@@ -2,14 +2,7 @@
 
 import { scrollTo } from "@web/core/utils/scrolling";
 
-import {
-    Component,
-    onWillDestroy,
-    onWillUpdateProps,
-    useEffect,
-    useRef,
-    useState,
-} from "@odoo/owl";
+const { Component, onWillDestroy, onWillUpdateProps, useEffect, useRef, useState } = owl;
 
 /**
  * A notebook component that will render only the current page and allow
@@ -115,12 +108,6 @@ export class Notebook extends Component {
         }
     }
 
-    activatePage(pageIndex) {
-        if (!this.disabledPages.includes(pageIndex)) {
-            this.state.currentPage = pageIndex;
-        }
-    }
-
     computePages(props) {
         if (!props.slots && !props.pages) {
             return [];
@@ -130,7 +117,6 @@ export class Notebook extends Component {
                 page.isVisible = true;
             }
         }
-        this.disabledPages = [];
         const pages = [];
         const pagesWithIndex = [];
         for (const [k, v] of Object.entries({ ...props.slots, ...props.pages })) {
@@ -139,9 +125,6 @@ export class Notebook extends Component {
                 pagesWithIndex.push([id, v]);
             } else {
                 pages.push([id, v]);
-            }
-            if (v.isDisabled) {
-                this.disabledPages.push(k);
             }
         }
         for (const page of pagesWithIndex) {
@@ -189,6 +172,5 @@ Notebook.props = {
     anchors: { type: Object, optional: true },
     defaultPage: { type: String, optional: true },
     orientation: { type: String, optional: true },
-    icons: { type: Object, optional: true },
     onPageUpdate: { type: Function, optional: true },
 };

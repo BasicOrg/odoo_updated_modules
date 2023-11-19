@@ -9,7 +9,7 @@
                 <xpath expr="//field[@name='push_notification_image']" position="after">
                     <field name="use_visitor_timezone"
                         string="Local Time"
-                        invisible="not display_push_notification_attributes or post_method == 'now'"/>
+                        attrs="{'invisible': ['|', ('display_push_notification_attributes', '=', False), ('post_method', '=', 'now')]}"/>
                 </xpath>
             </field>
         </record>

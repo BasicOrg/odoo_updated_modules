@@ -1,5 +1,5 @@
 /** @odoo-module */
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class PivotDialogTable extends Component {
     _onCellClicked(formula) {
@@ -7,9 +7,3 @@ export class PivotDialogTable extends Component {
     }
 }
 PivotDialogTable.template = "spreadsheet_edition.PivotDialogTable";
-PivotDialogTable.props = {
-    colHeaders: Array,
-    rowHeaders: Array,
-    values: Array,
-    onCellSelected: Function,
-};

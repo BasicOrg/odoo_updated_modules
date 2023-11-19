@@ -6,6 +6,7 @@
         <field name="street">1021 Sint-Bernardsesteenweg</field>
         <field name="city">Antwerpen</field>
         <field name="country_id" ref="base.be"/>
+        
         <field name="zip">2660</field>
         <field name="phone">+32 470 12 34 56</field>
         <field name="email">info@company.beexample.com</field>
@@ -15,12 +16,6 @@
     <record id="demo_company_be" model="res.company">
         <field name="name">BE Company CoA</field>
         <field name="partner_id" ref="partner_demo_company_be"/>
-    </record>
-
-    <record id="demo_bank_be" model="res.partner.bank">
-        <field name="acc_number">BE76429468789995</field>
-        <field name="partner_id" ref="partner_demo_company_be"/>
-        <field name="company_id" ref="demo_company_be"/>
     </record>
 
     <function model="res.company" name="_onchange_country_id">
@@ -33,8 +28,7 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>be_comp</value>
+        <value eval="[ref('l10n_be.l10nbe_chart_template')]"/>
         <value model="res.company" eval="obj().env.ref('l10n_be.demo_company_be')"/>
     </function>
 </odoo>

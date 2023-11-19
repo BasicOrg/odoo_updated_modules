@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-import logging
-import os
 
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models, SUPERUSER_ID
-from odoo.tools import format_date, email_normalize, email_normalize_all
+from odoo.tools import format_date
 from odoo.exceptions import AccessError, ValidationError
-_logger = logging.getLogger(__name__)
 
 
 class EventRegistration(models.Model):
@@ -17,39 +14,26 @@ class EventRegistration(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
-    @api.model
-    def _get_random_barcode(self):
-        """Generate a string representation of a pseudo-random 8-byte number for barcode
-        generation.
-
-        A decimal serialisation is longer than a hexadecimal one *but* it
-        generates a more compact barcode (Code128C rather than Code128A).
-
-        Generate 8 bytes (64 bits) barcodes as 16 bytes barcodes are not
-        compatible with all scanners.
-         """
-        return str(int.from_bytes(os.urandom(8), 'little'))
-
     # event
     event_id = fields.Many2one(
-        'event.event', string='Event', required=True)
+        'event.event', string='Event', required=True,
+        readonly=True, states={'draft': [('readonly', False)]})
     event_ticket_id = fields.Many2one(
-        'event.event.ticket', string='Event Ticket', ondelete='restrict')
+        'event.event.ticket', string='Event Ticket', readonly=True, ondelete='restrict',
+        states={'draft': [('readonly', False)]})
     active = fields.Boolean(default=True)
-    barcode = fields.Char(string='Barcode', default=lambda self: self._get_random_barcode(), readonly=True, copy=False)
     # utm informations
-    utm_campaign_id = fields.Many2one('utm.campaign', 'Campaign', index=True, ondelete='set null')
+    utm_campaign_id = fields.Many2one('utm.campaign', 'Campaign',  index=True, ondelete='set null')
     utm_source_id = fields.Many2one('utm.source', 'Source', index=True, ondelete='set null')
     utm_medium_id = fields.Many2one('utm.medium', 'Medium', index=True, ondelete='set null')
     # attendee
     partner_id = fields.Many2one('res.partner', string='Booked by', tracking=1)
     name = fields.Char(
         string='Attendee Name', index='trigram',
-        compute='_compute_name', readonly=False, store=True, tracking=2)
-    email = fields.Char(string='Email', compute='_compute_email', readonly=False, store=True, tracking=3)
-    phone = fields.Char(string='Phone', compute='_compute_phone', readonly=False, store=True, tracking=4)
-    company_name = fields.Char(
-        string='Company Name', compute='_compute_company_name', readonly=False, store=True, tracking=5)
+        compute='_compute_name', readonly=False, store=True, tracking=10)
+    email = fields.Char(string='Email', compute='_compute_email', readonly=False, store=True, tracking=11)
+    phone = fields.Char(string='Phone', compute='_compute_phone', readonly=False, store=True, tracking=12)
+    mobile = fields.Char(string='Mobile', compute='_compute_mobile', readonly=False, store=True, tracking=13)
     # organization
     date_closed = fields.Datetime(
         string='Attended Date', compute='_compute_date_closed',
@@ -60,31 +44,11 @@ class EventRegistration(models.Model):
     event_user_id = fields.Many2one(string='Event Responsible', related='event_id.user_id', readonly=True)
     company_id = fields.Many2one(
         'res.company', string='Company', related='event_id.company_id',
-        store=True, readonly=False)
+        store=True, readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection([
-        ('draft', 'Unconfirmed'),
-        ('open', 'Registered'),
-        ('done', 'Attended'),
-        ('cancel', 'Cancelled')],
-        string='Status', default='open',
-        readonly=True, copy=False, tracking=6,
-        help='Unconfirmed: registrations in a pending state waiting for an action (specific case, notably with sale status)\n'
-             'Registered: registrations considered taken by a client\n'
-             'Attended: registrations for which the attendee attended the event\n'
-             'Cancelled: registrations cancelled manually')
-    # properties
-    registration_properties = fields.Properties(
-        'Properties', definition='event_id.registration_properties_definition', copy=True)
-
-    _sql_constraints = [
-        ('barcode_event_uniq', 'unique(barcode)', "Barcode should be unique")
-    ]
-
-    @api.constrains('state', 'event_id', 'event_ticket_id')
-    def _check_seats_availability(self):
-        registrations_confirmed = self.filtered(lambda registration: registration.state in ('open', 'done'))
-        registrations_confirmed.event_id._check_seats_availability()
-        registrations_confirmed.event_ticket_id._check_seats_availability()
+        ('draft', 'Unconfirmed'), ('cancel', 'Cancelled'),
+        ('open', 'Confirmed'), ('done', 'Attended')],
+        string='Status', default='draft', readonly=True, copy=False, tracking=True)
 
     @api.depends('partner_id')
     def _compute_name(self):
@@ -92,7 +56,7 @@ class EventRegistration(models.Model):
             if not registration.name and registration.partner_id:
                 registration.name = registration._synchronize_partner_values(
                     registration.partner_id,
-                    fnames={'name'},
+                    fnames=['name']
                 ).get('name') or False
 
     @api.depends('partner_id')
@@ -101,27 +65,26 @@ class EventRegistration(models.Model):
             if not registration.email and registration.partner_id:
                 registration.email = registration._synchronize_partner_values(
                     registration.partner_id,
-                    fnames={'email'},
+                    fnames=['email']
                 ).get('email') or False
 
     @api.depends('partner_id')
     def _compute_phone(self):
         for registration in self:
             if not registration.phone and registration.partner_id:
-                partner_values = registration._synchronize_partner_values(
+                registration.phone = registration._synchronize_partner_values(
                     registration.partner_id,
-                    fnames={'phone', 'mobile'},
-                )
-                registration.phone = partner_values.get('phone') or partner_values.get('mobile') or False
+                    fnames=['phone']
+                ).get('phone') or False
 
     @api.depends('partner_id')
-    def _compute_company_name(self):
+    def _compute_mobile(self):
         for registration in self:
-            if not registration.company_name and registration.partner_id:
-                registration.company_name = registration._synchronize_partner_values(
+            if not registration.mobile and registration.partner_id:
+                registration.mobile = registration._synchronize_partner_values(
                     registration.partner_id,
-                    fnames={'company_name'},
-                ).get('company_name') or False
+                    fnames=['mobile']
+                ).get('mobile') or False
 
     @api.depends('state')
     def _compute_date_closed(self):
@@ -139,7 +102,7 @@ class EventRegistration(models.Model):
 
     def _synchronize_partner_values(self, partner, fnames=None):
         if fnames is None:
-            fnames = {'name', 'email', 'phone', 'mobile'}
+            fnames = ['name', 'email', 'phone', 'mobile']
         if partner:
             contact_id = partner.address_get().get('contact', False)
             if contact_id:
@@ -147,58 +110,19 @@ class EventRegistration(models.Model):
                 return dict((fname, contact[fname]) for fname in fnames if contact[fname])
         return {}
 
-    @api.onchange('phone', 'event_id', 'partner_id')
-    def _onchange_phone_validation(self):
-        if self.phone:
-            country = self.partner_id.country_id or self.event_id.country_id or self.env.company.country_id
-            self.phone = self._phone_format(fname='phone', country=country) or self.phone
-
-    @api.model
-    def register_attendee(self, barcode, event_id):
-        attendee = self.search([('barcode', '=', barcode)], limit=1)
-        if not attendee:
-            return {'error': 'invalid_ticket'}
-        res = attendee._get_registration_summary()
-        if attendee.state == 'cancel':
-            status = 'canceled_registration'
-        elif not attendee.event_id.is_ongoing:
-            status = 'not_ongoing_event'
-        elif attendee.state != 'done':
-            if event_id and attendee.event_id.id != event_id:
-                status = 'need_manual_confirmation'
-            else:
-                attendee.action_set_done()
-                status = 'confirmed_registration'
-        else:
-            status = 'already_registered'
-        res.update({'status': status, 'event_id': event_id})
-        return res
-
     # ------------------------------------------------------------
     # CRUD
     # ------------------------------------------------------------
 
     @api.model_create_multi
     def create(self, vals_list):
-        # format numbers: prefetch side records, then try to format according to country
-        all_partner_ids = set(values['partner_id'] for values in vals_list if values.get('partner_id'))
-        all_event_ids = set(values['event_id'] for values in vals_list if values.get('event_id'))
-        for values in vals_list:
-            if not values.get('phone'):
-                continue
-
-            related_country = self.env['res.country']
-            if values.get('partner_id'):
-                related_country = self.env['res.partner'].with_prefetch(all_partner_ids).browse(values['partner_id']).country_id
-            if not related_country and values.get('event_id'):
-                related_country = self.env['event.event'].with_prefetch(all_event_ids).browse(values['event_id']).country_id
-            if not related_country:
-                related_country = self.env.company.country_id
-            values['phone'] = self._phone_format(number=values['phone'], country=related_country) or values['phone']
-
         registrations = super(EventRegistration, self).create(vals_list)
 
-        if not self.env.context.get('install_mode', False):
+        # auto_confirm if possible; if not automatically confirmed, call mail schedulers in case
+        # some were created already open
+        if registrations._check_auto_confirmation():
+            registrations.sudo().action_confirm()
+        elif not self.env.context.get('install_mode', False):
             # running the scheduler for demo data can cause an issue where wkhtmltopdf runs during
             # server start and hangs indefinitely, leading to serious crashes
             # we currently avoid this by not running the scheduler, would be best to find the actual
@@ -211,20 +135,42 @@ class EventRegistration(models.Model):
         to_confirm = (self.filtered(lambda registration: registration.state in {'draft', 'cancel'})
                       if confirming else None)
         ret = super(EventRegistration, self).write(vals)
-        if confirming and not self.env.context.get('install_mode', False):
-            # running the scheduler for demo data can cause an issue where wkhtmltopdf runs
-            # during server start and hangs indefinitely, leading to serious crashes we
-            # currently avoid this by not running the scheduler, would be best to find the
-            # actual reason for this issue and fix it so we can remove this check
-            to_confirm._update_mail_schedulers()
+        # As these Event(Ticket) methods are model constraints, it is not necessary to call them
+        # explicitly when creating new registrations. However, it is necessary to trigger them here
+        # as changes in registration states cannot be used as constraints triggers.
+        if confirming:
+            to_confirm.event_id._check_seats_availability()
+            to_confirm.event_ticket_id._check_seats_availability()
+
+            if not self.env.context.get('install_mode', False):
+                # running the scheduler for demo data can cause an issue where wkhtmltopdf runs
+                # during server start and hangs indefinitely, leading to serious crashes we
+                # currently avoid this by not running the scheduler, would be best to find the
+                # actual reason for this issue and fix it so we can remove this check
+                to_confirm._update_mail_schedulers()
 
         return ret
 
-    def _compute_display_name(self):
-        """ Custom display_name in case a registration is nott linked to an attendee
+    def name_get(self):
+        """ Custom name_get implementation to better differentiate registrations
+        linked to a given partner but with different name (one partner buying
+        several registrations)
+
+          * name, partner_id has no name -> take name
+          * partner_id has name, name void or same -> take partner name
+          * both have name: partner + name
         """
+        ret_list = []
         for registration in self:
-            registration.display_name = registration.name or f"#{registration.id}"
+            if registration.partner_id.name:
+                if registration.name and registration.name != registration.partner_id.name:
+                    name = '%s, %s' % (registration.partner_id.name, registration.name)
+                else:
+                    name = registration.partner_id.name
+            else:
+                name = registration.name
+            ret_list.append((registration.id, name))
+        return ret_list
 
     def toggle_active(self):
         pre_inactive = self - self.filtered(self._active_name)
@@ -235,13 +181,13 @@ class EventRegistration(models.Model):
             pre_inactive.event_id._check_seats_availability()
             pre_inactive.event_ticket_id._check_seats_availability()
 
+    def _check_auto_confirmation(self):
+        """ Checks that all registrations are for `auto-confirm` events. """
+        return all(event.auto_confirm for event in self.event_id)
+
     # ------------------------------------------------------------
     # ACTIONS / BUSINESS
     # ------------------------------------------------------------
-
-    def action_set_previous_state(self):
-        self.filtered(lambda reg: reg.state == 'open').action_set_draft()
-        self.filtered(lambda reg: reg.state == 'done').action_confirm()
 
     def action_set_draft(self):
         self.write({'state': 'draft'})
@@ -265,8 +211,9 @@ class EventRegistration(models.Model):
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
         ctx = dict(
             default_model='event.registration',
-            default_res_ids=self.ids,
-            default_template_id=template.id if template else False,
+            default_res_id=self.id,
+            default_use_template=bool(template),
+            default_template_id=template and template.id,
             default_composition_mode='comment',
             default_email_layout_xmlid="mail.mail_notification_light",
         )
@@ -305,19 +252,6 @@ class EventRegistration(models.Model):
     # MAILING / GATEWAY
     # ------------------------------------------------------------
 
-    def _message_compute_subject(self):
-        if self.name:
-            return _(
-                "%(event_name)s - Registration for %(attendee_name)s",
-                event_name=self.event_id.name,
-                attendee_name=self.name,
-            )
-        return _(
-            "%(event_name)s - Registration #%(registration_id)s",
-            event_name=self.event_id.name,
-            registration_id=self.id,
-        )
-
     def _message_get_suggested_recipients(self):
         recipients = super(EventRegistration, self)._message_get_suggested_recipients()
         public_users = self.env['res.users'].sudo()
@@ -338,31 +272,24 @@ class EventRegistration(models.Model):
     def _message_get_default_recipients(self):
         # Prioritize registration email over partner_id, which may be shared when a single
         # partner booked multiple seats
-        return {r.id:
-            {
-                'partner_ids': [],
-                'email_to': ','.join(email_normalize_all(r.email)) or r.email,
-                'email_cc': False,
-            } for r in self
-        }
+        return {r.id: {
+            'partner_ids': [],
+            'email_to': r.email,
+            'email_cc': False}
+            for r in self}
 
     def _message_post_after_hook(self, message, msg_vals):
         if self.email and not self.partner_id:
             # we consider that posting a message with a specified recipient (not a follower, a specific one)
             # on a document without customer means that it was created through the chatter using
             # suggested recipients. This heuristic allows to avoid ugly hacks in JS.
-            email_normalized = email_normalize(self.email)
-            new_partner = message.partner_ids.filtered(
-                lambda partner: partner.email == self.email or (email_normalized and partner.email_normalized == email_normalized)
-            )
+            new_partner = message.partner_ids.filtered(lambda partner: partner.email == self.email)
             if new_partner:
-                if new_partner[0].email_normalized:
-                    email_domain = ('email', 'in', [new_partner[0].email, new_partner[0].email_normalized])
-                else:
-                    email_domain = ('email', '=', new_partner[0].email)
                 self.search([
-                    ('partner_id', '=', False), email_domain, ('state', 'not in', ['cancel']),
-                ]).write({'partner_id': new_partner[0].id})
+                    ('partner_id', '=', False),
+                    ('email', '=', new_partner.email),
+                    ('state', 'not in', ['cancel']),
+                ]).write({'partner_id': new_partner.id})
         return super(EventRegistration, self)._message_post_after_hook(message, msg_vals)
 
     # ------------------------------------------------------------
@@ -379,7 +306,7 @@ class EventRegistration(models.Model):
         elif diff.days == 1:
             return _('tomorrow')
         elif (diff.days < 7):
-            return _('in %d days', diff.days)
+            return _('in %d days') % (diff.days, )
         elif (diff.days < 14):
             return _('next week')
         elif event_date.month == (today + relativedelta(months=+1)).month:

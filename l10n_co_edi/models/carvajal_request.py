@@ -57,15 +57,19 @@ class CarvajalUsernameToken(UsernameToken):
 
 class CarvajalRequest():
     def __init__(self, move_type, company):
-        l10n_co_edi_account = company.sudo().l10n_co_edi_account or ''
+        l10n_co_edi_account = company.l10n_co_edi_account or ''
         if move_type in ('in_refund', 'in_invoice') and len(l10n_co_edi_account.split('_')) == 2:
             l10n_co_edi_account = l10n_co_edi_account.split('_')[0] + "_DS" + l10n_co_edi_account.split('_')[1]
-        self.username = company.sudo().l10n_co_edi_username or ''
-        self.password = company.sudo().l10n_co_edi_password or ''
+        self.username = company.l10n_co_edi_username or ''
+        self.password = company.l10n_co_edi_password or ''
         self.co_id_company = company.l10n_co_edi_company or ''
         self.account = l10n_co_edi_account
         self.test_mode = company.l10n_co_edi_test_mode
-        self.wsdl = 'https://wscenf%s.cen.biz/isows/InvoiceService?wsdl' % ('lab' if self.test_mode else '')
+        self.wsdl = company.env['ir.config_parameter'].sudo().get_param('l10n_edi_carvajal_wsdl')
+        if self.wsdl:
+            self.wsdl = self.wsdl % ('-stage' if company.l10n_co_edi_test_mode else '')
+        else:  # for old users, keep using the old URL
+            self.wsdl = 'https://wscenf%s.cen.biz/isows/InvoiceService?wsdl' % ('lab' if self.test_mode else '')
 
     @property
     def client(self):
@@ -202,19 +206,15 @@ class CarvajalRequest():
         except Exception as e:
             return self._handle_exception(e)
 
-        processStatus = response.processStatus if hasattr(response, 'processStatus') else None
-        processName = response.processName if hasattr(response, 'processName') else None
-        legalStatus = response.legalStatus if hasattr(response, 'legalStatus') else None
-
-        if processStatus == 'OK' and \
-                processName in ('PDF_CREATION', 'ISSUANCE_CHECK_DELIVERY', 'SEND_TO_RECEIVER', 'SEND_TO_SENDER', 'SEND_NOTIFICATION') and \
-                legalStatus == 'ACCEPTED':
-            return self._download(invoice)
-        elif processStatus == 'PROCESSING' or \
-                (processStatus == 'OK' and legalStatus != 'REJECTED') or (processStatus == 'FAIL' and legalStatus == 'RETRY'):
+        if response.processStatus == 'PROCESSING':
             return {'error': _('The invoice is still processing by Carvajal.'), 'blocking_level': 'info'}
-        else:  # legalStatus == 'REJECTED' or (processStatus == 'FAIL' and legalStatus != 'RETRY')
-            msg = (_('The invoice was rejected by Carvajal: %s', html_escape(response['errorMessage']).replace('\n', '<br/>'))
-                   if hasattr(response, 'errorMessage') and response['errorMessage']
-                   else _('The invoice was rejected by Carvajal but no error message was received.'))
-            return {'error': msg, 'blocking_level': 'error'}
+        legalStatus = response.legalStatus if hasattr(response, 'legalStatus') else 'REJECTED'
+        if legalStatus == 'ACCEPTED':
+            if invoice.move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'):
+                return self._download(invoice)
+            else:
+                return {}
+        msg = (_('The invoice was rejected by Carvajal: %s', html_escape(response['errorMessage']).replace('\n', '<br/>'))
+               if hasattr(response, 'errorMessage') and response['errorMessage']
+               else _('The invoice was rejected by Carvajal but no error message was received.'))
+        return {'error': msg, 'blocking_level': 'error'}

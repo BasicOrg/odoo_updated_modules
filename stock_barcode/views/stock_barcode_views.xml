@@ -12,7 +12,7 @@
     <menuitem
         id="stock_barcode_menu"
         action="stock_barcode_action_main_menu"
-        web_icon="stock_barcode,static/description/icon.png"
+        web_icon="stock_barcode,static/description/icon.svg"
         sequence="155"
         groups="stock.group_stock_user" />
 
@@ -24,6 +24,7 @@
         <field name="res_model">stock.picking</field>
         <field name="view_mode">form</field>
         <field name="context">{
+            'form_view_initial_mode': 'edit',
             'force_detailed_view': True,
         }</field>
     </record>
@@ -49,6 +50,7 @@
         <field name="view_mode">kanban,form</field>
         <field name="view_id" ref="stock_barcode.stock_picking_kanban"/>
         <field name="context">{
+            'form_view_initial_mode': 'edit',
             'contact_display': 'partner_address',
             'search_default_available': 1,
             'search_default_to_do_transfers': 1,
@@ -71,15 +73,14 @@
         <field name="mode">primary</field>
         <field name="priority">20</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile o_emphasize_colors" create="0" sample="1" action="get_action_picking_tree_ready_kanban" type="object">
+            <kanban class="o_kanban_mobile oe_background_grey o_emphasize_colors" create="0" sample="1" action="get_action_picking_tree_ready_kanban" type="object">
                 <field name="display_name"/>
                 <field name="color"/>
                 <field name="count_picking_ready"/>
                 <field name="code"/>
-                <field name="is_barcode_picking_type" invisible="1"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-if="record.is_barcode_picking_type" t-attf-class="oe_kanban_card #{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click">
+                        <div t-if="['incoming', 'outgoing', 'internal'].indexOf(record.code.raw_value) > -1" t-attf-class="oe_kanban_card #{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click">
                             <span class="oe_kanban_color_help" t-attf-title="In #{kanban_getcolorname(record.color.raw_value)}" role="img" t-attf-aria-label="In #{kanban_getcolorname(record.color.raw_value)}"/>
                                 <div class="o_kanban_card_header">
                                     <div class="o_primary o_kanban_record_title">
@@ -110,6 +111,7 @@
         <field name="domain">[('code', 'in', ('incoming', 'outgoing', 'internal'))]</field>
         <field name="view_id" ref="stock_picking_type_kanban"/>
         <field name="context">{
+            'form_view_initial_mode': 'edit',
             'force_detailed_view': True,
         }</field>
     </record>

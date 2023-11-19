@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
-    <div t-name="spreadsheet_edition.ListingAllSidePanel" class="o-listing-all-side-panel">
+    <div t-name="spreadsheet_edition.ListingAllSidePanel" class="o-listing-all-side-panel" owl="1">
         <t t-set="listId" t-value="getters.getSelectedListId()"/>
         <t t-if="listId">
             <ListingDetailsSidePanel listId="listId"/>
             <div class="o-sidePanelButtons">
-                <button t-on-click="() => this.delete(listId)" class="o-button o_delete_element">Delete</button>
-                <button t-on-click="resetListingSelection" class="o-button o_pivot_cancel">Back</button>
+                <button t-on-click="() => this.delete(listId)" class="o-sidePanelButton o_delete_element">Delete</button>
+                <button t-on-click="resetListingSelection" class="o-sidePanelButton o_pivot_cancel">Back</button>
             </div>
         </t>
         <t t-else="1">

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.FontSelectionField">
+    <t t-name="web.FontSelectionField" owl="1">
         <t t-if="props.readonly">
-            <span t-esc="string" t-att-raw-value="props.record.data[props.name]" t-attf-style="font-family:{{ props.record.data[props.name] }};"/>
+            <span t-esc="string" t-att-raw-value="props.value" t-attf-style="font-family:{{ props.value }};"/>
         </t>
         <t t-else="">
-            <select class="o_input" t-on-change="onChange" t-attf-style="font-family:{{ props.record.data[props.name] }};">
+            <select class="o_input" t-on-change="onChange" t-attf-style="font-family:{{ props.value }};">
                 <option
                     t-att-selected="false === value"
                     t-att-value="stringify(false)"
                     t-esc="this.props.placeholder || ''"
-                    t-attf-style="{{ props.required ? 'display:none' : '' }}"
+                    t-attf-style="{{ isRequired ? 'display:none' : '' }}"
                 />
                 <t t-foreach="options" t-as="option" t-key="option[0]">
                     <option

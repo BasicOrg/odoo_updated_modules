@@ -29,25 +29,27 @@ QUnit.module("timer", (hooks) => {
             },
         });
         const props = {
-            name: "timer",
-            context: {},
+            value: testState,
             record: {
                 resModel: "dummy",
+                getFieldContext() {
+                    return {};
+                },
                 model: {
                     load() {
                         assert.step("load");
                     },
+                    notify() {
+                        assert.step("notify");
+                    },
                 },
-                data: {
-                    timer: testState,
-                },
-            },
+            }
         };
         await mount(TimerToggleButton, target, { env, props: props });
         await nextTick();
         assert.hasClass(target.querySelector("button i"), `fa-${icon}-circle`, "correct icon is used");
         await click(target, "button");
-        assert.verifySteps([action, "load"], "correct action is called and record is reloaded and view is refreshed");
+        assert.verifySteps([action, "load", "notify"], "correct action is called and record is reloaded and view is refreshed");
     }
 
     QUnit.test("TimerToggleButton true value state test", async function (assert) {

@@ -26,6 +26,7 @@
     <record id="product_pos_category_tree_view" model="ir.ui.view">
         <field name="name">pos.category.tree</field>
         <field name="model">pos.category</field>
+        <field name="field_parent" eval="False"/>
         <field name="arch" type="xml">
             <tree string="Product Product Categories">
                 <field name="sequence" widget="handle"/>
@@ -61,6 +62,7 @@
 
     <record id="product_pos_category_action" model="ir.actions.act_window">
         <field name="name">PoS Product Categories</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">pos.category</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="view_id" eval="False"/>

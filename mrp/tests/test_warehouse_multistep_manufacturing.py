@@ -146,9 +146,7 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
             'location_dest_id': self.customer_location,
             'partner_id': self.env['ir.model.data']._xmlid_to_res_id('base.res_partner_4'),
             'picking_type_id': self.warehouse.out_type_id.id,
-            'state': 'draft',
         })
-
         self.env['stock.move'].create({
             'name': self.finished_product.name,
             'product_id': self.finished_product.id,
@@ -188,7 +186,7 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
         self.assertEqual(picking_stock_postprod.origin, 'SOURCEDOCUMENT', 'The post-prod origin should be the SO name')
 
         picking_stock_preprod.action_assign()
-        picking_stock_preprod.move_ids.write({'quantity': 4, 'picked': True})
+        picking_stock_preprod.move_line_ids.qty_done = 4
         picking_stock_preprod._action_done()
 
         self.assertFalse(sum(self.env['stock.quant']._gather(self.raw_product, self.warehouse.lot_stock_id).mapped('quantity')))
@@ -228,7 +226,6 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
             'location_dest_id': self.customer_location,
             'partner_id': self.env['ir.model.data']._xmlid_to_res_id('base.res_partner_4'),
             'picking_type_id': self.warehouse.out_type_id.id,
-            'state': 'draft',
         })
         self.env['stock.move'].create({
             'name': self.finished_product.name,
@@ -488,7 +485,7 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
         """
 
         self.warehouse.mto_pull_id.route_id.active = True
-        # Creating complex product which trigger another manufacture
+        # Creating complex product which trigger another manifacture
 
         routes = self.warehouse.manufacture_pull_id.route_id + self.warehouse.mto_pull_id.route_id
         self.complex_product = self.env['product.product'].create({
@@ -528,7 +525,6 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
         production_form.picking_type_id = self.warehouse.manu_type_id
         production = production_form.save()
         production.action_confirm()
-        self.env.invalidate_all()
 
         move_raw_ids = production.move_raw_ids
         self.assertEqual(len(move_raw_ids), 2)
@@ -657,45 +653,3 @@ class TestMultistepManufacturingWarehouse(TestMrpCommon):
             "The default source location of the merged mo should be the same as the 1st of the original MOs")
         self.assertEqual(picking_type, mo.picking_type_id,
             "The operation type of the merged mo should be the same as the 1st of the original MOs")
-
-    def test_manufacturing_bom_from_reordering_rules(self):
-        """
-            Check that the manufacturing order is created with the BoM set in the reording rule:
-                - Create a product with 2 bill of materials,
-                - Create an orderpoint for this product specifying the 2nd BoM that must be used,
-                - Check that the MO has been created with the 2nd BoM
-        """
-        manufacturing_route = self.env['stock.rule'].search([
-            ('action', '=', 'manufacture')]).route_id
-        with Form(self.warehouse) as warehouse:
-            warehouse.manufacture_steps = 'pbm_sam'
-        finished_product = self.env['product.product'].create({
-            'name': 'Product',
-            'type': 'product',
-            'route_ids': manufacturing_route,
-        })
-        self.env['mrp.bom'].create({
-            'product_tmpl_id': finished_product.product_tmpl_id.id,
-            'product_qty': 1,
-            'product_uom_id': finished_product.uom_id.id,
-            'type': 'normal',
-        })
-        bom_2 = self.env['mrp.bom'].create({
-            'product_tmpl_id': finished_product.product_tmpl_id.id,
-            'product_qty': 1,
-            'product_uom_id': finished_product.uom_id.id,
-            'type': 'normal',
-        })
-        self.env['stock.warehouse.orderpoint'].create({
-            'name': 'Orderpoint for P1',
-            'product_id': self.finished_product.id,
-            'product_min_qty': 1,
-            'product_max_qty': 1,
-            'route_id': manufacturing_route.id,
-            'bom_id': bom_2.id,
-        })
-        self.env['procurement.group'].run_scheduler()
-        mo = self.env['mrp.production'].search([('product_id', '=', self.finished_product.id)])
-        self.assertEqual(len(mo), 1)
-        self.assertEqual(mo.product_qty, 1.0)
-        self.assertEqual(mo.bom_id, bom_2)

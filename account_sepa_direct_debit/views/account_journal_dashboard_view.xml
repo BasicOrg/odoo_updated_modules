@@ -7,7 +7,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="sdd_account_payment_with_mandates_tree"/>
             <field name="domain">
-                [('payment_method_code','in', ('sdd', 'sepa_direct_debit')),
+                [('payment_method_code','=','sdd'),
                  ('state', '=', 'posted'),
                  ('is_move_sent', '=', False),
                 ]
@@ -29,7 +29,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <a type="object" name="open_sdd_payments">
-                                    <t t-out="dashboard.sdd_payments_to_send_number"/>
+                                    <t t-esc="dashboard.sdd_payments_to_send_number"/>
                                     <t t-if="dashboard.sdd_payments_to_send_number == 1">Direct Debit Payment to Collect</t>
                                     <t t-if="dashboard.sdd_payments_to_send_number > 1">Direct Debit Payments to Collect</t>
                                 </a>

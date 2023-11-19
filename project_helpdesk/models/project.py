@@ -13,7 +13,7 @@ class Task(models.Model):
                 'tag': 'display_notification',
                 'params': {
                     'type': 'warning',
-                    'message': _('Recurring tasks cannot be converted into tickets.'),
+                    'message': 'Recurring tasks cannot be converted into tickets.',
                 }
             }
         return {
@@ -23,9 +23,5 @@ class Task(models.Model):
             'views': [(False, 'form')],
             'type': 'ir.actions.act_window',
             'target': 'new',
-            'context': {
-                **self.env.context,
-                'to_convert': self.ids,
-                'dialog_size': 'medium',
-            },
+            'context': {**self.env.context, 'to_convert': self.ids},
         }

@@ -8,7 +8,11 @@
                 <field name="ticket_id" invisible="1"/>
                 <sheet>
                     <group>
-                        <field name="forum_id" options="{'no_open': True, 'no_create': True}"/>
+                        <group>
+                            <field name="forum_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
                         <field name="title"/>
                         <field name="description" required="1"/>
                         <field name="tag_ids" widget="many2many_tags"/>
@@ -17,7 +21,7 @@
                 <footer>
                     <button string="Create and View Post" name="action_create_view_post" type="object" class="oe_highlight"/>
                     <button string="Create Post" name="action_create_post" type="object" class="btn-secondary"/>
-                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

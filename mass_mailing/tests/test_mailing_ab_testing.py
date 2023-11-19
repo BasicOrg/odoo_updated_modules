@@ -6,8 +6,6 @@ from datetime import datetime, timedelta
 from odoo.addons.mass_mailing.tests.common import MassMailCommon
 from odoo.tests import users, tagged
 from odoo.tools import mute_logger
-from odoo.tests.common import Form
-from odoo import fields
 
 
 @tagged('post_install', '-at_install')
@@ -52,7 +50,7 @@ class TestMailingABTesting(MassMailCommon):
         self.ab_testing_mailing_2.mailing_trace_ids[:15].set_opened()
         self.ab_testing_mailing_ids.invalidate_recordset()
 
-        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66.67)
+        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66)
         self.assertEqual(self.ab_testing_mailing_2.opened_ratio, 50)
 
         with self.mock_mail_gateway():
@@ -84,7 +82,7 @@ class TestMailingABTesting(MassMailCommon):
         self.ab_testing_mailing_2.mailing_trace_ids[:15].set_opened()
         self.ab_testing_mailing_ids.invalidate_recordset()
 
-        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66.67)
+        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66)
         self.assertEqual(self.ab_testing_mailing_2.opened_ratio, 50)
 
         with self.mock_mail_gateway():
@@ -134,16 +132,6 @@ class TestMailingABTesting(MassMailCommon):
         self.assertTrue(ab_mailing.ab_testing_winner_selection, "The selection winner has been set to default value")
         self.assertTrue(ab_mailing.ab_testing_schedule_datetime, "The schedule date has been set to default value")
 
-    @users('user_marketing')
-    def test_mailing_ab_testing_compare(self):
-        # compare version feature should returns all mailings of the same
-        # campaign having a/b testing enabled.
-        compare_version = self.ab_testing_mailing_1.action_compare_versions()
-        self.assertEqual(
-            self.env['mailing.mailing'].search(compare_version.get('domain')),
-            self.ab_testing_mailing_1 + self.ab_testing_mailing_2
-        )
-
     @mute_logger('odoo.addons.mail.models.mail_mail')
     @users('user_marketing')
     def test_mailing_ab_testing_manual_flow(self):
@@ -167,7 +155,7 @@ class TestMailingABTesting(MassMailCommon):
         self.ab_testing_mailing_2.mailing_trace_ids[:15].set_opened()
         self.ab_testing_mailing_ids.invalidate_recordset()
 
-        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66.67)
+        self.assertEqual(self.ab_testing_mailing_1.opened_ratio, 66)
         self.assertEqual(self.ab_testing_mailing_2.opened_ratio, 50)
 
         with self.mock_mail_gateway():
@@ -175,30 +163,3 @@ class TestMailingABTesting(MassMailCommon):
         self.ab_testing_mailing_ids.invalidate_recordset()
         winner_mailing = self.ab_testing_campaign.mailing_mail_ids.filtered(lambda mailing: mailing.ab_testing_pc == 100)
         self.assertEqual(winner_mailing.subject, 'A/B Testing V2')
-
-    @mute_logger('odoo.addons.mail.models.mail_mail')
-    @users('user_marketing')
-    def test_mailing_ab_testing_minimum_participants(self):
-        """ Test that it should send minimum one mail(if possible) when ab_testing_pc is too small compared to the amount of targeted records."""
-        mailing_list = self._create_mailing_list_of_x_contacts(10)
-        ab_testing = self.env['mailing.mailing'].create({
-            'subject': 'A/B Testing SMS V1',
-            'contact_list_ids': mailing_list.ids,
-            'ab_testing_enabled': True,
-            'ab_testing_pc': 2,
-            'ab_testing_schedule_datetime': datetime.now(),
-            'mailing_type': 'mail',
-            'campaign_id': self.ab_testing_campaign.id,
-        })
-        with self.mock_mail_gateway():
-            ab_testing.action_send_mail()
-        self.assertEqual(ab_testing.state, 'done')
-        self.assertEqual(len(self._mails), 1)
-
-    def test_mailing_ab_testing_duplicate_date(self):
-        """ Test that "Send final on" date value should be copied in new mass_mailing """
-        ab_testing_mail_1 = Form(self.ab_testing_mailing_1)
-        ab_testing_mail_1.ab_testing_schedule_datetime = datetime.now() + timedelta(days=10)
-        action = ab_testing_mail_1.save().action_duplicate()
-        ab_testing_mailing_2 = self.env[action['res_model']].browse(action['res_id'])
-        self.assertEqual(fields.Datetime.to_string(ab_testing_mailing_2.ab_testing_schedule_datetime), ab_testing_mail_1.ab_testing_schedule_datetime)

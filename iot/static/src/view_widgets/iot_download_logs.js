@@ -3,7 +3,8 @@
 import { registry } from '@web/core/registry';
 import { useService } from '@web/core/utils/hooks';
 import { IoTConnectionErrorDialog } from '../iot_connection_error_dialog';
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class IoTBoxDownloadLogs extends Component {
     setup() {
@@ -22,7 +23,7 @@ export class IoTBoxDownloadLogs extends Component {
             } else {
                 this.doWarnFail(this.ip_url);
             }
-        } catch {
+        } catch (_) {
             this.doWarnFail(this.ip_url);
         }
     }
@@ -32,7 +33,4 @@ export class IoTBoxDownloadLogs extends Component {
 }
 IoTBoxDownloadLogs.template = `iot.IoTBoxDownloadLogs`;
 
-export const ioTBoxDownloadLogs = {
-    component: IoTBoxDownloadLogs,
-};
-registry.category("view_widgets").add("iot_download_logs", ioTBoxDownloadLogs);
+registry.category('view_widgets').add('iot_download_logs', IoTBoxDownloadLogs);

@@ -56,7 +56,7 @@ class BpostRequest():
 
         res = [field for field in recipient_required_fields if not recipient[field]]
         if res:
-            return _("The recipient address is incomplete or wrong (Missing field(s):  \n %s)", ", ".join(res).replace("_id", ""))
+            return _("The recipient address is incomplete or wrong (Missing field(s):  \n %s)") % ", ".join(res).replace("_id", "")
         if recipient.country_id.code == "BE" and delivery_nature == 'International':
             return _("bpost International is used only to ship outside Belgium. Please change the delivery method into bpost Domestic.")
         if recipient.country_id.code != "BE" and delivery_nature == 'Domestic':
@@ -64,7 +64,7 @@ class BpostRequest():
 
         res = [field for field in shipper_required_fields if not shipper[field]]
         if res:
-            return _("The address of your company/warehouse is incomplete or wrong (Missing field(s):  \n %s)", ", ".join(res).replace("_id", ""))
+            return _("The address of your company/warehouse is incomplete or wrong (Missing field(s):  \n %s)") % ", ".join(res).replace("_id", "")
         if shipper.country_id.code != 'BE':
             return _("Your company/warehouse address must be in Belgium to ship with bpost")
 
@@ -75,7 +75,7 @@ class BpostRequest():
                 return _("Please provide at least one item to ship.")
             error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
             if error_lines:
-                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s", ", ".join(error_lines.product_id.mapped('name')))
+                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s") % ", ".join(error_lines.product_id.mapped('name'))
         return False
 
     def _parse_address(self, partner):
@@ -319,17 +319,17 @@ class BpostRequest():
             weight_in_kg = carrier._bpost_convert_weight(package.shipping_weight)
             boxes.append({
                 'weight': str(_grams(weight_in_kg)),
-                'parcelValue': max(min(int(parcel_value * 100), 2500000), 100),
-                'contentDescription': ' '.join(["%d %s" % (line.quantity, re.sub(r'[\W_]+', ' ', line.product_id.name or '')) for line in package_lines])[:50],
+                'parcelValue': max(min(int(parcel_value*100), 2500000), 100),
+                'contentDescription': ' '.join(["%d %s" % (line.qty_done, re.sub('[\W_]+', ' ', line.product_id.name or '')) for line in package_lines])[:50],
             })
         lines_without_package = picking.move_line_ids.filtered(lambda sml: not sml.result_package_id)
         if lines_without_package:
             parcel_value = sum(sml.sale_price for sml in lines_without_package)
-            weight_in_kg = carrier._bpost_convert_weight(sum(sml.quantity * sml.product_id.weight for sml in lines_without_package))
+            weight_in_kg = carrier._bpost_convert_weight(sum(sml.qty_done * sml.product_id.weight for sml in lines_without_package))
             boxes.append({
                 'weight': str(_grams(weight_in_kg)),
-                'parcelValue': max(min(int(parcel_value * 100), 2500000), 100),
-                'contentDescription': ' '.join(["%d %s" % (line.quantity, re.sub(r'[\W_]+', ' ', line.product_id.name or '')) for line in lines_without_package])[:50],
+                'parcelValue': max(min(int(parcel_value*100), 2500000), 100),
+                'contentDescription': ' '.join(["%d %s" % (line.qty_done, re.sub('[\W_]+', ' ', line.product_id.name or '')) for line in lines_without_package])[:50],
             })
         return boxes
 
@@ -339,7 +339,7 @@ class BpostRequest():
         parcel_value = sum(move.product_qty * move.product_id.lst_price for move in picking.move_ids)
         boxes = [{
             'weight': str(_grams(weight_in_kg)),
-            'parcelValue': max(min(int(parcel_value * 100), 2500000), 100),
+            'parcelValue': max(min(int(parcel_value*100), 2500000), 100),
             'contentDescription': ' '.join(["%d %s" % (line.product_qty, re.sub(r'[\W_]+', ' ', line.product_id.name or '')) for line in picking.move_ids])[:50],
         }]
         return boxes

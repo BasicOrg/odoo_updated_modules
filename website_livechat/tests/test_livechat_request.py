@@ -32,14 +32,14 @@ class TestLivechatRequestHttpCase(tests.HttpCase, TestLivechatCommon):
         })
 
         # Open Chat Request
-        self.visitor.with_user(self.operator_b).sudo().action_send_chat_request()
-        chat_request = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
+        self.visitor.with_user(self.operator_b).action_send_chat_request()
+        chat_request = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
         self.assertEqual(chat_request.livechat_operator_id, self.operator_b.partner_id, "Operator for active livechat session must be Operator Marc")
 
         # Click on livechatbutton at client side
         res = self.opener.post(url=self.open_chat_url, json=self.open_chat_params)
         self.assertEqual(res.status_code, 200)
-        channel = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id),
+        channel = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id),
                                                    ('livechat_active', '=', True)])
 
         # Check that the chat request has been canceled.
@@ -49,12 +49,11 @@ class TestLivechatRequestHttpCase(tests.HttpCase, TestLivechatCommon):
         self.assertEqual(channel.livechat_operator_id, self.operator.partner_id, "Operator for active livechat session must be Michel Operator")
 
     def _common_chat_request_flow(self):
-        self.visitor.with_user(self.operator).sudo().action_send_chat_request()
-        channel = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
+        self.visitor.with_user(self.operator).action_send_chat_request()
+        channel = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
         self.assertEqual(len(channel), 1)
         self.assertEqual(channel.livechat_operator_id, self.operator.partner_id, "Michel Operator should be the operator of this channel.")
         self.assertEqual(len(channel.message_ids), 0)
-        self.assertEqual(channel.anonymous_name, f"Visitor #{self.visitor.id} ({self.visitor.country_id.name})")
 
         # Operator Sends message
         self._send_message(channel, self.operator.email, "Hello Again !", author_id=self.operator.partner_id.id)
@@ -67,23 +66,14 @@ class TestLivechatRequestHttpCase(tests.HttpCase, TestLivechatCommon):
         # Visitor Leave the conversation
         channel._close_livechat_session()
         self.assertEqual(len(channel.message_ids), 3)
-        self.assertEqual(channel.message_ids[0].author_id, self.env.ref('base.partner_root'), "Odoobot must be the sender of the 'left the conversation' message.")
-        self.assertIn(f"Visitor #{channel.livechat_visitor_id.id}", channel.message_ids[0].body)
+        self.assertEqual(channel.message_ids[0].author_id, self.env.ref('base.partner_root'), "Odoobot must be the sender of the 'has left the conversation' message.")
+        self.assertEqual(channel.message_ids[0].body, "<p>%s has left the conversation.</p>" % self.visitor.display_name)
         self.assertEqual(channel.livechat_active, False, "The livechat session must be inactive as the visitor sent his feedback.")
 
         return channel
 
     def _clean_livechat_sessions(self):
         # clean every possible mail channel linked to the visitor
-        active_channels = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
+        active_channels = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
         for active_channel in active_channels:
             active_channel._close_livechat_session()
-
-    def test_update_guest_of_chat_request_if_outdated(self):
-        self.visitor.with_user(self.operator).sudo().action_send_chat_request()
-        chat_request = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)])
-        chat_request.message_post(body="Hello", author_id=self.operator.partner_id.id)
-        guest = self.env["mail.guest"].create({"name": "Guest"})
-        self.assertNotEqual(chat_request.channel_member_ids.guest_id, guest)
-        self.env.ref('website.default_website').with_context(guest=guest)._get_livechat_request_session()
-        self.assertEqual(chat_request.channel_member_ids.guest_id, guest)

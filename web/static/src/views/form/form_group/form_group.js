@@ -1,8 +1,7 @@
 /** @odoo-module */
-import { Component } from "@odoo/owl";
 import { sortBy } from "@web/core/utils/arrays";
 
-class Group extends Component {
+class Group extends owl.Component {
     _getItems() {
         const items = Object.entries(this.props.slots || {}).filter(([k, v]) => v.type === "item");
         return sortBy(items, (i) => i[1].sequence);
@@ -62,10 +61,6 @@ export class InnerGroup extends Group {
         const items = this.getItems();
         while (items.length) {
             const [slotName, slot] = items.shift();
-            if (!slot.isVisible) {
-                continue;
-            }
-
             const { newline, itemSpan } = slot;
             if (newline) {
                 rows.push(currentRow);

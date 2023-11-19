@@ -31,8 +31,3 @@ class PosConfig(models.Model):
             if not self.current_session_id and config.module_pos_discount and not config.discount_product_id:
                 raise UserError(_('A discount product is needed to use the Global Discount feature. Go to Point of Sale > Configuration > Settings to set it.'))
         return super().open_ui()
-
-    def _get_special_products(self):
-        res = super()._get_special_products()
-        default_discount_product = self.env.ref('point_of_sale.product_product_consumable', raise_if_not_found=False) or self.env['product.product']
-        return res | self.env['pos.config'].search([]).mapped('discount_product_id') | default_discount_product

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
 
-<t t-name="DatabaseExpirationPanel">
+<t t-name="DatabaseExpirationPanel" owl="1">
     <div role="alert"
         class="database_expiration_panel alert o-hidden-ios text-center mt-4"
         t-attf-class="alert-{{alertType}}"
@@ -64,7 +64,7 @@
         <Transition visible="state.displayRegisterForm and subscription.lastRequestStatus !== 'success'" t-slot-scope="transition" leaveDuration="400" name="'o-vertical-slide'">
             <form class="oe_instance_register oe_instance_register_form d-flex flex-wrap align-items-center overflow-hidden justify-content-center mt-4" t-att-class="transition.className">
                 <label for="enterprise_code">Subscription Code: </label>
-                <input type="text" class="o_input w-auto mx-2 mb-2 mb-sm-0" t-ref="input"
+                <input type="text" class="form-control w-auto mx-2 mb-2 mb-sm-0" t-ref="input"
                     placeholder="Paste code here"
                     title="Your subscription code"
                     />

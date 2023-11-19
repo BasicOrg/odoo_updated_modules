@@ -10,29 +10,24 @@
                 <field name="is_taxcloud_configured" invisible="1"/>
             </form>
             <xpath expr="//tree/field[@name='tax_id']" position="attributes">
-                <attribute name="column_invisible">parent.is_taxcloud</attribute>
-                <attribute name="readonly">qty_invoiced &gt; 0 or is_downpayment</attribute>
+                <attribute name="attrs">{'column_invisible': [('parent.is_taxcloud', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='price_tax']" position="replace"/>
             <xpath expr="//tree/field[@name='tax_id']" position="after">
-                <field name="price_tax" string="Tax" column_invisible="not parent.is_taxcloud"/>
+                <field name="price_tax" string="Tax" attrs="{'column_invisible': [('parent.is_taxcloud', '=', False)]}"/>
             </xpath>
             <xpath expr="//header" position="after">
                 <div class="alert alert-info text-center" role="alert"
-                     invisible="is_taxcloud_configured or not is_taxcloud">
+                     attrs="{'invisible': ['|', ('is_taxcloud_configured', '=', True), ('is_taxcloud', '=', False)]}">
                     Please enter your Taxcloud credentials to compute tax rates automatically.
                     <a class="alert-link" href="/web#action=account.action_account_config" role="button">Go to Settings.</a>
                 </div>
             </xpath>
-            <div name="so_button_below_order_lines" position="attributes">
-                <attribute name="invisible">0</attribute>
-            </div>
-            <div name="so_button_below_order_lines" position="inside">
-                <button name="validate_taxes_on_sales_order"
-                        string="Update taxes"
-                        type="object"
-                        invisible="not is_taxcloud"/>
-            </div>
+            <xpath expr="//group[@name='note_group']" position="before">
+                <div class="oe_right" attrs="{'invisible': [('is_taxcloud', '=', False)]}">
+                    <button name="validate_taxes_on_sales_order" string="Update taxes" type="object"/>
+                </div>
+            </xpath>
         </field>
     </record>
 </odoo>

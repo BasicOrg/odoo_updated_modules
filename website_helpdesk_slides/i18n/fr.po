@@ -3,29 +3,23 @@
 # 	* website_helpdesk_slides
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
+# Jolien De Paepe, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Jolien De Paepe, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#. module: website_helpdesk_slides
-#. odoo-python
-#: code:addons/website_helpdesk_slides/models/slide_channel.py:0
-#, python-format
-msgid "%(name)s's Helpdesk Teams"
-msgstr "Équipes d'assistance de %(name)s"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
@@ -44,9 +38,27 @@ msgid "<i class=\"fa fa-2x fa-mortar-board\" title=\"eLearning\"/>"
 msgstr "<i class=\"fa fa-2x fa-mortar-board\" title=\"eLearning\"/>"
 
 #. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.view_slide_channel_form_inherit_website_helpdesk_slides
-msgid "<span class=\"o_stat_text\">Helpdesk Teams</span>"
-msgstr "<span class=\"o_stat_text\">Équipes d'assistance</span>"
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid ""
+"<i class=\"fa fa-3x rounded bg-o-color-5 m-3 fa-mortar-board fa-3x rounded "
+"bg-o-color-5 m-3\">​</i>"
+msgstr ""
+"<i class=\"fa fa-3x rounded bg-o-color-5 m-3 fa-mortar-board fa-3x rounded "
+"bg-o-color-5 m-3\">​</i>"
+
+#. module: website_helpdesk_slides
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid ""
+"<span style=\"font-size: 18px;\">Level up your skills with training videos "
+"and tutorials</span>"
+msgstr ""
+"<span style=\"font-size: 18px;\">Améliorez vos compétences avec des vidéos "
+"de formation et des tutoriels</span>"
+
+#. module: website_helpdesk_slides
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid "<span style=\"font-weight: bolder; font-size: 18px;\">Courses</span>"
+msgstr "<span style=\"font-weight: bolder; font-size: 18px;\">Cours</span>"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.search_result
@@ -63,62 +75,24 @@ msgid "Course"
 msgstr "Cours"
 
 #. module: website_helpdesk_slides
-#. odoo-python
 #: code:addons/website_helpdesk_slides/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__website_slide_channel_ids
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
 #, python-format
 msgid "Courses"
 msgstr "Cours"
 
 #. module: website_helpdesk_slides
-#: model:ir.model.fields,help:website_helpdesk_slides.field_helpdesk_team__website_slide_channel_ids
-msgid ""
-"Customers will see only the content from chosen courses in the help center. "
-"If you want all courses to be accessible, just leave the field empty. "
-"Alternatively, you can make courses private to restrict this feature to "
-"internal users."
-msgstr ""
-"Les clients ne verront que le contenu des cours sélectionnés dans le centre "
-"d'assistance. Si vous souhaitez que tous les cours soient accessibles, "
-"laissez le champ vide. Vous pouvez également rendre les cours privés afin de"
-" limiter cette fonctionnalité aux utilisateurs internes."
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
-msgid "Documents"
-msgstr "Documents"
-
-#. module: website_helpdesk_slides
 #: model:ir.model,name:website_helpdesk_slides.model_helpdesk_team
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_slide_channel__helpdesk_team_ids
 msgid "Helpdesk Team"
 msgstr "Équipe d'assistance"
 
 #. module: website_helpdesk_slides
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_slide_channel__helpdesk_team_count
-msgid "Helpdesk Team Count"
-msgstr "Nombre d'équipes d'assistance"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
+#: model:ir.model.fields,help:website_helpdesk_slides.field_helpdesk_team__website_slide_channel_ids
 msgid ""
-"Hours to Complete\n"
-"                    |"
+"In the help center, customers will only be able to see the selected courses."
 msgstr ""
-"Heures pour compléter\n"
-"                    |"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
-msgid "Lessons"
-msgstr "Leçons"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Level up your skills with our training videos and tutorials"
-msgstr ""
-"Améliorez vos compétences grâce à nos vidéos de formation et à nos tutoriels"
+"Dans le centre d'aide, les clients pourront uniquement voir les cours "
+"sélectionnés."
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.search_result
@@ -126,7 +100,7 @@ msgid ""
 "Likes\n"
 "                    |"
 msgstr ""
-"J'aime\n"
+"Likes\n"
 "                    |"
 
 #. module: website_helpdesk_slides
@@ -139,19 +113,9 @@ msgstr ""
 "                    |"
 
 #. module: website_helpdesk_slides
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__website_top_channels
-msgid "Most Popular Courses"
-msgstr "Cours les plus populaires"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Most popular"
-msgstr "Les plus populaires"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Quick Links"
-msgstr "Liens rapides"
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
+msgid "Reviews"
+msgstr "Avis"
 
 #. module: website_helpdesk_slides
 #: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__show_knowledge_base_slide_channel
@@ -165,8 +129,8 @@ msgstr "Diapositives"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Take courses"
-msgstr "Suivre des cours"
+msgid "Take Courses"
+msgstr "Suivre un cours"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.search_result

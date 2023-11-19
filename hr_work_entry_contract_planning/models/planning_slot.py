@@ -35,8 +35,8 @@ class PlanningSlot(models.Model):
         self.env['hr.work.entry'].flush_model(['employee_id', 'date_start', 'date_stop'])
         self.env.cr.execute("""
             SELECT slot.id as id,
-                   ARRAY_AGG(DISTINCT contract.id) as contract_ids,
-                   ARRAY_AGG(DISTINCT hwe.id) as work_entry_ids,
+                   ARRAY_AGG(contract.id) as contract_ids,
+                   ARRAY_AGG(hwe.id) as work_entry_ids,
                    COALESCE(MIN(hwe.date_start), slot.start_datetime) as start,
                    COALESCE(MAX(hwe.date_stop), slot.end_datetime) as stop
               FROM planning_slot slot

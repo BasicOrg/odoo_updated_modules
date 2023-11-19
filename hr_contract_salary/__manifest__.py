@@ -24,15 +24,14 @@
         'views/hr_contract_views.xml',
         'views/hr_job_views.xml',
         'views/res_config_settings_views.xml',
-        'views/hr_contract_salary_benefit_views.xml',
+        'views/hr_contract_salary_advantage_views.xml',
         'views/hr_contract_salary_personal_info_views.xml',
         'views/hr_contract_salary_resume_views.xml',
-        'views/hr_contract_salary_offer_views.xml',
 
         'data/ir_cron_data.xml',
         'data/mail_template_data.xml',
         'data/mail_templates.xml',
-        'data/hr_contract_salary_benefits_data.xml',
+        'data/hr_contract_salary_advantages_data.xml',
         'data/hr_contract_salary_personal_info_data.xml',
         'data/hr_contract_salary_resume_data.xml',
 
@@ -48,10 +47,6 @@
             'hr_contract_salary/static/src/scss/hr_contract_salary.scss',
             'hr_contract_salary/static/src/js/hr_contract_salary.js',
             'hr_contract_salary/static/src/xml/resume_sidebar.xml',
-        ],
-        'web.assets_backend': [
-            'hr_contract_salary/static/src/js/binary_field_contract.js',
-            'hr_contract_salary/static/src/xml/binary_field_contract.xml'
         ],
     }
 }

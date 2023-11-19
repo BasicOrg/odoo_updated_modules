@@ -1,7 +1,8 @@
-/** @odoo-module **/
+odoo.define('survey.preload_image_mixin', function (require) {
+"use strict";
 
 
-export default {
+return {
     /**
     * Load the target section background and render it when loaded.
     *
@@ -29,3 +30,5 @@ export default {
         return preloadPromise;
     }
 };
+
+});

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="template" xml:space="preserve">
-<t t-name="web_editor.FileSelectorControlPanel">
-    <div class="o_we_file_selector_control_panel sticky-top d-flex flex-wrap gap-2 mb-1 p-3 align-items-end">
+<t t-name="web_editor.FileSelectorControlPanel" owl="1">
+    <div class="d-flex flex-wrap gap-2 mt-4 mb-2 align-items-end">
         <SearchMedia searchPlaceholder="props.searchPlaceholder" needle="props.needle" search="props.search"/>
         <div class="d-flex gap-3 justify-content-start align-items-center">
             <div t-if="props.showOptimizedOption" class="flex-shrink-0 form-check form-switch align-items-center" t-on-change="props.changeShowOptimized">
@@ -36,7 +36,7 @@
     </div>
 </t>
 
-<t t-name="web_editor.FileSelector">
+<t t-name="web_editor.FileSelector" owl="1">
     <div>
         <FileSelectorControlPanel uploadText="uploadText"
             accept="fileMimetypes"
@@ -52,27 +52,17 @@
             changeSearchService="service => this.state.searchService = service"
             searchService="state.searchService"
             needle="state.needle"
-            search="(needle) => this.handleSearch(needle)"
+            search="(needle) => this.search(needle)"
             useMediaLibrary="props.useMediaLibrary"
             validateUrl="validateUrl"
             multiSelect="props.multiSelect"/>
         <t t-call="{{ constructor.attachmentsListTemplate }}"/>
-        <div name="load_more_attachments"
-            class="pt-3 pb-1 text-center mx-auto o_we_load_more"
-            t-ref="load-more-button">
-            <button t-if="canLoadMore"
-                class="btn btn-primary o_load_more"
-                type="button"
-                t-on-click="handleLoadMore">
-                Load more...
-            </button>
-            <div t-elif="hasContent" class="mt-2 o_load_done_msg">
+        <div name="load_more_attachments" class="mt-4 text-center mx-auto o_we_load_more">
+            <button t-if="canLoadMore" class="btn btn-secondary o_load_more" type="button" t-on-click="loadMore">Load more...</button>
+            <div t-if="hasContent and !canLoadMore" class="mt-4 o_load_done_msg">
                 <span><i t-esc="allLoadedText"/></span>
             </div>
         </div>
-        <div t-if="this.state.canScrollAttachments"
-            class="position-sticky d-flex align-items-center mx-auto btn btn-primary rounded-circle oi oi-chevron-down o_scroll_attachments"
-            t-on-click="handleScrollAttachments"/>
     </div>
 </t>
 </templates>

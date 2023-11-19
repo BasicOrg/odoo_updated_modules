@@ -1,21 +1,14 @@
 /** @odoo-module */
 
 import { OdooViewsDataSource } from "@spreadsheet/data_sources/odoo_views_data_source";
+import { orderByToString } from "@spreadsheet/helpers/helpers";
 import { LoadingDataError } from "@spreadsheet/o_spreadsheet/errors";
 import { _t } from "@web/core/l10n/translation";
 import { sprintf } from "@web/core/utils/strings";
-import {
-    formatDateTime,
-    deserializeDateTime,
-    formatDate,
-    deserializeDate,
-} from "@web/core/l10n/dates";
-import { orderByToString } from "@web/search/utils/order_by";
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "../o_spreadsheet/o_spreadsheet_extended";
 
 const { toNumber } = spreadsheet.helpers;
-const { DEFAULT_LOCALE } = spreadsheet.constants;
 
 /**
  * @typedef {import("@spreadsheet/data_sources/metadata_repository").Field} Field
@@ -31,7 +24,7 @@ const { DEFAULT_LOCALE } = spreadsheet.constants;
  * @property {Object} context
  */
 
-export class ListDataSource extends OdooViewsDataSource {
+export default class ListDataSource extends OdooViewsDataSource {
     /**
      * @override
      * @param {Object} services Services (see DataSource)
@@ -42,22 +35,14 @@ export class ListDataSource extends OdooViewsDataSource {
      */
     constructor(services, params) {
         super(services, params);
-        this.maxPosition = params.limit;
-        this.maxPositionFetched = 0;
+        this.limit = params.limit;
+        this._orm = services.orm;
         this.data = [];
-    }
-
-    /**
-     * Increase the max position of the list
-     * @param {number} position
-     */
-    increaseMaxPosition(position) {
-        this.maxPosition = Math.max(this.maxPosition, position);
     }
 
     async _load() {
         await super._load();
-        if (this.maxPosition === 0) {
+        if (this.limit === 0) {
             this.data = [];
             return;
         }
@@ -65,28 +50,13 @@ export class ListDataSource extends OdooViewsDataSource {
         this.data = await this._orm.searchRead(
             this._metaData.resModel,
             domain,
-            this._getFieldsToFetch(),
+            this._metaData.columns.filter((f) => this.getField(f)),
             {
                 order: orderByToString(orderBy),
-                limit: this.maxPosition,
+                limit: this.limit,
                 context,
             }
         );
-        this.maxPositionFetched = this.maxPosition;
-    }
-
-    /**
-     * Get the fields to fetch from the server.
-     * Automatically add the currency field if the field is a monetary field.
-     */
-    _getFieldsToFetch() {
-        const fields = this._metaData.columns.filter((f) => this.getField(f));
-        for (const field of fields) {
-            if (this.getField(field).type === "monetary") {
-                fields.push(this.getField(field).currency_field);
-            }
-        }
-        return fields;
     }
 
     /**
@@ -116,8 +86,8 @@ export class ListDataSource extends OdooViewsDataSource {
      */
     getListCellValue(position, fieldName) {
         this._assertDataIsLoaded();
-        if (position >= this.maxPositionFetched) {
-            this.increaseMaxPosition(position + 1);
+        if (position >= this.limit) {
+            this.limit = position + 1;
             // A reload is needed because the asked position is not already loaded.
             this._triggerFetching();
             throw new LoadingDataError();
@@ -159,19 +129,8 @@ export class ListDataSource extends OdooViewsDataSource {
             case "boolean":
                 return record[fieldName] ? "TRUE" : "FALSE";
             case "date":
-                return record[fieldName]
-                    ? toNumber(this._formatDate(record[fieldName]), DEFAULT_LOCALE)
-                    : "";
             case "datetime":
-                return record[fieldName]
-                    ? toNumber(this._formatDateTime(record[fieldName]), DEFAULT_LOCALE)
-                    : "";
-            case "properties": {
-                const properties = record[fieldName] || [];
-                return properties.map((property) => property.string).join(", ");
-            }
-            case "json":
-                throw new Error(sprintf(_t('Fields of type "%s" are not supported'), "json"));
+                return record[fieldName] ? toNumber(record[fieldName]) : "";
             default:
                 return record[fieldName] || "";
         }
@@ -180,22 +139,6 @@ export class ListDataSource extends OdooViewsDataSource {
     //--------------------------------------------------------------------------
     // Private
     //--------------------------------------------------------------------------
-
-    _formatDateTime(dateValue) {
-        const date = deserializeDateTime(dateValue);
-        return formatDateTime(date, {
-            format: "yyyy-MM-dd HH:mm:ss",
-            numberingSystem: "latn",
-        });
-    }
-
-    _formatDate(dateValue) {
-        const date = deserializeDate(dateValue);
-        return formatDate(date, {
-            format: "yyyy-MM-dd",
-            numberingSystem: "latn",
-        });
-    }
 
     /**
      * Ask the parent data source to force a reload of this data source in the

@@ -19,17 +19,18 @@ class Partner(models.Model):
     def _populate_factories(self):
         # Activate currency to avoid fail iterator
         (self.env.ref('base.USD') | self.env.ref('base.EUR')).active = True
-        last_id = self.env["res.company"].search([], order="id desc", limit=1).id
 
-        # remaining: paperformat_id, parent_id, partner_id, font, report_header, external_report_layout_id, report_footer
+        # remaining: paperformat_id, parent_id, partner_id, favicon, font, report_header, external_report_layout_id, report_footer
         def get_name(values=None, counter=0, **kwargs):
-            return 'company_%s_%s' % (last_id + counter + 1, self.env['res.currency'].browse(values['currency_id']).name)
+            return 'company_%s_%s' % (counter, self.env['res.currency'].browse(values['currency_id']).name)
 
         active_currencies = self.env['res.currency'].search([('active', '=', True)]).ids
         return [
             ('name', populate.constant('company_{counter}')),
             ('sequence', populate.randint(0, 100)),
             ('company_registry', populate.iterate([False, 'company_registry_{counter}'])),
+            ('base_onboarding_company_state', populate.iterate(
+                [False] + [e[0] for e in type(self).base_onboarding_company_state.selection])),
             ('primary_color', populate.iterate([False, '', '#ff7755'])),
             ('secondary_color', populate.iterate([False, '', '#ffff55'], seed='primary_color')),
             ('currency_id', populate.iterate(active_currencies)),

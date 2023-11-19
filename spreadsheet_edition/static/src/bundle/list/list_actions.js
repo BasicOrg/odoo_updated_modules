@@ -1,12 +1,15 @@
 /** @odoo-module */
 
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+
+const { createFullMenuItem } = spreadsheet.helpers;
+
 export const REINSERT_LIST_CHILDREN = (env) =>
     env.model.getters.getListIds().map((listId, index) => {
-        return {
-            id: `reinsert_list_${listId}`,
+        return createFullMenuItem(`reinsert_list_${listId}`, {
             name: env.model.getters.getListDisplayName(listId),
             sequence: index,
-            execute: async (env) => {
+            action: async (env) => {
                 const zone = env.model.getters.getSelectedZone();
                 const dataSource = await env.model.getters.getAsyncListDataSource(listId);
                 const list = env.model.getters.getListDefinition(listId);
@@ -25,5 +28,5 @@ export const REINSERT_LIST_CHILDREN = (env) =>
                     });
                 });
             },
-        };
+        });
     });

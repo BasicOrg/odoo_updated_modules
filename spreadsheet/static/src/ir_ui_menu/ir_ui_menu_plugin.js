@@ -1,11 +1,11 @@
 /** @odoo-module */
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 const { CorePlugin } = spreadsheet;
 
-export class IrMenuPlugin extends CorePlugin {
-    constructor(config) {
-        super(config);
-        this.env = config.custom.env;
+export default class IrMenuPlugin extends CorePlugin {
+    constructor(getters, history, range, dispatch, config, uuidGenerator) {
+        super(getters, history, range, dispatch, config, uuidGenerator);
+        this.env = config.evalContext.env;
     }
 
     /**

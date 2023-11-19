@@ -4,15 +4,15 @@ import { AttendeeCalendarYearRenderer } from "@calendar/views/attendee_calendar/
 import { patch } from "@web/core/utils/patch";
 import { useAppointmentRendererHook } from "@appointment/views/appointment_calendar/hooks";
 
-patch(AttendeeCalendarYearRenderer.prototype, {
+patch(AttendeeCalendarYearRenderer.prototype, "appointment_calendar_year_renderer", {
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
         const fns = useAppointmentRendererHook(() => Object.values(this.fcs).map((fc) => fc.el));
         Object.assign(this, fns);
     },
 
     get options() {
-        const options = super.options;
+        const options = this._super();
         if (this.getEventTimeFormat) {
             options.eventTimeFormat = this.getEventTimeFormat();
         }
@@ -27,7 +27,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
     mapRecordsToEvents() {
         this.maxResId = Math.max(Object.keys(this.props.model.data.records).map((id) => Number.parseInt(id)));
         const res = [
-            ...super.mapRecordsToEvents(...arguments),
+            ...this._super(...arguments),
             ...Object.values(this.props.model.data.slots).map((r) => this.convertSlotToEvent(r)),
         ];
         return res;
@@ -51,10 +51,10 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      */
     fcEventToRecord(event) {
         if (!event.extendedProps || !event.extendedProps.slotId) {
-            return super.fcEventToRecord(...arguments);
+            return this._super(...arguments);
         }
         return {
-            ...super.fcEventToRecord({
+            ...this._super({
                 allDay: event.allDay,
                 date: event.date,
                 start: event.start,
@@ -68,7 +68,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      * @override
      */
     onEventRender(info) {
-        super.onEventRender(...arguments);
+        this._super(...arguments);
         const { el, event } = info;
         if (event.extendedProps.slotId) {
             el.classList.add("o_calendar_slot");
@@ -105,7 +105,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      */
     async onSelect(info) {
         if (!this.isSlotCreationMode()) {
-            return super.onSelect(...arguments);
+            return this._super(...arguments);
         }
         const start = luxon.DateTime.fromISO(info.startStr);
         const end = luxon.DateTime.fromISO(info.endStr).minus({ days: 1 });
@@ -132,7 +132,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      */
     onDateClick(info) {
         if (!this.isSlotCreationMode()) {
-            return super.onDateClick(...arguments);
+            return this._super(...arguments);
         }
         // Disabled in month view
         if (this.props.model.scale === "month") {
@@ -158,7 +158,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      */
     isSelectionAllowed(event) {
         if (!this.isSlotCreationMode) {
-            return super.isSelectionAllowed?.(...arguments) || true;
+            return (this._super && this._super(...arguments)) || true;
         }
         return luxon.DateTime.fromJSDate(event.start) > luxon.DateTime.now();
     },
@@ -168,7 +168,7 @@ patch(AttendeeCalendarYearRenderer.prototype, {
      */
     onEventAllow(dropInfo, draggedEvent) {
         if (!this.isSlotCreationMode()) {
-            return super.onEventAllow?.(...arguments) || true;
+            return (this._super && this._super(...arguments)) || true;
         }
         return draggedEvent.extendedProps.slotId && luxon.DateTime.fromJSDate(dropInfo.start) > luxon.DateTime.now();
     },

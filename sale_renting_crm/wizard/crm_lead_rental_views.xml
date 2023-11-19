@@ -11,14 +11,14 @@
                         <field name="lead_id" invisible="1"/>
                     </group>
                 </group>
-                <group invisible="action != 'exist'" required="action == 'exist'">
+                <group attrs="{'invisible': [('action','!=','exist')], 'required':[('action', '=','exist')]}">
                     <group>
-                        <field name="partner_id" invisible="action != 'exist'" required="action == 'exist'"/>
+                        <field name="partner_id" attrs="{'invisible': [('action','!=','exist')], 'required':[('action', '=','exist')]}"/>
                     </group>
                 </group>
                 <footer>
                     <button name="action_new_rental" string="Confirm" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>
@@ -26,6 +26,7 @@
 
     <record id="crm_lead_to_rental_action" model="ir.actions.act_window">
         <field name="name">New Rental</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">crm.lead.rental</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="crm_lead_rental_view_form"/>

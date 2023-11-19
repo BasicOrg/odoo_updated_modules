@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
 class RentalProcessing(models.TransientModel):
     _name = 'rental.order.wizard'
-    _description = "Pick-up/Return products"
+    _description = 'Pick-up/Return products'
 
     order_id = fields.Many2one('sale.order', required=True, ondelete='cascade')
     rental_wizard_line_ids = fields.One2many('rental.order.wizard.line', 'rental_order_wizard_id')
@@ -19,7 +17,7 @@ class RentalProcessing(models.TransientModel):
             ('return', 'Return'),
         ],
     )
-    is_late = fields.Boolean(related='order_id.is_late')
+    has_late_lines = fields.Boolean(compute='_compute_has_late_lines')
 
     @api.onchange('order_id')
     def _get_wizard_lines(self):
@@ -36,6 +34,11 @@ class RentalProcessing(models.TransientModel):
 
             self.rental_wizard_line_ids = [(6, 0, [])] + [(0, 0, vals) for vals in lines_values]
 
+    @api.depends('rental_wizard_line_ids')
+    def _compute_has_late_lines(self):
+        for wizard in self:
+            wizard.has_late_lines = wizard.rental_wizard_line_ids and any(line.is_late for line in wizard.rental_wizard_line_ids)
+
     def apply(self):
         """Apply the wizard modifications to the SaleOrderLine(s).
 
@@ -49,23 +52,26 @@ class RentalProcessing(models.TransientModel):
                         translated_status = value
                         break
 
-                msg = Markup("<b>%s</b>:<ul>%s</ul>") % (translated_status, msg)
+                header = "<b>" + translated_status + "</b>:<ul>"
+                msg = header + msg + "</ul>"
                 wizard.order_id.message_post(body=msg)
         return  # {'type': 'ir.actions.act_window_close'}
 
 
 class RentalProcessingLine(models.TransientModel):
     _name = 'rental.order.wizard.line'
-    _description = "RentalOrderLine transient representation"
+    _description = 'RentalOrderLine transient representation'
 
     @api.model
     def _default_wizard_line_vals(self, line, status):
+        delay_price = line.product_id._compute_delay_price(fields.Datetime.now() - line.return_date)
         return {
             'order_line_id': line.id,
             'product_id': line.product_id.id,
             'qty_reserved': line.product_uom_qty,
             'qty_delivered': line.qty_delivered if status == 'return' else line.product_uom_qty - line.qty_delivered,
             'qty_returned': line.qty_returned if status == 'pickup' else line.qty_delivered - line.qty_returned,
+            'is_late': line.is_late and delay_price > 0
         }
 
     rental_order_wizard_id = fields.Many2one('rental.order.wizard', 'Rental Order Wizard', required=True, ondelete='cascade')
@@ -76,6 +82,8 @@ class RentalProcessingLine(models.TransientModel):
     qty_reserved = fields.Float("Reserved")
     qty_delivered = fields.Float("Picked-up")
     qty_returned = fields.Float("Returned")
+
+    is_late = fields.Boolean(default=False)  # make related on sol is_late ?
 
     @api.constrains('qty_returned', 'qty_delivered')
     def _only_pickedup_can_be_returned(self):
@@ -93,14 +101,15 @@ class RentalProcessingLine(models.TransientModel):
         for wizard_line in self:
             order_line = wizard_line.order_line_id
             if wizard_line.status == 'pickup' and wizard_line.qty_delivered > 0:
-                delivered_qty = order_line.qty_delivered + wizard_line.qty_delivered
-                vals = {'qty_delivered': delivered_qty}
-                if delivered_qty > order_line.product_uom_qty:
-                    vals['product_uom_qty'] = delivered_qty
+                vals = {'qty_delivered': order_line.qty_delivered + wizard_line.qty_delivered}
+                if order_line.qty_delivered + wizard_line.qty_delivered > order_line.product_uom_qty:
+                    vals['product_uom_qty'] = order_line.qty_delivered + wizard_line.qty_delivered
+                if order_line.start_date > fields.Datetime.now():
+                    vals['start_date'] = fields.Datetime.now()
                 order_line.update(vals)
 
             elif wizard_line.status == 'return' and wizard_line.qty_returned > 0:
-                if wizard_line.rental_order_wizard_id.is_late:
+                if wizard_line.is_late:
                     # Delays facturation
                     order_line._generate_delay_line(wizard_line.qty_returned)
 
@@ -129,12 +138,12 @@ class RentalProcessingLine(models.TransientModel):
             diff, old_qty, new_qty = line._get_diff()
             if diff:  # i.e. diff>0
 
-                msg += Markup("<li> %s") % (order_line.product_id.display_name)
+                msg += "<li> %s" % (order_line.product_id.display_name)
 
                 if old_qty > 0:
-                    msg += Markup(": %s -> <b> %s </b> %s <br/>") % (old_qty, new_qty, order_line.product_uom.name)
+                    msg += ": %s -> <b> %s </b> %s <br/>" % (old_qty, new_qty, order_line.product_uom.name)
                 elif new_qty != 1 or order_line.product_uom_qty > 1.0:
-                    msg += Markup(": %s %s <br/>") % (new_qty, order_line.product_uom.name)
+                    msg += ": %s %s <br/>" % (new_qty, order_line.product_uom.name)
                 # If qty = 1, product has been picked up, no need to specify quantity
                 # But if ordered_qty > 1.0: we need to still specify pickedup/returned qty
         return msg

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import serial.tools.list_ports
+from glob import glob
 
 from odoo.addons.hw_drivers.interface import Interface
 
@@ -11,8 +11,8 @@ class SerialInterface(Interface):
 
     def get_devices(self):
         serial_devices = {}
-        for port in serial.tools.list_ports.comports():
-            serial_devices[port.device] = {
-                'identifier': port.device
+        for identifier in glob('/dev/serial/by-path/*'):
+            serial_devices[identifier] = {
+                'identifier': identifier
             }
         return serial_devices

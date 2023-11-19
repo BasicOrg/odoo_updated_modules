@@ -5,33 +5,31 @@
         <field name="arch" type="xml">
             <form string="273S Sheet">
                 <header>
-                    <button string="Export XML file" name="action_generate_xml"
-                        type="object" class="btn-primary" invisible="xml_file"/>
-                    <button string="Export XML file" name="action_generate_xml"
-                        type="object" class="btn-secondary" invisible="not xml_file"/>
-                    <button string="Export PDF file" name="action_generate_pdf" type="object" class="btn-secondary"/>
+                    <button string="Export XML file" name="action_generate_xml" type="object" class="btn-primary" states="draft,waiting"/>
+                    <button string="Export PDF file" name="action_generate_pdf" type="object" class="btn-primary" states="draft,waiting"/>
+                    <button string="Export XML file" name="action_generate_xml" type="object" states="done"/>
+                    <button string="Export PDF file" name="action_generate_pdf" type="object" states="done"/>
                 </header>
                 <sheet>
                     <group>
-                        <field name="year" class="o_hr_narrow_field" options="{'type': 'number'}"/>
-                        <field name="month" class="o_hr_narrow_field"/>
+                        <field name="year"/>
+                        <field name="month"/>
                         <field name="period" invisible="1"/>
                         <field name="company_id" invisible="1" />
                         <field name="currency_id" invisible="1" />
                         <field name="state" invisible="1" />
-                        <field name="pdf_filename" invisible="1" />
                         <field name="xml_filename" invisible="1" />
                     </group>
-                    <div class="mt-3" invisible="state not in ('waiting', 'done')">
-                        <h2 invisible="not xml_file and not pdf_file">Generation Complete</h2>
-                        <p invisible="not pdf_file">
+                    <div states="waiting,done">
+                        <h2 attrs="{'invisible': [('xml_file', '=', False), ('pdf_file', '=', False)]}">Generation Complete</h2>
+                        <p attrs="{'invisible': [('pdf_file', '=', False)]}">
                             Download the 273S PDF file: <field name="pdf_file" readonly="1" filename="pdf_filename"/>
                         </p>
-                        <p invisible="not xml_file" class="oe_inline">
+                        <p attrs="{'invisible': [('xml_file', '=', False)]}" class="oe_inline">
                             Download the XML Export file: <field name="xml_file" readonly="1" filename="xml_filename"/>
-                            <!-- Payment Structured Communication: <field name="payment_reference" invisible="not payment_reference" readonly="1"/> -->
-                            <field name="xml_validation_state" class="ms-2 mb-0" widget="state_selection" nolabel="1"/>
-                            <field name="error_message" invisible="xml_validation_state != 'invalid'" nolabel="1"/>
+                            <!-- Payment Structured Communication: <field name="payment_reference" attrs="{'invisible': [('payment_reference', '=', False)]}" readonly="1"/> -->
+                            <field name="xml_validation_state" widget="state_selection" nolabel="1"/>
+                            <field name="error_message" attrs="{'invisible': [('xml_validation_state', '!=', 'invalid')]}" nolabel="1"/>
                         </p>
                     </div>
                 </sheet>
@@ -46,7 +44,7 @@
             <tree string="273S Sheets">
                 <field name="month"/>
                 <field name="year"/>
-                <field name="period" column_invisible="True"/>
+                <field name="period" invisible="1"/>
             </tree>
         </field>
     </record>

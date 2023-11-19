@@ -14,14 +14,20 @@ class TestInterCompanySaleToPurchase(TestInterCompanyRulesCommonSOPO):
         sale_order = Form(self.env['sale.order'])
         sale_order.company_id = company
         sale_order.warehouse_id = company.warehouse_id
+        sale_order.pricelist_id = self.env['product.pricelist'].search([('id', '=', 1)])
         sale_order.partner_id = partner
         sale_order.user_id = user
-        with sale_order.order_line.new() as line:
-            line.name = 'Service'
-            line.product_id = self.product_consultant
-            line.price_unit = 450.0
+        sale_order.partner_invoice_id = partner
+        sale_order.partner_shipping_id = partner
+        sale_order = sale_order.save()
 
-        return sale_order.save()
+        with Form(sale_order) as so:
+            with so.order_line.new() as line:
+                line.name = 'Service'
+                line.product_id = self.product_consultant
+                line.price_unit = 450.0
+
+        return sale_order
 
     def generate_sale_order(self, company, partner, user):
         sale_order = self._generate_draft_sale_order(company, partner, user)
@@ -170,18 +176,3 @@ class TestInterCompanySaleToPurchase(TestInterCompanyRulesCommonSOPO):
         purchase_order = self.env['purchase.order'].search([('partner_id', '=', self.company_b.partner_id.id)], limit=1)
         self.assertTrue(purchase_order)
         purchase_order.with_user(self.res_users_company_a).button_confirm()
-
-    def test_sale_to_specific_partner(self):
-        """
-        Classic intercompany SO-PO on company C2. C1 sells to a child of C2. It
-        should still create a PO on C2 side.
-        """
-        self.company_b.rule_type = 'sale_purchase'
-        partner_b = self.env['res.partner'].create({
-            'name': 'SuperPartner',
-            'parent_id': self.company_b.partner_id.id,
-        })
-        so = self._generate_draft_sale_order(self.company_a, partner_b, self.res_users_company_a)
-        so.with_user(self.res_users_company_a).action_confirm()
-        purchase_order = self.env['purchase.order'].sudo().search([('partner_id', '=', self.company_a.partner_id.id)], limit=1)
-        self.assertEqual(purchase_order.company_id, self.company_b)

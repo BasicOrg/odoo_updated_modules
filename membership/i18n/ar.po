@@ -3,16 +3,17 @@
 # 	* membership
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -102,7 +103,7 @@ msgstr "شراء عضوية"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_membership_invoice_view
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_res_partner__membership_cancel
@@ -125,7 +126,7 @@ msgstr "عضو ملغي"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
 msgid "Category"
-msgstr "الفئة "
+msgstr "فئة"
 
 #. module: membership
 #: model:ir.model.fields,help:membership.field_product_product__membership
@@ -236,7 +237,7 @@ msgstr "تاريخ انتهاء العضوية"
 
 #. module: membership
 #: model:ir.model.constraint,message:membership.constraint_product_template_membership_date_greater
-msgid "Error! Ending Date cannot be set before Beginning Date."
+msgid "Error ! Ending Date cannot be set before Beginning Date."
 msgstr "خطأ! لا يمكن لتاريخ الانتهاء أن يسبق تاريخ البدء."
 
 #. module: membership
@@ -262,7 +263,7 @@ msgstr "من"
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
 msgid "Group By"
-msgstr "تجميع حسب"
+msgstr "التجميع حسب "
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
@@ -279,7 +280,7 @@ msgstr "المُعرف"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
 msgid "Inactive"
-msgstr "غير نشط "
+msgstr "غير نشط"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__account_invoice_id
@@ -361,6 +362,13 @@ msgstr "قيد اليومية"
 #: model:ir.model,name:membership.model_account_move_line
 msgid "Journal Item"
 msgstr "عنصر اليومية"
+
+#. module: membership
+#: model:ir.model.fields,field_description:membership.field_membership_invoice____last_update
+#: model:ir.model.fields,field_description:membership.field_membership_membership_line____last_update
+#: model:ir.model.fields,field_description:membership.field_report_membership____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__write_uid
@@ -500,6 +508,8 @@ msgstr "منتجات العضوية"
 
 #. module: membership
 #: model:ir.actions.server,name:membership.ir_cron_update_membership_ir_actions_server
+#: model:ir.cron,cron_name:membership.ir_cron_update_membership
+#: model:ir.cron,name:membership.ir_cron_update_membership
 msgid "Membership: update memberships"
 msgstr "العضوية: تحديث العضويات"
 
@@ -554,14 +564,12 @@ msgid "Partner"
 msgstr "الشريك"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner doesn't have an address to make the invoice."
 msgstr "لا يملك الشريك عنواناً لإصدار الفاتورة. "
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner is a free Member."
@@ -590,7 +598,7 @@ msgstr "الكمية"
 #. module: membership
 #: model:ir.ui.menu,name:membership.menu_report_membership
 msgid "Reporting"
-msgstr "إعداد التقارير "
+msgstr "التقارير"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -615,7 +623,7 @@ msgstr "اختر هذا الخيار إن كنت تريد منح عضويات م
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
 msgid "Start Date"
-msgstr "تاريخ البدء "
+msgstr "تاريخ البداية"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
@@ -676,7 +684,7 @@ msgstr "إلى"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
 msgid "Vendors"
-msgstr "الموردين"
+msgstr "الموردون"
 
 #. module: membership
 #: model:ir.model.fields.selection,name:membership.selection__membership_membership_line__state__waiting
@@ -686,8 +694,7 @@ msgid "Waiting Member"
 msgstr "عضو منتظر"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "You cannot create recursive associated members."
-msgstr "لا يمكنك إنشاء أعضاء مقترنين متداخلين. "
+msgstr "لا يمكنك إنشاء أعضاء مقترنين متكررين. "

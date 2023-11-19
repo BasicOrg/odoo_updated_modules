@@ -8,9 +8,6 @@
     'sequence': 50,
     'summary': 'Helpdesk integration with holidays',
     'depends': ['helpdesk', 'hr_holidays_gantt'],
-    'data': [
-        'views/helpdesk_team_view.xml',
-    ],
     'description': """
 Helpdesk integration with time off
 """,

@@ -88,8 +88,8 @@ class AccountMove(models.Model):
                         product = rule.plan_id.product_id
                     if not order:
                         order = line.subscription_id
-                        desc_lines += _("\n%s: from %s to %s", line.product_id.name, format_date(self.env, line.deferred_start_date),
-                                        format_date(self.env, line.deferred_end_date))
+                        desc_lines += _("\n%s: from %s to %s", line.product_id.name, format_date(self.env, line.subscription_start_date),
+                                        format_date(self.env, line.subscription_end_date))
                     commission = move.currency_id.round(line.price_subtotal * rule.rate / 100.0)
                     comm_by_rule[rule] += commission
 
@@ -104,17 +104,12 @@ class AccountMove(models.Model):
                 continue
 
             # build description lines
-            desc = _(
-                'Commission on %(invoice)s, %(partner)s, %(amount)s',
-                invoice=move.name,
-                partner=move.partner_id.name,
-                amount=formatLang(self.env, move.amount_untaxed, currency_obj=move.currency_id),
-            )
+            desc = f"{_('Commission on %s') % (move.name)}, {move.partner_id.name}, {formatLang(self.env, move.amount_untaxed, currency_obj=move.currency_id)}"
             if order:
                 desc += f"\n{order.name}, {desc_lines}"
                 # extend the description to show the number of months to defer the expense over
-                end_date_list = move.invoice_line_ids.mapped('deferred_end_date')
-                start_date_list = move.invoice_line_ids.mapped('deferred_start_date')
+                end_date_list = move.invoice_line_ids.mapped('subscription_end_date')
+                start_date_list = move.invoice_line_ids.mapped('subscription_start_date')
                 date_to = max([ed for ed in end_date_list if ed])
                 date_from = min([sd for sd in start_date_list if sd])
                 # we calculate the delta according to the whole range to avoid 11 month and 29 days= 11 months
@@ -139,11 +134,12 @@ class AccountMove(models.Model):
             if move.move_type in ['out_invoice', 'in_invoice']:
                 # link the purchase order line to the invoice
                 move.commission_po_line_id = line
-                msg_body = _('New commission. Invoice: %s. Amount: %s.',
+                msg_body = 'New commission. Invoice: %s. Amount: %s.' % (
                     move._get_html_link(),
-                    formatLang(self.env, total, currency_obj=move.currency_id))
+                    formatLang(self.env, total, currency_obj=move.currency_id),
+                )
             else:
-                msg_body = _('Commission refunded. Invoice: %s. Amount: %s.',
+                msg_body = 'Commission refunded. Invoice: %s. Amount: %s.' % (
                     move._get_html_link(),
                     formatLang(self.env, total, currency_obj=move.currency_id))
             purchase.message_post(body=msg_body)
@@ -167,14 +163,6 @@ class AccountMove(models.Model):
         self.filtered(lambda move: move.move_type == 'out_invoice')._make_commission()
         return res
 
-    def button_draft(self):
-        res = super(AccountMove, self).button_draft()
-        for move in self:
-            cpo = self.env['purchase.order'].sudo().search(move._get_commission_purchase_order_domain(), limit=1)
-            if cpo and move.move_type == 'out_refund' and cpo.state == 'draft':
-                message_body = _("The commission partner order %s must be checked manually (especially refund lines which can be duplicated).", cpo._get_html_link())
-                move.message_post(body=message_body)
-        return res
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
@@ -186,13 +174,10 @@ class AccountMoveLine(models.Model):
         template_products = template.sale_order_template_line_ids.product_id.mapped('product_tmpl_id')
         template_id = template.id if template and self.product_id.product_tmpl_id in template_products.ids else None
         sub_pricelist = self.subscription_id.pricelist_id
-        pricelist_id = sub_pricelist and sub_pricelist.id or self.sale_line_ids.mapped('order_id.pricelist_id')[:1].id
+        pricelist_id =  sub_pricelist and sub_pricelist.id or self.sale_line_ids.mapped('order_id.pricelist_id')[:1].id
 
-        # In order of precedence, the commission plan can be one of:
-        # 1. the commission plan set on the subscription
-        # 2. the commission plan set on the sale order
-        # 3. the referrer's commission plan
-        plan = self.sale_line_ids.order_id.commission_plan_id or self.move_id.referrer_id.commission_plan_id
+        # a specific commission plan can be set on the subscription, taking predence over the referrer's commission plan
+        plan = self.move_id.referrer_id.commission_plan_id
         if self.subscription_id:
             plan = self.subscription_id.commission_plan_id
 

@@ -9,8 +9,8 @@ from zeep.wsdl.utils import etree_to_string
 from odoo import _
 from odoo import release
 from odoo.exceptions import UserError
+from odoo.modules.module import get_resource_path
 from odoo.tools import float_repr, float_round
-from odoo.tools.misc import file_path
 
 class DHLProvider():
 
@@ -31,8 +31,8 @@ class DHLProvider():
 
 
     def _set_client(self, wsdl_filename, api):
-        wsdl_path = file_path(f'delivery_dhl/api/{wsdl_filename}')
-        client = Client(wsdl_path)
+        wsdl_path = get_resource_path('delivery_dhl', 'api', wsdl_filename)
+        client = Client('file:///%s' % wsdl_path.lstrip('/'))
         return client
 
     def _set_request(self, site_id, password):
@@ -81,19 +81,14 @@ class DHLProvider():
         contact = self.factory.Contact()
         contact.PersonName = partner_id.name
         contact.PhoneNumber = partner_id.phone
-        if partner_id.email:
-            contact.Email = partner_id.email
+        contact.Email = partner_id.email
         consignee.Contact = contact
         return consignee
 
     def _set_dct_to(self, partner_id):
         to = self.factory_dct_request.DCTTo()
-        country_code = partner_id.country_id.code
-        zip_code = partner_id.zip or ''
-        if country_code == 'ES' and (zip_code.startswith('35') or zip_code.startswith('38')):
-            country_code = 'IC'
-        to.CountryCode = country_code
-        to.Postalcode = zip_code
+        to.CountryCode = partner_id.country_id.code
+        to.Postalcode = partner_id.zip
         to.City = partner_id.city
         return to
 
@@ -113,8 +108,7 @@ class DHLProvider():
         contact = self.factory.Contact()
         contact.PersonName = warehouse_partner_id.name
         contact.PhoneNumber = warehouse_partner_id.phone
-        if warehouse_partner_id.email:
-            contact.Email = warehouse_partner_id.email
+        contact.Email = warehouse_partner_id.email
         shipper.Contact = contact
         return shipper
 
@@ -251,7 +245,7 @@ class DHLProvider():
         # 'ErrorResponse', we could handle them differently if needed as
         # the 'ShipmentValidateErrorResponse' is something you cannot do,
         # and 'ErrorResponse' are bad values given in the request.
-        if response_element_xml.find('GetQuoteResponse') is not None:
+        if response_element_xml.find('GetQuoteResponse'):
             return response_element_xml
         else:
             condition = response_element_xml.find('Response/Status/Condition')
@@ -276,7 +270,7 @@ class DHLProvider():
             recipient_required_field.append('street')
         res = [field for field in recipient_required_field if not recipient[field]]
         if res:
-            return _("The address of the customer is missing or wrong (Missing field(s) :\n %s)", ", ".join(res).replace("_id", ""))
+            return _("The address of the customer is missing or wrong (Missing field(s) :\n %s)") % ", ".join(res).replace("_id", "")
 
         shipper_required_field = ['city', 'zip', 'phone', 'country_id']
         if not shipper.street and not shipper.street2:
@@ -284,25 +278,21 @@ class DHLProvider():
 
         res = [field for field in shipper_required_field if not shipper[field]]
         if res:
-            return _("The address of your company warehouse is missing or wrong (Missing field(s) :\n %s)", ", ".join(res).replace("_id", ""))
+            return _("The address of your company warehouse is missing or wrong (Missing field(s) :\n %s)") % ", ".join(res).replace("_id", "")
 
         if order:
             if not order.order_line:
                 return _("Please provide at least one item to ship.")
             error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
             if error_lines:
-                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s", ", ".join(error_lines.product_id.mapped('name')))
+                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s") % ", ".join(error_lines.product_id.mapped('name'))
         return False
 
     def _set_export_declaration(self, carrier, picking, is_return=False):
         export_lines = []
         move_lines = picking.move_line_ids.filtered(lambda line: line.product_id.type in ['product', 'consu'])
-        currency_id = picking.sale_id and picking.sale_id.currency_id or picking.company_id.currency_id
         for sequence, line in enumerate(move_lines, start=1):
-            if line.move_id.sale_line_id:
-                unit_quantity = line.product_uom_id._compute_quantity(line.quantity, line.move_id.sale_line_id.product_uom)
-            else:
-                unit_quantity = line.product_uom_id._compute_quantity(line.quantity, line.product_id.uom_id)
+            unit_quantity = line.product_uom_id._compute_quantity(line.qty_done, line.product_id.uom_id, rounding_method='HALF-UP')
             rounded_qty = max(1, float_round(unit_quantity, precision_digits=0, rounding_method='HALF-UP'))
             item = self.factory.ExportLineItem()
             item.LineNumber = sequence
@@ -311,15 +301,12 @@ class DHLProvider():
             if len(line.product_id.name) > 75:
                 raise UserError(_("DHL doesn't support products with name greater than 75 characters."))
             item.Description = line.product_id.name
-            item.Value = float_repr(line.sale_price / rounded_qty, currency_id.decimal_places)
+            item.Value = line.sale_price
             item.Weight = item.GrossWeight = {
                 "Weight": carrier._dhl_convert_weight(line.product_id.weight, carrier.dhl_package_weight_unit),
                 "WeightUnit": carrier.dhl_package_weight_unit,
             }
-            item.ManufactureCountryCode = line.product_id.country_of_origin.code or line.picking_id.picking_type_id.warehouse_id.partner_id.country_id.code
-            if line.product_id.hs_code:
-                item.ImportCommodityCode = line.product_id.hs_code
-                item.CommodityCode = line.product_id.hs_code
+            item.ManufactureCountryCode = line.product_id.country_of_origin or line.picking_id.picking_type_id.warehouse_id.partner_id.country_id.code
             export_lines.append(item)
 
         export_declaration = self.factory.ExportDeclaration()

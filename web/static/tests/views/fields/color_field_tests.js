@@ -61,14 +61,14 @@ QUnit.module("Fields", (hooks) => {
         // style returns the value in the rgb format
         assert.strictEqual(
             target.querySelector(".o_field_color div").style.backgroundColor,
-            "initial",
-            "field has the transparent background if no color value has been selected"
+            "rgb(0, 0, 0)",
+            "field has the default color set as background if no value has been selected"
         );
 
         assert.strictEqual(target.querySelector(".o_field_color input").value, "#000000");
         await editInput(target, ".o_field_color input", "#fefefe");
         assert.verifySteps([
-            'onchange [[1],{"hex_color":"#fefefe"},["hex_color"],{"hex_color":{},"display_name":{}}]',
+            'onchange [[1],{"id":1,"hex_color":"#fefefe"},"hex_color",{"hex_color":"1"}]',
         ]);
         assert.strictEqual(target.querySelector(".o_field_color input").value, "#fefefe");
         assert.strictEqual(
@@ -100,48 +100,6 @@ QUnit.module("Fields", (hooks) => {
         assert.doesNotHaveClass(target.querySelector(".o_data_row"), "o_selected_row");
     });
 
-    QUnit.test("read-only color field in editable list view", async function (assert) {
-        await makeView({
-            type: "list",
-            serverData,
-            resModel: "partner",
-            arch: `
-                <tree editable="bottom">
-                    <field name="hex_color" readonly="1" widget="color" />
-                </tree>`,
-        });
-
-        assert.containsN(
-            target,
-            ".o_field_color input:disabled",
-            2,
-            "the field should not be editable"
-        );
-    });
-
-    QUnit.test(
-        "color field read-only in model definition, in non-editable list",
-        async function (assert) {
-            serverData.models.partner.fields.hex_color.readonly = true;
-            await makeView({
-                type: "list",
-                serverData,
-                resModel: "partner",
-                arch: `
-                <tree>
-                    <field name="hex_color" widget="color" />
-                </tree>`,
-            });
-
-            assert.containsN(
-                target,
-                ".o_field_color input:disabled",
-                2,
-                "the field should not be editable"
-            );
-        }
-    );
-
     QUnit.test("color field change via another field's onchange", async (assert) => {
         serverData.models.partner.onchanges = {
             foo: (rec) => {
@@ -167,13 +125,13 @@ QUnit.module("Fields", (hooks) => {
 
         assert.strictEqual(
             target.querySelector(".o_field_color div").style.backgroundColor,
-            "initial",
-            "field has transparent background if no color value has been selected"
+            "rgb(0, 0, 0)",
+            "field has the default color set as background if no value has been selected"
         );
         assert.strictEqual(target.querySelector(".o_field_color input").value, "#000000");
         await editInput(target, ".o_field_char[name='foo'] input", "someValue");
         assert.verifySteps([
-            'onchange [[1],{"foo":"someValue"},["foo"],{"foo":{},"hex_color":{},"display_name":{}}]',
+            'onchange [[1],{"id":1,"foo":"someValue","hex_color":false},"foo",{"foo":"1","hex_color":""}]',
         ]);
         assert.strictEqual(target.querySelector(".o_field_color input").value, "#fefefe");
         assert.strictEqual(

@@ -7,15 +7,18 @@ from odoo import api, models, _
 class AccountJournalDashboard(models.Model):
     _inherit = "account.journal"
 
-    def _get_journal_dashboard_data_batched(self):
-        dashboard_data = super()._get_journal_dashboard_data_batched()
-        self._fill_dashboard_data_count(dashboard_data, 'account.payment', 'num_aba_ct_to_send', [
+    def get_journal_dashboard_datas(self):
+        domain_aba_ct_to_send = [
+            ('journal_id', '=', self.id),
             ('payment_method_id.code', '=', 'aba_ct'),
             ('is_move_sent', '=', False),
             ('is_matched', '=', False),
             ('state', '=', 'posted'),
-        ])
-        return dashboard_data
+        ]
+        return dict(
+            super(AccountJournalDashboard, self).get_journal_dashboard_datas(),
+            num_aba_ct_to_send=self.env['account.payment'].search_count(domain_aba_ct_to_send)
+        )
 
     def action_aba_ct_to_send(self):
         payment_method_line = self.outbound_payment_method_line_ids.filtered(lambda l: l.code == 'aba_ct')

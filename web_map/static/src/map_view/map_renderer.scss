@@ -6,39 +6,58 @@ $map-marker-color: #2c8397;
 
 .o-map-renderer {
     height: 100%;
-    @include media-breakpoint-down(md) {
-        height: calc(100% - #{$o-navbar-height});
+
+    &--container {
+        height: 100%;
     }
+
     &--popup-table {
+        vertical-align: top;
+
         &-content-name {
+            font-weight: bold;
+            white-space: nowrap;
             line-height: $map-table-row-padding;
+            vertical-align: baseline;
         }
+
+        &-content-value {
+            vertical-align: baseline;
+        }
+
         &-space {
             padding-left: $map-table-line-padding;
         }
     }
 
-    &--popup-buttons-divider {
-        width: 5px;
+    &--popup-buttons {
+        display: flex;
+        justify-content: left;
+        align-items: flex-end;
+        margin-top: 8px;
+
+        &-divider {
+            width: 5px;
+            height: auto;
+            display: inline-block;
+        }
     }
 
     &--pin-list {
         &-container {
-            padding: 8px $o-horizontal-padding !important;
+            padding: 8px 8px 8px 22px !important;
             height: 100%;
-            overflow-y: auto;
+            overflow-y: scroll;
             overflow-x: hidden;
-            
-            @include media-breakpoint-up(md) {
-                border-right: $border-width solid $border-color;
-            }
         }
 
         &-group {
+            margin-bottom: 1rem;
 
             &-header {
-                height: $o-navbar-height;
-                color: $headings-color;
+                display: flex;
+                align-items: baseline;
+                color: #212529;
             }
 
             svg {
@@ -47,6 +66,7 @@ $map-marker-color: #2c8397;
             }
 
             > i {
+                margin-right: 1rem;
                 width: 0.5rem;
             }
 
@@ -56,10 +76,18 @@ $map-marker-color: #2c8397;
         }
 
         &-header {
+            padding: 8px 0;
+            text-transform: uppercase;
             color: $headings-color;
+
+            i {
+                margin-right: 0.5rem;
+            }
         }
 
         &-details {
+            padding-left: 0px;
+            padding-bottom: 0px;
 
             a {
                 color: $gray-900;
@@ -67,6 +95,9 @@ $map-marker-color: #2c8397;
 
             > li {
                 list-style-position: inside;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
 
                 &.o-map-renderer--pin-located:hover {
                     text-decoration: none;
@@ -100,14 +131,18 @@ $map-marker-color: #2c8397;
         }
 
         &-number {
+            position: relative;
             top: -40px;
             color: $map-number-color;
             font-size: $map-number-font-size;
+            text-align: center;
             margin-top: 10%;
         }
     }
 
     &--alert {
+        @include o-position-absolute($top: 0);
+        width: 100%;
         z-index: 401; // leaflet have 400
     }
 
@@ -124,10 +159,12 @@ $map-marker-color: #2c8397;
             color: #666666;
         }
     }
-}
-.o-sm-pin-list-container {
-    @include media-breakpoint-down(md) {
-        height: $o-navbar-height;
+
+    .leaflet-container a {
+        color: $link-color;
+        &:hover {
+            color: $link-hover-color;
+        }
     }
 }
 

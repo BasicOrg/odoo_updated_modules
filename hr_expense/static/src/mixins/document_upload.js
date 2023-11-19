@@ -1,12 +1,12 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { useBus, useService } from '@web/core/utils/hooks';
-import { useRef, useEffect, useState } from "@odoo/owl";
 
-export const ExpenseDocumentDropZone = (T) => class ExpenseDocumentDropZone extends T {
+const { useRef, useEffect, useState } = owl;
+
+export const ExpenseDocumentDropZone = {
     setup() {
-        super.setup();
+        this._super();
         this.dragState = useState({
             showDragZone: false,
         });
@@ -31,31 +31,31 @@ export const ExpenseDocumentDropZone = (T) => class ExpenseDocumentDropZone exte
             },
             () => [document.querySelector('.o_content')]
         );
-    }
+    },
 
     highlight(ev) {
         ev.stopPropagation();
         ev.preventDefault();
         this.dragState.showDragZone = true;
-    }
+    },
 
     unhighlight(ev) {
         ev.stopPropagation();
         ev.preventDefault();
         this.dragState.showDragZone = false;
-    }
+    },
 
     async onDrop(ev) {
         ev.preventDefault();
         await this.env.bus.trigger("change_file_input", {
             files: ev.dataTransfer.files,
         });        
-    }
+    },
 };
 
-export const ExpenseDocumentUpload = (T) => class ExpenseDocumentUpload extends T {
+export const ExpenseDocumentUpload = {
     setup() {
-        super.setup();
+        this._super();
         this.actionService = useService('action');
         this.notification = useService('notification');
         this.orm = useService('orm');
@@ -67,11 +67,11 @@ export const ExpenseDocumentUpload = (T) => class ExpenseDocumentUpload extends 
             this.fileInput.el.files = ev.detail.files;
             await this.onChangeFileInput();
         });
-    }
+    },
 
     uploadDocument() {
         this.fileInput.el.click();
-    }
+    },
 
     async onChangeFileInput() {
         const params = {
@@ -87,18 +87,18 @@ export const ExpenseDocumentUpload = (T) => class ExpenseDocumentUpload extends 
             throw new Error(attachments.error);
         }
         this.onUpload(attachments);
-    }
+    },
 
     async onUpload(attachments) {
         const attachmentIds = attachments.map((a) => a.id);
         if (!attachmentIds.length) {
             this.notification.add(
-                _t('An error occurred during the upload')
+                this.env._t('An error occurred during the upload')
             );
             return;
         }
 
         const action = await this.orm.call('hr.expense', 'create_expense_from_attachments', ["", attachmentIds]);
         this.actionService.doAction(action);
-    }
+    },
 };

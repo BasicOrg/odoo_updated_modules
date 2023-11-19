@@ -51,8 +51,3 @@ class PosSession(models.Model):
         result = super()._loader_params_pos_payment_method()
         result['search_params']['fields'].append('iot_device_id')
         return result
-
-    def _loader_params_pos_printer(self):
-        result = super()._loader_params_pos_printer()
-        result['search_params']['fields'].append('device_identifier')
-        return result

@@ -10,4 +10,12 @@ class SaleOrder(models.Model):
 
     def _mailing_get_default_domain(self, mailing):
         domain = super()._mailing_get_default_domain(mailing)
-        return expression.AND([domain, [('subscription_state', '=', '3_progress')]])
+        return expression.AND([domain, [('stage_category', '=', 'progress')]])
+
+    def _sms_get_number_fields(self):
+        """ No phone or mobile field is available on subscription model. Instead
+        SMS will fallback on partner-based computation using ``_sms_get_partner_fields``. """
+        return []
+
+    def _sms_get_partner_fields(self):
+        return ['partner_id']

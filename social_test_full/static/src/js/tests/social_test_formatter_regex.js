@@ -1,23 +1,23 @@
 /** @odoo-module */
 
-import { SocialPostFormatterMixinBase } from '@social/js/social_post_formatter_mixin';
+import { SocialPostFormatterMixin } from '@social/js/social_post_formatter_mixin';
 
-import { patchWithCleanup } from "@web/../tests/helpers/utils";
+import { patch } from '@web/core/utils/patch';
 
 QUnit.module('Social Formatter Regex', {}, () => {
     QUnit.test('Facebook Message', (assert) => {
         assert.expect(1);
 
-        patchWithCleanup(SocialPostFormatterMixinBase, {
+        patch(SocialPostFormatterMixin, "test_formatted_mixin_facebook", {
             _getMediaType() { return 'facebook' },
             _formatPost() {
                 this.originalPost = { account_id: { raw_value: 42 } };
-                return super._formatPost(...arguments);
+                return this._super(...arguments);
             }
         });
 
         const testMessage = 'Hello @[542132] Odoo-Social, check this out: https://www.odoo.com?utm=mail&param=1 #crazydeals #odoo';
-        const finalMessage = SocialPostFormatterMixinBase._formatPost(testMessage);
+        const finalMessage = SocialPostFormatterMixin._formatPost(testMessage);
 
         assert.equal(finalMessage, [
             "Hello",
@@ -32,12 +32,12 @@ QUnit.module('Social Formatter Regex', {}, () => {
     QUnit.test('Instagram Message', (assert) => {
         assert.expect(1);
 
-        patchWithCleanup(SocialPostFormatterMixinBase, {
+        patch(SocialPostFormatterMixin, "test_formatted_mixin_instagram", {
             _getMediaType() { return 'instagram' },
         });
 
         const testMessage = 'Hello @Odoo.Social, check this out: https://www.odoo.com #crazydeals #odoo';
-        const finalMessage = SocialPostFormatterMixinBase._formatPost(testMessage);
+        const finalMessage = SocialPostFormatterMixin._formatPost(testMessage);
 
         assert.equal(finalMessage, [
             "Hello",
@@ -52,12 +52,12 @@ QUnit.module('Social Formatter Regex', {}, () => {
     QUnit.test('LinkedIn Message', (assert) => {
         assert.expect(1);
 
-        patchWithCleanup(SocialPostFormatterMixinBase, {
+        patch(SocialPostFormatterMixin, "test_formatted_mixin_linkedin", {
             _getMediaType() { return 'linkedin' },
         });
 
-        const testMessage = 'Hello, check this out: https://www.odoo.com {hashtag|#|crazydeals} #odoo';
-        const finalMessage = SocialPostFormatterMixinBase._formatPost(testMessage);
+        const testMessage = 'Hello, check this out: https://www.odoo.com #crazydeals #odoo';
+        const finalMessage = SocialPostFormatterMixin._formatPost(testMessage);
 
         assert.equal(finalMessage, [
             "Hello, check this out:",
@@ -70,12 +70,12 @@ QUnit.module('Social Formatter Regex', {}, () => {
     QUnit.test('Twitter Message', (assert) => {
         assert.expect(1);
 
-        patchWithCleanup(SocialPostFormatterMixinBase, {
+        patch(SocialPostFormatterMixin, "test_formatted_mixin_twitter", {
             _getMediaType() { return 'twitter' },
         });
 
         const testMessage = 'Hello @Odoo-Social, check this out: https://www.odoo.com #crazydeals #odoo';
-        const finalMessage = SocialPostFormatterMixinBase._formatPost(testMessage);
+        const finalMessage = SocialPostFormatterMixin._formatPost(testMessage);
 
         assert.equal(finalMessage, [
             "Hello",
@@ -90,12 +90,12 @@ QUnit.module('Social Formatter Regex', {}, () => {
     QUnit.test('YouTube Message', (assert) => {
         assert.expect(1);
 
-        patchWithCleanup(SocialPostFormatterMixinBase, {
+        patch(SocialPostFormatterMixin, "test_formatted_mixin_youtube", {
             _getMediaType() { return 'youtube' },
         });
 
         const testMessage = 'Hello, check this out: https://www.odoo.com #crazydeals #odoo';
-        const finalMessage = SocialPostFormatterMixinBase._formatPost(testMessage);
+        const finalMessage = SocialPostFormatterMixin._formatPost(testMessage);
 
         assert.equal(finalMessage, [
             "Hello, check this out:",

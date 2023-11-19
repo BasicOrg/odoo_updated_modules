@@ -3,17 +3,17 @@
 # 	* base_setup
 # 
 # Translators:
-# Wil Odoo, 2023
-# Abe Manyo, 2023
+# Martin Trigaux, 2022
+# arfa simoncelli, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Abe Manyo, 2023\n"
-"Language-Team: Indonesian (https://app.transifex.com/odoo/teams/41243/id/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: arfa simoncelli, 2022\n"
+"Language-Team: Indonesian (https://www.transifex.com/odoo/teams/41243/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,61 +22,81 @@ msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+
+#. module: base_setup
+#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "<span class=\"fa fa-lg fa-users\" aria-label=\"Number of active users\"/>"
-msgstr "<span class=\"fa fa-lg fa-users\" aria-label=\"Jumlah user aktif\"/>"
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid ""
-"<span class=\"o_form_label\" invisible=\"active_user_count &gt; '1'\">\n"
-"                                        Active User\n"
-"                                    </span>\n"
-"                                    <span class=\"o_form_label\" invisible=\"active_user_count &lt;= '1'\">\n"
-"                                        Active Users\n"
-"                                    </span>"
 msgstr ""
-"<span class=\"o_form_label\" invisible=\"active_user_count &gt; '1'\">\n"
-"                                        User Aktif\n"
-"                                    </span>\n"
-"                                    <span class=\"o_form_label\" invisible=\"active_user_count &lt;= '1'\">\n"
-"                                        User-User Aktif\n"
-"                                    </span>"
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid ""
-"<span class=\"o_form_label\" invisible=\"company_count &gt; '1'\">\n"
-"                                        Company\n"
-"                                    </span>\n"
-"                                    <span class=\"o_form_label\" invisible=\"company_count &lt;= '1'\">\n"
-"                                        Companies\n"
-"                                    </span>\n"
-"                                    <br/>"
-msgstr ""
-"<span class=\"o_form_label\" invisible=\"company_count &gt; '1'\">\n"
-"                                        Perusahaan\n"
-"                                    </span>\n"
-"                                    <span class=\"o_form_label\" invisible=\"company_count &lt;= '1'\">\n"
-"                                        Perusahaan-Perusahaan\n"
-"                                    </span>\n"
-"                                    <br/>"
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid ""
-"<span class=\"o_form_label\" invisible=\"language_count &gt; '1'\">\n"
-"                                            Language\n"
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('active_user_count', '&gt;', '1')]}\">\n"
+"                                            Active User\n"
 "                                        </span>\n"
-"                                        <span class=\"o_form_label\" invisible=\"language_count &lt;= '1'\">\n"
-"                                            Languages\n"
+"                                        <span class=\"o_form_label\" attrs=\"{'invisible':[('active_user_count', '&lt;=', '1')]}\">\n"
+"                                            Active Users\n"
 "                                        </span>"
 msgstr ""
-"<span class=\"o_form_label\" invisible=\"language_count &gt; '1'\">\n"
-"                                            Bahasa\n"
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('active_user_count', '&gt;', '1')]}\">\n"
+"                                            Pengguna Aktif\n"
 "                                        </span>\n"
-"                                        <span class=\"o_form_label\" invisible=\"language_count &lt;= '1'\">\n"
-"                                            Bahasa-Bahasa\n"
+"                                        <span class=\"o_form_label\" attrs=\"{'invisible':[('active_user_count', '&lt;=', '1')]}\">\n"
+"                                            Pengguna Aktif\n"
 "                                        </span>"
+
+#. module: base_setup
+#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('company_count', '&gt;', '1')]}\">\n"
+"                                            Company\n"
+"                                        </span>\n"
+"                                        <span class=\"o_form_label\" attrs=\"{'invisible':[('company_count', '&lt;=', '1')]}\">\n"
+"                                            Companies\n"
+"                                        </span>\n"
+"                                        <br/>"
+msgstr ""
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('company_count', '&gt;', '1')]}\">\n"
+"                                            Perusahaan\n"
+"                                        </span>\n"
+"                                        <span class=\"o_form_label\" attrs=\"{'invisible':[('company_count', '&lt;=', '1')]}\">\n"
+"                                            Perusahaan\n"
+"                                        </span>\n"
+"                                        <br/>"
+
+#. module: base_setup
+#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('language_count', '&gt;', '1')]}\">\n"
+"                                                Language\n"
+"                                            </span>\n"
+"                                            <span class=\"o_form_label\" attrs=\"{'invisible':[('language_count', '&lt;=', '1')]}\">\n"
+"                                                Languages\n"
+"                                            </span>"
+msgstr ""
+"<span class=\"o_form_label\" attrs=\"{'invisible':[('language_count', '&gt;', '1')]}\">\n"
+"                                                Bahasa\n"
+"                                            </span>\n"
+"                                            <span class=\"o_form_label\" attrs=\"{'invisible':[('language_count', '&lt;=', '1')]}\">\n"
+"                                                Bahasa\n"
+"                                            </span>"
+
+#. module: base_setup
+#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">Document Layout</span>\n"
+"                                        <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"o_form_label\">Tata Letak Dokumen</span>\n"
+"                                        <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -86,15 +106,6 @@ msgid ""
 msgstr ""
 "<strong>Simpan</strong> halaman ini dan kembali ke sini untuk memilih "
 "Penyedia Geo Anda."
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid ""
-"<strong>Save</strong> this page and come back here to set up Cloudflare "
-"turnstile."
-msgstr ""
-"<strong>Simpan</strong> halaman ini dan kembali lagi ke sini untuk setup "
-"Cloudflare turnstile."
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -114,25 +125,10 @@ msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid "API Keys"
-msgstr "API Keys"
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid ""
-"API Keys allow your users to access Odoo with external tools when multi-"
-"factor authentication is enabled."
-msgstr ""
-"API Key memungkinkan user untuk mengakses Odoo dengan tool eksternal saat "
-"autentikasi multi-faktor diaktifkan."
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "About"
 msgstr "Tentang"
 
 #. module: base_setup
-#. odoo-python
 #: code:addons/base_setup/controllers/main.py:0
 #, python-format
 msgid "Access Denied"
@@ -141,7 +137,7 @@ msgstr "Akses Ditolak"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Add Languages"
-msgstr "Tambahkan Bahasa"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -193,7 +189,7 @@ msgid ""
 "Automatically generate counterpart documents for orders/invoices between "
 "companies"
 msgstr ""
-"Secara otomatis menghasilkan dokumen counterpart untuk pesanan/faktur antar "
+"Secara otomatis menghasilkan dokumen rekanan untuk pesanan/faktur antar "
 "perusahaan"
 
 #. module: base_setup
@@ -210,11 +206,6 @@ msgid "Choose the layout of your documents"
 msgstr "Pilih tata letak dokumen Anda"
 
 #. module: base_setup
-#: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_website_cf_turnstile
-msgid "Cloudflare Turnstile"
-msgstr "Cloudflare Turnstile"
-
-#. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Companies"
 msgstr "Perusahaan"
@@ -223,11 +214,6 @@ msgstr "Perusahaan"
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__company_id
 msgid "Company"
 msgstr "Perusahaan"
-
-#. module: base_setup
-#: model:ir.model.fields,field_description:base_setup.field_res_config_settings__company_country_code
-msgid "Company Country Code"
-msgstr "Kode Negara Perusahaan"
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__company_informations
@@ -265,6 +251,11 @@ msgid "Contacts"
 msgstr "Kontak"
 
 #. module: base_setup
+#: model:ir.model.fields,field_description:base_setup.field_res_config_settings__external_email_server_default
+msgid "Custom Email Servers"
+msgstr "Server Email Khusus"
+
+#. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__report_footer
 msgid "Custom Report Footer"
 msgstr "Laporan Footer Kustom"
@@ -276,16 +267,10 @@ msgid "Default Access Rights"
 msgstr "Hak Akses Standar"
 
 #. module: base_setup
-#. odoo-python
 #: code:addons/base_setup/models/res_config_settings.py:0
 #, python-format
 msgid "Default User Template not found."
 msgstr "Template Pengguna Dasar tidak ditemukan."
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid "Document Layout"
-msgstr "Layout Dokumen"
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__external_report_layout_id
@@ -308,12 +293,11 @@ msgid ""
 "Enable the profiling tool. Profiling may impact performance while being "
 "active."
 msgstr ""
-"Aktifkan tool profiling. Profiling dapat berdampak pada performa saat aktif."
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Find free high-resolution images from Unsplash"
-msgstr "Cari gambar high-resolution gratis dari Unsplash"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,help:base_setup.field_res_config_settings__report_footer
@@ -329,22 +313,22 @@ msgstr "Pengaturan Umum"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Geo Localization"
-msgstr "Geo Lokalisasi"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_base_geolocalize
 msgid "GeoLocalize"
-msgstr "GeoLokalisasi"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "GeoLocalize your partners"
-msgstr "GeoLokalisasi mitra Anda"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_product_images
 msgid "Get product pictures using barcode"
-msgstr "Dapatkan gambar produk menggunakan barcode"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -364,7 +348,7 @@ msgstr "Impor & Ekspor"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Integrate with mail client plugins"
-msgstr "Integrasikan dengan plugin email klie"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -375,11 +359,6 @@ msgstr "Integrasi"
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Inter-Company Transactions"
 msgstr "Transaksi Antar Perusahaan"
-
-#. module: base_setup
-#: model:ir.model.fields,field_description:base_setup.field_res_config_settings__is_root_company
-msgid "Is Root Company"
-msgstr "Apakah Akar Perusahaan"
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_auth_ldap
@@ -400,17 +379,17 @@ msgstr "Layout"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Mail Plugin"
-msgstr "Email Plugin"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Manage API Keys"
-msgstr "Kelola Api Key"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Manage Companies"
-msgstr "Kelola Perusahaan"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_account_inter_company_rules
@@ -420,12 +399,12 @@ msgstr "Mengelola Antar Perusahaan"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Manage Languages"
-msgstr "Kelola Bahasa"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Manage Users"
-msgstr "Kelola User"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__group_multi_currency
@@ -435,17 +414,17 @@ msgstr "Beberapa Mata Uang"
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__active_user_count
 msgid "Number of Active Users"
-msgstr "Jumlah User-User Aktif"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__company_count
 msgid "Number of Companies"
-msgstr "Jumlah Perusahaan "
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__language_count
 msgid "Number of Languages"
-msgstr "Jumlah Bahasa-Bahasa"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -454,28 +433,23 @@ msgstr "Otentikasi OAuth"
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid "Odoo"
-msgstr "Odoo"
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "On Apple Store"
-msgstr "Pada Apple Store"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "On Google Play"
-msgstr "Pada Google Play"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Outlook Calendar"
-msgstr "Kalender Outlook"
+msgstr ""
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_partner_autocomplete
 msgid "Partner Autocomplete"
-msgstr "Penyelesaian Otomatis Partner"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -485,7 +459,7 @@ msgstr "Performa"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Permissions"
-msgstr "Izin"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -495,22 +469,12 @@ msgstr "Pratinjau Dokumen"
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__profiling_enabled_until
 msgid "Profiling enabled until"
-msgstr "Profiling diaktifkan sampai"
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid "Progressive Web App"
-msgstr "App Web Progresif"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Protect your forms from spam and abuse."
-msgstr "Lindungi formulir Anda dari spam dan penyalahgunaan."
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid "Protect your forms with CF Turnstile."
-msgstr "Lindungi formulir Anda dengan CF Turnstile."
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -520,7 +484,7 @@ msgstr "Kirim SMS"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Send texts to your contacts"
-msgstr "Kirim teks ke kontak-kontak Anda"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -535,7 +499,7 @@ msgstr "Pengaturan"
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__show_effect
 msgid "Show Effect"
-msgstr "Tunjukkan Efek"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -545,34 +509,22 @@ msgstr "Sinkronisasi kalendar Anda dengan Google Calendar"
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Synchronize your calendar with Outlook"
-msgstr "Sinkronisasikan kalender Anda dengan Outlook"
+msgstr ""
 
 #. module: base_setup
-#: model:ir.model.fields,help:base_setup.field_res_config_settings__company_country_code
-msgid ""
-"The ISO country code in two chars. \n"
-"You can use this field for quick search."
-msgstr ""
-"Kode ISO negara dalam dua karakter.\n"
-"Anda dapat menggunakan kolom ini untuk pencarian cepat."
-
-#. module: base_setup
-#: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
-msgid ""
-"This name will be used for the application when Odoo is installed through "
-"the browser."
-msgstr ""
-"Nama ini akan digunakan untuk aplikasi saat Odoo diinstal melalui browser."
+#: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_base_gengo
+msgid "Translate Your Website with Gengo"
+msgstr "Terjemahkan Situs Web Anda dengan Gengo"
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_web_unsplash
 msgid "Unsplash Image Library"
-msgstr "Pustaka Gambar Unsplash"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid "Update Info"
-msgstr "Update Info"
+msgstr ""
 
 #. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
@@ -600,23 +552,14 @@ msgid "Users"
 msgstr "Pengguna"
 
 #. module: base_setup
-#. odoo-python
-#: code:addons/base_setup/models/res_config_settings.py:0
-#, python-format
-msgid "VAT"
-msgstr "PPN"
-
-#. module: base_setup
 #: model_terms:ir.ui.view,arch_db:base_setup.res_config_settings_view_form
 msgid ""
 "When populating your address book, Odoo provides a list of matching "
 "companies. When selecting one item, the company data and logo are auto-"
 "filled."
 msgstr ""
-"Saat mengisi buku alamat, Odoo menyediakan daftar perusahaan yang cocok. "
-"Saat memilih satu item, data perusahaan dan logo akan diisi otomatis."
 
 #. module: base_setup
 #: model:ir.model.fields,field_description:base_setup.field_res_config_settings__module_google_recaptcha
 msgid "reCAPTCHA"
-msgstr "reCAPTCHA"
+msgstr ""

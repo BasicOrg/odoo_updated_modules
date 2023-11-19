@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website.s_popup_options', function (require) {
+'use strict';
 
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 options.registry.SnippetPopup = options.Class.extend({
     /**
@@ -31,15 +32,6 @@ options.registry.SnippetPopup = options.Class.extend({
         // sound). Stop the video, as the user can't do it (no button on video
         // in edit mode).
         this._removeIframeSrc();
-        if (!this.$target[0].parentElement.matches("#website_cookies_bar")) {
-            this.trigger_up("option_update", {
-                optionName: "anchor",
-                name: "modalAnchor",
-                data: {
-                    buttonEl: this._requestUserValueWidgets("onclick_opt")[0].el,
-                },
-            });
-        }
         return this._super(...arguments);
     },
     /**
@@ -57,13 +49,6 @@ options.registry.SnippetPopup = options.Class.extend({
      */
     onBuilt: function () {
         this._assignUniqueID();
-        // Fix in stable to convert the data-focus bootstrap option from version 4.0 to
-        // 5.1 (renamed to data-bs-focus).
-        const popup = this.$target.closest('.s_popup_middle');
-        if (popup && popup.attr('data-focus')) {
-            popup.attr('data-bs-focus', popup.attr('data-focus'));
-            popup[0].removeAttribute('data-focus');
-        }
     },
     /**
      * @override
@@ -91,9 +76,6 @@ options.registry.SnippetPopup = options.Class.extend({
                 clearTimeout(timeoutID);
                 resolve();
             });
-            // The following line is in charge of hiding .s_popup at the same
-            // time the modal is closed when the page is saved in edit mode.
-            this.$target[0].closest('.s_popup').classList.add('d-none');
             this.$bsTarget.modal('hide');
         });
     },
@@ -103,17 +85,14 @@ options.registry.SnippetPopup = options.Class.extend({
     //--------------------------------------------------------------------------
 
     /**
-     * Moves the snippet in #o_shared_blocks to be common to all pages or inside
-     * the first editable oe_structure in the main to be on current page only.
+     * Moves the snippet in footer to be common to all pages
+     * or inside wrap to be on one page only
      *
      * @see this.selectClass for parameters
      */
     moveBlock: function (previewMode, widgetValue, params) {
-        const selector = widgetValue === 'allPages' ?
-            '#o_shared_blocks' : 'main .oe_structure:o_editable';
-        const whereEl = $(this.$target[0].ownerDocument).find(selector)[0];
-        const popupEl = this.$target[0].closest('.s_popup');
-        whereEl.prepend(popupEl);
+        const $container = $(widgetValue === 'moveToFooter' ? 'footer' : 'main');
+        this.$target.closest('.s_popup').prependTo($container.find('.oe_structure:o_editable').first());
     },
     /**
      * @see this.selectClass for parameters
@@ -141,7 +120,7 @@ options.registry.SnippetPopup = options.Class.extend({
     _computeWidgetState: function (methodName, params) {
         switch (methodName) {
             case 'moveBlock':
-                return this.$target[0].closest('#o_shared_blocks') ? 'allPages' : 'currentPage';
+                return this.$target.closest('footer').length ? 'moveToFooter' : 'moveToBody';
         }
         return this._super(...arguments);
     },
@@ -156,4 +135,5 @@ options.registry.SnippetPopup = options.Class.extend({
             iframe.src = '';
         });
     },
+});
 });

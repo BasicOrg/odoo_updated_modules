@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { Many2OneField, many2OneField } from "@web/views/fields/many2one/many2one_field";
+import { Many2OneField } from "@web/views/fields/many2one/many2one_field";
 
 
 class TaskWithHours extends Many2OneField {
 
-    canCreate() {
+    get canCreate() {
         return Boolean(this.context.default_project_id);
     }
 
@@ -30,7 +30,7 @@ class TaskWithHours extends Many2OneField {
      */
     get Many2XAutocompleteProps() {
         const props = super.Many2XAutocompleteProps;
-        if (!this.canCreate()) {
+        if (!this.canCreate) {
             props.quickCreate = null;
         }
         return props;
@@ -42,13 +42,10 @@ class TaskWithHours extends Many2OneField {
     computeActiveActions(props) {
         super.computeActiveActions(props);
         const activeActions = this.state.activeActions;
-        activeActions.create = activeActions.create && this.canCreate(props);
-        activeActions.createEdit = false
+        activeActions.create = activeActions.create && this.canCreate;
+        activeActions.createEdit = activeActions.create;
     }
 
 }
 
-registry.category("fields").add("task_with_hours", {
-    ...many2OneField,
-    component: TaskWithHours,
-});
+registry.category("fields").add("task_with_hours", TaskWithHours);

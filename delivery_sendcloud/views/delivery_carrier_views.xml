@@ -6,39 +6,31 @@
     <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
     <field name="arch" type="xml">
       <xpath expr="//div[@name='title']" position="after">
-        <div colspan="2" class="alert alert-warning" invisible="delivery_type != 'sendcloud' or prod_environment" role="status">
+        <div colspan="2" class="alert alert-warning" attrs="{'invisible': ['|', ('delivery_type', '!=', 'sendcloud'), ('prod_environment', '=', True)]}" role="status">
           <p><i class="fa fa-exclamation-triangle"/> In test environment, to avoid charges, your shippings are automatically <b>cancelled</b> after the label creation.</p>
         </div>
       </xpath>
       <page name="destination" position="before">
-        <page string="SendCloud Configuration" name="sendcloud_configuration" invisible="delivery_type != 'sendcloud'">
+        <page string="SendCloud Configuration" name="sendcloud_configuration" attrs="{'invisible': [('delivery_type', '!=', 'sendcloud')]}">
           <group>
             <group string="Integration">
-              <field name="sendcloud_public_key" required="delivery_type == 'sendcloud'"/>
-              <field name="sendcloud_secret_key" required="delivery_type == 'sendcloud'"/>
-              <field name="country_id" required="delivery_type == 'sendcloud'"/>
+              <field name="sendcloud_public_key" attrs="{'required': [('delivery_type', '=', 'sendcloud')]}"/>
+              <field name="sendcloud_secret_key" attrs="{'required': [('delivery_type', '=', 'sendcloud')]}"/>
               <div colspan='2'>
-                <button name="action_load_sendcloud_shipping_products" string="Load your products" type="object" class="btn btn-primary"/>
+                <button name="action_load_sendcloud_shipping_products" string="Load your SendCloud shipping products" type="object" class="oe_inline fa fa-arrow-right oe_link"/>
               </div>
-              <div colspan="2" class="alert alert-warning" invisible="sendcloud_shipping_id" role="status">
+              <div colspan="2" class="alert alert-warning" attrs="{'invisible': [('sendcloud_shipping_id', '!=', False)]}" role="status">
                 <p><i class="fa fa-exclamation-triangle"/> Do not forget to load your SendCloud shipping products for a valid configuration.</p>
               </div>
-              <field name="sendcloud_shipping_id" invisible="1"/>
-              <field name="sendcloud_return_id" invisible="1"/>
-              <field name="sendcloud_shipping_name"/>
-              <field name="sendcloud_return_name"/>
+              <field name="sendcloud_shipping_id" readonly="True"/>
+              <field name="sendcloud_return_id" readonly="True"/>
             </group>
             <group string="Options">
               <field name="sendcloud_shipping_rules"/>
               <field name="sendcloud_default_package_type_id" string="Default Package Type"/>
               <field name="can_generate_return" invisible="1"/>
-              <field name="return_label_on_delivery" invisible="1"/>
-              <field name="get_return_label_from_portal" invisible="not return_label_on_delivery"/>
-              <field name="sendcloud_can_batch_shipping" invisible="1"/>
-              <field name="sendcloud_use_batch_shipping" invisible="not sendcloud_shipping_id or not sendcloud_can_batch_shipping" readonly="not sendcloud_can_batch_shipping"/>
-              <field name="sendcloud_has_custom_functionalities" invisible="1"/>
-              <separator string="Functionality Filters" class="mb-4" invisible="not sendcloud_shipping_id or not sendcloud_has_custom_functionalities"/>
-              <field name="sendcloud_product_functionalities" widget="sendcloud_functionalities" nolabel="1" colspan="2" invisible="not sendcloud_shipping_id or not sendcloud_has_custom_functionalities"/>
+              <field name="return_label_on_delivery" attrs="{'invisible': ['|', ('can_generate_return', '=', False), ('sendcloud_return_id', '=', False)]}"/>
+              <field name="get_return_label_from_portal" attrs="{'invisible': [('return_label_on_delivery', '=', False)]}"/>
             </group>
           </group>
         </page>

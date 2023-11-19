@@ -17,8 +17,8 @@ from werkzeug.urls import url_encode, url_join
 
 class SocialInstagramController(SocialController):
 
-    @http.route('/social_instagram/callback', type='http', auth='user')
     @fragment_to_query_string
+    @http.route('/social_instagram/callback', type='http', auth='user')
     def social_instagram_callback(self, access_token=None, extended_access_token=None, **kw):
         if not request.env.user.has_group('social.group_social_manager'):
             return request.render('social.social_http_error_view',
@@ -37,7 +37,7 @@ class SocialInstagramController(SocialController):
         try:
             self._instagram_create_accounts(access_token, extended_access_token)
         except SocialValidationException as e:
-            return request.render('social.social_http_error_view', {'error_message': e.get_message(), 'documentation_data': e.get_documentation_data()})
+            return request.render('social.social_http_error_view', {'error_message': str(e)})
 
         url = '/web?#%s' % url_encode({
             'action': request.env.ref('social.action_social_stream_post').id,
@@ -88,9 +88,10 @@ class SocialInstagramController(SocialController):
         # called manually to throw a ValidationError if not valid instagram image
         social_post._check_post_access()
 
-        return request.env['ir.binary']._get_image_stream_from(
+        return request.env['ir.binary']._get_stream_from(
             social_post.instagram_image_id,
             default_mimetype='image/jpeg',
+            placeholder=request.env['ir.http']._placeholder_path(),
         ).get_response()
 
     def _instagram_create_accounts(self, access_token, extended_access_token):
@@ -117,11 +118,11 @@ class SocialInstagramController(SocialController):
         accounts_to_create = []
         has_existing_accounts = False
         for account in accounts['data']:
-            instagram_access_token = account.get('access_token')
+            instagram_access_token = account['access_token']
             facebook_account_id = account['id']
             instagram_account_id = account.get('instagram_business_account', {}).get('id')
 
-            if not instagram_access_token or not instagram_account_id:
+            if not instagram_account_id:
                 continue
 
             instagram_accounts_endpoint = url_join(
@@ -159,11 +160,7 @@ class SocialInstagramController(SocialController):
         if accounts_to_create:
             request.env['social.account'].create(accounts_to_create)
         elif not has_existing_accounts:
-            message = _('You need to link your Instagram page to your Facebook account to post with Odoo Social.\n Please create one and make sure it is linked to your account.')
-            documentation_link = 'https://help.instagram.com/176235449218188'
-            documentation_link_label = _('Read More about Instagram Accounts')
-            documentation_link_icon_class = 'fa fa-instagram'
-            raise SocialValidationException(message, documentation_link, documentation_link_label, documentation_link_icon_class)
+            raise SocialValidationException(_('No Instagram accounts linked with your Facebook page'))
 
     def _instagram_get_extended_access_token(self, access_token, media):
         """ Same mechanism as social_facebook/controllers/main.py#_get_extended_access_token """

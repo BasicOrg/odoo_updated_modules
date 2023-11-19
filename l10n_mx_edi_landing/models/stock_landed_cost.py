@@ -39,4 +39,4 @@ class StockLandedCost(models.Model):
             custom_number = landed_cost.l10n_mx_edi_customs_number.strip()
             if not CUSTOM_NUMBERS_PATTERN.match(custom_number):
                 raise ValidationError(_("Error!, The format of the customs number is incorrect. \n%s\n"
-                                        "For example: 15  48  3009  0001234", help_message))
+                                        "For example: 15  48  3009  0001234") % help_message)

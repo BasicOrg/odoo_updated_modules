@@ -1,20 +1,14 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { fuzzyLookup } from "@web/core/utils/search";
 import { computeAppsAndMenuItems } from "@web/webclient/menus/menu_helpers";
-import { DefaultCommandItem } from "@web/core/commands/command_palette";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 class AppIconCommand extends Component {}
 AppIconCommand.template = "web.AppIconCommand";
-AppIconCommand.props = {
-    webIconData: { type: String, optional: true },
-    webIcon: { type: Object, optional: true },
-    ...DefaultCommandItem.props,
-};
 
 const commandCategoryRegistry = registry.category("command_categories");
 commandCategoryRegistry.add("apps", { namespace: "/" }, { sequence: 10 });
@@ -22,9 +16,9 @@ commandCategoryRegistry.add("menu_items", { namespace: "/" }, { sequence: 20 });
 
 const commandSetupRegistry = registry.category("command_setup");
 commandSetupRegistry.add("/", {
-    emptyMessage: _t("No menu found"),
-    name: _t("menus"),
-    placeholder: _t("Search for a menu..."),
+    emptyMessage: _lt("No menu found"),
+    name: _lt("menus"),
+    placeholder: _lt("Search for a menu..."),
 });
 
 const commandProviderRegistry = registry.category("command_provider");

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="mrp_mps.MpsLineComponent">
+    <t t-name="mrp_mps.MpsLineComponent" owl="1">
         <tbody class="o_mps_content" t-att-data-id="productionSchedule.id" t-att-data-warehouse_id="'warehouse_id' in productionSchedule and productionSchedule.warehouse_id[0]">
             <tr class="bg-light">
                 <th>
@@ -17,7 +17,7 @@
                 <th/>
                 <t t-foreach="productionSchedule.forecast_ids" t-as="forecast" t-key="forecast_index">
                     <th class="text-end pe-4">
-                        <span t-attf-class="{{! groups.mrp_mps_show_starting_inventory and 'o_hidden' or 'text-end'}}" t-esc="formatFloat(forecast.starting_inventory_qty)" data-bs-toggle="tooltip" data-bs-placement="bottom" title="The forecasted quantity in stock at the beginning of the period."/>
+                        <span t-attf-class="{{! groups.mrp_mps_show_starting_inventory and 'o_hidden' or 'text-end'}}" t-esc="formatFloat(forecast.starting_inventory_qty, false, {'digits': [false, productionSchedule.precision_digits]})" data-bs-toggle="tooltip" data-bs-placement="bottom" title="The forecasted quantity in stock at the beginning of the period."/>
                     </th>
                 </t>
             </tr>
@@ -29,7 +29,7 @@
                 <th/>
                 <t t-foreach="productionSchedule.forecast_ids" t-as="forecast" t-key="forecast_index">
                     <th class="text-end pe-4">
-                        <span t-esc="formatFloat(forecast.outgoing_qty_year_minus_2)"/>
+                        <span t-esc="formatFloat(forecast.outgoing_qty_year_minus_2, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                     </th>
                 </t>
             </tr>
@@ -41,7 +41,7 @@
                 <th></th>
                 <t t-foreach="productionSchedule.forecast_ids" t-as="forecast" t-key="forecast_index">
                     <th class="text-end pe-4">
-                        <span t-esc="formatFloat(forecast.outgoing_qty_year_minus_1)"/>
+                        <span t-esc="formatFloat(forecast.outgoing_qty_year_minus_1, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                     </th>
                 </t>
             </tr>
@@ -63,13 +63,13 @@
                         t-att-data-date_start="forecast.date_start"
                         t-att-data-date_stop="forecast.date_stop"
                         t-attf-class="{{! groups.mrp_mps_show_actual_demand and 'o_hidden' or 'o_mrp_mps_open_details'}}">
-                            <t t-esc="formatFloat(forecast.outgoing_qty)"/>
+                            <t t-esc="formatFloat(forecast.outgoing_qty, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                         </a>
                         <span t-attf-class="{{! (groups.mrp_mps_show_actual_demand and groups.mrp_mps_show_demand_forecast) and 'o_hidden' or ''}}"> / </span>
                         <input type="text"
                         t-att-data-date_index="forecast_index"
                         t-attf-class="text-end form-control o_mrp_mps_input_forcast_qty {{! groups.mrp_mps_show_demand_forecast and 'o_hidden' or groups.mrp_mps_show_actual_demand and 'o_mps_inline' or ''}}"
-                        t-att-value="formatFloat(forecast.forecast_qty)"
+                        t-att-value="formatFloat(forecast.forecast_qty, false, {'digits': [false, productionSchedule.precision_digits]})"
                         t-on-change.stop="(ev) => this._onChangeForecast(ev, productionSchedule.id)"
                         t-on-focus.prevent="_onFocusInput"/>
                     </th>
@@ -83,7 +83,7 @@
                 <th/>
                 <t t-foreach="productionSchedule.forecast_ids" t-as="forecast" t-key="forecast_index">
                     <th t-attf-class="text-end pe-4 {{forecast.indirect_demand_qty == 0 and 'text-muted' or ''}}">
-                        <t t-esc="formatFloat(forecast.indirect_demand_qty)"/>
+                        <t t-esc="formatFloat(forecast.indirect_demand_qty, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                     </th>
                 </t>
             </tr>
@@ -125,7 +125,7 @@
                             }} {{
                             forecast.forced_replenish and 'o_mrp_mps_forced_replenish' or ''
                             }}">
-                            <t t-esc="formatFloat(forecast.incoming_qty)"/>
+                            <t t-esc="formatFloat(forecast.incoming_qty, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                         </a>
                         <span t-attf-class="{{! (groups.mrp_mps_show_actual_replenishment and groups.mrp_mps_show_to_replenish) and 'o_hidden' or ''}}"> / </span>
                         <div t-attf-class="input-group {{! groups.mrp_mps_show_to_replenish and 'o_hidden' or  groups.mrp_mps_show_actual_replenishment and 'o_mps_inline' or ''}}">
@@ -150,7 +150,7 @@
                                 }} {{
                                 forecast.forced_replenish and 'o_mrp_mps_forced_replenish' or ''
                                 }}"
-                            t-att-value="formatFloat(forecast.replenish_qty)"
+                            t-att-value="formatFloat(forecast.replenish_qty, false, {'digits': [false, productionSchedule.precision_digits]})"
                             t-on-change.stop="(ev) => this._onChangeToReplenish(ev, productionSchedule.id)"
                             t-on-focus="_onFocusInput"/>
                         </div>
@@ -172,9 +172,9 @@
                 </th>
                 <t t-foreach="productionSchedule.forecast_ids" t-as="forecast" t-key="forecast_index">
                     <th class="text-end pe-4">
-                        <span t-attf-class="{{! groups.mrp_mps_show_available_to_promise and 'o_hidden' or ''}}" t-esc="formatFloat(forecast.starting_inventory_qty + forecast.replenish_qty - forecast.outgoing_qty)"/>
+                        <span t-attf-class="{{! groups.mrp_mps_show_available_to_promise and 'o_hidden' or ''}}" t-esc="formatFloat(forecast.starting_inventory_qty + forecast.replenish_qty - forecast.outgoing_qty, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                         <span t-attf-class="{{! (groups.mrp_mps_show_safety_stock and groups.mrp_mps_show_available_to_promise) and 'o_hidden' or ''}}"> / </span>
-                        <span t-attf-class="{{forecast.safety_stock_qty &lt; 0 and 'text-danger' or ''}} {{! groups.mrp_mps_show_safety_stock and 'o_hidden' or ''}}" t-esc="formatFloat(forecast.safety_stock_qty)"/>
+                        <span t-attf-class="{{forecast.safety_stock_qty &lt; 0 and 'text-danger' or ''}} {{! groups.mrp_mps_show_safety_stock and 'o_hidden' or ''}}" t-esc="formatFloat(forecast.safety_stock_qty, false, {'digits': [false, productionSchedule.precision_digits]})"/>
                     </th>
                 </t>
             </tr>

@@ -3,16 +3,17 @@
 # 	* web_gantt
 # 
 # Translators:
-# Wil Odoo, 2023
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,8 +21,31 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_controller.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#, python-format
+msgid "&nbsp;"
+msgstr "&nbsp;"
+
+#. module: web_gantt
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#, python-format
+msgid "Add"
+msgstr "إضافة"
+
+#. module: web_gantt
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#, python-format
+msgid "Add record"
+msgstr "إضافة سجل "
+
+#. module: web_gantt
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_controller.js:0
 #, python-format
 msgid "Are you sure to delete this record?"
 msgstr "هل أنت متأكد من أنك ترغب في حذف هذا السجل؟ "
@@ -29,273 +53,222 @@ msgstr "هل أنت متأكد من أنك ترغب في حذف هذا السج�
 #. module: web_gantt
 #: model:ir.model,name:web_gantt.model_base
 msgid "Base"
-msgstr "قاعدة "
+msgstr "أساس"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Collapse rows"
 msgstr "تصغير الصفوف "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_controller.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_controller.js:0
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Create"
 msgstr "إنشاء"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Day"
 msgstr "اليوم"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.js:0
-#, python-format
-msgid "Edit"
-msgstr "تحرير"
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Expand rows"
 msgstr "تكبير الصفوف "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_view.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Gantt"
 msgstr "جانت"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Gantt View"
 msgstr "أداة عرض جانت"
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Gantt child can only be field or template, got %s"
 msgstr "يمكن أن يكون تابع غانت إما حقل أو قالب فقط، به %s "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Gantt must have a 'date_start' attribute"
 msgstr "يجب أن يكون لعرض غانت خاصية 'date_start' "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Gantt must have a 'date_stop' attribute"
 msgstr "يجب أن يكون لعرض غانت خاصية 'date_stop' "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid ""
 "Gantt must have a 'dependency_inverted_field' attribute once the "
 "'dependency_field' is specified"
 msgstr ""
-"يجب أن يكون لنافذة عرض غانت خاصية 'dependency_inverted_field' بمجرد أن يتم "
-"تحديد 'dependency_field' "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Gantt view can contain only one templates tag"
 msgstr "يمكن أن يحتوي عرض غانت على علامة تصنيف قوالب واحدة فقط "
 
 #. module: web_gantt
-#. odoo-python
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_model.js:0
+#, python-format
+msgid "Grouping by date is not supported"
+msgstr "خاصية التجميع حسب التاريخ غير مدعومة "
+
+#. module: web_gantt
 #: code:addons/web_gantt/models/models.py:0
 #, python-format
 msgid "Insufficient fields for Gantt View!"
 msgstr "لا توجد حقول كافية لعرض غانت! "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Invalid attributes (%s) in gantt view. Attributes must be in (%s)"
 msgstr "خواص غير صالحة (%s) في عرض غانت. يجب أن تكون الخواص في (%s) "
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/ir_ui_view.py:0
 #, python-format
 msgid "Invalid default_scale '%s' in gantt"
 msgstr "default_scale '%s' غير صالح في عرض غانت "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Month"
 msgstr "الشهر"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_popover.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
-msgid "Name"
-msgstr "الاسم"
+msgid "Name:"
+msgstr "الاسم:"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_controller.xml:0
-#, python-format
-msgid "New"
-msgstr "جديد"
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Next"
 msgstr "التالي"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_controller.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_controller.js:0
 #, python-format
 msgid "Open"
 msgstr "فتح"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_controller.js:0
 #, python-format
 msgid "Plan"
 msgstr "الخطة "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
+#, python-format
+msgid "Plan existing"
+msgstr "تخطيط الموجود "
+
+#. module: web_gantt
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Previous"
 msgstr "السابق"
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/models.py:0
 #, python-format
 msgid ""
 "Records that are in the past cannot be automatically rescheduled. They "
 "should be manually rescheduled instead."
 msgstr ""
-"لا يمكن إعادة جدولة السجلات التي هي في الماضي. يجب أن تتم إعادة جدولتها "
-"يدوياً عوضاً عن ذلك. "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_popover.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
-msgid "Start"
-msgstr "بدء"
+msgid "Start:"
+msgstr "بدء: "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_popover.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
-msgid "Stop"
-msgstr "إيقاف"
+msgid "Stop:"
+msgstr "إيقاف: "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
-#: code:addons/web_gantt/static/src/gantt_renderer.xml:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/xml/web_gantt.xml:0
 #, python-format
 msgid "Today"
-msgstr "اليوم "
+msgstr "اليوم"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.js:0
-#, python-format
-msgid "Total"
-msgstr "الإجمالي"
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_model.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_model.js:0
 #, python-format
 msgid "Undefined %s"
 msgstr "غير محدد %s "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_renderer.js:0
 #: model:ir.model,name:web_gantt.model_ir_ui_view
-#, python-format
 msgid "View"
-msgstr "أداة العرض"
+msgstr "عرض "
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Week"
 msgstr "الأسبوع"
 
 #. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_gantt/static/src/js/gantt_view.js:0
 #, python-format
 msgid "Year"
 msgstr "السنة"
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/models.py:0
 #, python-format
 msgid "You cannot reschedule %s towards %s."
-msgstr "لا يمكنك إعادة جدولة %s إلى %s. "
+msgstr ""
 
 #. module: web_gantt
-#. odoo-python
 #: code:addons/web_gantt/models/models.py:0
 #, python-format
 msgid ""
 "You cannot reschedule tasks that do not follow a direct dependency path. "
 "Only the first task has been automatically rescheduled."
 msgstr ""
-"لا يمكنك إعادة جدولة المهام التي لا تتبع مسار تبعيات مهام مباشر. لقد تمت "
-"إعادة جدولة المهمة الأولى فقط تلقائياً. "
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
-#, python-format
-msgid "hours"
-msgstr "ساعات"
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
-#, python-format
-msgid "minutes"
-msgstr "دقائق "
-
-#. module: web_gantt
-#. odoo-javascript
-#: code:addons/web_gantt/static/src/gantt_arch_parser.js:0
-#, python-format
-msgid "months"
-msgstr "شهور"

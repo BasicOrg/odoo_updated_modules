@@ -126,8 +126,7 @@ class SocialAccountLinkedin(models.Model):
         return {
             'Authorization': 'Bearer %s' % linkedin_access_token,
             'cache-control': 'no-cache',
-            'X-Restli-Protocol-Version': '2.0.0',
-            'LinkedIn-Version': '202211',
+            'X-Restli-Protocol-Version': '2.0.0'
         }
 
     def _get_linkedin_accounts(self, linkedin_access_token):
@@ -167,11 +166,7 @@ class SocialAccountLinkedin(models.Model):
     def _create_linkedin_accounts(self, access_token, media):
         linkedin_accounts = self._get_linkedin_accounts(access_token)
         if not linkedin_accounts:
-            message = _('You need a Business Account to post on LinkedIn with Odoo Social.\n Please create one and make sure it is linked to your account')
-            documentation_link = 'https://business.linkedin.com/marketing-solutions/linkedin-pages'
-            documentation_link_label = _('Read More about Business Accounts')
-            documentation_link_icon_class = 'fa fa-linkedin'
-            raise SocialValidationException(message, documentation_link, documentation_link_label, documentation_link_icon_class)
+            raise SocialValidationException(_('There is no page linked to this account'))
 
         social_accounts = self.sudo().with_context(active_test=False).search([
             ('media_id', '=', media.id),

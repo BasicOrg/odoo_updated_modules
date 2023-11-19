@@ -1,129 +1,69 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* account_batch_payment
-#
+# * account_batch_payment
+# 
 # Translators:
-# Filip Matúšek <filip.matusek@26house.com>, 2022
-# Damian Brencic <brencicdamian12313@gmail.com>, 2022
-# SAKodoo <sak@odoo.com>, 2022
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
-# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2022
-# Martin Trigaux, 2022
-#
+# Martin Trigaux, 2018
+# Pavol Krnáč <pavol.krnac@ekoenergo.sk>, 2018
+# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2018
+# gebri <gebri@inmail.sk>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0beta+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Slovak (https://app.transifex.com/odoo/teams/41243/sk/)\n"
-"Language: sk\n"
+"POT-Creation-Date: 2018-09-21 14:06+0000\n"
+"PO-Revision-Date: 2018-09-21 14:06+0000\n"
+"Last-Translator: gebri <gebri@inmail.sk>, 2018\n"
+"Language-Team: Slovak (https://www.transifex.com/odoo/teams/41243/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: sk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_move_kanban
-msgid "<i class=\"fa fa-clock-o\" aria-label=\"Date\" role=\"img\" title=\"Date\"/>"
-msgstr "<i class=\"fa fa-clock-o\" aria-label=\"Date\" role=\"img\" title=\"Date\"/>"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_form_inherit_account_batch_payment
-msgid "<span>Batch Payment</span>"
-msgstr "<span>Dávková platba</span>"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "<strong attrs=\"{'invisible': [('warning_line_ids', '=', [])]}\">The following warnings were also raised; they do not impeach validation</strong>"
-msgstr "<strong attrs=\"{'invisible': [('warning_line_ids', '=', [])]}\">Boli vznesené aj nasledujúce varovania; nespochybňujú validáciu</strong>"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "<strong>Please first consider the following warnings</strong>"
-msgstr "<strong>Najskôr zvážte nasledujúce varovania</strong>"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "<strong>The following errors occurred</strong>"
+#: model:ir.model,name:account_batch_payment.model_account_batch_download_wizard
+msgid "Account Batch download wizard"
 msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_needaction
-msgid "Action Needed"
-msgstr "Potrebná akcia"
+#: model:ir.model,name:account_batch_payment.model_account_reconciliation_widget
+msgid "Account Reconciliation widget"
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_ids
-msgid "Activities"
-msgstr "Aktivity"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_exception_decoration
-msgid "Activity Exception Decoration"
-msgstr "Označenie výnimky v aktivite"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_state
-msgid "Activity State"
-msgstr "Stav aktivity"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "Ikona typ aktivity"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#: code:addons/account_batch_payment/models/account_batch_payment.py:75
 #, python-format
 msgid "All payments in the batch must belong to the same company."
-msgstr "Všetky platby v dávke musia patriť tej istej spoločnosti."
+msgstr ""
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#: code:addons/account_batch_payment/models/account_batch_payment.py:86
 #, python-format
 msgid "All payments in the batch must share the same payment method."
-msgstr "Všetky platby v dávke musia zdieľať rovnaký spôsob platby."
+msgstr ""
+
+#. module: account_batch_payment
+#: code:addons/account_batch_payment/models/account_batch_payment.py:81
+#, python-format
+msgid "All payments in the batch must share the same type."
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__amount
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Amount"
 msgstr "Suma"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__amount_residual
-msgid "Amount Residual"
-msgstr ""
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__amount_residual_currency
-msgid "Amount Residual Currency"
-msgstr ""
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_payment__amount_signed
-msgid "Amount Signed"
-msgstr "Podpísaná čiastka"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_attachment_count
-msgid "Attachment Count"
-msgstr "Počet príloh"
-
-#. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__available_payment_method_ids
 msgid "Available Payment Method"
-msgstr "Dostupné spôsoby platby"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__journal_id
 msgid "Bank"
-msgstr "Bankové doklady"
+msgstr "Banka"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
@@ -133,7 +73,7 @@ msgstr "Banková účtovná kniha"
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Batch Content"
-msgstr "Dávkový obsah"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:account.payment.method,name:account_batch_payment.account_payment_method_batch_deposit
@@ -144,31 +84,34 @@ msgstr "Depozit šarže"
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_report_account_batch_payment_print_batch_payment
 msgid "Batch Deposit Report"
-msgstr "Správa o vklade dávky"
+msgstr ""
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_payment.py:0
 #: model:ir.model,name:account_batch_payment.model_account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__batch_payment_id
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__batch_payment_id
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_payment__batch_payment_id
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
-#, python-format
 msgid "Batch Payment"
-msgstr "Hromadná platba"
+msgstr ""
 
 #. module: account_batch_payment
+#: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_in
+#: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_out
 #: model:ir.ui.menu,name:account_batch_payment.menu_batch_payment_purchases
 #: model:ir.ui.menu,name:account_batch_payment.menu_batch_payment_sales
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
 msgid "Batch Payments"
-msgstr "Hromadné platby"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__batch_type
 msgid "Batch Type"
-msgstr "Typ dávky"
+msgstr ""
+
+#. module: account_batch_payment
+#: model:ir.model.fields,help:account_batch_payment.field_account_batch_download_wizard__batch_payment_id
+msgid "Batch payment from which the file has been generated."
+msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_in
@@ -178,31 +121,16 @@ msgid ""
 "                    reconciliation. They are also useful when depositing checks\n"
 "                    to the bank."
 msgstr ""
-"Hromadné platby vám uľahčujú zoskupovanie rôznych platieb\n"
-"                    párovania. Sú užitočné aj pri vklade šekov\n"
-"                  do banky."
 
 #. module: account_batch_payment
-#: model:ir.model,name:account_batch_payment.model_account_batch_error_wizard
-msgid "Batch payments error reporting wizard"
-msgstr "Sprievodca prehľadov chýb hromadných platieb"
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.download_xml_form
+msgid "Click here to download the generated file:"
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model,name:account_batch_payment.model_account_batch_error_wizard_line
-msgid "Batch payments error reporting wizard line"
-msgstr "Riadok sprievodcu prehľadov chýb hromadných platieb"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Cannot validate an empty batch. Please add some payments to it first."
-msgstr "Prázdnu dávku nie je možné overiť. Najskôr do nej pridajte nejaké platby."
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.download_xml_form
 msgid "Close"
-msgstr "Zatvoriť"
+msgstr "Zatvor"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__payment_method_code
@@ -210,47 +138,30 @@ msgid "Code"
 msgstr "Kód"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__company_currency_id
-msgid "Company Currency"
-msgstr "Mena spoločnosti"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_tree_inherit_account_batch_payment
-msgid "Create Batch"
-msgstr ""
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_journal.py:0
+#: code:addons/account_batch_payment/models/account_journal.py:57
+#: model:ir.actions.server,name:account_batch_payment.action_account_create_batch_payment
 #, python-format
 msgid "Create Batch Payment"
-msgstr "Vytvorte hromadnú platbu"
+msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_in
 msgid "Create a new customer batch payment"
-msgstr "Vytvorte novú dávkovú platbu zákazníka"
+msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_out
 msgid "Create a new vendor batch payment"
-msgstr "Vytvorte novú dávkovú platbu dodávateľa"
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.actions.server,name:account_batch_payment.action_account_create_batch_payment
-msgid "Create batch payment"
-msgstr "Vytvorte hromadnú platbu"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__create_uid
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__create_uid
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__create_uid
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__create_uid
 msgid "Created by"
 msgstr "Vytvoril"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__create_date
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__create_date
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__create_date
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__create_date
 msgid "Created on"
 msgstr "Vytvorené"
@@ -258,7 +169,7 @@ msgstr "Vytvorené"
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__export_file_create_date
 msgid "Creation date of the related export file."
-msgstr "Dátum vytvorenia súvisiaceho exportného súboru."
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__currency_id
@@ -271,49 +182,35 @@ msgid "Customer"
 msgstr "Zákazník"
 
 #. module: account_batch_payment
-#: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_in
-msgid "Customer Batch Payments"
-msgstr ""
-
-#. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__date
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
 msgid "Date"
 msgstr "Dátum"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__description
-msgid "Description"
-msgstr "Popis"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__display_name
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__display_name
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__display_name
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__display_name
+#: model:ir.model.fields,field_description:account_batch_payment.field_report_account_batch_payment_print_batch_payment__display_name
 msgid "Display Name"
-msgstr "Zobrazovaný názov"
+msgstr "Zobrazovaný Názov"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__error_line_ids
-msgid "Error Line"
-msgstr "Chybový riadok"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__error_wizard_id
-msgid "Error Wizard"
-msgstr "Sprievodca chybami"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_line_tree
-msgid "Exclude Payments"
-msgstr "Vylúčte platby"
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.download_xml_form
+msgid "Download export file"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__export_file
 msgid "Export file related to this batch"
-msgstr "Exportujte súbor súvisiaci s touto dávkou"
+msgstr ""
 
 #. module: account_batch_payment
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
+msgid "Exported File"
+msgstr ""
+
+#. module: account_batch_payment
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__export_file
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_file
 msgid "File"
 msgstr "Súbor"
@@ -321,32 +218,27 @@ msgstr "Súbor"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__file_generation_enabled
 msgid "File Generation Enabled"
-msgstr "Generovanie súborov je povolené"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_filename
 msgid "File Name"
-msgstr "Názov súboru"
+msgstr "Názov Súboru"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_follower_ids
-msgid "Followers"
-msgstr "Odberatelia"
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__export_filename
+msgid "File name"
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "Odberatelia (partneri)"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Úžasná ikona fronty napr. fa-tasks"
+#: model:ir.model.fields,help:account_batch_payment.field_account_batch_download_wizard__export_file
+msgid "Generated XML file"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_file_create_date
 msgid "Generation Date"
-msgstr "Dátum generovania"
+msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
@@ -354,88 +246,53 @@ msgid "Group By"
 msgstr "Zoskupiť podľa"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__has_message
-msgid "Has Message"
-msgstr "Má správu"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__help_message
-msgid "Help"
-msgstr "Pomoc"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__id
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__id
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__id
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__id
+#: model:ir.model.fields,field_description:account_batch_payment.field_report_account_batch_payment_print_batch_payment__id
 msgid "ID"
 msgstr "ID"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_exception_icon
-msgid "Icon"
-msgstr "Ikona"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_exception_icon
-msgid "Icon to indicate an exception activity."
-msgstr "Ikona indikujúca výnimočnú aktivitu."
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_needaction
-msgid "If checked, new messages require your attention."
-msgstr "Ak označené, potom nové správy vyžadujú vašu pozornosť."
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_error
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_sms_error
-msgid "If checked, some messages have a delivery error."
-msgstr "Ak označené, potom majú niektoré správy chybu dodania."
-
-#. module: account_batch_payment
-#: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__batch_type__inbound
+#: selection:account.batch.payment,batch_type:0
 msgid "Inbound"
 msgstr "Prichádzajúce"
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_journal.py:0
+#: code:addons/account_batch_payment/models/account_journal.py:31
 #, python-format
 msgid "Inbound Batch Payments Sequence"
-msgstr "Postupnosť dávkových dávok"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_is_follower
-msgid "Is Follower"
-msgstr "Odberateľ"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Issuing bank account :"
 msgstr ""
+
+#. module: account_batch_payment
+#. openerp-web
+#: code:addons/account_batch_payment/static/src/js/account_batch_payment_reconciliation.js:135
+#, python-format
+msgid "Incorrect Operation"
+msgstr "Nesprávna operácia"
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_journal
 msgid "Journal"
-msgstr "Účtovný denník"
+msgstr "Účtovná kniha"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__write_uid
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__write_uid
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard____last_update
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment____last_update
+#: model:ir.model.fields,field_description:account_batch_payment.field_report_account_batch_payment_print_batch_payment____last_update
+msgid "Last Modified on"
+msgstr "Posledná modifikácia"
+
+#. module: account_batch_payment
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__write_uid
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__write_uid
 msgid "Last Updated by"
 msgstr "Naposledy upravoval"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__write_date
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__write_date
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__write_date
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__write_date
 msgid "Last Updated on"
 msgstr "Naposledy upravované"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
-msgid "Leave empty to generate automatically..."
-msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
@@ -443,106 +300,30 @@ msgid "Memo"
 msgstr "Pripomienka"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_has_error
-msgid "Message Delivery error"
-msgstr "Chyba zobrazovania správ"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_ids
-msgid "Messages"
-msgstr "Správy"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Termín mojej aktivity"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_payment__payment_method_name
-msgid "Name"
-msgstr "Meno"
-
-#. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__export_filename
 msgid "Name of the export file generated for this batch"
-msgstr "Názov exportovaného súboru vygenerovaného pre túto dávku"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_payment__amount_signed
-msgid "Negative value of amount field if payment_type is outbound"
 msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__state__draft
+#: model:ir.model.fields,help:account_batch_payment.field_account_batch_download_wizard__export_filename
+msgid "Name of the generated XML file"
+msgstr ""
+
+#. module: account_batch_payment
+#: selection:account.batch.payment,state:0
 msgid "New"
 msgstr "Nové"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Kalendár ďalších aktivít eventu"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_date_deadline
-msgid "Next Activity Deadline"
-msgstr "Ďalší konečný termín aktivity"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_summary
-msgid "Next Activity Summary"
-msgstr "Zhrnutie ďalšej aktivity"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_type_id
-msgid "Next Activity Type"
-msgstr "Typ ďalšej aktivity"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
-msgid "Not Batch Payments"
-msgstr ""
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
-msgid "Not reconciled"
-msgstr ""
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_needaction_counter
-msgid "Number of Actions"
-msgstr "Počet akcií"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_has_error_counter
-msgid "Number of errors"
-msgstr "Počet chýb"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_needaction_counter
-msgid "Number of messages which requires an action"
-msgstr "Počet správ, ktoré vyžadujú akciu"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_error_counter
-msgid "Number of messages with delivery error"
-msgstr "Počet doručených správ s chybou"
-
-#. module: account_batch_payment
-#: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__batch_type__outbound
+#: selection:account.batch.payment,batch_type:0
 msgid "Outbound"
 msgstr "Odchádzajúce"
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_journal.py:0
+#: code:addons/account_batch_payment/models/account_journal.py:17
 #, python-format
 msgid "Outbound Batch Payments Sequence"
-msgstr "Poradie odchádzajúcich dávkových platieb"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_tree_inherit_account_batch_payment
-msgid "Partner"
-msgstr "Partner"
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__payment_method_id
@@ -550,36 +331,11 @@ msgid "Payment Method"
 msgstr "Metóda platby"
 
 #. module: account_batch_payment
-#: model:ir.model,name:account_batch_payment.model_account_payment_method
-msgid "Payment Methods"
-msgstr "Platobné metódy"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
-msgid "Payment method"
-msgstr "Spôsob platby"
-
-#. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__payment_ids
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__payment_ids
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Payments"
 msgstr "Platby"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/wizard/batch_error.py:0
-#, python-format
-msgid "Payments in Error"
-msgstr "Platby omylom"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Payments must be posted to be added to a batch."
-msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
@@ -589,30 +345,15 @@ msgstr "Tlač"
 #. module: account_batch_payment
 #: model:ir.actions.report,name:account_batch_payment.action_print_batch_payment
 msgid "Print Batch Payment"
-msgstr "Tlač hromadnej platby"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "Proceed with validation"
-msgstr "Pokračujte s overením"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__rating_ids
-msgid "Ratings"
 msgstr ""
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
-msgid "Re-generate Export File"
-msgstr "Znova vygenerujte exportný súbor"
+#: model:ir.actions.server,name:account_batch_payment.action_account_print_batch_payment
+msgid "Print Batch Payments"
+msgstr ""
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Recipient Bank Account"
-msgstr "Bankový účet prijímateľa"
-
-#. module: account_batch_payment
-#: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__state__reconciled
+#: selection:account.batch.payment,state:0
 msgid "Reconciled"
 msgstr "Zosúladené"
 
@@ -622,149 +363,67 @@ msgid "Reference"
 msgstr "Referencia"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_user_id
-msgid "Responsible User"
-msgstr "Zodpovedný užívateľ"
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
+msgid "Register Payment"
+msgstr "Registrovať platbu"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Chyba doručenia SMS"
+#. openerp-web
+#: code:addons/account_batch_payment/static/src/xml/account_reconciliation.xml:8
+#, python-format
+msgid "Select a Batch Payment"
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__state__sent
+#: selection:account.batch.payment,state:0
 msgid "Sent"
 msgstr "Poslané"
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#. openerp-web
+#: code:addons/account_batch_payment/static/src/js/account_batch_payment_reconciliation.js:133
 #, python-format
-msgid "Set payments state to \"posted\"."
-msgstr ""
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_line_tree
-msgid "Show"
-msgstr "Zobraziť"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__show_remove_button
-msgid "Show Remove Button"
-msgstr "Zobraziť tlačidlo Odstrániť"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__show_remove_options
-msgid "Show Remove Options"
-msgstr "Zobraziť možnosti odstránenia"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Some payments have already been matched with a bank statement."
-msgstr ""
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Some payments have already been sent."
-msgstr ""
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Some recipient accounts do not allow out payments."
+msgid ""
+"Some journal items from the selected batch payment are already selected in "
+"another reconciliation : "
 msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__state
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
 msgid "State"
-msgstr "Štát"
+msgstr "Stav"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_state
+#: code:addons/account_batch_payment/models/account_batch_payment.py:88
+#, python-format
 msgid ""
-"Status based on activities\n"
-"Overdue: Due date is already passed\n"
-"Today: Activity date is today\n"
-"Planned: Future activities."
-msgstr ""
-"Status založený na aktivitách\n"
-"Zmeškané: dátum už vypršal\n"
-"Dnes: dátum aktivity je dnes\n"
-"Plán: budúce aktivity"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "TOTAL"
-msgstr "SÚČET"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "Target another recipient account or allow sending money to the current one."
+"The batch must have the same payment method as the payments it contains."
 msgstr ""
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "The batch cannot be validated."
-msgstr ""
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
-msgid "The batch could not be validated"
-msgstr "Dávku sa nepodarilo overiť"
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "The batch must have the same payment method as the payments it contains."
-msgstr "Dávka musí mať rovnaký spôsob platby ako platby, ktoré obsahuje."
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#: code:addons/account_batch_payment/models/account_batch_payment.py:83
 #, python-format
 msgid "The batch must have the same type as the payments it contains."
-msgstr "Dávka musí mať rovnaký typ ako platby, ktoré obsahuje."
+msgstr ""
 
 #. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_error_wizard__batch_payment_id
-msgid "The batch payment generating the errors and warnings displayed in this wizard."
-msgstr "Dávková platba generujúca chyby a varovania zobrazené v tomto sprievodcovi."
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#: code:addons/account_batch_payment/models/account_batch_payment.py:78
 #, python-format
-msgid "The journal of the batch payment and of the payments it contains must be the same."
-msgstr "Denník dávkovej platby a platieb, ktoré obsahuje, musí byť rovnaký."
+msgid ""
+"The journal of the batch payment and of the payments it contains must be the"
+" same."
+msgstr ""
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__payment_method_id
 msgid "The payment method used by the payments in this batch."
-msgstr "Spôsob platby použitý pri platbách v tejto dávke."
+msgstr ""
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Total"
 msgstr "Celkom"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_error_wizard__show_remove_options
-msgid "True if and only if the options to remove the payments causing the errors or warnings from the batch should be shown"
-msgstr "Platí vtedy a len vtedy, ak by sa mali zobraziť možnosti odstránenia platieb spôsobujúcich chyby alebo varovania z dávky"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_exception_decoration
-msgid "Type of the exception activity on record."
-msgstr "Typ výnimočnej aktivity v zázname."
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
@@ -774,48 +433,31 @@ msgstr "Nezladené"
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Validate"
-msgstr "Potvrdiť"
+msgstr "Overiť"
 
 #. module: account_batch_payment
-#: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_out
-msgid "Vendor Batch Payments"
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_download_wizard__warning_message
+msgid "Warning"
+msgstr "Varovanie"
+
+#. module: account_batch_payment
+#: model:ir.model.fields,help:account_batch_payment.field_account_batch_download_wizard__warning_message
+msgid "Warning message to display about the content of the downloadable file."
 msgstr ""
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__warning_line_ids
-msgid "Warning Line"
-msgstr "Varovná čiara"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__warning_wizard_id
-msgid "Warning Wizard"
-msgstr "Sprievodca varovaním"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__website_message_ids
-msgid "Website Messages"
-msgstr "Správy webstránok"
-
-#. module: account_batch_payment
-#: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__website_message_ids
-msgid "Website communication history"
-msgstr "História komunikácie webstránok"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__file_generation_enabled
-msgid "Whether or not this batch payment should display the 'Generate File' button instead of 'Print' in form view."
-msgstr "Či má alebo nemá táto dávková platba vo formulári zobraziť tlačidlo „Vytvoriť súbor“ namiesto „Tlačiť“."
-
-#. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "You cannot add payments that are not posted."
+msgid ""
+"Whether or not this batch payment should display the 'Generate File' button "
+"instead of 'Print' in form view."
 msgstr ""
 
 #. module: account_batch_payment
-#. odoo-python
-#: code:addons/account_batch_payment/models/account_batch_payment.py:0
-#, python-format
-msgid "You cannot add payments with zero amount in a Batch Payment."
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
+msgid "auto ..."
+msgstr "auto ..."
+
+#. module: account_batch_payment
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
+msgid "re-Generate Export File"
 msgstr ""

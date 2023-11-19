@@ -18,6 +18,10 @@ class L10nLuGenerateXML(models.TransientModel):
     report_data = fields.Binary('Report file', readonly=True, attachment=False)
     filename = fields.Char(string='Filename', size=256, readonly=True)
 
+    def _lu_validate_xml_content(self, content):
+        self.env['ir.attachment'].l10n_lu_reports_validate_xml_from_attachment(content, 'xsd_lu_eCDF.xsd')
+        return True
+
     def get_xml(self, lu_annual_report=False):
         """
         Generates the XML report.
@@ -34,7 +38,7 @@ class L10nLuGenerateXML(models.TransientModel):
                 raise RedirectWarning(
                     message=_("Some fields required for the export are missing or invalid. Please verify them."),
                     action={
-                        'name': _("Company: %s", agent.name),
+                        'name': _("Company : %s", agent.name),
                         'type': 'ir.actions.act_window',
                         'view_mode': 'form',
                         'res_model': 'res.partner',
@@ -47,9 +51,8 @@ class L10nLuGenerateXML(models.TransientModel):
                     additional_context={'required_fields': [ecdf_not_ok and 'l10n_lu_agent_ecdf_prefix',
                                                             matr_not_ok and 'l10n_lu_agent_matr_number']}
                 )
-        report_gen_options = self.env.context.get('report_generation_options', {})
-        report = self.env['account.report'].browse(report_gen_options.get('report_id'))
-        options = report.get_options({**report_gen_options, 'export_mode': 'file'})
+        report = self.env['account.report'].browse(self.env.context.get('report_generation_options', {}).get('report_id'))
+        options = report._get_options()
         filename = self.env['l10n_lu.report.handler'].get_report_filename(options)
         agent_vat = agent.vat if agent else self._get_export_vat()
         company_vat = self._get_export_vat()
@@ -57,6 +60,7 @@ class L10nLuGenerateXML(models.TransientModel):
         company_vat = company_vat[2:] if company_vat and company_vat.startswith("LU") else company_vat
         language = self.env.context.get('lang', '').split('_')[0].upper()
         language = language in ('EN', 'FR', 'DE') and language or 'EN'
+        report_gen_options = self.env.context.get('report_generation_options', {})
         if report_gen_options:
             report_gen_options['language'] = language
         lu_template_values = {
@@ -75,7 +79,7 @@ class L10nLuGenerateXML(models.TransientModel):
                     "The company's Matr. Number hasn't been defined. Please configure it in the company's information."
                 ),
                 action={
-                    'name': _("Company: %s", company.name),
+                    'name': _("Company : %s", company.name),
                     'type': 'ir.actions.act_window',
                     'view_mode': 'form',
                     'res_model': 'res.company',
@@ -95,10 +99,17 @@ class L10nLuGenerateXML(models.TransientModel):
             'matr_number': company.matr_number or "NE",
             'rcs_number': company.company_registry or "NE",
         }
-        declarations_data = self._lu_get_declarations(declaration_template_values)
-        self._save_xml_report(declarations_data, lu_template_values, filename)
-        url = "web/content/?model=" + self._name + "&id=" + str(
-            self.id) + "&filename_field=filename&field=report_data&download=true&filename=" + self.filename
+        if lu_annual_report:
+            declarations_data = lu_annual_report._lu_get_declarations(declaration_template_values)
+            self._save_xml_report(declarations_data, lu_template_values, filename, lu_annual_report)
+            url = "web/content/?model=" + lu_annual_report._name + "&id=" + str(
+                lu_annual_report.id) + "&filename_field=filename&field=report_data&download=true&filename=" + \
+                  lu_annual_report.filename
+        else:
+            declarations_data = self._lu_get_declarations(declaration_template_values)
+            self._save_xml_report(declarations_data, lu_template_values, filename)
+            url = "web/content/?model=" + self._name + "&id=" + str(
+                self.id) + "&filename_field=filename&field=report_data&download=true&filename=" + self.filename
 
         return {
                     'name': 'XML Report',
@@ -125,10 +136,10 @@ class L10nLuGenerateXML(models.TransientModel):
         rendered_content = self.env['ir.qweb']._render('l10n_lu_reports.l10n_lu_electronic_report_template_2_0', lu_template_values, minimal_qcontext=True)
 
         content = "\n".join(re.split(r'\n\s*\n', rendered_content))
-        self.env['ir.attachment'].l10n_lu_reports_validate_xml_from_attachment(content, 'ecdf')
+        self._lu_validate_xml_content(content)
         self.env['l10n_lu.report.handler']._validate_ecdf_prefix()
         vals = {
-            'report_data': base64.b64encode(bytes("<?xml version='1.0' encoding='UTF-8'?>" + content, 'utf-8')),
+            'report_data': base64.b64encode(bytes(content, 'utf-8')),
             'filename': filename + '.xml'
         }
         if lu_annual_report:

@@ -1,7 +1,10 @@
-/** @odoo-module **/
+odoo.define('website_helpdesk.form', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import FormEditorRegistry from "@website/js/form_editor_registry";
+var core = require('web.core');
+var FormEditorRegistry = require('website.form_editor_registry');
+
+var _t = core._t;
 
 FormEditorRegistry.add('create_ticket', {
     formFields: [{
@@ -9,26 +12,26 @@ FormEditorRegistry.add('create_ticket', {
         required: true,
         name: 'partner_name',
         fillWith: 'name',
-        string: _t('Your Name'),
+        string: 'Your Name',
     }, {
         type: 'email',
         required: true,
         name: 'partner_email',
         fillWith: 'email',
-        string: _t('Your Email'),
+        string: 'Your Email',
     }, {
         type: 'char',
         modelRequired: true,
         name: 'name',
-        string: _t('Subject'),
+        string: 'Subject',
     }, {
         type: 'char',
         name: 'description',
-        string: _t('Description'),
+        string: 'Description',
     }, {
         type: 'binary',
         custom: true,
-        name: _t('Attachment'),
+        name: 'Attachment',
     }],
     fields: [{
         name: 'team_id',
@@ -37,4 +40,6 @@ FormEditorRegistry.add('create_ticket', {
         string: _t('Helpdesk Team'),
     }],
     successPage: '/your-ticket-has-been-submitted',
+});
+
 });

@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from . import browsable_object
 from . import hr_contract
 from . import hr_contract_history
 from . import hr_employee
@@ -22,7 +23,4 @@ from . import hr_rule_parameter
 from . import hr_work_entry_type
 from . import hr_work_entry
 from . import hr_salary_attachment
-from . import hr_salary_attachment_type
 from . import note
-from . import hr_payroll_employee_declaration
-from . import hr_payroll_declaration_mixin

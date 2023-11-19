@@ -1,34 +1,29 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # * mrp_maintenance
-#
+# 
 # Translators:
 # Martin Trigaux, 2019
 # Kostas Goutoudis <goutoudis@gmail.com>, 2019
 # Stefanos Nikou <stefanos.nikou@gmail.com>, 2019
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
+"POT-Creation-Date: 2018-10-08 07:14+0000\n"
 "PO-Revision-Date: 2016-08-05 13:29+0000\n"
 "Last-Translator: Stefanos Nikou <stefanos.nikou@gmail.com>, 2019\n"
 "Language-Team: Greek (https://www.transifex.com/odoo/teams/41243/el/)\n"
-"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_production_view_form_inherit_maintenance
 msgid "<span class=\"o_stat_text\">Maintenance</span>"
-msgstr ""
-
-#. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__company_id
-msgid "Company"
 msgstr ""
 
 #. module: mrp_maintenance
@@ -54,6 +49,11 @@ msgstr ""
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
 msgid "Equipment"
+msgstr ""
+
+#. module: mrp_maintenance
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
+msgid "Equipments"
 msgstr ""
 
 #. module: mrp_maintenance
@@ -124,19 +124,20 @@ msgid "Maintenance Equipment"
 msgstr ""
 
 #. module: mrp_maintenance
-#. odoo-javascript
-#: code:addons/mrp_maintenance/static/src/components/menuPopup.xml:0
 #: model:ir.model,name:mrp_maintenance.model_maintenance_request
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_production_view_form_inherit_maintenance
-#, python-format
 msgid "Maintenance Request"
 msgstr ""
 
 #. module: mrp_maintenance
-#. odoo-python
-#: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:93
 #, python-format
 msgid "Maintenance Requests"
+msgstr ""
+
+#. module: mrp_maintenance
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workorder_tablet_view_form_inherit_maintenance
+msgid "Maintenance request"
 msgstr ""
 
 #. module: mrp_maintenance
@@ -151,7 +152,8 @@ msgstr ""
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__mtbf
-msgid "Mean Time Between Failure, computed based on done corrective maintenances."
+msgid ""
+"Mean Time Between Failure, computed based on done corrective maintenances."
 msgstr ""
 
 #. module: mrp_maintenance
@@ -161,8 +163,8 @@ msgid "Mean Time To Repair"
 msgstr ""
 
 #. module: mrp_maintenance
-#. odoo-python
-#: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:80
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:115
 #, python-format
 msgid "New Maintenance Request"
 msgstr ""
@@ -170,16 +172,6 @@ msgstr ""
 #. module: mrp_maintenance
 #: model:ir.model.fields,field_description:mrp_maintenance.field_mrp_production__maintenance_count
 msgid "Number of maintenance requests"
-msgstr ""
-
-#. module: mrp_maintenance
-#: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_request_view_search_inherit_mrp
-msgid "Operation"
-msgstr ""
-
-#. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__production_company_id
-msgid "Production Company"
 msgstr ""
 
 #. module: mrp_maintenance
@@ -226,8 +218,7 @@ msgid "days"
 msgstr "ημέρες"
 
 #. module: mrp_maintenance
-#. odoo-python
-#: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:47
 #, python-format
 msgid "work centers"
 msgstr ""

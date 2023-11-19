@@ -48,20 +48,26 @@ class TestSeller(TransactionCase):
             (0, 0, {'partner_id': self.asustec.id, 'product_code': 'NO', 'company_id': False}),
         ]})
 
-        name = self.product_consu.with_context(
+        names = self.product_consu.with_context(
             partner_id=self.asustec.id,
-        ).display_name
-        self.assertEqual(name, '[A] Boudin, [B] Boudin, [NO] Boudin', "Incorrect vendor reference list")
-        name = self.product_consu.with_context(
+        ).name_get()
+        ref = set([x[1] for x in names])
+        self.assertEqual(len(names), 3, "3 vendor references should have been found")
+        self.assertEqual(ref, {'[A] Boudin', '[B] Boudin', '[NO] Boudin'}, "Incorrect vendor reference list")
+        names = self.product_consu.with_context(
             partner_id=self.asustec.id,
             company_id=company_a.id,
-        ).display_name
-        self.assertEqual(name, '[A] Boudin, [NO] Boudin', "Incorrect vendor reference list")
-        name = self.product_consu.with_context(
+        ).name_get()
+        ref = set([x[1] for x in names])
+        self.assertEqual(len(names), 2, "2 vendor references should have been found")
+        self.assertEqual(ref, {'[A] Boudin', '[NO] Boudin'}, "Incorrect vendor reference list")
+        names = self.product_consu.with_context(
             partner_id=self.asustec.id,
             company_id=company_b.id,
-        ).display_name
-        self.assertEqual(name, '[B] Boudin, [NO] Boudin', "Incorrect vendor reference list")
+        ).name_get()
+        ref = set([x[1] for x in names])
+        self.assertEqual(len(names), 2, "2 vendor references should have been found")
+        self.assertEqual(ref, {'[B] Boudin', '[NO] Boudin'}, "Incorrect vendor reference list")
 
     def test_30_select_seller(self):
         self.res_partner_1 = self.asustec

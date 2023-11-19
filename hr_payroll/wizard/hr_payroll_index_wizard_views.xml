@@ -7,16 +7,15 @@
             <field name="arch" type="xml">
                 <form string="Contract indexing">
                     <field name="display_warning" invisible="1"/>
-                    <span role="status" class="alert alert-warning d-block" invisible="not display_warning">You have selected contracts that are not running, this wizard can only index running contracts.</span>
+                    <span role="status" class="alert alert-warning" attrs="{'invisible': [('display_warning', '=', False)]}">You have selected contracts that are not running, this wizard can only index running contracts.</span>
                     <group colspan="4">
                         <field name="contract_ids" widget="many2many_tags"/>
                         <field name="percentage" widget="percentage"/>
                         <field name="description"/>
                     </group>
                     <footer>
-                        <button string="Confirm" name="action_confirm" invisible="display_warning" type="object" class="oe_highlight" data-hotkey="q"/>
-                        <button string="Confirm" name="action_confirm" invisible="not display_warning" type="object" class="btn btn-primary disabled"/>
-                        <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Confirm" name="action_confirm" type="object" class="oe_highlight" data-hotkey="q"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                </form>
             </field>

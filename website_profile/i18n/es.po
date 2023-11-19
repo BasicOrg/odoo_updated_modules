@@ -3,16 +3,16 @@
 # 	* website_profile
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-10-04 09:26+0000\n"
+"PO-Revision-Date: 2022-09-22 05:57+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -47,13 +47,13 @@ msgstr "Intente otra búsqueda"
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_badges
-msgid "<i class=\"fa fa-arrow-right\"/> Get Badges"
+msgid "<i class=\"fa fa-arrow-right me-1\"/>All Badges"
 msgstr ""
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_content
-msgid "<i class=\"fa fa-close me-1\"/>Cancel"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:website_profile.user_badges
+msgid "<i class=\"fa fa-arrow-right\"/> All Badges"
+msgstr "<i class=\"fa fa-arrow-right\"/> Todas las insignias"
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
@@ -66,34 +66,14 @@ msgid "<i class=\"fa fa-pencil me-1\"/>EDIT"
 msgstr ""
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_content
-msgid "<i class=\"fa fa-pencil me-1\"/>Edit"
-msgstr "<i class=\"fa fa-pencil me-1\"/>Editar"
-
-#. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_header
 msgid "<i class=\"fa fa-pencil me-2\"/>EDIT PROFILE"
-msgstr ""
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_badges
-msgid "<i class=\"oi oi-arrow-right me-1\"/>All Badges"
-msgstr ""
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_badges
-msgid "<i class=\"oi oi-arrow-right\"/> All Badges"
 msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.badge_content
 msgid "<i class=\"text-muted\"> awarded users</i>"
 msgstr "<i class=\"text-muted\"> usuarios premiados</i>"
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
-msgid "<option value=\"\">Country...</option>"
-msgstr "<option value=\"\">País...</option>"
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_content
@@ -137,7 +117,7 @@ msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
-msgid "<span class=\"fw-bold\">Public Profile</span>"
+msgid "<span class=\"fw-bold\">Public profile</span>"
 msgstr ""
 
 #. module: website_profile
@@ -176,7 +156,7 @@ msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.users_page_header
-msgid "<strong class=\"mb-3 text-white me-2\">Rank by:</strong>"
+msgid "<strong class=\"mb-3 text-white me-2\">Rank by :</strong>"
 msgstr ""
 
 #. module: website_profile
@@ -195,13 +175,13 @@ msgid ""
 "                            <t t-out=\"object.company_id.name or ''\">YourCompany</t> Profile validation\n"
 "                        </span>\n"
 "                    </td>\n"
-"                    <td t-if=\"not user.company_id.uses_default_logo\" valign=\"middle\" align=\"right\">\n"
-"                        <img t-attf-src=\"/logo.png?company={{ user.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"user.company_id.name\">\n"
+"                    <td valign=\"middle\" align=\"right\">\n"
+"                        <img t-attf-src=\"/logo.png?company={{ user.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"user.company_id.name\"/>\n"
 "                    </td>\n"
 "                </tr>\n"
 "                <tr>\n"
 "                    <td colspan=\"2\" style=\"text-align:center;\">\n"
-"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;\">\n"
+"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;\"/>\n"
 "                    </td>\n"
 "                </tr>\n"
 "            </table>\n"
@@ -214,7 +194,7 @@ msgid ""
 "                <tr>\n"
 "                    <td valign=\"top\" style=\"font-size: 13px;\">\n"
 "                        <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                            Hello <t t-out=\"object.name or ''\">Marc Demo</t>,<br><br>\n"
+"                            Hello <t t-out=\"object.name or ''\">Marc Demo</t>,<br/><br/>\n"
 "                            You have been invited to validate your email in order to get access to \"<t t-out=\"object.company_id.name or ''\">YourCompany</t>\" website.\n"
 "                            To validate your email, please click on the following link:\n"
 "                            <div style=\"margin: 16px 0px 16px 0px;\">\n"
@@ -228,7 +208,7 @@ msgid ""
 "                </tr>\n"
 "                <tr>\n"
 "                    <td style=\"text-align:center;\">\n"
-"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                    </td>\n"
 "                </tr>\n"
 "            </table>\n"
@@ -269,6 +249,92 @@ msgid ""
 "</table>\n"
 "            "
 msgstr ""
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
+"<tbody>\n"
+"    <!-- ENCABEZADO -->\n"
+"    <tr>\n"
+"        <td align=\"center\" style=\"min-width: 590px;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                <tr>\n"
+"                    <td valign=\"middle\">\n"
+"                        <span style=\"font-size: 20px; font-weight: bold;\">\n"
+"                            <t t-out=\"object.company_id.name or ''\">SuEmpresa</t> Validación del perfil\n"
+"                        </span>\n"
+"                    </td>\n"
+"                    <td valign=\"middle\" align=\"right\">\n"
+"                        <img t-attf-src=\"/logo.png?company={{ user.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"user.company_id.name\"/>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td colspan=\"2\" style=\"text-align:center;\">\n"
+"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;\"/>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </table>\n"
+"        </td>\n"
+"    </tr>\n"
+"    <!-- CONTENIDO -->\n"
+"    <tr>\n"
+"        <td align=\"center\" style=\"min-width: 590px;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                <tr>\n"
+"                    <td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                        <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"                            Hola <t t-out=\"object.name or ''\">Marc Demo</t>,<br/><br/>\n"
+"                            Se le invitó a validar su correo electrónico para acceder al sitio web de<t t-out=\"object.company_id.name or ''\">SuEmpresa</t>\n"
+"                            Haga clic en el siguiente enlace para validar su cuenta:\n"
+"                            <div style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                <a t-att-href=\"ctx.get('token_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
+"                                    Validar mi cuenta\n"
+"                                </a>\n"
+"                            </div>\n"
+"                            ¡Gracias por su participación!\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td style=\"text-align:center;\">\n"
+"                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </table>\n"
+"        </td>\n"
+"    </tr>\n"
+"    <!-- PIE -->\n"
+"    <tr>\n"
+"        <td align=\"center\" style=\"min-width: 590px;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\" font-family: 'Verdana Regular'; color: #454748; min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                <tr>\n"
+"                    <td valign=\"middle\" align=\"left\">\n"
+"                         <t t-out=\"user.company_id.name or ''\">SuEmpresa</t>\n"
+"                    </td>\n"
+"                    <td valign=\"middle\" align=\"right\" style=\"opacity: 0.7;\">\n"
+"                        <t t-out=\"user.company_id.phone or ''\">+1 650-123-4567</t>\n"
+"                        <t t-if=\"user.company_id.email\">\n"
+"                            | <a t-attf-href=\"'mailto:%s' % {{ user.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.email or ''\">info@yourcompany.com</a>\n"
+"                        </t>\n"
+"                        <t t-if=\"user.company_id.website\">\n"
+"                            | <a t-attf-href=\"{{ user.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.website or ''\">http://www.example.com</a>\n"
+"                        </t>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </table>\n"
+"        </td>\n"
+"    </tr>\n"
+"</tbody>\n"
+"</table>\n"
+"</td></tr>\n"
+"<!-- CON TECNOLOGÍA DE -->\n"
+"<tr><td align=\"center\" style=\"min-width: 590px;\">\n"
+"    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
+"        <tr><td style=\"text-align: center; font-size: 13px;\">\n"
+"            Con tecnología de <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=forum\" style=\"color: #875A7B;\">Odoo</a>\n"
+"        </td></tr>\n"
+"    </table>\n"
+"</td></tr>\n"
+"</table>\n"
+"            "
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.email_validation_banner
@@ -309,11 +375,6 @@ msgid "Badges"
 msgstr "Insignias"
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_badges
-msgid "Badges are your collection of achievements. Wear them proudly! <br/>"
-msgstr ""
-
-#. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.badge_content
 msgid ""
 "Besides gaining reputation with your questions and answers,\n"
@@ -346,6 +407,11 @@ msgstr "Cerrar"
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
+msgid "Country..."
+msgstr "País..."
+
+#. module: website_profile
+#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
 msgid "Edit"
 msgstr "Editar"
 
@@ -363,11 +429,6 @@ msgstr ""
 #: model:ir.model,name:website_profile.model_gamification_badge
 msgid "Gamification Badge"
 msgstr "Insignia de gamificación"
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.profile_next_rank_card
-msgid "Get"
-msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_sub_nav
@@ -435,13 +496,6 @@ msgid "No user found for"
 msgstr "No se encuenta ningún usuario con"
 
 #. module: website_profile
-#. odoo-python
-#: code:addons/website_profile/controllers/main.py:0
-#, python-format
-msgid "Not have enough karma to view other users' profile."
-msgstr ""
-
-#. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
 msgid ""
 "Please enter a valid email address in order to receive notifications from "
@@ -452,11 +506,16 @@ msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.rank_badge_main
+msgid "Rank badge"
+msgstr "Insignia de rango"
+
+#. module: website_profile
+#: model_terms:ir.ui.view,arch_db:website_profile.rank_badge_main
 msgid "Ranks"
 msgstr "Rangos"
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.profile_access_denied
+#: model_terms:ir.ui.view,arch_db:website_profile.private_profile
 msgid "Return to the website."
 msgstr "Regresar al sitio web."
 
@@ -464,6 +523,11 @@ msgstr "Regresar al sitio web."
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_sub_nav
 msgid "Search"
 msgstr "Búsqueda"
+
+#. module: website_profile
+#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_sub_nav
+msgid "Search courses"
+msgstr "Buscar cursos"
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_sub_nav
@@ -486,9 +550,7 @@ msgid "This month"
 msgstr "Este mes"
 
 #. module: website_profile
-#. odoo-python
-#: code:addons/website_profile/controllers/main.py:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:website_profile.private_profile
 msgid "This profile is private!"
 msgstr "Este perfil es privado"
 
@@ -504,7 +566,6 @@ msgid "Unpublished"
 msgstr "No publicado"
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_biography_editor
 #: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
 msgid "Update"
 msgstr "Actualizar"
@@ -548,12 +609,6 @@ msgstr "URL del sitio web"
 #: model_terms:ir.ui.view,arch_db:website_profile.rank_badge_main
 msgid "When you finish a course or reach milestones, you're awarded badges."
 msgstr "Cuando terminas un curso o alcanzas hitos, se te otorgan insignias."
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.user_biography_editor
-#: model_terms:ir.ui.view,arch_db:website_profile.user_profile_edit_content
-msgid "Write a few words about yourself..."
-msgstr ""
 
 #. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.all_user_card
@@ -621,22 +676,8 @@ msgid "xp"
 msgstr "xp"
 
 #. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.profile_next_rank_card
-msgid ""
-"xp\n"
-"                        to level up!"
-msgstr ""
-
-#. module: website_profile
 #: model_terms:ir.ui.view,arch_db:website_profile.email_validation_banner
 msgid "your account settings"
-msgstr ""
-
-#. module: website_profile
-#: model_terms:ir.ui.view,arch_db:website_profile.profile_next_rank_card
-msgid ""
-"{{ '%s/%s xp' % (user.karma, next_rank_id.karma_min) if next_rank_id else "
-"''}}"
 msgstr ""
 
 #. module: website_profile

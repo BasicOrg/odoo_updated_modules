@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from uuid import uuid4
 from odoo import fields, models, api
 
 class User(models.Model):
@@ -17,12 +16,5 @@ class User(models.Model):
 
     def hmrc_reset_tokens(self):
         self.ensure_one()
-        self.env['hmrc.service'].sudo()._clean_tokens()
+        self.env['hmrc.service'].sudo(self.id)._clean_tokens()
         return True
-
-    def _l10n_uk_hmrc_unique_reference(self):
-        self.ensure_one()
-        # Generates a unique, stable HMAC signature of this sample string-
-        # based on the user's credentials. This is guaranteed to change
-        # if any of the user's credentials change (login, totp, password)
-        return self._compute_session_token("l10n_uk_hmrc_unique_reference")

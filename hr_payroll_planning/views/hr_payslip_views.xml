@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <div class="oe_button_box" position="inside">
                 <button type="object" class="oe_stat_button" id="open_slots" groups="planning.group_planning_manager"
-                    icon="fa-tasks" name="action_open_planning_slots" invisible="planning_slot_count == 0">
+                    icon="fa-tasks" name="action_open_planning_slots" attrs="{'invisible': [('planning_slot_count', '=', 0)]}">
                     <field name="planning_slot_count" widget="statinfo" string="Planning"/>
                 </button>
             </div>

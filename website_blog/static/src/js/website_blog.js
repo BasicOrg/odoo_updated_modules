@@ -1,8 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_blog.website_blog', function (require) {
+'use strict';
+var core = require('web.core');
 
-import { _t } from "@web/core/l10n/translation";
-import dom from "@web/legacy/js/core/dom";
-import publicWidget from "@web/legacy/js/public/public_widget";
+const dom = require('web.dom');
+const publicWidget = require('web.public.widget');
 
 publicWidget.registry.websiteBlog = publicWidget.Widget.extend({
     selector: '.website_blog',
@@ -41,9 +42,9 @@ publicWidget.registry.websiteBlog = publicWidget.Widget.extend({
         placeholder.style.minHeight = '100vh';
         this.$('#o_wblog_next_container').append(placeholder);
 
-        // Use setTimeout() to calculate the 'offset()'' only after that size classes
+        // Use _.defer to calculate the 'offset()'' only after that size classes
         // have been applyed and that $el has been resized.
-        setTimeout(() => {
+        _.defer(function () {
             self._forumScrollAction($el, 300, function () {
                 window.location.href = nexInfo.url;
             });
@@ -70,19 +71,16 @@ publicWidget.registry.websiteBlog = publicWidget.Widget.extend({
         ev.preventDefault();
         var url = '';
         var $element = $(ev.currentTarget);
-        var blogPostTitle = $('#o_wblog_post_name').html() || '';
-        var articleURL = window.location.href;
+        var blogPostTitle = encodeURIComponent($('#o_wblog_post_name').html() || '');
+        var articleURL = encodeURIComponent(window.location.href);
         if ($element.hasClass('o_twitter')) {
-            var tweetText = _t(
-                "Amazing blog article: %s! Check it live: %s",
-                blogPostTitle,
-                articleURL
-            );
-            url = 'https://twitter.com/intent/tweet?tw_p=tweetbutton&text=' + encodeURIComponent(tweetText);
+            var twitterText = core._t("Amazing blog article: %s! Check it live: %s");
+            var tweetText = _.string.sprintf(twitterText, blogPostTitle, articleURL);
+            url = 'https://twitter.com/intent/tweet?tw_p=tweetbutton&text=' + tweetText;
         } else if ($element.hasClass('o_facebook')) {
-            url = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleURL);
+            url = 'https://www.facebook.com/sharer/sharer.php?u=' + articleURL;
         } else if ($element.hasClass('o_linkedin')) {
-            url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(articleURL);
+            url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + articleURL;
         }
         window.open(url, '', 'menubar=no, width=500, height=400');
     },
@@ -100,4 +98,5 @@ publicWidget.registry.websiteBlog = publicWidget.Widget.extend({
     _forumScrollAction: function ($el, duration, callback) {
         dom.scrollTo($el[0], {duration: duration}).then(() => callback());
     },
+});
 });

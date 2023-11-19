@@ -15,6 +15,7 @@ PLM for workorder.
         'mrp_plm',
     ],
     'data': [
+        'data/mrp_data.xml',
         'views/mrp_eco_views.xml',
     ],
     'installable': True,

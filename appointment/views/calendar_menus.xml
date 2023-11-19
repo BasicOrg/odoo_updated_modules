@@ -1,21 +1,44 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <!-- Calendar's appointment menu-->
     <menuitem
-        id="appointment_menu_calendar"
+        id="menu_schedule_report"
         parent="calendar.mail_menu_calendar"
-        name="Appointments"
-        action="appointment_type_action"/>
+        name="Reporting"
+        sequence="15"/>
+    <menuitem
+        id="menu_schedule_report_all"
+        parent="appointment.menu_schedule_report"
+        action="calendar_event_action_reporting"/>
+    <menuitem
+        id="menu_schedule_report_online"
+        parent="appointment.menu_schedule_report"
+        action="calendar_event_action_report"/>
 
-    <!-- Calendar's reporting menu-->
     <menuitem
-        id="reporting_menu_calendar"
+        id="calendar_appointment_type_menu_action"
         parent="calendar.mail_menu_calendar"
-        name="Reporting"/>
+        name="Calendar"
+        sequence="3"
+        action="calendar.action_calendar_event"
+        groups="base.group_user"/>
+
     <menuitem
-        id="menu_schedule_report_all_events"
-        parent="appointment.reporting_menu_calendar"
-        action="calendar_event_action_report_all"/>
+        id="appointment_type_menu"
+        parent="calendar.mail_menu_calendar"
+        action="appointment_type_action"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_appointment_type_custom_and_anytime"
+        parent="calendar.calendar_menu_config"
+        action="appointment_type_action_custom_and_anytime"
+        groups="base.group_no_one"/>
+
+    <menuitem
+        id="menu_appointment_invite"
+        parent="calendar.calendar_menu_config"
+        action="appointment_invite_action"
+        groups="base.group_no_one"/>
 
 </odoo>

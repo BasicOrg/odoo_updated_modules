@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { WebsiteSale } from '@website_sale/js/website_sale';
+import { WebsiteSale } from 'website_sale.website_sale';
 
 WebsiteSale.include({
     /**
@@ -8,7 +8,7 @@ WebsiteSale.include({
      */
     _getContext() {
         const context = this._super.apply(this, arguments);
-        Object.assign(context, this._getSerializedRentingDates());
+        Object.assign(context, this._getRentingDates());
         return context;
     }
 });

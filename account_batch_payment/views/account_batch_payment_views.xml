@@ -21,46 +21,45 @@ if records:
                 <header>
                     <field name="id" invisible="1"/>
                     <field name="file_generation_enabled" invisible="1"/>
-                    <button name="print_batch_payment" string="Print" type="object" invisible="state != 'sent'"/>
-                    <button name="validate_batch_button" string="Re-generate Export File" type="object" invisible="not file_generation_enabled or state != 'sent' or not payment_ids"/>
-                    <button name="validate_batch_button" class="oe_highlight" string="Validate" type="object" invisible="state != 'draft' or not payment_ids"/>
+                    <button name="print_batch_payment" string="Print" type="object" attrs="{'invisible': [('state', '!=', 'sent')]}"/>
+                    <button name="validate_batch_button" string="Re-generate Export File" type="object" attrs="{'invisible': ['|', '|', ('file_generation_enabled', '=', False), ('state', '!=', 'sent'), ('payment_ids', '=', [])]}"/>
+                    <button name="validate_batch_button" class="oe_highlight" string="Validate" type="object" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('payment_ids', '=', [])]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="batch_type" readonly="state != 'draft'"/>
-                            <field name="journal_id" domain="[('type', '=', 'bank')]" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="batch_type"/>
+                            <field name="journal_id" domain="[('type', '=', 'bank')]" options="{'no_open': True, 'no_create': True}"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="available_payment_method_ids" invisible="1"/>
-                            <field name="payment_method_id" options="{'no_create': True, 'no_open': True}"
-                                   required="1"
-                                   readonly="state != 'draft' or payment_ids"/>
+                            <field name="payment_method_id" required="1" options="{'no_create': True, 'no_open': True}"
+                                   attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('payment_ids', '!=', [])]}"/>
                             <field name="payment_method_code" invisible="1"/> <!--For use in modules depending on this one-->
                         </group><group>
-                            <field name="date" readonly="state != 'draft'"/>
-                            <field name="name" placeholder="Leave empty to generate automatically..." required="0" readonly="state != 'draft'"/>
+                            <field name="date"/>
+                            <field name="name" placeholder="Leave empty to generate automatically..." required="0"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Batch Content" name="batch_content">
                             <field name="payment_ids"
-                                   readonly="state != 'draft'"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
                                    force_save="1"
                                    widget="many2many"
                                    domain="[('batch_payment_id', '=', False), ('state', '=', 'posted'), ('is_move_sent', '=', False), ('payment_method_id', '=', payment_method_id), ('journal_id', '=', journal_id), ('payment_type','=',batch_type), ('amount', '!=', 0)]"
                                    options="{'no_create': True}">
                                 <tree string="Payments" decoration-muted="state == 'draft'" create="false">
                                     <field name="name"/>
-                                    <field name="date" readonly="state in ['cancel', 'posted']"/>
+                                    <field name="date"/>
                                     <field name="partner_id"/>
                                     <field name="ref"/>
                                     <field name="payment_method_name" optional="hide" string="Payment method"/>
                                     <field name="amount_signed" sum="Total" string="Amount"/>
-                                    <field name="currency_id" column_invisible="True"/>
-                                    <field name="state" column_invisible="True"/>
-                                    <field name="payment_method_id" column_invisible="True"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="payment_method_id" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -96,13 +95,12 @@ if records:
             <field name="model">account.batch.payment</field>
             <field name="arch" type="xml">
                 <tree decoration-muted="state == 'reconciled'" decoration-info="state == 'draft'" sample="1">
-                    <field name="name" readonly="state != 'draft'"/>
-                    <field name="journal_id" readonly="state != 'draft'"/>
-                    <field name="date" readonly="state != 'draft'"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="date"/>
                     <field name="amount"/>
                     <field name="state"/>
-                    <field name="activity_ids" widget="list_activity" optional="show"/>
-                    <field name="currency_id" column_invisible="True"/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -110,7 +108,7 @@ if records:
         <record id="action_batch_payment_in" model="ir.actions.act_window">
             <field name="name">Customer Batch Payments</field>
             <field name="res_model">account.batch.payment</field>
-            <field name="view_mode">tree,form,kanban,activity</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="view_id" ref="view_batch_payment_tree"/>
             <field name="search_view_id" ref="view_batch_payment_search"/>
             <field name="domain" eval="[('batch_type', '=', 'inbound')]"/>
@@ -129,7 +127,7 @@ if records:
         <record id="action_batch_payment_out" model="ir.actions.act_window">
             <field name="name">Vendor Batch Payments</field>
             <field name="res_model">account.batch.payment</field>
-            <field name="view_mode">tree,form,kanban,activity</field>
+            <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_batch_payment_tree"/>
             <field name="search_view_id" ref="view_batch_payment_search"/>
             <field name="domain" eval="[('batch_type', '=', 'outbound')]"/>
@@ -158,14 +156,14 @@ if records:
                             <div t-attf-class="oe_kanban_global_click">
                                 <div class="row mb4">
                                     <div class="col-6 o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
+                                        <strong>
                                             <span>
-                                                <field name="name" readonly="state != 'draft'"/>
+                                                <field name="name"/>
                                             </span>
                                         </strong>
                                     </div>
                                     <div class="col-6 text-end">
-                                        <strong><i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/> <t t-out="record.date.value"/></strong>
+                                        <strong><i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/> <t t-esc="record.date.value"/></strong>
                                     </div>
                                 </div>
                                 <div class="row">

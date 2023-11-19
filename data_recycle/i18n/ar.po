@@ -3,16 +3,17 @@
 # 	* data_recycle
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,20 +26,17 @@ msgid ""
 "' recycling rule.<br/>\n"
 "You can validate those changes"
 msgstr ""
-"' قاعدة إعادة التدوير.<br/>\n"
-"يمكنك تأكيد تلك التغييرات "
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_record.py:0
 #, python-format
 msgid "**Record Deleted**"
-msgstr "**تم حذف السجل** "
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">الكل</span>"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__active
@@ -49,7 +47,7 @@ msgstr "نشط"
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_action__archive
 msgid "Archive"
-msgstr "الأرشيف "
+msgstr "أرشفة"
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_mode__automatic
@@ -91,21 +89,16 @@ msgstr "تنظيف البيانات "
 
 #. module: data_recycle
 #: model:ir.actions.server,name:data_recycle.ir_cron_clean_records_ir_actions_server
+#: model:ir.cron,cron_name:data_recycle.ir_cron_clean_records
+#: model:ir.cron,name:data_recycle.ir_cron_clean_records
 msgid "Data Recycle: Clean Records"
-msgstr "إعادة تدوير البيانات: مسح السجلات "
-
-#. module: data_recycle
-#. odoo-python
-#: code:addons/data_recycle/models/data_recycle_model.py:0
-#, python-format
-msgid "Data to Recycle"
-msgstr "البيانات لإعادة تدويرها "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__notify_frequency_period__days
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__time_field_delta_unit__days
 msgid "Days"
-msgstr "الأيام"
+msgstr "أيام "
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_action__unlink
@@ -120,12 +113,12 @@ msgstr "دلتا "
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__time_field_delta_unit
 msgid "Delta Unit"
-msgstr "وحدة دلتا "
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
 msgid "Discard"
-msgstr "إهمال "
+msgstr "تجاهل"
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_search
@@ -142,7 +135,7 @@ msgstr "اسم العرض "
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_record
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_record_notification
 msgid "Field Recycle Records"
-msgstr "سجلات إعادة تدوير الحقول "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__domain
@@ -158,7 +151,13 @@ msgstr "المُعرف"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__include_archived
 msgid "Include Archived"
-msgstr "إظهار المؤرشفة "
+msgstr ""
+
+#. module: data_recycle
+#: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model____last_update
+#: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__last_notification
@@ -181,8 +180,6 @@ msgstr "آخر تحديث في"
 #: model:ir.model.fields,help:data_recycle.field_data_recycle_model__notify_user_ids
 msgid "List of users to notify when there are new records to recycle"
 msgstr ""
-"قائمة المستخدمين الذين يجب إخطارهم عندما تكون هناك سجلات جديدة بانتظار إعادة"
-" التدوير "
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_mode__manual
@@ -193,13 +190,13 @@ msgstr "يدوي"
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__res_model_id
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__res_model_id
 msgid "Model"
-msgstr "النموذج "
+msgstr "الكائن"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__res_model_name
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__res_model_name
 msgid "Model Name"
-msgstr "اسم النموذج "
+msgstr "اسم الكائن"
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__notify_frequency_period__months
@@ -252,58 +249,58 @@ msgstr "السجلات"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__records_to_recycle_count
 msgid "Records To Recycle"
-msgstr "السجلات لإعادة تدويرها "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_action
 msgid "Recycle Action"
-msgstr "إعادة تدوير الإجراء "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_mode
 msgid "Recycle Mode"
-msgstr "إعادة تدوير الوضع "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__recycle_model_id
 msgid "Recycle Model"
-msgstr "إعادة تدوير النموذج "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_record_ids
 msgid "Recycle Record"
-msgstr "إعادة تدوير السجل "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_cleaning_config_rules_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_recycle_record
 msgid "Recycle Records"
-msgstr "إعادة تدوير السجلات "
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
 msgid "Recycle Rule"
-msgstr "إعادة تدوير القاعدة "
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_search
 msgid "Recycle Rules"
-msgstr "إعادة تدوير القواعد "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model,name:data_recycle.model_data_recycle_model
 msgid "Recycling Model"
-msgstr "نموذج إعادة التدوير "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model,name:data_recycle.model_data_recycle_record
 msgid "Recycling Record"
-msgstr "سجل إعادة التدوير "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_config
 msgid "Recyle Records Rules"
-msgstr "إعادة تدوير قواعد السجلات "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_cleaning_config_rules
@@ -313,12 +310,12 @@ msgstr "القواعد"
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "Run Now"
-msgstr "التشغيل الآن "
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "Select a model to configure recycling actions"
-msgstr "قم بتحديد نموذج لتهيئة إجراءات إعادة التدوير "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.constraint,message:data_recycle.constraint_data_recycle_model_check_notif_freq
@@ -326,33 +323,31 @@ msgid "The notification frequency should be greater than 0"
 msgstr "يجب أن يكون تواتر الإشعارات أكبر من 0 "
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_model.py:0
 #, python-format
 msgid "This model doesn't manage archived records. Only deletion is possible."
-msgstr "لا يدير هذا النموذج السجلات المؤرشفة. يمكن حذفها فقط. "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__time_field_id
 msgid "Time Field"
-msgstr "حقل الوقت "
+msgstr ""
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_record.py:0
 #, python-format
 msgid "Undefined Name"
-msgstr "اسم غير محدد "
+msgstr ""
 
 #. module: data_recycle
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_recycle/static/src/views/data_recycle_list_view.xml:0
 #, python-format
 msgid "Unselect"
 msgstr "إلغاء التحديد "
 
 #. module: data_recycle
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_recycle/static/src/views/data_recycle_list_view.xml:0
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
 #, python-format
@@ -362,7 +357,7 @@ msgstr "تصديق "
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.notification
 msgid "We've identified"
-msgstr "قمنا بتعريف "
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__notify_frequency_period__weeks

@@ -1,14 +1,14 @@
 /** @odoo-module **/
 
-import { formatText } from '@mail/js/emojis_mixin';
+import MailEmojisMixin from '@mail/js/emojis_mixin';
 
-export const SocialPostFormatterRegex = {
+const SocialPostFormatterRegex = {
     REGEX_AT: /\B@([\w\dÀ-ÿ-.]+)/g,
     REGEX_HASHTAG: /(^|\s|<br>)#([a-zA-Z\d\-_]+)/g,
     REGEX_URL: /http(s)?:\/\/(www\.)?[a-zA-Z0-9@:%_+~#=~#?&/=\-;!.]{3,2000}/g,
 };
 
-export const SocialPostFormatterMixinBase = {
+export const SocialPostFormatterMixin = Object.assign({}, SocialPostFormatterRegex, {
 
     /**
      * Add emojis support
@@ -20,7 +20,7 @@ export const SocialPostFormatterMixinBase = {
      */
     _formatPost(value) {
         // add emojis support and escape HTML
-        value = formatText(value);
+        value = MailEmojisMixin._formatText(value);
 
         // highlight URLs
         value = value.replace(
@@ -31,18 +31,9 @@ export const SocialPostFormatterMixinBase = {
     },
 
     _getMediaType() {
-        return this.props && this.props.mediaType ||
-            this.props.record && this.props.record.data.media_type ||
+        return this.props && this.props.mediaType || 
+            this.record && this.record.media_type.raw_value ||
             this.originalPost && this.originalPost.media_type.raw_value || '';
     }
 
-};
-
-export const SocialPostFormatterMixin = (T) => class extends T {
-    _formatPost() {
-        return SocialPostFormatterMixinBase._formatPost.call(this, ...arguments);
-    }
-    _getMediaType() {
-        return SocialPostFormatterMixinBase._getMediaType.call(this, ...arguments);
-    }
-};
+});

@@ -9,11 +9,12 @@
             <div class="o_website_sale_daterange_picker variant_attribute col-auto">
                 <input class="s_rental_search_rental_duration_unit" type="hidden" name="rental_duration_unit"
                        value=""/>
-                <div class="s_website_form_datetime input-group date ps-0 o_not_editable o_daterange_picker"
+                <div class="s_website_form_datetime input-group date ps-0 o_not_editable"
+                     data-target-input="nearest"
                      id="rentingDates">
-                    <input type="text" name="renting_start_date" class="form-control"/>
-                    <input type="text" name="renting_end_date" class="form-control"/>
-                    <div class="input-group-text">
+                    <input type="text" id="s_rental_search_date_input" name="renting_dates"
+                           class="form-control daterange-input"/>
+                    <div class="input-group-text" data-target="#rentingDates" data-toggle="daterange">
                         <i class="fa fa-calendar"/>
                     </div>
                     <button class="s_rental_search_btn btn btn-secondary input-group-text">

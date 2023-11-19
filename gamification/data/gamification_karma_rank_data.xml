@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data noupdate="1">
     <!--Karma-->
-    <record id="karma_tracking_user_root" model="gamification.karma.tracking" forcecreate="0">
-        <field name="user_id" ref="base.user_root"/>
-        <field name="new_value">2500</field>
-        <field name="reason">I am the Root!</field>
+    <record id="base.user_root" model="res.users">
+        <field name="karma">2500</field>
     </record>
-    <record id="karma_tracking_user_admin" model="gamification.karma.tracking" forcecreate="0">
-        <field name="user_id" ref="base.user_admin"/>
-        <field name="new_value">2500</field>
-        <field name="reason">I am the Admin!</field>
+    <record id="base.user_admin" model="res.users">
+        <field name="karma">2500</field>
     </record>
 
     <!--Ranks-->
@@ -18,7 +14,7 @@
         <field name="description" type="html"><p>You just began the adventure! Welcome!</p></field>
         <field name="description_motivational" type="html">
             <div class="d-flex align-items-center">
-                <div class="flex-grow-1">Earn your first points and join the adventure!</div>
+                <div class="flex-grow-1">Earn your first points and join the adventure !</div>
                 <img class="ms-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_newbie_badge.svg"/>
             </div>
         </field>

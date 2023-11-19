@@ -4,7 +4,8 @@ import { parseDate, parseDateTime } from "@web/core/l10n/dates";
 import { localization } from "@web/core/l10n/localization";
 import { evaluateExpr } from "@web/core/py_js/py";
 import { registry } from "@web/core/registry";
-import { escapeRegExp } from "@web/core/utils/strings";
+import { escapeRegExp, nbsp } from "@web/core/utils/strings";
+import { session } from "@web/session";
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -32,28 +33,21 @@ function evaluateMathematicalExpression(expr, context = {}) {
  *
  * @param {string} value
  * @param {Object} options - additional options
- * @param {string|RegExp} options.thousandsSep - the thousands separator used in the value
- * @param {string|RegExp} options.decimalPoint - the decimal point used in the value
+ * @param {string|RegExp} [options.thousandsSep] - the thousands separator used in the value
+ * @param {string|RegExp} [options.decimalPoint] - the decimal point used in the value
  * @returns {number}
  */
 function parseNumber(value, options = {}) {
+    // a number can have the thousand separator multiple times. ex: 1,000,000.00
+    value = value.replaceAll(new RegExp(escapeRegExp(options.thousandsSep), "g") || ",", "");
+    // a number only have one decimal separator
+    value = value.replace(new RegExp(escapeRegExp(options.decimalPoint), "g") || ".", ".");
+
     if (value.startsWith("=")) {
         value = evaluateMathematicalExpression(value.substring(1));
         if (options.truncate) {
             value = Math.trunc(value);
         }
-    } else {
-        // A whitespace thousands separator is equivalent to any whitespace character.
-        // E.g. "1  000 000" should be parsed as 1000000 even if the
-        // thousands separator is nbsp.
-        const thousandsSepRegex = options.thousandsSep.match(/\s+/)
-            ? /\s+/g
-            : new RegExp(escapeRegExp(options.thousandsSep), "g") || ",";
-
-        // a number can have the thousand separator multiple times. ex: 1,000,000.00
-        value = value.replaceAll(thousandsSepRegex, "");
-        // a number only have one decimal separator
-        value = value.replace(new RegExp(escapeRegExp(options.decimalPoint), "g") || ".", ".");
     }
 
     return Number(value);
@@ -72,7 +66,7 @@ export class InvalidNumberError extends Error {}
  * @returns {number} a float
  */
 export function parseFloat(value) {
-    const thousandsSepRegex = localization.thousandsSep || "";
+    const thousandsSepRegex = localization.thousandsSep;
     const decimalPointRegex = localization.decimalPoint;
     let parsed = parseNumber(value, {
         thousandsSep: thousandsSepRegex,
@@ -122,7 +116,7 @@ export function parseFloatTime(value) {
  * @returns {number} an integer
  */
 export function parseInteger(value) {
-    const thousandsSepRegex = localization.thousandsSep || "";
+    const thousandsSepRegex = localization.thousandsSep;
     const decimalPointRegex = localization.decimalPoint;
     let parsed = parseNumber(value, {
         thousandsSep: thousandsSepRegex,
@@ -138,11 +132,6 @@ export function parseInteger(value) {
         if (!Number.isInteger(parsed)) {
             throw new InvalidNumberError(`"${value}" is not a correct number`);
         }
-    }
-    if (parsed < -2147483648 || parsed > 2147483647) {
-        throw new InvalidNumberError(
-            `"${value}" is out of bounds (integers should be between -2,147,483,648 and 2,147,483,647)`
-        );
     }
     return parsed;
 }
@@ -164,27 +153,43 @@ export function parsePercentage(value) {
 
 /**
  * Try to extract a monetary value from a string. The localization is considered in the process.
- * This is a very lenient function such that it ignores everything before we encounter a substring consisting of either
- * - a sign (- or +)
- * - an equals sign (signaling the start of a mathematical expression)
- * - a decimal point
- * - a number
- * We then remove any non-numeric characters at the end
- *
+ * The monetary value can have the formats sym$&nbsp;float, float$&nbsp;sym or float
+ * where $&nbsp; is a non breaking space and sym is a currency symbol.
+ * If a symbol is found it must correspond to the default currency symbol or to the
+ * symbol of the currency whose id is passed in options.
  *
  * @param {string} value
- * @returns {number}
+ * @param {Object} [options={}]
+ * @param {number} [options.currencyId]
+ * @returns {number} float
  */
-export function parseMonetary(value) {
-    value = value.trim();
-    const startMatch = value.match(
-        new RegExp(`[\\d\\-+=]|${escapeRegExp(localization.decimalPoint)}`)
-    );
-    if (startMatch) {
-        value = value.substring(startMatch.index);
+export function parseMonetary(value, options = {}) {
+    // TODO GES help ?
+    // const values = value.split("&nbsp;");
+    const values = value.split(nbsp);
+    if (values.length === 1) {
+        return parseFloat(value);
     }
-    value = value.replace(/\D*$/, "");
-    return parseFloat(value);
+    let currency = session.currencies[options.currencyId];
+    if (!currency) {
+        if (Object.keys(session.currencies).length !== 0) {
+            // BS
+            currency = session.currencies[Object.keys(session.currencies)[0]];
+        } else {
+            throw new InvalidNumberError(
+                `"${value}" is either an invalid number or is using an unconfigured currency symbol`
+            );
+        }
+    }
+    const symbolIndex = values.findIndex((v) => v === currency.symbol);
+    if (symbolIndex === -1) {
+        throw new InvalidNumberError(`"${value}" doesn't have the expected currency symbol`);
+    }
+    values.splice(symbolIndex, 1);
+    if (values.length !== 1) {
+        throw new InvalidNumberError(`"${value}" is not a valid number`);
+    }
+    return parseFloat(values[0]);
 }
 
 registry
@@ -194,6 +199,5 @@ registry
     .add("float", parseFloat)
     .add("float_time", parseFloatTime)
     .add("integer", parseInteger)
-    .add("many2one_reference", parseInteger)
     .add("monetary", parseMonetary)
     .add("percentage", parsePercentage);

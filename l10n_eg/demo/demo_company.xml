@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>    <data>
+<odoo>
+    <data>
         <record id="partner_demo_company_eg" model="res.partner">
             <field name="name">EG Company</field>
             <field name="country_id" ref="base.eg"/>
@@ -27,9 +27,8 @@
         </function>
 
         <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>eg</value>
-        <value model="res.company" eval="obj().env.ref('l10n_eg.demo_company_eg')"/>
-    </function>
+            <value eval="[ref('l10n_eg.egypt_chart_template_standard')]"/>
+            <value model="res.company" eval="obj().env.ref('l10n_eg.demo_company_eg')"/>
+        </function>
     </data>
 </odoo>

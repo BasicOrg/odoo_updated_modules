@@ -7,8 +7,8 @@
             <form string="Employee Pay Head Breakup">
                 <span class="o_form_label">This wizard will print report which displays employees break-up of Net Head for a specified dates.</span>
                 <footer>
-                    <button name="print_report" string="Print" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x" />
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                 </footer>
                 <group>
                     <field name="start_date"/>
@@ -23,6 +23,7 @@
 
         <record id="action_salary_employee_month" model="ir.actions.act_window">
             <field name="name">Yearly Salary by Head</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.salary.employee.month</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

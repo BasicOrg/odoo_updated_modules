@@ -17,7 +17,6 @@
         <field name="line_ids">
             <record id="account_financial_report_total_assets0" model="account.report.line">
                 <field name="name">ASSETS</field>
-                <field name="hierarchy_level">0</field>
                 <field name="code">TA</field>
                 <field name="aggregation_formula">CA.balance + FA.balance + PNCA.balance</field>
                 <field name="children_ids">
@@ -74,7 +73,6 @@
             </record>
             <record id="account_financial_report_liabilities_view0" model="account.report.line">
                 <field name="name">LIABILITIES</field>
-                <field name="hierarchy_level">0</field>
                 <field name="code">L</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_liabilities_view0_balance" model="account.report.expression">
@@ -148,7 +146,6 @@
             </record>
             <record id="account_financial_report_equity0" model="account.report.line">
                 <field name="name">EQUITY</field>
-                <field name="hierarchy_level">0</field>
                 <field name="code">EQ</field>
                 <field name="aggregation_formula">UNAFFECTED_EARNINGS.balance + RETAINED_EARNINGS.balance</field>
                 <field name="children_ids">
@@ -228,7 +225,6 @@
             </record>
             <record id="account_financial_report_liabilities_and_equity_view0" model="account.report.line">
                 <field name="name">LIABILITIES + EQUITY</field>
-                <field name="hierarchy_level">0</field>
                 <field name="code">LE</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_liabilities_and_equity_view0_balance" model="account.report.expression">
@@ -241,7 +237,6 @@
             </record>
             <record id="account_financial_report_off_sheet" model="account.report.line">
                 <field name="name">OFF BALANCE SHEET ACCOUNTS</field>
-                <field name="hierarchy_level">0</field>
                 <field name="code">OS</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>

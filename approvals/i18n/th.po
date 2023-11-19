@@ -3,16 +3,21 @@
 # 	* approvals
 # 
 # Translators:
-# Wil Odoo, 2023
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Krisa C, 2022
+# Seksan Poltree <seksan.poltree@gmail.com>, 2022
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -107,7 +112,6 @@ msgid "An additional reference that should be specified on the request."
 msgstr "การอ้างอิงเพิ่มเติมที่ควรระบุไว้ในคำร้องขอ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "An user may not be in the approver list multiple times."
@@ -175,8 +179,10 @@ msgid "Approvals to review"
 msgstr "การอนุมัติที่จะตรวจสอบ"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
@@ -197,14 +203,11 @@ msgid "Approver"
 msgstr "ผู้อนุมัติ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
 "Approver Sequence can only be activated with at least 1 minimum approver."
 msgstr ""
-"ลำดับผู้อนุมัติสามารถเปิดใช้งานได้โดยมีผู้อนุมัติขั้นต่ำอย่างน้อย 1 "
-"คนเท่านั้น"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__user_ids
@@ -227,7 +230,7 @@ msgstr "ผู้อนุมัติ"
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approver_sequence
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approver_sequence
 msgid "Approvers Sequence?"
-msgstr "ลำดับผู้อนุมัติ?"
+msgstr ""
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
@@ -239,11 +242,6 @@ msgstr "เก็บถาวรแล้ว"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Attach Document"
 msgstr "แนบเอกสาร"
-
-#. module: approvals
-#: model:ir.model,name:approvals.model_ir_attachment
-msgid "Attachment"
-msgstr "การแนบ"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_attachment_count
@@ -274,17 +272,12 @@ msgstr "ทริปธุรกิจ"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__change_request_owner
 msgid "Can Change Request Owner"
-msgstr "สามารถเปลี่ยนเจ้าของคำขอได้"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit
 msgid "Can Edit"
 msgstr "สามารถแก้ไข"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit_user_id
-msgid "Can Edit User"
-msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__cancel
@@ -308,7 +301,7 @@ msgstr "หมวดหมู่"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__category_approver
 msgid "Category Approver"
-msgstr "ผู้อนุมัติหมวดหมู่"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__sequence_code
@@ -322,7 +315,7 @@ msgstr "โค้ด"
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__company_id
 #: model:ir.model.fields,field_description:approvals.field_approval_request__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_config
@@ -395,6 +388,14 @@ msgid "Date start"
 msgstr "วันที่เริ่มต้น"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Deadline"
+msgstr "วันครบกำหนด"
+
+#. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 msgid "Delete"
 msgstr "ลบ"
@@ -427,6 +428,11 @@ msgstr "เอกสาร"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Documents"
 msgstr "เอกสาร"
+
+#. module: approvals
+#: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
+msgid "Dropdown menu"
+msgstr "เมนูดรอปดาว์น"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
@@ -602,12 +608,7 @@ msgstr "หากเลือก คำขออนุมัติจะมี�
 #: model:ir.model.fields,help:approvals.field_approval_request__approver_sequence
 msgid ""
 "If checked, the approvers have to approve in sequence (one after the other)."
-" If Employee's Manager is selected as approver, they will be the first in "
-"line."
 msgstr ""
-"หากทำเครื่องหมาย ผู้อนุมัติจะต้องอนุมัติตามลำดับ (ทีละรายการ) "
-"หากผู้จัดการของพนักงานถูกเลือกเป็นผู้อนุมัติ "
-"พวกเขาจะเป็นคนแรกที่อยู่ในรายการ"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__image
@@ -646,6 +647,15 @@ msgid "Job Referral Award"
 msgstr "รางวัลผู้แนะนำงาน"
 
 #. module: approvals
+#: model:ir.model.fields,field_description:approvals.field_approval_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_product_line____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_request____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__write_uid
 #: model:ir.model.fields,field_description:approvals.field_approval_category__write_uid
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__write_uid
@@ -676,6 +686,14 @@ msgid "Location"
 msgstr "สถานที่"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Log"
+msgstr "ล็อก"
+
+#. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "เอกสารหลักที่แนบมา"
@@ -702,7 +720,6 @@ msgid "Minimum Approval"
 msgstr "การอนุมัติขั้นต่ำ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
@@ -741,7 +758,6 @@ msgid "Name"
 msgstr "ชื่อ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__new
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__new
@@ -821,8 +837,8 @@ msgstr "จํานวนข้อผิดพลาด"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+msgid "Number of messages which requires an action"
+msgstr "จํานวนข้อความที่ต้องดําเนินการ"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_has_error_counter
@@ -836,8 +852,8 @@ msgstr "จำนวนคำขอให้ตรวจสอบ"
 
 #. module: approvals
 #: model:res.groups,name:approvals.group_approval_user
-msgid "Officer: Approve all requests"
-msgstr "เจ้าหน้าที่: อนุมัติคำขอทั้งหมด"
+msgid "Officer : Approve all requests"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_category__has_amount__optional
@@ -888,12 +904,12 @@ msgstr "สินค้า"
 #: model:ir.model,name:approvals.model_approval_product_line
 #: model:ir.model.fields,field_description:approvals.field_approval_request__product_line_ids
 msgid "Product Line"
-msgstr "รายการสินค้า"
+msgstr "ไลน์สินค้า"
 
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_product_variant
 msgid "Product Variants"
-msgstr "ตัวเลือกย่อยสินค้า"
+msgstr "ตัวแปรสินค้า"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__product_id
@@ -901,7 +917,6 @@ msgstr "ตัวเลือกย่อยสินค้า"
 #: model:ir.ui.menu,name:approvals.approvals_menu_product_template
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree
-#: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree_independent
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Products"
 msgstr "สินค้า"
@@ -912,11 +927,6 @@ msgstr "สินค้า"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Quantity"
 msgstr "ปริมาณ"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_request__rating_ids
-msgid "Ratings"
-msgstr "การให้คะแนน"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__reference
@@ -930,8 +940,10 @@ msgid "Reference Sequence"
 msgstr "ลำดับอ้างอิง"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
@@ -993,7 +1005,6 @@ msgid "SMS Delivery error"
 msgstr "ข้อผิดพลาดในการส่ง SMS"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__sequence
@@ -1002,13 +1013,6 @@ msgstr "ข้อผิดพลาดในการส่ง SMS"
 #, python-format
 msgid "Sequence"
 msgstr "ลำดับ"
-
-#. module: approvals
-#: model:ir.model.fields,help:approvals.field_approval_approver__can_edit_user_id
-msgid ""
-"Simple users should not be able to remove themselves as approvers because "
-"they will lose access to the record if they misclick."
-msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__status
@@ -1041,7 +1045,7 @@ msgstr "ส่งแล้ว"
 #. module: approvals
 #: model:res.groups,comment:approvals.group_approval_user
 msgid "The user will be able to access all requests and approve/refuse them."
-msgstr "ผู้ใช้จะสามารถเข้าถึงคำขอทั้งหมดและอนุมัติ/ปฏิเสธได้"
+msgstr ""
 
 #. module: approvals
 #: model:res.groups,comment:approvals.group_approval_manager
@@ -1049,7 +1053,6 @@ msgid "The user will have access to the approvals configuration."
 msgstr "ผู้ใช้จะสามารถเข้าถึงการกำหนดค่าการอนุมัติ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
@@ -1060,7 +1063,6 @@ msgstr ""
 "ไม่มีผู้จัดการที่เชื่อมโยงกับโปรไฟล์พนักงานของคุณ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
@@ -1071,7 +1073,6 @@ msgstr ""
 "ไม่มีผู้ใช้ที่เชื่อมโยงกับผู้จัดการของคุณ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
@@ -1082,8 +1083,9 @@ msgstr ""
 "ผู้จัดการของคุณไม่อยู่ในรายชื่อผู้อนุมัติ"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__pending
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__pending
 #, python-format
@@ -1111,8 +1113,12 @@ msgid "Unit of Measure"
 msgstr "หน่วยวัด"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__user_id
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__user_id
+#, python-format
 msgid "User"
 msgstr "ผู้ใช้"
 
@@ -1144,47 +1150,24 @@ msgid "Withdraw"
 msgstr "ถอน"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You cannot approve before the previous approver."
-msgstr "คุณไม่สามารถอนุมัติก่อนผู้อนุมัติคนก่อนหน้าได้"
-
-#. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/approval_request.py:0
-#, python-format
-msgid ""
-"You cannot assign the same approver multiple times on the same request."
-msgstr "คุณไม่สามารถมอบหมายผู้อนุมัติคนเดียวกันหลายครั้งในคำขอเดียวกันได้"
-
-#. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/ir_attachment.py:0
-#, python-format
-msgid ""
-"You cannot unlink an attachment which is linked to a validated, refused or "
-"cancelled approval request."
 msgstr ""
-"คุณไม่สามารถยกเลิกการเชื่อมโยงเอกสารแนบที่เชื่อมโยงกับคำขออนุมัติที่ได้รับการตรวจสอบ"
-" ปฏิเสธ หรือยกเลิกได้"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to add at least %s approvers to confirm your request."
 msgstr "คุณต้องเพิ่มอย่างน้อย %s ผู้อนุมัติเพื่อยืนยันคำขอของคุณ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to attach at lease one document."
 msgstr "คุณต้องแนบเอกสารอย่างน้อยหนึ่งฉบับ"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "Your minimum approval exceeds the total of default approvers."
@@ -1193,7 +1176,7 @@ msgstr "การอนุมัติขั้นต่ำของคุณเ
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "e.g. Brussels"
-msgstr "เช่น บรัสเซลส์"
+msgstr "เช่น Brussels"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form

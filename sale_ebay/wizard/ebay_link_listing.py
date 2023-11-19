@@ -16,7 +16,7 @@ class ebay_link_listing(models.TransientModel):
             listing._link_listing()
 
     def _link_listing(self):
-        response = self.env['product.template']._ebay_execute('GetItem', {
+        response = self.env['product.template'].ebay_execute('GetItem', {
             'ItemID': self.ebay_id,
             'DetailLevel': 'ReturnAll'
         })
@@ -70,28 +70,28 @@ class ebay_link_listing(models.TransientModel):
         if 'SellerProfiles' in item:
             if 'SellerPaymentProfile' in item['SellerProfiles']\
                 and 'PaymentProfileID' in item['SellerProfiles']['SellerPaymentProfile']:
-                ebay_seller_payment_policy = self.env['ebay.policy'].search([
+                ebay_seller_payment_policy_id = self.env['ebay.policy'].search_read([
                     ('policy_type', '=', 'PAYMENT'),
                     ('policy_id', '=', item['SellerProfiles']['SellerPaymentProfile']['PaymentProfileID'])
-                ], limit=1)
-                if ebay_seller_payment_policy:
-                    product_values['ebay_seller_payment_policy_id'] = ebay_seller_payment_policy.id
+                ], ['id'])
+                if ebay_seller_payment_policy_id:
+                    product_values['ebay_seller_payment_policy_id'] = ebay_seller_payment_policy_id[0]['id']
             if 'SellerReturnProfile' in item['SellerProfiles']\
                 and 'ReturnProfileID' in item['SellerProfiles']['SellerReturnProfile']:
-                ebay_seller_return_policy = self.env['ebay.policy'].search([
+                ebay_seller_return_policy_id = self.env['ebay.policy'].search_read([
                     ('policy_type', '=', 'RETURN_POLICY'),
                     ('policy_id', '=', item['SellerProfiles']['SellerReturnProfile']['ReturnProfileID'])
-                ], limit=1)
-                if ebay_seller_return_policy:
-                    product_values['ebay_seller_return_policy_id'] = ebay_seller_return_policy.id
+                ], ['id'])
+                if ebay_seller_return_policy_id:
+                    product_values['ebay_seller_return_policy_id'] = ebay_seller_return_policy_id[0]['id']
             if 'SellerShippingProfile' in item['SellerProfiles']\
                 and 'ShippingProfileID' in item['SellerProfiles']['SellerShippingProfile']:
-                ebay_seller_shipping_policy = self.env['ebay.policy'].search([
+                ebay_seller_shipping_policy_id = self.env['ebay.policy'].search([
                     ('policy_type', '=', 'SHIPPING'),
                     ('policy_id', '=', item['SellerProfiles']['SellerShippingProfile']['ShippingProfileID'])
-                ], limit=1)
-                if ebay_seller_shipping_policy:
-                    product_values['ebay_seller_shipping_policy_id'] = ebay_seller_shipping_policy.id
+                ])
+                if ebay_seller_shipping_policy_id:
+                    product_values['ebay_seller_shipping_policy_id'] = ebay_seller_shipping_policy_id[0]['id']
         product.write(product_values)
 
         if 'Variations' in item:

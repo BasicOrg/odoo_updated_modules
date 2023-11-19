@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'EDI for Mexico (Advanced Features)',
-    'countries': ['mx'],
+    'icon': '/l10n_mx/static/description/icon.png',
     'version': '0.1',
     'category': 'Hidden',
     'depends': [
@@ -12,7 +12,7 @@
     'data': [
         'security/ir.model.access.csv',
 
-        'data/4.0/cfdi.xml',
+        'data/3.3/cfdi.xml',
         'data/product_data.xml',
         'data/uom_uom_data.xml',
 
@@ -30,7 +30,6 @@
     ],
     'demo': [
         'demo/demo_cfdi.xml',
-        'demo/res_partner.xml',
     ],
     'installable': True,
     'post_init_hook': 'post_init_hook',

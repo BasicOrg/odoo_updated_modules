@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="l10n_si_balance_sheet" model="account.report">
         <field name="name">Balance sheet</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
@@ -18,7 +18,6 @@
                 <field name="name">Resources</field>
                 <field name="code">si_resources</field>
                 <field name="aggregation_formula">si_resources_a.balance + si_resources_b.balance + si_resources_c.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="l10n_si_balance_sheet_resources_a" model="account.report.line">
                         <field name="name">A. Long-term assets</field>
@@ -390,7 +389,6 @@
                 <field name="name">Liabilities</field>
                 <field name="code">si_liabilities</field>
                 <field name="aggregation_formula">si_liabilities_a.balance + si_liabilities_b.balance + si_liabilities_c.balance + si_liabilities_ch.balance + si_liabilities_d.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="l10n_si_balance_sheet_liabilities_a" model="account.report.line">
                         <field name="name">A. Capital</field>
@@ -663,7 +661,7 @@
                         </field>
                     </record>
                     <record id="l10n_si_balance_sheet_liabilities_ch" model="account.report.line">
-                        <field name="name">C. Short term obligations</field>
+                        <field name="name">Č. Short term obligations</field>
                         <field name="code">si_liabilities_ch</field>
                         <field name="aggregation_formula">si_liabilities_ch_I.balance + si_liabilities_ch_II.balance + si_liabilities_ch_III.balance</field>
                         <field name="children_ids">

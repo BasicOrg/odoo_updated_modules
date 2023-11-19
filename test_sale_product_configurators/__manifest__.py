@@ -13,9 +13,8 @@
     ],
     'assets': {
         'web.assets_tests': [
-            'test_sale_product_configurators/static/src/js/tour_utils.js',
             'test_sale_product_configurators/static/tests/tours/**/*',
         ],
     },
-    'license': 'LGPL-3',
+    'license': 'OEEL-1',
 }

@@ -8,7 +8,7 @@ import { registry } from "@web/core/registry";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 
-import { useRef, Component, xml } from "@odoo/owl";
+const { useRef, Component, xml } = owl;
 
 QUnit.module("UseViewButton tests", (hooks) => {
     let target;

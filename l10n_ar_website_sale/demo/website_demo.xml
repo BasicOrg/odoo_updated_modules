@@ -4,6 +4,7 @@
     <record id="default_website_ri" model="website">
         <field name="name">(AR) Responsable Inscripto Website</field>
         <field name="company_id" ref="l10n_ar.company_ri"/>
+        <field name="logo" type="base64" file="l10n_ar_website_sale/static/description/icon.png"/>
         <field name="domain" model="ir.config_parameter" eval="obj().env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
     </record>
     <function model="payment.provider" name="copy">
@@ -16,7 +17,7 @@
     </function>
     <function model="product.product" name="write">
         <value model="product.product" eval="obj().search([('taxes_id', '=', False)]).ids"/>
-        <value model="account.tax" eval="{'taxes_id': [(4, obj().search([('type_tax_use', '=', 'sale'), ('tax_group_id', '=', ref('account.%s_tax_group_iva_21' % ref('l10n_ar.company_ri'))), ('company_id', '=', ref('l10n_ar.company_ri'))]).id)]}"/>
+        <value model="account.tax" eval="{'taxes_id': [(4, obj().search([('type_tax_use', '=', 'sale'), ('tax_group_id', '=', ref('l10n_ar.tax_group_iva_21')), ('company_id', '=', ref('l10n_ar.company_ri'))]).id)]}"/>
     </function>
 
 </odoo>

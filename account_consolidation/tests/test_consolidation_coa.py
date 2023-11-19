@@ -11,7 +11,7 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
         for i in range(count):
             self._create_consolidation_account(chart=self.chart)
 
-        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': self.env.ref('base.EUR').id})
+        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': 1})
         self._create_consolidation_account(chart=chart)
         self.assertEqual(count, self.chart.account_ids_count)
         self.assertEqual(1, chart.account_ids_count)
@@ -20,7 +20,7 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
         count = 5
         for i in range(count):
             self._create_analysis_period(chart=self.chart)
-        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': self.env.ref('base.EUR').id})
+        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': 1})
         self._create_analysis_period(chart=chart)
         self.assertEqual(count, self.chart.period_ids_count)
         self.assertEqual(1, chart.period_ids_count)
@@ -28,7 +28,7 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
     def test_unlink(self):
         Account = self.env['consolidation.account']
         AnalysisPeriod = self.env['consolidation.period']
-        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': self.env.ref('base.EUR').id})
+        chart = self.env['consolidation.chart'].create({'name': 'bluh', 'currency_id': 1})
         acc = self._create_consolidation_account(chart=chart)
         ap = self._create_analysis_period(chart=chart)
         self.assertEqual(Account.search_count([('id', '=', acc.id)]), 1)
@@ -41,7 +41,7 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
 
     def test_copy_consolidation_chart(self):
         # Test that copying a chart is properly copying every accounts, groups,... and linking them to the new chart
-        base_chart = self.env['consolidation.chart'].create({'name': 'Base Chart', 'currency_id': self.env.ref('base.EUR').id})
+        base_chart = self.env['consolidation.chart'].create({'name': 'Base Chart', 'currency_id': 1})
         group_a = self.env['consolidation.group'].create({
             'chart_id': base_chart.id,
             'name': 'Group A',
@@ -62,12 +62,6 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
             'name': 'Group AB',
             'sequence': 4,
         }])
-        group_aaa = self.env['consolidation.group'].create({
-            'chart_id': base_chart.id,
-            'parent_id': group_aa.id,
-            'name': 'Group AAA',
-            'sequence': 5,
-        })
         self.env['consolidation.account'].create([{
             'chart_id': base_chart.id,
             'name': 'Account BA',
@@ -75,40 +69,36 @@ class TestAccountConsolidationChart(AccountConsolidationTestCase):
             'group_id': group_b.id,
         }, {
             'chart_id': base_chart.id,
-            'name': 'Account AAAA',
+            'name': 'Account AAA',
             'currency_mode': 'end',
-            'group_id': group_aaa.id,
+            'group_id': group_aa.id,
         }, {
             'chart_id': base_chart.id,
-            'name': 'Account AAAB',
+            'name': 'Account AAB',
             'currency_mode': 'end',
-            'group_id': group_aaa.id,
+            'group_id': group_aa.id,
         }, {
             'chart_id': base_chart.id,
             'name': 'Account ABA',
             'currency_mode': 'end',
             'group_id': group_ab.id,
-        }, {
-            'chart_id': base_chart.id,
-            'name': 'Account X',
-            'currency_mode': 'end',
         }])
         copied_chart = base_chart.copy()
-        copied_group_a, copied_group_b, copied_group_aa, copied_group_ab, copied_group_aaa = copied_chart.group_ids.sorted(lambda g: g.sequence)
+        copied_group_a, copied_group_b, copied_group_aa, copied_group_ab = copied_chart.group_ids
         # Check that all four groups where properly copied and are linked to the chart ids.
-        for base_group, copied_group in zip(base_chart.group_ids.sorted(lambda g: g.sequence), copied_chart.group_ids.sorted(lambda g: g.sequence)):
+        for base_group, copied_group in zip(base_chart.group_ids, copied_chart.group_ids):
             self.assertEqual(copied_group.name, f'{base_group.name} (copy)')
 
         # Also make sure that all children groups have the right parents.
-        for parent_group, copied_group in zip([copied_group_a, copied_group_a, copied_group_aa], [copied_group_aa, copied_group_ab, copied_group_aaa]):
+        for parent_group, copied_group in zip([copied_group_a, copied_group_a], [copied_group_aa, copied_group_ab]):
             self.assertEqual(copied_group.parent_id, parent_group)
 
         # Ensure that all accounts were copied and are linked to the chart
-        for base_account, copied_account in zip(base_chart.account_ids.sorted(lambda a: a.name), copied_chart.account_ids.sorted(lambda a: a.name)):
+        for base_account, copied_account in zip(base_chart.account_ids, copied_chart.account_ids):
             self.assertEqual(copied_account.name, f'{base_account.name} (copy)')
 
         # Make sure that all copied accounts are linked to their groups too
-        expected_groups_for_accounts = [self.env['consolidation.group'], copied_group_b, copied_group_aaa, copied_group_aaa, copied_group_ab]
+        expected_groups_for_accounts = [copied_group_b, copied_group_aa, copied_group_aa, copied_group_ab]
         for copied_group, copied_account in zip(expected_groups_for_accounts, copied_chart.account_ids):
             self.assertEqual(copied_account.group_id, copied_group)
 
@@ -123,8 +113,8 @@ class TestAccountConsolidationAccount(AccountConsolidationTestCase):
         self.not_mapped_account = self._create_consolidation_account('I am not mapped', chart=self.chart, section=None)
 
         self.super_charts = [
-            ConsoChart.create({'name': 'blah', 'currency_id': self.env.ref('base.EUR').id}),
-            ConsoChart.create({'name': 'bluh', 'currency_id': self.env.ref('base.EUR').id})
+            ConsoChart.create({'name': 'blah', 'currency_id': 1}),
+            ConsoChart.create({'name': 'bluh', 'currency_id': 1})
         ]
         self.super_accounts = [
             self._create_consolidation_account('I am the mapping one %s' % sc.id, chart=sc, section=None)
@@ -227,7 +217,7 @@ class TestAccountConsolidationAccount(AccountConsolidationTestCase):
 
         chart_2 = self.env['consolidation.chart'].create({
             'name': 'blah',
-            'currency_id': self.env.ref('base.EUR').id,
+            'currency_id': 1,
             'company_ids': [(6, 0, (self.us_company.id, self.default_company.id))]
         })
 

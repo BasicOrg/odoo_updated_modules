@@ -27,6 +27,7 @@
 
         <record id="action_res_city_tree" model="ir.actions.act_window">
             <field name="name">Cities</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.city</field>
             <field name="view_mode">tree</field>
             <field name="help">
@@ -35,11 +36,6 @@
                 to enforce any address of it to have a city in this list.
             </field>
         </record>
-
-        <menuitem id="menu_res_city"
-            action="action_res_city_tree"
-            parent="contacts.menu_localisation"
-            sequence="2"/>
-
     </data>
 </odoo>
+

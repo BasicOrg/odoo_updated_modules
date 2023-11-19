@@ -1,23 +1,18 @@
 /* @odoo-module */
 
-import { visitXML } from "@web/core/utils/xml";
+import { XMLParser } from "@web/core/utils/xml";
 import { _t } from "@web/core/l10n/translation";
 import { INTERVALS, MODES, TIMELINES } from "./cohort_model";
-import { archParseBoolean } from "@web/views/utils";
+import { sprintf } from "@web/core/utils/strings";
 
-export class CohortArchParser {
+export class CohortArchParser extends XMLParser {
     parse(arch, fields) {
         const archInfo = {
             fieldAttrs: {},
         };
-        visitXML(arch, (node) => {
+        this.visitXML(arch, (node) => {
             switch (node.tagName) {
                 case "cohort": {
-                    if (node.hasAttribute("disable_linking")) {
-                        archInfo.disableLinking = archParseBoolean(
-                            node.getAttribute("disable_linking")
-                        );
-                    }
                     const title = node.getAttribute("string");
                     if (title) {
                         archInfo.title = title;
@@ -41,7 +36,7 @@ export class CohortArchParser {
                         archInfo.mode = mode;
                     } else {
                         throw new Error(
-                            _t(
+                            sprintf(
                                 "The argument %s is not a valid mode. Here are the modes: %s",
                                 mode,
                                 MODES
@@ -53,7 +48,7 @@ export class CohortArchParser {
                         archInfo.timeline = timeline;
                     } else {
                         throw new Error(
-                            _t(
+                            sprintf(
                                 "The argument %s is not a valid timeline. Here are the timelines: %s",
                                 timeline,
                                 TIMELINES
@@ -66,7 +61,7 @@ export class CohortArchParser {
                         archInfo.interval = interval;
                     } else {
                         throw new Error(
-                            _t(
+                            sprintf(
                                 "The argument %s is not a valid interval. Here are the intervals: %s",
                                 interval,
                                 INTERVALS
@@ -82,10 +77,8 @@ export class CohortArchParser {
                     if (node.hasAttribute("string")) {
                         archInfo.fieldAttrs[fieldName].string = node.getAttribute("string");
                     }
-                    if (
-                        node.getAttribute("invisible") === "True" ||
-                        node.getAttribute("invisible") === "1"
-                    ) {
+                    const modifiers = JSON.parse(node.getAttribute("modifiers") || "{}");
+                    if (modifiers.invisible === true) {
                         archInfo.fieldAttrs[fieldName].isInvisible = true;
                         break;
                     }

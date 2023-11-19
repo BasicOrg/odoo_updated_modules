@@ -50,7 +50,7 @@
             "cells": {
                 "A7": {
                     "style": 1,
-                    "content": "[Tickets by Stage](odoo://view/{\"viewType\":\"graph\",\"action\":{\"domain\":[],\"context\":{\"group_by\":[\"stage_id\",\"team_id\"],\"graph_measure\":\"__count\",\"graph_mode\":\"bar\",\"graph_groupbys\":[\"stage_id\",\"team_id\"]},\"modelName\":\"helpdesk.ticket.report.analysis\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"cohort\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Tickets by Stage\"})",
+                    "content": "[Tickets by Stage](odoo://view/{\"viewType\":\"graph\",\"action\":{\"domain\":[],\"context\":{\"group_by\":[\"ticket_stage_id\",\"team_id\"],\"graph_measure\":\"__count\",\"graph_mode\":\"bar\",\"graph_groupbys\":[\"ticket_stage_id\",\"team_id\"]},\"modelName\":\"helpdesk.ticket.report.analysis\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"cohort\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Tickets by Stage\"})",
                     "border": 1
                 },
                 "A19": {
@@ -312,7 +312,7 @@
                 },
                 "E19": {
                     "style": 1,
-                    "content": "[Top Assignees](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[[\"user_id\",\"!=\",false]],\"context\":{\"group_by\":[\"user_id\"],\"pivot_measures\":[\"__count\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"user_id\"]},\"modelName\":\"helpdesk.ticket.report.analysis\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"cohort\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Agents\"})",
+                    "content": "[Top Agents](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[[\"user_id\",\"!=\",false]],\"context\":{\"group_by\":[\"user_id\"],\"pivot_measures\":[\"__count\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"user_id\"]},\"modelName\":\"helpdesk.ticket.report.analysis\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"cohort\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Agents\"})",
                     "border": 1
                 },
                 "E20": {
@@ -606,7 +606,7 @@
                         "legendPosition": "top",
                         "metaData": {
                             "groupBy": [
-                                "stage_id",
+                                "ticket_stage_id",
                                 "team_id"
                             ],
                             "measure": "__count",
@@ -618,7 +618,7 @@
                             "context": {},
                             "domain": [],
                             "groupBy": [
-                                "stage_id",
+                                "ticket_stage_id",
                                 "team_id"
                             ],
                             "orderBy": []
@@ -953,17 +953,6 @@
         }
     },
     "revisionId": "START_REVISION",
-    "settings": {
-        "locale": {
-            "name": "English (US)",
-            "code": "en_US",
-            "thousandsSeparator": ",",
-            "decimalSeparator": ".",
-            "dateFormat": "mm/dd/yyyy",
-            "timeFormat": "hh:mm:ss",
-            "formulaArgSeparator": ","
-        }
-    },
     "chartOdooMenusReferences": {
         "f16a9ed2-bf56-4fcd-9fa7-262c3be1e441": "helpdesk.menu_helpdesk_root",
         "7c83311f-28a2-47b3-b27c-4ff69ad74d38": "helpdesk.menu_helpdesk_root",

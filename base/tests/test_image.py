@@ -156,8 +156,8 @@ class TestImage(TransactionCase):
         """Test the verify_resolution parameter of image_process."""
         res = tools.image_process(self.img_1920x1080_jpeg, verify_resolution=True)
         self.assertNotEqual(res, False, "size ok")
-        image_excessive = tools.image_apply_opt(Image.new('RGB', (50001, 1000)), 'PNG')
-        with self.assertRaises(UserError, msg="size excessive"):
+        image_excessive = tools.image_apply_opt(Image.new('RGB', (45001, 1000)), 'PNG')
+        with self.assertRaises(ValueError, msg="size excessive"):
             tools.image_process(image_excessive, verify_resolution=True)
 
     def test_13_image_process_quality(self):
@@ -176,19 +176,6 @@ class TestImage(TransactionCase):
         # CASE: JPEG optimize + reduced quality
         res = tools.image_process(self.img_1920x1080_jpeg)
         self.assertLessEqual(len(res), len(self.img_1920x1080_jpeg))
-
-        # CASE: JPEG optimize + bigger size => original
-        pil_image = Image.new('RGB', (1920, 1080), color=self.bg_color)
-        # Drawing non trivial content so that optimization matters.
-        ImageDraw.Draw(pil_image).ellipse(xy=[
-            (400, 0),
-            (1500, 1080)
-        ], fill=self.fill_color, outline=(240, 25, 40), width=10)
-        image = tools.image_apply_opt(pil_image, 'JPEG')
-        res = tools.image_process(image, quality=50)
-        self.assertLess(len(res), len(image), "Low quality image should be smaller than original")
-        res = tools.image_process(image, quality=99)
-        self.assertEqual(len(res), len(image), "Original should be returned if size increased")
 
         # CASE: GIF doesn't apply quality, just optimize
         image = tools.image_apply_opt(Image.new('RGB', (1080, 1920)), 'GIF')
@@ -285,49 +272,9 @@ class TestImage(TransactionCase):
         image = img_open(tools.image_process(image_1080_1920_tiff, quality=95))
         self.assertEqual(image.format, 'JPEG', "unsupported format to JPEG")
 
-    def test_17_get_webp_size(self):
-        # Using 32 bytes image headers as data.
-        # Lossy webp: 550x368
-        webp_lossy = b'RIFFhv\x00\x00WEBPVP8 \\v\x00\x00\xd2\xbe\x01\x9d\x01*&\x02p\x01>\xd5'
-        size = tools.get_webp_size(webp_lossy)
-        self.assertEqual((550, 368), size, "Wrong resolution for lossy webp")
-        # Lossless webp: 421x163
-        webp_lossless = b'RIFF\xba\x84\x00\x00WEBPVP8L\xad\x84\x00\x00/\xa4\x81(\x10MHr\x1bI\x92\xa4'
-        size = tools.get_webp_size(webp_lossless)
-        self.assertEqual((421, 163), size, "Wrong resolution for lossless webp")
-        # Extended webp: 800x600
-        webp_extended = b'RIFF\x80\xce\x00\x00WEBPVP8X\n\x00\x00\x00\x10\x00\x00\x00\x1f\x03\x00W\x02\x00AL'
-        size = tools.get_webp_size(webp_extended)
-        self.assertEqual((800, 600), size, "Wrong resolution for extended webp")
-
     def test_20_image_data_uri(self):
         """Test that image_data_uri is working as expected."""
         self.assertEqual(tools.image_data_uri(base64.b64encode(self.img_1x1_png)), 'data:image/png;base64,' + base64.b64encode(self.img_1x1_png).decode('ascii'))
-
-    def test_21_image_guess_size_from_field_name(self):
-        f = tools.image_guess_size_from_field_name
-        # Test case: empty field_name input
-        self.assertEqual(f(''), (0, 0))
-        # Test case: custom field_name input
-        self.assertEqual(f('custom_field'), (0, 0))
-        # Test case: field_name input that starts with 'x_'
-        self.assertEqual(f('x_field'), (0, 0))
-        # Test case: field_name input that starts with 'x_' and ends with a number less than 16
-        self.assertEqual(f('x_studio_image_1'), (0, 0))
-        # Test case: field_name input that starts with 'x_' and ends with a number greater than 16
-        self.assertEqual(f('x_studio_image_32'), (0, 0))
-        # Test case: field_name input that has a suffix less than 16
-        self.assertEqual(f('image_15'), (0, 0))
-        # Test case: field_name input that has a suffix equal to 16
-        self.assertEqual(f('image_16'), (16, 16))
-        # Test case: field_name input that has a suffix greater than 16
-        self.assertEqual(f('image_32'), (32, 32))
-        # Test case: field_name input that has a suffix with 2 numbers
-        self.assertEqual(f('image_1920_1080'), (1080, 1080))
-        # Test case: field_name input that has a float as suffix
-        self.assertEqual(f('image_32.5'), (0, 0))
-        # Test case: field_name input that has a suffix greater than 16 but no underscore
-        self.assertEqual(f('image32'), (0, 0))
 
     def _assertAlmostEqualSequence(self, rgb1, rgb2, delta=10):
         self.assertEqual(len(rgb1), len(rgb2))
@@ -358,9 +305,3 @@ class TestImage(TransactionCase):
         self._assertAlmostEqualSequence(fixed_image.getpixel((size - 1, 0)), expected[1])         # top/right
         self._assertAlmostEqualSequence(fixed_image.getpixel((0, size - 1)), expected[2])         # bottom/left
         self._assertAlmostEqualSequence(fixed_image.getpixel((size - 1, size - 1)), expected[3])  # bottom/right
-
-    def test_ptype_image_to_jpeg(self):
-        """converts to RGB when saving as JPEG"""
-        image1 = Image.new('P', (1, 1), color='red')
-        image2 = Image.new('RGB', (1, 1), color='red')
-        self.assertEqual(tools.image.image_apply_opt(image1, 'JPEG'), tools.image.image_apply_opt(image2, 'JPEG'))

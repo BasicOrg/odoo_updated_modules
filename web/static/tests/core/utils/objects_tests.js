@@ -1,18 +1,9 @@
 /** @odoo-module **/
 
-import { omit, pick, shallowEqual } from "@web/core/utils/objects";
+import { pick, shallowEqual } from "@web/core/utils/objects";
 
 QUnit.module("utils", () => {
     QUnit.module("Objects");
-
-    QUnit.test("omit", function (assert) {
-        assert.deepEqual(omit({}), {});
-        assert.deepEqual(omit({}, "a"), {});
-        assert.deepEqual(omit({ a: 1 }), { a: 1 });
-        assert.deepEqual(omit({ a: 1 }, "a"), {});
-        assert.deepEqual(omit({ a: 1, b: 2 }, "c", "a"), { b: 2 });
-        assert.deepEqual(omit({ a: 1, b: 2 }, "b", "c"), { a: 1 });
-    });
 
     QUnit.test("pick", function (assert) {
         assert.deepEqual(pick({}), {});
@@ -56,17 +47,5 @@ QUnit.module("utils", () => {
         const fn = () => {};
         assert.ok(shallowEqual({ a: fn }, { a: fn }));
         assert.notOk(shallowEqual({ a: () => {} }, { a: () => {} }));
-    });
-
-    QUnit.test("shallowEqual: custom comparison function", function (assert) {
-        const dateA = new Date();
-        const dateB = new Date(dateA);
-
-        assert.notOk(shallowEqual({ a: 1, date: dateA }, { a: 1, date: dateB }));
-        assert.ok(
-            shallowEqual({ a: 1, date: dateA }, { a: 1, date: dateB }, (a, b) =>
-                a instanceof Date ? Number(a) === Number(b) : a === b
-            )
-        );
     });
 });

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
-from werkzeug.urls import url_join
-
 from odoo import fields, models, _
-from odoo.addons.sms.tools.sms_api import SmsApi
+from odoo.addons.phone_validation.tools import phone_validation
 
 
 class MassSMSTest(models.TransientModel):
@@ -23,8 +20,9 @@ class MassSMSTest(models.TransientModel):
         self.ensure_one()
 
         numbers = [number.strip() for number in self.numbers.splitlines()]
-        sanitized_numbers = [self.env.user._phone_format(number=number) for number in numbers]
-        invalid_numbers = [number for sanitized, number in zip(sanitized_numbers, numbers) if not sanitized]
+        sanitize_res = phone_validation.phone_sanitize_numbers_w_record(numbers, self.env.user)
+        sanitized_numbers = [info['sanitized'] for info in sanitize_res.values() if info['sanitized']]
+        invalid_numbers = [number for number, info in sanitize_res.items() if info['code']]
 
         record = self.env[self.mailing_id.mailing_model_real].search([], limit=1)
         body = self.mailing_id.body_plaintext
@@ -32,16 +30,17 @@ class MassSMSTest(models.TransientModel):
             # Returns a proper error if there is a syntax error with qweb
             body = self.env['mail.render.mixin']._render_template(body, self.mailing_id.mailing_model_real, record.ids)[record.id]
 
-        new_sms_messages_sudo = self.env['sms.sms'].sudo().create([{'body': body, 'number': number} for number in sanitized_numbers])
-        sms_api = SmsApi(self.env)
-        sent_sms_list = sms_api._send_sms_batch([{
+        # res_id is used to map the result to the number to log notifications as IAP does not return numbers...
+        # TODO: clean IAP to make it return a clean dict with numbers / use custom keys / rename res_id to external_id
+        sent_sms_list = self.env['sms.api']._send_sms_batch([{
+            'res_id': number,
+            'number': number,
             'content': body,
-            'numbers': [{'number': sms_id.number, 'uuid': sms_id.uuid} for sms_id in new_sms_messages_sudo],
-        }], delivery_reports_url=url_join(self[0].get_base_url(), '/sms/status'))
+        } for number in sanitized_numbers])
 
         error_messages = {}
         if any(sent_sms.get('state') != 'success' for sent_sms in sent_sms_list):
-            error_messages = sms_api._get_sms_api_error_messages()
+            error_messages = self.env['sms.api']._get_sms_api_error_messages()
 
         notification_messages = []
         if invalid_numbers:
@@ -54,15 +53,14 @@ class MassSMSTest(models.TransientModel):
                     _('Test SMS successfully sent to %s', sent_sms.get('res_id')))
             elif sent_sms.get('state'):
                 notification_messages.append(
-                    _('Test SMS could not be sent to %s: %s',
+                    _('Test SMS could not be sent to %s:<br>%s',
                     sent_sms.get('res_id'),
                     error_messages.get(sent_sms['state'], _("An error occurred.")))
                 )
 
         if notification_messages:
-            message_body = Markup(
-                f"<ul>{''.join('<li>%s</li>' for _ in notification_messages)}</ul>"
-            ) % tuple(notification_messages)
-            self.mailing_id._message_log(body=message_body)
+            self.mailing_id._message_log(body='<ul>%s</ul>' % ''.join(
+                ['<li>%s</li>' % notification_message for notification_message in notification_messages]
+            ))
 
         return True

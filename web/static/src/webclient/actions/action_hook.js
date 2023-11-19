@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import { onMounted, useComponent, useEffect, useExternalListener } from "@odoo/owl";
+const { onMounted, useComponent, useEffect, useExternalListener } = owl;
 
-export const scrollSymbol = Symbol("scroll");
+const scrollSymbol = Symbol("scroll");
 
 export class CallbackRecorder {
     constructor() {
@@ -118,8 +118,7 @@ export function useSetupAction(params = {}) {
                         root: { left: rootRef.el.scrollLeft, top: rootRef.el.scrollTop },
                     };
                 } else {
-                    const contentEl = rootRef.el.querySelector(".o_component_with_search_panel > .o_renderer_with_searchpanel," 
-                    + ".o_component_with_search_panel > .o_renderer") || rootRef.el.querySelector(".o_content");
+                    const contentEl = rootRef.el.querySelector(".o_content");
                     if (contentEl) {
                         state[scrollSymbol] = {
                             content: { left: contentEl.scrollLeft, top: contentEl.scrollTop },
@@ -139,8 +138,7 @@ export function useSetupAction(params = {}) {
                         rootRef.el.scrollTop = (scrolling.root && scrolling.root.top) || 0;
                         rootRef.el.scrollLeft = (scrolling.root && scrolling.root.left) || 0;
                     } else if (scrolling.content) {
-                        const contentEl = rootRef.el.querySelector(".o_component_with_search_panel > .o_renderer_with_searchpanel," 
-                    + ".o_component_with_search_panel > .o_renderer") || rootRef.el.querySelector(".o_content");
+                        const contentEl = rootRef.el.querySelector(".o_content");
                         if (contentEl) {
                             contentEl.scrollTop = scrolling.content.top || 0;
                             contentEl.scrollLeft = scrolling.content.left || 0;

@@ -20,7 +20,6 @@ Website Forum integration for the helpdesk module
     """,
     'data': [
         'security/ir.model.access.csv',
-        'views/forum_forum_templates.xml',
         'views/helpdesk_templates.xml',
         'views/helpdesk_views.xml',
         'wizards/helpdesk_ticket_select_forum.xml',

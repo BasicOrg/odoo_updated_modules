@@ -2,10 +2,10 @@
 
 import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
-import { useBus, useService } from "@web/core/utils/hooks";
+import { useService } from "@web/core/utils/hooks";
 import { Transition } from "@web/core/transition";
 
-import { Component, useState } from "@odoo/owl";
+const { Component, onWillDestroy, useState } = owl;
 
 /**
  * Loading Indicator
@@ -28,31 +28,33 @@ export class LoadingIndicator extends Component {
         this.shouldUnblock = false;
         this.startShowTimer = null;
         this.blockUITimer = null;
-        useBus(this.env.bus, "RPC:REQUEST", this.requestCall);
-        useBus(this.env.bus, "RPC:RESPONSE", this.responseCall);
+        this.env.bus.addEventListener("RPC:REQUEST", this.requestCall.bind(this));
+        this.env.bus.addEventListener("RPC:RESPONSE", this.responseCall.bind(this));
+        onWillDestroy(() => {
+            this.env.bus.removeEventListener("RPC:REQUEST", this.requestCall.bind(this));
+            this.env.bus.removeEventListener("RPC:RESPONSE", this.responseCall.bind(this));
+        });
     }
 
-    requestCall({ detail }) {
-        if (detail.settings.silent) {
-            return;
-        }
+    requestCall({ detail: rpcId }) {
         if (this.state.count === 0) {
             browser.clearTimeout(this.startShowTimer);
             this.startShowTimer = browser.setTimeout(() => {
                 if (this.state.count) {
                     this.state.show = true;
+                    this.blockUITimer = browser.setTimeout(() => {
+                        this.shouldUnblock = true;
+                        this.uiService.block();
+                    }, 3000);
                 }
             }, 250);
         }
-        this.rpcIds.add(detail.data.id);
+        this.rpcIds.add(rpcId);
         this.state.count++;
     }
 
-    responseCall({ detail }) {
-        if (detail.settings.silent) {
-            return;
-        }
-        this.rpcIds.delete(detail.data.id);
+    responseCall({ detail: rpcId }) {
+        this.rpcIds.delete(rpcId);
         this.state.count = this.rpcIds.size;
         if (this.state.count === 0) {
             browser.clearTimeout(this.startShowTimer);
@@ -68,7 +70,6 @@ export class LoadingIndicator extends Component {
 
 LoadingIndicator.template = "web.LoadingIndicator";
 LoadingIndicator.components = { Transition };
-LoadingIndicator.props = {};
 
 registry.category("main_components").add("LoadingIndicator", {
     Component: LoadingIndicator,

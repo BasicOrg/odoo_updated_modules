@@ -1,7 +1,7 @@
 /** @odoo-module */
 
 import { selectCell, setCellContent } from "@spreadsheet/../tests/utils/commands";
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { getAccountingData } from "../accounting_test_data";
 import {
     createModelWithDataSource,
@@ -49,7 +49,7 @@ QUnit.module("spreadsheet_account > Accounting Drill down", { beforeEach }, () =
                 if (args.method === "spreadsheet_move_line_action") {
                     assert.deepEqual(args.args, [
                         {
-                            codes: ["100"],
+                            code: "100",
                             company_id: null,
                             include_unposted: false,
                             date_range: {
@@ -62,17 +62,15 @@ QUnit.module("spreadsheet_account > Accounting Drill down", { beforeEach }, () =
                 }
             },
         });
-        const env = model.config.custom.env;
+        const env = model.config.evalContext.env;
         env.model = model;
         setCellContent(model, "A1", `=ODOO.BALANCE("100", 2020)`);
         setCellContent(model, "A2", `=ODOO.BALANCE("100", 0)`);
         await waitForDataSourcesLoaded(model);
         selectCell(model, "A1");
-        const root = cellMenuRegistry
-            .getMenuItems()
-            .find((item) => item.id === "move_lines_see_records");
+        const root = cellMenuRegistry.getAll().find((item) => item.id === "move_lines_see_records");
         assert.equal(root.isVisible(env), true);
-        await root.execute(env);
+        await root.action(env);
         assert.verifySteps(["drill down action"]);
         selectCell(model, "A2");
         assert.equal(root.isVisible(env), false);

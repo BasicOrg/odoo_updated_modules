@@ -40,9 +40,8 @@ class TestAccountMoveDateAlgorithm(AccountTestInvoicingCommon):
             'date': date,
         })
 
-    def _set_lock_date(self, lock_date, period_lock_date=None):
+    def _set_lock_date(self, lock_date):
         self.env.company.fiscalyear_lock_date = fields.Date.from_string(lock_date)
-        self.env.company.period_lock_date = fields.Date.from_string(period_lock_date)
 
     def _reverse_invoice(self, invoice):
         move_reversal = self.env['account.move.reversal']\
@@ -50,8 +49,9 @@ class TestAccountMoveDateAlgorithm(AccountTestInvoicingCommon):
             .create({
                 'journal_id': invoice.journal_id.id,
                 'reason': "no reason",
+                'refund_method': 'cancel',
             })
-        reversal = move_reversal.refund_moves()
+        reversal = move_reversal.reverse_moves()
         return self.env['account.move'].browse(reversal['res_id'])
 
     # -------------------------------------------------------------------------
@@ -151,12 +151,13 @@ class TestAccountMoveDateAlgorithm(AccountTestInvoicingCommon):
         (invoice + refund).action_post()
         self._set_lock_date('2017-01-31')
 
-        amls = (invoice + refund).line_ids.filtered(lambda x: x.account_id.account_type == 'asset_receivable')
-        amls.reconcile()
-        exchange_move = amls.matched_debit_ids.exchange_move_id
+        res = (invoice + refund).line_ids\
+            .filtered(lambda x: x.account_id.account_type == 'asset_receivable')\
+            .reconcile()
+        exchange_move = res['partials'].exchange_move_id
 
         self.assertRecordValues(exchange_move, [{
-            'date': fields.Date.from_string('2017-02-12'),
+            'date': fields.Date.from_string('2017-02-01'),
             'amount_total_signed': 200.0,
         }])
 
@@ -166,9 +167,10 @@ class TestAccountMoveDateAlgorithm(AccountTestInvoicingCommon):
         refund = self._create_invoice('out_refund', '2017-01-01', currency_id=self.currency_data['currency'].id)
         (invoice + refund).action_post()
 
-        amls = (invoice + refund).line_ids.filtered(lambda x: x.account_id.account_type == 'asset_receivable')
-        amls.reconcile()
-        exchange_move = amls.matched_debit_ids.exchange_move_id
+        res = (invoice + refund).line_ids\
+            .filtered(lambda x: x.account_id.account_type == 'asset_receivable')\
+            .reconcile()
+        exchange_move = res['partials'].exchange_move_id
 
         self._set_lock_date('2017-01-31')
         (invoice + refund).line_ids.remove_move_reconcile()
@@ -229,54 +231,3 @@ class TestAccountMoveDateAlgorithm(AccountTestInvoicingCommon):
             'date': fields.Date.from_string('2017-02-28'),
             'amount_total_signed': 440.0,
         }])
-
-    @freezegun.freeze_time('2023-05-01')
-    def test_caba_with_different_lock_dates(self):
-        """
-        Test the date of the CABA move when reconciling a payment with an invoice
-        with date before fiscalyear_period but after period_lock_date either when
-        having accountant rights or not.
-        """
-        self.env.company.tax_exigibility = True
-
-        tax_waiting_account = self.env['account.account'].create({
-            'name': 'TAX_WAIT',
-            'code': 'TWAIT',
-            'account_type': 'liability_current',
-            'reconcile': True,
-        })
-        tax = self.env['account.tax'].create({
-            'name': 'cash basis 10%',
-            'type_tax_use': 'sale',
-            'amount': 10,
-            'tax_exigibility': 'on_payment',
-            'cash_basis_transition_account_id': tax_waiting_account.id,
-        })
-
-        self._set_lock_date('2023-01-01', '2023-02-01')
-
-        for group, expected_date in (
-                ('account.group_account_manager', '2023-01-30'),
-                ('account.group_account_invoice', '2023-05-01'),
-        ):
-            with self.subTest(group=group, expected_date=expected_date):
-                self.env.user.groups_id = [Command.set(self.env.ref(group).ids)]
-
-                self.assertTrue(self.env.user.user_has_groups(group))
-
-                invoice = self._create_invoice(
-                    'out_invoice', '2023-01-02',
-                    invoice_line_ids=[{'tax_ids': [Command.set(tax.ids)]}],
-                )
-                payment = self._create_payment('2023-01-30', amount=invoice.amount_total)
-                (invoice + payment.move_id).action_post()
-
-                (invoice + payment.move_id).line_ids\
-                    .filtered(lambda x: x.account_id.account_type == 'asset_receivable')\
-                    .reconcile()
-
-                caba_move = self.env['account.move'].search([('tax_cash_basis_origin_move_id', '=', invoice.id)])
-
-                self.assertRecordValues(caba_move, [{
-                    'date': fields.Date.from_string(expected_date),
-                }])

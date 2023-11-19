@@ -8,12 +8,11 @@ from odoo.tools.misc import format_duration
 
 class AppointmentSlot(models.Model):
     _name = "appointment.slot"
-    _description = "Appointment: Time Slot"
+    _description = "Online Appointment : Time Slot"
     _rec_name = "weekday"
     _order = "weekday, start_hour, start_datetime, end_datetime"
 
     appointment_type_id = fields.Many2one('appointment.type', 'Appointment Type', ondelete='cascade')
-    schedule_based_on = fields.Selection(related="appointment_type_id.schedule_based_on")
     slot_type = fields.Selection([('recurring', 'Recurring'), ('unique', 'One Shot')],
         string='Slot type', default='recurring', required=True, compute="_compute_slot_type", store=True,
         help="""Defines the type of slot. The recurring slot is the default type which is used for
@@ -25,10 +24,7 @@ class AppointmentSlot(models.Model):
     restrict_to_user_ids = fields.Many2many(
         'res.users', string='Restrict to Users',
         help="If empty, all users are considered to be available.\n"
-             "If set, only the selected users will be taken into account for this slot.")
-    restrict_to_resource_ids = fields.Many2many("appointment.resource", string="Restrict to Resources",
-        help="If empty, all resources are considered to be available.\n"
-             "If set, only the selected resources will be taken into account for this slot.")
+            "If set, only the selected users will be taken into account for this slot.")
     # Recurring slot
     weekday = fields.Selection([
         ('1', 'Monday'),
@@ -104,11 +100,15 @@ class AppointmentSlot(models.Model):
         self.ensure_one()
         return self.end_hour if self.end_hour else 24
 
-    @api.depends('slot_type', 'weekday', 'start_datetime', 'end_datetime', 'start_hour', 'end_hour')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         weekdays = dict(self._fields['weekday'].selection)
         for slot in self:
             if slot.slot_type == 'recurring':
-                slot.display_name = "%s, %02d:%02d - %02d:%02d" % (weekdays.get(slot.weekday), int(slot.start_hour), int(round((slot.start_hour % 1) * 60)), int(slot.end_hour), int(round((slot.end_hour % 1) * 60)))
+                result.append((
+                    slot.id,
+                    "%s, %02d:%02d - %02d:%02d" % (weekdays.get(slot.weekday), int(slot.start_hour), int(round((slot.start_hour % 1) * 60)), int(slot.end_hour), int(round((slot.end_hour % 1) * 60)))
+                ))
             else:
-                slot.display_name = f"{slot.start_datetime} - {slot.end_datetime}"
+                result.append((slot.id, "%s - %s" % (slot.start_datetime, slot.end_datetime)))
+        return result

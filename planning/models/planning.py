@@ -6,12 +6,11 @@ from dateutil.relativedelta import relativedelta
 import logging
 import pytz
 import uuid
-from math import modf
-from random import randint, shuffle
-import itertools
+from math import ceil, modf
+from random import randint
 
 from odoo import api, fields, models, _
-from odoo.addons.resource.models.utils import Intervals, sum_intervals, string_to_datetime
+from odoo.addons.resource.models.resource import Intervals, sum_intervals, string_to_datetime
 from odoo.addons.resource.models.resource_mixin import timezone_datetime
 from odoo.exceptions import UserError, AccessError
 from odoo.osv import expression
@@ -45,9 +44,8 @@ class Planning(models.Model):
         return datetime.combine(fields.Date.context_today(self), time.max)
 
     name = fields.Text('Note')
-    resource_id = fields.Many2one('resource.resource', 'Resource', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", group_expand='_group_expand_resource_id')
+    resource_id = fields.Many2one('resource.resource', 'Resource', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", group_expand='_read_group_resource_id')
     resource_type = fields.Selection(related='resource_id.resource_type')
-    resource_color = fields.Integer(related='resource_id.color', string="Resource color")
     employee_id = fields.Many2one('hr.employee', 'Employee', compute='_compute_employee_id', store=True)
     work_email = fields.Char("Work Email", related='employee_id.work_email')
     work_address_id = fields.Many2one(related='employee_id.address_id', store=True)
@@ -81,8 +79,6 @@ class Planning(models.Model):
     conflicting_slot_ids = fields.Many2many('planning.slot', compute='_compute_overlap_slot_count')
     overlap_slot_count = fields.Integer('Overlapping Slots', compute='_compute_overlap_slot_count', search='_search_overlap_slot_count')
     is_past = fields.Boolean('Is This Shift In The Past?', compute='_compute_past_shift')
-    is_users_role = fields.Boolean('Is the shifts role one of the current user roles', compute='_compute_is_users_role')
-    request_to_switch = fields.Boolean('Has there been a request to switch on this shift slot?', default=False, readonly=True)
 
     # time allocation
     allocation_type = fields.Selection([
@@ -104,7 +100,7 @@ class Planning(models.Model):
     state = fields.Selection([
             ('draft', 'Draft'),
             ('published', 'Published'),
-    ], string='Status', default='draft', copy=True) # "state" field is not copied by default in the orm, which is not a desired behavior in planning
+    ], string='Status', default='draft')
     # template dummy fields (only for UI purpose)
     template_creation = fields.Boolean("Save as Template", store=False, inverse='_inverse_template_creation')
     template_autocomplete_ids = fields.Many2many('planning.slot.template', store=False, compute='_compute_template_autocomplete_ids')
@@ -115,29 +111,23 @@ class Planning(models.Model):
 
     # Recurring (`repeat_` fields are none stored, only used for UI purpose)
     recurrency_id = fields.Many2one('planning.recurrency', readonly=True, index=True, ondelete="set null", copy=False)
-    repeat = fields.Boolean("Repeat", compute='_compute_repeat', inverse='_inverse_repeat',
-        help="To avoid polluting your database and performance issues, shifts are only created for the next 6 months. They are then gradually created as time passes by in order to always get shifts 6 months ahead. This value can be modified from the settings of Planning, in debug mode.")
-    repeat_interval = fields.Integer("Repeat every", default=1, compute='_compute_repeat_interval', inverse='_inverse_repeat')
+    repeat = fields.Boolean("Repeat", compute='_compute_repeat', inverse='_inverse_repeat', copy=True,
+        help="Modifications made to a shift only impact the current shift and not the other ones that are part of the recurrence. The same goes when deleting a recurrent shift. Disable this option to stop the recurrence.\n"
+        "To avoid polluting your database and performance issues, shifts are only created for the next 6 months. They are then gradually created as time passes by in order to always get shifts 6 months ahead. This value can be modified from the settings of Planning, in debug mode.")
+    repeat_interval = fields.Integer("Repeat every", default=1, compute='_compute_repeat_interval', inverse='_inverse_repeat', copy=True)
     repeat_unit = fields.Selection([
         ('day', 'Days'),
         ('week', 'Weeks'),
         ('month', 'Months'),
         ('year', 'Years'),
     ], default='week', compute='_compute_repeat_unit', inverse='_inverse_repeat', required=True)
-    repeat_type = fields.Selection([('forever', 'Forever'), ('until', 'Until'), ('x_times', 'Number of Occurrences')],
-        string='Repeat Type', default='forever', compute='_compute_repeat_type', inverse='_inverse_repeat')
-    repeat_until = fields.Date("Repeat Until", compute='_compute_repeat_until', inverse='_inverse_repeat')
-    repeat_number = fields.Integer("Repetitions", default=1, compute='_compute_repeat_number', inverse='_inverse_repeat')
-    recurrence_update = fields.Selection([
-        ('this', 'This shift'),
-        ('subsequent', 'This and following shifts'),
-        ('all', 'All shifts'),
-    ], default='this', store=False)
+    repeat_type = fields.Selection([('forever', 'Forever'), ('until', 'Until'), ('x_times', 'Number of Repetitions')],
+        string='Repeat Type', default='forever', compute='_compute_repeat_type', inverse='_inverse_repeat', copy=True)
+    repeat_until = fields.Date("Repeat Until", compute='_compute_repeat_until', inverse='_inverse_repeat', copy=True)
+    repeat_number = fields.Integer("Repetitions", default=1, compute='_compute_repeat_number', inverse='_inverse_repeat', copy=True)
     confirm_delete = fields.Boolean('Confirm Slots Deletion', compute='_compute_confirm_delete')
 
     is_hatched = fields.Boolean(compute='_compute_is_hatched')
-
-    slot_properties = fields.Properties('Properties', definition='role_id.slot_properties_definition', precompute=False)
 
     _sql_constraints = [
         ('check_start_date_lower_end_date', 'CHECK(end_datetime > start_datetime)', 'The end date of a shift should be after its start date.'),
@@ -176,16 +166,7 @@ class Planning(models.Model):
     def _compute_past_shift(self):
         now = fields.Datetime.now()
         for slot in self:
-            if slot.end_datetime:
-                if slot.end_datetime < now:
-                    slot.is_past = True
-                    # We have to do this (below), for the field to be set automatically to False when the shift is in the past
-                    if slot.request_to_switch:
-                        slot.sudo().request_to_switch = False
-                else:
-                    slot.is_past = False
-            else:
-                slot.is_past = False
+            slot.is_past = slot.end_datetime < now if slot.end_datetime else False
 
     @api.depends('resource_id.employee_id', 'resource_type')
     def _compute_employee_id(self):
@@ -196,7 +177,10 @@ class Planning(models.Model):
     def _compute_role_id(self):
         for slot in self:
             if not slot.role_id:
-                slot.role_id = slot.resource_id.default_role_id
+                if slot.employee_id.default_planning_role_id:
+                    slot.role_id = slot.employee_id.default_planning_role_id
+                else:
+                    slot.role_id = False
 
             if slot.template_id:
                 slot.previous_template_id = slot.template_id
@@ -214,12 +198,6 @@ class Planning(models.Model):
     def _compute_is_assigned_to_me(self):
         for slot in self:
             slot.is_assigned_to_me = slot.user_id == self.env.user
-
-    @api.depends('role_id')
-    def _compute_is_users_role(self):
-        user_resource_roles = self.env['resource.resource'].search([('user_id', '=', self.env.user.id)]).role_ids
-        for slot in self:
-            slot.is_users_role = (slot.role_id in user_resource_roles) or not user_resource_roles or not slot.role_id
 
     @api.depends('start_datetime', 'end_datetime')
     def _compute_allocation_type(self):
@@ -246,18 +224,23 @@ class Planning(models.Model):
         start_utc = pytz.utc.localize(min(slots.mapped('start_datetime')))
         end_utc = pytz.utc.localize(max(slots.mapped('end_datetime')))
         resource_work_intervals, calendar_work_intervals = slots.resource_id \
-            .filtered('calendar_id') \
+            .filtered(lambda r: not r.flexible_hours) \
             ._get_valid_work_intervals(start_utc, end_utc, calendars=slots.company_id.resource_calendar_id)
         for slot in slots:
-            if not slot.resource_id and slot.allocation_type == 'planning' or not slot.resource_id.calendar_id:
+            if not slot.resource_id and slot.allocation_type == 'planning' or slot.resource_id.flexible_hours:
                 slot.allocated_percentage = 100 * slot.allocated_hours / slot._calculate_slot_duration()
             else:
-                work_hours = slot._get_working_hours_over_period(start_utc, end_utc, resource_work_intervals, calendar_work_intervals)
+                work_hours = slot._get_duration_over_period(
+                    pytz.utc.localize(slot.start_datetime),
+                    pytz.utc.localize(slot.end_datetime),
+                    resource_work_intervals, calendar_work_intervals,
+                    has_allocated_hours=False,
+                )
                 slot.allocated_percentage = 100 * slot.allocated_hours / work_hours if work_hours else 100
 
     @api.depends(
         'start_datetime', 'end_datetime', 'resource_id.calendar_id',
-        'company_id.resource_calendar_id', 'allocated_percentage')
+        'company_id.resource_calendar_id', 'allocated_percentage', 'resource_id.flexible_hours')
     def _compute_allocated_hours(self):
         percentage_field = self._fields['allocated_percentage']
         self.env.remove_to_compute(percentage_field, self)
@@ -265,12 +248,12 @@ class Planning(models.Model):
             lambda s:
                 (s.allocation_type == 'planning' or not s.company_id)
                 and not s.resource_id
-                or not s.resource_id.calendar_id
+                or s.resource_id.flexible_hours
         )
         slots_with_calendar = self - planning_slots
         for slot in planning_slots:
             # for each planning slot, compute the duration
-            ratio = slot.allocated_percentage / 100.0
+            ratio = slot.allocated_percentage / 100.0 or 1
             slot.allocated_hours = slot._calculate_slot_duration() * ratio
         if slots_with_calendar:
             # for forecasted slots, compute the conjunction of the slot resource's work intervals and the slot.
@@ -305,12 +288,11 @@ class Planning(models.Model):
             if not slot.employee_id:
                 slot.working_days_count = 0
                 continue
-            calendar = slot.resource_id.calendar_id or slot.resource_id.company_id.resource_calendar_id
-            slots_per_calendar[calendar].add(slot.id)
-            datetime_begin, datetime_end = planned_dates_per_calendar_id[calendar.id]
+            slots_per_calendar[slot.resource_id.calendar_id].add(slot.id)
+            datetime_begin, datetime_end = planned_dates_per_calendar_id[slot.resource_id.calendar_id.id]
             datetime_begin = min(datetime_begin, slot.start_datetime)
             datetime_end = max(datetime_end, slot.end_datetime)
-            planned_dates_per_calendar_id[calendar.id] = datetime_begin, datetime_end
+            planned_dates_per_calendar_id[slot.resource_id.calendar_id.id] = datetime_begin, datetime_end
         for calendar, slot_ids in slots_per_calendar.items():
             slots = self.env['planning.slot'].browse(list(slot_ids))
             if not calendar:
@@ -384,15 +366,11 @@ class Planning(models.Model):
         query = """
             SELECT S1.id
             FROM planning_slot S1
-            WHERE EXISTS (
-                SELECT 1
-                  FROM planning_slot S2
-                 WHERE S1.id <> S2.id
-                   AND S1.resource_id = S2.resource_id
-                   AND S1.start_datetime < S2.end_datetime
-                   AND S1.end_datetime > S2.start_datetime
-                   AND S1.allocated_percentage + S2.allocated_percentage > 100
-            )
+            INNER JOIN planning_slot S2 ON S1.resource_id = S2.resource_id AND S1.id <> S2.id
+            WHERE
+                S1.start_datetime < S2.end_datetime
+                AND S1.end_datetime > S2.start_datetime
+                AND S1.allocated_percentage + S2.allocated_percentage > 100
         """
         operator_new = (operator == ">") and "inselect" or "not inselect"
         return [('id', operator_new, (query, ()))]
@@ -482,16 +460,13 @@ class Planning(models.Model):
                 slot.repeat_interval = slot.recurrency_id.repeat_interval
         (self - recurrency_slots).update(self.default_get(['repeat_interval']))
 
-    @api.depends('recurrency_id.repeat_until', 'repeat', 'repeat_type')
+    @api.depends('recurrency_id.repeat_until')
     def _compute_repeat_until(self):
         for slot in self:
-            repeat_until = False
-            if slot.repeat and slot.repeat_type == 'until':
-                if slot.recurrency_id and slot.recurrency_id.repeat_until:
-                    repeat_until = slot.recurrency_id.repeat_until
-                elif slot.start_datetime:
-                    repeat_until = slot.start_datetime + relativedelta(weeks=1)
-            slot.repeat_until = repeat_until
+            if slot.recurrency_id:
+                slot.repeat_until = slot.recurrency_id.repeat_until
+            else:
+                slot.repeat_until = False
 
     @api.depends('recurrency_id.repeat_number', 'repeat_type')
     def _compute_repeat_number(self):
@@ -541,7 +516,13 @@ class Planning(models.Model):
                 slot.recurrency_id._repeat_slot()
             # user wants to delete the recurrence
             # here we also check that we don't delete by mistake a slot of which the repeat parameters have been changed
-            elif not slot.repeat and slot.recurrency_id.id:
+            elif not slot.repeat and slot.recurrency_id.id and (
+                slot.repeat_unit == slot.recurrency_id.repeat_unit and
+                slot.repeat_type == slot.recurrency_id.repeat_type and
+                slot.repeat_until == slot.recurrency_id.repeat_until and
+                slot.repeat_number == slot.recurrency_id.repeat_number and
+                slot.repeat_interval == slot.recurrency_id.repeat_interval
+            ):
                 slot.recurrency_id._delete_slot(slot.end_datetime)
                 slot.recurrency_id.unlink()  # will set recurrency_id to NULL
 
@@ -584,7 +565,7 @@ class Planning(models.Model):
             current_start = convert_datetime_timezone(start_datetime, user_tz)
             current_end = convert_datetime_timezone(end_datetime, user_tz)
             # Look at the work intervals to examine whether the current start/end_datetimes are inside working hours
-            calendar_id = resource.calendar_id or company.resource_calendar_id
+            calendar_id = resource.calendar_id if resource else company.resource_calendar_id
             work_interval = calendar_id._work_intervals_batch(current_start, current_end)[False]
             intervals = [(date_start, date_stop) for date_start, date_stop, attendance in work_interval]
             if not intervals:
@@ -630,7 +611,7 @@ class Planning(models.Model):
             start = start.astimezone(pytz.utc).replace(tzinfo=None)
 
             h, m = divmod(template_id.duration, 1)
-            delta = timedelta(hours=int(h), minutes=int(round(m * 60)))
+            delta = timedelta(hours=int(h), minutes=int(m * 60))
             end = start + delta
         return (start, end)
 
@@ -751,28 +732,28 @@ class Planning(models.Model):
             """ % {'table_name': self._table}
             self.env.cr.execute(query)
 
-    @api.depends(lambda self: self._display_name_fields())
-    @api.depends_context('group_by')
-    def _compute_display_name(self):
+    def name_get(self):
         group_by = self.env.context.get('group_by', [])
-        field_list = [fname for fname in self._display_name_fields() if fname not in group_by]
+        field_list = [fname for fname in self._name_get_fields() if fname not in group_by]
 
         # Sudo as a planning manager is not able to read private project if he is not project manager.
         self = self.sudo()
-        for slot in self.with_context(hide_partner_ref=True):
+        result = []
+        for slot in self:
             # label part, depending on context `groupby`
             name_values = [
                 self._fields[fname].convert_to_display_name(slot[fname], slot) if fname != 'resource_id' else slot.resource_id.name
                 for fname in field_list
                 if slot[fname]
-            ][:4]  # limit to 4 labels
+            ][:3]  # limit to 3 labels
             name = ' - '.join(name_values) or slot.resource_id.name
 
             # add unicode bubble to tell there is a note
             if slot.name:
-                name = f'{name} \U0001F4AC'
+                name = u'%s \U0001F4AC' % name
 
-            slot.display_name = name or ''
+            result.append([slot.id, name or ''])
+        return result
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -789,103 +770,43 @@ class Planning(models.Model):
         return super().create(vals_list)
 
     def write(self, values):
-        new_resource = self.env['resource.resource'].browse(values['resource_id']) if 'resource_id' in values else None
-        if new_resource and new_resource.resource_type == 'material':
+        if 'resource_id' in values and self.env['resource.resource'].browse(values['resource_id']).resource_type == 'material':
             values['state'] = 'published'
-        # if the resource_id is changed while the shift has already been published and the resource is human, that means that the shift has been re-assigned
-        # and thus we should send the email about the shift re-assignment
-        if (new_resource and self.state == 'published'
-                and self.resource_type == 'user'
-                and new_resource.resource_type == 'user'):
-            self._send_shift_assigned(self, new_resource)
-        # if the "resource_id" or the "start/end_datetime" fields meaningfully change when there is a request to switch, remove the request to switch
-        for slot in self:
-            if slot.request_to_switch and (
-                (new_resource and slot.resource_id != new_resource)
-                or ('start_datetime' in values and slot.start_datetime != datetime.strptime(values['start_datetime'], '%Y-%m-%d %H:%M:%S'))
-                or ('end_datetime' in values and slot.end_datetime != datetime.strptime(values['end_datetime'], '%Y-%m-%d %H:%M:%S'))
-            ):
-                values['request_to_switch'] = False
-        # update other slots in recurrency
-        slots = self
-        recurrence_update = values.pop('recurrence_update', 'this')
-        if recurrence_update != 'this':
-            recurrence_domain = []
-            if recurrence_update == 'subsequent':
-                for slot in self:
-                    recurrence_domain = expression.OR([recurrence_domain,
-                        ['&', ('recurrency_id', '=', slot.recurrency_id.id), ('start_datetime', '>=', slot.start_datetime)]
-                    ])
-            else:
-                recurrence_domain = [('recurrency_id', 'in', self.recurrency_id.ids)]
-            slots |= self.search(recurrence_domain)
-
-        result = super(Planning, slots).write(values)
+        # detach planning entry from recurrency
+        if any(fname in values.keys() for fname in self._get_fields_breaking_recurrency()) and not values.get('recurrency_id'):
+            values.update({'recurrency_id': False})
+        result = super(Planning, self).write(values)
         # recurrence
         if any(key in ('repeat', 'repeat_unit', 'repeat_type', 'repeat_until', 'repeat_interval', 'repeat_number') for key in values):
             # User is trying to change this record's recurrence so we delete future slots belonging to recurrence A
             # and we create recurrence B from now on w/ the new parameters
             for slot in self:
-                recurrence = slot.recurrency_id
-                if recurrence and values.get('repeat') is None:
-                    repeat_type = values.get('repeat_type') or recurrence.repeat_type
-                    repeat_until = values.get('repeat_until') or recurrence.repeat_until
+                if slot.recurrency_id and values.get('repeat') is None:
+                    repeat_type = values.get('repeat_type') or slot.recurrency_id.repeat_type
+                    repeat_until = values.get('repeat_until') or slot.recurrency_id.repeat_until
                     repeat_number = values.get('repeat_number', 0) or slot.repeat_number
                     if repeat_type == 'until':
                         repeat_until = datetime.combine(fields.Date.to_date(repeat_until), datetime.max.time())
                         repeat_until = repeat_until.replace(tzinfo=pytz.timezone(slot.company_id.resource_calendar_id.tz or 'UTC')).astimezone(pytz.utc).replace(tzinfo=None)
                     recurrency_values = {
-                        'repeat_interval': values.get('repeat_interval') or recurrence.repeat_interval,
-                        'repeat_unit': values.get('repeat_unit') or recurrence.repeat_unit,
+                        'repeat_interval': values.get('repeat_interval') or slot.recurrency_id.repeat_interval,
+                        'repeat_unit': values.get('repeat_unit') or slot.recurrency_id.repeat_unit,
                         'repeat_until': repeat_until if repeat_type == 'until' else False,
                         'repeat_number': repeat_number,
                         'repeat_type': repeat_type,
                         'company_id': slot.company_id.id,
                     }
-                    recurrence.write(recurrency_values)
+                    slot.recurrency_id.write(recurrency_values)
                     if slot.repeat_type == 'x_times':
-                        recurrency_values['repeat_until'] = recurrence._get_recurrence_last_datetime()
+                        recurrency_values['repeat_until'] = slot.recurrency_id._get_recurrence_last_datetime()
                     end_datetime = slot.end_datetime if values.get('repeat_unit') else recurrency_values.get('repeat_until')
-                    recurrence._delete_slot(end_datetime)
-                    recurrence._repeat_slot()
-        return result
-
-    @api.returns('self', lambda value: value.id)
-    def copy(self, default=None):
-        result = super().copy(default=default)
-        # force recompute of stored computed fields depending on start_datetime
-        if default and "start_datetime" in default:
-            result._compute_allocated_hours()
-            result._compute_working_days_count()
+                    slot.recurrency_id._delete_slot(end_datetime)
+                    slot.recurrency_id._repeat_slot()
         return result
 
     # ----------------------------------------------------
     # Actions
     # ----------------------------------------------------
-
-    def action_address_recurrency(self, recurrence_update):
-        """ :param recurrence_update: the occurences to be targetted (this, subsequent, all)
-        """
-        if recurrence_update == 'this':
-            return
-        domain = [('id', 'not in', self.ids)]
-        if recurrence_update == 'all':
-            domain = expression.AND([domain, [('recurrency_id', 'in', self.recurrency_id.ids)]])
-        elif recurrence_update == 'subsequent':
-            start_date_per_recurrency_id = {}
-            sub_domain = []
-            for shift in self:
-                if shift.recurrency_id.id not in start_date_per_recurrency_id\
-                    or shift.start_datetime < start_date_per_recurrency_id[shift.recurrency_id.id]:
-                    start_date_per_recurrency_id[shift.recurrency_id.id] = shift.start_datetime
-            for recurrency_id, start_datetime in start_date_per_recurrency_id.items():
-                sub_domain = expression.OR([sub_domain,
-                    ['&', ('recurrency_id', '=', recurrency_id), ('start_datetime', '>', start_datetime)]
-                ])
-            domain = expression.AND([domain, sub_domain])
-        sibling_slots = self.env['planning.slot'].search(domain)
-        self.recurrency_id.unlink()
-        sibling_slots.unlink()
 
     def action_unlink(self):
         self.unlink()
@@ -910,7 +831,7 @@ class Planning(models.Model):
         # user must at least 'read' the shift to self assign (Prevent any user in the system (portal, ...) to assign themselves)
         if not self.check_access_rights('read', raise_exception=False):
             raise AccessError(_("You don't have the right to self assign."))
-        if self.resource_id and not self.request_to_switch:
+        if self.resource_id:
             raise UserError(_("You can not assign yourself to an already assigned shift."))
         return self.sudo().write({'resource_id': self.env.user.employee_id.resource_id.id if self.env.user.employee_id else False})
 
@@ -927,325 +848,9 @@ class Planning(models.Model):
             raise UserError(_("You can not unassign another employee than yourself."))
         return self.sudo().write({'resource_id': False})
 
-    def action_switch_shift(self):
-        """ Allow planning user to make shift available for other people to assign themselves to. """
-        self.ensure_one()
-        # same as with self-assign, a user must be able to 'read' the shift in order to request a switch
-        if not self.check_access_rights('read', raise_exception=False):
-            raise AccessError(_("You don't have the right to switch shifts."))
-        if self.employee_id != self.env.user.employee_id:
-            raise UserError(_("You can not request to switch a shift that is assigned to another user."))
-        if self.is_past:
-            raise UserError(_("You cannot switch a shift that is in the past."))
-        return self.sudo().write({'request_to_switch': True})
-
-    def action_cancel_switch(self):
-        """ Allows the planning user to cancel the shift switch if they change their mind at a later date """
-        self.ensure_one()
-        # same as above, the user rights are checked in order for the operation to be completed
-        if not self.check_access_rights('read', raise_exception=False):
-            raise AccessError(_("You don't have the right to cancel a request to switch."))
-        if self.employee_id != self.env.user.employee_id:
-            raise UserError(_("You can not cancel a request to switch made by another user."))
-        if self.is_past:
-            raise UserError(_("You cannot cancel a request to switch that is in the past."))
-        return self.sudo().write({'request_to_switch': False})
-
-    def auto_plan_id(self):
-        """ Used in the form view to auto plan a single shift.
-        """
-        if not self.with_context(planning_slot_id=self.id).auto_plan_ids([('id', '=', self.id)]):
-            return self._get_notification_action("danger", _("There are no resources available for this open shift."))
-
-    @api.model
-    def auto_plan_ids(self, view_domain):
-        # We need to make sure we have a specified either one shift in particular or a period to look into.
-        assert self._context.get('planning_slot_id') or (
-            self._context.get('default_start_datetime') and self._context.get('default_end_datetime')
-        ), "`default_start_datetime` and `default_end_datetime` attributes should be in the context"
-
-        # Our goal is to assign empty shifts in this period. So first, let's get them all!
-        open_shifts, min_start, max_end = self._read_group(
-            expression.AND([
-                view_domain,
-                [('resource_id', '=', False)],
-            ]),
-            [],
-            ['id:recordset', 'start_datetime:min', 'end_datetime:max'],
-        )[0]
-        if not open_shifts:
-            return []
-        user_tz = pytz.timezone(self.env.user.tz or 'UTC')
-        min_start = min_start.astimezone(user_tz)
-        max_end = max_end.astimezone(user_tz)
-
-        # Get all resources that have the role set on those shifts as default role or in their roles.
-        Resource = self.env['resource.resource']
-        # open_shifts.role_id.ids wouldn't include False, yet we need this information
-        open_shift_role_ids = [shift.role_id.id for shift in open_shifts]
-        resources = Resource.search([
-            ('calendar_id', '!=', False),
-            '|',
-                ('default_role_id', 'in', open_shift_role_ids),
-                ('role_ids', 'in', open_shift_role_ids),
-        ])
-        # And make two dictionnaries out of it (default roles and roles). We will prioritize default roles.
-        resource_ids_per_role_id = defaultdict(list)
-        resource_ids_per_default_role_id = defaultdict(list)
-        for resource in resources:
-            resource_ids_per_default_role_id[resource.default_role_id.id].append(resource.id)
-            for role in resource.role_ids:
-                if role == resource.default_role_id:
-                    continue
-                resource_ids_per_role_id[role.id].append(resource.id)
-        # Get the schedule of each resource in the period.
-        schedule_intervals_per_resource_id, dummy = resources._get_valid_work_intervals(min_start, max_end)
-
-        # Now let's get the assigned shifts and count the worked hours per day for each resource
-        min_start = min_start.astimezone(pytz.utc).replace(tzinfo=None) + relativedelta(hour=0, minute=0, second=0, microsecond=0)
-        max_end = max_end.astimezone(pytz.utc).replace(tzinfo=None) + relativedelta(days=1, hour=0, minute=0, second=0, microsecond=0)
-        PlanningShift = self.env['planning.slot']
-        same_days_shifts = PlanningShift.search_read([
-            ('resource_id', 'in', resources.ids),
-            ('end_datetime', '>', min_start),
-            ('start_datetime', '<', max_end),
-        ], ['start_datetime', 'end_datetime', 'resource_id', 'allocated_hours'], load=False)
-        timeline_and_worked_hours_per_resource_id = self._shift_records_to_timeline_per_resource_id(same_days_shifts)
-
-        # Create an "empty timeline" with midnight for each day in the period
-        delta_days = (max_end - min_start).days
-        empty_timeline = [
-            ((min_start + relativedelta(days=i + 1)).astimezone(user_tz).replace(tzinfo=None), 0)
-            for i in range(delta_days)
-        ]
-
-        def find_resource(shift):
-            shift_intervals = Intervals([(
-                shift.start_datetime.astimezone(user_tz),
-                shift.end_datetime.astimezone(user_tz),
-                PlanningShift,
-            )])
-            for resources_dict in [resource_ids_per_default_role_id, resource_ids_per_role_id]:
-                resource_ids = resources_dict[shift.role_id.id]
-                shuffle(resource_ids)
-                for resource in Resource.browse(resource_ids):
-                    split_shift_intervals = shift_intervals & schedule_intervals_per_resource_id[resource.id]
-                    # If the shift is out of resource's schedule, skip it.
-                    if not split_shift_intervals:
-                        continue
-                    rate = shift.allocated_hours * 3600 / sum(map(lambda x: (x[1] - x[0]).total_seconds(), split_shift_intervals))
-                    # Try to add the shift to the timeline.
-                    timeline = self._get_new_timeline_if_fits_in(
-                        split_shift_intervals,
-                        rate,
-                        resource.calendar_id.hours_per_day if resource.calendar_id else resource.company_id.resource_calendar_id.hours_per_day,
-                        timeline_and_worked_hours_per_resource_id[resource.id].copy(),
-                        empty_timeline,
-                    )
-                    # If we got a new timeline (not False), it means the shift fits for the resource
-                    # (no overload, no "occupation rate" > 100%).
-                    # If it fits, assign the shift to the resource and update the timeline.
-                    if timeline:
-                        shift.resource_id = resource
-                        timeline_and_worked_hours_per_resource_id[resource.id] = timeline
-                        return True
-            return False
-
-        return open_shifts.filtered(find_resource).ids
-
-# A. Represent the resoures shifts and the open shift on a timeline
-#   Legend
-#   ┏━━ : open shift                    ┌─────────────────── 2023/01/02 ────────────────┬─────────────────── 2023/01/03 ────────────────┐
-#   ┌── : resource's shifts             0 ───────────── 8 ~~~~~~~~~~~~~ 16 ──────────── 0 ───────────── 8 ~~~~~~~~~~~~~ 16 ──────────── 0
-#   ~~~ : resource's schedule           ├───────────────┼───────────────┼───────────────┼───────────────┼───────────────┼───────────────┤
-
-# a/ Allocated Hours (ah) :                             ┏━━ 3h ━┓                                               ┌────── 8h ─────┐
-#                                                       ┡━━━━━━━┹────────────────────── 7h ─────────────────────┴───────┬───────┘
-#                                                       └───────────────────────────────────────────────────────────────┘
-
-# b/ Rates [ah / (end - start)] :                       ┏━━ 75% ┓                                               ┌───── 100% ────┐
-#                                                       ┡━━━━━━━┹───────────────────── 25% ─────────────────────┴───────┬───────┘
-#                                                       └───────────────────────────────────────────────────────────────┘
-
-# c/ Increments Timeline :                             ┌↑75%
-#   Visual :                                           └↑25%    ↓75%                                            ↑100%   ↓25%    ↓100%
-#   Array :                                             ┗━━━━━━━┹───────────────────────────────────────────────┴───────┴───────┘
-# [
-#    (dt(2023, 1, 2,  8, 0), +1.00),
-#    (dt(2023, 1, 2, 12, 0), -0.75),
-#    (dt(2023, 1, 3, 12, 0), +1.00),
-#    (dt(2023, 1, 3, 16, 0), -0.25),
-#    (dt(2023, 1, 3, 20, 0), -1.00),
-# ]
-
-# d/ Values Timeline :
-#   Visual :                                            |100%   |25%                                            |125%   |100%   |0%
-#   Array :                                             ┗━━━━━━━┹───────────────────────────────────────────────┴───────┴───────┘
-# [
-#    (dt(2023, 1, 2,  8, 0),  1.00),
-#    (dt(2023, 1, 2, 12, 0),  0.25),
-#    (dt(2023, 1, 3, 12, 0),  1.25),
-#    (dt(2023, 1, 3, 16, 0),  1.00),
-#    (dt(2023, 1, 3, 20, 0),  0.00),
-# ]
-
-# B. Try to assign each open shift to a resource
-
-# 1) Check that the shift fits in the resource's schedule
-#   We just get the schedule intervals of the resource, convert the shift to intervals, and check the difference.
-
-# 2) Check that the resource would not be overloaded this day
-#   Delimit days with ghost events at 0:00. Then compute the total time worked per day and compare it to the resource's max load.
-#   We do so considering that every resource have the same time zone (the user's one).
-
-# 3) ...and that it would not conflict with the resource's other shifts (sum of rates > 100%)
-#   Visual :                            |0%             |100%   |25%                    |25%                    |125%   |100%   |0%     |0%
-#   Array :                             └────── A ──────┗━━ B ━━┹────────── C ──────────┴───────────────────────┴───────┴───────┴───────┘
-# [                                     ^                                               ^                                               ^
-#    (dt(2023, 1, 2,  0, 0),  0.00), <
-#    (dt(2023, 1, 2,  8, 0),  1.25),                         2) Worked Hours on 2023/01/02
-#    (dt(2023, 1, 2, 12, 0),  0.25),                            = 8h * 0% (A) + 4h * 125% (B) + 12h * 25% (C)
-#    (dt(2023, 1, 3,  0, 0),  0.25), <                          = 0h          + 5h            + 3h
-#    (dt(2023, 1, 3, 12, 0),  1.00),                            = 8h => OK
-#    (dt(2023, 1, 3, 16, 0),  0.75),
-#    (dt(2023, 1, 3, 20, 0),  0.00),                         3) rate(B) = 100% => OK
-#    (dt(2023, 1, 4,  0, 0),  0.00), <
-# ]
-
-    @api.model
-    def _shift_records_to_timeline_per_resource_id(self, records):
-        timeline_and_worked_hours_per_resource_id = defaultdict(list)
-        for record in records:
-            rate = record['allocated_hours'] * 3600 / (
-                fields.Datetime.from_string(record['end_datetime']) - fields.Datetime.from_string(record['start_datetime'])
-            ).total_seconds()
-            timeline_and_worked_hours_per_resource_id[record['resource_id']].extend([
-                (record['start_datetime'], rate), (record['end_datetime'], -rate)
-            ])
-        for resource_id, timeline in timeline_and_worked_hours_per_resource_id.items():
-            timeline_and_worked_hours_per_resource_id[resource_id] = self._increments_to_values(timeline)
-        return timeline_and_worked_hours_per_resource_id
-
-    @api.model
-    def _get_new_timeline_if_fits_in(self, split_shift_intervals, rate, resource_hours_per_day, timeline, empty_timeline):
-        if rate > 1:
-            return False
-        add_midnights = True
-        for split_shift_start, split_shift_end, _ in split_shift_intervals:
-            start = split_shift_start.astimezone(pytz.utc).replace(tzinfo=None)
-            end = split_shift_end.astimezone(pytz.utc).replace(tzinfo=None)
-            increments = self._values_to_increments(timeline) + [(start, rate), (end, -rate)]
-            if add_midnights:
-                # Add ghost events at 0:00 to delimit days. This condition prevents from adding ghost events on each iteration.
-                increments += empty_timeline
-                add_midnights = False
-            timeline = self._increments_to_values(increments, check=(start, end, resource_hours_per_day))
-            if not timeline:
-                return False
-        return timeline
-
-    @api.model
-    def _increments_to_values(self, increments, check=False):
-        """ Transform a timeline of increments into a timeline of values by accumulating the increments.
-            If check is a tuple (start, end, resource_hours_per_day), the timeline is checked to ensure
-            that the resource would not be overloaded this day or have an "occupation rate" > 100% between start and end.
-
-            :param increments: List of tuples (instant, increment).
-            :param check: False or a tuple (start, end, resource_hours_per_day).
-            :return: List of tuples (instant, value) if check is False or the timeline is valid, else False.
-        """
-        if not increments:
-            return []
-        if check:
-            start, end, resource_hours_per_day = check
-
-        values = []
-        # Sum and sort increments by instant.
-        increments = [
-            (group[0], sum(increment[1] for increment in group[1]))
-            for group in itertools.groupby(increments, key=lambda increment: increment[0])
-        ]
-        increments.sort(key=lambda x: x[0])
-
-        def get_instant_plus_days(instant, days):
-            return instant + relativedelta(days=days, hour=0, minute=0, second=0, microsecond=0)
-
-        hours_per_day = defaultdict(float)
-        last_instant, last_value = increments[0][0], 0.0
-        for increment in increments:
-            # Check if the resource is overloaded this day.
-            hours_per_day[last_instant.date()] += last_value * (increment[0] - last_instant).total_seconds() / 3600
-            if check and hours_per_day[last_instant.date()] > resource_hours_per_day and (
-                get_instant_plus_days(start, 0) <= last_instant < get_instant_plus_days(end, 1)
-            ):
-                return False
-            last_value += increment[1]
-            last_instant = increment[0]
-            # Check if the occupation rate exceeds 100%.
-            if check and last_value > 1 and start <= last_instant <= end:
-                return False
-            values.append((last_instant, last_value))
-        return values
-
-    @api.model
-    def _values_to_increments(self, values):
-        """ Transform a timeline of values into a timeline of increments by subtracting the values.
-
-            :param values: List of tuples (instant, value).
-            :return: List of tuples (instant, increment).
-        """
-        increments = []
-        last_value = 0
-        for value in values:
-            increments.append((value[0], value[1] - last_value))
-            last_value = value[1]
-        return increments
-
     # ----------------------------------------------------
     # Gantt - Calendar view
     # ----------------------------------------------------
-
-    @api.model
-    def gantt_resource_work_interval(self, slot_ids):
-        """ Returns the work intervals of the resources corresponding to the provided slots
-
-            This method is used in a rpc call
-
-        :param slot_ids: The slots the work intervals have to be returned for.
-        :return: list of dicts { resource_id: [Intervals] } and { resource_id: flexible_hours }.
-        """
-        # Get the oldest start date and latest end date from the slots.
-        domain = [("id", "in", slot_ids)]
-        read_group_fields = ["start_datetime:min", "end_datetime:max", "resource_id:recordset", "__count"]
-        planning_slot_read_group = self.env["planning.slot"]._read_group(domain, [], read_group_fields)
-        start_datetime, end_datetime, resources, count = planning_slot_read_group[0]
-        if not count:
-            return [{}]
-
-        # Get default start/end datetime if any.
-        default_start_datetime = (fields.Datetime.to_datetime(self._context.get('default_start_datetime')) or datetime.min).replace(tzinfo=pytz.utc)
-        default_end_datetime = (fields.Datetime.to_datetime(self._context.get('default_end_datetime')) or datetime.max).replace(tzinfo=pytz.utc)
-
-        start_datetime = max(default_start_datetime, start_datetime.replace(tzinfo=pytz.utc))
-        end_datetime = min(default_end_datetime, end_datetime.replace(tzinfo=pytz.utc))
-
-        # Get slots' resources and current company work intervals.
-        work_intervals_per_resource, dummy = resources._get_valid_work_intervals(start_datetime, end_datetime)
-        company_calendar = self.env.company.resource_calendar_id
-        company_calendar_work_intervals = company_calendar._work_intervals_batch(start_datetime, end_datetime)
-
-        # Export work intervals in UTC
-        work_intervals_per_resource[False] = company_calendar_work_intervals[False]
-        work_interval_per_resource = defaultdict(list)
-        for resource_id, resource_work_intervals in work_intervals_per_resource.items():
-            for resource_work_interval in resource_work_intervals:
-                work_interval_per_resource[resource_id].append(
-                    (resource_work_interval[0].astimezone(pytz.UTC), resource_work_interval[1].astimezone(pytz.UTC))
-                )
-        # Add the flexible status per resource to the output
-        flexible_per_resource = {resource.id: not bool(resource.calendar_id) for resource in set(resources)}
-        flexible_per_resource[False] = True
-        return [work_interval_per_resource, flexible_per_resource]
 
     @api.model
     def gantt_unavailability(self, start_date, end_date, scale, group_bys=None, rows=None):
@@ -1270,7 +875,9 @@ class Planning(models.Model):
                         tag_resource_rows(row.get('rows'))
 
         tag_resource_rows(rows)
-        resources = self.env['resource.resource'].browse(resource_ids).filtered('calendar_id')
+        resources = self.env['resource.resource'] \
+            .browse(resource_ids) \
+            .filtered(lambda r: not r.flexible_hours)
         leaves_mapping = resources._get_unavailable_intervals(start_datetime, end_datetime)
         company_leaves = self.env.company.resource_calendar_id._unavailable_intervals(start_datetime.replace(tzinfo=pytz.utc), end_datetime.replace(tzinfo=pytz.utc))
 
@@ -1293,7 +900,7 @@ class Planning(models.Model):
             if row.get('resource_id'):
                 resource_id = self.env['resource.resource'].browse(row.get('resource_id'))
                 if resource_id:
-                    if not resource_id.calendar_id:
+                    if resource_id.flexible_hours:
                         return new_row
                     calendar = leaves_mapping[resource_id.id]
 
@@ -1337,12 +944,9 @@ class Planning(models.Model):
         new_slot_values = slots_to_copy._copy_slots(date_start_copy, date_end_copy, relativedelta(days=7))
         slots_to_copy.write({'was_copied': True})
         if new_slot_values:
-            return [self.create(new_slot_values).ids, slots_to_copy.ids]
+            self.create(new_slot_values)
+            return True
         return False
-
-    def action_rollback_copy_previous_week(self, copied_slot_ids):
-        self.browse(copied_slot_ids).was_copied = False
-        self.unlink()
 
     # ----------------------------------------------------
     # Sending Shifts
@@ -1394,6 +998,17 @@ class Planning(models.Model):
             }
         }
 
+    def action_planning_publish(self):
+        notif_type = "success"
+        unpublished_shifts = self.filtered(lambda shift: shift.state == 'draft')
+        if not unpublished_shifts:
+            notif_type = "warning"
+            message = _('There are no shifts to publish.')
+        else:
+            message = _('The shifts have successfully been published.')
+            unpublished_shifts.action_publish()
+        return self._get_notification_action(notif_type, message)
+
     def action_planning_publish_and_send(self):
         notif_type = "success"
         start, end = min(self.mapped('start_datetime')), max(self.mapped('end_datetime'))
@@ -1404,8 +1019,9 @@ class Planning(models.Model):
             planning = self.env['planning.planning'].create({
                 'start_datetime': start,
                 'end_datetime': end,
+                'slot_ids': [(6, 0, self.ids)],
             })
-            planning._send_planning(slots=self, employees=self.employee_id)
+            planning._send_planning()
             message = _('The shifts have successfully been published and sent.')
         return self._get_notification_action(notif_type, message)
 
@@ -1417,6 +1033,13 @@ class Planning(models.Model):
         self._send_slot(employee_ids, self.start_datetime, self.end_datetime)
         message = _("The shift has successfully been sent.")
         return self._get_notification_action('success', message)
+
+    def action_publish(self):
+        self.write({
+            'state': 'published',
+            'publication_warning': False,
+        })
+        return True
 
     def action_unpublish(self):
         if not self.env.user.has_group('planning.group_planning_manager'):
@@ -1437,8 +1060,6 @@ class Planning(models.Model):
 
     def _calculate_slot_duration(self):
         self.ensure_one()
-        if not self.start_datetime or not self.end_datetime:
-            return 0.0
         period = self.end_datetime - self.start_datetime
         slot_duration = period.total_seconds() / 3600
         max_duration = (period.days + 1) * self.company_id.resource_calendar_id.hours_per_day
@@ -1542,13 +1163,12 @@ class Planning(models.Model):
                 **values,
                 'start_datetime': start_inter.astimezone(pytz.utc).replace(tzinfo=None),
                 'end_datetime': end_inter.astimezone(pytz.utc).replace(tzinfo=None),
+                'allocated_hours': float_utils.float_round(
+                    (((end_inter - start_inter).total_seconds() / 3600.0) * (self.allocated_percentage / 100.0)),
+                    precision_digits=2
+                ),
             }
-            was_updated = self._update_remaining_hours_to_plan_and_values(remaining_hours_to_plan, new_slot_vals)
-            new_slot_vals['allocated_hours'] = float_utils.float_round(
-                ((end_inter - start_inter).total_seconds() / 3600.0) * (self.allocated_percentage / 100.0),
-                precision_digits=2
-            )
-            if not was_updated:
+            if not self._update_remaining_hours_to_plan_and_values(remaining_hours_to_plan, new_slot_vals):
                 return splitted_slot_values
             if unassign:
                 new_slot_vals['resource_id'] = False
@@ -1639,13 +1259,6 @@ class Planning(models.Model):
                 continue
             values['start_datetime'] = slot._add_delta_with_dst(values['start_datetime'], delta)
             values['end_datetime'] = slot._add_delta_with_dst(values['end_datetime'], delta)
-            if any(
-                new_slot['resource_id'] == values['resource_id'] and
-                new_slot['start_datetime'] <= values['end_datetime'] and
-                new_slot['end_datetime'] >= values['start_datetime']
-                for new_slot in new_slot_values
-            ):
-                values['resource_id'] = False
             interval = Intervals([(
                 pytz.utc.localize(values.get('start_datetime')),
                 pytz.utc.localize(values.get('end_datetime')),
@@ -1708,8 +1321,8 @@ class Planning(models.Model):
                     new_slot_values += self._merge_slots_values(split_slot_values, unassigned_interval)
         return new_slot_values
 
-    def _display_name_fields(self):
-        """ List of fields that can be displayed in the display_name """
+    def _name_get_fields(self):
+        """ List of fields that can be displayed in the name_get """
         return ['resource_id', 'role_id']
 
     def _get_fields_breaking_publication(self):
@@ -1719,6 +1332,15 @@ class Planning(models.Model):
             'resource_type',
             'start_datetime',
             'end_datetime',
+            'role_id',
+        ]
+
+    def _get_fields_breaking_recurrency(self):
+        """Returns the list of field which when changed should break the relation of the forecast
+            with it's recurrency
+        """
+        return [
+            'resource_id',
             'role_id',
         ]
 
@@ -1754,32 +1376,13 @@ class Planning(models.Model):
             'role_id': self.role_id.id
         }
 
-    def _manage_archived_resources(self, departure_date):
-        shift_vals_list = []
-        shift_ids_to_remove_resource = []
-        for slot in self:
-            split_time = pytz.timezone(self._get_tz()).localize(departure_date).astimezone(pytz.utc).replace(tzinfo=None)
-            if (slot.start_datetime < split_time) and (slot.end_datetime > split_time):
-                shift_vals_list.append({
-                    'start_datetime': split_time,
-                    **slot._prepare_shift_vals(),
-                })
-                if split_time > slot.start_datetime:
-                    slot.write({'end_datetime': split_time})
-            elif slot.start_datetime >= split_time:
-                shift_ids_to_remove_resource.append(slot.id)
-        if shift_vals_list:
-            self.sudo().create(shift_vals_list)
-        if shift_ids_to_remove_resource:
-            self.sudo().browse(shift_ids_to_remove_resource).write({'resource_id': False})
-
-    def _group_expand_resource_id(self, resources, domain, order):
-        dom_tuples = [(dom[0], dom[1]) for dom in domain if isinstance(dom, (tuple, list)) and len(dom) == 3]
+    def _read_group_resource_id(self, resources, domain, order):
+        dom_tuples = [(dom[0], dom[1]) for dom in domain if isinstance(dom, list) and len(dom) == 3]
         resource_ids = self.env.context.get('filter_resource_ids', False)
         if resource_ids:
             return self.env['resource.resource'].search([('id', 'in', resource_ids)], order=order)
         if self.env.context.get('planning_expand_resource') and ('start_datetime', '<=') in dom_tuples and ('end_datetime', '>=') in dom_tuples:
-            if ('resource_id', '=') in dom_tuples or ('resource_id', 'ilike') in dom_tuples or ('resource_id', 'in') in dom_tuples:
+            if ('resource_id', '=') in dom_tuples or ('resource_id', 'ilike') in dom_tuples:
                 filter_domain = self._expand_domain_m2o_groupby(domain, 'resource_id')
                 return self.env['resource.resource'].search(filter_domain, order=order)
             filters = self._expand_domain_dates(domain)
@@ -1804,7 +1407,7 @@ class Planning(models.Model):
             if dom[0] == filter_field:
                 field = self._fields[dom[0]]
                 if field.type == 'many2one' and len(dom) == 3:
-                    if dom[1] in ['=', 'in']:
+                    if dom[1] == '=':
                         filter_domain = expression.OR([filter_domain, [('id', dom[1], dom[2])]])
                     elif dom[1] == 'ilike':
                         rec_name = self.env[field.comodel_name]._rec_name
@@ -1837,17 +1440,21 @@ class Planning(models.Model):
             self = self.filtered(lambda s: s.resource_id)
         if not self:
             return False
-        self.ensure_one()
 
         employee_with_backend = employee_ids.filtered(lambda e: e.user_id and e.user_id.has_group('planning.group_planning_user'))
         employee_without_backend = employee_ids - employee_with_backend
         planning = False
-        if employee_without_backend:
+        if len(self) > 1 or employee_without_backend:
             planning = self.env['planning.planning'].create({
                 'start_datetime': start_datetime,
                 'end_datetime': end_datetime,
                 'include_unassigned': include_unassigned,
+                'slot_ids': [(6, 0, self.ids)],
             })
+        if len(self) > 1:
+            return planning._send_planning(message=message, employees=employee_ids)
+
+        self.ensure_one()
 
         template = self.env.ref('planning.email_template_slot_single')
         employee_url_map = {**employee_without_backend.sudo()._planning_get_url(planning), **employee_with_backend._slot_get_url(self)}
@@ -1897,29 +1504,6 @@ class Planning(models.Model):
             'state': 'published',
             'publication_warning': False,
         })
-
-    def _send_shift_assigned(self, slot, human_resource):
-        email_from = slot.company_id.email or ''
-        assignee = slot.resource_id.employee_id
-
-        template = self.env.ref('planning.email_template_shift_switch_email', raise_if_not_found=False)
-        start_datetime = self._format_datetime_to_user_tz(slot.start_datetime, assignee.env, tz=assignee.tz, lang_code=assignee.user_partner_id.lang)
-        end_datetime = self._format_datetime_to_user_tz(slot.end_datetime, assignee.env, tz=assignee.tz, lang_code=assignee.user_partner_id.lang)
-        template_context = {
-            'old_assignee_name': assignee.name,
-            'new_assignee_name': human_resource.employee_id.name,
-            'start_datetime': start_datetime,
-            'end_datetime': end_datetime,
-        }
-        if template and assignee != human_resource.employee_id:
-            template.with_context(**template_context).send_mail(
-                slot.id,
-                email_values={
-                    'email_to': assignee.work_email,
-                    'email_from': email_from,
-                },
-                email_layout_xmlid='mail.mail_notification_light',
-            )
 
     # ---------------------------------------------------
     # Slots generation/copy
@@ -2040,17 +1624,6 @@ class Planning(models.Model):
         new_slots_vals_list += to_merge
         return new_slots_vals_list
 
-    def _get_working_hours_over_period(self, start_utc, end_utc, work_intervals, calendar_intervals):
-        start = max(start_utc, pytz.utc.localize(self.start_datetime))
-        end = min(end_utc, pytz.utc.localize(self.end_datetime))
-        slot_interval = Intervals([(
-            start, end, self.env['resource.calendar.attendance']
-        )])
-        working_intervals = work_intervals[self.resource_id.id] \
-            if self.resource_id \
-            else calendar_intervals[self.company_id.resource_calendar_id.id]
-        return sum_intervals(slot_interval & working_intervals)
-
     def _get_duration_over_period(self, start_utc, stop_utc, work_intervals, calendar_intervals, has_allocated_hours=True):
         assert start_utc.tzinfo and stop_utc.tzinfo
         self.ensure_one()
@@ -2059,14 +1632,22 @@ class Planning(models.Model):
             return self.allocated_hours
         # if the slot goes over the gantt period, compute the duration only within
         # the gantt period
-        ratio = self.allocated_percentage / 100.0
-        working_hours = self._get_working_hours_over_period(start_utc, stop_utc, work_intervals, calendar_intervals)
-        return working_hours * ratio
+        ratio = self.allocated_percentage / 100.0 or 1
+        start = max(start_utc, pytz.utc.localize(self.start_datetime))
+        end = min(stop_utc, pytz.utc.localize(self.end_datetime))
+        slot_interval = Intervals([(
+            start, end, self.env['resource.calendar.attendance']
+        )])
+        if self.resource_id:
+            working_intervals = work_intervals[self.resource_id.id]
+        else:
+            working_intervals = calendar_intervals[self.company_id.resource_calendar_id.id]
+        return sum_intervals(slot_interval & working_intervals) * ratio
 
     def _gantt_progress_bar_resource_id(self, res_ids, start, stop):
         start_naive, stop_naive = start.replace(tzinfo=None), stop.replace(tzinfo=None)
 
-        resources = self.env['resource.resource'].with_context(active_test=False).search([('id', 'in', res_ids)])
+        resources = self.env['resource.resource'].search([('id', 'in', res_ids)])
         planning_slots = self.env['planning.slot'].search([
             ('resource_id', 'in', res_ids),
             ('start_datetime', '<=', stop_naive),
@@ -2086,11 +1667,9 @@ class Planning(models.Model):
         return {
             resource.id: {
                 'is_material_resource': resource.resource_type == 'material',
-                'resource_color': resource.color,
                 'value': planned_hours_mapped[resource.id],
                 'max_value': work_hours.get(resource.id, 0.0),
                 'employee_id': resource.employee_id.id,
-                'employee_model': 'hr.employee' if self.env.user.has_group('hr.group_hr_user') else 'hr.employee.public',
             }
             for resource in resources
         }
@@ -2101,7 +1680,7 @@ class Planning(models.Model):
                 self._gantt_progress_bar_resource_id(res_ids, start, stop),
                 warning=_("As there is no running contract during this period, this resource is not expected to work a shift. Planned hours:")
             )
-        raise NotImplementedError(_("This Progress Bar is not implemented."))
+        raise NotImplementedError("This Progress Bar is not implemented.")
 
     @api.model
     def gantt_progress_bar(self, fields, res_ids, date_start_str, date_stop_str):
@@ -2115,26 +1694,6 @@ class Planning(models.Model):
             progress_bars[field] = self._gantt_progress_bar(field, res_ids[field], start_utc, stop_utc)
 
         return progress_bars
-
-    def _prepare_shift_vals(self):
-        """ Generate shift vals"""
-        self.ensure_one()
-        return {
-            'resource_id': False,
-            'end_datetime': self.end_datetime,
-            'role_id': self.role_id.id,
-            'company_id': self.company_id.id,
-            'allocated_percentage': self.allocated_percentage,
-            'name': self.name,
-            'recurrency_id': self.recurrency_id.id,
-            'repeat': self.repeat,
-            'repeat_interval': self.repeat_interval,
-            'repeat_unit': self.repeat_unit,
-            'repeat_type': self.repeat_type,
-            'repeat_until': self.repeat_until,
-            'repeat_number': self.repeat_number,
-            'template_id': self.template_id.id,
-        }
 
 class PlanningRole(models.Model):
     _name = 'planning.role'
@@ -2151,7 +1710,6 @@ class PlanningRole(models.Model):
     resource_ids = fields.Many2many('resource.resource', 'resource_resource_planning_role_rel',
                                     'planning_role_id', 'resource_resource_id', 'Resources')
     sequence = fields.Integer()
-    slot_properties_definition = fields.PropertiesDefinition('Planning Slot Properties')
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
@@ -2175,6 +1733,7 @@ class PlanningPlanning(models.Model):
     end_datetime = fields.Datetime("Stop Date", required=True)
     include_unassigned = fields.Boolean("Includes Open Shifts", default=True)
     access_token = fields.Char("Security Token", default=_default_access_token, required=True, copy=False, readonly=True)
+    slot_ids = fields.Many2many('planning.slot')
     company_id = fields.Many2one('res.company', string="Company", required=True, default=lambda self: self.env.company,
         help="Company linked to the material resource. Leave empty for the resource to be available in every company.")
     date_start = fields.Date('Date Start', compute='_compute_dates')
@@ -2192,43 +1751,45 @@ class PlanningPlanning(models.Model):
 
     def _compute_display_name(self):
         """ This override is need to have a human readable string in the email light layout header (`message.record_name`) """
-        self.display_name = _('Planning')
+        for planning in self:
+            planning.display_name = _('Planning')
 
     # ----------------------------------------------------
     # Business Methods
     # ----------------------------------------------------
 
-    def _is_slot_in_planning(self, slot_sudo):
-        return (
-            self
-            and slot_sudo.start_datetime > self.start_datetime
-            and slot_sudo.end_datetime < self.end_datetime
-            and slot_sudo.state == "published"
-        )
-
-    def _send_planning(self, slots, message=None, employees=False):
+    def _send_planning(self, message=None, employees=False):
         email_from = self.env.user.email or self.env.user.company_id.email or ''
-        # extract planning URLs
-        employee_url_map = employees.sudo()._planning_get_url(self)
+        sent_slots = self.env['planning.slot']
+        for planning in self:
+            # prepare planning urls, recipient employees, ...
+            slots = planning.slot_ids
+            slots_open = slots.filtered(lambda slot: not slot.resource_id) if planning.include_unassigned else 0
 
-        # send planning email template with custom domain per employee
-        template = self.env.ref('planning.email_template_planning_planning', raise_if_not_found=False)
-        template_context = {
-            'slot_unassigned': self.include_unassigned,
-            'message': message,
-        }
-        if template:
-            # /!\ For security reason, we only given the public employee to render mail template
-            for employee in self.env['hr.employee.public'].browse(employees.ids):
-                if employee.work_email:
-                    template_context['employee'] = employee
-                    template_context['start_datetime'] = self.date_start
-                    template_context['end_datetime'] = self.date_end
-                    template_context['planning_url'] = employee_url_map[employee.id]
-                    template_context['assigned_new_shift'] = bool(slots.filtered(lambda slot: slot.employee_id.id == employee.id))
-                    template.with_context(**template_context).send_mail(self.id, email_values={'email_to': employee.work_email, 'email_from': email_from}, email_layout_xmlid='mail.mail_notification_light')
+            # extract planning URLs
+            employees = employees or slots.mapped('employee_id')
+            employee_url_map = employees.sudo()._planning_get_url(planning)
+
+            # send planning email template with custom domain per employee
+            template = self.env.ref('planning.email_template_planning_planning', raise_if_not_found=False)
+            template_context = {
+                'slot_unassigned_count': slots_open and len(slots_open),
+                'slot_total_count': slots and len(slots),
+                'message': message,
+            }
+            if template:
+                # /!\ For security reason, we only given the public employee to render mail template
+                for employee in self.env['hr.employee.public'].browse(employees.ids):
+                    if employee.work_email:
+                        template_context['employee'] = employee
+                        template_context['start_datetime'] = planning.date_start
+                        template_context['end_datetime'] = planning.date_end
+                        template_context['planning_url'] = employee_url_map[employee.id]
+                        template_context['assigned_new_shift'] = bool(slots.filtered(lambda slot: slot.employee_id.id == employee.id))
+                        template.with_context(**template_context).send_mail(planning.id, email_values={'email_to': employee.work_email, 'email_from': email_from}, email_layout_xmlid='mail.mail_notification_light')
+            sent_slots |= slots
         # mark as sent
-        slots.write({
+        sent_slots.write({
             'state': 'published',
             'publication_warning': False
         })

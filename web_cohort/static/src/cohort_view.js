@@ -6,7 +6,7 @@ import { CohortRenderer } from "./cohort_renderer";
 import { CohortArchParser } from "./cohort_arch_parser";
 import { CohortModel } from "./cohort_model";
 
-export const cohortView = {
+const cohortView = {
     type: "cohort",
     display_name: "Cohort",
     icon: "oi oi-view-cohort",
@@ -39,7 +39,6 @@ export const cohortView = {
                 resModel: resModel,
                 timeline: archInfo.timeline,
                 title: archInfo.title,
-                disableLinking: Boolean(archInfo.disableLinking),
             };
         }
 

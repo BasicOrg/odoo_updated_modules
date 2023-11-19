@@ -62,8 +62,8 @@ class TestProcurement(TestMrpCommon):
             'location_id': self.warehouse.lot_stock_id.id,
         }).action_apply_inventory()
         produce_product_4.action_assign()
-        self.assertEqual(produce_product_4.product_qty, 96, "Wrong quantity of finish product.")
-        self.assertEqual(produce_product_4.product_uom_id, self.uom_unit, "Wrong quantity of finish product.")
+        self.assertEqual(produce_product_4.product_qty, 8, "Wrong quantity of finish product.")
+        self.assertEqual(produce_product_4.product_uom_id, self.uom_dozen, "Wrong quantity of finish product.")
         self.assertEqual(produce_product_4.reservation_state, 'assigned', "Consume material not available")
 
         # produce product4
@@ -174,21 +174,22 @@ class TestProcurement(TestMrpCommon):
         self.assertTrue(picking_qc_to_stock)
         picking_input_to_qc.action_assign()
         self.assertEqual(picking_input_to_qc.state, 'assigned')
-        picking_input_to_qc.move_ids.write({'quantity': 5.0, 'picked': True})
+        picking_input_to_qc.move_line_ids.write({'qty_done': 5.0})
         picking_input_to_qc._action_done()
         picking_qc_to_stock.action_assign()
         self.assertEqual(picking_qc_to_stock.state, 'assigned')
-        picking_qc_to_stock.move_ids.write({'quantity': 3.0, 'picked': True})
+        picking_qc_to_stock.move_line_ids.write({'qty_done': 3.0})
         picking_qc_to_stock.with_context(skip_backorder=True, picking_ids_not_to_backorder=picking_qc_to_stock.ids).button_validate()
         self.assertEqual(picking_qc_to_stock.state, 'done')
         mo.action_assign()
-        self.assertEqual(mo.move_raw_ids.quantity, 3.0)
+        self.assertEqual(mo.move_raw_ids.reserved_availability, 3.0)
         produce_form = Form(mo)
         produce_form.qty_producing = 3.0
         mo = produce_form.save()
-        self.assertEqual(mo.move_raw_ids.quantity, 3.0)
-        picking_qc_to_stock.move_line_ids.quantity = 5.0
-        self.assertEqual(mo.move_raw_ids.quantity, 3.0)
+        self.assertEqual(mo.move_raw_ids.quantity_done, 3.0)
+        picking_qc_to_stock.move_line_ids.qty_done = 5.0
+        self.assertEqual(mo.move_raw_ids.reserved_availability, 5.0)
+        self.assertEqual(mo.move_raw_ids.quantity_done, 3.0)
 
     def test_link_date_mo_moves(self):
         """ Check link of shedule date for manufaturing with date stock move."""
@@ -248,11 +249,11 @@ class TestProcurement(TestMrpCommon):
         self.assertEqual(len(move_orig), 1, 'the move orig is not created')
         self.assertEqual(move_orig.product_qty, 10, 'the quantity to produce is not good relative to the move')
 
-        new_date_start = fields.Datetime.to_datetime(mo.date_start) + timedelta(days=5)
-        mo.date_start = new_date_start
+        new_sheduled_date = fields.Datetime.to_datetime(mo.date_planned_start) + timedelta(days=5)
+        mo.date_planned_start = new_sheduled_date
 
-        self.assertAlmostEqual(mo.move_raw_ids.date, mo.date_start, delta=timedelta(seconds=1))
-        self.assertAlmostEqual(mo.move_finished_ids.date, mo.date_finished, delta=timedelta(seconds=1))
+        self.assertAlmostEqual(mo.move_raw_ids.date, mo.date_planned_start, delta=timedelta(seconds=1))
+        self.assertAlmostEqual(mo.move_finished_ids.date, mo.date_planned_finished, delta=timedelta(seconds=1))
 
     def test_finished_move_cancellation(self):
         """Check state of finished move on cancellation of raw moves. """
@@ -293,7 +294,7 @@ class TestProcurement(TestMrpCommon):
         mo.move_raw_ids[0]._action_cancel()
         self.assertEqual(mo.state, 'cancel', 'Manufacturing order should be cancelled.')
         self.assertEqual(mo.move_finished_ids[0].state, 'cancel', 'Finished move should be cancelled if mo is cancelled.')
-        self.assertEqual(mo.move_dest_ids[0].state, 'confirmed', 'Destination move should not be cancelled if prapogation cancel is False on manufacturing rule.')
+        self.assertEqual(mo.move_dest_ids[0].state, 'waiting', 'Destination move should not be cancelled if prapogation cancel is False on manufacturing rule.')
 
     def test_procurement_with_empty_bom(self):
         """Ensure that a procurement request using a product with an empty BoM
@@ -342,7 +343,7 @@ class TestProcurement(TestMrpCommon):
         production.button_mark_done()
 
         move_dest._action_assign()
-        self.assertEqual(move_dest.quantity, 10.0)
+        self.assertEqual(move_dest.reserved_availability, 10.0)
 
     def test_auto_assign(self):
         """ When auto reordering rule exists, check for when:
@@ -465,7 +466,7 @@ class TestProcurement(TestMrpCommon):
         self.assertEqual(len(mo), 1, "Manufacture order was not automatically created")
         mo.action_assign()
         mo.is_locked = False
-        self.assertEqual(mo.move_raw_ids.quantity, 0, "No components should be reserved yet")
+        self.assertEqual(mo.move_raw_ids.reserved_availability, 0, "No components should be reserved yet")
         self.assertEqual(mo.product_qty, 15, "Quantity to produce should be picking demand + reordering rule max qty")
 
         # 2nd MO for product_2 should have been created and confirmed when 1st MO for product_1 was confirmed
@@ -481,7 +482,7 @@ class TestProcurement(TestMrpCommon):
         mo2 = mo2_form.save()
         mo2.button_mark_done()
 
-        self.assertEqual(mo.move_raw_ids.quantity, 15, "Components should have been auto-reserved")
+        self.assertEqual(mo.move_raw_ids.reserved_availability, 15, "Components should have been auto-reserved")
 
         # add new component to 1st MO
         mo_form = Form(mo)
@@ -499,12 +500,12 @@ class TestProcurement(TestMrpCommon):
         self.assertEqual(mo3.product_qty, 6, "Quantity to produce should be 1 + reordering rule max qty")
 
         mo_form = Form(mo)
-        mo.move_raw_ids.quantity = 15
+        mo.move_raw_ids.quantity_done = 15
         mo_form.qty_producing = 15
         mo = mo_form.save()
         mo.button_mark_done()
 
-        self.assertEqual(pick_output.move_ids_without_package.quantity, 10, "Completed products should have been auto-reserved in picking")
+        self.assertEqual(pick_output.move_ids_without_package.reserved_availability, 10, "Completed products should have been auto-reserved in picking")
 
         # make sure next MO auto-reserves components now that they are in stock since
         # default reservation_method = 'at_confirm'
@@ -516,7 +517,7 @@ class TestProcurement(TestMrpCommon):
         mo_assign_at_confirm = mo_form.save()
         mo_assign_at_confirm.action_confirm()
 
-        self.assertEqual(mo_assign_at_confirm.move_raw_ids.quantity, 5, "Components should have been auto-reserved")
+        self.assertEqual(mo_assign_at_confirm.move_raw_ids.reserved_availability, 5, "Components should have been auto-reserved")
 
     def test_check_update_qty_mto_chain(self):
         """ Simulate a mto chain with a manufacturing order. Updating the
@@ -750,167 +751,3 @@ class TestProcurement(TestMrpCommon):
             {'product_qty': 1, 'bom_id': bom01.id, 'picking_type_id': manu_operation01.id, 'location_dest_id': stock_location01.id},
             {'product_qty': 2, 'bom_id': bom02.id, 'picking_type_id': manu_operation02.id, 'location_dest_id': stock_location02.id},
         ])
-
-    def test_update_mo_component_qty(self):
-        """ After Confirming MO, updating component qty should run procurement
-            to update orig move qty
-        """
-        warehouse = self.env['stock.warehouse'].search([], limit=1)
-        # 2 steps Manufacture
-        warehouse.write({'manufacture_steps': 'pbm'})
-        mo, *_ = self.generate_mo(qty_final=2, qty_base_1=1, qty_base_2=2)
-        self.assertEqual(mo.state, 'confirmed', 'MO should be confirmed at this point')
-        self.assertEqual(mo.product_qty, 2, 'MO qty to produce should be 2')
-        self.assertEqual(mo.move_raw_ids.mapped('product_uom_qty'), [4, 2], 'Comp2 qty should be 4 and comp1 should be 2')
-        self.assertEqual(mo.picking_ids.move_ids.mapped('product_uom_qty'), [4, 2], 'Comp moves should have same qty as MO')
-        # decrease comp2 qty, should reflect in picking
-        mo.move_raw_ids[0].product_uom_qty = 2
-        self.assertEqual(mo.picking_ids.move_ids[0].product_uom_qty, 2, 'Comp2 move should have same qty as MO')
-
-        # add a third component, should reflect in picking
-        comp3 = self.env['product.product'].create({
-            'name': 'Comp3',
-            'type': 'product'
-        })
-        mo.write({
-            'move_raw_ids': [(0, 0, {
-                'product_id': comp3.id,
-                'product_uom_qty': 3
-            })]
-        })
-        self.assertEqual(len(mo.picking_ids.move_ids), 3, 'Picking should have 3 moves')
-        self.assertEqual(mo.picking_ids.move_ids[2].product_uom_qty, 3, 'Comp3 move should have same qty as MO')
-        # change its qty
-        mo.move_raw_ids[2].product_uom_qty = 4
-        self.assertEqual(mo.picking_ids.move_ids[2].product_uom_qty, 4, 'Comp3 move should have same qty as MO')
-
-        # increase qty to produce
-        wiz = self.env['change.production.qty'].create({
-            'mo_id': mo.id,
-            'product_qty': 4
-        })
-        wiz.change_prod_qty()
-        self.assertEqual(mo.product_qty, 4, 'MO qty to produce should be 4')
-        # each move qty should be doubled
-        self.assertEqual(mo.picking_ids.move_ids.mapped('product_uom_qty'), [4, 4, 8], 'Comps move should have same qty as MO')
-
-    def test_update_merged_mo_component_qty(self):
-        """ After Confirming two MOs merge then and change their component qtys,
-            Procurements should run and any new moves should be merged with old ones
-        """
-        warehouse = self.env['stock.warehouse'].search([], limit=1)
-        # 2 steps Manufacture
-        warehouse.write({'manufacture_steps': 'pbm'})
-
-        super_product = self.env['product.product'].create({
-            'name': 'Super Product',
-            'type': 'product',
-        })
-        comp1 = self.env['product.product'].create({
-            'name': 'Comp1',
-            'type': 'product',
-        })
-        comp2 = self.env['product.product'].create({
-            'name': 'Comp2',
-            'type': 'product',
-        })
-        bom = self.env['mrp.bom'].create({
-            'product_id': super_product.id,
-            'product_tmpl_id': super_product.product_tmpl_id.id,
-            'product_uom_id': self.uom_unit.id,
-            'product_qty': 1.0,
-            'type': 'normal',
-            'consumption': 'flexible',
-            'bom_line_ids': [
-                (0, 0, {'product_id': comp1.id, 'product_qty': 1}),
-                (0, 0, {'product_id': comp2.id, 'product_qty': 2})
-            ]
-        })
-        # MO 1
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.product_id = super_product
-        mo_form.bom_id = bom
-        mo_form.product_qty = 1
-        mo_1 = mo_form.save()
-        mo_1.action_confirm()
-
-        # MO 2
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.product_id = super_product
-        mo_form.bom_id = bom
-        mo_form.product_qty = 1
-        mo_2 = mo_form.save()
-        mo_2.action_confirm()
-
-        res_mo_id = (mo_1 | mo_2).action_merge()['res_id']
-        mo = self.env['mrp.production'].browse(res_mo_id)
-        self.assertEqual(mo.product_qty, 2, 'Qty to produce should be 2')
-        self.assertEqual(mo.move_raw_ids.mapped('product_uom_qty'), [2, 4], 'Comp1 qty should be 2 and comp2 should be 4')
-        self.assertEqual(mo.picking_ids[0].move_ids.mapped('product_uom_qty'), [1, 2], 'Comp moves should have same qty as old MO')
-        # increase Comp1 qty by 1 in MO
-        mo.move_raw_ids[0].product_uom_qty = 3
-
-        # any required qty is added to first picking by procurement
-        self.assertEqual(mo.picking_ids[0].move_ids[0].product_uom_qty, 2, 'Comp1 qty increase should reflect in picking')
-
-        # add new comp3
-        comp3 = self.env['product.product'].create({
-            'name': 'Comp3',
-            'type': 'product'
-        })
-        mo.write({
-            'move_raw_ids': [(0, 0, {
-                'product_id': comp3.id,
-                'product_uom_qty': 2,
-            })]
-        })
-        self.assertEqual(len(mo.picking_ids[0].move_ids), 3, 'Picking should have 3 moves')
-        self.assertEqual(mo.picking_ids[0].move_ids[2].product_uom_qty, 2, 'Comp3 move should have same qty as MO')
-
-        # increase qty to produce
-        wiz = self.env['change.production.qty'].create({
-            'mo_id': mo.id,
-            'product_qty': 4
-        })
-        wiz.change_prod_qty()
-        self.assertEqual(mo.product_qty, 4, 'MO qty to produce should be 4')
-        # extra quantities are all added to first picking moves
-        # comp1 (2 + 3 extra) = 5
-        # comp2 (2 + 4 extra) = 6
-        # comp3 (2 + 2 extra) = 4
-        self.assertEqual(mo.picking_ids[0].move_ids.mapped('product_uom_qty'), [5, 6, 4], 'Comp qty do not match expected')
-
-    def test_pbm_and_additionnal_components(self):
-        """
-        2-steps manufacturring.
-        When adding a new component to a confirmed MO, it should add an SM in
-        the PBM picking. Also, it should be possible to define the to-consume
-        qty of the new line even if the MO is locked
-        """
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
-        warehouse.manufacture_steps = 'pbm'
-
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.bom_id = self.bom_4
-        mo = mo_form.save()
-        mo.action_confirm()
-
-        if not mo.is_locked:
-            mo.action_toggle_is_locked()
-
-        with Form(mo) as mo_form:
-            with mo_form.move_raw_ids.new() as raw_line:
-                raw_line.product_id = self.product_2
-                raw_line.product_uom_qty = 2.0
-
-        move_vals = mo._get_move_raw_values(self.product_3, 0, self.product_3.uom_id)
-        mo.move_raw_ids = [(0, 0, move_vals)]
-        mo.move_raw_ids[-1].product_uom_qty = 3.0
-
-        expected_vals = [
-            {'product_id': self.product_1.id, 'product_uom_qty': 1.0},
-            {'product_id': self.product_2.id, 'product_uom_qty': 2.0},
-            {'product_id': self.product_3.id, 'product_uom_qty': 3.0},
-        ]
-        self.assertRecordValues(mo.move_raw_ids, expected_vals)
-        self.assertRecordValues(mo.picking_ids.move_ids, expected_vals)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models, tools, Command, _
+from odoo import fields, models, tools, _
 from odoo.tools.misc import clean_context
 
 
@@ -15,7 +15,8 @@ class MailingContactImport(models.TransientModel):
     def action_import(self):
         """Import each lines of "contact_list" as a new contact."""
         self.ensure_one()
-        contacts = tools.email_split_tuples(', '.join((self.contact_list or '').splitlines()))
+
+        contacts = tools.email_split_tuples(', '.join(self.contact_list.splitlines()))
         if not contacts:
             return {
                 'type': 'ir.actions.client',
@@ -63,10 +64,7 @@ class MailingContactImport(models.TransientModel):
             if email not in existing_contacts:
                 unique_contacts[email] = {
                     'name': name,
-                    'subscription_ids': [
-                        Command.create({'list_id': mailing_list_id.id})
-                        for mailing_list_id in self.mailing_list_ids
-                    ],
+                    'list_ids': self.mailing_list_ids.ids,
                 }
 
         if not unique_contacts:

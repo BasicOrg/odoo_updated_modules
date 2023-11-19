@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="account.view_account_form"/>
         <field name="arch" type="xml">
             <field name="currency_id" position="before">
-                <field name="non_trade" invisible="account_type not in ('liability_payable', 'asset_receivable')"/>
+                <field name="non_trade" attrs="{'invisible': [('account_type', 'not in', ('liability_payable','asset_receivable'))]}"/>
             </field>
         </field>
     </record>

@@ -5,6 +5,8 @@ import logging
 from odoo import _, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+from odoo.addons.payment import utils as payment_utils
+
 _logger = logging.getLogger(__name__)
 
 
@@ -95,33 +97,37 @@ class PaymentTransaction(models.Model):
 
         return refund_tx
 
-    def _send_capture_request(self, amount_to_capture=None):
-        """ Override of `payment` to simulate a capture request. """
-        child_capture_tx = super()._send_capture_request(amount_to_capture=amount_to_capture)
-        if self.provider_code != 'demo':
-            return child_capture_tx
+    def _send_capture_request(self):
+        """ Override of payment to simulate a capture request.
 
-        tx = child_capture_tx or self
+        Note: self.ensure_one()
+
+        :return: None
+        """
+        super()._send_capture_request()
+        if self.provider_code != 'demo':
+            return
+
         notification_data = {
-            'reference': tx.reference,
+            'reference': self.reference,
             'simulated_state': 'done',
             'manual_capture': True,  # Distinguish manual captures from regular one-step captures.
         }
-        tx._handle_notification_data('demo', notification_data)
+        self._handle_notification_data('demo', notification_data)
 
-        return child_capture_tx
+    def _send_void_request(self):
+        """ Override of payment to simulate a void request.
 
-    def _send_void_request(self, amount_to_void=None):
-        """ Override of `payment` to simulate a void request. """
-        child_void_tx = super()._send_void_request(amount_to_void=amount_to_void)
+        Note: self.ensure_one()
+
+        :return: None
+        """
+        super()._send_void_request()
         if self.provider_code != 'demo':
-            return child_void_tx
+            return
 
-        tx = child_void_tx or self
-        notification_data = {'reference': tx.reference, 'simulated_state': 'cancel'}
-        tx._handle_notification_data('demo', notification_data)
-
-        return child_void_tx
+        notification_data = {'reference': self.reference, 'simulated_state': 'cancel'}
+        self._handle_notification_data('demo', notification_data)
 
     def _get_tx_from_notification_data(self, provider_code, notification_data):
         """ Override of payment to find the transaction based on dummy data.
@@ -157,10 +163,6 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'demo':
             return
 
-        # Update the provider reference.
-        self.provider_reference = f'demo-{self.reference}'
-
-        # Create the token.
         if self.tokenize:
             # The reasons why we immediately tokenize the transaction regardless of the state rather
             # than waiting for the payment method to be validated ('authorized' or 'done') like the
@@ -170,7 +172,6 @@ class PaymentTransaction(models.Model):
             #   said simulated state.
             self._demo_tokenize_from_notification_data(notification_data)
 
-        # Update the payment state.
         state = notification_data['simulated_state']
         if state == 'pending':
             self._set_pending()
@@ -201,10 +202,10 @@ class PaymentTransaction(models.Model):
         state = notification_data['simulated_state']
         token = self.env['payment.token'].create({
             'provider_id': self.provider_id.id,
-            'payment_method_id': self.payment_method_id.id,
             'payment_details': notification_data['payment_details'],
             'partner_id': self.partner_id.id,
             'provider_ref': 'fake provider reference',
+            'verified': True,
             'demo_simulated_state': state,
         })
         self.write({

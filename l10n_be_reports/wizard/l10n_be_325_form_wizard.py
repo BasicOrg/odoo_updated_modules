@@ -24,9 +24,9 @@ class Form325Wizard(models.TransientModel):
         compute='_compute_sender_id', readonly=False, store=True,
         help="The company responsible for sending the form.",
     )
-    reference_year = fields.Char(
+    reference_year = fields.Integer(
         string='Reference Year',
-        default=lambda x: str(fields.Date.context_today(x).year - 1),
+        default=lambda x: fields.Date.context_today(x).year - 1,
     )
     is_test = fields.Boolean(
         string="Test Form",
@@ -63,10 +63,8 @@ class Form325Wizard(models.TransientModel):
 
     @api.constrains('reference_year')
     def _constrains_reference_year(self):
-        for record in self:
-            if not record.reference_year.isdigit():
-                raise ValidationError(_("The reference year must be a number."))
-            if not record.is_test and int(record.reference_year) >= fields.Date.context_today(self).year:
+        for record in self.filtered(lambda x: not x.is_test):
+            if record.reference_year >= fields.Date.context_today(self).year:
                 raise ValidationError(_("You can't use a reference year in the future or for the current year."))
 
     def action_generate_325_form(self):

@@ -17,7 +17,7 @@ class ArticleMember(models.Model):
         'res.partner', 'Partner',
         index=True, ondelete='cascade', required=True)
     permission = fields.Selection(
-        [('write', 'Can edit'),
+        [('write', 'Can write'),
          ('read', 'Can read'),
          ('none', 'No access')],
         required=True, default='read')
@@ -75,6 +75,16 @@ class ArticleMember(models.Model):
                     _("Article '%s' should always have a writer: inherit write permission, or have a member with write access",
                       article.display_name)
                 )
+
+    @api.constrains('partner_id', 'permission')
+    def _check_external_member_permission(self):
+        for member in self.filtered(lambda member: member.permission == 'write'):
+            if member.partner_id.partner_share:
+                raise ValidationError(
+                    _("The external user %(user_name)s cannot have a 'write' permission on article %(article_name)s",
+                      user_name=member.partner_id.display_name,
+                      article_name=member.article_id.display_name
+                      ))
 
     def write(self, vals):
         """ Whatever rights, avoid any attempt at privilege escalation. """

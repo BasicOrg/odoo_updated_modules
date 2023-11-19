@@ -10,7 +10,7 @@
     'depends': ['helpdesk', 'sms'],
     'data': [
         'views/helpdesk_stage_views.xml',
-        'views/helpdesk_sms_views.xml',
+        'views/helpdesk_views.xml',
         'security/ir.model.access.csv',
         'security/helpdesk_sms_security.xml',
     ],

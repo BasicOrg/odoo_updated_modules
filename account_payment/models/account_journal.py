@@ -8,6 +8,39 @@ from odoo.exceptions import UserError
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
+    @api.constrains('inbound_payment_method_line_ids')
+    def _check_inbound_payment_method_line_ids(self):
+        """
+        Check and ensure that the user do not remove a apml that is linked to a provider in the test or enabled state.
+        """
+        if not self.company_id:
+            return
+
+        self.env['account.payment.method'].flush_model(['code', 'payment_type'])
+        self.env['account.payment.method.line'].flush_model(['payment_method_id'])
+        self.env['payment.provider'].flush_model(['code', 'state'])
+
+        self._cr.execute('''
+            SELECT provider.id
+              FROM payment_provider provider
+              JOIN account_payment_method apm
+                ON apm.code = provider.code
+         LEFT JOIN account_payment_method_line apml
+                ON apm.id = apml.payment_method_id AND apml.journal_id IS NOT NULL
+             WHERE provider.state IN ('enabled', 'test')
+               AND provider.code != 'custom'
+               AND apm.payment_type = 'inbound'
+               AND apml.id IS NULL
+               AND provider.company_id IN %(company_ids)s
+        ''', {'company_ids': tuple(self.company_id.ids)})
+        ids = [r[0] for r in self._cr.fetchall()]
+        if ids:
+            providers = self.env['payment.provider'].sudo().browse(ids)
+            raise UserError(
+                _("You can't delete a payment method that is linked to a provider in the enabled or test state.\n"
+                  "Linked provider(s): %s", ', '.join(p.display_name for p in providers))
+            )
+
     def _get_available_payment_method_lines(self, payment_type):
         lines = super()._get_available_payment_method_lines(payment_type)
 
@@ -33,23 +66,14 @@ class AccountJournal(models.Model):
             for journal in self:
                 to_remove = []
 
-                available_providers = installed_providers.filtered_domain(
-                    self.env['payment.provider']._check_company_domain(journal.company_id)
+                available_providers = installed_providers.filtered(
+                    lambda p: p.company_id == journal.company_id
                 ).mapped('code')
                 available = payment_method.code in available_providers
 
                 if vals['mode'] == 'unique' and not available:
                     to_remove.append(payment_method.id)
 
-                journal.available_payment_method_ids = [Command.unlink(payment_method) for payment_method in to_remove]
-
-    @api.ondelete(at_uninstall=False)
-    def _unlink_except_linked_to_payment_provider(self):
-        linked_providers = self.env['payment.provider'].sudo().search([]).filtered(
-            lambda p: p.journal_id.id in self.ids and p.state != 'disabled'
-        )
-        if linked_providers:
-            raise UserError(_(
-                "You must first deactivate a payment provider before deleting its journal.\n"
-                "Linked providers: %s", ', '.join(p.display_name for p in linked_providers)
-            ))
+                journal.write({
+                    'available_payment_method_ids': [Command.unlink(payment_method) for payment_method in to_remove]
+                })

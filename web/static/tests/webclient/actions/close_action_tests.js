@@ -1,9 +1,17 @@
 /** @odoo-module **/
 
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
-import { click, getFixture, nextTick, patchWithCleanup } from "../../helpers/utils";
+import testUtils from "web.test_utils";
+import { registerCleanup } from "../../helpers/cleanup";
+import {
+    click,
+    getFixture,
+    legacyExtraNextTick,
+    nextTick,
+    patchWithCleanup,
+} from "../../helpers/utils";
 import { createWebClient, doAction, getActionManagerServerData } from "./../helpers";
 
+import { registry } from "@web/core/registry";
 import { formView } from "@web/views/form/form_view";
 import { listView } from "../../../src/views/list/list_view";
 
@@ -42,9 +50,9 @@ QUnit.module("ActionManager", (hooks) => {
             assert.step("on_close");
         }
         await doAction(webClient, 5, { onClose });
-        assert.containsOnce(target, ".o_dialog");
-        await click(target.querySelector(".o_dialog .modal-header button"));
-        assert.containsNone(target, ".o_dialog");
+        assert.containsOnce(target, ".o_dialog_container .o_dialog");
+        await click(target.querySelector(".o_dialog_container .o_dialog .modal-header button"));
+        assert.containsNone(target, ".o_dialog_container .o_dialog");
         assert.verifySteps(["on_close"]);
 
         // execute an 'ir.actions.act_window_close' action
@@ -99,7 +107,7 @@ QUnit.module("ActionManager", (hooks) => {
         let form;
         patchWithCleanup(formView.Controller.prototype, {
             setup() {
-                super.setup(...arguments);
+                this._super(...arguments);
                 form = this;
             },
         });
@@ -121,7 +129,7 @@ QUnit.module("ActionManager", (hooks) => {
         let list;
         patchWithCleanup(listView.Controller.prototype, {
             setup() {
-                super.setup(...arguments);
+                this._super(...arguments);
                 list = this;
             },
         });
@@ -141,6 +149,7 @@ QUnit.module("ActionManager", (hooks) => {
 
         await click(target, ".modal-header button.btn-close");
         await nextTick();
+        await legacyExtraNextTick();
         assert.containsNone(target, ".modal");
         assert.containsNone(target, ".o_list_view");
         assert.containsOnce(target, ".o_kanban_view");
@@ -154,7 +163,7 @@ QUnit.module("ActionManager", (hooks) => {
             let list;
             patchWithCleanup(listView.Controller.prototype, {
                 setup() {
-                    super.setup(...arguments);
+                    this._super(...arguments);
                     list = this;
                 },
             });
@@ -172,18 +181,30 @@ QUnit.module("ActionManager", (hooks) => {
             list.env.config.historyBack();
             assert.verifySteps(["on_close"], "should have called the on_close handler");
             await nextTick();
+            await legacyExtraNextTick();
             assert.containsOnce(target, ".o_list_view");
             assert.containsNone(target, ".modal");
         }
     );
 
     QUnit.test("web client is not deadlocked when a view crashes", async function (assert) {
-        assert.expect(4);
-        assert.expectErrors();
+        assert.expect(6);
+        const handler = (ev) => {
+            assert.step("error");
+            // need to preventDefault to remove error from console (so python test pass)
+            ev.preventDefault();
+        };
+        // fake error service so that the odoo qunit handlers don't think that they need to handle the error
+        registry.category("services").add("error", { start: () => {} });
+        window.addEventListener("unhandledrejection", handler);
+        registerCleanup(() => window.removeEventListener("unhandledrejection", handler));
+        patchWithCleanup(QUnit, {
+            onUnhandledRejection: () => {},
+        });
 
         const readOnFirstRecordDef = testUtils.makeTestPromise();
-        const mockRPC = (route, { method, args, kwargs }) => {
-            if (method === "web_read" && args[0][0] === 1) {
+        const mockRPC = (route, args) => {
+            if (args.method === "read" && args.args[0][0] === 1) {
                 return readOnFirstRecordDef;
             }
         };
@@ -192,15 +213,17 @@ QUnit.module("ActionManager", (hooks) => {
         // open first record in form view. this will crash and will not
         // display a form view
         await testUtils.dom.click($(target).find(".o_list_view .o_data_cell:first"));
+        assert.verifySteps([]);
+        await legacyExtraNextTick();
         readOnFirstRecordDef.reject(new Error("not working as intended"));
         await nextTick();
-        assert.verifyErrors(["not working as intended"]);
-
+        assert.verifySteps(["error"]);
         assert.containsOnce(target, ".o_list_view", "there should still be a list view in dom");
         // open another record, the read will not crash
         await testUtils.dom.click(
             $(target).find(".o_list_view .o_data_row:eq(2) .o_data_cell:first")
         );
+        await legacyExtraNextTick();
         assert.containsNone(target, ".o_list_view", "there should not be a list view in dom");
         assert.containsOnce(target, ".o_form_view", "there should be a form view in dom");
     });

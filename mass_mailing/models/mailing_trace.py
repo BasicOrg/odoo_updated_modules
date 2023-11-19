@@ -13,23 +13,22 @@ class MailingTrace(models.Model):
     Note:: State management / Error codes / Failure types summary
 
       * trace_status
-        'outgoing', 'process', 'pending', 'sent', 'opened', 'replied',
-        'error', 'bounce', 'cancel'
+        'outgoing', 'sent', 'opened', 'replied',
+        'error', 'bouce', 'cancel'
       * failure_type
         # generic
         'unknown',
         # mass_mailing
-        "mail_email_invalid", "mail_smtp", "mail_email_missing",
-        "mail_from_invalid", "mail_from_missing",
+        "mail_email_invalid", "mail_smtp", "mail_email_missing"
         # mass mailing mass mode specific codes
         "mail_bl", "mail_optout", "mail_dup"
         # mass_mailing_sms
-        'sms_number_missing', 'sms_number_format', 'sms_credit', 'sms_server',
-        'sms_acc', 'sms_country_not_supported', 'sms_registration_needed',
+        'sms_number_missing', 'sms_number_format', 'sms_credit',
+        'sms_server', 'sms_acc'
         # mass_mailing_sms mass mode specific codes
         'sms_blacklist', 'sms_duplicate', 'sms_optout',
       * cancel:
-        * mail: set in _prepare_mail_values in composer, if email is blacklisted
+        * mail: set in get_mail_values in composer, if email is blacklisted
           (mail) or in opt_out / seen list (mass_mailing) or email_to is void
           or incorrectly formatted (mass_mailing) - based on mail cancel state
         * sms: set in _prepare_mass_sms_trace_values in composer if sms is
@@ -39,12 +38,8 @@ class MailingTrace(models.Model):
         * invalid mail / invalid sms number -> error (RECIPIENT, sms_number_format)
       * exception: set in  _postprocess_sent_message (_postprocess_iap_sent_sms)
         if mail (sms) not sent with failure type, reset if sent;
-      * process: (used in sms): set in SmsTracker._update_sms_traces when held back
-        (at IAP) before actual sending to the sms_service.
-      * pending: (used in sms): default value for sent sms.
-      * sent: set in
-        * _postprocess_sent_message if mail
-        * SmsTracker._update_sms_traces if sms, when delivery report is received.
+      * sent: set in _postprocess_sent_message (_postprocess_iap_sent_sms) if
+        mail (sms) sent
       * clicked: triggered by add_click
       * opened: triggered by add_click + blank gif (mail) + gateway reply (mail)
       * replied: triggered by gateway reply (mail)
@@ -57,6 +52,7 @@ class MailingTrace(models.Model):
     _order = 'create_date DESC'
 
     trace_type = fields.Selection([('mail', 'Email')], string='Type', default='mail', required=True)
+    display_name = fields.Char(compute='_compute_display_name')
     # mail data
     mail_mail_id = fields.Many2one('mail.mail', string='Mail', index='btree_not_null')
     mail_mail_id_int = fields.Integer(
@@ -85,9 +81,7 @@ class MailingTrace(models.Model):
     reply_datetime = fields.Datetime('Replied On')
     trace_status = fields.Selection(selection=[
         ('outgoing', 'Outgoing'),
-        ('process', 'Processing'),
-        ('pending', 'Sent'),
-        ('sent', 'Delivered'),
+        ('sent', 'Sent'),
         ('open', 'Opened'),
         ('reply', 'Replied'),
         ('bounce', 'Bounced'),
@@ -97,18 +91,14 @@ class MailingTrace(models.Model):
         # generic
         ("unknown", "Unknown error"),
         # mail
-        ("mail_bounce", "Bounce"),
         ("mail_email_invalid", "Invalid email address"),
         ("mail_email_missing", "Missing email address"),
-        ("mail_from_invalid", "Invalid from address"),
-        ("mail_from_missing", "Missing from address"),
         ("mail_smtp", "Connection failed (outgoing mail server problem)"),
         # mass mode
         ("mail_bl", "Blacklisted Address"),
-        ("mail_dup", "Duplicated Email"),
         ("mail_optout", "Opted Out"),
+        ("mail_dup", "Duplicated Email"),
     ], string='Failure type')
-    failure_reason = fields.Text('Failure reason', copy=False, readonly=True)
     # Link tracking
     links_click_ids = fields.One2many('link.tracker.click', 'mailing_trace_id', string='Links click')
     links_click_datetime = fields.Datetime('Clicked On', help='Stores last click datetime in case of multi clicks.')
@@ -125,7 +115,7 @@ class MailingTrace(models.Model):
     @api.depends('trace_type', 'mass_mailing_id')
     def _compute_display_name(self):
         for trace in self:
-            trace.display_name = f'{trace.trace_type}: {trace.mass_mailing_id.name} ({trace.id})'
+            trace.display_name = '%s: %s (%s)' % (trace.trace_type, trace.mass_mailing_id.name, trace.id)
 
     @api.model_create_multi
     def create(self, values_list):
@@ -167,13 +157,9 @@ class MailingTrace(models.Model):
         traces.write({'trace_status': 'reply', 'reply_datetime': fields.Datetime.now()})
         return traces
 
-    def set_bounced(self, domain=None, bounce_message=False):
+    def set_bounced(self, domain=None):
         traces = self + (self.search(domain) if domain else self.env['mailing.trace'])
-        traces.write({
-            'failure_reason': bounce_message,
-            'failure_type': 'mail_bounce',
-            'trace_status': 'bounce',
-        })
+        traces.write({'trace_status': 'bounce'})
         return traces
 
     def set_failed(self, domain=None, failure_type=False):

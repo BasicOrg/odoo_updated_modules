@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
 
 from werkzeug.urls import url_encode
 
-from odoo import _, http
+from odoo import http
 from odoo.exceptions import AccessError
 from odoo.http import request
 from odoo.tools import consteq
@@ -25,7 +26,7 @@ class MailController(http.Controller):
         base_link = request.httprequest.path
         params = dict(request.params)
         params.pop('token', '')
-        valid_token = request.env['mail.thread']._encode_link(base_link, params)
+        valid_token = request.env['mail.thread']._notify_encode_link(base_link, params)
         return consteq(valid_token, str(token))
 
     @classmethod
@@ -159,33 +160,5 @@ class MailController(http.Controller):
         # ==============================================================================================
 
         if res_id and isinstance(res_id, str):
-            try:
-                res_id = int(res_id)
-            except ValueError:
-                res_id = False
+            res_id = int(res_id)
         return self._redirect_to_record(model, res_id, access_token, **kwargs)
-
-    # csrf is disabled here because it will be called by the MUA with unpredictable session at that time
-    @http.route('/mail/unfollow', type='http', auth='public', csrf=False)
-    def mail_action_unfollow(self, model, res_id, pid, token, **kwargs):
-        comparison, record, __ = MailController._check_token_and_record_or_redirect(model, int(res_id), token)
-        if not comparison or not record:
-            raise AccessError(_('Non existing record or wrong token.'))
-
-        pid = int(pid)
-        record_sudo = record.sudo()
-        record_sudo.message_unsubscribe([pid])
-
-        display_link = True
-        if request.session.uid:
-            try:
-                record.check_access_rights('read')
-                record.check_access_rule('read')
-            except AccessError:
-                display_link = False
-
-        return request.render('mail.message_document_unfollowed', {
-            'name': record_sudo.display_name,
-            'model_name': request.env['ir.model'].sudo()._get(model).display_name,
-            'access_url': record._notify_get_action_link('view', model=model, res_id=res_id) if display_link else False,
-        })

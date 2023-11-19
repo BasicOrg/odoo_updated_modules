@@ -50,11 +50,6 @@ class SocialStreamPostYoutube(models.Model):
                     / (post.youtube_likes_count + post.youtube_dislikes_count)
                 )
 
-    def _compute_is_author(self):
-        youtube_posts = self._filter_by_media_types(['youtube'])
-        super(SocialStreamPostYoutube, (self - youtube_posts))._compute_is_author()
-        youtube_posts.is_author = True
-
     # ========================================================
     # COMMENTS / LIKES
     # ========================================================

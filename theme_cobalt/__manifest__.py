@@ -5,12 +5,12 @@
     'summary': 'Development, IT development, Design, Tech, Computers, IT, Blogs',
     'sequence': 110,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['website'],
     'data': [
         'data/ir_asset.xml',
         'views/images.xml',
         'views/customizations.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/cobalt_poster.jpg',
@@ -24,7 +24,7 @@
         'website.library_image_16': '/theme_cobalt/static/src/img/pictures/s_image_3.jpg',
         'website.library_image_05': '/theme_cobalt/static/src/img/pictures/s_image_5.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_banner', 's_references', 's_text_image', 's_color_blocks_2', 's_images_wall'],
     },
     'license': 'LGPL-3',

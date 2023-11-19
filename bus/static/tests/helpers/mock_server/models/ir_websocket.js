@@ -3,21 +3,17 @@
 import { patch } from "@web/core/utils/patch";
 import { MockServer } from "@web/../tests/helpers/mock_server";
 
-patch(MockServer.prototype, {
+patch(MockServer.prototype, 'bus/models/ir_websocket', {
     /**
      * Simulates `_update_presence` on `ir.websocket`.
      *
      * @param inactivityPeriod
      * @param imStatusIdsByModel
      */
-    _mockIrWebsocket__updatePresence(inactivityPeriod, imStatusIdsByModel) {
+     _mockIrWebsocket__updatePresence(inactivityPeriod, imStatusIdsByModel) {
         const imStatusNotifications = this._mockIrWebsocket__getImStatus(imStatusIdsByModel);
         if (Object.keys(imStatusNotifications).length > 0) {
-            this._mockBusBus__sendone(
-                this.pyEnv.currentPartner,
-                "mail.record/insert",
-                imStatusNotifications
-            );
+            this._mockBusBus__sendone(this.currentPartnerId, 'bus/im_status', imStatusNotifications);
         }
     },
     /**
@@ -29,29 +25,10 @@ patch(MockServer.prototype, {
      */
     _mockIrWebsocket__getImStatus(imStatusIdsByModel) {
         const imStatus = {};
-        const { "res.partner": partnerIds } = imStatusIdsByModel;
+        const { 'res.partner': partnerIds } = imStatusIdsByModel;
         if (partnerIds) {
-            imStatus["Persona"] = this.mockSearchRead("res.partner", [[["id", "in", partnerIds]]], {
-                context: { active_test: false },
-                fields: ["im_status"],
-            }).map((p) => ({ ...p, type: "partner" }));
+            imStatus['partners'] = this.mockSearchRead('res.partner', [[['id', 'in', partnerIds]]], { context: { 'active_test': false }, fields: ['im_status'] })
         }
         return imStatus;
-    },
-    /**
-     * Simulates `_build_bus_channel_list` on `ir.websocket`.
-     */
-    _mockIrWebsocket__buildBusChannelList() {
-        const channels = ["broadcast"];
-        const authenticatedUserId = this.pyEnv.cookie.get("authenticated_user_sid");
-        const authenticatedPartner = authenticatedUserId
-            ? this.pyEnv["res.partner"].searchRead([["user_ids", "in", [authenticatedUserId]]], {
-                  context: { active_test: false },
-              })[0]
-            : null;
-        if (authenticatedPartner) {
-            channels.push({ model: "res.partner", id: authenticatedPartner.id });
-        }
-        return channels;
     },
 });

@@ -21,4 +21,4 @@ class StockMoveLine(models.Model):
 
     def _get_fields_stock_barcode(self):
         """ Inject info if the line is subcontract and have tracked component """
-        return super()._get_fields_stock_barcode() + ['is_subcontract_stock_barcode']
+        return super()._get_fields_stock_barcode() + ['move_id', 'is_subcontract_stock_barcode']

@@ -1,8 +1,9 @@
 /** @odoo-module */
 
+import { jsonToBase64 } from "@spreadsheet_edition/bundle/helpers";
 import { getBasicServerData } from "@spreadsheet/../tests/utils/data";
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
-import { nextTick, patchWithCleanup } from "@web/../tests/helpers/utils";
+import { patchWithCleanup } from "@web/../tests/helpers/utils";
 import { SpreadsheetAction } from "@documents_spreadsheet/bundle/actions/spreadsheet_action";
 import { SpreadsheetTemplateAction } from "@documents_spreadsheet/bundle/actions/spreadsheet_template/spreadsheet_template_action";
 import { UNTITLED_SPREADSHEET_NAME } from "@spreadsheet/helpers/constants";
@@ -10,7 +11,7 @@ import {
     getSpreadsheetActionEnv,
     getSpreadsheetActionModel,
     prepareWebClientForSpreadsheet,
-} from "@spreadsheet_edition/../tests/utils/webclient_helpers";
+} from "./utils/webclient_helpers";
 
 /**
  * @typedef {import("@spreadsheet/../tests/utils/data").ServerData} ServerData
@@ -38,7 +39,7 @@ async function createSpreadsheetAction(actionTag, params) {
     let spreadsheetAction;
     patchWithCleanup(SpreadsheetActionComponent.prototype, {
         setup() {
-            super.setup();
+            this._super();
             spreadsheetAction = this;
         },
     });
@@ -47,6 +48,9 @@ async function createSpreadsheetAction(actionTag, params) {
         webClient = await createWebClient({
             serverData: params.serverData || getBasicServerData(),
             mockRPC: params.mockRPC,
+            legacyParams: {
+                withLegacyMockServer: true,
+            },
         });
     }
 
@@ -57,12 +61,10 @@ async function createSpreadsheetAction(actionTag, params) {
             tag: actionTag,
             params: {
                 spreadsheet_id: params.spreadsheetId,
-                convert_from_template: params.convert_from_template,
             },
         },
         { clearBreadcrumbs: true } // Sometimes in test defining custom action, Odoo opens on the action instead of opening on root
     );
-    await nextTick();
     return {
         webClient,
         model: getSpreadsheetActionModel(spreadsheetAction),
@@ -86,7 +88,7 @@ export async function createSpreadsheet(params = {}) {
         documents.push({
             id: spreadsheetId,
             name: UNTITLED_SPREADSHEET_NAME,
-            spreadsheet_data: "{}",
+            raw: "{}",
         });
         params = { ...params, spreadsheetId };
     }
@@ -108,55 +110,9 @@ export async function createSpreadsheetTemplate(params = {}) {
         templates.push({
             id: spreadsheetId,
             name: "test template",
-            spreadsheet_data: "{}",
+            data: jsonToBase64({}),
         });
         params = { ...params, spreadsheetId };
     }
     return createSpreadsheetAction("action_open_template", params);
-}
-
-/**
- * Mock the action service of the env, and add the mockDoAction function to it.
- */
-export function mockActionService(env, mockDoAction) {
-    patchWithCleanup(env.services.action, {
-        doAction(action) {
-            mockDoAction(action);
-        },
-    });
-}
-
-/**
- * @param {HTMLElement} target
- * @returns {HTMLElement}
- */
-export function getConnectedUsersEl(target) {
-    return target.querySelector(".o_spreadsheet_number_users");
-}
-
-/**
- * @param {HTMLElement} target
- * @returns {HTMLElement}
- */
-export function getConnectedUsersElImage(target) {
-    return target.querySelector(".o_spreadsheet_number_users i");
-}
-
-/**
- *
- * @param {HTMLElement} target
- * @returns {string}
- */
-export function getSynchedStatus(target) {
-    /** @type {HTMLElement} */
-    const content = target.querySelector(".o_spreadsheet_sync_status");
-    return content.innerText;
-}
-
-/**
- * @param {HTMLElement} target
- * @returns {number}
- */
-export function displayedConnectedUsers(target) {
-    return parseInt(getConnectedUsersEl(target).innerText);
 }

@@ -3,16 +3,13 @@
 import { Notification } from "./notification";
 import { Transition } from "@web/core/transition";
 
-import { Component, xml, useState } from "@odoo/owl";
+const { Component, xml, useState } = owl;
 
 export class NotificationContainer extends Component {
     setup() {
         this.notifications = useState(this.props.notifications);
     }
 }
-NotificationContainer.props = {
-    notifications: Object,
-};
 
 NotificationContainer.template = xml`
     <div class="o_notification_manager">

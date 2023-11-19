@@ -5,12 +5,11 @@
         <field name="model">account.analytic.line</field>
         <field name="arch" type="xml">
             <tree string="Analytic Items" multi_edit="1">
-                <field name="company_id" column_invisible="True"/>
-                <field name="product_uom_category_id" column_invisible="True"/>
                 <field name="date" optional="show"/>
                 <field name="name"/>
                 <field name="account_id"/>
-                <field name="currency_id" column_invisible="True"/>
+                <field name="plan_id"/>
+                <field name="currency_id" invisible="1"/>
                 <field name="unit_amount" sum="Quantity" optional="hide"/>
                 <field name="product_uom_id" optional="hide"/>
                 <field name="partner_id" optional="hide"/>
@@ -27,10 +26,12 @@
             <search string="Search Analytic Lines">
                 <field name="name"/>
                 <field name="date"/>
-                <separator/>
-                <filter name="month" string="Date" date="date"/>
+                <field name="account_id"/>
+                <field name="plan_id"/>
+                <filter string="Date" name="date" date="date"/>
+                <filter string="Analytic Account" name="group_by_analytic_account" context="{'group_by': 'account_id'}"/>
+                <filter string="Analytic Plan" name="group_by_analytic_plan" context="{'group_by': 'plan_id'}"/>
                 <group string="Group By..." expand="0" name="groupby">
-                    <separator/>
                     <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
                 </group>
             </search>
@@ -109,8 +110,8 @@
         <field name="model">account.analytic.line</field>
         <field name="arch" type="xml">
             <pivot string="Analytic Items" sample="1">
-                <field name="account_id"/>
-                <field name="date" interval="month" type="col"/>
+                <field name="account_id" type="row"/>
+                <field name="unit_amount" type="measure"/>
                 <field name="amount" type="measure"/>
             </pivot>
         </field>
@@ -131,15 +132,15 @@
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                             <div class="row">
                                 <div class="col-6">
-                                    <strong><span><t t-out="record.name.value"/></span></strong>
+                                    <strong><span><t t-esc="record.name.value"/></span></strong>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <strong><t t-out="record.date.value"/></strong>
+                                    <strong><t t-esc="record.date.value"/></strong>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 text-muted">
-                                    <span><t t-out="record.account_id.value"/></span>
+                                    <span><t t-esc="record.account_id.value"/></span>
                                 </div>
                                 <div class="col-6">
                                     <span class="float-end text-end">

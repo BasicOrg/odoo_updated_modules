@@ -26,7 +26,8 @@ class ResUsers(models.Model):
             return
         res = self.env['hr.referral.reward']._read_group(
             [('gift_manager_id', 'in', self.ids)],
+            ['gift_manager_id'],
             ['gift_manager_id'])
-        responsibles_to_remove_ids = set(self.ids) - {gift_manager.id for [gift_manager] in res}
+        responsibles_to_remove_ids = set(self.ids) - {x['gift_manager_id'][0] for x in res}
         reward_responsible_group.sudo().write({
             'users': [(3, responsible_id) for responsible_id in responsibles_to_remove_ids]})

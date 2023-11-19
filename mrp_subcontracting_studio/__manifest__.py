@@ -10,4 +10,11 @@
     'depends': ['mrp_subcontracting', 'web_studio'],
     'auto_install': True,
     'license': 'OEEL-1',
+    'assets': {
+        'mrp_subcontracting.webclient': [
+            ('remove', 'web_studio/static/src/legacy/studio_legacy_service.js'),
+            ('remove', 'web_studio/static/src/studio_service.js'),
+            ('remove', 'web_studio/static/src/views/list/list_renderer.js'),
+        ],
+    }
 }

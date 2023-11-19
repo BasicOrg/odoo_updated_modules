@@ -133,12 +133,6 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
         }
 
         .o_colorpicker_section {
-            &.o_custom_gradient_editor{
-                .o_custom_gradient_btn{
-                    border: 1px solid var(--o-we-toolbar-border);
-                }
-            }
-
             &::after {
                 content: "";
                 display: table;
@@ -160,8 +154,7 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
 
 // Toolbar - Generic rules shared among backend & frontend
 .oe-toolbar {
-    display: flex;
-    align-items: center;
+    display: grid;
 
     .btn {
         display: flex;
@@ -189,11 +182,16 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
 
 // Floating Toolbar
 .oe-toolbar.oe-floating {
-    gap: $o-we-sidebar-content-field-control-item-spacing * .7;
+    gap: 0 $o-we-sidebar-content-field-control-item-spacing * .7;
+    grid-auto-flow: column;
     align-items: stretch;
+    height: auto;
     min-height: $o-we-toolbar-height;
+    max-width: none;
+    border-radius: $o-we-item-border-radius;
     padding: 0 $o-we-sidebar-content-field-control-item-spacing;
     background-color: var(--o-we-toolbar-bg, #{$o-we-toolbar-bg});
+    box-shadow: 0 0 4px rgba(#000, .1), 0 4px 18px rgba(#000, .25);
     color: var(--o-we-toolbar-color-text, #{$o-we-toolbar-color-text});
     font-family: $o-we-font-family;
 
@@ -216,6 +214,11 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
             margin-right: calc(#{$o-we-toolbar-entries-gap} - #{$o-we-toolbar-entries-border-width});
             background: var(--o-we-toolbar-border, #{$o-we-toolbar-border});
             transform: scaleY(.6)
+        }
+
+        // Adjust dropdown-menu position, but not when already handled in js
+        .o-dropdown-menu:not([x-placement]) {
+            margin-left: $o-we-toolbar-entries-gap;
         }
     }
 
@@ -273,7 +276,7 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
         overflow: visible;
         border-top: 1px solid var(--o-we-toolbar-border, #{$o-we-toolbar-border});
         background-color: var(--o-we-toolbar-bg, #{$o-we-toolbar-bg});
-        box-shadow: $box-shadow;
+        box-shadow: 0 18px 18px rgba(#000, .23);
         @include border-top-radius(0);
         @include border-bottom-radius($o-we-item-border-radius);
 
@@ -304,7 +307,7 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
 
         &.active {
             & > * , &:hover, &:focus {
-                color: var(--o-we-toolbar-color-clickable-active, #{$o-we-toolbar-color-clickable-active});
+                color: var(--o-we-toolbar-color-clickable-active, #{$o-we-toolbar-color-clickable-active})
 
                 &:before {
                     top: 0;
@@ -318,6 +321,9 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
     // Specific elements
     #decoration {
         #removeFormat {
+            display: none;
+        }
+        .active ~ #removeFormat {
             display: flex;
         }
     }
@@ -343,6 +349,7 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
         }
 
         .o_we_colorpicker_switch_panel button {
+            @extend .btn;
             margin-bottom: -1px;
 
             &.active {
@@ -368,24 +375,13 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
 
     .colorpicker {
         background: var(--o-we-toolbar-bg, #{$o-we-toolbar-bg});
-        box-shadow: $box-shadow;
+        box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.2);
     }
 
     .o_image_alt {
         @include o-text-overflow();
         max-width: 150px;
     }
-
-    input#fontSizeCurrentValue {
-        width: 20px;
-        border: none;
-    }
-}
-
-// Toolbar in Sidebar (website editor, mass mailing)
-#oe_snippets > .o_we_customize_panel .oe-toolbar {
-    display: grid;
-    align-items: stretch;
 }
 
 // Floating Table Picker
@@ -401,14 +397,13 @@ $o-we-zindex: $o-we-overlay-zindex + 1 !default;
 
 
 body:not(.editor_has_snippets) {
-    > .oe-toolbar {
-        // Bootstrap sets .modal z-index at 1055. Ensure toolbar is visible in
+    .oe-toolbar {
+        // Bootstrap sets .modal z-index at 1050. Ensure toolbar is visible in
         // modals. Only apply this to the toolbar if it's not in a snippets menu.
-        z-index: 1056;
+        z-index: 1051;
     }
 }
-
-@include media-breakpoint-down(md) {
+@media only screen and (max-width: 767px) {
     .oe-toolbar {
         background-color: white;
 
@@ -506,7 +501,11 @@ img.o_we_selected_image {
 .fa.o_we_selected_image::before {
     @extend %o-we-selected-image;
 }
-
+// Override default image selection color from portal. It prevents your from
+// seeing the images' quality clearly in the wysiwyg.
+img::selection {
+    background: transparent;
+}
 .o_we_media_author {
     font-size: 11px;
     @include o-position-absolute($bottom: 0, $left: 0, $right: 0);
@@ -523,22 +522,6 @@ img.o_we_selected_image {
         height: initial !important;
         top: initial !important;
         left: initial !important;
-    }
-
-    .oe-toolbar.oe-floating {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-        overflow-y: visible;
-
-        .dropdown-menu {
-            max-height: 200px;
-            overflow: auto;
-
-            &.colorpicker-menu {
-                bottom: auto;
-            }
-        }
     }
 }
 
@@ -581,14 +564,14 @@ img.o_we_selected_image {
     border: $o-we-border-width solid $o-we-fg-light;
     overflow: auto;
     height: 100%;
-    padding: 4px 40px 4px 4px;
+    padding: 4px;
     min-height: 10px;
     border-radius: 3px;
 }
 
-.oe-bordered-editor .note-editable {
+.oe-bordered-editor>.note-editable {
     border-width: 1px;
-    padding: 4px 40px 4px 4px;
+    padding: 4px;
     min-height: 180px;
 }
 
@@ -599,8 +582,7 @@ img.o_we_selected_image {
 .o_we_crop_widget {
     background-color: rgba(128, 128, 128, 0.5);
     @include o-position-absolute(0, 0, 0, 0);
-    /* This value must be higher than dialog z-index in bootstrap */
-    z-index: 1056;
+    z-index: 1024;
 
     .o_we_cropper_wrapper {
         position: absolute;
@@ -610,7 +592,6 @@ img.o_we_selected_image {
         margin-top: 0.5rem;
         display: flex;
         flex-wrap: wrap;
-        bottom: 1rem;
 
         input[type=radio] {
             display: none;
@@ -671,19 +652,6 @@ img.o_we_selected_image {
     // Prevent the edited link from being deselected when clicking between
     // buttons in the popover
     user-select: none;
-    box-shadow: $box-shadow;
-    border-color: rgba(0,0,0,0.025);
-
-    .popover-arrow::before {
-        border-right-color: rgba(0, 0, 0, 0.05);
-    }
-    // As the popover is displayed both in the frontend and the backend,
-    // the font styles need to be uniformized.
-    font-size: 12px;
-    font-weight: 400 !important;
-    .fw-bold {
-        font-weight: 500 !important;
-    }
 
     .o_we_preview_favicon > img {
         max-height: 16px;
@@ -691,7 +659,7 @@ img.o_we_selected_image {
     }
 
     .o_we_url_link {
-        width: 100px;
+        word-break: break-all;
     }
 
     .o_we_full_url {
@@ -713,41 +681,4 @@ img.o_we_selected_image {
 }
 textarea.o_codeview {
     min-height: 400px;
-}
-
-@keyframes fade {
-    0%,100% { opacity: 0 }
-    30%,70% { opacity: 1 }
-  }
-.o-chatgpt-content {
-    position: absolute;
-    background: rgba(1, 186, 210, 0.5);
-    opacity: 0;
-    animation: fade 1.5s ease-in-out;
-    z-index: 1;
-    outline: 2px dashed #01bad2;
-    outline-offset: -2px;
-}
-
-.o-prompt-input {
-    position: relative;
-    // see .o-mail-Composer-input
-    > textarea {
-        padding-top: 10px; // carefully crafted to have the text in the middle in chat window
-        padding-bottom: 10px;
-        min-height: 40px;
-        max-height: 110px;
-        resize: none;
-    }
-}
-button.o-message-insert {
-    line-height: 1;
-}
-.o-chatgpt-message > div > *:last-child, .o-chatgpt-alternative > *:last-child {
-    margin-bottom: 0;
-}
-.o-message-error {
-    color: #d44c59;
-    font-weight: bold;
-    --bg-opacity: 0.25;
 }

@@ -7,7 +7,8 @@
             <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='task_id']" position="after">
-                    <field name="order_id" string="Sales Order" filter_domain="['|', ('so_line', 'ilike', self), ('order_id', 'ilike', self)]"/>
+                    <field name="order_id" string="Sales Order" groups="sales_team.group_sale_salesman"/>
+                    <field name="so_line" groups="sales_team.group_sale_salesman"/>
                 </xpath>
                 <xpath expr="//filter[@name='month']" position="before">
                     <filter name="billable_fixed" string="Billed at a Fixed Price" domain="[('timesheet_invoice_type', '=', 'billable_fixed')]"
@@ -23,6 +24,8 @@
                     <separator/>
                 </xpath>
                 <xpath expr="//filter[@name='groupby_employee']" position="after">
+                    <filter string="Sales Order" name="groupby_sale_order" domain="[]" context="{'group_by': 'order_id'}"
+                        groups="sales_team.group_sale_salesman"/>
                     <filter string="Sales Order Item" name="groupby_sale_order_item" domain="[]" context="{'group_by': 'so_line'}"
                         groups="sales_team.group_sale_salesman"/>
                     <filter string="Invoice" name="groupby_invoice" domain="[]" context="{'group_by': 'timesheet_invoice_id'}"
@@ -39,11 +42,9 @@
         <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="commercial_partner_id" column_invisible="True" groups="sales_team.group_sale_salesman"/>
-                <field name="is_so_line_edited" column_invisible="True" groups="sales_team.group_sale_salesman"/>
-                <field name="allow_billable" column_invisible="True" groups="sales_team.group_sale_salesman"/>
-                <field name="allowed_so_line_ids" column_invisible="1"/>
-                <field name="so_line" widget="so_line_field" optional="show" options="{'no_create': True, 'no_open': True}" context="{'create': False, 'edit': False, 'delete': False}" invisible="not allow_billable" readonly="readonly_timesheet" placeholder="Non-billable" groups="sales_team.group_sale_salesman"/>
+                <field name="commercial_partner_id" invisible="1" groups="sales_team.group_sale_salesman"/>
+                <field name="is_so_line_edited" invisible="1" groups="sales_team.group_sale_salesman"/>
+                <field name="so_line" widget="so_line_field" optional="hide" options="{'no_create': True}" context="{'create': False, 'edit': False, 'delete': False}" groups="sales_team.group_sale_salesman"/>
             </xpath>
         </field>
     </record>
@@ -56,27 +57,7 @@
             <xpath expr="//field[@name='task_id']" position="after">
                 <field name="commercial_partner_id" invisible="1" groups="sales_team.group_sale_salesman"/>
                 <field name="is_so_line_edited" invisible="1" groups="sales_team.group_sale_salesman"/>
-                <field name="allow_billable" invisible="1" groups="sales_team.group_sale_salesman"/>
-                <field name="allowed_so_line_ids" invisible="1"/>
-                <field name="so_line" widget="so_line_field" options='{"no_create": True}' context="{'create': False, 'edit': False, 'delete': False, 'with_price_unit': True}" invisible="not allow_billable" readonly="readonly_timesheet" placeholder="Non-billable" groups="sales_team.group_sale_salesman"/>
-            </xpath>
-            <xpath expr="//group" position="before">
-                <t groups="sales_team.group_sale_salesman">
-                    <field name="order_id" invisible="1"/>
-                    <field name="timesheet_invoice_id" invisible="1"/>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_sale_order_from_timesheet" type="object" class="oe_stat_button" icon="fa-dollar" invisible="not order_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Sales Order</span>
-                            </div>
-                        </button>
-                        <button name="action_invoice_from_timesheet" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not timesheet_invoice_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Invoice</span>
-                            </div>
-                        </button>
-                    </div>
-                </t>
+                <field name="so_line" widget="so_line_field" options='{"no_create": True}' context="{'create': False, 'edit': False, 'delete': False}" groups="sales_team.group_sale_salesman"/>
             </xpath>
         </field>
     </record>
@@ -107,30 +88,6 @@
         </field>
     </record>
 
-    <record id="view_hr_timesheet_line_graph_invoice_employee" model="ir.ui.view">
-        <field name="name">account.analytic.line.graph.invoice.employee</field>
-        <field name="model">account.analytic.line</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="view_hr_timesheet_line_graph_employee_per_date"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='date']" position="replace">
-                <field name="timesheet_invoice_id"/>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="view_hr_timesheet_line_pivot_inherited" model="ir.ui.view">
-        <field name="name">account.analytic.line.pivot</field>
-        <field name="model">account.analytic.line</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="hr_timesheet.view_hr_timesheet_line_pivot"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='amount']" position="attributes">
-                <attribute name="type">measure</attribute>
-            </xpath>
-        </field>
-    </record>
-
     <!--
         Timesheet from Sales Order
     -->
@@ -138,9 +95,6 @@
         <field name="name">Timesheets</field>
         <field name="res_model">account.analytic.line</field>
         <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_search"/>
-        <field name="context">{
-            "is_timesheet": 1,
-        }</field>
         <field name="domain">[('project_id', '!=', False)]</field>
     </record>
 
@@ -165,12 +119,10 @@
         <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_search"/>
         <field name="domain">[('project_id', '!=', False), ('so_line', '=', active_id)]</field>
         <field name="context">{
-            'grid_range': 'week',
             'search_default_billable_timesheet': True,
             'search_default_week': 1,
             'default_so_line': active_id,
             'default_is_so_line_edited': True,
-            "is_timesheet": 1,
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -199,7 +151,7 @@
     <record id="timesheet_action_from_sales_order_item_pivot" model="ir.actions.act_window.view">
         <field name="sequence" eval="30"/>
         <field name="view_mode">pivot</field>
-        <field name="view_id" ref="view_hr_timesheet_line_pivot_inherited"/>
+        <field name="view_id" ref="hr_timesheet.view_hr_timesheet_line_pivot"/>
         <field name="act_window_id" ref="timesheet_action_from_sales_order_item"/>
     </record>
 
@@ -225,9 +177,6 @@
         <field name="res_model">account.analytic.line</field>
         <field name="view_mode">pivot,tree,form</field>
         <field name="domain">[('project_id', '!=', False)]</field>
-        <field name="context">{
-            "is_timesheet": 1,
-        }</field>
         <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_search"/>
     </record>
 
@@ -236,9 +185,6 @@
         <field name="res_model">account.analytic.line</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('project_id', '!=', False)]</field>
-        <field name="context">{
-            "is_timesheet": 1,
-        }</field>
         <field name="search_view_id" ref="hr_timesheet.hr_timesheet_line_search"/>
     </record>
 

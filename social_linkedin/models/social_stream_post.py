@@ -49,13 +49,6 @@ class SocialStreamPostLinkedIn(models.Model):
             else:
                 post.post_link = False
 
-    def _compute_is_author(self):
-        linkedin_posts = self._filter_by_media_types(['linkedin'])
-        super(SocialStreamPostLinkedIn, (self - linkedin_posts))._compute_is_author()
-
-        for post in linkedin_posts:
-            post.is_author = post.linkedin_author_urn == post.account_id.linkedin_account_urn
-
     # ========================================================
     # COMMENTS / LIKES
     # ========================================================
@@ -112,7 +105,7 @@ class SocialStreamPostLinkedIn(models.Model):
         element_urn = comment_urn or self.linkedin_post_urn
 
         response = requests.get(
-            url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'socialActions/%s/comments' % quote(element_urn)),
+            url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'socialActions/%s/comments/' % quote(element_urn)),
             params={
                 'start': offset,
                 'count': count,
@@ -144,15 +137,13 @@ class SocialStreamPostLinkedIn(models.Model):
 
     def _linkedin_format_comment(self, json_data):
         """Formats a comment returned by the LinkedIn API to a dict that will be interpreted by our frontend."""
-        author_image_url = self.account_id._extract_linkedin_picture_url(json_data.get('created', {}).get('actor~'))
-        author_image_url = self.env['social.stream']._enforce_url_scheme(author_image_url)
         data = {
             'id': json_data.get('$URN'),
             'from': {
                 'id': json_data.get('created', {}).get('actor'),
                 'name': self.stream_id._format_linkedin_name(json_data.get('created', {}).get('actor~')),
                 'authorUrn': json_data.get('created', {}).get('actor'),
-                'picture': author_image_url,
+                'picture': self.account_id._extract_linkedin_picture_url(json_data.get('created', {}).get('actor~')),
                 'vanityName': json_data.get('created', {}).get('actor~').get('vanityName'),
                 'isOrganization': 'organization' in json_data.get('created', {}).get('actor', ''),
             },
@@ -168,19 +159,6 @@ class SocialStreamPostLinkedIn(models.Model):
                 }
             },
         }
-
-        image_content = next(
-            (content for content in json_data.get('content', [])
-             if content.get('type') == 'IMAGE'),
-            None,
-        )
-        if image_content:
-            # Sometimes we can't access the image (e.g. if it's still being process)
-            # so we have a placeholder image if the download URL is not yet available
-            data['attachment'] = {
-                'type': 'photo',
-                'media': {'image': {'src': image_content.get('url', '/web/static/img/placeholder.png')}},
-            }
 
         sub_comments_count = json_data.get('commentsSummary', {}).get('totalFirstLevelComments', 0)
         data['comments'] = {

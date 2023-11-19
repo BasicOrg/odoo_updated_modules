@@ -1,20 +1,16 @@
-/** @odoo-module **/
 /* global YT */
+odoo.define('website_event_track_live.website_event_youtube_embed', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import TrackSuggestionWidget from "@website_event_track_live/js/website_event_track_suggestion";
-import ReplaySuggestionWidget from "@website_event_track_live/js/website_event_track_replay_suggestion";
+var publicWidget = require('web.public.widget');
+var TrackSuggestionWidget = require('website_event_track_live.website_event_track_suggestion');
+var ReplaySuggestionWidget = require('website_event_track_live.website_event_track_replay_suggestion');
 
 publicWidget.registry.websiteEventTrackLive = publicWidget.Widget.extend({
     selector: '.o_wevent_event_track_live',
-    custom_events: Object.assign({}, publicWidget.Widget.prototype.custom_events, {
+    custom_events: _.extend({}, publicWidget.Widget.prototype.custom_events, {
         'video-ended': '_onVideoEnded'
     }),
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
 
     start: function () {
         var self = this;
@@ -50,8 +46,11 @@ publicWidget.registry.websiteEventTrackLive = publicWidget.Widget.extend({
             class: 'owevent_track_suggestion_loading position-absolute w-100'
         }));
         var self = this;
-        this.rpc('/event_track/get_track_suggestion', {
-            track_id: this.$el.data('trackId'),
+        this._rpc({
+            route: '/event_track/get_track_suggestion',
+            params: {
+                track_id: this.$el.data('trackId'),
+            }
         }).then(function (suggestion) {
             self.nextSuggestion = suggestion;
             self._showSuggestion();
@@ -121,4 +120,6 @@ publicWidget.registry.websiteEventTrackLive = publicWidget.Widget.extend({
             this.outro.on('replay', null, this._onReplay.bind(this));
         }
     }
+});
+
 });

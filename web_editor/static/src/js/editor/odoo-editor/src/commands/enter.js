@@ -3,6 +3,7 @@ import { UNBREAKABLE_ROLLBACK_CODE } from '../utils/constants.js';
 
 import {
     childNodeIndex,
+    clearEmpty,
     fillEmpty,
     isBlock,
     isUnbreakable,
@@ -13,8 +14,6 @@ import {
     splitTextNode,
     toggleClass,
     isVisible,
-    descendants,
-    isVisibleTextNode,
 } from '../utils/utils.js';
 
 Text.prototype.oEnter = function (offset) {
@@ -43,13 +42,13 @@ HTMLElement.prototype.oEnter = function (offset, firstSplit = true) {
     }
 
     // First split the node in two and move half the children in the clone.
-    let splitEl = this.cloneNode(false);
+    const splitEl = this.cloneNode(false);
     while (offset < this.childNodes.length) {
         splitEl.appendChild(this.childNodes[offset]);
     }
     if (isBlock(this) || splitEl.hasChildNodes()) {
         this.after(splitEl);
-        if (isBlock(splitEl) || isVisible(splitEl) || splitEl.textContent === '\u200B') {
+        if (isVisible(splitEl)) {
             didSplit = true;
         } else {
             splitEl.remove();
@@ -73,22 +72,14 @@ HTMLElement.prototype.oEnter = function (offset, firstSplit = true) {
     if (firstSplit && didSplit) {
         restore();
 
-        let node = this;
-        while (!isBlock(node) && !isVisible(node)) {
-            const toRemove = node;
-            node = node.parentNode;
-            toRemove.remove();
-        }
-        fillEmpty(node);
+        fillEmpty(clearEmpty(this));
         fillEmpty(splitEl);
-        if (splitEl.tagName === 'A') {
-            while (!isBlock(splitEl) && !isVisible(splitEl)) {
-                const toRemove = splitEl;
-                splitEl = splitEl.parentNode;
-                toRemove.remove();
-            }
-        }
-        setCursorStart(splitEl);
+
+        const focusToElement =
+            splitEl.nodeType === Node.ELEMENT_NODE && splitEl.tagName === 'A'
+                ? clearEmpty(splitEl)
+                : splitEl;
+        setCursorStart(focusToElement);
     }
     return splitEl;
 };
@@ -100,9 +91,8 @@ HTMLElement.prototype.oEnter = function (offset, firstSplit = true) {
  */
 HTMLHeadingElement.prototype.oEnter = function () {
     const newEl = HTMLElement.prototype.oEnter.call(this, ...arguments);
-    if (!descendants(newEl).some(isVisibleTextNode)) {
+    if (!newEl.textContent) {
         const node = setTagName(newEl, 'P');
-        node.replaceChildren(document.createElement('br'));
         setCursorStart(node);
     }
 };

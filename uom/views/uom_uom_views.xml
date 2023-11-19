@@ -4,7 +4,7 @@
         <field name="name">uom.uom.tree</field>
         <field name="model">uom.uom</field>
         <field name="arch" type="xml">
-            <tree string="Units of Measure" create="false">
+            <tree string="Units of Measure">
                 <field name="name"/>
                 <field name="category_id"/>
                 <field name="uom_type"/>
@@ -24,21 +24,21 @@
                              <field name="category_id"/>
                              <field name="uom_type" readonly="1"/>
                              <label for="factor"
-                                invisible="uom_type != 'smaller'"/>
-                            <div invisible="uom_type != 'smaller'">
+                                attrs="{'invisible':[('uom_type','!=','smaller')]}"/>
+                            <div attrs="{'invisible':[('uom_type','!=','smaller')]}">
                                 <field name="factor"
                                     digits="[42,5]"
-                                    readonly="uom_type == 'bigger'"/>
+                                    attrs="{'readonly':[('uom_type','=','bigger')]}"/>
                                 <span class="oe_grey oe_inline">
                                     e.g: 1*(reference unit)=ratio*(this unit)
                                 </span>
                             </div>
-                            <label for="factor_inv"
-                                invisible="uom_type != 'bigger'"/>
-                            <div invisible="uom_type != 'bigger'">
+                            <label for="factor_inv" 
+                                attrs="{'invisible':[('uom_type','!=','bigger')]}"/>                           
+                            <div attrs="{'invisible':[('uom_type','!=','bigger')]}">
                                 <field name="factor_inv"
                                     digits="[42,5]"
-                                    readonly="uom_type != 'bigger'"/>
+                                    attrs="{'readonly':[('uom_type','!=','bigger')]}"/>
                                 <span class="oe_grey oe_inline">
                                     e.g: 1*(this unit)=ratio*(reference unit)
                                 </span>
@@ -71,6 +71,7 @@
 
     <record id="product_uom_form_action" model="ir.actions.act_window">
         <field name="name">Units of Measure</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">uom.uom</field>
         <field name="view_id" ref="product_uom_tree_view"/>
         <field name="search_view_id" ref="uom_uom_view_search"/>
@@ -100,9 +101,9 @@
                                 <tree editable="bottom">
                                     <field name="name" decoration-bf="uom_type == 'reference'"/>
                                     <field name="uom_type" decoration-bf="uom_type == 'reference'"/>
-                                    <field name="factor" column_invisible="True"/>
-                                    <field name="factor_inv" column_invisible="True"/>
-                                    <field name="ratio" string="Ratio" readonly="uom_type == 'reference'" digits="[42,5]"/>
+                                    <field name="factor" invisible="1"/>
+                                    <field name="factor_inv" invisible="1"/>
+                                    <field name="ratio" string="Ratio" attrs="{'readonly': [('uom_type', '=', 'reference')]}" digits="[42,5]"/>
                                     <field name="active"/>
                                     <field name="rounding" digits="[42, 5]"/>
                                 </tree>
@@ -138,6 +139,7 @@
 
     <record id="product_uom_categ_form_action" model="ir.actions.act_window">
         <field name="name">Units of Measure Categories</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">uom.category</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'allow_to_change_reference': 1}</field>

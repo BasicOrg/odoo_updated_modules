@@ -17,7 +17,7 @@ def _check_with_xsd_patch(xml_to_validate, xsd_fname, env, prefix=None):
 
 class TestL10nClEdiCommon(AccountEdiTestCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref='cl'):
+    def setUpClass(cls, chart_template_ref='l10n_cl.cl_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].write({

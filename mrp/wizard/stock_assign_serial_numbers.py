@@ -17,11 +17,10 @@ class StockAssignSerialNumbers(models.TransientModel):
     show_apply = fields.Boolean() # Technical field to show the Apply button
     show_backorders = fields.Boolean() # Technical field to show the Create Backorder and No Backorder buttons
     multiple_lot_components_names = fields.Text() # Names of components with multiple lots, used to show warning
-    mark_as_done = fields.Boolean("Valide all the productions after the split")
 
     def generate_serial_numbers_production(self):
         if self.next_serial_number and self.next_serial_count:
-            generated_serial_numbers = "\n".join(lot['lot_name'] for lot in self.env['stock.lot'].generate_lot_names(self.next_serial_number, self.next_serial_count))
+            generated_serial_numbers = "\n".join(self.env['stock.lot'].generate_lot_names(self.next_serial_number, self.next_serial_count))
             self.serial_numbers = "\n".join([self.serial_numbers, generated_serial_numbers]) if self.serial_numbers else generated_serial_numbers
             self._onchange_serial_numbers()
         action = self.env["ir.actions.actions"]._for_xml_id("mrp.act_assign_serial_numbers_production")
@@ -42,7 +41,7 @@ class StockAssignSerialNumbers(models.TransientModel):
         if duplicate_serial_numbers:
             self.serial_numbers = ""
             self.produced_qty = 0
-            raise UserError(_('Duplicate Serial Numbers (%s)', ','.join(duplicate_serial_numbers)))
+            raise UserError(_('Duplicate Serial Numbers (%s)') % ','.join(duplicate_serial_numbers))
         existing_serial_numbers = self.env['stock.lot'].search([
             ('company_id', '=', self.production_id.company_id.id),
             ('product_id', '=', self.production_id.product_id.id),
@@ -51,14 +50,14 @@ class StockAssignSerialNumbers(models.TransientModel):
         if existing_serial_numbers:
             self.serial_numbers = ""
             self.produced_qty = 0
-            raise UserError(_('Existing Serial Numbers (%s)', ','.join(existing_serial_numbers.mapped('display_name'))))
+            raise UserError(_('Existing Serial Numbers (%s)') % ','.join(existing_serial_numbers.mapped('display_name')))
         if len(serial_numbers) > self.expected_qty:
             self.serial_numbers = ""
             self.produced_qty = 0
             raise UserError(_('There are more Serial Numbers than the Quantity to Produce'))
         self.produced_qty = len(serial_numbers)
         self.show_apply = self.produced_qty == self.expected_qty
-        self.show_backorders = 0 < self.produced_qty < self.expected_qty
+        self.show_backorders = self.produced_qty > 0 and self.produced_qty < self.expected_qty
 
     def _assign_serial_numbers(self, cancel_remaining_quantity=False):
         serial_numbers = self._get_serial_numbers()
@@ -78,8 +77,9 @@ class StockAssignSerialNumbers(models.TransientModel):
             for workorder in production.workorder_ids:
                 workorder.qty_produced = workorder.qty_producing
 
-        if self.mark_as_done:
-            productions.button_mark_done()
+        if productions and len(production_lots) < len(productions):
+            productions[-1].move_raw_ids.move_line_ids.write({'qty_done': 0})
+            productions[-1].state = "confirmed"
 
     def apply(self):
         self._assign_serial_numbers()

@@ -25,10 +25,10 @@ class AccountBatchPayment(models.Model):
         if self.payment_method_code == 'aba_ct':
             bank_account = self.journal_id.bank_account_id
             if bank_account.acc_type != 'aba' or not bank_account.aba_bsb:
-                raise UserError(_("The account %s, of journal '%s', is not valid for ABA.\nEither its account number is incorrect or it has no BSB set.", bank_account.acc_number, self.journal_id.name))
+                raise UserError(_("The account %s, of journal '%s', is not valid for ABA.\nEither its account number is incorrect or it has no BSB set.") % (bank_account.acc_number, self.journal_id.name))
 
             if not self.journal_id.aba_fic or not self.journal_id.aba_user_spec or not self.journal_id.aba_user_number:
-                raise UserError(_("The account %s, of journal '%s', is not set up for ABA payments.\nPlease fill in its ABA fields.", bank_account.acc_number, self.journal_id.name))
+                raise UserError(_("The account %s, of journal '%s', is not set up for ABA payments.\nPlease fill in its ABA fields.") % (bank_account.acc_number, self.journal_id.name))
 
             for payment in self.payment_ids:
                 if payment.partner_bank_id.acc_type != 'aba' or not payment.partner_bank_id.aba_bsb:

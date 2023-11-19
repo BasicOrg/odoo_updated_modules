@@ -32,15 +32,19 @@ class AppointmentOnboardingLink(models.TransientModel):
 
         # Avoid multiplying RPC calls. Adequate because this function is only
         # meant to be called when pushing one of the buttons on link wizard.
-        validation_response = self.env['onboarding.onboarding.step'].action_validate_step(
-            'appointment.appointment_onboarding_preview_invite_step')
-
-        if validation_response == "JUST_DONE":
+        onboarding_invite_step = self.env.ref('appointment.appointment_onboarding_preview_invite_step',
+                                              raise_if_not_found=False)
+        if not onboarding_invite_step:
+            return
+        was_done = onboarding_invite_step.current_step_state in {'just_done', 'done'}
+        onboarding_invite_step.action_set_just_done()
+        if not was_done:
             #  make sure to check first step as well as there is now always an appointment type.
-            self.env['onboarding.onboarding.step'].action_validate_step(
-                'appointment.appointment_onboarding_create_appointment_type_step')
+            self.env.ref(
+                'appointment.appointment_onboarding_create_appointment_type_step',
+                raise_if_not_found=False).action_set_just_done()
 
         return {
             'bookUrl': invite.book_url,
-            'validationResponse': validation_response,
+            'wasFirstValidation': not was_done,
         }

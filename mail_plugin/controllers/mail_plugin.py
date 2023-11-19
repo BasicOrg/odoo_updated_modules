@@ -5,7 +5,6 @@ import base64
 import json
 import logging
 import requests
-from markupsafe import Markup
 from werkzeug.exceptions import Forbidden
 
 from odoo import http, tools, _
@@ -118,10 +117,10 @@ class MailPluginController(http.Controller):
 
         partner.write(partner_values)
 
-        partner.message_post_with_source(
+        partner.message_post_with_view(
             'iap_mail.enrich_company',
-            render_values=iap_data,
-            subtype_xmlid='mail.mt_note',
+            values=iap_data,
+            subtype_id=request.env.ref('mail.mt_note').id,
         )
 
         return {
@@ -194,7 +193,7 @@ class MailPluginController(http.Controller):
         if normalized_email:
             filter_domain = [('email_normalized', 'ilike', search_term)]
         else:
-            filter_domain = ['|', '|', ('complete_name', 'ilike', search_term), ('ref', '=', search_term),
+            filter_domain = ['|', '|', ('display_name', 'ilike', search_term), ('ref', '=', search_term),
                              ('email', 'ilike', search_term)]
 
         # Search for the partner based on the email.
@@ -251,7 +250,7 @@ class MailPluginController(http.Controller):
                 for name, content in attachments
             ]
 
-        request.env[model].browse(res_id).message_post(body=Markup(message), attachments=attachments)
+        request.env[model].browse(res_id).message_post(body=message, attachments=attachments)
         return True
 
     @http.route('/mail_plugin/get_translations', type="json", auth="outlook", cors="*")
@@ -263,10 +262,6 @@ class MailPluginController(http.Controller):
         Returns enrichment data for a given domain, in case an error happens the response will
         contain an enrichment_info key explaining what went wrong
         """
-        if domain in iap_tools._MAIL_DOMAIN_BLACKLIST:
-            # Can not enrich the provider domain names (gmail.com; outlook.com, etc)
-            return {'enrichment_info': {'type': 'missing_data'}}
-
         enriched_data = {}
         try:
             response = request.env['iap.enrich.api']._request_enrich({domain: domain})  # The key doesn't matter
@@ -289,20 +284,15 @@ class MailPluginController(http.Controller):
         search = self._get_iap_search_term(email)
 
         partner_iap = request.env["res.partner.iap"].sudo().search([("iap_search_domain", "=", search)], limit=1)
+
         if partner_iap:
-            return partner_iap.partner_id.sudo(False)
+            return partner_iap.partner_id
 
         return request.env["res.partner"].search([("is_company", "=", True), ("email_normalized", "=ilike", "%" + search)], limit=1)
 
     def _get_company_data(self, company):
         if not company:
             return {'id': -1}
-
-        try:
-            company.check_access_rights('read')
-            company.check_access_rule('read')
-        except AccessError:
-            return {'id': company.id, 'name': _('No Access')}
 
         fields_list = ['id', 'name', 'phone', 'mobile', 'email', 'website']
 
@@ -363,10 +353,10 @@ class MailPluginController(http.Controller):
 
         new_company = request.env['res.partner'].create(new_company_info)
 
-        new_company.message_post_with_source(
+        new_company.message_post_with_view(
             'iap_mail.enrich_company',
-            render_values=iap_data,
-            subtype_xmlid='mail.mt_note',
+            values=iap_data,
+            subtype_id=request.env.ref('mail.mt_note').id,
         )
 
         return new_company, {'type': 'company_created'}
@@ -389,8 +379,9 @@ class MailPluginController(http.Controller):
 
         if not partner_values['name']:
             # Always ensure that the partner has a name
-            name, email_normalized = tools.parse_contact_from_email(partner_values['email'])
-            partner_values['name'] = name or email_normalized
+            name, email = request.env['res.partner']._parse_partner_name(
+                partner_values['email'])
+            partner_values['name'] = name or email
 
         return partner_values
 

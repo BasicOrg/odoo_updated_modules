@@ -1,13 +1,12 @@
 /** @odoo-module */
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
-const today = luxon.DateTime.now();
+import tour from 'web_tour.tour';
+const today = moment();
 
-registry.category("web_tour.tours").add('crm_forecast', {
+tour.register('crm_forecast', {
     test: true,
     url: "/web",
-    steps: () => [
-    stepUtils.showAppsMenuItem(),
+}, [
+    tour.stepUtils.showAppsMenuItem(),
     {
         trigger: ".o_app[data-menu-xmlid='crm.crm_menu_root']",
         content: "open crm app",
@@ -40,11 +39,15 @@ registry.category("web_tour.tours").add('crm_forecast', {
     }, {
         trigger: "div[name=date_deadline] input",
         content: "complete expected closing",
-        run: `text ${today.toFormat("MM/dd/yyyy")}`,
+        run: `text ${today.format("MM/DD/YYYY")}`,
     }, {
         trigger: "div[name=date_deadline] input",
         content: "click to make the datepicker disappear",
         run: "click"
+    }, {
+        trigger: "body:not(:has(div.bootstrap-datetimepicker-widget))",
+        content: "wait for date_picker to disappear",
+        run: function () {},
     }, {
         trigger: '.o_back_button',
         content: 'navigate back to the kanban view',
@@ -65,9 +68,13 @@ registry.category("web_tour.tours").add('crm_forecast', {
         trigger: ".o_field_widget[name=date_deadline] input",
         content: "complete expected closing",
         run: function (actions) {
-            actions.text(`text ${today.plus({months: 5}).startOf('month').minus({days: 1}).toFormat("MM/dd/yyyy")}`, this.$anchor);
+            actions.text(`text ${moment(today).add(5, 'months').startOf('month').subtract(1, 'days').format("MM/DD/YYYY")}`, this.$anchor);
             this.$anchor[0].dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Escape" }));
         },
+    }, {
+        trigger: "body:not(:has(div.bootstrap-datetimepicker-widget))",
+        content: "wait for date_picker to disappear",
+        run: function () {},
     }, {
         trigger: ".o_field_widget[name=probability] input",
         content: "max out probability",
@@ -86,4 +93,4 @@ registry.category("web_tour.tours").add('crm_forecast', {
         content: "assert that the opportunity has the Won banner",
         run: function () {},
     }
-]});
+]);

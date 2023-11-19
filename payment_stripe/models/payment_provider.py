@@ -1,6 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import json
 import logging
 import uuid
 
@@ -8,12 +7,12 @@ import requests
 from werkzeug.urls import url_encode, url_join, url_parse
 
 from odoo import _, api, fields, models
-from odoo.exceptions import RedirectWarning, UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError
 
-from odoo.addons.payment import utils as payment_utils
-from odoo.addons.payment_stripe import const, utils as stripe_utils
-from odoo.addons.payment_stripe.controllers.main import StripeController
+from odoo.addons.payment_stripe import utils as stripe_utils
+from odoo.addons.payment_stripe.const import API_VERSION, PROXY_URL, HANDLED_WEBHOOK_EVENTS
 from odoo.addons.payment_stripe.controllers.onboarding import OnboardingController
+from odoo.addons.payment_stripe.controllers.main import StripeController
 
 
 _logger = logging.getLogger(__name__)
@@ -42,7 +41,7 @@ class PaymentProvider(models.Model):
         super()._compute_feature_support_fields()
         self.filtered(lambda p: p.code == 'stripe').update({
             'support_express_checkout': True,
-            'support_manual_capture': 'full_only',
+            'support_manual_capture': True,
             'support_refund': 'partial',
             'support_tokenization': True,
         })
@@ -62,7 +61,6 @@ class PaymentProvider(models.Model):
         `state` together with writing on those custom fields, the constraint would be triggered.
 
         :return: None
-        :raise ValidationError: If the provider of a connected account is set in state 'test'.
         """
         for provider in self:
             if provider.state == 'test' and provider._stripe_has_connected_account():
@@ -78,37 +76,6 @@ class PaymentProvider(models.Model):
         Note: self.ensure_one()
 
         :return: Whether the provider is linked to a connected Stripe account
-        :rtype: bool
-        """
-        self.ensure_one()
-        return False
-
-    @api.constrains('state')
-    def _check_onboarding_of_enabled_provider_is_completed(self):
-        """ Check that the provider cannot be set to 'enabled' if the onboarding is ongoing.
-
-        This constraint is defined in the present module to allow the export of the translation
-        string of the `ValidationError` should it be raised by modules that would fully implement
-        Stripe Connect.
-
-        :return: None
-        :raise ValidationError: If the provider of a connected account is set in state 'enabled'
-                                while the onboarding is not finished.
-        """
-        for provider in self:
-            if provider.state == 'enabled' and provider._stripe_onboarding_is_ongoing():
-                raise ValidationError(_(
-                    "You cannot set the provider state to Enabled until your onboarding to Stripe "
-                    "is completed."
-                ))
-
-    def _stripe_onboarding_is_ongoing(self):
-        """ Return whether the provider is linked to an ongoing onboarding to Stripe Connect.
-
-        Note: This method serves as a hook for modules that would fully implement Stripe Connect.
-        Note: self.ensure_one()
-
-        :return: Whether the provider is linked to an ongoing onboarding to Stripe Connect
         :rtype: bool
         """
         self.ensure_one()
@@ -134,18 +101,8 @@ class PaymentProvider(models.Model):
         """
         self.ensure_one()
 
-        if self.env.company.country_id.code not in const.SUPPORTED_COUNTRIES:
-            raise RedirectWarning(
-                _(
-                    "Stripe Connect is not available in your country, please use another payment"
-                    " provider."
-                ),
-                self.env.ref('payment.action_payment_provider').id,
-                _("Other Payment Providers"),
-            )
-
         if self.state == 'enabled':
-            self.env['onboarding.onboarding.step'].action_validate_step_payment_provider()
+            self.company_id._mark_payment_onboarding_step_as_done()
             action = {'type': 'ir.actions.act_window_close'}
         else:
             # Account creation
@@ -195,8 +152,8 @@ class PaymentProvider(models.Model):
             webhook = self._stripe_make_request(
                 'webhook_endpoints', payload={
                     'url': self._get_stripe_webhook_url(),
-                    'enabled_events[]': const.HANDLED_WEBHOOK_EVENTS,
-                    'api_version': const.API_VERSION,
+                    'enabled_events[]': HANDLED_WEBHOOK_EVENTS,
+                    'api_version': API_VERSION,
                 }
             )
             self.stripe_webhook_secret = webhook.get('secret')
@@ -250,9 +207,7 @@ class PaymentProvider(models.Model):
 
     # === BUSINESS METHODS - PAYMENT FLOW === #
 
-    def _stripe_make_request(
-        self, endpoint, payload=None, method='POST', offline=False, idempotency_key=None
-    ):
+    def _stripe_make_request(self, endpoint, payload=None, method='POST', offline=False):
         """ Make a request to Stripe API at the specified endpoint.
 
         Note: self.ensure_one()
@@ -261,7 +216,6 @@ class PaymentProvider(models.Model):
         :param dict payload: The payload of the request
         :param str method: The HTTP method of the request
         :param bool offline: Whether the operation of the transaction being processed is 'offline'
-        :param str idempotency_key: The idempotency key to pass in the request.
         :return The JSON-formatted content of the response
         :rtype: dict
         :raise: ValidationError if an HTTP error occurs
@@ -271,18 +225,15 @@ class PaymentProvider(models.Model):
         url = url_join('https://api.stripe.com/v1/', endpoint)
         headers = {
             'AUTHORIZATION': f'Bearer {stripe_utils.get_secret_key(self)}',
-            'Stripe-Version': const.API_VERSION,  # SetupIntent requires a specific version.
+            'Stripe-Version': API_VERSION,  # SetupIntent requires a specific version.
             **self._get_stripe_extra_request_headers(),
         }
-        if method == 'POST' and idempotency_key:
-            headers['Idempotency-Key'] = idempotency_key
         try:
             response = requests.request(method, url, data=payload, headers=headers, timeout=60)
             # Stripe can send 4XX errors for payment failures (not only for badly-formed requests).
             # Check if an error code is present in the response content and raise only if not.
             # See https://stripe.com/docs/error-codes.
-            # If the request originates from an offline operation, don't raise to avoid a cursor
-            # rollback and return the response as-is for flow-specific handling.
+            # If the request originates from an offline operation, don't raise and return the resp.
             if not response.ok \
                     and not offline \
                     and 400 <= response.status_code < 500 \
@@ -409,7 +360,7 @@ class PaymentProvider(models.Model):
                 'proxy_data': self._stripe_prepare_proxy_data(stripe_payload=payload),
             },
         }
-        url = url_join(const.PROXY_URL, f'{version}/{endpoint}')
+        url = url_join(PROXY_URL, f'{version}/{endpoint}')
         try:
             response = requests.post(url=url, json=proxy_payload, timeout=60)
             response.raise_for_status()
@@ -426,7 +377,7 @@ class PaymentProvider(models.Model):
         response_content = response.json()
         if response_content.get('error'):  # An exception was raised on the proxy
             error_data = response_content['error']['data']
-            _logger.warning("request forwarded with error: %s", error_data['message'])
+            _logger.error("request forwarded with error: %s", error_data['message'])
             raise ValidationError(_("Stripe Proxy error: %(error)s", error=error_data['message']))
 
         return response_content.get('result', {})
@@ -444,69 +395,3 @@ class PaymentProvider(models.Model):
         self.ensure_one()
 
         return {}
-
-    #=== BUSINESS METHODS - GETTERS ===#
-
-    def _stripe_get_publishable_key(self):
-        """ Return the publishable key of the provider.
-
-        This getter allows fetching the publishable key from a QWeb template and through Stripe's
-        utils.
-
-        Note: `self.ensure_one()
-
-        :return: The publishable key.
-        :rtype: str
-        """
-        self.ensure_one()
-
-        return stripe_utils.get_publishable_key(self.sudo())
-
-    def _stripe_get_inline_form_values(self, amount, currency, partner_id, is_validation, **kwargs):
-        """ Return a serialized JSON of the required values to render the inline form.
-
-        Note: `self.ensure_one()`
-
-        :param float amount: The amount in major units, to convert in minor units.
-        :param res.currency currency: The currency of the transaction.
-        :param int partner_id: The partner of the transaction, as a `res.partner` id.
-        :param bool is_validation: Whether the operation is a validation.
-        :return: The JSON serial of the required values to render the inline form.
-        :rtype: str
-        """
-        self.ensure_one()
-
-        if not is_validation:
-            currency_name = currency and currency.name.lower()
-        else:
-            currency_name = self._get_validation_currency().name.lower()
-        partner = self.env['res.partner'].with_context(show_address=1).browse(partner_id).exists()
-        inline_form_values = {
-            'publishable_key': self._stripe_get_publishable_key(),
-            'currency_name': currency_name,
-            'minor_amount': amount and payment_utils.to_minor_currency_units(amount, currency),
-            'capture_method': 'manual' if self.capture_manually else 'automatic',
-            'billing_details': {
-                'name': partner.name or '',
-                'email': partner.email or '',
-                'phone': partner.phone or '',
-                'address': {
-                    'line1': partner.street or '',
-                    'line2': partner.street2 or '',
-                    'city': partner.city or '',
-                    'state': partner.state_id.code or '',
-                    'country': partner.country_id.code or '',
-                    'postal_code': partner.zip or '',
-                },
-            },
-            'is_tokenization_required': self._is_tokenization_required(**kwargs),
-            'payment_methods_mapping': const.PAYMENT_METHODS_MAPPING,
-        }
-        return json.dumps(inline_form_values)
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'stripe':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHODS_CODES

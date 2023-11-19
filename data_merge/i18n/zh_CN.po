@@ -3,17 +3,17 @@
 # 	* data_merge
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,21 +21,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_model.py:0
 #, python-format
 msgid "%s (copy)"
-msgstr "%s（副本）"
+msgstr "%s (副本)"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_group.py:0
-#, python-format
-msgid "%s - Similarity: %s%%"
-msgstr "%s - 相似性： %s%%"
-
-#. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "%s records have been merged"
@@ -52,18 +44,22 @@ msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
+msgid ""
+"<span attrs=\"{'invisible': [('custom_merge_method', '=', False)]}\">Model "
+"specific</span>"
+msgstr ""
+"<span attrs=\"{'invisible': [('custom_merge_method', '=', "
+"False)]}\">特定模型</span>"
+
+#. module: data_merge
+#: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">每</span>"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "<span class=\"oe_inline\">%</span>"
 msgstr "<span class=\"oe_inline\">%</span>"
-
-#. module: data_merge
-#: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
-msgid "<span invisible=\"not custom_merge_method\">Model specific</span>"
-msgstr "<span invisible=\"not custom_merge_method\">特定模型</span>"
 
 #. module: data_merge
 #: model:ir.model.constraint,message:data_merge.constraint_data_merge_rule_uniq_model_id_field_id
@@ -75,7 +71,7 @@ msgstr "字段只能出现一次！"
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__active
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__active
 msgid "Active"
-msgstr "已启用"
+msgstr "启用"
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__removal_mode__archive
@@ -86,10 +82,10 @@ msgstr "存档"
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_model_view_search
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_record_search
 msgid "Archived"
-msgstr "已存档"
+msgstr "已归档"
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid ""
@@ -98,7 +94,7 @@ msgid ""
 msgstr "是否确实要合并其各自组中的选定记录？"
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "Are you sure that you want to merge these records?"
@@ -116,7 +112,6 @@ msgid "Can Be Merged"
 msgstr "可以合并"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_rule.py:0
 #, python-format
 msgid "Case/Accent Insensitive Match"
@@ -168,7 +163,7 @@ msgstr "创建人"
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__create_date
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__mix_by_company
@@ -182,11 +177,15 @@ msgstr "自定义合并方法"
 
 #. module: data_merge
 #: model:ir.actions.server,name:data_merge.ir_cron_cleanup_ir_actions_server
+#: model:ir.cron,cron_name:data_merge.ir_cron_cleanup
+#: model:ir.cron,name:data_merge.ir_cron_cleanup
 msgid "Data Merge: Cleanup Records"
 msgstr "数据合并：清理记录"
 
 #. module: data_merge
 #: model:ir.actions.server,name:data_merge.ir_cron_find_duplicates_ir_actions_server
+#: model:ir.cron,cron_name:data_merge.ir_cron_find_duplicates
+#: model:ir.cron,name:data_merge.ir_cron_find_duplicates
 msgid "Data Merge: Find Duplicate Records"
 msgstr "数据合并：查找重复记录"
 
@@ -196,7 +195,6 @@ msgid "Days"
 msgstr "天"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 #, python-format
@@ -238,13 +236,6 @@ msgstr "重复数据删除规则"
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "Deduplication Rules"
 msgstr "重复数据删除规则"
-
-#. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Deduplication is forbidden on the model: %s"
-msgstr "在以下模型中禁止重复数据删除：%s"
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__removal_mode__delete
@@ -293,7 +284,7 @@ msgstr "发散字段"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__domain
 msgid "Domain"
-msgstr "域"
+msgstr "网域"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__removal_mode
@@ -308,13 +299,6 @@ msgid "Duplicates"
 msgstr "副本"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Duplicates to Merge"
-msgstr "待合并的副本"
-
-#. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__create_threshold
 msgid ""
 "Duplicates with a similarity below this threshold will not be suggested"
@@ -326,7 +310,6 @@ msgid "Enable Merge"
 msgstr "启用合并功能"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_rule.py:0
 #, python-format
 msgid "Exact Match"
@@ -395,6 +378,14 @@ msgid "Is Master"
 msgstr "是主要"
 
 #. module: data_merge
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_group____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_model____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_record____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_rule____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
+
+#. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__last_notification
 msgid "Last Notification"
 msgstr "上次通知"
@@ -413,7 +404,7 @@ msgstr "最后更新人"
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__write_date
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_record__used_in
@@ -431,15 +422,13 @@ msgid "Manual"
 msgstr "手动"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "Manual Selection - %s"
 msgstr "手动选择 - %s"
 
 #. module: data_merge
-#. odoo-python
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/models/ir_model.py:0
 #: code:addons/data_merge/static/src/views/data_merge_list_view.xml:0
 #: model:ir.actions.server,name:data_merge.merge_action_crm_lost_reason
@@ -492,13 +481,6 @@ msgid "Merge action attached"
 msgstr "附带的合并动作"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Missing required PostgreSQL extension: unaccent"
-msgstr "缺少所需的PostgreSQL扩展名：unaccent"
-
-#. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__res_model_id
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__res_model_id
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__res_model_id
@@ -523,7 +505,7 @@ msgstr "模型"
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__notify_frequency_period__months
 msgid "Months"
-msgstr "个月"
+msgstr "月份"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__name
@@ -532,7 +514,6 @@ msgid "Name"
 msgstr "名称"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #: model_terms:ir.actions.act_window,help:data_merge.action_data_merge_record
 #: model_terms:ir.actions.act_window,help:data_merge.action_data_merge_record_notification
@@ -554,14 +535,6 @@ msgstr "通知频率周期"
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__notify_user_ids
 msgid "Notify Users"
 msgstr "通知用户"
-
-#. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "Query Failed."
-msgstr "查询失败。"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__record_ids
@@ -595,13 +568,6 @@ msgid "Records eligible for the deduplication process"
 msgstr "符合重复数据消除过程条件的记录"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "Records must be of the same model"
-msgstr "记录须为同一样式"
-
-#. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__merge_threshold
 msgid ""
 "Records with a similarity percentage above this threshold will be "
@@ -621,7 +587,7 @@ msgstr "选择模型以配置重复数据消除规则"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__sequence
 msgid "Sequence"
-msgstr "序列"
+msgstr "序号"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__similarity
@@ -655,32 +621,23 @@ msgid "The notification frequency should be greater than 0"
 msgstr "通知频率应大于 0"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "The referenced record does not exist"
-msgstr "引用的记录不存在"
-
-#. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "The selected records have been merged"
-msgstr "选定的记录已被合并"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "The target model does not exists."
 msgstr "目标模型不存在。"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "There is not referenced record"
-msgstr "没有引用的记录"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.constraint,message:data_merge.constraint_data_merge_model_uniq_name
@@ -693,7 +650,7 @@ msgid "Unique ID Field"
 msgstr "唯一 ID 字段"
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.xml:0
 #, python-format
 msgid "Unselect"
@@ -725,7 +682,6 @@ msgid "When enabled, duplicates across different companies will be suggested"
 msgstr "启用后，将建议不同公司的重复项"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "You must select at least two %s in order to merge them."
@@ -739,7 +695,7 @@ msgstr "复制记录与 '"
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_duplicate
 msgid "here"
-msgstr "此处"
+msgstr "这里"
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_merged

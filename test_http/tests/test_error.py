@@ -81,3 +81,8 @@ class TestHttpJsonError(TestHttpBase):
         self.assertEqual(error_data['message'], 'Unknown destination')
         self.assertEqual(error_data['arguments'], ['Unknown destination'])
         self.assertEqual(error_data['context'], {})
+
+    @mute_logger('odoo.http')
+    def test_errorjson1_dev_mode_werkzeug(self):
+        with patch.object(config, 'options', {**config.options, 'dev_mode': 'werkzeug'}):
+            self.test_errorjson0_value_error()

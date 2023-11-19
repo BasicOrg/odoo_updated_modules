@@ -2,6 +2,7 @@
 
 from freezegun import freeze_time
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.account_accountant.tests.test_bank_rec_widget_common import WizardForm
 
 from odoo import Command, fields
 from odoo.exceptions import UserError
@@ -13,7 +14,7 @@ from odoo.tests import tagged
 class TestResPartner(AccountTestInvoicingCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='be_comp'):
+    def setUpClass(cls, chart_template_ref='l10n_be.l10nbe_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.invoice = cls.init_invoice('in_invoice')
@@ -97,11 +98,9 @@ class TestResPartner(AccountTestInvoicingCommon):
     def pay_bill(cls, bill, amount, date, currency=None):
         if not currency:
             currency = bill.currency_id
-        assert amount
-        payment_type = 'outbound' if amount > 0 else 'inbound'
         payment = cls.env['account.payment'].create({
-            'payment_type': payment_type,
-            'amount': abs(amount),
+            'payment_type': 'outbound',
+            'amount': amount,
             'currency_id': currency.id,
             'journal_id': cls.company_data['default_journal_bank'].id,
             'date': fields.Date.from_string(date),
@@ -114,13 +113,13 @@ class TestResPartner(AccountTestInvoicingCommon):
         bill_payable_move_lines += payment.line_ids.filtered(lambda x: x.account_type == 'liability_payable')
         bill_payable_move_lines.reconcile()
 
-    def create_325_form(self, ref_year=2000, state='generated', test=False):
+    def create_325_form(self, ref_year=2000, state='generated'):
         form_325 = self.env['l10n_be.form.325'].create({
             'company_id': self.company_data['company'].id,
             'sender_id': self.sender.id,
             'debtor_id': self.debtor.id,
             'reference_year': ref_year,
-            'is_test': test,
+            'is_test': False,
             'sending_type': '0',
             'treatment_type': '0',
             'state': 'draft',
@@ -131,10 +130,7 @@ class TestResPartner(AccountTestInvoicingCommon):
             form_325._validate_form()
         return form_325
 
-    def create_form28150(
-        self, ref_year=None, form_type='0', company=None, partner=None, commission=0.0, fees=0.0, atn=0.0,
-        exposed_expenses=0.0, paid_amount=0.0, state='generated', test=False
-    ):
+    def create_form28150(self, ref_year=None, form_type='0', company=None, partner=None, commission=0.0, fees=0.0, atn=0.0, exposed_expenses=0.0, paid_amount=0.0, state='generated'):
         if not company:
             company = self.company_data['company']
         if not partner:
@@ -146,11 +142,11 @@ class TestResPartner(AccountTestInvoicingCommon):
             'debtor_id': company.partner_id.id,
             'reference_year': ref_year,
             'treatment_type': form_type,
-            'is_test': test,
-            'state': 'draft',
+            'is_test': False,
+            'state': state,
         })
 
-        form_281_50 = self.env['l10n_be.form.281.50'].create({
+        return self.env['l10n_be.form.281.50'].create({
             'form_325_id': form325.id,
             'company_id': company.id,
             'income_debtor_bce_number': self.debtor._get_bce_number(),
@@ -168,9 +164,6 @@ class TestResPartner(AccountTestInvoicingCommon):
             'exposed_expenses': exposed_expenses,
             'paid_amount': paid_amount,
         })
-        if state == 'generated':
-            form325._validate_form()
-        return form_281_50
 
     def create_tagged_accounts(self):
         account_ids = [
@@ -510,10 +503,12 @@ class TestResPartner(AccountTestInvoicingCommon):
         st_line = statement.line_ids
         wizard = self.env['bank.rec.widget'].with_context(default_st_line_id=st_line.id).new({})
         line = wizard.line_ids.filtered(lambda x: x.flag == 'auto_balance')
-        wizard._js_action_mount_line_in_edit(line.index)
-        line.account_id = expense_account_atn_281_50
-        wizard._line_value_changed_account_id(line)
-        wizard._action_validate()
+        form = WizardForm(wizard)
+        form._view['modifiers']['todo_command']['invisible'] = False
+        form.todo_command = f'mount_line_in_edit,{line.index}'
+        form.form_account_id = expense_account_atn_281_50
+        wizard = form.save()
+        wizard.button_validate(async_action=False)
 
         form_325 = self.create_325_form()
         form_281_50 = form_325.form_281_50_ids
@@ -552,10 +547,12 @@ class TestResPartner(AccountTestInvoicingCommon):
         st_line = statement.line_ids
         wizard = self.env['bank.rec.widget'].with_context(default_st_line_id=st_line.id).new({})
         line = wizard.line_ids.filtered(lambda x: x.flag == 'auto_balance')
-        wizard._js_action_mount_line_in_edit(line.index)
-        line.account_id = expense_account_atn_281_50
-        wizard._line_value_changed_account_id(line)
-        wizard._action_validate()
+        form = WizardForm(wizard)
+        form._view['modifiers']['todo_command']['invisible'] = False
+        form.todo_command = f'mount_line_in_edit,{line.index}'
+        form.form_account_id = expense_account_atn_281_50
+        wizard = form.save()
+        wizard.button_validate(async_action=False)
 
         form_325 = self.create_325_form()
         form_281_50_partner_b = form_325.form_281_50_ids.filtered(lambda f: f.partner_id == self.partner_b)
@@ -755,12 +752,6 @@ class TestResPartner(AccountTestInvoicingCommon):
         form_2 = self.create_form28150(ref_year=2020, state='draft')
         self.assertEqual(form_2.official_id, False)
 
-    def test_281_50_in_test_mode_should_not_consume_sequence_number(self):
-        test_form = self.create_form28150(ref_year=2020, test=True)
-        self.assertEqual(test_form.official_id, '1')
-        test_form_2 = self.create_form28150(ref_year=2020, test=False)
-        self.assertEqual(test_form_2.official_id, '1')
-
     def test_281_50_partner_relation(self):
         """Ensure Many2one and One2many are working as expected"""
         form = self.create_form28150(ref_year=2020)
@@ -780,15 +771,6 @@ class TestResPartner(AccountTestInvoicingCommon):
             form.form_325_id.unlink()
         with self.assertRaises(UserError):
             form.unlink()
-
-    def test_delete_testing_325_and_281_50_should_succeed(self):
-        # deletion from 325 form
-        form = self.create_form28150(ref_year=2020, test=True)
-        form.form_325_id.unlink()
-        self.assertEqual(len(form.exists()), 0)
-        # deletion from 281_50
-        form_2 = self.create_form28150(ref_year=2020, test=True)
-        form_2.unlink()
 
     def test_281_50_fields_should_remain_the_same_even_if_partner_info_changed(self):
         partner = self.partner_a
@@ -948,129 +930,38 @@ class TestResPartner(AccountTestInvoicingCommon):
             }
         ])
 
-    def test_281_50_bill_in_currency(self):
-        foreign_currency = self.currency_data['currency']
-        bill = self.env['account.move'].create({
-            'move_type': 'in_invoice',
-            'partner_id': self.partner_b.id,
-            'invoice_date': fields.Date.from_string('2018-06-01'),  # 2018 because first rate of gold coin is in 2017
-            'currency_id': foreign_currency.id,
-            'invoice_line_ids': [
-                Command.create({
-                    'product_id': self.product_b.id,
-                    'account_id': self.product_b.property_account_expense_id.id,
-                    'product_uom_id': self.product_b.uom_id.id,
-                    'quantity': 1.0,
-                    'discount': 0.0,
-                    'price_unit': 1000.0,  # 1000 Gold coin -> 500 USD,
-                    'tax_ids': [],
-                }),
-            ],
-        })
-        bill.action_post()
-        self.pay_bill(bill, 1000, '2018-06-01', currency=foreign_currency)
 
-        form_325 = self.create_325_form(ref_year=2018)
-        form_281_50_from_form_325_ids = form_325.form_281_50_ids
-        self.assertRecordValues(form_325.form_281_50_ids, [
-            # pylint: disable=C0326
-            {
-                'partner_id': self.partner_b.id, 'commissions': 0.0, 'fees': 500.0, 'atn': 0.0, 'exposed_expenses': 0.0,
-                'total_remuneration': 500.0, 'paid_amount': 500.0, 'partner_is_natural_person': False,
-            },
-        ])
-        self.assertRecordValues(form_325, [{
-            'form_281_50_total_amount': 500.0,
-            'form_281_50_ids': form_281_50_from_form_325_ids.ids,
-        }])
+def test_281_50_bill_in_currency(self):
+    foreign_currency = self.currency_data['currency']
+    bill = self.env['account.move'].create({
+        'move_type': 'in_invoice',
+        'partner_id': self.partner_b.id,
+        'invoice_date': fields.Date.from_string('2018-06-01'),  # 2018 because first rate of gold coin is in 2017
+        'currency_id': foreign_currency.id,
+        'invoice_line_ids': [
+            Command.create({
+                'product_id': self.product_b.id,
+                'account_id': self.product_b.property_account_expense_id.id,
+                'product_uom_id': self.product_b.uom_id.id,
+                'quantity': 1.0,
+                'discount': 0.0,
+                'price_unit': 1000.0,  # 1000 Gold coin -> 500 USD
+            }),
+        ],
+    })
+    bill.action_post()
+    self.pay_bill(bill, 1000, '2018-06-01', currency=foreign_currency)
 
-    def test_281_50_vendor_bill_and_credit_note_without_payment(self):
-        """ Ensure form 281.50 handles correctly credit note in its computation """
-        bill = self.create_and_post_bill(partner_id=self.partner_b, product_id=self.product_b, amount=1000.0, date='2000-05-12')
-
-        credit_note = bill._reverse_moves([{'invoice_date': '2000-05-12'}])
-        credit_note.action_post()
-
-        form_325 = self.create_325_form(ref_year=2000)
-        self.assertRecordValues(form_325.form_281_50_ids.filtered(lambda x: x.partner_id.id == self.partner_b.id), [
-            {
-                'partner_id': self.partner_b.id,
-                'commissions': 0.0,
-                'atn': 0.0,
-                'fees': 0.0,
-                'exposed_expenses': 0.0,
-                'total_remuneration': 0.0,
-                'paid_amount': 0.0,
-            }
-        ])
-
-    def test_281_50_vendor_bill_and_credit_note_with_payment(self):
-        """ Ensure form 281.50 handles correctly credit note and their payments in its computation """
-        bill = self.create_and_post_bill(partner_id=self.partner_b, product_id=self.product_b, amount=1000.0, date='2000-05-12')
-        self.pay_bill(bill=bill, amount=1000.0, date='2000-05-12')
-
-        credit_note = bill._reverse_moves([{'invoice_date': '2000-05-12'}])
-        credit_note.action_post()
-        self.pay_bill(bill=credit_note, amount=-1000.0, date='2000-05-12')
-
-        form_325 = self.create_325_form(ref_year=2000)
-        self.assertRecordValues(form_325.form_281_50_ids.filtered(lambda x: x.partner_id.id == self.partner_b.id), [
-            {
-                'partner_id': self.partner_b.id,
-                'commissions': 0.0,
-                'atn': 0.0,
-                'fees': 0.0,
-                'exposed_expenses': 0.0,
-                'total_remuneration': 0.0,
-                'paid_amount': 0.0,
-            }
-        ])
-
-    def test_281_50_positive_and_negative_line_should_compensate(self):
-        """Ensure form 281.50 handles negative lines put on the same account"""
-        partner_id = self.partner_b
-        product_id = self.product_b
-        bill = self.env['account.move'].create({
-            'move_type': 'in_invoice',
-            'partner_id': partner_id.id,
-            'invoice_payment_term_id': False,
-            'invoice_date': fields.Date.from_string('2000-05-12'),
-            'currency_id': self.currency_data['currency'].id,
-            'invoice_line_ids': [
-                Command.create({
-                    'product_id': product_id.id,
-                    'account_id': product_id.property_account_expense_id.id,
-                    'partner_id': partner_id.id,
-                    'product_uom_id': product_id.uom_id.id,
-                    'quantity': 1.0,
-                    'discount': 0.0,
-                    'price_unit': 1000,
-                    'tax_ids': [],
-                }),
-                Command.create({
-                    'product_id': product_id.id,
-                    'account_id': product_id.property_account_expense_id.id,
-                    'partner_id': partner_id.id,
-                    'product_uom_id': product_id.uom_id.id,
-                    'quantity': 1.0,
-                    'discount': 0.0,
-                    'price_unit': -100,
-                    'tax_ids': [],
-                }),
-            ]
-        })
-        bill.action_post()
-        self.pay_bill(bill=bill, amount=900.0, date='2000-05-12')
-
-        form_325 = self.create_325_form(ref_year=2000)
-        self.assertRecordValues(form_325.form_281_50_ids.filtered(lambda x: x.partner_id.id == self.partner_b.id), [
-            {
-                'partner_id': self.partner_b.id,
-                'commissions': 0.0,
-                'atn': 0.0,
-                'fees': 900.0,
-                'exposed_expenses': 0.0,
-                'total_remuneration': 900.0,
-                'paid_amount': 900.0,
-            }
-        ])
+    form_325 = self.create_325_form(ref_year=2018)
+    form_281_50_from_form_325_ids = form_325.form_281_50_ids
+    self.assertRecordValues(form_325.form_281_50_ids, [
+        # pylint: disable=C0326
+        {
+            'partner_id': self.partner_b.id, 'commissions': 0.0, 'fees': 500.0, 'atn': 0.0, 'exposed_expenses': 0.0,
+            'total_remuneration': 500.0, 'paid_amount': 500.0, 'partner_is_natural_person': False,
+        },
+    ])
+    self.assertRecordValues(form_325, [{
+        'form_281_50_total_amount': 500.0,
+        'form_281_50_ids': form_281_50_from_form_325_ids.ids,
+    }])

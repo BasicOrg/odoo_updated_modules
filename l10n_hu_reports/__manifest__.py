@@ -2,11 +2,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Hungary - Accounting Reports',
-    'countries': ['hu'],
+    'icon': '/l10n_hu/static/description/icon.png',
     'version': '1.0',
     'category': 'Accounting/Localizations/Reporting',
+    'author': 'Odoo S.A.',
     'description': """
-Accounting reports for Hungary
+        Accounting reports for Hungary
     """,
     'depends': [
         'l10n_hu',

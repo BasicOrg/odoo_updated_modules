@@ -1,98 +1,108 @@
 /** @odoo-module **/
 
-import { getFixture, patchDate } from "@web/../tests/helpers/utils";
-import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { registry } from "@web/core/registry";
-import { servicesToDefineInGantt } from "@project_enterprise/../tests/task_gantt_dependency_tests";
+import { createView } from "web.test_utils";
+import TaskGanttView from '@project_enterprise/js/task_gantt_view';
 
-servicesToDefineInGantt.push("timesheet_uom");
-const serviceRegistry = registry.category("services");
+const actualDate = new Date(2020, 5, 22, 8, 0, 0);
+const initialDate = new Date(actualDate.getTime() - actualDate.getTimezoneOffset() * 60 * 1000);
 
-let serverData;
-let target;
+const ganttViewParams = {
+    arch: `<gantt date_start="start" date_stop="stop" progress="progress"/>`,
+    model: "task",
+    View: TaskGanttView,
+    viewOptions: { initialDate },
+};
+
 QUnit.module("Views > GanttView > TaskGantt", {
     beforeEach() {
-        patchDate(2020, 5, 22, 8, 0, 0);
-        setupViewRegistries();
-        target = getFixture();
-        for (const service of servicesToDefineInGantt) {
-            serviceRegistry.add(service, { start() {} });
-        }
-        serverData = {
-            models: {
-                task: {
-                    fields: {
-                        id: { string: "ID", type: "integer" },
-                        name: { string: "Name", type: "char" },
-                        progress: { string: "progress", type: "float" },
-                        start: { string: "Start Date", type: "datetime" },
-                        stop: { string: "Start Date", type: "datetime" },
-                        user_id: { string: "Assigned to", type: "many2one", relation: "users" },
-                        allow_timesheets: { string: "Allow timeshet", type: "boolean" },
-                        project_id: {
-                            string: "Project",
-                            type: "many2one",
-                            relation: "project",
-                        },
+        ganttViewParams.data = {
+            task: {
+                fields: {
+                    id: { string: "ID", type: "integer" },
+                    name: { string: "Name", type: "char" },
+                    progress: { string: "progress", type: "float" },
+                    start: { string: "Start Date", type: "datetime" },
+                    stop: { string: "Start Date", type: "datetime" },
+                    user_id: { string: "Assigned to", type: "many2one", relation: "users" },
+                    allow_timesheets: { string: "Allow timeshet", type: "boolean" },
+                    project_id: {
+                        string: "Project",
+                        type: "many2one",
+                        relation: "project",
                     },
-                    records: [
-                        {
-                            id: 1,
-                            name: "Blop",
-                            start: "2020-06-14 08:00:00",
-                            stop: "2020-06-24 08:00:00",
-                            user_id: 100,
-                            progress: 50.00,
-                            allow_timesheets: true,
-                            project_id: 1,
-                        },
-                        {
-                            id: 2,
-                            name: "Yop",
-                            start: "2020-06-02 08:00:00",
-                            stop: "2020-06-12 08:00:00",
-                            user_id: 101, progress: 0,
-                            allow_timesheets: true,
-                            project_id: 1,
-                        },
-                    ],
                 },
-                users: {
-                    fields: {
-                        id: { string: "ID", type: "integer" },
-                        name: { string: "Name", type: "char" },
+                records: [
+                    {
+                        id: 1,
+                        name: "Blop",
+                        start: "2020-06-14 08:00:00",
+                        stop: "2020-06-24 08:00:00",
+                        user_id: 100,
+                        progress: 50.00,
+                        allow_timesheets: true,
+                        project_id: 1,
                     },
-                    records: [
-                        { id: 100, name: "Jane Doe" },
-                        { id: 101, name: "John Doe" },
-                    ],
-                },
-                project: {
-                    fields: {
-                        id: { string: "ID", type: "integer" },
-                        name: { string: "Name", type: "char" },
+                    {
+                        id: 2,
+                        name: "Yop",
+                        start: "2020-06-02 08:00:00",
+                        stop: "2020-06-12 08:00:00",
+                        user_id: 101, progress: 0,
+                        allow_timesheets: true,
+                        project_id: 1,
                     },
-                    records: [{ id: 1, name: "My Project" }],
+                ],
+            },
+            users: {
+                fields: {
+                    id: { string: "ID", type: "integer" },
+                    name: { string: "Name", type: "char" },
                 },
+                records: [
+                    { id: 100, name: "Jane Doe" },
+                    { id: 101, name: "John Doe" },
+                ],
+            },
+            project: {
+                fields: {
+                    id: { string: "ID", type: "integer" },
+                    name: { string: "Name", type: "char" },
+                },
+                records: [{ id: 1, name: "My Project" }],
             },
         };
     },
 });
 
 QUnit.test("Check progress bar values", async (assert) => {
-    await makeView({
-        arch: `<gantt js_class="task_gantt" date_start="start" date_stop="stop" progress="progress"/>`,
-        resModel: "task",
-        type: "gantt",
-        serverData,
-        async mockRPC(_, args) {
-            if (args.method === "search_milestone_from_task") {
-                return [];
+    assert.expect(5);
+    ganttViewParams.mockRPC = function (route, args) {
+        if (route === '/web/dataset/search_read') {
+            assert.strictEqual(args.model, 'task',
+                "should read on the correct model");
+            return Promise.resolve({
+                records: this.data.task.records
+            });
+        } else {
+            if (args.method === 'search_milestone_from_task') {
+                return Promise.resolve([]);
             }
+            return this._super.apply(this, arguments);
         }
-    })
-    const [firstPill, secondPill] = target.querySelectorAll(".o_gantt_pill");
-    assert.containsNone(firstPill, "span.o_gantt_progress");
-    assert.containsOnce(secondPill, "span.o_gantt_progress");
-    assert.strictEqual(secondPill.querySelector("span").getAttribute('style'), "width:50%;");
+    };
+    ganttViewParams.archs = {
+        'tasks,false,form': `
+            <form>
+                <field name="name"/>
+                <field name="start"/>
+                <field name="stop"/>
+            </form>`,
+    };
+    const gantt = await createView(ganttViewParams);
+    const pills = document.querySelectorAll(".o_gantt_pill");
+    assert.strictEqual(pills[0].querySelector("span").dataset['progress'], "0%;", "The first task should have no progress");
+    assert.strictEqual(pills[0].querySelector("span").getAttribute('style'), "width:0%;", "The style should reflect the data-progress value");
+    assert.strictEqual(pills[1].querySelector("span").dataset['progress'], "50%;", "The second task should have 50% progress");
+    assert.strictEqual(pills[1].querySelector("span").getAttribute('style'), "width:50%;", "The style should reflect the data-progress value");
+    gantt.destroy();
 });

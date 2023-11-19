@@ -16,7 +16,7 @@ class HrPayslipRun(models.Model):
         # Display button if batch is from belgium with out
         # employees
         for batch in self:
-            if batch.company_id.country_id.code != "BE" or \
+            if batch.state not in ['close', 'paid'] or batch.company_id.country_id.code != "BE" or \
                     all(slip.struct_id.code != 'CP200HOLN' and slip.state != 'cancel' for slip in batch.slip_ids):
                 batch.l10n_be_display_eco_voucher_button = False
             else:

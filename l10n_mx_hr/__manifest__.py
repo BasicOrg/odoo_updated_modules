@@ -2,9 +2,9 @@
 
 {
     'name': 'Employees - Mexico',
-    'countries': ['mx'],
     'version': '1.0',
     'category': 'Human Resources/Employees',
+    'icon': '/l10n_mx/static/description/icon.png',
     'sequence': 120,
     'summary': 'Adds specific fields to Employees for Mexican companies.',
     'depends': ['hr'],
@@ -12,5 +12,7 @@
         'views/hr_employee_views.xml',
     ],
     'installable': True,
+    'application': False,
+    'auto_install': False,
     'license': 'LGPL-3',
 }

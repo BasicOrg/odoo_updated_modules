@@ -33,7 +33,6 @@ class SocialLinkedinCase(SocialCase):
             if success:
                 response._content = b'{"id": "42"}'
                 response.status_code = 200
-                response.headers = {'x-restli-id': 'fake_created_post_urn'}
             else:
                 response._content = b'{"serviceErrorCode": 65600}'
                 response.status_code = 404
@@ -46,8 +45,6 @@ class SocialLinkedinCase(SocialCase):
         self._checkPostedStatus(success)
 
         if success:
-            linkedin_post_id = self.social_post.live_post_ids.mapped('linkedin_post_id')
-            self.assertEqual(linkedin_post_id, ['fake_created_post_urn'] * 2)
             self.assertTrue(
                 all([not account.is_media_disconnected for account in self.social_post.account_ids]),
                 'Accounts should not be marked disconnected if post is successful')
@@ -63,7 +60,7 @@ class SocialLinkedinCase(SocialCase):
         """
         self.social_post.message = 'A message https://odoo.com'
         self.assertTrue(self.social_post.image_ids)
-        self._test_post_type('multiImage')
+        self._test_post_type('IMAGE')
 
     def test_post_urls(self):
         """
@@ -72,7 +69,7 @@ class SocialLinkedinCase(SocialCase):
         """
         self.social_post.message = 'A message https://odoo.com'
         self.social_post.image_ids = False
-        self._test_post_type('article')
+        self._test_post_type('ARTICLE')
 
     def test_post_text(self):
         """
@@ -81,7 +78,7 @@ class SocialLinkedinCase(SocialCase):
         """
         self.social_post.message = 'A message without URL'
         self.social_post.image_ids = False
-        self._test_post_type(None)
+        self._test_post_type('NONE')
 
     def _test_post_type(self, expected_post_type):
         self.assertEqual(self.social_post.state, 'draft')
@@ -91,7 +88,10 @@ class SocialLinkedinCase(SocialCase):
             response._content = b'{"id": "42"}'
             response.status_code = 200
 
-            post_type = next(iter(kwargs.get('json', {}).get('content', {})), None)
+            post_type = (kwargs.get('json', {})
+                         .get('specificContent', {})
+                         .get('com.linkedin.ugc.ShareContent', {})
+                         .get('shareMediaCategory', ''))
 
             responses.append(post_type)
             return response
@@ -108,25 +108,3 @@ class SocialLinkedinCase(SocialCase):
     @classmethod
     def _get_social_media(cls):
         return cls.env.ref('social_linkedin.social_media_linkedin')
-
-    def _get_commentary_after_post(self):
-        commentaries = []
-
-        def _patched_post(*args, **kwargs):
-            commentaries.append(kwargs.get('json', {}).get('commentary', None))
-
-        with patch.object(requests, 'post', _patched_post):
-            self.social_post._action_post()
-
-        return commentaries
-
-    def test_post_with_special_char(self):
-        """
-        Check the priority of the ``post type``
-        The last priority is text
-        """
-        self.social_post.message = '(This) <is> {a} [test] string <3'
-        self.social_post.image_ids = False
-        commentaries = self._get_commentary_after_post()
-        expected_output = '\\(This\\) \\<is\\> \\{a\\} \\[test\\] string \\<3'
-        self.assertTrue(all([commentary == expected_output for commentary in commentaries]))

@@ -5,9 +5,9 @@
         <field name="model">account.journal</field>
         <field name="inherit_id" ref="account.view_account_journal_form" />
         <field name="arch" type="xml">
-            <group name="bank_account_number" position="inside">
-                <field name="coda_split_transactions" invisible="bank_statements_source != 'file_import'"/>
-            </group>
+            <xpath expr="//field[@name='bank_statements_source']" position="after">
+                <field name="coda_split_transactions" attrs="{'invisible': [('bank_statements_source', '!=', 'file_import')]}"/>
+            </xpath>
         </field>
     </record>
 

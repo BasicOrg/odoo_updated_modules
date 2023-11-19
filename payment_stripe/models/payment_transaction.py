@@ -3,13 +3,14 @@
 import logging
 import pprint
 
-from werkzeug.urls import url_encode, url_join
+from werkzeug import urls
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.payment import utils as payment_utils
-from odoo.addons.payment_stripe import const
+from odoo.addons.payment_stripe import utils as stripe_utils
+from odoo.addons.payment_stripe.const import STATUS_MAPPING, PAYMENT_METHOD_TYPES
 from odoo.addons.payment_stripe.controllers.main import StripeController
 
 
@@ -18,6 +19,8 @@ _logger = logging.getLogger(__name__)
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
+
+    stripe_payment_intent = fields.Char(string="Stripe Payment Intent ID", readonly=True)
 
     def _get_specific_processing_values(self, processing_values):
         """ Override of payment to return Stripe-specific processing values.
@@ -32,14 +35,141 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'stripe' or self.operation == 'online_token':
             return res
 
-        intent = self._stripe_create_intent()
+        if self.operation in ['online_redirect', 'validation']:
+            checkout_session = self._stripe_create_checkout_session()
+            return {
+                'publishable_key': stripe_utils.get_publishable_key(self.provider_id),
+                'session_id': checkout_session['id'],
+            }
+        else:  # Express checkout.
+            payment_intent = self._stripe_create_payment_intent()
+            self.stripe_payment_intent = payment_intent['id']
+            return {
+                'client_secret': payment_intent['client_secret'],
+            }
+
+    def _stripe_create_checkout_session(self):
+        """ Create and return a Checkout Session.
+
+        :return: The Checkout Session
+        :rtype: dict
+        """
+        # Filter payment method types by available payment method
+        existing_pms = [pm.name.lower() for pm in self.env['payment.icon'].search([])]
+        linked_pms = [pm.name.lower() for pm in self.provider_id.payment_icon_ids]
+        pm_filtered_pmts = filter(
+            lambda pmt: pmt.name == 'card'
+            # If the PM (payment.icon) record related to a PMT doesn't exist, don't filter out the
+            # PMT because the user couldn't even have linked it to the provider in the first place.
+            or (pmt.name in linked_pms or pmt.name not in existing_pms),
+            PAYMENT_METHOD_TYPES
+        )
+        # Filter payment method types by country code
+        country_code = self.partner_country_id and self.partner_country_id.code.lower()
+        country_filtered_pmts = filter(
+            lambda pmt: not pmt.countries or country_code in pmt.countries, pm_filtered_pmts
+        )
+        # Filter payment method types by currency name
+        currency_name = self.currency_id.name.lower()
+        currency_filtered_pmts = filter(
+            lambda pmt: not pmt.currencies or currency_name in pmt.currencies, country_filtered_pmts
+        )
+        # Filter payment method types by recurrence if the transaction must be tokenized
+        if self.tokenize:
+            recurrence_filtered_pmts = filter(
+                lambda pmt: pmt.recurrence == 'recurring', currency_filtered_pmts
+            )
+        else:
+            recurrence_filtered_pmts = currency_filtered_pmts
+        # Build the session values related to payment method types
+        pmt_values = {}
+        for pmt_id, pmt_name in enumerate(map(lambda pmt: pmt.name, recurrence_filtered_pmts)):
+            pmt_values[f'payment_method_types[{pmt_id}]'] = pmt_name
+
+        # Create the session according to the operation and return it
+        customer = self._stripe_create_customer()
+        common_session_values = self._get_common_stripe_session_values(pmt_values, customer)
         base_url = self.provider_id.get_base_url()
+        if self.operation == 'online_redirect':
+            return_url = f'{urls.url_join(base_url, StripeController._checkout_return_url)}' \
+                         f'?reference={urls.url_quote_plus(self.reference)}'
+            # Specify a future usage for the payment intent to:
+            # 1. attach the payment method to the created customer
+            # 2. trigger a 3DS check if one if required, while the customer is still present
+            future_usage = 'off_session' if self.tokenize else None
+            capture_method = 'manual' if self.provider_id.capture_manually else 'automatic'
+            checkout_session = self.provider_id._stripe_make_request(
+                'checkout/sessions', payload={
+                    **common_session_values,
+                    'mode': 'payment',
+                    'success_url': return_url,
+                    'cancel_url': return_url,
+                    'line_items[0][price_data][currency]': self.currency_id.name,
+                    'line_items[0][price_data][product_data][name]': self.reference,
+                    'line_items[0][price_data][unit_amount]': payment_utils.to_minor_currency_units(
+                        self.amount, self.currency_id
+                    ),
+                    'line_items[0][quantity]': 1,
+                    'payment_intent_data[description]': self.reference,
+                    'payment_intent_data[setup_future_usage]': future_usage,
+                    'payment_intent_data[capture_method]': capture_method,
+                }
+            )
+            self.stripe_payment_intent = checkout_session['payment_intent']
+        else:  # 'validation'
+            # {CHECKOUT_SESSION_ID} is a template filled by Stripe when the Session is created
+            return_url = f'{urls.url_join(base_url, StripeController._validation_return_url)}' \
+                         f'?reference={urls.url_quote_plus(self.reference)}' \
+                         f'&checkout_session_id={{CHECKOUT_SESSION_ID}}'
+            checkout_session = self.provider_id._stripe_make_request(
+                'checkout/sessions', payload={
+                    **common_session_values,
+                    'mode': 'setup',
+                    'success_url': return_url,
+                    'cancel_url': return_url,
+                    'setup_intent_data[description]': self.reference,
+                }
+            )
+        return checkout_session
+
+    def _stripe_create_customer(self):
+        """ Create and return a Customer.
+
+        :return: The Customer
+        :rtype: dict
+        """
+        customer = self.provider_id._stripe_make_request(
+            'customers', payload={
+                'address[city]': self.partner_city or None,
+                'address[country]': self.partner_country_id.code or None,
+                'address[line1]': self.partner_address or None,
+                'address[postal_code]': self.partner_zip or None,
+                'address[state]': self.partner_state_id.name or None,
+                'description': f'Odoo Partner: {self.partner_id.name} (id: {self.partner_id.id})',
+                'email': self.partner_email or None,
+                'name': self.partner_name,
+                'phone': self.partner_phone or None,
+            }
+        )
+        return customer
+
+    def _get_common_stripe_session_values(self, pmt_values, customer):
+        """ Return the Stripe Session values that are common to redirection and validation.
+
+        Note: This method serves as a hook for modules that would fully implement Stripe Connect.
+
+        :param dict pmt_values: The payment method types values
+        :param dict customer: The Stripe customer to assign to the session
+        :return: The common Stripe Session values
+        :rtype: dict
+        """
         return {
-            'client_secret': intent['client_secret'],
-            'return_url': url_join(
-                base_url,
-                f'{StripeController._return_url}?{url_encode({"reference": self.reference})}',
-            ),
+            **pmt_values,
+            # Assign a customer to the session so that Stripe automatically attaches the payment
+            # method to it in a validation flow. In checkout flow, a customer is automatically
+            # created if not provided but we still do it here to avoid requiring the customer to
+            # enter his email on the checkout page.
+            'customer': customer['id'],
         }
 
     def _send_payment_request(self):
@@ -58,13 +188,12 @@ class PaymentTransaction(models.Model):
             raise UserError("Stripe: " + _("The transaction is not linked to a token."))
 
         # Make the payment request to Stripe
-        payment_intent = self._stripe_create_intent()
+        payment_intent = self._stripe_create_payment_intent()
         _logger.info(
             "payment request response for transaction with reference %s:\n%s",
             self.reference, pprint.pformat(payment_intent)
         )
-        if not payment_intent:  # The PI might be missing if Stripe failed to create it.
-            return  # There is nothing to process; the transaction is in error at this point.
+        self.stripe_payment_intent = payment_intent['id']
 
         # Handle the payment request response
         notification_data = {'reference': self.reference}
@@ -73,162 +202,65 @@ class PaymentTransaction(models.Model):
         )
         self._handle_notification_data('stripe', notification_data)
 
-    def _stripe_create_intent(self):
-        """ Create and return a PaymentIntent or a SetupIntent object, depending on the operation.
+    def _stripe_create_payment_intent(self):
+        """ Create and return a PaymentIntent.
 
-        :return: The created PaymentIntent or SetupIntent object.
+        Note: self.ensure_one()
+
+        :return: The Payment Intent
         :rtype: dict
         """
-        if self.operation == 'validation':
+        if self.operation in ['online_token', 'offline']:
+            if not self.token_id.stripe_payment_method:  # Pre-SCA token -> migrate it
+                self.token_id._stripe_sca_migrate_customer()
+
             response = self.provider_id._stripe_make_request(
-                'setup_intents', payload=self._stripe_prepare_setup_intent_payload()
+                'payment_intents',
+                payload=self._stripe_prepare_payment_intent_payload(payment_by_token=True),
+                offline=self.operation == 'offline',
             )
-        else:  # 'online_direct', 'online_token', 'offline'.
+        else:  # 'online_direct' (express checkout).
             response = self.provider_id._stripe_make_request(
                 'payment_intents',
                 payload=self._stripe_prepare_payment_intent_payload(),
-                offline=self.operation == 'offline',
-                # Prevent multiple offline payments by token (e.g., due to a cursor rollback).
-                idempotency_key=payment_utils.generate_idempotency_key(
-                    self, scope='payment_intents_token'
-                ) if self.operation == 'offline' else None,
             )
 
         if 'error' not in response:
-            intent = response
-        else:  # A processing error was returned in place of the intent.
-            # The request failed and no error was raised because we are in an offline payment flow.
-            # Extract the error from the response, log it, and set the transaction in error to let
-            # the calling module handle the issue without rolling back the cursor.
+            payment_intent = response
+        else:  # A processing error was returned in place of the payment intent
             error_msg = response['error'].get('message')
-            _logger.warning(
-                "The creation of the intent failed.\n"
-                "Stripe gave us the following info about the problem:\n'%s'", error_msg
-            )
             self._set_error("Stripe: " + _(
                 "The communication with the API failed.\n"
                 "Stripe gave us the following info about the problem:\n'%s'", error_msg
-            ))  # Flag transaction as in error now, as the intent status might have a valid value.
-            intent = response['error'].get('payment_intent') \
-                     or response['error'].get('setup_intent')  # Get the intent from the error.
+            ))  # Flag transaction as in error now as the intent status might have a valid value
+            payment_intent = response['error'].get('payment_intent')  # Get the PI from the error
 
-        return intent
+        return payment_intent
 
-    def _stripe_prepare_setup_intent_payload(self):
-        """ Prepare the payload for the creation of a SetupIntent object in Stripe format.
-
-        Note: This method serves as a hook for modules that would fully implement Stripe Connect.
-
-        :return: The Stripe-formatted payload for the SetupIntent request.
-        :rtype: dict
-        """
-        customer = self._stripe_create_customer()
-        return {
-            'customer': customer['id'],
-            'description': self.reference,
-            'payment_method_types[]': const.PAYMENT_METHODS_MAPPING.get(
-                self.payment_method_code, self.payment_method_code
-            ),
-            **self._stripe_prepare_mandate_options(),
-        }
-
-    def _stripe_prepare_payment_intent_payload(self):
-        """ Prepare the payload for the creation of a PaymentIntent object in Stripe format.
+    def _stripe_prepare_payment_intent_payload(self, payment_by_token=False):
+        """ Prepare the payload for the creation of a payment intent in Stripe format.
 
         Note: This method serves as a hook for modules that would fully implement Stripe Connect.
+        Note: self.ensure_one()
 
-        :return: The Stripe-formatted payload for the PaymentIntent request.
+        :param boolean payment_by_token: Whether the payment is made by token or not.
+        :return: The Stripe-formatted payload for the payment intent request
         :rtype: dict
         """
-        ppm_code = self.payment_method_id.primary_payment_method_id.code
-        payment_method_type = ppm_code or self.payment_method_code
         payment_intent_payload = {
             'amount': payment_utils.to_minor_currency_units(self.amount, self.currency_id),
             'currency': self.currency_id.name.lower(),
             'description': self.reference,
             'capture_method': 'manual' if self.provider_id.capture_manually else 'automatic',
-            'payment_method_types[]': const.PAYMENT_METHODS_MAPPING.get(
-                payment_method_type, payment_method_type
-            ),
-            'expand[]': 'payment_method',
         }
-        if self.operation in ['online_token', 'offline']:
-            if not self.token_id.stripe_payment_method:  # Pre-SCA token, migrate it.
-                self.token_id._stripe_sca_migrate_customer()
-
-            payment_intent_payload.update({
-                'confirm': True,
-                'customer': self.token_id.provider_ref,
-                'off_session': True,
-                'payment_method': self.token_id.stripe_payment_method,
-                'mandate': self.token_id.stripe_mandate or None,
-            })
-        else:
-            if self.tokenize:
-                customer = self._stripe_create_customer()
-                payment_intent_payload.update(
-                    customer=customer['id'],
-                    setup_future_usage='off_session',
-                    **self._stripe_prepare_mandate_options(),
-                )
+        if payment_by_token:
+            payment_intent_payload.update(
+                confirm=True,
+                customer=self.token_id.provider_ref,
+                off_session=True,
+                payment_method=self.token_id.stripe_payment_method,
+            )
         return payment_intent_payload
-
-    def _stripe_create_customer(self):
-        """ Create and return a Customer.
-
-        :return: The Customer
-        :rtype: dict
-        """
-        customer = self.provider_id._stripe_make_request(
-            'customers', payload={
-                'address[city]': self.partner_city or None,
-                'address[country]': self.partner_country_id.code or None,
-                'address[line1]': self.partner_address or None,
-                'address[postal_code]': self.partner_zip or None,
-                'address[state]': self.partner_state_id.name or None,
-                'description': f'Odoo Partner: {self.partner_id.name} (id: {self.partner_id.id})',
-                'email': self.partner_email or None,
-                'name': self.partner_name,
-                'phone': self.partner_phone and self.partner_phone[:20] or None,
-            }
-        )
-        return customer
-
-    def _stripe_prepare_mandate_options(self):
-        """ Prepare the configuration options for setting up an eMandate along with an intent.
-
-        :return: The Stripe-formatted payload for the mandate options.
-        :rtype: dict
-        """
-        mandate_values = self._get_mandate_values()
-
-        OPTION_PATH_PREFIX = 'payment_method_options[card][mandate_options]'
-        mandate_options = {
-            f'{OPTION_PATH_PREFIX}[reference]': self.reference,
-            f'{OPTION_PATH_PREFIX}[amount_type]': 'maximum',
-            f'{OPTION_PATH_PREFIX}[amount]': payment_utils.to_minor_currency_units(
-                mandate_values.get('amount', 15000), self.currency_id
-            ),  # Use the specified amount, if any, or define the maximum amount of 15.000 INR.
-            f'{OPTION_PATH_PREFIX}[start_date]': int(round(
-                (mandate_values.get('start_datetime') or fields.Datetime.now()).timestamp()
-            )),
-            f'{OPTION_PATH_PREFIX}[interval]': 'sporadic',
-            f'{OPTION_PATH_PREFIX}[supported_types][]': 'india',
-        }
-        if mandate_values.get('end_datetime'):
-            mandate_options[f'{OPTION_PATH_PREFIX}[end_date]'] = int(round(
-                mandate_values['end_datetime'].timestamp()
-            ))
-        if mandate_values.get('recurrence_unit') and mandate_values.get('recurrence_duration'):
-            mandate_options.update({
-                f'{OPTION_PATH_PREFIX}[interval]': mandate_values['recurrence_unit'],
-                f'{OPTION_PATH_PREFIX}[interval_count]': mandate_values['recurrence_duration'],
-            })
-        if self.operation == 'validation':
-            currency_name = self.provider_id._get_validation_currency().name.lower()
-            mandate_options[f'{OPTION_PATH_PREFIX}[currency]'] = currency_name
-
-        return mandate_options
 
     def _send_refund_request(self, amount_to_refund=None):
         """ Override of payment to send a refund request to Stripe.
@@ -246,7 +278,7 @@ class PaymentTransaction(models.Model):
         # Make the refund request to stripe.
         data = self.provider_id._stripe_make_request(
             'refunds', payload={
-                'payment_intent': self.provider_reference,
+                'charge': self.provider_reference,
                 'amount': payment_utils.to_minor_currency_units(
                     -refund_tx.amount,  # Refund transactions' amount is negative, inverse it.
                     refund_tx.currency_id,
@@ -264,15 +296,20 @@ class PaymentTransaction(models.Model):
 
         return refund_tx
 
-    def _send_capture_request(self, amount_to_capture=None):
-        """ Override of `payment` to send a capture request to Stripe. """
-        child_capture_tx = super()._send_capture_request(amount_to_capture=amount_to_capture)
+    def _send_capture_request(self):
+        """ Override of payment to send a capture request to Stripe.
+
+        Note: self.ensure_one()
+
+        :return: None
+        """
+        super()._send_capture_request()
         if self.provider_code != 'stripe':
-            return child_capture_tx
+            return
 
         # Make the capture request to Stripe
         payment_intent = self.provider_id._stripe_make_request(
-            f'payment_intents/{self.provider_reference}/capture'
+            f'payment_intents/{self.stripe_payment_intent}/capture'
         )
         _logger.info(
             "capture request response for transaction with reference %s:\n%s",
@@ -286,17 +323,20 @@ class PaymentTransaction(models.Model):
         )
         self._handle_notification_data('stripe', notification_data)
 
-        return child_capture_tx
+    def _send_void_request(self):
+        """ Override of payment to send a void request to Stripe.
 
-    def _send_void_request(self, amount_to_void=None):
-        """ Override of `payment` to send a void request to Stripe. """
-        child_void_tx = super()._send_void_request(amount_to_void=amount_to_void)
+        Note: self.ensure_one()
+
+        :return: None
+        """
+        super()._send_void_request()
         if self.provider_code != 'stripe':
-            return child_void_tx
+            return
 
         # Make the void request to Stripe
         payment_intent = self.provider_id._stripe_make_request(
-            f'payment_intents/{self.provider_reference}/cancel'
+            f'payment_intents/{self.stripe_payment_intent}/cancel'
         )
         _logger.info(
             "void request response for transaction with reference %s:\n%s",
@@ -309,8 +349,6 @@ class PaymentTransaction(models.Model):
             payment_intent, notification_data
         )
         self._handle_notification_data('stripe', notification_data)
-
-        return child_void_tx
 
     def _get_tx_from_notification_data(self, provider_code, notification_data):
         """ Override of payment to find the transaction based on Stripe data.
@@ -334,9 +372,7 @@ class PaymentTransaction(models.Model):
             # refund object that has no 'description' (the merchant reference) field. We thus search
             # the transaction by its provider reference which is the refund id for refund txs.
             refund_id = notification_data['object_id']  # The object is a refund.
-            tx = self.search(
-                [('provider_reference', '=', refund_id), ('provider_code', '=', 'stripe')]
-            )
+            tx = self.search([('provider_reference', '=', refund_id), ('provider_code', '=', 'stripe')])
         else:
             raise ValidationError("Stripe: " + _("Received data with missing merchant reference"))
 
@@ -347,15 +383,15 @@ class PaymentTransaction(models.Model):
         return tx
 
     def _process_notification_data(self, notification_data):
-        """ Override of `payment` to process the transaction based on Stripe data.
+        """ Override of payment to process the transaction based on Adyen data.
 
         Note: self.ensure_one()
 
         :param dict notification_data: The notification data build from information passed to the
                                        return route. Depending on the operation of the transaction,
-                                       the entries with the keys 'payment_intent', 'setup_intent'
-                                       and 'payment_method' can be populated with their
-                                       corresponding Stripe API objects.
+                                       the entries with the keys 'payment_intent', 'charge',
+                                       'setup_intent' and 'payment_method' can be populated with
+                                       their corresponding Stripe API objects.
         :return: None
         :raise: ValidationError if inconsistent data were received
         """
@@ -363,38 +399,30 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'stripe':
             return
 
-        # Update the payment method.
-        payment_method = notification_data.get('payment_method')
-        if isinstance(payment_method, dict):  # capture/void/refund requests receive a string.
-            payment_method_type = payment_method.get('type')
-            if self.payment_method_id.code == payment_method_type == 'card':
-                payment_method_type = notification_data['payment_method']['card']['brand']
-            payment_method = self.env['payment.method']._get_from_code(payment_method_type)
-            self.payment_method_id = payment_method or self.payment_method_id
-
-        # Update the provider reference and the payment state.
+        # Handle the provider reference and the status.
         if self.operation == 'validation':
-            self.provider_reference = notification_data['setup_intent']['id']
-            status = notification_data['setup_intent']['status']
+            status = notification_data.get('setup_intent', {}).get('status')
         elif self.operation == 'refund':
             self.provider_reference = notification_data['refund']['id']
             status = notification_data['refund']['status']
-        else:  # 'online_direct', 'online_token', 'offline'
-            self.provider_reference = notification_data['payment_intent']['id']
-            status = notification_data['payment_intent']['status']
+        else:  # 'online_redirect', 'online_token', 'offline'
+            if 'charge' in notification_data:  # The online_redirect operation may include a charge.
+                self.provider_reference = notification_data['charge']['id']
+            status = notification_data.get('payment_intent', {}).get('status')
         if not status:
             raise ValidationError(
                 "Stripe: " + _("Received data with missing intent status.")
             )
-        if status in const.STATUS_MAPPING['draft']:
+
+        if status in STATUS_MAPPING['draft']:
             pass
-        elif status in const.STATUS_MAPPING['pending']:
+        elif status in STATUS_MAPPING['pending']:
             self._set_pending()
-        elif status in const.STATUS_MAPPING['authorized']:
+        elif status in STATUS_MAPPING['authorized']:
             if self.tokenize:
                 self._stripe_tokenize_from_notification_data(notification_data)
             self._set_authorized()
-        elif status in const.STATUS_MAPPING['done']:
+        elif status in STATUS_MAPPING['done']:
             if self.tokenize:
                 self._stripe_tokenize_from_notification_data(notification_data)
 
@@ -404,9 +432,9 @@ class PaymentTransaction(models.Model):
             # will not be triggered by a customer browsing the transaction from the portal.
             if self.operation == 'refund':
                 self.env.ref('payment.cron_post_process_payment_tx')._trigger()
-        elif status in const.STATUS_MAPPING['cancel']:
+        elif status in STATUS_MAPPING['cancel']:
             self._set_canceled()
-        elif status in const.STATUS_MAPPING['error']:
+        elif status in STATUS_MAPPING['error']:
             if self.operation != 'refund':
                 last_payment_error = notification_data.get('payment_intent', {}).get(
                     'last_payment_error'
@@ -420,7 +448,7 @@ class PaymentTransaction(models.Model):
                 self._set_error(_(
                     "The refund did not go through. Please log into your Stripe Dashboard to get "
                     "more information on that matter, and address any accounting discrepancies."
-                ), extra_allowed_states=('done',))
+                ))
         else:  # Classify unknown intent statuses as `error` tx state
             _logger.warning(
                 "received invalid payment status (%s) for transaction with reference %s",
@@ -435,35 +463,33 @@ class PaymentTransaction(models.Model):
                                        See `_process_notification_data`.
         :return: None
         """
+        if self.operation == 'online_redirect':
+            payment_method_id = notification_data.get('charge', {}).get('payment_method')
+            customer_id = notification_data.get('charge', {}).get('customer')
+        else:  # 'validation'
+            payment_method_id = notification_data.get('payment_method', {}).get('id')
+            customer_id = notification_data.get('setup_intent', {}).get('customer')
         payment_method = notification_data.get('payment_method')
-        if not payment_method:
+        if not payment_method_id or not payment_method:
             _logger.warning(
                 "requested tokenization from notification data with missing payment method"
             )
             return
 
-        # Extract the Stripe objects from the notification data.
-        if self.operation == 'online_direct':
-            customer_id = notification_data['payment_intent']['customer']
-        else:  # 'validation'
-            customer_id = notification_data['setup_intent']['customer']
-        # Another payment method (e.g., SEPA) might have been generated.
-        if not payment_method[payment_method['type']]:
-            payment_methods = self.provider_id._stripe_make_request(
-                f'customers/{customer_id}/payment_methods', method='GET'
-            )
-            _logger.info("Received payment_methods response:\n%s", pprint.pformat(payment_methods))
-            payment_method = payment_methods['data'][0]
+        if payment_method.get('type') != 'card':
+            # Only 'card' payment methods can be tokenized. This case should normally not happen as
+            # non-recurring payment methods are not shown to the customer if the "Save my payment
+            # details checkbox" is shown. Still, better be on the safe side..
+            _logger.warning("requested tokenization of non-recurring payment method")
+            return
 
-        # Create the token.
         token = self.env['payment.token'].create({
             'provider_id': self.provider_id.id,
-            'payment_method_id': self.payment_method_id.id,
-            'payment_details': payment_method[payment_method['type']]['last4'],
+            'payment_details': payment_method['card'].get('last4'),
             'partner_id': self.partner_id.id,
             'provider_ref': customer_id,
-            'stripe_payment_method': payment_method['id'],
-            'stripe_mandate': payment_method[payment_method['type']].get('mandate'),
+            'verified': True,
+            'stripe_payment_method': payment_method_id,
         })
         self.write({
             'token_id': token,

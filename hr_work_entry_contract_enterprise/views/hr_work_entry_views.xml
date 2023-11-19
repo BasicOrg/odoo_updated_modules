@@ -31,17 +31,23 @@
                    sample="1">
                 <templates>
                     <div t-name="gantt-popover">
-                        <t t-out="date_start.toFormat('f ')"/>
-                        <i class="fa fa-long-arrow-right" title="Arrow"/>
-                        <t t-out="date_stop.toFormat(' f')"/>
+                        <div><t t-esc="userTimezoneStartDate.format('l LT ')"/><i class="fa fa-long-arrow-right" title="Arrow"/><t t-esc="userTimezoneStopDate.format(' l LT')"/></div>
                     </div>
                 </templates>
-                <field name="color"/>
+                <field name="color" invisible="1"/>
                 <field name="state"/>
                 <field name="employee_id"/>
                 <field name="name"/>
             </gantt>
         </field>
     </record>
+
+    <menuitem
+            id="hr_menu_contract"
+            name="All Contracts"
+            action="hr_contract.action_hr_contract"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="6"
+            groups="hr_contract.group_hr_contract_manager"/>
 
 </odoo>

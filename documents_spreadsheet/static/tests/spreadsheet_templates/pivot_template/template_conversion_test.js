@@ -1,13 +1,13 @@
 /** @odoo-module */
 
 import { DataSources } from "@spreadsheet/data_sources/data_sources";
-import { CommandResult } from "@spreadsheet/o_spreadsheet/cancelled_reason";
-import { Model } from "@odoo/o-spreadsheet";
+import CommandResult from "@spreadsheet/o_spreadsheet/cancelled_reason";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { createSpreadsheetWithPivot } from "@spreadsheet/../tests/utils/pivot";
 import { setCellContent } from "@spreadsheet/../tests/utils/commands";
 import { getCellContent } from "@spreadsheet/../tests/utils/getters";
-import { getBasicServerData } from "@spreadsheet/../tests/utils/data";
-import { convertFromSpreadsheetTemplate } from "@documents_spreadsheet/bundle/helpers";
+
+const { Model } = spreadsheet;
 
 /**
  * @param {object} params
@@ -24,14 +24,7 @@ async function convertFormula(params) {
         proms.push(model.getters.getPivotDataSource(pivotId).prepareForTemplateGeneration());
     }
     await Promise.all(proms);
-    setCellContent(
-        model,
-        "A1",
-        `=${params.formula
-            .split("\n")
-            .map((s) => s.trim())
-            .join("")}`
-    );
+    setCellContent(model, "A1", `=${params.formula}`);
     model.dispatch(params.convert);
     // Remove the equal sign
     return getCellContent(model, "A1").slice(1);
@@ -43,9 +36,9 @@ QUnit.module("documents_spreadsheet > pivot_templates", {}, function () {
     QUnit.test(
         "Dispatch template command is not allowed if cache is not loaded",
         async function (assert) {
-            const { model: m1, env } = await createSpreadsheetWithPivot();
+            const { model: m1 } = await createSpreadsheetWithPivot();
             const model = new Model(m1.exportData(), {
-                custom: { dataSources: new DataSources(env) },
+                dataSources: new DataSources(m1.config.dataSources._orm),
             });
             assert.deepEqual(model.dispatch("CONVERT_PIVOT_TO_TEMPLATE").reasons, [
                 CommandResult.PivotCacheNotLoaded,
@@ -433,35 +426,4 @@ QUnit.module("documents_spreadsheet > pivot_templates", {}, function () {
         });
         assert.equal(result, `ODOO.PIVOT("1","probability","product_id",A2,"bar","110")`);
     });
-
-    QUnit.test(
-        "Open spreadsheet from template containing pivot of records without data",
-        async (assert) => {
-            const serverData = getBasicServerData();
-            const { model, env } = await createSpreadsheetWithPivot({
-                arch: /*xml*/ `
-                    <pivot>
-                        <field name="product_id" type="row"/>
-                        <field name="bar" type="row"/>
-                        <field name="foo" type="col"/>
-                        <field name="bar" type="col"/>
-                        <field name="probability" type="measure"/>
-                    </pivot>`,
-                serverData,
-            });
-            await model.getters.getPivotDataSource("1").prepareForTemplateGeneration();
-            model.dispatch("CONVERT_PIVOT_TO_TEMPLATE");
-            serverData.models.partner.records = [];
-            const data = await convertFromSpreadsheetTemplate(env, model.exportData());
-            const cells = data.sheets[0].cells;
-            assert.equal(cells.A4.content, "=ODOO.PIVOT.HEADER(1)");
-            assert.equal(cells.B1.content, '=ODOO.PIVOT.HEADER(1,"foo",1)');
-            assert.equal(cells.B2.content, '=ODOO.PIVOT.HEADER(1,"foo",1,"bar","true")');
-            assert.equal(
-                cells.B3.content,
-                '=ODOO.PIVOT.HEADER(1,"foo",1,"bar","true","measure","probability")'
-            );
-            assert.equal(cells.B4.content, '=ODOO.PIVOT(1,"probability","foo",1,"bar","true")');
-        }
-    );
 });

@@ -1,10 +1,10 @@
 /** @odoo-module */
 
+import { Domain } from "@web/core/domain";
 import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { combineModifiers } from "@web/model/relational_model/utils";
 
 export const X2M_TYPES = ["one2many", "many2many"];
+const RELATIONAL_TYPES = [...X2M_TYPES, "many2one"];
 const NUMERIC_TYPES = ["integer", "float", "monetary"];
 
 /**
@@ -16,25 +16,24 @@ const NUMERIC_TYPES = ["integer", "float", "monetary"];
  * @property {boolean} duplicate
  */
 
-export const BUTTON_CLICK_PARAMS = [
-    "name",
-    "type",
-    "args",
-    "context",
-    "close",
-    "confirm",
-    "confirm-title",
-    "confirm-label",
-    "special",
-    "effect",
-    "help",
-    // WOWL SAD: is adding the support for debounce attribute here justified or should we
-    // just override compileButton in kanban compiler to add the debounce?
-    "debounce",
-    // WOWL JPP: is adding the support for not oppening the dialog of confirmation in the settings view
-    // This should be refactor someday
-    "noSaveDialog",
-];
+/**
+ * Add dependencies to activeFields
+ *
+ * @param {Object} activeFields
+ * @param {Object} [dependencies={}]
+ */
+export function addFieldDependencies(activeFields, fields, dependencies = {}) {
+    for (const [name, dependency] of Object.entries(dependencies)) {
+        if (!(name in activeFields)) {
+            activeFields[name] = Object.assign({ name, rawAttrs: {} }, dependency, {
+                modifiers: { invisible: true },
+            });
+        }
+        if (!(name in fields)) {
+            fields[name] = { ...dependency };
+        }
+    }
+}
 
 /**
  * Parse the arch to check if is true or false
@@ -47,35 +46,6 @@ export const BUTTON_CLICK_PARAMS = [
  */
 export function archParseBoolean(str, trueIfEmpty = false) {
     return str ? !/^false|0$/i.test(str) : trueIfEmpty;
-}
-
-/**
- * @param {string?} type
- * @returns {string | false}
- */
-function getViewClass(type) {
-    const isValidType = Boolean(type) && registry.category("views").contains(type);
-    return isValidType && `o_${type}_view`;
-}
-
-/**
- * @param {string?} viewType
- * @param {Element?} rootNode
- * @param {string[]} additionalClassList
- * @returns {string}
- */
-export function computeViewClassName(viewType, rootNode, additionalClassList = []) {
-    const subType = rootNode?.getAttribute("js_class");
-    const classList = rootNode?.getAttribute("class")?.split(" ") || [];
-    const uniqueClasses = new Set([
-        getViewClass(viewType),
-        getViewClass(subType),
-        ...classList,
-        ...additionalClassList,
-    ]);
-    return Array.from(uniqueClasses)
-        .filter((c) => c) // remove falsy values
-        .join(" ");
 }
 
 /**
@@ -98,10 +68,7 @@ export const computeReportMeasures = (fields, fieldAttrs, activeMeasures) => {
         if (isInvisible) {
             continue;
         }
-        if (
-            ["integer", "float", "monetary"].includes(field.type) &&
-            field.group_operator !== undefined
-        ) {
+        if (["integer", "float", "monetary"].includes(field.type)) {
             measures[fieldName] = field;
         }
     }
@@ -136,24 +103,15 @@ export const computeReportMeasures = (fields, fieldAttrs, activeMeasures) => {
 };
 
 /**
- * @param {String} fieldName
- * @param {Object} rawAttrs
- * @param {Record} record
- * @returns {String}
+ * @param {Array[] | boolean} modifier
+ * @param {Object} evalContext
+ * @returns {boolean}
  */
-export function getFormattedValue(record, fieldName, attrs) {
-    const field = record.fields[fieldName];
-    const formatter = registry.category("formatters").get(field.type, (val) => val);
-    const formatOptions = {
-        escape: false,
-        data: record.data,
-        isPassword: "password" in attrs,
-        digits: attrs.digits ? JSON.parse(attrs.digits) : field.digits,
-        field: record.fields[fieldName],
-    };
-    return record.data[fieldName] !== undefined
-        ? formatter(record.data[fieldName], formatOptions)
-        : "";
+export function evalDomain(modifier, evalContext) {
+    if (modifier && typeof modifier !== "boolean") {
+        modifier = new Domain(modifier).contains(evalContext);
+    }
+    return Boolean(modifier);
 }
 
 /**
@@ -193,6 +151,32 @@ export function getDecoration(rootNode) {
 }
 
 /**
+ * @param {number | number[]} idsList
+ * @returns {number[]}
+ */
+export function getIds(idsList) {
+    if (Array.isArray(idsList)) {
+        if (idsList.length === 2 && typeof idsList[1] === "string") {
+            return [idsList[0]];
+        } else {
+            return idsList;
+        }
+    } else if (idsList) {
+        return [idsList];
+    } else {
+        return [];
+    }
+}
+
+/**
+ * @param {any} field
+ * @returns {boolean}
+ */
+export function isRelational(field) {
+    return field && RELATIONAL_TYPES.includes(field.type);
+}
+
+/**
  * @param {any} field
  * @returns {boolean}
  */
@@ -217,33 +201,19 @@ export function isNull(value) {
 }
 
 export function processButton(node) {
-    const withDefault = {
-        close: (val) => archParseBoolean(val, false),
-        context: (val) => val || "{}",
-    };
-    const clickParams = {};
-    for (const { name, value } of node.attributes) {
-        if (BUTTON_CLICK_PARAMS.includes(name)) {
-            clickParams[name] = withDefault[name] ? withDefault[name](value) : value;
-        }
-    }
     return {
         className: node.getAttribute("class") || "",
-        disabled: !!node.getAttribute("disabled") || false,
         icon: node.getAttribute("icon") || false,
         title: node.getAttribute("title") || undefined,
         string: node.getAttribute("string") || undefined,
         options: JSON.parse(node.getAttribute("options") || "{}"),
-        display: node.getAttribute("display") || "selection",
-        clickParams,
-        column_invisible: node.getAttribute("column_invisible"),
-        invisible: combineModifiers(
-            node.getAttribute("column_invisible"),
-            node.getAttribute("invisible"),
-            "OR"
-        ),
-        readonly: node.getAttribute("readonly"),
-        required: node.getAttribute("required"),
+        modifiers: JSON.parse(node.getAttribute("modifiers") || "{}"),
+        clickParams: {
+            close: archParseBoolean(node.getAttribute("close"), false),
+            context: node.getAttribute("context") || "{}",
+            name: node.getAttribute("name"),
+            type: node.getAttribute("type"),
+        },
     };
 }
 
@@ -267,6 +237,30 @@ export function processMeasure(measure) {
         return measure.map(processMeasure);
     }
     return measure === "__count__" ? "__count" : measure;
+}
+
+/**
+ * @param {any} string
+ * @return {OrderTerm[]}
+ */
+export function stringToOrderBy(string) {
+    if (!string) {
+        return [];
+    }
+    return string.split(",").map((order) => {
+        const splitOrder = order.trim().split(" ");
+        if (splitOrder.length === 2) {
+            return {
+                name: splitOrder[0],
+                asc: splitOrder[1].toLowerCase() === "asc",
+            };
+        } else {
+            return {
+                name: splitOrder[0],
+                asc: true,
+            };
+        }
+    });
 }
 
 /**

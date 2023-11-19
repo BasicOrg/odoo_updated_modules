@@ -5,19 +5,10 @@ import datetime
 
 from odoo import tests, _
 from odoo.addons.website_livechat.tests.common import TestLivechatCommon
-from odoo.tests.common import new_test_user
 
 
 @tests.tagged('post_install', '-at_install')
 class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
-    def test_channel_created_on_user_interaction(self):
-        self.start_tour('/', 'im_livechat_request_chat', login=None)
-        channel = self.env['discuss.channel'].search([['livechat_active', '=', True], ['livechat_visitor_id', '=', self.visitor.id]])
-        self.assertFalse(channel, 'Channel should not be created until user sends a message')
-        self.start_tour('/', 'im_livechat_request_chat_and_send_message', login=None)
-        channel = self.env['discuss.channel'].search([['livechat_active', '=', True], ['livechat_visitor_id', '=', self.visitor.id]])
-        self.assertTrue(channel, 'Channel should be created after sending the first message')
-
     def test_visitor_banner_history(self):
         # create visitor history
         self.env['website.track'].create([{
@@ -39,7 +30,7 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
             self.env.ref('website.contactus_page').name,
             self.env.ref('website.homepage_page').name,
         )
-        history = self.env['discuss.channel']._get_visitor_history(self.visitor)
+        history = self.env['mail.channel']._get_visitor_history(self.visitor)
 
         self.assertEqual(history, handmade_history)
 
@@ -47,10 +38,10 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
         # Open a new live chat
         res = self.opener.post(url=self.open_chat_url, json=self.open_chat_params)
         self.assertEqual(res.status_code, 200)
-        channel_1 = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
+        channel_1 = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
 
         # Check Channel naming
-        self.assertEqual(channel_1.name, "%s %s" % (f'Visitor #{channel_1.livechat_visitor_id.id}', self.operator.livechat_username))
+        self.assertEqual(channel_1.name, "%s %s" % (self.visitor.display_name, self.operator.livechat_username))
         channel_1.unlink()
 
         # Remove livechat_username
@@ -65,10 +56,10 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
         # Open a new live chat
         res = self.opener.post(url=self.open_chat_url, json=self.open_chat_params)
         self.assertEqual(res.status_code, 200)
-        channel_2 = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
+        channel_2 = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
 
         # Check Channel naming
-        self.assertEqual(channel_2.name, "%s %s" % (f'Visitor #{channel_2.livechat_visitor_id.id}', self.operator.name))
+        self.assertEqual(channel_2.name, "%s %s" % (self.visitor.display_name, self.operator.name))
 
     def test_basic_flow_with_rating(self):
         channel = self._common_basic_flow()
@@ -78,19 +69,19 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
         channel._close_livechat_session()
 
         self.assertEqual(len(channel.message_ids), 4)
-        self.assertEqual(channel.message_ids[0].author_id, self.env.ref('base.partner_root'), "Odoobot must be the sender of the 'left the conversation' message.")
-        self.assertIn(f"Visitor #{channel.livechat_visitor_id.id}", channel.message_ids[0].body)
+        self.assertEqual(channel.message_ids[0].author_id, self.env.ref('base.partner_root'), "Odoobot must be the sender of the 'has left the conversation' message.")
+        self.assertEqual(channel.message_ids[0].body, "<p>%s has left the conversation.</p>" % self.visitor.display_name)
         self.assertEqual(channel.livechat_active, False, "The livechat session must be inactive as the visitor sent his feedback.")
 
     def test_basic_flow_without_rating(self):
         channel = self._common_basic_flow()
 
-        # left the conversation
+        # has left the conversation
         channel._close_livechat_session()
         self.assertEqual(len(channel.message_ids), 3)
         self.assertEqual(channel.message_ids[0].author_id, self.env.ref('base.partner_root'), "Odoobot must be the author the message.")
-        self.assertIn(f"Visitor #{channel.livechat_visitor_id.id}", channel.message_ids[0].body)
-        self.assertEqual(channel.livechat_active, False, "The livechat session must be inactive since visitor left the conversation.")
+        self.assertEqual(channel.message_ids[0].body, "<p>%s has left the conversation.</p>" % self.visitor.display_name)
+        self.assertEqual(channel.livechat_active, False, "The livechat session must be inactive since visitor has left the conversation.")
 
     def test_visitor_info_access_rights(self):
         channel = self._common_basic_flow()
@@ -116,11 +107,11 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
         res = self.opener.post(url=self.open_chat_url, json=self.open_chat_params)
         self.assertEqual(res.status_code, 200)
 
-        channel = self.env['discuss.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
+        channel = self.env['mail.channel'].search([('livechat_visitor_id', '=', self.visitor.id), ('livechat_active', '=', True)], limit=1)
 
         # Check Channel and Visitor naming
         self.assertEqual(self.visitor.display_name, "%s #%s" % (_("Website Visitor"), self.visitor.id))
-        self.assertEqual(channel.name, "%s %s" % (f'Visitor #{channel.livechat_visitor_id.id}', self.operator.livechat_username))
+        self.assertEqual(channel.name, "%s %s" % (self.visitor.display_name, self.operator.livechat_username))
 
         # Post Message from visitor
         self._send_message(channel, self.visitor.display_name, "Message from Visitor")
@@ -141,7 +132,3 @@ class TestLivechatBasicFlowHttpCase(tests.HttpCase, TestLivechatCommon):
         self.assertEqual(channel.livechat_active, True, "The livechat session must be active as the visitor did not left the conversation yet.")
 
         return channel
-
-    def test_livechat_as_portal_user(self):
-        new_test_user(self.env, login="portal_user", groups="base.group_portal")
-        self.start_tour("/my", "website_livechat_as_portal_tour", login="portal_user")

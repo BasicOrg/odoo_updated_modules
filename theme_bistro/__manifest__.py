@@ -5,6 +5,7 @@
     'summary': 'Bistro, Restaurant, Bar, Pub, Cafe, Food, Catering',
     'sequence': 220,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -24,8 +25,6 @@
         'views/snippets/s_quotes_carousel.xml',
         'views/snippets/s_text_block.xml',
         'views/snippets/s_text_image.xml',
-        'views/new_page_template.xml',
-
     ],
     'images': [
         'static/description/bistro_cover.jpg',
@@ -37,7 +36,7 @@
         'website.s_product_catalog_default_image': '/theme_bistro/static/src/img/backgrounds/16.jpg',
         'website.s_quotes_carousel_demo_image_1': '/theme_bistro/static/src/img/backgrounds/19.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_features', 's_picture', 's_product_catalog', 's_text_block', 's_quotes_carousel'],
         'pricing': ["s_text_image", "s_product_catalog"],
     },

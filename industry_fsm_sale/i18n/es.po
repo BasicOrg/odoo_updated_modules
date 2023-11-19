@@ -3,16 +3,16 @@
 # 	* industry_fsm_sale
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,14 +20,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#: code:addons/industry_fsm_sale/models/project_task.py:0
+#: code:addons/industry_fsm_sale/models/project_task.py:0
+#, python-format
+msgid "%s - %s"
+msgstr ""
+
+#. module: industry_fsm_sale
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "<b>Invoice your time and material</b> to your customer."
 msgstr "<b>Facture su tiempo y materiales</b> a sus clientes."
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid ""
@@ -41,15 +47,15 @@ msgid ""
 "                            in your profile from where to draw stock.\n"
 "                        </p>"
 msgstr ""
-"<p class=\"o_view_nocontent_smiling_face\">\n"
-"                            No se encontraron productos. ¡Creemos uno!\n"
-"                        </p><p>\n"
-"                            Lleve el seguimiento de los productos que utiliza para completar sus tareas, y facture la mercancía a sus clientes.\n"
-"                            Consejo: puede agregar varios productos a la vez al usar kits.\n"
-"                        </p><p>\n"
-"                            Cuando su tarea se marca como hecha, sus existencias se actualizarán de forma automática. Solamente elija en su perfil\n"
-"                            un almacén de dónde obtener las existencias.\n"
-"                        </p>"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit_sale_timesheet
+msgid ""
+"<span class=\"fa fa-exclamation-triangle text-warning oe_edit_only\" "
+"title=\"By saving this change, the customer phone number will also be "
+"updated.\" attrs=\"{'invisible': ['|', ('partner_id', '=', False), "
+"('is_task_phone_update', '=', False)]}\"/>"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
@@ -57,20 +63,14 @@ msgid "<span>Disc.%</span>"
 msgstr "<span>Desc.%</span>"
 
 #. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
 msgid "<span>Products</span>"
-msgstr "<span>Productos</span>"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
 msgid "<strong class=\"mr16\">Subtotal</strong>"
 msgstr "<strong class=\"mr16\">Subtotal</strong>"
-
-#. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
-msgid "<strong>Amount Due: </strong>"
-msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
@@ -88,7 +88,6 @@ msgid "<strong>Untaxed amount</strong>"
 msgstr "<strong>Importe sin impuestos</strong>"
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
@@ -98,7 +97,7 @@ msgstr ""
 "tarea."
 
 #. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.industry_fsm_sale_product_catalog_inherit_search_view
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
 msgid "Added Products"
 msgstr "Productos agregados"
 
@@ -115,11 +114,10 @@ msgstr ""
 "del empleado."
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/wizard/sale_make_invoice_advance.py:0
 #, python-format
 msgid "An invoice has been created: %s"
-msgstr "Se creó una factura: %s"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_account_analytic_line
@@ -132,7 +130,11 @@ msgid "Billable"
 msgstr "Facturable"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: model:project.task.type,legend_blocked:industry_fsm_sale.field_service_project_stage_0
+msgid "Blocked"
+msgstr "Bloqueada"
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid ""
@@ -143,14 +145,13 @@ msgstr ""
 " los artículos seleccionados de la orden de venta sin distinción."
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid "Choose Products"
 msgstr "Elige productos"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid ""
@@ -161,13 +162,16 @@ msgstr ""
 "calentador, etc.).</i>"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid ""
-"Click on a product to add it to your <b>list of materials</b>. <i>Tip: for "
-"large quantities, click on the number to edit it directly.</i>"
+"Click on your product to add it to your <b>list of materials</b>. <i>Tip: "
+"for large quantities, click on the number to edit it directly.</i>"
 msgstr ""
+"Haga clic en su producto y agréguelo a su <b>lista de materiales</b>. "
+"<i>Consejo: haga clic en el número para editar cantidades grandes "
+"directamente."
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_res_config_settings
@@ -175,7 +179,7 @@ msgid "Config Settings"
 msgstr "Opciones de configuración"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Confirm the creation of your <b>invoice</b>."
@@ -188,19 +192,19 @@ msgid "Create Invoice"
 msgstr "Crear Factura"
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+msgid "Create new quotation"
+msgstr "Crear nueva cotización"
+
+#. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_view_form_inherit
 msgid "Create new quotations directly from tasks"
-msgstr "Crea nuevos presupuestos directamente desde las tareas"
+msgstr "Crea nuevas cotizaciones directamente desde las tareas"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__currency_id
 msgid "Currency"
 msgstr "Moneda"
-
-#. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_view_form_inherit
-msgid "Default Service"
-msgstr "Servicio predeterminado"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_sale_order_line__delivered_price_subtotal
@@ -218,6 +222,11 @@ msgid "Delivered Total Tax"
 msgstr "Impuesto sobre el total entregado"
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+msgid "Description"
+msgstr "Descripción"
+
+#. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__display_create_invoice_primary
 msgid "Display Create Invoice Primary"
 msgstr "Mostrar crear factura primario"
@@ -228,17 +237,20 @@ msgid "Display Create Invoice Secondary"
 msgstr "Mostrar crear factura secundario"
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/sale_order.py:0
-#, python-format
-msgid "Extra Quotation Created: %s"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Dropdown menu"
+msgstr "Menú desplegable"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Edit"
+msgstr "Editar"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_project__allow_quotations
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__allow_quotations
 msgid "Extra Quotations"
-msgstr "Presupuestos adicionales"
+msgstr "Cotizaciones adicionales"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_report_project_task_user_fsm
@@ -246,6 +258,12 @@ msgid "FSM Tasks Analysis"
 msgstr "Análisis de las tareas del Servicio externo "
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Favorites"
+msgstr "Favoritos"
+
+#. module: industry_fsm_sale
+#: model:product.product,name:industry_fsm_sale.field_service_product
 #: model:product.template,name:industry_fsm_sale.field_service_product_product_template
 msgid "Field Service"
 msgstr "Servicio externo"
@@ -253,7 +271,7 @@ msgstr "Servicio externo"
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_product_product__fsm_partner_price_currency_id
 msgid "Fsm Partner Price Currency"
-msgstr "Divisa del precio de partner de Servicio externo"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields.selection,name:industry_fsm_sale.selection__report_project_task_user_fsm__invoice_status__invoiced
@@ -261,21 +279,22 @@ msgid "Fully Invoiced"
 msgstr "Facturado"
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/product_product.py:0
-#, python-format
-msgid "Invalid operator: %s"
-msgstr "Operador no válido: %s"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Group By"
+msgstr "Agrupar por"
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/product_product.py:0
-#, python-format
-msgid "Invalid value: %s"
-msgstr "Valor no válido: %s"
+#: model:product.product,uom_name:industry_fsm_sale.field_service_product
+#: model:product.template,uom_name:industry_fsm_sale.field_service_product_product_template
+msgid "Hours"
+msgstr "Horas"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: model:project.task.type,legend_normal:industry_fsm_sale.field_service_project_stage_0
+msgid "In Progress"
+msgstr "En progreso"
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid "Invoice"
@@ -301,16 +320,20 @@ msgstr ""
 "tareas."
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_form_quotation
 #, python-format
 msgid "Invoices"
 msgstr "Facturas"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__is_task_phone_update
+msgid "Is Task Phone Update"
+msgstr ""
+
+#. module: industry_fsm_sale
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Let's <b>track the material</b> you use for your task."
@@ -318,7 +341,7 @@ msgstr ""
 "<b>Llevemos un seguimiento de los materiales</b>que utiliza en su tarea."
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Let's create a new <b>product</b>."
@@ -367,12 +390,17 @@ msgstr "Numero de facturas"
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_product_product__fsm_partner_price
 msgid "Partner Price"
-msgstr "Precio de partner"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__portal_quotation_count
 msgid "Portal Quotation Count"
-msgstr "Número de cotizaciones del portal"
+msgstr ""
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Price:"
+msgstr "Precio:"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__pricelist_id
@@ -381,10 +409,25 @@ msgstr "Tarifa"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_product_template
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.industry_fsm_sale_product_catalog_kanban_view
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
 msgid "Product"
 msgstr "Producto"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Category"
+msgstr "Categoría de producto"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Type"
+msgstr "Tipo de producto"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_product_product
@@ -394,6 +437,8 @@ msgstr "Variantes de producto"
 #. module: industry_fsm_sale
 #: model:ir.actions.act_window,name:industry_fsm_sale.product_action_fsm
 #: model:ir.ui.menu,name:industry_fsm_sale.fsm_menu_settings_product
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
 msgid "Products"
 msgstr "Productos"
@@ -422,7 +467,6 @@ msgid "Quantity"
 msgstr "Cantidad"
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/controllers/portal.py:0
 #, python-format
 msgid "Quotation"
@@ -431,21 +475,36 @@ msgstr "Presupuesto"
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__quotation_count
 msgid "Quotation Count"
-msgstr "Nº de presupuestos"
+msgstr "Recuento de presupuestos"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: code:addons/industry_fsm_sale/models/sale_order.py:0
+#, python-format
+msgid "Quotation created: %s"
+msgstr ""
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/controllers/portal.py:0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_form_quotation
 #, python-format
 msgid "Quotations"
-msgstr "Presupuestos"
+msgstr "Cotizaciones"
+
+#. module: industry_fsm_sale
+#: model:project.task.type,legend_done:industry_fsm_sale.field_service_project_stage_0
+msgid "Ready"
+msgstr "Preparado"
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_order_form_inherit_sale_project
 msgid "Related Task"
 msgstr "Tarea relacionada"
+
+#. module: industry_fsm_sale
+#: model:ir.model.fields,field_description:industry_fsm_sale.field_report_project_task_user_fsm__remaining_hours_so
+msgid "Remaining Hours on SO"
+msgstr "Horas restantes en la orden de venta"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_sale_advance_payment_inv
@@ -470,9 +529,6 @@ msgid ""
 "By default the sales order item set on the project will be selected. In the absence of one, the last prepaid sales order item that has time remaining will be used.\n"
 "Remove the sales order item in order to make this task non billable. You can also change or remove the sales order item of each timesheet entry individually."
 msgstr ""
-"Artículo de la orden de venta en el que agregará el tiempo dedicado para ser facturado al cliente.\n"
-"De forma predeterminada, se seleccionará el artículo de la orden de venta establecido en el proyecto. Si no hay uno establecido, se utilizará el último artículo de la orden de venta prepagado que tenga tiempo restante.\n"
-"Borre el artículo de la orden de venta para hacer que esta tarea sea no facturable. También puede cambiar o borrar el artículo de la orden de venta de cada entrada de hoja de horas de forma individual."
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_sale_order_line
@@ -485,13 +541,33 @@ msgid ""
 "Sales order item that will be selected by default on the tasks and timesheets of this project, except if the employee set on the timesheets is explicitely linked to another sales order item on the project.\n"
 "It can be modified on each task and timesheet entry individually if necessary."
 msgstr ""
-"Artículo de orden de venta que se seleccionará de forma predeterminada en las tareas y hojas de horas de este proyecto, excepto si el empleado establecido en las hojas de horas está explícitamente vinculado a otro artículo de orden de venta del proyecto.\n"
-"Se puede modificar en cada tarea y entrada de hoja de horas si es necesario."
+
+#. module: industry_fsm_sale
+#. openerp-web
+#: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
+#, python-format
+msgid "Save your <b>product</b>."
+msgstr "Guarde su <b>producto</b>."
+
+#. module: industry_fsm_sale
+#: model:ir.model.fields,help:industry_fsm_sale.field_product_product__project_id
+#: model:ir.model.fields,help:industry_fsm_sale.field_product_template__project_id
+msgid ""
+"Select a billable project on which tasks can be created. This setting must "
+"be set for each company."
+msgstr ""
+"Seleccione un proyecto facturable en el que se pueden crear tareas. Esta "
+"configuración debe establecerse para cada empresa."
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_sale_line_employee_map__timesheet_product_id
 msgid "Service"
 msgstr "Servicio"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Services"
+msgstr "Servicios"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_project_task
@@ -507,7 +583,13 @@ msgstr "Recurrencia de tareas"
 #. module: industry_fsm_sale
 #: model:ir.model.fields,help:industry_fsm_sale.field_sale_order__task_id
 msgid "Task from which this quotation have been created"
-msgstr "Tareas creadas a partir de esta cotización"
+msgstr ""
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_search_fsm_inherit_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.report_project_task_user_fsm_view_search_inherit_sale
+msgid "Tasks in Overtime"
+msgstr "Tiempo extra de las tareas"
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
@@ -520,20 +602,13 @@ msgid "The material can be allowed only when the task can be billed."
 msgstr "El material solo se puede permitir cuando se puede facturar la tarea."
 
 #. module: industry_fsm_sale
-#: model:ir.model.constraint,message:industry_fsm_sale.constraint_project_project_timesheet_product_required_if_billable_and_time
+#: model:ir.model.constraint,message:industry_fsm_sale.constraint_project_project_timesheet_product_required_if_billable_and_timesheets_and_fsm_projects
 msgid ""
 "The timesheet product is required when the fsm project can be billed and "
 "timesheets are allowed."
 msgstr ""
 "El producto de la hoja de horas es necesario cuando se puede facturar el "
 "proyecto de Servicio externo y se permiten las hojas de horas."
-
-#. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/sale_order.py:0
-#, python-format
-msgid "This Sales Order has been created from Task: %s"
-msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.portal_my_task
@@ -544,9 +619,16 @@ msgstr "Tiempo y materiales"
 #: model:ir.actions.act_window,name:industry_fsm_sale.project_task_action_to_invoice_fsm
 #: model:ir.model.fields.selection,name:industry_fsm_sale.selection__report_project_task_user_fsm__invoice_status__to_invoice
 #: model:ir.ui.menu,name:industry_fsm_sale.fsm_menu_all_tasks_invoice
+#: model:project.task.type,name:industry_fsm_sale.field_service_project_stage_0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_search_fsm_inherit_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.report_project_task_user_fsm_view_search_inherit_sale
 msgid "To Invoice"
 msgstr "A facturar"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+msgid "Total Price"
+msgstr "Precio total"
 
 #. module: industry_fsm_sale
 #: model_terms:ir.actions.act_window,help:industry_fsm_sale.product_action_fsm
@@ -572,25 +654,25 @@ msgid "Upselling Opportunity"
 msgstr "Oportunidad de upselling"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Use the breadcrumbs to navigate to your <b>list of products</b>."
-msgstr "Utilice las migas de pan para ir a su <b>lista de productos</b>."
+msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Use the breadcrumbs to return to your <b>task</b>."
-msgstr "Utilice las migas de pan para volver a su <b>tarea</b>."
+msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Wait for the invoice to show up"
-msgstr "Espere a que aparezca la factura"
+msgstr ""
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__warning_message

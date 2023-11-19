@@ -22,15 +22,14 @@ class ProductLabelLayout(models.TransientModel):
     extra_html = fields.Html('Extra Content', default='')
     rows = fields.Integer(compute='_compute_dimensions')
     columns = fields.Integer(compute='_compute_dimensions')
-    pricelist_id = fields.Many2one('product.pricelist', string="Pricelist")
 
     @api.depends('print_format')
     def _compute_dimensions(self):
         for wizard in self:
             if 'x' in wizard.print_format:
                 columns, rows = wizard.print_format.split('x')[:2]
-                wizard.columns = columns.isdigit() and int(columns) or 1
-                wizard.rows = rows.isdigit() and int(rows) or 1
+                wizard.columns = int(columns)
+                wizard.rows = int(rows)
             else:
                 wizard.columns, wizard.rows = 1, 1
 
@@ -42,9 +41,7 @@ class ProductLabelLayout(models.TransientModel):
         if self.print_format == 'dymo':
             xml_id = 'product.report_product_template_label_dymo'
         elif 'x' in self.print_format:
-            xml_id = 'product.report_product_template_label_%sx%s' % (self.columns, self.rows)
-            if 'xprice' not in self.print_format:
-                xml_id += '_noprice'
+            xml_id = 'product.report_product_template_label'
         else:
             xml_id = ''
 
@@ -72,6 +69,6 @@ class ProductLabelLayout(models.TransientModel):
         xml_id, data = self._prepare_report_data()
         if not xml_id:
             raise UserError(_('Unable to find report template for %s format', self.print_format))
-        report_action = self.env.ref(xml_id).report_action(None, data=data, config=False)
+        report_action = self.env.ref(xml_id).report_action(None, data=data)
         report_action.update({'close_on_report_download': True})
         return report_action

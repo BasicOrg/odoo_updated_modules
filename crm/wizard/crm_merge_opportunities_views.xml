@@ -8,7 +8,7 @@
                 <form string="Merge Leads/Opportunities">
                     <group string="Assign opportunities to">
                         <field name="user_id" class="oe_inline"/>
-                        <field name="team_id" class="oe_inline" context="{'kanban_view_ref': 'sales_team.crm_team_view_kanban'}"/>
+                        <field name="team_id" class="oe_inline" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"/>
                     </group>
                     <group string="Select Leads/Opportunities">
                         <field name="opportunity_ids" nolabel="1">
@@ -27,7 +27,7 @@
                     </group>
                     <footer>
                         <button name="action_merge" type="object" string="Merge" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </form>
             </field>

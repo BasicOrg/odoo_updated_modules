@@ -16,6 +16,7 @@
 
         <record id="fsm_worksheet_template2_form_inherit" model="ir.ui.view">
             <field name="name">fsm.worksheet.template2.form.inherit</field>
+            <field name="type">form</field>
             <field name="model" model="ir.model" eval="obj().env.ref('industry_fsm_report.fsm_worksheet_template2').model_id.model"/>
             <field name="inherit_id" ref="industry_fsm_report.fsm_worksheet_template2_form_inherit"/>
             <field name="arch" type="xml">
@@ -24,11 +25,5 @@
                 </field>
             </field>
         </record>
-
-        <function model="worksheet.template" name="_generate_qweb_report_template">
-            <value eval="[ref('industry_fsm_report.fsm_worksheet_template2')]"/>
-            <value model="ir.ui.view" eval=" obj().env.ref('industry_fsm_sale_report.fsm_worksheet_template2_form_inherit').id"/>
-        </function>
-
     </data>
 </odoo>

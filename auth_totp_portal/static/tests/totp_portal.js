@@ -1,12 +1,13 @@
-/** @odoo-module **/
+odoo.define('auth_totp_portal.tours', function(require) {
+"use strict";
 
-import { registry } from "@web/core/registry";
-import { jsonrpc } from "@web/core/network/rpc_service";
+const tour = require('web_tour.tour');
+const ajax = require('web.ajax');
 
-registry.category("web_tour.tours").add('totportal_tour_setup', {
+tour.register('totportal_tour_setup', {
     test: true,
-    url: '/my/security',
-    steps: () => [{
+    url: '/my/security'
+}, [{
     content: "Open totp wizard",
     trigger: 'button#auth_totp_portal_enable',
 }, {
@@ -29,7 +30,7 @@ registry.category("web_tour.tours").add('totportal_tour_setup', {
     trigger: 'a:contains("Cannot scan it?")',
     run: async function(helpers) {
         const secret = this.$anchor.closest('div').find('span[name="secret"]').text();
-        const token = await jsonrpc('/totphook', {
+        const token = await ajax.jsonRpc('/totphook', 'call', {
             secret
         });
         helpers._text(helpers._get_action_values('input[name=code]'), token);
@@ -39,12 +40,12 @@ registry.category("web_tour.tours").add('totportal_tour_setup', {
     content: "Check that the button has changed",
     trigger: 'button:contains(Disable two-factor authentication)',
     run: () => {}
-}]});
+}]);
 
-registry.category("web_tour.tours").add('totportal_login_enabled', {
+tour.register('totportal_login_enabled', {
     test: true,
-    url: '/',
-    steps: () => [{
+    url: '/'
+}, [{
     content: "check that we're on the login page or go to it",
     trigger: 'input#login, a:contains(Sign in)'
 }, {
@@ -65,7 +66,7 @@ registry.category("web_tour.tours").add('totportal_login_enabled', {
     content: "input code",
     trigger: 'input[name=totp_token]',
     run: async function (helpers) {
-        const token = await jsonrpc('/totphook');
+        const token = await ajax.jsonRpc('/totphook', 'call', {});
         helpers._text(helpers._get_action_values(), token);
         // FIXME: is there a way to put the button as its own step trigger without
         //        the tour straight blowing through and not waiting for this?
@@ -73,7 +74,7 @@ registry.category("web_tour.tours").add('totportal_login_enabled', {
     }
 }, {
     content: "check we're logged in",
-    trigger: "h3:contains(My account)",
+    trigger: "h3:contains(Documents)",
     run: () => {}
 }, {
     content: "go back to security",
@@ -96,12 +97,12 @@ registry.category("web_tour.tours").add('totportal_login_enabled', {
     content: "Check that the button has changed",
     trigger: 'button:contains(Enable two-factor authentication)',
     run: () => {}
-}]});
+}]);
 
-registry.category("web_tour.tours").add('totportal_login_disabled', {
+tour.register('totportal_login_disabled', {
     test: true,
-    url: '/',
-    steps: () => [{
+    url: '/'
+}, [{
     content: "check that we're on the login page or go to it",
     trigger: 'input#login, a:contains(Sign in)'
 }, {
@@ -117,6 +118,7 @@ registry.category("web_tour.tours").add('totportal_login_disabled', {
     trigger: 'button:contains("Log in")',
 }, {
     content: "check we're logged in",
-    trigger: "h3:contains(My account)",
+    trigger: "h3:contains(Documents)",
     run: () => {}
-}]});
+}]);
+});

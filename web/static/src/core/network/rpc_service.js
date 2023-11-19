@@ -18,14 +18,11 @@ export class RPCError extends Error {
     }
 }
 
-export class ConnectionLostError extends Error {
-    constructor(url, ...args) {
-        super(`Connection to "${url}" couldn't be established or was interrupted`, ...args);
-        this.url = url;
-    }
-}
+export class ConnectionLostError extends Error {}
 
 export class ConnectionAbortedError extends Error {}
+
+export class HTTPError extends Error {}
 
 // -----------------------------------------------------------------------------
 // Main RPC method
@@ -43,12 +40,11 @@ export function makeErrorFromResponse(reponse) {
     return error;
 }
 
-let rpcId = 0;
-export function jsonrpc(url, params = {}, settings = {}) {
-    const bus = settings.bus;
+export function jsonrpc(env, rpcId, url, params, settings = {}) {
+    const bus = env.bus;
     const XHR = browser.XMLHttpRequest;
     const data = {
-        id: rpcId++,
+        id: rpcId,
         jsonrpc: "2.0",
         method: "call",
         params: params,
@@ -57,59 +53,57 @@ export function jsonrpc(url, params = {}, settings = {}) {
     let rejectFn;
     const promise = new Promise((resolve, reject) => {
         rejectFn = reject;
-        bus?.trigger("RPC:REQUEST", { data, settings });
+        if (!settings.silent) {
+            bus.trigger("RPC:REQUEST", data.id);
+        }
         // handle success
         request.addEventListener("load", () => {
             if (request.status === 502) {
                 // If Odoo is behind another server (eg.: nginx)
-                const error = new ConnectionLostError(url);
-                bus?.trigger("RPC:RESPONSE", { data, settings, error });
-                reject(error);
+                if (!settings.silent) {
+                    bus.trigger("RPC:RESPONSE", data.id);
+                }
+                reject(new ConnectionLostError());
                 return;
             }
             let params;
             try {
                 params = JSON.parse(request.response);
-            } catch {
-                // the response isn't json parsable, which probably means that the rpc request could
-                // not be handled by the server, e.g. PoolError('The Connection Pool Is Full')
-                const error = new ConnectionLostError(url);
-                bus?.trigger("RPC:RESPONSE", { data, settings, error });
-                return reject(error);
+            } catch (_) {
+                reject(
+                    new HTTPError(
+                        `server responded with invalid JSON response (HTTP${request.status}): ${request.response}`
+                    )
+                );
+                return;
             }
             const { error: responseError, result: responseResult } = params;
-            if (!params.error) {
-                bus?.trigger("RPC:RESPONSE", { data, settings, result: params.result });
+            if (!settings.silent) {
+                bus.trigger("RPC:RESPONSE", data.id);
+            }
+            if (!responseError) {
                 return resolve(responseResult);
             }
             const error = makeErrorFromResponse(responseError);
-            bus?.trigger("RPC:RESPONSE", { data, settings, error });
             reject(error);
         });
         // handle failure
         request.addEventListener("error", () => {
-            const error = new ConnectionLostError(url);
-            bus?.trigger("RPC:RESPONSE", { data, settings, error });
-            reject(error);
+            if (!settings.silent) {
+                bus.trigger("RPC:RESPONSE", data.id);
+            }
+            reject(new ConnectionLostError());
         });
         // configure and send request
         request.open("POST", url);
         request.setRequestHeader("Content-Type", "application/json");
         request.send(JSON.stringify(data));
     });
-    /**
-     * @param {Boolean} rejectError Returns an error if true. Allows you to cancel
-     *                  ignored rpc's in order to unblock the ui and not display an error.
-     */
-    promise.abort = function (rejectError = true) {
+    promise.abort = function () {
         if (request.abort) {
             request.abort();
         }
-        const error = new ConnectionAbortedError("XmlHttpRequestError abort");
-        bus?.trigger("RPC:RESPONSE", { data, settings, error });
-        if (rejectError) {
-            rejectFn(error);
-        }
+        rejectFn(new ConnectionAbortedError("XmlHttpRequestError abort"));
     };
     return promise;
 }
@@ -120,15 +114,9 @@ export function jsonrpc(url, params = {}, settings = {}) {
 export const rpcService = {
     async: true,
     start(env) {
-        /**
-         * @param {string} route
-         * @param {Object} params
-         * @param {Object} [settings]
-         * @param {boolean} settings.silent
-         * @param {XMLHttpRequest} settings.xhr
-         */
-        return function rpc(route, params = {}, settings = {}) {
-            return jsonrpc(route, params, { bus: env.bus, ...settings });
+        let rpcId = 0;
+        return function rpc(route, params = {}, settings) {
+            return jsonrpc(env, rpcId++, route, params, settings);
         };
     },
 };

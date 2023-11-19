@@ -41,7 +41,7 @@ class TestPayslipOvertime(HrWorkEntryAttendanceCommon):
             'check_out': datetime(2022, 1, 3, 20, 0, 0),
         })
         self.payslip._compute_worked_days_line_ids()
-        self.assertEqual(self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME').number_of_hours, 11)
+        self.assertEqual(self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME').number_of_hours, 12)
 
     def test_with_negative_overtime(self):
         self.env['hr.attendance'].create({
@@ -52,7 +52,7 @@ class TestPayslipOvertime(HrWorkEntryAttendanceCommon):
         self.payslip._compute_worked_days_line_ids()
         self.assertFalse(self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME'))
 
-    def test_with_overtime_calendar_contract(self):
+    def test_with_overtime_invalid_contract(self):
         self.contract.work_entry_source = 'calendar'
         self.env['hr.attendance'].create({
             'employee_id': self.employee.id,
@@ -60,7 +60,7 @@ class TestPayslipOvertime(HrWorkEntryAttendanceCommon):
             'check_out': datetime(2022, 1, 3, 20, 0, 0),
         })
         self.payslip._compute_worked_days_line_ids()
-        self.assertEqual(self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME').number_of_hours, 11)
+        self.assertFalse(self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME'))
 
     def test_overtime_parameter_percent(self):
         self.env['hr.attendance'].create({
@@ -76,13 +76,13 @@ class TestPayslipOvertime(HrWorkEntryAttendanceCommon):
         self.assertEqual(overtime_worked_days.number_of_hours * self.contract.hourly_wage * 0.5, overtime_worked_days.amount)
 
         rule_value.parameter_value = '100'
-        self.env.registry.clear_cache()
+        self.env['hr.rule.parameter'].pool._clear_cache()
         self.payslip._compute_worked_days_line_ids()
         overtime_worked_days = self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME')
         self.assertEqual(overtime_worked_days.number_of_hours * self.contract.hourly_wage * 1, overtime_worked_days.amount)
 
         rule_value.parameter_value = '15'
-        self.env.registry.clear_cache()
+        self.env['hr.rule.parameter'].pool._clear_cache()
         self.payslip._compute_worked_days_line_ids()
         overtime_worked_days = self.payslip.worked_days_line_ids.filtered(lambda w: w.code == 'OVERTIME')
         self.assertEqual(overtime_worked_days.number_of_hours * self.contract.hourly_wage * .15, overtime_worked_days.amount)

@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import logging
 import requests
-from urllib.parse import quote, urlparse
+from urllib.parse import quote
 from werkzeug.urls import url_join
-import re
 
 from odoo import models, fields, tools, _
 from odoo.exceptions import UserError
 
-_logger = logging.getLogger(__name__)
 
 class SocialLivePostLinkedin(models.Model):
     _inherit = 'social.live.post'
@@ -46,22 +43,26 @@ class SocialLivePostLinkedin(models.Model):
             for batch_linkedin_post_ids in tools.split_every(50, linkedin_post_ids):
                 endpoint = url_join(
                     self.env['social.media']._LINKEDIN_ENDPOINT,
-                    'socialMetadata?ids=List(%s)' % ','.join(map(quote, batch_linkedin_post_ids)))
+                    'organizationalEntityShareStatistics?shares=List(%s)' % ','.join(map(quote, batch_linkedin_post_ids)))
 
-                response = session.get(endpoint, headers=account._linkedin_bearer_headers(), timeout=10)
+                response = session.get(
+                    endpoint, params={'q': 'organizationalEntity', 'organizationalEntity': account.linkedin_account_urn, 'count': 50},
+                    headers=account._linkedin_bearer_headers(), timeout=10)
 
-                if not response.ok or 'results' not in response.json():
+                if response.status_code != 200 or 'elements' not in response.json():
                     account._action_disconnect_accounts(response.json())
-                    _logger.error('Error when fetching LinkedIn stats: %r.', response.text)
                     break
 
-                for urn, stats in response.json()['results'].items():
+                for stats in response.json()['elements']:
+                    urn = stats.get('share')
+                    stats = stats.get('totalShareStatistics')
+
                     if not urn or not stats or urn not in batch_linkedin_post_ids:
                         continue
 
-                    like_count = sum(like.get('count', 0) for like in stats.get('reactionSummaries', {}).values())
-                    comment_count = stats.get('commentSummary', {}).get('count', 0)
-                    linkedin_post_ids[urn].update({'engagement': like_count + comment_count})
+                    linkedin_post_ids[urn].update({
+                        'engagement': stats.get('likeCount', 0) + stats.get('commentCount', 0) + stats.get('shareCount', 0)
+                    })
 
     def _post(self):
         linkedin_live_posts = self._filter_by_media_types(['linkedin'])
@@ -73,12 +74,11 @@ class SocialLivePostLinkedin(models.Model):
         for live_post in self:
             url_in_message = self.env['social.post']._extract_url_from_message(live_post.message)
 
-            data = {
-                "author": live_post.account_id.linkedin_account_urn,
-                "commentary": self._format_to_linkedin_little_text(live_post.message),
-                "distribution": {"feedDistribution": "MAIN_FEED"},
-                "lifecycleState": "PUBLISHED",
-                "visibility": "PUBLIC",
+            share_content = {
+                "shareCommentary": {
+                    "text": live_post.message
+                },
+                "shareMediaCategory": "NONE"
             }
 
             if live_post.post_id.image_ids:
@@ -90,84 +90,86 @@ class SocialLivePostLinkedin(models.Model):
                 except UserError as e:
                     live_post.write({
                         'state': 'failed',
-                        'failure_reason': str(e)
+                        'failure_reason': e.name
                     })
                     continue
 
-                if len(images_urn) == 1:
-                    data["content"] = {"media": {"id": images_urn[0]}}
-                else:
-                    data["content"] = {
-                        "multiImage": {
-                            "images": [{"id": image_urn} for image_urn in images_urn],
-                        }
-                    }
-
+                share_content.update({
+                    "shareMediaCategory": "IMAGE",
+                    "media": [{
+                        "status": "READY",
+                        "media": image_urn
+                    } for image_urn in images_urn]
+                })
             elif url_in_message:
-                tracker_code = urlparse(url_in_message).path.split('/r/')[-1]
-                link_tracker = self.env['link.tracker'].search([
-                    ('link_code_ids.code', '=', tracker_code),
-                    ('source_id', '=', live_post.post_id.source_id.id),
-                ], limit=1)
-                original_url = link_tracker.url or url_in_message
-                data['content'] = {
-                    'article': {
-                        'source': url_in_message,
-                        'title': link_tracker.title or original_url,
-                        'description': original_url,
-                    },
+                share_content.update({
+                    "shareMediaCategory": "ARTICLE",
+                    "media": [{
+                        "status": "READY",
+                        "originalUrl": url_in_message
+                    }]
+                })
+
+            data = {
+                "author": live_post.account_id.linkedin_account_urn,
+                "lifecycleState": "PUBLISHED",
+                "specificContent": {
+                    "com.linkedin.ugc.ShareContent": share_content
+                },
+                "visibility": {
+                    "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
                 }
+            }
 
             response = requests.post(
-                url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'posts'),
+                url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'ugcPosts'),
                 headers=live_post.account_id._linkedin_bearer_headers(),
-                json=data, timeout=10)
+                json=data, timeout=5).json()
 
-            post_id = response.headers.get('x-restli-id')
-            if response.ok and post_id:
-                values = {
-                    'state': 'posted',
-                    'failure_reason': False,
-                    'linkedin_post_id': post_id,
-                }
+            response_id = response.get('id')
+            values = {
+                'state': 'posted' if response_id else 'failed',
+                'failure_reason': False
+            }
+            if response_id:
+                values['linkedin_post_id'] = response_id
             else:
-                try:
-                    response_json = response.json()
-                except Exception:
-                    response_json = {}
-                values = {
-                    'state': 'failed',
-                    'failure_reason': response_json.get('message', _('unknown')),
-                }
+                values['failure_reason'] = response.get('message', 'unknown')
 
-                if response_json.get('serviceErrorCode') == 65600:
-                    # Invalid access token
-                    self.account_id._action_disconnect_accounts(response)
+            if response.get('serviceErrorCode') == 65600:
+                # Invalid access token
+                self.account_id._action_disconnect_accounts(response)
 
             live_post.write(values)
 
     def _linkedin_upload_image(self, account_id, image_id):
         # 1 - Register your image to be uploaded
         data = {
-            "initializeUploadRequest": {
+            "registerUploadRequest": {
+                "recipes": [
+                    "urn:li:digitalmediaRecipe:feedshare-image"
+                ],
                 "owner": account_id.linkedin_account_urn,
-            },
+                "serviceRelationships": [
+                    {
+                        "relationshipType": "OWNER",
+                        "identifier": "urn:li:userGeneratedContent"
+                    }
+                ]
+            }
         }
+
         response = requests.post(
-                url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'images?action=initializeUpload'),
+                url_join(self.env['social.media']._LINKEDIN_ENDPOINT, 'assets?action=registerUpload'),
                 headers=account_id._linkedin_bearer_headers(),
-                json=data, timeout=10)
+                json=data, timeout=5).json()
 
-        if not response.ok:
-            _logger.error('Could not upload the image: %r.', response.text)
-
-        response = response.json()
-        if 'value' not in response or 'uploadUrl' not in response['value']:
+        if 'value' not in response or 'asset' not in response['value']:
             raise UserError(_("We could not upload your image, try reducing its size and posting it again (error: Failed during upload registering)."))
 
         # 2 - Upload image binary file
-        upload_url = response['value']['uploadUrl']
-        image_urn = response['value']['image']
+        upload_url = response['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl']
+        image_urn = response['value']['asset']
 
         data = image_id.with_context(bin_size=False).raw
 
@@ -176,16 +178,7 @@ class SocialLivePostLinkedin(models.Model):
 
         response = requests.request('POST', upload_url, data=data, headers=headers, timeout=15)
 
-        if not response.ok:
+        if response.status_code != 201:
             raise UserError(_("We could not upload your image, try reducing its size and posting it again."))
 
         return image_urn
-
-    def _format_to_linkedin_little_text(self, input_string):
-        """
-        Replaces the special characters `(){}<>[]_` with escaped versions of themselves, i.e. `\\(\\)\\{\\}\\<\\>\\[\\]`.
-        https://learn.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/little-text-format?view=li-lms-2023-03#text
-        """
-        pattern = r"[\(\)\<\>\{\}\[\]\_\|\*\~\#\@]"
-        output_string = re.sub(pattern, lambda match: r"\{}".format(match.group(0)), input_string)
-        return output_string

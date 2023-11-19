@@ -1,47 +1,29 @@
 /** @odoo-module **/
 
 import { formatDateTime } from "@web/core/l10n/dates";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { selectionField, SelectionField } from "../selection/selection_field";
+import { SelectionField } from "../selection/selection_field";
 
 const { DateTime } = luxon;
 
 export class TimezoneMismatchField extends SelectionField {
-    static template = "web.TimezoneMismatchField";
-    static props = {
-        ...super.props,
-        tzOffsetField: { type: String, optional: true },
-        mismatchTitle: { type: String, optional: true },
-    };
-    static defaultProps = {
-        ...super.defaultProps,
-        tzOffsetField: "tz_offset",
-        mismatchTitle: _t(
-            "Timezone Mismatch : This timezone is different from that of your browser.\nPlease, set the same timezone as your browser's to avoid time discrepancies in your system."
-        ),
-    };
-
     get mismatch() {
         const userOffset = this.props.record.data[this.props.tzOffsetField];
-        if (userOffset && this.props.record.data[this.props.name]) {
+        if (userOffset && this.props.value) {
             const offset = -new Date().getTimezoneOffset();
             let browserOffset = offset < 0 ? "-" : "+";
-            browserOffset += Math.abs(offset / 60)
-                .toFixed(0)
-                .padStart(2, "0");
-            browserOffset += Math.abs(offset % 60)
-                .toFixed(0)
-                .padStart(2, "0");
+            browserOffset += _.str.sprintf("%02d", Math.abs(offset / 60));
+            browserOffset += _.str.sprintf("%02d", Math.abs(offset % 60));
             return browserOffset !== userOffset;
-        } else if (!this.props.record.data[this.props.name]) {
+        } else if (!this.props.value) {
             return true;
         }
         return false;
     }
     get mismatchTitle() {
-        if (!this.props.record.data[this.props.name]) {
-            return _t("Set a timezone on your user");
+        if (!this.props.value) {
+            return this.env._t("Set a timezone on your user");
         }
         return this.props.mismatchTitle;
     }
@@ -51,7 +33,7 @@ export class TimezoneMismatchField extends SelectionField {
         }
         return super.options.map((option) => {
             const [value, label] = option;
-            if (value === this.props.record.data[this.props.name]) {
+            if (value === this.props.value) {
                 const offset = this.props.record.data[this.props.tzOffsetField].match(
                     /([+-])([0-9]{2})([0-9]{2})/
                 );
@@ -74,30 +56,26 @@ export class TimezoneMismatchField extends SelectionField {
     }
 }
 
-export const timezoneMismatchField = {
-    ...selectionField,
-    component: TimezoneMismatchField,
-    additionalClasses: ["d-flex"],
-    supportedOptions: [
-        ...(selectionField.supportedOptions || []),
-        {
-            label: _t("Mismatch title"),
-            name: "mismatch_title",
-            type: "string",
-        },
-        {
-            label: _t("Timezone offset field"),
-            name: "tz_offset_field",
-            type: "field",
-            availableTypes: ["char"],
-        },
-    ],
-    extractProps({ options }) {
-        const props = selectionField.extractProps(...arguments);
-        props.tzOffsetField = options.tz_offset_field;
-        props.mismatchTitle = options.mismatch_title;
-        return props;
-    },
+TimezoneMismatchField.template = "web.TimezoneMismatchField";
+TimezoneMismatchField.additionalClasses = ["d-flex"];
+TimezoneMismatchField.props = {
+    ...SelectionField.props,
+    tzOffsetField: { type: String, optional: true },
+    mismatchTitle: { type: String, optional: true },
+};
+TimezoneMismatchField.defaultProps = {
+    ...SelectionField.defaultProps,
+    tzOffsetField: "tz_offset",
+    mismatchTitle: _lt(
+        "Timezone Mismatch : This timezone is different from that of your browser.\nPlease, set the same timezone as your browser's to avoid time discrepancies in your system."
+    ),
+};
+TimezoneMismatchField.extractProps = ({ attrs }) => {
+    return {
+        ...SelectionField.extractProps({ attrs }),
+        tzOffsetField: attrs.options.tz_offset_field,
+        mismatchTitle: attrs.options.mismatch_title,
+    };
 };
 
-registry.category("fields").add("timezone_mismatch", timezoneMismatchField);
+registry.category("fields").add("timezone_mismatch", TimezoneMismatchField);

@@ -7,16 +7,13 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     point_of_sale_update_stock_quantities = fields.Selection([
-            ('closing', 'At the session closing (faster)'),
-            ('real', 'In real time (accurate but slower)'),
-            ], default='closing', string="Update quantities in stock",
+            ('closing', 'At the session closing'),
+            ('real', 'In real time (recommended)'),
+            ], default='real', string="Update quantities in stock",
             help="At the session closing: A picking is created for the entire session when it's closed\n In real time: Each order sent to the server create its own picking")
     point_of_sale_use_ticket_qr_code = fields.Boolean(
         string='Use QR code on ticket',
         help="Add a QR code on the ticket, which the user can scan to request the invoice linked to its order.")
-    point_of_sale_ticket_unique_code = fields.Boolean(
-        string='Generate a code on ticket',
-        help="Add a 5-digit code on the receipt to allow the user to request the invoice for an order on the portal.")
 
     @api.constrains('period_lock_date', 'fiscalyear_lock_date')
     def validate_period_lock_date(self):
@@ -29,11 +26,15 @@ class ResCompany(models.Model):
         for record in self:
             sessions_in_period = pos_session_model.search(
                 [
-                    ("company_id", "child_of", record.id),
+                    "&",
+                    "&",
+                    ("company_id", "=", record.id),
                     ("state", "!=", "closed"),
-                    ("start_at", "<=", record._get_user_fiscal_lock_date()),
+                    "|",
+                    ("start_at", "<=", record.period_lock_date),
+                    ("start_at", "<=", record.fiscalyear_lock_date),
                 ]
             )
             if sessions_in_period:
                 sessions_str = ', '.join(sessions_in_period.mapped('name'))
-                raise ValidationError(_("Please close all the point of sale sessions in this period before closing it. Open sessions are: %s ", sessions_str))
+                raise ValidationError(_("Please close all the point of sale sessions in this period before closing it. Open sessions are: %s ") % (sessions_str))

@@ -5,8 +5,8 @@
     'version': '1.0',
     'category': 'Human Resources/Approvals',
     'description': """
-This module adds to the approvals workflow the possibility to generate
-RFQ from an approval purchase request.
+        This module adds to the approvals workflow the possibility to generate
+        RFQ from an approval purchase request.
     """,
     'depends': ['approvals', 'purchase'],
     'data': [

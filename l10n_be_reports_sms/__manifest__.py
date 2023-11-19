@@ -3,11 +3,11 @@
 
 {
     'name': 'Belgium - Accounting Reports - SMS',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'version': '1.0',
     'category': 'Accounting/Localizations/Reporting',
     'description': """
-Bridge module between belgian accounting and SMS
+        Bridge module between belgian accounting and SMS
     """,
     'depends': [
         'l10n_be_reports', 'sms'

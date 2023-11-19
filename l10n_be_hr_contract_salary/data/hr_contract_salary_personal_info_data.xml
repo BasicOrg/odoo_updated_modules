@@ -300,8 +300,8 @@
     <record id="hr_contract_salary_personal_info_lang" model="hr.contract.salary.personal.info">
         <field name="name">Payroll Language</field>
         <field name="helper"></field>
-        <field name="res_field_id" model="ir.model.fields" eval="obj().search([('model', '=', 'hr.employee'), ('name', '=', 'lang')])"/>
-        <field name="applies_on">employee</field>
+        <field name="res_field_id" model="ir.model.fields" eval="obj().search([('model', '=', 'res.partner'), ('name', '=', 'lang')])"/>
+        <field name="applies_on">address</field>
         <field name="display_type">dropdown</field>
         <field name="position">left</field>
         <field name="info_type_id" ref="hr_contract_salary.hr_contract_salary_personal_info_type_general"/>

@@ -14,22 +14,22 @@
                                     <i>Lock specific journal entries</i>
                                 </div>
                                 <field name="period_lock_date" placeholder="Pick a date to lock"
-                                       options="{'warn_future': true}" />
+                                       options="{'datepicker': {'warn_future': true}}" />
                                 <field name="tax_lock_date" placeholder="Pick a date to lock"
-                                       options="{'warn_future': true}" />
+                                       options="{'datepicker': {'warn_future': true}}" />
                             </group>
                             <group string="Accounting Period Closing">
                                 <div class="text-muted mb-3" colspan="2">
                                     <i>Lock all journal entries</i>
                                 </div>
                                 <field name="fiscalyear_lock_date" placeholder="Pick a date to lock"
-                                       options="{'warn_future': true}" />
+                                       options="{'datepicker': {'warn_future': true}}" />
                             </group>
                         </group>
                     </sheet>
                     <footer>
                         <button string="Save" name="change_lock_date" type="object" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                </form>
             </field>

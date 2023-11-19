@@ -14,13 +14,13 @@
                             <field name="complementary_declaration"/>
                             <field name="company_partner_id" invisible="True"/>
                             <field name="partner_bank_id"/>
-                            <field name="previous_report_number" invisible="not complementary_declaration"/>
+                            <field name="previous_report_number" attrs="{'invisible': [('complementary_declaration', '=', False)]}"/>
                         </group>
                     </group>
 
                     <footer>
-                        <button string="Cancel" special="cancel" data-hotkey="x"/>
-                        <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action" data-hotkey="q"/>
+                        <button string="Cancel" special="cancel" data-hotkey="z"/>
+                        <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>
                     </footer>
                 </form>
             </field>
@@ -37,13 +37,13 @@
                             <field name="company_partner_id" invisible="True"/>
                             <field name="partner_bank_id"/>
                             <field name="complementary_declaration"/>
-                            <field name="previous_report_number" invisible="not complementary_declaration"/>
+                            <field name="previous_report_number" attrs="{'invisible': [('complementary_declaration', '=', False)]}"/>
                         </group>
                     </group>
 
                     <footer>
-                        <button string="Cancel" special="cancel" data-hotkey="x"/>
-                        <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action" data-hotkey="q"/>
+                        <button string="Cancel" special="cancel" data-hotkey="z"/>
+                        <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>
                     </footer>
                 </form>
             </field>
@@ -61,15 +61,15 @@
                             <field name="partner_bank_id"/>
                             <field name="complementary_declaration"/>
                             <field name="monthly_return"/>
-                            <field name="previous_report_number" invisible="not complementary_declaration"/>
+                            <field name="previous_report_number" attrs="{'invisible': [('complementary_declaration', '=', False)]}"/>
                             <field name="using_sii"/>
-                            <field name="exempted_from_mod_390" invisible="not exempted_from_mod_390_available"/>
+                            <field name="exempted_from_mod_390" attrs="{'invisible': [('exempted_from_mod_390_available', '=', False)]}"/>
                             <field name="exempted_from_mod_390_available" invisible="1"/>
                         </group>
                     </group>
 
                     <footer>
-                        <button string="Cancel" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" special="cancel" data-hotkey="z"/>
                         <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>
                     </footer>
                 </form>
@@ -98,7 +98,7 @@
                     </group>
 
                     <footer>
-                        <button string="Cancel" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" special="cancel" data-hotkey="z"/>
                         <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>
                     </footer>
                 </form>
@@ -134,75 +134,6 @@
                         </group>
                     </group>
 
-                    <footer>
-                        <button string="Cancel" special="cancel" data-hotkey="x"/>
-                        <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <record id="mod390_boe_wizard" model="ir.ui.view">
-            <field name="name">l10n_es_reports.aeat.boe.mod390.export.wizard.form</field>
-            <field name="model">l10n_es_reports.aeat.boe.mod390.export.wizard</field>
-            <field name="arch" type="xml">
-                <form>
-                    <group>
-                        <field name="physical_person_name"/>
-                        <field name="monthly_return"/>
-                    </group>
-                    <separator string="Principal activity"/>
-                    <group>
-                        <group>
-                            <field name="principal_activity"/>
-                        </group>
-                        <group>
-                            <field name="principal_iae_epigrafe"/>
-                        </group>
-                        <group>
-                            <field name="principal_code_activity"/>
-                        </group>
-                    </group>
-                    <separator string="Judicial person"/>
-                    <group>
-                        <group>
-                            <field name="judicial_person_name"/>
-                        </group>
-                        <group>
-                            <field name="judicial_person_nif"/>
-                        </group>
-                        <group>
-                            <field name="judicial_person_procuration_date"/>
-                        </group>
-                        <group>
-                            <field name="judicial_person_notary"/>
-                        </group>
-                        <group>
-                            <field name="is_in_tax_unit" invisible="1"/>
-                            <field name="group_number" invisible="not is_in_tax_unit"/>
-                        </group>
-                    </group>
-                    <separator string="Special Regimen"/>
-                    <group>
-                        <group>
-                            <field name="special_regime_applicable_163"/>
-                        </group>
-                        <group>
-                            <field name="special_cash_basis"/>
-                        </group>
-                    </group>
-                    <separator string="Substitute declaration"/>
-                    <group>
-                        <group>
-                            <field name="is_substitute_declaration"/>
-                        </group>
-                        <group>
-                            <field name="is_substitute_decl_by_rectif_of_quotas" invisible="not is_substitute_declaration"/>
-                        </group>
-                        <group>
-                            <field name="previous_decl_number" invisible="not is_substitute_declaration"/>
-                        </group>
-                    </group>
                     <footer>
                         <button string="Cancel" special="cancel" data-hotkey="z"/>
                         <button string="Generate BOE" class="oe_highlight" type="object" name="download_boe_action"/>

@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Employee Function">
                 <field name="name"/>
-                <field name="type_id" column_invisible="True"/>
+                <field name="type_id" invisible="1"/>
                 <field name="rule_ids"/>
                 <field name="country_id" options="{'no_create': True}"/>
             </tree>
@@ -55,7 +55,7 @@
         <field name="arch" type="xml">
             <form string="Employee Function">
             <sheet>
-                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                 <div class="oe_title">
                     <label for="name" string="Structure Name"/>
                     <h1><field name="name" placeholder="e.g. Regular Pay"/></h1>
@@ -70,19 +70,17 @@
                     </group>
                     <group>
                         <field name="report_id"/>
-                        <field name="payslip_name"/>
-                        <field name="hide_basic_on_pdf"/>
                         <field name="schedule_pay"/>
                     </group>
                 </group>
                 <notebook colspan="4">
                      <page name="salary_rules" string="Salary Rules">
-                       <field name="rule_ids" readonly="not id">
+                       <field name="rule_ids" attrs="{'readonly': [('id', '=', False)]}">
                          <tree>
                             <field name="name"/>
                             <field name="code"/>
                             <field name="category_id"/>
-                            <field name="sequence" column_invisible="True"/>
+                            <field name="sequence" invisible="1"/>
                             <field name="partner_id"/>
                          </tree>
                       </field>
@@ -125,18 +123,4 @@
             </p>
         </field>
     </record>
-
-    <record id="ir_actions_server_duplicate_structure" model="ir.actions.server">
-        <field name="name">Duplicate</field>
-        <field name="model_id" ref="model_hr_payroll_structure"/>
-        <field name="binding_model_id" ref="model_hr_payroll_structure"/>
-        <field name="binding_view_types">list</field>
-        <field name="state">code</field>
-        <field name="groups_id" eval="[(4, ref('hr_payroll.group_hr_payroll_user'))]"/>
-        <field name="code">
-for record in records:
-    record.copy()
-        </field>
-    </record>
-
 </odoo>

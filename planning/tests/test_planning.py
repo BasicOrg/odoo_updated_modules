@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details
-from datetime import datetime, time, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from freezegun import freeze_time
-from odoo.exceptions import UserError
 
 from odoo import fields
-from odoo.exceptions import ValidationError
 from odoo.tests.common import Form
-from odoo.tests import new_test_user
 
-from odoo.addons.mail.tests.common import MockEmail
 from .common import TestCommonPlanning
 
-class TestPlanning(TestCommonPlanning, MockEmail):
+class TestPlanning(TestCommonPlanning):
 
     @classmethod
     def setUpClass(cls):
@@ -27,7 +23,6 @@ class TestPlanning(TestCommonPlanning, MockEmail):
             'hours_per_day': 8.0,
             'attendance_ids': [
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 9, 'hour_to': 13, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 14, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 14, 'hour_to': 18, 'day_period': 'afternoon'}),
             ]
         })
@@ -45,35 +40,24 @@ class TestPlanning(TestCommonPlanning, MockEmail):
             'hours_per_day': 8.0,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Friday Lunch', 'dayofweek': '4', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Friday Afternoon', 'dayofweek': '4', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'})
             ]
         })
         cls.env.user.company_id.resource_calendar_id = calendar
         cls.employee_joseph.resource_calendar_id = calendar_joseph
         cls.employee_bert.resource_calendar_id = calendar_bert
-        cls.slot, cls.slot2 = cls.env['planning.slot'].create([
-            {
-                'start_datetime': datetime(2019, 6, 27, 8, 0, 0),
-                'end_datetime': datetime(2019, 6, 27, 18, 0, 0),
-            },
-            {
-                'start_datetime': datetime(2019, 6, 27, 8, 0, 0),
-                'end_datetime': datetime(2019, 6, 28, 18, 0, 0),
-            }
-        ])
+        cls.slot = cls.env['planning.slot'].create({
+            'start_datetime': datetime(2019, 6, 27, 8, 0, 0),
+            'end_datetime': datetime(2019, 6, 27, 18, 0, 0),
+        })
         cls.template = cls.env['planning.slot.template'].create({
             'start_time': 11,
             'duration': 4,
@@ -86,20 +70,14 @@ class TestPlanning(TestCommonPlanning, MockEmail):
     def test_change_percentage(self):
         self.slot.allocated_percentage = 60
         self.assertEqual(self.slot.allocated_hours, 8 * 0.60, "It should 60%% of working hours")
-        self.slot2.allocated_percentage = 60
-        self.assertEqual(self.slot2.allocated_hours, 16 * 0.60)
 
     def test_change_hours_more(self):
         self.slot.allocated_hours = 12
         self.assertEqual(self.slot.allocated_percentage, 150)
-        self.slot2.allocated_hours = 24
-        self.assertEqual(self.slot2.allocated_percentage, 150)
 
     def test_change_hours_less(self):
         self.slot.allocated_hours = 4
         self.assertEqual(self.slot.allocated_percentage, 50)
-        self.slot2.allocated_hours = 8
-        self.assertEqual(self.slot2.allocated_percentage, 50)
 
     def test_change_start(self):
         self.slot.start_datetime += relativedelta(hours=2)
@@ -239,7 +217,7 @@ class TestPlanning(TestCommonPlanning, MockEmail):
             3) Check if the start and end dates are on two days and not one.
             4) Check if the allocating hours is equal to the duration in the template.
         """
-        self.resource_bert.calendar_id = False
+        self.resource_bert.flexible_hours = True
         template_slot = self.env['planning.slot.template'].create({
             'start_time': 23,
             'duration': 3,
@@ -263,7 +241,7 @@ class TestPlanning(TestCommonPlanning, MockEmail):
         """ The purpose of this test case is to check the planning state """
         self.slot.resource_id = self.employee_bert.resource_id
         self.assertEqual(self.slot.state, 'draft', 'Planning is draft mode.')
-        self.slot.action_send()
+        self.slot.action_publish()
         self.assertEqual(self.slot.state, 'published', 'Planning is published.')
 
     def test_create_working_calendar_period(self):
@@ -285,159 +263,3 @@ class TestPlanning(TestCommonPlanning, MockEmail):
         test_week = test_week.save()
         self.assertEqual(test_week.start_datetime, datetime(2019, 6, 24, 8, 0), 'It should adjust to employee calendar: 0am -> 9pm')
         self.assertEqual(test_week.end_datetime, datetime(2019, 6, 28, 17, 0), 'It should adjust to employee calendar: 0am -> 9pm')
-
-    def test_shift_switching(self):
-        """ The purpose of this test is to check the main back-end mechanism of switching shifts between employees """
-        bert_user = new_test_user(self.env,
-                                  login='bert_user',
-                                  groups='planning.group_planning_user',
-                                  name='Bert User',
-                                  email='user@example.com')
-        self.employee_bert.user_id = bert_user.id
-        joseph_user = new_test_user(self.env,
-                                    login='joseph_user',
-                                    groups='planning.group_planning_user',
-                                    name='Joseph User',
-                                    email='juser@example.com')
-        self.employee_joseph.user_id = joseph_user.id
-
-        # Lets first try to switch a shift that is in the past - should throw an error
-        self.slot.resource_id = self.employee_bert.resource_id
-        self.assertEqual(self.slot.is_past, True, 'The shift for this test should be in the past')
-        with self.assertRaises(UserError):
-            self.slot.with_user(bert_user).action_switch_shift()
-
-        # Lets now try to switch a shift that is not ours - it should again throw an error
-        self.assertEqual(self.slot.resource_id, self.employee_bert.resource_id, 'The shift should be assigned to Bert')
-        with self.assertRaises(UserError):
-            self.slot.with_user(joseph_user).action_switch_shift()
-
-        # Lets now to try to switch a shift that is both in the future and is ours - this should not throw an error
-        test_slot = self.env['planning.slot'].create({
-            'start_datetime': datetime.now() + relativedelta(days=2),
-            'end_datetime': datetime.now() + relativedelta(days=4),
-            'state': 'published',
-            'employee_id': bert_user.employee_id.id,
-            'resource_id': self.employee_bert.resource_id.id,
-        })
-
-        with self.mock_mail_gateway():
-            self.assertEqual(test_slot.request_to_switch, False, 'Before requesting to switch, the request to switch should be False')
-            test_slot.with_user(bert_user).action_switch_shift()
-            self.assertEqual(test_slot.request_to_switch, True, 'After the switch action, the request to switch should be True')
-
-            # Lets now assign another user to the shift - this should remove the request to switch and assign the shift
-            test_slot.with_user(joseph_user).action_self_assign()
-            self.assertEqual(test_slot.request_to_switch, False, 'After the assign action, the request to switch should be False')
-            self.assertEqual(test_slot.resource_id, self.employee_joseph.resource_id, 'The shift should now be assigned to Joseph')
-
-            # Lets now create a new request and then change the start datetime of the switch - this should remove the request to switch
-            test_slot.with_user(joseph_user).action_switch_shift()
-            self.assertEqual(test_slot.request_to_switch, True, 'After the switch action, the request to switch should be True')
-            test_slot.write({'start_datetime': (datetime.now() + relativedelta(days=3)).strftime("%Y-%m-%d %H:%M:%S")})
-            self.assertEqual(test_slot.request_to_switch, False, 'After the change, the request to switch should be False')
-
-        self.assertEqual(len(self._new_mails), 1)
-        self.assertMailMailWEmails(
-            [bert_user.partner_id.email],
-            None,
-            author=joseph_user.partner_id,
-        )
-
-    def test_name_long_duration(self):
-        """ Set an absurdly high duration to ensure we validate it and get an error """
-        template_slot = self.env['planning.slot.template'].create({
-            'start_time': 9,
-            'duration': 100000,
-        })
-        with self.assertRaises(ValidationError):
-            # only try to get the name, this triggers its compute
-            template_slot.name
-
-    def test_shift_creation_from_role(self):
-        self.env.user.tz = 'Asia/Calcutta'
-        self.env.user.company_id.resource_calendar_id.tz = 'Asia/Calcutta'
-        PlanningRole = self.env['planning.role']
-        PlanningTemplate = self.env['planning.slot.template']
-
-        role_a = PlanningRole.create({'name': 'role a'})
-        role_b = PlanningRole.create({'name': 'role b'})
-
-        template_a = PlanningTemplate.create({
-            'start_time': 8,
-            'duration': 2.0,
-            'role_id': role_a.id
-        })
-        self.assertEqual(template_a.duration_days, 1, "Duration in days should be a 1 day according to resource calendar.")
-        self.assertEqual(template_a.end_time, 10.0, "End time should be 2 hours from start hours.")
-
-        template_b = PlanningTemplate.create({
-            'start_time': 8,
-            'duration': 4.0,
-            'role_id': role_b.id
-        })
-
-        slot = self.env['planning.slot'].create({'template_id': template_a.id})
-        self.assertEqual(slot.role_id.id, slot.template_autocomplete_ids.mapped('role_id').id, "Role of the slot and shift template should be same.")
-
-        slot.template_id = template_b.id
-        self.assertEqual(slot.role_id.id, slot.template_autocomplete_ids.mapped('role_id').id, "Role of the slot and shift template should be same.")
-
-    def test_manage_archived_resources(self):
-        with freeze_time("2020-04-22"):
-            self.env.user.tz = 'UTC'
-            slot_1, slot_2, slot_3 = self.env['planning.slot'].create([
-                {
-                    'resource_id': self.resource_bert.id,
-                    'start_datetime': datetime(2020, 4, 20, 8, 0),
-                    'end_datetime': datetime(2020, 4, 24, 17, 0),
-                },
-                {
-                    'resource_id': self.resource_bert.id,
-                    'start_datetime': datetime(2020, 4, 20, 8, 0),
-                    'end_datetime': datetime(2020, 4, 21, 17, 0),
-                },
-                {
-                    'resource_id': self.resource_bert.id,
-                    'start_datetime': datetime(2020, 4, 23, 8, 0),
-                    'end_datetime': datetime(2020, 4, 24, 17, 0),
-                },
-            ])
-
-            slot1_initial_end_date = slot_1.end_datetime
-            slot2_initial_end_date = slot_2.end_datetime
-
-            self.resource_bert.employee_id.action_archive()
-
-            self.assertEqual(slot_1.end_datetime, datetime.combine(fields.Date.today()+ timedelta(days=1), time.min), 'End date of the splited shift should be today')
-            self.assertNotEqual(slot_1.end_datetime, slot1_initial_end_date, 'End date should be updated')
-            self.assertEqual(slot_2.end_datetime, slot2_initial_end_date, 'End date should be the same')
-            self.assertFalse(slot_3.resource_id, 'Resource should be the False for archeived resource shifts')
-
-    def test_avoid_rounding_error_when_creating_template(self):
-        """
-        Regression test: in some odd circumstances,
-        a floating point error during the divmod conversion from float -> hours/min can lead to incorrect minutes
-        5.1 after a divmod(1) gives back minutes = 0.0999999999964 instead of 1, hence the source of error
-        """
-        template = self.env['planning.slot.template'].create({
-            'start_time': 8,
-            'duration': 5.1,  # corresponds to 5:06
-        })
-        self.assertEqual(template.start_time + template.duration, 13.1, 'Template end time should be the start + duration')
-        slot = self.env['planning.slot'].create({
-            'start_datetime': datetime(2021, 1, 1, 0, 0),
-            'end_datetime': datetime(2021, 1, 1, 23, 59),
-        })
-        slot.write({
-            'template_id': template.id,
-        })
-        self.assertEqual(slot.end_datetime.minute, 6, 'The min should be 6, just like in the template, not 5 due to rounding error')
-
-    def test_name_respect_duration(self):
-        """ The template name should follow the working hours"""
-        template_slot = self.env['planning.slot.template'].create({
-            'start_time': 9,
-            'duration': 48,
-        })
-        self.assertEqual(template_slot.name, "9 AM - 9 AM (2 days span)", 'Template name is not correct')

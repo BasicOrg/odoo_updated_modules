@@ -9,11 +9,11 @@ class HrContractSalaryResume(models.Model):
 
     def _get_available_fields(self):
         result = super()._get_available_fields()
-        return list(set(result + [('monthly_benefit', 'Nature'),
+        return result + [('monthly_benefit', 'Nature'),
                          ('monthly_cash', 'Monthly Cash'),
                          ('yearly_cash', 'Yearly Cash'),
                          ('annual_time_off', 'Annual Time Off'),
                          ('holidays', 'Extra Time Off'),
-                         ('SALARY', 'Salary')]))
+                         ('SALARY', 'Salary')]
 
     code = fields.Selection(_get_available_fields)

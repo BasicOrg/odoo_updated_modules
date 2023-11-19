@@ -1,8 +1,8 @@
 /** @odoo-module */
 
+import { SampleServer } from "@web/views/sample_server";
 import { parseDate } from "@web/core/l10n/dates";
 import { registry } from "@web/core/registry";
-import { SampleServer } from "@web/model/sample_server";
 
 /**
  * This function mocks calls to the 'get_cohort_data' method. It is

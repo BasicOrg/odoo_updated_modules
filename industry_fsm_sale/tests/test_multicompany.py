@@ -26,31 +26,6 @@ class TestMultiCompany(TestSaleCommonBase):
         cls.companyA = cls.env['res.company'].create({'name': 'test_company_A'})
         cls.companyB = cls.env['res.company'].create({'name': 'test_company_B'})
 
-        # create default accounts on company A
-        cls.account_receivable_a, cls.account_sale_a = cls.env['account.account'].create([
-            {
-                'name': 'Test Account',
-                'account_type': 'asset_receivable',
-                'code': 'TestAccountReceivable',
-                'company_id': cls.companyA.id,
-                'reconcile': True
-            }, {
-                'name': 'Product Sales',
-                'code': 'S200000',
-                'account_type': 'income',
-                'company_id': cls.companyA.id,
-                'reconcile': False,
-            },
-        ])
-
-        cls.sale_journal_a = cls.env['account.journal'].create({
-            'name': 'Sales Journal A',
-            'code': 'refA',
-            'type': 'sale',
-            'company_id': cls.companyA.id,
-            'default_account_id': cls.account_sale_a.id,
-        })
-
         cls.user_employee_company_B = mail_new_test_user(
             cls.env,
             name='Gregor Clegane Employee',
@@ -81,7 +56,7 @@ class TestMultiCompany(TestSaleCommonBase):
         cls.fsm_company_a = Project.create({
             'name': 'FSM Company A',
             'alias_name': 'fsm+companya',
-            'company_id': cls.companyA.id,
+            'company_id': cls.env.company.id,
             'is_fsm': True,
             'allow_timesheets': True,
             'allow_billable': True,
@@ -143,7 +118,7 @@ class TestMultiCompany(TestSaleCommonBase):
         task_company_id = self.task_1.company_id.id
 
         # This should not raise an error.
-        self.task_1.with_context(allowed_company_ids=[self.companyA.id, self.companyB.id]).with_company(self.companyB).action_fsm_view_material()
+        self.task_1.with_context(allowed_company_ids=[self.env.company.id, self.companyB.id], company_id=self.companyB.id).action_fsm_view_material()
 
         self.assertFalse(self.task_1.fsm_done, "Task should not be validated")
         self.assertFalse(self.task_1.sale_order_id, "Task should not be linked to a SO")
@@ -151,7 +126,7 @@ class TestMultiCompany(TestSaleCommonBase):
         so_company_id = self.task_1.sale_order_id.company_id.id
         self.assertEqual(self.task_1.sale_order_id.state, 'draft', "Sale order should not be confirmed")
         # Validating a task while in another company should not impact the propagation of the company_id to the sale order
-        self.task_1.with_context(allowed_company_ids=[self.companyA.id, self.companyB.id]).with_company(self.companyB).action_fsm_validate()
+        self.task_1.with_context(allowed_company_ids=[self.env.company.id, self.companyB.id], company_id=self.companyB.id).action_fsm_validate()
         self.assertTrue(self.task_1.fsm_done, "Task should be validated")
         self.assertEqual(self.task_1.sale_order_id.state, 'sale', "Sale order should be confirmed")
         self.assertEqual(so_company_id, task_company_id, "The company of the sale order should be the same as the one from the task")
@@ -159,7 +134,8 @@ class TestMultiCompany(TestSaleCommonBase):
         self.assertTrue(self.task_1.task_to_invoice, "Task should be invoiceable")
         invoice_ctx = self.task_1.action_create_invoice()['context']
         invoice_ctx['allowed_company_ids'] = [self.companyB.id, so_company_id]
-        invoice_wizard = self.env['sale.advance.payment.inv'].with_context(invoice_ctx).with_company(self.companyB).create({})
+        invoice_ctx['company_id'] = self.companyB.id
+        invoice_wizard = self.env['sale.advance.payment.inv'].with_context(invoice_ctx).create({})
         invoice_wizard.create_invoices()
         self.assertFalse(self.task_1.task_to_invoice, "Task should not be invoiceable")
         self.assertEqual(self.task_1.sale_order_id.invoice_ids[0].company_id.id, so_company_id, "The company of the invoice should be the same as the one from the SO")

@@ -15,23 +15,7 @@ class ResPartnerBank(models.Model):
 
     journal_id = fields.One2many(
         'account.journal', 'bank_account_id', domain=[('type', '=', 'bank')], string='Account Journal', readonly=True,
-        check_company=True,
         help="The accounting journal corresponding to this bank account.")
-    has_iban_warning = fields.Boolean(
-        compute='_compute_display_account_warning',
-        help='Technical field used to display a warning if the IBAN country is different than the holder country.',
-        store=True,
-    )
-    partner_country_name = fields.Char(related='partner_id.country_id.name')
-    has_money_transfer_warning = fields.Boolean(
-        compute='_compute_display_account_warning',
-        help='Technical field used to display a warning if the account is a transfer service account.',
-        store=True,
-    )
-    money_transfer_service = fields.Char(compute='_compute_money_transfer_service_name')
-    partner_supplier_rank = fields.Integer(related='partner_id.supplier_rank')
-    partner_customer_rank = fields.Integer(related='partner_id.customer_rank')
-    related_moves = fields.One2many('account.move', inverse_name='partner_bank_id')
 
     # Add tracking to the base fields
     bank_id = fields.Many2one(tracking=True)
@@ -39,72 +23,14 @@ class ResPartnerBank(models.Model):
     acc_number = fields.Char(tracking=True)
     acc_holder_name = fields.Char(tracking=True)
     partner_id = fields.Many2one(tracking=True)
-    user_has_group_validate_bank_account = fields.Boolean(compute='_compute_user_has_group_validate_bank_account')
-    allow_out_payment = fields.Boolean(
-        tracking=True,
-        help='Sending fake invoices with a fraudulent account number is a common phishing practice. '
-             'To protect yourself, always verify new bank account numbers, preferably by calling the vendor, as phishing '
-             'usually happens when their emails are compromised. Once verified, you can activate the ability to send money.'
-    )
+    allow_out_payment = fields.Boolean(tracking=True)
     currency_id = fields.Many2one(tracking=True)
-    lock_trust_fields = fields.Boolean(compute='_compute_lock_trust_fields')
 
     @api.constrains('journal_id')
     def _check_journal_id(self):
         for bank in self:
             if len(bank.journal_id) > 1:
                 raise ValidationError(_('A bank account can belong to only one journal.'))
-
-    @api.constrains('allow_out_payment')
-    def _check_allow_out_payment(self):
-        """ Block enabling the setting, but it can be set to false without the group. (For example, at creation) """
-        for bank in self:
-            if bank.allow_out_payment:
-                if not self.user_has_groups('account.group_validate_bank_account'):
-                    raise ValidationError(_('You do not have the right to trust or un-trust a bank account.'))
-
-    @api.depends('partner_id.country_id', 'sanitized_acc_number', 'allow_out_payment', 'acc_type')
-    def _compute_display_account_warning(self):
-        for bank in self:
-            if bank.allow_out_payment or not bank.sanitized_acc_number or bank.acc_type != 'iban':
-                bank.has_iban_warning = False
-                bank.has_money_transfer_warning = False
-                continue
-            bank_country = bank.sanitized_acc_number[:2]
-            bank.has_iban_warning = bank.partner_id.country_id and bank_country != bank.partner_id.country_id.code
-
-            bank_institution_code = bank.sanitized_acc_number[4:7]
-            bank.has_money_transfer_warning = bank_institution_code in bank._get_money_transfer_services()
-
-    @api.depends('sanitized_acc_number', 'allow_out_payment')
-    def _compute_money_transfer_service_name(self):
-        for bank in self:
-            if bank.sanitized_acc_number:
-                bank_institution_code = bank.sanitized_acc_number[4:7]
-                bank.money_transfer_service = bank._get_money_transfer_services().get(bank_institution_code, False)
-            else:
-                bank.money_transfer_service = False
-
-    def _get_money_transfer_services(self):
-        return {
-            '967': 'Wise',
-            '977': 'Paynovate',
-            '974': 'PPS EU SA',
-        }
-
-    @api.depends('acc_number')
-    def _compute_user_has_group_validate_bank_account(self):
-        user_has_group_validate_bank_account = self.user_has_groups('account.group_validate_bank_account')
-        for bank in self:
-            bank.user_has_group_validate_bank_account = user_has_group_validate_bank_account
-
-    @api.depends('allow_out_payment')
-    def _compute_lock_trust_fields(self):
-        for bank in self:
-            if not bank._origin or not bank.allow_out_payment:
-                bank.lock_trust_fields = False
-            elif bank._origin and bank.allow_out_payment:
-                bank.lock_trust_fields = True
 
     def _build_qr_code_vals(self, amount, free_communication, structured_communication, currency, debtor_partner, qr_method=None, silent_errors=True):
         """ Returns the QR-code vals needed to generate the QR-code report link to pay this account with the given parameters,
@@ -122,14 +48,14 @@ class ResPartnerBank(models.Model):
             return None
 
         self.ensure_one()
+
         if not currency:
             raise UserError(_("Currency must always be provided in order to generate a QR-code"))
 
         available_qr_methods = self.get_available_qr_methods_in_sequence()
         candidate_methods = qr_method and [(qr_method, dict(available_qr_methods)[qr_method])] or available_qr_methods
         for candidate_method, candidate_name in candidate_methods:
-            error_msg = self._get_error_messages_for_qr(candidate_method, debtor_partner, currency)
-            if not error_msg:
+            if self._eligible_for_qr_code(candidate_method, debtor_partner, currency):
                 error_message = self._check_for_qr_code_errors(candidate_method, amount, currency, debtor_partner, free_communication, structured_communication)
 
                 if not error_message:
@@ -180,7 +106,10 @@ class ResPartnerBank(models.Model):
         :param structured_communication: Structured communication to add to the payment when generating one with the QR-code
         """
         params = self._get_qr_code_generation_params(qr_method, amount, currency, debtor_partner, free_communication, structured_communication)
-        return '/report/barcode/?' + werkzeug.urls.url_encode(params) if params else None
+        if params:
+            params['type'] = params.pop('barcode_type')
+            return '/report/barcode/?' + werkzeug.urls.url_encode(params)
+        return None
 
     def _get_qr_code_base64(self, qr_method, amount, currency, debtor_partner, free_communication, structured_communication):
         """ Hook for extension, to support the different QR generation methods.
@@ -223,35 +152,26 @@ class ResPartnerBank(models.Model):
         all_available.sort(key=lambda x: x[2])
         return [(code, name) for (code, name, sequence) in all_available]
 
-    def _get_error_messages_for_qr(self, qr_method, debtor_partner, currency):
+    def _eligible_for_qr_code(self, qr_method, debtor_partner, currency, raises_error=True):
         """ Tells whether or not the criteria to apply QR-generation
         method qr_method are met for a payment on this account, in the
         given currency, by debtor_partner. This does not impeach generation errors,
         it only checks that this type of QR-code *should be* possible to generate.
-        If not, returns an adequate error message to be displayed to the user if need be.
         Consistency of the required field needs then to be checked by _check_for_qr_code_errors().
-        :returns:  None if the qr method is eligible, or the error message
         """
-        return None
+        return False
 
     def _check_for_qr_code_errors(self, qr_method, amount, currency, debtor_partner, free_communication, structured_communication):
         """ Checks the data before generating a QR-code for the specified qr_method
-        (this method must have been checked for eligbility by _get_error_messages_for_qr() first).
+        (this method must have been checked for eligbility by _eligible_for_qr_code() first).
 
         Returns None if no error was found, or a string describing the first error encountered
         so that it can be reported to the user.
         """
         return None
 
-    @api.model_create_multi
     def create(self, vals_list):
         # EXTENDS base res.partner.bank
-
-        if not self.user_has_groups('account.group_validate_bank_account'):
-            for vals in vals_list:
-                # force the allow_out_payment field to False in order to prevent scam payments on newly created bank accounts
-                vals['allow_out_payment'] = False
-
         res = super().create(vals_list)
         for account in res:
             msg = _("Bank Account %s created", account._get_html_link(title=f"#{account.id}"))
@@ -276,15 +196,6 @@ class ResPartnerBank(models.Model):
                 # Group initial values by partner_id
                 account_initial_values[account][field] = account[field]
 
-        # Some fields should not be editable based on conditions. It is enforced in the view, but not in python which
-        # leaves them vulnerable to edits via the shell/... So we need to ensure that the user has the rights to edit
-        # these fields when writing too.
-        if ('acc_number' in vals or 'partner_id' in vals) and any(account.lock_trust_fields for account in self):
-            raise UserError(_("You cannot modify the account number or partner of an account that has been trusted."))
-
-        if 'allow_out_payment' in vals and not self.user_has_groups('account.group_validate_bank_account'):
-            raise UserError(_("You do not have the rights to trust or un-trust accounts."))
-
         res = super().write(vals)
 
         # Log changes to move lines on each move
@@ -303,26 +214,3 @@ class ResPartnerBank(models.Model):
             msg = _("Bank Account %s with number %s deleted", account._get_html_link(title=f"#{account.id}"), account.acc_number)
             account.partner_id._message_log(body=msg)
         return super().unlink()
-
-    def default_get(self, fields_list):
-        if 'acc_number' not in fields_list:
-            return super().default_get(fields_list)
-
-        # When create & edit, `name` could be used to pass (in the context) the
-        # value input by the user. However, we want to set the default value of
-        # `acc_number` variable instead.
-        default_acc_number = self._context.get('default_acc_number', False) or self._context.get('default_name', False)
-        return super(ResPartnerBank, self.with_context(default_acc_number=default_acc_number)).default_get(fields_list)
-
-    @api.depends('allow_out_payment', 'acc_number', 'bank_id')
-    @api.depends_context('display_account_trust')
-    def _compute_display_name(self):
-        super()._compute_display_name()
-        if self.env.context.get('display_account_trust'):
-            for acc in self:
-                trusted_label = _('trusted') if acc.allow_out_payment else _('untrusted')
-                if acc.bank_id:
-                    name = f'{acc.acc_number} - {acc.bank_id.name} ({trusted_label})'
-                else:
-                    name = f'{acc.acc_number} ({trusted_label})'
-                acc.display_name = name

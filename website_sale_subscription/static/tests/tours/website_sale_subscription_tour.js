@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import wsTourUtils from '@website_sale/js/tours/tour_utils';
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('shop_buy_subscription_product', {
+tour.register('shop_buy_subscription_product', {
     test: true,
     url: '/shop',
-    steps: () => [
+},
+    [
         {
             content: "Search streaming write text",
             trigger: 'form input[name="search"]',
@@ -29,10 +29,10 @@ registry.category("web_tour.tours").add('shop_buy_subscription_product', {
             trigger: '#product_detail form[action^="/shop/cart/update"] #add_to_cart',
         },
         {
-            content: "See added to cart + try to add other recurrence",
+            content: "See added t o cart + try to add other recurrence",
             trigger: '.my_cart_quantity:contains("2")',
             run: function () {
-                window.location.href = '/shop';
+                window.location.href = '/@/shop';
             },
         },
         {
@@ -48,6 +48,17 @@ registry.category("web_tour.tours").add('shop_buy_subscription_product', {
             content: "Select streaming monthly",
             trigger: '.oe_product_cart:first a:contains("Streaming SUB Monthly")',
         },
-        wsTourUtils.goToCart({quantity: 2}),
+        {
+            content: "Check that we cannot add streaming monthly",
+            trigger: '#product_detail p:contains("This product has no valid combination.")',
+            run: function () {}, // it's a check
+        },
+        {
+            content: "go to cart",
+            trigger: '.my_cart_quantity:contains("2")',
+            run: function () {
+                window.location.href = '/@/shop/cart';
+            },
+        },
     ]
-});
+);

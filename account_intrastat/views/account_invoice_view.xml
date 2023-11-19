@@ -8,13 +8,13 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='fiscal_position_id']" position="after">
                     <field name="intrastat_country_id"
-                           invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')"
-                           readonly="state in ['cancel', 'posted']"
+                           attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}"
                            help="Arrival country"
                            options="{'no_create': True}"/>
                     <field name="intrastat_transport_mode_id"
-                           invisible="not intrastat_country_id or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')"
-                           readonly="state != 'draft'"
+                           attrs="{'invisible': ['|',
+                                ('intrastat_country_id', '=', False),
+                                ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}"
                            context="{'search_view_ref': 'account_intrastat.view_intrastat_code_restricted_type_search',
                            'form_view_ref': 'account_intrastat.view_intrastat_code_restricted_type_form',
                            'default_type': 'transport'}"/>
@@ -57,7 +57,7 @@
                     />
                 </xpath>
                 <xpath expr="//field[@name='line_ids']//field[@name='account_id']" position="before">
-                    <field name="intrastat_transaction_id" column_invisible="True"/>
+                    <field name="intrastat_transaction_id" invisible="1"/>
                 </xpath>
             </field>
         </record>
@@ -70,7 +70,8 @@
                 <xpath expr="//field[@name='invoice_line_ids']//field[@name='quantity']" position="before">
                     <field name="intrastat_product_origin_country_id"
                         optional="hide"
-                        options="{'no_create': True}"/>
+                        attrs="{'column_invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund'))]}"
+                        options="{'no_create_edit': True}"/>
                 </xpath>
             </field>
         </record>

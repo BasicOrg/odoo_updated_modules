@@ -4,9 +4,9 @@ import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
 import { BomOverviewSpecialLine } from "@mrp/components/bom_overview_special_line/mrp_bom_overview_special_line";
 
-patch(BomOverviewSpecialLine.prototype, {
+patch(BomOverviewSpecialLine.prototype, "mrp_subcontracting", {
     setup() {
-        super.setup();
+        this._super.apply();
         this.actionService = useService("action");
     },
 

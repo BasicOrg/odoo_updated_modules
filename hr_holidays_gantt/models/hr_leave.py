@@ -55,66 +55,51 @@ class HrLeave(models.Model):
             leaves[leave.employee_id.id].append(leave)
         return leaves
 
-    def _get_leave_warning_parameters(self, leaves, employee, date_from, date_to):
+    def _get_leave_warning(self, leaves, employee, date_from, date_to):
         loc_cache = {}
 
         def localize(date):
             if date not in loc_cache:
                 loc_cache[date] = utc.localize(date).astimezone(timezone(self.env.user.tz or 'UTC')).replace(tzinfo=None)
-            return loc_cache[date]
+            return loc_cache.get(date)
 
+        warning = ''
         periods = self._group_leaves(leaves, employee, date_from, date_to)
         periods_by_states = [list(b) for a, b in groupby(periods, key=lambda x: x['is_validated'])]
-        res = {}
+
         for periods in periods_by_states:
-            leaves_for_employee = {'name': employee.name, "leaves": []}
+            period_leaves = ''
             for period in periods:
                 dfrom = period['from']
                 dto = period['to']
+                prefix = ''
+                if period != periods[0]:
+                    if period == periods[-1]:
+                        prefix = _(' and')
+                    else:
+                        prefix = ','
+
                 if period.get('show_hours', False):
-                    leaves_for_employee['leaves'].append({
-                        "start_date": format_date(self.env, localize(dfrom)),
-                        "start_time": format_time(self.env, localize(dfrom)),
-                        "end_date": format_date(self.env, localize(dto)),
-                        "end_time": format_time(self.env, localize(dto))
-                    })
+                    period_leaves += _('%(prefix)s from the %(dfrom_date)s at %(dfrom)s to the %(dto_date)s at %(dto)s',
+                                        prefix=prefix,
+                                        dfrom_date=format_date(self.env, localize(dfrom)),
+                                        dfrom=format_time(self.env, localize(dfrom)),
+                                        dto_date=format_date(self.env, localize(dto)),
+                                        dto=format_time(self.env, localize(dto)))
                 else:
-                    leaves_for_employee['leaves'].append({
-                        "start_date": format_date(self.env, localize(dfrom)),
-                        "end_date": format_date(self.env, localize(dto)),
-                    })
-            res["validated" if periods[0].get('is_validated') else "requested"] = leaves_for_employee
-        return res
+                    period_leaves += _('%(prefix)s from the %(dfrom)s to the %(dto)s',
+                                        prefix=prefix,
+                                        dfrom=format_date(self.env, localize(dfrom)),
+                                        dto=format_date(self.env, localize(dto)))
 
-    def format_date_range_to_string(self, date_dict):
-        if len(date_dict) == 4:
-            return _('from %(start_date)s at %(start_time)s to %(end_date)s at %(end_time)s', **date_dict)
-        else:
-            return _('from %(start_date)s to %(end_date)s', **date_dict)
-
-    def _get_leave_warning(self, leaves, employee, date_from, date_to):
-        leaves_parameters = self._get_leave_warning_parameters(leaves, employee, date_from, date_to)
-        warning = ''
-        for leave_type, leaves_for_employee in leaves_parameters.items():
-            if not leaves_for_employee:
-                continue
-            if leave_type == "validated":
-                warning += _(
-                    '%(name)s is on time off %(leaves)s. \n',
-                    name=leaves_for_employee["name"],
-                    leaves=', '.join(map(self.format_date_range_to_string, leaves_for_employee["leaves"]))
-                )
-            else:
-                warning += _(
-                    '%(name)s requested time off %(leaves)s. \n',
-                    name=leaves_for_employee["name"],
-                    leaves=', '.join(map(self.format_date_range_to_string, leaves_for_employee["leaves"]))
-                )
+            time_off_type = _('is on time off') if periods[0].get('is_validated') else _('has requested time off')
+            warning += _('%(employee)s %(time_off_type)s%(period_leaves)s. \n',
+                         employee=employee.name, period_leaves=period_leaves, time_off_type=time_off_type)
         return warning
 
     def _group_leaves(self, leaves, employee_id, date_from, date_to):
         """
-            Returns all the leaves happening between `planned_date_begin` and `date_deadline`
+            Returns all the leaves happening between `planned_date_begin` and `planned_date_end`
         """
         work_times = {wk[0]: wk[1] for wk in employee_id.list_work_time_per_day(date_from, date_to)}
 
@@ -140,10 +125,8 @@ class HrLeave(models.Model):
             else:
                 dt_delta = (leave.date_to - leave.date_from)
                 number_of_days = dt_delta.days + ((dt_delta.seconds / 3600) / 24)
-            # leaves are ordered by date_from and grouped by type. When go from the batch of validated time offs to the
-            # requested ones, we need to bypass the second condition with the third one
-            if not periods or has_working_hours(periods[-1]['from'], leave.date_to) or \
-                    periods[-1]['is_validated'] != is_validated:
+
+            if not periods or has_working_hours(periods[-1]['from'], leave.date_to):
                 periods.append({'is_validated': is_validated, 'from': leave.date_from, 'to': leave.date_to, 'show_hours': number_of_days <= 1})
             else:
                 periods[-1]['is_validated'] = is_validated
@@ -156,9 +139,36 @@ class HrLeave(models.Model):
     def gantt_unavailability(self, start_date, end_date, scale, group_bys=None, rows=None):
         start_datetime = fields.Datetime.from_string(start_date)
         end_datetime = fields.Datetime.from_string(end_date)
-        employee_ids = tag_employee_rows(rows)
+        employee_ids = set()
+
+        # function to "mark" top level rows concerning employees
+        # the propagation of that item to subrows is taken care of in the traverse function below
+        def tag_employee_rows(rows):
+            for row in rows:
+                group_bys = row.get('groupedBy')
+                res_id = row.get('resId')
+                if group_bys:
+                    # if employee_id is the first grouping attribute, we mark the row
+                    if group_bys[0] == 'employee_id' and res_id:
+                        employee_id = res_id
+                        employee_ids.add(employee_id)
+                        row['employee_id'] = employee_id
+                    # else we recursively traverse the rows where employee_id appears in the group_by
+                    elif 'employee_id' in group_bys:
+                        tag_employee_rows(row.get('rows'))
+
+        tag_employee_rows(rows)
         employees = self.env['hr.employee'].browse(employee_ids)
         leaves_mapping = employees.mapped('resource_id')._get_unavailable_intervals(start_datetime, end_datetime)
+
+        # function to recursively replace subrows with the ones returned by func
+        def traverse(func, row):
+            new_row = dict(row)
+            if new_row.get('employee_id'):
+                for sub_row in new_row.get('rows'):
+                    sub_row['employee_id'] = new_row['employee_id']
+            new_row['rows'] = [traverse(func, row) for row in new_row.get('rows')]
+            return func(new_row)
 
         cell_dt = timedelta(hours=1) if scale in ['day', 'week'] else timedelta(hours=12)
 
@@ -177,32 +187,3 @@ class HrLeave(models.Model):
             return new_row
 
         return [traverse(inject_unvailabilty, row) for row in rows]
-
-def tag_employee_rows(rows):
-    """
-        Add `employee_id` key in rows and subsrows recursively if necessary
-        :return: a set of ids with all concerned employees (subrows included)
-    """
-    employee_ids = set()
-    for row in rows:
-        group_bys = row.get('groupedBy')
-        res_id = row.get('resId')
-        if group_bys:
-            # if employee_id is the first grouping attribute, we mark the row
-            if group_bys[0] == 'employee_id' and res_id:
-                employee_id = res_id
-                employee_ids.add(employee_id)
-                row['employee_id'] = employee_id
-            # else we recursively traverse the rows where employee_id appears in the group_by
-            elif 'employee_id' in group_bys:
-                employee_ids.update(tag_employee_rows(row.get('rows')))
-    return employee_ids
-
-# function to recursively replace subrows with the ones returned by func
-def traverse(func, row):
-    new_row = dict(row)
-    if new_row.get('employee_id'):
-        for sub_row in new_row.get('rows'):
-            sub_row['employee_id'] = new_row['employee_id']
-    new_row['rows'] = [traverse(func, row) for row in new_row.get('rows')]
-    return func(new_row)

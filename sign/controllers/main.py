@@ -2,18 +2,15 @@
 
 import base64
 import io
-import zipfile
 import logging
 import mimetypes
 import re
 
 from PyPDF2 import PdfFileReader
 
-from odoo import http, models, tools, Command, _, fields
+from odoo import http, models, tools, Command, _
 from odoo.http import request, content_disposition
-from odoo.tools import consteq
 from odoo.addons.iap.tools import iap_tools
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger()
 
@@ -24,22 +21,17 @@ class Sign(http.Controller):
         sign_request = http.request.env['sign.request'].sudo().browse(sign_request_id).exists()
         if not sign_request:
             return request.render('sign.deleted_sign_request')
-        current_request_item = sign_request.request_item_ids.filtered(lambda r: consteq(r.access_token, token))
+        current_request_item = sign_request.request_item_ids.filtered(lambda r: r.access_token == token)
         if not current_request_item and sign_request.access_token != token:
             return request.not_found()
 
         sign_item_types = http.request.env['sign.item.type'].sudo().search_read([])
-        if not sign_item_types:
-            raise UserError(_("Unable to sign the document due to missing required data. Please contact an administrator."))
 
         # Currently only Signature, Initials, Text are allowed to be added while signing
-        item_type_signature = request.env.ref('sign.sign_item_type_signature', raise_if_not_found=False)
-        item_type_initial = request.env.ref('sign.sign_item_type_initial', raise_if_not_found=False)
-        item_type_text = request.env.ref('sign.sign_item_type_text', raise_if_not_found=False)
         edit_while_signing_allowed_type_ids = {
-            item_type_signature and item_type_signature.id,
-            item_type_initial and item_type_initial.id,
-            item_type_text and item_type_text.id,
+            request.env.ref('sign.sign_item_type_signature').id,
+            request.env.ref('sign.sign_item_type_initial').id,
+            request.env.ref('sign.sign_item_type_text').id,
         }
         for item_type in sign_item_types:
             item_type['edit_while_signing_allowed'] = item_type['id'] in edit_while_signing_allowed_type_ids
@@ -67,8 +59,8 @@ class Sign(http.Controller):
                 on the signer localisation.
                 """
                 current_request_item.write({
-                    'latitude': request.geoip.location.latitude or 0.0,
-                    'longitude': request.geoip.location.longitude or 0.0,
+                    'latitude': request.geoip.get('latitude', 0.0),
+                    'longitude': request.geoip.get('longitude', 0.0),
                 })
 
         item_values = {}
@@ -92,7 +84,7 @@ class Sign(http.Controller):
             'token': token,
             'nbComments': len(sign_request.message_ids.filtered(lambda m: m.message_type == 'comment')),
             'isPDF': (sign_request.template_id.attachment_id.mimetype.find('pdf') > -1),
-            'webimage': re.match('image.*(gif|jpe|jpg|png|webp)', sign_request.template_id.attachment_id.mimetype),
+            'webimage': re.match('image.*(gif|jpe|jpg|png)', sign_request.template_id.attachment_id.mimetype),
             'hasItems': len(sign_request.template_id.sign_item_ids) > 0,
             'sign_items': sign_request.template_id.sign_item_ids,
             'item_values': item_values,
@@ -103,8 +95,8 @@ class Sign(http.Controller):
             'readonly': not (current_request_item and current_request_item.state == 'sent' and sign_request.state in ['sent', 'shared']),
             'sign_item_types': sign_item_types,
             'sign_item_select_options': sign_request.template_id.sign_item_ids.mapped('option_ids'),
+            'refusal_allowed': sign_request.refusal_allowed and sign_request.state == 'sent',
             'portal': post.get('portal'),
-            'company_id': (sign_request.communication_company_id or sign_request.create_uid.company_id).id,
         }
 
     # -------------
@@ -124,18 +116,14 @@ class Sign(http.Controller):
             return request.not_found()
         return request.redirect('/sign/document/mail/%s/%s' % (sign_request_item.sign_request_id.id, sign_request_item.access_token))
 
-    @http.route(["/sign/document/mail/<int:request_id>/<token>"], type='http', auth='public', website=True)
-    def sign_document_from_mail(self, request_id, token, **post):
-        sign_request = request.env['sign.request'].sudo().browse(request_id)
-        if not sign_request or sign_request.validity and sign_request.validity < fields.Date.today():
+    @http.route(["/sign/document/mail/<int:id>/<token>"], type='http', auth='public')
+    def sign_document_from_mail(self, id, token):
+        sign_request = request.env['sign.request'].sudo().browse(id)
+        if not sign_request:
             return http.request.render('sign.deleted_sign_request')
-        current_request_item = sign_request.request_item_ids.filtered(lambda r: consteq(r.access_token, token))
-
-        if sign_request.state != 'shared' and not current_request_item._validate_expiry(post.get('timestamp'), post.get('exp')):
-            return request.render('sign.sign_request_expired', {'resend_expired_link': '/sign/resend_expired_link/%s/%s' % (request_id, token)}, status=403)
-
+        current_request_item = sign_request.request_item_ids.filtered(lambda r: r.access_token == token)
         current_request_item.access_via_link = True
-        return request.redirect('/sign/document/%s/%s' % (request_id, token))
+        return request.redirect('/sign/document/%s/%s' % (id, token))
 
     @http.route(["/sign/document/<int:sign_request_id>/<token>"], type='http', auth='public', website=True)
     def sign_document_public(self, sign_request_id, token, **post):
@@ -148,9 +136,9 @@ class Sign(http.Controller):
             http.request.env.context = dict(http.request.env.context, lang=current_request_item.partner_id.lang)
         return http.request.render('sign.doc_sign', document_context)
 
-    @http.route(['/sign/download/<int:request_id>/<token>/<download_type>'], type='http', auth='public')
-    def download_document(self, request_id, token, download_type, **post):
-        sign_request = http.request.env['sign.request'].sudo().browse(request_id).exists()
+    @http.route(['/sign/download/<int:id>/<token>/<download_type>'], type='http', auth='public')
+    def download_document(self, id, token, download_type, **post):
+        sign_request = http.request.env['sign.request'].sudo().browse(id).exists()
         if not sign_request or sign_request.access_token != token:
             return http.request.not_found()
 
@@ -160,7 +148,7 @@ class Sign(http.Controller):
             pdf_content, __ = report_action._render_qweb_pdf(
                 'sign.action_sign_request_print_logs',
                 sign_request.id,
-                data={'format_date': tools.format_date, 'company_id': sign_request.communication_company_id}
+                data={'format_date': tools.format_date}
             )
             pdfhttpheaders = [
                 ('Content-Type', 'application/pdf'),
@@ -174,13 +162,13 @@ class Sign(http.Controller):
             document = sign_request.completed_document
             if not document:
                 if sign_request._check_is_encrypted():# if the document is completed but the document is encrypted
-                    return request.redirect('/sign/password/%(request_id)s/%(access_token)s' % {'request_id': request_id, 'access_token': token})
+                    return request.redirect('/sign/password/%(request_id)s/%(access_token)s' % {'request_id': id, 'access_token': token})
                 sign_request._generate_completed_document()
                 document = sign_request.completed_document
 
         if not document:
             # Shouldn't it fall back on 'origin' download type?
-            return request.redirect("/sign/document/%(request_id)s/%(access_token)s" % {'request_id': request_id, 'access_token': token})
+            return request.redirect("/sign/document/%(request_id)s/%(access_token)s" % {'request_id': id, 'access_token': token})
 
         # Avoid to have file named "test file.pdf (V2)" impossible to open on Windows.
         # This line produce: test file (V2).pdf
@@ -194,32 +182,6 @@ class Sign(http.Controller):
                 ('Content-Disposition', content_disposition(filename))
             ]
         )
-
-    @http.route(['/sign/download/zip/<ids>'], type='http', auth='user')
-    def download_multiple_documents(self, ids, **post):
-        """ If the user has access to all the requests, create a zip archive of all the documents requested and
-        return it.
-        The document each are in a folder named by their request ID to ensure unicity of files.
-        """
-        if not request.env.user.has_group('sign.group_sign_user'):
-            return request.render(
-                'http_routing.http_error',
-                {'status_code': _('Oops'),
-                 'status_message': _('You do not have access to these documents, please contact a Sign Administrator.')})
-
-        sign_requests = http.request.env['sign.request'].browse(int(i) for i in ids.split(',')).exists()
-
-        with io.BytesIO() as buffer:
-            with zipfile.ZipFile(buffer, 'w', compression=zipfile.ZIP_DEFLATED) as zipfile_obj:
-                for sign_request in sign_requests:
-                    zipfile_obj.writestr(f'{sign_request.id}/{sign_request.reference}', base64.b64decode(sign_request.completed_document))
-            content = buffer.getvalue()
-
-        return request.make_response(content, headers=[
-            ('Content-Disposition', http.content_disposition('documents.zip')),
-            ('Content-Type', 'application/zip'),
-            ('Content-Length', len(content)),
-        ])
 
     @http.route(['/sign/password/<int:sign_request_id>/<token>'], type='http', auth='public')
     def check_password_page(self, sign_request_id, token, **post):
@@ -246,34 +208,12 @@ class Sign(http.Controller):
         request_item.sign_request_id._send_completed_document()
         return request.redirect('/sign/document/%(request_id)s/%(access_token)s' % {'request_id': sign_request_id, 'access_token': token})
 
-    @http.route(['/sign/resend_expired_link/<int:request_id>/<token>'], type='http', auth='public', website=True)
-    def resend_expired_link(self, request_id, token):
-        sign_request = request.env['sign.request'].sudo().browse(request_id)
-        if not sign_request:
-            return http.request.render('sign.deleted_sign_request')
-        current_request_item = sign_request.request_item_ids.filtered(lambda r: consteq(r.access_token, token))
-
-        current_request_item.send_signature_accesses()
-
-        return request.render('sign.sign_request_expired', {
-            'state': 'sent',
-            'resend_expired_link': '/sign/resend_expired_link/%s/%s' % (request_id, token),
-            'email': current_request_item.signer_email,
-        })
-
     # -------------
     #  JSON Routes
     # -------------
-    @http.route(["/sign/get_document/<int:request_id>/<token>"], type='json', auth='user')
-    def get_document(self, request_id, token):
-        context = self.get_document_qweb_context(request_id, token)
-        return {
-            'html': request.env['ir.qweb']._render('sign._doc_sign', context),
-            'context': {
-                'refusal_allowed': context['current_request_item'] and context['current_request_item'].state == 'sent' and context['sign_request'].state == 'sent',
-                'sign_request_token': context['sign_request'].access_token,
-            }
-        }
+    @http.route(["/sign/get_document/<int:id>/<token>"], type='json', auth='user')
+    def get_document(self, id, token):
+        return http.Response(template='sign._doc_sign', qcontext=self.get_document_qweb_context(id, token)).render()
 
     @http.route(["/sign/update_user_signature"], type="json", auth="user")
     def update_signature(self, sign_request_id, role, signature_type=None, datas=None, frame_datas=None):
@@ -296,9 +236,9 @@ class Sign(http.Controller):
             pIDs.append(existing.id if existing else ResPartner.create({'name': p[0], 'email': p[1]}).id)
         return pIDs
 
-    @http.route(['/sign/send_public/<int:request_id>/<token>'], type='json', auth='public')
-    def make_public_user(self, request_id, token, name=None, mail=None):
-        sign_request = http.request.env['sign.request'].sudo().search([('id', '=', request_id), ('access_token', '=', token)])
+    @http.route(['/sign/send_public/<int:id>/<token>'], type='json', auth='public')
+    def make_public_user(self, id, token, name=None, mail=None):
+        sign_request = http.request.env['sign.request'].sudo().search([('id', '=', id), ('access_token', '=', token)])
         if not sign_request or len(sign_request.request_item_ids) != 1 or sign_request.request_item_ids.partner_id:
             return False
 
@@ -318,10 +258,10 @@ class Sign(http.Controller):
         return {"requestID": new_sign_request.id, "requestToken": new_sign_request.access_token, "accessToken": new_sign_request.request_item_ids[0].access_token}
 
     @http.route([
-        '/sign/send-sms/<int:request_id>/<token>/<phone_number>',
+        '/sign/send-sms/<int:id>/<token>/<phone_number>',
         ], type='json', auth='public')
-    def send_sms(self, request_id, token, phone_number):
-        request_item = http.request.env['sign.request.item'].sudo().search([('sign_request_id', '=', request_id), ('access_token', '=', token), ('state', '=', 'sent')], limit=1)
+    def send_sms(self, id, token, phone_number):
+        request_item = http.request.env['sign.request.item'].sudo().search([('sign_request_id', '=', id), ('access_token', '=', token), ('state', '=', 'sent')], limit=1)
         if not request_item:
             return False
         if request_item.role_id.auth_method == 'sms':
@@ -351,7 +291,7 @@ class Sign(http.Controller):
                     'sms': True
                 }
             request_item_sudo.sign_request_id._message_log(
-                body=_('%s validated the signature by SMS with the phone number %s.', request_item_sudo.partner_id.display_name, request_item_sudo.sms_number)
+                body=_('%s validated the signature by SMS with the phone number %s.') % (request_item_sudo.partner_id.display_name, request_item_sudo.sms_number)
             )
             return {'success': True}
         return {'success': False}
@@ -367,7 +307,7 @@ class Sign(http.Controller):
             ('state', '=', 'sent')
         ], limit=1)
 
-        if not request_item_sudo or request_item_sudo.sign_request_id.validity and request_item_sudo.sign_request_id.validity < fields.Date.today():
+        if not request_item_sudo:
             return {'success': False}
 
         result = {'success': True}
@@ -391,6 +331,7 @@ class Sign(http.Controller):
                 ("sign_request_id", "=", sign_request_id),
                 ("access_token", "=", token),
                 ("state", "=", "sent"),
+                ("sign_request_id.refusal_allowed", "=", True),
             ],
             limit=1,
         )
@@ -436,9 +377,9 @@ class Sign(http.Controller):
         old_pdf = PdfFileReader(io.BytesIO(base64.b64decode(template_id.attachment_id.datas)), strict=False, overwriteWarnings=False)
         return True if old_pdf.isEncrypted else False
 
-    @http.route(['/sign/save_location/<int:request_id>/<token>'], type='json', auth='public')
-    def save_location(self, request_id, token, latitude=0, longitude=0):
-        sign_request_item = http.request.env['sign.request.item'].sudo().search([('sign_request_id', '=', request_id), ('access_token', '=', token)], limit=1)
+    @http.route(['/sign/save_location/<int:id>/<token>'], type='json', auth='public')
+    def save_location(self, id, token, latitude=0, longitude=0):
+        sign_request_item = http.request.env['sign.request.item'].sudo().search([('sign_request_id', '=', id), ('access_token', '=', token)], limit=1)
         sign_request_item.write({'latitude': latitude, 'longitude': longitude})
 
     @http.route("/sign/render_assets_pdf_iframe", type="json", auth="public")
@@ -476,9 +417,7 @@ class Sign(http.Controller):
         return warnings
 
     @http.route("/sign/check_iap_credits", type="json", auth="user")
-    def check_iap_credits(self, context=None):
-        if context:
-            request.update_context(**context)
+    def check_iap_credits(self):
         warnings = self.get_iap_credit_warnings()
         if warnings:
             return {
@@ -487,74 +426,3 @@ class Sign(http.Controller):
                 })
             }
         return {}
-
-    @http.route(['/sign/sign_request_state/<int:request_id>/<token>'], type='json', auth='public')
-    def get_sign_request_state(self, request_id, token):
-        """
-        Returns the state of a sign request.
-        :param request_id: id of the request
-        :param token: access token of the request
-        :return: state of the request
-        """
-        sign_request = request.env['sign.request'].sudo().browse(request_id).exists()
-        if not sign_request or not consteq(sign_request.access_token, token):
-            return http.request.not_found()
-        return sign_request.state
-
-    @http.route(['/sign/sign_request_items'], type='json', auth='user')
-    def get_sign_request_items(self, request_id, token):
-        """
-        Finds up to 3 most important sign request items for the current user to sign,
-        after the user has just completed one.
-        :param request_id: id of the completed sign request
-        :param token: access token of the request
-        :return: list of dicts describing sign request items for the Thank You dialog
-        """
-        sign_request = request.env['sign.request'].browse(request_id).sudo()
-        if not sign_request or not consteq(sign_request.access_token, token):
-            return http.request.not_found()
-        uid = sign_request.create_uid.id
-        items = request.env['sign.request.item'].sudo().search_read(
-            domain=[
-                ('partner_id', '=', request.env.user.partner_id.id),
-                ('state', '=', 'sent'),
-                ('ignored', '=', False),
-            ],
-            fields=['access_token', 'sign_request_id', 'create_uid', 'create_date'],
-            order='create_date DESC',
-            limit=20,
-        )
-        items.sort(key=lambda item: (0 if item['create_uid'] and uid == item['create_uid'][0] else 1))
-        items = items[:3]
-        return [{
-            'id': item['id'],
-            'token': item['access_token'],
-            'requestId': item['sign_request_id'][0],
-            'name': item['sign_request_id'][1],
-            'userId': item['create_uid'][0],
-            'user': item['create_uid'][1],
-            'date': item['create_date'].date(),
-        } for item in items]
-
-    @http.route(['/sign/ignore_sign_request_item/<int:item_id>/<token>'], type='json', auth='user')
-    def ignore_sign_request_item(self, item_id, token):
-        """
-        Sets the state of a sign request item to "ignored".
-        :param item_id: id of the item
-        :param token: access token of the item
-        :return: bool (whether the item was successfully accessed)
-        """
-        sign_request_item = request.env['sign.request.item'].sudo().browse(item_id).exists()
-        if not consteq(sign_request_item.access_token, token):
-            return http.request.not_found()
-        if not sign_request_item:
-            return False
-        sign_request_item.ignored = True
-        return True
-
-    @http.route(['/sign/sign_ignore/<int:item_id>/<token>'], type='http', auth='public')
-    def ignore_sign_request_item_from_mail(self, item_id, token):
-        if self.ignore_sign_request_item(item_id, token):
-            return http.request.render('sign.ignore_sign_request_item')
-        else:
-            return http.request.not_found()

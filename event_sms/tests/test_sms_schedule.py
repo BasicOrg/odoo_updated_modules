@@ -30,6 +30,7 @@ class TestSMSSchedule(EventCase, SMSCase):
         })
 
         cls.test_event = cls.env['event.event'].create({
+            'auto_confirm': True,
             'date_begin': fields.Datetime.to_string(datetime.today() + timedelta(days=1)),
             'date_end': fields.Datetime.to_string(datetime.today() + timedelta(days=15)),
             'date_tz': 'Europe/Brussels',
@@ -60,7 +61,7 @@ class TestSMSSchedule(EventCase, SMSCase):
         # check subscription scheduler
         sub_scheduler = self.env['event.mail'].search([('event_id', '=', test_event.id), ('interval_type', '=', 'after_sub')])
         self.assertEqual(len(sub_scheduler), 1)
-        self.assertEqual(sub_scheduler.scheduled_date, test_event.create_date.replace(microsecond=0), 'event: incorrect scheduled date for checking controller')
+        self.assertEqual(sub_scheduler.scheduled_date, test_event.create_date, 'event: incorrect scheduled date for checking controller')
 
         # verify that subscription scheduler was auto-executed after each registration
         self.assertEqual(len(sub_scheduler.mail_registration_ids), 3)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.tests.common import BaseCase, TransactionCase
+from odoo.tests.common import BaseCase
 from odoo.tools import Query
 
 
@@ -50,12 +50,12 @@ class QueryTestCase(BaseCase):
         alias = query.left_join("product_template__categ_id", "user_id", "res_user", "id", "user_id")
         self.assertEqual(alias, 'product_template__categ_id__user_id')
         # additional implicit join
-        query.add_table('account_account')
+        query.add_table('account.account')
         query.add_where("product_category.expense_account_id = account_account.id")
 
         from_clause, where_clause, where_params = query.get_sql()
         self.assertEqual(from_clause,
-            '"product_product", "product_template", "account_account" JOIN "product_category" AS "product_template__categ_id" ON ("product_template"."categ_id" = "product_template__categ_id"."id") LEFT JOIN "res_user" AS "product_template__categ_id__user_id" ON ("product_template__categ_id"."user_id" = "product_template__categ_id__user_id"."id")')
+            '"product_product", "product_template", "account.account" JOIN "product_category" AS "product_template__categ_id" ON ("product_template"."categ_id" = "product_template__categ_id"."id") LEFT JOIN "res_user" AS "product_template__categ_id__user_id" ON ("product_template__categ_id"."user_id" = "product_template__categ_id__user_id"."id")')
         self.assertEqual(where_clause, "product_product.template_id = product_template.id AND product_category.expense_account_id = account_account.id")
 
     def test_raise_missing_lhs(self):
@@ -99,32 +99,3 @@ class QueryTestCase(BaseCase):
         query.join('foo', 'bar_id', 'SELECT id FROM foo', 'id', 'bar')
         from_clause, where_clause, where_params = query.get_sql()
         self.assertEqual(from_clause, '"foo" JOIN (SELECT id FROM foo) AS "foo__bar" ON ("foo"."bar_id" = "foo__bar"."id")')
-
-
-class TestQuery(TransactionCase):
-    def test_auto(self):
-        model = self.env['res.partner.category']
-        query = model._search([])
-        self.assertIsInstance(query, Query)
-
-        ids = list(query)
-        self.assertGreater(len(ids), 1)
-
-    def test_records_as_query(self):
-        records = self.env['res.partner.category']
-        query = records._as_query()
-        self.assertEqual(list(query), records.ids)
-        self.cr.execute(*query.select())
-        self.assertEqual([row[0] for row in self.cr.fetchall()], records.ids)
-
-        records = self.env['res.partner.category'].search([])
-        query = records._as_query()
-        self.assertEqual(list(query), records.ids)
-        self.cr.execute(*query.select())
-        self.assertEqual([row[0] for row in self.cr.fetchall()], records.ids)
-
-        records = records.browse(reversed(records.ids))
-        query = records._as_query()
-        self.assertEqual(list(query), records.ids)
-        self.cr.execute(*query.select())
-        self.assertEqual([row[0] for row in self.cr.fetchall()], records.ids)

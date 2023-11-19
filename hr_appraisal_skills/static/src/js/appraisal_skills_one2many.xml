@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
-    <t t-name="hr_appraisal_skills.AppraisalSkillsListRenderer" t-inherit-mode="primary" t-inherit="hr_skills.SkillsListRenderer">
+    <t t-name="hr_appraisal_skills.AppraisalSkillsListRenderer" owl="1" t-inherit-mode="primary" t-inherit="hr_skills.SkillsListRenderer">
         <xpath expr="//table" position="attributes">
             <attribute name="t-attf-class" add="{{ props.showSampleData ? 'o_appraisal_blur' : '' }}" separator=" "/>
         </xpath>
@@ -9,16 +9,16 @@
             <attribute name="style"/>
         </xpath>
 
-        <xpath expr="//div[@name='skills_available']//button" position="replace">
-            <button t-on-click="props.onAdd" class="btn btn-secondary btn-sm" role="button" t-if="isEditable">
-                Add new skills
-            </button>
+        <xpath expr="//t[@t-if='!showTable']" position="replace">
+            <div class="ms-4 mt-4">
+                <button t-on-click="props.onAdd" class="btn btn-secondary btn-sm" role="button" t-if="isEditable">
+                    Add new skills
+                </button>
+            </div>
         </xpath>
-
-        <xpath expr="//div[@name='skills_header']" position="replace"/>
     </t>
 
-    <t t-name="hr_appraisal_skills.AppraisalSkillsListRenderer.Rows" t-inherit-mode="primary" t-inherit="hr_skills.SkillsListRenderer.Rows">
+    <t t-name="hr_appraisal_skills.AppraisalSkillsListRenderer.Rows" owl="1" t-inherit-mode="primary" t-inherit="hr_skills.SkillsListRenderer.Rows">
         <xpath expr="//t[@t-as='skill_group']" position="after">
             <t t-if="props.showSampleData">
                 <t t-foreach="sampleRecords" t-as="record" t-key="record_index">

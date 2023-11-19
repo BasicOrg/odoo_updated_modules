@@ -3,17 +3,16 @@
 # 	* website_helpdesk_slides
 # 
 # Translators:
-# Thi Huong Nguyen, 2023
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,31 +20,38 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: website_helpdesk_slides
-#. odoo-python
-#: code:addons/website_helpdesk_slides/models/slide_channel.py:0
-#, python-format
-msgid "%(name)s's Helpdesk Teams"
-msgstr ""
-
-#. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.search_result
 msgid ", by"
-msgstr ", theo"
+msgstr ", bởi"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
 msgid "<i class=\"fa fa-2x fa-mortar-board\" title=\"eLearning Course\"/>"
-msgstr "<i class=\"fa fa-2x fa-mortar-board\" title=\"Khoá học Học trực tuyến\"/>"
+msgstr ""
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.search_result
 msgid "<i class=\"fa fa-2x fa-mortar-board\" title=\"eLearning\"/>"
-msgstr "<i class=\"fa fa-2x fa-mortar-board\" title=\"Học trực tuyến\"/>"
+msgstr ""
 
 #. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.view_slide_channel_form_inherit_website_helpdesk_slides
-msgid "<span class=\"o_stat_text\">Helpdesk Teams</span>"
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid ""
+"<i class=\"fa fa-3x rounded bg-o-color-5 m-3 fa-mortar-board fa-3x rounded "
+"bg-o-color-5 m-3\">​</i>"
+msgstr ""
+
+#. module: website_helpdesk_slides
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid ""
+"<span style=\"font-size: 18px;\">Level up your skills with training videos "
+"and tutorials</span>"
+msgstr ""
+
+#. module: website_helpdesk_slides
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
+msgid "<span style=\"font-weight: bolder; font-size: 18px;\">Courses</span>"
 msgstr ""
 
 #. module: website_helpdesk_slides
@@ -54,8 +60,6 @@ msgid ""
 "Comments\n"
 "                    | <i class=\"fa fa-folder-open-o\"/>"
 msgstr ""
-"Bình luận\n"
-"                    | <i class=\"fa fa-folder-open-o\"/>"
 
 #. module: website_helpdesk_slides
 #: model:ir.model,name:website_helpdesk_slides.model_slide_channel
@@ -63,54 +67,21 @@ msgid "Course"
 msgstr "Khóa học"
 
 #. module: website_helpdesk_slides
-#. odoo-python
 #: code:addons/website_helpdesk_slides/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__website_slide_channel_ids
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
 #, python-format
 msgid "Courses"
 msgstr "Khóa học"
 
 #. module: website_helpdesk_slides
+#: model:ir.model,name:website_helpdesk_slides.model_helpdesk_team
+msgid "Helpdesk Team"
+msgstr "Nhóm Helpdesk"
+
+#. module: website_helpdesk_slides
 #: model:ir.model.fields,help:website_helpdesk_slides.field_helpdesk_team__website_slide_channel_ids
 msgid ""
-"Customers will see only the content from chosen courses in the help center. "
-"If you want all courses to be accessible, just leave the field empty. "
-"Alternatively, you can make courses private to restrict this feature to "
-"internal users."
-msgstr ""
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
-msgid "Documents"
-msgstr "Tài liệu"
-
-#. module: website_helpdesk_slides
-#: model:ir.model,name:website_helpdesk_slides.model_helpdesk_team
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_slide_channel__helpdesk_team_ids
-msgid "Helpdesk Team"
-msgstr "Đội ngũ hỗ trợ"
-
-#. module: website_helpdesk_slides
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_slide_channel__helpdesk_team_count
-msgid "Helpdesk Team Count"
-msgstr ""
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
-msgid ""
-"Hours to Complete\n"
-"                    |"
-msgstr ""
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
-msgid "Lessons"
-msgstr "Bài học"
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Level up your skills with our training videos and tutorials"
+"In the help center, customers will only be able to see the selected courses."
 msgstr ""
 
 #. module: website_helpdesk_slides
@@ -119,8 +90,6 @@ msgid ""
 "Likes\n"
 "                    |"
 msgstr ""
-"Thích\n"
-"                    |"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
@@ -128,37 +97,25 @@ msgid ""
 "Members\n"
 "                    |"
 msgstr ""
-"Thành viên\n"
-"                    |"
 
 #. module: website_helpdesk_slides
-#: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__website_top_channels
-msgid "Most Popular Courses"
-msgstr ""
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Most popular"
-msgstr ""
-
-#. module: website_helpdesk_slides
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Quick Links"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.channel_search_result
+msgid "Reviews"
+msgstr "Đánh giá"
 
 #. module: website_helpdesk_slides
 #: model:ir.model.fields,field_description:website_helpdesk_slides.field_helpdesk_team__show_knowledge_base_slide_channel
 msgid "Show Knowledge Base Slide Channel"
-msgstr "Hiển thị kênh slide kho kiến thức"
+msgstr ""
 
 #. module: website_helpdesk_slides
 #: model:ir.model,name:website_helpdesk_slides.model_slide_slide
 msgid "Slides"
-msgstr "Slide"
+msgstr "Bài viết"
 
 #. module: website_helpdesk_slides
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_slides.knowledge_base_slides_card
-msgid "Take courses"
+msgid "Take Courses"
 msgstr ""
 
 #. module: website_helpdesk_slides
@@ -167,5 +124,3 @@ msgid ""
 "Views\n"
 "                    |"
 msgstr ""
-"Lượt xem\n"
-"                    |"

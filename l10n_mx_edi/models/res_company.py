@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -46,18 +46,12 @@ class ResCompany(models.Model):
         default=False)
     l10n_mx_edi_pac_username = fields.Char(
         string='PAC username',
-        help='The username used to request the seal from the PAC',
-        groups='base.group_system')
+        help='The username used to request the seal from the PAC')
     l10n_mx_edi_pac_password = fields.Char(
         string='PAC password',
-        help='The password used to request the seal from the PAC',
-        groups='base.group_system')
-    l10n_mx_edi_certificate_ids = fields.One2many(
-        comodel_name='l10n_mx_edi.certificate',
-        inverse_name='company_id',
-        string='Certificates (MX)',
-    )
-
+        help='The password used to request the seal from the PAC')
+    l10n_mx_edi_certificate_ids = fields.Many2many('l10n_mx_edi.certificate',
+        string='Certificates (MX)')
 
     # == CFDI EDI ==
     l10n_mx_edi_fiscal_regime = fields.Selection(
@@ -65,26 +59,3 @@ class ResCompany(models.Model):
         string="Fiscal Regime",
         help="It is used to fill Mexican XML CFDI required field "
         "Comprobante.Emisor.RegimenFiscal.")
-
-    def _l10n_mx_edi_cfdi_check_config(self):
-        """ Check the configuration of the company. """
-        self.ensure_one()
-        pac_name = self.l10n_mx_edi_pac
-
-        errors = []
-
-        # == Check the certificate ==
-        certificate = self.l10n_mx_edi_certificate_ids.sudo()._get_valid_certificate()
-        if not certificate:
-            errors.append(_("No valid certificate found"))
-
-        # == Check the credentials to call the PAC web-service ==
-        if pac_name:
-            pac_test_env = self.l10n_mx_edi_pac_test_env
-            pac_password = self.sudo().l10n_mx_edi_pac_password
-            if not pac_test_env and not pac_password:
-                errors.append(_("No PAC credentials specified."))
-        else:
-            errors.append(_("No PAC specified."))
-
-        return errors

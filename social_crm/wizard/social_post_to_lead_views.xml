@@ -22,14 +22,14 @@
                         <group col="2">
                             <field name="partner_id" widget="res_partner_many2one"
                                 context="{'res_partner_search_mode': 'customer'}"
-                                invisible="action != 'exist'"
-                                required="action == 'exist'"/>
+                                attrs="{'required': [('action', '=', 'exist')],
+                                        'invisible': [('action', '!=', 'exist')]}"/>
                         </group>
                     </group>
                 </group>
                 <footer>
                     <button name="action_convert_to_lead" string="Convert" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>
@@ -37,6 +37,7 @@
 
     <record id="social_post_to_lead_action" model="ir.actions.act_window">
         <field name="name">Convert Post to Lead</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">social.post.to.lead</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="social_post_to_lead_view_form"/>

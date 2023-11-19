@@ -1,11 +1,11 @@
-/** @odoo-module **/
+odoo.define('web_editor.image_processing', function (require) {
+'use strict';
 
-import { pick } from "@web/core/utils/objects";
-import {getAffineApproximation, getProjective} from "@web_editor/js/editor/perspective_utils";
+const {getAffineApproximation, getProjective} = require('@web_editor/js/editor/perspective_utils');
 
 // Fields returned by cropperjs 'getData' method, also need to be passed when
 // initializing the cropper to reuse the previous crop.
-export const cropperDataFields = ['x', 'y', 'width', 'height', 'rotate', 'scaleX', 'scaleY'];
+const cropperDataFields = ['x', 'y', 'width', 'height', 'rotate', 'scaleX', 'scaleY'];
 const modifierFields = [
     'filter',
     'quality',
@@ -16,7 +16,7 @@ const modifierFields = [
     'resizeWidth',
     'aspectRatio',
 ];
-export const isGif = (mimetype) => mimetype === 'image/gif';
+const isGif = (mimetype) => mimetype === 'image/gif';
 
 // webgl color filters
 const _applyAll = (result, filter, filters) => {
@@ -200,7 +200,7 @@ const glFilters = {
  * @param {HTMLImageElement} img the image to which modifications are applied
  * @returns {string} dataURL of the image with the applied modifications
  */
-export async function applyModifications(img, dataOptions = {}) {
+async function applyModifications(img, dataOptions = {}) {
     const data = Object.assign({
         glFilter: '',
         filter: '#0000',
@@ -334,13 +334,7 @@ export async function applyModifications(img, dataOptions = {}) {
     ctx.fillRect(0, 0, result.width, result.height);
 
     // Quality
-    const dataURL = result.toDataURL(mimetype, quality / 100);
-    const newSize = getDataURLBinarySize(dataURL);
-    const originalSize = _getImageSizeFromCache(originalSrc);
-    const isChanged = !!perspective || !!glFilter ||
-        original.width !== result.width || original.height !== result.height ||
-        original.width !== croppedImg.width || original.height !== croppedImg.height;
-    return (isChanged || originalSize >= newSize) ? dataURL : await _loadImageDataURL(originalSrc);
+    return result.toDataURL(mimetype, quality / 100);
 }
 
 /**
@@ -350,7 +344,7 @@ export async function applyModifications(img, dataOptions = {}) {
  * @param {HTMLImageElement} [img] img element in which to load the image
  * @returns {Promise<HTMLImageElement>} Promise that resolves to the loaded img
  */
-export function loadImage(src, img = new Image()) {
+function loadImage(src, img = new Image()) {
     return new Promise((resolve, reject) => {
         img.addEventListener('load', () => resolve(img), {once: true});
         img.addEventListener('error', reject, {once: true});
@@ -397,17 +391,8 @@ async function _updateImageData(src, key = 'objectURL') {
     } else {
         value = URL.createObjectURL(blob);
     }
-    imageCache.set(src, Object.assign(currentImageData || {}, {[key]: value, size: blob.size}));
+    imageCache.set(src, Object.assign(currentImageData || {}, {[key]: value}));
     return value;
-}
-/**
- * Returns the size of a cached image.
- *
- * @param {String} src used as a key on the image cache map.
- * @returns {Number} size of the image in bytes.
- */
-function _getImageSizeFromCache(src) {
-    return imageCache.get(src).size;
 }
 /**
  * Activates the cropper on a given image.
@@ -416,15 +401,14 @@ function _getImageSizeFromCache(src) {
  * @param {Number} aspectRatio the aspectRatio of the crop box
  * @param {DOMStringMap} dataset dataset containing the cropperDataFields
  */
-export async function activateCropper(image, aspectRatio, dataset) {
+async function activateCropper(image, aspectRatio, dataset) {
     image.src = await _loadImageObjectURL(image.getAttribute('src'));
     $(image).cropper({
         viewMode: 2,
         dragMode: 'move',
         autoCropArea: 1.0,
         aspectRatio: aspectRatio,
-        data: Object.fromEntries(Object.entries(pick(dataset, ...cropperDataFields))
-            .map(([key, value]) => [key, parseFloat(value)])),
+        data: _.mapObject(_.pick(dataset, ...cropperDataFields), value => parseFloat(value)),
         // Can't use 0 because it's falsy and cropperjs will then use its defaults (200x100)
         minContainerWidth: 1,
         minContainerHeight: 1,
@@ -440,41 +424,23 @@ export async function activateCropper(image, aspectRatio, dataset) {
  * @param {string} [attachmentSrc=''] specifies the URL of the corresponding
  * attachment if it can't be found in the 'src' attribute.
  */
-export async function loadImageInfo(img, rpc, attachmentSrc = '') {
+async function loadImageInfo(img, rpc, attachmentSrc = '') {
     const src = attachmentSrc || img.getAttribute('src');
     // If there is a marked originalSrc, the data is already loaded.
-    // If the image does not have the "mimetypeBeforeConversion" attribute, it
-    // has to be added.
-    if ((img.dataset.originalSrc && img.dataset.mimetypeBeforeConversion) || !src) {
+    if (img.dataset.originalSrc || !src) {
         return;
     }
 
-    // Only consider the "relative" part of the URL. Needed because some
-    // relative URLs were wrongly converted to absolute URLs at some point and
-    // user domains could have been changed meanwhile.
-    let relativeSrc;
-    try {
-        const srcUrl = new URL(src);
-        relativeSrc = srcUrl.pathname;
-    } catch {
-        relativeSrc = src;
-    }
-    const {original} = await rpc('/web_editor/get_image_info', {src: relativeSrc.split(/[?#]/)[0]});
-    // If src was an absolute "external" URL, we consider unlikely that its
-    // relative part matches something from the DB and even if it does, nothing
-    // bad happens, besides using this random image as the original when using
-    // the options, instead of having no option.
-    // The "redirect" check is for when it is a redirect image attachment due to
-    // an external URL upload.
-    if (original && original.image_src && !/\/web\/image\/\d+-redirect\//.test(original.image_src)) {
-        if (!img.dataset.mimetype) {
-            // The mimetype has to be added only if it is not already present as
-            // we want to avoid to reset a mimetype set by the user.
-            img.dataset.mimetype = original.mimetype;
-        }
+    const {original} = await rpc({
+        route: '/web_editor/get_image_info',
+        params: {src: src.split(/[?#]/)[0]},
+    });
+    // Check that url is local.
+    const isLocal = original && new URL(original.image_src, window.location.origin).origin === window.location.origin;
+    if (isLocal && original.image_src) {
         img.dataset.originalId = original.id;
         img.dataset.originalSrc = original.image_src;
-        img.dataset.mimetypeBeforeConversion = original.mimetype;
+        img.dataset.mimetype = original.mimetype;
     }
 }
 
@@ -484,17 +450,17 @@ export async function loadImageInfo(img, rpc, attachmentSrc = '') {
  *     won't be accepted.
  * @returns {Boolean}
  */
-export function isImageSupportedForProcessing(mimetype, strict = false) {
+function isImageSupportedForProcessing(mimetype, strict = false) {
     if (isGif(mimetype)) {
         return !strict;
     }
-    return ['image/jpeg', 'image/png', 'image/webp'].includes(mimetype);
+    return ['image/jpeg', 'image/png'].includes(mimetype);
 }
 /**
  * @param {HTMLImageElement} img
  * @returns {Boolean}
  */
-export function isImageSupportedForStyle(img) {
+function isImageSupportedForStyle(img) {
     if (!img.parentElement) {
         return false;
     }
@@ -518,7 +484,7 @@ export function isImageSupportedForStyle(img) {
  * @param {Blob} blob
  * @returns {Promise}
  */
-export function createDataURL(blob) {
+function createDataURL(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => resolve(reader.result));
@@ -528,27 +494,16 @@ export function createDataURL(blob) {
     });
 }
 
-/**
- * @param {String} dataURL
- * @returns {Number} number of bytes represented with base64
- */
-export function getDataURLBinarySize(dataURL) {
-    // Every 4 bytes of base64 represent 3 bytes.
-    return dataURL.split(',')[1].length / 4 * 3;
-}
-
-export const removeOnImageChangeAttrs = [...cropperDataFields, ...modifierFields, 'aspectRatio'];
-
-export default {
+return {
     applyModifications,
     cropperDataFields,
     activateCropper,
     loadImageInfo,
     loadImage,
-    removeOnImageChangeAttrs,
+    removeOnImageChangeAttrs: [...cropperDataFields, ...modifierFields, 'aspectRatio'],
     isImageSupportedForProcessing,
     isImageSupportedForStyle,
     createDataURL,
     isGif,
-    getDataURLBinarySize,
 };
+});

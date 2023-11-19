@@ -12,7 +12,6 @@ from werkzeug.urls import url_join
 from odoo import api, fields, models, tools, _
 from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 from odoo.exceptions import AccessError
-from odoo.osv import expression
 from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
@@ -56,33 +55,20 @@ class Digest(models.Model):
             digest.available_fields = ', '.join(kpis_values_fields)
 
     def _get_kpi_compute_parameters(self):
-        """Get the parameters used to computed the KPI value."""
-        companies = self.company_id
-        if any(not digest.company_id for digest in self):
-            # No company: we will use the current company to compute the KPIs
-            companies |= self.env.company
-
-        return (
-            fields.Datetime.to_string(self.env.context.get('start_datetime')),
-            fields.Datetime.to_string(self.env.context.get('end_datetime')),
-            companies,
-        )
+        return fields.Datetime.to_string(self._context.get('start_datetime')), fields.Datetime.to_string(self._context.get('end_datetime')), self.env.company
 
     def _compute_kpi_res_users_connected_value(self):
-        self._calculate_company_based_kpi(
-            'res.users',
-            'kpi_res_users_connected_value',
-            date_field='login_date',
-        )
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            user_connected = self.env['res.users'].search_count([('company_id', '=', company.id), ('login_date', '>=', start), ('login_date', '<', end)])
+            record.kpi_res_users_connected_value = user_connected
 
     def _compute_kpi_mail_message_total_value(self):
-        start, end, __ = self._get_kpi_compute_parameters()
-        self.kpi_mail_message_total_value = self.env['mail.message'].search_count([
-            ('create_date', '>=', start),
-            ('create_date', '<', end),
-            ('subtype_id', '=', self.env.ref('mail.mt_comment').id),
-            ('message_type', 'in', ('comment', 'email', 'email_outgoing')),
-        ])
+        discussion_subtype_id = self.env.ref('mail.mt_comment').id
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            total_messages = self.env['mail.message'].search_count([('create_date', '>=', start), ('create_date', '<', end), ('subtype_id', '=', discussion_subtype_id), ('message_type', 'in', ['comment', 'email'])])
+            record.kpi_mail_message_total_value = total_messages
 
     @api.onchange('periodicity')
     def _onchange_periodicity(self):
@@ -133,7 +119,7 @@ class Digest(models.Model):
 
     def action_send_manual(self):
         """ Manually send digests emails to all registered users. In that case
-        do not update periodicity as this is not an automation rule that could
+        do not update periodicity as this is not an automated action that could
         be considered as unwanted spam. """
         return self._action_send(update_periodicity=False)
 
@@ -179,10 +165,8 @@ class Digest(models.Model):
                 'tips': self._compute_tips(user.company_id, user, tips_count=tips_count, consumed=consume_tips),
                 'preferences': self._compute_preferences(user.company_id, user),
             },
-            options={
-                'preserve_comments': True,
-                'post_process': True,
-            },
+            post_process=True,
+            options={'preserve_comments': True}
         )[self.id]
         full_mail = self.env['mail.render.mixin']._render_encapsulate(
             'digest.digest_mail_layout',
@@ -289,9 +273,6 @@ class Digest(models.Model):
                 if self._fields['%s_value' % field_name].type == 'monetary':
                     converted_amount = tools.format_decimalized_amount(compute_value)
                     compute_value = self._format_currency_amount(converted_amount, company.currency_id)
-                elif self._fields['%s_value' % field_name].type == 'float':
-                    compute_value = "%.2f" % compute_value
-
                 kpi_values['kpi_col%s' % (col_index + 1)].update({
                     'value': compute_value,
                     'margin': margin,
@@ -307,15 +288,7 @@ class Digest(models.Model):
             '|', ('group_id', 'in', user.groups_id.ids), ('group_id', '=', False)
         ], limit=tips_count)
         tip_descriptions = [
-            tools.html_sanitize(
-                self.env['mail.render.mixin'].sudo()._render_template(
-                    tip.tip_description,
-                    'digest.tip',
-                    tip.ids,
-                    engine="qweb",
-                    options={'post_process': True},
-                )[tip.id]
-            )
+            tools.html_sanitize(self.env['mail.render.mixin'].sudo()._render_template(tip.tip_description, 'digest.tip', tip.ids, post_process=True, engine="qweb")[tip.id])
             for tip in tips
         ]
         if consumed:
@@ -344,14 +317,14 @@ class Digest(models.Model):
             )
         elif self.periodicity == 'daily' and user.has_group('base.group_erp_manager'):
             preferences.append(Markup('<p>%s<br /><a href="%s" target="_blank" style="color:#875A7B; font-weight: bold;">%s</a></p>') % (
-                _('Prefer a broader overview?'),
+                _('Prefer a broader overview ?'),
                 f'/digest/{self.id:d}/set_periodicity?periodicity=weekly',
                 _('Switch to weekly Digests')
             ))
         if user.has_group('base.group_erp_manager'):
             preferences.append(Markup('<p>%s<br /><a href="%s" target="_blank" style="color:#875A7B; font-weight: bold;">%s</a></p>') % (
                 _('Want to customize this email?'),
-                f'/web#view_type=form&model={self._name}&id={self.id:d}',
+                f'/web#view_type=form&amp;model={self._name}&amp;id={self.id:d}',
                 _('Choose the metrics you care about')
             ))
 
@@ -390,40 +363,6 @@ class Digest(models.Model):
     # ------------------------------------------------------------
     # FORMATTING / TOOLS
     # ------------------------------------------------------------
-
-    def _calculate_company_based_kpi(self, model, digest_kpi_field, date_field='create_date',
-                                     additional_domain=None, sum_field=None):
-        """Generic method that computes the KPI on a given model.
-
-        :param model: Model on which we will compute the KPI
-            This model must have a "company_id" field
-        :param digest_kpi_field: Field name on which we will write the KPI
-        :param date_field: Field used for the date range
-        :param additional_domain: Additional domain
-        :param sum_field: Field to sum to obtain the KPI,
-            if None it will count the number of records
-        """
-        start, end, companies = self._get_kpi_compute_parameters()
-
-        base_domain = [
-            ('company_id', 'in', companies.ids),
-            (date_field, '>=', start),
-            (date_field, '<', end),
-        ]
-
-        if additional_domain:
-            base_domain = expression.AND([base_domain, additional_domain])
-
-        values = self.env[model]._read_group(
-            domain=base_domain,
-            groupby=['company_id'],
-            aggregates=[f'{sum_field}:sum'] if sum_field else ['__count'],
-        )
-
-        values_per_company = {company.id: agg for company, agg in values}
-        for digest in self:
-            company = digest.company_id or self.env.company
-            digest[digest_kpi_field] = values_per_company.get(company.id, 0)
 
     def _get_kpi_fields(self):
         return [field_name for field_name, field in self._fields.items()

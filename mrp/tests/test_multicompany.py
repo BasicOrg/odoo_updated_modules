@@ -135,7 +135,7 @@ class TestMrpMulticompany(common.TransactionCase):
         mo_form = Form(self.env['mrp.production'].with_user(self.user_a))
         mo_form.product_id = product
         # The mo must be confirmed, no longer in draft, in order for `lot_producing_id` to be visible in the view
-        # <div class="o_row" invisible="state == 'draft' or product_tracking in ('none', False)">
+        # <div class="o_row" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('product_tracking', 'in', ('none', False))]}">
         mo = mo_form.save()
         mo.action_confirm()
         mo_form = Form(mo)
@@ -175,9 +175,8 @@ class TestMrpMulticompany(common.TransactionCase):
         details_operation_form = Form(mo.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
             ml.lot_id = lot_b
-            ml.quantity = 1
+            ml.qty_done = 1
         details_operation_form.save()
-        mo.move_raw_ids.picked = True
         with self.assertRaises(UserError):
             mo.button_mark_done()
 

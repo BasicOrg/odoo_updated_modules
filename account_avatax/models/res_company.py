@@ -1,6 +1,6 @@
-import json
-import logging
 from datetime import timedelta
+from pprint import pformat
+import logging
 
 from odoo import fields, models, _
 from odoo.exceptions import UserError
@@ -26,7 +26,6 @@ class ResCompany(models.Model):
     avalara_commit = fields.Boolean(string="Commit in Avatax")
     avalara_address_validation = fields.Boolean(string="Avalara Address Validation")
     avalara_use_upc = fields.Boolean(string="Use UPC", default=True)
-    setting_account_avatax = fields.Boolean(string='Use AvaTax', store=True)
 
 
 class ResConfigSettings(models.TransientModel):
@@ -73,10 +72,6 @@ class ResConfigSettings(models.TransientModel):
         string="Use UPC",
         help="Use Universal Product Code instead of custom defined codes in Avalara.",
     )
-    setting_account_avatax = fields.Boolean(
-        related='company_id.setting_account_avatax',
-        readonly=False,
-    )
 
     def avatax_sync_company_params(self):
         """Sync all the (supported) parameters that can be configured in Avatax."""
@@ -97,9 +92,9 @@ class ResConfigSettings(models.TransientModel):
                 fields=['code'],
             )
         }
-        client = self.env['account.external.tax.mixin']._get_client(self.company_id)
+        client = self.env['account.avatax']._get_client(self.company_id)
         response = client.list_entity_use_codes()
-        error = self.env['account.external.tax.mixin']._handle_response(response, _(
+        error = self.env['account.avatax']._handle_response(response, _(
             "Odoo could not fetch the exemption codes of %(company)s",
             company=self.company_id.display_name,
         ))
@@ -120,18 +115,17 @@ class ResConfigSettings(models.TransientModel):
 
     def avatax_ping(self):
         """Test the connexion and the credentials."""
-        client = self.env['account.external.tax.mixin']._get_client(self.company_id)
+        client = self.env['account.avatax']._get_client(self.company_id)
         query_result = client.ping()
-
-        return {
-            'name': _('Test Result'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'avatax.connection.test.result',
-            'res_id': self.env['avatax.connection.test.result'].create({'server_response': json.dumps(query_result)}).id,
-            'target': 'new',
-            'views': [(False, 'form')],
-        }
+        raise UserError(_(
+            "Server Response:\n%s",
+            pformat(query_result)
+        ))
 
     def avatax_log(self):
-        self.env['account.external.tax.mixin']._enable_external_tax_logging('account_avatax.log.end.date')
+        """Start logging all requests done to Avatax, for 30 minutes."""
+        self.env['ir.config_parameter'].sudo().set_param(
+            'account_avatax.log.end.date',
+            (fields.Datetime.now() + timedelta(minutes=30)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        )
         return True

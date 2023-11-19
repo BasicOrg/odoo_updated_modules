@@ -3,17 +3,16 @@
 # 	* social_twitter
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,68 +20,67 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_post_template.py:0
 #, python-format
 msgid "%s / %s characters to fit in a Tweet"
-msgstr "符合推文的%s / %s个字符"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.twitter_preview
 msgid "11m"
-msgstr "11m"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.twitter_preview
 msgid "<b class=\"text-900\">Twitter Account</b>"
-msgstr "<b class=\"text-900\">Twitter账号</b>"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
-msgstr "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
+msgstr "<i class=\"fa fa-comments\" title=“评论”/>"
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-heart me-1\" title=\"Likes\"/>"
-msgstr "<i class=\"fa fa-heart me-1\" title=\"Likes\"/>"
+msgid "<i class=\"fa fa-heart\" title=\"Likes\"/>"
+msgstr "<i class=\"fa fa-heart\" title=“喜欢”/>"
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 msgid ""
-"<i class=\"fa fa-pencil me-1\" title=\"Quote a tweet\"/>\n"
+"<i class=\"fa fa-pencil\" title=\"Quote a tweet\"/>\n"
 "                                    <span>Quote Tweet</span>"
 msgstr ""
-"<i class=\"fa fa-pencil me-1\" title=\"Quote a tweet\"/>\n"
-"                                    <span>引用推文</span>"
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-retweet me-1\" title=\"Retweet a tweet\"/>"
-msgstr "<i class=\"fa fa-retweet me-1\" title=\"Retweet a tweet\"/>"
+msgid "<i class=\"fa fa-retweet\" title=\"Retweet a tweet\"/>"
+msgstr ""
+
+#. module: social_twitter
+#: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
+msgid "<span class=\"fst-italic\">Empty tweet</span>"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.twitter_preview
 msgid "@twitteraccount ·"
-msgstr "@twitteraccount ·"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_stream_post.py:0
 #, python-format
 msgid "A retweet already exists"
-msgstr "一个转推已经存在"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/controllers/main.py:0
+#: code:addons/social_twitter/models/social_stream_post.py:0
 #, python-format
-msgid "Authentication failed. Please enter valid credentials."
-msgstr "验证失败。请输入有效凭证。"
+msgid "An error occurred (%s)"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
+#. openerp-web
 #: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 #, python-format
@@ -90,19 +88,8 @@ msgid "Author Image"
 msgstr "作者图像"
 
 #. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid ""
-"Can not like / unlike the tweet\n"
-"%s."
-msgstr ""
-"不能喜欢/不喜欢这条推特吗\n"
-"%s。"
-
-#. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_quote.js:0
 #, python-format
 msgid "Cancel"
 msgstr "取消"
@@ -113,6 +100,14 @@ msgid ""
 "Check this if you want to use your personal Twitter Developer Account "
 "instead of the provided one."
 msgstr "如果你想使用你的个人Twitter开发者账户而不是提供的账户，请勾选此项。"
+
+#. module: social_twitter
+#: code:addons/social_twitter/models/social_stream_post.py:0
+#: code:addons/social_twitter/models/social_stream_post.py:0
+#: code:addons/social_twitter/models/social_stream_post.py:0
+#, python-format
+msgid "Code %i"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model,name:social_twitter.model_res_config_settings
@@ -137,12 +132,12 @@ msgstr "创建人"
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account__description
 msgid "Description"
-msgstr "描述"
+msgstr "说明"
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account__display_name
@@ -156,51 +151,19 @@ msgid "Display Twitter Preview"
 msgstr "显示Twitter预览"
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
-#, python-format
-msgid "Empty tweet"
-msgstr "空推"
-
-#. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_kanban_controller.js:0
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_quote.js:0
 #, python-format
 msgid "Error"
 msgstr "错误"
 
 #. module: social_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_twitter/static/src/js/stream_post_twitter_quote.js:0
 #, python-format
 msgid "Error while sending the data to the server."
-msgstr "发送数据给服务器时出现错误"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid ""
-"Failed to delete the Tweet\n"
-"%s."
 msgstr ""
-"删除推文失败\n"
-"%s。"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid ""
-"Failed to fetch the tweets in the same thread: '%s' using the account %s."
-msgstr "使用帐户%s在同一频道 '%s' 获取推特失败。"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid "Failed to post comment: %s with the account %s."
-msgstr "使用帐户%s发布评论：'%s' 失败。"
 
 #. module: social_twitter
 #: model:social.stream.type,name:social_twitter.stream_type_twitter_likes
@@ -221,12 +184,17 @@ msgstr "图像"
 #: model:ir.model.fields,field_description:social_twitter.field_social_post__is_twitter_post_limit_exceed
 #: model:ir.model.fields,field_description:social_twitter.field_social_post_template__is_twitter_post_limit_exceed
 msgid "Is Twitter Post Limit Exceed"
-msgstr "Twitter发布限制是否超过"
+msgstr ""
 
 #. module: social_twitter
 #: model:social.stream.type,name:social_twitter.stream_type_twitter_keyword
 msgid "Keyword"
 msgstr "关键字"
+
+#. module: social_twitter
+#: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account____last_update
+msgid "Last Modified on"
+msgstr "最后修改日"
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account__write_uid
@@ -236,17 +204,24 @@ msgstr "最后更新人"
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_twitter_account__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: social_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
 #, python-format
 msgid "Likes"
 msgstr "喜爱"
 
 #. module: social_twitter
-#. odoo-python
+#: code:addons/social_twitter/models/social_stream_post.py:0
+#, python-format
+msgid ""
+"Looks like this Tweet is a duplicate. Edit its content and try posting "
+"again."
+msgstr ""
+
+#. module: social_twitter
 #: code:addons/social_twitter/models/social_stream.py:0
 #, python-format
 msgid ""
@@ -270,18 +245,17 @@ msgid "Name"
 msgstr "名称"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_stream.py:0
 #, python-format
 msgid "Please select a Twitter account for this stream type."
 msgstr "请为该流媒体类型选择一个Twitter账户。"
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_quote.js:0
 #, python-format
 msgid "Post"
-msgstr "过账"
+msgstr "发布"
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.twitter_preview
@@ -289,36 +263,36 @@ msgid "Post Image"
 msgstr "文章图像"
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_quote.js:0
 #, python-format
 msgid "Quote a Tweet"
-msgstr "引用推文"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_quoted_tweet_author_link
 msgid "Quoted tweet author Link"
-msgstr "引用推文作者链接"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_quoted_tweet_author_name
 msgid "Quoted tweet author Name"
-msgstr "引用推文作者名称"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_quoted_tweet_message
 msgid "Quoted tweet message"
-msgstr "引用推文消息"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_quoted_tweet_profile_image_url
 msgid "Quoted tweet profile image URL"
-msgstr "引用推文简介图像URL"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 msgid "RT"
-msgstr "RT"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_retweet_count
@@ -326,31 +300,17 @@ msgid "Re-tweets"
 msgstr "转发"
 
 #. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/controllers/main.py:0
-#, python-format
-msgid "Read More about Twitter Accounts"
-msgstr "了解更多有关 Twitter 账户的信息"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid "Replies from Tweets older than 7 days must be accessed on Twitter.com"
-msgstr "超过 7 天的推文回复必须通过 Twitter.com 访问"
-
-#. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 msgid "Retweet"
-msgstr "转推"
+msgstr ""
 
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 msgid "Retweet or Quote"
-msgstr "转推或引用"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
 #, python-format
 msgid "Retweets"
@@ -412,7 +372,6 @@ msgid "Social Twitter Account"
 msgstr "社交推特账户"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_stream.py:0
 #, python-format
 msgid ""
@@ -421,29 +380,18 @@ msgid ""
 msgstr "你输入的关键词看起来不有效。请用其他词再试一次。"
 
 #. module: social_twitter
-#. odoo-python
+#: code:addons/social_twitter/models/social_stream_post.py:0
+#, python-format
+msgid "The tweet is empty. Add a message and try posting again."
+msgstr ""
+
+#. module: social_twitter
 #: code:addons/social_twitter/models/social_media.py:0
 #, python-format
 msgid ""
 "The url that this service requested returned an error. Please contact the "
 "author of the app."
 msgstr "该服务所请求的网址返回了一个错误。请联系该应用程序的作者。"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/controllers/main.py:0
-#: code:addons/social_twitter/controllers/main.py:0
-#: code:addons/social_twitter/controllers/main.py:0
-#, python-format
-msgid "This Tweet has been deleted."
-msgstr "此推文已被删除。"
-
-#. module: social_twitter
-#. odoo-python
-#: code:addons/social_twitter/models/social_stream_post.py:0
-#, python-format
-msgid "This tweet is outdated, please refresh the stream and try again."
-msgstr "此推文已过期，请刷新信息流再试。"
 
 #. module: social_twitter
 #: model:social.stream.type,name:social_twitter.stream_type_twitter_follow
@@ -464,11 +412,11 @@ msgstr "推特作者ID"
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_can_retweet
 msgid "Twitter Can Retweet"
-msgstr "Twitter可以转推"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_comments.js:0
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_comments_count
 #, python-format
 msgid "Twitter Comments"
@@ -485,14 +433,9 @@ msgid "Twitter Consumer Secret Key"
 msgstr "推特消费者密匙"
 
 #. module: social_twitter
-#: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_conversation_id
-msgid "Twitter Conversation ID"
-msgstr "推特对话 ID"
-
-#. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.res_config_settings_view_form
 msgid "Twitter Developer Account"
-msgstr "Twitter开发者账户"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream__twitter_followed_account_id
@@ -523,7 +466,7 @@ msgstr "Twitter OAuth 令牌 Secret"
 #: model:ir.model.fields,field_description:social_twitter.field_social_post__twitter_post_limit_message
 #: model:ir.model.fields,field_description:social_twitter.field_social_post_template__twitter_post_limit_message
 msgid "Twitter Post Limit Message"
-msgstr "Twitter发布限制消息"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_post__twitter_preview
@@ -532,7 +475,7 @@ msgid "Twitter Preview"
 msgstr "Twitter预览"
 
 #. module: social_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
 #, python-format
 msgid "Twitter Profile Image"
@@ -546,12 +489,12 @@ msgstr "推特简介图像URL"
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_quoted_tweet_id_str
 msgid "Twitter Quoted Tweet ID"
-msgstr "Twitter引用推文ID"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_retweeted_tweet_id_str
 msgid "Twitter Retweet ID"
-msgstr "Twitter转推ID"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.fields,field_description:social_twitter.field_social_stream_post__twitter_screen_name
@@ -574,14 +517,12 @@ msgid "Twitter User Likes"
 msgstr "推特用户点赞"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/controllers/main.py:0
 #, python-format
 msgid "Twitter did not provide a valid access token or it may have expired."
 msgstr "Twitter没有提供有效的访问令牌，或者它可能已经过期。"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/controllers/main.py:0
 #, python-format
 msgid "Twitter did not provide a valid access token."
@@ -593,7 +534,6 @@ msgid "Twitter tweet id"
 msgstr "推特推文ID"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator."
@@ -602,17 +542,10 @@ msgstr "未经授权。请联系你的管理员。"
 #. module: social_twitter
 #: model_terms:ir.ui.view,arch_db:social_twitter.social_stream_post_view_kanban
 msgid "Undo Retweet"
-msgstr "取消转推"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/xml/social_twitter_templates.xml:0
-#, python-format
-msgid "Unknown"
-msgstr "未知"
-
-#. module: social_twitter
-#. odoo-python
+#: code:addons/social_twitter/models/social_stream_post.py:0
 #: code:addons/social_twitter/models/social_stream_post.py:0
 #: code:addons/social_twitter/models/social_stream_post.py:0
 #, python-format
@@ -632,38 +565,36 @@ msgid ""
 msgstr "当我们需要将某些功能限制在特定的媒体（'facebook', 'twitter', ...）时，用于进行比较。"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_account.py:0
 #, python-format
 msgid ""
-"We could not upload your image, it may be corrupted, it may exceed size "
-"limit or API may have send improper response (error: %s)."
-msgstr "我们无法上传您的图片，可能图片已损坏、图片大小超出限制或 API 发送了不正确响应（错误：%s）。"
+"We could not upload your image, try reducing its size and posting it again "
+"(error: %s)."
+msgstr "我们无法上传您的图像，请尝试缩小其尺寸并再次发布（错误：%s）。"
 
 #. module: social_twitter
-#. odoo-python
+#: code:addons/social_twitter/models/social_stream_post.py:0
 #: code:addons/social_twitter/models/social_stream_post.py:0
 #: code:addons/social_twitter/models/social_stream_post.py:0
 #, python-format
 msgid "You are not authenticated"
-msgstr "您没有身份认证"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/js/stream_post_comments.js:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_comments.js:0
 #, python-format
 msgid ""
 "You can comment only three times a tweet as it may be considered as spamming"
 " by Twitter"
-msgstr "您只能评论一条推文三次，因为它可能被Twitter视为滥发信息。"
+msgstr ""
 
 #. module: social_twitter
 #: model:ir.model.constraint,message:social_twitter.constraint_social_stream_post_tweet_uniq
 msgid "You can not store two times the same tweet on the same stream!"
-msgstr "您不能在同一条信息流上存储两次相同的推文！"
+msgstr ""
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_stream.py:0
 #, python-format
 msgid ""
@@ -674,14 +605,12 @@ msgstr ""
 "这可能是因为它受到了保护。为了解决这个问题，请确保你在再次尝试之前关注它。"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr "你没有一个有效的订阅。请在这里购买一个:%s"
 
 #. module: social_twitter
-#. odoo-python
 #: code:addons/social_twitter/models/social_media.py:0
 #, python-format
 msgid ""
@@ -695,8 +624,8 @@ msgid "e.g. #odoo"
 msgstr "例如：#odoo"
 
 #. module: social_twitter
-#. odoo-javascript
-#: code:addons/social_twitter/static/src/js/stream_post_comment.js:0
+#. openerp-web
+#: code:addons/social_twitter/static/src/js/stream_post_twitter_comments.js:0
 #, python-format
 msgid "tweet"
 msgstr "推特"

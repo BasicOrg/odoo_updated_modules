@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
-    <div t-name="spreadsheet_dashboard.DashboardAction" class="o_action o_spreadsheet_dashboard_action o_field_highlight">
+    <div t-name="spreadsheet_dashboard.DashboardAction" owl="1" class="o_action o_spreadsheet_dashboard_action o_field_highlight">
         <ControlPanel display="controlPanelDisplay">
-            <t t-set-slot="layout-actions">
+            <t t-set-slot="control-panel-top-right">
                 <t t-set="status" t-value="state.activeDashboard and state.activeDashboard.status"/>
                 <FilterValue
                     t-if="status === Status.Loaded"
@@ -12,9 +12,6 @@
                     t-foreach="filters"
                     t-key="filter.id"
                 />
-            </t>
-            <t t-set-slot="control-panel-navigation-additional">
-                <SpreadsheetShareButton t-key="activeDashboardId" model="state.activeDashboard?.model" onSpreadsheetShared.bind="shareSpreadsheet"/>
             </t>
         </ControlPanel>
         <t t-set="dashboard" t-value="state.activeDashboard"/>

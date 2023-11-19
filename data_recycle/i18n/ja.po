@@ -3,16 +3,17 @@
 # 	* data_recycle
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Ryoko Tsuda <ryoko@quartile.co>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,26 +26,23 @@ msgid ""
 "' recycling rule.<br/>\n"
 "You can validate those changes"
 msgstr ""
-"' リサイクル規則<br/>\n"
-"これらの変更を検証できます。"
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_record.py:0
 #, python-format
 msgid "**Record Deleted**"
-msgstr "**記録削除済**"
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">毎</span>"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__active
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__active
 msgid "Active"
-msgstr "有効化"
+msgstr "有効"
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_action__archive
@@ -54,7 +52,7 @@ msgstr "アーカイブ"
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_mode__automatic
 msgid "Automatic"
-msgstr "自動"
+msgstr "オートマ"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__company_id
@@ -87,19 +85,14 @@ msgstr "作成日"
 #. module: data_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_cleaning_root
 msgid "Data Cleaning"
-msgstr "データクレンジング"
+msgstr "データクリーニング"
 
 #. module: data_recycle
 #: model:ir.actions.server,name:data_recycle.ir_cron_clean_records_ir_actions_server
+#: model:ir.cron,cron_name:data_recycle.ir_cron_clean_records
+#: model:ir.cron,name:data_recycle.ir_cron_clean_records
 msgid "Data Recycle: Clean Records"
-msgstr "データリサイクル: クリーンレコード"
-
-#. module: data_recycle
-#. odoo-python
-#: code:addons/data_recycle/models/data_recycle_model.py:0
-#, python-format
-msgid "Data to Recycle"
-msgstr "リサイクルするデータ"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__notify_frequency_period__days
@@ -115,12 +108,12 @@ msgstr "削除"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__time_field_delta
 msgid "Delta"
-msgstr "差"
+msgstr "デルタ"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__time_field_delta_unit
 msgid "Delta Unit"
-msgstr "デルタユニット"
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
@@ -142,12 +135,12 @@ msgstr "表示名"
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_record
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_record_notification
 msgid "Field Recycle Records"
-msgstr "フィールドリサイクルレコード"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__domain
 msgid "Filter"
-msgstr "フィルター"
+msgstr "フィルタ"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__id
@@ -158,12 +151,18 @@ msgstr "ID"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__include_archived
 msgid "Include Archived"
-msgstr "アーカイブ済を含む"
+msgstr ""
+
+#. module: data_recycle
+#: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model____last_update
+#: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__last_notification
 msgid "Last Notification"
-msgstr "最終通知"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__write_uid
@@ -180,7 +179,7 @@ msgstr "最終更新日"
 #. module: data_recycle
 #: model:ir.model.fields,help:data_recycle.field_data_recycle_model__notify_user_ids
 msgid "List of users to notify when there are new records to recycle"
-msgstr "リサイクルする新規レコードがあるときに通知するユーザのリスト"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__recycle_mode__manual
@@ -219,12 +218,12 @@ msgstr "クリーニング提案はありません"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__notify_frequency
 msgid "Notify"
-msgstr "通知"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__notify_frequency_period
 msgid "Notify Frequency Period"
-msgstr "通知頻度期間"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__notify_user_ids
@@ -250,58 +249,58 @@ msgstr "レコード"
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__records_to_recycle_count
 msgid "Records To Recycle"
-msgstr "リサイクルするレコード"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_action
 msgid "Recycle Action"
-msgstr "リサイクルアクション"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_mode
 msgid "Recycle Mode"
-msgstr "リサイクルモード"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_record__recycle_model_id
 msgid "Recycle Model"
-msgstr "リサイクルモデル"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__recycle_record_ids
 msgid "Recycle Record"
-msgstr "リサイクルレコード"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_cleaning_config_rules_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_recycle_record
 msgid "Recycle Records"
-msgstr "リサイクルレコード"
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
 msgid "Recycle Rule"
-msgstr "リサイクルルール"
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_search
 msgid "Recycle Rules"
-msgstr "リサイクルルール"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model,name:data_recycle.model_data_recycle_model
 msgid "Recycling Model"
-msgstr "リサイクルモデル"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model,name:data_recycle.model_data_recycle_record
 msgid "Recycling Record"
-msgstr "リサイクルレコード"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.actions.act_window,name:data_recycle.action_data_recycle_config
 msgid "Recyle Records Rules"
-msgstr "リサイクルレコードルール"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.ui.menu,name:data_recycle.menu_data_cleaning_config_rules
@@ -311,46 +310,44 @@ msgstr "規則"
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "Run Now"
-msgstr "今すぐ実行"
+msgstr ""
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_merge_model_form
 msgid "Select a model to configure recycling actions"
-msgstr "リサイクルアクションを設定するモデルを選択"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.constraint,message:data_recycle.constraint_data_recycle_model_check_notif_freq
 msgid "The notification frequency should be greater than 0"
-msgstr "通知頻度は0より大きくする必要があります。"
+msgstr ""
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_model.py:0
 #, python-format
 msgid "This model doesn't manage archived records. Only deletion is possible."
-msgstr "このモデルはアーカイブ済レコードを管理しません。削除のみ可能です。"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields,field_description:data_recycle.field_data_recycle_model__time_field_id
 msgid "Time Field"
-msgstr "時間フィールド"
+msgstr ""
 
 #. module: data_recycle
-#. odoo-python
 #: code:addons/data_recycle/models/data_recycle_record.py:0
 #, python-format
 msgid "Undefined Name"
-msgstr "未定義の名前"
+msgstr ""
 
 #. module: data_recycle
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_recycle/static/src/views/data_recycle_list_view.xml:0
 #, python-format
 msgid "Unselect"
 msgstr "選択解除"
 
 #. module: data_recycle
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_recycle/static/src/views/data_recycle_list_view.xml:0
 #: model_terms:ir.ui.view,arch_db:data_recycle.view_data_recycle_record_list
 #, python-format
@@ -360,7 +357,7 @@ msgstr "検証"
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.notification
 msgid "We've identified"
-msgstr "以下を確認しました:"
+msgstr ""
 
 #. module: data_recycle
 #: model:ir.model.fields.selection,name:data_recycle.selection__data_recycle_model__notify_frequency_period__weeks
@@ -376,9 +373,9 @@ msgstr "年"
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.notification
 msgid "here"
-msgstr "クリック"
+msgstr "こちら"
 
 #. module: data_recycle
 #: model_terms:ir.ui.view,arch_db:data_recycle.notification
 msgid "records to clean with the '"
-msgstr "以下できれいにするレコード:"
+msgstr ""

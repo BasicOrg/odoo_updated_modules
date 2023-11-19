@@ -36,17 +36,16 @@ class TestCommon(TransactionCase):
 
         # Allocations
         self.allocation_patrick = self.env['hr.leave.allocation'].create({
-            'state': 'confirm',
+            'state': 'validate',
             'holiday_status_id': self.leave_type.id,
             'employee_id': self.patrick.id,
             'date_from': time.strftime('%Y-01-01'),
             'date_to': time.strftime('%Y-12-31'),
         })
         self.allocation_bob = self.env['hr.leave.allocation'].create({
-            'state': 'confirm',
+            'state': 'validate',
             'holiday_status_id': self.leave_type.id,
             'employee_id': self.bob.id,
             'date_from': time.strftime('%Y-01-01'),
             'date_to': time.strftime('%Y-12-31'),
         })
-        (self.allocation_patrick | self.allocation_bob).action_validate()

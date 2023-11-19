@@ -1,6 +1,5 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 import { useService } from "@web/core/utils/hooks";
@@ -9,7 +8,7 @@ import { download } from "@web/core/network/download";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { FileInput } from "@web/core/file_input/file_input";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class HomeMenuCustomizer extends Component {
     setup() {
@@ -71,15 +70,15 @@ export class HomeMenuCustomizer extends Component {
 
     resetBackground() {
         this.dialogManager.add(ConfirmationDialog, {
-            body: _t("Are you sure you want to reset the background image?"),
-            title: _t("Confirmation"),
+            body: this.env._t("Are you sure you want to reset the background image?"),
+            title: this.env._t("Confirmation"),
             confirm: () => this.confirmReset(),
         });
     }
 
     async onBackgroundUpload([file]) {
         if (!file) {
-            this.notification.add(_t("Could not change the background"), {
+            this.notification.add(this.env._t("Could not change the background"), {
                 sticky: true,
                 type: "warning",
             });
@@ -95,5 +94,4 @@ export class HomeMenuCustomizer extends Component {
     }
 }
 HomeMenuCustomizer.template = "web_studio.HomeMenuCustomizer";
-HomeMenuCustomizer.props = {};
 HomeMenuCustomizer.components = { Dropdown, DropdownItem, FileInput };

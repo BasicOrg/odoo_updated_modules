@@ -3,16 +3,17 @@
 # 	* approvals_purchase
 # 
 # Translators:
-# Wil Odoo, 2023
+# Friederike Fasterling-Nesselbosch, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,8 +26,7 @@ msgid ""
 "Allows you to define which documents you would like to create once the "
 "request has been approved"
 msgstr ""
-"Sie können festlegen, welche Dokumente Sie erstellen möchten, sobald der "
-"Antrag genehmigt wurde."
+"Dokumente welche erstellt werden sollen, wenn die Genehmigung erteilt wurde."
 
 #. module: approvals_purchase
 #: model:ir.model,name:approvals_purchase.model_approval_category
@@ -53,7 +53,7 @@ msgstr "Angebotsanfragen erstellen"
 #. module: approvals_purchase
 #: model_terms:ir.ui.view,arch_db:approvals_purchase.exception_approval_request_canceled
 msgid "Exception occurred: the Approval Request"
-msgstr "Ausnahme aufgetreten: die Genehmigungsanfrage"
+msgstr "Ausnahme aufgetreten: Genehmigungsanfrage"
 
 #. module: approvals_purchase
 #: model_terms:ir.ui.view,arch_db:approvals_purchase.exception_approval_request_canceled
@@ -61,16 +61,15 @@ msgid "Exception(s):"
 msgstr "Ausnahme(n):"
 
 #. module: approvals_purchase
-#. odoo-python
 #: code:addons/approvals_purchase/models/approval_product_line.py:0
 #, python-format
 msgid "Please set a vendor on product(s) %s."
-msgstr "Bitte hinterlegen Sie einen Lieferanten für Produkt %s."
+msgstr "Bitte hinterlegen Sie einen Lieferanter unter den Produkten %s."
 
 #. module: approvals_purchase
 #: model:ir.model,name:approvals_purchase.model_approval_product_line
 msgid "Product Line"
-msgstr "Produktlinie"
+msgstr "Produktposition"
 
 #. module: approvals_purchase
 #: model:ir.model.fields,field_description:approvals_purchase.field_approval_product_line__product_id
@@ -80,15 +79,14 @@ msgstr "Produkte"
 #. module: approvals_purchase
 #: model:ir.model.fields,field_description:approvals_purchase.field_approval_request__purchase_order_count
 msgid "Purchase Order Count"
-msgstr "Anzahl Bestellungen"
+msgstr "Anzahl der Bestellungen"
 
 #. module: approvals_purchase
 #: model:ir.model.fields,field_description:approvals_purchase.field_approval_product_line__purchase_order_line_id
 msgid "Purchase Order Line"
-msgstr "Bestellzeile"
+msgstr "Bestellposition"
 
 #. module: approvals_purchase
-#. odoo-python
 #: code:addons/approvals_purchase/models/approval_request.py:0
 #: model_terms:ir.ui.view,arch_db:approvals_purchase.approval_purchase_request_view_form_inherit
 #, python-format
@@ -98,7 +96,7 @@ msgstr "Bestellungen"
 #. module: approvals_purchase
 #: model:ir.model.fields,field_description:approvals_purchase.field_approval_product_line__po_uom_qty
 msgid "Purchase UoM Quantity"
-msgstr "Menge der Einkaufsmaßeinheit"
+msgstr "Einkaufs-Mengeneinheit"
 
 #. module: approvals_purchase
 #: model:ir.model.fields,help:approvals_purchase.field_approval_product_line__po_uom_qty
@@ -109,14 +107,12 @@ msgstr ""
 "verwendet."
 
 #. module: approvals_purchase
-#. odoo-python
 #: code:addons/approvals_purchase/models/approval_request.py:0
 #, python-format
 msgid "You cannot create an empty purchase request."
-msgstr "Sie können keine leere Bestellanforderung erstellen."
+msgstr "Sie können keinen leeren Kaufantrag erstellen."
 
 #. module: approvals_purchase
-#. odoo-python
 #: code:addons/approvals_purchase/models/approval_request.py:0
 #, python-format
 msgid "You must select a product for each line of requested products."

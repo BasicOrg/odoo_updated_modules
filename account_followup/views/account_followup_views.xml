@@ -19,11 +19,12 @@
                 <form create="false" delete="false">
                     <header>
                         <button string="Follow up" name="%(manual_reminder_action)d"
-                                type="action" class="button btn-primary" invisible="followup_status != 'in_need_of_action'"/>
+                                type="action" class="button btn-primary" attrs="{'invisible': [('followup_status', '!=', 'in_need_of_action')]}"/>
                         <button string="Follow up" name="%(manual_reminder_action)d"
-                                type="action" class="button btn-secondary" invisible="followup_status == 'in_need_of_action'"/>
-                        <button string="Reconcile" name="action_open_unreconciled_partner"
-                                class="btn btn-secondary" type="object"/>
+                                type="action" class="button btn-secondary" attrs="{'invisible': [('followup_status', '=', 'in_need_of_action')]}"/>
+                        <button string="Reconcile" name="%(account_accountant.action_manual_reconciliation)d"
+                                class="btn btn-secondary" type="action"
+                                context="{'mode': 'customers', 'partner_ids': active_ids, 'all_entries': True}"/>
                         <field name="followup_line_id" widget="statusbar" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
@@ -31,9 +32,7 @@
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button" type="object" name="get_formview_action"
                                     icon="fa-user">
-                                <div class="o_stat_info">
-                                    <span class="o_stat_text">Customer</span>
-                                </div>
+                                Customer
                             </button>
                             <button class="oe_stat_button" type="object" name="action_view_unpaid_invoices"
                                     icon="fa-pencil-square-o">
@@ -41,13 +40,13 @@
                             </button>
                         </div>
                         <widget name="web_ribbon" title="In need of action"
-                                bg_color="text-bg-danger"
-                                invisible="followup_status != 'in_need_of_action'"/>
+                                bg_color="bg-danger"
+                                attrs="{'invisible': [('followup_status', '!=', 'in_need_of_action')]}"/>
                         <widget name="web_ribbon" title="With overdue invoices"
-                                bg_color="text-bg-warning"
-                                invisible="followup_status != 'with_overdue_invoices'"/>
+                                bg_color="bg-warning"
+                                attrs="{'invisible': [('followup_status', '!=', 'with_overdue_invoices')]}"/>
                         <div class="oe_title">
-                            <h1><field name="name" readonly="True" required="True" class="oe_inline"/> <small><field name="trust" widget="followup_trust_widget" class="oe_inline"/></small></h1>
+                            <h1><field name="name" readonly="True" required="True"/> <small><field name="trust" widget="followup_trust_widget"/></small></h1>
                         </div>
                         <group name="schedule">
                             <group>
@@ -60,9 +59,9 @@
                         </group>
                         <field name="unreconciled_aml_ids">
                             <tree create="false" delete="false" editable="bottom" default_order="date_maturity asc" no_open="true">
-                                <field name="currency_id" column_invisible="True"/>
+                                <field name="currency_id" invisible="1"/>
                                 <field name="invoice_date" string="Date"/>
-                                <field name="move_name" string="Invoice No." widget="open_move_widget"/>
+                                <field name="move_id" string="Invoice No."/>
                                 <field name="date_maturity" widget="remaining_days"/>
                                 <field name="invoice_origin" optional="show"/>
                                 <field name="expected_pay_date" widget="date" optional="show"/>
@@ -72,7 +71,7 @@
                             </tree>
                         </field>
                         <group class="oe_invoice_lines_tab">
-                            <group class="oe_subtotal_footer">
+                            <group class="oe_subtotal_footer oe_right">
                                 <field name="currency_id" invisible="1"/>
                                 <field name="total_due" style="font-weight: bold; font-size: 1.2em;" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="total_overdue" style="font-weight: bold; font-size: 1.2em;" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -93,16 +92,16 @@
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <tree string="Follow-up Reports Tree View" create="false" import="false" delete="false" sample="1">
-                    <field name="currency_id" column_invisible="True"/>
+                    <field name="currency_id" invisible="1"/>
                     <field name="name"/>
                     <field name="followup_responsible_id" widget="many2one_avatar_user"/>
                     <field name="user_id" widget="many2one_avatar_user" optional="hide"/>
                     <field name="followup_reminder_type"/>
+                    <field name="followup_next_action_date" optional="hide" widget="remaining_days"/>
                     <field name="followup_status" widget="badge"
                            decoration-danger="followup_status == 'in_need_of_action'"
                            decoration-warning="followup_status == 'with_overdue_invoices'"
                            decoration-info="followup_status == 'no_action_needed'"/>
-                    <field name="followup_next_action_date" optional="show" widget="remaining_days"/>
                     <field name="followup_line_id"/>
                     <field name="total_due" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total"/>
                     <field name="total_overdue" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total"/>
@@ -118,8 +117,6 @@
             <field name="priority">100</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name"/>
-                    <field name="followup_responsible_id"/>
                     <field name="followup_line_id"/>
                     <field name="followup_status"/>
                     <filter string="Assigned to me"
@@ -158,7 +155,7 @@
             (0, 0, {'view_mode': 'tree', 'view_id': ref('customer_statements_tree_view')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('customer_statements_form_view')})]"/>
             <field name="domain">['|', ('parent_id', '=', False), ('is_company', '=', True), ('customer_rank', '>', 0)]</field>
-            <field name="context">{'search_default_filter_with_overdue_invoices': 1, 'res_partner_search_mode': 'customer'}</field>
+            <field name="context">{'search_default_filter_in_need_of_action': 1, 'res_partner_search_mode': 'customer'}</field>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
                 No follow-up to send!

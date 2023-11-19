@@ -18,12 +18,13 @@ class TestTimesheetHolidaysCreate(common.TransactionCase):
     def test_status_create(self):
         """Ensure that when a status is created, it fullfills the project and task constrains"""
         status = self.env['hr.leave.type'].create({
-            'name': 'A nice Time Off Type',
+            'name': 'A nice Leave Type',
             'requires_allocation': 'no'
         })
 
-        self.assertEqual(status.timesheet_project_id, status.company_id.internal_project_id, 'The default project linked to the status should be the same as the company')
-        self.assertEqual(status.timesheet_task_id, status.company_id.leave_timesheet_task_id, 'The default task linked to the status should be the same as the company')
+        company = self.env.company
+        self.assertEqual(status.timesheet_project_id, company.internal_project_id, 'The default project linked to the status should be the same as the company')
+        self.assertEqual(status.timesheet_task_id, company.leave_timesheet_task_id, 'The default task linked to the status should be the same as the company')
 
     def test_company_create(self):
         main_company = self.env.ref('base.main_company')
@@ -46,22 +47,22 @@ class TestTimesheetHolidays(TestCommonTimesheet):
         # leave dates : from next monday to next wednesday (to avoid crashing tests on weekend, when
         # there is no work days in working calendar)
         # NOTE: second and millisecond can add a working days
-        self.leave_start_datetime = datetime(2018, 2, 5)  # this is monday
-        self.leave_end_datetime = self.leave_start_datetime + relativedelta(days=2)
+        self.leave_start_datetime = datetime(2018, 2, 5, 7, 0, 0, 0)  # this is monday
+        self.leave_end_datetime = self.leave_start_datetime + relativedelta(days=3)
 
         # all company have those internal project/task (created by default)
         self.internal_project = self.env.company.internal_project_id
         self.internal_task_leaves = self.env.company.leave_timesheet_task_id
 
         self.hr_leave_type_with_ts = self.env['hr.leave.type'].create({
-            'name': 'Time Off Type with timesheet generation',
+            'name': 'Leave Type with timesheet generation',
             'requires_allocation': 'no',
             'timesheet_generate': True,
             'timesheet_project_id': self.internal_project.id,
             'timesheet_task_id': self.internal_task_leaves.id,
         })
         self.hr_leave_type_no_ts = self.env['hr.leave.type'].create({
-            'name': 'Time Off Type without timesheet generation',
+            'name': 'Leave Type without timesheet generation',
             'requires_allocation': 'no',
             'timesheet_generate': False,
             'timesheet_project_id': False,
@@ -80,6 +81,7 @@ class TestTimesheetHolidays(TestCommonTimesheet):
             'date_from': time.strftime('%Y-01-01'),
             'date_to': time.strftime('%Y-12-31'),
         })
+        self.hr_leave_allocation_with_ts.action_validate()
         self.hr_leave_allocation_no_ts = self.Allocations.sudo().create({
             'name': 'Days for limited category without timesheet',
             'employee_id': self.empl_employee.id,
@@ -89,75 +91,58 @@ class TestTimesheetHolidays(TestCommonTimesheet):
             'date_from': time.strftime('%Y-01-01'),
             'date_to': time.strftime('%Y-12-31'),
         })
+        self.hr_leave_allocation_no_ts.action_validate()
 
     def test_validate_with_timesheet(self):
         # employee creates a leave request
+        number_of_days = (self.leave_end_datetime - self.leave_start_datetime).days
         holiday = self.Requests.with_user(self.user_employee).create({
-            'name': 'Time Off 1',
+            'name': 'Leave 1',
             'employee_id': self.empl_employee.id,
             'holiday_status_id': self.hr_leave_type_with_ts.id,
-            'request_date_from': self.leave_start_datetime,
-            'request_date_to': self.leave_end_datetime,
+            'date_from': self.leave_start_datetime,
+            'date_to': self.leave_end_datetime,
+            'number_of_days': number_of_days,
         })
         holiday.with_user(SUPERUSER_ID).action_validate()
 
-        # The leave type and timesheet are linked to the same project and task of hr_leave_type_with_ts as the company is set
-        self.assertEqual(holiday.timesheet_ids.project_id.id, self.hr_leave_type_with_ts.timesheet_project_id.id)
-        self.assertEqual(holiday.timesheet_ids.task_id.id, self.hr_leave_type_with_ts.timesheet_task_id.id)
+        # The leave type and timesheet are linked to the same project and task'
+        self.assertEqual(holiday.timesheet_ids.project_id.id, self.internal_project.id)
+        self.assertEqual(holiday.timesheet_ids.task_id.id, self.internal_task_leaves.id)
 
-        self.assertEqual(len(holiday.timesheet_ids), holiday.number_of_days, 'Number of generated timesheets should be the same as the leave duration (1 per day between %s and %s)' % (fields.Datetime.to_string(self.leave_start_datetime), fields.Datetime.to_string(self.leave_end_datetime)))
+        self.assertEqual(len(holiday.timesheet_ids), number_of_days, 'Number of generated timesheets should be the same as the leave duration (1 per day between %s and %s)' % (fields.Datetime.to_string(self.leave_start_datetime), fields.Datetime.to_string(self.leave_end_datetime)))
 
         # manager refuse the leave
         holiday.with_user(SUPERUSER_ID).action_refuse()
         self.assertEqual(len(holiday.timesheet_ids), 0, 'Number of linked timesheets should be zero, since the leave is refused.')
 
-        company = self.env['res.company'].create({"name": "new company"})
-        self.empl_employee.write({
-            "company_id": company.id,
-        })
-
-        hr_leave_type_with_ts_without_company = self.hr_leave_type_with_ts.copy()
-        hr_leave_type_with_ts_without_company.write({
-            'company_id': False,
-        })
-        self.assertTrue(hr_leave_type_with_ts_without_company.timesheet_generate)
-
-        holiday = self.Requests.create({
-            'name': 'Time Off 2',
-            'employee_id': self.empl_employee.id,
-            'holiday_status_id': hr_leave_type_with_ts_without_company.id,
-            'request_date_from': self.leave_start_datetime,
-            'request_date_to': self.leave_end_datetime,
-        })
-        holiday.with_user(SUPERUSER_ID).action_validate()
-
-        # The leave type and timesheet are linked to the same project and task of the employee company as the company is not set
-        self.assertEqual(holiday.timesheet_ids.project_id.id, company.internal_project_id.id)
-        self.assertEqual(holiday.timesheet_ids.task_id.id, company.leave_timesheet_task_id.id)
-
     def test_validate_without_timesheet(self):
         # employee creates a leave request
+        number_of_days = (self.leave_end_datetime - self.leave_start_datetime).days
         holiday = self.Requests.with_user(self.user_employee).create({
-            'name': 'Time Off 1',
+            'name': 'Leave 1',
             'employee_id': self.empl_employee.id,
             'holiday_status_id': self.hr_leave_type_no_ts.id,
-            'request_date_from': self.leave_start_datetime,
-            'request_date_to': self.leave_end_datetime,
+            'date_from': self.leave_start_datetime,
+            'date_to': self.leave_end_datetime,
+            'number_of_days': number_of_days,
         })
         holiday.with_user(SUPERUSER_ID).action_validate()
         self.assertEqual(len(holiday.timesheet_ids), 0, 'Number of generated timesheets should be zero since the leave type does not generate timesheet')
 
     @freeze_time('2018-02-05')  # useful to be able to cancel the validated time off
     def test_cancel_validate_holidays(self):
+        number_of_days = (self.leave_end_datetime - self.leave_start_datetime).days
         holiday = self.Requests.with_user(self.user_employee).create({
-            'name': 'Time Off 1',
+            'name': 'Leave 1',
             'employee_id': self.empl_employee.id,
             'holiday_status_id': self.hr_leave_type_with_ts.id,
-            'request_date_from': self.leave_start_datetime,
-            'request_date_to': self.leave_end_datetime,
+            'date_from': self.leave_start_datetime,
+            'date_to': self.leave_end_datetime,
+            'number_of_days': number_of_days,
         })
         holiday.with_user(self.env.user).action_validate()
-        self.assertEqual(len(holiday.timesheet_ids), holiday.number_of_days, 'Number of generated timesheets should be the same as the leave duration (1 per day between %s and %s)' % (fields.Datetime.to_string(self.leave_start_datetime), fields.Datetime.to_string(self.leave_end_datetime)))
+        self.assertEqual(len(holiday.timesheet_ids), number_of_days, 'Number of generated timesheets should be the same as the leave duration (1 per day between %s and %s)' % (fields.Datetime.to_string(self.leave_start_datetime), fields.Datetime.to_string(self.leave_end_datetime)))
 
         self.env['hr.holidays.cancel.leave'].with_user(self.user_employee).with_context(default_leave_id=holiday.id) \
             .new({'reason': 'Test remove holiday'}) \
@@ -188,11 +173,11 @@ class TestTimesheetHolidays(TestCommonTimesheet):
         })
 
         holiday = self.Requests.with_user(self.user_employee).create({
-            'name': 'Time Off 1',
+            'name': 'Leave 1',
             'employee_id': self.empl_employee.id,
             'holiday_status_id': self.hr_leave_type_with_ts.id,
-            'request_date_from': leave_start_datetime,
-            'request_date_to': leave_end_datetime,
+            'date_from': leave_start_datetime,
+            'date_to': leave_end_datetime,
         })
         holiday.with_user(SUPERUSER_ID).action_validate()
         self.assertEqual(len(holiday.timesheet_ids), 4, '4 timesheets should be generated for this time off.')

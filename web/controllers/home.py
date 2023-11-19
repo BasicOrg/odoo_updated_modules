@@ -29,7 +29,7 @@ class Home(http.Controller):
 
     @http.route('/', type='http', auth="none")
     def index(self, s_action=None, db=None, **kw):
-        if request.db and request.session.uid and not is_user_internal(request.session.uid):
+        if request.session.uid and not is_user_internal(request.session.uid):
             return request.redirect_query('/web/login_successful', query=request.params)
         return request.redirect_query('/web', query=request.params)
 
@@ -40,7 +40,7 @@ class Home(http.Controller):
         # Ensure we have both a database and a user
         ensure_db()
         if not request.session.uid:
-            return request.redirect_query('/web/login', query=request.params, code=303)
+            return request.redirect('/web/login', 303)
         if kw.get('redirect'):
             return request.redirect(kw.get('redirect'), 303)
         if not security.check_session(request.session, request.env):
@@ -62,16 +62,12 @@ class Home(http.Controller):
             return request.redirect('/web/login?error=access')
 
     @http.route('/web/webclient/load_menus/<string:unique>', type='http', auth='user', methods=['GET'])
-    def web_load_menus(self, unique, lang=None):
+    def web_load_menus(self, unique):
         """
         Loads the menus for the webclient
         :param unique: this parameters is not used, but mandatory: it is used by the HTTP stack to make a unique request
-        :param lang: language in which the menus should be loaded (only works if language is installed)
         :return: the menus (including the images in Base64)
         """
-        if lang:
-            request.update_context(lang=lang)
-
         menus = request.env["ir.ui.menu"].load_web_menus(request.session.debug)
         body = json.dumps(menus, default=ustr)
         response = request.make_response(body, [
@@ -92,15 +88,9 @@ class Home(http.Controller):
         if request.httprequest.method == 'GET' and redirect and request.session.uid:
             return request.redirect(redirect)
 
-        # simulate hybrid auth=user/auth=public, despite using auth=none to be able
-        # to redirect users when no db is selected - cfr ensure_db()
-        if request.env.uid is None:
-            if request.session.uid is None:
-                # no user -> auth=public with specific website public user
-                request.env["ir.http"]._auth_method_public()
-            else:
-                # auth=user
-                request.update_env(user=request.session.uid)
+        # so it is correct if overloaded with auth="public"
+        if not request.uid:
+            request.update_env(user=odoo.SUPERUSER_ID)
 
         values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
         try:
@@ -145,7 +135,7 @@ class Home(http.Controller):
         if request.env.user._is_system():
             uid = request.session.uid = odoo.SUPERUSER_ID
             # invalidate session token cache as we've changed the uid
-            request.env.registry.clear_cache()
+            request.env['res.users'].clear_caches()
             request.session.session_token = security.compute_session_token(request.session, request.env)
 
         return request.redirect(self._login_redirect(uid))
@@ -158,7 +148,3 @@ class Home(http.Controller):
         headers = [('Content-Type', 'application/json'),
                    ('Cache-Control', 'no-store')]
         return request.make_response(data, headers)
-
-    @http.route(['/robots.txt'], type='http', auth="none")
-    def robots(self, **kwargs):
-        return "User-agent: *\nDisallow: /\n"

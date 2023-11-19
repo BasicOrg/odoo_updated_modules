@@ -15,16 +15,10 @@ class ProductTemplate(models.Model):
     purchase_method = fields.Selection([
         ('purchase', 'On ordered quantities'),
         ('receive', 'On received quantities'),
-    ], string="Control Policy", compute='_compute_purchase_method', store=True, readonly=False,
-        help="On ordered quantities: Control bills based on ordered quantities.\n"
-            "On received quantities: Control bills based on received quantities.")
+    ], string="Control Policy", help="On ordered quantities: Control bills based on ordered quantities.\n"
+        "On received quantities: Control bills based on received quantities.", default="receive")
     purchase_line_warn = fields.Selection(WARNING_MESSAGE, 'Purchase Order Line Warning', help=WARNING_HELP, required=True, default="no-message")
     purchase_line_warn_msg = fields.Text('Message for Purchase Order Line')
-
-    @api.depends('detailed_type')
-    def _compute_purchase_method(self):
-        for product in self:
-            product.purchase_method = 'purchase' if product.detailed_type == 'service' else 'receive'
 
     def _compute_purchased_product_qty(self):
         for template in self:
@@ -61,8 +55,8 @@ class ProductProduct(models.Model):
             ('product_id', 'in', self.ids),
             ('order_id.date_approve', '>=', date_from)
         ]
-        order_lines = self.env['purchase.order.line']._read_group(domain, ['product_id'], ['product_uom_qty:sum'])
-        purchased_data = {product.id: qty for product, qty in order_lines}
+        order_lines = self.env['purchase.order.line']._read_group(domain, ['product_id', 'product_uom_qty'], ['product_id'])
+        purchased_data = dict([(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
         for product in self:
             if not product.id:
                 product.purchased_product_qty = 0.0

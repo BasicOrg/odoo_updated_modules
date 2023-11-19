@@ -1,5 +1,4 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from urllib.parse import urlparse
 
 from odoo.tests import tagged
 from odoo.tests.common import HttpCase
@@ -39,7 +38,7 @@ class TestWebsiteLinksRussian(HttpCase):
         res = self.url_open(f'/r/r/{self.link.code}', allow_redirects=False)
         res.raise_for_status()
         self.assertEqual(res.status_code, 301, "Should be a lang alias redirection")
-        self.assertEqual(urlparse(res.headers.get('Location'), '').path, f'/ru/r/{self.link.code}',
+        self.assertEqual(res.headers.get('Location'), f'{self.base_url()}/ru/r/{self.link.code}',
             "Should be redirected to /ru as r is an alias for ru (russian)")
 
         res = self.url_open(res.headers['Location'], allow_redirects=False)

@@ -12,8 +12,8 @@
                     <div class="o_row">
                         <span>Choose an example <field name="model_id" readonly="1"/> record:</span>
                         <div>
-                            <field name="resource_ref" class="oe_inline" options="{'hide_model': True, 'no_create': True, 'no_open': True}" invisible="no_record"/>
-                            <span class="text-warning" invisible="not no_record">No records</span>
+                            <field name="resource_ref" class="oe_inline" options="{'hide_model': True, 'no_create': True, 'no_open': True}" attrs="{'invisible': [('no_record', '=', True)]}"/>
+                            <span class="text-warning" attrs="{'invisible': [('no_record', '=', False)]}">No records</span>
                         </div>
                     </div>
                     <p>Choose a language: <field name="lang" class="oe_inline ml8"/></p>
@@ -22,7 +22,7 @@
                         <field name="body" readonly="1" nolabel="1" options='{"safe": True}'/>
                     <hr/>
                     <footer>
-                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </form>
             </field>
@@ -31,6 +31,7 @@
         <record id="sms_template_preview_action" model="ir.actions.act_window">
             <field name="name">Template Preview</field>
             <field name="res_model">sms.template.preview</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="sms_template_preview_form"/>
             <field name="target">new</field>

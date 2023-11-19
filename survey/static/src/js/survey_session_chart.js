@@ -1,9 +1,8 @@
-/** @odoo-module **/
-/* global ChartDataLabels */
+odoo.define('survey.session_chart', function (require) {
+'use strict';
 
-import { loadJS } from "@web/core/assets";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import SESSION_CHART_COLORS from "@survey/js/survey_session_colors";
+var publicWidget = require('web.public.widget');
+var SESSION_CHART_COLORS = require('survey.session_colors');
 
 publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
     init: function (parent, options) {
@@ -22,10 +21,6 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
         return this._super.apply(this, arguments).then(function () {
             self._setupChart();
         });
-    },
-
-    willStart: async function () {
-        await loadJS("/survey/static/src/js/libs/chartjs-plugin-datalabels.js");
     },
 
     //--------------------------------------------------------------------------
@@ -132,37 +127,35 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
                         },
                         anchor: 'end',
                         align: 'top',
-                    },
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        enabled: false,
-                    },
+                    }
+                },
+                legend: {
+                    display: false,
                 },
                 scales: {
-                    y: {
+                    yAxes: [{
                         ticks: {
                             display: false,
                         },
-                        grid: {
+                        gridLines: {
                             display: false
                         }
-                    },
-                    x: {
+                    }],
+                    xAxes: [{
                         ticks: {
                             maxRotation: 0,
-                            font: {
-                                size :"35",
-                                weight:"bold"
-                            },
-                            color : '#212529'
+                            fontSize: '35',
+                            fontStyle: 'bold',
+                            fontColor: '#212529'
                         },
-                        grid: {
+                        gridLines: {
                             drawOnChartArea: false,
                             color: 'rgba(0, 0, 0, 0.2)'
                         }
-                    }
+                    }]
+                },
+                tooltips: {
+                    enabled: false,
                 },
                 layout: {
                     padding: {
@@ -173,7 +166,7 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
                     }
                 }
             },
-            plugins: [ChartDataLabels, {
+            plugins: [{
                 /**
                  * The way it works is each label is an array of words.
                  * eg.: if we have a chart label: "this is an example of a label"
@@ -181,15 +174,15 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
                  * Each value of the array represents a line of the label.
                  * So for this example above: it will be displayed as:
                  * "this is an examble<br/>of a label", breaking the label in 2 parts and put on 2 lines visually.
-                 *
+                 * 
                  * What we do here is rework the labels with our own algorithm to make them fit better in screen space
                  * based on breakpoints based on number of columns to display.
                  * So this example will become: ["this is an", "example of", "a label"] if we have a lot of labels to put in the chart.
                  * Which will be displayed as "this is an<br/>example of<br/>a label"
                  * Obviously, the more labels you have, the more columns, and less screen space is available.
-                 *
+                 * 
                  * We also adapt the font size based on the width available in the chart.
-                 *
+                 * 
                  * So we counterbalance multiple times:
                  * - Based on number of columns (i.e. number of survey.question.answer of your current survey.question),
                  *   we split the words of every labels to make them display on more rows.
@@ -197,8 +190,8 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
                  *   we reduce the chart font to be able to fit more characters.
                  * - Based on the longest word present in the labels, we apply a certain ratio with the width of the chart
                  *   to get a more accurate font size for the space available.
-                 *
-                 * @param {Object} chart
+                 * 
+                 * @param {Object} chart 
                  */
                 beforeInit: function (chart) {
                     const nbrCol = chart.data.labels.length;
@@ -227,7 +220,7 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
                         const allWords = chart.data.labels.reduce((accumulator, words) => accumulator.concat(' '.concat(words)));
                         const maxWordLength = Math.max(...allWords.split(' ').map((word) => word.length));
                         fontRatio = maxWordLength > charPerLine ? minRatio : fontRatio;
-                        chart.options.scales.x.ticks.font.size = Math.min(parseInt(chart.options.scales.x.ticks.font.size), chart.width * fontRatio / (nbrCol));
+                        chart.options.scales.xAxes[0].ticks.fontSize = Math.min(parseInt(chart.options.scales.xAxes[0].ticks.fontSize), chart.width * fontRatio / (nbrCol));
                     }
 
                     chart.data.labels.forEach(function (label, index, labelsList) {
@@ -365,4 +358,6 @@ publicWidget.registry.SurveySessionChart = publicWidget.Widget.extend({
     }
 });
 
-export default publicWidget.registry.SurveySessionChart;
+return publicWidget.registry.SurveySessionChart;
+
+});

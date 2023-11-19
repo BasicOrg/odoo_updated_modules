@@ -29,7 +29,7 @@ class ResCurrency(models.Model):
         if afip_ws == 'wsfe':
             response = client.service.FEParamGetCotizacion(auth, MonId=self.l10n_ar_afip_code)
             if response.Errors:
-                raise UserError(_('The was an error obtaining the rate:\n\n * Code %s -  %s', response.Errors.Err[0].Code, response.Errors.Err[0].Msg))
+                raise UserError(_('The was an error obtaining the rate:\n\n * Code %s -  %s') % (response.Errors.Err[0].Code, response.Errors.Err[0].Msg))
             # Events None
             date = response.ResultGet.FchCotiz
             rate = response.ResultGet.MonCotiz

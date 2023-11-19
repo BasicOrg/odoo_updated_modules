@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 
 
 class AccountAnalyticAccount(models.Model):
@@ -18,64 +18,41 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('line_ids')
     def _compute_invoice_count(self):
         sale_types = self.env['account.move'].get_sale_types(include_receipts=True)
-
-        query = self.env['account.move.line']._search([
-            ('parent_state', '=', 'posted'),
-            ('move_id.move_type', 'in', sale_types),
-        ])
-        query.add_where(
-            'account_move_line.analytic_distribution ?| %s',
-            [[str(account_id) for account_id in self.ids]],
-        )
-
-        query_string, query_param = query.select(
-            'jsonb_object_keys(account_move_line.analytic_distribution) as account_id',
-            'COUNT(DISTINCT(account_move_line.move_id)) as move_count',
-        )
-        query_string = f"{query_string} GROUP BY jsonb_object_keys(account_move_line.analytic_distribution)"
-
-        self._cr.execute(query_string, query_param)
-        data = {int(record.get('account_id')): record.get('move_count') for record in self._cr.dictfetchall()}
+        domain = [
+            ('move_line_id.move_id.move_type', 'in', sale_types),
+            ('account_id', 'in', self.ids)
+        ]
+        groups = self.env['account.analytic.line']._read_group(domain, ['move_line_id.move_id:count_distinct'], ['account_id'])
+        moves_count_mapping = dict((g['account_id'][0], g['account_id_count']) for g in groups)
         for account in self:
-            account.invoice_count = data.get(account.id, 0)
+            account.invoice_count = moves_count_mapping.get(account.id, 0)
 
     @api.depends('line_ids')
     def _compute_vendor_bill_count(self):
         purchase_types = self.env['account.move'].get_purchase_types(include_receipts=True)
-
-        query = self.env['account.move.line']._search([
-            ('parent_state', '=', 'posted'),
-            ('move_id.move_type', 'in', purchase_types),
-        ])
-        query.add_where(
-            'account_move_line.analytic_distribution ?| %s',
-            [[str(account_id) for account_id in self.ids]],
-        )
-
-        query_string, query_param = query.select(
-            'jsonb_object_keys(account_move_line.analytic_distribution) as account_id',
-            'COUNT(DISTINCT(account_move_line.move_id)) as move_count',
-        )
-        query_string = f"{query_string} GROUP BY jsonb_object_keys(account_move_line.analytic_distribution)"
-
-        self._cr.execute(query_string, query_param)
-        data = {int(record.get('account_id')): record.get('move_count') for record in self._cr.dictfetchall()}
+        domain = [
+            ('move_line_id.move_id.move_type', 'in', purchase_types),
+            ('account_id', 'in', self.ids)
+        ]
+        groups = self.env['account.analytic.line']._read_group(domain, ['move_line_id.move_id:count_distinct'], ['account_id'])
+        moves_count_mapping = dict((g['account_id'][0], g['account_id_count']) for g in groups)
         for account in self:
-            account.vendor_bill_count = data.get(account.id, 0)
+            account.vendor_bill_count = moves_count_mapping.get(account.id, 0)
 
     def action_view_invoice(self):
         self.ensure_one()
         query = self.env['account.move.line']._search([('move_id.move_type', 'in', self.env['account.move'].get_sale_types())])
+        query.order = None
         query.add_where('analytic_distribution ? %s', [str(self.id)])
-        query_string, query_param = query.select('DISTINCT account_move_line.move_id')
+        query_string, query_param = query.select('DISTINCT move_id')
         self._cr.execute(query_string, query_param)
         move_ids = [line.get('move_id') for line in self._cr.dictfetchall()]
         result = {
             "type": "ir.actions.act_window",
             "res_model": "account.move",
             "domain": [('id', 'in', move_ids)],
-            "context": {"create": False, 'default_move_type': 'out_invoice'},
-            "name": _("Customer Invoices"),
+            "context": {"create": False},
+            "name": "Customer Invoices",
             'view_mode': 'tree,form',
         }
         return result
@@ -83,16 +60,17 @@ class AccountAnalyticAccount(models.Model):
     def action_view_vendor_bill(self):
         self.ensure_one()
         query = self.env['account.move.line']._search([('move_id.move_type', 'in', self.env['account.move'].get_purchase_types())])
+        query.order = None
         query.add_where('analytic_distribution ? %s', [str(self.id)])
-        query_string, query_param = query.select('DISTINCT account_move_line.move_id')
+        query_string, query_param = query.select('DISTINCT move_id')
         self._cr.execute(query_string, query_param)
         move_ids = [line.get('move_id') for line in self._cr.dictfetchall()]
         result = {
             "type": "ir.actions.act_window",
             "res_model": "account.move",
             "domain": [('id', 'in', move_ids)],
-            "context": {"create": False, 'default_move_type': 'in_invoice'},
-            "name": _("Vendor Bills"),
+            "context": {"create": False},
+            "name": "Vendor Bills",
             'view_mode': 'tree,form',
         }
         return result

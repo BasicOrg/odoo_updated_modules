@@ -3,17 +3,16 @@
 # 	* account_disallowed_expenses_fleet
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,11 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_disallowed_expenses_fleet
-#. odoo-python
-#: code:addons/account_disallowed_expenses_fleet/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Accounts missing a disallowed expense category"
-msgstr "缺少禁止费用类别的账户"
+#: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_account_disallowed_expenses_category__car_category
+msgid "Car Category"
+msgstr "汽车类别"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate__company_id
@@ -40,12 +37,7 @@ msgstr "创建人"
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate__create_date
 msgid "Created on"
-msgstr "创建日期"
-
-#. module: account_disallowed_expenses_fleet
-#: model:ir.model,name:account_disallowed_expenses_fleet.model_account_deferred_report_handler
-msgid "Deferred Expense Report Custom Handler"
-msgstr "递延费用报告自定义处理程序"
+msgstr "创建时间"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model,name:account_disallowed_expenses_fleet.model_account_disallowed_expenses_category
@@ -55,7 +47,7 @@ msgstr "不允许支出类别"
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model,name:account_disallowed_expenses_fleet.model_account_disallowed_expenses_fleet_report_handler
 msgid "Disallowed Expenses Fleet Custom Handler"
-msgstr "不允许费用 车队定制处理程序"
+msgstr ""
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_vehicle__rate_ids
@@ -74,17 +66,14 @@ msgid "ID"
 msgstr "ID"
 
 #. module: account_disallowed_expenses_fleet
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses_fleet/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid ""
-"It looks like Journal Items concerning vehicles are missing. Please check if"
-msgstr "与车辆有关的日志项目好像丢失了。请检查是否"
-
-#. module: account_disallowed_expenses_fleet
 #: model:ir.model,name:account_disallowed_expenses_fleet.model_account_move_line
 msgid "Journal Item"
-msgstr "日记账项目"
+msgstr "会计分录"
+
+#. module: account_disallowed_expenses_fleet
+#: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate__write_uid
@@ -94,17 +83,7 @@ msgstr "最后更新人"
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
-
-#. module: account_disallowed_expenses_fleet
-#: model:ir.model,name:account_disallowed_expenses_fleet.model_bank_rec_widget_line
-msgid "Line of the bank reconciliation widget"
-msgstr "银行对账小工具的资料行"
-
-#. module: account_disallowed_expenses_fleet
-#: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_account_disallowed_expenses_category__car_category
-msgid "Make Vehicle Required"
-msgstr "将车辆设为必要"
+msgstr "最后更新时间"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,field_description:account_disallowed_expenses_fleet.field_fleet_disallowed_expenses_rate__date_from
@@ -113,8 +92,8 @@ msgstr "开始日期"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model.fields,help:account_disallowed_expenses_fleet.field_account_disallowed_expenses_category__car_category
-msgid "The vehicle becomes mandatory while booking any account move."
-msgstr "为任何账户分录记帐时，该车辆都会成为强制要求。"
+msgid "This checkbox makes the vehicle mandatory while booking a vendor bill."
+msgstr "此复选框使车辆在预订供应商账单时为必填项。"
 
 #. module: account_disallowed_expenses_fleet
 #: model:ir.model,name:account_disallowed_expenses_fleet.model_fleet_vehicle
@@ -128,22 +107,6 @@ msgid "Vehicle Disallowed Expenses Rate"
 msgstr "车辆不允许费用率"
 
 #. module: account_disallowed_expenses_fleet
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses_fleet/static/src/components/disallowed_expenses_report/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_disallowed_expenses_fleet.disallowed_expenses_fleet_search_template_extra_options
 msgid "Vehicle Split"
-msgstr "车辆拆分"
-
-#. module: account_disallowed_expenses_fleet
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses_fleet/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "need a Disallowed Expense Category."
-msgstr "需要禁止费用类别。"
-
-#. module: account_disallowed_expenses_fleet
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses_fleet/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "these accounts"
-msgstr "这些账户"
+msgstr ""

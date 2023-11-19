@@ -1,16 +1,18 @@
 .pos-receipt-print {
     width: 512px;
+    height: 0;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: left;
+    direction: ltr;
     font-size: 27px;
     color: #000000;
 }
 
 .pos-receipt .pos-receipt-right-align {
     float: right;
-    display: flex;
-}
-
-.pos-receipt .pos-receipt-right-align .tax-letter{
-    margin-left: 0.5em;
 }
 
 .pos-receipt .pos-receipt-center-align {
@@ -66,10 +68,6 @@
     font-size: 75%;
 }
 
-.pos-payment-terminal-receipt pre {
-    font-family: inherit;
-}
-
 .responsive-price {
     display: flex;
     flex-wrap: wrap;
@@ -78,11 +76,4 @@
 
 .responsive-price > .pos-receipt-right-align {
     margin-left: auto;
-}
-
-.pos-receipt .pos-receipt-taxes {
-    display: grid;
-    grid-template-columns: min-content min-content auto auto auto;
-    width: 100%;
-    justify-items: end;
 }

@@ -11,7 +11,7 @@
             <field name="registration_ids" invisible="1"/>
             <button name="action_send_push" string="Send Push" type="object"
                 groups="social.group_social_user"
-                invisible="not registration_ids or not firebase_enable_push_notifications"/>
+                attrs="{'invisible': ['|', ('registration_ids', '=', []), ('firebase_enable_push_notifications', '!=', True)]}"/>
         </xpath>
     </field>
 </record>

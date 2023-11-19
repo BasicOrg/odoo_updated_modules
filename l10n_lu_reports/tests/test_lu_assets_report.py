@@ -11,7 +11,7 @@ from odoo.tests.common import Form
 class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='lu'):
+    def setUpClass(cls, chart_template_ref='l10n_lu.lu_2011_chart_1'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].write({
@@ -20,8 +20,8 @@ class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
             'vat': 'LU12345613',
         })
 
-        cls.tax_17 = cls.env['account.tax'].search([('company_id', '=', cls.company_data['company'].id), ('name', '=', '17% G')])
-        cls.tax_3 = cls.env['account.tax'].search([('company_id', '=', cls.company_data['company'].id), ('name', '=', '3% G')])
+        cls.tax_17 = cls.env['account.tax'].search([('company_id', '=', cls.company_data['company'].id), ('name', '=', '17-P-G')])
+        cls.tax_3 = cls.env['account.tax'].search([('company_id', '=', cls.company_data['company'].id), ('name', '=', '3-P-G')])
 
         cls.product = cls.env['product.product'].create({'name': 'product_1', 'lst_price': 100.0})
         cls.partner_be = cls.env['res.partner'].create({
@@ -38,9 +38,10 @@ class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
         # then no tax is set, and no tax should be reported for the asset
         self.env['account.asset'].create({
             'name': 'test',
+            'asset_type': 'purchase',
             'acquisition_date': datetime.today() - relativedelta(days=400),
-            'account_depreciation_id': self.company_data['default_account_assets'].id,
-            'account_depreciation_expense_id': self.company_data['default_account_expense'].id,
+            'account_depreciation_id': self.company_data['default_account_expense'].id,
+            'account_depreciation_expense_id': self.company_data['default_account_assets'].id,
             'journal_id': self.company_data['default_journal_purchase'].id,
             'original_value': 100.00,
         }).validate()
@@ -74,6 +75,7 @@ class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
             'name': 'multiple_assets_per_line_test_account',
             'code': '000001',
             'account_type': 'asset_non_current',
+            'asset_type': 'purchase',
             'multiple_assets_per_line': True,
             'create_asset': "validate",
         })
@@ -92,8 +94,8 @@ class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
         report = self.env.ref('account_asset.assets_report')
         # Assets must be in a state different from draft in order to be reported
         for asset in move.asset_ids:
-            asset.account_depreciation_id = self.company_data['default_account_assets']
-            asset.account_depreciation_expense_id = self.company_data['default_account_expense']
+            asset.account_depreciation_id = self.company_data['default_account_expense']
+            asset.account_depreciation_expense_id = self.company_data['default_account_assets']
             asset.validate()
         report, options = self._get_report_and_options(report, datetime.today() - relativedelta(days=365), datetime.today())
         data = report.l10n_lu_asset_report_get_xml_2_0_report_values(options)['forms'][0]['tables'][0]
@@ -106,19 +108,19 @@ class LuxembourgAssetsReportTaxesTest(TestAccountReportsCommon):
     @classmethod
     def _get_report_and_options(cls, report, date_from, date_to):
         report = report.with_context(date_from=date_from, date_to=date_to, lang='EN_us')
-        options = cls._generate_options(report, date_from, date_to)
+        options = report._get_options({'date': {'date_from': date_from, 'date_to': date_to, 'filter': 'custom'}})
         return report, options
 
     @classmethod
     def _get_report_data_linked_assets(cls, invoice_lines):
-        asset_form = Form(cls.env['account.asset'])
+        asset_form = Form(cls.env['account.asset'].with_context(asset_type='purchase'))
         # `original_move_line_ids` is not visible when it's empty by default
         # {'invisible' : [('original_move_line_ids', '=', [])]}
-        asset_form._view['modifiers']['original_move_line_ids']['invisible'] = 'False'
+        asset_form._view['modifiers']['original_move_line_ids']['invisible'] = False
         for line in invoice_lines:
             asset_form.original_move_line_ids.add(line)
-        asset_form.account_depreciation_id = cls.company_data['default_account_assets']
-        asset_form.account_depreciation_expense_id = cls.company_data['default_account_expense']
+        asset_form.account_depreciation_id = cls.company_data['default_account_expense']
+        asset_form.account_depreciation_expense_id = cls.company_data['default_account_assets']
         asset_form.journal_id = cls.company_data['default_journal_purchase']
         asset_form = asset_form.save()
         asset_form.validate()

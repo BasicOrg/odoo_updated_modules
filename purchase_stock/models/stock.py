@@ -21,8 +21,8 @@ class StockWarehouse(models.Model):
                                      help="When products are bought, they can be delivered to this warehouse")
     buy_pull_id = fields.Many2one('stock.rule', 'Buy rule')
 
-    def _generate_global_route_rules_values(self):
-        rules = super()._generate_global_route_rules_values()
+    def _get_global_route_rules_values(self):
+        rules = super(StockWarehouse, self)._get_global_route_rules_values()
         location_id = self.in_type_id.default_location_dest_id
         rules.update({
             'buy_pull_id': {
@@ -32,7 +32,7 @@ class StockWarehouse(models.Model):
                     'picking_type_id': self.in_type_id.id,
                     'group_propagation_option': 'none',
                     'company_id': self.company_id.id,
-                    'route_id': self._find_global_route('purchase_stock.route_warehouse0_buy', _('Buy'), raise_if_not_found=False).id,
+                    'route_id': self._find_global_route('purchase_stock.route_warehouse0_buy', _('Buy')).id,
                     'propagate_cancel': self.reception_steps != 'one_step',
                 },
                 'update_values': {
@@ -75,16 +75,8 @@ class ReturnPicking(models.TransientModel):
 
     def _prepare_move_default_values(self, return_line, new_picking):
         vals = super(ReturnPicking, self)._prepare_move_default_values(return_line, new_picking)
-        if self.location_id.usage == "supplier":
-            vals['purchase_line_id'], vals['partner_id'] = return_line.move_id._get_purchase_line_and_partner_from_chain()
+        vals['purchase_line_id'] = return_line.move_id.purchase_line_id.id
         return vals
-
-    def _create_returns(self):
-        new_picking_id, picking_type_id = super()._create_returns()
-        picking = self.env['stock.picking'].browse(new_picking_id)
-        if len(picking.move_ids.partner_id) == 1:
-            picking.partner_id = picking.move_ids.partner_id
-        return new_picking_id, picking_type_id
 
 
 class Orderpoint(models.Model):
@@ -97,7 +89,7 @@ class Orderpoint(models.Model):
     vendor_id = fields.Many2one(related='supplier_id.partner_id', string="Vendor", store=True)
     purchase_visibility_days = fields.Float(default=0.0, help="Visibility Days applied on the purchase routes.")
 
-    @api.depends('product_id.purchase_order_line_ids.product_qty', 'product_id.purchase_order_line_ids.state')
+    @api.depends('product_id.purchase_order_line_ids', 'product_id.purchase_order_line_ids.state')
     def _compute_qty(self):
         """ Extend to add more depends values """
         return super()._compute_qty()
@@ -160,7 +152,7 @@ class Orderpoint(models.Model):
         self.ensure_one()
         domain = [('orderpoint_id', 'in', self.ids)]
         if self.env.context.get('written_after'):
-            domain = AND([domain, [('write_date', '>=', self.env.context.get('written_after'))]])
+            domain = AND([domain, [('write_date', '>', self.env.context.get('written_after'))]])
         order = self.env['purchase.order.line'].search(domain, limit=1).order_id
         if order:
             action = self.env.ref('purchase.action_rfq_form')
@@ -196,11 +188,17 @@ class Orderpoint(models.Model):
     def _set_default_route_id(self):
         route_id = self.env['stock.rule'].search([
             ('action', '=', 'buy')
-        ], limit=1).route_id
+        ]).route_id
         orderpoint_wh_supplier = self.filtered(lambda o: o.product_id.seller_ids)
-        if route_id and orderpoint_wh_supplier and (not self.product_id.route_ids or route_id in self.product_id.route_ids):
+        if route_id and orderpoint_wh_supplier:
             orderpoint_wh_supplier.route_id = route_id[0].id
         return super()._set_default_route_id()
+
+    def _get_orderpoint_procurement_date(self):
+        date = super()._get_orderpoint_procurement_date()
+        if any(rule.action == 'buy' for rule in self.rule_ids):
+            date -= relativedelta(days=self.company_id.po_lead)
+        return date
 
 
 class StockLot(models.Model):
@@ -227,20 +225,3 @@ class StockLot(models.Model):
         action['domain'] = [('id', 'in', self.mapped('purchase_order_ids.id'))]
         action['context'] = dict(self._context, create=False)
         return action
-
-
-class ProcurementGroup(models.Model):
-    _inherit = 'procurement.group'
-
-    @api.model
-    def run(self, procurements, raise_user_error=True):
-        wh_by_comp = dict()
-        for procurement in procurements:
-            routes = procurement.values.get('route_ids')
-            if routes and any(r.action == 'buy' for r in routes.rule_ids):
-                company = procurement.company_id
-                if company not in wh_by_comp:
-                    wh_by_comp[company] = self.env['stock.warehouse'].search([('company_id', '=', company.id)])
-                wh = wh_by_comp[company]
-                procurement.values['route_ids'] |= wh.reception_route_id
-        return super().run(procurements, raise_user_error=raise_user_error)

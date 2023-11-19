@@ -20,7 +20,7 @@ class TestFsmSaleProducts(HttpCase, TestFsmFlowCommon):
         cls.task.write({
             'user_ids': [Command.link(cls.env.ref("base.user_admin").id)],
             'planned_date_begin': fields.Datetime.today() + timedelta(days=1),
-            'date_deadline': fields.Datetime.today() + timedelta(days=2),
+            'planned_date_end': fields.Datetime.today() + timedelta(days=2),
         })
         cls.consu_product_ordered.priority = '1'
         cls.my_custom_price_list = cls.env['product.pricelist'].create({

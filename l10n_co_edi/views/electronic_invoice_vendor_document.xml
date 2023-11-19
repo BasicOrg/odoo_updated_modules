@@ -25,7 +25,7 @@
                 <EMI_5 t-out="invoice_partner.zip"/>
                 <EMI_6 t-out="invoice_partner.state_id.name"/>
                 <EMI_7 t-out="str(invoice_partner.state_id.l10n_co_edi_code).zfill(2)"/>
-                <EMI_8 t-out="invoice_partner.street"/>
+                <EMI_8/>
                 <EMI_9 t-out="invoice_partner.country_id.code"/>
                 <EMI_10 t-out="invoice_partner.country_id.name"/>
                 <EMI_11/>
@@ -38,9 +38,9 @@
                     <TAC_1 t-out="';'.join(invoice_partner.commercial_partner_id.l10n_co_edi_obligation_type_ids.mapped('name'))"/>
                 </TAC>
 
-                <GTE>
-                    <GTE_1 t-out="invoice_partner._l10n_co_edi_get_fiscal_regimen_code()"/>
-                    <GTE_2 t-out="invoice_partner._l10n_co_edi_get_fiscal_regimen_name()"/>
+                <GTE t-if="tax_types">
+                    <GTE_1 t-out="tax_types[0].code"/>
+                    <GTE_2 t-out="tax_types[0].name"/>
                 </GTE>
             </EMI>
             <ADQ>
@@ -51,6 +51,8 @@
                 <ADQ_5/>
                 <ADQ_6/>
                 <ADQ_7/>
+                <ADQ_8/>
+                <ADQ_9/>
                 <ADQ_10/>
                 <ADQ_11 t-out="company_partner._get_vat_without_verification_code()"/>
                 <ADQ_12 t-out="company_partner._get_vat_verification_code()"/>
@@ -61,9 +63,9 @@
                     <TCR_1><t t-out="';'.join(company_partner.l10n_co_edi_obligation_type_ids.mapped('name'))"/></TCR_1>
                 </TCR>
 
-                <GTA>
-                    <GTA_1 t-out="company_partner._l10n_co_edi_get_fiscal_regimen_code()"/>
-                    <GTA_2 t-out="company_partner._l10n_co_edi_get_fiscal_regimen_name()"/>
+                <GTA t-if="tax_types">
+                    <GTA_1 t-out="tax_types[0].code"/>
+                    <GTA_2 t-out="tax_types[0].name"/>
                 </GTA>
             </ADQ>
             <TOT>
@@ -107,12 +109,8 @@
                 <MEP_3 t-out="invoice.invoice_date_due if not l10n_co_edi_is_direct_payment else ''"/>
             </MEP>
 
-            <NOT t-foreach="notas" t-as="nota">
-                <NOT_1 t-out="nota"/>
-            </NOT>
-
             <t t-set="ite_counter" t-value="1"/>
-            <ITE t-foreach="invoice.invoice_line_ids.filtered(lambda line: line.display_type == 'product')" t-as="line">
+            <ITE t-foreach="invoice.invoice_line_ids.filtered(lambda line: not line.display_type)" t-as="line">
                     <ITE_1 t-out="ite_counter"/>
                     <ITE_2 t-out="line.quantity"/>
                     <ITE_3 t-out="line.product_uom_id.l10n_co_edi_ubl or '94'"/>
@@ -132,14 +130,14 @@
                     </FCB>
 
                     <IDE t-if="invoice.move_type == 'in_invoice'">
-                        <IDE_1 t-out="ite_counter"/>
-                        <IDE_2 t-out="'false' if float_compare(line.price_subtotal, 0, precision_rounding=line.currency_id.rounding or invoice.currency_id.rounding) &gt;= 0 else 'true'"/>
+                        <IDE_1 t-esc="ite_counter"/>
+                        <IDE_2 t-esc="'false' if float_compare(line.price_subtotal, 0, precision_rounding=line.currency_id.rounding or invoice.currency_id.rounding) &gt;= 0 else 'true'"/>
                         <IDE_3/>
-                        <IDE_4 t-out="line.discount"/>
-                        <IDE_5 t-out="format_monetary(round(invoice.currency_id.round((line.discount / 100) * line.price_unit * line.quantity) or 0.0, 2), invoice.currency_id)"/>
-                        <IDE_6 t-out="invoice.currency_id.name"/>
-                        <IDE_7 t-out="format_monetary(round(line.price_unit * line.quantity, 2), invoice.currency_id)"/>
-                        <IDE_8 t-out="invoice.currency_id.name"/>
+                        <IDE_4 t-esc="line.discount"/>
+                        <IDE_5 t-esc="format_monetary(round(invoice.currency_id.round((line.discount / 100) * line.price_unit * line.quantity) or 0.0, 2), invoice.currency_id)"/>
+                        <IDE_6 t-esc="invoice.currency_id.name"/>
+                        <IDE_7 t-esc="format_monetary(round(line.price_unit * line.quantity, 2), invoice.currency_id)"/>
+                        <IDE_8 t-esc="invoice.currency_id.name"/>
                     </IDE>
 
                     <t t-call="l10n_co_edi.tii_section"/>

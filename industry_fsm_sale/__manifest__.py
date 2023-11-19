@@ -11,19 +11,21 @@ Create Sales order with timesheets and products from tasks
     'depends': ['industry_fsm', 'sale_timesheet_enterprise'],
     'data': [
         'data/industry_fsm_data.xml',
+        'security/industry_fsm_sale_security.xml',
         'views/project_task_views.xml',
         'views/product_product_views.xml',
         'views/project_project_views.xml',
         'views/sale_order_views.xml',
         "views/project_sharing_views.xml",
         'views/project_portal_templates.xml',
+        'report/project_report_views.xml',
     ],
     'auto_install': True,
     'post_init_hook': 'post_init',
-    'uninstall_hook': 'uninstall_hook',
     'assets': {
         'web.assets_backend': [
             'industry_fsm_sale/static/src/components/**/*',
+            'industry_fsm_sale/static/src/views/**/*',
             'industry_fsm_sale/static/src/js/tours/**/*',
         ],
         'web.assets_tests': [

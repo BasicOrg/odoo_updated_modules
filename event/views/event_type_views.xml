@@ -14,23 +14,33 @@
                     </div>
                    <group>
                        <group>
-                           <field name="default_timezone" class="w-100"/>
-                           <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_quick_create': True}"/>
+                           <div colspan="2" class="o_checkbox_optional_field">
+                               <label for="default_timezone"/>
+                               <field name="default_timezone" class="w-100"/>
+                           </div>
+                           <div colspan="2" class="o_checkbox_optional_field">
+                               <label for="tag_ids"/>
+                               <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_quick_create': True}"/>
+                           </div>
                        </group>
                        <group>
-                           <label for="has_seats_limitation" string="Limit Registrations"/>
-                           <div>
+                           <div colspan="2" class="o_checkbox_optional_field">
+                               <label for="has_seats_limitation" string="Limit Registrations"/>
                                <field name="has_seats_limitation"/>
-                               <span invisible="not has_seats_limitation" required="not has_seats_limitation">
-                                   to <field name="seats_max" class="oe_inline o_input_9ch"/>
-                                   Attendees
+                               <span attrs="{'invisible': [('has_seats_limitation', '=', False)], 'required': [('has_seats_limitation', '=', False)]}">
+                                   to <field name="seats_max" class="oe_inline"/>
+                                   Confirmed Attendees
                                </span>
+                           </div>
+                           <div colspan="2" class="o_checkbox_optional_field">
+                               <label for="auto_confirm" string="Autoconfirmation"/>
+                               <field name="auto_confirm"/>
                            </div>
                        </group>
                    </group>
 
                    <notebook>
-                       <page string="Tickets" name="page_tickets">
+                       <page string="Tickets">
                            <field name="event_type_ticket_ids"
                                   class="w-100"
                                   context="{
@@ -43,15 +53,15 @@
                            <field name="event_type_mail_ids" class="w-100">
                                <tree string="Communication" editable="bottom">
                                    <field name="notification_type"/>
-                                   <field name="template_model_id" column_invisible="True"/>
+                                   <field name="template_model_id" invisible="1"/>
                                    <field name="template_ref" options="{'model_field': 'template_model_id', 'no_quick_create': True}" context="{'filter_template_on_event': True, 'default_model': 'event.registration'}"/>
-                                   <field name="interval_nbr" readonly="interval_unit == 'now'"/>
+                                   <field name="interval_nbr" attrs="{'readonly':[('interval_unit', '=', 'now')]}"/>
                                    <field name="interval_unit"/>
                                     <field name="interval_type"/>
                                </tree>
                            </field>
                        </page>
-                       <page string="Notes" name="notes">
+                       <page string="Notes">
                            <group>
                                 <label for="note" string="Note" />
                                 <br />
@@ -73,7 +83,7 @@
         <field name="name">event.type.tree</field>
         <field name="model">event.type</field>
         <field name="arch" type="xml">
-            <tree string="Event Template" sample="1">
+            <tree string="Event Template">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </tree>

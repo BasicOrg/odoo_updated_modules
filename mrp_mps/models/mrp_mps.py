@@ -19,7 +19,7 @@ class MrpProductionSchedule(models.Model):
 
     @api.model
     def _default_warehouse_id(self):
-        return self.env['stock.warehouse'].search(self.env['stock.warehouse']._check_company_domain(self.env.company), limit=1)
+        return self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
 
     forecast_ids = fields.One2many('mrp.product.forecast', 'production_schedule_id',
         'Forecasted quantity at date')
@@ -46,43 +46,10 @@ class MrpProductionSchedule(models.Model):
     max_to_replenish_qty = fields.Float(
         'Maximum to Replenish', default=1000,
         help="The maximum replenishment you would like to launch for each period in the MPS. Note that if the demand is higher than that amount, the remaining quantity will be transferred to the next period automatically.")
-    replenish_state = fields.Selection([
-        ('to_replenish', 'To Replenish'),
-        ('under_replenishment', 'Under Replenishment'),
-        ('excessive_replenishment', 'Excessive Replenishment')], store=False, search='_search_replenish_state',
-        help="Technical field to support filtering by replenish state")
 
     _sql_constraints = [
-        ('warehouse_product_ref_uniq', 'unique (warehouse_id, product_id)', 'The combination of warehouse and product must be unique!'),
+        ('warehouse_product_ref_uniq', 'unique (warehouse_id, product_id)', 'The combination of warehouse and product must be unique !'),
     ]
-
-    def _search_replenish_state(self, operator, value):
-        productions_schedules = self.search([])
-        productions_schedules_states = productions_schedules.get_production_schedule_view_state()
-
-        def filter_function(f):
-            if not value:
-                return not (f['state'] == 'to_launch' and f['to_replenish'] or \
-                    f['state'] == 'to_relaunch' or f['state'] == 'to_correct')
-            return value == "to_replenish" and f['state'] == 'to_launch' and f['to_replenish'] or \
-                value == "under_replenishment" and f['state'] == 'to_relaunch' or \
-                value == "excessive_replenishment" and f['state'] == 'to_correct'
-
-        ids = []
-        for state in productions_schedules_states:
-            if value:
-                if any(map(filter_function, state['forecast_ids'])):
-                    ids.append(state['id'])
-            else:
-                if all(map(filter_function, state['forecast_ids'])):
-                    ids.append(state['id'])
-
-        if operator == '=':
-            operator = 'in'
-        else:
-            operator = 'not in'
-
-        return [('id', operator, ids)]
 
     def action_open_actual_demand_details(self, date_str, date_start_str, date_stop_str):
         """ Open the picking list view for the actual demand for the current
@@ -105,7 +72,7 @@ class MrpProductionSchedule(models.Model):
             'res_model': 'stock.picking',
             'views': [(False, 'list'), (False, 'form')],
             'view_mode': 'list,form',
-            'name': _('Actual Demand %s %s (%s - %s)', self.product_id.display_name, date_str, date_start_str, date_stop_str),
+            'name': _('Actual Demand %s %s (%s - %s)') % (self.product_id.display_name, date_str, date_start_str, date_stop_str),
             'target': 'current',
             'domain': [('id', 'in', picking_ids)],
         }
@@ -128,7 +95,7 @@ class MrpProductionSchedule(models.Model):
         rfq_domain = self._get_rfq_domain(date_start, date_stop)
         purchase_order_by_date = self._get_rfq_and_planned_date(rfq_domain)
         purchase_order_line_ids = self._filter_rfq(purchase_order_by_date, date_start, date_stop).ids
-        name = _('Actual Replenishment %s %s (%s - %s)', self.product_id.display_name, date_str, date_start_str, date_stop_str)
+        name = _('Actual Replenishment %s %s (%s - %s)') % (self.product_id.display_name, date_str, date_start_str, date_stop_str)
 
         context = {
             'default_move_ids': move_ids,
@@ -308,8 +275,7 @@ class MrpProductionSchedule(models.Model):
                 continue
             dummy, components = bom.explode(record.product_id, 1)
             for component in components:
-                if component[0].product_id.type != 'consu':
-                    components_list.add((component[0].product_id.id, record.warehouse_id.id, record.company_id.id))
+                components_list.add((component[0].product_id.id, record.warehouse_id.id, record.company_id.id))
         for component in components_list:
             if self.env['mrp.production.schedule'].search([
                 ('product_id', '=', component[0]),
@@ -391,9 +357,6 @@ class MrpProductionSchedule(models.Model):
             # demand.
             rounding = production_schedule.product_id.uom_id.rounding
             lead_time = production_schedule._get_lead_times()
-            # Ignore "Days to Supply Components" when set demand for components since it's normally taken care by the
-            # components themselves
-            lead_time_ignore_components = lead_time - production_schedule.bom_id.days_to_prepare_mo
             production_schedule_state = production_schedule_states_by_id[production_schedule['id']]
             if production_schedule in self:
                 procurement_date = add(fields.Date.today(), days=lead_time)
@@ -448,7 +411,7 @@ class MrpProductionSchedule(models.Model):
                     continue
                 # Set the indirect demand qty for children schedules.
                 for (product, ratio) in indirect_ratio_mps[(production_schedule.warehouse_id, production_schedule.product_id)].items():
-                    related_date = max(subtract(date_start, days=lead_time_ignore_components), fields.Date.today())
+                    related_date = max(subtract(date_start, days=lead_time), fields.Date.today())
                     index = next(i for i, (dstart, dstop) in enumerate(date_range) if related_date <= dstart or (related_date >= dstart and related_date <= dstop))
                     related_key = (date_range[index], product, production_schedule.warehouse_id)
                     indirect_demand_qty[related_key] += ratio * forecast_values['replenish_qty']
@@ -671,7 +634,7 @@ class MrpProductionSchedule(models.Model):
         based on rules lead times + produce delay or supplier info delay.
         """
         rules = self.product_id._get_rules_from_location(self.warehouse_id.lot_stock_id)
-        return rules._get_lead_days(self.product_id, bom=self.bom_id)[0]['total_delay']
+        return rules._get_lead_days(self.product_id)[0]
 
     def _get_replenish_qty(self, after_forecast_qty):
         """ Modify the quantity to replenish depending the min/max and targeted
@@ -734,8 +697,6 @@ class MrpProductionSchedule(models.Model):
         stock_moves_and_date = sorted(stock_moves_and_date, key=lambda m: m[1])
         index = 0
         for (move, date) in stock_moves_and_date:
-            if date < after_date or date > before_date:
-                continue
             # Skip to the next time range if the planned date is not in the
             # current time interval.
             while not (date_range[index][0] <= date and date_range[index][1] >= date):
@@ -838,7 +799,7 @@ class MrpProductionSchedule(models.Model):
                 return Node(product_tree.product, ratio, product_tree.children)
 
             product_tree = Node(product, ratio, [])
-            product_bom = bom_by_product.get(product)
+            product_bom = bom_by_product[product]
             if product not in bom_by_product and not product_bom:
                 product_bom = self.env['mrp.bom']._bom_find(product)[product]
             for line in product_bom.bom_line_ids:
@@ -881,8 +842,7 @@ class MrpProductionSchedule(models.Model):
         groupby_delay = defaultdict(list)
         for schedule in self:
             rules = schedule.product_id._get_rules_from_location(schedule.warehouse_id.lot_stock_id)
-            lead_days, dummy = rules.filtered(lambda r: r.action not in ['buy', 'manufacture'])._get_lead_days(schedule.product_id)
-            delay = lead_days['total_delay']
+            delay, dummy = rules.filtered(lambda r: r.action not in ['buy', 'manufacture'])._get_lead_days(schedule.product_id)
             groupby_delay[delay].append((schedule.product_id, schedule.warehouse_id))
         for delay in groupby_delay:
             products, warehouses = zip(*groupby_delay[delay])
@@ -938,8 +898,8 @@ class MrpProductionSchedule(models.Model):
         for (move, date) in stock_moves_by_date:
             # There are cases when we want to consider moves where their (scheduled) date occurs before the after_date
             # if lead times make their stock delivery at a relevant time. Therefore we need to ignore the lines that have
-            # date + lead time < after_date. Similar logic with before_date
-            if date < after_date or date > before_date:
+            # date + lead time < after_date
+            if date < after_date:
                 continue
             # Skip to the next time range if the planned date is not in the
             # current time interval.
@@ -970,8 +930,7 @@ class MrpProductionSchedule(models.Model):
         groupby_delay = defaultdict(list)
         for schedule in self:
             rules = schedule.product_id._get_rules_from_location(schedule.warehouse_id.lot_stock_id)
-            lead_days, dummy = rules._get_lead_days(schedule.product_id)
-            delay = lead_days['total_delay']
+            delay, dummy = rules._get_lead_days(schedule.product_id)
             groupby_delay[delay].append((schedule.product_id, schedule.warehouse_id))
 
         for delay in groupby_delay:

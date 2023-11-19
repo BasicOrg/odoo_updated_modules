@@ -11,10 +11,6 @@ class Users(models.Model):
     _inherit = 'res.users'
 
     def _systray_get_calendar_event_domain(self):
-        current_user_non_declined_attendee_ids = self.env['calendar.attendee']._search([
-            ('partner_id', '=', self.env.user.partner_id.id),
-            ('state', '!=', 'declined'),
-        ])
         tz = self.env.user.tz
         start_dt = datetime.datetime.utcnow()
         if tz:
@@ -34,17 +30,17 @@ class Users(models.Model):
                 '&',
                     ['allday', '=', True],
                     ['start_date', '=', fields.Date.to_string(start_date)],
-                ('attendee_ids', 'in', current_user_non_declined_attendee_ids)]
+                ('attendee_ids.partner_id', '=', self.env.user.partner_id.id)]
 
     @api.model
     def systray_get_activities(self):
         res = super(Users, self).systray_get_activities()
 
-        EventModel = self.env['calendar.event']
-        meetings_lines = EventModel.search_read(
+        meetings_lines = self.env['calendar.event'].search_read(
             self._systray_get_calendar_event_domain(),
-            ['id', 'start', 'name', 'allday'],
+            ['id', 'start', 'name', 'allday', 'attendee_status'],
             order='start')
+        meetings_lines = [line for line in meetings_lines if line['attendee_status'] != 'declined']
         if meetings_lines:
             meeting_label = _("Today's Meetings")
             meetings_systray = {
@@ -52,14 +48,9 @@ class Users(models.Model):
                 'type': 'meeting',
                 'name': meeting_label,
                 'model': 'calendar.event',
-                'icon': modules.module.get_module_icon(EventModel._original_module),
+                'icon': modules.module.get_module_icon(self.env['calendar.event']._original_module),
                 'meetings': meetings_lines,
-                "view_type": EventModel._systray_view,
             }
             res.insert(0, meetings_systray)
 
         return res
-
-    @api.model
-    def check_calendar_credentials(self):
-        return {}

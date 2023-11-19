@@ -1,29 +1,30 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* website_twitter_wall
-#
+# * website_twitter_wall
+# 
 # Translators:
-# Kristoffer Grundström <lovaren@gmail.com>, 2022
-# Simon S, 2022
-# Mikael Åkerberg <mikael.akerberg@mariaakerberg.com>, 2022
-# Martin Trigaux, 2022
-# Anders Wallenquist <anders.wallenquist@vertel.se>, 2022
-# Chrille Hedberg <hedberg.chrille@gmail.com>, 2022
-# Kim Asplund <kim.asplund@gmail.com>, 2022
-#
+# Martin Trigaux, 2019
+# Anders Wallenquist <anders.wallenquist@vertel.se>, 2019
+# Kim Asplund <kim.asplund@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
+"Project-Id-Version: Odoo Server saas~12.2+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:50+0000\n"
-"Last-Translator: Kim Asplund <kim.asplund@gmail.com>, 2022\n"
-"Language-Team: Swedish (https://app.transifex.com/odoo/teams/41243/sv/)\n"
-"Language: sv\n"
+"POT-Creation-Date: 2019-03-20 14:08+0000\n"
+"PO-Revision-Date: 2019-01-16 08:42+0000\n"
+"Last-Translator: Kim Asplund <kim.asplund@gmail.com>, 2019\n"
+"Language-Team: Swedish (https://www.transifex.com/odoo/teams/41243/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: website_twitter_wall
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
+msgid "(Un)archiving a wall. Do you want to proceed?"
+msgstr ""
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_walls
@@ -57,7 +58,7 @@ msgstr ""
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__access_token
 msgid "Access Token"
-msgstr "Åtkomsttecken"
+msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__active
@@ -65,15 +66,9 @@ msgid "Active"
 msgstr "Aktiv"
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_search
-msgid "Archived"
-msgstr "Arkiverad"
-
-#. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__can_publish
-msgid "Can Publish"
-msgstr "Kan publicera"
+msgid "Can publish"
+msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__create_uid
@@ -83,7 +78,7 @@ msgstr "Skapad av"
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__create_date
 msgid "Created on"
-msgstr "Skapad"
+msgstr "Skapad den"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
@@ -91,10 +86,7 @@ msgid "Decrease zoom level"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-javascript
-#: code:addons/website_twitter_wall/static/src/xml/website_twitter_wall_tweet.xml:0
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
-#, python-format
 msgid "Delete this tweet"
 msgstr ""
 
@@ -139,14 +131,19 @@ msgid "Is Live"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__is_published
-msgid "Is Published"
-msgstr "Är publicerad"
-
-#. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__is_live
 msgid "Is live mode on/off"
 msgstr ""
+
+#. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__is_published
+msgid "Is published"
+msgstr "Är publicerad"
+
+#. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall____last_update
+msgid "Last Modified on"
+msgstr "Senast redigerad"
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__last_search
@@ -161,7 +158,7 @@ msgstr "Senast uppdaterad av"
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__write_date
 msgid "Last Updated on"
-msgstr "Senast uppdaterad på"
+msgstr "Senast uppdaterad"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
@@ -174,7 +171,7 @@ msgid "Live mode"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__mixed
+#: selection:website.twitter.wall,mode:0
 msgid "Mixed"
 msgstr ""
 
@@ -185,11 +182,12 @@ msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__name
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
 msgid "Name"
 msgstr "Namn"
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__popular
+#: selection:website.twitter.wall,mode:0
 msgid "Popular"
 msgstr ""
 
@@ -199,7 +197,7 @@ msgid "Query operators"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__recent
+#: selection:website.twitter.wall,mode:0
 msgid "Recent"
 msgstr ""
 
@@ -207,11 +205,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
 msgid "Repeat"
 msgstr "Repetera"
-
-#. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_search
-msgid "Search CRM Score"
-msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__search_pattern
@@ -239,11 +232,6 @@ msgid "Share #{wall.name} on twitter"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.snippet_options
-msgid "Share Option"
-msgstr ""
-
-#. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
 msgid "Shuffle"
 msgstr ""
@@ -254,27 +242,26 @@ msgid "Single view"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:83
 #, python-format
-msgid "The Twitter authentication failed. Please check your API key and secret."
+msgid ""
+"The Twitter authentication failed. Please check your API key and secret."
 msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__website_url
 msgid "The full URL to access the document through the website."
-msgstr "Fullständig URL för åtkomst av dokument via webbplatsen."
+msgstr "Den fullständiga URL för åtkomst av dokument via webbplatsen."
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__search_pattern
 msgid ""
-"The search criteria to get the tweets you want. You can use the Twitter query operators.\n"
-"You can also use the special \"favorites:screen_name\" operator to get the favorited tweets of \"screen_name\"."
+"The search criteria to get the tweets you want. You can use the Twitter "
+"query operators."
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:94
 #, python-format
 msgid "The tweets search failed. Check your credentials and access token"
 msgstr ""
@@ -291,15 +278,18 @@ msgid "Total Tweets"
 msgstr ""
 
 #. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__tweet_ids
+msgid "Tweet"
+msgstr ""
+
+#. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_tweet__tweet_html
 msgid "Tweet Html"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:134
 #: model:ir.actions.act_window,name:website_twitter_wall.website_twitter_tweet_action
-#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__tweet_ids
 #: model:ir.ui.menu,name:website_twitter_wall.website_twitter_tweet_menu
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_tweet_view_form
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_tweet_view_tree
@@ -321,11 +311,11 @@ msgstr ""
 #. module: website_twitter_wall
 #: model:ir.ui.menu,name:website_twitter_wall.menu_website_twitter_wall_root
 msgid "Twitter Wall"
-msgstr "Twitter-vägg"
+msgstr ""
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.snippet_options
-msgid "Twitter Wall Page"
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_footer_custom
+msgid "Twitter wall"
 msgstr ""
 
 #. module: website_twitter_wall
@@ -350,11 +340,6 @@ msgid "Wall"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-msgid "Wall Name"
-msgstr ""
-
-#. module: website_twitter_wall
 #: model:ir.actions.act_window,name:website_twitter_wall.website_twitter_wall_action
 #: model:ir.ui.menu,name:website_twitter_wall.twitter_wall_menu
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
@@ -375,5 +360,5 @@ msgstr "Webbplatsens URL"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-msgid "e.g. My Twitter Wall"
+msgid "Your wall name"
 msgstr ""

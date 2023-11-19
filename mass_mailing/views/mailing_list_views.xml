@@ -39,10 +39,6 @@
         <field name="model">mailing.list</field>
         <field name="arch" type="xml">
             <form string="Contact List">
-                <header>
-                    <button name="action_send_mailing" string="Send Mailing"
-                        type="object" class="btn btn-primary"/>
-                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_contacts"
@@ -55,18 +51,42 @@
                         </button>
                         <button name="action_view_contacts_bouncing"
                                 type="object" icon="fa-exchange" class="oe_stat_button">
-                                <field name="contact_pct_bounce" widget="statinfo" string="% Bounce"/>
+                            <div class="o_field_widget o_stat_info">
+                                <div class="oe_inline">
+                                    <span class="o_stat_value">
+                                        <field name="contact_pct_bounce" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_value">%</span>
+                                </div>
+                                <span class="o_stat_text">Bounce</span>
+                            </div>
                         </button>
                         <button name="action_view_contacts_opt_out"
                                 type="object" icon="fa-bell-slash-o" class="oe_stat_button">
-                                <field name="contact_pct_opt_out" widget="statinfo" string="% Opt-out"/>
+                            <div class="o_field_widget o_stat_info">
+                                <div class="oe_inline">
+                                    <span class="o_stat_value">
+                                        <field name="contact_pct_opt_out" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_value">%</span>
+                                </div>
+                                <span class="o_stat_text">Opt-out</span>
+                            </div>
                         </button>
                         <button name="action_view_contacts_blacklisted"
                                 type="object" icon="fa-ban" class="oe_stat_button">
-                                <field name="contact_pct_blacklisted" widget="statinfo" string="% Blacklist"/>
+                            <div class="o_field_widget o_stat_info">
+                                <div class="oe_inline">
+                                    <span class="o_stat_value">
+                                        <field name="contact_pct_blacklisted" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_value">%</span>
+                                </div>
+                                <span class="o_stat_text">Blacklist</span>
+                            </div>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
@@ -173,7 +193,7 @@
                             </div>
                         </div>
                         <!-- Card when the Kanban view is not grouped -->
-                        <div class="oe_kanban_global_click o_mailing_list_kanban_ungrouped d-flex gap-1 flex-row justify-content-between align-items-center flex-wrap">
+                        <div class="oe_kanban_global_click o_mailing_list_kanban_ungrouped d-flex flex-row justify-content-between align-items-center flex-wrap">
                             <div class="col-lg-3 col-sm-6 col-12 py-0 my-auto">
                                 <div class="d-flex text-large">
                                     <span class="d-inline-block text-truncate fw-normal text-large"
@@ -182,7 +202,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="o_mailing_list_kanban_counts col-lg-1 col-6 my-auto d-flex">
+                            <div class="o_mailing_list_kanban_counts col-lg-1 col-12 my-auto d-flex">
                                 <div class="d-flex flex-row justify-content-start justify-content-md-end">
                                     <div class="my-auto p-0">
                                         <button name="action_view_contacts" type="object"
@@ -198,14 +218,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_mailing_list_kanban_stats order-4 order-lg-3 col-lg-5 col-sm-12 col-12 py-0 my-3 my-sm-auto d-flex justify-content-sm-between justify-content-start flex-wrap">
+                            <div class="o_mailing_list_kanban_stats col-lg-5 col-sm-12 col-12 py-0 my-3 my-sm-auto d-flex justify-content-sm-between justify-content-start flex-wrap">
                                 <a class="me-sm-0 me-3 text-large" tabindex="-1"
                                     name="action_view_contacts_email" type="object">
                                     <span class="fw-normal">
                                         <field name="contact_count_email"/>
                                     </span>
                                     <br/>
-                                    <span class="text-muted">
+                                    <span class="text-secondary">
                                         <i class="fa fa-envelope-o"/> Contacts
                                     </span>
                                 </a>
@@ -215,7 +235,7 @@
                                         <field name="mailing_count"/>
                                     </span>
                                     <br/>
-                                    <span class="text-muted">Mailings</span>
+                                    <span class="text-secondary">Mailings</span>
                                 </a>
                                 <hr class="w-100 d-block d-sm-none opacity-0 m-0 p-0"/>
                                 <a class="me-sm-0 me-3 text-large" tabindex="-1"
@@ -224,7 +244,7 @@
                                         <field name="contact_pct_bounce"/> %
                                     </span>
                                     <br/>
-                                    <span class="text-muted">Bounce</span>
+                                    <span class="text-secondary">Bounce</span>
                                 </a>
                                 <a class="me-sm-0 me-3 text-large" tabindex="-1"
                                     name="action_view_contacts_opt_out" type="object">
@@ -232,7 +252,7 @@
                                         <field name="contact_pct_opt_out"/> %
                                     </span>
                                     <br/>
-                                    <span class="text-muted">Opt-Out</span>
+                                    <span class="text-secondary">Opt-Out</span>
                                 </a>
                                 <a class="me-sm-0 me-3 text-large" tabindex="-1"
                                     name="action_view_contacts_blacklisted" type="object">
@@ -240,16 +260,16 @@
                                         <field name="contact_pct_blacklisted"/> %
                                     </span>
                                     <br/>
-                                    <span class="text-muted">Blacklist</span>
+                                    <span class="text-secondary">Blacklist</span>
                                 </a>
                             </div>
-                            <div class="o_kanban_ungrouped_action_buttons order-3 order-lg-4 col-5 col-lg-2 py-0 my-auto d-none d-md-flex flex-wrap justify-content-end gap-1">
+                            <div class="o_kanban_ungrouped_action_buttons col-12 col-lg-2 py-0 pe-2 ps-md-2 my-md-auto my-2 d-none d-md-flex flex-wrap justify-content-lg-end">
                                 <button name="action_open_import" string="Import Contacts"
-                                    type="object" class="btn btn-secondary text-nowrap">
+                                    type="object" class="btn btn-secondary border me-2 text-nowrap">
                                     Import Contacts
                                 </button>
                                 <button name="action_send_mailing" string="Send Mailing"
-                                    type="object" class="btn btn-secondary text-nowrap">
+                                    type="object" class="btn btn-secondary border me-2 text-nowrap">
                                     Send Mailing
                                 </button>
                             </div>

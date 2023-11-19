@@ -4,12 +4,7 @@ import { registry } from '@web/core/registry';
 import { IoTConnectionErrorDialog } from './iot_connection_error_dialog';
 
 export class IoTLongpolling {
-    static serviceDependencies = ["dialog"];
-    constructor() {
-        this.setup(...arguments);
-    }
-    // setup to allow patching
-    setup({ dialog }) {
+    constructor(dialogService) {
         // CONSTANTS
         this.POLL_TIMEOUT = 60000;
         this.POLL_ROUTE = '/hw_drivers/event';
@@ -25,7 +20,7 @@ export class IoTLongpolling {
         this._session_id = this._createUUID();
         this._listeners = {};
         this._delayedStartPolling(this.RPC_DELAY);
-        this.dialogService = dialog;
+        this.dialogService = dialogService;
     }
 
     //--------------------------------------------------------------------------
@@ -66,8 +61,7 @@ export class IoTLongpolling {
      * @param {string} device_identifier
      */
     removeListener(iot_ip, device_identifier, listener_id) {
-        const device = this._listeners[iot_ip].devices[device_identifier];
-        if (device && device.listener_id === listener_id) {
+        if (this._listeners[iot_ip].devices[device_identifier].listener_id === listener_id) {
             delete this._listeners[iot_ip].devices[device_identifier];
         }
     }
@@ -112,7 +106,7 @@ export class IoTLongpolling {
             }
         } else {
             var self = this;
-            Object.keys(this._listeners).forEach((ip) => {
+            _.each(this._listeners, function (listener, ip) {
                 self.startPolling(ip);
             });
         }
@@ -167,7 +161,7 @@ export class IoTLongpolling {
         this.protocol = window.location.protocol;
         var port = this.protocol === 'http:' ? ':8069' : '';
         var url = this.protocol + '//' + iot_ip + port;
-        var queryOptions = Object.assign({
+        var queryOptions = _.extend({
             url: url + route,
             dataType: 'json',
             contentType: "application/json;charset=utf-8",
@@ -209,7 +203,7 @@ export class IoTLongpolling {
                     if (self._session_id === result.result.session_id) {
                         self._onSuccess(iot_ip, result.result);
                     }
-                } else if (Object.keys(self._listeners[iot_ip].devices || {}).length > 0) {
+                } else if (!_.isEmpty(self._listeners[iot_ip].devices)) {
                     self._poll(iot_ip);
                 }
             }).fail(function (jqXHR, textStatus) {
@@ -228,7 +222,7 @@ export class IoTLongpolling {
         if (devices[result.device_identifier]) {
             devices[result.device_identifier].callback(result);
         }
-        if (Object.keys(devices || {}).length > 0) {
+        if (!_.isEmpty(devices)) {
             this._poll(iot_ip);
         }
         this._retries = 0;
@@ -249,10 +243,11 @@ export class IoTLongpolling {
 }
 
 export const iotLongpollingService = {
-    dependencies: IoTLongpolling.serviceDependencies,
-    start(_, deps) {
-        return new IoTLongpolling(deps);
-    },
+    dependencies: ['dialog'],
+    start(_, { dialog }) {
+        return new IoTLongpolling(dialog);
+    }
 };
+
 
 registry.category('services').add('iot_longpolling', iotLongpollingService);

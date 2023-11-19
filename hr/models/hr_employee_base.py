@@ -19,33 +19,30 @@ class HrEmployeeBase(models.AbstractModel):
     name = fields.Char()
     active = fields.Boolean("Active")
     color = fields.Integer('Color Index', default=0)
-    department_id = fields.Many2one('hr.department', 'Department', check_company=True)
+    department_id = fields.Many2one('hr.department', 'Department', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     member_of_department = fields.Boolean("Member of department", compute='_compute_part_of_department', search='_search_part_of_department',
         help="Whether the employee is a member of the active user's department or one of it's child department.")
-    job_id = fields.Many2one('hr.job', 'Job Position', check_company=True)
+    job_id = fields.Many2one('hr.job', 'Job Position', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     job_title = fields.Char("Job Title", compute="_compute_job_title", store=True, readonly=False)
     company_id = fields.Many2one('res.company', 'Company')
-    address_id = fields.Many2one(
-        'res.partner',
-        string='Work Address',
-        compute="_compute_address_id",
-        precompute=True,
-        store=True,
-        readonly=False,
-        check_company=True)
+    address_id = fields.Many2one('res.partner', 'Work Address', compute="_compute_address_id", store=True, readonly=False,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     work_phone = fields.Char('Work Phone', compute="_compute_phones", store=True, readonly=False)
     mobile_phone = fields.Char('Work Mobile', compute="_compute_work_contact_details", store=True, inverse='_inverse_work_contact_details')
     work_email = fields.Char('Work Email', compute="_compute_work_contact_details", store=True, inverse='_inverse_work_contact_details')
-    work_contact_id = fields.Many2one('res.partner', 'Work Contact', copy=False)
-    work_location_id = fields.Many2one('hr.work.location', 'Work Location')
+    work_contact_id = fields.Many2one('res.partner', 'Work Contact')
+    related_contact_ids = fields.Many2many('res.partner', 'Related Contacts', compute='_compute_related_contacts')
+    related_contacts_count = fields.Integer('Number of related contacts', compute='_compute_related_contacts_count')
+    work_location_id = fields.Many2one('hr.work.location', 'Work Location', compute="_compute_work_location_id", store=True, readonly=False,
+    domain="[('address_id', '=', address_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     user_id = fields.Many2one('res.users')
     resource_id = fields.Many2one('resource.resource')
-    resource_calendar_id = fields.Many2one('resource.calendar', check_company=True)
+    resource_calendar_id = fields.Many2one('resource.calendar', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     parent_id = fields.Many2one('hr.employee', 'Manager', compute="_compute_parent_id", store=True, readonly=False,
-        check_company=True)
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     coach_id = fields.Many2one(
         'hr.employee', 'Coach', compute='_compute_coach', store=True, readonly=False,
-        check_company=True,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help='Select the "Employee" who is the coach of this employee.\n'
              'The "Coach" has no specific rights or responsibilities by default.')
     tz = fields.Selection(
@@ -64,46 +61,19 @@ class HrEmployeeBase(models.AbstractModel):
         ('presence_to_define', 'To define'),
         ('presence_undetermined', 'Undetermined')], compute='_compute_presence_icon')
     show_hr_icon_display = fields.Boolean(compute='_compute_presence_icon')
-    newly_hired = fields.Boolean('Newly Hired', compute='_compute_newly_hired', search='_search_newly_hired')
-
-    @api.model
-    def _get_new_hire_field(self):
-        return 'create_date'
-
-    def _compute_newly_hired(self):
-        new_hire_field = self._get_new_hire_field()
-        new_hire_date = fields.Datetime.now() - timedelta(days=90)
-        for employee in self:
-            employee.newly_hired = employee[new_hire_field] > new_hire_date
-
-    def _search_newly_hired(self, operator, value):
-        new_hire_field = self._get_new_hire_field()
-        new_hires = self.env['hr.employee'].sudo().search([
-            (new_hire_field, '>', fields.Datetime.now() - timedelta(days=90))
-        ])
-
-        op = 'in' if value and operator == '=' or not value and operator != '=' else 'not in'
-        return [('id', op, new_hires.ids)]
-
-
-    def _get_valid_employee_for_user(self):
-        user = self.env.user
-        # retrieve the employee of the current active company for the user
-        employee = user.employee_id
-        if not employee:
-            # search for all employees as superadmin to not get blocked by multi-company rules
-            user_employees = user.employee_id.sudo().search([
-                ('user_id', '=', user.id)
-            ])
-            # the default company employee is most likely the correct one, but fallback to the first if not available
-            employee = user_employees.filtered(lambda r: r.company_id == user.company_id) or user_employees[:1]
-        return employee
+    employee_type = fields.Selection([
+        ('employee', 'Employee'),
+        ('student', 'Student'),
+        ('trainee', 'Trainee'),
+        ('contractor', 'Contractor'),
+        ('freelance', 'Freelancer'),
+        ], string='Employee Type', default='employee', required=True,
+        help="The employee type. Although the primary purpose may seem to categorize employees, this field has also an impact in the Contract History. Only Employee type is supposed to be under contract and will have a Contract History.")
 
     @api.depends_context('uid', 'company')
     @api.depends('department_id')
     def _compute_part_of_department(self):
-        user_employee = self._get_valid_employee_for_user()
-        active_department = user_employee.department_id
+        active_department = self.env.user.employee_id.department_id
         if not active_department:
             self.member_of_department = False
         else:
@@ -120,14 +90,12 @@ class HrEmployeeBase(models.AbstractModel):
     def _search_part_of_department(self, operator, value):
         if operator not in ('=', '!=') or not isinstance(value, bool):
             raise UserError(_('Operation not supported'))
-
-        user_employee = self._get_valid_employee_for_user()
         # Double negation
         if not value:
-            operator = '!=' if operator == '=' else '='
-        if not user_employee.department_id:
-            return [('id', operator, user_employee.id)]
-        return (['!'] if operator == '!=' else []) + [('department_id', 'child_of', user_employee.department_id.id)]
+            operator = '=' if operator == '!=' else '='
+        if not self.env.user.employee_id.department_id:
+            return [('id', operator, self.env.user.employee_id.id)]
+        return (['!'] if operator == '!=' else []) + [('department_id', 'child_of', self.env.user.employee_id.department_id.id)]
 
     @api.depends('user_id.im_status')
     def _compute_presence_state(self):
@@ -214,6 +182,26 @@ class HrEmployeeBase(models.AbstractModel):
                     'mobile': employee.mobile_phone,
                 })
 
+    @api.depends('work_contact_id')
+    def _compute_related_contacts(self):
+        for employee in self:
+            employee.related_contact_ids = employee.work_contact_id
+
+    @api.depends('related_contact_ids')
+    def _compute_related_contacts_count(self):
+        for employee in self:
+            employee.related_contacts_count = len(employee.related_contact_ids)
+
+    def action_related_contacts(self):
+        self.ensure_one()
+        return {
+            'name': _("Related Contacts"),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'kanban,tree,form',
+            'res_model': 'res.partner',
+            'domain': [('id', 'in', self.related_contact_ids.ids)]
+        }
+
     @api.depends('company_id')
     def _compute_address_id(self):
         for employee in self:
@@ -252,6 +240,11 @@ class HrEmployeeBase(models.AbstractModel):
                     show_icon = False
             employee.hr_icon_display = icon
             employee.show_hr_icon_display = show_icon
+
+    @api.depends('address_id')
+    def _compute_work_location_id(self):
+        to_reset = self.filtered(lambda e: e.address_id != e.work_location_id.address_id)
+        to_reset.work_location_id = False
 
     @api.model
     def _get_employee_working_now(self):

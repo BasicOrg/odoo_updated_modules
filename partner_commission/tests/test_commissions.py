@@ -6,7 +6,7 @@ from odoo.tests.common import Form, tagged
 from odoo.addons.partner_commission.tests.setup import Line, Spec, TestCommissionsSetup
 
 
-@tagged('commission', 'post_install', '-at_install')
+@tagged('commission')
 class TestCommissions(TestCommissionsSetup):
 
     def test_commissions(self):
@@ -123,9 +123,10 @@ class TestCommissions(TestCommissionsSetup):
         move_reversal = self.env['account.move.reversal'].with_user(self.salesman).with_context(ctx).create({
             'date': fields.Date.today(),
             'reason': '...',
+            'refund_method': 'refund',
             'journal_id': inv.journal_id.id,
         })
-        reversal = move_reversal.refund_moves()
+        reversal = move_reversal.reverse_moves()
         reverse_move = self.env['account.move'].browse(reversal['res_id'])
         reverse_move.action_post()
         self._pay_invoice(reverse_move)
@@ -151,36 +152,4 @@ class TestCommissions(TestCommissionsSetup):
         po = inv.commission_po_line_id.order_id
         self.assertEqual(po.partner_id, self.referrer, 'Referrer != vendor')
         self.assertEqual(inv.commission_po_line_id.price_subtotal, spec.commission, 'Commission is wrong')
-        self.assertEqual(len(po.order_line), 1, 'Expected 1 purchase order line')
-
-    def test_sale_order_commission(self):
-        """If the referrer and the sale order both have a commission plan, prioritize the sale order commission plan."""
-        self.referrer.grade_id = self.gold
-        self.referrer._onchange_grade_id()
-
-        # Subscription commission plan overrides SO commission_plan, remove it for this test
-        self.crm.recurring_invoice = False
-
-        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True))
-        form.partner_id = self.customer
-        form.referrer_id = self.referrer
-        # Modify SO commission_plan
-        form.commission_plan_id = self.silver_plan
-
-        with form.order_line.new() as line:
-            line.name = self.crm.name
-            line.product_id = self.crm
-            line.product_uom_qty = 1
-
-        so = form.save()
-        so.action_confirm()
-
-        inv = so._create_invoices()
-        inv.action_post()
-        self._pay_invoice(inv)
-
-        po = inv.commission_po_line_id.order_id
-        self.assertEqual(po.partner_id, self.referrer, 'Referrer != vendor')
-        # (silver_plan_rate * crm_price) = 15% * 20 = 3
-        self.assertEqual(inv.commission_po_line_id.price_subtotal, 3, 'Commission is wrong')
         self.assertEqual(len(po.order_line), 1, 'Expected 1 purchase order line')

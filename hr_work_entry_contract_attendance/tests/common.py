@@ -9,8 +9,7 @@ class HrWorkEntryAttendanceCommon(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.employee = cls.env['hr.employee'].create({
-            'name': 'Billy Pointer',
-            'tz': 'UTC',
+            'name': 'Billy Pointer'
         })
         cls.contract = cls.env['hr.contract'].create({
             'name': 'Billy Pointer\'s contract',

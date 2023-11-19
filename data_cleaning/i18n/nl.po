@@ -3,16 +3,17 @@
 # 	* data_cleaning
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Erwin van der Ploeg <erwin@odooexperts.nl>, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -62,7 +63,6 @@ msgid "Active"
 msgstr "Actief"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__lower
 #, python-format
@@ -70,7 +70,6 @@ msgid "All Lowercase"
 msgstr "Alles in kleine letters"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__all
 #, python-format
@@ -78,7 +77,6 @@ msgid "All Spaces"
 msgstr "Allemaal spaties"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__upper
 #, python-format
@@ -155,14 +153,14 @@ msgstr "Land"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__create_uid
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__create_date
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__create_date
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__current_value
@@ -171,15 +169,10 @@ msgstr "Huidig"
 
 #. module: data_cleaning
 #: model:ir.actions.server,name:data_cleaning.ir_cron_clean_records_ir_actions_server
+#: model:ir.cron,cron_name:data_cleaning.ir_cron_clean_records
+#: model:ir.cron,name:data_cleaning.ir_cron_clean_records
 msgid "Data Cleaning: Clean Records"
 msgstr "Gegevens opschonen: Opschonen records"
-
-#. module: data_cleaning
-#. odoo-python
-#: code:addons/data_cleaning/models/data_cleaning_model.py:0
-#, python-format
-msgid "Data to Clean"
-msgstr "Op te schonen gegevens"
 
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__notify_frequency_period__days
@@ -194,14 +187,14 @@ msgstr "Negeren"
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_search
 msgid "Discarded"
-msgstr "Negeerd"
+msgstr "Weggegooid"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__display_name
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__display_name
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__field_id
@@ -238,7 +231,6 @@ msgid "Field To Clean"
 msgstr "Veld om op te schonen"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__first
 #, python-format
@@ -246,7 +238,6 @@ msgid "First Letters to Uppercase"
 msgstr "Eerste letters in hoofdletters"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__phone
 #, python-format
@@ -277,6 +268,13 @@ msgid "ID"
 msgstr "ID"
 
 #. module: data_cleaning
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__last_notification
 msgid "Last Notification"
 msgstr "Laatste melding"
@@ -293,7 +291,7 @@ msgstr "Laatst bijgewerkt door"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__write_date
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: data_cleaning
 #: model:ir.model.fields,help:data_cleaning.field_data_cleaning_model__notify_user_ids
@@ -312,7 +310,7 @@ msgstr "Handmatig"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__res_model_id
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__res_model_id
 msgid "Model"
-msgstr "Model"
+msgstr "Type"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__res_model_name
@@ -384,7 +382,6 @@ msgid "Rules"
 msgstr "Regels"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__html
 #, python-format
@@ -402,7 +399,6 @@ msgid "Sequence"
 msgstr "Reeks"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__case
 #, python-format
@@ -420,7 +416,6 @@ msgid "Suggested Value"
 msgstr "Voorgestelde waarde"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__superfluous
 #, python-format
@@ -428,7 +423,6 @@ msgid "Superfluous Spaces"
 msgstr "Overbodige spaties"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #, python-format
 msgid ""
@@ -449,7 +443,6 @@ msgid "Trim"
 msgstr "Trim"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__trim
 #, python-format
@@ -457,19 +450,19 @@ msgid "Trim Spaces"
 msgstr "Trim spaties"
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #, python-format
 msgid "Unselect"
 msgstr "Deselecteren"
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_list
 #, python-format
 msgid "Validate"
-msgstr "Bevestigen"
+msgstr "Bevestig"
 
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__notify_frequency_period__weeks

@@ -28,10 +28,9 @@ class IrasAuditFileWizard(models.TransientModel):
 
     def generate_iras(self):
         general_ledger_report = self.env.ref('account_reports.general_ledger_report')
-        options = general_ledger_report.get_options(previous_options={'date': {
+        options = general_ledger_report._get_options(previous_options={
             'date_from': self.date_from,
             'date_to': self.date_to
-        }
         })
         if self.export_type == 'xml':
             return general_ledger_report.l10n_sg_export_iras_audit_file_xml(options)
@@ -183,7 +182,8 @@ class IrasAuditFile(models.Model):
             ('date', '<=', date_to)
             ])
 
-        options = self.get_options(previous_options={
+        options = self._get_options(previous_options={
+            'multi_company': {'id': company.id, 'name': company.name},
             'unfold_all': True,
             'unfolded_lines': [],
             'date': {
@@ -192,9 +192,7 @@ class IrasAuditFile(models.Model):
                 'date_to': fields.Date.from_string(date_from)
             }
         })
-        general_ledger_report = self.env.ref('account_reports.general_ledger_report')
-        handler = self.env['account.general.ledger.report.handler']
-        accounts_results = handler._query_values(general_ledger_report, options)
+        accounts_results = self._general_ledger_query_values(options)
         all_accounts = self.env['account.account'].search([('company_id', '=', company.id)])
 
         for account in all_accounts:
@@ -220,28 +218,14 @@ class IrasAuditFile(models.Model):
                     total_debit += move_line_id.debit
                     transaction_count_total += 1
                     account_type_dict = dict(self.env['account.account']._fields['account_type']._description_selection(self.env))
-                    # for exchange gain/loss journal items, source document should be the invoice/bill it is generated from
-                    source_doc = move_line_id.move_id.invoice_origin
-                    description = move_line_id.name
-                    if move_line_id.move_id.journal_id == move_line_id.company_id.currency_exchange_journal_id:
-                        # find all reconciled lines from exchange move, then find lines where the move_id is invoice/bill. Use payment if not found.
-                        reconciled_lines = move_line_id.move_id.line_ids._all_reconciled_lines()
-                        moves = reconciled_lines.move_id
-                        invoice_move = moves.filtered(lambda x: x.is_invoice(include_receipts=True))[:1]
-                        if invoice_move:
-                            source_doc = invoice_move.name
-                        else:
-                            payment_move = moves.filtered(lambda x: x.payment_id)[:1]
-                            source_doc = payment_move.name if payment_move else source_doc
-                        description = move_line_id.move_id.ref or description
                     gldata_lines.append({
                         'TransactionDate': fields.Date.to_string(move_line_id.date),
                         'AccountID': move_line_id.account_id.code,
                         'AccountName': move_line_id.account_id.name,
-                        'TransactionDescription': description,
+                        'TransactionDescription': move_line_id.name,
                         'Name': move_line_id.partner_id.name if move_line_id.partner_id else False,
                         'TransactionID': move_line_id.move_id.name,
-                        'SourceDocumentID': source_doc,
+                        'SourceDocumentID': move_line_id.move_id.invoice_origin if move_line_id.move_id else False,
                         'SourceType': account_type_dict[move_line_id.account_id.account_type][:20],
                         'Debit': float_repr(move_line_id.debit, IRAS_DIGITS),
                         'Credit': float_repr(move_line_id.credit, IRAS_DIGITS),

@@ -3,7 +3,6 @@
 
 {
     'name': 'Italy - Accounting Reports',
-    'countries': ['it'],
     'version': '1.0',
     'description': """
 Accounting reports for Italy

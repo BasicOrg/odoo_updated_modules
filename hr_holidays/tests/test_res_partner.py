@@ -39,16 +39,15 @@ class TestPartner(TransactionCase):
             'requires_allocation': 'no',
             'name': 'Legal Leaves',
             'time_type': 'leave',
-            'responsible_ids': cls.users.ids
         })
         cls.leaves = cls.env['hr.leave'].create([{
-            'request_date_from': cls.today + relativedelta(days=-2),
-            'request_date_to': cls.today + relativedelta(days=2),
+            'date_from': cls.today + relativedelta(days=-2),
+            'date_to': cls.today + relativedelta(days=2),
             'employee_id': cls.employees[0].id,
             'holiday_status_id': cls.leave_type.id,
         }, {
-            'request_date_from': cls.today + relativedelta(days=-2),
-            'request_date_to': cls.today + relativedelta(days=3),
+            'date_from': cls.today + relativedelta(days=-2),
+            'date_to': cls.today + relativedelta(days=3),
             'employee_id': cls.employees[1].id,
             'holiday_status_id': cls.leave_type.id,
         }])

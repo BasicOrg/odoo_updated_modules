@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 import slidesTourTools from '@website_slides/../tests/tours/slides_tour_tools';
 
 /**
@@ -14,41 +14,40 @@ wTourUtils.registerWebsitePreviewTour('course_publisher', {
     // TODO: replace by wTourUtils.getClientActionURL when it's added
     url: '/slides',
     test: true
-}, () => [{
+}, [{
     content: 'eLearning: click on New (top-menu)',
-    trigger: 'div.o_new_content_container a',
+    trigger: 'div.o_new_content_container a'
 }, {
     content: 'eLearning: click on New Course',
     trigger: '#o_new_content_menu_choices a:contains("Course")'
 }, {
     content: 'eLearning: set name',
-    trigger: 'div[name="name"] input',
+    trigger: 'input[name="name"]',
     run: 'text How to Déboulonnate',
-    in_modal: true,
 }, {
     content: 'eLearning: click on tags',
-    trigger: '.o_field_many2many_tags input',
+    trigger: '.o_field_many2manytags input',
     run: 'text Gard',
-    in_modal: true,
 }, {
     content: 'eLearning: select gardener tag',
     trigger: '.ui-autocomplete a:contains("Gardener")',
-    in_modal: true,
+    in_modal: false,
 }, {
     content: 'eLearning: set description',
     trigger: '.o_field_html[name="description"]',
     run: 'text Déboulonnate is very common at Fleurus',
-    in_modal: true,
 }, {
     content: 'eLearning: we want reviews',
     trigger: '.o_field_boolean[name="allow_comment"] input',
 }, {
     content: 'eLearning: seems cool, create it',
     trigger: 'button:contains("Save")',
-},
-...wTourUtils.clickOnEditAndWaitEditMode(),
-{
+}, {
+    content: 'eLearning: launch course edition',
+    trigger: '.o_edit_website_container a',
+}, {
     content: 'eLearning: double click image to edit it',
+    extra_trigger: 'iframe body.editor_enable',
     trigger: 'iframe img.o_wslides_course_pict',
     run: 'dblclick',
 }, {
@@ -64,7 +63,16 @@ wTourUtils.registerWebsitePreviewTour('course_publisher', {
     extra_trigger: '.o_we_url_success',
 }, {
     content: 'eLearning: is the Corgi set ?',
-    trigger: 'iframe img.o_wslides_course_pict[data-original-src$="GoldWinnerPembrookeWelshCorgi.jpg"]',
+    trigger: 'iframe img.o_wslides_course_pict',
+    run: function () {
+        const $imgCorgi = $('.o_website_preview iframe').contents().find('img.o_wslides_course_pict');
+        if ($imgCorgi.attr('src').endsWith('GoldWinnerPembrookeWelshCorgi.jpg')) {
+            $imgCorgi.addClass('o_wslides_tour_success');
+        }
+    },
+}, {
+    content: 'eLearning: the Corgi is set !',
+    trigger: 'iframe img.o_wslides_course_pict.o_wslides_tour_success',
 }, {
     content: 'eLearning: save course edition',
     trigger: 'button[data-action="save"]',

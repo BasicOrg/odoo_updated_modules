@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 export const qwebSample = /* xml */ `
 <h1>Qweb examples</h1>
 <div>
@@ -112,11 +110,11 @@ export const qwebSample = /* xml */ `
     <p t-else="">Welcome!</p>
 </div>
 
-<t t-foreach="[1, 2, 3]" t-as="i" t-key="i">
+<t t-foreach="[1, 2, 3]" t-as="i">
     <p><t t-esc="i"></t></p>
 </t>
 
-<p t-foreach="[1, 2, 3]" t-as="i" t-key="i">
+<p t-foreach="[1, 2, 3]" t-as="i">
     <t t-esc="i"></t>
 </p>
 
@@ -156,7 +154,7 @@ export const qwebSample = /* xml */ `
         <t t-elif="is_online and object.event_id.description">
             <t t-set="object.event_id.description_to_html_lines()" t-value="splitted_description" data-oe-t-inline="true"></t>
             <li>Description:
-                <ul t-foreach="splitted_description" t-as="description_line" t-key="description_line_index">
+                <ul t-foreach="splitted_description" t-as="description_line">
                     <li t-out="description_line or ''">Email: my.email@test.example.com</li>
                 </ul>
             </li>

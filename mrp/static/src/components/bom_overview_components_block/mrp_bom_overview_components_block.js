@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { useBus } from "@web/core/utils/hooks";
 import { BomOverviewLine } from "../bom_overview_line/mrp_bom_overview_line";
 import { BomOverviewExtraBlock } from "../bom_overview_extra_block/mrp_bom_overview_extra_block";
-import { Component, onWillUnmount, onWillUpdateProps, useState } from "@odoo/owl";
+
+const { Component, onMounted, onWillUnmount, onWillUpdateProps, useState } = owl;
 
 export class BomOverviewComponentsBlock extends Component {
     setup() {
@@ -13,12 +13,15 @@ export class BomOverviewComponentsBlock extends Component {
             unfoldAll: this.props.unfoldAll || false,
         });
         if (this.props.unfoldAll) {
-            this.props.changeFolded({ ids: this.childIds, isFolded: false });
+            this.props.bus.trigger("change-fold", { ids: this.childIds, isFolded: false });
         }
 
-        if (this.hasComponents) {
-            useBus(this.env.overviewBus, "unfold-all", () => this._unfoldAll());
-        }
+        onMounted(() => {
+            if (this.hasComponents) {
+                this.props.bus.addEventListener(`toggle-fold-${this.identifier}`, (ev) => this._onToggleFolded(ev.detail));
+                this.props.bus.addEventListener("unfold-all", () => this._unfoldAll());
+            }
+        });
 
         onWillUpdateProps(newProps => {
             if (this.data.product_id != newProps.data.product_id) {
@@ -31,24 +34,26 @@ export class BomOverviewComponentsBlock extends Component {
 
         onWillUnmount(() => {
             if (this.hasComponents) {
-                this.props.changeFolded({ ids: this.childIds, isFolded: true });
+                this.props.bus.trigger("change-fold", { ids: this.childIds, isFolded: true });
+                this.props.bus.removeEventListener(`toggle-fold-${this.identifier}`, (ev) => this._onToggleFolded(ev.detail));
+                this.props.bus.removeEventListener("unfold-all", () => this._unfoldAll());
             }
         });
     }
     //---- Handlers ----
 
-    onToggleFolded(foldId) {
+    _onToggleFolded(foldId) {
         const newState = !this.state[foldId];
         this.state[foldId] = newState;
         this.state.unfoldAll = false;
-        this.props.changeFolded({ ids: [foldId], isFolded: newState });
+        this.props.bus.trigger("change-fold", { ids: [foldId], isFolded: newState });
     }
 
     _unfoldAll() {
         const allChildIds = this.childIds;
         this.state.unfoldAll = true;
         allChildIds.forEach(id => this.state[id] = false);
-        this.props.changeFolded({ ids: allChildIds, isFolded: false });
+        this.props.bus.trigger("change-fold", { ids: allChildIds, isFolded: false });
     }
 
     //---- Getters ----
@@ -67,6 +72,14 @@ export class BomOverviewComponentsBlock extends Component {
 
     get identifier() {
         return this.getIdentifier(this.data);
+    }
+
+    get operationsId() {
+        return this.getIdentifier(this.data, "operations");
+    }
+
+    get byproductsId() {
+        return this.getIdentifier(this.data, "byproducts");
     }
 
     get showOperations() {
@@ -91,12 +104,11 @@ BomOverviewComponentsBlock.components = {
     BomOverviewExtraBlock,
 };
 BomOverviewComponentsBlock.props = {
+    bus: Object,
     unfoldAll: { type: Boolean, optional: true },
     showOptions: Object,
     currentWarehouseId: { type: Number, optional: true },
     data: Object,
-    precision: Number,
-    changeFolded: Function,
 };
 BomOverviewComponentsBlock.defaultProps = {
     unfoldAll: false,

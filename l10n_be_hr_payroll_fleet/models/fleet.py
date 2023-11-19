@@ -32,14 +32,10 @@ class FleetVehicle(models.Model):
     @api.depends('co2_fee', 'log_contracts', 'log_contracts.state', 'log_contracts.recurring_cost_amount_depreciated')
     def _compute_total_depreciated_cost(self):
         for car in self:
-            if car.log_contracts:
-                car.total_depreciated_cost = car.co2_fee + \
-                    sum(car.log_contracts.filtered(
-                        lambda contract: contract.state == 'open'
-                    ).mapped('recurring_cost_amount_depreciated'))
-            else:
-                car.total_depreciated_cost = car.model_id.with_company(car.company_id).default_total_depreciated_cost
-
+            car.total_depreciated_cost = car.co2_fee + \
+                sum(car.log_contracts.filtered(
+                    lambda contract: contract.state == 'open'
+                ).mapped('recurring_cost_amount_depreciated'))
 
     @api.depends('co2_fee', 'log_contracts', 'log_contracts.state', 'log_contracts.cost_generated')
     def _compute_total_cost(self):
@@ -77,10 +73,7 @@ class FleetVehicle(models.Model):
         (self - be_vehicles).tax_deduction = 0
         coefficients = self.env['hr.rule.parameter'].sudo()._get_parameter_from_code('tax_deduction_fuel_coefficients', raise_if_not_found=False) if be_vehicles else None
         for vehicle in be_vehicles:
-            if vehicle.vehicle_type == "bike":
-                vehicle.tax_deduction = 1
-            else:
-                vehicle.tax_deduction = vehicle._get_tax_deduction(vehicle.co2, vehicle.fuel_type, coefficients, vehicle.horsepower)
+            vehicle.tax_deduction = vehicle._get_tax_deduction(vehicle.co2, vehicle.fuel_type, coefficients, vehicle.horsepower)
 
     def _get_co2_fee(self, co2, fuel_type):
         # Reference: https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/special_contributions/companycar.html
@@ -121,6 +114,21 @@ class FleetVehicle(models.Model):
             return '%s, %s%s' % (name, round(self.tax_deduction * 100, 2), "%")
         else:
             return name
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        vehicles = super().create(vals_list)
+        contracts_vals_list = []
+        for vehicle in vehicles:
+            if not vehicle.log_contracts:
+                contracts_vals_list.append({
+                    'vehicle_id': vehicle.id,
+                    'recurring_cost_amount_depreciated': vehicle.model_id.default_recurring_cost_amount_depreciated,
+                    'purchaser_id': vehicle.driver_id.id,
+                    'company_id': vehicle.company_id.id,
+                })
+        self.env['fleet.vehicle.log.contract'].create(contracts_vals_list)
+        return vehicles
 
     def _get_acquisition_date(self):
         self.ensure_one()
@@ -179,17 +187,15 @@ class FleetVehicle(models.Model):
 class FleetVehicleLogContract(models.Model):
     _inherit = 'fleet.vehicle.log.contract'
 
-    recurring_cost_amount_depreciated = fields.Float(
-        "Depreciated Cost Amount", tracking=True,
-        compute='_compute_recurring_cost_amount_depreciated', store=True, readonly=False)
+    recurring_cost_amount_depreciated = fields.Float("Depreciated Cost Amount", tracking=True)
 
-    @api.depends('vehicle_id')
-    def _compute_recurring_cost_amount_depreciated(self):
-        for log_contract in self:
-            default_cost = log_contract.vehicle_id.model_id.default_recurring_cost_amount_depreciated
-            if not default_cost:
-                continue
-            log_contract.recurring_cost_amount_depreciated = default_cost
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('recurring_cost_amount_depreciated', 0) and vals.get('vehicle_id'):
+                vehicle_id = self.env['fleet.vehicle'].browse(vals['vehicle_id'])
+                vals['recurring_cost_amount_depreciated'] = vehicle_id.model_id.default_recurring_cost_amount_depreciated
+        return super().create(vals_list)
 
 
 class FleetVehicleModel(models.Model):
@@ -243,11 +249,8 @@ class FleetVehicleModel(models.Model):
     def _compute_tax_deduction(self):
         coefficients = self.env['hr.rule.parameter'].sudo()._get_parameter_from_code('tax_deduction_fuel_coefficients', raise_if_not_found=False)
         for model in self:
-            if model.vehicle_type == "bike":
-                model.tax_deduction = 1
-            else:
-                model.tax_deduction = self.env['fleet.vehicle']._get_tax_deduction(
-                    model.default_co2, model.default_fuel_type, coefficients, model.horsepower)
+            model.tax_deduction = self.env['fleet.vehicle']._get_tax_deduction(
+                model.default_co2, model.default_fuel_type, coefficients, model.horsepower)
 
     @api.depends_context('uid')
     def _compute_current_country_code(self):

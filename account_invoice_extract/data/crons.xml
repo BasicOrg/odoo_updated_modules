@@ -12,6 +12,17 @@
             <field name="doall" eval="False"/>
         </record>
 
+        <record id='ir_cron_ocr_parse' model='ir.cron'>
+            <field name='name'>Invoice OCR: Parse Invoices</field>
+            <field name='model_id' ref='model_account_move'/>
+            <field name='state'>code</field>
+            <field name='code'>model._cron_parse()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name='numbercall'>-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+
         <record id='ir_cron_ocr_validate' model='ir.cron'>
             <field name='name'>Invoice OCR: Validate Invoices</field>
             <field name='model_id' ref='model_account_move'/>

@@ -1,14 +1,10 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
-import { getColor } from "../colors";
+const { Component } = owl;
 
 export class CalendarMobileFilterPanel extends Component {
     get caretDirection() {
         return this.props.sideBarShown ? "down" : "left";
-    }
-    getFilterColor(filter) {
-        return `o_color_${getColor(filter.colorIndex)}`;
     }
     getFilterTypePriority(type) {
         return ["user", "record", "dynamic", "all"].indexOf(type);

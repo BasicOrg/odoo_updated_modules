@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="web.RemainingDaysField">
+
+    <t t-name="web.RemainingDaysField" owl="1">
         <t t-if="props.readonly">
             <t t-set="days" t-value="diffDays" />
             <t t-set="formatted" t-value="formattedValue" />
@@ -12,11 +13,21 @@
                 }"
                 t-att-title="formatted"
             >
-                <t t-esc="diffString"/>
+                <t t-if="days !== null">
+                    <t t-if="Math.abs(days) gt 99"><t t-esc="formatted" /></t>
+                    <t t-elif="days lt -1"><t t-esc="-days" /> days ago</t>
+                    <t t-elif="days === -1">Yesterday</t>
+                    <t t-elif="days === 0">Today</t>
+                    <t t-elif="days === 1">Tomorrow</t>
+                    <t t-elif="days gt 1">In <t t-esc="days" /> days</t>
+                </t>
             </div>
         </t>
         <t t-else="">
-            <DateTimeField t-props="props" />
+            <div>
+                <t t-component="pickerComponent" date="props.value or null" onDateTimeChanged.bind="onDateTimeChanged" />
+            </div>
         </t>
     </t>
+
 </templates>

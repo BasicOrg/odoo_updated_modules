@@ -69,8 +69,8 @@ class CRMRevealRule(models.Model):
     def _compute_lead_count(self):
         leads = self.env['crm.lead']._read_group([
             ('reveal_rule_id', 'in', self.ids)
-        ], groupby=['reveal_rule_id', 'type'], aggregates=['__count'])
-        mapping = {(reveal_rule.id, type_crm): count for reveal_rule, type_crm, count in leads}
+        ], fields=['reveal_rule_id', 'type'], groupby=['reveal_rule_id', 'type'], lazy=False)
+        mapping = {(lead['reveal_rule_id'][0], lead['type']): lead['__count'] for lead in leads}
         for rule in self:
             rule.lead_count = mapping.get((rule.id, 'lead'), 0)
             rule.opportunity_count = mapping.get((rule.id, 'opportunity'), 0)
@@ -83,9 +83,21 @@ class CRMRevealRule(models.Model):
         except Exception:
             raise ValidationError(_('Enter Valid Regex.'))
 
+    @api.model
+    def _assert_geoip(self):
+        if not odoo._geoip_resolver:
+            message = _('Lead Generation requires a GeoIP resolver which could not be found on your system. Please consult https://pypi.org/project/GeoIP/.')
+            self.env['bus.bus']._sendone(self.env.user.partner_id, 'mail.simple_notification', {
+                'title': _('Missing Library'),
+                'message': message,
+                'sticky': True,
+                'warning': True,
+            })
+
     @api.model_create_multi
     def create(self, vals_list):
-        self.env.registry.clear_cache() # Clear the cache in order to recompute _get_active_rules
+        self.clear_caches() # Clear the cache in order to recompute _get_active_rules
+        self._assert_geoip()
         return super().create(vals_list)
 
     def write(self, vals):
@@ -93,11 +105,12 @@ class CRMRevealRule(models.Model):
             'country_ids', 'regex_url', 'active'
         }
         if set(vals.keys()) & fields_set:
-            self.env.registry.clear_cache() # Clear the cache in order to recompute _get_active_rules
+            self.clear_caches() # Clear the cache in order to recompute _get_active_rules
+        self._assert_geoip()
         return super(CRMRevealRule, self).write(vals)
 
     def unlink(self):
-        self.env.registry.clear_cache() # Clear the cache in order to recompute _get_active_rules
+        self.clear_caches() # Clear the cache in order to recompute _get_active_rules
         return super(CRMRevealRule, self).unlink()
 
     def action_get_lead_tree_view(self):
@@ -376,10 +389,10 @@ class CRMRevealRule(models.Model):
             'flavor_text': _("Opportunity created by Odoo Lead Generation"),
             'people_data': result.get('people_data'),
         })
-        lead.message_post_with_source(
+        lead.message_post_with_view(
             'iap_mail.enrich_company',
-            render_values=template_values,
-            subtype_xmlid='mail.mt_note',
+            values=template_values,
+            subtype_id=self.env.ref('mail.mt_note').id
         )
 
         return lead

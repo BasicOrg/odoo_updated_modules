@@ -11,19 +11,16 @@
             </xpath>
             <xpath expr="//sheet" position="after">
                 <footer>
-                    <button string="Save" special="save" data-hotkey="q" class="btn btn-primary" close="1"
+                    <button string="Save" special="save" data-hotkey="v" class="btn btn-primary" close="1"
                             groups="event.group_event_manager"/>
-                    <button string="Discard" special="cancel" data-hotkey="x" class="btn-secondary" close="1"/>
+                    <button string="Discard" special="cancel" data-hotkey="z" class="btn-secondary" close="1"/>
                     <button name="action_unschedule" type="object" string="Unschedule" class="btn-secondary" close="1"
-                            invisible="not id" groups="event.group_event_manager"/>
+                            attrs="{'invisible': [('id', '=', False)]}" groups="event.group_event_manager"/>
                     <button name="unlink" type="object" icon="fa-trash" title="Delete" class="btn-secondary float-end"
-                            close="1" invisible="not id"
+                            close="1" attrs="{'invisible': [('id', '=', False)]}"
                             groups="event.group_event_manager" data-hotkey="d"/>
                 </footer>
             </xpath>
-            <xpath expr="//field[@name='stage_id']" position="replace"/>
-            <xpath expr="//field[@name='wishlist_visitor_count']" position="replace"/>
-            <xpath expr="//field[@name='is_published']" position="replace"/>
         </field>
     </record>
 
@@ -33,6 +30,7 @@
         <field eval="2" name="priority"/>
         <field name="arch" type="xml">
             <gantt
+                js_class="event_track_gantt"
                 form_view_id="%(event_track_view_form_in_gantt)d"
                 date_start="date"
                 date_stop="date_end"
@@ -42,8 +40,8 @@
                 dynamic_range="1">
                 <templates>
                     <div t-name="gantt-popover">
-                        <div><strong>Start — </strong> <t t-esc="date.toFormat('f')"/></div>
-                        <div t-if="partner_name"><strong>Proposed By — </strong> <t t-esc="partner_name"/></div>
+                        <div><strong>Start — </strong> <t t-out="date.format('l LT')"/></div>
+                        <div t-if="partner_name"><strong>Proposed By — </strong> <t t-out="partner_name"/></div>
                     </div>
                 </templates>
                 <field name="partner_name"/>

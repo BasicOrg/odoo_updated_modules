@@ -1,10 +1,10 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "./o_spreadsheet_extended";
 const { load, CorePlugin, tokenize, parse, convertAstNodes, astToFormula } = spreadsheet;
 const { corePluginRegistry } = spreadsheet.registries;
 
-export const ODOO_VERSION = 6;
+export const ODOO_VERSION = 5;
 
 const MAP = {
     PIVOT: "ODOO.PIVOT",
@@ -18,7 +18,7 @@ const MAP = {
 const dmyRegex = /^([0|1|2|3][1-9])\/(0[1-9]|1[0-2])\/(\d{4})$/i;
 
 export function migrate(data) {
-    let _data = load(data, !!odoo.debug);
+    let _data = load(data);
     const version = _data.odooVersion || 0;
     if (version < 1) {
         _data = migrate0to1(_data);
@@ -34,9 +34,6 @@ export function migrate(data) {
     }
     if (version < 5) {
         _data = migrate4to5(_data);
-    }
-    if (version < 6) {
-        _data = migrate5to6(_data);
     }
     return _data;
 }
@@ -70,7 +67,7 @@ function migrate1to2(data) {
             if (cell.content && cell.content.startsWith("=")) {
                 try {
                     cell.content = migratePivotDaysParameters(cell.content);
-                } catch {
+                } catch (_) {
                     continue;
                 }
             }
@@ -147,9 +144,6 @@ function migrate4to5(data) {
                 data.pivots[id].fieldMatching = {};
             }
             data.pivots[id].fieldMatching[filter.id] = { chain: fm.field, type: fm.type };
-            if ("offset" in fm) {
-                data.pivots[id].fieldMatching[filter.id].offset = fm.offset;
-            }
         }
         delete filter.pivotFields;
 
@@ -162,9 +156,6 @@ function migrate4to5(data) {
                 data.lists[id].fieldMatching = {};
             }
             data.lists[id].fieldMatching[filter.id] = { chain: fm.field, type: fm.type };
-            if ("offset" in fm) {
-                data.lists[id].fieldMatching[filter.id].offset = fm.offset;
-            }
         }
         delete filter.listFields;
 
@@ -187,9 +178,6 @@ function migrate4to5(data) {
                 figure.data.fieldMatching = {};
             }
             figure.data.fieldMatching[filter.id] = { chain: fm.field, type: fm.type };
-            if ("offset" in fm) {
-                figure.data.fieldMatching[filter.id].offset = fm.offset;
-            }
         }
         delete filter.graphFields;
     }
@@ -221,23 +209,7 @@ function migratePivotDaysParameters(formulaString) {
     return "=" + astToFormula(convertedAst);
 }
 
-function migrate5to6(data) {
-    if (!data.globalFilters?.length) {
-        return data;
-    }
-    for (const filter of data.globalFilters) {
-        if (filter.type === "date" && ["year", "quarter", "month"].includes(filter.rangeType)) {
-            if (filter.defaultsToCurrentPeriod) {
-                filter.defaultValue = `this_${filter.rangeType}`;
-            }
-            filter.rangeType = "fixedPeriod";
-        }
-        delete filter.defaultsToCurrentPeriod;
-    }
-    return data;
-}
-
-export class OdooVersion extends CorePlugin {
+export default class OdooVersion extends CorePlugin {
     export(data) {
         data.odooVersion = ODOO_VERSION;
     }

@@ -1,11 +1,11 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { CharField, charField } from "@web/views/fields/char/char_field";
+import { CharField } from "@web/views/fields/char/char_field";
 import { useDebounced } from "@web/core/utils/timing";
 import { useService } from "@web/core/utils/hooks";
-import { useState } from "@odoo/owl";
 
+const { useState } = owl;
 export const DELAY = 400;
 
 export class IbanWidget extends CharField {
@@ -27,9 +27,4 @@ export class IbanWidget extends CharField {
 }
 IbanWidget.template = "base_iban.iban";
 
-export const ibanWidget = {
-    ...charField,
-    component: IbanWidget,
-};
-
-registry.category("fields").add("iban", ibanWidget);
+registry.category("fields").add("iban", IbanWidget);

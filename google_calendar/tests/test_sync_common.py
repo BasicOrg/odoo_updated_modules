@@ -23,7 +23,6 @@ class TestSyncGoogle(HttpCase):
     def setUp(self):
         super().setUp()
         self.google_service = GoogleCalendarService(self.env['google.service'])
-        self.env.user.sudo().unpause_google_synchronization()
 
     def assertGoogleEventDeleted(self, google_id):
         GoogleSync._google_delete.assert_called()
@@ -38,7 +37,6 @@ class TestSyncGoogle(HttpCase):
         expected_kwargs = {'timeout': timeout} if timeout else {}
         GoogleSync._google_insert.assert_called_once()
         args, kwargs = GoogleSync._google_insert.call_args
-        args[1:][0].pop('conferenceData', None)
         self.assertEqual(args[1:], expected_args) # skip Google service arg
         self.assertEqual(kwargs, expected_kwargs)
 
@@ -64,7 +62,7 @@ class TestSyncGoogle(HttpCase):
     def assertGoogleEventSendUpdates(self, expected_value):
         GoogleService._do_request.assert_called_once()
         args, _ = GoogleService._do_request.call_args
-        val = "sendUpdates=%s" % expected_value
+        val = "?sendUpdates=%s" % expected_value
         self.assertTrue(val in args[0], "The URL should contain %s" % val)
 
     def call_post_commit_hooks(self):

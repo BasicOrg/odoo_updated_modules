@@ -224,8 +224,6 @@ class ExportXlsxWriter:
                 cell_value = pycompat.to_text(cell_value)
             except UnicodeDecodeError:
                 raise UserError(_("Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.", self.field_names)[column])
-        elif isinstance(cell_value, (list, tuple, dict)):
-            cell_value = pycompat.to_text(cell_value)
 
         if isinstance(cell_value, str):
             if len(cell_value) > self.worksheet.xls_strmax:
@@ -331,10 +329,11 @@ class Export(http.Controller):
             if import_compat and not field_name == 'id':
                 if exclude and field_name in exclude:
                     continue
-                if field.get('type') in ('properties', 'properties_definition'):
-                    continue
                 if field.get('readonly'):
-                    continue
+                    # If none of the field's states unsets readonly, skip the field
+                    if all(dict(attrs).get('readonly', True)
+                           for attrs in field.get('states', {}).values()):
+                        continue
             if not field.get('exportable', True):
                 continue
 
@@ -470,7 +469,7 @@ class ExportFormat(object):
         model, fields, ids, domain, import_compat = \
             operator.itemgetter('model', 'fields', 'ids', 'domain', 'import_compat')(params)
 
-        Model = request.env[model].with_context(import_compat=import_compat, **params.get('context', {}))
+        Model = request.env[model].with_context(**params.get('context', {}))
         if not Model._is_an_ordinary_table():
             fields = [field for field in fields if field['name'] != 'id']
 
@@ -484,7 +483,7 @@ class ExportFormat(object):
         if not import_compat and groupby:
             groupby_type = [Model._fields[x.split(':')[0]].type for x in groupby]
             domain = [('id', 'in', ids)] if ids else domain
-            groups_data = Model.read_group(domain, ['__count'], groupby, lazy=False)
+            groups_data = Model.read_group(domain, [x if x != '.id' else 'id' for x in field_names], groupby, lazy=False)
 
             # read_group(lazy=False) returns a dict only for final groups (with actual data),
             # not for intermediary groups. The full group tree must be re-constructed.
@@ -494,6 +493,7 @@ class ExportFormat(object):
 
             response_data = self.from_group_data(fields, tree)
         else:
+            Model = Model.with_context(import_compat=import_compat)
             records = Model.browse(ids) if ids else Model.search(domain, offset=0, limit=False, order=False)
 
             export_data = records.export_data(field_names).get('datas', [])
@@ -510,7 +510,7 @@ class ExportFormat(object):
 class CSVExport(ExportFormat, http.Controller):
 
     @http.route('/web/export/csv', type='http', auth="user")
-    def web_export_csv(self, data):
+    def index(self, data):
         try:
             return self.base(data)
         except Exception as exc:
@@ -554,7 +554,7 @@ class CSVExport(ExportFormat, http.Controller):
 class ExcelExport(ExportFormat, http.Controller):
 
     @http.route('/web/export/xlsx', type='http', auth="user")
-    def web_export_xlsx(self, data):
+    def index(self, data):
         try:
             return self.base(data)
         except Exception as exc:
@@ -586,6 +586,8 @@ class ExcelExport(ExportFormat, http.Controller):
         with ExportXlsxWriter(fields, len(rows)) as xlsx_writer:
             for row_index, row in enumerate(rows):
                 for cell_index, cell_value in enumerate(row):
+                    if isinstance(cell_value, (list, tuple)):
+                        cell_value = pycompat.to_text(cell_value)
                     xlsx_writer.write_cell(row_index + 1, cell_index, cell_value)
 
         return xlsx_writer.value

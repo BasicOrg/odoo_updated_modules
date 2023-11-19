@@ -1,40 +1,38 @@
-/** @odoo-module **/
-
+/** @odoo-module */
 import { registry } from "@web/core/registry";
-import { browser } from "@web/core/browser/browser"
+import { DeviceController } from "@iot/device_controller";
 
-/**
- * Generate a unique identifier (64 bits) in hexadecimal.
- * Copied beacause if imported from web import too many other modules
- * 
- * @returns {string}
- */
-function uuid() {
-    const array = new Uint8Array(8);
-    window.crypto.getRandomValues(array);
-    // Uint8Array to hex
-    return [...array].map((b) => b.toString(16).padStart(2, "0")).join("");
+
+function onIoTActionResult(data, env) {
+    if (data.result === true) {
+        env.services.notification.add(env._t("Successfully sent to printer!"));
+    } else {
+        env.services.notification.add(env._t("Check if the printer is still connected"), {
+            title: env._t("Connection to printer failed"),
+            type: "danger",
+        });
+    }
 }
 
+function onValueChange(data, env) {
+    if (data.status) {
+        env.services.notification.add(env._t("Printer ") + data.status);
+    }
+}
 
 async function iotReportActionHandler(action, options, env) {
-    if (action.device_ids && action.device_ids.length) {
+    if (action.device_id) {
+        // Call new route that sends you report to send to printer
         const orm = env.services.orm;
         action.data = action.data || {};
-        action.data["device_ids"] = action.device_ids;
-        const args = [action.id, action.context.active_ids, action.data, uuid()];
-        const report_id = action.id;
-        const list = browser.localStorage.getItem(`print_report_number_${report_id}`);
-        if (!list) {
-            const action_wizard = await orm.call("ir.actions.report", "get_action_wizard", args);
-            await env.services.action.doAction(action_wizard);
-        }
-        else {
-            await env.services.iot_websocket.addJob(JSON.parse(list), args);
-        }
-        if (options.onClose) {
-            options.onClose();
-        }
+        action.data["device_id"] = action.device_id;
+        const args = [action.id, action.context.active_ids, action.data];
+        const [ip, identifier, document] = await orm.call("ir.actions.report", "iot_render", args);
+        const iotDevice = new DeviceController(env.services.iot_longpolling, { iot_ip: ip, identifier });
+        iotDevice.addListener(data => onValueChange(data, env));
+        iotDevice.action({ document })
+            .then(data => onIoTActionResult(data, env))
+            .guardedCatch(() => iotDevice.iotLongpolling._doWarnFail(ip));
         return true;
     }
 }

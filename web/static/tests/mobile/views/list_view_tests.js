@@ -61,13 +61,13 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
 
         assert.containsN(fixture, ".o_data_row", 4);
         assert.containsNone(fixture, ".o_list_selection_box");
-        assert.containsOnce(fixture, ".o_control_panel .fa-search");
+        assert.containsOnce(fixture, ".o_control_panel .o_cp_bottom_right");
 
         // select a record
         await triggerEvents(fixture, ".o_data_row:nth-child(1)", ["touchstart", "touchend"]);
         assert.containsOnce(fixture, ".o_list_selection_box");
         assert.containsNone(fixture, ".o_list_selection_box .o_list_select_domain");
-        assert.containsNone(fixture, ".o_control_panel .o_cp_searchview");
+        assert.containsNone(fixture, ".o_control_panel .o_cp_bottom_right");
         assert.ok(
             fixture.querySelector(".o_list_selection_box").textContent.includes("1 selected")
         );
@@ -87,14 +87,14 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
         await toggleActionMenu(fixture);
         assert.deepEqual(
             getMenuItemTexts(fixture.querySelector(".o_cp_action_menus")),
-            ["Duplicate", "Delete"],
-            "action menu should contain the Duplicate and Delete actions"
+            ["Delete"],
+            "action menu should contain the Delete action"
         );
 
         // unselect all
-        await click(fixture, ".o_list_unselect_all");
+        await click(fixture, ".o_discard_selection");
         assert.containsNone(fixture, ".o_list_selection_box");
-        assert.containsOnce(fixture, ".o_control_panel .fa-search");
+        assert.containsOnce(fixture, ".o_control_panel .o_cp_bottom_right");
     });
 
     QUnit.test("selection box is properly displayed (multi pages)", async function (assert) {
@@ -134,8 +134,8 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
         await toggleActionMenu(fixture);
         assert.deepEqual(
             getMenuItemTexts(fixture.querySelector(".o_cp_action_menus")),
-            ["Duplicate", "Delete"],
-            "action menu should contain the Duplicate and Delete actions"
+            ["Delete"],
+            "action menu should contain the Delete action"
         );
 
         // select all records of first page

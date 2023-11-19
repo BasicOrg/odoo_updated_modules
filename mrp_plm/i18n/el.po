@@ -1,35 +1,43 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # * mrp_plm
-#
+# 
 # Translators:
 # Stefanos Nikou <stefanos.nikou@gmail.com>, 2019
 # Eirini Spiridonidou <eirinisofia999@gmail.com>, 2019
 # Martin Trigaux, 2019
 # George Tarasidis <george_tarasidis@yahoo.com>, 2019
 # Kostas Goutoudis <goutoudis@gmail.com>, 2019
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server saas~12.2+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
+"POT-Creation-Date: 2019-03-20 14:07+0000\n"
 "PO-Revision-Date: 2016-08-05 13:29+0000\n"
 "Last-Translator: Kostas Goutoudis <goutoudis@gmail.com>, 2019\n"
 "Language-Team: Greek (https://www.transifex.com/odoo/teams/41243/el/)\n"
-"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_product_product__product_attachment_count
+msgid "# Attachment"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__mrp_document_count
+#: model:ir.model.fields,field_description:mrp_plm.field_product_product__template_attachment_count
+#: model:ir.model.fields,field_description:mrp_plm.field_product_template__template_attachment_count
 msgid "# Attachments"
 msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__eco_count
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__eco_count
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__eco_count
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__eco_count
 msgid "# ECOs"
@@ -41,20 +49,51 @@ msgid "# ECOs in progress"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
+msgid "&amp;nbsp;"
+msgstr "&amp;nbsp;"
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:9
 #, python-format
-msgid "%(approval_name)s %(approver_name)s %(approval_status)s this ECO"
+msgid "&times;"
+msgstr "&times;"
+
+#. module: mrp_plm
+#: model:ir.model.fields,help:mrp_plm.field_mrp_bom__image_small
+msgid "64px * 64px"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "<i class=\"fa fa-comments\" role=\"img\" aria-label=\"Messages\"/>"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
-msgid "<i class=\"fa fa-envelope-o\" role=\"img\" aria-label=\"Domain alias\" title=\"Domain alias\"/>&amp;nbsp;"
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid ""
+"<i class=\"fa fa-envelope-o\" role=\"img\" aria-label=\"Domain alias\" "
+"title=\"Domain alias\"/>&amp;nbsp;"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+msgid "<i class=\"fa fa-remove\" role=\"img\" aria-label=\"Remove\" title=\"Remove\"/>"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+msgid "<i class=\"fa fa-undo\" role=\"img\" aria-label=\"Undo\" title=\"Undo\"/>"
+msgstr ""
+
+#. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:635
 #, python-format
 msgid ""
 "<p class=\"o_view_nocontent_smiling_face\">\n"
@@ -65,24 +104,45 @@ msgid ""
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-danger\">Archived</span>"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-primary\">New</span>"
+#: code:addons/mrp_plm/models/product.py:40
+#: code:addons/mrp_plm/models/product.py:86
+#, python-format
+msgid ""
+"<p class=\"o_view_nocontent_smiling_face\">\n"
+"                        Upload files to your product\n"
+"                    </p><p>\n"
+"                        Use this feature to store any files, like drawings or specifications.\n"
+"                    </p>"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "<span>Revision</span><br/>"
+msgid "<span>Bill of Materials</span><br/>"
+msgstr "<span>Λογαριασμός των Υλικών (ΒοΜ)</span><br/>"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "<span>New</span>"
+msgstr "<span>Nέο</span>"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "<span>Routing</span><br/>"
 msgstr ""
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "<span>View</span>"
+msgstr "<span>Προβολή</span>"
+
+#. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_defaults
-msgid "A Python dictionary that will be evaluated to provide default values when creating new records for this alias."
-msgstr "Ένα Python λεξικό που θα αξιολογηθεί για να παρέχει προεπιλεγμένες τιμές όταν δημιουργείτε νέες εγγραφές για αυτό το ψευδώνυμο."
+msgid ""
+"A Python dictionary that will be evaluated to provide default values when "
+"creating new records for this alias."
+msgstr ""
+"Ένα Python λεξικό που θα αξιολογηθεί για να παρέχει προεπιλεγμένες τιμές "
+"όταν δημιουργείτε νέες εγγραφές για αυτό το ψευδώνυμο."
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_needaction
@@ -101,39 +161,19 @@ msgid "Activities"
 msgstr "Δραστηριότητες"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_exception_decoration
-msgid "Activity Exception Decoration"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_state
 msgid "Activity State"
 msgstr "Κατάσταση Δραστηριότητας"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_type_icon
-msgid "Activity Type Icon"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__add
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_routing_change__change_type__add
+#: selection:mrp.eco.bom.change,change_type:0
+#: selection:mrp.eco.routing.change,change_type:0
 msgid "Add"
 msgstr "Προσθήκη"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Add a description..."
-msgstr ""
-
-#. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_tag_action
 msgid "Add a new tag"
-msgstr ""
-
-#. module: mrp_plm
-#: model:res.groups,name:mrp_plm.group_plm_manager
-msgid "Administrator"
 msgstr ""
 
 #. module: mrp_plm
@@ -152,19 +192,9 @@ msgid "Alias Name"
 msgstr "Ψευδώνυμο ονόματος"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias Status"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_domain
 msgid "Alias domain"
 msgstr "Ψευδώνυμο τομέα"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_model_id
@@ -172,18 +202,19 @@ msgid "Aliased Model"
 msgstr "Μοντέλο Ψευδωνύμου"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 #: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_search_mrp_plm
 msgid "All"
 msgstr "Όλα"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
-msgid "All Validations"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "All Approvals have be done"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__allow_change_kanban_state
-msgid "Allow Change Kanban State"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "All Validations"
 msgstr ""
 
 #. module: mrp_plm
@@ -203,7 +234,6 @@ msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_tree
 msgid "Apply Changes"
 msgstr ""
 
@@ -238,6 +268,11 @@ msgid "Approval Type"
 msgstr ""
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "Approval:"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__approval_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__approval_template_ids
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -256,8 +291,7 @@ msgid "Approve"
 msgstr "Έγκριση"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__done
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval__status__approved
+#: selection:mrp.eco,kanban_state:0 selection:mrp.eco.approval,status:0
 msgid "Approved"
 msgstr "Εγκρίθηκε"
 
@@ -267,26 +301,32 @@ msgid "Approved by"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval_template__approval_type__optional
+#: selection:mrp.eco.approval.template,approval_type:0
 msgid "Approves, but the approval is optional"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_search_mrp_plm
 msgid "Archived"
 msgstr "Αρχειοθετημένα"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__effectivity__asap
+#: selection:mrp.eco,effectivity:0
 msgid "As soon as possible"
 msgstr "Το συντομότερο δυνατόν"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__effectivity__date
+#: selection:mrp.eco,effectivity:0
 msgid "At Date"
 msgstr "Σε Ημερομηνία"
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:16
+#, python-format
+msgid "Attachment"
+msgstr "Συνημμένο"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_attachment_count
@@ -295,27 +335,20 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:627
+#: code:addons/mrp_plm/models/product.py:32
+#: code:addons/mrp_plm/models/product.py:78
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__mrp_document_ids
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+#: model_terms:ir.ui.view,arch_db:mrp_plm.product_product_view_form_inherit_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.product_template_view_form_inherit_plm
 #, python-format
 msgid "Attachments"
 msgstr "Συνημμένα"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__awaiting_my_validation
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-msgid "Awaiting My Validation"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-msgid "Awaiting Validation"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_report_mrp_report_bom_structure
-msgid "BOM Overview Report"
+msgid "BOM Structure Report"
 msgstr ""
 
 #. module: mrp_plm
@@ -329,12 +362,10 @@ msgid "Bill of Material Line"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:155
 #: model:ir.actions.act_window,name:mrp_plm.mrp_bom_action_kanban
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__bom_id
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_boms
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 #, python-format
 msgid "Bill of Materials"
 msgstr "Κατάσταση Υλικών"
@@ -342,20 +373,13 @@ msgstr "Κατάσταση Υλικών"
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_bom_action_kanban
 msgid ""
-"Bills of materials allow you to define the list of required components\n"
-"              used to make a finished product; through a manufacturing\n"
+"Bills of materials allow you to define the list of required raw\n"
+"              materials used to make a finished product; through a manufacturing\n"
 "              order or a pack of products."
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__blocked
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_validated
-#, python-format
+#: selection:mrp.eco,kanban_state:0
 msgid "Blocked"
 msgstr "Μπλοκαρισμένο"
 
@@ -363,6 +387,11 @@ msgstr "Μπλοκαρισμένο"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__is_blocking
 msgid "Blocking Stage"
 msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+msgid "BoM"
+msgstr "Κ.Υ."
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
@@ -381,11 +410,14 @@ msgid "BoM Revision"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-javascript
-#: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
 #: model_terms:ir.ui.view,arch_db:mrp_plm.report_mrp_bom_inherit_mrp_plm
-#, python-format
 msgid "BoM Version"
+msgstr ""
+
+#. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:157
+#, python-format
+msgid "BoM and Routing"
 msgstr ""
 
 #. module: mrp_plm
@@ -425,8 +457,15 @@ msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Changes made on the operation."
+msgid "Changes made on the routing."
 msgstr ""
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:25
+#, python-format
+msgid "Close"
+msgstr "Κλείσιμο"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__color
@@ -440,12 +479,12 @@ msgid "Color Index"
 msgstr "Χρωματισμός Ευρετήριου"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval__status__comment
+#: selection:mrp.eco.approval,status:0
 msgid "Commented"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval_template__approval_type__comment
+#: selection:mrp.eco.approval.template,approval_type:0
 msgid "Comments only"
 msgstr ""
 
@@ -457,14 +496,13 @@ msgstr "Εταιρία"
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_configuration
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "Configuration"
 msgstr "Διαμόρφωση"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__conflict
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__conflict
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#: selection:mrp.eco,state:0
 msgid "Conflict"
 msgstr ""
 
@@ -479,6 +517,11 @@ msgid "Consumed in Operation"
 msgstr ""
 
 #. module: mrp_plm
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_bom_action_kanban
+msgid "Create a bill of materials"
+msgstr ""
+
+#. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_stage_action
 msgid "Create a new ECO stage"
 msgstr ""
@@ -487,6 +530,19 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_type_action_dashboard
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_type_action_form
 msgid "Create a new ECO type"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_form
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_routing
+msgid "Create a new engineering change order"
 msgstr ""
 
 #. module: mrp_plm
@@ -514,11 +570,6 @@ msgid "Created on"
 msgstr "Δημιουργήθηκε στις"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_bounced_content
-msgid "Custom Bounced Message"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__effectivity
 msgid "Date on which the changes should be applied. For reference only."
 msgstr ""
@@ -529,31 +580,14 @@ msgid "Default Values"
 msgstr "Προεπιλεγμένες τιμές"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Define the approval roles on the ECO stages."
-msgstr ""
-
-#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
 msgid "Delete"
 msgstr "Διαγραφή"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__description
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Description"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__description
-msgid "Description and tooltips of the stage states."
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Description of the change and its reason."
-msgstr ""
+msgid "Description of the change and its reason ..."
+msgstr "Περιγραφή της αλλαγής και ο λόγος της ..."
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__bom_change_ids
@@ -562,7 +596,7 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__routing_change_ids
-msgid "Difference between old operation and new operation revision"
+msgid "Difference between old routing and new routing revision"
 msgstr ""
 
 #. module: mrp_plm
@@ -583,15 +617,15 @@ msgid "Displayed Image"
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Documents"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__done
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#: selection:mrp.eco,state:0
 msgid "Done"
 msgstr "Ολοκληρωμένη"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Dropdown menu"
+msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_routing_change_view_form
@@ -600,6 +634,7 @@ msgstr "Διάρκεια"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__eco_id
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "ECO"
 msgstr ""
 
@@ -611,7 +646,6 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_eco_approval
-#: model:mail.activity.type,name:mrp_plm.mail_activity_eco_approval
 msgid "ECO Approval"
 msgstr ""
 
@@ -671,6 +705,11 @@ msgid "ECO Types"
 msgstr ""
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "ECO approvals"
+msgstr ""
+
+#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_bom_change_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_routing_change_view_form
 msgid "ECO details"
@@ -692,16 +731,16 @@ msgid "ECO(s)"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-javascript
-#: code:addons/mrp_plm/static/src/components/bom_overview_display_filter/mrp_bom_overview_display_filter.js:0
-#: code:addons/mrp_plm/static/src/components/bom_overview_line/mrp_bom_overview_line.js:0
-#: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
+#. openerp-web
+#: code:addons/mrp_plm/static/src/js/mrp_bom_report.js:17
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_ecos
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__eco_ids
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_eco_report
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_calendar
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_routing_view_form_inherit_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.product_template_view_form_inherit_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.report_mrp_bom_inherit_mrp_plm
 #, python-format
@@ -709,17 +748,20 @@ msgid "ECOs"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
 msgid "Eco"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:648
 #, python-format
 msgid "Eco BoM"
+msgstr ""
+
+#. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:660
+#, python-format
+msgid "Eco Routing"
 msgstr ""
 
 #. module: mrp_plm
@@ -733,26 +775,24 @@ msgid "Edit Task"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_effective
 msgid "Effective"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity
+msgid "Effectivity"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity_date
-msgid "Effective Date"
+msgid "Effectivity Date"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_view_form
 msgid "Email Alias"
 msgstr "Ψευδώνυμο Email"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__email_cc
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Email cc"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__eco_id
@@ -769,21 +809,18 @@ msgstr ""
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_approval
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_approval_my
+#: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_form
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_late
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_main
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_product_tmpl
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_report
+#: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_routing
 msgid "Engineering Change Orders"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "Engineering Changes"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Extra Info"
 msgstr ""
 
 #. module: mrp_plm
@@ -808,15 +845,16 @@ msgid "Followers"
 msgstr "Ακόλουθοι"
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_channel_ids
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Ακόλουθοι (Κανάλια)"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_partner_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Ακόλουθοι (Συνεργάτες)"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__effectivity_date
@@ -829,33 +867,17 @@ msgid "Future Activities"
 msgstr "Μελλοντικές Δραστηριότητες"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_done
-msgid "Green Kanban Label"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_normal
-msgid "Grey Kanban Label"
-msgstr ""
-
-#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Group by..."
 msgstr "Ομαδοποίηση κατά..."
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__has_message
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__has_message
-msgid "Has Message"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.module.category,description:mrp_plm.module_category_manufacturing_product_lifecycle_management_(plm)
+#: model:ir.module.category,description:mrp_plm.module_category_plm
 msgid "Helps you manage your product's lifecycles."
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__priority__1
+#: selection:mrp.eco,priority:0
 msgid "High"
 msgstr "Υψηλή"
 
@@ -873,18 +895,18 @@ msgstr "Κωδικός"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_parent_thread_id
-msgid "ID of the parent record holding the alias (example: project holding the task creation alias)"
-msgstr "Αναγνωριστικό της μητρικής εγγραφής που κρατά το ψευδώνυμο (παράδειγμα: έργο που κατέχει το ψευδώνυμο της δημιουργίας εργασίας)"
+msgid ""
+"ID of the parent record holding the alias (example: project holding the task"
+" creation alias)"
+msgstr ""
+"Αναγνωριστικό της μητρικής εγγραφής που κρατά το ψευδώνυμο (παράδειγμα: έργο"
+" που κατέχει το ψευδώνυμο της δημιουργίας εργασίας)"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_exception_icon
-msgid "Icon"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_exception_icon
-msgid "Icon to indicate an exception activity."
-msgstr ""
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_unread
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_unread
+msgid "If checked new messages require your attention."
+msgstr "Εάν επιλεγεί τα νέα μηνύματα χρειάζονται την προσοχή σας"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_needaction
@@ -894,26 +916,28 @@ msgstr "Εάν επιλεγεί τα νέα μηνύματα χρειάζοντ�
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_has_error
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_has_sms_error
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_has_error
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_bounced_content
-msgid "If set, this content will automatically be sent out to unauthorized users instead of the default message."
+#: model:ir.model.fields,help:mrp_plm.field_mrp_bom__active
+msgid ""
+"If the active field is set to False, it will allow you to hide the bills of "
+"material without removing it."
 msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__active
-msgid "If the active field is set to False, it will allow you to hide the engineering change order without removing it."
+msgid ""
+"If the active field is set to False, it will allow you to hide the "
+"engineering change order without removing it."
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__image_128
-msgid "Image 128"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Important Messages"
+msgstr "Σημαντικά Μηνύματα "
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
@@ -922,17 +946,9 @@ msgid "In #{kanban_getcolorname(record.color.raw_value)}"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__normal
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_validated
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_progress
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-#, python-format
+#: selection:mrp.eco,kanban_state:0 selection:mrp.eco,state:0
+#: model:mrp.eco.stage,name:mrp_plm.ecostage_progress
 msgid "In Progress"
 msgstr "Σε εξέλιξη"
 
@@ -958,18 +974,8 @@ msgid "Is Rejected"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval_template__approval_type__mandatory
+#: selection:mrp.eco.approval.template,approval_type:0
 msgid "Is required to approve"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_blocked
-msgid "Kanban Blocked Explanation"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_normal
-msgid "Kanban Ongoing Explanation"
 msgstr ""
 
 #. module: mrp_plm
@@ -978,14 +984,21 @@ msgid "Kanban State"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__kanban_state_label
-msgid "Kanban State Label"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
+msgid "Kit"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_done
-msgid "Kanban Valid Explanation"
-msgstr ""
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_tag____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type____last_update
+msgid "Last Modified on"
+msgstr "Τελευταία τροποποίηση στις"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__write_uid
@@ -1017,23 +1030,15 @@ msgid "Late Activities"
 msgstr "Καθυστερημένες Δραστηριότητες"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_production__latest_bom_id
-msgid "Latest Bom"
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_main_attachment_id
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_main_attachment_id
+msgid "Main Attachment"
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
-msgid ""
-"Manage your products and bills of materials changes with the ECO's.\n"
-"              Gather the related documentation and receive the necessary approvals\n"
-"              before applying your changes."
-msgstr ""
+#: model:res.groups,name:mrp_plm.group_plm_manager
+msgid "Manager"
+msgstr "Διευθυντής"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__upd_time_cycle_manual
@@ -1063,9 +1068,9 @@ msgid "Mrp Eco Tags"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+msgid "My Activities"
+msgstr "Οι Δραστηριότητες μου"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -1079,6 +1084,7 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__name
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_tag__name
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__name
 msgid "Name"
 msgstr "Περιγραφή"
@@ -1114,23 +1120,18 @@ msgid "New Product UoM"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__new_routing_id
+msgid "New Routing"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__new_time_cycle_manual
 msgid "New manual duration"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__operation_id
-msgid "New or Previous Operation"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__new_product_qty
 msgid "New revision quantity"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
 msgstr ""
 
 #. module: mrp_plm
@@ -1149,28 +1150,12 @@ msgid "Next Activity Type"
 msgstr "Επόμενος Τύπος Δραστηριότητας"
 
 #. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_bom_action_kanban
-msgid "No bill of materials found. Let's create one!"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
-msgid "No engineering change order found"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__priority__0
+#: selection:mrp.eco,priority:0
 msgid "Normal"
 msgstr "Κανονική"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval__status__none
+#: selection:mrp.eco.approval,status:0
 msgid "Not Yet"
 msgstr ""
 
@@ -1189,7 +1174,7 @@ msgstr "Πλήθος ενεργειών"
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_error_counter
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_has_error_counter
-msgid "Number of errors"
+msgid "Number of error"
 msgstr ""
 
 #. module: mrp_plm
@@ -1205,6 +1190,12 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_unread_counter
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Πλήθος μη αναγνωσμένων μηνυμάτων"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__old_time_cycle_manual
 msgid "Old manual duration"
 msgstr ""
@@ -1215,49 +1206,20 @@ msgid "Once the changes are applied, the ECOs will be moved to this stage."
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__operation_name
-msgid "Operation"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Operation Changes"
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_force_thread_id
-msgid "Optional ID of a thread (record) to which all incoming messages will be attached, even if they did not reply to it. If set, this will disable the creation of new records completely."
-msgstr "Προαιρετική ταυτότητα ενός νήματος (εγγραφής), στην οποία όλα τα εισερχόμενα μηνύματα θα πρέπει να επισυνάπτονται, ακόμη και αν δεν απαντήσει σ 'αυτό. Εάν οριστεί, αυτό θα απενεργοποιήσει εντελώς τη δημιουργία νέων αρχείων."
+msgid ""
+"Optional ID of a thread (record) to which all incoming messages will be "
+"attached, even if they did not reply to it. If set, this will disable the "
+"creation of new records completely."
+msgstr ""
+"Προαιρετική ταυτότητα ενός νήματος (εγγραφής), στην οποία όλα τα εισερχόμενα"
+" μηνύματα θα πρέπει να επισυνάπτονται, ακόμη και αν δεν απαντήσει σ 'αυτό. "
+"Εάν οριστεί, αυτό θα απενεργοποιήσει εντελώς τη δημιουργία νέων αρχείων."
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_document__origin_attachment_id
-msgid "Origin Attachment"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_blocked
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_blocked
-msgid "Override the default value displayed for the blocked state for kanban selection, when the ECO is in that stage."
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_done
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_done
-msgid "Override the default value displayed for the done state for kanban selection, when the ECO is in that stage."
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_normal
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_normal
-msgid "Override the default value displayed for the normal state for kanban selection, when the ECO is in that stage."
-msgstr ""
+#: selection:mrp.eco,activity_state:0
+msgid "Overdue"
+msgstr "Εκπρόθεσμο"
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_dashboard
@@ -1270,7 +1232,7 @@ msgid "Owner"
 msgstr "Ιδιοκτήτης"
 
 #. module: mrp_plm
-#: model:ir.module.category,name:mrp_plm.module_category_manufacturing_product_lifecycle_management_(plm)
+#: model:ir.module.category,name:mrp_plm.module_category_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_root
 msgid "PLM"
 msgstr ""
@@ -1292,8 +1254,19 @@ msgstr "Κωδικός γονικής εγγραφής νήματος"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_parent_model_id
-msgid "Parent model holding the alias. The model holding the alias reference is not necessarily the model given by alias_model_id (example: project (parent_model) and task (model))"
-msgstr "Γονικό μοντέλο κρατώντας το ψευδώνυμο. Το μοντέλο που κρατά το ψευδώνυμο αναφοράς δεν είναι απαραίτητο το μοντέλο να δίνεται από alias_model_id (παράδειγμα: Έργο (parent_model) και Εργασία (μοντέλο))"
+msgid ""
+"Parent model holding the alias. The model holding the alias reference is not"
+" necessarily the model given by alias_model_id (example: project "
+"(parent_model) and task (model))"
+msgstr ""
+"Γονικό μοντέλο κρατώντας το ψευδώνυμο. Το μοντέλο που κρατά το ψευδώνυμο "
+"αναφοράς δεν είναι απαραίτητο το μοντέλο να δίνεται από alias_model_id "
+"(παράδειγμα: Έργο (parent_model) και Εργασία (μοντέλο))"
+
+#. module: mrp_plm
+#: selection:mrp.eco,activity_state:0
+msgid "Planned"
+msgstr "Προγραμματισμένη"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_contact
@@ -1334,6 +1307,11 @@ msgid "Previous Product UoM"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__previous_routing_id
+msgid "Previous Routing"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__old_product_qty
 msgid "Previous revision quantity"
 msgstr ""
@@ -1344,30 +1322,25 @@ msgid "Priority"
 msgstr "Προτεραιότητα"
 
 #. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_product_template
+#: model:ir.model,name:mrp_plm.model_product_product
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__product_tmpl_id
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__product_id
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_bom_change_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Product"
 msgstr "Είδος"
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:154
 #, python-format
 msgid "Product Only"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_mrp_document
-msgid "Production Document"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_mrp_production
-msgid "Production Order"
-msgstr ""
+#: model:ir.model,name:mrp_plm.model_product_template
+msgid "Product Template"
+msgstr "Πρότυπο Είδους "
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__active
@@ -1385,26 +1358,9 @@ msgid "Quantity"
 msgstr "Ποσότητα"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__rating_ids
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_validated
-#, python-format
-msgid "Ready"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__rebase_id
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__rebase
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#: selection:mrp.eco,state:0
 msgid "Rebase"
 msgstr ""
 
@@ -1419,11 +1375,6 @@ msgid "Record Thread ID"
 msgstr "Ταυτότητα εγγραφής νήματος"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_blocked
-msgid "Red Kanban Label"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__name
 msgid "Reference"
 msgstr "Σχετικό"
@@ -1434,7 +1385,7 @@ msgid "Reject"
 msgstr "Απόρριψη"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval__status__rejected
+#: selection:mrp.eco.approval,status:0
 msgid "Rejected"
 msgstr "Απορίφθηκε"
 
@@ -1444,9 +1395,8 @@ msgid "Related attachment"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__remove
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_routing_change__change_type__remove
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+#: selection:mrp.eco.bom.change,change_type:0
+#: selection:mrp.eco.routing.change,change_type:0
 msgid "Remove"
 msgstr "Αφαίρεση"
 
@@ -1471,21 +1421,50 @@ msgid "Responsible User"
 msgstr "Υπεύθυνος Χρήστης"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Rev :"
+msgstr ""
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__revision_ids
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__revision_ids
+msgid "Revision"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__name
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template__name
 msgid "Role"
 msgstr "Ρόλος"
 
 #. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:157
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__routing_id
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#, python-format
 msgid "Routing"
 msgstr "Γραμμή Παραγωγής"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_sms_error
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_has_sms_error
-msgid "SMS Delivery error"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Routing Changes"
 msgstr ""
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__new_routing_revision
+msgid "Routing Revision"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Routing:"
+msgstr ""
+
+#. module: mrp_plm
+#: model:ir.model,name:mrp_plm.model_mrp_routing
+#: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_routings
+msgid "Routings"
+msgstr "Γραμμές Παραγωγής"
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_search
@@ -1505,6 +1484,23 @@ msgid "Set Cover Image"
 msgstr ""
 
 #. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:8
+#, python-format
+msgid "Set a Cover Image"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Short Summary"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__allow_apply_change
 msgid "Show Apply Change"
 msgstr ""
@@ -1512,7 +1508,19 @@ msgstr ""
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Show all records which has next action date is before today"
-msgstr "Εμφάνιση όλων των εγγραφών όπου η ημερομηνία επόμενης δράσης είναι πριν από σήμερα"
+msgstr ""
+"Εμφάνιση όλων των εγγραφών όπου η ημερομηνία επόμενης δράσης είναι πριν από "
+"σήμερα"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__image_small
+msgid "Small-sized Image"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Someone rejected this change"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__stage_id
@@ -1522,18 +1530,13 @@ msgid "Stage"
 msgstr "Στάδιο"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Stage Description and Tooltips"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__stage_ids
 msgid "Stages"
 msgstr "Στάδια"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Start Revision"
+msgid "Start New Revision"
 msgstr ""
 
 #. module: mrp_plm
@@ -1561,42 +1564,28 @@ msgstr ""
 "Προγραμματισμένες: Μελλοντικές δραστηριότητες."
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:350
 #, python-format
-msgid "Successfully Rebased!"
+msgid "Successfully Rebased !"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "System will automatically resolved the conflict(s) and apply changes. Do you agree?"
+msgid ""
+"System will automatically resolved the conflict(s) and apply changes. Do you"
+" agree?"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_tag__name
-msgid "Tag Name"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.constraint,message:mrp_plm.constraint_mrp_eco_tag_name_uniq
-msgid "Tag name already exists!"
-msgstr ""
+#: sql_constraint:mrp.eco.tag:0
+msgid "Tag name already exists !"
+msgstr "Το όνομα ετικέτας υπάρχει ήδη !"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__tag_ids
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_tag_view_tree
 msgid "Tags"
 msgstr "Ετικέτες"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Task in progress. Click to block or set as done."
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Task is blocked. Click to unblock or set as done."
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__user_can_approve
@@ -1631,24 +1620,43 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_model_id
-msgid "The model (Odoo Document Kind) to which this alias corresponds. Any incoming email that does not reply to an existing record will cause the creation of a new record of this model (e.g. a Project Task)"
-msgstr "Το μοντέλο (Odoo Document Kind) στο οποίο αντιστοιχεί αυτό το ψευδώνυμο. Κάθε εισερχόμενο email που δεν έχει απαντηθεί σε υπάρχουσα εγγραφή, θα προκαλέσει τη δημιουργία μίας νέας εγγραφής αυτού του μοντέλου (π.χ. Εργασία Έργου)"
+msgid ""
+"The model (Odoo Document Kind) to which this alias corresponds. Any incoming"
+" email that does not reply to an existing record will cause the creation of "
+"a new record of this model (e.g. a Project Task)"
+msgstr ""
+"Το μοντέλο (Odoo Document Kind) στο οποίο αντιστοιχεί αυτό το ψευδώνυμο. "
+"Κάθε εισερχόμενο email που δεν έχει απαντηθεί σε υπάρχουσα εγγραφή, θα "
+"προκαλέσει τη δημιουργία μίας νέας εγγραφής αυτού του μοντέλου (π.χ. Εργασία"
+" Έργου)"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_name
-msgid "The name of the email alias, e.g. 'jobs' if you want to catch emails for <jobs@example.odoo.com>"
-msgstr "Το όνομα του ψευδώνυμου email , π.χ. 'jobs', αν θέλετε να πάρετε emails για <jobs@example.odoo.com>"
+msgid ""
+"The name of the email alias, e.g. 'jobs' if you want to catch emails for "
+"<jobs@example.odoo.com>"
+msgstr ""
+"Το όνομα του ψευδώνυμου email , π.χ. 'jobs', αν θέλετε να πάρετε emails για "
+"<jobs@example.odoo.com>"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_user_id
-msgid "The owner of records created upon receiving emails on this alias. If this field is not set the system will attempt to find the right owner based on the sender (From) address, or will use the Administrator account if no system user is found for that address."
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
 msgstr ""
 "Ο ιδιοκτήτης των εγγραφών που δημιουργούνται κατά τη λήψη μηνυμάτων ηλεκτρονικού ταχυδρομείου σε αυτό το ψευδώνυμο. Αν αυτό το πεδίο δεν είναι ρυθμισμένο το σύστημα θα προσπαθήσει να βρει το σωστό ιδιοκτήτη με βάση τον αποστολέα (Από) τη διεύθυνση.\n"
 "Διαφορετικά, θα χρησιμοποιήσει το λογαριασμό διαχειριστή, αν ο χρήστης δεν έχει βρεθεί στο σύστημα για τη συγκεκριμένη διεύθυνση."
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "This step is done. Click to block or set in progress."
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:20
+#, python-format
+msgid ""
+"There is no available image to be set as cover. Add an image as an "
+"attachment to the the engineering order."
 msgstr ""
 
 #. module: mrp_plm
@@ -1659,10 +1667,15 @@ msgid "To Apply"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__confirmed
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#: selection:mrp.eco,state:0
 msgid "To Do"
 msgstr "Προς υλοποίηση"
+
+#. module: mrp_plm
+#: selection:mrp.eco,activity_state:0
+msgid "Today"
+msgstr "Σήμερα"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -1673,23 +1686,9 @@ msgstr "Σημερινές Δραστηριότητες"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__type_id
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__change_type
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__change_type
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__type_id
 msgid "Type"
 msgstr "Τύπος"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_exception_decoration
-msgid "Type of the exception activity on record."
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__type_ids
-msgid "Types"
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "Undo"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__uom_change
@@ -1697,14 +1696,36 @@ msgid "Unit of Measure"
 msgstr "Μονάδα Μέτρησης"
 
 #. module: mrp_plm
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__update
-#: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_routing_change__change_type__update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_unread
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_unread
+msgid "Unread Messages"
+msgstr "Μη αναγνωσμένα μηνύματα"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_unread_counter
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Μετρητής μη αναγνωσμένων μηνυμάτων"
+
+#. module: mrp_plm
+#: selection:mrp.eco.bom.change,change_type:0
+#: selection:mrp.eco.routing.change,change_type:0
 msgid "Update"
 msgstr "Ενημέρωση"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_plm_production_form_view
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
 msgid "Update BoM"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Update Documents"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Update Routing"
 msgstr ""
 
 #. module: mrp_plm
@@ -1724,6 +1745,7 @@ msgstr "Επικυρωμένο"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__version
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__version
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__version
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__version
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_form_inherit_plm
@@ -1731,8 +1753,23 @@ msgid "Version"
 msgstr "Έκδοση"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+msgid "Waiting Any Validation"
+msgstr ""
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_approvals
 msgid "Waiting Approvals"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+msgid "Waiting My Validation"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Waiting for Approvals"
 msgstr ""
 
 #. module: mrp_plm
@@ -1763,35 +1800,21 @@ msgid "Work Centers"
 msgstr "Κέντρα Εργασίας"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "You can also add a description to help your coworkers understand the meaning and purpose of the stage."
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid ""
-"You can define here labels that will be displayed for the state instead\n"
-"                            of the default labels."
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:473
 #, python-format
 msgid "You cannot change the stage, as approvals are required in the process."
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: code:addons/mrp_plm/models/mrp_eco.py:465
 #, python-format
 msgid "You cannot change the stage, as approvals are still required."
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "e.g. Awesome Product 2.0"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "by"
+msgstr "από"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -1802,3 +1825,8 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
 msgid "oe_kanban_text_red"
 msgstr "oe_kanban_text_red"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "was"
+msgstr ""

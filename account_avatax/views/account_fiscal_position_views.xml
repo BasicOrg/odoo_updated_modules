@@ -6,10 +6,10 @@
         <field name="inherit_id" ref="account.view_account_position_form"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <field name="is_avatax" invisible="'US' not in fiscal_country_codes and 'CA' not in fiscal_country_codes"/>
+                <field name="is_avatax"/>
             </field>
             <notebook position="inside">
-                <page name="avatax" string="Avatax" invisible="not is_avatax">
+                <page name="avatax" string="Avatax" attrs="{'invisible': [('is_avatax', '!=', True)]}">
                     <group>
                         <group>
                             <field name="avatax_invoice_account_id"/>

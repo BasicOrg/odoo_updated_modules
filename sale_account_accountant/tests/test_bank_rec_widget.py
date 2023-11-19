@@ -30,7 +30,7 @@ class TestBankRecWidget(TestBankRecWidgetCommon):
         })
         (so1 + so2).action_quotation_sent()
 
-        st_line = self._create_st_line(amount=2300.0, payment_ref=f"turlututu {so1.name} tsoin {so2.name} tsoin")
+        st_line = self._create_st_line(amount=2300.0, payment_ref=f"turlututu{so1.name}tsoin{so2.name}tsoin")
         rule = self._create_reconcile_model()
 
         # Match directly the sale orders.

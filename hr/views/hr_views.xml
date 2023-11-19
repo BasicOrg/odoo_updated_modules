@@ -6,7 +6,7 @@
             id="menu_hr_root"
             name="Employees"
             groups="group_hr_manager,group_hr_user,base.group_user"
-            web_icon="hr,static/description/icon.png"
+            web_icon="hr,static/description/icon.svg"
             sequence="185"/>
 
         <menuitem
@@ -84,18 +84,10 @@
                 groups="group_hr_user"/>
 
             <menuitem
-                id="menu_resource_calendar_view"
-                action="resource.action_resource_calendar_form"
-                parent="menu_config_employee"
-                name="Working Schedules"
-                sequence="6"
-                groups="group_hr_user"/>
-
-            <menuitem
                 id="menu_hr_departure_reason_tree"
                 action="hr_departure_reason_action"
                 parent="menu_config_employee"
-                sequence="7"
+                sequence="5"
                 groups="group_hr_user"/>
 
             <menuitem
@@ -130,15 +122,15 @@
                 id="menu_config_plan"
                 name="Activity Planning"
                 parent="menu_human_resources_configuration"
-                groups="group_hr_manager"
+                groups="group_hr_user"
                 sequence="100"/>
 
                 <menuitem
                     id="menu_config_plan_plan"
                     name="On/Offboarding Plans"
-                    action="mail_activity_plan_action"
+                    action="hr_plan_action"
                     parent="menu_config_plan"
-                    groups="group_hr_manager"
+                    groups="group_hr_user"
                     sequence="100"/>
 
     </data>

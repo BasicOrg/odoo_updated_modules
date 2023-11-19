@@ -1,8 +1,18 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
+
+# Author: Gustavo Valverde <gvalverde@iterativo.do> iterativo | Consultores
+# Contributors: Edser Solis - iterativo
+
+# Odoo 8.0 author: Eneldo Serrata <eneldo@marcos.do>
+# (Marcos Organizador de Negocios SRL..)
+# Odoo 7.0 author: Jose Ernesto Mendez <tecnologia@obsdr.com>
+# (Open Business Solutions SRL.)
+
+# Copyright (c) 2016 - Present | iterativo, SRL. - http://iterativo.do
+# All rights reserved.
+
 {
     'name': 'Dominican Republic - Accounting',
-    'icon': '/account/static/description/l10n.png',
-    'countries': ['do'],
     'version': '2.0',
     'category': 'Accounting/Localizations/Account Charts',
     'description': """
@@ -72,14 +82,26 @@ en Odoo):
 110101- Caja
 11010101 Caja General
     """,
-    'author': 'Gustavo Valverde - iterativo | Consultores de Odoo (http://iterativo.do)',
-    'website': 'https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations.html',
-    'depends': [
-        'account',
-        'base_iban',
-    ],
+    'author': 'Gustavo Valverde - iterativo | Consultores de Odoo',
+    'website': 'http://iterativo.do',
+    'depends': ['account',
+                'base_iban'
+                ],
     'data': [
+        # Basic accounting data
+        'data/l10n_do_chart_data.xml',
+        'data/account_group.xml',
+        'data/account_account_tag_data.xml',
+        'data/account.account.template.csv',
+        'data/account_chart_template_data.xml',
+        'data/account_tax_group_data.xml',
         'data/account_tax_report_data.xml',
+        'data/account.tax.template.xml',
+        'data/l10n_do_res_partner_title.xml',
+        # Adds fiscal position
+        'data/fiscal_position_template.xml',
+        # configuration wizard, views, reports...
+        'data/account_chart_template_configure_data.xml',
     ],
     'demo': [
         'demo/demo_company.xml',

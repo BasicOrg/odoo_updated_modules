@@ -35,14 +35,13 @@ class ProductPublicCategory(models.Model):
     @api.constrains('parent_id')
     def check_parent_id(self):
         if not self._check_recursion():
-            raise ValueError(_('Error! You cannot create recursive categories.'))
+            raise ValueError(_('Error ! You cannot create recursive categories.'))
 
-    @api.depends('parents_and_self')
-    def _compute_display_name(self):
+    def name_get(self):
+        res = []
         for category in self:
-            category.display_name = " / ".join(category.parents_and_self.mapped(
-                lambda cat: cat.name or _("New")
-            ))
+            res.append((category.id, " / ".join(category.parents_and_self.mapped('name'))))
+        return res
 
     def _compute_parents_and_self(self):
         for category in self:

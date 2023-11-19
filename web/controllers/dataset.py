@@ -15,9 +15,27 @@ _logger = logging.getLogger(__name__)
 
 class DataSet(http.Controller):
 
+    @http.route('/web/dataset/search_read', type='json', auth="user")
+    def search_read(self, model, fields=False, offset=0, limit=False, domain=None, sort=None):
+        return request.env[model].web_search_read(domain, fields, offset=offset, limit=limit, order=sort)
+
+    @http.route('/web/dataset/load', type='json', auth="user")
+    def load(self, model, id, fields):
+        warnings.warn("the route /web/dataset/load is deprecated and will be removed in Odoo 17. Use /web/dataset/call_kw with method 'read' and a list containing the id as args instead", DeprecationWarning)
+        value = {}
+        r = request.env[model].browse([id]).read()
+        if r:
+            value = r[0]
+        return {'value': value}
+
     def _call_kw(self, model, method, args, kwargs):
         check_method_name(method)
         return call_kw(request.env[model], method, args, kwargs)
+
+    @http.route('/web/dataset/call', type='json', auth="user")
+    def call(self, model, method, args, domain_id=None, context_id=None):
+        warnings.warn("the route /web/dataset/call is deprecated and will be removed in Odoo 17. Use /web/dataset/call_kw with empty kwargs instead", DeprecationWarning)
+        return self._call_kw(model, method, args, {})
 
     @http.route(['/web/dataset/call_kw', '/web/dataset/call_kw/<path:path>'], type='json', auth="user")
     def call_kw(self, model, method, args, kwargs, path=None):
@@ -31,7 +49,7 @@ class DataSet(http.Controller):
         return False
 
     @http.route('/web/dataset/resequence', type='json', auth="user")
-    def resequence(self, model, ids, field='sequence', offset=0, context=None):
+    def resequence(self, model, ids, field='sequence', offset=0):
         """ Re-sequences a number of records in the model, by their ids
 
         The re-sequencing starts at the first model of ``ids``, the sequence
@@ -45,8 +63,6 @@ class DataSet(http.Controller):
                            starting the resequencing from an arbitrary number,
                            defaults to ``0``
         """
-        if context:
-            request.update_context(**context)
         m = request.env[model]
         if not m.fields_get([field]):
             return False

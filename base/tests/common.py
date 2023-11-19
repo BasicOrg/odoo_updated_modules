@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import threading
-
 from contextlib import contextmanager
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 from odoo.tests.common import TransactionCase, HttpCase
 from odoo import Command
@@ -24,6 +22,9 @@ class BaseCommon(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
 
+        # Enforce the use of USD as main currency unless modified in inherited class(es)
+        cls._use_currency('USD')
+
         # Mail logic won't be tested by default in other modules.
         # Mail API overrides should be tested with dedicated tests on purpose
         # Hack to use with_context and avoid manual context dict modification
@@ -32,15 +33,6 @@ class BaseCommon(TransactionCase):
         cls.partner = cls.env['res.partner'].create({
             'name': 'Test Partner',
         })
-        cls.currency = cls.env.company.currency_id
-
-    @classmethod
-    def _enable_currency(cls, currency_code):
-        currency = cls.env['res.currency'].with_context(active_test=False).search(
-            [('name', '=', currency_code.upper())]
-        )
-        currency.action_unarchive()
-        return currency
 
     @classmethod
     def _use_currency(cls, currency_code):
@@ -52,6 +44,15 @@ class BaseCommon(TransactionCase):
             # The value is added in cache, and the cache value is set as dirty so that that
             # the value will be written to the database on next flush.
             # this was needed because some journal entries may exist when running tests, especially l10n demo data.
+
+    @classmethod
+    def _enable_currency(cls, currency_code):
+        currency = cls.env['res.currency'].with_context(active_test=False).search(
+            [('name', '=', currency_code.upper())]
+        )
+        currency.action_unarchive()
+        return currency
+
 
 class BaseUsersCommon(BaseCommon):
 
@@ -91,6 +92,7 @@ class TransactionCaseWithUserDemo(TransactionCase):
 
         if not cls.user_demo:
             cls.env['ir.config_parameter'].sudo().set_param('auth_password_policy.minlength', 4)
+            # YTI TODO: This could be factorized between the different classes
             cls.partner_demo = cls.env['res.partner'].create({
                 'name': 'Marc Demo',
                 'email': 'mark.brown23@example.com',
@@ -326,97 +328,59 @@ class MockSmtplibCase:
         self.testing_smtp_session = TestingSMTPSession()
 
         IrMailServer = self.env['ir.mail_server']
-        connect_origin = type(IrMailServer).connect
-        find_mail_server_origin = type(IrMailServer)._find_mail_server
-
-        # custom mock to avoid losing context
-        def mock_function(func):
-            mock = Mock()
-
-            def _call(*args, **kwargs):
-                mock(*args[1:], **kwargs)
-                return func(*args, **kwargs)
-
-            _call.mock = mock
-            return _call
+        connect_origin = IrMailServer.connect
+        find_mail_server_origin = IrMailServer._find_mail_server
 
         with patch('smtplib.SMTP_SSL', side_effect=lambda *args, **kwargs: self.testing_smtp_session), \
              patch('smtplib.SMTP', side_effect=lambda *args, **kwargs: self.testing_smtp_session), \
              patch.object(type(IrMailServer), '_is_test_mode', lambda self: False), \
-             patch.object(type(IrMailServer), 'connect', mock_function(connect_origin)) as connect_mocked, \
-             patch.object(type(IrMailServer), '_find_mail_server', mock_function(find_mail_server_origin)) as find_mail_server_mocked:
-            self.connect_mocked = connect_mocked.mock
-            self.find_mail_server_mocked = find_mail_server_mocked.mock
+             patch.object(type(IrMailServer), 'connect', wraps=IrMailServer, side_effect=connect_origin) as connect_mocked, \
+             patch.object(type(IrMailServer), '_find_mail_server', side_effect=find_mail_server_origin) as find_mail_server_mocked:
+            self.connect_mocked = connect_mocked
+            self.find_mail_server_mocked = find_mail_server_mocked
             yield
 
-    def _build_email(self, mail_from, return_path=None, **kwargs):
-        return self.env['ir.mail_server'].build_email(
-            mail_from,
-            kwargs.pop('email_to', 'dest@example-é.com'),
-            kwargs.pop('subject', 'subject'),
-            kwargs.pop('body', 'body'),
-            headers={'Return-Path': return_path} if return_path else None,
-            **kwargs,
-        )
+    def assert_email_sent_smtp(self, smtp_from=None, smtp_to_list=None, message_from=None, from_filter=None, emails_count=1):
+        """Check that the given email has been sent.
 
-    def _send_email(self, msg, smtp_session):
-        with patch.object(threading.current_thread(), 'testing', False):
-            self.env['ir.mail_server'].send_email(msg, smtp_session=smtp_session)
-        return smtp_session.messages.pop()
-
-    def assertSMTPEmailsSent(self, smtp_from=None, smtp_to_list=None, message_from=None,
-                             mail_server=None, from_filter=None,
-                             emails_count=1):
-        """Check that the given email has been sent. If one of the parameter is
-        None it is just ignored and not used to retrieve the email.
+        If one of the parameter is None, it's just ignored and not used to retrieve the email.
 
         :param smtp_from: FROM used for the authentication to the mail server
         :param smtp_to_list: List of destination email address
         :param message_from: FROM used in the SMTP headers
-        :arap mail_server: used to compare the 'from_filter' as an alternative
-          to using the from_filter parameter
-        :param from_filter: from_filter of the <ir.mail_server> used to send the
-          email. False means 'match everything';'
+        :param from_filter: from_filter of the <ir.mail_server> used to send the email
+            Can use a lambda to check the value
         :param emails_count: the number of emails which should match the condition
         :return: True if at least one email has been found with those parameters
         """
-        if from_filter is not None and mail_server:
-            raise ValueError('Invalid usage: use either from_filter either mail_server')
-        if from_filter is None and mail_server is not None:
-            from_filter = mail_server.from_filter
         matching_emails = filter(
             lambda email:
-                (smtp_from is None or smtp_from == email['smtp_from'])
+                (smtp_from is None or (
+                    smtp_from(email['smtp_from'])
+                    if callable(smtp_from)
+                    else smtp_from == email['smtp_from'])
+                 )
                 and (smtp_to_list is None or smtp_to_list == email['smtp_to_list'])
                 and (message_from is None or 'From: %s' % message_from in email['message'])
                 and (from_filter is None or from_filter == email['from_filter']),
             self.emails,
         )
 
-        debug_info = ''
         matching_emails_count = len(list(matching_emails))
-        if matching_emails_count != emails_count:
-            emails_from = []
-            for email in self.emails:
-                from_found = next((
-                    line.split('From:')[1].strip() for line in email['message'].splitlines()
-                    if line.startswith('From:')), '')
-                emails_from.append(from_found)
-            debug_info = '\n'.join(
-                f"SMTP-From: {email['smtp_from']}, SMTP-To: {email['smtp_to_list']}, Msg-From: {email_msg_from}, From_filter: {email['from_filter']})"
-                for email, email_msg_from in zip(self.emails, emails_from)
-            )
-        self.assertEqual(
-            matching_emails_count, emails_count,
-            msg=f'Incorrect emails sent: {matching_emails_count} found, {emails_count} expected'
-                f'\nConditions\nSMTP-From: {smtp_from}, SMTP-To: {smtp_to_list}, Msg-From: {message_from}, From_filter: {from_filter}'
-                f'\nNot found in\n{debug_info}'
+
+        self.assertTrue(
+            matching_emails_count == emails_count,
+            msg='Emails not sent, %i emails match the condition but %i are expected' % (matching_emails_count, emails_count),
         )
 
     @classmethod
-    def _init_mail_gateway(cls):
-        cls.default_from_filter = False
-        cls.env['ir.config_parameter'].sudo().set_param('mail.default.from_filter', cls.default_from_filter)
+    def _init_mail_config(cls):
+        cls.alias_bounce = 'bounce.test'
+        cls.alias_domain = 'test.com'
+        cls.default_from = 'notifications'
+        cls.env['ir.config_parameter'].sudo().set_param('mail.catchall.domain', cls.alias_domain)
+        cls.env['ir.config_parameter'].sudo().set_param('mail.default.from', cls.default_from)
+        cls.env['ir.config_parameter'].sudo().set_param('mail.bounce.alias', cls.alias_bounce)
 
     @classmethod
     def _init_mail_servers(cls):
@@ -426,30 +390,27 @@ class MockSmtplibCase:
             'smtp_host': 'smtp_host',
             'smtp_encryption': 'none',
         }
-        cls.mail_servers = cls.env['ir.mail_server'].create([
+        (
+            cls.server_domain,
+            cls.server_user,
+            cls.server_notification,
+            cls.server_default,
+        ) = cls.env['ir.mail_server'].create([
             {
                 'name': 'Domain based server',
-                'from_filter': 'test.mycompany.com',
-                'sequence': 0,
+                'from_filter': 'test.com',
                 ** ir_mail_server_values,
             }, {
                 'name': 'User specific server',
-                'from_filter': 'specific_user@test.mycompany.com',
-                'sequence': 1,
+                'from_filter': 'specific_user@test.com',
                 ** ir_mail_server_values,
             }, {
                 'name': 'Server Notifications',
-                'from_filter': 'notifications.test@test.mycompany.com',
-                'sequence': 2,
+                'from_filter': 'notifications@test.com',
                 ** ir_mail_server_values,
             }, {
                 'name': 'Server No From Filter',
                 'from_filter': False,
-                'sequence': 3,
                 ** ir_mail_server_values,
             },
         ])
-        (
-            cls.mail_server_domain, cls.mail_server_user,
-            cls.mail_server_notification, cls.mail_server_default
-        ) = cls.mail_servers

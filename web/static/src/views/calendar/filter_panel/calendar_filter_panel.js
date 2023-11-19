@@ -1,60 +1,29 @@
 /** @odoo-module **/
 
+import { usePopover } from "@web/core/popover/popover_hook";
 import { _t } from "@web/core/l10n/translation";
 import { AutoComplete } from "@web/core/autocomplete/autocomplete";
 import { Transition } from "@web/core/transition";
 import { useOwnedDialogs, useService } from "@web/core/utils/hooks";
+import { sprintf } from "@web/core/utils/strings";
 import { SelectCreateDialog } from "@web/views/view_dialogs/select_create_dialog";
-import { getColor } from "../colors";
-import { Component, useState } from "@odoo/owl";
 
-let nextId = 1;
+const { Component, useState } = owl;
 
-export class CalendarFilterPanel extends Component {
+class FilterAutoComplete extends Component {
     setup() {
-        this.state = useState({
-            collapsed: {},
-            fieldRev: 1,
-        });
-        this.addDialog = useOwnedDialogs();
         this.orm = useService("orm");
-    }
-
-    getFilterColor(filter) {
-        return filter.colorIndex !== null ? "o_cw_filter_color_" + getColor(filter.colorIndex) : "";
-    }
-
-    getAutoCompleteProps(section) {
-        return {
-            autoSelect: true,
-            resetOnSelect: true,
-            placeholder: _t("+ Add %s", section.label),
-            sources: [
-                {
-                    placeholder: _t("Loading..."),
-                    options: (request) => this.loadSource(section, request),
-                },
-            ],
-            onSelect: (option, params = {}) => {
-                if (option.action) {
-                    option.action(params);
-                    return;
-                }
-                this.props.model.createFilter(section.fieldName, option.value);
-            },
+        this.addDialog = useOwnedDialogs();
+        this.state = useState({
             value: "",
-        };
+        });
+        this.sources = [{ placeholder: _t("Loading..."), options: this.loadSource.bind(this) }];
     }
-
-    async loadSource(section, request) {
-        const resModel = this.props.model.fields[section.fieldName].relation;
-        const domain = [
-            ["id", "not in", section.filters.filter((f) => f.type !== "all").map((f) => f.value)],
-        ];
-        const records = await this.orm.call(resModel, "name_search", [], {
+    async loadSource(request) {
+        const records = await this.orm.call(this.props.resModel, "name_search", [], {
             name: request,
             operator: "ilike",
-            args: domain,
+            args: this.props.domain,
             limit: 8,
             context: {},
         });
@@ -67,46 +36,89 @@ export class CalendarFilterPanel extends Component {
         if (records.length > 7) {
             options.push({
                 label: _t("Search More..."),
-                action: () => this.onSearchMore(section, resModel, domain, request),
-            });
-        }
-
-        if (records.length === 0) {
-            options.push({
-                label: _t("No records"),
-                classList: "o_m2o_no_result",
-                unselectable: true,
+                action: this.onSearchMore.bind(this, request),
             });
         }
 
         return options;
     }
-
-    async onSearchMore(section, resModel, domain, request) {
-        const dynamicFilters = [];
+    async onSearchMore(request) {
+        let dynamicFilters = [];
         if (request.length) {
-            const nameGets = await this.orm.call(resModel, "name_search", [], {
+            const nameGets = await this.orm.call(this.props.resModel, "name_search", [], {
                 name: request,
-                args: domain,
+                args: this.props.domain,
                 operator: "ilike",
                 context: {},
             });
-            dynamicFilters.push({
-                description: _t("Quick search: %s", request),
-                domain: [["id", "in", nameGets.map((nameGet) => nameGet[0])]],
-            });
+
+            dynamicFilters = [
+                {
+                    description: sprintf(_t("Quick search: %s"), request),
+                    domain: [["id", "in", nameGets.map((nameGet) => nameGet[0])]],
+                },
+            ];
         }
-        const title = _t("Search: %s", section.label);
+        const title = sprintf(this.env._t("Search: %s"), this.props.searchMoreTitle);
         this.addDialog(SelectCreateDialog, {
-            title,
+            title: title || _t("Select records"),
             noCreate: true,
             multiSelect: false,
-            resModel,
+            resModel: this.props.resModel,
             context: {},
-            domain,
-            onSelected: ([resId]) => this.props.model.createFilter(section.fieldName, resId),
+            domain: this.props.domain,
+            onSelected: (...args) => {
+                console.log(...args);
+            },
             dynamicFilters,
         });
+    }
+
+    onInput({ inputValue }) {
+        this.state.value = inputValue;
+    }
+    onSelect(option, params = {}) {
+        this.props.onSelect(option.value);
+        this.state.value = "";
+    }
+}
+FilterAutoComplete.template = "web.FilterAutoComplete";
+FilterAutoComplete.components = {
+    AutoComplete,
+};
+
+class CalendarFilterTooltip extends Component {}
+CalendarFilterTooltip.template = "web.CalendarFilterPanel.tooltip";
+
+let nextId = 1;
+
+export class CalendarFilterPanel extends Component {
+    setup() {
+        this.state = useState({
+            collapsed: {},
+            fieldRev: 1,
+        });
+
+        this.popover = usePopover();
+        this.removePopover = null;
+    }
+
+    getAutoCompleteProps(section) {
+        return {
+            resModel: this.props.model.fields[section.fieldName].relation,
+            domain: [
+                [
+                    "id",
+                    "not in",
+                    section.filters.filter((f) => f.type !== "all").map((f) => f.value),
+                ],
+            ],
+            searchMoreTitle: section.label,
+            placeholder: `+ ${_t("Add")} ${section.label}`,
+            onSelect: (value) => {
+                this.props.model.createFilter(section.fieldName, value);
+            },
+        };
     }
 
     get nextFilterId() {
@@ -152,6 +164,13 @@ export class CalendarFilterPanel extends Component {
         return this.state.collapsed[section.fieldName] || false;
     }
 
+    closeTooltip() {
+        if (this.removePopover) {
+            this.removePopover();
+            this.removePopover = null;
+        }
+    }
+
     onFilterInputChange(section, filter, ev) {
         this.props.model.updateFilters(section.fieldName, {
             [filter.value]: ev.target.checked,
@@ -168,6 +187,28 @@ export class CalendarFilterPanel extends Component {
         this.props.model.updateFilters(section.fieldName, filters);
     }
 
+    onFilterMouseEnter(section, filter, ev) {
+        this.closeTooltip();
+        if (!section.hasAvatar || !filter.hasAvatar) {
+            return;
+        }
+
+        this.removePopover = this.popover.add(
+            ev.currentTarget,
+            CalendarFilterTooltip,
+            { section, filter },
+            {
+                closeOnClickAway: false,
+                popoverClass: "o-calendar-filter--tooltip",
+                position: "top",
+            }
+        );
+    }
+
+    onFilterMouseLeave() {
+        this.closeTooltip();
+    }
+
     onFilterRemoveBtnClick(section, filter) {
         this.props.model.unlinkFilter(section.fieldName, filter.recordId);
     }
@@ -179,7 +220,7 @@ export class CalendarFilterPanel extends Component {
 }
 
 CalendarFilterPanel.components = {
-    AutoComplete,
+    FilterAutoComplete,
     Transition,
 };
 CalendarFilterPanel.template = "web.CalendarFilterPanel";

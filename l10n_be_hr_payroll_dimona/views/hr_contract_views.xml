@@ -15,7 +15,7 @@
             </group>
             <div name="hourly_wage" position="after">
                 <field name="l10n_be_is_student" invisible="1"/>
-                <field name="l10n_be_dimona_planned_hours" invisible="wage_type != 'hourly' or country_code != 'BE' or not l10n_be_is_student"/>
+                <field name="l10n_be_dimona_planned_hours" attrs="{'invisible': ['|', '|', ('wage_type', '!=', 'hourly'), ('country_code', '!=', 'BE'), ('l10n_be_is_student', '=', False)]}"/>
             </div>
         </field>
     </record>

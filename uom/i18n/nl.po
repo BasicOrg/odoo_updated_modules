@@ -3,16 +3,16 @@
 # 	* uom
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-23 08:03+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -69,7 +69,7 @@ msgstr "Grotere verhouding"
 #. module: uom
 #: model:ir.model.fields.selection,name:uom.selection__uom_uom__uom_type__bigger
 msgid "Bigger than the reference Unit of Measure"
-msgstr "Groter dan de referentie maateenheid"
+msgstr "Groter dan de referentie maateenheid."
 
 #. module: uom
 #: model:ir.model.fields,field_description:uom.field_uom_uom__category_id
@@ -127,7 +127,7 @@ msgstr "Dozijnen"
 #. module: uom
 #: model_terms:ir.ui.view,arch_db:uom.uom_uom_view_search
 msgid "Group By"
-msgstr "Groeperen op"
+msgstr "Groepeer op"
 
 #. module: uom
 #: model:uom.uom,name:uom.product_uom_hour
@@ -158,6 +158,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:uom.field_uom_uom__id
 msgid "ID"
 msgstr "ID"
+
+#. module: uom
+#: model:ir.model.fields,field_description:uom.field_uom_category____last_update
+#: model:ir.model.fields,field_description:uom.field_uom_uom____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
 
 #. module: uom
 #: model:ir.model.fields,field_description:uom.field_uom_category__write_uid
@@ -210,7 +216,7 @@ msgstr "Referentie maateenheid"
 #. module: uom
 #: model:ir.model.fields,field_description:uom.field_uom_uom__rounding
 msgid "Rounding Precision"
-msgstr "Afrondingsprecisie"
+msgstr "Afronding"
 
 #. module: uom
 #: model_terms:ir.ui.view,arch_db:uom.uom_uom_view_search
@@ -228,7 +234,6 @@ msgid "Smaller than the reference Unit of Measure"
 msgstr "Kleiner dan de referentie maateenheid."
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid ""
@@ -243,7 +248,7 @@ msgstr ""
 "Sommige kritieke velden zijn gewijzigd op %s.\n"
 "Houd er rekening mee dat bestaande gegevens door deze wijziging NIET worden bijgewerkt.\n"
 "\n"
-"Aangezien maateenheden van invloed zijn op het hele systeem, kan dit kritieke problemen veroorzaken.\n"
+"Aangezien meeteenheden van invloed zijn op het hele systeem, kan dit kritieke problemen veroorzaken.\n"
 "bijv. het wijzigen van de afronding kan de voorraadstand verstoren.\n"
 "\n"
 "Daarom wordt het niet aanbevolen om kerneenheden in een actieve database te wijzigen."
@@ -265,10 +270,9 @@ msgstr ""
 #. module: uom
 #: model:ir.model.constraint,message:uom.constraint_uom_uom_factor_gt_zero
 msgid "The conversion ratio for a unit of measure cannot be 0!"
-msgstr "De omrekeningsverhouding voor een maateenheid kan niet 0 zijn !"
+msgstr "De conversie ratio voor een maateenheid kan niet 0 zijn !"
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid ""
@@ -281,8 +285,7 @@ msgstr ""
 #. module: uom
 #: model:ir.model.constraint,message:uom.constraint_uom_uom_factor_reference_is_one
 msgid "The reference unit must have a conversion factor equal to 1."
-msgstr ""
-"De referentie-eenheid moet een omrekeningsverhouding hebben gelijk aan 1."
+msgstr "De referentie-eenheid moet een conversiefactor hebben gelijk aan 1."
 
 #. module: uom
 #: model:ir.model.constraint,message:uom.constraint_uom_uom_rounding_gt_zero
@@ -290,7 +293,6 @@ msgid "The rounding precision must be strictly positive."
 msgstr "De afrondingsnauwkeurigheid moet altijd positief zijn."
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid ""
@@ -303,13 +305,6 @@ msgstr ""
 "dezelfde categorie als de maateenheid %s die op het product is gedefinieerd."
 " Corrigeer de maateenheid die op de orderregel of op het product is "
 "gedefinieerd, deze moeten tot dezelfde categorie behoren."
-
-#. module: uom
-#. odoo-python
-#: code:addons/uom/models/uom_uom.py:0
-#, python-format
-msgid "The value of ratio could not be Zero"
-msgstr "De waarde van de ratio mag niet nul zijn"
 
 #. module: uom
 #: model:ir.model.fields,field_description:uom.field_uom_uom__uom_type
@@ -377,21 +372,18 @@ msgstr ""
 "Uren, dagen."
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid "UoM category %s must have at least one reference unit of measure."
-msgstr "Maateenheidcategorie %s moet minstens één referentie-eenheid hebben."
+msgstr ""
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid "UoM category %s should have a reference unit of measure."
 msgstr "Maateenheidcategorie %s moet een referentie-eenheid hebben."
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid "UoM category %s should only have one reference unit of measure."
@@ -408,7 +400,6 @@ msgid "Volume"
 msgstr "Volume"
 
 #. module: uom
-#. odoo-python
 #: code:addons/uom/models/uom_uom.py:0
 #, python-format
 msgid "Warning for %s"
@@ -430,7 +421,7 @@ msgid ""
 "You must define a conversion rate between several Units of\n"
 "            Measure within the same category."
 msgstr ""
-"Je moet een omrekeningsverhouding definiëren tussen verschillende maateenheden \n"
+"Je moet een conversie ratio definiëren tussen verschillende maateenheden \n"
 "van dezelfde categorie."
 
 #. module: uom
@@ -521,4 +512,4 @@ msgstr "qt (US)"
 #. module: uom
 #: model:uom.uom,name:uom.product_uom_yard
 msgid "yd"
-msgstr "yd"
+msgstr ""

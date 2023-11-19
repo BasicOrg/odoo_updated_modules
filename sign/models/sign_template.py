@@ -7,7 +7,6 @@ import io
 
 from PyPDF2 import PdfFileReader
 from collections import defaultdict
-from random import randint
 
 from odoo import api, fields, models, Command, _
 from odoo.exceptions import UserError, AccessError, ValidationError
@@ -24,7 +23,7 @@ class SignTemplate(models.Model):
     attachment_id = fields.Many2one('ir.attachment', string="Attachment", required=True, ondelete='cascade')
     name = fields.Char(related='attachment_id.name', readonly=False, store=True)
     num_pages = fields.Integer('Number of pages', compute="_compute_num_pages", readonly=True, store=True)
-    datas = fields.Binary(related='attachment_id.datas')
+    datas = fields.Binary(related='attachment_id.datas', readonly=False)
     sign_item_ids = fields.One2many('sign.item', 'template_id', string="Signature Items", copy=True)
     responsible_count = fields.Integer(compute='_compute_responsible_count', string="Responsible Count")
 
@@ -50,11 +49,10 @@ class SignTemplate(models.Model):
     is_sharing = fields.Boolean(compute='_compute_is_sharing', help='Checked if this template has created a shared document for you')
 
     @api.model
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
-        if not order:
-            return super()._name_search(name, domain, operator, limit, order)
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         # Display favorite templates first
-        template_ids = super()._name_search(name, domain, operator, None, order)
+        args = args or []
+        template_ids = self._search([('name', operator, name)] + args, limit=None, access_rights_uid=name_get_uid)
         templates = self.browse(template_ids)
         templates = templates.sorted(key=lambda t: self.env.user in t.favorited_ids, reverse=True)
         return templates[:limit].ids
@@ -78,12 +76,19 @@ class SignTemplate(models.Model):
             template.has_sign_requests = bool(template.with_context(active_test=False).sign_request_ids)
 
     def _compute_signed_in_progress_template(self):
-        sign_requests = self.env['sign.request']._read_group([('state', '!=', 'canceled')], ['state', 'template_id'], ['__count'])
-        signed_request_dict = {template.id: count for state, template, count in sign_requests if state == 'signed'}
-        in_progress_request_dict = {template.id: count for state, template, count in sign_requests if state == 'sent'}
+        sign_requests = self.env['sign.request'].read_group([('state', '!=', 'canceled')], ['state', 'template_id'], ['state', 'template_id'], lazy=False)
+        signed_request_dict = defaultdict(int)
+        in_progress_request_dict = defaultdict(int)
+        for sign_request in sign_requests:
+            if sign_request['state'] == 'sent':
+                template_id = sign_request['template_id'][0]
+                in_progress_request_dict[template_id] = sign_request['__count']
+            elif sign_request['state'] == 'signed':
+                template_id = sign_request['template_id'][0]
+                signed_request_dict[template_id] = sign_request['__count']
         for template in self:
-            template.signed_count = signed_request_dict.get(template.id, 0)
-            template.in_progress_count = in_progress_request_dict.get(template.id, 0)
+            template.signed_count = signed_request_dict[template.id]
+            template.in_progress_count = in_progress_request_dict[template.id]
 
     @api.depends_context('uid')
     def _compute_is_sharing(self):
@@ -94,23 +99,14 @@ class SignTemplate(models.Model):
             template.is_sharing = template.id in sign_template_sharing_ids
 
     @api.model
-    def get_empty_list_help(self, help_message):
+    def get_empty_list_help(self, help):
         if not self.env.ref('sign.template_sign_tour', raise_if_not_found=False):
             return '<p class="o_view_nocontent_smiling_face">%s</p>' % _('Upload a PDF')
-        return super().get_empty_list_help(help_message)
+        return super().get_empty_list_help(help)
 
     @api.model_create_multi
     def create(self, vals_list):
-        # Sometimes the attachment is not already created in database when the sign template create method is called
-        attachment_vals = [{'name': val['name'], 'datas': val.pop('datas')} for val in vals_list if not val.get('attachment_id') and val.get('datas')]
-        attachments_iter = iter(self.env['ir.attachment'].create(attachment_vals))
-        for val in vals_list:
-            if not val.get('attachment_id', True):
-                try:
-                    val['attachment_id'] = next(attachments_iter).id
-                except StopIteration:
-                    raise UserError(_('No attachment was provided'))
-        attachments = self.env['ir.attachment'].browse([vals.get('attachment_id') for vals in vals_list if vals.get('attachment_id')])
+        attachments = self.env['ir.attachment'].browse([vals.get('attachment_id') for vals in vals_list])
         for attachment in attachments:
             self._check_pdf_data_validity(attachment.datas)
         # copy the attachment if it has been attached to a record
@@ -125,26 +121,13 @@ class SignTemplate(models.Model):
                 'res_model': self._name,
                 'res_id': template.id
             })
-        templates.attachment_id.check('read')
         return templates
-
-    def write(self, vals):
-        res = super().write(vals)
-        if 'attachment_id' in vals:
-            self.attachment_id.check('read')
-        return res
 
     def copy(self, default=None):
         self.ensure_one()
         default = default or {}
         default['name'] = default.get('name', self._get_copy_name(self.name))
-        new_template = super().copy(default)
-        for sign_item in new_template.sign_item_ids:
-            if sign_item.type_id.item_type == 'selection':
-                archived_options = sign_item.option_ids.filtered(lambda option: not option.available).ids
-                if archived_options:
-                    sign_item.option_ids = [Command.unlink(option) for option in archived_options]
-        return new_template
+        return super().copy(default)
 
     @api.model
     def create_with_attachment_data(self, name, data, active=True):
@@ -165,7 +148,7 @@ class SignTemplate(models.Model):
             'name': "Template \"%(name)s\"" % {'name': self.attachment_id.name},
             'type': 'ir.actions.client',
             'tag': 'sign.Template',
-            'params': {
+            'context': {
                 'id': self.id,
                 'sign_directly_without_mail': sign_directly_without_mail,
             },
@@ -227,10 +210,7 @@ class SignTemplate(models.Model):
 
         # update existing sign items
         for item in self.sign_item_ids.filtered(lambda r: str(r.id) in new_sign_items):
-            str_item_id = str(item.id)
-            if 'option_ids' in new_sign_items.get(str_item_id):
-                new_sign_items[str_item_id]['option_ids'] = list(map(int, new_sign_items[str_item_id]['option_ids']))
-            item.write(new_sign_items.pop(str_item_id))
+            item.write(new_sign_items.pop(str(item.id)))
 
         # create new sign items
         new_values_list = []
@@ -244,13 +224,11 @@ class SignTemplate(models.Model):
 
     @api.model
     def _get_copy_name(self, name):
-        regex = re.compile(r'(.*?)((?:\(\d+\))?)((?:\.pdf)?)$')
+        regex = re.compile(r' \(v(\d+)\)$')
         match = regex.search(name)
-        name_doc = match.group(1)
-        name_ver = match.group(2)
-        name_ext = match.group(3)
-        version = int(name_ver[1:-1]) + 1 if name_ver else 2
-        return f"{name_doc}({version}){name_ext}"
+        version = str(int(match.group(1)) + 1) if match else "2"
+        index = match.start() if match else len(name)
+        return name[:index] + " (v" + version + ")"
 
     @api.model
     def rotate_pdf(self, template_id=None):
@@ -277,8 +255,6 @@ class SignTemplate(models.Model):
         self.ensure_one()
         shared_sign_request = self.sign_request_ids.filtered(lambda sr: sr.state == 'shared' and sr.create_uid == self.env.user)
         if not shared_sign_request:
-            if len(self.sign_item_ids.mapped('responsible_id')) > 1:
-                raise ValidationError(_("You cannot share this document by link, because it has fields to be filled by different roles. Use Send button instead."))
             shared_sign_request = self.env['sign.request'].with_context(no_sign_mail=True).create({
                 'template_id': self.id,
                 'request_item_ids': [Command.create({'role_id': self.sign_item_ids.responsible_id.id or self.env.ref('sign.sign_item_role_default').id})],
@@ -316,24 +292,6 @@ class SignTemplate(models.Model):
             items[item.page] += item
         return items
 
-    def trigger_template_tour(self):
-        template = self.env.ref('sign.template_sign_tour')
-        if template.has_sign_requests:
-            template = template.copy({
-                'favorited_ids': [Command.link(self.env.user.id)],
-                'active': False
-            })
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'sign.Template',
-            'name': template.name,
-            'params': {
-                'sign_edit_call': 'sign_send_request',
-                'id': template.id,
-                'sign_directly_without_mail': False
-            }
-        }
-
 
 class SignTemplateTag(models.Model):
 
@@ -341,47 +299,34 @@ class SignTemplateTag(models.Model):
     _description = "Sign Template Tag"
     _order = "name"
 
-    def _get_default_color(self):
-        return randint(1, 11)
-
     name = fields.Char('Tag Name', required=True, translate=True)
-    color = fields.Integer('Color Index', default=_get_default_color)
+    color = fields.Integer('Color Index')
 
     _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+        ('name_uniq', 'unique (name)', "Tag name already exists !"),
     ]
 
 
 class SignItemSelectionOption(models.Model):
     _name = "sign.item.option"
     _description = "Option of a selection Field"
-    _rec_name = "value"
 
-    value = fields.Text(string="Option", readonly=True)
-    available = fields.Boolean(string="Available in new templates", default=True)
-
-    _sql_constraints = [
-        ('value_uniq', 'unique (value)', "Value already exists!"),
-    ]
+    value = fields.Text(string="Option")
 
     @api.model
-    def name_create(self, name):
-        existing_option = self.search([('value', '=ilike', name.strip())], limit=1)
-        if existing_option:
-            existing_option.available = True
-            return existing_option.id, existing_option.display_name
-        return super().name_create(name)
+    def get_or_create(self, value):
+        option = self.search([('value', '=', value)], limit=1)
+        return option.id if option else self.create({'value': value}).id
 
 
 class SignItem(models.Model):
     _name = "sign.item"
     _description = "Fields to be sign on Document"
-    _order = "page asc, posY asc, posX asc"
     _rec_name = 'template_id'
 
     template_id = fields.Many2one('sign.template', string="Document Template", required=True, ondelete='cascade')
 
-    type_id = fields.Many2one('sign.item.type', string="Type", required=True, ondelete='restrict')
+    type_id = fields.Many2one('sign.item.type', string="Type", required=True, ondelete='cascade')
 
     required = fields.Boolean(default=True)
     responsible_id = fields.Many2one("sign.item.role", string="Responsible", ondelete="restrict")
@@ -423,11 +368,11 @@ class SignItemType(models.Model):
 
     @api.constrains('auto_field')
     def _check_auto_field_exists(self):
-        partner = self.env['res.partner'].browse(self.env.user.partner_id.id)
+        Partner = self.env['res.partner']
         for sign_type in self:
             if sign_type.auto_field:
                 try:
-                    if isinstance(partner.mapped(sign_type.auto_field), models.BaseModel):
+                    if isinstance(Partner.sudo().mapped(sign_type.auto_field), models.BaseModel):
                         raise AttributeError
                 except (KeyError, AttributeError):
                     raise ValidationError(_("Malformed expression: %(exp)s", exp=sign_type.auto_field))
@@ -436,13 +381,10 @@ class SignItemType(models.Model):
 class SignItemParty(models.Model):
     _name = "sign.item.role"
     _description = "Signature Item Party"
-    _rec_name = "name"
-    _order = "sequence, id"
 
     name = fields.Char(required=True, translate=True)
     color = fields.Integer()
     default = fields.Boolean(required=True, default=False)
-    sequence = fields.Integer(string="Default order", default=10)
 
     auth_method = fields.Selection(string="Extra Authentication Step", selection=[
         ('sms', 'Unique Code via SMS')
@@ -450,16 +392,8 @@ class SignItemParty(models.Model):
 
     change_authorized = fields.Boolean('Change Authorized', help="If checked, recipient of a document with this role can be changed after having sent the request. Useful to replace a signatory who is out of office, etc.")
 
-    _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Name already exists!"),
-    ]
-
-    def write(self, vals):
-        vals.pop('default', None)
-        return super().write(vals)
-
-    @api.ondelete(at_uninstall=False)
-    def _unlink_role(self):
-        for role in self:
-            if role.default:
-                raise AccessError(_("The role %s is required by the Sign application and cannot be deleted.", role.name))
+    @api.model
+    def get_or_create(self, name):
+        party = self.search([('name', '=', name)], limit=1)
+        party = party if party else self.create({'name': name})
+        return {'id': party.id, 'name': party.name, 'color': party.color}

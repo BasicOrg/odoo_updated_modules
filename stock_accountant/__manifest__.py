@@ -10,9 +10,6 @@
 Filters the stock lines out of the reconciliation widget
     """,
     'depends': ['stock_account', 'account_accountant'],
-    'data': [
-        'views/res_config_settings_views.xml',
-    ],
     'installable': True,
     'auto_install': True,
     'license': 'OEEL-1',

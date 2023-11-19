@@ -2,16 +2,20 @@
 
 import { AbstractBehavior } from "@knowledge/components/behaviors/abstract_behavior/abstract_behavior";
 import { HEADINGS, fetchValidHeadings } from "@knowledge/js/tools/knowledge_tools";
-import {
+
+const {
+    onPatched,
+    onWillPatch,
     onWillStart,
     useEffect,
-    useState } from "@odoo/owl";
+    useState } = owl;
+
+let observerId = 0;
 
 export class TableOfContentBehavior extends AbstractBehavior {
-    static template = "knowledge.TableOfContentBehavior";
-
     setup () {
         super.setup();
+        this.observerId = observerId++;
         this.state = useState({
             toc: []
         });
@@ -37,14 +41,25 @@ export class TableOfContentBehavior extends AbstractBehavior {
             });
         }
 
+        onWillPatch(() => {
+            this.editor.observerUnactive(`knowledge_toc_update_id_${this.observerId}`);
+        });
+        onPatched(() => {
+            this.editor.idSet(this.props.anchor);
+            this.editor.observerActive(`knowledge_toc_update_id_${this.observerId}`);
+        });
+
         onWillStart(() => {
             this._updateTableOfContents();
         });
     }
 
-    //--------------------------------------------------------------------------
-    // TECHNICAL
-    //--------------------------------------------------------------------------
+    /**
+     * @returns {OdooEditor}
+     */
+    get editor () {
+        return this.props.wysiwyg.odooEditor;
+    }
 
     /**
      * Observes the changes made to the titles of the editor.
@@ -71,13 +86,13 @@ export class TableOfContentBehavior extends AbstractBehavior {
                 const target = mutation.target;
                 const headerNode = this._findClosestHeader(target);
 
-                return headerNode && headerNode.parentElement === this.props.root;
+                return headerNode && headerNode.parentElement === this.editor.editable;
             });
             if (update) {
                 this.delayedUpdateTableOfContents();
             }
         });
-        observer.observe(this.props.root, {
+        observer.observe(this.editor.editable, {
             childList: true,
             attributes: false,
             subtree: true,
@@ -87,7 +102,7 @@ export class TableOfContentBehavior extends AbstractBehavior {
     }
 
     //--------------------------------------------------------------------------
-    // BUSINESS
+    // Table of content - BUSINESS LOGIC
     //--------------------------------------------------------------------------
 
     /**
@@ -162,7 +177,7 @@ export class TableOfContentBehavior extends AbstractBehavior {
         let previousDepth = -1;
         let index = 0;
 
-        this.state.toc = fetchValidHeadings(this.props.root).map(heading => {
+        this.state.toc = fetchValidHeadings(this.editor.editable).map(heading => {
             let depth = HEADINGS.indexOf(heading.tagName);
             if (depth !== previousDepth && heading.tagName === previousTag) {
                 depth = previousDepth;
@@ -197,7 +212,7 @@ export class TableOfContentBehavior extends AbstractBehavior {
     }
 
     //--------------------------------------------------------------------------
-    // HANDLERS
+    // Table of content - HANDLERS
     //--------------------------------------------------------------------------
 
     /**
@@ -209,7 +224,7 @@ export class TableOfContentBehavior extends AbstractBehavior {
     _onTocLinkClick (event) {
         event.preventDefault();
         const headingIndex = parseInt(event.target.getAttribute('data-oe-nodeid'));
-        const targetHeading = fetchValidHeadings(this.props.root)[headingIndex];
+        const targetHeading = fetchValidHeadings(this.editor.editable)[headingIndex];
         if (targetHeading){
             targetHeading.scrollIntoView({
                 behavior: 'smooth',
@@ -223,3 +238,6 @@ export class TableOfContentBehavior extends AbstractBehavior {
         }
     }
 }
+
+TableOfContentBehavior.template = "knowledge.TableOfContentBehavior";
+TableOfContentBehavior.components = {};

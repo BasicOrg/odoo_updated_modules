@@ -1,18 +1,13 @@
 /** @odoo-module */
 
 import { FilterValue } from "@spreadsheet/global_filters/components/filter_value/filter_value";
-import { _t } from "@web/core/l10n/translation";
-import { Component, useRef } from "@odoo/owl";
-import { hooks } from "@odoo/o-spreadsheet";
+import { LegacyComponent } from "@web/legacy/legacy_component";
 
 /**
  * This is the side panel to define/edit a global filter.
  * It can be of 3 different type: text, date and relation.
  */
-export class GlobalFiltersSidePanel extends Component {
-    dnd = hooks.useDragAndDropListItems();
-    filtersListRef = useRef("filtersList");
-
+export default class GlobalFiltersSidePanel extends LegacyComponent {
     setup() {
         this.getters = this.env.model.getters;
     }
@@ -25,10 +20,6 @@ export class GlobalFiltersSidePanel extends Component {
         return this.env.model.getters.getGlobalFilters();
     }
 
-    _t(...args) {
-        return _t(...args);
-    }
-
     hasDataSources() {
         return (
             this.env.model.getters.getPivotIds().length +
@@ -38,82 +29,27 @@ export class GlobalFiltersSidePanel extends Component {
     }
 
     newText() {
-        this.env.openSidePanel("TEXT_FILTER_SIDE_PANEL");
+        this.env.openSidePanel("FILTERS_SIDE_PANEL", { type: "text" });
     }
 
     newDate() {
-        this.env.openSidePanel("DATE_FILTER_SIDE_PANEL");
+        this.env.openSidePanel("FILTERS_SIDE_PANEL", { type: "date" });
     }
 
     newRelation() {
-        this.env.openSidePanel("RELATION_FILTER_SIDE_PANEL");
+        this.env.openSidePanel("FILTERS_SIDE_PANEL", { type: "relation" });
     }
 
-    /**
-     * @param {string} id
-     */
     onEdit(id) {
-        const filter = this.env.model.getters.getGlobalFilter(id);
-        if (!filter) {
-            return;
-        }
-        switch (filter.type) {
-            case "text":
-                this.env.openSidePanel("TEXT_FILTER_SIDE_PANEL", { id });
-                break;
-            case "date":
-                this.env.openSidePanel("DATE_FILTER_SIDE_PANEL", { id });
-                break;
-            case "relation":
-                this.env.openSidePanel("RELATION_FILTER_SIDE_PANEL", { id });
-                break;
-        }
+        this.env.openSidePanel("FILTERS_SIDE_PANEL", { id });
     }
 
-    startDragAndDrop(filter, event) {
-        if (event.button !== 0) {
-            return;
+    onDelete() {
+        if (this.id) {
+            this.env.model.dispatch("REMOVE_GLOBAL_FILTER", { id: this.id });
         }
-
-        const rects = this.getFiltersElementsRects();
-        const filtersItems = this.filters.map((filter, index) => ({
-            id: filter.id,
-            size: rects[index].height,
-            position: rects[index].y,
-        }));
-        this.dnd.start("vertical", {
-            draggedItemId: filter.id,
-            initialMousePosition: event.clientY,
-            items: filtersItems,
-            containerEl: this.filtersListRef.el,
-            onDragEnd: (filterId, finalIndex) => this.onDragEnd(filterId, finalIndex),
-        });
-    }
-
-    getFiltersElementsRects() {
-        return Array.from(this.filtersListRef.el.children).map((filterEl) =>
-            filterEl.getBoundingClientRect()
-        );
-    }
-
-    getFilterItemStyle(filter) {
-        return this.dnd.itemsStyle[filter.id] || "";
-    }
-
-    onDragEnd(filterId, finalIndex) {
-        const originalIndex = this.filters.findIndex((filter) => filter.id === filterId);
-        const delta = finalIndex - originalIndex;
-        if (filterId && delta !== 0) {
-            this.env.model.dispatch("MOVE_GLOBAL_FILTER", {
-                id: filterId,
-                delta,
-            });
-        }
+        this.trigger("close-side-panel");
     }
 }
-
 GlobalFiltersSidePanel.template = "spreadsheet_edition.GlobalFiltersSidePanel";
 GlobalFiltersSidePanel.components = { FilterValue };
-GlobalFiltersSidePanel.props = {
-    onCloseSidePanel: { type: Function, optional: true },
-};

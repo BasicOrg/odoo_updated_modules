@@ -2,7 +2,6 @@
 
 import { _t } from "@web/core/l10n/translation";
 import { ServerData } from "../data_sources/server_data";
-import { toServerDateString } from "../helpers/helpers";
 
 /**
  * @typedef Currency
@@ -30,7 +29,7 @@ export class CurrencyDataSource {
         const data = this.serverData.batch.get("res.currency.rate", "get_rates_for_spreadsheet", {
             from,
             to,
-            date: date ? toServerDateString(date) : undefined,
+            date,
         });
         const rate = data !== undefined ? data.rate : undefined;
         if (rate === false) {

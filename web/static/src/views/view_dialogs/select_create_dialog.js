@@ -1,29 +1,24 @@
 /** @odoo-module **/
 
 import { Dialog } from "@web/core/dialog/dialog";
-import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
 import { View } from "@web/views/view";
 import { escape } from "@web/core/utils/strings";
 
 import { FormViewDialog } from "./form_view_dialog";
 
-import { Component, markup, useState } from "@odoo/owl";
-import { registry } from "@web/core/registry";
+const { Component, markup, useState } = owl;
 
 export class SelectCreateDialog extends Component {
     setup() {
         this.viewService = useService("view");
         this.dialogService = useService("dialog");
         this.state = useState({ resIds: [] });
-        // ℹ️ `_t` can only be inlined directly inside JS template literals
-        // after Babel has been updated to version 2.12.
-        const translatedText = _t("No records found!");
         this.baseViewProps = {
             display: { searchPanel: false },
             editable: false, // readonly
             noBreadcrumbs: true,
-            noContentHelp: markup(`<p>${escape(translatedText)}</p>`),
+            noContentHelp: markup(`<p>${escape(this.env._t("No records found!"))}</p>`),
             showButtons: false,
             selectRecord: (resId) => this.select([resId]),
             onSelectionChanged: (resIds) => {
@@ -35,7 +30,6 @@ export class SelectCreateDialog extends Component {
     get viewProps() {
         const type = this.env.isSmall ? "kanban" : "list";
         const props = {
-            loadIrFilters: true,
             ...this.baseViewProps,
             context: this.props.context,
             domain: this.props.domain,
@@ -46,8 +40,6 @@ export class SelectCreateDialog extends Component {
         };
         if (type === "list") {
             props.allowSelectors = this.props.multiSelect;
-        } else if (type === "kanban") {
-            props.forceGlobalClick = true;
         }
         return props;
     }
@@ -57,17 +49,6 @@ export class SelectCreateDialog extends Component {
             await this.props.onSelected(resIds);
             this.props.close();
         }
-    }
-
-    async unselect() {
-        if (this.props.onUnselect) {
-            await this.props.onUnselect();
-            this.props.close();
-        }
-    }
-
-    get canUnselect() {
-        return this.env.isSmall && !!this.props.onUnselect;
     }
 
     async createEditRecord() {
@@ -88,26 +69,21 @@ export class SelectCreateDialog extends Component {
 }
 SelectCreateDialog.components = { Dialog, View };
 SelectCreateDialog.template = "web.SelectCreateDialog";
-SelectCreateDialog.props = {
-    context: { type: Object, optional: true },
-    domain: { type: Array, optional: true },
-    dynamicFilters: { type: Array, optional: true },
-    resModel: String,
-    searchViewId: { type: [Number, { value: false }], optional: true },
-    multiSelect: { type: Boolean, optional: true },
-    onSelected: { type: Function, optional: true },
-    close: { type: Function, optional: true },
-    onCreateEdit: { type: Function, optional: true },
-    title: { type: String, optional: true },
-    noCreate: { type: Boolean, optional: true },
-    onUnselect: { type: Function, optional: true },
-};
+
 SelectCreateDialog.defaultProps = {
     dynamicFilters: [],
     multiSelect: true,
     searchViewId: false,
-    domain: [],
-    context: {},
+    type: "list",
 };
 
-registry.category("dialogs").add("select_create", SelectCreateDialog);
+/**
+ * Props: (to complete)
+ *
+ * resModel
+ * domain
+ * context
+ * title
+ * onSelected
+ * type
+ */

@@ -17,7 +17,7 @@ class CertificationReport(models.AbstractModel):
         partner_doc = None
         options = self._context.get('options')
         report = self.env['account.report'].browse(options['report_id'])
-        lines = report._filter_out_folded_children(report._get_lines(options))
+        lines = report._get_lines(options)
 
         for line in lines:
             model, model_id = report._get_model_info_from_id(line['id'])

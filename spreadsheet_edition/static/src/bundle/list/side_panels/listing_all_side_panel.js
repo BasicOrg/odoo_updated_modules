@@ -3,9 +3,9 @@
 import { _t } from "@web/core/l10n/translation";
 import { ListingDetailsSidePanel } from "./listing_details_side_panel";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
-export class ListingAllSidePanel extends Component {
+export default class ListingAllSidePanel extends Component {
     constructor() {
         super(...arguments);
         this.getters = this.env.model.getters;
@@ -20,7 +20,7 @@ export class ListingAllSidePanel extends Component {
     }
 
     delete(listId) {
-        this.env.askConfirmation(_t("Are you sure you want to delete this list?"), () => {
+        this.env.askConfirmation(_t("Are you sure you want to delete this list ?"), () => {
             this.env.model.dispatch("REMOVE_ODOO_LIST", { listId });
             this.props.onCloseSidePanel();
         });
@@ -28,7 +28,3 @@ export class ListingAllSidePanel extends Component {
 }
 ListingAllSidePanel.template = "spreadsheet_edition.ListingAllSidePanel";
 ListingAllSidePanel.components = { ListingDetailsSidePanel };
-ListingAllSidePanel.props = {
-    onCloseSidePanel: Function,
-    listId: { type: String, optional: true },
-};

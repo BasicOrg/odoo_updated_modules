@@ -2,18 +2,17 @@
 // = Main Navbar
 // ============================================================================
 .o_main_navbar {
-    @include print-variable(o-navbar-height, $o-navbar-height);
+    @include print-variable(o-navbar-height, $o-navbar-height-xs);
 
-    --Dropdown_menu-margin-y: 0;
+    @include media-breakpoint-up(lg) {
+        @include print-variable(o-navbar-height, $o-navbar-height-lg);
+    }
 
     display: flex;
     height: var(--o-navbar-height);
     min-width: min-content;
-    padding-top: $o-navbar-padding-v;
-    padding-bottom: $o-navbar-padding-v;
     border-bottom: $o-navbar-border-bottom;
     background: $o-navbar-background;
-    font-size: $o-navbar-font-size;
 
     // = Reset browsers defaults
     // --------------------------------------------------------------------------
@@ -25,53 +24,27 @@
 
     // = General components & behaviours
     // --------------------------------------------------------------------------
-
-    .o_nav_entry, .dropdown-toggle {
-        @extend %-main-navbar-entry-base;
-        @extend %-main-navbar-entry-spacing;
-        border-color: transparent;
+    .dropdown.show > .dropdown-toggle {
+        @extend %-main-navbar-entry-active;
     }
 
-    .o_menu_sections {
-        .o_nav_entry, .dropdown-toggle {
-            background: var(--NavBar-entry-backgroundColor, #{$o-navbar-background});
-            border: $border-width solid transparent;
+    .o_nav_entry {
+        @extend %-main-navbar-entry-base;
+        @extend %-main-navbar-entry-spacing;
+        @extend %-main-navbar-entry-bg-hover;
+    }
 
-            &:hover {
-                background: var(--NavBar-entry-backgroundColor--hover, #{$o-navbar-entry-bg--hover});
-            }
-
-            &:focus {
-                background: var(--NavBar-entry-backgroundColor--focus, #{$o-navbar-entry-bg--hover});
-            }
-
-            &:active {
-                background: var(--NavBar-entry-backgroundColor--active, #{$o-navbar-entry-bg--active});
-            }
-        }
-
-        .dropdown.show > .dropdown-toggle {
-            border-color: var(--NavBar-entry-borderColor-active, transparent);
-            background: var(--NavBar-entry-backgroundColor--active, #{$o-navbar-entry-bg--active});
-            color: var(--NavBar-entry-color--active, #{$o-navbar-entry-color--active});
-        }
+    .dropdown-toggle {
+        @extend %-main-navbar-entry-base;
+        @extend %-main-navbar-entry-spacing;
+        @extend %-main-navbar-entry-bg-hover;
+        border: 0;
     }
 
     .dropdown-menu {
-        border-top: $o-navbar-dropdown-menu-border-top;
-        border-radius: $o-navbar-dropdown-menu-border-radius;
-
-        .disabled {
-            cursor: default;
-        }
-    }
-
-    .dropdown-header.dropdown-menu_group {
-      margin-top: 0;
-    }
-
-    .dropdown-item + .dropdown-header:not(.o_more_dropdown_section_group) {
-      margin-top: .3em;
+        margin-top: 0;
+        border-top: 0;
+        @include border-top-radius(0);
     }
 
     .o_dropdown_menu_group_entry.dropdown-item {
@@ -85,9 +58,8 @@
     // = Navbar Sections & Children
     // --------------------------------------------------------------------------
     .o_navbar_apps_menu .dropdown-toggle {
-        --NavBar-entry-padding-left: #{$o-horizontal-padding};
-
         @extend %-main-navbar-entry-base;
+        padding-left: $o-horizontal-padding;
         font-size: $o-navbar-brand-font-size;
     }
 
@@ -96,7 +68,6 @@
         @extend %-main-navbar-entry-spacing;
         padding-left: 0;
         font-size: $o-navbar-brand-font-size;
-        color: var(--NavBar-brand-color, #{$o-navbar-brand-color});
 
         &:hover {
             background: none;
@@ -104,6 +75,8 @@
     }
 
     .o_menu_sections {
+        width: 0;
+
         .o_more_dropdown_section_group {
             margin-top: .8em;
 
@@ -114,19 +87,27 @@
         }
     }
 
-    .o_menu_systray {
-        --NavBar-entry-padding-left: #{$o-navbar-entry-padding-h * 0.5};
-        --NavBar-entry-padding-right: #{$o-navbar-entry-padding-h * 0.5};
+    .o_menu_systray > * {
+        > a, > .dropdown > a, > button, > label { // <label> is required by website
+            @extend %-main-navbar-entry-base;
+            @extend %-main-navbar-entry-spacing;
+            @extend %-main-navbar-entry-bg-hover;
 
-        .badge {
-            margin-right: -.5em;
-            border: 0;
-            padding: ($o-navbar-badge-padding * .5) $o-navbar-badge-padding;
-            background-color: var(--o-navbar-badge-bg, #{$o-navbar-badge-bg});
-            font-size: $o-navbar-badge-size;
-            color: var(--o-navbar-badge-color, $o-navbar-badge-color);
-            text-shadow: var(--o-navbar-badge-text-shadow, #{$o-navbar-badge-text-shadow});
-            transform: translate(-0.6em, -30%);
+            @include media-breakpoint-up(lg) {
+                padding: 0 $o-horizontal-padding * .6;
+            }
+
+            .badge {
+                margin-right: -.5em;
+                border: 0;
+                height: $o-navbar-badge-size + $o-navbar-badge-padding + $o-navbar-badge-size-adjust;
+                padding: ($o-navbar-badge-padding * .5) $o-navbar-badge-padding;
+                background-color: var(--o-navbar-badge-bg, #{$o-navbar-badge-bg});
+                font-size: $o-navbar-badge-size;
+                color: var(--o-navbar-badge-color, inherit);
+                text-shadow: var(--o-navbar-badge-text-shadow, #{1px 1px 0 rgba($black, .3)});
+                transform: translate(-10%, -30%);
+            }
         }
     }
 }
@@ -135,6 +116,13 @@
 // = SuperUser Design
 // ============================================================================
 body.o_is_superuser .o_menu_systray {
-    border-image: repeating-linear-gradient(135deg, #d9b904, #d9b904 10px, #373435 10px, #373435 20px) 2;
-    border-image-width: map-get($border-widths, 2);
+    position: relative;
+    background: repeating-linear-gradient(135deg, #d9b904, #d9b904 10px, #373435 10px, #373435 20px);
+
+    &:before {
+        content: "";
+        @include o-position-absolute(2px, 2px, 2px, 2px);
+        background-color: $o-brand-odoo;
+    }
 }
+

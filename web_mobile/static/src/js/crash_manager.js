@@ -1,7 +1,7 @@
 /** @odoo-module */
 
 import { registry } from "@web/core/registry";
-import mobile from "@web_mobile/js/services/core";
+import mobile from "web_mobile.core";
 
 function mobileErrorHandler(env, error, originalError) {
     if (mobile.methods.crashManager) {

@@ -35,7 +35,7 @@ class TestSMSPerformance(BaseMailPerformance, sms_common.SMSCase):
     def test_message_sms_record_1_partner(self):
         record = self.test_record.with_user(self.env.user)
         pids = self.customer.ids
-        with self.subTest("QueryCount"), self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=27):
+        with self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=26):
             messages = record._message_sms(
                 body='Performance Test',
                 partner_ids=pids,
@@ -50,7 +50,7 @@ class TestSMSPerformance(BaseMailPerformance, sms_common.SMSCase):
     def test_message_sms_record_10_partners(self):
         record = self.test_record.with_user(self.env.user)
         pids = self.partners.ids
-        with self.subTest("QueryCount"), self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=27):
+        with self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=26):
             messages = record._message_sms(
                 body='Performance Test',
                 partner_ids=pids,
@@ -64,7 +64,7 @@ class TestSMSPerformance(BaseMailPerformance, sms_common.SMSCase):
     @warmup
     def test_message_sms_record_default(self):
         record = self.test_record.with_user(self.env.user)
-        with self.subTest("QueryCount"), self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=29):
+        with self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=28):
             messages = record._message_sms(
                 body='Performance Test',
             )
@@ -117,7 +117,7 @@ class TestSMSMassPerformance(BaseMailPerformance, sms_common.MockSMS):
             'mass_keep_log': False,
         })
 
-        with self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=54):
+        with self.mockSMSGateway(sms_allow_unlink=True), self.assertQueryCount(employee=56):
             composer.action_send_sms()
 
     @mute_logger('odoo.addons.sms.models.sms_sms')

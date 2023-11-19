@@ -1,66 +1,20 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { Component, useRef, useState } from "@odoo/owl";
-import { Dialog } from "@web/core/dialog/dialog";
-import { Domain } from "@web/core/domain";
-import { DomainSelector } from "@web/core/domain_selector/domain_selector";
-import { useService } from "@web/core/utils/hooks";
+import { Dialog } from "../dialog/dialog";
+import { DomainSelector } from "../domain_selector/domain_selector";
+import { _t } from "../l10n/translation";
+
+const { Component, useState } = owl;
 
 export class DomainSelectorDialog extends Component {
-    static template = "web.DomainSelectorDialog";
-    static components = {
-        Dialog,
-        DomainSelector,
-    };
-    static props = {
-        close: Function,
-        onConfirm: Function,
-        resModel: String,
-        className: { type: String, optional: true },
-        defaultConnector: { type: [{ value: "&" }, { value: "|" }], optional: true },
-        domain: String,
-        isDebugMode: { type: Boolean, optional: true },
-        readonly: { type: Boolean, optional: true },
-        text: { type: String, optional: true },
-        confirmButtonText: { type: String, optional: true },
-        disableConfirmButton: { type: Function, optional: true },
-        discardButtonText: { type: String, optional: true },
-        title: { type: String, optional: true },
-        context: { type: Object, optional: true },
-    };
-    static defaultProps = {
-        isDebugMode: false,
-        readonly: false,
-        context: {},
-    };
-
     setup() {
-        this.notification = useService("notification");
-        this.rpc = useService("rpc");
-        this.orm = useService("orm");
-        this.user = useService("user");
-        this.state = useState({ domain: this.props.domain });
-        this.confirmButtonRef = useRef("confirm");
-    }
-
-    get confirmButtonText() {
-        return this.props.confirmButtonText || _t("Confirm");
+        this.state = useState({
+            value: this.props.initialValue,
+        });
     }
 
     get dialogTitle() {
-        return this.props.title || _t("Domain");
-    }
-
-    get disabled() {
-        if (this.props.disableConfirmButton) {
-            return this.props.disableConfirmButton(this.state.domain);
-        }
-        return false;
-    }
-
-    get discardButtonText() {
-        return this.props.discardButtonText || _t("Discard");
+        return _t("Domain");
     }
 
     get domainSelectorProps() {
@@ -69,44 +23,40 @@ export class DomainSelectorDialog extends Component {
             resModel: this.props.resModel,
             readonly: this.props.readonly,
             isDebugMode: this.props.isDebugMode,
-            defaultConnector: this.props.defaultConnector,
-            domain: this.state.domain,
-            update: (domain) => {
-                this.state.domain = domain;
+            defaultLeafValue: this.props.defaultLeafValue,
+            value: this.state.value,
+            update: (value) => {
+                this.state.value = value;
             },
         };
     }
 
-    async onConfirm() {
-        this.confirmButtonRef.el.disabled = true;
-        let domain;
-        let isValid;
-        try {
-            const evalContext = { ...this.user.context, ...this.props.context };
-            domain = new Domain(this.state.domain).toList(evalContext);
-        } catch {
-            isValid = false;
-        }
-        if (isValid === undefined) {
-            isValid = await this.rpc("/web/domain/validate", {
-                model: this.props.resModel,
-                domain,
-            });
-        }
-        if (!isValid) {
-            if (this.confirmButtonRef.el) {
-                this.confirmButtonRef.el.disabled = false;
-            }
-            this.notification.add(_t("Domain is invalid. Please correct it"), {
-                type: "danger",
-            });
-            return;
-        }
-        this.props.onConfirm(this.state.domain);
+    async onSave() {
+        await this.props.onSelected(this.state.value);
         this.props.close();
     }
-
     onDiscard() {
         this.props.close();
     }
 }
+DomainSelectorDialog.template = "web.DomainSelectorDialog";
+DomainSelectorDialog.components = {
+    Dialog,
+    DomainSelector,
+};
+DomainSelectorDialog.props = {
+    close: Function,
+    className: { type: String, optional: true },
+    resModel: String,
+    readonly: { type: Boolean, optional: true },
+    isDebugMode: { type: Boolean, optional: true },
+    defaultLeafValue: { type: Array, optional: true },
+    initialValue: { type: String, optional: true },
+    onSelected: { type: Function, optional: true },
+};
+DomainSelectorDialog.defaultProps = {
+    initialValue: "",
+    onSelected: () => {},
+    readonly: true,
+    isDebugMode: false,
+};

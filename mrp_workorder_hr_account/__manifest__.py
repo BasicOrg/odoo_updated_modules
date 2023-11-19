@@ -8,7 +8,7 @@
 
     'description': """ """,
 
-    'depends': ['mrp_workorder', 'mrp_account_enterprise'],
+    'depends': ['mrp_workorder_hr', 'account'],
 
     'installable': True,
     'auto_install': True,

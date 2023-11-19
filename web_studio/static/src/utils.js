@@ -1,4 +1,4 @@
-/** @odoo-module default=false **/
+/** @odoo-module alias=web_studio.utils default=false **/
 export const COLORS = [
     "#FFFFFF",
     "#262c34",
@@ -27,7 +27,7 @@ export const BG_COLORS = [
     "#606060",
     "#6B6C70",
     "#838383",
-    "#FFFFFF",
+    "#F5F5F5",
 ];
 
 export const ICONS = [

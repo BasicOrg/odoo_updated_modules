@@ -60,15 +60,15 @@ class TestHR(common.TransactionCase):
         leave_type_form = Form(self.env['hr.leave.type'].with_user(user))
         leave_type_form.name = name
         leave_type_form.requires_allocation = requires_allocation
-        # invisible="requires_allocation == 'no'"
+        # attrs="{'invisible': [('requires_allocation', '=', 'no')]}"
         if requires_allocation == 'yes':
             leave_type_form.employee_requests = employee_requests
-            # invisible="requires_allocation == 'no' or employee_requests == 'no'"
+            # attrs="{'invisible': ['|', ('requires_allocation', '=', 'no'), ('employee_requests', '=', 'no')]}"
             if employee_requests == 'yes':
                 leave_type_form.allocation_validation_type = allocation_validation
         leave_type_form.leave_validation_type = validation
         leave_type_form.request_unit = request_unit
-        leave_type_form.responsible_ids.add(user)
+        leave_type_form.responsible_id = user
         return leave_type_form.save()
 
     def create_allocation(self, user, employee, leave_type, number_of_days=10):
@@ -90,10 +90,10 @@ class TestHR(common.TransactionCase):
         #         if len(allocation.employee_ids) == 1:
         #             allocation.employee_id = allocation.employee_ids[0]._origin
         allocation_form.employee_ids.add(employee)
+        allocation_form.name = 'New Request'
         allocation_form.date_from = time.strftime('2015-1-1')
         allocation_form.date_to = time.strftime('%Y-12-31')
         allocation_form.holiday_status_id = leave_type
-        allocation_form.name = 'New Request'
         return allocation_form.save()
 
     def create_leave(self, user, leave_type, start, end, employee=None):
@@ -142,15 +142,21 @@ class TestHR(common.TransactionCase):
             leave_type=self.leave_type_2,
         )
 
+        allocation_no_validation.action_confirm()
+
         # Holiday user refuse allocation
         allocation_no_validation.action_refuse()
         self.assertEqual(allocation_no_validation.state, 'refuse')
 
+        # Holiday manager reset to draft
+        allocation_no_validation.with_user(self.hr_holidays_manager).action_draft()
+        self.assertEqual(allocation_no_validation.state, 'draft')
+
         # Holiday user approve allocation
+        allocation_no_validation.action_confirm()
         allocation_no_validation.action_validate()
         self.assertEqual(allocation_no_validation.state, 'validate')
         self.assertEqual(allocation_no_validation.approver_id, self.hr_holidays_user.employee_id)
-
 
         # --------------------------------------------------
         # User: Allocation request
@@ -162,7 +168,8 @@ class TestHR(common.TransactionCase):
             employee=self.user.employee_id,
             leave_type=self.leave_type_3,
         )
-        self.assertEqual(allocation.state, 'confirm')
+        self.assertEqual(allocation.state, 'draft')
+        allocation.action_confirm()
 
         # Holiday Manager validates
         allocation.with_user(self.hr_holidays_manager).action_validate()
@@ -234,16 +241,15 @@ class TestHR(common.TransactionCase):
         contract_form.date_start = start
         contract_form.date_end = end
         if car:  # only for fleet manager
-            # invisible="not transport_mode_car"
+            # attrs="{'invisible': [('transport_mode_car', '=', False)]}"
             contract_form.transport_mode_car = True
             contract_form.car_id = car
         contract_form.wage = wage
+        contract_form.state = state
         sign_template = self.env['sign.template'].search([], limit=1)
         contract_form.hr_responsible_id = self.user
         contract_form.sign_template_id = sign_template
         contract_form.contract_update_template_id = sign_template
-        contract_form.save()
-        contract_form.state = state
         return contract_form.save()
 
     def create_work_entry_type(self, user, name, code, is_leave=False, leave_type=None):
@@ -303,7 +309,7 @@ class TestHR(common.TransactionCase):
                 employee=self.user.employee_id,
                 start=Date.today().replace(day=16),
                 car=self.env['fleet.vehicle'].search([
-                    ('driver_id', '=', self.user.employee_id.work_contact_id.id),
+                    ('driver_id', '=', self.user.employee_id.address_home_id.id),
                     ('company_id', '=', self.user.employee_id.company_id.id),
                 ], limit=1),
                 wage=2500,
@@ -376,9 +382,11 @@ class TestHR(common.TransactionCase):
             model=car_model,
         )
 
+        # Add access rigths to be able to access the employee's private address
         # (in real use, the HR managing employees cars would be granted hr and fleet rights)
-        with Form(car.with_user(self.hr_fleet_manager)) as car_form:
-            car_form.driver_id = self.env['res.partner'].search([('id', '=', self.user.employee_id.work_contact_id.id)], limit=1)
+        with additional_groups(self.hr_fleet_manager, 'base.group_private_addresses'):
+            with Form(car.with_user(self.hr_fleet_manager)) as car_form:
+                car_form.driver_id = self.env['res.partner'].search([('id', '=', self.user.employee_id.address_home_id.id)], limit=1)
 
     def _test_payroll(self):
         struct = self.create_structure(

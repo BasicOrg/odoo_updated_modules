@@ -14,8 +14,6 @@ class ProductLabelLayout(models.TransientModel):
         ('lots', 'Lot/SN Labels')], string="Labels to print", required=True, default='products')
 
     def process(self):
-        if not self.picking_ids:
-            return
         if self.label_type == 'products':
             return self.picking_ids.action_open_label_layout()
         view = self.env.ref('stock.lot_label_layout_form_picking')
@@ -25,5 +23,5 @@ class ProductLabelLayout(models.TransientModel):
             'res_model': 'lot.label.layout',
             'views': [(view.id, 'form')],
             'target': 'new',
-            'context': {'default_move_line_ids': self.picking_ids.move_line_ids.ids},
+            'context': {'default_picking_ids': self.picking_ids.ids},
         }

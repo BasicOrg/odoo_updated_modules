@@ -1,9 +1,9 @@
-/** @odoo-module **/
+odoo.define('survey.result', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import { loadBundle, loadJS } from "@web/core/assets";
-import { SurveyImageZoomer } from "@survey/js/survey_image_zoomer";
-import publicWidget from "@web/legacy/js/public/public_widget";
+var _t = require('web.core')._t;
+const { loadJS } = require('@web/core/assets');
+var publicWidget = require('web.public.widget');
 
 // The given colors are the same as those used by D3
 var D3_COLORS = ["#1f77b4","#ff7f0e","#aec7e8","#ffbb78","#2ca02c","#98df8a","#d62728",
@@ -15,7 +15,6 @@ var D3_COLORS = ["#1f77b4","#ff7f0e","#aec7e8","#ffbb78","#2ca02c","#98df8a","#d
 publicWidget.registry.SurveyResultPagination = publicWidget.Widget.extend({
     events: {
         'click li.o_survey_js_results_pagination a': '_onPageClick',
-        "click .o_survey_question_answers_show_btn": "_onShowAllAnswers",
     },
 
     //--------------------------------------------------------------------------
@@ -56,32 +55,18 @@ publicWidget.registry.SurveyResultPagination = publicWidget.Widget.extend({
 
         var $target = $(ev.currentTarget);
         $target.closest('li').addClass('active');
-        this.$questionsEl.find("tbody tr").addClass("d-none");
+        this.$questionsEl.find('tbody tr').addClass('d-none');
 
         var num = $target.text();
-        var min = this.limit * (num - 1) - 1;
-        if (min === -1) {
-            this.$questionsEl
-                .find("tbody tr:lt(" + this.limit * num + ")")
-                .removeClass("d-none");
+        var min = (this.limit * (num-1))-1;
+        if (min === -1){
+            this.$questionsEl.find('tbody tr:lt('+ this.limit * num +')')
+                .removeClass('d-none');
         } else {
-            this.$questionsEl
-                .find("tbody tr:lt(" + this.limit * num + "):gt(" + min + ")")
-                .removeClass("d-none");
+            this.$questionsEl.find('tbody tr:lt('+ this.limit * num +'):gt(' + min + ')')
+                .removeClass('d-none');
         }
-    },
 
-    /**
-     * @private
-     * @param {MouseEvent} ev
-     */
-    _onShowAllAnswers: function (ev) {
-        const btnEl = ev.currentTarget;
-        const pager = btnEl.previousElementSibling;
-        btnEl.classList.add("d-none");
-        this.$questionsEl.find("tbody tr").removeClass("d-none");
-        pager.classList.add("d-none");
-        this.$questionsEl.parent().addClass("h-auto");
     },
 });
 
@@ -90,6 +75,9 @@ publicWidget.registry.SurveyResultPagination = publicWidget.Widget.extend({
  *
  */
 publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
+    jsLibs: [
+        '/web/static/lib/Chart/Chart.js',
+    ],
 
     //--------------------------------------------------------------------------
     // Widget
@@ -125,36 +113,10 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                         self.chartConfig = self._getSectionResultsChartConfig();
                         break;
                 }
-                window.addEventListener("afterprint", self._onAfterPrint.bind(self));
-                window.addEventListener("beforeprint", self._onBeforePrint.bind(self));
-                self.chart = self._loadChart();
+
+                self._loadChart();
             }
         });
-    },
-
-    willStart: async function () {
-        await loadBundle("web.chartjs_lib");
-    },
-
-    // -------------------------------------------------------------------------
-    // Handlers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Prepare chart for media print
-     * @private
-     */
-    _onBeforePrint: function () {
-        const printWidth = 630; // Value to fit any graphic into the width of an A4 portrait page
-        this.chart.resize(printWidth, Math.floor(printWidth / this.chart.aspectRatio));
-    },
-
-    /**
-     * Turn back chart to original size, for media screen
-     * @private
-     */
-    _onAfterPrint: function () {
-        this.chart.resize();
     },
 
     // -------------------------------------------------------------------------
@@ -184,33 +146,23 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
             },
             options: {
                 scales: {
-                    x: {
+                    xAxes: [{
                         ticks: {
-                            callback: function (val, index) {
-                                // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-                                const value = this.getLabelForValue(val);
-                                const tickLimit = 25;
-                                return value?.length > tickLimit
-                                    ? `${value.slice(0, tickLimit)}...`
-                                    : value;
-                            },
+                            callback: this._customTick(25),
                         },
-                    },
-                    y: {
+                    }],
+                    yAxes: [{
                         ticks: {
                             precision: 0,
                         },
-                        beginAtZero: true,
-                    },
+                    }],
                 },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            title: function (tooltipItem) {
-                                return tooltipItem.label;
-                            },
-                        },
-                    },
+                tooltips: {
+                    callbacks: {
+                        title: function (tooltipItem, data) {
+                            return data.labels[tooltipItem[0].index];
+                        }
+                    }
                 },
             },
         };
@@ -240,34 +192,24 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                 })
             },
             options: {
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        enabled: false,
-                    },
+                legend: {
+                    display: false,
                 },
                 scales: {
-                    x: {
+                    xAxes: [{
                         ticks: {
-                            callback: function (val, index) {
-                                // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-                                const value = this.getLabelForValue(val);
-                                const tickLimit = 35;
-                                return value?.length > tickLimit
-                                    ? `${value.slice(0, tickLimit)}...`
-                                    : value;
-                            },
+                            callback: this._customTick(35),
                         },
-                    },
-                    y: {
+                    }],
+                    yAxes: [{
                         ticks: {
-                            precision: 0,
+                                precision: 0,
                         },
-                        beginAtZero: true,
-                    },
+                    }],
                 },
+                tooltips: {
+                    enabled: false,
+                }
             },
         };
     },
@@ -293,10 +235,7 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                         return D3_COLORS[index % 20];
                     }),
                 }]
-            },
-            options: {
-                aspectRatio: 2,
-            },
+            }
         };
     },
 
@@ -320,13 +259,10 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                 }]
             },
             options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: _t("Overall Performance"),
-                    },
+                title: {
+                    display: true,
+                    text: _t("Overall Performance"),
                 },
-                aspectRatio: 2,
             }
         };
     },
@@ -387,38 +323,20 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                 datasets: datasets
             },
             options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: _t("Performance by Section"),
-                    },
-                    legend: {
-                        display: true,
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                const xLabel = tooltipItem.label;
-                                var roundedValue = Math.round(tooltipItem.parsed.y * 100) / 100;
-                                return `${xLabel}: ${roundedValue}%`;
-                            },
-                        },
-                    },
+                title: {
+                    display: true,
+                    text: _t("Performance by Section"),
+                },
+                legend: {
+                    display: true,
                 },
                 scales: {
-                    x: {
+                    xAxes: [{
                         ticks: {
-                            callback: function (val, index) {
-                                // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-                                const value = this.getLabelForValue(val);
-                                const tickLimit = 20;
-                                return value?.length > tickLimit
-                                    ? `${value.slice(0, tickLimit)}...`
-                                    : value;
-                            },
+                            callback: this._customTick(20),
                         },
-                    },
-                    y: {
+                    }],
+                    yAxes: [{
                         gridLines: {
                             display: false,
                         },
@@ -427,15 +345,39 @@ publicWidget.registry.SurveyResultChart = publicWidget.Widget.extend({
                             callback: function (label) {
                                 return label + '%';
                             },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
                             maxTicksLimit: 5,
-                            stepSize: 25,
+                            stepSize: 25
                         },
-                        beginAtZero: true,
-                        suggestedMin: 0,
-                        suggestedMax: 100,
-                    },
+                    }],
                 },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                            var roundedValue = Math.round(tooltipItem.yLabel * 100) / 100;
+                            return `${datasetLabel}: ${roundedValue}%`;
+                        }
+                    }
+                }
             },
+        };
+    },
+
+    /**
+     * Custom Tick function to replace overflowing text with '...'
+     *
+     * @private
+     * @param {Integer} tickLimit
+     */
+    _customTick: function (tickLimit) {
+        return function (label) {
+            if (label.length <= tickLimit) {
+                return label;
+            } else {
+                return label.slice(0, tickLimit) + '...';
+            }
         };
     },
 
@@ -467,15 +409,13 @@ publicWidget.registry.SurveyResultWidget = publicWidget.Widget.extend({
     selector: '.o_survey_result',
     events: {
         'click .o_survey_results_topbar_clear_filters': '_onClearFiltersClick',
-        'click .filter-add-answer': '_onFilterAddAnswerClick',
+        'click i.filter-add-answer': '_onFilterAddAnswerClick',
         'click i.filter-remove-answer': '_onFilterRemoveAnswerClick',
         'click a.filter-finished-or-not': '_onFilterFinishedOrNotClick',
         'click a.filter-finished': '_onFilterFinishedClick',
         'click a.filter-failed': '_onFilterFailedClick',
         'click a.filter-passed': '_onFilterPassedClick',
         'click a.filter-passed-and-failed': '_onFilterPassedAndFailedClick',
-        'click .o_survey_answer_image': '_onAnswerImgClick',
-        "click .o_survey_results_print": "_onPrintResultsClick",
     },
 
     //--------------------------------------------------------------------------
@@ -498,12 +438,14 @@ publicWidget.registry.SurveyResultWidget = publicWidget.Widget.extend({
         var self = this;
         return this._super.apply(this, arguments).then(function () {
             var allPromises = [];
-            self.$('.pagination_wrapper').each(function (){
+
+            self.$('.pagination').each(function (){
                 var questionId = $(this).data("question_id");
                 allPromises.push(new publicWidget.registry.SurveyResultPagination(self, {
                     'questionsEl': self.$('#survey_table_question_'+ questionId)
                 }).attachTo($(this)));
             });
+
             self.$('.survey_graph').each(function () {
                 allPromises.push(new publicWidget.registry.SurveyResultChart(self)
                     .attachTo($(this)));
@@ -521,7 +463,7 @@ publicWidget.registry.SurveyResultWidget = publicWidget.Widget.extend({
     // Handlers
     // -------------------------------------------------------------------------
 
-    /**
+     /**
      * Add an answer filter by updating the URL and redirecting.
      * @private
      * @param {Event} ev
@@ -615,55 +557,25 @@ publicWidget.registry.SurveyResultWidget = publicWidget.Widget.extend({
     },
 
     /**
-     * Called when an image on an answer in multi-answers question is clicked.
-     * Starts a widget opening a dialog to display the now zoomable image.
-     * this.imgZoomer is the zoomer widget linked to the survey result widget, if any.
-     *
-     * @private
-     * @param {Event} ev
-     */
-    _onAnswerImgClick: function (ev) {
-        ev.preventDefault();
-        new SurveyImageZoomer({
-            sourceImage: $(ev.currentTarget).attr('src')
-        }).appendTo(document.body);
-    },
-
-    /**
-     * Call print dialog
-     * @private
-     */
-    _onPrintResultsClick: function () {
-        window.print();
-    },
-
-    /**
      * Returns the modified pathname string for filters after adding or removing an
-     * answer filter (from click event).
+     * answer filter (from click event). Filters are formatted as `"rowX,ansX", where
+     * the row is used for matrix-type questions and set to 0 otherwise.
      * @private
-     * @param {String} filters Existing answer filters, formatted as
-     * `modelX,rowX,ansX|modelY,rowY,ansY...` - row is used for matrix-type questions row id, 0 for others
-     * "model" specifying the model to query depending on the question type we filter on.
-       - 'A': 'survey.question.answer' ids: simple_choice, multiple_choice, matrix
-       - 'L': 'survey.user_input.line' ids: char_box, text_box, numerical_box, date, datetime
+     * @param {String} filters Existing answer filters, formatted as `rowX,ansX|rowY,ansY...`.
      * @param {"add" | "remove"} operation Whether to add or remove the filter.
      * @param {Event} ev Event defining the filter.
      * @returns {String} Updated filters.
      */
     _prepareAnswersFilters(filters, operation, ev) {
-        const cellDataset = ev.currentTarget.dataset;
-        const filter = `${cellDataset.modelShortKey},${cellDataset.rowId || 0},${cellDataset.recordId}`;
+        const cell = $(ev.target);
+        const eventFilter = `${cell.data('rowId') || 0},${cell.data('answerId')}`;
 
         if (operation === 'add') {
-            if (filters) {
-                filters = !filters.split("|").includes(filter) ? filters += `|${filter}` : filters;
-            } else {
-                filters = filter;
-            }
+            filters = filters ? filters + `|${eventFilter}` : eventFilter;
         } else if (operation === 'remove') {
             filters = filters
                 .split("|")
-                .filter(filterItem => filterItem !== filter)
+                .filter(filterItem => filterItem !== eventFilter)
                 .join("|");
         } else {
             throw new Error('`operation` parameter for `_prepareAnswersFilters` must be either "add" or "remove".')
@@ -672,8 +584,10 @@ publicWidget.registry.SurveyResultWidget = publicWidget.Widget.extend({
     }
 });
 
-export default {
+return {
     resultWidget: publicWidget.registry.SurveyResultWidget,
     chartWidget: publicWidget.registry.SurveyResultChart,
     paginationWidget: publicWidget.registry.SurveyResultPagination
 };
+
+});

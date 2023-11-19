@@ -42,43 +42,25 @@ class Task(models.Model):
             fsm_sn_moves = self.env['stock.move']
             if not qty:
                 continue
-            for move in so_line.move_ids:
-                if move.state in ['done', 'cancel'] or move.quantity >= qty:
-                    continue
-                fsm_sn_moves |= move
-                while move.move_orig_ids.filtered(lambda m: not m.picked or m.quantity < qty):
+            for last_move in so_line.move_ids.filtered(lambda p: p.state not in ['done', 'cancel'] and p.quantity_done < qty):
+                move = last_move
+                fsm_sn_moves |= last_move
+                while move.move_orig_ids.filtered(lambda m: m.quantity_done < qty):
                     move = move.move_orig_ids
                     fsm_sn_moves |= move
             for fsm_sn_move in fsm_sn_moves:
-                if not fsm_sn_move.move_line_ids:
-                    ml_vals = fsm_sn_move._prepare_move_line_vals(quantity=0)
-                    ml_vals['quantity'] = fsm_sn_move.product_uom_qty
-                    ml_vals['lot_id'] = so_line.fsm_lot_id.id
-                    ml_to_create.append(ml_vals)
-                else:
-                    qty_done = 0
-                    fsm_sn_move.move_line_ids.lot_id = so_line.fsm_lot_id
-                    for move_line in fsm_sn_move.move_line_ids:
-                        qty_done += move_line.quantity
-                    missing_qty = fsm_sn_move.product_uom_qty - qty_done
-                    if missing_qty > 0:
-                        ml_vals = fsm_sn_move._prepare_move_line_vals(quantity=0)
-                        ml_vals['quantity'] = missing_qty
-                        ml_vals['lot_id'] = so_line.fsm_lot_id.id
-                        ml_to_create.append(ml_vals)
+                ml_vals = fsm_sn_move._prepare_move_line_vals(quantity=0)
+                ml_vals['qty_done'] = qty - fsm_sn_move.quantity_done
+                ml_vals['lot_id'] = so_line.fsm_lot_id.id
                 if fsm_sn_move.product_id.tracking == "serial":
                     quants = self.env['stock.quant']._gather(fsm_sn_move.product_id, fsm_sn_move.location_id, lot_id=so_line.fsm_lot_id)
                     quant = quants.filtered(lambda q: q.quantity == 1.0)[:1]
                     ml_vals['location_id'] = quant.location_id.id or fsm_sn_move.location_id.id
+                ml_to_create.append(ml_vals)
             all_fsm_sn_moves |= fsm_sn_moves
         self.env['stock.move.line'].create(ml_to_create)
-        for so_line in self.sale_order_id.order_line:
-            # set the quantity delivered of the sol to the quantity ordered for the product linked to the task
-            if so_line.task_id == self and not so_line.product_id.service_policy == 'delivered_timesheet':
-                so_line.qty_delivered = so_line.product_uom_qty
 
         def is_fsm_material_picking(picking, task):
-            """ this function returns if the picking is a picking ready to be validated. """
             for move in picking.move_ids:
                 while move.move_dest_ids:
                     move = move.move_dest_ids
@@ -87,9 +69,8 @@ class Task(models.Model):
                     continue
                 if not (sol.product_id != task.project_id.timesheet_product_id \
                 and sol != task.sale_line_id \
-                # On the last and, we check if the task is either done (and thus already done for the delivery) or the current one (and thus about to be validated)
-                # if not, we can not validate the delivery
-                and (sol.task_id == task or sol.task_id.fsm_done)):
+                and sol.product_uom_qty != 0 \
+                and sol.task_id == task):
                     return False
             return True
 
@@ -99,35 +80,20 @@ class Task(models.Model):
             if move.state in ('done', 'cancel') or move in all_fsm_sn_moves:
                 continue
             rounding = move.product_uom.rounding
-            if float_compare(move.quantity, move.product_uom_qty, precision_rounding=rounding) < 0:
+            if float_compare(move.quantity_done, move.product_uom_qty, precision_rounding=rounding) < 0:
                 qty_to_do = float_round(
-                    move.product_uom_qty - move.quantity,
+                    move.product_uom_qty - move.quantity_done,
                     precision_rounding=rounding,
                     rounding_method='HALF-UP')
-                move.quantity = qty_to_do
+                move._set_quantity_done(qty_to_do)
         pickings_to_do.with_context(skip_sms=True, cancel_backorder=True).button_validate()
 
-    def _fsm_ensure_sale_order(self):
-        """Since we want to use the current user warehouse when using the FSM product kanban view, the SO must
-           be confirmed before adding any product trough the product kanban view.
-           We cannot indeed wait that the user actually adds a product trough the FSM product kanban view
-           to do so as there would be a risk that all the existing SOL (possibly added in a (pre)sale phase)
-           would get that user's default warehouse when the SO gets confirmed and the picking generated."""
-        sale_order = super()._fsm_ensure_sale_order()
-        if self.user_has_groups('project.group_project_user'):
-            sale_order = self.sale_order_id.sudo()
-        if sale_order.state == 'draft':
-            sale_order.action_confirm()
-        return sale_order
-
-    def _fsm_create_sale_order(self):
-        """Since we want to use the current user warehouse when using the FSM product kanban view, the SO must
-           be confirmed before adding any product trough the product kanban view.
-           We cannot indeed wait that the user actually adds a product trough the FSM product kanban view
-           to do so as there would be a risk that all the existing SOL (possibly added in a (pre)sale phase)
-           would get that user's default warehouse when the SO gets confirmed and the picking generated."""
-        super()._fsm_create_sale_order()
-        sale_order = self.sale_order_id
-        if self.user_has_groups('project.group_project_user'):
-            sale_order = self.sale_order_id.sudo()
-        sale_order.action_confirm()
+    def write(self, vals):
+        result = super().write(vals)
+        if 'user_ids' in vals:
+            for task in self:
+                user = task.user_ids[:1]
+                sale_order = task.sale_order_id.sudo()
+                if sale_order.state in ['draft', 'sent'] and user != sale_order.user_id:
+                    sale_order.write({'user_id': user.id})
+        return result

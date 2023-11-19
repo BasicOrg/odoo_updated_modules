@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { EventBus } from "@odoo/owl";
+const { EventBus } = owl;
 
 // -----------------------------------------------------------------------------
 // Errors

@@ -3,16 +3,16 @@
 # 	* website_crm_iap_reveal
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-02-11 14:34+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -46,7 +46,7 @@ msgstr "Đang hoạt động"
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_view_search
 msgid "Archived"
-msgstr "Đã lưu trữ"
+msgstr "Đã lưu"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_crm_reveal_rule
@@ -96,7 +96,7 @@ msgstr "Quốc gia"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__create_date
 msgid "Create Date"
-msgstr "Tạo ngày"
+msgstr "Ngày tạo"
 
 #. module: website_crm_iap_reveal
 #: model_terms:ir.actions.act_window,help:website_crm_iap_reveal.crm_reveal_rule_action
@@ -133,7 +133,6 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Enter Valid Regex."
@@ -162,17 +161,22 @@ msgstr "Từ"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__lead_ids
 msgid "Generated Lead / Opportunity"
-msgstr "Tạo lead/cơ hội"
+msgstr "Tạo lead / Cơ hội"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_ir_http
 msgid "HTTP Routing"
-msgstr "Định tuyến HTTP"
+msgstr "HTTP Routing"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_rule__priority__2
 msgid "High"
 msgstr "Cao"
+
+#. module: website_crm_iap_reveal
+#: model:ir.model,name:website_crm_iap_reveal.model_iap_account
+msgid "IAP Account"
+msgstr "Tài khoản IAP"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_lead__reveal_iap_credits
@@ -194,13 +198,19 @@ msgstr "Địa chỉ IP"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__industry_tag_ids
 msgid "Industries"
-msgstr "Ngành nghề"
+msgstr "Ngành nghề "
+
+#. module: website_crm_iap_reveal
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule____last_update
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__write_uid
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__write_date
@@ -211,7 +221,7 @@ msgstr "Cập nhật lần cuối vào"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_rule__lead_type__lead
 msgid "Lead"
-msgstr "Lead"
+msgstr "Tiềm năng"
 
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_form
@@ -236,14 +246,26 @@ msgid "Lead Generation Views"
 msgstr "Dạng xem tạo lead "
 
 #. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid ""
+"Lead Generation requires a GeoIP resolver which could not be found on your "
+"system. Please consult https://pypi.org/project/GeoIP/."
+msgstr ""
+"Tạo lead yêu cầu trình phân giải GeoIP không được tìm thấy ở hệ thống của "
+"bạn. Hãy tham khảo https://pypi.org/project/GeoIP/."
+
+#. module: website_crm_iap_reveal
 #: model:ir.actions.server,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead_ir_actions_server
+#: model:ir.cron,cron_name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
+#: model:ir.cron,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
 msgid "Lead Generation: Leads/Opportunities Generation"
 msgstr "Tạo lead: Tạo lead/cơ hội"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_crm_lead
 msgid "Lead/Opportunity"
-msgstr "Lead/Cơ hội"
+msgstr "Tiềm năng/Cơ hội"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,help:website_crm_iap_reveal.field_crm_reveal_rule__industry_tag_ids
@@ -273,7 +295,13 @@ msgstr "Chỉ cho phép tối đa 5 liên hệ!"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_rule__priority__1
 msgid "Medium"
-msgstr "Phương tiện"
+msgstr "Kênh trung gian"
+
+#. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid "Missing Library"
+msgstr "Không có thư viện"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_view__reveal_state__not_found
@@ -288,7 +316,7 @@ msgstr "Số lượng liên hệ"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__lead_count
 msgid "Number of Generated Leads"
-msgstr "Số lượng lead đã tạo "
+msgstr "Số lượng lead được tạo "
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__opportunity_count
@@ -329,7 +357,6 @@ msgid "Opportunity Generation Conditions"
 msgstr "Điều kiện tạo cơ hội"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Opportunity created by Odoo Lead Generation"
@@ -343,12 +370,12 @@ msgstr "Vai trò khác"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__preferred_role_id
 msgid "Preferred Role"
-msgstr "Vai trò ưu tiên"
+msgstr "Vai trò ưa thích"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__priority
 msgid "Priority"
-msgstr "Mức độ ưu tiên"
+msgstr "Độ ưu tiên"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,help:website_crm_iap_reveal.field_crm_reveal_rule__regex_url
@@ -384,7 +411,7 @@ msgstr "Tên quy tắc"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__team_id
 msgid "Sales Team"
-msgstr "Đội ngũ kinh doanh"
+msgstr "Đội ngũ bán hàng"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__user_id
@@ -425,7 +452,7 @@ msgstr "Hậu tố"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__tag_ids
 msgid "Tags"
-msgstr "Thẻ"
+msgstr "Tag"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,help:website_crm_iap_reveal.field_crm_reveal_rule__extra_contacts
@@ -521,4 +548,4 @@ msgstr "nhân viên"
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_form
 msgid "to"
-msgstr "đến"
+msgstr "tới"

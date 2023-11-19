@@ -25,9 +25,6 @@
             'social_linkedin/static/src/scss/social_linkedin.scss',
             'social_linkedin/static/src/xml/**/*',
         ],
-        'web.assets_web_dark': [
-            'social_linkedin/static/src/scss/social_linkedin.dark.scss',
-        ],
     },
     'license': 'OEEL-1',
 }

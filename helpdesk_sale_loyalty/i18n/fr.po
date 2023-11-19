@@ -3,17 +3,18 @@
 # 	* helpdesk_sale_loyalty
 # 
 # Translators:
-# Jolien De Paepe, 2023
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
+# Jolien De Paepe, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Jolien De Paepe, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,51 +22,48 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: helpdesk_sale_loyalty
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__company_id
 msgid "Company"
 msgstr "Société"
 
 #. module: helpdesk_sale_loyalty
-#. odoo-python
-#: code:addons/helpdesk_sale_loyalty/wizard/helpdesk_sale_coupon_generate.py:0
-#, python-format
-msgid "Compose Email"
-msgstr "Composer un email"
-
-#. module: helpdesk_sale_loyalty
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_ticket_view_form_inherit_helpdesk_sale_coupon
 msgid "Coupon"
-msgstr "Bon de réduction"
+msgstr "Coupon"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__program
 msgid "Coupon Program"
-msgstr "Programme de bon de réduction"
+msgstr "Campagne de Coupon"
 
 #. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__points_granted
-msgid "Coupon Value"
-msgstr "Valeur du bon de réduction"
-
-#. module: helpdesk_sale_loyalty
-#. odoo-python
 #: code:addons/helpdesk_sale_loyalty/wizard/helpdesk_sale_coupon_generate.py:0
 #, python-format
 msgid "Coupon created"
-msgstr "Bon de réduction créé"
+msgstr "Coupon créé"
 
 #. module: helpdesk_sale_loyalty
-#. odoo-python
+#: model:loyalty.card,point_name:helpdesk_sale_loyalty.coupon_demo_1
+msgid "Coupon points"
+msgstr "Points de coupon"
+
+#. module: helpdesk_sale_loyalty
 #: code:addons/helpdesk_sale_loyalty/models/helpdesk_ticket.py:0
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_ticket_view_form_inherit_helpdesk_sale_coupon
 #, python-format
 msgid "Coupons"
-msgstr "Bons de réduction"
+msgstr "Coupons"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_ticket__coupons_count
 msgid "Coupons count"
-msgstr "Nombre de bons de réduction"
+msgstr "Nombre de coupons"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__create_uid
@@ -78,36 +76,35 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: helpdesk_sale_loyalty
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
-msgid "Discard"
-msgstr "Ignorer"
-
-#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Afficher le nom"
+
+#. module: helpdesk_sale_loyalty
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
+msgid "Generate"
+msgstr "Générer"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model,name:helpdesk_sale_loyalty.model_helpdesk_sale_coupon_generate
 msgid "Generate Sales Coupon from Helpdesk"
-msgstr "Générer des bons de réduction depuis le module Assistance"
+msgstr "Générer des Coupons depuis le module Assistance"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.actions.act_window,name:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_action
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
 msgid "Generate a Coupon"
-msgstr "Générer un bon de réduction"
+msgstr "Générer un coupon"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_ticket__coupon_ids
 msgid "Generated Coupons"
-msgstr "Bons de réduction générés"
+msgstr "Coupons générés"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model,name:helpdesk_sale_loyalty.model_helpdesk_ticket
 msgid "Helpdesk Ticket"
-msgstr "Ticket d'assistance"
+msgstr "Ticket d'Assistance"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__id
@@ -115,19 +112,19 @@ msgid "ID"
 msgstr "ID"
 
 #. module: helpdesk_sale_loyalty
+#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
-
-#. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__points_name
-msgid "Portal Point Name"
-msgstr "Nom du point de portail"
+msgstr "Dernière mise à jour le"
 
 #. module: helpdesk_sale_loyalty
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
@@ -135,16 +132,6 @@ msgid "Send"
 msgstr "Envoyer"
 
 #. module: helpdesk_sale_loyalty
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
-msgid "Send by Email"
-msgstr "Envoyer par email"
-
-#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__ticket_id
 msgid "Ticket"
 msgstr "Ticket"
-
-#. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__valid_until
-msgid "Valid Until"
-msgstr "Valide jusqu'au"

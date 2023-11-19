@@ -7,9 +7,11 @@
     'category': 'Productivity/Documents',
     'summary': 'Avoid auto-enabling the documents feature on fsm projects',
     'description': """
-Avoid auto-enabling the documents feature on fsm projects.
+        Avoid auto-enabling the documents feature on fsm projects.
     """,
     'depends': ['documents_project', 'industry_fsm'],
+    'data': [
+    ],
     'auto_install': True,
     'license': 'OEEL-1',
     'post_init_hook': '_documents_fsm_post_init'

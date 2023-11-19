@@ -3,16 +3,16 @@
 # 	* delivery_bpost
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2021-07-12 07:56+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -35,7 +35,6 @@ msgid "Allow deliveries on Saturday (extra charges apply)"
 msgstr "Autoriser les livraisons le samedi (inclus des frais supplémentaires)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -43,7 +42,7 @@ msgid ""
 "(Detailed error: %s)"
 msgstr ""
 "Erreur d'authentification - Mauvais identifiants\n"
-"(Erreur détaillée : %s)"
+"(Erreur détaillée: %s)"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_account_number
@@ -53,33 +52,34 @@ msgstr "Numéro de compte Bpost"
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_delivery_nature
 msgid "Bpost Delivery Nature"
-msgstr "Nature de la livraison Bpost"
+msgstr "Nature de la livraison bpost"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_domestic_deliver_type
 msgid "Bpost Domestic Deliver Type"
-msgstr "Type de livraison Bpost Domestique"
+msgstr "Type de livraison bpost Domestic"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_domestic
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_domestic
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
 msgid "Bpost Domestic bpack 24h Pro"
-msgstr "Envoi Bpost Domestique avec bpack 24h Pro"
+msgstr "Envoi bpost Domestic avec bpack 24h Pro"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_international_deliver_type
 msgid "Bpost International Deliver Type"
-msgstr "Type de livraison Bpost International"
+msgstr "Type de livraison bpost International"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_label_format
 msgid "Bpost Label Format"
-msgstr "Format d’étiquette Bpost"
+msgstr "Format d’étiquette bpost"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_label_stock_type
 msgid "Bpost Label Stock Type"
-msgstr "Étiquette Bpost de type stock"
+msgstr "Type de film à étiquette bpost"
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
@@ -89,15 +89,16 @@ msgstr "Type de colis Bpost"
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_parcel_return_instructions
 msgid "Bpost Parcel Return Instructions"
-msgstr "Instructions sur le retour de colis Bpost"
+msgstr "Instructions sur le retour de colis bpost"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_shipment_type
 msgid "Bpost Shipment Type"
-msgstr "Type d’expédition Bpost"
+msgstr "Type d’expédition bpost"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_inter
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_world
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_world_product_template
 msgid "Bpost World Express Pro"
 msgstr "Bpost World Express Pro"
@@ -125,7 +126,7 @@ msgstr "Détruire"
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_delivery_nature__domestic
 msgid "Domestic"
-msgstr "National"
+msgstr "Domestique"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_shipment_type__gift
@@ -140,17 +141,17 @@ msgstr "MARCHANDISES"
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_delivery_nature__international
 msgid "International"
-msgstr "International"
+msgstr "Internationale"
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
 msgid "Label Format"
-msgstr "Format de libellé"
+msgstr "Format d'étiquette"
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
 msgid "Label Type"
-msgstr "Type de libellé"
+msgstr "Type d'étiquette"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_shipment_type__other
@@ -173,11 +174,10 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Packages over 30 Kg are not accepted by bpost."
-msgstr "Bpost n’accepte pas les colis supérieurs à 30 kg."
+msgstr "bpost n’accepte pas les colis supérieurs à 30 kg."
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_developer_password
@@ -185,30 +185,31 @@ msgid "Passphrase"
 msgstr "Phrase secrète"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
-msgstr "Veuillez fournir au moins un article à expédier."
+msgstr "Veuillez fournir au moins un élément concernant l'expédition"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__delivery_type
 msgid "Provider"
-msgstr "Fournisseur"
+msgstr "Transporteur"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return labels created into bpost"
-msgstr "Étiquettes de retour créées dans Bpost"
+msgid ""
+"Return labels created into bpost <br/> <b>Tracking Numbers: </b><br/>%s"
+msgstr ""
+"Étiquettes de retour créées dans bpost <br/> <b>Numéro de suivi : "
+"</b><br/>%s"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return shipment created into bpost"
-msgstr "Envoi de retour créé dans Bpost"
+msgid "Return shipment created into bpost <br/> <b>Tracking Number : </b>%s"
+msgstr ""
+"L'envoi de retour a été créé dans Bpost <br/><b>Numéro de suivi :</b>%s"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_parcel_return_instructions__rta
@@ -226,50 +227,46 @@ msgid "SAMPLE"
 msgstr "ÉCHANTILLON"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "Shipment #%s has been cancelled"
-msgstr "L'expédition #%s a été annulée"
+msgstr "L'expédition #%s à été annulée"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment created into bpost"
-msgstr "Envoi créé dans Bpost"
+msgid "Shipment created into bpost <br/> <b>Tracking Links</b> <br/>%s"
+msgstr "Envoi créé dans bpost <br/> <b>Liens de suivi </b> <br/>%s"
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_delivery_carrier
 msgid "Shipping Methods"
-msgstr "Modes d'expédition"
+msgstr "Méthodes d'expédition"
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_stock_package_type
 msgid "Stock package type"
-msgstr "Type de colis de stock"
+msgstr "Stock package type"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "The BPost shipping service is unresponsive, please retry later."
 msgstr ""
-"Le service d'expédition Bpost ne répond pas, veuillez réessayer plus tard."
+"Le service d'expédition BPost ne répond pas, veuillez réessayer "
+"ultérieurement."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The address of your company/warehouse is incomplete or wrong (Missing field(s):  \n"
 " %s)"
 msgstr ""
-"L’adresse de votre société/entrepôt est incomplète ou erronée (champ(s) manquant(s): \n"
+"L’adresse de votre entreprise/entrepôt est incomplète ou erronée (champ(s) manquant(s):  \n"
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -280,18 +277,16 @@ msgstr ""
 "sont des services."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
 " %s"
 msgstr ""
-"Le prix d'expédition estimé ne peut pas être calculé car le poids manque pour le(s) produit(s) suivant(s) : \n"
+"Le prix d'expédition estimé ne peut pas être calculé car le poids est manquant pour le(s) produit(s) suivant(s) : \n"
 " %s"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -302,42 +297,27 @@ msgstr ""
 "%s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Links"
-msgstr "Liens de suivi"
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_domestic
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_world
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_world_product_template
+msgid "Units"
+msgstr "Unité(s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr "Numéro de suivi :"
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Numbers:"
-msgstr "Numéros de suivi :"
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "You cannot compute a passphrase for non-bpost carriers."
 msgstr ""
-"Vous ne pouvez pas créer une phrase secrète pour les transporteurs autres "
-"que bpost."
+"Vous ne pouvez pas élaborer une phrase secrète pour les transporteurs autres"
+" que bpost."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Your company/warehouse address must be in Belgium to ship with bpost"
 msgstr ""
-"Votre société/entrepôt doit avoir une adresse en Belgique pour une "
+"Votre entreprise/entrepôt doit avoir une adresse en Belgique pour une "
 "expédition par bpost"
 
 #. module: delivery_bpost
@@ -384,10 +364,9 @@ msgstr "Configuration de bpost"
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_package_type_id
 msgid "bpost Default Package Type"
-msgstr "Type de colis par défaut de bpost"
+msgstr "Type de paquet par défaut de bpost"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -395,10 +374,9 @@ msgid ""
 "delivery method into bpost International."
 msgstr ""
 "bpost Domestic ne peut être utilisé que pour des livraisons en Belgique. "
-"Changez le mode de livraison en bpost International."
+"Changez la méthode de livraison en bpost International."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -406,17 +384,17 @@ msgid ""
 "delivery method into bpost Domestic."
 msgstr ""
 "bpost International ne peut être utilisé que pour des livraisons à "
-"l’extérieur de la Belgique. Changez le mode de livraison en bpost Domestic."
+"l’extérieur de la Belgique. Changez la méthode de livraison en bpost "
+"Domestic."
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_sale
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_stock
 msgid "bpost Shipping Methods"
-msgstr "Modes d'expédition Bpost"
+msgstr "Méthodes d'expédition Bpost"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "bpost did not return prices for this destination country."
-msgstr "Bpost n’a pas indiqué de frais de retour pour ce pays de destination."
+msgstr "bpost n’a pas indiqué de frais de retour pour ce pays de destination."

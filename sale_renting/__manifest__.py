@@ -5,18 +5,18 @@
     'summary': "Manage rental contracts, deliveries and returns",
 
     'description': """
-Specify rentals of products (products, quotations, invoices, ...)
-Manage status of products, rentals, delays
-Manage user and manager notifications
+        Specify rentals of products (products, quotations, invoices, ...)
+        Manage status of products, rentals, delays
+        Manage user and manager notifications
     """,
 
-    'website': "https://www.odoo.com/app/rental",
+    'website': "https://www.odoo.com",
 
     'category': 'Sales/Sales',
     'sequence': 160,
     'version': '1.0',
 
-    'depends': ['sale'],
+    'depends': ['sale_temporal'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -24,17 +24,15 @@ Manage user and manager notifications
 
         'data/rental_data.xml',
 
-        'views/product_pricelist_views.xml',
-        'views/product_pricing_views.xml',
         'views/product_template_views.xml',
         'views/sale_order_views.xml',
-        'views/sale_temporal_recurrence_views.xml',
         'views/res_config_settings_views.xml',
 
         'report/rental_order_report_templates.xml',
         'report/rental_report_views.xml',
         'report/rental_schedule_views.xml',
 
+        'wizard/rental_configurator_views.xml',
         'wizard/rental_processing_views.xml',
 
         'views/sale_renting_menus.xml',

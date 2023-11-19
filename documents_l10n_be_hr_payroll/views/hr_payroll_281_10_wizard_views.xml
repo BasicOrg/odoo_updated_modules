@@ -11,11 +11,17 @@
             <p name="save_warning" position="after">
                 <field name="documents_enabled" invisible="1"/>
                 <div>
-                    <div invisible="documents_enabled">
+                    <div attrs="{'invisible': [('documents_enabled', '=', True)]}">
                         <p><strong>Warning: </strong>In order to post the 281.10 sheets in the employee portal, you have to Enable "Human Resources" in the <a name="%(documents.configuration_action)d" type="action" class="oe_link">"Documents" app settings</a>.</p>
                     </div>
                 </div>
             </p>
+            <button name="action_generate_xml" position="after">
+                <button name="action_post_in_documents" string="Post in Documents" type="object" confirm="This will add all the sheets in the employee portal. Are you sure you want to proceed ?" attrs="{'invisible': [('documents_enabled', '=', False)]}"/>
+            </button>
+            <field name="pdf_to_generate" position="after">
+                <field name="pdf_to_post" groups="base.group_no_one"/>
+            </field>
         </field>
     </record>
 </odoo>

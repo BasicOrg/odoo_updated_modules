@@ -21,11 +21,6 @@ class TestHrEmployee(TestHrCommon):
             'image_1920': False
         })
 
-    def test_employee_linked_partner(self):
-        user_partner = self.user_without_image.partner_id
-        work_contact = self.employee_without_image.work_contact_id
-        self.assertEqual(user_partner, work_contact)
-
     def test_employee_resource(self):
         _tz = 'Pacific/Apia'
         self.res_users_hr_officer.company_id.resource_calendar_id.tz = _tz
@@ -124,19 +119,6 @@ class TestHrEmployee(TestHrCommon):
         self.assertTrue(emp_sub_sub.member_of_department)
         self.assertFalse(emp_other.member_of_department)
         self.assertFalse(emp_parent.member_of_department)
-        employees = emp + emp_sub + emp_sub_sub + emp_other + emp_parent
-        self.assertEqual(
-            employees.filtered_domain(employees._search_part_of_department('=', True)),
-            emp + emp_sub + emp_sub_sub)
-        self.assertEqual(
-            employees.filtered_domain(employees._search_part_of_department('!=', False)),
-            emp + emp_sub + emp_sub_sub)
-        self.assertEqual(
-            employees.filtered_domain(employees._search_part_of_department('=', False)),
-            emp_other + emp_parent)
-        self.assertEqual(
-            employees.filtered_domain(employees._search_part_of_department('!=', True)),
-            emp_other + emp_parent)
 
     def test_employee_create_from_user(self):
         employee = self.env['hr.employee'].create({
@@ -170,42 +152,10 @@ class TestHrEmployee(TestHrCommon):
 
     def test_employee_create_from_signup(self):
         # Test that an employee is not created when signin up on the website
-        partner = self.env['res.partner'].create({
-            'name': 'test partner'
-        })
         self.env['res.users'].signup({
             'name': 'Test User',
             'login': 'test_user',
             'email': 'test_user@odoo.com',
             'password': 'test_user_password',
-            'partner_id': partner.id,
         })
         self.assertFalse(self.env['res.users'].search([('login', '=', 'test_user')]).employee_id)
-
-    def test_employee_update_work_contact_id(self):
-        """
-            Check that the `work_contact_id` information is no longer
-            updated when an employee's `user_id` is removed.
-        """
-        user = self.env['res.users'].create({
-            'name': 'Test',
-            'login': 'test',
-            'email': 'test@example.com',
-        })
-        employee_A, employee_B = self.env['hr.employee'].create([
-            {
-                'name': 'Employee A',
-                'user_id': user.id,
-                'work_email': 'employee_A@example.com',
-            },
-            {
-                'name': 'Employee B',
-                'user_id': False,
-                'work_email': 'employee_B@example.com',
-            }
-        ])
-        employee_A.user_id = False
-        employee_B.user_id = user.id
-        employee_B.work_email = 'new_email@example.com'
-        self.assertEqual(employee_A.work_email, 'employee_A@example.com')
-        self.assertEqual(employee_B.work_email, 'new_email@example.com')

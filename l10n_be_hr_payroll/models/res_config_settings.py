@@ -56,6 +56,12 @@ class ResConfigSettings(models.TransientModel):
     l10n_be_ffe_employer_type = fields.Selection(
         related='company_id.l10n_be_ffe_employer_type', string='Ffe Employer Type',
         readonly=False)
+    group_export_sdworx_leaves = fields.Boolean(
+        string="Export Time Off to SDWorx",
+        implied_group="l10n_be_hr_payroll.group_export_sdworx_leaves")
+    sdworx_code = fields.Char(
+        related='company_id.sdworx_code',
+        readonly=False)
     onss_expeditor_number = fields.Char(
         related="company_id.onss_expeditor_number",
         readonly=False,

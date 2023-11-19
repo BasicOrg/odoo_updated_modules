@@ -1,33 +1,19 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { useSpecialData } from "@web/views/fields/relational_utils";
+import { _lt } from "@web/core/l10n/translation";
 import { standardFieldProps } from "../standard_field_props";
 
+const { Component } = owl;
+
 export class BadgeSelectionField extends Component {
-    static template = "web.BadgeSelectionField";
-    static props = {
-        ...standardFieldProps,
-        domain: { type: Array, optional: true },
-        size: { type: String, optional: true, validate: (s) => ["sm", "md", "lg"].includes(s), default: "md"},
-    };
-
-    setup() {
-        this.type = this.props.record.fields[this.props.name].type;
-        if (this.type === "many2one") {
-            this.specialData = useSpecialData((orm, props) => {
-                const { relation } = props.record.fields[props.name];
-                return orm.call(relation, "name_search", ["", props.domain]);
-            });
-        }
-    }
-
     get options() {
-        switch (this.type) {
+        switch (this.props.record.fields[this.props.name].type) {
             case "many2one":
-                return this.specialData.data;
+                // WOWL: conversion needed while we keep using the legacy model
+                return Object.values(this.props.record.preloadedData[this.props.name]).map((v) => {
+                    return [v.id, v.display_name];
+                });
             case "selection":
                 return this.props.record.fields[this.props.name].selection;
             default:
@@ -36,22 +22,20 @@ export class BadgeSelectionField extends Component {
     }
 
     get string() {
-        switch (this.type) {
+        switch (this.props.type) {
             case "many2one":
-                return this.props.record.data[this.props.name]
-                    ? this.props.record.data[this.props.name][1]
-                    : "";
+                return this.props.value ? this.props.value[1] : "";
             case "selection":
-                return this.props.record.data[this.props.name] !== false
-                    ? this.options.find((o) => o[0] === this.props.record.data[this.props.name])[1]
+                return this.props.value !== false
+                    ? this.options.find((o) => o[0] === this.props.value)[1]
                     : "";
             default:
                 return "";
         }
     }
     get value() {
-        const rawValue = this.props.record.data[this.props.name];
-        return this.type === "many2one" && rawValue ? rawValue[0] : rawValue;
+        const rawValue = this.props.value;
+        return this.props.type === "many2one" && rawValue ? rawValue[0] : rawValue;
     }
 
     stringify(value) {
@@ -62,44 +46,42 @@ export class BadgeSelectionField extends Component {
      * @param {string | number | false} value
      */
     onChange(value) {
-        switch (this.type) {
+        switch (this.props.type) {
             case "many2one":
                 if (value === false) {
-                    this.props.record.update({ [this.props.name]: false });
+                    this.props.update(false);
                 } else {
-                    this.props.record.update({
-                        [this.props.name]: this.options.find((option) => option[0] === value),
-                    });
+                    this.props.update(this.options.find((option) => option[0] === value));
                 }
                 break;
             case "selection":
-                this.props.record.update({ [this.props.name]: value });
+                this.props.update(value);
                 break;
         }
     }
 }
 
-export const badgeSelectionField = {
-    component: BadgeSelectionField,
-    displayName: _t("Badges"),
-    supportedTypes: ["many2one", "selection"],
-    supportedOptions: [
-        {
-            label: "Size",
-            name: "size",
-            type: "selection",
-            choices: [
-                { label: "Small", value: "sm" },
-                { label: "Medium", value: "md" },
-                { label: "Large", value: "lg" },],
-            default: "md",
-        }
-    ],
-    isEmpty: (record, fieldName) => record.data[fieldName] === false,
-    extractProps: (fieldInfo, dynamicInfo) => ({
-        domain: dynamicInfo.domain(),
-        size: fieldInfo.options.size,
-    }),
+BadgeSelectionField.template = "web.BadgeSelectionField";
+BadgeSelectionField.props = {
+    ...standardFieldProps,
 };
 
-registry.category("fields").add("selection_badge", badgeSelectionField);
+BadgeSelectionField.displayName = _lt("Badges");
+BadgeSelectionField.supportedTypes = ["many2one", "selection"];
+BadgeSelectionField.legacySpecialData = "_fetchSpecialMany2ones";
+
+BadgeSelectionField.isEmpty = (record, fieldName) => record.data[fieldName] === false;
+
+registry.category("fields").add("selection_badge", BadgeSelectionField);
+
+export function preloadSelection(orm, record, fieldName) {
+    const field = record.fields[fieldName];
+    const context = record.evalContext;
+    const domain = record.getFieldDomain(fieldName).toList(context);
+    return orm.call(field.relation, "name_search", ["", domain]);
+}
+
+registry.category("preloadedData").add("selection_badge", {
+    loadOnTypes: ["many2one"],
+    preload: preloadSelection,
+});

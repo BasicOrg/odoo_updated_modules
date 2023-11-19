@@ -24,6 +24,7 @@ GANTT_VALID_ATTRIBUTES = set([
     'delete',
     'plan',
     'default_group_by',
+    'permanent_group_by',
     'dynamic_range',
     'display_unavailability',
     'disable_drag_drop',
@@ -44,7 +45,6 @@ GANTT_VALID_ATTRIBUTES = set([
     'dependency_field',
     'dependency_inverted_field',
     'pill_label',
-    'groups_limit'
 ])
 
 class View(models.Model):

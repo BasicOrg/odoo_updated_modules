@@ -8,4 +8,5 @@ import { WebClientEnterprise } from "./webclient/webclient";
  * the community main.js to load a different webclient class
  * (WebClientEnterprise instead of WebClient)
  */
+
 startWebClient(WebClientEnterprise);

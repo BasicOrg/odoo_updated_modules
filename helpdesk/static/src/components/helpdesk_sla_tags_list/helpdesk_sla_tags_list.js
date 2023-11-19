@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { TagsList } from "@web/core/tags_list/tags_list";
+import { TagsList } from "@web/views/fields/many2many_tags/tags_list";
 
 
 export class HelpdeskSLATagsList extends TagsList {

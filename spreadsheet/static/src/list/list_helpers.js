@@ -11,7 +11,9 @@ import { getOdooFunctions } from "../helpers/odoo_functions_helpers";
  * @returns {number}
  */
 export function getNumberOfListFormulas(formula) {
-    return getOdooFunctions(formula, ["ODOO.LIST", "ODOO.LIST.HEADER"]).length;
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.LIST", "ODOO.LIST.HEADER"].includes(functionName)
+    ).filter((fn) => fn.isMatched).length;
 }
 
 /**
@@ -22,5 +24,7 @@ export function getNumberOfListFormulas(formula) {
  * @returns {import("../helpers/odoo_functions_helpers").OdooFunctionDescription|undefined}
  */
 export function getFirstListFunction(formula) {
-    return getOdooFunctions(formula, ["ODOO.LIST", "ODOO.LIST.HEADER"])[0];
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.LIST", "ODOO.LIST.HEADER"].includes(functionName)
+    ).find((fn) => fn.isMatched);
 }

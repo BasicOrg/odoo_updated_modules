@@ -3,16 +3,16 @@
 # 	* hr_referral
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,13 +20,16 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid ""
-" You've gained {gained} points with this progress.{new_line}It makes you a "
-"new total of {total} points. Visit {link1}this link{link2} to pick a gift!"
+" You've gained %(gained)s points with this progress.<br/>It makes you a new "
+"total of %(total)s points. Visit <a href=\"%(url)s\">this link</a> to pick a"
+" gift!"
 msgstr ""
+" Bạn đã giành được %(gained)s điểm nhờ tiến trình này.<br/>Bạn có tổng điểm "
+"mới là %(total)s điểm. Hãy bấm vào <a href=\"%(url)s\">liên kết này</a> để "
+"chọn một món quà!"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_recruitment_report__referral_hired
@@ -90,9 +93,11 @@ msgstr "<span title=\"Thông tin thêm\">Thông tin thêm</span>"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid ""
-"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link\" role=\"img\" "
-"aria-label=\"My Link to Share\"/></span>"
+"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link text-"
+"secondary\" role=\"img\" aria-label=\"My Link to Share\"/></span>"
 msgstr ""
+"<span title=\"Liên kết của tôi để chia sẻ\"><i class=\"fa fa-lg fa-link "
+"text-secondary\" role=\"img\" aria-label=\"My Link to Share\"/></span>"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -100,7 +105,6 @@ msgid "<span title=\"Send by Mail\">Refer Friend</span>"
 msgstr "<span title=\"Gửi bằng Mail\">Giới thiệu bạn bè</span>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid ""
@@ -108,7 +112,7 @@ msgid ""
 "href=%(url)s>dashboard</a> now!"
 msgstr ""
 "Một cảnh báo mới đã được thêm vào ứng dụng Giới thiệu! Kiểm tra <a "
-"href=%(url)s>trang tổng quan</a> của bạn ngay!"
+"href=%(url)s>bảng thông tin</a> của bạn ngay!"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_needaction
@@ -124,12 +128,12 @@ msgstr "Đang hoạt động"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_ids
 msgid "Activities"
-msgstr "Hoạt động"
+msgstr "Các hoạt động"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Hoạt động ngoại lệ"
+msgstr "Hành động ngoại lệ"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_state
@@ -139,7 +143,7 @@ msgstr "Trạng thái hoạt động"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Biểu tượng loại hoạt động"
+msgstr "Biểu tượng kiểu hoạt động"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__name
@@ -158,13 +162,6 @@ msgid "Alerts"
 msgstr "Cảnh báo"
 
 #. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_alert_configuration
-msgid ""
-"Alerts will be displayed on the first screen to give information or "
-"redirects the employees"
-msgstr ""
-
-#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_recruitment_stage__points
 msgid ""
 "Amount of points that the referent will receive when the applicant will "
@@ -181,27 +178,36 @@ msgid "Applicant"
 msgstr "Ứng viên"
 
 #. module: hr_referral
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred"
+msgstr "Người đăng ký được giới thiệu"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Hired"
+msgstr "Người nộp đơn được giới thiệu đã tuyển"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Refused"
+msgstr "Người đăng ký được giới thiệu bị từ chối"
+
+#. module: hr_referral
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Applicant must have a company."
 msgstr "Ứng viên phải có một công ty."
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_name
-msgid "Applicant's Name"
-msgstr "Tên Ứng viên"
-
-#. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_alert_view_search
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_alert_form
 msgid "Archived"
-msgstr "Đã lưu trữ"
+msgstr "Đã lưu"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_attachment_count
 msgid "Attachment Count"
-msgstr "Số lượng tệp đính kèm"
+msgstr "Số lượng tập tin đính kèm"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
@@ -209,7 +215,6 @@ msgid "Avatar"
 msgstr "Ảnh đại diện"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__awarded_employees
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_backend_kanban
@@ -230,7 +235,7 @@ msgstr "Nền"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
 msgid "Background Image"
-msgstr "Hình nền"
+msgstr "Hình Nền"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard__body
@@ -255,14 +260,14 @@ msgid "Channel"
 msgstr "Kênh"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Choose an avatar for your new friend!"
 msgstr "Chọn một hình đại diện cho người bạn mới của bạn!"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Click to level up!"
@@ -282,16 +287,14 @@ msgstr "Công ty"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__company_id
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__company_id
-#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
 msgid "Company"
 msgstr "Công ty"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: hr_referral
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_configuration
@@ -302,7 +305,7 @@ msgstr "Cấu hình"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__cost
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_form
 msgid "Cost"
-msgstr "Chi phí"
+msgstr "Giá vốn"
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_alert_configuration
@@ -336,7 +339,7 @@ msgid "Created on"
 msgstr "Được tạo vào"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
@@ -380,11 +383,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__department_id
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
 msgid "Department"
-msgstr "Bộ phận"
+msgstr "Phòng/Ban"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__description
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_form
 msgid "Description"
 msgstr "Mô tả"
 
@@ -394,7 +396,6 @@ msgid "Direct Clicks"
 msgstr "Nhấp chuột trực tiếp"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/report/hr_referral_report.py:0
 #, python-format
 msgid "Direct Referral"
@@ -420,7 +421,6 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid "Do not have access"
@@ -438,6 +438,7 @@ msgstr ""
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__earned_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__earned_points
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
 msgid "Earned Points"
 msgstr "Điểm kiếm được"
 
@@ -447,16 +448,11 @@ msgid "Email"
 msgstr "Email"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Email a friend"
 msgstr "Gửi email cho một người bạn"
-
-#. module: hr_referral
-#: model:ir.model.fields,help:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Email subject for applications sent via email"
-msgstr "Tiêu đề email cho các ứng viên được gửi qua email"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
@@ -487,7 +483,6 @@ msgstr "Nhân viên"
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Employees Analysis"
 msgstr "Đánh giá nhân viên"
@@ -529,12 +524,7 @@ msgstr "Người theo dõi (Đối tác)"
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Font biểu tượng, ví dụ: fa-tasks"
-
-#. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid "Force Onboarding"
-msgstr ""
+msgstr "Font biểu tượng ví dụ: fa-tasks"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__friend_id
@@ -563,14 +553,14 @@ msgid "Front"
 msgstr "Trước mặt"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team"
 msgstr "Tập hợp nhóm của bạn"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team!"
@@ -613,7 +603,6 @@ msgid "Has Referrer"
 msgstr "Có liên kết giới thiệu"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
@@ -625,7 +614,6 @@ msgstr ""
 "tin tuyển dụng</a>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
@@ -653,6 +641,11 @@ msgid "Hr Referral Onboarding Page"
 msgstr "Trang giới thiệu Hr"
 
 #. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
+msgid "Hr Referral Reward"
+msgstr "Phần thưởng giới thiệu Hr"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard__id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend__id
@@ -674,18 +667,18 @@ msgstr "Biểu tượng"
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Biểu tượng cho thấy một hoạt động ngoại lệ."
+msgstr "Biểu tượng để chỉ ra một hoạt động ngoại lệ."
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
+msgstr "Nếu chọn, các tin nhắn mới yêu cầu sự có mặt của bạn."
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_has_error
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Nếu chọn, một số tin nhắn sẽ có lỗi gửi."
+msgstr "Nếu đánh dấu thì một số thông điệp có lỗi."
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend__image_head
@@ -705,7 +698,7 @@ msgstr "Đang thực hiện"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_is_follower
 msgid "Is Follower"
-msgstr "Là người theo dõi"
+msgstr "Trở thành người theo dõi"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_link_to_share__job_id
@@ -726,7 +719,7 @@ msgid "Job Positions"
 msgstr "Vị trí công việc"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Job Referral Program"
@@ -736,6 +729,20 @@ msgstr "Chương trình giới thiệu việc làm"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__job_open_date
 msgid "Job Start Recruitment Date"
 msgstr "Ngày tuyển dụng bắt đầu công việc"
+
+#. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_level____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_link_to_share____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_send_mail____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__write_date
@@ -753,7 +760,7 @@ msgstr "Cập nhật gần nhất"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__write_uid
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_send_mail__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__write_date
@@ -789,7 +796,7 @@ msgid "Let's share a job position."
 msgstr "Hãy chia sẻ một vị trí công việc."
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Level"
@@ -833,6 +840,11 @@ msgid "Linkedin Clicks"
 msgstr "Số lần nhấp vào Linkedin"
 
 #. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Tệp đính kèm chính"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__max_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__max_points
 msgid "Max Points"
@@ -841,22 +853,22 @@ msgstr "Điểm tối đa"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__medium_id
 msgid "Medium"
-msgstr "Phương tiện"
+msgstr "Kênh trung gian"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_has_error
 msgid "Message Delivery error"
-msgstr "Lỗi gửi tin nhắn"
+msgstr "Thông báo gửi đi gặp lỗi"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_ids
 msgid "Messages"
-msgstr "Tin nhắn"
+msgstr "Thông báo"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Hạn chót hoạt động của tôi"
+msgstr "Hạn chót hoạt động"
 
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.action_hr_applicant_employee_referral
@@ -864,35 +876,33 @@ msgid "My Referral"
 msgstr "Giới thiệu của tôi"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid "New Alert In Referrals App"
 msgstr "Cảnh báo mới trong ứng dụng Giới thiệu"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid "New gift awarded for %s"
 msgstr "Món quà mới được trao cho %s"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Next"
-msgstr "Tiếp theo"
+msgstr "Kế tiếp"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Sự kiện theo lịch cho hoạt động tiếp theo"
+msgstr "Sự kiện lịch hoạt động tiếp theo"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Hạn chót cho hoạt động tiếp theo"
+msgstr "Hạn chót cho hành động kế tiếp"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_summary
@@ -902,12 +912,7 @@ msgstr "Tóm tắt hoạt động tiếp theo"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_type_id
 msgid "Next Activity Type"
-msgstr "Loại hoạt động tiếp theo"
-
-#. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "No data to display"
-msgstr "Không có dữ liệu để hiển thị"
+msgstr "Kiểu hoạt động kế tiếp"
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_job_employee_referral
@@ -934,17 +939,17 @@ msgstr "Số lượng hành động"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_has_error_counter
 msgid "Number of errors"
-msgstr "Số lượng lỗi"
+msgstr "Số lỗi"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Số tin nhắn cần xử lý"
+msgid "Number of messages which requires an action"
+msgstr "Số thông báo cần xử lý"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Số tin nhắn bị gửi lỗi"
+msgstr "Số lượng tin gửi đi bị lỗi"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__onclick
@@ -955,14 +960,14 @@ msgstr "Khi bấm"
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_onboarding_configuration
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_onboarding_configuration
 msgid "Onboarding"
-msgstr "Hướng dẫn"
+msgstr "Giới thiệu"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Ongoing"
-msgstr "Đang diễn ra"
+msgstr "Đang tiến hành"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -994,16 +999,14 @@ msgid "Points Given For Not Hired"
 msgstr "Điểm được cho vì không tuyển được"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Points Given For Refused"
+msgstr "Điểm được đưa cho vì bị từ chối"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__points_missing
 msgid "Points Missing"
 msgstr "Thiếu điểm"
-
-#. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points Received"
-msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -1019,13 +1022,6 @@ msgstr "Dòng điểm cho giới thiệu"
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_kanban
 msgid "Points to buy this"
 msgstr "Điểm để mua cái này"
-
-#. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points to spend"
-msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend__position
@@ -1049,11 +1045,6 @@ msgid "Product Name"
 msgstr "Tên sản phẩm"
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__rating_ids
-msgid "Ratings"
-msgstr "Đánh giá"
-
-#. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_applicant_employee_referral
 msgid "Ready to receive points?"
 msgstr "Sẵn sàng nhận điểm?"
@@ -1069,7 +1060,6 @@ msgid "Recruitment Stages"
 msgstr "Các giai đoạn tuyển dụng"
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Referer"
 msgstr ""
@@ -1106,6 +1096,11 @@ msgid "Referral Points"
 msgstr "Điểm giới thiệu"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referral Rate"
+msgstr "Tỷ lệ giới thiệu"
+
+#. module: hr_referral
 #: model:res.groups,name:hr_referral.group_hr_referral_reward_responsible_user
 msgid "Referral Reward Responsible User"
 msgstr ""
@@ -1122,37 +1117,45 @@ msgid "Referral State"
 msgstr "Trạng thái giới thiệu"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s"
 msgstr "Giới thiệu: %s"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s (%s)"
 msgstr "Giới thiệu: %s (%s)"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_root
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
 #, python-format
 msgid "Referrals"
-msgstr "Giới thiệu"
+msgstr "Người giới thiệu"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_applicant_view_search_bis_inherit_referral
 msgid "Referred By"
-msgstr "Giới thiệu bởi"
+msgstr "Tham chiếu bởi"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__ref_user_id
 msgid "Referred By User"
 msgstr "Giới thiệu theo người dùng"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referred Hired People"
+msgstr ""
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referrer People"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.ui.menu,name:hr_referral.menu_report_employee_referral_all
@@ -1170,11 +1173,11 @@ msgid "Responsible User"
 msgstr "Người phụ trách"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Restart Onboarding"
-msgstr "Khởi động lại Hướng dẫn"
+msgstr "Khởi động lại giới thiệu"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
@@ -1182,20 +1185,19 @@ msgid "Restore Default"
 msgstr ""
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
 #, python-format
 msgid "Reward"
-msgstr "Phần thưởng"
+msgstr "Thưởng"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_reward
 msgid "Reward for Referrals"
-msgstr "Phần thưởng Giới thiệu"
+msgstr "Phần thưởng cho người giới thiệu"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward_configuration
@@ -1256,10 +1258,10 @@ msgstr "Thứ tự của giai đoạn"
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_configuration
 #: model:ir.ui.menu,name:hr_referral.hr_referral_menu_configuration
 msgid "Settings"
-msgstr "Cài đặt"
+msgstr "Thiết lập"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Share"
@@ -1291,25 +1293,18 @@ msgid "Show in Referrals"
 msgstr "Hiển thị trong Giới thiệu"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip"
 msgstr "Bỏ qua"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip and Start"
 msgstr "Bỏ qua và Bắt đầu"
-
-#. module: hr_referral
-#. odoo-python
-#: code:addons/hr_referral/models/hr_applicant.py:0
-#, python-format
-msgid "Sorry, your referral %s has been refused in the recruitment process."
-msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__utm_source_id
@@ -1327,20 +1322,25 @@ msgid "Stage"
 msgstr "Giai đoạn"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Start"
-msgstr "Bắt đầu"
+msgstr "Khởi động"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Start Now"
 msgstr "Bắt đầu ngay"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "State"
+msgstr "Trạng thái"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_state
@@ -1351,23 +1351,18 @@ msgid ""
 "Planned: Future activities."
 msgstr ""
 "Trạng thái dựa trên hoạt động\n"
-"Quá hạn: Hạn chót hạn đã qua\n"
+"Quá hạn: Ngày đến hạn phải được chuyển\n"
 "Hôm nay: Hôm nay là ngày phải thực hiện\n"
-"Kế hoạch: Cần thực hiện trong tương lai."
+"Kế hoạch: Các hoạt động trong tương lai."
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard__subject
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_send_mail__subject
 msgid "Subject"
-msgstr "Tiêu đề"
+msgstr "Chủ đề"
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Subject / Application"
-msgstr "Tiêu đề / Hồ sơ ứng tuyển"
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Successful"
@@ -1377,6 +1372,13 @@ msgstr "Thành công"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__text
 msgid "Text"
 msgstr "Văn bản"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid ""
+"The % is based on the total of applicant that have been referred by someone "
+"else divided by the total of applicant."
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_friend__image
@@ -1423,25 +1425,18 @@ msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "This reports allow you to follow the referrals and their evolution."
-msgstr ""
+msgid "This report performs analysis on your employee referral."
+msgstr "Báo cáo này thực hiện phân tích về giới thiệu nhân viên của bạn."
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid ""
-"This will make the onboarding visible to all employees who have already seen"
-" it. Do you want to continue?"
-msgstr ""
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "To Spend"
 msgstr "Để chi tiêu"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Total"
@@ -1460,7 +1455,7 @@ msgstr "Twitter Bấm"
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Loại hoạt động ngoại lệ trong tập dữ liệu."
+msgstr "Loại hoạt động ngoại lệ trên hồ sơ."
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__url
@@ -1492,24 +1487,28 @@ msgid "User"
 msgstr "Người dùng"
 
 #. module: hr_referral
+#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
+msgid "User : Referral only"
+msgstr ""
+
+#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__gift_manager_id
 msgid "User responsible of this gift."
 msgstr "Người dùng chịu trách nhiệm về món quà này."
 
 #. module: hr_referral
-#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
-msgid "User: Referral only"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Users Referrer"
+msgstr "Liên kết giới thiệu người dùng"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "View Jobs"
 msgstr "Xem công việc"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_job.py:0
 #, python-format
 msgid "Visit Webpage"
@@ -1518,27 +1517,25 @@ msgstr "Visit Webpage"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__website_message_ids
 msgid "Website Messages"
-msgstr "Thông báo trên trang web"
+msgstr "Thông báo Website"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__website_message_ids
 msgid "Website communication history"
-msgstr "Lịch sử trao đổi qua trang web"
+msgstr "Lịch sử thông tin liên lạc website"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_onboarding
 msgid "Welcome Onboarding in Referral App"
-msgstr "Chào mừng bạn tham gia ứng dụng Giới thiệu"
+msgstr "Chào mừng bạn gia nhập ứng dụng giới thiệu"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "You are not allowed to access applicant records."
 msgstr "Bạn không được phép truy cập hồ sơ ứng viên."
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_campaign.py:0
 #, python-format
 msgid ""
@@ -1547,7 +1544,6 @@ msgid ""
 msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_source.py:0
 #, python-format
 msgid ""
@@ -1556,7 +1552,6 @@ msgid ""
 msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid ""
@@ -1577,14 +1572,12 @@ msgid "You need another"
 msgstr "Bạn cần cái khác"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer got a step further!"
 msgstr "Người giới thiệu của bạn đã tiến thêm một bước nữa!"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer is hired!"
@@ -1596,7 +1589,7 @@ msgid "click(s)"
 msgstr "click(s)"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "has been hired!"
@@ -1608,14 +1601,14 @@ msgid "https://www.google.com"
 msgstr "https://www.google.com"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "reward"
 msgstr "phần thưởng"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "share"

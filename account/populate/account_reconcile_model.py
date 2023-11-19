@@ -26,7 +26,7 @@ class AccountReconcileModel(models.Model):
             return 'model_%s' % counter
 
         company_ids = self.env['res.company'].search([
-            ('chart_template', '!=', False),
+            ('chart_template_id', '!=', False),
             ('id', 'in', self.env.registry.populated_models['res.company']),
         ])
         return [
@@ -62,7 +62,7 @@ class AccountReconcileModelLine(models.Model):
                                 asset, liability, equity, off_balance, False.
             :return (Model<account.account>): the recordset of accounts found.
             """
-            domain = self.env['account.account']._check_company_domain(company_id)
+            domain = [('company_id', '=', company_id)]
             if type:
                 domain += [('account_type', '=', type)]
             if group:

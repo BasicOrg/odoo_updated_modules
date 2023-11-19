@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import random
+
 from odoo import models
 from odoo.addons.appointment.populate import data
 from odoo.tools import populate
@@ -16,6 +18,7 @@ class AppointmentType(models.Model):
     _populate_sizes = {'small': 15, 'medium': 40, 'large': 500}
 
     def _populate_factories(self):
+        staff_user_ids = self.env.registry.populated_models['res.users']
         reminder_ids = self.env.registry.populated_models['calendar.alarm']
         country_ids = self.env["res.country"].search([]).ids
 
@@ -24,15 +27,15 @@ class AppointmentType(models.Model):
         company_users = {company_id: (company_id.user_ids - admin_ids).ids
                          for company_id in company_ids if len(company_id.user_ids - admin_ids) > 0}
 
-        def get_k_staff_users(random=None, **kwargs):
+        def get_k_staff_users(random, **kwargs):
             staff_users = company_users[random.choice(list(company_users.keys()))]
             return random.sample(staff_users, random.randint(1, len(staff_users)))
 
-        def get_tz(values, random=None, **kwargs):
+        def get_tz(values, random, **kwargs):
             """Sets a timezone that matches at least one of the users'"""
             return random.choice(self.env["res.users"].browse(values['staff_user_ids'])).tz
 
-        def get_up_to_two_reminders(random=None, **kwargs):
+        def get_up_to_two_reminders(random, **kwargs):
             reminders = self.env['calendar.alarm'].browse(random.sample(reminder_ids, 2))
             # Avoid sending two reminders at same time with same method
             if (len(reminders.mapped("alarm_type")) == 1
@@ -40,7 +43,7 @@ class AppointmentType(models.Model):
                 return reminders[1:]
             return reminders
 
-        def get_n_countries_or_false(random=None, **kwargs):
+        def get_n_countries_or_false(random, **kwargs):
             n_countries = random.choices((0, 1, 4, 5, 8), (0.80, .05, .05, .05, 0.05))[0]
             if n_countries:
                 return random.sample(country_ids, n_countries)
@@ -66,7 +69,6 @@ class AppointmentType(models.Model):
 
     def _populate(self, size):
         appointment_types = super()._populate(size)
-        random = populate.Random('zizizaseed')
         # Ensures at least one of each is created (for small population size)
         none_done_category = True
         none_done_duration = True

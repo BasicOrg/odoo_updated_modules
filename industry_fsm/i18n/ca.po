@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* industry_fsm
-#
+# 
 # Translators:
 # Denys Sarapulov, 2022
 # CristianCruzParra, 2022
@@ -11,26 +11,21 @@
 # Carles Antoli <carlesantoli@hotmail.com>, 2022
 # Martin Trigaux, 2022
 # jabelchi, 2022
-# Quim - eccit <quim@eccit.com>, 2022
 # marcescu, 2022
-# Cristian Cruz, 2022
-# Ivan Espinola, 2022
-# jabiri7, 2022
-# martioodo hola, 2023
-# Óscar Fonseca <tecnico@extreme-micro.com>, 2023
-#
+# Quim - eccit <quim@eccit.com>, 2022
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
 "PO-Revision-Date: 2022-09-22 05:47+0000\n"
-"Last-Translator: Óscar Fonseca <tecnico@extreme-micro.com>, 2023\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Last-Translator: Quim - eccit <quim@eccit.com>, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: industry_fsm
@@ -40,84 +35,94 @@ msgstr "# de tasques"
 
 #. module: industry_fsm
 #: model:ir.actions.report,print_report_name:industry_fsm.task_custom_report
-msgid "'Field Service Report - %s - %s' % (object.name, object.partner_id.name)"
+msgid "'Worksheet %s - %s' % (object.name, object.partner_id.name)"
 msgstr ""
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "<b>Review and sign</b> the <b>task report</b> with your customer."
-msgstr "<b>Revisa i signa</b> l'informe <b>de tasques</b> amb el vostre client."
+msgstr ""
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
+#: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "<b>Send your task report</b> to your customer."
-msgstr "<b>Envieu l'informe de tasques</b> al vostre client."
+msgstr ""
 
 #. module: industry_fsm
 #: model:mail.template,body_html:industry_fsm.mail_template_data_intervention_details
 msgid ""
 "<div>\n"
-"    <t t-set=\"date_begin\" t-value=\"format_datetime(object.planned_date_begin, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"></t>\n"
+"    <t t-set=\"date_begin\" t-value=\"format_datetime(object.planned_date_begin, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"/>\n"
 "\n"
-"    <t t-set=\"date_end\" t-value=\"format_datetime(object.planned_date_end, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"></t>\n"
+"    <t t-set=\"date_end\" t-value=\"format_datetime(object.planned_date_end, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"/>\n"
 "\n"
-"    Dear <t t-out=\"object.partner_id.name or 'customer'\">customer</t>,<br><br>\n"
+"    Dear <t t-out=\"object.partner_id.name or 'customer'\">customer</t>,<br/><br/>\n"
 "    <t t-if=\"date_begin and date_end\">\n"
 "        Your <t t-out=\"object.name or ''\">Boiler maintenance</t> intervention is scheduled from the <t t-out=\"date_begin or ''\">05/31/2021 12:30:00</t> to the <t t-out=\"date_end or ''\">05/31/2021 14:30:00</t>.\n"
 "    </t>\n"
 "    <t t-else=\"\">\n"
 "        Your <t t-out=\"object.name or ''\">Boiler maintenance</t> intervention is scheduled.\n"
 "    </t>\n"
-"    <br><br>\n"
+"    <br/><br/>\n"
 "    Best regards,\n"
 "    <t t-if=\"user.signature\">\n"
-"        <br>\n"
-"        <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"        <br/>\n"
+"        <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "    </t>\n"
 "</div>\n"
 "        "
 msgstr ""
+"<div>\n"
+"    <t t-set=\"date_begin\" t-value=\"format_datetime(object.planned_date_begin, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"/>\n"
+"\n"
+"    <t t-set=\"date_end\" t-value=\"format_datetime(object.planned_date_end, tz=object.partner_id.tz, lang_code=object.partner_id.lang)\"/>\n"
+"\n"
+"   Estimat<t t-out=\"object.partner_id.name or 'customer'\">client</t>,<br/><br/>\n"
+"    <t t-if=\"date_begin and date_end\">\n"
+"        Tu <t t-out=\"object.name or ''\">Manteniment de la caldera</t> la intervenció està programada des de <t t-out=\"date_begin or ''\">05/31/2021 12:30:00</t> a la <t t-out=\"date_end or ''\">05/31/2021 14:30:00</t>.\n"
+"    </t>\n"
+"    <t t-else=\"\">\n"
+"        El seu <t t-out=\"object.name or ''\">Manteniment de la caldera</t>es programa la intervenció.\n"
+"    </t>\n"
+"    <br/><br/>\n"
+"    Salutacions cordials,\n"
+"    <t t-if=\"user.signature\">\n"
+"        <br/>\n"
+"        <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
+"    </t>\n"
+"</div>\n"
+"        "
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.portal_task_sign_button
 msgid "<i class=\"fa fa-check me-1\"/>Sign"
-msgstr "Signatura <i class=\"fa fa-check me-1\"/>"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_sharing_inherit_project_task_view_form
+msgid ""
+"<i class=\"fa fa-long-arrow-right mx-2 oe_edit_only\" aria-label=\"Arrow icon\" title=\"Arrow\"/>\n"
+"                        <i class=\"fa fa-long-arrow-right mx-2 oe_read_only\" aria-label=\"Arrow icon\" title=\"Arrow\" attrs=\"{'invisible': [('planned_date_begin', '=', False), ('planned_date_end', '=', False)]}\"/>"
+msgstr ""
+"<i class=\"fa fa-long-arrow-right mx-2 oe_edit_only\" aria-label=\"Arrow icon\" title=\"Arrow\"/>\n"
+"                        <i class=\"fa fa-long-arrow-right mx-2 oe_read_only\" aria-label=\"Arrow icon\" title=\"Arrow\" attrs=\"{'invisible': [('planned_date_begin', '=', False), ('planned_date_end', '=', False)]}\"/>"
 
 #. module: industry_fsm
 #: model:mail.template,body_html:industry_fsm.mail_template_data_task_report
 msgid ""
 "<p>\n"
-"                Dear <t t-out=\"object.partner_id.name or 'Customer'\">Customer</t>,<br><br>\n"
-"                Please find attached the field service report for our onsite operation. <br><br>\n"
-"                Feel free to contact us if you have any questions.<br><br>\n"
-"                Best regards,<br><br>\n"
+"                Dear <t t-out=\"object.partner_id.name or 'Customer'\">Customer</t>,<br/><br/>\n"
+"                Please find attached the worksheet for our onsite operation. <br/><br/>\n"
+"                Feel free to contact us if you have any questions.<br/><br/>\n"
+"                Best regards,<br/><br/>\n"
 "            </p>\n"
 "        "
 msgstr ""
-
-#. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
-msgid "<span class=\"fa fa-exclamation-triangle text-warning oe_edit_only\" title=\"By saving this change, the customer phone number will also be updated.\" attrs=\"{'invisible': ['|', ('partner_id', '=', False), ('is_task_phone_update', '=', False)]}\"/>"
-msgstr ""
-
-#. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
-msgid "<span class=\"o_stat_text\">Worksheet</span>"
-msgstr ""
-
-#. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
-msgid ""
-"<span class=\"o_stat_text\">Worksheet</span>\n"
-"                            <span class=\"o_stat_text\">Complete</span>"
-msgstr ""
-"<span class=\"o_stat_text\">Full de treball</span>\n"
-"<span class=\"o_stat_text\">Completat</span>\n"
-"  "
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
@@ -133,7 +138,7 @@ msgstr ""
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
 msgid "<strong class=\"me-2\">Total</strong>"
-msgstr "<strong class=\"me-2\">Total</strong>"
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
@@ -143,12 +148,12 @@ msgstr "<strong>Client: </strong>"
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.portal_my_task
 msgid "<strong>Planned Date:</strong>"
-msgstr "<strong>Data planificada:</strong>"
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
 msgid "<strong>Worker: </strong>"
-msgstr "<strong>Worker: </strong>"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__active
@@ -159,11 +164,6 @@ msgstr "Actiu"
 #: model:ir.ui.menu,name:industry_fsm.fsm_menu_config_activity_type
 msgid "Activity Types"
 msgstr "Tipus d'activitats"
-
-#. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.fsm_form_view_comment
-msgid "Add details about your intervention..."
-msgstr ""
 
 #. module: industry_fsm
 #: model:res.groups,name:industry_fsm.group_fsm_manager
@@ -178,17 +178,29 @@ msgid "All Tasks"
 msgstr "Totes les tasques"
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__planned_hours
-msgid "Allocated Time"
+#: model_terms:ir.actions.act_window,help:industry_fsm.project_task_user_action_report_fsm
+msgid ""
+"Analyze the progress of your tasks and the performance of your workers."
 msgstr ""
 
 #. module: industry_fsm
-#: model_terms:ir.actions.act_window,help:industry_fsm.project_task_user_action_report_fsm
-msgid "Analyze the progress of your tasks and the performance of your workers."
-msgstr "Analitzar el progrés de les vostres tasques i el rendiment dels vostres treballadors."
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__ancestor_id
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Ancestor Task"
+msgstr ""
 
 #. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Archived"
+msgstr "Arxivat"
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_project_task__user_ids
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__user_ids
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Assignees"
 msgstr "Assignats"
 
@@ -200,17 +212,42 @@ msgstr "Data d'assignació"
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__rating_avg
 msgid "Average Rating"
-msgstr "Valoració mitjana"
+msgstr ""
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__dependent_ids
-msgid "Block"
-msgstr ""
+#: model:project.task,legend_blocked:industry_fsm.planning_task_0
+#: model:project.task,legend_blocked:industry_fsm.planning_task_1
+#: model:project.task,legend_blocked:industry_fsm.planning_task_10
+#: model:project.task,legend_blocked:industry_fsm.planning_task_11
+#: model:project.task,legend_blocked:industry_fsm.planning_task_12
+#: model:project.task,legend_blocked:industry_fsm.planning_task_13
+#: model:project.task,legend_blocked:industry_fsm.planning_task_14
+#: model:project.task,legend_blocked:industry_fsm.planning_task_15
+#: model:project.task,legend_blocked:industry_fsm.planning_task_16
+#: model:project.task,legend_blocked:industry_fsm.planning_task_17
+#: model:project.task,legend_blocked:industry_fsm.planning_task_19
+#: model:project.task,legend_blocked:industry_fsm.planning_task_2
+#: model:project.task,legend_blocked:industry_fsm.planning_task_20
+#: model:project.task,legend_blocked:industry_fsm.planning_task_3
+#: model:project.task,legend_blocked:industry_fsm.planning_task_4
+#: model:project.task,legend_blocked:industry_fsm.planning_task_5
+#: model:project.task,legend_blocked:industry_fsm.planning_task_6
+#: model:project.task,legend_blocked:industry_fsm.planning_task_7
+#: model:project.task,legend_blocked:industry_fsm.planning_task_8
+#: model:project.task,legend_blocked:industry_fsm.planning_task_9
+#: model:project.task.type,legend_blocked:industry_fsm.planning_project_stage_1
+msgid "Blocked"
+msgstr "Bloquejat"
+
+#. module: industry_fsm
+#: model:project.task,legend_done:industry_fsm.planning_task_18
+msgid "Buzz or set as done"
+msgstr "Avisar o marcar com a fet"
 
 #. module: industry_fsm
 #: model:ir.ui.menu,name:industry_fsm.project_task_menu_planning_by_project_fsm
 msgid "By Project"
-msgstr "Per projecte"
+msgstr "Per Projecte"
 
 #. module: industry_fsm
 #: model:ir.ui.menu,name:industry_fsm.project_task_menu_planning_by_user_fsm
@@ -218,14 +255,31 @@ msgid "By User"
 msgstr "Per usuari"
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_project_task__partner_city
-msgid "City"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:industry_fsm.view_partner_address_form_industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_stop_timer_wizard_form
+msgid "Cancel"
+msgstr "Cancel·lar"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.portal_task_sign_button
 msgid "Close"
 msgstr "Tancar"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Closed"
+msgstr "Tancat"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+msgid "Closed Last 30 Days"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+msgid "Closed Last 7 Days"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__is_closed
@@ -240,10 +294,11 @@ msgstr "Comentaris"
 #. module: industry_fsm
 #: model:ir.model,name:industry_fsm.model_res_company
 msgid "Companies"
-msgstr "Empreses"
+msgstr "Companyies"
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__company_id
+#: model_terms:ir.ui.view,arch_db:industry_fsm.view_project_project_filter_inherit_industry_fsm
 msgid "Company"
 msgstr "Empresa"
 
@@ -263,11 +318,13 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
-msgid "Confirm the <b>time spent</b> on your task. <i>Tip: note that the duration has automatically been rounded to 15 minutes.</i>"
-msgstr "Confirmeu el <b>temps dedicat</b> a la vostra tasca. <i>Consell: cal tenir en compte que la durada s'ha arrodonit automàticament a 15 minuts.</i>"
+msgid ""
+"Confirm the <b>time spent</b> on your task. <i>Tip: note that the duration "
+"has automatically been rounded to 15 minutes.</i>"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model,name:industry_fsm.model_res_partner
@@ -285,11 +342,6 @@ msgid "Create Date"
 msgstr "Data de creació"
 
 #. module: industry_fsm
-#: model:ir.model,name:industry_fsm.model_project_task_create_timesheet
-msgid "Create Timesheet from task"
-msgstr ""
-
-#. module: industry_fsm
 #: model:ir.actions.act_window,name:industry_fsm.open_create_project_fsm
 msgid "Create a Project"
 msgstr "Crear un projecte"
@@ -297,7 +349,7 @@ msgstr "Crear un projecte"
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.res_config_settings_view_form
 msgid "Create custom worksheet templates"
-msgstr "Crea plantilles personalitzades de fulls de treball"
+msgstr ""
 
 #. module: industry_fsm
 #: model:res.groups,name:industry_fsm.group_fsm_quotation_from_task
@@ -311,13 +363,15 @@ msgstr "Crea cites noves directament a partir de les vostres tasques"
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_project_action_only_fsm
-msgid "Create projects to organize your tasks and define a different workflow for each project."
-msgstr "Crea projectes per organitzar les teves tasques i definir un diferent flux de treball per a cada projecte."
+msgid ""
+"Create projects to organize your tasks and define a different workflow for "
+"each project."
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_view_form_inherit
 msgid "Create reports to be signed off by your customers"
-msgstr "Creeu informes per a tancar la sessió dels vostres clients"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_project_task_stop_timers_wizard__create_uid
@@ -334,13 +388,14 @@ msgstr "Creat el"
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_res_config_settings__module_industry_fsm_report
 msgid "Custom Worksheets"
-msgstr "Fulls de treball personalitzats"
+msgstr ""
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/models/project_task.py:0
 #: model:ir.model.fields,field_description:industry_fsm.field_project_task__partner_id
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__partner_id
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 #, python-format
 msgid "Customer"
 msgstr "Client"
@@ -376,15 +431,12 @@ msgid "Deadline"
 msgstr "Data limit"
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__description
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
 msgid "Description"
 msgstr "Descripció"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_project_view_form_simplified_footer_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.view_partner_address_form_industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_stop_timer_wizard_form
 msgid "Discard"
 msgstr "Descartar"
 
@@ -438,20 +490,35 @@ msgstr "Mostra l'informe de signes secundari"
 #. module: industry_fsm
 #: model:ir.model.fields,help:industry_fsm.field_project_project__is_fsm
 #: model:ir.model.fields,help:industry_fsm.field_project_task__is_fsm
-msgid "Display tasks in the Field Service module and allow planning with start/end dates."
-msgstr "Mostra les tasques al mòdul Servei de Camp i permet la planificació amb les dates d'inici/final."
+msgid ""
+"Display tasks in the Field Service module and allow planning with start/end "
+"dates."
+msgstr ""
+"Mostra les tasques al mòdul Servei de Camp i permet la planificació amb les "
+"dates d'inici/final."
 
 #. module: industry_fsm
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Dissatisfied"
+msgstr "Descontent"
+
+#. module: industry_fsm
 #: code:addons/industry_fsm/models/project_task.py:0
 #, python-format
 msgid "Do you want to stop the running timers?"
-msgstr "Voleu aturar els temporitzadors en execució?"
+msgstr ""
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__hours_effective
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_list_fsm
+msgid "Effective Hours"
+msgstr "Hores reals"
 
 #. module: industry_fsm
 #: model:mail.template,description:industry_fsm.mail_template_data_task_report
 msgid "Email sent when clicking on \"send report\" in a task"
-msgstr "S'ha enviat un correu electrònic en fer clic a «envia l'informe» en una tasca"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__planned_date_end
@@ -474,7 +541,6 @@ msgid "FSM Tasks Analysis"
 msgstr "Anàlisi de tasques FSM"
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/models/project_project.py:0
 #: code:addons/industry_fsm/models/res_company.py:0
 #: model:ir.model.fields,field_description:industry_fsm.field_project_project__is_fsm
@@ -488,31 +554,21 @@ msgid "Field Service"
 msgstr "Servei de camp"
 
 #. module: industry_fsm
-#: model:ir.actions.report,name:industry_fsm.task_custom_report
-msgid "Field Service Report"
-msgstr ""
-
-#. module: industry_fsm
-#: model:mail.template,subject:industry_fsm.mail_template_data_task_report
-msgid "Field Service Report - {{ object.name }}"
+#: model:mail.template,name:industry_fsm.mail_template_data_intervention_details
+msgid "Field Service: Intervention Scheduled"
 msgstr ""
 
 #. module: industry_fsm
 #: model:mail.template,name:industry_fsm.mail_template_data_task_report
-msgid "Field Service: Field Service Report"
+msgid "Field Service: Task Report"
 msgstr ""
 
 #. module: industry_fsm
-#: model:mail.template,name:industry_fsm.mail_template_data_intervention_details
-msgid "Field Service: Intervention Scheduled"
-msgstr "Servei de camp: intervenció programada"
-
-#. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Fill in your <b>worksheet</b> with the details of your intervention."
-msgstr "Ompliu el vostre <b>full de treball</b> amb els detalls de la vostra intervenció."
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_action_fsm_map
@@ -522,39 +578,48 @@ msgstr "Troba el teu itinerari per a les tasques d'avui."
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_action_fsm
 msgid "Find here your upcoming tasks for the next few days."
-msgstr "Trobeu aquí les vostres properes tasques per als propers dies."
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,help:industry_fsm.field_report_project_task_user_fsm__is_closed
 msgid "Folded in Kanban stages are closing stages."
-msgstr "Plegats en etapes Kanban són etapes de tancament."
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Followed Tasks"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Future"
 msgstr "Futur"
 
 #. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "Future Activities"
+#. openerp-web
+#: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
+#, python-format
+msgid ""
+"Give it a <b>title</b> <i>(e.g. Boiler maintenance, Air-conditioning "
+"installation, etc.).</i>"
 msgstr ""
 
 #. module: industry_fsm
-#. odoo-javascript
-#: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
-#, python-format
-msgid "Give it a <b>title</b> <i>(e.g. Boiler maintenance, Air-conditioning installation, etc.).</i>"
-msgstr "Dona-li un títol <b></b> <i>(p. ex. manteniment de boiler, instal·lació d'aire condicionat, etc.).</i>"
-
-#. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Go back to your Field Service <b>task</b>."
 msgstr "Torna al vostre servei de camp <b>tasca</b>."
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__effective_hours
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Group By"
+msgstr "Agrupar per"
+
+#. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
 msgid "Hours Spent"
 msgstr "Hores dedicades"
@@ -567,45 +632,87 @@ msgid "ID"
 msgstr "ID"
 
 #. module: industry_fsm
-#. odoo-python
+#: model:project.task,legend_normal:industry_fsm.planning_task_0
+#: model:project.task,legend_normal:industry_fsm.planning_task_1
+#: model:project.task,legend_normal:industry_fsm.planning_task_10
+#: model:project.task,legend_normal:industry_fsm.planning_task_11
+#: model:project.task,legend_normal:industry_fsm.planning_task_12
+#: model:project.task,legend_normal:industry_fsm.planning_task_13
+#: model:project.task,legend_normal:industry_fsm.planning_task_14
+#: model:project.task,legend_normal:industry_fsm.planning_task_15
+#: model:project.task,legend_normal:industry_fsm.planning_task_16
+#: model:project.task,legend_normal:industry_fsm.planning_task_17
+#: model:project.task,legend_normal:industry_fsm.planning_task_18
+#: model:project.task,legend_normal:industry_fsm.planning_task_19
+#: model:project.task,legend_normal:industry_fsm.planning_task_2
+#: model:project.task,legend_normal:industry_fsm.planning_task_20
+#: model:project.task,legend_normal:industry_fsm.planning_task_3
+#: model:project.task,legend_normal:industry_fsm.planning_task_4
+#: model:project.task,legend_normal:industry_fsm.planning_task_5
+#: model:project.task,legend_normal:industry_fsm.planning_task_6
+#: model:project.task,legend_normal:industry_fsm.planning_task_7
+#: model:project.task,legend_normal:industry_fsm.planning_task_8
+#: model:project.task,legend_normal:industry_fsm.planning_task_9
+#: model:project.task.type,legend_normal:industry_fsm.planning_project_stage_1
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "In Progress"
+msgstr "En curs"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_list_fsm
+msgid "Initially Planned Hours"
+msgstr "Hores planificades inicialment"
+
+#. module: industry_fsm
 #: code:addons/industry_fsm/controllers/portal.py:0
 #, python-format
 msgid "Invalid Task."
 msgstr "Tasca no vàlida."
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/controllers/portal.py:0
 #, python-format
 msgid "Invalid signature data."
 msgstr "Data de signatura no vàlida."
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Invite your customer to <b>validate and sign your task report</b>."
-msgstr "Convideu al vostre client a validar <b>i signeu l'informe de tasques</b>."
-
-#. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__message_is_follower
-msgid "Is Follower"
 msgstr ""
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_project_task__is_task_phone_update
-msgid "Is Task Phone Update"
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__milestone_reached
+msgid "Is Milestone Reached"
 msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_project_task__fsm_is_sent
 msgid "Is Worksheet sent"
-msgstr "S'ha enviat el full de treball"
+msgstr ""
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__state
+msgid "Kanban State"
+msgstr "Estat kanban"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.res_config_settings_view_form
-msgid "Keep track of the products used for your tasks, and invoice your time and material to your customers"
-msgstr "Fes un seguiment dels productes utilitzats per a les teves tasques, i factura el teu temps i material als teus clients"
+msgid ""
+"Keep track of the products used for your tasks, and invoice your time and "
+"material to your customers"
+msgstr ""
+"Fes un seguiment dels productes utilitzats per a les teves tasques, i "
+"factura el teu temps i material als teus clients"
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_project_task_stop_timers_wizard____last_update
+#: model:ir.model.fields,field_description:industry_fsm.field_project_task_stop_timers_wizard_line____last_update
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__date_last_stage_update
@@ -626,25 +733,29 @@ msgstr "Última actualització el"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "Late Activities"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Late Tasks"
+msgstr "Tasques endarrerides"
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Launch the timer to <b>track the time spent</b> on your task."
-msgstr "Inicia el temporitzador i<b>segueix el temps dedicat</b> a la teva feina."
+msgstr ""
+"Inicia el temporitzador i<b>segueix el temps dedicat</b> a la teva feina."
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
-msgid "Let's <b>mark your task as done!</b> <i>Tip: when doing so, your stock will automatically be updated, and your task will be closed.</i>"
-msgstr "<b>marquem la vostra tasca tal com s'ha fet!</b> <i>Consell: en fer-ho, l'estoc s'actualitzarà automàticament i la vostra tasca es tancarà.</i>"
+msgid ""
+"Let's <b>mark your task as done!</b> <i>Tip: when doing so, your stock will "
+"automatically be updated, and your task will be closed.</i>"
+msgstr ""
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Let's create your first <b>task</b>."
@@ -682,21 +793,79 @@ msgid "Milestone"
 msgstr "Fita"
 
 #. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__milestone_deadline
+msgid "Milestone Deadline"
+msgstr ""
+
+#. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_project_project__allow_milestones
 msgid "Milestones"
-msgstr "Fites"
+msgstr "Fita"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Department's Projects"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Department's Tasks"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+msgid "My Favorite Projects"
+msgstr "Els meus projectes preferits"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Favorites Projects"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Projects"
+msgstr "Els meus projectes"
 
 #. module: industry_fsm
 #: model:ir.actions.act_window,name:industry_fsm.project_task_action_fsm
 #: model:ir.ui.menu,name:industry_fsm.fsm_tasks_menu
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "My Tasks"
 msgstr "Les meves tasques"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Team's Projects"
+msgstr "Els projectes del meu equip"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "My Team's Tasks"
+msgstr "Les tasques del meu equip"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_partner_address_form_industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
 msgid "Navigate To"
 msgstr "Navega a"
+
+#. module: industry_fsm
+#: model:project.task,legend_blocked:industry_fsm.planning_task_18
+msgid "Need functional or technical help"
+msgstr "Necessita ajuda funcional o tècnica"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "No Rating"
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_user_action_report_fsm
@@ -722,14 +891,28 @@ msgstr "No s'ha trobat cap escenari. ¡Crearem una!"
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_action_to_schedule_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_tasks_action_fsm
 msgid "No tasks found. Let's create one!"
-msgstr "No s'ha trobat cap tasca. ¡Creem-ne una!"
+msgstr "No s'ha trobat cap tasca. ¡Creem-ne un!"
 
 #. module: industry_fsm
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Not Starred"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Okay"
+msgstr "D'acord"
+
+#. module: industry_fsm
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
-msgid "Open your <b>worksheet</b> in order to fill it in with the details of your intervention."
-msgstr "Obriu el vostre <b>full de treball</b> per omplir-lo amb els detalls de la vostra intervenció."
+msgid ""
+"Open your <b>worksheet</b> in order to fill it in with the details of your "
+"intervention."
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__overtime
@@ -742,15 +925,15 @@ msgid "Parent Task"
 msgstr "Tasca pare"
 
 #. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Past"
+msgstr "Anterior"
+
+#. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__personal_stage_type_ids
 msgid "Personal Stage"
 msgstr "Etapa personal"
-
-#. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_project_task__partner_phone
-#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_map_view_fsm
-msgid "Phone"
-msgstr ""
 
 #. module: industry_fsm
 #: model:project.task.type,name:industry_fsm.planning_project_stage_1
@@ -758,9 +941,24 @@ msgid "Planned"
 msgstr "Planificat"
 
 #. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_sharing_inherit_project_task_view_form
+msgid "Planned Date"
+msgstr "Data planificada"
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__hours_planned
+msgid "Planned Hours"
+msgstr "Hores planificades"
+
+#. module: industry_fsm
 #: model:ir.ui.menu,name:industry_fsm.fsm_menu_planning
 msgid "Planning"
 msgstr "Planificació"
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__planning_overlap
+msgid "Planning Overlap"
+msgstr "Superposició de planificació"
 
 #. module: industry_fsm
 #: model:ir.actions.act_window,name:industry_fsm.project_task_action_fsm_planning_groupby_project
@@ -786,6 +984,8 @@ msgstr "Progrés"
 #: model:ir.model,name:industry_fsm.model_project_project
 #: model:ir.model.fields,field_description:industry_fsm.field_project_task__project_id
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__project_id
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Project"
 msgstr "Projecte"
 
@@ -797,7 +997,13 @@ msgstr "Projectes"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "Properties"
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Rated tasks"
+msgstr ""
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__rating_last_text
+msgid "Rating Last Text"
 msgstr ""
 
 #. module: industry_fsm
@@ -806,21 +1012,50 @@ msgid "Rating Value (/5)"
 msgstr "Valor de valoració (/5)"
 
 #. module: industry_fsm
-#. odoo-javascript
+#: model:project.task,legend_done:industry_fsm.planning_task_0
+#: model:project.task,legend_done:industry_fsm.planning_task_1
+#: model:project.task,legend_done:industry_fsm.planning_task_10
+#: model:project.task,legend_done:industry_fsm.planning_task_11
+#: model:project.task,legend_done:industry_fsm.planning_task_12
+#: model:project.task,legend_done:industry_fsm.planning_task_13
+#: model:project.task,legend_done:industry_fsm.planning_task_14
+#: model:project.task,legend_done:industry_fsm.planning_task_15
+#: model:project.task,legend_done:industry_fsm.planning_task_16
+#: model:project.task,legend_done:industry_fsm.planning_task_17
+#: model:project.task,legend_done:industry_fsm.planning_task_19
+#: model:project.task,legend_done:industry_fsm.planning_task_2
+#: model:project.task,legend_done:industry_fsm.planning_task_3
+#: model:project.task,legend_done:industry_fsm.planning_task_4
+#: model:project.task,legend_done:industry_fsm.planning_task_5
+#: model:project.task,legend_done:industry_fsm.planning_task_6
+#: model:project.task,legend_done:industry_fsm.planning_task_7
+#: model:project.task,legend_done:industry_fsm.planning_task_8
+#: model:project.task,legend_done:industry_fsm.planning_task_9
+#: model:project.task.type,legend_done:industry_fsm.planning_project_stage_1
+msgid "Ready"
+msgstr "Preparat"
+
+#. module: industry_fsm
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
-msgid "Ready to <b>manage your onsite interventions</b>? <i>Click Field Service to start.</i>"
-msgstr "Preparat per<b>gestionar les seves intervencions in situ</b>? <i>Faci Clic en Servei de Camp per a començar.</i>"
+msgid ""
+"Ready to <b>manage your onsite interventions</b>? <i>Click Field Service to "
+"start.</i>"
+msgstr ""
+"Llest per<b>gestionar les seves intervencions in situ</b>? <i>Faci Clic en "
+"Servei de Camp per a començar.</i>"
+
+#. module: industry_fsm
+#: model:project.task,legend_done:industry_fsm.planning_task_20
+msgid "Ready to reopen"
+msgstr "Llest per reobrir"
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__remaining_hours
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_list_fsm
 msgid "Remaining Hours"
 msgstr "Hores restants"
-
-#. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__remaining_hours_percentage
-msgid "Remaining Hours Percentage"
-msgstr ""
 
 #. module: industry_fsm
 #: model:ir.ui.menu,name:industry_fsm.fsm_menu_reporting
@@ -828,11 +1063,17 @@ msgid "Reporting"
 msgstr "Informes"
 
 #. module: industry_fsm
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Satisfied"
+msgstr "Satisfet"
+
+#. module: industry_fsm
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Save time by automatically generating a <b>signature</b>."
-msgstr "Estalvieu el temps generant automàticament una signatura <b></b>."
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_action_fsm_planning_groupby_project
@@ -842,16 +1083,17 @@ msgid "Schedule your tasks and assign them to your workers."
 msgstr "Planifica les teves tasques i les assigna als teus treballadors."
 
 #. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
-msgid "Search Planning"
-msgstr ""
+msgid "Search planning"
+msgstr "Planificació de la cerca"
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Select the <b>customer</b> for your task."
-msgstr "Seleccioneu el <b>client</b> per a la vostra tasca."
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
@@ -859,7 +1101,6 @@ msgid "Send Report"
 msgstr "Enviar informe"
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/models/project_task.py:0
 #, python-format
 msgid "Send report"
@@ -867,19 +1108,16 @@ msgstr "Envia l'informe"
 
 #. module: industry_fsm
 #: model:mail.template,description:industry_fsm.mail_template_data_intervention_details
-msgid "Set this template on a project's stage to automate email when tasks reach stages"
-msgstr "Estableix aquesta plantilla a la fase d'un projecte per a automatitzar el correu electrònic quan les tasques arribin a etapes"
+msgid ""
+"Set this template on a project's stage to automate email when tasks reach "
+"stages"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.actions.act_window,name:industry_fsm.res_config_settings_action_fsm
 #: model:ir.ui.menu,name:industry_fsm.fsm_menu_settings_res_config
 msgid "Settings"
 msgstr "Configuració"
-
-#. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "Show all records which has next action date is before today"
-msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.portal_task_sign_button
@@ -904,7 +1142,6 @@ msgid "Signature"
 msgstr "Signatura"
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/controllers/portal.py:0
 #, python-format
 msgid "Signature is missing."
@@ -917,11 +1154,15 @@ msgstr "Signat per"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_stop_timer_wizard_form
-msgid "Some employees are still running their timer for this task. Are you sure you want to continue?"
-msgstr "Alguns empleats encara estan executant el seu temporitzador per a aquesta tasca. Segur que voleu continuar?"
+msgid ""
+"Some employees are still running their timer for this task. Are you sure you"
+" want to continue?"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__stage_id
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Stage"
 msgstr "Etapa"
 
@@ -932,21 +1173,33 @@ msgid "Stages"
 msgstr "Etapes"
 
 #. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Starred"
+msgstr "Destacat"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Start Date"
+msgstr "Data inicial"
+
+#. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__planned_date_begin
 msgid "Start date"
 msgstr "Data inicial"
 
 #. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__state
-msgid "Status"
-msgstr ""
-
-#. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Stop the <b>timer</b> when you are done."
 msgstr "Atura el <b>temporitzador</b> quan hagis acabat."
+
+#. module: industry_fsm
+#: model:ir.model.fields,field_description:industry_fsm.field_project_project__allow_subtasks
+msgid "Sub-tasks"
+msgstr "Subtasques"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_tree
@@ -973,13 +1226,14 @@ msgstr "Dependències de la tasca"
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_project_task__fsm_done
+#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__fsm_done
 msgid "Task Done"
 msgstr "Tasca feta"
 
 #. module: industry_fsm
-#: model:ir.model,name:industry_fsm.model_project_task_recurrence
-msgid "Task Recurrence"
-msgstr ""
+#: model:ir.actions.report,name:industry_fsm.task_custom_report
+msgid "Task Report"
+msgstr "Informe de tasques"
 
 #. module: industry_fsm
 #: model:ir.model,name:industry_fsm.model_report_industry_fsm_worksheet_custom
@@ -989,12 +1243,12 @@ msgstr "Informe personalitzat de full de treball de tasca"
 #. module: industry_fsm
 #: model:ir.model,name:industry_fsm.model_project_task_stop_timers_wizard
 msgid "Task stop running timers confirmation wizard"
-msgstr "Assistent de confirmació de l'aturada de l'execució dels temporitzadors de tasques"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model,name:industry_fsm.model_project_task_stop_timers_wizard_line
 msgid "Task stop running timers confirmation wizard line"
-msgstr "Línia de l'assistent de confirmació de l'aturada de temps d'execució de la tasca"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.actions.act_window,name:industry_fsm.project_tasks_action_fsm
@@ -1002,6 +1256,9 @@ msgstr "Línia de l'assistent de confirmació de l'aturada de temps d'execució 
 #: model:ir.ui.menu,name:industry_fsm.fsm_menu_tasks_kanban
 #: model:project.project,label_tasks:industry_fsm.fsm_project
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_calendar_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_list_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Tasks"
 msgstr "Tasques"
 
@@ -1015,28 +1272,36 @@ msgid "Tasks Analysis"
 msgstr "Anàlisi de tasques"
 
 #. module: industry_fsm
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+msgid "Tasks Soon in Overtime"
+msgstr ""
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Tasks in Conflict"
+msgstr "Tasques en conflicte"
+
+#. module: industry_fsm
 #: code:addons/industry_fsm/controllers/portal.py:0
 #, python-format
 msgid "The worksheet has been signed"
-msgstr "S'ha signat el full de treball"
+msgstr ""
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/controllers/portal.py:0
 #, python-format
 msgid "The worksheet is not in a state requiring customer signature."
-msgstr "El full de treball no està en un estat que requereixi signatura del client."
+msgstr ""
+"El full de treball no està en un estat que requereixi signatura del client."
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/models/project_task.py:0
 #, python-format
 msgid "There are no reports to send."
 msgstr "No hi ha informes per enviar."
 
 #. module: industry_fsm
-#. odoo-python
 #: code:addons/industry_fsm/models/project_task.py:0
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
 #, python-format
@@ -1051,31 +1316,12 @@ msgstr "Temps dedicat"
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_res_config_settings__module_industry_fsm_sale
 msgid "Time and Material Invoicing"
-msgstr "Invocació de temps i material"
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
 msgid "Time recorded on this task"
 msgstr "Temps enregistrat en aquesta tasca"
-
-#. module: industry_fsm
-#: model:ir.model.fields,help:industry_fsm.field_report_project_task_user_fsm__total_hours_spent
-msgid "Time spent on this task, including its sub-tasks."
-msgstr ""
-
-#. module: industry_fsm
-#. odoo-python
-#: code:addons/industry_fsm/models/project_task.py:0
-#, python-format
-msgid "Timer started at: %(date)s %(time)s"
-msgstr ""
-
-#. module: industry_fsm
-#. odoo-python
-#: code:addons/industry_fsm/wizard/project_task_create_timesheet.py:0
-#, python-format
-msgid "Timer stopped at: %(date)s %(time)s"
-msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.timesheet_view_form
@@ -1088,15 +1334,18 @@ msgid "Timesheets"
 msgstr "Fulls d'hores"
 
 #. module: industry_fsm
-#: model:ir.actions.act_window,name:industry_fsm.project_task_action_to_schedule_fsm
-#: model:ir.ui.menu,name:industry_fsm.fsm_menu_all_tasks_schedule
-msgid "To Schedule"
-msgstr "Per programar"
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "To Do"
+msgstr "Per fer"
 
 #. module: industry_fsm
+#: model:ir.actions.act_window,name:industry_fsm.project_task_action_to_schedule_fsm
+#: model:ir.ui.menu,name:industry_fsm.fsm_menu_all_tasks_schedule
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "To Schedule/Assign"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "To Schedule"
+msgstr "Per programar"
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_action_all_fsm
@@ -1104,8 +1353,6 @@ msgid ""
 "To get things done, plan activities and use the task status.<br>\n"
 "                Collaborate efficiently by chatting in real-time or via email."
 msgstr ""
-"Per fer les coses, planifica activitats i utilitza l'estat de la tasca.<br>\n"
-"                Col·laboreu eficientment xatejant en temps real o per correu electrònic."
 
 #. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_tasks_action_fsm
@@ -1118,23 +1365,22 @@ msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
 msgid "Today"
 msgstr "Avui"
 
 #. module: industry_fsm
-#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
-msgid "Today Activities"
-msgstr ""
-
-#. module: industry_fsm
-#: model:ir.model.fields,field_description:industry_fsm.field_report_project_task_user_fsm__total_hours_spent
-msgid "Total Hours"
-msgstr ""
-
-#. module: industry_fsm
 #: model_terms:ir.actions.act_window,help:industry_fsm.project_task_type_action_fsm
 msgid "Track the progress of your tasks from their creation to their closing."
-msgstr "Segueix el progrés de les vostres tasques des de la seva creació fins al seu tancament."
+msgstr ""
+"Segueix el progrés de les vostres tasques des de la seva creació fins al seu"
+" tancament."
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.report_project_task_user_fsm_view_search
+msgid "Unassigned"
+msgstr "Sense assignar"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_view_search_fsm
@@ -1142,11 +1388,11 @@ msgid "Unread Messages"
 msgstr "Missatges sense llegir"
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Use the breadcrumbs to return to your <b>task</b>."
-msgstr "Utilitzeu la ruta de navegació per tornar a la vostra tasca <b></b>."
+msgstr ""
 
 #. module: industry_fsm
 #: model:res.groups,name:industry_fsm.group_fsm_user
@@ -1154,7 +1400,7 @@ msgid "User"
 msgstr "Usuari"
 
 #. module: industry_fsm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm/static/src/js/tours/industry_fsm_tour.js:0
 #, python-format
 msgid "Validate the <b>signature</b>."
@@ -1195,9 +1441,22 @@ msgstr "Hores de treball a tancar"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.portal_my_task
+#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
 #: model_terms:ir.ui.view,arch_db:industry_fsm.worksheet_custom_page
 msgid "Worksheet"
 msgstr "Full de treball"
+
+#. module: industry_fsm
+#: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
+msgid "Worksheet Complete"
+msgstr ""
+
+#. module: industry_fsm
+#: model:mail.template,report_name:industry_fsm.mail_template_data_task_report
+msgid ""
+"Worksheet {{ object.name }}{{ (' - ' + object.partner_id.name) if "
+"object.partner_id else '' }}.pdf"
+msgstr ""
 
 #. module: industry_fsm
 #: model:ir.model.fields,field_description:industry_fsm.field_project_project__allow_worksheets
@@ -1207,8 +1466,20 @@ msgstr "Fulls de treball"
 
 #. module: industry_fsm
 #: model:mail.template,subject:industry_fsm.mail_template_data_intervention_details
-msgid "Your intervention is scheduled {{ object.planned_date_begin and object.planned_date_end and 'from the ' + format_datetime(object.planned_date_begin, tz=object.partner_id.tz, lang_code=object.partner_id.lang) + ' to the ' + format_datetime(object.planned_date_end, tz=object.partner_id.tz, lang_code=object.partner_id.lang) or '' }}"
-msgstr "La vostra intervenció està programada {{ object.planned_date_begin and object.planned_date_end and 'from the ' + format_datetime(object.planned_date_begin, tz=object.partner_id.tz, lang_code=object.partner_id.lang) + ' to the ' + format_datetime(object.planned_date_end, tz=object.partner_id.tz, lang_code=object.partner_id.lang) or '' }}"
+msgid ""
+"Your intervention is scheduled {{ object.planned_date_begin and "
+"object.planned_date_end and 'from the ' + "
+"format_datetime(object.planned_date_begin, tz=object.partner_id.tz, "
+"lang_code=object.partner_id.lang) + ' to the ' + "
+"format_datetime(object.planned_date_end, tz=object.partner_id.tz, "
+"lang_code=object.partner_id.lang) or '' }}"
+msgstr ""
+"La vostra intervenció està programada {{ object.planned_date_begin and "
+"object.planned_date_end and 'from the ' + "
+"format_datetime(object.planned_date_begin, tz=object.partner_id.tz, "
+"lang_code=object.partner_id.lang) + ' to the ' + "
+"format_datetime(object.planned_date_end, tz=object.partner_id.tz, "
+"lang_code=object.partner_id.lang) or '' }}"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.fsm_form_view_comment
@@ -1222,15 +1493,20 @@ msgstr "Per exemple, substitució de la caldera"
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.view_task_form2_inherit
-msgid "is FSM?"
-msgstr ""
+msgid "is FSM ?"
+msgstr "¿és FSM?"
 
 #. module: industry_fsm
 #: model:ir.actions.server,name:industry_fsm.fsm_customer_ratings_server_action
 msgid "project.project.fsm"
-msgstr "project.project.fsm"
+msgstr ""
 
 #. module: industry_fsm
 #: model_terms:ir.ui.view,arch_db:industry_fsm.project_task_user_view_pivot
 msgid "working days to assign"
 msgstr "dies laborables a assignar"
+
+#. module: industry_fsm
+#: model:mail.template,subject:industry_fsm.mail_template_data_task_report
+msgid "{{ object.name }} Report"
+msgstr "{{ object.name }} Informe"

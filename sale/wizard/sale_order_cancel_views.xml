@@ -6,8 +6,6 @@
         <field name="arch" type="xml">
             <form>
                 <group col="1">
-                    <field name="author_id" invisible="1"/>
-                    <field name="lang" invisible="1"/>
                     <field name="render_model" invisible="1"/>
                     <field name="order_id" invisible="1"/>
                     <field name="template_id" invisible="1"/>
@@ -17,7 +15,7 @@
                          role="alert">
                         <span>Are you sure you want to cancel this order? <br/></span>
                         <span id="display_invoice_alert"
-                              invisible="not display_invoice_alert">
+                              attrs="{'invisible': [('display_invoice_alert', '=', False)]}">
                             Draft invoices for this order will be cancelled. <br/>
                         </span>
                     </div>

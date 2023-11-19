@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import Dialog from '@web/legacy/js/core/dialog';
+import Dialog from 'web.Dialog';
 
 Dialog.include({
 

@@ -10,8 +10,8 @@ from odoo.osv import expression
 
 class AppraisalSurvey(Survey):
 
-    def _get_results_page_user_input_domain(self, survey, **post):
-        user_input_domain = super()._get_results_page_user_input_domain(survey, **post)
+    def _get_user_input_domain(self, survey, line_filter_domain, **post):
+        user_input_domain = super()._get_user_input_domain(survey, line_filter_domain, **post)
         if not post.get('appraisal_id'):
             return user_input_domain
         appraisal = request.env['hr.appraisal'].sudo().browse(int(post.get('appraisal_id')))

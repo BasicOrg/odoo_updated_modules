@@ -5,6 +5,7 @@
     'summary': 'Diversity, Fashions, Trends, Clothes, Shoes, Sports, Fitness, Stores',
     'sequence': 180,
     'version': '2.1.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -15,7 +16,7 @@
         'views/snippets/s_cover.xml',
         'views/snippets/s_image_gallery.xml',
         'views/snippets/s_media_list.xml',
-        'views/snippets/s_text_cover.xml',
+        'views/snippets/s_banner.xml',
         'views/snippets/s_color_blocks_2.xml',
         'views/snippets/s_references.xml',
         'views/snippets/s_call_to_action.xml',
@@ -28,7 +29,6 @@
         'views/snippets/s_numbers.xml',
         'views/snippets/s_three_columns.xml',
         'views/snippets/s_quotes_carousel.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/anelusia_description.jpg',
@@ -45,8 +45,8 @@
         'website.s_media_list_default_image_1': '/theme_anelusia/static/src/img/snippets/s_media_list_1.jpg',
         'website.s_media_list_default_image_2': '/theme_anelusia/static/src/img/snippets/s_media_list_2.jpg',
     },
-    'configurator_snippets': {
-        'homepage': ['s_text_cover', 's_images_wall', 's_color_blocks_2', 's_references',
+    'snippet_lists': {
+        'homepage': ['s_banner', 's_images_wall', 's_color_blocks_2', 's_references',
                      's_media_list', 's_company_team', 's_call_to_action'],
     },
     'license': 'LGPL-3',

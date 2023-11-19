@@ -9,7 +9,6 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.tools.misc import clean_context
 
 from odoo.addons.base.models.res_partner import _tz_get
 
@@ -119,7 +118,6 @@ class RecurrenceRule(models.Model):
     weekday = fields.Selection(WEEKDAY_SELECTION, string='Weekday')
     byday = fields.Selection(BYDAY_SELECTION, string='By day')
     until = fields.Date('Repeat Until')
-    trigger_id = fields.Many2one('ir.cron.trigger')
 
     _sql_constraints = [
         ('month_day',
@@ -152,7 +150,7 @@ class RecurrenceRule(models.Model):
                 week_map = {v: k for k, v in RRULE_WEEKDAYS.items()}
                 weekday_short = [week_map[w] for w in weekdays]
                 day_strings = [d[1] for d in WEEKDAY_SELECTION if d[0] in weekday_short]
-                on = _("on %s", ", ".join(day_strings))
+                on = _("on %s") % ", ".join([day_name for day_name in day_strings])
             elif recurrence.rrule_type == 'monthly':
                 if recurrence.month_by == 'day':
                     position_label = dict(BYDAY_SELECTION)[recurrence.byday]
@@ -166,8 +164,11 @@ class RecurrenceRule(models.Model):
 
     @api.depends('calendar_event_ids.start')
     def _compute_dtstart(self):
-        groups = self.env['calendar.event']._read_group([('recurrence_id', 'in', self.ids)], ['recurrence_id'], ['start:min'])
-        start_mapping = {recurrence.id: start_min for recurrence, start_min in groups}
+        groups = self.env['calendar.event'].read_group([('recurrence_id', 'in', self.ids)], ['start:min'], ['recurrence_id'])
+        start_mapping = {
+            group['recurrence_id'][0]: group['start']
+            for group in groups
+        }
         for recurrence in self:
             recurrence.dtstart = start_mapping.get(recurrence.id)
 
@@ -176,15 +177,13 @@ class RecurrenceRule(models.Model):
         'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'day', 'weekday')
     def _compute_rrule(self):
         for recurrence in self:
-            current_rule = recurrence._rrule_serialize()
-            if recurrence.rrule != current_rule:
-                recurrence.write({'rrule': current_rule})
+            recurrence.rrule = recurrence._rrule_serialize()
 
     def _inverse_rrule(self):
         for recurrence in self:
             if recurrence.rrule:
                 values = self._rrule_parse(recurrence.rrule, recurrence.dtstart)
-                recurrence.with_context(dont_notify=True).write(values)
+                recurrence.write(values)
 
     def _reconcile_events(self, ranges):
         """
@@ -218,7 +217,7 @@ class RecurrenceRule(models.Model):
             specific_values_creation = {}
 
         for recurrence in self.filtered('base_event_id'):
-            recurrence.calendar_event_ids |= recurrence.base_event_id
+            self.calendar_event_ids |= recurrence.base_event_id
             event = recurrence.base_event_id or recurrence._get_first_event(include_outliers=False)
             duration = event.stop - event.start
             if specific_values_creation:
@@ -241,47 +240,8 @@ class RecurrenceRule(models.Model):
 
         events = self.calendar_event_ids - keep
         detached_events = self._detach_events(events)
-        context = {
-            **clean_context(self.env.context),
-            **{'no_mail_to_attendees': True, 'mail_create_nolog': True},
-        }
-        self.env['calendar.event'].with_context(context).create(event_vals)
+        self.env['calendar.event'].with_context(no_mail_to_attendees=True, mail_create_nolog=True).create(event_vals)
         return detached_events
-
-    def _setup_alarms(self, recurrence_update=False):
-        """ Schedule cron triggers for future events
-        Create one ir.cron.trigger per recurrence.
-        :param recurrence_update: boolean: if true, update all recurrences in self, else only the recurrences
-               without trigger
-        """
-        now = fields.Datetime.now()
-        # get next events
-        self.env['calendar.event'].flush_model(fnames=['recurrence_id', 'start'])
-        if recurrence_update:
-            recurrence = self
-        else:
-            recurrence = self.filtered(lambda rec: not rec.trigger_id)
-        if not recurrence.calendar_event_ids.ids:
-            return
-
-        self.env.cr.execute("""
-            SELECT DISTINCT ON (recurrence_id) id event_id, recurrence_id
-                    FROM calendar_event 
-                   WHERE start > %s
-                     AND id IN %s
-                ORDER BY recurrence_id,start ASC;
-        """, (now, tuple(recurrence.calendar_event_ids.ids)))
-        result = self.env.cr.dictfetchall()
-        if not result:
-            return
-        events = self.env['calendar.event'].browse(value['event_id'] for value in result)
-        triggers_by_events = events._setup_alarms()
-        for vals in result:
-            trigger_id = triggers_by_events.get(vals['event_id'])
-            if not trigger_id:
-                continue
-            recurrence = self.env['calendar.recurrence'].browse(vals['recurrence_id'])
-            recurrence.trigger_id = trigger_id
 
     def _split_from(self, event, recurrence_values=None):
         """Stops the current recurrence at the given event and creates a new one starting
@@ -334,9 +294,9 @@ class RecurrenceRule(models.Model):
 
     @api.model
     def _detach_events(self, events):
-        events.with_context(dont_notify=True).write({
+        events.write({
             'recurrence_id': False,
-            'recurrency': True,
+            'recurrency': False,
         })
         return events
 
@@ -421,16 +381,6 @@ class RecurrenceRule(models.Model):
             start = dt + relativedelta(day=1)
         else:
             start = dt
-        # Comparaison of DST (to manage the case of going too far back in time).
-        # If we detect a change in the DST between the creation date of an event
-        # and the date used for the occurrence period, we use the creation date of the event.
-        # This is a hack to avoid duplication of events (for example on google calendar).
-        if isinstance(dt, datetime):
-            timezone = self._get_timezone()
-            dst_dt = timezone.localize(dt).dst()
-            dst_start = timezone.localize(start).dst()
-            if dst_dt != dst_start:
-                start = dt
         return start
 
     def _get_first_event(self, include_outliers=False):

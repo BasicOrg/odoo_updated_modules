@@ -1,8 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_mail_group.mail_group', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import MailGroup from "@mail_group/js/mail_group";
+const core = require('web.core');
+const _t = core._t;
+const MailGroup = require('mail_group.mail_group');
 
 MailGroup.include({
     start: async function () {
@@ -12,10 +13,13 @@ MailGroup.include({
         // Because it's rendered only once when the admin add the snippets
         // for the first time, we make a RPC call to setup the widget properly
         const email = (new URL(document.location.href)).searchParams.get('email');
-        const response = await this.rpc('/group/is_member', {
-            'group_id': this.mailgroupId,
-            'email': email,
-            'token': this.token,
+        const response = await this._rpc({
+            route: '/group/is_member',
+            params: {
+                'group_id': this.mailgroupId,
+                'email': email,
+                'token': this.token,
+            },
         });
 
         if (!response) {
@@ -36,45 +40,11 @@ MailGroup.include({
         }
 
         if (this.isMember) {
-            this.$el.find('.o_mg_subscribe_btn').text(_t('Unsubscribe')).removeClass('btn-primary').addClass('btn-outline-primary');
+            this.$target.find('.o_mg_subscribe_btn').text(_t('Unsubscribe')).removeClass('btn-primary').addClass('btn-outline-primary');
         }
 
         this.$el.data('isMember', this.isMember);
     },
-    /**
-     * @override
-     */
-    destroy: function () {
-        this.el.classList.add('d-none');
-        this._super(...arguments);
-    },
 });
 
-// TODO should probably have a better way to handle this, maybe the invisible
-// block system could be extended to handle this kind of things. Here we only
-// do the same as the non-edit mode public widget: showing and hiding the widget
-// but without the rest. Arguably could just enable the whole widget in edit
-// mode but not stable-friendly.
-publicWidget.registry.MailGroupEditMode = publicWidget.Widget.extend({
-    selector: MailGroup.prototype.selector,
-    disabledInEditableMode: false,
-
-    /**
-     * @override
-     */
-    start: function () {
-        if (this.editableMode) {
-            this.el.classList.remove('d-none');
-        }
-        return this._super(...arguments);
-    },
-    /**
-     * @override
-     */
-    destroy: function () {
-        if (this.editableMode) {
-            this.el.classList.add('d-none');
-        }
-        this._super(...arguments);
-    },
 });

@@ -3,10 +3,9 @@
 from odoo import fields
 
 from odoo.addons.account_payment.tests.common import AccountPaymentCommon
-from odoo.addons.payment_custom.tests.common import PaymentCustomCommon
 
 
-class SepaDirectDebitCommon(AccountPaymentCommon, PaymentCustomCommon):
+class SepaDirectDebitCommon(AccountPaymentCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -24,7 +23,9 @@ class SepaDirectDebitCommon(AccountPaymentCommon, PaymentCustomCommon):
 
         assert cls.sepa_bank_account.acc_type == 'iban'
 
-        cls.sepa = cls._prepare_provider('sepa_direct_debit')
+        cls.sepa = cls._prepare_provider('sepa_direct_debit', update_values={
+            'sdd_sms_verification_required': True, # Needed for test ???
+        })
         cls.sepa_journal = cls.sepa.journal_id
         cls.sepa_journal.bank_account_id = cls.sepa_bank_account
 
@@ -41,6 +42,7 @@ class SepaDirectDebitCommon(AccountPaymentCommon, PaymentCustomCommon):
             'partner_bank_id': cls.partner_bank.id,
             'start_date': fields.Date.today(),
             'payment_journal_id': cls.sepa_journal.id,
+            'verified': True,
             'state': 'active',
         })
 

@@ -2,11 +2,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Bulgaria - Accounting Reports',
-    'countries': ['bg'],
+    'icon': '/l10n_bg/static/description/icon.png',
     'version': '1.0',
     'category': 'Accounting/Localizations/Reporting',
+    'author': 'Odoo S.A.',
     'description': """
-Base module for Bulgarian reports
+        Base module for Bulgarian reports
     """,
     'depends': [
         'l10n_bg',
@@ -18,5 +19,5 @@ Base module for Bulgarian reports
     ],
     'auto_install': True,
     'installable': True,
-    'license': 'OEEL-1',
+    'license': 'LGPL-3',
 }

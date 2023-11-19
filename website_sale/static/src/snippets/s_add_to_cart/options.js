@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import options from '@web_editor/js/editor/snippets.options';
-import { _t } from "@web/core/l10n/translation";
+import options from 'web_editor.snippets.options';
+import { _t } from 'web.core';
 
 const Many2oneUserValueWidget = options.userValueWidgetsRegistry['we-many2one'];
 
@@ -25,15 +25,10 @@ const Many2oneDefaultMessageWidget = Many2oneUserValueWidget.extend({
 options.userValueWidgetsRegistry['we-many2one-default-message'] = Many2oneDefaultMessageWidget;
 
 options.registry.AddToCart = options.Class.extend({
-    events: Object.assign({}, options.Class.prototype.events || {}, {
+    events: _.extend({}, options.Class.prototype.events || {}, {
         'click .reset-variant-picker': '_onClickResetVariantPicker',
         'click .reset-product-picker': '_onClickResetProductPicker',
     }),
-
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
-    },
 
     async updateUI() {
         if (this.rerender) {
@@ -97,9 +92,13 @@ options.registry.AddToCart = options.Class.extend({
      * Fetches the variants ids from the server
      */
     async _fetchVariants(productTemplateId) {
-        const response = await this.orm.searchRead(
-            "product.product", [["product_tmpl_id", "=", parseInt(productTemplateId)]], ["id"]
-        );
+        const response = await this._rpc({
+            model: 'product.product',
+            method: 'search_read',
+            domain: [
+                ["product_tmpl_id", "=", parseInt(productTemplateId)],
+            ],
+        });
         this.$target[0].dataset.variants = response.map(variant => variant.id);
     },
 

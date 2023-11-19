@@ -3,9 +3,6 @@
 
 import logging
 
-from odoo.tools.float_utils import float_round
-_logger = logging.getLogger('precompute_setter')
-
 from odoo import models, fields, api, _, Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.translate import html_translate
@@ -31,7 +28,7 @@ class Category(models.Model):
                                    'category', 'discussion')
 
     _sql_constraints = [
-        ('positive_color', 'CHECK(color >= 0)', 'The color code must be positive!')
+        ('positive_color', 'CHECK(color >= 0)', 'The color code must be positive !')
     ]
 
     @api.depends('name', 'parent.display_name')     # this definition is recursive
@@ -71,13 +68,13 @@ class Category(models.Model):
             # assign name of last category, and reassign display_name (to normalize it)
             cat.name = names[-1].strip()
 
-    def _fetch_query(self, query, fields):
+    def _read(self, fields):
         # DLE P45: `test_31_prefetch`,
         # with self.assertRaises(AccessError):
         #     cat1.name
         if self.search_count([('id', 'in', self._ids), ('name', '=', 'NOACCESS')]):
             raise AccessError('Sorry')
-        return super()._fetch_query(query, fields)
+        return super(Category, self)._read(fields)
 
 
 class Discussion(models.Model):
@@ -135,7 +132,7 @@ class Message(models.Model):
     _description = 'Test New API Message'
 
     discussion = fields.Many2one('test_new_api.discussion', ondelete='cascade')
-    body = fields.Text(index='trigram')
+    body = fields.Text()
     author = fields.Many2one('res.users', default=lambda self: self.env.user)
     name = fields.Char(string='Title', compute='_compute_name', store=True)
     display_name = fields.Char(string='Abstract', compute='_compute_display_name')
@@ -148,7 +145,6 @@ class Message(models.Model):
     important = fields.Boolean()
     label = fields.Char(translate=True)
     priority = fields.Integer()
-    active = fields.Boolean(default=True)
 
     attributes = fields.Properties(
         string='Properties',
@@ -233,7 +229,6 @@ class EmailMessage(models.Model):
     message = fields.Many2one('test_new_api.message', 'Message',
                               required=True, ondelete='cascade')
     email_to = fields.Char('To')
-    active = fields.Boolean('Active Message', related='message.active', store=True, related_sudo=False)
 
 
 class DiscussionPartner(models.Model):
@@ -271,11 +266,6 @@ class Multi(models.Model):
         for line in self.lines:
             line.partner = self.partner
 
-    @api.onchange('tags')
-    def _onchange_tags(self):
-        for line in self.lines:
-            line.tags |= self.tags
-
 
 class MultiLine(models.Model):
     _name = 'test_new_api.multi.line'
@@ -298,16 +288,6 @@ class MultiTag(models.Model):
     _description = 'Test New API Multi Tag'
 
     name = fields.Char()
-    display_name = fields.Char(compute='_compute_display_name')
-
-    @api.depends('name')
-    @api.depends_context('special_tag')
-    def _compute_display_name(self):
-        for record in self:
-            name = record.name
-            if name and self.env.context.get('special_tag'):
-                name += "!"
-            record.display_name = name or ""
 
 
 class Edition(models.Model):
@@ -550,7 +530,6 @@ class Order(models.Model):
     _name = _description = 'test_new_api.order'
 
     line_ids = fields.One2many('test_new_api.order.line', 'order_id')
-    line_short_field_name = fields.Integer(index=True)
 
 
 class OrderLine(models.Model):
@@ -559,16 +538,6 @@ class OrderLine(models.Model):
     order_id = fields.Many2one('test_new_api.order', required=True, ondelete='cascade')
     product = fields.Char()
     reward = fields.Boolean()
-    short_field_name = fields.Integer(index=True)
-    very_very_very_very_very_long_field_name_1 = fields.Integer(index=True)
-    very_very_very_very_very_long_field_name_2 = fields.Integer(index=True)
-    has_been_rewarded = fields.Char(compute='_compute_has_been_rewarded', store=True)
-
-    @api.depends('reward')
-    def _compute_has_been_rewarded(self):
-        for rec in self:
-            if rec.reward:
-                rec.has_been_rewarded = 'Yes'
 
     def unlink(self):
         # also delete associated reward lines
@@ -594,8 +563,6 @@ class CompanyDependent(models.Model):
     truth = fields.Boolean(company_dependent=True)
     count = fields.Integer(company_dependent=True)
     phi = fields.Float(company_dependent=True, digits=(2, 5))
-    html1 = fields.Html(company_dependent=True, sanitize=False)
-    html2 = fields.Html(company_dependent=True, sanitize_attributes=True, strip_classes=True, strip_style=True)
 
 
 class CompanyDependentAttribute(models.Model):
@@ -897,7 +864,6 @@ class MonetaryRelated(models.Model):
     monetary_id = fields.Many2one('test_new_api.monetary_base')
     currency_id = fields.Many2one('res.currency', related='monetary_id.base_currency_id')
     amount = fields.Monetary(related='monetary_id.amount')
-    total = fields.Monetary()
 
 
 class MonetaryCustom(models.Model):
@@ -971,11 +937,6 @@ class RequiredM2OTransient(models.TransientModel):
     bar = fields.Many2one('res.country', required=True)
 
 
-class TestTransient(models.TransientModel):
-    _name = 'test_new_api.transient_model'
-    _description = 'Transient Model'
-
-
 class Attachment(models.Model):
     _name = 'test_new_api.attachment'
     _description = 'Attachment'
@@ -1042,7 +1003,7 @@ class ModelParent(models.Model):
     _description = 'Model Multicompany parent'
 
     name = fields.Char()
-    company_id = fields.Many2one('res.company')
+    company_id = fields.Many2one('res.company', required=True)
 
 
 class ModelChild(models.Model):
@@ -1051,7 +1012,7 @@ class ModelChild(models.Model):
     _check_company_auto = True
 
     name = fields.Char()
-    company_id = fields.Many2one('res.company')
+    company_id = fields.Many2one('res.company', required=True)
     parent_id = fields.Many2one('test_new_api.model_parent', check_company=True)
 
 
@@ -1061,9 +1022,26 @@ class ModelChildNoCheck(models.Model):
     _check_company_auto = True
 
     name = fields.Char()
-    company_id = fields.Many2one('res.company')
+    company_id = fields.Many2one('res.company', required=True)
     parent_id = fields.Many2one('test_new_api.model_parent', check_company=False)
 
+
+class ModelPrivateAddressOnchange(models.Model):
+    _name = 'test_new_api.model_private_address_onchange'
+    _description = 'Model Private Address Onchange'
+    _check_company_auto = True
+
+    name = fields.Char()
+    company_id = fields.Many2one('res.company', required=True)
+    address_id = fields.Many2one('res.partner', check_company=True)
+
+    @api.onchange('name')
+    def _onchange_name(self):
+        if self.name and not self.address_id:
+            self.address_id = self.env['res.partner'].sudo().create({
+                'name': self.name,
+                'type': 'private',
+            })
 
 # model with explicit and stored field 'display_name'
 class Display(models.Model):
@@ -1395,28 +1373,9 @@ class ComputeMember(models.Model):
             member.container_id = container.search([('name', '=', member.name)], limit=1)
 
 
-class User(models.Model):
-    _name = _description = 'test_new_api.user'
-
-    group_ids = fields.Many2many('test_new_api.group')
-    group_count = fields.Integer(compute='_compute_group_count', store=True)
-
-    @api.depends('group_ids')
-    def _compute_group_count(self):
-        for user in self:
-            user.group_count = len(user.group_ids)
-
-
-class Group(models.Model):
-    _name = _description = 'test_new_api.group'
-
-    user_ids = fields.Many2many('test_new_api.user')
-
-
 class ComputeEditable(models.Model):
     _name = _description = 'test_new_api.compute_editable'
 
-    precision_rounding = fields.Float(default=0.01, digits=(1, 10))
     line_ids = fields.One2many('test_new_api.compute_editable.line', 'parent_id')
 
     @api.onchange('line_ids')
@@ -1434,7 +1393,6 @@ class ComputeEditableLine(models.Model):
     same = fields.Integer(compute='_compute_same', store=True)
     edit = fields.Integer(compute='_compute_edit', store=True, readonly=False)
     count = fields.Integer()
-    one_compute = fields.Float(compute='_compute_one_compute')
 
     @api.depends('value')
     def _compute_same(self):
@@ -1446,10 +1404,6 @@ class ComputeEditableLine(models.Model):
         for line in self:
             line.edit = line.value
 
-    @api.depends('parent_id.precision_rounding')
-    def _compute_one_compute(self):
-        for rec in self:
-            rec.one_compute = float_round(99.9999999, precision_rounding=rec.parent_id.precision_rounding)
 
 class ConstrainedUnlinks(models.Model):
     _name = 'test_new_api.model_constrained_unlinks'
@@ -1599,6 +1553,8 @@ class PrecomputeCombo(models.Model):
     _name = 'test_new_api.precompute.combo'
     _description = 'yet another model with precomputed fields'
 
+    _logger = logging.getLogger('precompute_setter')
+
     name = fields.Char()
     reader = fields.Char(compute='_compute_reader', precompute=True, store=True)
     editer = fields.Char(compute='_compute_editer', precompute=True, store=True, readonly=False)
@@ -1620,7 +1576,7 @@ class PrecomputeCombo(models.Model):
             record.setter = record.name
 
     def _inverse_setter(self):
-        _logger.warning("Unexpected inverse of %s.setter", self._name, stack_info=True)
+        self._logger.warning("Unexpected inverse of %s.setter", self._name, stack_info=True)
 
 
 class PrecomputeEditable(models.Model):
@@ -1658,7 +1614,9 @@ class PrecomputeReadonly(models.Model):
         ('confirmed', 'Confirmed'),
     ], default='draft')
     bar = fields.Char(compute='_compute_bar', precompute=True, store=True, readonly=True)
-    baz = fields.Char(compute='_compute_baz', precompute=True, store=True, readonly=False)
+    baz = fields.Char(
+        compute='_compute_baz', precompute=True, store=True, readonly=True, states={'draft': [('readonly', False)]}
+    )
 
     @api.depends('foo')
     def _compute_bar(self):
@@ -1761,32 +1719,18 @@ class RelatedTranslation2(models.Model):
     _name = 'test_new_api.related_translation_2'
     _description = 'A model to test translation for related fields'
 
-    related_id = fields.Many2one('test_new_api.related_translation_1', string='Parent Model')
-    name = fields.Char('Name Related', related='related_id.name', readonly=False)
-    html = fields.Html('HTML Related', related='related_id.html', readonly=False)
-    computed_name = fields.Char('Name Computed', compute='_compute_name')
-    computed_html = fields.Char('HTML Computed', compute='_compute_html')
-
-    @api.depends_context('lang')
-    @api.depends('related_id.name')
-    def _compute_name(self):
-        for record in self:
-            record.computed_name = record.related_id.name
-
-    @api.depends_context('lang')
-    @api.depends('related_id.html')
-    def _compute_html(self):
-        for record in self:
-            record.computed_html = record.related_id.html
+    parent_id = fields.Many2one('test_new_api.related_translation_1', string='Parent Model')
+    name = fields.Char('Name Related', related='parent_id.name', readonly=False)
+    html = fields.Html('HTML Related', related='parent_id.html', readonly=False)
 
 
 class RelatedTranslation3(models.Model):
     _name = 'test_new_api.related_translation_3'
     _description = 'A model to test translation for related fields'
 
-    related_id = fields.Many2one('test_new_api.related_translation_2', string='Parent Model')
-    name = fields.Char('Name Related', related='related_id.name', readonly=False)
-    html = fields.Html('HTML Related', related='related_id.html', readonly=False)
+    parent_id = fields.Many2one('test_new_api.related_translation_2', string='Parent Model')
+    name = fields.Char('Name Related', related='parent_id.name', readonly=False)
+    html = fields.Html('HTML Related', related='parent_id.html', readonly=False)
 
 
 class IndexedTranslation(models.Model):
@@ -1800,65 +1744,3 @@ class EmptyChar(models.Model):
     _description = 'A model to test emtpy char'
 
     name = fields.Char('Name')
-
-
-class Team(models.Model):
-    _name = 'test_new_api.team'
-    _description = 'Odoo Team'
-
-    name = fields.Char()
-    parent_id = fields.Many2one('test_new_api.team')
-    member_ids = fields.One2many('test_new_api.team.member', 'team_id')
-
-
-class TeamMember(models.Model):
-    _name = 'test_new_api.team.member'
-    _description = 'Odoo Developer'
-
-    name = fields.Char('Name')
-    team_id = fields.Many2one('test_new_api.team')
-    parent_id = fields.Many2one('test_new_api.team', related='team_id.parent_id')
-
-
-class UnsearchableO2M(models.Model):
-    _name = 'test_new_api.unsearchable.o2m'
-    _description = 'Test non-stored unsearchable o2m'
-
-    name = fields.Char('Name')
-    stored_parent_id = fields.Many2one('test_new_api.unsearchable.o2m', store=True)
-    parent_id = fields.Many2one('test_new_api.unsearchable.o2m', store=False, compute="_compute_parent_id")
-    child_ids = fields.One2many('test_new_api.unsearchable.o2m', 'parent_id')
-
-    @api.depends('stored_parent_id')
-    def _compute_parent_id(self):
-        for r in self:
-            r.parent_id = r.stored_parent_id
-
-
-class AnyParent(models.Model):
-    _name = 'test_new_api.any.parent'
-    _description = 'Any Parent'
-
-    name = fields.Char()
-    child_ids = fields.One2many('test_new_api.any.child', 'parent_id')
-
-
-class AnyChild(models.Model):
-    _name = 'test_new_api.any.child'
-    _description = 'Any Child'
-    _inherits = {
-        'test_new_api.any.parent': 'parent_id',
-    }
-
-    parent_id = fields.Many2one('test_new_api.any.parent', required=True, ondelete='cascade')
-    link_sibling_id = fields.Many2one('test_new_api.any.child')
-    quantity = fields.Integer()
-    tag_ids = fields.Many2many('test_new_api.any.tag')
-
-
-class AnyTag(models.Model):
-    _name = 'test_new_api.any.tag'
-    _description = 'Any tag'
-
-    name = fields.Char()
-    child_ids = fields.Many2many('test_new_api.any.child')

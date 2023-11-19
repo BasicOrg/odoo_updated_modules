@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
-
 from odoo import Command
-from odoo.tests.common import users, tagged, HttpCase
+from odoo.tests.common import users, tagged, TransactionCase
 
 
 @tagged('post_install', '-at_install')
-class TestImLivechatMessage(HttpCase):
+class TestImLivechatMessage(TransactionCase):
     def setUp(self):
         super().setUp()
-        self.password = 'Pl1bhD@2!kXZ'
         self.users = self.env['res.users'].create([
             {
                 'email': 'e.e@example.com',
@@ -22,22 +19,16 @@ class TestImLivechatMessage(HttpCase):
                 'odoobot_state': 'disabled',
                 'signature': '--\nErnest',
             },
-            {'name': 'test1', 'login': 'test1', 'password': self.password, 'email': 'test1@example.com', 'livechat_username': 'chuck'},
+            {'name': 'test1', 'login': 'test1', 'email': 'test1@example.com'},
         ])
 
     @users('emp')
     def test_message_format(self):
         im_livechat_channel = self.env['im_livechat.channel'].sudo().create({'name': 'support', 'user_ids': [Command.link(self.users[0].id)]})
-        self.env['bus.presence'].create({'user_id': self.users[0].id, 'status': 'online'})  # make available for livechat (ignore leave)
-        self.authenticate(self.users[1].login, self.password)
-        channel_livechat_1 = self.env['discuss.channel'].browse(self.make_jsonrpc_request("/im_livechat/get_session", {
-            'anonymous_name': 'anon 1',
-            'previous_operator_id': self.users[0].partner_id.id,
-            'country_id': self.env.ref('base.in').id,
-            'channel_id': im_livechat_channel.id,
-        })['id'])
+        self.users[0].im_status = 'online'  # make available for livechat (ignore leave)
+        channel_livechat_1 = self.env['mail.channel'].browse(im_livechat_channel._open_livechat_mail_channel(anonymous_name='anon 1', previous_operator_id=self.users[0].partner_id.id, user_id=self.users[1].id, country_id=self.env.ref('base.in').id)['id'])
         record_rating = self.env['rating.rating'].create({
-            'res_model_id': self.env['ir.model']._get('discuss.channel').id,
+            'res_model_id': self.env['ir.model']._get('mail.channel').id,
             'res_id': channel_livechat_1.id,
             'parent_res_model_id': self.env['ir.model']._get('im_livechat.channel').id,
             'parent_res_id': im_livechat_channel.id,
@@ -48,39 +39,31 @@ class TestImLivechatMessage(HttpCase):
         })
         message = channel_livechat_1.message_post(
             author_id=record_rating.partner_id.id,
-            body=Markup("<img src='%s' alt=':%s/5' style='width:18px;height:18px;float:left;margin-right: 5px;'/>%s")
+            body="<img src='%s' alt=':%s/5' style='width:18px;height:18px;float:left;margin-right: 5px;'/>%s"
             % (record_rating.rating_image_url, record_rating.rating, record_rating.feedback),
             rating_id=record_rating.id,
         )
         self.assertEqual(message.message_format(), [{
-            'attachments': [],
+            'attachment_ids': [],
             'author': {
                 'id': self.users[1].partner_id.id,
-                'is_company': self.users[1].partner_id.is_company,
-                'user_livechat_username': self.users[1].livechat_username,
-                'type': "partner",
-                'user': {
-                    'id': self.users[1].id,
-                    'isInternalUser': self.users[1]._is_internal(),
-                }
+                'name': "test1",
             },
             'body': message.body,
             'date': message.date,
-            'write_date': message.write_date,
-            'create_date': message.create_date,
+            'guestAuthor': [('clear',)],
             'history_partner_ids': [],
             'id': message.id,
-            'default_subject': channel_livechat_1.name,
             'is_discussion': False,
             'is_note': True,
+            'is_notification': False,
             'linkPreviews': [],
             'message_type': 'notification',
-            'reactions': [],
-            'model': 'discuss.channel',
+            'messageReactionGroups': [],
+            'model': 'mail.channel',
             'module_icon': '/mail/static/description/icon.png',
             'needaction_partner_ids': [],
             'notifications': [],
-            'pinned_at': False,
             'rating': {
                 'id': record_rating.id,
                 'ratingImageUrl': record_rating.rating_image_url,
@@ -89,7 +72,6 @@ class TestImLivechatMessage(HttpCase):
             'recipients': [],
             'record_name': "test1 Ernest Employee",
             'res_id': channel_livechat_1.id,
-            'scheduledDatetime': False,
             'sms_ids': [],
             'starred_partner_ids': [],
             'subject': False,

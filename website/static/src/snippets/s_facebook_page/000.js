@@ -1,8 +1,8 @@
-/** @odoo-module **/
+odoo.define('website.s_facebook_page', function (require) {
+'use strict';
 
-import { pick } from "@web/core/utils/objects";
-import { clamp } from "@web/core/utils/numbers";
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
+var utils = require('web.utils');
 
 const FacebookPageWidget = publicWidget.Widget.extend({
     selector: '.o_facebook_page',
@@ -16,19 +16,13 @@ const FacebookPageWidget = publicWidget.Widget.extend({
 
         this.options.wysiwyg && this.options.wysiwyg.odooEditor.observerUnactive();
 
-        const params = pick(this.$el[0].dataset, 'href', 'id', 'height', 'tabs', 'small_header', 'hide_cover');
+        var params = _.pick(this.$el[0].dataset, 'href', 'height', 'tabs', 'small_header', 'hide_cover');
         if (!params.href) {
             return def;
         }
-        if (params.id) {
-            params.href = `https://www.facebook.com/${params.id}`;
-        }
-        delete params.id;
-        params.width = clamp(Math.floor(this.$el.width()), 180, 500);
+        params.width = utils.confine(Math.floor(this.$el.width()), 180, 500);
 
-        const searchParams = new URLSearchParams(params);
-        const src = "https://www.facebook.com/plugins/page.php?" + searchParams;
-
+        var src = $.param.querystring('https://www.facebook.com/plugins/page.php', params);
         this.$iframe = $('<iframe/>', {
             src: src,
             width: params.width,
@@ -62,4 +56,5 @@ const FacebookPageWidget = publicWidget.Widget.extend({
 
 publicWidget.registry.facebookPage = FacebookPageWidget;
 
-export default FacebookPageWidget;
+return FacebookPageWidget;
+});

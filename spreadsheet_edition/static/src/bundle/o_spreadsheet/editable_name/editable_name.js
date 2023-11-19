@@ -1,8 +1,8 @@
 /** @odoo-module */
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 
-export class EditableName extends Component {
+export default class EditableName extends Component {
     setup() {
         super.setup();
         this.state = useState({

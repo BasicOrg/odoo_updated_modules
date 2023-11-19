@@ -1,19 +1,19 @@
-/** @odoo-module **/
+odoo.define('web.test.x2many', function (require) {
+    'use strict';
 
-    import { stepUtils } from "@web_tour/tour_service/tour_utils";
-    import { registry } from "@web/core/registry";
+    var tour = require("web_tour.tour");
     var inc;
 
-    registry.category("web_tour.tours").add('widget_x2many', {
+    tour.register('widget_x2many', {
         url: '/web?debug=tests#action=test_new_api.action_discussions',
         test: true,
-        steps: () => [
+    }, [
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Discussions
     /////////////////////////////////////////////////////////////////////////////////////////////
     {
         content: "wait web client",
-        trigger: '.o_breadcrumb:contains(Discussions)',
+        trigger: '.breadcrumb:contains(Discussions)',
     }, { // create test discussion
         content: "create new discussion",
         trigger: 'button.o_list_button_add',
@@ -51,14 +51,14 @@
     }, {
         content: "check if the modal is saved",
         trigger: '.o_field_widget[name=moderator] input:propValueContains(user_test)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "go to Participants tab to check onchange",
         trigger: '.o_notebook_headers .nav-item a:contains(Participants)',
     }, {
         content: "check the onchange from the o2m to the m2m",
         trigger: '.o_field_widget[name=participants] .o_data_cell:contains(user_test)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, { // add ourself as participant
         content: "click to add participants",
         trigger: '.o_field_widget[name=participants] .o_field_x2many_list_row_add a'
@@ -69,7 +69,7 @@
         content: "save selected participants",
         trigger: '.o_select_button',
         extra_trigger: 'tr:has(td:containsExact(Mitchell Admin)) .o_list_record_selector input[type="checkbox"]:propChecked',
-    }, ...stepUtils.saveForm({
+    }, ...tour.stepUtils.saveForm({
         content: "save discussion",
         extra_trigger: '.o_field_widget[name=participants] .o_data_cell:containsExact(Mitchell Admin)',
     }), { // add message a
@@ -104,7 +104,7 @@
     }, {
         content: "check onchange",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValue([test_trigger] Mitchell Admin:a\n[test_trigger] Mitchell Admin:b)',
-        isCheck: true,
+        run: function () {},
     }, { // change message b
         content: "edit message b",
         trigger: '.o_field_widget[name=messages] .o_data_cell:containsExact(b)',
@@ -151,11 +151,11 @@
         content: "check data 1",
         trigger: '.o_content:has(.o_field_widget[name=messages] tbody .o_data_row:eq(2))',
         extra_trigger: 'body:not(:has(.o_field_widget[name=messages] tbody .o_data_row:eq(3)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "check data 2",
         trigger: '.o_content:has(.o_field_widget[name=messages] tr:has(td:containsExact(bbb)):has(td:containsExact([test_trigger] Mitchell Admin)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "go to tab 3",
         trigger: '.o_notebook_headers .nav-item a:contains(Participants)',
@@ -163,7 +163,7 @@
         content: "check data 3",
         trigger: '.o_content:has(.o_field_widget[name=participants] tbody .o_data_row:eq(2))',
         extra_trigger: 'body:not(:has(.o_field_widget[name=participants] tbody .o_data_row:eq(3)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "change tab to Messages",
         trigger: '.o_notebook_headers .nav-item a:contains(Messages)',
@@ -215,23 +215,23 @@
     }, {
         content: "test one2many's line onchange after many2one",
         trigger: '.o_field_widget[name=name]:contains([test_trigger] Marc Demo)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "test one2many field not triggered onchange",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValueContains([test_trigger] Mitchell Admin:e)',
         in_modal: false,
-        isCheck: true, // don't change texarea content
+        run: function () {}, // don't change texarea content
     }, {
         content: "save changes",
         trigger: '.modal-footer .o_form_button_save'
     }, {
         content: "test one2many triggered the onchange on save for the line",
         trigger: '.o_field_widget[name=messages] .o_data_cell:contains([test_trigger] Marc Demo)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "test one2many triggered the onchange on save",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValueContains([test_trigger] Marc Demo:e)',
-        isCheck: true, // don't change texarea content
+        run: function () {}, // don't change texarea content
     }, { // remove
         content: "remove b",
         trigger: '.o_field_widget[name=messages] .o_data_row:has(.o_data_cell:containsExact(bbb)) .o_list_record_remove',
@@ -245,15 +245,15 @@
     }, { // check saved data
         content: "check data 4",
         trigger: '.o_content:not(:has(.o_field_widget[name=messages] tbody tr:has(.o_list_record_remove):eq(4)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "check data 5",
         trigger: '.o_content:has(.o_field_widget[name=messages] tbody:has(tr td:containsExact(aaa)):has(tr td:containsExact(c)):has(tr td:containsExact(d)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "check data 6",
         trigger: '.o_content:has(.o_field_widget[name=messages] tbody tr:has(td:containsExact([test_trigger] Mitchell Admin)):has(td:containsExact(aaa)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "go to Participants",
         trigger: '.o_notebook_headers .nav-item a:contains(Participants)',
@@ -261,7 +261,7 @@
         content: "check data 7",
         trigger: '.o_content:has(.o_field_widget[name=participants] tbody .o_data_row:eq(2))',
         extra_trigger: '.o_content:not(:has(.o_field_widget[name=participants] tbody .o_data_row:eq(3)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "go to Messages",
         trigger: '.o_notebook_headers .nav-item a:contains(Messages)',
@@ -279,7 +279,7 @@
     }, {
         content: "test one2many's line onchange after many2one",
         trigger: '.o_field_widget[name=name]:contains([test_trigger] Marc Demo)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "insert body",
         trigger: '.o_field_widget[name="body"] textarea',
@@ -290,13 +290,13 @@
     }, { // check onchange data
         content: "check data 8",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValueContains([test_trigger] Mitchell Admin:aaa\n[test_trigger] Mitchell Admin:c\n[test_trigger] Mitchell Admin:d\n[test_trigger] Marc Demo:ddd)',
-        isCheck: true, // don't change texarea content
+        run: function () {}, // don't change texarea content
     }, {
         content: "check data 9",
         trigger: '.o_content:has(.o_field_widget[name=messages] .o_data_row:eq(3))',
         extra_trigger: 'body:not(:has(.o_field_widget[name=messages] .o_data_row:eq(4)))',
-        isCheck: true,
-    }, ...stepUtils.discardForm({ // cancel
+        run: function () {}, // it's a check
+    }, ...tour.stepUtils.discardForm({ // cancel
         content: "cancel change",
         extra_trigger: '.o_field_widget[name=messages]:has(tr td:containsExact(ddd))',
     }),
@@ -314,7 +314,7 @@
     }, {
         content: "select previous created record",
         trigger: 'td:contains(test_trigger):last',
-        extra_trigger: '.o_breadcrumb:contains(Discussions 2)',
+        extra_trigger: '.breadcrumb-item:contains(Discussions 2)',
     }, {
         content: "edit content",
         trigger: '.o_field_widget[name=name] input',
@@ -338,7 +338,7 @@
     }, {
         content: "test one2many's line onchange",
         trigger: '.o_field_widget[name=messages] .o_selected_row td:nth(3):contains(3)',
-        isCheck: true, // don't blur the many2one
+        run: function () {}, // don't blur the many2one
     }, {
         content: "open the many2one to select an other user",
         trigger: '.o_field_widget[name=messages] .o_field_many2one[name="author"] input',
@@ -349,7 +349,7 @@
     }, {
         content: "test one2many's line onchange after many2one",
         trigger: '.o_field_widget[name=messages] td:contains([test_trigger2] Marc Demo)',
-        isCheck: true, // don't blur the many2one
+        run: function () {}, // don't blur the many2one
     }, {
         content: "change text value",
         trigger: '.o_field_widget[name="body"] textarea',
@@ -361,7 +361,7 @@
     }, {
         content: "test one2many onchange",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValueContains([test_trigger2] Marc Demo:ccccc)',
-        isCheck: true, // don't change texarea content
+        run: function () {}, // don't change texarea content
     }, {
         content: "click outside to trigger one2many onchange",
         trigger: '.o_field_widget[name=categories] input',
@@ -374,19 +374,19 @@
     }, {
         content: "test one2many onchange after delete",
         trigger: '.o_content:not(:has(.o_field_widget[name="message_concat"] textarea:propValueContains(Mitchell Admin:d)))',
-        isCheck: true,
-    }, ...stepUtils.saveForm({ // save
+        run: function () {},
+    }, ...tour.stepUtils.saveForm({ // save
         content: "save discussion",
         extra_trigger: 'body:not(:has(tr:has(td:containsExact(d))))',
     }), { // check saved data
         content: "check data 10",
         trigger: '.o_field_widget[name=message_concat] textarea:propValueContains([test_trigger2] Mitchell Admin:aaa\n[test_trigger2] Marc Demo:ccccc)',
-        isCheck: true, // don't change texarea content
+        run: function () {}, // don't change texarea content
     }, {
         content: "check data 11",
         trigger: '.o_field_widget[name=messages] tbody .o_data_row:eq(1)',
         extra_trigger: 'body:not(:has(.o_field_widget[name=messages] tbody .o_data_row:eq(2)))',
-        isCheck: true,
+        run: function () {},
     }, { // add message eee
         content: "create new message eee",
         trigger: '.o_field_widget[name=messages] .o_field_x2many_list_row_add a',
@@ -395,18 +395,18 @@
         content: "change text value",
         trigger: '.o_field_widget[name="body"] textarea',
         run: 'text eee'
-    }, ...stepUtils.saveForm({ // save
+    }, ...tour.stepUtils.saveForm({ // save
         content: "save discussion",
         extra_trigger: '.o_field_widget[name="body"] textarea:propValueContains(eee)',
     }), { // check saved data
         content: "check data 12",
         trigger: '.o_field_widget[name="message_concat"] textarea:propValueContains([test_trigger2] Mitchell Admin:aaa\n[test_trigger2] Marc Demo:ccccc\n[test_trigger2] Mitchell Admin:eee)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "check data 13",
         trigger: '.o_field_widget[name=messages] .o_data_row:eq(2)',
         extra_trigger: 'body:not(:has(.o_field_widget[name=messages] .o_data_row:eq(3)))',
-        isCheck: true,
+        run: function () {}, // it's a check
     },
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,7 @@
         trigger: '.dropdown-item[data-menu-xmlid="test_new_api.menu_discussions_3"]',
     }, {
         content: "wait web client",
-        trigger: '.o_breadcrumb:contains(Discussions 3)',
+        trigger: '.breadcrumb:contains(Discussions 3)',
     }, {
         content: "create new discussion",
         trigger: 'button.o_list_button_add',
@@ -434,11 +434,11 @@
         content: "check new dummy message happened",
         trigger: '.o_field_widget[name=messages] .o_data_row .o_list_number:containsExact(13)',
         extra_trigger: '.o_field_widget[name=important_messages] .o_data_row .o_list_number:containsExact(13)',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "check field not in embedded view received correctly",
         trigger: '.o_field_widget[name=messages] .o_data_row input[type="checkbox"]:propChecked',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "empty discussion title",
         trigger: '.o_field_widget[name=name] input',
@@ -446,7 +446,7 @@
     }, {
         content: "onchange happened",
         trigger: '.o_field_widget[name=messages] .o_data_row td:contains([removed_title])',
-        isCheck: true,
+        run: function () {}, // it's a check
     }, {
         content: "set discussion title to generate dummy message",
         trigger: '.o_field_widget[name=name] input',
@@ -455,7 +455,8 @@
         content: "check update and new dummy message happened",
         trigger: '.o_field_widget[name=messages] .o_data_row .o_list_number:containsExact(22)',
         extra_trigger: '.o_field_widget[name=important_messages] .o_data_row .o_list_number:containsExact(22)',
-        isCheck: true,
+        run: function () {}, // it's a check
     },
-    ...stepUtils.discardForm(),
-    ]});
+    ...tour.stepUtils.discardForm(),
+    ]);
+});

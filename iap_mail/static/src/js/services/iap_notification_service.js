@@ -1,42 +1,41 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { Markup } from 'web.utils';
 import { registry } from "@web/core/registry";
-
-import { markup } from "@odoo/owl";
 
 export const iapNotificationService = {
     dependencies: ["bus_service", "notification"],
 
     start(env, { bus_service, notification }) {
-        bus_service.subscribe("iap_notification", (params) => {
-            if (params.type == "no_credit") {
-                displayCreditErrorNotification(params);
-            } else {
-                displayNotification(params);
+        bus_service.addEventListener('notification', ({ detail: notifications }) => {
+            for (const { payload, type } of notifications) {
+                if (type === 'iap_notification') {
+                    if (payload.error_type == 'success') {
+                        displaySuccessIapNotification(payload);
+                    } else if (payload.error_type == 'danger') {
+                        displayFailureIapNotification(payload);
+                    }
+                }
             }
         });
-        bus_service.start();
 
-        function displayNotification(params) {
-            notification.add(params.message, {
-                title: params.title,
-                type: params.type,
+        /**
+         * Displays the IAP success notification on user's screen
+         */
+        function displaySuccessIapNotification(notif) {
+            notification.add(notif.title, {
+                type: notif.error_type,
             });
         }
 
-        function displayCreditErrorNotification(params) {
-            // ℹ️ `_t` can only be inlined directly inside JS template literals
-            // after Babel has been updated to version 2.12.
-            const translatedText = _t("Buy more credits");
-            const message = markup(`
-            <a class='btn btn-link' href='${params.get_credits_url}' target='_blank'>
-                <i class='oi oi-arrow-right'></i>
-                ${translatedText}
-            </a>`);
+        /**
+         * Displays the IAP failure notification on user's screen
+         */
+        function displayFailureIapNotification(notif) {
+            const message = Markup`<a class='btn btn-link' href='${notif.url}' target='_blank' ><i class='fa fa-arrow-right'></i> ${env._t("Buy more credits")}</a>`;
             notification.add(message, {
-                title: params.title,
-                type: 'danger',
+                type: notif.error_type,
+                title: notif.title
             });
         }
     }

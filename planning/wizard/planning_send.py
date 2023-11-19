@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, models, fields, Command, _
+from odoo import api, models, fields, _
 from odoo.osv import expression
 
 
@@ -13,8 +13,7 @@ class PlanningSend(models.TransientModel):
     def default_get(self, default_fields):
         res = super().default_get(default_fields)
         if 'slot_ids' in res and 'employee_ids' in default_fields:
-            employees = self.env['planning.slot'].browse(res['slot_ids'][0][2]).employee_id
-            res['employee_ids'] = [Command.set(employees.sudo().sorted('name').ids)]
+            res['employee_ids'] = self.env['planning.slot'].browse(res['slot_ids'][0][2]).filtered_domain(self._get_slot_domain()).employee_id.ids
         return res
 
     start_datetime = fields.Datetime("Period", required=True)
@@ -29,18 +28,21 @@ class PlanningSend(models.TransientModel):
                                     compute="_compute_employees_no_email", inverse="_inverse_employees_no_email")
 
     def _get_slot_domain(self):
-        self.ensure_one()
-        return [('start_datetime', '>=', self.start_datetime), ('end_datetime', '<=', self.end_datetime)]
+        return []
 
     @api.depends('start_datetime', 'end_datetime')
     def _compute_slots_data(self):
+        slot_domain = self._get_slot_domain()
         for wiz in self:
-            wiz.slot_ids = self.env['planning.slot'].with_user(self.env.user).search(self._get_slot_domain(), order='employee_id')
+            domain = expression.AND([[('start_datetime', '>=', wiz.start_datetime), ('end_datetime', '<=', wiz.end_datetime)], slot_domain])
+            wiz.slot_ids = self.env['planning.slot'].with_user(self.env.user).search(domain)
             wiz.employee_ids = wiz.slot_ids.filtered(lambda s: s.resource_type == 'user').mapped('employee_id')
 
     def _inverse_employee_ids(self):
+        slot_domain = self._get_slot_domain()
         for wiz in self:
-            wiz.slot_ids = self.env['planning.slot'].with_user(self.env.user).search(self._get_slot_domain())
+            domain = expression.AND([[('start_datetime', '>=', wiz.start_datetime), ('end_datetime', '<=', wiz.end_datetime)], slot_domain])
+            wiz.slot_ids = self.env['planning.slot'].with_user(self.env.user).search(domain)
 
     @api.depends('employee_ids')
     def _compute_employees_no_email(self):
@@ -77,7 +79,7 @@ class PlanningSend(models.TransientModel):
                 'target': 'new',
             }
         else:
-            return self.action_send()
+            self.action_send()
 
     def action_send(self):
         if self.include_unassigned:
@@ -98,6 +100,7 @@ class PlanningSend(models.TransientModel):
             'start_datetime': self.start_datetime,
             'end_datetime': self.end_datetime,
             'include_unassigned': self.include_unassigned,
+            'slot_ids': [(6, 0, slot_to_send.ids)],
         })
         slot_employees = slot_to_send.mapped('employee_id')
         open_slots = slot_to_send.filtered(lambda s: not s.employee_id and not s.is_past)
@@ -109,7 +112,7 @@ class PlanningSend(models.TransientModel):
                 for slot in open_slots:
                     if not employee.planning_role_ids or not slot.role_id or slot.role_id in employee.planning_role_ids:
                         employees_to_send |= employee
-        res = planning._send_planning(slots=slot_to_send, message=self.note, employees=employees_to_send)
+        res = planning._send_planning(message=self.note, employees=employees_to_send)
         if res:
             return {
                 'type': 'ir.actions.client',
@@ -120,3 +123,23 @@ class PlanningSend(models.TransientModel):
                     'next': {'type': 'ir.actions.act_window_close'},
                 }
             }
+
+    def action_publish(self):
+        domain = [('employee_id', 'in', self.employee_ids.ids)]
+        if self.include_unassigned:
+            domain = expression.OR([[('resource_id', '=', False)], domain])
+        slot_to_publish = self.slot_ids.filtered_domain(domain)
+        if not slot_to_publish:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'danger',
+                    'message': _("The shifts have already been published, or there are no shifts to publish."),
+                }
+            }
+        slot_to_publish.write({
+            'state': 'published',
+            'publication_warning': False
+        })
+        return True

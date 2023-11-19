@@ -1,26 +1,29 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* website_twitter_wall
-#
+# * website_twitter_wall
+# 
 # Translators:
-# Hanna Kheradroosta, 2023
-# Hamid Darabi, 2023
-# Martin Trigaux, 2023
-# Hamed Mohammadi <hamed@dehongi.com>, 2023
-#
+# Martin Trigaux, 2018
+# Hamid Darabi, 2018
+# Hamed Mohammadi <hamed@dehongi.com>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:50+0000\n"
-"Last-Translator: Hamed Mohammadi <hamed@dehongi.com>, 2023\n"
-"Language-Team: Persian (https://app.transifex.com/odoo/teams/41243/fa/)\n"
-"Language: fa\n"
+"POT-Creation-Date: 2018-09-21 14:07+0000\n"
+"PO-Revision-Date: 2018-09-21 14:07+0000\n"
+"Last-Translator: Hamed Mohammadi <hamed@dehongi.com>, 2018\n"
+"Language-Team: Persian (https://www.transifex.com/odoo/teams/41243/fa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: website_twitter_wall
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
+msgid "(Un)archiving a wall. Do you want to proceed?"
+msgstr ""
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_walls
@@ -62,17 +65,6 @@ msgid "Active"
 msgstr "فعال"
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_search
-msgid "Archived"
-msgstr "بایگانی شده"
-
-#. module: website_twitter_wall
-#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__can_publish
-msgid "Can Publish"
-msgstr "می تواند منتشر کند"
-
-#. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__create_uid
 msgid "Created by"
 msgstr "ایجاد شده توسط"
@@ -80,7 +72,7 @@ msgstr "ایجاد شده توسط"
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__create_date
 msgid "Created on"
-msgstr "ایجادشده در"
+msgstr "ایجاد شده در"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
@@ -88,10 +80,7 @@ msgid "Decrease zoom level"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-javascript
-#: code:addons/website_twitter_wall/static/src/xml/website_twitter_wall_tweet.xml:0
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
-#, python-format
 msgid "Delete this tweet"
 msgstr ""
 
@@ -136,14 +125,19 @@ msgid "Is Live"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__is_published
-msgid "Is Published"
-msgstr "منتشر شده است"
-
-#. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__is_live
 msgid "Is live mode on/off"
 msgstr ""
+
+#. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__is_published
+msgid "Is published"
+msgstr ""
+
+#. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall____last_update
+msgid "Last Modified on"
+msgstr "آخرین تغییر در"
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__last_search
@@ -158,7 +152,7 @@ msgstr "آخرین تغییر توسط"
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__write_date
 msgid "Last Updated on"
-msgstr "آخرین بروز رسانی در"
+msgstr "آخرین به روز رسانی در"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
@@ -171,7 +165,7 @@ msgid "Live mode"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__mixed
+#: selection:website.twitter.wall,mode:0
 msgid "Mixed"
 msgstr ""
 
@@ -182,11 +176,12 @@ msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__name
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
 msgid "Name"
 msgstr "نام"
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__popular
+#: selection:website.twitter.wall,mode:0
 msgid "Popular"
 msgstr ""
 
@@ -196,7 +191,7 @@ msgid "Query operators"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model:ir.model.fields.selection,name:website_twitter_wall.selection__website_twitter_wall__mode__recent
+#: selection:website.twitter.wall,mode:0
 msgid "Recent"
 msgstr ""
 
@@ -204,11 +199,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
 msgid "Repeat"
 msgstr "تکرار"
-
-#. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_search
-msgid "Search CRM Score"
-msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__search_pattern
@@ -236,11 +226,6 @@ msgid "Share #{wall.name} on twitter"
 msgstr ""
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.snippet_options
-msgid "Share Option"
-msgstr ""
-
-#. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_view
 msgid "Shuffle"
 msgstr ""
@@ -251,27 +236,26 @@ msgid "Single view"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:83
 #, python-format
-msgid "The Twitter authentication failed. Please check your API key and secret."
+msgid ""
+"The Twitter authentication failed. Please check your API key and secret."
 msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__website_url
 msgid "The full URL to access the document through the website."
-msgstr "آدرس URL کامل برای دسترسی سند در وبسایت."
+msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,help:website_twitter_wall.field_website_twitter_wall__search_pattern
 msgid ""
-"The search criteria to get the tweets you want. You can use the Twitter query operators.\n"
-"You can also use the special \"favorites:screen_name\" operator to get the favorited tweets of \"screen_name\"."
+"The search criteria to get the tweets you want. You can use the Twitter "
+"query operators."
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:94
 #, python-format
 msgid "The tweets search failed. Check your credentials and access token"
 msgstr ""
@@ -288,15 +272,18 @@ msgid "Total Tweets"
 msgstr ""
 
 #. module: website_twitter_wall
+#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__tweet_ids
+msgid "Tweet"
+msgstr ""
+
+#. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_tweet__tweet_html
 msgid "Tweet Html"
 msgstr ""
 
 #. module: website_twitter_wall
-#. odoo-python
-#: code:addons/website_twitter_wall/models/website_twitter_wall.py:0
+#: code:addons/website_twitter_wall/models/website_twitter_wall.py:134
 #: model:ir.actions.act_window,name:website_twitter_wall.website_twitter_tweet_action
-#: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__tweet_ids
 #: model:ir.ui.menu,name:website_twitter_wall.website_twitter_tweet_menu
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_tweet_view_form
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_tweet_view_tree
@@ -318,11 +305,11 @@ msgstr ""
 #. module: website_twitter_wall
 #: model:ir.ui.menu,name:website_twitter_wall.menu_website_twitter_wall_root
 msgid "Twitter Wall"
-msgstr "دیوار تویتر"
+msgstr ""
 
 #. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.snippet_options
-msgid "Twitter Wall Page"
+#: model_terms:ir.ui.view,arch_db:website_twitter_wall.twitter_wall_footer_custom
+msgid "Twitter wall"
 msgstr ""
 
 #. module: website_twitter_wall
@@ -338,17 +325,12 @@ msgstr ""
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_wall__website_published
 msgid "Visible on current website"
-msgstr "قابل دید در وبسایت حاضر"
+msgstr ""
 
 #. module: website_twitter_wall
 #: model:ir.model.fields,field_description:website_twitter_wall.field_website_twitter_tweet__wall_ids
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_tweet_view_form
 msgid "Wall"
-msgstr ""
-
-#. module: website_twitter_wall
-#: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-msgid "Wall Name"
 msgstr ""
 
 #. module: website_twitter_wall
@@ -372,5 +354,5 @@ msgstr "URL وبسایت"
 
 #. module: website_twitter_wall
 #: model_terms:ir.ui.view,arch_db:website_twitter_wall.website_twitter_wall_view_form
-msgid "e.g. My Twitter Wall"
+msgid "Your wall name"
 msgstr ""

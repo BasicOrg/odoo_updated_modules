@@ -4,7 +4,7 @@
 from collections import defaultdict
 
 from odoo import api, fields, models, _, Command
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, get_lang
+from odoo.tools import get_lang
 
 
 class PurchaseOrderGroup(models.Model):
@@ -23,7 +23,7 @@ class PurchaseOrderGroup(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    requisition_id = fields.Many2one('purchase.requisition', string='Blanket Order', copy=False)
+    requisition_id = fields.Many2one('purchase.requisition', string='Purchase Agreement', copy=False)
     is_quantity_copy = fields.Selection(related='requisition_id.is_quantity_copy', readonly=False)
 
     purchase_group_id = fields.Many2one('purchase.order.group')
@@ -113,7 +113,7 @@ class PurchaseOrder(models.Model):
             if alternative_po_ids:
                 view = self.env.ref('purchase_requisition.purchase_requisition_alternative_warning_form')
                 return {
-                    'name': _("What about the alternative Requests for Quotations?"),
+                    'name': _('Alternative Warning'),
                     'type': 'ir.actions.act_window',
                     'view_mode': 'form',
                     'res_model': 'purchase.requisition.alternative.warning',
@@ -142,13 +142,13 @@ class PurchaseOrder(models.Model):
                 origin_po_id.purchase_group_id.order_ids |= orders
             else:
                 self.env['purchase.order.group'].create({'order_ids': [Command.set(origin_po_id.ids + orders.ids)]})
+        mt_note = self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note')
         for order in orders:
             if order.requisition_id:
-                order.message_post_with_source(
+                order.message_post_with_view(
                     'mail.message_origin_link',
-                    render_values={'self': order, 'origin': order.requisition_id},
-                    subtype_xmlid='mail.mt_note',
-                )
+                    values={'self': order, 'origin': order.requisition_id},
+                    subtype_id=mt_note)
         return orders
 
     def write(self, vals):
@@ -158,10 +158,10 @@ class PurchaseOrder(models.Model):
         result = super(PurchaseOrder, self).write(vals)
         if vals.get('requisition_id'):
             for order in self:
-                order.message_post_with_source(
+                order.message_post_with_view(
                     'mail.message_origin_link',
-                    render_values={'self': order, 'origin': order.requisition_id, 'edit': True},
-                    subtype_xmlid='mail.mt_note',
+                    values={'self': order, 'origin': order.requisition_id, 'edit': True},
+                    subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note')
                 )
         if vals.get('alternative_po_ids', False):
             if not self.purchase_group_id and len(self.alternative_po_ids + self) > len(self):
@@ -198,7 +198,6 @@ class PurchaseOrder(models.Model):
         ctx = dict(
             self.env.context,
             search_default_groupby_product=True,
-            purchase_order_id=self.id,
         )
         view_id = self.env.ref('purchase_requisition.purchase_order_line_compare_tree').id
         return {
@@ -207,7 +206,7 @@ class PurchaseOrder(models.Model):
             'view_mode': 'list',
             'res_model': 'purchase.order.line',
             'views': [(view_id, "list")],
-            'domain': [('order_id', 'in', (self | self.alternative_po_ids).ids), ('display_type', '=', False)],
+            'domain': [('order_id', 'in', (self | self.alternative_po_ids).ids)],
             'context': ctx,
         }
 
@@ -215,45 +214,22 @@ class PurchaseOrder(models.Model):
         product_to_best_price_line = defaultdict(lambda: self.env['purchase.order.line'])
         product_to_best_date_line = defaultdict(lambda: self.env['purchase.order.line'])
         product_to_best_price_unit = defaultdict(lambda: self.env['purchase.order.line'])
-        po_alternatives = self | self.alternative_po_ids
-
-        multiple_currencies = False
-        if len(po_alternatives.currency_id) > 1:
-            multiple_currencies = True
-
-        for line in po_alternatives.order_line:
+        order_lines = self.order_line | self.alternative_po_ids.order_line
+        for line in order_lines:
             if not line.product_qty or not line.price_subtotal or line.state in ['cancel', 'purchase', 'done']:
                 continue
-
-            # if no best price line => no best price unit line either
-            if not product_to_best_price_line[line.product_id]:
+            if not product_to_best_price_line[line.product_id] or product_to_best_price_line[line.product_id][0].price_subtotal > line.price_subtotal:
                 product_to_best_price_line[line.product_id] = line
-                product_to_best_price_unit[line.product_id] = line
-            else:
-                price_subtotal = line.price_subtotal
-                price_unit = line.price_unit
-                current_price_subtotal = product_to_best_price_line[line.product_id][0].price_subtotal
-                current_price_unit = product_to_best_price_unit[line.product_id][0].price_unit
-                if multiple_currencies:
-                    price_subtotal /= line.order_id.currency_rate
-                    price_unit /= line.order_id.currency_rate
-                    current_price_subtotal /= product_to_best_price_line[line.product_id][0].order_id.currency_rate
-                    current_price_unit /= product_to_best_price_unit[line.product_id][0].order_id.currency_rate
-
-                if current_price_subtotal > price_subtotal:
-                    product_to_best_price_line[line.product_id] = line
-                elif current_price_subtotal == price_subtotal:
-                    product_to_best_price_line[line.product_id] |= line
-                if current_price_unit > price_unit:
-                    product_to_best_price_unit[line.product_id] = line
-                elif current_price_unit == price_unit:
-                    product_to_best_price_unit[line.product_id] |= line
-
+            elif product_to_best_price_line[line.product_id][0].price_subtotal == line.price_subtotal:
+                product_to_best_price_line[line.product_id] |= line
             if not product_to_best_date_line[line.product_id] or product_to_best_date_line[line.product_id][0].date_planned > line.date_planned:
                 product_to_best_date_line[line.product_id] = line
             elif product_to_best_date_line[line.product_id][0].date_planned == line.date_planned:
                 product_to_best_date_line[line.product_id] |= line
-
+            if not product_to_best_price_unit[line.product_id] or product_to_best_price_unit[line.product_id][0].price_unit > line.price_unit:
+                product_to_best_price_unit[line.product_id] = line
+            elif product_to_best_price_unit[line.product_id][0].price_unit == line.price_unit:
+                product_to_best_price_unit[line.product_id] |= line
         best_price_ids = set()
         best_date_ids = set()
         best_price_unit_ids = set()
@@ -278,19 +254,8 @@ class PurchaseOrderLine(models.Model):
             for line in pol.order_id.requisition_id.line_ids:
                 if line.product_id == pol.product_id:
                     pol.price_unit = line.product_uom_id._compute_price(line.price_unit, pol.product_uom)
-                    partner = pol.order_id.partner_id or pol.order_id.requisition_id.vendor_id
-                    params = {'order_id': pol.order_id}
-                    seller = pol.product_id._select_seller(
-                        partner_id=partner,
-                        quantity=pol.product_qty,
-                        date=pol.order_id.date_order and pol.order_id.date_order.date(),
-                        uom_id=line.product_uom_id,
-                        params=params)
-
-                    if not pol.date_planned:
-                        pol.date_planned = pol._get_date_planned(seller).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
-                    product_ctx = {'seller_id': seller.id, 'lang': get_lang(pol.env, partner.lang).code}
+                    partner = pol.order_id.partner_id or pol.order_id.requisition.vendor_id
+                    product_ctx = {'seller_id': partner.id, 'lang': get_lang(pol.env, partner.lang).code}
                     name = pol._get_product_purchase_description(pol.product_id.with_context(product_ctx))
                     if line.product_description_variants:
                         name += '\n' + line.product_description_variants
@@ -323,7 +288,7 @@ class PurchaseOrderLine(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': _("Nothing to clear"),
-                'message': _("There are no quantities to clear."),
+                'message': _("There are no quantites to clear."),
                 'sticky': False,
             }
         }

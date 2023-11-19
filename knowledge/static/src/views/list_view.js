@@ -1,6 +1,5 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from '@web/core/registry';
 
 import { listView } from '@web/views/list/list_view';
@@ -11,7 +10,7 @@ export class KnowledgeArticleController extends ListController {
     setup() {
         super.setup();
         // Hide create button (creation cannot be deactivated to allow imports)
-        this.activeActions.create = false;
+        this.activeActions['create'] = false;
     }
 
     /**
@@ -19,24 +18,24 @@ export class KnowledgeArticleController extends ListController {
      * Place it as the second additional action for admin users.
      * @override
      */
-    getStaticActionMenuItems() {
-        const menuItems = super.getStaticActionMenuItems();
-        menuItems.duplicate = {
-            isAvailable: () => this.nbSelected && this.userService.isAdmin,
-            sequence: 15,
-            icon: "fa fa-clone",
-            description: _t("Duplicate"),
-            callback: async () => {
-                const selectedResIds = await this.getSelectedResIds();
-                if (selectedResIds.length === 1) {
-                    await this.model.orm.call(this.props.resModel, "copy", [selectedResIds]);
-                } else {
-                    await this.model.orm.call(this.props.resModel, "copy_batch", [selectedResIds]);
+    getActionMenuItems() {
+        const actionMenuItems = super.getActionMenuItems();
+        if (actionMenuItems && this.userService.isAdmin) {
+            actionMenuItems.other.splice(1, 0, {
+                description: this.env._t("Duplicate"),
+                callback: async () => {
+                    const selectedResIds = await this.getSelectedResIds();
+                    if (selectedResIds.length === 1) {
+                        await this.model.orm.call(this.props.resModel, "copy", [selectedResIds]);
+                    } else {
+                        await this.model.orm.call(this.props.resModel, "copy_batch", [selectedResIds]);
+                    }
+                    // Reloads the view to show the new duplicates
+                    this.actionService.switchView("list");
                 }
-                this.model.load();
-            },
-        };
-        return menuItems;
+            });
+        }
+        return actionMenuItems;
     }
 }
 

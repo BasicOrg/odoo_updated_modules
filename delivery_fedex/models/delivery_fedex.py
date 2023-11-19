@@ -3,7 +3,6 @@
 import logging
 import time
 
-from markupsafe import Markup
 from zeep.helpers import serialize_object
 
 from odoo import api, models, fields, _, tools
@@ -104,13 +103,6 @@ class ProviderFedex(models.Model):
                                            ('FEDEX_NEXT_DAY_AFTERNOON', 'FEDEX_NEXT_DAY_AFTERNOON'),
                                            ('FEDEX_NEXT_DAY_END_OF_DAY', 'FEDEX_NEXT_DAY_END_OF_DAY'),
                                            ('FEDEX_EXPRESS_SAVER', 'FEDEX_EXPRESS_SAVER'),
-                                           ('FEDEX_REGIONAL_ECONOMY', 'FEDEX_REGIONAL_ECONOMY'),
-                                           ('FEDEX_FIRST', 'FEDEX_FIRST'),
-                                           ('FEDEX_PRIORITY_EXPRESS', 'FEDEX_PRIORITY_EXPRESS'),
-                                           ('FEDEX_PRIORITY', 'FEDEX_PRIORITY'),
-                                           ('FEDEX_PRIORITY_EXPRESS_FREIGHT', 'FEDEX_PRIORITY_EXPRESS_FREIGHT'),
-                                           ('FEDEX_PRIORITY_FREIGHT', 'FEDEX_PRIORITY_FREIGHT'),
-                                           ('FEDEX_ECONOMY_SELECT', 'FEDEX_ECONOMY_SELECT'),
                                            ],
                                           default='FEDEX_INTERNATIONAL_PRIORITY')
     fedex_duty_payment = fields.Selection([('SENDER', 'Sender'), ('RECIPIENT', 'Recipient')], required=True, default="SENDER")
@@ -234,7 +226,6 @@ class ProviderFedex(models.Model):
         res = []
 
         for picking in pickings:
-            order_currency = picking.sale_id.currency_id or picking.company_id.currency_id
 
             srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
             superself = self.sudo()
@@ -245,7 +236,7 @@ class ProviderFedex(models.Model):
 
             package_type = picking.package_ids and picking.package_ids[0].package_type_id.shipper_package_code or self.fedex_default_package_type_id.shipper_package_code
             srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit, self.fedex_saturday_delivery)
-            srm.set_currency(_convert_curr_iso_fdx(order_currency.name))
+            srm.set_currency(_convert_curr_iso_fdx(picking.company_id.currency_id.name))
             srm.set_shipper(picking.company_id.partner_id, picking.picking_type_id.warehouse_id.partner_id)
             srm.set_recipient(picking.partner_id)
 
@@ -254,13 +245,14 @@ class ProviderFedex(models.Model):
             srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type, 'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
 
             order = picking.sale_id
+            order_currency = picking.sale_id.currency_id or picking.company_id.currency_id
 
             net_weight = self._fedex_convert_weight(picking.shipping_weight, self.fedex_weight_unit)
 
             # Commodities for customs declaration (international shipping)
             if 'INTERNATIONAL' in self.fedex_service_type  or (picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN'):
 
-                commodities = self._get_commodities_from_stock_move_lines(picking.move_line_ids)
+                commodities = self._get_commodities_from_order(order)
                 for commodity in commodities:
                     srm.commodities(self, commodity, _convert_curr_iso_fdx(order_currency.name))
 
@@ -296,7 +288,6 @@ class ProviderFedex(models.Model):
             master_tracking_id = False
             package_labels = []
             carrier_tracking_refs = []
-            lognote_pickings = picking.sale_id.picking_ids if picking.sale_id else picking
 
             for sequence, package in enumerate(packages, start=1):
 
@@ -341,15 +332,14 @@ class ProviderFedex(models.Model):
 
                     carrier_price = self._get_request_price(response['price'], order, order_currency)
 
-                    logmessage = Markup(_("Shipment created into Fedex<br/>"
-                                          "<b>Tracking Numbers:</b> %s<br/>"
-                                          "<b>Packages:</b> %s")) % (','.join(carrier_tracking_refs), ','.join([pl[0] for pl in package_labels]))
+                    logmessage = _("Shipment created into Fedex<br/>"
+                                   "<b>Tracking Numbers:</b> %s<br/>"
+                                   "<b>Packages:</b> %s") % (','.join(carrier_tracking_refs), ','.join([pl[0] for pl in package_labels]))
                     if self.fedex_label_file_type != 'PDF':
-                        attachments = [('%s-%s.%s' % (self._get_delivery_label_prefix(), pl[0], self.fedex_label_file_type), pl[1]) for pl in package_labels]
+                        attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for pl in package_labels]
                     if self.fedex_label_file_type == 'PDF':
-                        attachments = [('%s.pdf' % (self._get_delivery_label_prefix()), pdf.merge_pdf([pl[1] for pl in package_labels]))]
-                    for pick in lognote_pickings:
-                        pick.message_post(body=logmessage, attachments=attachments)
+                        attachments = [('LabelFedex.pdf', pdf.merge_pdf([pl[1] for pl in package_labels]))]
+                    picking.message_post(body=logmessage, attachments=attachments)
                     shipping_data = {'exact_price': carrier_price,
                                      'tracking_number': ','.join(carrier_tracking_refs)}
                     res = res + [shipping_data]
@@ -360,9 +350,8 @@ class ProviderFedex(models.Model):
                 self.get_return_label(picking, tracking_number=response['tracking_number'], origin_date=response['date'])
             commercial_invoice = srm.get_document()
             if commercial_invoice:
-                fedex_documents = [('%s.pdf' % self._get_delivery_doc_prefix(), commercial_invoice)]
-                for pick in lognote_pickings:
-                    pick.message_post(body=_('Fedex Documents'), attachments=fedex_documents)
+                fedex_documents = [('DocumentFedex.pdf', commercial_invoice)]
+                picking.message_post(body='Fedex Documents', attachments=fedex_documents)
         return res
 
     def fedex_get_return_label(self, picking, tracking_number=None, origin_date=None):
@@ -422,7 +411,7 @@ class ProviderFedex(models.Model):
         if not response.get('errors_message'):
             fedex_labels = [('%s-%s-%s.%s' % (self.get_return_label_prefix(), response['tracking_number'], index, self.fedex_label_file_type), label)
                             for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
-            picking.message_post(body=_('Return Label'), attachments=fedex_labels)
+            picking.message_post(body='Return Label', attachments=fedex_labels)
         else:
             raise UserError(response['errors_message'])
 
@@ -461,17 +450,17 @@ class ProviderFedex(models.Model):
         """Extract price info in target currency, converting if necessary"""
         if not order_currency:
             order_currency = order.currency_id
-        company = order.company_id or self.env.user.company_id
+        company_currency = order.company_id.currency_id if order.company_id else self.env.user.company_id.currency_id
         fdx_currency = _convert_curr_iso_fdx(order_currency.name)
         if fdx_currency in req_price:
             # normally we'll have the order currency on the response, then we can take it as is
             return req_price[fdx_currency]
         _logger.info("Preferred currency has not been found in FedEx response")
         # otherwise, see if we have the company currency, and convert to the order's currency
-        fdx_currency = _convert_curr_iso_fdx(company.currency_id.name)
+        fdx_currency = _convert_curr_iso_fdx(company_currency.name)
         if fdx_currency in req_price:
-            return company.currency_id._convert(
-                req_price[fdx_currency], order_currency, company, order.date_order or fields.Date.today())
+            return company_currency._convert(
+                req_price[fdx_currency], order_currency, order.company_id, order.date_order or fields.Date.today())
         # finally, attempt to find active currency in the database
         currency_codes = list(req_price.keys())
         # note, fedex sometimes return the currency as ISO instead of using their own code 
@@ -483,7 +472,7 @@ class ProviderFedex(models.Model):
         for fdx_currency in req_price:
             if fdx_currency in currency_by_name:
                 return currency_by_name[fdx_currency]._convert(
-                    req_price[fdx_currency], order_currency, company, order.date_order or fields.Date.today())
+                    req_price[fdx_currency], order_currency, order.company_id, order.date_order or fields.Date.today())
         _logger.info("No known currency has not been found in FedEx response")
         return 0.0
 
@@ -537,7 +526,7 @@ class ProviderFedex(models.Model):
         # converted weight of the shipping to the smallest value accepted by FedEx: 0.01 kg or lb.
         # (in the case where the weight is actually 0.0 because weights are not set, don't do this)
         if weight > 0.0:
-            new_value = max(new_value, 0.01)
+            new_value = max(new_value, 0.1)
 
         # Rounding to avoid differences between sum of values before and after conversion, caused by
         # Floating Point Arithmetic issues (ex: .1 + .1 + .1 != .3)

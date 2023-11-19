@@ -5,29 +5,26 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//setting[@id='process_operations_barcodes']" position="inside">
+            <xpath expr="//div[@name='stock_barcode']" position="after">
                 <field name="show_barcode_nomenclature" invisible="1"/>
-                <div class="content-group row mt16" invisible="not show_barcode_nomenclature">
+                <div class="content-group row mt16" attrs="{'invisible': [('show_barcode_nomenclature', '=', False)]}">
                     <label for="barcode_nomenclature_id" string="Barcode Nomenclature" class="col-lg-3 o_light_label"/>
-                    <field name="barcode_nomenclature_id" required="module_stock_barcode" options="{'no_open': 1}"/>
+                    <field name="barcode_nomenclature_id" attrs="{'required': [('module_stock_barcode', '=', True)]}" options="{'no_open': 1}"/>
                 </div>
-                <div class="content-group">
-                    <div class="mt8" invisible="not module_stock_barcode">
-                        <button class="btn-link" type="action" string="Configure Product Barcodes" name="%(stock_barcode.product_action_barcodes)d" icon="oi-arrow-right"/>
-                    </div>
+            </xpath>
+            <xpath expr="//div[@id='use_product_barcode']" position="replace">
+                <div class="mt8" attrs="{'invisible': [('module_stock_barcode', '=', False)]}">
+                    <button class="btn-link" type="action" string="Configure Product Barcodes" name="%(stock_barcode.product_action_barcodes)d" icon="fa-arrow-right"/>
                 </div>
+            </xpath>
+            <xpath expr="//div[@id='barcode_settings']" position="inside">
                 <div>
-                    <a href="stock_barcode/print_inventory_commands?barcode_type=barcode_commands_and_operation_types" class="oe_link" target="_blank">
-                        <i class="fa fa-print"/> Print barcode commands and operation types
-                    </a>
-                </div>
-                <div groups="stock.group_stock_multi_locations">
-                    <a href="stock_barcode/print_inventory_commands?barcode_type=locations" class="oe_link" target="_blank">
-                        <i class="fa fa-print"/> Print storage locations
+                    <a href="stock_barcode/print_inventory_commands" class="oe_link" target="_blank">
+                        <i class="fa fa-print"/> Print barcode commands
                     </a>
                 </div>
                 <field name="stock_barcode_demo_active" invisible="1"/>
-                <div invisible="not stock_barcode_demo_active">
+                <div attrs="{'invisible': [('stock_barcode_demo_active', '!=', True)]}">
                     <a href="stock_barcode/static/img/barcodes_demo.pdf" class="oe_link" target="_blank">
                         <i class="fa fa-print"/> Print barcode demo sheet
                     </a>

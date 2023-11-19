@@ -12,7 +12,7 @@ class TimesheetsAnalysisReport(models.Model):
     is_timer_running = fields.Boolean(compute='_compute_is_timer_running', search='_search_is_timer_running')
 
     def _compute_is_timer_running(self):
-        timer_timesheet_ids = set(self.env['account.analytic.line']._search([('id', 'in', self.ids), ('is_timer_running', '=', True)]))
+        timer_timesheet_ids = self.env['account.analytic.line']._search([('id', 'in', self.ids), ('is_timer_running', '=', True)])
         for timesheet_analysis in self:
             timesheet_analysis.is_timer_running = timesheet_analysis.id in timer_timesheet_ids
 

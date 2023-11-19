@@ -1,17 +1,17 @@
 /** @odoo-module **/
 
 import { unique } from "@web/core/utils/arrays";
-import { visitXML } from "@web/core/utils/xml";
+import { XMLParser } from "@web/core/utils/xml";
 import { archParseBoolean } from "@web/views/utils";
 
-export class MapArchParser {
+export class MapArchParser extends XMLParser {
     parse(arch) {
         const archInfo = {
             fieldNames: [],
             fieldNamesMarkerPopup: [],
         };
 
-        visitXML(arch, (node) => {
+        this.visitXML(arch, (node) => {
             switch (node.tagName) {
                 case "map":
                     this.visitMap(node, archInfo);

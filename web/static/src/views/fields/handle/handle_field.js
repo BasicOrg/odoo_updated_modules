@@ -1,23 +1,19 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { standardFieldProps } from "../standard_field_props";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
-export class HandleField extends Component {
-    static template = "web.HandleField";
-    static props = {
-        ...standardFieldProps,
-    };
-}
+export class HandleField extends Component {}
 
-export const handleField = {
-    component: HandleField,
-    displayName: _t("Handle"),
-    supportedTypes: ["integer"],
-    isEmpty: () => false,
+HandleField.template = "web.HandleField";
+HandleField.props = {
+    ...standardFieldProps,
 };
+HandleField.displayName = _lt("Handle");
+HandleField.supportedTypes = ["integer"];
+HandleField.isEmpty = () => false;
 
-registry.category("fields").add("handle", handleField);
+registry.category("fields").add("handle", HandleField);

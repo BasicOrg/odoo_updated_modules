@@ -5,16 +5,19 @@ from odoo import fields, models
 
 
 class ReportProjectTaskUser(models.Model):
-    _inherit = 'report.project.task.user'
+    _name = 'report.project.task.user.fsm'
+    _inherit = 'report.project.task.user.fsm'
 
     worksheet_template_id = fields.Many2one('worksheet.template', string="Worksheet Template", readonly=True)
 
     def _select(self):
-        return super()._select() + """,
-            t.worksheet_template_id
+        select_to_append = """,
+            t.worksheet_template_id as worksheet_template_id
         """
+        return super()._select() + select_to_append
 
     def _group_by(self):
-        return super()._group_by() + """,
+        group_by_append = """,
                 t.worksheet_template_id
         """
+        return super(ReportProjectTaskUser, self)._group_by() + group_by_append

@@ -3,18 +3,16 @@
 # 	* mrp_plm
 # 
 # Translators:
-# Wil Odoo, 2023
-# Larissa Manderfeld, 2023
-# Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -34,13 +32,20 @@ msgid "# ECOs"
 msgstr "# ECOs"
 
 #. module: mrp_plm
-#. odoo-python
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__eco_inprogress_count
+msgid "# ECOs in progress"
+msgstr "# ECOs en curso"
+
+#. module: mrp_plm
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "%(approval_name)s %(approver_name)s %(approval_status)s this ECO"
 msgstr ""
-"%(approval_name)s %(approver_name)s %(approval_status)s esta orden de cambio"
-" de ingeniería"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+msgstr "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
@@ -52,7 +57,6 @@ msgstr ""
 "title=\"Domain alias\"/>&amp;nbsp;"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid ""
@@ -67,19 +71,14 @@ msgstr ""
 "Utilice esta función para almacenar cualquier archivo, como dibujos o especificaciones."
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_plm_production_form_view
-msgid "<span class=\"o_stat_text\">ECO(S)</span>"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+msgid "<span class=\"bg-danger\">Archived</span>"
+msgstr "<span class=\"bg-danger\">Archivado</span>"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-danger\">Archived</span>"
-msgstr "<span class=\"text-bg-danger\">Archivado</span>"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-primary\">New</span>"
-msgstr ""
+msgid "<span class=\"bg-primary\">New</span>"
+msgstr "<span class=\"bg-primary\">Nuevo</span>"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
@@ -140,7 +139,7 @@ msgstr "Añadir una descripción.."
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_tag_action
 msgid "Add a new tag"
-msgstr "Añadir una nueva etiqueta"
+msgstr "Añadir nueva etiqueta"
 
 #. module: mrp_plm
 #: model:res.groups,name:mrp_plm.group_plm_manager
@@ -158,34 +157,14 @@ msgid "Alias Contact Security"
 msgstr "Seudónimo del contacto de seguridad"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_domain_id
-msgid "Alias Domain"
-msgstr "Seudónimo del dominio"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_domain
-msgid "Alias Domain Name"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_full_name
-msgid "Alias Email"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_name
 msgid "Alias Name"
 msgstr "Seudónimo"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias Status"
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr ""
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_domain
+msgid "Alias domain"
+msgstr "Seudónimo del dominio"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_model_id
@@ -236,7 +215,7 @@ msgstr "Aplicar sincronización"
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__type
 msgid "Apply on"
-msgstr "Aplicar en"
+msgstr "Aplicar sobre"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__approval_date
@@ -316,7 +295,6 @@ msgid "Attachment Count"
 msgstr "Nº de archivos adjuntos"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__mrp_document_ids
 #, python-format
@@ -337,11 +315,6 @@ msgstr "Esperando Validación"
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_report_mrp_report_bom_structure
 msgid "BOM Overview Report"
-msgstr "Reporte de resumen de LdM"
-
-#. module: mrp_plm
-#: model:mrp.eco.type,name:mrp_plm.ecotype_bom_update
-msgid "BOM Updates"
 msgstr ""
 
 #. module: mrp_plm
@@ -355,7 +328,6 @@ msgid "Bill of Material Line"
 msgstr "Línea de Lista de Materiales"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.actions.act_window,name:mrp_plm.mrp_bom_action_kanban
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__bom_id
@@ -377,13 +349,8 @@ msgstr ""
 "paquete de productos."
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__blocked
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_bom_update_effective
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_bom_update_new
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_bom_update_progress
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_bom_update_validated
 #: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_effective
 #: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_new
 #: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_progress
@@ -414,14 +381,7 @@ msgid "BoM Revision"
 msgstr "Revisión de LdM"
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_production.py:0
-#, python-format
-msgid "BoM Suggestions from %(mo_name)s"
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
 #: model_terms:ir.ui.view,arch_db:mrp_plm.report_mrp_bom_inherit_mrp_plm
 #, python-format
@@ -442,15 +402,6 @@ msgstr "Puede aprobar"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__user_can_reject
 msgid "Can Reject"
 msgstr "Puede rechazar"
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_production.py:0
-#, python-format
-msgid ""
-"Cannot create an ECO if the Manufacturing Order doesn't use a Bill of "
-"Materials"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_changes
@@ -528,11 +479,6 @@ msgstr "Conflicto resuelto"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__operation_change
 msgid "Consumed in Operation"
 msgstr "Consumido en la operación"
-
-#. module: mrp_plm
-#: model:ir.actions.server,name:mrp_plm.action_production_order_create_eco
-msgid "Create ECO"
-msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_stage_action
@@ -653,6 +599,11 @@ msgid "Done"
 msgstr "Hecho"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Dropdown menu"
+msgstr "Menú desplegable"
+
+#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_routing_change_view_form
 msgid "Duration"
 msgstr "Duración"
@@ -753,12 +704,11 @@ msgid "ECO(s)"
 msgstr "ECO(s)"
 
 #. module: mrp_plm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/mrp_plm/static/src/components/bom_overview_display_filter/mrp_bom_overview_display_filter.js:0
 #: code:addons/mrp_plm/static/src/components/bom_overview_line/mrp_bom_overview_line.js:0
 #: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_ecos
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_production__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__eco_ids
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_eco_report
@@ -771,23 +721,16 @@ msgid "ECOs"
 msgstr "ECOs"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Eco"
 msgstr "ECO"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Eco BoM"
 msgstr "ECO LdM"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_production__eco_count
-msgid "Eco Count"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_eco_routing_change
@@ -801,7 +744,6 @@ msgstr "Editar Tarea"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_bom_update_effective
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_effective
 msgid "Effective"
 msgstr "Eficaz"
@@ -812,7 +754,6 @@ msgid "Effective Date"
 msgstr "Fecha efectiva"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_email
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_view_form
 msgid "Email Alias"
 msgstr "Pseudónimo de correo"
@@ -1003,19 +944,13 @@ msgid "In #{kanban_getcolorname(record.color.raw_value)}"
 msgstr "En #{kanban_getcolorname(record.color.raw_value)}"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__normal
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_bom_update_effective
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_bom_update_new
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_bom_update_progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_bom_update_validated
 #: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_effective
 #: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_new
 #: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_progress
 #: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_validated
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_bom_update_progress
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_progress
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 #, python-format
@@ -1074,6 +1009,18 @@ msgid "Kanban Valid Explanation"
 msgstr "Explicación del kanban válido"
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_tag____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__write_uid
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__write_uid
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template__write_uid
@@ -1108,9 +1055,15 @@ msgid "Latest Bom"
 msgstr "Última lista de materiales"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_incoming_local
-msgid "Local-part based incoming detection"
-msgstr ""
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__email_cc
+msgid "List of cc from incoming emails."
+msgstr "Listado de cc en emails entrantes."
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_main_attachment_id
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjuntos principales"
 
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
@@ -1135,14 +1088,9 @@ msgid "Manual Duration Change"
 msgstr "Cambio de duración manual"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__production_id
-msgid "Manufacturing Orders"
-msgstr "Órdenes de producción"
-
-#. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_master_data
 msgid "Master Data"
-msgstr "Datos maestros"
+msgstr "Datos principales"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_error
@@ -1183,7 +1131,6 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: mrp_plm
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_bom_update_new
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_new
 msgid "New"
 msgstr "Nuevo"
@@ -1192,13 +1139,6 @@ msgstr "Nuevo"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__new_bom_id
 msgid "New Bill of Materials"
 msgstr "Nueva lista de materiales"
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_production.py:0
-#, python-format
-msgid "New BoM from %(mo_name)s"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__current_bom_id
@@ -1302,7 +1242,7 @@ msgstr "Numero de errores"
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_needaction_counter
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Número de mensajes que requieren una acción"
 
 #. module: mrp_plm
@@ -1332,7 +1272,6 @@ msgid "Operation Changes"
 msgstr "Cambios de operación"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Operation not supported"
@@ -1390,6 +1329,11 @@ msgstr ""
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_dashboard
 msgid "Overview"
 msgstr "Información general"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_user_id
+msgid "Owner"
+msgstr "Propietario"
 
 #. module: mrp_plm
 #: model:ir.module.category,name:mrp_plm.module_category_manufacturing_product_lifecycle_management_(plm)
@@ -1481,16 +1425,10 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Product Only"
 msgstr "Solo el producto"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Production"
-msgstr "Producción"
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_document
@@ -1518,18 +1456,7 @@ msgid "Quantity"
 msgstr "Cantidad"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__rating_ids
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__rating_ids
-msgid "Ratings"
-msgstr "Valoraciones"
-
-#. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_bom_update_effective
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_bom_update_new
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_bom_update_progress
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_bom_update_validated
 #: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_effective
 #: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_new
 #: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_progress
@@ -1702,11 +1629,10 @@ msgstr ""
 "Planificada: futuras actividades."
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
-msgid "Successfully Rebased!"
-msgstr ""
+msgid "Successfully Rebased !"
+msgstr "Sincronización realizada"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
@@ -1724,14 +1650,14 @@ msgstr "Nombre de etiqueta"
 
 #. module: mrp_plm
 #: model:ir.model.constraint,message:mrp_plm.constraint_mrp_eco_tag_name_uniq
-msgid "Tag name already exists!"
-msgstr "¡El nombre de la etiqueta ya existe!"
+msgid "Tag name already exists !"
+msgstr "¡El nombre de categoría ya existe!"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__tag_ids
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_tag_view_tree
 msgid "Tags"
-msgstr "Etiquetas"
+msgstr "Categorías"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -1799,7 +1725,21 @@ msgid ""
 msgstr ""
 "El nombre de este seudónimo de correo electrónico. Por ejemplo, "
 "\"trabajos\",  si lo que quiere es obtener los correos para "
-"<trabajos@example.odoo.com>"
+"<trabajos@example.odoo.com>."
+
+#. module: mrp_plm
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_user_id
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
+msgstr ""
+"El propietario de los registros creados al recibir correos electrónicos en "
+"este seudónimo. Si el campo no está establecido, el sistema tratará de "
+"encontrar el propietario adecuado basado en la dirección del emisor (De), o "
+"usará la cuenta de administrador si no se encuentra un usuario para esa "
+"dirección."
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -1859,6 +1799,11 @@ msgid "Update"
 msgstr "Actualizar"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_plm_production_form_view
+msgid "Update BoM"
+msgstr "Actualización  LdM"
+
+#. module: mrp_plm
 #: model:res.groups,name:mrp_plm.group_plm_user
 msgid "User"
 msgstr "Usuario"
@@ -1869,7 +1814,6 @@ msgid "Users"
 msgstr "Usuarios"
 
 #. module: mrp_plm
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_bom_update_validated
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_validated
 msgid "Validated"
 msgstr "Validado"
@@ -1920,8 +1864,8 @@ msgid ""
 "You can also add a description to help your coworkers understand the meaning"
 " and purpose of the stage."
 msgstr ""
-"Puedes incluso añadir una descripción para ayudar a tus compañeros de "
-"trabajo a entender el significado y el propósito de esta etapa."
+"Puede incluso añadir una descripción para ayudar a sus compañeros de trabajo"
+" a entender el significado y el propósito de esta etapa."
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -1933,7 +1877,6 @@ msgstr ""
 "                            de las etiquetas predeterminadas."
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "You cannot change the stage, as approvals are required in the process."
@@ -1941,7 +1884,6 @@ msgstr ""
 "No puede cambiar la etapa, ya que se requieren aprobaciones en el proceso."
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "You cannot change the stage, as approvals are still required."
@@ -1958,11 +1900,6 @@ msgstr "ej. Producto asombroso 2.0"
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
 msgid "e.g. Engineering Department"
 msgstr "p.ej. Departamento de Ingeniería"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_view_form
-msgid "e.g. domain.com"
-msgstr "p. ej. dominio.com"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban

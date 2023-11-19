@@ -3,6 +3,15 @@ export const pageOptionsCallbacks = {
     header_overlay: function (value) {
         this.document.getElementById('wrapwrap').classList.toggle('o_header_overlay', value);
     },
+    header_color: function (value) {
+        const headerEl = this.document.querySelector('#wrapwrap > header');
+        if (this.value) {
+            headerEl.classList.remove(this.value);
+        }
+        if (value) {
+            headerEl.classList.add(value);
+        }
+    },
     header_visible: function (value) {
         const headerEl = this.document.querySelector('#wrapwrap > header');
         headerEl.classList.toggle('d-none', !value);
@@ -28,9 +37,7 @@ export class PageOption {
         this.isDirty = isDirty;
         this.document = document;
         this.name = name;
-        if (pageOptionsCallbacks[name]) {
-            this.callback = pageOptionsCallbacks[name].bind(this);
-        }
+        this.callback = pageOptionsCallbacks[name].bind(this);
     }
     get value() {
         if (this.el.value.toLowerCase() === 'true') {
@@ -41,9 +48,7 @@ export class PageOption {
         return this.el.value;
     }
     set value(value) {
-        if (this.callback) {
-            this.callback(value);
-        }
+        this.callback(value);
         this.el.value = value;
         this.isDirty = true;
     }

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, fields, models
+from odoo import fields, models, _
 
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    l10n_au_kp_api_key = fields.Char(string='Employment Hero API Key', config_parameter='l10n_au_keypay.l10n_au_kp_api_key')
+    l10n_au_kp_api_key = fields.Char(string='Keypay API Key', config_parameter='l10n_au_keypay.l10n_au_kp_api_key')
     l10n_au_kp_base_url = fields.Char(
         string='Payroll URL', config_parameter='l10n_au_keypay.l10n_au_kp_base_url',
         required=True, default='https://keypay.yourpayroll.com.au/')
@@ -24,7 +24,7 @@ class ResConfigSettings(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'title': 'Payruns fetched',
-                'message': _("%s Payruns were fetched and added to your accounting", len(account_moves)),
+                'message': _("%s Payruns were fetched and added to your accounting") % (len(account_moves)),
                 'sticky': True,
             }
         }

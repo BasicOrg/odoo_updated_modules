@@ -18,25 +18,18 @@
   </template>
 
   <template id="portal_my_home_purchase" name="Show Requests for Quotation / Purchase Orders" customize_show="True" inherit_id="portal.portal_my_home" priority="25">
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-          <t t-set="portal_vendor_category_enable" t-value="True"/>
-      </xpath>
-      <div id="portal_vendor_category" position="inside">
-          <t t-call="portal.portal_docs_entry">
-              <t t-set="icon" t-value="'/purchase/static/src/img/rfq.svg'"/>
-              <t t-set="text">Follow your Requests for Quotation</t>
-              <t t-set="title">Requests for Quotation</t>
-              <t t-set="url" t-value="'/my/rfq'"/>
-              <t t-set="placeholder_count" t-value="'rfq_count'"/>
-          </t>
-          <t t-call="portal.portal_docs_entry">
-              <t t-set="icon" t-value="'/purchase/static/src/img/calculator.svg'"/>
-              <t t-set="text">Follow orders you have to fulfill</t>
-              <t t-set="title">Our Orders</t>
-              <t t-set="url" t-value="'/my/purchase'"/>
-              <t t-set="placeholder_count" t-value="'purchase_count'"/>
-          </t>
-      </div>
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Requests for Quotation</t>
+            <t t-set="url" t-value="'/my/rfq'"/>
+            <t t-set="placeholder_count" t-value="'rfq_count'"/>
+        </t>
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Purchase Orders</t>
+            <t t-set="url" t-value="'/my/purchase'"/>
+            <t t-set="placeholder_count" t-value="'purchase_count'"/>
+        </t>
+    </xpath>
   </template>
 
   <template id="portal_my_purchase_rfqs" name="My Requests For Quotation">
@@ -47,7 +40,7 @@
               <t t-set="title" >Requests For Quotation</t>
           </t>
           <t t-if="not rfqs">
-              <p class="alert alert-warning">There are currently no requests for quotation for your account.</p>
+              <p>There are currently no requests for quotation for your account.</p>
           </t>
           <t t-if="rfqs" t-call="portal.portal_table">
               <thead>
@@ -84,7 +77,7 @@
               <t t-set="title">Purchase Orders</t>
           </t>
           <t t-if="not orders">
-              <p class="alert alert-warning">There are currently no purchase orders for your account.</p>
+              <p>There are currently no purchase orders for your account.</p>
           </t>
           <t t-if="orders" t-call="portal.portal_table">
               <thead>
@@ -126,7 +119,7 @@
       </t>
   </template>
 
-  <template id="portal_my_purchase_order" name="Purchase Order" inherit_id="portal.portal_sidebar" primary="True">
+  <template id="portal_my_purchase_order" name="Purchase Order Portal Template" inherit_id="portal.portal_sidebar" primary="True">
       <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
           <t t-set="o_portal_fullwidth_alert" groups="purchase.group_purchase_manager">
               <t t-call="portal.portal_back_in_edit_mode">
@@ -137,44 +130,46 @@
           <div class="row mt16 o_portal_purchase_sidebar">
               <!-- Sidebar -->
               <t t-call="portal.portal_record_sidebar">
-                  <t t-set="classes" t-value="'col-lg-3 col-xl-4 d-print-none'"/>
+                  <t t-set="classes" t-value="'col-lg-auto d-print-none'"/>
 
                   <t t-set="title">
-                      <h2 t-field="order.amount_total" data-id="total_amount"/>
+                      <h2 class="mb-0"><b t-field="order.amount_total" data-id="total_amount"/> </h2>
                   </t>
                   <t t-set="entries">
-                      <div class="d-flex flex-column gap-4">
-                          <div class="flex-grow-1 order-md-last order-lg-first">
+                      <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                          <li class="list-group-item flex-grow-1">
                               <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                  <div class="btn-group flex-grow-1 me-1 mb-1">
+                                      <a class="btn btn-secondary btn-block o_download_btn" t-att-href="order.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Download</a>
+                                  </div>
                                   <div class="btn-group flex-grow-1 mb-1">
-                                      <a class="btn btn-secondary btn-block o_print_btn o_portal_invoice_print" t-att-href="order.get_portal_url(report_type='pdf')" id="print_invoice_report" title="View Details" target="_blank"><i class="fa fa-print"/> View Details</a>
+                                      <a class="btn btn-secondary btn-block o_print_btn o_portal_invoice_print" t-att-href="order.get_portal_url(report_type='pdf')" id="print_invoice_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
                                   </div>
                               </div>
-                          </div>
+                          </li>
 
-                          <div class="navspy flex-grow-1 ps-0" t-ignore="true" role="complementary">
+                          <li class="navspy list-group-item ps-0 flex-grow-1" t-ignore="true" role="complementary">
                               <ul class="nav flex-column bs-sidenav"></ul>
-                          </div>
+                          </li>
 
-                          <div t-if="order.user_id">
-                              <h6><small class="text-muted">Purchase Representative</small></h6>
-                              <div class="o_portal_contact_details d-flex flex-column gap-2">
-                                <div class="d-flex justify-content-start align-items-center gap-2">
-                                    <img class="o_avatar o_portal_contact_img rounded" t-att-src="image_data_uri(order.user_id.avatar_128)" alt="Contact"/>
-                                    <div>
-                                        <h6 class="mb-0" t-out="order.user_id.name"/>
-                                        <a href="#discussion" class="small fw-bold">Send message</a>
-                                    </div>
-                                </div>
-                                <div t-field="order.user_id" t-options='{"widget": "contact", "fields": ["phone"], "no_marker": False}'/>
-                            </div>
-                          </div>
-                      </div>
+                          <li t-if="order.user_id" class="list-group-item flex-grow-1">
+                              <div class="small mb-1"><strong class="text-muted">Purchase Representative</strong></div>
+                              <div class="row flex-nowrap">
+                                  <div class="col flex-grow-0 pe-2">
+                                      <img class="rounded-circle mr4 float-start o_portal_contact_img" t-att-src="image_data_uri(order.user_id.avatar_1024)" alt="Contact"/>
+                                  </div>
+                                  <div class="col ps-0" style="min-width: 150px">
+                                      <span t-field="order.user_id" t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True}'/>
+                                      <a href="#discussion" class="small"><i class="fa fa-comment"></i> Send message</a>
+                                  </div>
+                              </div>
+                          </li>
+                      </ul>
                   </t>
               </t>
 
               <!-- Page content -->
-              <div id="quote_content" class="o_portal_content col-12 col-lg-9 col-xl-8">
+              <div id="quote_content" class="col-12 col-lg justify-content-end">
 
                   <!-- status messages -->
                   <div t-if="order.state == 'cancel'" class="alert alert-danger alert-dismissable d-print-none" role="alert">
@@ -183,14 +178,13 @@
                   </div>
 
                   <!-- main content -->
-                  <div id="portal_purchase_content">
+                  <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}" id="portal_purchase_content">
                       <div t-call="purchase.purchase_order_portal_content"/>
                   </div>
 
                   <!-- chatter -->
-                  <hr/>
-                  <div id="purchase_order_communication">
-                      <h3>Communication history</h3>
+                  <div id="purchase_order_communication" class="mt-4">
+                      <h2>History</h2>
                       <t t-call="portal.message_thread"/>
                   </div>
               </div><!-- // #quote_content -->
@@ -200,7 +194,7 @@
 
   <template id="purchase_order_portal_content" name="Purchase Order Portal Content">
       <!-- Intro -->
-      <div id="introduction" class="mt-5 mt-lg-0 pb-2 pt-0">
+      <div id="introduction" t-attf-class="pb-2 pt-3 #{'card-header bg-white' if report_type == 'html' else ''}">
         <h2 class="my-0">
           <t t-if="order.state in ['draft', 'sent']">Request for Quotation</t>
           <t t-else="1">
@@ -210,7 +204,7 @@
         </h2>
       </div>
 
-      <div>
+      <div t-attf-class="#{'card-body' if report_type == 'html' else ''}">
           <!-- Informations -->
           <div id="informations">
               <div class="row" id="po_date">
@@ -249,8 +243,8 @@
                                       </a>
                                       <div class="small d-lg-inline-block">Date: <span class="text-muted" t-field="i.invoice_date"/></div>
                                   </div>
-                                  <span t-if="i.payment_state in ('paid', 'in_payment')" class="badge text-bg-success small"><i class="fa fa-fw fa-check"/>Paid</span>
-                                  <span t-else="" class="small badge text-bg-primary"><i class="fa fa-fw fa-clock-o"/>Waiting Payment</span>
+                                  <span t-if="i.payment_state in ('paid', 'in_payment')" class="small badge text-bg-success"><i class="fa fa-fw fa-check"/> <b>Paid</b></span>
+                                  <span t-else="" class="small badge text-bg-info"><i class="fa fa-fw fa-clock-o"/> <b>Waiting Payment</b></span>
                               </div>
                           </t>
                       </ul>
@@ -261,99 +255,100 @@
           <section id="details" style="page-break-inside: auto;" class="mt32">
               <h3 id="details">Pricing</h3>
 
-              <div class="table-responsive">
-                <table t-att-data-order-id="order.id" t-att-data-token="order.access_token" class="table table-sm" id="purchase_order_table">
-                    <thead class="bg-100">
-                        <tr>
-                            <th class="text-start">Products</th>
-                            <th class="text-end">Quantity</th>
-                            <th t-if="update_dates" class="text-end">Scheduled Date</th>
-                            <th t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">Unit Price</th>
-                            <th t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                                <span>Taxes</span>
-                            </th>
-                            <th class="text-end" t-if="order.state in ['purchase', 'done']" >
-                                <span>Amount</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="purchase_tbody">
+              <table t-att-data-order-id="order.id" t-att-data-token="order.access_token" class="table table-sm" id="purchase_order_table">
+                  <thead class="bg-100">
+                      <tr>
+                          <th class="text-start">Products</th>
+                          <th class="text-end">Quantity</th>
+                          <th t-if="update_dates" class="text-end">Scheduled Date</th>
+                          <th t-if="update_dates" class="text-end"><strong>Update Here</strong></th>
+                          <th t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">Unit Price</th>
+                          <th t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                              <span>Taxes</span>
+                          </th>
+                          <th class="text-end" t-if="order.state in ['purchase', 'done']" >
+                              <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
+                              <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody class="purchase_tbody">
 
-                          <t t-set="current_subtotal" t-value="0"/>
+                      <t t-set="current_subtotal" t-value="0"/>
 
-                          <t t-foreach="order.order_line" t-as="line">
+                      <t t-foreach="order.order_line" t-as="line">
 
-                              <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                          <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                          <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
 
-                            <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic text-break' if line.display_type == 'line_note' else ''">
-                                <t t-if="not line.display_type">
-                                    <td id="product_name">
-                                        <img t-att-src="image_data_uri(resize_to_48(line.product_id.image_1024))" alt="Product" class="d-none d-lg-inline"/>
-                                        <span t-field="line.name"/>
-                                    </td>
-                                    <td class="text-end">
-                                        <div id="quote_qty">
-                                            <span t-field="line.product_qty"/>
-                                            <span t-field="line.product_uom" groups="uom.group_uom"/>
-                                        </div>
-                                    </td>
-                                    <td t-if="update_dates" class="text-end">
-                                        <div class="container">
-                                          <div class="mb-3">
-                                            <div class="input-group date">
-                                                <input type="text"
-                                                    class="form-control datetimepicker-input o-purchase-datetimepicker text-end"
-                                                    t-att-data-access-token="order.access_token"
-                                                    t-att-data-order-id="order.id"
-                                                    t-att-data-line-id="line.id"
-                                                    t-att-data-value="line.date_planned.isoformat()"
-                                                />
-                                            </div>
+                          <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic text-break' if line.display_type == 'line_note' else ''">
+                              <t t-if="not line.display_type">
+                                  <td id="product_name">
+                                      <img t-att-src="image_data_uri(resize_to_48(line.product_id.image_1024))" alt="Product" class="d-none d-lg-inline"/>
+                                      <span t-field="line.name"/>
+                                  </td>
+                                  <td class="text-end">
+                                      <div id="quote_qty">
+                                          <span t-field="line.product_qty"/>
+                                          <span t-field="line.product_uom" groups="uom.group_uom"/>
+                                      </div>
+                                  </td>
+                                  <td t-if="update_dates" class="text-end"><span t-esc="line.date_planned.date()"/></td>
+                                  <td t-if="update_dates" class="text-end">
+                                    <form t-attf-action="/my/purchase/#{order.id}/update?access_token=#{order.access_token}" method="post">
+                                      <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                      <div class="container">
+                                        <div class="mb-3">
+                                          <div class="input-group date">
+                                              <input type="text" class="form-control datetimepicker-input o-purchase-datetimepicker" t-attf-id="datetimepicker_#{line.id}" t-att-name="line.id"
+                                                data-toggle="datetimepicker" data-date-format="YYYY-MM-DD" t-attf-data-target="#datetimepicker_#{line.id}"/>
                                           </div>
                                         </div>
-                                    </td>
-                                    <td t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
-                                        <div
-                                            t-field="line.price_unit"
-                                            class="text-end"
-                                        />
-                                    </td>
-                                    <td t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.taxes_id))"/>
-                                    </td>
-                                    <td class="text-end" t-if="not update_dates and order.state in ['purchase', 'done']">
-                                        <span class="oe_order_line_price_subtotal" t-field="line.price_subtotal"/>
-                                    </td>
-                                </t>
-                                <t t-if="line.display_type == 'line_section'">
-                                    <td colspan="99">
-                                        <span t-field="line.name"/>
-                                    </td>
-                                    <t t-set="current_section" t-value="line"/>
-                                    <t t-set="current_subtotal" t-value="0"/>
-                                </t>
-                                <t t-if="line.display_type == 'line_note'">
-                                    <td colspan="99">
-                                        <span t-field="line.name"/>
-                                    </td>
-                                </t>
-                            </tr>
+                                      </div>
+                                    </form>
+                                  </td>
+                                  <td t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                                      <div
+                                          t-field="line.price_unit"
+                                          class="text-end"
+                                      />
+                                  </td>
+                                  <td t-if="not update_dates and order.state in ['purchase', 'done']" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                      <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.taxes_id))"/>
+                                  </td>
+                                  <td class="text-end" t-if="not update_dates and order.state in ['purchase', 'done']">
+                                      <span class="oe_order_line_price_subtotal" t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                      <span class="oe_order_line_price_total" t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                                  </td>
+                              </t>
+                              <t t-if="line.display_type == 'line_section'">
+                                  <td colspan="99">
+                                      <span t-field="line.name"/>
+                                  </td>
+                                  <t t-set="current_section" t-value="line"/>
+                                  <t t-set="current_subtotal" t-value="0"/>
+                              </t>
+                              <t t-if="line.display_type == 'line_note'">
+                                  <td colspan="99">
+                                      <span t-field="line.name"/>
+                                  </td>
+                              </t>
+                          </tr>
 
-                            <t t-if="current_section and (line_last or order.order_line[line_index+1].display_type == 'line_section') and order.state in ['purchase', 'done']">
-                                <tr class="is-subtotal text-end">
-                                    <td colspan="99">
-                                        <strong class="mr16">Subtotal</strong>
-                                        <span
-                                            t-esc="current_subtotal"
-                                            t-options='{"widget": "monetary", "display_currency": order.currency_id}'
-                                        />
-                                    </td>
-                                </tr>
-                            </t>
-                        </t>
-                    </tbody>
-                </table>
-              </div>
+                          <t t-if="current_section and (line_last or order.order_line[line_index+1].display_type == 'line_section') and order.state in ['purchase', 'done']">
+                              <tr class="is-subtotal text-end">
+                                  <td colspan="99">
+                                      <strong class="mr16">Subtotal</strong>
+                                      <span
+                                          t-esc="current_subtotal"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'
+                                      />
+                                  </td>
+                              </tr>
+                          </t>
+                      </t>
+                  </tbody>
+              </table>
 
               <div id="total" t-if="order.state in ['purchase', 'done']" class="row" name="total" style="page-break-inside: avoid;">
                   <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ms-auto">
@@ -379,13 +374,13 @@
   <template id="purchase_order_portal_content_totals_table">
       <table class="table table-sm">
           <t t-set="tax_totals" t-value="order.tax_totals"/>
-          <t t-call="purchase.document_tax_totals"/>
+          <t t-call="account.document_tax_totals"/>
       </table>
   </template>
 
   <template id="portal_my_purchase_order_update_date" name="Portal: My Purchase Order Update Dates" inherit_id="purchase.portal_my_purchase_order" primary="True">
     <xpath expr="////div[@id='portal_purchase_content']" position="replace">
-      <div id="portal_purchase_content">
+      <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}" id="portal_purchase_content">
         <t t-set="update_dates" t-value="True"/>
         <div t-call="purchase.purchase_order_portal_content"/>
       </div>

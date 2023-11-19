@@ -7,7 +7,6 @@ import os
 
 from lxml import etree
 
-from markupsafe import Markup
 from xmlrpc import client as xmlrpclib
 
 from odoo import api, fields, models, _, Command
@@ -45,18 +44,12 @@ class FetchmailServer(models.Model):
     @api.constrains('l10n_cl_is_dte', 'server_type')
     def _check_server_type(self):
         for record in self:
-            if record.l10n_cl_is_dte and record.server_type not in ('imap', 'outlook', 'gmail'):
+            if record.l10n_cl_is_dte and record.server_type != 'imap':
                 raise ValidationError(_('The server must be of type IMAP.'))
 
     def fetch_mail(self):
         for server in self.filtered(lambda s: s.l10n_cl_is_dte):
             _logger.info('Start checking for new emails on %s IMAP server %s', server.server_type, server.name)
-
-            # prevents the process from timing out when connecting for the first time
-            # to an edi email server with too many new emails to process
-            # e.g over 5k emails. We will only fetch the next 50 "new" emails
-            # based on their IMAP uid
-            default_batch_size = 50
 
             count, failed = 0, 0
             imap_server = None
@@ -66,7 +59,7 @@ class FetchmailServer(models.Model):
 
                 result, data = imap_server.uid('search', None, '(UID %s:*)' % server.l10n_cl_last_uid)
                 new_max_uid = server.l10n_cl_last_uid
-                for uid in data[0].split()[:default_batch_size]:
+                for uid in data[0].split():
                     if int(uid) <= server.l10n_cl_last_uid:
                         # We get always minimum 1 message.  If no new message, we receive the newest already managed.
                         continue
@@ -92,7 +85,6 @@ class FetchmailServer(models.Model):
                     try:
                         server._process_incoming_email(msg_txt)
                         new_max_uid = max(new_max_uid, int(uid))
-                        server.write({'l10n_cl_last_uid': new_max_uid})
                         self._cr.commit()
                     except Exception:
                         _logger.info('Failed to process mail from %s server %s.', server.server_type, server.name,
@@ -107,16 +99,13 @@ class FetchmailServer(models.Model):
                              server.name, exc_info=True)
             finally:
                 if imap_server:
-                    try:
-                        imap_server.close()
-                        imap_server.logout()
-                    except Exception:  # pylint: disable=broad-except
-                        _logger.warning('Failed to properly finish connection: %s.', server.name, exc_info=True)
+                    imap_server.close()
+                    imap_server.logout()
                 server.write({'date': fields.Datetime.now()})
         return super(FetchmailServer, self.filtered(lambda s: not s.l10n_cl_is_dte)).fetch_mail()
 
     def _process_incoming_email(self, msg_txt):
-        parsed_values = self.env['mail.thread']._message_parse_extract_payload(msg_txt, {})
+        parsed_values = self.env['mail.thread']._message_parse_extract_payload(msg_txt)
         body, attachments = parsed_values['body'], parsed_values['attachments']
         from_address = msg_txt.get('from')
         for attachment in attachments:
@@ -149,7 +138,7 @@ class FetchmailServer(models.Model):
                     try:
                         move._l10n_cl_send_receipt_acknowledgment()
                     except Exception as error:
-                        move.message_post(body=str(error))
+                        move.message_post(body=error)
         elif origin_type == 'incoming_sii_dte_result':
             self._process_incoming_sii_dte_result(att_content)
         elif origin_type in ['incoming_acknowledge', 'incoming_commercial_accept', 'incoming_commercial_reject']:
@@ -165,10 +154,10 @@ class FetchmailServer(models.Model):
             msg = _('Incoming SII DTE result:<br/> '
                     '<li><b>ESTADO</b>: %s</li>'
                     '<li><b>REVISIONDTE/ESTADO</b>: %s</li>'
-                    '<li><b>REVISIONDTE/DETALLE</b>: %s</li>',
+                    '<li><b>REVISIONDTE/DETALLE</b>: %s</li>') % (
                       status, error_status, xml_content.findtext('REVISIONENVIO/REVISIONDTE/DETALLE'))
         else:
-            msg = _('Incoming SII DTE result:<br/><li><b>ESTADO</b>: %s</li>', status)
+            msg = _('Incoming SII DTE result:<br/><li><b>ESTADO</b>: %s</li>') % status
         for move in moves:
             move.message_post(body=msg)
 
@@ -180,7 +169,7 @@ class FetchmailServer(models.Model):
             issuer_vat = self._get_dte_receptor_vat(dte)
             partner = self._get_partner(issuer_vat, company_id)
             if not partner:
-                _logger.warning('Partner for incoming customer claim has not been found for %s', issuer_vat)
+                _logger.error('Partner for incoming customer claim has not been found for %s' % issuer_vat)
                 continue
             document_type_code = self._get_document_type_from_xml(dte)
             document_type = self.env['l10n_latam.document.type'].search(
@@ -196,14 +185,14 @@ class FetchmailServer(models.Model):
                 ('company_id', '=', company_id)
             ], limit=1)
             if not move:
-                _logger.warning('Move not found with partner: %s, name: %s, l10n_latam_document_type: %s, company_id: %s',
-                                partner.id, name, document_type.id, company_id)
+                _logger.error('Move not found with partner: %s, name: %s, l10n_latam_document_type: %s, '
+                              'company_id: %s' % (partner.id, name, document_type.id, company_id))
                 continue
             status = {'incoming_acknowledge': 'received', 'incoming_commercial_accept': 'accepted'}.get(
                 origin_type, 'claimed')
             move.write({'l10n_cl_dte_acceptation_status': status})
             move.with_context(no_new_invoice=True).message_post(
-                body=_('DTE reception status established as <b>%s</b> by incoming email', status),
+                body=_('DTE reception status established as <b>%s</b> by incoming email') % status,
                 attachments=[(att_name, att_content)])
 
     def _check_document_number_exists(self, partner_id, document_number, document_type, company_id):
@@ -266,9 +255,10 @@ class FetchmailServer(models.Model):
 
             except Exception as error:
                 _logger.info(error)
-                with self.env.cr.savepoint(), self.env['account.move'].with_context(
-                        default_move_type=default_move_type, allowed_company_ids=[company_id])._get_edi_creation() as invoice_form:
-                    msgs.append(str(error))
+                with self.env['account.move'].with_context(
+                        default_move_type=default_move_type, allowed_company_ids=[company_id],
+                        account_predictive_bills_disable_prediction=True)._get_edi_creation() as invoice_form:
+                    msgs.append(error)
                     invoice_form.partner_id = partner
                     invoice_form.l10n_latam_document_type_id = document_type
                     invoice_form.l10n_latam_document_number = document_number
@@ -279,7 +269,7 @@ class FetchmailServer(models.Model):
 
             dte_attachment = self.env['ir.attachment'].create({
                 'name': 'DTE_{}.xml'.format(document_number),
-                'res_model': move._name,
+                'res_model': self._name,
                 'res_id': move.id,
                 'type': 'binary',
                 'datas': base64.b64encode(etree.tostring(dte_xml))
@@ -289,27 +279,26 @@ class FetchmailServer(models.Model):
             for msg in msgs:
                 move.with_context(no_new_invoice=True).message_post(body=msg)
 
-            msg = _('Vendor Bill DTE has been generated for the following vendor:') if partner else \
-                  _('Vendor not found: You can generate this vendor manually with the following information:')
-            msg += Markup('<br/>')
+            msg = _('Vendor Bill DTE has been generated for the following vendor: </br>') if partner else \
+                  _('Vendor not found: You can generate this vendor manually with the following information: </br>')
             move.with_context(no_new_invoice=True).message_post(
-                body=msg + Markup(_(
+                body=msg + _(
                     '<li><b>Name</b>: %(name)s</li><li><b>RUT</b>: %(vat)s</li><li>'
-                    '<b>Address</b>: %(address)s</li>')) % {
+                    '<b>Address</b>: %(address)s</li>') % {
                     'vat': self._get_dte_issuer_vat(xml_content) or '',
                     'name': self._get_dte_partner_name(xml_content) or '',
                     'address': self._get_dte_issuer_address(xml_content) or ''}, attachment_ids=[dte_attachment.id])
 
             if float_compare(move.amount_total, xml_total_amount, precision_digits=move.currency_id.decimal_places) != 0:
                 move.message_post(
-                    body=Markup(_('<strong>Warning:</strong> The total amount of the DTE\'s XML is %s and the total amount '
+                    body=_('<strong>Warning:</strong> The total amount of the DTE\'s XML is %s and the total amount '
                            'calculated by Odoo is %s. Typically this is caused by additional lines in the detail or '
-                           'by unidentified taxes, please check if a manual correction is needed.'))
+                           'by unidentified taxes, please check if a manual correction is needed.')
                     % (formatLang(self.env, xml_total_amount, currency_obj=move.currency_id),
                        formatLang(self.env, move.amount_total, currency_obj=move.currency_id)))
             move.l10n_cl_dte_acceptation_status = 'received'
             moves.append(move)
-            _logger.info('New move has been created from DTE %s with id: %s', att_name, move.id)
+            _logger.info(_('New move has been created from DTE %s with id: %s') % (att_name, move.id))
         return moves
 
     def _get_invoice_form(self, company_id, partner, default_move_type, from_address, dte_xml, document_number,
@@ -317,9 +306,10 @@ class FetchmailServer(models.Model):
         """
         This method creates a draft vendor bill from the attached xml in the incoming email.
         """
-        with self.env.cr.savepoint(), self.env['account.move'].with_context(
+        with self.env['account.move'].with_context(
                 default_invoice_source_email=from_address,
-                default_move_type=default_move_type, allowed_company_ids=[company_id])._get_edi_creation() as invoice_form:
+                default_move_type=default_move_type, allowed_company_ids=[company_id],
+                account_predictive_bills_disable_prediction=True)._get_edi_creation() as invoice_form:
             journal = self._get_dte_purchase_journal(company_id)
             if journal:
                 invoice_form.journal_id = journal
@@ -434,9 +424,9 @@ class FetchmailServer(models.Model):
 
     def _get_dte_purchase_journal(self, company_id):
         return self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(company_id),
             ('type', '=', 'purchase'),
             ('l10n_latam_use_documents', '=', True),
+            ('company_id', '=', company_id)
         ], limit=1)
 
     def _get_document_number(self, xml_content):
@@ -463,8 +453,8 @@ class FetchmailServer(models.Model):
     def _get_withholding_taxes(self, company_id, dte_line):
         # Get withholding taxes from DTE line
         tax_codes = [int(element.text) for element in dte_line.findall('.//ns0:CodImpAdic', namespaces=XML_NAMESPACES)]
-        return set(self.env['account.tax'].search([
-            *self.env['account.tax']._check_company_domain(company_id),
+        return set(self.env['account.tax'].with_context(allowed_company_ids=[company_id]).search([
+            ('company_id', '=', company_id),
             ('type_tax_use', '=', 'purchase'),
             ('l10n_cl_sii_code', 'in', tax_codes)
         ]))
@@ -485,10 +475,7 @@ class FetchmailServer(models.Model):
         4) if 3 previous criteria fail, check product name, and return false if fails
         """
         if partner_id:
-            supplier_info_domain = [
-                *self.env['product.supplierinfo']._check_company_domain(company_id),
-                ('partner_id', '=', partner_id),
-            ]
+            supplier_info_domain = [('partner_id', '=', partner_id), ('company_id', 'in', [company_id, False])]
             if product_code:
                 # 1st criteria
                 supplier_info_domain.append(('product_code', '=', product_code))
@@ -501,16 +488,13 @@ class FetchmailServer(models.Model):
         # 3rd criteria
         if product_code:
             product = self.env['product.product'].sudo().search([
-                *self.env['product.product']._check_company_domain(company_id),
                 '|', ('default_code', '=', product_code), ('barcode', '=', product_code),
-            ], limit=1)
+                ('company_id', 'in', [company_id, False]), ], limit=1)
             if product:
                 return product
         # 4th criteria
         return self.env['product.product'].sudo().search([
-            *self.env['product.product']._check_company_domain(company_id),
-            ('name', 'ilike', product_name),
-        ], limit=1)
+            ('company_id', 'in', [company_id, False]), ('name', 'ilike', product_name)], limit=1)
 
     def _get_dte_lines(self, dte_xml, company_id, partner_id):
         """
@@ -518,11 +502,9 @@ class FetchmailServer(models.Model):
         If no products are found, it puts only the description of the products in the draft invoice lines
         """
         gross_amount = dte_xml.findtext('.//ns0:MntBruto', namespaces=XML_NAMESPACES) is not None
-        default_purchase_tax = self.env['account.tax'].search([
-            *self.env['account.tax']._check_company_domain(company_id),
-            ('l10n_cl_sii_code', '=', 14),
-            ('type_tax_use', '=', 'purchase'),
-        ], limit=1)
+        default_purchase_tax = self.env['account.tax'].search(
+            [('l10n_cl_sii_code', '=', 14), ('type_tax_use', '=', 'purchase'),
+             ('company_id', '=', company_id)], limit=1)
         currency = self._get_dte_currency(dte_xml)
         invoice_lines = []
         for dte_line in dte_xml.findall('.//ns0:Detalle', namespaces=XML_NAMESPACES):
@@ -553,7 +535,7 @@ class FetchmailServer(models.Model):
             if (dte_xml.findtext('.//ns0:TasaIVA', namespaces=XML_NAMESPACES) is not None and
                     dte_line.findtext('.//ns0:IndExe', namespaces=XML_NAMESPACES) is None):
                 values['default_tax'] = True
-                values['taxes'] = set(default_purchase_tax) | self._get_withholding_taxes(company_id, dte_line)
+                values['taxes'] = self._get_withholding_taxes(company_id, dte_line)
             if gross_amount:
                 # in case the tag MntBruto is included in the IdDoc section, and there are not
                 # additional taxes (withholdings)

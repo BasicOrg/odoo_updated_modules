@@ -21,6 +21,13 @@ class MrpProduction(models.Model):
 
     incoming_picking = fields.Many2one(related='move_finished_ids.move_dest_ids.picking_id')
 
+    @api.depends('name')
+    def name_get(self):
+        return [
+            (record.id, "%s (%s)" % (record.incoming_picking.name, record.name)) if record.bom_id.type == 'subcontract'
+            else (record.id, record.name) for record in self
+        ]
+
     @api.depends('move_raw_ids.move_line_ids')
     def _compute_move_line_raw_ids(self):
         for production in self:
@@ -38,7 +45,7 @@ class MrpProduction(models.Model):
             for move in production.move_raw_ids:
                 move.move_line_ids = line_by_product.pop(move.product_id, self.env['stock.move.line'])
             for product_id, lines in line_by_product.items():
-                qty = sum(line.product_uom_id._compute_quantity(line.quantity, product_id.uom_id) for line in lines)
+                qty = sum(line.product_uom_id._compute_quantity(line.qty_done, product_id.uom_id) for line in lines)
                 move = production._get_move_raw_values(product_id, qty, product_id.uom_id)
                 move['additional'] = True
                 production.move_raw_ids = [(0, 0, move)]
@@ -58,22 +65,22 @@ class MrpProduction(models.Model):
 
     def subcontracting_record_component(self):
         self.ensure_one()
-        self.move_raw_ids.picked = True
         if not self._get_subcontract_move():
             raise UserError(_("This MO isn't related to a subcontracted move"))
         if float_is_zero(self.qty_producing, precision_rounding=self.product_uom_id.rounding):
             return {'type': 'ir.actions.act_window_close'}
         if self.product_tracking != 'none' and not self.lot_producing_id:
-            raise UserError(_('You must enter a serial number for %s', self.product_id.name))
+            raise UserError(_('You must enter a serial number for %s') % self.product_id.name)
         for sml in self.move_raw_ids.move_line_ids:
             if sml.tracking != 'none' and not sml.lot_id:
-                raise UserError(_('You must enter a serial number for each line of %s', sml.product_id.display_name))
-        if self.move_raw_ids and not any(self.move_raw_ids.mapped('quantity')):
+                raise UserError(_('You must enter a serial number for each line of %s') % sml.product_id.display_name)
+        if self.move_raw_ids and not any(self.move_raw_ids.mapped('quantity_done')):
             raise UserError(_("You must indicate a non-zero amount consumed for at least one of your components"))
         consumption_issues = self._get_consumption_issues()
         if consumption_issues:
             return self._action_generate_consumption_wizard(consumption_issues)
-        self.sudo()._update_finished_move()  # Portal user may need sudo rights to update pickings
+
+        self._update_finished_move()
         self.subcontracting_has_been_recorded = True
 
         quantity_issues = self._get_quantity_produced_issues()
@@ -92,10 +99,10 @@ class MrpProduction(models.Model):
             return action
         return {'type': 'ir.actions.act_window_close'}
 
-    def pre_button_mark_done(self):
+    def _pre_button_mark_done(self):
         if self._get_subcontract_move():
             return True
-        return super().pre_button_mark_done()
+        return super()._pre_button_mark_done()
 
     def _update_finished_move(self):
         """ After producing, set the move line on the subcontract picking. """
@@ -104,29 +111,36 @@ class MrpProduction(models.Model):
         if subcontract_move_id:
             quantity = self.qty_producing
             if self.lot_producing_id:
-                move_lines = subcontract_move_id.move_line_ids.filtered(lambda ml: not ml.picked and ml.lot_id == self.lot_producing_id or not ml.lot_id)
+                move_lines = subcontract_move_id.move_line_ids.filtered(lambda ml: ml.lot_id == self.lot_producing_id or not ml.lot_id)
             else:
-                move_lines = subcontract_move_id.move_line_ids.filtered(lambda ml: not ml.picked and not ml.lot_id)
+                move_lines = subcontract_move_id.move_line_ids.filtered(lambda ml: not ml.lot_id)
             # Update reservation and quantity done
             for ml in move_lines:
                 rounding = ml.product_uom_id.rounding
                 if float_compare(quantity, 0, precision_rounding=rounding) <= 0:
                     break
-                quantity_to_process = min(quantity, ml.quantity)
+                quantity_to_process = min(quantity, ml.reserved_uom_qty - ml.qty_done)
                 quantity -= quantity_to_process
 
+                new_quantity_done = (ml.qty_done + quantity_to_process)
+
                 # on which lot of finished product
-                if float_compare(quantity_to_process, ml.quantity, precision_rounding=rounding) >= 0:
+                if float_compare(new_quantity_done, ml.reserved_uom_qty, precision_rounding=rounding) >= 0:
                     ml.write({
-                        'quantity': quantity_to_process,
-                        'picked': True,
+                        'qty_done': new_quantity_done,
                         'lot_id': self.lot_producing_id and self.lot_producing_id.id,
                     })
                 else:
-                    ml.write({
-                        'quantity': quantity_to_process,
-                        'picked': True,
+                    new_qty_reserved = ml.reserved_uom_qty - new_quantity_done
+                    default = {
+                        'reserved_uom_qty': new_quantity_done,
+                        'qty_done': new_quantity_done,
                         'lot_id': self.lot_producing_id and self.lot_producing_id.id,
+                    }
+                    ml.copy(default=default)
+                    ml.with_context(bypass_reservation_update=True).write({
+                        'reserved_uom_qty': new_qty_reserved,
+                        'qty_done': 0
                     })
 
             if float_compare(quantity, 0, precision_rounding=self.product_uom_id.rounding) > 0:
@@ -136,13 +150,18 @@ class MrpProduction(models.Model):
                     'product_id': self.product_id.id,
                     'location_id': subcontract_move_id.location_id.id,
                     'location_dest_id': subcontract_move_id.location_dest_id.id,
+                    'reserved_uom_qty': 0,
                     'product_uom_id': self.product_uom_id.id,
-                    'quantity': quantity,
-                    'picked': True,
+                    'qty_done': quantity,
                     'lot_id': self.lot_producing_id and self.lot_producing_id.id,
                 })
             if not self._get_quantity_to_backorder():
-                subcontract_move_id.move_line_ids.filtered(lambda ml: not ml.picked).unlink()
+                ml_reserved = subcontract_move_id.move_line_ids.filtered(lambda ml:
+                    float_is_zero(ml.qty_done, precision_rounding=ml.product_uom_id.rounding) and
+                    not float_is_zero(ml.reserved_uom_qty, precision_rounding=ml.product_uom_id.rounding))
+                ml_reserved.unlink()
+                for ml in subcontract_move_id.move_line_ids:
+                    ml.reserved_uom_qty = ml.qty_done
                 subcontract_move_id._recompute_state()
 
     def _subcontracting_filter_to_done(self):

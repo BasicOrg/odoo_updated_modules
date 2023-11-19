@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { BoardController } from "./board_controller";
-import { visitXML } from "@web/core/utils/xml";
+import { XMLParser } from "@web/core/utils/xml";
 import { Domain } from "@web/core/domain";
-export class BoardArchParser {
+
+export class BoardArchParser extends XMLParser {
     parse(arch, customViewId) {
         let nextId = 1;
         const archInfo = {
@@ -18,7 +19,7 @@ export class BoardArchParser {
         };
         let currentIndex = -1;
 
-        visitXML(arch, (node) => {
+        this.visitXML(arch, (node) => {
             switch (node.tagName) {
                 case "form":
                     archInfo.title = node.getAttribute("string");
@@ -35,7 +36,7 @@ export class BoardArchParser {
                     const isFolded = Boolean(
                         node.hasAttribute("fold") ? parseInt(node.getAttribute("fold"), 10) : 0
                     );
-                    const action = {
+                    let action = {
                         id: nextId++,
                         title: node.getAttribute("string"),
                         actionId: parseInt(node.getAttribute("name"), 10),
@@ -44,8 +45,7 @@ export class BoardArchParser {
                         isFolded,
                     };
                     if (node.hasAttribute("domain")) {
-                        const domain = node.getAttribute("domain");
-                        action.domain = new Domain(domain).toList();
+                        action.domain = new Domain(node.getAttribute("domain")).toList();
                         // so it can be serialized when reexporting board xml
                         action.domain.toString = () => node.getAttribute("domain");
                     }
@@ -60,7 +60,7 @@ export class BoardArchParser {
 
 export const boardView = {
     type: "form",
-    display_name: _t("Board"),
+    display_name: _lt("Board"),
     Controller: BoardController,
 
     props: (genericProps, view) => {

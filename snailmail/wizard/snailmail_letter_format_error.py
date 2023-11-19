@@ -20,9 +20,7 @@ class SnailmailLetterFormatError(models.TransientModel):
             ('error_code', '=', 'FORMAT_ERROR'),
         ])
         for letter in letters_to_resend:
-            old_attachment = letter.attachment_id
-            letter.attachment_id = False
-            old_attachment.unlink()
+            letter.attachment_id.unlink()
             letter.write({'cover': self.snailmail_cover})
             letter.snailmail_print()
 

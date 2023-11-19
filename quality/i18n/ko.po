@@ -3,17 +3,16 @@
 # 	* quality
 # 
 # Translators:
-# Wil Odoo, 2023
-# Daye Jeong, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Daye Jeong, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-23 08:22+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -54,7 +53,7 @@ msgstr "제안된 작업"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__active
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_ids
@@ -81,19 +80,14 @@ msgid "Activity Type Icon"
 msgstr "활동 유형 아이콘"
 
 #. module: quality
-#: model_terms:ir.ui.view,arch_db:quality.quality_check_view_activity
-msgid "Activity view"
-msgstr "활동 보기"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__additional_note
 msgid "Additional Note"
-msgstr "추가 메모"
+msgstr "추가 노트"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_check__additional_note
 msgid "Additional remarks concerning this check."
-msgstr "이 점검에 대한 추가 설명."
+msgstr ""
 
 #. module: quality
 #: model:res.groups,name:quality.group_quality_manager
@@ -121,34 +115,14 @@ msgid "Alias Contact Security"
 msgstr "별칭 연락처 보안"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain_id
-msgid "Alias Domain"
-msgstr "별칭 도메인"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
-msgid "Alias Domain Name"
-msgstr "별칭 도메인 이름"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_full_name
-msgid "Alias Email"
-msgstr "이메일 별칭"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_name
 msgid "Alias Name"
 msgstr "별칭 이름"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_status
-msgid "Alias Status"
-msgstr "별칭 상태"
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr "최근 받은메일에서 확인한 별칭 상태입니다."
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
+msgid "Alias domain"
+msgstr "별칭 도메인"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_model_id
@@ -185,7 +159,7 @@ msgid "Check Count"
 msgstr "확인 수"
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Close"
@@ -212,7 +186,7 @@ msgstr "회사"
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_1
 msgid "Confirmed"
-msgstr "확인"
+msgstr "확인됨"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__control_date
@@ -222,7 +196,7 @@ msgstr "제어 날짜"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__point_id
 msgid "Control Point"
-msgstr "품질 관리점"
+msgstr "관리점"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__action_corrective
@@ -266,7 +240,7 @@ msgstr "고객 반송 메시지"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__date_assign
 msgid "Date Assigned"
-msgstr "날짜 지정"
+msgstr "날짜가 할당됨"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__date_close
@@ -316,11 +290,6 @@ msgid "Done"
 msgstr "완료"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_email
-msgid "Email Alias"
-msgstr "이메일 별칭"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__email_cc
 msgid "Email cc"
 msgstr "이메일 참조"
@@ -328,12 +297,12 @@ msgstr "이메일 참조"
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_check__quality_state__fail
 msgid "Failed"
-msgstr "불합격"
+msgstr "실패함"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__folded
 msgid "Folded"
-msgstr "접기"
+msgstr "접음"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_follower_ids
@@ -349,13 +318,13 @@ msgstr "팔로워"
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_partner_ids
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "팔로워 (협력사)"
+msgstr "팔로워 (파트너)"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_type_icon
 #: model:ir.model.fields,help:quality.field_quality_check__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "멋진 아이콘 폰트 예: fa-tasks"
+msgstr "멋진 아이콘 폰트 예 : fa-tasks"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -397,7 +366,7 @@ msgstr "ID"
 msgid ""
 "ID of the parent record holding the alias (example: project holding the task"
 " creation alias)"
-msgstr "별칭을 담고 있는 상위 레코드의 ID (예: 별칭을 생성한 작업을 담고 있는 프로젝트)"
+msgstr "별칭을 담고 있는 상위 레코드의 ID (예 : 별칭을 생성한 작업을 담고 있는 프로젝트)"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_exception_icon
@@ -436,7 +405,7 @@ msgstr "이 옵션을 선택하면 일부 정보가 전달 오류를 생성합�
 msgid ""
 "If set, this content will automatically be sent out to unauthorized users "
 "instead of the default message."
-msgstr "설정할 경우, 권한이 없는 사용자에게 기본 메시지 대신 이 내용을 전송합니다. "
+msgstr ""
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -455,6 +424,18 @@ msgstr "지침"
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_is_follower
 msgid "Is Follower"
 msgstr "팔로워임"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_stage____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_check____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point_test_type____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_reason____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_tag____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__write_uid
@@ -486,14 +467,14 @@ msgid "Late Activities"
 msgstr "지연된 활동"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_incoming_local
-msgid "Local-part based incoming detection"
-msgstr "로컬 부품 기반 입고 감지"
+#: model:ir.model.fields,help:quality.field_quality_alert__email_cc
+msgid "List of cc from incoming emails."
+msgstr "수신메일의 참조 목록"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__lot_id
 msgid "Lot"
-msgstr "LOT"
+msgstr "Lot"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__lot_id
@@ -504,6 +485,14 @@ msgstr "LOT/일련번호"
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__1
 msgid "Low"
 msgstr "낮음"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "주요 첨부 파일"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_has_error
@@ -542,7 +531,7 @@ msgid "Name"
 msgstr "이름"
 
 #. module: quality
-#. odoo-python
+#: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
@@ -560,7 +549,7 @@ msgstr "신규"
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_calendar_event_id
 #: model:ir.model.fields,field_description:quality.field_quality_check__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "다음 활동 캘린더 행사"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_date_deadline
@@ -581,7 +570,6 @@ msgid "Next Activity Type"
 msgstr "다음 활동 유형"
 
 #. module: quality
-#. odoo-python
 #: code:addons/quality/models/quality.py:0
 #, python-format
 msgid ""
@@ -629,7 +617,7 @@ msgstr "오류 횟수"
 #: model:ir.model.fields,help:quality.field_quality_alert_team__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "조치가 필요한 메시지 수"
 
 #. module: quality
@@ -638,7 +626,7 @@ msgstr "조치가 필요한 메시지 수"
 #: model:ir.model.fields,help:quality.field_quality_check__message_has_error_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "전송 오류가 발생한 메시지 수입니다."
+msgstr "전송 오류 메시지 수"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__picking_type_ids
@@ -666,6 +654,11 @@ msgid "Others"
 msgstr "기타"
 
 #. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_user_id
+msgid "Owner"
+msgstr "소유자"
+
+#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_parent_model_id
 msgid "Parent Model"
 msgstr "상위 모델"
@@ -682,13 +675,13 @@ msgid ""
 " necessarily the model given by alias_model_id (example: project "
 "(parent_model) and task (model))"
 msgstr ""
-"별칭이 있는 상위 모델입니다. 별칭 참조를 포함하는 모델은 반드시 alias_model_id(예: 프로젝트(parent_model) 및 "
-"태스크(model)에서 제공하는 모델일 필요는 없습니다.)"
+"별칭이 있는 상위 모델입니다. 별칭 참조를 포함하는 모델은 반드시 alias_model_id(예 : 프로젝트(parent_model) 및"
+" 태스크(model)에서 제공하는 모델일 필요는 없습니다.)"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__partner_id
 msgid "Partner"
-msgstr "협력사"
+msgstr "파트너"
 
 #. module: quality
 #: model:quality.reason,name:quality.reason_parts
@@ -698,7 +691,7 @@ msgstr "부품 품질 관리"
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_check__quality_state__pass
 msgid "Passed"
-msgstr "합격"
+msgstr "합격함"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__picking_id
@@ -720,9 +713,9 @@ msgid ""
 "- followers: only followers of the related document or members of following channels\n"
 msgstr ""
 "Mailgateway를 사용하여 문서에 메시지를 게시하는 정책.\n"
-"- 모든 사용자: 모든 사용자가 게시할 수 있습니다\n"
-"- 협력사: 인증된 협력사만 게시할 수 있습니다\n"
-"- 팔로워: 관련 문서의 팔로워 또는 팔로잉 중인 채널의 사용자만 게시할 수 있습니다\n"
+"- 모두 : 모든 사용자가 게시할 수 있습니다\n"
+"- 파트너 : 인증 된 파트너만 게시할 수 있습니다\n"
+"- 팔로워 : 관련 문서의 팔로워 또는 관련 채널의 참여자 만 게시할 수 있습니다\n"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__action_preventive
@@ -749,7 +742,7 @@ msgstr "품목 카테고리"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__product_id
 msgid "Product Variant"
-msgstr "품목 세부선택"
+msgstr "파생 품목"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__product_ids
@@ -792,12 +785,12 @@ msgstr "품질 관리 테스트 유형"
 msgid ""
 "Quality Point will apply to every Products in the selected Product "
 "Categories."
-msgstr "선택한 카테고리의 모든 품목에 품질 점수가 적용됩니다. "
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_point__product_ids
 msgid "Quality Point will apply to every selected Products."
-msgstr "선택한 모든 제품에 품질 점수가 적용됩니다."
+msgstr ""
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_tag
@@ -808,14 +801,6 @@ msgstr "품질 관리 태그"
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Quality Team"
 msgstr "품질팀"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_check__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_point__rating_ids
-msgid "Ratings"
-msgstr "평가"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_force_thread_id
@@ -876,7 +861,7 @@ msgstr "다음 행동 날짜가 오늘 이전 인 모든 기록보기"
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_3
 msgid "Solved"
-msgstr "해결 완료"
+msgstr "해결됨"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__stage_id
@@ -898,10 +883,10 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"활동 기준 상태\n"
-"기한 초과: 기한이 이미 지났습니다.\n"
-"오늘: 활동 날짜가 오늘입니다.\n"
-"예정: 향후 계획된 활동입니다."
+"활동에 기조한 상태입니다\n"
+"기한초과: 이미 기한이 지났습니다\n"
+"오늘: 활동 날짜가 오늘입니다\n"
+"계획: 향후 활동입니다."
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_tag__name
@@ -914,7 +899,7 @@ msgid "Tags"
 msgstr "태그"
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Take a Picture"
@@ -960,8 +945,18 @@ msgstr ""
 msgid ""
 "The name of the email alias, e.g. 'jobs' if you want to catch emails for "
 "<jobs@example.odoo.com>"
+msgstr "이메일 별칭 이름. <jobs@example.odoo.com>에 대한 이메일을 수신하도록 하려면 'jobs'라고 적습니다."
+
+#. module: quality
+#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_user_id
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
 msgstr ""
-"<jobs@example.odoo.com>에 대한 이메일을 수신하도록 하려면 이메일의 별칭 이름을 적어주세요. 예: 'jobs'"
+"이 별칭으로 이메일을 받을 때 생성되는 레코드의 소유자. 이 필드를 시스템에 설정하지 않으면 보낸 사람 주소를 기준으로 올바른 소유자를 "
+"찾기 위해 시도하거나 주소에서 해당하는 사용자를 찾지 못한 경우 관리자 계정을 사용합니다."
 
 #. module: quality
 #: model:res.groups,comment:quality.group_quality_manager
@@ -982,7 +977,7 @@ msgstr "제목"
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_check__quality_state__none
 msgid "To do"
-msgstr "To do"
+msgstr "할 일"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -1022,7 +1017,7 @@ msgid "Very High"
 msgstr "매우 높음"
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Viewer"
@@ -1057,4 +1052,4 @@ msgstr "작업장 실패"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point_test_type__active
 msgid "active"
-msgstr "활성화"
+msgstr ""

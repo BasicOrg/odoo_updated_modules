@@ -3,16 +3,18 @@
 # 	* industry_fsm_stock
 # 
 # Translators:
-# Wil Odoo, 2023
+# Mustafa Rawi <mustafa@cubexco.com>, 2022
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,19 +22,14 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: industry_fsm_stock
-#. odoo-python
-#: code:addons/industry_fsm_stock/models/product.py:0
-#, python-format
-msgid ""
-"Adding or updating this product is restricted due to its tracked status. "
-"Your current access rights do not allow you to perform these actions. Please"
-" contact your administrator to request the necessary permissions."
-msgstr ""
-
-#. module: industry_fsm_stock
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
 msgid "Already Delivered"
 msgstr "تم التوصيل بالفعل "
+
+#. module: industry_fsm_stock
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
+msgid "Close"
+msgstr "إغلاق "
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__company_id
@@ -55,7 +52,7 @@ msgstr "أنشئ في"
 #. module: industry_fsm_stock
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
 msgid "Discard"
-msgstr "إهمال "
+msgstr "تجاهل"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__display_name
@@ -64,7 +61,6 @@ msgid "Display Name"
 msgstr "اسم العرض "
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/wizard/fsm_stock_tracking.py:0
 #, python-format
 msgid "Each line needs a Lot/Serial Number"
@@ -85,6 +81,12 @@ msgstr "دفعة Fsm "
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__id
 msgid "ID"
 msgstr "المُعرف"
+
+#. module: industry_fsm_stock
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking____last_update
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__write_uid
@@ -109,11 +111,14 @@ msgid "Lot/Serial Number"
 msgstr "رقم الدفعة/الرقم التسلسلي "
 
 #. module: industry_fsm_stock
-#. odoo-javascript
-#: code:addons/industry_fsm_stock/static/src/js/product_catalog/sale_order_line/sale_order_line.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
 msgid "Lot/Serial number"
 msgstr "رقم اللوط/الرقم المسلسل"
+
+#. module: industry_fsm_stock
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "On hand:"
+msgstr "الكمية في اليد:"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__product_id
@@ -137,11 +142,6 @@ msgid "Quantity Decreasable"
 msgstr "الكمية قابلة للتقليل "
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__quantity_decreasable_sum
-msgid "Quantity Decreasable Sum"
-msgstr ""
-
-#. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__sale_order_line_id
 msgid "Sale Order Line"
 msgstr "بند أمر البيع"
@@ -150,12 +150,6 @@ msgstr "بند أمر البيع"
 #: model:ir.model,name:industry_fsm_stock.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "بند أمر المبيعات"
-
-#. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__is_same_warehouse
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__is_same_warehouse
-msgid "Same warehouse"
-msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__serial_missing
@@ -174,15 +168,17 @@ msgid "Task"
 msgstr "المهمة"
 
 #. module: industry_fsm_stock
-#. odoo-python
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__fsm_done
+msgid "Task Done"
+msgstr "انتهت المهمة "
+
+#. module: industry_fsm_stock
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid ""
 "The ordered quantity cannot be decreased below the amount already delivered."
 " Instead, create a return in your inventory."
 msgstr ""
-"لا يمكن تقليل الكمية المطلوبة إلى أقل من الكمية التي قد تم إيصالها بالفعل. "
-"عوضاً عن ذلك، قم بإنشاء عملية إرجاع إلى مخزونك. "
 
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_fsm_stock_tracking
@@ -213,18 +209,17 @@ msgid "Validate"
 msgstr "تصديق "
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid "Validate Lot/Serial Number"
 msgstr "تصديق رقم الدفعة/الرقم التسلسلي "
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_validated
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_valided
 msgid "Validated Tracking Line"
 msgstr "بند التتبع الذي تم تصديقه "
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__warehouse_id
-msgid "Warehouse"
-msgstr "المستودع "
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "View Availability"
+msgstr ""

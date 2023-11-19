@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { sprintf } from "../utils/strings";
 import { FileUploadProgressBar } from "./file_upload_progress_bar";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class FileUploadProgressRecord extends Component {
     getProgressTexts() {
@@ -11,15 +11,15 @@ export class FileUploadProgressRecord extends Component {
         const percent = Math.round(fileUpload.progress * 100);
         if (percent === 100) {
             return {
-                left: _t("Processing..."),
+                left: this.env._t("Processing..."),
                 right: "",
             };
         } else {
             const mbLoaded = Math.round(fileUpload.loaded / 1000000);
             const mbTotal = Math.round(fileUpload.total / 1000000);
             return {
-                left: _t("Uploading... (%s%)", percent),
-                right: _t("(%s/%sMB)", mbLoaded, mbTotal),
+                left: sprintf(this.env._t("Uploading... (%s%)"), percent),
+                right: sprintf(this.env._t("(%s/%sMB)"), mbLoaded, mbTotal),
             };
         }
     }

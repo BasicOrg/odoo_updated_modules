@@ -4,13 +4,14 @@ import { FileSelectorControlPanel } from '@web_editor/components/media_dialog/fi
 import { getFixture, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { HtmlField } from '@web_editor/js/backend/html_field';
 import {registry} from '@web/core/registry';
-import testUtils from '@web/../tests/legacy/helpers/test_utils';
+import testUtils from 'web.test_utils';
 import { uploadService } from '@web_editor/components/upload_progress_toast/upload_service';
 import { unsplashService } from '@web_unsplash/services/unsplash_service';
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
-import weTestUtils from '@web_editor/../tests/test_utils';
-import {Wysiwyg} from '@web_editor/js/wysiwyg/wysiwyg';
-import { useEffect } from "@odoo/owl";
+import weTestUtils from 'web_editor.test_utils';
+import Wysiwyg from 'web_editor.wysiwyg';
+
+const { useEffect } = owl;
 
 QUnit.module('field html file upload', {
     beforeEach: function () {
@@ -45,8 +46,8 @@ QUnit.module('field html file upload', {
         assert.expect(4);
         const onAttachmentChangeTriggered = testUtils.makeTestPromise();
         patchWithCleanup(HtmlField.prototype, {
-            _onAttachmentChange(event) {
-                super._onAttachmentChange(event);
+            '_onAttachmentChange': function (event) {
+                this._super(event);
                 onAttachmentChangeTriggered.resolve(true);
             }
         });
@@ -54,22 +55,16 @@ QUnit.module('field html file upload', {
         const onChangeTriggered = testUtils.makeTestPromise();
         patchWithCleanup(FileSelectorControlPanel.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 useEffect(() => {
                     defFileSelector.resolve(true);
                 }, () => []);
             },
             async onChangeFileInput() {
-                super.onChangeFileInput();
+                this._super();
                 onChangeTriggered.resolve(true);
             }
         });
-        patchWithCleanup(Wysiwyg.prototype, {
-            async _getColorpickerTemplate() {
-                return weTestUtils.COLOR_PICKER_TEMPLATE;
-            }
-        });
-
         // create and load form view
         const serviceRegistry = registry.category("services");
         serviceRegistry.add("upload", uploadService);

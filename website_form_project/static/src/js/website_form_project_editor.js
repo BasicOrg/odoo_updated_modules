@@ -1,24 +1,27 @@
-/** @odoo-module **/
+odoo.define('website_form_project.form', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import FormEditorRegistry from "@website/js/form_editor_registry";
+var core = require('web.core');
+var FormEditorRegistry = require('website.form_editor_registry');
+
+var _t = core._t;
 
 FormEditorRegistry.add('create_task', {
     formFields: [{
         type: 'char',
         modelRequired: true,
         name: 'name',
-        string: _t('Task Title'),
+        string: 'Task Title',
     }, {
         type: 'email',
         modelRequired: true,
         fillWith: 'email',
         name: 'email_from',
-        string: _t('Your Email'),
+        string: 'Your Email',
     }, {
         type: 'char',
         name: 'description',
-        string: _t('Description'),
+        string: 'Description',
     }],
     fields: [{
         name: 'project_id',
@@ -27,4 +30,6 @@ FormEditorRegistry.add('create_task', {
         string: _t('Project'),
         createAction: 'project.open_view_project_all',
     }],
+});
+
 });

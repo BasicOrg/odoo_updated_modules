@@ -3,6 +3,7 @@
     <record id="hr_work_entry.work_entry_type_attendance" model="hr.work.entry.type">
         <field name="meal_voucher">True</field>
         <field name="leave_right">True</field>
+        <field name="sdworx_code">7010</field>
     </record>
 
     <record id="hr_work_entry_contract.work_entry_type_leave" model="hr.work.entry.type">
@@ -14,6 +15,7 @@
     <record id="hr_work_entry_contract.work_entry_type_compensatory" model="hr.work.entry.type">
         <field name="leave_right">True</field>
         <field name="dmfa_code">1</field> <!-- 1, as this is paid, unpaid would be 20 -->
+        <field name="sdworx_code">T351</field>
     </record>
 
     <record id="hr_work_entry_contract.work_entry_type_home_working" model="hr.work.entry.type">
@@ -28,8 +30,15 @@
         <field name="name">Public Holiday</field>
         <field name="code">LEAVE500</field>
         <field name="is_leave">True</field>
-        <field name="color">3</field>
         <field name="representation_fees">True</field>
+        <field name="dmfa_code">1</field>
+    </record>
+
+    <!-- YTI MASTER TO REMOVE -->
+    <record id="work_entry_type_after_contract_public_holiday" model="hr.work.entry.type">
+        <field name="name">After Contract Public Holiday</field>
+        <field name="code">LEAVE510</field>
+        <field name="is_leave">True</field>
         <field name="dmfa_code">1</field>
     </record>
 
@@ -39,6 +48,7 @@
         <field name="leave_right" eval="True"/>
         <field name="is_leave">True</field>
         <field name="dmfa_code">1</field>
+        <field name="sdworx_code">7440</field>
     </record>
 
     <record id="work_entry_type_training" model="hr.work.entry.type">
@@ -52,6 +62,7 @@
         <field name="name">Unjustified Reason</field>
         <field name="code">LEAVE700</field>
         <field name="is_leave">True</field>
+        <field name="leave_type_ids" eval="[(6,0,[ref('hr_holidays.holiday_status_unpaid')])]"/>
         <field name="dmfa_code">30</field>
     </record>
 
@@ -69,17 +80,20 @@
 
     <record id="hr_work_entry_contract.work_entry_type_unpaid_leave" model="hr.work.entry.type">
         <field name="dmfa_code">30</field>
+        <field name="sdworx_code">9710</field>
     </record>
 
     <record id="hr_work_entry_contract.work_entry_type_sick_leave" model="hr.work.entry.type">
         <field name="dmfa_code">1</field>
         <field name="representation_fees" eval="True"/>
         <field name="leave_right">True</field>
+        <field name="sdworx_code">T900</field>
     </record>
 
-    <record id="hr_work_entry_contract.work_entry_type_legal_leave" model="hr.work.entry.type">
+     <record id="hr_work_entry_contract.work_entry_type_legal_leave" model="hr.work.entry.type">
         <field name="dmfa_code">1</field>
         <field name="representation_fees">True</field>
+        <field name="sdworx_code">T010</field>
     </record>
 
     <record id="hr_payroll.hr_work_entry_type_out_of_contract" model="hr.work.entry.type">
@@ -95,6 +109,7 @@
         <field name="dmfa_code">1</field>   <!-- YTI: 1 as it is paid, would be 70 otherwise -->
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">7360</field>
     </record>
 
     <record id="work_entry_type_economic_unemployment" model="hr.work.entry.type">
@@ -103,6 +118,7 @@
         <field name="dmfa_code">71</field>
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">97A0</field>
     </record>
 
     <record id="work_entry_type_corona" model="hr.work.entry.type">
@@ -111,6 +127,7 @@
         <field name="dmfa_code">77</field>
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">97A0</field>
     </record>
 
     <record id="work_entry_type_maternity" model="hr.work.entry.type">
@@ -119,6 +136,7 @@
         <field name="dmfa_code">52</field> <!-- 51? -->
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">9520</field>
     </record>
 
     <record id="work_entry_type_paternity_company" model="hr.work.entry.type">
@@ -136,6 +154,7 @@
         <field name="dmfa_code">52</field>
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">T020</field>
     </record>
 
     <record id="work_entry_type_unpredictable" model="hr.work.entry.type">
@@ -144,6 +163,7 @@
         <field name="is_leave">True</field>
         <field name="color">5</field>
         <field name="dmfa_code">24</field>
+        <field name="sdworx_code">9620</field>
     </record>
 
     <record id="work_entry_type_training" model="hr.work.entry.type">
@@ -153,6 +173,7 @@
         <field name="meal_voucher">True</field>
         <field name="private_car">True</field>
         <field name="representation_fees">True</field>
+        <field name="sdworx_code">7300</field>
     </record>
 
     <record id="work_entry_type_training_time_off" model="hr.work.entry.type">
@@ -161,6 +182,7 @@
         <field name="dmfa_code">5</field>
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">7320</field>
     </record>
 
     <record id="work_entry_type_flemish_training_time_off" model="hr.work.entry.type">
@@ -169,6 +191,7 @@
         <field name="dmfa_code">5</field>
         <field name="is_leave">True</field>
         <field name="color">5</field>
+        <field name="sdworx_code">7320</field>
     </record>
 
     <record id="work_entry_type_long_sick" model="hr.work.entry.type">
@@ -177,7 +200,7 @@
         <field name="is_leave">True</field>
         <field name="color">5</field>
         <!-- 50, not 30 -->
-        <field name="dmfa_code">50</field>
+        <field name="dmfa_code">50</field> 
     </record>
 
     <record id="work_entry_type_breast_feeding" model="hr.work.entry.type">
@@ -205,6 +228,7 @@
         <field name="is_leave">True</field>
         <field name="color">5</field>
         <field name="dmfa_code">73</field>
+        <field name="sdworx_code">9760</field>
     </record>
 
     <record id="work_entry_type_recovery_additional" model="hr.work.entry.type">
@@ -230,13 +254,17 @@
         <field name="dmfa_code">1</field>
     </record>
 
+    <record id="hr_work_entry_contract.work_entry_type_legal_leave" model="hr.work.entry.type">
+        <field name="name" eval="'Annual Time Off '+time.strftime('%Y')"/>
+    </record>
+
     <record id="work_entry_type_phc" model="hr.work.entry.type">
         <field name="name">Public Holiday Compensation</field>
         <field name="code">PHC1</field>
         <field name="color">3</field>
         <field name="is_leave">True</field>
         <field name="dmfa_code">1</field>
-        <field name="representation_fees" eval="True"/>
+        <field name="sdworx_code">T351</field>
     </record>
 
     <record id="work_entry_type_extra_legal" model="hr.work.entry.type">
@@ -246,6 +274,7 @@
         <field name="color">5</field>
         <field name="representation_fees">True</field>
         <field name="dmfa_code">1</field>
+        <field name="sdworx_code">7282</field>
     </record>
 
     <record id="work_entry_type_part_sick" model="hr.work.entry.type">
@@ -271,6 +300,7 @@
         <field name="is_leave">True</field>
         <field name="color">5</field>
         <field name="dmfa_code">14</field>
+        <field name="sdworx_code">T040</field>
     </record>
 
     <record id="work_entry_type_credit_time" model="hr.work.entry.type">

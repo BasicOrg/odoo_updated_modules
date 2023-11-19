@@ -10,7 +10,7 @@ from collections import defaultdict
 class ApprovalRequest(models.Model):
     _name = 'approval.request'
     _description = 'Approval Request'
-    _inherit = ['mail.thread.main.attachment', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
     _mail_post_access = 'read'
 
@@ -46,7 +46,7 @@ class ApprovalRequest(models.Model):
         ('refused', 'Refused'),
         ('cancel', 'Cancel'),
     ], default="new", compute="_compute_request_status",
-        store=True, index=True, tracking=True,
+        store=True, tracking=True,
         group_expand='_read_group_request_status')
     request_owner_id = fields.Many2one('res.users', string="Request Owner",
         check_company=True, domain="[('company_ids', 'in', company_id)]")
@@ -87,8 +87,8 @@ class ApprovalRequest(models.Model):
 
     def _compute_attachment_number(self):
         domain = [('res_model', '=', 'approval.request'), ('res_id', 'in', self.ids)]
-        attachment_data = self.env['ir.attachment']._read_group(domain, ['res_id'], ['__count'])
-        attachment = dict(attachment_data)
+        attachment_data = self.env['ir.attachment']._read_group(domain, ['res_id'], ['res_id'])
+        attachment = dict((data['res_id'], data['res_id_count']) for data in attachment_data)
         for request in self:
             request.attachment_number = attachment.get(request.id, 0)
 
@@ -127,14 +127,14 @@ class ApprovalRequest(models.Model):
         if self.approver_sequence:
             approvers = approvers.filtered(lambda a: a.status in ['new', 'pending', 'waiting'])
 
-            approvers[1:].sudo().write({'status': 'waiting'})
+            approvers[1:].status = 'waiting'
             approvers = approvers[0] if approvers and approvers[0].status != 'pending' else self.env['approval.approver']
         else:
             approvers = approvers.filtered(lambda a: a.status == 'new')
 
         approvers._create_activity()
-        approvers.sudo().write({'status': 'pending'})
-        self.sudo().write({'date_confirmed': fields.Datetime.now()})
+        approvers.write({'status': 'pending'})
+        self.write({'date_confirmed': fields.Datetime.now()})
 
     def _get_user_approval_activities(self, user):
         domain = [
@@ -156,7 +156,7 @@ class ApprovalRequest(models.Model):
             current_approver = approval.approver_ids & approver
             approvers_to_update = approval.approver_ids.filtered(lambda a: a.status not in ['approved', 'refused'] and (a.sequence > current_approver.sequence or (a.sequence == current_approver.sequence and a.id > current_approver.id)))
 
-            if only_next_approver and approvers_to_update:
+            if only_next_approver and approvers_to_update and approvers_to_update[0].category_approver:
                 approvers_to_update = approvers_to_update[0]
             approvers_updated |= approvers_to_update
 
@@ -235,57 +235,38 @@ class ApprovalRequest(models.Model):
 
         self.filtered_domain([('request_status', 'in', ['approved', 'refused', 'cancel'])])._cancel_activities()
 
-    @api.model
-    def _update_approver_vals(self, approver_id_vals, approver, new_required, new_sequence):
-        if approver.required != new_required or approver.sequence != new_sequence:
-            approver_id_vals.append(Command.update(approver.id, {'required': new_required, 'sequence': new_sequence}))
-
-    @api.model
-    def _create_or_update_approver(self, user_id, users_to_approver, approver_id_vals, required, sequence):
-        if user_id not in users_to_approver.keys():
-            approver_id_vals.append(Command.create({
-                'user_id': user_id,
-                'status': 'new',
-                'required': required,
-                'sequence': sequence,
-            }))
-        else:
-            current_approver = users_to_approver.pop(user_id)
-            self._update_approver_vals(approver_id_vals, current_approver, required, sequence)
-
     @api.depends('category_id', 'request_owner_id')
     def _compute_approver_ids(self):
         for request in self:
-            users_to_approver = {}
+            #Don't remove manually added approvers
+            users_to_approver = defaultdict(lambda: self.env['approval.approver'])
             for approver in request.approver_ids:
-                users_to_approver[approver.user_id.id] = approver
-
-            users_to_category_approver = {}
+                users_to_approver[approver.user_id.id] |= approver
+            users_to_category_approver = defaultdict(lambda: self.env['approval.category.approver'])
             for approver in request.category_id.approver_ids:
-                users_to_category_approver[approver.user_id.id] = approver
-
-            approver_id_vals = []
-
+                users_to_category_approver[approver.user_id.id] |= approver
+            new_users = request.category_id.user_ids
+            manager_user = 0
             if request.category_id.manager_approval:
                 employee = self.env['hr.employee'].search([('user_id', '=', request.request_owner_id.id)], limit=1)
                 if employee.parent_id.user_id:
-                    manager_user_id = employee.parent_id.user_id.id
-                    manager_required = request.category_id.manager_approval == 'required'
-                    # We set the manager sequence to be lower than all others (9) so they are the first to approve.
-                    self._create_or_update_approver(manager_user_id, users_to_approver, approver_id_vals, manager_required, 9)
-                    if manager_user_id in users_to_category_approver.keys():
-                        users_to_category_approver.pop(manager_user_id)
-
-            for user_id in users_to_category_approver:
-                self._create_or_update_approver(user_id, users_to_approver, approver_id_vals,
-                                                users_to_category_approver[user_id].required,
-                                                users_to_category_approver[user_id].sequence)
-
-            for current_approver in users_to_approver.values():
-                # Reset sequence and required for the remaining approvers that are no (longer) part of the category approvers or managers.
-                # Set the sequence of these manually added approvers to 1000, so that they always appear after the category approvers.
-                self._update_approver_vals(approver_id_vals, current_approver, False, 1000)
-
+                    new_users |= employee.parent_id.user_id
+                    manager_user = employee.parent_id.user_id.id
+            approver_id_vals = []
+            for user in new_users:
+                # Force require on the manager if he is explicitely in the list
+                required = users_to_category_approver[user.id].required or (request.category_id.manager_approval == 'required' if manager_user == user.id else False)
+                current_approver = users_to_approver[user.id]
+                if current_approver and current_approver.required != required:
+                    approver_id_vals.append(Command.update(current_approver.id, {'required': required}))
+                elif not current_approver:
+                    sequence = (users_to_category_approver[user.id].sequence or 1000) if request.approver_sequence else 10
+                    approver_id_vals.append(Command.create({
+                        'user_id': user.id,
+                        'status': 'new',
+                        'required': required,
+                        'sequence': sequence,
+                    }))
             request.update({'approver_ids': approver_id_vals})
 
     def write(self, vals):
@@ -301,13 +282,6 @@ class ApprovalRequest(models.Model):
                         approver[0]._create_activity()
 
         return res
-
-    @api.constrains('approver_ids')
-    def _check_approver_ids(self):
-        for request in self:
-            # make sure the approver_ids are unique per request
-            if len(request.approver_ids) != len(request.approver_ids.user_id):
-                raise UserError(_("You cannot assign the same approver multiple times on the same request."))
 
 class ApprovalApprover(models.Model):
     _name = 'approval.approver'
@@ -334,7 +308,6 @@ class ApprovalApprover(models.Model):
     required = fields.Boolean(default=False, readonly=True)
     category_approver = fields.Boolean(compute='_compute_category_approver')
     can_edit = fields.Boolean(compute='_compute_can_edit')
-    can_edit_user_id = fields.Boolean(compute='_compute_can_edit', help="Simple users should not be able to remove themselves as approvers because they will lose access to the record if they misclick.")
 
     def action_approve(self):
         self.request_id.action_approve(self)
@@ -366,4 +339,3 @@ class ApprovalApprover(models.Model):
         is_user = self.env.user.has_group('approvals.group_approval_user')
         for approval in self:
             approval.can_edit = not approval.user_id or not approval.category_approver or is_user
-            approval.can_edit_user_id = is_user or approval.request_id.request_owner_id == self.env.user

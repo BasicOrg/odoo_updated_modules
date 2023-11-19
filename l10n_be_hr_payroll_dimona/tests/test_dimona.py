@@ -27,13 +27,18 @@ class TestDimona(TransactionCase):
             'onss_registration_number': '12548245',
         })
 
+        cls.private_address = cls.env['res.partner'].create({
+            'type': 'private',
+            'street': '23 Test Street',
+            'city': 'Test City',
+            'zip': '6800',
+            'country_id': cls.belgium.id,
+        })
+
         cls.employee = cls.env['hr.employee'].create({
             'name': 'Test Employee',
             'niss': '93051822361',
-            'private_street': '23 Test Street',
-            'private_city': 'Test City',
-            'private_zip': '6800',
-            'private_country_id': cls.belgium.id,
+            'address_home_id': cls.private_address.id,
         })
 
         cls.contract = cls.env['hr.contract'].create({

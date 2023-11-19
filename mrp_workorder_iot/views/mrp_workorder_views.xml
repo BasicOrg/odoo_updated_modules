@@ -9,10 +9,9 @@
                 <field name="ip" invisible="1"/>
                 <field name="identifier" invisible="1"/>
                 <field name="boxes" invisible="1"/>
-                <label for="device_name" invisible="test_type not in ['measure', 'picture', 'printer'] or not identifier"/>
-                <field name="device_name"
-                       readonly="1"
-                       invisible="test_type not in ['measure', 'picture', 'printer'] or not identifier"/>
+                <label for="device_name" attrs="{'invisible': ['|', ('test_type', 'not in', ['measure', 'picture', 'printer']), ('identifier', '=', False)]}"/>
+                <field name="device_name" readonly="1"
+                       attrs="{'invisible': ['|', ('test_type', 'not in', ['measure', 'picture', 'printer']), ('identifier', '=', False)]}"/>
             </xpath>
             <field name="picture" position="attributes">
                 <attribute name="widget">iot_picture</attribute>
@@ -49,7 +48,7 @@
         <field name="inherit_id" ref="iot.iot_device_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="IoT Triggers" name="iot_triggers" invisible="type != 'keyboard'">
+                <page string="IoT Triggers" name="iot_triggers" attrs="{'invisible': [('type', '!=', 'keyboard')]}">
                     <field name="trigger_ids">
                         <tree>
                             <field name="workcenter_id"/>

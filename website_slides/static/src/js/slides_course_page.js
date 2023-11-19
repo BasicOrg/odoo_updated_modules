@@ -1,8 +1,9 @@
 /** @odoo-module **/
 
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { session } from "@web/session";
-import { renderToElement } from "@web/core/utils/render";
+import publicWidget from 'web.public.widget';
+import session from 'web.session';
+import { qweb as QWeb } from 'web.core';
+
 
 /**
  * Global widget for both fullscreen view and non-fullscreen view of a slide course.
@@ -19,38 +20,6 @@ export const SlideCoursePage = publicWidget.Widget.extend({
         'slide_mark_completed': '_onSlideMarkCompleted',
     },
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
-
-    /**
-     * Collapse the next category when the current one has just been completed
-     */
-    collapseNextCategory: function (nextCategoryId) {
-        const categorySection = document.getElementById(`category-collapse-${nextCategoryId}`);
-        if (categorySection?.getAttribute('aria-expanded') === 'false') {
-            categorySection.setAttribute('aria-expanded', true);
-            document.querySelector(`ul[id=collapse-${nextCategoryId}]`).classList.add('show');
-        }
-    },
-
-    /**
-     * @override
-     */
-    start: function () {
-        // TODO: we need to clean this code and make the changes in the view in master
-        const $completed = $('.o_wslides_channel_completion_completed');
-        const $progressbar = $('.o_wslides_channel_completion_progressbar');
-        if($progressbar.hasClass('d-none')){
-            $progressbar.removeClass('d-none').addClass('d-flex').addClass('hidden-progressbar-completed-tag');
-        }
-        if($completed.hasClass('d-none')){
-            $completed.removeClass('d-none').addClass('hidden-progressbar-completed-tag');
-        }
-        return this._super.apply(this, arguments)
-    },
-
     /**
      * Greens up the bullet when the slide is completed
      *
@@ -65,9 +34,8 @@ export const SlideCoursePage = publicWidget.Widget.extend({
             return;
         }
 
-        const newButton = renderToElement('website.slides.sidebar.done.button', {
+        const newButton = QWeb.render('website.slides.sidebar.done.button', {
             slideId: slide.id,
-            uncompletedIcon: $button.data('uncompletedIcon') ?? 'fa-circle-thin',
             slideCompleted: completed,
             canSelfMarkUncompleted: slide.canSelfMarkUncompleted,
             canSelfMarkCompleted: slide.canSelfMarkCompleted,
@@ -90,12 +58,12 @@ export const SlideCoursePage = publicWidget.Widget.extend({
 
         if (completion < 100) {
             // Hide the "Completed" text and show the progress bar
-            $completed.addClass('hidden-progressbar-completed-tag');
-            $progressbar.removeClass('hidden-progressbar-completed-tag');
+            $completed.addClass('d-none');
+            $progressbar.removeClass('d-none').addClass('d-flex');
         } else {
             // Hide the progress bar and show the "Completed" text
-            $completed.removeClass('hidden-progressbar-completed-tag');
-            $progressbar.addClass('hidden-progressbar-completed-tag');
+            $completed.removeClass('d-none');
+            $progressbar.addClass('d-none').removeClass('d-flex');
         }
 
         $progressbar.find('.progress-bar').css('width', `${completion}%`);
@@ -116,21 +84,18 @@ export const SlideCoursePage = publicWidget.Widget.extend({
      *     false to mark the slide as not completed
      */
     _toggleSlideCompleted: async function (slide, completed = true) {
-        if (!!slide.completed === !!completed || !slide.isMember || !slide.canSelfMarkCompleted) {
+        if (!!slide.completed === !!completed || !slide.isMember) {
             // no useless RPC call
             return;
         }
 
-        const data = await this.rpc(
-            `/slides/slide/${completed ? 'set_completed' : 'set_uncompleted'}`,
-            {slide_id: slide.id},
-        );
+        const data = await this._rpc({
+            route: `/slides/slide/${completed ? 'set_completed' : 'set_uncompleted'}`,
+            params: {slide_id: slide.id},
+        });
 
         this.toggleCompletionButton(slide, completed);
         this.updateProgressbar(data.channel_completion);
-        if (data.next_category_id) {
-            this.collapseNextCategory(data.next_category_id);
-        }
     },
     /**
      * Retrieve the slide data corresponding to the slide id given in argument.

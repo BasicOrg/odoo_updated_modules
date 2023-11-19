@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="stock_barcode.GroupedLineComponent">
+    <t t-name="stock_barcode.GroupedLineComponent" owl="1">
         <div t-on-click="select"
             class="o_barcode_line list-group-item d-flex flex-row flex-wrap pt-0"
             t-att-data-barcode="line.product_id.barcode" t-attf-class="{{componentClasses}}">
@@ -18,7 +18,7 @@
             </div>
             <div class="o_sublines mb-2 flex-grow-1" t-if="opened">
                 <t t-foreach="line.lines" t-as="subline" t-key="subline.virtual_id">
-                    <LineComponent line="subline" displayUOM="props.displayUOM" subline="true" editLine="props.editLine"/>
+                    <LineComponent line="subline" displayUOM="props.displayUOM" subline="true"/>
                 </t>
             </div>
         </div>

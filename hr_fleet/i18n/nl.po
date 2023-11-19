@@ -3,17 +3,17 @@
 # 	* hr_fleet
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Erwin van der Ploeg <erwin@odooexperts.nl>, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -30,9 +30,9 @@ msgstr ""
 "                        <span class=\"o_stat_text\">Werknemer</span>"
 
 #. module: hr_fleet
-#: model:ir.model,name:hr_fleet.model_mail_activity_plan_template
-msgid "Activity plan template"
-msgstr "Sjabloon activiteitsplan"
+#: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_form
+msgid "Application Settings"
+msgstr "Applicatie instellingen"
 
 #. module: hr_fleet
 #: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_assignation_log_employee_view_list
@@ -41,7 +41,6 @@ msgid "Attachments"
 msgstr "Bijlagen"
 
 #. module: hr_fleet
-#. odoo-python
 #: code:addons/hr_fleet/models/employee.py:0
 #, python-format
 msgid "Cannot remove address from employees with linked cars."
@@ -62,6 +61,11 @@ msgstr "Bedrijfsauto"
 #: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_assignation_log_employee_view_list
 msgid "Current Driver"
 msgstr "Huidige bestuurder"
+
+#. module: hr_fleet
+#: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_view_search_inherit_hr
+msgid "Current Driver (Employee)"
+msgstr "Huidige chauffeur (werknemer)"
 
 #. module: hr_fleet
 #: model:ir.model,name:hr_fleet.model_hr_departure_wizard
@@ -95,28 +99,9 @@ msgid "Employee"
 msgstr "Werknemer"
 
 #. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "Employee %s is not linked to a vehicle."
-msgstr "Werknemer %s is niet gekoppeld aan een voertuig."
-
-#. module: hr_fleet
 #: model:ir.model.fields,field_description:hr_fleet.field_fleet_vehicle__driver_employee_name
 msgid "Employee Name"
 msgstr "Naam werknemer"
-
-#. module: hr_fleet
-#: model:ir.model.fields.selection,name:hr_fleet.selection__mail_activity_plan_template__responsible_type__fleet_manager
-msgid "Fleet Manager"
-msgstr "Wagenparkbeheerder"
-
-#. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "Fleet Manager is limited to Employee plans."
-msgstr "Wagenparkbeheerder is beperkt tot plannen van werknemer."
 
 #. module: hr_fleet
 #: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_form
@@ -129,7 +114,7 @@ msgid "Future Driver (Employee)"
 msgstr "Toekomstige chauffeur (Werknemer)"
 
 #. module: hr_fleet
-#: model:ir.model.fields,field_description:hr_fleet.field_hr_employee__license_plate
+#: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_filter
 msgid "License Plate"
 msgstr "Kentekenplaat"
 
@@ -156,7 +141,6 @@ msgid "Public Employee"
 msgstr "Openbare werknemer"
 
 #. module: hr_fleet
-#. odoo-python
 #: code:addons/hr_fleet/models/fleet_vehicle.py:0
 #, python-format
 msgid "Related Employee"
@@ -168,27 +152,13 @@ msgid "Release Company Car"
 msgstr "Bedrijfsauto vrijgeven"
 
 #. module: hr_fleet
-#: model:ir.model.fields,field_description:hr_fleet.field_mail_activity_plan_template__responsible_type
-msgid "Responsible"
-msgstr "Verantwoordelijke"
-
-#. module: hr_fleet
 #: model:ir.model,name:hr_fleet.model_fleet_vehicle_log_services
 msgid "Services for vehicles"
 msgstr "Diensten voor voertuigen"
 
 #. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "The vehicle of employee %(employee)s is not linked to a fleet manager."
-msgstr ""
-"Het voertuig van de werknemer %(employee)s is niet gekoppeld aan een "
-"wagenparkbeheerder."
-
-#. module: hr_fleet
-#. odoo-javascript
-#: code:addons/hr_fleet/static/src/views/hr_fleet_kanban/hr_fleet_kanban_controller.xml:0
+#. openerp-web
+#: code:addons/hr_fleet/static/src/xml/attachment_kanban.xml:0
 #, python-format
 msgid "Upload"
 msgstr "Upload"

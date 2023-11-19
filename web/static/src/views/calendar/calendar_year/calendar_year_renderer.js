@@ -1,12 +1,13 @@
 /** @odoo-module **/
 
+import { formatDate } from "@web/core/l10n/dates";
 import { localization } from "@web/core/l10n/localization";
 import { useDebounced } from "@web/core/utils/timing";
 import { getColor } from "../colors";
 import { useCalendarPopover, useFullCalendar } from "../hooks";
 import { CalendarYearPopover } from "./calendar_year_popover";
 
-import { Component, useEffect, useRef } from "@odoo/owl";
+const { Component, useEffect, useRef, onRendered } = owl;
 
 export class CalendarYearRenderer extends Component {
     setup() {
@@ -25,11 +26,17 @@ export class CalendarYearRenderer extends Component {
         useEffect(() => {
             this.updateSize();
         });
+
+        onRendered(() => {
+            const year = formatDate(this.props.model.date, { format: "yyyy" });
+            this.env.config.setDisplayName(`${this.props.displayName} (${year})`);
+        });
     }
 
     get options() {
         return {
-            columnHeaderFormat: "EEEEE",
+            columnHeaderFormat: (info) =>
+                luxon.DateTime.fromJSDate(info.date.marker).toFormat("EEEEE"),
             contentHeight: 0,
             dateClick: this.onDateClick,
             dayRender: this.onDayRender,
@@ -56,7 +63,7 @@ export class CalendarYearRenderer extends Component {
             selectable: this.props.model.canCreate,
             showNonCurrentDates: false,
             timeZone: luxon.Settings.defaultZone.name,
-            titleFormat: { month: "long", year: "numeric" },
+            titleFormat: { month: "short", year: "numeric" },
             unselectAuto: false,
             weekNumberCalculation: "ISO",
             weekNumbers: false,
@@ -97,7 +104,7 @@ export class CalendarYearRenderer extends Component {
         };
     }
     openPopover(target, date, records) {
-        this.popover.open(target, this.getPopoverProps(date, records), "o_cw_popover");
+        this.popover.open(target, this.getPopoverProps(date, records));
     }
     unselect() {
         for (const fc of Object.values(this.fcs)) {

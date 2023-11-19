@@ -1,12 +1,15 @@
-/** @odoo-module **/
+odoo.define("website_forum.tour_forum", function (require) {
+    "use strict";
 
-    import { _t } from "@web/core/l10n/translation";
-    import wTourUtils from "@website/js/tours/tour_utils";
+    var core = require("web.core");
+    const wTourUtils = require('website.tour_utils');
+
+    var _t = core._t;
 
     wTourUtils.registerBackendAndFrontendTour("question", {
         url: '/forum/1',
-    }, () => [{
-        trigger: ".o_wforum_ask_btn",
+    }, [{
+        trigger: ".o_forum_ask_btn",
         position: "left",
         content: _t("Create a new post in this forum by clicking on the button."),
     }, {
@@ -60,9 +63,5 @@
         trigger: ".o_wforum_validate_toggler[data-karma]:first",
         content: _t("Click here to accept this answer."),
         position: "right",
-    }, {
-        content: "Check edit button is there",
-        trigger: "a:contains('Edit your answer')",
-        auto: true,
-        isCheck: true,
     }]);
+});

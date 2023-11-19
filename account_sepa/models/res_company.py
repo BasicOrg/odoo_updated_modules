@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from .account_batch_payment import check_valid_SEPA_str
 from .account_journal import sanitize_communication
 
 class ResCompany(models.Model):
@@ -14,7 +15,6 @@ class ResCompany(models.Model):
         help="Entity that assigns the identification (eg. KBE-BCO or Finanzamt Muenchen IV).")
     sepa_initiating_party_name = fields.Char('Your Company Name', size=70, copy=False,
         help="Will appear in SEPA payments as the name of the party initiating the payment. Limited to 70 characters.")
-    account_sepa_lei = fields.Char(related='partner_id.account_sepa_lei', readonly=False)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -40,3 +40,13 @@ class ResCompany(models.Model):
             else:
                 company.sepa_orgid_issr = ''
                 company.sepa_orgid_id = ''
+
+    @api.constrains('sepa_orgid_id', 'sepa_orgid_issr', 'sepa_initiating_party_name')
+    def _check_sepa_fields(self):
+        for rec in self:
+            if rec.sepa_orgid_id:
+                check_valid_SEPA_str(rec.sepa_orgid_id)
+            if rec.sepa_orgid_issr:
+                check_valid_SEPA_str(rec.sepa_orgid_issr)
+            if rec.sepa_initiating_party_name:
+                check_valid_SEPA_str(rec.sepa_initiating_party_name)

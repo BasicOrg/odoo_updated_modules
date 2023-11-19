@@ -15,7 +15,7 @@ See: https://www.bpost.be/portal/goHome
     'sequence': 330,
     'version': '1.0',
     'application': True,
-    'depends': ['stock_delivery', 'mail'],
+    'depends': ['delivery', 'mail'],
     'data': [
         'data/delivery_bpost_data.xml',
         'views/delivery_bpost_views.xml',

@@ -1,7 +1,9 @@
 /** @odoo-module **/
 
-import { CheckboxItem } from "@web/core/dropdown/checkbox_item";
-import { Component } from "@odoo/owl";
+import { Dropdown } from "@web/core/dropdown/dropdown";
+import { DropdownItem } from "@web/core/dropdown/dropdown_item";
+
+const { Component } = owl;
 
 export class GroupMenu extends Component {
     get items() {
@@ -17,4 +19,4 @@ export class GroupMenu extends Component {
 }
 
 GroupMenu.template = "mrp_mps.GroupMenu";
-GroupMenu.components = { CheckboxItem };
+GroupMenu.components = { Dropdown, DropdownItem };

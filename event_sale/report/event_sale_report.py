@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import fields, models, tools
-from odoo.addons.sale.models.sale_order import SALE_ORDER_STATE
 
 
 class EventSaleReport(models.Model):
@@ -32,16 +31,22 @@ class EventSaleReport(models.Model):
     sale_order_id = fields.Many2one('sale.order', readonly=True)
     sale_order_date = fields.Datetime('Order Date', readonly=True)
     sale_order_partner_id = fields.Many2one('res.partner', string='Customer', readonly=True)
-    sale_order_state = fields.Selection(
-        selection=SALE_ORDER_STATE, string='Sale Order Status', readonly=True)
+    sale_order_state = fields.Selection([
+        ('draft', 'Quotation'),
+        ('sent', 'Quotation Sent'),
+        ('sale', 'Sales Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled'),
+        ], string='Sale Order Status', readonly=True)
     sale_order_user_id = fields.Many2one('res.users', string='Salesperson', readonly=True)
     sale_order_line_id = fields.Many2one('sale.order.line', readonly=True)
     sale_price = fields.Float('Revenues', readonly=True)
     sale_price_untaxed = fields.Float('Untaxed Revenues', readonly=True)
     invoice_partner_id = fields.Many2one('res.partner', string='Invoice Address', readonly=True)
-    sale_status = fields.Selection(string="Payment Status", selection=[
-            ('to_pay', 'Not Sold'),
-            ('sold', 'Sold'),
+    is_paid = fields.Boolean('Is Paid', readonly=True)
+    payment_status = fields.Selection(string="Payment Status", selection=[
+            ('to_pay', 'Not Paid'),
+            ('paid', 'Paid'),
             ('free', 'Free'),
         ])
     company_id = fields.Many2one('res.company', string='Company', readonly=True)
@@ -61,7 +66,7 @@ class EventSaleReport(models.Model):
     def _with_clause(self, *with_):
         # Extra clauses formatted as `cte1 AS (SELECT ...)`, `cte2 AS (SELECT ...)`...
         return """
-WITH
+WITH 
     """ + ',\n    '.join(with_) if with_ else ''
 
     def _select_clause(self, *select):
@@ -69,19 +74,19 @@ WITH
         return """
 SELECT
     ROW_NUMBER() OVER (ORDER BY event_registration.id) AS id,
-
+    
     event_registration.id AS event_registration_id,
     event_registration.company_id AS company_id,
     event_registration.event_id AS event_id,
     event_registration.event_ticket_id AS event_ticket_id,
     event_registration.create_date AS event_registration_create_date,
     event_registration.name AS event_registration_name,
-    event_registration.state AS event_registration_state,
+    event_registration.state AS event_registration_state, 
     event_registration.active AS active,
     event_registration.sale_order_id AS sale_order_id,
     event_registration.sale_order_line_id AS sale_order_line_id,
-    event_registration.sale_status AS sale_status,
-
+    event_registration.is_paid AS is_paid,
+    
     event_event.event_type_id AS event_type_id,
     event_event.date_begin AS event_date_begin,
     event_event.date_end AS event_date_end,
@@ -93,22 +98,19 @@ SELECT
     sale_order.partner_id AS sale_order_partner_id,
     sale_order.state AS sale_order_state,
     sale_order.user_id AS sale_order_user_id,
-
+    
     sale_order_line.product_id AS product_id,
+    sale_order_line.price_total
+        / CASE COALESCE(sale_order.currency_rate, 0) WHEN 0 THEN 1.0 ELSE sale_order.currency_rate END
+        / sale_order_line.product_uom_qty AS sale_price,
+    sale_order_line.price_subtotal
+        / CASE COALESCE(sale_order.currency_rate, 0) WHEN 0 THEN 1.0 ELSE sale_order.currency_rate END
+        / sale_order_line.product_uom_qty AS sale_price_untaxed,
     CASE
-        WHEN sale_order_line.product_uom_qty = 0 THEN 0
-        ELSE
-        sale_order_line.price_total
-            / CASE COALESCE(sale_order.currency_rate, 0) WHEN 0 THEN 1.0 ELSE sale_order.currency_rate END
-            / sale_order_line.product_uom_qty
-    END AS sale_price,
-    CASE
-        WHEN sale_order_line.product_uom_qty = 0 THEN 0
-        ELSE
-        sale_order_line.price_subtotal
-            / CASE COALESCE(sale_order.currency_rate, 0) WHEN 0 THEN 1.0 ELSE sale_order.currency_rate END
-            / sale_order_line.product_uom_qty
-    END AS sale_price_untaxed""" + (',\n    ' + ',\n    '.join(select) if select else '')
+        WHEN sale_order_line.price_total = 0 THEN 'free'
+        WHEN event_registration.is_paid THEN 'paid'
+        ELSE 'to_pay'
+    END payment_status""" + (',\n    ' + ',\n    '.join(select) if select else '')
 
     def _from_clause(self, *join_):
         # Extra clauses formatted as `column1`, `column2`...

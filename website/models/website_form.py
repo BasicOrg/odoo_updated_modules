@@ -31,16 +31,13 @@ class website_form_model(models.Model):
         builders and are writable. By default no field is writable by the
         form builder.
         """
-        if self.model == "mail.mail":
-            included = {'email_from', 'email_to', 'email_cc', 'email_bcc', 'body', 'reply_to', 'subject'}
-        else:
-            included = {
-                field.name
-                for field in self.env['ir.model.fields'].sudo().search([
-                    ('model_id', '=', self.id),
-                    ('website_form_blacklisted', '=', False)
-                ])
-            }
+        included = {
+            field.name
+            for field in self.env['ir.model.fields'].sudo().search([
+                ('model_id', '=', self.id),
+                ('website_form_blacklisted', '=', False)
+            ])
+        }
         return {
             k: v for k, v in self.get_authorized_fields(self.model).items()
             if k in included
@@ -63,23 +60,14 @@ class website_form_model(models.Model):
         # Remove readonly and magic fields
         # Remove string domains which are supposed to be evaluated
         # (e.g. "[('product_id', '=', product_id)]")
+        MAGIC_FIELDS = models.MAGIC_COLUMNS + [model.CONCURRENCY_CHECK_FIELD]
         for field in list(fields_get):
             if 'domain' in fields_get[field] and isinstance(fields_get[field]['domain'], str):
                 del fields_get[field]['domain']
-            if fields_get[field].get('readonly') or field in models.MAGIC_COLUMNS or \
-                    fields_get[field]['type'] in ['many2one_reference', 'properties']:
+            if fields_get[field].get('readonly') or field in MAGIC_FIELDS or fields_get[field]['type'] == 'many2one_reference':
                 del fields_get[field]
 
         return fields_get
-
-    @api.model
-    def get_compatible_form_models(self):
-        if not self.env.user.has_group('website.group_website_restricted_editor'):
-            return []
-        return self.sudo().search_read(
-            [('website_form_access', '=', True)],
-            ['id', 'model', 'name', 'website_form_label', 'website_form_key'],
-        )
 
 
 class website_form_model_fields(models.Model):

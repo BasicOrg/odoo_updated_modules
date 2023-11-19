@@ -100,6 +100,8 @@ QUnit.test("can be rendered", async (assert) => {
         target.querySelector("img.o_user_avatar").dataset.src,
         "http://lordofthering/web/image?model=res.users&field=avatar_128&id=7"
     );
+    assert.containsOnce(target, "span.oe_topbar_name");
+    assert.strictEqual(target.querySelector(".oe_topbar_name").textContent, "Sauron");
     assert.containsNone(target, ".dropdown-menu .dropdown-item");
     await click(target.querySelector("button.dropdown-toggle"));
     assert.containsN(target, ".dropdown-menu .dropdown-item", 4);
@@ -130,8 +132,8 @@ QUnit.test("display the correct name in debug mode", async (assert) => {
     env = await makeTestEnv();
     await mount(UserMenu, target, { env });
     assert.containsOnce(target, "img.o_user_avatar");
-    assert.containsOnce(target, "small.oe_topbar_name");
-    assert.strictEqual(target.querySelector(".oe_topbar_name").textContent, "Sauron" + "test");
+    assert.containsOnce(target, "span.oe_topbar_name");
+    assert.strictEqual(target.querySelector(".oe_topbar_name").textContent, "Sauron (test)");
 });
 
 QUnit.test("can execute the callback of settings", async (assert) => {

@@ -74,8 +74,23 @@ $o-wblog-loader-size: 50px;
     // menu. The aim is to be able to write simple articles on the fly,
     // achieving a good design without being forced to use snippets.
     .o_wblog_read_text {
-        @include font-size(18px);
+        font-size: 18px;
+        line-height: 28px;
         font-weight: 300;
+
+        p, ul, ol {
+            margin-bottom: 1.55em;
+        }
+
+        li {
+            margin-bottom: 1em;
+        }
+
+        .lead {
+            font-size: 26px;
+            line-height: 34px;
+            margin-bottom: 40px;
+        }
     }
 
     .o_wblog_author_avatar {
@@ -98,7 +113,7 @@ $o-wblog-loader-size: 50px;
         width: 3em;
         height: 3em;
         > i {
-            @include font-size(1.3em);
+            font-size: 1.3em;
         }
     }
 
@@ -124,10 +139,6 @@ $o-wblog-loader-size: 50px;
     // Blog Post Page Cover
     // ==============================================
     .o_wblog_post_page_cover {
-        // "Latest Blog" Tag
-        .o_wblog_post_title > .h4 {
-            color: var(--o-cc3-btn-secondary-text);
-        }
 
         // Cover sizes
         // ==============================================
@@ -238,7 +249,7 @@ $o-wblog-loader-size: 50px;
 
             padding-top: 33%;
             height: auto!important;
-            // This is mandatory as we do not want the CoverProperties
+            // This is mandatory as we do not want the CoverProperties 
             // sizing classes to be applied here
             min-height: auto!important;
 
@@ -249,7 +260,7 @@ $o-wblog-loader-size: 50px;
 
         .o_wblog_normalize_font {
             // normalize fonts
-            @include font-size(13px);
+            font-size: 13px;
             line-height: 1.45;
         }
 
@@ -280,11 +291,6 @@ $o-wblog-loader-size: 50px;
         // The purple lines are enough to help the user dropping snippets.
         #o_wblog_sidebar .oe_structure:empty {
             display: none;
-        }
-
-        // Prevent users from using the select in the sidebar during edit.
-        .o_wblog_sidebar_block select[name="archive"] {
-            pointer-events: none;
         }
     }
 }

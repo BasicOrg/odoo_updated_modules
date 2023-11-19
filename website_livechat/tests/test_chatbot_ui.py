@@ -7,7 +7,7 @@ from odoo.addons.website_livechat.tests.common import TestLivechatCommon
 
 
 @tests.tagged('post_install', '-at_install')
-class TestLivechatChatbotUI(TestLivechatCommon, ChatbotCase):
+class TestLivechatChatbotUI(tests.HttpCase, TestLivechatCommon, ChatbotCase):
     def setUp(self):
         super().setUp()
         self.env['im_livechat.channel'].search([
@@ -29,16 +29,16 @@ class TestLivechatChatbotUI(TestLivechatCommon, ChatbotCase):
         self.start_tour('/', 'website_livechat_chatbot_flow_tour', step_delay=100)
 
         operator = self.chatbot_script.operator_partner_id
-        livechat_discuss_channel = self.env['discuss.channel'].search([
+        livechat_mail_channel = self.env['mail.channel'].search([
             ('livechat_channel_id', '=', self.livechat_channel.id),
             ('livechat_operator_id', '=', operator.id),
             ('message_ids', '!=', False),
         ])
 
-        self.assertTrue(bool(livechat_discuss_channel))
-        self.assertEqual(len(livechat_discuss_channel), 1)
+        self.assertTrue(bool(livechat_mail_channel))
+        self.assertEqual(len(livechat_mail_channel), 1)
 
-        conversation_messages = livechat_discuss_channel.message_ids.sorted('id')
+        conversation_messages = livechat_mail_channel.message_ids.sorted('id')
 
         expected_messages = [
             ("Hello! I'm a bot!", operator, False),
@@ -94,6 +94,3 @@ class TestLivechatChatbotUI(TestLivechatCommon, ChatbotCase):
                         ('mail_message_id', '=', conversation_message.id)
                     ], limit=1).user_script_answer_id
                 )
-
-    def test_chatbot_available_after_reload(self):
-        self.start_tour("/", "website_livechat_chatbot_after_reload_tour", step_delay=100)

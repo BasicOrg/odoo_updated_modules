@@ -1,27 +1,36 @@
 /** @odoo-module **/
 
-import { makeFakeNotificationService } from "@web/../tests/helpers/mock_services";
-import {
-    click,
-    getFixture,
-    nextTick,
-    patchDate,
-    patchWithCleanup,
-} from "@web/../tests/helpers/utils";
+import { registry } from "@web/core/registry";
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
+import { click, getFixture, patchDate, patchWithCleanup } from "@web/../tests/helpers/utils";
+import { makeFakeNotificationService } from "@web/../tests/helpers/mock_services";
 import { browser } from "@web/core/browser/browser";
 import { ormService } from "@web/core/orm_service";
-import { registry } from "@web/core/registry";
-import { session } from "@web/session";
+import testUtils from "web.test_utils";
 import { enterpriseSubscriptionService } from "@web_enterprise/webclient/home_menu/enterprise_subscription_service";
 import { homeMenuService } from "@web_enterprise/webclient/home_menu/home_menu_service";
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
+import { session } from "@web/session";
 
 const serviceRegistry = registry.category("services");
 
 let target;
 
 async function createExpirationPanel(params = {}) {
+    const mockedCookieService = {
+        name: "cookie",
+        start() {
+            return Object.assign(
+                {
+                    current: {},
+                    setCookie() {},
+                    deleteCookie() {},
+                },
+                params.cookie
+            );
+        },
+    };
+
+    serviceRegistry.add(mockedCookieService.name, mockedCookieService);
     serviceRegistry.add("orm", ormService);
     serviceRegistry.add("home_menu", homeMenuService);
     serviceRegistry.add(
@@ -30,16 +39,12 @@ async function createExpirationPanel(params = {}) {
     );
     patchWithCleanup(session, { ...params.session });
     serviceRegistry.add("enterprise_subscription", enterpriseSubscriptionService);
+    patchWithCleanup(browser, params.browser);
 
     const webclient = await createWebClient({
         mockRPC: params.mockRPC,
     });
-    if (params.mockLuxonSettings) {
-        // Already set in the fake localization service, so it's done here
-        patchWithCleanup(luxon.Settings, params.mockLuxonSettings);
-    }
     await doAction(webclient, "menu");
-    await nextTick(); // wait for url to be updated
     return webclient;
 }
 
@@ -224,11 +229,11 @@ QUnit.module("web_enterprise", function ({ beforeEach }) {
             assert.containsOnce(
                 target,
                 ".oe_instance_register_form button",
-                "and a button 'Register'"
+                "and a button 'REGISTER'"
             );
             assert.strictEqual(
                 target.querySelector(".oe_instance_register_form button").innerText,
-                "Register"
+                "REGISTER"
             );
 
             await click(target.querySelector(".oe_instance_register_form button"));
@@ -246,7 +251,7 @@ QUnit.module("web_enterprise", function ({ beforeEach }) {
             assert.containsOnce(
                 target,
                 ".oe_instance_register_form button",
-                "and a button 'Register'"
+                "and a button 'REGISTER'"
             );
 
             await testUtils.fields.editInput(
@@ -278,11 +283,11 @@ QUnit.module("web_enterprise", function ({ beforeEach }) {
             assert.containsOnce(
                 target,
                 ".oe_instance_register_form button",
-                "and a button 'Register'"
+                "and a button 'REGISTER'"
             );
             assert.strictEqual(
                 target.querySelector(".oe_instance_register_form button").innerText,
-                "Retry"
+                "RETRY"
             );
 
             await testUtils.fields.editInput(
@@ -757,6 +762,10 @@ QUnit.module("web_enterprise", function ({ beforeEach }) {
         assert.expect(1);
 
         patchDate(2019, 9, 25, 12, 0, 0);
+        patchWithCleanup(luxon.Settings, {
+            defaultLocale: "ar-001",
+            defaultNumberingSystem: "arab",
+        });
 
         await createExpirationPanel({
             session: {
@@ -764,10 +773,6 @@ QUnit.module("web_enterprise", function ({ beforeEach }) {
                 expiration_reason: "renewal",
                 notification_type: true, // used by subscription service to know whether mail is installed
                 warning: "admin",
-            },
-            mockLuxonSettings: {
-                defaultLocale: "ar-001",
-                defaultNumberingSystem: "arab",
             },
             async mockRPC(route, { method }) {
                 if (route === "/web/webclient/load_menus") {

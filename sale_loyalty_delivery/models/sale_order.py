@@ -4,31 +4,15 @@
 from odoo import _, models
 from odoo.fields import Command
 
-
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    # delivery overrides
-
-    def _compute_amount_total_without_delivery(self):
-        res = super()._compute_amount_total_without_delivery()
-        return res - sum(
-            self.order_line.filtered(
-                lambda l: l.coupon_id and l.coupon_id.program_type in ['ewallet', 'gift_card']
-            ).mapped('price_unit')
-        )
-
-    # sale_loyalty overrides
-
     def _get_no_effect_on_threshold_lines(self):
-        res = super()._get_no_effect_on_threshold_lines()
-        return res + self.order_line.filtered(
-            lambda line: line.is_delivery or line.reward_id.reward_type == 'shipping')
-
-    def _get_lines_impacting_invoice_status(self):
-        return super()._get_lines_impacting_invoice_status().filtered(
-            lambda line: not line.is_reward_line
-        )
+        self.ensure_one()
+        lines = self.order_line.filtered(lambda line:\
+            line.is_delivery or\
+            line.reward_id.reward_type == 'shipping')
+        return lines + super()._get_no_effect_on_threshold_lines()
 
     def _get_reward_values_free_shipping(self, reward, coupon, **kwargs):
         delivery_line = self.order_line.filtered(lambda l: l.is_delivery)
@@ -46,7 +30,6 @@ class SaleOrder(models.Model):
             'product_uom': reward.discount_line_product_id.uom_id.id,
             'order_id': self.id,
             'is_reward_line': True,
-            'sequence': max(self.order_line.filtered(lambda x: not x.is_reward_line).mapped('sequence'), default=0) + 1,
             'tax_id': [(Command.CLEAR, 0, 0)] + [(Command.LINK, tax.id, False) for tax in taxes],
         }]
 

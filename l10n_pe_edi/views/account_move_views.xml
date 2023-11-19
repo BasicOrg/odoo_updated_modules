@@ -13,47 +13,44 @@
                     <div class="o_td_label">
                         <label for="l10n_pe_edi_operation_type"
                                string="Operation Type"
-                               invisible="not l10n_pe_edi_is_required"/>
+                               attrs="{'invisible': [('l10n_pe_edi_is_required', '=', False)]}"/>
                     </div>
                     <field name="l10n_pe_edi_operation_type"
                            nolabel="1"
-                           invisible="not l10n_pe_edi_is_required"
-                           readonly="state != 'draft'"/>
+                           attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('l10n_pe_edi_is_required', '=', False)]}"/>
                 </xpath>
                 <!-- TODO: => Other info? -->
                 <xpath expr="//page[@name='other_info']" position="after">
                     <page string="Peruvian EDI"
                           name="l10n_pe_edi"
-                          invisible="not l10n_pe_edi_is_required">
+                          attrs="{'invisible': [('l10n_pe_edi_is_required', '=', False)]}">
                         <group name="l10n_pe_edi_electronic_info">
                             <field name="l10n_pe_edi_cancel_reason"
-                                   readonly="state != 'draft'"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="l10n_pe_edi_refund_reason"
-                                   invisible="not l10n_pe_edi_refund_reason"
-                                   readonly="state != 'draft'"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('l10n_pe_edi_refund_reason', '=', False)]}"/>
                             <field name="l10n_pe_edi_charge_reason"
-                                   invisible="not l10n_pe_edi_charge_reason"
-                                   readonly="state != 'draft'"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('l10n_pe_edi_charge_reason', '=', False)]}"/>
                             <field name="l10n_pe_edi_legend"
-                                   readonly="state != 'draft'"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="l10n_pe_edi_legend_value"
-                                   readonly="state != 'draft'"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                     </page>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']//tree/field[@name='tax_ids']" position="after">
                     <field name="l10n_pe_edi_affectation_reason"
                            optional="show"
-                           column_invisible="not parent.l10n_pe_edi_is_required"/>
+                           attrs="{'column_invisible': [('parent.l10n_pe_edi_is_required', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']//tree/field[@name='discount']" position="after">
                     <field name="l10n_pe_edi_allowance_charge_reason_code"
                            string="Disc. Code"
                            optional="show"
-                           column_invisible="not parent.l10n_pe_edi_is_required"/>
+                           attrs="{'column_invisible': [('parent.l10n_pe_edi_is_required', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']//tree/field[@name='tax_ids']" position="after">
-                    <field name="l10n_pe_edi_affectation_reason" column_invisible="True"/>
+                    <field name="l10n_pe_edi_affectation_reason" invisible="1"/>
                 </xpath>
             </field>
         </record>

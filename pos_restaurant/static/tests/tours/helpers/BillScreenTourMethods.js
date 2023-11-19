@@ -1,20 +1,30 @@
-/** @odoo-module */
+odoo.define('pos_restaurant.tour.BillScreenTourMethods', function (require) {
+    'use strict';
 
-export function clickOk() {
-    return [
-        {
-            content: `go back`,
-            trigger: `.receipt-screen .button.next`,
-        },
-    ];
-}
+    const { createTourMethods } = require('point_of_sale.tour.utils');
 
-export function isShown() {
-    return [
-        {
-            content: "Bill screen is shown",
-            trigger: '.receipt-screen h2:contains("Bill Printing")',
-            run: () => {},
-        },
-    ];
-}
+    class Do {
+        clickOk() {
+            return [
+                {
+                    content: `go back`,
+                    trigger: `.receipt-screen .button.next`,
+                },
+            ];
+        }
+    }
+
+    class Check {
+        isShown() {
+            return [
+                {
+                    content: 'Bill screen is shown',
+                    trigger: '.receipt-screen h1:contains("Bill Printing")',
+                    run: () => {},
+                },
+            ];
+        }
+    }
+
+    return createTourMethods('BillScreen', Do, Check);
+});

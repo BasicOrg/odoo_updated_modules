@@ -36,7 +36,6 @@ class SocialStreamPost(models.Model):
     formatted_published_date = fields.Char('Formatted Published Date', compute='_compute_formatted_published_date')
     account_id = fields.Many2one(related='stream_id.account_id', string='Related social Account')
     company_id = fields.Many2one('res.company', 'Company', related='account_id.company_id')
-    is_author = fields.Boolean('Is Author', compute='_compute_is_author')
 
     stream_post_image_ids = fields.One2many('social.stream.post.image', 'stream_post_id', string="Stream Post Images",
         help="Images that were shared with this post.")
@@ -74,9 +73,6 @@ class SocialStreamPost(models.Model):
     def _compute_formatted_published_date(self):
         for post in self:
             post.formatted_published_date = self._format_published_date(post.published_date) if post.published_date else False
-
-    def _compute_is_author(self):
-        self.is_author = False
 
     def _filter_by_media_types(self, media_types):
         return self.filtered(lambda post: post.media_type in media_types)

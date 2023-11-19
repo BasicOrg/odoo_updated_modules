@@ -1,9 +1,9 @@
 /** @odoo-module */
 
-import { usePopover } from "@web/core/popover/popover_hook";
 import { useService } from "@web/core/utils/hooks";
 import { StudioApprovalInfos } from "@web_studio/approval/approval_infos";
-import { Component, onWillUnmount, useRef } from "@odoo/owl";
+
+const { useState, Component, onWillUnmount, useRef } = owl;
 
 function useOpenExternal() {
     const closeFns = [];
@@ -22,34 +22,37 @@ function useOpenExternal() {
 export class StudioApproval extends Component {
     setup() {
         this.dialog = useService("dialog");
-        this.popover = usePopover(StudioApprovalInfos);
+        this.popover = useService("popover");
         this.rootRef = useRef("root");
         this.openExternal = useOpenExternal();
-    }
 
-    get approval() {
-        return this.props.approval;
-    }
-
-    get state() {
-        return this.approval.state;
+        const approval = this.props.approval;
+        this.approval = approval;
+        this.state = useState(approval.state);
     }
 
     toggleApprovalInfo() {
+        if (this.isOpened) {
+            this.closeInfos();
+            this.closeInfos = null;
+            return;
+        }
+        const onClose = () => {
+            this.isOpened = false;
+        };
         if (this.env.isSmall) {
-            if (this.isOpened) {
-                this.closeInfos();
-                this.closeInfos = null;
-                return;
-            }
-            const onClose = () => {
-                this.isOpened = false;
-            };
             this.closeInfos = this.openExternal(() =>
                 this.dialog.add(StudioApprovalInfos, { approval: this.approval }, { onClose })
             );
         } else {
-            this.popover.open(this.rootRef.el, { approval: this.approval, isPopover: true });
+            this.closeInfos = this.openExternal(() =>
+                this.popover.add(
+                    this.rootRef.el,
+                    StudioApprovalInfos,
+                    { approval: this.approval, isPopover: true },
+                    { onClose }
+                )
+            );
         }
     }
 
@@ -57,7 +60,4 @@ export class StudioApproval extends Component {
         return this.state.entries.find((e) => e.rule_id[0] === ruleId);
     }
 }
-StudioApproval.props = {
-    approval: Object,
-};
 StudioApproval.template = "StudioApproval";

@@ -130,7 +130,7 @@ class BlogTagCategory(models.Model):
     tag_ids = fields.One2many('blog.tag', 'category_id', string='Tags')
 
     _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Tag category already exists!"),
+        ('name_uniq', 'unique (name)', "Tag category already exists !"),
     ]
 
 
@@ -145,7 +145,7 @@ class BlogTag(models.Model):
     post_ids = fields.Many2many('blog.post', string='Posts')
 
     _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+        ('name_uniq', 'unique (name)', "Tag name already exists !"),
     ]
 
 
@@ -216,17 +216,16 @@ class BlogPost(models.Model):
         for blog_post in self:
             blog_post.published_date = blog_post.post_date
             if not blog_post.published_date:
-                blog_post.post_date = blog_post.create_date
+                blog_post._write(dict(post_date=blog_post.create_date)) # dont trigger inverse function
 
     def _check_for_publication(self, vals):
         if vals.get('is_published'):
             for post in self.filtered(lambda p: p.active):
-                post.blog_id.message_post_with_source(
+                post.blog_id.message_post_with_view(
                     'website_blog.blog_post_template_new_post',
                     subject=post.name,
-                    render_values={'post': post},
-                    subtype_xmlid='website_blog.mt_blog_blog_published',
-                )
+                    values={'post': post},
+                    subtype_id=self.env['ir.model.data']._xmlid_to_res_id('website_blog.mt_blog_blog_published'))
             return True
         return False
 
@@ -274,11 +273,9 @@ class BlogPost(models.Model):
             'res_id': self.id,
         }
 
-    def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
+    def _notify_get_recipients_groups(self, msg_vals=None):
         """ Add access button to everyone if the document is published. """
-        groups = super()._notify_get_recipients_groups(
-            message, model_description, msg_vals=msg_vals
-        )
+        groups = super(BlogPost, self)._notify_get_recipients_groups(msg_vals=msg_vals)
         if not self:
             return groups
 

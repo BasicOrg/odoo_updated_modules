@@ -8,7 +8,7 @@
     'description': 'Spreadsheet CRM templates',
     'depends': ['documents_spreadsheet', 'crm'],
     'data': [
-        'data/spreadsheet_template_data.xml',
+        'data/documents_data.xml',
     ],
     'installable': True,
     'auto_install': True,

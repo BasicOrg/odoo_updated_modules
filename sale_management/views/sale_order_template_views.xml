@@ -17,11 +17,12 @@
     <record id="sale_order_template_view_form" model="ir.ui.view">
         <field name="name">sale.order.template.form</field>
         <field name="model">sale.order.template</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Quotation Template">
                 <sheet>
                     <div name="button_box" class="oe_button_box"/>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <div class="oe_title" name="sale_order_template_title">
                         <label for="name" id="sale_order_template_title"/>
                         <h1>
@@ -36,16 +37,15 @@
                                 <field name="number_of_days" style="width: 3rem;"/>
                                 <div class="d-inline-block">days</div>
                             </div>
-                            <field name="require_signature"/>
-                            <field name="require_payment"/>
-                            <field name="prepayment_percent"
-                                   invisible="not require_payment"
-                                   widget="percentage"
-                                   string="Prepayment amount"
-                                   style="width: 3rem"/>
+                            <label for="require_signature" string="Online confirmation"/>
+                            <div>
+                                <field name="require_signature" class="oe_inline"/>
+                                <span>Signature</span>
+                                <field name="require_payment" class="oe_inline ms-3"/>
+                                <span>Payment</span>
+                            </div>
                             <field name="mail_template_id" context="{'default_model': 'sale.order'}"/>
                             <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                            <field name="journal_id"/>
                         </group>
                     </group>
                     <notebook name="main_book">
@@ -60,9 +60,9 @@
                                 <field name="display_type" invisible="1"/>
                                 <field name="product_uom_category_id" invisible="1"/>
                                 <field name="company_id" invisible="1"/>
-                                <group invisible="display_type">
+                                <group attrs="{'invisible': [('display_type', '!=', False)]}">
                                     <group>
-                                        <field name="product_id" required="not display_type"/>
+                                        <field name="product_id" attrs="{'required': [('display_type', '=', False)]}"/>
                                         <label for="product_uom_qty"/>
                                         <div>
                                             <field name="product_uom_qty" class="oe_inline"/>
@@ -70,13 +70,13 @@
                                     </group>
                                 </group>
                                 <notebook colspan="4" name="description">
-                                    <page string="Description" name="order_description" invisible="display_type">
+                                    <page string="Description" name="order_description" attrs="{'invisible': [('display_type', '!=', False)]}">
                                         <field name="name" />
                                     </page>
-                                    <page string="Section" name="order_section" invisible="display_type != 'line_section'">
+                                    <page string="Section" name="order_section" attrs="{'invisible': [('display_type', '!=', 'line_section')]}">
                                         <field name="name" />
                                     </page>
-                                    <page string="Note" name="order_note" invisible="display_type != 'line_note'">
+                                    <page string="Note" name="order_note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}">
                                         <field name="name" />
                                     </page>
                                 </notebook>
@@ -88,17 +88,18 @@
                                     <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                                 </control>
 
-                                <field name="display_type" column_invisible="True"/>
-                                <field name="company_id" column_invisible="True"/>
+                                <field name="display_type" invisible="1"/>
+                                <field name="company_id" invisible="1"/>
                                 <field name="sequence" widget="handle"/>
                                 <field name="product_id"/>
-                                <field name="name"/>
+                                <field name="name" widget="section_and_note_text"/>
                                 <field name="product_uom_qty"/>
-                                <field name="product_uom_category_id" column_invisible="True"/>
+                                <field name="product_uom_category_id" invisible="1"/>
                                 <field
                                     name="product_uom_id"
                                     groups="uom.group_uom"
-                                    required="not display_type"/>
+                                    attrs="{'required': [('display_type', '=', False)]}"
+                                />
                             </tree>
                         </field>
                     </page>
@@ -108,9 +109,9 @@
                             <field name="product_id"/>
                             <field name="name"/>
                             <field name="quantity"/>
-                            <field name="product_uom_category_id" column_invisible="True"/>
+                            <field name="product_uom_category_id" invisible="1"/>
                             <field name="uom_id" groups="uom.group_uom"/>
-                            <field name="company_id" column_invisible="True"/>
+                            <field name="company_id" invisible="1"/>
                           </tree>
                         </field>
                     </page>
@@ -127,6 +128,7 @@
     <record id="sale_order_template_view_tree" model="ir.ui.view">
         <field name="name">sale.order.template.tree</field>
         <field name="model">sale.order.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Quotation Template">
                 <field name="name"/>
@@ -137,6 +139,7 @@
 
     <record id="sale_order_template_action" model="ir.actions.act_window">
         <field name="name">Quotation Templates</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order.template</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">

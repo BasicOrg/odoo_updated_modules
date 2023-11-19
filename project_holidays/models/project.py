@@ -2,8 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-from odoo.addons.project.models.project_task import CLOSED_STATES
-from collections import defaultdict
+
 
 class Task(models.Model):
     _inherit = 'project.task'
@@ -14,27 +13,14 @@ class Task(models.Model):
         compute_sudo=True, readonly=True)
 
     @api.depends_context('lang')
-    @api.depends('planned_date_begin', 'date_deadline', 'user_ids')
+    @api.depends('planned_date_begin', 'planned_date_end', 'user_ids')
     def _compute_leave_warning(self):
-        def group_by_leave(data):
-            mapping_leaves = defaultdict(list)
-            for item in data:
-                name = item['name']
-                for leave in item['leaves']:
-                    leave_tuple = tuple(leave.items())
-                    mapping_leaves[leave_tuple].append(name)
-            res = []
-            for leave_tuple, names in mapping_leaves.items():
-                leave_dict = dict(leave_tuple)
-                res.append({'names': names, 'leaves': leave_dict})
-            return res
-
         assigned_tasks = self.filtered(
             lambda t: t.user_ids.employee_id
             and t.project_id
             and t.planned_date_begin
-            and t.date_deadline
-            and not t.state in CLOSED_STATES
+            and t.planned_date_end
+            and not t.is_closed
         )
         (self - assigned_tasks).leave_warning = False
         (self - assigned_tasks).is_absent = False
@@ -46,46 +32,25 @@ class Task(models.Model):
         date_from = min_date if min_date > fields.Datetime.today() else fields.Datetime.today()
         leaves = self.env['hr.leave']._get_leave_interval(
             date_from=date_from,
-            date_to=max(assigned_tasks.mapped('date_deadline')),
+            date_to=max(assigned_tasks.mapped('planned_date_end')),
             employee_ids=assigned_tasks.mapped('user_ids.employee_id')
         )
 
         for task in assigned_tasks:
-            leaves_parameters = {"validated": [], "requested": []}
-            # Gather leaves parameters for each employee
-            for employee in task.user_ids.employee_id:
+            warning = False
+            employees = task.user_ids.mapped('employee_id')
+            warning = ''
+            for employee in employees:
                 task_leaves = leaves.get(employee.id)
                 if task_leaves:
-                    employee_leaves = self.env['hr.leave']._get_leave_warning_parameters(
-                        task_leaves, employee, task.planned_date_begin, task.date_deadline
+                    warning += self.env['hr.leave']._get_leave_warning(
+                        leaves=task_leaves,
+                        employee=employee,
+                        date_from=task.planned_date_begin,
+                        date_to=task.planned_date_end
                     )
-                    for leave_type, leaves_for_employee in employee_leaves.items():
-                        if not leaves_for_employee:
-                            continue
-                        leaves_parameters[leave_type].append(leaves_for_employee)
-            # Group leaves
-            for leave_type, leaves_for_employee in leaves_parameters.items():
-                leaves_parameters[leave_type] = group_by_leave(leaves_for_employee)
-            warning = ''
-            for leave_type, leaves_for_employee in leaves_parameters.items():
-                for leave in leaves_for_employee:
-                    if leave["leaves"]:
-                        if leave_type == 'validated':
-                            if len(leave["names"]) == 1:
-                                warning += _('%(names)s is on time off %(leaves)s. \n',
-                                             names=', '.join(leave["names"]),
-                                             leaves=self.env['hr.leave'].format_date_range_to_string(leave["leaves"]))
-                            else:
-                                warning += _('%(names)s are on time off %(leaves)s. \n',
-                                             names=', '.join(leave["names"]),
-                                             leaves=self.env['hr.leave'].format_date_range_to_string(leave["leaves"]))
-                        else:
-                            warning += _('%(names)s requested time off %(leaves)s. \n',
-                                         names=', '.join(leave["names"]),
-                                         leaves=self.env['hr.leave'].format_date_range_to_string(leave["leaves"]))
             task.leave_warning = warning or False
             task.is_absent = bool(warning)
-        return warning
 
     @api.model
     def _search_is_absent(self, operator, value):
@@ -96,8 +61,8 @@ class Task(models.Model):
             ('user_ids.employee_id', '!=', False),
             ('project_id', '!=', False),
             ('planned_date_begin', '!=', False),
-            ('date_deadline', '!=', False),
-            ('state', 'not in', list(CLOSED_STATES)),
+            ('planned_date_end', '!=', False),
+            ('is_closed', '!=', True),
         ])
         if not tasks:
             return []
@@ -106,7 +71,7 @@ class Task(models.Model):
         date_from = min_date if min_date > fields.Datetime.today() else fields.Datetime.today()
         mapped_leaves = self.env['hr.leave']._get_leave_interval(
             date_from=date_from,
-            date_to=max(tasks.mapped('date_deadline')),
+            date_to=max(tasks.mapped('planned_date_end')),
             employee_ids=tasks.mapped('user_ids.employee_id')
         )
         task_ids = []
@@ -115,7 +80,7 @@ class Task(models.Model):
             for employee in employees:
                 if employee.id in mapped_leaves:
                     leaves = mapped_leaves[employee.id]
-                    period = self.env['hr.leave']._group_leaves(leaves, employee, task.planned_date_begin, task.date_deadline)
+                    period = self.env['hr.leave']._group_leaves(leaves, employee, task.planned_date_begin, task.planned_date_end)
                     if period:
                         task_ids.append(task.id)
         if operator == '!=':

@@ -44,13 +44,13 @@ class TestWorkEntryBase(TransactionCase):
         })
 
         cls.work_entry_type_unpaid = cls.env['hr.work.entry.type'].create({
-            'name': 'Unpaid Time Off',
+            'name': 'Unpaid Leave',
             'is_leave': True,
             'code': 'LEAVETEST300',
         })
 
         cls.work_entry_type_leave = cls.env['hr.work.entry.type'].create({
-            'name': 'Time Off',
+            'name': 'Leave',
             'is_leave': True,
             'code': 'LEAVETEST100'
         })

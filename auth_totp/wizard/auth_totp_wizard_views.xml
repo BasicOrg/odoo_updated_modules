@@ -40,7 +40,7 @@
 
                             <!-- Desktop version -->
                             <div class="text-center d-none d-md-block">
-                                <field name="qrcode" readonly="True" widget="image" options="{'reload': false }"/>
+                                <field name="qrcode" readonly="True" widget="image"/>
 
                                 <h3 class="fw-bold"><a data-bs-toggle="collapse"
                                    href="#collapseTotpSecret" role="button" aria-expanded="false"
@@ -59,7 +59,7 @@
                             <div class="mt-2">
                                 <label for="code" class="px-0">Verification Code</label>
                                 <div class="d-flex align-items-center">
-                                    <field required="True" name="code" autocomplete="off" class="o_field_highlight px-0 me-2" placeholder="e.g. 123456"/>
+                                    <field required="True" name="code" autocomplete="off" class="px-0 me-2" placeholder="e.g. 123456"/>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                 <footer>
                     <button type="object" name="enable" class="btn btn-primary"
                             string="Activate" data-hotkey="q"/>
-                    <button string="Cancel" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

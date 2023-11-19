@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 wTourUtils.registerWebsitePreviewTour('translate_menu_name', {
     url: '/pa_GB',
     test: true,
     edition: false,
-}, () => [
+}, [
     {
         content: "activate translate mode",
         trigger: '.o_translate_website_container a',

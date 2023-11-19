@@ -2,16 +2,15 @@
 
 import { registry } from '@web/core/registry';
 import { UploadProgressToast } from './upload_progress_toast';
-import { checkFileSize } from "@web/core/utils/files";
-import { humanNumber } from "@web/core/utils/numbers";
-import { getDataURLFromFile } from "@web/core/utils/urls";
-import { reactive } from "@odoo/owl";
+import { getDataURLFromFile } from 'web.utils';
+
+const { reactive } = owl;
 
 export const AUTOCLOSE_DELAY = 3000;
 
 export const uploadService = {
-    dependencies: ['rpc', 'notification'],
-    start(env, { rpc, notification }) {
+    dependencies: ['rpc'],
+    start(env, { rpc }) {
         let fileId = 0;
         const progressToast = reactive({
             files: {},
@@ -70,13 +69,14 @@ export const uploadService = {
                 const sortedFiles = Array.from(files).sort((a, b) => a.size - b.size);
                 for (const file of sortedFiles) {
                     let fileSize = file.size;
-                    if (!checkFileSize(fileSize, notification)) {
-                        return null;
-                    }
                     if (!fileSize) {
-                        fileSize = "";
+                        fileSize = null;
+                    } else if (fileSize < 1024) {
+                        fileSize = fileSize.toFixed(2) + " bytes";
+                    } else if (fileSize < 1048576) {
+                        fileSize = (fileSize / 1024).toFixed(2) + " KB";
                     } else {
-                        fileSize = humanNumber(fileSize) + "B";
+                        fileSize = (fileSize / 1048576).toFixed(2) + " MB";
                     }
 
                     const id = ++fileId;
@@ -87,6 +87,10 @@ export const uploadService = {
                         id,
                         name: file.name,
                         size: fileSize,
+                        progress: 0,
+                        hasError: false,
+                        uploaded: false,
+                        errorMessage: '',
                     });
                 }
 
@@ -118,29 +122,6 @@ export const uploadService = {
                             file.hasError = true;
                             file.errorMessage = attachment.error;
                         } else {
-                            if (attachment.mimetype === 'image/webp') {
-                                // Generate alternate format for reports.
-                                const image = document.createElement('img');
-                                image.src = `data:image/webp;base64,${dataURL.split(',')[1]}`;
-                                await new Promise(resolve => image.addEventListener('load', resolve));
-                                const canvas = document.createElement('canvas');
-                                canvas.width = image.width;
-                                canvas.height = image.height;
-                                const ctx = canvas.getContext('2d');
-                                ctx.fillStyle = 'rgb(255, 255, 255)';
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                ctx.drawImage(image, 0, 0);
-                                const altDataURL = canvas.toDataURL('image/jpeg', 0.75);
-                                await rpc('/web_editor/attachment/add_data', {
-                                    'name': file.name.replace(/\.webp$/, '.jpg'),
-                                    'data': altDataURL.split(',')[1],
-                                    'res_id': attachment.id,
-                                    'res_model': 'ir.attachment',
-                                    'is_image': true,
-                                    'width': 0,
-                                    'quality': 0,
-                                }, {xhr});
-                            }
                             file.uploaded = true;
                             await onUploaded(attachment);
                         }

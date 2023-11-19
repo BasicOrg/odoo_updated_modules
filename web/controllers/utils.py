@@ -16,7 +16,8 @@ import werkzeug.wsgi
 from lxml import etree
 from werkzeug.urls import iri_to_uri
 
-from odoo.tools.translate import JAVASCRIPT_TRANSLATION_COMMENT, WEB_TRANSLATION_COMMENT
+from odoo.tools import apply_inheritance_specs
+from odoo.tools.translate import _
 from odoo.tools.misc import file_open
 from odoo import http
 from odoo.http import request
@@ -52,7 +53,7 @@ def clean_action(action, env):
     return cleaned_action
 
 
-def ensure_db(redirect='/web/database/selector', db=None):
+def ensure_db(redirect='/web/database/selector'):
     # This helper should be used in web client auth="none" routes
     # if those routes needs a db to work with.
     # If the heuristics does not find any database, then the users will be
@@ -60,8 +61,7 @@ def ensure_db(redirect='/web/database/selector', db=None):
     # If the db is taken out of a query parameter, it will be checked against
     # `http.db_filter()` in order to ensure it's legit and thus avoid db
     # forgering that could lead to xss attacks.
-    if db is None:
-        db = request.params.get('db') and request.params.get('db').strip()
+    db = request.params.get('db') and request.params.get('db').strip()
 
     # Ensure db is legit
     if db and db not in http.db_filter([db]):
@@ -212,7 +212,6 @@ def _local_web_translations(trans_file):
     except Exception:
         return
     for x in po:
-        if x.id and x.string and (JAVASCRIPT_TRANSLATION_COMMENT in x.auto_comments
-                                  or WEB_TRANSLATION_COMMENT in x.auto_comments):
+        if x.id and x.string and "openerp-web" in x.auto_comments:
             messages.append({'id': x.id, 'string': x.string})
     return messages

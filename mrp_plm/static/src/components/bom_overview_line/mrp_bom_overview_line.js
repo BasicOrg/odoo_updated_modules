@@ -1,15 +1,14 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { patch } from "@web/core/utils/patch";
 import { BomOverviewLine } from "@mrp/components/bom_overview_line/mrp_bom_overview_line";
 
-patch(BomOverviewLine.prototype, {
+patch(BomOverviewLine.prototype, "mrp_plm", {
     //---- Handlers ----
 
     async goToEco() {
         return this.actionService.doAction({
-            name: _t("ECOs"),
+            name: this.env._t("ECOs"),
             type: "ir.actions.act_window",
             res_model: "mrp.eco",
             domain: [["product_tmpl_id.product_variant_ids", "in", [this.data.product_id]]],
@@ -19,13 +18,12 @@ patch(BomOverviewLine.prototype, {
     }
 });
 
-patch(BomOverviewLine, {
+patch(BomOverviewLine, "mrp_plm", {
     props: {
         ...BomOverviewLine.props,
         showOptions: { 
             ...BomOverviewLine.showOptions,
             ecos: Boolean,
-            ecoAllowed: Boolean,
         },
     },
 });

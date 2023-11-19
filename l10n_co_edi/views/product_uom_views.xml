@@ -7,7 +7,8 @@
             <field name="inherit_id" ref="uom.product_uom_form_view"/>
             <field name="arch" type="xml">
                 <field name="rounding" position="before">
-                    <field name="l10n_co_edi_ubl" invisible="'CO' not in fiscal_country_codes"/>
+                    <field name="l10n_co_edi_country_code" invisible="1"/>
+                    <field name="l10n_co_edi_ubl" attrs="{'invisible': [('l10n_co_edi_country_code', '!=', 'CO')], 'required': [('l10n_co_edi_country_code', '=', 'CO')]}"/>
                 </field>
             </field>
         </record>
@@ -17,7 +18,8 @@
             <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
             <field name="arch" type="xml">
                 <field name="rounding" position="before">
-                    <field name="l10n_co_edi_ubl"/>
+                    <field name="l10n_co_edi_country_code" invisible="1"/>
+                    <field name="l10n_co_edi_ubl" attrs="{'invisible': [('l10n_co_edi_country_code', '!=', 'CO')], 'required': [('l10n_co_edi_country_code', '=', 'CO')]}"/>
                 </field>
             </field>
         </record>

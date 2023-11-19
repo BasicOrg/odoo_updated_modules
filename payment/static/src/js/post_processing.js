@@ -1,103 +1,142 @@
-/** @odoo-module **/
+odoo.define('payment.post_processing', function (require) {
+    'use strict';
 
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { renderToElement } from '@web/core/utils/render';
-import { markup } from "@odoo/owl";
-import { formatCurrency } from "@web/core/currency";
-import { _t } from '@web/core/l10n/translation';
-import { ConnectionLostError, RPCError } from '@web/core/network/rpc_service';
+    var publicWidget = require('web.public.widget');
+    var core = require('web.core');
+    const {Markup} = require('web.utils');
 
-publicWidget.registry.PaymentPostProcessing = publicWidget.Widget.extend({
-    selector: 'div[name="o_payment_status"]',
+    var _t = core._t;
 
-    timeout: 0,
-    pollCount: 0,
+    $.blockUI.defaults.css.border = '0';
+    $.blockUI.defaults.css["background-color"] = '';
+    $.blockUI.defaults.overlayCSS["opacity"] = '0.9';
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
+    publicWidget.registry.PaymentPostProcessing = publicWidget.Widget.extend({
+        selector: 'div[name="o_payment_status"]',
 
-    async start() {
-        this.call('ui', 'block', {
-            'message': _t("We are processing your payment. Please wait."),
-        });
-        this._poll();
-        return this._super.apply(this, arguments);
-    },
+        _pollCount: 0,
 
-    _poll() {
-        this._updateTimeout();
-        setTimeout(() => {
-            // Fetch the post-processing values from the server.
-            const self = this;
-            this.rpc('/payment/status/poll', {
-                'csrf_token': odoo.csrf_token,
-            }).then(postProcessingValues => {
-                let { state, display_message, landing_route } = postProcessingValues;
-
-                // Display the transaction details before redirection to show something ASAP.
-                if (display_message) {
-                    postProcessingValues.display_message = markup(display_message);
+        start: function() {
+            this.displayLoading();
+            this.poll();
+            return this._super.apply(this, arguments);
+        },
+        /* Methods */
+        startPolling: function () {
+            var timeout = 3000;
+            //
+            if(this._pollCount >= 10 && this._pollCount < 20) {
+                timeout = 10000;
+            }
+            else if(this._pollCount >= 20) {
+                timeout = 30000;
+            }
+            //
+            setTimeout(this.poll.bind(this), timeout);
+            this._pollCount ++;
+        },
+        poll: function () {
+            var self = this;
+            this._rpc({
+                route: '/payment/status/poll',
+                params: {
+                    'csrf_token': core.csrf_token,
                 }
-                this._renderTemplate(
-                    'payment.transactionDetails', {...postProcessingValues, formatCurrency}
-                );
-
-                // Redirect the user to the landing route if the transaction reached a final state.
-                if (self._getFinalStates(postProcessingValues['provider_code']).includes(state)) {
-                    window.location = landing_route;
-                } else {
-                    self._poll();
+            }).then(function(data) {
+                if(data.success === true) {
+                    self.processPolledData(data.display_values_list);
                 }
-            }).catch(error => {
-                if (error instanceof RPCError) { // Server error.
-                    switch (error.data.message) {
-                        case 'retry':
-                            self._poll();
-                            break;
-                        case 'tx_not_found':
-                            self._renderTemplate('payment.tx_not_found');
-                            break;
-                        default:
-                            self._renderTemplate(
-                                'payment.exception', { error_message: error.data.message }
-                            );
-                            break;
+                else {
+                    switch(data.error) {
+                    case "tx_process_retry":
+                        break;
+                    case "no_tx_found":
+                        self.displayContent("payment.no_tx_found", {});
+                        break;
+                    default: // if an exception is raised
+                        self.displayContent("payment.exception", {exception_msg: data.error});
+                        break;
                     }
-                } else if (error instanceof ConnectionLostError) { // RPC error (server unreachable).
-                    self._renderTemplate('payment.rpc_error');
-                    self._poll();
-                } else {
-                    return Promise.reject(error);
+                }
+                self.startPolling();
+
+            }).guardedCatch(function() {
+                self.displayContent("payment.rpc_error", {});
+                self.startPolling();
+            });
+        },
+        processPolledData: function (display_values_list) {
+            var render_values = {
+                'tx_draft': [],
+                'tx_pending': [],
+                'tx_authorized': [],
+                'tx_done': [],
+                'tx_cancel': [],
+                'tx_error': [],
+            };
+
+            // group the transaction according to their state
+            display_values_list.forEach(function (display_values) {
+                var key = 'tx_' + display_values.state;
+                if(key in render_values) {
+                    if (display_values["display_message"]) {
+                        display_values.display_message = Markup(display_values.display_message)
+                    }
+                    render_values[key].push(display_values);
                 }
             });
-        }, this.timeout);
-    },
 
-    _getFinalStates(providerCode) {
-        return ['authorized', 'done'];
-    },
+            function countTxInState(states) {
+                var nbTx = 0;
+                for (var prop in render_values) {
+                    if (states.indexOf(prop) > -1 && render_values.hasOwnProperty(prop)) {
+                        nbTx += render_values[prop].length;
+                    }
+                }
+                return nbTx;
+            }
+                       
+            /*
+            * When the server sends the list of monitored transactions, it tries to post-process 
+            * all the successful ones. If it succeeds or if the post-process has already been made, 
+            * the transaction is removed from the list of monitored transactions and won't be 
+            * included in the next response. We assume that successful and post-process 
+            * transactions should always prevail on others, regardless of their number or state.
+            */
+            if (render_values['tx_done'].length === 1 &&
+                render_values['tx_done'][0].is_post_processed) {
+                    window.location = render_values['tx_done'][0].landing_route;
+                    return;
+            }
+            // If there are multiple transactions monitored, display them all to the customer. If
+            // there is only one transaction monitored, redirect directly the customer to the
+            // landing route.
+            if(countTxInState(['tx_done', 'tx_error', 'tx_pending', 'tx_authorized']) === 1) {
+                // We don't want to redirect customers to the landing page when they have a pending
+                // transaction. The successful transactions are dealt with before.
+                var tx = render_values['tx_authorized'][0] || render_values['tx_error'][0];
+                if (tx) {
+                    window.location = tx.landing_route;
+                    return;
+                }
+            }
 
-    _updateTimeout() {
-        if (this.pollCount >= 1 && this.pollCount < 10) {
-            this.timeout = 3000;
-        }
-        if (this.pollCount >= 10 && this.pollCount < 20) {
-            this.timeout = 10000;
-        }
-        else if (this.pollCount >= 20) {
-            this.timeout = 30000;
-        }
-        this.pollCount++;
-    },
+            this.displayContent("payment.display_tx_list", render_values);
+        },
+        displayContent: function (xmlid, render_values) {
+            var html = core.qweb.render(xmlid, render_values);
+            $.unblockUI();
+            this.$el.find('div[name="o_payment_status_content"]').html(html);
+        },
+        displayLoading: function () {
+            var msg = _t("We are processing your payment, please wait ...");
+            $.blockUI({
+                'message': '<h2 class="text-white"><img src="/web/static/img/spin.png" class="fa-pulse"/>' +
+                    '    <br />' + msg +
+                    '</h2>'
+            });
+        },
+    });
 
-    _renderTemplate(xmlid, display_values={}) {
-        this.call('ui', 'unblock');
-        const statusContainer = document.querySelector('div[name="o_payment_status_content"]');
-        statusContainer.innerHTML = renderToElement(xmlid, display_values).innerHTML;
-    },
-
+    return publicWidget.registry.PaymentPostProcessing;
 });
-
-export default publicWidget.registry.PaymentPostProcessing;

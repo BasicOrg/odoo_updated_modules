@@ -1,21 +1,21 @@
-/** @odoo-module */
+/** @odoo-module alias=website.root */
 
 import { loadJS } from "@web/core/assets";
-import { _t } from "@web/core/l10n/translation";
-import { session } from "@web/session";
-import publicRootData from '@web/legacy/js/public/public_root';
-import "@website/libs/zoomodoo/zoomodoo";
-import { pick } from "@web/core/utils/objects";
+import { _t } from 'web.core';
+import KeyboardNavigationMixin from 'web.KeyboardNavigationMixin';
+import {Markup} from 'web.utils';
+import session from 'web.session';
+import publicRootData from 'web.public.root';
+import "web.zoomodoo";
 
-import { markup } from "@odoo/owl";
-
-export const WebsiteRoot = publicRootData.PublicRoot.extend({
-    events: Object.assign({}, publicRootData.PublicRoot.prototype.events || {}, {
+export const WebsiteRoot = publicRootData.PublicRoot.extend(KeyboardNavigationMixin, {
+    // TODO remove KeyboardNavigationMixin in master
+    events: _.extend({}, KeyboardNavigationMixin.events, publicRootData.PublicRoot.prototype.events || {}, {
         'click .js_change_lang': '_onLangChangeClick',
         'click .js_publish_management .js_publish_btn': '_onPublishBtnClick',
         'shown.bs.modal': '_onModalShown',
     }),
-    custom_events: Object.assign({}, publicRootData.PublicRoot.prototype.custom_events || {}, {
+    custom_events: _.extend({}, publicRootData.PublicRoot.prototype.custom_events || {}, {
         'gmap_api_request': '_onGMapAPIRequest',
         'gmap_api_key_request': '_onGMapAPIKeyRequest',
         'ready_to_clean_for_save': '_onWidgetsStopRequest',
@@ -28,18 +28,29 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
      */
     init() {
         this.isFullscreen = false;
-        this.rpc = this.bindService("rpc");
-        this.notification = this.bindService("notification");
+        KeyboardNavigationMixin.init.call(this, {
+            autoAccessKeys: false,
+            skipRenderOverlay: true,
+        });
         return this._super(...arguments);
     },
     /**
      * @override
      */
     start: function () {
+        KeyboardNavigationMixin.start.call(this);
+
         // Enable magnify on zommable img
         this.$('.zoomable img[data-zoom]').zoomOdoo();
 
         return this._super.apply(this, arguments);
+    },
+    /**
+     * @override
+     */
+    destroy() {
+        KeyboardNavigationMixin.destroy.call(this);
+        return this._super(...arguments);
     },
 
     //--------------------------------------------------------------------------
@@ -51,7 +62,7 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
      */
     _getContext: function (context) {
         var html = document.documentElement;
-        return Object.assign({
+        return _.extend({
             'website_id': html.getAttribute('data-website-id') | 0,
         }, this._super.apply(this, arguments));
     },
@@ -60,7 +71,7 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
      */
     _getExtraContext: function (context) {
         var html = document.documentElement;
-        return Object.assign({
+        return _.extend({
             'editable': !!(html.dataset.editable || $('[data-oe-model]').length), // temporary hack, this should be done in python
             'translatable': !!html.dataset.translatable,
             'edit_translations': !!html.dataset.edit_translations,
@@ -73,7 +84,9 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
     async _getGMapAPIKey(refetch) {
         if (refetch || !this._gmapAPIKeyProm) {
             this._gmapAPIKeyProm = new Promise(async resolve => {
-                const data = await this.rpc('/website/google_maps_api_key');
+                const data = await this._rpc({
+                    route: '/website/google_maps_api_key',
+                });
                 resolve(JSON.parse(data).google_maps_api_key || '');
             });
         }
@@ -85,11 +98,9 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
     _getPublicWidgetsRegistry: function (options) {
         var registry = this._super.apply(this, arguments);
         if (options.editableMode) {
-            const toPick = Object.keys(registry).filter((key) => {
-                const PublicWidget = registry[key];
+            return _.pick(registry, function (PublicWidget) {
                 return !PublicWidget.prototype.disabledInEditableMode;
             });
-            return pick(registry, ...toPick);
         }
         return registry;
     },
@@ -116,19 +127,21 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
                     if (!editableMode && session.is_admin) {
                         const message = _t("Cannot load google map.");
                         const urlTitle = _t("Check your configuration.");
-                        this.notification.add(
-                            markup(`<div>
-                                <span>${message}</span><br/>
-                                <a href="/web#action=website.action_website_configuration">${urlTitle}</a>
-                            </div>`),
-                            { type: 'warning', sticky: true }
-                        );
+                        this.displayNotification({
+                            type: 'warning',
+                            sticky: true,
+                            message:
+                                Markup`<div>
+                                    <span>${message}</span><br/>
+                                    <a href="/web#action=website.action_website_configuration">${urlTitle}</a>
+                                </div>`,
+                        });
                     }
                     resolve(false);
                     this._gmapAPILoading = false;
                     return;
                 }
-                await loadJS(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=odoo_gmap_api_post_load&key=${encodeURIComponent(key)}`);
+                await loadJS(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=odoo_gmap_api_post_load&key=${key}`);
             });
         }
         return this._gmapAPILoading;
@@ -142,7 +155,7 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
      * @override
      */
     _onWidgetsStartRequest: function (ev) {
-        ev.data.options = Object.assign({}, ev.data.options || {});
+        ev.data.options = _.clone(ev.data.options || {});
         ev.data.options.editableMode = ev.data.editableMode;
         this._super.apply(this, arguments);
     },
@@ -160,11 +173,11 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
         var $target = $(ev.currentTarget);
         // retrieve the hash before the redirect
         var redirect = {
-            lang: encodeURIComponent($target.data('url_code')),
+            lang: $target.data('url_code'),
             url: encodeURIComponent($target.attr('href').replace(/[&?]edit_translations[^&?]+/, '')),
             hash: encodeURIComponent(window.location.hash)
         };
-        window.location.href = `/website/lang/${redirect.lang}?r=${redirect.url}${redirect.hash}`;
+        window.location.href = _.str.sprintf("/website/lang/%(lang)s?r=%(url)s%(hash)s", redirect);
     },
     /**
      * @private
@@ -225,9 +238,12 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
         }
 
         var $data = $(ev.currentTarget).parents(".js_publish_management:first");
-        this.rpc($data.data('controller') || '/website/publish', {
-            id: +$data.data('id'),
-            object: $data.data('object'),
+        this._rpc({
+            route: $data.data('controller') || '/website/publish',
+            params: {
+                id: +$data.data('id'),
+                object: $data.data('object'),
+            },
         })
         .then(function (result) {
             $data.toggleClass("css_published", result).toggleClass("css_unpublished", !result);
@@ -241,6 +257,19 @@ export const WebsiteRoot = publicRootData.PublicRoot.extend({
      */
     _onModalShown: function (ev) {
         $(ev.target).addClass('modal_shown');
+    },
+    /**
+     * @override
+     */
+    _onKeyDown(ev) {
+        if (!session.user_id) {
+            return;
+        }
+        // If document.body doesn't contain the element, it was probably removed as a consequence of pressing Esc.
+        // we don't want to toggle fullscreen as the removal (eg, closing a modal) is the intended action.
+        if (ev.keyCode !== $.ui.keyCode.ESCAPE || !document.body.contains(ev.target) || ev.target.closest('.modal')) {
+            return KeyboardNavigationMixin._onKeyDown.apply(this, arguments);
+        }
     },
 });
 

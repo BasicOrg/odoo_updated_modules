@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import collections
 from datetime import timedelta
 from itertools import groupby
 import operator as py_operator
-from odoo import fields, models, _
+from odoo import api, fields, models
 from odoo.tools import groupby
 from odoo.tools.float_utils import float_round, float_is_zero
 
@@ -30,7 +29,14 @@ class ProductTemplate(models.Model):
         compute='_compute_used_in_bom_count', compute_sudo=False)
     mrp_product_qty = fields.Float('Manufactured', digits='Product Unit of Measure',
         compute='_compute_mrp_product_qty', compute_sudo=False)
+    produce_delay = fields.Float(
+        'Manufacturing Lead Time', default=0.0,
+        help="Average lead time in days to manufacture this product. In the case of multi-level BOM, the manufacturing lead times of the components will be added. In case the product is subcontracted, this can be used to determine the date at which components should be sent to the subcontractor.")
     is_kits = fields.Boolean(compute='_compute_is_kits', compute_sudo=False)
+    days_to_prepare_mo = fields.Float(
+        string="Days to prepare Manufacturing Order", default=0.0,
+        help="Create and confirm Manufacturing Orders these many days in advance, to have enough time to replenish components or manufacture semi-finished products.\n"
+             "Note that this does not affect the MO scheduled date, which still respects the just-in-time mechanism.")
 
     def _compute_bom_count(self):
         for product in self:
@@ -47,7 +53,7 @@ class ProductTemplate(models.Model):
         super()._compute_show_qty_status_button()
         for template in self:
             if template.is_kits:
-                template.show_on_hand_qty_status_button = template.product_variant_count <= 1
+                template.show_on_hand_qty_status_button = True
                 template.show_forecasted_qty_status_button = False
 
     def _compute_used_in_bom_count(self):
@@ -73,29 +79,18 @@ class ProductTemplate(models.Model):
             template.mrp_product_qty = float_round(sum(template.mapped('product_variant_ids').mapped('mrp_product_qty')), precision_rounding=template.uom_id.rounding)
 
     def action_view_mos(self):
-        action = self.env["ir.actions.actions"]._for_xml_id("mrp.mrp_production_action")
+        action = self.env["ir.actions.actions"]._for_xml_id("mrp.mrp_production_report")
         action['domain'] = [('state', '=', 'done'), ('product_tmpl_id', 'in', self.ids)]
         action['context'] = {
-            'search_default_filter_plan_date': 1,
+            'graph_measure': 'product_uom_qty',
+            'time_ranges': {'field': 'date_planned_start', 'range': 'last_365_days'}
         }
         return action
 
-    def action_archive(self):
-        filtered_products = self.env['mrp.bom.line'].search([('product_id', 'in', self.product_variant_ids.ids), ('bom_id.active', '=', True)]).product_id.mapped('display_name')
-        res = super().action_archive()
-        if filtered_products:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                'title': _("Note that product(s): '%s' is/are still linked to active Bill of Materials, "
-                            "which means that the product can still be used on it/them.", filtered_products),
-                'type': 'warning',
-                'sticky': True,  #True/False will display for few seconds if false
-                'next': {'type': 'ir.actions.act_window_close'},
-                },
-            }
-        return res
+    def action_compute_bom_days(self):
+        templates = self.filtered(lambda t: t.bom_count > 0)
+        if templates:
+            return templates.mapped('product_variant_id').action_compute_bom_days()
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
@@ -168,9 +163,9 @@ class ProductProduct(models.Model):
     def _compute_mrp_product_qty(self):
         date_from = fields.Datetime.to_string(fields.datetime.now() - timedelta(days=365))
         #TODO: state = done?
-        domain = [('state', '=', 'done'), ('product_id', 'in', self.ids), ('date_start', '>', date_from)]
-        read_group_res = self.env['mrp.production']._read_group(domain, ['product_id'], ['product_uom_qty:sum'])
-        mapped_data = {product.id: qty for product, qty in read_group_res}
+        domain = [('state', '=', 'done'), ('product_id', 'in', self.ids), ('date_planned_start', '>', date_from)]
+        read_group_res = self.env['mrp.production']._read_group(domain, ['product_id', 'product_uom_qty'], ['product_id'])
+        mapped_data = dict([(data['product_id'][0], data['product_uom_qty']) for data in read_group_res])
         for product in self:
             if not product.id:
                 product.mrp_product_qty = 0.0
@@ -210,27 +205,20 @@ class ProductProduct(models.Model):
         # compute kit quantities
         for product in bom_kits:
             bom_sub_lines = bom_sub_lines_per_kit[product]
-            # group lines by component
-            bom_sub_lines_grouped = collections.defaultdict(list)
-            for info in bom_sub_lines:
-                bom_sub_lines_grouped[info[0].product_id].append(info)
             ratios_virtual_available = []
             ratios_qty_available = []
             ratios_incoming_qty = []
             ratios_outgoing_qty = []
             ratios_free_qty = []
-
-            for component, bom_sub_lines in bom_sub_lines_grouped.items():
-                component = component.with_context(mrp_compute_quantities=qties).with_prefetch(prefetch_component_ids)
-                qty_per_kit = 0
-                for bom_line, bom_line_data in bom_sub_lines:
-                    if component.type != 'product' or float_is_zero(bom_line_data['qty'], precision_rounding=bom_line.product_uom_id.rounding):
-                        # As BoMs allow components with 0 qty, a.k.a. optionnal components, we simply skip those
-                        # to avoid a division by zero. The same logic is applied to non-storable products as those
-                        # products have 0 qty available.
-                        continue
-                    uom_qty_per_kit = bom_line_data['qty'] / bom_line_data['original_qty']
-                    qty_per_kit += bom_line.product_uom_id._compute_quantity(uom_qty_per_kit, bom_line.product_id.uom_id, round=False, raise_if_failure=False)
+            for bom_line, bom_line_data in bom_sub_lines:
+                component = bom_line.product_id.with_context(mrp_compute_quantities=qties).with_prefetch(prefetch_component_ids)
+                if component.type != 'product' or float_is_zero(bom_line_data['qty'], precision_rounding=bom_line.product_uom_id.rounding):
+                    # As BoMs allow components with 0 qty, a.k.a. optionnal components, we simply skip those
+                    # to avoid a division by zero. The same logic is applied to non-storable products as those
+                    # products have 0 qty available.
+                    continue
+                uom_qty_per_kit = bom_line_data['qty'] / bom_line_data['original_qty']
+                qty_per_kit = bom_line.product_uom_id._compute_quantity(uom_qty_per_kit, bom_line.product_id.uom_id, round=False, raise_if_failure=False)
                 if not qty_per_kit:
                     continue
                 rounding = component.uom_id.rounding
@@ -252,11 +240,11 @@ class ProductProduct(models.Model):
                 ratios_free_qty.append(component_res["free_qty"] / qty_per_kit)
             if bom_sub_lines and ratios_virtual_available:  # Guard against all cnsumable bom: at least one ratio should be present.
                 res[product.id] = {
-                    'virtual_available': min(ratios_virtual_available) * bom_kits[product].product_qty // 1,
-                    'qty_available': min(ratios_qty_available) * bom_kits[product].product_qty // 1,
-                    'incoming_qty': min(ratios_incoming_qty) * bom_kits[product].product_qty // 1,
-                    'outgoing_qty': min(ratios_outgoing_qty) * bom_kits[product].product_qty // 1,
-                    'free_qty': min(ratios_free_qty) * bom_kits[product].product_qty // 1,
+                    'virtual_available': min(ratios_virtual_available) // 1,
+                    'qty_available': min(ratios_qty_available) // 1,
+                    'incoming_qty': min(ratios_incoming_qty) // 1,
+                    'outgoing_qty': min(ratios_outgoing_qty) // 1,
+                    'free_qty': min(ratios_free_qty) // 1,
                 }
             else:
                 res[product.id] = {
@@ -275,7 +263,7 @@ class ProductProduct(models.Model):
         # bom specific to this variant or global to template or that contains the product as a byproduct
         action['context'] = {
             'default_product_tmpl_id': template_ids[0],
-            'default_product_id': self.env.user.has_group('product.group_product_variant') and self.ids[0] or False,
+            'default_product_id': self.ids[0],
         }
         action['domain'] = ['|', '|', ('byproduct_ids.product_id', 'in', self.ids), ('product_id', 'in', self.ids), '&', ('product_id', '=', False), ('product_tmpl_id', 'in', template_ids)]
         return action
@@ -297,6 +285,15 @@ class ProductProduct(models.Model):
             res['context'].pop('default_product_tmpl_id', None)
         return res
 
+    def action_compute_bom_days(self):
+        bom_by_products = self.env['mrp.bom']._bom_find(self)
+        company_id = self.env.context.get('default_company_id', self.env.company.id)
+        warehouse = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1)
+        for product in self:
+            bom_data = self.env['report.mrp.report_bom_structure'].with_context(minimized=True)._get_bom_data(bom_by_products[product], warehouse, product, ignore_stock=True)
+            availability_delay = bom_data.get('resupply_avail_delay')
+            product.days_to_prepare_mo = availability_delay - bom_data.get('lead_time', 0) if availability_delay else 0
+
     def _match_all_variant_values(self, product_template_attribute_value_ids):
         """ It currently checks that all variant values (`product_template_attribute_value_ids`)
         are in the product (`self`).
@@ -305,16 +302,17 @@ class ProductProduct(models.Model):
         them has to be found on the variant.
         """
         self.ensure_one()
-        # The intersection of the values of the product and those of the line satisfy:
-        # * the number of items equals the number of attributes (since a product cannot
-        #   have multiple values for the same attribute),
-        # * the attributes are a subset of the attributes of the line.
-        return len(self.product_template_attribute_value_ids & product_template_attribute_value_ids) == len(product_template_attribute_value_ids.attribute_id)
+        if not product_template_attribute_value_ids:
+            return True
+        for _, iter_ptav in groupby(product_template_attribute_value_ids, lambda ptav: ptav.attribute_line_id):
+            if not any(ptav in self.product_template_attribute_value_ids for ptav in iter_ptav):
+                return False
+        return True
 
     def _count_returned_sn_products(self, sn_lot):
         res = self.env['stock.move.line'].search_count([
             ('lot_id', '=', sn_lot.id),
-            ('quantity', '=', 1),
+            ('qty_done', '=', 1),
             ('state', '=', 'done'),
             ('production_id', '=', False),
             ('location_id.usage', '=', 'production'),
@@ -336,20 +334,3 @@ class ProductProduct(models.Model):
             if OPERATORS[operator](product.qty_available, value):
                 product_ids.append(product.id)
         return list(set(product_ids))
-
-    def action_archive(self):
-        filtered_products = self.env['mrp.bom.line'].search([('product_id', 'in', self.ids), ('bom_id.active', '=', True)]).product_id.mapped('display_name')
-        res = super().action_archive()
-        if filtered_products:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                'title': _("Note that product(s): '%s' is/are still linked to active Bill of Materials, "
-                            "which means that the product can still be used on it/them.", filtered_products),
-                'type': 'warning',
-                'sticky': True,  #True/False will display for few seconds if false
-                'next': {'type': 'ir.actions.act_window_close'},
-                },
-            }
-        return res

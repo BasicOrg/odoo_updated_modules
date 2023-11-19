@@ -1,17 +1,12 @@
-/* @odoo-module */
+odoo.define('hr_payroll_holidays.work_entries_gantt', function (require) {
+    'use strict';
 
-import { patch } from "@web/core/utils/patch";
-import { TimeOffToDeferWarning, useTimeOffToDefer } from "@hr_payroll_holidays/views/hooks";
-import { WorkEntriesGanttController } from '@hr_work_entry_contract_enterprise/work_entries_gantt_controller';
+    var WorkEntryPayrollHolidaysControllerMixin = require('hr_payroll_holidays.WorkEntryPayrollHolidaysControllerMixin');
+    var WorkEntryGanttController = require("hr_work_entry_contract_enterprise.work_entries_gantt");
 
-patch(WorkEntriesGanttController.prototype, {
-    setup() {
-        super.setup(...arguments);
-        this.timeOff = useTimeOffToDefer();
-    }
+    var WorkEntryPayrollHolidaysGanttController = WorkEntryGanttController.include(WorkEntryPayrollHolidaysControllerMixin);
+
+    return WorkEntryPayrollHolidaysGanttController;
+
 });
 
-patch(WorkEntriesGanttController, {
-    components: { ...WorkEntriesGanttController.components, TimeOffToDeferWarning },
-    template: "hr_payroll_holidays.WorkEntriesGanttController"
-});

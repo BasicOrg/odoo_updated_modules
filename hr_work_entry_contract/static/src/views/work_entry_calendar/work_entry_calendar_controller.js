@@ -12,7 +12,6 @@ export class WorkEntryCalendarController extends CalendarController {
         const { onRegenerateWorkEntries } = useWorkEntry({
             getEmployeeIds: this.getEmployeeIds.bind(this),
             getRange: this.model.computeRange.bind(this.model),
-            onClose: this.model.load.bind(this.model)
         });
         this.onRegenerateWorkEntries = onRegenerateWorkEntries;
     }

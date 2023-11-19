@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 class TestEdi(TestAr):
 
     @classmethod
-    def setUpClass(cls, afip_ws, chart_template_ref='ar_ri'):
+    def setUpClass(cls, afip_ws, chart_template_ref='l10n_ar.l10nar_ri_chart_template'):
         super(TestEdi, cls).setUpClass(chart_template_ref=chart_template_ref)
         cls.company_ri.write({
             'l10n_ar_afip_ws_environment': 'testing',

@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { usePopover } from "@web/core/popover/popover_hook";
 import { useService } from "@web/core/utils/hooks";
@@ -8,68 +7,79 @@ import { localization } from "@web/core/l10n/localization";
 import { parseDate, formatDate } from "@web/core/l10n/dates";
 
 import { formatMonetary } from "@web/views/fields/formatters";
-import { standardFieldProps } from "@web/views/fields/standard_field_props";
-import { Component } from "@odoo/owl";
+
+const { Component, onWillUpdateProps } = owl;
 
 class AccountPaymentPopOver extends Component {}
-AccountPaymentPopOver.props = {
-    "*": { optional: true },
-}
 AccountPaymentPopOver.template = "account.AccountPaymentPopOver";
 
 export class AccountPaymentField extends Component {
-    static props = { ...standardFieldProps };
-
     setup() {
-        const position = localization.direction === "rtl" ? "bottom" : "left";
-        this.popover = usePopover(AccountPaymentPopOver, { position });
+        this.popover = usePopover();
         this.orm = useService("orm");
         this.action = useService("action");
+
+        this.formatData(this.props);
+        onWillUpdateProps((nextProps) => this.formatData(nextProps));
     }
 
-    getInfo() {
-        const info = this.props.record.data[this.props.name] || {
+    formatData(props) {
+        const info = props.value || {
             content: [],
             outstanding: false,
             title: "",
-            move_id: this.props.record.resId,
+            move_id: this.props.record.data.id,
         };
-        for (const [key, value] of Object.entries(info.content)) {
+        for (let [key, value] of Object.entries(info.content)) {
             value.index = key;
-            value.amount_formatted = formatMonetary(value.amount, {
-                currencyId: value.currency_id,
-            });
+            value.amount_formatted = formatMonetary(value.amount, { currencyId: value.currency_id });
             if (value.date) {
                 // value.date is a string, parse to date and format to the users date format
                 value.date = formatDate(parseDate(value.date));
             }
         }
-        return {
-            lines: info.content,
-            outstanding: info.outstanding,
-            title: info.title,
-            moveId: info.move_id,
-        };
+        this.lines = info.content;
+        this.outstanding = info.outstanding;
+        this.title = info.title;
+        this.move_id = info.move_id;
     }
 
-    onInfoClick(ev, line) {
-        this.popover.open(ev.currentTarget, {
-            title: _t("Journal Entry Info"),
-            ...line,
-            _onRemoveMoveReconcile: this.removeMoveReconcile.bind(this),
-            _onOpenMove: this.openMove.bind(this),
-        });
+    onInfoClick(ev, idx) {
+        if (this.popoverCloseFn) {
+            this.closePopover();
+        }
+        this.popoverCloseFn = this.popover.add(
+            ev.currentTarget,
+            AccountPaymentPopOver,
+            {
+                title: this.env._t("Journal Entry Info"),
+                ...this.lines[idx],
+                _onRemoveMoveReconcile: this.removeMoveReconcile.bind(this),
+                _onOpenMove: this.openMove.bind(this),
+                onClose: this.closePopover,
+            },
+            {
+                position: localization.direction === "rtl" ? "bottom" : "left",
+            },
+        );
     }
 
-    async assignOutstandingCredit(moveId, id) {
-        await this.orm.call(this.props.record.resModel, 'js_assign_outstanding_line', [moveId, id], {});
+    closePopover() {
+        this.popoverCloseFn();
+        this.popoverCloseFn = null;
+    }
+
+    async assignOutstandingCredit(id) {
+        await this.orm.call(this.props.record.resModel, 'js_assign_outstanding_line', [this.move_id, id], {});
         await this.props.record.model.root.load();
+        this.props.record.model.notify();
     }
 
     async removeMoveReconcile(moveId, partialId) {
-        this.popover.close();
+        this.closePopover();
         await this.orm.call(this.props.record.resModel, 'js_remove_outstanding_partial', [moveId, partialId], {});
         await this.props.record.model.root.load();
+        this.props.record.model.notify();
     }
 
     async openMove(moveId) {
@@ -78,10 +88,6 @@ export class AccountPaymentField extends Component {
     }
 }
 AccountPaymentField.template = "account.AccountPaymentField";
+AccountPaymentField.supportedTypes = ["char"];
 
-export const accountPaymentField = {
-    component: AccountPaymentField,
-    supportedTypes: ["char"],
-};
-
-registry.category("fields").add("payment", accountPaymentField);
+registry.category("fields").add("payment", AccountPaymentField);

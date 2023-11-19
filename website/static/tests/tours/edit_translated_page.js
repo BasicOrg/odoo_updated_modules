@@ -1,25 +1,23 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import wTourUtils from "@website/js/tours/tour_utils";
+import tour from "web_tour.tour";
 
-registry.category("web_tour.tours").add('edit_translated_page_redirect', {
+tour.register('edit_translated_page_redirect', {
     test: true,
     url: '/nl/contactus',
-    steps: () => [
+}, [
     {
         content: "Enter backend",
         trigger: 'a.o_frontend_to_backend_edit_btn',
     },
     {
-        content: "Check the data-for attribute",
-        trigger: 'iframe main:has([data-for="contactus_form"])',
-        run: () => {}, // it's a check
+        content: "Enter edit mode",
+        extra_trigger: 'iframe main:has([data-for="contactus_form"])',
+        trigger: '.o_edit_website_container > a',
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
     {
-        content: "Go to /nl",
-        trigger: "body",
+        content: 'check editor dashboard',
+        trigger: '#oe_snippets.o_loaded',
         run: () => {
             // After checking the presence of the editor dashboard, we visit a
             // translated version of the homepage. The homepage is a special
@@ -31,5 +29,14 @@ registry.category("web_tour.tours").add('edit_translated_page_redirect', {
         content: "Enter backend",
         trigger: 'a.o_frontend_to_backend_edit_btn',
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
-]});
+    {
+        content: "Enter edit mode",
+        extra_trigger: 'iframe #wrapwrap',
+        trigger: '.o_edit_website_container > a',
+    },
+    {
+        content: 'check editor dashboard',
+        trigger: '#oe_snippets.o_loaded',
+        run: () => {},
+    },
+]);

@@ -7,9 +7,9 @@
             <field name="inherit_id" ref="hr_payroll.hr_contract_form_inherit"/>
             <field name="arch" type="xml">
                  <field name="structure_type_id" position="after">
-                    <field name="qualif" invisible="country_code != 'FR'"/>
-                    <field name="niveau" invisible="country_code != 'FR'"/>
-                    <field name="coef" invisible="country_code != 'FR'"/>
+                    <field name="qualif" attrs="{'invisible': [('country_code', '!=', 'FR')]}"/>
+                    <field name="niveau" attrs="{'invisible': [('country_code', '!=', 'FR')]}"/>
+                    <field name="coef" attrs="{'invisible': [('country_code', '!=', 'FR')]}"/>
                  </field>
             </field>
         </record>
@@ -22,7 +22,7 @@
             <field name="arch" type="xml">
             <data>
                  <xpath expr="//field[@name='paid']" position="after">
-                     <field name="payment_mode" invisible="country_code != 'FR'"/>
+                     <field name="payment_mode" attrs="{'invisible': [('country_code', '!=', 'FR')]}"/>
                  </xpath>
             </data>
             </field>

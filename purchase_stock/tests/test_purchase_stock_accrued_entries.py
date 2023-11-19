@@ -41,10 +41,7 @@ class TestAccruedPurchaseStock(AccountTestInvoicingCommon):
     def test_purchase_stock_accruals(self):
         # receive 2 on 2020-01-02
         pick = self.purchase_order.picking_ids
-        pick.move_ids.write({
-            'quantity': 2,
-            'picked': True,
-        })
+        pick.move_ids.write({'quantity_done': 2})
         pick.button_validate()
         wiz_act = pick.button_validate()
         wiz = Form(self.env[wiz_act['res_model']].with_context(wiz_act['context'])).save()
@@ -53,7 +50,7 @@ class TestAccruedPurchaseStock(AccountTestInvoicingCommon):
 
         # receive 3 on 2020-01-06
         pick = pick.copy()
-        pick.move_ids.write({'quantity': 3, 'picked': True})
+        pick.move_ids.write({'quantity_done': 3})
         wiz_act = pick.button_validate()
         pick.move_ids.write({'date': fields.Date.to_date('2020-01-06')})
 
@@ -93,7 +90,7 @@ class TestAccruedPurchaseStock(AccountTestInvoicingCommon):
     def test_purchase_stock_invoiced_accrued_entries(self):
         # deliver 2 on 2020-01-02
         pick = self.purchase_order.picking_ids
-        pick.move_ids.write({'quantity': 2, 'picked': True})
+        pick.move_ids.write({'quantity_done': 2})
         pick.button_validate()
         wiz_act = pick.button_validate()
         wiz = Form(self.env[wiz_act['res_model']].with_context(wiz_act['context'])).save()
@@ -107,7 +104,7 @@ class TestAccruedPurchaseStock(AccountTestInvoicingCommon):
 
         # deliver 3 on 2020-01-06
         pick = pick.copy()
-        pick.move_ids.write({'quantity': 3, 'picked': True})
+        pick.move_ids.write({'quantity_done': 3})
         wiz_act = pick.button_validate()
         pick.move_ids.write({'date': fields.Date.to_date('2020-01-06')})
 

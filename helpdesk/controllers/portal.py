@@ -19,6 +19,8 @@ class CustomerPortal(portal.CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         values = super(CustomerPortal, self)._prepare_portal_layout_values()
+        if values.get('sales_user', False):
+            values['title'] = _("Salesperson")
         return values
 
     def _prepare_home_portal_values(self, counters):
@@ -39,8 +41,6 @@ class CustomerPortal(portal.CustomerPortal):
             'page_name': 'ticket',
             'ticket': ticket,
             'ticket_link_section': [],
-            'ticket_closed': kwargs.get('ticket_closed', False),
-            'preview_object': ticket,
         }
         return self._get_page_view_values(ticket, access_token, values, 'my_tickets_history', False, **kwargs)
 
@@ -50,7 +50,7 @@ class CustomerPortal(portal.CustomerPortal):
 
         searchbar_sortings = {
             'date': {'label': _('Newest'), 'order': 'create_date desc'},
-            'reference': {'label': _('Reference'), 'order': 'id desc'},
+            'reference': {'label': _('Reference'), 'order': 'id'},
             'name': {'label': _('Subject'), 'order': 'name'},
             'user': {'label': _('Assigned to'), 'order': 'user_id'},
             'stage': {'label': _('Stage'), 'order': 'stage_id'},
@@ -65,7 +65,7 @@ class CustomerPortal(portal.CustomerPortal):
         }
         searchbar_inputs = {
             'content': {'input': 'content', 'label': Markup(_('Search <span class="nolabel"> (in Content)</span>'))},
-            'ticket_ref': {'input': 'ticket_ref', 'label': _('Search in Reference')},
+            'id': {'input': 'id', 'label': _('Search in Reference')},
             'message': {'input': 'message', 'label': _('Search in Messages')},
             'user': {'input': 'user', 'label': _('Search in Assigned to')},
             'status': {'input': 'status', 'label': _('Search in Stage')},
@@ -115,8 +115,8 @@ class CustomerPortal(portal.CustomerPortal):
         # search
         if search and search_in:
             search_domain = []
-            if search_in == 'ticket_ref':
-                search_domain = OR([search_domain, [('ticket_ref', 'ilike', search)]])
+            if search_in == 'id':
+                search_domain = OR([search_domain, [('id', 'ilike', search)]])
             if search_in == 'content':
                 search_domain = OR([search_domain, ['|', ('name', 'ilike', search), ('description', 'ilike', search)]])
             if search_in == 'user':
@@ -141,9 +141,7 @@ class CustomerPortal(portal.CustomerPortal):
         tickets = request.env['helpdesk.ticket'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_tickets_history'] = tickets.ids[:100]
 
-        if not tickets:
-            grouped_tickets = []
-        elif groupby != 'none':
+        if groupby != 'none':
             grouped_tickets = [request.env['helpdesk.ticket'].concat(*g) for k, g in groupbyelem(tickets, itemgetter(searchbar_groupby[groupby]['input']))]
         else:
             grouped_tickets = [tickets]
@@ -208,4 +206,4 @@ class CustomerPortal(portal.CustomerPortal):
             body = _('Ticket closed by the customer')
             ticket_sudo.with_context(mail_create_nosubscribe=True).message_post(body=body, message_type='comment', subtype_xmlid='mail.mt_note')
 
-        return request.redirect('/my/ticket/%s/%s?ticket_closed=1' % (ticket_id, access_token or ''))
+        return request.redirect('/my/ticket/%s/%s' % (ticket_id, access_token or ''))

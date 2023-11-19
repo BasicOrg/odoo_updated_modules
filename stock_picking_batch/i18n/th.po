@@ -3,18 +3,21 @@
 # 	* stock_picking_batch
 # 
 # Translators:
-# Wichanon Jamwutthipreecha, 2023
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Krisa C, 2022
+# Prawit Boonthue <prawit.boonthue@gmail.com>, 2022
+# Pornvibool Tippayawat <pornvibool.t@gmail.com>, 2022
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-27 15:12+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,28 +25,21 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "2023-08-20"
-msgstr "2023-08-20"
-
-#. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.view_picking_type_form_inherit
 msgid ""
-"<span class=\"o_form_label fw-bold\" invisible=\"not auto_batch\">Group "
-"by</span>"
+"<span class=\"o_form_label fw-bold\" attrs=\"{'invisible':[('auto_batch', "
+"'=', False)]}\">Group by</span>"
 msgstr ""
-"<span class=\"o_form_label fw-bold\" invisible=\"not "
-"auto_batch\">จัดกลุ่มตาม</span>"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "<strong>FROM</strong>"
-msgstr "<strong>จาก</strong>"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "<strong>Lot/Serial Number</strong>"
-msgstr "<strong>ล็อค/หมายเลขซีเรียล</strong>"
+msgstr "<strong>ล็อค/เลขซีเรียล</strong>"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
@@ -58,17 +54,17 @@ msgstr "<strong>บาร์โค้ดสินค้า</strong>"
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "<strong>Responsible:</strong>"
-msgstr "<strong>รับผิดชอบ:</strong>"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "<strong>TO</strong>"
-msgstr "<strong>ถึง</strong>"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "<strong>→</strong>"
-msgstr "<strong>→</strong>"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_max_lines
@@ -76,8 +72,6 @@ msgid ""
 "A transfer will not be automatically added to batches that will exceed this number of lines if the transfer is added to it.\n"
 "Leave this value as '0' if no line limit."
 msgstr ""
-"การโอนย้ายจะไม่ถูกเพิ่มโดยอัตโนมัติไปยังชุดที่จะเกินจำนวนในรายการนี้ หากมีการเพิ่มการโอนย้ายเข้าไป\n"
-"ให้ปล่อยค่านี้เป็น '0' หากไม่มีขีดจำกัดของรายการ"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_max_pickings
@@ -85,8 +79,6 @@ msgid ""
 "A transfer will not be automatically added to batches that will exceed this number of transfers.\n"
 "Leave this value as '0' if no transfer limit."
 msgstr ""
-"การโอนย้ายจะไม่ถูกเพิ่มโดยอัตโนมัติไปยังชุดที่จะเกินจำนวนในการโอนย้ายนี้\n"
-"ให้ปล่อยค่านี้เป็น '0' หากไม่มีขีดจำกัดของการโอนย้าย"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__message_needaction
@@ -114,17 +106,16 @@ msgid "Activity Type Icon"
 msgstr "ไอคอนประเภทกิจกรรม"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking.py:0
 #: code:addons/stock_picking_batch/wizard/stock_add_to_wave.py:0
 #, python-format
 msgid "Add Operations"
-msgstr "เพิ่มการดำเนินการ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_to_batch_form
 msgid "Add pickings to"
-msgstr "เพิ่มการเบิกสินค้าไปที่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_add_to_wave_form
@@ -133,23 +124,22 @@ msgid "Add to"
 msgstr "เพิ่มไปที่"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_move_line.py:0
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_add_to_wave_form
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.view_move_line_tree_detailed_wave
 #, python-format
 msgid "Add to Wave"
-msgstr "เพิ่มลงในกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.actions.act_window,name:stock_picking_batch.stock_picking_to_batch_action_stock_picking
 msgid "Add to batch"
-msgstr "เพิ่มลงในชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.actions.act_window,name:stock_picking_batch.stock_add_to_wave_action_stock_picking
 msgid "Add to wave"
-msgstr "เพิ่มลงในกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
@@ -159,14 +149,13 @@ msgstr "การจัดสรร"
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__allowed_picking_ids
 msgid "Allowed Picking"
-msgstr "อนุญาตให้เบิกสินค้าได้"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking.py:0
 #, python-format
 msgid "Assigned to %s Responsible"
-msgstr "มอบหมายให้ %s รับผิดชอบแล้ว"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__message_attachment_count
@@ -176,38 +165,43 @@ msgstr "จำนวนสิ่งที่แนบมา"
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__batch_auto_confirm
 msgid "Auto-confirm"
-msgstr "ยืนยันอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__auto_batch
 msgid "Automatic Batches"
-msgstr "ชุดอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_group_by_partner
 msgid "Automatically group batches by contacts."
-msgstr "จัดกลุ่มชุดตามผู้ติดต่อโดยอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_group_by_destination
 msgid "Automatically group batches by destination country."
-msgstr "จัดกลุ่มชุดตามประเทศปลายทางโดยอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_group_by_dest_loc
 msgid "Automatically group batches by their destination location."
-msgstr "จัดกลุ่มชุดตามตำแหน่งปลายทางโดยอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__batch_group_by_src_loc
 msgid "Automatically group batches by their source location."
-msgstr "จัดกลุ่มชุดตามตำแหน่งต้นทางโดยอัตโนมัติ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_type__auto_batch
 msgid ""
 "Automatically put pickings into batches as they are confirmed when possible."
-msgstr "คัดแยกเป็นชุดโดยอัตโนมัติ เมื่อได้รับการยืนยันตอนที่สามารถเกิดขึ้นได้"
+msgstr ""
+
+#. module: stock_picking_batch
+#: model:ir.model,name:stock_picking_batch.model_stock_backorder_confirmation
+msgid "Backorder Confirmation"
+msgstr "ยืนยันสั่งซื้อล่วงหน้า"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
@@ -215,18 +209,11 @@ msgid "Barcode"
 msgstr "บาร์โค้ด"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_form_inherit
 msgid "Batch"
 msgstr "ชุด"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Batch Name"
-msgstr "ชื่อชุด"
-
-#. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #: model:ir.actions.report,name:stock_picking_batch.action_report_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_picking_batch
@@ -239,30 +226,30 @@ msgstr "ชื่อชุด"
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.view_picking_internal_search_inherit
 #, python-format
 msgid "Batch Transfer"
-msgstr "การโอนย้ายเป็นกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_picking_to_batch
 msgid "Batch Transfer Lines"
-msgstr "รายการโอนย้ายเป็นชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.actions.act_window,name:stock_picking_batch.stock_picking_batch_action
 #: model:ir.ui.menu,name:stock_picking_batch.stock_picking_batch_menu
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.view_picking_type_form_inherit
 msgid "Batch Transfers"
-msgstr "การโอนเป็นชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
 msgid "Batch Transfers not finished"
-msgstr "การโอนย้ายเป็นชุดยังไม่เสร็จสิ้น"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_move_line__batch_id
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking__batch_id
 msgid "Batch associated to this transfer"
-msgstr "ชุดที่เกี่ยวข้องกับการโอนย้ายนี้"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_type_kanban_batch
@@ -282,11 +269,10 @@ msgid "Cancelled"
 msgstr "ยกเลิก"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/wizard/stock_add_to_wave.py:0
 #, python-format
 msgid "Cannot create wave transfers"
-msgstr "ไม่สามารถสร้างการโอนย้ายเป็นกลุ่มได้"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
@@ -294,23 +280,26 @@ msgid "Check Availability"
 msgstr "สำรองสินค้า"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid "Choose Labels Layout"
-msgstr "เลือกเค้าโครงป้ายกำกับ"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid "Choose Type of Labels To Print"
-msgstr "เลือกประเภทของฉลากที่จะพิมพ์"
+msgstr ""
+
+#. module: stock_picking_batch
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
+msgid "Clear quantities"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_add_to_wave_form
@@ -328,22 +317,22 @@ msgstr "ติดต่อ"
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__count_picking_batch
 msgid "Count Picking Batch"
-msgstr "จำนวนการเบิกสินค้าเป็นชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__count_picking_wave
 msgid "Count Picking Wave"
-msgstr "จำนวนการเบิกสินค้าเป็นกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.actions.act_window,help:stock_picking_batch.stock_picking_batch_action
 msgid "Create a new batch transfer"
-msgstr "สร้างการโอนย้ายชุดใหม่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.actions.act_window,help:stock_picking_batch.action_picking_tree_wave
 msgid "Create a new wave transfer"
-msgstr "สร้างการโอนย้ายเป็นกลุ่มใหม่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__create_uid
@@ -420,11 +409,6 @@ msgid "Group By"
 msgstr "กลุ่มโดย"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Gujarat"
-msgstr "คุชราต"
-
-#. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__has_message
 msgid "Has Message"
 msgstr "มีข้อความ"
@@ -458,15 +442,12 @@ msgid "If checked, some messages have a delivery error."
 msgstr "ถ้าเลือก ข้อความบางข้อความมีข้อผิดพลาดในการส่ง"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking.py:0
 #, python-format
 msgid ""
 "If the Automatic Batches feature is enabled, at least one 'Group by' option "
 "must be selected."
 msgstr ""
-"หากเปิดใช้งานคุณสมบัติชุดงานอัตโนมัติ จำเป็นต้องเลือกตัวเลือก 'จัดกลุ่มตาม' "
-"อย่างน้อยหนึ่งตัวเลือก"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
@@ -484,9 +465,11 @@ msgid "Is Follower"
 msgstr "เป็นผู้ติดตาม"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "John Doe"
-msgstr "John Doe"
+#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave____last_update
+#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch____last_update
+#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_to_batch____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__write_uid
@@ -510,37 +493,27 @@ msgstr "กิจกรรมล่าสุด"
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__line_ids
 msgid "Line"
-msgstr "รายการ"
+msgstr "ไลน์"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_batch__picking_ids
 msgid "List of transfers associated to this batch"
-msgstr "รายการโอนย้ายที่เกี่ยวข้องกับชุดนี้"
+msgstr ""
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Location From Name"
-msgstr "สถานที่ตั้งจากชื่อ"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Location To Name"
-msgstr "สถานที่ตามชื่อ"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Lot Number"
-msgstr "หมายเลขล็อต"
+#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "เอกสารหลักที่แนบมา"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__batch_max_lines
 msgid "Maximum lines per batch"
-msgstr "จำนวนรายการสูงสุดต่อชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__batch_max_pickings
 msgid "Maximum transfers per batch"
-msgstr "การโอนย้ายสูงสุดต่อชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__message_has_error
@@ -561,7 +534,7 @@ msgstr "โหมด"
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.view_move_line_tree
 msgid "Move Lines"
-msgstr "ย้ายรายการ"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__my_activity_date_deadline
@@ -571,7 +544,7 @@ msgstr "วันครบกำหนดกิจกรรมของฉัน
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
 msgid "My Transfers"
-msgstr "การโอนย้ายของฉัน"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__activity_calendar_event_id
@@ -605,8 +578,8 @@ msgstr "จํานวนข้อผิดพลาด"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_batch__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+msgid "Number of messages which requires an action"
+msgstr "จํานวนข้อความที่ต้องดําเนินการ"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_batch__message_has_error_counter
@@ -624,11 +597,6 @@ msgid "Operations"
 msgstr "การปฏิบัติการ"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Package ID"
-msgstr "รหัสแพ็กเกจ"
-
-#. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__picking_ids
 msgid "Picking"
 msgstr "การรับ"
@@ -639,12 +607,11 @@ msgid "Picking Type"
 msgstr "ประเภทการรับ"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid ""
 "Please add 'Done' quantities to the batch picking to create a new pack."
-msgstr "โปรดเพิ่มจำนวน 'เสร็จสิ้น' ให้กับการเลือกชุดงาน เพื่อสร้างแพ็คใหม่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
@@ -662,19 +629,9 @@ msgid "Product"
 msgstr "สินค้า"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Product Barcode"
-msgstr "บาร์โค้ดสินค้า"
-
-#. module: stock_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_move_line
 msgid "Product Moves (Stock Move Line)"
-msgstr "ย้ายสินค้า (รายการเคลื่อนย้ายสต็อก)"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Product Name"
-msgstr "ชื่อสินค้า"
+msgstr "ย้ายสินค้า ( ไลน์เคลื่อนย้ายสต๊อก )"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
@@ -685,16 +642,6 @@ msgstr "ใส่ในแพ็ค"
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "Quantity"
 msgstr "ปริมาณ"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Quantity Done"
-msgstr "ปริมาณที่ทำเสร็จแล้ว"
-
-#. module: stock_picking_batch
-#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__rating_ids
-msgid "Ratings"
-msgstr "การให้คะแนน"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__user_id
@@ -708,11 +655,6 @@ msgstr "รับผิดชอบ"
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__activity_user_id
 msgid "Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบ"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Result Package ID"
-msgstr "รหัสแพ็กเกจผลลัพธ์"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__message_has_sms_error
@@ -733,40 +675,54 @@ msgid ""
 "              - If not manually changed and transfers are added/removed/updated then this will be their earliest scheduled date\n"
 "                but this scheduled date will not be set for all transfers in batch."
 msgstr ""
-"วันที่กำหนดสำหรับการโอนย้ายที่จะดำเนินการ\n"
-"- หากตั้งค่าด้วยตนเอง วันที่กำหนดไว้สำหรับการโอนทั้งหมดในชุดจะอัปเดตเป็นวันที่นี้โดยอัตโนมัติ\n"
-"- หากไม่ได้เปลี่ยนแปลงด้วยตนเองและมีการเพิ่ม/ลบ/อัปเดตการถ่ายโอน จะเป็นวันที่กำหนดไว้เร็วที่สุด\n"
-"แต่วันที่กำหนดนี้จะไม่ถูกกำหนดไว้สำหรับการโอนย้ายทั้งหมดในชุด"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
 msgid "Search Batch Transfer"
-msgstr "ค้นหาการโอนย้ายเป็นชุด"
+msgstr ""
+
+#. module: stock_picking_batch
+#: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
+msgid "Set quantities"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__show_allocation
 msgid "Show Allocation Button"
-msgstr "แสดงปุ่มการจัดสรร"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__show_check_availability
 msgid "Show Check Availability"
-msgstr "แสดงรายการตรวจสอบความพร้อมจำหน่ายสินค้า"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__show_clear_qty_button
 msgid "Show Clear Qty Button"
-msgstr "แสดงปุ่มล้างจำนวน"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__show_set_qty_button
 msgid "Show Set Qty Button"
-msgstr "แสดงปุ่มกำหนดจำนวน"
+msgstr ""
+
+#. module: stock_picking_batch
+#: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__show_validate
+msgid "Show Validate Button"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
 msgid "Show all records which has next action date is before today"
 msgstr "แสดงระเบียนทั้งหมดที่มีวันที่ดำเนินการถัดไปคือก่อนวันนี้"
+
+#. module: stock_picking_batch
+#: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
+#, python-format
+msgid ""
+"Some transfers are still waiting for goods. Please check or force their "
+"availability before setting this batch to done."
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_type__batch_group_by_src_loc
@@ -807,7 +763,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_tree
 msgid "Stock Batch Transfer"
-msgstr "การโอนย้ายสต็อกเป็นชุด"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_move
@@ -817,17 +773,17 @@ msgstr "ย้ายสต๊อก"
 #. module: stock_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_package_destination
 msgid "Stock Package Destination"
-msgstr "แพ็คเกจสต็อกปลายทาง"
+msgstr "ปลายทางพัสดุภัณฑ์"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__move_line_ids
 msgid "Stock move lines"
-msgstr "รายการย้ายสต็อก"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__move_ids
 msgid "Stock moves"
-msgstr "การย้ายสต็อก"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
@@ -835,17 +791,13 @@ msgid "Summary:"
 msgstr "สรุป"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid ""
-"The following transfers cannot be added to batch transfer %s. Please check their states and operation types.\n"
+"The following transfers cannot be added to batch transfer %s. Please check their states and operation types, if they aren't immediate transfers.\n"
 "\n"
 "Incompatibilities: %s"
 msgstr ""
-"ไม่สามารถเพิ่มการถ่ายโอนต่อไปนี้ในการถ่ายโอนแบบชุด %s โปรดตรวจสอบสถานะและประเภทการดำเนินการ\n"
-"\n"
-"ความไม่เข้ากัน: %s"
 
 #. module: stock_picking_batch
 #: model_terms:ir.actions.act_window,help:stock_picking_batch.stock_picking_batch_action
@@ -855,10 +807,6 @@ msgid ""
 "            It may also be useful to assign jobs (one person = one batch) or\n"
 "            help the timing management of operations (tasks to be done at 1pm)."
 msgstr ""
-"เป้าหมายของการโอนย้ายแบบกลุ่มคือการจัดกลุ่มการปฏิบัติงานที่อาจ\n"
-"             (จำเป็นต้อง) ทำร่วมกันเพื่อเพิ่มประสิทธิภาพการดำเนินการ\n"
-"นอกจากนี้ยังอาจเป็นประโยชน์ในการมอบหมายงาน             (หนึ่งคน = หนึ่งกลุ่ม) หรือ\n"
-"             ช่วยบริหารจัดการเวลาการดำเนินงาน (งานเสร็จ 13.00 น.)"
 
 #. module: stock_picking_batch
 #: model_terms:ir.actions.act_window,help:stock_picking_batch.action_picking_tree_wave
@@ -868,43 +816,35 @@ msgid ""
 "                    It may also be useful to assign jobs (one person = one batch) or\n"
 "                    help the timing management of operations (tasks to be done at 1pm)."
 msgstr ""
-"เป้าหมายของการโอนย้ายเป็นกลุ่มคือการรวมกลุ่มการดำเนินงานจากการโอนย้ายที่แตกต่างกัน\n"
-"                  เข้าด้วยกันเพื่อเพิ่มประสิทธิภาพการดำเนินการ\n"
-"                  นอกจากนี้ยังอาจเป็นประโยชน์ในการมอบหมายงาน (หนึ่งคน = หนึ่งชุด) หรือ\n"
-"                  ช่วยบริหารจัดการเวลาการดำเนินงาน (งานเสร็จภายใน 13.00 น.)"
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/wizard/stock_add_to_wave.py:0
 #, python-format
 msgid "The selected operations should belong to a unique company."
-msgstr "การดำเนินงานที่เลือกควรเป็นของบริษัทที่ไม่ซ้ำกัน"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/wizard/stock_picking_to_batch.py:0
 #, python-format
 msgid "The selected pickings should belong to an unique company."
-msgstr "การเบิกสินค้าที่เลือกควรเป็นของบริษัทที่ไม่ซ้ำกัน"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/wizard/stock_add_to_wave.py:0
 #, python-format
 msgid "The selected transfers should belong to a unique company."
-msgstr "การโอนย้ายที่เลือกควรเป็นของบริษัทที่ไม่ซ้ำกัน"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/wizard/stock_add_to_wave.py:0
 #, python-format
 msgid "The selected transfers should belong to the same operation type"
-msgstr "การโอนย้ายที่เลือกควรเป็นประเภทการดำเนินการเดียวกัน"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__is_wave
 msgid "This batch is a wave"
-msgstr "ชุดนี้เป็นกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_filter
@@ -920,30 +860,19 @@ msgstr "กิจกรรมวันนี้"
 #: model:ir.model,name:stock_picking_batch.model_stock_picking
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
 msgid "Transfer"
-msgstr "โอนย้าย"
+msgstr "โอน"
 
 #. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Transfer Display Name"
-msgstr "ชื่อที่แสดงการโอนย้าย"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Transfer Name"
-msgstr "ชื่อการโอนย้าย"
-
-#. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid "Transferred by"
-msgstr "โอนย้ายแล้ว โดย"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__picking_ids
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
 msgid "Transfers"
-msgstr "โอนย้าย"
+msgstr "โอน"
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__picking_type_code
@@ -954,11 +883,6 @@ msgstr "ประเภทการปฏิบัติการ"
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_batch__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "ประเภทกิจกรรมข้อยกเว้นบนบันทึก"
-
-#. module: stock_picking_batch
-#: model_terms:ir.ui.view,arch_db:stock_picking_batch.report_picking_batch
-msgid "Unit of Measure"
-msgstr "หน่วยวัด"
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_batch_form
@@ -973,23 +897,23 @@ msgstr "โกดังสินค้า"
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_add_to_wave__wave_id
 msgid "Wave Transfer"
-msgstr "การโอนย้ายแบบกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model,name:stock_picking_batch.model_stock_add_to_wave
 msgid "Wave Transfer Lines"
-msgstr "รายการโอนย้ายแบบกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.actions.act_window,name:stock_picking_batch.action_picking_tree_wave
 #: model:ir.ui.menu,name:stock_picking_batch.stock_picking_wave_menu
 msgid "Wave Transfers"
-msgstr "การโอนย้ายเป็นกลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_picking_batch.stock_picking_type_kanban_batch
 msgid "Waves"
-msgstr "กลุ่ม"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields,field_description:stock_picking_batch.field_stock_picking_batch__website_message_ids
@@ -1004,38 +928,36 @@ msgstr "ประวัติการสื่อสารของเว็บ
 #. module: stock_picking_batch
 #: model:ir.model.fields,help:stock_picking_batch.field_stock_picking_to_batch__is_create_draft
 msgid "When checked, create the batch in draft status"
-msgstr "เมื่อเลือกแล้ว ให้สร้างชุดงานในสถานะแบบร่าง"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid "You cannot delete Done batch transfers."
-msgstr "คุณไม่สามารถลบการโอนย้ายแบบชุดที่เสร็จสิ้นแล้วได้"
+msgstr ""
 
 #. module: stock_picking_batch
-#. odoo-python
 #: code:addons/stock_picking_batch/models/stock_picking_batch.py:0
 #, python-format
 msgid "You have to set some pickings to batch."
-msgstr "คุณต้องตั้งค่าการเบิกสินค้าบางส่วนเป็นชุดงาน"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields.selection,name:stock_picking_batch.selection__stock_picking_to_batch__mode__new
 msgid "a new batch transfer"
-msgstr "การโอนย้ายชุดใหม่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields.selection,name:stock_picking_batch.selection__stock_add_to_wave__mode__new
 msgid "a new wave transfer"
-msgstr "การโอนย้ายแบบกลุ่มใหม่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields.selection,name:stock_picking_batch.selection__stock_picking_to_batch__mode__existing
 msgid "an existing batch transfer"
-msgstr "การโอนย้ายเป็นชุดที่มีอยู่"
+msgstr ""
 
 #. module: stock_picking_batch
 #: model:ir.model.fields.selection,name:stock_picking_batch.selection__stock_add_to_wave__mode__existing
 msgid "an existing wave transfer"
-msgstr "การโอนย้ายเป็นกลุ่มที่มีอยู่"
+msgstr ""

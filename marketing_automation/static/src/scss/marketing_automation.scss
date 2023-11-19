@@ -20,16 +20,16 @@
 // Abstract Hierarchy
 // ------------------------------------------------------------------
 .o_ma_hierarchy {
-    margin-left: calc(var(--formView-sheet-padding-x) * -1);
-    margin-right: calc(var(--formView-sheet-padding-x) * -1);
-    margin-bottom: calc(var(--formView-sheet-padding-x) * -1);
-    padding: var(--formView-sheet-padding-x);
-    background-color: $o-ma-hierarchy-background;
-
-    .o_kanban_renderer {
-        --Kanban-gap: 0;
+    margin-left: -$o-horizontal-padding;
+    margin-right: -$o-horizontal-padding;
+    @include media-breakpoint-up(lg, $o-extra-grid-breakpoints) {
+        margin-left: -$o-horizontal-padding*2;
+        margin-right: -$o-horizontal-padding*2;
     }
-    
+    margin-bottom:-24px;
+    padding: 10px 0px 24px 16px;
+    background-color: $o-ma-hierarchy-background;
+    box-shadow: 0px 1px 1px rgba(17, 17, 17, 0.23);
     .o_ma_hierarchy_title {
         padding: 0px 0px 0px 72px;
         font-size: 18px;
@@ -51,26 +51,22 @@
             padding: 0px 0px 0px 100px;
             margin: 0px 0px 0px 0px;
             background-color: transparent;
-            .o_ma_body_wrapper {
-                padding-left: 133px;
+            // Timeline Border
+            &:before {
+                content: '';
+                display: block;
+                @include o-position-absolute;
+                height: 100%;
                 margin-left: 8px;
                 border-left: 1px dashed $o-ma-border-color;
             }
             // Record with all children
             .o_ma_body {
-                // Timeline Border
-                &:before {
-                    content: '';
-                    display: block;
-                    @include o-position-absolute($bottom: 0px);
-                    height: 100%;
-                    border-left: 1px dashed $o-ma-border-color;
-                }
                 margin-left: 8px;
                 padding-top: 20px;
                 // Timeline Pill: Display time
                 .o_ma_timeline {
-                    @include o-position-absolute($top: 32px, $left: -102px);
+                    @include o-position-absolute($top: 32px, $left: 6px);
                     width: 90px;
                     padding: 3px 0px;
                     border-radius: 3px;
@@ -94,7 +90,7 @@
                         width: 14px;
                         height: 14px;
                         background: $o-ma-color-white;
-                        border: 1px solid $card-border-color;
+                        border-bottom: 1px solid $o-ma-border-color;
                         transform: rotate(45deg);
                     }
                     // Timeline dot
@@ -106,6 +102,13 @@
                         border: 2px solid $o-brand-primary;
                         border-radius: 10px;
                         background: $o-ma-hierarchy-background;
+                    }
+                }
+                // Contain children
+                .o_hierarchy_children {
+                    margin-left: 25px;
+                    & > div:last-child:before {
+                        height: 40px;
                     }
                 }
             }
@@ -144,7 +147,7 @@
                 margin: 5px;
                 width: 28px;
                 height: 28px;
-                color: white;
+                color: $o-ma-color-white;
                 font-size: 14px;
                 border-radius: 3px;
                 background: linear-gradient(to right bottom, $o-brand-primary, darken($o-brand-primary, 5%));
@@ -188,7 +191,7 @@
                         border-bottom-color: $o-ma-border-color;
                     }
                     &.active {
-                        color: map-get($o-theme-text-colors, 'primary');
+                        color: $o-brand-primary;
                         border-bottom-color: $o-ma-color-white;
                         background-color: $o-ma-color-white;
                     }
@@ -339,13 +342,38 @@
 }
 
 // ------------------------------------------------------------------
+// Marketing Activity Form
+// ------------------------------------------------------------------
+
+.o_marketing_activity_form.o_form_view {
+    .o_group .o_field_widget {
+        // Force col-x classes to use their normal values
+        // Overrides '.o_form_view .o_group .o_field_widget' that sets the width to 100%
+
+        &.col-2 {
+            @extend .col-2;
+        }
+
+        &.col-10 {
+            @extend .col-10;
+        }
+    }
+}
+
+// ------------------------------------------------------------------
 // Colors
 // ------------------------------------------------------------------
+.o_ma_text_processed {
+    @extend .text-primary;
+}
+.o_ma_text_rejected {
+    @extend .text-danger;
+}
 .o_ma_text_canceled {
-    color: map-get($o-theme-text-colors, 'warning');
+    @extend .text-warning;
 }
 .o_ma_text_error {
-    color: $text-muted;
+    @extend .text-muted;
 }
 .o_ma_processed {
     background-color: $o-brand-primary;
@@ -361,41 +389,4 @@
 }
 .o_ma_scheduled {
     background-color: $o-brand-odoo;
-}
-
-.o_ma_templates_container {
-    pointer-events: auto;
-    .marketing-template {
-        &, * {
-            transition: all .15s;
-        }
-        min-height: 17vh; 
-        img {
-            filter: invert(.5);
-        }
-
-        &:hover {
-            * {
-                color: $o-enterprise-color !important;
-            }
-
-            background-color: var(--o-color-4);
-            box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 2px 0 rgba(0, 0, 0, 0.05);
-            border-color: $o-enterprise-color !important;
-
-            img {
-                filter: invert(0);
-            }
-
-            .card-body {
-                background-color: var(--o-color-4) !important;
-            }
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .o_view_nocontent.o_ma_campaign_container  {
-        align-items: start;
-    }
 }

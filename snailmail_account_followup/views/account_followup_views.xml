@@ -17,15 +17,12 @@
             <field name="model">account_followup.followup.line</field>
             <field name="inherit_id" ref="account_followup.view_account_followup_followup_line_form"/>
             <field name="arch" type="xml">
-                <field name="send_email" position="after">
+                <field name="send_sms" position="after">
                     <field name="send_letter"/>
                 </field>
-                <field name="mail_template_id" position="attributes">
-                    <attribute name="invisible">not send_email and not send_letter</attribute>
-                </field>
-                <field name="join_invoices" position="attributes">
-                    <attribute name="invisible">not send_email and not send_letter</attribute>
-                </field>
+                <group name="email" position="attributes">
+                    <attribute name="attrs">{'invisible': [('send_email','=',False),('send_letter','=',False)]}</attribute>
+                </group>
             </field>
         </record>
 

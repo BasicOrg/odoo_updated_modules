@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-<t t-name="web_studio.MapNewViewDialog" >
+<t t-name="web_studio.MapNewViewDialog" owl="1" >
   <Dialog size="'md'" title="title">
     <div class="form-text text-muted">Select the contact field to use to get the coordinates of your records.</div>
     <div class="o_web_studio_select mt-4">
@@ -12,11 +12,11 @@
             </option>
         </select>
     </div>
-    <t t-set-slot="footer">
+    <t t-set-slot="footer" owl="1">
       <button class="btn btn-primary" t-on-click="_confirm">
         Activate View
       </button>
-      <button class="btn btn-secondary" t-on-click="_cancel">
+      <button class="btn btn-secondary" t-on-click="close">
         Cancel
       </button>
     </t>

@@ -1,26 +1,26 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
 
-registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_rec_widget',
+tour.register('account_accountant_batch_payment_bank_rec_widget',
     {
         test: true,
         url: '/web',
-        steps: () => [
-        stepUtils.showAppsMenuItem(),
-        ...stepUtils.goToAppSteps('account_accountant.menu_accounting', "Open the accounting module"),
+    },
+    [
+        tour.stepUtils.showAppsMenuItem(),
+        ...tour.stepUtils.goToAppSteps('account_accountant.menu_accounting', "Open the accounting module"),
 
         // Open the widget. The first line should be selected by default.
         {
             content: "Open the bank reconciliation widget",
-            extra_trigger: ".o_breadcrumb",
+            extra_trigger: ".breadcrumb",
             trigger: "button.btn-primary[name='action_open_reconcile']",
         },
         {
             content: "The 'line1' should be selected by default",
-            trigger: "div[name='line_ids'] td[field='name']:contains('line1')",
+            trigger: "div[name='lines_widget'] td[field='name']:contains('line1')",
             run: function() {},
         },
 
@@ -36,14 +36,14 @@ registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_r
         {
             content: "Remove the payment of 100.0",
             extra_trigger: "div.bank_rec_widget_form_batch_payments_list_anchor table.o_list_table tr.o_rec_widget_list_selected_item",
-            trigger: "div[name='line_ids'] .fa-trash-o:last",
+            trigger: "div[name='lines_widget'] .fa-trash-o:last",
         },
 
         // Check the batch rejection wizard.
         {
             content: "Validate and open the wizard",
-            extra_trigger: "button.btn-primary:contains('Validate')",
-            trigger: "button:contains('Validate')",
+            extra_trigger: "button.btn-primary[name='button_validate']",
+            trigger: "button[name='button_validate']",
         },
         {
             content: "Click on 'Cancel'",
@@ -53,7 +53,7 @@ registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_r
         {
             content: "Validate and open the wizard",
             extra_trigger: "body:not(.modal-open)",
-            trigger: "button:contains('Validate')",
+            trigger: "button[name='button_validate']",
         },
         {
             content: "Click on 'Expect Payments Later'",
@@ -64,8 +64,7 @@ registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_r
         // Reconcile 'line2' with the remaining payment in batch.
         {
             content: "The 'line2' should be selected by default",
-            extra_trigger: "div[name='line_ids'] td[field='name']:contains('line2')",
-            trigger: "div[name='line_ids'] td[field='name']:contains('line2')",
+            trigger: "div[name='lines_widget'] td[field='name']:contains('line2')",
             run: function() {},
         },
         {
@@ -78,17 +77,16 @@ registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_r
         },
         {
             content: "Validate. The wizard should be opened.",
-            extra_trigger: "button.btn-primary:contains('Validate')",
-            trigger: "button:contains('Validate')",
+            extra_trigger: "button.btn-primary[name='button_validate']",
+            trigger: "button[name='button_validate']",
         },
         {
             content: "The 'line3' should be selected by default",
-            extra_trigger: "div[name='line_ids'] td[field='name']:contains('line3')",
-            trigger: "div[name='line_ids'] td[field='name']:contains('line3')",
+            trigger: "div[name='lines_widget'] td[field='name']:contains('line3')",
             run: function() {},
         },
-        stepUtils.toggleHomeMenu(),
-        ...stepUtils.goToAppSteps(
+        tour.stepUtils.toggleHomeMenu(),
+        ...tour.stepUtils.goToAppSteps(
             'account_accountant.menu_accounting',
             "Reset back to accounting module"
         ),
@@ -98,4 +96,4 @@ registry.category("web_tour.tours").add('account_accountant_batch_payment_bank_r
             run() {}
         }
     ]
-});
+);

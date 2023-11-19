@@ -1,14 +1,17 @@
 /** @odoo-module **/
 
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
+import testUtils from "web.test_utils";
+import core from "web.core";
+import AbstractAction from "web.AbstractAction";
 import { registry } from "@web/core/registry";
 import { click, getFixture, patchWithCleanup, makeDeferred, nextTick } from "../../helpers/utils";
 import { createWebClient, doAction, getActionManagerServerData } from "./../helpers";
+import { registerCleanup } from "../../helpers/cleanup";
 import { errorService } from "@web/core/errors/error_service";
 import { useService } from "@web/core/utils/hooks";
 import { ClientErrorDialog } from "@web/core/errors/error_dialogs";
 
-import { Component, onMounted, xml } from "@odoo/owl";
+const { Component, onMounted, xml } = owl;
 
 let serverData;
 let target;
@@ -146,7 +149,8 @@ QUnit.module("ActionManager", (hooks) => {
         ]);
         await testUtils.dom.click(`button[name="5"]`);
         assert.verifySteps([
-            "/web/dataset/call_kw/partner/web_save",
+            "/web/dataset/call_kw/partner/create",
+            "/web/dataset/call_kw/partner/read",
             "/web/action/load",
             "/web/dataset/call_kw/partner/get_views",
             "/web/dataset/call_kw/partner/onchange",
@@ -154,11 +158,38 @@ QUnit.module("ActionManager", (hooks) => {
         assert.containsOnce(document.body, ".modal");
         await testUtils.dom.click(`button[name="some_method"]`);
         assert.verifySteps([
-            "/web/dataset/call_kw/partner/web_save",
+            "/web/dataset/call_kw/partner/create",
+            "/web/dataset/call_kw/partner/read",
             "/web/dataset/call_button",
-            "/web/dataset/call_kw/partner/web_read",
+            "/web/dataset/call_kw/partner/read",
         ]);
         assert.containsNone(document.body, ".modal");
+    });
+
+    QUnit.test('on_attach_callback is called for actions in target="new"', async function (assert) {
+        assert.expect(3);
+        const ClientAction = AbstractAction.extend({
+            on_attach_callback: function () {
+                assert.step("on_attach_callback");
+                assert.containsOnce(
+                    document.body,
+                    ".modal .o_test",
+                    "should have rendered the client action in a dialog"
+                );
+            },
+            start: function () {
+                this.$el.addClass("o_test");
+            },
+        });
+        core.action_registry.add("test", ClientAction);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, {
+            tag: "test",
+            target: "new",
+            type: "ir.actions.client",
+        });
+        assert.verifySteps(["on_attach_callback"]);
+        delete core.action_registry.map.test;
     });
 
     QUnit.test(
@@ -184,6 +215,32 @@ QUnit.module("ActionManager", (hooks) => {
             assert.containsNone(target, '.o_technical_modal .modal-body button[special="save"]');
             assert.containsOnce(target, '.o_technical_modal .modal-footer button[special="save"]');
             assert.containsOnce(target, ".o_technical_modal .modal-footer button:not(.d-none)");
+        }
+    );
+
+    QUnit.test(
+        'buttons of client action in target="new" and transition to MVC action',
+        async function (assert) {
+            const ClientAction = AbstractAction.extend({
+                renderButtons($target) {
+                    const button = document.createElement("button");
+                    button.setAttribute("class", "o_stagger_lee");
+                    $target[0].appendChild(button);
+                },
+            });
+            core.action_registry.add("test", ClientAction);
+            const webClient = await createWebClient({ serverData });
+            await doAction(webClient, {
+                tag: "test",
+                target: "new",
+                type: "ir.actions.client",
+            });
+            assert.containsOnce(target, ".modal footer button.o_stagger_lee");
+            assert.containsNone(target, '.modal footer button[special="save"]');
+            await doAction(webClient, 25);
+            assert.containsNone(target, ".modal footer button.o_stagger_lee");
+            assert.containsOnce(target, '.modal footer button[special="save"]');
+            delete core.action_registry.map.test;
         }
     );
 
@@ -228,10 +285,6 @@ QUnit.module("ActionManager", (hooks) => {
             assert.strictEqual($(".modal:last .modal-body").text(), "Are you sure?");
 
             await testUtils.dom.click($(".modal:last .modal-footer .btn-primary"));
-            // needs two renderings to close the ConfirmationDialog:
-            //  - 1 to open the next dialog (the action in target="new")
-            //  - 1 to close the ConfirmationDialog, once the next action is executed
-            await nextTick();
             assert.containsOnce(document.body, ".modal");
             assert.strictEqual(
                 target.querySelector(".modal main .o_content").innerText.trim(),
@@ -265,8 +318,18 @@ QUnit.module("ActionManager", (hooks) => {
     });
 
     QUnit.test("do not commit a dialog in error", async (assert) => {
-        assert.expect(7);
-        assert.expectErrors();
+        assert.expect(6);
+
+        const handler = (ev) => {
+            // need to preventDefault to remove error from console (so python test pass)
+            ev.preventDefault();
+        };
+        window.addEventListener("unhandledrejection", handler);
+        registerCleanup(() => window.removeEventListener("unhandledrejection", handler));
+
+        patchWithCleanup(QUnit, {
+            onUnhandledRejection: () => {},
+        });
 
         class ErrorClientAction extends Component {
             setup() {
@@ -292,7 +355,6 @@ QUnit.module("ActionManager", (hooks) => {
                     );
                 } catch (e) {
                     assert.strictEqual(e.cause.message, "my error");
-                    throw e;
                 }
             }
         }
@@ -305,7 +367,7 @@ QUnit.module("ActionManager", (hooks) => {
         const errorDialogOpened = makeDeferred();
         patchWithCleanup(ClientErrorDialog.prototype, {
             setup() {
-                super.setup(...arguments);
+                this._super(...arguments);
                 onMounted(() => errorDialogOpened.resolve());
             },
         });
@@ -322,9 +384,8 @@ QUnit.module("ActionManager", (hooks) => {
         assert.ok(
             target.querySelector(".modal-body .o_error_detail").textContent.includes("my error")
         );
-        assert.verifyErrors(["my error"]);
 
-        await click(target, ".modal-footer .btn-primary");
+        await click(target, ".modal-footer button");
         assert.containsNone(target, ".modal");
 
         await doAction(webClient, {
@@ -343,7 +404,7 @@ QUnit.module("ActionManager", (hooks) => {
         // execute an action in target="current"
         await doAction(webClient, 1);
         assert.deepEqual(
-            [...target.querySelectorAll(".o_breadcrumb span")].map((i) => i.innerText),
+            [...target.querySelectorAll(".breadcrumb-item")].map((i) => i.innerText),
             ["Partners Action 1"]
         );
 
@@ -356,7 +417,7 @@ QUnit.module("ActionManager", (hooks) => {
             type: "ir.actions.act_window",
             views: [[false, "list"]],
         });
-        assert.containsNone(target, ".modal .o_breadcrumb");
+        assert.containsNone(target, ".modal .breadcrumb");
     });
 
     QUnit.test('call switchView in an action in target="new"', async function (assert) {
@@ -411,29 +472,6 @@ QUnit.module("ActionManager", (hooks) => {
         assert.hasClass(target.querySelector(".o_dialog .modal-dialog"), "modal-xl");
     });
 
-    QUnit.test('click on record in list view action in target="new"', async function (assert) {
-        const webClient = await createWebClient({ serverData });
-        await doAction(webClient, 1001);
-        await doAction(webClient, {
-            name: "Favorite Ponies",
-            res_model: "pony",
-            type: "ir.actions.act_window",
-            target: "new",
-            views: [
-                [false, "list"],
-                [false, "form"],
-            ],
-        });
-
-        // The list view has been opened in a dialog
-        assert.containsOnce(target, ".o_dialog .modal-dialog .o_list_view");
-
-        // click on a record in the dialog -> should do nothing as we can't switch view in the dialog
-        await click(target.querySelector(".modal .o_data_row .o_data_cell"));
-        assert.containsOnce(target, ".o_dialog .modal-dialog .o_list_view");
-        assert.containsNone(target, ".o_form_view");
-    });
-
     QUnit.module('Actions in target="fullscreen"');
 
     QUnit.test(
@@ -472,13 +510,10 @@ QUnit.module("ActionManager", (hooks) => {
         ] = `<form><button name="1" type="action" class="oe_stat_button" /></form>`;
         const webClient = await createWebClient({ serverData });
         await doAction(webClient, 6);
-        await nextTick(); // for the webclient to react and remove the navbar
         assert.isNotVisible(target.querySelector(".o_main_navbar"));
         await click(target.querySelector("button[name='1']"));
-        await nextTick();
         assert.isNotVisible(target.querySelector(".o_main_navbar"));
         await click(target.querySelector(".breadcrumb li a"));
-        await nextTick();
         assert.isNotVisible(target.querySelector(".o_main_navbar"));
     });
 
@@ -494,7 +529,6 @@ QUnit.module("ActionManager", (hooks) => {
                 '<form><button name="24" type="action" class="oe_stat_button"/></form>';
             await createWebClient({ serverData });
             await nextTick(); // wait for the load state (default app)
-            await nextTick(); // wait for the action to be mounted
             assert.containsOnce(target, "nav .o_menu_brand");
             assert.strictEqual(target.querySelector("nav .o_menu_brand").innerText, "MAIN APP");
             await click(target.querySelector("button[name='24']"));
@@ -517,9 +551,9 @@ QUnit.module("ActionManager", (hooks) => {
         await doAction(webClient, 1);
 
         assert.containsOnce(target, ".o_kanban_view");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsOnce(target, ".breadcrumb-item");
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partners Action 1"
         );
 
@@ -532,9 +566,9 @@ QUnit.module("ActionManager", (hooks) => {
         });
 
         assert.containsOnce(target, ".o_list_view");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsOnce(target, ".breadcrumb-item");
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Another Partner Action"
         );
     });
@@ -553,9 +587,9 @@ QUnit.module("ActionManager", (hooks) => {
         });
 
         assert.containsOnce(target, ".o_list_view");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsOnce(target, ".breadcrumb-item");
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partner Action"
         );
 
@@ -563,10 +597,9 @@ QUnit.module("ActionManager", (hooks) => {
         await click(target.querySelector(".o_data_row .o_data_cell"));
 
         assert.containsOnce(target, ".o_form_view");
-        assert.containsOnce(target, "ol.breadcrumb");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsN(target, ".breadcrumb-item", 2);
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partner ActionFirst record"
         );
     });
@@ -585,34 +618,31 @@ QUnit.module("ActionManager", (hooks) => {
         });
 
         assert.containsOnce(target, ".o_list_view");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsOnce(target, ".breadcrumb-item");
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partner Action"
         );
 
         // open first record
         await click(target.querySelector(".o_data_row .o_data_cell"));
         assert.containsOnce(target, ".o_form_view");
-        assert.containsOnce(target, "ol.breadcrumb");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsN(target, ".breadcrumb-item", 2);
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partner ActionFirst record"
         );
 
         await doAction(webClient, 1);
         assert.containsOnce(target, ".o_kanban_view");
-        assert.containsOnce(target, "ol.breadcrumb");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsN(target, ".breadcrumb-item", 3);
 
         // go back to form view
-        await click(target.querySelector("ol.breadcrumb .o_back_button"));
+        await click(target.querySelectorAll(".breadcrumb-item")[1]);
         assert.containsOnce(target, ".o_form_view");
-        assert.containsOnce(target, "ol.breadcrumb");
-        assert.containsOnce(target, ".o_breadcrumb span");
+        assert.containsN(target, ".breadcrumb-item", 2);
         assert.strictEqual(
-            target.querySelector(".o_control_panel .o_breadcrumb").textContent,
+            target.querySelector(".o_control_panel .breadcrumb").textContent,
             "Partner ActionFirst record"
         );
     });

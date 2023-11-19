@@ -14,7 +14,7 @@
                     <span style="font-size: 20px; font-weight: bold;">
                         <t t-esc="company.name"/>
                     </span>
-                </td><td valign="middle" align="right" t-if="not company.uses_default_logo">
+                </td><td valign="middle" align="right">
                     <img t-att-src="'/logo.png?company=%s' % company.id" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
                 </td></tr>
                 <tr><td colspan="2" style="text-align:center;">
@@ -26,8 +26,8 @@
     <!-- CONTENT -->
     <t t-set="top" t-value="'border-top: thin solid #dee2e6;'" />
     <t t-set="bottom" t-value="'border-bottom: thin solid #dee2e6;'" />
-    <t t-set="right" t-value="'border-right: thin solid #dee2e6;'" />
-    <t t-set="left" t-value="'border-left: thin solid #dee2e6;'" />
+    <t t-set="right" t-value="'border-end: thin solid #dee2e6;'" />
+    <t t-set="left" t-value="'border-start: thin solid #dee2e6;'" />
     <tr>
         <td style="padding: 0 50px;">
             <div style="font-size: 13px; padding: 10px 0;">

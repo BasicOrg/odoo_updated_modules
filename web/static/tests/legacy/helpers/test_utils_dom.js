@@ -1,6 +1,10 @@
-/** @odoo-module **/
+odoo.define('web.test_utils_dom', function (require) {
+    "use strict";
 
-import { delay } from "@web/core/utils/concurrency";
+    const concurrency = require('web.concurrency');
+    const Widget = require('web.Widget');
+
+    const { Component } = owl;
 
     /**
      * DOM Test Utils
@@ -16,7 +20,7 @@ import { delay } from "@web/core/utils/concurrency";
     //-------------------------------------------------------------------------
 
     // TriggerEvent helpers
-    const keyboardEventBubble = args => Object.assign({}, args, { bubbles: true});
+    const keyboardEventBubble = args => Object.assign({}, args, { bubbles: true, keyCode: args.which });
     const mouseEventMapping = args => Object.assign({}, args, {
         bubbles: true,
         cancelable: true,
@@ -128,14 +132,11 @@ import { delay } from "@web/core/utils/concurrency";
      * @param {boolean} [options.last=false] if true, clicks on the last element
      * @returns {Promise}
      */
-    export async function click(el, options = {}) {
+    async function click(el, options = {}) {
         let matches, target;
         let selectorMsg = "";
         if (typeof el === 'string') {
             el = $(el);
-        }
-        if (el.disabled || (el instanceof jQuery && el.get(0).disabled)) {
-            throw new Error("Can't click on a disabled button");
         }
         if (_isEventTarget(el)) {
             // EventTarget
@@ -190,6 +191,21 @@ import { delay } from "@web/core/utils/concurrency";
      */
     async function clickFirst(el, options) {
         return click(el, Object.assign({}, options, { first: true }));
+    }
+
+    /**
+     * Click on the last element of a list of elements.  Note that if the list has
+     * only one visible element, we trigger an error. In that case, it is better to
+     * use the click helper instead.
+     *
+     * @param {string|EventTarget|EventTarget[]} el (if string: it is a (jquery) selector)
+     * @param {boolean} [options={}] click options
+     * @param {boolean} [options.allowInvisible=false] if true, clicks on the
+     *   element event if it is invisible
+     * @returns {Promise}
+     */
+    async function clickLast(el, options) {
+        return click(el, Object.assign({}, options, { last: true }));
     }
 
     /**
@@ -300,6 +316,94 @@ import { delay } from "@web/core/utils/concurrency";
     }
 
     /**
+     * Helper method to retrieve a distinct item from a collection of elements defined
+     * by the given "selector" string. It can either be the index of the item or its
+     * inner text.
+     * @param {Element} el
+     * @param {string} selector
+     * @param {number | string} [elFinder=0]
+     * @returns {Element | null}
+     */
+    function findItem(el, selector, elFinder = 0) {
+        const elements = [...getNode(el).querySelectorAll(selector)];
+        if (!elements.length) {
+            throw new Error(`No element found with selector "${selector}".`);
+        }
+        switch (typeof elFinder) {
+            case "number": {
+                const match = elements[elFinder];
+                if (!match) {
+                    throw new Error(
+                        `No element with selector "${selector}" at index ${elFinder}.`
+                    );
+                }
+                return match;
+            }
+            case "string": {
+                const match = elements.find(
+                    (el) => el.innerText.trim().toLowerCase() === elFinder.toLowerCase()
+                );
+                if (!match) {
+                    throw new Error(
+                        `No element with selector "${selector}" containing "${elFinder}".
+                    `);
+                }
+                return match;
+            }
+            default: throw new Error(
+                `Invalid provided element finder: must be a number|string|function.`
+            );
+        }
+    }
+
+    /**
+     * Helper function used to extract an HTML EventTarget element from a given
+     * target. The extracted element will depend on the target type:
+     * - Component|Widget -> el
+     * - jQuery -> associated element (must have 1)
+     * - HTMLCollection (or similar) -> first element (must have 1)
+     * - string -> result of document.querySelector with string
+     * - else -> as is
+     * @private
+     * @param {(Component|Widget|jQuery|HTMLCollection|HTMLElement|string)} target
+     * @returns {EventTarget}
+     */
+    function getNode(target) {
+        let nodes;
+        if (target instanceof Component || target instanceof Widget) {
+            nodes = [target.el];
+        } else if (typeof target === 'string') {
+            nodes = document.querySelectorAll(target);
+        } else if (target === jQuery) { // jQuery (or $)
+            nodes = [document.body];
+        } else if (target.length) { // jQuery instance, HTMLCollection or array
+            nodes = target;
+        } else {
+            nodes = [target];
+        }
+        if (nodes.length !== 1) {
+            throw new Error(`Found ${nodes.length} nodes instead of 1.`);
+        }
+        const node = nodes[0];
+        if (!node) {
+            throw new Error(`Expected a node and got ${node}.`);
+        }
+        if (!_isEventTarget(node)) {
+            throw new Error(`Expected node to be an instance of EventTarget and got ${node.constructor.name}.`);
+        }
+        return node;
+    }
+
+    /**
+     * Open the datepicker of a given element.
+     *
+     * @param {jQuery} $datepickerEl element to which a datepicker is attached
+     */
+    async function openDatepicker($datepickerEl) {
+        return click($datepickerEl.find('.o_datepicker_input'));
+    }
+
+    /**
      * Returns a promise that will be resolved after the nextAnimationFrame after
      * the next tick
      *
@@ -308,7 +412,7 @@ import { delay } from "@web/core/utils/concurrency";
      * @returns {Promise}
      */
     async function returnAfterNextAnimationFrame() {
-        await delay(0);
+        await concurrency.delay(0);
         await new Promise(resolve => {
             window.requestAnimationFrame(resolve);
         });
@@ -327,7 +431,7 @@ import { delay } from "@web/core/utils/concurrency";
      * @param {Boolean} [fast=false] true if the trigger event have to wait for a single tick instead of waiting for the next animation frame
      * @returns {Promise}
      */
-    export async function triggerEvent(el, eventType, eventAttrs = {}, fast = false) {
+    async function triggerEvent(el, eventType, eventAttrs = {}, fast = false) {
         let matches;
         let selectorMsg = "";
         if (_isEventTarget(el)) {
@@ -381,11 +485,123 @@ import { delay } from "@web/core/utils/concurrency";
         }
     }
 
-    export default {
+    /**
+     * Simulate a keypress event for a given character
+     *
+     * @param {string} char the character, or 'ENTER'
+     * @returns {Promise}
+     */
+    async function triggerKeypressEvent(char) {
+        let keycode;
+        if (char === 'Enter') {
+            keycode = $.ui.keyCode.ENTER;
+        } else if (char === "Tab") {
+            keycode = $.ui.keyCode.TAB;
+        } else {
+            keycode = char.charCodeAt(0);
+        }
+        return triggerEvent(document.body, 'keypress', {
+            key: char,
+            keyCode: keycode,
+            which: keycode,
+        });
+    }
+
+    /**
+     * simulate a mouse event with a custom event who add the item position. This is
+     * sometimes necessary because the basic way to trigger an event (such as
+     * $el.trigger('mousemove')); ) is too crude for some uses.
+     *
+     * @param {jQuery|EventTarget} $el
+     * @param {string} type a mouse event type, such as 'mousedown' or 'mousemove'
+     * @returns {Promise}
+     */
+    async function triggerMouseEvent($el, type) {
+        const el = $el instanceof jQuery ? $el[0] : $el;
+        if (!el) {
+            throw new Error(`no target found to trigger MouseEvent`);
+        }
+        const rect = el.getBoundingClientRect();
+        // try to click around the center of the element, biased to the bottom
+        // right as chrome  messes up when clicking on the top-left corner...
+        const left = rect.x + Math.ceil(rect.width / 2);
+        const top = rect.y + Math.ceil(rect.height / 2);
+        return triggerEvent(el, type, {which: 1, clientX: left, clientY: top});
+    }
+
+    /**
+     * simulate a mouse event with a custom event on a position x and y. This is
+     * sometimes necessary because the basic way to trigger an event (such as
+     * $el.trigger('mousemove')); ) is too crude for some uses.
+     *
+     * @param {integer} x
+     * @param {integer} y
+     * @param {string} type a mouse event type, such as 'mousedown' or 'mousemove'
+     * @returns {HTMLElement}
+     */
+    async function triggerPositionalMouseEvent(x, y, type) {
+        const ev = document.createEvent("MouseEvent");
+        const el = document.elementFromPoint(x, y);
+        ev.initMouseEvent(
+            type,
+            true /* bubble */,
+            true /* cancelable */,
+            window, null,
+            x, y, x, y, /* coordinates */
+            false, false, false, false, /* modifier keys */
+            0 /*left button*/, null
+        );
+        el.dispatchEvent(ev);
+        return el;
+    }
+
+    /**
+     * Simulate a "TAP" (touch) event with a custom position x and y.
+     *
+     * @param {number} x
+     * @param {number} y
+     * @returns {HTMLElement}
+     */
+    async function triggerPositionalTapEvents(x, y) {
+        const element = document.elementFromPoint(x, y);
+        const touch = new Touch({
+            identifier: 0,
+            target: element,
+            clientX: x,
+            clientY: y,
+            pageX: x,
+            pageY: y,
+        });
+        await triggerEvent(element, 'touchstart', {
+            touches: [touch],
+            targetTouches: [touch],
+            changedTouches: [touch],
+        });
+        await triggerEvent(element, 'touchmove', {
+            touches: [touch],
+            targetTouches: [touch],
+            changedTouches: [touch],
+        });
+        await triggerEvent(element, 'touchend', {
+            changedTouches: [touch],
+        });
+        return element;
+    }
+
+    return {
         click,
         clickFirst,
+        clickLast,
         dragAndDrop,
+        findItem,
+        getNode,
+        openDatepicker,
         returnAfterNextAnimationFrame,
         triggerEvent,
         triggerEvents,
+        triggerKeypressEvent,
+        triggerMouseEvent,
+        triggerPositionalMouseEvent,
+        triggerPositionalTapEvents,
     };
+});

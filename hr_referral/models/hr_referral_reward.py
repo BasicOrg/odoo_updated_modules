@@ -30,18 +30,20 @@ class HrReferralReward(models.Model):
         help="This field holds the image used as image for the product, limited to 1024x1024px.")
 
     def _compute_awarded_employees(self):
-        data = {hr_referral_reward.id: count for hr_referral_reward, count in self.env['hr.referral.points']._read_group(
+        data = {d['hr_referral_reward_id'][0]: d['__count'] for d in self.env['hr.referral.points']._read_group(
             [('hr_referral_reward_id', 'in', self.ids)],
             ['hr_referral_reward_id'],
-            ['__count'])}
+            ['hr_referral_reward_id'],
+            lazy=False)}
         for item in self:
             item.awarded_employees = data.get(item.id, 0)
 
     def _compute_points_missing(self):
-        read_group_res = self.env['hr.referral.points']._read_group([('ref_user_id', '=', self.env.user.id)], ['company_id'], ['points:sum'])
-        available_points_company = {company.id: points_sum for company, points_sum in read_group_res}
+        available_points_company = dict()
+        for item in self.env['hr.referral.points']._read_group([('ref_user_id', '=', self.env.user.id)], ['company_id', 'points'], ['company_id']):
+            available_points_company[item['company_id'][0]] = item['points']
         for item in self:
-            item.points_missing = item.cost - available_points_company.get(item.company_id.id, 0)
+            item.points_missing = item.cost - (available_points_company[item.company_id.id] if item.company_id.id in available_points_company else 0)
 
     def buy(self):
         current_user = self.env.user

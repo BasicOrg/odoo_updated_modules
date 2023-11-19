@@ -4,7 +4,6 @@
 from unittest.mock import patch
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
-from freezegun import freeze_time
 
 from odoo import fields
 from odoo.tests.common import TransactionCase, new_test_user
@@ -162,13 +161,13 @@ class TestEventNotifications(TransactionCase, MailCase, CronMixinCase):
     def test_email_alarm(self):
         now = fields.Datetime.now()
         with self.capture_triggers('calendar.ir_cron_scheduler_alarm') as capt:
-            alarm = self.env['calendar.alarm'].with_user(self.user).create({
+            alarm = self.env['calendar.alarm'].create({
                 'name': 'Alarm',
                 'alarm_type': 'email',
                 'interval': 'minutes',
                 'duration': 20,
             })
-            self.event.with_user(self.user).write({
+            self.event.write({
                 'name': 'test event',
                 'start': now + relativedelta(minutes=15),
                 'stop': now + relativedelta(minutes=18),
@@ -177,7 +176,7 @@ class TestEventNotifications(TransactionCase, MailCase, CronMixinCase):
             })
             self.env.flush_all()  # flush is required to make partner_ids be present in the event
 
-        self.assertEqual(len(capt.records), 1)
+        capt.records.ensure_one()
         self.assertLessEqual(capt.records.call_at, now)
 
         with patch.object(fields.Datetime, 'now', lambda: now):
@@ -186,84 +185,3 @@ class TestEventNotifications(TransactionCase, MailCase, CronMixinCase):
                 'subtype': 'mail.mt_note',
             }):
                 self.env['calendar.alarm_manager'].with_context(lastcall=now - relativedelta(minutes=15))._send_reminder()
-
-    def test_email_alarm_recurrence(self):
-        # test that only a single cron trigger is created for recurring events.
-        # Once a notification has been sent, the next one should be created.
-        # It prevent creating hunderds of cron trigger at event creation
-        alarm = self.env['calendar.alarm'].create({
-            'name': 'Alarm',
-            'alarm_type': 'email',
-            'interval': 'minutes',
-            'duration': 1,
-        })
-        cron = self.env.ref('calendar.ir_cron_scheduler_alarm')
-        cron.lastcall = False
-        with self.capture_triggers('calendar.ir_cron_scheduler_alarm') as capt:
-            with freeze_time('2022-04-13 10:00+0000'):
-                now = fields.Datetime.now()
-                self.env['calendar.event'].create({
-                    'name': "Single Doom's day",
-                    'start': now + relativedelta(minutes=15),
-                    'stop': now + relativedelta(minutes=20),
-                    'alarm_ids': [fields.Command.link(alarm.id)],
-                }).with_context(mail_notrack=True)
-                self.env.flush_all()
-                self.assertEqual(len(capt.records), 1)
-        with self.capture_triggers('calendar.ir_cron_scheduler_alarm') as capt:
-            with freeze_time('2022-04-13 10:00+0000'):
-                self.env['calendar.event'].create({
-                    'name': "Recurring Doom's day",
-                    'start': now + relativedelta(minutes=15),
-                    'stop': now + relativedelta(minutes=20),
-                    'recurrency': True,
-                    'rrule_type': 'monthly',
-                    'month_by': 'date',
-                    'day': 13,
-                    'count': 5,
-                    'alarm_ids': [fields.Command.link(alarm.id)],
-                }).with_context(mail_notrack=True)
-                self.env.flush_all()
-                self.assertEqual(len(capt.records), 1, "1 trigger should have been created for the whole recurrence")
-                self.assertEqual(capt.records.call_at, datetime(2022, 4, 13, 10, 14))
-                self.env['calendar.alarm_manager']._send_reminder()
-                self.assertEqual(len(capt.records), 1)
-
-            with freeze_time('2022-04-28 10:00+0000'):
-                self.env['ir.cron.trigger']._gc_cron_triggers()
-
-            with freeze_time('2022-05-16 10:00+0000'):
-                self.env['calendar.alarm_manager']._send_reminder()
-                self.assertEqual(capt.records.mapped('call_at'), [datetime(2022, 6, 13, 10, 14)])
-                self.assertEqual(len(capt.records), 1, "1 more trigger should have been created")
-
-        with self.capture_triggers('calendar.ir_cron_scheduler_alarm') as capt:
-            with freeze_time('2022-04-13 10:00+0000'):
-                now = fields.Datetime.now()
-                self.env['calendar.event'].create({
-                    'name': "Single Doom's day",
-                    'start_date': now.date(),
-                    'stop_date': now.date() + relativedelta(days=1),
-                    'allday': True,
-                    'alarm_ids': [fields.Command.link(alarm.id)],
-                }).with_context(mail_notrack=True)
-                self.env.flush_all()
-                self.assertEqual(len(capt.records), 1)
-
-        with self.capture_triggers('calendar.ir_cron_scheduler_alarm') as capt:
-            with freeze_time('2022-04-13 10:00+0000'):
-                now = fields.Datetime.now()
-                self.env['calendar.event'].create({
-                    'name': "Single Doom's day",
-                    'start_date': now.date(),
-                    'stop_date': now.date() + relativedelta(days=1),
-                    'allday': True,
-                    'recurrency': True,
-                    'rrule_type': 'monthly',
-                    'month_by': 'date',
-                    'day': 13,
-                    'count': 5,
-                    'alarm_ids': [fields.Command.link(alarm.id)],
-                }).with_context(mail_notrack=True)
-                self.env.flush_all()
-                self.assertEqual(len(capt.records), 1)

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from pytz import timezone, utc
 
 from odoo import api, fields, models, _
 from odoo.addons.http_routing.models.ir_http import slug
-from odoo.addons.resource.models.utils import float_to_time
+from odoo.addons.resource.models.resource import float_to_time
+from odoo.modules.module import get_resource_path
 from odoo.tools import is_html_empty
 from odoo.tools.translate import html_translate
 
@@ -115,7 +116,7 @@ class Sponsor(models.Model):
             elif sponsor.partner_id.image_256:
                 sponsor.website_image_url = self.env['website'].image_url(sponsor.partner_id, 'image_256', size=256)
             else:
-                sponsor.website_image_url = 'website_event_exhibitor/static/src/img/event_sponsor_default_0.jpeg'
+                sponsor.website_image_url = get_resource_path('website_event_exhibitor', 'static/src/img', 'event_sponsor_default_%d.png' % (sponsor.id % 1))
 
     def _synchronize_with_partner(self, fname):
         """ Synchronize with partner if not set. Setting a value does not write
@@ -152,7 +153,7 @@ class Sponsor(models.Model):
         for sponsor in self:
             if not sponsor.event_id.is_ongoing:
                 sponsor.is_in_opening_hours = False
-            elif sponsor.hour_from is False or sponsor.hour_to is False:
+            elif not sponsor.hour_from or not sponsor.hour_to:
                 sponsor.is_in_opening_hours = True
             else:
                 event_tz = timezone(sponsor.event_id.date_tz)
@@ -165,9 +166,6 @@ class Sponsor(models.Model):
                 # compute opening hours
                 opening_from_tz = event_tz.localize(datetime.combine(now_tz.date(), float_to_time(sponsor.hour_from)))
                 opening_to_tz = event_tz.localize(datetime.combine(now_tz.date(), float_to_time(sponsor.hour_to)))
-                if sponsor.hour_to == 0:
-                    # when closing 'at midnight', we consider it's at midnight the next day
-                    opening_to_tz = opening_to_tz + timedelta(days=1)
 
                 opening_from = max([dt_begin, opening_from_tz])
                 opening_to = min([dt_end, opening_to_tz])

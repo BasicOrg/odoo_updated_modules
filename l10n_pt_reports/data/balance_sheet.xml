@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_line_pt_balanco" model="account.report">
         <field name="name">Balanço</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
@@ -20,7 +20,6 @@
         <field name="name">ATIVO</field>
         <field name="code">ATIVO</field>
         <field name="report_id" ref="account_financial_report_line_pt_balanco"/>
-        <field name="hierarchy_level">0</field>
     </record>
     <record id="account_financial_report_line_pt_balanco_ativo_nao_corrente" model="account.report.line">
         <field name="name">Ativo não corrente</field>
@@ -398,7 +397,6 @@
         <field name="name">CAPITAL PRÓPRIO E PASSIVO</field>
         <field name="code">CAPITAL_PROPRIO_E_PASSIVO</field>
         <field name="report_id" ref="account_financial_report_line_pt_balanco"/>
-        <field name="hierarchy_level">0</field>
     </record>
     <record id="account_financial_report_line_pt_balanco_capital_proprio" model="account.report.line">
         <field name="name">Capital próprio</field>

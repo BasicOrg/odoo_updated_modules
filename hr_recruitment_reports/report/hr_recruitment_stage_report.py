@@ -44,10 +44,7 @@ SELECT
     COALESCE(LAG(mm.date) OVER (PARTITION BY mm.res_id ORDER BY mm.id), ha.create_date) AS date_begin,
     mm.date AS date_end,
     EXTRACT(EPOCH FROM mm.date - COALESCE(LAG(mm.date) OVER (PARTITION by mm.res_id ORDER BY mm.id), ha.create_date))/(24*60*60)::decimal(16,2) AS days_in_stage,
-    CASE WHEN EXISTS(SELECT 1 from hr_recruitment_stage WHERE id = mtv.old_value_integer)
-        THEN mtv.old_value_integer
-        ELSE NULL
-    END AS stage_id
+    mtv.old_value_integer AS stage_id
 FROM
     hr_applicant ha
 JOIN
@@ -62,7 +59,7 @@ ON
 JOIN
     ir_model_fields imf
 ON
-    mtv.field_id = imf.id
+    mtv.field = imf.id
     AND imf.model = 'hr.applicant'
     AND imf.name = 'stage_id'
 
@@ -101,7 +98,7 @@ LEFT JOIN LATERAL (
     JOIN
         ir_model_fields imf
     ON
-        mtv.field_id = imf.id
+        mtv.field = imf.id
         AND imf.model = 'hr.applicant'
         AND imf.name = 'stage_id'
     WHERE

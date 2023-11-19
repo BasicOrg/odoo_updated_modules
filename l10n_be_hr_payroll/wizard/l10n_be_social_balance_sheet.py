@@ -186,7 +186,7 @@ class L10nBeSocialBalanceSheet(models.TransientModel):
 
         cdi = self.env.ref('l10n_be_hr_payroll.l10n_be_contract_type_cdi')
         cdd = self.env.ref('l10n_be_hr_payroll.l10n_be_contract_type_cdd')
-        replacement = self.env.ref('l10n_be_hr_payroll.l10n_be_contract_type_replacement')
+        replacement = self.env.ref('l10n_be_hr_payroll.l10n_be_contract_type_cdd')
         defined_work = self.env.ref('l10n_be_hr_payroll.l10n_be_contract_type_clearly_defined_work')
         mapped_types = {
             cdi: '110',
@@ -311,8 +311,7 @@ class L10nBeSocialBalanceSheet(models.TransientModel):
                 workers_data[contract_type][contract_time] += 1
                 workers_data[contract_type]['fte'] += 1 * calendar.work_time_rate / 100.0
 
-                reason_code = employee.departure_reason_id.reason_code
-                reason_code = str(reason_code if reason_code in [340, 341, 342, 343] else 343)
+                reason_code = str(employee.departure_reason_id.reason_code or 343)
                 workers_data[reason_code][contract_time] += 1
                 workers_data[reason_code]['fte'] += 1 * calendar.work_time_rate / 100.0
 

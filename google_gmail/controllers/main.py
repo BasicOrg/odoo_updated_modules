@@ -29,7 +29,7 @@ class GoogleGmailController(http.Controller):
             raise Forbidden()
 
         if error:
-            return _('An error occur during the authentication process.')
+            return _('An error occur during the authentication process: %s.', error)
 
         try:
             state = json.loads(state)
@@ -56,8 +56,8 @@ class GoogleGmailController(http.Controller):
 
         try:
             refresh_token, access_token, expiration = record._fetch_gmail_refresh_token(code)
-        except UserError:
-            return _('An error occur during the authentication process.')
+        except UserError as e:
+            return _('An error occur during the authentication process: %s.', str(e.name))
 
         record.write({
             'google_gmail_access_token': access_token,

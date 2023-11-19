@@ -8,7 +8,6 @@ import {
     getFixture,
     patchWithCleanup,
     triggerEvent,
-    editInput,
 } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { loadJS } from "@web/core/assets";
@@ -225,7 +224,7 @@ QUnit.module('partner_autocomplete', {
         // Click on the first option - "First company"
         await click(autocompleteContainer.querySelectorAll('ul li.partner_autocomplete_dropdown_many2one')[0], null);
 
-        const modalContent = target.querySelector('.modal-content');
+        const modalContent = target.querySelector('.o_dialog_container .modal-content');
         // Check that the fields of the modal have been pre-filled
         const expectedValues = {
             "website": "firstcompany.com",
@@ -346,16 +345,5 @@ QUnit.module('partner_autocomplete', {
         for (const [fieldName, expectedValue] of Object.entries(expectedValues)) {
             assert.strictEqual(target.querySelector(`[name=${fieldName}] input`).value, expectedValue, `${fieldName} should be filled`);
         }
-    });
-
-    QUnit.test("Show confirmation dialog on input blur", async function (assert) {
-        assert.expect(1);
-        await makeView(makeViewParams);
-        const input = target.querySelector("[name=parent_id] input.o-autocomplete--input.o_input");
-        await triggerEvent(input, null, "focus");
-        await click(input);
-        await editInput(input, null, "go");
-        await triggerEvent(input, null, "blur");
-        assert.containsOnce(target, ".o_dialog");
     });
 });

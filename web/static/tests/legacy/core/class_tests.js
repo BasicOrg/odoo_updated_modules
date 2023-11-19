@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('web.class_tests', function (require) {
+"use strict";
 
-import Class from "@web/legacy/js/core/class";
+var Class = require('web.Class');
 
 QUnit.module('core', {}, function () {
 
@@ -161,5 +162,7 @@ QUnit.module('core', {}, function () {
         assert.strictEqual(i.bar(), 4);
     });
 
+
+});
 
 });

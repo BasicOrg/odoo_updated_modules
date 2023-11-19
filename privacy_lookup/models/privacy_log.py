@@ -8,7 +8,6 @@ from odoo.exceptions import UserError
 class PrivacyLog(models.Model):
     _name = 'privacy.log'
     _description = 'Privacy Log'
-    _rec_name = 'user_id'
 
     date = fields.Datetime(default=fields.Datetime.now, required=True)
     anonymized_name = fields.Char(required=True)

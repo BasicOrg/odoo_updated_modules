@@ -7,21 +7,11 @@
         <field name="arch" type="xml">
             <page name="job_description_page" position="after">
                 <page string="Payroll" groups="hr_payroll.group_hr_payroll_user"
-                    name="page_payroll" invisible="not display_l10n_be_scale">
-                    <group col="2">
-                        <group col="1" >
-                            <field name="display_l10n_be_scale" invisible="1"/>
-                            <field name="l10n_be_contract_ip"/>
-                            <field name="l10n_be_contract_withholding_taxes_exemption"/>
-                        </group>
-                        <group col="2">
-                            <field name="l10n_be_custom_representation_fees"/>
-                            <separator string="Representation Fees" invisible="not l10n_be_custom_representation_fees"/>
-                            <field name="l10n_be_custom_representation_fees_homeworking" invisible="not l10n_be_custom_representation_fees"/>
-                            <field name="l10n_be_custom_representation_fees_phone" invisible="not l10n_be_custom_representation_fees"/>
-                            <field name="l10n_be_custom_representation_fees_internet" invisible="not l10n_be_custom_representation_fees"/>
-                            <field name="l10n_be_custom_representation_fees_car_management" invisible="not l10n_be_custom_representation_fees"/>
-                        </group>
+                    attrs="{'invisible': [('display_l10n_be_scale', '=', False)]}">
+                    <group>
+                        <field name="display_l10n_be_scale" invisible="1"/>
+                        <field name="l10n_be_contract_ip"/>
+                        <field name="l10n_be_contract_withholding_taxes_exemption"/>
                     </group>
                 </page>
             </page>
@@ -36,9 +26,9 @@
         <field name="model">hr.job</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="company_id" column_invisible="True"/>
-                <field name="name" readonly="True"/>
-                <field name="department_id" readonly="True"/>
+                <field name="company_id" invisible="1"/>
+                <field name="name" attrs="{'readonly': True}"/>
+                <field name="department_id" attrs="{'readonly': True}"/>
             </tree>
         </field>
     </record>

@@ -5,9 +5,9 @@ export const TEST_GROUP_IDS = {
 };
 
 export const TEST_USER_IDS = {
-    odoobotId: 2,
-    adminPartnerId: 3,
-    adminUserId: 2,
+    partnerRootId: 2,
+    currentPartnerId: 3,
+    currentUserId: 2,
     publicPartnerId: 4,
     publicUserId: 3,
 };

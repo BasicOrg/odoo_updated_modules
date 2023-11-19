@@ -12,6 +12,8 @@ _logger = logging.getLogger(__name__)
 class Company(models.Model):
     _inherit = 'res.company'
 
+    prevent_old_timesheets_encoding = fields.Boolean(string="Lock Dates")
+
     # reminder for employees
     timesheet_mail_employee_allow = fields.Boolean("Employee Reminder", default=True)
     timesheet_mail_employee_delay = fields.Integer("Employee Reminder Days", default=1)
@@ -21,14 +23,14 @@ class Company(models.Model):
     ], string='Employee Frequency', required=True, default="weeks")
     timesheet_mail_employee_nextdate = fields.Datetime('Next scheduled date for employee reminder', readonly=True)
 
-    # reminder for approver
-    timesheet_mail_allow = fields.Boolean("Approver Reminder", default=True)
-    timesheet_mail_delay = fields.Integer("Approver Reminder Days", default=3)
-    timesheet_mail_interval = fields.Selection([
+    # reminder for manager
+    timesheet_mail_manager_allow = fields.Boolean("Manager Reminder", default=True)
+    timesheet_mail_manager_delay = fields.Integer("Manager Reminder Days", default=3)
+    timesheet_mail_manager_interval = fields.Selection([
         ('weeks', 'after the end of the week'),
         ('months', 'after the end of the month')
-    ], string='Approver Reminder Frequency', required=True, default="weeks")
-    timesheet_mail_nextdate = fields.Datetime('Next scheduled date for approver reminder', readonly=True)
+    ], string='Manager Reminder Frequency', required=True, default="weeks")
+    timesheet_mail_manager_nextdate = fields.Datetime('Next scheduled date for manager reminder', readonly=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -43,10 +45,10 @@ class Company(models.Model):
         return result
 
     def _timesheet_postprocess(self, values):
-        if any(field_name in values for field_name in ['timesheet_mail_employee_delay', 'timesheet_mail_employee_interval']) or values.get('timesheet_mail_employee_allow'):
+        if any(field_name in values for field_name in ['timesheet_mail_employee_delay', 'timesheet_mail_employee_interval']):
             self._calculate_timesheet_mail_employee_nextdate()
-        if any(field_name in values for field_name in ['timesheet_mail_delay', 'timesheet_mail_interval']) or values.get('timesheet_mail_allow'):
-            self._calculate_timesheet_mail_nextdate()
+        if any(field_name in values for field_name in ['timesheet_mail_manager_delay', 'timesheet_mail_manager_interval']):
+            self._calculate_timesheet_mail_manager_nextdate()
 
     def _calculate_next_week_date(self, delay):
         now = fields.Datetime.now()
@@ -71,14 +73,14 @@ class Company(models.Model):
                 nextdate = self._calculate_next_month_date(delay)
             company.timesheet_mail_employee_nextdate = fields.Datetime.to_string(nextdate)
 
-    def _calculate_timesheet_mail_nextdate(self):
+    def _calculate_timesheet_mail_manager_nextdate(self):
         for company in self:
-            delay = company.timesheet_mail_delay
-            if company.timesheet_mail_interval == 'weeks':
+            delay = company.timesheet_mail_manager_delay
+            if company.timesheet_mail_manager_interval == 'weeks':
                 nextdate = self._calculate_next_week_date(delay)
             else:
                 nextdate = self._calculate_next_month_date(delay)
-            company.timesheet_mail_nextdate = fields.Datetime.to_string(nextdate)
+            company.timesheet_mail_manager_nextdate = fields.Datetime.to_string(nextdate)
 
     @api.model
     def _cron_timesheet_reminder_employee(self):
@@ -134,18 +136,18 @@ class Company(models.Model):
         companies._calculate_timesheet_mail_employee_nextdate()
 
     @api.model
-    def _cron_timesheet_reminder(self):
-        """ Send a email reminder to all users having the group 'timesheet approver'. """
+    def _cron_timesheet_reminder_manager(self):
+        """ Send a email reminder to all users having the group 'timesheet manager'. """
         today_min = fields.Datetime.to_string(datetime.combine(date.today(), time.min))
         today_max = fields.Datetime.to_string(datetime.combine(date.today(), time.max))
-        companies = self.search([('timesheet_mail_allow', '=', True), ('timesheet_mail_nextdate', '<', today_max), ('timesheet_mail_nextdate', '>=', today_min)])
+        companies = self.search([('timesheet_mail_manager_allow', '=', True), ('timesheet_mail_manager_nextdate', '<', today_max), ('timesheet_mail_manager_nextdate', '>=', today_min)])
         for company in companies:
             # calculate the period
-            if company.timesheet_mail_interval == 'months':
-                date_start = (date.today() - timedelta(days=company.timesheet_mail_delay)) + relativedelta(day=1)
+            if company.timesheet_mail_manager_interval == 'months':
+                date_start = (date.today() - timedelta(days=company.timesheet_mail_manager_delay)) + relativedelta(day=1)
                 date_stop = date_start + relativedelta(months=1, days=-1)
             else:
-                date_start = date.today() - timedelta(weeks=1, days=company.timesheet_mail_delay - 1)
+                date_start = date.today() - timedelta(weeks=1, days=company.timesheet_mail_manager_delay - 1)
                 date_stop = date_start + timedelta(days=6)
 
             date_start = fields.Date.to_string(date_start)
@@ -155,15 +157,15 @@ class Company(models.Model):
                 'date_start': date_start,
                 'date_stop': date_stop,
             }
-            users = self.env['res.users'].search([('groups_id', 'in', [self.env.ref('hr_timesheet.group_hr_timesheet_approver').id])])
+            users = self.env['res.users'].search([('groups_id', 'in', [self.env.ref('hr_timesheet.group_timesheet_manager').id])])
             self._cron_timesheet_send_reminder(
                 self.env['hr.employee'].search([('user_id', 'in', users.ids)]),
-                'timesheet_grid.mail_template_timesheet_reminder',
+                'timesheet_grid.mail_template_timesheet_reminder_manager',
                 'timesheet_grid.action_timesheet_previous_week',
                 additionnal_values=values)
 
         # compute the next execution date
-        companies._calculate_timesheet_mail_nextdate()
+        companies._calculate_timesheet_mail_manager_nextdate()
 
     @api.model
     def _cron_timesheet_send_reminder(self, employees, template_xmlid, action_xmlid, additionnal_values=None):

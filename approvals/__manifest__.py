@@ -37,8 +37,15 @@ creates next activities for the related approvers.
     'application': True,
     'installable': True,
     'assets': {
+        'mail.assets_messaging': [
+            'approvals/static/src/models/*.js',
+        ],
+        'mail.assets_discuss_public': [
+            'approvals/static/src/components/*/*',
+        ],
         'web.assets_backend': [
-            'approvals/static/src/**/*',
+            'approvals/static/src/backend_components/*/*',
+            'approvals/static/src/components/*/*',
         ],
         'web.assets_tests': [
             'approvals/static/tests/tours/**/*',
@@ -47,7 +54,7 @@ creates next activities for the related approvers.
             'approvals/static/tests/helpers/**/*',
         ],
         'web.qunit_suite_tests': [
-            'approvals/static/tests/**/*tests.js',
+            'approvals/static/tests/qunit_suite_tests/**/*.js',
         ],
     },
     'license': 'OEEL-1',

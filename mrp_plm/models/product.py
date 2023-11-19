@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models
+from odoo import api, fields, models, _
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    version = fields.Integer('Version', default=1, readonly=True, copy=False, help="The current version of the product.")
+    version = fields.Integer('Version', default=1, readonly=True, help="The current version of the product.")
     eco_count = fields.Integer('# ECOs',compute='_compute_eco_count')
     eco_ids = fields.One2many('mrp.eco', 'product_tmpl_id', 'ECOs')
 

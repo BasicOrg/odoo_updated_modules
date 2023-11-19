@@ -1,8 +1,10 @@
-/* @odoo-module */
+/** @odoo-module **/
 
-import { browser } from "@web/core/browser/browser";
-import { MEDIAS_BREAKPOINTS, SIZES, utils } from "@web/core/ui/ui_service";
+import { browser } from '@web/core/browser/browser';
+import { MEDIAS_BREAKPOINTS, SIZES, uiService } from '@web/core/ui/ui_service';
 import { patchWithCleanup } from "@web/../tests/helpers/utils";
+
+import config from 'web.config';
 
 /**
  * Return the width corresponding to the given size. If an upper and lower bound
@@ -37,9 +39,41 @@ function getSizeFromWidth(width) {
 }
 
 /**
+ * Patch legacy objects referring to the ui size. This function must be removed
+ * when the wowl env will be available in the form_renderer (currently the form
+ * renderer relies on config). This will impact env.browser.innerWidth,
+ * env.device.isMobile and config.device.{size_class/isMobile}.
+ *
+ * @param {number} size
+ * @param {number} width
+ */
+function legacyPatchUiSize(height, size, width) {
+    const legacyEnv = owl.Component.env;
+    patchWithCleanup(legacyEnv, {
+        browser: {
+            ...legacyEnv.browser,
+            innerWidth: width,
+            innerHeight: height || browser.innerHeight,
+        },
+        device: {
+            ...legacyEnv.device,
+            isMobile: size <= SIZES.SM,
+        }
+    });
+    patchWithCleanup(config, {
+        device: {
+            ...config.device,
+            size_class: size,
+            isMobile: size <= SIZES.SM,
+        },
+    });
+}
+
+/**
  * Adjust ui size either from given size (mapped to window breakpoints) or
- * width. This will impact uiService.{isSmall/size}, (wowl/legacy)
- * browser.innerWidth, (wowl) env.isSmall and. When a size is given, the browser
+ * width. This will impact not only config.device.{size_class/isMobile} but
+ * uiService.{isSmall/size}, (wowl/legacy) browser.innerWidth, (wowl)
+ * env.isSmall and (legacy) env.device.isMobile. When a size is given, the browser
  * width is set according to the breakpoints that are used by the webClient.
  *
  * @param {Object} params parameters to configure the ui size.
@@ -48,8 +82,8 @@ function getSizeFromWidth(width) {
  * @param {number|undefined} [params.height]
  */
 function patchUiSize({ height, size, width }) {
-    if ((!size && !width) || (size && width)) {
-        throw new Error("Either size or width must be given to the patchUiSize function");
+    if (!size && !width || size && width) {
+        throw new Error('Either size or width must be given to the patchUiSize function');
     }
     size = size === undefined ? getSizeFromWidth(width) : size;
     width = width || getWidthFromSize(size);
@@ -58,11 +92,15 @@ function patchUiSize({ height, size, width }) {
         innerWidth: width,
         innerHeight: height || browser.innerHeight,
     });
-    patchWithCleanup(utils, {
+    patchWithCleanup(uiService, {
         getSize() {
             return size;
         },
     });
+    legacyPatchUiSize(height, size, width);
 }
 
-export { patchUiSize, SIZES };
+export {
+    patchUiSize,
+    SIZES
+};

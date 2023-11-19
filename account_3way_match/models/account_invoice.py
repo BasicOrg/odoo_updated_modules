@@ -48,7 +48,7 @@ class AccountMove(models.Model):
             records = records.filtered(lambda r: r.payment_state != 'paid' and r.move_type in ('in_invoice', 'in_refund'))
             (self - records).release_to_pay = 'no'
         for invoice in records:
-            if invoice.payment_state == 'paid' or not invoice.is_invoice(include_receipts=True):
+            if invoice.payment_state == 'paid':
                 # no need to pay, if it's already paid
                 invoice.release_to_pay = 'no'
             elif invoice.force_release_to_pay:
@@ -93,7 +93,7 @@ class AccountMoveLine(models.Model):
         return super()._auto_init()
 
 
-    @api.depends('purchase_line_id.qty_received', 'purchase_line_id.qty_invoiced', 'purchase_line_id.product_qty', 'price_unit')
+    @api.depends('purchase_line_id.qty_received', 'purchase_line_id.qty_invoiced', 'purchase_line_id.product_qty')
     def _can_be_paid(self):
         """ Computes the 'release to pay' status of an invoice line, depending on
         the invoicing policy of the product linked to it, by calling the dedicated

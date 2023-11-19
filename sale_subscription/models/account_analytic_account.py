@@ -12,9 +12,9 @@ class AccountAnalyticAccount(models.Model):
 
     def _compute_subscription_count(self):
         subscription_data = self.env['sale.order']._read_group(domain=[('analytic_account_id', 'in', self.ids)],
-                                                                     groupby=['analytic_account_id'],
-                                                                     aggregates=['__count'])
-        mapped_data = {analytic_account.id: count for analytic_account, count in subscription_data}
+                                                                     fields=['analytic_account_id'],
+                                                                     groupby=['analytic_account_id'])
+        mapped_data = dict([(m['analytic_account_id'][0], m['analytic_account_id_count']) for m in subscription_data])
         for account in self:
             account.subscription_count = mapped_data.get(account.id, 0)
 

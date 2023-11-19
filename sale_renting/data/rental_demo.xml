@@ -40,7 +40,7 @@
         <field name="currency_id" ref="base.USD"/>
     </record>
     <record id="rental_pricing_2" model="product.pricing">
-        <field name="recurrence_id" ref="recurrence_weekly"/>
+        <field name="recurrence_id" ref="sale_temporal.recurrence_weekly"/>
         <field name="price" eval="25"/>
         <field name="currency_id" ref="base.USD"/>
     </record>
@@ -52,7 +52,7 @@
     </record>
 
     <record id="rental_pricing_4" model="product.pricing">
-        <field name="recurrence_id" ref="recurrence_weekly"/>
+        <field name="recurrence_id" ref="sale_temporal.recurrence_weekly"/>
         <field name="price" eval="900.00"/> <!-- One day of reduction -->
         <field name="currency_id" ref="base.USD"/>
     </record>
@@ -61,6 +61,15 @@
         <field name="recurrence_id" ref="sale_renting.recurrence_2_weeks"/>
         <field name="price" eval="1750"/> <!-- 3 days of reduction -->
         <field name="currency_id" ref="base.USD"/>
+    </record>
+
+    <!-- Rentable products with pricings -->
+    <record id="rental_product_1" model="product.product"> <!-- Needed to avoid triggering the constraint -->
+        <field name="product_pricing_ids" eval="[(5,0,0)]"/>
+    </record>
+
+    <record id="rental_product_2" model="product.product"> <!-- Needed to avoid triggering the constraint -->
+        <field name="product_pricing_ids" eval="[(5,0,0)]"/>
     </record>
 
     <record id="rental_product_1" model="product.product"> <!-- Projector -->
@@ -80,10 +89,10 @@
         <field name="partner_invoice_id" ref="base.res_partner_2"/>
         <field name="partner_shipping_id" ref="base.res_partner_2"/>
         <field name="user_id" ref="base.user_demo"/>
+        <field name="pricelist_id" ref="product.list0"/>
         <field name="team_id" ref="sales_team.team_sales_department"/>
         <field name="date_order" eval="DateTime.today() - relativedelta(months=3)"/>
-        <field name="rental_start_date" eval="DateTime.today()"/>
-        <field name="rental_return_date" eval="DateTime.today() + relativedelta(days=3)"/>
+        <field name="is_rental_order" eval="True"/>
     </record>
 
     <record id="rental_order_line_1" model="sale.order.line">
@@ -91,12 +100,10 @@
         <field name="product_id" ref="rental_product_2"/>
         <field name="product_uom_qty">3</field>
         <field name="product_uom" ref="uom.product_uom_unit"/>
-        <field name="name" eval="'[RENT002] Meeting Room'"/>
-        <field name="price_unit" eval="450.0"/>
-    </record>
-
-    <record id="rental_order_line_1" model="sale.order.line"> <!-- After creation to avoid the compute and force the value -->
         <field name="is_rental" eval="True"/>
+        <field name="start_date" eval="DateTime.today()"/>
+        <field  name="return_date" eval="DateTime.today() + relativedelta(days=3)"/>
+        <field name="price_unit" eval="450.0"/>
     </record>
 
     <record id="rental_order_line_2" model="sale.order.line">
@@ -110,65 +117,77 @@
 
     <!-- Confirmed SO : reserved products -->
 
-    <record id="rental_order_2" model="sale.order"> <!-- NOTE: CONFIRMED RENTAL ORDER WITH LATE RETURN-->
+    <record id="rental_order_2" model="sale.order"> <!-- NOTE: CONFIRMED RENTAL ORDER-->
         <field name="partner_id" ref="base.res_partner_2"/>
         <field name="partner_invoice_id" ref="base.res_partner_2"/>
         <field name="partner_shipping_id" ref="base.res_partner_2"/>
         <field name="user_id" ref="base.user_admin"/>
+        <field name="pricelist_id" ref="product.list0"/>
         <field name="team_id" ref="sales_team.team_sales_department"/>
         <field name="date_order" eval="DateTime.today() - relativedelta(months=3)"/>
-        <field name="rental_start_date" eval="DateTime.today() - relativedelta(days=5)"/>
-        <field name="rental_return_date" eval="DateTime.today() - relativedelta(days=1)"/>
+        <field name="is_rental_order" eval="True"/>
         <field name="tag_ids" eval="[(4, ref('sales_team.categ_oppor3')), (4, ref('sales_team.categ_oppor7'))]"/>
     </record>
 
-    <record id="rental_order_line_3" model="sale.order.line"> <!-- NOTE: partial pickup -->
+    <record id="rental_order_line_3" model="sale.order.line"> <!-- NOTE: late return -->
         <field name="order_id" ref="rental_order_2"/>
         <field name="product_id" ref="rental_product_1"/>
         <field name="product_uom_qty">3</field>
         <field name="product_uom" ref="uom.product_uom_unit"/>
         <field name="name" eval="'[RENT001] Projector'"/>
+        <field name="is_rental" eval="True"/>
+        <field name="qty_delivered">3</field>
+        <field name="start_date" eval="DateTime.today() - relativedelta(days=5)"/>
+        <field name="return_date" eval="DateTime.today() - relativedelta(days=1)"/>
+        <field name="return_date" eval="DateTime.today() - relativedelta(days=1)"/>
+        <field name="price_unit" eval="100.0"/>
+    </record>
+  <record id="rental_order_line_3" model="sale.order.line"> <!-- NOTE: late return -->
+      <field name="order_id" ref="rental_order_2"/>
+      <field name="product_id" ref="rental_product_1"/>
+      <field name="product_uom_qty">3</field>
+      <field name="product_uom" ref="uom.product_uom_unit"/>
+      <field name="name" eval="'[RENT001] Projector'"/>
+      <field name="is_rental" eval="True"/>
+      <field name="qty_delivered">3</field>
+      <field name="start_date" eval="DateTime.today() - relativedelta(days=5)"/>
+      <field name="return_date" eval="DateTime.today() - relativedelta(days=1)"/>
+      <field name="price_unit" eval="100.0"/>
+  </record>
+
+    <record id="rental_order_line_4" model="sale.order.line"> <!-- NOTE: partial pickup -->
+        <field name="order_id" ref="rental_order_2"/>
+        <field name="product_id" ref="rental_product_1"/>
+        <field name="product_uom_qty">3</field>
+        <field name="product_uom" ref="uom.product_uom_unit"/>
+        <field name="name" eval="'[RENT001] Projector'"/>
+        <field name="is_rental" eval="True"/>
         <field name="qty_delivered">2</field>
+        <field name="start_date" eval="DateTime.today() - relativedelta(days=1)"/>
+        <field name="return_date" eval="DateTime.today() + relativedelta(days=5)"/>
+        <field name="return_date" eval="DateTime.today() + relativedelta(days=5)"/>
         <field name="price_unit" eval="150.0"/>
     </record>
+  <record id="rental_order_line_4" model="sale.order.line"> <!-- NOTE: partial pickup -->
+      <field name="order_id" ref="rental_order_2"/>
+      <field name="product_id" ref="rental_product_1"/>
+      <field name="product_uom_qty">3</field>
+      <field name="product_uom" ref="uom.product_uom_unit"/>
+      <field name="name" eval="'[RENT001] Projector'"/>
+      <field name="is_rental" eval="True"/>
+      <field name="qty_delivered">2</field>
+      <field name="start_date" eval="DateTime.today() - relativedelta(days=1)"/>
+      <field name="return_date" eval="DateTime.today() + relativedelta(days=5)"/>
+      <field name="price_unit" eval="150.0"/>
+  </record>
 
-    <record id="rental_order_line_3" model="sale.order.line"> <!-- After creation to avoid the compute and force the value -->
-        <field name="is_rental" eval="True"/>
-    </record>
-
-    <record id="rental_order_line_4" model="sale.order.line">
+    <record id="rental_order_line_5" model="sale.order.line">
         <field name="order_id" ref="rental_order_2"/>
         <field name="name" model="sale.order.line" eval="obj().env.ref('product.product_delivery_01').get_product_multiline_description_sale()"/>
         <field name="product_id" ref="product.product_delivery_01"/>
         <field name="product_uom_qty">2</field>
         <field name="product_uom" ref="uom.product_uom_unit"/>
         <field name="price_unit">65.00</field>
-    </record>
-
-    <record id="rental_order_3" model="sale.order"> <!-- NOTE: CONFIRMED RENTAL ORDER ALREADY PICKED-UP-->
-        <field name="partner_id" ref="base.res_partner_1"/>
-        <field name="partner_invoice_id" ref="base.res_partner_1"/>
-        <field name="partner_shipping_id" ref="base.res_partner_1"/>
-        <field name="user_id" ref="base.user_admin"/>
-        <field name="team_id" ref="sales_team.team_sales_department"/>
-        <field name="date_order" eval="DateTime.today() - relativedelta(months=2)"/>
-        <field name="rental_start_date" eval="DateTime.today() - relativedelta(days=5)"/>
-        <field name="rental_return_date" eval="DateTime.today() + relativedelta(days=5)"/>
-        <field name="tag_ids" eval="[(4, ref('sales_team.categ_oppor3')), (4, ref('sales_team.categ_oppor7'))]"/>
-    </record>
-
-    <record id="rental_order_line_5" model="sale.order.line">
-        <field name="order_id" ref="rental_order_3"/>
-        <field name="product_id" ref="rental_product_1"/>
-        <field name="product_uom_qty">2</field>
-        <field name="product_uom" ref="uom.product_uom_unit"/>
-        <field name="name" eval="'[RENT001] Projector'"/>
-        <field name="qty_delivered">2</field>
-        <field name="price_unit" eval="100.0"/>
-    </record>
-
-    <record id="rental_order_line_5" model="sale.order.line"> <!-- After creation to avoid the compute and force the value -->
-        <field name="is_rental" eval="True"/>
     </record>
 
     <record id="rental_order_activity_1" model="mail.activity">
@@ -182,6 +201,6 @@
     </record>
 
     <!-- Confirm rental order -->
-    <function model="sale.order" name="action_confirm" eval="[[ref('rental_order_2'), ref('rental_order_3')]]" context="{'action_no_send_mail': True}"/>
+    <function model="sale.order" name="action_confirm" eval="[[ref('rental_order_2')]]" context="{'action_no_send_mail': True}"/>
 
 </odoo>

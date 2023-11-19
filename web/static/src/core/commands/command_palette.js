@@ -2,8 +2,8 @@
 
 import { Dialog } from "@web/core/dialog/dialog";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
-import { _t } from "@web/core/l10n/translation";
-import { KeepLast, Race } from "@web/core/utils/concurrency";
+import { _lt } from "@web/core/l10n/translation";
+import { KeepLast } from "@web/core/utils/concurrency";
 import { useAutofocus, useService } from "@web/core/utils/hooks";
 import { scrollTo } from "@web/core/utils/scrolling";
 import { fuzzyLookup } from "@web/core/utils/search";
@@ -11,19 +11,18 @@ import { debounce } from "@web/core/utils/timing";
 import { isMacOS, isMobileOS } from "@web/core/browser/feature_detection";
 import { escapeRegExp } from "@web/core/utils/strings";
 
-import {
+const {
     Component,
     onWillStart,
     onWillDestroy,
-    EventBus,
     useRef,
     useState,
     markRaw,
     useExternalListener,
-} from "@odoo/owl";
+} = owl;
 
-const DEFAULT_PLACEHOLDER = _t("Search...");
-const DEFAULT_EMPTY_MESSAGE = _t("No result found");
+const DEFAULT_PLACEHOLDER = _lt("Search...");
+const DEFAULT_EMPTY_MESSAGE = _lt("No result found");
 const FUZZY_NAMESPACES = ["default"];
 
 /**
@@ -88,15 +87,6 @@ export function splitCommandName(name, searchValue) {
 
 export class DefaultCommandItem extends Component {}
 DefaultCommandItem.template = "web.DefaultCommandItem";
-DefaultCommandItem.props = {
-    slots: { type: Object, optional: true },
-    // Props send by the command palette:
-    hotkey: { type: String, optional: true },
-    hotkeyOptions: { type: String, optional: true },
-    name: { type: String, optional: true },
-    searchValue: { type: String, optional: true },
-    executeCommand: { type: Function, optional: true },
-};
 
 export class CommandPalette extends Component {
     setup() {
@@ -107,7 +97,6 @@ export class CommandPalette extends Component {
         }
 
         this.keyId = 1;
-        this.race = new Race();
         this.keepLast = new KeepLast();
         this._sessionId = CommandPalette.lastSessionId++;
         this.DefaultCommandItem = DefaultCommandItem;
@@ -154,7 +143,6 @@ export class CommandPalette extends Component {
             if (commands.length) {
                 categories.push({
                     commands,
-                    name: this.categoryNames[category],
                     keyId: category,
                 });
             }
@@ -182,7 +170,7 @@ export class CommandPalette extends Component {
 
         const { namespace, searchValue } = this.processSearchValue(config.searchValue || "");
         this.switchNamespace(namespace);
-        await this.race.add(this.search(searchValue));
+        await this.search(searchValue);
     }
 
     /**
@@ -193,7 +181,6 @@ export class CommandPalette extends Component {
      */
     async setCommands(namespace, options = {}) {
         this.categoryKeys = ["default"];
-        this.categoryNames = {};
         const proms = this.providersByNamespace[namespace].map((provider) => {
             const { provide } = provider;
             const result = provide(this.env, options);
@@ -208,7 +195,6 @@ export class CommandPalette extends Component {
             if (namespaceConfig.categories) {
                 let commandsSorted = [];
                 this.categoryKeys = namespaceConfig.categories;
-                this.categoryNames = namespaceConfig.categoryNames || {};
                 if (!this.categoryKeys.includes("default")) {
                     this.categoryKeys.push("default");
                 }
@@ -380,11 +366,5 @@ export class CommandPalette extends Component {
     }
 }
 CommandPalette.lastSessionId = 0;
-CommandPalette.props = {
-    bus: { type: EventBus, optional: true },
-    close: Function,
-    config: Object,
-    closeMe: { type: Function, optional: true },
-};
 CommandPalette.template = "web.CommandPalette";
 CommandPalette.components = { Dialog };

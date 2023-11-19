@@ -1,7 +1,7 @@
 /** @odoo-module */
 
-import wTourUtils from '@website/js/tours/tour_utils';
-import wSaleTourUtils from '@website_sale/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
+import wSaleTourUtils from 'website_sale.tour_utils';
 
 const optionBlock = 'dynamic_snippet_products';
 const productsSnippet = {id: 's_dynamic_snippet_products', name: 'Products'};
@@ -33,41 +33,39 @@ function changeTemplate(templateKey) {
     ];
 }
 
+let templatesSteps = [];
+for (const templateKey of templates) {
+    templatesSteps = templatesSteps.concat(changeTemplate(templateKey));
+}
 wTourUtils.registerWebsitePreviewTour('website_sale.snippet_products', {
     test: true,
     url: '/',
     edition: true,
 },
-() => {
-    let templatesSteps = [];
-    for (const templateKey of templates) {
-        templatesSteps = templatesSteps.concat(changeTemplate(templateKey));
-    }
-    return [
-        wTourUtils.dragNDrop(productsSnippet),
-        wTourUtils.clickOnSnippet(productsSnippet),
-        ...templatesSteps,
-        ...changeTemplate('dynamic_filter_template_product_product_add_to_cart'),
-        ...wTourUtils.clickOnSave(),
-        {
-            trigger: "iframe .s_dynamic_snippet_products .o_carousel_product_card_body .js_add_cart",
-            run: 'click',
-        },
-        wSaleTourUtils.goToCart({backend: true}),
-    ]
-});
+[
+    wTourUtils.dragNDrop(productsSnippet),
+    wTourUtils.clickOnSnippet(productsSnippet),
+    ...templatesSteps,
+    ...changeTemplate('dynamic_filter_template_product_product_add_to_cart'),
+    ...wTourUtils.clickOnSave(),
+    {
+        trigger: "iframe .s_dynamic_snippet_products .o_carousel_product_card_body .js_add_cart",
+        run: 'click',
+    },
+    wSaleTourUtils.goToCart({backend: true}),
+]);
 
 wTourUtils.registerWebsitePreviewTour('website_sale.products_snippet_recently_viewed', {
     test: true,
     url: '/',
     edition: true,
 },
-() => [
+[
     wTourUtils.dragNDrop(productsSnippet),
     wTourUtils.clickOnSnippet(productsSnippet),
-    ...changeTemplate('dynamic_filter_template_product_product_add_to_cart'),
     wTourUtils.changeOption(optionBlock, 'we-select[data-name="filter_opt"] we-toggler', 'filter'),
     wTourUtils.changeOption(optionBlock, 'we-select[data-name="filter_opt"] we-button:contains("Recently Viewed")', 'filter'),
+    ...changeTemplate('dynamic_filter_template_product_product_add_to_cart'),
     ...wTourUtils.clickOnSave(),
     {
         content: 'make delete icon appear',

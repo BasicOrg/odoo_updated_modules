@@ -21,7 +21,7 @@
                     <span style="font-size: 10px;">Your SEPA Direct Debit Transaction</span><br/>
                     <span style="font-size: 20px; font-weight: bold;" t-out="object.reference or ''"></span>
                 </td></tr>
-                <tr><td valign="middle" align="right" t-if="not company.uses_default_logo">
+                <tr><td valign="middle" align="right">
                     <img t-attf-src="/logo.png?company={{ company.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="company.name"/>
                 </td></tr>
                 <tr><td colspan="2" style="text-align:center;">
@@ -104,7 +104,8 @@
             <field name="subject">Your SEPA Direct Debit Mandate with {{ object.payment_journal_id.company_id.name }}</field>
             <field name="email_from">{{ object.payment_journal_id.company_id.email }}</field>
             <field name="email_to">{{ object.partner_id.email_formatted }}</field>
-            <field name="report_template_ids" eval="[(4, ref('account_sepa_direct_debit.sdd_mandate_form_report_main'))]"/>
+            <field name="report_template" ref="account_sepa_direct_debit.sdd_mandate_form_report_main"/>
+            <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
             <field name="description">Send the SEPA mandate in attachement, to partners who signed a new mandate</field>
             <field name="body_html" type="html">
 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
@@ -119,7 +120,7 @@
                     <span style="font-size: 10px;">Your SEPA Direct Debit Manddate</span><br/>
                     <span style="font-size: 20px; font-weight: bold;" t-out="object.partner_bank_id.acc_number or ''">BE15001559627230</span>
                 </td></tr>
-                <tr><td valign="middle" align="right" t-if="not company.uses_default_logo">
+                <tr><td valign="middle" align="right">
                     <img t-attf-src="/logo.png?company={{ company.id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="company.name"/>
                 </td></tr>
                 <tr><td colspan="2" style="text-align:center;">

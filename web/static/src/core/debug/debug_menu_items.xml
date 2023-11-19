@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.DebugMenu.SetDefaultDialog">
+    <t t-name="web.DebugMenu.SetDefaultDialog" owl="1">
         <Dialog title="title">
             <table style="width: 100%">
                 <tr>
@@ -61,7 +61,7 @@
         </Dialog>
     </t>
 
-    <t t-name="web.DebugMenu.GetMetadataDialog">
+    <t t-name="web.DebugMenu.GetMetadataDialog" owl="1">
         <Dialog title="title">
             <table class="table table-sm table-striped">
                 <tr>
@@ -110,15 +110,6 @@
                     <td><t t-esc="state.writeDate"/></td>
                 </tr>
             </table>
-        </Dialog>
-    </t>
-
-    <t t-name="web.DebugMenu.GetViewDialog">
-        <Dialog title="title">
-            <pre t-esc="props.arch.outerHTML"/>
-            <t t-set-slot="footer">
-                <button class="btn btn-primary o-default-button" t-on-click="() => props.close()">Close</button>
-            </t>
         </Dialog>
     </t>
 </templates>

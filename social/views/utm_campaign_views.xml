@@ -15,18 +15,17 @@
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <button name="action_redirect_to_social_media_posts"
                     type="object" class="oe_stat_button order-10" icon="fa-newspaper-o"
-                    invisible="social_posts_count == 0" groups="social.group_social_user">
+                    attrs="{'invisible': [('social_posts_count', '=', 0)]}" groups="social.group_social_user">
                     <field name="social_posts_count" widget="statinfo" string="Posts"/>
                 </button>
-                <button icon="fa-thumbs-up" disabled="disabled"
-                    invisible="social_engagement == 0" groups="social.group_social_user">
+                <button icon="fa-thumbs-up" disabled="disabled" groups="social.group_social_user">
                     <field name="social_engagement" widget="statinfo" string="Engagement"/>
                 </button>
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Social Media" name="social_media" class="order-2"
-                    invisible="social_posts_count == 0" groups="social.group_social_user">
-                    <field name="social_post_ids" mode="kanban" widget="one2many" nolabel="1" context="{'default_campaign_id': id}"/>
+                    attrs="{'invisible': [('social_posts_count', '=', 0)]}" groups="social.group_social_user">
+                    <field name="social_post_ids" mode="kanban" widget="one2many" nolabel="1" context="{'default_campaign_id': active_id}"/>
                 </page>
             </xpath>
         </field>
@@ -39,7 +38,7 @@
             <form string="Campaign">
                 <group>
                     <field name="name"/>
-                    <field name="user_id" widget="many2one_avatar_user"/>
+                    <field name="user_id"/>
                     <field name="tag_ids" widget="many2many_tags"/>
                 </group>
             </form>
@@ -56,7 +55,7 @@
             </xpath>
             <xpath expr="//ul[@id='o_utm_actions']">
                 <a name="action_redirect_to_social_media_posts" type="object"
-                    t-attf-class="pe-4 #{record.social_posts_count.raw_value === 0 ? 'text-muted' : ''}" groups="social.group_social_user">
+                    t-attf-class="#{record.social_posts_count.raw_value === 0 ? 'text-muted' : ''}" groups="social.group_social_user">
                     <t t-out="record.social_posts_count.raw_value"/> Posts
                 </a>
             </xpath>

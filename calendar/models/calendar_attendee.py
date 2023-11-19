@@ -24,23 +24,23 @@ class Attendee(models.Model):
 
     STATE_SELECTION = [
         ('needsAction', 'Needs Action'),
-        ('tentative', 'Maybe'),
-        ('declined', 'No'),
-        ('accepted', 'Yes'),
+        ('tentative', 'Uncertain'),
+        ('declined', 'Declined'),
+        ('accepted', 'Accepted'),
     ]
 
     # event
     event_id = fields.Many2one('calendar.event', 'Meeting linked', required=True, ondelete='cascade')
     recurrence_id = fields.Many2one('calendar.recurrence', related='event_id.recurrence_id')
     # attendee
-    partner_id = fields.Many2one('res.partner', 'Attendee', required=True, readonly=True, ondelete='cascade')
+    partner_id = fields.Many2one('res.partner', 'Attendee', required=True, readonly=True)
     email = fields.Char('Email', related='partner_id.email')
     phone = fields.Char('Phone', related='partner_id.phone')
     common_name = fields.Char('Common name', compute='_compute_common_name', store=True)
     access_token = fields.Char('Invitation Token', default=_default_access_token)
     mail_tz = fields.Selection(_tz_get, compute='_compute_mail_tz', help='Timezone used for displaying time in the mail template')
     # state
-    state = fields.Selection(STATE_SELECTION, string='Status', default='needsAction')
+    state = fields.Selection(STATE_SELECTION, string='Status', readonly=True, default='needsAction')
     availability = fields.Selection(
         [('free', 'Available'), ('busy', 'Busy')], 'Available/Busy', readonly=True)
 
@@ -92,13 +92,6 @@ class Attendee(models.Model):
             partners = (event.attendee_ids & self).partner_id & event.message_partner_ids
             event.message_unsubscribe(partner_ids=partners.ids)
 
-    def _send_invitation_emails(self):
-        """ Hook to be able to override the invitation email sending process.
-         Notably inside appointment to use a different mail template from the appointment type. """
-        self._send_mail_to_attendees(
-            self.env.ref('calendar.calendar_template_meeting_invitation', raise_if_not_found=False)
-        )
-
     def _send_mail_to_attendees(self, mail_template, force_send=False):
         """ Send mail for event invitation to event attendees.
             :param mail_template: a mail.template record
@@ -120,33 +113,31 @@ class Attendee(models.Model):
                 event_id = attendee.event_id.id
                 ics_file = ics_files.get(event_id)
 
-                attachment_ids = None
+                attachment_values = []
                 if ics_file:
-                    attachment_ids = self.env['ir.attachment'].create({
-                        'datas': base64.b64encode(ics_file),
-                        'description': 'invitation.ics',
-                        'mimetype': 'text/calendar',
-                        'name': 'invitation.ics',
-                    }).ids
-
+                    attachment_values = [
+                        (0, 0, {'name': 'invitation.ics',
+                                'mimetype': 'text/calendar',
+                                'datas': base64.b64encode(ics_file)})
+                    ]
                 body = mail_template._render_field(
                     'body_html',
                     attendee.ids,
-                    compute_lang=True)[attendee.id]
+                    compute_lang=True,
+                    post_process=True)[attendee.id]
                 subject = mail_template._render_field(
                     'subject',
                     attendee.ids,
                     compute_lang=True)[attendee.id]
-                attendee.event_id.with_context(no_document=True).sudo().message_notify(
+                attendee.event_id.with_context(no_document=True).message_notify(
                     email_from=attendee.event_id.user_id.email_formatted or self.env.user.email_formatted,
                     author_id=attendee.event_id.user_id.partner_id.id or self.env.user.partner_id.id,
                     body=body,
                     subject=subject,
                     partner_ids=attendee.partner_id.ids,
                     email_layout_xmlid='mail.mail_notification_light',
-                    attachment_ids=attachment_ids,
-                    force_send=force_send,
-                )
+                    attachment_ids=attachment_values,
+                    force_send=force_send)
 
     def do_tentative(self):
         """ Makes event invitation as Tentative. """
@@ -157,7 +148,7 @@ class Attendee(models.Model):
         for attendee in self:
             attendee.event_id.message_post(
                 author_id=attendee.partner_id.id,
-                body=_("%s has accepted the invitation", attendee.common_name),
+                body=_("%s has accepted the invitation") % (attendee.common_name),
                 subtype_xmlid="calendar.subtype_invitation",
             )
         return self.write({'state': 'accepted'})
@@ -167,7 +158,7 @@ class Attendee(models.Model):
         for attendee in self:
             attendee.event_id.message_post(
                 author_id=attendee.partner_id.id,
-                body=_("%s has declined the invitation", attendee.common_name),
+                body=_("%s has declined the invitation") % (attendee.common_name),
                 subtype_xmlid="calendar.subtype_invitation",
             )
         return self.write({'state': 'declined'})

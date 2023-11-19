@@ -3,16 +3,16 @@
 # 	* website_crm_iap_reveal
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-02-11 14:34+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -47,7 +47,7 @@ msgstr "Attivo"
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_view_search
 msgid "Archived"
-msgstr "In archivio"
+msgstr "Archiviato"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_crm_reveal_rule
@@ -122,7 +122,7 @@ msgstr "Creato da"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__create_date
 msgid "Created on"
-msgstr "Data creazione"
+msgstr "Creato il"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__lead_for
@@ -136,7 +136,6 @@ msgid "Display Name"
 msgstr "Nome visualizzato"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Enter Valid Regex."
@@ -178,6 +177,11 @@ msgid "High"
 msgstr "Alta"
 
 #. module: website_crm_iap_reveal
+#: model:ir.model,name:website_crm_iap_reveal.model_iap_account
+msgid "IAP Account"
+msgstr "Account acquisti integrati"
+
+#. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_lead__reveal_iap_credits
 msgid "IAP Credits"
 msgstr "Crediti acquisti in-app"
@@ -198,6 +202,12 @@ msgstr "Indirizzo IP"
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__industry_tag_ids
 msgid "Industries"
 msgstr "Settori"
+
+#. module: website_crm_iap_reveal
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule____last_update
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__write_uid
@@ -239,7 +249,19 @@ msgid "Lead Generation Views"
 msgstr "Viste generazione contatto"
 
 #. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid ""
+"Lead Generation requires a GeoIP resolver which could not be found on your "
+"system. Please consult https://pypi.org/project/GeoIP/."
+msgstr ""
+"Impossibile trovare nel sistema il risolutore GeoIP necessario per la "
+"generazione dei contatti. Consultare https://pypi.org/project/GeoIP/."
+
+#. module: website_crm_iap_reveal
 #: model:ir.actions.server,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead_ir_actions_server
+#: model:ir.cron,cron_name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
+#: model:ir.cron,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
 msgid "Lead Generation: Leads/Opportunities Generation"
 msgstr "Generazione contatto: generazione contatti/opportunità"
 
@@ -278,6 +300,12 @@ msgstr "Sono ammessi al massimo 5 contatti."
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_rule__priority__1
 msgid "Medium"
 msgstr "Medio"
+
+#. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid "Missing Library"
+msgstr "Libreria mancante"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_view__reveal_state__not_found
@@ -333,7 +361,6 @@ msgid "Opportunity Generation Conditions"
 msgstr "Requisiti per generazione opportunità"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Opportunity created by Odoo Lead Generation"

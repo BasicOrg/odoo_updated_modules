@@ -2,12 +2,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Automation Rules based on Employee Contracts',
+    'name': 'Automated Action based on Employee Contracts',
     'version': '1.0',
     'category': 'Human Resources',
     'description': """
-Bridge to add contract calendar on automation rules
-===================================================
+Bridge to add contract calendar on automated actions
+====================================================
     """,
     'depends': ['base_automation', 'hr_contract'],
     'data': [

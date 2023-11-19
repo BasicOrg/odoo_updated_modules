@@ -3,16 +3,17 @@
 # 	* data_cleaning
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Linkup <link-up@naver.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Linkup <link-up@naver.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -31,7 +32,7 @@ msgstr ""
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">매</span>"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action
@@ -43,26 +44,25 @@ msgstr "추가 작업"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action_display
 msgid "Action Display"
-msgstr "작업 표시"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action_technical
 msgid "Action Technical"
-msgstr "작업 기술"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__action
 msgid "Actions"
-msgstr "활동"
+msgstr "추가 작업"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__active
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__active
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__lower
 #, python-format
@@ -70,7 +70,6 @@ msgid "All Lowercase"
 msgstr "모든 소문자"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__all
 #, python-format
@@ -78,7 +77,6 @@ msgid "All Spaces"
 msgstr "모든 빈칸"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__upper
 #, python-format
@@ -93,7 +91,7 @@ msgstr "자동"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action_case
 msgid "Case"
-msgstr "사례"
+msgstr ""
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_merge_model_form
@@ -170,15 +168,10 @@ msgstr "현재"
 
 #. module: data_cleaning
 #: model:ir.actions.server,name:data_cleaning.ir_cron_clean_records_ir_actions_server
+#: model:ir.cron,cron_name:data_cleaning.ir_cron_clean_records
+#: model:ir.cron,name:data_cleaning.ir_cron_clean_records
 msgid "Data Cleaning: Clean Records"
 msgstr "데이터 정리: 기록 정리"
-
-#. module: data_cleaning
-#. odoo-python
-#: code:addons/data_cleaning/models/data_cleaning_model.py:0
-#, python-format
-msgid "Data to Clean"
-msgstr "정리할 데이터"
 
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__notify_frequency_period__days
@@ -188,7 +181,7 @@ msgstr "일"
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_list
 msgid "Discard"
-msgstr "취소"
+msgstr "작성 취소"
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_search
@@ -237,7 +230,6 @@ msgid "Field To Clean"
 msgstr "정리할 필드"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__first
 #, python-format
@@ -245,7 +237,6 @@ msgid "First Letters to Uppercase"
 msgstr "첫번째 글자는 대문자입니다"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__phone
 #, python-format
@@ -259,13 +250,11 @@ msgid ""
 "every letter to lowercase except the first letter of each word, which is set"
 " to uppercase."
 msgstr ""
-"규칙에 따라 대소문자가 설정되는 방식입니다. '첫 글자는 대문자로' 는 첫 글자만 대문자로 표시되며 나머지 글자는 모두 소문자로 "
-"설정됩니다."
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.notification
 msgid "I've identified"
-msgstr "확인했습니다"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__id
@@ -273,6 +262,13 @@ msgstr "확인했습니다"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__id
 msgid "ID"
 msgstr "ID"
+
+#. module: data_cleaning
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__last_notification
@@ -296,7 +292,7 @@ msgstr "최근 갱신 일자"
 #. module: data_cleaning
 #: model:ir.model.fields,help:data_cleaning.field_data_cleaning_model__notify_user_ids
 msgid "List of users to notify when there are new records to clean"
-msgstr "정리할 새 레코드가 있을 때 알림을 받을 사용자 목록"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__cleaning_mode__manual
@@ -356,7 +352,7 @@ msgstr "레코드 ID"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__name
 msgid "Record Name"
-msgstr "레코드 이름"
+msgstr ""
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_search
@@ -367,7 +363,7 @@ msgstr "기록"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__records_to_clean_count
 msgid "Records To Clean"
-msgstr "정리할 레코드"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__rule_ids
@@ -380,12 +376,11 @@ msgid "Rules"
 msgstr "규칙"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__html
 #, python-format
 msgid "Scrap HTML"
-msgstr "HTML 가져오기"
+msgstr ""
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_merge_model_form
@@ -398,12 +393,11 @@ msgid "Sequence"
 msgstr "순서"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__case
 #, python-format
 msgid "Set Type Case"
-msgstr "대소문자 설정"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__suggested_value_display
@@ -416,7 +410,6 @@ msgid "Suggested Value"
 msgstr "제안값"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__superfluous
 #, python-format
@@ -424,7 +417,6 @@ msgid "Superfluous Spaces"
 msgstr "불필요한 빈칸"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #, python-format
 msgid ""
@@ -443,22 +435,21 @@ msgid "Trim"
 msgstr "자르기"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__trim
 #, python-format
 msgid "Trim Spaces"
-msgstr "빈 칸 조정"
+msgstr ""
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #, python-format
 msgid "Unselect"
 msgstr "선택 취소"
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_list
 #, python-format
@@ -476,7 +467,6 @@ msgid ""
 "Which spaces are trimmed by the rule. Leading, trailing, and successive "
 "spaces are considered superfluous."
 msgstr ""
-"규칙에 따라 빈칸을 조정하는 방식입니다. 앞이나 뒤 혹은 연속해서 빈칸이 있는 경우 공백이 불필요하게 있는 것으로 간주합니다."
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.notification
@@ -486,4 +476,4 @@ msgstr "여기"
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.notification
 msgid "records to clean with the '"
-msgstr "정리할 레코드 '"
+msgstr ""

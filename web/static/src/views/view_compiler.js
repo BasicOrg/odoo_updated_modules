@@ -7,7 +7,7 @@ import {
     createTextNode,
     getTag,
 } from "@web/core/utils/xml";
-import { toStringExpression, BUTTON_CLICK_PARAMS } from "./utils";
+import { toStringExpression } from "./utils";
 
 /**
  * @typedef Compiler
@@ -16,8 +16,26 @@ import { toStringExpression, BUTTON_CLICK_PARAMS } from "./utils";
  * @property {(el: Element, params: Record<string, any>) => Element} fn
  */
 
-import { xml } from "@odoo/owl";
+const { xml } = owl;
 
+const BUTTON_CLICK_PARAMS = [
+    "name",
+    "type",
+    "args",
+    "context",
+    "close",
+    "confirm",
+    "special",
+    "effect",
+    "help",
+    "modifiers",
+    // WOWL SAD: is adding the support for debounce attribute here justified or should we
+    // just override compileButton in kanban compiler to add the debounce?
+    "debounce",
+    // WOWL JPP: is adding the support for not oppening the dialog of confirmation in the settings view
+    // This should be refactor someday
+    "noSaveDialog",
+];
 const BUTTON_STRING_PROPS = ["string", "size", "title", "icon", "id"];
 const INTERP_REGEXP = /(\{\{|#\{)(.*?)(\}{1,2})/g;
 
@@ -140,7 +158,11 @@ export function encodeObjectForTemplate(obj) {
  * @returns {boolean | boolean[]}
  */
 export function getModifier(el, modifierName) {
-    return el.getAttribute(modifierName);
+    // cf python side def transfer_node_to_modifiers
+    // modifiers' string are evaluated to their boolean or array form
+    const modifiers = JSON.parse(el.getAttribute("modifiers") || "{}");
+    const mod = modifierName in modifiers ? modifiers[modifierName] : false;
+    return typeof mod !== "boolean" ? mod : !!mod;
 }
 
 /**
@@ -195,24 +217,13 @@ export class ViewCompiler {
         this.id = 1;
         /** @type {Compiler[]} */
         this.compilers = [
-            {
-                selector: "a[type]:not([data-bs-toggle]),a[data-type]:not([data-bs-toggle])",
-                fn: this.compileButton,
-            },
-            {
-                selector: "button:not([data-bs-toggle])",
-                fn: this.compileButton,
-                doNotCopyAttributes: true,
-            },
+            { selector: "a[type],a[data-type]", fn: this.compileButton },
+            { selector: "button", fn: this.compileButton, doNotCopyAttributes: true },
             { selector: "field", fn: this.compileField },
             { selector: "widget", fn: this.compileWidget },
         ];
         this.templates = templates;
-        this.ctx = { readonly: "__comp__.props.readonly" };
-
-        this.owlDirectiveRegexesWhitelist = this.constructor.OWL_DIRECTIVE_WHITELIST.map(
-            (d) => new RegExp(d)
-        );
+        this.ctx = { readonly: "props.readonly" };
         this.setup();
     }
 
@@ -225,16 +236,14 @@ export class ViewCompiler {
      * @returns {Element}
      */
     applyInvisible(invisible, compiled, params) {
-        if (!invisible || invisible === "False") {
+        if (!invisible) {
             return compiled;
         }
-        if (invisible === "True" || invisible === "1") {
+        if (typeof invisible === "boolean") {
             return;
         }
-        const recordExpr = params.recordExpr || "__comp__.props.record";
-        let isVisileExpr = `!__comp__.evaluateBooleanExpr(${JSON.stringify(
-            invisible
-        )},${recordExpr}.evalContextWithVirtualIds)`;
+        const recordExpr = params.recordExpr || "props.record";
+        let isVisileExpr = `!evalDomainFromRecord(${recordExpr},${JSON.stringify(invisible)})`;
         if (compiled.hasAttribute("t-if")) {
             const formerTif = compiled.getAttribute("t-if");
             isVisileExpr = `( ${formerTif} ) and ${isVisileExpr}`;
@@ -249,8 +258,7 @@ export class ViewCompiler {
      * @returns {string}
      */
     compile(key, params = {}) {
-        const root = this.templates[key].cloneNode(true);
-        const child = this.compileNode(root, params);
+        const child = this.compileNode(this.templates[key], params);
         const newRoot = createElement("t", [child]);
         return newRoot;
     }
@@ -268,11 +276,10 @@ export class ViewCompiler {
             return createTextNode(node.nodeValue);
         }
 
-        this.validateNode(node);
         let invisible;
         if (evalInvisible) {
             invisible = getModifier(node, "invisible");
-            if (!params.compileInvisibleNodes && (invisible === "True" || invisible === "1")) {
+            if (this.isAlwaysInvisible(invisible, params)) {
                 return;
             }
         }
@@ -309,10 +316,9 @@ export class ViewCompiler {
         if (tag === "a" && type === "url") {
             tag = "button";
         }
-        const recordExpr = params.recordExpr || "__comp__.props.record";
         const button = createElement("ViewButton", {
             tag: toStringExpression(tag),
-            record: recordExpr,
+            record: `props.record`,
         });
 
         assignOwlDirectives(button, el);
@@ -364,20 +370,15 @@ export class ViewCompiler {
      * @param {Element} el
      * @returns {Element}
      */
-    compileField(el, params) {
+    compileField(el) {
         const fieldName = el.getAttribute("name");
-        const fieldId = el.getAttribute("field_id");
+        const fieldId = el.getAttribute("field_id") || fieldName;
 
         const field = createElement("Field");
-        const recordExpr = params.recordExpr || "__comp__.props.record";
         field.setAttribute("id", `'${fieldId}'`);
         field.setAttribute("name", `'${fieldName}'`);
-        field.setAttribute("record", recordExpr);
-        field.setAttribute("fieldInfo", `__comp__.props.archInfo.fieldNodes['${fieldId}']`);
-        field.setAttribute(
-            "readonly",
-            `__comp__.props.archInfo.activeActions?.edit === false and !${recordExpr}.isNew`
-        );
+        field.setAttribute("record", `props.record`);
+        field.setAttribute("fieldInfo", `props.archInfo.fieldNodes['${fieldId}']`);
 
         if (el.hasAttribute("widget")) {
             field.setAttribute("type", `'${el.getAttribute("widget")}'`);
@@ -392,8 +393,8 @@ export class ViewCompiler {
      * @returns {Element}
      */
     compileGenericNode(el, params) {
-        const compiled = createElement(el.nodeName.toLowerCase());
-        const metaAttrs = ["column_invisible", "invisible", "readonly", "required"];
+        const compiled = createElement(el.nodeName);
+        const metaAttrs = ["modifiers", "attrs", "invisible", "readonly"];
         for (const attr of el.attributes) {
             if (metaAttrs.includes(attr.name)) {
                 continue;
@@ -415,52 +416,60 @@ export class ViewCompiler {
      * @returns {Element}
      */
     compileWidget(el) {
-        const widgetId = el.getAttribute("widget_id");
-        const props = { record: "__comp__.props.record" };
-        if (el.hasAttribute("name")) {
-            props.name = `'${el.getAttribute("name")}'`;
+        const attrs = {};
+        const props = { record: `props.record`, readonly: this.ctx.readonly };
+        for (const { name, value } of el.attributes) {
+            switch (name) {
+                case "class":
+                case "name": {
+                    props[name] = `'${value}'`;
+                    break;
+                }
+                case "modifiers": {
+                    attrs.modifiers = JSON.parse(value || "{}");
+                    break;
+                }
+                default: {
+                    attrs[name] = value;
+                }
+            }
         }
-        if (el.hasAttribute("class")) {
-            props.className = `'${el.getAttribute("class")}'`;
-        }
-        props.widgetInfo = `__comp__.props.archInfo.widgetNodes['${widgetId}']`;
+        props.node = encodeObjectForTemplate({ attrs });
         const widget = createElement("Widget", props);
         return assignOwlDirectives(widget, el);
     }
 
-    validateNode(node) {
-        // detect attributes not in whitelist, starting with t-
-        const attributes = Object.values(node.attributes).map((attr) => attr.name);
-        const regexes = this.owlDirectiveRegexesWhitelist;
-        for (const attr of attributes) {
-            if (attr.startsWith("t-") && !regexes.some((regex) => regex.test(attr))) {
-                console.warn(`Forbidden directive ${attr} used in arch`);
-            }
-        }
+    /**
+     * @param {any} invisibleModifer
+     * @param {{ enableInvisible?: boolean }} params
+     * @returns {boolean}
+     */
+    isAlwaysInvisible(invisibleModifer, params) {
+        return !params.enableInvisible && typeof invisibleModifer === "boolean" && invisibleModifer;
     }
 }
-ViewCompiler.OWL_DIRECTIVE_WHITELIST = [];
 
-let templateCache = Object.create(null);
+let templateIds = Object.create(null);
 /**
  * @param {typeof ViewCompiler} ViewCompiler
- * @param {string} key
+ * @param {string} rawArch
  * @param {Record<string, Element>} templates
  * @param {Record<string, any>} [params]
  * @returns {Record<string, string>}
  */
-export function useViewCompiler(ViewCompiler, templates, params) {
-    const compiledTemplates = {};
-    let compiler;
-    for (const tname in templates) {
-        const key = templates[tname].outerHTML;
-        if (!templateCache[key]) {
-            compiler = compiler || new ViewCompiler(templates);
-            templateCache[key] = xml`${compiler.compile(tname, params).outerHTML}`;
-        }
-        compiledTemplates[tname] = templateCache[key];
+export function useViewCompiler(ViewCompiler, rawArch, templates, params) {
+    if (!templateIds[rawArch]) {
+        templateIds[rawArch] = {};
     }
-    return compiledTemplates;
+    const compiledTemplates = templateIds[rawArch];
+    const compiler = new ViewCompiler(templates);
+    for (const key in templates) {
+        if (!compiledTemplates[key]) {
+            const compiledDoc = compiler.compile(key, params);
+            compiledTemplates[key] = xml`${compiledDoc.outerHTML}`;
+        }
+    }
+    return { ...compiledTemplates };
 }
 
 /*
@@ -472,5 +481,5 @@ export function useViewCompiler(ViewCompiler, templates, params) {
  * This is how a memory leak occurs. :-)
  */
 export function resetViewCompilerCache() {
-    templateCache = Object.create(null);
+    templateIds = Object.create(null);
 }

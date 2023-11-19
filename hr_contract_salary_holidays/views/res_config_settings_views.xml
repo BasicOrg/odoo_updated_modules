@@ -6,17 +6,26 @@
         <field name="priority" eval="70"/>
         <field name="inherit_id" ref="hr.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//app[@name='hr']" position="inside">
-                <block title="Extra Time Off Allocation" name="employee_rights_setting_container">
-                    <setting title="If the employee requested extra time off in his salary configurator, create automatically the allocation request."
-                             string="If the employee requested extra time off in his salary configurator, create automatically the allocation request">
-                        <field name="hr_contract_timeoff_auto_allocation"/>
-                        <div class="mt16">
-                            <label for="hr_contract_timeoff_auto_allocation_type_id" class="mr8"/>
-                            <field name="hr_contract_timeoff_auto_allocation_type_id" required="hr_contract_timeoff_auto_allocation"/>
+            <xpath expr="//div[@data-key='hr']" position="inside">
+                <h2>Extra Time Off Allocation</h2>
+                <div class="row mt16 o_settings_container" name="employee_rights_setting_container">
+                    <div class="col-12 col-lg-6 o_setting_box" title="If the employee requested extra time off in his salary configurator, create automatically the allocation request.">
+                        <div class="o_setting_left_pane">
+                            <field name="hr_contract_timeoff_auto_allocation"/>
                         </div>
-                    </setting>
-                </block>
+                        <div class="o_setting_right_pane">
+                            <label for="hr_contract_timeoff_auto_allocation"/>
+                            <div class="text-muted">
+                                If the employee requested extra time off in his salary configurator, create automatically the allocation request
+                            </div>
+                            <div class="mt16">
+                                <label for="hr_contract_timeoff_auto_allocation_type_id" />
+                                <field name="hr_contract_timeoff_auto_allocation_type_id" 
+                                        attrs="{'required': [('hr_contract_timeoff_auto_allocation', '=', True)]}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>

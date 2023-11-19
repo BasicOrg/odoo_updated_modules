@@ -27,8 +27,8 @@ class PrivacyLookupWizard(models.TransientModel):
         for wizard in self:
             wizard.line_count = len(wizard.line_ids)
 
-    def _compute_display_name(self):
-        self.display_name = _('Privacy Lookup')
+    def name_get(self):
+        return [(w.id, _('Privacy Lookup')) for w in self]
 
     def _get_query_models_blacklist(self):
         return [
@@ -38,7 +38,7 @@ class PrivacyLookupWizard(models.TransientModel):
             # Ondelete Cascade
             'mail.notification',
             'mail.followers',
-            'discuss.channel.member',
+            'mail.channel.member',
             # Special case for direct messages
             'mail.message',
         ]
@@ -286,8 +286,8 @@ class PrivacyLookupWizardLine(models.TransientModel):
             record = self.env[line.res_model].sudo().browse(line.res_id)
             if not record.exists():
                 continue
-            name = record.display_name
-            line.res_name = name if name else f'{line.res_model_id.name}/{line.res_id}'
+            name = record.name_get()
+            line.res_name = name[0][1] if name else ('%s/%s') % (line.res_model_id.name, line.res_id)
 
     @api.onchange('is_active')
     def _onchange_is_active(self):

@@ -6,9 +6,9 @@
             <field name="model">data_merge.record</field>
             <field name="arch" type="xml">
                 <tree expand="true" js_class="data_merge_list" decoration-danger="is_deleted" create="0" export_xlsx="0">
-                    <field name="is_deleted" column_invisible="True" />
-                    <field name="res_model_name" column_invisible="True" />
-                    <field name="group_id" column_invisible="True" />
+                    <field name="is_deleted" invisible="1" />
+                    <field name="res_model_name" invisible="1" />
+                    <field name="group_id" invisible="1" />
                     <field name="record_create_date" widget="date" optional="show" />
                     <field name="record_create_uid" optional="hide" />
                     <field name="record_write_date" widget="date" optional="hide" />
@@ -23,7 +23,7 @@
                     <groupby name="group_id">
                         <field name="active" invisible="1" />
                         <button type="object" name="merge_records" string="Merge" />
-                        <button type="object" name="discard_records" string="Discard" class="text-danger text-uppercase o_data_merge_discard_btn" invisible="not active"/>
+                        <button type="object" name="discard_records" string="Discard" class="text-danger text-uppercase o_data_merge_discard_btn"/>
                     </groupby>
                 </tree>
             </field>

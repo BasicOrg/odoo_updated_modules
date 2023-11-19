@@ -1,18 +1,20 @@
-/** @odoo-module **/
+odoo.define('sale_subscription.tour', function(require) {
 "use_strict";
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { markup } from "@odoo/owl";
+var core = require('web.core');
+var tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add('sale_subscription_tour', {
+var _t = core._t;
+const { markup } = owl;
+
+tour.register('sale_subscription_tour', {
     url: "/web",
     sequence: 250,
     rainbowMan: true,
-    rainbowManMessage: () => markup(_t("<b>Congratulations</b>, your first subscription quotation is ready to be sent!")),
-    steps: () => [{
+    rainbowManMessage: markup(_t("<b>Congratulations</b>, your first subscription quotation is ready to be sent!")),
+}, [{
     trigger: '.o_app[data-menu-xmlid="sale_subscription.menu_sale_subscription_root"]',
-	content: _t('Want recurring billing via subscription management? Get started by clicking here'),
+	content: _t('Want recurring billing via subscription management ? Get started by clicking here'),
     position: 'bottom',
 },
 {
@@ -27,7 +29,7 @@ registry.category("web_tour.tours").add('sale_subscription_tour', {
 },
 {
     trigger: '.o-kanban-button-new',
-    extra_trigger: '.o_kanban_renderer',
+    extra_trigger: '.o_kanban_product_template',
     content: _t('Go ahead and create a new product'),
     position: 'right',
 },
@@ -57,7 +59,7 @@ registry.category("web_tour.tours").add('sale_subscription_tour', {
 },
 {
     trigger: '.o-kanban-button-new',
-    extra_trigger: '.o_kanban_renderer',
+    extra_trigger: '.o_kanban_order',
     content: _t('Go ahead and create a new subscription'),
     position: 'right',
 },
@@ -84,8 +86,10 @@ registry.category("web_tour.tours").add('sale_subscription_tour', {
 },
 {
     trigger: 'div[name="subscription_pill"]',
-    content:  _t("Your contract is recurrent"),
+    content:  _t("Your contrat is recurrent"),
     position: "bottom",
 },
 
-]});
+]);
+
+});

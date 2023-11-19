@@ -2,10 +2,11 @@
 
 from hashlib import md5
 
-from odoo import fields, models
-from odoo.tools.float_utils import float_repr, float_split
+from odoo import api, fields, models
+from odoo.tools.float_utils import float_repr
 
-from odoo.addons.payment_payulatam import const
+SUPPORTED_CURRENCIES = ('ARS', 'BRL', 'CLP', 'COP', 'MXN', 'PEN', 'USD')
+
 
 class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
@@ -24,14 +25,16 @@ class PaymentProvider(models.Model):
         string="PayU Latam API Key", required_if_provider='payulatam',
         groups='base.group_system')
 
-    def _get_supported_currencies(self):
-        """ Override of `payment` to return the supported currencies. """
-        supported_currencies = super()._get_supported_currencies()
-        if self.code == 'payulatam':
-            supported_currencies = supported_currencies.filtered(
-                lambda c: c.name in const.SUPPORTED_CURRENCIES
-            )
-        return supported_currencies
+    @api.model
+    def _get_compatible_providers(self, *args, currency_id=None, **kwargs):
+        """ Override of payment to unlist PayU Latam providers for unsupported currencies. """
+        providers = super()._get_compatible_providers(*args, currency_id=currency_id, **kwargs)
+
+        currency = self.env['res.currency'].browse(currency_id).exists()
+        if currency and currency.name not in SUPPORTED_CURRENCIES:
+            providers = providers.filtered(lambda p: p.code != 'payulatam')
+
+        return providers
 
     def _payulatam_generate_sign(self, values, incoming=True):
         """ Generate the signature for incoming or outgoing communications.
@@ -43,27 +46,16 @@ class PaymentProvider(models.Model):
         :rtype: str
         """
         if incoming:
-            # "Confirmation" and "Response" pages have a different way to calculate what they call the `new_value`
-            if self.env.context.get('payulatam_is_confirmation_page'):
-                # https://developers.payulatam.com/latam/en/docs/integrations/webcheckout-integration/confirmation-page.html#signature-validation
-                # For confirmation page, PayU Latam round to the first digit if the second one is a zero
-                # to generate their signature.
-                # e.g:
-                #  150.00 -> 150.0
-                #  150.26 -> 150.26
-                # This happens to be Python 3's default behavior when casting to `float`.
-                new_value = "%d.%d" % float_split(float(values.get('TX_VALUE')), 2)
-            else:
-                # https://developers.payulatam.com/latam/en/docs/integrations/webcheckout-integration/response-page.html#signature-validation
-                # PayU Latam use the "Round half to even" rounding method
-                # to generate their signature. This happens to be Python 3's
-                # default rounding method.
-                new_value = float_repr(float(values.get('TX_VALUE')), 1)
             data_string = '~'.join([
                 self.payulatam_api_key,
                 self.payulatam_merchant_id,
                 values['referenceCode'],
-                new_value,
+                # http://developers.payulatam.com/en/web_checkout/integration.html
+                # Section: 2. Response page > Signature validation
+                # PayU Latam use the "Round half to even" rounding method
+                # to generate their signature. This happens to be Python 3's
+                # default rounding method.
+                float_repr(float(values.get('TX_VALUE')), 1),
                 values['currency'],
                 values.get('transactionState'),
             ])
@@ -72,17 +64,7 @@ class PaymentProvider(models.Model):
                 self.payulatam_api_key,
                 self.payulatam_merchant_id,
                 values['referenceCode'],
-                float_repr(float(values['amount']), 2),
+                float_repr(float(values['amount']), 1),
                 values['currency'],
-                values['paymentMethods'],
             ])
         return md5(data_string.encode('utf-8')).hexdigest()
-
-    #=== BUSINESS METHODS ===#
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'payulatam':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHODS_CODES

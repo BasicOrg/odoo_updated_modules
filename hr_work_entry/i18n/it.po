@@ -3,16 +3,16 @@
 # 	* hr_work_entry
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-06-09 14:05+0000\n"
+"PO-Revision-Date: 2022-09-22 05:52+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,27 +20,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: hr_work_entry
-#. odoo-python
 #: code:addons/hr_work_entry/models/hr_employee.py:0
 #, python-format
 msgid "%s work entries"
 msgstr "%s voci di lavoro"
 
 #. module: hr_work_entry
-#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_employee_view_form
-msgid ""
-"<span class=\"o_stat_text\">\n"
-"                            Work Entries\n"
-"                            </span>"
-msgstr ""
-"<span class=\"o_stat_text\">\n"
-"                            Voci lavorative\n"
-"                            </span>"
-
-#. module: hr_work_entry
 #: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_form
-msgid "<span>Hours</span>"
-msgstr "<span>Ore</span>"
+msgid "<span class=\"ml8\">Hours</span>"
+msgstr "<span class=\"ml8\">Ore</span>"
 
 #. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_user_work_entry_employee__active
@@ -54,7 +42,7 @@ msgstr "Attivo"
 #: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_type_view_search
 #: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_search
 msgid "Archived"
-msgstr "In archivio"
+msgstr "Archiviato"
 
 #. module: hr_work_entry
 #: model:hr.work.entry.type,name:hr_work_entry.work_entry_type_attendance
@@ -72,14 +60,16 @@ msgid "Cancelled"
 msgstr "Annullato"
 
 #. module: hr_work_entry
-#: model:ir.model.fields,help:hr_work_entry.field_hr_work_entry__code
 #: model:ir.model.fields,help:hr_work_entry.field_hr_work_entry_type__code
 msgid ""
 "Careful, the Code is used in many references, changing it could lead to "
 "unwanted changes."
 msgstr ""
-"Attenzione, il codice è utilizzato in molti riferimenti, cambiarlo potrebbe "
-"causare cambiamenti indesiderati."
+
+#. module: hr_work_entry
+#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__code
+msgid "Code"
+msgstr "Codice"
 
 #. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__color
@@ -119,7 +109,7 @@ msgstr "Creato da"
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__create_date
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__create_date
 msgid "Created on"
-msgstr "Data creazione"
+msgstr "Creato il"
 
 #. module: hr_work_entry
 #: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_search
@@ -138,11 +128,6 @@ msgid "Department"
 msgstr "Ufficio"
 
 #. module: hr_work_entry
-#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_form
-msgid "Description"
-msgstr "Descrizione"
-
-#. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_user_work_entry_employee__display_name
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__display_name
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__display_name
@@ -155,9 +140,9 @@ msgid "Draft"
 msgstr "Bozza"
 
 #. module: hr_work_entry
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__duration
-msgid "Duration"
-msgstr "Durata"
+#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_type_view_kanban
+msgid "Dropdown menu"
+msgstr "Menù a discesa"
 
 #. module: hr_work_entry
 #: model:ir.model,name:hr_work_entry.model_hr_employee
@@ -171,12 +156,6 @@ msgstr "Dipendente"
 #: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_tree
 msgid "End"
 msgstr "Fine"
-
-#. module: hr_work_entry
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__external_code
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__external_code
-msgid "External Code"
-msgstr "Codice esterno"
 
 #. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__date_start
@@ -194,11 +173,6 @@ msgid "HR Work Entry Type"
 msgstr "Tipo di voce lavorativa RU"
 
 #. module: hr_work_entry
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_employee__has_work_entries
-msgid "Has Work Entries"
-msgstr "Ha voci lavorative"
-
-#. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_user_work_entry_employee__id
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__id
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__id
@@ -213,6 +187,13 @@ msgid ""
 msgstr ""
 "Se il campo Attivo impostato a falso, consente di nascondere il tipo di voce"
 " lavorativa senza rimuoverlo."
+
+#. module: hr_work_entry
+#: model:ir.model.fields,field_description:hr_work_entry.field_hr_user_work_entry_employee____last_update
+#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry____last_update
+#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: hr_work_entry
 #: model:ir.model.fields,field_description:hr_work_entry.field_hr_user_work_entry_employee__write_uid
@@ -245,15 +226,10 @@ msgid "Note: Validated work entries cannot be modified."
 msgstr "Nota: le voci di lavoro convalidate non possono essere modificate."
 
 #. module: hr_work_entry
-#: model:hr.work.entry.type,name:hr_work_entry.overtime_work_entry_type
-msgid "Overtime Hours"
-msgstr "Ore di straordinario"
-
-#. module: hr_work_entry
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__code
-#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry_type__code
-msgid "Payroll Code"
-msgstr "Codice libro paga"
+#: model:ir.model.fields,field_description:hr_work_entry.field_hr_work_entry__duration
+#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_form
+msgid "Period"
+msgstr "Periodo"
 
 #. module: hr_work_entry
 #: model:ir.model,name:hr_work_entry.model_resource_calendar_leaves
@@ -276,7 +252,7 @@ msgid "Sequence"
 msgstr "Sequenza"
 
 #. module: hr_work_entry
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_work_entry/static/src/xml/work_entry_templates.xml:0
 #, python-format
 msgid "Solve conflicts first"
@@ -319,24 +295,16 @@ msgid "Type"
 msgstr "Tipologia"
 
 #. module: hr_work_entry
-#. odoo-python
 #: code:addons/hr_work_entry/models/hr_work_entry.py:0
 #, python-format
 msgid "Undefined"
 msgstr "Non definita"
 
 #. module: hr_work_entry
-#. odoo-python
 #: code:addons/hr_work_entry/models/hr_work_entry.py:0
 #, python-format
 msgid "Undefined Type"
 msgstr "Tipo non definito"
-
-#. module: hr_work_entry
-#: model:ir.model.fields,help:hr_work_entry.field_hr_work_entry__external_code
-#: model:ir.model.fields,help:hr_work_entry.field_hr_work_entry_type__external_code
-msgid "Use this code to export your data to a third party"
-msgstr "Utilizza questo codice per esportare i tuoi dati verso terze parti"
 
 #. module: hr_work_entry
 #: model:ir.model.fields.selection,name:hr_work_entry.selection__hr_work_entry__state__validated
@@ -354,7 +322,7 @@ msgid "Work Detail"
 msgstr "Dettagli del lavoro"
 
 #. module: hr_work_entry
-#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_work_entry_view_pivot
+#: model_terms:ir.ui.view,arch_db:hr_work_entry.hr_employee_view_form
 msgid "Work Entries"
 msgstr "Voci lavorative"
 

@@ -23,4 +23,4 @@ export class SignKanbanRenderer extends KanbanRenderer {
 SignKanbanRenderer.component = {
     ...KanbanRenderer.components,
     KanbanRecord: SignKanbanRecord,
-};
+}

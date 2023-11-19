@@ -1,8 +1,8 @@
 /** @odoo-module **/
-import { UNREMOVABLE_ROLLBACK_CODE } from '../utils/constants.js';
 import {
     findNode,
-    isSelfClosingElement,
+    isContentTextNode,
+    isVisibleEmpty,
     nodeSize,
     rightPos,
     getState,
@@ -14,8 +14,8 @@ import {
     rightLeafOnlyPathNotBlockNotEditablePath,
     isNotEditableNode,
     splitTextNode,
-    paragraphRelatedElements,
     prepareUpdate,
+    isVisibleStr,
     isInPre,
     fillEmpty,
     setSelection,
@@ -23,11 +23,6 @@ import {
     childNodeIndex,
     boundariesOut,
     isEditorTab,
-    isVisible,
-    isUnbreakable,
-    isEmptyBlock,
-    isWhitespace,
-    isVisibleTextNode,
 } from '../utils/utils.js';
 
 /**
@@ -47,7 +42,7 @@ export function deleteText(charSize, offset, direction, alreadyMoved) {
 
     // Do remove the character, then restore the state of the surrounding parts.
     const restore = prepareUpdate(parentElement, firstSplitOffset, parentElement, secondSplitOffset);
-    const isSpace = isWhitespace(middleNode) && !isInPre(middleNode);
+    const isSpace = !isVisibleStr(middleNode) && !isInPre(middleNode);
     const isZWS = middleNode.nodeValue === '\u200B';
     middleNode.remove();
     restore();
@@ -88,7 +83,7 @@ Text.prototype.oDeleteForward = function (offset, alreadyMoved = false) {
 
 HTMLElement.prototype.oDeleteForward = function (offset) {
     const filterFunc = node =>
-        isSelfClosingElement(node) || isVisibleTextNode(node) || isNotEditableNode(node);
+        isVisibleEmpty(node) || isContentTextNode(node) || isNotEditableNode(node);
 
     const firstLeafNode = findNode(rightLeafOnlyNotBlockNotEditablePath(this, offset), filterFunc);
     if (firstLeafNode &&
@@ -147,55 +142,6 @@ HTMLElement.prototype.oDeleteForward = function (offset) {
         firstLeafNode.oDeleteBackward(Math.min(1, nodeSize(firstLeafNode)));
         return;
     }
-
-    const nextSibling = this.nextSibling;
-    if (
-        (
-            offset === this.childNodes.length ||
-            (this.childNodes.length === 1 && this.childNodes[0].tagName === 'BR')
-        ) &&
-        this.parentElement &&
-        nextSibling &&
-        ['LI', 'UL', 'OL'].includes(nextSibling.tagName)
-    ) {
-        const nextSiblingNestedLi = nextSibling.querySelector('li:first-child');
-        if (nextSiblingNestedLi) {
-            // Add the first LI from the next sibbling list to the current list.
-            this.after(nextSiblingNestedLi);
-            // Remove the next sibbling list if it's empty.
-            if (!isVisible(nextSibling, false) || nextSibling.textContent === '') {
-                nextSibling.remove();
-            }
-            HTMLElement.prototype.oDeleteBackward.call(nextSiblingNestedLi, 0, true);
-        } else {
-            HTMLElement.prototype.oDeleteBackward.call(nextSibling, 0);
-        }
-        return;
-    }
-
-    // Remove the nextSibling if it is a non-editable element.
-    if (
-        nextSibling &&
-        nextSibling.nodeType === Node.ELEMENT_NODE &&
-        !nextSibling.isContentEditable
-    ) {
-        nextSibling.remove();
-        return;
-    }
-    const parentEl = this.parentElement;
-    // Prevent the deleteForward operation since it is done at the end of an
-    // enclosed editable zone (inside a non-editable zone in the editor).
-    if (
-        parentEl &&
-        parentEl.getAttribute("contenteditable") === "true" &&
-        parentEl.oid !== "root" &&
-        parentEl.parentElement &&
-        !parentEl.parentElement.isContentEditable &&
-        paragraphRelatedElements.includes(this.tagName) &&
-        !this.nextElementSibling
-    ) {
-        throw UNREMOVABLE_ROLLBACK_CODE;
-    }
     const firstOutNode = findNode(
         rightLeafOnlyPathNotBlockNotEditablePath(
             ...(firstLeafNode ? rightPos(firstLeafNode) : [this, offset]),
@@ -203,24 +149,7 @@ HTMLElement.prototype.oDeleteForward = function (offset) {
         filterFunc,
     );
     if (firstOutNode) {
-        // If next sibblings is an unbreadable node, and current node is empty, we
-        // delete the current node and put the selection at the beginning of the
-        // next sibbling.
-        if (nextSibling && isUnbreakable(nextSibling) && isEmptyBlock(this)) {
-            const restore = prepareUpdate(...boundariesOut(this));
-            this.remove();
-            restore();
-            setSelection(firstOutNode, 0);
-            return;
-        }
         const [node, offset] = leftPos(firstOutNode);
-        // If the next node is a <LI> we call directly the htmlElement
-        // oDeleteBackward : because we don't want the special cases of
-        // deleteBackward for LI when we comme from a deleteForward.
-        if (node.tagName === 'LI') {
-            HTMLElement.prototype.oDeleteBackward.call(node, offset);
-            return;
-        }
         node.oDeleteBackward(offset);
         return;
     }

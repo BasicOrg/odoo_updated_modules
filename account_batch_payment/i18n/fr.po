@@ -3,42 +3,24 @@
 # 	* account_batch_payment
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Malika Berardi, 2022
+# laje_odoo, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "$1000.0"
-msgstr "1 000 $"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "2023-08-14"
-msgstr "14-08-2023"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "2023-08-15"
-msgstr "15-08-2023"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "3956012345678"
-msgstr "3956012345678"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_move_kanban
@@ -48,16 +30,17 @@ msgstr "<i class=\"fa fa-clock-o\" aria-label=\"Date\" role=\"img\" title=\"Date
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_form_inherit_account_batch_payment
 msgid "<span>Batch Payment</span>"
-msgstr "<span>Paiement par lot</span>"
+msgstr "<span>Paiement en groupe</span>"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
 msgid ""
-"<strong invisible=\"not warning_line_ids\">The following warnings were also "
-"raised; they do not impeach validation</strong>"
+"<strong attrs=\"{'invisible': [('warning_line_ids', '=', [])]}\">The "
+"following warnings were also raised; they do not impeach validation</strong>"
 msgstr ""
-"<strong invisible=\"not warning_line_ids\">Les avertissements suivants ont "
-"été soulevés ; ils n'empêchent pas la validation</strong>"
+"<strong attrs=\"{'invisible': [('warning_line_ids', '=', [])]}\">Les "
+"avertissements suivants ont également été émis ; ils n'empêchent pas la "
+"validation</strong>"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
@@ -69,11 +52,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
 msgid "<strong>The following errors occurred</strong>"
 msgstr "<strong>Les erreurs suivantes se sont produites</strong>"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "ABC Suppliers"
-msgstr "ABC Suppliers"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_needaction
@@ -88,12 +66,12 @@ msgstr "Activités"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Activité exception décoration"
+msgstr "Activité d'exception de décoration"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_state
 msgid "Activity State"
-msgstr "Statut de l'activité"
+msgstr "État de l'Activité"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_type_icon
@@ -101,19 +79,18 @@ msgid "Activity Type Icon"
 msgstr "Icône de type d'activité"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "All payments in the batch must belong to the same company."
 msgstr ""
-"Tous les paiements dans le lot doivent provenir de la même entreprise. "
+"Tous les paiements dans le groupe doivent provenir de la même compagnie. "
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "All payments in the batch must share the same payment method."
-msgstr "Tous les paiements du lot doivent partager le même mode de paiement."
+msgstr ""
+"Tous les paiements du groupe doivent partager la même méthode de paiement."
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__amount
@@ -140,12 +117,12 @@ msgstr "Montant signé"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_attachment_count
 msgid "Attachment Count"
-msgstr "Nombre de pièces jointes"
+msgstr "Compte des pièces jointes"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__available_payment_method_ids
 msgid "Available Payment Method"
-msgstr "Mode de paiement disponible "
+msgstr "Méthode de paiement disponible "
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__journal_id
@@ -158,11 +135,6 @@ msgid "Bank Journal"
 msgstr "Journal de banque"
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Bank Transfer"
-msgstr "Virement bancaire"
-
-#. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Batch Content"
 msgstr "Contenu du lot"
@@ -171,15 +143,14 @@ msgstr "Contenu du lot"
 #: model:account.payment.method,name:account_batch_payment.account_payment_method_batch_deposit
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.account_journal_dashboard_kanban_view_inherited
 msgid "Batch Deposit"
-msgstr "Dépôt par lot"
+msgstr "Bordereau de dépôt"
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_report_account_batch_payment_print_batch_payment
 msgid "Batch Deposit Report"
-msgstr "Rapport sur les dépôts par lot"
+msgstr "Rapport sur les dépôts par lots"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_payment.py:0
 #: model:ir.model,name:account_batch_payment.model_account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__batch_payment_id
@@ -188,19 +159,19 @@ msgstr "Rapport sur les dépôts par lot"
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
 #, python-format
 msgid "Batch Payment"
-msgstr "Paiement par lot"
+msgstr "Paiement en groupe"
 
 #. module: account_batch_payment
 #: model:ir.ui.menu,name:account_batch_payment.menu_batch_payment_purchases
 #: model:ir.ui.menu,name:account_batch_payment.menu_batch_payment_sales
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
 msgid "Batch Payments"
-msgstr "Paiements par lot"
+msgstr "Paiements en groupe"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__batch_type
 msgid "Batch Type"
-msgstr "Type de lot"
+msgstr "Type de Groupe"
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_in
@@ -210,29 +181,28 @@ msgid ""
 "                    reconciliation. They are also useful when depositing checks\n"
 "                    to the bank."
 msgstr ""
-"Les paiements par lot vous permettent de regrouper différents paiements pour vous faciliter la \n"
+"Les paiements par groupe vous permettent de regrouper différents paiements pour vous faciliter la \n"
 " réconciliation. Ils sont également utiles lors du dépôt de chèques\n"
-"  à la banque."
+"  à la Banque."
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_batch_error_wizard
 msgid "Batch payments error reporting wizard"
-msgstr "Assistant de rapport d'erreur sur les paiements par lot "
+msgstr "Assistant de rapport d'erreur sur les paiements en lot "
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_batch_error_wizard_line
 msgid "Batch payments error reporting wizard line"
 msgstr ""
-"Ligne d'assistance pour le signalement des erreurs dans les paiements par "
-"lot"
+"Ligne d'assistance pour le signalement des erreurs dans les paiements "
+"groupés"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Cannot validate an empty batch. Please add some payments to it first."
 msgstr ""
-"Impossible de valider un lot vide. Veuillez d'abord y ajouter quelques "
+"Impossible de valider un groupe vide. Veuillez d'abord y ajouter quelques "
 "paiements."
 
 #. module: account_batch_payment
@@ -251,31 +221,25 @@ msgid "Company Currency"
 msgstr "Devise de la société"
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_tree_inherit_account_batch_payment
-msgid "Create Batch"
-msgstr "Créer un lot"
-
-#. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_journal.py:0
 #, python-format
 msgid "Create Batch Payment"
-msgstr "Créer un paiement par lot"
+msgstr "Créer un Paiement en Groupe"
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_in
 msgid "Create a new customer batch payment"
-msgstr "Créer un nouveau paiement par lot client"
+msgstr "Créer un nouveau paiement groupé client"
 
 #. module: account_batch_payment
 #: model_terms:ir.actions.act_window,help:account_batch_payment.action_batch_payment_out
 msgid "Create a new vendor batch payment"
-msgstr "Créer un nouveau paiement par lot fournisseur"
+msgstr "Créer un nouveau paiement groupé fournisseur"
 
 #. module: account_batch_payment
 #: model:ir.actions.server,name:account_batch_payment.action_account_create_batch_payment
 msgid "Create batch payment"
-msgstr "Créer un paiement par lot"
+msgstr "Créer un Paiement en Groupe"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__create_uid
@@ -294,7 +258,7 @@ msgstr "Créé le"
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__export_file_create_date
 msgid "Creation date of the related export file."
-msgstr "Date de création du fichier d'export associé."
+msgstr "Date de création du fichier d'export."
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__currency_id
@@ -309,18 +273,13 @@ msgstr "Client"
 #. module: account_batch_payment
 #: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_in
 msgid "Customer Batch Payments"
-msgstr "Paiements par lot clients"
+msgstr "Paiements groupés clients"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__date
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
 msgid "Date"
 msgstr "Date"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Demo Ref"
-msgstr "Réf. démo"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__description
@@ -332,7 +291,7 @@ msgstr "Description"
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__display_name
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Nom affiché"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__error_line_ids
@@ -342,7 +301,7 @@ msgstr "Ligne d'erreur"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__error_wizard_id
 msgid "Error Wizard"
-msgstr "Assistant d'erreur"
+msgstr "Assitant d'erreur"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_line_tree
@@ -352,7 +311,7 @@ msgstr "Exclure les paiements"
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__export_file
 msgid "Export file related to this batch"
-msgstr "Exporter le fichier relatif à ce lot"
+msgstr "Exporter le fichier relatif à ce groupe"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_file
@@ -367,7 +326,7 @@ msgstr "Génération de fichier activée"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_filename
 msgid "File Name"
-msgstr "Nom de fichier"
+msgstr "Nom de Fichier"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_follower_ids
@@ -382,7 +341,7 @@ msgstr "Abonnés (Partenaires)"
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Icône Font Awesome par ex. fa-tasks"
+msgstr "Icône Font Awesome e.g. fa-tasks"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__export_file_create_date
@@ -422,6 +381,13 @@ msgid "Icon to indicate an exception activity."
 msgstr "Icône pour indiquer une activité d'exception."
 
 #. module: account_batch_payment
+#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#: code:addons/account_batch_payment/models/account_batch_payment.py:0
+#, python-format
+msgid "Id: %s"
+msgstr "Id: %s"
+
+#. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
@@ -430,7 +396,7 @@ msgstr "Si coché, de nouveaux messages demandent votre attention."
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_error
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Si coché, certains messages ont une erreur de livraison."
+msgstr "Si actif, certains messages ont une erreur de livraison."
 
 #. module: account_batch_payment
 #: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__batch_type__inbound
@@ -438,11 +404,10 @@ msgid "Inbound"
 msgstr "Entrant"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_journal.py:0
 #, python-format
 msgid "Inbound Batch Payments Sequence"
-msgstr "Séquence des paiements par lot entrants"
+msgstr "Séquence des paiements groupés entrants"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_is_follower
@@ -460,23 +425,30 @@ msgid "Journal"
 msgstr "Journal"
 
 #. module: account_batch_payment
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard____last_update
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line____last_update
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__write_uid
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__write_uid
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__write_date
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__write_date
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
+msgstr "Dernière mise à jour le"
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
-msgid "Leave empty to generate automatically..."
-msgstr "Laisser vide pour générer automatiquement..."
+#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Pièce jointe principale"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
@@ -492,11 +464,6 @@ msgstr "Erreur d'envoi du message"
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_ids
 msgid "Messages"
 msgstr "Messages"
-
-#. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Monthly Payment"
-msgstr "Paiement mensuel"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__my_activity_date_deadline
@@ -531,12 +498,12 @@ msgstr "Activité suivante de l'événement du calendrier"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Date limite de l'activité à venir"
+msgstr "Date limite de l'Activité à Venir"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_summary
 msgid "Next Activity Summary"
-msgstr "Résumé de l'activité suivante"
+msgstr "Résumé d'activité suivante"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_type_id
@@ -546,7 +513,7 @@ msgstr "Type d'activités à venir"
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
 msgid "Not Batch Payments"
-msgstr "Pas de paiements par lot"
+msgstr "Pas de paiements en lot"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_search_inherit_account_batch_payment
@@ -565,8 +532,8 @@ msgstr "Nombre d'erreurs"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Nombre de messages nécessitant une action"
+msgid "Number of messages which requires an action"
+msgstr "Nombre de messages exigeant une action"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__message_has_error_counter
@@ -574,21 +541,15 @@ msgid "Number of messages with delivery error"
 msgstr "Nombre de messages avec des erreurs d'envoi"
 
 #. module: account_batch_payment
-#: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
-msgid "Odoo Payments LLC"
-msgstr "Odoo Payments LLC"
-
-#. module: account_batch_payment
 #: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__batch_type__outbound
 msgid "Outbound"
 msgstr "Sortant"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_journal.py:0
 #, python-format
 msgid "Outbound Batch Payments Sequence"
-msgstr "Séquence des paiements par lot sortants"
+msgstr "Séquence des paiements groupés sortants"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_account_payment_tree_inherit_account_batch_payment
@@ -598,17 +559,17 @@ msgstr "Partenaire"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__payment_method_id
 msgid "Payment Method"
-msgstr "Mode de paiement"
+msgstr "Moyen de paiement"
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_payment_method
 msgid "Payment Methods"
-msgstr "Modes de paiements"
+msgstr "Méthodes de paiements"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Payment method"
-msgstr "Mode de paiement"
+msgstr "Méthode de paiement"
 
 #. module: account_batch_payment
 #: model:ir.model,name:account_batch_payment.model_account_payment
@@ -619,18 +580,16 @@ msgid "Payments"
 msgstr "Paiements"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/wizard/batch_error.py:0
 #, python-format
 msgid "Payments in Error"
 msgstr "Paiements en erreur"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Payments must be posted to be added to a batch."
-msgstr "Les paiements doivent être enregistrés pour être ajoutés à un lot."
+msgstr "Les paiements doivent être enregistrés pour être ajoutés à un groupe."
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
@@ -640,7 +599,7 @@ msgstr "Imprimer"
 #. module: account_batch_payment
 #: model:ir.actions.report,name:account_batch_payment.action_print_batch_payment
 msgid "Print Batch Payment"
-msgstr "Impression du paiement par lot"
+msgstr "Impression du paiement groupé"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_form
@@ -648,14 +607,9 @@ msgid "Proceed with validation"
 msgstr "Procéder à la validation"
 
 #. module: account_batch_payment
-#: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__rating_ids
-msgid "Ratings"
-msgstr "Évaluations"
-
-#. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
 msgid "Re-generate Export File"
-msgstr "Recréer le fichier d'export"
+msgstr "re-générer le fichier d'exportation"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
@@ -665,7 +619,7 @@ msgstr "Compte bancaire du bénéficiaire"
 #. module: account_batch_payment
 #: model:ir.model.fields.selection,name:account_batch_payment.selection__account_batch_payment__state__reconciled
 msgid "Reconciled"
-msgstr "Réconcilié"
+msgstr "Lettré"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__name
@@ -675,7 +629,7 @@ msgstr "Référence"
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__activity_user_id
 msgid "Responsible User"
-msgstr "Utilisateur responsable"
+msgstr "Utilisateur Responsable"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__message_has_sms_error
@@ -688,7 +642,6 @@ msgid "Sent"
 msgstr "Envoyé"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Set payments state to \"posted\"."
@@ -697,7 +650,7 @@ msgstr "Définissez l'état des paiements sur \"Comptabilisé\"."
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.batch_error_wizard_line_tree
 msgid "Show"
-msgstr "Afficher"
+msgstr "Montrer"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard_line__show_remove_button
@@ -710,32 +663,28 @@ msgid "Show Remove Options"
 msgstr "Afficher les options de suppression"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Some payments have already been matched with a bank statement."
-msgstr "Certains paiements ont déjà été réconciliés avec un relevé bancaire."
+msgstr "Certains paiements ont déjà été associés à un relevé bancaire."
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Some payments have already been sent."
 msgstr "Certains paiements ont déjà été envoyés."
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "Some recipient accounts do not allow out payments."
-msgstr ""
-"Certains comptes bénéficiaires n'autorisent pas les paiements sortants."
+msgstr "Certains comptes bénéficiaires n'autorisent pas les paiements."
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_payment__state
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
 msgid "State"
-msgstr "Statut"
+msgstr "État"
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_state
@@ -753,10 +702,9 @@ msgstr ""
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.print_batch_payment
 msgid "TOTAL"
-msgstr "TOTAL"
+msgstr "SOMME"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid ""
@@ -776,20 +724,19 @@ msgid "The batch could not be validated"
 msgstr "Le lot n'a pas pu être validé"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "The batch must have the same payment method as the payments it contains."
 msgstr ""
-"Le lot doit avoir le même mode de paiement que les paiements qu'il contient."
+"Le groupe doit avoir la même méthode de paiement que les paiements qu'il "
+"contient."
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid "The batch must have the same type as the payments it contains."
-msgstr "Le lot doit avoir le même type que les paiements qu'il contient."
+msgstr "Le groupe doit avoir le même type que les paiements qu'il contient."
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_error_wizard__batch_payment_id
@@ -797,24 +744,23 @@ msgid ""
 "The batch payment generating the errors and warnings displayed in this "
 "wizard."
 msgstr ""
-"Le paiement par lot générant les erreurs et les avertissements affichés dans"
-" cet assistant."
+"Le paiement par lots générant les erreurs et les avertissements affichés "
+"dans cet assistant."
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "The journal of the batch payment and of the payments it contains must be the"
 " same."
 msgstr ""
-"Le journal du paiement par lot et des paiements qu'il contient doivent être "
-"le même. "
+"Le journal du paiement en groupe et des paiements qu'il contient doivent "
+"être le même. "
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__payment_method_id
 msgid "The payment method used by the payments in this batch."
-msgstr "Le mode de paiement utilisé pour les paiements dans ce lot."
+msgstr "La méthode de paiement utilisée pour les paiements dans ce groupe."
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
@@ -827,19 +773,19 @@ msgid ""
 "True if and only if the options to remove the payments causing the errors or"
 " warnings from the batch should be shown"
 msgstr ""
-"True si et seulement si les options permettant de supprimer du lot les "
+"Vrai si et seulement si les options permettant de supprimer du lot les "
 "paiements à l'origine des erreurs ou des avertissements doivent être "
 "affichées."
 
 #. module: account_batch_payment
 #: model:ir.model.fields,help:account_batch_payment.field_account_batch_payment__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Type d'activité d'exception enregistrée."
+msgstr "Type d'activité d'exception enregistrée"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_search
 msgid "Unreconciled"
-msgstr "Non réconcilié"
+msgstr "Non lettré"
 
 #. module: account_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
@@ -849,7 +795,7 @@ msgstr "Valider"
 #. module: account_batch_payment
 #: model:ir.actions.act_window,name:account_batch_payment.action_batch_payment_out
 msgid "Vendor Batch Payments"
-msgstr "Paiements par lot fournisseur"
+msgstr "Paiement en lot des fournisseurs "
 
 #. module: account_batch_payment
 #: model:ir.model.fields,field_description:account_batch_payment.field_account_batch_error_wizard__warning_line_ids
@@ -877,22 +823,34 @@ msgid ""
 "Whether or not this batch payment should display the 'Generate File' button "
 "instead of 'Print' in form view."
 msgstr ""
-"Si ce paiement par lot doit ou non afficher le bouton \"Générer un fichier\""
-" au lieu de \"Imprimer\" en mode formulaire."
+"Si ce paiement par groupe doit ou non afficher le bouton \"Générer un "
+"fichier\" au lieu de \"Imprimer\" en mode formulaire."
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
-msgid "You cannot add payments that are not posted."
+msgid ""
+"You cannot add payments that are not posted.\n"
+"Payments:\n"
+"%s"
 msgstr ""
-"Vous ne pouvez pas ajouter des paiements qui ne sont pas comptabilisés."
+"Vous ne pouvez pas ajouter de paiements qui ne sont pas comptabilisés.\n"
+"Paiements :\n"
+"%s"
 
 #. module: account_batch_payment
-#. odoo-python
 #: code:addons/account_batch_payment/models/account_batch_payment.py:0
 #, python-format
-msgid "You cannot add payments with zero amount in a Batch Payment."
+msgid ""
+"You cannot add payments with zero amount in a Batch Payment.\n"
+"Payments:\n"
+"%s"
 msgstr ""
-"Vous ne pouvez pas ajouter de paiements avec un montant nul dans un paiement"
-" par lot."
+"Vous ne pouvez pas ajouter de paiements avec un montant nul dans un paiement par groupe.\n"
+"Paiements:\n"
+"%s"
+
+#. module: account_batch_payment
+#: model_terms:ir.ui.view,arch_db:account_batch_payment.view_batch_payment_form
+msgid "auto ..."
+msgstr "auto..."

@@ -1,24 +1,24 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* social_facebook
-#
+# 
 # Translators:
 # Marius Stedjan <marius@stedjan.com>, 2022
 # Jorunn D. Newth, 2022
 # Martin Trigaux, 2022
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
 "PO-Revision-Date: 2022-09-22 05:49+0000\n"
 "Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Norwegian Bokmål (https://app.transifex.com/odoo/teams/41243/nb/)\n"
-"Language: nb\n"
+"Language-Team: Norwegian Bokmål (https://www.transifex.com/odoo/teams/41243/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: social_facebook
@@ -28,12 +28,12 @@ msgstr ""
 
 #. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
 msgstr ""
 
 #. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
+msgid "<i class=\"fa fa-thumbs-up\" title=\"Likes\"/>"
 msgstr ""
 
 #. module: social_facebook
@@ -42,7 +42,6 @@ msgid "Actual Facebook ID of the post"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
 msgid "An error occurred."
@@ -59,7 +58,7 @@ msgid "App Secret"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
 #, python-format
@@ -68,7 +67,9 @@ msgstr ""
 
 #. module: social_facebook
 #: model:ir.model.fields,help:social_facebook.field_res_config_settings__facebook_use_own_account
-msgid "Check this if you want to use your personal Facebook Developer Account instead of the provided one."
+msgid ""
+"Check this if you want to use your personal Facebook Developer Account "
+"instead of the provided one."
 msgstr ""
 
 #. module: social_facebook
@@ -119,8 +120,8 @@ msgid "Facebook Author ID"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-javascript
-#: code:addons/social_facebook/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_facebook/static/src/js/stream_post_facebook_comments.js:0
 #, python-format
 msgid "Facebook Comments"
 msgstr ""
@@ -139,7 +140,9 @@ msgstr ""
 
 #. module: social_facebook
 #: model:ir.model.fields,help:social_facebook.field_social_account__facebook_account_id
-msgid "Facebook Page ID provided by the Facebook API, this should never be set manually."
+msgid ""
+"Facebook Page ID provided by the Facebook API, this should never be set "
+"manually."
 msgstr ""
 
 #. module: social_facebook
@@ -154,14 +157,12 @@ msgid "Facebook Preview"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Facebook did not provide a valid access token or it may have expired."
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Facebook did not provide a valid access token."
@@ -173,7 +174,7 @@ msgid "Is event post"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model:ir.model.fields,field_description:social_facebook.field_social_stream_post__facebook_likes_count
 #, python-format
@@ -201,10 +202,11 @@ msgid "Post Image"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
-msgid "Post not found. It could be because the post has been deleted on the Social Platform."
+msgid ""
+"Post not found. It could be because the post has been deleted on the Social "
+"Platform."
 msgstr ""
 
 #. module: social_facebook
@@ -218,14 +220,7 @@ msgid "Reach"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
-#: code:addons/social_facebook/controllers/main.py:0
-#, python-format
-msgid "Read More about Facebook Pages"
-msgstr ""
-
-#. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model:ir.model.fields,field_description:social_facebook.field_social_stream_post__facebook_shares_count
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
@@ -269,14 +264,19 @@ msgid "Social Stream Post"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
+#: code:addons/social_facebook/controllers/main.py:0
+#, python-format
+msgid "There is no page linked to this account"
+msgstr ""
+
+#. module: social_facebook
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator. "
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
+#: code:addons/social_facebook/models/social_stream_post.py:0
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
 msgid "Unknown"
@@ -289,7 +289,9 @@ msgstr ""
 
 #. module: social_facebook
 #: model:ir.model.fields,help:social_facebook.field_social_media__media_type
-msgid "Used to make comparisons when we need to restrict some features to a specific media ('facebook', 'twitter', ...)."
+msgid ""
+"Used to make comparisons when we need to restrict some features to a "
+"specific media ('facebook', 'twitter', ...)."
 msgstr ""
 
 #. module: social_facebook
@@ -298,7 +300,7 @@ msgid "User Likes"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
 #, python-format
@@ -306,32 +308,30 @@ msgid "Views"
 msgstr "Visninger"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_live_post.py:0
 #: code:addons/social_facebook/models/social_post.py:0
 #, python-format
-msgid "We could not upload your image, try reducing its size and posting it again (error: %s)."
+msgid ""
+"We could not upload your image, try reducing its size and posting it again "
+"(error: %s)."
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr ""
 
 #. module: social_facebook
-#. odoo-python
-#: code:addons/social_facebook/controllers/main.py:0
-#, python-format
-msgid ""
-"You need to be the manager of a Facebook Page to post with Odoo Social.\n"
-" Please create one and make sure it is linked to your account."
+#: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
+msgid "added an event"
 msgstr ""
 
 #. module: social_facebook
-#: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
-msgid "added an event"
+#. openerp-web
+#: code:addons/social_facebook/static/src/js/stream_post_facebook_comments.js:0
+#, python-format
+msgid "comment/reply"
 msgstr ""
 
 #. module: social_facebook

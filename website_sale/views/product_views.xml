@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="product_template_search_view_website" model="ir.ui.view">
         <field name="name">product.template.search.published</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_search_view"/>
         <field name="arch" type="xml">
-            <filter name="consumable" position="after">
+            <xpath expr="//filter[@name='consumable']" position="after">
                 <separator/>
                 <filter string="Published" name="published" domain="[('is_published', '=', True)]"/>
-            </filter>
+            </xpath>
         </field>
     </record>
 
@@ -21,9 +20,6 @@
             <field name="name" position="after">
                 <field name="website_id" groups="website.group_multi_website" optional="show"/>
                 <field name="is_published" string="Is Published" optional="hide"/>
-            </field>
-            <field name="additional_product_tag_ids" position="after">
-                <field name="ribbon_id" options="{'no_quick_create': True}" optional="hide"/>
             </field>
         </field>
     </record>
@@ -47,9 +43,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="website_sale.product_template_view_tree"/>
         <field name="arch" type="xml">
-            <tree position="attributes">
+            <xpath expr="/tree" position="attributes">
               <attribute name="default_order">website_sequence</attribute>
-            </tree>
+            </xpath>
             <field name="priority" position="before">
                 <field name="website_sequence" widget="handle"/>
             </field>
@@ -66,9 +62,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_kanban_view"/>
         <field name="arch" type="xml">
-            <kanban position="attributes">
+            <xpath expr="/kanban" position="attributes">
               <attribute name="default_order">website_sequence</attribute>
-            </kanban>
+            </xpath>
             <field name="id" position="after">
                 <field name="website_sequence"/>
             </field>
@@ -78,7 +74,7 @@
     <record id="product_template_action_website" model="ir.actions.act_window">
         <field name="name">Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="view_mode">tree,kanban,form,activity</field>
         <field name="view_id"/>
         <field name="search_view_id" ref="product_template_search_view_website"/>
         <field name="context">{'search_default_published': 1, 'tree_view_ref':'website_sale.product_template_view_tree_website_sale', 'kanban_view_ref':'website_sale.product_template_view_kanban_website_sale'}</field>
@@ -105,17 +101,17 @@
                     <field name="compare_list_price" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" class="oe_edit_only"/>
                 </div>
             </div>
-            <field name="uom_id" position="after">
+            <xpath expr="//field[@name='uom_id']" position="after">
                 <label for="base_unit_count" groups="website_sale.group_show_uom_price"/>
                 <div name="base_unit_price" groups="website_sale.group_show_uom_price" class="d-flex flex-row">
-                    <field name="base_unit_count" invisible="product_variant_count &gt; 1" style="width: 4rem;"/>
-                    <field name="base_unit_id" options="{'no_open': True}" invisible="product_variant_count &gt; 1" placeholder="Specify unit" style="width: 10rem;"/>
-                    <div class="d-flex flex-row" invisible="base_unit_price == 0 or product_variant_count &gt; 1">
+                    <field name="base_unit_count" attrs="{'invisible': [('product_variant_count', '>', 1)]}" style="width: 4rem;"/>
+                    <field name="base_unit_id" options="{'no_open': True}" attrs="{'invisible': [('product_variant_count', '>', 1)]}" placeholder="Specify unit" style="width: 10rem;"/>
+                    <div class="d-flex flex-row" attrs="{'invisible': ['|', ('base_unit_price','=', 0), ('product_variant_count', '>', 1)]}">
                         (<field name="base_unit_price" class="oe_inline"/> / <field name="base_unit_name" class="oe_inline"/>)
                     </div>
-                    <span class='text-muted' invisible="product_variant_count &lt;= 1">Based on variants</span>
+                    <span class='text-muted' attrs="{'invisible': [('product_variant_count', '&lt;=', 1)]}">Based on variants</span>
                 </div>
-            </field>
+            </xpath>
         </field>
     </record>
 
@@ -124,16 +120,16 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <field name="uom_id" position="after">
+            <xpath expr="//field[@name='uom_id']" position="after">
                 <label for="base_unit_count" groups="website_sale.group_show_uom_price"/>
                 <div name="base_unit_price" groups="website_sale.group_show_uom_price" class="d-flex flex-row">
                     <field name="base_unit_count" style="width: 4rem;"/>
                     <field name="base_unit_id" options="{'no_open': True}" placeholder="Specify unit" style="width: 10rem;"/>
-                    <div class="d-flex flex-row" invisible="base_unit_price == 0">
+                    <div class="d-flex flex-row" attrs="{'invisible': [('base_unit_price','=', 0)]}">
                         (<field name="base_unit_price" class="oe_inline"/> / <field name="base_unit_name" class="oe_inline"/>)
                     </div>
                 </div>
-            </field>
+            </xpath>
         </field>
     </record>
 
@@ -144,28 +140,28 @@
         <field name="arch" type="xml">
             <!-- add state field in header -->
             <div name="button_box" position="inside">
-                <field name="is_published" widget="website_redirect_button" invisible="not sale_ok"/>
+                <field name="is_published" widget="website_redirect_button" attrs="{'invisible': [('sale_ok','=',False)]}"/>
             </div>
             <group name="upsell" position="attributes">
                 <attribute name="invisible">0</attribute>
             </group>
-            <group name="upsell" position="inside">
-                <field name="accessory_product_ids" widget="many2many_tags" invisible="not sale_ok"
+            <xpath expr="//group[@name='upsell']" position="inside">
+                <field name="accessory_product_ids" widget="many2many_tags" attrs="{'invisible': [('sale_ok','=',False)]}"
                        placeholder="Suggested accessories in the eCommerce cart"/>
                 <field name="alternative_product_ids" widget="many2many_tags"
-                       domain="[('id', '!=', id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
-                       invisible="not sale_ok"
+                       domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                       attrs="{'invisible': [('sale_ok','=',False)]}"
                        placeholder="Displayed in bottom of product pages"/>
-            </group>
+            </xpath>
             <xpath expr="//page[@name='sales']/group[@name='sale']" position="inside">
-                <group string="eCommerce Shop" name="shop" invisible="not sale_ok">
+                <group string="eCommerce Shop" name="shop" attrs="{'invisible': [('sale_ok','=',False)]}">
                     <field name="website_url" invisible="1"/>
                     <field name="website_id" options="{'no_create': True}" groups="website.group_multi_website"/>
                     <field name="website_sequence" groups="base.group_no_one"/>
                     <field name="public_categ_ids" widget="many2many_tags" string="Categories"/>
                     <field name="website_ribbon_id" groups="base.group_no_one" options="{'no_quick_create': True}"/>
                 </group>
-                <group name="product_template_images" string="Extra Product Media" invisible="not sale_ok">
+                <group name="product_template_images" string="Extra Product Media" attrs="{'invisible': [('sale_ok','=',False)]}">
                     <field name="product_template_image_ids" class="o_website_sale_image_list" context="{'default_name': name}" mode="kanban" add-label="Add a Media" nolabel="1"/>
                 </group>
             </xpath>
@@ -177,24 +173,21 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
         <field name="arch" type="xml">
-            <group name="pricing" position="inside">
+            <field name="standard_price" position="after">
                 <label for="base_unit_count" groups="website_sale.group_show_uom_price"/>
-                <div name="base_unit_price" groups="website_sale.group_show_uom_price" class="d-flex flex-row">
-                    <field name="base_unit_count" style="width: 4rem;"/>
-                    <field name="base_unit_id" options="{'no_open': True}" placeholder="Specify unit" style="width: 10rem;"/>
-                    <div class="d-flex flex-row" invisible="base_unit_price == 0">
-                        (<field name="base_unit_price" class="oe_inline"/> / <field name="base_unit_name" class="oe_inline"/>)
-                    </div>
+                <div name="base_unit_price" groups="website_sale.group_show_uom_price" class="o_row">
+                    <field name="base_unit_count"/>
+                    <field name="base_unit_id" options="{'no_open': True}"/>
+                    <span attrs="{'invisible': [('base_unit_price','=', 0)]}">
+                        (<field name="base_unit_price"/> / <field name="base_unit_name"/>)
+                    </span>
                 </div>
-            </group>
-            <group name="packaging" position="after">
+            </field>
+            <sheet position="inside">
                 <group name="product_variant_images" string="Extra Variant Media">
                     <field name="product_variant_image_ids" class="o_website_sale_image_list" context="{'default_name': name}" mode="kanban" add-label="Add a Media" nolabel="1"/>
                 </group>
-                <group name="sales" string="Sales" groups="base.group_no_one">
-                    <field name="ribbon_id" options="{'no_quick_create': True}"/>
-                </group>
-            </group>
+            </sheet>
         </field>
     </record>
 
@@ -215,6 +208,11 @@
                             <field name="bg_color"/>
                         </group>
                     </group>
+                    <group string="Products">
+                        <group>
+                            <field name="product_tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_edit_color': 1}"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>
@@ -228,7 +226,7 @@
             <form string="Website Public Categories">
                 <sheet>
                     <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
-                    <div class="float-start">
+                    <div class="oe_left">
                         <group>
                             <field name="name"/>
                             <field name="parent_id"/>
@@ -240,10 +238,10 @@
             </form>
         </field>
     </record>
-
     <record id="product_public_category_tree_view" model="ir.ui.view">
         <field name="name">product.public.category.tree</field>
         <field name="model">product.public.category</field>
+        <field name="field_parent" eval="False"/>
         <field name="arch" type="xml">
             <tree string="Product Public Categories">
                 <field name="sequence" widget="handle"/>
@@ -252,9 +250,9 @@
             </tree>
         </field>
     </record>
-
     <record id="product_public_category_action" model="ir.actions.act_window">
         <field name="name">eCommerce Categories</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.public.category</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" eval="False"/>
@@ -283,15 +281,15 @@
         <field name="inherit_id" ref="product.product_pricelist_view" />
         <field name="model">product.pricelist</field>
         <field name="arch" type="xml">
-            <group name="pricelist_availability" position="after">
+            <xpath expr="//group[@name='pricelist_availability']" position="after">
                 <group name="pricelist_website" string="Website">
                     <field name="company_id" invisible="1"/>
                     <field name="website_id" options="{'no_create': True}"/>
                     <field name="selectable"/>
                     <field name="code"/>
                 </group>
-            </group>
-        </field>
+            </xpath>
+          </field>
     </record>
 
     <record id="website_sale_pricelist_tree_view" model="ir.ui.view">
@@ -325,11 +323,11 @@
                             <div class="col">
                                 <field name="image_1920" widget="image"/>
                             </div>
-                            <div class="col" invisible="video_url in ['', False]">
+                            <div class="col" attrs="{'invisible': [('video_url', 'in', ['', False])]}">
                                 <div class="o_video_container p-2">
                                     <span>Video Preview</span>
                                     <field name="embed_code" class="mt-2" widget="video_preview"/>
-                                    <h4 class="o_invalid_warning text-muted text-center" invisible="embed_code">
+                                    <h4 class="o_invalid_warning text-muted text-center" attrs="{'invisible': [('embed_code', '!=', False)]}">
                                         Please enter a valid Video URL.
                                     </h4>
                                 </div>

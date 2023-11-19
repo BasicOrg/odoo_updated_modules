@@ -1,15 +1,16 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { StreamPostCommentsReplyTwitterQuote } from './stream_post_comments_reply_quote';
 import { SocialPostFormatterMixin } from '@social/js/social_post_formatter_mixin';
 
 import { Dialog } from '@web/core/dialog/dialog';
+import { patch } from '@web/core/utils/patch';
 import { sprintf } from '@web/core/utils/strings';
 import { useService } from '@web/core/utils/hooks';
-import { Component, markup } from "@odoo/owl";
 
-export class StreamPostTwitterQuote extends SocialPostFormatterMixin(Component) {
+const { Component, markup } = owl;
+
+export class StreamPostTwitterQuote extends Component {
 
     setup() {
         super.setup();
@@ -35,7 +36,7 @@ export class StreamPostTwitterQuote extends SocialPostFormatterMixin(Component) 
         };
         xhr.onerror = () => {
             this.notification.add(
-                _t('Error while sending the data to the server.'),
+                this.env._t('Error while sending the data to the server.'),
                 {type: 'warning'}
             );
         };
@@ -52,12 +53,8 @@ export class StreamPostTwitterQuote extends SocialPostFormatterMixin(Component) 
         return this.props.originalPost;
     }
 
-    get JSON() {
-        // The @StreamPostCommentsOriginalPost template needs to have JSON in its evaluation
-        // context and the @TwitterQuoteDialog template inherits from it
-        return JSON;
-    }
 }
+patch(StreamPostTwitterQuote.prototype, 'social_twitter.SocialPostFormatterMixin', SocialPostFormatterMixin);
 
 StreamPostTwitterQuote.template = "social_twitter.TwitterQuoteDialog";
 StreamPostTwitterQuote.components = { Dialog, StreamPostCommentsReplyTwitterQuote };

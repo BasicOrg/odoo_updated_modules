@@ -16,21 +16,18 @@ class IrAttachment(models.Model):
     @api.model
     def _l10n_pe_edi_load_xsd_files(self, force_reload=False):
         url = 'http://cpe.sunat.gob.pe/sites/default/files/inline-files/XSD%202.1.zip'
+        xsd_name = 'xsd_pe_edi.zip'
+
         def modify_xsd_content(content):
             return content.replace(b'schemaLocation="../common/', b'schemaLocation="')
-        xml_utils.load_xsd_files_from_url(self.env, url, modify_xsd_content=modify_xsd_content, xsd_name_prefix='l10n_pe_edi')
 
-    @api.model
-    def action_download_xsd_files(self):
-        # EXTENDS account/models/ir_attachment.py
-        self._l10n_pe_edi_load_xsd_files()
-        super().action_download_xsd_files()
+        xml_utils.load_xsd_files_from_url(self.env, url, xsd_name, force_reload=force_reload, modify_xsd_content=modify_xsd_content)
+        return
 
     @api.model
     def l10n_pe_edi_validate_xml_from_attachment(self, xml_content, xsd_name):
-        return xml_utils.validate_xml_from_attachment(self.env, xml_content, xsd_name, prefix='l10n_pe_edi')
+        return xml_utils.validate_xml_from_attachment(self.env, xml_content, xsd_name, self._l10n_pe_edi_load_xsd_files)
 
-    @api.model
     def _l10n_pe_edi_check_with_xsd(self, xml_to_validate, validation_type):
         """
         This method validates the format description of the xml files
@@ -45,10 +42,12 @@ class IrAttachment(models.Model):
         try:
             self.l10n_pe_edi_validate_xml_from_attachment(xml_to_validate, xsd_fname)
             return ''
+        except FileNotFoundError:
+            _logger.info('The XSD validation files from Sunat has not been found, please run the cron manually. ')
+            return ''
         except UserError as exc:
             return str(exc)
 
-    @api.model
     def _l10n_pe_edi_get_xsd_file_name(self):
         return {
             '01': 'UBL-Invoice-2.1.xsd',

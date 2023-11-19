@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='project_id']" position="after">
                     <field name="allow_worksheets" invisible="1" />
-                    <field name="worksheet_template_id" invisible="not allow_worksheets" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}"/>
+                    <field name="worksheet_template_id" attrs="{'invisible': [('allow_worksheets', '=', False)]}" options="{'no_create': 1, 'no_edit': 1, 'no_open': 1}"/>
                 </xpath>
             </field>
         </record>

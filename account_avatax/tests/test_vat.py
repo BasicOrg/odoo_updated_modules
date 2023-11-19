@@ -19,6 +19,7 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
             'list_price': 15.00,
             'standard_price': 15.00,
             'supplier_taxes_id': None,
+            'invoice_policy': 'order',
             'avatax_category_id': cls.env.ref('account_avatax.DC010000').id,
         })
         with cls._capture_request(return_value={'lines': [], 'summary': []}) as capture:
@@ -35,8 +36,8 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
                     }),
                 ]
             })
-            cls.invoice.button_external_tax_calculation()
-        cls.captured_arguments = capture.val['json']['createTransactionModel']
+            cls.invoice.button_update_avatax()
+        cls.captured_arguments = capture.val
         return res
 
     def test_business_id(self):
@@ -46,7 +47,7 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
         header. Some applications may not carry that information onto the transaction itself, and
         the connector may have to pull directly from the customer record.
         """
-        vat = self.captured_arguments['businessIdentificationNo']
+        vat = self.captured_arguments['json']['businessIdentificationNo']
         self.assertEqual(vat, 'businessid')
 
     def test_country_code(self):
@@ -57,7 +58,7 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
         """
         self.assertTrue(all(
             all(address.get('country'))
-            for address in self.captured_arguments['addresses'].values()
+            for address in self.captured_arguments['json']['addresses'].values()
         ))
 
     def test_currency_code(self):
@@ -66,12 +67,12 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
         AvaTax needs to know the currency the document is transacted in, not the default currency
         information.
         """
-        currency_code = self.captured_arguments['currencyCode']
+        currency_code = self.captured_arguments['json']['currencyCode']
         self.assertEqual(currency_code, 'USD')
 
     def test_ship_to_address(self):
         """Ship-to address must contain country code and use the shipping partner."""
-        destination_address = self.captured_arguments['addresses']['shipTo']
+        destination_address = self.captured_arguments['json']['addresses']['shipTo']
         self.assertEqual(destination_address, {
             'city': 'San Francisco',
             'country': 'US',
@@ -82,5 +83,5 @@ class TestAccountAvalaraVAT(TestAccountAvataxCommon):
 
     def test_ship_from_address(self):
         """Ship-from address must include country code."""
-        country_code = self.captured_arguments['addresses']['shipFrom']['country']
+        country_code = self.captured_arguments['json']['addresses']['shipFrom']['country']
         self.assertEqual(country_code, 'US')

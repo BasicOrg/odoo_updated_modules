@@ -3,17 +3,16 @@
 # 	* helpdesk_timesheet
 # 
 # Translators:
-# Wil Odoo, 2023
-# Junko Augias, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Junko Augias, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,16 +25,18 @@ msgid "# Tickets"
 msgstr "チケット数"
 
 #. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
+msgid "<span class=\"o_stat_text\">Recorded</span>"
+msgstr "<span class=\"o_stat_text\">記録済</span>"
+
+#. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_account_analytic_line
-#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__analytic_account_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__analytic_account_id
-#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__analytic_account_id
 msgid "Analytic Account"
 msgstr "分析勘定"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "Confirm Time Spent"
 msgstr "費やした時間を確認する"
@@ -43,17 +44,17 @@ msgstr "費やした時間を確認する"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "ヘルプデスクチケットをタスクに変換"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_task_convert_wizard
 msgid "Convert Project Tasks to Tickets"
-msgstr "プロジェクトタスクをチケットに変換"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_create_timesheet
 msgid "Create Timesheet from ticket"
-msgstr "チケットからタイムシートを作成"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__create_uid
@@ -68,7 +69,7 @@ msgstr "作成日"
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Days Spent"
-msgstr "費やした日数"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_create_timesheet_view_form
@@ -78,6 +79,7 @@ msgstr "削除"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__department_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__department_id
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
 msgid "Department"
 msgstr "部門"
 
@@ -88,8 +90,14 @@ msgstr "あなたの活動を説明してください..."
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__description
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Description"
 msgstr "説明"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Description of the ticket..."
+msgstr "チケットの説明..."
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_create_timesheet_view_form
@@ -104,7 +112,7 @@ msgstr "表示名"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_account_analytic_line__display_task
 msgid "Display Task"
-msgstr "タスクを表示"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__display_timer
@@ -144,7 +152,7 @@ msgstr "タイムシート時間を表示する"
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Duration"
-msgstr "期間"
+msgstr "経過時間"
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__employee_id
@@ -155,13 +163,13 @@ msgstr "従業員"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__encode_uom_in_days
 msgid "Encode Uom In Days"
-msgstr "日にちで単位をエンコード"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_account_analytic_line__has_helpdesk_team
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_project_project__has_helpdesk_team
 msgid "Has Helpdesk Teams"
-msgstr "ヘルプデスクのチームあり"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_team
@@ -198,9 +206,9 @@ msgid "Is Timer Running"
 msgstr "タイマーは作動していますか"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-msgid "Issue with new portal system"
-msgstr "新規ポータルシステムとの問題"
+#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__write_uid
@@ -215,27 +223,45 @@ msgstr "最終更新日"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__manager_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__employee_parent_id
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
 msgid "Manager"
 msgstr "マネジャー"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_team.py:0
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_search_inherit_helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
+msgid "My Department"
+msgstr "自分の部門"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
+msgid "My Team's Ratings"
+msgstr "自分のチームの評価"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_search_inherit_helpdesk_timesheet
+msgid "My Team's Tickets"
+msgstr "自分のチームのチケット"
+
+#. module: helpdesk_timesheet
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "New"
 msgstr "新規"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/project.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr "操作はサポートされていません"
-
-#. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Pause"
 msgstr "一時停止"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Pause timer"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_project
@@ -248,9 +274,8 @@ msgstr "プロジェクト"
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__project_id
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__project_id
 msgid ""
-"Project to which the timesheets of this helpdesk team's tickets will be "
-"linked."
-msgstr "このヘルプデスクチームのチケットのタイムシートがリンクされるプロジェクト"
+"Project to which the tickets (and the timesheets) will be linked by default."
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.actions.act_window,help:helpdesk_timesheet.act_hr_timesheet_line_helpdesk
@@ -258,14 +283,14 @@ msgid "Record a new activity"
 msgstr "活動を記録しましょう"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
-msgid "Recorded"
-msgstr "登録済"
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Resume"
+msgstr "再開"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
-msgid "Resume"
-msgstr "履歴書"
+msgid "Resume timer"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_sla_report_analysis
@@ -280,7 +305,7 @@ msgstr "保存"
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_create_timesheet_view_form
 msgid "Save time"
-msgstr "時間の節約"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
@@ -289,13 +314,18 @@ msgstr "開始"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Start timer"
+msgstr "タイマーを開始"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Stop"
 msgstr "停止"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-msgid "Task/Ticket"
-msgstr "タスク/チケット"
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Stop timer"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:project.project,label_tasks:helpdesk_timesheet.helpdesk_team3_projet
@@ -303,12 +333,27 @@ msgid "Tasks"
 msgstr "タスク"
 
 #. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__use_helpdesk_timesheet
+msgid "This requires to have project module installed."
+msgstr ""
+
+#. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__timesheet_encode_uom_id
+msgid ""
+"This will set the unit of measure used to encode timesheet. This will simply provide tools\n"
+"        and widgets to help the encoding. All reporting will still be expressed in hours (default value)."
+msgstr ""
+"ここでタイムシート入力の単位を指定します。入力を補佐するツールやウィジェットでこの単位が使われます。ここでの指定にかかわらず、レポートでの表示は時間(デフォルト値)単位となります。"
+
+#. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__ticket_id
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_search_inherit_helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_tree_inherit_helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_report_search_helpdesk
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.my_timesheet_view_form_helpdesk
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_view_form_helpdesk
 msgid "Ticket"
 msgstr "チケット"
 
@@ -320,15 +365,14 @@ msgstr "チケット分析"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__ticket_id
 msgid "Ticket for which we are creating a sales order"
-msgstr "販売オーダを作成するチケット"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 msgid "Ticket:"
-msgstr "チケット:"
+msgstr ""
 
 #. module: helpdesk_timesheet
-#. odoo-python
 #: code:addons/helpdesk_timesheet/models/project.py:0
 #: code:addons/helpdesk_timesheet/models/project.py:0
 #: model:ir.actions.act_window,name:helpdesk_timesheet.project_project_action_view_helpdesk_tickets
@@ -341,15 +385,6 @@ msgstr "チケット"
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__time_spent
 msgid "Time"
 msgstr "時間"
-
-#. module: helpdesk_timesheet
-#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__timesheet_ids
-msgid ""
-"Time spent on this ticket. By default, your timesheets will be linked to the sales order item of your ticket.\n"
-"Remove the sales order item to make your timesheet entries non billable."
-msgstr ""
-"チケットに費やされた時間。デフォルトでは、タイムシートはチケットの販売オーダ項目にリンクされます。\n"
-"タイムシートを請求不可能にするには、販売オーダ項目を削除します。"
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__timer_pause
@@ -389,17 +424,12 @@ msgstr "タイムシート"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_timesheets_analysis_report
 msgid "Timesheets Analysis Report"
-msgstr "タイムシート分析レポート"
-
-#. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_tree_inherit_helpdesk_timesheet
-msgid "Total"
-msgstr "合計"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_team__total_timesheet_time
 msgid "Total Timesheet Time"
-msgstr "タイムシート時間合計"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.actions.act_window,help:helpdesk_timesheet.act_hr_timesheet_line_helpdesk
@@ -416,17 +446,16 @@ msgstr "ユーザータイマー"
 #. module: helpdesk_timesheet
 #: model:project.project,name:helpdesk_timesheet.helpdesk_team3_projet
 msgid "VIP Support"
-msgstr "VIPサポート"
+msgstr ""
 
 #. module: helpdesk_timesheet
-#. odoo-python
 #: code:addons/helpdesk_timesheet/models/analytic.py:0
 #, python-format
 msgid ""
 "You cannot link a timesheet entry to a task and a ticket at the same time."
-msgstr "タイムシートエントリをタスクとチケットに同時にリンクすることはできません。"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 msgid "for the"
-msgstr "以下用:"
+msgstr ""

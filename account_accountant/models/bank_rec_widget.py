@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from contextlib import contextmanager
+import ast
+import markupsafe
 
-from odoo import _, api, fields, models, Command
+from odoo import _, api, fields, models, tools, Command
+from odoo.exceptions import UserError
+from odoo.osv import expression
+from odoo.models import check_method_name
 from odoo.addons.web.controllers.utils import clean_action
+from odoo.tools import html2plaintext
 from odoo.tools.misc import formatLang
 
 
 class BankRecWidget(models.Model):
     _name = "bank.rec.widget"
+    _inherit = "analytic.mixin"
     _description = "Bank reconciliation widget for a single statement line"
 
     # This model is never saved inside the database.
@@ -17,29 +23,22 @@ class BankRecWidget(models.Model):
     _table_query = "0"
 
     # ==== Business fields ====
-    st_line_id = fields.Many2one(comodel_name='account.bank.statement.line')
+    st_line_id = fields.Many2one(
+        comodel_name='account.bank.statement.line',
+        required=True,
+    )
     move_id = fields.Many2one(
         related='st_line_id.move_id',
         depends=['st_line_id'],
     )
-    st_line_to_check = fields.Boolean(
+    to_check = fields.Boolean(
         related='st_line_id.move_id.to_check',
         depends=['st_line_id'],
+        readonly=False,
     )
     st_line_is_reconciled = fields.Boolean(
         related='st_line_id.is_reconciled',
         depends=['st_line_id'],
-    )
-    st_line_journal_id = fields.Many2one(
-        related='st_line_id.journal_id',
-        depends=['st_line_id'],
-    )
-    st_line_narration = fields.Html(
-        related='st_line_id.narration',
-        depends=['st_line_id'],
-    )
-    st_line_transaction_details = fields.Html(
-        compute='_compute_st_line_transaction_details',
     )
     transaction_currency_id = fields.Many2one(
         comodel_name='res.currency',
@@ -55,33 +54,18 @@ class BankRecWidget(models.Model):
         compute='_compute_partner_id',
         store=True,
         readonly=False,
+        domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]",
     )
     line_ids = fields.One2many(
         comodel_name='bank.rec.widget.line',
         inverse_name='wizard_id',
         compute='_compute_line_ids',
-        compute_sudo=False,
         store=True,
         readonly=False,
     )
-    available_reco_model_ids = fields.Many2many(
-        comodel_name='account.reconcile.model',
-        compute='_compute_available_reco_model_ids',
-        store=True,
-        readonly=False,
-    )
-    selected_reco_model_id = fields.Many2one(
-        comodel_name='account.reconcile.model',
-        compute='_compute_selected_reco_model_id',
-    )
-    partner_name = fields.Char(
-        related='st_line_id.partner_name',
-    )
-
     company_id = fields.Many2one(
         comodel_name='res.company',
-        related='st_line_id.company_id',
-        depends=['st_line_id'],
+        compute='_compute_company_id',
     )
     company_currency_id = fields.Many2one(
         string="Wizard Company Currency",
@@ -98,100 +82,161 @@ class BankRecWidget(models.Model):
             ('reconciled', "Reconciled"),
         ],
         compute='_compute_state',
-        store=True,
         help="Invalid: The bank transaction can't be validate since the suspense account is still involved\n"
              "Valid: The bank transaction can be validated.\n"
              "Reconciled: The bank transaction has already been processed. Nothing left to do."
     )
 
     # ==== JS fields ====
+    lines_widget = fields.Binary(
+        compute='_compute_lines_widget',
+    )
+    reco_models_widget = fields.Binary(
+        compute='_compute_reco_models_widget',
+    )
+    amls_widget = fields.Binary(
+        compute='_compute_amls_widget',
+        readonly=False,
+    )
     selected_aml_ids = fields.Many2many(
         comodel_name='account.move.line',
         compute='_compute_selected_aml_ids',
     )
-    todo_command = fields.Json(
+    # Technical field to communicate from the JS code to the Python code
+    todo_command = fields.Char(
         store=False,
     )
-    return_todo_command = fields.Json(
-        store=False,
-    )
+    next_action_todo = fields.Binary()
+
+    # ==== Edition Form ====
+    # Editable fields by the user:
     form_index = fields.Char()
+    form_flag = fields.Char()
+    form_name = fields.Char()
+    form_date = fields.Date()
+    form_account_id = fields.Many2one(
+        comodel_name='account.account',
+        domain="[('account_type', '!=', 'asset_cash'), '|', ('company_id', '=', company_id), ('deprecated', '=', False)]",
+    )
+    form_partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        domain="['|', ('parent_id','=', False), ('is_company','=', True)]",
+    )
+    form_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+    )
+    form_tax_ids = fields.Many2many(comodel_name='account.tax')
+    form_amount_currency = fields.Monetary(currency_field='form_currency_id')
+    form_balance = fields.Monetary(currency_field='company_currency_id')
+
+    # Helper fields:
+    form_force_negative_sign = fields.Boolean()
+    form_single_currency_mode = fields.Boolean(
+        compute='_compute_form_single_currency_mode',
+    )
+
+    form_extra_text = fields.Html(
+        compute='_compute_amount_suggestion',
+        sanitize=False,
+    )
+    form_suggest_amount_currency = fields.Monetary(
+        currency_field='form_currency_id',
+        compute='_compute_amount_suggestion',
+    )
+    form_suggest_balance = fields.Monetary(
+        currency_field='company_currency_id',
+        compute='_compute_amount_suggestion',
+    )
+
+    form_partner_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        compute='_compute_form_partner_info',
+    )
+    form_partner_receivable_account_id = fields.Many2one(
+        comodel_name='account.account',
+        compute='_compute_form_partner_info',
+    )
+    form_partner_payable_account_id = fields.Many2one(
+        comodel_name='account.account',
+        compute='_compute_form_partner_info',
+    )
+    form_partner_receivable_amount = fields.Monetary(
+        currency_field='form_partner_currency_id',
+        compute='_compute_form_partner_info',
+    )
+    form_partner_payable_amount = fields.Monetary(
+        currency_field='form_partner_currency_id',
+        compute='_compute_form_partner_info',
+    )
 
     # -------------------------------------------------------------------------
     # COMPUTE METHODS
     # -------------------------------------------------------------------------
 
     @api.depends('st_line_id')
-    def _compute_line_ids(self):
+    def _compute_company_id(self):
         for wizard in self:
-            if wizard.st_line_id:
-
-                is_reconciled = wizard.st_line_id.is_reconciled
-
-                # Liquidity line.
-                line_ids_commands = [
-                    Command.clear(),
-                    Command.create(wizard._lines_prepare_liquidity_line()),
-                ]
-
-                # Existing amls if the statement line is already reconciled.
-                if is_reconciled:
-                    _liquidity_lines, _suspense_lines, other_lines = wizard.st_line_id._seek_for_lines()
-                    for aml in other_lines:
-                        exchange_diff_aml = (aml.matched_debit_ids + aml.matched_debit_ids)\
-                            .exchange_move_id.line_ids.filtered(lambda l: l.account_id != aml.account_id)
-                        if wizard.state == 'reconciled' and exchange_diff_aml:
-                            line_ids_commands.append(
-                                Command.create(wizard._lines_prepare_aml_line(
-                                    aml,  # Create the aml line with un-squashed amounts (aml - exchange diff)
-                                    balance=aml.balance - exchange_diff_aml.balance,
-                                    amount_currency=aml.amount_currency - exchange_diff_aml.amount_currency
-                                ))
-                            )
-                            line_ids_commands.append(
-                                Command.create(wizard._lines_prepare_aml_line(exchange_diff_aml))
-                            )
-                        else:
-                            line_ids_commands.append(Command.create(wizard._lines_prepare_aml_line(aml)))
-
-                wizard.line_ids = line_ids_commands
-
-                wizard._lines_add_auto_balance_line()
-
-            else:
-
-                wizard.line_ids = [Command.clear()]
+            wizard.company_id = wizard.st_line_id.company_id
 
     @api.depends('st_line_id')
-    def _compute_available_reco_model_ids(self):
+    def _compute_line_ids(self):
+        """ Convert the python dictionaries in 'lines_widget' to a bank.rec.edit.line recordset to ease the business
+        computations.
+        In case 'lines_widget' is empty, the default initial lines are generated.
+        """
         for wizard in self:
-            if wizard.st_line_id:
-                available_reco_models = self.env['account.reconcile.model'].search([
-                    ('rule_type', '=', 'writeoff_button'),
-                    ('company_id', '=', wizard.st_line_id.company_id.id),
-                    '|',
-                    ('match_journal_ids', '=', False),
-                    ('match_journal_ids', '=', wizard.st_line_id.journal_id.id),
-                ])
-                wizard.available_reco_model_ids = [Command.set(available_reco_models.ids)]
-            else:
-                wizard.available_reco_model_ids = [Command.clear()]
 
-    @api.depends('line_ids.reconcile_model_id')
-    def _compute_selected_reco_model_id(self):
-        for wizard in self:
-            selected_reconcile_models = wizard.line_ids.reconcile_model_id.filtered(lambda x: x.rule_type == 'writeoff_button')
-            if len(selected_reconcile_models) == 1:
-                wizard.selected_reco_model_id = selected_reconcile_models.id
+            # The wizard already has lines.
+            if wizard.line_ids:
+                return
+
+            # Protected fields by the orm like create_date should be excluded.
+            protected_fields = set(models.MAGIC_COLUMNS + [self.CONCURRENCY_CHECK_FIELD])
+
+            if wizard.lines_widget and wizard.lines_widget['lines']:
+                # Create the `bank.rec.widget.line` from existing data in `lines_widget`.
+                line_ids_commands = []
+                for line_vals in wizard.lines_widget['lines']:
+                    create_vals = {}
+
+                    for field_name, field in wizard.line_ids._fields.items():
+                        if field_name in protected_fields:
+                            continue
+
+                        value = line_vals[field_name]
+                        if field.type == 'many2one':
+                            create_vals[field_name] = value['id']
+                        elif field.type == 'many2many':
+                            create_vals[field_name] = value['ids']
+                        elif field.type == 'char':
+                            create_vals[field_name] = value['value'] or ''
+                        else:
+                            create_vals[field_name] = value['value']
+
+                    line_ids_commands.append(Command.create(create_vals))
+                wizard.line_ids = line_ids_commands
             else:
-                wizard.selected_reco_model_id = None
+                # The wizard is opened for the first time. Create the default lines.
+                line_ids_commands = [Command.clear(), Command.create(wizard._lines_widget_prepare_liquidity_line())]
+
+                if wizard.st_line_id.is_reconciled:
+                    # The statement line is already reconciled. We just need to preview the existing amls.
+                    _liquidity_lines, _suspense_lines, other_lines = wizard.st_line_id._seek_for_lines()
+                    for aml in other_lines:
+                        line_ids_commands.append(Command.create(wizard._lines_widget_prepare_aml_line(aml)))
+                wizard.line_ids = line_ids_commands
+
+                wizard._lines_widget_add_auto_balance_line()
+
+    @api.depends('company_id', 'form_currency_id')
+    def _compute_form_single_currency_mode(self):
+        for wizard in self:
+            wizard.form_single_currency_mode = wizard.form_currency_id == wizard.company_id.currency_id
 
     @api.depends('st_line_id', 'line_ids.account_id')
     def _compute_state(self):
         for wizard in self:
-            if not wizard.st_line_id:
-                wizard.state = 'invalid'
-            elif wizard.st_line_id.is_reconciled:
+            if wizard.st_line_id.is_reconciled:
                 wizard.state = 'reconciled'
             else:
                 suspense_account = wizard.st_line_id.journal_id.suspense_account_id
@@ -207,11 +252,6 @@ class BankRecWidget(models.Model):
                                          or wizard.st_line_id.journal_id.company_id.currency_id
 
     @api.depends('st_line_id')
-    def _compute_st_line_transaction_details(self):
-        for wizard in self:
-            wizard.st_line_transaction_details = wizard.st_line_id.transaction_details
-
-    @api.depends('st_line_id')
     def _compute_transaction_currency_id(self):
         for wizard in self:
             wizard.transaction_currency_id = wizard.st_line_id.foreign_currency_id or wizard.journal_currency_id
@@ -219,107 +259,671 @@ class BankRecWidget(models.Model):
     @api.depends('st_line_id')
     def _compute_partner_id(self):
         for wizard in self:
-            if wizard.st_line_id:
-                wizard.partner_id = wizard.st_line_id._retrieve_partner()
+            wizard.partner_id = wizard.st_line_id._retrieve_partner()
+
+    @api.depends('form_partner_id')
+    def _compute_form_partner_info(self):
+        for wizard in self:
+            partner_currency = None
+            partner_receivable_account = None
+            partner_payable_account = None
+            partner_receivable_amount = 0.0
+            partner_payable_amount = 0.0
+            partner = wizard.form_partner_id.with_company(wizard.company_id)
+            if partner:
+                partner_currency = wizard.company_currency_id
+                partner_receivable_account = partner.property_account_receivable_id
+                common_domain = [('parent_state', '=', 'posted'), ('partner_id', '=', partner.id)]
+                if partner_receivable_account:
+                    res = self.env['account.move.line'].read_group(
+                        domain=expression.AND([common_domain, [('account_id', '=', partner_receivable_account.id)]]),
+                        fields=['amount_residual:sum'],
+                        groupby=['partner_id'],
+                    )
+                    partner_receivable_amount = res[0]['amount_residual'] if res else 0.0
+                partner_payable_account = partner.property_account_payable_id
+                if partner_payable_account:
+                    res = self.env['account.move.line'].read_group(
+                        domain=expression.AND([common_domain, [('account_id', '=', partner_payable_account.id)]]),
+                        fields=['amount_residual:sum'],
+                        groupby=['partner_id'],
+                    )
+                    partner_payable_amount = res[0]['amount_residual'] if res else 0.0
+            wizard.form_partner_currency_id = partner_currency
+            wizard.form_partner_receivable_account_id = partner_receivable_account
+            wizard.form_partner_payable_account_id = partner_payable_account
+            wizard.form_partner_receivable_amount = partner_receivable_amount
+            wizard.form_partner_payable_amount = partner_payable_amount
+
+    def _check_lines_widget_consistency(self):
+        """ Check the consistency of 'line_ids' at each onchange (manually called since the wizard is never saved).
+        For example, you can't duplicate a journal item in the wizard.
+        """
+        for wizard in self:
+            seen_amls = set()
+            nb_liquidity = 0
+            nb_auto_balance = 0
+            for line in wizard.line_ids:
+                if line.flag == 'liquidity':
+                    nb_liquidity += 1
+                elif line.flag == 'auto_balance':
+                    nb_auto_balance += 1
+                if line.source_aml_id:
+                    if line.source_aml_id in seen_amls:
+                        raise UserError(_("You can't have multiple times the same journal item in the bank reconciliation widget"))
+                    seen_amls.add(line.source_aml_id)
+            if wizard.line_ids and nb_liquidity != 1:
+                raise UserError(_("You can't have multiple liquidity journal item at the same time in the bank reconciliation widget"))
+            if nb_auto_balance > 1:
+                raise UserError(_("You can't have maximum one auto balance line at the same time in the bank reconciliation widget"))
+
+    @api.depends(
+        'form_index',
+        'line_ids.account_id',
+        'line_ids.date',
+        'line_ids.name',
+        'line_ids.partner_id',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.balance',
+        'line_ids.analytic_distribution',
+        'line_ids.tax_repartition_line_id',
+        'line_ids.tax_ids',
+        'line_ids.tax_tag_ids',
+        'line_ids.group_tax_id',
+        'line_ids.reconcile_model_id',
+    )
+    def _compute_lines_widget(self):
+        """ Convert the bank.rec.widget.line recordset (line_ids fields) to a dictionary to fill the 'lines_widget'
+        owl widget.
+        """
+        self._check_lines_widget_consistency()
+
+        # Protected fields by the orm like create_date should be excluded.
+        protected_fields = set(models.MAGIC_COLUMNS + [self.CONCURRENCY_CHECK_FIELD])
+
+        for wizard in self:
+            line_vals_list = []
+            for line in wizard.line_ids:
+                js_vals = {}
+
+                for field_name, field in line._fields.items():
+                    if field_name in protected_fields:
+                        continue
+
+                    value = line[field_name]
+                    if field.type == 'date':
+                        js_vals[field_name] = {
+                            'display': tools.format_date(self.env, value),
+                            'value': fields.Date.to_string(value),
+                        }
+                    elif field.type == 'char':
+                        js_vals[field_name] = {'value': value or ''}
+                    elif field.type == 'monetary':
+                        currency = line[field.currency_field]
+                        js_vals[field_name] = {
+                            'display': formatLang(self.env, value, currency_obj=currency),
+                            'value': value,
+                            'is_zero': currency.is_zero(value),
+                        }
+                    elif field.type == 'many2one':
+                        record = value._origin
+                        js_vals[field_name] = {
+                            'display': record.display_name or '',
+                            'id': record.id,
+                        }
+                    elif field.type == 'many2many':
+                        records = value._origin
+                        js_vals[field_name] = {
+                            'display': records.mapped('display_name'),
+                            'ids': records.ids,
+                        }
+                    else:
+                        js_vals[field_name] = {'value': value}
+                line_vals_list.append(js_vals)
+
+            extra_notes = []
+            bank_account = wizard.st_line_id.partner_bank_id.display_name or wizard.st_line_id.account_number
+            if bank_account:
+                extra_notes.append(bank_account)
+            narration = wizard.st_line_id.narration and html2plaintext(wizard.st_line_id.narration)
+            if narration:
+                extra_notes.append(narration)
+
+            bool_analytic_distribution = False
+            for line in wizard.line_ids:
+                if line.analytic_distribution:
+                    bool_analytic_distribution = True
+                    break
+
+            wizard.lines_widget = {
+                'lines': line_vals_list,
+
+                'display_multi_currency_column': wizard.line_ids.currency_id != wizard.company_currency_id,
+                'display_taxes_column': bool(wizard.line_ids.tax_ids),
+                'display_analytic_distribution_column': bool_analytic_distribution,
+                'form_index': wizard.form_index,
+                'state': wizard.state,
+                'partner_name': wizard.st_line_id.partner_name,
+                'extra_notes': ' '.join(extra_notes) if extra_notes else None,
+            }
+
+    @api.depends('state', 'line_ids.reconcile_model_id')
+    def _compute_reco_models_widget(self):
+        for wizard in self:
+            # Compute 'available_reconcile_model_ids'.
+            if wizard.reco_models_widget:
+                available_reconcile_model_ids = wizard.reco_models_widget['available_reconcile_model_ids']
             else:
-                wizard.partner_id = None
+                reconcile_models = self.env['account.reconcile.model'].search([
+                    ('rule_type', '=', 'writeoff_button'),
+                    ('company_id', '=', self.company_id.id),
+                ])
+                available_reconcile_model_ids = [{
+                    'id': x.id,
+                    'display_name': x.display_name,
+                } for x in reconcile_models]
+
+            # Compute 'selected_model_id'.
+            selected_reconcile_models = wizard.line_ids.reconcile_model_id
+            if len(selected_reconcile_models) == 1:
+                selected_reconcile_model_id = selected_reconcile_models.id
+            else:
+                selected_reconcile_model_id = None
+
+            wizard.reco_models_widget = {
+                'available_reconcile_model_ids': available_reconcile_model_ids,
+                'selected_reconcile_model_id': selected_reconcile_model_id,
+                'display_widget': wizard.state in ('valid', 'invalid'),
+            }
+
+    @api.depends('st_line_id')
+    def _compute_amls_widget(self):
+        for wizard in self:
+            st_line = wizard.st_line_id
+
+            context = {
+                # Number of amls to be displayed by default.
+                'limit': 10,
+
+                # Views.
+                'search_view_ref': 'account_accountant.view_account_move_line_search_bank_rec_widget',
+                'tree_view_ref': 'account_accountant.view_account_move_line_list_bank_rec_widget',
+
+                # Custom order by.
+                'bank_rec_widget_st_line_amount': st_line.amount_currency if st_line.foreign_currency_id else st_line.amount,
+                'bank_rec_widget_st_line_currency_id': wizard.transaction_currency_id.id,
+            }
+
+            if st_line.partner_id:
+                context['search_default_name'] = st_line.partner_id.name
+
+            dynamic_filters = []
+
+            # == Dynamic Customer/Vendor filter ==
+            journal = st_line.journal_id
+
+            account_ids = set()
+
+            inbound_accounts = journal._get_journal_inbound_outstanding_payment_accounts() - journal.default_account_id
+            outbound_accounts = journal._get_journal_outbound_outstanding_payment_accounts() - journal.default_account_id
+
+            # Matching on debit account.
+            for account in inbound_accounts:
+                account_ids.add(account.id)
+
+            # Matching on credit account.
+            for account in outbound_accounts:
+                account_ids.add(account.id)
+
+            dynamic_filters.append({
+                'name': 'receivable_matching',
+                'description': _("Receivable"),
+                'domain': [
+                    '|',
+                    '&',
+                    ('account_id.account_type', '=', 'asset_receivable'),
+                    ('payment_id', '=', False),
+                    '&',
+                    '&',
+                    ('journal_id.type', 'in', ('bank', 'cash')),
+                    ('account_id', 'in', tuple(account_ids)),
+                    ('payment_id.partner_type', '=', 'customer'),
+                ],
+                'no_separator': True,
+            })
+            dynamic_filters.append({
+                'name': 'receivable_matching',
+                'description': _("Payable"),
+                'domain': [
+                    '|',
+                    '&',
+                    ('account_id.account_type', '=', 'liability_payable'),
+                    ('payment_id', '=', False),
+                    '&',
+                    '&',
+                    ('journal_id.type', 'in', ('bank', 'cash')),
+                    ('account_id', 'in', tuple(account_ids)),
+                    ('payment_id.partner_type', '=', 'supplier'),
+                ],
+            })
+
+            # == Dynamic Currency filter ==
+            if wizard.transaction_currency_id != wizard.company_currency_id:
+                context['search_default_currency_id'] = wizard.transaction_currency_id.id
+
+            # Stringify the domain.
+            for dynamic_filter in dynamic_filters:
+                dynamic_filter['domain'] = str(dynamic_filter['domain'])
+
+            wizard.amls_widget = {
+                'domain': st_line._get_default_amls_matching_domain(),
+
+                'dynamic_filters': dynamic_filters,
+
+                'context': context,
+            }
 
     @api.depends('company_id', 'line_ids.source_aml_id')
     def _compute_selected_aml_ids(self):
         for wizard in self:
             wizard.selected_aml_ids = [Command.set(wizard.line_ids.source_aml_id.ids)]
 
+    @api.depends('form_index', 'form_amount_currency', 'form_balance', 'form_force_negative_sign')
+    def _compute_amount_suggestion(self):
+        for wizard in self:
+            form_extra_text = None
+            form_suggest_amount_currency = None
+            form_suggest_balance = None
+
+            line = wizard._lines_widget_get_line_in_edit_form()
+            if line and line.flag == 'new_aml':
+                aml = line.source_aml_id
+                balance_sign = -1 if wizard.form_force_negative_sign else 1
+
+                aml_vals = {
+                    'balance': aml.amount_residual,
+                    'amount_currency': aml.amount_residual_currency,
+                    'amount_residual': aml.amount_residual,
+                    'amount_residual_currency': aml.amount_residual_currency,
+                    'company': wizard.company_id,
+                    'currency': aml.currency_id,
+                    'date': line.date,
+                }
+                self.env['account.move.line']._prepare_reconciliation_partials([
+                    {
+                        'balance': line.balance,
+                        'amount_currency': line.amount_currency,
+                        'amount_residual': line.balance,
+                        'amount_residual_currency': line.amount_currency,
+                        'company': wizard.company_id,
+                        'currency': line.currency_id,
+                        'date': line.date,
+                    },
+                    aml_vals,
+                ])
+                residual_amount_before_reco = abs(aml_vals['amount_currency'])
+                residual_amount_after_reco = abs(aml_vals['amount_residual_currency'])
+                reconciled_amount = residual_amount_before_reco - residual_amount_after_reco
+                is_fully_reconciled = aml.currency_id.is_zero(residual_amount_after_reco)
+                is_invoice = aml.move_id.is_invoice(include_receipts=True)
+
+                if is_fully_reconciled:
+                    lines = [
+                        _("The invoice %(display_name_html)s with an open amount of %(open_amount)s will be entirely paid by the transaction.")
+                        if is_invoice else
+                        _("%(display_name_html)s with an open amount of %(open_amount)s will be fully reconciled by the transaction.")
+                    ]
+                    partial_amounts = wizard._lines_widget_check_partial_amount(line)
+                    if partial_amounts:
+                        lines.append(
+                            _("You might want to record a %(btn_start)spartial payment%(btn_end)s.")
+                            if is_invoice else
+                            _("You might want to make a %(btn_start)spartial reconciliation%(btn_end)s instead.")
+                         )
+                        form_suggest_amount_currency = balance_sign * partial_amounts['amount_currency']
+                        form_suggest_balance = balance_sign * partial_amounts['balance']
+                else:
+                    if is_invoice:
+                        lines = [
+                            _("The invoice %(display_name_html)s with an open amount of %(open_amount)s will be reduced by %(amount)s."),
+                            _("You might want to set the invoice as %(btn_start)sfully paid%(btn_end)s."),
+                        ]
+                    else:
+                        lines = [
+                            _("%(display_name_html)s with an open amount of %(open_amount)s will be reduced by %(amount)s."),
+                            _("You might want to %(btn_start)sfully reconcile%(btn_end)s the document."),
+                        ]
+                    form_suggest_amount_currency = balance_sign * line.source_amount_currency
+                    form_suggest_balance = balance_sign * line.source_balance
+
+                display_name_html = markupsafe.Markup("""
+                    <button name="button_form_redirect_to_move_form"
+                            class="o_bank_rec_widget_form_suggest_button"
+                            method_args="%(method_args)s"
+                            type="object">%(display_name)s</button>
+                """) % {
+                    'method_args': [aml.move_id.id],
+                    'display_name': aml.move_id.display_name,
+                }
+
+                extra_text = markupsafe.Markup('<br/>').join(lines) % {
+                        'amount': formatLang(self.env, reconciled_amount, currency_obj=aml.currency_id),
+                        'open_amount': formatLang(self.env, residual_amount_before_reco, currency_obj=aml.currency_id),
+                        'display_name_html': display_name_html,
+                        'btn_start': markupsafe.Markup('<button name="button_form_apply_suggestion" class="o_bank_rec_widget_form_suggest_button" type="object">'),
+                        'btn_end': markupsafe.Markup('</button>'),
+                }
+                form_extra_text = f"""<div class="font-italic text-muted">{extra_text}</div>"""
+
+            wizard.form_extra_text = form_extra_text
+            wizard.form_suggest_amount_currency = form_suggest_amount_currency
+            wizard.form_suggest_balance = form_suggest_balance
+
     # -------------------------------------------------------------------------
     # ONCHANGE METHODS
     # -------------------------------------------------------------------------
 
+    def _process_todo_command(self, command_name, command_args):
+        """ Decode the command coming from the JS-side and do the corresponding behavior accordingly.
+
+        :param command_name: An arbitrary code representing the action to do.
+        :param command_args: A list of serializable parameters.
+        """
+        if command_name == 'trigger_matching_rules':
+            self._action_trigger_matching_rules()
+        elif command_name == 'mount_line_in_edit':
+            line_index = command_args[0]
+            field_clicked = command_args[1:2] or None
+            self._action_mount_line_in_edit(line_index, field_clicked)
+        elif command_name == 'clear_edit_form':
+            self._action_clear_manual_operations_form()
+        elif command_name == 'remove_line':
+            line_index = command_args[0]
+            self._action_remove_line(line_index)
+        elif command_name == 'remove_new_aml':
+            aml_id = int(command_args[0])
+            aml = self.env['account.move.line'].browse(aml_id)
+            self._action_remove_new_amls(aml)
+        elif command_name == 'add_new_amls':
+            aml_ids = [int(x) for x in command_args]
+            amls = self.env['account.move.line'].browse(aml_ids)
+            self._action_add_new_amls(amls)
+        elif command_name == 'select_reconcile_model_button':
+            rec_model_id = int(command_args[0])
+            rec_model = self.env['account.reconcile.model'].browse(rec_model_id)
+            self._action_select_reconcile_model(rec_model)
+        elif command_name == 'unselect_reconcile_model_button':
+            rec_model_id = int(command_args[0])
+            rec_model = self.env['account.reconcile.model'].browse(rec_model_id)
+            self._action_unselect_reconcile_model(rec_model)
+        elif command_name == 'button_clicked':
+            method_name = command_args[0]
+            check_method_name(method_name)
+            getattr(self, method_name)(*command_args[1:])
+
     @api.onchange('todo_command')
     def _onchange_todo_command(self):
-        self.ensure_one()
-        todo_command = self.todo_command
-        self.todo_command = None
-        self.return_todo_command = None
+        """ Decode the command if any coming from the JS-side. The command is a string having the following pattern:
+        <command_name, [arg0, [arg1, ...[argn]]]>
+        """
+        todo_command = (self.todo_command or '').lower()
+        self.todo_command = False
 
-        # Ensure the lines are well loaded.
-        # Suppose the initial values of 'line_ids' are 2 lines,
-        # "self.line_ids = [Command.create(...)]" will produce a single new line in 'line_ids' but three lines in case
-        # the field is accessed before.
+        if not todo_command:
+            return
+
         self._ensure_loaded_lines()
 
-        method_name = todo_command['method_name']
-        getattr(self, f'_js_action_{method_name}')(*todo_command.get('args', []), **todo_command.get('kwargs', {}))
+        command_split = todo_command.split(',')
+        self._process_todo_command(command_split[0], command_split[1:])
 
-    # -------------------------------------------------------------------------
-    # LOW-LEVEL METHODS
-    # -------------------------------------------------------------------------
+    @api.onchange('form_name')
+    def _onchange_form_name(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if line:
 
-    @api.model
-    def new(self, values=None, origin=None, ref=None):
-        widget = super().new(values=values, origin=origin, ref=ref)
-
-        # Ensure the lines are well loaded.
-        # Suppose the initial values of 'line_ids' are 2 lines,
-        # "self.line_ids = [Command.create(...)]" will produce a single new line in 'line_ids' but three lines in case
-        # the field is accessed before.
-        widget.line_ids
-
-        return widget
-
-    # -------------------------------------------------------------------------
-    # INIT
-    # -------------------------------------------------------------------------
-
-    @api.model
-    def fetch_initial_data(self):
-        # Fields.
-        fields = self.fields_get()
-        field_attributes = self.env['ir.ui.view']._get_view_field_attributes()
-        for field_name, field in self._fields.items():
-            if field.type == 'one2many':
-                fields[field_name]['relatedFields'] = self[field_name]\
-                    .fields_get(attributes=field_attributes)
-                del fields[field_name]['relatedFields'][field.inverse_name]
-                for one2many_fieldname, one2many_field in self[field_name]._fields.items():
-                    if one2many_field.type == "many2many":
-                        comodel = self.env[one2many_field.comodel_name]
-                        fields[field_name]['relatedFields'][one2many_fieldname]['relatedFields'] = comodel \
-                            .fields_get(allfields=['id', 'display_name'], attributes=field_attributes)
-            elif field.name == 'available_reco_model_ids':
-                fields[field_name]['relatedFields'] = self[field_name]\
-                    .fields_get(allfields=['id', 'display_name'], attributes=field_attributes)
-
-        fields['todo_command']['onChange'] = True
-
-        # Initial values.
-        initial_values = {}
-        for field_name, field in self._fields.items():
-            if field.type == 'one2many':
-                initial_values[field_name] = []
+            if line.flag == 'liquidity':
+                self.st_line_id.payment_ref = self.form_name
+                self.invalidate_model(fnames=['partner_id'])
+                self._action_reset_wizard()
+                self._action_focus_liquidity_line(field_clicked='name')
             else:
-                initial_values[field_name] = field.convert_to_onchange(self[field_name], self, {})
+                self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+                line.name = self.form_name
 
-        return {
-            'initial_values': initial_values,
-            'fields': fields,
-        }
+    @api.onchange('form_date')
+    def _onchange_form_date(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if line and line.flag == 'liquidity':
+            self.st_line_id.date = self.form_date
+            self._action_reset_wizard()
+            self._action_focus_liquidity_line(field_clicked='date')
+
+    @api.onchange('form_account_id')
+    def _onchange_form_account_id(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        if self.form_account_id:
+            line.account_id = self.form_account_id
+
+        # Recompute taxes.
+        if line.flag not in ('tax_line', 'early_payment') and line.tax_ids:
+            self._lines_widget_recompute_taxes()
+            self._lines_widget_add_auto_balance_line()
+            self._action_mount_line_in_edit(line.index)
+
+    @api.onchange('form_partner_id')
+    def _onchange_form_partner_id(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        if line.flag == 'liquidity':
+            self.st_line_id.partner_id = self.form_partner_id
+            self.invalidate_model(fnames=['partner_id'])
+            self._action_reset_wizard()
+            self._action_focus_liquidity_line(field_clicked='partner_id')
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        partner = self.form_partner_id
+        line.partner_id = partner
+
+        new_account = None
+        if partner:
+            is_partner_receivable_amount_zero = self.form_partner_currency_id.is_zero(self.form_partner_receivable_amount)
+            is_partner_payable_amount_zero = self.form_partner_currency_id.is_zero(self.form_partner_payable_amount)
+            if not is_partner_receivable_amount_zero and is_partner_payable_amount_zero:
+                new_account = self.form_partner_receivable_account_id
+            elif is_partner_receivable_amount_zero and not is_partner_payable_amount_zero:
+                new_account = self.form_partner_payable_account_id
+            elif self.st_line_id.amount < 0.0:
+                new_account = self.form_partner_payable_account_id or self.form_partner_receivable_account_id
+            else:
+                new_account = self.form_partner_receivable_account_id or self.form_partner_payable_account_id
+
+        if new_account:
+            # Set the new receivable/payable account if any.
+            self.form_account_id = new_account
+            self._onchange_form_account_id()
+        elif line.flag not in ('tax_line', 'early_payment') and line.tax_ids:
+            # Recompute taxes.
+            self._lines_widget_recompute_taxes()
+            self._lines_widget_add_auto_balance_line()
+            self._action_mount_line_in_edit(line.index)
+
+    @api.onchange('form_currency_id')
+    def _onchange_form_currency_id(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        if self.form_currency_id:
+            line.currency_id = self.form_currency_id
+
+        self._onchange_form_amount_currency()
+
+    @api.onchange('analytic_distribution')
+    def _onchange_analytic_distribution(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        line.analytic_distribution = self.analytic_distribution
+
+        # Recompute taxes.
+        if line.flag not in ('tax_line', 'early_payment') and any(x.analytic for x in line.tax_ids):
+            self._lines_widget_recompute_taxes()
+            self._lines_widget_add_auto_balance_line()
+            self._action_mount_line_in_edit(line.index)
+
+    @api.onchange('form_tax_ids')
+    def _onchange_form_tax_ids(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+
+        tax_base_amount_currency = line.tax_base_amount_currency
+        has_exited_price_included_mode = line.tax_ids and not line.force_price_included_taxes
+        line.tax_ids = [Command.set(self.form_tax_ids.ids)]
+
+        # The user has customized the balance before adding taxes. In that case, don't force the taxes to act as
+        # price included.
+        if has_exited_price_included_mode:
+            line.force_price_included_taxes = False
+
+        # The user manually removes the taxes.
+        if not line.tax_ids:
+            self.form_amount_currency = tax_base_amount_currency
+            self._onchange_form_amount_currency()
+
+        self._lines_widget_recompute_taxes()
+        self._lines_widget_add_auto_balance_line()
+        self._action_mount_line_in_edit(line.index)
+
+    @api.onchange('form_amount_currency')
+    def _onchange_form_amount_currency(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        if line.flag == 'liquidity':
+            self.st_line_id.amount = self.form_amount_currency
+            self._action_reset_wizard()
+            self._action_focus_liquidity_line(field_clicked='amount_currency')
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+
+        if line.flag == 'new_aml':
+            # The balance must keep the same sign as the original aml and must not exceed its original value.
+            self.form_amount_currency = max(0.0, min(self.form_amount_currency, abs(line.source_amount_currency)))
+
+            # If the user remove completely the value, reset to the original balance.
+            if not self.form_amount_currency:
+                self.form_amount_currency = abs(line.source_amount_currency)
+
+        elif not self.form_amount_currency:
+            self.form_amount_currency = 0.0
+
+        if self.form_currency_id == line.company_currency_id:
+            # Single currency: amount_currency must be equal to balance.
+            self.form_balance = self.form_amount_currency
+        elif line.flag == 'new_aml':
+            if line.currency_id.compare_amounts(self.form_amount_currency, abs(line.source_amount_currency)) == 0.0:
+                # The value has been reset to its original value. Reset the balance as well to avoid rounding issues.
+                self.form_balance = abs(line.source_balance)
+            else:
+                # Apply the rate.
+                rate = abs(line.source_amount_currency) / abs(line.source_balance)
+                self.form_balance = line.company_currency_id.round(self.form_amount_currency / rate)
+        elif line.flag in ('manual', 'early_payment', 'tax_line'):
+            if line.currency_id in (self.transaction_currency_id, self.journal_currency_id):
+                self.form_balance = self.st_line_id\
+                    ._prepare_counterpart_amounts_using_st_line_rate(self.form_currency_id, None, self.form_amount_currency)['balance']
+            else:
+                self.form_balance = self.form_currency_id\
+                    ._convert(self.form_amount_currency, self.company_currency_id, self.company_id, self.st_line_id.date)
+
+        sign = -1 if self.form_force_negative_sign else 1
+        line.amount_currency = sign * self.form_amount_currency
+        line.balance = sign * self.form_balance
+
+        if line.flag not in ('tax_line', 'early_payment') and line.tax_ids:
+            # Manual edition of amounts. Disable the price_included mode.
+            line.force_price_included_taxes = False
+
+            self._lines_widget_recompute_taxes()
+            self._lines_widget_add_auto_balance_line()
+            self._action_mount_line_in_edit(line.index)
+        else:
+            self._lines_widget_add_auto_balance_line()
+
+    @api.onchange('form_balance')
+    def _onchange_form_balance(self):
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
+
+        if line.flag == 'liquidity':
+            self.st_line_id.amount = self.form_balance
+            self._action_reset_wizard()
+            self._action_focus_liquidity_line(field_clicked='debit')
+            return
+
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        if line.flag == 'new_aml':
+
+            # The balance must keep the same sign as the original aml and must not exceed its original value.
+            self.form_balance = max(0.0, min(self.form_balance, abs(line.source_balance)))
+
+            # If the user remove completely the value, reset to the original balance.
+            if not self.form_balance:
+                self.form_balance = abs(line.source_balance)
+
+        elif not self.form_balance:
+            self.form_balance = 0.0
+
+        sign = -1 if self.form_force_negative_sign else 1
+        line.balance = sign * self.form_balance
+
+        # Single currency: amount_currency must be equal to balance.
+        if self.form_currency_id == line.company_currency_id:
+            self.form_amount_currency = self.form_balance
+            self._onchange_form_amount_currency()
+        else:
+            self._lines_widget_add_auto_balance_line()
 
     # -------------------------------------------------------------------------
-    # LINES METHODS
+    # ORM METHODS
     # -------------------------------------------------------------------------
 
-    def _ensure_loaded_lines(self):
-        # Ensure the lines are well loaded.
-        # Suppose the initial values of 'line_ids' are 2 lines,
-        # "self.line_ids = [Command.create(...)]" will produce a single new line in 'line_ids' but three lines in case
-        # the field is accessed before.
-        self.line_ids
+    def onchange(self, values, field_name, field_onchange):
+        # Extends base.
+        # All onchanges in this model are made because we can't replace them by computed fields.
+        # We need to know exactly in which order the onchanges are triggered and be able to prevent the trigger of some
+        # of them.
+        return super(BankRecWidget, self.with_context(recursive_onchanges=False)).onchange(values, field_name, field_onchange)
 
-    def _lines_turn_auto_balance_into_manual_line(self, line):
+    # -------------------------------------------------------------------------
+    # LINES_WIDGET METHODS
+    # -------------------------------------------------------------------------
+
+    def _lines_widget_form_turn_auto_balance_into_manual_line(self, line):
         # When editing an auto_balance line, it becomes a custom manual line.
-        if line.flag == 'auto_balance':
+        if self.form_flag == 'auto_balance':
+            self.form_flag = 'manual'
             line.flag = 'manual'
 
-    def _lines_get_line_in_edit_form(self):
+    def _lines_widget_get_line_in_edit_form(self):
         self.ensure_one()
 
         if not self.form_index:
@@ -327,7 +931,7 @@ class BankRecWidget(models.Model):
 
         return self.line_ids.filtered(lambda x: x.index == self.form_index)
 
-    def _lines_prepare_aml_line(self, aml, **kwargs):
+    def _lines_widget_prepare_aml_line(self, aml, **kwargs):
         self.ensure_one()
         return {
             'flag': 'aml',
@@ -335,7 +939,7 @@ class BankRecWidget(models.Model):
             **kwargs,
         }
 
-    def _lines_prepare_liquidity_line(self):
+    def _lines_widget_prepare_liquidity_line(self):
         """ Create a line corresponding to the journal item having the liquidity account on the statement line."""
         self.ensure_one()
         st_line = self.st_line_id
@@ -346,48 +950,47 @@ class BankRecWidget(models.Model):
         # the transaction amount is on the suspense account line.
         liquidity_line, _suspense_lines, _other_lines = st_line._seek_for_lines()
 
-        return self._lines_prepare_aml_line(liquidity_line, flag='liquidity')
+        return self._lines_widget_prepare_aml_line(liquidity_line, flag='liquidity')
 
-    def _lines_prepare_auto_balance_line(self):
+    def _lines_widget_prepare_auto_balance_line(self):
         """ Create the auto_balance line if necessary in order to have fully balanced lines."""
         self.ensure_one()
+        self._ensure_loaded_lines()
         st_line = self.st_line_id
 
         # Compute the current open balance.
-        transaction_amount, transaction_currency, journal_amount, _journal_currency, company_amount, _company_currency \
-            = self.st_line_id._get_accounting_amounts_and_currencies()
-        open_amount_currency = -transaction_amount
-        open_balance = -company_amount
-        for line in self.line_ids:
-            if line.flag in ('liquidity', 'auto_balance'):
-                continue
+        lines = self.line_ids.filtered(lambda x: x.flag not in ('auto_balance', 'liquidity'))
+        open_balance = -sum(lines.mapped('balance'))
+        open_amount_currency = -sum(lines.mapped('amount_currency'))
+        currencies = set(lines.currency_id)
 
-            open_balance -= line.balance
-            journal_transaction_rate = abs(transaction_amount / journal_amount) if journal_amount else 0.0
-            company_transaction_rate = abs(transaction_amount / company_amount) if company_amount else 0.0
-            if line.currency_id == self.transaction_currency_id:
-                open_amount_currency -= line.amount_currency
-            elif line.currency_id == self.journal_currency_id:
-                open_amount_currency -= transaction_currency.round(line.amount_currency * journal_transaction_rate)
-            else:
-                open_amount_currency -= transaction_currency.round(line.balance * company_transaction_rate)
+        # Special handle for the liquidity line to avoid rounding issues with conversion rates.
+        default_st_line_vals_list = st_line._prepare_move_line_default_vals()
+        open_balance -= default_st_line_vals_list[0]['debit'] - default_st_line_vals_list[0]['credit']
+        if currencies == {self.company_currency_id}:
+            open_amount_currency -= default_st_line_vals_list[0]['amount_currency']
+            currencies.add(self.company_currency_id)
+        elif currencies == {self.journal_currency_id}:
+            open_amount_currency -= default_st_line_vals_list[0]['amount_currency']
+            currencies.add(self.journal_currency_id)
+        else:
+            open_amount_currency += default_st_line_vals_list[1]['amount_currency']
+            currencies.add(self.transaction_currency_id)
+
+        same_currency = currencies == {self.transaction_currency_id}
+
+        if not same_currency:
+            open_amount_currency = self.st_line_id\
+                ._prepare_counterpart_amounts_using_st_line_rate(self.company_currency_id, open_balance, open_balance)['amount_currency']
 
         # Create a new auto-balance line.
-        account = None
         if self.partner_id:
             name = _("Open balance: %s", st_line.payment_ref)
-            partner_is_customer = st_line.partner_id.customer_rank and not st_line.partner_id.supplier_rank
-            partner_is_supplier = st_line.partner_id.supplier_rank and not st_line.partner_id.customer_rank
-            if partner_is_customer:
-                account = st_line.partner_id.with_company(st_line.company_id).property_account_receivable_id
-            elif partner_is_supplier:
-                account = st_line.partner_id.with_company(st_line.company_id).property_account_payable_id
-            elif st_line.amount > 0:
+            if st_line.amount > 0:
                 account = st_line.partner_id.with_company(st_line.company_id).property_account_receivable_id
             else:
                 account = st_line.partner_id.with_company(st_line.company_id).property_account_payable_id
-
-        if not account:
+        else:
             name = st_line.payment_ref
             account = st_line.journal_id.suspense_account_id
 
@@ -400,8 +1003,9 @@ class BankRecWidget(models.Model):
             'balance': open_balance,
         }
 
-    def _lines_add_auto_balance_line(self):
+    def _lines_widget_add_auto_balance_line(self):
         ''' Add the line auto balancing the debit/credit. '''
+        self._ensure_loaded_lines()
 
         # Drop the existing line then re-create it to ensure this line is always the last one.
         line_ids_commands = []
@@ -409,95 +1013,102 @@ class BankRecWidget(models.Model):
             line_ids_commands.append(Command.unlink(auto_balance_line.id))
 
         # Re-create a new auto-balance line if needed.
-        auto_balance_line_vals = self._lines_prepare_auto_balance_line()
+        auto_balance_line_vals = self._lines_widget_prepare_auto_balance_line()
         if not self.company_currency_id.is_zero(auto_balance_line_vals['balance']):
             line_ids_commands.append(Command.create(auto_balance_line_vals))
         self.line_ids = line_ids_commands
 
-    def _lines_prepare_new_aml_line(self, aml, **kwargs):
-        return self._lines_prepare_aml_line(
+    def _lines_widget_prepare_new_aml_line(self, aml, **kwargs):
+        amounts_in_st_curr = self.st_line_id\
+            ._prepare_counterpart_amounts_using_st_line_rate(aml.currency_id, -aml.amount_residual, -aml.amount_residual_currency)
+        if self.transaction_currency_id == aml.currency_id:
+            # The reconciliation will be done using the currency of the transaction.
+            amount_currency = amounts_in_st_curr['amount_currency']
+            balance = amounts_in_st_curr['balance']
+            currency_id = aml.currency_id.id
+        elif aml.currency_id == self.company_currency_id:
+            # The reconciliation will be expressed using the foreign currency of the transaction to cover the
+            # Mexican case.
+            amount_currency = aml.company_currency_id\
+                ._convert(-aml.amount_residual, self.transaction_currency_id, aml.company_id, aml.date)
+            amounts_in_st_curr = self.st_line_id\
+                ._prepare_counterpart_amounts_using_st_line_rate(self.transaction_currency_id, -aml.amount_residual, amount_currency)
+            balance = amounts_in_st_curr['balance']
+            currency_id = self.transaction_currency_id.id
+        elif self.transaction_currency_id == self.company_currency_id:
+            # The reconciliation will be expressed using the foreign currency of the aml to cover the Mexican
+            # case.
+            amount_currency = -aml.amount_residual_currency
+            balance = aml.currency_id\
+                ._convert(amount_currency, self.transaction_currency_id, aml.company_id, self.st_line_id.date)
+            currency_id = aml.currency_id.id
+        else:
+            # The reconciliation will be done using the currency of the aml.
+            amount_currency = -aml.amount_residual_currency
+            balance = amounts_in_st_curr['balance']
+            currency_id = aml.currency_id.id
+
+        return self._lines_widget_prepare_aml_line(
             aml,
             flag='new_aml',
-            currency_id=aml.currency_id,
-            amount_currency=-aml.amount_residual_currency,
-            balance=-aml.amount_residual,
-            source_amount_currency=-aml.amount_residual_currency,
-            source_balance=-aml.amount_residual,
+            currency_id=currency_id,
+            amount_currency=amount_currency,
+            balance=balance,
+            source_amount_currency=amount_currency,
+            source_balance=balance,
             **kwargs,
         )
 
-    def _lines_check_partial_amount(self, line):
+    def _lines_widget_check_partial_amount(self, line):
         if line.flag != 'new_aml':
             return None
 
-        exchange_diff_line = self.line_ids\
-            .filtered(lambda x: x.flag == 'exchange_diff' and x.source_aml_id == line.source_aml_id)
-        auto_balance_line_vals = self._lines_prepare_auto_balance_line()
+        auto_balance_line_vals = self._lines_widget_prepare_auto_balance_line()
 
         auto_balance = auto_balance_line_vals['balance']
-        current_balance = line.balance + exchange_diff_line.balance
-        has_enough_comp_debit = self.company_currency_id.compare_amounts(auto_balance, 0) < 0 \
-                                and self.company_currency_id.compare_amounts(current_balance, 0) > 0 \
-                                and self.company_currency_id.compare_amounts(current_balance, -auto_balance) > 0
-        has_enough_comp_credit = self.company_currency_id.compare_amounts(auto_balance, 0) > 0 \
-                                and self.company_currency_id.compare_amounts(current_balance, 0) < 0 \
-                                and self.company_currency_id.compare_amounts(-current_balance, auto_balance) > 0
+        current_balance = line.balance
+        has_enough_comp_debit = auto_balance < 0.0 and current_balance > 0.0 and current_balance > -auto_balance
+        has_enough_comp_credit = auto_balance > 0.0 and current_balance < 0.0 and -current_balance > auto_balance
 
         auto_amount_currency = auto_balance_line_vals['amount_currency']
         current_amount_currency = line.amount_currency
-        has_enough_curr_debit = line.currency_id.compare_amounts(auto_amount_currency, 0) < 0 \
-                                and line.currency_id.compare_amounts(current_amount_currency, 0) > 0 \
-                                and line.currency_id.compare_amounts(current_amount_currency, -auto_amount_currency) > 0
-        has_enough_curr_credit = line.currency_id.compare_amounts(auto_amount_currency, 0) > 0 \
-                                and line.currency_id.compare_amounts(current_amount_currency, 0) < 0 \
-                                and line.currency_id.compare_amounts(-current_amount_currency, auto_amount_currency) > 0
+        has_enough_curr_debit = auto_amount_currency < 0.0 and current_amount_currency > 0.0 and current_amount_currency > -auto_amount_currency
+        has_enough_curr_credit = auto_amount_currency > 0.0 and current_amount_currency < 0.0 and -current_amount_currency > auto_amount_currency
 
         if line.currency_id == self.transaction_currency_id:
             if has_enough_curr_debit or has_enough_curr_credit:
                 amount_currency_after_partial = current_amount_currency + auto_amount_currency
 
-                # Get the bank transaction rate.
-                transaction_amount, _transaction_currency, _journal_amount, _journal_currency, company_amount, _company_currency \
-                    = self.st_line_id._get_accounting_amounts_and_currencies()
-                rate = abs(company_amount / transaction_amount) if transaction_amount else 0.0
-
-                # Compute the amounts to make a partial.
-                balance_after_partial = line.company_currency_id.round(amount_currency_after_partial * rate)
-                new_line_balance = line.company_currency_id.round(balance_after_partial * abs(line.balance) / abs(current_balance))
-                exchange_diff_line_balance = balance_after_partial - new_line_balance
+                rate = abs(line.source_amount_currency) / abs(line.source_balance)
+                balance_after_partial = line.company_currency_id.round(amount_currency_after_partial / rate)
                 return {
-                    'exchange_diff_line': exchange_diff_line,
                     'amount_currency': amount_currency_after_partial,
-                    'balance': new_line_balance,
-                    'exchange_balance': exchange_diff_line_balance,
+                    'balance': balance_after_partial,
                 }
         elif has_enough_comp_debit or has_enough_comp_credit:
             # Compute the new value for balance.
             balance_after_partial = current_balance + auto_balance
 
-            # Get the rate of the original journal item.
+            # Compute the new value for amount_currency.
             rate = abs(line.source_amount_currency) / abs(line.source_balance)
-
-            # Compute the amounts to make a partial.
-            new_line_balance = line.company_currency_id.round(balance_after_partial * abs(line.balance) / abs(current_balance))
-            exchange_diff_line_balance = balance_after_partial - new_line_balance
-            amount_currency_after_partial = line.currency_id.round(new_line_balance * rate)
+            amount_currency_after_partial = line.currency_id.round(balance_after_partial * rate)
             return {
-                'exchange_diff_line': exchange_diff_line,
                 'amount_currency': amount_currency_after_partial,
-                'balance': new_line_balance,
-                'exchange_balance': exchange_diff_line_balance,
+                'balance': balance_after_partial,
             }
         return None
 
-    def _lines_check_apply_early_payment_discount(self):
+    def _lines_widget_check_apply_early_payment_discount(self):
         """ Try to apply the early payment discount on the currently mounted journal items.
+
         :return: True if applied, False otherwise.
         """
+        self._ensure_loaded_lines()
+
         all_aml_lines = self.line_ids.filtered(lambda x: x.flag == 'new_aml')
 
         # Get the balance without the 'new_aml' lines.
-        auto_balance_line_vals = self._lines_prepare_auto_balance_line()
+        auto_balance_line_vals = self._lines_widget_prepare_auto_balance_line()
         open_balance_wo_amls = auto_balance_line_vals['balance'] + sum(all_aml_lines.mapped('balance'))
         open_amount_currency_wo_amls = auto_balance_line_vals['amount_currency'] + sum(all_aml_lines.mapped('amount_currency'))
 
@@ -514,7 +1125,7 @@ class BankRecWidget(models.Model):
         for aml_line in all_aml_lines:
             aml = aml_line.source_aml_id
 
-            if aml.move_id._is_eligible_for_early_payment_discount(self.transaction_currency_id, self.st_line_id.date):
+            if aml._is_eligible_for_early_payment_discount(self.transaction_currency_id, self.st_line_id.date):
                 at_least_one_aml_for_early_payment = True
                 total_early_payment_discount += aml.amount_currency - aml.discount_amount_currency
 
@@ -570,50 +1181,36 @@ class BankRecWidget(models.Model):
 
         return is_early_payment_applied
 
-    def _lines_check_apply_partial_matching(self):
+    def _lines_widget_check_apply_partial_matching(self):
         """ Try to apply a partial matching on the currently mounted journal items.
+
         :return: True if applied, False otherwise.
         """
+        self._ensure_loaded_lines()
+
         all_aml_lines = self.line_ids.filtered(lambda x: x.flag == 'new_aml')
         if all_aml_lines:
+            # == Check for a partial reconciliation ==
             last_line = all_aml_lines[-1]
-
-            # Cleanup the existing partials if not on the last line.
-            line_ids_commands = []
-            for aml_line in all_aml_lines:
-                is_partial = aml_line.display_stroked_amount_currency or aml_line.display_stroked_balance
-                if is_partial and not aml_line.manually_modified:
-                    line_ids_commands.append(Command.update(aml_line.id, {
-                        'amount_currency': aml_line.source_amount_currency,
-                        'balance': aml_line.source_balance,
-                    }))
-            if line_ids_commands:
-                self.line_ids = line_ids_commands
-                self._lines_recompute_exchange_diff()
-
-            # Check for a partial reconciliation.
-            partial_amounts = self._lines_check_partial_amount(last_line)
+            partial_amounts = self._lines_widget_check_partial_amount(last_line)
 
             if partial_amounts:
                 # Make a partial: an auto-balance line is no longer necessary.
                 last_line.amount_currency = partial_amounts['amount_currency']
                 last_line.balance = partial_amounts['balance']
-                exchange_line = partial_amounts['exchange_diff_line']
-                if exchange_line:
-                    exchange_line.balance = partial_amounts['exchange_balance']
-                    if exchange_line.currency_id == self.company_currency_id:
-                        exchange_line.amount_currency = exchange_line.balance
                 return True
 
         return False
 
-    def _lines_load_new_amls(self, amls, reco_model=None):
+    def _lines_widget_load_new_amls(self, amls, reco_model=None):
         """ Create counterpart lines for the journal items passed as parameter."""
+        self._ensure_loaded_lines()
+
         # Create a new line for each aml.
         line_ids_commands = []
         kwargs = {'reconcile_model_id': reco_model.id} if reco_model else {}
         for aml in amls:
-            aml_line_vals = self._lines_prepare_new_aml_line(aml, **kwargs)
+            aml_line_vals = self._lines_widget_prepare_new_aml_line(aml, **kwargs)
             line_ids_commands.append(Command.create(aml_line_vals))
 
         if not line_ids_commands:
@@ -623,6 +1220,7 @@ class BankRecWidget(models.Model):
 
     def _convert_to_tax_base_line_dict(self, line):
         """ Convert the current dictionary in order to use the generic taxes computation method defined on account.tax.
+
         :return: A python dictionary.
         """
         self.ensure_one()
@@ -632,22 +1230,20 @@ class BankRecWidget(models.Model):
         if line.force_price_included_taxes:
             handle_price_include = True
             extra_context = {'force_price_include': True}
-            base_amount = line.tax_base_amount_currency
         else:
             handle_price_include = False
             extra_context = None
-            base_amount = line.amount_currency
 
         return self.env['account.tax']._convert_to_tax_base_line_dict(
             line,
             partner=line.partner_id,
             currency=line.currency_id,
             taxes=line.tax_ids,
-            price_unit=base_amount,
+            price_unit=line.tax_base_amount_currency,
             quantity=1.0,
             account=line.account_id,
             analytic_distribution=line.analytic_distribution,
-            price_subtotal=base_amount,
+            price_subtotal=line.tax_base_amount_currency,
             is_refund=is_refund,
             handle_price_include=handle_price_include,
             extra_context=extra_context,
@@ -655,6 +1251,7 @@ class BankRecWidget(models.Model):
 
     def _convert_to_tax_line_dict(self, line):
         """ Convert the current dictionary in order to use the generic taxes computation method defined on account.tax.
+
         :return: A python dictionary.
         """
         self.ensure_one()
@@ -672,7 +1269,7 @@ class BankRecWidget(models.Model):
             tax_amount=line.amount_currency,
         )
 
-    def _lines_prepare_tax_line(self, tax_line_vals):
+    def _lines_widget_prepare_tax_line(self, tax_line_vals):
         self.ensure_one()
 
         tax_rep = self.env['account.tax.repartition.line'].browse(tax_line_vals['tax_repartition_line_id'])
@@ -702,14 +1299,17 @@ class BankRecWidget(models.Model):
             'group_tax_id': group_tax.id,
         }
 
-    def _lines_recompute_taxes(self):
+    def _lines_widget_recompute_taxes(self):
         self.ensure_one()
-        base_lines = self.line_ids.filtered(lambda x: x.flag == 'manual' and not x.tax_repartition_line_id and x.tax_ids)
+        self._ensure_loaded_lines()
+
+        base_lines = self.line_ids.filtered(lambda x: x.flag == 'manual' and not x.tax_repartition_line_id)
         tax_lines = self.line_ids.filtered(lambda x: x.flag == 'tax_line')
 
         tax_results = self.env['account.tax']._compute_taxes(
             [self._convert_to_tax_base_line_dict(x) for x in base_lines],
             tax_lines=[self._convert_to_tax_line_dict(x) for x in tax_lines],
+            handle_price_include=None,
             include_caba_tags=True,
         )
 
@@ -738,11 +1338,11 @@ class BankRecWidget(models.Model):
 
         # Newly created tax lines.
         for tax_line_vals in tax_results['tax_lines_to_add']:
-            line_ids_commands.append(Command.create(self._lines_prepare_tax_line(tax_line_vals)))
+            line_ids_commands.append(Command.create(self._lines_widget_prepare_tax_line(tax_line_vals)))
 
         # Update of existing tax lines.
         for tax_line_vals, to_update in tax_results['tax_lines_to_update']:
-            new_line_vals = self._lines_prepare_tax_line(to_update)
+            new_line_vals = self._lines_widget_prepare_tax_line(to_update)
             line_ids_commands.append(Command.update(tax_line_vals['record'].id, {
                 'amount_currency': new_line_vals['amount_currency'],
                 'balance': new_line_vals['balance'],
@@ -750,86 +1350,7 @@ class BankRecWidget(models.Model):
 
         self.line_ids = line_ids_commands
 
-    def _lines_recompute_exchange_diff(self):
-        self.ensure_one()
-        line_ids_commands = []
-
-        # Clean the existing lines.
-        for exchange_diff in self.line_ids.filtered(lambda x: x.flag == 'exchange_diff'):
-            line_ids_commands.append(Command.unlink(exchange_diff.id))
-
-        new_amls = self.line_ids.filtered(lambda x: x.flag == 'new_aml')
-        for new_aml in new_amls:
-
-            # Compute the balance of the line using the rate/currency coming from the bank transaction.
-            amounts_in_st_curr = self.st_line_id._prepare_counterpart_amounts_using_st_line_rate(
-                new_aml.currency_id,
-                new_aml.balance,
-                new_aml.amount_currency,
-            )
-            balance = amounts_in_st_curr['balance']
-            if new_aml.currency_id == self.company_currency_id and self.transaction_currency_id != self.company_currency_id:
-                # The reconciliation will be expressed using the foreign currency of the transaction to cover the
-                # Mexican case.
-                is_new_aml_payment = bool(new_aml.source_aml_move_id.statement_line_id or new_aml.source_aml_move_id.payment_id)
-                exchange_rate_date = new_aml.date if is_new_aml_payment else self.st_line_id.date
-                aml_rate_at_st_line_date = self.env['res.currency']\
-                    ._get_conversion_rate(self.company_currency_id, self.transaction_currency_id, self.company_id, exchange_rate_date)
-                amount_currency_in_st_line_curr = self.transaction_currency_id.round(new_aml.balance * aml_rate_at_st_line_date)
-                if amounts_in_st_curr['balance']:
-                    st_line_rate = abs(amounts_in_st_curr['amount_currency']) / abs(amounts_in_st_curr['balance'])
-                else:
-                    st_line_rate = 1.0
-                balance = self.company_currency_id.round(amount_currency_in_st_line_curr / st_line_rate)
-            elif new_aml.currency_id != self.company_currency_id and self.transaction_currency_id == self.company_currency_id:
-                # The reconciliation will be expressed using the foreign currency of the aml to cover the Mexican
-                # case.
-                balance = new_aml.currency_id\
-                    ._convert(new_aml.amount_currency, self.transaction_currency_id, self.company_id, self.st_line_id.date)
-
-            # Compute the exchange difference balance.
-            exchange_diff_balance = balance - new_aml.balance
-            if self.company_currency_id.is_zero(exchange_diff_balance):
-                continue
-
-            expense_exchange_account = self.company_id.expense_currency_exchange_account_id
-            income_exchange_account = self.company_id.income_currency_exchange_account_id
-
-            if exchange_diff_balance > 0.0:
-                account = expense_exchange_account
-            else:
-                account = income_exchange_account
-
-            line_ids_commands.append(Command.create({
-                'flag': 'exchange_diff',
-                'source_aml_id': new_aml.source_aml_id.id,
-
-                'account_id': account.id,
-                'date': new_aml.date,
-                'name': _("Exchange Difference: %s", new_aml.name),
-                'partner_id': new_aml.partner_id.id,
-                'currency_id': new_aml.currency_id.id,
-                'amount_currency': exchange_diff_balance if new_aml.currency_id == self.company_currency_id else 0.0,
-                'balance': exchange_diff_balance,
-            }))
-
-        if line_ids_commands:
-            self.line_ids = line_ids_commands
-
-            # Reorder to put each exchange line right after the corresponding new_aml.
-            new_lines = self.env['bank.rec.widget.line']
-            for line in self.line_ids:
-                if line.flag == 'exchange_diff':
-                    continue
-
-                new_lines |= line
-                if line.flag == 'new_aml':
-                    exchange_diff = self.line_ids\
-                        .filtered(lambda x: x.flag == 'exchange_diff' and x.source_aml_id == line.source_aml_id)
-                    new_lines |= exchange_diff
-            self.line_ids = new_lines
-
-    def _lines_prepare_reco_model_write_off_vals(self, reco_model, write_off_vals):
+    def _lines_widget_prepare_reco_model_write_off_vals(self, reco_model, write_off_vals):
         self.ensure_one()
 
         balance = self.st_line_id\
@@ -846,7 +1367,6 @@ class BankRecWidget(models.Model):
             'amount_currency': write_off_vals['amount_currency'],
             'balance': balance,
             'tax_base_amount_currency': write_off_vals['amount_currency'],
-            'force_price_included_taxes': True,
 
             'reconcile_model_id': reco_model.id,
             'analytic_distribution': write_off_vals['analytic_distribution'],
@@ -854,198 +1374,28 @@ class BankRecWidget(models.Model):
         }
 
     # -------------------------------------------------------------------------
-    # LINES UPDATE METHODS
-    # -------------------------------------------------------------------------
-
-    def _line_value_changed_account_id(self, line):
-        self.ensure_one()
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        # Recompute taxes.
-        if line.flag not in ('tax_line', 'early_payment') and line.tax_ids:
-            self._lines_recompute_taxes()
-            self._lines_add_auto_balance_line()
-
-    def _line_value_changed_date(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity' and line.date:
-            self.st_line_id.date = line.date
-            self._action_reload_liquidity_line()
-            self.return_todo_command = {'reset_global_info': True, 'reset_record': True}
-
-    def _line_value_changed_narration(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity':
-            self.st_line_id.move_id.narration = line.narration
-            self._action_reload_liquidity_line()
-            self.return_todo_command = {'reset_record': True}
-
-    def _line_value_changed_name(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity':
-            self.st_line_id.payment_ref = line.name
-            self._action_reload_liquidity_line()
-            self.return_todo_command = {'reset_global_info': True, 'reset_record': True}
-            return
-
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-    def _line_value_changed_amount_currency(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity':
-            self.st_line_id.amount = line.amount_currency
-            self.return_todo_command = {'reset_global_info': True}
-            return
-
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        sign = -1 if line.amount_currency < 0.0 else 1
-        if line.flag == 'new_aml':
-            # The balance must keep the same sign as the original aml and must not exceed its original value.
-            line.amount_currency = sign * max(0.0, min(abs(line.amount_currency), abs(line.source_amount_currency)))
-            line.manually_modified = True
-
-            # If the user remove completely the value, reset to the original balance.
-            if not line.amount_currency:
-                line.amount_currency = line.source_amount_currency
-
-        elif not line.amount_currency:
-            line.amount_currency = 0.0
-
-        if line.currency_id == line.company_currency_id:
-            # Single currency: amount_currency must be equal to balance.
-            line.balance = line.amount_currency
-        elif line.flag == 'new_aml':
-            if line.currency_id.compare_amounts(abs(line.amount_currency), abs(line.source_amount_currency)) == 0.0:
-                # The value has been reset to its original value. Reset the balance as well to avoid rounding issues.
-                line.balance = line.source_balance
-            else:
-                # Apply the rate.
-                if line.source_balance:
-                    rate = abs(line.source_amount_currency / line.source_balance)
-                    line.balance = line.company_currency_id.round(line.amount_currency / rate)
-                else:
-                    line.balance = 0.0
-        elif line.flag in ('manual', 'early_payment', 'tax_line'):
-            if line.currency_id in (self.transaction_currency_id, self.journal_currency_id):
-                line.balance = self.st_line_id\
-                    ._prepare_counterpart_amounts_using_st_line_rate(line.currency_id, None, line.amount_currency)['balance']
-            else:
-                line.balance = line.currency_id\
-                    ._convert(line.amount_currency, self.company_currency_id, self.company_id, self.st_line_id.date)
-
-        if line.flag not in ('tax_line', 'early_payment'):
-            if line.tax_ids:
-                # Manual edition of amounts. Disable the price_included mode.
-                line.force_price_included_taxes = False
-                self._lines_recompute_taxes()
-            self._lines_recompute_exchange_diff()
-
-        self._lines_add_auto_balance_line()
-
-    def _line_value_changed_balance(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity':
-            self.st_line_id.amount = line.balance
-            self._action_reload_liquidity_line()
-            self.return_todo_command = {'reset_global_info': True, 'reset_record': True}
-            return
-
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        sign = -1 if line.balance < 0.0 else 1
-        if line.flag == 'new_aml':
-            # The balance must keep the same sign as the original aml and must not exceed its original value.
-            line.balance = sign * max(0.0, min(abs(line.balance), abs(line.source_balance)))
-            line.manually_modified = True
-
-            # If the user remove completely the value, reset to the original balance.
-            if not line.balance:
-                line.balance = line.source_balance
-
-        elif not line.balance:
-            line.balance = 0.0
-
-        # Single currency: amount_currency must be equal to balance.
-        if line.currency_id == line.company_currency_id:
-            line.amount_currency = line.balance
-            self._line_value_changed_amount_currency(line)
-        else:
-            self._lines_recompute_exchange_diff()
-            self._lines_add_auto_balance_line()
-
-    def _line_value_changed_currency_id(self, line):
-        self.ensure_one()
-        self._line_value_changed_amount_currency(line)
-
-    def _line_value_changed_tax_ids(self, line):
-        self.ensure_one()
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        if line.tax_ids:
-            # Adding taxes but no tax before.
-            if not line.tax_base_amount_currency:
-                line.tax_base_amount_currency = line.amount_currency
-                line.force_price_included_taxes = True
-        else:
-            original_base_amount_currency = line.tax_base_amount_currency
-            line.tax_base_amount_currency = False
-            if line.force_price_included_taxes:
-                # Removing taxes letting the field empty.
-                # If the user didn't touch the amount_currency/balance, restore the original amount.
-                line.amount_currency = original_base_amount_currency
-                line.tax_base_amount_currency = False
-                self._line_value_changed_amount_currency(line)
-
-        self._lines_recompute_taxes()
-        self._lines_add_auto_balance_line()
-
-    def _line_value_changed_partner_id(self, line):
-        self.ensure_one()
-        if line.flag == 'liquidity':
-            self.st_line_id.partner_id = line.partner_id
-            self._action_reload_liquidity_line()
-            self.return_todo_command = {'reset_global_info': True, 'reset_record': True}
-            return
-
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        new_account = None
-        if line.partner_id:
-            partner_is_customer = line.partner_id.customer_rank and not line.partner_id.supplier_rank
-            partner_is_supplier = line.partner_id.supplier_rank and not line.partner_id.customer_rank
-            is_partner_receivable_amount_zero = line.partner_currency_id.is_zero(line.partner_receivable_amount)
-            is_partner_payable_amount_zero = line.partner_currency_id.is_zero(line.partner_payable_amount)
-            if partner_is_customer or not is_partner_receivable_amount_zero and is_partner_payable_amount_zero:
-                new_account = line.partner_receivable_account_id
-            elif partner_is_supplier or is_partner_receivable_amount_zero and not is_partner_payable_amount_zero:
-                new_account = line.partner_payable_account_id
-            elif self.st_line_id.amount < 0.0:
-                new_account = line.partner_payable_account_id or line.partner_receivable_account_id
-            else:
-                new_account = line.partner_receivable_account_id or line.partner_payable_account_id
-
-        if new_account:
-            # Set the new receivable/payable account if any.
-            line.account_id = new_account
-            self._line_value_changed_account_id(line)
-        elif line.flag not in ('tax_line', 'early_payment') and line.tax_ids:
-            # Recompute taxes.
-            self._lines_recompute_taxes()
-            self._lines_add_auto_balance_line()
-
-    def _line_value_changed_analytic_distribution(self, line):
-        self.ensure_one()
-        self._lines_turn_auto_balance_into_manual_line(line)
-
-        # Recompute taxes.
-        if line.flag not in ('tax_line', 'early_payment') and any(x.analytic for x in line.tax_ids):
-            self._lines_recompute_taxes()
-            self._lines_add_auto_balance_line()
-
-    # -------------------------------------------------------------------------
     # ACTIONS
     # -------------------------------------------------------------------------
+
+    def _ensure_loaded_lines(self):
+        # Ensure the lines are well loaded.
+        # Suppose the initial values of 'line_ids' are 2 lines,
+        # "self.line_ids = [Command.create(...)]" will produce a single new line in 'line_ids' but three lines in case
+        # the field is accessed before.
+        self.line_ids
+
+    def _action_clear_manual_operations_form(self):
+        self.form_index = None
+
+    def _action_reset_wizard(self):
+        self.ensure_one()
+        self.invalidate_model(fnames=['line_ids'])
+        self._action_trigger_matching_rules()
+
+    def _action_focus_liquidity_line(self, field_clicked=None):
+        self.ensure_one()
+        liquidity_line = self.line_ids.filtered(lambda x: x.flag == 'liquidity')
+        self._action_mount_line_in_edit(liquidity_line.index, field_clicked=field_clicked)
 
     def _action_trigger_matching_rules(self):
         self.ensure_one()
@@ -1056,9 +1406,6 @@ class BankRecWidget(models.Model):
         reconcile_models = self.env['account.reconcile.model'].search([
             ('rule_type', '!=', 'writeoff_button'),
             ('company_id', '=', self.company_id.id),
-            '|',
-            ('match_journal_ids', '=', False),
-            ('match_journal_ids', '=', self.st_line_id.journal_id.id),
         ])
         matching = reconcile_models._apply_rules(self.st_line_id, self.partner_id)
 
@@ -1074,310 +1421,57 @@ class BankRecWidget(models.Model):
             self.matching_rules_allow_auto_reconcile = True
         return matching
 
-    def _prepare_embedded_views_data(self):
-        self.ensure_one()
-        st_line = self.st_line_id
-
-        context = {
-            'search_view_ref': 'account_accountant.view_account_move_line_search_bank_rec_widget',
-            'tree_view_ref': 'account_accountant.view_account_move_line_list_bank_rec_widget',
-        }
-
-        if self.partner_id:
-            context['search_default_partner_id'] = self.partner_id.id
-
-        dynamic_filters = []
-
-        # == Dynamic Customer/Vendor filter ==
-        journal = st_line.journal_id
-
-        account_ids = set()
-
-        inbound_accounts = journal._get_journal_inbound_outstanding_payment_accounts() - journal.default_account_id
-        outbound_accounts = journal._get_journal_outbound_outstanding_payment_accounts() - journal.default_account_id
-
-        # Matching on debit account.
-        for account in inbound_accounts:
-            account_ids.add(account.id)
-
-        # Matching on credit account.
-        for account in outbound_accounts:
-            account_ids.add(account.id)
-
-        rec_pay_matching_filter = {
-            'name': 'receivable_payable_matching',
-            'description': _("Customer/Vendor"),
-            'domain': [
-                '|',
-                # Matching invoices.
-                '&',
-                ('account_id.account_type', 'in', ('asset_receivable', 'liability_payable')),
-                ('payment_id', '=', False),
-                # Matching Payments.
-                '&',
-                ('account_id', 'in', tuple(account_ids)),
-                ('payment_id', '!=', False),
-            ],
-            'no_separator': True,
-            'is_default': False,
-        }
-
-        misc_matching_filter = {
-            'name': 'misc_matching',
-            'description': _("Misc"),
-            'domain': ['!'] + rec_pay_matching_filter['domain'],
-            'is_default': False,
-        }
-
-        dynamic_filters.append(rec_pay_matching_filter)
-        dynamic_filters.append(misc_matching_filter)
-
-        # Stringify the domain.
-        for dynamic_filter in dynamic_filters:
-            dynamic_filter['domain'] = str(dynamic_filter['domain'])
-
-        return {
-            'amls': {
-                'domain': st_line._get_default_amls_matching_domain(),
-                'dynamic_filters': dynamic_filters,
-                'context': context,
-            },
-        }
-
-    def _action_mount_st_line(self, st_line):
-        self.ensure_one()
-        self.st_line_id = st_line
-        self.form_index = None
-        self._action_trigger_matching_rules()
-
-    def _js_action_mount_st_line(self, st_line_id):
-        self.ensure_one()
-        st_line = self.env['account.bank.statement.line'].browse(st_line_id)
-        self._action_mount_st_line(st_line)
-        self.return_todo_command = self._prepare_embedded_views_data()
-
-    def _js_action_restore_st_line_data(self, initial_data):
-        self.ensure_one()
-        initial_values = initial_data['initial_values']
-
-        self.st_line_id = self.env['account.bank.statement.line'].browse(initial_values['st_line_id'])
-
-        # Skip restore and trigger matching rules if the liquidity line was modified
-        liquidity_line = self.line_ids.filtered(lambda l: l.flag == 'liquidity')
-        initial_liquidity_line_values = next((cmd[2] for cmd in initial_values['line_ids'] if cmd[2]['flag'] == 'liquidity'), {})
-        initial_liquidity_line = self.env['bank.rec.widget.line'].new(initial_liquidity_line_values)
-        for field in initial_liquidity_line_values.keys() - ['index', 'suggestion_html']:
-            if initial_liquidity_line[field] != liquidity_line[field]:
-                self._js_action_mount_st_line(self.st_line_id.id)
-                return
-
-        # If the user goes to reco model and create a new one, we want to make it appearing when coming back.
-        # That's why we pop 'available_reco_model_ids' as well.
-        for field_name in ('id', 'st_line_id', 'todo_command', 'return_todo_command', 'available_reco_model_ids'):
-            initial_values.pop(field_name, None)
-
-        line_ids_commands = [Command.clear()]
-        for orm_command in initial_values['line_ids']:
-            if orm_command[0] == Command.CREATE:
-                line_ids_commands.append(Command.create(orm_command[2]))
-            else:
-                line_ids_commands.append(orm_command)
-        initial_values['line_ids'] = line_ids_commands
-
-        self.update(initial_values)
-
-        self.return_todo_command = self._prepare_embedded_views_data()
-
-    def _action_reload_liquidity_line(self):
-        self.ensure_one()
-        self = self.with_context(default_st_line_id=self.st_line_id.id)
-
-        self.invalidate_model()
-
-        # Ensure the lines are well loaded.
-        # Suppose the initial values of 'line_ids' are 2 lines,
-        # "self.line_ids = [Command.create(...)]" will produce a single new line in 'line_ids' but three lines in case
-        # the field is accessed before.
-        self.line_ids
-
-        self._action_trigger_matching_rules()
-
-        # Focus back the liquidity line.
-        self._js_action_mount_line_in_edit(self.line_ids.filtered(lambda x: x.flag == 'liquidity').index)
-
-    def _action_validate(self):
-        self.ensure_one()
-        partners = (self.line_ids.filtered(lambda x: x.flag != 'liquidity')).partner_id
-        partner_to_set = partners if len(partners) == 1 else self.env['res.partner']
-
-        # Prepare the lines to be created.
-        to_reconcile = []
-        line_ids_create_command_list = []
-        aml_to_exchange_diff_vals = {}
-
-        for i, line in enumerate(self.line_ids):
-            if line.flag == 'exchange_diff':
-                continue
-
-            amount_currency = line.amount_currency
-            balance = line.balance
-            if line.flag == 'new_aml':
-                to_reconcile.append((i, line.source_aml_id.id))
-                exchange_diff = self.line_ids \
-                    .filtered(lambda x: x.flag == 'exchange_diff' and x.source_aml_id == line.source_aml_id)
-                if exchange_diff:
-                    aml_to_exchange_diff_vals[i] = {
-                        'amount_residual': exchange_diff.balance,
-                        'amount_residual_currency': exchange_diff.amount_currency
-                    }
-                    # Squash amounts of exchange diff into corresponding new_aml
-                    amount_currency += exchange_diff.amount_currency
-                    balance += exchange_diff.balance
-            line_ids_create_command_list.append(Command.create(line._get_aml_values(
-                sequence=i,
-                partner_id=partner_to_set.id if line.flag in ('liquidity', 'auto_balance') else line.partner_id.id,
-                amount_currency=amount_currency,
-                balance=balance,
-            )))
-
-        st_line = self.st_line_id
-        move = st_line.move_id
-
-        # Update the move.
-        move_ctx = move.with_context(
-            skip_invoice_sync=True,
-            skip_invoice_line_sync=True,
-            skip_account_move_synchronization=True,
-            force_delete=True,
-        )
-        move_ctx.write({'partner_id': partner_to_set.id, 'line_ids': [Command.clear()] + line_ids_create_command_list})
-        if move_ctx.state == 'draft':
-            move_ctx.action_post()
-
-        AccountMoveLine = self.env['account.move.line']
-        lines = [
-            (move_ctx.line_ids.filtered(lambda x: x.sequence == index),
-             self.env['account.move.line'].browse(counterpart_aml_id))
-            for index, counterpart_aml_id in to_reconcile
-        ]
-        # Handle exchange diffs
-        exchange_diff_moves = None
-        lines_with_exch_diff = AccountMoveLine
-        if aml_to_exchange_diff_vals:
-            exchange_diff_vals_list = []
-            for line, counterpart in lines:
-                exchange_diff_amounts = aml_to_exchange_diff_vals.get(line.sequence)
-                if exchange_diff_amounts:
-                    related_exchange_diff_amls = line if exchange_diff_amounts['amount_residual'] * line.amount_residual > 0 else counterpart
-                    exchange_diff_vals_list.append(related_exchange_diff_amls._prepare_exchange_difference_move_vals(
-                        [exchange_diff_amounts],
-                        exchange_date=max(line.date, counterpart.date)
-                    ))
-                    lines_with_exch_diff += line
-            exchange_diff_moves = AccountMoveLine._create_exchange_difference_moves(exchange_diff_vals_list)
-
-        # Perform the reconciliation.
-        self.env['account.move.line'].with_context(no_exchange_difference=True)._reconcile_plan(
-            [line + counterpart for line, counterpart in lines])
-
-        # Assign exchange move to partials.
-        for index, line in enumerate(lines_with_exch_diff):
-            (line.matched_debit_ids + line.matched_credit_ids).exchange_move_id = exchange_diff_moves[index]
-
-        # Fill missing partner.
-        st_line_ctx = st_line.with_context(skip_account_move_synchronization=True)
-        st_line_ctx.partner_id = partner_to_set
-
-        # Create missing partner bank if necessary.
-        if st_line.account_number and st_line.partner_id and not st_line.partner_bank_id:
-            st_line_ctx.partner_bank_id = st_line._find_or_create_bank_account()
-
-        # Refresh analytic lines.
-        move.line_ids.analytic_line_ids.unlink()
-        move.line_ids._create_analytic_lines()
-
-    @contextmanager
-    def _action_validate_method(self):
-        self.ensure_one()
-        st_line = self.st_line_id
-
-        yield
-
-        # The current record has been invalidated. Reload it completely.
-        self.st_line_id = st_line
-        self._ensure_loaded_lines()
-        self.return_todo_command = {'done': True}
-
-    def _js_action_validate(self):
-        with self._action_validate_method():
-            self._action_validate()
-
-    def _action_to_check(self):
-        self.st_line_id.move_id.to_check = True
-        self.invalidate_recordset(fnames=['st_line_to_check'])
-        self._action_validate()
-
-    def _js_action_to_check(self):
+    def _action_mount_line_in_edit(self, line_index, field_clicked=None):
         self.ensure_one()
 
-        if self.state == 'valid':
-            # The validation can be performed.
-            with self._action_validate_method():
-                self._action_to_check()
-        else:
-            # No need any validation.
-            self.st_line_id.move_id.to_check = True
-            self.invalidate_recordset(fnames=['st_line_to_check'])
-            self.return_todo_command = {'done': True}
+        line = self.line_ids.filtered(lambda x: x.index == line_index)
 
-    def _js_action_reset(self):
+        self.form_force_negative_sign = line.flag == 'new_aml' and (line.source_balance < 0.0 or line.source_amount_currency < 0.0)
+        balance_sign = -1 if self.form_force_negative_sign else 1
+
+        self.form_index = line.index
+        self.form_flag = line.flag
+        self.form_name = line.name
+        self.form_date = line.date
+        self.form_account_id = line.account_id
+        self.form_partner_id = line.partner_id
+        self.form_currency_id = line.currency_id
+        self.analytic_distribution = line.analytic_distribution
+        self.form_tax_ids = [Command.set(line.tax_ids.ids)]
+        self.form_amount_currency = balance_sign * line.amount_currency
+        self.form_balance = balance_sign * line.balance
+        if field_clicked:
+            self.next_action_todo = {'type': 'focus', 'field': field_clicked[0]}
+
+    def _action_remove_line(self, line_index):
         self.ensure_one()
-        st_line = self.st_line_id
-        st_line.action_undo_reconciliation()
-
-        # The current record has been invalidated. Reload it completely.
-        self.st_line_id = st_line
-        self._ensure_loaded_lines()
-        self._action_trigger_matching_rules()
-        self.return_todo_command = {'done': True}
-
-    def _js_action_set_as_checked(self):
-        self.ensure_one()
-        self.st_line_id.move_id.to_check = False
-        self.invalidate_recordset(fnames=['st_line_to_check'])
-        self.return_todo_command = {'done': True}
-
-    def _action_clear_manual_operations_form(self):
-        self.form_index = None
-
-    def _action_remove_lines(self, lines):
-        self.ensure_one()
-        if not lines:
-            return
-
-        is_taxes_recomputation_needed = bool(lines.tax_ids)
-        has_new_aml = any(line.flag == 'new_aml' for line in lines)
+        line = self.line_ids.filtered(lambda x: x.index == line_index)
+        is_taxes_recomputation_needed = bool(line.tax_ids)
 
         # Update 'line_ids'.
-        self.line_ids = [
-            Command.unlink(line.id)
-            for line in lines
-        ]
+        self.line_ids = [Command.unlink(line.id)]
 
         # Recompute taxes and auto balance the lines.
         if is_taxes_recomputation_needed:
-            self._lines_recompute_taxes()
-        if has_new_aml \
-            and not self._lines_check_apply_early_payment_discount() \
-            and not self._lines_check_apply_partial_matching():
-            self._lines_recompute_exchange_diff()
-        self._lines_add_auto_balance_line()
+            self._lines_widget_recompute_taxes()
+        if line.flag == 'new_aml':
+            if not self._lines_widget_check_apply_early_payment_discount():
+                self._lines_widget_check_apply_partial_matching()
+        self._lines_widget_add_auto_balance_line()
         self._action_clear_manual_operations_form()
 
-    def _js_action_remove_line(self, line_index):
+    def _action_add_new_amls(self, amls, reco_model=None, allow_partial=True):
         self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == line_index)
-        self._action_remove_lines(line)
+        self._lines_widget_load_new_amls(amls, reco_model=reco_model)
+        if not self._lines_widget_check_apply_early_payment_discount() and allow_partial:
+            self._lines_widget_check_apply_partial_matching()
+        self._lines_widget_add_auto_balance_line()
+        self._action_clear_manual_operations_form()
+
+    def _action_remove_new_amls(self, amls):
+        self.ensure_one()
+        for line in self.line_ids.filtered(lambda x: x.flag == 'new_aml' and x.source_aml_id in amls):
+            self._action_remove_line(line.index)
 
     def _action_select_reconcile_model(self, reco_model):
         self.ensure_one()
@@ -1386,94 +1480,142 @@ class BankRecWidget(models.Model):
         self.line_ids = [
             Command.unlink(x.id)
             for x in self.line_ids
-            if x.flag not in ('new_aml', 'liquidity') and x.reconcile_model_id and x.reconcile_model_id != reco_model
+            if x.flag != 'liquidity' and x.reconcile_model_id and x.reconcile_model_id != reco_model
         ]
-        self._lines_recompute_taxes()
+        self._lines_widget_recompute_taxes()
 
         # Compute the residual balance on which apply the newly selected model.
-        auto_balance_line_vals = self._lines_prepare_auto_balance_line()
+        auto_balance_line_vals = self._lines_widget_prepare_auto_balance_line()
         residual_balance = auto_balance_line_vals['amount_currency']
 
         write_off_vals_list = reco_model._apply_lines_for_bank_widget(residual_balance, self.partner_id, self.st_line_id)
 
         # Apply the newly generated lines.
         self.line_ids = [
-            Command.create(self._lines_prepare_reco_model_write_off_vals(reco_model, x))
+            Command.create(self._lines_widget_prepare_reco_model_write_off_vals(reco_model, x))
             for x in write_off_vals_list
         ]
 
-        self._lines_recompute_taxes()
-        self._lines_add_auto_balance_line()
+        self._lines_widget_recompute_taxes()
+        self._lines_widget_add_auto_balance_line()
 
-        if reco_model.to_check != self.st_line_to_check:
+        if reco_model.to_check != self.to_check:
             self.st_line_id.move_id.to_check = reco_model.to_check
-            self.invalidate_recordset(fnames=['st_line_to_check'])
+            self.invalidate_recordset(fnames=['to_check'])
 
-    def _js_action_select_reconcile_model(self, reco_model_id):
-        self.ensure_one()
-        reco_model = self.env['account.reconcile.model'].browse(reco_model_id)
-        self._action_select_reconcile_model(reco_model)
+    def _lines_widget_add_reco_model_write_off_lines(self, reco_model, write_off_vals_list):
+        self.line_ids = [
+            Command.create(self._lines_widget_prepare_reco_model_write_off_vals(reco_model, x))
+            for x in write_off_vals_list
+        ]
 
-    def _action_add_new_amls(self, amls, reco_model=None, allow_partial=True):
+    def _action_unselect_reconcile_model(self, reco_model):
         self.ensure_one()
-        existing_amls = set(self.line_ids.source_aml_id)
-        amls = amls.filtered(lambda x: x not in existing_amls)
-        if not amls:
+
+    def button_validate(self, async_action=True):
+        self.ensure_one()
+        assert self.state == 'valid'
+
+        partners = (self.line_ids.filtered(lambda x: x.flag not in ('liquidity', 'auto_balance'))).partner_id
+        partner_id_to_set = partners.id if len(partners) == 1 else None
+
+        # Prepare the lines to be created.
+        to_reconcile = []
+        line_ids_create_command_list = []
+
+        for i, line in enumerate(self.line_ids):
+            line_ids_create_command_list.append(Command.create({
+                'name': line.name,
+                'sequence': i,
+                'account_id': line.account_id.id,
+                'partner_id': partner_id_to_set if line.flag in ('liquidity', 'auto_balance') else line.partner_id.id,
+                'currency_id': line.currency_id.id,
+                'amount_currency': line.amount_currency,
+                'balance': line.debit - line.credit,
+                'reconcile_model_id': line.reconcile_model_id.id,
+                'analytic_distribution': line.analytic_distribution,
+                'tax_repartition_line_id': line.tax_repartition_line_id.id,
+                'tax_ids': [Command.set(line.tax_ids.ids)],
+                'tax_tag_ids': [Command.set(line.tax_tag_ids.ids)],
+                'group_tax_id': line.group_tax_id.id,
+            }))
+
+            if line.flag == 'new_aml':
+                to_reconcile.append((i, line.source_aml_id.id))
+
+        action_todo = {
+            'type': 'rpc',
+            'method': 'js_action_reconcile_st_line',
+            'st_line_id': self.st_line_id.id,
+            'params': {
+                'command_list': line_ids_create_command_list,
+                'to_reconcile': to_reconcile,
+                'partner_id': partner_id_to_set,
+            },
+        }
+
+        if async_action:
+            self.next_action_todo = action_todo
+        else:
+            self.js_action_reconcile_st_line(action_todo['st_line_id'], action_todo['params'])
+
+    def button_to_check(self, async_action=True):
+        self.ensure_one()
+        if self.state == 'valid':
+            self.button_validate(async_action=async_action)
+        else:
+            self.next_action_todo = {'type': 'move_to_next', 'st_line_id': self.st_line_id.id}
+        self.st_line_id.move_id.to_check = True
+        self.invalidate_recordset(fnames=['to_check'])
+
+    def button_set_as_checked(self):
+        self.ensure_one()
+        self.st_line_id.move_id.to_check = False
+        if self.st_line_is_reconciled:
+            self.next_action_todo = {'type': 'move_to_next', 'st_line_id': self.st_line_id.id}
+        self.invalidate_recordset(fnames=['to_check'])
+
+    def button_reset(self):
+        self.ensure_one()
+        assert self.state == 'reconciled'
+        self.st_line_id.action_undo_reconciliation()
+
+        self._ensure_loaded_lines()
+        self._action_trigger_matching_rules()
+
+    def button_form_apply_suggestion(self):
+        self.ensure_one()
+        self.form_amount_currency = self.form_suggest_amount_currency
+        self.form_balance = self.form_suggest_balance
+
+        if self.form_single_currency_mode:
+            self._onchange_form_balance()
+        else:
+            self._onchange_form_amount_currency()
+
+    def button_form_partner_receivable(self):
+        self.ensure_one()
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
             return
 
-        self._lines_load_new_amls(amls, reco_model=reco_model)
-        self._lines_recompute_exchange_diff()
-        if not self._lines_check_apply_early_payment_discount() and allow_partial:
-            self._lines_check_apply_partial_matching()
-        self._lines_add_auto_balance_line()
-        self._action_clear_manual_operations_form()
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        self.form_account_id = self.form_partner_receivable_account_id
+        self._onchange_form_account_id()
 
-    def _js_action_add_new_aml(self, aml_id):
+    def button_form_partner_payable(self):
         self.ensure_one()
-        aml = self.env['account.move.line'].browse(aml_id)
-        self._action_add_new_amls(aml)
+        line = self._lines_widget_get_line_in_edit_form()
+        if not line:
+            return
 
-    def _action_remove_new_amls(self, amls):
+        self._lines_widget_form_turn_auto_balance_into_manual_line(line)
+        self.form_account_id = self.form_partner_payable_account_id
+        self._onchange_form_account_id()
+
+    def button_form_redirect_to_move_form(self, move_id):
         self.ensure_one()
-        to_remove = self.line_ids.filtered(lambda x: x.flag == 'new_aml' and x.source_aml_id in amls)
-        self._action_remove_lines(to_remove)
-
-    def _js_action_remove_new_aml(self, aml_id):
-        self.ensure_one()
-        aml = self.env['account.move.line'].browse(aml_id)
-        self._action_remove_new_amls(aml)
-
-    def _js_action_mount_line_in_edit(self, line_index):
-        self.ensure_one()
-        self.form_index = line_index
-
-    def _js_action_line_changed(self, form_index, field_name):
-        self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == form_index)
-
-        # Invalidate the cache of newly set value to force the recomputation of computed fields.
-        value = line[field_name]
-        line.invalidate_recordset(fnames=[field_name], flush=False)
-        line[field_name] = value
-
-        getattr(self, f'_line_value_changed_{field_name}')(line)
-
-    def _js_action_line_set_partner_receivable_account(self, form_index):
-        self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == form_index)
-        line.account_id = line.partner_receivable_account_id
-        self._line_value_changed_account_id(line)
-
-    def _js_action_line_set_partner_payable_account(self, form_index):
-        self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == form_index)
-        line.account_id = line.partner_payable_account_id
-        self._line_value_changed_account_id(line)
-
-    def _js_action_redirect_to_move(self, form_index):
-        self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == form_index)
-        move = line.source_aml_move_id
+        move = self.env['account.move'].browse(int(move_id))
 
         action = {
             'type': 'ir.actions.act_window',
@@ -1491,32 +1633,96 @@ class BankRecWidget(models.Model):
                 'res_model': 'account.move',
                 'res_id': move.id,
             })
-        self.return_todo_command = clean_action(action, self.env)
 
-    def _js_action_apply_line_suggestion(self, form_index):
-        self.ensure_one()
-        line = self.line_ids.filtered(lambda x: x.index == form_index)
-
-        # Since 'balance'/'amount_currency' are both dependencies of 'suggestion_balance'/'suggestion_amount_currency',
-        # keep the value in variable before assigning anything to avoid an inconsistency after applying
-        # 'suggestion_amount_currency' but before updating 'balance'.
-        suggestion_amount_currency = line.suggestion_amount_currency
-        suggestion_balance = line.suggestion_balance
-
-        line.amount_currency = suggestion_amount_currency
-        line.balance = suggestion_balance
-
-        if line.currency_id == line.company_currency_id:
-            self._line_value_changed_balance(line)
-        else:
-            self._line_value_changed_amount_currency(line)
+        self.next_action_todo = clean_action(action, self.env)
 
     @api.model
-    def collect_global_info_data(self, journal_id):
-        journal = self.env['account.journal'].browse(journal_id)
-        balance = formatLang(self.env,
-                             journal.current_statement_balance,
-                             currency_obj=journal.currency_id or journal.company_id.currency_id)
-        return {
-            'balance_amount': balance,
+    def _prepare_button_show_reconciled_action(self, records, **kwargs):
+        action = {
+            'type': 'ir.actions.act_window',
+            'res_model': records._name,
+            'context': {'create': False},
+            **kwargs,
         }
+        if len(records) == 1:
+            action.update({
+                'view_mode': 'form',
+                'res_id': records.id,
+            })
+        else:
+            action.update({
+                'view_mode': 'list,form',
+                'domain': [('id', 'in', records.ids)],
+            })
+        return action
+
+    def js_action_reconcile_st_line(self, st_line_id, params):
+        st_line = self.env['account.bank.statement.line'].browse(st_line_id)
+
+        # Remove the existing lines.
+        move = st_line.move_id
+
+        # Update the move.
+        move_ctx = move.with_context(
+            skip_invoice_sync=True,
+            skip_account_move_synchronization=True,
+            force_delete=True,
+        )
+        move_ctx.write({'line_ids': [Command.clear()] + params['command_list']})
+        if move_ctx.state == 'draft':
+            move_ctx.action_post()
+
+        # Perform the reconciliation.
+        for index, counterpart_aml_id in params['to_reconcile']:
+            counterpart_aml = self.env['account.move.line'].browse(counterpart_aml_id)
+            (move.line_ids.filtered(lambda x: x.sequence == index) + counterpart_aml).reconcile()
+
+        # Fill missing partner.
+        st_line.with_context(skip_account_move_synchronization=True).partner_id = params['partner_id']
+
+        # Create missing partner bank if necessary.
+        if st_line.account_number and st_line.partner_id and not st_line.partner_bank_id:
+            st_line.partner_bank_id = st_line._find_or_create_bank_account()
+
+        # Refresh analytic lines.
+        move.line_ids.analytic_line_ids.unlink()
+        move.line_ids._create_analytic_lines()
+
+    def collect_global_info_data(self, journal_id):
+        domain = [
+            ('display_type', 'not in', ('line_section', 'line_note')),
+            ('move_id.state', '=', 'posted'),
+            ('journal_id', '=', journal_id),
+        ]
+
+        query = self.env['account.move.line']._where_calc(domain)
+        tables, where_clause, where_params = query.get_sql()
+
+        self._cr.execute(f'''
+            WITH statement_lines AS (
+                SELECT DISTINCT account_move_line.statement_line_id
+                FROM {tables}
+                WHERE {where_clause}
+            )
+            SELECT
+                st_line.currency_id,
+                COALESCE(SUM(st_line.amount), 0.0) AS amount
+            FROM statement_lines
+            JOIN account_bank_statement_line st_line ON st_line.id = statement_lines.statement_line_id
+            GROUP BY st_line.currency_id
+        ''', where_params)
+
+        balance_by_currency = {}
+        for currency_id, amount in self._cr.fetchall():
+            balance_by_currency[currency_id] = amount
+
+        if len(balance_by_currency) != 1:
+            return {'balance_amount': None}
+
+        for currency_id, amount in balance_by_currency.items():
+            currency = self.env['res.currency'].browse(currency_id)
+            return {'balance_amount': formatLang(self.env, amount, currency_obj=currency)}
+
+    def action_open_bank_reconciliation_report(self, journal_id):
+        # abstract
+        raise UserWarning(_("Please install the 'Accounting Reports' module."))

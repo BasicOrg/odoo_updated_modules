@@ -8,7 +8,11 @@
                 <field name="article_id" invisible="1"/>
                 <field name="have_share_partners" invisible="1"/>
                 <div colspan="2" class="alert alert-info text-center mb-0" role="alert"
-                     invisible="not have_share_partners or permission != 'none'">
+                     attrs="{'invisible': ['|', ('have_share_partners', '=', False), ('permission', '!=', 'write')]}">
+                    <i class="fa fa-w fa-info-circle"/> External users cannot write on Articles and will be granted read access instead.
+                </div>
+                <div colspan="2" class="alert alert-info text-center mb-0" role="alert"
+                     attrs="{'invisible': ['|', ('have_share_partners', '=', False), ('permission', '!=', 'none')]}">
                     <i class="fa fa-w fa-info-circle"/> All external users you selected won't be added to the members.
                 </div>
                 <sheet>
@@ -19,7 +23,6 @@
                             placeholder="Add people or email addresses"
                             context="{'force_email': True, 'show_email': True}"/>
                     </group>
-                    <field name="message" class="border" placeholder="Extra Comment" invisible="permission == 'none'"/>
                 </sheet>
                 <footer>
                     <button string="Invite" type="object" name="action_invite_members" class="btn-primary"/>

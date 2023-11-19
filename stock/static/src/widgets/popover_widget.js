@@ -1,7 +1,8 @@
 /** @odoo-module */
 import { registry } from "@web/core/registry";
 import { usePopover } from "@web/core/popover/popover_hook";
-import { Component } from "@odoo/owl";
+const { Component } = owl;
+
 
 /**
  * Extend this to add functionality to Popover (custom methods etc.)
@@ -25,25 +26,30 @@ PopoverComponent.template = 'stock.popoverContent';
 
 export class PopoverWidgetField extends Component {
     setup(){
+        this.popover = usePopover();
+        this.closePopover = null;
         let fieldValue = this.props.record.data[this.props.name];
-        this.jsonValue = JSON.parse(fieldValue || "{}");
-        const position = this.jsonValue.position || "top";
-        this.popover = usePopover(this.constructor.components.Popover, { position });
+        this.jsonValue = JSON.parse(fieldValue);
         this.color = this.jsonValue.color || 'text-primary';
         this.icon = this.jsonValue.icon || 'fa-info-circle';
     }
 
     showPopup(ev){
-        this.popover.open(ev.currentTarget, { ...this.jsonValue, record: this.props.record });
+        if (this.jsonValue.popoverTemplate){
+            this.constructor.components.Popover.template = this.jsonValue.popoverTemplate;
+        }
+        this.closePopover = this.popover.add(
+            ev.currentTarget,
+            this.constructor.components.Popover,
+            {...this.jsonValue, record: this.props.record},
+            {
+                position: this.jsonValue.position || 'top',
+            }
+            );
     }
 }
 
+PopoverWidgetField.supportedTypes = ['char'];
 PopoverWidgetField.template = 'stock.popoverButton';
 PopoverWidgetField.components = { Popover: PopoverComponent }
-
-export const popoverWidgetField = {
-    component: PopoverWidgetField,
-    supportedTypes: ['char'],
-};
-
-registry.category("fields").add("popover_widget", popoverWidgetField);
+registry.category("fields").add("popover_widget", PopoverWidgetField);

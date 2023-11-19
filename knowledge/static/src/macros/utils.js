@@ -30,30 +30,13 @@ export function pasteElements(dataTransfer, target) {
     const sel = document.getSelection();
     sel.removeAllRanges();
     const range = document.createRange();
-    const lastChild = target.lastChild;
-    if (!lastChild) {
+    const firstChild = target.firstChild;
+    if (!firstChild) {
         range.setStart(target, 0);
         range.setEnd(target, 0);
     } else {
-        const subLastChild = lastChild.lastChild;
-        if (subLastChild) {
-            if (subLastChild.nodeType === Node.ELEMENT_NODE && subLastChild.tagName === 'BR') {
-                range.setStartBefore(subLastChild);
-                range.setEndBefore(subLastChild);
-            } else {
-                range.setStartAfter(subLastChild);
-                range.setEndAfter(subLastChild);
-            }
-        } else {
-            range.setStartAfter(lastChild);
-            range.setEndAfter(lastChild);
-        }
-    }
-    const lastElementChild = target.lastElementChild;
-    if (lastElementChild) {
-        lastElementChild.scrollIntoView();
-    } else {
-        target.scrollIntoView();
+        range.setStart(firstChild, 0);
+        range.setEnd(firstChild, 0);
     }
     sel.addRange(range);
     target.dispatchEvent(fakePaste);

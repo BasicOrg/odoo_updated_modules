@@ -1,45 +1,24 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* quality_mrp_workorder
-#
+# * quality_mrp_workorder
+# 
 # Translators:
-# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2022
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
-# Martin Trigaux, 2022
-#
+# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2018
+# gebri <gebri@inmail.sk>, 2018
+# Radoslav Sloboda <rado.sloboda@gmail.com>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:48+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Slovak (https://app.transifex.com/odoo/teams/41243/sk/)\n"
-"Language: sk\n"
+"POT-Creation-Date: 2018-09-21 14:06+0000\n"
+"PO-Revision-Date: 2018-09-21 14:06+0000\n"
+"Last-Translator: Radoslav Sloboda <rado.sloboda@gmail.com>, 2018\n"
+"Language-Team: Slovak (https://www.transifex.com/odoo/teams/41243/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: sk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Lot/Serial Number: </strong>"
-msgstr ""
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Work Order: </strong>"
-msgstr ""
-
-#. module: quality_mrp_workorder
-#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_production__check_ids
-msgid "Checks"
-msgstr "Doklady"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_inherit_mrp_workorder
-msgid "Component Lot/Serial"
-msgstr ""
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_form_inherit_mrp
@@ -47,62 +26,46 @@ msgid "Discard"
 msgstr "Zrušiť"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_production_workorder_tree_editable_view_inherit_quality
-msgid "Done"
-msgstr "Hotové"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Fail"
-msgstr "Zlyhané"
+msgstr ""
 
 #. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/quality.py:0
+#: code:addons/quality_mrp_workorder/models/quality.py:12
 #, python-format
 msgid "Failure"
-msgstr "Zlyhanie"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_quality_mrp_workorder
-msgid "Finished Lot/Serial"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_point_view_search_inherit_mrp_workorder
-msgid "Manufacturing Steps"
+#: code:addons/quality_mrp_workorder/models/mrp_workorder.py:40
+#, python-format
+msgid "Failure Message"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__measure
+msgid "Measure"
+msgstr "Meranie"
+
+#. module: quality_mrp_workorder
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__measure_success
+msgid "Measure Success"
+msgstr ""
+
+#. module: quality_mrp_workorder
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Measure:"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_search_inherit_quality_mrp_workorder
-msgid "Operation"
-msgstr "Operatíva"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
-msgid "Pass"
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__norm_unit
+msgid "Norm Unit"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_product_template
-msgid "Product"
-msgstr "Produkt"
-
-#. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_stock_move_line
-msgid "Product Moves (Stock Move Line)"
-msgstr "Pohyby produktu (riadok skladového pohybu)"
-
-#. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_product_product
-msgid "Product Variant"
-msgstr "Varianta produktu"
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
+msgid "Pass"
+msgstr ""
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_mrp_production
@@ -110,39 +73,19 @@ msgid "Production Order"
 msgstr "Výrobná objednávka"
 
 #. module: quality_mrp_workorder
-#. odoo-javascript
-#: code:addons/quality_mrp_workorder/static/src/components/menuPopup.xml:0
-#, python-format
-msgid "Quality Alert"
-msgstr ""
-
-#. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_quality_check
 msgid "Quality Check"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/quality.py:0
-#, python-format
-msgid "Quality Check Failed"
-msgstr ""
-
-#. module: quality_mrp_workorder
 #: model:ir.actions.act_window,name:quality_mrp_workorder.quality_check_action_wo
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_mrp_workorder
 msgid "Quality Checks"
 msgstr ""
 
 #. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_quality_point
-msgid "Quality Control Point"
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_tablet_view_form_inherit_maintenance
+msgid "Quality alert"
 msgstr ""
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_point_view_search_inherit_mrp_workorder
-msgid "Quality Points"
-msgstr "Body kvality"
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_form_inherit_mrp
@@ -150,25 +93,17 @@ msgid "Save"
 msgstr "Uložiť"
 
 #. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/quality.py:0
+#: code:addons/quality_mrp_workorder/models/quality.py:12
 #, python-format
 msgid "Success"
 msgstr "Úspech"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Validate"
-msgstr "Potvrdiť"
+msgstr "Overiť"
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_mrp_workorder
 msgid "Work Order"
 msgstr "Pracovná objednávka"
-
-#. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/mrp_workorder.py:0
-#, python-format
-msgid "You first need to complete the Quality Check using the Tablet View before marking the Operation as Done."
-msgstr ""

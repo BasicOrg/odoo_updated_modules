@@ -26,7 +26,7 @@ class TestWorkentryAttendance(HrWorkEntryAttendanceCommon):
         work_entries = self.env['hr.work.entry'].search([('employee_id', '=', self.employee.id)])
         # Should not have generated a work entry since no period has been generated yet
         self.assertFalse(work_entries)
-        self.contract.generate_work_entries(date(2021, 9, 1), date(2021, 9, 30))
+        self.contract._generate_work_entries(date(2021, 9, 1), date(2021, 9, 30))
         work_entries = self.env['hr.work.entry'].search([('employee_id', '=', self.employee.id)])
         self.assertEqual(len(attendances), len(work_entries))
         self.assertTrue(all(hwe.attendance_id for hwe in work_entries))
@@ -45,7 +45,7 @@ class TestWorkentryAttendance(HrWorkEntryAttendanceCommon):
                 'check_out': datetime(2021, 9, 30, 17, 0, 0),
             },
         ])
-        self.contract.generate_work_entries(date(2021, 9, 1), date(2021, 9, 30))
+        self.contract._generate_work_entries(date(2021, 9, 1), date(2021, 9, 30))
         work_entries = self.env['hr.work.entry'].search([('employee_id', '=', self.employee.id)])
         self.assertEqual(len(work_entries), len(boundaries_attendances))
 
@@ -74,3 +74,18 @@ class TestWorkentryAttendance(HrWorkEntryAttendanceCommon):
         work_entries = self.env['hr.work.entry'].search([('employee_id', '=', self.employee.id)])
         attendance.unlink()
         self.assertFalse(work_entries.active)
+
+    def test_invalid_contract(self):
+        # Tests that attendances have no impact on the work entry generation
+        # if the contract isn't in attendance mode
+        self.contract.write({
+            'work_entry_source': 'calendar',
+        })
+        self.env['hr.attendance'].create({
+            'employee_id': self.employee.id,
+            'check_in': datetime(2021, 9, 14, 14, 0, 0),
+            'check_out': datetime(2021, 9, 14, 17, 0, 0),
+        })
+        self.contract._generate_work_entries(date(2021, 9, 1), date(2021, 9, 30))
+        work_entries = self.env['hr.work.entry'].search([('employee_id', '=', self.employee.id)])
+        self.assertFalse(any(hwe.attendance_id for hwe in work_entries))

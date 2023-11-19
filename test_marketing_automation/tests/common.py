@@ -48,7 +48,6 @@ class TestMACommon(TestMailFullCommon):
             'schedule_date': datetime or False,           # optional: check schedule_date on marketing trace
             'trace_status': status of mailing trace,      # if not set: check there is no mailing trace
             'trace_content': content of mail/sms          # content of sent mail / sms
-            'trace_failure_type': failure_type of trace   # to check status update in case of failure
         }, {}, ... ]
         """
         all_records = self.env[activity.campaign_id.model_name]
@@ -77,7 +76,7 @@ class TestMACommon(TestMailFullCommon):
                         [{'partner': self.env['res.partner'],  # TDE FIXME: make it generic and check why partner seems unset
                           'email': record.email_normalized,  # TDE FIXME: make it generic and check for aprtner
                           'trace_status': info['trace_status'],
-                          'failure_type': info.get('trace_failure_type', False),
+                          'failure_type': info.get('failure_type', False),
                           'record': record,
                          } for record in info['records']],
                         activity.mass_mailing_id,

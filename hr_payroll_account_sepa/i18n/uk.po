@@ -1,24 +1,43 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* hr_payroll_account_sepa
-#
+# 
 # Translators:
-# Martin Trigaux, 2022
-# Alina Lisnenko <alina.lisnenko@erp.co.ua>, 2023
-#
+# Martin Trigaux, 2019
+# Alina Lisnenko <alinasemeniuk1@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:47+0000\n"
-"Last-Translator: Alina Lisnenko <alina.lisnenko@erp.co.ua>, 2023\n"
-"Language-Team: Ukrainian (https://app.transifex.com/odoo/teams/41243/uk/)\n"
-"Language: uk\n"
+"POT-Creation-Date: 2019-09-27 09:18+0000\n"
+"PO-Revision-Date: 2019-08-26 09:36+0000\n"
+"Last-Translator: Alina Lisnenko <alinasemeniuk1@gmail.com>, 2019\n"
+"Language-Team: Ukrainian (https://www.transifex.com/odoo/teams/41243/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: uk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__state
+msgid ""
+"* When the payslip is created the status is 'Draft'\n"
+"                \n"
+"* If the payslip is under verification, the status is 'Waiting'.\n"
+"                \n"
+"* If the payslip is confirmed then status is set to 'Done'.\n"
+"                \n"
+"* When user cancel payslip the status is 'Rejected'."
+msgstr ""
+"* Коли створений платіж, статус має назву \"Чернетка\"\n"
+"                \n"
+"* Якщо платіжний баланс підлягає перевірці, статус має назву \"Очікування\".\n"
+"                \n"
+"* Якщо сплату розрахунків підтверджено, то статус встановлено на \"Готово\".\n"
+"                \n"
+"* Коли користувач скасовує платіж, статус має назву \"Відхилено\"."
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__journal_id
@@ -39,12 +58,6 @@ msgid "Confirm"
 msgstr "Підтвердити"
 
 #. module: hr_payroll_account_sepa
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account_sepa.hr_payslip_run_view_form
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account_sepa.hr_payslip_view_form
-msgid "Create Payment Report"
-msgstr "Створити звіт платежів"
-
-#. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__create_uid
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__create_uid
 msgid "Created by"
@@ -54,25 +67,19 @@ msgstr "Створив"
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__create_date
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__create_date
 msgid "Created on"
-msgstr "Створено"
+msgstr "Створено на"
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export_date
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_date
+msgid "Creation date of the related export file."
+msgstr "Дата створення відповідного файлу експорту."
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__display_name
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__display_name
 msgid "Display Name"
 msgstr "Назва для відображення"
-
-#. module: hr_payroll_account_sepa
-#: model:ir.model,name:hr_payroll_account_sepa.model_hr_employee
-msgid "Employee"
-msgstr "Співробітник"
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
-#, python-format
-msgid "Employees With Invalid Bank Accounts"
-msgstr "Співробітники з недійсними банківськими рахунками"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export
@@ -97,12 +104,8 @@ msgstr "Назва експортованого файлу SEPA .xml"
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__sepa_export_filename
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_filename
-msgid "File Name"
-msgstr "Назва файлу"
-
-#. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__file_name
-msgid "File name"
+msgid "File Name"
 msgstr "Назва файлу"
 
 #. module: hr_payroll_account_sepa
@@ -128,15 +131,10 @@ msgid "ID"
 msgstr "ID"
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
-#, python-format
-msgid ""
-"Invalid bank account for the following employees:\n"
-"%s"
-msgstr ""
-"Недійсний банківський рахунок наступних співробітників:\n"
-"%s"
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard____last_update
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard____last_update
+msgid "Last Modified on"
+msgstr "Останні зміни на"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__write_uid
@@ -151,9 +149,21 @@ msgid "Last Updated on"
 msgstr "Останнє оновлення"
 
 #. module: hr_payroll_account_sepa
+#: model_terms:ir.ui.view,arch_db:hr_payroll_account_sepa.hr_payslip_run_view_form
+#: model_terms:ir.ui.view,arch_db:hr_payroll_account_sepa.hr_payslip_view_form
+msgid "Make Payment"
+msgstr "Зробити платіж"
+
+#. module: hr_payroll_account_sepa
 #: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export_filename
 msgid "Name of the export file generated for this payslip"
 msgstr "Назва експортованого файлу, створеного для цього розрахункового листа"
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields.selection,name:hr_payroll_account_sepa.selection__hr_payslip__state__paid
+#: model:ir.model.fields.selection,name:hr_payroll_account_sepa.selection__hr_payslip_run__state__paid
+msgid "Paid"
+msgstr "Оплачено"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model,name:hr_payroll_account_sepa.model_hr_payslip
@@ -178,29 +188,19 @@ msgid "Select a bank journal."
 msgstr "Виберіть банківський журнал."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Some employees (%s) don't have a bank account."
 msgstr "Деякі співробітники (%s) не мають банківського рахунку."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Some employees (%s) don't have a private address."
 msgstr "Деякі співробітники (%s) не мають приватних адрес."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
-#, python-format
-msgid "Some employees (%s) don't have a valid name on the private address."
-msgstr "Деякі співробітники (%s) мають недійсні назви приватних адрес."
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
-#, python-format
-msgid "The journal '%s' requires a proper IBAN account to pay via SEPA. Please configure it first."
-msgstr "Журнал '%s' вимагає правильного рахунку IBAN для оплати через SEPA. Будь ласка, налаштуйте його спочатку."
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__state
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run__state
+msgid "Status"
+msgstr "Статус"

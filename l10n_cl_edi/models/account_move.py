@@ -4,7 +4,6 @@ import base64
 import logging
 import re
 
-from collections import namedtuple
 from datetime import datetime
 from io import BytesIO
 from markupsafe import Markup
@@ -16,7 +15,7 @@ from odoo import fields, models
 from odoo.addons.l10n_cl_edi.models.l10n_cl_edi_util import UnexpectedXMLResponse, InvalidToken
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
-from odoo.tools.float_utils import float_repr, float_round
+from odoo.tools.float_utils import float_repr
 
 _logger = logging.getLogger(__name__)
 
@@ -63,16 +62,11 @@ class AccountMove(models.Model):
         ('ack_sent', 'Acknowledge Sent'),
         ('claimed', 'Claimed'),
         ('accepted', 'Accepted'),
-        ('goods', 'Reception 19983'),
-        ('accepted_goods', 'Accepted and RG 19983'),
     ], string='DTE Accept status', copy=False, help="""The status of the DTE Acceptation
     Received: the DTE was received by us for vendor bills, by our customers for customer invoices.
     Acknowledge Sent: the Acknowledge has been sent to the vendor.
     Claimed: the DTE was claimed by us for vendor bills, by our customers for customer invoices.
     Accepted: the DTE was accepted by us for vendor bills, by our customers for customer invoices.
-    Reception 19983: means that the merchandise or services reception has been created and sent.
-    Accepted and RG 19983: means that both the content of the document has been accepted and the merchandise or 
-services reception has been received as well.
     """)
     l10n_cl_claim = fields.Selection([
         ('ACD', 'Accept the Content of the Document'),
@@ -84,9 +78,11 @@ services reception has been received as well.
     l10n_cl_claim_description = fields.Char(string='Claim Detail', readonly=True, copy=False)
     l10n_cl_sii_send_file = fields.Many2one('ir.attachment', string='SII Send file', copy=False)
     l10n_cl_dte_file = fields.Many2one('ir.attachment', string='DTE file', copy=False)
-    l10n_cl_sii_send_ident = fields.Text(string='SII Send Identification(Track ID)', copy=False, tracking=True)
+    l10n_cl_sii_send_ident = fields.Text(string='SII Send Identification(Track ID)', readonly=True,
+                                         states={'draft': [('readonly', False)]}, copy=False, tracking=True)
     l10n_cl_journal_point_of_sale_type = fields.Selection(related='journal_id.l10n_cl_point_of_sale_type')
-    l10n_cl_reference_ids = fields.One2many('l10n_cl.account.invoice.reference', 'move_id', string='Reference Records')
+    l10n_cl_reference_ids = fields.One2many('l10n_cl.account.invoice.reference', 'move_id', readonly=True,
+                                            states={'draft': [('readonly', False)]}, string='Reference Records')
 
     def button_cancel(self):
         for record in self.filtered(lambda x: x.company_id.country_id.code == "CL"):
@@ -129,9 +125,8 @@ services reception has been received as well.
         # Avoid to post a vendor bill with a inactive currency created from the incoming mail
         for move in self.filtered(
                 lambda x: x.company_id.account_fiscal_country_id.code == "CL" and
-                          x.company_id.l10n_cl_dte_service_provider in ['SII', 'SIITEST', 'SIIDEMO'] and
+                          x.company_id.l10n_cl_dte_service_provider in ['SII', 'SIITEST'] and
                           x.journal_id.l10n_latam_use_documents):
-            msg_demo = _(' in DEMO mode.') if move.company_id.l10n_cl_dte_service_provider == 'SIIDEMO' else '.'
             # check if we have the currency active, in order to receive vendor bills correctly.
             if move.move_type in ['in_invoice', 'in_refund'] and not move.currency_id.active:
                 raise UserError(
@@ -156,7 +151,7 @@ services reception has been received as well.
                 })
                 move.l10n_cl_sii_send_file = attachment.id
                 move.with_context(no_new_invoice=True).message_post(
-                    body=_('DTE has been created%s', msg_demo),
+                    body=_('DTE has been created'),
                     attachment_ids=attachment.ids)
         return res
 
@@ -189,6 +184,36 @@ services reception has been received as well.
 
     # SII Customer Invoice Buttons
 
+    def _l10n_cl_send_dte_reception_status(self, status_type):
+        """
+        Send to the supplier the acceptance or claim of the bill received.
+        """
+        response_id = self.env['ir.sequence'].browse(self.env.ref('l10n_cl_edi.response_sequence').id).next_by_id()
+        response = self.env['ir.qweb']._render('l10n_cl_edi.response_dte', {
+            'move': self,
+            'format_vat': self._l10n_cl_format_vat,
+            'time_stamp': self._get_cl_current_strftime(),
+            'response_id': response_id,
+            'dte_status': 2 if status_type == 'claimed' else 0,
+            'dte_glosa_status': 'DTE Rechazado' if status_type == 'claimed' else 'DTE Aceptado OK',
+            'code_rejected': '-1' if status_type == 'claimed' else None,
+            '__keep_empty_lines': True,
+        })
+        digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
+        signed_response = self._sign_full_xml(
+            response, digital_signature, '', 'env_resp', self.l10n_latam_document_type_id._is_doc_type_voucher())
+        dte_attachment = self.env['ir.attachment'].create({
+            'name': 'DTE_{}.xml'.format(self.name),
+            'res_model': self._name,
+            'res_id': self.id,
+            'type': 'binary',
+            'datas': base64.b64encode(bytes(signed_response, 'utf-8')),
+        })
+        self.l10n_cl_dte_file = dte_attachment.id
+        email_template = (self.env.ref('l10n_cl_edi.email_template_claimed_ack') if status_type == 'claimed' else
+                          self.env.ref('l10n_cl_edi.email_template_receipt_commercial_accept'))
+        email_template.send_mail(self.id, force_send=True, email_values={'attachment_ids': [dte_attachment.id]})
+
     def l10n_cl_send_dte_to_sii(self, retry_send=True):
         """
         Send the DTE to the SII.
@@ -207,11 +232,6 @@ services reception has been received as well.
             return None
         _logger.info('Sending DTE for invoice with ID %s (name: %s)', self.id, self.name)
         digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
-        if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO':
-            self.message_post(body=_('This DTE has been generated in DEMO Mode. It is considered as accepted and '
-                                     'it won\'t be sent to SII.'))
-            self.l10n_cl_dte_status = 'accepted'
-            return None
         response = self._send_xml_to_sii(
             self.company_id.l10n_cl_dte_service_provider,
             self.company_id.website,
@@ -228,7 +248,7 @@ services reception has been received as well.
         sii_response_status = response_parsed.findtext('STATUS')
         if sii_response_status == '5':
             digital_signature.last_token = False
-            _logger.warning('The response status is %s. Clearing the token.',
+            _logger.error('The response status is %s. Clearing the token.' %
                           self._l10n_cl_get_sii_reception_status_message(sii_response_status))
             if retry_send:
                 _logger.info('Retrying send DTE to SII')
@@ -283,7 +303,7 @@ services reception has been received as well.
                      response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/NUM_ATENCION')))
 
     def l10n_cl_verify_claim_status(self):
-        if self.company_id.l10n_cl_dte_service_provider in ['SIITEST', 'SIIDEMO']:
+        if self.company_id.l10n_cl_dte_service_provider == 'SIITEST':
             raise UserError(_('This feature is not available in certification/test mode'))
         response = self._get_dte_claim(
             self.company_id.l10n_cl_dte_service_provider,
@@ -300,74 +320,13 @@ services reception has been received as well.
         except Exception as error:
             _logger.error(error)
             if not self.env.context.get('cron_skip_connection_errs'):
-                self.message_post(body=_('Asking for claim status with response:') + Markup('<br/>: %s <br/>') % response +
-                                       _('failed due to:') + Markup('<br/> %s') % error)
+                self.message_post(body=_('Asking for claim status with response:') + '<br/>: %s <br/>' % response +
+                                       _('failed due to:') + '<br/> %s' % error)
         else:
             self.l10n_cl_claim = response_code
-            self.message_post(body=_('Asking for claim status with response:') + Markup('<br/> %s') % response)
+            self.message_post(body=_('Asking for claim status with response:') + '<br/> %s' % response)
 
-    # SII Vendor Bill Buttons
-
-    def _l10n_cl_send_dte_reception_status(self, status_type):
-        """
-        Send to the supplier the acceptance or claim of the bill received.
-        """
-        response_id = self.env['ir.sequence'].browse(self.env.ref('l10n_cl_edi.response_sequence').id).next_by_id()
-        StatusType = namedtuple(
-            'StatusType',
-            ['dte_status', 'dte_glosa_status', 'code_rejected', 'email_template', 'response_type', 'env_type'])
-        status_types = {
-            'accepted': StatusType(0, 'DTE Aceptado OK', None, 'email_template_receipt_commercial_accept',
-                                   'response_dte', 'env_resp'),
-            'goods': StatusType(
-                1, 'El acuse de recibo que se declara en este acto, de acuerdo a lo dispuesto en la letra b) '
-                   'del Art. 4, y la letra c) del Art. 5 de la Ley 19.983, acredita que la entrega de '
-                   'mercaderias o servicio(s) prestado(s) ha(n) sido recibido(s).',
-                    None, 'email_template_receipt_goods', 'receipt_dte', 'recep'),
-            'claimed': StatusType(2, 'DTE Rechazado', -1, 'email_template_claimed_ack', 'response_dte', 'env_resp'),
-        }
-        if not int(self.l10n_latam_document_number):
-            raise UserError(_('Please check the document number'))
-        digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
-        response = self.env['ir.qweb']._render('l10n_cl_edi.%s' % status_types[status_type].response_type, {
-            'move': self,
-            'doc_id': f'F{int(self.l10n_latam_document_number)}T{self.l10n_latam_document_type_id.code}',
-            'format_vat': self._l10n_cl_format_vat,
-            'time_stamp': self._get_cl_current_strftime(),
-            'response_id': response_id,
-            'dte_status': status_types[status_type].dte_status,
-            'dte_glosa_status': status_types[status_type].dte_glosa_status,
-            'code_rejected': status_types[status_type].code_rejected,
-            'signer_rut': digital_signature.subject_serial_number,
-            'rec_address': f'{self.company_id.street}, {self.company_id.street2} {self.company_id.city}',
-            '__keep_empty_lines': True,
-        })
-        signed_response = self._sign_full_xml(
-            response, digital_signature, '', status_types[status_type].env_type,
-            self.l10n_latam_document_type_id._is_doc_type_voucher())
-        if status_type == 'goods':
-            response = self.env['ir.qweb']._render('l10n_cl_edi.envio_receipt_dte', {
-                'move': self,
-                'format_vat': self._l10n_cl_format_vat,
-                'receipt_section': signed_response.replace(Markup('<?xml version="1.0" encoding="ISO-8859-1" ?>'), ''),
-                'time_stamp': self._get_cl_current_strftime(),
-                '__keep_empty_lines': True,
-            })
-            signed_response = self._sign_full_xml(
-                response, digital_signature, '', 'env_recep',
-                self.l10n_latam_document_type_id._is_doc_type_voucher())
-        dte_attachment = self.env['ir.attachment'].create({
-            'name': 'DTE_{}_{}.xml'.format(status_type, self.name),
-            'res_model': self._name,
-            'res_id': self.id,
-            'type': 'binary',
-            'datas': base64.b64encode(bytes(signed_response, 'utf-8')),
-        })
-        self.l10n_cl_dte_file = dte_attachment.id
-        # If we are sending a reception of goods or services we must use an envelope and sign it the same
-        # way we do with the invoice (DTE / EnvioDTE) in this case we use the tags: DocumentoRecibo / EnvioRecibos
-        email_template = self.env.ref('l10n_cl_edi.%s' % status_types[status_type].email_template)
-        email_template.send_mail(self.id, force_send=True, email_values={'attachment_ids': [dte_attachment.id]})
+    # SII Vendor Bills Buttons
 
     def l10n_cl_reprocess_acknowledge(self):
         if not self.partner_id:
@@ -375,7 +334,7 @@ services reception has been received as well.
         try:
             self._l10n_cl_send_receipt_acknowledgment()
         except Exception as error:
-            self.message_post(body=str(error))
+            self.message_post(body=error)
 
     def _l10n_cl_send_receipt_acknowledgment(self):
         """
@@ -421,78 +380,86 @@ services reception has been received as well.
             'attachment_ids': attachment})
         self.l10n_cl_dte_acceptation_status = 'ack_sent'
 
-    def _l10n_cl_action_response(self, status_type):
-        """
-        This method is intended to manage the claim/acceptation/receipt of goods for vendor bill
-        """
-        accepted_statuses = {'accepted_goods', 'accepted', 'goods'}
-
-        ActionResponse = namedtuple('ActionResponse', ['code', 'category', 'status', 'description'])
-        action_response = {
-            'accepted': ActionResponse('ACD', _('Claim status'), 'accepted', _('acceptance')),
-            'goods': ActionResponse('ERM', _('Reception law 19983'), 'received',
-                                _('reception of goods or services RG 19.983')),
-            'claimed': ActionResponse('RCD', _('Claim status'), 'claimed', _('claim')),
-        }
-
-        if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO':
-            self.message_post(body=_(
-                '<strong>WARNING: Simulating %s in Demo Mode</strong>') % action_response[status_type].description)
-            self.l10n_cl_dte_acceptation_status = 'accepted_goods' if \
-                self.l10n_cl_dte_acceptation_status in accepted_statuses and status_type in accepted_statuses \
-                else status_type
-            self._l10n_cl_send_dte_reception_status(status_type)
+    def l10n_cl_accept_document(self):
         if not self.l10n_latam_document_type_id._is_doc_type_acceptance():
-            raise UserError(_('The document type with code %s cannot be %s') %
-                            (self.l10n_latam_document_type_id.code, action_response[status_type].status))
+            raise UserError(_('The document type with code %s cannot be accepted') %
+                            self.l10n_latam_document_type_id.code)
+        if self.company_id.l10n_cl_dte_service_provider == 'SIITEST':
+            self._l10n_cl_send_dte_reception_status('accepted')
+            self.l10n_cl_dte_acceptation_status = 'accepted'
+            self.message_post(body=_('Claim status was not sending to SII. This feature is not available in '
+                                     'certification/test mode'))
+            return None
         try:
             response = self._send_sii_claim_response(
                 self.company_id.l10n_cl_dte_service_provider, self.partner_id.vat,
                 self.company_id._get_digital_signature(user_id=self.env.user.id), self.l10n_latam_document_type_id.code,
-                self.l10n_latam_document_number, action_response[status_type].code)
+                self.l10n_latam_document_number, 'ACD')
         except InvalidToken:
             digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
             digital_signature.last_token = None
             return self.l10n_cl_accept_document()
         if not response:
             return None
+
         try:
             cod_response = response['codResp']
-            description_response = response['descResp']
         except Exception as error:
             _logger.error(error)
             self.message_post(body=_('Exception error parsing the response: %s') % response)
             return None
         if cod_response in [0, 1]:
-            # accepted_goods only when both acceptation of the invoice and receipt of goods have been done
-            self.l10n_cl_dte_acceptation_status = 'accepted_goods' if \
-                self.l10n_cl_dte_acceptation_status in accepted_statuses and status_type in accepted_statuses \
-                else status_type
-            self._l10n_cl_send_dte_reception_status(status_type)
-            msg = _('Document %s was accepted with the following response:') % (
-                action_response[status_type].description) + '<br/><strong>%s: %s.</strong>' % (
-                cod_response, description_response)
-            if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO':
-                msg += _(' -- Response simulated in Demo Mode')
+            self.l10n_cl_dte_acceptation_status = 'accepted'
+            self._l10n_cl_send_dte_reception_status('accepted')
+            msg = _('Document acceptance was accepted with response:') + '<br/> %s' % response
         else:
-            msg = _('Document %s failed with the following response:') % (action_response[status_type].description) + \
-                  Markup('<br/><strong>%s: %s.</strong>') % (cod_response, description_response)
-            if cod_response == 9 and self.company_id.l10n_cl_dte_service_provider == 'SIITEST':
-                msg += Markup(_('<br/><br/>If you are trying to test %s of documents, you should send this %s as a vendor '
-                         'to %s before doing the test.')) % (
-                    action_response[status_type].description,
-                    self.l10n_latam_document_type_id.name,
-                    self.company_id.name)
+            msg = _('Document acceptance failed with response:') + '<br/> %s' % response
         self.message_post(body=msg)
 
-    def l10n_cl_accept_document(self):
-        self._l10n_cl_action_response('accepted')
-
-    def l10n_cl_receipt_service_or_merchandise(self):
-        self._l10n_cl_action_response('goods')
-
     def l10n_cl_claim_document(self):
-        self._l10n_cl_action_response('claimed')
+        if not self.l10n_latam_document_type_id._is_doc_type_acceptance():
+            raise UserError(_('The document type with code %s cannot be claimed') %
+                            self.l10n_latam_document_type_id.code)
+        if self.company_id.l10n_cl_dte_service_provider == 'SIITEST':
+            self._l10n_cl_send_dte_reception_status('claimed')
+            self.write({
+                'l10n_cl_dte_acceptation_status': 'claimed',
+                'state': 'cancel',
+            })
+            self.message_post(body=_('The claim status was not sent to SII as this feature does not work '
+                                     'in certification/test mode'))
+            return
+        try:
+            response = self._send_sii_claim_response(
+                self.company_id.l10n_cl_dte_service_provider,
+                self.partner_id.vat,
+                self.company_id._get_digital_signature(user_id=self.env.user.id),
+                self.l10n_latam_document_type_id.code,
+                self.l10n_latam_document_number,
+                'RCD'
+            )
+        except InvalidToken:
+            digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
+            digital_signature.last_token = None
+            return self.l10n_cl_claim_document()
+        if not response:
+            return None
+        try:
+            cod_response = response['codResp']
+        except Exception as error:
+            _logger.error(error)
+            self.message_post(body='Exception error parsing the response: %s' % response)
+        else:
+            if cod_response in [0, 1]:
+                self.write({
+                    'l10n_cl_dte_acceptation_status': 'claimed',
+                    'state': 'cancel',
+                })
+                self._l10n_cl_send_dte_reception_status('claimed')
+                msg = _('Document was claimed with response:') + '<br/> %s' % response
+            else:
+                msg = _('Document claim failed with response:') + '<br/> %s' % response
+            self.message_post(body=msg)
 
     # DTE creation
 
@@ -508,7 +475,6 @@ services reception has been received as well.
             'format_length': self._format_length,
             'format_uom': self._format_uom,
             'float_repr': float_repr,
-            'float_rr': self._float_repr_float_round,
             'doc_id': doc_id_number,
             'caf': self.l10n_latam_document_type_id._get_caf_file(self.company_id.id, int(self.l10n_latam_document_number)),
             'amounts': self._l10n_cl_get_amounts(),
@@ -540,7 +506,7 @@ services reception has been received as well.
         })
         self.with_context(no_new_invoice=True).message_post(
             body=_('Partner DTE has been generated'),
-            attachment_ids=[dte_partner_attachment.id])
+            attachments_ids=[dte_partner_attachment.id])
         return dte_partner_attachment
 
     def _l10n_cl_create_dte_envelope(self, receiver_rut='60803000-K'):
@@ -580,20 +546,25 @@ services reception has been received as well.
         self.message_post(body=_('DTE has been sent to the partner'))
 
     # Helpers
+
     def _l10n_cl_edi_currency_validation(self):
-        # commented to allow validation to true for every case of invoices (national invoices in foreign currency)
+        if self.currency_id != self.company_id.currency_id and self.l10n_cl_journal_point_of_sale_type == 'online':
+            return self.l10n_latam_document_type_id._is_doc_type_export()
         return True
 
     def _l10n_cl_edi_post_validation(self):
+        if not self._l10n_cl_edi_currency_validation():
+            raise UserError(
+                _('It is not possible to validate invoices in %s for %s, please convert it to CLP') % (
+                    self.currency_id.name, self.l10n_latam_document_type_id.name))
         if (self.l10n_cl_journal_point_of_sale_type == 'online' and
                 not ((self.partner_id.l10n_cl_dte_email or self.commercial_partner_id.l10n_cl_dte_email) and
                      self.company_id.l10n_cl_dte_email) and
                 not self.l10n_latam_document_type_id._is_doc_type_export() and
                 not self.l10n_latam_document_type_id._is_doc_type_ticket()):
-            raise UserError(
-                _('The %s %s has not a DTE email defined. This is mandatory for electronic invoicing.') %
-                (_('partner') if not (self.partner_id.l10n_cl_dte_email or
-                                      self.commercial_partner_id.l10n_cl_dte_email) else _('company'), self.partner_id.name))
+            raise UserError(_('The %s %s has not a DTE email defined. This is mandatory for electronic invoicing.') %
+                            (_('partner') if not (self.partner_id.l10n_cl_dte_email or
+                                                  self.commercial_partner_id.l10n_cl_dte_email) else _('company'), self.partner_id.name))
         if datetime.strptime(self._get_cl_current_strftime(), '%Y-%m-%dT%H:%M:%S').date() < self.invoice_date:
             raise UserError(
                 _('The stamp date and time cannot be prior to the invoice issue date and time. TIP: check '
@@ -664,110 +635,42 @@ services reception has been received as well.
             'Otro': _('Internal Error'),
         }.get(sii_response_status, sii_response_status)
 
-    def _float_repr_float_round(self, value, decimal_places):
-        return float_repr(float_round(value, decimal_places), decimal_places)
-
-    def _l10n_cl_normalize_currency_name(self, currency_name):
-        currency_dict = {
-            'AED': 'DIRHAM',
-            'ARS': 'PESO',
-            'AUD': 'DOLAR AUST',
-            'BOB': 'BOLIVIANO',
-            'BRL': 'CRUZEIRO REAL',
-            'CAD': 'DOLAR CAN',
-            'CHF': 'FRANCO SZ',
-            'CLP': 'PESO CL',
-            'CNY': 'RENMINBI',
-            'COP': 'PESO COL',
-            'ECS': 'SUCRE',
-            'EUR': 'EURO',
-            'GBP': 'LIBRA EST',
-            'HKD': 'DOLAR HK',
-            'INR': 'RUPIA',
-            'JPY': 'YEN',
-            'MXN': 'PESO MEX',
-            'NOK': 'CORONA NOR',
-            'NZD': 'DOLAR NZ',
-            'PEN': 'NUEVO SOL',
-            'PYG': 'GUARANI',
-            'SEK': 'CORONA SC',
-            'SGD': 'DOLAR SIN',
-            'TWD': 'DOLAR TAI',
-            'USD': 'DOLAR USA',
-            'UYU': 'PESO URUG',
-            'VEF': 'BOLIVAR',
-            'ZAR': 'RAND',
-        }
-        return currency_dict.get(currency_name, 'OTRAS MONEDAS')
-
     def _l10n_cl_get_amounts(self):
         """
         This method is used to calculate the amount and taxes required in the Chilean localization electronic documents.
         """
         self.ensure_one()
-        global_discounts = self.invoice_line_ids.filtered(lambda x: x.price_subtotal < 0)
-        export = self.l10n_latam_document_type_id._is_doc_type_export()
-        key_main_currency = 'amount_currency' if export else 'balance'
-        sign_main_currency = -1 if self.move_type == 'out_invoice' else 1
-        currency_round_main_currency = self.currency_id if export else self.company_id.currency_id
-        currency_round_other_currency = self.company_id.currency_id if export else self.currency_id
-        total_amount_main_currency = currency_round_main_currency.round(
-            self.amount_total) if export else currency_round_main_currency.round(abs(self.amount_total_signed))
-        other_currency = self.currency_id != self.company_id.currency_id
+        vat_taxes = self.line_ids.filtered(lambda x: x.tax_line_id.l10n_cl_sii_code == 14)
+        lines_with_taxes = self.invoice_line_ids.filtered(lambda x: x.tax_ids)
+        lines_without_taxes = self.invoice_line_ids.filtered(lambda x: not x.tax_ids)
         values = {
-            'vat_amount': 0,
-            'subtotal_amount_taxable': 0,
-            'subtotal_amount_exempt': 0,
-            'total_amount': total_amount_main_currency,
-            'main_currency_round': currency_round_main_currency.decimal_places,
+            'vat_amount': self.direction_sign * self.currency_id.round(sum(vat_taxes.mapped('amount_currency'))),
+            # Sum of the subtotal amount affected by tax
+            'subtotal_amount_taxable': sum(lines_with_taxes.mapped('price_subtotal')) if (
+                    lines_with_taxes and (self.l10n_latam_document_type_id.code == '39' or
+                    not self.l10n_latam_document_type_id._is_doc_type_voucher())) else False,
+            # Sum of the subtotal amount not affected by tax
+            'subtotal_amount_exempt': sum(lines_without_taxes.mapped('price_subtotal')) if lines_without_taxes else False,
+            'vat_percent': (
+                '%.2f' % (vat_taxes[0].tax_line_id.mapped('amount')[0])
+                if vat_taxes and (self.l10n_latam_document_type_id.code == '39' or not
+                self.l10n_latam_document_type_id._is_doc_type_voucher()) and
+                   not self.l10n_latam_document_type_id._is_doc_type_exempt() else False
+            ),
+            'total_amount': self.currency_id.round(self.amount_total),
         }
-        values['main_currency_name'] = self._l10n_cl_normalize_currency_name(
-            currency_round_main_currency.name) if export else False
-        vat_percent = 0
+        # Calculate the fields needed if the invoice has a different currency than company currency
+        if self.currency_id != self.company_id.currency_id and self.l10n_latam_document_type_id._is_doc_type_export():
+            rate = (self.currency_id + self.company_id.currency_id)._get_rates(self.company_id, self.date).get(
+                self.currency_id.id) or 1
+            values['second_currency'] = {'rate': rate}
 
-        if other_currency:
-            key_other_currency = 'balance' if export else 'amount_currency'
-            values['second_currency'] = {
-                'subtotal_amount_taxable': 0,
-                'subtotal_amount_exempt': 0,
-                'vat_amount': 0,
-                'total_amount': currency_round_other_currency.round(abs(self.amount_total_signed)) \
-                    if export else currency_round_other_currency.round(self.amount_total),
-                'round_currency': currency_round_other_currency.decimal_places,
-                'name': self._l10n_cl_normalize_currency_name(currency_round_other_currency.name),
-                'rate': round(abs(self.amount_total_signed) / self.amount_total, 4),
-            }
-        for line in self.line_ids:
-            if line.tax_line_id and line.tax_line_id.l10n_cl_sii_code == 14:
-                values['vat_amount'] += line[key_main_currency] * sign_main_currency
-                if other_currency:
-                    values['second_currency']['vat_amount'] += line[key_other_currency] * sign_main_currency # amount_currency behaves as balance
-                vat_percent = line.tax_line_id.amount if line.tax_line_id.amount > vat_percent else vat_percent
-            if line.display_type == 'product':
-                if line.tax_ids:
-                    values['subtotal_amount_taxable'] += line[key_main_currency] * sign_main_currency
-                    if other_currency:
-                        values['second_currency']['subtotal_amount_taxable'] += line[key_other_currency] * sign_main_currency
-                else:
-                    values['subtotal_amount_exempt'] += line[key_main_currency] * sign_main_currency
-                    if other_currency:
-                        values['second_currency']['subtotal_amount_exempt'] += line[key_other_currency] * sign_main_currency
-        values['global_discounts'] = []
-        for gd in global_discounts:
-            main_value = currency_round_main_currency.round(abs(gd.price_subtotal)) if \
-                (not other_currency and not export) or (other_currency and export) else \
-                currency_round_main_currency.round(abs(gd.balance))
-            second_value = currency_round_other_currency.round(abs(gd.balance)) if other_currency and export else \
-                currency_round_other_currency.round(abs(gd.price_subtotal))
-            values['global_discounts'].append(
-                {
-                    'name': gd.name,
-                    'global_discount_main_value': main_value,
-                    'global_discount_second_value': second_value if second_value != main_value else False,
-                    'tax_ids': gd.tax_ids,
-                }
-            )
-        values['vat_percent'] = '%.2f' % vat_percent if vat_percent > 0 else False
+            values['second_currency'].update({
+                'subtotal_amount_taxable': sum(lines_with_taxes.mapped('price_subtotal')) / rate if lines_with_taxes else False,
+                'subtotal_amount_exempt': sum(lines_without_taxes.mapped('price_subtotal')) / rate if lines_without_taxes else False,
+                'vat_amount': sum(lines_with_taxes.mapped('price_subtotal')) / rate if lines_with_taxes else False,
+                'total_amount': self.amount_total / rate
+            })
         return values
 
     def _l10n_cl_get_withholdings(self):
@@ -782,12 +685,11 @@ services reception has been received as well.
         :return:
         """
         self.ensure_one()
-        cid = self.company_id.id
         return [{'tax_code': line.tax_line_id.l10n_cl_sii_code,
                  'tax_percent': abs(line.tax_line_id.amount),
                  'tax_amount': self.currency_id.round(abs(line.amount_currency))} for line in self.line_ids.filtered(
             lambda x: x.tax_group_id.id in [
-                self.env.ref(f'account.{cid}_tax_group_ila').id, self.env.ref(f'account.{cid}_tax_group_retenciones').id])]
+                self.env.ref('l10n_cl.tax_group_ila').id, self.env.ref('l10n_cl.tax_group_retenciones').id])]
 
     def _l10n_cl_get_dte_barcode_xml(self):
         """
@@ -803,13 +705,10 @@ services reception has been received as well.
             'format_length': self._format_length,
             'format_uom': self._format_uom,
             'time_stamp': self._get_cl_current_strftime(),
-            'caf': self.l10n_latam_document_type_id._get_caf_file(
-                self.company_id.id, int(self.l10n_latam_document_number)),
-            'amounts': self._l10n_cl_get_amounts(),
+            'caf': self.l10n_latam_document_type_id._get_caf_file(self.company_id.id, int(self.l10n_latam_document_number)),
             '__keep_empty_lines': True,
         })
-        caf_file = self.l10n_latam_document_type_id._get_caf_file(
-            self.company_id.id, int(self.l10n_latam_document_number))
+        caf_file = self.l10n_latam_document_type_id._get_caf_file(self.company_id.id, int(self.l10n_latam_document_number))
         ted = self.env['ir.qweb']._render('l10n_cl_edi.ted_template', {
             'dd': dd,
             'frmt': self._sign_message(dd.encode('ISO-8859-1', 'replace'), caf_file.findtext('RSASK')),
@@ -829,17 +728,13 @@ services reception has been received as well.
         return self.env['l10n_latam.document.type'].search(
             [('code', '=', '61'), ('country_id.code', '=', "CL")], limit=1)
 
-    def _l10n_cl_get_comuna_recep(self, recep=True):
+    def _l10n_cl_get_comuna_recep(self):
         if self.partner_id._l10n_cl_is_foreign():
-            if recep:
-                return self._format_length(
-                    self.partner_id.state_id.name or self.commercial_partner_id.state_id.name or 'N-A', 20)
-            return self._format_length(self.partner_shipping_id.state_id.name or 'N-A', 20)
+            return self._format_length(
+                self.partner_id.state_id.name or self.commercial_partner_id.state_id.name or 'N-A', 20)
         if self.l10n_latam_document_type_id._is_doc_type_voucher():
             return 'N-A'
-        if recep:
-            return self._format_length(self.partner_id.city or self.commercial_partner_id.city, 20) or False
-        return self._format_length(self.partner_shipping_id.city, 20) or False
+        return self.partner_id.city or self.commercial_partner_id.city or False
 
     def _l10n_cl_get_set_dte_id(self, xml_content):
         set_dte = xml_content.find('.//ns0:SetDTE', namespaces={'ns0': 'http://www.sii.cl/SiiDte'})
@@ -859,6 +754,8 @@ services reception has been received as well.
                                  ('partner_id.country_id.code', '=', "CL")]):
             _logger.debug('Sending %s DTE to partner' % move.name)
             if move.partner_id._l10n_cl_is_foreign():
+                # review this option: if in the email will the pdf be included, the email should be sent
+                # to foreign partners also
                 continue
             move._l10n_cl_send_dte_to_partner()
             self.env.cr.commit()
@@ -867,7 +764,7 @@ services reception has been received as well.
         for move in self.search([('l10n_cl_dte_acceptation_status', 'in', ['accepted', 'claimed']),
                                  ('move_type', 'in', ['out_invoice', 'out_refund']),
                                  ('l10n_cl_claim', '=', False)]):
-            if move.company_id.l10n_cl_dte_service_provider in ['SIITEST', 'SIIDEMO']:
+            if move.company_id.l10n_cl_dte_service_provider == 'SIITEST':
                 continue
             move.l10n_cl_verify_claim_status()
             self.env.cr.commit()
@@ -911,63 +808,25 @@ class AccountMoveLine(models.Model):
         This method is used to calculate the amount and taxes of the lines required in the Chilean localization
         electronic documents.
         """
-        # If in this fix we should check for boletas, we have the following cases, and how this affects the xml
-        # for facturas and boletas:
-
-        # 1. local invoice in same currency tax not included in price
-        # 2. local invoice in same currency tax included in price (there is difference of -1 peso in amount_untaxed
-        # and +1 peso in vat tax amount. The lines are OK
-        # 3. local invoice in different currency tax not included in price
-        # 4. local invoice in different currency tax include in price -> this is the most problematic case because
-        # 5. foreign invoice in different currency (without tax)
-
-        domestic_invoice_other_currency = self.move_id.currency_id != self.move_id.company_id.currency_id and not \
-            self.move_id.l10n_latam_document_type_id._is_doc_type_export()
-        export = self.move_id.l10n_latam_document_type_id._is_doc_type_export()
-        if not export:
-            # This is to manage case 1, 2, 3 and 4
-            # cases 1 and 2: domestic invoice in same currency and cases 3 and 4 with other currency
-            main_currency = self.move_id.company_id.currency_id
-            main_currency_field = 'balance'
-            second_currency_field = 'price_subtotal'
-            second_currency = self.currency_id
-            main_currency_rate = 1
-            second_currency_rate = abs(self.balance) / self.price_subtotal if domestic_invoice_other_currency else False
-            inverse_rate = second_currency_rate if domestic_invoice_other_currency else main_currency_rate
-        else:
-            # This is to manage case 5 (export docs)
-            main_currency = self.currency_id
-            second_currency = self.move_id.company_id.currency_id
-            main_currency_field = 'price_subtotal'
-            second_currency_field = 'balance'
-            inverse_rate = abs(self.balance) / self.price_subtotal
-        price_subtotal = abs(self[main_currency_field])
-        if self.quantity and self.discount != 100.0:
-            price_unit = (price_subtotal / abs(self.quantity)) / (1 - self.discount / 100)
-            discount_amount = (price_subtotal / (1 - self.discount / 100)) * self.discount / 100
-        else:
-            price_unit = self.price_unit
-            discount_amount = self.price_unit * self.quantity
         values = {
-            'decimal_places': main_currency.decimal_places,
-            'price_item': round(price_unit, 6),
-            'total_discount': main_currency.round(discount_amount),
-            'price_subtotal': main_currency.round(price_subtotal),
-            'exempt': bool(not self.tax_ids),
+            'price_item': float(
+                self.price_total / self.quantity) if self.move_id.l10n_latam_document_type_id._is_doc_type_voucher(
+                ) and not self.l10n_latam_document_type_id._is_doc_type_electronic_ticket() else self.price_unit,
+            'total_discount': '{:.0f}'.format(self.price_unit * self.quantity * self.discount / 100.0),
         }
-        if domestic_invoice_other_currency or export:
-            price_subtotal_second = abs(self[second_currency_field])
-            if self.quantity and self.discount != 100.0:
-                price_unit_second = (price_subtotal_second / abs(self.quantity)) / (1 - self.discount / 100)
-            else:
-                price_unit_second = self.price_unit
-            discount_amount_second = price_unit_second * self.quantity - price_subtotal_second
-            values['second_currency'] = {
-                'price': second_currency.round(price_unit_second),
-                'currency_name': self.move_id._format_length(second_currency.name, 3),
-                'conversion_rate': round(inverse_rate, 4),
-                'amount_discount': second_currency.round(discount_amount_second),
-                'total_amount': second_currency.round(price_subtotal_second),
-                'round_currency': second_currency.decimal_places,
+        if self.move_id.currency_id != self.move_id.company_id.currency_id:
+            rate = (self.move_id.currency_id + self.move_id.company_id.currency_id)._get_rates(
+                self.move_id.company_id, self.move_id.date).get(self.move_id.currency_id.id) or 1
+            second_currency_values = {
+                'price': self.price_unit if not self.move_id.l10n_latam_document_type_id._is_doc_type_export(
+                    ) else '{:.4f}'.format(self.price_unit / rate),
+                'conversion_rate': '{:.4f}'.format((self.currency_id + self.company_id.currency_id)._get_rates(
+                    self.company_id, self.move_id.date).get(
+                    self.currency_id.id)) if self.move_id.l10n_latam_document_type_id._is_doc_type_export(
+                        ) else False,
+                'total_amount': '{:.4f}'.format(
+                    self.price_subtotal / rate) if self.move_id.l10n_latam_document_type_id._is_doc_type_export(
+                        ) else False,
             }
+            values.update({'second_currency': second_currency_values})
         return values

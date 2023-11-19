@@ -52,23 +52,6 @@ class TestCleaning(test_common.TestCommon):
         records_found.action_validate()
         self.assertEqual(bernard.name, 'Bernard', 'should update the name to Bernard')
 
-    def test_cleaning_action_case_first_translated(self):
-        bernard = self._create_record('data_cleaning.test.model', name='Bernard', translated_field="THIS IS BERNARD")
-        bernard.with_context(lang='fr_FR').translated_field = "C'EST BERNARD"
-
-        self._create_rule('case', action_case='first', field_name='translated_field')
-        self.TestDCModel.action_clean_records()
-
-        records_found = self.Record.search([('cleaning_model_id', '=', self.TestDCModel.id)])
-        self.assertEqual(len(records_found), 1, 'Should find 1 record to clean')
-
-        self.assertEqual(records_found.res_id, bernard.id, 'Should be `THIS IS BERNARD`!')
-        self.assertEqual(records_found.suggested_value, 'This Is Bernard', 'Should change to all lowercase with first letters in caps')
-
-        records_found.action_validate()
-        self.assertEqual(bernard.translated_field, 'This Is Bernard', 'should update the translated_field to `This Is Bernard`')
-        self.assertEqual(bernard.with_context(lang='fr_FR').translated_field, "C'EST BERNARD", 'shoudn\'t update the translated_field of other languages')
-
     def test_cleaning_action_case_upper(self):
         jean_claude = self._create_record('data_cleaning.test.model', name='Jean Claude')
         self._create_record('data_cleaning.test.model', name='BERNARD')

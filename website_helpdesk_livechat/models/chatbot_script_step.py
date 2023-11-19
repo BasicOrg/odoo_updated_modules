@@ -11,28 +11,28 @@ class ChatbotScriptStep(models.Model):
         selection_add=[('create_ticket', 'Create Ticket')], ondelete={'create_ticket': 'cascade'})
     helpdesk_team_id = fields.Many2one('helpdesk.team', string='Helpdesk Team', ondelete='set null')
 
-    def _prepare_ticket_values(self, discuss_channel, description):
+    def _prepare_ticket_values(self, mail_channel, description):
         name = _("%(name)s's Ticket",
-            name=discuss_channel.livechat_visitor_id.display_name or self.chatbot_script_id.title)
+            name=mail_channel.livechat_visitor_id.display_name or self.chatbot_script_id.title)
 
         return {
-            'description': description + discuss_channel._get_channel_history(),
+            'description': description + mail_channel._get_channel_history(),
             'name': name,
             'source_id': self.chatbot_script_id.source_id.id,
             'team_id': self.helpdesk_team_id.id,
         }
 
-    def _process_step(self, discuss_channel):
+    def _process_step(self, mail_channel):
         self.ensure_one()
 
-        posted_message = super()._process_step(discuss_channel)
+        posted_message = super()._process_step(mail_channel)
 
         if self.step_type == 'create_ticket':
-            self._process_step_create_ticket(discuss_channel)
+            self._process_step_create_ticket(mail_channel)
 
         return posted_message
 
-    def _process_step_create_ticket(self, discuss_channel):
+    def _process_step_create_ticket(self, mail_channel):
         """ When reaching a 'create_ticket' step, we extract the relevant information: visitor's
         email, phone and conversation history to create a helpdesk.ticket.
 
@@ -44,9 +44,9 @@ class ChatbotScriptStep(models.Model):
         his issue before creating the ticket. """
 
         customer_values = self._chatbot_prepare_customer_values(
-            discuss_channel, create_partner=True, update_partner=True)
+            mail_channel, create_partner=True, update_partner=True)
 
         self.env['helpdesk.ticket'].create({
             'partner_id': customer_values['partner'].id,
-            **self._prepare_ticket_values(discuss_channel, customer_values['description']),
+            **self._prepare_ticket_values(mail_channel, customer_values['description']),
         })

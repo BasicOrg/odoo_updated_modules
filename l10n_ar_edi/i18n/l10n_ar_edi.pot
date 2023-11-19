@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.5alpha1+e\n"
+"Project-Id-Version: Odoo Server 13.3alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-07 08:31+0000\n"
-"PO-Revision-Date: 2023-09-07 08:31+0000\n"
+"POT-Creation-Date: 2020-05-15 17:03+0000\n"
+"PO-Revision-Date: 2020-05-15 17:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,21 +16,23 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_ar_edi
-#. odoo-python
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code_due
+msgid " Authorization Due date"
+msgstr ""
+
+#. module: l10n_ar_edi
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid " Missing certificate."
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid " Missing private key."
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -40,14 +42,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "\"Check Available AFIP PoS\" is not implemented for webservice %s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -56,7 +56,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -76,12 +75,27 @@ msgstr ""
 
 #. module: l10n_ar_edi
 #: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
-msgid "<span invisible=\"l10n_ar_afip_ws_crt\"> or</span>"
+msgid ""
+"<span attrs=\"{'invisible': [('l10n_ar_afip_ws_crt','!=', False)]}\"> "
+"or</span>"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__account_move__l10n_ar_fce_transmission_type__adc
-#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__res_company__l10n_ar_fce_transmission_type__adc
+#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">AFIP Web Services</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__res_config_settings__l10n_ar_afip_fce_transmission__adc
 msgid "ADC - AGENTE DE DEPOSITO COLECTIVO"
 msgstr ""
 
@@ -91,9 +105,7 @@ msgid "AFIP"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_mode
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_mode
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_mode
 msgid "AFIP Authorization Mode"
 msgstr ""
 
@@ -115,7 +127,6 @@ msgid "AFIP Environment"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
 msgid "AFIP Errors"
@@ -133,16 +144,13 @@ msgid "AFIP Invoice Verification"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "AFIP Messages"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_qr_code
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_qr_code
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_qr_code
 msgid "AFIP QR Code"
 msgstr ""
 
@@ -152,44 +160,36 @@ msgid "AFIP Servers"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "AFIP Validation Error"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "AFIP Validation Event"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "AFIP Validation Observation"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_verification_result
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_verification_result
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_verification_result
 msgid "AFIP Verification result"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_ws
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_journal__l10n_ar_afip_ws
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_ws
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_ws
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afipws_connection__l10n_ar_afip_ws
 msgid "AFIP WS"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
@@ -198,7 +198,6 @@ msgstr ""
 
 #. module: l10n_ar_edi
 #: model:ir.ui.menu,name:l10n_ar_edi.menu_afipws
-#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
 msgid "AFIP Web Services"
 msgstr ""
 
@@ -208,24 +207,37 @@ msgid "AFIP Webservice Connection"
 msgstr ""
 
 #. module: l10n_ar_edi
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_xml_request
+msgid "AFIP XML Request"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_xml_response
+msgid "AFIP XML Response"
+msgstr ""
+
+#. module: l10n_ar_edi
 #: model_terms:ir.ui.view,arch_db:l10n_ar_edi.view_move_form
 msgid "AFIP authorization"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "AFIP authorization verification result: %s%s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid ""
 "AFIP environment not configured for company \"%s\", please check accounting "
 "settings"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_result
+msgid "AFIP request result"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -251,7 +263,6 @@ msgid "Approved"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid ""
@@ -261,42 +272,11 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_result
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_result
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_result
-msgid "Argentina: Result of the electronic invoice request to the AFIP web service"
+#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
+msgid "Argentina Localization"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_code_due
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code_due
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_code_due
-msgid "Argentina: The Due Date of the Invoice given by AFIP"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_fce_is_cancellation
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_fce_is_cancellation
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_fce_is_cancellation
-msgid ""
-"Argentina: When informing a MiPyMEs (FCE) debit/credit notes in AFIP it is "
-"required to send information about whether the original document has been "
-"explicitly rejected by the buyer. More information here "
-"http://www.afip.gob.ar/facturadecreditoelectronica/preguntasFrecuentes/emisor-"
-"factura.asp"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_code
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_code
-msgid ""
-"Argentina: authorization code given by AFIP after electronic invoice is "
-"created and valid"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -308,17 +288,8 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_code
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_code
 msgid "Authorization Code"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_code_due
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code_due
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_code_due
-msgid "Authorization Due date"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -413,15 +384,18 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "Connection failed"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
+#: code:addons/l10n_ar_edi/models/res_config_settings.py:0
+#, python-format
+msgid "Connection failed. This is what we get"
+msgstr ""
+
+#. module: l10n_ar_edi
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "Connection is available"
@@ -457,12 +431,22 @@ msgid "Consult invoice in AFIP"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
 "Could happen that the VAT is calculated without the discount, then it throws"
 " another amount."
+msgstr ""
+
+#. module: l10n_ar_edi
+#: code:addons/l10n_ar_edi/models/account_journal.py:0
+#, python-format
+msgid "Could not synchronize next number with the AFIP last numbers %s"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_res_config_settings__l10n_ar_country_code
+msgid "Country Code"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -488,12 +472,6 @@ msgid "Default MiPyME FCE Transmission Option"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_res_company__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,help:l10n_ar_edi.field_res_config_settings__l10n_ar_fce_transmission_type
-msgid "Default value for \"FCE: Transmission Option\" on electronic invoices"
-msgstr ""
-
-#. module: l10n_ar_edi
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afip_ws_consult__display_name
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afipws_connection__display_name
 msgid "Display Name"
@@ -505,36 +483,18 @@ msgid "Document Type"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Domestic market -without detail- RG2485 (WSFEv1)"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:account.journal,name:l10n_ar_edi.ws_fex_journal_ri
-msgid "Electronic Exportation Invoice (FEX)"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model:account.journal,name:l10n_ar_edi.ws_bfe_journal_ri
-msgid "Electronic Fiscal Bond (BFE)"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Electronic Fiscal Bond - Web Service"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:account.journal,name:l10n_ar_edi.ws_fe_journal_ri
-msgid "Electronic Invoice (FE)"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Electronic Invoice - Web Service"
@@ -555,69 +515,52 @@ msgid "Expiration Time"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Export -with detail- RG2758 (WSFEXv1)"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Export Voucher - Web Service"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_fce_is_cancellation
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_fce_is_cancellation
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_fce_is_cancellation
 msgid "FCE: Is Cancellation?"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_fce_transmission_type
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_res_config_settings__l10n_ar_afip_fce_transmission
 msgid "FCE: Transmission Option"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_res_company__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_res_config_settings__l10n_ar_fce_transmission_type
-msgid "FCE: Transmission Option Default"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid "Fiscal Bond -with detail- RG2557 (WSBFE)"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "For \"%s\" WS the afip code country is mandatory: %s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "For WS \"%s\" country code is mandatory country: %s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "For WS \"%s\" country is required on partner"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -628,7 +571,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -637,7 +579,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid ""
@@ -651,17 +592,11 @@ msgid "Generate Renewal Request"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
-msgid "Generate Request"
-msgstr ""
-
-#. module: l10n_ar_edi
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afipws_connection__generation_time
 msgid "Generation Time"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid "Get AFIP currency rate not implemented for webservice %s"
@@ -686,14 +621,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "Go to AFIP page"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "HINT"
@@ -718,7 +651,6 @@ msgid "ID"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -730,7 +662,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -742,26 +673,32 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "Invoice Date is required!"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
 msgid "Invoice number %s\n"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid ""
 "Invoice validated locally because it is in a testing environment without "
 "testing certificate/keys"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: code:addons/l10n_ar_edi/models/afip_errors.py:0
+#, python-format
+msgid ""
+"It is possible that you are making a CN/DN but you are setting a wrong value in the \"FCE: Is cancellation\" field. If the AFIP message indicates:\n"
+"\t * \"OK - Comprobante electrónico autorizado, NO rechazado por el Comprador\" it means that the \"FCE: Is cancellation\" should NOT be set.\n"
+"\t * \"OK - Comprobante electrónico autorizado pero fue rechazado por el comprador\" it means that the \"FCE: Is cancellation\" should be set."
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -776,7 +713,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -787,17 +723,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/afip_errors.py:0
-#, python-format
-msgid ""
-"It is possible that you are making a CN/DN but you are setting a wrong value in the \"FCE: Is cancellation\" field. If the AFIP message indicates:\n"
-"\t * \"OK - Comprobante electrónico autorizado, NO rechazado por el Comprador\" it means that the \"FCE: Is cancellation\" should NOT be set.\n"
-"\t * \"OK - Comprobante electrónico autorizado pero fue rechazado por el comprador\" it means that the \"FCE: Is cancellation\" should be set."
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid ""
@@ -806,7 +731,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid "It solved using \"round globally\" method in the company"
@@ -820,21 +744,24 @@ msgstr ""
 
 #. module: l10n_ar_edi
 #: model:ir.model,name:l10n_ar_edi.model_account_move
-msgid "Journal Entry"
+msgid "Journal Entries"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_verification_type
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_verification_type
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_verification_type
 msgid "L10N Ar Afip Verification Type"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid "Last Business Day"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afip_ws_consult____last_update
+#: model:ir.model.fields,field_description:l10n_ar_edi.field_l10n_ar_afipws_connection____last_update
+msgid "Last Modified on"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -850,7 +777,6 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "Missing configuration to connect to AFIP:"
@@ -863,21 +789,18 @@ msgid "NCM Code"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "No AFIP WS selected"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
 msgid "No AFIP WS selected on point of sale %s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid ""
@@ -886,15 +809,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/account_move.py:0
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "No AFIP code in %s UOM"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid ""
@@ -902,7 +822,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid "No rate for ARS (is the base currency for AFIP)"
@@ -915,14 +834,12 @@ msgid "Not Available"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "Not a valid certificate file"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "Not a valid private key file"
@@ -939,45 +856,18 @@ msgid "Observed"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/afip_errors.py:0
-#, python-format
-msgid ""
-"Please check the next conditions:\n"
-"    * Review that the invoice total invoice is greater than the amount defined by AFIP for this type of document\n"
-"    * Review that the customer is a MiPYME"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid "Please report this error to your Odoo provider"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "Please set AFIP Authorization Mode and Code to continue!"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/res_config_settings.py:0
-#, python-format
-msgid "Please set a certificate in order to make the test"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/res_config_settings.py:0
-#, python-format
-msgid "Please set a private key in order to make the test"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
 msgid ""
@@ -985,14 +875,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/wizards/l10n_ar_afip_ws_consult.py:0
 #, python-format
 msgid "Please set the number you want to consult"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "Point of sale and document number are required!"
@@ -1011,7 +899,7 @@ msgstr ""
 
 #. module: l10n_ar_edi
 #: model:ir.model,name:l10n_ar_edi.model_product_template
-msgid "Product"
+msgid "Product Template"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -1026,7 +914,6 @@ msgid "QR Code"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid "Rate:"
@@ -1044,21 +931,13 @@ msgid "Required"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_result
 #: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_result
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_result
 msgid "Result"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__account_move__l10n_ar_fce_transmission_type__sca
-#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__res_company__l10n_ar_fce_transmission_type__sca
+#: model:ir.model.fields.selection,name:l10n_ar_edi.selection__res_config_settings__l10n_ar_afip_fce_transmission__sca
 msgid "SCA - TRANSFERENCIA AL SISTEMA DE CIRCULACION ABIERTA"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form_demo
-msgid "Set another demo certificate"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -1067,16 +946,19 @@ msgid "Sign"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid ""
-"Some documents where validated in AFIP but as we have an error with one document the batch validation was stopped\n"
+"Some invoices where validated in AFIP but as we have an error with one invoice the batch validation was stopped\n"
 "\n"
-"* These documents were validated:\n"
-"%(validate_invoices)s\n"
-"* These documents weren't validated:\n"
-"%(invalide_invoices)s\n"
+"* These invoices were validated:\n"
+"   * %s\n"
+"\n"
+"* These invoices weren't validated:\n"
+"%s\n"
+"\n"
+"\n"
+"\n"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -1093,8 +975,10 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
-msgid "Test Connections"
+#: model:ir.model.fields,help:l10n_ar_edi.field_l10n_ar_afip_ws_consult__available_document_type_ids
+msgid ""
+"Technical field used to compute the domain of the documents available for "
+"the given journal"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -1104,28 +988,36 @@ msgid "Testing"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "The AFIP certificate is expired, please renew in order to continue"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
+#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_code_due
+msgid "The Due Date of the Invoice given by AFIP"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model:ir.model.fields,help:l10n_ar_edi.field_res_config_settings__l10n_ar_country_code
+msgid ""
+"The ISO country code in two chars. \n"
+"You can use this field for quick search."
+msgstr ""
+
+#. module: l10n_ar_edi
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid "The certificate and private key do not match"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "The certificate can not be uploaded!"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid ""
@@ -1133,28 +1025,24 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "The company CUIT must be defined before this action"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "The company city must be defined before this action"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "The company country must be defined before this action"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1163,25 +1051,21 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid "The invoice is trying to be reprocessed"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
-"The new RG 4919/2021 define that MiPYME document requires to inform the FCE Transmission Option. Set this one in your Accounting Settings in order to continue. Possible values are: SCA or ADC. These options means:\n"
+"The new RG 4919/2021 define that MiPYME document requires to inform the FCE Transmission Option. Set this one in your System Parameters creating a parameter with name \"l10n_ar_edi.fce_transmission\". Possible values are: SCA or ADC. These options means:\n"
 " * SCA - TRANSFERENCIA AL SISTEMA DE CIRCULACION ABIERTA\n"
 " * ADC - AGENTE DE DEPOSITO COLECTIVO"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1194,14 +1078,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid "The private key can not be uploaded!"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1213,7 +1095,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid ""
@@ -1224,7 +1105,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_currency.py:0
 #, python-format
 msgid ""
@@ -1234,16 +1114,13 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid "There was a problem with the connection to the %s webservice: %s"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_qr_code
 #: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_qr_code
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_qr_code
 msgid ""
 "This QR code is mandatory by the AFIP in the electronic invoices when this "
 "ones are printed."
@@ -1266,7 +1143,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1277,8 +1153,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1298,23 +1172,19 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_fce_transmission_type
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_fce_transmission_type
+#: model:ir.model.fields,help:l10n_ar_edi.field_res_config_settings__l10n_ar_afip_fce_transmission
 msgid ""
-"This field only need to be set when you are reporting a MiPyME FCE "
-"documents. Default value can be set in the Accouting Settings"
+"This field only need to be set when you are reporting a MiPyME FCE documents"
 msgstr ""
 
 #. module: l10n_ar_edi
 #: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
 msgid ""
-"This information will be sent to AFIP by default when validating electronic "
-"FCE documents. RG 4919/2021 requirement."
+"This information will be sent to AFIP when validation electronic FCE "
+"documents. RG 4919/2021 requirement."
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1324,7 +1194,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1333,18 +1202,15 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
-msgid "This is the description of the observation code: \"%s\""
+msgid "This is the description of the observation code"
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_auth_mode
 #: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_auth_mode
-#: model:ir.model.fields,help:l10n_ar_edi.field_account_payment__l10n_ar_afip_auth_mode
 msgid ""
-"This is the type of AFIP Authorization, depending on the way that the invoice is created the mode will change:\n"
+"This is the type of AFIP Authorization, depending of the way that the invoice is created the mode will change:\n"
 "\n"
 " * CAE (Electronic Authorization Code): Means that is an electronic invoice. If you validate a customer invoice this field will be autofill with CAE option. Also, if you trying to verify in AFIP an electronic vendor bill you can set this option\n"
 " * CAI (Printed Authorization Code): Means that is a pre-printed invoice. With this option set you can register and verify in AFIP pre-printed vendor bills\n"
@@ -1352,21 +1218,9 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/res_config_settings.py:0
 #, python-format
 msgid "This is what we get"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
-#: code:addons/l10n_ar_edi/models/account_move.py:0
-#, python-format
-msgid ""
-"This is what we get:\n"
-"%s\n"
-"\n"
-"Please make the required corrections and try again"
 msgstr ""
 
 #. module: l10n_ar_edi
@@ -1396,7 +1250,6 @@ msgid "Unique ID"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid "Verification of Invoices (WSCDC)"
@@ -1408,7 +1261,6 @@ msgid "Verify Vendor Bills validity in AFIP"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid ""
@@ -1417,21 +1269,18 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
-msgid "We couldn't validate the document \"%s\" (Draft Invoice *%s) in AFIP"
+msgid "We couldn't validate the invoice \"%s\" (Draft Invoice *%s) in AFIP"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_move.py:0
 #, python-format
 msgid "We couldn't validate the invoice in AFIP."
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -1440,7 +1289,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1452,37 +1300,30 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
 #, python-format
 msgid "Webservice is down"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
+#: model:ir.model.fields,help:l10n_ar_edi.field_account_move__l10n_ar_afip_fce_is_cancellation
+msgid ""
+"When informing a MiPyMEs (FCE) debit/credit notes in AFIP it is require to "
+"sent information about if the original document has been explicitly rejected"
+" by the buyer. More information here "
+"http://www.afip.gob.ar/facturadecreditoelectronica/preguntasFrecuentes/emisor-"
+"factura.asp"
+msgstr ""
+
+#. module: l10n_ar_edi
 #: code:addons/l10n_ar_edi/models/res_company.py:0
 #, python-format
 msgid ""
-"Wrong certificate file format.\n"
-"Please upload a valid PEM certificate."
+"Wrong Certificate file format.\n"
+"Be sure you have BEGIN CERTIFICATE string in your first line."
 msgstr ""
 
 #. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_xml_request
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_xml_request
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_xml_request
-msgid "XML Request"
-msgstr ""
-
-#. module: l10n_ar_edi
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_bank_statement_line__l10n_ar_afip_xml_response
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_move__l10n_ar_afip_xml_response
-#: model:ir.model.fields,field_description:l10n_ar_edi.field_account_payment__l10n_ar_afip_xml_response
-msgid "XML Response"
-msgstr ""
-
-#. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1493,7 +1334,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid ""
@@ -1502,14 +1342,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/afip_errors.py:0
 #, python-format
 msgid "You may not have completed the Bank Account field on the invoice"
 msgstr ""
 
 #. module: l10n_ar_edi
-#. odoo-python
 #: code:addons/l10n_ar_edi/models/product_template.py:0
 #, python-format
 msgid ""
@@ -1519,8 +1357,27 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_edi
+#: code:addons/l10n_ar_edi/models/l10n_ar_afipws_connection.py:0
+#, python-format
+msgid ""
+"it seems like you do not have permissions in AFIP to connect using the "
+"current certificate and CUIT. Please confirm this two parameters and then "
+"try again"
+msgstr ""
+
+#. module: l10n_ar_edi
 #: model_terms:ir.ui.view,arch_db:l10n_ar_edi.l10n_ar_afip_ws_consult_form
 msgid "or"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form
+msgid "⇒ Generate Request"
+msgstr ""
+
+#. module: l10n_ar_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_edi.res_config_settings_view_form_demo
+msgid "⇒ Set another demo certificate"
 msgstr ""
 
 #. module: l10n_ar_edi

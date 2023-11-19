@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import options from '@web_editor/js/editor/snippets.options';
-import weUtils from '@web_editor/js/common/utils';
+import options from 'web_editor.snippets.options';
+import weUtils from 'web_editor.utils';
 
 options.registry.StepsConnector = options.Class.extend({
     /**
@@ -73,16 +73,6 @@ options.registry.StepsConnector = options.Class.extend({
     //--------------------------------------------------------------------------
 
     /**
-     * @override
-     */
-    _computeVisibility() {
-        // We don't use the service_context_get intentionally because the
-        // connectors are hidden as soon as the page is smaller than 992px
-        // (the BS lg breakpoint).
-        const isMobileView = weUtils.isMobileView(this.$target[0]);
-        return !isMobileView && this._super(...arguments);
-    },
-    /**
      * Width and position of the connectors should be updated when one of the
      * steps is modified.
      *
@@ -91,53 +81,24 @@ options.registry.StepsConnector = options.Class.extend({
     _reloadConnectors() {
         const possibleTypes = this._requestUserValueWidgets('connector_type')[0].getMethodsParams().optionsPossibleValues.selectClass;
         const type = possibleTypes.find(possibleType => possibleType && this.$target[0].classList.contains(possibleType)) || '';
-        // As the connectors are only visible in desktop, we can ignore the
-        // steps that are only visible in mobile.
-        const stepsEls = this.$target[0].querySelectorAll('.s_process_step:not(.o_snippet_desktop_invisible)');
-        const nbBootstrapCols = 12;
-        let colsInRow = 0;
+        const steps = this.$target[0].querySelectorAll('.s_process_step');
 
-        for (let i = 0; i < stepsEls.length - 1; i++) {
-            const connectorEl = stepsEls[i].querySelector('.s_process_step_connector');
-            const stepMainElementRect = this._getStepMainElementRect(stepsEls[i]);
-            const nextStepMainElementRect = this._getStepMainElementRect(stepsEls[i + 1]);
-            const stepSize = this._getClassSuffixedInteger(stepsEls[i], 'col-lg-');
-            const nextStepSize = this._getClassSuffixedInteger(stepsEls[i + 1], 'col-lg-');
-            const stepOffset = this._getClassSuffixedInteger(stepsEls[i], 'offset-lg-');
-            const nextStepOffset = this._getClassSuffixedInteger(stepsEls[i + 1], 'offset-lg-');
-            const stepPaddingTop = this._getClassSuffixedInteger(stepsEls[i], 'pt');
-            const nextStepPaddingTop = this._getClassSuffixedInteger(stepsEls[i + 1], 'pt');
+        for (let i = 0; i < steps.length - 1; i++) {
+            const connectorEl = steps[i].querySelector('.s_process_step_connector');
+            const stepMainElementRect = this._getStepMainElementRect(steps[i]);
+            const nextStepMainElementRect = this._getStepMainElementRect(steps[i + 1]);
+            const stepSize = this._getStepColSize(steps[i]);
+            const nextStepSize = this._getStepColSize(steps[i + 1]);
+            const nextStepPadding = this._getStepColPadding(steps[i + 1]);
 
             connectorEl.style.left = `calc(50% + ${stepMainElementRect.width / 2}px)`;
             connectorEl.style.height = `${stepMainElementRect.height}px`;
-            connectorEl.style.width = `calc(${100 * (stepSize / 2 + nextStepOffset + nextStepSize / 2) / stepSize}% - ${stepMainElementRect.width / 2}px - ${nextStepMainElementRect.width / 2}px)`;
-
-            const isTheLastColOfRow = nbBootstrapCols <
-                colsInRow + stepSize + stepOffset + nextStepSize + nextStepOffset;
-            const isNextStepTooLow = stepMainElementRect.height + stepPaddingTop <
-                nextStepPaddingTop;
-            connectorEl.classList.toggle('d-none', isTheLastColOfRow || isNextStepTooLow);
-            colsInRow = isTheLastColOfRow ? 0 : colsInRow + stepSize + stepOffset;
-            // When we are mobile view, the connector is not visible, here we
-            // display it quickly just to have its size.
-            connectorEl.style.display = 'block';
+            connectorEl.style.width = `calc(${100 * (stepSize / 2 + nextStepPadding + nextStepSize / 2) / stepSize}% - ${stepMainElementRect.width / 2}px - ${nextStepMainElementRect.width / 2}px)`;
+            connectorEl.classList.toggle('d-none', nextStepMainElementRect.top > stepMainElementRect.bottom);
             const {height, width} = connectorEl.getBoundingClientRect();
-            connectorEl.style.removeProperty('display');
             connectorEl.setAttribute('viewBox', `0 0 ${width} ${height}`);
             connectorEl.querySelector('path').setAttribute('d', this._getPath(type, width, height));
         }
-    },
-    /**
-     * Returns the number suffixed to the class given in parameter.
-     *
-     * @private
-     * @param {HTMLElement} el
-     * @param {String} classNamePrefix
-     * @returns {Integer}
-     */
-    _getClassSuffixedInteger(el, classNamePrefix) {
-        const className = [...el.classList].find(cl => cl.startsWith(classNamePrefix));
-        return className ? parseInt(className.replace(classNamePrefix, '')) : 0;
     },
     /**
      * Returns the step's icon or content bounding rectangle.
@@ -167,6 +128,28 @@ options.registry.StepsConnector = options.Class.extend({
         return {};
     },
     /**
+     * Returns the size of the step, as a number of bootstrap lg-col.
+     *
+     * @private
+     * @param {HTMLElement}
+     * @returns {integer}
+     */
+    _getStepColSize(stepEl) {
+        const colClass = stepEl.className.split(' ').find(cl => cl.startsWith('col-lg'));
+        return parseInt(colClass[colClass.length - 1]);
+    },
+    /**
+     * Returns the padding of the step, as a number of bootstrap lg-col.
+     *
+     * @private
+     * @param {HTMLElement}
+     * @returns {integer}
+     */
+    _getStepColPadding(stepEl) {
+        const paddingClass = stepEl.className.split(' ').find(cl => cl.startsWith('offset-lg'));
+        return paddingClass ? parseInt(paddingClass[paddingClass.length - 1]) : 0;
+    },
+    /**
      * Returns the svg path based on the type of connector.
      *
      * @private
@@ -188,6 +171,5 @@ options.registry.StepsConnector = options.Class.extend({
                 return `M ${0.05 * width} ${hHeight * 1.2} Q ${width / 2} ${hHeight * 1.8}, ${0.95 * width - 6} ${hHeight * 1.2}`;
             }
         }
-        return '';
     },
 });

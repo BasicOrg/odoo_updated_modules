@@ -3,18 +3,17 @@
 # 	* event_sale
 # 
 # Translators:
-# Wil Odoo, 2023
-# Daye Jeong, 2023
-# Sarah Park, 2023
+# JH CHOI <hwangtog@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -27,13 +26,6 @@ msgid ""
 ".\n"
 "            <span>Manual actions may be needed.</span>"
 msgstr ""
-".\n"
-"            <span>수동 작업이 필요할 수 있습니다.</span>"
-
-#. module: event_sale
-#: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
-msgid "<span class=\"o_stat_text\">Sale Order</span>"
-msgstr "<span class=\"o_stat_text\">판매 주문</span>"
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_form_inherit_ticket
@@ -41,16 +33,23 @@ msgid "<span class=\"o_stat_text\">Sales</span>"
 msgstr "<span class=\"o_stat_text\">판매</span>"
 
 #. module: event_sale
+#: model_terms:ir.ui.view,arch_db:event_sale.view_event_registration_editor_form
+msgid ""
+"<span>Not enough seats available. All registrations were created as "
+"\"Unconfirmed\" and can be updated later on.</span>"
+msgstr ""
+
+#. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_ticket_id_change_exception
 msgid "<span>Registration modification for attendee:</span>"
-msgstr "<span>참석자 등록 수정:</span>"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,help:event_sale.field_event_event_ticket__description
 #: model:ir.model.fields,help:event_sale.field_event_type_ticket__description
 msgid ""
 "A description of the ticket that you want to communicate to your customers."
-msgstr "고객에게 전달하려는 티켓에 대한 내용입니다."
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,help:event_sale.field_product_product__detailed_type
@@ -60,14 +59,14 @@ msgid ""
 "A consumable product is a product for which stock is not managed.\n"
 "A service is a non-material product you provide."
 msgstr ""
-"저장 가능 품목이란 재고 관리가 가능한 품목을 의미하며, 사용을 위해서는 재고 관리 앱을 설치하셔야 합니다.\n"
-"소모품은 재고가 따로 관리되지 않는 품목입니다.\n"
-"서비스는 회사 측에서 제공하는 비물질적 재화입니다."
+"저장 가능 제품은 재고를 관리하는 품목입니다. 창고 앱이 설치되어 있어야 합니다.\n"
+"소모품은 재고가 관리되지 않는 품목입니다.\n"
+"서비스는 귀하가 제공하는 비물질 품목입니다."
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event__sale_order_lines_ids
 msgid "All sale order lines pointing to this event"
-msgstr "이 행사에 대한 전체 판매 주문 내역"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__event_registration_state__done
@@ -77,7 +76,7 @@ msgstr "참석함"
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_sale_order__attendee_count
 msgid "Attendee Count"
-msgstr "참석자 수"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__event_registration_name
@@ -92,12 +91,12 @@ msgstr "참석자"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_registration_editor_form
 msgid "Before updating the linked registrations of"
-msgstr "연결된 등록을 업데이트하기 전에"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Booked by"
-msgstr "예약자"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_registration__utm_campaign_id
@@ -113,7 +112,7 @@ msgstr "취소"
 #: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__event_registration_state__cancel
 #: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_order_state__cancel
 msgid "Cancelled"
-msgstr "취소됨"
+msgstr "취소 됨"
 
 #. module: event_sale
 #: model:ir.model.fields,help:event_sale.field_sale_order_line__event_id
@@ -132,7 +131,7 @@ msgstr "행사 티켓을 선택하면 이 행사 티켓에 대한 등록이 자�
 #. module: event_sale
 #: model_terms:ir.actions.act_window,help:event_sale.event_sale_report_action
 msgid "Come back once tickets have been sold to overview your sales income."
-msgstr "티켓이 판매된 후 다시 판매 수입 현황을 살펴보시기 바랍니다."
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__company_id
@@ -152,7 +151,7 @@ msgstr "확인됨"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_registration_editor_form
 msgid "Create/Update registrations"
-msgstr "등록 생성/업데이트"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event_configurator__create_uid
@@ -170,8 +169,6 @@ msgstr "작성일자"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event__currency_id
-#: model:ir.model.fields,field_description:event_sale.field_event_event_ticket__currency_id
-#: model:ir.model.fields,field_description:event_sale.field_event_type_ticket__currency_id
 msgid "Currency"
 msgstr "통화"
 
@@ -208,7 +205,7 @@ msgstr "판매 확인에 대한 참석자 목록 편집"
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__editor_id
 msgid "Editor"
-msgstr "편집기"
+msgstr "편집가"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__email
@@ -238,20 +235,28 @@ msgid "Event End Date"
 msgstr "행사 종료일"
 
 #. module: event_sale
+#: model:ir.model.fields,field_description:event_sale.field_sale_order_line__event_ok
+msgid "Event Ok"
+msgstr ""
+
+#. module: event_sale
 #: model:ir.model,name:event_sale.model_event_registration
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__event_registration_id
+#: model:product.product,name:event_sale.product_product_event
 msgid "Event Registration"
 msgstr "행사 등록"
 
 #. module: event_sale
+#: model:product.product,name:event_sale.product_product_event_standard
 #: model:product.template,name:event_sale.product_product_event_standard_product_template
 msgid "Event Registration - Standard"
-msgstr "행사 등록 - 일반"
+msgstr ""
 
 #. module: event_sale
+#: model:product.product,name:event_sale.product_product_event_vip
 #: model:product.template,name:event_sale.product_product_event_vip_product_template
 msgid "Event Registration - VIP"
-msgstr "행사 등록 - VIP"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.actions.act_window,name:event_sale.action_sale_order_event_registration
@@ -261,12 +266,12 @@ msgstr "행사 등록"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Event Sales Analysis"
-msgstr "행사 판매 분석"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model,name:event_sale.model_event_sale_report
 msgid "Event Sales Report"
-msgstr "행사 판매 보고서"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__event_date_begin
@@ -277,7 +282,7 @@ msgstr "행사 시작일"
 #. module: event_sale
 #: model:ir.model,name:event_sale.model_event_type_ticket
 msgid "Event Template Ticket"
-msgstr "행사 티켓 서식"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model,name:event_sale.model_event_event_ticket
@@ -303,16 +308,16 @@ msgstr "행사 유형"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Events that have ended"
-msgstr "종료된 행사"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_ticket_id_change_exception
 msgid "Exception:"
-msgstr "예외:"
+msgstr ""
 
 #. module: event_sale
-#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__sale_status__free
-#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_status__free
+#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__payment_status__free
+#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__payment_status__free
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Free"
 msgstr "무료"
@@ -331,21 +336,39 @@ msgid "ID"
 msgstr "ID"
 
 #. module: event_sale
-#. odoo-python
 #: code:addons/event_sale/wizard/event_configurator.py:0
 #, python-format
 msgid "Invalid ticket choice \"%(ticket_name)s\" for event \"%(event_name)s\"."
-msgstr "%(event_name)s 행사에 대한 \"%(ticket_name)s\" 티켓 선택이 잘못되었습니다."
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__invoice_partner_id
 msgid "Invoice Address"
-msgstr "청구지 주소"
+msgstr "청구서 발행 주소"
+
+#. module: event_sale
+#: model:ir.model.fields,field_description:event_sale.field_event_registration__is_paid
+#: model:ir.model.fields,field_description:event_sale.field_event_sale_report__is_paid
+msgid "Is Paid"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__active
 msgid "Is registration active (not archived)?"
-msgstr "등록이 활성화된 상태인가요? (보관 처리되지 않았는지 확인)"
+msgstr ""
+
+#. module: event_sale
+#: model:ir.model,name:event_sale.model_account_move
+msgid "Journal Entry"
+msgstr "분개"
+
+#. module: event_sale
+#: model:ir.model.fields,field_description:event_sale.field_event_event_configurator____last_update
+#: model:ir.model.fields,field_description:event_sale.field_event_sale_report____last_update
+#: model:ir.model.fields,field_description:event_sale.field_registration_editor____last_update
+#: model:ir.model.fields,field_description:event_sale.field_registration_editor_line____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event_configurator__write_uid
@@ -362,9 +385,19 @@ msgid "Last Updated on"
 msgstr "최근 갱신 일자"
 
 #. module: event_sale
+#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_order_state__done
+msgid "Locked"
+msgstr "잠김"
+
+#. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_registration__utm_medium_id
 msgid "Medium"
-msgstr "전달 매체"
+msgstr "중간"
+
+#. module: event_sale
+#: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__mobile
+msgid "Mobile"
+msgstr "모바일"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__name
@@ -374,19 +407,23 @@ msgstr "이름"
 #. module: event_sale
 #: model_terms:ir.actions.act_window,help:event_sale.event_sale_report_action
 msgid "No Event Revenues yet!"
-msgstr "아직 행사 수익이 없습니다!"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Non-free tickets"
-msgstr "유료 티켓"
+msgstr ""
 
 #. module: event_sale
-#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__sale_status__to_pay
-#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_status__to_pay
-#: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
-msgid "Not Sold"
-msgstr "판매되지 않음"
+#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__payment_status__to_pay
+#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__payment_status__to_pay
+msgid "Not Paid"
+msgstr "지불 안됨"
+
+#. module: event_sale
+#: model:ir.model.fields,field_description:event_sale.field_registration_editor__seats_available_insufficient
+msgid "Not enough seats for all registrations"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_configurator_view_form
@@ -395,13 +432,27 @@ msgstr "확인"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_order_date
+#: model_terms:ir.ui.view,arch_db:event_sale.event_report_template_full_page_ticket_inherit_sale
 msgid "Order Date"
 msgstr "주문일"
+
+#. module: event_sale
+#: model_terms:ir.ui.view,arch_db:event_sale.event_report_template_full_page_ticket_inherit_sale
+msgid "Order Ref"
+msgstr "주문 참조"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__registration_id
 msgid "Original Registration"
 msgstr "원본 등록"
+
+#. module: event_sale
+#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__payment_status__paid
+#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__payment_status__paid
+#: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
+#: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
+msgid "Paid"
+msgstr "지불됨"
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
@@ -414,14 +465,15 @@ msgid "Past Events"
 msgstr "지난 행사"
 
 #. module: event_sale
-#: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_status
+#: model:ir.model.fields,field_description:event_sale.field_event_registration__payment_status
+#: model:ir.model.fields,field_description:event_sale.field_event_sale_report__payment_status
 msgid "Payment Status"
 msgstr "결제 상태"
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Pending payment"
-msgstr "결제 대기 중"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor_line__phone
@@ -429,17 +481,9 @@ msgid "Phone"
 msgstr "전화번호"
 
 #. module: event_sale
-#. odoo-python
-#: code:addons/event_sale/models/sale_order.py:0
-#, python-format
-msgid ""
-"Please make sure all your event related lines are configured before "
-"confirming this order:%s"
-msgstr "주문을 승인하기 전에 행사 관련 항목이 모두 설정되었는지 확인하세요:%s"
-
-#. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event_ticket__price
 #: model:ir.model.fields,field_description:event_sale.field_event_type_ticket__price
+#: model_terms:ir.ui.view,arch_db:event_sale.event_report_template_full_page_ticket_inherit_sale
 msgid "Price"
 msgstr "가격"
 
@@ -455,16 +499,12 @@ msgid "Price Reduce Tax inc"
 msgstr "세금을 포함한 가격 인하"
 
 #. module: event_sale
-#: model:ir.model.fields,field_description:event_sale.field_event_event_ticket__price_incl
-msgid "Price include"
-msgstr "가격 포함"
-
-#. module: event_sale
 #: model:ir.model,name:event_sale.model_product_template
 #: model:ir.model.fields,field_description:event_sale.field_event_event_configurator__product_id
 #: model:ir.model.fields,field_description:event_sale.field_event_event_ticket__product_id
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__product_id
 #: model:ir.model.fields,field_description:event_sale.field_event_type_ticket__product_id
+#: model:ir.model.fields,field_description:event_sale.field_sale_order_template_line__product_id
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Product"
 msgstr "품목"
@@ -478,7 +518,7 @@ msgstr "품목 유형"
 #. module: event_sale
 #: model:ir.model,name:event_sale.model_product_product
 msgid "Product Variant"
-msgstr "세부 품목"
+msgstr "파생 품목"
 
 #. module: event_sale
 #: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_order_state__draft
@@ -489,6 +529,11 @@ msgstr "견적서"
 #: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_order_state__sent
 msgid "Quotation Sent"
 msgstr "견적 발송"
+
+#. module: event_sale
+#: model:ir.model,name:event_sale.model_sale_order_template_line
+msgid "Quotation Template Line"
+msgstr "견적 서식 명세"
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_form
@@ -506,17 +551,12 @@ msgstr "등록 날짜"
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__event_registration_state
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Registration Status"
-msgstr "등록 현황"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_form
 msgid "Registration revenues"
-msgstr "등록 수익"
-
-#. module: event_sale
-#: model:ir.model.fields,field_description:event_sale.field_sale_order_line__registration_ids
-msgid "Registrations"
-msgstr "등록"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_registration_editor__event_registration_ids
@@ -536,6 +576,7 @@ msgstr "수익"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_order_id
+#: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_form
 msgid "Sale Order"
 msgstr "판매 주문"
@@ -549,12 +590,7 @@ msgstr "판매 주문 내역"
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_order_state
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
 msgid "Sale Order Status"
-msgstr "판매 주문 상태"
-
-#. module: event_sale
-#: model:ir.model.fields,field_description:event_sale.field_event_registration__sale_status
-msgid "Sale Status"
-msgstr "판매 상태"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_form_inherit_ticket
@@ -564,7 +600,7 @@ msgstr "판매"
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_event__sale_price_subtotal
 msgid "Sales (Tax Excluded)"
-msgstr "판매 (세금 포함)"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_event_ticket_view_tree_from_event
@@ -589,7 +625,7 @@ msgstr "판매 주문 내역"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_event_ticket_view_tree_from_event
 msgid "Sales Start"
-msgstr "판매 시작"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_order_user_id
@@ -602,22 +638,9 @@ msgid "Skip"
 msgstr "건너뛰기"
 
 #. module: event_sale
-#: model:ir.model.fields.selection,name:event_sale.selection__event_registration__sale_status__sold
-#: model:ir.model.fields.selection,name:event_sale.selection__event_sale_report__sale_status__sold
-#: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
-#: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
-msgid "Sold"
-msgstr "판매됨"
-
-#. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_registration__utm_source_id
 msgid "Source"
-msgstr "유입 경로"
-
-#. module: event_sale
-#: model:ir.model.fields,field_description:event_sale.field_event_registration__state
-msgid "Status"
-msgstr "상태"
+msgstr "원본"
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
@@ -627,17 +650,17 @@ msgstr "티켓"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_ticket_id_change_exception
 msgid "Ticket changed from"
-msgstr "티켓이 다음에서 변경됨"
+msgstr ""
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__event_ticket_price
 msgid "Ticket price"
-msgstr "티켓 가격"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_form_inherit_ticket
 msgid "Total sales for this event"
-msgstr "이 행사의 총 매출"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_registration_ticket_view_form
@@ -650,22 +673,18 @@ msgid "Unconfirmed"
 msgstr "미확인됨"
 
 #. module: event_sale
-#: model:ir.model.fields,help:event_sale.field_event_registration__state
-msgid ""
-"Unconfirmed: registrations in a pending state waiting for an action (specific case, notably with sale status)\n"
-"Registered: registrations considered taken by a client\n"
-"Attended: registrations for which the attendee attended the event\n"
-"Cancelled: registrations cancelled manually"
-msgstr ""
-"미확인: 활동 대기 중 보류 중인 등록 (판매 상태와 같은 특정한 상황).\n"
-"등록 완료: 고객 접수로 간주한 등록\n"
-"참석: 행사에 참석자가 참석하여 등록\n"
-"취소: 수기로 취소한 등록"
+#: model:product.product,uom_name:event_sale.product_product_event
+#: model:product.product,uom_name:event_sale.product_product_event_standard
+#: model:product.product,uom_name:event_sale.product_product_event_vip
+#: model:product.template,uom_name:event_sale.product_product_event_standard_product_template
+#: model:product.template,uom_name:event_sale.product_product_event_vip_product_template
+msgid "Units"
+msgstr "단위"
 
 #. module: event_sale
 #: model:ir.model.fields,field_description:event_sale.field_event_sale_report__sale_price_untaxed
 msgid "Untaxed Revenues"
-msgstr "비과세 수익"
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_sale_report_view_search
@@ -680,7 +699,7 @@ msgstr "예정/진행중"
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.view_event_registration_editor_form
 msgid "please give attendee details."
-msgstr "참석자들에게 세부 내용을 안내해주시기 바랍니다."
+msgstr ""
 
 #. module: event_sale
 #: model_terms:ir.ui.view,arch_db:event_sale.event_ticket_id_change_exception

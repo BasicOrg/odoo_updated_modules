@@ -10,9 +10,9 @@
                         <div>
                             <div class="o_row">
                                 <span class="oe_inline">From</span>
-                                <field name="date_from" class="oe_inline o_hr_narrow_field" nolabel="1"/>
+                                <field name="date_from" class="oe_inline" nolabel="1"/>
                                 <span class="oe_inline">To</span>
-                                <field name="date_to" class="oe_inline o_hr_narrow_field" nolabel="1"/>
+                                <field name="date_to" class="oe_inline" nolabel="1"/>
                             </div>
                         </div>
                         <group>
@@ -21,17 +21,17 @@
                         </group>
                         <field name="line_ids">
                             <tree editable="bottom">
-                                <field name="employee_id" widget="many2one_avatar_user"/>
+                                <field name="employee_id"/>
                                 <field name="niss"/>
                                 <field name="amount"/>
-                                <field name="currency_id" column_invisible="True"/>
+                                <field name="currency_id" invisible="1"/>
                             </tree>
                         </field>
                     </group>
                 </sheet>
                 <footer>
                     <button string="Export XLS" name="action_export_xls" type="object" class="btn-primary"/>
-                    <button special="cancel" string="Close" type="object" class="btn-secondary"/>
+                    <button special="cancel" string="Close" type="object" class="btn-primary"/>
                 </footer>
             </form>
         </field>

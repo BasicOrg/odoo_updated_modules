@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_view_tree" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='driver_id']" position="after">
-                <field name="driver_employee_id" widget="many2one_avatar_user" optional="hide"/>
+                <field name="driver_employee_id" widget="many2one_avatar" optional="hide"/>
             </xpath>
         </field>
     </record>
@@ -22,7 +22,7 @@
                 <attribute name="optional">hide</attribute>
             </field>
             <field name="driver_id" position="after">
-                <field name="driver_employee_id" widget="many2one_avatar_user"/>
+                <field name="driver_employee_id" widget="many2one_avatar"/>
             </field>
             <field name="date_end" position="after">
                 <field name="attachment_number" optional="show" />
@@ -60,7 +60,7 @@
                 <field name="future_driver_employee_id" invisible="1"/>
             </xpath>
             <button name="open_assignation_logs" position="before">
-                <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-id-card-o" groups="hr.group_hr_user" invisible="not driver_employee_id">
+                <button name="action_open_employee" type="object" class="oe_stat_button" icon="fa-id-card-o" groups="hr.group_hr_user" attrs="{'invisible': [('driver_employee_id', '=', False)]}">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">1</span>
                         <span class="o_stat_text">Employee</span>
@@ -78,10 +78,12 @@
             <xpath expr="//field[@name='license_plate']" position="after">
                 <field name="mobility_card"/>
             </xpath>
+            <xpath expr="//field[@name='driver_id']" position="after">
+                <field name="driver_employee_id" string="Current Driver (Employee)"/>
+            </xpath>
             <xpath expr="//field[@name='log_drivers']" position="attributes">
                 <attribute name="filter_domain">[
-                    '|', '|', '|', '|','|',
-                    ('log_drivers.driver_employee_id.name', 'ilike', self),
+                    '|', '|', '|', '|',
                     ('log_drivers.driver_id.name', 'ilike', self),
                     ('driver_id.name', 'ilike', self),
                     ('future_driver_id.name', 'ilike', self),
@@ -97,10 +99,10 @@
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
         <field name="arch" type="xml">
             <field name="driver_id" position="after">
-                <field name="driver_employee_id" optional="hide" widget="many2one_avatar_user"/>
+                <field name="driver_employee_id" optional="hide"/>
             </field>
             <field name="future_driver_id" position="after">
-                <field name="future_driver_employee_id" optional="hide" widget="many2one_avatar_user"/>
+                <field name="future_driver_employee_id" optional="hide"/>
             </field>
         </field>
     </record>

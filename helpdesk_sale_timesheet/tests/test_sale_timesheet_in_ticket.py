@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.tests import tagged, Form
+from odoo.tests import tagged
 from odoo.addons.sale_timesheet.tests.common import TestCommonSaleTimesheet
 
 
@@ -133,69 +133,3 @@ class TestSaleTimesheetInTicket(TestCommonSaleTimesheet):
 
         self.assertEqual(timesheet_entry.partner_id, self.partner_b, "The invoiced and posted Timesheet entry should have its partner unchanged")
         self.assertEqual(timesheet_entry_2.partner_id, self.partner_a, "The second Timesheet entry should have its partner changed, as it was not invoiced and posted")
-
-    def test_add_timesheet_line_and_get_remaining_so_hours(self):
-        """Test that ticket remaining time is correctly computed, using the timesheet "uom" rather than the "sol" one.
-        Test Case:
-        =========
-        - Create a custom Unit of Measure (eg.: 50hours)
-        - Create a service product
-        - Create a sale order on that product
-        - Get the ticket associated
-        - Add a line in the timesheet lines (3 hours worked)
-        - Ensure we got the good remaining time when we change from the view form (47 hours)
-        """
-
-        working_time_category = self.env.ref('uom.uom_categ_wtime')
-
-        # We create a unit of measure of 50 hours
-        uom = self.env["uom.uom"].create({
-            "name": "50(hours)",
-            "factor": 0.16,
-            "uom_type": "bigger",
-            "category_id": working_time_category.id,
-        })
-
-        service = self.env["product.product"].create({
-            "name": "testService",
-            "type": "service",
-            "service_policy": "ordered_prepaid",
-            "list_price": 1000.,
-            "service_tracking": "task_in_project",
-            "uom_id": uom.id,
-            "uom_po_id": uom.id,
-        })
-
-        sale_order = self.env["sale.order"].create({
-            "partner_id": self.partner_a.id,
-            'partner_invoice_id': self.partner_a.id,
-            'partner_shipping_id': self.partner_a.id,
-        })
-
-        self.env["sale.order.line"].create({
-            'name': service.name,
-            'product_id': service.id,
-            'product_uom_qty': 1,
-            'product_uom': service.uom_id.id,
-            'price_unit': service.list_price,
-            'order_id': sale_order.id,
-            'tax_id': False,
-        })
-
-        sale_order.action_confirm()
-
-        ticket = self.env["helpdesk.ticket"].create({
-            "name": "test_ticket",
-            "sale_order_id": sale_order.id,
-            "partner_id": self.partner_a.id,
-            "team_id": self.helpdesk_team.id,
-        })
-
-        # We edit the form of the helpdesk ticket and after add a 3 hours timesheet line
-        # we must have a remaining hours of 47
-        with Form(ticket) as f:
-            with f.timesheet_ids.new() as line:
-                line.employee_id = self.employee_user
-                line.name = "/",
-                line.unit_amount = 3
-            self.assertEqual(f.remaining_hours_so, 47)

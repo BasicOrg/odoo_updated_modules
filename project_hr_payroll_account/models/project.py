@@ -13,8 +13,8 @@ class Project(models.Model):
         contracts_data = self.env['hr.contract']._read_group([
             ('analytic_account_id', '!=', False),
             ('analytic_account_id', 'in', self.analytic_account_id.ids)
-        ], ['analytic_account_id'], ['__count'])
-        mapped_data = {analytic_account.id: count for analytic_account, count in contracts_data}
+        ], ['analytic_account_id'], ['analytic_account_id'])
+        mapped_data = {data['analytic_account_id'][0]: data['analytic_account_id_count'] for data in contracts_data}
         for project in self:
             project.contracts_count = mapped_data.get(project.analytic_account_id.id, 0)
 
@@ -45,10 +45,10 @@ class Project(models.Model):
             buttons.append({
                 'icon': 'book',
                 'text': _lt('Contracts'),
-                'number': self.sudo().contracts_count,
+                'number': self.contracts_count,
                 'action_type': 'object',
                 'action': 'action_open_project_contracts',
-                'show': self.sudo().contracts_count > 0,
+                'show': self.contracts_count > 0,
                 'sequence': 57,
             })
         return buttons

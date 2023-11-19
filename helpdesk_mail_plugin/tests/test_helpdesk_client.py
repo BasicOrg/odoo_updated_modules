@@ -25,9 +25,20 @@ class TestHelpdeskClient(TestMailPluginControllerCommon, MailCase):
         email_body = 'Test email body'
         email_subject = 'Test email subject'
 
+        data = {
+            'id': 0,
+            'jsonrpc': '2.0',
+            'method': 'call',
+            'params': {
+                'email_body': email_body,
+                'email_subject': email_subject,
+                'partner_id': customer.id,
+            },
+        }
+
         messages_info = [{
-            'content': 'The reference for your ticket is',
-            'message_type': 'auto_comment',
+            'content': 'The reference of your ticket is',
+            'message_type': 'notification',
             'subtype': 'mail.mt_note',
             'email_values': {
                 'email_from': self.env.company.email_formatted,
@@ -44,12 +55,15 @@ class TestHelpdeskClient(TestMailPluginControllerCommon, MailCase):
         }]
 
         with self.assertPostNotifications(messages_info):
-            ticket_id = self.make_jsonrpc_request('/mail_plugin/ticket/create', {
-                'email_body': email_body,
-                'email_subject': email_subject,
-                'partner_id': customer.id,
-            }).get('ticket_id')
+            response = self.url_open(
+                url='/mail_plugin/ticket/create',
+                data=json.dumps(data),
+                headers={'Content-Type': 'application/json'},
+            ).json()
+
             self.env['mail.mail'].process_email_queue()
+
+        ticket_id = response.get('result', {}).get('ticket_id')
 
         self.assertTrue(bool(ticket_id))
 

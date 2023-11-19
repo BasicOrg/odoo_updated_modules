@@ -21,38 +21,45 @@ class ChatbotScriptAnswer(models.Model):
         'chatbot.script.step', string='Script Step', required=True, ondelete='cascade')
     chatbot_script_id = fields.Many2one(related='script_step_id.chatbot_script_id')
 
-    @api.depends('script_step_id')
-    @api.depends_context('chatbot_script_answer_display_short_name')
-    def _compute_display_name(self):
+    def name_get(self):
         if self._context.get('chatbot_script_answer_display_short_name'):
-            return super()._compute_display_name()
+            return super().name_get()
 
+        result = []
         for answer in self:
-            if answer.script_step_id:
-                answer_message = answer.script_step_id.message.replace('\n', ' ')
-                shortened_message = textwrap.shorten(answer_message, width=26, placeholder=" [...]")
-                answer.display_name = f"{shortened_message}: {answer.name}"
-            else:
-                answer.display_name = answer.name
+            answer_message = answer.script_step_id.message.replace('\n', ' ')
+            shortened_message = textwrap.shorten(answer_message, width=26, placeholder=" [...]")
+
+            result.append((
+                answer.id,
+                "%s: %s" % (shortened_message, answer.name)
+            ))
+
+        return result
 
     @api.model
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
+    def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
         """
         Search the records whose name or step message are matching the ``name`` pattern.
         The chatbot_script_id is also passed to the context through the custom widget
         ('chatbot_triggering_answers_widget') This allows to only see the question_answer
         from the same chatbot you're configuring.
         """
-        domain = domain or []
+        force_domain_chatbot_script_id = self.env.context.get('force_domain_chatbot_script_id')
 
         if name and operator == 'ilike':
+            if not args:
+                args = []
+
             # search on both name OR step's message (combined with passed args)
             name_domain = [('name', operator, name)]
             step_domain = [('script_step_id.message', operator, name)]
-            domain = expression.AND([domain, expression.OR([name_domain, step_domain])])
+            domain = expression.AND([args, expression.OR([name_domain, step_domain])])
 
-        force_domain_chatbot_script_id = self.env.context.get('force_domain_chatbot_script_id')
+        else:
+            domain = args or []
+
         if force_domain_chatbot_script_id:
             domain = expression.AND([domain, [('chatbot_script_id', '=', force_domain_chatbot_script_id)]])
 
-        return self._search(domain, limit=limit, order=order)
+        return self._search(domain, limit=limit, access_rights_uid=name_get_uid)

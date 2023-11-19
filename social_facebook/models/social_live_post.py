@@ -26,7 +26,7 @@ class SocialLivePostFacebook(models.Model):
         accounts = self.env['social.account'].search([('media_type', '=', 'facebook')])
 
         for account in accounts:
-            posts_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/%s" % (account.facebook_account_id, 'published_posts'))
+            posts_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/%s" % (account.facebook_account_id, 'published_posts'))
             result = requests.get(posts_endpoint_url,
                 params={
                     'access_token': account.facebook_access_token,
@@ -69,7 +69,7 @@ class SocialLivePostFacebook(models.Model):
     def _post_facebook(self, facebook_target_id):
         self.ensure_one()
         account = self.account_id
-        post_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/feed" % facebook_target_id)
+        post_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/feed" % facebook_target_id)
 
         post = self.post_id
 
@@ -85,14 +85,14 @@ class SocialLivePostFacebook(models.Model):
                 # gifs are posted on the '/videos' endpoint, with a different base url
                 endpoint_url = url_join(
                     "https://graph-video.facebook.com",
-                    f'/v17.0/{facebook_target_id}/videos'
+                    f'/v10.0/{facebook_target_id}/videos'
                 )
                 params['description'] = params['message']
             else:
                 # a single regular image is posted on the '/photos' endpoint
                 endpoint_url = url_join(
-                    self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED,
-                    f'{facebook_target_id}/photos'
+                    self.env['social.media']._FACEBOOK_ENDPOINT,
+                    f'/v10.0/{facebook_target_id}/photos'
                 )
                 params['caption'] = params['message']
 
@@ -112,15 +112,13 @@ class SocialLivePostFacebook(models.Model):
                 except UserError as e:
                     self.write({
                         'state': 'failed',
-                        'failure_reason': str(e)
+                        'failure_reason': e.name
                     })
                     return
                 images_attachments = post._format_images_facebook(facebook_target_id, account.facebook_access_token)
                 if images_attachments:
-                    params.update({
-                        f'attached_media[{index}]': json.dumps(attachment)
-                        for index, attachment in enumerate(images_attachments)
-                    })
+                    for index, image_attachment in enumerate(images_attachments):
+                        params.update({'attached_media[' + str(index) + ']': json.dumps(image_attachment)})
 
             link_url = self.env['social.post']._extract_url_from_message(self.message)
             # can't combine with images

@@ -4,21 +4,16 @@ from odoo import fields, models
 
 
 class SaleSubscriptionReport(models.Model):
-    _inherit = "sale.subscription.report"
-    _name = "sale.subscription.report"
+    _inherit = 'sale.subscription.report'
 
     referrer_id = fields.Many2one('res.partner', 'Referrer', readonly=True)
-    commission_plan_id = fields.Many2one('commission.plan', readonly=True)
 
-    def _select_additional_fields(self):
-        res = super()._select_additional_fields()
-        res['referrer_id'] = "s.referrer_id"
-        res['commission_plan_id'] = 's.commission_plan_id'
-        return res
+    def _select(self):
+        select_str = super()._select()
+        select_str += ", sub.referrer_id as referrer_id"
+        return select_str
 
-    def _group_by_sale(self):
-        group_by_str = super()._group_by_sale()
-        return f"""{group_by_str},
-                    s.referrer_id,
-                    s.commission_plan_id
-        """
+    def _group_by(self):
+        group_by_str = super()._group_by()
+        group_by_str += ", sub.referrer_id"
+        return group_by_str

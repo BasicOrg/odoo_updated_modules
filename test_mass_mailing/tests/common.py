@@ -4,9 +4,10 @@
 from odoo.addons.phone_validation.tools import phone_validation
 
 from odoo.addons.mass_mailing_sms.tests.common import MassSMSCommon
+from odoo.addons.test_mail_sms.tests.common import TestSMSCommon
 
 
-class TestMassMailCommon(MassSMSCommon):
+class TestMassMailCommon(MassSMSCommon, TestSMSCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -14,6 +15,7 @@ class TestMassMailCommon(MassSMSCommon):
 
         cls.test_alias = cls.env['mail.alias'].create({
             'alias_name': 'test.alias',
+            'alias_user_id': False,
             'alias_model_id': cls.env['ir.model']._get('mailing.test.simple').id,
             'alias_contact': 'everyone'
         })

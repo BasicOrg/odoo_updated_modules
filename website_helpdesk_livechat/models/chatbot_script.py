@@ -10,9 +10,12 @@ class ChatbotScript(models.Model):
     ticket_count = fields.Integer(string='Generated Ticket Count', compute='_compute_ticket_count')
 
     def _compute_ticket_count(self):
-        tickets_data = self.env['helpdesk.ticket'].with_context(active_test=False).sudo()._read_group(
-            [('source_id', 'in', self.source_id.ids)], ['source_id'], ['__count'])
-        mapped_tickets = {source.id: count for source, count in tickets_data}
+        mapped_tickets = {}
+        if self.ids:
+            tickets_data = self.env['helpdesk.ticket'].with_context(active_test=False).sudo()._read_group(
+                [('source_id', 'in', self.mapped('source_id').ids)], ['source_id'], ['source_id'])
+            mapped_tickets = {ticket['source_id'][0]: ticket['source_id_count'] for ticket in tickets_data}
+
         for script in self:
             script.ticket_count = mapped_tickets.get(script.source_id.id, 0)
 

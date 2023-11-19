@@ -247,16 +247,16 @@ class TransferModelTestCase(AccountAutoTransferTestCase):
 
         move.action_post()
         start_date = self.transfer_model._determine_start_date()
-        self.assertEqual(start_date, move.date + relativedelta(days=1), 'A move posted, start date should be the day after that move')
+        self.assertEqual(start_date, move.date, 'A move posted, start date should be the date of that move')
 
         second_move = self._create_basic_move(date_str='2019-08-01', journal_id=self.journal.id, transfer_model_id=self.transfer_model.id, posted=False)
         start_date = self.transfer_model._determine_start_date()
-        self.assertEqual(start_date, move.date + relativedelta(days=1), 'Two moves generated, start date should be the day after the last posted one')
+        self.assertEqual(start_date, move.date, 'Two moves generated, start date should be the date of the last posted one')
 
         second_move.action_post()
         random_move = self._create_basic_move(date_str='2019-08-01', journal_id=self.journal.id)
         start_date = self.transfer_model._determine_start_date()
-        self.assertEqual(start_date, second_move.date + relativedelta(days=1), 'Random move generated not linked to transfer model, start date should be the day after the last one linked to it')
+        self.assertEqual(start_date, second_move.date, 'Random move generated not linked to transfer model, start date should be the date of the last one linked to it')
 
     def test__get_next_move_date(self):
         experimentations = {

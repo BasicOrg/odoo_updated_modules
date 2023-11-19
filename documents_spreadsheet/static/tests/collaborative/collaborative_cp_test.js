@@ -1,12 +1,7 @@
 /** @odoo-module */
 
 import { getFixture, nextTick } from "@web/../tests/helpers/utils";
-import {
-    createSpreadsheet,
-    displayedConnectedUsers,
-    getConnectedUsersElImage,
-    getSynchedStatus,
-} from "../spreadsheet_test_utils";
+import { createSpreadsheet } from "../spreadsheet_test_utils";
 import { setCellContent } from "@spreadsheet/../tests/utils/commands";
 import { actionService } from "@web/webclient/actions/action_service";
 import { registry } from "@web/core/registry";
@@ -14,7 +9,33 @@ import {
     joinSession,
     leaveSession,
 } from "@spreadsheet_edition/../tests/utils/collaborative_helpers";
-import { session } from "@web/session";
+
+/**
+ * @param {HTMLElement} target
+ * @returns {HTMLElement}
+ */
+function getConnectedUsersEl(target) {
+    return target.querySelector(".o_spreadsheet_number_users i");
+}
+
+/**
+ *
+ * @param {HTMLElement} target
+ * @returns {string}
+ */
+function getSynchedStatus(target) {
+    /** @type {HTMLElement} */
+    const content = target.querySelector(".o_spreadsheet_sync_status");
+    return content.innerText;
+}
+
+/**
+ * @param {HTMLElement} target
+ * @returns {number}
+ */
+function displayedConnectedUsers(target) {
+    return parseInt(getConnectedUsersEl(target).innerText);
+}
 
 /** @type {HTMLElement} */
 let target;
@@ -36,7 +57,7 @@ QUnit.module(
                 "It should display one connected user"
             );
             assert.hasClass(
-                getConnectedUsersElImage(target),
+                getConnectedUsersEl(target),
                 "fa-user",
                 "It should display the fa-user icon"
             );
@@ -48,7 +69,7 @@ QUnit.module(
                 "It should display two connected users"
             );
             assert.hasClass(
-                getConnectedUsersElImage(target),
+                getConnectedUsersEl(target),
                 "fa-users",
                 "It should display the fa-users icon"
             );
@@ -77,16 +98,6 @@ QUnit.module(
                 1,
                 "It should display one connected user"
             );
-        });
-
-        QUnit.test("collaborative session client has the user id", async function (assert) {
-            const uid = session.user_context.uid;
-            const { model } = await createSpreadsheet();
-            const clients = [...model.getters.getConnectedClients()];
-            assert.strictEqual(clients.length, 1);
-            const localClient = clients[0];
-            assert.strictEqual(localClient.name, "Mitchell");
-            assert.strictEqual(localClient.userId, uid);
         });
 
         QUnit.test("Sync status is correctly rendered", async function (assert) {

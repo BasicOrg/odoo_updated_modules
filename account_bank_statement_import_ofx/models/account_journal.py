@@ -119,7 +119,7 @@ class AccountJournal(models.Model):
             ofx = PatchedOfxParser.parse(io.BytesIO(attachment.raw))
         except UnicodeDecodeError:
             # Replacing utf-8 chars with ascii equivalent
-            encoding = re.findall(b'encoding="(.*?)"', attachment.raw)
+            encoding = re.findall(b'encoding="(.*?)"', attachment)
             encoding = encoding[0] if len(encoding) > 1 else 'utf-8'
             attachment = unicodedata.normalize('NFKD', attachment.raw.decode(encoding)).encode('ascii', 'ignore')
             ofx = PatchedOfxParser.parse(io.BytesIO(attachment))

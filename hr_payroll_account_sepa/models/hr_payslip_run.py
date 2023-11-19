@@ -8,7 +8,7 @@ class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     sepa_export = fields.Binary(string='SEPA File', help="Exported SEPA .xml file")
-    sepa_export_date = fields.Date(string='Generation Date')
+    sepa_export_date = fields.Date(string='Generation Date', help="Creation date of the payment file.")
     sepa_export_filename = fields.Char(string='File Name', help="Exported SEPA .xml file name")
 
     def action_open_sepa_wizard(self):

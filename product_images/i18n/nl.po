@@ -3,17 +3,17 @@
 # 	* product_images
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:54+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -34,18 +33,17 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
 msgid ""
-"<span invisible=\"nb_products_selected &lt;= 10000\">\n"
+"<span attrs=\"{'invisible': [('nb_products_selected', '&lt;=', 10000)]}\">\n"
 "                            As only 10,000 products can be processed per day, the remaining will be\n"
 "                            done tomorrow.\n"
 "                        </span>"
 msgstr ""
-"<span invisible=\"nb_products_selected &lt;= 10000\">\n"
-"                            Aangezien er slechts 10.000 producten per dag kunnen worden verwerkt, zal de rest\n"
-"                            morgen verwerkt worden.\n"
+"<span attrs=\"{'invisible': [('nb_products_selected', '&lt;=', 10000)]}\">\n"
+"                            Aangezien er slechts 10.000 producten per dag kunnen worden verwerkt, wordt de rest\n"
+"                            morgen gedaan.\n"
 "                        </span>"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -58,7 +56,7 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.res_config_settings_view_form
 msgid "API Key"
-msgstr "API key"
+msgstr "API-code"
 
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
@@ -73,17 +71,17 @@ msgstr "Configuratie instellingen"
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: product_images
 #: model:ir.model,name:product_images.model_product_fetch_image_wizard
@@ -108,7 +106,7 @@ msgstr "Afbeeldingen ophalen van Google Afbeeldingen"
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_res_config_settings__google_custom_search_key
 msgid "Google Custom Search API Key"
-msgstr "Google Custom Search API Key"
+msgstr "Google Custom Search API-sleutel"
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__id
@@ -121,6 +119,11 @@ msgid "Image Fetch Pending"
 msgstr "Afbeelding ophalen in behandeling"
 
 #. module: product_images
+#: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Laatst bijgewerkt door"
@@ -128,7 +131,7 @@ msgstr "Laatst bijgewerkt door"
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__nb_products_unable_to_process
@@ -156,6 +159,8 @@ msgstr ""
 
 #. module: product_images
 #: model:ir.actions.server,name:product_images.ir_cron_fetch_image_ir_actions_server
+#: model:ir.cron,cron_name:product_images.ir_cron_fetch_image
+#: model:ir.cron,name:product_images.ir_cron_fetch_image
 msgid "Product Images: Get product images from Google"
 msgstr "Productafbeeldingen: ontvang productafbeeldingen van Google"
 
@@ -165,7 +170,6 @@ msgid "Product Variant"
 msgstr "Productvariant"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "Product images"
@@ -177,7 +181,6 @@ msgid "Products To Process"
 msgstr "Producten om te verwerken:"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -193,16 +196,14 @@ msgid "Search Engine ID"
 msgstr "Zoekmachine-ID"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "The API Key and Search Engine ID must be set in the General Settings."
 msgstr ""
-"De API Key en zoekmachine-ID moeten worden ingesteld in de algemene "
+"De API-sleutel en zoekmachine-ID moeten worden ingesteld in de algemene "
 "instellingen."
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -230,7 +231,6 @@ msgstr ""
 "barcode en geen afbeelding)"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
@@ -244,7 +244,6 @@ msgstr ""
 "herstellen of om de module \"product_images\" opnieuw te installeren."
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/models/ir_cron_trigger.py:0
 #, python-format
 msgid "This action is already scheduled. Please try again later."
@@ -265,19 +264,18 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
 msgid "You selected"
-msgstr "Je hebt"
+msgstr "Je hebt geselecteerd"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "Your API Key or your Search Engine ID is incorrect."
-msgstr "Je API Key of je zoekmachine-ID is onjuist."
+msgstr "Je API-sleutel of je zoekmachine-ID is onjuist."
 
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
 msgid "of which will be processed."
-msgstr "ervan zullen verwerkt worden."
+msgstr "waarvan verwerkt zal worden."
 
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
@@ -293,4 +291,4 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
 msgid "products,"
-msgstr "producten geselecteerd,"
+msgstr "producten,"

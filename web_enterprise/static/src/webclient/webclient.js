@@ -8,6 +8,7 @@ export class WebClientEnterprise extends WebClient {
     setup() {
         super.setup();
         this.hm = useService("home_menu");
+        useService("enterprise_legacy_service_provider");
     }
     _loadDefaultApp() {
         return this.hm.toggle(true);

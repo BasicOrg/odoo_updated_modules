@@ -25,9 +25,7 @@ class TestDeliveryFedexInternal(TransactionCase):
             'rate': 0.8,
             'name': '2001-01-01'})
         self.cr.execute("UPDATE res_company SET currency_id = %s", [self.currency_gbp_id.id])
-        self.env['res.company'].invalidate_model(['currency_id'])
         self.cr.execute("UPDATE res_currency SET active = true where name in ('EUR', 'GBP', 'USD')")
-        self.env['res.currency'].invalidate_model(['active'])
 
         self.uom_unit = self.env.ref('uom.product_uom_unit')
         test_product = self.env['product.product'].create({

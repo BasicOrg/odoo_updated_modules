@@ -54,7 +54,6 @@ class TestApprovalsPurchase(TestApprovalsCommon):
             # ... but raise an error because all product line need a product_id.
             request_purchase.action_approve()
         # Edit the line without product id then try to approve it again.
-        request_purchase.action_draft()
         request_form = Form(request_purchase)
         with request_form.product_line_ids.edit(1) as line:
             line.product_id = self.product_computer
@@ -116,9 +115,6 @@ class TestApprovalsPurchase(TestApprovalsCommon):
         po_for_seller_2 = self.get_purchase_order_for_seller(self.partner_seller_2)
         self.assertEqual(len(po_for_seller_1), 1)
         self.assertEqual(len(po_for_seller_2), 0)
-
-        # check that the payment term is set
-        self.assertEqual(po_for_seller_1.payment_term_id, self.payment_terms)
 
         # Now, do the same but for 12 computers. The selected seller for the
         # purchase order must be partner_seller_2 because he has better price

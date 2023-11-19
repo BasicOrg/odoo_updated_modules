@@ -57,21 +57,19 @@ class SaleOrderLine(models.Model):
 
     def _populate(self, size):
         so_line = super()._populate(size)
-        self.confirm_sale_order(0.60, so_line)
+
+        def confirm_sale_order(sample_ratio):
+            # Confirm sample_ratio * 100 % of picking
+            random = populate.Random('confirm_sale_order')
+            order_ids = so_line.order_id.ids
+            orders_to_confirm = self.env['sale.order'].browse(random.sample(order_ids, int(len(order_ids) * sample_ratio)))
+            _logger.info("Confirm %d sale orders", len(orders_to_confirm))
+            orders_to_confirm.action_confirm()
+            return orders_to_confirm
+
+        confirm_sale_order(0.50)
+
         return so_line
-
-    def confirm_sale_order(self, sample_ratio, so_line):
-        # Confirm sample_ratio * 100 % of so
-        random = populate.Random('confirm_sale_order')
-        order_ids = self.filter_confirmable_sale_orders(so_line.order_id).ids
-        orders_to_confirm = self.env['sale.order'].browse(random.sample(order_ids, int(len(order_ids) * sample_ratio)))
-        _logger.info("Confirm %d sale orders", len(orders_to_confirm))
-        orders_to_confirm.action_confirm()
-        return orders_to_confirm
-
-    @classmethod
-    def filter_confirmable_sale_orders(cls, sale_order):
-        return sale_order
 
     def _populate_factories(self):
         order_ids = self.env.registry.populated_models["sale.order"]
@@ -83,7 +81,7 @@ class SaleOrderLine(models.Model):
                 ('product_tmpl_id', 'in', self.env.registry.populated_models["product.template"])
             ]).ids
 
-        self.env['product.product'].browse(product_ids).fetch(['uom_id'])  # prefetch all uom_id
+        self.env['product.product'].browse(product_ids).read(['uom_id'])  # prefetch all uom_id
 
         def get_product_uom(values, counter, random):
             return self.env['product.product'].browse(values['product_id']).uom_id.id

@@ -14,7 +14,7 @@
                 <button name="action_open_manual_reconciliation_widget" type="object"
                         string="Payment Matching" class="oe_stat_button" icon="fa-dollar"
                         groups="account.group_account_user"
-                        invisible="is_reconciled or state != 'posted'"/>
+                        attrs="{'invisible': ['|', ('is_reconciled', '=', True), ('state', '!=', 'posted')]}"/>
             </xpath>
         </field>
     </record>

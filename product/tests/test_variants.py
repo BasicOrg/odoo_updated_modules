@@ -229,10 +229,6 @@ class TestVariants(ProductVariantsCommon):
         self.assertEqual(template_dyn.name, 'Test Dynamical')
 
         variant_dyn = template_dyn._create_product_variant(template_dyn._get_first_possible_combination())
-        if 'create_product_product' in variant_dyn._context:
-            new_context = dict(variant_dyn._context)
-            new_context.pop('create_product_product')
-            variant_dyn = variant_dyn.with_context(new_context)
         self.assertEqual(len(template_dyn.product_variant_ids), 1)
 
         variant_dyn_copy = variant_dyn.copy()
@@ -736,11 +732,11 @@ class TestVariantsImages(ProductVariantsCommon):
         images = self.variants.mapped('image_1920')
         self.assertEqual(len(set(images)), 4)
         variant_no_image = self.variants[0]
-        old_last_update = variant_no_image.write_date
+        old_last_update = variant_no_image['__last_update']
 
         self.assertFalse(variant_no_image.image_1920)
         self.template.image_1920 = image_black
-        new_last_update = variant_no_image.write_date
+        new_last_update = variant_no_image['__last_update']
 
         # the first has no image variant, all the others do
         self.assertFalse(variant_no_image.image_variant_1920)
@@ -837,7 +833,7 @@ class TestVariantsArchive(ProductVariantsCommon):
 
         def unlink(self):
             raise Exception('just')
-        self.patch(type(Product), 'unlink', unlink)
+        Product._patch_method('unlink', unlink)
 
         variants_2x1 = self.template.product_variant_ids
         self._assert_2color_x_1size()
@@ -859,6 +855,8 @@ class TestVariantsArchive(ProductVariantsCommon):
         archived_variants = self._get_archived_variants()
         self.assertFalse(archived_variants)
 
+        Product._revert_method('unlink')
+
     def test_02_update_variant_archive_2_value(self):
         """We do the same operations on the template as in the previous tests,
            except we simulate that the variants can't be unlinked.
@@ -870,7 +868,7 @@ class TestVariantsArchive(ProductVariantsCommon):
 
         def unlink(slef):
             raise Exception('just')
-        self.patch(type(Product), 'unlink', unlink)
+        Product._patch_method('unlink', unlink)
 
         variants_2x2 = self.template.product_variant_ids
         self._assert_2color_x_2size()
@@ -926,6 +924,8 @@ class TestVariantsArchive(ProductVariantsCommon):
         self.assertEqual(archived_variants, variants_2x2)
         self._assert_2color_x_2size(archived_variants)
 
+        Product._revert_method('unlink')
+
     @mute_logger('odoo.models.unlink')
     def test_03_update_variant_archive_3_value(self):
         self._remove_ptal_size()
@@ -935,7 +935,7 @@ class TestVariantsArchive(ProductVariantsCommon):
 
         def unlink(slef):
             raise Exception('just')
-        self.patch(type(Product), 'unlink', unlink)
+        Product._patch_method('unlink', unlink)
 
         self._assert_2color_x_1size()
         archived_variants = self._get_archived_variants()
@@ -983,12 +983,14 @@ class TestVariantsArchive(ProductVariantsCommon):
         archived_variants = self._get_archived_variants()
         self.assertEqual(archived_variants, variants_2x1 + variant_0x0)
 
+        Product._revert_method('unlink')
+
     def test_04_from_to_single_values(self):
         Product = self.env['product.product']
 
         def unlink(slef):
             raise Exception('just')
-        self.patch(type(Product), 'unlink', unlink)
+        Product._patch_method('unlink', unlink)
 
         # CASE: remove one value, line becoming single value
         variants_2x2 = self.template.product_variant_ids
@@ -1024,6 +1026,8 @@ class TestVariantsArchive(ProductVariantsCommon):
         archived_variants = self._get_archived_variants()
         self._assert_2color_x_0size(archived_variants)
         self.assertEqual(archived_variants, variants_2x0)
+
+        Product._revert_method('unlink')
 
     def test_name_search_dynamic_attributes(self):
         dynamic_attr = self.env['product.attribute'].create({
@@ -1075,7 +1079,7 @@ class TestVariantsArchive(ProductVariantsCommon):
         # Patch unlink method to force archiving instead deleting
         def unlink(self):
             self.active = False
-        self.patch(type(Product), 'unlink', unlink)
+        Product._patch_method('unlink', unlink)
 
         # Creating attributes
         pa_color = ProductAttribute.create({'sequence': 1, 'name': 'color', 'create_variant': 'dynamic'})
@@ -1180,18 +1184,7 @@ class TestVariantsArchive(ProductVariantsCommon):
         })
         self.assertTrue(product_white.active)
 
-    def test_set_barcode(self):
-        tmpl = self.product.product_tmpl_id
-        tmpl.barcode = '123'
-        self.assertEqual(tmpl.barcode, '123')
-        self.assertEqual(self.product.barcode, '123')
-
-        tmpl.toggle_active()
-
-        tmpl.barcode = '456'
-        tmpl.invalidate_recordset(fnames=['barcode'])
-        self.assertEqual(tmpl.barcode, '456')
-        self.assertEqual(self.product.barcode, '456')
+        Product._revert_method('unlink')
 
     def _update_color_vars(self, ptal):
         self.ptal_color = ptal

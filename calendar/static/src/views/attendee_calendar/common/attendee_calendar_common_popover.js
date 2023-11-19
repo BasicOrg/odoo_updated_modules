@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { onWillStart } from "@odoo/owl";
 import { CalendarCommonPopover } from "@web/views/calendar/calendar_common/calendar_common_popover";
 import { useService } from "@web/core/utils/hooks";
 import { useAskRecurrenceUpdatePolicy } from "@calendar/views/ask_recurrence_update_policy_hook";
@@ -12,27 +11,17 @@ export class AttendeeCalendarCommonPopover extends CalendarCommonPopover {
         super.setup();
         this.user = useService("user");
         this.orm = useService("orm");
-        this.actionService = useService("action");
         this.askRecurrenceUpdatePolicy = useAskRecurrenceUpdatePolicy();
-
-        onWillStart(this.onWillStart);
-    }
-
-    async onWillStart() {
         // Show status dropdown if user is in attendees list
-        if (this.isEventEditable) {
-            const stateSelections = await this.env.services.orm.call(
-                this.props.model.resModel,
-                "get_state_selections",
-            );
+        if (this.isCurrentUserAttendee) {
             this.statusColors = {
                 accepted: "text-success",
                 declined: "text-danger",
                 tentative: "text-muted",
-                needsAction: "false",
+                needsAction: "text-dark",
             };
             this.statusInfo = {};
-            for (const selection of stateSelections) {
+            for (const selection of this.props.model.fields.attendee_status.selection) {
                 this.statusInfo[selection[0]] = {
                     text: selection[1],
                     color: this.statusColors[selection[0]],
@@ -43,7 +32,7 @@ export class AttendeeCalendarCommonPopover extends CalendarCommonPopover {
     }
 
     get isCurrentUserAttendee() {
-        return this.props.record.rawRecord.partner_ids.includes(this.user.partnerId) || this.props.record.rawRecord.partner_id[0] === this.user.partnerId;
+        return this.props.record.rawRecord.partner_ids.includes(this.user.partnerId);
     }
 
     get isCurrentUserOrganizer() {
@@ -62,46 +51,26 @@ export class AttendeeCalendarCommonPopover extends CalendarCommonPopover {
     }
 
     get isEventDetailsVisible() {
-        return this.isEventPrivate ? this.isEventEditable : true;
+        return this.isEventPrivate ? this.isCurrentUserAttendee : true;
     }
 
     get isEventArchivable() {
         return false;
-    }
-    
-    async onClickOpenRecord() {
-        const action = await this.orm.call(
-            'calendar.event', 
-            'action_open_calendar_event', 
-            [this.props.record.id]
-        );
-        this.actionService.doAction(action); 
     }
 
     /**
      * @override
      */
     get isEventDeletable() {
-        return super.isEventDeletable && this.isEventEditable && !this.isEventArchivable;
+        return super.isEventDeletable && this.isCurrentUserAttendee && !this.isEventArchivable;
     }
 
     /**
      * @override
      */
     get isEventEditable() {
-        return this.props.record.rawRecord.user_can_edit;
+        return this.isEventPrivate ? this.isCurrentUserAttendee : super.isEventEditable;
     }
-
-    get isEventViewable() {
-        return this.isEventPrivate ? this.isEventEditable : super.isEventEditable;
-    }
-
-    /**
-     * @override
-     */
-     get hasFooter() {
-        return this.isEventViewable || super.hasFooter;
-     }
 
     async changeAttendeeStatus(selectedStatus) {
         const record = this.props.record;
@@ -115,7 +84,7 @@ export class AttendeeCalendarCommonPopover extends CalendarCommonPopover {
                 return this.props.close();
             }
         }
-        await this.env.services.orm.call(
+        await this.orm.call(
             this.props.model.resModel,
             "change_attendee_status",
             [[record.id], selectedStatus, recurrenceUpdate],

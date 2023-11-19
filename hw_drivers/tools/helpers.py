@@ -2,9 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import datetime
-from enum import Enum
 from importlib import util
-import platform
 import io
 import json
 import logging
@@ -17,31 +15,16 @@ import urllib3
 import zipfile
 from threading import Thread
 import time
-import contextlib
-import requests
-import secrets
 
-from odoo import _, http, service
+from odoo import _, http
 from odoo.tools.func import lazy_property
-from odoo.tools.misc import file_path
+from odoo.modules.module import get_resource_path
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import crypt
-except ImportError:
-    _logger.warning('Could not import library crypt')
 
 #----------------------------------------------------------
 # Helper
 #----------------------------------------------------------
-
-
-class CertificateStatus(Enum):
-    OK = 1
-    NEED_REFRESH = 2
-    ERROR = 3
-
 
 class IoTRestart(Thread):
     """
@@ -53,76 +36,36 @@ class IoTRestart(Thread):
 
     def run(self):
         time.sleep(self.delay)
-        service.server.restart()
-
-
-if platform.system() == 'Windows':
-    writable = contextlib.nullcontext
-elif platform.system() == 'Linux':
-    @contextlib.contextmanager
-    def writable():
-        subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
-        subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/"])
-        try:
-            yield
-        finally:
-            subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
-            subprocess.call(["sudo", "mount", "-o", "remount,ro", "/root_bypass_ramdisks/"])
-            subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])
+        subprocess.check_call(["sudo", "service", "odoo", "restart"])
 
 def access_point():
     return get_ip() == '10.11.12.1'
 
-def start_nginx_server():
-    if platform.system() == 'Windows':
-        path_nginx = get_path_nginx()
-        if path_nginx:
-            os.chdir(path_nginx)
-            _logger.info('Start Nginx server: %s\\nginx.exe', path_nginx)
-            os.popen('nginx.exe')
-            os.chdir('..\\server')
-    elif platform.system() == 'Linux':
-        subprocess.check_call(["sudo", "service", "nginx", "restart"])
+def add_credential(db_uuid, enterprise_code):
+    write_file('odoo-db-uuid.conf', db_uuid)
+    write_file('odoo-enterprise-code.conf', enterprise_code)
 
 def check_certificate():
     """
     Check if the current certificate is up to date or not authenticated
-    :return CheckCertificateStatus
     """
     server = get_odoo_server_url()
-
-    if not server:
-        return {"status": CertificateStatus.ERROR,
-                "error_code": "ERR_IOT_HTTPS_CHECK_NO_SERVER"}
-
-    if platform.system() == 'Windows':
-        path = Path(get_path_nginx()).joinpath('conf/nginx-cert.crt')
-    elif platform.system() == 'Linux':
+    if server:
         path = Path('/etc/ssl/certs/nginx-cert.crt')
-
-    if not path.exists():
-        return {"status": CertificateStatus.NEED_REFRESH}
-
-    try:
-        with path.open('r') as f:
-            cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
-    except EnvironmentError:
-        _logger.exception("Unable to read certificate file")
-        return {"status": CertificateStatus.ERROR,
-                "error_code": "ERR_IOT_HTTPS_CHECK_CERT_READ_EXCEPTION"}
-
-    cert_end_date = datetime.datetime.strptime(cert.get_notAfter().decode('utf-8'), "%Y%m%d%H%M%SZ") - datetime.timedelta(days=10)
-    for key in cert.get_subject().get_components():
-        if key[0] == b'CN':
-            cn = key[1].decode('utf-8')
-    if cn == 'OdooTempIoTBoxCertificate' or datetime.datetime.now() > cert_end_date:
-        message = _('Your certificate %s must be updated', cn)
-        _logger.info(message)
-        return {"status": CertificateStatus.NEED_REFRESH}
-    else:
-        message = _('Your certificate %s is valid until %s', cn, cert_end_date)
-        _logger.info(message)
-        return {"status": CertificateStatus.OK, "message": message}
+        if path.exists():
+            with path.open('r') as f:
+                cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
+                cert_end_date = datetime.datetime.strptime(cert.get_notAfter().decode('utf-8'), "%Y%m%d%H%M%SZ") - datetime.timedelta(days=10)
+                for key in cert.get_subject().get_components():
+                    if key[0] == b'CN':
+                        cn = key[1].decode('utf-8')
+                if cn == 'OdooTempIoTBoxCertificate' or datetime.datetime.now() > cert_end_date:
+                    _logger.info(_('Your certificate %s must be updated') % (cn))
+                    load_certificate()
+                else:
+                    _logger.info(_('Your certificate %s is valid until %s') % (cn, cert_end_date))
+        else:
+            load_certificate()
 
 def check_git_branch():
     """
@@ -151,12 +94,14 @@ def check_git_branch():
                 local_branch = subprocess.check_output(git + ['symbolic-ref', '-q', '--short', 'HEAD']).decode('utf-8').rstrip()
 
                 if db_branch != local_branch:
-                    with writable():
-                        subprocess.check_call(["rm", "-rf", "/home/pi/odoo/addons/hw_drivers/iot_handlers/drivers/*"])
-                        subprocess.check_call(["rm", "-rf", "/home/pi/odoo/addons/hw_drivers/iot_handlers/interfaces/*"])
-                        subprocess.check_call(git + ['branch', '-m', db_branch])
-                        subprocess.check_call(git + ['remote', 'set-branches', 'origin', db_branch])
-                        os.system('/home/pi/odoo/addons/point_of_sale/tools/posbox/configuration/posbox_update.sh')
+                    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
+                    subprocess.check_call(["rm", "-rf", "/home/pi/odoo/addons/hw_drivers/iot_handlers/drivers/*"])
+                    subprocess.check_call(["rm", "-rf", "/home/pi/odoo/addons/hw_drivers/iot_handlers/interfaces/*"])
+                    subprocess.check_call(git + ['branch', '-m', db_branch])
+                    subprocess.check_call(git + ['remote', 'set-branches', 'origin', db_branch])
+                    os.system('/home/pi/odoo/addons/point_of_sale/tools/posbox/configuration/posbox_update.sh')
+                    subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
+                    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])
 
         except Exception as e:
             _logger.error('Could not reach configured server')
@@ -185,73 +130,39 @@ def check_image():
     version = checkFile.get(valueLastest, 'Error').replace('iotboxv', '').replace('.zip', '').split('_')
     return {'major': version[0], 'minor': version[1]}
 
-def save_conf_server(url, token, db_uuid, enterprise_code):
-    """
-    Save config to connect IoT to the server
-    """
-    write_file('odoo-remote-server.conf', url)
-    write_file('token', token)
-    write_file('odoo-db-uuid.conf', db_uuid or '')
-    write_file('odoo-enterprise-code.conf', enterprise_code or '')
-
-def generate_password():
-    """
-    Generate an unique code to secure raspberry pi
-    """
-    alphabet = 'abcdefghijkmnpqrstuvwxyz23456789'
-    password = ''.join(secrets.choice(alphabet) for i in range(12))
-    shadow_password = crypt.crypt(password, crypt.mksalt())
-    subprocess.call(('sudo', 'usermod', '-p', shadow_password, 'pi'))
-
-    with writable():
-        subprocess.call(('sudo', 'cp', '/etc/shadow', '/root_bypass_ramdisks/etc/shadow'))
-
-    return password
-
-
-def get_certificate_status(is_first=True):
-    """
-    Will get the HTTPS certificate details if present. Will load the certificate if missing.
-
-    :param is_first: Use to make sure that the recursion happens only once
-    :return: (bool, str)
-    """
-    check_certificate_result = check_certificate()
-    certificateStatus = check_certificate_result["status"]
-
-    if certificateStatus == CertificateStatus.ERROR:
-        return False, check_certificate_result["error_code"]
-
-    if certificateStatus == CertificateStatus.NEED_REFRESH and is_first:
-        certificate_process = load_certificate()
-        if certificate_process is not True:
-            return False, certificate_process
-        return get_certificate_status(is_first=False)  # recursive call to attempt certificate read
-    return True, check_certificate_result.get("message",
-                                              "The HTTPS certificate was generated correctly")
-
 def get_img_name():
     major, minor = get_version().split('.')
     return 'iotboxv%s_%s.zip' % (major, minor)
 
 def get_ip():
-    interfaces = netifaces.interfaces()
-    for interface in interfaces:
-        if netifaces.ifaddresses(interface).get(netifaces.AF_INET):
-            addr = netifaces.ifaddresses(interface).get(netifaces.AF_INET)[0]['addr']
-            if addr != '127.0.0.1':
-                return addr
+    while True:
+        try:
+            return netifaces.ifaddresses('eth0')[netifaces.AF_INET][0]['addr']
+        except KeyError:
+            pass
+
+        try:
+            return netifaces.ifaddresses('wlan0')[netifaces.AF_INET][0]['addr']
+        except KeyError:
+            pass
+
+        _logger.warning("Couldn't get IP, sleeping and retrying.")
+        time.sleep(5)
 
 def get_mac_address():
-    interfaces = netifaces.interfaces()
-    for interface in interfaces:
-        if netifaces.ifaddresses(interface).get(netifaces.AF_INET):
-            addr = netifaces.ifaddresses(interface).get(netifaces.AF_LINK)[0]['addr']
-            if addr != '00:00:00:00:00:00':
-                return addr
+    while True:
+        try:
+            return netifaces.ifaddresses('eth0')[netifaces.AF_LINK][0]['addr']
+        except KeyError:
+            pass
 
-def get_path_nginx():
-    return str(list(Path().absolute().parent.glob('*nginx*'))[0])
+        try:
+            return netifaces.ifaddresses('wlan0')[netifaces.AF_LINK][0]['addr']
+        except KeyError:
+            pass
+
+        _logger.warning("Couldn't get MAC address, sleeping and retrying.")
+        time.sleep(5)
 
 def get_ssid():
     ap = subprocess.call(['systemctl', 'is-active', '--quiet', 'hostapd']) # if service is active return 0 else inactive
@@ -262,20 +173,16 @@ def get_ssid():
     return subprocess.check_output(['sed', 's/.*"\\(.*\\)"/\\1/'], stdin=process_grep.stdout).decode('utf-8').rstrip()
 
 def get_odoo_server_url():
-    if platform.system() == 'Linux':
-        ap = subprocess.call(['systemctl', 'is-active', '--quiet', 'hostapd']) # if service is active return 0 else inactive
-        if not ap:
-            return False
+    ap = subprocess.call(['systemctl', 'is-active', '--quiet', 'hostapd']) # if service is active return 0 else inactive
+    if not ap:
+        return False
     return read_file_first_line('odoo-remote-server.conf')
 
 def get_token():
     return read_file_first_line('token')
 
 def get_version():
-    if platform.system() == 'Linux':
-        return read_file_first_line('/var/odoo/iotbox_version')
-    elif platform.system() == 'Windows':
-        return 'W22_11'
+    return subprocess.check_output(['cat', '/var/odoo/iotbox_version']).decode().rstrip()
 
 def get_wifi_essid():
     wifi_options = []
@@ -293,52 +200,35 @@ def load_certificate():
     """
     db_uuid = read_file_first_line('odoo-db-uuid.conf')
     enterprise_code = read_file_first_line('odoo-enterprise-code.conf')
-    if not (db_uuid and enterprise_code):
-        return "ERR_IOT_HTTPS_LOAD_NO_CREDENTIAL"
-
-    url = 'https://www.odoo.com/odoo-enterprise/iot/x509'
-    data = {
-        'params': {
-            'db_uuid': db_uuid,
-            'enterprise_code': enterprise_code
+    if db_uuid and enterprise_code:
+        url = 'https://www.odoo.com/odoo-enterprise/iot/x509'
+        data = {
+            'params': {
+                'db_uuid': db_uuid,
+                'enterprise_code': enterprise_code
+            }
         }
-    }
-    urllib3.disable_warnings()
-    http = urllib3.PoolManager(cert_reqs='CERT_NONE', retries=urllib3.Retry(4))
-    try:
+        urllib3.disable_warnings()
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
         response = http.request(
             'POST',
             url,
             body = json.dumps(data).encode('utf8'),
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         )
-    except Exception as e:
-        _logger.exception("An error occurred while trying to reach odoo.com servers.")
-        return "ERR_IOT_HTTPS_LOAD_REQUEST_EXCEPTION\n\n%s" % e
-
-    if response.status != 200:
-        return "ERR_IOT_HTTPS_LOAD_REQUEST_STATUS %s\n\n%s" % (response.status, response.reason)
-
-    result = json.loads(response.data.decode('utf8'))['result']
-    if not result:
-        return "ERR_IOT_HTTPS_LOAD_REQUEST_NO_RESULT"
-
-    write_file('odoo-subject.conf', result['subject_cn'])
-    if platform.system() == 'Linux':
-        with writable():
+        result = json.loads(response.data.decode('utf8'))['result']
+        if result:
+            write_file('odoo-subject.conf', result['subject_cn'])
+            subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
+            subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/"])
             Path('/etc/ssl/certs/nginx-cert.crt').write_text(result['x509_pem'])
             Path('/root_bypass_ramdisks/etc/ssl/certs/nginx-cert.crt').write_text(result['x509_pem'])
             Path('/etc/ssl/private/nginx-cert.key').write_text(result['private_key_pem'])
             Path('/root_bypass_ramdisks/etc/ssl/private/nginx-cert.key').write_text(result['private_key_pem'])
-    elif platform.system() == 'Windows':
-        Path(get_path_nginx()).joinpath('conf/nginx-cert.crt').write_text(result['x509_pem'])
-        Path(get_path_nginx()).joinpath('conf/nginx-cert.key').write_text(result['private_key_pem'])
-    time.sleep(3)
-    if platform.system() == 'Windows':
-        odoo_restart(0)
-    elif platform.system() == 'Linux':
-        start_nginx_server()
-    return True
+            subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
+            subprocess.call(["sudo", "mount", "-o", "remount,ro", "/root_bypass_ramdisks/"])
+            subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])
+            subprocess.check_call(["sudo", "service", "nginx", "restart"])
 
 def download_iot_handlers(auto=True):
     """
@@ -350,13 +240,14 @@ def download_iot_handlers(auto=True):
         pm = urllib3.PoolManager(cert_reqs='CERT_NONE')
         server = server + '/iot/get_handlers'
         try:
-            resp = pm.request('POST', server, fields={'mac': get_mac_address(), 'auto': auto}, timeout=8)
+            resp = pm.request('POST', server, fields={'mac': get_mac_address(), 'auto': auto})
             if resp.data:
-                with writable():
-                    drivers_path = ['odoo', 'addons', 'hw_drivers', 'iot_handlers']
-                    path = path_file(str(Path().joinpath(*drivers_path)))
-                    zip_file = zipfile.ZipFile(io.BytesIO(resp.data))
-                    zip_file.extractall(path)
+                subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
+                drivers_path = Path.home() / 'odoo/addons/hw_drivers/iot_handlers'
+                zip_file = zipfile.ZipFile(io.BytesIO(resp.data))
+                zip_file.extractall(drivers_path)
+                subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
+                subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])
         except Exception as e:
             _logger.error('Could not reach configured server')
             _logger.error('A error encountered : %s ' % e)
@@ -368,84 +259,39 @@ def load_iot_handlers():
     And execute these python drivers and interfaces
     """
     for directory in ['interfaces', 'drivers']:
-        path = file_path(f'hw_drivers/iot_handlers/{directory}')
-        filesList = list_file_by_os(path)
+        path = get_resource_path('hw_drivers', 'iot_handlers', directory)
+        filesList = os.listdir(path)
         for file in filesList:
-            spec = util.spec_from_file_location(file, str(Path(path).joinpath(file)))
+            path_file = os.path.join(path, file)
+            spec = util.spec_from_file_location(file, path_file)
             if spec:
                 module = util.module_from_spec(spec)
-                try:
-                    spec.loader.exec_module(module)
-                except Exception as e:
-                    _logger.error('Unable to load file: %s ', file)
-                    _logger.error('An error encountered : %s ', e)
+                spec.loader.exec_module(module)
     lazy_property.reset_all(http.root)
-
-def list_file_by_os(file_list):
-    platform_os = platform.system()
-    if platform_os == 'Linux':
-        return [x.name for x in Path(file_list).glob('*[!W].*')]
-    elif platform_os == 'Windows':
-        return [x.name for x in Path(file_list).glob('*[!L].*')]
 
 def odoo_restart(delay):
     IR = IoTRestart(delay)
     IR.start()
 
-def path_file(filename):
-    platform_os = platform.system()
-    if platform_os == 'Linux':
-        return Path.home() / filename
-    elif platform_os == 'Windows':
-        return Path().absolute().parent.joinpath('server/' + filename)
-
 def read_file_first_line(filename):
-    path = path_file(filename)
+    path = Path.home() / filename
+    path = Path('/home/pi/' + filename)
     if path.exists():
         with path.open('r') as f:
             return f.readline().strip('\n')
+    return ''
 
 def unlink_file(filename):
-    with writable():
-        path = path_file(filename)
-        if path.exists():
-            path.unlink()
+    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
+    path = Path.home() / filename
+    if path.exists():
+        path.unlink()
+    subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
+    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])
 
-def write_file(filename, text, mode='w'):
-    with writable():
-        path = path_file(filename)
-        with open(path, mode) as f:
-            f.write(text)
-
-def download_from_url(download_url, path_to_filename):
-    """
-    This function downloads from its 'download_url' argument and
-    saves the result in 'path_to_filename' file
-    The 'path_to_filename' needs to be a valid path + file name
-    (Example: 'C:\\Program Files\\Odoo\\downloaded_file.zip')
-    """
-    try:
-        request_response = requests.get(download_url, timeout=60)
-        request_response.raise_for_status()
-        write_file(path_to_filename, request_response.content, 'wb')
-        _logger.info('Downloaded %s from %s', path_to_filename, download_url)
-    except Exception as e:
-        _logger.error('Failed to download from %s: %s', download_url, e)
-
-def unzip_file(path_to_filename, path_to_extract):
-    """
-    This function unzips 'path_to_filename' argument to
-    the path specified by 'path_to_extract' argument
-    and deletes the originally used .zip file
-    Example: unzip_file('C:\\Program Files\\Odoo\\downloaded_file.zip', 'C:\\Program Files\\Odoo\\new_folder'))
-    Will extract all the contents of 'downloaded_file.zip' to the 'new_folder' location)
-    """
-    try:
-        with writable():
-            path = path_file(path_to_filename)
-            with zipfile.ZipFile(path) as zip_file:
-                zip_file.extractall(path_file(path_to_extract))
-            Path(path).unlink()
-        _logger.info('Unzipped %s to %s', path_to_filename, path_to_extract)
-    except Exception as e:
-        _logger.error('Failed to unzip %s: %s', path_to_filename, e)
+def write_file(filename, text):
+    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/"])
+    path = Path.home() / filename
+    path.write_text(text)
+    subprocess.call(["sudo", "mount", "-o", "remount,ro", "/"])
+    subprocess.call(["sudo", "mount", "-o", "remount,rw", "/root_bypass_ramdisks/etc/cups"])

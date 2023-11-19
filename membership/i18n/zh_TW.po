@@ -3,16 +3,16 @@
 # 	* membership
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -154,7 +154,7 @@ msgstr "聯絡人"
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__create_uid
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__create_date
@@ -236,8 +236,8 @@ msgstr "會籍終止日期"
 
 #. module: membership
 #: model:ir.model.constraint,message:membership.constraint_product_template_membership_date_greater
-msgid "Error! Ending Date cannot be set before Beginning Date."
-msgstr ""
+msgid "Error ! Ending Date cannot be set before Beginning Date."
+msgstr "錯誤！失效日期不能早於開始日期。"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -256,7 +256,7 @@ msgstr "免費會員"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date_from
 msgid "From"
-msgstr "由"
+msgstr "來自"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -274,12 +274,12 @@ msgstr "分組由..."
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__id
 #: model:ir.model.fields,field_description:membership.field_report_membership__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
 msgid "Inactive"
-msgstr "未啟用"
+msgstr "停用"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__account_invoice_id
@@ -355,12 +355,19 @@ msgstr "加入會員資格"
 #. module: membership
 #: model:ir.model,name:membership.model_account_move
 msgid "Journal Entry"
-msgstr "日記賬記項"
+msgstr "日記帳分錄"
 
 #. module: membership
 #: model:ir.model,name:membership.model_account_move_line
 msgid "Journal Item"
-msgstr "日記賬項目"
+msgstr "日記帳專案"
+
+#. module: membership
+#: model:ir.model.fields,field_description:membership.field_membership_invoice____last_update
+#: model:ir.model.fields,field_description:membership.field_membership_membership_line____last_update
+#: model:ir.model.fields,field_description:membership.field_report_membership____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__write_uid
@@ -391,7 +398,7 @@ msgstr "會員價格"
 #: model_terms:ir.ui.view,arch_db:membership.membership_members_tree
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
 msgid "Members"
-msgstr "成員"
+msgstr "會員"
 
 #. module: membership
 #: model:ir.actions.act_window,name:membership.action_report_membership_tree
@@ -500,6 +507,8 @@ msgstr "會員產品"
 
 #. module: membership
 #: model:ir.actions.server,name:membership.ir_cron_update_membership_ir_actions_server
+#: model:ir.cron,cron_name:membership.ir_cron_update_membership
+#: model:ir.cron,name:membership.ir_cron_update_membership
 msgid "Membership: update memberships"
 msgstr "會員資格：更新會員資格"
 
@@ -554,14 +563,12 @@ msgid "Partner"
 msgstr "業務夥伴"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner doesn't have an address to make the invoice."
 msgstr "業務夥伴沒有地址來開具應收憑單。"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner is a free Member."
@@ -590,7 +597,7 @@ msgstr "數量"
 #. module: membership
 #: model:ir.ui.menu,name:membership.menu_report_membership
 msgid "Reporting"
-msgstr "報告"
+msgstr "報表"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -686,7 +693,6 @@ msgid "Waiting Member"
 msgstr "等待會員"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "You cannot create recursive associated members."

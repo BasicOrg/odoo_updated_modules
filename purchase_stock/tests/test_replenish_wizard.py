@@ -43,14 +43,11 @@ class TestReplenishWizard(TestStockCommon):
             'quantity': self.product_uom_qty,
             'warehouse_id': self.wh.id,
         })
-        genrated_picking = replenish_wizard.launch_replenishment()
-        links = genrated_picking.get("params", {}).get("links")
-        url = links and links[0].get("url", "") or ""
-        purchase_order_id, model_name = self.url_extract_rec_id_and_model(url)
-
-        last_po_id = False
-        if purchase_order_id and model_name:
-            last_po_id = self.env[model_name[0]].browse(int(purchase_order_id[0]))
+        replenish_wizard.launch_replenishment()
+        last_po_id = self.env['purchase.order'].search([
+            ('origin', 'ilike', '%Manual Replenishment%'),
+            ('partner_id', '=', self.vendor.id)
+        ])[-1]
         self.assertTrue(last_po_id, 'Purchase Order not found')
         order_line = last_po_id.order_line.search([('product_id', '=', self.product1.id)])
         self.assertTrue(order_line, 'The product is not in the Purchase Order')
@@ -96,14 +93,10 @@ class TestReplenishWizard(TestStockCommon):
             'quantity': 10,
             'warehouse_id': self.wh.id,
         })
-        genrated_picking = replenish_wizard.launch_replenishment()
-        links = genrated_picking.get("params", {}).get("links")
-        url = links and links[0].get("url", "") or ""
-        purchase_order_id, model_name = self.url_extract_rec_id_and_model(url)
-
-        last_po_id = False
-        if purchase_order_id and model_name:
-            last_po_id = self.env[model_name[0]].browse(int(purchase_order_id[0]))
+        replenish_wizard.launch_replenishment()
+        last_po_id = self.env['purchase.order'].search([
+            ('origin', 'ilike', '%Manual Replenishment%'),
+        ])[-1]
         self.assertEqual(last_po_id.partner_id, vendor1)
         self.assertEqual(last_po_id.order_line.price_unit, 100)
 
@@ -155,14 +148,10 @@ class TestReplenishWizard(TestStockCommon):
             'quantity': 10,
             'warehouse_id': self.wh.id,
         })
-        genrated_picking = replenish_wizard.launch_replenishment()
-        links = genrated_picking.get("params", {}).get("links")
-        url = links and links[0].get("url", "") or ""
-        purchase_order_id, model_name = self.url_extract_rec_id_and_model(url)
-
-        last_po_id = False
-        if purchase_order_id and model_name:
-            last_po_id = self.env[model_name[0]].browse(int(purchase_order_id[0]))
+        replenish_wizard.launch_replenishment()
+        last_po_id = self.env['purchase.order'].search([
+            ('origin', 'ilike', '%Manual Replenishment%'),
+        ])[-1]
         self.assertEqual(last_po_id.partner_id, vendor1)
         self.assertEqual(last_po_id.order_line.price_unit, 100)
 
@@ -204,15 +193,10 @@ class TestReplenishWizard(TestStockCommon):
             'quantity': 10,
             'warehouse_id': self.wh.id,
         })
-        genrated_picking = replenish_wizard.launch_replenishment()
-        links = genrated_picking.get("params", {}).get("links")
-        url = links and links[0].get("url", "") or ""
-        purchase_order_id, model_name = self.url_extract_rec_id_and_model(url)
-
-        last_po_id = False
-        if purchase_order_id and model_name:
-            last_po_id = self.env[model_name[0]].browse(int(purchase_order_id[0]))
-
+        replenish_wizard.launch_replenishment()
+        last_po_id = self.env['purchase.order'].search([
+            ('origin', 'ilike', '%Manual Replenishment%'),
+        ])[-1]
         self.assertEqual(last_po_id.partner_id, vendor2)
 
     def test_chose_supplier_4(self):
@@ -257,14 +241,10 @@ class TestReplenishWizard(TestStockCommon):
             'quantity': 10,
             'warehouse_id': self.wh.id,
         })
-        genrated_picking = replenish_wizard.launch_replenishment()
-        links = genrated_picking.get("params", {}).get("links")
-        url = links and links[0].get("url", "") or ""
-        purchase_order_id, model_name = self.url_extract_rec_id_and_model(url)
-
-        last_po_id = False
-        if purchase_order_id and model_name:
-            last_po_id = self.env[model_name[0]].browse(int(purchase_order_id[0]))
+        replenish_wizard.launch_replenishment()
+        last_po_id = self.env['purchase.order'].search([
+            ('origin', 'ilike', '%Manual Replenishment%'),
+        ])[-1]
 
         self.assertEqual(last_po_id.partner_id, vendor1)
         self.assertEqual(last_po_id.order_line.price_unit, 60)

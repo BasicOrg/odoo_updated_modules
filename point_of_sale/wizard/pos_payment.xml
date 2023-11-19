@@ -13,13 +13,14 @@
                 </group>
                 <footer>
                     <button name="check" string="Make Payment" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button special="cancel" data-hotkey="x" string="Cancel" class="btn-secondary"/>
+                    <button special="cancel" data-hotkey="z" string="Cancel" class="btn-secondary"/>
                 </footer>
             </form>
             </field>
         </record>
         <record id="action_pos_payment" model="ir.actions.act_window">
             <field name="name">Payment</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">pos.make.payment</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

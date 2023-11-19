@@ -15,8 +15,6 @@ class QualityPoint(models.Model):
     _inherit = "quality.point"
 
     failure_message = fields.Html('Failure Message')
-    failure_location_ids = fields.Many2many('stock.location', string="Failure Locations", domain="[('usage', '=', 'internal')]",
-                            help="If a quality check fails, a location is chosen from this list for each failed quantity.")
     measure_on = fields.Selection([
         ('operation', 'Operation'),
         ('product', 'Product'),
@@ -35,20 +33,14 @@ class QualityPoint(models.Model):
         ('day', 'Days'),
         ('week', 'Weeks'),
         ('month', 'Months')], default="day")  # TDE RENAME ?
-    is_lot_tested_fractionally = fields.Boolean(string="Lot Tested Fractionally", help="Determines if only a fraction of the lot should be tested",
-                                                compute="_compute_is_lot_tested_fractionally")
-    testing_percentage_within_lot = fields.Float(help="Defines the percentage within a lot that should be tested", default=100)
+    is_lot_tested_fractionally = fields.Boolean(string="Lot Tested Fractionally", help="Determines if only a fraction of the lot should be tested")
+    testing_percentage_within_lot = fields.Float(help="Defines the percentage within a lot that should be tested")
     norm = fields.Float('Norm', digits='Quality Tests')  # TDE RENAME ?
     tolerance_min = fields.Float('Min Tolerance', digits='Quality Tests')
     tolerance_max = fields.Float('Max Tolerance', digits='Quality Tests')
     norm_unit = fields.Char('Norm Unit', default=lambda self: 'mm')  # TDE RENAME ?
     average = fields.Float(compute="_compute_standard_deviation_and_average")
     standard_deviation = fields.Float(compute="_compute_standard_deviation_and_average")
-
-    @api.depends('testing_percentage_within_lot')
-    def _compute_is_lot_tested_fractionally(self):
-        for point in self:
-            point.is_lot_tested_fractionally = point.testing_percentage_within_lot < 100
 
     def _compute_standard_deviation_and_average(self):
         # The variance and mean are computed by the Welford’s method and used the Bessel's
@@ -127,66 +119,6 @@ class QualityPoint(models.Model):
         action['domain'] = [('point_id', '=', self.id), ('quality_state', '!=', 'none')]
         return action
 
-    def _get_checks_values(self, products, company_id, existing_checks=False):
-        quality_points_list = []
-        point_values = []
-        if not existing_checks:
-            existing_checks = []
-        for check in existing_checks:
-            point_key = (check.point_id.id, check.team_id.id, check.product_id.id)
-            quality_points_list.append(point_key)
-
-        for point in self:
-            if not point.check_execute_now():
-                continue
-            point_products = point.product_ids
-
-            if point.product_category_ids:
-                point_product_from_categories = self.env['product.product'].search([('categ_id', 'child_of', point.product_category_ids.ids), ('id', 'in', products.ids)])
-                point_products |= point_product_from_categories
-
-            if not point.product_ids and not point.product_category_ids:
-                point_products |= products
-
-            for product in point_products:
-                if product not in products:
-                    continue
-                point_key = (point.id, point.team_id.id, product.id)
-                if point_key in quality_points_list:
-                    continue
-                point_values.append({
-                    'point_id': point.id,
-                    'measure_on': point.measure_on,
-                    'team_id': point.team_id.id,
-                    'product_id': product.id,
-                })
-                quality_points_list.append(point_key)
-
-        return point_values
-
-    @api.model
-    def _get_domain(self, product_ids, picking_type_id, measure_on='product'):
-        """ Helper that returns a domain for quality.point based on the products and picking type
-        pass as arguments. It will search for quality point having:
-        - No product_ids and no product_category_id
-        - At least one variant from product_ids
-        - At least one category that is a parent of the product_ids categories
-
-        :param product_ids: the products that could require a quality check
-        :type product: :class:`~odoo.addons.product.models.product.ProductProduct`
-        :param picking_type_id: the products that could require a quality check
-        :type product: :class:`~odoo.addons.stock.models.stock_picking.PickingType`
-        :return: the domain for quality point with given picking_type_id for all the product_ids
-        :rtype: list
-        """
-        domain = [('picking_type_ids', 'in', picking_type_id.ids)]
-        domain_in_products_or_categs = ['|', ('product_ids', 'in', product_ids.ids), ('product_category_ids', 'parent_of', product_ids.categ_id.ids)]
-        domain_no_products_and_categs = [('product_ids', '=', False), ('product_category_ids', '=', False)]
-        domain += OR([domain_in_products_or_categs, domain_no_products_and_categs])
-        domain += [('measure_on', '=', measure_on)]
-
-        return domain
-
 
 class QualityCheck(models.Model):
     _inherit = "quality.check"
@@ -202,8 +134,8 @@ class QualityCheck(models.Model):
     tolerance_max = fields.Float('Max Tolerance', related='point_id.tolerance_max', readonly=True)
     warning_message = fields.Text(compute='_compute_warning_message')
     norm_unit = fields.Char(related='point_id.norm_unit', readonly=True)
-    qty_to_test = fields.Float(compute="_compute_qty_to_test", string="Quantity to Test", help="Quantity of product to test within the lot", digits='Product Unit of Measure')
-    qty_tested = fields.Float(string="Quantity Tested", help="Quantity of product tested within the lot", digits='Product Unit of Measure')
+    qty_to_test = fields.Float(compute="_compute_qty_to_test", string="Quantity to Test", help="Quantity of product to test within the lot")
+    qty_tested = fields.Float(string="Quantity Tested", help="Quantity of product tested within the lot")
     measure_on = fields.Selection([
         ('operation', 'Operation'),
         ('product', 'Product'),
@@ -212,8 +144,7 @@ class QualityCheck(models.Model):
                   Product = A quality check is requested per product.
                  Quantity = A quality check is requested for each new product quantity registered, with partial quantity checks also possible.""")
     move_line_id = fields.Many2one('stock.move.line', 'Stock Move Line', check_company=True, help="In case of Quality Check by Quantity, Move Line on which the Quality Check applies")
-    failure_location_id = fields.Many2one('stock.location', string="Failure Location")
-    lot_name = fields.Char('Lot/Serial Number Name', related='move_line_id.lot_name', store=True)
+    lot_name = fields.Char('Lot/Serial Number Name')
     lot_line_id = fields.Many2one('stock.lot', store=True, compute='_compute_lot_line_id')
     qty_line = fields.Float(compute='_compute_qty_line', string="Quantity")
     uom_id = fields.Many2one(related='product_id.uom_id', string="Product Unit of Measure")
@@ -226,27 +157,24 @@ class QualityCheck(models.Model):
     def _compute_warning_message(self):
         for rec in self:
             if rec.measure_success == 'fail':
-                rec.warning_message = _('You measured %.2f %s and it should be between %.2f and %.2f %s.',
+                rec.warning_message = _('You measured %.2f %s and it should be between %.2f and %.2f %s.') % (
                     rec.measure, rec.norm_unit, rec.point_id.tolerance_min,
                     rec.point_id.tolerance_max, rec.norm_unit
                 )
             else:
                 rec.warning_message = ''
 
-    @api.depends('move_line_id.quantity')
+    @api.depends('move_line_id.qty_done')
     def _compute_qty_line(self):
         for qc in self:
-            qc.qty_line = qc.move_line_id.quantity
+            qc.qty_line = qc.move_line_id.qty_done
 
     @api.depends('move_line_id.lot_id')
     def _compute_lot_line_id(self):
         for qc in self:
             qc.lot_line_id = qc.move_line_id.lot_id
-            if qc.lot_line_id and qc._update_lot_from_lot_line():
+            if qc.lot_line_id:
                 qc.lot_id = qc.lot_line_id
-
-    def _update_lot_from_lot_line(self):
-        return True
 
     @api.depends('measure')
     def _compute_measure_success(self):
@@ -268,7 +196,7 @@ class QualityCheck(models.Model):
     def _compute_qty_to_test(self):
         for qc in self:
             if qc.is_lot_tested_fractionally:
-                qc.qty_to_test = float_round(qc.qty_line * qc.testing_percentage_within_lot / 100, precision_rounding=qc.product_id.uom_id.rounding or 0.01, rounding_method="UP")
+                qc.qty_to_test = float_round(qc.qty_line * qc.testing_percentage_within_lot / 100, precision_rounding=self.product_id.uom_id.rounding, rounding_method="UP")
             else:
                 qc.qty_to_test = qc.qty_line
 
@@ -294,16 +222,25 @@ class QualityCheck(models.Model):
     def _check_to_unlink(self):
         return True
 
-    def _measure_passes(self):
-        self.ensure_one()
-        return self.point_id.tolerance_min <= self.measure <= self.point_id.tolerance_max
-
     def do_measure(self):
         self.ensure_one()
-        if self._measure_passes():
-            return self.do_pass()
-        else:
+        if self.measure < self.point_id.tolerance_min or self.measure > self.point_id.tolerance_max:
             return self.do_fail()
+        else:
+            return self.do_pass()
+
+    def correct_measure(self):
+        self.ensure_one()
+        return {
+            'name': _('Quality Checks'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'quality.check',
+            'view_mode': 'form',
+            'view_id': self.env.ref('quality_control.quality_check_view_form_small').id,
+            'target': 'new',
+            'res_id': self.id,
+            'context': self.env.context,
+        }
 
     def do_alert(self):
         self.ensure_one()
@@ -345,56 +282,12 @@ class QualityCheck(models.Model):
     def action_open_quality_check_wizard(self, current_check_id=None):
         check_ids = sorted(self.ids)
         action = self.env["ir.actions.actions"]._for_xml_id("quality_control.action_quality_check_wizard")
-        check_id = self.browse(current_check_id or check_ids[0])
-        action['name'] = check_id._get_check_action_name()
         action['context'] = self.env.context.copy()
         action['context'].update({
             'default_check_ids': check_ids,
-            'default_current_check_id': check_id.id,
-            'default_qty_tested': check_id.qty_to_test,
+            'default_current_check_id': current_check_id or check_ids[0],
         })
         return action
-
-    def _move_line_to_failure_location(self, failure_location_id, failed_qty=None):
-        """ This function is used to fail move lines and can optionally:
-             - split it into failed and passed qties (i.e. 2 move lines w/1 check each)
-             - send the failed qty to a failure location
-        :param failure_location_id: id of location to send failed qty to
-        :param failed_qty: qty failed on check, defaults to None, if None all quantity of the move is failed
-        """
-        for check in self:
-            if check.quality_state != 'fail' or check.point_id.measure_on != 'move_line' or not check.move_line_id or not check.picking_id:
-                continue
-            failed_qty = failed_qty or check.move_line_id.quantity
-            old_move_line = check.move_line_id
-            dest_location = failure_location_id or old_move_line.location_dest_id.id
-            if failure_location_id:
-                check.failure_location_id = failure_location_id
-            if failed_qty == check.move_line_id.quantity:
-                old_move_line.location_dest_id = dest_location
-                return
-            old_move_line.quantity -= failed_qty
-            failed_move_line = old_move_line.with_context(default_check_ids=None, no_checks=True).copy({
-                'location_dest_id': dest_location,
-                'quantity': failed_qty,
-            })
-            # switch the checks, check in self should always be the failed one,
-            # new check linked to original move line will be passed check
-            new_check = self.create(failed_move_line._get_check_values(check.point_id))
-            check.move_line_id = failed_move_line
-            new_check.move_line_id = old_move_line
-            new_check.do_pass()
-
-    def _get_check_action_name(self):
-        self.ensure_one()
-        action_name = self.title or "Quality Check"
-        if self.product_id:
-            action_name += ' : %s' % self.product_id.name
-        if self.qty_line and self.uom_id:
-            action_name += ' - %s %s' % (self.qty_line, self.uom_id.name)
-        if self.lot_name or self.lot_line_id:
-            action_name += ' - %s' % self.lot_name or self.lot_line_id.name
-        return action_name
 
 
 class QualityAlert(models.Model):
@@ -413,18 +306,20 @@ class QualityAlert(models.Model):
         }
 
     @api.depends('name', 'title')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         for record in self:
             name = record.name + ' - ' + record.title if record.title else record.name
-            record.display_name = name
+            result.append((record.id, name))
+        return result
 
     @api.model
     def name_create(self, name):
         """ Create an alert with name_create should use prepend the sequence in the name """
-        record = self.create({
+        values = {
             'title': name,
-        })
-        return record.id, record.display_name
+        }
+        return self.create(values).name_get()[0]
 
     @api.model
     def message_new(self, msg_dict, custom_values=None):
@@ -501,12 +396,12 @@ class ProductProduct(models.Model):
             ('company_id', '=', self.env.company.id),
             ('quality_state', '!=', 'none')
         ]
-        quality_checks_by_state = self.env['quality.check']._read_group(domain, ['quality_state'], ['__count'])
-        for quality_state, count in quality_checks_by_state:
-            if quality_state == 'fail':
-                quality_fail_qty = count
-            elif quality_state == 'pass':
-                quality_pass_qty = count
+        quality_checks_by_state = self.env['quality.check']._read_group(domain, ['product_id'], ['quality_state'])
+        for checks_data in quality_checks_by_state:
+            if checks_data['quality_state'] == 'fail':
+                quality_fail_qty = checks_data['quality_state_count']
+            elif checks_data['quality_state'] == 'pass':
+                quality_pass_qty = checks_data['quality_state_count']
 
         return quality_fail_qty, quality_pass_qty
 

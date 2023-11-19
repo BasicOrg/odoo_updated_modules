@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
+import { _t } from 'web.core';
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('order_lunch_tour', {
+tour.register('order_lunch_tour', {
     url: "/web",
     test: true,
-    steps: () => [{
+}, [{
     trigger: 'a[data-menu-xmlid="lunch.menu_lunch"]',
     content: _t("Start by accessing the lunch app."),
     position: 'bottom',
@@ -39,4 +39,4 @@ registry.category("web_tour.tours").add('order_lunch_tour', {
     content: _t("Validate your order"),
     position: 'left',
     run: 'click',
-}]});
+}]);

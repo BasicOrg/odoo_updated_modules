@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-
-from markupsafe import Markup
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import pdf
@@ -144,7 +142,7 @@ class ProviderUPS(models.Model):
                 'require_invoice': picking._should_generate_commercial_invoice(),
                 'invoice_date': fields.Date.today().strftime('%Y%m%d'),
                 'description': picking.origin,
-                'total_qty': sum(sml.quantity for sml in picking.move_line_ids),
+                'total_qty': sum(sml.qty_done for sml in picking.move_line_ids),
                 'ilt_monetary_value': '%d' % sum(sml.sale_price for sml in picking.move_line_ids),
                 'itl_currency_code': self.env.company.currency_id.name,
                 'phone': picking.partner_id.mobile or picking.partner_id.phone or picking.sale_id.partner_id.mobile or picking.sale_id.partner_id.phone,
@@ -197,16 +195,15 @@ class ProviderUPS(models.Model):
                 package_labels = package_labels + [(track_number, label_binary_data)]
 
             carrier_tracking_ref = "+".join([pl[0] for pl in package_labels])
-            logmessage = _("Shipment created into UPS") + Markup("<br/><b>") + \
-                         _("Tracking Numbers:") + Markup("</b> ") + carrier_tracking_ref + \
-                         Markup("<br/><b>") + _("Packages:") + Markup("</b> ") + \
-                         ','.join([p.name for p in packages if p.name])
+            logmessage = _("Shipment created into UPS<br/>"
+                           "<b>Tracking Numbers:</b> %s<br/>"
+                           "<b>Packages:</b> %s") % (carrier_tracking_ref, ','.join([p.name for p in packages if p.name]))
             if self.ups_label_file_type != 'GIF':
-                attachments = [('%s-%s.%s' % (self._get_delivery_label_prefix(), pl[0], self.ups_label_file_type), pl[1]) for pl in package_labels]
+                attachments = [('LabelUPS-%s.%s' % (pl[0], self.ups_label_file_type), pl[1]) for pl in package_labels]
             if self.ups_label_file_type == 'GIF':
-                attachments = [('%s.pdf' % (self._get_delivery_label_prefix()), pdf.merge_pdf([pl[1] for pl in package_labels]))]
+                attachments = [('LabelUPS.pdf', pdf.merge_pdf([pl[1] for pl in package_labels]))]
             if 'invoice_binary_data' in result:
-                attachments.append(('%s-CommercialInvoice.pdf' % (self._get_delivery_doc_prefix()), result['invoice_binary_data']))
+                attachments.append(('UPSCommercialInvoice.pdf', result['invoice_binary_data']))
             if picking.sale_id:
                 for pick in picking.sale_id.picking_ids:
                     pick.message_post(body=logmessage, attachments=attachments)
@@ -236,7 +233,7 @@ class ProviderUPS(models.Model):
             'is_return': True,
             'invoice_date': fields.Date.today().strftime('%Y%m%d'),
             'description': picking.origin,
-            'total_qty': sum(sml.quantity for sml in picking.move_line_ids),
+            'total_qty': sum(sml.qty_done for sml in picking.move_line_ids),
             'ilt_monetary_value': '%d' % invoice_line_total,
             'itl_currency_code': self.env.company.currency_id.name,
             'phone': picking.partner_id.mobile or picking.partner_id.phone or picking.sale_id.partner_id.mobile or picking.sale_id.partner_id.phone,
@@ -289,10 +286,9 @@ class ProviderUPS(models.Model):
             package_labels = package_labels + [(track_number, label_binary_data)]
 
         carrier_tracking_ref = "+".join([pl[0] for pl in package_labels])
-        logmessage = _("Return label generated") + Markup("<br/><b>") + \
-                     _("Tracking Numbers:") + Markup("</b> ") + carrier_tracking_ref + \
-                     Markup("<br/><b>") + _("Packages:") + Markup("</b> ") + \
-                     ','.join([p.name for p in packages if p.name])
+        logmessage = _("Return label generated<br/>"
+                       "<b>Tracking Numbers:</b> %s<br/>"
+                       "<b>Packages:</b> %s") % (carrier_tracking_ref, ','.join([p.name for p in packages if p.name]))
         if self.ups_label_file_type != 'GIF':
             attachments = [('%s-%s-%s.%s' % (self.get_return_label_prefix(), pl[0], index, self.ups_label_file_type), pl[1]) for index, pl in enumerate(package_labels)]
         if self.ups_label_file_type == 'GIF':

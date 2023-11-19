@@ -4,6 +4,7 @@ from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.tests import tagged
 from odoo.tools import file_open
 from odoo.exceptions import UserError
+from odoo.modules.module import get_module_resource
 from odoo.addons.account_bank_statement_import_camt.models.account_journal import _logger as camt_wizard_logger
 
 NORMAL_AMOUNTS = [100, 150, 250]
@@ -30,11 +31,6 @@ class TestAccountBankStatementImportCamt(AccountTestInvoicingCommon):
         self.env['res.partner.bank'].create({
             'acc_number': 'BE93999574162167',
             'partner_id': partner_norbert.id,
-            'bank_id': bank_norbert.id,
-        })
-        self.env['res.partner.bank'].create({
-            'acc_number': '10987654323',
-            'partner_id': self.partner_a.id,
             'bank_id': bank_norbert.id,
         })
 
@@ -71,7 +67,7 @@ class TestAccountBankStatementImportCamt(AccountTestInvoicingCommon):
                 'ref': 'TESTBANK/NL/20151129/01206408',
                 'partner_name': 'China Export',
                 'amount': -564.05,
-                'partner_id': self.partner_a.id,
+                'partner_id': self.env.ref('base.res_partner_3').id,
             },
         ])
 
@@ -331,8 +327,7 @@ class TestAccountBankStatementImportCamt(AccountTestInvoicingCommon):
         )
 
         self.assertEqual(error_catcher.exception.args[0], (
-            "The following files could not be imported:\n"
-            "- test_camt.xml: Please set the IBAN account on your bank journal.\n\n"
+            "Please set the IBAN account on your bank journal.\n\n"
             "This CAMT file is targeting several IBAN accounts but none match the current journal."
         ))
 
@@ -370,30 +365,3 @@ class TestAccountBankStatementImportCamt(AccountTestInvoicingCommon):
         usd_currency = self.env.ref('base.USD')
         self.assertEqual(self.env.company.currency_id.id, usd_currency.id)
         self._test_minimal_camt_file_import('camt_053_minimal_charges_02.xml', usd_currency)
-
-    def test_import_already_fully_imported_catm_without_opening_balance(self):
-        """
-        Test the scenario when you have a CAMT file where one statement does not
-        have an opening balance, and you try to import it twice
-        """
-        bank_journal = self.env['account.journal'].create({
-            'name': 'Bank 123456',
-            'code': 'BNK67',
-            'type': 'bank',
-            'bank_acc_number': '112233',
-            'currency_id': self.env.ref('base.USD').id,
-        })
-
-        camt_file_path = 'account_bank_statement_import_camt/test_camt_file/test_camt_no_opening_balance.xml'
-
-        def import_file():
-            with file_open(camt_file_path, 'rb') as camt_file:
-                bank_journal.create_document_from_attachment(self.env['ir.attachment'].create({
-                    'mimetype': 'application/xml',
-                    'name': 'test_camt_no_opening_balance.xml',
-                    'raw': camt_file.read(),
-                }).ids)
-
-        import_file()
-        with self.assertRaises(UserError, msg='You already have imported that file.'):
-            import_file()

@@ -8,7 +8,6 @@ import {
     mount,
     nextTick,
     patchWithCleanup,
-    mockTimeout,
 } from "@web/../tests/helpers/utils";
 import { setupViewRegistries } from "@web/../tests/views/helpers";
 import { registry } from "@web/core/registry";
@@ -16,8 +15,7 @@ import { OnboardingBanner } from "@web/views/onboarding_banner";
 import { View } from "@web/views/view";
 import { actionService } from "@web/webclient/actions/action_service";
 
-import { Component, onWillStart, onWillUpdateProps, useState, xml } from "@odoo/owl";
-import { CallbackRecorder } from "@web/webclient/actions/action_hook";
+const { Component, onWillStart, onWillUpdateProps, useState, xml } = owl;
 
 const serviceRegistry = registry.category("services");
 const viewRegistry = registry.category("views");
@@ -76,7 +74,7 @@ QUnit.module("Views", (hooks) => {
         class ToyController extends Component {
             setup() {
                 this.class = "toy";
-                this.template = xml`${this.props.arch.outerHTML}`;
+                this.template = xml`${this.props.arch}`;
             }
         }
         ToyController.template = xml`<div t-attf-class="{{class}} {{props.className}}"><t t-call="{{ template }}"/></div>`;
@@ -123,9 +121,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, serverData.views["animal,false,toy"]);
+                assert.strictEqual(arch, serverData.views["animal,false,toy"]);
                 assert.deepEqual(fields, {});
                 assert.strictEqual(info.actionMenus, undefined);
                 assert.strictEqual(this.env.config.viewId, false);
@@ -161,9 +159,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, serverData.views["animal,1,toy"]);
+                assert.strictEqual(arch, serverData.views["animal,1,toy"]);
                 assert.deepEqual(fields, {});
                 assert.strictEqual(info.actionMenus, undefined);
                 assert.strictEqual(this.env.config.viewId, 1);
@@ -198,9 +196,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, serverData.views["animal,1,toy"]);
+                assert.strictEqual(arch, serverData.views["animal,1,toy"]);
                 assert.deepEqual(fields, {});
                 assert.strictEqual(info.actionMenus, undefined);
                 assert.strictEqual(this.env.config.viewId, 1);
@@ -239,9 +237,9 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
+                    this._super();
                     const { arch, fields, info } = this.props;
-                    assert.strictEqual(arch.outerHTML, serverData.views["animal,false,toy"]);
+                    assert.strictEqual(arch, serverData.views["animal,false,toy"]);
                     assert.deepEqual(fields, {});
                     assert.strictEqual(info.actionMenus, undefined);
                     assert.strictEqual(this.env.config.viewId, false);
@@ -282,9 +280,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, serverData.views["animal,1,toy"]);
+                assert.strictEqual(arch, serverData.views["animal,1,toy"]);
                 assert.deepEqual(fields, {});
                 assert.strictEqual(info.actionMenus, undefined);
                 assert.strictEqual(this.env.config.viewId, 1);
@@ -328,9 +326,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, `<toy>Specific arch content</toy>`);
+                assert.strictEqual(arch, `<toy>Specific arch content</toy>`);
                 assert.deepEqual(fields, {});
                 assert.strictEqual(info.actionMenus, undefined);
                 assert.strictEqual(this.env.config.viewId, undefined);
@@ -361,9 +359,9 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
+                this._super();
                 const { arch, fields, info } = this.props;
-                assert.strictEqual(arch.outerHTML, serverData.views["animal,false,toy"]);
+                assert.strictEqual(arch, serverData.views["animal,false,toy"]);
                 assert.deepEqual(fields, {});
                 assert.deepEqual(info.actionMenus, {});
                 assert.strictEqual(this.env.config.viewId, false);
@@ -401,9 +399,9 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
+                    this._super();
                     const { arch, fields, info } = this.props;
-                    assert.strictEqual(arch.outerHTML, `<toy>Specific arch content</toy>`);
+                    assert.strictEqual(arch, `<toy>Specific arch content</toy>`);
                     assert.deepEqual(fields, {});
                     assert.deepEqual(info.actionMenus, {});
                     assert.strictEqual(this.env.config.viewId, false);
@@ -444,9 +442,9 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
+                    this._super();
                     const { arch, fields, info } = this.props;
-                    assert.strictEqual(arch.outerHTML, `<toy>Specific arch content</toy>`);
+                    assert.strictEqual(arch, `<toy>Specific arch content</toy>`);
                     assert.deepEqual(fields, {});
                     assert.deepEqual(info.actionMenus, {});
                     assert.strictEqual(this.env.config.viewId, undefined);
@@ -480,9 +478,13 @@ QUnit.module("Views", (hooks) => {
         const ToyController = viewRegistry.get("toy").Controller;
         patchWithCleanup(ToyController.prototype, {
             setup() {
-                super.setup();
-                const { irFilters, searchViewArch, searchViewFields, searchViewId } =
-                    this.props.info;
+                this._super();
+                const {
+                    irFilters,
+                    searchViewArch,
+                    searchViewFields,
+                    searchViewId,
+                } = this.props.info;
                 assert.strictEqual(searchViewArch, serverData.views["animal,false,search"]);
                 assert.deepEqual(searchViewFields, serverData.models.animal.fields);
                 assert.strictEqual(searchViewId, false);
@@ -524,9 +526,13 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
-                    const { irFilters, searchViewArch, searchViewFields, searchViewId } =
-                        this.props.info;
+                    this._super();
+                    const {
+                        irFilters,
+                        searchViewArch,
+                        searchViewFields,
+                        searchViewId,
+                    } = this.props.info;
                     assert.strictEqual(searchViewArch, `<search/>`);
                     assert.deepEqual(searchViewFields, {});
                     assert.strictEqual(searchViewId, false);
@@ -564,9 +570,13 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
-                    const { irFilters, searchViewArch, searchViewFields, searchViewId } =
-                        this.props.info;
+                    this._super();
+                    const {
+                        irFilters,
+                        searchViewArch,
+                        searchViewFields,
+                        searchViewId,
+                    } = this.props.info;
                     assert.strictEqual(searchViewArch, `<search/>`);
                     assert.deepEqual(searchViewFields, {});
                     assert.strictEqual(searchViewId, undefined);
@@ -603,9 +613,13 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
-                    const { irFilters, searchViewArch, searchViewFields, searchViewId } =
-                        this.props.info;
+                    this._super();
+                    const {
+                        irFilters,
+                        searchViewArch,
+                        searchViewFields,
+                        searchViewId,
+                    } = this.props.info;
                     assert.strictEqual(searchViewArch, `<search/>`);
                     assert.deepEqual(searchViewFields, {});
                     assert.strictEqual(searchViewId, false);
@@ -664,9 +678,13 @@ QUnit.module("Views", (hooks) => {
             const ToyController = viewRegistry.get("toy").Controller;
             patchWithCleanup(ToyController.prototype, {
                 setup() {
-                    super.setup();
-                    const { irFilters, searchViewArch, searchViewFields, searchViewId } =
-                        this.props.info;
+                    this._super();
+                    const {
+                        irFilters,
+                        searchViewArch,
+                        searchViewFields,
+                        searchViewId,
+                    } = this.props.info;
                     assert.strictEqual(searchViewArch, `<search/>`);
                     assert.deepEqual(searchViewFields, {});
                     assert.strictEqual(searchViewId, undefined);
@@ -1108,7 +1126,7 @@ QUnit.module("Views", (hooks) => {
     });
 
     QUnit.test("real life banner", async (assert) => {
-        assert.expect(8);
+        assert.expect(10);
 
         serverData.views["animal,1,toy"] = `
             <toy banner_route="/mybody/isacage">
@@ -1133,12 +1151,14 @@ QUnit.module("Views", (hooks) => {
                     </div>
                 </div>
             </div>
-            <div class="o_onboarding" />
-                <div class="o_onboarding_wrap" />
-                    <a href="#" data-bs-toggle="modal" data-bs-target=".o_onboarding_modal" class="float-end o_onboarding_btn_close">
-                        <i class="fa fa-times" title="Close the onboarding panel" id="closeOnboarding"></i>
-                    </a>
-                    <div class="bannerContent">Content</div>
+            <div class="o_onboarding_container collapse show">
+                <div class="o_onboarding" />
+                    <div class="o_onboarding_wrap" />
+                        <a href="#" data-bs-toggle="modal" data-bs-target=".o_onboarding_modal" class="float-end o_onboarding_btn_close">
+                            <i class="fa fa-times" title="Close the onboarding panel" id="closeOnboarding"></i>
+                        </a>
+                        <div class="bannerContent">Content</div>
+                    </div>
                 </div>
             </div>`;
 
@@ -1152,7 +1172,6 @@ QUnit.module("Views", (hooks) => {
                 return true;
             }
         };
-        const { execRegisteredTimeouts } = mockTimeout();
         const config = {
             views: [[1, "toy"]],
         };
@@ -1163,17 +1182,31 @@ QUnit.module("Views", (hooks) => {
         };
         await mount(View, target, { env, props });
 
+        const prom = new Promise((resolve) => {
+            const complete = (ev) => {
+                if (ev.target.classList.contains("o_onboarding_container")) {
+                    resolve();
+                }
+            };
+            // We need to handle both events, because the transition is not
+            // always executed
+            target.addEventListener("transitionend", complete);
+            target.addEventListener("transitioncancel", complete);
+        });
+
         assert.verifySteps(["/mybody/isacage"]);
         assert.isNotVisible(target.querySelector(".modal"));
-        assert.hasClass(target.querySelector(".o_onboarding_container"), "o-vertical-slide");
+        assert.hasClass(target.querySelector(".o_onboarding_container"), "collapse show");
 
         await click(target.querySelector("#closeOnboarding"));
         assert.isVisible(target.querySelector(".modal"));
 
         await click(target.querySelector(".modal a[type='action']"));
         assert.verifySteps(["mah_method"]);
-        execRegisteredTimeouts();
-        assert.containsNone(target, ".o_onboarding_container");
+        await prom;
+        assert.doesNotHaveClass(target.querySelector(".o_onboarding_container"), "show");
+        assert.hasClass(target.querySelector(".o_onboarding_container"), "collapse");
+        assert.isNotVisible(target.querySelector(".modal"));
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1392,7 +1425,7 @@ QUnit.module("Views", (hooks) => {
                     });
                     assert.deepEqual(domain, [[0, "=", 1]]);
                     assert.deepEqual(groupBy, ["birthday"]);
-                    assert.deepEqual(orderBy, [{ name: "bar", asc: true }]);
+                    assert.deepEqual(orderBy, ["bar"]);
                 }
             }
             ToyController.template = xml`<div/>`;
@@ -1406,7 +1439,7 @@ QUnit.module("Views", (hooks) => {
                 domain: [[0, "=", 1]],
                 groupBy: ["birthday"],
                 context: { key: "val" },
-                orderBy: [{ name: "bar", asc: true }],
+                orderBy: ["bar"],
             };
             await mount(View, target, { env, props });
         }
@@ -1560,7 +1593,7 @@ QUnit.module("Views", (hooks) => {
                     });
                     assert.deepEqual(domain, ["&", [0, "=", 1], [1, "=", 1]]);
                     assert.deepEqual(groupBy, ["name"]);
-                    assert.deepEqual(orderBy, [{ name: "bar", asc: true }]);
+                    assert.deepEqual(orderBy, ["bar"]);
                 }
             }
             ToyController.template = xml`<div/>`;
@@ -1574,59 +1607,11 @@ QUnit.module("Views", (hooks) => {
                 domain: [[0, "=", 1]],
                 groupBy: ["birthday"],
                 context: { search_default_filter: 1, search_default_group_by: 1 },
-                orderBy: [{ name: "bar", asc: true }],
+                orderBy: ["bar"],
             };
             await mount(View, target, { env, props });
         }
     );
-
-    QUnit.test("multiple ways to pass classes for styling", async (assert) => {
-        const env = await makeTestEnv({ serverData });
-        const props = {
-            resModel: "animal",
-            type: "toy",
-            className: "o_custom_class_from_props_1 o_custom_class_from_props_2",
-            arch: `
-                <toy
-                    js_class="toy_imp"
-                    class="o_custom_class_from_arch_1 o_custom_class_from_arch_2"
-                />
-            `,
-            fields: {},
-        };
-        await mount(View, target, { env, props });
-        const view = target.querySelector(".o_toy_view");
-        assert.hasClass(view, "o_toy_imp_view", "should have the class from js_class attribute");
-        assert.hasClass(view, "o_custom_class_from_props_1", "should have the class from props");
-        assert.hasClass(view, "o_custom_class_from_props_2", "should have the class from props");
-        assert.hasClass(view, "o_custom_class_from_arch_1", "should have the class from arch");
-        assert.hasClass(view, "o_custom_class_from_arch_2", "should have the class from arch");
-    });
-
-    QUnit.test("callback recorders are moved from props to subenv", async (assert) => {
-        assert.expect(5);
-        class ToyController extends Component {
-            setup() {
-                assert.ok(this.env.__getGlobalState__ instanceof CallbackRecorder); // put in env by View
-                assert.ok(this.env.__getContext__ instanceof CallbackRecorder); // put in env by View
-
-                assert.strictEqual(this.env.__getLocalState__, null); // set by View
-                assert.strictEqual(this.env.__beforeLeave__, null); // set by View
-
-                assert.ok(this.env.__getOrderBy__ instanceof CallbackRecorder); // put in env by WithSearch
-            }
-        }
-        ToyController.template = xml`<div/>`;
-        viewRegistry.add("toy", { type: "toy", Controller: ToyController }, { force: true });
-        const env = await makeTestEnv({ serverData });
-        const props = {
-            type: "toy",
-            resModel: "animal",
-            __getGlobalState__: new CallbackRecorder(),
-            __getContext__: new CallbackRecorder(),
-        };
-        await mount(View, target, { env, props });
-    });
 
     ////////////////////////////////////////////////////////////////////////////
     // update props

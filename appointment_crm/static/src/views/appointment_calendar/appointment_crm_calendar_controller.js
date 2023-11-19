@@ -3,7 +3,7 @@
 import { AttendeeCalendarController } from "@calendar/views/attendee_calendar/attendee_calendar_controller";
 import { patch } from "@web/core/utils/patch";
 
-patch(AttendeeCalendarController.prototype, {
+patch(AttendeeCalendarController.prototype, "appointment_crm_calendar_controller", {
     /**
      * Add the opportunity name from which the user came from if
      * there is one

@@ -7,9 +7,8 @@ import re
 from PIL import Image
 from io import BytesIO
 from uuid import uuid4
-from unittest.mock import patch
 
-from odoo.tests.common import HttpCase, tagged, get_db_name
+from odoo.tests.common import HttpCase, tagged
 from odoo.tools import config, mute_logger
 
 
@@ -73,9 +72,10 @@ class MobileRoutesTest(HttpCase):
         and retrieve its details & session's id
         """
         payload = self._build_payload({
-            "db": get_db_name(),
+            "db": self.env.cr.dbname,
             "login": "demo",
             "password": "demo",
+            "context": {},
         })
         response = self.url_open("/web/session/authenticate", data=json.dumps(payload), headers=self.headers)
         self.assertEqual(response.status_code, 200)
@@ -99,6 +99,7 @@ class MobileRoutesTest(HttpCase):
             "db": self.env.cr.dbname,
             "login": "demo",
             "password": "admin",
+            "context": {},
         })
         response = self.url_open("/web/session/authenticate", data=json.dumps(payload), headers=self.headers)
         self.assertEqual(response.status_code, 200)
@@ -120,6 +121,7 @@ class MobileRoutesTest(HttpCase):
             "db": db_name,
             "login": "demo",
             "password": "admin",
+            "context": {},
         })
         response = self.url_open("/web/session/authenticate", data=json.dumps(payload), headers=self.headers)
         self.assertEqual(response.status_code, 200)
@@ -187,20 +189,3 @@ class MobileRoutesTest(HttpCase):
         self.assertTrue(isinstance(error["data"], dict))
         self.assertIn("name", error["data"])
         self.assertIn("message", error["data"])
-
-
-@tagged("-at_install", "post_install")
-class MobileRoutesMultidbTest(MobileRoutesTest):
-
-    def run(self, result=None):
-        if not config['list_db']:
-            return
-        dblist = (get_db_name(), 'another_database')
-        assert len(dblist) >= 2, "There should be at least 2 databases"
-        with patch('odoo.http.db_list') as db_list, \
-             patch('odoo.http.db_filter') as db_filter, \
-             patch('odoo.http.Registry') as Registry:
-            db_list.return_value = dblist
-            db_filter.side_effect = lambda dbs, host=None: [db for db in dbs if db in dblist]
-            Registry.return_value = self.registry
-            return super().run(result)

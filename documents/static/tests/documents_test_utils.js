@@ -3,7 +3,7 @@
 import { makeView } from "@web/../tests/views/helpers";
 import { start } from "@mail/../tests/helpers/test_utils";
 
-export function getEnrichedSearchArch(searchArch='<search></search>') {
+function getEnrichedSearchArch(searchArch='<search></search>') {
     var searchPanelArch = `
         <searchpanel class="o_documents_search_panel">
             <field name="folder_id" string="Workspace" enable_counters="1"/>
@@ -19,11 +19,6 @@ export async function createDocumentsView(params) {
     return makeView(params);
 }
 
-export async function createFolderView(params) {
-    params.searchViewArch = '<search></search>';
-    return makeView(params);
-}
-
 export async function createDocumentsViewWithMessaging(params) {
     const serverData = params.serverData || {};
     serverData.views = serverData.views || {};
@@ -33,5 +28,8 @@ export async function createDocumentsViewWithMessaging(params) {
         searchArchs[`${modelName},false,search`] = getEnrichedSearchArch(serverData.views[`${modelName},false,search`]);
     };
     Object.assign(serverData.views, searchArchs);
+    params.legacyParams =  {
+        ...params.legacyParams,
+    };
     return start(params);
 }

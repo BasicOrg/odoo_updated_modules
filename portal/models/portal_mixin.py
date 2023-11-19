@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import uuid
-from ast import literal_eval
 from werkzeug.urls import url_encode
 from odoo import api, exceptions, fields, models, _
 
@@ -65,6 +64,42 @@ class PortalMixin(models.AbstractModel):
 
         return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
+    def _notify_get_recipients_groups(self, msg_vals=None):
+        groups = super(PortalMixin, self)._notify_get_recipients_groups(msg_vals=msg_vals)
+        if not self:
+            return groups
+
+        access_token = self._portal_ensure_token()
+        local_msg_vals = dict(msg_vals or {})
+
+        if access_token and 'partner_id' in self._fields and self['partner_id']:
+            customer = self['partner_id']
+            local_msg_vals['access_token'] = self.access_token
+            local_msg_vals['pid'] = customer.id
+            local_msg_vals['hash'] = self._sign_token(customer.id)
+            local_msg_vals.update(customer.signup_get_auth_param()[customer.id])
+            access_link = self._notify_get_action_link('view', **local_msg_vals)
+
+            new_group = [
+                ('portal_customer', lambda pdata: pdata['id'] == customer.id, {
+                    'has_button_access': True,
+                    'button_access': {
+                        'url': access_link,
+                    },
+                    'notification_is_customer': True,
+                })
+            ]
+        else:
+            new_group = []
+
+        # enable portal users that should have access through portal (if not access rights
+        # will do their duty)
+        portal_group = next(group for group in groups if group[0] == 'portal')
+        portal_group[2]['active'] = True
+        portal_group[2]['has_button_access'] = True
+
+        return new_group + groups
+
     def _get_access_action(self, access_uid=None, force_website=False):
         """ Instead of the classic form view, redirect to the online document for
         portal users or if force_website=True. """
@@ -110,8 +145,7 @@ class PortalMixin(models.AbstractModel):
     def action_share(self):
         action = self.env["ir.actions.actions"]._for_xml_id("portal.portal_share_action")
         action['context'] = {'active_id': self.env.context['active_id'],
-                             'active_model': self.env.context['active_model'],
-                             **literal_eval(action['context'])}
+                             'active_model': self.env.context['active_model']}
         return action
 
     def get_portal_url(self, suffix=None, report_type=None, download=None, query_string=None, anchor=None):

@@ -1,13 +1,13 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.http import request, route
-
+from odoo import http
 from odoo.addons.website_sale.controllers.variant import WebsiteSaleVariantController
 
 
 class WebsiteSaleStockWishlistVariantController(WebsiteSaleVariantController):
-
-    @route()
-    def get_combination_info_website(self, *args, **kwargs):
-        request.update_context(website_sale_stock_wishlist_get_wish=True)
-        return super().get_combination_info_website(*args, **kwargs)
+    @http.route()
+    def get_combination_info_website(self, product_template_id, product_id, combination, add_qty, **kw):
+        kw['context'] = kw.get('context', {})
+        kw['context'].update(website_sale_stock_wishlist_get_wish=True)
+        return super().get_combination_info_website(product_template_id, product_id, combination, add_qty, **kw)

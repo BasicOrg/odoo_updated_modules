@@ -13,13 +13,17 @@ class SocialPost(models.Model):
                                           compute='_compute_sale_invoiced_amount', compute_sudo=True)
 
     def _compute_sale_quotation_count(self):
-        quotation_data = self.env['sale.order']._read_group(
-            [('source_id', 'in', self.source_id.ids)],
-            ['source_id'], ['__count'])
-        mapped_data = {source.id: count for source, count in quotation_data}
-        for post in self:
-            post.sale_quotation_count = mapped_data.get(post.source_id.id, 0)
+        if self.source_id.ids:
+            quotation_data = self.env['sale.order'].read_group(
+                [('source_id', 'in', self.source_id.ids)],
+                ['source_id'], ['source_id'])
+            mapped_data = {datum['source_id'][0]: datum['source_id_count'] for datum in quotation_data}
 
+            for post in self:
+                post.sale_quotation_count = mapped_data.get(post.source_id.id, 0)
+        else:
+            for post in self:
+                post.sale_quotation_count = 0
 
     def _compute_sale_invoiced_amount(self):
         if self.source_id.ids:

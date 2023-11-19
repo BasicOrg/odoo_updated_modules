@@ -1,26 +1,14 @@
 /** @odoo-module **/
 
-import fonts from '@web_editor/js/wysiwyg/fonts';
-import weUtils from '@web_editor/js/common/utils';
-import options from '@web_editor/js/editor/snippets.options';
-import { _t } from "@web/core/l10n/translation";
+import fonts from 'wysiwyg.fonts';
+import {generateHTMLId} from 'web_editor.utils';
+import options from 'web_editor.snippets.options';
+import {_t} from 'web.core';
 
 let dbSocialValues;
 let dbSocialValuesProm;
-const clearDbSocialValuesCache = () => {
-    dbSocialValuesProm = undefined;
-    dbSocialValues = undefined;
-};
-const getDbSocialValuesCache = () => {
-    return dbSocialValues;
-};
 
 options.registry.SocialMedia = options.Class.extend({
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
-    },
-
     /**
      * @override
      */
@@ -50,12 +38,6 @@ options.registry.SocialMedia = options.Class.extend({
      * @override
      */
     async cleanForSave() {
-        // When the snippet is cloned via its parent, the options UI won't be
-        // updated and DB values won't be fetched, the options `cleanForSave`
-        // will then update the website with empty values.
-        if (!dbSocialValues) {
-            return;
-        }
         // Update the DB links.
         let websiteId;
         this.trigger_up('context_get', {
@@ -63,7 +45,11 @@ options.registry.SocialMedia = options.Class.extend({
                 websiteId = ctx['website_id'];
             },
         });
-        await this.orm.write("website", [websiteId], dbSocialValues);
+        await this._rpc({
+            model: 'website',
+            method: 'write',
+            args: [[websiteId], dbSocialValues],
+        });
     },
     /**
      * @override
@@ -122,7 +108,7 @@ options.registry.SocialMedia = options.Class.extend({
                         anchorEl = document.createElement('a');
                         anchorEl.setAttribute('target', '_blank');
                         const iEl = document.createElement('i');
-                        iEl.classList.add('fa', 'rounded-circle', 'shadow-sm', 'o_editable_media');
+                        iEl.classList.add('fa', 'rounded-circle', 'shadow-sm');
                         anchorEl.appendChild(iEl);
                     } else {
                         // Copy existing style if there is already another link.
@@ -132,7 +118,7 @@ options.registry.SocialMedia = options.Class.extend({
                     const faIcon = isDbField ? `fa-${entry.media}` : 'fa-pencil';
                     anchorEl.querySelector('i').classList.add(faIcon);
                     if (isDbField) {
-                        anchorEl.href = `/website/social/${encodeURIComponent(entry.media)}`;
+                        anchorEl.href = `/website/social/${entry.media}`;
                         anchorEl.classList.add(`s_social_media_${entry.media}`);
                     }
                 }
@@ -201,9 +187,9 @@ options.registry.SocialMedia = options.Class.extend({
                 listPosition++;
             }
             return {
-                id: weUtils.generateHTMLId(),
+                id: generateHTMLId(),
                 display_name: media ? dbSocialValues[`social_${media}`] : el.getAttribute('href'),
-                placeholder: `https://${encodeURIComponent(media) || 'example'}.com/yourPage`,
+                placeholder: `https://${media || 'example'}.com/yourPage`,
                 undeletable: !!media,
                 notToggleable: !media,
                 selected: true,
@@ -215,13 +201,13 @@ options.registry.SocialMedia = options.Class.extend({
         // Adds the DB social media links that are not in the DOM.
         for (let [media, link] of Object.entries(dbSocialValues)) {
             media = media.split('social_').pop();
-            if (!this.$target[0].querySelector(`:scope > a[href="/website/social/${encodeURIComponent(media)}"]`)) {
+            if (!this.$target[0].querySelector(`:scope > a[href="/website/social/${media}"]`)) {
                 const entryNotInDom = this.entriesNotInDom.find(entry => entry.media === media);
                 if (!entryNotInDom) {
                     this.entriesNotInDom.push({
-                        id: weUtils.generateHTMLId(),
+                        id: generateHTMLId(),
                         display_name: link,
-                        placeholder: `https://${encodeURIComponent(media)}.com/yourPage`,
+                        placeholder: `https://${media}.com/yourPage`,
                         undeletable: true,
                         selected: false,
                         listPosition: listPosition++,
@@ -255,15 +241,12 @@ options.registry.SocialMedia = options.Class.extend({
                 },
             });
             // Fetch URLs for db links.
-            dbSocialValuesProm = this.orm.read("website", [websiteId], [
-                "social_facebook",
-                "social_twitter",
-                "social_linkedin",
-                "social_youtube",
-                "social_instagram",
-                "social_github",
-                "social_tiktok",
-            ]).then(function (values) {
+            dbSocialValuesProm = this._rpc({
+                model: 'website',
+                method: 'read',
+                args: [websiteId, ['social_facebook', 'social_twitter', 'social_linkedin',
+                    'social_youtube', 'social_instagram', 'social_github']],
+            }).then(function (values) {
                 [dbSocialValues] = values;
                 delete dbSocialValues.id;
             });
@@ -277,12 +260,13 @@ options.registry.SocialMedia = options.Class.extend({
      * @return {String} The social network to which the url leads to.
      */
     _findRelevantSocialMedia(url) {
-        // Note that linkedin, twitter, github and tiktok will also work because
-        // the url will match the good icon so we don't need a specific regex.
         const supportedSocialMedia = [
             ['facebook', /^(https?:\/\/)(www\.)?(facebook|fb|m\.facebook)\.(com|me).*$/],
+            ['twitter', /^(https?:\/\/)((www\.)?twitter\.com).*$/],
             ['youtube', /^(https?:\/\/)(www\.)?(youtube.com|youtu.be).*$/],
             ['instagram', /^(https?:\/\/)(www\.)?(instagram.com|instagr.am|instagr.com).*$/],
+            ['linkedin', /^(https?:\/\/)((www\.)?linkedin\.com).*$/],
+            ['github', /^(https?:\/\/)((www\.)?github\.com).*$/],
         ];
         for (const [socialMedia, regex] of supportedSocialMedia) {
             if (regex.test(url)) {
@@ -296,7 +280,7 @@ options.registry.SocialMedia = options.Class.extend({
             const iconNames = fonts.fontIcons[0].alias;
             const exactIcon = iconNames.find(el => el === `fa-${domain}`);
             return (exactIcon || iconNames.find(el => el.includes(domain))).split('fa-').pop();
-        } catch {
+        } catch (_error) {
             return false;
         }
     },
@@ -329,7 +313,7 @@ options.registry.SocialMedia = options.Class.extend({
         let url;
         try {
             url = new URL(str);
-        } catch {
+        } catch (_error) {
             return false;
         }
         return url.protocol.startsWith('http');
@@ -367,6 +351,4 @@ options.registry.SocialMedia = options.Class.extend({
 
 export default {
     SocialMedia: options.registry.SocialMedia,
-    clearDbSocialValuesCache,
-    getDbSocialValuesCache,
 };

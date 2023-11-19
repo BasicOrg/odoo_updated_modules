@@ -2,9 +2,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import datetime, timedelta, time
+from unittest.mock import patch
 
 from odoo.addons.event.tests.common import EventCase
 from odoo.addons.mail.tests.common import mail_new_test_user
+from odoo.fields import Datetime as FieldsDatetime, Date as FieldsDate
+from odoo.tests.common import TransactionCase
 
 
 class OnlineEventCase(EventCase):
@@ -48,7 +51,7 @@ class OnlineEventCase(EventCase):
 
         for page_specific in ['Introduction', 'Location']:
             view = self.env['ir.ui.view'].search(
-                [('name', '=', f'{page_specific} {event.name}')]
+                [('name', '=', page_specific + ' ' + event.name)]
             )
             if page_specific in menus_in:
                 self.assertTrue(bool(view))
@@ -69,50 +72,8 @@ class TestEventOnlineCommon(OnlineEventCase):
         # event if 8-18 in Europe/Brussels (DST) (first day: begins at 9, last day: ends at 15)
         cls.event_0 = cls.env['event.event'].create({
             'name': 'TestEvent',
+            'auto_confirm': True,
             'date_begin': datetime.combine(cls.reference_now, time(7, 0)) - timedelta(days=1),
             'date_end': datetime.combine(cls.reference_now, time(13, 0)) + timedelta(days=1),
             'date_tz': 'Europe/Brussels',
-        })
-
-
-class TestEventQuestionCommon(EventCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super(TestEventQuestionCommon, cls).setUpClass()
-
-        cls.event_type_questions = cls.env['event.type'].create({
-            'name': 'Update Type',
-            'has_seats_limitation': True,
-            'seats_max': 30,
-            'default_timezone': 'Europe/Paris',
-            'event_type_ticket_ids': [],
-            'event_type_mail_ids': [],
-        })
-
-        cls.event_question_1 = cls.env['event.question'].create({
-            'title': 'Question1',
-            'question_type': 'simple_choice',
-            'event_type_id': cls.event_type_questions.id,
-            'once_per_order': False,
-            'answer_ids': [
-                (0, 0, {'name': 'Q1-Answer1'}),
-                (0, 0, {'name': 'Q1-Answer2'})
-            ],
-        })
-        cls.event_question_2 = cls.env['event.question'].create({
-            'title': 'Question2',
-            'question_type': 'simple_choice',
-            'event_type_id': cls.event_type_questions.id,
-            'once_per_order': True,
-            'answer_ids': [
-                (0, 0, {'name': 'Q2-Answer1'}),
-                (0, 0, {'name': 'Q2-Answer2'})
-            ],
-        })
-        cls.event_question_3 = cls.env['event.question'].create({
-            'title': 'Question3',
-            'question_type': 'text_box',
-            'event_type_id': cls.event_type_questions.id,
-            'once_per_order': True,
         })

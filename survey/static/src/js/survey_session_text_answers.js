@@ -1,10 +1,12 @@
-/** @odoo-module **/
+odoo.define('survey.session_text_answers', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { renderToElement } from "@web/core/utils/render";
-import SESSION_CHART_COLORS from "@survey/js/survey_session_colors";
-import { formatDate, formatDateTime } from "@web/core/l10n/dates";
-const { DateTime } = luxon;
+var publicWidget = require('web.public.widget');
+var core = require('web.core');
+var time = require('web.time');
+var SESSION_CHART_COLORS = require('survey.session_colors');
+
+var QWeb = core.qweb;
 
 publicWidget.registry.SurveySessionTextAnswers = publicWidget.Widget.extend({
     init: function (parent, options) {
@@ -41,14 +43,12 @@ publicWidget.registry.SurveySessionTextAnswers = publicWidget.Widget.extend({
                         textValue.substring(0, 22) + '...' :
                         textValue;
                 } else if (self.questionType === 'date') {
-                    textValue = formatDate(DateTime.fromFormat(textValue, "yyyy-MM-dd"));
+                    textValue = moment(textValue).format(time.getLangDateFormat());
                 } else if (self.questionType === 'datetime') {
-                    textValue = formatDateTime(
-                        DateTime.fromFormat(textValue, "yyyy-MM-dd HH:mm:ss")
-                    );
+                    textValue = moment(textValue).format(time.getLangDatetimeFormat());
                 }
 
-                var $textAnswer = $(renderToElement('survey.survey_session_text_answer', {
+                var $textAnswer = $(QWeb.render('survey.survey_session_text_answer', {
                     value: textValue,
                     borderColor: `rgb(${SESSION_CHART_COLORS[self.answerIds.length % 10]})`
                 }));
@@ -68,4 +68,6 @@ publicWidget.registry.SurveySessionTextAnswers = publicWidget.Widget.extend({
     },
 });
 
-export default publicWidget.registry.SurveySessionTextAnswers;
+return publicWidget.registry.SurveySessionTextAnswers;
+
+});

@@ -17,8 +17,8 @@
                             <field name="action" widget="radio" />
                         </group>
                         <group>
-                            <field name="action_trim" widget="radio" invisible="action != 'trim'" required="action == 'trim'" />
-                            <field name="action_case" widget="radio" invisible="action != 'case'" required="action == 'case'" />
+                            <field name="action_trim" widget="radio" attrs="{'invisible': [('action', '!=', 'trim')], 'required': [('action', '=', 'trim')]}" />
+                            <field name="action_case" widget="radio" attrs="{'invisible': [('action', '!=', 'case')], 'required': [('action', '=', 'case')]}" />
                         </group>
                     </group>
                 </form>

@@ -30,13 +30,13 @@ QUnit.module("Mrp", (hooks) => {
             serverData,
             resModel: "foo",
             resId: 1,
-            arch: '<form><field name="duration" widget="mrp_timer" readonly="1"/></form>',
+            arch: '<form><field name="duration" widget="mrp_timer"/></form>',
         });
 
         assert.strictEqual(
             target.querySelector(".o_field_mrp_timer").textContent,
-            "150:30",
-            "should not contain hours and be correctly set base on minutes seconds"
+            "02:30:30",
+            "should contain hours and be correctly set base on minutes seconds"
         );
     });
 });

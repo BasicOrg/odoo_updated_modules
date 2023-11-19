@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import datetime
-from unittest.mock import patch
-
 from odoo import exceptions
 from odoo.addons.knowledge.tests.common import KnowledgeCommonWData
 from odoo.tests.common import tagged, users
@@ -85,7 +82,8 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
 
         _title = 'Fthagn'
         new = Article.article_create(title=_title, parent_id=False, is_private=False)
-        self.assertMembers(new, 'write', {self.env.user.partner_id: 'write'}) # With the visiblity we add directly the user as member
+        self.assertMembers(new, 'write', {})
+        self.assertFalse(new.article_member_ids)
         self.assertEqual(new.body, f'<h1>{_title}</h1>')
         self.assertEqual(new.category, 'workspace')
         self.assertEqual(new.name, _title)
@@ -122,14 +120,6 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
         with self.assertRaises(exceptions.AccessError):
             Article.article_create(title=_title, parent_id=readonly_article.id, is_private=False)
 
-        # Test fix: cannot create under unwritable parent even if a sequence is set.
-        with self.assertRaises(exceptions.AccessError):
-            Article.create({
-                "name": "I've a sequence, can I bypass security ? Was internal Right ? no more !",
-                "parent_id": readonly_article.id,
-                "sequence": 10
-            })
-
         private_nonmember = Article.sudo().create({
             'article_member_ids': [
                 (0, 0, {'partner_id': self.partner_employee2.id,
@@ -140,8 +130,6 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
             'internal_permission': 'none',
             'name': 'AdminPrivate',
         })
-        # If no body given at create, make it reflect article title.
-        self.assertEqual(private_nonmember.body, "<h1>AdminPrivate</h1>")
         _title = 'Fthagn, but with parent private none: cracboum'
         with self.assertRaises(exceptions.AccessError):
             Article.article_create(title=_title, parent_id=private_nonmember.id, is_private=False)
@@ -212,7 +200,7 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
             shared_article.invite_members(partners, 'write')
         self.assertMembers(shared_article, False,
                            {self.partner_employee: 'write',
-                            self.customer: 'write',
+                            self.customer: 'read',  # shared partners are always read only
                             self.partner_employee_manager: 'write',
                             self.partner_employee2: 'write'},
                            msg='Invite: should add rights for people')
@@ -231,9 +219,7 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
 
         # check access is effectively granted
         shared_article.with_user(self.user_employee2).check_access_rule('write')
-        shared_article.with_user(self.customer).check_access_rule('write')
         direct_child_write.with_user(self.user_employee2).check_access_rule('write')
-        direct_child_write.with_user(self.customer).check_access_rule('write')
         with self.assertRaises(exceptions.AccessError,
                                msg='Invite: access should have been blocked'):
             direct_child_read.with_user(self.user_employee2).check_access_rule('read')
@@ -249,7 +235,7 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
 
         self.assertMembers(shared_article, False,
                            {self.partner_employee: 'write',
-                            self.customer: 'write',
+                            self.customer: 'read',
                             self.partner_employee_manager: 'none',
                             self.partner_employee2: 'read'})
 
@@ -742,24 +728,10 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
     @users('employee')
     def test_article_sort_for_user(self):
         """ Testing the sort + custom info returned by get_user_sorted_articles """
-        # Freeze time for the database cursor
-        before = datetime(2023, 10, 5, 2, 30, 30)
-        self.patch(self.env.cr, 'now', lambda: before)
-        # Add workspace_children as favorite for some users to test the ordering
-        # by `favorite_count` and change their name so that they don't match the
-        # test query
-        self.workspace_children[0].write({
-            'name': 'Pg Child1',
+        self.workspace_children.write({
             'favorite_ids': [
                 (0, 0, {'user_id': user.id})
                 for user in self.user_admin + self.user_employee2 + self.user_employee_manager
-            ],
-        })
-        self.workspace_children[1].write({
-            'name': 'Pg Child2',
-            'favorite_ids': [
-                (0, 0, {'user_id': user.id})
-                for user in self.user_admin + self.user_employee2
             ],
         })
 
@@ -767,116 +739,50 @@ class TestKnowledgeArticleBusiness(KnowledgeCommonBusinessCase):
         workspace_children = self.workspace_children.with_env(self.env)
         wkspace_grandchildren = self.wkspace_grandchildren.with_env(self.env)
         wkspace_grandgrandchildren = self.wkspace_grandgrandchildren.with_env(self.env)
-        (wkspace_grandchildren[2] + wkspace_grandgrandchildren[1]).action_toggle_favorite()
-
-        # Artificially alter `write_date` for each article to test the ordering
-        # by that field.
-        before_articles = (
-            self.article_workspace + self.workspace_children +
-            self.wkspace_grandchildren[1:3] + self.wkspace_grandgrandchildren
-        )
-        for article in before_articles:
-            article.write({
-                'name': article.name + " time traveled"
-            })
-        # One article was written on later than the others.
-        after = datetime(2023, 10, 5, 2, 30, 31)
-        with patch.object(self.env.cr, 'now', lambda: after):
-            self.wkspace_grandchildren[0].write({
-                'name': self.wkspace_grandchildren[0].name + " time traveled"
-            })
-            self.wkspace_grandchildren[0].invalidate_recordset()
+        (article_workspace + workspace_children[1] + wkspace_grandchildren[2]).action_toggle_favorite()
 
         # ensure initial values
-        self.assertFalse(article_workspace.is_user_favorite)
-        self.assertEqual(article_workspace.favorite_count, 1)
-        self.assertEqual(article_workspace.user_favorite_sequence, -1)
+        self.assertTrue(article_workspace.is_user_favorite)
+        self.assertEqual(article_workspace.favorite_count, 2)
+        self.assertEqual(article_workspace.user_favorite_sequence, 1)
         self.assertFalse(workspace_children[0].is_user_favorite)
         self.assertEqual(workspace_children[0].favorite_count, 3)
         self.assertEqual(workspace_children[0].user_favorite_sequence, -1)
-        self.assertFalse(workspace_children[1].is_user_favorite)
-        self.assertEqual(workspace_children[1].favorite_count, 2)
-        self.assertEqual(workspace_children[1].user_favorite_sequence, -1)
+        self.assertTrue(workspace_children[1].is_user_favorite)
+        self.assertEqual(workspace_children[1].favorite_count, 4)
+        self.assertEqual(workspace_children[1].user_favorite_sequence, 2)
         self.assertTrue(wkspace_grandchildren[2].is_user_favorite)
         self.assertEqual(wkspace_grandchildren[2].favorite_count, 1)
-        self.assertEqual(wkspace_grandchildren[2].user_favorite_sequence, 1)
-        self.assertTrue(wkspace_grandgrandchildren[1].is_user_favorite)
-        self.assertEqual(wkspace_grandgrandchildren[1].favorite_count, 1)
-        self.assertEqual(wkspace_grandgrandchildren[1].user_favorite_sequence, 2)
-        for other in wkspace_grandchildren[0:2] + wkspace_grandgrandchildren[0]:
+        self.assertEqual(wkspace_grandchildren[2].user_favorite_sequence, 3)
+        for other in wkspace_grandchildren[0:2] + wkspace_grandgrandchildren:
             self.assertFalse(other.is_user_favorite)
             self.assertEqual(other.favorite_count, 0)
             self.assertEqual(other.user_favorite_sequence, -1)
-        for before_article in before_articles:
-            self.assertEqual(before_article.write_date, before)
-        self.assertEqual(wkspace_grandchildren[0].write_date, after)
 
         # search also includes descendants of articles having the term in their name
-        # verify that the search is case insensitive
-        result = self.env['knowledge.article'].get_user_sorted_articles('playgroun', limit=4)
-        expected = self.article_workspace + self.wkspace_grandchildren[2] + self.wkspace_grandgrandchildren[1] + self.workspace_children[0]
+        result = self.env['knowledge.article'].get_user_sorted_articles('laygroun', limit=4)
+        expected = self.article_workspace + self.workspace_children[1] + self.workspace_children[0] + self.wkspace_grandchildren[2]
         found_ids = [a['id'] for a in result]
         self.assertEqual(found_ids, expected.ids)
-
         # check returned result once (just to be sure)
         workspace_info = next(article_result for article_result in result if article_result['id'] == article_workspace.id)
-        self.assertFalse(workspace_info['is_user_favorite'], article_workspace.name)
+        self.assertTrue(workspace_info['is_user_favorite'], article_workspace.name)
         self.assertFalse(workspace_info['icon'])
-        self.assertEqual(workspace_info['favorite_count'], 1)
+        self.assertEqual(workspace_info['favorite_count'], 2)
         self.assertEqual(workspace_info['name'], article_workspace.name)
         self.assertEqual(workspace_info['root_article_id'], (article_workspace.id, f'📄 {article_workspace.name}'))
 
         # test with bigger limit, both favorites and unfavorites
-        # result ordering explanation:
-        # article_workspace VS wkspace_grandchildren[2]
-        # -> checks [match query] prevails over [is_user_favorite=True]
-        # wkspace_grandchildren[2] VS wkspace_grandgrandchildren[1]
-        # -> checks [favorite_sequence ASC] prevails over [id DESC]
-        # wkspace_grandgrandchildren[1] VS workspace_children[1]
-        # -> checks [is_user_favorite=True] prevails over [favorite_count DESC]
-        # workspace_children[0] VS workspace_children[1]
-        # -> checks [favorite_count DESC] prevails over [id DESC]
-        # workspace_children[1] VS wkspace_grandchildren[0]
-        # -> checks [favorite_count DESC] prevails over [write_date DESC]
-        # wkspace_grandchildren[0] VS wkspace_grandgrandchildren[0]
-        # -> checks [write_date DESC] prevails over [id DESC]
-        # wkspace_grandgrandchildren[0] VS wkspace_grandchildren[1]
-        # -> checks [id DESC] is true (proving all previous DESC or ASC assumptions)
         result = self.env['knowledge.article'].get_user_sorted_articles('laygroun', limit=10)
-        expected = self.article_workspace + self.wkspace_grandchildren[2] + self.wkspace_grandgrandchildren[1] + \
-                   self.workspace_children[0] + self.workspace_children[1] + self.wkspace_grandchildren[0] + \
-                   self.wkspace_grandgrandchildren[0] + self.wkspace_grandchildren[1]
+        expected = self.article_workspace + self.workspace_children[1] + self.workspace_children[0] + \
+                   self.wkspace_grandchildren[2] + self.wkspace_grandgrandchildren[1] + self.wkspace_grandgrandchildren[0] + \
+                   self.wkspace_grandchildren[1] + self.wkspace_grandchildren[0]
         self.assertEqual([a['id'] for a in result], expected.ids)
 
         # test corner case: search with less than favorite, sequence might not be taken into account
         result = self.env['knowledge.article'].get_user_sorted_articles('laygroun', limit=1)
         self.assertEqual([a['id'] for a in result], self.article_workspace.ids)
 
-        # change the visibility for tested articles
-        article_workspace.write({
-            'is_article_visible_by_everyone': False
-        })
-        # add the search query in the name of the first favorite to
-        # demonstrate the visibility impact on ordering
-        wkspace_grandchildren[2].write({
-            'name': 'Playground grand children 2'
-        })
-        # ensure that the write_date of wkspace_grandchildren[0] was not
-        # overwritten by a compute method during the previous searches
-        with patch.object(self.env.cr, 'now', lambda: after):
-            self.wkspace_grandchildren[0].write({
-                'name': self.wkspace_grandchildren[0].name + " time traveled"
-            })
-            self.wkspace_grandchildren[0].invalidate_recordset()
-        # test ordering with hidden_mode = True
-        # result ordering explanation:
-        # article_workspace VS wkspace_grandchildren[2]
-        # -> checks [parent_id = False] prevails over [is_user_favorite=True]
-        result = self.env['knowledge.article'].get_user_sorted_articles('layground', limit=10, hidden_mode=True)
-        expected = self.article_workspace + self.wkspace_grandchildren[2] + self.wkspace_grandgrandchildren[1] + \
-                   self.workspace_children[0] + self.workspace_children[1] + self.wkspace_grandchildren[0] + \
-                   self.wkspace_grandgrandchildren[0] + self.wkspace_grandchildren[1]
-        self.assertEqual([a['id'] for a in result], expected.ids)
 
 @tagged('knowledge_internals', 'knowledge_management')
 class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
@@ -903,7 +809,7 @@ class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
         self.assertEqual(len(duplicate.child_ids), 2, 'Copy batch should copy children')
         self.assertEqual(
             sorted(duplicate.mapped('child_ids.name')),
-            sorted([f'{name}' for name in article_workspace.mapped('child_ids.name')])
+            sorted([f'{name} (copy)' for name in article_workspace.mapped('child_ids.name')])
         )
 
         # Selecting 2 articles in different hierarchies (under same parent) should duplicate both
@@ -911,7 +817,7 @@ class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
         duplicates = workspace_children.copy_batch()
         self.assertEqual(
             sorted(duplicates.mapped('name')),
-            sorted([f'{name}' for name in workspace_children.mapped('name')])
+            sorted([f'{name} (copy)' for name in workspace_children.mapped('name')])
         )
 
         # Duplicating readonly article should raise an error
@@ -936,17 +842,17 @@ class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
         shared = self.article_shared.with_env(self.env)
         duplicates = (workspace_children + shared).copy_batch()
         for original, copy in zip(workspace_children + shared, duplicates):
-            self.assertEqual(copy.name, f'{original.name}{" (copy)" if not original.parent_id else ""}')
+            self.assertEqual(copy.name, f'{original.name} (copy)')
             self.assertEqual(len(original.child_ids), len(copy.child_ids))
             self.assertEqual(len(original._get_descendants()), len(copy._get_descendants()))
             self.assertNotEqual(original.child_ids, copy.child_ids)
         self.assertEqual(
             sorted(duplicates.mapped('child_ids.name')),
-            sorted([f'{name}' for name in (workspace_children + shared).mapped('child_ids.name')])
+            sorted([f'{name} (copy)' for name in (workspace_children + shared).mapped('child_ids.name')])
         )
         self.assertEqual(
             sorted(article.name for article in duplicates[-1]._get_descendants()),
-            sorted(f'{article.name}' for article in shared._get_descendants()),
+            sorted(f'{article.name} (copy)' for article in shared._get_descendants()),
             "Check descendants name is also updated (not only direct children)"
         )
 
@@ -997,7 +903,7 @@ class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
         self.assertTrue(new_article.child_ids != article_workspace.child_ids)
         self.assertEqual(
             sorted(new_article.child_ids.mapped('name')),
-            sorted([f"{name}" for name in article_workspace.child_ids.mapped('name')])
+            sorted([f"{name} (copy)" for name in article_workspace.child_ids.mapped('name')])
         )
         self.assertFalse(new_article.parent_id)
 
@@ -1006,26 +912,6 @@ class TestKnowledgeArticleCopy(KnowledgeCommonBusinessCase):
 class TestKnowledgeArticleRemoval(KnowledgeCommonBusinessCase):
     """ Test unlink / archive management of articles """
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
-        cls.shared_article_multi_company = cls.env['knowledge.article'].create({
-            'name': "Multi-Company Article",
-            'article_member_ids': [
-                (0, 0, {'partner_id': cls.partner_employee_c2.id, 'permission': 'read'}),
-                (0, 0, {'partner_id': cls.partner_employee.id, 'permission': 'write'}),
-                (0, 0, {'partner_id': cls.partner_admin.id, 'permission': 'write'})
-            ],
-            'internal_permission': 'none'
-        })
-
-    @users('employee')
-    def test_send_to_trash_multi_company(self):
-        article_to_trash = self.shared_article_multi_company
-        article_to_trash.action_send_to_trash()
-        self.assertFalse(article_to_trash.active)
-        self.assertTrue(article_to_trash.to_delete)
 
     @mute_logger('odoo.addons.base.models.ir_rule')
     @users('employee')
@@ -1293,7 +1179,7 @@ class TestKnowledgeShare(KnowledgeCommonWData):
         self.assertEqual(len(self._new_msgs), 1)
         self.assertIn(
             knowledge_article_sudo._get_invite_url(self.partner_portal),
-            self._new_mails.body_html
+            self._new_msgs.body
         )
 
         with self.with_user('portal_test'):
@@ -1315,6 +1201,7 @@ class TestKnowledgeShare(KnowledgeCommonWData):
 @tagged('post_install', '-at_install', 'knowledge_internals', 'knowledge_management')
 class TestKnowledgeArticleCovers(KnowledgeCommonWData):
     """ Test article covers management  """
+
     @users('employee')
     def test_article_cover_management(self):
         # User cannot modify cover of hidden article
@@ -1343,174 +1230,3 @@ class TestKnowledgeArticleCovers(KnowledgeCommonWData):
         article_write = self.article_workspace.with_env(self.env)
         article_write.write({'cover_image_id': cover_2.id})
         self.assertEqual(article_write.cover_image_id, cover_2)
-
-
-@tagged('post_install', '-at_install', 'knowledge_internals', 'knowledge_management', 'knowledge_visibility')
-class TestKnowledgeArticleVisibility(KnowledgeCommonBusinessCase):
-    """Test the concept of visibility for workspace articles"""
-
-    @users("employee")
-    def test_visibility(self):
-        # workspace articles
-        article = self.article_workspace.with_env(self.env)
-
-        self.assertTrue(article.is_article_visible_by_everyone)
-        self.assertTrue(article.is_article_visible)
-
-        article.write({'is_article_visible_by_everyone': False})
-        self.assertFalse(article.is_article_visible)
-
-        article.action_join()
-        self.assertMembers(article, 'write', {self.env.user.partner_id: 'write'})
-        self.assertTrue(article.is_article_visible)
-
-        employee = article.article_member_ids.filtered(
-            lambda m: m.partner_id == self.env.user.partner_id)
-        article._remove_member(employee)
-        self.assertMembers(article, 'write', {})
-        self.assertFalse(article.is_article_visible)
-
-        Articles = self.env['knowledge.article']
-        new = Articles.article_create(title="Bloup").with_env(self.env)
-
-        self.assertFalse(new.is_article_visible_by_everyone)
-        self.assertMembers(new, 'write', {self.env.user.partner_id: 'write'})
-
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 8)
-        self.assertEqual(len(visible_articles), 4)
-
-        creator_member = new.article_member_ids.filtered(lambda m: m.partner_id.id == self.env.user.partner_id.id)
-        new._remove_member(creator_member)
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 9)
-        self.assertEqual(len(visible_articles), 3)
-
-        new.action_join()
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 8)
-        self.assertEqual(len(visible_articles), 4)
-
-        new.move_to(parent_id=article.id)
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 8)
-        self.assertEqual(len(visible_articles), 4) # We are still member of the article so it's still visible
-
-        article.write({'is_article_visible_by_everyone': True})
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)
-
-        article.write({'is_article_visible_by_everyone': False})
-        article.action_join()
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)
-
-    @users('employee')
-    def test_user_has_access_parent_path(self):
-        #Testing user_has_access_parent_path
-        Articles = self.env['knowledge.article']
-
-        root = Articles.with_user(self.user_admin).article_create(title="Root")
-        child = Articles.with_user(self.user_admin).article_create(title="Child", parent_id=root.id)
-        grandchild = Articles.with_user(self.user_admin).article_create(title="Grandchild", parent_id=child.id)
-        baby = Articles.with_user(self.user_admin).article_create(title="Baby", parent_id=grandchild.id)
-
-        root_user = root.with_user(self.env.user)
-        child_user = child.with_user(self.env.user)
-        grandchild_user = grandchild.with_user(self.env.user)
-        baby_user = baby.with_user(self.env.user)
-
-        self.assertTrue(baby_user.user_has_access_parent_path)
-        self.assertTrue(baby.user_has_access_parent_path)
-
-        child._add_members(self.env.user.partner_id, 'none')
-        grandchild._add_members(self.env.user.partner_id, 'write')
-
-        self.assertMembers(child, False, {self.env.user.partner_id: 'none'})
-        self.assertMembers(grandchild, False, {self.env.user.partner_id: 'write'})
-        self.assertMembers(root, 'write', {self.user_admin.partner_id: 'write'})
-        self.assertTrue(root_user.user_has_access)
-        self.assertTrue(root.user_has_access)
-
-        self.assertTrue(root_user.user_has_access_parent_path)
-        self.assertTrue(root.user_has_access_parent_path)
-
-        self.assertFalse(child_user.user_has_access)
-        self.assertTrue(child.user_has_access)
-
-        self.assertTrue(grandchild_user.user_has_access)
-        self.assertFalse(grandchild_user.user_has_access_parent_path)
-
-        self.assertTrue(baby.user_has_access_parent_path)
-        self.assertFalse(baby_user.user_has_access_parent_path)
-
-        with self.assertRaises(exceptions.AccessError):
-            baby_user.action_join()
-
-        # Other categories, the change of visibility shouldn't affect these articles
-    @users("employee")
-    def test_private_articles(self):
-        # private articles
-        Articles = self.env['knowledge.article']
-
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 11)
-
-        private = Articles.article_create(title="Private", is_private=True)
-        self.assertEqual(private.category, 'private')
-        private.write({'is_article_visible_by_everyone': True})
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)
-
-        self.assertTrue(private.is_article_visible)
-        self.assertTrue(private.is_article_visible_by_everyone)
-
-        private.write({'is_article_visible_by_everyone': False})
-
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)
-
-        self.assertTrue(private.is_article_visible)
-
-    @users("employee")
-    def test_shared_articles(self):
-        # shared articles
-        Articles = self.env['knowledge.article']
-
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 11)
-
-        to_invite = Articles.article_create(title="To invite", is_private=True)
-        to_invite.invite_members(self.partner_employee_manager, 'read')
-        self.assertEqual(to_invite.category, 'shared')
-        to_invite.write({'is_article_visible_by_everyone': True})
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)
-
-        self.assertTrue(to_invite.is_article_visible)
-        self.assertTrue(to_invite.is_article_visible_by_everyone)
-
-        to_invite.write({'is_article_visible_by_everyone': False})
-
-        hidden_articles = Articles.get_user_sorted_articles("", hidden_mode=True)
-        visible_articles = Articles.get_user_sorted_articles("", hidden_mode=False)
-        self.assertEqual(len(hidden_articles), 0)
-        self.assertEqual(len(visible_articles), 12)

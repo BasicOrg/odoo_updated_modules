@@ -1,15 +1,14 @@
 /** @odoo-module **/
 
-import { loadJS } from "@web/core/assets";
 import { isMobileOS } from "@web/core/browser/feature_detection";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
-import { useService, useAutofocus } from "@web/core/utils/hooks";
+import { useService } from "@web/core/utils/hooks";
 import { pick } from "@web/core/utils/objects";
 import { renderToString } from "@web/core/utils/render";
 import { getDataURLFromFile } from "@web/core/utils/urls";
 
-import { Component, useState, onWillStart, useRef, useEffect } from "@odoo/owl";
+const { Component, useState, onWillStart, useRef, useEffect } = owl;
 
 let htmlId = 0;
 export class NameAndSignature extends Component {
@@ -29,24 +28,18 @@ export class NameAndSignature extends Component {
         });
 
         this.signNameInputRef = useRef("signNameInput");
-        this.signInputLoad = useRef("signInputLoad");
-        useAutofocus({ refName: "signNameInput" });
+        const signInputLoad = useRef("signInputLoad");
         useEffect(
             (el) => {
                 if (el) {
                     el.click();
                 }
             },
-            () => [this.signInputLoad.el]
+            () => [signInputLoad.el]
         );
 
         onWillStart(async () => {
             this.fonts = await this.rpc(`/web/sign/get_fonts/${this.props.defaultFont}`);
-        });
-
-        onWillStart(async () => {
-            await loadJS("/web/static/lib/jSignature/jSignatureCustom.js");
-            await loadJS("/web/static/src/libs/jSignatureCustom.js");
         });
 
         this.signatureRef = useRef("signature");
@@ -61,7 +54,6 @@ export class NameAndSignature extends Component {
                     this.resetSignature();
                     this.props.signature.getSignatureImage = () =>
                         this.jSignature("getData", "image");
-                    this.props.signature.resetSignature = () => this.resetSignature();
                     if (this.state.signMode === "auto") {
                         this.drawCurrentName();
                     }
@@ -145,10 +137,6 @@ export class NameAndSignature extends Component {
         return this.$signatureField.jSignature(...arguments);
     }
 
-    uploadFile() {
-        this.signInputLoad.el?.click();
-    }
-
     /**
      * Handles change on load file input: displays the loaded image if the
      * format is correct, or displays an error otherwise.
@@ -182,14 +170,6 @@ export class NameAndSignature extends Component {
         this.jSignature("reset");
     }
 
-    onClickSignLoad() {
-        this.setMode("load");
-    }
-
-    onClickSignAuto() {
-        this.setMode("auto");
-    }
-
     onInputSignName(ev) {
         this.props.signature.name = ev.target.value;
         if (!this.state.showSignatureArea && this.getCleanedName()) {
@@ -202,7 +182,7 @@ export class NameAndSignature extends Component {
     }
 
     onSelectFont(index) {
-        this.currentFont = index;
+        this.currentFont = this.fonts[index];
         this.drawCurrentName();
     }
 
@@ -223,11 +203,7 @@ export class NameAndSignature extends Component {
                 let height = 0;
                 const ratio = image.width / image.height;
 
-                const signatureEl = this.signatureRef.el;
-                if (!signatureEl) {
-                    return;
-                }
-                const canvas = signatureEl.querySelector("canvas");
+                const canvas = this.signatureRef.el.querySelector("canvas");
                 const context = canvas.getContext("2d");
 
                 if (image.width / canvas.width > image.height / canvas.height) {

@@ -30,16 +30,10 @@ in order to test the whole mail codebase. """,
         'test_mass_mailing',
         'test_mail_sms',
         'voip',
-        'whatsapp',
     ],
     'data': [
         'security/ir.model.access.csv',
     ],
-    'assets': {
-        'web.qunit_suite_tests': [
-            'test_mail_enterprise/static/tests/**/*.js',
-        ],
-    },
     'installable': True,
     'license': 'OEEL-1',
 }

@@ -1,22 +1,23 @@
 /** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
+import { _lt, _t } from "@web/core/l10n/translation";
 import { Dialog } from "@web/core/dialog/dialog";
+import { sprintf } from "@web/core/utils/strings";
 import { useService } from "@web/core/utils/hooks";
 import { Notebook } from "@web/core/notebook/notebook";
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 
 const LABELS = {
-    PIVOT: _t("pivot"),
-    LIST: _t("list"),
-    LINK: _t("link"),
-    GRAPH: _t("graph"),
+    PIVOT: _lt("pivot"),
+    LIST: _lt("list"),
+    LINK: _lt("link"),
+    GRAPH: _lt("graph"),
 };
 
 const PAGE_LABELS = {
-    SPREADSHEET: _t("Spreadsheets"),
-    DASHBOARD: _t("Dashboards"),
+    SPREADSHEET: _lt("Spreadsheets"),
+    DASHBOARD: _lt("Dashboards"),
 };
 /**
  * @typedef State
@@ -37,10 +38,10 @@ export class SpreadsheetSelectorDialog extends Component {
         this.state = useState({
             threshold: this.props.threshold,
             name: this.props.name,
-            confirmationIsPending: false,
         });
         this.actionState = {
-            getOpenSpreadsheetAction: () => {},
+            actionTag: undefined,
+            selectedSpreadsheet: false,
             notificationMessage: "",
         };
         this.notification = useService("notification");
@@ -55,42 +56,33 @@ export class SpreadsheetSelectorDialog extends Component {
     }
 
     get nameLabel() {
-        return _t("Name of the %s:", LABELS[this.props.type]);
+        return sprintf(_t("Name of the %s:"), LABELS[this.props.type]);
     }
 
     get title() {
-        return _t("Select a spreadsheet to insert your %s.", LABELS[this.props.type]);
+        return sprintf(_t("Select a spreadsheet to insert your %s."), LABELS[this.props.type]);
     }
 
     /**
      * @param {number|false} id
      */
-    onSpreadsheetSelected({ getOpenSpreadsheetAction, notificationMessage }) {
+    onSpreadsheetSelected({ spreadsheet, actionTag, notificationMessage }) {
         this.actionState = {
-            getOpenSpreadsheetAction,
+            selectedSpreadsheet: spreadsheet,
+            actionTag,
             notificationMessage,
         };
     }
 
-    async _confirm() {
-        if (this.state.confirmationIsPending) {
-            return;
-        }
-        this.state.confirmationIsPending = true;
-        const action = await this.actionState.getOpenSpreadsheetAction();
+    _confirm() {
         const threshold = this.state.threshold ? parseInt(this.state.threshold, 10) : 0;
+        const isNewItem = this.actionState.selectedSpreadsheet === false;
+        const notificationMessage = isNewItem
+            ? this.actionState.notificationMessage
+            : sprintf(_t("New sheet inserted in '%s'"), this.actionState.selectedSpreadsheet.name);
+        // make sure we send a primitive string instead of a LazyTranslatedString
         const name = this.state.name.toString();
-
-        this.notification.add(this.actionState.notificationMessage, { type: "info" });
-        this.actionService.doAction({
-            ...action,
-            params: this._addToPreprocessingAction(action.params, threshold, name),
-        });
-        this.props.close();
-    }
-
-    _addToPreprocessingAction(actionParams, threshold, name) {
-        return {
+        const actionOptions = {
             ...this.props.actionOptions,
             preProcessingAsyncActionData: {
                 ...this.props.actionOptions.preProcessingAsyncActionData,
@@ -102,8 +94,18 @@ export class SpreadsheetSelectorDialog extends Component {
                 threshold,
                 name,
             },
-            ...actionParams,
+            alwaysCreate: isNewItem,
+            spreadsheet_id:
+                this.actionState.selectedSpreadsheet && this.actionState.selectedSpreadsheet.id,
         };
+
+        this.notification.add(notificationMessage, { type: "info" });
+        this.actionService.doAction({
+            type: "ir.actions.client",
+            tag: this.actionState.actionTag,
+            params: actionOptions,
+        });
+        this.props.close();
     }
 
     _cancel() {

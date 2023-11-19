@@ -4,26 +4,20 @@ from datetime import date
 
 
 class AccountConsolidationTestCase(common.TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUp(self):
+        super().setUp()
         # DEFAULT DEFAULT COMPANY
-        cls.default_company = cls.env.ref('base.main_company')
+        self.default_company = self.env.ref('base.main_company')
 
         # DEFAULT US COMPANY
-        cls.us_company = cls.env['res.company'].create({
-            'name': 'cls Company',
-            'currency_id': cls.env.ref('base.USD').id,
-        })
+        self.us_company = self.env['res.company'].create({'name': 'Vincent Company', 'currency_id': 2})
 
         # DEFAULT CHART
-        cls.chart = cls.env['consolidation.chart'].create({
+        self.chart = self.env['consolidation.chart'].create({
             'name': 'Default chart',
-            'currency_id': cls.env.ref('base.EUR').id,
-            'company_ids': [(6, 0, (cls.us_company.id, cls.default_company.id))]
+            'currency_id': 1,
+            'company_ids': [(6, 0, (self.us_company.id, self.default_company.id))]
         })
-
-        cls.report = cls.env.ref('account_consolidation.consolidated_balance_report')
 
     def _create_consolidation_account(self, name='BLAH', currency_mode='end', chart=None, section=None):
         return self.env['consolidation.account'].create({
@@ -92,17 +86,3 @@ class AccountConsolidationTestCase(common.TransactionCase):
         company = company or self.default_company
         return self.env['account.journal'].create({'name': name, 'code': code, 'type': 'bank',
                                                    'bank_acc_number': '123456', 'company_id': company.id})
-
-    def _get_conso_groug_section_id(self, group):
-        groups_hierarchy_in_order = self.env['consolidation.group']
-
-        current = group
-        while current:
-            groups_hierarchy_in_order = current + groups_hierarchy_in_order
-            current = current.parent_id
-
-        current_id = None
-        for ordered_group in groups_hierarchy_in_order:
-            current_id = self.report._get_generic_line_id(None, None, 'section_%s' % ordered_group.id, parent_line_id=current_id)
-
-        return current_id

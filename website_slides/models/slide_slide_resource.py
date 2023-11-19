@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from werkzeug.urls import url_encode
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from odoo.tools.mimetypes import get_extension
 
 
 class SlideResource(models.Model):
@@ -18,7 +15,6 @@ class SlideResource(models.Model):
     data = fields.Binary('Resource', compute='_compute_reset_resources', store=True, readonly=False)
     file_name = fields.Char(store=True)
     link = fields.Char('Link', compute='_compute_reset_resources', store=True, readonly=False)
-    download_url = fields.Char('Download URL', compute='_compute_download_url')
 
     _sql_constraints = [
         ('check_url', "CHECK (resource_type != 'url' OR link IS NOT NULL)", 'A resource of type url must contain a link.'),
@@ -46,19 +42,6 @@ class SlideResource(models.Model):
                 elif resource.resource_type == 'url':
                     new_name = self.link
                 resource.name = new_name
-
-    @api.depends('name', 'file_name')
-    def _compute_download_url(self):
-        for resource in self:
-            extension = get_extension(resource.file_name) if resource.file_name else ''
-            if not resource.name:
-                resource.download_url = False
-                continue
-            file_name = resource.name if resource.name.endswith(extension) else resource.name + extension
-            resource.download_url = f'/web/content/slide.slide.resource/{resource.id}/data?' + url_encode({
-                'download': 'true',
-                'filename': file_name,
-            })
 
     @api.constrains('data')
     def _check_link_type(self):

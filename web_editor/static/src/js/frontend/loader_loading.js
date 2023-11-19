@@ -6,7 +6,7 @@
  * tweaked as soon as the DOM is ready so that they appear to be loading.
  *
  * They must then be loaded using standard Odoo modules system. In particular,
- * @see @web_editor/js/frontend/loadWysiwygFromTextarea
+ * @see web_editor.loader
  */
 
 document.addEventListener('DOMContentLoaded', () => {

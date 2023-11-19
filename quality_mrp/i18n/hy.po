@@ -1,79 +1,98 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # * quality_mrp
-#
+# 
 # Translators:
 # Martin Trigaux <mat@odoo.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
+"POT-Creation-Date: 2016-09-07 09:57+0000\n"
 "PO-Revision-Date: 2016-09-07 09:57+0000\n"
 "Last-Translator: Martin Trigaux <mat@odoo.com>, 2016\n"
 "Language-Team: Armenian (https://www.transifex.com/odoo/teams/41243/hy/)\n"
-"Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: hy\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: quality_mrp
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
-msgid "<span class=\"o_stat_text text-danger\">Quality Checks</span>"
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_view_form_inherit_quality
+msgid "<span class=\"o_stat_text\">Quality Alert</span>"
 msgstr ""
 
 #. module: quality_mrp
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
-msgid "<span class=\"o_stat_text text-success\">Quality Checks</span>"
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production_alert_count
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_workorder_alert_count
+msgid "Alert count"
 msgstr ""
 
 #. module: quality_mrp
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
-msgid "<span class=\"o_stat_text\">Quality Alerts</span>"
-msgstr ""
-
-#. module: quality_mrp
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
-msgid "<span class=\"o_stat_text\">Quality Checks</span>"
-msgstr ""
-
-#. module: quality_mrp
-#: model_terms:ir.ui.view,arch_db:quality_mrp.worksheet_page
-msgid "<strong>Manufacturing Order: </strong>"
-msgstr ""
-
-#. module: quality_mrp
-#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production__quality_alert_ids
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production_alert_ids
 msgid "Alerts"
 msgstr ""
 
 #. module: quality_mrp
-#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production__check_ids
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_workorder_check_ids
+msgid "Check ids"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production_check_todo
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_workorder_check_todo
+msgid "Check todo"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production_check_ids
 msgid "Checks"
 msgstr ""
 
 #. module: quality_mrp
-#: model:ir.model,name:quality_mrp.model_stock_move_line
-msgid "Product Moves (Stock Move Line)"
+#: model:ir.ui.view,arch_db:quality_mrp.quality_alert_view_form_inherit_mrp
+msgid "Create Production Message"
 msgstr ""
 
 #. module: quality_mrp
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_tablet_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_view_form_inherit_quality
+msgid "Done"
+msgstr "Կատարված է"
+
+#. module: quality_mrp
 #: model:ir.model,name:quality_mrp.model_mrp_production
-#: model:ir.model.fields,field_description:quality_mrp.field_quality_alert__production_id
-#: model:ir.model.fields,field_description:quality_mrp.field_quality_check__production_id
+msgid "Manufacturing Order"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_alert_operation_id
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_check_workorder_id
+msgid "Operation"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_alert_production_id
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_check_production_id
 msgid "Production Order"
 msgstr ""
 
 #. module: quality_mrp
 #: model:ir.model,name:quality_mrp.model_quality_alert
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workcenter_view_kanban_inherit_quality_mrp
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_tablet_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_view_form_inherit_quality
 msgid "Quality Alert"
 msgstr ""
 
 #. module: quality_mrp
-#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production__quality_alert_count
-msgid "Quality Alert Count"
+#: code:addons/quality_mrp/models/mrp_production.py:38
+#: code:addons/quality_mrp/models/mrp_workorder.py:36
+#, python-format
+msgid "Quality Alerts"
 msgstr ""
 
 #. module: quality_mrp
@@ -82,34 +101,49 @@ msgid "Quality Check"
 msgstr ""
 
 #. module: quality_mrp
-#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production__quality_check_fail
-msgid "Quality Check Fail"
-msgstr ""
-
-#. module: quality_mrp
-#: model:ir.model.fields,field_description:quality_mrp.field_mrp_production__quality_check_todo
-msgid "Quality Check Todo"
-msgstr ""
-
-#. module: quality_mrp
 #: model:ir.actions.act_window,name:quality_mrp.quality_check_action_mo
-#: model_terms:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
+#: model:ir.actions.act_window,name:quality_mrp.quality_check_action_wo
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_production_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_tablet_view_form_inherit_quality
+#: model:ir.ui.view,arch_db:quality_mrp.mrp_workorder_view_form_inherit_quality
 msgid "Quality Checks"
 msgstr ""
 
 #. module: quality_mrp
 #: model:ir.model,name:quality_mrp.model_quality_point
-msgid "Quality Control Point"
+msgid "Quality Point"
 msgstr ""
 
 #. module: quality_mrp
-#: model:ir.model,name:quality_mrp.model_stock_move
-msgid "Stock Move"
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_point_code
+msgid "Type of Operation"
 msgstr ""
 
 #. module: quality_mrp
-#. odoo-python
-#: code:addons/quality_mrp/models/mrp_production.py:0
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_alert_workcenter_id
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_check_workcenter_id
+msgid "Work Center"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model,name:quality_mrp.model_mrp_workorder
+msgid "Work Order"
+msgstr ""
+
+#. module: quality_mrp
+#: model:ir.model.fields,field_description:quality_mrp.field_quality_point_workcenter_id
+msgid "Workcenter"
+msgstr ""
+
+#. module: quality_mrp
+#: code:addons/quality_mrp/models/quality.py:25
+#, python-format
+msgid "Workorder Messages"
+msgstr ""
+
+#. module: quality_mrp
+#: code:addons/quality_mrp/models/mrp_production.py:91
+#: code:addons/quality_mrp/models/mrp_workorder.py:81
 #, python-format
 msgid "You still need to do the quality checks!"
 msgstr ""

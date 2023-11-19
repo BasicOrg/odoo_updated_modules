@@ -12,7 +12,6 @@ class TestIndustryFsmCommon(TransactionCase):
             'name': 'Field Service',
             'is_fsm': True,
             'allow_timesheets': True,
-            'company_id': cls.env.company.id
         })
         cls.partner = cls.env['res.partner'].create({
             'name': 'Partner',

@@ -58,12 +58,12 @@
                 },
                 "A19": {
                     "style": 1,
-                    "content": "[Most Produced Products](odoo://view/{\"viewType\":\"graph\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_start\",\"!=\",false],[\"date_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"product_id\",\"state\"],\"graph_measure\":\"product_uom_qty\",\"graph_mode\":\"bar\",\"graph_groupbys\":[\"product_id\",\"state\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Most Produced Products\"})",
+                    "content": "[Most Produced Products](odoo://view/{\"viewType\":\"graph\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_planned_start\",\"!=\",false],[\"date_planned_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"product_id\",\"state\"],\"graph_measure\":\"product_uom_qty\",\"graph_mode\":\"bar\",\"graph_groupbys\":[\"product_id\",\"state\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Most Produced Products\"})",
                     "border": 1
                 },
                 "A31": {
                     "style": 1,
-                    "content": "[Top Products](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_start\",\"!=\",false],[\"date_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"product_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"product_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Products\"})",
+                    "content": "[Top Products](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_planned_start\",\"!=\",false],[\"date_planned_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"product_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"product_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Products\"})",
                     "border": 1
                 },
                 "A32": {
@@ -113,7 +113,7 @@
                 },
                 "A44": {
                     "style": 1,
-                    "content": "[Top Responsibles](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"&\",\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_start\",\"!=\",false],[\"date_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"],[\"user_id\",\"!=\",false]],\"context\":{\"group_by\":[\"user_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"picking_type_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Responsibles\"})",
+                    "content": "[Top Responsibles](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"&\",\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_planned_start\",\"!=\",false],[\"date_planned_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"],[\"user_id\",\"!=\",false]],\"context\":{\"group_by\":[\"user_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"picking_type_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Responsibles\"})",
                     "border": 1
                 },
                 "A45": {
@@ -291,7 +291,7 @@
                 },
                 "C32": {
                     "style": 6,
-                    "content": "=_t(\"Qty Produced\")",
+                    "content": "=_t(\"Quantity Produced\")",
                     "border": 2
                 },
                 "C33": {
@@ -345,7 +345,7 @@
                 },
                 "C45": {
                     "style": 6,
-                    "content": "=_t(\"Qty Produced\")",
+                    "content": "=_t(\"Quantity Produced\")",
                     "border": 2
                 },
                 "C46": {
@@ -403,7 +403,7 @@
                 },
                 "E31": {
                     "style": 1,
-                    "content": "[Top Operation Types](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_start\",\"!=\",false],[\"date_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"picking_type_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"picking_type_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Operation Types\"})",
+                    "content": "[Top Operation Types](odoo://view/{\"viewType\":\"pivot\",\"action\":{\"domain\":[\"|\",[\"state\",\"=\",\"draft\"],\"|\",[\"state\",\"=\",\"confirmed\"],\"|\",\"&\",\"&\",[\"is_planned\",\"=\",true],[\"date_planned_start\",\"!=\",false],[\"date_planned_finished\",\"!=\",false],\"|\",[\"state\",\"=\",\"progress\"],[\"state\",\"=\",\"done\"]],\"context\":{\"group_by\":[\"picking_type_id\"],\"pivot_measures\":[\"__count\",\"product_uom_qty\"],\"pivot_column_groupby\":[],\"pivot_row_groupby\":[\"picking_type_id\"]},\"modelName\":\"mrp.production\",\"views\":[[false,\"graph\"],[false,\"pivot\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Top Operation Types\"})",
                     "border": 1
                 },
                 "E32": {
@@ -519,7 +519,7 @@
                 },
                 "G32": {
                     "style": 6,
-                    "content": "=_t(\"Qty Produced\")",
+                    "content": "=_t(\"Quantity Produced\")",
                     "border": 2
                 },
                 "G33": {
@@ -711,12 +711,12 @@
                                     true
                                 ],
                                 [
-                                    "date_start",
+                                    "date_planned_start",
                                     "!=",
                                     false
                                 ],
                                 [
-                                    "date_finished",
+                                    "date_planned_finished",
                                     "!=",
                                     false
                                 ],
@@ -843,19 +843,19 @@
                     "content": "=_t(\"Total quantity\")"
                 },
                 "A4": {
-                    "content": "=_t(\"Total time (min)\")"
+                    "content": "=_t(\"Total time (min)t\")"
                 },
                 "A5": {
-                    "content": "=_t(\"Available time (min)\")"
+                    "content": "=_t(\"Available time (min)t\")"
                 },
                 "A6": {
-                    "content": "=_t(\"Productive time (min)\")"
+                    "content": "=_t(\"Productive time (min)t\")"
                 },
                 "A7": {
                     "content": "=_t(\"OEE\")"
                 },
                 "A8": {
-                    "content": "=_t(\"Average cost / unit\")"
+                    "content": "=_t(\"Average cost / unitt\")"
                 },
                 "B1": {
                     "style": 2,
@@ -1088,17 +1088,6 @@
         }
     },
     "revisionId": "START_REVISION",
-    "settings": {
-        "locale": {
-            "name": "English (US)",
-            "code": "en_US",
-            "thousandsSeparator": ",",
-            "decimalSeparator": ".",
-            "dateFormat": "mm/dd/yyyy",
-            "timeFormat": "hh:mm:ss",
-            "formulaArgSeparator": ","
-        }
-    },
     "chartOdooMenusReferences": {
         "2828f15d-9fe0-43c8-8ad7-a2b7fe7ff3c5": "mrp.menu_mrp_root",
         "6591ce4b-64ce-4630-943d-18570a18a4f2": "mrp.menu_mrp_root",
@@ -1139,12 +1128,12 @@
                     true
                 ],
                 [
-                    "date_start",
+                    "date_planned_start",
                     "!=",
                     false
                 ],
                 [
-                    "date_finished",
+                    "date_planned_finished",
                     "!=",
                     false
                 ],
@@ -1210,12 +1199,12 @@
                     true
                 ],
                 [
-                    "date_start",
+                    "date_planned_start",
                     "!=",
                     false
                 ],
                 [
-                    "date_finished",
+                    "date_planned_finished",
                     "!=",
                     false
                 ],
@@ -1292,12 +1281,12 @@
                     true
                 ],
                 [
-                    "date_start",
+                    "date_planned_start",
                     "!=",
                     false
                 ],
                 [
-                    "date_finished",
+                    "date_planned_finished",
                     "!=",
                     false
                 ],
@@ -1362,12 +1351,12 @@
                     true
                 ],
                 [
-                    "date_start",
+                    "date_planned_start",
                     "!=",
                     false
                 ],
                 [
-                    "date_finished",
+                    "date_planned_finished",
                     "!=",
                     false
                 ],
@@ -1424,12 +1413,12 @@
                     true
                 ],
                 [
-                    "date_start",
+                    "date_planned_start",
                     "!=",
                     false
                 ],
                 [
-                    "date_finished",
+                    "date_planned_finished",
                     "!=",
                     false
                 ],
@@ -1636,14 +1625,6 @@
                     "field": "product_id",
                     "type": "many2one"
                 },
-                "7": {
-                    "field": "production_id.product_id",
-                    "type": "many2one"
-                },
-                "8": {
-                    "field": "production_id.product_id",
-                    "type": "many2one"
-                },
                 "9": {
                     "field": "product_id",
                     "type": "many2one"
@@ -1694,22 +1675,6 @@
                 "6": {
                     "field": "picking_type_id",
                     "type": "many2one"
-                },
-                "7": {
-                    "field": "production_id.picking_type_id",
-                    "type": "many2one"
-                },
-                "8": {
-                    "field": "production_id.picking_type_id",
-                    "type": "many2one"
-                },
-                "9": {
-                    "field": "production_id.picking_type_id",
-                    "type": "many2one"
-                },
-                "10": {
-                    "field": "production_id.picking_type_id",
-                    "type": "many2one"
                 }
             },
             "listFields": {},
@@ -1735,23 +1700,23 @@
             "defaultsToCurrentPeriod": false,
             "pivotFields": {
                 "1": {
-                    "field": "user_id",
+                    "field": "activity_user_id",
                     "type": "many2one"
                 },
                 "2": {
-                    "field": "user_id",
+                    "field": "activity_user_id",
                     "type": "many2one"
                 },
                 "3": {
-                    "field": "user_id",
+                    "field": "activity_user_id",
                     "type": "many2one"
                 },
                 "5": {
-                    "field": "user_id",
+                    "field": "activity_user_id",
                     "type": "many2one"
                 },
                 "6": {
-                    "field": "user_id",
+                    "field": "activity_user_id",
                     "type": "many2one"
                 },
                 "7": {
@@ -1760,14 +1725,6 @@
                 },
                 "8": {
                     "field": "user_id",
-                    "type": "many2one"
-                },
-                "9": {
-                    "field": "production_id.user_id",
-                    "type": "many2one"
-                },
-                "10": {
-                    "field": "production_id.user_id",
                     "type": "many2one"
                 }
             },

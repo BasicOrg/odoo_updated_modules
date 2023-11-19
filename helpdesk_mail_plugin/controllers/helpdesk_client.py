@@ -15,7 +15,7 @@ class HelpdeskClientController(http.Controller):
         if not partner:
             return {'error': 'partner_not_found'}
 
-        record = request.env['helpdesk.ticket'].with_company(partner.company_id).create({
+        record = request.env['helpdesk.ticket'].create({
             'name': html2plaintext(email_subject),
             'partner_id': partner_id,
             'description': email_body,

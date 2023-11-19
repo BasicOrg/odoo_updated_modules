@@ -8,7 +8,7 @@
             <xpath expr="//field[@name='trg_date_calendar_id']" position="before">
                 <field name="trg_date_resource_field_id"
                     domain="[('model_id', '=', model_id), ('relation', '=', 'res.users'), ('ttype', 'in', ['many2one'])]"
-                    invisible="not trg_date_id or trg_date_range_type != 'day'"/>
+                    attrs="{'invisible': ['|', ('trg_date_id','=',False), ('trg_date_range_type', '!=', 'day')]}"/>
             </xpath>
         </field>
     </record>

@@ -8,4 +8,4 @@ class HrPayrollStructureType(models.Model):
     _inherit = 'hr.payroll.structure.type'
     _description = 'Salary Structure Type'
 
-    salary_benefits_ids = fields.One2many('hr.contract.salary.benefit', 'structure_type_id')
+    salary_advantage_ids = fields.One2many('hr.contract.salary.advantage', 'structure_type_id')

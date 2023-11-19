@@ -29,7 +29,7 @@ from odoo import _, api, models, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import ustr, posix_to_ldml, pycompat
 from odoo.tools import html_escape as escape
-from odoo.tools.misc import file_open, get_lang, babel_locale_parse
+from odoo.tools.misc import get_lang, babel_locale_parse
 
 REMOTE_CONNECTION_TIMEOUT = 2.5
 
@@ -59,7 +59,7 @@ class IrQWeb(models.AbstractModel):
                 sub_call = el.get('t-call')
                 if sub_call:
                     el.set('t-options', f"{{'snippet-key': '{snippet_key}', 'snippet-sub-call-key': '{sub_call}'}}")
-                # If it already has a data-snippet it is a saved or an inherited snippet.
+                # If it already has a data-snippet it is a saved snippet.
                 # Do not override it.
                 elif 'data-snippet' not in el.attrib:
                     el.attrib['data-snippet'] = snippet_key.split('.', 1)[-1]
@@ -77,7 +77,7 @@ class IrQWeb(models.AbstractModel):
 
         el.set('t-options', f"{{'snippet-key': {key!r}}}")
         view = self.env['ir.ui.view']._get(key).sudo()
-        name = el.attrib.pop('string', view.name)
+        name = view.name
         thumbnail = el.attrib.pop('t-thumbnail', "oe-thumbnail")
         # Forbid sanitize contains the specific reason:
         # - "true": always forbid
@@ -134,9 +134,6 @@ class IrQWeb(models.AbstractModel):
         directives.insert(index, 'install')
         return directives
 
-    def _get_template_cache_keys(self):
-        return super()._get_template_cache_keys() + ['snippet_lang']
-
 
 #------------------------------------------------------
 # QWeb fields
@@ -159,13 +156,12 @@ class Field(models.AbstractModel):
 
         if options['translate'] and field.type in ('char', 'text'):
             lang = record.env.lang or 'en_US'
-            base_lang = record._get_base_lang()
-            if lang == base_lang:
+            if lang == 'en_US':
                 attrs['data-oe-translation-state'] = 'translated'
             else:
-                base_value = record.with_context(lang=base_lang)[field_name]
-                value = record[field_name]
-                attrs['data-oe-translation-state'] = 'translated' if base_value != value else 'to_translate'
+                value_en = record.with_context(lang='en_US')[field_name]
+                value_lang = record.with_context(lang=lang)[field_name]
+                attrs['data-oe-translation-state'] = 'translated' if value_en != value_lang else 'to_translate'
 
         return attrs
 
@@ -186,7 +182,7 @@ class Integer(models.AbstractModel):
     def from_html(self, model, field, element):
         lang = self.user_lang()
         value = element.text_content().strip()
-        return int(value.replace(lang.thousands_sep or '', ''))
+        return int(value.replace(lang.thousands_sep, ''))
 
 
 class Float(models.AbstractModel):
@@ -198,7 +194,7 @@ class Float(models.AbstractModel):
     def from_html(self, model, field, element):
         lang = self.user_lang()
         value = element.text_content().strip()
-        return float(value.replace(lang.thousands_sep or '', '')
+        return float(value.replace(lang.thousands_sep, '')
                           .replace(lang.decimal_point, '.'))
 
 
@@ -215,10 +211,6 @@ class ManyToOne(models.AbstractModel):
             if many2one:
                 attrs['data-oe-many2one-id'] = many2one.id
                 attrs['data-oe-many2one-model'] = many2one._name
-            if options.get('null_text'):
-                attrs['data-oe-many2one-allowreset'] = 1
-                if not many2one:
-                    attrs['data-oe-many2one-model'] = record._fields[field_name].comodel_name
         return attrs
 
     @api.model
@@ -228,18 +220,12 @@ class ManyToOne(models.AbstractModel):
         M2O = self.env[field.comodel_name]
         field_name = element.get('data-oe-field')
         many2one_id = int(element.get('data-oe-many2one-id'))
-
-        allow_reset = element.get('data-oe-many2one-allowreset')
-        if allow_reset and not many2one_id:
-            # Reset the id of the many2one
-            Model.browse(id).write({field_name: False})
-            return None
-
         record = many2one_id and M2O.browse(many2one_id)
         if record and record.exists():
             # save the new id of the many2one
             Model.browse(id).write({field_name: many2one_id})
 
+        # not necessary, but might as well be explicit about it
         return None
 
 
@@ -403,25 +389,19 @@ class HTML(models.AbstractModel):
         if options.get('inherit_branding'):
             field = record._fields[field_name]
             if field.sanitize:
-                if field.sanitize_overridable:
-                    if record.user_has_groups('base.group_sanitize_override'):
-                        # Don't mark the field as 'sanitize' if the sanitize
-                        # is defined as overridable and the user has the right
-                        # to do so
-                        return attrs
-                    else:
-                        try:
-                            field.convert_to_column(record[field_name], record)
-                        except UserError:
-                            # The field contains element(s) that would be
-                            # removed if sanitized. It means that someone who
-                            # was part of a group allowing to bypass the
-                            # sanitation saved that field previously. Mark the
-                            # field as not editable.
-                            attrs['data-oe-sanitize-prevent-edition'] = 1
-                            return attrs
-                # The field edition is not fully prevented and the sanitation cannot be bypassed
-                attrs['data-oe-sanitize'] = 'no_block' if field.sanitize_attributes else 1 if field.sanitize_form else 'allow_form'
+                if field.sanitize_overridable and not record.user_has_groups('base.group_sanitize_override'):
+                    try:
+                        field.convert_to_column(record[field_name], record)
+                    except UserError:
+                        # The field contains element(s) that would be removed if
+                        # sanitized. It means that someone who was part of a
+                        # group allowing to bypass the sanitation saved that
+                        # field previously. Mark the field as not editable.
+                        attrs['data-oe-sanitize-prevent-edition'] = 1
+                if not (field.sanitize_overridable and record.user_has_groups('base.group_sanitize_override')):
+                    # Don't mark the field as 'sanitize' if the sanitize is
+                    # defined as overridable and the user has the right to do so
+                    attrs['data-oe-sanitize'] = 1 if field.sanitize_form else 'allow_form'
 
         return attrs
 
@@ -479,13 +459,20 @@ class Image(models.AbstractModel):
 
     def load_local_url(self, url):
         match = self.local_url_re.match(urls.url_parse(url).path)
-        rest = match.group('rest')
 
-        path = os.path.join(
-            match.group('module'), 'static', rest)
+        rest = match.group('rest')
+        for sep in os.sep, os.altsep:
+            if sep and sep != '/':
+                rest.replace(sep, '/')
+
+        path = odoo.modules.get_module_resource(
+            match.group('module'), 'static', *(rest.split('/')))
+
+        if not path:
+            return None
 
         try:
-            with file_open(path, 'rb') as f:
+            with open(path, 'rb') as f:
                 # force complete image load to ensure it's valid image data
                 image = I.open(f)
                 image.load()
@@ -510,7 +497,7 @@ class Image(models.AbstractModel):
             # force a complete load of the image data to validate it
             image.load()
         except Exception:
-            logger.warning("Failed to load remote image %r", url, exc_info=True)
+            logger.exception("Failed to load remote image %r", url)
             return None
 
         # don't use original data in case weird stuff was smuggled in, with
@@ -528,9 +515,9 @@ class Monetary(models.AbstractModel):
     def from_html(self, model, field, element):
         lang = self.user_lang()
 
-        value = element.find('span').text_content().strip()
+        value = element.find('span').text.strip()
 
-        return float(value.replace(lang.thousands_sep or '', '')
+        return float(value.replace(lang.thousands_sep, '')
                           .replace(lang.decimal_point, '.'))
 
 

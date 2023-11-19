@@ -17,15 +17,15 @@ This module extends the functionality of Mexican localization to support customs
 To use this module, you need to:
 
 - Create a customer invoice normally.
-- Add the personalized number related to the customs information, separated by commas,
+- Add the personalized number related to the customs information, separated by commas, 
   if there are several numbers for each line of the invoice associated with a product.
 
   For example, given the number of petition **16  52  3XXX  8000988**.
 
   The number of the corresponding request to import the good must be registered, which is integrated from left to right in the following way:
 
-  Last 2 digits of the validation year followed by two spaces, 2 digits of the customs office followed by two spaces, 4 digits of the number of the patent followed by two spaces,
-  1 digit corresponding to the last digit of the current year, except that it is of a consolidated motion, initiated in the immediately preceding year or of the original motion
+  Last 2 digits of the validation year followed by two spaces, 2 digits of the customs office followed by two spaces, 4 digits of the number of the patent followed by two spaces, 
+  1 digit corresponding to the last digit of the current year, except that it is of a consolidated motion, initiated in the immediately preceding year or of the original motion 
   for a rectification, followed by 6 digits of the progressive numbering by customs.
 
   +------------+------------+---------+-----------+--------+------------+-----------------------+
@@ -54,7 +54,7 @@ For more information in the SAT documentation
 External Trade Complement for the Mexican localization
 ------------------------------------------------------
 
-This module adds the External Trade Complement to CFDI version 4.0, in which
+This module adds the External Trade Complement to CFDI version 3.3, in which
 was added the customs information of the products, it specifies the emitter
 and receiver address, and also data related to export laws.
 
@@ -183,7 +183,7 @@ other hand, the optional node "DescripcionesEspecificas" will not be added
 in this version, since it needs fields that depend on the stock module.
 They will be added in a later version.
 
-.. _c_FraccionArancelaria: http://www.sat.gob.mx/informacion_fiscal/factura_electronica/Documents/c_FraccionArancelaria.xls
+.. _c_FraccionArancelaria: http://www.sat.gob.mx/informacion_fiscal/factura_electronica/Documents/c_FraccionArancelaria.xls 
 .. _Link: http://www.sat.gob.mx/informacion_fiscal/factura_electronica/Documents/c_UnidadMedidaAduana.xls
 .. _c_colonia: http://www.sat.gob.mx/informacion_fiscal/factura_electronica/Documents/c_Colonia.xls
 .. _c_localidad: http://www.sat.gob.mx/informacion_fiscal/factura_electronica/Documents/c_Localidad.xls
@@ -230,7 +230,7 @@ Tax Cash Basis Entries at Payment Date
                     Taxes to Paid            200        -160    USD
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 1250.00
                 - Paid to SAT MXN 200.00
                 - Have a difference of MXN 40.00 for Taxes to Collect that I would
@@ -274,7 +274,7 @@ Tax Cash Basis Entries at Payment Date
                     Taxes to Paid            128        -160    USD
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 800.00
                 - Paid to SAT MXN 128.00
                 - Have a difference of MXN -72.00 for Taxes to Collect that I would
@@ -314,7 +314,7 @@ Tax Cash Basis Entries at Payment Date
                     Taxes to Paid            200        -160    USD
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 1250.00
                 - Paid to SAT MXN 200.00
                 - Have no difference for Taxes to Collect
@@ -386,11 +386,11 @@ Tax Cash Basis Entries at Payment Date
 
                 Tax Base Account     800                   0    USD
                     Tax Base Account         800           0    USD
-                Taxes to Collect     128                   0    USD  # (I'd expect the same value as in the invoice for amount_currency in tax: 160 USD)
+                Taxes to Collect     128                   0    USD  # (I'd expect the same value as in the invoice for amount_currency in tax: 160 USD) 
                     Taxes to Paid            128           0    USD
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 800.00
                 - Paid to SAT MXN 128.00
                 - Have a difference of MXN -32.00 for Taxes to Collect that I would
@@ -430,7 +430,7 @@ Tax Cash Basis Entries at Payment Date
                     Taxes to Paid            160           -      -
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 1000.00
                 - Paid to SAT MXN 160.00
                 - Have no difference for Taxes to Collect
@@ -627,7 +627,7 @@ Tax Cash Basis Entries at Payment Date
 
                 Tax Base Account     800                   0    USD
                     Tax Base Account         800           0    USD
-                Creditable Tax       128                   0    USD  # (I'd expect the same value as in the invoice for amount_currency in tax: 160 USD)
+                Creditable Tax       128                   0    USD  # (I'd expect the same value as in the invoice for amount_currency in tax: 160 USD) 
                     Unpaid Taxes             128           0    USD
 
             What I expect from here:
@@ -716,7 +716,7 @@ Tax Cash Basis Entries at Payment Date
                     Taxes to Collect         128        -160    USD
 
             What I expect from here:
-                - Base to report to DIOT if it would be the case (not in this case):
+                - Base to report to DIOT if it would be the case (not in this case): 
                   * Tax Base Account MXN 800.00 and MXN -800.00
                 - Paid to SAT MXN 0.00
                 - Have a difference of MXN -72.00 for Taxes to Collect that I would

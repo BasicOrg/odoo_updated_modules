@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-<t t-name="web_studio.AppCreator">
-    <div class="o_web_studio_app_creator h-100 overflow-auto">
+<t t-name="web_studio.AppCreator" owl="1">
+    <div class="o_web_studio_app_creator">
         <div t-if="state.step !== 'model_configuration'" class="o_web_studio_app_creator_box">
             <div t-attf-class="o_web_studio_app_creator_left">
                 <div class="o_web_studio_app_creator_left_content">
@@ -13,41 +13,80 @@
                     </t>
                     <t t-elif="state.step === 'app'">
                         <h3 class="mb32">Create your App</h3>
-                        <div class="o_web_studio_app_creator_name" t-att-class="{ o_web_studio_field_warning: !state.isFieldValid('appName') }">
+                        <div class="o_web_studio_app_creator_name" t-att-class="{ o_web_studio_app_creator_field_warning: invalid.appName }">
                             <label for="appName">Choose an app name</label>
-                            <input type="text" class="o_input"
+                            <input type="text" id="appName" class="o_input"
+                                autofocus=""
                                 name="appName"
                                 placeholder="e.g. Real Estate"
-                                t-model="state.data.appName"
-                                t-ref="autofocus"
+                                t-att-value="state.appName"
+                                t-on-input="onInput"
                             />
                         </div>
                     </t>
                     <t t-elif="state.step === 'model'">
-                        <h3 class="w-100 mb-5">Create your first menu</h3>
-                        <MenuCreator showValidation="state.showValidation" menuCreatorModel="state.menuCreatorModel" />
+                        <h3 class="mb32">Create your first Menu</h3>
+                        <div class="o_web_studio_app_creator_menu" t-att-class="{ o_web_studio_app_creator_field_warning: invalid.menuName }">
+                            <label for="menuName">Choose your first object name</label>
+                            <input type="text" id="menuName" class="o_input"
+                                autofocus=""
+                                name="menuName"
+                                placeholder="e.g. Properties"
+                                t-att-value="state.menuName"
+                                t-on-input="onInput"
+                            />
+                        </div>
+                        <div class="o_web_studio_app_creator_model_choice">
+                            <div class="form-check">
+                                <input type="radio"
+                                    id="model_choice_new"
+                                    name="model_choice"
+                                    value="new"
+                                    class="form-check-input"
+                                    t-on-change="onChecked"
+                                    t-att-checked="state.modelChoice === 'new'" />
+                                <label class="form-check-label" for="model_choice_new">New Model</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio"
+                                    id="model_choice_existing"
+                                    name="model_choice"
+                                    value="existing"
+                                    class="form-check-input"
+                                    t-on-change="onChecked"
+                                    t-att-checked="state.modelChoice === 'existing'" />
+                                <label class="form-check-label" for="model_choice_existing">Existing Model</label>
+                            </div>
+                        </div>
+                        <div
+                            t-if="state.modelChoice === 'existing'" class="o_web_studio_app_creator_model mt8"
+                            t-att-class="{ o_web_studio_app_creator_field_warning: invalid.modelId }"
+                        >
+                                <label for="name">Model</label>
+                                <ModelSelector
+                                    widgetArgs="['model', record, { mode: 'edit' }]"
+                                    onFieldChanged.bind="onModelIdChanged"
+                                />
+                        </div>
                     </t>
                 </div>
                 <div class="o_web_studio_app_creator_buttons">
-                    <button t-if="state.hasPrevious" type="button"
-                        class="btn oi oi-chevron-left o_web_studio_app_creator_previous"
+                    <button t-if="state.step !== 'welcome'" type="button"
+                        class="btn fa fa-chevron-left o_web_studio_app_creator_previous"
                         aria-label="Previous"
                         title="Previous"
-                        t-on-click="() => this.state.previous()"
+                        t-on-click="onPrevious"
                     />
-                    <t t-set="nextStep" t-value="state.nextStep" />
                     <button type="button"
                         class="btn o_web_studio_app_creator_next"
                         aria-label="Next"
                         title="Next"
-                        t-att-class="{ is_ready: nextStep !== false }"
-                        t-on-click="() => this.state.next()"
+                        t-att-class="{ is_ready: isReady }"
+                        t-on-click="onNext"
                         >
-                        <span t-if="nextStep !== false">
-                            <t t-if="nextStep">Next</t>
-                            <t t-else="">Create your app</t>
-                        </span>
-                        <i class="oi oi-chevron-right"/>
+                        <span t-if="state.step === 'welcome' or (state.step === 'app' and state.app_name) or (state.step === 'model' and state.modelChoice === 'new' and state.menu_name)">Next</span>
+                        <span t-elif="(state.step === 'model' and state.modelChoice === 'existing' and state.menu_name and !invalid.modelChoice) or (state.step === 'model_configuration')">Create your app</span>
+                        <i class="fa fa-chevron-right"/>
                     </button>
                 </div>
             </div>
@@ -57,18 +96,23 @@
                         <img class="o_web_studio_welcome_image" src="/web_studio/static/src/img/studio_app_icon.png"/>
                     </t>
                     <IconCreator t-else=""
-                        t-props="state.data.iconData" 
+                        backgroundColor="state.iconData.backgroundColor"
+                        color="state.iconData.color"
+                        iconClass="state.iconData.iconClass"
                         editable="state.step === 'app'"
-                        onIconChange.bind="(iconData) => this.state.data.iconData = iconData"
+                        type="state.iconData.type"
+                        webIconData="state.iconData.webIconData"
+                        onIconChange.bind="onIconChanged"
                     />
                 </div>
             </div>
         </div>
         <ModelConfigurator
             t-if="state.step === 'model_configuration'"
+            debug='debug'
             label="'Create your app'"
             onConfirmOptions.bind="onConfirmOptions"
-            onPrevious="() => this.state.previous()"
+            onPrevious.bind="onPrevious"
         />
     </div>
 </t>

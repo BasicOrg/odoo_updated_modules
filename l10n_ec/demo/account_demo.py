@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from odoo import api, models
 
+_logger = logging.getLogger(__name__)
 
-class AccountChartTemplate(models.AbstractModel):
+
+class AccountChartTemplate(models.Model):
     _inherit = "account.chart.template"
 
     @api.model
-    def _get_demo_data_move(self, company=False):
-        move_data = super()._get_demo_data_move(company)
-        if company.account_fiscal_country_id.code == 'EC':
-            move_data['demo_invoice_1']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_01'
-            move_data['demo_invoice_2']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_01'
-            move_data['demo_invoice_3']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_01'
-            move_data['demo_invoice_followup']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_01'
-            move_data['demo_invoice_5']['l10n_latam_document_number'] = '001-001-00001'
-            move_data['demo_invoice_equipment_purchase']['l10n_latam_document_number'] = '001-001-00002'
-            move_data['demo_move_auto_reconcile_1']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_04'
-            move_data['demo_move_auto_reconcile_2']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_04'
-            move_data['demo_move_auto_reconcile_3']['l10n_latam_document_number'] = '001-001-00003'
-            move_data['demo_move_auto_reconcile_4']['l10n_latam_document_number'] = '001-001-00004'
-            move_data['demo_move_auto_reconcile_5']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_04'
-            move_data['demo_move_auto_reconcile_6']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_04'
-            move_data['demo_move_auto_reconcile_7']['l10n_latam_document_type_id'] = 'l10n_ec.ec_dt_04'
-        return move_data
+    def _get_demo_data_move(self):
+        ref = self.env.ref
+        cid = self.env.company.id
+        model, data = super()._get_demo_data_move()
+        if self.env.company.account_fiscal_country_id.code == 'EC':
+            document_type = ref('l10n_ec.ec_dt_18', False) and ref('l10n_ec.ec_dt_18').id or False
+            data[f'{cid}_demo_invoice_1']['l10n_latam_document_type_id'] = document_type
+            data[f'{cid}_demo_invoice_2']['l10n_latam_document_type_id'] = document_type
+            data[f'{cid}_demo_invoice_3']['l10n_latam_document_type_id'] = document_type
+            data[f'{cid}_demo_invoice_followup']['l10n_latam_document_type_id'] = document_type
+            data[f'{cid}_demo_invoice_5']['l10n_latam_document_number'] = '001-001-00001'
+            data[f'{cid}_demo_invoice_equipment_purchase']['l10n_latam_document_number'] = '001-001-00002'
+        return model, data

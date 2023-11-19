@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_l10n_fi_pl" model="account.report">
         <field name="name">Profit and Loss</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
@@ -16,9 +16,8 @@
         </field>
         <field name="line_ids">
             <record id="account_financial_report_l10n_fi_pl_line_1" model="account.report.line">
-                <field name="name">A) TURNOVER</field>
+                <field name="name">A) LIIKEVAIHTO</field>
                 <field name="code">FIPL_1</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_1_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -29,7 +28,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_1_1" model="account.report.line">
-                        <field name="name">I. General sales accounts</field>
+                        <field name="name">I. Yleiset myyntitilit</field>
                         <field name="code">FIPL_1_1</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -44,7 +43,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_2" model="account.report.line">
-                        <field name="name">II. Sales, construction services</field>
+                        <field name="name">II. Myynti, rakentamispalvelut</field>
                         <field name="code">FIPL_1_2</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -59,7 +58,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_3" model="account.report.line">
-                        <field name="name">III. Ancillary services</field>
+                        <field name="name">III. Oheispalvelut</field>
                         <field name="code">FIPL_1_3</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -74,7 +73,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_4" model="account.report.line">
-                        <field name="name">IV. Delivery charges and installment surcharges</field>
+                        <field name="name">IV. Toimitusveloitukset ja osamaksulisät</field>
                         <field name="code">FIPL_1_4</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -89,7 +88,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_5" model="account.report.line">
-                        <field name="name">V. Commission and agency</field>
+                        <field name="name">V. Komissiokauppa ja agentuuri</field>
                         <field name="code">FIPL_1_5</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -104,7 +103,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_6" model="account.report.line">
-                        <field name="name">VI. Sales of goods, Aland</field>
+                        <field name="name">VI. Tavaramyynti, Ahvenanmaa</field>
                         <field name="code">FIPL_1_6</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -119,7 +118,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_7" model="account.report.line">
-                        <field name="name">VII. Community service sales</field>
+                        <field name="name">VII. Yhteisöpalvelumyynti</field>
                         <field name="code">FIPL_1_7</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -134,7 +133,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_8" model="account.report.line">
-                        <field name="name">VIII. Community sales</field>
+                        <field name="name">VIII. Yhteisötavaramyynti</field>
                         <field name="code">FIPL_1_8</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -149,7 +148,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_9" model="account.report.line">
-                        <field name="name">IX. Export of goods</field>
+                        <field name="name">IX. Tavaravienti</field>
                         <field name="code">FIPL_1_9</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -164,7 +163,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_10" model="account.report.line">
-                        <field name="name">X. Sales of services outside the EU</field>
+                        <field name="name">X. Palvelumyynti EU:n ulkopuolelle</field>
                         <field name="code">FIPL_1_10</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -179,7 +178,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_11" model="account.report.line">
-                        <field name="name">XI. Sales, second-hand goods and works of art, collectors' items and antiques</field>
+                        <field name="name">XI. Myynti, käytetyt tavarat ja taide-, keräily- ja antiikkiesineet</field>
                         <field name="code">FIPL_1_11</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -194,7 +193,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_12" model="account.report.line">
-                        <field name="name">XII. Sales, securities and real estate</field>
+                        <field name="name">XII. Myynti, arvopaperit ja kiinteistöt</field>
                         <field name="code">FIPL_1_12</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -209,7 +208,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_1_13" model="account.report.line">
-                        <field name="name">XIII. Adjustments to sales</field>
+                        <field name="name">XIII. Myynnin oikaisuerät</field>
                         <field name="code">FIPL_1_13</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_balance" model="account.report.expression">
@@ -221,7 +220,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_1" model="account.report.line">
-                                <field name="name">1. Sales discounts</field>
+                                <field name="name">1. Myynnin alennukset</field>
                                 <field name="code">FIPL_1_13_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -236,7 +235,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_2" model="account.report.line">
-                                <field name="name">2. Indirect taxes</field>
+                                <field name="name">2. Välilliset verot</field>
                                 <field name="code">FIPL_1_13_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -251,7 +250,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_3" model="account.report.line">
-                                <field name="name">3. Transfers and transit items</field>
+                                <field name="name">3. Tulonsiirto- ja läpikulkuerät</field>
                                 <field name="code">FIPL_1_13_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -266,7 +265,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_4" model="account.report.line">
-                                <field name="name">4. Exchange differences on sales</field>
+                                <field name="name">4. Myynnin valuuttakurssierot</field>
                                 <field name="code">FIPL_1_13_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -281,7 +280,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_1_13_5" model="account.report.line">
-                                <field name="name">5. Other sales adjustments</field>
+                                <field name="name">5. Muut myynnin oikaisuerät</field>
                                 <field name="code">FIPL_1_13_5</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -300,11 +299,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_2" model="account.report.line">
-                <field name="name">B) Increase (+) or decrease (-) of inventories of finished and work-in-progress products</field>
+                <field name="name">B) Valmiiden ja keskeneräisten tuotteiden varastojen lisäys (+) tai vähennys (-)</field>
                 <field name="code">FIPL_2</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_2_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -315,11 +313,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_3" model="account.report.line">
-                <field name="name">C) Manufacturing for own use (+)</field>
+                <field name="name">C) Valmistus omaan käyttöön (+)</field>
                 <field name="code">FIPL_3</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_3_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -330,9 +327,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_4" model="account.report.line">
-                <field name="name">D) Other operating income</field>
+                <field name="name">D) Liiketoiminnan muut tuotot</field>
                 <field name="code">FIPL_4</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_4_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -343,7 +339,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_4_1" model="account.report.line">
-                        <field name="name">I. Gains on sales of fixed assets</field>
+                        <field name="name">I. Myyntivoitot pysyvistä vastaavista</field>
                         <field name="code">FIPL_4_1</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -358,7 +354,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_2" model="account.report.line">
-                        <field name="name">II. Leasing credits</field>
+                        <field name="name">II. Leasinghyvitykset</field>
                         <field name="code">FIPL_4_2</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -373,7 +369,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_3" model="account.report.line">
-                        <field name="name">III. Insurance and damages</field>
+                        <field name="name">III. Vakuutus- ja vahingonkorvaukset</field>
                         <field name="code">FIPL_4_3</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -388,7 +384,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_4" model="account.report.line">
-                        <field name="name">IV. Rental income</field>
+                        <field name="name">IV. Vuokratuotot</field>
                         <field name="code">FIPL_4_4</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -403,7 +399,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_5" model="account.report.line">
-                        <field name="name">V. Grants and subsidies</field>
+                        <field name="name">V. Avustukset ja tuet</field>
                         <field name="code">FIPL_4_5</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -418,7 +414,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_6" model="account.report.line">
-                        <field name="name">VI. Revenue from services</field>
+                        <field name="name">VI. Palvelutuotot</field>
                         <field name="code">FIPL_4_6</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -433,7 +429,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_7" model="account.report.line">
-                        <field name="name">VII. Fees and allowances</field>
+                        <field name="name">VII. Palkkiot ja korvaukset</field>
                         <field name="code">FIPL_4_7</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -448,7 +444,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_4_8" model="account.report.line">
-                        <field name="name">VIII. Other revenue</field>
+                        <field name="name">VIII. Muut tuotot</field>
                         <field name="code">FIPL_4_8</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -465,9 +461,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_5" model="account.report.line">
-                <field name="name">E) Materials and services</field>
+                <field name="name">E) Materiaalit ja palvelut</field>
                 <field name="code">FIPL_5</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_5_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -478,7 +473,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_5_1" model="account.report.line">
-                        <field name="name">I. Materials, supplies and goods</field>
+                        <field name="name">I. Aineet, tarvikkeet ja tavarat</field>
                         <field name="code">FIPL_5a</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -491,7 +486,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1" model="account.report.line">
-                                <field name="name">1. Purchases during the accounting period</field>
+                                <field name="name">1. Ostot tilikauden aikana</field>
                                 <field name="code">FIPL_5aa</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -504,7 +499,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_1" model="account.report.line">
-                                        <field name="name">a) Purchases of materials, supplies and goods</field>
+                                        <field name="name">a) Aine-, tarvike- ja tavaraostot</field>
                                         <field name="code">FIPL_5aa_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -519,7 +514,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_2" model="account.report.line">
-                                        <field name="name">b) Purchases of goods, Åland</field>
+                                        <field name="name">b) Tavaraostot, Ahvenanmaa</field>
                                         <field name="code">FIPL_5aa_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -534,7 +529,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_3" model="account.report.line">
-                                        <field name="name">c) Community acquisitions of goods</field>
+                                        <field name="name">c) Yhteisötavarahankinnat</field>
                                         <field name="code">FIPL_5aa_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -549,7 +544,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_4" model="account.report.line">
-                                        <field name="name">d) Imports</field>
+                                        <field name="name">d) Tuonti</field>
                                         <field name="code">FIPL_5aa_4</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -564,7 +559,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_5" model="account.report.line">
-                                        <field name="name">e) Purchases, second-hand goods and collectors' items of art and antiques</field>
+                                        <field name="name">e) Ostot, käytetyt tavarat ja taide- keräily- ja antiikkiesineet</field>
                                         <field name="code">FIPL_5aa_5</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -579,7 +574,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_6" model="account.report.line">
-                                        <field name="name">f) Purchases, securities and real estate</field>
+                                        <field name="name">f) Ostot, arvopaperit ja kiinteistöt</field>
                                         <field name="code">FIPL_5aa_6</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -594,7 +589,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7" model="account.report.line">
-                                        <field name="name">g) Purchase adjustments</field>
+                                        <field name="name">g) Ostojen oikaisuerät</field>
                                         <field name="code">FIPL_5aa_7</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_balance" model="account.report.expression">
@@ -606,7 +601,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_1" model="account.report.line">
-                                                <field name="name">a. Discounts on purchases</field>
+                                                <field name="name">a. Ostojen alennukset</field>
                                                 <field name="code">FIPL_5aa_7_1</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -621,7 +616,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_2" model="account.report.line">
-                                                <field name="name">b. Returned goods</field>
+                                                <field name="name">b. Palautetut tavarat</field>
                                                 <field name="code">FIPL_5aa_7_2</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -636,7 +631,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_3" model="account.report.line">
-                                                <field name="name">c. Damages and allowances</field>
+                                                <field name="name">c. Vahingonkorvaukset ja avustukset</field>
                                                 <field name="code">FIPL_5aa_7_3</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -651,7 +646,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_4" model="account.report.line">
-                                                <field name="name">d. Freight, freight forwarding and other procurement costs</field>
+                                                <field name="name">d. Rahdit, huolinta ja muut hankintakulut</field>
                                                 <field name="code">FIPL_5aa_7_4</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -666,7 +661,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_5" model="account.report.line">
-                                                <field name="name">e. Transfers for purposes other than sale</field>
+                                                <field name="name">e. Siirrot muuhun kuin myyntitarkoitukseen</field>
                                                 <field name="code">FIPL_5aa_7_5</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -681,7 +676,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_6" model="account.report.line">
-                                                <field name="name">f. Exchange differences on purchases</field>
+                                                <field name="name">f. Ostojen valuuttakurssierot</field>
                                                 <field name="code">FIPL_5aa_7_6</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -696,7 +691,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_l10n_fi_pl_line_5_1_1_7_7" model="account.report.line">
-                                                <field name="name">g. Other adjustments to purchases</field>
+                                                <field name="name">g. Muut ostojen oikaisuerät</field>
                                                 <field name="code">FIPL_5aa_7_7</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="hide_if_zero" eval="1"/>
@@ -715,7 +710,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_5_1_2" model="account.report.line">
-                                <field name="name">2. Increase (+) or decrease (-) in stocks</field>
+                                <field name="name">2. Varastojen lisäys (+) tai vähennys (-)</field>
                                 <field name="code">FIPL_5ab</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -732,7 +727,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_5_2" model="account.report.line">
-                        <field name="name">II. External services</field>
+                        <field name="name">II. Ulkopuoliset palvelut</field>
                         <field name="code">FIPL_5b</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_balance" model="account.report.expression">
@@ -744,7 +739,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_1" model="account.report.line">
-                                <field name="name">1. Subcontracting</field>
+                                <field name="name">1. Alihankinta</field>
                                 <field name="code">FIPL_5b_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -759,7 +754,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_2" model="account.report.line">
-                                <field name="name">2. Purchases of construction services</field>
+                                <field name="name">2. Rakentamispalveluostot</field>
                                 <field name="code">FIPL_5b_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -774,7 +769,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_3" model="account.report.line">
-                                <field name="name">3. Procurement of community services</field>
+                                <field name="name">3. Yhteisöpalveluhankinta</field>
                                 <field name="code">FIPL_5b_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -789,7 +784,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_4" model="account.report.line">
-                                <field name="name">4. Hired labour</field>
+                                <field name="name">4. Vuokrattu työvoima</field>
                                 <field name="code">FIPL_5b_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -804,7 +799,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_5_2_5" model="account.report.line">
-                                <field name="name">5. Other external services</field>
+                                <field name="name">5. Muut ulkopuoliset palvelut</field>
                                 <field name="code">FIPL_5b_5</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -823,9 +818,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_6" model="account.report.line">
-                <field name="name">F) Variable expenses</field>
+                <field name="name">F) Muuttuvat kulut</field>
                 <field name="code">FIPL_6</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_6_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -836,7 +830,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_6_1" model="account.report.line">
-                        <field name="name">I. Changing wages</field>
+                        <field name="name">I. Muuttuvat palkat</field>
                         <field name="code">FIPL_6a</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6_1_balance" model="account.report.expression">
@@ -848,7 +842,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6a_1" model="account.report.line">
-                                <field name="name">1. Wages for working time</field>
+                                <field name="name">1. Työssäoloajan palkat</field>
                                 <field name="code">FIPL_6a_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -863,7 +857,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6a_2" model="account.report.line">
-                                <field name="name">2. Holiday and social wages</field>
+                                <field name="name">2. Loma-ajan ja sosiaalipalkat</field>
                                 <field name="code">FIPL_6a_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -880,7 +874,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_6_2" model="account.report.line">
-                        <field name="name">II. Variable personnel costs</field>
+                        <field name="name">II. Muuttuvat henkilösivukulut</field>
                         <field name="code">FIPL_6b</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6_2_balance" model="account.report.expression">
@@ -892,7 +886,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6_2_1" model="account.report.line">
-                                <field name="name">1. Pension insurance premiums</field>
+                                <field name="name">1. Eläkevakuutusmaksut</field>
                                 <field name="code">FIPL_6b_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -907,7 +901,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6_2_2" model="account.report.line">
-                                <field name="name">2. Other compulsory insurance premiums</field>
+                                <field name="name">2. Muut pakolliset vakuutusmaksut</field>
                                 <field name="code">FIPL_6b_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -922,7 +916,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6b_3" model="account.report.line">
-                                <field name="name">3. Voluntary personal insurance contributions</field>
+                                <field name="name">3. Vapaaehtoiset henkilövakuutusmaksut</field>
                                 <field name="code">FIPL_6b_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -939,7 +933,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_6c" model="account.report.line">
-                        <field name="name">III. Other variable costs</field>
+                        <field name="name">III. Muut muuttuvat kulut</field>
                         <field name="code">FIPL_6c</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6c_balance" model="account.report.expression">
@@ -951,7 +945,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_6c_1" model="account.report.line">
-                                <field name="name">1. Voluntary personal expenses</field>
+                                <field name="name">1. Vapaaehtoiset henkilösivukulut</field>
                                 <field name="code">FIPL_6c_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -966,7 +960,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6c_2" model="account.report.line">
-                                <field name="name">2. Travel expenses</field>
+                                <field name="name">2. Matkakulut</field>
                                 <field name="code">FIPL_6c_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -981,7 +975,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6c_3" model="account.report.line">
-                                <field name="name">3. Use and maintenance of production</field>
+                                <field name="name">3. Tuotannon käyttö ja ylläpito</field>
                                 <field name="code">FIPL_6c_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -996,7 +990,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6c_4" model="account.report.line">
-                                <field name="name">4. Expenditure on production facilities</field>
+                                <field name="name">4. Tuotantotilojen kulut</field>
                                 <field name="code">FIPL_6c_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1011,7 +1005,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6c_5" model="account.report.line">
-                                <field name="name">5. Vehicle expenses</field>
+                                <field name="name">5. Ajoneuvokulut</field>
                                 <field name="code">FIPL_6c_5</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1026,7 +1020,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_6c_6" model="account.report.line">
-                                <field name="name">6. Other variable costs</field>
+                                <field name="name">6. Muut muuttuvat kulut</field>
                                 <field name="code">FIPL_6c_6</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1045,9 +1039,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_7" model="account.report.line">
-                <field name="name">G) Personnel costs</field>
+                <field name="name">G) Henkilöstökulut</field>
                 <field name="code">FIPL_7</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_7_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -1058,7 +1051,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_7_1" model="account.report.line">
-                        <field name="name">I. Remuneration and fees</field>
+                        <field name="name">I. Palkat ja palkkiot</field>
                         <field name="code">FIPL_7a</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_7_1_balance" model="account.report.expression">
@@ -1070,7 +1063,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_7_1_1" model="account.report.line">
-                                <field name="name">1. Salaries and bonuses of employees</field>
+                                <field name="name">1. Työntekijöiden palkat ja palkkiot</field>
                                 <field name="code">FIPL_7a_1</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_balance" model="account.report.expression">
@@ -1082,7 +1075,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_1" model="account.report.line">
-                                        <field name="name">a) Normal wages during working hours</field>
+                                        <field name="name">a) Työssäoloajan normaalipalkat</field>
                                         <field name="code">FIPL_7a_1_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1097,7 +1090,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_2" model="account.report.line">
-                                        <field name="name">b) Supplements and allowances</field>
+                                        <field name="name">b) Lisät ja korvaukset</field>
                                         <field name="code">FIPL_7a_1_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1112,7 +1105,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_3" model="account.report.line">
-                                        <field name="name">c) Fees and commissions</field>
+                                        <field name="name">c) Palkkiot</field>
                                         <field name="code">FIPL_7a_1_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1127,7 +1120,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_4" model="account.report.line">
-                                        <field name="name">d) Holiday and social wages</field>
+                                        <field name="name">d) Loma-ajan ja sosiaalipalkat</field>
                                         <field name="code">FIPL_7a_1_4</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1142,7 +1135,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_5" model="account.report.line">
-                                        <field name="name">e) Benefits in kind</field>
+                                        <field name="name">e) Luontoisedut</field>
                                         <field name="code">FIPL_7a_1_5</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1157,7 +1150,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_1_6" model="account.report.line">
-                                        <field name="name">f) Salary reimbursements received</field>
+                                        <field name="name">f) Saadut korvaukset palkoista</field>
                                         <field name="code">FIPL_7a_1_6</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1174,7 +1167,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_7_1_2" model="account.report.line">
-                                <field name="name">2. Management salaries</field>
+                                <field name="name">2. Johdon palkat</field>
                                 <field name="code">FIPL_7a_2</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_2_balance" model="account.report.expression">
@@ -1186,7 +1179,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_2_1" model="account.report.line">
-                                        <field name="name">a) Management salaries and fees</field>
+                                        <field name="name">a) Johdon palkat ja palkkiot</field>
                                         <field name="code">FIPL_7a_2_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1201,7 +1194,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_2_2" model="account.report.line">
-                                        <field name="name">b) Management benefits in kind</field>
+                                        <field name="name">b) Johdon luontoisedut</field>
                                         <field name="code">FIPL_7a_2_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1216,7 +1209,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_2_3" model="account.report.line">
-                                        <field name="name">c) Compensation received for management salaries</field>
+                                        <field name="name">c) Saadut korvaukset johdon palkoista</field>
                                         <field name="code">FIPL_7a_2_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1233,7 +1226,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_7_1_3" model="account.report.line">
-                                <field name="name">3. Salaries of shareholders and relatives</field>
+                                <field name="name">3. Osakkaiden ja omaisten palkat</field>
                                 <field name="code">FIPL_7a_3</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_3_balance" model="account.report.expression">
@@ -1245,7 +1238,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_3_1" model="account.report.line">
-                                        <field name="name">a) Salaries and fees of shareholders and relatives</field>
+                                        <field name="name">a) Osakkaiden ja omaisten palkat ja palkkiot</field>
                                         <field name="code">FIPL_7a_3_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1260,7 +1253,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_3_2" model="account.report.line">
-                                        <field name="name">b) Benefits in kind for shareholders and relatives</field>
+                                        <field name="name">b) Osakkaiden ja omaisten luontoisedut</field>
                                         <field name="code">FIPL_7a_3_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1275,7 +1268,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_1_3_3" model="account.report.line">
-                                        <field name="name">c) Compensation received for the salaries of shareholders and relatives</field>
+                                        <field name="name">c) Saadut korvaukset osakkaiden ja omaisten palkoista</field>
                                         <field name="code">FIPL_7a_3_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1292,7 +1285,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_7_1_4" model="account.report.line">
-                                <field name="name">4. Counterpart account for benefits in kind</field>
+                                <field name="name">4. Luontoisetujen vastatili</field>
                                 <field name="code">FIPL_7a_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -1308,7 +1301,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_7_2" model="account.report.line">
-                        <field name="name">II. Staff expenses</field>
+                        <field name="name">II. Henkilösivukulut</field>
                         <field name="code">FIPL_7b</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1321,7 +1314,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_7_2_1" model="account.report.line">
-                                <field name="name">1. Pension expenses</field>
+                                <field name="name">1. Eläkekulut</field>
                                 <field name="code">FIPL_7b_1</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -1334,7 +1327,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_1_1" model="account.report.line">
-                                        <field name="name">a) Pensions paid</field>
+                                        <field name="name">a) Maksetut eläkkeet</field>
                                         <field name="code">FIPL_7b_1_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1349,7 +1342,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_1_2" model="account.report.line">
-                                        <field name="name">b) Pension insurance contributions</field>
+                                        <field name="name">b) Eläkevakuutusmaksut</field>
                                         <field name="code">FIPL_7b_1_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1364,7 +1357,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_1_3" model="account.report.line">
-                                        <field name="name">c) Periodicity during the financial year</field>
+                                        <field name="name">c) Tilikauden aikainen jaksotus</field>
                                         <field name="code">FIPL_7b_1_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1381,7 +1374,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_7_2_2" model="account.report.line">
-                                <field name="name">2. Other personnel costs</field>
+                                <field name="name">2. Muut henkilösivukulut</field>
                                 <field name="code">FIPL_7b_2</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -1394,7 +1387,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_2_1" model="account.report.line">
-                                        <field name="name">a) Social security contributions</field>
+                                        <field name="name">a) Sosiaaliturvamaksut</field>
                                         <field name="code">FIPL_7b_2_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1409,7 +1402,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_2_2" model="account.report.line">
-                                        <field name="name">b) Compulsory insurance premiums</field>
+                                        <field name="name">b) Pakolliset vakuutusmaksut</field>
                                         <field name="code">FIPL_7b_2_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1424,7 +1417,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_2_3" model="account.report.line">
-                                        <field name="name">c) Other staff insurance contributions</field>
+                                        <field name="name">c) Muut henkilöstön vakuutusmaksut</field>
                                         <field name="code">FIPL_7b_2_3</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1439,7 +1432,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_7_2_2_4" model="account.report.line">
-                                        <field name="name">d) Periodicity during the financial year</field>
+                                        <field name="name">d) Tilikauden aikainen jaksotus</field>
                                         <field name="code">FIPL_7b_2_4</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -1460,9 +1453,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_8" model="account.report.line">
-                <field name="name">H) Depreciation, amortisation and impairment</field>
+                <field name="name">H) Poistot ja arvonalentumiset</field>
                 <field name="code">FIPL_8</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_8_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -1473,7 +1465,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_8_1" model="account.report.line">
-                        <field name="name">I. Depreciation according to plan</field>
+                        <field name="name">I. Suunnitelman mukaiset poistot</field>
                         <field name="code">FIPL_8a</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1488,7 +1480,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_8_2" model="account.report.line">
-                        <field name="name">II. Amortisation of consolidated goodwill and reduction of consolidated reserves</field>
+                        <field name="name">II. Konserniliikearvon poisto ja konsernireservin vähennys</field>
                         <field name="code">FIPL_8b</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1503,7 +1495,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_8_3" model="account.report.line">
-                        <field name="name">III. Impairment of fixed assets</field>
+                        <field name="name">III. Arvonalentumiset pysyvien vastaavien hyödykkeistä</field>
                         <field name="code">FIPL_8c</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1518,7 +1510,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_8_4" model="account.report.line">
-                        <field name="name">IV. Extraordinary impairments of current assets</field>
+                        <field name="name">IV. Vaihtuvien vastaavien poikkeukselliset arvonalentumiset</field>
                         <field name="code">FIPL_8d</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1535,9 +1527,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_9" model="account.report.line">
-                <field name="name">I) Other operating expenses</field>
+                <field name="name">I) Liiketoiminnan muut kulut</field>
                 <field name="code">FIPL_9</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_9_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -1548,7 +1539,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_9_1" model="account.report.line">
-                        <field name="name">I. Voluntary expenditure on staff</field>
+                        <field name="name">I. Vapaaehtoiset henkilösivukulut</field>
                         <field name="code">FIPL_9_1</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1561,7 +1552,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_1" model="account.report.line">
-                                <field name="name">1. Staff training</field>
+                                <field name="name">1. Henkilökunnan koulutus</field>
                                 <field name="code">FIPL_9_1_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1576,7 +1567,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_2" model="account.report.line">
-                                <field name="name">2. Staff meetings and recreation</field>
+                                <field name="name">2. Henkilökuntapalaverit ja virkistys</field>
                                 <field name="code">FIPL_9_1_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1591,7 +1582,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_3" model="account.report.line">
-                                <field name="name">3. Occupational health care</field>
+                                <field name="name">3. Työterveyshuolto</field>
                                 <field name="code">FIPL_9_1_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1606,7 +1597,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_4" model="account.report.line">
-                                <field name="name">4. Providing food and coffee for staff</field>
+                                <field name="name">4. Ruoka- ja kahvitarjoilu henkilökunnalle</field>
                                 <field name="code">FIPL_9_1_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1621,7 +1612,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_5" model="account.report.line">
-                                <field name="name">5. Work clothing and protective equipment</field>
+                                <field name="name">5. Työvaatteet ja suojavälineet</field>
                                 <field name="code">FIPL_9_1_5</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1636,7 +1627,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_1_6" model="account.report.line">
-                                <field name="name">6. Other voluntary personal expenses</field>
+                                <field name="name">6. Muut vapaaehtoiset henkilösivukulut</field>
                                 <field name="code">FIPL_9_1_6</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1653,7 +1644,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_2" model="account.report.line">
-                        <field name="name">II. Premises expenses</field>
+                        <field name="name">II. Toimitilakulut</field>
                         <field name="code">FIPL_9_2</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1666,7 +1657,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_2_1" model="account.report.line">
-                                <field name="name">1. Rents and consideration</field>
+                                <field name="name">1. Vuokrat ja vastikkeet</field>
                                 <field name="code">FIPL_9_2_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1681,7 +1672,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_2_2" model="account.report.line">
-                                <field name="name">2. Treatment costs</field>
+                                <field name="name">2. Hoitokulut</field>
                                 <field name="code">FIPL_9_2_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1696,7 +1687,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_2_3" model="account.report.line">
-                                <field name="name">3. Other office expenses</field>
+                                <field name="name">3. Muut toimitilakulut</field>
                                 <field name="code">FIPL_9_2_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1713,7 +1704,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_3" model="account.report.line">
-                        <field name="name">III. Vehicle expenses</field>
+                        <field name="name">III. Ajoneuvokulut</field>
                         <field name="code">FIPL_9_3</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1728,7 +1719,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_4" model="account.report.line">
-                        <field name="name">IV. Computer equipment and software costs</field>
+                        <field name="name">IV. Atk-laite ja -ohjelmakulut</field>
                         <field name="code">FIPL_9_4</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1743,7 +1734,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_5" model="account.report.line">
-                        <field name="name">V. Other machinery and equipment costs</field>
+                        <field name="name">V. Muut kone- ja kalustokulut</field>
                         <field name="code">FIPL_9_5</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1758,7 +1749,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_6" model="account.report.line">
-                        <field name="name">VI. Travel expenses</field>
+                        <field name="name">VI. Matkakulut</field>
                         <field name="code">FIPL_9_6</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1771,7 +1762,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_6_1" model="account.report.line">
-                                <field name="name">1. Air tickets, accommodation and other travel expenses</field>
+                                <field name="name">1. Matkaliput, majoitus ja muut matkakulut</field>
                                 <field name="code">FIPL_9_6_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1786,7 +1777,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_6_2" model="account.report.line">
-                                <field name="name">2. Reimbursement of travel expenses</field>
+                                <field name="name">2. Matkakustannusten korvaukset</field>
                                 <field name="code">FIPL_9_6_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1803,7 +1794,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_7" model="account.report.line">
-                        <field name="name">VII. Representation expenses</field>
+                        <field name="name">VII. Edustuskulut</field>
                         <field name="code">FIPL_9_7</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1818,7 +1809,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_8" model="account.report.line">
-                        <field name="name">VIII. Costs of sale</field>
+                        <field name="name">VIII. Myyntikulut</field>
                         <field name="code">FIPL_9_8</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1831,7 +1822,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_8_1" model="account.report.line">
-                                <field name="name">1. Commissions paid</field>
+                                <field name="name">1. Maksetut provisiot</field>
                                 <field name="code">FIPL_9_8_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1846,7 +1837,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_8_2" model="account.report.line">
-                                <field name="name">2. Sales freight and handling</field>
+                                <field name="name">2. Myyntirahdit ja -huolinta</field>
                                 <field name="code">FIPL_9_8_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1861,7 +1852,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_8_3" model="account.report.line">
-                                <field name="name">3. Other selling expenses</field>
+                                <field name="name">3. Muut myyntikulut</field>
                                 <field name="code">FIPL_9_8_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1878,7 +1869,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_9" model="account.report.line">
-                        <field name="name">IX. Marketing expenses</field>
+                        <field name="name">IX. Markkinointikulut</field>
                         <field name="code">FIPL_9_9</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1891,7 +1882,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_9_1" model="account.report.line">
-                                <field name="name">1. Advertising</field>
+                                <field name="name">1. Mainonta</field>
                                 <field name="code">FIPL_9_9_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1906,7 +1897,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_9_2" model="account.report.line">
-                                <field name="name">2. Promoting sales</field>
+                                <field name="name">2. Myynnin edistäminen</field>
                                 <field name="code">FIPL_9_9_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1921,7 +1912,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_9_3" model="account.report.line">
-                                <field name="name">3. Relationship activities</field>
+                                <field name="name">3. Suhdetoiminta</field>
                                 <field name="code">FIPL_9_9_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1938,7 +1929,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_10" model="account.report.line">
-                        <field name="name">X. Research and development costs</field>
+                        <field name="name">X. Tutkimus- ja kehityskulut</field>
                         <field name="code">FIPL_9_10</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -1953,7 +1944,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_11" model="account.report.line">
-                        <field name="name">XI. Administrative costs</field>
+                        <field name="name">XI. Hallintokulut</field>
                         <field name="code">FIPL_9_11</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -1966,7 +1957,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_1" model="account.report.line">
-                                <field name="name">1. Administrative services</field>
+                                <field name="name">1. Hallintopalvelut</field>
                                 <field name="code">FIPL_9_11_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1981,7 +1972,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_2" model="account.report.line">
-                                <field name="name">2. Gathering information</field>
+                                <field name="name">2. Tiedonhankinta</field>
                                 <field name="code">FIPL_9_11_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -1996,7 +1987,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_3" model="account.report.line">
-                                <field name="name">3. Information and financial communication</field>
+                                <field name="name">3. Tieto- ja rahaliikenne</field>
                                 <field name="code">FIPL_9_11_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2011,7 +2002,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_4" model="account.report.line">
-                                <field name="name">4. Insurance and compensation</field>
+                                <field name="name">4. Vakuutukset ja vahingonkorvaukset</field>
                                 <field name="code">FIPL_9_11_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2026,7 +2017,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_5" model="account.report.line">
-                                <field name="name">5. Office supplies</field>
+                                <field name="name">5. Toimistotarvikkeet</field>
                                 <field name="code">FIPL_9_11_5</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2041,7 +2032,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_6" model="account.report.line">
-                                <field name="name">6. Other administrative expenses</field>
+                                <field name="name">6. Muut hallintokulut</field>
                                 <field name="code">FIPL_9_11_6</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2056,7 +2047,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_11_7" model="account.report.line">
-                                <field name="name">7. Received administrative expense allowances</field>
+                                <field name="name">7. Saadut hallintokulukorvaukset</field>
                                 <field name="code">FIPL_9_11_7</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2073,20 +2064,20 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_12" model="account.report.line">
-                        <field name="name">XII. Other operating expenses</field>
+                        <field name="name">XII. Muut liikekulut</field>
                         <field name="code">FIPL_9_12</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_12_balance" model="account.report.expression">
                                 <field name="label">balance</field>
                                 <field name="engine">aggregation</field>
-                                <field name="formula">FIPL_9_12_1.balance + FIPL_9_12_2.balance + FIPL_9_12_3.balance + FIPL_9_12_4.balance + FIPL_9_12_5.balance</field>
+                                <field name="formula">FIPL_9_12_1.balance + FIPL_9_12_2.balance + FIPL_9_12_3.balance + FIPL_9_12_4.balance</field>
                                 <field name="date_scope">normal</field>
                             </record>
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_9_12_1" model="account.report.line">
-                                <field name="name">1. Credit losses</field>
+                                <field name="name">1. Luottotappiot</field>
                                 <field name="code">FIPL_9_12_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2095,13 +2086,13 @@
                                     <record id="account_financial_report_l10n_fi_pl_line_9_12_1_balance" model="account.report.expression">
                                         <field name="label">balance</field>
                                         <field name="engine">account_codes</field>
-                                        <field name="formula">-871 - 873 - 872</field>
+                                        <field name="formula">-871 - 870 - 873 - 872</field>
                                         <field name="date_scope">normal</field>
                                     </record>
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_12_2" model="account.report.line">
-                                <field name="name">2. Other operating expenses</field>
+                                <field name="name">2. Vähennyskelpoiset muut liikekulut</field>
                                 <field name="code">FIPL_9_12_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2110,13 +2101,13 @@
                                     <record id="account_financial_report_l10n_fi_pl_line_9_12_2_balance" model="account.report.expression">
                                         <field name="label">balance</field>
                                         <field name="engine">account_codes</field>
-                                        <field name="formula">-870</field>
+                                        <field name="formula">-876 - 875 - 874</field>
                                         <field name="date_scope">normal</field>
                                     </record>
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_12_3" model="account.report.line">
-                                <field name="name">3. Other deductible business expenses</field>
+                                <field name="name">3. Vähennyskelvottomat muut liikekulut</field>
                                 <field name="code">FIPL_9_12_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2125,13 +2116,13 @@
                                     <record id="account_financial_report_l10n_fi_pl_line_9_12_3_balance" model="account.report.expression">
                                         <field name="label">balance</field>
                                         <field name="engine">account_codes</field>
-                                        <field name="formula">-874 - 875 - 876</field>
+                                        <field name="formula">-880 - 877 - 879 - 878 - 884</field>
                                         <field name="date_scope">normal</field>
                                     </record>
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_9_12_4" model="account.report.line">
-                                <field name="name">4. Other non-deductible operating expenses</field>
+                                <field name="name">4. Käyttöomaisuuden luovutustappiot</field>
                                 <field name="code">FIPL_9_12_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2140,22 +2131,7 @@
                                     <record id="account_financial_report_l10n_fi_pl_line_9_12_4_balance" model="account.report.expression">
                                         <field name="label">balance</field>
                                         <field name="engine">account_codes</field>
-                                        <field name="formula">-877 - 878 - 879 - 880 - 884</field>
-                                        <field name="date_scope">normal</field>
-                                    </record>
-                                </field>
-                            </record>
-                            <record id="account_financial_report_l10n_fi_pl_line_9_12_5" model="account.report.line">
-                                <field name="name">5. Losses on disposal of fixed assets</field>
-                                <field name="code">FIPL_9_12_5</field>
-                                <field name="groupby">account_id</field>
-                                <field name="hide_if_zero" eval="1"/>
-                                <field name="foldable" eval="True"/>
-                                <field name="expression_ids">
-                                    <record id="account_financial_report_l10n_fi_pl_line_9_12_5_balance" model="account.report.expression">
-                                        <field name="label">balance</field>
-                                        <field name="engine">account_codes</field>
-                                        <field name="formula">-885 - 886 - 887</field>
+                                        <field name="formula">-887 - 885 - 886</field>
                                         <field name="date_scope">normal</field>
                                     </record>
                                 </field>
@@ -2163,7 +2139,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_9_13" model="account.report.line">
-                        <field name="name">XIII. Reconciliation differences</field>
+                        <field name="name">XIII. Täsmäytyserot</field>
                         <field name="code">FIPL_9_13</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2180,11 +2156,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_10" model="account.report.line">
-                <field name="name">J) Share of the profit (loss) of associated companies</field>
+                <field name="name">J) Osuus osakkuusyritysten voitosta (tappiosta)</field>
                 <field name="code">FIPL_10</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_10_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2195,10 +2170,9 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_11" model="account.report.line">
-                <field name="name">K) OPERATING PROFIT (LOSS)</field>
+                <field name="name">K) LIIKEVOITTO (-TAPPIO)</field>
                 <field name="code">FIPL_11</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_11_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2209,9 +2183,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_12" model="account.report.line">
-                <field name="name">L) Financial income and expenses</field>
+                <field name="name">L) Rahoitustuotot ja -kulut</field>
                 <field name="code">FIPL_12</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_12_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2222,7 +2195,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_12_1" model="account.report.line">
-                        <field name="name">I. Financial income</field>
+                        <field name="name">I. Rahoitustuotot</field>
                         <field name="code">FIPL_12_1</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -2235,7 +2208,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_1" model="account.report.line">
-                                <field name="name">1. Income from shares in companies of the same group</field>
+                                <field name="name">1. Tuotot osuuksista saman konsernin yrityksissä</field>
                                 <field name="code">FIPL_12_1_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2250,7 +2223,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_2" model="account.report.line">
-                                <field name="name">2. Share of profit (loss) of associates</field>
+                                <field name="name">2. Osuus osakkuusyritysten voitosta (tappiosta)</field>
                                 <field name="code">FIPL_12_1_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2265,7 +2238,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_3" model="account.report.line">
-                                <field name="name">3. Income from participating interests in associated enterprises</field>
+                                <field name="name">3. Tuotot osuuksista omistusyhteysyrityksissä</field>
                                 <field name="code">FIPL_12_1_3</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2280,7 +2253,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_4" model="account.report.line">
-                                <field name="name">4. Income from shares in other participating interests</field>
+                                <field name="name">4. Tuotot osuuksista muissa omistusyhteysyrityksissä</field>
                                 <field name="code">FIPL_12_1_4</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2295,7 +2268,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_5" model="account.report.line">
-                                <field name="name">5. Income from other fixed assets</field>
+                                <field name="name">5. Tuotot muista pysyvien vastaavien sijoituksista</field>
                                 <field name="code">FIPL_12_1_5</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -2308,7 +2281,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_12_1_5_1" model="account.report.line">
-                                        <field name="name">a) From companies within the same group</field>
+                                        <field name="name">a) Saman konsernin yrityksiltä</field>
                                         <field name="code">FIPL_12_1_5_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2323,7 +2296,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_12_1_5_2" model="account.report.line">
-                                        <field name="name">b) From others</field>
+                                        <field name="name">b) Muilta</field>
                                         <field name="code">FIPL_12_1_5_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2340,7 +2313,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_1_6" model="account.report.line">
-                                <field name="name">6. Other interest and financial income</field>
+                                <field name="name">6. Muut korko- ja rahoitustuotot</field>
                                 <field name="code">FIPL_12_1_6</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -2353,7 +2326,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_12_1_6_1" model="account.report.line">
-                                        <field name="name">a) From companies within the same group</field>
+                                        <field name="name">a) Saman konsernin yrityksiltä</field>
                                         <field name="code">FIPL_12_1_6_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2368,7 +2341,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_12_1_6_2" model="account.report.line">
-                                        <field name="name">b) From others</field>
+                                        <field name="name">b) Muilta</field>
                                         <field name="code">FIPL_12_1_6_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2387,7 +2360,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_12_2" model="account.report.line">
-                        <field name="name">II. Financial charges</field>
+                        <field name="name">II. Rahoituskulut</field>
                         <field name="code">FIPL_12_2</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -2400,7 +2373,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_fi_pl_line_12_2_1" model="account.report.line">
-                                <field name="name">1. Impairment of fixed assets investments</field>
+                                <field name="name">1. Arvonalentumiset pysyvien vastaavien sijoituksista</field>
                                 <field name="code">FIPL_12_2_1</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2415,7 +2388,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_2_2" model="account.report.line">
-                                <field name="name">2. Impairment losses on financial securities held as current assets</field>
+                                <field name="name">2. Arvonalentumiset vaihtuvien vastaavien rahoitusarvopapereista</field>
                                 <field name="code">FIPL_12_2_2</field>
                                 <field name="groupby">account_id</field>
                                 <field name="hide_if_zero" eval="1"/>
@@ -2430,7 +2403,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_fi_pl_line_12_2_3" model="account.report.line">
-                                <field name="name">3. Interest and other financial charges</field>
+                                <field name="name">3. Korkokulut ja muut rahoituskulut</field>
                                 <field name="code">FIPL_12_2_3</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="expression_ids">
@@ -2443,7 +2416,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_l10n_fi_pl_line_12_2_3_1" model="account.report.line">
-                                        <field name="name">a) For companies within the same group</field>
+                                        <field name="name">a) Saman konsernin yrityksille</field>
                                         <field name="code">FIPL_12_2_3_1</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2458,7 +2431,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_l10n_fi_pl_line_12_2_3_2" model="account.report.line">
-                                        <field name="name">b) For others</field>
+                                        <field name="name">b) Muille</field>
                                         <field name="code">FIPL_12_2_3_2</field>
                                         <field name="groupby">account_id</field>
                                         <field name="hide_if_zero" eval="1"/>
@@ -2479,11 +2452,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_13" model="account.report.line">
-                <field name="name">M) Incidental items</field>
+                <field name="name">M) Satunnaiset erät</field>
                 <field name="code">FIPL_13</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_13_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2495,10 +2467,9 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_14" model="account.report.line">
-                <field name="name">N) PROFIT (LOSS) BEFORE ACCOUNTING TRANSFERS AND TAXES</field>
+                <field name="name">N) VOITTO (TAPPIO) ENNEN TILINPÄÄTÖSSIIRTOJA JA VEROJA</field>
                 <field name="code">FIPL_14</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_14_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2509,9 +2480,8 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_15" model="account.report.line">
-                <field name="name">O) Balance sheet transfers</field>
+                <field name="name">O) Tilinpäätössiirrot</field>
                 <field name="code">FIPL_15</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_15_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2522,7 +2492,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_15_1" model="account.report.line">
-                        <field name="name">I. Change in the depreciation difference</field>
+                        <field name="name">I. Poistoeron muutos</field>
                         <field name="code">FIPL_15_1</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2537,7 +2507,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_15_2" model="account.report.line">
-                        <field name="name">II. Change in tax provisions</field>
+                        <field name="name">II. Verotusperusteisten varausten muutos</field>
                         <field name="code">FIPL_15_2</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2552,7 +2522,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_15_3" model="account.report.line">
-                        <field name="name">III. Group support</field>
+                        <field name="name">III. Konserniavustus</field>
                         <field name="code">FIPL_15_3</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2569,10 +2539,9 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_16" model="account.report.line">
-                <field name="name">P) Income taxes</field>
+                <field name="name">P) Tuloverot</field>
                 <field name="code">FIPL_16</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_16_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2583,7 +2552,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_16_1" model="account.report.line">
-                        <field name="name">I. Taxes for the financial year</field>
+                        <field name="name">I. Tilikauden verot</field>
                         <field name="code">FIPL_16_1</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2598,7 +2567,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_fi_pl_line_16_2" model="account.report.line">
-                        <field name="name">II. Deferred taxes</field>
+                        <field name="name">II. Laskennalliset verot</field>
                         <field name="code">FIPL_16_2</field>
                         <field name="groupby">account_id</field>
                         <field name="hide_if_zero" eval="1"/>
@@ -2615,11 +2584,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_17" model="account.report.line">
-                <field name="name">Q) Other direct taxes</field>
+                <field name="name">Q) Muut välittömät verot</field>
                 <field name="code">FIPL_17</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_17_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2630,11 +2598,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_18" model="account.report.line">
-                <field name="name">R) Minority shareholdings</field>
+                <field name="name">R) Vähemmistöosuudet</field>
                 <field name="code">FIPL_18</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_18_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -2645,11 +2612,10 @@
                 </field>
             </record>
             <record id="account_financial_report_l10n_fi_pl_line_19" model="account.report.line">
-                <field name="name">S) PROFIT (LOSS) FOR THE FINANCIAL YEAR</field>
+                <field name="name">S) TILIKAUDEN VOITTO (TAPPIO)</field>
                 <field name="code">FIPL_19</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_fi_pl_line_19_balance" model="account.report.expression">
                         <field name="label">balance</field>

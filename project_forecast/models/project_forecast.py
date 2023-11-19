@@ -15,7 +15,8 @@ class PlanningShift(models.Model):
     project_id = fields.Many2one(
         'project.project', string="Project", compute='_compute_project_id', store=True,
         readonly=False, copy=True, check_company=True, group_expand='_read_group_project_id',
-    )
+        domain="[('company_id', '=', company_id), ('allow_forecast', '=', True)]")
+    allow_forecast = fields.Boolean(related="project_id.allow_forecast")
 
     @api.depends('template_id.project_id')
     def _compute_project_id(self):
@@ -43,8 +44,10 @@ class PlanningShift(models.Model):
         result.append('project_id')
         return result
 
-    def _display_name_fields(self):
-        return  super()._display_name_fields() + ['project_id']
+    def _name_get_fields(self):
+        fields = super(PlanningShift, self)._name_get_fields()
+        fields.insert(1, 'project_id')
+        return fields
 
     def _prepare_template_values(self):
         result = super(PlanningShift, self)._prepare_template_values()
@@ -82,9 +85,3 @@ class PlanningShift(models.Model):
 
     def write(self, values):
         return super(PlanningShift, self).write(values)
-
-    def _prepare_shift_vals(self):
-        return {
-            **super()._prepare_shift_vals(),
-            'project_id': self.project_id.id,
-        }

@@ -1,36 +1,31 @@
 /** @odoo-module **/
 
-import { BarcodeParser } from "@barcodes/js/barcode_parser";
+import BarcodeParser from 'barcodes.BarcodeParser';
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { Mutex } from "@web/core/utils/concurrency";
 import LazyBarcodeCache from '@stock_barcode/lazy_barcode_cache';
-import { _t } from "@web/core/l10n/translation";
+import { _t } from 'web.core';
+import { sprintf } from '@web/core/utils/strings';
 import { useService } from "@web/core/utils/hooks";
-import { FNC1_CHAR } from "@barcodes_gs1_nomenclature/js/barcode_parser";
-import { EventBus } from "@odoo/owl";
+
+const { EventBus } = owl;
 
 export default class BarcodeModel extends EventBus {
-    constructor(resModel, resId, services) {
+    constructor(params, services) {
         super();
         this.dialogService = useService('dialog');
         this.orm = services.orm;
         this.rpc = services.rpc;
-        this.notificationService = services.notification;
-        this.action = services.action;
-        this.resId = resId;
-        this.resModel = resModel;
+        this.notification = services.notification;
+        this.params = params;
         this.unfoldLineKey = false;
         this.currentSortIndex = 0;
-        this.validateContext = {};
-        // Keeps the history of all barcodes scanned (start with the most recent.)
-        this.scanHistory = [];
         // Keeps track of list scanned record(s) by type.
         this.lastScanned = { packageId: false, product: false, sourceLocation: false };
         this._currentLocation = false; // Reminds the current source when the scanned one is forgotten.
-        this.needSourceConfirmation = false;
     }
 
     setData(data) {
-        this.actionId = data.actionId;
         this.cache = new LazyBarcodeCache(data.data.records, { rpc: this.rpc });
         const nomenclature = this.cache.getRecord('barcode.nomenclature', data.data.nomenclature_id);
         nomenclature.rules = [];
@@ -57,6 +52,7 @@ export default class BarcodeModel extends EventBus {
 
         // UI stuff.
         this.name = this._getName();
+        this.view = 'barcodeLines'; // Could be also 'printMenu' or 'editFormView'.
         // Barcode's commands are returned by a method for override purpose.
         this.commands = this._getCommands();
     }
@@ -94,7 +90,7 @@ export default class BarcodeModel extends EventBus {
     getActionRefresh(newId) {
         return {
             route: '/stock_barcode/get_barcode_data',
-            params: {model: this.resModel, res_id: this.resId || false},
+            params: {model: this.params.model, res_id: this.params.id || false},
         };
     }
 
@@ -110,8 +106,72 @@ export default class BarcodeModel extends EventBus {
         throw new Error('Not Implemented');
     }
 
+    askBeforeNewLinesCreation(product) {
+        return false;
+    }
+
     get barcodeInfo() {
-        throw new Error('Not Implemented');
+        // Takes the parent line if the current line is part of a group.
+        let line = this._getParentLine(this.selectedLine) || this.selectedLine;
+        if (!line && this.lastScanned.packageId) {
+            const lines = this._moveEntirePackage() ? this.packageLines : this.pageLines;
+            line = lines.find(l => l.package_id && l.package_id.id === this.lastScanned.packageId);
+        }
+
+        if (line) { // Message depends of the selected line's state.
+            const { tracking } = line.product_id;
+            const trackingNumber = (line.lot_id && line.lot_id.name) || line.lot_name;
+            if (this._lineIsNotComplete(line)) {
+                if (tracking === 'none') {
+                    this.messageType = 'scan_product';
+                } else {
+                    this.messageType = tracking === 'lot' ? 'scan_lot' : 'scan_serial';
+                }
+            } else if (tracking !== 'none' && !trackingNumber) {
+                // Line's quantity is fulfilled but still waiting a tracking number.
+                this.messageType = tracking === 'lot' ? 'scan_lot' : 'scan_serial';
+            } else { // Line's quantity is fulfilled.
+                this.messageType = this._getLocationMessage();
+            }
+        } else { // Message depends of the operation.
+            this.messageType = this.groups.group_stock_multi_locations ?
+                this._getDefaultMessageType() :
+                'scan_product';
+        }
+
+        const barcodeInformations = { class: this.messageType, warning: false };
+        switch (this.messageType) {
+            case 'scan_product':
+                barcodeInformations.message = _t("Scan a product");
+                barcodeInformations.icon = 'tags';
+                break;
+            case 'scan_src':
+                barcodeInformations.message = _t("Scan the source location, or scan a product");
+                barcodeInformations.icon = 'sign-out';
+                break;
+            case 'scan_product_or_src':
+                barcodeInformations.message = _t("Scan more products, or scan a new source location");
+                break;
+            case 'scan_product_or_dest':
+                barcodeInformations.message = _t("Scan more products, or scan the destination location");
+                barcodeInformations.icon = 'sign-in';
+                break;
+            case 'scan_lot':
+                barcodeInformations.message = sprintf(
+                    _t("Scan lot numbers for product %s to change their quantity"),
+                    line.product_id.display_name
+                );
+                barcodeInformations.icon = 'barcode';
+                break;
+            case 'scan_serial':
+                barcodeInformations.message = sprintf(
+                    _t("Scan serial numbers for product %s to change their quantity"),
+                    line.product_id.display_name
+                );
+                barcodeInformations.icon = 'barcode';
+                break;
+        }
+        return barcodeInformations;
     }
 
     get canCreateNewLot() {
@@ -128,10 +188,6 @@ export default class BarcodeModel extends EventBus {
      */
     get canBeValidate() {
         return this.pageLines.length + this.packageLines.length;
-    }
-
-    get cancelLabel() {
-        return _t("Cancel");
     }
 
     get canSelectLocation() {
@@ -293,7 +349,7 @@ export default class BarcodeModel extends EventBus {
     }
 
     get recordIds() {
-        return [this.resId];
+        return [this.params.id];
     }
 
     get selectedLine() {
@@ -306,12 +362,25 @@ export default class BarcodeModel extends EventBus {
         return true;
     }
 
+    get viewsWidgetData() {
+        return {
+            resModel: this.lineModel,
+            additionalContext: this._getNewLineDefaultContext(),
+        };
+    }
+
     // ACTIONS
+
+    displayBarcodeActions() {
+        this.view = 'actionsView';
+        this.trigger('update');
+    }
 
     /**
      * @param {integer} [lineId] if provided it checks if the line still exist (selects it or removes it from the lines' list)
      */
     async displayBarcodeLines(lineId) {
+        this.view = 'barcodeLines';
         if (lineId) { // If we pass a record id checks if the record still exist.
             const res = await this.orm.search(this.lineModel, [['id', '=', lineId]]);
             if (!res.length) { // The record was deleted, we remove the corresponding line.
@@ -322,6 +391,22 @@ export default class BarcodeModel extends EventBus {
                 this.selectLine(line);
             }
         }
+        this.trigger('update');
+    }
+
+    displayInformation() {
+        this.view = 'infoFormView';
+        this.trigger('update');
+    }
+
+    displayPackagePage() {
+        this.view = 'packagePage';
+        this.trigger('update');
+    }
+
+    displayProductPage() {
+        this.view = 'productPage';
+        this.trigger('update');
     }
 
     /**
@@ -347,18 +432,6 @@ export default class BarcodeModel extends EventBus {
         return foundLine;
     }
 
-    /**
-     * Calls the notification service and plays a sound if the notification's type is "warning".
-     * @param {String} message
-     * @param {Object} options
-     */
-    notification(message, options={}) {
-        if (options.type === "danger") {
-            this.trigger('error');
-        }
-        return this.notificationService.add(message, options);
-    }
-
     async refreshCache(records) {
         this.cache.setCache(records);
         this._createState();
@@ -366,15 +439,15 @@ export default class BarcodeModel extends EventBus {
 
     async save() {
         const { route, params } = this._getSaveCommand();
+        this.linesToSave = [];
         if (route) {
             const res = await this.rpc(route, params);
             await this.refreshCache(res.records);
         }
-        this.linesToSave = [];
     }
 
     selectLine(line) {
-        if (this.lineCanBeSelected(line) && (!line.virtual_ids || !line.virtual_ids.includes(this.selectedLineVirtualId))) {
+        if (this.lineCanBeSelected(line)) {
             this._selectLine(line);
         }
     }
@@ -388,7 +461,7 @@ export default class BarcodeModel extends EventBus {
     toggleSublines(line) {
         const lineKey = this.groupKey(line);
         this.unfoldLineKey = this.unfoldLineKey === lineKey ? false : lineKey;
-        if (this.unfoldLineKey === lineKey && (!this.selectedLine || this.unfoldLineKey != this.groupKey(this.selectedLine))) {
+        if (this.unfoldLineKey === lineKey) {
             this.selectLine(line);
         }
         this.trigger('update');
@@ -456,7 +529,7 @@ export default class BarcodeModel extends EventBus {
                 continue;
             }
             if (lotName === l.lot_name || (l.lot_id && lotName === l.lot_id.name)) {
-                this.notification(_t("This serial number is already used."), { type: "warning" });
+                this.notification.add(_t("This serial number is already used."), { type: 'warning' });
                 return Promise.reject();
             }
         }
@@ -465,23 +538,19 @@ export default class BarcodeModel extends EventBus {
 
     async validate() {
         await this.save();
-        const context = this.validateContext;
         const action = await this.orm.call(
-            this.resModel,
+            this.params.model,
             this.validateMethod,
             [this.recordIds],
-            { context },
+            { context: { display_detailed_backorder: true } },
         );
         const options = {
-            onClose: ev => this._closeValidate(ev)
+            on_close: ev => this._closeValidate(ev)
         };
-        if (action && (action.res_model || action.type == "ir.actions.client")) {
-            if (action.type == "ir.actions.client") {
-                action.params = Object.assign(action.params || {}, options)
-            }
-            return this.action.doAction(action, options);
+        if (action && action.res_model) {
+            return this.trigger('do-action', { action, options });
         }
-        return options.onClose();
+        return options.on_close();
     }
 
     async processBarcode(barcode) {
@@ -492,9 +561,8 @@ export default class BarcodeModel extends EventBus {
     // Private
     // --------------------------------------------------------------------------
 
-    _canOverrideTrackingNumber(line, newLotName) {
-        const lineLotName = line.lot_name || line.lot_id?.name;
-        return !newLotName || !lineLotName || newLotName === lineLotName;
+    _canOverrideTrackingNumber(line) {
+        return false;
     }
 
     _checkBarcode(barcodeData) {
@@ -504,7 +572,7 @@ export default class BarcodeModel extends EventBus {
     async _closeValidate(ev) {
         if (ev === undefined) {
             // If all is OK, displays a notification and goes back to the previous page.
-            this.notification(this.validateMessage, { type: "success" });
+            this.notification.add(this.validateMessage, { type: 'success' });
             this.trigger('history-back');
         }
     }
@@ -514,7 +582,33 @@ export default class BarcodeModel extends EventBus {
     }
 
     createNewLine(params) {
-        return this._createNewLine(params);
+        const product = params.fieldsParams.product_id;
+        if (this.askBeforeNewLinesCreation(product)) {
+            const confirmationPromise = new Promise((resolve, reject) => {
+                const body = product.code ?
+                    sprintf(
+                        _t("Scanned product [%s] %s is not reserved for this transfer. Are you sure you want to add it?"),
+                        product.code, product.display_name
+                    ) :
+                    sprintf(
+                        _t("Scanned product %s is not reserved for this transfer. Are you sure you want to add it?"),
+                        product.display_name
+                    );
+
+                this.dialogService.add(ConfirmationDialog, {
+                    body, title: _t("Add extra product?"),
+                    cancel: reject,
+                    confirm: async () => {
+                        const newLine = await this._createNewLine(params);
+                        resolve(newLine);
+                    },
+                    close: reject,
+                });
+            });
+            return confirmationPromise;
+        } else {
+            return this._createNewLine(params);
+        }
     }
 
     /**
@@ -532,12 +626,11 @@ export default class BarcodeModel extends EventBus {
             let paramsUOM = params.fieldsParams.uom;
             if (paramsUOM.category_id !== productUOM.category_id) {
                 // Not the same UoM's category -> Can't be converted.
-                const message = _t(
-                    "Scanned quantity uses %s as Unit of Measure, but this UoM is not compatible with the product's one (%s).",
-                    paramsUOM.name,
-                    productUOM.name
+                const message = sprintf(
+                    _t("Scanned quantity uses %s as Unit of Measure, but this UoM is not compatible with the product's one (%s)."),
+                    paramsUOM.name, productUOM.name
                 );
-                this.notification(message, { title: _t("Wrong Unit of Measure"), type: "danger" });
+                this.notification.add(message, { title: _t("Wrong Unit of Measure"), type: 'danger'});
                 return false;
             }
         }
@@ -551,10 +644,6 @@ export default class BarcodeModel extends EventBus {
         await this.updateLine(newLine, params.fieldsParams);
         this.currentState.lines.push(newLine);
         return newLine;
-    }
-
-    _shouldCreateLineOnExceed(line) {
-        return true;
     }
 
     _defaultLocation() {
@@ -571,17 +660,31 @@ export default class BarcodeModel extends EventBus {
             'O-BTN.validate': () => {
                 if (this.canBeValidate) {
                     this.validate();
-                } else {
-                    this.trigger('error');
                 }
             },
         };
+    }
+
+    _getDefaultMessageType() {
+        return this.groups.group_stock_multi_locations ? 'scan_src' : 'scan_product';
     }
 
     _getLineIndex() {
         const sortIndex = String(this.currentSortIndex).padStart(4, '0');
         this.currentSortIndex++;
         return sortIndex;
+    }
+
+    /**
+     * Depending of the config, says if the user can scan a location or a product only.
+     *
+     * @returns {string}
+     */
+    _getLocationMessage() {
+        if (this.groups.group_stock_multi_locations) {
+            return 'scan_product_or_src';
+        }
+        return 'scan_product';
     }
 
     _getModelRecord() {
@@ -658,8 +761,11 @@ export default class BarcodeModel extends EventBus {
 
     async _goToMainMenu() {
         await this.save();
-        this.action.doAction('stock_barcode.stock_barcode_action_main_menu', {
-            clearBreadcrumbs: true,
+        this.trigger('do-action', {
+            action: 'stock_barcode.stock_barcode_action_main_menu',
+            options: {
+                clear_breadcrumbs: true,
+            },
         });
     }
 
@@ -721,17 +827,11 @@ export default class BarcodeModel extends EventBus {
             result.match = true;
             return result; // Simple barcode, no more information to retrieve.
         }
+        // Then, parses the barcode through the nomenclature.
+        await this.parser.is_loaded();
         try {
             const parsedBarcode = this.parser.parse_barcode(barcode);
             if (parsedBarcode.length) { // With the GS1 nomenclature, the parsed result is a list.
-                const productRule = parsedBarcode.find(bc => bc.rule.type === "product");
-                this.gs1Filters = {};
-                if (productRule) {
-                    const product = await this.cache.getRecordByBarcode(productRule.value, 'product.product');
-                    if(product){
-                        this.gs1Filters['stock.lot'] = {product_id: product.id};
-                    }
-                }
                 for (const data of parsedBarcode) {
                     const parsedData = await this._processGs1Data(data);
                     Object.assign(result, parsedData);
@@ -752,11 +852,10 @@ export default class BarcodeModel extends EventBus {
         }
         const recordByData = await this.cache.getRecordByBarcode(barcode, false, false, filters);
         if (recordByData.size > 1) {
-            const message = _t(
-                "Barcode scan is ambiguous with several model: %s. Use the most likely.",
-                Array.from(recordByData.keys())
-            );
-            this.notification(message, { type: "warning" });
+            const message = sprintf(
+                _t("Barcode scan is ambiguous with several model: %s. Use the most likely."),
+                Array.from(recordByData.keys()));
+            this.notification.add(message, { type: 'warning' });
         }
 
         if (this.groups.group_stock_multi_locations) {
@@ -800,6 +899,11 @@ export default class BarcodeModel extends EventBus {
                 result.match = true;
             }
         }
+        const quantPackage = recordByData.get('stock.quant.package');
+        if (this.groups.group_tracking_lot && quantPackage) {
+            result.package = quantPackage;
+            result.match = true;
+        }
 
         if (!result.match && this.packageTypes.length) {
             // If no match, check if the barcode begins with a package type's barcode.
@@ -815,22 +919,6 @@ export default class BarcodeModel extends EventBus {
         return result;
     }
 
-    async print(action, method) {
-        await this.save();
-        const options = this._getPrintOptions();
-        if (options.warning) {
-            return this.notification(options.warning, { type: "warning" });
-        }
-        if (!action && method) {
-            action = await this.orm.call(
-                this.resModel,
-                method,
-                [[this.resId]]
-            );
-        }
-        this.action.doAction(action, options);
-    }
-
     async _processGs1Data(data) {
         const result = {};
         const { rule, value } = data;
@@ -844,7 +932,7 @@ export default class BarcodeModel extends EventBus {
             }
         } else if (rule.type === 'lot') {
             if (this.useExistingLots) {
-                result.lot = await this.cache.getRecordByBarcode(value, 'stock.lot', false, this.gs1Filters);
+                result.lot = await this.cache.getRecordByBarcode(value, 'stock.lot');
             }
             if (!result.lot) { // No existing lot found, set a lot name.
                 result.lotName = value;
@@ -868,7 +956,7 @@ export default class BarcodeModel extends EventBus {
                 result.match = true;
             } else {
                 const message = _t("An unexisting package type was scanned. This part of the barcode can't be processed.");
-                this.notification(message, { type: "warning" });
+                this.notification.add(message, { type: 'warning' });
             }
         } else if (rule.type === 'product') {
             const product = await this.cache.getRecordByBarcode(value, 'product.product');
@@ -913,7 +1001,8 @@ export default class BarcodeModel extends EventBus {
         }
         try {
             barcodeData = await this._parseBarcode(barcode, filters);
-            if (this._shouldSearchForAnotherLot(barcodeData, filters)) {
+            if (!barcodeData.match && filters['stock.lot'] &&
+                !this.canCreateNewLot && this.useExistingLots) {
                 // Retry to parse the barcode without filters in case it matches an existing
                 // record that can't be found because of the filters
                 const lot = await this.cache.getRecordByBarcode(barcode, 'stock.lot');
@@ -925,13 +1014,6 @@ export default class BarcodeModel extends EventBus {
             barcodeData.error = parseErrorMessage;
         }
 
-        // Keep in memory every scans.
-        this.scanHistory.unshift(barcodeData);
-
-        if (barcodeData.match) { // Makes flash the screen if the scanned barcode was recognized.
-            this.trigger('flash');
-        }
-
         // Process each data in order, starting with non-ambiguous data type.
         if (barcodeData.action) { // As action is always a single data, call it and do nothing else.
             return await barcodeData.action();
@@ -939,7 +1021,7 @@ export default class BarcodeModel extends EventBus {
         // Depending of the configuration, the user can be forced to scan a specific barcode type.
         const check = this._checkBarcode(barcodeData);
         if (check.error) {
-            return this.notification(check.message, { title: check.title, type: "danger" });
+            return this.notification.add(check.message, { title: check.title, type: "danger" });
         }
 
         if (barcodeData.packaging) {
@@ -983,7 +1065,6 @@ export default class BarcodeModel extends EventBus {
                 // anything else, we assume it's a new lot/serial number.
                 if (previousProduct.tracking !== 'none' &&
                     !barcodeData.match && this.canCreateNewLot) {
-                    this.trigger('flash');
                     barcodeData.lotName = barcode;
                     barcodeData.product = previousProduct;
                 }
@@ -1002,12 +1083,23 @@ export default class BarcodeModel extends EventBus {
                     barcodeData.error = _t("You are expected to scan one or more products.");
                 }
             }
-            return this.notification(barcodeData.error, { type: "danger" });
-        } else if (barcodeData.lot && barcodeData.lot.product_id !== product.id) {
-            delete barcodeData.lot; // The product was scanned alongside another product's lot.
+            return this.notification.add(barcodeData.error, { type: 'danger' });
         }
         if (barcodeData.weight) { // the encoded weight is based on the product's UoM
             barcodeData.uom = this.cache.getRecord('uom.uom', product.uom_id);
+        }
+
+        // Default quantity set to 1 by default if the product is untracked or
+        // if there is a scanned tracking number.
+        if (product.tracking === 'none' || barcodeData.lot || barcodeData.lotName || this._incrementTrackedLine()) {
+            barcodeData.quantity = barcodeData.quantity || 1;
+            if (product.tracking === 'serial' && barcodeData.quantity > 1 && (barcodeData.lot || barcodeData.lotName)) {
+                barcodeData.quantity = 1;
+                this.notification.add(
+                    _t(`A product tracked by serial numbers can't have multiple quantities for the same serial number.`),
+                    { type: 'danger' }
+                );
+            }
         }
 
         // Searches and selects a line if needed.
@@ -1015,28 +1107,12 @@ export default class BarcodeModel extends EventBus {
             currentLine = this._findLine(barcodeData);
         }
 
-        // Default quantity set to 1 by default if the product is untracked or
-        // if there is a scanned tracking number.
-        if (product.tracking === 'none' || barcodeData.lot || barcodeData.lotName || this._incrementTrackedLine()) {
-            const hasUnassignedQty = currentLine && currentLine.qty_done && !currentLine.lot_id && !currentLine.lot_name;
-            const isTrackingNumber = barcodeData.lot || barcodeData.lotName;
-            const defaultQuantity = isTrackingNumber && hasUnassignedQty ? 0 : 1;
-            barcodeData.quantity = barcodeData.quantity || defaultQuantity;
-            if (product.tracking === 'serial' && barcodeData.quantity > 1 && (barcodeData.lot || barcodeData.lotName)) {
-                barcodeData.quantity = 1;
-                this.notification(
-                    _t(`A product tracked by serial numbers can't have multiple quantities for the same serial number.`),
-                    { type: 'danger' }
-                );
-            }
-        }
-
         if ((barcodeData.lotName || barcodeData.lot) && product) {
             const lotName = barcodeData.lotName || barcodeData.lot.name;
             for (const line of this.currentState.lines) {
                 if (line.product_id.tracking === 'serial' && this.getQtyDone(line) !== 0 &&
                     ((line.lot_id && line.lot_id.name) || line.lot_name) === lotName) {
-                    return this.notification(
+                    return this.notification.add(
                         _t("The scanned serial number is already used."),
                         { type: 'danger' }
                     );
@@ -1077,14 +1153,14 @@ export default class BarcodeModel extends EventBus {
             // Checks the quantity doesn't exceed the line's remaining quantity.
             if (currentLine.reserved_uom_qty && product.tracking === 'none') {
                 const remainingQty = currentLine.reserved_uom_qty - currentLine.qty_done;
-                if (barcodeData.quantity > remainingQty && this._shouldCreateLineOnExceed(currentLine)) {
+                if (barcodeData.quantity > remainingQty) {
                     // In this case, lowers the increment quantity and keeps
                     // the excess quantity to create a new line.
                     exceedingQuantity = barcodeData.quantity - remainingQty;
                     barcodeData.quantity = remainingQty;
                 }
             }
-            if (barcodeData.quantity > 0 || barcodeData.lot || barcodeData.lotName) {
+            if (barcodeData.quantity > 0) {
                 const fieldsParams = this._convertDataToFieldsParams(barcodeData);
                 if (barcodeData.uom) {
                     fieldsParams.uom = barcodeData.uom;
@@ -1117,41 +1193,22 @@ export default class BarcodeModel extends EventBus {
         this.trigger('update');
     }
 
-    async _processLocation(barcodeData) {
+    _processLocation(barcodeData) {
         if (barcodeData.location) {
-            await this._processLocationSource(barcodeData);
+            this._processLocationSource(barcodeData);
             this.trigger('update');
         }
     }
 
-    async _processLocationSource(barcodeData) {
+    _processLocationSource(barcodeData) {
         this.location = barcodeData.location;
         barcodeData.stopped = true;
         // Unselects the line.
         this.selectedLineVirtualId = false;
-        this.lastScanned.packageId = false;
     }
 
     async _processPackage(barcodeData) {
         throw new Error('Not Implemented');
-    }
-
-    /**
-     * This method cleans the barcode in case the parser use the GS1 nomenclature, removing the
-     * parentheses and the extra spaces (helping for human readability but not valid).
-     * E.g.: (01) 00001234567895 (10) lot-abc -> 0100001234567895\x1D10lot-abc
-     *
-     * @param {string} barcode
-     * @returns {string} barcode
-     */
-    cleanBarcode (barcode) {
-        if (this.parser.nomenclature.is_gs1_nomenclature) {
-            barcode = barcode.replace(/[( ]([0-9]+)[)]/g, `${FNC1_CHAR}$1`);
-            if (barcode[0] === FNC1_CHAR) {
-                barcode = barcode.slice(1, barcode.length);
-            }
-        }
-        return barcode;
     }
 
     lineCanBeSelected() {
@@ -1169,14 +1226,10 @@ export default class BarcodeModel extends EventBus {
      * @returns {Boolean}
      */
     lineCanBeTakenFromTheCurrentLocation(line) {
-        return this.lineIsInTheCurrentLocation(line);
-    }
-
-    lineIsInTheCurrentLocation(line) {
         return Boolean(
-            !this.groups.group_stock_multi_locations ||
             !this.lastScanned.sourceLocation || // No current location so we don't care.
-            this.lastScanned.sourceLocation.id == line.location_id.id // Line at the right location.
+            this.lastScanned.sourceLocation.id == line.location_id.id || // Line at the right location !
+            !this.getQtyDone(line) // Line has no qty. done so we can take it (its location will be overrided).
         );
     }
 
@@ -1276,7 +1329,7 @@ export default class BarcodeModel extends EventBus {
             if (quantPackage && (!line.package_id || line.package_id.id !== quantPackage.id)) {
                 continue; // Not the expected package.
             }
-            if (line.product_id.tracking !== "none" && !this._canOverrideTrackingNumber(line, dataLotName)) {
+            if (dataLotName && lineLotName && dataLotName !== lineLotName && !this._canOverrideTrackingNumber(line)) {
                 continue; // Not the same lot.
             }
             if (line.product_id.tracking === 'serial') {
@@ -1290,30 +1343,17 @@ export default class BarcodeModel extends EventBus {
                     !dataLotName || !lineLotName || dataLotName !== lineLotName
                 ) && (
                     line.qty_done && line.qty_done >= line.reserved_uom_qty &&
-                    (line.product_id.tracking === "none" || lineLotName) &&
-                    line.id && (!this.selectedLine || line.virtual_id != this.selectedLine.virtual_id)
-                )) {
-                    // Has enough quantity (and another lot is set if the line's product is tracked)
-                    // and the line wasn't explicitly selected.
-                    continue;
+                    line.id && line.virtual_id != this.selectedLine.virtual_id
+            )) {
+                continue;
             }
             if (this._lineIsNotComplete(line)) {
-                if (this.lineCanBeTakenFromTheCurrentLocation(line)) {
-                    // Found a uncompleted compatible line, stop searching if it has the same location
-                    // than the scanned one (or if no location was scanned).
-                    foundLine = line;
-                    if ((this.lineIsInTheCurrentLocation(line)) &&
-                        (this.tracking === 'none' || !dataLotName || dataLotName === lineLotName)) {
-                        break;
-                    }
-                } else if (this.needSourceConfirmation && foundLine && !this._lineIsNotComplete(foundLine)) {
-                    // Found a empty line in another location, we should take it but depending of
-                    // the config, maybe we can't (location should be confirmed first).
-                    // That said, we already found another line but if it's completed, forget we
-                    // found it to avoid to create a new line in the current location because it's
-                    // basicaly the same than increment the other line found in another location.
-                    foundLine = false;
-                    continue;
+                // Found a uncompleted compatible line, stop searching if it has the same location
+                // than the scanned one (or if no location was scanned).
+                foundLine = line;
+                if ((!this.lastScanned.sourceLocation || line.location_id.id == this.lastScanned.sourceLocation.id) &&
+                    (this.tracking === 'none' || !dataLotName || dataLotName === lineLotName)) {
+                    break;
                 }
             }
             // The line matches but there could be a better candidate, so keep searching.
@@ -1330,11 +1370,6 @@ export default class BarcodeModel extends EventBus {
             }
         }
         return foundLine;
-    }
-
-    _shouldSearchForAnotherLot(barcodeData, filters) {
-        return !barcodeData.match && filters['stock.lot'] &&
-            !this.canCreateNewLot && this.useExistingLots
     }
 
     _shouldSearchForAnotherLine(line, barcodeData) {
@@ -1372,7 +1407,7 @@ export default class BarcodeModel extends EventBus {
     }
 
     _getName() {
-        return this.cache.getRecord(this.resModel, this.resId).name;
+        return this.cache.getRecord(this.params.model, this.params.id).name;
     }
 
     // Response -> UI State

@@ -28,7 +28,7 @@ class SaleOrderLine(models.Model):
             domain = expression.AND([domain, [('validated', '=', True)]])
         return domain
 
-    def get_allocated_hours_field(self):
+    def get_planned_hours_field(self):
         return 'product_uom_qty'
 
     def get_worked_hours_fields(self):

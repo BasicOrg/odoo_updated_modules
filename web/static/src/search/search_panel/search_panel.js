@@ -2,7 +2,7 @@
 
 import { useBus } from "@web/core/utils/hooks";
 
-import { Component, onMounted, onWillUpdateProps, onWillStart, useRef, useState } from "@odoo/owl";
+const { Component, onMounted, onWillStart, useRef, useState } = owl;
 
 //-------------------------------------------------------------------------
 // Helpers
@@ -56,11 +56,6 @@ export class SearchPanel extends Component {
         onWillStart(async () => {
             await this.env.searchModel.sectionsPromise;
             this.expandDefaultValue();
-            this.updateActiveValues();
-        });
-
-        onWillUpdateProps(async () => {
-            await this.env.searchModel.sectionsPromise;
             this.updateActiveValues();
         });
 

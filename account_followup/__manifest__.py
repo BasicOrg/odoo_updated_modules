@@ -30,7 +30,6 @@ of recall defined. You can define different policies for different companies.
         'data/account_followup_data.xml',
         'data/cron.xml',
         'wizard/followup_manual_reminder_views.xml',
-        'wizard/followup_missing_information.xml',
         'views/account_followup_views.xml',
         'views/account_followup_line_views.xml',
         'views/partner_view.xml',
@@ -48,7 +47,7 @@ of recall defined. You can define different policies for different companies.
             ('include', 'web._assets_helpers'),
             'web/static/src/scss/pre_variables.scss',
             'web/static/lib/bootstrap/scss/_variables.scss',
-            ('include', 'web._assets_bootstrap_backend'),
+            ('include', 'web._assets_bootstrap'),
             'web/static/fonts/fonts.scss',
         ],
         'web.assets_backend': [

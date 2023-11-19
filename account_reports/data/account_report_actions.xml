@@ -38,6 +38,12 @@
             <field name="context" eval="{'report_id': ref('account_reports.journal_report')}"/>
         </record>
 
+        <record id="action_account_report_bank_reconciliation" model="ir.actions.client">
+            <field name="name">Bank Reconciliation</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'report_id': ref('account_reports.bank_reconciliation_report')}"/>
+        </record>
+
         <record id="action_account_report_general_ledger" model="ir.actions.client">
             <field name="name">General Ledger</field>
             <field name="tag">account_report</field>
@@ -80,17 +86,6 @@
             <field name="context" eval="{'report_id': ref('account_reports.generic_ec_sales_report')}"/>
         </record>
 
-        <record id="action_account_report_deferred_expense" model="ir.actions.client">
-            <field name="name">Deferred Expense</field>
-            <field name="tag">account_report</field>
-            <field name="context" eval="{'report_id': ref('account_reports.deferred_expense_report')}"/>
-        </record>
-        <record id="action_account_report_deferred_revenue" model="ir.actions.client">
-            <field name="name">Deferred Revenue</field>
-            <field name="tag">account_report</field>
-            <field name="context" eval="{'report_id': ref('account_reports.deferred_revenue_report')}"/>
-        </record>
-
         <record id="account_financial_current_year_earnings_line_1" model="account.report.line">
             <field name="action_id" ref="action_account_report_pl"/>
         </record>
@@ -111,12 +106,13 @@
             <field name="binding_view_types">form</field>
             <field name="code">
 if records:
-    action = records._create_menu_item_for_report()
+    records._create_menu_item_for_report()
             </field>
         </record>
 
         <record id="action_account_report_tree" model="ir.actions.act_window">
             <field name="name">Accounting Reports</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.report</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="account_report_tree"/>
@@ -125,6 +121,7 @@ if records:
 
         <record id="action_account_report_horizontal_groups" model="ir.actions.act_window">
             <field name="name">Horizontal Groups</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.report.horizontal.group</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="account_report_horizontal_group_tree"/>

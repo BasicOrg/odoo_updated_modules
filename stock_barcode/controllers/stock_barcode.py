@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from odoo import http, _
 from odoo.http import request
-from odoo.exceptions import UserError
+from odoo.modules.module import get_resource_path
 from odoo.osv import expression
 from odoo.tools import pdf, split_every
 from odoo.tools.misc import file_open
@@ -14,7 +14,7 @@ from odoo.tools.misc import file_open
 class StockBarcodeController(http.Controller):
 
     @http.route('/stock_barcode/scan_from_main_menu', type='json', auth='user')
-    def main_menu(self, barcode):
+    def main_menu(self, barcode, **kw):
         """ Receive a barcode scanned from the main menu and return the appropriate
             action (open an existing / new picking) or warning.
         """
@@ -49,11 +49,6 @@ class StockBarcodeController(http.Controller):
             if ret_open_product_location:
                 return ret_open_product_location
 
-        if not barcode_type or barcode_type == 'lot':
-            ret_open_lot_location = self._try_open_lot_location(barcode)
-            if ret_open_lot_location:
-                return ret_open_lot_location
-
         if request.env.user.has_group('stock.group_tracking_lot') and \
            (not barcode_type or barcode_type == 'package'):
             ret_open_package = self._try_open_package(barcode)
@@ -61,9 +56,9 @@ class StockBarcodeController(http.Controller):
                 return ret_open_package
 
         if request.env.user.has_group('stock.group_stock_multi_locations'):
-            return {'warning': _('No picking or location or product corresponding to barcode %(barcode)s', barcode=barcode)}
+            return {'warning': _('No picking or location or product corresponding to barcode %(barcode)s') % {'barcode': barcode}}
         else:
-            return {'warning': _('No picking or product corresponding to barcode %(barcode)s', barcode=barcode)}
+            return {'warning': _('No picking or product corresponding to barcode %(barcode)s') % {'barcode': barcode}}
 
     @http.route('/stock_barcode/save_barcode_data', type='json', auth='user')
     def save_barcode_data(self, model, res_id, write_field, write_vals):
@@ -87,13 +82,9 @@ class StockBarcodeController(http.Controller):
             target_record = request.env[model].browse(res_id).with_context(allowed_company_ids=self._get_allowed_company_ids())
         data = target_record._get_stock_barcode_data()
         data['records'].update(self._get_barcode_nomenclature())
-        data['precision'] = request.env['decimal.precision'].precision_get('Product Unit of Measure')
-        mute_sound = request.env['ir.config_parameter'].sudo().get_param('stock_barcode.mute_sound_notifications')
-        config = {'play_sound': bool(not mute_sound or mute_sound == "False")}
         return {
             'data': data,
             'groups': self._get_groups_data(),
-            'config': config,
         }
 
     @http.route('/stock_barcode/get_specific_barcode_data', type='json', auth='user')
@@ -114,12 +105,8 @@ class StockBarcodeController(http.Controller):
         barcode_field_by_model = self._get_barcode_field_by_model()
         result = defaultdict(list)
         model_names = model_name and [model_name] or list(barcode_field_by_model.keys())
-
         for model in model_names:
-            domain = [
-                (barcode_field_by_model[model], operator, barcode),
-                ('company_id', 'in', [False, request.env.company.id])
-            ]
+            domain = [(barcode_field_by_model[model], operator, barcode)]
             domain_for_this_model = domains_by_model.get(model)
             if domain_for_this_model:
                 domain = expression.AND([domain, domain_for_this_model])
@@ -141,21 +128,41 @@ class StockBarcodeController(http.Controller):
         action and action.sudo().write({'params': {'message_demo_barcodes': False}})
 
     @http.route('/stock_barcode/print_inventory_commands', type='http', auth='user')
-    def print_inventory_commands(self, barcode_type=False):
+    def print_inventory_commands(self):
         if not request.env.user.has_group('stock.group_stock_user'):
             return request.not_found()
+
+        barcode_pdfs = []
+
+        # get fixed command barcodes
+        file_path = get_resource_path('stock_barcode', 'static/img', 'barcodes_actions.pdf')
+        with file_open(file_path, "rb") as commands_file:
+            barcode_pdfs.append(commands_file.read())
 
         # make sure we use the selected company if possible
         allowed_company_ids = self._get_allowed_company_ids()
 
         # same domain conditions for picking types and locations
-        domain = self._get_picking_type_domain(barcode_type, allowed_company_ids)
+        domain = [('active', '=', 'True'),
+                  ('barcode', '!=', ''),
+                  ('company_id', 'in', allowed_company_ids)]
 
-        # get fixed command barcodes
-        barcode_pdfs = self._get_barcode_pdfs(barcode_type, domain)
+        # get picking types barcodes
+        picking_type_ids = request.env['stock.picking.type'].search(domain)
+        Report = request.env['ir.actions.report']
+        for picking_type_batch in split_every(100, picking_type_ids.ids):
+            picking_types_pdf, _ = Report._render_qweb_pdf('stock.action_report_picking_type_label', picking_type_batch)
+            if picking_types_pdf:
+                barcode_pdfs.append(picking_types_pdf)
 
-        if not barcode_pdfs:
-            raise UserError(_("Barcodes are not available."))
+        # get locations barcodes
+        if request.env.user.has_group('stock.group_stock_multi_locations'):
+            locations_ids = request.env['stock.location'].search(domain)
+            for location_ids_batch in split_every(100, locations_ids.ids):
+                locations_pdf, _ = Report._render_qweb_pdf('stock.action_report_location_barcode', location_ids_batch)
+                if locations_pdf:
+                    barcode_pdfs.append(locations_pdf)
+
         merged_pdf = pdf.merge_pdf(barcode_pdfs)
 
         pdfhttpheaders = [
@@ -164,29 +171,6 @@ class StockBarcodeController(http.Controller):
         ]
 
         return request.make_response(merged_pdf, headers=pdfhttpheaders)
-
-    def _try_open_lot_location(self, barcode):
-        """ If barcode represent a lot, open a list/kanban view to show all
-        the locations of this lot.
-        """
-        result = request.env['stock.lot'].search_read([
-            ('name', '=', barcode),
-        ], ['id', 'display_name'], limit=1)
-        if result:
-            tree_view_id = request.env.ref('stock.view_stock_quant_tree').id
-            kanban_view_id = request.env.ref('stock_barcode.stock_quant_barcode_kanban_2').id
-            return {
-                'action': {
-                    'name': result[0]['display_name'],
-                    'res_model': 'stock.quant',
-                    'views': [(tree_view_id, 'list'), (kanban_view_id, 'kanban')],
-                    'type': 'ir.actions.act_window',
-                    'domain': [('lot_id', '=', result[0]['id'])],
-                    'context': {
-                        'search_default_internal_loc': True,
-                    },
-                },
-            }
 
     def _try_open_product_location(self, barcode):
         """ If barcode represent a product, open a list/kanban view to show all
@@ -274,6 +258,7 @@ class StockBarcodeController(http.Controller):
                     'user_id': False,
                     'location_id': corresponding_location.id,
                     'location_dest_id': dest_loc.id,
+                    'immediate_transfer': True,
                 })
                 picking.action_confirm()
 
@@ -293,36 +278,6 @@ class StockBarcodeController(http.Controller):
         """
         cids = request.httprequest.cookies.get('cids', str(request.env.user.company_id.id))
         return [int(cid) for cid in cids.split(',')]
-
-    def _get_picking_type_domain(self, barcode_type, allowed_company_ids):
-        return [
-            ('active', '=', 'True'),
-            ('barcode', '!=', ''),
-            ('company_id', 'in', allowed_company_ids)
-        ]
-
-    def _get_barcode_pdfs(self, barcode_type, domain):
-        barcode_pdfs = []
-        if barcode_type == 'barcode_commands_and_operation_types':
-            with file_open('stock_barcode/static/img/barcodes_actions.pdf', "rb") as commands_file:
-                barcode_pdfs.append(commands_file.read())
-
-        if 'operation_types' in barcode_type:
-            # get picking types barcodes
-            picking_type_ids = request.env['stock.picking.type'].search(domain)
-            for picking_type_batch in split_every(112, picking_type_ids.ids):
-                picking_types_pdf, _content_type = request.env['ir.actions.report']._render_qweb_pdf('stock.action_report_picking_type_label', picking_type_batch)
-                if picking_types_pdf:
-                    barcode_pdfs.append(picking_types_pdf)
-
-        # get locations barcodes
-        if barcode_type == 'locations' and request.env.user.has_group('stock.group_stock_multi_locations'):
-            locations_ids = request.env['stock.location'].search(domain)
-            for location_ids_batch in split_every(112, locations_ids.ids):
-                locations_pdf, _content_type = request.env['ir.actions.report']._render_qweb_pdf('stock.action_report_location_barcode', location_ids_batch)
-                if locations_pdf:
-                    barcode_pdfs.append(locations_pdf)
-        return barcode_pdfs
 
     def _get_groups_data(self):
         return {

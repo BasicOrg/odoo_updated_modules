@@ -1,7 +1,10 @@
-/** @odoo-module **/
+odoo.define('website_links.code_editor', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from "@web/legacy/js/public/public_widget";
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+
+var _t = core._t;
 
 publicWidget.registry.websiteLinksCodeEditor = publicWidget.Widget.extend({
     selector: '#wrapwrap:has(.o_website_links_edit_code)',
@@ -10,11 +13,6 @@ publicWidget.registry.websiteLinksCodeEditor = publicWidget.Widget.extend({
         'click .o_website_links_cancel_edit': '_onCancelEditClick',
         'submit #edit-code-form': '_onEditCodeFormSubmit',
         'click .o_website_links_ok_edit': '_onEditCodeFormSubmit',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
     },
 
     //--------------------------------------------------------------------------
@@ -63,9 +61,12 @@ publicWidget.registry.websiteLinksCodeEditor = publicWidget.Widget.extend({
         if (initCode === newCode) {
             this._showNewCode(newCode);
         } else {
-            return this.rpc('/website_links/add_code', {
-                init_code: initCode,
-                new_code: newCode,
+            return this._rpc({
+                route: '/website_links/add_code',
+                params: {
+                    init_code: initCode,
+                    new_code: newCode,
+                },
             }).then(function (result) {
                 self._showNewCode(result[0].code);
             }, function () {
@@ -116,4 +117,5 @@ publicWidget.registry.websiteLinksCodeEditor = publicWidget.Widget.extend({
         ev.preventDefault();
         this._submitCode();
     },
+});
 });

@@ -10,9 +10,6 @@
                 <filter string="To Defer" name="to_defer" domain="[('payslip_state', '=', 'blocked')]" groups="hr_holidays.group_hr_holidays_user"/>
                 <separator/>
             </xpath>
-            <xpath expr="//field[@name='employee_id']" position="after">
-                <field name="employee_id" string="Employee Code" filter_domain="[('employee_id.registration_number','ilike', self)]"/>
-            </xpath>
         </field>
     </record>
 
@@ -21,7 +18,7 @@
         <field name="res_model">hr.leave</field>
         <field name="view_mode">tree,kanban,form,calendar,activity</field>
         <field name="search_view_id" ref="hr_holidays.hr_leave_view_search_manager"/>
-        <field name="domain">[('payslip_state', '=', 'blocked'), ('state', '=', 'validate'), ('employee_company_id', 'in', allowed_company_ids)]</field>
+        <field name="domain">[('payslip_state', '=', 'blocked')]</field>
     </record>
 
     <record id="hr_leave_view_form_inherit" model="ir.ui.view">
@@ -39,7 +36,7 @@
                     type="object"
                     class="oe_highlight"
                     groups="hr_payroll.group_hr_payroll_user"
-                    invisible="payslip_state != 'blocked' or state != 'validate'"/>
+                    attrs="{'invisible': ['|', ('payslip_state', '!=', 'blocked'), ('state', '!=', 'validate')]}"/>
             </button>
         </field>
     </record>

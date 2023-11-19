@@ -29,20 +29,15 @@ Features:
     ],
     'auto_install': True,
     'license': 'OEEL-1',
-    'post_init_hook': '_create_livechat_channel',
     'assets': {
-        'web.assets_backend': [
-            'website_helpdesk_livechat/static/src/**/*',
-        ],
-        'mail.assets_public': [
-            'website_helpdesk_livechat/static/src/**/*',
+        'mail.assets_messaging': [
+            'website_helpdesk_livechat/static/src/models/*.js',
         ],
         'web.tests_assets': [
-            'website_helpdesk_livechat/static/tests/helpers/**/*',
+            'website_helpdesk_livechat/static/tests/helpers/*',
         ],
         'web.qunit_suite_tests': [
-            'website_helpdesk_livechat/static/tests/**/*',
-            ('remove', 'website_helpdesk_livechat/static/tests/helpers/**/*'),
+            'website_helpdesk_livechat/static/tests/qunit_suite_tests/**/*.js',
         ],
     },
 }

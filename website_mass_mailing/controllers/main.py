@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import tools, _
+from odoo import _
 from odoo.http import route, request
 from odoo.addons.mass_mailing.controllers import main
 
@@ -14,7 +14,7 @@ class MassMailController(main.MassMailController):
         fname = self._get_fname(subscription_type)
         is_subscriber = False
         if value and fname:
-            contacts_count = request.env['mailing.subscription'].sudo().search_count(
+            contacts_count = request.env['mailing.contact.subscription'].sudo().search_count(
                 [('list_id', 'in', [int(list_id)]), (f'contact_id.{fname}', '=', value), ('opt_out', '=', False)])
             is_subscriber = contacts_count > 0
 
@@ -40,10 +40,10 @@ class MassMailController(main.MassMailController):
                 'toast_content': _("Suspicious activity detected by Google reCaptcha."),
             }
 
-        ContactSubscription = request.env['mailing.subscription'].sudo()
+        ContactSubscription = request.env['mailing.contact.subscription'].sudo()
         Contacts = request.env['mailing.contact'].sudo()
         if subscription_type == 'email':
-            name, value = tools.parse_contact_from_email(value)
+            name, value = Contacts.get_name_email(value)
         elif subscription_type == 'mobile':
             name = value
 

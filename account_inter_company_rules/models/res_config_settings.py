@@ -15,8 +15,7 @@ class ResConfigSettings(models.TransientModel):
         for record in self:
             if record.rule_type == 'invoice_and_refund':
                 record.intercompany_transaction_message = _(
-                    "Generate a bill/invoice when a company confirms an invoice/bill for %s. "
-                    "The new bill/invoice will be created in the first Purchase/Sales Journal of the Journals list view.",
+                    'Generate a bill/invoice when a company confirms an invoice/bill for %s.',
                     record.company_id.name)
             else:
                 record.intercompany_transaction_message = ''

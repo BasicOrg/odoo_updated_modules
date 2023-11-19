@@ -79,7 +79,7 @@ class SocialYoutubeController(SocialController):
         try:
             self._youtube_create_accounts(access_token, refresh_token, expires_in)
         except SocialValidationException as e:
-            return request.render('social.social_http_error_view', {'error_message': e.get_message(), 'documentation_data': e.get_documentation_data()})
+            return request.render('social.social_http_error_view', {'error_message': str(e)})
 
         url = '/web?#%s' % url_encode({
             'action': request.env.ref('social.action_social_stream_post').id,
@@ -126,11 +126,7 @@ class SocialYoutubeController(SocialController):
             raise SocialValidationException(_('YouTube did not provide a valid access token or it may have expired.'))
 
         if 'items' not in youtube_channels:
-            message = _('There is no channel linked with this YouTube account.')
-            documentation_link = 'https://support.google.com/youtube/answer/6388033'
-            documentation_link_label = _('Read More about YouTube Channel')
-            documentation_link_icon_class = 'fa fa-youtube'
-            raise SocialValidationException(message, documentation_link, documentation_link_label, documentation_link_icon_class)
+            raise SocialValidationException(_('There is no channel linked with this YouTube account.'))
 
         accounts_to_create = []
         existing_accounts = self._youtube_get_existing_accounts(youtube_channels)
@@ -143,7 +139,6 @@ class SocialYoutubeController(SocialController):
             base_values = {
                 'active': True,
                 'name': channel['snippet']['title'],
-                'social_account_handle': channel['snippet'].get('customUrl', '').lstrip('@'),
                 'youtube_access_token': access_token,
                 'youtube_refresh_token': refresh_token,
                 'youtube_token_expiration_date': fields.Datetime.now() + timedelta(seconds=int(expires_in)),

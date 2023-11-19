@@ -1,16 +1,19 @@
 /** @odoo-module */
 
 import { KanbanController } from '@web/views/kanban/kanban_controller';
-import { useBus, useService } from '@web/core/utils/hooks';
-import { onMounted } from "@odoo/owl";
+import { bus } from 'web.core';
+
+const { onMounted, onWillUnmount } = owl;
 
 export class StockBarcodeKanbanController extends KanbanController {
     setup() {
         super.setup(...arguments);
-        this.barcodeService = useService('barcode');
-        useBus(this.barcodeService.bus, 'barcode_scanned', (ev) => this._onBarcodeScannedHandler(ev.detail.barcode));
         onMounted(() => {
+            bus.on('barcode_scanned', this, this._onBarcodeScannedHandler);
             document.activeElement.blur();
+        });
+        onWillUnmount(() => {
+            bus.off('barcode_scanned', this, this._onBarcodeScannedHandler);
         });
     }
 
@@ -51,7 +54,7 @@ export class StockBarcodeKanbanController extends KanbanController {
             this.actionService.doAction(res.action);
         } else if (res.warning) {
             const params = { title: res.warning.title, type: 'danger' };
-            this.model.notification.add(res.warning.message, params);
+            this.model.notificationService.add(res.warning.message, params);
         }
     }
 }

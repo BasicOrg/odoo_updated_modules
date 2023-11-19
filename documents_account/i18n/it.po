@@ -3,17 +3,16 @@
 # 	* documents_account
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,13 +20,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "<b>Deselect this page</b> as we plan to process all bills first."
 msgstr ""
 "<b>Deseleziona la pagina</b>, pianifichiamo prima l'elaborazione di tutte le"
 " fatture."
+
+#. module: documents_account
+#: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"I valori impostati qui sono "
+"specifici per azienda.\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_workflow_rule
@@ -54,7 +64,7 @@ msgid "Accounting Workspace"
 msgstr "Spazio di lavoro contabilità"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -69,11 +79,6 @@ msgid "Attachment"
 msgstr "Allegato"
 
 #. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_bank_statement
-msgid "Bank Statement"
-msgstr "Estratto conto bancario"
-
-#. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Centralize accounting files and documents"
 msgstr "Centralizza i file e documenti di contabilità"
@@ -81,24 +86,24 @@ msgstr "Centralizza i file e documenti di contabilità"
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
 msgid "Check them"
-msgstr "Controllarle"
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a card to <b>select the document</b>."
 msgstr "Fai clic su una scheda per <b>selezionare il documento</b>."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a thumbnail to <b>preview the document</b>."
 msgstr "Fai clic su una miniatura per una <b>anteprima del documento</b>."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -121,7 +126,7 @@ msgstr "Azienda"
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_res_config_settings
 msgid "Config Settings"
-msgstr "Impostazioni di configurazione"
+msgstr "Impostazioni configurazione"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__create_model
@@ -129,34 +134,19 @@ msgid "Create"
 msgstr "Crea"
 
 #. module: documents_account
+#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
+msgid "Create Bill"
+msgstr "Creare fattura"
+
+#. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.credit_note_rule
-msgid "Create Customer Credit Note"
-msgstr "Crea nota di credito cliente"
+msgid "Create Credit Note"
+msgstr "Crea nota di credito"
 
 #. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.customer_invoice_rule
 msgid "Create Customer Invoice"
 msgstr "Crea Fattura Cliente"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.misc_entry_rule
-msgid "Create Miscellaneous Operations"
-msgstr "Crea operazioni varie"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
-msgid "Create Vendor Bill"
-msgstr "Crea fattura fornitore"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.documents_vendor_receipt_rule
-msgid "Create Vendor Receipt"
-msgstr "Crea ricevuta fornitore"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_refund_rule
-msgid "Create Vendor Refund"
-msgstr "Crea rimborso fornitore"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__create_uid
@@ -166,7 +156,7 @@ msgstr "Creato da"
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__create_date
 msgid "Created on"
-msgstr "Data creazione"
+msgstr "Creato il"
 
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_out_refund
@@ -177,11 +167,6 @@ msgstr "Nota di credito"
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_out_invoice
 msgid "Customer invoice"
 msgstr "Fattura cliente"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__display_journal_id
-msgid "Display Journal"
-msgstr "Visualizza registro"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__display_name
@@ -219,8 +204,7 @@ msgid "Folder where to save the generated file"
 msgstr "Cartella dove salvare il file generato"
 
 #. module: documents_account
-#. odoo-python
-#: code:addons/documents_account/wizard/account_reports_export_wizard.py:0
+#: code:addons/documents_account/wizard/report_export_wizard.py:0
 #, python-format
 msgid "Generated Documents"
 msgstr "Documenti generati"
@@ -231,13 +215,7 @@ msgid "ID"
 msgstr "ID"
 
 #. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.bank_statement_rule
-msgid "Import Bank Statement"
-msgstr "Importa estratto conto bancario"
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__journal_id
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__journal_id
 msgid "Journal"
 msgstr "Registro"
 
@@ -262,6 +240,11 @@ msgid "Journals to synchronize"
 msgstr "Registri da sincronizzare"
 
 #. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__write_uid
 msgid "Last Updated by"
 msgstr "Ultimo aggiornamento di"
@@ -272,7 +255,7 @@ msgid "Last Updated on"
 msgstr "Ultimo aggiornamento il"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -283,64 +266,47 @@ msgstr ""
 "etichette per filtrare i documenti e strutturare il processo.</i>"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process these bills: turn them into vendor bills."
 msgstr "Elaboriamo questi conti convertendoli in fatture fornitore."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process this document, coming from our scanner."
 msgstr "Elaboriamo il documento, in arrivo dallo scanner."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Let's tag this mail as legal<br/> <i>Tips: actions can be tailored to your "
 "process, according to the workspace.</i>"
 msgstr ""
-"Etichettiamo l'e-mail come legale<br/> <i>Suggerimenti: le azioni possono "
-"essere adattate al processo, in base allo spazio di lavoro.</i>"
 
 #. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_entry
-msgid "Miscellaneous Operations"
-msgstr "Operazioni varie"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__move_type
-msgid "Move Type"
-msgstr "Tipo di movimento"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_receipt
-msgid "Purchase Receipt"
-msgstr "Ricevuta di acquisto"
+#: model:mail.activity.type,name:documents_account.mail_documents_activity_data_md
+msgid "Reconciliation request"
+msgstr "Richiesta di riconciliazione"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_bank_statement_line__suspense_statement_line_id
 #: model:ir.model.fields,field_description:documents_account.field_account_move__suspense_statement_line_id
 #: model:ir.model.fields,field_description:documents_account.field_account_payment__suspense_statement_line_id
 msgid "Request document from a bank statement line"
-msgstr "Richiedi documento a partire dalla riga di un estratto conto bancario"
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Send this letter to the legal department, by assigning the right tags."
 msgstr ""
 "Invia questa lettera all'ufficio legale assegnando le etichette corrette."
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__suitable_journal_ids
-msgid "Suitable Journal"
-msgstr "Registro idoneo"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_reports_export_wizard__tag_ids
@@ -356,7 +322,7 @@ msgstr "Dichiarazione dei redditi"
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
 msgid "This invoice has been initiated by a bank transaction."
-msgstr "La fattura è stata creata a partire da un'operazione bancaria."
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_refund
@@ -369,7 +335,7 @@ msgid "Vendor bill"
 msgstr "Fattura fornitore"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -383,7 +349,7 @@ msgid "Workspace"
 msgstr "Spazio di lavoro"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""

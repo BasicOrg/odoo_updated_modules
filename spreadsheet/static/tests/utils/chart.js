@@ -1,11 +1,11 @@
 /** @odoo-module */
 
 import { nextTick } from "@web/../tests/helpers/utils";
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { createModelWithDataSource } from "./model";
 const uuidGenerator = new spreadsheet.helpers.UuidGenerator();
 
-/** @typedef {import("@odoo/o-spreadsheet").Model} Model */
+/** @typedef {import("@spreadsheet/o_spreadsheet/o_spreadsheet").Model} Model */
 
 /**
  *
@@ -38,7 +38,7 @@ export async function createSpreadsheetWithChart(params = {}) {
 
     insertChartInSpreadsheet(model, params.type);
 
-    const env = model.config.custom.env;
+    const env = model.config.evalContext.env;
     env.model = model;
     await nextTick();
     return { model, env };

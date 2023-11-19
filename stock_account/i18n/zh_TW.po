@@ -3,16 +3,18 @@
 # 	* stock_account
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2022
+# 226408 台北 <226408@so8d.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: 226408 台北 <226408@so8d.com>, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,21 +22,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid " Product cost updated from %(previous)s to %(new_cost)s."
 msgstr " 產品成本從 %(previous)s 更新為 %(new_cost)s。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_quant.py:0
 #, python-format
 msgid " [Accounted on %s]"
-msgstr " [記賬至 %s]"
+msgstr ""
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #: code:addons/stock_account/models/product.py:0
 #, python-format
@@ -42,7 +41,6 @@ msgid "%(user)s changed cost from %(previous)s to %(new_price)s - %(product)s"
 msgstr "%(user)s 已將成本從 %(previous)s 更改為 %(new_price)s - %(product)s"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
@@ -57,23 +55,11 @@ msgid ""
 ")\n"
 "                            <small class=\"mx-2 fst-italic\">Use a negative added value to record a decrease in the product value</small>"
 msgstr ""
-")\n"
-"                            <small class=\"mx-2 fst-italic\">將負值加至賬目，以記錄產品價值下降</small>"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
-msgid "6.00"
-msgstr "6.00"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_category_property_form
 msgid "<b>Set other input/output accounts on specific </b>"
 msgstr "<b>設置特定的其他輸入/輸出帳戶</b>"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_picking
-msgid "<span class=\"o_stat_text\">Valuation</span>"
-msgstr "<span class=\"o_stat_text\">估值</span>"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
@@ -88,12 +74,12 @@ msgstr "<span>數量</span>"
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
 msgid "<span>SN/LN</span>"
-msgstr "<span>序號/批次</span>"
+msgstr "<span>SN/LN</span>"
 
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_account_chart_template
 msgid "Account Chart Template"
-msgstr "項目表範本"
+msgstr "項目表模版"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_move__account_move_ids
@@ -152,29 +138,14 @@ msgid ""
 msgstr "影響接收操作的落地成本, 並在產品之間拆分以更新成本價。"
 
 #. module: stock_account
-#: model:ir.model,name:stock_account.model_account_analytic_account
-msgid "Analytic Account"
-msgstr "分析帳戶"
-
-#. module: stock_account
-#: model:ir.model.fields,field_description:stock_account.field_stock_move__analytic_account_line_ids
+#: model:ir.model.fields,field_description:stock_account.field_stock_move__analytic_account_line_id
 msgid "Analytic Account Line"
 msgstr "分析帳戶項目"
-
-#. module: stock_account
-#: model:ir.model,name:stock_account.model_account_analytic_plan
-msgid "Analytic Plans"
-msgstr "分析計劃"
 
 #. module: stock_account
 #: model:ir.model.fields.selection,name:stock_account.selection__product_category__property_valuation__real_time
 msgid "Automated"
 msgstr "自動"
-
-#. module: stock_account
-#: model:ir.model.fields,field_description:stock_account.field_res_config_settings__group_stock_accounting_automatic
-msgid "Automatic Stock Accounting"
-msgstr "自動庫存會計"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_product__avg_cost
@@ -187,22 +158,11 @@ msgid "Average Cost (AVCO)"
 msgstr "平均成本(AVCO)"
 
 #. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
-msgid "BC46282798"
-msgstr "BC46282798"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
-msgid "Bacon"
-msgstr "熏肉"
-
-#. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_revaluation_form_view
 msgid "Cancel"
 msgstr "取消"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -211,7 +171,6 @@ msgid ""
 msgstr "找不到產品%s的庫存入庫項目。 在處理此操作之前，您必須在產品類別或產品上進行一個定義。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -221,7 +180,6 @@ msgid ""
 msgstr "找不到產品%s的庫存出庫庫項目。 在處理此操作之前，您必須在產品類別或產品上進行定義。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
@@ -232,11 +190,6 @@ msgstr "更改您的成本方法是一個重要的更改, 將影響您的庫存�
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_stock_quantity_history_inherit_stock_account
 msgid "Choose a date to get the valuation at that date"
-msgstr "選擇一個日期，以獲得當日的估值"
-
-#. module: stock_account
-#: model:ir.model.fields,field_description:stock_account.field_account_move_line__cogs_origin_id
-msgid "Cogs Origin"
 msgstr ""
 
 #. module: stock_account
@@ -251,7 +204,6 @@ msgid "Config Settings"
 msgstr "配置設定"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -268,7 +220,6 @@ msgid "Costing Method"
 msgstr "成本方法"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid "Costing method change for product category %s: from %s to %s."
@@ -297,7 +248,7 @@ msgstr "國家/地區代碼"
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__create_uid
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__create_date
@@ -310,7 +261,7 @@ msgstr "建立於"
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__currency_id
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__currency_id
 msgid "Currency"
-msgstr "貨幣"
+msgstr "幣別"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__current_quantity_svl
@@ -363,13 +314,18 @@ msgid "Display Serial & Lot Number on Invoices"
 msgstr "在發票上顯示序號和批號"
 
 #. module: stock_account
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:stock_account.res_config_settings_view_form
+msgid "Documentation"
+msgstr "系統使用說明"
+
+#. module: stock_account
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
-"Due to a change of product category (from %s to %s), the costing method has "
-"changed for product template %s: from %s to %s."
-msgstr ""
+"Due to a change of product category (from %s to %s), the costing method"
+"                                has changed for product template %s: from %s"
+" to %s."
+msgstr "由於產品類別變更（從 %s 更改為 %s），產品範本 %s 的成本計算方法已更改：從 %s 更改為 %s。"
 
 #. module: stock_account
 #: model:ir.model.fields.selection,name:stock_account.selection__product_category__property_cost_method__fifo
@@ -379,18 +335,18 @@ msgstr "先進先出(FIFO)"
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_inventory_valuation_search
 msgid "Group by..."
-msgstr "分組依據⋯"
+msgstr "分組由..."
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_inventory_valuation_search
 msgid "Has Remaining Qty"
-msgstr "有剩餘數量"
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__id
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_inventory_valuation_search
@@ -403,7 +359,8 @@ msgid "Inventory Locations"
 msgstr "盤點位置"
 
 #. module: stock_account
-#. odoo-python
+#: code:addons/stock_account/__init__.py:0
+#: code:addons/stock_account/__init__.py:0
 #: code:addons/stock_account/models/account_chart_template.py:0
 #: model:ir.model.fields,field_description:stock_account.field_product_category__property_valuation
 #: model:ir.model.fields,field_description:stock_account.field_product_product__valuation
@@ -418,33 +375,39 @@ msgstr "庫存計價"
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__account_move_line_id
 msgid "Invoice Line"
-msgstr "發票資料行"
+msgstr "應收憑單明細"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__price_diff_value
 msgid "Invoice value correction with invoice currency"
-msgstr "使用發票貨幣更正發票金額"
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__account_journal_id
 msgid "Journal"
-msgstr "日記賬"
+msgstr "日記帳"
 
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_account_move
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__account_move_id
 msgid "Journal Entry"
-msgstr "日記賬記項"
+msgstr "日記帳分錄"
 
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_account_move_line
 msgid "Journal Item"
-msgstr "日記賬項目"
+msgstr "日記帳明細"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_res_config_settings__module_stock_landed_costs
 msgid "Landed Costs"
 msgstr "落地成本"
+
+#. module: stock_account
+#: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer____last_update
+#: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__write_uid
@@ -465,8 +428,8 @@ msgstr "已連結至"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.res_config_settings_view_form
-msgid "Lots & Serial numbers will appear on the invoice"
-msgstr "發票將顯示批次及序號"
+msgid "Lots &amp; Serial numbers will appear on the invoice"
+msgstr "批號和序號將顯示在發票上"
 
 #. module: stock_account
 #: model:ir.model.fields.selection,name:stock_account.selection__product_category__property_valuation__manual_periodic
@@ -474,14 +437,12 @@ msgid "Manual"
 msgstr "手動"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "Manual Stock Valuation: %s."
 msgstr "手動庫存估值：%s。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "Manual Stock Valuation: No Reason Given."
@@ -503,7 +464,7 @@ msgstr ""
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_tree
 msgid "Moved Quantity"
-msgstr "已移動數量"
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__new_value
@@ -514,11 +475,6 @@ msgstr "新值"
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__new_value_by_qty
 msgid "New value by quantity"
 msgstr "按數量計算的新值"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_tree
-msgid "Open Valuation Layer"
-msgstr "開啟估值層"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_form
@@ -540,7 +496,6 @@ msgstr "商品"
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_product_category
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__categ_id
-#: model_terms:ir.ui.view,arch_db:stock_account.view_inventory_valuation_search
 msgid "Product Category"
 msgstr "產品分類"
 
@@ -550,7 +505,6 @@ msgid "Product Moves (Stock Move Line)"
 msgstr "產品移動(移庫明細)"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_revaluation_form_view
 #, python-format
@@ -565,10 +519,9 @@ msgstr "產品模板"
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_product_product
 msgid "Product Variant"
-msgstr "產品款式"
+msgstr "產品變體"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid "Product value manually modified (from %s to %s)"
@@ -582,7 +535,7 @@ msgstr "數量"
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_product__quantity_svl
 msgid "Quantity Svl"
-msgstr "庫存估值層數量"
+msgstr "Svl數量"
 
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_stock_quant
@@ -630,7 +583,6 @@ msgid "Return Picking Line"
 msgstr "退料明細"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "Revaluation of %s"
@@ -662,11 +614,6 @@ msgstr ""
 "         先進先出（First In First Out，簡稱FIFO）：假設那些先進入公司的產品估值，它們也會先離開。"
 
 #. module: stock_account
-#: model:res.groups,name:stock_account.group_stock_accounting_automatic
-msgid "Stock Accounting Automatic"
-msgstr "庫存自動會計"
-
-#. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_category__property_stock_account_input_categ_id
 msgid "Stock Input Account"
 msgstr "庫存進貨項目"
@@ -696,7 +643,7 @@ msgid "Stock Quantity History"
 msgstr "庫存數量歷史"
 
 #. module: stock_account
-#: model:ir.model,name:stock_account.model_stock_forecasted_product_product
+#: model:ir.model,name:stock_account.model_report_stock_report_product_product_replenishment
 msgid "Stock Replenishment Report"
 msgstr "庫存補貨報告"
 
@@ -706,8 +653,8 @@ msgid "Stock Request an Inventory Count"
 msgstr "庫存請求進行盤點"
 
 #. module: stock_account
-#. odoo-javascript
-#: code:addons/stock_account/static/src/stock_account_forecasted/forecasted_header.js:0
+#. openerp-web
+#: code:addons/stock_account/static/src/js/report_stock_forecasted.js:0
 #: model:ir.actions.act_window,name:stock_account.stock_valuation_layer_action
 #: model:ir.actions.act_window,name:stock_account.stock_valuation_layer_report_action
 #: model_terms:ir.ui.view,arch_db:stock_account.view_stock_quant_tree_editable_inherit
@@ -747,7 +694,7 @@ msgstr "庫存估值層"
 msgid ""
 "Technical field to correctly show the currently selected company's currency "
 "that corresponds to the totaled value of the product's valuation layers"
-msgstr "技術欄位，用於正確顯示目前所選公司的貨幣，該貨幣對應產品估值層的總計價值"
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,help:stock_account.field_stock_picking__country_code
@@ -759,7 +706,6 @@ msgstr ""
 " 您可以使用此欄位進行快速搜尋。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
@@ -768,7 +714,6 @@ msgid ""
 msgstr "庫存輸入和/或輸出科目不能與庫存估價科目相同。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #: code:addons/stock_account/models/product.py:0
 #, python-format
@@ -778,14 +723,12 @@ msgid ""
 msgstr "該操作會導致建立您沒有存取權限的日記帳分錄。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "The added value doesn't have any impact on the stock valuation"
 msgstr "價值調整對庫存估值沒有任何影響"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -794,7 +737,6 @@ msgid ""
 msgstr "移動明細的狀態不一致: 有些正在進貨, 其他的則在出貨。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -804,7 +746,6 @@ msgid ""
 msgstr "移動線處於不一致的狀態：他們在一個單一的步驟中作為一個公司的內部公司，而他們應該通過公司間中轉地點。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -818,17 +759,17 @@ msgstr "移動名細處於不一致的狀態:它們不屬於同一個來源或�
 msgid ""
 "There are no valuation layers. Valuation layers are created when there are "
 "product moves that impact the valuation of the stock."
-msgstr "沒有估值層。當出現影響庫存估值的產品移動時，會建立估值層。"
+msgstr ""
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_report_tree
 msgid "Total Remaining Quantity"
-msgstr "總計剩餘數量"
+msgstr ""
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_report_tree
 msgid "Total Remaining Value"
-msgstr "總計剩餘價值"
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_product__total_value
@@ -842,7 +783,7 @@ msgstr "總值"
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_stock_picking
 msgid "Transfer"
-msgstr "轉移"
+msgstr "調撥"
 
 #. module: stock_account
 #: model:ir.model.fields,help:stock_account.field_stock_move__to_refund
@@ -866,7 +807,7 @@ msgstr "單位價值"
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__uom_id
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer_revaluation__product_uom_name
 msgid "Unit of Measure"
-msgstr "量度單位"
+msgstr "單位"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_move__to_refund
@@ -900,14 +841,15 @@ msgstr ""
 #: model:ir.ui.menu,name:stock_account.menu_valuation
 #: model_terms:ir.ui.view,arch_db:stock_account.res_config_settings_view_form
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_form
+#: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_picking
 #: model_terms:ir.ui.view,arch_db:stock_account.view_stock_quant_tree_editable_inherit
 msgid "Valuation"
-msgstr "計價"
+msgstr "估值"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_product__company_currency_id
 msgid "Valuation Currency"
-msgstr "計價貨幣"
+msgstr ""
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.product_product_stock_tree_inherit_stock_account
@@ -915,13 +857,14 @@ msgid "Valuation Report"
 msgstr "庫存計價報告"
 
 #. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_tree
+#. openerp-web
+#: code:addons/stock_account/static/src/xml/inventory_report.xml:0
 #: model_terms:ir.ui.view,arch_db:stock_account.view_stock_quantity_history_inherit_stock_account
+#, python-format
 msgid "Valuation at Date"
-msgstr "指定日期的估值"
+msgstr ""
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid "Valuation method change for product category %s: from %s to %s."
@@ -933,19 +876,16 @@ msgid "Value"
 msgstr "值"
 
 #. module: stock_account
-#. odoo-javascript
-#: code:addons/stock_account/static/src/stock_account_forecasted/forecasted_header.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_product_product_replenishment
 msgid "Value On Hand:"
-msgstr "手上數量的價值："
+msgstr ""
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_product_product__value_svl
 msgid "Value Svl"
-msgstr "庫存估值層價值"
+msgstr "Svl值"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid "Warning"
@@ -982,21 +922,18 @@ msgid "Wizard model to reavaluate a stock inventory for a product"
 msgstr "用於重新評估產品庫存的作業模型"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "You cannot revalue a product with a standard cost method."
 msgstr "您不能使用標準成本方法重估產品。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/wizard/stock_valuation_layer_revaluation.py:0
 #, python-format
 msgid "You cannot revalue a product with an empty or negative stock."
 msgstr "您不能重估具有空庫存或負庫存的產品。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
@@ -1006,7 +943,6 @@ msgid ""
 msgstr "您無法在自動評價中更新產品成本，因為這會導致建立您沒有存取權限的日記帳分錄。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
@@ -1015,7 +951,6 @@ msgid ""
 msgstr "您沒有在產品類別上定義任何輸入估價項目。在處理此操作之前，必須定義一個。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid ""
@@ -1024,7 +959,6 @@ msgid ""
 msgstr "您沒有在您的產品類別中定義任何庫存輸入帳戶。您必須在處理此操作之前定義一個。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/stock_move.py:0
 #, python-format
 msgid ""
@@ -1033,7 +967,6 @@ msgid ""
 msgstr "您沒有在產品類別上定義的任何庫存日記帳, 請檢查是否已安裝了會計項目表。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #: code:addons/stock_account/models/product.py:0
 #: code:addons/stock_account/models/product.py:0
@@ -1045,7 +978,6 @@ msgid ""
 msgstr "您沒有在您的產品類別中定義任何庫存評估帳戶。 處理此操作之前，您必須定義一個。"
 
 #. module: stock_account
-#. odoo-python
 #: code:addons/stock_account/models/product.py:0
 #, python-format
 msgid "You must set a counterpart account on your product category."
@@ -1054,19 +986,14 @@ msgstr "您必須在您的產品類別上設置一個對應賬戶。"
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_revaluation_form_view
 msgid "by"
-msgstr "由"
+msgstr "by"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.stock_valuation_layer_revaluation_form_view
 msgid "for"
-msgstr "給予"
+msgstr "為"
 
 #. module: stock_account
 #: model_terms:ir.ui.view,arch_db:stock_account.view_category_property_form
 msgid "locations"
 msgstr "位置"
-
-#. module: stock_account
-#: model_terms:ir.ui.view,arch_db:stock_account.stock_account_report_invoice_document
-msgid "units"
-msgstr "單位"

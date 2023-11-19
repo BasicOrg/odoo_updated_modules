@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import timedelta
-
 from odoo import fields
 from odoo.tests.common import Form
 
@@ -13,26 +11,26 @@ class TestTimesheetMerge(TestCommonTimesheet):
     def setUp(self):
         super(TestTimesheetMerge, self).setUp()
 
-        yesterday = fields.Date.today() - timedelta(days=1)
+        today = fields.Date.today()
         self.timesheet1 = self.env['account.analytic.line'].with_user(self.user_employee).create({
             'name': "my timesheet 1",
             'project_id': self.project_customer.id,
             'task_id': self.task1.id,
-            'date': yesterday,
+            'date': today,
             'unit_amount': 1.0,
         })
         self.timesheet2 = self.env['account.analytic.line'].with_user(self.user_employee).create({
             'name': "my timesheet 2",
             'project_id': self.project_customer.id,
             'task_id': self.task2.id,
-            'date': yesterday,
+            'date': today,
             'unit_amount': 2.0,
         })
         self.timesheet3 = self.env['account.analytic.line'].with_user(self.user_employee).create({
             'name': "my timesheet 2",
             'project_id': self.project_customer.id,
             'task_id': self.task2.id,
-            'date': yesterday,
+            'date': today,
             'unit_amount': 3.0,
         })
         self.timesheet3.with_user(self.user_manager).action_validate_timesheet()
@@ -57,7 +55,7 @@ class TestTimesheetMerge(TestCommonTimesheet):
         self.assertEqual(wizard.task_id, self.task1, "should take the task of the 1st timesheet")
         wizard.action_merge()
 
-        timesheets = self.env['account.analytic.line'].search([('project_id', '=', self.project_customer.id), ('date', '=', fields.Date.today() - timedelta(days=1))])
+        timesheets = self.env['account.analytic.line'].search([('project_id', '=', self.project_customer.id), ('date', '=', fields.Date.today())])
         self.assertEqual(len(timesheets), 2)
 
         merged_timesheet = timesheets.filtered(lambda l: not l.validated)

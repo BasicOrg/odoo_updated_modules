@@ -1,53 +1,64 @@
-/** @odoo-module **/
+odoo.define('payment_demo.payment_form', require => {
+    'use strict';
 
-import paymentForm from '@payment/js/payment_form';
-import paymentDemoMixin from '@payment_demo/js/payment_demo_mixin';
+    const checkoutForm = require('payment.checkout_form');
+    const manageForm = require('payment.manage_form');
 
-paymentForm.include({
+    const paymentDemoMixin = {
 
-    // #=== DOM MANIPULATION ===#
+        //--------------------------------------------------------------------------
+        // Private
+        //--------------------------------------------------------------------------
 
-    /**
-     * Prepare the inline form of Demo for direct payment.
-     *
-     * @override method from @payment/js/payment_form
-     * @private
-     * @param {number} providerId - The id of the selected payment option's provider.
-     * @param {string} providerCode - The code of the selected payment option's provider.
-     * @param {number} paymentOptionId - The id of the selected payment option
-     * @param {string} paymentMethodCode - The code of the selected payment method, if any.
-     * @param {string} flow - The online payment flow of the selected payment option.
-     * @return {void}
-     */
-    async _prepareInlineForm(providerId, providerCode, paymentOptionId, paymentMethodCode, flow) {
-        if (providerCode !== 'demo') {
-            this._super(...arguments);
-            return;
-        } else if (flow === 'token') {
-            return;
-        }
-        this._setPaymentFlow('direct');
-    },
+        /**
+         * Simulate a feedback from a payment provider and redirect the customer to the status page.
+         *
+         * @override method from payment.payment_form_mixin
+         * @private
+         * @param {string} code - The code of the provider
+         * @param {number} providerId - The id of the provider handling the transaction
+         * @param {object} processingValues - The processing values of the transaction
+         * @return {Promise}
+         */
+        _processDirectPayment: function (code, providerId, processingValues) {
+            if (code !== 'demo') {
+                return this._super(...arguments);
+            }
 
-    // #=== PAYMENT FLOW ===#
+            const customerInput = document.getElementById('customer_input').value;
+            const simulatedPaymentState = document.getElementById('simulated_payment_state').value;
+            return this._rpc({
+                route: '/payment/demo/simulate_payment',
+                params: {
+                    'reference': processingValues.reference,
+                    'payment_details': customerInput,
+                    'simulated_state': simulatedPaymentState,
+                },
+            }).then(() => {
+                window.location = '/payment/status';
+            });
+        },
 
-    /**
-     * Simulate a feedback from a payment provider and redirect the customer to the status page.
-     *
-     * @override method from payment.payment_form
-     * @private
-     * @param {string} providerCode - The code of the selected payment option's provider.
-     * @param {number} paymentOptionId - The id of the selected payment option.
-     * @param {string} paymentMethodCode - The code of the selected payment method, if any.
-     * @param {object} processingValues - The processing values of the transaction.
-     * @return {void}
-     */
-    async _processDirectFlow(providerCode, paymentOptionId, paymentMethodCode, processingValues) {
-        if (providerCode !== 'demo') {
-            this._super(...arguments);
-            return;
-        }
-        paymentDemoMixin.processDemoPayment(processingValues);
-    },
-
+        /**
+         * Prepare the inline form of Demo for direct payment.
+         *
+         * @override method from payment.payment_form_mixin
+         * @private
+         * @param {string} code - The code of the selected payment option's provider
+         * @param {integer} paymentOptionId - The id of the selected payment option
+         * @param {string} flow - The online payment flow of the selected payment option
+         * @return {Promise}
+         */
+        _prepareInlineForm: function (code, paymentOptionId, flow) {
+            if (code !== 'demo') {
+                return this._super(...arguments);
+            } else if (flow === 'token') {
+                return Promise.resolve();
+            }
+            this._setPaymentFlow('direct');
+            return Promise.resolve()
+        },
+    };
+    checkoutForm.include(paymentDemoMixin);
+    manageForm.include(paymentDemoMixin);
 });

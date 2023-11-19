@@ -3,11 +3,10 @@
 
 {
     'name': 'Belgium - Accounting Reports (post wizard)',
-    'countries': ['be'],
     'version': '1.0',
     'category': 'Accounting/Localizations/Reporting',
     'description': """
-Enable the VAT wizard when posting a tax return journal entry
+        Enable the VAT wizard when posting a tax return journal entry
     """,
     'depends': [
         'l10n_be_reports'
@@ -17,6 +16,6 @@ Enable the VAT wizard when posting a tax return journal entry
     ],
     'installable': True,
     'auto_install': True,
-    'website': 'https://www.odoo.com/app/accounting',
+    'website': 'https://www.odoo.com/page/accounting',
     'license': 'OEEL-1',
 }

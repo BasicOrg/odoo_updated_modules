@@ -6,24 +6,10 @@
             <field name='model'>sale.order</field>
             <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search" />
             <field name='arch' type='xml'>
-                <field name="order_line" position="after">
-                    <field name="referrer_id"/>
-                </field>
-                <filter name="sales_team" position="after">
-                    <filter string="Referrer" name="referrer_id" domain="[]" context="{'group_by':'referrer_id'}"/>
-                </filter>
+                <xpath expr="//group" position="inside">
+                     <filter string="Referrer" name="referrer_id" domain="[]" context="{'group_by':'referrer_id'}"/>
+                </xpath>
             </field>
-    </record>
-
-    <record id="sale_order_subscription_view_tree_inherit_partner_commission" model='ir.ui.view'>
-        <field name='name'>sale.order.subscription.tree.inherit.partner.commission</field>
-        <field name='model'>sale.order</field>
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree" />
-        <field name='arch' type='xml'>
-            <field name="partner_id" position="after">
-                <field name="referrer_id" optional="hide"/>
-            </field>
-        </field>
     </record>
 
     <record id="sale_order_view_search_inherit_partner_commission" model='ir.ui.view'>
@@ -31,9 +17,6 @@
             <field name='model'>sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter" />
             <field name='arch' type='xml'>
-                <field name="order_line" position="after">
-                    <field name="referrer_id"/>
-                </field>
                 <xpath expr="//group" position="inside">
                      <filter string="Referrer" name="referrer_id" domain="[]" context="{'group_by':'referrer_id'}"/>
                 </xpath>
@@ -58,13 +41,15 @@
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
                 <field name="commission_plan_frozen" invisible="1"/>
-                <field name="referrer_id" context="{'res_partner_search_mode': 'supplier'}" options="{'no_create': True}"/>
-                <field name="commission_plan_frozen" invisible="not referrer_id or not is_subscription" required="referrer_id and is_subscription"/>
-                <field name="commission_plan_id" invisible="not referrer_id" readonly="is_subscription and not commission_plan_frozen"
+                <field name="referrer_id" context="{'res_partner_search_mode': 'supplier'}"/>
+                <field name="commission_plan_frozen" attrs="{'required': [('referrer_id', '!=', False), ('is_subscription', '=', True)],
+                                                                  'invisible': ['|', ('referrer_id', '=', False), ('is_subscription', '=', False)]}"/>
+                <field name="commission_plan_id" attrs="{'readonly': [('is_subscription', '=', True), ('commission_plan_frozen', '=', False)],
+                                                         'invisible': [('referrer_id', '=', False)]}"
                        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
             </field>
             <field name="tax_totals" position="after">
-                <field name="commission" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="not referrer_id or not commission_plan_id"/>
+                <field name="commission" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible': ['|', ('referrer_id', '=', False), ('commission_plan_id', '=', False)]}"/>
             </field>
         </field>
     </record>

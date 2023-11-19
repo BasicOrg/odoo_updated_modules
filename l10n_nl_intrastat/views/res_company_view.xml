@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="base.view_company_form"/>
             <field name="arch" type="xml">
                 <xpath expr=".//notebook" position="inside">
-                    <page string="CBS" name="cbs" invisible="country_code != 'NL'">
+                    <page string="CBS" name="cbs" attrs="{'invisible': [('country_code', '!=', 'NL')]}">
                         <group>
                             <field name="l10n_nl_cbs_reg_number"/>
                         </group>

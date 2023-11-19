@@ -31,7 +31,7 @@ class TestIsMultiLang(odoo.tests.HttpCase):
         it = self.env.ref('base.lang_it').sudo()
         en = self.env.ref('base.lang_en').sudo()
         be = self.env.ref('base.lang_fr_BE').sudo()
-        country1 = self.env['res.country'].create({'name': "My Super Country", 'code': 'ZV'})
+        country1 = self.env['res.country'].create({'name': "My Super Country"})
 
         it.active = True
         be.active = True
@@ -57,7 +57,6 @@ class TestIsMultiLang(odoo.tests.HttpCase):
         it_href = body.find('./head/link[@rel="alternate"][@hreflang="it"]').get('href')
         fr_href = body.find('./head/link[@rel="alternate"][@hreflang="fr"]').get('href')
         en_href = body.find('./head/link[@rel="alternate"][@hreflang="en"]').get('href')
-
         self.assertEqual(urlparse(it_href).path, f'/{it.url_code}/test_lang_url/my-super-country-italia-{country1.id}')
         self.assertEqual(urlparse(fr_href).path, f'/{be.url_code}/test_lang_url/my-super-country-belgium-{country1.id}')
         self.assertEqual(urlparse(en_href).path, f'/test_lang_url/my-super-country-{country1.id}')
@@ -80,18 +79,3 @@ class TestIsMultiLang(odoo.tests.HttpCase):
         self.assertRegex(r.text, r'<link rel="alternate" hreflang="en" href="http://[^"]+/"/>')
         r = self.url_open(be_prefix + '/contactus')
         self.assertRegex(r.text, r'<link rel="alternate" hreflang="en" href="http://[^"]+/contactus"/>')
-
-    def test_04_multilang_false(self):
-        website = self.env['website'].search([], limit=1)
-        fr = self.env.ref('base.lang_fr').sudo()
-        en = self.env.ref('base.lang_en').sudo()
-        fr.active = True
-
-        website.default_lang_id = en
-        website.language_ids = en + fr
-        self.opener.cookies['frontend_lang'] = fr.iso_code
-
-        res = self.url_open('/get_post_nomultilang', allow_redirects=False)
-        res.raise_for_status()
-
-        self.assertEqual(res.status_code, 200, "Should not be redirected")

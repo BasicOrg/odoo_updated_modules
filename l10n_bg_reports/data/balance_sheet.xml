@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="l10n_bg_bs" model="account.report">
         <field name="name">Balance sheet</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
@@ -639,7 +639,7 @@
                                     <record id="l10n_bg_bs_liabilities_a_6_balance_aggregate" model="account.report.expression">
                                         <field name="label">balance_aggregate</field>
                                         <field name="engine">aggregation</field>
-                                        <field name="formula">bg_pl_expenses_12.balance - bg_pl_income_10.balance</field>
+                                        <field name="formula">bg_pl_expenses_12.balance</field>
                                         <field name="subformula">cross_report</field>
                                         <field name="date_scope">from_fiscalyear</field>
                                     </record>

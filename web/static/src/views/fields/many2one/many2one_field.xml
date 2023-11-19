@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.Many2OneField.CreateConfirmationDialog">
+    <t t-name="web.Many2OneField.CreateConfirmationDialog" owl="1">
         <Dialog title="title" size="'md'">
             <div>
-                <t t-out="dialogContent"/>
+                Create <strong t-esc="props.value"/> as a new <t t-esc="props.name"/>?
             </div>
             <t t-set-slot="footer">
                 <button class="btn btn-primary" t-on-click="onCreate">Create</button>
@@ -13,7 +13,7 @@
         </Dialog>
     </t>
 
-    <t t-name="web.Many2OneField">
+    <t t-name="web.Many2OneField" owl="1">
         <t t-if="props.readonly">
             <t t-if="!props.canOpen">
                 <span>
@@ -26,9 +26,9 @@
             </t>
             <t t-else="">
                 <a
-                    t-if="value"
-                    t-attf-class="o_form_uri #{classFromDecoration}"
-                    t-att-href="value ? `#id=${value[0]}&amp;model=${relation}` : '#'"
+                    t-if="props.value"
+                    class="o_form_uri"
+                    t-att-href="props.value ? `#id=${props.value[0]}&amp;model=${relation}` : '#'"
                     t-on-click.prevent="onClick"
                 >
                     <span t-esc="displayName" />
@@ -45,8 +45,8 @@
                 <t t-if="hasExternalButton">
                     <button
                         type="button"
-                        class="btn btn-link text-action oi o_external_button"
-                        t-att-class="env.inDialog ? 'oi-launch' : 'oi-arrow-right'"
+                        class="btn btn-secondary fa o_external_button"
+                        t-att-class="props.openTarget === 'current' ? 'fa-arrow-right' : 'fa-external-link'"
                         tabindex="-1"
                         draggable="false"
                         aria-label="Internal link"

@@ -11,7 +11,6 @@
         'security/ir.model.access.csv',
         'data/consolidated_balance_report.xml',
         'data/account_report_actions.xml',
-        'data/onboarding_data.xml',
         'views/account_account_views.xml',
         'views/account_move_views.xml',
         'views/consolidation_account_views.xml',
@@ -21,14 +20,18 @@
         'views/consolidation_chart_views.xml',
         'views/consolidation_rate_views.xml',
         'views/menuitems.xml',
+        'views/onboarding_templates.xml',
     ],
     'installable': True,
     'application': True,
     'assets': {
         'web.assets_backend': [
+            'account_consolidation/static/src/scss/consolidation_grid_view.scss',
             'account_consolidation/static/src/scss/consolidation_kanban.scss',
+            'account_consolidation/static/src/js/trial_balance_grid/controller.js',
+            'account_consolidation/static/src/js/trial_balance_grid/renderer.js',
+            'account_consolidation/static/src/js/trial_balance_grid/view.js',
             'account_consolidation/static/src/components/**/*',
-            'account_consolidation/static/src/views/**/*',
         ],
         'web.qunit_suite_tests': [
             'account_consolidation/static/tests/**/*',

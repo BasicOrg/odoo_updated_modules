@@ -12,10 +12,10 @@ class Partner(models.Model):
     def _compute_document_count(self):
         read_group_var = self.env['documents.document']._read_group(
             [('partner_id', 'in', self.ids)],
-            groupby=['partner_id'],
-            aggregates=['__count'])
+            fields=['partner_id'],
+            groupby=['partner_id'])
 
-        document_count_dict = {partner.id: count for partner, count in read_group_var}
+        document_count_dict = dict((d['partner_id'][0], d['partner_id_count']) for d in read_group_var)
         for record in self:
             record.document_count = document_count_dict.get(record.id, 0)
 

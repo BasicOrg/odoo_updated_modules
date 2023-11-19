@@ -3,7 +3,7 @@
 
 from odoo import Command
 from .common import TestCommonSaleTimesheet
-from odoo.tests import tagged, Form
+from odoo.tests import tagged
 
 
 @tagged('post_install', '-at_install')
@@ -165,7 +165,7 @@ class TestProject(TestCommonSaleTimesheet):
         self.env['project.task'].create({
             'name': 'task A',
             'project_id': self.project_global.id,
-            'allocated_hours': 10,
+            'planned_hours': 10,
             'timesheet_ids': [
                 Command.create({
                     'name': '/',
@@ -175,10 +175,4 @@ class TestProject(TestCommonSaleTimesheet):
             ],
         })
 
-        self.project_global.invalidate_recordset()
-        self.project_global.analytic_account_id.invalidate_recordset()
         self.assertEqual(self.project_global.analytic_account_balance, expected_analytic_account_balance)
-
-    def test_open_product_form_with_default_service_policy(self):
-        form = Form(self.env['product.product'].with_context(default_detailed_type='service', default_service_policy='delivered_timesheet'))
-        self.assertEqual('delivered_timesheet', form.service_policy)

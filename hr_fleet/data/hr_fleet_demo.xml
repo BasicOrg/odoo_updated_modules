@@ -3,6 +3,20 @@
     <record id="fleet.vehicle_1" model="fleet.vehicle">
         <field name="driver_employee_id" ref="hr.employee_qdp"/>
     </record>
+    <!-- Link addresses linked to cars to employees, ease migration from external to internal -->
+    <record id="hr.employee_hne" model="hr.employee">
+        <field name="address_home_id" ref="base.res_partner_address_25"/>
+    </record>
+    <record id="hr.employee_fpi" model="hr.employee">
+        <field name="address_home_id" ref="base.res_partner_address_17"/>
+    </record>
+    <record id="hr.employee_jog" model="hr.employee">
+        <field name="address_home_id" ref="base.res_partner_address_16"/>
+    </record>
+    <record id="hr.employee_jep" model="hr.employee">
+        <field name="address_home_id" ref="base.res_partner_address_15"/>
+    </record>
+
     <record id="fleet.vehicle_2" model="fleet.vehicle">
         <field name="driver_employee_id" ref="hr.employee_hne"/>
     </record>
@@ -16,15 +30,9 @@
         <field name="driver_employee_id" ref="hr.employee_jep"/>
     </record>
 
-    <!-- recompute driver_employee_id as we assigned a proper work_contact_id to some employees -->
+    <!-- recompute driver_employee_id as we assigned a proper address_home_id to some employees -->
     <function model="fleet.vehicle.assignation.log" name="_compute_driver_employee_id">
         <value model="fleet.vehicle.assignation.log" eval="obj().search([('driver_employee_id', '=', False), ('driver_id', '!=', False)]).ids"/>
     </function>
-
-    <record id="onboarding_fleet_training" model="mail.activity.plan.template">
-        <field name="summary">Fleet Training</field>
-        <field name="responsible_type">fleet_manager</field>
-        <field name="plan_id" ref="hr.onboarding_plan"/>
-    </record>
 
 </odoo>

@@ -10,7 +10,7 @@ class ResCurrency(models.Model):
 
     display_rounding_warning = fields.Boolean(string="Display Rounding Warning", compute='_compute_display_rounding_warning',
         help="The warning informs a rounding factor change might be dangerous on res.currency's form view.")
-    fiscal_country_codes = fields.Char(compute='_compute_fiscal_country_codes')
+
 
     @api.depends('rounding')
     def _compute_display_rounding_warning(self):
@@ -18,12 +18,6 @@ class ResCurrency(models.Model):
             record.display_rounding_warning = record.id \
                                               and record._origin.rounding != record.rounding \
                                               and record._origin._has_accounting_entries()
-
-    @api.depends_context('allowed_company_ids')
-    def _compute_fiscal_country_codes(self):
-        for record in self:
-            companies = self.env['res.company'].search([('id', 'in', self.env.context.get('allowed_company_ids', []))])
-            record.fiscal_country_codes = ",".join(companies.mapped('account_fiscal_country_id.code'))
 
     def write(self, vals):
         if 'rounding' in vals:
@@ -43,28 +37,30 @@ class ResCurrency(models.Model):
         return bool(self.env['account.move.line'].search_count(['|', ('currency_id', '=', self.id), ('company_currency_id', '=', self.id)]))
 
     @api.model
-    def _get_query_currency_table(self, company_ids, conversion_date):
+    def _get_query_currency_table(self, options):
         ''' Construct the currency table as a mapping company -> rate to convert the amount to the user's company
         currency in a multi-company/multi-currency environment.
         The currency_table is a small postgresql table construct with VALUES.
-        :param company_ids: list of company ids
-        :param conversion_date: date, used to determine the currency rate between the individual companies and the user's company
+        :param options: The report options.
         :return:        The query representing the currency table.
         '''
 
-        companies = self.env['res.company'].browse(company_ids)
         user_company = self.env.company
-        if companies == user_company:
-            currency_rates = {user_company.currency_id.id: 1.0}
-        else:
+        user_currency = user_company.currency_id
+        if options.get('multi_company', False):
+            companies = self.env.companies
+            conversion_date = options['date']['date_to']
             currency_rates = companies.mapped('currency_id')._get_rates(user_company, conversion_date)
+        else:
+            companies = user_company
+            currency_rates = {user_currency.id: 1.0}
 
         conversion_rates = []
         for company in companies:
             conversion_rates.extend((
                 company.id,
                 currency_rates[user_company.currency_id.id] / currency_rates[company.currency_id.id],
-                user_company.currency_id.decimal_places,
+                user_currency.decimal_places,
             ))
         query = '(VALUES %s) AS currency_table(company_id, rate, precision)' % ','.join('(%s, %s, %s)' for i in companies)
         return self.env.cr.mogrify(query, conversion_rates).decode(self.env.cr.connection.encoding)

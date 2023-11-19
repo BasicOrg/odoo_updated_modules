@@ -2,61 +2,46 @@
 
 import { useService } from "@web/core/utils/hooks";
 
-import { onWillUnmount, status, useComponent, useEnv } from "@odoo/owl";
-import { POPOVER_SYMBOL } from "./popover_controller";
+const { onWillUnmount, status, useComponent } = owl;
 
-/**
- * @typedef PopoverHookReturnType
- * @property {(target: string | HTMLElement, props: object) => void} open
- *  - Signals the manager to open the configured popover
- *    component on the target, with the given props.
- * @property {() => void} close
- *  - Signals the manager to remove the popover.
- * @property {boolean} isOpen
- *  - Whether the popover is currently open.
- */
+export function usePopover() {
+    const removeFns = new Set();
+    const service = useService("popover");
+    const component = useComponent();
 
-export function makePopover(popoverService, component, options) {
-    let removeFn = null;
-    function close() {
-        removeFn?.();
-    }
-    return {
-        open(target, props) {
-            close();
-            const newOptions = Object.create(options);
-            newOptions.onClose = () => {
-                removeFn = null;
-                options.onClose?.();
-            };
-            removeFn = popoverService.add(target, component, props, newOptions);
-        },
-        close,
-        get isOpen() {
-            return Boolean(removeFn);
-        },
-    };
-}
-
-/**
- * Manages a component to be used as a popover.
- *
- * @param {typeof import("@odoo/owl").Component} component
- * @param {import("@web/core/popover/popover_service").PopoverServiceAddOptions} [options]
- * @returns {PopoverHookReturnType}
- */
-export function usePopover(component, options = {}) {
-    const env = useEnv();
-    const popoverService = useService("popover");
-    const owner = useComponent();
-    const newOptions = Object.create(options);
-    newOptions[POPOVER_SYMBOL] = env[POPOVER_SYMBOL];
-    newOptions.onClose = () => {
-        if (status(owner) !== "destroyed") {
-            options.onClose?.();
+    onWillUnmount(function () {
+        for (const removeFn of removeFns) {
+            removeFn();
         }
+        removeFns.clear();
+    });
+    return {
+        /**
+         * Signals the manager to add a popover.
+         *
+         * @param {string | HTMLElement}    target
+         * @param {any}                     Component
+         * @param {Object}                  props
+         * @param {Object}                  [options]
+         * @param {boolean}                 [options.closeOnClickAway=true]
+         * @param {function()}              [options.onClose]
+         * @param {function()}              [options.preventClose]
+         * @param {string}                  [options.popoverClass]
+         * @param {string}                  [options.position]
+         * @returns {function()}
+         */
+        add(target, Component, props, options = {}) {
+            const newOptions = Object.create(options);
+            newOptions.onClose = function () {
+                removeFns.delete(removeFn);
+                if (options.onClose && status(component) !== "destroyed") {
+                    options.onClose();
+                }
+            };
+
+            const removeFn = service.add(target, Component, props, newOptions);
+            removeFns.add(removeFn);
+            return removeFn;
+        },
     };
-    const popover = makePopover(popoverService, component, newOptions);
-    onWillUnmount(popover.close);
-    return popover;
 }

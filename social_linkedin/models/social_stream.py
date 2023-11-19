@@ -6,7 +6,6 @@ from datetime import datetime
 from urllib.parse import quote
 from werkzeug.urls import url_join
 from urllib.parse import urlparse
-import re
 
 from odoo import models, _
 from odoo.exceptions import UserError
@@ -39,11 +38,10 @@ class SocialStreamLinkedIn(models.Model):
         projection = '(paging,elements*(%s))' % self.env['social.media']._LINKEDIN_STREAM_POST_PROJECTION
         posts_endpoint = url_join(
             self.env['social.media']._LINKEDIN_ENDPOINT,
-            'posts?author=%s' % quote(self.account_id.linkedin_account_urn))
+            'ugcPosts?authors=List(%s)' % quote(self.account_id.linkedin_account_urn))
 
         posts_response = requests.get(
-            posts_endpoint,
-            params={'q': 'author', 'projection': projection, 'count': 100},
+            posts_endpoint, params={'q': 'authors', 'projection': projection, 'count': 100},
             headers=self.account_id._linkedin_bearer_headers(),
             timeout=5)
 
@@ -51,13 +49,9 @@ class SocialStreamLinkedIn(models.Model):
             self.sudo().account_id._action_disconnect_accounts(posts_response.json())
             return False
 
-        stream_post_data = posts_response.json()['elements']
-
-        self._prepare_linkedin_stream_post_images(stream_post_data)
-
         linkedin_post_data = {
             stream_post_data.get('id'): self._prepare_linkedin_stream_post_values(stream_post_data)
-            for stream_post_data in stream_post_data
+            for stream_post_data in posts_response.json()['elements']
         }
 
         # retrieve post statistics
@@ -97,93 +91,37 @@ class SocialStreamLinkedIn(models.Model):
         user_name = '%s %s' % (json_data.get('localizedLastName', ''), json_data.get('localizedFirstName', ''))
         return json_data.get('localizedName', user_name)
 
-    def _prepare_linkedin_stream_post_images(self, posts_data):
-        """Fetch the images URLs and insert their URL in posts_data.
-
-        On the 4 January 2023, the projection in the /posts API doesn't work for image.
-        But the projection on the /images work... So for now we need to fetch the images
-        in a second request.
-        """
-        all_image_urns = set()
-        for post in posts_data:
-            # multi-images post
-            images = post.get('content', {}).get('multiImage', {}).get('images', [])
-            all_image_urns |= {quote(image['id']) for image in images}
-            # single image post
-            image = post.get('content', {}).get('media', {}).get('id')
-            if image:
-                all_image_urns.add(quote(image))
-        if not all_image_urns:
-            return
-
-        images_endpoint = url_join(
-            self.env['social.media']._LINKEDIN_ENDPOINT,
-            'images?ids=List(%s)' % ",".join(all_image_urns))
-        response = requests.get(
-            images_endpoint,
-            params={},
-            headers=self.account_id._linkedin_bearer_headers(),
-            timeout=10,
-        )
-
-        if not response.ok:
-            return
-
-        url_by_urn = {
-            image: image_values["downloadUrl"]
-            for image, image_values in response.json()["results"].items()
-            if image_values.get("downloadUrl")
-        }
-
-        # Insert image in the result like the LinkedIn projection should do...
-        for post in posts_data:
-            # multi-images post
-            images = post.get('content', {}).get('multiImage', {}).get('images', [])
-            for image in images:
-                image["downloadUrl"] = url_by_urn.get(image.get("id"))
-
-            # single image post
-            image = post.get("content", {}).get("media", {}).get("id")
-            if image:
-                post["content"]["media"]["downloadUrl"] = url_by_urn.get(image)
-
-    def _prepare_linkedin_stream_post_values(self, post_data):
-        article = post_data.get('content', {}).get('article', {})
-        author_image = self.account_id._extract_linkedin_picture_url(post_data.get('author~'))
-
-        return {
+    def _prepare_linkedin_stream_post_values(self, data):
+        medias = data.get('specificContent', {}).get('com.linkedin.ugc.ShareContent', {}).get('media', [])
+        post_values = {
             'stream_id': self.id,
-            'author_name': self._format_linkedin_name(post_data.get('author~', {})),
-            'published_date': datetime.fromtimestamp(post_data.get('createdAt', 0) / 1000),
-            'linkedin_post_urn': post_data.get('id'),
-            'linkedin_author_urn': post_data.get('author'),
-            'linkedin_author_image_url': self._enforce_url_scheme(author_image),
-            'message': self._format_from_linkedin_little_text(post_data.get('commentary', '')),
-            'stream_post_image_ids': [(5, 0)] + [(0, 0, image_value) for image_value in self._extract_linkedin_image(post_data)],
-            **self._extract_linkedin_article(article),
+            'author_name': self._format_linkedin_name(data.get('author~', {})),
+            'published_date': datetime.fromtimestamp(data.get('created', {}).get('time', 0) / 1000),
+            'linkedin_post_urn': data.get('id'),
+            'linkedin_author_urn': data.get('author'),
+            'message': data.get('specificContent', {}).get('com.linkedin.ugc.ShareContent', {}).get('shareCommentary', {}).get('text'),
+            'linkedin_author_image_url': self.account_id._extract_linkedin_picture_url(data.get('author~')),
+            'stream_post_image_ids': [(5, 0)] + [(0, 0, image_value) for image_value in self._extract_linkedin_image(medias)],
         }
+        post_values.update(self._extract_linkedin_article(medias))
+        return post_values
 
-    def _extract_linkedin_image(self, post_data):
-        # single image post
-        single_image = post_data.get('content', {}).get('media', {}).get('downloadUrl')
-        if single_image:
-            return [{'image_url': self._enforce_url_scheme(single_image)}]
-
-        # multi-images post
-        images = post_data.get('content', {}).get('multiImage', {}).get('images', [])
+    def _extract_linkedin_image(self, medias):
         return [
-            {'image_url': self._enforce_url_scheme(image.get('downloadUrl'))}
-            for image in images if image.get('downloadUrl')
+            {'image_url': self._enforce_url_scheme(media.get('originalUrl'))}
+            for media in medias
+            if media.get('originalUrl') and 'digitalmediaAsset' in media.get('media', '')
         ]
 
-    def _extract_linkedin_article(self, article):
-        if not article:
+    def _extract_linkedin_article(self, medias):
+        if not medias or 'article' not in medias[0].get('media', ''):
             return {}
 
         return {
-            'link_title': article.get('title', '') or article.get('source', ''),
-            'link_description': article.get('description', ''),
-            'link_url': self._enforce_url_scheme(article.get('source'))
+            'link_title': medias[0].get('title', {}).get('text'),
+            'link_description': medias[0].get('description', {}).get('text'),
+            'link_image_url': self._enforce_url_scheme((medias[0].get('thumbnails') or [{}])[0].get('url')),
+            'link_url': self._enforce_url_scheme(medias[0].get('originalUrl'))
         }
 
     def _enforce_url_scheme(self, url):
@@ -197,11 +135,3 @@ class SocialStreamLinkedIn(models.Model):
             return url
 
         return 'https://%s' % url
-
-    def _format_from_linkedin_little_text(self, input_string):
-        """
-        Replaces escaped versions of the characters `(){}<>[]_` with their original characters,
-        """
-        pattern = "\\\\([\\(\\)\\<\\>\\{\\}\\[\\]\\_\\|\\*\\~\\#\\@])"
-        output_string = re.sub(pattern, lambda match: match.group(1), input_string)
-        return output_string

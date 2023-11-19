@@ -68,7 +68,9 @@ class TestController(HttpCase):
   <rect x="80" y="80" width="300" height="300" style="fill:#383E45;" />
 </svg>
         """
-        attachment = self.env['ir.attachment'].create({
+        # Need to bypass security check to write image with mimetype image/svg+xml
+        context = {'binary_field_real_user': self.env['res.users'].sudo().browse([1])}
+        attachment = self.env['ir.attachment'].sudo().with_context(context).create({
             'name': 'test.svg',
             'mimetype': 'image/svg+xml',
             'datas': binascii.b2a_base64(svg, newline=False),
@@ -145,6 +147,6 @@ class TestController(HttpCase):
         self.assertTrue(attachment)
 
         domain = [('name', '=', 'pixel')]
-        result = attachment.search(domain)
+        result = attachment.search_read(domain)
         self.assertTrue(len(result), "No attachment fetched")
-        self.assertEqual(result, attachment)
+        self.assertEqual(result[0]['id'], attachment.id)

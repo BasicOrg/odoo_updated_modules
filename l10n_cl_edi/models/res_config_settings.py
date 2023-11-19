@@ -2,6 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import fields, models
 
+from .res_company import L10N_CL_SII_REGIONAL_OFFICES_ITEMS
+
 
 class ResConfigSettings(models.TransientModel):
 

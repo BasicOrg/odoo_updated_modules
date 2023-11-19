@@ -3,16 +3,19 @@
 # 	* privacy_lookup
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Christophe CHAUVET <christophe.chauvet@gmail.com>, 2022
+# Cécile Collart <cco@odoo.com>, 2022
+# Jolien De Paepe, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-06-09 14:06+0000\n"
+"PO-Revision-Date: 2022-09-22 05:54+0000\n"
+"Last-Translator: Jolien De Paepe, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -27,12 +30,12 @@ msgstr "Note additionnelle"
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log__anonymized_email
 msgid "Anonymized Email"
-msgstr "Email anonyme"
+msgstr "Email masqué"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log__anonymized_name
 msgid "Anonymized Name"
-msgstr "Nom anonyme"
+msgstr "Nom masqué"
 
 #. module: privacy_lookup
 #: model:ir.actions.server,name:privacy_lookup.ir_actions_server_archive_all
@@ -40,7 +43,6 @@ msgid "Archive Selection"
 msgstr "Archiver la sélection"
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/wizard/privacy_lookup_wizard.py:0
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_lookup_wizard_line_view_search
 #, python-format
@@ -87,7 +89,6 @@ msgid "Delete Selection"
 msgstr "Supprimer la sélection"
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/wizard/privacy_lookup_wizard.py:0
 #, python-format
 msgid "Deleted"
@@ -98,7 +99,7 @@ msgstr "Supprimé"
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__display_name
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Afficher le nom"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__res_model
@@ -135,7 +136,7 @@ msgstr "Géré par"
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__has_active
 msgid "Has Active"
-msgstr "A une activité"
+msgstr ""
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log__id
@@ -156,18 +157,25 @@ msgid "Is Unlinked"
 msgstr "N'est pas lié"
 
 #. module: privacy_lookup
+#: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log____last_update
+#: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard____last_update
+#: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log__write_uid
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__write_uid
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_log__write_date
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__write_date
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
+msgstr "Dernière mise à jour le"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__line_ids
@@ -177,12 +185,12 @@ msgstr "Ligne"
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__line_count
 msgid "Line Count"
-msgstr "Nombre de lignes"
+msgstr "Compter les lignes"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard__log_id
 msgid "Log"
-msgstr "Publier"
+msgstr "Enregistrer"
 
 #. module: privacy_lookup
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_lookup_wizard_view_form
@@ -213,7 +221,7 @@ msgstr "Confidentialité"
 #: model:ir.model,name:privacy_lookup.model_privacy_log
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_log_view_form
 msgid "Privacy Log"
-msgstr "Privacy log"
+msgstr "Privacy Log"
 
 #. module: privacy_lookup
 #: model:ir.actions.act_window,name:privacy_lookup.privacy_log_action
@@ -221,10 +229,9 @@ msgstr "Privacy log"
 #: model:ir.ui.menu,name:privacy_lookup.pricacy_log_menu
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_log_view_list
 msgid "Privacy Logs"
-msgstr "Privacy logs"
+msgstr "Privacy Logs"
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/wizard/privacy_lookup_wizard.py:0
 #: model:ir.actions.act_window,name:privacy_lookup.action_privacy_lookup_wizard
 #: model:ir.actions.server,name:privacy_lookup.ir_action_server_action_privacy_lookup_partner
@@ -232,22 +239,22 @@ msgstr "Privacy logs"
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_lookup_wizard_view_form
 #, python-format
 msgid "Privacy Lookup"
-msgstr "Privacy Lookup"
+msgstr "Privacy recherche"
 
 #. module: privacy_lookup
 #: model:ir.actions.act_window,name:privacy_lookup.action_privacy_lookup_wizard_line
 msgid "Privacy Lookup Line"
-msgstr "Ligne de Privacy Lookup"
+msgstr "Ligne de recherche Privacy"
 
 #. module: privacy_lookup
 #: model:ir.model,name:privacy_lookup.model_privacy_lookup_wizard
 msgid "Privacy Lookup Wizard"
-msgstr "Assistant de Privacy Lookup"
+msgstr "Assistant de recherche Privacy"
 
 #. module: privacy_lookup
 #: model:ir.model,name:privacy_lookup.model_privacy_lookup_wizard_line
 msgid "Privacy Lookup Wizard Line"
-msgstr "Ligne d'assistant de Privacy Lookup"
+msgstr "Ligne d'assistant de recherche Privacy"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__resource_ref
@@ -267,12 +274,12 @@ msgstr "Références"
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__res_model_id
 msgid "Related Document Model"
-msgstr "Modèle de document associé"
+msgstr "Modèle de document concerné"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__res_id
 msgid "Resource ID"
-msgstr "ID ressource"
+msgstr "ID de la ressource"
 
 #. module: privacy_lookup
 #: model:ir.model.fields,field_description:privacy_lookup.field_privacy_lookup_wizard_line__res_name
@@ -285,14 +292,12 @@ msgid "Search References"
 msgstr "Préférences de recherche"
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/wizard/privacy_lookup_wizard.py:0
 #, python-format
 msgid "The record is already unlinked."
 msgstr "L'enregistrement est déjà dissocié."
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/models/privacy_log.py:0
 #, python-format
 msgid "This email address is not valid (%s)"
@@ -302,13 +307,12 @@ msgstr "Cette adresse email n'est pas valide (%s)"
 #: model_terms:ir.ui.view,arch_db:privacy_lookup.privacy_lookup_wizard_line_view_tree
 msgid ""
 "This operation is irreversible. Do you wish to proceed to the record "
-"deletion?"
+"deletion ?"
 msgstr ""
-"Cette opération est irréversible. Êtes-vous sûr de vouloir supprimer "
-"l'enregistrement ?"
+"Cette opération est irréversible. Souhaitez-vous procéder à la suppression "
+"de l'enregistrement ?"
 
 #. module: privacy_lookup
-#. odoo-python
 #: code:addons/privacy_lookup/wizard/privacy_lookup_wizard.py:0
 #, python-format
 msgid "Unarchived"

@@ -13,13 +13,10 @@ Org Chart Widget for HR
 This module extend the employee form with a organizational chart.
 (N+1, N+2, direct subordinates)
         """,
-    'depends': ['hr', 'web_hierarchy'],
-    'auto_install': ['hr'],
+    'depends': ['hr'],
+    'auto_install': True,
     'data': [
-        'views/hr_department_views.xml',
-        'views/hr_views.xml',
-        'views/hr_employee_public_views.xml',
-        'views/hr_org_chart_menus.xml',
+        'views/hr_views.xml'
     ],
     'assets': {
         'web._assets_primary_variables': [
@@ -27,7 +24,6 @@ This module extend the employee form with a organizational chart.
         ],
         'web.assets_backend': [
             'hr_org_chart/static/src/fields/*',
-            'hr_org_chart/static/src/views/**/*',
         ],
         'web.qunit_suite_tests': [
             'hr_org_chart/static/tests/**/*',

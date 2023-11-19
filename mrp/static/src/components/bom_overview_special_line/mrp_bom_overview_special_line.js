@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import { formatFloatTime, formatMonetary } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
-import { Component } from "@odoo/owl";
+import { formatFloat, formatFloatTime, formatMonetary } from "@web/views/fields/formatters";
+
+const { Component } = owl;
 
 export class BomOverviewSpecialLine extends Component {
     setup() {
@@ -11,14 +11,18 @@ export class BomOverviewSpecialLine extends Component {
         this.formatMonetary = (val) => formatMonetary(val, { currencyId: this.data.currency_id });
     }
 
+    //---- Handlers ----
+
+    onToggleFolded() {
+        if (this.props.parentId) {
+            this.props.bus.trigger(`toggle-fold-${this.props.parentId}`);
+        }
+    }
+
     //---- Getters ----
 
     get data() {
         return this.props.data;
-    }
-
-    get precision() {
-        return this.props.precision;
     }
 
     get hasFoldButton() {
@@ -48,7 +52,9 @@ export class BomOverviewSpecialLine extends Component {
 
 BomOverviewSpecialLine.template = "mrp.BomOverviewSpecialLine";
 BomOverviewSpecialLine.props = {
+    bus: Object,
     type: String,
+    parentId: { type: String, optional: true },
     isFolded: { type: Boolean, optional: true },
     showOptions: {
         type: Object,
@@ -62,7 +68,6 @@ BomOverviewSpecialLine.props = {
         },
     },
     data: Object,
-    precision: Number,
     toggleFolded: { type: Function, optional: true },
 };
 BomOverviewSpecialLine.defaultProps = {

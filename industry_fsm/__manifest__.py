@@ -22,15 +22,17 @@ Adds the following options:
     'version': '1.0',
     'depends': ['project_enterprise', 'timesheet_grid', 'base_geolocalize'],
     'data': [
+        'report/worksheet_custom_report_templates.xml',
+        'report/worksheet_custom_reports.xml',
         'data/fsm_data.xml',
         'data/mail_template_data.xml',
         'security/fsm_security.xml',
         'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
+        'report/project_report_views.xml',
         'views/hr_timesheet_views.xml',
         'views/fsm_views.xml',
         'views/project_task_views.xml',
-        'report/project_report_views.xml',
         'views/res_partner_views.xml',
         'views/project_sharing_views.xml',
         'views/project_portal_templates.xml',
@@ -45,9 +47,6 @@ Adds the following options:
         ],
         'web.assets_frontend': [
             'industry_fsm/static/src/js/tours/**/*',
-        ],
-        'web.assets_tests': [
-            'industry_fsm/static/tests/tours/**/*',
         ],
     },
     'license': 'OEEL-1',

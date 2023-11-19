@@ -17,7 +17,7 @@
                                 </div>
                             </button>
                         </div>
-                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <div class="oe_title">
                             <label for="name"/>
                             <h1>
@@ -52,30 +52,15 @@
             <field eval="8" name="priority"/>
             <field name="arch" type="xml">
                 <tree string="Analytic Accounts" multi_edit="1">
-                    <field name="company_id" column_invisible="True"/>
-                    <field name="currency_id" column_invisible="True"/>
                     <field name="name" string="Name"/>
                     <field name="code"/>
                     <field name="partner_id"/>
                     <field name="plan_id"/>
-                    <field name="active" column_invisible="True"/>
+                    <field name="active" invisible="1"/>
                     <field name="company_id" groups="base.group_multi_company"/>
                     <field name="debit" sum="Debit"/>
                     <field name="credit" sum="Credit"/>
                     <field name="balance" sum="Balance"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_account_analytic_account_list_select" model="ir.ui.view">
-            <field name="name">account.analytic.account.list.select</field>
-            <field name="model">account.analytic.account</field>
-            <field name="mode">primary</field>
-            <field eval="18" name="priority"/>
-            <field name="inherit_id" ref="analytic.view_account_analytic_account_list"/>
-            <field name="arch" type="xml">
-                <tree position="attributes">
-                    <attribute name="multi_edit">0</attribute>
                 </tree>
             </field>
         </record>
@@ -141,6 +126,7 @@
 
         <record id="action_account_analytic_account_form" model="ir.actions.act_window">
             <field name="name">Analytic Accounts</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.analytic.account</field>
             <field name="search_view_id" ref="view_account_analytic_account_search"/>
             <field name="context">{'search_default_active':1}</field>

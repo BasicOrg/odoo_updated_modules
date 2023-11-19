@@ -3,17 +3,17 @@
 # 	* hr_appraisal_survey
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,82 +26,168 @@ msgid "- Feedback requested by -"
 msgstr "- 要求的反馈 --"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.survey,description:hr_appraisal_survey.appraisal_360_feedback_template
-msgid ""
-"360 Degree Feedback is a system or process in which managers will ask feedback from the people who work around the employee.\n"
-"            This typically includes the employee's manager, peers, and direct reports."
-msgstr ""
-"360 度反馈是一种考评方法/过程，经理会从多位员工收集反馈、对员工进行综合考评。\n"
-"            通常涉及员工的经理、同事和直接下属。 "
-
-#. module: hr_appraisal_survey
-#: model:ir.actions.act_window,name:hr_appraisal_survey.survey_survey_action_appraisal
-#: model:ir.ui.menu,name:hr_appraisal_survey.menu_hr_appraisal_surveys
 #: model:survey.survey,title:hr_appraisal_survey.appraisal_360_feedback_template
 msgid "360 Feedback"
 msgstr "360 反馈"
 
 #. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_button_form_view
-msgid "<i class=\"oi oi-fw oi-arrow-right\"/>Edit Survey"
-msgstr "<i class=\"oi oi-fw oi-arrow-right\"/>编辑调查"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_view_form
-msgid "<span class=\"o_stat_text\">Feedbacks</span>"
-msgstr "<span class=\"o_stat_text\">反馈</span>"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_view_form
-msgid "<span> / </span>"
-msgstr "<span> - </span>"
-
-#. module: hr_appraisal_survey
 #: model:mail.template,body_html:hr_appraisal_survey.mail_template_appraisal_ask_feedback
 msgid ""
-"<t t-set=\"logged_user\" t-value=\"ctx.get('logged_user')\"></t>\n"
-"                <t t-set=\"employee\" t-value=\"ctx.get('employee')\"></t>\n"
-"                <t t-set=\"deadline\" t-value=\"ctx.get('deadline')\"></t>\n"
-"                <div style=\"margin: 0px; padding: 0px;\">\n"
+"<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                        <p style=\"margin-left:5px\">Dear <t t-out=\"object.partner_id.name or 'participant'\">[participant]</t></p>\n"
-"                        <span>\n"
-"                            <t t-out=\"logged_user\">[Current user]</t> invites you to participate in a survey and provide your feedback on <t t-out=\"employee\">[employee]</t>.\n"
-"                            Please complete the survey before the <t t-out=\"deadline\">[specified deadline]</t>.\n"
-"                        </span>\n"
-"                        <br>\n"
+"                        Dear <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t>,\n"
+"                        <br/><br/>\n"
+"                        An appraisal feedback was requested about <t t-out=\"object.appraisal_id.employee_id.name or 'this'\">this</t>.\n"
+"                        <br/>\n"
+"                        Please take time to fill the survey.\n"
+"                        <br/><br/>\n"
 "                        Thank you!\n"
-"                        <br><br>\n"
+"                        <br/><br/>\n"
+"                        <t t-if=\"ctx.get('recipient_users')\">\n"
+"                            <p style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                <a t-att-href=\"ctx.get('url')\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
+"                                    View Appraisal\n"
+"                                </a>\n"
+"                            </p>\n"
+"                        </t>\n"
+"                        <t t-if=\"ctx.get('user_body')\">\n"
+"                            <div style=\"background-color:#F8F8F8;\">\n"
+"                                <t t-out=\"ctx.get('user_body')\">Annual appraisal.</t>\n"
+"                            </div>\n"
+"                        </t>\n"
 "                        <div style=\"margin: 16px 0px 16px 0px; text-align: center;\">\n"
 "                            <a t-att-href=\"object.get_start_url()\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
-"                                Give your feedback\n"
+"                                <t t-if=\"object.survey_id.certification\">\n"
+"                                    Start Certification\n"
+"                                </t>\n"
+"                                <t t-else=\"\">\n"
+"                                    Start Survey\n"
+"                                </t>\n"
 "                            </a>\n"
 "                        </div>\n"
 "                    </p>\n"
 "                </div>\n"
 "            "
 msgstr ""
-"<t t-set=\"logged_user\" t-value=\"ctx.get('logged_user')\"></t>\n"
-"                <t t-set=\"employee\" t-value=\"ctx.get('employee')\"></t>\n"
-"                <t t-set=\"deadline\" t-value=\"ctx.get('deadline')\"></t>\n"
-"                <div style=\"margin: 0px; padding: 0px;\">\n"
+"<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                       <p style=\"margin-left:5px\">亲爱的<t t-out=\"object.partner_id.name or 'participant'\">[与会者］</t></p>\n"
-"                       <span>\n"
-"                           <t t-out=\"logged_user\">[当前用户]</t>邀请您参与一项调查，并提供您对<t t-out=\"employee\">[员工]</t>的反馈意见。\n"
-"                            请在<t t-out=\"deadline\">[指定截止日期]</t>之前完成调查。\n"
-"                       </span>\n"
-"                       <br>\n"
-"                        谢谢！\n"
-"                       <br><br>\n"
+"                        亲爱的<t t-out=\"object.partner_id.name or ''\">布兰登-弗里曼</t>\n"
+"                       <br/><br/>\n"
+"                        要求<t t-out=\"object.appraisal_id.employee_id.name or 'this'\">对此</t>进行鉴定反馈。\n"
+"                       <br/>\n"
+"                        请花时间填写调查表。\n"
+"                       <br/><br/>\n"
+"                        谢谢您!\n"
+"                       <br/><br/>\n"
+"                        <t t-if=\"ctx.get('recipient_users')\">\n"
+"                            <p style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                <a t-att-href=\"ctx.get('url')\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
+"                                    查看评估\n"
+"                                </a>\n"
+"                            </p>\n"
+"                        </t>\n"
+"                        <t t-if=\"ctx.get('user_body')\">\n"
+"                            <div style=\"background-color:#F8F8F8;\">\n"
+"                                <t t-out=\"ctx.get('user_body')\">年度评估。</t>\n"
+"                            </div>\n"
+"                        </t>\n"
 "                        <div style=\"margin: 16px 0px 16px 0px; text-align: center;\">\n"
 "                            <a t-att-href=\"object.get_start_url()\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
-"                                反馈意见\n"
+"                                <t t-if=\"object.survey_id.certification\">\n"
+"                                    开始认证\n"
+"                                </t>\n"
+"                                <t t-else=\"\">\n"
+"                                    开始调查\n"
+"                                </t>\n"
 "                            </a>\n"
 "                        </div>\n"
 "                    </p>\n"
 "                </div>\n"
 "            "
+
+#. module: hr_appraisal_survey
+#: model:survey.question,description:hr_appraisal_survey.appraisal_1
+msgid ""
+"<h2>Overall Purpose Of Employee Appraisal</h2>\n"
+"            <ul>\n"
+"                <li>To initiate a clear and open communication of performance expectations</li>\n"
+"                <li>To assist employees in their professional growth, through the identification of strengths and opportunities for development</li>\n"
+"            </ul>\n"
+"\n"
+"            <h2>At the outset of the appraisal time period</h2>\n"
+"            <ul>\n"
+"                <li>It is the joint responsibility of the employee and the supervisor (appraiser) to establish a feasible work plan for the coming year, including major employee responsibilities and corresponding benchmarks against which results will be evaluated.</li>\n"
+"                <li>Critical or key elements of performance and professional development needs (if any), should also be noted at this time</li>\n"
+"            </ul>\n"
+"\n"
+"            <h2>At the conclusion of the appraisal time period</h2>\n"
+"            <ul>\n"
+"                <li>The employee will be responsible for completing a draft of the Appraisal Form as a tool for self-appraisal and a starting point for the supervisor’s evaluation. The employee can add examples of achievements for each criterion. Once the form had been filled, the employee send it to their supervisor.</li>\n"
+"                <li>It is the primary responsibility of the supervisor to gather the necessary input from the appropriate sources of feedback (internal and/or external customers, peers).</li>\n"
+"                <li>The supervisor synthesizes and integrates all input into the completed appraisal. The motivation of the evaluation is explained in the ad hoc fields.</li>\n"
+"                <li>The employee may choose to offer comments or explanation regarding the completed review.</li>\n"
+"            </ul>\n"
+"        "
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_button_form_view
+msgid "<i class=\"fa fa-fw fa-arrow-right\"/>Edit Survey"
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model:survey.question,description:hr_appraisal_survey.appraisal_2
+#: model:survey.question,description:hr_appraisal_survey.appraisal_360_1
+#: model:survey.question,description:hr_appraisal_survey.appraisal_360_4
+#: model:survey.question,description:hr_appraisal_survey.appraisal_360_9
+#: model:survey.survey,description:hr_appraisal_survey.opinion_form
+msgid "<p> </p>"
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model:survey.survey,description:hr_appraisal_survey.appraisal_360_feedback_template
+msgid ""
+"<p>360 Degree Feedback is a system or process in which managers will ask feedback from the people who work around the employee.\n"
+"            This typically includes the employee's manager, peers, and direct reports.</p>\n"
+"        "
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model:survey.question,description:hr_appraisal_survey.appraisal_4
+msgid ""
+"<p>Identify professional, performance, or project objectives you recommend "
+"for employee’s continued career development over the coming year.</p>"
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model:survey.question,description:hr_appraisal_survey.appraisal_3
+msgid ""
+"<p>The appraiser should rate the employee’s major work accomplishments and performance according to the metric provided below:</p>\n"
+"            <ol>\n"
+"                <li> Significantly exceeds standards and expectations required of the position</li>\n"
+"                <li> Exceeds standards and expectations</li>\n"
+"                <li> Meet standards and expectations</li>\n"
+"                <li> Did not meet standards and expectations</li>\n"
+"                <li> Significantly below standards and expectations</li>\n"
+"            </ol>\n"
+"        "
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model:survey.survey,description:hr_appraisal_survey.appraisal_feedback_template
+msgid ""
+"<p>This survey allows you to give a feedback about your collaboration with an employee. Filling it helps us improving the appraisal process.</p>\n"
+"        "
+msgstr ""
+
+#. module: hr_appraisal_survey
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_view_form
+msgid ""
+"<span class=\"o_stat_text\">Feedback</span>\n"
+"                        <span class=\"o_stat_text\">Survey</span>"
+msgstr ""
+"<span class=\"o_stat_text\">反馈</span>\n"
+"                        <span class=\"o_stat_text\">调查</span>"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_1
@@ -153,20 +239,14 @@ msgstr "附加评语"
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_6
 msgid "Admit my mistakes"
-msgstr "承认我的错误"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_user_input_view_tree
-msgid "All answers"
-msgstr "全部答案"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.x_360_5_5
 msgid "Almost always"
-msgstr "几乎总是"
+msgstr ""
 
 #. module: hr_appraisal_survey
-#. odoo-python
 #: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
 #, python-format
 msgid ""
@@ -187,7 +267,6 @@ msgstr "回答截止日期"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__appraisal_id
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_survey_user_input__appraisal_id
-#: model:ir.model.fields.selection,name:hr_appraisal_survey.selection__survey_survey__survey_type__appraisal
 msgid "Appraisal"
 msgstr "评价"
 
@@ -195,6 +274,11 @@ msgstr "评价"
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__employee_id
 msgid "Appraisal Employee"
 msgstr "评估的员工"
+
+#. module: hr_appraisal_survey
+#: model:ir.model.fields,field_description:hr_appraisal_survey.field_survey_survey__is_appraisal
+msgid "Appraisal Managers Only"
+msgstr "仅评估经理"
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_hr_department__appraisal_survey_template_id
@@ -220,14 +304,7 @@ msgstr "评估"
 #. module: hr_appraisal_survey
 #: model:mail.template,name:hr_appraisal_survey.mail_template_appraisal_ask_feedback
 msgid "Appraisal: Ask Feedback"
-msgstr "人力资源评估：询问反馈"
-
-#. module: hr_appraisal_survey
-#. odoo-python
-#: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
-#, python-format
-msgid "Appraisal: Ask Feedback new template"
-msgstr "评价：询问反馈新模板"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_1_5
@@ -235,11 +312,8 @@ msgid "Appraiser"
 msgstr "评估人"
 
 #. module: hr_appraisal_survey
-#. odoo-python
-#: code:addons/hr_appraisal_survey/models/hr_appraisal.py:0
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_view_form
-#, python-format
 msgid "Ask Feedback"
 msgstr "询问反馈"
 
@@ -254,16 +328,6 @@ msgid "Asked Feedback"
 msgstr "询问反馈"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid "At the conclusion of the appraisal time period"
-msgstr "评估期结束时"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid "At the outset of the appraisal time period"
-msgstr "评估期开始时"
-
-#. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__attachment_ids
 msgid "Attachments"
 msgstr "附件"
@@ -271,7 +335,7 @@ msgstr "附件"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__author_id
 msgid "Author"
-msgstr "编写者"
+msgstr "作者"
 
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_button_form_view
@@ -279,14 +343,9 @@ msgid "Back to the appraisal"
 msgstr "返回评估"
 
 #. module: hr_appraisal_survey
-#: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__body_has_template_value
-msgid "Body content is the same as the template"
-msgstr "正文内容与模板相同"
-
-#. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__can_edit_body
 msgid "Can Edit Body"
-msgstr "可以编辑主体"
+msgstr "允许编辑"
 
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
@@ -294,9 +353,19 @@ msgid "Cancel"
 msgstr "取消"
 
 #. module: hr_appraisal_survey
+#: model:ir.model.fields,help:hr_appraisal_survey.field_survey_survey__is_appraisal
+msgid "Check this option to restrict the answers to appraisal managers only."
+msgstr "选中此选项仅将答案限制为评估经理。"
+
+#. module: hr_appraisal_survey
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_button_form_view
+msgid "Close"
+msgstr "关闭"
+
+#. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_3
 msgid "Collaborate effectively with others to achieve shared goals"
-msgstr "与他人有效协作以实现共同目标"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_9
@@ -308,11 +377,6 @@ msgstr "沟通技巧(书面和口头)：清晰，简洁，正确"
 #: model:ir.model,name:hr_appraisal_survey.model_res_company
 msgid "Companies"
 msgstr "公司"
-
-#. module: hr_appraisal_survey
-#: model:ir.model.fields,field_description:hr_appraisal_survey.field_hr_appraisal__completed_survey_count
-msgid "Completed Survey Count"
-msgstr "已完成调查计数"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_3
@@ -338,7 +402,7 @@ msgstr "内容"
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_2
 msgid "Create space for different ideas and options to be voiced"
-msgstr "为表达不同想法和选项创造空间"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__create_uid
@@ -348,19 +412,12 @@ msgstr "创建人"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_14
 msgid "Creativity and forward looking aptitude"
 msgstr "创新和前瞻能力"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"Critical or key elements of performance and professional development needs "
-"(if any), should also be noted at this time"
-msgstr "此时，还应注意绩效和专业发展需求（如有）的关键因素"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_8
@@ -393,11 +450,6 @@ msgid "Department"
 msgstr "部门"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid "Did not meet standards and expectations"
-msgstr "未达到标准和预期"
-
-#. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__display_name
 msgid "Display Name"
 msgstr "显示名称"
@@ -405,12 +457,7 @@ msgstr "显示名称"
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_10
 msgid "Do you have any comment to tell me and help me improve?"
-msgstr "你有什么意见要告诉我并帮助我改进吗？"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_user_input_view_tree
-msgid "Employee"
-msgstr "员工"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model,name:hr_appraisal_survey.model_hr_appraisal
@@ -443,55 +490,40 @@ msgid "Enthusiasm & implication toward projects/assignments"
 msgstr "对项目/任务的热情和憧憬"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid "Exceeds standards and expectations"
-msgstr "超出标准和预期"
-
-#. module: hr_appraisal_survey
-#. odoo-python
-#: code:addons/hr_appraisal_survey/models/hr_appraisal.py:0
-#, python-format
-msgid "Feedback Surveys"
-msgstr "反馈调查"
-
-#. module: hr_appraisal_survey
-#. odoo-python
 #: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
 #, python-format
 msgid "Fill the feedback form on survey"
 msgstr "填写调查反馈表"
 
 #. module: hr_appraisal_survey
+#: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__email_from
+msgid "From"
+msgstr "从"
+
+#. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_5
 msgid "How do you feel to work with me? Do I ... "
-msgstr "你觉得和我一起工作怎么样？我..."
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.appraisal_360_3_sug5
 msgid "I'm not from the company."
-msgstr "我不是公司的人。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.appraisal_360_3_sug3
 msgid "I'm part of your management."
-msgstr "我是你们管理层的一部分。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.appraisal_360_3_sug4
 msgid "I'm referring to you."
-msgstr "我指的是你。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__id
 msgid "ID"
 msgstr "ID"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_4
-msgid ""
-"Identify professional, performance, or project objectives you recommend for "
-"employee’s continued career development over the coming year."
-msgstr "根据员工未来一年的职业持续发展，提出您建议的专业、绩效或项目目标。"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_5
@@ -501,29 +533,17 @@ msgstr "主动性和自主性"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__is_mail_template_editor
 msgid "Is Editor"
-msgstr "是编辑者"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"It is the joint responsibility of the employee and the supervisor "
-"(appraiser) to establish a feasible work plan for the coming year, including"
-" major employee responsibilities and corresponding benchmarks against which "
-"results will be evaluated."
-msgstr "制定下一年度可行的工作计划，包括员工的主要职责和评估结果的相应标准，是员工和主管（评估人）的共同责任。"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"It is the primary responsibility of the supervisor to gather the necessary "
-"input from the appropriate sources of feedback (internal and/or external "
-"customers, peers)."
-msgstr "主管的首要责任是从合适的反馈来源（内部和/或外部客户、同行）收集必要的意见。"
+msgstr "编辑"
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__lang
 msgid "Language"
 msgstr "语言"
+
+#. module: hr_appraisal_survey
+#: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__write_uid
@@ -533,7 +553,7 @@ msgstr "最后更新人"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_2_3
@@ -550,12 +570,7 @@ msgstr "领导力：帮助下属的专业能力持续增长"
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_1
 msgid "Listen well to others"
-msgstr "听听别人的意见"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
-msgid "Load template"
-msgstr "加载模板"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__template_id
@@ -563,12 +578,6 @@ msgid "Mail Template"
 msgstr "邮件模板"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid "Meet standards and expectations"
-msgstr "达到标准和预期"
-
-#. module: hr_appraisal_survey
-#. odoo-python
 #: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
 #, python-format
 msgid "Missing email"
@@ -592,7 +601,7 @@ msgstr "目标"
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.x_360_5_4
 msgid "Often"
-msgstr "经常"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
@@ -607,18 +616,8 @@ msgid ""
 "a placeholder expression that provides the appropriate language, e.g. {{ "
 "object.partner_id.lang }}."
 msgstr ""
-"发送邮件时可选择的翻译代码（ISO 代码）。如果未设置，将使用英文版本。一般使用占位符确定适当语言，例如{{ "
-"object.partner_id.lang }}。"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid "Overall Purpose Of Employee Appraisal"
-msgstr "员工评估的总体目标"
-
-#. module: hr_appraisal_survey
-#: model:ir.model.fields,help:hr_appraisal_survey.field_survey_user_input__requested_by
-msgid "Partner-related data of the user"
-msgstr "用户的合作伙伴相关数据"
+"在发送邮件时可选择的语言代码(ISO 代码)。如果没有设置，会使用英文版本。一般用占位符来确定合适的语言，例如: {{ "
+"object.partner_id.lang }}."
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_4_2
@@ -653,32 +652,22 @@ msgstr "及时考勤记录"
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.x_360_5_2
 msgid "Rarely"
-msgstr "极少"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__employee_ids
 msgid "Recipients"
-msgstr "收款人"
+msgstr "收件人"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_7
 msgid "Recognize the contributions of teammates and peers"
-msgstr "认可队友和同行的贡献"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__render_model
 msgid "Rendering Model"
-msgstr "渲染模型"
-
-#. module: hr_appraisal_survey
-#: model:ir.model.fields,field_description:hr_appraisal_survey.field_survey_user_input__requested_by
-msgid "Requested by"
-msgstr "申请人"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_user_input_view_tree
-msgid "Resend"
-msgstr "重发"
+msgstr "呈现模型"
 
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_page_statistics_header
@@ -698,24 +687,9 @@ msgid ""
 msgstr "自下而上的调查缓解表现出来的技术、组织、结构或关系而产生的结果"
 
 #. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
-msgid "Save as a new template"
-msgstr "保存为新模版"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
-msgid "Save as new template"
-msgstr "保存为新模版"
-
-#. module: hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_user_input_view_tree
-msgid "See Answers"
-msgstr "查看答案"
-
-#. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_5
 msgid "Seek to understand the problem before working on a solution"
-msgstr "在制定解决方案之前寻求了解问题"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
@@ -730,28 +704,17 @@ msgstr "发出的调查"
 #. module: hr_appraisal_survey
 #: model:mail.template,description:hr_appraisal_survey.mail_template_appraisal_ask_feedback
 msgid "Sent to employees to gather appraisal feedback"
-msgstr "发送给员工以收集评估反馈"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.y_360_5_4
 msgid "Show good judgment in decision making"
-msgstr "在决策中表现出良好的判断力"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid "Significantly below standards and expectations"
-msgstr "明显低于标准和预期"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid ""
-"Significantly exceeds standards and expectations required of the position"
-msgstr "明显高于岗位标准和预期"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.x_360_5_3
 msgid "Sometimes"
-msgstr "有时候"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__subject
@@ -762,7 +725,7 @@ msgstr "主题"
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.appraisal_ask_feedback_view_form
 msgid "Subject..."
-msgstr "主题......"
+msgstr "主题..."
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_3_2
@@ -777,10 +740,8 @@ msgid "Survey"
 msgstr "调查"
 
 #. module: hr_appraisal_survey
-#. odoo-python
 #: code:addons/hr_appraisal_survey/models/hr_appraisal.py:0
-#: code:addons/hr_appraisal_survey/models/survey.py:0
-#: code:addons/hr_appraisal_survey/models/survey.py:0
+#: code:addons/hr_appraisal_survey/models/hr_appraisal.py:0
 #: code:addons/hr_appraisal_survey/models/survey.py:0
 #, python-format
 msgid "Survey Feedback"
@@ -794,12 +755,7 @@ msgstr "调查标签"
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__survey_template_id
 msgid "Survey Template"
-msgstr "调查模板"
-
-#. module: hr_appraisal_survey
-#: model:ir.model.fields,field_description:hr_appraisal_survey.field_survey_survey__survey_type
-msgid "Survey Type"
-msgstr "调查类型"
+msgstr " 调查模板"
 
 #. module: hr_appraisal_survey
 #: model:ir.model,name:hr_appraisal_survey.model_survey_user_input
@@ -807,9 +763,15 @@ msgid "Survey User Input"
 msgstr "调查用户输入"
 
 #. module: hr_appraisal_survey
+#: model:ir.actions.act_window,name:hr_appraisal_survey.survey_survey_action_appraisal
+#: model:ir.ui.menu,name:hr_appraisal_survey.menu_hr_appraisal_surveys
+msgid "Surveys"
+msgstr "调查"
+
+#. module: hr_appraisal_survey
 #: model:mail.template,subject:hr_appraisal_survey.mail_template_appraisal_ask_feedback
 msgid "Take part in {{ object.employee_id.name or 'this' }} appraisal"
-msgstr "参加 {{ object.employee_id.name or 'this' }} 评价"
+msgstr "参加{{ object.employee_id.name 或 'this' }}的考核。}}的考核"
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_4
@@ -824,49 +786,13 @@ msgid "Technical skills regarding to the job requirements"
 msgstr "对于工作要求的技能"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_3
-msgid ""
-"The appraiser should rate the employee’s major work accomplishments and "
-"performance according to the metric provided below:"
-msgstr "考核者应根据以下指标对员工的主要工作成就和绩效进行评分："
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"The employee may choose to offer comments or explanation regarding the "
-"completed review."
-msgstr "员工可选择就已完成的评估提出意见或解释。"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"The employee will be responsible for completing a draft of the Appraisal "
-"Form as a tool for self-appraisal and a starting point for the supervisor’s "
-"evaluation. The employee can add examples of achievements for each "
-"criterion. Once the form had been filled, the employee send it to their "
-"supervisor."
-msgstr "员工将负责填写评估表初稿，作为自我评估的工具和主管评估的参考。员工可以为每项标准添加成就实例。表格填写完毕后，员工将其发送给主管。"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"The supervisor synthesizes and integrates all input into the completed "
-"appraisal. The motivation of the evaluation is explained in the ad hoc "
-"fields."
-msgstr "主管综合所有意见和建议，总结出完整评估报告。评估的动机在特别领域中说明。"
-
-#. module: hr_appraisal_survey
-#. odoo-python
 #: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
 #, python-format
 msgid ""
 "This employee doesn't have any mail address registered and will not receive any email. \n"
-"The following employees do not have any email: \n"
+"The following employees do not have any email : \n"
 "%s"
 msgstr ""
-"员工未注册邮件，无电子邮件地址，不会收到任何电子邮件。\n"
-"以下员工无电子邮件：\n"
-"%s"
 
 #. module: hr_appraisal_survey
 #: model:ir.model.fields,help:hr_appraisal_survey.field_hr_department__appraisal_survey_template_id
@@ -878,14 +804,7 @@ msgstr "这个字段与Appraisal App上的360反馈设置一起使用，目的�
 #. module: hr_appraisal_survey
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.hr_appraisal_survey_button_form_view
 msgid "This is a Test Survey."
-msgstr "这是一项测试调查。"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.survey,description:hr_appraisal_survey.appraisal_feedback_template
-msgid ""
-"This survey allows you to give a feedback about your collaboration with an "
-"employee. Filling it helps us improving the appraisal process."
-msgstr "通过本调查表，您可以就与员工的合作情况提出反馈意见。填写问卷有助于我们改进评估流程。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.arow_3_1_15
@@ -893,21 +812,10 @@ msgid "Time management: projects/tasks are completed on time"
 msgstr "时间管理：项目/任务按时完成"
 
 #. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid ""
-"To assist employees in their professional growth, through the identification"
-" of strengths and opportunities for development"
-msgstr "通过挖掘优势和发现机会，助力员工实现职业发展"
-
-#. module: hr_appraisal_survey
-#: model_terms:survey.question,description:hr_appraisal_survey.appraisal_1
-msgid "To initiate a clear and open communication of performance expectations"
-msgstr "展开公开透明的沟通，讨论绩效期望"
-
-#. module: hr_appraisal_survey
-#: model:ir.model.fields,field_description:hr_appraisal_survey.field_hr_appraisal__total_survey_count
-msgid "Total Survey Count"
-msgstr "调查总计数"
+#: code:addons/hr_appraisal_survey/wizard/appraisal_ask_feedback.py:0
+#, python-format
+msgid "Unable to post message, please configure the sender's email address."
+msgstr "无法发布邮件，请配置发件人的EMail地址。"
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_5_1
@@ -917,39 +825,49 @@ msgid ""
 msgstr "在下方对上述绩效评估作出评论。"
 
 #. module: hr_appraisal_survey
+#: model:ir.model.fields,field_description:hr_appraisal_survey.field_appraisal_ask_feedback__user_body
+msgid "User Contents"
+msgstr "用户内容"
+
+#. module: hr_appraisal_survey
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_survey.survey_user_input_view_tree
+msgid "View Results"
+msgstr "查看结果"
+
+#. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.appraisal_360_3_sug1
 msgid "We're colleagues, for the same manager."
-msgstr "我们是同事，为同一个经理服务。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question.answer,value:hr_appraisal_survey.appraisal_360_3_sug2
 msgid "We're colleagues, in different teams."
-msgstr "我们是同事，在不同的团队中。"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_6
 msgid "What should I do in order to improve on my day-to-day job?"
-msgstr "我应该怎么做才能改善我的日常工作？"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_7
 msgid "What's my greatest strength?"
-msgstr "我最大的优势是什么？"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_8
 msgid "What's my greatest weakness?"
-msgstr "我最大的弱点是什么？"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_3
 msgid "What's the relation between us?"
-msgstr "我们之间是什么关系？"
+msgstr ""
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_360_2
 msgid "What's your name?"
-msgstr "您叫什么名字？"
+msgstr "你叫什么名字？"
 
 #. module: hr_appraisal_survey
 #: model:survey.question,title:hr_appraisal_survey.appraisal_2

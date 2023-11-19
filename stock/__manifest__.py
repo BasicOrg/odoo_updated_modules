@@ -27,6 +27,7 @@
         'data/stock_sequence_data.xml',
         'data/stock_traceability_report_data.xml',
 
+        'report/report_stock_forecasted.xml',
         'report/report_stock_quantity.xml',
         'report/report_stock_reception.xml',
         'report/stock_report_views.xml',
@@ -41,7 +42,6 @@
         'report/picking_templates.xml',
         'report/product_templates.xml',
         'report/product_packaging.xml',
-        'report/report_return_slip.xml',
         'data/mail_template_data.xml',
 
         'views/stock_menu_views.xml',
@@ -49,6 +49,7 @@
         'wizard/stock_change_product_qty_views.xml',
         'wizard/stock_picking_return_views.xml',
         'wizard/stock_scheduler_compute_views.xml',
+        'wizard/stock_immediate_transfer_views.xml',
         'wizard/stock_inventory_conflict.xml',
         'wizard/stock_backorder_confirmation_views.xml',
         'wizard/stock_quantity_history.xml',
@@ -65,7 +66,6 @@
         'wizard/stock_inventory_warning.xml',
         'wizard/stock_label_type.xml',
         'wizard/stock_lot_label_layout.xml',
-        'wizard/stock_quant_relocate.xml',
 
         'views/res_partner_views.xml',
         'views/product_strategy_views.xml',
@@ -93,23 +93,33 @@
     'application': True,
     'pre_init_hook': 'pre_init_hook',
     'post_init_hook': '_assign_default_mail_template_picking_id',
-    'uninstall_hook': 'uninstall_hook',
     'assets': {
         'web.report_assets_common': [
+            # legacy reports (delete when all reports are converted)
+            'stock/static/src/legacy_web_report/utils.js',
+            'stock/static/src/legacy_web_report/report.js',
+            'stock/static/src/legacy_web_report/report_backend.scss',
+
+            'web/static/src/legacy/scss/views.scss',
             'stock/static/src/scss/report_stock_reception.scss',
             'stock/static/src/scss/report_stock_rule.scss',
+        ],
+        'web.assets_common': [
+            'stock/static/src/scss/stock_traceability_report.scss',
         ],
         'web.assets_backend': [
             'stock/static/src/**/*.js',
             'stock/static/src/**/*.xml',
-            'stock/static/src/scss/*.scss',
+            'stock/static/src/scss/stock_forecasted.scss',
+            'stock/static/src/scss/forecast_widget.scss',
+            'stock/static/src/scss/stock_empty_screen.scss',
             'stock/static/src/views/**/*',
         ],
         'web.assets_frontend': [
             'stock/static/src/scss/stock_traceability_report.scss',
         ],
         'web.assets_tests': [
-            'stock/static/tests/tours/*.js',
+            'stock/static/tests/tours/stock_report_tests.js',
         ],
         'web.qunit_suite_tests': [
             'stock/static/tests/inventory_report_list_tests.js',

@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
             <data>
                  <xpath expr="//field[@name='company_registry']" position="after">
-                    <field name="l10n_de_datev_consultant_number" invisible="country_code != 'DE'"/>
-                    <field name="l10n_de_datev_client_number" invisible="country_code != 'DE'"/>
+                    <field name="l10n_de_datev_consultant_number" attrs="{'invisible': [('country_code', '!=', 'DE')]}"/>
+                    <field name="l10n_de_datev_client_number" attrs="{'invisible': [('country_code', '!=', 'DE')]}"/>
                  </xpath>
             </data>
             </field>
@@ -22,8 +22,7 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='accounting_entries']" position="inside">
-                    <field name="l10n_de_datev_identifier" groups="base.group_no_one" options="{'format': false}" invisible="'DE' not in fiscal_country_codes"/>
-                    <field name="l10n_de_datev_identifier_customer" groups="base.group_no_one" options="{'format': false}"  invisible="'DE' not in fiscal_country_codes"/>
+                    <field name="l10n_de_datev_identifier" groups="base.group_no_one" options="{'format': false}" />
                 </xpath>
             </field>
         </record>

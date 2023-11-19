@@ -1,25 +1,38 @@
-/** @odoo-module **/
+odoo.define('barcodes.barcode_mobile_tests', function (require) {
+    "use strict";
 
-    import {barcodeService} from "@barcodes/barcode_service";
-    import { makeTestEnv } from "@web/../tests/helpers/mock_env";
-    import { registry } from "@web/core/registry";
-    import testUtils from "@web/../tests/legacy/helpers/test_utils";
+    const {barcodeService} = require("@barcodes/barcode_service");
+    const {barcodeRemapperService} = require("@barcodes/js/barcode_events");
+    const { makeTestEnv } = require("@web/../tests/helpers/mock_env");
+    const { registry } = require("@web/core/registry");
+    var testUtils = require('web.test_utils');
 
     const maxTimeBetweenKeysInMs = barcodeService.maxTimeBetweenKeysInMs;
     const isMobileChrome = barcodeService.isMobileChrome;
     var triggerEvent = testUtils.dom.triggerEvent;
 
     function triggerKeyDown(char, target = document.body) {
+        let keycode;
+        if (char === 'Enter') {
+            keycode = $.ui.keyCode.ENTER;
+        } else if (char === "Tab") {
+            keycode = $.ui.keyCode.TAB;
+        } else {
+            keycode = char.charCodeAt(0);
+        }
         triggerEvent(target, 'keydown', {
             key: char,
+            keyCode: keycode,
         });
     }
-
+    
     QUnit.module('Barcodes', {
         before() {
             barcodeService.maxTimeBetweenKeysInMs = 0;
             barcodeService.isMobileChrome = true;
             registry.category("services").add("barcode", barcodeService, { force: true});
+            // remove this one later
+            registry.category("services").add("barcode_remapper", barcodeRemapperService);
             this.env = makeTestEnv();
         },
         after() {
@@ -69,7 +82,7 @@
                 $element = $form.find('input[name=' + keepFocusedElements[i] + ']');
                 $element.focus();
                 triggerKeyDown('c', $element[0]);
-
+    
                 assert.strictEqual(document.activeElement, $element[0],
                     "input " + keepFocusedElements[i] + " should keep focus");
             }
@@ -88,4 +101,5 @@
             $('#qunit-fixture').empty();
             document.querySelector('input[name=barcode]').remove();
         });
+    });
     });

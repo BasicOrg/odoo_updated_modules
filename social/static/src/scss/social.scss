@@ -64,7 +64,7 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
 
         .o_social_preview {
             font-family: $o-social-font-family-reset;
-            font-size: 1rem;
+            font-size: 1.2rem;
 
             .o_social_preview_icon_wrapper {
                 width: 2em;
@@ -99,6 +99,9 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
             font-size: 1rem;
             display: inline-block;
         }
+        br:not(:first-child) {
+            display: none;
+        }
     }
 
     &.o_social_stream_post_with_attachments {
@@ -115,7 +118,9 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
     display: block;
 
     &:hover, &:focus {
-        background: rgba($info, 0.4);
+        $bg-color: scale-color($info, $alert-border-scale);
+        background: $bg-color;
+        color: color-contrast($bg-color);
     }
 }
 
@@ -137,7 +142,7 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
         .o_social_stream_post_published_date {
             color: lighten($o-main-text-color, 10%);
             &:hover {
-                color: $o-enterprise-action-color;
+                color: $o-enterprise-primary-color;
             }
         }
     }
@@ -162,14 +167,6 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
         &:last-child {
             padding: 1rem 16px 0 8px;
         }
-    }
-
-    .o_kanbanheader_media_image {
-        object-fit: contain;
-    }
-
-    .o_kanban_header_title {
-        align-items: center;
     }
 }
 
@@ -225,6 +222,20 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
 
 .o_social_subtle_btn_disabled {
     color: lighten($o-main-text-color, 10%);
+}
+
+.o_social_author_image {
+    &:after {
+        @include o-position-absolute(0, 0, 0, 0);
+        border: 1px solid rgba(black, .1);
+        border-radius: 100%;
+        content: '';
+    }
+
+    img {
+        width: 2em;
+        height: 2em;
+    }
 }
 
 .o_social_bubble_radius {
@@ -372,6 +383,9 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
         .dropdown-toggle:after {
             content: none;
         }
+        .dropdown-item{
+            color: #666666;
+        }
     }
 
     .o_social_add_comment, .o_social_comment_image {
@@ -398,7 +412,7 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
     .o_social_comment_published_date, .o_social_post_published_date {
         color: lighten($o-main-text-color, 10%);
         &:hover {
-            color: $o-enterprise-action-color;
+            color: $o-enterprise-primary-color;
         }
     }
 
@@ -452,7 +466,7 @@ $o-social-font-family-reset: $o-font-family-sans-serif;
 
     .o_social_comment_message {
         .o_social_manage_comment {
-            margin: 0 0 auto auto;
+            margin: auto 0 auto auto;
         }
 
         .o_social_comment_text {

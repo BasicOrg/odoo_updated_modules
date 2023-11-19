@@ -12,7 +12,7 @@
         'views/mailing_mailing_views.xml',
     ],
     'demo': [
-        'demo/mailing_mailing.xml',
+        'data/mass_mailing_demo.xml',
     ],
     'auto_install': True,
     'license': 'LGPL-3',

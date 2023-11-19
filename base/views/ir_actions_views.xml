@@ -33,16 +33,12 @@
             <field name="arch" type="xml">
                 <search string="Action">
                     <field name="name" filter_domain="['|', ('name','ilike',self), ('type','ilike',self)]" string="Action"/>
-                    <group>
-                        <filter string="Action Type" name="type" context="{'group_by':'type'}"/>
-                        <filter string="Binding Type" name="binding_type" context="{'group_by':'binding_type'}"/>
-                        <filter string="Binding Model" name="binding_model_id" context="{'group_by':'binding_model_id'}"/>
-                    </group>
                 </search>
             </field>
         </record>
         <record id="ir_sequence_actions" model="ir.actions.act_window">
             <field name="name">Actions</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.actions.actions</field>
             <field name="view_id" ref="action_view_tree"/>
             <field name="search_view_id" ref="action_view_search"/>
@@ -60,34 +56,22 @@
                     <field name="binding_model_id" invisible="1"/>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="create_action" type="object"
-                                    invisible="binding_model_id" icon="fa-plus-square"
-                                    help="Display an option on related documents to print this report" class="oe_stat_button">
-                                    <div class="o_field_widget o_stat_info">
-                                        <span class="o_stat_text">Add to the 'Print' menu</span>
-                                    </div>
-                            </button>
-                            <button name="unlink_action" type="object"
-                                    invisible="not binding_model_id" icon="fa-minus-square"
-                                    help="Remove the contextual action related to this report" class="oe_stat_button">
-                                    <div class="o_field_widget o_stat_info">
-                                        <span class="o_stat_text">Remove from the 'Print' menu</span>
-                                    </div>
-                            </button>
-                            <button name="associated_view" type="object"
-                                    invisible="report_type not in ['qweb-pdf', 'qweb-html', 'qweb-text']" icon='fa-code'
-                                    class="oe_stat_button">
-                                    <div class="o_field_widget o_stat_info">
-                                        <span class="o_stat_text">Qweb Views</span>
-                                    </div>
-                            </button>
+                            <button name="create_action" string="Add in the 'Print' menu" type="object"
+                                    attrs="{'invisible':[('binding_model_id','!=',False)]}" icon="fa-plus-square"
+                                    help="Display an option on related documents to print this report" class="oe_stat_button"/>
+                            <button name="unlink_action" string="Remove from the 'Print' menu" type="object"
+                                    attrs="{'invisible':[('binding_model_id','=',False)]}" icon="fa-minus-square"
+                                    help="Remove the contextual action related to this report" class="oe_stat_button"/>
+                            <button name="associated_view" string="QWeb views" type="object"
+                                    attrs="{'invisible':[('report_type', 'not in', ['qweb-pdf', 'qweb-html', 'qweb-text'])]}" icon='fa-code'
+                                    class="oe_stat_button"/>
                         </div>
                         <group>
                             <group>
                                 <field name="name"/>
                                 <field name="report_type"/>
                                 <field name="paperformat_id"
-                                       invisible="report_type != 'qweb-pdf'"/>
+                                       attrs="{'invisible':[('report_type','not in',['qweb-pdf'])]}"/>
                             </group>
                             <group>
                                 <field name="model"/>
@@ -96,7 +80,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page name="security" string="Visibility">
+                            <page name="security" string="Security">
                                 <field name="groups_id"/>
                             </page>
                             <page name='advanced' string="Advanced Properties">
@@ -142,40 +126,12 @@
         </record>
         <record id="ir_action_report" model="ir.actions.act_window">
             <field name="name">Reports</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.actions.report</field>
             <field name="view_id" ref="act_report_xml_view_tree"/>
             <field name="search_view_id" ref="act_report_xml_search_view"/>
         </record>
         <menuitem action="ir_action_report" id="menu_ir_action_report" parent="base.next_id_6"/>
-
-        <!-- ir.actions.client -->
-
-        <record id="view_client_action_form" model="ir.ui.view">
-            <field name="name">ir.actions.client.form</field>
-            <field name="model">ir.actions.client</field>
-            <field name="arch" type="xml">
-                <form string="Client Action">
-                    <sheet>
-                        <group>
-                            <group name="main_details">
-                                <field name="name"/>
-                                <field name="xml_id" string="External ID"/>
-                                <field name="binding_type"/>
-                                <field name="tag"/>
-                            </group>
-                            <group name="action_details">
-                                <field name="type" readonly="1"/>
-                                <field name="target"/>
-                                <field name="context"/>
-                            </group>
-                        </group>
-                        <group name="help" string="Help">
-                            <field name="help" colspan="2" nolabel="1" class="oe-bordered-editor"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
 
         <!-- ir.actions.act_window -->
 
@@ -215,7 +171,6 @@
                             <group>
                                 <group name="views" string="Views">
                                     <field name="view_mode"/>
-                                    <field name="mobile_view_mode"/>
                                     <field name="view_id"/>
                                     <field name="search_view_id"/>
                                 </group>
@@ -227,13 +182,13 @@
                                 </group>
                             </group>
                             <group name="help" string="Help">
-                                <field colspan="2" name="help" options="{'codeview': true}" nolabel="1" class="oe-bordered-editor"/>
+                                <field colspan="2" name="help" nolabel="1" class="oe-bordered-editor"/>
                             </group>
                             <group name="views_tree" string="Views">
                                 <field colspan="2" name="view_ids" nolabel="1">
                                     <form string="Views">
                                         <group>
-                                            <field name="sequence"/>
+                                            <field colspan="4" name="sequence"/>
                                             <field name="view_mode"/>
                                             <field domain="[('type', '=', view_mode)]" name="view_id"/>
                                         </group>
@@ -246,7 +201,7 @@
                                 </field>
                             </group>
                         </page>
-                        <page string="Visibility" name="security">
+                        <page string="Security" name="security">
                             <field name="groups_id"/>
                         </page>
                     </notebook>
@@ -260,15 +215,12 @@
             <field name="arch" type="xml">
                 <search string="Open a Window">
                     <field name="name" filter_domain="['|', ('name','ilike',self), ('res_model','ilike',self)]" string="Action"/>
-                    <group>
-                        <filter string="Binding Model" name="binding_model_id" context="{'group_by':'binding_model_id'}"/>
-                        <filter string="Target Window" name="target" context="{'group_by':'target'}"/>
-                    </group>
                 </search>
             </field>
         </record>
         <record id="ir_action_window" model="ir.actions.act_window">
             <field name="name">Window Actions</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.actions.act_window</field>
             <field name="search_view_id" ref="view_window_action_search"/>
         </record>
@@ -286,24 +238,6 @@
         </record>
         <menuitem action="ir_action_window" id="menu_ir_action_window" parent="base.next_id_6"/>
 
-        <record id="view_client_action_tree" model="ir.ui.view">
-            <field name="name">Client Actions</field>
-            <field name="model">ir.actions.client</field>
-            <field name="arch" type="xml">
-                <tree string="Client Actions">
-                    <field name="name"/>
-                    <field name="tag"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="ir_client_actions_report" model="ir.actions.act_window">
-            <field name="name">Client Actions</field>
-            <field name="res_model">ir.actions.client</field>
-            <field name="view_id" ref="view_client_action_tree"/>
-        </record>
-        <menuitem action="ir_client_actions_report" id="menu_ir_client_actions_report" parent="base.next_id_6"/>
-
         <!-- ir.actions.server -->
 
         <record id="view_server_action_form" model="ir.ui.view">
@@ -315,124 +249,107 @@
                         <field name="binding_model_id" invisible="1"/>
                         <button name="create_action" string="Create Contextual Action" type="object"
                                 class="btn-primary"
-                                invisible="binding_model_id"
+                                attrs="{'invisible':[('binding_model_id','!=',False)]}"
                                 help="Display an option in the 'More' top-menu in order to run this action."/>
                         <button name="unlink_action" string="Remove Contextual Action" type="object"
-                                invisible="not binding_model_id"
+                                attrs="{'invisible':[('binding_model_id','=',False)]}"
                                 help="Remove 'More' top-menu contextual action related to this action"/>
                         <button name="run" string="Run" type="object"
                                 class="btn-primary"
-                                invisible="model_name != 'ir.actions.server' or state != 'code'"
+                                attrs="{'invisible':['|', ('model_id', '!=', %(base.model_ir_actions_server)s), ('state', '!=', 'code')]}"
                                 help="Run this action manually."/>
                     </header>
                     <sheet>
-                        <h1 class="oe_title">
-                            <field name="name" placeholder="e.g. Mass archive contacts"/>
-                        </h1>
-                        <div class="d-flex flex-column">
-                            <label for="state"/>
-                            <field name="state" widget="selection_badge" options="{'size': 'sm'}"/>
-                        </div>
-                        <group string="Technical Settings" groups="base.group_no_one">
-                            <group>
-                                <field name="model_id" options="{'no_create': True, 'no_open': True}" />
-                                <field name="groups_id" widget="many2many_tags" />
-                            </group>
-                        </group>
-                        <separator string="Action Details" groups="base.group_no_one" />
-                        <div class="d-flex flex-row flex-wrap gap-2" invisible="state != 'object_write'">
-                            <field name="evaluation_type" class="oe_inline"/>
-                            <field name="update_path" widget="DynamicModelFieldSelectorChar" class="oe_inline" options="{'model': 'model_name'}"/>
-                            <field name="update_field_id" invisible="1"/>
-                            <field name="value_field_to_show" invisible="1"/>
-                            <field name="update_related_model_id" invisible="1"/>
-                            <field name="update_field_type" invisible="1"/>
-                            <span invisible="evaluation_type != 'value' or not update_field_type == 'many2many'">by</span>
-                            <field name="update_m2m_operation" class="oe_inline" invisible="evaluation_type != 'value' or not update_field_type == 'many2many'" required="update_field_type == 'many2many'"/>
-                            <span invisible="evaluation_type != 'value' or update_field_type == 'many2many'">to</span>
-                            <field name="value" class="oe_inline" placeholder="Set a value..." invisible="update_field_id == False or value_field_to_show != 'value' or evaluation_type != 'value'" string="Custom Value"/>
-                            <field name="resource_ref" class="oe_inline" placeholder="Choose a value..." string="Custom Value" options="{'model_field': 'update_related_model_id', 'no_create': True, 'no_open': True}" invisible=" update_field_id == False or value_field_to_show != 'resource_ref' or evaluation_type == 'equation' or update_m2m_operation == 'clear'"/>
-                            <field name="selection_value" class="oe_inline" placeholder="Choose a value..." options="{'no_create': True, 'no_open': True}" invisible=" update_field_id == False or value_field_to_show != 'selection_value' or evaluation_type == 'equation'"/>
-                            <field name="update_boolean_value" class="oe_inline" invisible="evaluation_type != 'value' or value_field_to_show != 'update_boolean_value'" required="value_field_to_show == 'update_boolean_value'"/>
-                            <span invisible="update_field_id != False or evaluation_type == 'equation'" class="text-muted">Set a value...</span>
-                            <span invisible="evaluation_type != 'equation'">
-                                to this Python expression:
-                            </span>
-                            <div class="w-100 d-flex flex-row gap-3" invisible="evaluation_type != 'equation'">
-                                <field name="value" class="w-50" widget="code" options="{'mode': 'python'}" string="Expression"/>
-                                <div class="w-50 opacity-75">
-                                    <span colspan="2" class="text-muted"> Available variables: </span>
-                                        <ul colspan="2" class="text-muted">
-                                            <li><code>env</code>: environment on which the action is triggered</li>
-                                            <li><code>model</code>: model of the record on which the action is triggered; is a void recordset</li>
-                                            <li><code>record</code>: record on which the action is triggered</li>
-                                            <li><code>records</code>: recordset of all records on which the action is triggered in multi mode</li>
-                                            <li><code>time</code>, <code>datetime</code>, <code>dateutil</code>, <code>timezone</code>: useful Python libraries</li>
-                                            <li><code>float_compare()</code>: utility function to compare floats based on a specific precision</li>
-                                        </ul>
-                                </div>
-                            </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="e.g. Update order quantity"/></h1>
                         </div>
                         <group name="action_wrapper">
                             <group name="action_content">
+                                <field name="model_id" options="{'no_create': True}"/>
                                 <field name="model_name" invisible="1"/>
-                                <field name="available_model_ids" invisible="1"/>
-                                <field name="model_id" options="{'no_create': True, 'no_open': True}" groups="!base.group_no_one" invisible="context.get('default_model_id')"
-                                       domain="[('id', 'in', available_model_ids)]"/>
-
+                            </group>
+                            <group>
+                                <field name="state"/>
                                 <field name="type" invisible="1"/>
                                 <field name="crud_model_id"
-                                    options="{'no_create': True, 'no_open': True}"
-                                    invisible="state != 'object_create'"
-                                    required="state == 'object_create'"/>
+                                    options="{'no_create': True}"
+                                    attrs="{'invisible': [('state', '!=', 'object_create')], 'required': [('state', '=', 'object_create')]}"/>
                                 <field name="crud_model_name" invisible="1"/>
-                                <field name="value" widget="char" string="Name" invisible="state != 'object_create'"
-                                       help="The name of the record to create" placeholder="e.g. Follow-up"/>
                                 <field name="link_field_id"
                                     domain="[('model_id', '=', model_id), ('relation', '=', crud_model_name),
                                     ('ttype', 'in', ['many2one', 'one2many', 'many2many'])]"
-                                    placeholder="Select a field to link the record to"
-                                    options="{'no_create': True, 'no_open': True}"
-                                    invisible="state != 'object_create'"
+                                    options="{'no_create': True}"
+                                    attrs="{'invisible': [('state', '!=', 'object_create')]}"
                                     context="{'default_model_id': model_id, 'default_relation': crud_model_name}"/>
-                                    <field name="webhook_url" string="URL" invisible="state != 'webhook'" placeholder="e.g. https://maker.ifttt.com/use/..."/>
-                                    <field name="webhook_field_ids" string="Fields" invisible="state != 'webhook'" widget="many2many_tags" context="{'hide_model': 1}" domain="[('model_id', '=', model_id)]" placeholder="Select fields to include in the request..."/>
-                                </group>
-                                <group invisible="state != 'webhook'">
-                                    <label for="webhook_sample_payload" />
-                                    <field name="webhook_sample_payload" string="Sample Payload" nolabel="1" colspan="2" readonly="1" widget="code" options="{'mode': 'js'}" />
-                                </group>
+                            </group>
                         </group>
-                        <field name="child_ids" domain="[('model_id', '=', model_id)]" invisible="state != 'multi'"/>
-                        <p class="oe_grey" invisible="state != 'multi'">
-                            If several child actions return an action, only the last one will be executed.
-                            This may happen when having server actions executing code that returns an action, or server actions returning a client action.
-                        </p>
-                        <notebook invisible="state != 'code'">
-                            <page string="Code">
-                                <field name="code" invisible="state != 'code'" widget="code" options="{'mode': 'python'}" placeholder="Enter Python code here. Help about Python expression is available in the help tab of this document."/>
+                        <notebook>
+                            <page string="Python Code" name='code' autofocus="autofocus"
+                                    attrs="{'invisible': [('state', '!=', 'code')]}">
+                                <field name="code" widget="ace" options="{'mode': 'python'}" placeholder="Enter Python code here. Help about Python expression is available in the help tab of this document."/>
                             </page>
-                            <page string="Help">
-                                <p>The following variables can be used:</p>
-                                <ul>
-                                    <li><code>env</code>: environment on which the action is triggered</li>
-                                    <li><code>model</code>: model of the record on which the action is triggered; is a void recordset</li>
-                                    <li><code>record</code>: record on which the action is triggered; may be be void</li>
-                                    <li><code>records</code>: recordset of all records on which the action is triggered in multi mode; may be void</li>
-                                    <li><code>time</code>, <code>datetime</code>, <code>dateutil</code>, <code>timezone</code>: useful Python libraries</li>
-                                    <li><code>float_compare()</code>: utility function to compare floats based on a specific precision</li>
-                                    <li><code>log(message, level='info')</code>: logging function to record debug information in <code>ir.logging</code> table</li>
-                                    <li><code>_logger.info(message)</code>: logger to emit messages in server logs</li>
-                                    <li><code>UserError</code>: exception class for raising user-facing warning messages</li>
-                                    <li><code>Command</code>: x2many commands namespace</li>
-                                    <li>To return an action, assign: <code>action = {...}</code></li>
-                                </ul>
-                                <div >
-                                    <p>Example of Python code:</p>
-<pre style='white-space: pre-wrap'>partner_name = record.name + '_code'
+
+                            <page string="Data to Write" name="page_object" autofocus="autofocus"
+                                    attrs="{'invisible':[('state', 'not in', ['object_create', 'object_write'])]}">
+                                <p attrs="{'invisible': [('model_id', '!=', False)]}">
+                                    Please set the Model to Create before choosing values
+                                </p>
+                                <field name="fields_lines">
+                                     <tree string="Field Mappings" editable="bottom">
+                                        <field name="col1"
+                                            options="{'no_create': True}"
+                                            domain="['|', ('model_id', '=', parent.crud_model_id), ('model_id', '=', parent.model_id)]"/>
+                                        <field name="evaluation_type"/>
+                                        <field name="resource_ref"
+                                            options="{'hide_model': True, 'no_create': True}"
+                                            attrs="{'readonly': [('evaluation_type', '!=', 'reference')]}"/>
+                                        <field name="value"
+                                            attrs="{'readonly': [('evaluation_type', '=', 'reference')]}"
+                                            options="{'no_create': True}"
+                                            force_save="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page name="security" string="Security">
+                                <field name="groups_id"/>
+                            </page>
+
+                            <page string="Actions" name="actions" autofocus="autofocus"
+                                    attrs="{'invisible': [('state', '!=', 'multi')]}">
+                                <p class="oe_grey">
+                                    If several child actions return an action, only the last one will be executed.
+                                    This may happen when having server actions executing code that returns an action, or server actions returning a client action.
+                                </p>
+                                <field name="child_ids" domain="[('model_id', '=', model_id)]"/>
+                            </page>
+
+                            <page string="Help" name="help_info" autofocus="autofocus"
+                                    attrs="{'invisible': [('state', '!=', 'code')]}">
+                                <group>
+                                    <div style="margin-top: 4px;">
+                                        <h3>Help with Python expressions</h3>
+                                        <p>Various fields may use Python code or Python expressions. The following variables can be used:</p>
+                                        <ul>
+                                            <li><code>env</code>: Odoo Environment on which the action is triggered</li>
+                                            <li><code>model</code>: Odoo Model of the record on which the action is triggered; is a void recordset</li>
+                                            <li><code>record</code>: record on which the action is triggered; may be be void</li>
+                                            <li><code>records</code>: recordset of all records on which the action is triggered in multi mode; may be void</li>
+                                            <li><code>time</code>, <code>datetime</code>, <code>dateutil</code>, <code>timezone</code>: useful Python libraries</li>
+                                            <li><code>log(message, level='info')</code>:logging function to record debug information in <code>ir.logging</code> table</li>
+                                            <li><code>UserError</code>: Warning Exception to use with <code>raise</code></li>
+                                            <li>To return an action, assign: <code>action = {...}</code></li>
+                                        </ul>
+                                        <div attrs="{'invisible': [('state', '!=', 'code')]}">
+                                            <p>Example of Python code</p>
+<code style='white-space: pre-wrap'>
+partner_name = record.name + '_code'
 env['res.partner'].create({'name': partner_name})
-    </pre>
-                                </div>
+</code>
+                                        </div>
+                                    </div>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -444,6 +361,7 @@ env['res.partner'].create({'name': partner_name})
             <field name="model">ir.actions.server</field>
             <field name="arch" type="xml">
                 <tree string="Server Actions">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="state"/>
                     <field name="model_id"/>
@@ -469,6 +387,7 @@ env['res.partner'].create({'name': partner_name})
         </record>
         <record id="action_server_action" model="ir.actions.act_window">
             <field name="name">Server Actions</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.actions.server</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_server_action_tree"/>
@@ -487,8 +406,8 @@ env['res.partner'].create({'name': partner_name})
                     <field name="sequence" widget='handle'/>
                     <field name="action_id"/>
                     <field name="state" readonly="1"/>
-                    <button name="action_launch" invisible="state != 'open'" string="Launch" type="object" icon="fa-cogs" help="Launch Configuration Wizard"/>
-                    <button name="action_open" invisible="state != 'done'"
+                    <button name="action_launch" states="open" string="Launch" type="object" icon="fa-cogs" help="Launch Configuration Wizard"/>
+                    <button name="action_open" states="done"
                             string="Todo" type="object" help="Set as Todo"
                             icon="fa-exchange"/>
                 </tree>
@@ -501,10 +420,10 @@ env['res.partner'].create({'name': partner_name})
                 <form string="Config Wizard Steps">
                   <header>
                         <button name="action_launch"
-                            invisible="state != 'open'" string="Launch"
-                            type="object" icon="fa-cogs" class="oe_highlight"
+                            states="open" string="Launch"
+                            type="object" icon="fa-cogs" class="oe_highlight" 
                             help="Launch Configuration Wizard"/>
-                        <button name="action_open" invisible="state != 'done'"
+                        <button name="action_open" states="done"
                             string="Set as Todo" type="object"
                             icon="fa-exchange" class="oe_highlight"/>
                         <field name="state" widget="statusbar" statusbar_visible="open,done" nolabel="1" readonly="1" />
@@ -523,7 +442,7 @@ env['res.partner'].create({'name': partner_name})
             <field name="name">ir.actions.todo.select</field>
             <field name="arch" type="xml">
                 <search string="Search Actions">
-                    <filter string="To Do" name="todo" domain="[('state','=','open')]" help="Wizards to be Launched"/>
+                    <filter string="To Do" name="todo" domain=" [('state','=','open')]" help="Wizards to be Launched"/>
                     <field name="action_id"/>
                     <field name="state"/>
                 </search>
@@ -538,6 +457,7 @@ env['res.partner'].create({'name': partner_name})
         <menuitem id="menu_ir_actions_todo_form" action="act_ir_actions_todo_form" parent="base.next_id_6"/>
         <record id="action_run_ir_action_todo" model="ir.actions.server">
             <field name="name">Config: Run Remaining Action Todo</field>
+            <field name="type">ir.actions.server</field>
             <field name="model_id" ref="model_res_config"/>
             <field name="state">code</field>
             <field name="code">

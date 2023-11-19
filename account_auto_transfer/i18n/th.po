@@ -3,17 +3,19 @@
 # 	* account_auto_transfer
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,24 +28,21 @@ msgid "<span> to </span>"
 msgstr "<span> ถึง </span>"
 
 #. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "เทมเพลตแผนภูมิบัญชี"
-
-#. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_transfer_model
 msgid "Account Transfer Model"
-msgstr "โมเดลการโอนบัญชี"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_transfer_model_line
 msgid "Account Transfer Model Line"
-msgstr "รายการโมเดลการโอนบัญชี"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.actions.server,name:account_auto_transfer.ir_cron_auto_transfer_ir_actions_server
-msgid "Account automatic transfers: Perform transfers"
-msgstr "บัญชีการโอนอัตโนมัติ: ดำเนินการโอนเงิน"
+#: model:ir.cron,cron_name:account_auto_transfer.ir_cron_auto_transfer
+#: model:ir.cron,name:account_auto_transfer.ir_cron_auto_transfer
+msgid "Account automatic transfers : Perform transfers"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -56,7 +55,6 @@ msgid ""
 "Adds a condition to only transfer the sum of the lines from the origin "
 "accounts that match these analytic accounts to the destination account"
 msgstr ""
-"เพิ่มเงื่อนไขในการโอนเฉพาะผลรวมของรายการจากบัญชีต้นทางที่ตรงกับบัญชีวิเคราะห์เหล่านี้ไปยังบัญชีปลายทาง"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model_line__partner_ids
@@ -64,95 +62,84 @@ msgid ""
 "Adds a condition to only transfer the sum of the lines from the origin "
 "accounts that match these partners to the destination account"
 msgstr ""
-"เพิ่มเงื่อนไขในการโอนเฉพาะผลรวมของบรรทัดจากบัญชีต้นทางที่ตรงกับพาร์ทเนอร์เหล่านี้ไปยังบัญชีปลายทาง"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__analytic_account_ids
 msgid "Analytic Filter"
-msgstr "ตัวกรองการวิเคราะห์"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Automated Transfer"
-msgstr "การโอนอัตโนมัติ"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (%s%% from account %s)"
-msgstr "การโอนอัตโนมัติ (%s%% จากบัญชี %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (-%s%%)"
-msgstr "การโอนอัตโนมัติ (-%s%%)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "Automatic Transfer (entries with analytic account(s): %s and partner(s): %s)"
-msgstr "การโอนอัตโนมัติ (รายการที่มีบัญชีวิเคราะห์: %s และพาร์ทเนอร์: %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with analytic account(s): %s)"
-msgstr "การโอนอัตโนมัติ (รายการที่มีบัญชีวิเคราะห์: %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with partner(s): %s)"
-msgstr "การโอนอัตโนมัติ (รายการร่วมกับพาร์ทเนอร์: %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "Automatic Transfer (from account %s with analytic account(s): %s and "
 "partner(s): %s)"
 msgstr ""
-"การโอนอัตโนมัติ (จากบัญชี %s พร้อมบัญชีวิเคราะห์: %s และพาร์ทเนอร์: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with analytic account(s): %s)"
-msgstr "การโอนอัตโนมัติ (จากบัญชี %s พร้อมบัญชีวิเคราะห์: %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with partner(s): %s)"
-msgstr "การโอนอัตโนมัติ (จากบัญชี %s กับพาร์ทเนอร์ : %s)"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (to account %s)"
-msgstr "การโอนอัตโนมัติ (เข้าบัญชี %s)"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.actions.act_window,name:account_auto_transfer.transfer_model_action
 #: model:ir.ui.menu,name:account_auto_transfer.menu_auto_transfer
 msgid "Automatic Transfers"
-msgstr "การโอนอัตโนมัติ"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model__company_id
@@ -162,7 +149,7 @@ msgstr "บริษัทที่เกี่ยวข้องกับสม
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Compute Transfer"
-msgstr "การถ่ายโอนการคำนวณ"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__create_uid
@@ -189,12 +176,12 @@ msgstr "บัญชีปลายทาง"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__line_ids
 msgid "Destination Accounts"
-msgstr "บัญชีปลายทาง"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__journal_id
 msgid "Destination Journal"
-msgstr "สมุดรายวันปลายทาง"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -204,7 +191,7 @@ msgstr "ปิดการใช้งาน"
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__state__disabled
 msgid "Disabled"
-msgstr "ปิดการใช้งาน"
+msgstr "Disabled"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__display_name
@@ -225,7 +212,7 @@ msgstr "รายการที่สร้างขึ้น"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__move_ids
 msgid "Generated Moves"
-msgstr "การย้ายที่สร้างขึ้น"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__id
@@ -234,26 +221,20 @@ msgid "ID"
 msgstr "ไอดี"
 
 #. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "IFRS Automatic Transfers"
-msgstr "IFRS การโอนอัตโนมัติ"
-
-#. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Journal"
-msgstr "สมุดรายวัน"
+msgstr "สมุดบันทึก"
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_move
 msgid "Journal Entry"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึกประจำวัน"
 
 #. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_move_line
-msgid "Journal Item"
-msgstr "รายการสมุดรายวัน"
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model____last_update
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__write_uid
@@ -273,26 +254,19 @@ msgid "Monthly"
 msgstr "รายเดือน"
 
 #. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Monthly IFRS rent expense transfer"
-msgstr "การโอนค่าใช้จ่ายค่าเช่า IFRS รายเดือน"
-
-#. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__move_ids_count
 msgid "Move Ids Count"
-msgstr "การย้ายจำนวนรหัส"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Move Model"
-msgstr "การย้ายโมเดล"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_tree
 msgid "Move Models"
-msgstr "การย้ายโมเดล"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__name
@@ -302,25 +276,25 @@ msgstr "ชื่อ"
 #. module: account_auto_transfer
 #: model:ir.model.constraint,message:account_auto_transfer.constraint_account_transfer_model_line_unique_account_by_transfer_model
 msgid "Only one account occurrence by transfer model"
-msgstr "มีเพียงบัญชีเดียวที่เกิดขึ้นตามโมเดลการโอน"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__account_ids
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Origin Accounts"
-msgstr "บัญชีต้นฉบับ"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_bank_statement_line__transfer_model_id
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_move__transfer_model_id
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_payment__transfer_model_id
 msgid "Originating Model"
-msgstr "โมเดลต้นฉบับ"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__partner_ids
 msgid "Partner Filter"
-msgstr "ตัวกรองพาร์ทเนอร์"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__percent
@@ -335,14 +309,14 @@ msgstr "เปอร์เซ็นต์ (%)"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__percent_is_readonly
 msgid "Percent Is Readonly"
-msgstr "เปอร์เซ็นต์เป็นแบบอ่านอย่างเดียว"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model_line__percent
 msgid ""
 "Percentage of the sum of lines from the origin accounts will be transferred "
 "to the destination account"
-msgstr "เปอร์เซ็นต์ของผลรวมบรรทัดจากบัญชีต้นทางจะถูกโอนไปยังบัญชีปลายทาง"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -357,7 +331,7 @@ msgstr "รายไตรมาส"
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__state__in_progress
 msgid "Running"
-msgstr "กำลังทำงาน"
+msgstr "การดำเนินการ"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__sequence
@@ -372,52 +346,48 @@ msgstr "วันที่เริ่ม"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__state
 msgid "State"
-msgstr "สถานะ"
+msgstr "รัฐ"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__date_stop
 msgid "Stop Date"
-msgstr "วันที่หยุด"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The analytic filter %s is duplicated"
-msgstr "ตัวกรองการวิเคราะห์ %s ซ้ำกัน"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "The partner filter %s in combination with the analytic filter %s is "
 "duplicated"
-msgstr "ตัวกรองพาร์ทเนอร์ %s ร่วมกับตัวกรองการวิเคราะห์ %s ซ้ำกัน"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The partner filter %s is duplicated"
-msgstr "ตัวกรองพาร์ทเนอร์ %s ซ้ำกัน"
+msgstr ""
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
-msgid "The total percentage (%s) should be less or equal to 100!"
-msgstr "เปอร์เซ็นต์ทั้งหมด (%s) ควรน้อยกว่าหรือเท่ากับ 100!"
+msgid "The total percentage (%s) should be less or equal to 100 !"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__total_percent
 msgid "Total Percent"
-msgstr "เปอร์เซ็นต์ทั้งหมด"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__transfer_model_id
 msgid "Transfer Model"
-msgstr "โมเดลการโอน"
+msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -430,20 +400,6 @@ msgid "Yearly"
 msgstr "รายปี"
 
 #. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Yearly liabilites auto transfers"
-msgstr "การโอนหนี้รายปีอัตโนมัติ"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/models/account_move_line.py:0
-#, python-format
-msgid "You cannot set Tax on Automatic Transfer's entries."
-msgstr "คุณไม่สามารถตั้งค่าภาษีในรายการการโอนอัตโนมัติได้"
-
-#. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "e.g. Monthly Expense Transfer"
-msgstr "เช่น การโอนค่าใช้จ่ายรายเดือน"
+msgstr ""

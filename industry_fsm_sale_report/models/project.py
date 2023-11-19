@@ -8,6 +8,3 @@ class Task(models.Model):
 
     def _is_fsm_report_available(self):
         return super()._is_fsm_report_available() or self.sale_order_id
-
-    def has_to_be_signed(self):
-        return super().has_to_be_signed() or (self.sale_order_id and not self.worksheet_signature)

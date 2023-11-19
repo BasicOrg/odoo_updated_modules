@@ -8,19 +8,15 @@
         <field name="priority">10</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_tooltip']" position="after">
-                <label for="planning_enabled" invisible="type != 'service' or not sale_ok"/>
-                <div name="service_policy_div" invisible="type != 'service' or not sale_ok">
+                <label for="planning_enabled" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                <div attrs="{'invisible': [('type', '!=', 'service')]}">
                     <field name="planning_enabled" class="oe_inline"/>
-                    <span invisible="not planning_enabled" class="oe_inline me-2">
+                    <span attrs="{'invisible': [('planning_enabled', '=', False)]}" class="oe_inline me-2">
                         as
                     </span>
                     <field name="planning_role_id"
-                           invisible="not planning_enabled"
-                           required="planning_enabled"
-                           options="{'no_quick_create': True}"
-                           context="{'form_view_ref': 'sale_planning.sale_planning_role_view_form'}"
+                           attrs="{'invisible': [('planning_enabled', '=', False)], 'required': [('planning_enabled', '=', True)]}"
                            class="oe_inline" nolabel="1" placeholder=" e.g. Consultant"/>
-                    <div class="fst-italic text-muted" invisible="not planning_enabled">Plan shifts for your orders for employees who have this role.</div>
                 </div>
             </xpath>
         </field>

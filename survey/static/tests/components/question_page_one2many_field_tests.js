@@ -1,10 +1,7 @@
 /** @odoo-module */
 
-import { makeServerError } from "@web/../tests/helpers/mock_server";
 import { click, editInput, getFixture, nextTick, triggerHotkey } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { errorService } from "@web/core/errors/error_service";
-import { registry } from "@web/core/registry";
 
 QUnit.module("QuestionPageOneToManyField", (hooks) => {
     let serverData;
@@ -15,24 +12,20 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
 
         serverData = {
             models: {
-                survey: {
-                    fields: {
-                        question_and_page_ids: { type: "one2many", relation: "survey_question" },
-                        favorite_color: { string: "Favorite color", type: "char" }
-                    },
+                partner: {
+                    fields: { lines: { type: "one2many", relation: "lines_sections" } },
                     records: [
                         {
                             id: 1,
-                            question_and_page_ids: [1, 2],
-                            favorite_color: ""
+                            lines: [1, 2],
                         },
                     ],
                 },
-                survey_question: {
+                lines_sections: {
                     fields: {
                         is_page: { type: "boolean" },
                         title: { type: "char", string: "Title" },
-                        random_questions_count: { type: "integer", string: "Question Count" },
+                        random_questions_count: { type: "number", string: "Question Count" },
                     },
                     records: [
                         {
@@ -51,7 +44,7 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
                 },
             },
             views: {
-                "survey_question,false,form": `
+                "lines_sections,false,form": `
                     <form>
                         <field name="title" />
                     </form>
@@ -65,12 +58,12 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
     QUnit.test("basic rendering", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -94,12 +87,12 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
     QUnit.test("click on section behaves as usual in readonly mode", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -119,12 +112,12 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
     QUnit.test("click on section edit the section in place", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -138,16 +131,15 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
         assert.containsNone(target, ".modal .o_form_view");
     });
 
-    QUnit.test("click on real line saves form and opens a dialog", async (assert) => {
+    QUnit.test("click on real line opens a dialog", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="favorite_color"/>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -156,70 +148,21 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
                     </field>
                 </form>
             `,
-            mockRPC(route, args) {
-                if (args.method === "web_save" && args.model === "survey") {
-                    assert.step("save parent form");
-                }
-            },
-        });
-        await editInput(target, "[name='favorite_color'] input", "Yellow");
-        await click(target.querySelector(".o_data_row:nth-child(2) .o_data_cell"));
-        // Edit content to trigger the expected actual save at row opening
-        assert.verifySteps(["save parent form"]);
-        assert.containsOnce(target, ".o_selected_row");
-        assert.containsOnce(target, ".modal .o_form_view");
-    });
-
-    QUnit.test("A validation error from saving parent form notifies and prevents dialog from closing", async (assert) => {
-        registry.category("services").add("error", errorService);
-
-        await makeView({
-            type: "form",
-            resModel: "survey",
-            resId: 1,
-            serverData,
-            arch: `
-                <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
-                        <tree>
-                            <field name="is_page" invisible="1" />
-                            <field name="title" />
-                            <field name="random_questions_count" />
-                        </tree>
-                    </field>
-                </form>
-            `,
-            mockRPC(route, args) {
-                if (args.method === "web_save" && args.model === "survey") {
-                    assert.step("save parent form");
-                    throw makeServerError({
-                        description: "This isn't right!",
-                        type: "ValidationError",
-                    });
-
-                }
-            },
         });
         await click(target.querySelector(".o_data_row:nth-child(2) .o_data_cell"));
-        await editInput(target, ".o_dialog:not(.o_inactive_modal) .modal-body [name='title'] input", "Invalid RecordTitle");
-        await click(target.querySelector(".o_dialog:not(.o_inactive_modal) .o_form_button_save"));
-        assert.verifySteps(["save parent form"]);
-        await nextTick();
-        assert.containsOnce(document.body, ".o_notification");
+        assert.containsNone(target, ".o_selected_row");
         assert.containsOnce(target, ".modal .o_form_view");
-        assert.containsOnce(target, ".modal-dialog .o_form_button_save");
-        assert.containsNone(target, ".modal-dialog .o_form_button_save[disabled='1']");
     });
 
     QUnit.test("can create section inline", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -244,12 +187,12 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
     QUnit.test("creates real record in form dialog", async (assert) => {
         await makeView({
             type: "form",
-            resModel: "survey",
+            resModel: "partner",
             resId: 1,
             serverData,
             arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />
@@ -274,12 +217,12 @@ QUnit.module("QuestionPageOneToManyField", (hooks) => {
         async (assert) => {
             await makeView({
                 type: "form",
-                resModel: "survey",
+                resModel: "partner",
                 resId: 1,
                 serverData,
                 arch: `
                 <form>
-                    <field name="question_and_page_ids" widget="question_page_one2many">
+                    <field name="lines" widget="question_page_one2many">
                         <tree>
                             <field name="is_page" invisible="1" />
                             <field name="title" />

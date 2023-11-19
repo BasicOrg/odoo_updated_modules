@@ -3,17 +3,16 @@
 # 	* sale_ebay
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,18 +20,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 " If you want to set quantity to 0, the Out Of Stock option should be enabled"
 " and the listing duration should set to Good 'Til Canceled"
 msgstr ""
-"Als je de hoeveelheid op 0 wilt zetten moet je de Niet op voorraad optie "
-"activeren en de lijstlengte moet gezet worden op 'Goed tot geannuleerd'"
+"Als je de kwantiteit op 0 wilt zetten moet je de Uit Voorraad optie "
+"aanzetten en de lijstlengte moet gezet worden op 'goed tot geannuleerd'"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -40,7 +37,7 @@ msgid ""
 " Or if you try to delete a variation, you cannot do it by unselecting it. Setting the quantity to 0 is the safest method to make a variation unavailable."
 msgstr ""
 "Je moet minstens 2 varianten selecteren om gebruik te kunnen maken van een multi-variantenlijst.\n"
-"Als je een variant wil verwijderen, kun je dat niet doen door hem uit te vinken. De hoeveelheid op 0 zetten is de veiligste manier om een variant onbeschikbaar te maken."
+"Als je een variant wil verwijderen, kun je dat niet doen door hem uit te vinken. Zet de hoeveelheid op 0; dat is de veiligste manier om een variant onbeschikbaar te maken."
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_duration__days_10
@@ -69,16 +66,49 @@ msgstr "7 dagen"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Sales Team</span>"
+msgstr "<span class=\"o_form_label\">Verkoopteam</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Storage</span>"
+msgstr "<span class=\"o_form_label\">Opslag</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Synchronization</span>"
+msgstr "<span class=\"o_form_label\">Synchronisatie</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Account</span>"
+msgstr "<span class=\"o_form_label\">eBay account</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">eBay Marketplace Account Deletion/Closure "
+"Notifications</span>"
+msgstr ""
+"<span class=\"o_form_label\">Meldingen over verwijderen/beëindigen van eBay "
+"Marketplace-account</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Options</span>"
+msgstr "<span class=\"o_form_label\">eBay opties</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Activate Other Currencies"
 msgstr "Activeer andere valuta's"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Add other countries"
-msgstr "Andere landen toevoegen"
+msgstr "Voeg andere landen toe"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -92,7 +122,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_best_offer
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_best_offer
 msgid "Allow Best Offer"
-msgstr "Het beste bod toestaan"
+msgstr "Sta beste bod toe"
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_type__chinese
@@ -103,7 +133,7 @@ msgstr "Veiling"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_buy_it_now_price
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_buy_it_now_price
 msgid "Buy It Now Price"
-msgstr "Nu kopen prijs"
+msgstr "Koop het nu prijs"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
@@ -148,7 +178,6 @@ msgid "Config Settings"
 msgstr "Configuratie instellingen"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Configure The eBay Integrator Now"
@@ -230,13 +259,17 @@ msgid "Display Name"
 msgstr "Schermnaam"
 
 #. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "Documentation"
+msgstr "Documentatie"
+
+#. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_listing_duration
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_listing_duration
 msgid "Duration"
 msgstr "Duur"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -247,7 +280,6 @@ msgstr ""
 "%s"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -257,6 +289,8 @@ msgstr "Ebay kon het order %s niet synchroniseren"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_orders_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_orders_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_orders_sync
 msgid "Ebay: get new orders"
 msgstr "Ebay: krijg nieuwe orders"
 
@@ -267,11 +301,15 @@ msgstr "Ebay: orders herstellen"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_stock_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_stock_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_stock_sync
 msgid "Ebay: synchronise stock"
 msgstr "Ebay: voorraad synchroniseren"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_categories_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_categories
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_categories
 msgid "Ebay: update categories"
 msgstr "e-Bay: update categorieën"
 
@@ -281,7 +319,6 @@ msgid "End Item's Listing"
 msgstr "Einde productenlijst"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -292,15 +329,14 @@ msgstr ""
 "Geen variant ingesteld om op te lijsten op eBay."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 "Error Encountered.\n"
-"%r"
+"'%s'"
 msgstr ""
 "Fout opgetreden.\n"
-"%r"
+"'%s'"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -325,7 +361,7 @@ msgstr "Gallerij plus"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Generate Token"
-msgstr "Token genereren"
+msgstr "genereer token"
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_duration__gtc
@@ -353,7 +389,6 @@ msgid "Import eBay config data and sync transactions"
 msgstr "Importeer e-Bay configuratie data en synchroniseer transacties"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -368,6 +403,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_item_condition_id
 msgid "Item Condition"
 msgstr "Productconditie"
+
+#. module: sale_ebay
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_category____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_site____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__write_uid
@@ -411,12 +455,12 @@ msgstr "Linken met bestaande eBay oplijsting"
 #. module: sale_ebay
 #: model:ir.actions.act_window,name:sale_ebay.action_ebay_link_listing
 msgid "Link with Existing eBay Listing"
-msgstr "Linken met bestaande eBay oplijsting"
+msgstr "Link met bestaande eBay oplijsting"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
 msgid "Link with eBay Listing"
-msgstr "Linken met eBay oplijsting"
+msgstr "Link met eBay oplijsting"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -458,7 +502,6 @@ msgid "Name"
 msgstr "Naam"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid "No Business Policies"
@@ -470,14 +513,12 @@ msgid "Official eBay Category"
 msgstr "Officiële eBay categorie"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "One parameter is missing."
 msgstr "Er ontbreekt een parameter."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Or the condition is not compatible with the category."
@@ -486,7 +527,7 @@ msgstr "Of de conditie is niet passend bij de categorie."
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_out_of_stock
 msgid "Out Of Stock"
-msgstr "Niet op voorraad"
+msgstr "Niet meer op voorraad"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_seller_payment_policy_id
@@ -495,14 +536,13 @@ msgid "Payment Policy"
 msgstr "Betalingsbeleid"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "Please provide your ebay production keys before enabling the account "
 "deletion notifications."
 msgstr ""
-"Geef je eBay-productiesleutels op voordat je de "
+"Geef uw eBay-productiesleutels op voordat je de "
 "accountverwijderingsmeldingen inschakelt."
 
 #. module: sale_ebay
@@ -537,7 +577,6 @@ msgid "Product Variant"
 msgstr "Productvariant"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "Product created from eBay transaction %s"
@@ -646,18 +685,13 @@ msgstr "Leveringsbeleid"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_start_date
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_start_date
 msgid "Start Date"
-msgstr "Begindatum"
+msgstr "Startdatum"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_price
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_price
 msgid "Starting Price for Auction"
 msgstr "Startprijs voor bieding"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Storage"
-msgstr "Opslag"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -693,26 +727,18 @@ msgid "Sync now"
 msgstr "Sync nu"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Synchronization"
-msgstr "Synchronisatie"
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Chose The Following Delivery Method :\n"
 msgstr "De koper koos de volgende verzendwijze:\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Posted :\n"
 msgstr "De koper plaatste:\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -749,7 +775,6 @@ msgstr ""
 "toegestaan. Extra kosten kunnen in rekening gebracht worden voor deze optie"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -764,20 +789,6 @@ msgstr ""
 "formaat \"JJJJ-MM-DD\"."
 
 #. module: sale_ebay
-#. odoo-python
-#: code:addons/sale_ebay/models/product.py:0
-#, python-format
-msgid ""
-"This function should not be called with a range of more than 30 days, as "
-"eBay does not handle longer timespans. Instead use synchronize_orders which "
-"split in as many calls as needed."
-msgstr ""
-"Deze functie moet niet worden aangeroepen met een bereik van meer dan 30 "
-"dagen, omdat eBay geen langere tijdspannes verwerkt. Gebruik in plaats "
-"daarvan synchronize_orders, dat zoveel aanroepen doet als nodig."
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_partner.py:0
 #, python-format
 msgid ""
@@ -844,11 +855,6 @@ msgid "eBay"
 msgstr "eBay"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Account"
-msgstr "eBay Account"
-
-#. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_category
 msgid "eBay Category"
 msgstr "eBay categorie"
@@ -894,20 +900,9 @@ msgid "eBay Listing ID"
 msgstr "eBay lijst ID"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Marketplace Account Deletion/Closure Notifications"
-msgstr ""
-"Meldingen over het verwijderen/beëindigen van eBay Marketplace-account"
-
-#. module: sale_ebay
 #: model:mail.activity.type,summary:sale_ebay.ebay_GDPR_notification
 msgid "eBay Odoo connector notification - account deletion"
 msgstr "Melding van eBay Odoo-connector - accountverwijdering"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Options"
-msgstr "eBay opties"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_policy
@@ -947,7 +942,11 @@ msgid "eBay connector: account deletion notification"
 msgstr "eBay-connector: melding accountverwijdering"
 
 #. module: sale_ebay
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "eBay documentation"
+msgstr "eBay documentatie"
+
+#. module: sale_ebay
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid ""
@@ -958,7 +957,6 @@ msgstr ""
 "'%s'"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "eBay is unreachable. Please try again later."
@@ -972,10 +970,11 @@ msgstr "e-bay parameters"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid ""
-"eBay requires supporting customer account deletion/closure notifications."
+"eBay requires supporting customer account deletion/closure notifications.\n"
+"                                Please follow the"
 msgstr ""
-"eBay vereist ondersteunende meldingen over het verwijderen/beëindigen van "
-"klantenaccounts."
+"eBay vereist ondersteuning voor het verwijderen/beëindigen van klantaccounts.\n"
+"Volg alstublieft de"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_url
@@ -1022,3 +1021,8 @@ msgstr "E-bay valuta"
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sales_team
 msgid "ebay Sales Team"
 msgstr "ebay verkoopteam"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "to setup this mechanism."
+msgstr "om dit mechanisme in te stellen."

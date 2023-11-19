@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import logging
 import re
 import requests
 
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from werkzeug.urls import url_join
-
-_logger = logging.getLogger(__name__)
 
 
 class SocialLivePostTwitter(models.Model):
@@ -29,21 +26,16 @@ class SocialLivePostTwitter(models.Model):
             )
 
     def _refresh_statistics(self):
-        super()._refresh_statistics()
+        super(SocialLivePostTwitter, self)._refresh_statistics()
         accounts = self.env['social.account'].search([('media_type', '=', 'twitter')])
+        endpoint_name = 'statuses/user_timeline'
         for account in accounts:
-            existing_live_posts = self.env['social.live.post'].sudo().search(
-                [('account_id', '=', account.id), ('twitter_tweet_id', '!=', False)],
-                order='create_date DESC', limit=100)
-
-            if not existing_live_posts:
-                continue
-
-            tweets_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, '/2/tweets')
             query_params = {
-                'ids': ','.join(existing_live_posts.mapped('twitter_tweet_id')),
-                'tweet.fields': 'public_metrics',
+                'user_id': account.twitter_user_id,
+                'tweet_mode': 'extended',
+                'count': 100
             }
+            tweets_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/%s.json" % endpoint_name)
             headers = account._get_twitter_oauth_header(
                 tweets_endpoint_url,
                 params=query_params,
@@ -55,25 +47,29 @@ class SocialLivePostTwitter(models.Model):
                 headers=headers,
                 timeout=5
             )
-            if not result.ok:
-                _logger.error('Failed to fetch the account (%i) metrics: %r.', account.id, result.text)
 
-            result_tweets = result.json().get('data', [])
-            if isinstance(result_tweets, dict) and result_tweets.get('errors'):
+            result_tweets = result.json()
+            if isinstance(result_tweets, dict) and result_tweets.get('errors') or result_tweets is None:
                 account._action_disconnect_accounts(result_tweets)
                 return
+
+            tweets_ids = [tweet.get('id_str') for tweet in result_tweets]
+            existing_live_posts = self.env['social.live.post'].sudo().search([
+                ('twitter_tweet_id', 'in', tweets_ids)
+            ])
 
             existing_live_posts_by_tweet_id = {
                 live_post.twitter_tweet_id: live_post for live_post in existing_live_posts
             }
 
             for tweet in result_tweets:
-                existing_live_post = existing_live_posts_by_tweet_id.get(tweet.get('id'))
+                existing_live_post = existing_live_posts_by_tweet_id.get(tweet.get('id_str'))
                 if existing_live_post:
-                    public_metrics = tweet.get('public_metrics', {})
-                    likes_count = public_metrics.get('like_count', 0)
-                    retweets_count = public_metrics.get('retweet_count', 0)
-                    existing_live_post.engagement = likes_count + retweets_count
+                    likes_count = tweet.get('favorite_count', 0)
+                    retweets_count = tweet.get('retweet_count', 0)
+                    existing_live_post.write({
+                        'engagement': likes_count + retweets_count
+                    })
 
     def _post(self):
         twitter_live_posts = self._filter_by_media_types(['twitter'])
@@ -82,14 +78,14 @@ class SocialLivePostTwitter(models.Model):
         twitter_live_posts._post_twitter()
 
     def _post_twitter(self):
-        post_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, '/2/tweets')
+        post_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/statuses/update.json")
 
         for live_post in self:
             account = live_post.account_id
             post = live_post.post_id
 
             params = {
-                'text': live_post.message,
+                'status': live_post.message,
             }
 
             try:
@@ -97,22 +93,25 @@ class SocialLivePostTwitter(models.Model):
             except UserError as e:
                 live_post.write({
                     'state': 'failed',
-                    'failure_reason': str(e)
+                    'failure_reason': e.name
                 })
                 continue
             if images_attachments_ids:
-                params['media'] = {'media_ids': images_attachments_ids}
+                params['media_ids'] = ','.join(images_attachments_ids)
 
-            headers = account._get_twitter_oauth_header(post_endpoint_url)
+            headers = account._get_twitter_oauth_header(
+                post_endpoint_url,
+                params=params
+            )
             result = requests.post(
                 post_endpoint_url,
-                json=params,
+                data=params,
                 headers=headers,
                 timeout=5
             )
 
-            if result.ok:
-                live_post.twitter_tweet_id = result.json()['data']['id']
+            if (result.status_code == 200):
+                live_post.twitter_tweet_id = result.json().get('id_str')
                 values = {
                     'state': 'posted',
                     'failure_reason': False

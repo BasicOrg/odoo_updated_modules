@@ -40,7 +40,7 @@ class ImporterCase(common.TransactionCase):
     def setUp(self):
         super(ImporterCase, self).setUp()
         self.model = self.env[self.model_name]
-        self.env.registry.clear_cache()
+        self.env['ir.model.data'].clear_caches()
         self.cr.cache.clear()
 
     def import_(self, fields, rows, context=None):
@@ -68,7 +68,7 @@ class ImporterCase(common.TransactionCase):
             return d['name']
 
         name = record.display_name
-        # fix dotted display_name results, otherwise xid lookups blow up
+        # fix dotted name_get results, otherwise xid lookups blow up
         name = name.replace('.', '-')
         ModelData.create({
             'name': name,
@@ -562,35 +562,37 @@ class test_m2o(ImporterCase):
         # create integer objects
         record1 = self.env['export.integer'].create({'value': 42})
         record2 = self.env['export.integer'].create({'value': 36})
+        # get its name
+        name1 = dict(record1.name_get())[record1.id]
+        name2 = dict(record2.name_get())[record2.id]
 
         # preheat the oven
         for _ in range(5):
             with contextlib.closing(self.env.cr.savepoint(flush=False)):
-                self.import_(['value'], [[record1.display_name], [record1.display_name], [record2.display_name]])
+                self.import_(['value'], [[name1], [name1], [name2]])
 
         # 1 x SAVEPOINT load
         # 3 x name_search
         # 1 x SAVEPOINT _load_records
-        # 1 x select on list of existing modules
-        # 1 x insert
+        # 3 x insert
         # 1 x RELEASE SAVEPOINT _load_records
         # 1 x RELEASE SAVEPOINT load
-        # => 9
-        with self.assertQueryCount(9):
+        # => 10
+        with self.assertQueryCount(8):
             result = self.import_(['value'], [
-                # import by display_name
-                [record1.display_name],
-                [record1.display_name],
-                [record2.display_name],
+                # import by name_get
+                [name1],
+                [name1],
+                [name2],
             ])
 
         self.assertFalse(result['messages'])
         self.assertEqual(len(result['ids']), 3)
         # correct ids assigned to corresponding records
         self.assertEqual([
-            (record1.id, record1.display_name),
-            (record1.id, record1.display_name),
-            (record2.id, record2.display_name),],
+            (record1.id, name1),
+            (record1.id, name1),
+            (record2.id, name2),],
             values(self.read()))
 
     def test_by_xid(self):
@@ -614,17 +616,19 @@ class test_m2o(ImporterCase):
     def test_by_names(self):
         record1 = self.env['export.integer'].create({'value': 42})
         record2 = self.env['export.integer'].create({'value': 42})
+        name1 = dict(record1.name_get())[record1.id]
+        name2 = dict(record2.name_get())[record2.id]
         # names should be the same
-        self.assertEqual(record1.display_name, record2.display_name)
+        self.assertEqual(name1, name2)
 
-        result = self.import_(['value'], [[record2.display_name]])
+        result = self.import_(['value'], [[name2]])
         self.assertEqual(
             result['messages'],
             [message(u"Found multiple matches for value 'export.integer:42' in field 'Value' (2 matches)",
                      type='warning')])
         self.assertEqual(len(result['ids']), 1)
         self.assertEqual([
-            (record1.id, record1.display_name)
+            (record1.id, name1)
         ], values(self.read()))
 
     def test_fail_by_implicit_id(self):
@@ -720,20 +724,6 @@ class test_m2o(ImporterCase):
         result = self.import_(['value'], [[101]], context=context)
         self.assertFalse(result['messages'])
         self.assertEqual(len(result['ids']), 1)
-
-    @mute_logger('odoo.sql_db')
-    def test_name_create_enabled_m2o_required_field(self):
-        self.model = self.env['export.many2one.required.subfield']
-        self.env['export.with.required.field'].create({'name': 'ipsum', 'value': 10})
-        context = {'name_create_enabled_fields': {'name': True}}
-        result = self.import_(['name'], [['lorem'], ['ipsum']], context=context)
-        messages = result['messages']
-        self.assertTrue(messages)
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0]['message'],
-                         "No matching record found for name 'lorem' in field 'Name' and the following error was "
-                         "encountered when we attempted to create one: Cannot create new 'export.with.required.field' "
-                         "records from their name alone. Please create those records manually and try importing again.")
 
 class TestInvalidStrings(ImporterCase):
     model_name = 'export.m2o.str'
@@ -869,7 +859,7 @@ class test_m2m(ImporterCase):
 class test_o2m(ImporterCase):
     model_name = 'export.one2many'
 
-    def test_display_name(self):
+    def test_name_get(self):
         s = u'Java is a DSL for taking large XML files and converting them ' \
             u'to stack traces'
         result = self.import_(
@@ -1043,14 +1033,6 @@ class test_o2m(ImporterCase):
         [b] = self.browse()
         self.assertEqual(b.value.m2o.value, 101)
 
-    def test_escape_m2o_in_o2m(self):
-        result = self.import_(['value/m2o'], [['21%']])
-        self.assertEqual(result['messages'], [message(
-            u"No matching record found for name '21%' "
-            u"in field 'Value/M2O'", moreinfo=moreaction(
-                res_model='export.integer'),
-            field_name='Value', field_path=['value', 'm2o'], field_type='name', value='21%')])
-
 
 class test_o2m_multiple(ImporterCase):
     model_name = 'export.one2many.multiple'
@@ -1129,7 +1111,7 @@ class test_realworld(SavepointCaseWithUserDemo):
         """ The content of the o2m field's dict needs to go through conversion
         as it may be composed of convertables or other relational fields
         """
-        self.env.registry.clear_cache()
+        self.env['ir.model.data'].clear_caches()
         Model = self.env['export.one2many.recursive']
         result = Model.load(
             ['value', 'child/const', 'child/child1/str', 'child/child2/value'],
@@ -1156,7 +1138,7 @@ class test_realworld(SavepointCaseWithUserDemo):
                          [12])
 
     def test_o2m_subfields_fail_by_implicit_id(self):
-        self.env.registry.clear_cache()
+        self.env['ir.model.data'].clear_caches()
         Model = self.env['export.one2many.recursive']
         result = Model.with_context(import_file=True).load(
             ['child/child1/parent_id'],

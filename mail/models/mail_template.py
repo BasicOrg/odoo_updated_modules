@@ -2,13 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import base64
-import itertools
 import logging
 
 from odoo import _, api, fields, models, tools, Command
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError
 from odoo.tools import is_html_empty
-from odoo.tools.safe_eval import safe_eval, time
 
 _logger = logging.getLogger(__name__)
 
@@ -18,7 +16,7 @@ class MailTemplate(models.Model):
     _name = "mail.template"
     _inherit = ['mail.render.mixin', 'template.reset.mixin']
     _description = 'Email Templates'
-    _order = 'user_id,name,id'
+    _order = 'name'
 
     _unrestricted_rendering = True
 
@@ -46,7 +44,6 @@ class MailTemplate(models.Model):
     email_from = fields.Char('From',
                              help="Sender address (placeholders may be used here). If not set, the default "
                                   "value will be the author's email alias if configured, or email address.")
-    user_id = fields.Many2one('res.users', string='User', domain="[('share', '=', False)]", help='The template belongs to this user')
     # recipients
     use_default_to = fields.Boolean(
         'Default recipients',
@@ -59,20 +56,15 @@ class MailTemplate(models.Model):
     email_cc = fields.Char('Cc', help="Carbon copy recipients (placeholders may be used here)")
     reply_to = fields.Char('Reply To', help="Email address to which replies will be redirected when sending emails in mass; only used when the reply is not logged in the original discussion thread.")
     # content
-    body_html = fields.Html(
-        'Body', render_engine='qweb', render_options={'post_process': True},
-        prefetch=True, translate=True, sanitize=False)
+    body_html = fields.Html('Body', render_engine='qweb', translate=True, prefetch=True, sanitize=False)
     attachment_ids = fields.Many2many('ir.attachment', 'email_template_attachment_rel', 'email_template_id',
                                       'attachment_id', 'Attachments',
                                       help="You may attach files to this template, to be added to all "
                                            "emails created from this template")
-    report_template_ids = fields.Many2many(
-        'ir.actions.report', relation='mail_template_ir_actions_report_rel',
-        column1='mail_template_id',
-        column2='ir_actions_report_id',
-        string='Dynamic Reports',
-        domain="[('model', '=', model)]")
-    email_layout_xmlid = fields.Char('Email Notification Layout', copy=False)
+    report_name = fields.Char('Report Filename', translate=True, prefetch=True,
+                              help="Name to use for the generated report file (may contain placeholders)\n"
+                                   "The extension can be omitted and will then come from the report type.")
+    report_template = fields.Many2one('ir.actions.report', 'Optional report to print and attach')
     # options
     mail_server_id = fields.Many2one('ir.mail_server', 'Outgoing Mail Server', readonly=False,
                                      help="Optional preferred server for outgoing mails. If not set, the highest "
@@ -89,7 +81,6 @@ class MailTemplate(models.Model):
     # access
     can_write = fields.Boolean(compute='_compute_can_write',
                                help='The current user can edit the template.')
-    is_template_editor = fields.Boolean(compute="_compute_is_template_editor")
 
     # Overrides of mail.render.mixin
     @api.depends('model')
@@ -102,10 +93,6 @@ class MailTemplate(models.Model):
         writable_templates = self._filter_access_rules('write')
         for template in self:
             template.can_write = template in writable_templates
-
-    @api.depends_context('uid')
-    def _compute_is_template_editor(self):
-        self.is_template_editor = self.user_has_groups('mail.group_mail_template_editor')
 
     @api.depends('active', 'description')
     def _compute_template_category(self):
@@ -152,51 +139,19 @@ class MailTemplate(models.Model):
             record.attachment_ids.write({'res_model': record._name, 'res_id': record.id})
         return self
 
-    def _check_abstract_models(self, vals_list):
-        model_names = self.sudo().env['ir.model'].browse(filter(None, (
-            vals.get('model_id') for vals in vals_list
-        ))).mapped('model')
-        for model in model_names:
-            if self.env[model]._abstract:
-                raise ValidationError(_('You may not define a template on an abstract model: %s', model))
-
     @api.model_create_multi
     def create(self, vals_list):
-        self._check_abstract_models(vals_list)
         return super().create(vals_list)\
             ._fix_attachment_ownership()
 
     def write(self, vals):
-        self._check_abstract_models([vals])
         super().write(vals)
         self._fix_attachment_ownership()
         return True
 
-    def open_delete_confirmation_modal(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_id': self.id,
-            'res_model': self._name,
-            'target': 'new',
-            'view_id': self.env.ref('mail.mail_template_view_form_confirm_delete').id,
-            'context': {'dialog_size': 'medium'},
-            'name': _('Confirmation'),
-        }
-
     def unlink(self):
         self.unlink_action()
         return super(MailTemplate, self).unlink()
-
-    def cancel_unlink(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_id': self.id,
-            'res_model': self._name,
-            'target': 'new',
-            'context': {'dialog_size': 'large'},
-        }
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
@@ -213,18 +168,14 @@ class MailTemplate(models.Model):
     def create_action(self):
         ActWindow = self.env['ir.actions.act_window']
         view = self.env.ref('mail.email_compose_message_wizard_form')
+
         for template in self:
-            context = {
-                'default_composition_mode': 'mass_mail',
-                'default_model': template.model,
-                'default_template_id' : template.id,
-            }
             button_name = _('Send Mail (%s)', template.name)
             action = ActWindow.create({
                 'name': button_name,
                 'type': 'ir.actions.act_window',
                 'res_model': 'mail.compose.message',
-                'context': repr(context),
+                'context': "{'default_composition_mode': 'mass_mail', 'default_template_id' : %d, 'default_use_template': True}" % (template.id),
                 'view_mode': 'form,tree',
                 'view_id': view.id,
                 'target': 'new',
@@ -238,327 +189,118 @@ class MailTemplate(models.Model):
     # MESSAGE/EMAIL VALUES GENERATION
     # ------------------------------------------------------------
 
-    def _generate_template_attachments(self, res_ids, render_fields,
-                                       render_results=None):
-        """ Render attachments of template 'self', returning values for records
-        given by 'res_ids'. Note that ``report_template_ids`` returns values for
-        'attachments', as we have a list of tuple (report_name, base64 value)
-        for those reports. It is considered as being the job of callers to
-        transform those attachments into valid ``ir.attachment`` records.
-
-        :param list res_ids: list of record IDs on which template is rendered;
-        :param list render_fields: list of fields to render on template which
-          are specific to attachments, e.g. attachment_ids or report_template_ids;
-        :param dict render_results: res_ids-based dictionary of render values.
-          For each res_id, a dict of values based on render_fields is given
-
-        :return: updated (or new) render_results;
-        """
+    def generate_recipients(self, results, res_ids):
+        """Generates the recipients of the template. Default values can ben generated
+        instead of the template values if requested by template or context.
+        Emails (email_to, email_cc) can be transformed into partners if requested
+        in the context. """
         self.ensure_one()
-        if render_results is None:
-            render_results = {}
 
-        # generating reports is done on a per-record basis, better ensure cache
-        # is filled up to avoid rendering and browsing in a loop
-        if res_ids and 'report_template_ids' in render_fields and self.report_template_ids:
-            self.env[self.model].browse(res_ids)
-
-        for res_id in res_ids:
-            values = render_results.setdefault(res_id, {})
-
-            # link template attachments directly
-            if 'attachment_ids' in render_fields:
-                values['attachment_ids'] = self.attachment_ids.ids
-
-            # generate attachments (reports)
-            if 'report_template_ids' in render_fields and self.report_template_ids:
-                for report in self.report_template_ids:
-                    # generate content
-                    if report.report_type in ['qweb-html', 'qweb-pdf']:
-                        report_content, report_format = self.env['ir.actions.report']._render_qweb_pdf(report, [res_id])
-                    else:
-                        render_res = self.env['ir.actions.report']._render(report, [res_id])
-                        if not render_res:
-                            raise UserError(_('Unsupported report type %s found.', report.report_type))
-                        report_content, report_format = render_res
-                    report_content = base64.b64encode(report_content)
-                    # generate name
-                    if report.print_report_name:
-                        report_name = safe_eval(
-                            report.print_report_name,
-                            {
-                                'object': self.env[self.model].browse(res_id),
-                                'time': time,
-                            }
-                        )
-                    else:
-                        report_name = _('Report')
-                    extension = "." + report_format
-                    if not report_name.endswith(extension):
-                        report_name += extension
-                    values.setdefault('attachments', []).append((report_name, report_content))
-            elif 'report_template_ids' in render_fields:
-                values['attachments'] = []
-
-        # hook for attachments-specific computation, used currently only for accounting
-        if hasattr(self.env[self.model], '_process_attachments_for_template_post'):
-            records_attachments = self.env[self.model].browse(res_ids)._process_attachments_for_template_post(self)
-            for res_id, additional_attachments in records_attachments.items():
-                if not additional_attachments:
-                    continue
-                if additional_attachments.get('attachment_ids'):
-                    render_results[res_id].setdefault('attachment_ids', []).extend(additional_attachments['attachment_ids'])
-                if additional_attachments.get('attachments'):
-                    render_results[res_id].setdefault('attachments', []).extend(additional_attachments['attachments'])
-
-        return render_results
-
-    def _generate_template_recipients(self, res_ids, render_fields,
-                                      find_or_create_partners=False,
-                                      render_results=None):
-        """ Render recipients of the template 'self', returning values for records
-        given by 'res_ids'. Default values can be generated instead of the template
-        values if requested by template (see 'use_default_to' field). Email fields
-        ('email_cc', 'email_to') are transformed into partners if requested
-        (finding or creating partners). 'partner_to' field is transformed into
-        'partner_ids' field.
-
-        Note: for performance reason, information from records are transferred to
-        created partners no matter the company. For example, if we have a record of
-        company A and one of B with the same email and no related partner, a partner
-        will be created with company A or B but populated with information from the 2
-        records. So some info might be leaked from one company to the other through
-        the partner.
-
-        :param list res_ids: list of record IDs on which template is rendered;
-        :param list render_fields: list of fields to render on template which
-          are specific to recipients, e.g. email_cc, email_to, partner_to);
-        :param boolean find_or_create_partners: transform emails into partners
-          (calling ``find_or_create`` on partner model);
-        :param dict render_results: res_ids-based dictionary of render values.
-          For each res_id, a dict of values based on render_fields is given;
-
-        :return: updated (or new) render_results. It holds a 'partner_ids' key
-          holding partners given by ``_message_get_default_recipients`` and/or
-          generated based on 'partner_to'. If ``find_or_create_partners`` is
-          False emails are present, otherwise they are included as partners
-          contained in ``partner_ids``.
-        """
-        self.ensure_one()
-        if render_results is None:
-            render_results = {}
-        ModelSudo = self.env[self.model].with_prefetch(res_ids).sudo()
-
-        # if using default recipients -> ``_message_get_default_recipients`` gives
-        # values for email_to, email_cc and partner_ids
-        if self.use_default_to and self.model:
-            default_recipients = ModelSudo.browse(res_ids)._message_get_default_recipients()
+        if self.use_default_to or self._context.get('tpl_force_default_to'):
+            records = self.env[self.model].browse(res_ids).sudo()
+            default_recipients = records._message_get_default_recipients()
             for res_id, recipients in default_recipients.items():
-                render_results.setdefault(res_id, {}).update(recipients)
-        # render fields dynamically which generates recipients
-        else:
-            for field in set(render_fields) & {'email_cc', 'email_to', 'partner_to'}:
-                generated_field_values = self._render_field(field, res_ids)
-                for res_id in res_ids:
-                    render_results.setdefault(res_id, {})[field] = generated_field_values[res_id]
+                results[res_id].pop('partner_to', None)
+                results[res_id].update(recipients)
 
-        # create partners from emails if asked to
-        if find_or_create_partners:
-            res_id_to_company = {}
-            if self.model and 'company_id' in ModelSudo._fields:
-                for read_record in ModelSudo.browse(res_ids).read(['company_id']):
-                    company_id = read_record['company_id'][0] if read_record['company_id'] else False
-                    res_id_to_company[read_record['id']] = company_id
+        records_company = None
+        if self._context.get('tpl_partners_only') and self.model and results and 'company_id' in self.env[self.model]._fields:
+            records = self.env[self.model].browse(results.keys()).read(['company_id'])
+            records_company = {rec['id']: (rec['company_id'][0] if rec['company_id'] else None) for rec in records}
 
-            all_emails = []
-            email_to_res_ids = {}
-            email_to_company = {}
-            for res_id in res_ids:
-                record_values = render_results.setdefault(res_id, {})
-                mails = tools.email_split(record_values.pop('email_to', '')) + \
-                        tools.email_split(record_values.pop('email_cc', ''))
-                all_emails += mails
-                record_company = res_id_to_company.get(res_id)
+        for res_id, values in results.items():
+            partner_ids = values.get('partner_ids', list())
+            if self._context.get('tpl_partners_only'):
+                mails = tools.email_split(values.pop('email_to', '')) + tools.email_split(values.pop('email_cc', ''))
+                Partner = self.env['res.partner']
+                if records_company:
+                    Partner = Partner.with_context(default_company_id=records_company[res_id])
                 for mail in mails:
-                    email_to_res_ids.setdefault(mail, []).append(res_id)
-                    if record_company:
-                        email_to_company[mail] = record_company
-
-            if all_emails:
-                customers_information = ModelSudo.browse(res_ids)._get_customer_information()
-                partners = self.env['res.partner']._find_or_create_from_emails(
-                    all_emails,
-                    additional_values={
-                        email: {
-                            'company_id': email_to_company.get(email),
-                            **customers_information.get(email, {}),
-                        }
-                        for email in itertools.chain(all_emails, [False])
-                    })
-                for original_email, partner in zip(all_emails, partners):
-                    if not partner:
-                        continue
-                    for res_id in email_to_res_ids[original_email]:
-                        render_results[res_id].setdefault('partner_ids', []).append(partner.id)
-
-        # update 'partner_to' rendered value to 'partner_ids'
-        all_partner_to = {
-            pid
-            for record_values in render_results.values()
-            for pid in self._parse_partner_to(record_values.get('partner_to', ''))
-        }
-        existing_pids = set()
-        if all_partner_to:
-            existing_pids = set(self.env['res.partner'].sudo().browse(list(all_partner_to)).exists().ids)
-        for res_id, record_values in render_results.items():
-            partner_to = record_values.pop('partner_to', '')
+                    partner = Partner.find_or_create(mail)
+                    partner_ids.append(partner.id)
+            partner_to = values.pop('partner_to', '')
             if partner_to:
-                tpl_partner_ids = set(self._parse_partner_to(partner_to)) & existing_pids
-                record_values.setdefault('partner_ids', []).extend(tpl_partner_ids)
+                # placeholders could generate '', 3, 2 due to some empty field values
+                tpl_partner_ids = [int(pid) for pid in partner_to.split(',') if pid]
+                partner_ids += self.env['res.partner'].sudo().browse(tpl_partner_ids).exists().ids
+            results[res_id]['partner_ids'] = partner_ids
+        return results
 
-        return render_results
+    def generate_email(self, res_ids, fields):
+        """Generates an email from the template for given the given model based on
+        records given by res_ids.
 
-    def _generate_template_scheduled_date(self, res_ids, render_results=None):
-        """ Render scheduled date based on template 'self'. Specific parsing is
-        done to ensure value matches ORM expected value: UTC but without
-        timezone set in value.
-
-        :param list res_ids: list of record IDs on which template is rendered;
-        :param dict render_results: res_ids-based dictionary of render values.
-          For each res_id, a dict of values based on render_fields is given;
-
-        :return: updated (or new) render_results;
+        :param res_id: id of the record to use for rendering the template (model
+                       is taken from template definition)
+        :returns: a dict containing all relevant fields for creating a new
+                  mail.mail entry, with one extra key ``attachments``, in the
+                  format [(report_name, data)] where data is base64 encoded.
         """
         self.ensure_one()
-        if render_results is None:
-            render_results = {}
+        multi_mode = True
+        if isinstance(res_ids, int):
+            res_ids = [res_ids]
+            multi_mode = False
 
-        scheduled_dates = self._render_field('scheduled_date', res_ids)
-        for res_id in res_ids:
-            scheduled_date = self._process_scheduled_date(scheduled_dates.get(res_id))
-            render_results.setdefault(res_id, {})['scheduled_date'] = scheduled_date
-
-        return render_results
-
-    def _generate_template_static_values(self, res_ids, render_fields, render_results=None):
-        """ Return values based on template 'self'. Those are not rendered nor
-        dynamic, just static values used for configuration of emails.
-
-        :param list res_ids: list of record IDs on which template is rendered;
-        :param list render_fields: list of fields to render, currently limited
-          to a subset (i.e. auto_delete, mail_server_id, model, res_id);
-        :param dict render_results: res_ids-based dictionary of render values.
-          For each res_id, a dict of values based on render_fields is given;
-
-        :return: updated (or new) render_results;
-        """
-        self.ensure_one()
-        if render_results is None:
-            render_results = {}
-
-        for res_id in res_ids:
-            values = render_results.setdefault(res_id, {})
-
-            # technical settings
-            if 'auto_delete' in render_fields:
-                values['auto_delete'] = self.auto_delete
-            if 'email_layout_xmlid' in render_fields:
-                values['email_layout_xmlid'] = self.email_layout_xmlid
-            if 'mail_server_id' in render_fields:
-                values['mail_server_id'] = self.mail_server_id.id
-            if 'model' in render_fields:
-                values['model'] = self.model
-            if 'res_id' in render_fields:
-                values['res_id'] = res_id or False
-
-        return render_results
-
-    def _generate_template(self, res_ids, render_fields,
-                           find_or_create_partners=False):
-        """ Render values from template 'self' on records given by 'res_ids'.
-        Those values are generally used to create a mail.mail or a mail.message.
-        Model of records is the one defined on template.
-
-        :param list res_ids: list of record IDs on which template is rendered;
-        :param list render_fields: list of fields to render on template;
-        :param boolean find_or_create_partners: transform emails into partners
-          (see ``_generate_template_recipients``);
-
-        :returns: a dict of (res_ids, values) where values contains all rendered
-          fields asked in ``render_fields``. Asking for attachments adds an
-          'attachments' key using the format [(report_name, data)] where data
-          is base64 encoded. Asking for recipients adds a 'partner_ids' key.
-          Note that 2many fields contain a list of IDs, not commands.
-        """
-        self.ensure_one()
-        render_fields_set = set(render_fields)
-        fields_specific = {
-            'attachment_ids',  # attachments
-            'email_cc',  # recipients
-            'email_to',  # recipients
-            'partner_to',  # recipients
-            'report_template_ids',  # attachments
-            'scheduled_date',  # specific
-            # not rendered (static)
-            'auto_delete',
-            'email_layout_xmlid',
-            'mail_server_id',
-            'model',
-            'res_id',
-        }
-
-        render_results = {}
-        for _lang, (template, template_res_ids) in self._classify_per_lang(res_ids).items():
-            # render fields not rendered by sub methods
-            fields_torender = {
-                field for field in render_fields_set
-                if field not in fields_specific
-            }
-            for field in fields_torender:
+        results = dict()
+        for lang, (template, template_res_ids) in self._classify_per_lang(res_ids).items():
+            for field in fields:
                 generated_field_values = template._render_field(
-                    field, template_res_ids
+                    field, template_res_ids,
+                    post_process=(field == 'body_html')
                 )
                 for res_id, field_value in generated_field_values.items():
-                    render_results.setdefault(res_id, {})[field] = field_value
+                    results.setdefault(res_id, dict())[field] = field_value
+            # compute recipients
+            if any(field in fields for field in ['email_to', 'partner_to', 'email_cc']):
+                results = template.generate_recipients(results, template_res_ids)
+            # update values for all res_ids
+            for res_id in template_res_ids:
+                values = results[res_id]
+                if values.get('body_html'):
+                    values['body'] = tools.html_sanitize(values['body_html'])
+                # if asked in fields to return, parse generated date into tz agnostic UTC as expected by ORM
+                scheduled_date = values.pop('scheduled_date', None)
+                if 'scheduled_date' in fields and scheduled_date:
+                    parsed_datetime = self.env['mail.mail']._parse_scheduled_datetime(scheduled_date)
+                    values['scheduled_date'] = parsed_datetime.replace(tzinfo=None) if parsed_datetime else False
 
-            # render recipients
-            if render_fields_set & {'email_cc', 'email_to', 'partner_to'}:
-                template._generate_template_recipients(
-                    template_res_ids, render_fields_set,
-                    render_results=render_results,
-                    find_or_create_partners=find_or_create_partners
+                # technical settings
+                values.update(
+                    mail_server_id=template.mail_server_id.id or False,
+                    auto_delete=template.auto_delete,
+                    model=template.model,
+                    res_id=res_id or False,
+                    attachment_ids=[attach.id for attach in template.attachment_ids],
                 )
 
-            # render scheduled_date
-            if 'scheduled_date' in render_fields_set:
-                template._generate_template_scheduled_date(
-                    template_res_ids,
-                    render_results=render_results
-            )
+            # Add report in attachments: generate once for all template_res_ids
+            if template.report_template:
+                for res_id in template_res_ids:
+                    attachments = []
+                    report_name = template._render_field('report_name', [res_id])[res_id]
+                    report = template.report_template
+                    report_service = report.report_name
 
-            # add values static for all res_ids
-            template._generate_template_static_values(
-                template_res_ids,
-                render_fields_set,
-                render_results=render_results
-            )
+                    if report.report_type in ['qweb-html', 'qweb-pdf']:
+                        result, report_format = self.env['ir.actions.report']._render_qweb_pdf(report, [res_id])
+                    else:
+                        res = self.env['ir.actions.report']._render(report, [res_id])
+                        if not res:
+                            raise UserError(_('Unsupported report type %s found.', report.report_type))
+                        result, report_format = res
 
-            # generate attachments if requested
-            if render_fields_set & {'attachment_ids', 'report_template_ids'}:
-                template._generate_template_attachments(
-                    template_res_ids,
-                    render_fields_set,
-                    render_results=render_results
-                )
+                    # TODO in trunk, change return format to binary to match message_post expected format
+                    result = base64.b64encode(result)
+                    if not report_name:
+                        report_name = 'report.' + report_service
+                    ext = "." + report_format
+                    if not report_name.endswith(ext):
+                        report_name += ext
+                    attachments.append((report_name, result))
+                    results[res_id]['attachments'] = attachments
 
-        return render_results
-
-    @classmethod
-    def _parse_partner_to(cls, partner_to):
-        return [
-            int(pid.strip()) for pid in partner_to.split(',')
-            if (pid and pid.strip().isdigit())
-        ]
+        return multi_mode and results or results[res_ids[0]]
 
     # ------------------------------------------------------------
     # EMAIL
@@ -590,24 +332,13 @@ class MailTemplate(models.Model):
         Attachment = self.env['ir.attachment']  # TDE FIXME: should remove default_type from context
 
         # create a mail_mail based on values, without attachments
-        values = self._generate_template(
-            [res_id],
-            ('attachment_ids',
-             'auto_delete',
-             'body_html',
-             'email_cc',
+        values = self.generate_email(
+            res_id,
+            ['subject', 'body_html',
              'email_from',
-             'email_to',
-             'mail_server_id',
-             'model',
-             'partner_to',
-             'reply_to',
-             'report_template_ids',
-             'res_id',
-             'scheduled_date',
-             'subject',
-            )
-        )[res_id]
+             'email_cc', 'email_to', 'partner_to', 'reply_to',
+             'auto_delete', 'scheduled_date']
+        )
         values['recipient_ids'] = [Command.link(pid) for pid in values.get('partner_ids', list())]
         values['attachment_ids'] = [Command.link(aid) for aid in values.get('attachment_ids', list())]
         values.update(email_values or {})
@@ -617,7 +348,6 @@ class MailTemplate(models.Model):
         if 'email_from' in values and not values.get('email_from'):
             values.pop('email_from')
         # encapsulate body
-        email_layout_xmlid = email_layout_xmlid or self.email_layout_xmlid
         if email_layout_xmlid and values['body_html']:
             record = self.env[self.model].browse(res_id)
             model = self.env['ir.model']._get(record._name)

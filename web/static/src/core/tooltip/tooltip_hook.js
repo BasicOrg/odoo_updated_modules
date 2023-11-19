@@ -2,7 +2,7 @@
 
 import { useService } from "@web/core/utils/hooks";
 
-import { useEffect, useRef } from "@odoo/owl";
+const { useEffect, useRef } = owl;
 
 export function useTooltip(refName, params) {
     const tooltip = useService("tooltip");

@@ -1,16 +1,23 @@
 /** @odoo-module */
 
 import { registry } from "@web/core/registry";
-import { formView } from "@web/views/form/form_view";
-import { updateAccountOnMobileDevice } from "@web_mobile/js/core/mixins";
+import { patch } from "@web/core/utils/patch";
 
-class ResUsersPreferenceController extends formView.Controller {
-    onRecordSaved(record) {
-        return updateAccountOnMobileDevice();
-    }
-}
+import { formView } from "@web/views/form/form_view";
+import { UpdateDeviceAccountControllerMixin } from "web_mobile.mixins";
+import { Record, RelationalModel } from "@web/views/basic_relational_model";
+
+export class ResUsersPreferenceRecord extends Record {}
+export class ResUsersPreferenceModel extends RelationalModel {}
+ResUsersPreferenceModel.Record = ResUsersPreferenceRecord;
+
+patch(
+    ResUsersPreferenceRecord.prototype,
+    "res_users_controller_mobile_mixin",
+    UpdateDeviceAccountControllerMixin
+);
 
 registry.category("views").add("res_users_preferences_form", {
     ...formView,
-    Controller: ResUsersPreferenceController,
+    Model: ResUsersPreferenceModel,
 });

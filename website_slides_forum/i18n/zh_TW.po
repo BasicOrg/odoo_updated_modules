@@ -3,16 +3,17 @@
 # 	* website_slides_forum
 # 
 # Translators:
-# Wil Odoo, 2023
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-10-04 09:26+0000\n"
+"PO-Revision-Date: 2022-09-22 05:57+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -37,9 +38,9 @@ msgstr "<b>回答不應該添加或擴展問題。</b>而是應編輯問題或�
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
 msgid ""
-"<b>Answers should not add or expand questions</b>. Instead, either edit the "
+"<b>Answers should not add or expand questions</b>. Insteadeither edit the "
 "question or add a comment."
-msgstr "<b>答案不應添加或擴展問題 </b>。 相反，可選擇編輯問題或添加評論。"
+msgstr "<b>答案不應添加或擴展問題</b>。您應該編輯問題或添加評論。"
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
@@ -112,18 +113,40 @@ msgid ""
 msgstr "<b>請避免提出過於主觀和爭論</b>或與該社群無關的問題。"
 
 #. module: website_slides_forum
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
+msgid "<b>What kinds of questions can I ask here?</b>"
+msgstr "<b>我可以在這裡問什麼類型的問題？</b>"
+
+#. module: website_slides_forum
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
+msgid "<b>What should I avoid in my answers?</b>"
+msgstr "<b>我的回答應該避免什麼？</b>"
+
+#. module: website_slides_forum
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
+msgid "<b>What should I avoid in my questions?</b>"
+msgstr "<b>我在提問時應該避免什麼？</b>"
+
+#. module: website_slides_forum
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
+msgid "<b>Why can other people edit my questions/answers?</b>"
+msgstr "<b>為什麼其他人可以編輯我的問題/答案？</b>"
+
+#. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.slide_fullscreen
 msgid ""
 "<i class=\"fa fa-comments\"/><span class=\"ms-1 d-none d-md-inline-"
 "block\">Forum</span>"
 msgstr ""
-"<i class=\"fa fa-comments\"/><span class=\"ms-1 d-none d-md-inline-"
-"block\">討論區</span>"
 
 #. module: website_slides_forum
-#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_breadcrumb
-msgid "<strong>Forum</strong>"
-msgstr "<strong>討論區</strong>"
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_header
+msgid "<i class=\"fa fa-home\"/> Course"
+msgstr "<i class=\"fa fa-home\"/> 學習論壇"
 
 #. module: website_slides_forum
 #: model:forum.forum,name:website_slides_forum.forum_forum_demo_channel_0
@@ -131,19 +154,18 @@ msgid "Basics of Gardening"
 msgstr "園藝基礎"
 
 #. module: website_slides_forum
-#: model_terms:ir.ui.view,arch_db:website_slides_forum.forum_all_all_entries
-msgid "Check out our courses <i class=\"fa fa-long-arrow-right\"/>"
-msgstr "查看我們的課程 <i class=\"fa fa-long-arrow-right\"/>"
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_index
+msgid "Check our Courses <i class=\"fa fa-chevron-right\"/>"
+msgstr "查看我們的課程"
 
 #. module: website_slides_forum
 #: model_terms:ir.actions.act_window,help:website_slides_forum.forum_post_action_channel
 msgid "Come back later to monitor and moderate what is posted on your Forums."
-msgstr "請稍後回來，監察及管理討論區發佈的內容。"
+msgstr ""
 
 #. module: website_slides_forum
 #: model:ir.model,name:website_slides_forum.model_slide_channel
 #: model:ir.model.fields,field_description:website_slides_forum.field_forum_forum__slide_channel_id
-#: model_terms:ir.ui.view,arch_db:website_slides_forum.forum_all_all_entries
 msgid "Course"
 msgstr "課程"
 
@@ -158,21 +180,19 @@ msgid "Courses"
 msgstr "課程"
 
 #. module: website_slides_forum
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_index
+msgid "Courses Discussions"
+msgstr "課程討論"
+
+#. module: website_slides_forum
 #: model_terms:ir.actions.act_window,help:website_slides_forum.forum_forum_action_channel
 msgid "Create a Forum"
 msgstr "建立論壇"
 
 #. module: website_slides_forum
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
-msgid "Dismiss"
-msgstr "解除"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
-msgid "Dismiss message"
-msgstr "知道了"
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_index
+msgid "Description"
+msgstr "說明"
 
 #. module: website_slides_forum
 #: model:ir.model.fields,help:website_slides_forum.field_forum_forum__slide_channel_ids
@@ -186,27 +206,27 @@ msgid ""
 "For example, if you ask an interesting question or give a helpful answer, "
 "your input will be upvoted. On the other hand if the answer is misleading - "
 "it will be downvoted. Each vote in favor will generate 10 points, each vote "
-"against will subtract 2 points. There is a limit of 200 points that can be "
+"against will subtract 10 points. There is a limit of 200 points that can be "
 "accumulated for a question or answer per day. The table given at the end "
 "explains reputation point requirements for each type of moderation task."
 msgstr ""
-"舉例，如果你提出一個有趣的問題，或提供了有用的答案，你發佈的內容會被正評。相反，若答案有誤導性，它將會被負評。每個正評當作 10 分計算，每個負評會扣 "
-"2 分。在同一天內，一個問題或答案最多可以累積 200 分。有關各類版主審批權限的最低信譽積分要求，請見文末列表。"
+"例如，如果您提出一個有趣的問題或給出一個有用的答案，您的意見將被點贊。另一方面，如果答案具有誤導性 - 它將被否決。每票贊成將產生 10 "
+"分，每票反對將減去 10 分。每天一個問題或一個答案的累積積分上限為 200 點。最後給出的統計數解釋了每種類型的審核任務的活躍點要求。"
 
 #. module: website_slides_forum
 #: model:ir.model,name:website_slides_forum.model_forum_forum
 #: model:ir.ui.menu,name:website_slides_forum.website_slides_menu_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.course_main
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.slide_fullscreen
-#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_breadcrumb
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_channel_inherit_view_form
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_header
 msgid "Forum"
-msgstr "討論區"
+msgstr "論壇"
 
 #. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.snippet_options
 msgid "Forum Page"
-msgstr "討論區頁面"
+msgstr ""
 
 #. module: website_slides_forum
 #: model:ir.actions.act_window,name:website_slides_forum.forum_post_action_channel
@@ -229,13 +249,19 @@ msgstr "論壇"
 #. module: website_slides_forum
 #: model_terms:ir.actions.act_window,help:website_slides_forum.forum_forum_action_channel
 msgid "Forums allow your attendees to ask questions to your community."
-msgstr "課程參加者可在討論區向社群提問請教。"
+msgstr ""
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
 msgid "Here a table with the privileges and the karma level"
 msgstr "這是活躍度級別與權限關聯表"
+
+#. module: website_slides_forum
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
+msgid "Hide Intro"
+msgstr "隱藏簡介"
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
@@ -257,14 +283,9 @@ msgstr ""
 "的討論”，那麼您不應該在這裡提問，而應該在我們的郵件列表上提問。但是，如果您的動機是“我希望其他人向我解釋______”，那麼您可以在此提出問題。"
 
 #. module: website_slides_forum
-#: model:ir.model.fields,field_description:website_slides_forum.field_forum_forum__image_1920
-msgid "Image"
-msgstr "圖片"
-
-#. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.res_config_settings_view_form
 msgid "Manage Forums"
-msgstr "管理討論區"
+msgstr ""
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
@@ -275,7 +296,7 @@ msgstr "此外："
 #. module: website_slides_forum
 #: model_terms:ir.actions.act_window,help:website_slides_forum.forum_post_action_channel
 msgid "No Forum Post yet!"
-msgstr "未有討論區帖文。"
+msgstr ""
 
 #. module: website_slides_forum
 #: model:ir.model.fields,field_description:website_slides_forum.field_slide_channel__forum_total_posts
@@ -293,28 +314,25 @@ msgid "Posts"
 msgstr "貼文"
 
 #. module: website_slides_forum
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
+msgid "Register"
+msgstr "註冊"
+
+#. module: website_slides_forum
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_header
+msgid "Reviews"
+msgstr "評論"
+
+#. module: website_slides_forum
+#: model_terms:ir.ui.view,arch_db:website_slides_forum.website_slides_forum_index
+msgid "See all Courses"
+msgstr "查看所有課程"
+
+#. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.snippet_options
 msgid "Separate Courses"
-msgstr "單獨課程"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
-msgid ""
-"Share and discuss the best content and new marketing ideas, build your "
-"professional profile and become a better marketer together."
-msgstr "分享和討論最好的內容及新的營銷理念，建立你的專業個人檔案，一起成為更好的營銷人員。"
-
-#. module: website_slides_forum
-#: model:ir.model.fields,field_description:website_slides_forum.field_forum_forum__visibility
-msgid "Show Course To"
-msgstr "顯示課程給"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
-msgid "Sign up"
-msgstr "註冊"
+msgstr ""
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
@@ -345,6 +363,14 @@ msgid ""
 msgstr "該社區面向專業和發燒友用戶、合作夥伴和程序員。您可以提出以下問題："
 
 #. module: website_slides_forum
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
+#: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
+msgid ""
+"This community is for professionals and enthusiasts of our products and services.\n"
+"                                        <br>Share and discuss the best content and new marketing ideas, build your professional profile and become a better marketer together."
+msgstr "該社區面向我們產品和服務的專業人士和愛好者。<br>分享和討論最佳內容和新營銷理念，建立您的專業形象，共同成為更好的營銷人員。"
+
+#. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
 msgid ""
@@ -358,28 +384,15 @@ msgid "Trees, Wood and Gardens"
 msgstr "樹木、木材和花園"
 
 #. module: website_slides_forum
+#: model:ir.model.fields,field_description:website_slides_forum.field_forum_forum__visibility
+msgid "Visibility"
+msgstr "可見性"
+
+#. module: website_slides_forum
 #: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_0
 #: model_terms:forum.forum,welcome_message:website_slides_forum.forum_forum_demo_channel_2
 msgid "Welcome!"
 msgstr "歡迎!"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
-msgid "What kind of questions can I ask here?"
-msgstr "我在這裏可以提問甚麼類型的問題？"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
-msgid "What should I avoid in my answers?"
-msgstr "我的答案中應該避免甚麼？"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
-msgid "What should I avoid in my questions?"
-msgstr "我的問題應該避免甚麼？"
 
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
@@ -395,12 +408,6 @@ msgstr ""
 #. module: website_slides_forum
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
 #: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
-msgid "Why can other people edit my questions/answers?"
-msgstr "為甚麼其他人可以編輯我的問題 / 答案？"
-
-#. module: website_slides_forum
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_0
-#: model_terms:forum.forum,faq:website_slides_forum.forum_forum_demo_channel_2
 msgid ""
 "You should only ask practical, answerable questions based on actual problems"
 " that you face. Chatty, open-ended questions diminish the usefulness of this"
@@ -410,7 +417,7 @@ msgstr "您應該只根據您面臨的實際問題提出務實的、可回答的
 #. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.forum_forum_view_form
 msgid "eLearning"
-msgstr "網上教學"
+msgstr "eLearning"
 
 #. module: website_slides_forum
 #: model_terms:ir.ui.view,arch_db:website_slides_forum.forum_post_view_graph_slides

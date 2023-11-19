@@ -1,54 +1,53 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* web_cohort
-#
+# * web_cohort
+# 
 # Translators:
-# Tuomo Aura <tuomo.aura@web-veistamo.fi>, 2022
-# Jarmo Kortetjärvi <jarmo.kortetjarvi@gmail.com>, 2022
-# Henri Komulainen <henri.komulainen@web-veistamo.fi>, 2022
-# Miku Laitinen <miku.laitinen@gmail.com>, 2022
-# Martin Trigaux, 2022
-# Kari Lindgren <kari.lindgren@emsystems.fi>, 2022
-# Ossi Mantylahti <ossi.mantylahti@obs-solutions.fi>, 2023
-#
+# Martin Trigaux, 2018
+# Kari Lindgren <kari.lindgren@emsystems.fi>, 2018
+# Miku Laitinen <miku.laitinen@gmail.com>, 2018
+# Jussi Lehto <jussi@gulfeo.com>, 2018
+# Jarmo Kortetjärvi <jarmo.kortetjarvi@gmail.com>, 2018
+# Tuomo Aura <tuomo.aura@web-veistamo.fi>, 2018
+# Heikki Katajisto <heikki.katajisto@myyntivoima.fi>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:49+0000\n"
-"Last-Translator: Ossi Mantylahti <ossi.mantylahti@obs-solutions.fi>, 2023\n"
-"Language-Team: Finnish (https://app.transifex.com/odoo/teams/41243/fi/)\n"
-"Language: fi\n"
+"POT-Creation-Date: 2018-09-21 14:06+0000\n"
+"PO-Revision-Date: 2018-09-21 14:06+0000\n"
+"Last-Translator: Heikki Katajisto <heikki.katajisto@myyntivoima.fi>, 2018\n"
+"Language-Team: Finnish (https://www.transifex.com/odoo/teams/41243/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: web_cohort
-#. odoo-python
-#: code:addons/web_cohort/controllers/main.py:0
-#, python-format
-msgid "%s - By %s"
-msgstr "%s - Tekijä %s"
-
-#. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_renderer.xml:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:76
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:154
 #, python-format
 msgid "- By"
-msgstr "- Tekijä"
+msgstr ""
 
 #. module: web_cohort
 #: model:ir.model,name:web_cohort.model_ir_actions_act_window_view
 msgid "Action Window View"
-msgstr "Action Window View"
+msgstr ""
 
 #. module: web_cohort
-#. odoo-python
-#. odoo-javascript
-#: code:addons/web_cohort/controllers/main.py:0
-#: code:addons/web_cohort/static/src/cohort_renderer.xml:0
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Activity"
+msgstr "Toimenpide"
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/controllers/main.py:59
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:112
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:184
 #, python-format
 msgid "Average"
 msgstr "Keskinkertainen"
@@ -56,78 +55,165 @@ msgstr "Keskinkertainen"
 #. module: web_cohort
 #: model:ir.model,name:web_cohort.model_base
 msgid "Base"
-msgstr "Pohja"
+msgstr "Perus"
 
 #. module: web_cohort
-#: model:ir.model.fields.selection,name:web_cohort.selection__ir_actions_act_window_view__view_mode__cohort
-#: model:ir.model.fields.selection,name:web_cohort.selection__ir_ui_view__type__cohort
-msgid "Cohort"
-msgstr "Kohortti"
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Calendar"
+msgstr "Kalenteri"
 
 #. module: web_cohort
-#. odoo-python
-#: code:addons/web_cohort/controllers/main.py:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:22
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
 #, python-format
-msgid "Cohort %(title)s (%(model_name)s)"
-msgstr "Kohortti %(title)s (%(model_name)s)"
+msgid "Cohort"
+msgstr "Cohort"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:42
 #, python-format
 msgid "Cohort view has not defined \"date_start\" attribute."
-msgstr "Kohorttinäkymässä ei ole määritelty \"date_start\"-attribuuttia."
+msgstr ""
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_arch_parser.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:45
 #, python-format
 msgid "Cohort view has not defined \"date_stop\" attribute."
-msgstr "Kohorttinäkymässä ei ole määritelty \"date_stop\"-attribuuttia."
+msgstr ""
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_model.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_controller.js:96
+#: code:addons/web_cohort/static/src/js/cohort_view.js:63
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:17
+#, python-format
+msgid "Count"
+msgstr "Määrä"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Dashboard"
+msgstr "Työpöytä"
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:15
 #, python-format
 msgid "Day"
 msgstr "Päivä"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_renderer.xml:0
-#, python-format
-msgid "Download as Excel file"
-msgstr "Lataa Excel-tiedostona"
+#: selection:ir.ui.view,type:0
+msgid "Diagram"
+msgstr "Kaavio"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_renderer.xml:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:36
 #, python-format
-msgid "Main actions"
-msgstr "Päätoiminnot"
+msgid "Download in Excel file"
+msgstr ""
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_model.js:0
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Form"
+msgstr "Lomake"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Gantt"
+msgstr "Gantt"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Graph"
+msgstr "Kaavio"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Grid"
+msgstr "Taulukko"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Kanban"
+msgstr "Kanban"
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:6
+#, python-format
+msgid "Measures"
+msgstr "Näytettävät tiedot"
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:17
 #, python-format
 msgid "Month"
 msgstr "Kuukausi"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_renderer.xml:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:204
 #, python-format
-msgid "No data available."
-msgstr "Ei dataa saatavilla."
+msgid "No data available for cohort."
+msgstr ""
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_renderer.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:128
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:201
 #, python-format
-msgid ""
-"Period: %(period)s\n"
-"%(measure)s: %(count)s"
+msgid "No data available."
 msgstr ""
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/static/src/xml/web_cohort.xml:43
+#, python-format
+msgid "Period:"
+msgstr "Jakso:"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Pivot"
+msgstr "Taulukko"
+
+#. module: web_cohort
+#: selection:ir.ui.view,type:0
+msgid "QWeb"
+msgstr "QWeb"
+
+#. module: web_cohort
+#: selection:ir.ui.view,type:0
+msgid "Search"
+msgstr "Haku"
+
+#. module: web_cohort
+#: selection:ir.actions.act_window.view,view_mode:0
+#: selection:ir.ui.view,type:0
+msgid "Tree"
+msgstr "Puu"
+
+#. module: web_cohort
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:74
+#, python-format
+msgid "Untitled"
+msgstr "Nimetön"
 
 #. module: web_cohort
 #: model:ir.model,name:web_cohort.model_ir_ui_view
@@ -141,15 +227,15 @@ msgid "View Type"
 msgstr "Näkymän tyyppi"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_model.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:16
 #, python-format
 msgid "Week"
 msgstr "Viikko"
 
 #. module: web_cohort
-#. odoo-javascript
-#: code:addons/web_cohort/static/src/cohort_model.js:0
+#. openerp-web
+#: code:addons/web_cohort/static/src/js/cohort_view.js:18
 #, python-format
 msgid "Year"
 msgstr "Vuosi"

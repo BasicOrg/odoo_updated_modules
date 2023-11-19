@@ -3,12 +3,12 @@
 
 {
     'name': 'Account Consolidation Demo Data',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'version': '1.0',
     'category': 'Hidden',
     'sequence': 50,
     'summary': 'Account Consolidation Demo Data using a Belgium and a US company',
-    'depends': ['account_consolidation', 'l10n_be'],
+    'depends': ['account_consolidation', 'l10n_be', 'l10n_generic_coa'],
     'description': """
 Account Consolidation Demo Data
 ==================================

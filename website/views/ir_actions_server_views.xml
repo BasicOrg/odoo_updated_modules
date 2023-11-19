@@ -10,13 +10,12 @@
                 <data>
                     <xpath expr="//field[@name='state']" position="after">
                         <field name="website_published"
-                            invisible="state != 'code'"/>
+                            attrs="{'invisible': [('state', '!=', 'code')]}"/>
                         <field name="xml_id" invisible="1"/>
                         <field name="website_path"
-                            invisible="not website_published or state != 'code'"/>
-                        <field name="website_url" widget="url"
-                            readonly="1"
-                            invisible="not website_published or state != 'code'"/>
+                            attrs="{'invisible': ['|', ('website_published', '!=', True), ('state', '!=', 'code')]}"/>
+                        <field name="website_url" readonly="1" widget="url"
+                            attrs="{'invisible': ['|', ('website_published', '!=', True), ('state', '!=', 'code')]}"/>
                     </xpath>
                 </data>
             </field>

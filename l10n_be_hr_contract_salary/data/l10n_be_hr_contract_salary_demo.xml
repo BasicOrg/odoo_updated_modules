@@ -40,7 +40,7 @@
         <field name="company_ids" eval="[(4, ref('l10n_be_hr_payroll.res_company_be'))]"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="groups_id" eval="[(6,0,[ref('base.group_user')])]"/>
-        <field name="image_1920" type="base64" file="hr_contract_salary/static/img/hr_employe_laurie_poiret.png"/>
+        <field name="image_1920" type="base64" file="hr_contract_salary/static/img/hr_employe_laurie_poiret.jpg"/>
     </record>
 
     <record id="res_partner_laurie_poiret_work_address" model="res.partner">
@@ -52,26 +52,31 @@
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
     </record>
 
+    <record id="res_partner_laurie_poiret_private_address" model="res.partner">
+        <field name="name">Laurie Poiret</field>
+        <field name="street">58 rue des Wallons</field>
+        <field name="city">Louvain-la-Neuve</field>
+        <field name="zip">1348</field>
+        <field name="country_id" ref="base.be"/>
+        <field name="phone">+0032476543210</field>
+        <field name="email">laurie.poiret@example.com</field>
+        <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+    </record>
+
     <record id="res_partner_bank_account_laurie_poiret" model="res.partner.bank">
         <field name="acc_number">BE10561132778404</field>
         <field name="bank_id" ref="base.bank_ing"/>
-        <field name="partner_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret"/>
+        <field name="partner_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_private_address"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
-        <field name="allow_out_payment" eval="True"/>
     </record>
 
     <record id="hr_employee_laurie_poiret" model="hr.employee">
         <field name="name">Laurie Poiret (lap)</field>
-        <field name="work_contact_id" ref="res_partner_laurie_poiret"/>
         <field name="gender">female</field>
         <field name="marital">single</field>
         <field name="job_title">Software Developer</field>
-        <field name="private_street">58 rue des Wallons</field>
-        <field name="private_city">Louvain-la-Neuve</field>
-        <field name="private_zip">1348</field>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_phone">+0032476543210</field>
-        <field name="private_email">laurie.poiret@example.com</field>
+        <field name="address_home_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_private_address"/>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
         <field name="emergency_contact">Marc Poiret</field>
         <field name="emergency_phone">+0032498765432</field>
@@ -88,7 +93,7 @@
         <field name="identification_id">91-07-28-458-80</field>
         <field name="niss">91111111192</field>
         <field name="bank_account_id" ref="l10n_be_hr_contract_salary.res_partner_bank_account_laurie_poiret"/>
-        <field name="image_1920" type="base64" file="hr_contract_salary/static/img/hr_employe_laurie_poiret.png"/>
+        <field name="image_1920" type="base64" file="hr_contract_salary/static/img/hr_employe_laurie_poiret.jpg"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="user_id" ref="l10n_be_hr_contract_salary.user_laurie_poiret"/>
     </record>
@@ -185,7 +190,6 @@
         <field name="sign_template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="contract_update_template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
-        <field name="resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
     </record>
 
     <record id="l10n_be_hr_contract_salary.job_developer_belgium" model="hr.job">

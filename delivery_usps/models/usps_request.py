@@ -68,7 +68,7 @@ class USPSRequest():
                 return _("Please provide at least one item to ship.")
             error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
             if error_lines:
-                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s", ", ".join(error_lines.product_id.mapped('name')))
+                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s") % ", ".join(error_lines.product_id.mapped('name'))
             tot_weight = order._get_estimated_weight()
             weight_uom_id = order.env['product.template']._get_weight_uom_id_from_ir_config_parameter()
             weight_in_pounds = weight_uom_id._compute_quantity(tot_weight, order.env.ref('uom.product_uom_lb'))

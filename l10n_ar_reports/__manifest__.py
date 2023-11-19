@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Argentinean Accounting Reports',
-    'countries': ['ar'],
+    'icon': '/l10n_ar/static/description/icon.png',
     'version': '1.0',
     'author': 'ADHOC SA',
     'category': 'Accounting/Localizations/Reporting',
@@ -35,11 +35,6 @@ Official Documentation AFIP
         'security/ir.model.access.csv',
         'security/security.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'l10n_ar_reports/static/src/components/**/*',
-        ],
-    },
     'auto_install': ['l10n_ar', 'account_reports'],
     'installable': True,
     'license': 'OEEL-1',

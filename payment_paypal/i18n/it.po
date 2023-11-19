@@ -3,65 +3,99 @@
 # 	* payment_paypal
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2019
+# Sergio Zanchetta <primes2h@gmail.com>, 2019
+# Luigia Cimmino Caserta <lcc@odoo.com>, 2019
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~12.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2019-08-26 08:16+0000\n"
+"PO-Revision-Date: 2019-08-26 09:12+0000\n"
+"Last-Translator: Luigia Cimmino Caserta <lcc@odoo.com>, 2019\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: it\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: payment_paypal
-#: model:ir.model.fields,field_description:payment_paypal.field_payment_provider__code
-msgid "Code"
-msgstr "Codice"
+#: model_terms:ir.ui.view,arch_db:payment_paypal.mail_template_paypal_invite_user_to_configure
+msgid ""
+"<br/><br/>\n"
+"                Thanks,<br/>\n"
+"                <b>The Odoo Team</b>"
+msgstr ""
+"<br/><br/>\n"
+"                Grazie,<br/>\n"
+"                <b>il team Odoo</b>"
 
 #. module: payment_paypal
-#: model:ir.model.fields,field_description:payment_paypal.field_payment_provider__paypal_email_account
+#: code:addons/payment_paypal/models/payment.py:0
+#, python-format
+msgid "Add your Paypal account to Odoo"
+msgstr "Aggiungi il tuo conto Paypal ad Odoo"
+
+#. module: payment_paypal
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__paypal_email_account
 msgid "Email"
 msgstr "E-mail"
 
 #. module: payment_paypal
-#: model_terms:ir.ui.view,arch_db:payment_paypal.payment_provider_form
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__fees_dom_fixed
+msgid "Fixed domestic fees"
+msgstr "Tariffe fisse nazionali"
+
+#. module: payment_paypal
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__fees_int_fixed
+msgid "Fixed international fees"
+msgstr "Tariffe fisse internazionali"
+
+#. module: payment_paypal
+#: model_terms:ir.ui.view,arch_db:payment_paypal.mail_template_paypal_invite_user_to_configure
+msgid ""
+"Hello,\n"
+"                <br/><br/>\n"
+"                You have received a payment through PayPal.<br/>\n"
+"                Kindly follow the instructions given by PayPal to create your account.<br/>\n"
+"                Then, help us complete your Paypal credentials in Odoo.<br/><br/>"
+msgstr ""
+"Ciao,\n"
+"                <br/><br/>\n"
+"                Hai ricevuto un pagamento attraverso PayPal.<br/>\n"
+"                Per favore segui le istruzioni date da PayPal per creare il tuo account.<br/>\n"
+"                Successivamente, aiutaci a completare le tue credenziali Paypal su Odoo.<br/><br/>"
+
+#. module: payment_paypal
+#: model_terms:ir.ui.view,arch_db:payment_paypal.acquirer_form_paypal
 msgid "How to configure your paypal account?"
 msgstr "Come configurare l'account PayPal."
 
 #. module: payment_paypal
-#. odoo-python
-#: code:addons/payment_paypal/models/payment_transaction.py:0
-#, python-format
-msgid "Missing value for txn_id (%(txn_id)s) or txn_type (%(txn_type)s)."
-msgstr "Valore mancante per txn_id (%(txn_id)s) o txn_type (%(txn_type)s)."
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__paypal_seller_account
+msgid "Merchant Account ID"
+msgstr ""
 
 #. module: payment_paypal
-#. odoo-python
-#: code:addons/payment_paypal/models/payment_transaction.py:0
-#, python-format
-msgid "No transaction found matching reference %s."
-msgstr "Nessuna transazione trovata corrispondente al riferimento %s."
-
-#. module: payment_paypal
-#: model:ir.model.fields,field_description:payment_paypal.field_payment_provider__paypal_pdt_token
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__paypal_pdt_token
 msgid "PDT Identity Token"
-msgstr "Token di identità PDT"
+msgstr ""
 
 #. module: payment_paypal
-#: model:ir.model.fields,field_description:payment_paypal.field_payment_transaction__paypal_type
-msgid "PayPal Transaction Type"
-msgstr "PayPal tipo di transazione"
+#: model:ir.model,name:payment_paypal.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr "Sistema di pagamento"
 
 #. module: payment_paypal
-#: model:ir.model,name:payment_paypal.model_payment_provider
-msgid "Payment Provider"
-msgstr "Fornitore di pagamenti"
+#: model:ir.model.fields,help:payment_paypal.field_payment_acquirer__paypal_pdt_token
+msgid ""
+"Payment Data Transfer allows you to receive notification of successful "
+"payments as they are made."
+msgstr ""
+"Il PDT (trasferimento dati di pagamento) consente di ricevere notifiche dei "
+"pagamenti andati a buon fine."
 
 #. module: payment_paypal
 #: model:ir.model,name:payment_paypal.model_payment_transaction
@@ -69,46 +103,56 @@ msgid "Payment Transaction"
 msgstr "Transazione di pagamento"
 
 #. module: payment_paypal
-#: model:ir.model.fields.selection,name:payment_paypal.selection__payment_provider__code__paypal
+#: model:ir.model.fields.selection,name:payment_paypal.selection__payment_acquirer__provider__paypal
 msgid "Paypal"
 msgstr "PayPal"
 
 #. module: payment_paypal
-#. odoo-python
-#: code:addons/payment_paypal/models/payment_transaction.py:0
-#, python-format
-msgid "Received data with invalid payment status: %s"
-msgstr "Dati ricevuti con stato di pagamento non valido: %s"
+#: model:ir.model.fields,help:payment_paypal.field_payment_acquirer__paypal_use_ipn
+msgid "Paypal Instant Payment Notification"
+msgstr "Notifica immediata di pagamento PayPal"
 
 #. module: payment_paypal
-#. odoo-python
-#: code:addons/payment_paypal/models/payment_transaction.py:0
+#: code:addons/payment_paypal/models/payment.py:0
 #, python-format
-msgid "The customer left the payment page."
-msgstr "Il cliente ha abbandonato la pagina di pagamento."
+msgid "Paypal: received data with missing reference (%s) or txn_id (%s)"
+msgstr "PayPal: ricevuti dati con riferimento (%s) o txn_id (%s) mancante"
 
 #. module: payment_paypal
-#: model:ir.model.fields,help:payment_paypal.field_payment_provider__paypal_email_account
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__provider
+msgid "Provider"
+msgstr "Fornitore"
+
+#. module: payment_paypal
+#: model_terms:ir.ui.view,arch_db:payment_paypal.mail_template_paypal_invite_user_to_configure
+msgid "Set Paypal credentials"
+msgstr "Imposta le credenziali Paypal"
+
+#. module: payment_paypal
+#: model:ir.model.fields,help:payment_paypal.field_payment_acquirer__paypal_seller_account
 msgid ""
-"The public business email solely used to identify the account with PayPal"
+"The Merchant ID is used to ensure communications coming from Paypal are "
+"valid and secured."
 msgstr ""
-"L'email pubblica aziendale utilizzata esclusivamente per identificare il "
-"conto con PayPal"
+"L'ID commerciante PayPal è usato per garantire che le comunicazioni da "
+"PayPal siano valide e protette."
 
 #. module: payment_paypal
-#. odoo-python
-#: code:addons/payment_paypal/controllers/main.py:0
-#, python-format
-msgid ""
-"The status of transaction with reference %(ref)s was not synchronized "
-"because the 'Payment data transfer' option is not enabled on the PayPal "
-"dashboard."
-msgstr ""
-"Lo stato della transazione con riferimento %(ref)s non è stato sincronizzato"
-" perché l'opzione \"Trasferimento dati pagamento\" non è attiva nella "
-"dashboard Paypal."
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_transaction__paypal_txn_type
+msgid "Transaction type"
+msgstr "Tipo di transazione"
 
 #. module: payment_paypal
-#: model:ir.model.fields,help:payment_paypal.field_payment_provider__code
-msgid "The technical code of this payment provider."
-msgstr "Codice tecnico del fornitore di pagamenti."
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__paypal_use_ipn
+msgid "Use IPN"
+msgstr "Usare IPN"
+
+#. module: payment_paypal
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__fees_dom_var
+msgid "Variable domestic fees (in percents)"
+msgstr "Tariffe variabili nazionali (in percentuale)"
+
+#. module: payment_paypal
+#: model:ir.model.fields,field_description:payment_paypal.field_payment_acquirer__fees_int_var
+msgid "Variable international fees (in percents)"
+msgstr "Tariffe variabili internazionali (in percentuale)"

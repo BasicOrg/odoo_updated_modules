@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
-import { overlayService } from "@web/core/overlay/overlay_service";
 import { browser } from "@web/core/browser/browser";
 import { notificationService } from "@web/core/notifications/notification_service";
 import { menuService } from "@web/webclient/menus/menu_service";
 import { registry } from "@web/core/registry";
+import { ormService } from "@web/core/orm_service";
 import { uiService } from "@web/core/ui/ui_service";
+import { viewService } from "@web/views/view_service";
 import { actionService } from "@web/webclient/actions/action_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { NavBar } from "@web/webclient/navbar/navbar";
@@ -20,7 +21,7 @@ import {
     mockTimeout,
 } from "../helpers/utils";
 
-import { Component, xml, onRendered } from "@odoo/owl";
+const { Component, xml, onRendered } = owl;
 
 const systrayRegistry = registry.category("systray");
 const serviceRegistry = registry.category("services");
@@ -33,12 +34,13 @@ let target;
 QUnit.module("Navbar", {
     async beforeEach() {
         target = getFixture();
-        serviceRegistry.add("overlay", overlayService);
         serviceRegistry.add("menu", menuService);
         serviceRegistry.add("action", actionService);
         serviceRegistry.add("notification", notificationService);
         serviceRegistry.add("hotkey", hotkeyService);
         serviceRegistry.add("ui", uiService);
+        serviceRegistry.add("view", viewService); // #action-serv-leg-compat-js-class
+        serviceRegistry.add("orm", ormService); // #action-serv-leg-compat-js-class
         systrayRegistry.add("addon.myitem", { Component: MySystrayItem });
         patchWithCleanup(browser, {
             setTimeout: (handler, delay, ...args) => handler(...args),
@@ -84,43 +86,6 @@ QUnit.test("href attribute on apps menu items", async (assert) => {
     await click(appsMenu, "button.dropdown-toggle");
     const dropdownItem = target.querySelector(".o_navbar_apps_menu .dropdown-item");
     assert.strictEqual(dropdownItem.getAttribute("href"), "#menu_id=1&action=339");
-});
-
-QUnit.test("many sublevels in app menu items", async (assert) => {
-    baseConfig.serverData.menus = {
-        root: { id: "root", children: [1], name: "root", appID: "root" },
-        1: { id: 1, children: [2], name: "My app", appID: 1 },
-        2: { id: 2, children: [3], name: "My menu", appID: 1 },
-        3: { id: 3, children: [4], name: "My submenu 1", appID: 1 },
-        4: { id: 4, children: [5], name: "My submenu 2", appID: 1 },
-        5: { id: 5, children: [6], name: "My submenu 3", appID: 1 },
-        6: { id: 6, children: [7], name: "My submenu 4", appID: 1 },
-        7: { id: 7, children: [8], name: "My submenu 5", appID: 1 },
-        8: { id: 8, children: [9], name: "My submenu 6", appID: 1 },
-        9: { id: 9, children: [], name: "My submenu 7", appID: 1 },
-    };
-    const env = await makeTestEnv(baseConfig);
-    env.services.menu.setCurrentMenu(1);
-    await mount(NavBar, target, { env });
-    const firstSectionMenu = target.querySelector(".o_menu_sections .dropdown");
-    await click(firstSectionMenu, "button.dropdown-toggle");
-    const menuChildren = [...firstSectionMenu.querySelectorAll(".dropdown-menu > *")];
-    assert.deepEqual(
-        menuChildren.map((el) => ({
-            text: el.textContent,
-            paddingLeft: el.style.paddingLeft,
-            tagName: el.tagName,
-        })),
-        [
-            { text: "My submenu 1", paddingLeft: "20px", tagName: "DIV" },
-            { text: "My submenu 2", paddingLeft: "32px", tagName: "DIV" },
-            { text: "My submenu 3", paddingLeft: "44px", tagName: "DIV" },
-            { text: "My submenu 4", paddingLeft: "56px", tagName: "DIV" },
-            { text: "My submenu 5", paddingLeft: "68px", tagName: "DIV" },
-            { text: "My submenu 6", paddingLeft: "80px", tagName: "DIV" },
-            { text: "My submenu 7", paddingLeft: "92px", tagName: "A" },
-        ]
-    );
 });
 
 QUnit.test("data-menu-xmlid attribute on AppsMenu items", async (assert) => {
@@ -231,7 +196,7 @@ QUnit.test("navbar updates after adding a systray item", async (assert) => {
                     systrayRegistry.add("addon.myitem2", { Component: MyItem2 });
                 }
             });
-            super.setup();
+            this._super();
         },
     });
 

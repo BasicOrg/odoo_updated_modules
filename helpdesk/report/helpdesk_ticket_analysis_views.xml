@@ -16,18 +16,6 @@
         </field>
     </record>
 
-    <record id="helpdesk_ticket_view_pivot_analysis_dashboard" model="ir.ui.view">
-        <field name="name">helpdesk.ticket.report.analysis.pivot.dashboard</field>
-        <field name="model">helpdesk.ticket.report.analysis</field>
-        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_pivot_analysis"/>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='team_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-        </field>
-    </record>
-
     <record id="helpdesk_ticket_view_pivot_7days_analysis_inherit_dashboard" model="ir.ui.view">
         <field name="name">helpdesk.ticket.view.pivot.7days.analysis.inherit</field>
         <field name="model">helpdesk.ticket.report.analysis</field>
@@ -88,16 +76,16 @@
         <field name="arch" type="xml">
             <tree string="Tickets" multi_edit="1" sample="1">
                 <field name="ticket_id" string="Name" readonly="1"/>
-                <field name="team_id" optional="show" readonly="1" column_invisible="context.get('default_team_id', False)"/>
-                <field name="team_id" optional="hide" readonly="1" column_invisible="not context.get('default_team_id', False)"/>
+                <field name="team_id" optional="show" readonly="1" invisible="context.get('default_team_id', False)"/>
+                <field name="team_id" optional="hide" readonly="1" invisible="not context.get('default_team_id', False)"/>
                 <field name="user_id" optional="show" widget="many2one_avatar_user"/>
                 <field name="partner_id" optional="show"/>
                 <field name="ticket_type_id" optional="hide"/>
                 <field name="priority" optional="show" widget="priority"/>
-                <field name="stage_id" optional="show" readonly="1"/>
-                <field name="sla_deadline" optional="show" widget="remaining_days"/>
-                <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1" column_invisible="context.get('default_team_id', False)"/>
-                <field name="company_id" groups="base.group_multi_company" optional="hide" readonly="1" column_invisible="not context.get('default_team_id', False)"/>
+                <field name="ticket_stage_id" optional="show" readonly="1"/>
+                <field name="ticket_deadline" optional="show" widget="remaining_days"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1" invisible="context.get('default_team_id', False)"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide" readonly="1" invisible="not context.get('default_team_id', False)"/>
             </tree>
         </field>
     </record>
@@ -108,21 +96,23 @@
         <field name="arch" type="xml">
             <graph string="Tickets Analysis" sample="1" disable_linking="1">
                 <field name="team_id"/>
-                <field name="stage_id"/>
+                <field name="ticket_stage_id"/>
                 <field name="ticket_open_hours" widget="float_time"/>
             </graph>
         </field>
     </record>
 
-    <record id="helpdesk_ticket_view_graph_analysis_dashboard" model="ir.ui.view">
-        <field name="name">helpdesk.ticket.view.graph.analysis.dashboard</field>
+    <record id="helpdesk_ticket_view_graph_7days_analysis_inherit_dashboard" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.graph.7days.analysis.inherit</field>
         <field name="model">helpdesk.ticket.report.analysis</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_graph_analysis"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
-            <xpath expr="//graph" position="attributes">
-                <attribute name="stacked">False</attribute>
+            <xpath expr="//field[@name='team_id']" position="replace">
+                <field name="close_date" interval="day"/>
             </xpath>
+            <field name="ticket_stage_id" position="replace"/>
+            <field name="ticket_open_hours" position="replace"/>
         </field>
     </record>
 
@@ -139,7 +129,7 @@
             <xpath expr="//field[@name='team_id']" position="replace">
                 <field name="create_date" interval="day"/>
             </xpath>
-            <field name="stage_id" position="replace"/>
+            <field name="ticket_stage_id" position="replace"/>
         </field>
     </record>
 
@@ -147,7 +137,7 @@
         <field name="name">helpdesk.ticket.report.analysis.cohort</field>
         <field name="model">helpdesk.ticket.report.analysis</field>
         <field name="arch" type="xml">
-            <cohort string="Tickets Analysis" date_start="create_date" date_stop="close_date" disable_linking="True" interval="day" sample="1" measure="ticket_open_hours"/>
+            <cohort string="Tickets Analysis" date_start="create_date" date_stop="close_date" interval="day" sample="1" measure="ticket_open_hours"/>
         </field>
     </record>
 
@@ -161,7 +151,7 @@
                 <field name="ticket_type_id" optional="hide"/>
                 <field name="team_id" optional="show"/>
                 <field name="partner_id" widget="res_partner_many2one" optional="show"/>
-                <field name="stage_id" optional="show"/>
+                <field name="ticket_stage_id" optional="show"/>
             </tree>
         </field>
     </record>
@@ -169,11 +159,54 @@
     <record id="helpdesk_ticket_report_analysis_view_search" model="ir.ui.view">
         <field name="name">helpdesk.ticket.report.analysis.search</field>
         <field name="model">helpdesk.ticket.report.analysis</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="helpdesk_tickets_view_search_base"/>
-        <field name="priority">20</field>
         <field name="arch" type="xml">
-            <search position="attributes"/>
+            <search string="Tickets Analysis">
+                <field name="ticket_id"/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <field name="team_id"/>
+                <field name="ticket_type_id"/>
+                <field name="ticket_stage_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="ticket_deadline" groups="helpdesk.group_use_sla"/>
+                <filter string="My Tickets" domain="[('user_id','=',uid)]" name="my_ticket"/>
+                <filter string="Followed" domain="[('ticket_id.message_is_follower', '=', True)]" name="my_follow_ticket"/>
+                <filter string="Unassigned" domain="[('user_id', '=', False)]" name="unassigned"/>
+                <separator/>
+                <filter string="Urgent" domain="[('priority', '=', 3)]" name="urgent_priority"/>
+                <filter string="High Priority" domain="[('priority', '=', 2)]" name="high_priority"/>
+                <filter string="Medium Priority" domain="[('priority', '=', 1)]" name="medium_priority"/>
+                <filter string="Low Priority" domain="[('priority', '=', 0)]" name="low_priority"/>
+                <separator groups="helpdesk.group_use_sla"/>
+                <filter string="SLA Success" domain="[('ticket_id.sla_success', '=', True)]" name="sla_success" groups="helpdesk.group_use_sla"/>
+                <filter string="SLA in Progress" domain="[('sla_fail', '=', False), ('ticket_id.sla_status_ids', '!=', False)]" name="sla_inprogress" groups="helpdesk.group_use_sla"/>
+                <filter string="SLA Failed" domain="[('sla_fail', '=', True)]" name="sla_failed" groups="helpdesk.group_use_sla"/>
+                <separator/>
+                <filter string="Open" domain="[('ticket_stage_id.fold', '=', False)]" name="is_open"/>
+                <filter string="Closed" domain="[('ticket_stage_id.fold', '=', True)]" name="is_close"/>
+                <separator/>
+                <filter string="Rated Tickets" domain="[('rating_last_value', '!=', 0.0)]" name="rated_ticket"/>
+                <separator/>
+                <filter string="Last 7 days" name="last_7days" domain="[('close_date','&gt;', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 30 days" name="last_30days" domain="[('close_date', '&gt;', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Creation Date" date="create_date" name="creation_date"/>
+                <separator/>
+                <filter string="Archived" domain="[('active', '=', False)]" name="archive"/>
+                <group expand="0" string="Group By">
+                    <filter string="Assigned to" name="assignee" context="{'group_by':'user_id'}"/>
+                    <filter string="Team" name="team" context="{'group_by':'team_id'}"/>
+                    <filter string="Stage" name="stage" context="{'group_by':'ticket_stage_id'}"/>
+                    <filter string="Type" name="ticket_type_id" context="{'group_by':'ticket_type_id'}"/>
+                    <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Status" name="state" context="{'group_by': 'kanban_state'}"/>
+                    <filter string="Customer" name="partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter string="Creation Date" name="created_by" context="{'group_by': 'create_date'}"/>
+                    <filter string="SLA Deadline" name="ticket_deadline" context="{'group_by': 'ticket_deadline'}"/>
+                    <filter string="Closing Date" name="close_date" context="{'group_by': 'close_date'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -189,7 +222,7 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
-                No data yet!
+                No data yet !
             </p><p>
                 Get statistics on your tickets and how long it takes to assign and resolve them.
             </p>
@@ -215,104 +248,6 @@
         <field name="view_mode">cohort</field>
         <field name="view_id" ref="helpdesk_ticket_report_view_cohort"/>
         <field name="act_window_id" ref="helpdesk_ticket_analysis_action"/>
-    </record>
-
-    <record id="helpdesk_ticket_analysis_dashboard_action" model="ir.actions.act_window">
-        <field name="name">Ticket Analysis</field>
-        <field name="res_model">helpdesk.ticket.report.analysis</field>
-        <field name="view_mode">pivot,graph,cohort</field>
-        <field name="context">{
-            'search_default_group_by_create_date': 1,
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_empty_folder">
-                No data yet!
-            </p><p>
-                Get statistics on your tickets and how long it takes to assign and resolve them.
-            </p>
-        </field>
-    </record>
-
-    <record id="action_helpdesk_ticket_analysis_dashboard_graph_view" model="ir.actions.act_window.view">
-        <field name="sequence" eval="5"/>
-        <field name="view_mode">graph</field>
-        <field name="view_id" ref="helpdesk_ticket_view_graph_analysis_dashboard"/>
-        <field name="act_window_id" ref="helpdesk_ticket_analysis_dashboard_action"/>
-    </record>
-
-    <record id="action_helpdesk_ticket_analysis_dashboard_pivot_view" model="ir.actions.act_window.view">
-        <field name="sequence" eval="10"/>
-        <field name="view_mode">pivot</field>
-        <field name="view_id" ref="helpdesk_ticket_view_pivot_analysis_dashboard"/>
-        <field name="act_window_id" ref="helpdesk_ticket_analysis_dashboard_action"/>
-    </record>
-
-    <record id="helpdesk_ticket_action_7dayssuccess" model="ir.actions.act_window">
-        <field name="name">Success Rate Analysis</field>
-        <field name="res_model">helpdesk.ticket.report.analysis</field>
-        <field name="view_mode">pivot,graph</field>
-        <field name="domain" eval="[('close_date', '>=', (DateTime.today() - relativedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
-        <field name="search_view_id" ref="helpdesk.helpdesk_ticket_report_analysis_view_search"/>
-        <field name="context">{
-            'search_default_is_close': True,
-            'search_default_my_ticket': True,
-            'search_default_sla_success': True,
-            'search_default_last_7days': True,
-            'pivot_measures': ['__count__'],
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_empty_folder">
-                No data yet!
-            </p><p>
-                Create tickets to get statistics.
-            </p>
-        </field>
-    </record>
-
-    <record id="helpdesk_ticket_action_7dayssuccess_pivot" model="ir.actions.act_window.view">
-        <field name="sequence" eval="19"/>
-        <field name="view_mode">pivot</field>
-        <field name="view_id" ref="helpdesk.helpdesk_ticket_view_pivot_analysis_7dayssuccess_inherit_dashboard"/>
-        <field name="act_window_id" ref="helpdesk_ticket_action_7dayssuccess"/>
-    </record>
-
-    <record id="helpdesk_ticket_action_7dayssuccess_graph" model="ir.actions.act_window.view">
-        <field name="sequence" eval="29"/>
-        <field name="view_mode">graph</field>
-        <field name="act_window_id" ref="helpdesk_ticket_action_7dayssuccess"/>
-    </record>
-
-    <record id="helpdesk_ticket_action_dashboard" model="ir.actions.act_window">
-        <field name="name">Ticket Analysis</field>
-        <field name="res_model">helpdesk.ticket.report.analysis</field>
-        <field name="view_mode">pivot,graph,cohort</field>
-        <field name="search_view_id" ref="helpdesk.helpdesk_ticket_report_analysis_view_search"/>
-        <field name="domain">[('stage_id.fold', '=', False)]</field>
-        <field name="context">{
-            'search_default_my_ticket': True,
-            'search_default_is_open': True,
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_empty_folder">
-                No data yet!
-            </p><p>
-                Create tickets to get statistics.
-            </p>
-        </field>
-    </record>
-
-    <record id="helpdesk_ticket_action_dashboard_pivot" model="ir.actions.act_window.view">
-        <field name="sequence" eval="16"/>
-        <field name="view_mode">pivot</field>
-        <field name="view_id" ref="helpdesk.helpdesk_ticket_view_pivot_analysis_inherit_dashboard"/>
-        <field name="act_window_id" ref="helpdesk_ticket_action_dashboard"/>
-    </record>
-
-    <record id="helpdesk_ticket_action_dashboard_graph" model="ir.actions.act_window.view">
-        <field name="sequence" eval="25"/>
-        <field name="view_mode">graph</field>
-        <field name="view_id" ref="helpdesk.helpdesk_ticket_view_graph_analysis_inherit_dashboard"/>
-        <field name="act_window_id" ref="helpdesk_ticket_action_dashboard"/>
     </record>
 
 </odoo>

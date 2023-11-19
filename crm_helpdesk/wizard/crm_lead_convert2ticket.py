@@ -58,16 +58,15 @@ class CrmLeadConvert2Ticket(models.TransientModel):
         else:  # if partner is not on lead -> take partner phone first
             vals["partner_phone"] = partner.phone or lead.mobile or partner.mobile
         if lead.email_from:
-            vals['partner_email'] = lead.email_from
+            vals['email'] = lead.email_from
 
         # create and add a specific creation message
         ticket_sudo = self.env['helpdesk.ticket'].with_context(
             mail_create_nosubscribe=True, mail_create_nolog=True
         ).sudo().create(vals)
-        ticket_sudo.message_post_with_source(
-            'mail.message_origin_link',
-            render_values={'self': ticket_sudo, 'origin': lead},
-            subtype_xmlid='mail.mt_note',
+        ticket_sudo.message_post_with_view(
+            'mail.message_origin_link', values={'self': ticket_sudo, 'origin': lead},
+            subtype_id=self.env.ref('mail.mt_note').id, author_id=self.env.user.partner_id.id
         )
 
         # move the mail thread
@@ -80,6 +79,7 @@ class CrmLeadConvert2Ticket(models.TransientModel):
 
         # return to ticket (if can see) or lead (if cannot)
         try:
+            self.env['helpdesk.ticket'].check_access_rights('read')
             self.env['helpdesk.ticket'].browse(ticket_sudo.ids).check_access_rule('read')
         except:
             return {

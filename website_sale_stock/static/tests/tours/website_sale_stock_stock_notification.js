@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('back_in_stock_notification_product', {
+tour.register('back_in_stock_notification_product', {
         test: true,
         url: '/shop?search=Macbook%20Pro',
-    steps: () => [
+    },
+    [
         {
             content: "Open product page",
             trigger: 'a:contains("Macbook Pro")',
@@ -26,7 +27,6 @@ registry.category("web_tour.tours").add('back_in_stock_notification_product', {
         {
             content: "Success Message",
             trigger: '#stock_notification_success_message',
-            isCheck: true,
         },
     ],
-});
+);

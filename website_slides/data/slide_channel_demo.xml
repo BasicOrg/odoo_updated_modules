@@ -16,7 +16,7 @@
                                      (4, ref('website_slides.slide_channel_tag_other_0')),
                                      (4, ref('website_slides.slide_channel_tag_other_2'))]"/>
         <field name="image_1920" type="base64" file="website_slides/static/src/img/channel_demo_gardening.jpg"/>
-        <field name="description">Learn the basics of gardening!</field>
+        <field name="description">Learn the basics of gardening !</field>
         <field name="create_date" eval="DateTime.now() - relativedelta(days=8)"/>
     </record>
 
@@ -42,9 +42,6 @@
     <record id="slide_channel_demo_2_gard2" model="slide.channel">
         <field name="name">Trees, Wood and Gardens</field>
         <field name="user_id" ref="base.user_demo"/>
-        <field name="prerequisite_channel_ids" eval="[(5, 0),
-                                                      (4, ref('website_slides.slide_channel_demo_0_gard_0')),
-                                                      (4, ref('website_slides.slide_channel_demo_1_gard1'))]"/>
         <field name="enroll">public</field>
         <field name="channel_type">documentation</field>
         <field name="allow_comment" eval="True"/>
@@ -62,10 +59,9 @@
     </record>
 
     <record id="slide_channel_demo_3_furn0" model="slide.channel">
-        <field name="name">Choose your wood!</field>
+        <field name="name">Choose your wood !</field>
         <field name="user_id" ref="base.user_admin"/>
-        <field name="enroll">invite</field>
-        <field name="visibility">members</field>
+        <field name="enroll">public</field>
         <field name="channel_type">training</field>
         <field name="allow_comment" eval="True"/>
         <field name="promote_strategy">latest</field>
@@ -103,7 +99,6 @@ will learn the basics of wood characteristics.</field>
         <field name="name">Basics of Furniture Creation</field>
         <field name="user_id" ref="base.user_admin"/>
         <field name="enroll">invite</field>
-        <field name="visibility">connected</field>
         <field name="channel_type">training</field>
         <field name="allow_comment" eval="True"/>
         <field name="promote_strategy">latest</field>

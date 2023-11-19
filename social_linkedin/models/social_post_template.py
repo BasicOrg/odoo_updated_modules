@@ -17,20 +17,17 @@ class SocialPostTemplate(models.Model):
                 post.message and
                 'linkedin' in post.account_ids.media_id.mapped('media_type'))
 
-    @api.depends(lambda self: ['message', 'image_ids', 'display_linkedin_preview'] + self._get_post_message_modifying_fields())
+    @api.depends(lambda self: ['message', 'image_ids'] + self._get_post_message_modifying_fields())
     def _compute_linkedin_preview(self):
         for post in self:
-            if not post.display_linkedin_preview:
-                post.linkedin_preview = False
-                continue
             post.linkedin_preview = self.env['ir.qweb']._render('social_linkedin.linkedin_preview', {
                 **post._prepare_preview_values("instagram"),
                 'message': post._prepare_post_content(
                     post.message,
                     'linkedin',
                     **{field: post[field] for field in post._get_post_message_modifying_fields()}),
-                'image_urls': [
-                    f'/web/image/{image._origin.id or image.id}'
+                'images': [
+                    image.with_context(bin_size=False).datas
                     for image in post.image_ids.sorted(lambda image: image._origin.id or image.id, reverse=True)
                 ],
             })

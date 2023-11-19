@@ -8,7 +8,7 @@ from odoo.exceptions import UserError
 from odoo.addons.hr_timesheet.tests.test_timesheet import TestCommonTimesheet
 from odoo.addons.sale_timesheet.tests.common import TestCommonSaleTimesheet
 from odoo.tests import tagged
-from odoo.tests.common import Form
+
 
 @tagged('-at_install', 'post_install')
 class TestSaleTimesheet(TestCommonSaleTimesheet):
@@ -501,7 +501,7 @@ class TestSaleTimesheet(TestCommonSaleTimesheet):
         task = Task.with_context(default_project_id=self.project_template.id).create({
             'name': 'first task',
             'partner_id': self.partner_b.id,
-            'allocated_hours': 10,
+            'planned_hours': 10,
             'sale_line_id': self.so.order_line[0].id
         })
 
@@ -518,15 +518,15 @@ class TestSaleTimesheet(TestCommonSaleTimesheet):
         self.assertEqual(timesheet_count2, 1, "One timesheet in project_template")
         self.assertEqual(len(task.timesheet_ids), 1, "The timesheet should be linked to task")
 
-        # change project of task, it has no impact on timesheet. never.
+        # change project of task, as the timesheet is not yet invoiced, the timesheet will change his project
         task.write({
             'project_id': self.project_global.id
         })
 
         timesheet_count1 = Timesheet.search_count([('project_id', '=', self.project_global.id)])
         timesheet_count2 = Timesheet.search_count([('project_id', '=', self.project_template.id)])
-        self.assertEqual(timesheet_count1, 0, "No timesheet in project_global")
-        self.assertEqual(timesheet_count2, 1, "One timesheet in project_template")
+        self.assertEqual(timesheet_count1, 1, "One timesheet in project_global")
+        self.assertEqual(timesheet_count2, 0, "No timesheet in project_template")
         self.assertEqual(len(task.timesheet_ids), 1, "The timesheet still should be linked to task")
 
         # Create an invoice
@@ -550,9 +550,9 @@ class TestSaleTimesheet(TestCommonSaleTimesheet):
             'unit_amount': 6,
         })
 
-        self.assertEqual(Timesheet.search_count([('project_id', '=', self.project_global.id)]), 1, "1 timesheets in project_global")
+        self.assertEqual(Timesheet.search_count([('project_id', '=', self.project_global.id)]), 2, "2 timesheets in project_global")
 
-        # change project of task, it has no impact on timesheet. never.
+        # change project of task, the timesheet not yet invoiced will change its project. The timesheet already invoiced will not change his project.
         task.write({
             'project_id': self.project_template.id
         })
@@ -726,135 +726,6 @@ class TestSaleTimesheet(TestCommonSaleTimesheet):
         move.with_context(check_move_validity=False).line_ids[0].unlink()
         self.assertFalse(analytic_line.timesheet_invoice_id, "The timesheet should have been unlinked from move")
 
-    def test_update_sol_price(self):
-        """ This test ensure that when the price of a sol is updated, the project_profitability panel from the project linked to the SO of that sol is correctly updated too.
-        1) create new SO
-        2) add a sol with a service product with 'invoice on prepaid' and 'create project & task' setting.
-        3) confirm SO and check the project_profitability panel
-        4) update the price of the sol and check the project_profitability panel
-        """
-        sale_order = self.env['sale.order'].with_context(mail_notrack=True, mail_create_nolog=True).create({
-            'partner_id': self.partner_a.id,
-        })
-        product_price = self.product_order_timesheet3.list_price
-        so_line = self.env['sale.order.line'].create({
-            'name': self.product_order_timesheet3.name,
-            'product_id': self.product_order_timesheet3.id,
-            'product_uom_qty': 1,
-            'product_uom': self.product_order_timesheet3.uom_id.id,
-            'price_unit': product_price,
-            'order_id': sale_order.id,
-        })
-        sale_order.action_confirm()
-        project = sale_order.project_ids[0]
-
-        items = project._get_profitability_items(with_action=False)
-        self.assertEqual(items['revenues']['data'][0]['to_invoice'], product_price, "The quantity to_invoice should be equal to the price of the product")
-
-        so_line.price_unit = 2*product_price
-        items = project._get_profitability_items(with_action=False)
-        self.assertEqual(items['revenues']['data'][0]['to_invoice'], 2*product_price, "The quantity to_invoice should be equal to twice the price of the product")
-
-    def test_sale_order_with_multiple_project_templates(self):
-        """Test when creating multiple projects for one sale order every project has its own allocated hours"""
-        sale_order = self.env['sale.order'].with_context(tracking_disable=True).create({
-            'partner_id': self.partner_a.id,
-            'partner_invoice_id': self.partner_a.id,
-            'partner_shipping_id': self.partner_a.id,
-        })
-
-        project_template_1, project_template_2 = self.env['project.project'].create([
-            {'name': 'Template 1'},
-            {'name': 'Template 1'},
-        ])
-
-        product_1, product_2 = self.env['product.product'].create([
-            {
-                'name': "Service with template 1",
-                'standard_price': 10,
-                'list_price': 20,
-                'type': 'service',
-                'invoice_policy': 'order',
-                'uom_id': self.uom_hour.id,
-                'uom_po_id': self.uom_hour.id,
-                'default_code': 'c1',
-                'service_tracking': 'task_in_project',
-                'project_id': False,  # will create a project,
-                'project_template_id': project_template_1.id,
-            }, {
-                'name': "Service with template 2",
-                'standard_price': 10,
-                'list_price': 20,
-                'type': 'service',
-                'invoice_policy': 'order',
-                'uom_id': self.uom_hour.id,
-                'uom_po_id': self.uom_hour.id,
-                'default_code': 'c2',
-                'service_tracking': 'task_in_project',
-                'project_id': False,  # will create a project,
-                'project_template_id': project_template_2.id,
-            },
-        ])
-
-        sale_order_line_template_1, sale_order_line_template_2 = self.env['sale.order.line'].create([
-            {
-                'order_id': sale_order.id,
-                'name': product_1.name,
-                'product_id': product_1.id,
-                'product_uom_qty': 10,
-                'product_uom': product_1.uom_id.id,
-                'price_unit': product_1.list_price,
-            }, {
-                'order_id': sale_order.id,
-                'name': product_2.name,
-                'product_id': product_2.id,
-                'product_uom_qty': 5,
-                'product_uom': product_2.uom_id.id,
-                'price_unit': product_2.list_price,
-            },
-        ])
-
-        sale_order.action_confirm()
-        self.assertEqual(10, sale_order_line_template_1.project_id.allocated_hours)
-        self.assertEqual(5, sale_order_line_template_2.project_id.allocated_hours)
-
-    def test_onchange_uom_service_product(self):
-        uom_unit = self.env.ref('uom.product_uom_unit')
-        uom_kg = self.env.ref('uom.product_uom_kgm')
-
-        # Create product (consumable that will be switch to service)
-        product_1 = self.env['product.template'].create([
-            {
-                'name': "Consumable to convert to service 1",
-                'standard_price': 10,
-            },
-        ])
-        product_2 = self.env['product.product'].create({
-                'name': "Consumable to convert to service 2",
-                'standard_price': 15,
-        })
-
-        # Initial uom should be unit
-        self.assertEqual([product_1.uom_id.id, product_2.uom_id.id], [uom_unit.id]*2)
-        products = [product_1, product_2] #perform the tests for both product and variants
-        for product in products:
-            # 1. product.template form: [uom: unit] --> change to service --> [uom: hour]
-            with Form(product.with_context({'tracking_disable': True}), view="sale_timesheet.view_product_timesheet_form") as product_form:
-                product_form.detailed_type = 'service'
-                product_form.service_policy = 'delivered_timesheet'
-                self.assertEqual(product_form.uom_id.id, self.uom_hour.id)
-
-            # 2. product.template form: [uom: kgm] --> change to service --> [uom: hour] --> change to consumable --> [uom: kgm]
-            product.write({
-                'detailed_type': 'consu',
-                'uom_id': uom_kg.id,
-            })
-            with Form(product.with_context({'tracking_disable': True}), view="sale_timesheet.view_product_timesheet_form") as product_form:
-                product_form.detailed_type = 'service'
-                product_form.service_policy = 'delivered_timesheet'
-                self.assertEqual(product_form.uom_id.id, self.uom_hour.id)
-                product_form.detailed_type = 'consu'
-                self.assertEqual(product_form.uom_id.id, uom_kg.id)
 
 class TestSaleTimesheetView(TestCommonTimesheet):
     def test_get_view_timesheet_encode_uom(self):

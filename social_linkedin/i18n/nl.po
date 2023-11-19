@@ -3,16 +3,16 @@
 # 	* social_linkedin
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,18 +26,18 @@ msgstr "<b>LinkedIn post</b>"
 
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
-msgstr "<i class=\"fa fa-comments me-1\" title=\"Commentaren\"/>"
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
+msgstr "<i class=\"fa fa-comments\" title=\"Reacties\"/>"
 
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
-msgstr "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
+msgid "<i class=\"fa fa-thumbs-up\" title=\"Likes\"/>"
+msgstr "<i class=\"fa fa-thumbs-up\" title=\"Likes\"/>"
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_live_post__linkedin_post_id
 msgid "Actual LinkedIn ID of the post"
-msgstr "Werkelijke Linkedin ID van de post"
+msgstr "Echte Linkedin ID van de post"
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_res_config_settings__linkedin_app_id
@@ -50,7 +50,7 @@ msgid "App Secret"
 msgstr "App geheim"
 
 #. module: social_linkedin
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_linkedin/static/src/xml/social_linkedin_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
 #, python-format
@@ -78,7 +78,7 @@ msgid "Display LinkedIn Preview"
 msgstr "Toon LinkedIn voorvertoning"
 
 #. module: social_linkedin
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_linkedin/static/src/xml/social_linkedin_templates.xml:0
 #, python-format
 msgid "Likes"
@@ -102,17 +102,17 @@ msgid "LinkedIn Account URN"
 msgstr "LinkedIn Account URN"
 
 #. module: social_linkedin
-#. odoo-javascript
-#: code:addons/social_linkedin/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_linkedin/static/src/js/stream_post_linkedin_comments.js:0
 #: model:ir.model.fields,field_description:social_linkedin.field_social_stream_post__linkedin_comments_count
 #, python-format
 msgid "LinkedIn Comments"
-msgstr "LinkedIn reacties"
+msgstr "LinkedIn comments"
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_stream_post__linkedin_likes_count
 msgid "LinkedIn Likes"
-msgstr "LinkedIn Vind-ik-leuks"
+msgstr "LinkedIn likes"
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_post__linkedin_preview
@@ -143,10 +143,9 @@ msgstr "LinkedIn auteur URN"
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_stream_post__linkedin_author_image_url
 msgid "LinkedIn author image URL"
-msgstr "LinkedIn auteur afbeelding URL"
+msgstr "LinkedIn auteur image URL"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "LinkedIn did not provide a valid access token."
@@ -160,7 +159,7 @@ msgstr "LinkedIn post URN"
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.res_config_settings_view_form
 msgid "Linkedin Developer Account"
-msgstr "LinkedIn-ontwikkelaarsaccount"
+msgstr ""
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_media__media_type
@@ -175,14 +174,7 @@ msgstr "Plaats afbeelding"
 #. module: social_linkedin
 #: model:social.stream.type,name:social_linkedin.stream_type_linkedin_company_post
 msgid "Posts"
-msgstr "Posts"
-
-#. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_account.py:0
-#, python-format
-msgid "Read More about Business Accounts"
-msgstr "Meer lezen over Business Accounts"
+msgstr "Berichten"
 
 #. module: social_linkedin
 #: model:ir.model,name:social_linkedin.model_social_account
@@ -207,7 +199,7 @@ msgstr "Social media post"
 #. module: social_linkedin
 #: model:ir.model,name:social_linkedin.model_social_post_template
 msgid "Social Post Template"
-msgstr "Social media post sjabloon"
+msgstr "Sjabloon voor sociale berichten"
 
 #. module: social_linkedin
 #: model:ir.model,name:social_linkedin.model_social_stream
@@ -225,7 +217,6 @@ msgid "The access token is used to perform request to the REST API"
 msgstr "Het toegangstoken wordt gebruikt om de REST API aan te spreken"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_media.py:0
 #, python-format
 msgid ""
@@ -236,14 +227,18 @@ msgstr ""
 "Neem contact op met de auteur van de app."
 
 #. module: social_linkedin
-#. odoo-python
+#: code:addons/social_linkedin/models/social_account.py:0
+#, python-format
+msgid "There is no page linked to this account"
+msgstr "Er is geen pagina gekoppeld aan dit account"
+
+#. module: social_linkedin
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "There was a authentication issue during your request."
 msgstr "Er is een authenticatieprobleem opgetreden tijdens je verzoek."
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator."
@@ -269,7 +264,6 @@ msgid "Vanity name, used to generate a link to the author"
 msgstr "Vanity-naam, gebruikt om een ​​link naar de auteur te genereren"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_live_post.py:0
 #, python-format
 msgid ""
@@ -280,7 +274,6 @@ msgstr ""
 "opnieuw te plaatsen (fout: mislukt tijdens het registreren van de upload)."
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_live_post.py:0
 #, python-format
 msgid ""
@@ -290,33 +283,20 @@ msgstr ""
 "opnieuw te plaatsen."
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_stream.py:0
 #, python-format
 msgid "Wrong stream type for \"%s\""
 msgstr "Verkeerd streamtype voor ''%s\"."
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr "Je hebt geen actief abonnement. Je kunt er hier één kopen: %s"
 
 #. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_account.py:0
+#. openerp-web
+#: code:addons/social_linkedin/static/src/js/stream_post_linkedin_comments.js:0
 #, python-format
-msgid ""
-"You need a Business Account to post on LinkedIn with Odoo Social.\n"
-" Please create one and make sure it is linked to your account"
-msgstr ""
-"Je heb een Business Account nodig om op LinkedIn te publiceren met Odoo Social media. \n"
-"Maak er één aan en zorg ervoor dat deze gekoppeld is aan je account"
-
-#. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_live_post.py:0
-#, python-format
-msgid "unknown"
-msgstr "onbekend"
+msgid "comment/reply"
+msgstr "opmerking/reactie"

@@ -37,11 +37,11 @@ class WebsiteHelpdesk(http.Controller):
                 todate = (datetime.date.today()-datetime.timedelta(days=x)).strftime('%Y-%m-%d 00:00:00')
                 domdate = domain + [('create_date', '<=', yesterday), ('create_date', '>=', todate)]
                 stats[x] = {1: 0, 3: 0, 5: 0}
-                rating_stats = request.env['rating.rating'].sudo()._read_group(domdate, ['rating'], ['__count'])
-                total = sum(count for __, count in rating_stats)
-                for rating, count in rating_stats:
+                rating_stats = request.env['rating.rating'].sudo().read_group(domdate, [], ['rating'])
+                total = sum(st['rating_count'] for st in rating_stats)
+                for rate in rating_stats:
                     any_rating = True
-                    stats[x][rating] = (count * 100) / total
+                    stats[x][rate['rating']] = (rate['rating_count'] * 100) / total
             values = {
                 'team': team,
                 'ratings': ratings if any_rating else False,

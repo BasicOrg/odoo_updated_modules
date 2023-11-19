@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, _
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, float_repr, is_html_empty, html2plaintext, cleanup_xml_node, find_xml_value
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, float_repr, is_html_empty, html2plaintext, cleanup_xml_node
 from lxml import etree
 
 from datetime import datetime
@@ -88,8 +88,8 @@ class AccountEdiXmlCII(models.AbstractModel):
                          "shall be categorized with an Invoiced item VAT category code (BT-151).")
 
     def _check_non_0_rate_tax(self, vals):
-        for line_vals in vals['tax_details']['tax_details_per_record']:
-            tax_rate_list = line_vals.tax_ids.flatten_taxes_hierarchy().mapped("amount")
+        for line_vals in vals['tax_details_per_record']:
+            tax_rate_list = line_vals['line'].tax_ids.flatten_taxes_hierarchy().mapped("amount")
             if not any([rate > 0 for rate in tax_rate_list]):
                 return _("When the Canary Island General Indirect Tax (IGIC) applies, the tax rate on "
                          "each invoice line should be greater than 0.")
@@ -125,34 +125,14 @@ class AccountEdiXmlCII(models.AbstractModel):
 
         def grouping_key_generator(base_line, tax_values):
             tax = tax_values['tax_repartition_line'].tax_id
-            grouping_key = {
+            return {
                 **self._get_tax_unece_codes(invoice, tax),
                 'amount': tax.amount,
                 'amount_type': tax.amount_type,
             }
-            # If the tax is fixed, we want to have one group per tax
-            # s.t. when the invoice is imported, we can try to guess the fixed taxes
-            if tax.amount_type == 'fixed':
-                grouping_key['tax_name'] = tax.name
-            return grouping_key
-
-        # Validate the structure of the taxes
-        self._validate_taxes(invoice)
 
         # Create file content.
-        tax_details = invoice._prepare_invoice_aggregated_taxes(grouping_key_generator=grouping_key_generator)
-
-        # Fixed Taxes: filter them on the document level, and adapt the totals
-        # Fixed taxes are not supposed to be taxes in real live. However, this is the way in Odoo to manage recupel
-        # taxes in Belgium. Since only one tax is allowed, the fixed tax is removed from totals of lines but added
-        # as an extra charge/allowance.
-        fixed_taxes_keys = [k for k in tax_details['tax_details'] if k['amount_type'] == 'fixed']
-        for key in fixed_taxes_keys:
-            fixed_tax_details = tax_details['tax_details'].pop(key)
-            tax_details['tax_amount_currency'] -= fixed_tax_details['tax_amount_currency']
-            tax_details['tax_amount'] -= fixed_tax_details['tax_amount']
-            tax_details['base_amount_currency'] += fixed_tax_details['tax_amount_currency']
-            tax_details['base_amount'] += fixed_tax_details['tax_amount']
+        tax_details = invoice._prepare_edi_tax_details(grouping_key_generator=grouping_key_generator)
 
         if 'siret' in invoice.company_id._fields and invoice.company_id.siret:
             seller_siret = invoice.company_id.siret
@@ -176,10 +156,9 @@ class AccountEdiXmlCII(models.AbstractModel):
             'ship_to_trade_party': invoice.partner_shipping_id if 'partner_shipping_id' in invoice._fields and invoice.partner_shipping_id
                 else invoice.commercial_partner_id,
             # Chorus Pro fields
-            'buyer_reference': invoice.buyer_reference if 'buyer_reference' in invoice._fields
-                and invoice.buyer_reference else invoice.commercial_partner_id.ref,
-            'purchase_order_reference': invoice.purchase_order_reference if 'purchase_order_reference' in invoice._fields
-                and invoice.purchase_order_reference else invoice.ref or invoice.name,
+            'buyer_reference': invoice.buyer_reference if 'buyer_reference' in invoice._fields and invoice.buyer_reference else invoice.ref,
+            'purchase_order_reference': invoice.purchase_order_reference if 'purchase_order_reference' in invoice._fields and invoice.purchase_order_reference
+                else invoice.payment_reference or invoice.name,
             'contract_reference': invoice.contract_reference if 'contract_reference' in invoice._fields and invoice.contract_reference else '',
         }
 
@@ -212,40 +191,22 @@ class AccountEdiXmlCII(models.AbstractModel):
         else:
             template_values['document_context_id'] = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
 
-        # Fixed taxes: add them as charges on the invoice lines
-        for line_vals in template_values['invoice_line_vals_list']:
-            line_vals['allowance_charge_vals_list'] = []
-            for grouping_key, tax_detail in tax_details['tax_details_per_record'][line_vals['line']]['tax_details'].items():
-                if grouping_key['amount_type'] == 'fixed':
-                    line_vals['allowance_charge_vals_list'].append({
-                        'indicator': 'true',
-                        'reason': tax_detail['tax_name'],
-                        'reason_code': 'AEO',
-                        'amount': tax_detail['tax_amount_currency'],
-                    })
-            sum_fixed_taxes = sum(x['amount'] for x in line_vals['allowance_charge_vals_list'])
-            line_vals['line_total_amount'] = line_vals['line'].price_subtotal + sum_fixed_taxes
-
-        # Fixed taxes: set the total adjusted amounts on the document level
-        template_values['tax_basis_total_amount'] = tax_details['base_amount_currency']
-        template_values['tax_total_amount'] = tax_details['tax_amount_currency']
-
         return template_values
 
     def _export_invoice(self, invoice):
         vals = self._export_invoice_vals(invoice)
         errors = [constraint for constraint in self._export_invoice_constraints(invoice, vals).values() if constraint]
         xml_content = self.env['ir.qweb']._render('account_edi_ubl_cii.account_invoice_facturx_export_22', vals)
-        return etree.tostring(cleanup_xml_node(xml_content), xml_declaration=True, encoding='UTF-8'), set(errors)
+        return etree.tostring(cleanup_xml_node(xml_content)), set(errors)
 
     # -------------------------------------------------------------------------
     # IMPORT
     # -------------------------------------------------------------------------
 
-    def _import_fill_invoice_form(self, invoice, tree, qty_factor):
+    def _import_fill_invoice_form(self, journal, tree, invoice, qty_factor):
 
         def _find_value(xpath, element=tree):
-            return find_xml_value(xpath, element, tree.nsmap)
+            return self.env['account.edi.format']._find_value(xpath, element, tree.nsmap)
 
         logs = []
 
@@ -254,13 +215,14 @@ class AccountEdiXmlCII(models.AbstractModel):
 
         # ==== partner_id ====
 
-        role = invoice.journal_id.type == 'purchase' and 'SellerTradeParty' or 'BuyerTradeParty'
-        name = _find_value(f"//ram:{role}/ram:Name")
-        mail = _find_value(f"//ram:{role}//ram:URIID[@schemeID='SMTP']")
-        vat = _find_value(f"//ram:{role}/ram:SpecifiedTaxRegistration/ram:ID")
-        phone = _find_value(f"//ram:{role}/ram:DefinedTradeContact/ram:TelephoneUniversalCommunication/ram:CompleteNumber")
-        country_code = _find_value(f'//ram:{role}/ram:PostalTradeAddress//ram:CountryID')
-        self._import_retrieve_and_fill_partner(invoice, name=name, phone=phone, mail=mail, vat=vat, country_code=country_code)
+        partner_type = invoice.journal_id.type == 'purchase' and 'SellerTradeParty' or 'BuyerTradeParty'
+        invoice.partner_id = self.env['account.edi.format']._retrieve_partner(
+            name=_find_value(f"//ram:{partner_type}/ram:Name"),
+            mail=_find_value(f"//ram:{partner_type}//ram:URIID[@schemeID='SMTP']"),
+            vat=_find_value(f"//ram:{partner_type}/ram:SpecifiedTaxRegistration/ram:ID"),
+        )
+        if not invoice.partner_id:
+            logs.append(_("Could not retrieve the vendor."))
 
         # ==== currency_id ====
 
@@ -275,7 +237,7 @@ class AccountEdiXmlCII(models.AbstractModel):
                 invoice.currency_id = currency
             else:
                 logs.append(_("Could not retrieve currency: %s. Did you enable the multicurrency option and "
-                              "activate the currency?", currency_code_node.text))
+                              "activate the currency ?", currency_code_node.text))
 
         # ==== Reference ====
 
@@ -283,21 +245,15 @@ class AccountEdiXmlCII(models.AbstractModel):
         if ref_node is not None:
             invoice.ref = ref_node.text
 
-        # ==== Invoice origin ====
-
-        invoice_origin_node = tree.find('./{*}OrderReference/{*}ID')
-        if invoice_origin_node is not None:
-            invoice.invoice_origin = invoice_origin_node.text
-
         # === Note/narration ====
 
         narration = ""
         note_node = tree.find('./{*}ExchangedDocument/{*}IncludedNote/{*}Content')
-        if note_node is not None and note_node.text:
+        if note_node is not None:
             narration += note_node.text + "\n"
 
         payment_terms_node = tree.find('.//{*}SpecifiedTradePaymentTerms/{*}Description')
-        if payment_terms_node is not None and payment_terms_node.text:
+        if payment_terms_node is not None:
             narration += payment_terms_node.text + "\n"
 
         invoice.narration = narration
@@ -311,28 +267,28 @@ class AccountEdiXmlCII(models.AbstractModel):
         # ==== invoice_date ====
 
         invoice_date_node = tree.find('./{*}ExchangedDocument/{*}IssueDateTime/{*}DateTimeString')
-        if invoice_date_node is not None and invoice_date_node.text:
-            date_str = invoice_date_node.text.strip()
+        if invoice_date_node is not None:
+            date_str = invoice_date_node.text
             date_obj = datetime.strptime(date_str, DEFAULT_FACTURX_DATE_FORMAT)
             invoice.invoice_date = date_obj.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         # ==== invoice_date_due ====
 
         invoice_date_due_node = tree.find('.//{*}SpecifiedTradePaymentTerms/{*}DueDateDateTime/{*}DateTimeString')
-        if invoice_date_due_node is not None and invoice_date_due_node.text:
-            date_str = invoice_date_due_node.text.strip()
+        if invoice_date_due_node is not None:
+            date_str = invoice_date_due_node.text
             date_obj = datetime.strptime(date_str, DEFAULT_FACTURX_DATE_FORMAT)
             invoice.invoice_date_due = date_obj.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
         # ==== invoice_line_ids: AllowanceCharge (document level) ====
 
-        logs += self._import_fill_invoice_allowance_charge(tree, invoice, qty_factor)
+        logs += self._import_fill_invoice_allowance_charge(tree, invoice, journal, qty_factor)
 
-        # ==== Prepaid amount ====
+        # ==== Down Payment (prepaid amount) ====
 
         prepaid_node = tree.find('.//{*}ApplicableHeaderTradeSettlement/'
                                  '{*}SpecifiedTradeSettlementHeaderMonetarySummation/{*}TotalPrepaidAmount')
-        logs += self._import_log_prepaid_amount(invoice, prepaid_node, qty_factor)
+        self._import_fill_invoice_down_payment(invoice, prepaid_node, qty_factor)
 
         # ==== invoice_line_ids ====
 
@@ -340,7 +296,7 @@ class AccountEdiXmlCII(models.AbstractModel):
         if line_nodes is not None:
             for invl_el in line_nodes:
                 invoice_line = invoice.invoice_line_ids.create({'move_id': invoice.id})
-                invl_logs = self._import_fill_invoice_line_form(invoice.journal_id, invl_el, invoice, invoice_line, qty_factor)
+                invl_logs = self._import_fill_invoice_line_form(journal, invl_el, invoice, invoice_line, qty_factor)
                 logs += invl_logs
 
         return logs
@@ -349,11 +305,11 @@ class AccountEdiXmlCII(models.AbstractModel):
         logs = []
 
         def _find_value(xpath, element=tree):
-            return find_xml_value(xpath, element, tree.nsmap)
+            return self.env['account.edi.format']._find_value(xpath, element, tree.nsmap)
 
         # Product.
         name = _find_value('.//ram:SpecifiedTradeProduct/ram:Name', tree)
-        invoice_line.product_id = self.env['product.product']._retrieve_product(
+        invoice_line.product_id = self.env['account.edi.format']._retrieve_product(
             default_code=_find_value('.//ram:SpecifiedTradeProduct/ram:SellerAssignedID', tree),
             name=_find_value('.//ram:SpecifiedTradeProduct/ram:Name', tree),
             barcode=_find_value('.//ram:SpecifiedTradeProduct/ram:GlobalID', tree)
@@ -372,22 +328,40 @@ class AccountEdiXmlCII(models.AbstractModel):
             'net_price_unit': './{*}SpecifiedLineTradeAgreement/{*}NetPriceProductTradePrice/{*}ChargeAmount',
             'billed_qty': './{*}SpecifiedLineTradeDelivery/{*}BilledQuantity',
             'allowance_charge': './/{*}SpecifiedLineTradeSettlement/{*}SpecifiedTradeAllowanceCharge',
-            'allowance_charge_indicator': './{*}ChargeIndicator/{*}Indicator',
-            'allowance_charge_amount': './{*}ActualAmount',
-            'allowance_charge_reason': './{*}Reason',
-            'allowance_charge_reason_code': './{*}ReasonCode',
+            'allowance_charge_indicator': './{*}ChargeIndicator/{*}Indicator',  # below allowance_charge node
+            'allowance_charge_amount': './{*}ActualAmount',  # below allowance_charge node
             'line_total_amount': './{*}SpecifiedLineTradeSettlement/{*}SpecifiedTradeSettlementLineMonetarySummation/{*}LineTotalAmount',
         }
-        inv_line_vals = self._import_fill_invoice_line_values(tree, xpath_dict, invoice_line, qty_factor)
-        # retrieve tax nodes
+        self._import_fill_invoice_line_values(tree, xpath_dict, invoice_line, qty_factor)
+
+        if not invoice_line.product_uom_id:
+            logs.append(
+                _("Could not retrieve the unit of measure for line with label '%s'. Did you install the inventory "
+                  "app and enabled the 'Units of Measure' option ?", invoice_line.name))
+
+        # Taxes
+        taxes = self.env['account.tax']
         tax_nodes = tree.findall('.//{*}ApplicableTradeTax/{*}RateApplicablePercent')
-        return self._import_fill_invoice_line_taxes(tax_nodes, invoice_line, inv_line_vals, logs)
+        for tax_node in tax_nodes:
+            tax = self.env['account.tax'].search([
+                ('company_id', '=', journal.company_id.id),
+                ('amount', '=', float(tax_node.text)),
+                ('amount_type', '=', 'percent'),
+                ('type_tax_use', '=', 'purchase'),
+            ], limit=1)
+            if tax:
+                taxes += tax
+            else:
+                logs.append(_("Could not retrieve the tax: %s %% for line '%s'.", float(tax_node.text), invoice_line.name))
+
+        invoice_line.tax_ids = taxes
+        return logs
 
     # -------------------------------------------------------------------------
     # IMPORT : helpers
     # -------------------------------------------------------------------------
 
-    def _get_import_document_amount_sign(self, tree):
+    def _get_import_document_amount_sign(self, filename, tree):
         """
         In factur-x, an invoice has code 380 and a credit note has code 381. However, a credit note can be expressed
         as an invoice with negative amounts. For this case, we need a factor to take the opposite of each quantity
@@ -397,9 +371,9 @@ class AccountEdiXmlCII(models.AbstractModel):
         if move_type_code is None:
             return None, None
         if move_type_code.text == '381':
-            return 'refund', 1
+            return 'in_refund', 1
         if move_type_code.text == '380':
             amount_node = tree.find('.//{*}SpecifiedTradeSettlementHeaderMonetarySummation/{*}TaxBasisTotalAmount')
             if amount_node is not None and float(amount_node.text) < 0:
-                return 'refund', -1
-            return 'invoice', 1
+                return 'in_refund', -1
+            return 'in_invoice', 1

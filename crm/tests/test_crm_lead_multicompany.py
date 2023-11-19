@@ -205,7 +205,6 @@ class TestCRMLeadMultiCompany(TestCrmCommon):
         # writing current user on lead would imply putting its team and team's company
         # on lead (aka self.company_2), and this clashes with company restriction on
         # customer
-        self.env.user.company_ids -= self.company_main
         with self.assertRaises(UserError):
             lead.write({
                 'user_id': self.env.user,
@@ -314,7 +313,7 @@ class TestCRMLeadMultiCompany(TestCrmCommon):
         new_lead = self.format_and_process(
             INCOMING_EMAIL,
             customer_company.email,
-            self.sales_team_1.alias_email,
+            '%s@%s' % (self.sales_team_1.alias_name, self.alias_domain),
             subject='Team having partner in company',
             target_model='crm.lead',
         )

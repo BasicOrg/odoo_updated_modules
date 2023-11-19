@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.5alpha1+e\n"
+"Project-Id-Version: Odoo Server 15.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-07 08:46+0000\n"
-"PO-Revision-Date: 2023-09-07 08:46+0000\n"
+"POT-Creation-Date: 2022-01-07 17:45+0000\n"
+"PO-Revision-Date: 2022-01-07 17:45+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,10 +25,16 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "%s is accepted by SII. It cannot be cancelled."
+msgstr ""
+
+#. module: l10n_cl_edi_stock
+#: model_terms:ir.ui.view,arch_db:l10n_cl_edi_stock.delivery_guide_document
+msgid ""
+"&gt;\n"
+"                                            <strong>Un Med</strong>"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
@@ -130,14 +136,14 @@ msgid ""
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
 "                        Dear\n"
 "                        <t t-if=\"object.partner_id.commercial_partner_id\">\n"
-"                            <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t> (<t t-out=\"object.partner_id.commercial_partner_id.name or ''\">Brandon Freeman</t>),\n"
+"                            <t t-esc=\"object.partner_id.name or ''\">Brandon Freeman</t> (<t t-esc=\"object.partner_id.commercial_partner_id.name or ''\">Brandon Freeman</t>),\n"
 "                        </t>\n"
 "                        <t t-else=\"\">\n"
-"                            <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t>,\n"
+"                            <t t-esc=\"object.partner_id.name or ''\">Brandon Freeman</t>,\n"
 "                        </t>\n"
-"                        <br><br>\n"
-"                        Here is your delivery guide <strong t-out=\"object.l10n_latam_document_number or ''\">GDE 000008</strong>\n"
-"                        <br><br>\n"
+"                        <br/><br/>\n"
+"                        Here is your delivery guide <strong t-esc=\"object.l10n_latam_document_number or ''\">GDE 000008</strong>\n"
+"                        <br/><br/>\n"
 "                        Do not hesitate to contact us if you have any questions.\n"
 "                    </p>\n"
 "                </div>\n"
@@ -260,19 +266,25 @@ msgid "Accepted With Objections"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
+#: model:ir.model.fields,help:l10n_cl_edi_stock.field_l10n_latam_document_type__internal_type
+msgid ""
+"Analog to odoo account.move.move_type but with more options allowing to "
+"identify the kind of document we are working with. (not only related to "
+"account.move, could be for documents of other models like stock.picking)"
+msgstr ""
+
+#. module: l10n_cl_edi_stock
 #: model:ir.model.fields.selection,name:l10n_cl_edi_stock.selection__stock_picking__l10n_cl_dte_status__ask_for_status
 msgid "Ask For Status"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Asking for DTE status with response:"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -296,20 +308,11 @@ msgid "Cancelled"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#: model:ir.model.fields,help:l10n_cl_edi_stock.field_res_partner__l10n_cl_delivery_guide_price
-#: model:ir.model.fields,help:l10n_cl_edi_stock.field_res_users__l10n_cl_delivery_guide_price
-msgid ""
-"Chile: Select which price of the product will be shown in the delivery "
-"guide, if any."
-msgstr ""
-
-#. module: l10n_cl_edi_stock
 #: model:ir.ui.menu,name:l10n_cl_edi_stock.menu_sii_chile
 msgid "Chilean SII"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Company Not Authorized to Send Files"
@@ -336,28 +339,18 @@ msgid "DTE file"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
-msgid "DTE has been created in DEMO mode."
+msgid "DTE has been created"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
-#: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
-#, python-format
-msgid "DTE has been created."
-msgstr ""
-
-#. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "DTE has been sent to SII with response: %s."
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "DTE has been sent to the partner"
@@ -390,7 +383,6 @@ msgid "Delivery Guide SII DTE 52 (CL)"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Delivery Guide for foreign partner is not implemented yet"
@@ -402,7 +394,6 @@ msgid "Do Not Show Price"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Document Signature"
@@ -414,7 +405,6 @@ msgid "Document Type"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -423,15 +413,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#: model_terms:ir.ui.view,arch_db:l10n_cl_edi_stock.barcode_stamp_footer
-msgid ""
-"Electronic Stamp SII\n"
-"                        <br/>\n"
-"                        Resolution Nº:"
-msgstr ""
-
-#. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "File Size Error (Too Big or Too Small)"
@@ -453,21 +434,23 @@ msgid "INT1"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Incomplete File (Size <> Parameter size)"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Internal Error"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
+#: model:ir.model.fields,field_description:l10n_cl_edi_stock.field_l10n_latam_document_type__internal_type
+msgid "Internal Type"
+msgstr ""
+
+#. module: l10n_cl_edi_stock
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Invalid Schema"
@@ -484,8 +467,8 @@ msgid "L10N Cl Draft Status"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#: model:ir.model.fields,field_description:l10n_cl_edi_stock.field_stock_picking__l10n_cl_is_return
-msgid "L10N Cl Is Return"
+#: model:ir.model,name:l10n_cl_edi_stock.model_l10n_latam_document_type
+msgid "Latam Document Type"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
@@ -499,7 +482,6 @@ msgid "Manual"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Not Authenticated"
@@ -511,7 +493,6 @@ msgid "Not Sent"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Partner DTE has been generated"
@@ -528,14 +509,12 @@ msgid "Pending To Be Sent"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Please set a Delivery Address as the delivery guide needs one."
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Please, configure the Delivery Guide Price in the partner."
@@ -577,7 +556,6 @@ msgid "SII Send file"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Sender Does Not Have Permission To Send"
@@ -609,19 +587,24 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
+#: model:ir.model.fields.selection,name:l10n_cl_edi_stock.selection__l10n_latam_document_type__internal_type__stock_picking
+msgid "Stock Picking"
+msgstr ""
+
+#. module: l10n_cl_edi_stock
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "System Locked"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#: model:ir.model.fields,help:l10n_cl_edi_stock.field_stock_picking__l10n_latam_document_number
-msgid "The number of the related document."
+#: model:ir.model.fields,help:l10n_cl_edi_stock.field_stock_picking__l10n_cl_draft_status
+msgid ""
+"Technical field making it possible to have a draft status for entering the "
+"starting number for the guia in this company.  "
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -631,7 +614,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -641,7 +623,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -651,7 +632,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -661,22 +641,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""
 "There is not an activity description configured in the customer record. This"
 " is mandatory for electronic delivery guide for this type of document. "
 "Please go to the partner record and set the activity description"
-msgstr ""
-
-#. module: l10n_cl_edi_stock
-#. odoo-python
-#: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
-#, python-format
-msgid ""
-"This DTE has been generated in DEMO Mode. It is considered as accepted and "
-"it won't be sent to SII."
 msgstr ""
 
 #. module: l10n_cl_edi_stock
@@ -688,14 +658,12 @@ msgid ""
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "This company has no connection with the SII configured.  "
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "This electronic document is being processed already."
@@ -707,14 +675,12 @@ msgid "Transfer"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "Upload OK"
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid "You need to specify a Document Number"
@@ -726,7 +692,6 @@ msgid "You should have a unique document number within the company. "
 msgstr ""
 
 #. module: l10n_cl_edi_stock
-#. odoo-python
 #: code:addons/l10n_cl_edi_stock/models/stock_picking.py:0
 #, python-format
 msgid ""

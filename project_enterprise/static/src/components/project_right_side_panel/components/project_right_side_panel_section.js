@@ -1,11 +1,12 @@
 /** @odoo-module */
 
 import { useBus, useService } from '@web/core/utils/hooks';
-import { patch } from "@web/core/utils/patch";
+import { patch } from '@web/core/utils/patch';
 import { ProjectRightSidePanelSection } from '@project/components/project_right_side_panel/components/project_right_side_panel_section';
-import { useState } from "@odoo/owl";
 
-patch(ProjectRightSidePanelSection.prototype, {
+const { useState } = owl;
+
+patch(ProjectRightSidePanelSection.prototype, '@project_enterprise/components/project_right_side_panel/components/project_right_side_panel_section', {
     setup() {
         this.state = useState({ isClosed: !!this.env.isSmall && this.props.canBeClosed });
         this.ui = useService('ui');

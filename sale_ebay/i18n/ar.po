@@ -3,16 +3,18 @@
 # 	* sale_ebay
 # 
 # Translators:
-# Wil Odoo, 2023
+# Mustafa Rawi <mustafa@cubexco.com>, 2022
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +22,6 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -31,7 +32,6 @@ msgstr ""
 "مدة تسجيل المنتج في القائمة بالقيمة \"صالح حتى الإلغاء\""
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -68,6 +68,38 @@ msgstr "7 أيام"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Sales Team</span>"
+msgstr "<span class=\"o_form_label\">فريق المبيعات</span> "
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Storage</span>"
+msgstr "<span class=\"o_form_label\">المخزون</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Synchronization</span>"
+msgstr "<span class=\"o_form_label\">المزامنة</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Account</span>"
+msgstr "<span class=\"o_form_label\">حساب eBay</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">eBay Marketplace Account Deletion/Closure "
+"Notifications</span>"
+msgstr "<span class=\"o_form_label\">إشعارات الإغلاق/الحذف لحساب سوق eBay</span> "
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Options</span>"
+msgstr "<span class=\"o_form_label\">خيارات eBay</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Activate Other Currencies"
 msgstr "تفعيل عملات أخرى"
 
@@ -77,7 +109,6 @@ msgid "Add other countries"
 msgstr "إضافة دول أخرى "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -106,13 +137,13 @@ msgstr "سعر الشراء الحالي"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_category_id
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_category_id
 msgid "Category"
-msgstr "الفئة "
+msgstr "فئة"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_category_2_id
@@ -138,7 +169,7 @@ msgstr "نوع الفئة"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition__code
 msgid "Code"
-msgstr "رمز "
+msgstr "الكود"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_res_config_settings
@@ -146,7 +177,6 @@ msgid "Config Settings"
 msgstr "تهيئة الإعدادات "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Configure The eBay Integrator Now"
@@ -200,7 +230,7 @@ msgstr "العملة"
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__ebay_category__category_type__store
 msgid "Custom Store Category"
-msgstr "فئة المتجر المخصص "
+msgstr "فئة المخزون المخصص"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -228,13 +258,17 @@ msgid "Display Name"
 msgstr "اسم العرض "
 
 #. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "Documentation"
+msgstr "التوثيق"
+
+#. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_listing_duration
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_listing_duration
 msgid "Duration"
 msgstr "المدة"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -245,7 +279,6 @@ msgstr ""
 "%s "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -257,6 +290,8 @@ msgstr ""
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_orders_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_orders_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_orders_sync
 msgid "Ebay: get new orders"
 msgstr "Ebay: احصل على طلبات جديدة "
 
@@ -267,11 +302,15 @@ msgstr "Ebay: استعادة الطلبات "
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_stock_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_stock_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_stock_sync
 msgid "Ebay: synchronise stock"
 msgstr "Ebay: مزامنة المخزون "
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_categories_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_categories
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_categories
 msgid "Ebay: update categories"
 msgstr "Ebay: تحديث الفئات"
 
@@ -281,7 +320,6 @@ msgid "End Item's Listing"
 msgstr "إنهاء إدراج العنصر بالقوائم"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -292,13 +330,14 @@ msgstr ""
 "لم لم يتم تحديد متغير لإدراجه في eBay. "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 "Error Encountered.\n"
-"%r"
+"'%s'"
 msgstr ""
+"حدث خطأ.\n"
+"'%s'"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -351,7 +390,6 @@ msgid "Import eBay config data and sync transactions"
 msgstr "استيراد بيانات إعداد eBay ومزامنة المعاملات"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -366,6 +404,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_item_condition_id
 msgid "Item Condition"
 msgstr "حالة السلعة"
+
+#. module: sale_ebay
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_category____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_site____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__write_uid
@@ -456,7 +503,6 @@ msgid "Name"
 msgstr "الاسم"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid "No Business Policies"
@@ -468,14 +514,12 @@ msgid "Official eBay Category"
 msgstr "الفئة eBay الرسمية "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "One parameter is missing."
 msgstr "هناك معيار واحد مفقود. "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Or the condition is not compatible with the category."
@@ -493,7 +537,6 @@ msgid "Payment Policy"
 msgstr "سياسة الدفع "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -533,7 +576,6 @@ msgid "Product Variant"
 msgstr "متغير المنتج "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "Product created from eBay transaction %s"
@@ -642,18 +684,13 @@ msgstr "سياسة الشحن"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_start_date
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_start_date
 msgid "Start Date"
-msgstr "تاريخ البدء "
+msgstr "تاريخ البداية"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_price
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_price
 msgid "Starting Price for Auction"
 msgstr "السعر المبدئي للعرض بالمزاد"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Storage"
-msgstr "مساحة تخزين "
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -689,26 +726,18 @@ msgid "Sync now"
 msgstr "المزامنة الآن"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Synchronization"
-msgstr "المزامنة "
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Chose The Following Delivery Method :\n"
 msgstr "قام المشتري باختيار طريقة التوصيل التالية:\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Posted :\n"
 msgstr "قام المشتري بنشر:\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -745,7 +774,6 @@ msgstr ""
 "إضافية مقابل هذه الخاصية"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -759,20 +787,6 @@ msgstr ""
 "بصيغة \"YYYY-MM-DD\". "
 
 #. module: sale_ebay
-#. odoo-python
-#: code:addons/sale_ebay/models/product.py:0
-#, python-format
-msgid ""
-"This function should not be called with a range of more than 30 days, as "
-"eBay does not handle longer timespans. Instead use synchronize_orders which "
-"split in as many calls as needed."
-msgstr ""
-"يجب ألا يتم استدعاء هذه الوظيفة مع نطاق لأكثر من 30 يوم، حيث إن eBay لا "
-"يتحمل الفترات الزمنية الأطول. عوضاً عن ذلك، استخدم synchronize_orders، والذي"
-" يقوم بتقسيم أي كم مطلوب من الاستدعاءات. "
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_partner.py:0
 #, python-format
 msgid ""
@@ -793,7 +807,7 @@ msgstr "العنوان"
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_stock_picking
 msgid "Transfer"
-msgstr "تحويل "
+msgstr "الشحنة"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy__policy_type
@@ -837,11 +851,6 @@ msgstr "الرمز البريدي"
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "eBay"
 msgstr "eBay"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Account"
-msgstr "حساب eBay "
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_category
@@ -889,19 +898,9 @@ msgid "eBay Listing ID"
 msgstr "معرف قائمة eBay"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Marketplace Account Deletion/Closure Notifications"
-msgstr "إشعارات حذف/إغلاق حساب سوق eBay "
-
-#. module: sale_ebay
 #: model:mail.activity.type,summary:sale_ebay.ebay_GDPR_notification
 msgid "eBay Odoo connector notification - account deletion"
 msgstr "إشعار موصل شحن eBay في أودو - حذف الحساب "
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Options"
-msgstr "خيارات eBay "
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_policy
@@ -941,7 +940,11 @@ msgid "eBay connector: account deletion notification"
 msgstr "موصل eBay: إشعار حذف الحساب "
 
 #. module: sale_ebay
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "eBay documentation"
+msgstr "توثيق eBay "
+
+#. module: sale_ebay
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid ""
@@ -952,7 +955,6 @@ msgstr ""
 "'%s' "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "eBay is unreachable. Please try again later."
@@ -966,8 +968,11 @@ msgstr "معايير eBay "
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid ""
-"eBay requires supporting customer account deletion/closure notifications."
-msgstr "يتطلب eBay إشعارات داعمة لحذف/إغلاق حساب سوق eBay الخاص بالعميل. "
+"eBay requires supporting customer account deletion/closure notifications.\n"
+"                                Please follow the"
+msgstr ""
+"يتطلب eBay دعم إشعارات إغلاق/حذف حسابات العملاء.\n"
+"                                يرجى تتبع "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_url
@@ -1014,3 +1019,8 @@ msgstr "عملة eBay"
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sales_team
 msgid "ebay Sales Team"
 msgstr "فريق مبيعات eBay "
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "to setup this mechanism."
+msgstr "لضبط هذه الآلية. "

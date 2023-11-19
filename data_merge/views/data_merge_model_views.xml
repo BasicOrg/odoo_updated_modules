@@ -41,28 +41,28 @@
                                 <field name="domain" widget="domain" options="{'model': 'res_model_name'}" />
                                 <field name="mix_by_company" widget="boolean_toggle" groups="base.group_multi_company" />
                                 <field name="custom_merge_method" invisible="1" />
-                                <field name="removal_mode" widget="radio" options="{'horizontal': true}" invisible="custom_merge_method" />
-                                <label for="removal_mode" invisible="not custom_merge_method" />
-                                <span invisible="not custom_merge_method">Model specific</span>
+                                <field name="removal_mode" widget="radio" options="{'horizontal': true}" attrs="{'invisible': [('custom_merge_method', '=', True)]}" />
+                                <label for="removal_mode" attrs="{'invisible': [('custom_merge_method', '=', False)]}" />
+                                <span attrs="{'invisible': [('custom_merge_method', '=', False)]}">Model specific</span>
                             </group>
                             <group>
                                 <field name="merge_mode" widget="radio" options="{'horizontal': true}" />
 
                                 <!-- Manual merge -->
-                                <label for="notify_user_ids" invisible="merge_mode == 'automatic'" />
-                                <div invisible="merge_mode == 'automatic'">
+                                <label for="notify_user_ids" attrs="{'invisible': [('merge_mode', '=', 'automatic')]}" />
+                                <div attrs="{'invisible': [('merge_mode', '=', 'automatic')]}">
                                     <field name="notify_user_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}" domain="[('share', '=', False)]" />
-                                    <div class="d-flex w-25" invisible="not notify_user_ids">
+                                    <div class="d-flex w-25" attrs="{'invisible': [('notify_user_ids', '=', [])]}">
                                         <span class="me-1">Every</span>
-                                        <field name="notify_frequency" required="notify_user_ids" />
-                                        <field name="notify_frequency_period" required="notify_user_ids" />
+                                        <field name="notify_frequency" attrs="{'required': [('notify_user_ids', '!=', [])]}" />
+                                        <field name="notify_frequency_period" attrs="{'required': [('notify_user_ids', '!=', [])]}" />
                                     </div>
                                 </div>
 
                                 <!-- Automatic merge -->
-                                <label for="merge_threshold" invisible="merge_mode == 'manual'"/>
-                                <div invisible="merge_mode == 'manual'">
-                                    <field name="merge_threshold" class="oe_inline" required="merge_mode == 'automatic'" />
+                                <label for="merge_threshold" attrs="{'invisible': [('merge_mode', '=', 'manual')]}"/>
+                                <div attrs="{'invisible': [('merge_mode', '=', 'manual')]}">
+                                    <field name="merge_threshold" class="oe_inline" attrs="{'required': [('merge_mode', '=', 'automatic')]}" />
                                     <span class="oe_inline">%</span>
                                 </div>
 
@@ -74,17 +74,17 @@
                                 <field name="active" widget="boolean_toggle" />
                             </group>
                         </group>
-                        <group invisible="res_model_id">
+                        <group attrs="{'invisible': [('res_model_id', '!=', False)]}">
                             <group>
-                                <div class="alert alert-info" role="alert" colspan="2">
+                                <div class="alert alert-info" role="alert">
                                     Select a model to configure deduplication rules
                                 </div>
                             </group>
                         </group>
-                        <group invisible="not res_model_id">
+                        <group attrs="{'invisible': [('res_model_id', '=', False)]}">
                             <field name="rule_ids" context="{'default_res_model_id': res_model_id}">
                                 <tree editable="bottom" string="Deduplication Rules">
-                                    <field name="res_model_id" column_invisible="True" />
+                                    <field name="res_model_id" invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="field_id" options="{'no_create': True, 'no_open': True}" />
                                     <field name="match_mode" />

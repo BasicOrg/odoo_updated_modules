@@ -1,10 +1,9 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
-import { formatFloatTime, formatMonetary } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
-import { Component } from "@odoo/owl";
+import { formatFloat, formatFloatTime, formatMonetary } from "@web/views/fields/formatters";
+
+const { Component } = owl;
 
 export class BomOverviewLine extends Component {
     setup() {
@@ -54,7 +53,7 @@ export class BomOverviewLine extends Component {
 
     async goToAttachment() {
         return this.actionService.doAction({
-            name: _t("Attachments"),
+            name: this.env._t("Attachments"),
             type: "ir.actions.act_window",
             res_model: "mrp.document",
             domain: [["id", "in", this.data.attachment_ids]],
@@ -64,14 +63,16 @@ export class BomOverviewLine extends Component {
         });
     }
 
+    onToggleFolded() {
+        if (this.props.parentId) {
+            this.props.bus.trigger(`toggle-fold-${this.props.parentId}`, this.identifier);
+        }
+    }
+
     //---- Getters ----
 
     get data() {
         return this.props.data;
-    }
-
-    get precision() {
-        return this.props.precision;
     }
 
     get identifier() {
@@ -151,7 +152,9 @@ export class BomOverviewLine extends Component {
 
 BomOverviewLine.template = "mrp.BomOverviewLine";
 BomOverviewLine.props = {
+    bus: Object,
     isFolded: { type: Boolean, optional: true },
+    parentId: { type: String, optional: true },
     showOptions: {
         type: Object,
         shape: {
@@ -165,10 +168,7 @@ BomOverviewLine.props = {
     },
     currentWarehouseId: { type: Number, optional: true },
     data: Object,
-    precision: Number,
-    toggleFolded: { type: Function, optional: true },
 };
 BomOverviewLine.defaultProps = {
     isFolded: true,
-    toggleFolded: () => {},
 };

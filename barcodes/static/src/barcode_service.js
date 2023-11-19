@@ -3,7 +3,8 @@
 import { isBrowserChrome, isMobileOS } from "@web/core/browser/feature_detection";
 import { registry } from "@web/core/registry";
 import { session } from "@web/session";
-import { EventBus, whenReady } from "@odoo/owl";
+
+const { EventBus, whenReady } = owl;
 
 function isEditable(element) {
     return element.matches('input,textarea,[contenteditable="true"]');
@@ -27,10 +28,6 @@ export const barcodeService = {
     // this is done here to make it easily mockable in mobile tests
     isMobileChrome: isMobileOS() && isBrowserChrome(),
 
-    cleanBarcode: function(barcode) {
-        return barcode.replace(/Alt|Shift|Control/g, '');
-    },
-
     start() {
         const bus = new EventBus();
         let timeout = null;
@@ -50,13 +47,9 @@ export const barcodeService = {
         /**
          * check if we have a barcode, and trigger appropriate events
          */
-        function checkBarcode(ev) {
-            let str = barcodeInput ? barcodeInput.value : bufferedBarcode;
-            str = barcodeService.cleanBarcode(str);
+        function checkBarcode() {
+            const str = barcodeInput ? barcodeInput.value : bufferedBarcode;
             if (str.length >= 3) {
-                if (ev) {
-                    ev.preventDefault();
-                }
                 handleBarcode(str, currentTarget);
             }
             if (barcodeInput) {
@@ -74,11 +67,9 @@ export const barcodeService = {
                 return;
             }
             // Ignore 'Shift', 'Escape', 'Backspace', 'Insert', 'Delete', 'Home', 'End', Arrow*, F*, Page*, ...
-            // meta is often used for UX purpose (like shortcuts)
-            // Notes:
-            // - shiftKey is not ignored because it can be used by some barcode scanner for digits.
-            // - altKey/ctrlKey are not ignored because it can be used in some barcodes (e.g. GS1 separator)
-            const isSpecialKey = !['Control', 'Alt'].includes(ev.key) && (ev.key.length > 1 || ev.metaKey);
+            // ctrl, meta and alt are often used for UX purpose (like shortcuts)
+            // Note: shiftKey is not ignored because it can be used by some barcode scanner for digits.
+            const isSpecialKey = ev.key.length > 1 || ev.ctrlKey || ev.metaKey || ev.altKey;
             const isEndCharacter = ev.key.match(/(Enter|Tab)/);
 
             // Don't catch non-printable keys except 'enter' and 'tab'
@@ -99,7 +90,7 @@ export const barcodeService = {
 
             clearTimeout(timeout);
             if (isEndCharacter) {
-                checkBarcode(ev);
+                checkBarcode();
             } else {
                 bufferedBarcode += ev.key;
                 timeout = setTimeout(checkBarcode, barcodeService.maxTimeBetweenKeysInMs);

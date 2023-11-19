@@ -53,7 +53,6 @@ class Generate1099Wizard(models.TransientModel):
         since they are allowed to use to offset the reported amount."""
         for wizard in self:
             lines = self.env["account.move.line"].search([
-                ("company_id", "in", self.env.companies.ids),
                 ("parent_state", "=", "posted"),
                 ("currency_id", "=", self.env.ref("base.USD").id),
                 ("partner_id.box_1099_id", "!=", False),

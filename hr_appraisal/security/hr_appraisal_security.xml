@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="hr_appraisal.group_hr_appraisal_user" model="res.groups">
-        <field name="name">Officer: Access all appraisals</field>
+        <field name="name">Officer : Access all appraisals</field>
         <field name="category_id" ref="base.module_category_human_resources_appraisals"/>
         <field name="implied_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
     </record>
@@ -29,14 +29,14 @@
     <record id="hr_appraisal_emp_rule" model="ir.rule">
         <field name="name">Employee Appraisal</field>
         <field name="model_id" ref="model_hr_appraisal"/>
-        <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('manager_ids', 'in', user.employee_id.ids)]</field>
+        <field name="domain_force">['|', '|', ('employee_id.user_id', '=', user.id), ('manager_ids', 'in', user.employee_id.id), '&amp;', ('employee_id.parent_id', '!=', False), ('employee_id.parent_id', '=', user.employee_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
     <record id="hr_appraisal_implicit_rule" model="ir.rule">
         <field name="name">Employee Appraisal historically implicit</field>
         <field name="model_id" ref="model_hr_appraisal"/>
-        <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('manager_ids', 'in', user.employee_id.ids)]</field>
+        <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('manager_ids', 'in', user.employee_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
@@ -67,12 +67,6 @@
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 
-    <record id="hr_appraisal_goal_company_rule" model="ir.rule">
-        <field name="name">Appraisal Goal multi-company</field>
-        <field name="model_id" ref="model_hr_appraisal_goal"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-    </record>
-
     <record id="hr_appraisal_goal_all" model="ir.rule">
         <field name="name">Appraisal: An appraisal manager can see all goals</field>
         <field name="model_id" ref="model_hr_appraisal_goal"/>
@@ -88,7 +82,7 @@
             '|',
             '|',
             '|',
-            ('is_manager', '=', True),
+            ('is_implicit_manager', '=', True),
             ('employee_id.user_id', '=', user.id),
             ('manager_id.user_id', '=', user.id),
             '&amp;',

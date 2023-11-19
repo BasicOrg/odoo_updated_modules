@@ -10,13 +10,13 @@
         <record id="sms_template_data_payment_failure" model="sms.template">
             <field name="name">Subscription: Payment failure</field>
             <field name="model_id" ref="sale_subscription.model_sale_order"/>
-            <field name="body">{{ object.company_id.name }}: Our final attempt to process a payment for your subscription failed. As your payment should have been made on {{ object.next_invoice_date }}, your subscription has been terminated.</field>
+            <field name="body">{{ object.company_id.name }}: Our final attempt to process a payment for your subscription failed. As your payment should have been made on {{ object.recurring_next_date }}, your subscription has been terminated.</field>
         </record>
 
         <record id="sms_template_data_payment_reminder" model="sms.template">
             <field name="name">Subscription: Payment reminder</field>
             <field name="model_id" ref="sale_subscription.model_sale_order"/>
-            <field name="body">{{ object.company_id.name }}: We were unable to process a payment for your subscription. Your subscription {{ object.name }} is still valid but will be suspended on {{ object.next_invoice_date }} unless the payment succeeds in the meantime.</field>
+            <field name="body">{{ object.company_id.name }}: We were unable to process a payment for your subscription. Your subscription {{ object.name }} is still valid but will be suspended on {{ object.recurring_next_date }} unless the payment succeeds in the meantime.</field>
         </record>
 
         <record id="sale_subscription_act_window_sms_composer_single" model="ir.actions.act_window">

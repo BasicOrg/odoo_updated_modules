@@ -14,11 +14,11 @@
                 <div name='detailed-explanation-text' invisible="not context.get('display_detailed_backorder', False)">
                     <p>You have processed less products than the initial demand:</p>
                     <p class="text-info fw-bold ms-2"
-                       invisible="empty_move_count &lt;= 0">
+                       attrs="{'invisible': [('empty_move_count', '&lt;=', 0)]}">
                         <field name="empty_move_count" class="d-inline"/> products were not processed at all.
                     </p>
                     <p class="text-info fw-bold ms-2"
-                       invisible="partial_move_count &lt;= 0">
+                       attrs="{'invisible': [('partial_move_count', '&lt;=', 0)]}">
                         <field name="partial_move_count" class="d-inline"/> products were partially processed.
                     </p>
                 </div>

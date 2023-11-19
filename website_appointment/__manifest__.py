@@ -5,9 +5,9 @@
 {
     'name': 'Website Appointments',
     'version': '1.0',
-    'category': 'Services/Appointment',
+    'category': 'Marketing/Online Appointment',
     'sequence': 215,
-    'website': 'https://www.odoo.com/app/appointments',
+    'website': 'https://www.odoo.com/page/appointments',
     'description': """
 Allow clients to Schedule Appointments through your Website
 -------------------------------------------------------------
@@ -18,17 +18,14 @@ Allow clients to Schedule Appointments through your Website
         'data/calendar_data.xml',
         'data/website_data.xml',
         'views/appointment_type_views.xml',
-        'views/appointment_invite_views.xml',
         'views/calendar_menus.xml',
         'views/appointment_templates_appointments.xml',
         'views/appointment_templates_registration.xml',
         'views/appointment_templates_validation.xml',
         'views/website_pages_views.xml',
-        'views/snippets/s_online_appointment.xml',
-        'views/snippets/s_searchbar.xml',
-        'views/snippets/snippets.xml',
         'security/calendar_security.xml',
         'security/ir.model.access.csv',
+        'views/snippets.xml',
     ],
     'demo': [
         'data/appointment_demo.xml',
@@ -48,9 +45,6 @@ Allow clients to Schedule Appointments through your Website
         ],
         'website.assets_editor': [
             'website_appointment/static/src/js/systray_items/*.js',
-        ],
-        'website.assets_wysiwyg': [
-            'website_appointment/static/src/snippets/s_online_appointment/options.js',
         ],
     }
 }

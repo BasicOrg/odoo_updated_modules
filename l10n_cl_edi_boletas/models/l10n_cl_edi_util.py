@@ -26,11 +26,7 @@ REST_SERVER_URL = {
         'SII': {
             'SEND': 'https://rahue.sii.cl/recursos/v1/boleta.electronica.envio',
             'OTHER': 'https://api.sii.cl/recursos/v1/'
-        },
-        'SIIDEMO': {
-            'SEND': 'https://pangal.sii.cl/recursos/v1/boleta.electronica.envio',
-            'OTHER': 'https://apicert.sii.cl/recursos/v1/'
-        },
+        }
 }
 
 SII_DETAIL_STATUS_RESULTS_REST = {
@@ -53,8 +49,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         return etree.fromstring(response.content).findtext('*/SEMILLA')
 
     def _get_token_rest(self, mode, digital_signature):
-        if mode == 'SIIDEMO':
-            return digital_signature.last_token
         if digital_signature.last_rest_token:
             return digital_signature.last_rest_token
         seed = self._get_seed_rest(mode)
@@ -98,8 +92,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
             'User-Agent': 'Mozilla/4.0 ( compatible; PROG 1.0; Windows NT)',
             'Content-Type': content_type
         }
-        if mode == 'SIIDEMO':
-            return None
         try:
             response = requests.post(REST_SERVER_URL[mode]['SEND'], headers=headers, data=content, timeout=TIMEOUT_REST)
         except (requests.exceptions.Timeout, requests.exceptions.RequestException) as error:
@@ -124,8 +116,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
             return False
         url = url_join(REST_SERVER_URL[mode]['OTHER'],
                        'boleta.electronica.envio/%s-%s-%s' % (company_vat[:-2], company_vat[-1], track_id))
-        if mode == 'SIIDEMO':
-            return None
         try:
             response = requests.get(url, headers={'Cookie': 'TOKEN={}'.format(token)}, timeout=TIMEOUT_REST)
         except (requests.exceptions.Timeout, requests.exceptions.RequestException) as error:

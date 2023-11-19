@@ -3,7 +3,6 @@
 
 import base64
 
-from odoo import Command
 from odoo.tools import file_open
 from odoo.tests.common import TransactionCase, new_test_user
 
@@ -185,30 +184,3 @@ class TestSignTemplate(TransactionCase):
         self.assertEqual(set(sign_template.sign_item_ids.ids), set(list(result3.values()) + [item1_id]), 'An id mapping should be returned')
         self.assertEqual(self.env['sign.item'].browse(item1_id).posY, 0.158, 'The poxY of item1 should be 0.158')
         self.assertEqual(self.env['sign.item'].browse(item2_id).posY, 0.298, 'The poxY of item2 should be 0.298')
-
-    def test_sign_selection_option_archived(self):
-        sign_template_id = self.env['sign.template'].with_user(self.test_user).create_with_attachment_data(
-            name='sample_contract.pdf', data=self.pdf_data)
-        sign_template = self.env['sign.template'].with_user(self.test_user).browse(sign_template_id)
-        option1 = self.env['sign.item.option'].create({'value': 'abc'})
-        option2 = self.env['sign.item.option'].create({'value': 'def'})
-        options = option1 | option2
-        sign_template.update_from_pdfviewer(sign_items={'-1': {
-            'type_id': self.env.ref('sign.sign_item_type_selection').id,
-            'name': 'selection',
-            'required': True,
-            'responsible_id': self.env.ref('sign.sign_item_role_employee').id,
-            'page': 1,
-            'posX': 0.273,
-            'posY': 0.158,
-            'template_id': sign_template_id,
-            'width': 0.150,
-            'height': 0.015,
-            'transaction_id': -1,
-            'option_ids': [Command.set(options.ids)]
-        }}, name='')
-        self.assertEqual(len(sign_template.sign_item_ids.option_ids), 2)
-        option2.available = False
-        duplicate_template = sign_template.copy()
-        self.assertEqual(duplicate_template.sign_item_ids.option_ids.id, option1.id)
-        self.assertEqual(len(duplicate_template.sign_item_ids.option_ids), 1)

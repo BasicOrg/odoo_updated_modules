@@ -1,46 +1,39 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { standardFieldProps } from "../standard_field_props";
 import { formatSelection } from "../formatters";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class LabelSelectionField extends Component {
-    static template = "web.LabelSelectionField";
-    static props = {
-        ...standardFieldProps,
-        classesObj: { type: Object, optional: true },
-    };
-    static defaultProps = {
-        classesObj: {},
-    };
-
     get className() {
-        return this.props.classesObj[this.props.record.data[this.props.name]] || "primary";
+        return this.props.classesObj[this.props.value] || "primary";
     }
     get string() {
-        return formatSelection(this.props.record.data[this.props.name], {
+        return formatSelection(this.props.value, {
             selection: Array.from(this.props.record.fields[this.props.name].selection),
         });
     }
 }
 
-export const labelSelectionField = {
-    component: LabelSelectionField,
-    displayName: _t("Label Selection"),
-    supportedOptions: [
-        {
-            label: _t("Classes"),
-            name: "classes",
-            type: "string",
-        },
-    ],
-    supportedTypes: ["selection"],
-    extractProps: ({ options }) => ({
-        classesObj: options.classes,
-    }),
+LabelSelectionField.template = "web.LabelSelectionField";
+LabelSelectionField.props = {
+    ...standardFieldProps,
+    classesObj: { type: Object, optional: true },
+};
+LabelSelectionField.defaultProps = {
+    classesObj: {},
 };
 
-registry.category("fields").add("label_selection", labelSelectionField);
+LabelSelectionField.displayName = _lt("Label Selection");
+LabelSelectionField.supportedTypes = ["selection"];
+
+LabelSelectionField.extractProps = ({ attrs }) => {
+    return {
+        classesObj: attrs.options.classes,
+    };
+};
+
+registry.category("fields").add("label_selection", LabelSelectionField);

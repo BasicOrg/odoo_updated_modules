@@ -3,17 +3,16 @@
 # 	* account_asset
 # 
 # Translators:
-# Wil Odoo, 2023
-# Sarah Park, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-23 08:22+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,14 +20,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid " (%s of %s)"
-msgstr "(%s의 %s)"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid " (copy)"
@@ -47,109 +44,67 @@ msgstr "# 총 증가"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__depreciation_entries_count
 msgid "# Posted Depreciation Entries"
-msgstr "# 발행된 감가상각 항목"
+msgstr "# 전기 감가상각 항목"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid ""
-"%s Future entries will be recomputed to depreciate the asset following the "
-"changes."
-msgstr "%s 이후 항목 입력 시 자산의 감가상각 변경사항 반영을 위해 다시 계산됩니다."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
-#, python-format
-msgid "%s m"
-msgstr "%s m"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
-#, python-format
-msgid "%s y"
-msgstr "%s y"
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
-msgid "%s: Depreciation"
-msgstr "%s: 감가상각"
-
-#. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-msgid "(incl."
-msgstr "(전체 중"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid "A depreciation entry will be posted on and including the date %s."
-msgstr "감가상각 항목이 해당 날짜를 포함하여 %s 날짜를 기준으로 발행됩니다"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid ""
-"A depreciation entry will be posted on and including the date %s. <br/> %s "
-"Future entries will be recomputed to depreciate the asset following the "
-"changes."
+msgid "%s created from invoice: %s"
 msgstr ""
-"감가상각 항목이 %s 날짜를 기준으로 발행됩니다.<br/>%s이후의 항목들은 변경 후 자산 감가상각을 위해 다시 계산됩니다. "
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #, python-format
-msgid ""
-"A depreciation entry will be posted on and including the date %s.<br/> A "
-"disposal entry will be posted on the %s account <b>%s</b>."
-msgstr "%s 기준 (해당 날짜 포함)으로 감가상각 항목을 발행합니다. <br/>처분 항목을 %s<b>%s</b>계정으로 발행합니다."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid ""
-"A depreciation entry will be posted on and including the date %s.<br/> A "
-"second entry will neutralize the original income and post the  outcome of "
-"this sale on account <b>%s</b>."
+msgid "%s m"
 msgstr ""
-"감가상각 항목이 %s 날짜를 기준으로 발행됩니다.<br/> 두번째 항목은 원래의 수입 금액을 상계 후 매출 결과를 계정 "
-"<b>%s</b>으로 발행합니다."
 
 #. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/report/account_assets_report.py:0
+#, python-format
+msgid "%s y"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "(prorata entry)"
+msgstr "(비율 항목)"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "A deferred expense has been created for this move:"
+msgstr "이 이동에 대해 이연 비용이 생성되었습니다 :"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "A deferred revenue has been created for this move:"
+msgstr "이 이동에 대해 이연 수익이 생성되었습니다 :"
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "A document linked to %s has been deleted: %s"
-msgstr "%s에 연결된 문서가 삭제되었습니다: %s"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "A document linked to this move has been deleted: %s"
-msgstr "이 작업에 연결된 문서가 삭제되었습니다: %s"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
-msgid "A gross increase has been created: "
-msgstr "총 증가액 항목이 생성되었습니다:"
+msgid "A gross increase has been created: %s"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "A non deductible tax value of %s was added to %s's initial value of %s"
-msgstr "%s의 비공제 세금액이 %s의 기초 금액인 %s에 추가되었습니다."
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_account
@@ -162,20 +117,39 @@ msgid ""
 "Account Type is used for information purpose, to generate country-specific "
 "legal reports, and set the rules to close a fiscal year and generate opening"
 " entries."
-msgstr ""
-"계정 유형은 정보 제공을 목적으로, 각 국가별 법적 보고서를 생성하고 회계연도 마감 및 시작 항목에 대한 생성 규칙을 설정합니다."
+msgstr "계정 유형은 정보 목적, 국가별 법적 보고서 생성, 회계 연도 마감 및 개설 항목 생성 규칙을 설정하는 데 사용됩니다."
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__account_depreciation_id
 msgid "Account used in the depreciation entries, to decrease the asset value."
-msgstr "감가상각 입력 계정으로, 자산 가치를 상각합니다."
+msgstr "자산 가치를 낮추기 위해 감가상각 기입에 사용하는 계정입니다."
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__account_depreciation_expense_id
 msgid ""
 "Account used in the periodical entries, to record a part of the asset as "
 "expense."
-msgstr "자산을 비용 처리하도록 주기적으로 입력하는 계정입니다."
+msgstr "자산의 일부를 경비로 기록하기 위해 정기 항목에 사용하는 계정입니다."
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Account used to recognize the expense"
+msgstr "비용을 인식하는 데 사용되는 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Account used to recognize the revenue"
+msgstr "수익을 인식하는 데 사용되는 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Account used to record the deferred expense"
+msgstr "이연 비용을 기록하는 데 사용되는 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Account used to record the deferred income"
+msgstr "이연 소득을 기록하는 데 사용되는 계정"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__account_asset_id
@@ -186,26 +160,26 @@ msgstr "자산의 구매시 원래 가격을 기록하는 데 사용하는 계�
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_asset_modify__gain_account_id
 msgid "Account used to write the journal item in case of gain"
-msgstr "수익 발생과 관련된 전표에 사용되는 계정"
+msgstr "이익이 발생하는 경우 분개를 작성하는 데 사용되는 계정"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_res_company__gain_account_id
 msgid ""
 "Account used to write the journal item in case of gain while selling an "
 "asset"
-msgstr "자산 매각 시 차익 발생과 관련한 전표에 사용되는 계정"
+msgstr "자산을 판매하는 동안 이익이 발생하는 경우 분개를 작성하는 데 사용되는 계정"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_asset_modify__loss_account_id
 msgid "Account used to write the journal item in case of loss"
-msgstr "손실 발생과 관련된 전표에 사용되는 계정"
+msgstr "손실시 분개를 작성하는 데 사용되는 계정"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_res_company__loss_account_id
 msgid ""
 "Account used to write the journal item in case of loss while selling an "
 "asset"
-msgstr "자산 매각 시 손실 발생과 관련한 전표에 사용되는 계정"
+msgstr "자산을 판매하는 동안 손실된 경우 분개를 작성하는 데 사용되는 계정"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
@@ -215,7 +189,7 @@ msgstr "회계"
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_report
 msgid "Accounting Report"
-msgstr "회계 보고서"
+msgstr ""
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_acquisition_date
@@ -237,7 +211,7 @@ msgstr "조치 필요"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__active
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__activity_ids
@@ -260,30 +234,29 @@ msgid "Activity Type Icon"
 msgstr "활동 유형 아이콘"
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
-msgid "Add an internal note"
-msgstr "내부 메모 추가"
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "All the lines should be from the same account"
-msgstr "모든 항목의 계정이 동일해야 합니다."
+msgstr "모든 내역이 같은 계정이어야 합니다"
 
 #. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "All the lines should be from the same move type"
+msgstr "모든 내역이 동일한 이동 유형이어야 합니다."
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_asset.py:0
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "All the lines should be posted"
-msgstr "모든 내용이 발행되어야 합니다"
+msgstr "모든 내역을 전기해야 합니다"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__already_depreciated_amount_import
 msgid "Already Depreciated Amount Import"
-msgstr "이미 감가상각 반영 완료 금액 가져오기"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__parent_id
@@ -291,50 +264,38 @@ msgid "An asset has a parent when it is the result of gaining value"
 msgstr "자산이 값을 얻는 결과일 때 상위 항목이 있습니다."
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "An asset has been created for this move:"
 msgstr "이 이동에 대한 자산이 생성되었습니다 :"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid "An asset will be created for the value increase of the asset. <br/>"
-msgstr "자산의 가액를 증가시키기 위해 자산 항목을 생성합니다.<br/>"
-
-#. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__analytic_distribution
-msgid "Analytic Distribution"
-msgstr "분석 분포"
+msgid "Analytic"
+msgstr "분석"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__analytic_distribution_search
-msgid "Analytic Distribution Search"
-msgstr "분석 분포 검색"
-
-#. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__analytic_precision
-msgid "Analytic Precision"
-msgstr "분석의 정확성"
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__analytic_distribution_stored_char
+msgid "Analytic Distribution Stored Char"
+msgstr ""
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
 msgid "Archived"
 msgstr "보관됨"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
+#: code:addons/account_asset/models/account_move.py:0
 #: code:addons/account_asset/models/account_move.py:0
 #: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_id
 #: model:ir.model.fields,field_description:account_asset.field_account_move__asset_id
 #: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_id
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__asset_id
+#: model:ir.model.fields.selection,name:account_asset.selection__account_account__asset_type__purchase
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
 #, python-format
@@ -347,17 +308,25 @@ msgid "Asset Account"
 msgstr "자산 계정"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Asset Cancelled"
-msgstr "자산 취소됨"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid ""
+"Asset Cancelled <br>The account %(exp_acc)s has been credited by "
+"%(exp_delta)s, while the account %(dep_acc)s has been debited by "
+"%(dep_delta)s. This corresponds to %(move_count)s %(mthd)s "
+"%(word)s:<br>%(entries)s"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__account_asset_counterpart_id
 msgid "Asset Counterpart Account"
-msgstr "자산 상대 계정"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_id_display_name
@@ -367,40 +336,65 @@ msgid "Asset Id Display Name"
 msgstr "자산 ID 표시명"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__asset_lifetime_days
-msgid "Asset Lifetime Days"
-msgstr "자산 내용연수"
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_ids_display_name
+#: model:ir.model.fields,field_description:account_asset.field_account_move__asset_ids_display_name
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_ids_display_name
+msgid "Asset Ids Display Name"
+msgstr "자산 ID 표시명"
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_manually_modified
+#: model:ir.model.fields,field_description:account_asset.field_account_move__asset_manually_modified
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_manually_modified
+msgid "Asset Manually Modified"
+msgstr "자산을 수동으로 수정"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_account__asset_model
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_expense_model_search
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
 msgid "Asset Model"
 msgstr "자산 모델"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Asset Model name"
-msgstr "자산 모델명"
+msgstr "자산 모델 이름"
 
 #. module: account_asset
 #: model:ir.actions.act_window,name:account_asset.action_account_asset_model_form
 #: model:ir.ui.menu,name:account_asset.menu_action_account_asset_model_form
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_purchase_tree
 msgid "Asset Models"
 msgstr "자산 모듈"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__name
 msgid "Asset Name"
-msgstr "자산명"
+msgstr "자산 이름"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__asset_paused_days
-msgid "Asset Paused Days"
-msgstr "자산 중단기간"
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Asset Options"
+msgstr "자산 옵션"
+
+#. module: account_asset
+#: model:ir.model,name:account_asset.model_account_asset_report_handler
+msgid "Asset Report Custom Handler"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_account__asset_type
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__asset_type
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_asset_type
+#: model:ir.model.fields,field_description:account_asset.field_account_move__asset_asset_type
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_asset_type
+msgid "Asset Type"
+msgstr "자산 유형"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_value_change
@@ -415,49 +409,33 @@ msgid "Asset Values"
 msgstr "자산 가치"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Asset created"
-msgstr "자산 생성"
+msgstr "생성된 자산"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_move.py:0
-#, python-format
-msgid "Asset created from invoice: %s"
-msgstr "자산 항목이 다음 청구서에서 생성됨: %s"
-
-#. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/models/account_asset.py:0
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
-msgid "Asset disposed. %s"
-msgstr "처분 자산. %s"
+msgid "Asset paused"
+msgstr "자산 일시 정지"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
-msgid "Asset paused. %s"
-msgstr "중단 자산. %s"
+msgid "Asset sold or disposed. Accounting entry awaiting for validation."
+msgstr "매각 또는 처분된 자산. 검증을 기다리는 회계 항목입니다."
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
-#, python-format
-msgid "Asset sold. %s"
-msgstr "매각 자산. %s"
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
-msgid "Asset unpaused. %s"
-msgstr "중단해제 자산. %s"
+msgid "Asset unpaused"
+msgstr "자산 일시 정지 해제"
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_move_form_asset_inherit
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
 msgid "Asset(s)"
 msgstr "자산(들)"
 
@@ -467,22 +445,14 @@ msgid "Asset/Revenue Recognition"
 msgstr "자산/수익 인식"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
 #: model:ir.actions.act_window,name:account_asset.action_account_asset_form
 #: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_ids
 #: model:ir.model.fields,field_description:account_asset.field_account_move__asset_ids
 #: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_ids
 #: model:ir.ui.menu,name:account_asset.menu_action_account_asset_form
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_tree
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_purchase_tree
 msgid "Assets"
 msgstr "자산"
-
-#. module: account_asset
-#: model:ir.model,name:account_asset.model_account_asset_report_handler
-msgid "Assets Report Custom Handler"
-msgstr "자산 보고서 사용자 지정 처리기"
 
 #. module: account_asset
 #: model:ir.ui.menu,name:account_asset.menu_finance_config_assets
@@ -500,15 +470,6 @@ msgid "Assets in draft and open states"
 msgstr "초안 및 개시된 상태의 자산"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
-#, python-format
-msgid ""
-"Atleast one asset (%s) couldn't be set as running because it lacks any "
-"required information"
-msgstr "필요한 정보가 없기 때문에 자산 (%s)을 실행 중으로 설정할 수 없습니다."
-
-#. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_attachment_count
 msgid "Attachment Count"
 msgstr "첨부 파일 수"
@@ -516,7 +477,17 @@ msgstr "첨부 파일 수"
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
 msgid "Automate Asset"
-msgstr "자산 자동 처리"
+msgstr "자산 자동화"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Automate Deferred Expense"
+msgstr "이연 비용 자동화"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Automate Deferred Revenue"
+msgstr "이연 수익 자동화"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
@@ -524,22 +495,9 @@ msgid "Automation"
 msgstr "자동화"
 
 #. module: account_asset
-#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__prorata_computation_type__daily_computation
-msgid "Based on days per period"
-msgstr "기간별 일할"
-
-#. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-msgid "Bills"
-msgstr "거래처 청구서"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__book_value
-#, python-format
 msgid "Book Value"
-msgstr "장부가액"
+msgstr "책 값"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_account__can_create_asset
@@ -554,19 +512,17 @@ msgstr "취소"
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Cancel Asset"
-msgstr "자산 취소"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__state__cancelled
 msgid "Cancelled"
-msgstr "취소됨"
+msgstr "취소 됨"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
-#, python-format
-msgid "Characteristics"
-msgstr "명세"
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Category of asset"
+msgstr "자산 범주"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__children_ids
@@ -577,14 +533,10 @@ msgstr "하위"
 #: model:ir.model.fields,help:account_asset.field_account_asset__method
 msgid ""
 "Choose the method to use to compute the amount of depreciation lines.\n"
-"  * Straight Line: Calculated on basis of: Gross Value / Duration\n"
+"  * Straight Line: Calculated on basis of: Gross Value / Number of Depreciations\n"
 "  * Declining: Calculated on basis of: Residual Value * Declining Factor\n"
 "  * Declining then Straight Line: Like Declining but with a minimum depreciation value equal to the straight line value."
 msgstr ""
-"감가상각 계산법을 선택하세요.\n"
-"  * 정액법: 총 대상 가액/내용 연수를 기준으로 계산\n"
-"  * 정률법: 감가상각 대상 가액 x 상각률을 기준으로 계산\n"
-"  * 정률법 후 정액법: 정률법과 동일하나 최소 상각액은 정액법과 같음"
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__state__close
@@ -604,15 +556,19 @@ msgid "Company"
 msgstr "회사"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__prorata_computation_type
-msgid "Computation"
-msgstr "계산법"
-
-#. module: account_asset
-#: model:ir.actions.server,name:account_asset.action_account_asset_run
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Compute Depreciation"
 msgstr "감가상각 계산"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Compute Expense"
+msgstr "비용 계산"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Compute Revenue"
+msgstr "수익 계산"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
@@ -620,23 +576,11 @@ msgid "Confirm"
 msgstr "승인"
 
 #. module: account_asset
-#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__prorata_computation_type__constant_periods
-msgid "Constant Periods"
-msgstr "일정 기간"
-
-#. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__count_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_move__count_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_payment__count_asset
-msgid "Count Asset"
-msgstr "자산 계산"
-
-#. module: account_asset
 #: model:ir.actions.server,name:account_asset.action_account_aml_to_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_account__create_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_move_line_tree
 msgid "Create Asset"
-msgstr "자산 항목 생성"
+msgstr "자산 만들기"
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_account__create_asset__validate
@@ -646,17 +590,37 @@ msgstr "생성 및 승인"
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_account__create_asset__draft
 msgid "Create in draft"
-msgstr "미결로 작성"
+msgstr "초안으로 작성"
 
 #. module: account_asset
 #: model_terms:ir.actions.act_window,help:account_asset.action_account_asset_form
 msgid "Create new asset"
-msgstr "새로운 자산 항목을 생성합니다"
+msgstr ""
 
 #. module: account_asset
 #: model_terms:ir.actions.act_window,help:account_asset.action_account_asset_model_form
 msgid "Create new asset model"
-msgstr "새로운 자산 모델을 생성합니다."
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.actions.act_window,help:account_asset.action_account_expense_form
+msgid "Create new deferred expense"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.actions.act_window,help:account_asset.action_account_expense_model_form
+msgid "Create new deferred expense model"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.actions.act_window,help:account_asset.action_account_revenue_form
+msgid "Create new deferred revenue"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.actions.act_window,help:account_asset.action_account_revenue_model_form
+msgid "Create new deferred revenue model"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__create_uid
@@ -675,7 +639,17 @@ msgstr "작성일자"
 #: model:ir.model.fields,field_description:account_asset.field_account_move__asset_depreciated_value
 #: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_depreciated_value
 msgid "Cumulative Depreciation"
-msgstr "감가상각 누적액"
+msgstr "누적 감가상각"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Cumulative Expense"
+msgstr "누적 비용"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Cumulative Revenue"
+msgstr "누적 수익"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__currency_id
@@ -694,7 +668,7 @@ msgid "Current Values"
 msgstr "현재 가치"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_asset_modify__invoice_ids
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify__invoice_id
 msgid "Customer Invoice"
 msgstr "고객 청구서"
 
@@ -702,39 +676,181 @@ msgstr "고객 청구서"
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__date
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
 msgid "Date"
-msgstr "날짜"
+msgstr "일자"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_depreciation_beginning_date
-#: model:ir.model.fields,field_description:account_asset.field_account_move__asset_depreciation_beginning_date
-#: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_depreciation_beginning_date
-msgid "Date of the beginning of the depreciation"
-msgstr "감가 상각 시작일"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #, python-format
 msgid "Dec. then Straight"
-msgstr "정률법 후 정액법 적용"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__method__degressive
 #, python-format
 msgid "Declining"
-msgstr "정률법"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__method_progress_factor
 msgid "Declining Factor"
-msgstr "상각 요건"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__method__degressive_then_linear
 msgid "Declining then Straight Line"
-msgstr "정률법 적용 후 정액법"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#: model:ir.model.fields.selection,name:account_asset.selection__account_account__asset_type__expense
+#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__asset_type__expense
+#, python-format
+msgid "Deferred Expense"
+msgstr "이연 비용"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_expense_model_search
+msgid "Deferred Expense Account"
+msgstr "이연 비용 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Deferred Expense Amount"
+msgstr "이연 비용 금액"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Deferred Expense Model"
+msgstr "이연 비용 모델"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Deferred Expense Model name"
+msgstr "이연 비용 모델 이름"
+
+#. module: account_asset
+#: model:ir.actions.act_window,name:account_asset.action_account_expense_model_form
+#: model:ir.ui.menu,name:account_asset.menu_action_account_expense_model_recognition
+msgid "Deferred Expense Models"
+msgstr "이연 비용 모델"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Deferred Expense Options"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Deferred Expense name"
+msgstr "이연 비용 이름"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Deferred Expense(s)"
+msgstr "이연 비용"
+
+#. module: account_asset
+#: model:ir.actions.act_window,name:account_asset.action_account_expense_form
+#: model:ir.ui.menu,name:account_asset.menu_action_account_expense_recognition
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_tree
+msgid "Deferred Expenses"
+msgstr "이연 비용"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
+msgid "Deferred Expenses Models"
+msgstr "이연 비용 모델"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#: model:ir.model.fields.selection,name:account_asset.selection__account_account__asset_type__sale
+#, python-format
+msgid "Deferred Revenue"
+msgstr "이연 수익"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
+msgid "Deferred Revenue Account"
+msgstr "이연 수익 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Deferred Revenue Amount"
+msgstr "이연 수익 금액"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Deferred Revenue Model"
+msgstr "이연 수익 모델"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Deferred Revenue Model name"
+msgstr "이연 수익 모델 이름"
+
+#. module: account_asset
+#: model:ir.actions.act_window,name:account_asset.action_account_revenue_model_form
+#: model:ir.ui.menu,name:account_asset.menu_action_account_revenue_model_recognition
+msgid "Deferred Revenue Models"
+msgstr "이연 수익 모델"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
+msgid "Deferred Revenue Options"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Deferred Revenue name"
+msgstr "이연 수익 이름"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Deferred Revenue(s)"
+msgstr "이연 수익"
+
+#. module: account_asset
+#: model:ir.actions.act_window,name:account_asset.action_account_revenue_form
+#: model:ir.ui.menu,name:account_asset.menu_action_account_revenue_recognition
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_sale_tree
+msgid "Deferred Revenues"
+msgstr "이연 수익"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
+msgid "Deferred Revenues Models"
+msgstr "이연 수익 모델"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Deferred expense"
+msgstr "이연 비용"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "Deferred expense created"
+msgstr "이연 비용 생성됨"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Deferred revenue"
+msgstr "이연 수익"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "Deferred revenue created"
+msgstr "이연 수익 생성됨"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__value_residual
@@ -755,13 +871,7 @@ msgid "Depreciated Amount"
 msgstr "감가상각 금액"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
-#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__depreciation_value
-#: model:ir.model.fields,field_description:account_asset.field_account_move__depreciation_value
-#: model:ir.model.fields,field_description:account_asset.field_account_payment__depreciation_value
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-#, python-format
 msgid "Depreciation"
 msgstr "감가상각"
 
@@ -775,7 +885,7 @@ msgstr "감가상각 계정"
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Depreciation Board"
-msgstr "감가상각 내역"
+msgstr "감가상각 보드"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
@@ -786,7 +896,7 @@ msgstr "감가상각일"
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__depreciation_move_ids
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Depreciation Lines"
-msgstr "감가상각 항목"
+msgstr "감가상각 명세"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
@@ -794,28 +904,30 @@ msgid "Depreciation Method"
 msgstr "감가상각법"
 
 #. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__depreciation_number_import
+msgid "Depreciation Number Import"
+msgstr "감가상각 수 불러오기"
+
+#. module: account_asset
 #: model:account.report,name:account_asset.assets_report
 #: model:ir.actions.client,name:account_asset.action_account_report_assets
 #: model:ir.ui.menu,name:account_asset.menu_action_account_report_assets
 msgid "Depreciation Schedule"
-msgstr "감가상각명세서"
+msgstr "감가상각 일정"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
-msgid "Depreciation board modified %s"
-msgstr "감가상각표 수정됨 %s"
+msgid "Depreciation board modified"
+msgstr "수정된 감가상각 보드"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "Depreciation entry %s posted (%s)"
-msgstr "감가상각 항목 %s 발행(%s)"
+msgstr "감가상각 항목 %s 전기(%s)"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "Depreciation entry %s reversed (%s)"
@@ -827,13 +939,17 @@ msgid "Display Account Asset"
 msgstr "자산 계정 표시"
 
 #. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__display_model_choice
+msgid "Display Model Choice"
+msgstr "표시 모델 선택"
+
+#. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__display_name
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__display_name
 msgid "Display Name"
 msgstr "표시명"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Disposal"
@@ -845,69 +961,124 @@ msgid "Disposal Date"
 msgstr "처분일"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Disposal Move"
-msgstr "처분 작업"
+msgstr "처분 이동"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Disposal Moves"
-msgstr "처분 작업"
+msgstr "처분 이동"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
-#, python-format
 msgid "Dispose"
 msgstr "처분"
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__state__draft
 msgid "Draft"
-msgstr "미결"
+msgstr "임시"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__draft_asset_exists
-#: model:ir.model.fields,field_description:account_asset.field_account_move__draft_asset_exists
-#: model:ir.model.fields,field_description:account_asset.field_account_payment__draft_asset_exists
-msgid "Draft Asset Exists"
-msgstr "미결 자산이 있습니다"
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__draft_asset_ids
+#: model:ir.model.fields,field_description:account_asset.field_account_move__draft_asset_ids
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__draft_asset_ids
+msgid "Draft Asset"
+msgstr "초안 자산"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__method_number
-#: model:ir.model.fields,field_description:account_asset.field_asset_modify__method_number
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_kanban
 msgid "Duration"
-msgstr "상각 기간"
+msgstr "기간"
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_duration_rate
 msgid "Duration / Rate"
-msgstr "상각기간 / 비율"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Existing Depreciation Schedule"
+msgstr "기존 감가상각 스케줄"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Existing Depreciations"
+msgstr "기존 감가상각"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_tree
+#, python-format
+msgid "Expense"
+msgstr "경비"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__account_depreciation_expense_id
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__account_depreciation_expense_id
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_expense_model_search
 msgid "Expense Account"
-msgstr "비용 계정"
+msgstr "경비 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Expense Board"
+msgstr "비용 보드"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Expense Date"
+msgstr "비용 지출일"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Expense Lines"
+msgstr "비용 명세"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
+msgid "Expense Name"
+msgstr "비용 이름"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Expense Recognition"
+msgstr "비용 인식"
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_first_depreciation
 msgid "First Depreciation"
-msgstr "최초 감가상각"
+msgstr "첫 번째 감가상각"
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__first_depreciation_date
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "First Depreciation Date"
+msgstr "첫 번째 감가상각일"
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__first_depreciation_date_import
+msgid "First Depreciation Date Import"
+msgstr "첫번째 감가상각일 불러오기"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "First Recognition Date"
+msgstr "첫 번째 인식일"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__account_asset_id
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
 msgid "Fixed Asset Account"
-msgstr "고정자산 계정"
+msgstr "고정된 자산 계정"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_follower_ids
@@ -917,12 +1088,12 @@ msgstr "팔로워"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "팔로워 (협력사)"
+msgstr "팔로워 (파트너)"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "멋진 아이콘 폰트 예: fa-tasks"
+msgstr "멋진 아이콘 폰트 예 : fa-tasks"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_account__form_view_ref
@@ -948,7 +1119,7 @@ msgstr "이익 계정"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__gain_or_loss
 msgid "Gain Or Loss"
-msgstr "손익계산서"
+msgstr "손익"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__gain_value
@@ -956,7 +1127,6 @@ msgid "Gain Value"
 msgstr "이익 값"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 #, python-format
@@ -966,7 +1136,7 @@ msgstr "총 증가"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__account_asset_id
 msgid "Gross Increase Account"
-msgstr "총 증가 계정"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__gross_increase_value
@@ -974,15 +1144,15 @@ msgid "Gross Increase Value"
 msgstr "총 증가값"
 
 #. module: account_asset
-#. odoo-javascript
-#: code:addons/account_asset/static/src/components/depreciation_schedule/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_asset.assets_search_template_extra_options
 msgid "Group By Account"
-msgstr "계정별 그룹"
+msgstr ""
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_expense_model_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
 msgid "Group By..."
 msgstr "그룹별..."
 
@@ -990,6 +1160,11 @@ msgstr "그룹별..."
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__has_message
 msgid "Has Message"
 msgstr "메시지가 있습니다"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
+msgid "How would you like to modify this asset's depreciation?"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__id
@@ -1010,7 +1185,7 @@ msgstr "예외 활동을 표시하기 위한 아이콘"
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "선택할 경우, 새로운 메시지에 주의가 필요합니다."
+msgstr "만약 선택하였으면, 신규 메시지에 주의를 기울여야 합니다."
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__message_has_error
@@ -1019,11 +1194,33 @@ msgid "If checked, some messages have a delivery error."
 msgstr "이 옵션을 선택하면 일부 정보가 전달 오류를 생성합니다."
 
 #. module: account_asset
+#: model:ir.model.fields,help:account_asset.field_account_asset__prorata
+msgid ""
+"If set, specifies the start date for the first period's computation. By "
+"default, it is set to the day's date rather than the Start Date of the "
+"fiscal year."
+msgstr ""
+
+#. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_account__asset_model
 msgid ""
 "If this is selected, an expense/revenue will be created automatically when "
 "Journal Items on this account are posted."
-msgstr "선택할 경우, 이 계정과 관련된 전표가 발행되면 수익/비용 항목이 자동으로 생성됩니다."
+msgstr "이를 선택하면 이 계정의 분개 항목이 전기될 때 비용/수익이 자동으로 생성됩니다."
+
+#. module: account_asset
+#: model:ir.model.fields,help:account_asset.field_account_asset__first_depreciation_date_import
+msgid ""
+"In case of an import from another software, provide the first depreciation "
+"date in it."
+msgstr "다른 소프트웨어에서 가져오는 경우 첫 번째 감가상각 날짜를 제공하십시오."
+
+#. module: account_asset
+#: model:ir.model.fields,help:account_asset.field_account_asset__depreciation_number_import
+msgid ""
+"In case of an import from another software, provide the number of "
+"depreciations already done before starting with Odoo."
+msgstr "다른 소프트웨어에서 가져오는 경우 Odoo를 시작하기 전에 이미 수행된 감가상각 횟수를 제공하십시오."
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__already_depreciated_amount_import
@@ -1032,16 +1229,16 @@ msgid ""
 " to have the right depreciation table report. This is the value that was "
 "already depreciated with entries not computed from this model"
 msgstr ""
-"다른 프로그램에서 가져오는 경우에는, 이 필드를 사용하여 올바른 감가상각표 보고서를 확인할 수 있습니다. 해당 값은 이 모델에서 계산되지"
-" 않은 항목으로 이미 감가상각된 값입니다."
+"다른 소프트웨어에서 가져오는 경우 올바른 감가상각표 보고서를 보려면 이 필드를 사용해야 할 수 있습니다. 이 모델에서 계산되지 않은 "
+"항목으로 이미 감가상각된 값입니다."
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_asset_modify__informational_text
-msgid "Informational Text"
-msgstr "안내문"
+#: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
+msgid "Increase Accounts"
+msgstr "증가 계정"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_asset_modify__invoice_line_ids
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify__invoice_line_id
 msgid "Invoice Line"
 msgstr "청구서 내역"
 
@@ -1053,48 +1250,52 @@ msgstr "팔로워임"
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__salvage_value
 msgid "It is the amount you plan to have that you cannot depreciate."
-msgstr "감가상각을 할 수 없는 금액입니다."
+msgstr "감가상각할 수 없는 금액입니다."
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__journal_id
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_expense_model_search
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
 msgid "Journal"
-msgstr "전표"
+msgstr "분개장"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Journal Entries"
-msgstr "전표 입력"
+msgstr "분개"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_move
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Journal Entry"
-msgstr "전표"
+msgstr "분개"
 
 #. module: account_asset
 #: model:ir.model,name:account_asset.model_account_move_line
 msgid "Journal Item"
-msgstr "전표 항목"
+msgstr "분개 항목"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__original_move_line_ids
 #, python-format
 msgid "Journal Items"
-msgstr "전표 항목"
+msgstr "분개 항목"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid ""
-"Journal Items of %(account)s should have a label in order to generate an "
-"asset"
-msgstr "자산 항목을 생성하려면 %(account)s 전표에 라벨이 있어야 합니다."
+"Journal Items of {account} should have a label in order to generate an asset"
+msgstr "자산을 생성하려면 {account}의 분개장 항목에 꼬리표가 있어야 합니다."
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset____last_update
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__write_uid
@@ -1114,8 +1315,7 @@ msgid "Late Activities"
 msgstr "지연된 활동"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #, python-format
 msgid "Linear"
 msgstr "선형"
@@ -1132,9 +1332,14 @@ msgid "Loss Account"
 msgstr "손실 계정"
 
 #. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "주요 첨부 파일"
+
+#. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_form_asset_inherit
 msgid "Manage Items"
-msgstr "항목 관리"
+msgstr "아이템 관리"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_has_error
@@ -1161,11 +1366,15 @@ msgstr "모델"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
+msgid "Modification reason"
+msgstr "수정 이유"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
 msgid "Modify"
 msgstr "수정하기"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #: model:ir.model,name:account_asset.model_asset_modify
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
@@ -1176,7 +1385,17 @@ msgstr "자산 수정하기"
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Modify Depreciation"
-msgstr "감가상각 수정"
+msgstr "감가상각 수정하기"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Modify Expense"
+msgstr "비용 수정하기"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Modify Revenue"
+msgstr "수익 수정하기"
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__method_period__1
@@ -1187,19 +1406,29 @@ msgstr "월"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_account__multiple_assets_per_line
 msgid "Multiple Assets per Line"
-msgstr "내역 당 여러 항목의 자산"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_account__multiple_assets_per_line
 msgid ""
 "Multiple asset items will be generated depending on the bill line quantity "
 "instead of 1 global asset."
-msgstr "포괄적인 하나의 항목으로 자산을 생성하지 않고, 청구서 항목 수에 따라서 여러 개의 자산 항목을 생성합니다."
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "내 활동 마감일"
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify__need_date
+msgid "Need Date"
+msgstr "날짜 필요"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
+msgid "New Values"
+msgstr "새 값"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_asset_modify__value_residual
@@ -1214,7 +1443,7 @@ msgstr "자산의 새 잔존 금액"
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "다음 활동 캘린더 행사"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__activity_date_deadline
@@ -1232,36 +1461,51 @@ msgid "Next Activity Type"
 msgstr "다음 활동 유형"
 
 #. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Next Period Expense"
+msgstr "차기 비용"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Next Period Revenue"
+msgstr "차기 수익"
+
+#. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_account__create_asset__no
 #: model:ir.model.fields.selection,name:account_asset.selection__asset_modify__gain_or_loss__no
 msgid "No"
 msgstr "아니오"
 
 #. module: account_asset
-#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__prorata_computation_type__none
-msgid "No Prorata"
-msgstr "비율 계산 하지 않음"
-
-#. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__non_deductible_tax_value
 #: model:ir.model.fields,field_description:account_asset.field_account_move_line__non_deductible_tax_value
 msgid "Non Deductible Tax Value"
-msgstr "비공제 세액"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__salvage_value
 msgid "Not Depreciable Amount"
-msgstr "감가상각 제외 금액"
+msgstr "감가상각 금액이 아닙니다"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__salvage_value
 msgid "Not Depreciable Value"
-msgstr "감가상각 제외 금액"
+msgstr "감가상각 값이 아닙니다"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_asset_modify__name
-msgid "Note"
-msgstr "메모"
+#: model:ir.model.fields,help:account_asset.field_account_asset__first_depreciation_date
+msgid ""
+"Note that this date does not alter the computation of the first journal "
+"entry in case of prorata temporis assets. It simply changes its accounting "
+"date"
+msgstr "이 날짜는 비례 원칙 자산의 경우 첫 번째 분개 항목의 계산을 변경하지 않습니다. 단순히 회계 날짜만 변경합니다."
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__number_asset_ids
+#: model:ir.model.fields,field_description:account_asset.field_account_move__number_asset_ids
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__number_asset_ids
+msgid "Number Asset"
+msgstr "자산 숫자"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_needaction_counter
@@ -1269,7 +1513,9 @@ msgid "Number of Actions"
 msgstr "작업 수"
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_tree
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__method_number
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify__method_number
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_purchase_tree
 msgid "Number of Depreciations"
 msgstr "감가상각 횟수"
 
@@ -1277,7 +1523,14 @@ msgstr "감가상각 횟수"
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__method_period
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__method_period
 msgid "Number of Months in a Period"
-msgstr "월 환산 기간"
+msgstr "기간 내 개월 수"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Number of Recognitions"
+msgstr "인식 횟수"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__gross_increase_count
@@ -1285,16 +1538,9 @@ msgid "Number of assets made to increase the value of the asset"
 msgstr "자산 가치를 높이기 위해 만들어진 자산의 수"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__asset_number_days
-#: model:ir.model.fields,field_description:account_asset.field_account_move__asset_number_days
-#: model:ir.model.fields,field_description:account_asset.field_account_payment__asset_number_days
-msgid "Number of days"
-msgstr "일 수"
-
-#. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__total_depreciation_entries_count
 msgid "Number of depreciation entries (posted or not)"
-msgstr "감가상각 항목 수 (발행 여부 불문)"
+msgstr "감가상각 항목 수(전기 여부)"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__message_has_error_counter
@@ -1303,13 +1549,13 @@ msgstr "오류 횟수"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "조치가 필요한 메시지 수"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "전송 오류가 발생한 메시지 수입니다."
+msgstr "전송 오류 메시지 수"
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__state__paused
@@ -1317,8 +1563,7 @@ msgid "On Hold"
 msgstr "대기 중"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #, python-format
 msgid "Open Asset"
 msgstr "자산 열기"
@@ -1335,70 +1580,84 @@ msgid "Parent"
 msgstr "상위"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-#, python-format
-msgid "Parent Asset"
-msgstr "상위 자산"
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
-#, python-format
 msgid "Pause"
-msgstr "보류"
+msgstr "일시 정지"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__paused_prorata_date
-msgid "Paused Prorata Date"
-msgstr "비례 일수 계산 중단"
-
-#. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_expense_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_purchase_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
 msgid "Period length"
 msgstr "기간"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Posted Entries"
-msgstr "발행 전표"
+msgstr "전기된 항목"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__prorata_date
 msgid "Prorata Date"
-msgstr "비례 기준일"
+msgstr "비례 날짜"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__rating_ids
-msgid "Ratings"
-msgstr "평가"
+#: model:ir.model.fields,field_description:account_asset.field_account_asset__prorata
+msgid "Prorata Temporis"
+msgstr "비례 보상 원칙"
 
 #. module: account_asset
-#. odoo-python
+#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__asset_type__purchase
+msgid "Purchase: Asset"
+msgstr "구매 : 자산"
+
+#. module: account_asset
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
-msgid "Re-evaluate"
-msgstr "재평가"
+msgid "Re-evaluate Depreciation"
+msgstr ""
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_asset_modify__name
+msgid "Reason"
+msgstr "사유"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_move_line__asset_ids
-#: model_terms:ir.ui.view,arch_db:account_asset.view_move_line_form_asset_inherit
 msgid "Related Assets"
-msgstr "관련 자산"
+msgstr ""
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__related_purchase_value
-msgid "Related Purchase Value"
-msgstr "관련 매입가"
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "Related Expenses"
+msgstr "관련된 비용"
 
 #. module: account_asset
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Related Purchase"
+msgstr "관련된 구매"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Related Sales"
+msgstr "관련된 판매"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Report of reversal for {name}"
+msgstr "{name}에 대한 반전 보고서"
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Reset to running"
 msgstr "실행으로 재설정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Residual Amount to Recognize"
+msgstr "인식할 잔존 가치"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__activity_user_id
@@ -1406,26 +1665,71 @@ msgid "Responsible User"
 msgstr "담당 사용자"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
-#, python-format
 msgid "Resume"
 msgstr "경력 사항"
 
 #. module: account_asset
+#: code:addons/account_asset/wizard/asset_modify.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+#, python-format
 msgid "Resume Depreciation"
 msgstr "감가상각 재개"
 
 #. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/models/account_move.py:0
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+#, python-format
+msgid "Revenue"
+msgstr "수익"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_revenue_model_search
+msgid "Revenue Account"
+msgstr "수익 계정"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Revenue Board"
+msgstr "수익 보드"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Revenue Date"
+msgstr "수익 날짜"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Revenue Lines"
+msgstr "수익 명세"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_model_sale_tree
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_sale_tree
+msgid "Revenue Name"
+msgstr "수익명"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "Revenue Recognition"
+msgstr "수익 인식"
+
+#. module: account_asset
+#: model:ir.model.fields,field_description:account_asset.field_account_bank_statement_line__reversal_move_id
+#: model:ir.model.fields,field_description:account_asset.field_account_move__reversal_move_id
+#: model:ir.model.fields,field_description:account_asset.field_account_payment__reversal_move_id
+msgid "Reversal Move"
+msgstr "환입 이동"
+
+#. module: account_asset
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
 msgid ""
 "Reverse the depreciation entries posted in the future in order to modify the"
 " depreciation"
-msgstr "감가 상각을 수정하기 위해 미래에 발행된 감가 상각 항목을 역분개합니다."
+msgstr "감가 상각을 수정하기 위해 미래에 전기된 감가 상각 항목을 역분개합니다."
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__state__open
@@ -1438,23 +1742,26 @@ msgid "SMS Delivery error"
 msgstr "SMS 전송 에러"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Sale"
 msgstr "매출"
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-msgid "Save as Model"
-msgstr "모델로 저장"
+#: model:ir.model.fields.selection,name:account_asset.selection__account_asset__asset_type__sale
+msgid "Sale: Revenue Recognition"
+msgstr "판매 : 수익 인식"
 
 #. module: account_asset
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Save as Model"
+msgstr ""
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Save model"
-msgstr "모델 저장"
+msgstr "저장 모델"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_asset_modify__select_invoice_line_id
@@ -1462,17 +1769,19 @@ msgid "Select Invoice Line"
 msgstr "청구서 내역 선택"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
 #: model_terms:ir.ui.view,arch_db:account_asset.asset_modify_form
-#, python-format
 msgid "Sell"
 msgstr "판매"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Set manually the original values or"
+msgstr "원래 가격 수동 설정 또는"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "Set to Draft"
-msgstr "미결로 설정"
+msgstr "초안으로 설정"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
@@ -1482,21 +1791,24 @@ msgstr "실행 중으로 설정"
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_search
 msgid "Show all records which has next action date is before today"
-msgstr "다음 작업 일자가 오늘 이전인 모든 레코드 표시"
+msgstr "다음 행동 날짜가 오늘 이전 인 모든 기록보기"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
-msgid "Some fields are missing %s"
-msgstr "일부 필드에 %s 항목이 누락되었습니다."
+msgid "Some fields are missing {}"
+msgstr "일부 필드가 누락되었습니다 {}"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Some required values are missing"
 msgstr "일부 필수 값이 누락되었습니다"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "Start Depreciating"
+msgstr "감가상각 시작"
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__state
@@ -1519,41 +1831,28 @@ msgstr ""
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__method__linear
 msgid "Straight Line"
-msgstr "정액법"
+msgstr "직선"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__book_value
 msgid ""
 "Sum of the depreciable value, the salvage value and the book value of all "
 "value increase items"
-msgstr "감가상각 대상금액과 잔존가액 및 장부가액을 합산한 금액입니다 (항목의 가액이 증가한 경우)."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
-#, python-format
-msgid ""
-"The account %(exp_acc)s has been credited by %(exp_delta)s, while the "
-"account %(dep_acc)s has been debited by %(dep_delta)s. This corresponds to "
-"%(move_count)s cancelled %(word)s:<br>%(entries)s"
-msgstr ""
-"%(exp_acc)s 계정이 %(exp_delta)s에 의해 대변 처리 되었으며, %(dep_acc)s 계정은 %(dep_delta)s에"
-" 의해 차변 처리되었습니다. 이는 %(move_count)s에 따라 %(word)s 취소에 해당합니다: <br>%(entries)s"
+msgstr "상각 가능한 가치, 잔존 가치 및 모든 가치 증가 항목의 장부 가액의 합"
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__method_period
 #: model:ir.model.fields,help:account_asset.field_asset_modify__method_period
 msgid "The amount of time between two depreciations"
-msgstr "양 쪽 감가상각 사이의 시간"
+msgstr "두 감가상각 사이의 시간"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid ""
 "The amount you have entered (%s) does not match the Related Purchase's value"
 " (%s). Please make sure this is what you want."
-msgstr "입력한 금액 (%s)이 해당 구매 항목 가치 (%s)와 일치하지 않습니다. 입력 내용이 정확한지 확인하십시오."
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_asset_modify__asset_id
@@ -1566,40 +1865,30 @@ msgid "The children are the gains in value of this asset"
 msgstr "하위 요소는 이 자산의 가치 상승입니다"
 
 #. module: account_asset
-#: model:ir.model.fields,help:account_asset.field_asset_modify__invoice_ids
+#: model:ir.model.fields,help:account_asset.field_asset_modify__invoice_id
 msgid ""
 "The disposal invoice is needed in order to generate the closing journal "
 "entry."
-msgstr "마감 전표 생성하려면 청구서 삭제 내역이 필요합니다."
+msgstr "분개장 항목을 마감하려면 청구서 삭제가 필요합니다."
 
 #. module: account_asset
 #: model:ir.model.fields,help:account_asset.field_account_asset__method_number
 msgid "The number of depreciations needed to depreciate your asset"
-msgstr "자산의 감가상각에 소요되는 기간입니다."
+msgstr "자산을 감각상각해야 하는 횟수"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "The remaining value on the last depreciation line must be 0"
 msgstr "마지막 감가상각 내역의 나머지 값은 0이어야 합니다."
 
 #. module: account_asset
-#: model:ir.model.fields,help:account_asset.field_asset_modify__invoice_line_ids
+#: model:ir.model.fields,help:account_asset.field_asset_modify__invoice_line_id
 msgid "There are multiple lines that could be the related to this asset"
 msgstr "이 자산과 관련될 수 있는 여러 내역이 있습니다"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid ""
-"There are unposted depreciations prior to the selected operation date, "
-"please deal with them first."
-msgstr "선택한 운용일 이전의 미발행 감가상각 항목이 있으므로, 먼저 처리하시기 바랍니다."
-
-#. module: account_asset
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_asset/static/src/components/move_reversed/move_reversed.xml:0
 #, python-format
 msgid "This move has been reversed"
@@ -1611,19 +1900,30 @@ msgid "Today Activities"
 msgstr "오늘 활동"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_assets_report.py:0
+#: code:addons/account_asset/report/account_assets_report.py:0
 #, python-format
 msgid "Total"
-msgstr "총계"
+msgstr "합계"
 
 #. module: account_asset
-#: model:ir.model.fields,field_description:account_asset.field_account_asset__total_depreciable_value
-msgid "Total Depreciable Value"
-msgstr "총 감가상각 가능 금액"
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "Trying to pause an asset without any future depreciation line"
+msgstr "향후 감가상각 내역 없이 자산을 일시 정지"
 
 #. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Turn as a deferred expense"
+msgstr "이연 비용으로 전환"
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_move.py:0
+#, python-format
+msgid "Turn as a deferred revenue"
+msgstr "이연 수익으로 전환"
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "Turn as an asset"
@@ -1640,19 +1940,12 @@ msgid "Type of the exception activity on record."
 msgstr "레코드에 있는 예외 활동의 유형입니다."
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-msgid "Value at Import"
-msgstr "가져오기할 때의 값"
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
 msgid "Value decrease for: %(asset)s"
 msgstr "금액감소자산: %(asset)s"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
@@ -1660,11 +1953,10 @@ msgid "Value increase for: %(asset)s"
 msgstr "금액증가자산: %(asset)s"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "Warning for the Original Value of %s"
-msgstr "%s의 원래 금액에 대한 경고 알림"
+msgstr ""
 
 #. module: account_asset
 #: model:ir.model.fields,field_description:account_asset.field_account_asset__website_message_ids
@@ -1685,11 +1977,6 @@ msgid ""
 "You can manually close an asset when the depreciation is over.\n"
 "By cancelling an asset, all depreciation entries will be reversed"
 msgstr ""
-"자산이 생성되면, '초안' 상태입니다.\n"
-"자산을 승인하면, 상태는 '실행 중'으로 변경되며 감가상각 내역을 회계 장부로 발행할 수 있게 됩니다.\n"
-"'보류' 상태로 직접 설정해서 일시적으로 자산의 감가상각을 중단할 수도 있습니다.\n"
-"감가상각이 종료되면 자산 항목을 직접 마감할 수 있습니다.\n"
-"자산 항목을 삭제할 경우, 입력한 모든 감가상각이 역분개 처리됩니다.  "
 
 #. module: account_asset
 #: model:ir.model.fields.selection,name:account_asset.selection__account_asset__method_period__12
@@ -1698,131 +1985,124 @@ msgid "Years"
 msgstr "년"
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_move.py:0
-#, python-format
-msgid ""
-"You can't post an entry related to a draft asset. Please post the asset "
-"before."
-msgstr "미결 자산과 관련된 전표를 발행할 수 없습니다. 자산 항목을 먼저 발행하시기 바랍니다."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid "You can't re-evaluate the asset before the lock date."
-msgstr "잠금 날짜 이전에는 자산을 재평가할 수 없습니다."
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "You cannot archive a record that is not closed"
-msgstr "레코드를 닫지 않으면 보관 처리할 수 없습니다."
+msgstr "닫히지 않은 레코드는 보관할 수 없습니다."
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #: code:addons/account_asset/wizard/asset_modify.py:0
 #, python-format
 msgid ""
 "You cannot automate the journal entry for an asset that has a running gross "
 "increase. Please use 'Dispose' on the increase(s)."
-msgstr ""
-"지속적으로 총액이 증가하는 자산의 경우에는 자동 전표 입력을 할 수 없습니다. 증가분에 대해 '처분' 기능을 사용하시기 바랍니다."
+msgstr "총 증가량이 지속적으로 증가하는 자산에 대해서는 저널 항목을 자동화할 수 없습니다. 인상 시 '폐기'를 사용하십시오."
 
 #. module: account_asset
-#. odoo-python
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid ""
+"You cannot cancel an asset having depreciation entries prior to the lock "
+"date. As the asset is published in the Depreciation Schedule, you might need"
+" to dispose of it."
+msgstr ""
+
+#. module: account_asset
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid ""
 "You cannot create an asset from lines containing credit and debit on the "
 "account or with a null amount"
-msgstr "계정에 차대 항목이 있거나 값이 유효하지 않은 경우에는 자산을 생성할 수 없습니다."
+msgstr "계정의 대변 및 차변이 포함된 내역 또는 null 금액으로 자산을 생성할 수 없습니다"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "You cannot delete a document that is in %s state."
 msgstr "%s 상태인 문서는 삭제할 수 없습니다."
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid ""
-"You cannot delete an asset linked to posted entries.\n"
-"You should either confirm the asset, then, sell or dispose of it, or cancel the linked journal entries."
+"You cannot pause an asset with posted depreciation lines in the future "
+"without reverting them."
 msgstr ""
-"발행된 전표에 연결되어 있는 자산은 삭제할 수 없습니다.\n"
-"자산을 확인한 후 매각 또는 처분하거나, 연결된 전표입력 항목을 취소해야 합니다."
 
 #. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/models/account_asset.py:0
-#, python-format
-msgid "You cannot dispose of an asset before the lock date."
-msgstr "잠금 날짜 이전에는 자산을 처분할 수 없습니다."
-
-#. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_move.py:0
 #, python-format
 msgid "You cannot reset to draft an entry related to a posted asset"
-msgstr "발행된 자산과 관련된 미결 항목으로 초기화할 수 없습니다."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid "You cannot resume at a date equal to or before the pause date"
-msgstr "일시 중지 날짜와 같거나 이전인 날짜에는 다시 시작할 수 없습니다."
-
-#. module: account_asset
-#. odoo-python
-#: code:addons/account_asset/wizard/asset_modify.py:0
-#, python-format
-msgid "You cannot select the same account as the Depreciation Account"
-msgstr "감가상각 계정과 동일한 계정을 선택할 수 없습니다."
+msgstr ""
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_balance
 msgid "book_value"
-msgstr "장부 가치"
+msgstr ""
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_date_from
 #: model:account.report.column,name:account_asset.assets_report_depre_date_from
 msgid "date from"
-msgstr "다음 날짜부터"
+msgstr ""
 
 #. module: account_asset
 #: model:account.report.column,name:account_asset.assets_report_assets_date_to
 #: model:account.report.column,name:account_asset.assets_report_depre_date_to
 msgid "date to"
-msgstr "다음 날짜까지"
+msgstr ""
 
 #. module: account_asset
-#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
-msgid "depreciable)"
-msgstr "을 감가상각)"
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "deleted"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "e.g. Annual Subscription"
+msgstr "예. 연간 구독"
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "e.g. Annually Paid Insurance"
+msgstr "예. 연간 유료 보험"
 
 #. module: account_asset
 #: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
 msgid "e.g. Laptop iBook"
-msgstr "예: 삼성 노트북"
+msgstr "예. 노트북, 아이북"
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "entries"
-msgstr "입력"
+msgstr ""
 
 #. module: account_asset
-#. odoo-python
 #: code:addons/account_asset/models/account_asset.py:0
 #, python-format
 msgid "entry"
-msgstr "입력"
+msgstr ""
+
+#. module: account_asset
+#: code:addons/account_asset/models/account_asset.py:0
+#, python-format
+msgid "reversed"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_expense_form
+msgid "select the related expense"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_revenue_form
+msgid "select the related income"
+msgstr ""
+
+#. module: account_asset
+#: model_terms:ir.ui.view,arch_db:account_asset.view_account_asset_form
+msgid "select the related purchases"
+msgstr "연관 구매건을 선택하세요"

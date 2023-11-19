@@ -12,7 +12,7 @@
                         icon="fa-amazon"
                         type="object"
                         groups="sales_team.group_sale_manager"
-                        invisible="offer_count == 0">
+                        attrs="{'invisible': [('offer_count', '=', 0)]}">
                     <field name="offer_count" widget="statinfo" string="Offers"/>
                 </button>
             </div>
@@ -30,7 +30,7 @@
                         icon="fa-amazon"
                         type="object"
                         groups="sales_team.group_sale_manager"
-                        invisible="offer_count == 0">
+                        attrs="{'invisible': [('offer_count', '=', 0)]}">
                     <field name="offer_count" widget="statinfo" string="Offers"/>
                 </button>
             </div>

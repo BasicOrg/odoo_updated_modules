@@ -4,9 +4,8 @@ import re
 
 from odoo import models
 
-
 class IrWebsocket(models.AbstractModel):
-    _inherit = "ir.websocket"
+    _inherit = 'ir.websocket'
 
     def _build_bus_channel_list(self, channels):
         if self.env.uid:
@@ -17,7 +16,6 @@ class IrWebsocket(models.AbstractModel):
         """Add collaborative bus channels for active spreadsheets.
 
         Listening to channel "spreadsheet_collaborative_session:{res_model}:{res_id}"
-        or "spreadsheet_collaborative_session:{res_model}:{res_id}:{share_id}:{access_token}"
         tells the server the spreadsheet is active. But only users with read access
         can actually read the associate bus messages.
         We manually add the channel if the user has read access.
@@ -30,31 +28,13 @@ class IrWebsocket(models.AbstractModel):
         for channel in channels:
             if not isinstance(channel, str):
                 continue
-            if channel.startswith("spreadsheet_collaborative_session:"):
-                record = self._check_spreadsheet_channel(channel)
-                if record:
-                    channels.append(record)
+            match = re.match(r'spreadsheet_collaborative_session:(\w+(?:\.\w+)*):(\d+)', channel)
+            if match:
+                model_name = match[1]
+                res_id = int(match[2])
+                if model_name not in self.env:
+                    continue
+                # The following search ensures that the user has the correct access rights
+                record = self.env[model_name].with_context(active_test=False).search([("id", "=", res_id)])
+                channels.append(record)
         return channels
-
-    def _check_spreadsheet_channel(self, channel):
-        params = channel.split(":")
-        try:
-            res_id = int(params[2])
-        except ValueError:
-            return
-        model_name = params[1]
-        if model_name not in self.env:
-            return
-        if len(params) == 5:
-            share_id = int(params[3])
-            access_token = params[4]
-        else:
-            share_id = None
-            access_token = None
-        record = self.env[model_name].browse(res_id)
-        access = record._check_collaborative_spreadsheet_access(
-            "read", share_id, access_token, raise_exception=False
-        )
-        if not access:
-            return
-        return record

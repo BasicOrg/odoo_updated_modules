@@ -3,17 +3,18 @@
 # 	* website_event_booth
 # 
 # Translators:
-# Wil Odoo, 2023
-# Junko Augias, 2023
+# Martin Trigaux, 2022
+# 江口和志 <sandwhale1010@gmail.com>, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Junko Augias, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Ryoko Tsuda <ryoko@quartile.co>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,27 +27,29 @@ msgid ""
 "<i class=\"fa fa-exclamation-triangle me-2\" role=\"img\" aria-label=\"Error\" title=\"Error\"/>\n"
 "                    <span class=\"o_wbooth_registration_error_message\"/>"
 msgstr ""
-"<i class=\"fa fa-exclamation-triangle me-2\" role=\"img\" aria-label=\"Error\" title=\"Error\"/>\n"
-"                    <span class=\"o_wbooth_registration_error_message\"/>"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
 msgid ""
 "<i class=\"fa fa-exclamation-triangle\"/>\n"
-"                                        <span>Sorry, several booths are now sold out. Please change your choices before validating again.</span>"
+"                                    <span>Sorry, several booths are now sold out. Please change your choices before validating again.</span>"
 msgstr ""
 "<i class=\"fa fa-exclamation-triangle\"/>\n"
-"                                        <span>申し訳ございません。現在、いくつかのブースは完売しています。お手数ですが、選択内容を変更し、再度ご確認下さい。</span>"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "<i class=\"fa fa-map-o me-2\"/>View Plan"
-msgstr "<i class=\"fa fa-map-o me-2\"/>プランを見る"
+"                                    <span>申し訳ございません。現在、いくつかのブースは完売しています。お手数ですが、選択内容を変更し、再度ご確認ください。</span>"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "<span class=\"fa fa-gear me-1\"/> Configure Booths"
-msgstr "<span class=\"fa fa-gear me-1\"/>ブース設定"
+msgid ""
+"<i class=\"fa fa-gear me-1\" role=\"img\" aria-label=\"Configure\" "
+"title=\"Configure event booths\"/><em>Configure Booths</em>"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid ""
+"<span class=\"alert alert-info\">This event is finished. It's no longer "
+"possible to book a booth.</span>"
+msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
@@ -55,27 +58,8 @@ msgstr "<span class=\"text-nowrap\">完売</span>"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "<span>Book my Booth(s)</span>"
-msgstr "<span>ブースを予約</span>"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
 msgid "<span>Book my Booths</span>"
 msgstr "<span>ブースを予約</span>"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid ""
-"<span>Booth Selection</span><span class=\"fa fa-angle-right d-inline-block "
-"align-middle mx-sm-3 text-muted fs-5\"/>"
-msgstr ""
-"<span>ブース選択</span><span class=\"fa fa-angle-right d-inline-block align-"
-"middle mx-sm-3 text-muted fs-5\"/>"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid "<span>Confirmed</span>"
-msgstr "<span>確認されました</span>"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
@@ -96,57 +80,48 @@ msgstr ""
 "                            <span> *</span>"
 
 #. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "<strong>Contact Details</strong>"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "Book my Booths"
+msgstr "ブースを予約"
+
+#. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_type_view_form
 msgid "Booth Menu Item"
-msgstr "ブースメニューアイテム"
+msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model.fields,field_description:website_event_booth.field_event_event__booth_menu
 msgid "Booth Register"
-msgstr "ブース登録"
+msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/xml/event_booth_registration_templates.xml:0
 #, python-format
 msgid "Booth Registration completed!"
-msgstr "ブース登録が完了しました!"
+msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "Booth registration failed."
-msgstr "ブース登録に失敗しました。"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
+msgid "Booths"
+msgstr "ブース"
 
 #. module: website_event_booth
 #: model:ir.model.fields,field_description:website_event_booth.field_event_type__booth_menu
 msgid "Booths on Website"
-msgstr "ウェブサイト上のブース"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Check our"
-msgstr "以下をチェックする:"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "Choose your type of booth"
-msgstr "ブースタイプ選択"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
-msgid "Contact Details"
-msgstr "コンタクトの詳細"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid ""
-"Contact Details<span class=\"fa fa-angle-right d-inline-block align-middle "
-"mx-sm-3 text-muted fs-5\"/>"
 msgstr ""
-"連絡先詳細<span class=\"fa fa-angle-right d-inline-block align-middle mx-sm-3 "
-"text-muted fs-5\"/>"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
@@ -161,17 +136,12 @@ msgstr "イベント"
 #. module: website_event_booth
 #: model:ir.model.fields.selection,name:website_event_booth.selection__website_event_menu__menu_type__booth
 msgid "Event Booth Menus"
-msgstr "イベントブースメニュー"
+msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model.fields,field_description:website_event_booth.field_event_event__booth_menu_ids
 msgid "Event Booths Menus"
-msgstr "イベントブースメニュー"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Event Finished"
-msgstr "イベント終了"
+msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model,name:website_event_booth.model_event_type
@@ -184,32 +154,11 @@ msgid "Exhibition Map"
 msgstr "展示会マップ"
 
 #. module: website_event_booth
-#. odoo-python
 #: code:addons/website_event_booth/models/event_event.py:0
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
 #, python-format
 msgid "Get A Booth"
-msgstr "ブースを入手"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "It's no longer possible to book a booth."
-msgstr "ブースを予約することは不可能になりました。"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Link to list of future events"
-msgstr "今後のイベントリストへのリンク"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "List of Future Events"
-msgstr "今後のイベントリスト"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "Location"
-msgstr "ロケーション"
+msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model.fields,field_description:website_event_booth.field_website_event_menu__menu_type
@@ -218,20 +167,20 @@ msgstr "メニュータイプ"
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "Mobile"
+msgstr "携帯電話"
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
 msgid "Phone"
 msgstr "電話"
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "Please fill out the form correctly."
-msgstr "フォームに正しく記入して下さい。"
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Registration Not Open."
-msgstr "登録を受け付けていません。"
+msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
@@ -239,16 +188,21 @@ msgid "Sorry, all the booths are sold out."
 msgstr "申し訳ございませんが、全ブース完売となりました。"
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "The booth category doesn't exist."
-msgstr "ブースカテゴリが存在しません。"
+msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "This event is not open to exhibitors registration at this time."
-msgstr "本イベントは、今回出展者登録を受け付けておりません。"
+msgid "This event is not open to exhibitors registration,"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
+msgid "View Floor Plan"
+msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model,name:website_event_booth.model_website_event_menu
@@ -256,11 +210,26 @@ msgid "Website Event Menu"
 msgstr "ウェブサイトイベントメニュー"
 
 #. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "check our"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "for this event."
+msgstr ""
+
+#. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
 msgid "if you have any question."
-msgstr "ご質問がある場合。"
+msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
 msgid "list of future events"
-msgstr "今後のイベントリスト"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "you can"
+msgstr ""

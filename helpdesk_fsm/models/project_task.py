@@ -7,7 +7,7 @@ from odoo import api, models, fields
 class Task(models.Model):
     _inherit = 'project.task'
 
-    helpdesk_ticket_id = fields.Many2one('helpdesk.ticket', string='Original Ticket', index='btree_not_null', readonly=True)
+    helpdesk_ticket_id = fields.Many2one('helpdesk.ticket', string='Original Ticket', readonly=True)
 
     # Project Sharing fields
     display_helpdesk_ticket_button = fields.Boolean('Display Ticket', compute='_compute_display_helpdesk_ticket_button')
@@ -36,41 +36,22 @@ class Task(models.Model):
         }
 
     def write(self, vals):
-        previous_states_fsm_done = None
-        previous_states_state = None
+        previous_states = None
         if 'fsm_done' in vals:
-            previous_states_fsm_done = {task: task.fsm_done for task in self}
-        if 'state' in vals:
-            previous_states_state = {task: task.state for task in self}
+            previous_states = {task: task.fsm_done for task in self}
         res = super().write(vals)
         if 'fsm_done' in vals:
             tracked_tasks = self.filtered(
-                lambda t: t.fsm_done and t.helpdesk_ticket_id.use_fsm and previous_states_fsm_done[t] != t.fsm_done)
+                lambda t: t.fsm_done and t.helpdesk_ticket_id.use_fsm and previous_states[t] != t.fsm_done)
             subtype = self.env.ref('helpdesk_fsm.mt_ticket_task_done')
             for task in tracked_tasks:
                 task.helpdesk_ticket_id.sudo().message_post(
-                    body=task._get_html_link(),
-                    subtype_id=subtype.id,
-                )
-            return res
-        if vals.get('state', False) in ['1_done', '1_canceled']:
-            tracked_tasks = self.filtered(
-                lambda t: t.helpdesk_ticket_id.use_fsm and previous_states_state[t] != t.state)
-            for task in tracked_tasks:
-                subtype = self.env.ref('helpdesk_fsm.mt_ticket_task_{}'.format(task.state[2:]))
-                task.helpdesk_ticket_id.sudo().message_post(
-                    body=task._get_html_link(),
-                    subtype_id=subtype.id,
-                )
+                    subtype_id=subtype.id, body=task._get_html_link())
         return res
 
     @api.model_create_multi
     def create(self, vals_list):
         tasks = super().create(vals_list)
         for task in tasks.filtered('helpdesk_ticket_id'):
-            task.message_post_with_source(
-                'helpdesk.ticket_creation',
-                render_values={'self': task, 'ticket': task.helpdesk_ticket_id},
-                subtype_xmlid='mail.mt_note',
-            )
+            task.message_post_with_view('helpdesk.ticket_creation', values={'self': task, 'ticket': task.helpdesk_ticket_id}, subtype_id=self.env.ref('mail.mt_note').id)
         return tasks

@@ -8,14 +8,11 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='stream_type_id']" position="after">
                 <field name="twitter_followed_account_search"
-                    invisible="stream_type_type not in ('twitter_follow', 'twitter_likes') or not account_id or id"
-                    required="not id and stream_type_type in ('twitter_follow', 'twitter_likes')"
+                    attrs="{'required': [('id', '=', False), ('stream_type_type', 'in', ('twitter_follow', 'twitter_likes'))], 'invisible': ['|', ('stream_type_type', 'not in', ('twitter_follow', 'twitter_likes')), '|', ('account_id', '=', False), ('id', '!=', False)]}"
                     widget="twitter_users_autocomplete" />
                 <field name="twitter_followed_account_id" invisible="1" />
                 <field name="twitter_searched_keyword" placeholder="e.g. #odoo"
-                    invisible="stream_type_type != 'twitter_keyword' or not account_id"
-                    readonly="id"
-                    required="stream_type_type == 'twitter_keyword'" />
+                    attrs="{'required': [('stream_type_type', '=', 'twitter_keyword')], 'invisible': ['|', ('stream_type_type', '!=', 'twitter_keyword'), ('account_id', '=', False)], 'readonly': [('id', '!=', False)]}" />
             </xpath>
         </field>
     </record>

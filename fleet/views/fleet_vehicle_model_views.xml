@@ -6,10 +6,10 @@
         <field name="arch" type="xml">
             <form string="Model">
                 <sheet>
-                    <widget name="web_ribbon" text="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_model_vehicle" type="object" icon="fa-car" class="oe_stat_button"
-                            invisible="vehicle_count == 0">
+                            attrs="{'invisible': [('vehicle_count', '=', 0)]}">
                             <field name="vehicle_count" widget="statinfo" string="Vehicles"/>
                         </button>
                     </div>
@@ -34,18 +34,18 @@
                     <notebook>
                         <page string="Information" name="information">
                             <group>
-                                <group string="Model" invisible="vehicle_type != 'car'">
+                                <group string="Model" attrs="{'invisible': [('vehicle_type', '!=', 'car')]}">
                                     <field name="seats"/>
                                     <field name="doors"/>
                                     <field name="color"/>
                                     <field name="model_year"/>
                                     <field name="trailer_hook"/>
                                 </group>
-                                <group id="vehicle_information" string="Vehicle Information" invisible="vehicle_type != 'bike'">
+                                <group id="vehicle_information" string="Vehicle Information" attrs="{'invisible': [('vehicle_type', '!=', 'bike')]}">
                                     <field name="electric_assistance"/>
                                 </group>
                             </group>
-                            <group string="Engine" invisible="vehicle_type != 'car'">
+                            <group string="Engine" attrs="{'invisible': [('vehicle_type', '!=', 'car')]}">
                                 <group>
                                     <field name="default_fuel_type" required="1"/>
                                     <label for="default_co2"/>
@@ -101,7 +101,7 @@
         <field name="name">fleet.vehicle.model.tree</field>
         <field name="model">fleet.vehicle.model</field>
         <field name="arch" type="xml">
-            <tree string="Models" multi_edit="1">
+            <tree string="Models">
                 <field name="brand_id" />
                 <field name="name" />
                 <field name="vehicle_count" string="Vehicles"/>
@@ -119,7 +119,7 @@
             <kanban string="Models">
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click oe_kanban_details">
+                        <div class="oe_kanban_details">
                             <div><strong><field name="name"/></strong></div>
                             <div><field name="brand_id"/></div>
                         </div>
@@ -134,13 +134,9 @@
         <field name="model">fleet.vehicle.model</field>
         <field name="arch" type="xml">
             <search string="Vehicles costs" >
-                <field name="name" string="Model" />
-                <field name="brand_id"/>
-                <filter string="Contains Vehicle" name="contains_vehicle" domain="[('vehicle_count', '!=', 0)]"/>
+                <field name="brand_id" />
                 <group expand="1" string="Group By">
-                    <filter name="groupby_brand" context="{'group_by' : 'brand_id'}" string="Manufacturers"/>
-                    <filter name="groupby_category" context="{'group_by' : 'category_id'}" string="Category"/>
-                    <filter name="groupby_vehicle_type" context="{'group_by' : 'vehicle_type'}" string="Vehicle Type"/>
+                    <filter name="groupby_brand" context="{'group_by' : 'brand_id'}" string="Contains Vehicles"/>
                 </group>
             </search>
         </field>
@@ -160,7 +156,7 @@
         </field>
     </record>
 
-    <menuitem name="Fleet" id="menu_root" sequence="220" groups="fleet_group_user" web_icon="fleet,static/description/icon.png"/>
+    <menuitem name="Fleet" id="menu_root" sequence="220" groups="fleet_group_user" web_icon="fleet,static/description/icon.svg"/>
     <menuitem name="Configuration" parent="menu_root" id="fleet_configuration" sequence="100" groups="fleet_group_manager"/>
 
     <record id='fleet_vehicle_model_brand_view_tree' model='ir.ui.view'>
@@ -182,15 +178,17 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_brand_model" type="object" icon="fa-car" class="oe_stat_button"
-                            invisible="model_count == 0">
+                            attrs="{'invisible': [('model_count', '=', 0)]}">
                             <field name="model_count" widget="statinfo" string="Models"/>
                         </button>
                     </div>
                     <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="image_128" widget="image" class="oe_avatar float-start"/>
-                        </group>
+                        <div>
+                            <field name="image_128" widget="image" class="oe_avatar"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
                     </group>
                 </sheet>
             </form>
@@ -203,19 +201,18 @@
         <field name="arch" type="xml">
             <kanban default_order="name" action="action_brand_model" type="object">
                 <field name="id"/>
-                <field name="name"/>
-                <field name="active"/>
+                <field name="name" />
                 <templates>
-                    <t t-name="kanban-menu">
-                        <a role="menuitem" type="open" class="dropdown-item">Configuration</a>
-                        <a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
-                            <t t-if="record.active.raw_value">Archive</t>
-                            <t t-else="">Restore</t>
-                        </a>
-                        <a role="menuitem" t-if="widget.deletable" type="delete" class="dropdown-item">Delete</a>
-                    </t>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_vignette oe_semantic_html_override oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a role="menuitem" type="open" class="dropdown-item">Configuration</a>
+                                </div>
+                            </div>
                             <div class="o_kanban_image">
                                 <img alt="img" t-att-src="kanban_image('fleet.vehicle.model.brand', 'image_128', record.id.raw_value)" class="o_image_64_max" height="52"/>
                             </div>
@@ -244,8 +241,6 @@
                 <field name="name"/>
                 <filter string="With Models" name="with_models"
                     domain="[('model_count', '>', 0)]"/>
-                <separator/>
-                <filter string="Archived" name="active" domain="[('active','=',False)]"/>
             </search>
         </field>
     </record>
@@ -269,9 +264,6 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a new category
-            </p>
-            <p>
-                Categories will help you manage your fleet more efficiently and arrange your vehicles.
             </p>
         </field>
     </record>

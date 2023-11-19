@@ -1,15 +1,18 @@
-/** @odoo-module **/
+odoo.define('test_barcode_subcontract_flows.tour', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import helper from '@stock_barcode/../tests/tours/tour_helper_stock_barcode';
-import { stepUtils } from "@stock_barcode/../tests/tours/tour_step_utils";
+var core = require('web.core');
+var tour = require('web_tour.tour');
+var helper = require('stock_barcode.tourHelper');
+
+
+var _t = core._t;
 
 // ----------------------------------------------------------------------------
 // Tours
 // ----------------------------------------------------------------------------
 
-registry.category("web_tour.tours").add('test_receipt_classic_subcontracted_product', {test: true, steps: () => [
+tour.register('test_receipt_classic_subcontracted_product', {test: true}, [
     {
         trigger: '.o_barcode_client_action',
         run: function () {
@@ -43,11 +46,11 @@ registry.category("web_tour.tours").add('test_receipt_classic_subcontracted_prod
         trigger: '.o_barcode_line',
         run: 'scan LOC-01-02-00',
     },
-    ...stepUtils.validateBarcodeOperation(),
+    ...tour.stepUtils.validateBarcodeForm(),
 
-]});
+]);
 
-registry.category("web_tour.tours").add('test_receipt_tracked_subcontracted_product', {test: true, steps: () => [
+tour.register('test_receipt_tracked_subcontracted_product', {test: true}, [
     {
         trigger: '.o_barcode_client_action',
         run: 'scan product_subcontracted',
@@ -94,10 +97,10 @@ registry.category("web_tour.tours").add('test_receipt_tracked_subcontracted_prod
         content: _t('Record production'),
         position: "bottom",
     },
-    ...stepUtils.validateBarcodeOperation(),
-]});
+    ...tour.stepUtils.validateBarcodeForm(),
+]);
 
-registry.category("web_tour.tours").add('test_receipt_flexible_subcontracted_product', {test: true, steps: () => [
+tour.register('test_receipt_flexible_subcontracted_product', {test: true}, [
     {
         trigger: 'button.btn-secondary.o_mrp_subcontracting',
     },
@@ -108,17 +111,19 @@ registry.category("web_tour.tours").add('test_receipt_flexible_subcontracted_pro
         run: "text 1",
     },
     {
-        trigger: "div[name=move_line_raw_ids] td[name=quantity]",
+        trigger: "div[name=move_line_raw_ids] td[name=qty_done]",
     },
-
+    
     {
-        trigger: "div[name=move_line_raw_ids] [name=quantity] input",
-        run: "text 2",
+        trigger: "div[name=move_line_raw_ids] [name=qty_done] input",
+        run: "text 2", 
     },
     {
         trigger: ".modal-footer .btn-primary[name=subcontracting_record_component]",
         content: _t('Record production'),
         position: "bottom",
     },
-    ...stepUtils.validateBarcodeOperation(),
-]});
+    ...tour.stepUtils.validateBarcodeForm(),
+]);
+
+});

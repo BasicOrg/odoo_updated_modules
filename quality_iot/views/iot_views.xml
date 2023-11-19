@@ -29,7 +29,7 @@
         <field name="inherit_id" ref="quality.quality_point_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='test_type']" position="after">
-                <field name="device_id" invisible="test_type not in ['picture', 'measure', 'print_label']" />
+                <field name="device_id" attrs="{'invisible': [('test_type', 'not in', ['picture', 'measure', 'print_label'])]}" />
             </xpath>
         </field>
     </record>

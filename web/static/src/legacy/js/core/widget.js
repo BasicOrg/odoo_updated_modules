@@ -1,10 +1,11 @@
-/** @odoo-module **/
+odoo.define('web.Widget', function (require) {
+"use strict";
 
-import Class from "@web/legacy/js/core/class";
-import mixins from "@web/legacy/js/core/mixins";
-import ServicesMixin from "@web/legacy/js/core/service_mixins";
-import { loadBundle } from "@web/core/assets";
-import { renderToElement } from "@web/core/utils/render";
+var core = require('web.core');
+var mixins = require('web.mixins');
+var ServicesMixin = require('web.ServicesMixin');
+const { loadBundle } = require("@web/core/assets");
+
 
 /**
  * Base class for all visual components. Provides a lot of functions helpful
@@ -62,7 +63,7 @@ import { renderToElement } from "@web/core/utils/render";
  * That will kill the widget in a clean way and erase its content from the dom.
  */
 
-export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
+var Widget = core.Class.extend(mixins.PropertiesMixin, ServicesMixin, {
     // Backbone-ish API
     tagName: 'div',
     id: null,
@@ -218,7 +219,7 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
      * @param {boolean} [display] use true to show the widget or false to hide it
      */
     do_toggle: function (display) {
-        if (typeof display === "boolean") {
+        if (_.isBoolean(display)) {
             display ? this.do_show() : this.do_hide();
         } else if (this.$el) {
             this.$el.hasClass('o_hidden') ? this.do_show() : this.do_hide();
@@ -270,7 +271,7 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
     renderElement: function () {
         var $el;
         if (this.template) {
-            $el = $(renderToElement(this.template, { widget: this }));
+            $el = $(core.qweb.render(this.template, {widget: this}).trim());
         } else {
             $el = this._makeDescriptive();
         }
@@ -283,9 +284,9 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
      * @returns {Promise}
      */
     replace: function (target) {
-        return this._widgetRenderAndInsert((t) => {
+        return this._widgetRenderAndInsert(_.bind(function (t) {
             this.$el.replaceAll(t);
-        }, target);
+        }, this), target);
     },
     /**
      * Re-sets the widget's root element (el/$el/$el).
@@ -337,7 +338,7 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
      */
     _delegateEvents: function () {
         var events = this.events;
-        if (Object.keys(events || {}).length === 0) { return; }
+        if (_.isEmpty(events)) { return; }
 
         for(var key in events) {
             if (!events.hasOwnProperty(key)) { continue; }
@@ -364,7 +365,7 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
      * @return {jQuery}
      */
     _makeDescriptive: function () {
-        var attrs = Object.assign({}, this.attributes || {});
+        var attrs = _.extend({}, this.attributes || {});
         if (this.id) {
             attrs.id = this.id;
         }
@@ -372,7 +373,7 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
             attrs['class'] = this.className;
         }
         var $el = $(document.createElement(this.tagName));
-        if (Object.keys(attrs || {}).length > 0) {
+        if (!_.isEmpty(attrs)) {
             $el.attr(attrs);
         }
         return $el;
@@ -429,4 +430,6 @@ export var Widget = Class.extend(mixins.PropertiesMixin, ServicesMixin, {
     },
 });
 
-export default Widget;
+return Widget;
+
+});

@@ -3,16 +3,17 @@
 # 	* website_helpdesk_livechat
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Vo Thanh Thuy, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Vo Thanh Thuy, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,143 +21,138 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid " This channel is private. People must be invited to join it."
+msgstr ""
+" Kênh này mang tính riêng tư. Mọi người phải được mời thì mới có thể gia "
+"nhập."
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/chatbot_script_step.py:0
+#, python-format
+msgid "%(name)s's Ticket"
+msgstr ""
+
+#. module: website_helpdesk_livechat
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
 msgid ""
-"\n"
-"                    Create a new helpdesk ticket by typing <b>/ticket <i>ticket title</i></b><br>\n"
+"<br><br>\n"
+"                    You can create a new ticket by typing <b>/helpdesk <i>ticket title</i></b>.<br>\n"
+"                    You can search tickets by typing <b>/helpdesk_search <i>keyword</i></b> or <b><i>ticket number</i></b><br>\n"
 "                    "
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/chatbot_script_step.py:0
-#, python-format
-msgid "%(name)s's Ticket"
-msgstr "Phiếu hỗ trợ của %(name)s"
-
-#. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_done
 msgid "Alright, we should have everything we need"
-msgstr "Được rồi! Chúng tôi đã thu thập đủ thông tin cần thiết."
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_technical_serial_misc
 msgid "Anything else to add?"
-msgstr "Bạn có muốn bổ sung không?"
+msgstr ""
 
 #. module: website_helpdesk_livechat
+#: model:ir.actions.act_window,name:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
 #: model:ir.ui.menu,name:website_helpdesk_livechat.helpdesk_team_canned_response_menu
 msgid "Canned Responses"
-msgstr "Câu trả lời soạn sẵn"
+msgstr "Trả lời tự động"
+
+#. module: website_helpdesk_livechat
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.im_livechat_canned_response_view_search
+msgid "Canned Responses Search"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_chatbot_script
 msgid "Chatbot Script"
-msgstr "Kịch bản chatbot"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_chatbot_script_step
 msgid "Chatbot Script Step"
-msgstr "Bước kịch bản chatbot"
-
-#. module: website_helpdesk_livechat
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
-msgid "Configure Canned Responses"
-msgstr ""
-
-#. module: website_helpdesk_livechat
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
-msgid "Configure Live Chat Channel"
 msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model.fields.selection,name:website_helpdesk_livechat.selection__chatbot_script_step__step_type__create_ticket
 msgid "Create Ticket"
-msgstr "Tạo phiếu hỗ trợ"
+msgstr "Create Ticket"
 
 #. module: website_helpdesk_livechat
-#. odoo-javascript
-#: code:addons/website_helpdesk_livechat/static/src/messaging_service_patch.js:0
+#. openerp-web
+#: code:addons/website_helpdesk_livechat/static/src/models/messaging_initializer.js:0
 #, python-format
-msgid "Create a new helpdesk ticket (/ticket ticket title)"
-msgstr ""
+msgid "Create a new helpdesk ticket"
+msgstr "Tạo vé hỗ trợ mới"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
 msgid "Created a new ticket: %s"
-msgstr "Tạo một phiếu hỗ trợ mới: %s"
+msgstr ""
 
 #. module: website_helpdesk_livechat
-#: model:ir.model,name:website_helpdesk_livechat.model_discuss_channel
+#: model:ir.model,name:website_helpdesk_livechat.model_mail_channel
 msgid "Discussion Channel"
 msgstr "Kênh thảo luận"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_dispatch
 msgid "First, what is the nature of your issue?"
-msgstr "Đầu tiên, vấn đề của bạn là gì?"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model.fields,field_description:website_helpdesk_livechat.field_chatbot_script__ticket_count
 msgid "Generated Ticket Count"
-msgstr "Số phiếu hỗ trợ đã tạo"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_yes
 msgid "Great, that will make our lives easier."
-msgstr "Tuyệt vời! Mọi thứ đã trở nên dễ dàng hơn rồi."
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script,title:website_helpdesk_livechat.chatbot_script_helpdesk_bot
 msgid "Helpdesk Bot"
-msgstr "Bot hỗ trợ"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_helpdesk_team
 #: model:ir.model.fields,field_description:website_helpdesk_livechat.field_chatbot_script_step__helpdesk_team_id
 msgid "Helpdesk Team"
-msgstr "Đội ngũ hỗ trợ"
+msgstr "Nhóm Helpdesk"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_welcome
 msgid "Here we go, help is on the way!"
-msgstr "Bắt đầu nào! Chúng tôi sẵn sàng trợ giúp bạn!"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.answer,name:website_helpdesk_livechat.chatbot_script_helpdesk_step_dispatch_answer_technical
 msgid "I have a technical issue"
-msgstr "Tôi gặp vấn đề kỹ thuật"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.answer,name:website_helpdesk_livechat.chatbot_script_helpdesk_step_dispatch_answer_administrative
 msgid "I have an administrative question"
-msgstr "Tôi có câu hỏi về quản trị"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_no
 msgid "It's OK, we can also find your contract by other means."
-msgstr "Không sao cả, chúng tôi có thể tìm hợp đồng của bạn theo cách khác."
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_email
 msgid "Just a last thing, can we please have your email address?"
-msgstr "Một điều cuối cùng, bạn có thể cung cấp email của mình không?"
-
-#. module: website_helpdesk_livechat
-#: model:ir.model.fields,field_description:website_helpdesk_livechat.field_helpdesk_team__use_website_helpdesk_livechat
-msgid "Live Chat"
-msgstr "Trò chuyện Trực tiếp"
-
-#. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "Make sure you are using the right format:"
 msgstr ""
+
+#. module: website_helpdesk_livechat
+#: model:ir.model.fields,field_description:website_helpdesk_livechat.field_helpdesk_team__feature_livechat_channel_id
+msgid "Live Chat Channel"
+msgstr "Kênh Live Chat"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.answer,name:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_answer_no
@@ -164,19 +160,17 @@ msgid "No"
 msgstr "Không"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "No tickets found for %s."
+#: model_terms:ir.actions.act_window,help:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
+msgid "No canned reponses found. Let's create one!"
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
 msgid ""
 "No tickets found for <b>%s</b>. <br> Make sure you are using the right "
-"format:<br> <b>/search_tickets <i>keyword</i></b>"
+"format:<br> <b>/helpdesk_search <i>keyword</i></b> or <b>/helpdesk_search "
+"<i>ticket number</i></b>"
 msgstr ""
 
 #. module: website_helpdesk_livechat
@@ -185,36 +179,25 @@ msgid ""
 "OK, I just created a ticket for you. You should receive an email "
 "confirmation very soon."
 msgstr ""
-"Được rồi! Tôi vừa tạo một phiếu hỗ trợ cho bạn và bạn sẽ sớm nhận được email"
-" xác nhận."
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_technical_serial
 msgid "Please write below the serial number of your equipment."
-msgstr "Vui lòng điền số sê-ri thiết bị của bạn dưới đây."
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_input
 msgid "Please write below your customer reference."
-msgstr "Vui lòng điền mã khách hàng của bạn dưới đây."
-
-#. module: website_helpdesk_livechat
-#. odoo-javascript
-#: code:addons/website_helpdesk_livechat/static/src/messaging_service_patch.js:0
-#, python-format
-msgid "Search helpdesk tickets (/search_tickets keyword)"
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#. openerp-web
+#: code:addons/website_helpdesk_livechat/static/src/models/messaging_initializer.js:0
 #, python-format
-msgid ""
-"Search helpdesk tickets by typing <b>/search_tickets <i>keyword</i></b>"
-msgstr ""
+msgid "Search for a helpdesk ticket"
+msgstr "Tìm kiếm vé hỗ trợ"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
@@ -224,26 +207,17 @@ msgstr "Có yếu tố bị thiếu hoặc sai trong lệnh"
 #. module: website_helpdesk_livechat
 #: model:ir.model.fields,field_description:website_helpdesk_livechat.field_chatbot_script_step__step_type
 msgid "Step Type"
-msgstr "Loại bước"
+msgstr "Kiểu bước"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_technical_serial_thanks
 msgid "Thank you, that will help our engineers see what went wrong."
 msgstr ""
-"Cảm ơn bạn! Điều này sẽ giúp các kỹ thuật viên của chúng tôi thấy vấn đề là "
-"gì."
 
 #. module: website_helpdesk_livechat
 #: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.chatbot_script_view_form
 msgid "Tickets"
-msgstr "Phiếu hỗ trợ"
-
-#. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "Tickets search results for %s: "
-msgstr ""
+msgstr "Ticket"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref
@@ -251,8 +225,6 @@ msgid ""
 "To start with, do you have a customer reference?\n"
 "They are written on each invoice you received, next to your name."
 msgstr ""
-"Đầu tiên, bạn có mã khách hàng không?\n"
-"Mã này được ghi trong mọi hoá đơn mà bạn đã nhận và nằm cạnh tên của bạn."
 
 #. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_res_users
@@ -260,9 +232,28 @@ msgid "User"
 msgstr "Người dùng"
 
 #. module: website_helpdesk_livechat
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
+msgid "View Channels"
+msgstr "Xem kênh"
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid "We found some matched ticket(s) related to the search query: %s"
+msgstr "Chúng tôi tìm thấy vé khớp với truy vấn tìm kiếm: %s"
+
+#. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_issue
 msgid "We're all set. Now, what is your issue?"
-msgstr "Sẵn sàng rồi! Bây giờ, vui lòng nêu vấn đề của bạn."
+msgstr ""
+
+#. module: website_helpdesk_livechat
+#: model_terms:ir.actions.act_window,help:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
+msgid ""
+"With canned responses, you can type <i>:shortcuts</i> to insert prewritten "
+"responses into your messages. These shortcuts are replaced directly in your "
+"messages so that you can still make changes before sending them."
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.answer,name:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_answer_yes
@@ -270,8 +261,21 @@ msgid "Yes"
 msgstr "Có"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
-msgid "keyword"
+msgid "You are in a private conversation with <b>%(mentions)s</b>."
+msgstr "Bạn đang ở trong cuộc hội thoại riêng tư với <b>%(mentions)s</b>. "
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid "You are in channel <b>#%s</b>."
+msgstr "Bạn đang ở kênh <b>#%s</b>."
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid ""
+"You can search tickets by typing <b>/helpdesk_search <i>keyword</i></b> or "
+"<i><b>ticket number</b></i><br>"
 msgstr ""

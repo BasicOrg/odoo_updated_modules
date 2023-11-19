@@ -1,22 +1,15 @@
-/** @odoo-module **/
+odoo.define('product.pricelist.report.tests', function (require) {
+"use strict";
+const GeneratePriceList = require('product.generate_pricelist').GeneratePriceList;
+const testUtils = require('web.test_utils');
 
-import {
-    click,
-    editSelect,
-    editInput,
-    findElement,
-    getFixture,
-    patchWithCleanup
-} from "@web/../tests/helpers/utils";
-import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
-import { ProductPricelistReport } from "@product/js/pricelist_report/product_pricelist_report";
-
+const { createWebClient, doAction } = require('@web/../tests/webclient/helpers');
+const { getFixture, patchWithCleanup  } = require("@web/../tests/helpers/utils");
 
 let serverData;
 
-QUnit.module('Product Pricelist Report', {
+QUnit.module('Product Pricelist', {
     beforeEach: function () {
-
             this.data = {
                 'product.product': {
                     fields: {
@@ -33,11 +26,9 @@ QUnit.module('Product Pricelist Report', {
                     },
                     records: [{
                         id: 1,
-                        name: "Public Pricelist",
                         display_name: "Public Pricelist"
                     }, {
                         id: 2,
-                        name: "Test",
                         display_name: "Test"
                     }]
                 }
@@ -46,21 +37,20 @@ QUnit.module('Product Pricelist Report', {
         },
 }, function () {
     QUnit.test('Pricelist Client Action', async function (assert) {
-        assert.expect(18);
+        assert.expect(23);
 
         let Qty = [1, 5, 10]; // default quantities
-        patchWithCleanup(ProductPricelistReport.prototype, {
-                onSelectPricelist(event) {
-                    assert.step('pricelist_changed');
-                    super.onSelectPricelist(...arguments)
-                },
-                onClickAddQty(event) {
-                    assert.deepEqual(this.quantities, Qty.sort((a, b) => a - b), "changed quantity should be same.");
-                    assert.step('qty_added');
-                    super.onClickAddQty(...arguments);
-                },
-            });
-
+        patchWithCleanup(GeneratePriceList.prototype, {
+            _onFieldChanged: function (event) {
+                assert.step('field_changed');
+                return this._super.apply(this, arguments);
+            },
+            _onQtyChanged: function (event) {
+                assert.deepEqual(event.data.quantities, Qty.sort((a, b) => a - b), "changed quantity should be same.");
+                assert.step('qty_changed');
+                return this._super.apply(this, arguments);
+            },
+        });
         const mockRPC = (route, args) => {
             if (route === '/web/dataset/call_kw/report.product.report_pricelist/get_html') {
                 return Promise.resolve("");
@@ -71,67 +61,79 @@ QUnit.module('Product Pricelist Report', {
         const webClient = await createWebClient({ serverData, mockRPC });
         await doAction(webClient, {
             id: 1,
-            name: 'Generate Pricelist Report',
-            tag: 'generate_pricelist_report',
+            name: 'Generate Pricelist',
+            tag: 'generate_pricelist',
             type: 'ir.actions.client',
             context: {
                 'default_pricelist': 1,
                 'active_ids': [42],
+                'active_id': 42,
                 'active_model': 'product.product'
             }
         });
-        const selectElement = findElement(target, 'select');
-        const badgesElement = findElement(target, '.o_badges_list');
-        const inputElement = findElement(target, '.add-quantity-input');
-        const addQtyButton = findElement(target, '.o_add_qty');
 
         // checking default pricelist
-       assert.strictEqual(selectElement.children[0].text, "Public Pricelist", "should have default pricelist");
+        assert.strictEqual($(target).find('.o_field_many2one input').val(), "Public Pricelist",
+            "should have default pricelist");
 
         // changing pricelist
-        await editSelect(selectElement, '', 2);
+        await testUtils.fields.many2one.clickOpenDropdown("pricelist_id");
+        await testUtils.fields.many2one.clickItem("pricelist_id", "Test");
 
-        // check wherther pricelist value has been updated or not
-        assert.strictEqual(selectElement.children[0].text, "Test",
+        // check wherther pricelist value has been updated or not. along with that check default quantities should be there.
+        assert.strictEqual($(target).find('.o_field_many2one input').val(), "Test",
             "After pricelist change, the pricelist_id field should be updated");
-
-        // check default quantities should be there
-        assert.strictEqual(badgesElement.children.length, 3, "There should be 3 default quantities");
+        assert.strictEqual($(target).find('.o_badges > .badge').length, 3,
+            "There should be 3 default Quantities");
 
         // existing quantity can not be added.
-        await click(addQtyButton);
+        await testUtils.dom.click($(target).find('.o_add_qty'));
         let notificationElement = document.body.querySelector('.o_notification_manager .o_notification');
         assert.strictEqual(notificationElement.querySelector('.o_notification_content').textContent,
             "Quantity already present (1).", "Existing Quantity can not be added");
         assert.hasClass(notificationElement, "border-info");
 
         // adding few more quantities to check.
-        await editInput(inputElement, '', 2);
-        await click(addQtyButton);
+        $(target).find('.o_product_qty').val(2);
         Qty.push(2);
-
-        await editInput(inputElement, '', 3);
-        await click(addQtyButton);
+        await testUtils.dom.click($(target).find('.o_add_qty'));
+        $(target).find('.o_product_qty').val(3);
         Qty.push(3);
+        await testUtils.dom.click($(target).find('.o_add_qty'));
 
-        // check quantities were added
-        assert.strictEqual(badgesElement.children.length, 5, "There should be 5 different quantities");
+        // should not be added more then 5 quantities.
+        $(target).find('.o_product_qty').val(4);
+        await testUtils.dom.click($(target).find('.o_add_qty'));
 
-        // no more than 5 quantities can be used at a time
-        await editInput(inputElement, '', 4);
-        await click(addQtyButton);
         notificationElement = document.body.querySelector('.o_notification_manager .o_notification:nth-child(2)');
         assert.strictEqual(notificationElement.querySelector('.o_notification_content').textContent,
             "At most 5 quantities can be displayed simultaneously. Remove a selected quantity to add others.",
             "Can not add more then 5 quantities");
         assert.hasClass(notificationElement, "border-warning");
+        // removing all the quantities should work
+        Qty.pop(10);
+        await testUtils.dom.click($(target).find('.o_badges .badge:contains("10") .o_remove_qty'));
+        Qty.pop(5);
+        await testUtils.dom.click($(target).find('.o_badges .badge:contains("5") .o_remove_qty'));
+        Qty.pop(3);
+        await testUtils.dom.click($(target).find('.o_badges .badge:contains("3") .o_remove_qty'));
+        Qty.pop(2);
+        await testUtils.dom.click($(target).find('.o_badges .badge:contains("2") .o_remove_qty'));
+        Qty.pop(1);
+        await testUtils.dom.click($(target).find('.o_badges .badge:contains("1") .o_remove_qty'));
 
         assert.verifySteps([
-            'pricelist_changed',
-            'qty_added',
-            'qty_added',
-            'qty_added',
-            'qty_added',
+            'field_changed',
+            'qty_changed',
+            'qty_changed',
+            'qty_changed',
+            'qty_changed',
+            'qty_changed',
+            'qty_changed',
+            'qty_changed'
         ]);
     });
+}
+
+);
 });

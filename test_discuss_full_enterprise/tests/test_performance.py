@@ -8,7 +8,6 @@ old_method = TestDiscussFullPerformance._get_init_messaging_result
 def _get_init_messaging_result(self):
     res = old_method(self)
     res['current_user_settings'].update({
-        'homemenu_config': False,
         'how_to_call_on_mobile': 'ask',
         'external_device_number': False,
         'onsip_auth_username': False,
@@ -16,18 +15,19 @@ def _get_init_messaging_result(self):
         'should_auto_reject_incoming_calls': False,
         'voip_secret': False,
         'voip_username': False,
-        'is_discuss_sidebar_category_whatsapp_open': True,
     })
     res['voipConfig'] = {
         'mode': 'demo',
-        'missedCalls': 0,
         'pbxAddress': "localhost",
-        'webSocketUrl': self.env["ir.config_parameter"].sudo().get_param("voip.wsServer", default="ws://localhost"),
+        'webSocketUrl': "ws://localhost",
     }
     res['hasDocumentsUserGroup'] = False
-    res['helpdesk_livechat_active'] = False
+    res['helpdesk_livechat_active'] = 0
     return res
+
+def _get_query_count(self):
+    return 86
 
 
 TestDiscussFullPerformance._get_init_messaging_result = _get_init_messaging_result
-TestDiscussFullPerformance._query_count += 11
+TestDiscussFullPerformance._get_query_count = _get_query_count

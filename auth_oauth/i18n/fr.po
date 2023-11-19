@@ -3,16 +3,17 @@
 # 	* auth_oauth
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,11 +27,10 @@ msgstr "- ou -"
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
-msgid "<i class=\"oi oi-fw oi-arrow-right\"/>Tutorial"
-msgstr "<i class=\"oi oi-fw oi-arrow-right\"/>Tutoriel"
+msgid "<i class=\"fa fa-fw fa-arrow-right\"/>Tutorial"
+msgstr "<i class=\"fa fa-fw fa-arrow-right\"/>Tutoriel"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
 msgid "Access Denied"
@@ -44,7 +44,7 @@ msgstr "Autoriser les utilisateurs à se connecter avec Google"
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
 msgid "Allow users to sign in with their Google account"
-msgstr "Autoriser les utilisateurs à se connecter avec leur compte Google"
+msgstr "Autorisez les utilisateurs à se connecter avec leur compte Google"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__enabled
@@ -65,17 +65,17 @@ msgstr "Classe CSS"
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__client_id
 #: model:ir.model.fields,field_description:auth_oauth.field_res_config_settings__auth_oauth_google_client_id
 msgid "Client ID"
-msgstr "ID client"
+msgstr "Id. client"
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
 msgid "Client ID:"
-msgstr "ID client :"
+msgstr "Identifiant client :"
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_res_config_settings
 msgid "Config Settings"
-msgstr "Paramètres de configuration"
+msgstr "Paramètres de config"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__create_uid
@@ -90,12 +90,17 @@ msgstr "Créé le"
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__data_endpoint
 msgid "Data Endpoint"
-msgstr "Point d'extrémité des données"
+msgstr "Endpoint de données"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Afficher Nom"
+
+#. module: auth_oauth
+#: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
+msgid "Documentation"
+msgstr "Documentation"
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
@@ -108,14 +113,19 @@ msgid "ID"
 msgstr "ID"
 
 #. module: auth_oauth
+#: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
+msgstr "Dernière mise à jour le"
 
 #. module: auth_oauth
 #: model:ir.model.fields,help:auth_oauth.field_auth_oauth_provider__body
@@ -166,7 +176,7 @@ msgstr "L'UID OAuth doit être unique par fournisseur"
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_res_users__oauth_uid
 msgid "OAuth User ID"
-msgstr "ID utilisateur OAuth"
+msgstr "Id. utilisateur OAuth"
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_auth_oauth_provider
@@ -209,16 +219,15 @@ msgid "Server uri"
 msgstr "URI du serveur"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
 msgid "Sign up is not allowed on this database."
-msgstr "L'inscription n'est pas autorisée sur cette base de données."
+msgstr "Cette base de données n'autorise pas les inscriptions."
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_ir_config_parameter
 msgid "System Parameter"
-msgstr "Paramètres système"
+msgstr "Paramètre système"
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_res_users
@@ -231,7 +240,6 @@ msgid "UserInfo URL"
 msgstr "URL des UserInfo"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
 msgid ""
@@ -240,8 +248,8 @@ msgid ""
 "invitation email."
 msgstr ""
 "Vous n'avez pas le droit d'accéder à cette base de données, ou votre "
-"invitation a expiré. Merci de faire une demande d'invitation, et de cliquer "
-"sur le lien contenu dans l'email d'invitation."
+"invitation a expirée. Merci de faire une demande d'invitation, et de cliquer"
+" sur le lien contenu dans l'email d'invitation."
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.view_oauth_provider_form
@@ -252,4 +260,4 @@ msgstr "arch"
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
 msgid "e.g. 1234-xyz.apps.googleusercontent.com"
-msgstr "par ex. 1234-xyz.apps.googleusercontent.com"
+msgstr "par exemple: 1234-xyz.apps.googleusercontent.com"

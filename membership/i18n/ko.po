@@ -3,16 +3,16 @@
 # 	* membership
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,7 +22,7 @@ msgstr ""
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__num_invoiced
 msgid "# Invoiced"
-msgstr "# 청구서 발행 완료"
+msgstr "# 청구서 발행 수"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__num_paid
@@ -64,7 +64,7 @@ msgstr "귀하의 멤버십에 연결하고자 하는 회원. 관련된 회원�
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__account_invoice_line
 msgid "Account Invoice line"
-msgstr "계정 청구서 내역"
+msgstr "계정 청구서 항목"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_products_form
@@ -143,7 +143,7 @@ msgstr "회사"
 #. module: membership
 #: model:ir.ui.menu,name:membership.menu_marketing_config_association
 msgid "Configuration"
-msgstr "설정"
+msgstr "구성"
 
 #. module: membership
 #: model:ir.model,name:membership.model_res_partner
@@ -236,8 +236,8 @@ msgstr "회원권 종료일"
 
 #. module: membership
 #: model:ir.model.constraint,message:membership.constraint_product_template_membership_date_greater
-msgid "Error! Ending Date cannot be set before Beginning Date."
-msgstr "오류 발생! 종료일은 시작일 이전으로 설정할 수 없습니다."
+msgid "Error ! Ending Date cannot be set before Beginning Date."
+msgstr "오류! 시작일 전에 마감일을 설정할 수 없습니다."
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -256,7 +256,7 @@ msgstr "무료 회원"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date_from
 msgid "From"
-msgstr "시작"
+msgstr "출발"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -315,13 +315,13 @@ msgid ""
 "-Invoiced Member: A member whose invoice has been created.\n"
 "-Paying member: A member who has paid the membership fee."
 msgstr ""
-"현재 회원의 멤버십 상태를 나타냅니다.\n"
-"-비회원: 멤버십을 신청하지 않은 회원입니다.\n"
-"-취소된 회원 : 기존의 멤버십을 해지한 회원입니다.\n"
-"-만기 회원 : 회원 가입일이 만료된 회원입니다.\n"
-"-대기 회원 : 멤버십을 신청하고 청구서 생성을 기다리고 있는 회원입니다.\n"
-"-청구서 발행 회원 : 청구서가 생성 완료된 회원입니다.\n"
-"-결제 회원 : 멤버십 회비를 결제 완료한 회원입니다."
+"멤버십 상태를 나타냅니다.\n"
+"-비 회원 : 어떤 멤버십에도 해당되지 않는 파트너\n"
+"-취소 회원 : 멤버십을 취소한 회원\n"
+"-이전 회원 : 멤버십 날짜가 만기된 회원\n"
+"-대기 회원 : 청구서를 작성하거나 멤버십이 적용된 회원\n"
+"-청구서 회원 : 청구서를 작성한 멤버\n"
+"-지불 회원 : 회비를 지불한 회원"
 
 #. module: membership
 #: model:ir.model.fields,help:membership.field_membership_membership_line__state
@@ -334,13 +334,13 @@ msgid ""
 "-Invoiced Member: A member whose invoice has been created.\n"
 "-Paid Member: A member who has paid the membership amount."
 msgstr ""
-"현재 회원의 멤버십 상태를 나타냅니다.\n"
-"-비회원: 멤버십을 신청하지 않은 회원입니다.\n"
-"-취소된 회원 : 기존의 멤버십을 해지한 회원입니다.\n"
-"-만기 회원 : 회원 가입일이 만료된 회원입니다.\n"
-"-대기 회원 : 멤버십을 신청하고 청구서 생성을 기다리고 있는 회원입니다.\n"
-"-청구서 발행 회원 : 청구서가 생성 완료된 회원입니다.\n"
-"-결제 회원 : 멤버십 회비를 결제 완료한 회원입니다."
+"멤버십 상태를 나타냅니다.\n"
+"-비 회원 : 어떤 회원권에도 해당되지 않는 파트너\n"
+"-취소 회원 : 회원권을 취소한 회원\n"
+"-이전 회원 : 회원권 날짜가 만기된 회원\n"
+"-대기 회원 : 송장을 작성하거나 회원권이 적용된 회원\n"
+"-송장 회원 : 송장을 작성한 멤버\n"
+"-지불 회원 : 회비를 지불한 회원"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date
@@ -355,12 +355,19 @@ msgstr "회원권 가입"
 #. module: membership
 #: model:ir.model,name:membership.model_account_move
 msgid "Journal Entry"
-msgstr "전표 입력"
+msgstr "분개"
 
 #. module: membership
 #: model:ir.model,name:membership.model_account_move_line
 msgid "Journal Item"
-msgstr "전표 항목"
+msgstr "분개 항목"
+
+#. module: membership
+#: model:ir.model.fields,field_description:membership.field_membership_invoice____last_update
+#: model:ir.model.fields,field_description:membership.field_membership_membership_line____last_update
+#: model:ir.model.fields,field_description:membership.field_report_membership____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__write_uid
@@ -500,6 +507,8 @@ msgstr "회원권 상품"
 
 #. module: membership
 #: model:ir.actions.server,name:membership.ir_cron_update_membership_ir_actions_server
+#: model:ir.cron,cron_name:membership.ir_cron_update_membership
+#: model:ir.cron,name:membership.ir_cron_update_membership
 msgid "Membership: update memberships"
 msgstr "회원권 : 회원권 갱신"
 
@@ -516,14 +525,14 @@ msgstr "월"
 #. module: membership
 #: model_terms:ir.actions.act_window,help:membership.action_report_membership_tree
 msgid "No data yet!"
-msgstr "데이터가 아직 없습니다."
+msgstr "아직 정보가 없습니다!"
 
 #. module: membership
 #: model:ir.model.fields.selection,name:membership.selection__membership_membership_line__state__none
 #: model:ir.model.fields.selection,name:membership.selection__report_membership__membership_state__none
 #: model:ir.model.fields.selection,name:membership.selection__res_partner__membership_state__none
 msgid "Non Member"
-msgstr "비회원"
+msgstr "비 멤버"
 
 #. module: membership
 #: model_terms:ir.actions.act_window,help:membership.action_membership_members
@@ -551,17 +560,15 @@ msgstr "유료 회원"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__partner
 msgid "Partner"
-msgstr "협력사"
+msgstr "파트너"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner doesn't have an address to make the invoice."
-msgstr "협력사의 청구서 발행용 주소 정보가 없습니다."
+msgstr "협력사가 청구서를 만들기 위한 주소를 가지고 있지 않습니다."
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner is a free Member."
@@ -580,7 +587,7 @@ msgstr "품목"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_products_form
 msgid "Product Name"
-msgstr "품목명"
+msgstr "품목 명"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__quantity
@@ -625,27 +632,27 @@ msgstr "회원권 시작일"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.report_membership_view_tree
 msgid "Sum of # Invoiced"
-msgstr "# 청구 합계"
+msgstr ""
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.report_membership_view_tree
 msgid "Sum of # Paid"
-msgstr "# 정산 합계"
+msgstr ""
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.report_membership_view_tree
 msgid "Sum of Earned Amount"
-msgstr "수입 금액 합계"
+msgstr ""
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.report_membership_view_tree
 msgid "Sum of Quantity"
-msgstr "수량 합계"
+msgstr ""
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_products_form
 msgid "Taxes"
-msgstr "세무"
+msgstr "세금"
 
 #. module: membership
 #: model:ir.model.fields,help:membership.field_res_partner__membership_amount
@@ -671,7 +678,7 @@ msgstr "대기, 청구서 발행, 그리고 총 보류 열을 표시"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date_to
 msgid "To"
-msgstr "종료 시간"
+msgstr "도착"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
@@ -686,7 +693,6 @@ msgid "Waiting Member"
 msgstr "대기 회원"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "You cannot create recursive associated members."

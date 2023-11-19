@@ -25,14 +25,14 @@ class HrEmployeePublic(models.Model):
     work_phone = fields.Char(readonly=True)
     work_email = fields.Char(readonly=True)
     work_contact_id = fields.Many2one(readonly=True)
+    related_contact_ids = fields.Many2many(readonly=True)
     work_location_id = fields.Many2one(readonly=True)
     user_id = fields.Many2one(readonly=True)
     resource_id = fields.Many2one(readonly=True)
+    resource_calendar_id = fields.Many2one(readonly=True)
     tz = fields.Selection(readonly=True)
     color = fields.Integer(readonly=True)
-
-    # Manager-only fields
-    is_manager = fields.Boolean(compute='_compute_is_manager')
+    employee_type = fields.Selection(readonly=True)
 
     employee_id = fields.Many2one('hr.employee', 'Employee', compute="_compute_employee_id", search="_search_employee_id", compute_sudo=True)
     # hr.employee.public specific fields
@@ -51,34 +51,18 @@ class HrEmployeePublic(models.Model):
     coach_id = fields.Many2one('hr.employee.public', 'Coach', readonly=True)
     user_partner_id = fields.Many2one(related='user_id.partner_id', related_sudo=False, string="User's partner")
 
-    @api.depends_context('uid')
-    @api.depends('parent_id')
-    def _compute_is_manager(self):
-        all_reports = self.env['hr.employee.public'].search([('id', 'child_of', self.env.user.employee_id.id)]).ids
-        for employee in self:
-            employee.is_manager = employee.id in all_reports
-
-    def _get_manager_only_fields(self):
-        return []
-
-    @api.depends_context('uid')
-    def _compute_manager_only_fields(self):
-        manager_fields = self._get_manager_only_fields()
-        for employee in self:
-            if employee.is_manager:
-                employee_sudo = employee.employee_id.sudo()
-                for f in manager_fields:
-                    employee[f] = employee_sudo[f]
-            else:
-                for f in manager_fields:
-                    employee[f] = False
-
     def _search_employee_id(self, operator, value):
         return [('id', operator, value)]
 
     def _compute_employee_id(self):
         for employee in self:
             employee.employee_id = self.env['hr.employee'].browse(employee.id)
+
+    @api.depends('user_partner_id')
+    def _compute_related_contacts(self):
+        super()._compute_related_contacts()
+        for employee in self:
+            employee.related_contact_ids |= employee.user_partner_id
 
     @api.model
     def _get_fields(self):

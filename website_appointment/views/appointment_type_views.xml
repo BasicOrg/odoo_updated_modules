@@ -11,14 +11,20 @@
                 <field name="website_url"/>
             </xpath>
             <xpath expr="//div[hasclass('o_kanban_card_header')]" position="before">
-                <div class="ribbon ribbon-top-right" invisible="not is_published or not active">
-                    <span class="text-bg-success">Published</span>
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': ['|', ('is_published', '=', False), ('active', '=', False)]}">
+                    <span>Published</span>
                 </div>
             </xpath>
             <xpath expr="//div[hasclass('o_appointment_kanban_card_ungrouped')]/div" position="before">
-                <div class="ribbon ribbon-top-right" invisible="not is_published or not active">
-                    <span class="text-bg-success">Published</span>
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': ['|', ('is_published', '=', False), ('active', '=', False)]}">
+                    <span>Published</span>
                 </div>
+            </xpath>
+            <xpath expr="//div[hasclass('o_kanban_ungrouped_action_buttons')]" position="attributes">
+                <attribute name="class" add="pe-lg-5" separator=" "/>
+            </xpath>
+            <xpath expr="//div[hasclass('o_kanban_ungrouped_action_buttons')]/button[@name='action_share_invite']" position="attributes">
+                <attribute name="class" add="me-4" separator=" "/>
             </xpath>
             <xpath expr="//div[hasclass('o_appointment_kanban_box')]/div[1]" position="inside">
                 <span>
@@ -34,20 +40,17 @@
         <field name="model">appointment.type</field>
         <field name="inherit_id" ref="appointment.appointment_type_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='appointment_tz']" position="before">
-                <field name="website_id" groups="website.group_multi_website"/>
-            </xpath>
-            <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_calendar_meetings']" position="after">
+            <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_customer_preview']" position="replace">
                 <field name="website_url" invisible="1"/>
                 <field name="is_published" widget="website_redirect_button"/>
             </xpath>
             <xpath expr="//header/button[@name='action_share_invite']" position="after">
                 <button name="action_toggle_published" string="Publish" type="object"
-                    class="btn btn-secondary" invisible="is_published or not active" groups="appointment.group_appointment_user">
+                    class="btn btn-secondary" attrs="{'invisible': ['|', ('is_published', '=', True), ('active', '=', False)]}">
                     Publish
                 </button>
                 <button name="action_toggle_published" string="Unpublish" type="object"
-                        class="btn btn-secondary" invisible="not is_published or not active" groups="appointment.group_appointment_user">
+                        class="btn btn-secondary" attrs="{'invisible': ['|', ('is_published', '=', False), ('active', '=', False)]}">
                     Unpublish
                 </button>
             </xpath>
@@ -64,6 +67,9 @@
                 </xpath>
                 <xpath expr="//form" position="inside">
                     <field name="website_url" invisible="1"/>
+                </xpath>
+                <xpath expr="//group[@name='left_details']/div[2]/div[hasclass('my-2')]" position="attributes">
+                    <attribute name="class" remove="my-2" separator=" "/>
                 </xpath>
                 <xpath expr="//field[@name='appointment_duration']" position="attributes">
                     <attribute name="style" add="max-width: 40%;" separator=" "/>
@@ -94,13 +100,7 @@
         <field name="model">appointment.type</field>
         <field name="inherit_id" ref="appointment.appointment_type_view_search"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='filter_category_anytime']" position="after">
-                <separator/>
-                <filter name="filter_is_published" string="Published" domain="[('is_published', '=', True)]"/>
-            </xpath>
             <xpath expr="//filter[@name='group_by_timezone']" position="after">
-                <separator />
-                <filter string="Website" name="group_by_website" groups="website.group_multi_website" context="{'group_by': 'website_id'}"/>
                 <separator />
                 <filter string="Published" name="group_by_is_published" context="{'group_by': 'is_published'}"/>
             </xpath>

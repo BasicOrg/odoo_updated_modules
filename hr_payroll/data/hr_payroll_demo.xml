@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
         <record id="base.user_demo" model="res.users">
-            <field name="groups_id" eval="[
-                (3, ref('hr_contract.group_hr_contract_manager')), 
-                (3, ref('hr_payroll.group_hr_payroll_manager')), 
-                (3, ref('hr_contract.group_hr_contract_employee_manager')), 
-                (3, ref('hr_payroll.group_hr_payroll_employee_manager'))]"/>
-        </record>
-    </data>
-
-        <record id="resource.resource_calendar_std_35h" model="resource.calendar">
-            <field name="full_time_required_hours">35</field>
-        </record>
-
-        <record id="resource.resource_calendar_std_38h" model="resource.calendar">
-            <field name="full_time_required_hours">38</field>
+            <field name="groups_id" eval="[(4, ref('hr_payroll.group_hr_payroll_user'))]"/>
         </record>
 
         <!-- Structure Type -->
@@ -86,14 +72,14 @@
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="name">Sum of Allowance category</field>
             <field name="sequence" eval="99"/>
-            <field name="amount_python_compute">result = payslip._sum_category('ALW', payslip.date_from, to_date=payslip.date_to)</field>
+            <field name="amount_python_compute">result = payslip.sum_category('ALW', payslip.date_from, to_date=payslip.date_to)</field>
             <field name="struct_id" ref="structure_002"/>
          </record>
 
         <record id="hr_salary_rule_meal_voucher" model="hr.salary.rule">
             <field name="amount_select">fix</field>
             <field eval="10" name="amount_fix"/>
-            <field name="quantity">'WORK100' in worked_days and worked_days['WORK100'].number_of_days</field>
+            <field name="quantity">worked_days.WORK100 and worked_days.WORK100.number_of_days</field>
             <field name="code">MA</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="partner_id" ref="hr_meal_voucher_register"/>
@@ -142,7 +128,6 @@
             <field name="company_id" ref="base.main_company"/>
             <field eval="1" name="active"/>
             <field name="name">Roger Scott</field>
-            <field name="parent_id" ref="hr.employee_vad"/>
             <field name="work_location_id" ref="hr.work_location_1"/>
             <field name="work_phone">+3282823500</field>
             <field name="image_1920" type="base64" file="hr_payroll/static/img/hr_employee_payroll-image.jpg"/>
@@ -159,7 +144,6 @@
             <field name="notes">Default contract for marketing executives</field>
             <field eval="4000.0" name="wage"/>
             <field name="state">open</field>
-            <field name="hr_responsible_id" ref="base.user_admin"/>
         </record>
 
         <record id="hr_contract_gilles_gravie" model="hr.contract">
@@ -170,7 +154,6 @@
             <field name="employee_id" ref="hr.employee_qdp"/>
             <field name="notes">This is Marc Demo's contract</field>
             <field eval="5000.0" name="wage"/>
-            <field name="hr_responsible_id" ref="base.user_admin"/>
         </record>
 
         <record id="hr_contract.hr_contract_admin" model="hr.contract">
@@ -227,9 +210,9 @@
 
         <!-- Salary Attachments -->
         <record id="child_support" model="hr.salary.attachment">
-            <field name="employee_ids" eval="[(4, ref('hr.employee_qdp'))]"/>
+            <field name="employee_id" ref="hr.employee_qdp"/>
             <field name="monthly_amount">7500</field>
-            <field name="deduction_type_id" ref="hr_payroll.hr_salary_attachment_type_child_support"/>
+            <field name="deduction_type">child_support</field>
             <field name="date_start" eval="DateTime.today()"/>
             <field name="description">Child Support</field>
         </record>

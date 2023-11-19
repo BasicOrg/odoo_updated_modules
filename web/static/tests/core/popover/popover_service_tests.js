@@ -1,12 +1,11 @@
 /** @odoo-module **/
 
-import { Component, xml } from "@odoo/owl";
-import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { popoverService } from "@web/core/popover/popover_service";
 import { registry } from "@web/core/registry";
 import { clearRegistryWithCleanup, makeTestEnv } from "../../helpers/mock_env";
-import { makeFakeLocalizationService } from "../../helpers/mock_services";
-import { click, getFixture, mount, nextTick, triggerEvent } from "../../helpers/utils";
+import { click, getFixture, mount, nextTick } from "../../helpers/utils";
+
+const { Component, xml } = owl;
 
 let env;
 let fixture;
@@ -36,11 +35,7 @@ PseudoWebClient.template = xml`
 QUnit.module("Popover service", {
     async beforeEach() {
         clearRegistryWithCleanup(mainComponents);
-        registry
-            .category("services")
-            .add("popover", popoverService)
-            .add("localization", makeFakeLocalizationService())
-            .add("hotkey", hotkeyService);
+        registry.category("services").add("popover", popoverService);
 
         fixture = getFixture();
         env = await makeTestEnv();
@@ -51,6 +46,8 @@ QUnit.module("Popover service", {
 });
 
 QUnit.test("simple use", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 
@@ -70,6 +67,8 @@ QUnit.test("simple use", async (assert) => {
 });
 
 QUnit.test("close on click away", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 
@@ -80,52 +79,14 @@ QUnit.test("close on click away", async (assert) => {
     assert.containsOnce(fixture, ".o_popover #comp");
 
     await click(fixture, "#close");
-
-    assert.containsNone(fixture, ".o_popover");
-    assert.containsNone(fixture, ".o_popover #comp");
-});
-
-QUnit.test("close on click away should be default prevented", async (assert) => {
-    assert.expect(6);
-    class Comp extends Component {}
-    Comp.template = xml`<div id="comp">in popover</div>`;
-
-    popovers.add(popoverTarget, Comp, {});
-    await nextTick();
-
-    assert.containsOnce(fixture, ".o_popover");
-    assert.containsOnce(fixture, ".o_popover #comp");
-    const closeButton = fixture.querySelector("#close");
-    function clickListener(ev) {
-        assert.step(`click-event-${ev.defaultPrevented ? "default-prevented" : ""}`);
-    }
-    closeButton.addEventListener("pointerdown", clickListener);
-
-    await click(fixture, "#close");
-
-    assert.containsNone(fixture, ".o_popover");
-    assert.containsNone(fixture, ".o_popover #comp");
-    assert.verifySteps(["click-event-default-prevented"]);
-    closeButton.removeEventListener("pointerdown", clickListener);
-});
-
-QUnit.test("close on 'Escape' keydown", async (assert) => {
-    class Comp extends Component {}
-    Comp.template = xml`<div id="comp">in popover</div>`;
-
-    popovers.add(popoverTarget, Comp, {});
-    await nextTick();
-
-    assert.containsOnce(fixture, ".o_popover");
-    assert.containsOnce(fixture, ".o_popover #comp");
-
-    await triggerEvent(fixture, null, "keydown", { key: "Escape" });
 
     assert.containsNone(fixture, ".o_popover");
     assert.containsNone(fixture, ".o_popover #comp");
 });
 
 QUnit.test("do not close on click away", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 
@@ -148,6 +109,10 @@ QUnit.test("do not close on click away", async (assert) => {
 });
 
 QUnit.test("close callback", async (assert) => {
+    assert.expect(3);
+
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 
@@ -164,6 +129,8 @@ QUnit.test("close callback", async (assert) => {
 });
 
 QUnit.test("sub component triggers close", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp" t-on-click="() => this.props.close()">in popover</div>`;
 
@@ -180,6 +147,8 @@ QUnit.test("sub component triggers close", async (assert) => {
 });
 
 QUnit.test("close popover if target is removed", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 
@@ -196,25 +165,9 @@ QUnit.test("close popover if target is removed", async (assert) => {
     assert.containsNone(fixture, ".o_popover #comp");
 });
 
-QUnit.test("close and do not crash if target parent does not exist", async (assert) => {
-    // This target does not have any parent, it simulates the case where the element disappeared
-    // from the DOM before the setup of the component
-    const dissapearedTarget = document.createElement("div");
-
-    class Comp extends Component {}
-    Comp.template = xml`<div id="comp">in popover</div>`;
-
-    function onClose() {
-        assert.step("close");
-    }
-
-    popovers.add(dissapearedTarget, Comp, {}, { onClose });
-    await nextTick();
-
-    assert.verifySteps(["close"]);
-});
-
 QUnit.test("keep popover if target sibling is removed", async (assert) => {
+    assert.containsOnce(fixture, ".o_popover_container");
+
     class Comp extends Component {}
     Comp.template = xml`<div id="comp">in popover</div>`;
 

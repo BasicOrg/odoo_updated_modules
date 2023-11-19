@@ -22,24 +22,24 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <field name="is_published" widget="website_redirect_button"/>
-                        <button class="oe_stat_button" name="open_tweets" type="object" icon="fa-twitter" invisible="total_tweets == 0">
+                        <button class="oe_stat_button" name="open_tweets" type="object" icon="fa-twitter" attrs="{'invisible': [('total_tweets', '=', 0)]}">
                             <field string="Tweets" name="total_tweets" widget="statinfo"/>
                         </button>
                         <field name="is_live" invisible="1" />
-                        <button class="oe_stat_button" name="toggle_live_mode" type="object" invisible="not is_live" icon="fa-toggle-on text-success">
+                        <button class="oe_stat_button" name="toggle_live_mode" type="object" attrs="{'invisible':[('is_live','!=',True)]}" icon="fa-toggle-on text-success">
                             <div class="o_form_field o_stat_info">
                                 <span class="o_stat_text">Live Mode</span>
                                 <span class="o_stat_text">is <strong class="text-success"> On </strong></span>
                             </div>
                         </button>
-                        <button name="toggle_live_mode" type="object" class="oe_stat_button" icon="fa-toggle-off" invisible="is_live" widget="statinfo">
+                        <button name="toggle_live_mode" type="object" class="oe_stat_button" icon="fa-toggle-off" attrs="{'invisible':[('is_live','=',True)]}" widget="statinfo">
                             <div class="o_form_field o_stat_info">
                                 <span class="o_stat_text">Live Mode</span>
                                 <span class="o_stat_text">is <strong class="text-danger"> Off </strong></span>
                             </div>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="image" class="oe_avatar" widget="image" />
                     <div class="oe_title">
                         <label for="name" string="Wall Name"/>

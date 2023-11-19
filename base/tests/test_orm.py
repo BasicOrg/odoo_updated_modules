@@ -45,13 +45,13 @@ class TestORM(TransactionCase):
         self.assertTrue(type(Model).display_name.automatic, "test assumption not satisfied")
 
         # access regular field when another record from the same prefetch set has been deleted
-        records = Model.create([{'name': name[0], 'code': name[1]} for name in (['Foo', 'ZV'], ['Bar', 'ZX'], ['Baz', 'ZY'])])
+        records = Model.create([{'name': name} for name in ('Foo', 'Bar', 'Baz')])
         for record in records:
             record.name
             record.unlink()
 
         # access computed field when another record from the same prefetch set has been deleted
-        records = Model.create([{'name': name[0], 'code': name[1]} for name in (['Foo', 'ZV'], ['Bar', 'ZX'], ['Baz', 'ZY'])])
+        records = Model.create([{'name': name} for name in ('Foo', 'Bar', 'Baz')])
         for record in records:
             record.display_name
             record.unlink()
@@ -285,14 +285,12 @@ class TestORM(TransactionCase):
                 Command.create({'name': 'West Foo', 'code': 'WF'}),
                 Command.create({'name': 'East Foo', 'code': 'EF'}),
             ],
-            'code': 'ZV',
         }, {
             'name': 'Bar',
             'state_ids': [
                 Command.create({'name': 'North Bar', 'code': 'NB'}),
                 Command.create({'name': 'South Bar', 'code': 'SB'}),
             ],
-            'code': 'ZX',
         }]
         foo, bar = self.env['res.country'].create(vals_list)
         self.assertEqual(foo.name, 'Foo')
@@ -349,10 +347,12 @@ class TestInherits(TransactionCase):
             'employee': True,
         })
         foo_before, = user_foo.read()
+        del foo_before['__last_update']
         del foo_before['create_date']
         del foo_before['write_date']
         user_bar = user_foo.copy({'login': 'bar'})
         foo_after, = user_foo.read()
+        del foo_after['__last_update']
         del foo_after['create_date']
         del foo_after['write_date']
         self.assertEqual(foo_before, foo_after)
@@ -370,12 +370,14 @@ class TestInherits(TransactionCase):
         partner_bar = self.env['res.partner'].create({'name': 'Bar'})
 
         foo_before, = user_foo.read()
+        del foo_before['__last_update']
         del foo_before['create_date']
         del foo_before['write_date']
         del foo_before['login_date']
         partners_before = self.env['res.partner'].search([])
         user_bar = user_foo.copy({'partner_id': partner_bar.id, 'login': 'bar'})
         foo_after, = user_foo.read()
+        del foo_after['__last_update']
         del foo_after['create_date']
         del foo_after['write_date']
         del foo_after['login_date']

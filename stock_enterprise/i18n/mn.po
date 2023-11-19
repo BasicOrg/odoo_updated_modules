@@ -1,43 +1,32 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* stock_enterprise
-#
+# 
 # Translators:
-# Bayarkhuu Bataa, 2022
-# Батмөнх Ганбат <batmunkh2522@gmail.com>, 2022
-# Batmunkh Ganbat <batmunkh.g@bumanit.mn>, 2022
-# Насан-Очир <nasaaskii@gmail.com>, 2022
-# Martin Trigaux, 2022
-# Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2022
-#
+# Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2019
+# Martin Trigaux, 2019
+# Otgonbayar.A <gobi.mn@gmail.com>, 2019
+# nasaaskii <nasaaskii@gmail.com>, 2019
+# Chinzorita <chinzorig.o@asterisk-tech.mn>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:49+0000\n"
-"Last-Translator: Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2022\n"
-"Language-Team: Mongolian (https://app.transifex.com/odoo/teams/41243/mn/)\n"
-"Language: mn\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:38+0000\n"
+"Last-Translator: Chinzorita <chinzorig.o@asterisk-tech.mn>, 2019\n"
+"Language-Team: Mongolian (https://www.transifex.com/odoo/teams/41243/mn/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: mn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__assigned
 msgid "Available"
 msgstr "Бэлэн"
-
-#. module: stock_enterprise
-#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
-msgid "Average Cycle Time (Days)"
-msgstr ""
-
-#. module: stock_enterprise
-#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
-msgid "Average Delay (Days)"
-msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__cancel
@@ -62,12 +51,12 @@ msgstr "Захиалагчид"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
 msgid "Cycle Time"
-msgstr "Эргэлтийн хугацаа"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__cycle_time
 msgid "Cycle Time (Days)"
-msgstr "Эргэлтийн хугацаа(Өдрөөр)"
+msgstr ""
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
@@ -82,7 +71,31 @@ msgstr "Саатал"
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__delay
 msgid "Delay (Days)"
-msgstr "Саатал(Өдөр)"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
@@ -97,12 +110,12 @@ msgstr "Дууссан"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Deliveries"
-msgstr "Дууссан хүргэлтүүд"
+msgstr ""
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Receipts"
-msgstr "Дууссан хүлээн авах баримтууд"
+msgstr ""
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
@@ -112,7 +125,7 @@ msgstr "Дууссан шилжилтүүд"
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__scheduled_date
 msgid "Expected Date"
-msgstr "Төлөвлөсөн огноо"
+msgstr "Товлосон огноо"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__id
@@ -125,14 +138,29 @@ msgid "Internal"
 msgstr "Дотоод"
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__inventory_id
+msgid "Inventory Adjustment"
+msgstr "Тооллогын Тохируулга"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_late
 msgid "Is Late"
-msgstr "Хоцролт"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_backorder
 msgid "Is a Backorder"
-msgstr "Дутагдлын захиалга"
+msgstr ""
+
+#. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
+msgid "Month"
+msgstr "Сар"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
@@ -140,19 +168,14 @@ msgid "New"
 msgstr "Шинэ"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
-msgid "No data yet!"
-msgstr "Одоогоор мэдээлэл алга!"
-
-#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__operation_type
 msgid "Operation Type"
-msgstr "Ажиллагааны төрөл"
+msgstr "Агуулахын баримтын төрөл"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__partially_available
 msgid "Partially Available"
-msgstr "Зарим нь бэлэн"
+msgstr "Зарим нь Бэлэн"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__partner_id
@@ -160,14 +183,9 @@ msgid "Partner"
 msgstr "Харилцагч"
 
 #. module: stock_enterprise
-#: model:ir.ui.menu,name:stock_enterprise.stock_dashboard_menuitem
-msgid "Performance"
-msgstr "Гүйцэтгэл"
-
-#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_name
 msgid "Picking Name"
-msgstr "Бэлтгэх нэр"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__product_id
@@ -186,8 +204,19 @@ msgstr "Барааны тоо хэмжээ"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_enterprise_move_tree_view
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
 msgid "Quantity"
 msgstr "Тоо хэмжээ"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
@@ -198,12 +227,12 @@ msgstr "Холбогдол"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_cohort_view
 msgid "Report"
-msgstr "Тооцоо"
+msgstr "Тайлан"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_map_view
 msgid "Scheduled Date"
-msgstr "Товлогдсон огноо"
+msgstr "Товлосон огноо"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__state
@@ -213,22 +242,41 @@ msgstr "Төлөв"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
 msgid "Stock Overview"
-msgstr "Агуулахын тойм"
+msgstr ""
+
+#. module: stock_enterprise
+#: model:ir.model,name:stock_enterprise.model_report_stock_quantity
+msgid "Stock Quantity Report"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model,name:stock_enterprise.model_stock_report
 msgid "Stock Report"
-msgstr "Агуулахын тайлан"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
 msgid "Transfer Date"
-msgstr "Шилжүүлэх огноо"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_id
 msgid "Transfer Reference"
-msgstr "Шилжүүлэх баримт"
+msgstr "Шилжүүлэх Код"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_type_code
@@ -251,6 +299,17 @@ msgid "Waiting Availability"
 msgstr "Бэлэн болохыг хүлээж буй"
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
+#: model:ir.ui.menu,name:stock_enterprise.stock_dashboard_menuitem
 msgid "Warehouse Analysis"
-msgstr "Агуулахын шинжилгээ"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
+msgid "Week"
+msgstr "Долоо хоног"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "өдөр"

@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 wTourUtils.registerWebsitePreviewTour('snippet_cache_across_websites', {
     edition: true,
     test: true,
     url: '/@/'
-}, () => [
+}, [
     {
         content: "Check that the custom snippet is displayed",
         trigger: '#snippet_custom_body span:contains("custom_snippet_test")',
@@ -22,16 +22,14 @@ wTourUtils.registerWebsitePreviewTour('snippet_cache_across_websites', {
         content: "Switch to website 2",
         // Ensure data-website-id exists
         extra_trigger: 'iframe html[data-website-id="1"]',
-        trigger: '.o_website_switcher_container .dropdown-item:contains("My Website 2")'
+        trigger: '.o_website_switcher_container .dropdown-item:nth-child(2)'
     },
     {
         content: "Wait for the iframe to be loaded",
-        // The page reload generates assets for website 2, it may take some time
-        timeout: 20000,
         trigger: 'iframe html:not([data-website-id="1"])',
         run: () => null,
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
     {
         content: "Check that the custom snippet is not here",
         extra_trigger: '#oe_snippets:not(:has(#snippet_custom_body span:contains("custom_snippet_test")))',

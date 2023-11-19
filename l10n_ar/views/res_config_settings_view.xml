@@ -6,10 +6,11 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//app[@name='account']/block" position="after">
+            <xpath expr="//div[@data-key='account']/div" position="after">
                 <div  id="argentina_localization_section" invisible="1">
-                    <block title="Argentinean Localization" id="argentina_localization" invisible="country_code != 'AR'">
-                    </block>
+                    <h2 attrs="{'invisible':[('country_code', '!=', 'AR')]}">Argentinean Localization</h2>
+                    <div class="row mt16 o_settings_container" id="argentina_localization" attrs="{'invisible':[('country_code', '!=', 'AR')]}">
+                    </div>
                 </div>
             </xpath>
         </field>

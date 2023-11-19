@@ -3,7 +3,6 @@
 
 from datetime import date
 
-from odoo import Command
 from odoo.tests.common import TransactionCase
 from odoo.tests import tagged
 
@@ -25,7 +24,7 @@ class TestPayrollCommon(TransactionCase):
             'employee_requests': 'no',
             'allocation_validation_type': 'officer',
             'leave_validation_type': 'both',
-            'responsible_ids': [Command.link(cls.env.ref('base.user_admin').id)],
+            'responsible_id': cls.env.ref('base.user_admin').id,
             'request_unit': 'day'
         }])
 
@@ -54,89 +53,87 @@ class TestPayrollCommon(TransactionCase):
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'})
             ]
         })
+        cls.resource_calendar_mid_time._onchange_hours_per_day()
 
         cls.resource_calendar_4_5 = cls.resource_calendar.copy({
             'name': 'Calendar (4 / 5)',
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'})
             ]
         })
+        cls.resource_calendar_4_5._onchange_hours_per_day()
 
         cls.resource_calendar_9_10 = cls.resource_calendar.copy({
             'name': 'Calendar (9 / 10)',
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
             ]
         })
+        cls.resource_calendar_9_10._onchange_hours_per_day()
 
         cls.resource_calendar_30_hours_per_week = cls.resource_calendar.copy({
             'name': 'Calendar 30 Hours/Week',
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 16.5, 'day_period': 'afternoon'})
             ]
+        })
+        cls.resource_calendar_30_hours_per_week._onchange_hours_per_day()
+
+        address_home_georges = cls.env['res.partner'].create({
+            'name': 'Georges',
+            'company_id': cls.belgian_company.id,
+            'type': 'private',
+            'country_id': cls.env.ref('base.be').id
         })
 
         cls.employee_georges = cls.env['hr.employee'].create({
             'name': 'Georges',
-            'private_country_id': cls.env.ref('base.be').id,
+            'address_home_id': address_home_georges.id,
             'resource_calendar_id': cls.resource_calendar.id,
             'company_id': cls.belgian_company.id,
             'marital': "single",
             'spouse_fiscal_status': "without_income",
             'disabled': False,
             'disabled_spouse_bool': False,
-            'is_non_resident': False,
+            'resident_bool': False,
             'disabled_children_number': 0,
             'other_dependent_people': False,
             'other_senior_dependent': 0,
             'other_disabled_senior_dependent': 0,
             'other_juniors_dependent': 0,
             'other_disabled_juniors_dependent': 0,
+            'has_bicycle': False
         })
 
         first_contract_georges = cls.env['hr.contract'].create({
@@ -161,8 +158,7 @@ class TestPayrollCommon(TransactionCase):
             'ip_wage_rate': 25.0,
             'time_credit': False,
             'fiscal_voluntarism': False,
-            'fiscal_voluntary_rate': 0.0,
-            'has_bicycle': False,
+            'fiscal_voluntary_rate': 0.0
         })
 
         cls.georges_contracts = first_contract_georges
@@ -197,9 +193,16 @@ class TestPayrollCommon(TransactionCase):
         contract.write({'state': 'open'})  # By default, the state is 'draft' when we create a new contract
         cls.georges_contracts |= contract
 
+        address_home_john = cls.env['res.partner'].create({
+            'name': 'John Doe',
+            'company_id': cls.belgian_company.id,
+            'type': 'private',
+            'country_id': cls.env.ref('base.be').id
+        })
+
         cls.employee_john = cls.employee_georges.copy({
             'name': 'John Doe',
-            'private_country_id': cls.env.ref('base.be').id,
+            'address_home_id': address_home_john.id,
             'resource_calendar_id': cls.resource_calendar.id,
             'contract_ids': []
         })
@@ -243,9 +246,16 @@ class TestPayrollCommon(TransactionCase):
 
         cls.john_contracts |= contract
 
+        address_home_a = cls.env['res.partner'].create({
+            'name': 'A',
+            'company_id': cls.belgian_company.id,
+            'type': 'private',
+            'country_id': cls.env.ref('base.be').id
+        })
+
         cls.employee_a = cls.employee_georges.copy({
             'name': 'A',
-            'private_country_id': cls.env.ref('base.be').id,
+            'address_home_id': address_home_a.id,
             'resource_calendar_id': cls.resource_calendar.id,
             'contract_ids': []
         })
@@ -262,9 +272,16 @@ class TestPayrollCommon(TransactionCase):
 
         cls.a_contracts = first_contract_a
 
+        address_home_test = cls.env['res.partner'].create({
+            'name': 'Employee Test',
+            'company_id': cls.belgian_company.id,
+            'type': 'private',
+            'country_id': cls.env.ref('base.be').id
+        })
+
         cls.employee_test = cls.employee_georges.copy({
             'name': 'Employee Test',
-            'private_country_id': cls.env.ref('base.be').id,
+            'address_home_id': address_home_test.id,
             'resource_calendar_id': cls.resource_calendar.id,
             'contract_ids': []
         })

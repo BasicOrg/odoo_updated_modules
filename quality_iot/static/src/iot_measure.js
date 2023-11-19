@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { registry } from '@web/core/registry';
-import { FloatField, floatField } from '@web/views/fields/float/float_field';
+import { FloatField } from '@web/views/fields/float/float_field';
 import { useIotDevice } from '@iot/iot_device_hook';
 
 class IoTMeasureRealTimeValue extends FloatField {
@@ -21,7 +21,7 @@ class IoTMeasureRealTimeValue extends FloatField {
             onValueChange: (data) => {
                 if (this.env.model.root.isInEdition) {
                     // Only update the value in the record when the record is in edition mode.
-                    return this.props.record.update({ [this.props.name]: data.value });
+                    return this.props.update(data.value);
                 }
             },
         });
@@ -32,14 +32,12 @@ IoTMeasureRealTimeValue.props = {
     ip_field: { type: String },
     identifier_field: { type: String },
 };
+IoTMeasureRealTimeValue.extractProps = ({ field, attrs }) => {
+    return {
+        ...FloatField.extractProps({ field, attrs }),
+        ip_field: attrs.options.ip_field,
+        identifier_field: attrs.options.identifier,
+    };
+};
 
-registry.category("fields").add("iot_measure", {
-    ...floatField,
-    component: IoTMeasureRealTimeValue,
-    extractProps({ options }) {
-        const props = floatField.extractProps(...arguments);
-        props.ip_field = options.ip_field;
-        props.identifier_field = options.identifier;
-        return props;
-    },
-});
+registry.category('fields').add('iot_measure', IoTMeasureRealTimeValue);

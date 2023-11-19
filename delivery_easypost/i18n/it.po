@@ -3,17 +3,17 @@
 # 	* delivery_easypost
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
+# Friederike Fasterling-Nesselbosch, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-06-09 14:09+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Friederike Fasterling-Nesselbosch, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -42,19 +42,14 @@ msgstr ""
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_stock_package_type_form_inherit_easypost
-msgid "<span invisible=\"package_carrier_type != 'easypost'\">Inches</span>"
-msgstr "<span invisible=\"package_carrier_type != 'easypost'\">Pollici</span>"
-
-#. module: delivery_easypost
-#. odoo-python
-#: code:addons/delivery_easypost/models/delivery_carrier.py:0
-#, python-format
-msgid "A production key is required in order to load your easypost carriers."
+msgid ""
+"<span attrs=\"{'invisible': [('package_carrier_type', '!=', "
+"'easypost')]}\">Inches</span>"
 msgstr ""
-"Per caricare i vettori easypoint è necessaria una chiave di produzione."
+"<span attrs=\"{'invisible': [('package_carrier_type', '!=', "
+"'easypost')]}\">Pollici</span>"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "A production key is required in order to load your insurance fees."
@@ -106,7 +101,7 @@ msgstr "Creato da"
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost__create_date
 #: model:ir.model.fields,field_description:delivery_easypost.field_easypost_service__create_date
 msgid "Created on"
-msgstr "Data creazione"
+msgstr "Creato il"
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
@@ -170,11 +165,10 @@ msgid "Easypost Configuration"
 msgstr "Configurazione Easypost"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
-msgid "Easypost Documents:"
-msgstr "Documenti Easypost:"
+msgid "Easypost Documents:<br/>"
+msgstr "Documenti Easypost: <br/>"
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_label_file_type
@@ -208,7 +202,6 @@ msgid "Easypost Website"
 msgstr "Sito web Easypost"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Easypost returned an error: %s"
@@ -245,15 +238,14 @@ msgstr ""
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_insurance_fee_minimum
 msgid "Insurance fee minimum (USD)"
-msgstr "Min. spese di assicurazione (USD)"
+msgstr ""
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_insurance_fee_rate
 msgid "Insurance fee rate (USD)"
-msgstr "Tariffa spese di assicurazione (USD)"
+msgstr ""
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -267,6 +259,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
 msgid "Label Format"
 msgstr "Formato etichetta"
+
+#. module: delivery_easypost
+#: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost____last_update
+#: model:ir.model.fields,field_description:delivery_easypost.field_easypost_service____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost__write_uid
@@ -301,16 +299,12 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Package type used in pack %s is not configured for easypost."
 msgstr ""
-"Il tipo di imballaggio utilizzato per il pacco %s non è configurato per "
-"easypost."
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
@@ -325,17 +319,15 @@ msgstr "Chiave API"
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__delivery_type
 msgid "Provider"
-msgstr "Corriere"
+msgstr "Fornitore"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Return Label<br/>"
 msgstr "etichetta di ritorno<br/>"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Sale Order/Stock Picking is missing."
@@ -357,7 +349,6 @@ msgid "Service Level Name"
 msgstr "Nome livello servizio"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Shipment created into Easypost<br/><b>Tracking Numbers:</b> %s<br/>"
@@ -385,18 +376,14 @@ msgid "Test API Key"
 msgstr "Test chiave API"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
 "The %s carrier is missing (Missing field(s) :\n"
 " Default Package Type)"
 msgstr ""
-"Il vettore %s è mancante (Campo/i mancante/i:\n"
-"tipo imballaggio predefinito)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -407,7 +394,6 @@ msgstr ""
 " Tipo vettore di consegna)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -418,7 +404,6 @@ msgstr ""
 "Chiave API)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -429,7 +414,6 @@ msgstr ""
 " Chiave test API)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -439,7 +423,6 @@ msgstr ""
 "Impossibile calcolare una stima di prezzo perché manca il peso del prodotto."
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -450,7 +433,6 @@ msgstr ""
 "%s"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -463,38 +445,33 @@ msgstr ""
 #. module: delivery_easypost
 #: model:ir.model,name:delivery_easypost.model_stock_picking
 msgid "Transfer"
-msgstr "Trasferimento"
+msgstr "Trasferisci"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Unable to retrieve your default insurance rates."
 msgstr "Impossibile recuperare le tariffe assicurative predefinite."
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Unspecified field"
 msgstr "Campo non specificato"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "You can't cancel Easypost shipping."
 msgstr "Non è possibile annullare la spedizione Easypost."
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""

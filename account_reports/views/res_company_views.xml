@@ -6,9 +6,14 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="VAT Units">
+                    <field name="account_tax_unit_ids"/>
+                </page>
+            </xpath>
             <xpath expr="//field[@name='parent_id']" position="after">
                 <field name="account_display_representative_field" invisible="1"/>
-                <field name="account_representative_id" invisible="not account_display_representative_field"/>
+                <field name="account_representative_id" attrs="{'invisible': [('account_display_representative_field', '=', False)]}"/>
             </xpath>
         </field>
     </record>

@@ -18,21 +18,21 @@
                 </div>
                 <ul class="carousel-indicators">
                     <li class="o_indicators_left text-center d-none" aria-label="Previous" title="Previous">
-                        <i class="oi oi-chevron-left"/>
+                        <i class="fa fa-chevron-left"/>
                     </li>
                     <li data-bs-target="#slideshow_sample" data-bs-slide-to="0" style="background-image: url(/web/image/website.library_image_08)" class="active"/>
                     <li data-bs-target="#slideshow_sample" data-bs-slide-to="1" style="background-image: url(/web/image/website.library_image_03)"/>
                     <li data-bs-target="#slideshow_sample" data-bs-slide-to="2" style="background-image: url(/web/image/website.library_image_02)"/>
                     <li class="o_indicators_right text-center d-none" aria-label="Next" title="Next">
-                        <i class="oi oi-chevron-right"/>
+                        <i class="fa fa-chevron-right"/>
                     </li>
                 </ul>
-                <a class="carousel-control-prev o_we_no_overlay o_not_editable" href="#slideshow_sample" data-bs-slide="prev" aria-label="Previous" title="Previous">
-                    <span class="oi oi-chevron-left fa-2x text-white"/>
+                <a class="carousel-control-prev o_we_no_overlay" href="#slideshow_sample" data-bs-slide="prev" aria-label="Previous" title="Previous">
+                    <span class="fa fa-chevron-left fa-2x text-white"/>
                     <span class="visually-hidden">Previous</span>
                 </a>
-                <a class="carousel-control-next o_we_no_overlay o_not_editable" href="#slideshow_sample" data-bs-slide="next" aria-label="Next" title="Next">
-                    <span class="oi oi-chevron-right fa-2x text-white"/>
+                <a class="carousel-control-next o_we_no_overlay" href="#slideshow_sample" data-bs-slide="next" aria-label="Next" title="Next">
+                    <span class="fa fa-chevron-right fa-2x text-white"/>
                     <span class="visually-hidden">Next</span>
                 </a>
             </div>
@@ -63,7 +63,7 @@
 
 <template id="s_image_gallery_options" inherit_id="website.snippet_options">
     <xpath expr="//t[@t-call='website.snippet_options_background_options']" position="before">
-        <div data-js="GalleryImageList" data-selector=".s_image_gallery">
+        <div data-js="gallery" data-selector=".s_image_gallery">
             <we-row string="Images">
                 <we-button class="o_we_bg_success" data-add-images="true" data-no-preview="true">Add</we-button>
                 <we-button class="o_we_bg_danger" data-remove-all-images="true" data-no-preview="true">Remove all</we-button>
@@ -83,7 +83,7 @@
             <we-input string="Speed"
                 data-dependencies="slideshow_mode_opt"
                 data-apply-to=".carousel:first"
-                data-select-data-attribute="0s" data-attribute-name="bsInterval"
+                data-select-data-attribute="0s" data-attribute-name="interval"
                 data-unit="s" data-save-unit="ms" data-step="0.1"/>
             <we-select string="Columns" data-dependencies="masonry_mode_opt, grid_mode_opt">
                 <we-button data-columns="1">1</we-button>
@@ -96,6 +96,12 @@
             <we-range string="Images Spacing"
                 data-dependencies="!slideshow_mode_opt"
                 data-select-class="o_spc-none|o_spc-small|o_spc-medium|o_spc-big"/>
+            <we-select string="Styling" data-apply-to="img">
+                <we-button data-select-class="">Standard</we-button>
+                <we-button data-select-class="img-thumbnail">Thumbnails</we-button>
+                <we-button data-select-class="rounded-pill">Circle</we-button>
+                <we-button data-select-class="shadow">Shadows</we-button>
+            </we-select>
             <we-select string="Arrows" data-dependencies="slideshow_mode_opt">
                 <we-button data-select-class="">Standard</we-button>
                 <we-button data-select-class="s_image_gallery_indicators_arrows_boxed">Boxed</we-button>
@@ -113,7 +119,14 @@
                 <t t-set="so_rounded_no_dependencies" t-value="true"/>
             </t>
         </div>
-        <div data-js="gallery_img" data-selector=".s_image_gallery img"></div>
+        <div data-js="gallery_img" data-selector=".s_image_gallery img">
+            <we-row string="Re-order" data-no-preview="true">
+                <we-button class="fa fa-fw fa-angle-double-left" title="Move to first" data-position="first"/>
+                <we-button class="fa fa-fw fa-angle-left" title="Move to previous" data-position="prev"/>
+                <we-button class="fa fa-fw fa-angle-right" title="Move to next" data-position="next"/>
+                <we-button class="fa fa-fw fa-angle-double-right" title="Move to last" data-position="last"/>
+            </we-row>
+        </div>
     </xpath>
 </template>
 

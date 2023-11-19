@@ -36,28 +36,6 @@
         </field>
     </record>
 
-    <record id="hr_appraisal_report_view_form" model="ir.ui.view">
-        <field name="name">hr.appraisal.report.view.form</field>
-        <field name="model">hr.appraisal.report</field>
-        <field name="arch" type="xml">
-            <form string="Appraisal Analysis" create="0">
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="employee_id"/>
-                            <field name="department_id"/>
-                            <field name="final_interview"/>
-                        </group>
-                        <group>
-                            <field name="deadline"/>
-                            <field name="state"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
     <record id="hr_appraisal_report_view_gantt" model="ir.ui.view">
         <field name="name">hr.appraisal.report.gantt</field>
         <field name="model">hr.appraisal.report</field>
@@ -69,11 +47,10 @@
                 date_start="deadline"
                 date_stop="deadline"
                 default_group_by='department_id'
-                sample="1"
-                default_scale="year">
+                sample="1">
                 <templates>
                     <div t-name="gantt-popover">
-                        <strong>Date — </strong><t t-esc="deadline.toFormat('f')"/>
+                        <div><strong>Date — </strong><t t-esc="userTimezoneStartDate.format('l LT')"/></div>
                     </div>
                 </templates>
             </gantt>

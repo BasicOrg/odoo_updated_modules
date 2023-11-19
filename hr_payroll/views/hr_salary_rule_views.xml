@@ -8,8 +8,8 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="category_id"/>
-                <field name="struct_id" column_invisible="True"/>
-                <field name="sequence" column_invisible="True"/>
+                <field name="struct_id" invisible="1"/>
+                <field name="sequence" invisible="1"/>
                 <field name="partner_id"/>
             </tree>
         </field>
@@ -49,7 +49,7 @@
         <field name="arch" type="xml">
             <form string="Salary Rules">
             <sheet>
-                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                 <label for="name" string="Rule Name"/>
                 <h1><field name="name" placeholder="e.g. Net Salary"/></h1>
                 <label for="category_id"/>
@@ -69,22 +69,22 @@
                         <group name="general_conditions">
                             <group string="Conditions">
                                 <field name="condition_select"/>
-                                <field name="condition_range" invisible="condition_select != 'range'" required="condition_select == 'range'"/>
-                                <field name="condition_range_min" invisible="condition_select != 'range'" required="condition_select == 'range'"/>
-                                <field name="condition_range_max" invisible="condition_select != 'range'" required="condition_select == 'range'"/>
+                                <field name="condition_range" attrs="{'invisible':[('condition_select','!=','range')], 'required':[('condition_select','=','range')]}"/>
+                                <field name="condition_range_min" attrs="{'invisible':[('condition_select','!=','range')], 'required':[('condition_select','=','range')]}"/>
+                                <field name="condition_range_max" attrs="{'invisible':[('condition_select','!=','range')], 'required':[('condition_select','=','range')]}"/>
                             </group>
                             <group colspan="4">
-                                <field name="condition_python" invisible="condition_select != 'python'" required="condition_select == 'python'"/>
+                                <field name="condition_python" attrs="{'invisible':[('condition_select','!=','python')], 'required': [('condition_select','=','python')]}"/>
                             </group>
                             <group string="Computation">
                                 <field name="amount_select"/>
-                                <field name="amount_percentage_base" invisible="amount_select != 'percentage'" required="amount_select == 'percentage'"/>
-                                <field name="quantity" invisible="amount_select == 'code'" required="amount_select != 'code'"/>
-                                <field name="amount_fix"  invisible="amount_select != 'fix'"  required="amount_select == 'fix'"/>
-                                <field name="amount_percentage" invisible="amount_select != 'percentage'" required="amount_select == 'percentage'"/>
+                                <field name="amount_percentage_base" attrs="{'invisible':[('amount_select','!=','percentage')], 'required': [('amount_select','=','percentage')]}"/>
+                                <field name="quantity" attrs="{'invisible':[('amount_select','=','code')], 'required':[('amount_select','!=','code')]}"/>
+                                <field name="amount_fix"  attrs="{'invisible':[('amount_select','!=','fix')], 'required':[('amount_select','=','fix')]}"/>
+                                <field name="amount_percentage" attrs="{'invisible':[('amount_select','!=','percentage')], 'required':[('amount_select','=','percentage')]}"/>
                             </group>
                             <group colspan="4">
-                                <field name="amount_python_compute" invisible="amount_select != 'code'" required="amount_select == 'code'"/>
+                                <field colspan="4" name="amount_python_compute" attrs="{'invisible':[('amount_select','!=','code')], 'required':[('amount_select','=','code')]}"/>
                             </group>
                             <group string="Company Contribution">
                                 <field name="partner_id"/>

@@ -3,16 +3,17 @@
 # 	* mrp_workorder_iot
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Raymond Yu <cl_yu@hotmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Raymond Yu <cl_yu@hotmail.com>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,12 +23,12 @@ msgstr ""
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__action
 msgid "Action"
-msgstr "操作"
+msgstr "动作"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_quality_check__boxes
 msgid "Boxes"
-msgstr "框"
+msgstr "盒子"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__cancel
@@ -37,12 +38,12 @@ msgstr "取消"
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__clomo
 msgid "Close MO"
-msgstr "关闭生产订单（MO）"
+msgstr "关闭 MO"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__clowo
 msgid "Close WO"
-msgstr "关闭工单（WO）"
+msgstr "关闭 WO"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__create_uid
@@ -52,7 +53,7 @@ msgstr "创建人"
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__device_id
@@ -77,18 +78,18 @@ msgstr "ID"
 #. module: mrp_workorder_iot
 #: model:ir.model,name:mrp_workorder_iot.model_iot_device
 msgid "IOT Device"
-msgstr "物联网（IOT）设备"
+msgstr "IOT 设备"
 
 #. module: mrp_workorder_iot
 #: model:ir.model,name:mrp_workorder_iot.model_iot_trigger
 msgid "IOT Trigger"
-msgstr "物联网（IOT）触发器"
+msgstr "物联网触发器"
 
 #. module: mrp_workorder_iot
 #: model_terms:ir.ui.view,arch_db:mrp_workorder_iot.iot_device_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_workorder_iot.mrp_workcenter_view_form_iot
 msgid "IoT Triggers"
-msgstr "物联网（IOT）触发器"
+msgstr "物联网触发器"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__key
@@ -96,24 +97,29 @@ msgid "Key"
 msgstr "键"
 
 #. module: mrp_workorder_iot
+#: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger____last_update
+msgid "Last Modified on"
+msgstr "最后修改日"
+
+#. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__write_uid
 msgid "Last Updated by"
-msgstr "上一更新人"
+msgstr "最后更新人"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__next
 msgid "Next"
-msgstr "下一"
+msgstr "下一页"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__pack
 msgid "Pack"
-msgstr "包"
+msgstr "包裹"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__pause
@@ -121,9 +127,16 @@ msgid "Pause"
 msgstr "暂停"
 
 #. module: mrp_workorder_iot
+#. openerp-web
+#: code:addons/mrp_workorder_iot/static/src/pedal_status_button/pedal_status_button.xml:0
+#, python-format
+msgid "Pedal Status"
+msgstr "踏板状态"
+
+#. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__prev
 msgid "Previous"
-msgstr "之前"
+msgstr "上一页"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__print-slip
@@ -158,7 +171,7 @@ msgstr "报废"
 #. module: mrp_workorder_iot
 #: model:ir.model.fields,field_description:mrp_workorder_iot.field_iot_trigger__sequence
 msgid "Sequence"
-msgstr "序列"
+msgstr "单号规则"
 
 #. module: mrp_workorder_iot
 #: model:ir.model.fields.selection,name:mrp_workorder_iot.selection__iot_trigger__action__skip

@@ -2,13 +2,13 @@
 
 /** @odoo-module **/
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from '@web/core/utils/patch';
 import { WorkEntryCalendarController } from '@hr_work_entry_contract/views/work_entry_calendar/work_entry_calendar_controller';
 import { useWorkEntryPayslip } from '@hr_payroll/views/work_entry_calendar/work_entry_calendar_hook';
 
-patch(WorkEntryCalendarController.prototype, {
+patch(WorkEntryCalendarController.prototype, 'hr_payroll.work_entries_calendar', {
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
         this.onGeneratePayslips = useWorkEntryPayslip({
             getEmployeeIds: this.getEmployeeIds.bind(this),
             getRange: this.model.computeRange.bind(this.model),

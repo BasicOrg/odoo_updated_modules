@@ -1,34 +1,26 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
 import { SearchPanel } from "@web/search/search_panel/search_panel";
-import { useNestedSortable } from "@web/core/utils/nested_sortable";
-import { usePopover } from "@web/core/popover/popover_hook";
+
 import { useService } from "@web/core/utils/hooks";
-import { utils as uiUtils } from "@web/core/ui/ui_service";
-import { Component, onWillStart, useState } from "@odoo/owl";
-import { toggleArchive } from "@documents/views/hooks";
+import { device } from "web.config";
+import { sprintf } from "web.utils";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
 const VALUE_SELECTOR = [".o_search_panel_category_value", ".o_search_panel_filter_value"].join();
 const FOLDER_VALUE_SELECTOR = ".o_search_panel_category_value";
 const LONG_TOUCH_THRESHOLD = 400;
+
+const { Component, onWillStart, useState } = owl;
 
 /**
  * This file defines the DocumentsSearchPanel component, an extension of the
  * SearchPanel to be used in the documents kanban/list views.
  */
 
-export class DocumentsSearchPanelItemSettingsPopover extends Component {
-    static props = [
-        "close", // Function, close the popover
-        "createChildEnabled", // Whether we have the option to create a new child or not
-        "onCreateChild", // Function, create new child
-        "onEdit", // Function, edit element
-    ];
-}
-DocumentsSearchPanelItemSettingsPopover.template =
-    "documents.DocumentsSearchPanelItemSettingsPopover";
+export class DocumentsSearchPanelItemSettingsPopover extends Component {}
+DocumentsSearchPanelItemSettingsPopover.template = "documents.DocumentsSearchPanelItemSettingsPopover";
 
 export class DocumentsSearchPanel extends SearchPanel {
     setup() {
@@ -40,56 +32,11 @@ export class DocumentsSearchPanel extends SearchPanel {
         this.orm = useService("orm");
         this.user = useService("user");
         this.action = useService("action");
-        this.popover = usePopover(DocumentsSearchPanelItemSettingsPopover, {
-            onClose: () => this.onPopoverClose?.(),
-            popoverClass: "o_search_panel_item_settings_popover",
-        });
+        this.popover = useService("popover");
         this.dialog = useService("dialog");
 
         onWillStart(async () => {
             this.isDocumentManager = await this.user.hasGroup("documents.group_documents_manager");
-        });
-
-        useNestedSortable({
-            ref: this.root,
-            groups: ".o_search_panel_category",
-            elements: "li:not(.o_all_or_trash_category)",
-            enable: () => this.isDocumentManager,
-            nest: true,
-            nestInterval: 10,
-            /**
-             * When the placeholder moves, unfold the new parent and show/hide carets
-             * where needed.
-             * @param {DOMElement} parent - parent element of where the element was moved
-             * @param {DOMElement} newGroup - group in which the element was moved
-             * @param {DOMElement} prevPos.parent - element's parent before the move
-             * @param {DOMElement} placeholder - hint element showing the current position
-             */
-            onMove: ({ parent, newGroup, prevPos, placeholder }) => {
-                if (parent) {
-                    parent.classList.add("o_has_treeEntry");
-                    placeholder.classList.add("o_treeEntry");
-                    const parentSectionId = parseInt(newGroup.dataset.sectionId);
-                    const parentValueId = parseInt(parent.dataset.valueId);
-                    this.state.expanded[parentSectionId][parentValueId] = true;
-                } else {
-                    placeholder.classList.remove("o_treeEntry");
-                }
-                if (prevPos.parent && !prevPos.parent.querySelector("li")) {
-                    prevPos.parent.classList.remove("o_has_treeEntry");
-                }
-            },
-            onDrop: async ({ element, parent, next }) => {
-                const draggingFolderId = parseInt(element.dataset.valueId);
-                const parentFolderId = parent ? parseInt(parent.dataset.valueId) : false;
-                const beforeFolderId = next ? parseInt(next.dataset.valueId) : false;
-                await this.orm.call("documents.folder", "move_folder_to", [
-                    [draggingFolderId],
-                    parentFolderId,
-                    beforeFolderId,
-                ]);
-                await this._reloadSearchModel(true);
-            },
         });
     }
 
@@ -115,9 +62,7 @@ export class DocumentsSearchPanel extends SearchPanel {
     }
 
     isUploadingInFolder(folderId) {
-        return Object.values(this.documentUploads).find(
-            (upload) => upload.data.get("folder_id") === folderId
-        );
+        return Object.values(this.documentUploads).find(upload => upload.data.get("folder_id") === folderId);
     }
 
     //---------------------------------------------------------------------
@@ -127,7 +72,7 @@ export class DocumentsSearchPanel extends SearchPanel {
     getResModelResIdFromValueGroup(section, value, group) {
         if (value) {
             return [
-                this.env.model.root.fields[section.fieldName].relation,
+                this.env.model.root.activeFields[section.fieldName].relation,
                 section.values.get(value).id,
             ];
         } else if (group) {
@@ -143,9 +88,7 @@ export class DocumentsSearchPanel extends SearchPanel {
         // By default the category is not reloaded.
         if (reloadCategories) {
             await searchModel._fetchSections(
-                searchModel.getSections(
-                    (s) => s.type === "category" && s.fieldName === "folder_id"
-                ),
+                searchModel.getSections((s) => s.type === "category" && s.fieldName === "folder_id"),
                 []
             );
         }
@@ -161,7 +104,7 @@ export class DocumentsSearchPanel extends SearchPanel {
     }
 
     onSectionValueTouchStart(ev, section, value, group) {
-        if (!uiUtils.isSmall() || !this.supportedEditionFields.includes(section.fieldName)) {
+        if (!device.isMobile || !this.supportedEditionFields.includes(section.fieldName)) {
             return;
         }
         this.touchStartMs = Date.now();
@@ -189,34 +132,43 @@ export class DocumentsSearchPanel extends SearchPanel {
         const target = ev.currentTarget || ev.target;
         const label = target.closest(".o_search_panel_label");
         const counter = label && label.querySelector(".o_search_panel_counter");
-        this.popover.open(ev.target, {
+        if (this.popoverClose) {
+            this.popoverClose();
+        }
+        this.popoverClose = this.popover.add(ev.target, DocumentsSearchPanelItemSettingsPopover, {
             onEdit: () => {
-                this.popover.close();
+                this.popoverClose();
                 this.state.showMobileSearch = false;
                 this.editSectionValue(resModel, resId);
             },
             onCreateChild: () => {
-                this.popover.close();
+                this.popoverClose();
                 this.addNewSectionValue(section, value || group);
             },
+            onDelete: () => {
+                this.popoverClose();
+                this.state.showMobileSearch = false;
+                this.removeSectionValue(section, resModel, resId);
+            },
             createChildEnabled: this.supportedNewChildModels.includes(resModel),
+        }, {
+            onClose: () => {
+                target.classList.remove("d-block");
+                if (counter) {
+                    counter.classList.remove("d-none");
+                }
+            },
+            popoverClass: "o_search_panel_item_settings_popover",
         });
         target.classList.add("d-block");
         if (counter) {
             counter.classList.add("d-none");
         }
-        this.onPopoverClose = () => {
-            this.onPopoverClose = null;
-            target.classList.remove("d-block");
-            if (counter) {
-                counter.classList.remove("d-none");
-            }
-        };
     }
 
     async addNewSectionValue(section, parentValue) {
         const resModel = section.fieldName === "folder_id" ? "documents.folder" : "documents.tag";
-        const defaultName = resModel === "documents.folder" ? _t("New Workspace") : _t("New Tag");
+        const defaultName = resModel === "documents.folder" ? this.env._t("New Workspace") : this.env._t("New Tag");
         const createValues = {
             name: defaultName,
         };
@@ -228,7 +180,7 @@ export class DocumentsSearchPanel extends SearchPanel {
             const group = section.groups.get(parentValue);
             const groupValues = [...group.values.values()];
             let index = 2;
-            while (groupValues.find((v) => v.display_name === createValues.name)) {
+            while (groupValues.find(v => v.display_name === createValues.name)) {
                 createValues.name = defaultName + ` (${index++})`;
             }
         }
@@ -245,24 +197,40 @@ export class DocumentsSearchPanel extends SearchPanel {
     }
 
     async editSectionValue(resModel, resId) {
-        this.action.doAction(
-            {
-                res_model: resModel,
-                res_id: resId,
-                name: _t("Edit"),
-                type: "ir.actions.act_window",
-                target: "new",
-                views: [[false, "form"]],
-                context: {
-                    create: false,
-                    form_view_ref: "documents.folder_view_form",
-                },
+        this.action.doAction({
+            res_model: resModel,
+            res_id: resId,
+            name: this.env._t("Edit"),
+            type: "ir.actions.act_window",
+            target: "new",
+            views: [[false, "form"]],
+            context: {
+                create: false,
             },
-            {
-                onClose: this._reloadSearchModel.bind(this, true),
-            }
-        );
-        await this.env.model.env.documentsView.bus.trigger("documents-close-preview");
+        }, {
+            onClose: this._reloadSearchModel.bind(this, true),
+        });
+    }
+
+    async removeSectionValue(section, resModel, resId) {
+        if (resModel !== "documents.folder") {
+            this.dialog.add(ConfirmationDialog, {
+                body: this.env._t("Are you sure you want to delete this record?"),
+                confirm: async () => {
+                    await this.orm.unlink(resModel, [resId]);
+                    await this._reloadSearchModel(resModel === "documents.folder" && !section.enableCounters);
+                }
+            });
+        } else {
+            this.action.doAction("documents.documents_folder_deletion_wizard_action", {
+                additionalContext: {
+                    default_folder_id: resId,
+                },
+                onClose: () => {
+                    this._reloadSearchModel(true).then(this.render.bind(this, true));
+                },
+            });
+        }
     }
 
     //---------------------------------------------------------------------
@@ -305,6 +273,20 @@ export class DocumentsSearchPanel extends SearchPanel {
         return false;
     }
 
+    onDragStartFolder(value, ev) {
+        if (!value.id || !this.isDocumentManager) {
+            return;
+        }
+        ev.dataTransfer.setData("o_documents_drag_folder", "");
+        const newElement = document.createElement("span");
+        newElement.classList.add("o_documents_drag_icon");
+        newElement.innerText = value.display_name;
+        document.body.append(newElement);
+        ev.dataTransfer.setDragImage(newElement, -5, -5);
+        this.draggingFolder = value;
+        setTimeout(() => newElement.remove());
+    }
+
     /**
      * @param {Object} section
      * @param {Object} value
@@ -334,7 +316,22 @@ export class DocumentsSearchPanel extends SearchPanel {
         }
         if (ev.dataTransfer.types.includes("o_documents_data")) {
             await this.onDropDocuments(section, value, ev);
+        } else if (ev.dataTransfer.types.includes("o_documents_drag_folder")) {
+            await this.onDropFolder(section, value, ev);
         }
+    }
+
+    async onDropFolder(section, value, ev) {
+        if (
+            !this.isValidDragTransfer(section, value, ev.currentTarget, ev.dataTransfer) ||
+            this.draggingFolder.id === value.id
+        ) {
+            return;
+        }
+        // Dropping a folder into another one makes the dropped folder a child of the parent
+        await this.orm.call("documents.folder", "set_parent_folder", [[this.draggingFolder.id], value.id]);
+        await this._reloadSearchModel(true);
+        this.render(true);
     }
 
     /**
@@ -351,41 +348,26 @@ export class DocumentsSearchPanel extends SearchPanel {
         ) {
             return;
         }
-        const data = JSON.parse(dataTransfer.getData("o_documents_data"));
         if (section.fieldName === "folder_id") {
             const currentFolder = this.env.searchModel.getSelectedFolder();
             if ((currentFolder.id && !currentFolder.has_write_access) || !value.has_write_access) {
                 return this.notification.add(
-                    _t("You don't have the rights to move documents to that workspace"),
+                    this.env._t("You don't have the rights to move documents to that workspace"),
                     {
-                        title: _t("Access Error"),
+                        title: this.env._t("Access Error"),
                         type: "warning",
                     }
                 );
             }
-            if (currentFolder.id === "TRASH") {
-                const model = this.env.model;
-                await this.orm.write("documents.document", data.recordIds, { folder_id: value.id });
-                await toggleArchive(model, model.root.resModel, data.recordIds, false);
-                return;
-            }
-            // Dropping in the trash
-            if (value.id === "TRASH") {
-                const model = this.env.model;
-                const callback = async () => {
-                    await toggleArchive(model, model.root.resModel, data.recordIds, true);
-                };
-                model.root.records[0].openDeleteConfirmationDialog(model.root, callback, false);
-                return;
-            }
         }
+        const data = JSON.parse(dataTransfer.getData("o_documents_data"));
         if (data.lockedCount) {
             return this.notification.add(
-                _t(
-                    "%s file(s) not moved because they are locked by another user",
-                    data.lockedCount
-                ),
-                { title: _t("Partial transfer"), type: "warning" }
+                sprintf(this.env._t("%s file(s) not moved because they are locked by another user"), data.lockedCount),
+                {
+                    title: this.env._t("Partial transfer"),
+                    type: "warning",
+                }
             );
         }
         if (section.fieldName === "folder_id") {
@@ -452,7 +434,7 @@ export class DocumentsSearchPanel extends SearchPanel {
 
 DocumentsSearchPanel.modelExtension = "DocumentsSearchPanel";
 
-if (!uiUtils.isSmall()) {
+if (!device.isMobile) {
     DocumentsSearchPanel.template = "documents.SearchPanel";
     DocumentsSearchPanel.subTemplates = {
         category: "documents.SearchPanel.Category",

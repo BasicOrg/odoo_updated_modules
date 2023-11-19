@@ -9,7 +9,6 @@ import logging
 import datetime
 from re import match
 from dateutil.relativedelta import relativedelta
-from markupsafe import Markup
 
 _logger = logging.getLogger(__name__)
 
@@ -32,19 +31,19 @@ class HmrcVatObligation(models.Model):
     company_id = fields.Many2one('res.company', 'Company', required=True,
         default=lambda self: self.env.company)
 
-    @api.depends('date_due', 'date_start', 'date_end')
-    def _compute_display_name(self):
-        for o in self:
-            o.display_name = f"{o.date_due} ({o.date_start} - {o.date_end})"
+    def name_get(self):
+        return [(o.id, "%s (%s - %s)" % (o.date_due, o.date_start, o.date_end)) for o in self]
 
     @api.model
-    def _get_auth_headers(self, bearer, client_data=None):
+    def _get_auth_headers(self, bearer):
         headers = {
             'Accept': 'application/vnd.hmrc.1.0+json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer %s' % bearer,
-            **self.env['hmrc.service']._get_fraud_prevention_info(client_data),
         }
+        headers.update({
+            'Authorization': 'Bearer %s' % bearer ,
+        })
+        headers.update(self.env['hmrc.service']._get_fraud_prevention_info())
         return headers
 
     @api.model
@@ -141,22 +140,22 @@ class HmrcVatObligation(models.Model):
 
         values = {}
         for line in lines:
-            line_id = self.env['account.report']._parse_line_id(line['id'])[-1][-1]
+            line_id = self.env['account.generic.tax.report']._parse_line_id(line['id'])[-1][-1]
             if reverse_table.get(line_id):
                 # Do a get for the no_format as for the totals you have twice the line, without and with amount
                 # We cannot pass a negative netVatDue to the API and the amounts of sales/purchases/goodssupplied/ ... must be rounded
                 if reverse_table[line_id] == 'netVatDue':
-                    values[reverse_table[line_id]] = abs(round(line['columns'][0].get('no_format', 0.0), 2))
+                    values[reverse_table[line_id]] = abs(round(line['columns'][0].get('balance', 0.0), 2))
                 elif reverse_table[line_id] in ('totalValueSalesExVAT', 'totalValuePurchasesExVAT', 'totalValueGoodsSuppliedExVAT', 'totalAcquisitionsExVAT'):
-                    values[reverse_table[line_id]] = round(line['columns'][0].get('no_format', 0.0))
+                    values[reverse_table[line_id]] = round(line['columns'][0].get('balance', 0.0))
                 else:
-                    values[reverse_table[line_id]] = round(line['columns'][0].get('no_format', 0.0), 2)
+                    values[reverse_table[line_id]] = round(line['columns'][0].get('balance', 0.0), 2)
         return values
 
-    def action_submit_vat_return(self, data=None):
+    def action_submit_vat_return(self):
         self.ensure_one()
-        report = self.env.ref('l10n_uk.tax_report')
-        options = report.get_options()
+        report = self.env['account.generic.tax.report']
+        options = report._get_options(previous_options={'tax_report':self.env.ref('l10n_uk.tax_report').id})
         options['date'].update({'date_from': fields.Date.to_string(self.date_start),
                         'date_to': fields.Date.to_string(self.date_end),
                         'filter': 'custom',
@@ -167,8 +166,7 @@ class HmrcVatObligation(models.Model):
         res = self.env['hmrc.service']._login()
         if res: # If you can not login, return url for re-login
             return res
-        headers = self._get_auth_headers(self.env.user.l10n_uk_hmrc_vat_token, data)
-
+        headers = self._get_auth_headers(self.env.user.l10n_uk_hmrc_vat_token)
         url = self.env['hmrc.service']._get_endpoint_url('/organisations/vat/%s/returns' % vat)
         data = values.copy()
         data.update({
@@ -181,17 +179,17 @@ class HmrcVatObligation(models.Model):
         # Need to do something with the result?
         if r.status_code == 201: #Successful post
             response = json.loads(r.content.decode())
-            msg = _('Tax return successfully posted:') + Markup(' <br/>')
-            msg += Markup('<b>%s : </b>%s<br/>') % (_('Date Processed'), response['processingDate'])
+            msg = _('Tax return successfully posted:') + ' <br/>'
+            msg += '<b>' + _('Date Processed') + ': </b>' + response['processingDate'] + '<br/>'
             if response.get('paymentIndicator'):
-                msg += Markup('<b>%s : </b>%s<br/>') % (_('Payment Indicator'), response['paymentIndicator'])
-            msg += Markup('<b>%s : </b>%s<br/>') % (_('Form Bundle Number'), response['formBundleNumber'])
+                msg += '<b>' + _('Payment Indicator') + ': </b>' + response['paymentIndicator'] + '<br/>'
+            msg += '<b>' + _('Form Bundle Number') + ': </b>' + response['formBundleNumber'] + '<br/>'
             if response.get('chargeRefNumber'):
-                msg += Markup('<b>%s : </b>%s<br/>') % (_('Charge Ref Number'), response['chargeRefNumber'])
-            msg += Markup('<br/>%s<br/>') % _('Sent Values:')
+                msg += '<b>' + _('Charge Ref Number') + ': </b>' + response['chargeRefNumber'] + '<br/>'
+            msg += '<br/>' + _('Sent Values:') + '<br/>'
             for sent_key in data:
                 if sent_key != 'periodKey':
-                    msg += Markup('<b>%s</b>: %s</br>') % (sent_key, data[sent_key])
+                    msg += '<b>' + sent_key + '</b>: ' + str(data[sent_key]) + '<br/>'
             self.sudo().message_post(body=msg)
             self.sudo().write({'status': "fulfilled"})
         elif r.status_code == 401:  # auth issue
@@ -209,4 +207,4 @@ class HmrcVatObligation(models.Model):
                     msgs += err.get('message', '')
             else:
                 msgs = response.get('message') or response
-            raise UserError(_("Sorry, something went wrong: %s", msgs))
+            raise UserError(_("Sorry, something went wrong: %s") %  msgs)

@@ -3,30 +3,24 @@
 # 	* hr_payroll
 # 
 # Translators:
-# Martin Trigaux, 2023
-# Wil Odoo, 2023
-# Thi Huong Nguyen, 2023
+# Martin Trigaux, 2022
+# Duy BQ <duybq86@gmail.com>, 2022
+# Vo Thanh Thuy, 2022
+# Nancy Momoland <thanhnguyen.icsc@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Thi Huong Nguyen, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Nancy Momoland <thanhnguyen.icsc@gmail.com>, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip_worked_days.py:0
-#, python-format
-msgid " (Half-Day)"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count
@@ -37,64 +31,38 @@ msgstr "# Phiếu lương"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__payslips_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__payslips_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__payslip_count
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "# Payslips"
 msgstr "# Phiếu lương"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "$100"
-msgstr "100$"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "$100.0"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid ""
-"%s\n"
+"%s:\n"
 "- Employee: %s\n"
 "- Contract: %s\n"
 "- Payslip: %s\n"
 "- Salary rule: %s (%s)\n"
 "- Error: %s"
 msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
-#, python-format
-msgid "%s (copy)"
-msgstr "%s (sao chép)"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "%s and %s"
-msgstr "%s và %s"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "%s-declaration-%s"
-msgstr ""
+"%s:\n"
+"- Nhân viên: %s\n"
+"- Hợp đồng: %s\n"
+"- Phiếu lương: %s\n"
+"- Quy tắc lương: %s (%s)\n"
+"- Lỗi: %s"
 
 #. module: hr_payroll
 #: model:ir.actions.report,print_report_name:hr_payroll.action_report_payslip
 msgid "'Payslip - %s' % (object.name)"
-msgstr "'Phiếu lương - %s' % (object.name)"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "(%s Payslips)"
-msgstr "(%s Phiếu lương)"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__state
@@ -128,54 +96,9 @@ msgid "/ Month"
 msgstr "/ Tháng"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ day"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ half-month"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ half-year"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ quarter"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ two months"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ two weeks"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ week"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ year"
-msgstr ""
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "1. Save documents to terminated employees"
-msgstr "1. Lưu tài liệu cho nhân viên đã thôi việc"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
-msgid "100"
-msgstr "100"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_13th_month_salary
@@ -183,57 +106,13 @@ msgid "13th pay salary"
 msgstr "Lương tháng 13"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "1st semester of %s"
-msgstr ""
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "2. Index salaries for Marketing department"
-msgstr "2. Bảng lương cho bộ phận Marketing"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
-msgid "2023 Payroll"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "2023-08-10"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "2023-09-10"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "2nd semester of %s"
 msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "3. Create a new contract for Marc Demo with his new position"
-msgstr "3. Tạo hợp đồng mới cho Marc Demo với vị trí mới của anh ấy"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "380055"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "39560123456"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "40"
 msgstr ""
 
 #. module: hr_payroll
@@ -243,22 +122,16 @@ msgid ""
 "                            Save your Salary Rule in order to add Parameter Values.\n"
 "                        </span>"
 msgstr ""
-"<span class=\"bg-white opacity-75 w-100 h-100 o_salary_rule_overlay position-absolute top-0 end-0 w-100 h-100 text-center d-flex justify-content-center flex-column fs-3 \">\n"
-"                             Lưu Quy tắc lương của bạn để thêm Giá trị tham số.\n"
-"                         </span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "<span class=\"ms-2\"> hours/week</span>"
-msgstr "<span class=\"ms-2\"> giờ/tuần</span>"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
-msgid ""
-"<span class=\"o_stat_text\">\n"
-"                            Work Entries\n"
-"                            </span>"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Payroll Rules</span>"
+msgstr "<span class=\"o_form_label\">Quy tắc tính lương</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
@@ -268,21 +141,46 @@ msgstr "<span class=\"o_stat_text\">Phiếu lương</span>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 msgid ""
-"<span nolabel=\"1\" colspan=\"2\">This wizard will generate payslips for all"
+"<span class=\"text-muted\">Set a specific department if you wish to select "
+"all the employees from this department (and subdepartments) at once.</span>"
+msgstr ""
+"<span class=\"text-muted\">Chọn một phòng ban cụ thể nếu bạn muốn chọn tất "
+"cả nhân viên từ phòng ban này (và các phòng ban nhỏ) cùng một lúc.</span>"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"<span class=\"text-muted\">Set a specific structure if you wish to make an "
+"extra payslip (eg: End of the year bonus). If you leave this field empty, a "
+"regular payslip will be generated for all the selected employees, based on "
+"their contracts configuration.</span>"
+msgstr ""
+"<span class=\"text-muted\">Đặt cấu trúc cụ thể nếu bạn muốn tạo thêm một "
+"phiếu lương (ví dụ: Thưởng cuối năm). Nếu bạn để trống trường này, một phiếu"
+" lương thông thường sẽ được tạo cho tất cả các nhân viên đã chọn, dựa trên "
+"cấu hình hợp đồng của họ.</span>"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"<span colspan=\"4\" nolabel=\"1\">This wizard will generate payslips for all"
 " selected employee(s) based on the dates and credit note specified on "
 "Payslips Run.</span>"
 msgstr ""
-"<span nolabel=\"1\" colspan=\"2\">Tính năng này sẽ tạo phiếu lương cho tất "
-"cả (các) nhân viên đã chọn dựa trên ngày và ghi chú tín dụng được chỉ định "
-"trên Chạy phiếu lương.</span>"
+"<span colspan=\"4\" nolabel=\"1\">Cửa sổ này sẽ tạo phiếu tính lương cho tất"
+" cả (các) nhân viên được chọn dựa trên ngày và phiếu chi được chỉ định trên "
+"Chạy phiếu tính lương.</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_index_form_view
 msgid ""
-"<span role=\"status\" class=\"alert alert-warning d-block\" invisible=\"not "
-"display_warning\">You have selected contracts that are not running, this "
-"wizard can only index running contracts.</span>"
+"<span role=\"status\" class=\"alert alert-warning\" attrs=\"{'invisible': "
+"[('display_warning', '=', False)]}\">You have selected contracts that are "
+"not running, this wizard can only index running contracts.</span>"
 msgstr ""
+"<span role=\"status\" class=\"alert alert-warning\" attrs=\"{'invisible': "
+"[('display_warning', '=', False)]}\">Bạn đã chọn các hợp đồng không chạy, "
+"trình hướng dẫn này chỉ có thể lập chỉ mục các hợp đồng đang chạy.</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
@@ -315,14 +213,9 @@ msgstr ""
 "tính toán lại.</span>"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "<span>Days</span>"
-msgstr "<span>Days</span>"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
 msgid "<span>Versions</span>"
-msgstr "<span>Phiên bản</span>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -342,7 +235,7 @@ msgstr "<strong>Ngày bắt đầu hợp đồng</strong>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Contract Type</strong>"
-msgstr "<strong>Loại hợp đồng</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -394,19 +287,33 @@ msgstr "<strong>Thời gian làm việc</strong>"
 msgid ""
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; margin:0px auto;\"><tbody>\n"
 "    <tr><td valign=\"top\" style=\"text-align: left; font-size: 14px;\">\n"
-"        Dear <t t-esc=\"object.employee_id.name\"></t>, a new payslip is available for you.<br><br>\n"
-"        Please find the PDF in your employee portal.<br><br>\n"
-"        Have a nice day,<br>\n"
+"        Dear <t t-esc=\"object.employee_id.name\"/>, a new payslip is available for you.<br/><br/>\n"
+"        Please find the PDF in your employee portal.<br/><br/>\n"
+"        Have a nice day,<br/>\n"
 "        The HR Team\n"
 "    </td></tr>\n"
 "</tbody></table>\n"
 "            "
 msgstr ""
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; margin:0px auto;\"><tbody>\n"
+"    <tr><td valign=\"top\" style=\"text-align: left; font-size: 14px;\">\n"
+"        Thân gửi <t t-esc=\"object.employee_id.name\"/>, phiếu lương mới của bạn hiện đã có.<br/><br/>\n"
+"        Hãy xem bản PDF ở cổng thông tin nhân viên của bạn.<br/><br/>\n"
+"        Chúc bạn một ngày tốt lành,<br/>\n"
+"        Phòng nhân sự\n"
+"    </td></tr>\n"
+"</tbody></table>\n"
+"            "
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_work_entry_type_is_unforeseen_is_leave
 msgid "A unforeseen absence must be a leave."
 msgstr "Vắng mặt phải có phiếu nghỉ phép."
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Absenteeism Rate"
+msgstr "Tỷ lệ vắng mặt"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -430,19 +337,19 @@ msgstr "Đang hoạt động"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__active_amount
 msgid "Active Amount"
-msgstr "Số tiền hoạt động"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_ids
 msgid "Activities"
-msgstr "Hoạt động"
+msgstr "Các hoạt động"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_exception_decoration
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Hoạt động ngoại lệ"
+msgstr "Hành động ngoại lệ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_state
@@ -454,23 +361,14 @@ msgstr "Trạng thái hoạt động"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_type_icon
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Biểu tượng loại hoạt động"
+msgstr "Biểu tượng kiểu hoạt động"
 
 #. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/views/add_payslips_hook.js:0
-#: code:addons/hr_payroll/static/src/views/payslip_batch_form/payslip_batch_form.js:0
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
-#, python-format
-msgid "Add Payslips"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Add a <strong>name</strong> to the contract."
-msgstr "Thêm <strong>tên</strong> vào hợp đồng."
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_view_hr_payroll_structure_from_type
@@ -483,12 +381,17 @@ msgid "Add an internal note..."
 msgstr "Thêm ghi chú nội bộ..."
 
 #. module: hr_payroll
-#: model:res.groups,name:hr_payroll.group_hr_payroll_manager
-msgid "Administrator"
-msgstr "Quản trị viên"
+#: model:ir.actions.server,name:hr_payroll.action_hr_payslip_run_generate
+msgid "Add payslips"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#: model:res.groups,name:hr_payroll.group_hr_payroll_manager
+msgid "Administrator"
+msgstr "Người quản trị"
+
+#. module: hr_payroll
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.xml:0
 #, python-format
 msgid "All"
@@ -517,7 +420,7 @@ msgstr "Luôn đúng"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "Amount"
-msgstr "Số tiền"
+msgstr "Tổng tiền"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__amount_select
@@ -540,14 +443,9 @@ msgstr ""
 "Khoản tiền còn lại."
 
 #. module: hr_payroll
-#: model:ir.model.constraint,message:hr_payroll.constraint_hr_payroll_employee_declaration_unique_employee_sheet
-msgid "An employee can only have one declaration per sheet."
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payroll_stats/payroll_stats.xml:0
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__annually
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__annually
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__annually
 #, python-format
 msgid "Annually"
@@ -557,7 +455,7 @@ msgstr "Hàng năm"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid ""
 "Another refund payslip with the same amount has been found. Do you want to "
-"create a new one?"
+"create a new one ?"
 msgstr ""
 
 #. module: hr_payroll
@@ -586,40 +484,36 @@ msgstr "Ngày kết thúc ước tính."
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payroll_structure_filter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
 msgid "Archived"
-msgstr "Đã lưu trữ"
+msgstr "Đã lưu"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.js:0
 #, python-format
-msgid ""
-"Are you sure you want to delete this note? All content will be definitely "
-"lost."
+msgid "Are you sure you want to delete this note?"
 msgstr ""
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_assignment
-#: model:hr.salary.rule,name:hr_payroll.default_assignment_of_salary_rule
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__assignment_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__assignment
+#, python-format
 msgid "Assignment of Salary"
-msgstr "Chuyển nhượng tiền lương"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "At least one previous negative net could be reported on this payslip for %s"
 msgstr ""
-"Có ít nhất một khoản lương thực lãnh âm trước đây có thể được báo cáo trong "
-"phiếu lương này cho %s"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_attachment_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_attachment_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_attachment_count
 msgid "Attachment Count"
-msgstr "Số lượng tệp đính kèm"
+msgstr "Số lượng tập tin đính kèm"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__attachment_name
@@ -627,11 +521,17 @@ msgid "Attachment Name"
 msgstr "Tên tệp đính kèm"
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_attachment
-#: model:hr.salary.rule,name:hr_payroll.default_attachment_of_salary_rule
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__attachment_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__attachment
+#, python-format
 msgid "Attachment of Salary"
 msgstr "Tệp đính kèm lương"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Attendance Rate"
+msgstr "Tỉ lệ có mặt"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_entry_source__attendance
@@ -640,24 +540,29 @@ msgid "Attendances"
 msgstr "Chấm công"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "August 2023 Payslip"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__struct_ids
 msgid "Availability in Structure"
 msgstr "Có trong cấu trúc"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__avatar_1920
-msgid "Avatar"
-msgstr "Ảnh đại diện"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Basic Wage"
+msgstr "Mức lương cơ bản trung bình"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__avatar_128
-msgid "Avatar 128"
-msgstr "Hình đại diện 128"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Gross Wage"
+msgstr "Tổng lương trung bình"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Hours per Day of Work"
+msgstr "Lương theo giờ trung bình một ngày làm việc"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Net Wage"
+msgstr "Mức lương thực tế trung bình"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_report_view_tree
@@ -667,7 +572,7 @@ msgstr "Trung bình lương cơ bản"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_report_view_tree
 msgid "Average of Net Wage"
-msgstr "Trung bình của Lương thực lãnh"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule.category,name:hr_payroll.BASIC
@@ -675,9 +580,8 @@ msgid "Basic"
 msgstr "Cơ bản"
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_basic_salary_rule
 #, python-format
 msgid "Basic Salary"
 msgstr "Lương Cơ bản"
@@ -685,6 +589,7 @@ msgstr "Lương Cơ bản"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__basic_wage
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__basic_wage
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Basic Wage"
 msgstr "Lương cơ bản"
 
@@ -697,7 +602,7 @@ msgstr "Lương cơ bản nghỉ phép"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Batch"
-msgstr "Loạt"
+msgstr "Đợt"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__payslip_run_id
@@ -706,12 +611,12 @@ msgid "Batch Name"
 msgstr "Tên đợt"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.xml:0
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payslip_run
 #, python-format
 msgid "Batches"
-msgstr "Loạt"
+msgstr "Đợt lương"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__module_l10n_be_hr_payroll
@@ -719,20 +624,20 @@ msgid "Belgium Payroll"
 msgstr "Bảng Lương Vương Quốc Bỉ"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__bi-monthly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__bi-monthly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__bi-monthly
 msgid "Bi-monthly"
 msgstr "Hai tháng một lần"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__bi-weekly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__bi-weekly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__bi-weekly
 msgid "Bi-weekly"
 msgstr "Hai tuần một lần"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Board meeting summary:"
+msgid "Board meeting summary :"
 msgstr ""
 
 #. module: hr_payroll
@@ -761,14 +666,12 @@ msgid "Cancelled"
 msgstr "Đã hủy"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Cannot cancel a payslip that is done."
 msgstr "Không thể huỷ phiếu lương mà đã hoàn thành."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Cannot mark payslip as paid if not confirmed."
@@ -781,8 +684,6 @@ msgid ""
 "Careful, the Code is used in many references, changing it could lead to "
 "unwanted changes."
 msgstr ""
-"Hãy cẩn thận, Quy tắc được sử dụng trong nhiều tài liệu tham khảo, việc thay"
-" đổi nó có thể dẫn đến những thay đổi không mong muốn."
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__category_id
@@ -793,34 +694,38 @@ msgid "Category"
 msgstr "Danh mục"
 
 #. module: hr_payroll
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
+msgid "Change of Occupation"
+msgstr "Thay đổi nghề nghiệp"
+
+#. module: hr_payroll
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Check the <strong>Salary Structure Type</strong>."
-msgstr "Kiểm tra <strong>Loại cấu trúc lương</strong>."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Check the <strong>Work Entries</strong> linked to your newly created "
 "Contract."
 msgstr ""
-"Kiểm tra <strong>Mục nhập công việc</strong> được liên kết với Hợp đồng mới "
-"tạo của bạn."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Check the <strong>Working Schedule</strong>."
-msgstr "Kiểm tra <strong>Lịch làm việc</strong>."
+msgstr ""
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_child_support
-#: model:hr.salary.rule,name:hr_payroll.default_child_support
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__child_support_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__child_support
+#, python-format
 msgid "Child Support"
 msgstr "Nuôi con"
 
@@ -835,90 +740,80 @@ msgid "Choose a Payroll Localization"
 msgstr "Chọn Quy tắc Tiền lương Bản địa"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click here to create a new <strong>Contract</strong>."
-msgstr "Nhấp vào đây để tạo một <strong>Hợp đồng</strong> mới."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click here to generate a <strong>Batch</strong> for the displayed Employees."
 msgstr ""
-"Nhấp vào đây để tạo <strong>Bảng lương</strong> cho Nhân viên được hiển thị."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click here to go back to the <strong>Employee's profile</strong>."
-msgstr "Nhấn vào đây để quay lại trang <strong>Hồ sơ nhân viên</strong>."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click on <strong>Salary Information</strong> to access additional fields."
 msgstr ""
-"Nhấp vào <strong>Thông tin lương</strong> để truy cập các trường bổ sung."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on Employees to pick one of your <strong>Employees</strong>."
 msgstr ""
-"Nhấp vào Nhân viên để chọn một trong số <strong>Nhân viên</strong> của bạn."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click on Payroll to manage your employee's <strong>Work Entries</strong>, "
 "<strong>Contracts</strong> and <strong>Payslips</strong>."
 msgstr ""
-"Nhấp vào Bảng lương để quản lý <strong>Mục nhập công việc</strong>, "
-"<strong>Hợp đồng</strong> và <strong>Phiếu lương</strong> của nhân viên."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on the <strong>Payslip</strong>."
-msgstr "Nhấp vào <strong>Phiếu lương</strong>."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on the <strong>Work Entries</strong> menu."
-msgstr "Nhấp vào trình đơn <strong>Mục nhập công việc</strong>."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.xml:0
 #, python-format
 msgid "Close"
 msgstr "Đóng"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__paid_date
-msgid "Close Date"
-msgstr "Ngày đóng"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Close the window."
-msgstr "Đóng cửa sổ."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days_type__half-up
@@ -927,15 +822,14 @@ msgstr "Gần nhất"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__code
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__structure_code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__code
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -953,9 +847,6 @@ msgid "Companies"
 msgstr "Công ty"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__company_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__company_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__company_id
@@ -974,12 +865,6 @@ msgstr "Công ty"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
 msgid "Company Contribution"
 msgstr "Khoản phải đóng của công ty"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__full_time_required_hours
-#: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__full_time_required_hours
-msgid "Company Full Time"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__state__close
@@ -1015,7 +900,7 @@ msgstr "Điều kiện"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_index_form_view
@@ -1024,16 +909,16 @@ msgid "Confirm"
 msgstr "Xác nhận"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Confirm the <strong>Payslip</strong>."
-msgstr "Xác nhận <strong>Phiếu thanh toán</strong>."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip_run__state__verify
 msgid "Confirmed"
-msgstr "Đã xác nhận"
+msgstr "Đã được xác nhận"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__state__conflict
@@ -1041,22 +926,19 @@ msgid "Conflict"
 msgstr "Xung đột"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Conflicts"
 msgstr "Xung đột"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Congratulations! You created your first contract and generated your first "
 "payslip!"
 msgstr ""
-"Chúc mừng! Bạn đã tạo hợp đồng đầu tiên và tạo phiếu lương đầu tiên của "
-"mình!"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__contract_id
@@ -1070,11 +952,6 @@ msgstr "Hợp đồng"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__contract_domain_ids
 msgid "Contract Domain"
-msgstr "Lọc hợp đồng"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Contract Expiration Notice Period"
 msgstr ""
 
 #. module: hr_payroll
@@ -1125,7 +1002,7 @@ msgstr "Trợ cấp vận chuyển cho Gravie"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__amount
 msgid "Count"
-msgstr "Số tập dữ liệu"
+msgstr "Số bản ghi"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__country_id
@@ -1134,26 +1011,19 @@ msgstr "Số tập dữ liệu"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__country_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__country_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__country_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__country_id
 msgid "Country"
 msgstr "Quốc gia"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__country_code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__country_code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__country_code
 msgid "Country Code"
-msgstr "Mã Quốc gia"
+msgstr "Mã quốc gia"
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_hr_payroll_confirm_payroll
 msgid "Create Draft Entry"
 msgstr "Tạo bút toán nháp"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
-msgid "Create Individual Attachments"
-msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -1163,7 +1033,7 @@ msgstr "Tạo thanh toán SEPA"
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_new_salary_attachment
 msgid "Create Salary Attachment"
-msgstr "Tạo tệp đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_hr_contract_repository
@@ -1171,19 +1041,17 @@ msgid "Create a new contract"
 msgstr "Tạo hợp đồng mới"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.xml:0
 #, python-format
 msgid "Create new todo note"
-msgstr "Tạo ghi chú việc cần làm mới"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__create_uid
@@ -1195,7 +1063,6 @@ msgstr "Tạo ghi chú việc cần làm mới"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__create_uid
 msgid "Created by"
@@ -1205,9 +1072,7 @@ msgstr "Được tạo bởi"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__create_date
@@ -1219,7 +1084,6 @@ msgstr "Được tạo bởi"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__create_date
 msgid "Created on"
@@ -1228,29 +1092,21 @@ msgstr "Được tạo vào"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__credit_note
 msgid "Credit Note"
-msgstr "Giấy báo Có"
+msgstr "Công nợ âm"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Credit Notes"
-msgstr "Giấy báo Có"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__is_credit_time
-msgid "Credit Time"
-msgstr ""
+msgstr "Công nợ âm"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__time_credit
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry__is_credit_time
 msgid "Credit time"
-msgstr "Thời gian tín dụng"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__currency_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__currency_id
 msgid "Currency"
@@ -1260,12 +1116,6 @@ msgstr "Tiền tệ"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
 msgid "Current month"
 msgstr "Tháng hiện tại"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__daily
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__daily
-msgid "Daily"
-msgstr "Hàng ngày"
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_dashboard_root
@@ -1296,7 +1146,7 @@ msgstr "Đến ngày"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__date_end
 msgid "Date at which this assignment has been set as completed or cancelled."
-msgstr "Ngày mà nhiệm vụ này đã được đặt là hoàn thành hoặc bị hủy bỏ."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__full
@@ -1305,6 +1155,7 @@ msgstr "Ngày"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__number_of_days
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Days"
 msgstr "Ngày"
 
@@ -1324,39 +1175,17 @@ msgid "Days of Unpaid Time Off"
 msgstr "Số ngày nghỉ không lương"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__res_id
-msgid "Declaration Model Id"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__res_model
-msgid "Declaration Model Name"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__line_ids
-msgid "Declarations"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_deduction_salary_rule
 #: model:hr.salary.rule.category,name:hr_payroll.DED
 #, python-format
 msgid "Deduction"
 msgstr "Giảm trừ"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__schedule_pay
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_schedule_pay
 msgid "Default Scheduled Pay"
 msgstr "Kế hoạch thanh toán mặc định"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__wage_type
-msgid "Default Wage Type"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_work_entry_type_id
@@ -1364,13 +1193,14 @@ msgid "Default Work Entry Type"
 msgstr "Loại thời gian công việc mặc định"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Define a <strong>Wage</strong>."
-msgstr "Xác định <strong>Mức lương</strong>."
+msgstr ""
 
 #. module: hr_payroll
+#: model:ir.model.fields,help:hr_payroll.field_hr_contract__schedule_pay
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__schedule_pay
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure_type__default_schedule_pay
 msgid "Defines the frequency of the wage payment."
@@ -1399,13 +1229,15 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Department"
-msgstr "Bộ phận"
+msgstr "Phòng/Ban"
 
 #. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__description
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__name
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__description
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__description
@@ -1425,9 +1257,7 @@ msgstr "Huỷ bỏ"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__display_name
@@ -1441,7 +1271,6 @@ msgstr "Huỷ bỏ"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__display_name
@@ -1449,19 +1278,9 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Display Payslip PDF File on a payslip form"
-msgstr ""
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_work_entry_type_view_form_inherit
 msgid "Display in Payslip"
 msgstr "Hiển thị trong phiếu lương"
-
-#. module: hr_payroll
-#: model:res.groups,name:hr_payroll.group_payslip_display
-msgid "Display payslip PDF"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__attachment
@@ -1474,7 +1293,7 @@ msgstr "Tài liệu"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Done"
-msgstr "Hoàn tất"
+msgstr "Hoàn thành"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -1487,11 +1306,10 @@ msgid "Done Slip"
 msgstr "Phiếu lương đã hoàn thành"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Double Holiday Pay"
-msgstr "Nhân đôi lương ngày lễ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days_type__down
@@ -1499,12 +1317,11 @@ msgid "Down"
 msgstr "Xuống"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__draft
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__draft
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__state__draft
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 msgid "Draft"
-msgstr "Nháp"
+msgstr "Dự thảo"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -1517,12 +1334,6 @@ msgid "Draft Slip"
 msgstr "Phiếu lương dự thảo"
 
 #. module: hr_payroll
-#: model:ir.actions.server,name:hr_payroll.ir_actions_server_duplicate_structure
-msgid "Duplicate"
-msgstr "Nhân bản"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.actions.server,name:hr_payroll.action_edit_payslip_lines
 #, python-format
@@ -1538,7 +1349,7 @@ msgstr "Hướng dẫn sửa dòng phiếu lương"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_worked_days_line
 msgid "Edit payslip line wizard worked days"
-msgstr "Tính năng chỉnh sửa dòng phiếu lương thông tin ngày làm việc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_lines_wizard
@@ -1548,7 +1359,7 @@ msgstr "Hướng dẫn sửa dòng phiếu lương"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_line
 msgid "Edit payslip lines wizard line"
-msgstr "Chỉnh sửa chi tiết phiếu lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__edited
@@ -1558,25 +1369,20 @@ msgstr "Đã sửa"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_edit_payslip_lines_form_wizard
 msgid "Edition of Payslip Lines in the Payslip"
-msgstr "Phiên bản Dòng Phiếu lương trong Phiếu lương"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Eghezee"
 msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__email_cc
 msgid "Email cc"
-msgstr "Email cc"
+msgstr "Email CC"
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_employee
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__employee_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__employee_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__employee_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
@@ -1588,31 +1394,15 @@ msgid "Employee"
 msgstr "Nhân viên"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
-#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_search
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
-msgid "Employee Code"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_contract
 msgid "Employee Contract"
 msgstr "Hợp đồng nhân viên"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_count
 #, python-format
 msgid "Employee Count"
-msgstr "Số nhân viên"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "Employee Declarations"
-msgstr ""
+msgstr "Employee Count"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
@@ -1621,7 +1411,7 @@ msgid "Employee Function"
 msgstr "Chức vụ nhân viên"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.js:0
 #: model:ir.actions.act_window,name:hr_payroll.action_view_hr_payslip_form
 #: model:ir.actions.act_window,name:hr_payroll.action_view_hr_payslip_month_form
@@ -1630,18 +1420,16 @@ msgid "Employee Payslips"
 msgstr "Phiếu lương nhân viên"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employee Trends"
-msgstr "Xu hướng nhân sự"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employee whose contracts and company are differents"
-msgstr "Nhân viên có hợp đồng và công ty khác nhau"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__hourly_wage
@@ -1651,13 +1439,12 @@ msgstr "Tổng lương theo giờ của nhân viên."
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__resource_calendar_id
 msgid "Employee's working schedule."
-msgstr "Lịch làm việc của nhân viên."
+msgstr "Khung giờ làm việc của Nhân viên"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__employee_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_ids
+#: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_contracts_configuration
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_line_filter
@@ -1666,57 +1453,36 @@ msgid "Employees"
 msgstr "Nhân viên"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees (With Running Contracts) missing from open batches"
 msgstr ""
-"Nhân viên (Có hợp đồng đang chạy) bị thiếu trong các đợt mở bảng lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Both New And Running Contracts"
-msgstr "Nhân viên có cả hợp đồng mới và hợp đồng đang có hiệu lực"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Multiple Open Payslips of Same Type"
-msgstr "Nhân viên có nhiều phiếu lương mở cùng loại"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Employees Without Bank account Number"
 msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Employees Without Identification Number"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees Without Running Contracts"
-msgstr "Nhân viên không có hợp đồng có hiệu lực"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees with payslips generated on the previous contract"
-msgstr "Nhân viên có phiếu lương được tạo trong hợp đồng trước đó"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
@@ -1724,16 +1490,8 @@ msgid "Employer Cost"
 msgstr "Chi phí sử dụng lao động"
 
 #. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__hide_basic_on_pdf
-msgid ""
-"Enable this option if you don't want to display the Basic Salary on the "
-"printed pdf."
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__date_to
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__date_end
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "End Date"
 msgstr "Ngày kết thúc"
 
@@ -1748,7 +1506,6 @@ msgid "Error"
 msgstr "Lỗi"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule_category.py:0
 #, python-format
 msgid "Error! You cannot create recursive hierarchy of Salary Rule Category."
@@ -1771,11 +1528,11 @@ msgid "Export Payslip"
 msgstr "Xuất phiếu lương"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "First, we'll create a new <strong>Contract</strong>."
-msgstr "Trước tiên, chúng ta sẽ tạo một <strong>Hợp đồng</strong> mới."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__amount_fix
@@ -1783,12 +1540,6 @@ msgstr "Trước tiên, chúng ta sẽ tạo một <strong>Hợp đồng</strong
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_rule__amount_select__fix
 msgid "Fixed Amount"
 msgstr "Giá trị cố định"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__wage_type__monthly
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__monthly
-msgid "Fixed Wage"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_follower_ids
@@ -1808,7 +1559,7 @@ msgstr "Người theo dõi (Đối tác)"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_type_icon
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Font biểu tượng, ví dụ: fa-tasks"
+msgstr "Font biểu tượng ví dụ: fa-tasks"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_line__amount_percentage
@@ -1825,21 +1576,25 @@ msgstr "Bảng lương Pháp"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__date_from
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "From"
 msgstr "Từ"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "From %s to %s"
 msgstr "Từ %s tới %s"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "Full Time"
 msgstr "Đủ thời gian"
+
+#. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__full_time_required_hours
+#: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__full_time_required_hours
+msgid "Fulltime Hours"
+msgstr "Đủ giờ"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
@@ -1852,16 +1607,10 @@ msgid "Generate"
 msgstr "Tạo"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_tree
-msgid "Generate PDFs"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/js/hr_work_entries_gantt.xml:0
+#. openerp-web
+#: code:addons/hr_payroll/static/src/js/work_entries_controller_mixin.js:0
 #: code:addons/hr_payroll/static/src/views/work_entry_calendar/work_entry_calendar.xml:0
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
-#: model:ir.actions.server,name:hr_payroll.action_hr_payslip_run_generate
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #, python-format
 msgid "Generate Payslips"
@@ -1878,24 +1627,18 @@ msgid "Generate payslips for all selected employees"
 msgstr "Tạo phiếu lương cho toàn bộ nhân viên được chọn"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__pdf_generated
-msgid "Generated PDF"
-msgstr ""
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 msgid "Generated Payslips"
 msgstr "Tạo phiếu lương"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Give insurance card to new registered employees"
+msgid "Give assurance card to new registered employees"
 msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_gross_salary_rule
 #: model:hr.salary.rule.category,name:hr_payroll.GROSS
 #, python-format
 msgid "Gross"
@@ -1903,12 +1646,10 @@ msgstr "Tổng"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__gross_wage
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__gross_wage
 msgid "Gross Wage"
 msgstr "Tổng tiền lương"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
@@ -1919,11 +1660,6 @@ msgstr "Tổng tiền lương"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
 msgid "Group By"
 msgstr "Nhóm theo"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__group_payslip_display
-msgid "Group Payslip Display"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_work_entry
@@ -1938,7 +1674,7 @@ msgstr "Loại công việc HR"
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__half
 msgid "Half Day"
-msgstr "Nửa ngày"
+msgstr "Nữa ngày"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__has_message
@@ -1950,7 +1686,7 @@ msgstr "Có tin nhắn"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__has_negative_net_to_report
 msgid "Has Negative Net To Report"
-msgstr "Có thực lãnh âm để báo cáo"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__has_refund_slip
@@ -1960,12 +1696,12 @@ msgstr "Có phiếu hoàn tiền"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_similar_attachment
 msgid "Has Similar Attachment"
-msgstr "Có tệp đính kèm tương tự"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_similar_attachment_warning
 msgid "Has Similar Attachment Warning"
-msgstr "Có cảnh báo tệp đính kèm tương tự"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_total_amount
@@ -1973,16 +1709,15 @@ msgid "Has Total Amount"
 msgstr "Có tổng số tiền"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__hide_basic_on_pdf
-msgid "Hide Basic On Pdf"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__hourly_wage
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__wage_type__hourly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__hourly
 msgid "Hourly Wage"
 msgstr "Lương theo giờ"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Hours of Work"
+msgstr "Giờ làm việc"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__hours_per_week
@@ -1999,9 +1734,7 @@ msgstr "Phụ cấp thuê nhà"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__id
@@ -2015,7 +1748,6 @@ msgstr "Phụ cấp thuê nhà"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__id
@@ -2032,14 +1764,14 @@ msgstr "Biểu tượng"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_exception_icon
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Biểu tượng cho thấy một hoạt động ngoại lệ."
+msgstr "Biểu tượng để chỉ ra một hoạt động ngoại lệ."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_needaction
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_needaction
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
+msgstr "Nếu chọn, các tin nhắn mới yêu cầu sự có mặt của bạn."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_has_error
@@ -2049,13 +1781,7 @@ msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_error
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Nếu chọn, một số tin nhắn sẽ có lỗi gửi."
-
-#. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_employee__is_non_resident
-#: model:ir.model.fields,help:hr_payroll.field_res_users__is_non_resident
-msgid "If recipient lives in a foreign country"
-msgstr ""
+msgstr "Nếu đánh dấu thì một số thông điệp có lỗi."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__active
@@ -2067,19 +1793,11 @@ msgstr ""
 "không cần xóa bỏ nó."
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__image_1920
-msgid "Image"
-msgstr "Hình ảnh"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__image_128
-msgid "Image 128"
-msgstr "Hình ảnh 128"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_tree
+#. openerp-web
+#: code:addons/hr_payroll/static/src/xml/hr_contract_tree_views.xml:0
+#, python-format
 msgid "Index Contracts"
-msgstr "Hợp đồng chỉ mục"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payroll_index
@@ -2115,14 +1833,20 @@ msgstr "Ghi chú nội bộ"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__internet_invoice
 msgid "Internet Subscription Invoice"
-msgstr "Hóa đơn thuê bao Internet"
+msgstr ""
+
+#. module: hr_payroll
+#: code:addons/hr_payroll/models/note.py:0
+#, python-format
+msgid "Invite Follower"
+msgstr "Mời Người dõi theo"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_is_follower
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_is_follower
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_is_follower
 msgid "Is Follower"
-msgstr "Là người theo dõi"
+msgstr "Trở thành người theo dõi"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__is_fulltime
@@ -2133,7 +1857,7 @@ msgstr "Đủ thời gian"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__is_paid
 msgid "Is Paid"
-msgstr "Đã thanh toán"
+msgstr "Được thanh toán"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
@@ -2143,7 +1867,7 @@ msgstr "Là đăng ký"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_regular
 msgid "Is Regular"
-msgstr "Là thường xuyên"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_superuser
@@ -2151,25 +1875,27 @@ msgid "Is Superuser"
 msgstr "Là Superuser"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_wrong_duration
-msgid "Is Wrong Duration"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__quantity
 msgid ""
 "It is used in computation for percentage and fixed amount. E.g. a rule for "
 "Meal Voucher having fixed amount of 1€ per worked day can have its quantity "
-"defined in expression like worked_days['WORK100'].number_of_days."
+"defined in expression like worked_days.WORK100.number_of_days."
 msgstr ""
+"Được sử dụng để tính toán tổng số theo phần trăm và cố định. Ví dụ, một quy "
+"tắc Phiếu Ăn trưa có giá trị cố định 30000đ mỗi ngày làm việc có thể có số "
+"lượng được xác định bằng biểu thức kiểu như "
+"worked_days.WORK100.number_of_days."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input__amount
 msgid ""
 "It is used in computation. E.g. a rule for salesmen having 1%% commission of"
 " basic salary per product can defined in expression like: result = "
-"inputs['SALEURO'].amount * contract.wage * 0.01."
+"inputs.SALEURO.amount * contract.wage * 0.01."
 msgstr ""
+"Được sử dụng trong tính toán. Ví dụ, môt quy tắc cho nhân viên bán hàng có "
+"hoa hồng bằng 1% lương cơ bản nhân giá trị sản phẩm bán ra có thể được thể "
+"hiện bằng biểu thức result = inputs.SALEURO.amount * contract.wage*0.01."
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__job_id
@@ -2180,26 +1906,39 @@ msgid "Job Position"
 msgstr "Chức vụ"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "John Smith"
-msgstr "John Smith"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "John123"
-msgstr ""
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_search
 msgid "Last 365 Days Payslip"
 msgstr "Phiếu lương 365 ngày qua"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Last Departures"
-msgstr "Bộ phận gần đây"
+msgstr ""
+
+#. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
@@ -2215,9 +1954,7 @@ msgstr "Quý trước"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__write_uid
@@ -2229,19 +1966,16 @@ msgstr "Quý trước"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__write_date
@@ -2253,7 +1987,6 @@ msgstr "Cập nhật lần cuối bởi"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__write_date
 msgid "Last Updated on"
@@ -2263,11 +1996,6 @@ msgstr "Cập nhật lần cuối vào"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_line_form
 msgid "Line Name"
 msgstr "Tên dòng"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__lines_count
-msgid "Lines Count"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule_category__parent_id
@@ -2280,23 +2008,35 @@ msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Links:"
+msgid "Links :"
 msgstr ""
+
+#. module: hr_payroll
+#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__email_cc
+msgid "List of cc from incoming emails."
+msgstr "Danh sách CC từ email đến"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__paid
-msgid "Made Payment Order? "
-msgstr ""
+msgid "Made Payment Order ? "
+msgstr "Đã tạo lệnh thanh toán/UNC? "
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
+msgid "Made by Odoo with ❤️"
+msgstr "Tạo bởi Odoo ❤️"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Tệp đính kèm chính"
 
 #. module: hr_payroll
 #: model:res.groups,name:hr_payroll.group_hr_payroll_employee_manager
 msgid "Manager"
-msgstr "Quản lý"
+msgstr "Người quản lý"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
@@ -2310,15 +2050,10 @@ msgid "Mark as paid"
 msgstr "Đánh dấu đã thanh toán"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Married"
-msgstr "Đã kết hôn"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__master_department_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_search
 msgid "Master Department"
-msgstr "Bộ phận chính"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__condition_range_max
@@ -2335,14 +2070,14 @@ msgstr "Phiếu ăn"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_has_error
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_has_error
 msgid "Message Delivery error"
-msgstr "Lỗi gửi tin nhắn"
+msgstr "Thông báo gửi đi gặp lỗi"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_ids
 msgid "Messages"
-msgstr "Tin nhắn"
+msgstr "Thông báo"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__condition_range_min
@@ -2360,9 +2095,9 @@ msgid "Model for Printing hr.payslip.line grouped by register"
 msgstr "Đối tượng để In hr.payslip.line được nhóm theo người đăng ký"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payroll_stats/payroll_stats.xml:0
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__monthly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__monthly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__monthly
 #, python-format
 msgid "Monthly"
@@ -2375,6 +2110,11 @@ msgid "Monthly Amount"
 msgstr "Khoản tiền hàng tháng"
 
 #. module: hr_payroll
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__monthly
+msgid "Monthly Fixed Wage"
+msgstr "Tiền lương cố định hàng tháng"
+
+#. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_salary_attachment_check_monthly_amount
 msgid "Monthly amount must be strictly positive."
 msgstr "Khoản tiền hàng tháng phải là số dương."
@@ -2383,18 +2123,16 @@ msgstr "Khoản tiền hàng tháng phải là số dương."
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__my_activity_date_deadline
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Hạn chót hoạt động của tôi"
+msgstr "Hạn chót hoạt động"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__rule_parameter_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__name
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -2414,22 +2152,22 @@ msgstr ""
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_amount
 msgid "Negative Net To Report Amount"
-msgstr "Số tiền lương thực lãnh âm cần báo cáo"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_display
 msgid "Negative Net To Report Display"
-msgstr "Số tiền lương thực lãnh âm hiển thị"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_message
 msgid "Negative Net To Report Message"
-msgstr "Thông báo báo cáo lương thực tế âm"
+msgstr ""
 
 #. module: hr_payroll
 #: model:mail.activity.type,name:hr_payroll.mail_activity_data_hr_payslip_negative_net
 msgid "Negative Net to Report"
-msgstr "Lương thực lãnh âm cần báo cáo"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule.category,name:hr_payroll.NET
@@ -2439,12 +2177,11 @@ msgstr "Thực lãnh"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_view_kanban
 msgid "Net -"
-msgstr "Thực lãnh -"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_net_salary
 #, python-format
 msgid "Net Salary"
 msgstr "Lương Thực Lĩnh"
@@ -2456,7 +2193,6 @@ msgid "Net Wage"
 msgstr "Thực lãnh"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/report/hr_contract_history.py:0
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip_run__state__draft
 #, python-format
@@ -2464,21 +2200,18 @@ msgid "New"
 msgstr "Mới"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "New Contracts"
-msgstr "Hợp đồng mới"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "New Employees"
 msgstr "Nhân viên mới"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "New Payslip"
@@ -2494,7 +2227,7 @@ msgstr "Sự kiện lịch hoạt động tiếp theo"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_date_deadline
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Hạn chót cho hoạt động tiếp theo"
+msgstr "Hạn chót cho hành động kế tiếp"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_summary
@@ -2506,22 +2239,7 @@ msgstr "Tóm tắt hoạt động tiếp theo"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_type_id
 msgid "Next Activity Type"
-msgstr "Loại hoạt động tiếp theo"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__no_end_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__no_end_date
-msgid "No End Date"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"No Other Input Type was found for the following Salary Attachment Types codes:\n"
-"%s"
-msgstr ""
+msgstr "Kiểu hoạt động kế tiếp"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__no
@@ -2534,37 +2252,24 @@ msgid "No duplication of registration numbers is allowed"
 msgstr "Không được phép trùng lặp số đăng ký"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_rule_parameter.py:0
 #, python-format
-msgid "No rule parameter with code %r was found for %s "
-msgstr ""
+msgid "No rule parameter with code '%s' was found for %s "
+msgstr "Không tìm thấy tham số quy tắc có mã '%s' cho %s"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__is_non_resident
-#: model:ir.model.fields,field_description:hr_payroll.field_res_users__is_non_resident
-msgid "Non-resident"
-msgstr ""
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__normal_wage
+msgid "Normal Wage"
+msgstr "Lương cơ bản"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/res_company.py:0
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__note
+#: model:ir.model,name:hr_payroll.model_note_note
 #, python-format
 msgid "Note"
 msgstr "Ghi chú"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
-msgid ""
-"Note a description of your parameter, when it's used, how is it computed, "
-"what's the source, ..."
-msgstr ""
-"Lưu ý mô tả về thông số của bạn, khi nó được sử dụng, nó được tính toán như "
-"thế nào, nguồn là gì, ..."
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
@@ -2606,51 +2311,35 @@ msgid "Number of Hours"
 msgstr "Số giờ"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid ""
-"Number of days prior to the contract end date that a contract expiration "
-"warning is triggered."
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid ""
-"Number of days prior to the work permit expiration date that a warning is "
-"triggered."
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_has_error_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_has_error_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_has_error_counter
 msgid "Number of errors"
-msgstr "Số lượng lỗi"
+msgstr "Số lỗi"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__full_time_required_hours
 #: model:ir.model.fields,help:hr_payroll.field_resource_calendar__full_time_required_hours
-msgid ""
-"Number of hours to work on the company schedule to be considered as "
-"fulltime."
-msgstr ""
+msgid "Number of hours to work to be considered as fulltime."
+msgstr "Số giờ làm việc được coi là toàn thời gian."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_needaction_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_needaction_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Số tin nhắn cần xử lý"
+msgid "Number of messages which requires an action"
+msgstr "Số thông báo cần xử lý"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_has_error_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_has_error_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Số tin nhắn bị gửi lỗi"
+msgstr "Số lượng tin gửi đi bị lỗi"
 
 #. module: hr_payroll
 #: model:res.groups,name:hr_payroll.group_hr_payroll_user
-msgid "Officer: Manage all contracts"
+msgid "Officer : Manage all contracts"
 msgstr ""
 
 #. module: hr_payroll
@@ -2659,42 +2348,36 @@ msgid "On the"
 msgstr "Trên"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the first tab is the amount of worked time giving you a <strong>gross "
 "amount</strong>."
 msgstr ""
-"Trên tab đầu tiên là lượng thời gian đã làm việc mang lại cho bạn "
-"<strong>tổng số tiền</strong>."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the second tab is the computation of the rules linked to the Structure "
 "resulting in a <strong>net amount</strong>."
 msgstr ""
-"Trên tab thứ hai là tính toán các quy tắc được liên kết với Cấu trúc dẫn đến"
-" <strong>số tiền thực lãnh</strong>."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the smartbutton, you can find all the <strong>Payslips</strong> included "
 "in the Batch."
 msgstr ""
-"Trên nút thông minh, bạn có thể tìm thấy tất cả <strong>Phiếu lương</strong>"
-" có trong Bảng lương."
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_actions_server_action_open_reporting
 msgid "Open Payroll Reporting"
-msgstr "Mở báo cáo bảng lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
@@ -2728,23 +2411,6 @@ msgid "Out of Contract"
 msgstr "Không có hợp đồng"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__pdf_error
-msgid "PDF Error Message"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_file
-msgid "PDF File"
-msgstr "Tệp PDF"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_employee_declaration.py:0
-#, python-format
-msgid "PDF generation started. It will be available shortly."
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__paid
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip_run__state__paid
 msgid "Paid"
@@ -2757,8 +2423,14 @@ msgstr "Khoản đã trả"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_type__2
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Paid Time Off"
 msgstr "Nghỉ phép năm"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Paid Time Off (Basic Wage)"
+msgstr "Nghỉ có lương (Lương cơ bản)"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__parameter_value
@@ -2772,18 +2444,13 @@ msgstr "Cha"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__time_credit
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
+#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 msgid "Part Time"
-msgstr "Bán thời gian"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__time_credit_type_id
 msgid "Part Time Work Entry Type"
-msgstr "Loại nội dung công việc bán thời gian"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "Part time"
 msgstr ""
 
 #. module: hr_payroll
@@ -2818,8 +2485,8 @@ msgstr "Tên phiếu lương"
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.open_payroll_modules
+#: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_root
 #: model:ir.ui.menu,name:hr_payroll.menu_report_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Payroll"
 msgstr "Bảng lương"
@@ -2844,39 +2511,15 @@ msgid "Payroll Analysis Report"
 msgstr "Báo cáo phân tích bảng lương"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__code
-msgid "Payroll Code"
-msgstr "Mã lương"
-
-#. module: hr_payroll
 #: model:ir.actions.client,name:hr_payroll.hr_payroll_dashboard_open
+#: model:note.tag,name:hr_payroll.payroll_note_tag
 msgid "Payroll Dashboard"
-msgstr "Bảng thông tin lương"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_declaration_mixin
-msgid "Payroll Declaration Mixin"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_employee_declaration
-msgid "Payroll Employee Declaration"
 msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Payroll Entries"
 msgstr "Kế toán Lương"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_note
-msgid "Payroll Note"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Payroll Rules"
-msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -2895,7 +2538,7 @@ msgstr "Các quy tắc tiền lương mà áp dụng ở đất nước bạn"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Payroll tips &amp; tricks:"
+msgid "Payroll tips &amp; tricks :"
 msgstr ""
 
 #. module: hr_payroll
@@ -2910,6 +2553,8 @@ msgstr "Bảng lương với thanh toán SEPA"
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_cron_generate_payslip_pdfs_ir_actions_server
+#: model:ir.cron,cron_name:hr_payroll.ir_cron_generate_payslip_pdfs
+#: model:ir.cron,name:hr_payroll.ir_cron_generate_payslip_pdfs
 msgid "Payroll: Generate pdfs"
 msgstr "Bảng lương: Tạo pdf"
 
@@ -2920,11 +2565,12 @@ msgstr "Bảng lương: Phiếu lương mới"
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_cron_update_payroll_data_ir_actions_server
+#: model:ir.cron,cron_name:hr_payroll.ir_cron_update_payroll_data
+#: model:ir.cron,name:hr_payroll.ir_cron_update_payroll_data
 msgid "Payroll: Update data"
 msgstr "Bảng lương: Cập nhật dữ liệu"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.actions.report,name:hr_payroll.action_report_payslip
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__payslip_id
@@ -2934,11 +2580,10 @@ msgid "Payslip"
 msgstr "Phiếu lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
-msgid "Payslip 'Date From' must be earlier than 'Date To'."
-msgstr ""
+msgid "Payslip 'Date From' must be earlier 'Date To'."
+msgstr "'Từ ngày' của phiếu lương phải trước 'Đến ngày'."
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -3013,11 +2658,6 @@ msgid "Payslip Other Input Types"
 msgstr "Loại đầu vào khác"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Payslip PDF Display"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__payslip_start_date
 msgid "Payslip Start Date"
 msgstr "Ngày bắt đầu phiếu lương"
@@ -3029,7 +2669,6 @@ msgid "Payslip Worked Days"
 msgstr "Ngày làm việc trên Phiếu lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #: model:ir.actions.act_window,name:hr_payroll.act_hr_employee_payslip_list
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__slip_ids
@@ -3039,8 +2678,8 @@ msgstr "Ngày làm việc trên Phiếu lương"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_history_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_pivot
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_tree
 #, python-format
 msgid "Payslips"
@@ -3056,14 +2695,13 @@ msgstr "Bảng lương"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_tree
 msgid "Payslips Count"
-msgstr "Đếm phiếu lương"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips Generated On Previous Contract"
-msgstr "Phiếu lương được tạo trên hợp đồng trước đó"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_payslip_action_view_to_pay
@@ -3071,11 +2709,10 @@ msgid "Payslips To Pay"
 msgstr "Phiếu lương cần thanh toán"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips With Negative Amounts"
-msgstr "Phiếu lương có lương thực lãnh âm"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
@@ -3083,20 +2720,9 @@ msgid "Payslips by Employees"
 msgstr "Phiếu lương theo Nhân viên"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips with negative NET"
-msgstr "Phiếu lương có Thực lãnh âm"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_filename
-msgid "Pdf Filename"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_to_generate
-msgid "Pdf To Generate"
 msgstr ""
 
 #. module: hr_payroll
@@ -3120,28 +2746,20 @@ msgstr "Phần trăm dựa trên"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Period"
-msgstr "Giai đoạn"
+msgstr "Chu kỳ"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Pick an Employee to see his <strong>Contract's History</strong>."
 msgstr ""
-"Chọn một Nhân viên để xem <strong>Lịch sử hợp đồng</strong> của người đó."
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_entry_source__planning
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__work_entry_source__planning
 msgid "Planning"
-msgstr "Lập kế hoạch"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_employee_declaration.py:0
-#, python-format
-msgid "Please select the declarations for which you want to generate a PDF."
-msgstr ""
+msgstr "Kế hoạch"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -3149,15 +2767,16 @@ msgid "Post payroll slips in accounting"
 msgstr "Tự động tạo các bút toán lương cho kế toán"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Previous Negative Payslip to Report"
 msgstr "Phiếu lương âm trước đó cần báo cáo"
 
 #. module: hr_payroll
+#. openerp-web
+#: code:addons/hr_payroll/static/src/xml/payslip_tree_views.xml:0
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_tree
+#, python-format
 msgid "Print"
 msgstr "In"
 
@@ -3167,7 +2786,6 @@ msgid "Professional Tax"
 msgstr "Thuế Nhà thầu"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Prorated end-of-year bonus"
@@ -3212,26 +2830,14 @@ msgid "Quantity/Rate"
 msgstr "Số lượng/Tỷ lệ"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Quarter %s of %s"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__quarterly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__quarterly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__quarterly
 msgid "Quarterly"
-msgstr "Hàng quý"
+msgstr "Hàng Quý"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__queued_for_pdf
 msgid "Queued For Pdf"
-msgstr "Xếp hàng cho Pdf"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__pdf_to_generate
-msgid "Queued PDF generation"
 msgstr ""
 
 #. module: hr_payroll
@@ -3251,13 +2857,6 @@ msgid "Rate (%)"
 msgstr "Tỷ lệ (%)"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__rating_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__rating_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__rating_ids
-msgid "Ratings"
-msgstr "Đánh giá"
-
-#. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_hr_payroll_recompute_whole_sheet
 msgid "Recompute Whole Sheet"
 msgstr "Tính lại cả trang tính"
@@ -3269,7 +2868,6 @@ msgstr ""
 "Chỉ tính lại dòng phiếu lương, không tính dòng ngày làm việc/dữ liệu nhập"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "Recorded a new payment of %s."
@@ -3278,15 +2876,14 @@ msgstr "Đã ghi nhận thanh toán mới %s."
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__number
 msgid "Reference"
-msgstr "Mã tham chiếu"
+msgstr "Mã phiếu"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Refund"
-msgstr "Hoàn tiền"
+msgstr "Giảm công nợ"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Refund: %(payslip)s"
@@ -3296,11 +2893,6 @@ msgstr "Hoàn tiền: %(payslip)s"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__registration_number
 msgid "Registration Number of the Employee"
 msgstr "Số đăng ký của nhân viên"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Regular Hours"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_struct_id
@@ -3313,9 +2905,8 @@ msgid "Regular Working Day"
 msgstr "Ngày làm việc thông thường"
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_reimbursement_salary_rule
 #, python-format
 msgid "Reimbursement"
 msgstr "Hoàn trả"
@@ -3373,11 +2964,6 @@ msgid "Rounding"
 msgstr "Làm tròn"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Rue du Paradis"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__salary_rule_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__salary_rule_id
 msgid "Rule"
@@ -3415,11 +3001,10 @@ msgid "Running"
 msgstr "Đang chạy"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Running contracts coming to an end"
-msgstr "Các hợp đồng đang có hiệu lực sắp kết thúc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__sim_card
@@ -3439,7 +3024,6 @@ msgid "Salary"
 msgstr "Tiền lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_contract.py:0
 #: code:addons/hr_payroll/report/hr_contract_history.py:0
 #: model:ir.actions.act_window,name:hr_payroll.hr_salary_attachment_action
@@ -3448,64 +3032,42 @@ msgstr "Tiền lương"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
 #, python-format
 msgid "Salary Attachment"
-msgstr "Đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_salary_attachment_report
 msgid "Salary Attachment / Report"
-msgstr "Đính kèm lương / Báo cáo"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__salary_attachments_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__salary_attachment_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__salary_attachment_count
 msgid "Salary Attachment Count"
-msgstr "Số lượng đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_salary_attachment_report_action
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_attachment_salary_report
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_report_view_pivot
 msgid "Salary Attachment Report"
-msgstr "Báo cáo Đính kèm Lương"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_salary_attachment_type
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_form
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_tree
-msgid "Salary Attachment Type"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_tree
-msgid "Salary Attachment Type Name"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.actions.act_window,name:hr_payroll.action_hr_salary_attachment_type
-#: model:ir.ui.menu,name:hr_payroll.menu_hr_salary_attachment_type
-msgid "Salary Attachment Types"
 msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__salary_attachment_count
 msgid "Salary Attachment count"
-msgstr "Số lượng tệp đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__salary_attachment_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__salary_attachment_ids
 #: model:ir.ui.menu,name:hr_payroll.hr_menu_salary_attachments
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_history_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 #, python-format
 msgid "Salary Attachments"
-msgstr "Tệp đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_category_form
@@ -3563,7 +3125,6 @@ msgid "Salary Rules"
 msgstr "Quy tắc lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Salary Slip"
@@ -3595,13 +3156,9 @@ msgstr "Cấu trúc lương"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__schedule_pay
-msgid "Schedule Pay"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
-msgid "Search Declarations"
-msgstr ""
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__schedule_pay
+msgid "Scheduled Pay"
+msgstr "Thanh toán"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -3622,7 +3179,7 @@ msgstr "Tìm Phiếu lương"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 msgid "Search Salary Attachment"
-msgstr "Tìm kiếm tệp đính kèm lương"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
@@ -3635,33 +3192,26 @@ msgid "Search Structure Type"
 msgstr "Tìm kiếm loại cấu trúc"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Select an <strong>HR Responsible</strong> for the contract."
-msgstr "Chọn một <strong>Nhân sự phụ trách</strong> cho hợp đồng."
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__semi-annually
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__semi-annually
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__semi-annually
 msgid "Semi-annually"
 msgstr "Nửa năm một"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__semi-monthly
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__semi-monthly
-msgid "Semi-monthly"
-msgstr ""
-
-#. module: hr_payroll
 #: model:mail.template,description:hr_payroll.mail_template_new_payslip
 msgid "Sent to employee to notify them about their new payslip"
-msgstr "Gửi cho nhân viên để thông báo cho họ về phiếu lương mới của họ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__sequence
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__sequence
@@ -3670,44 +3220,23 @@ msgid "Sequence"
 msgstr "Trình tự"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
-msgid ""
-"Set a specific department if you wish to select all the employees from this "
-"department (and subdepartments) at once."
-msgstr ""
-"Chọn một phòng ban cụ thể nếu bạn muốn chọn tất cả nhân viên từ phòng ban "
-"này (và các phòng ban con) cùng một lúc."
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
-msgid ""
-"Set a specific structure if you wish to make an extra payslip (eg: End of "
-"the year bonus). If you leave this field empty, a regular payslip will be "
-"generated for all the selected employees, based on their contracts "
-"configuration."
-msgstr ""
-"Cài cấu trúc cụ thể nếu bạn muốn thực hiện thêm phiếu lương (ví dụ: Tiền "
-"thưởng cuối năm). Nếu bạn để trống trường này, một phiếu lương thông thường "
-"sẽ được tạo cho tất cả nhân viên đã chọn, dựa trên cấu hình hợp đồng của họ."
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Set the Contract as <strong><q>Running</q></strong>."
-msgstr "Đặt Hợp đồng là <strong><q>Đang chạy</q></strong>."
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Set to Draft"
-msgstr "Đặt làm nháp"
+msgstr "Thiết lập về nháp"
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payroll_configuration
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_global_settings
 msgid "Settings"
-msgstr "Cài đặt"
+msgstr "Thiết lập"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
@@ -3715,12 +3244,16 @@ msgid "Slips to Confirm"
 msgstr "Phiếu lương chờ Xác nhận"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Software Engineer"
+#: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
+#, python-format
+msgid ""
+"Some part of %s's calendar is not covered by any work entry. Please complete"
+" the schedule. Time intervals to look for:%s"
 msgstr ""
+"Có %s chỗ trong lịch đang không có nhật ký làm việc. Vui lòng cập nhật đầy "
+"đủ. Khoảng thời gian cần tìm:%s"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "Some work entries could not be validated."
@@ -3730,19 +3263,16 @@ msgstr "Không thể xác thực một số mục nhập công việc."
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__standard_calendar_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__standard_calendar_id
 msgid "Standard Calendar"
-msgstr "Lịch tiêu chuẩn"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__date_start
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "Start Date"
 msgstr "Ngày bắt đầu"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__state
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__state
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
 msgid "State"
 msgstr "Trạng thái"
 
@@ -3766,9 +3296,9 @@ msgid ""
 "Planned: Future activities."
 msgstr ""
 "Trạng thái dựa trên hoạt động\n"
-"Quá hạn: Hạn chót hạn đã qua\n"
+"Quá hạn: Ngày đến hạn phải được chuyển\n"
 "Hôm nay: Hôm nay là ngày phải thực hiện\n"
-"Kế hoạch: Cần thực hiện trong tương lai."
+"Kế hoạch: Các hoạt động trong tương lai."
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__struct_id
@@ -3826,14 +3356,13 @@ msgstr "Tổng số ngày"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__country_code
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input_type__country_code
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__country_code
 msgid ""
 "The ISO country code in two chars. \n"
 "You can use this field for quick search."
 msgstr ""
-"Mã quốc gia ISO với hai ký tự.\n"
-"Bạn có thể sử dụng trường này để tìm kiếm nhanh."
+"The ISO country code in two chars. \n"
+"You can use this field for quick search."
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
@@ -3841,9 +3370,6 @@ msgid ""
 "The Standard Calendar is the calendar used by the people working at a 100% "
 "rate. It's used here to compute your part-time percentage."
 msgstr ""
-"Lịch tiêu chuẩn là lịch được sử dụng bởi những người làm việc với tỷ lệ "
-"100%. Nó được sử dụng ở đây để tính phần trăm thời gian làm việc bán thời "
-"gian của bạn."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__is_unforeseen
@@ -3851,8 +3377,6 @@ msgid ""
 "The Work Entry checked as Unforeseen Absence will be counted in absenteeism "
 "at work report."
 msgstr ""
-"Mục nhập Công việc được đánh dấu là Vắng mặt Không lường trước sẽ được tính "
-"là vắng mặt trong báo cáo công việc."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_edit_payslip_line__code
@@ -3889,20 +3413,6 @@ msgid "The contract this worked days should be applied to"
 msgstr "Hợp đồng sẽ áp dụng số ngày làm việc này"
 
 #. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__paid_date
-msgid "The date on which the payment is made to the employee."
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"The duration of the payslip is not accurate according to the structure type."
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
@@ -3913,7 +3423,6 @@ msgstr ""
 "%s"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
@@ -3943,25 +3452,10 @@ msgstr ""
 "được thiết lập."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "The payslips should be in Draft or Waiting state."
 msgstr "Phiếu lương phải ở trạng thái Nháp hoặc Đang chờ."
-
-#. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/views/add_payslips_hook.js:0
-#, python-format
-msgid "The payslips(s) are now added to the batch"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "The period selected does not match the contract validity period."
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__time_credit_type_id
@@ -3969,43 +3463,19 @@ msgid ""
 "The work entry type used when generating work entries to fit full time "
 "working schedule."
 msgstr ""
-"Loại mục nhập công việc được sử dụng khi tạo các mục nhập công việc để phù "
-"hợp với lịch trình làm việc toàn thời gian."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__unpaid_structure_ids
 msgid "The work entry won’t grant any money to employee in payslip."
 msgstr ""
-"Mục nhập công việc sẽ không cấp bất kỳ khoản tiền nào cho nhân viên trong "
-"phiếu lương."
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "There is no declaration to generate for the given period"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"There's no contract set on payslip %s for %s. Check that there is at least a"
-" contract set on the employee form."
-msgstr ""
-"Không có hợp đồng nào được chọn trên phiếu lương %s cho %s. Kiểm tra xem có "
-"ít nhất một hợp đồng được thiết lập trên hồ sơ nhân viên không."
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "This action is forbidden on validated payslips."
 msgstr "Tác vụ này bị cấm trên phiếu lương đã xác thực."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "This action is restricted to payroll managers only."
@@ -4030,31 +3500,26 @@ msgstr ""
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract_history__time_credit
 msgid "This is a credit time contract."
-msgstr "Đây là hợp đồng tín dụng có thời hạn."
-
-#. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_work_entry__is_credit_time
-msgid "This is a credit time work entry."
 msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
-msgid "This payslip can be erroneous :"
+msgid ""
+"This payslip can be erroneous! Work entries may not be generated for the "
+"period from %(start)s to %(end)s."
 msgstr ""
+"Phiếu lương này có thể bị sai sót! Nội dung công việc đã không được ghi nhận"
+" trong khoảng thời gian từ %(start)s tới %(end)s."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_edit_payslip_lines_wizard.py:0
 #, python-format
 msgid "This payslip has been manually edited by %s."
 msgstr "Phiếu lương này đã được chỉnh sửa thủ công bởi %s."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 #, python-format
 msgid "This payslip is not validated. This is not a legal document."
 msgstr ""
@@ -4068,7 +3533,7 @@ msgstr "Báo cáo này thực hiện phân tích trên phiếu lương của b�
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.hr_work_entry_report_action
 msgid "This report performs analysis on your work entries."
-msgstr "Báo cáo này thực hiện phân tích về các mục công việc của bạn."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__condition_range
@@ -4082,7 +3547,6 @@ msgstr ""
 "variable names (hra, ma, lta, etc.) and the variable basic."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "Time intervals to look for:%s"
@@ -4091,7 +3555,6 @@ msgstr "Khoảng thời gian cần tìm:%s"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__date_to
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__date_to
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "To"
 msgstr "Đến"
 
@@ -4108,7 +3571,7 @@ msgstr "Chờ xác nhận"
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_employee_payslips_to_pay
 msgid "To Pay"
-msgstr "Cần thanh toán"
+msgstr "Cần trả"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -4133,6 +3596,16 @@ msgstr "Tổng"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Total Amount"
 msgstr "Tổng số tiền"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Total Gross Wage"
+msgstr "Tổng lương thu nhập"
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Total Net Wage"
+msgstr "Tổng lương thực lãnh"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
@@ -4177,7 +3650,7 @@ msgstr "Hai quy tắc có cùng mã không thể bắt đầu cùng ngày"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__struct_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__input_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__work_entry_type_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__deduction_type_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__deduction_type
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 msgid "Type"
 msgstr "Loại"
@@ -4186,7 +3659,7 @@ msgstr "Loại"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_exception_decoration
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Loại hoạt động ngoại lệ trong tập dữ liệu."
+msgstr "Loại hoạt động ngoại lệ trên hồ sơ."
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_type__is_unforeseen
@@ -4194,11 +3667,10 @@ msgid "Unforeseen Absence"
 msgstr "Vắng mặt không lường trước"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Unknown State"
-msgstr "Trạng thái không xác định"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_work_entry_type_view_form_inherit
@@ -4207,6 +3679,7 @@ msgstr "Không thanh toán"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_type__3
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Unpaid Time Off"
 msgstr "Nghỉ phép không lương"
 
@@ -4232,7 +3705,6 @@ msgstr "Lên"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__use_worked_day_lines
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__use_worked_day_lines
 msgid "Use Worked Day Lines"
 msgstr "Sử dụng chi tiết Ngày Làm việc"
 
@@ -4252,8 +3724,6 @@ msgstr "Được sử dụng để hiển thị quy tắc lương trên phiếu 
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__appears_on_employee_cost_dashboard
 msgid "Used to display the value in the employer cost dashboard."
 msgstr ""
-"Được sử dụng để hiển thị giá trị trong bảng điều khiển chi phí của nhà tuyển"
-" dụng."
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_res_users
@@ -4264,8 +3734,6 @@ msgstr "Người dùng"
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_user
 msgid "User can manage all contracts, work entries and create payslips."
 msgstr ""
-"Người dùng có thể quản lý tất cả các hợp đồng, mục nhập công việc và tạo "
-"phiếu lương."
 
 #. module: hr_payroll
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_employee_manager
@@ -4273,13 +3741,11 @@ msgid ""
 "User can see his own contracts and the contracts of the people he's manager "
 "of."
 msgstr ""
-"Người dùng có thể xem hợp đồng của chính mình và hợp đồng của những người mà"
-" anh ta quản lý."
 
 #. module: hr_payroll
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_manager
 msgid "User have full access on the application."
-msgstr "Người dùng có toàn quyền truy cập vào ứng dụng."
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
@@ -4289,7 +3755,7 @@ msgstr "Xác nhận"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_edit_payslip_lines_form_wizard
 msgid "Validate Edition"
-msgstr "Xác thực phiên bản"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__state__validated
@@ -4306,113 +3772,79 @@ msgstr "Phiên bản"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__appears_on_employee_cost_dashboard
 msgid "View on Employer Cost Dashboard"
-msgstr "Xem trên Bảng điều khiển chi phí của nhà tuyển dụng"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__appears_on_payroll_report
 msgid "View on Payroll Reporting"
-msgstr "Xem trên Báo cáo bảng lương"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_kanban
-msgid "Wage :"
 msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__wage_type
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__wage_type
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__wage_type
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__wage_type
 msgid "Wage Type"
 msgstr "Loại lương"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_index_wizard.py:0
 #, python-format
 msgid "Wage indexed by %.2f%% on %s"
-msgstr "Tiền lương được lập chỉ mục theo %.2f%% trên %s"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__verify
 msgid "Waiting"
-msgstr "Đang chờ"
+msgstr "Chờ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__warning_message
 msgid "Warning Message"
-msgstr "Thông báo cảnh báo"
+msgstr "Thông điệp cảnh báo"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "Warning, a similar attachment has been found."
 msgstr "Cảnh báo, tìm thấy tài liệu đính kèm tương tự."
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/action_box/action_box.xml:0
 #, python-format
 msgid "Warnings"
-msgstr "Cảnh báo"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_work_entry.py:0
-#, python-format
-msgid ""
-"Watch out for gaps in %(employee_name)s's calendar\n"
-"\n"
-"Please complete the missing work entries of %(employee_name)s:%(time_intervals_str)s \n"
-"\n"
-"Missing work entries are like the Bermuda Triangle for paychecks. Let's keep your colleague's earnings from vanishing into thin air!"
-msgstr ""
+msgstr "Các cảnh báo"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__round_days_type
 msgid "Way of rounding the work entry type."
-msgstr "Cách làm tròn loại mục công việc."
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "We have to improve our Payroll flow with the new Odoo process"
 msgstr ""
-"Chúng tôi phải cải thiện quy trình tính lương của mình với quy trình Odoo "
-"mới"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__website_message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__website_message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__website_message_ids
 msgid "Website Messages"
-msgstr "Thông báo trên trang web"
+msgstr "Thông báo Website"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__website_message_ids
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__website_message_ids
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__website_message_ids
 msgid "Website communication history"
-msgstr "Lịch sử trao đổi qua trang web"
+msgstr "Lịch sử thông tin liên lạc website"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Week %(week_number)s of %(year)s"
-msgstr ""
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__weekly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__weekly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__weekly
 msgid "Weekly"
 msgstr "Hàng tuần"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Weeks %(week)s and %(week1)s of %(year)s"
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__round_days
@@ -4420,13 +3852,11 @@ msgid ""
 "When the work entry is displayed in the payslip, the value is rounded "
 "accordingly."
 msgstr ""
-"Khi mục nhập công việc được hiển thị trong phiếu lương, giá trị được làm "
-"tròn tương ứng."
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__calendar_changed
 msgid "Whether the previous or next contract has a different schedule or not"
-msgstr "Cho dù hợp đồng trước hay sau có lịch trình khác nhau hay không"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_index__description
@@ -4439,11 +3869,13 @@ msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count_work
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Work Days"
 msgstr "Ngày làm việc"
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_work_entries_root
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Work Entries"
 msgstr "Quản lý các mục công việc"
 
@@ -4453,34 +3885,32 @@ msgstr "Quản lý các mục công việc"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_tree
 msgid "Work Entries Analysis"
-msgstr "Phân tích đầu vào công việc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_work_entry_report
 msgid "Work Entries Analysis Report"
-msgstr "Báo cáo phân tích đầu vào công việc"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Work Entries are generated for each <strong>time period</strong> defined in "
 "the Working Schedule of the Contract."
 msgstr ""
-"Mục nhập Công việc được tạo cho mỗi <strong>khoảng thời gian</strong> được "
-"xác định trong Lịch trình Công việc của Hợp đồng."
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_work_entry_report
 msgid "Work Entry Analysis"
-msgstr "Phân tích đầu vào công việc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__work_entry_source
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__work_entry_source
 msgid "Work Entry Source"
-msgstr "Nguồn nhập công việc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__work_entry_type_id
@@ -4495,23 +3925,10 @@ msgid "Work Hours"
 msgstr "Giờ làm việc"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Work Permit Expiration Notice Period"
-msgstr ""
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__work_time_rate
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "Work Time Rate"
 msgstr "Tỷ lệ thời gian làm việc"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"Work entries may not be generated for the period from %(start)s to %(end)s."
-msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure_type__default_work_entry_type_id
@@ -4537,7 +3954,7 @@ msgstr ""
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__work_time_rate
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract_history__work_time_rate
 msgid "Work time rate versus full time working schedule."
-msgstr "Tỷ lệ thời gian làm việc so với lịch trình làm việc toàn thời gian."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__work_code
@@ -4568,11 +3985,10 @@ msgstr "Ngày làm việc & Dữ liệu nhập ngoài"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__worked_days_line_ids
 msgid "Worked Days Lines"
-msgstr "Chi tiết ngày làm việc"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__use_worked_day_lines
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__use_worked_day_lines
 msgid "Worked days won't be computed/displayed in payslips."
 msgstr "Ngày làm việc sẽ không được tính/hiển thị trong phiếu lương."
 
@@ -4584,93 +4000,61 @@ msgid "Working Schedule"
 msgstr "Thời gian làm việc"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Working Schedule Changes"
-msgstr "Thay đổi lịch trình làm việc"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong percentage base or quantity defined for:"
-msgstr "Cơ sở tỷ lệ phần trăm hoặc số lượng sai được xác định cho:"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong python code defined for:"
 msgstr "Đã xác định sai mã python cho:"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong python condition defined for:"
 msgstr "Đã xác định sai điều kiện python cho:"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong quantity defined for:"
 msgstr "Đã xác định sai điều kiện cho:"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong range condition defined for:"
 msgstr "Đã xác định sai phạm vi điều kiện cho:"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__year
-msgid "Year"
-msgstr "Năm"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/res_users.py:0
-#, python-format
-msgid ""
-"You are receiving this message because you are the HR Responsible of this "
-"employee."
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "You can access the Payslips from the Employee's Profile."
-msgstr "Bạn có thể truy cập Phiếu lương từ Hồ sơ của Nhân viên."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "You can't validate a cancelled payslip."
 msgstr "Bạn không thể xác thực phiếu lương đã hủy."
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip_input_type.py:0
-#, python-format
-msgid ""
-"You cannot delete %s as it is used in another module but you can archive it "
-"instead."
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
 msgid "You cannot delete a payslip batch which is not draft!"
 msgstr "Bạn không thể xóa đợt phiếu lương không ở trạng thái nháp!"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
@@ -4679,39 +4063,26 @@ msgstr ""
 "Bạn không thể xoá một phiếu lương mà không ở trạng thái dự thảo hoặc huỷ!"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "You cannot delete a running salary attachment!"
-msgstr "Bạn không thể xóa tệp đính kèm tiền lương đang chạy!"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_salary_attachment.py:0
-#, python-format
-msgid "You cannot record a payment on multi employees attachments."
 msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
 msgid ""
 "You cannot reset a batch to draft if some of the payslips have already been "
 "paid."
 msgstr ""
-"Bạn không thể đặt lại lô thành bản nháp nếu một số phiếu lương đã được thanh"
-" toán."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "You cannot validate a payslip on which the contract is cancelled"
-msgstr "Bạn không thể xác thực phiếu lương mà hợp đồng bị hủy"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_index_wizard.py:0
 #, python-format
 msgid ""
@@ -4722,67 +4093,57 @@ msgstr ""
 "chúng, vui lòng thực hiện bằng tay"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "You must be logged in a %s company to use this feature"
-msgstr ""
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "You must select employee(s) to generate payslip(s)."
 msgstr "Bạn phải chọn ít nhất một nhân viên để tạo (các) phiếu lương."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_line.py:0
 #, python-format
 msgid "You must set a contract to create a payslip line."
 msgstr "Bạn phải thiết lập một hợp đồng để có thể tạo chi tiết phiếu lương."
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payroll_structure_type.py:0
 #, python-format
 msgid "You should also be logged into a company in %s to set this country."
 msgstr "Bạn cũng nên đăng nhập vào công ty trong %s để cài đặt quốc gia này."
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "demo@email.com"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "days"
+msgstr "ngày"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 msgid "e.g. April 2021"
-msgstr "ví dụ. tháng 4 năm 2021"
+msgstr "VD: Tháng 4/2021"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_structure_type_view_form
 msgid "e.g. Employee"
-msgstr "ví dụ. Người lao động"
+msgstr "VD: Nhân viên"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
 msgid "e.g. Net"
-msgstr "ví dụ. Thực tế"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
 msgid "e.g. Net Salary"
-msgstr "ví dụ. Lương thực lãnh"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
 msgid "e.g. Regular Pay"
-msgstr "ví dụ. Trả thường xuyên"
+msgstr "VD: Mức trả thông thường"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "https://www.odoo.com/fr_FR/slides/slide/manage-payroll-1002"
-msgstr "https://www.odoo.com/fr_FR/slides/slide/manage-payroll-1002"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip

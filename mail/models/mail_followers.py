@@ -29,7 +29,7 @@ class Followers(models.Model):
     res_id = fields.Many2oneReference(
         'Related Document ID', index=True, help='Id of the followed resource', model_field='res_model')
     partner_id = fields.Many2one(
-        'res.partner', string='Related Partner', index=True, ondelete='cascade', required=True)
+        'res.partner', string='Related Partner', index=True, ondelete='cascade', required=True, domain=[('type', '!=', 'private')])
     subtype_ids = fields.Many2many(
         'mail.message.subtype', string='Subtype',
         help="Message subtypes followed, meaning subtypes that will be pushed onto the user's Wall.")
@@ -74,33 +74,6 @@ class Followers(models.Model):
     # Private tools methods to fetch followers data
     # --------------------------------------------------
 
-    @api.model
-    def _get_mail_recipients_follower_status(self, mail_ids):
-        """ Get partner mail recipients that follows the related record of the mails.
-
-        Note that followers for message related to discuss.channel are not fetched.
-
-        :param list mail_ids: mail_mail ids
-        :return: followers of the related record of the mails limited to the
-            recipients of the mails as a set of tuple (model, res_id, partner_id).
-        :rtype: set
-        """
-        self.env['mail.mail'].flush_model(['message_id', 'recipient_ids'])
-        self.env['mail.followers'].flush_model(['partner_id', 'res_model', 'res_id'])
-        self.env['mail.message'].flush_model(['model', 'res_id'])
-        # mail_mail_res_partner_rel is the join table for the m2m recipient_ids field
-        self.env.cr.execute("""
-            SELECT message.model, message.res_id, mail_partner.res_partner_id
-              FROM mail_mail mail        
-              JOIN mail_mail_res_partner_rel mail_partner ON mail_partner.mail_mail_id = mail.id
-              JOIN mail_message message ON mail.mail_message_id = message.id AND message.model != 'discuss.channel'
-              JOIN mail_followers follower ON message.model = follower.res_model 
-               AND message.res_id = follower.res_id 
-               AND mail_partner.res_partner_id = follower.partner_id
-             WHERE mail.id IN %(mail_ids)s
-        """, {'mail_ids': tuple(mail_ids)})
-        return set(self.env.cr.fetchall())
-
     def _get_recipient_data(self, records, message_type, subtype_id, pids=None):
         """ Private method allowing to fetch recipients data based on a subtype.
         Purpose of this method is to fetch all data necessary to notify recipients
@@ -112,9 +85,9 @@ class Followers(models.Model):
 
         :param records: fetch data from followers of ``records`` that follow
           ``subtype_id``;
-        :param str message_type: mail.message.message_type in order to allow custom
+        :param message_type: mail.message.message_type in order to allow custom
           behavior depending on it (SMS for example);
-        :param int subtype_id: mail.message.subtype to check against followers;
+        :param subtype_id: mail.message.subtype to check against followers;
         :param pids: additional set of partner IDs from which to fetch recipient
           data independently from following status;
 
@@ -185,7 +158,7 @@ class Followers(models.Model):
            sub_followers.is_follower as _insert_followerslower
       FROM res_partner partner
       JOIN sub_followers ON sub_followers.pid = partner.id
-                        AND (sub_followers.internal IS NOT TRUE OR partner.partner_share IS NOT TRUE)
+                        AND (NOT sub_followers.internal OR NOT partner.partner_share)
  LEFT JOIN LATERAL (
         SELECT users.id AS uid,
                users.share AS share,
@@ -508,14 +481,3 @@ GROUP BY fol.id%s%s""" % (
                         update[fol_id] = {'subtype_ids': update_cmd}
 
         return new, update
-
-    def _format_for_chatter(self):
-        return [{
-            'id': follower.id,
-            'partner_id': follower.partner_id.id,
-            'name': follower.name,
-            'display_name': follower.display_name,
-            'email': follower.email,
-            'is_active': follower.is_active,
-            'partner': follower.partner_id.mail_partner_format()[follower.partner_id],
-        } for follower in self]

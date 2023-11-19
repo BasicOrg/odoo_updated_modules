@@ -3,17 +3,17 @@
 # 	* sale_purchase_inter_company_rules
 # 
 # Translators:
-# Wil Odoo, 2023
-# Sarah Park, 2023
+# Martin Trigaux, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -37,12 +37,11 @@ msgid "Automatic Validation"
 msgstr "자동 승인"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
 msgid "Automatically generated from %(origin)s of company %(company)s."
-msgstr "%(company)s 회사의 %(origin)s에서 자동 생성되었습니다."
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_res_company
@@ -52,10 +51,9 @@ msgstr "회사"
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_res_config_settings
 msgid "Config Settings"
-msgstr "환경 설정"
+msgstr "설정 구성"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -63,12 +61,6 @@ msgid ""
 "Configure correct warehouse for company(%s) from Menu: "
 "Settings/Users/Companies"
 msgstr "다음 메뉴에서 올바른 (%s) 회사의 창고 설정 : 설정/사용자/회사"
-
-#. module: sale_purchase_inter_company_rules
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__copy_lots_delivery
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_config_settings__copy_lots_delivery
-msgid "Copy Lots on Delivery Validation"
-msgstr "배송 확인 시 로트 번호를 복사합니다."
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_company__warehouse_id
@@ -79,60 +71,55 @@ msgid ""
 msgstr "해당 회사의 판매(구매) 주문서를 기반으로 작성되는 구매(판매) 주문서에 설정할 기본값"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s using warehouse %(warehouse)s"
-" when a company confirms a %(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                using "
+"warehouse %(warehouse)s when a company confirms a %(event_type)s for "
+"%(company)s."
 msgstr ""
 "%(company)s에 대한 %(event_type)s가 확인되면 창고 %(warehouse)s를 사용하여 %(validation)s "
 "%(generated_object)s를 생성합니다."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s when a company confirms a "
-"%(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                when a company"
+" confirms a %(event_type)s for %(company)s."
 msgstr ""
 "회사가 %(company)s에 대한 %(event_type)s를 확인할 때 %(validation)s "
 "%(generated_object)s를 생성합니다."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
 "Inter company user of company %(name)s doesn't have enough access rights"
-msgstr "%(name)s 회사의 회사 간 사용자는 접근 권한이 없습니다."
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
 msgid "Inter company user of company %s doesn't have enough access rights"
 msgstr "회사 간 사용자 %s에는 사용 권한이 충분하지 않습니다"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid "Provide at least one user for inter company relation for %(name)s"
-msgstr "%(name)s 의 회사 간 항목에는 사용자가 한 명 이상 있어야 합니다."
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
-msgid "Provide one user for intercompany relation for %(name)s "
-msgstr "%(name)s의 회사 간 항목에는 사용자가 한 명 있어야 합니다."
+msgid "Provide one user for intercompany relation for % "
+msgstr "%에 대한 회사 간 관계를 위해 한 명 이상의 사용자 필요"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_purchase_order
 msgid "Purchase Order"
-msgstr "구매 주문"
+msgstr "발주서"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__rule_type
@@ -167,22 +154,17 @@ msgstr "원본 판매 주문서"
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields.selection,name:sale_purchase_inter_company_rules.selection__res_company__rule_type__purchase
 msgid "Synchronize Purchase Order"
-msgstr "구매발주서 동기화"
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields.selection,name:sale_purchase_inter_company_rules.selection__res_company__rule_type__sale
 msgid "Synchronize Sales Order"
-msgstr "판매주문서 동기화"
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields.selection,name:sale_purchase_inter_company_rules.selection__res_company__rule_type__sale_purchase
 msgid "Synchronize Sales and Purchase Order"
-msgstr "판매주문서 및 구매발주서 동기화"
-
-#. module: sale_purchase_inter_company_rules
-#: model:ir.model,name:sale_purchase_inter_company_rules.model_stock_picking
-msgid "Transfer"
-msgstr "전송"
+msgstr ""
 
 #. module: sale_purchase_inter_company_rules
 #: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company_rules.res_config_settings_view_form
@@ -200,7 +182,6 @@ msgid "Warehouse For Purchase Orders"
 msgstr "구매 주문에 대한 창고"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -209,20 +190,14 @@ msgid ""
 "\n"
 "(SO currency: %(so_currency)s, Pricelist: %(pricelist)s, Partner: %(partner)s (ID: %(id)s))"
 msgstr ""
-"판매 가격표 상의 통화와 구매 가격표 상의 통화가 다르기 때문에 구매발주서에서 판매주문서를 생성할 수 없습니다.\n"
-"판매주문서 상의 통화는 공급업체 가격표에서 불러옵니다.\n"
-"\n"
-"(판매주문서 통화: %(so_currency)s, 가격표: %(pricelist)s, 협력사: %(partner)s (ID: %(id)s))"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "draft"
 msgstr "초안"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -230,14 +205,12 @@ msgid "purchase order"
 msgstr "구매 주문"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "purchase/sales order"
 msgstr "구매/판매 주문"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -245,14 +218,12 @@ msgid "sales order"
 msgstr "판매 주문"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "sales/purchase order"
 msgstr "판매/구매 주문"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "validated"

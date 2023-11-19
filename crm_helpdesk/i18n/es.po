@@ -3,21 +3,27 @@
 # 	* crm_helpdesk
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: es\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#. module: crm_helpdesk
+#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
+#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
+msgid "Cancel"
+msgstr "Cancelar"
 
 #. module: crm_helpdesk
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
@@ -28,7 +34,7 @@ msgstr "Convertir"
 #: model:ir.model,name:crm_helpdesk.model_helpdesk_ticket_to_lead
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
 msgid "Convert Ticket to Lead"
-msgstr "Convertir tíquet en iniciativa"
+msgstr "Convertir ticket a lead"
 
 #. module: crm_helpdesk
 #: model:ir.actions.act_window,name:crm_helpdesk.helpdesk_ticket_to_lead_action
@@ -40,7 +46,7 @@ msgstr "Convertir a lead"
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_view_form
 msgid "Convert to Ticket"
-msgstr "Convertir a tíquet"
+msgstr "Convertir a ticket"
 
 #. module: crm_helpdesk
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
@@ -72,12 +78,6 @@ msgid "Customer"
 msgstr "Cliente"
 
 #. module: crm_helpdesk
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Discard"
-msgstr "Descartar"
-
-#. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__display_name
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__display_name
 msgid "Display Name"
@@ -91,13 +91,19 @@ msgstr "No enlazar a un cliente"
 #. module: crm_helpdesk
 #: model:ir.model,name:crm_helpdesk.model_helpdesk_ticket
 msgid "Helpdesk Ticket"
-msgstr "Tíquet de asistencia"
+msgstr "Ticket de servicio de asistencia"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__id
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__id
 msgid "ID"
 msgstr "ID"
+
+#. module: crm_helpdesk
+#: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket____last_update
+#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__write_uid
@@ -114,10 +120,9 @@ msgstr "Última actualización el"
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__lead_id
 msgid "Lead"
-msgstr "Iniciativa"
+msgstr "Lead"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
 #, python-format
 msgid "Lead Converted"
@@ -126,10 +131,9 @@ msgstr "Lead convertido"
 #. module: crm_helpdesk
 #: model:ir.model,name:crm_helpdesk.model_crm_lead_convert2ticket
 msgid "Lead convert to Ticket"
-msgstr "Convertir iniciativa en tíquet"
+msgstr "Convertir lead a ticket"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "Lead created"
@@ -162,39 +166,35 @@ msgid "Team"
 msgstr "Equipo"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "The archived ticket can not converted as lead."
-msgstr "El tíquet archivado no se puede convertir en iniciativa"
+msgstr ""
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "This lead has been created from ticket: %s"
-msgstr "Este cliente potencial se ha creado a partir del tíquet: %s"
+msgstr ""
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__ticket_id
 msgid "Ticket"
-msgstr "Entrada"
+msgstr "Ticket"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "Ticket Converted"
-msgstr "Tíquet convertido"
+msgstr "Ticket convertido"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__ticket_type_id
 msgid "Ticket Type"
-msgstr "Tipo de entrada"
+msgstr "Tipo de ticket"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
 #, python-format
 msgid "Ticket created"
-msgstr "Tíquet creado"
+msgstr "Ticket creado"

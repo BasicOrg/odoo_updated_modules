@@ -5,7 +5,7 @@
         <field name="name">sign.request.kanban</field>
         <field name="model">sign.request</field>
         <field name="arch" type="xml">
-            <kanban quick_create="false" banner_route="/sign/check_iap_credits" default_order="create_date desc" sample="1" js_class="sign_kanban" action="go_to_document" type="object">
+            <kanban quick_create="false" class="o_sign_request_kanban" banner_route="/sign/check_iap_credits" default_order="create_date desc" sample="1" js_class="sign_kanban" action="go_to_document" type="object">
                 <field name="active"/>
                 <field name="color"/>
                 <field name="create_uid"/>
@@ -18,18 +18,8 @@
                 <field name="template_tags"/>
                 <progressbar field="activity_state" colors='{"planned": "success", "overdue": "danger", "today": "warning"}'/>
                 <templates>
-                    <div t-name="kanban-menu">
-                        <a role="menuitem" type="object" name="get_formview_action" class="dropdown-item">Details</a>
-                        <a role="menuitem" type="object" name="open_template" class="dropdown-item">Template</a>
-                        <a role="menuitem" type="object" name="toggle_active" class="dropdown-item" invisible="state not in ('sent', 'signed', 'refused', 'canceled')">
-                            <t t-if="!record.active.raw_value">Restore</t>
-                            <t t-if="record.active.raw_value">Archive</t>
-                        </a>
-                        <a role="menuitem" type="delete" invisible="state != 'shared'" class="dropdown-item">Stop Sharing</a>
-                        <ul class="oe_kanban_colorpicker" data-field="color"/>
-                    </div>
                     <div t-name="kanban-box" t-attf-class="o_sign_sticky_bottom oe_kanban_global_click {{!selection_mode ? kanban_color(record.color.raw_value) : ''}}">
-                        <div class="oe_kanban_main d-flex flex-column h-100">
+                        <div class="oe_kanban_main">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
                                     <div class="o_kanban_record_title">
@@ -44,8 +34,23 @@
                                         <span class="ps-4"><field name="reference"/></span>
                                     </div>
                                 </div>
+                                <div class="o_dropdown_kanban dropdown">
+                                    <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a role="menuitem" type="object" name="get_formview_action" class="dropdown-item">Details</a>
+                                        <a role="menuitem" type="object" name="open_template" class="dropdown-item">Template</a>
+                                        <a role="menuitem" type="object" name="toggle_active" class="dropdown-item" states="sent,signed,refused,canceled">
+                                            <t t-if="!record.active.raw_value">Restore</t>
+                                            <t t-if="record.active.raw_value">Archive</t>
+                                        </a>
+                                        <a role="menuitem" type="delete" states="shared" class="dropdown-item">Stop Sharing</a>
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="o_kanban_record_body flex-grow-1">
+                            <div class="o_kanban_record_body">
                                 <field name="template_tags" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                 <div class="o_signers container-fluid mt-2">
                                     <div t-foreach="record.request_item_infos.raw_value || []" t-as="request_item_info" t-key="request_item_info.id"
@@ -81,26 +86,22 @@
         <field name="name">sign.request.tree</field>
         <field name="model">sign.request</field>
         <field name="arch" type="xml">
-            <tree multi_edit="1" sample="1" js_class="sign_list" decoration-info="state in ('shared', 'sent')" decoration-muted="state in ('refused', 'canceled')">
-                <header>
-                    <button type="object" name="send_signature_accesses" class="btn btn-secondary" string="Resend"/>
-                    <button type="object" name="get_completed_document" class="btn btn-secondary" string="Download"/>
-                </header>
-                <field name="reference" readonly="1"/>
-                <field name="template_id" readonly="1" optional="hide"/>
-                <field name="state" readonly="1"/>
-                <field name="request_item_ids" string="Contacts" widget="many2many_tags" readonly="1" options="{'color_field': 'color'}"/>
-                <field name="progress" readonly="1"/>
+            <tree sample="1" js_class="sign_list" decoration-info="state in ('shared', 'sent')" decoration-muted="state in ('refused', 'canceled')">
+                <field name="reference"/>
+                <field name="template_id" optional="hide"/>
+                <field name="state"/>
+                <field name="request_item_ids" string="Contacts" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="progress"/>
                 <field name="template_tags" string="Tags" widget="many2many_tags"/>
-                <field name="create_date" string="Create date" readonly="1"/>
-                <field name="need_my_signature" readonly="1" column_invisible="True"/>
-                <field name="create_uid" readonly="1" column_invisible="True"/>
-                <field name="activity_exception_decoration" widget="activity_exception" readonly="1"/>
-                <button name="unlink" invisible="state != 'shared'" string="Stop Sharing" type="object"/>
-                <button name="get_completed_document" invisible="state != 'signed'" string="Download" type="object"/>
-                <button name="go_to_signable_document" string="sign" type="object" invisible="not need_my_signature or state != 'sent'"/>
-                <button name="send_signature_accesses" string="Resend" type="object" groups="sign.group_sign_user" invisible="state != 'sent' or create_uid != uid"/>
-                <button name="send_signature_accesses" string="Resend" type="object" groups="sign.group_sign_manager" invisible="state != 'sent' or create_uid == uid"/>
+                <field name="create_date" string="Create date"/>
+                <field name="need_my_signature" invisible="1"/>
+                <field name="create_uid" invisible="1"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+                <button name="unlink" states="shared" string="Stop Sharing" type="object"/>
+                <button name="get_completed_document" states="signed" string="Download" type="object"/>
+                <button name="go_to_signable_document" string="sign" type="object" attrs="{'invisible': ['|', ('need_my_signature', '=', False), ('state', '!=', 'sent')]}"/>
+                <button name="send_signature_accesses" string="Resend" type="object" groups="sign.group_sign_user" attrs="{'invisible': &quot;['|', ('state', '!=', 'sent'), ('create_uid', '!=', uid)]&quot;}"/>
+                <button name="send_signature_accesses" string="Resend" type="object" groups="sign.group_sign_manager" attrs="{'invisible': &quot;['|', ('state', '!=', 'sent'), ('create_uid', '=', uid)]&quot;}"/>
             </tree>
         </field>
     </record>
@@ -112,63 +113,50 @@
             <form create="false">
                 <header>
                     <button string="Preview" type="object" name="go_to_document" class="oe_highlight"/>
-                    <button string="Download Document" type="object" invisible="state != 'signed'" name="get_completed_document" class="oe_highlight"/>
-                    <button string="Cancel" type="object" invisible="state not in ('sent', 'signed')" name="cancel" confirm="This will keep all the already completed signature of this request and disable every sent access, are you sure?"/>
+                    <button string="Download Document" type="object" states="signed" name="get_completed_document" class="oe_highlight"/>
+                    <button string="Cancel" type="object" states="sent,signed" name="cancel" confirm="This will keep all the already completed signature of this request and disable every sent access, are you sure?"/>
                     <field name="state" widget="statusbar" statusbar_visible="sent,signed"/>
                 </header>
                 <sheet>
-                    <field name="active" invisible="1"/>
-                    <field name="template_id" invisible="1" kanban_view_ref="1484"/>
-                    <field name="favorited_ids" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>
-                    <widget name="web_ribbon" title="Fully Signed" invisible="state != 'signed'"/>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="go_to_document" class="oe_stat_button" icon="fa-pencil" states="sent,signed">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="nb_closed"/>/<field name="nb_total"/><span class="o_stat_text"> Signed</span></span>
+                                <span class="o_stat_text">View</span>
+                            </div>
+                        </button>
+                        <button type="object" name="open_logs" class="oe_stat_button" icon="fa-pencil">
+                            <!-- TODO show only in debug to sign managers? -->
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Activity Logs</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Fully Signed" attrs="{'invisible': [('state', '!=', 'signed')]}"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="integrity" invisible="1"/>
                     <div class="oe_title">
                         <label for="reference" string="Document Name"/>
                         <h1><field name="reference" placeholder="e.g. Non-disclosure agreement" readonly="1"/></h1>
                     </div>
-                    <div class="alert alert-warning" role="alert" invisible="integrity">
+                    <div class="alert alert-warning" role="alert" attrs="{'invisible': [('integrity', '=', True)]}">
                         The integrity of the document's history cannot be verified. This could mean that signature values or the underlying PDF document may have been modified after the fact.
                     </div>
+
+                    <field name="request_item_ids" context="{'default_sign_request_id': id}" nolabel="1"/>
+                    <field name="cc_partner_ids">
+                        <tree>
+                            <field name="name" string="Contacts in copy"/>
+                            <field name="email"/>
+                        </tree>
+                    </field>
                     <group>
                         <group>
                             <field name="active" invisible="1"/>
-                            <field name="template_id" invisible="1" context="{'kanban_view_ref': 'sign.sign_template_view_kanban_mobile'}"/>
+                            <field name="template_id" invisible="1" kanban_view_ref="%(sign.sign_template_view_kanban_mobile)s"/>
                             <field name="favorited_ids" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>
-                            <field name="template_tags" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Add document tags here"/>
-                            <field name="validity" readonly="state not in ['shared', 'sent']"/>
-                            <label for="reminder"/>
-                            <div class="d-flex">
-                                <span>Send a reminder every </span><field name="reminder" class="oe_inline o_field_highlight mx-1" readonly="state not in ['shared', 'sent']"/><span> days</span>.
-                            </div>
                         </group>
                     </group>
-                    <notebook>
-                      <page string="Signers" name="signers">
-                        <field name="request_item_ids" context="{'default_sign_request_id': id}"/>
-                      </page>
-                      <page string="Contacts in copy" name="cc_contacts">
-                        <field name="cc_partner_ids">
-                            <tree>
-                                <field name="name" string="Contacts in copy"/>
-                                <field name="email"/>
-                            </tree>
-                        </field>
-                      </page>
-                      <page string="Activity Logs" name="activity_logs" groups="sign.group_sign_manager">
-                        <field name="sign_log_ids" readonly="1">
-                          <tree>
-                            <field name="action"/>
-                            <field name="log_date"/>
-                            <field name="request_state" nolabel="1"/>
-                            <field name="partner_id" string="Contact"/>
-                            <field name="latitude" optional="hide"/>
-                            <field name="longitude" optional="hide"/>
-                            <field name="ip" string="IP Address"/>
-                          </tree>
-                        </field>
-                      </page>
-                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                      <field name="message_follower_ids"/>
@@ -184,7 +172,7 @@
         <field name="model">sign.request</field>
         <field name="arch" type="xml">
             <search>
-                <field name="reference" string="Document/Signer" filter_domain="['|', '|', ('reference', 'ilike', self), ('request_item_ids.partner_id.email', 'ilike', self), ('request_item_ids.partner_id.complete_name', 'ilike', self)]"/>
+                <field name="reference" string="Document/Signer" filter_domain="['|', '|', ('reference', 'ilike', self), ('request_item_ids.partner_id.email', 'ilike', self), ('request_item_ids.partner_id.name', 'ilike', self)]"/>
                 <field name="template_id" string="Template or Tag" filter_domain="['|', ('template_id.attachment_id.name', 'ilike', self), ('template_id.tag_ids.name', 'ilike', self)]"/>
                 <filter name="my_docs" string="My Documents" domain="[('create_uid', '=', uid)]"/>
                 <filter name="my_sign_request" string="My Requests" domain="[('request_item_ids.partner_id.user_ids', 'in', uid)]"/>
@@ -271,16 +259,17 @@
     <record id="sign_request_share_view_form" model="ir.ui.view">
         <field name="name">sign.request.share.view.form</field>
         <field name="model">sign.request</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Multiple Signature Requests">
                 <field name="share_link" invisible="1"/>
-                <span class="text-muted" invisible="not share_link">Sharing will create a copy of the file to sign. That file can be reached by the link below. Every public user using the link will generate a document when the Signature is complete. The link is private, only those that receive the link will be able to sign it.</span>
-                <group invisible="not share_link">
+                <span class="text-muted" attrs="{'invisible': [('share_link', '=', False)]}">Sharing will create a copy of the file to sign. That file can be reached by the link below. Every public user using the link will generate a document when the Signature is complete. The link is private, only those that receive the link will be able to sign it.</span>
+                <group attrs="{'invisible': [('share_link', '=', False)]}">
                     <field name="share_link" widget="CopyClipboardChar" readonly="1" class="mb-3"/>
                 </group>
                 <footer>
-                    <button string="Share &amp; Close" class="btn-primary" special="cancel" data-hotkey="x"/>
-                    <button string="Sign Now" name="go_to_signable_document" type="object" invisible="not share_link" data-hotkey="q"/>
+                    <button string="Share &amp; Close" class="btn-primary" special="cancel" data-hotkey="z"/>
+                    <button string="Sign Now" name="go_to_signable_document" type="object" attrs="{'invisible': [('share_link', '=', False)]}" data-hotkey="q"/>
                 </footer>
             </form>
         </field>
@@ -292,14 +281,14 @@
         <field name="model">sign.request.item</field>
         <field name="arch" type="xml">
             <tree editable="bottom" create="false" delete="false">
-                <field name="change_authorized" column_invisible="True"/>
-                <field name="partner_id" readonly="not change_authorized or state in ['completed', 'refused']"/>
+                <field name="change_authorized" invisible="1"/>
+                <field name="partner_id" attrs="{'readonly': ['|', ('change_authorized', '=', False), ('state', 'in', ['completed', 'refused'])]}"/>
                 <field name="signer_email"/>
                 <field name="role_id"/>
                 <field name="state"/>
-                <field name="is_mail_sent" column_invisible="True"/>
-                <button name="send_signature_accesses" string="Send" type="object" icon="fa-square-o pe-2" invisible="not signer_email or state != 'sent' or is_mail_sent"/>
-                <button name="send_signature_accesses" string="Resend" type="object" icon="fa-check-square-o pe-2" invisible="not signer_email or state != 'sent' or not is_mail_sent"/>
+                <field name="is_mail_sent" invisible="1"/>
+                <button name="send_signature_accesses" string="Send" type="object" icon="fa-square-o pe-2" attrs="{'invisible': ['|', '|', ('signer_email', '=', False), ('state', '!=', 'sent'), ('is_mail_sent', '!=', False)]}"/>
+                <button name="send_signature_accesses" string="Resend" type="object" icon="fa-check-square-o pe-2" attrs="{'invisible': ['|', '|', ('signer_email', '=', False), ('state', '!=', 'sent'), ('is_mail_sent', '=', False)]}"/>
             </tree>
         </field>
     </record>

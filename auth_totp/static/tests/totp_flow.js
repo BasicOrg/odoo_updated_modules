@@ -1,8 +1,8 @@
-/** @odoo-module **/
+odoo.define('auth_totp.tours', function(require) {
+"use strict";
 
-import { jsonrpc } from "@web/core/network/rpc_service";
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+const tour = require('web_tour.tour');
+const ajax = require('web.ajax');
 
 function openRoot() {
     return [{
@@ -21,7 +21,7 @@ function openRoot() {
 function openUserProfileAtSecurityTab() {
     return [{
         content: 'Open user account menu',
-        trigger: '.o_user_menu .dropdown-toggle',
+        trigger: '.o_user_menu .oe_topbar_name',
         run: 'click',
     }, {
         content: "Open preferences / profile screen",
@@ -54,7 +54,7 @@ function closeProfileDialog({content, totp_state}) {
         content,
         trigger,
         run() {
-            const $modal = this.$anchor.parents('.o_dialog');
+            const $modal = this.$anchor.parents('.o_dialog_container');
             if ($modal.length) {
                 $modal.find('button[name=preference_cancel]').click()
             }
@@ -62,7 +62,7 @@ function closeProfileDialog({content, totp_state}) {
     }, {
         trigger: 'body',
         async run() {
-            while (document.querySelector('.o_dialog')) {
+            while (document.querySelector('.o_dialog_container .o_dialog')) {
                 await Promise.resolve();
             }
             this.$anchor.addClass('dialog-closed');
@@ -73,10 +73,10 @@ function closeProfileDialog({content, totp_state}) {
     }];
 }
 
-registry.category("web_tour.tours").add('totp_tour_setup', {
+tour.register('totp_tour_setup', {
     test: true,
-    url: '/web',
-    steps: () => [...openUserProfileAtSecurityTab(), {
+    url: '/web'
+}, [...openUserProfileAtSecurityTab(), {
     content: "Open totp wizard",
     trigger: 'button[name=action_totp_enable_wizard]',
 }, {
@@ -98,7 +98,7 @@ registry.category("web_tour.tours").add('totp_tour_setup', {
         const $secret = this.$anchor.closest('div').find('[name=secret] span:first-child');
         const $copyBtn = $secret.find('button');
         $copyBtn.remove();
-        const token = await jsonrpc('/totphook', {
+        const token = await ajax.jsonRpc('/totphook', 'call', {
             secret: $secret.text()
         });
         helpers.text(token, '[name=code] input');
@@ -116,12 +116,12 @@ registry.category("web_tour.tours").add('totp_tour_setup', {
     content: "Check that the button has changed",
     totp_state: true,
 }),
-]});
+]);
 
-registry.category("web_tour.tours").add('totp_login_enabled', {
+tour.register('totp_login_enabled', {
     test: true,
-    url: '/',
-    steps: () => [{
+    url: '/'
+}, [{
     content: "check that we're on the login page or go to it",
     trigger: 'input#login, a:contains(Sign in)'
 }, {
@@ -148,20 +148,20 @@ registry.category("web_tour.tours").add('totp_login_enabled', {
         //       content of the HTML element, not the JS value property. We
         //       could set a class but that's really no better than
         //       procedurally clicking the button after we've set the input.
-        const token = await jsonrpc('/totphook');
+        const token = await ajax.jsonRpc('/totphook', 'call', {});
         helpers.text(token);
         helpers.click('button:contains("Log in")');
     }
 }, {
     content: "check we're logged in",
-    trigger: ".o_user_menu .dropdown-toggle",
+    trigger: ".o_user_menu .oe_topbar_name",
     run() {}
-}]});
+}]);
 
-registry.category("web_tour.tours").add('totp_login_device', {
+tour.register('totp_login_device', {
     test: true,
-    url: '/',
-    steps: () => [{
+    url: '/'
+}, [{
     content: "check that we're on the login page or go to it",
     trigger: 'input#login, a:contains(Sign in)'
 }, {
@@ -185,13 +185,13 @@ registry.category("web_tour.tours").add('totp_login_device', {
     content: "input code",
     trigger: 'input[name=totp_token]',
     async run(helpers) {
-        const token = await jsonrpc('/totphook')
+        const token = await ajax.jsonRpc('/totphook', 'call', {})
         helpers.text(token);
         helpers.click('button:contains("Log in")');
     }
 }, {
     content: "check we're logged in",
-    trigger: ".o_user_menu .dropdown-toggle",
+    trigger: ".o_user_menu .oe_topbar_name",
     run: 'click',
 }, {
     content: "click the Log out button",
@@ -212,7 +212,7 @@ registry.category("web_tour.tours").add('totp_login_device', {
     trigger: 'button:contains("Log in")',
 },  {
     content: "check we're logged in without 2FA",
-    trigger: ".o_user_menu .dropdown-toggle",
+    trigger: ".o_user_menu .oe_topbar_name",
     run() {}
 },
 // now go and disable two-factor authentication would be annoying to do in a separate tour
@@ -237,12 +237,12 @@ registry.category("web_tour.tours").add('totp_login_device', {
     content: "Check that the button has changed",
     totp_state: false
 }),
-]});
+]);
 
-registry.category("web_tour.tours").add('totp_login_disabled', {
+tour.register('totp_login_disabled', {
     test: true,
-    url: '/',
-    steps: () => [{
+    url: '/'
+}, [{
     content: "check that we're on the login page or go to it",
     trigger: 'input#login, a:contains(Sign in)'
 }, {
@@ -264,13 +264,13 @@ registry.category("web_tour.tours").add('totp_login_disabled', {
 ...openUserProfileAtSecurityTab(),
 // close the dialog if that makes sense
 ...closeProfileDialog({})
-]});
+]);
 
 const columns = {};
-registry.category("web_tour.tours").add('totp_admin_disables', {
+tour.register('totp_admin_disables', {
     test: true,
-    url: '/web',
-    steps: () => [stepUtils.showAppsMenuItem(), {
+    url: '/web'
+}, [tour.stepUtils.showAppsMenuItem(), {
     content: 'Go to settings',
     trigger: '[data-menu-xmlid="base.menu_administration"]'
 }, {
@@ -335,4 +335,5 @@ registry.category("web_tour.tours").add('totp_admin_disables', {
     content: "check that demo user has been de-totp'd",
     totp_state: false,
 }),
-]})
+])
+});

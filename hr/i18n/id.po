@@ -3,17 +3,21 @@
 # 	* hr
 # 
 # Translators:
-# Abe Manyo, 2023
-# Wil Odoo, 2023
+# Muftiara Syuhada <muftiara.syuhada@gmail.com>, 2022
+# Wahyu Setiawan <wahyusetiaaa@gmail.com>, 2022
+# Abe Manyo, 2022
+# Ryanto The <ry.the77@gmail.com>, 2022
+# Febrasari Almania <febrasari.almania@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Indonesian (https://app.transifex.com/odoo/teams/41243/id/)\n"
+"POT-Creation-Date: 2022-10-04 09:23+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Indonesian (https://www.transifex.com/odoo/teams/41243/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -24,14 +28,19 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr.field_res_company__hr_presence_control_email_amount
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_presence_control_email_amount
 msgid "# emails to send"
-msgstr "# email untuk dikirim"
+msgstr ""
 
 #. module: hr
-#. odoo-python
+#: code:addons/hr/wizard/hr_plan_wizard.py:0
+#, python-format
+msgid "%(activity)s, assigned to %(name)s, due on the %(deadline)s"
+msgstr ""
+
+#. module: hr
 #: code:addons/hr/models/hr_job.py:0
 #, python-format
 msgid "%s (copy)"
-msgstr "%s (salin)"
+msgstr "%s (salinan)"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_job_view_kanban
@@ -40,8 +49,8 @@ msgstr "&amp;nbsp;"
 
 #. module: hr
 #: model:ir.actions.report,print_report_name:hr.hr_employee_print_badge
-msgid "'Badge - %s' % (object.name).replace('/', '')"
-msgstr "'Lencana - %s' % (object.name).replace('/', '')"
+msgid "'Print Badge - %s' % (object.name).replace('/', '')"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -52,7 +61,7 @@ msgstr "'Lencana - %s' % (object.name).replace('/', '')"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "1 Onsite Interview"
-msgstr "1 Wawancara Onsite"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -63,7 +72,7 @@ msgstr "1 Wawancara Onsite"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "1 Phone Call"
-msgstr "1 Panggilan Telepon"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -74,12 +83,7 @@ msgstr "1 Panggilan Telepon"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "12 days / year, including <br>6 of your choice."
-msgstr "12 hari / tahun, termasuk <br>6 pilihan Anda."
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.print_employee_badge
-msgid "12345678901"
-msgstr "12345678901"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -90,7 +94,7 @@ msgstr "12345678901"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "2 open days"
-msgstr "2 hari terbuka"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -101,37 +105,60 @@ msgstr "2 hari terbuka"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "4 Days after Interview"
-msgstr "4 Hari setelah Wawancara"
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid ""
 "<b>Congratulations!</b> May I recommend you to setup an <a "
 "href=\"%s\">onboarding plan?</a>"
 msgstr ""
-"<b>Selamat!</b> Apakah saya boleh menyarankan Anda untuk setup <a "
-"href=\"%s\">rencana onboarding?</a>"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_department_view_kanban
 msgid "<i class=\"fa fa-building-o\" role=\"img\" aria-label=\"Company\" title=\"Company\"/>"
 msgstr ""
-"<i class=\"fa fa-building-o\" role=\"img\" aria-label=\"Company\" "
-"title=\"Perusahaan\"/>"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
-#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
-msgid "<i class=\"fa fa-fw me-2 fa-envelope text-primary\" title=\"Email\"/>"
-msgstr "<i class=\"fa fa-fw me-2 fa-envelope text-primary\" title=\"Email\"/>"
+#: model_terms:ir.ui.view,arch_db:hr.hr_department_view_kanban
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+msgstr "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
-#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
-msgid "<i class=\"fa fa-fw me-2 fa-phone text-primary\" title=\"Phone\"/>"
-msgstr "<i class=\"fa fa-fw me-2 fa-phone text-primary\" title=\"Telepon\"/>"
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
+msgid ""
+"<small role=\"img\" class=\"fa fa-fw fa-circle text-success o_button_icon "
+"hr_presence align-middle\" attrs=\"{'invisible': [('hr_icon_display', '!=', "
+"'presence_present')]}\" aria-label=\"Present\" title=\"Present\"/>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
+msgid ""
+"<small role=\"img\" class=\"fa fa-fw fa-circle text-warning o_button_icon "
+"hr_presence align-middle\" attrs=\"{'invisible': [('hr_icon_display', '!=', "
+"'presence_to_define')]}\" aria-label=\"To define\" title=\"To define\" "
+"name=\"presence_to_define\"/>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
+msgid ""
+"<small role=\"img\" class=\"fa fa-fw fa-circle-o text-muted o_button_icon "
+"hr_presence align-middle\" attrs=\"{'invisible': [('hr_icon_display', '!=', "
+"'present_absent')]}\" aria-label=\"Absent\" title=\"Absent\" "
+"name=\"presence_absent\"/>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
+msgid ""
+"<small role=\"img\" class=\"fa fa-fw fa-circle-o text-success o_button_icon "
+"hr_presence align-middle\" attrs=\"{'invisible': [('hr_icon_display', '!=', "
+"'presence_absent_active')]}\" aria-label=\"Present but not active\" "
+"title=\"Present but not active\" name=\"presence_absent_active\"/>"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -142,13 +169,56 @@ msgstr "<i class=\"fa fa-fw me-2 fa-phone text-primary\" title=\"Telepon\"/>"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "<small><b>READ</b></small>"
-msgstr "<small><b>BACA</b></small>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+msgid ""
+"<span class=\"fa fa-circle text-success\" role=\"img\" aria-label=\"Present\" title=\"Present\" name=\"presence_present\">\n"
+"                                                    </span>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+msgid ""
+"<span class=\"fa fa-circle text-warning\" role=\"img\" aria-label=\"To define\" title=\"To define\" name=\"presence_to_define\">\n"
+"                                                    </span>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+msgid ""
+"<span class=\"fa fa-circle-o text-muted\" role=\"img\" aria-label=\"Absent\" title=\"Absent\" name=\"presence_absent\">\n"
+"                                                    </span>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+msgid ""
+"<span class=\"fa fa-circle-o text-success\" role=\"img\" aria-label=\"Present but not active\" title=\"Present but not active\" name=\"presence_absent_active\">\n"
+"                                                    </span>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" role=\"img\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" role=\"img\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid ""
 "<span class=\"flex-shrink-0 ml8 me-2\">IP Addresses (comma-separated)</span>"
-msgstr "<span class=\"flex-shrink-0 ml8 me-2\">Alamat IP (dipisahkan-koma)</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
@@ -156,13 +226,6 @@ msgid ""
 "<span class=\"flex-shrink-0 ml8 me-2\">Minimum number of emails to "
 "send</span>"
 msgstr ""
-"<span class=\"flex-shrink-0 ml8 me-2\">Jumlah minimal email untuk "
-"dikirim</span>"
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_department_view_kanban
-msgid "<span class=\"fw-bolder\">Reporting</span>"
-msgstr "<span class=\"fw-bolder\">Melapoor</span>"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
@@ -170,8 +233,6 @@ msgid ""
 "<span class=\"o_form_label o_hr_form_label cursor-default\">Close "
 "Activities</span>"
 msgstr ""
-"<span class=\"o_form_label o_hr_form_label cursor-default\">Kegiatan "
-"Dekat</span>"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
@@ -179,15 +240,16 @@ msgid ""
 "<span class=\"o_form_label o_hr_form_label cursor-default\">Detailed "
 "Reason</span>"
 msgstr ""
-"<span class=\"o_form_label o_hr_form_label cursor-default\">Alasan "
-"Rinci</span>"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
 msgid "<span class=\"o_form_label o_hr_form_label cursor-default\">HR Info</span>"
 msgstr ""
-"<span class=\"o_form_label o_hr_form_label cursor-default\">Informasi "
-"HR</span>"
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Presence Control</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -206,9 +268,19 @@ msgid "<span class=\"o_stat_text\">Connected Since</span>"
 msgstr "<span class=\"o_stat_text\">Terhubung sejak</span>"
 
 #. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form_smartbutton
+msgid "<span class=\"o_stat_text\">Contacts</span>"
+msgstr ""
+
+#. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_partner_view_form
-msgid "<span class=\"o_stat_text\">Employee</span>"
-msgstr "<span class=\"o_stat_text\">Karyawan</span>"
+msgid "<span class=\"o_stat_text\">Employee(s)</span>"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.view_hr_job_form
+msgid "<span class=\"ps-1\">new Employees</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -219,7 +291,7 @@ msgstr "<span class=\"o_stat_text\">Karyawan</span>"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "<span class=\"text-muted small\">Days to get an Offer</span>"
-msgstr "<span class=\"text-muted small\">Hari untuk mendapatkan Tawaran</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -230,7 +302,7 @@ msgstr "<span class=\"text-muted small\">Hari untuk mendapatkan Tawaran</span>"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "<span class=\"text-muted small\">Process</span>"
-msgstr "<span class=\"text-muted small\">Proses</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,job_details:hr.job_ceo
@@ -241,17 +313,17 @@ msgstr "<span class=\"text-muted small\">Proses</span>"
 #: model_terms:hr.job,job_details:hr.job_marketing
 #: model_terms:hr.job,job_details:hr.job_trainee
 msgid "<span class=\"text-muted small\">Time to Answer</span>"
-msgstr "<span class=\"text-muted small\">Waktu untuk Menjawab</span>"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "<span>Km</span>"
-msgstr "<span>Km</span>"
+msgstr ""
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.view_hr_job_form
-msgid "<span>new Employees</span>"
-msgstr "<span>Karyawan baru</span>"
+#: model_terms:ir.ui.view,arch_db:hr.hr_department_view_kanban
+msgid "<strong><span>Reporting</span></strong>"
+msgstr "<strong><span>Laporan</span></strong>"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -262,14 +334,12 @@ msgstr "<span>Karyawan baru</span>"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "A full-time position <br>Attractive salary package."
-msgstr "Posisi full-time <br>Paket gaji menarik."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.constraint,message:hr.constraint_hr_employee_user_uniq
 msgid "A user cannot be linked to multiple employees in the same company."
 msgstr ""
-"User tidak dapat di-link ke lebih dari satu karyawan di perusahaan yang "
-"sama."
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__hr_icon_display__presence_absent
@@ -290,14 +360,14 @@ msgstr "Absen"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Achieve monthly sales objectives"
-msgstr "Capai objektif sales bulanan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__message_needaction
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_needaction
 #: model:ir.model.fields,field_description:hr.field_hr_job__message_needaction
 msgid "Action Needed"
-msgstr "Tindakan Diperluka"
+msgstr "Perlu Tindakan"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__active
@@ -305,13 +375,26 @@ msgstr "Tindakan Diperluka"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__active
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__active
 #: model:ir.model.fields,field_description:hr.field_hr_job__active
+#: model:ir.model.fields,field_description:hr.field_hr_plan__active
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__active
 msgid "Active"
 msgstr "Aktif"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_ids
+#: model:ir.model.fields,field_description:hr.field_hr_plan__plan_activity_type_ids
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_activity_type_view_tree
 msgid "Activities"
+msgstr "Aktivitas"
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_form
+msgid "Activities To Generate"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_activity_type_view_form
+msgid "Activity"
 msgstr "Aktivitas"
 
 #. module: hr
@@ -320,19 +403,19 @@ msgid "Activity Exception Decoration"
 msgstr "Dekorasi Pengecualian Aktivitas"
 
 #. module: hr
-#: model:ir.model,name:hr.model_mail_activity_plan
-msgid "Activity Plan"
-msgstr "Rencana Kegiatan"
-
-#. module: hr
 #: model:ir.ui.menu,name:hr.menu_config_plan
 msgid "Activity Planning"
-msgstr "Perencanaan Kegiatan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_state
 msgid "Activity State"
 msgstr "Status Aktivitas"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__activity_type_id
+msgid "Activity Type"
+msgstr "Jenis Aktivitas"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_type_icon
@@ -342,17 +425,7 @@ msgstr "Ikon Jenis Aktifitas"
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_tree
 msgid "Activity by"
-msgstr "Kegiatan oleh"
-
-#. module: hr
-#: model:ir.model,name:hr.model_mail_activity_plan_template
-msgid "Activity plan template"
-msgstr "Templat rencana kegiatan"
-
-#. module: hr
-#: model:ir.model,name:hr.model_mail_activity_schedule
-msgid "Activity schedule plan Wizard"
-msgstr "Activity schedule plan Wizard"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.act_employee_from_department
@@ -362,15 +435,20 @@ msgid "Add a new employee"
 msgstr "Tambah karyawan baru"
 
 #. module: hr
-#: model_terms:ir.actions.act_window,help:hr.mail_activity_plan_action
+#: model_terms:ir.actions.act_window,help:hr.hr_plan_action
 msgid "Add a new plan"
-msgstr "Tambahkan rencana baru"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.actions.act_window,help:hr.hr_plan_activity_type_action
+msgid "Add a new plan activity"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_departure_wizard__departure_description
 #: model:ir.model.fields,field_description:hr.field_hr_employee__departure_description
 msgid "Additional Information"
-msgstr "Informasi Tambahan"
+msgstr "Info Tambahan"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__additional_note
@@ -390,9 +468,10 @@ msgid "Additional languages"
 msgstr "Bahasa tambahan"
 
 #. module: hr
-#: model:hr.department,name:hr.dep_administration
-msgid "Administration"
-msgstr "Administrasi"
+#: model:ir.model.fields,field_description:hr.field_hr_employee__address_home_id
+#: model:ir.model.fields,field_description:hr.field_res_users__address_home_id
+msgid "Address"
+msgstr "Alamat"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -403,43 +482,46 @@ msgstr "Administrasi"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Administrative Work"
-msgstr "Pekerjaan Administratif"
+msgstr ""
 
 #. module: hr
 #: model:res.groups,name:hr.group_hr_manager
 msgid "Administrator"
-msgstr "Administrator"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__module_hr_presence
 msgid "Advanced Presence Control"
-msgstr "Advanced Presence Control"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Advanced presence of employees"
-msgstr "Kehadiran karyawan advanced"
+msgstr ""
 
 #. module: hr
+#: model:ir.model.fields,field_description:hr.field_crm_team__alias_contact
 #: model:ir.model.fields,field_description:hr.field_mail_alias__alias_contact
-#: model:ir.model.fields,field_description:hr.field_maintenance_equipment_category__alias_contact
 msgid "Alias Contact Security"
 msgstr "Alias Kontak Keamanan"
 
 #. module: hr
+#: model:ir.model.fields,help:hr.field_hr_employee__lang
+#: model:ir.model.fields,help:hr.field_res_users__private_lang
+msgid ""
+"All the emails and documents sent to this contact will be translated in this"
+" language."
+msgstr ""
+
+#. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Allow employees to update their own data"
-msgstr "Izinkan karyawan untuk mengupdate data mereka sendiri"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Allow employees to update their own data."
-msgstr "Izinkan karyawan untuk mengupdate data mereka sendiri."
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
-msgid "Application Settings"
-msgstr "Pengaturan Lamaran"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
@@ -451,16 +533,22 @@ msgstr "Terapkan"
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Approvers"
-msgstr "Approver"
+msgstr ""
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_departure_wizard__archive_private_address
+msgid "Archive Private Address"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_form
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_search
 #: model_terms:ir.ui.view,arch_db:hr.view_department_filter
 #: model_terms:ir.ui.view,arch_db:hr.view_department_form
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
-#: model_terms:ir.ui.view,arch_db:hr.view_hr_job_form
 #: model_terms:ir.ui.view,arch_db:hr.view_job_filter
 msgid "Archived"
 msgstr "Diarsipkan"
@@ -482,18 +570,6 @@ msgid ""
 "                                We expect the candidate to be proactive and have a \"get it done\" spirit. To be successful,\n"
 "                                you will have solid solving problem skills."
 msgstr ""
-"Sebagai karyawan dari perusahaan kami, Anda akan <b>berkolaborasi dengan setiap departemen untuk membuat dan menyebarkan\n"
-"                        produk disrupsi.</b> Ayo datang bekerja di perusahaan berkembang yang menawarkan manfaat besar dengan kesempatan untuk\n"
-"                        tumbuh ke depan dan belajar di samping pemimpin yang ahli. Kami sedang mencari anggota staff yang berpengalaman dan luar biasa.\n"
-"                        <br><br>\n"
-"                        Posisi ini membutuhkan sifat<b>kreatif dan teliti</b> Anda harus bisa berpikir out of the box.\n"
-"                        Kami mengharapkan kandidat yang proaktif dan memiliki sifat perilaku \"get it done\". Agar sukses\n"
-"                        Anda harus memiliki problem solving skills yang kuat."
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_mail_activity_plan_template__responsible_type
-msgid "Assignment"
-msgstr "Assignment"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__message_attachment_count
@@ -510,7 +586,7 @@ msgstr "Absensi"
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Attendance/Point of Sale"
-msgstr "Absensi/POS"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__mail_alias__alias_contact__employees
@@ -518,16 +594,14 @@ msgid "Authenticated Employees"
 msgstr "Karyawan Terotentikasi"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.discuss_channel_view_form
+#: model_terms:ir.ui.view,arch_db:hr.mail_channel_view_form_
 msgid "Auto Subscribe Departments"
-msgstr "Berlangganan Otomatis Departemen"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,help:hr.field_discuss_channel__subscription_department_ids
+#: model:ir.model.fields,help:hr.field_mail_channel__subscription_department_ids
 msgid "Automatically subscribe members of those departments to the channel."
 msgstr ""
-"Anggota-anggota departemen tersebut akan secara otomatis berlangganan ke "
-"channel."
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -538,7 +612,7 @@ msgstr ""
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Autonomy"
-msgstr "Otonomi"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -555,25 +629,25 @@ msgstr "Avatar"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__avatar_1024
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__avatar_1024
 msgid "Avatar 1024"
-msgstr "Avatar 1024"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__avatar_128
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__avatar_128
 msgid "Avatar 128"
-msgstr "Avatar 128"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__avatar_256
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__avatar_256
 msgid "Avatar 256"
-msgstr "Avatar 256"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__avatar_512
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__avatar_512
 msgid "Avatar 512"
-msgstr "Avatar 512"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -583,7 +657,7 @@ msgstr "Menjauh"
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__certificate__bachelor
 msgid "Bachelor"
-msgstr "Bachelor"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -594,7 +668,7 @@ msgstr "Bachelor"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Bachelor Degree or Higher"
-msgstr "Gelar Sarjana atau Lebih"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__barcode
@@ -610,39 +684,32 @@ msgstr "Nomor Rekening Bank"
 #. module: hr
 #: model:ir.model,name:hr.model_base
 msgid "Base"
-msgstr "Base"
+msgstr "Dasar"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_presence_control_ip
 msgid "Based on IP Address"
-msgstr "Berdasarkan IP Address"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__module_hr_attendance
 msgid "Based on attendances"
-msgstr "Berdasarkan absensi"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_presence_control_email
 msgid "Based on number of emails sent"
-msgstr "Berdasarkan jumlah email yang dikirim"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_presence_control_login
 msgid "Based on user status in system"
-msgstr "Berdasarkan status user di sistem"
+msgstr ""
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_employee_base
 msgid "Basic Employee"
-msgstr "Karyawan Dasar"
-
-#. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/background_image/background_image.xml:0
-#, python-format
-msgid "Binary file"
-msgstr "Binary file"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__can_edit
@@ -650,6 +717,7 @@ msgid "Can Edit"
 msgstr "Dapatkah Edit"
 
 #. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.plan_wizard
 #: model_terms:ir.ui.view,arch_db:hr.view_users_simple_form
 msgid "Cancel"
 msgstr "Batal"
@@ -658,7 +726,7 @@ msgstr "Batal"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__certificate
 #: model:ir.model.fields,field_description:hr.field_res_users__certificate
 msgid "Certificate Level"
-msgstr "Level Sertifikat"
+msgstr ""
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.res_users_action_my
@@ -666,9 +734,10 @@ msgid "Change my Preferences"
 msgstr "Ubah Pilihan Saya"
 
 #. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/employee_chat/employee_chat.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Chat"
 msgstr "Chat"
 
@@ -695,7 +764,6 @@ msgstr "Kewarganegaraan"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "City"
 msgstr "Kota"
 
@@ -704,27 +772,15 @@ msgstr "Kota"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__coach_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__coach_id
 #: model:ir.model.fields,field_description:hr.field_res_users__coach_id
-#: model:ir.model.fields.selection,name:hr.selection__mail_activity_plan_template__responsible_type__coach
+#: model:ir.model.fields.selection,name:hr.selection__hr_plan_activity_type__responsible__coach
 msgid "Coach"
 msgstr "Mentor"
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
+#: code:addons/hr/models/hr_plan_activity_type.py:0
 #, python-format
 msgid "Coach of employee %s is not set."
-msgstr "Coach karyawan %s belum ditetapkan."
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_contract_type__code
-msgid "Code"
-msgstr "Kod"
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.view_department_form
-#: model_terms:ir.ui.view,arch_db:hr.view_department_tree
-msgid "Color"
-msgstr "Warna"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__color
@@ -747,6 +803,9 @@ msgstr "Perusahaan"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__company_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__company_id
 #: model:ir.model.fields,field_description:hr.field_hr_job__company_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan__company_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__company_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__company_id
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__company_id
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
 #: model_terms:ir.ui.view,arch_db:hr.view_job_filter
@@ -756,7 +815,7 @@ msgstr "Perusahaan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__company_country_id
 msgid "Company Country"
-msgstr "Negara Perusahaan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.print_employee_badge
@@ -771,7 +830,7 @@ msgstr "Jam Kerja Perusahaan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_id
 msgid "Company employee"
-msgstr "Karyawan perusahaan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__complete_name
@@ -814,7 +873,7 @@ msgstr "Nama Kontak"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__emergency_phone
 #: model:ir.model.fields,field_description:hr.field_res_users__emergency_phone
 msgid "Contact Phone"
-msgstr "Nomor Telepon"
+msgstr ""
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_contract_type
@@ -828,13 +887,13 @@ msgstr "Jenis Kontrak"
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__employee_type__contractor
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__employee_type__contractor
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__employee_type__contractor
 msgid "Contractor"
-msgstr "Kontraktor"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_contract_type__country_id
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Country"
 msgstr "Negara"
 
@@ -850,14 +909,9 @@ msgid "Country of Birth"
 msgstr "Negara Tempat Lahir"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_work_location__location_type
-msgid "Cover Image"
-msgstr "Gambar Sampul"
-
-#. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__create_date
 msgid "Create Date"
-msgstr "Tanggal dibuat"
+msgstr "Tanggal Dibuat"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_users_simple_form_inherit_hr
@@ -865,7 +919,6 @@ msgid "Create Employee"
 msgstr "Buat Karyawan"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #: model:ir.actions.server,name:hr.action_hr_employee_create_user
 #, python-format
@@ -887,7 +940,7 @@ msgstr "Buat departemen baru"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Create content that will help our users on a daily basis"
-msgstr "Buat konten yang akan membantu user kami dari hari ke hari"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form
@@ -903,6 +956,9 @@ msgstr "Buat karyawan"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__create_uid
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__create_uid
 #: model:ir.model.fields,field_description:hr.field_hr_job__create_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan__create_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__create_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__create_uid
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__create_uid
 msgid "Created by"
 msgstr "Dibuat oleh"
@@ -915,14 +971,12 @@ msgstr "Dibuat oleh"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__create_date
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__create_date
 #: model:ir.model.fields,field_description:hr.field_hr_job__create_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan__create_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__create_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__create_date
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__create_date
 msgid "Created on"
 msgstr "Dibuat pada"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__currency_id
-msgid "Currency"
-msgstr "Mata Uang"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_job__no_of_employee
@@ -947,34 +1001,16 @@ msgid "Date of Birth"
 msgstr "Tanggal Lahir"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_departure_reason.py:0
 #, python-format
 msgid "Default departure reasons cannot be deleted."
-msgstr "Alasan default resign tidak dapat dihapus."
+msgstr ""
 
 #. module: hr
-#: model_terms:hr.job,description:hr.job_ceo
-msgid ""
-"Demonstration of different Odoo services for each client and convincing the client about functionality of the application.\n"
-"The candidate should have excellent communication skills.\n"
-"Relationship building and influencing skills\n"
-"Expertise in New Client Acquisition (NCAs) and Relationship Management.\n"
-"Gathering market and customer information.\n"
-"Coordinating with the sales and support team for adopting different strategies\n"
-"Reviewing progress and identifying opportunities and new areas for development.\n"
-"Building strong relationships with clients / customers for business growth profitability.\n"
-"Keep regular interaction with key clients for better extraction and expansion."
-msgstr ""
-"Demonstrasi layanan-layanan Odoo untuk setiap klien dan meyakinkan klien mengenai fungsionalitas aplikasi.\n"
-"Kandidat harus memiliki ketrampilan komunikasi yang luar biasa.\n"
-"Relationship building & influencing skills\n"
-"Ahli dalam New Client Acquisition (NCAs) dan Relationship Management.\n"
-"Mencari informasi pasar dan pelanggan.\n"
-"Berkoordinasi dengan tim sales dan support untuk menggunakan strategi-strategi yang berbeda\n"
-"Meninjau kemajuan dan mengidentifikasi opportunity dan area-area baru untuk dikembangkan.\n"
-"Membangun hubungan yang kuat dengan klien / pelanggan untuk pertumbuhan profitabilitas bisnis.\n"
-"Menjaga interaksi reguler dengan klien-klien penting untuk ekstraksi dan ekspansi yang lebih baik."
+#: model:ir.model.fields,help:hr.field_hr_employee__resource_calendar_id
+#: model:ir.model.fields,help:hr.field_res_users__employee_resource_calendar_id
+msgid "Define the schedule of resource"
+msgstr "Tentukan jadwal sumber daya"
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_department
@@ -982,8 +1018,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__department_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__department_id
 #: model:ir.model.fields,field_description:hr.field_hr_job__department_id
-#: model:ir.model.fields,field_description:hr.field_mail_activity_plan__department_id
-#: model:ir.model.fields,field_description:hr.field_mail_activity_schedule__department_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan__department_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__department_id
 #: model:ir.model.fields,field_description:hr.field_res_users__department_id
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
 #: model_terms:ir.ui.view,arch_db:hr.view_department_filter
@@ -998,13 +1034,6 @@ msgid "Department Name"
 msgstr "Nama Departemen"
 
 #. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/department_chart/department_chart.xml:0
-#, python-format
-msgid "Department Organization"
-msgstr "Organisasi Departemen"
-
-#. module: hr
 #: model:ir.actions.act_window,name:hr.hr_department_kanban_action
 #: model:ir.actions.act_window,name:hr.hr_department_tree_action
 #: model:ir.ui.menu,name:hr.menu_hr_department_kanban
@@ -1016,7 +1045,7 @@ msgstr "Departemen"
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Departure"
-msgstr "Resign"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_departure_wizard__departure_date
@@ -1035,33 +1064,33 @@ msgstr "Alasan Keluar"
 #: model:ir.actions.act_window,name:hr.hr_departure_reason_action
 #: model:ir.ui.menu,name:hr.menu_hr_departure_reason_tree
 msgid "Departure Reasons"
-msgstr "Alasan Resign"
+msgstr ""
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_departure_wizard
 msgid "Departure Wizard"
-msgstr "Departure Wizard"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
 msgid "Dependant"
-msgstr "Dependant"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__child_ids
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__child_ids
 msgid "Direct subordinates"
-msgstr "Bawahan langsung"
+msgstr ""
 
 #. module: hr
 #: model:ir.ui.menu,name:hr.menu_hr_employee
 msgid "Directory"
-msgstr "Direktori"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
 msgid "Discard"
-msgstr "Buang"
+msgstr "Abaikan"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1072,12 +1101,19 @@ msgstr "Buang"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Discover our products."
-msgstr "Temukan produk-produk kami."
+msgstr ""
 
 #. module: hr
-#: model:ir.model,name:hr.model_discuss_channel
+#: model:ir.model,name:hr.model_mail_channel
 msgid "Discussion Channel"
 msgstr "Saluran Diskusi"
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
+msgid ""
+"Display Homeworking settings for each employee and dedicated reports.\n"
+"                                        Presence icons will be updated with homeworking location."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_contract_type__display_name
@@ -1088,18 +1124,12 @@ msgstr "Saluran Diskusi"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__display_name
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__display_name
 #: model:ir.model.fields,field_description:hr.field_hr_job__display_name
+#: model:ir.model.fields,field_description:hr.field_hr_plan__display_name
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__display_name
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__display_name
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__display_name
 msgid "Display Name"
 msgstr "Nama Tampilan"
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
-msgid ""
-"Display remote work settings for each employee and dedicated reports. "
-"Presence icons will be updated with remote work location."
-msgstr ""
-"Tampilkan pengaturan kerja remote untuk setiap karyawan dan laporan khusus. "
-"Ikon kehadiran akan diupdate dengan lokasi kerja remote."
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__marital__divorced
@@ -1114,7 +1144,7 @@ msgstr "Doktor"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__driving_license
 msgid "Driving License"
-msgstr "SIM"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1131,11 +1161,6 @@ msgid ""
 "                        Several activities are often organized all over the year, such as weekly\n"
 "                        sports sessions, team building events, monthly drink, and much more"
 msgstr ""
-"Setiap karyawan memiliki kesempatan untuk melihat dampak dari pekerjaan mereka.\n"
-"                Anda dapat membuat kontribusi nyata untuk kesuksesan perusaahaan.\n"
-"                <br/>\n"
-"                Beberapa kegiatan seringkali diselenggarakan sepanjang tahun, seperti\n"
-"                sesi olahraga mingguan, acara team building, minum bersama bulanan, dan lebih banyak lagi"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1146,7 +1171,7 @@ msgstr ""
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Eat &amp; Drink"
-msgstr "Makan &amp; Minum"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -1169,24 +1194,22 @@ msgstr "Alias Email"
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Emergency"
-msgstr "Emergency"
+msgstr ""
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/res_partner.py:0 code:addons/hr/models/res_users.py:0
 #: model:ir.model,name:hr.model_hr_employee
 #: model:ir.model.fields,field_description:hr.field_hr_departure_wizard__employee_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__employee_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__employee_ids
 #: model:ir.model.fields,field_description:hr.field_resource_resource__employee_id
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__employee_type__employee
-#: model:ir.model.fields.selection,name:hr.selection__mail_activity_plan_template__responsible_type__employee
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__employee_type__employee
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__employee_type__employee
+#: model:ir.model.fields.selection,name:hr.selection__hr_plan_activity_type__responsible__employee
 #: model:ir.ui.menu,name:hr.menu_config_employee
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
-#: model_terms:ir.ui.view,arch_db:hr.res_users_view_form
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
-#: model_terms:ir.ui.view,arch_db:hr.view_users_simple_form_inherit_hr
-#, python-format
 msgid "Employee"
 msgstr "Karyawan"
 
@@ -1198,12 +1221,12 @@ msgstr "Kategori Karyawan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_count
 msgid "Employee Count"
-msgstr "Jumlah Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_employee_self_edit
 msgid "Employee Editing"
-msgstr "Editing Karyawan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.print_employee_badge
@@ -1213,18 +1236,13 @@ msgstr "Foto Karyawan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__private_lang
 msgid "Employee Lang"
-msgstr "Bahasa Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__name
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
 msgid "Employee Name"
 msgstr "Nama Karyawan"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_res_company__employee_properties_definition
-msgid "Employee Properties"
-msgstr "Properti Karyawan"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.open_view_categ_form
@@ -1234,41 +1252,42 @@ msgid "Employee Tags"
 msgstr "Tag Karyawan"
 
 #. module: hr
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr/static/src/views/archive_employee_hook.js:0
 #, python-format
 msgid "Employee Termination"
-msgstr "Pemberhentian Kerja Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__employee_type
+#: model:ir.model.fields,field_description:hr.field_hr_employee_base__employee_type
+#: model:ir.model.fields,field_description:hr.field_hr_employee_public__employee_type
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_type
 msgid "Employee Type"
-msgstr "Tipe Karyawan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Employee Update Rights"
-msgstr "Update Hak Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__bank_account_id
 #: model:ir.model.fields,help:hr.field_res_users__employee_bank_account_id
 msgid "Employee bank account to pay salaries"
-msgstr "Akun bank karyawan untuk mengirim gaji"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_bank_account_id
 msgid "Employee's Bank Account Number"
-msgstr "Nomor Akun Bank Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_country_id
 msgid "Employee's Country"
-msgstr "Negara Karyawan"
+msgstr ""
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_kanban
 #: model_terms:ir.ui.view,arch_db:hr.hr_kanban_view_employees
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
@@ -1278,10 +1297,16 @@ msgstr "Nama Karyawan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_resource_calendar_id
 msgid "Employee's Working Hours"
-msgstr "Jam Kerja Karyawan"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.res_users_view_form
+msgid "Employee(s)"
+msgstr "Karyawan"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.act_employee_from_department
+#: model:ir.actions.act_window,name:hr.hr_employee_action_from_user
 #: model:ir.actions.act_window,name:hr.hr_employee_public_action
 #: model:ir.actions.act_window,name:hr.open_view_employee_list
 #: model:ir.actions.act_window,name:hr.open_view_employee_list_my
@@ -1300,6 +1325,7 @@ msgstr "Jam Kerja Karyawan"
 #: model_terms:ir.ui.view,arch_db:hr.view_department_tree
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_tree
+#: model_terms:ir.ui.view,arch_db:hr.view_partner_tree2
 msgid "Employees"
 msgstr "Karyawan"
 
@@ -1307,7 +1333,7 @@ msgstr "Karyawan"
 #: model:ir.model.fields,field_description:hr.field_res_partner__employees_count
 #: model:ir.model.fields,field_description:hr.field_res_users__employees_count
 msgid "Employees Count"
-msgstr "Jumlah Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.open_view_employee_tree
@@ -1323,18 +1349,28 @@ msgstr "Tag Karyawan"
 #: model:ir.model.fields,field_description:hr.field_hr_job__contract_type_id
 #: model_terms:ir.ui.view,arch_db:hr.view_job_filter
 msgid "Employment Type"
-msgstr "Tipe Pekerjaan"
+msgstr ""
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.hr_contract_type_action
 #: model:ir.ui.menu,name:hr.menu_view_hr_contract_type
 msgid "Employment Types"
-msgstr "Tipe Pekerjaan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Enrich employee profiles with skills and resumes"
-msgstr "Perkaya profil karyawan dengan ketrampilan dan resume"
+msgstr ""
+
+#. module: hr
+#: model:ir.model.fields,help:hr.field_hr_employee__address_home_id
+#: model:ir.model.fields,help:hr.field_res_users__address_home_id
+msgid ""
+"Enter here the private address of the employee, not the one linked to your "
+"company."
+msgstr ""
+"Masukkan di sini alamat pribadi karyawan, bukan yang terkait dengan "
+"perusahaan Anda."
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1373,7 +1409,7 @@ msgstr "Pengembang Berpengalaman"
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Family Status"
-msgstr "Status Keluarga"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__gender__female
@@ -1396,14 +1432,14 @@ msgstr "Dipecat"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_follower_ids
 #: model:ir.model.fields,field_description:hr.field_hr_job__message_follower_ids
 msgid "Followers"
-msgstr "Follower"
+msgstr "Pengikut"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__message_partner_ids
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_partner_ids
 #: model:ir.model.fields,field_description:hr.field_hr_job__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Follower (Mitra)"
+msgstr "Pengikut (Rekanan)"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__activity_type_icon
@@ -1411,20 +1447,19 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Ikon font awesome, misalnya fa-tasks"
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/discuss_channel.py:0
+#: code:addons/hr/models/mail_channel.py:0
 #, python-format
 msgid ""
 "For %(channels)s, channel_type should be 'channel' to have the department "
 "auto-subscription."
 msgstr ""
-"Untuk %(channels)s, channel_type harusnya 'channel' untuk mengaktifkan "
-"langganan otomatis departemen."
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__employee_type__freelance
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__employee_type__freelance
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__employee_type__freelance
 msgid "Freelancer"
-msgstr "Freelancer"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1436,11 +1471,6 @@ msgstr "Freelancer"
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Fruit, coffee and <br>snacks provided."
 msgstr "Buah, kopi dan <br>cemilan disediakan."
-
-#. module: hr
-#: model:hr.contract.type,name:hr.contract_type_full_time
-msgid "Full-Time"
-msgstr "Full-Time"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
@@ -1459,11 +1489,6 @@ msgid "Generate"
 msgstr "Buat"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_departure_wizard_view_form
-msgid "Give more details about the reason of archiving the employee."
-msgstr "Dapatkan lebih banyak detail mengenai alasan mengarsip karyawan."
-
-#. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
 #: model_terms:hr.job,website_description:hr.job_consultant
 #: model_terms:hr.job,website_description:hr.job_cto
@@ -1472,7 +1497,7 @@ msgstr "Dapatkan lebih banyak detail mengenai alasan mengarsip karyawan."
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Google Adwords experience"
-msgstr "Pengalaman Google Adwords"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__certificate__graduate
@@ -1488,8 +1513,7 @@ msgstr "Lulusan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Great team of smart people, in a friendly and open culture"
-msgstr ""
-"Tim hebat penuh orang-orang pintar, di dalam budaya yang ramah dan terbuka"
+msgstr "Tim hebat dari orang-orang pintar dalam budaya yang ramah dan terbuka"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
@@ -1499,21 +1523,16 @@ msgid "Group By"
 msgstr "Dikelompokkan berdasarkan"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_discuss_channel__subscription_department_ids
+#: model:ir.model.fields,field_description:hr.field_mail_channel__subscription_department_ids
 msgid "HR Departments"
-msgstr "Departemen HR"
+msgstr ""
 
 #. module: hr
 #: model:ir.actions.server,name:hr.ir_cron_data_check_work_permit_validity_ir_actions_server
+#: model:ir.cron,cron_name:hr.ir_cron_data_check_work_permit_validity
+#: model:ir.cron,name:hr.ir_cron_data_check_work_permit_validity
 msgid "HR Employee: check work permit validity"
-msgstr "Karyawan HR: periksa validitas izin kerja"
-
-#. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/hr_presence_status/hr_presence_status.js:0
-#, python-format
-msgid "HR Presence Status"
-msgstr "Status Kehadiran HR"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -1526,7 +1545,7 @@ msgstr "Pengaturan HR"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__has_message
 #: model:ir.model.fields,field_description:hr.field_hr_job__has_message
 msgid "Has Message"
-msgstr "Memiliki Pesan"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1537,7 +1556,7 @@ msgstr "Memiliki Pesan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Highly creative and autonomous"
-msgstr "Sangat kreatif dan mandiri"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_job__no_of_hired_employee
@@ -1545,22 +1564,22 @@ msgid "Hired Employees"
 msgstr "Karyawan Yang Diterima"
 
 #. module: hr
-#: model:ir.model.fields.selection,name:hr.selection__hr_work_location__location_type__home
-msgid "Home"
-msgstr "Home"
-
-#. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__km_home_work
 #: model:ir.model.fields,field_description:hr.field_res_users__km_home_work
 msgid "Home-Work Distance"
-msgstr "Jarak Rumah-Kerja"
+msgstr ""
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_res_config_settings__module_hr_homeworking
+msgid "Homeworking"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__hr_icon_display
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__hr_icon_display
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__hr_icon_display
 msgid "Hr Icon Display"
-msgstr "Tampilan Ikon HR"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__hr_presence_state
@@ -1568,7 +1587,7 @@ msgstr "Tampilan Ikon HR"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__hr_presence_state
 #: model:ir.model.fields,field_description:hr.field_res_users__hr_presence_state
 msgid "Hr Presence State"
-msgstr "Status Kehadiran HR"
+msgstr ""
 
 #. module: hr
 #: model:ir.ui.menu,name:hr.menu_hr_main
@@ -1589,6 +1608,9 @@ msgstr "Manajer Sumber Daya Manusia"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__id
 #: model:ir.model.fields,field_description:hr.field_hr_job__id
+#: model:ir.model.fields,field_description:hr.field_hr_plan__id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__id
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__id
 msgid "ID"
 msgstr "ID"
@@ -1596,7 +1618,7 @@ msgstr "ID"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__id_card
 msgid "ID Card Copy"
-msgstr "Salinan Kartu ID"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__barcode
@@ -1629,8 +1651,11 @@ msgstr "Jika dicentang, pesan baru memerlukan penanganan dan perhatian Anda."
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_department__message_has_error
+#: model:ir.model.fields,help:hr.field_hr_department__message_has_sms_error
 #: model:ir.model.fields,help:hr.field_hr_employee__message_has_error
+#: model:ir.model.fields,help:hr.field_hr_employee__message_has_sms_error
 #: model:ir.model.fields,help:hr.field_hr_job__message_has_error
+#: model:ir.model.fields,help:hr.field_hr_job__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Jika dicentang, beberapa pesan mempunyai kesalahan dalam pengiriman."
 
@@ -1642,12 +1667,6 @@ msgid ""
 msgstr ""
 "Jika kolom aktif diatur ke Salah, itu akan memungkinkan Anda untuk "
 "menyembunyikan data sumber daya tanpa menghapusnya."
-
-#. module: hr
-#: model:ir.model.fields,help:hr.field_hr_employee__private_car_plate
-msgid "If you have more than one car, just separate the plates by a space."
-msgstr ""
-"Jika Anda memiliki lebih dari satu mobil, cukup pisahkan plat dengan spasi."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__image_1920
@@ -1680,33 +1699,27 @@ msgid "Image 512"
 msgstr "Gambar 512"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid "Import Template for Employees"
-msgstr "Impor Templat untuk Karyawan"
+msgstr ""
 
 #. module: hr
 #: model:hr.contract.type,name:hr.contract_type_interim
 msgid "Interim"
-msgstr "Interim"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__message_is_follower
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_is_follower
 #: model:ir.model.fields,field_description:hr.field_hr_job__message_is_follower
 msgid "Is Follower"
-msgstr "Adalah Follower"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee_public__is_manager
-msgid "Is Manager"
-msgstr "Manajer"
+msgstr "Pengikut"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__is_system
 msgid "Is System"
-msgstr "Apakah Sistem"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
@@ -1730,18 +1743,18 @@ msgstr "Deskripsi Pekerjaan"
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 #: model_terms:ir.ui.view,arch_db:hr.view_job_filter
 msgid "Job Position"
-msgstr "Jabatan Kerja"
+msgstr "Posisi Kerja"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.action_hr_job
 #: model:ir.ui.menu,name:hr.menu_view_hr_job
 msgid "Job Positions"
-msgstr "Jabatan Kerja"
+msgstr "Posisi Kerja"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_hr_job_form
 msgid "Job Summary"
-msgstr "Ringkasan Pekerjaan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__job_title
@@ -1749,6 +1762,7 @@ msgstr "Ringkasan Pekerjaan"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__job_title
 #: model:ir.model.fields,field_description:hr.field_res_users__job_title
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
 msgid "Job Title"
 msgstr "Jabatan"
 
@@ -1761,7 +1775,7 @@ msgstr "Pekerjaan"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__lang
 msgid "Lang"
-msgstr "Bahasa"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -1775,7 +1789,7 @@ msgstr "Bahasa"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__last_activity
 #: model:ir.model.fields,field_description:hr.field_res_users__last_activity
 msgid "Last Activity"
-msgstr "Aktivitas Terakhir"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__last_activity_time
@@ -1783,7 +1797,23 @@ msgstr "Aktivitas Terakhir"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__last_activity_time
 #: model:ir.model.fields,field_description:hr.field_res_users__last_activity_time
 msgid "Last Activity Time"
-msgstr "Waktu Aktivitas Terakhir"
+msgstr ""
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_contract_type____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_department____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_departure_reason____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_departure_wizard____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_employee____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_employee_category____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_employee_public____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_job____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_plan____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard____last_update
+#: model:ir.model.fields,field_description:hr.field_hr_work_location____last_update
+msgid "Last Modified on"
+msgstr "Terakhir diubah pada"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_contract_type__write_uid
@@ -1794,9 +1824,12 @@ msgstr "Waktu Aktivitas Terakhir"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__write_uid
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__write_uid
 #: model:ir.model.fields,field_description:hr.field_hr_job__write_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan__write_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__write_uid
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__write_uid
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__write_uid
 msgid "Last Updated by"
-msgstr "Terakhir Diperbarui oleh"
+msgstr "Terakhir diperbarui oleh"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_contract_type__write_date
@@ -1807,9 +1840,12 @@ msgstr "Terakhir Diperbarui oleh"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__write_date
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__write_date
 #: model:ir.model.fields,field_description:hr.field_hr_job__write_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan__write_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__write_date
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__write_date
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__write_date
 msgid "Last Updated on"
-msgstr "Terakhir Diperbarui pada"
+msgstr "Terakhir diperbarui pada"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
@@ -1818,10 +1854,17 @@ msgstr "Aktifitas terakhir"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.plan_wizard_action
+#: model_terms:ir.ui.view,arch_db:hr.plan_wizard
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_tree
 msgid "Launch Plan"
-msgstr "Rencana Peluncuran"
+msgstr ""
+
+#. module: hr
+#: code:addons/hr/wizard/hr_plan_wizard.py:0
+#, python-format
+msgid "Launch Plans"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1832,17 +1875,17 @@ msgstr "Rencana Peluncuran"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Lead the entire sales cycle"
-msgstr "Pimpin keseluruhan siklus sales"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__marital__cohabitant
 msgid "Legal Cohabitant"
-msgstr "Hidup Bersama Legal"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.action_hr_job
 msgid "Let's create a job position."
-msgstr "Mari membuat jabatan kerja."
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
@@ -1854,36 +1897,12 @@ msgstr "Lokasi"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_work_location__location_number
 msgid "Location Number"
-msgstr "Nomor Lokasi"
-
-#. module: hr
-#: model:hr.department,name:hr.dep_rd_ltp
-msgid "Long Term Projects"
-msgstr "Project Jangka Panjang"
-
-#. module: hr
-#: model_terms:hr.job,description:hr.job_hrm
-msgid ""
-"Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-"Lorem Ipsum has been the industry's standard dummy text ever since the "
-"1500s, when an unknown printer took a galley of type and scrambled it to "
-"make a type specimen book. It has survived not only five centuries, but also"
-" the leap into electronic typesetting, remaining essentially unchanged. It "
-"was popularised in the 1960s with the release of Letraset sheets containing "
-"Lorem Ipsum passages, and more recently with desktop publishing software "
-"like Aldus PageMaker including versions of Lorem Ipsum."
 msgstr ""
-"Lorem Ipsum adalah teks contoh pada industri pencetakan dan typesetting. "
-"Lorem Ipsum adalah teks contoh standar industri dari tahun 1500an, seorang "
-"pencetak yang tidak diketahui membuat galeri tulisan dan mengacaknya untuk "
-"membuat tipe buku spesimen. Tidak hanya bertahan 5 abad, bahkan melalui "
-"typesetting elektronik, Lorem Ipsum tidak diganti. Dipopulerkan pada tahun "
-"1960an dengan penerbitan Letraset sheet yang memiliki bagian-bagian Lorem "
-"Ipsum, dan baru-baru ini dengan software penerbit desktop seperti Aldus "
-"PageMaker yang memasukkan versi Lorem Ipsum mereka."
 
 #. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_department__message_main_attachment_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr.field_hr_job__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Lampiran Utama"
 
@@ -1893,33 +1912,22 @@ msgid "Male"
 msgstr "Laki-laki"
 
 #. module: hr
-#: model:hr.department,name:hr.dep_management
-msgid "Management"
-msgstr "Manajemen"
-
-#. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__manager_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee__parent_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__parent_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__parent_id
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_parent_id
-#: model:ir.model.fields.selection,name:hr.selection__mail_activity_plan_template__responsible_type__manager
+#: model:ir.model.fields.selection,name:hr.selection__hr_plan_activity_type__responsible__manager
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
 msgid "Manager"
 msgstr "Manajer"
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
+#: code:addons/hr/models/hr_plan_activity_type.py:0
 #, python-format
 msgid "Manager of employee %s is not set."
 msgstr "Manajer dari karyawan %s tidak diatur."
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.print_employee_badge
-msgid "Marc Demo"
-msgstr "Marc Demo"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__marital
@@ -1941,12 +1949,12 @@ msgstr "Menikah"
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__certificate__master
 msgid "Master"
-msgstr "Master"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__master_department_id
 msgid "Master Department"
-msgstr "Departemen Master"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -1957,14 +1965,14 @@ msgstr "Departemen Master"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Master demos of our software"
-msgstr "Demo master untuk software kami"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__member_of_department
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__member_of_department
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__member_of_department
 msgid "Member of department"
-msgstr "Anggota departemen"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__member_ids
@@ -1999,21 +2007,21 @@ msgstr "Pesan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Must Have"
-msgstr "Harus Dimiliki"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Deadline Kegiatan Saya"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
 msgid "My Department"
-msgstr "Departemen Saya"
+msgstr ""
 
 #. module: hr
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr/static/src/user_menu/my_profile.js:0
 #, python-format
 msgid "My Profile"
@@ -2029,6 +2037,7 @@ msgstr "Kelompok ku"
 #: model:ir.model.fields,field_description:hr.field_hr_contract_type__name
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__name
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__name
+#: model:ir.model.fields,field_description:hr.field_hr_plan__name
 msgid "Name"
 msgstr "Nama"
 
@@ -2046,27 +2055,12 @@ msgstr "Kewarganegaraan (negara)"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Negotiate and contract"
-msgstr "Negosiasi dan kontrak"
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_view_graph
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_view_pivot
-msgid "New Employees Over Time"
-msgstr "Karyawan-Karyawan Baru dari Waktu ke Waktu"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__newly_hired
-#: model:ir.model.fields,field_description:hr.field_hr_employee_base__newly_hired
-#: model:ir.model.fields,field_description:hr.field_hr_employee_public__newly_hired
-#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_search
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
-msgid "Newly Hired"
-msgstr "Baru Direkrut"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Kalender Acara Aktivitas Berikutnya"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_date_deadline
@@ -2092,17 +2086,7 @@ msgstr "Tipe Aktivitas Berikutnya"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Nice to have"
-msgstr "Baik untuk dimiliki"
-
-#. module: hr
-#: model_terms:ir.actions.act_window,help:hr.open_view_categ_form
-msgid "No Tags found ! Let's create one"
-msgstr "Tidak ada Tag yang ditemukan. Ayo buat baru"
-
-#. module: hr
-#: model_terms:ir.actions.act_window,help:hr.hr_work_location_action
-msgid "No Work Locations found ! Let's create one"
-msgstr "Tidak ada Lokasi Kerja yang ditemukan ! Ayo buat baru"
+msgstr "Baik untuk memiliki"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2114,8 +2098,12 @@ msgstr "Tidak ada Lokasi Kerja yang ditemukan ! Ayo buat baru"
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "No dumb managers, no stupid tools to use, no rigid working hours"
 msgstr ""
-"Tidak ada manajer bodoh, tidak ada alat yang mengesalkan untuk digunakan, "
-"tidak ada jam kerja yang kaku"
+
+#. module: hr
+#: code:addons/hr/models/hr_plan_activity_type.py:0
+#, python-format
+msgid "No specific user given on activity %s."
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2128,8 +2116,6 @@ msgstr ""
 msgid ""
 "No waste of time in enterprise processes, real responsibilities and autonomy"
 msgstr ""
-"Tanpa membuang waktu di proses enterprise, tanggung jawab nyata dan "
-"kemandirian"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -2138,6 +2124,7 @@ msgstr "Tidak tersedia"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__note
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__note
 msgid "Note"
 msgstr "Catatan"
 
@@ -2151,13 +2138,13 @@ msgstr "Catatan"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__message_needaction_counter
 #: model:ir.model.fields,field_description:hr.field_hr_job__message_needaction_counter
 msgid "Number of Actions"
-msgstr "Jumlah Action"
+msgstr "Jumlah Tindakan"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__children
 #: model:ir.model.fields,field_description:hr.field_res_users__children
 msgid "Number of Dependent Children"
-msgstr "Jumlah Anak yang Bergantung"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_job__no_of_employee
@@ -2182,20 +2169,27 @@ msgstr ""
 #: model:ir.model.fields,help:hr.field_hr_department__message_needaction_counter
 #: model:ir.model.fields,help:hr.field_hr_employee__message_needaction_counter
 #: model:ir.model.fields,help:hr.field_hr_job__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Jumlah pesan yang membutuhkan tindakan"
+msgid "Number of messages which requires an action"
+msgstr "Jumlah pesan yang butuh tindakan"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_department__message_has_error_counter
 #: model:ir.model.fields,help:hr.field_hr_employee__message_has_error_counter
 #: model:ir.model.fields,help:hr.field_hr_job__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Jumlah pesan dengan kesalahan pengiriman"
+msgstr "Jumlah dari pesan dengan kesalahan pengiriman"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_job__no_of_recruitment
 msgid "Number of new employees you expect to recruit."
 msgstr "Jumlah karyawan baru yang Anda harapkan untuk direkrut."
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee__related_contacts_count
+#: model:ir.model.fields,field_description:hr.field_hr_employee_base__related_contacts_count
+#: model:ir.model.fields,field_description:hr.field_hr_employee_public__related_contacts_count
+msgid "Number of related contacts"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.hr_department_tree_action
@@ -2204,9 +2198,6 @@ msgid ""
 "                    related to employees by departments: expenses, timesheets,\n"
 "                    leaves, recruitments, etc."
 msgstr ""
-"Struktur departemen Odoo digunakan untuk mengelola semua dokumen\n"
-"                    terkait karyawan berdasarkan departemen: pengeluaran, timesheet,\n"
-"                    cuti, rekrutmen, dsb."
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.hr_department_kanban_action
@@ -2215,35 +2206,18 @@ msgid ""
 "                related to employees by departments: expenses, timesheets,\n"
 "                time off, recruitments, etc."
 msgstr ""
-"Struktur departemen Odoo digunakan untuk mengelola semua dokumen\n"
-"                    terkait karyawan berdasarkan departemen: pengeluaran, timesheet,\n"
-"                    cuti, rekrutmen, dsb."
-
-#. module: hr
-#: model:ir.model.fields.selection,name:hr.selection__hr_work_location__location_type__office
-msgid "Office"
-msgstr "Kantor"
 
 #. module: hr
 #: model:res.groups,name:hr.group_hr_user
-msgid "Officer: Manage all employees"
-msgstr "Petugas: Kelola semua karyawan"
+msgid "Officer : Manage all employees"
+msgstr ""
 
 #. module: hr
-#: model:ir.actions.act_window,name:hr.mail_activity_plan_action
 #: model:ir.ui.menu,name:hr.menu_config_plan_plan
 msgid "On/Offboarding Plans"
-msgstr "Rencana On/Offboarding"
+msgstr ""
 
 #. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/core/web/thread_actions.js:0
-#, python-format
-msgid "Open Profile"
-msgstr "Buka Profil"
-
-#. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee_base.py:0
 #, python-format
 msgid "Operation not supported"
@@ -2252,9 +2226,14 @@ msgstr "Operation not supported"
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__certificate__other
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__gender__other
-#: model:ir.model.fields.selection,name:hr.selection__hr_work_location__location_type__other
+#: model:ir.model.fields.selection,name:hr.selection__hr_plan_activity_type__responsible__other
 msgid "Other"
 msgstr "Lainnya"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__responsible_id
+msgid "Other Responsible"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2286,8 +2265,6 @@ msgid ""
 " enabled in Configuration) and to change the cashier in the Point of Sale "
 "application."
 msgstr ""
-"PIN digunakan untuk Check In/Out dari Mode Kiosk pada aplikasi Absensi (bila"
-" diaktifkan di Konfigurasi) dan untuk merubah kasir di aplikasi POS."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__parent_id
@@ -2298,11 +2275,6 @@ msgstr "Departemen Induk"
 #: model:ir.model.fields,field_description:hr.field_hr_department__parent_path
 msgid "Parent Path"
 msgstr "Parent Path"
-
-#. module: hr
-#: model:hr.contract.type,name:hr.contract_type_part_time
-msgid "Part-Time"
-msgstr "Part-Time"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__user_partner_id
@@ -2319,7 +2291,7 @@ msgstr "Data rekanan terkait dari pengguna"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Passion for software products"
-msgstr "Semangat untuk produk software"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__passport_id
@@ -2341,20 +2313,7 @@ msgstr "Penggajian"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Perfect written English"
-msgstr "Perfect written English"
-
-#. module: hr
-#: model_terms:hr.job,description:hr.job_consultant
-#: model_terms:hr.job,description:hr.job_developer
-#: model_terms:hr.job,description:hr.job_marketing
-msgid ""
-"Perform assigned responsibilities, collaborate with team members, and adhere"
-" to company policies. Strong communication, problem-solving, and work ethic "
-"required. Adaptability, initiative, and willingness to learn are valued."
 msgstr ""
-"Lakukan tanggung jawab yang ditugaskan, kolaborasi dengan anggota tim, dan "
-"ikuti kebijakan perusahaan. Komunikasi kuat, problem-solving, dan work ethic"
-" bagus. Dapat beradaptasi, memiliki inisiatif, dan kemauan untuk belajar."
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2370,7 +2329,7 @@ msgstr "Keuntungan"
 #. module: hr
 #: model:hr.contract.type,name:hr.contract_type_permanent
 msgid "Permanent"
-msgstr "Permanen"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2381,14 +2340,7 @@ msgstr "Permanen"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Personal Evolution"
-msgstr "Evolusi Pribadi"
-
-#. module: hr
-#. odoo-python
-#: code:addons/hr/models/res_users.py:0
-#, python-format
-msgid "Personal information update."
-msgstr "Update informasi pribadi."
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
@@ -2404,40 +2356,48 @@ msgstr "Tempat Lahir"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__plan_ids
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__plan_id
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__plan_id
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_search
 msgid "Plan"
 msgstr "Rencana"
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan.py:0
-#, python-format
-msgid ""
-"Plan %(plan_names)s cannot use a department as it is used only for employee "
-"plans."
+#: model:ir.actions.act_window,name:hr.hr_plan_activity_type_action
+msgid "Plan Activities"
 msgstr ""
-"Rencana %(plan_names)s tidak dapat menggunakan departemen karena hanya "
-"digunakan untuk rencana karyawan."
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan.py:0
-#, python-format
-msgid ""
-"Plan activities %(template_names)s cannot use coach, manager or employee "
-"responsible as it is used only for employee plans."
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_form
+msgid "Plan Name"
 msgstr ""
-"Rencana kegiatan %(template_names)s tidak dapat menggunakan coach, manajer "
-"atau karyawan karena hanya digunakan untuk rencana karyawan."
 
 #. module: hr
+#: model:ir.model,name:hr.model_hr_plan_wizard
+msgid "Plan Wizard"
+msgstr ""
+
+#. module: hr
+#: model:ir.model,name:hr.model_hr_plan_activity_type
+msgid "Plan activity type"
+msgstr ""
+
+#. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_form
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_tree
+msgid "Planning"
+msgstr "Perencanaan"
+
+#. module: hr
+#: model:ir.actions.act_window,name:hr.hr_plan_action
 #: model_terms:ir.ui.view,arch_db:hr.view_department_form
 msgid "Plans"
-msgstr "Rencana"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__plans_count
 msgid "Plans Count"
-msgstr "Jumlah Rencana"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2449,12 +2409,10 @@ msgstr "Jumlah Rencana"
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Play any sport with colleagues, <br>the bill is covered."
 msgstr ""
-"Mainkan olahraga papun dengan rekan kerja, <br>tagihan ditanggung "
-"perusahaan."
 
 #. module: hr
+#: model:ir.model.fields,help:hr.field_crm_team__alias_contact
 #: model:ir.model.fields,help:hr.field_mail_alias__alias_contact
-#: model:ir.model.fields,help:hr.field_maintenance_equipment_category__alias_contact
 msgid ""
 "Policy to post a message on the document using the mailgateway.\n"
 "- everyone: everyone can post\n"
@@ -2468,18 +2426,13 @@ msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
-msgid "Presence Control"
-msgstr "Kontrol Kehadiran"
-
-#. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Presence of employees"
 msgstr "Kehadiran Karyawan"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Presence reporting screen, email and IP address control."
-msgstr "Layar pelaporan kehadiran, kontrol email dan IP address"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__hr_icon_display__presence_present
@@ -2506,20 +2459,13 @@ msgstr "Cetak Lencana"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Private Address"
 msgstr "Alamat Pribadi"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_car_plate
-msgid "Private Car Plate"
-msgstr "Plat Mobil Privat"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_city
 #: model:ir.model.fields,field_description:hr.field_res_users__private_city
 msgid "Private City"
-msgstr "Kota Privat"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
@@ -2527,10 +2473,9 @@ msgid "Private Contact"
 msgstr "Kontak Pribadi"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_country_id
 #: model:ir.model.fields,field_description:hr.field_res_users__private_country_id
 msgid "Private Country"
-msgstr "Negara Privat"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__private_email
@@ -2545,49 +2490,35 @@ msgid "Private Information"
 msgstr "Informasi Pribadi"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_phone
-#: model:ir.model.fields,field_description:hr.field_res_users__private_phone
+#: model:ir.model.fields,field_description:hr.field_hr_employee__phone
+#: model:ir.model.fields,field_description:hr.field_res_users__employee_phone
 msgid "Private Phone"
-msgstr "Nomor Privat"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_state_id
 #: model:ir.model.fields,field_description:hr.field_res_users__private_state_id
 msgid "Private State"
-msgstr "Negara Bagian Privat"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_street
 #: model:ir.model.fields,field_description:hr.field_res_users__private_street
 msgid "Private Street"
-msgstr "Jalan Privat"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_street2
 #: model:ir.model.fields,field_description:hr.field_res_users__private_street2
 msgid "Private Street2"
-msgstr "Jalan Privat 2"
+msgstr ""
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__private_zip
 #: model:ir.model.fields,field_description:hr.field_res_users__private_zip
 msgid "Private Zip"
-msgstr "Kode Pos Privat"
-
-#. module: hr
-#: model:hr.department,name:hr.dep_ps
-msgid "Professional Services"
-msgstr "Layanan Profesional"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__employee_properties
-msgid "Properties"
-msgstr "Properti-Properti"
+msgstr ""
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_employee_public
 msgid "Public Employee"
-msgstr "Karyawan Publik"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2598,24 +2529,12 @@ msgstr "Karyawan Publik"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Qualify the customer needs"
-msgstr "Memenuhi kebutuhan pelanggan"
-
-#. module: hr
-#: model:hr.department,name:hr.dep_rd_be
-msgid "R&D USA"
-msgstr "LitBang USA"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_department__rating_ids
-#: model:ir.model.fields,field_description:hr.field_hr_employee__rating_ids
-#: model:ir.model.fields,field_description:hr.field_hr_job__rating_ids
-msgid "Ratings"
-msgstr "Rating"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.action_hr_job
 msgid "Ready to recruit more efficiently?"
-msgstr "Siap untuk merekrut dengan lebih efisien?"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2627,17 +2546,11 @@ msgstr "Siap untuk merekrut dengan lebih efisien?"
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Real responsibilities and challenges in a fast evolving company"
 msgstr ""
-"Tanggung jawab dan tantangan nyata di perusahaan yang cepat berevolusi"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_departure_reason__name
 msgid "Reason"
 msgstr "Alasan"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_departure_reason__reason_code
-msgid "Reason Code"
-msgstr "Kode Alasan"
 
 #. module: hr
 #: model:ir.ui.menu,name:hr.menu_config_recruitment
@@ -2646,19 +2559,31 @@ msgid "Recruitment"
 msgstr "Perekrutan"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #: model:ir.actions.act_window,name:hr.hr_departure_wizard_action
 #, python-format
 msgid "Register Departure"
-msgstr "Daftarkan Resign"
+msgstr ""
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/res_partner.py:0 code:addons/hr/models/res_users.py:0
+#: model:ir.model.fields,field_description:hr.field_hr_employee__related_contact_ids
+#: model:ir.model.fields,field_description:hr.field_hr_employee_base__related_contact_ids
+#: model:ir.model.fields,field_description:hr.field_hr_employee_public__related_contact_ids
+msgid "Related Contact"
+msgstr ""
+
+#. module: hr
+#: code:addons/hr/models/hr_employee_base.py:0
+#: model_terms:ir.ui.view,arch_db:hr.view_employee_form_smartbutton
+#, python-format
+msgid "Related Contacts"
+msgstr ""
+
+#. module: hr
+#: code:addons/hr/models/res_partner.py:0
 #, python-format
 msgid "Related Employees"
-msgstr "Karyawan-Karyawan Terkait"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
@@ -2668,23 +2593,18 @@ msgstr "Pengguna Terkait"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__employee_ids
 msgid "Related employee"
-msgstr "Karyawan Terkait"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_res_partner__employee_ids
 msgid "Related employees based on their private address"
-msgstr "Karyawan-Karyawan terkait berdasarkan alamat privat mereka"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__user_id
 #: model:ir.model.fields,help:hr.field_resource_resource__user_id
 msgid "Related user name for the resource to manage its access."
 msgstr "Nama pengguna terkait untuk sumber daya untuk mengelola aksesnya."
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_res_config_settings__module_hr_homeworking
-msgid "Remote Work"
-msgstr "Kerja Remote"
 
 #. module: hr
 #: model:ir.ui.menu,name:hr.hr_menu_hr_reports
@@ -2696,11 +2616,6 @@ msgstr "Laporan"
 #: model:ir.model.fields,field_description:hr.field_hr_job__requirements
 msgid "Requirements"
 msgstr "Persyaratan"
-
-#. module: hr
-#: model:hr.department,name:hr.dep_rd
-msgid "Research & Development"
-msgstr "Penelitian & Pengembangan"
 
 #. module: hr
 #: model:hr.departure.reason,name:hr.departure_resigned
@@ -2737,6 +2652,11 @@ msgid "Responsibilities"
 msgstr "Tanggung Jawab"
 
 #. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__responsible
+msgid "Responsible"
+msgstr "Penanggung Jawab"
+
+#. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__activity_user_id
 msgid "Responsible User"
 msgstr "Tanggung-jawab"
@@ -2752,15 +2672,16 @@ msgid "SIN No"
 msgstr "No. KTP"
 
 #. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__ssnid
-#: model:ir.model.fields,field_description:hr.field_res_users__ssnid
-msgid "SSN No"
-msgstr "Nomor Jamkesmas"
+#: model:ir.model.fields,field_description:hr.field_hr_department__message_has_sms_error
+#: model:ir.model.fields,field_description:hr.field_hr_employee__message_has_sms_error
+#: model:ir.model.fields,field_description:hr.field_hr_job__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Kesalahan Pengiriman SMS"
 
 #. module: hr
-#: model:hr.department,name:hr.dep_sales
-msgid "Sales"
-msgstr "Penjualan"
+#: model:ir.model.fields,field_description:hr.field_hr_employee__ssnid
+msgid "SSN No"
+msgstr "Nomor Jamkesmas"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_users_simple_form
@@ -2768,6 +2689,7 @@ msgid "Save"
 msgstr "Simpan"
 
 #. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Schedule"
 msgstr "Jadwal"
@@ -2779,11 +2701,6 @@ msgid "School"
 msgstr "Sekolah"
 
 #. module: hr
-#: model:hr.contract.type,name:hr.contract_type_seasonal
-msgid "Seasonal"
-msgstr "Musiman"
-
-#. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__coach_id
 #: model:ir.model.fields,help:hr.field_hr_employee_base__coach_id
 #: model:ir.model.fields,help:hr.field_hr_employee_public__coach_id
@@ -2792,8 +2709,6 @@ msgid ""
 "Select the \"Employee\" who is the coach of this employee.\n"
 "The \"Coach\" has no specific rights or responsibilities by default."
 msgstr ""
-"Pilih \"Karyawan\" yang merupakan coach karyawan ini.\n"
-"Secara default \"Coach\" tidak memiliki hak atau tanggung jawab tertentu."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_contract_type__sequence
@@ -2806,7 +2721,6 @@ msgstr "Urutan"
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Set default company schedule to manage your employees working time"
 msgstr ""
-"Tetapkan jadwal default perusahaan untuk mengelola jam kerja karyawan Anda"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.hr_config_settings_action
@@ -2819,14 +2733,7 @@ msgstr "Pengaturan"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__show_hr_icon_display
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__show_hr_icon_display
 msgid "Show Hr Icon Display"
-msgstr "Tunjukkan Tampilan Ikon HR"
-
-#. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/department_chart/department_chart.xml:0
-#, python-format
-msgid "Show employees"
-msgstr "Tunjukkan karyawan "
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__marital__single
@@ -2845,14 +2752,13 @@ msgstr "Nomor Asuransi Sosial"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__ssnid
-#: model:ir.model.fields,help:hr.field_res_users__ssnid
 msgid "Social Security Number"
 msgstr "Nomor Keamanan Sosial"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.print_employee_badge
-msgid "Software Developer"
-msgstr "Software Developer"
+#: model:ir.model.fields,help:hr.field_hr_plan_activity_type__responsible_id
+msgid "Specific responsible of activity if not linked to the employee."
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2863,13 +2769,13 @@ msgstr "Software Developer"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Sport Activity"
-msgstr "Kegiatan Olahraga"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__spouse_birthdate
 #: model:ir.model.fields,field_description:hr.field_res_users__spouse_birthdate
 msgid "Spouse Birthdate"
-msgstr "Tanggal lahir Pasangan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__spouse_complete_name
@@ -2878,13 +2784,7 @@ msgid "Spouse Complete Name"
 msgstr "Nama Lengkap Pasangan"
 
 #. module: hr
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
-msgid "Start Date"
-msgstr "Tanggal Mulai"
-
-#. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "State"
 msgstr "Status"
 
@@ -2908,14 +2808,17 @@ msgstr ""
 "Direncanakan: Aktivitas yang akan datang."
 
 #. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_plan__steps_count
+msgid "Steps Count"
+msgstr ""
+
+#. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Street 2..."
 msgstr "Tambahan nama jalan..."
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Street..."
 msgstr "Jalan..."
 
@@ -2928,12 +2831,19 @@ msgstr "Jalan..."
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Strong analytical skills"
-msgstr "Keterampilan analitik yang kuat"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__employee_type__student
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__employee_type__student
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__employee_type__student
 msgid "Student"
 msgstr "Siswa"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_plan_activity_type__summary
+msgid "Summary"
+msgstr "Ringkasan"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee_category__name
@@ -2942,8 +2852,8 @@ msgstr "Nama Tag"
 
 #. module: hr
 #: model:ir.model.constraint,message:hr.constraint_hr_employee_category_name_uniq
-msgid "Tag name already exists!"
-msgstr "Nama tag sudah ada!"
+msgid "Tag name already exists !"
+msgstr "Nama tag sudah ada !"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__category_ids
@@ -2956,7 +2866,7 @@ msgstr "Label"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_job__no_of_recruitment
 msgid "Target"
-msgstr "Target"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -2967,22 +2877,22 @@ msgstr "Target"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Technical Expertise"
-msgstr "Keahlian Teknis"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__create_employee_id
 msgid "Technical field, bind user to this employee on create"
-msgstr "Field teknis, ikat user ke karyawan ini pada pembuatan"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_users__create_employee
 msgid "Technical field, whether to create an employee"
-msgstr "Field teknis, apakah utnuk membuat karyawan"
+msgstr ""
 
 #. module: hr
 #: model:hr.contract.type,name:hr.contract_type_temporary
 msgid "Temporary"
-msgstr "Sementara"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.constraint,message:hr.constraint_hr_employee_barcode_uniq
@@ -3002,21 +2912,27 @@ msgstr ""
 "Anda dapat menggunakan kolom ini untuk pencarian cepat."
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid "The PIN must be a sequence of digits."
 msgstr "Nomor PIN hanya boleh terdiri atas angka."
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
+#: code:addons/hr/models/hr_plan_activity_type.py:0
 #, python-format
 msgid "The employee %s should be linked to a user."
-msgstr "Karyawan %s harus di-link ke user."
+msgstr ""
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee__is_address_home_a_company
+#: model:ir.model.fields,field_description:hr.field_res_users__is_address_home_a_company
+msgid "The employee address has a company linked"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__employee_type
+#: model:ir.model.fields,help:hr.field_hr_employee_base__employee_type
+#: model:ir.model.fields,help:hr.field_hr_employee_public__employee_type
 #: model:ir.model.fields,help:hr.field_res_users__employee_type
 msgid ""
 "The employee type. Although the primary purpose may seem to categorize "
@@ -3024,38 +2940,31 @@ msgid ""
 "Employee type is supposed to be under contract and will have a Contract "
 "History."
 msgstr ""
-"Tipe karyawan. Walau tujuan primer mungkin untuk mengkategorikan karyawan, "
-"field ini juga memiliki dampak di Sejarah Kontrak. Harusnya hanya tipe "
-"Karyawan yang berada di bawah kontrak dan akan memiliki Sejarah Kontrak."
+
+#. module: hr
+#: code:addons/hr/wizard/hr_plan_wizard.py:0
+#, python-format
+msgid "The employees should belong to the same company."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.constraint,message:hr.constraint_hr_job_no_of_recruitment_positive
 msgid "The expected number of new employees must be positive."
-msgstr "Jumlah karyawan baru yang diperkirakan harus positif."
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid ""
-"The fields %r you try to read is not available on the public employee "
+"The fields \"%s\" you try to read is not available on the public employee "
 "profile."
 msgstr ""
-"Field %r yang Anda coba baca tidak tersedia pada profil publik karyawan."
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/res_users.py:0
-#, python-format
-msgid "The following fields were modified by %s"
-msgstr "Field-field berikut dimodifikasi oleh %s"
-
-#. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
+#: code:addons/hr/models/hr_plan_activity_type.py:0
 #, python-format
 msgid "The manager of %s should be linked to a user."
-msgstr "Manajer %s harusnya di-link ke user."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.constraint,message:hr.constraint_hr_job_name_company_uniq
@@ -3063,16 +2972,21 @@ msgid "The name of the job position must be unique per department in company!"
 msgstr "Nama jabatan harus unik tiap departemen di perusahaan!"
 
 #. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
+#: code:addons/hr/wizard/hr_plan_wizard.py:0
 #, python-format
-msgid "The user of %s's coach is not set."
-msgstr "User untuk coach %s belum ditetapkan."
+msgid "The plan %s cannot be launched: <br><ul>"
+msgstr ""
+
+#. module: hr
+#: code:addons/hr/wizard/hr_plan_wizard.py:0
+#, python-format
+msgid "The plan %s has been started"
+msgstr ""
 
 #. module: hr
 #: model:res.groups,comment:hr.group_hr_user
 msgid "The user will be able to approve document created by employees."
-msgstr "User akan dapat menyetujui dokumen yang dibuat karyawan."
+msgstr ""
 
 #. module: hr
 #: model:res.groups,comment:hr.group_hr_manager
@@ -3080,21 +2994,18 @@ msgid ""
 "The user will have access to the human resources configuration as well as "
 "statistic reports."
 msgstr ""
-"User akan mendapatkan akses ke konfigurasi HR sekaligus laporan statistik."
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid "The work permit of %(employee)s expires at %(date)s."
-msgstr "Izin kerja %(employee)s berakhir pada %(date)s."
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid "This employee already has an user."
-msgstr "Karyawan ini sudah memiliki user."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__tz
@@ -3104,15 +3015,6 @@ msgid ""
 "This field is used in order to define in which timezone the resources will "
 "work."
 msgstr ""
-"Field ini digunakan untuk mendefinisikan di timezone mana sumber daya akan "
-"bekerja."
-
-#. module: hr
-#. odoo-python
-#: code:addons/hr/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "Those responsible types are limited to Employee plans."
-msgstr "Tipe-tipe yang bertanggung jawab dibatasi ke rencana Karyawan."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__tz
@@ -3126,10 +3028,9 @@ msgstr "Zona Waktu"
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__hr_presence_state__to_define
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__hr_presence_state__to_define
 msgid "To Define"
-msgstr "Untuk mendefinisikan"
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid ""
@@ -3137,16 +3038,13 @@ msgid ""
 " leaves, ...), you should create another employee in the new company "
 "instead."
 msgstr ""
-"Untuk mencegah masalah lebih dari satu perusahaan (kehilangan akses ke "
-"kontrak Anda yang sebelumnya, cuti, ...), Anda harus membuat karyawan baru "
-"di perusahaan baru."
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__hr_icon_display__presence_to_define
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__hr_icon_display__presence_to_define
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__hr_icon_display__presence_to_define
 msgid "To define"
-msgstr "Untuk mendefinisikan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_filter
@@ -3166,6 +3064,8 @@ msgstr "Total Perkiraan Karyawan"
 #. module: hr
 #: model:hr.job,name:hr.job_trainee
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__employee_type__trainee
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__employee_type__trainee
+#: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__employee_type__trainee
 msgid "Trainee"
 msgstr "Peserta pelatihan"
 
@@ -3178,7 +3078,7 @@ msgstr "Peserta pelatihan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Trainings"
-msgstr "Training"
+msgstr "Trainings"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__activity_exception_decoration
@@ -3190,7 +3090,7 @@ msgstr "Jenis dari aktivitas pengecualian pada rekaman data."
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_base__hr_icon_display__presence_undetermined
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee_public__hr_icon_display__presence_undetermined
 msgid "Undetermined"
-msgstr "Belum ditentukan"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_department_filter
@@ -3198,11 +3098,6 @@ msgstr "Belum ditentukan"
 #: model_terms:ir.ui.view,arch_db:hr.view_job_filter
 msgid "Unread Messages"
 msgstr "Pesan Belum Dibaca"
-
-#. module: hr
-#: model_terms:ir.actions.act_window,help:hr.open_view_categ_form
-msgid "Use tags to categorize your Employees."
-msgstr "Gunakan tag untuk mengkategorikan Karyawan Anda."
 
 #. module: hr
 #: model:ir.model,name:hr.model_res_users
@@ -3214,21 +3109,27 @@ msgid "User"
 msgstr "Pengguna"
 
 #. module: hr
+#: code:addons/hr/models/hr_plan_activity_type.py:0
+#, python-format
+msgid "User of coach of employee %s is not set."
+msgstr ""
+
+#. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__user_partner_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__user_partner_id
 msgid "User's partner"
-msgstr "Partner user"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_job_view_kanban
-msgid "Vacancies:"
-msgstr "Lowongan:"
+msgid "Vacancies :"
+msgstr "Lowongan :"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_company__hr_presence_control_ip_list
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_presence_control_ip_list
 msgid "Valid IP addresses"
-msgstr "IP address valid"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -3239,14 +3140,7 @@ msgstr "IP address valid"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "Valid work permit for Belgium"
-msgstr "Ijin kerja yang sah untuk Belgium"
-
-#. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/components/avatar_card/avatar_card_popover_patch.xml:0
-#, python-format
-msgid "View profile"
-msgstr "Lihat profil"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__visa_expire
@@ -3261,11 +3155,25 @@ msgid "Visa No"
 msgstr "No. Visa"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
+#: model:ir.model.fields,field_description:hr.field_hr_plan_wizard__warning
 #, python-format
 msgid "Warning"
 msgstr "Peringatan"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_department__website_message_ids
+#: model:ir.model.fields,field_description:hr.field_hr_employee__website_message_ids
+#: model:ir.model.fields,field_description:hr.field_hr_job__website_message_ids
+msgid "Website Messages"
+msgstr "Pesan situs"
+
+#. module: hr
+#: model:ir.model.fields,help:hr.field_hr_department__website_message_ids
+#: model:ir.model.fields,help:hr.field_hr_employee__website_message_ids
+#: model:ir.model.fields,help:hr.field_hr_job__website_message_ids
+msgid "Website communication history"
+msgstr "Sejarah komunikasi situs"
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -3276,7 +3184,7 @@ msgstr "Peringatan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "What We Offer"
-msgstr "Apa yang Kami Tawarkan"
+msgstr ""
 
 #. module: hr
 #: model_terms:hr.job,website_description:hr.job_ceo
@@ -3287,7 +3195,7 @@ msgstr "Apa yang Kami Tawarkan"
 #: model_terms:hr.job,website_description:hr.job_marketing
 #: model_terms:hr.job,website_description:hr.job_trainee
 msgid "What's great in the job?"
-msgstr "Apa yang hebat di pekerjaan ini?"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__member_of_department
@@ -3297,8 +3205,6 @@ msgid ""
 "Whether the employee is a member of the active user's department or one of "
 "it's child department."
 msgstr ""
-"Apakah karyawan merupakan anggota dari departemen user yang aktif atau salah"
-" satu anak departemennya."
 
 #. module: hr
 #: model:ir.model.fields.selection,name:hr.selection__hr_employee__marital__widower
@@ -3307,16 +3213,6 @@ msgstr "Duda/Janda"
 
 #. module: hr
 #: model_terms:ir.actions.act_window,help:hr.act_employee_from_department
-#: model_terms:ir.actions.act_window,help:hr.open_view_employee_list_my
-msgid ""
-"With just a quick glance on the Odoo employee screen, you\n"
-"                    can easily find all the information you need for each person;\n"
-"                    contact data, job position, availability, etc."
-msgstr ""
-"Dengan hanya melihat sekilas pada layar karyawan Odoo, Anda dapat dengan mudah menemukan semua informasi yang Anda butuhkan untuk setiap orang;\n"
-"                data kontak, lowongan kerja, ketersediaan, dll."
-
-#. module: hr
 #: model_terms:ir.actions.act_window,help:hr.hr_employee_public_action
 msgid ""
 "With just a quick glance on the Odoo employee screen, you\n"
@@ -3325,6 +3221,14 @@ msgid ""
 msgstr ""
 "Dengan hanya melihat sekilas pada layar karyawan Odoo, Anda dapat dengan mudah menemukan semua informasi yang Anda butuhkan untuk setiap orang;\n"
 "                data kontak, lowongan kerja, ketersediaan, dll."
+
+#. module: hr
+#: model_terms:ir.actions.act_window,help:hr.open_view_employee_list_my
+msgid ""
+"With just a quick glance on the Odoo employee screen, you\n"
+"               can easily find all the information you need for each person;\n"
+"               contact data, job position, availability, etc."
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__address_id
@@ -3339,9 +3243,8 @@ msgstr "Alamat Tempat Kerja"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__work_contact_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_base__work_contact_id
 #: model:ir.model.fields,field_description:hr.field_hr_employee_public__work_contact_id
-#: model:ir.model.fields,field_description:hr.field_res_users__work_contact_id
 msgid "Work Contact"
-msgstr "Kontrak Kerja"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__work_email
@@ -3374,16 +3277,7 @@ msgstr "Lokasi Kerja"
 #: model:ir.actions.act_window,name:hr.hr_work_location_action
 #: model:ir.ui.menu,name:hr.menu_hr_work_location_tree
 msgid "Work Locations"
-msgstr "Lokasi Kerja"
-
-#. module: hr
-#: model_terms:ir.actions.act_window,help:hr.hr_work_location_action
-msgid ""
-"Work Locations are used to define more precisely where your employee is "
-"located everyday."
 msgstr ""
-"Lokasi Kerja digunakan untuk mendefinisikan lebih tepat di mana karyawan "
-"Anda berlokasi setiap hari."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__mobile_phone
@@ -3408,7 +3302,7 @@ msgstr "Ijin Kerja"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__work_permit_expiration_date
 msgid "Work Permit Expiration Date"
-msgstr "Tanggal Berakhir Izin Kerja"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__permit_no
@@ -3419,7 +3313,7 @@ msgstr "No. Ijin Kerja"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__work_permit_scheduled_activity
 msgid "Work Permit Scheduled Activity"
-msgstr "Kegiatan Terjadwal Izin Kerja"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__work_phone
@@ -3435,101 +3329,48 @@ msgid "Working Hours"
 msgstr "Jam Kerja"
 
 #. module: hr
-#: model:ir.ui.menu,name:hr.menu_resource_calendar_view
-msgid "Working Schedules"
-msgstr "Jadwal Kerja"
-
-#. module: hr
-#. odoo-python
 #: code:addons/hr/models/res_users.py:0
 #, python-format
 msgid ""
 "You are only allowed to update your preferences. Please contact a HR officer"
 " to update other information."
 msgstr ""
-"Anda hanya diizinkan untuk mengupdate preferensi Anda. Silakan hubungi "
-"petugas HR untuk mengupdate informasi lain."
 
 #. module: hr
-#. odoo-javascript
-#: code:addons/hr/static/src/thread_service_patch.js:0
+#. openerp-web
+#: code:addons/hr/static/src/models/employee.js:0
 #, python-format
 msgid "You can only chat with employees that have a dedicated user."
-msgstr "Anda hanya dapat caht dengan karyawan lain yang memiliki user khusus."
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_department.py:0
 #, python-format
 msgid "You cannot create recursive departments."
-msgstr "Anda tidak dapat membuat departemen rekursif."
+msgstr ""
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/hr_employee.py:0
 #, python-format
 msgid "You do not have access to this document."
-msgstr "Anda tidak memiliki akses ke dokumen ini."
-
-#. module: hr
-#: model_terms:hr.job,description:hr.job_trainee
-msgid ""
-"You participate to the update of our tutorial tools and pre-sales tools after the launch of a new version of Odoo. Indeed, any new version of the software brings significant improvements in terms of functionalities, ergonomics and configuration.\n"
-"You will have to become familiar with the existing tools (books, class supports, Odoo presentation’s slides, commercial tools),\n"
-"to participate to the update of those tools in order to make them appropriate for the new version of the software and, for sure,\n"
-"to suggest improvements in order to cover the new domains of the software.\n"
-"You join the Implementation Assistance department. This team of 3 people go with Odoo’s clients in the set up of the software. Your role will be\n"
-"to animate webinars in order to show the different functionalities of the software.\n"
-"to be involved in the support of the customers and\n"
-"to answer to their questions.\n"
-"You help the support manager to set up new support services by\n"
-"being involved in the treatment of new cases,\n"
-"contributing to the set up of a new politic,\n"
-"being involved into satisfaction surveys in order to have a better knowledge of how the support given is seen by the customers."
 msgstr ""
-"Anda setuju untuk mengupdate alat tutorial dan pre-sales kami setelah versi baru Odoo diluncurkan. Versi baru software Odoo membawa perkembangan signifikan dalam hal fungsionalitas, ergonomi dan konfigurasi.\n"
-"Anda harus terbiasa dengan alat yang tersedia saat ini (buku, class support, slide presentasi Odoo, alat komersil),\n"
-"untuk berpartisipasi dalam mengupdate alat-alat tersebut agar sesuai dengan versi baru software dan, tentunya,\n"
-"untuk menyarankan perubahan untuk mencakup domain-domain baru software.\n"
-"Anda bergabung dengan departemen Bantuan Implementasi. Tim 3 orang ini akan bekerja dengan klien Odoo untuk menyiapkan software. Peran Anda adalah\n"
-"untuk menganimasi webinar untuk menunjukkan fungsionalitas software yang berbeda-beda.\n"
-"agar terlibat dalam membantu pelanggan dan\n"
-"untuk menjawab pertanyaan mereka.\n"
-"Anda membantu support manager untuk menyiapkan layanan support baru dan\n"
-"terlibat dalam menyelesaikan kasus-kasus baru,\n"
-"berkontribusi untuk menyiapkan politic baru,\n"
-"terlibat dalam survei kepuasan agar memiliki pengetahuan lebih baik mengenai bagaimana pelanggan melihat support yang Odoo berikan."
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/res_config_settings.py:0
 #, python-format
 msgid "You should select at least one Advanced Presence Control option."
-msgstr "Anda harus memilih setidaknya satu opsi Advanced Presence Control."
-
-#. module: hr
-#: model_terms:hr.job,description:hr.job_cto
-msgid ""
-"You will take part in the consulting services we provide to our partners and customers: design, analysis, development, testing, project management, support/coaching. You will work autonomously as well as coordinate and supervise small distributed development teams for some projects. Optionally, you will deliver Odoo training sessions to partners and customers (8-10 people/session). You will report to the Head of Professional Services and work closely with all developers and consultants.\n"
-"\n"
-"The job is located in Grand-Rosière (1367), Belgium (between Louvain-La-Neuve and Namur)."
 msgstr ""
-"Anda akan mengambil bagian di layanan konsultasi yang kita sediakan ke partner dan pelanggan: design, analisis, development, testing, manajemen project, bantuan/coaching. Anda akan bekerja secara mandiri sekaligus mengkoordinasi dan mengawasi tim development kecil yang terdistribusi untuk beberapa proejct. Secara opsional, Anda akan melakukan sesi training Odoo untuk partner dan pelanggan (8-10 orang/sesi). Anda akan melapor ke Kepala Layanan Profesional dan bekerja erat dengan semua developer dan konsultan.\n"
-"\n"
-"Pekerjaan ini berlokasi di Grand-Rosière (1367), Belgia (di antara Louvain-La-Neuve dan Namur)."
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
-#: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "ZIP"
 msgstr "Kode Pos"
 
 #. module: hr
-#. odoo-python
 #: code:addons/hr/models/mail_alias.py:0
 #, python-format
 msgid "addresses linked to registered employees"
-msgstr "alamat-alamat yang di-link ke karyawan yang terdaftar"
+msgstr ""
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_department_form
@@ -3542,18 +3383,22 @@ msgid "e.g. John Doe"
 msgstr "misalnya John Doe"
 
 #. module: hr
+#: model_terms:ir.ui.view,arch_db:hr.hr_plan_view_form
+msgid "e.g. Onboarding"
+msgstr ""
+
+#. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_hr_job_form
 msgid "e.g. Sales Manager"
 msgstr "mis. Manajer Penjualan"
 
 #. module: hr
-#. odoo-python
+#: model:ir.model,name:hr.model_hr_plan
+msgid "plan"
+msgstr ""
+
+#. module: hr
 #: code:addons/hr/models/models.py:0
 #, python-format
 msgid "restricted to employees"
-msgstr "dibatasi untuk karyawan-karyawan"
-
-#. module: hr
-#: model:ir.model.fields,field_description:hr.field_hr_employee__work_permit_name
-msgid "work_permit_name"
-msgstr "work_permit_name"
+msgstr ""

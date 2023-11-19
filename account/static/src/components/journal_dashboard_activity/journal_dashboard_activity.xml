@@ -2,19 +2,19 @@
 
 <templates>
 
-     <t t-name="account.JournalDashboardActivity">
+     <t t-name="account.JournalDashboardActivity" owl="1">
         <t t-foreach="info.activities" t-as="activity" t-key="activity_index">
             <div class="row">
                 <div class="col-8 o_mail_activity">
                     <a href="#"
-                       t-att-class="(activity.status == 'late' ? 'text-danger ' : ' ') + (activity.activity_category == 'tax_report' ? 'o_open_vat_report' : 'see_activity')"
+                       t-att-class="(activity.status == 'late' ? 'o_activity_color_overdue ' : ' ') + (activity.activity_category == 'tax_report' ? 'o_open_vat_report' : 'see_activity')"
                        t-att-data-res-id="activity.res_id" t-att-data-id="activity.id" t-att-data-model="activity.res_model"
                        t-on-click.stop.prevent="() => this.openActivity(activity)">
-                        <t t-out="activity.name"/>
+                        <t t-esc="activity.name"/>
                     </a>
                 </div>
                 <div class="col-4 text-end">
-                    <span><t t-out="activity.date"/></span>
+                    <span><t t-esc="activity.date"/></span>
                 </div>
             </div>
         </t>

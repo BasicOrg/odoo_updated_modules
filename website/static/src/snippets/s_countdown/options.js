@@ -1,10 +1,13 @@
-/** @odoo-module **/
+odoo.define('website.s_countdown_options', function (require) {
+'use strict';
 
-import { renderToElement } from "@web/core/utils/render";
-import options from "@web_editor/js/editor/snippets.options";
+const core = require('web.core');
+const options = require('web_editor.snippets.options');
+
+const qweb = core.qweb;
 
 options.registry.countdown = options.Class.extend({
-    events: Object.assign({}, options.Class.prototype.events || {}, {
+    events: _.extend({}, options.Class.prototype.events || {}, {
         'click .toggle-edit-message': '_onToggleEndMessageClick',
     }),
 
@@ -31,7 +34,7 @@ options.registry.countdown = options.Class.extend({
         this.$target[0].dataset.endAction = widgetValue;
         if (widgetValue === 'message' || widgetValue === 'message_no_countdown') {
             if (!this.$target.find('.s_countdown_end_message').length) {
-                const message = this.endMessage || renderToElement('website.s_countdown.end_message');
+                const message = this.endMessage || qweb.render('website.s_countdown.end_message');
                 this.$target.append(message);
             }
             this.$target.toggleClass('hide-countdown', widgetValue === 'message_no_countdown');
@@ -138,4 +141,5 @@ options.registry.countdown = options.Class.extend({
         this.updateUIEndMessage();
         this.trigger_up('cover_update');
     },
+});
 });

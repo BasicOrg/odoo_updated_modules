@@ -2,7 +2,8 @@
 
 import { registry } from "@web/core/registry";
 import { useService } from '@web/core/utils/hooks';
-import { Component, useState } from "@odoo/owl";
+
+const { Component, useState } = owl;
 
 class TranslateWebsiteSystray extends Component {
     setup() {
@@ -16,7 +17,7 @@ class TranslateWebsiteSystray extends Component {
             const searchParams = new URLSearchParams(search);
             searchParams.set('edit_translations', '1');
             this.websiteService.goToWebsite({
-                path: pathname + `?${searchParams.toString() + hash}`,
+                path: encodeURI(pathname + `?${searchParams.toString() + hash}`),
                 translation: true
             });
         } else {

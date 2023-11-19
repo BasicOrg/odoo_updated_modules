@@ -18,4 +18,4 @@ class HrLeave(models.Model):
         return self.user_id
 
     def _get_document_partner(self):
-        return self.employee_id.work_contact_id
+        return self.employee_id.address_home_id

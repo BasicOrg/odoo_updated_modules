@@ -11,8 +11,8 @@ from freezegun import freeze_time
 class BelgiumTaxReportTest(AccountSalesReportCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='be_comp'):
-        super().setUpClass(chart_template_ref)
+    def setUpClass(cls, chart_template_ref='l10n_be.l10nbe_chart_template'):
+        super().setUpClass(chart_template_ref=chart_template_ref)
 
     @classmethod
     def setup_company_data(cls, company_name, chart_template=None, **kwargs):
@@ -31,7 +31,7 @@ class BelgiumTaxReportTest(AccountSalesReportCommon):
     def test_generate_xml_minimal(self):
         company = self.env.company
         report = self.env.ref('l10n_be.tax_report_vat')
-        options = report.get_options()
+        options = report._get_options()
 
         # The partner id is changing between execution of the test so we need to append it manually to the reference.
         ref = str(company.partner_id.id) + '112019'
@@ -74,7 +74,7 @@ class BelgiumTaxReportTest(AccountSalesReportCommon):
     def test_generate_xml_minimal_with_representative(self):
         company = self.env.company
         report = self.env.ref('l10n_be.tax_report_vat')
-        options = report.get_options()
+        options = report._get_options()
 
         # Create a new partner for the representative and link it to the company.
         representative = self.env['res.partner'].create({
@@ -167,7 +167,7 @@ class BelgiumTaxReportTest(AccountSalesReportCommon):
         move.action_post()
 
         report = self.env.ref('l10n_be.tax_report_vat')
-        options = report.get_options()
+        options = report._get_options()
 
         # The partner id is changing between execution of the test so we need to append it manually to the reference.
         ref = str(company.partner_id.id) + '112019'
@@ -252,7 +252,7 @@ class BelgiumTaxReportTest(AccountSalesReportCommon):
         move.action_post()
 
         report = self.env.ref('l10n_be.tax_report_vat')
-        options = report.get_options()
+        options = report._get_options()
         options['tax_unit'] = tax_unit.id
 
         # The partner id is changing between execution of the test so we need to append it manually to the reference.

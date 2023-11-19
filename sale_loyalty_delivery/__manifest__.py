@@ -5,10 +5,8 @@
     'summary': 'Adds free shipping mechanism in sales orders',
     'description': 'Integrate free shipping in sales orders.',
     'category': 'Sales/Sales',
-    'data': [
-        'views/loyalty_reward_views.xml',
-    ],
-    'depends': ['sale_loyalty', 'delivery'],
+    'version': '1.0',
+    'depends': ['sale_loyalty', 'loyalty_delivery'],
     'auto_install': True,
     'license': 'LGPL-3',
 }

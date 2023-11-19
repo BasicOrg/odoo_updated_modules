@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, models
-from odoo.addons.base.models.ir_model import MODULE_UNINSTALL_FLAG
 
 
 class IrConfigParameter(models.Model):
@@ -26,7 +25,7 @@ class IrConfigParameter(models.Model):
     def unlink(self):
         pls_emptied = any(record.key == "crm.pls_fields" for record in self)
         result = super(IrConfigParameter, self).unlink()
-        if pls_emptied and not self._context.get(MODULE_UNINSTALL_FLAG):
+        if pls_emptied:
             self.env.flush_all()
             self.env.registry.setup_models(self.env.cr)
-        return result
+        return pls_emptied

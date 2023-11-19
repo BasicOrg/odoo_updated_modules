@@ -10,7 +10,7 @@
  */
 function createBoxData(params) {
     return {
-        text: params.text || "",
+        text: params.text || '',
         box_angle: 0, // no angle
         box_height: 0.2, // 20% of the box layer for the height
         box_midX: 0.5, // box in the middle of box layer (horizontally)
@@ -33,34 +33,34 @@ function createBoxData(params) {
 function createBoxesData() {
     var vatBoxes = [
         createBoxData({
-            fieldName: "VAT_Number",
+            fieldName: 'VAT_Number',
             id: 1,
             ocr_selected: false,
             user_selected: false,
         }),
         createBoxData({
-            fieldName: "VAT_Number",
+            fieldName: 'VAT_Number',
             id: 2,
             ocr_selected: true,
             user_selected: false,
-            text: "BE0477472701",
+            text: 'BE0477472701'
         }),
         createBoxData({
-            fieldName: "VAT_Number",
+            fieldName: 'VAT_Number',
             id: 3,
             ocr_selected: false,
             user_selected: true,
-        }),
+        })
     ];
     var invoiceIdBoxes = [
         createBoxData({
-            fieldName: "invoice_id",
+            fieldName: 'invoice_id',
             id: 4,
             ocr_selected: false,
             user_selected: false,
         }),
         createBoxData({
-            fieldName: "invoice_id",
+            fieldName: 'invoice_id',
             id: 5,
             ocr_selected: true,
             user_selected: true,
@@ -68,34 +68,34 @@ function createBoxesData() {
     ];
     var supplierBoxes = [
         createBoxData({
-            fieldName: "supplier",
+            fieldName: 'supplier',
             id: 6,
             ocr_selected: false,
             user_selected: true,
         }),
         createBoxData({
-            fieldName: "supplier",
+            fieldName: 'supplier',
             id: 7,
             ocr_selected: true,
             user_selected: false,
-            text: "Some partner",
+            text: 'Some partner',
         }),
         createBoxData({
-            fieldName: "supplier",
+            fieldName: 'supplier',
             id: 8,
             ocr_selected: false,
             user_selected: false,
-        }),
+        })
     ];
     var totalBoxes = [
         createBoxData({
-            fieldName: "total",
+            fieldName: 'total',
             id: 9,
             ocr_selected: true,
             user_selected: true,
         }),
         createBoxData({
-            fieldName: "total",
+            fieldName: 'total',
             id: 10,
             ocr_selected: false,
             user_selected: false,
@@ -103,19 +103,19 @@ function createBoxesData() {
     ];
     var dateBoxes = [
         createBoxData({
-            fieldName: "date",
+            fieldName: 'date',
             id: 11,
             ocr_selected: true,
             user_selected: true,
         }),
         createBoxData({
-            fieldName: "date",
+            fieldName: 'date',
             id: 12,
             ocr_selected: false,
             user_selected: false,
         }),
         createBoxData({
-            fieldName: "date",
+            fieldName: 'date',
             id: 13,
             ocr_selected: false,
             user_selected: false,
@@ -123,13 +123,13 @@ function createBoxesData() {
     ];
     var dueDateBoxes = [
         createBoxData({
-            fieldName: "due_date",
+            fieldName: 'due_date',
             id: 14,
             ocr_selected: true,
             user_selected: false,
         }),
         createBoxData({
-            fieldName: "due_date",
+            fieldName: 'due_date',
             id: 15,
             ocr_selected: false,
             user_selected: true,
@@ -137,27 +137,19 @@ function createBoxesData() {
     ];
     var currencyBoxes = [
         createBoxData({
-            fieldName: "currency",
+            fieldName: 'currency',
             id: 16,
             ocr_selected: true,
             user_selected: false,
         }),
         createBoxData({
-            fieldName: "currency",
+            fieldName: 'currency',
             id: 17,
             ocr_selected: false,
             user_selected: true,
         }),
     ];
-    return [].concat(
-        vatBoxes,
-        invoiceIdBoxes,
-        supplierBoxes,
-        totalBoxes,
-        dateBoxes,
-        dueDateBoxes,
-        currencyBoxes
-    );
+    return [].concat(vatBoxes, invoiceIdBoxes, supplierBoxes, totalBoxes, dateBoxes, dueDateBoxes, currencyBoxes);
 }
 
 export default {

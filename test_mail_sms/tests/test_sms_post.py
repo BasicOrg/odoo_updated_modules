@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.addons.sms.tests.common import SMSCommon
-from odoo.addons.test_mail_sms.tests.common import TestSMSRecipients
+from odoo.addons.test_mail_sms.tests.common import TestSMSCommon, TestSMSRecipients
 
 
-class TestSMSPost(SMSCommon, TestSMSRecipients):
+class TestSMSPost(TestSMSCommon, TestSMSRecipients):
     """ TODO
 
       * add tests for new mail.message and mail.thread fields;
@@ -252,7 +251,7 @@ class TestSMSPost(SMSCommon, TestSMSRecipients):
         self.assertSMSNotification([{'partner': self.partner_1, 'number': self.test_numbers_san[1]}], 'Dear %s this is an SMS.' % self.test_record.display_name, messages)
 
 
-class TestSMSPostException(SMSCommon, TestSMSRecipients):
+class TestSMSPostException(TestSMSCommon, TestSMSRecipients):
 
     @classmethod
     def setUpClass(cls):
@@ -329,14 +328,14 @@ class TestSMSPostException(SMSCommon, TestSMSRecipients):
         ], self._test_body, messages)
 
     def test_message_sms_crash_credit_single(self):
-        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2._phone_format(): 'credit'}):
+        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2.phone_get_sanitized_number(): 'credit'}):
             test_record = self.env['mail.test.sms'].browse(self.test_record.id)
             messages = test_record._message_sms(self._test_body, partner_ids=(self.partner_1 | self.partner_2 | self.partner_3).ids)
 
         self.assertSMSNotification([
-            {'partner': self.partner_1, 'state': 'pending'},
+            {'partner': self.partner_1, 'state': 'sent'},
             {'partner': self.partner_2, 'state': 'exception', 'failure_type': 'sms_credit'},
-            {'partner': self.partner_3, 'state': 'pending'},
+            {'partner': self.partner_3, 'state': 'sent'},
         ], self._test_body, messages)
 
     def test_message_sms_crash_server_crash(self):
@@ -361,14 +360,14 @@ class TestSMSPostException(SMSCommon, TestSMSRecipients):
         ], self._test_body, messages)
 
     def test_message_sms_crash_unregistered_single(self):
-        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2._phone_format(): 'unregistered'}):
+        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2.phone_get_sanitized_number(): 'unregistered'}):
             test_record = self.env['mail.test.sms'].browse(self.test_record.id)
             messages = test_record._message_sms(self._test_body, partner_ids=(self.partner_1 | self.partner_2 | self.partner_3).ids)
 
         self.assertSMSNotification([
-            {'partner': self.partner_1, 'state': 'pending'},
+            {'partner': self.partner_1, 'state': 'sent'},
             {'partner': self.partner_2, 'state': 'exception', 'failure_type': 'sms_acc'},
-            {'partner': self.partner_3, 'state': 'pending'},
+            {'partner': self.partner_3, 'state': 'sent'},
         ], self._test_body, messages)
 
     def test_message_sms_crash_wrong_number(self):
@@ -382,18 +381,18 @@ class TestSMSPostException(SMSCommon, TestSMSRecipients):
         ], self._test_body, messages)
 
     def test_message_sms_crash_wrong_number_single(self):
-        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2._phone_format(): 'wrong_number_format'}):
+        with self.with_user('employee'), self.mockSMSGateway(nbr_t_error={self.partner_2.phone_get_sanitized_number(): 'wrong_number_format'}):
             test_record = self.env['mail.test.sms'].browse(self.test_record.id)
             messages = test_record._message_sms(self._test_body, partner_ids=(self.partner_1 | self.partner_2 | self.partner_3).ids)
 
         self.assertSMSNotification([
-            {'partner': self.partner_1, 'state': 'pending'},
+            {'partner': self.partner_1, 'state': 'sent'},
             {'partner': self.partner_2, 'state': 'exception', 'failure_type': 'sms_number_format'},
-            {'partner': self.partner_3, 'state': 'pending'},
+            {'partner': self.partner_3, 'state': 'sent'},
         ], self._test_body, messages)
 
 
-class TestSMSApi(SMSCommon):
+class TestSMSApi(TestSMSCommon):
 
     @classmethod
     def setUpClass(cls):

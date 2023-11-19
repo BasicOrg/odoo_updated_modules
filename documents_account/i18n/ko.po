@@ -3,17 +3,18 @@
 # 	* documents_account
 # 
 # Translators:
-# Wil Odoo, 2023
-# Sarah Park, 2023
+# Martin Trigaux, 2022
+# Linkup <link-up@naver.com>, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,11 +22,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "<b>Deselect this page</b> as we plan to process all bills first."
-msgstr "먼저 업체 청구서를 모두 처리할 예정이오니 <b>페이지를 선택 해제하세요</b>."
+msgstr ""
+
+#. module: documents_account
+#: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_workflow_rule
@@ -37,7 +49,7 @@ msgstr "조건과 일치하는 모든 첨부 파일에서 사용할 수 있는 �
 #. module: documents_account
 #: model:ir.model.constraint,message:documents_account.constraint_documents_account_folder_setting_journal_unique
 msgid "A setting already exists for this journal"
-msgstr "이 전표에 대한 설정이 이미 존재합니다"
+msgstr "이 분개장에 대한 설정이 이미 존재합니다"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_config_settings__documents_account_settings
@@ -47,25 +59,20 @@ msgstr "회계"
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_company__account_folder
 msgid "Accounting Workspace"
-msgstr "회계 문서 작업 공간"
+msgstr "회계 문서 저장공간"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "As this PDF contains multiple documents, let's split and process in bulk."
-msgstr "이 PDF 에는 여러 개의 문서가 포함되어 있으므로, 분할하여 일괄 처리하겠습니다."
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_ir_attachment
 msgid "Attachment"
 msgstr "첨부 파일"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_bank_statement
-msgid "Bank Statement"
-msgstr "은행거래명세서"
 
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
@@ -78,27 +85,27 @@ msgid "Check them"
 msgstr "확인"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a card to <b>select the document</b>."
-msgstr "카드를 클릭하여 <b>문서를 선택</b>하세요."
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a thumbnail to <b>preview the document</b>."
-msgstr "<b>문서 미리보기</b>를 하려면 썸네일을 클릭하세요."
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Click on the <b>page separator</b>: we don't want to split these two pages "
 "as they belong to the same document."
-msgstr "<b>페이지 구분 기호</b>를 선택하세요. 해당 페이지는 같은 문서에 있는 두 페이지이므로 분할하지 않습니다."
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_res_company
@@ -113,7 +120,7 @@ msgstr "회사"
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_res_config_settings
 msgid "Config Settings"
-msgstr "환경 설정"
+msgstr "설정 구성"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__create_model
@@ -121,34 +128,19 @@ msgid "Create"
 msgstr "작성"
 
 #. module: documents_account
+#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
+msgid "Create Bill"
+msgstr "청구서 만들기"
+
+#. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.credit_note_rule
-msgid "Create Customer Credit Note"
-msgstr "고객 대변전표가 생성되었습니다."
+msgid "Create Credit Note"
+msgstr "대변전표 만들기"
 
 #. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.customer_invoice_rule
 msgid "Create Customer Invoice"
-msgstr "고객 청구서 발행"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.misc_entry_rule
-msgid "Create Miscellaneous Operations"
-msgstr "기타 작업 생성"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
-msgid "Create Vendor Bill"
-msgstr "공급업체 청구서 생성"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.documents_vendor_receipt_rule
-msgid "Create Vendor Receipt"
-msgstr "공급업체 입고 생성"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_refund_rule
-msgid "Create Vendor Refund"
-msgstr "공급업체 환불 생성"
+msgstr "고객 송장 만들기"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__create_uid
@@ -168,12 +160,7 @@ msgstr "대변전표"
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_out_invoice
 msgid "Customer invoice"
-msgstr "고객 청구서"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__display_journal_id
-msgid "Display Journal"
-msgstr "전표 표시"
+msgstr "고객 송장"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__display_name
@@ -211,8 +198,7 @@ msgid "Folder where to save the generated file"
 msgstr "생성된 파일을 저장할 폴더"
 
 #. module: documents_account
-#. odoo-python
-#: code:addons/documents_account/wizard/account_reports_export_wizard.py:0
+#: code:addons/documents_account/wizard/report_export_wizard.py:0
 #, python-format
 msgid "Generated Documents"
 msgstr "생성된 문서"
@@ -223,35 +209,34 @@ msgid "ID"
 msgstr "ID"
 
 #. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.bank_statement_rule
-msgid "Import Bank Statement"
-msgstr "은행거래명세서 가져오기"
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__journal_id
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__journal_id
 msgid "Journal"
-msgstr "전표"
+msgstr "분개장"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_account_move
 msgid "Journal Entry"
-msgstr "전표입력"
+msgstr "분개"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_account_folder_setting
 msgid "Journal and Folder settings"
-msgstr "전표 및 폴더 설정"
+msgstr "분개장 및 폴더 설정"
 
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Journals"
-msgstr "전표"
+msgstr "분개장"
 
 #. module: documents_account
 #: model:ir.actions.act_window,name:documents_account.action_folder_settings_installer
 msgid "Journals to synchronize"
-msgstr "동기화 할 전표"
+msgstr "동기화 할 분개장"
+
+#. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__write_uid
@@ -264,71 +249,55 @@ msgid "Last Updated on"
 msgstr "최근 갱신 일자"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Let's process documents in your Inbox.<br/><i>Tip: Use Tags to filter "
 "documents and structure your process.</i>"
-msgstr "받은 메일함에서 문서를 처리해봅시다.<br/><i>도움말: 문서 필터와 작업 구축에 필터를 활용하세요.</i>"
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process these bills: turn them into vendor bills."
-msgstr "이 업체 청구서를 처리해 봅시다: 공급업체 청구서로 전환합니다."
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process this document, coming from our scanner."
-msgstr "스캐너에서 전송된 이 문서를 처리해봅시다."
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Let's tag this mail as legal<br/> <i>Tips: actions can be tailored to your "
 "process, according to the workspace.</i>"
 msgstr ""
-"이 메일에 법률 관련 태그를 지정합시다.<br/><i>도움말: 작업 공간에 따라서 프로세스에 맞게 작업을 조정할 수 있습니다.</i>"
 
 #. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_entry
-msgid "Miscellaneous Operations"
-msgstr "기타 작업"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__move_type
-msgid "Move Type"
-msgstr "이동 유형"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_receipt
-msgid "Purchase Receipt"
-msgstr "구매 영수증"
+#: model:mail.activity.type,name:documents_account.mail_documents_activity_data_md
+msgid "Reconciliation request"
+msgstr "조정 요청"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_bank_statement_line__suspense_statement_line_id
 #: model:ir.model.fields,field_description:documents_account.field_account_move__suspense_statement_line_id
 #: model:ir.model.fields,field_description:documents_account.field_account_payment__suspense_statement_line_id
 msgid "Request document from a bank statement line"
-msgstr "은행거래명세서 내역에 대한 서류 요청"
+msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Send this letter to the legal department, by assigning the right tags."
-msgstr "알맞은 태그를 지정하여 이 메일을 법무팀으로 전송하세요."
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__suitable_journal_ids
-msgid "Suitable Journal"
-msgstr "적합한 전표"
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_reports_export_wizard__tag_ids
@@ -344,7 +313,7 @@ msgstr "세금 계산서"
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
 msgid "This invoice has been initiated by a bank transaction."
-msgstr "이 청구서는 은행 거래에서 시작되었습니다."
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_refund
@@ -357,28 +326,27 @@ msgid "Vendor bill"
 msgstr "공급업체 청구서"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Want to become a <b>paperless company</b>? Let's discover Odoo Documents."
-msgstr "<b>종이 없는 회사</b>를 만들고자 하시나요? Odoo 문서를 확인해보세요."
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__folder_id
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Workspace"
-msgstr "작업 공간"
+msgstr "저장공간"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
 "Wow... 6 documents processed in a few seconds, You're good.<br/>The tour is "
 "complete. Try uploading your own documents now."
 msgstr ""
-"대단합니다. 몇 초 만에 6건의 문서를 처리했습니다. 잘하셨습니다.<br/>투어를 마치셨습니다. 이제 내 문서를 업로드해보세요. "
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_config_settings__account_folder
@@ -388,4 +356,4 @@ msgstr "계정 기본 폴더"
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
 msgid "to mark this invoice as paid."
-msgstr "이 청구서를 지불 완료로 표시하기."
+msgstr "이 청구서를 지불한 것으로 표시하기."

@@ -1,14 +1,13 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import {
-    KanbanMany2ManyTagsField,
-    kanbanMany2ManyTagsField,
-} from "@web/views/fields/many2many_tags/kanban_many2many_tags_field";
-import {
-    Many2ManyTagsField,
-    many2ManyTagsField,
-} from "@web/views/fields/many2many_tags/many2many_tags_field";
+import { TagsList } from "@web/views/fields/many2many_tags/tags_list";
+import { KanbanMany2ManyTagsField } from "@web/views/fields/many2many_tags/kanban_many2many_tags_field";
+import { Many2ManyTagsField } from "@web/views/fields/many2many_tags/many2many_tags_field";
+
+// Add support for hexadecimal colors
+export class DocumentsTagsList extends TagsList {}
+DocumentsTagsList.template = "documents.DocumentsTagsList";
 
 const getDocumentTags = (component, superTags) => {
     if (!component.env.searchModel.getTags) {
@@ -22,7 +21,7 @@ const getDocumentTags = (component, superTags) => {
         res[rec.id] = rec;
         return res;
     }, {});
-    const recordByTagId = component.props.record.data[component.props.name].records.reduce((res, rec) => {
+    const recordByTagId = component.props.value.records.reduce((res, rec) => {
         res[rec.id] = rec;
         return res;
     }, {});
@@ -31,7 +30,7 @@ const getDocumentTags = (component, superTags) => {
         .map((tag) => {
             const record = recordByTagId[tag.id];
             const searchModelTag = searchModelTagByRecordId[record.resId];
-            tag.colorIndex = searchModelTag.color_index;
+            tag.group_hex_color = searchModelTag.group_hex_color;
             tag.text = searchModelTag.display_name;
             return tag;
         });
@@ -43,19 +42,19 @@ export class DocumentsKanbanMany2ManyTagsField extends KanbanMany2ManyTagsField 
         return getDocumentTags(this, super.tags);
     }
 }
-export const documentsKanbanMany2ManyTagsField = {
-    ...kanbanMany2ManyTagsField,
-    component: DocumentsKanbanMany2ManyTagsField,
+DocumentsKanbanMany2ManyTagsField.components = {
+    ...DocumentsKanbanMany2ManyTagsField.components,
+    TagsList: DocumentsTagsList,
 };
-registry.category("fields").add("kanban.documents_many2many_tags", documentsKanbanMany2ManyTagsField);
+registry.category("fields").add("kanban.documents_many2many_tags", DocumentsKanbanMany2ManyTagsField);
 
 export class DocumentsMany2ManyTagsField extends Many2ManyTagsField {
     get tags() {
         return getDocumentTags(this, super.tags);
     }
 }
-export const documentsMany2ManyTagsField = {
-    ...many2ManyTagsField,
-    component: DocumentsMany2ManyTagsField,
+DocumentsMany2ManyTagsField.components = {
+    ...DocumentsMany2ManyTagsField.components,
+    TagsList: DocumentsTagsList,
 };
-registry.category("fields").add("documents_many2many_tags", documentsMany2ManyTagsField);
+registry.category("fields").add("documents_many2many_tags", DocumentsMany2ManyTagsField);

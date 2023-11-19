@@ -1,19 +1,10 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 /*global L*/
 
 import { renderToString } from "@web/core/utils/render";
-import { delay } from "@web/core/utils/concurrency";
 
-import {
-    Component,
-    onWillUnmount,
-    onWillUpdateProps,
-    useEffect,
-    useRef,
-    useState,
-} from "@odoo/owl";
+const { Component, onWillUnmount, onWillUpdateProps, useEffect, useRef, useState } = owl;
 
 const apiTilesRouteWithToken =
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}";
@@ -49,7 +40,6 @@ export class MapRenderer extends Component {
         this.mapContainerRef = useRef("mapContainer");
         this.state = useState({
             closedGroupIds: [],
-            expendedPinList: false,
         });
         this.nextId = 1;
 
@@ -154,10 +144,11 @@ export class MapRenderer extends Component {
             if (this.props.model.data.isGrouped) {
                 const groupId = markerInfo.record.groupId;
                 params.color = this.getGroupColor(groupId);
-                params.number =
-                    this.props.model.data.recordGroups[groupId].records.findIndex((record) => {
+                params.number = this.props.model.data.recordGroups[groupId].records.findIndex(
+                    (record) => {
                         return record.id === markerInfo.record.id;
-                    }) + 1;
+                    }
+                );
             }
 
             // Icon creation
@@ -226,11 +217,10 @@ export class MapRenderer extends Component {
     createMarkerPopup(markerInfo, latLongOffset = 0) {
         const popupFields = this.getMarkerPopupFields(markerInfo);
         const partner = markerInfo.record.partner;
-        const encodedAddress = encodeURIComponent(partner.contact_address_complete);
         const popupHtml = renderToString("web_map.markerPopup", {
             fields: popupFields,
             hasFormView: this.props.model.metaData.hasFormView,
-            url: `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`,
+            url: `https://www.google.com/maps/dir/?api=1&destination=${partner.partner_latitude},${partner.partner_longitude}`,
         });
 
         const popup = L.popup({ offset: [0, -30] })
@@ -294,7 +284,7 @@ export class MapRenderer extends Component {
                 fieldsView.push({
                     id: this.nextId++,
                     value: record.partner.contact_address_complete,
-                    string: _t("Address"),
+                    string: this.env._t("Address"),
                 });
             }
             return fieldsView;
@@ -303,61 +293,30 @@ export class MapRenderer extends Component {
             fieldsView.push({
                 id: this.nextId++,
                 value: record.display_name,
-                string: _t("Name"),
+                string: this.env._t("Name"),
             });
         }
         if (!this.props.model.metaData.hideAddress) {
             fieldsView.push({
                 id: this.nextId++,
                 value: record.partner.contact_address_complete,
-                string: _t("Address"),
+                string: this.env._t("Address"),
             });
         }
-        const fields = this.props.model.metaData.fields;
         for (const field of this.props.model.metaData.fieldNamesMarkerPopup) {
             if (record[field.fieldName]) {
-                let value = record[field.fieldName];
-                if (fields[field.fieldName].type === "many2one") {
-                    value = record[field.fieldName].display_name;
-                } else if (["one2many", "many2many"].includes(fields[field.fieldName].type)) {
-                    value = record[field.fieldName]
-                        ? record[field.fieldName].map((r) => r.display_name).join(", ")
-                        : "";
-                }
+                const fieldName =
+                    record[field.fieldName] instanceof Array
+                        ? record[field.fieldName][1]
+                        : record[field.fieldName];
                 fieldsView.push({
                     id: this.nextId++,
-                    value,
+                    value: fieldName,
                     string: field.string,
                 });
             }
         }
         return fieldsView;
-    }
-    /**
-     * @returns {string}
-     */
-    get googleMapUrl() {
-        let url = "https://www.google.com/maps/dir/?api=1";
-        if (this.props.model.data.records.length) {
-            const allCoordinates = this.props.model.data.records.filter(
-                ({ partner }) => partner && partner.partner_latitude && partner.partner_longitude
-            );
-            const uniqueCoordinates = allCoordinates.reduce((coords, { partner }) => {
-                const coord = partner.partner_latitude + "," + partner.partner_longitude;
-                if (!coords.includes(coord)) {
-                    coords.push(coord);
-                }
-                return coords;
-            }, []);
-            if (uniqueCoordinates.length && this.props.model.metaData.routing) {
-                // When routing is enabled, make last record the destination
-                url += `&destination=${uniqueCoordinates.pop()}`;
-            }
-            if (uniqueCoordinates.length) {
-                url += `&waypoints=${uniqueCoordinates.join("|")}`;
-            }
-        }
-        return url;
     }
     /**
      * Remove the markers from the map and empty the markers array.
@@ -401,10 +360,7 @@ export class MapRenderer extends Component {
      *
      * @param {Object} record
      */
-    async centerAndOpenPin(record) {
-        this.state.expendedPinList = false;
-        // wait the next owl render to avoid marker popup create => destroy
-        await delay(0);
+    centerAndOpenPin(record) {
         const popup = this.createMarkerPopup({
             record: record,
             ids: [record.id],
@@ -428,18 +384,6 @@ export class MapRenderer extends Component {
         } else {
             this.state.closedGroupIds.push(id);
         }
-    }
-
-    togglePinList() {
-        this.state.expendedPinList = !this.state.expendedPinList;
-    }
-
-    get expendedPinList() {
-        return this.env.isSmall ? this.state.expendedPinList : false;
-    }
-
-    get canDisplayPinList() {
-        return !this.env.isSmall || this.expendedPinList;
     }
 }
 

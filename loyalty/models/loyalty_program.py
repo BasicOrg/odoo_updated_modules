@@ -21,9 +21,6 @@ class LoyaltyProgram(models.Model):
     currency_id = fields.Many2one('res.currency', 'Currency', compute='_compute_currency_id',
         readonly=False, required=True, store=True, precompute=True)
     currency_symbol = fields.Char(related='currency_id.symbol')
-    pricelist_ids = fields.Many2many(
-        'product.pricelist', string="Pricelist", domain="[('currency_id', '=', currency_id)]"
-    )
 
     total_order_count = fields.Integer("Total Order Count", compute="_compute_total_order_count")
 
@@ -53,14 +50,7 @@ class LoyaltyProgram(models.Model):
         ('next_order_coupons', 'Next Order Coupons')],
         default='promotion', required=True,
     )
-    date_from = fields.Date(
-        string="Start Date",
-        help="The start date is included in the validity period of this program",
-    )
-    date_to = fields.Date(
-        string="End date",
-        help="The end date is included in the validity period of this program",
-    )
+    date_to = fields.Date(string='Validity')
     limit_usage = fields.Boolean(string='Limit Usage')
     max_usage = fields.Integer()
     # Dictates when the points can be used:
@@ -91,14 +81,6 @@ class LoyaltyProgram(models.Model):
     is_nominative = fields.Boolean(compute='_compute_is_nominative')
     is_payment_program = fields.Boolean(compute='_compute_is_payment_program')
 
-    payment_program_discount_product_id = fields.Many2one(
-        'product.product',
-        string='Discount Product',
-        compute='_compute_payment_program_discount_product_id',
-        readonly=True,
-        help="Product used in the sales order to apply the discount."
-    )
-
     # Technical field used for a label
     available_on = fields.Boolean("Available On", store=False,
         help="""
@@ -110,24 +92,6 @@ class LoyaltyProgram(models.Model):
         ('check_max_usage', 'CHECK (limit_usage = False OR max_usage > 0)',
             'Max usage must be strictly positive if a limit is used.'),
     ]
-
-    @api.constrains('currency_id', 'pricelist_ids')
-    def _check_pricelist_currency(self):
-        if any(
-            pricelist.currency_id != program.currency_id
-            for program in self
-            for pricelist in program.pricelist_ids
-        ):
-            raise UserError(_(
-                "The loyalty program's currency must be the same as all it's pricelists ones."
-            ))
-
-    @api.constrains('date_from', 'date_to')
-    def _check_date_from_date_to(self):
-        if any(p.date_to and p.date_from and p.date_from > p.date_to for p in self):
-            raise UserError(_(
-                "The validity period's start date must be anterior or equal to its end date."
-            ))
 
     @api.constrains('reward_ids')
     def _constrains_reward_ids(self):
@@ -175,8 +139,8 @@ class LoyaltyProgram(models.Model):
 
     @api.depends('coupon_ids')
     def _compute_coupon_count(self):
-        read_group_data = self.env['loyalty.card']._read_group([('program_id', 'in', self.ids)], ['program_id'], ['__count'])
-        count_per_program = {program.id: count for program, count in read_group_data}
+        read_group_data = self.env['loyalty.card']._read_group([('program_id', 'in', self.ids)], ['program_id'], ['program_id'])
+        count_per_program = {r['program_id'][0]: r['program_id_count'] for r in read_group_data}
         for program in self:
             program.coupon_count = count_per_program.get(program.id, 0)
 
@@ -190,14 +154,6 @@ class LoyaltyProgram(models.Model):
     def _compute_is_payment_program(self):
         for program in self:
             program.is_payment_program = program.program_type in ('gift_card', 'ewallet')
-
-    @api.depends('reward_ids.discount_line_product_id')
-    def _compute_payment_program_discount_product_id(self):
-        for program in self:
-            if program.is_payment_program:
-                program.payment_program_discount_product_id = program.reward_ids[0].discount_line_product_id
-            else:
-                program.payment_program_discount_product_id = False
 
     @api.model
     def _program_items_name(self):
@@ -216,7 +172,7 @@ class LoyaltyProgram(models.Model):
     def _program_type_default_values(self):
         # All values to change when program_type changes
         # NOTE: any field used in `rule_ids`, `reward_ids` and `communication_plan_ids` MUST be present in the kanban view for it to work properly.
-        first_sale_product = self.env['product.product'].search([('company_id', 'in', [False, self.env.company.id]), ('sale_ok', '=', True)], limit=1)
+        first_sale_product = self.env['product.product'].search([('sale_ok', '=', True)], limit=1)
         return {
             'coupons': {
                 'applies_on': 'current',
@@ -297,8 +253,7 @@ class LoyaltyProgram(models.Model):
                 'rule_ids': [(5, 0, 0), (0, 0, {
                     'reward_point_amount': '1',
                     'reward_point_mode': 'money',
-                    'reward_point_split': False,
-                    'product_ids': self.env.ref('loyalty.ewallet_product_50', raise_if_not_found=False),
+                    'product_ids': self.env.ref('loyalty.ewallet_product_50'),
                 })],
                 'reward_ids': [(5, 0, 0), (0, 0, {
                     'reward_type': 'discount',
@@ -362,10 +317,7 @@ class LoyaltyProgram(models.Model):
                 })],
                 'communication_plan_ids': [(5, 0, 0), (0, 0, {
                     'trigger': 'create',
-                    'mail_template_id': (
-                        self.env.ref('loyalty.mail_template_loyalty_card', raise_if_not_found=False)
-                        or self.env['mail.template']
-                    ).id,
+                    'mail_template_id': (self.env.ref('loyalty.mail_template_gift_card', raise_if_not_found=False) or self.env['mail.template']).id,
                 })],
             },
         }
@@ -420,14 +372,13 @@ class LoyaltyProgram(models.Model):
             raise UserError(_('You can not delete a program in an active state'))
 
     def toggle_active(self):
-        res = super().toggle_active()
+        super().toggle_active()
         # Propagate active state to children
-        for program in self.with_context(active_test=False):
+        for program in self:
             program.rule_ids.active = program.active
             program.reward_ids.active = program.active
             program.communication_plan_ids.active = program.active
-            program.reward_ids.with_context(active_test=True).discount_line_product_id.active = program.active
-        return res
+            program.reward_ids.discount_line_product_id.active = program.active
 
     def write(self, vals):
         # There is an issue when we change the program type, since we clear the rewards and create new ones.
@@ -435,19 +386,7 @@ class LoyaltyProgram(models.Model):
         # However we can check that the result of reward_ids would actually be empty or not, and if not, skip the constraint.
         if 'reward_ids' in vals and self._fields['reward_ids'].convert_to_cache(vals['reward_ids'], self):
             self = self.with_context(loyalty_skip_reward_check=True)
-            # We need add the program type to the context to avoid getting the default value
-            # ('discount') for reward type when calling the `default_get` method of
-            #`loyalty.reward`.
-            if 'program_type' in vals:
-                self = self.with_context(program_type=vals['program_type'])
-                return super().write(vals)
-            else:
-                for program in self:
-                    program = program.with_context(program_type=program.program_type)
-                    super(LoyaltyProgram, program).write(vals)
-                return True
-        else:
-            return super().write(vals)
+        return super().write(vals)
 
     @api.model
     def get_program_templates(self):
@@ -458,51 +397,51 @@ class LoyaltyProgram(models.Model):
         if ctx_menu_type == 'gift_ewallet':
             return {
                 'gift_card': {
-                    'title': _("Gift Card"),
-                    'description': _("Sell Gift Cards, that allows to purchase products"),
+                    'title': _('Gift Card'),
+                    'description': _('Sell Gift Cards, that can be used to purchase products'),
                     'icon': 'gift_card',
                 },
                 'ewallet': {
-                    'title': _("eWallet"),
-                    'description': _("Fill in your eWallet, to pay future orders"),
+                    'title': _('eWallet'),
+                    'description': _('Fill in your eWallet, and use it to pay future orders'),
                     'icon': 'ewallet',
                 },
             }
         return {
-            'promotion': {
-                'title': _("Promotional Program"),
-                'description': _("Automatic promo: 10% off on orders higher than $50"),
-                'icon': 'promotional_program',
-            },
             'promo_code': {
-                'title': _("Promo Code"),
-                'description': _("Get 10% off on some products, with a code"),
+                'title': _('Promo Code'),
+                'description': _('Get a code to receive 10% discount on specific products'),
                 'icon': 'promo_code',
             },
+            'loyalty': {
+                'title': _('Loyalty Cards'),
+                'description': _('Win points with each purchases, and use points to get gifts'),
+                'icon': 'loyalty_cards',
+            },
+            'fidelity': {
+                'title': _('Fidelity Cards'),
+                'description': _('Buy 10 products, and get 10$ discount on the 11th one'),
+                'icon': 'fidelity_cards',
+            },
+            'promotion': {
+                'title': _('Promotional Program'),
+                'description': _('Automatic promotion: 10% discount on orders higher than $50'),
+                'icon': 'promotional_program',
+            },
+            'coupons': {
+                'title': _('Coupons'),
+                'description': _('Send unique coupons that give access to rewards'),
+                'icon': 'coupons',
+            },
             'buy_x_get_y': {
-                'title': _("Buy X Get Y"),
-                'description': _("Buy 2 products and get a third one for free"),
+                'title': _('2+1 Free'),
+                'description': _('Buy 2 products and get a third one for free'),
                 'icon': '2_plus_1',
             },
             'next_order_coupons': {
-                'title': _("Next Order Coupon"),
-                'description': _("Send a coupon after an order, valid for next purchase"),
+                'title': _('Next Order Coupons'),
+                'description': _('Send unique, single-use coupon code for the next purchase'),
                 'icon': 'coupons',
-            },
-            'loyalty': {
-                'title': _("Loyalty Card"),
-                'description': _("Win points with each purchase, and claim gifts"),
-                'icon': 'loyalty_cards',
-            },
-            'coupons': {
-                'title': _("Coupon"),
-                'description': _("Generate and share unique coupons with your customers"),
-                'icon': 'coupons',
-            },
-            'fidelity': {
-                'title': _("Fidelity Card"),
-                'description': _("Buy 10 products to get 10$ off on the 11th one"),
-                'icon': 'fidelity_cards',
             },
         }
 
@@ -519,12 +458,10 @@ class LoyaltyProgram(models.Model):
         program = self.create(template_values[template_id])
         action = {}
         if self.env.context.get('menu_type') == 'gift_ewallet':
-            action = self.env['ir.actions.act_window']._for_xml_id('loyalty.loyalty_program_gift_ewallet_action')
-            action['views'] = [[False, 'form']]
-        else:
             action = self.env['ir.actions.act_window']._for_xml_id('loyalty.loyalty_program_discount_loyalty_action')
-            view_id = self.env.ref('loyalty.loyalty_program_view_form').id
-            action['views'] = [[view_id, 'form']]
+        else:
+            action = self.env['ir.actions.act_window']._for_xml_id('loyalty.loyalty_program_gift_ewallet_action')
+        action['views'] = [[False, 'form']]
         action['view_mode'] = 'form'
         action['res_id'] = program.id
         return action

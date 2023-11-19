@@ -2,7 +2,8 @@
 
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { Component, useState } from "@odoo/owl";
+
+const { Component, useState } = owl;
 
 class MobilePreviewSystray extends Component {
     setup() {

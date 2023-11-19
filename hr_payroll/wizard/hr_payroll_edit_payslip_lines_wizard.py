@@ -2,6 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+from odoo.addons.hr_payroll.models.browsable_object import BrowsableObject, InputLine, WorkedDays, Payslips
 
 
 class HrPayrollEditPayslipLinesWizard(models.TransientModel):
@@ -26,8 +28,8 @@ class HrPayrollEditPayslipLinesWizard(models.TransientModel):
         if not wizard_line.salary_rule_id:
             return reload_wizard
         localdict = self.payslip_id._get_localdict()
-        rules_dict = localdict['rules']
-        result_rules_dict = localdict['result_rules']
+        rules_dict = localdict['rules'].dict
+        result_rules_dict = localdict['result_rules'].dict
         remove_lines = False
         lines_to_remove = []
         blacklisted_rule_ids = []
@@ -41,7 +43,7 @@ class HrPayrollEditPayslipLinesWizard(models.TransientModel):
                     remove_lines = True
                 blacklisted_rule_ids.append(line.salary_rule_id.id)
                 localdict[line.code] = line.total
-                result_rules_dict[line.code] = {'total': line.total, 'amount': line.amount, 'quantity': line.quantity, 'rate': line.rate}
+                result_rules_dict[line.code] = {'total': line.total, 'amount': line.amount, 'quantity': line.quantity}
                 localdict = line.salary_rule_id.category_id._sum_salary_rule_category(localdict, line.total)
 
         payslip = self.payslip_id.with_context(force_payslip_localdict=localdict, prevent_payslip_computation_line_ids=blacklisted_rule_ids)
@@ -82,6 +84,7 @@ class HrPayrollEditPayslipLine(models.TransientModel):
     _description = 'Edit payslip lines wizard line'
 
     name = fields.Char(translate=True)
+    note = fields.Text(string='Description')
     sequence = fields.Integer("Sequence")
     salary_rule_id = fields.Many2one(
         'hr.salary.rule', string='Rule',
@@ -109,6 +112,7 @@ class HrPayrollEditPayslipLine(models.TransientModel):
             'sequence': line.sequence,
             'code': line.code,
             'name': line.name,
+            'note': line.note,
             'salary_rule_id': line.salary_rule_id.id,
             'contract_id': line.contract_id.id,
             'employee_id': line.employee_id.id,

@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.addons.l10n_in_hr_payroll.tests.common import TestPayrollCommon
+from odoo.addons.l10n_in_hr_payroll.tests.common import TestPaymentAdviceBase
 from odoo.tests import tagged
 
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
-class TestPaymentAdviceBatch(TestPayrollCommon):
+class TestPaymentAdviceBatch(TestPaymentAdviceBase):
 
     def test_00_payment_advice_batch_flow(self):
         # I want to generate a payslip from Payslip Batch.

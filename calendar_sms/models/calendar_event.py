@@ -7,22 +7,21 @@ from odoo.exceptions import UserError
 class CalendarEvent(models.Model):
     _inherit = 'calendar.event'
 
-    def _do_sms_reminder(self, alarms):
+    def _sms_get_default_partners(self):
+        """ Method overridden from mail.thread (defined in the sms module).
+            SMS text messages will be sent to attendees that haven't declined the event(s).
+        """
+        return self.mapped('attendee_ids').filtered(lambda att: att.state != 'declined' and att.partner_id.phone_sanitized).mapped('partner_id')
+
+    def _do_sms_reminder(self, alarm):
         """ Send an SMS text reminder to attendees that haven't declined the event """
         for event in self:
-            declined_partners = event.attendee_ids.filtered_domain([('state', '=', 'declined')]).partner_id
-            for alarm in alarms:
-                partners = event._mail_get_partners()[event.id].filtered(
-                    lambda partner: partner.phone_sanitized and partner not in declined_partners
-                )
-                if event.user_id and not alarm.sms_notify_responsible:
-                    partners -= event.user_id.partner_id
-                event._message_sms_with_template(
-                    template=alarm.sms_template_id,
-                    template_fallback=_("Event reminder: %(name)s, %(time)s.", name=event.name, time=event.display_time),
-                    partner_ids=partners.ids,
-                    put_in_queue=False
-                )
+            event._message_sms_with_template(
+                template=alarm.sms_template_id,
+                template_fallback=_("Event reminder: %(name)s, %(time)s.", name=event.name, time=event.display_time),
+                partner_ids=self._sms_get_default_partners().ids,
+                put_in_queue=False
+            )
 
     def action_send_sms(self):
         if not self.partner_ids:

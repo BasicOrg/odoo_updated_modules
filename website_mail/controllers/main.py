@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from collections import defaultdict
 from odoo import http
 from odoo.http import request
 
@@ -62,16 +61,17 @@ class WebsiteMail(http.Controller):
         elif request.session.get('partner_id'):
             partner = request.env['res.partner'].sudo().browse(request.session.get('partner_id'))
 
-        res = defaultdict(list)
+        res = {}
         if partner:
             for model in records:
-                mail_followers_ids = request.env['mail.followers'].sudo()._read_group([
+                mail_followers_ids = request.env['mail.followers'].sudo().read_group([
                     ('res_model', '=', model),
                     ('res_id', 'in', records[model]),
                     ('partner_id', '=', partner.id)
-                ], ['res_id'])
-                # `_read_group` will filter out the ones not matching the domain
-                res[model].extend(res_id for [res_id] in mail_followers_ids)
+                ], ['res_id', 'follow_count:count(id)'], ['res_id'])
+                # `read_group` will filter out the ones without count result
+                for m in mail_followers_ids:
+                    res.setdefault(model, []).append(m['res_id'])
 
         return [{
             'is_user': user != public_user,

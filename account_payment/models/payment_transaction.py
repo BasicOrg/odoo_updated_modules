@@ -89,14 +89,14 @@ class PaymentTransaction(models.Model):
                 return separator.join(invoices.mapped('name'))
         return super()._compute_reference_prefix(provider_code, separator, **values)
 
-    def _set_canceled(self, state_message=None, **kwargs):
+    def _set_canceled(self, state_message=None):
         """ Update the transactions' state to 'cancel'.
 
         :param str state_message: The reason for which the transaction is set in 'cancel' state
         :return: updated transactions
         :rtype: `payment.transaction` recordset
         """
-        processed_txs = super()._set_canceled(state_message, **kwargs)
+        processed_txs = super()._set_canceled(state_message)
         # Cancel the existing payments
         processed_txs.payment_id.action_cancel()
         return processed_txs
@@ -110,9 +110,6 @@ class PaymentTransaction(models.Model):
         them. This is also true for validations with a validity check (transfer of a small amount
         with immediate refund) because validation amounts are not included in payouts.
 
-        As the reconciliation is done in the child transactions for partial voids and captures, no
-        payment is created for their source transactions.
-
         :return: None
         """
         super()._reconcile_after_done()
@@ -122,8 +119,7 @@ class PaymentTransaction(models.Model):
 
         # Create and post missing payments for transactions requiring reconciliation
         for tx in self.filtered(lambda t: t.operation != 'validation' and not t.payment_id):
-            if not any(child.state in ['done', 'cancel'] for child in tx.child_transaction_ids):
-                tx._create_payment()
+            tx._create_payment()
 
     def _create_payment(self, **extra_create_values):
         """Create an `account.payment` record for the current transaction.
@@ -138,13 +134,8 @@ class PaymentTransaction(models.Model):
         """
         self.ensure_one()
 
-        reference = (f'{self.reference} - '
-                     f'{self.partner_id.display_name or ""} - '
-                     f'{self.provider_reference or ""}'
-                    )
-
         payment_method_line = self.provider_id.journal_id.inbound_payment_method_line_ids\
-            .filtered(lambda l: l.code == self.provider_id._get_code())
+            .filtered(lambda l: l.code == self.provider_code)
         payment_values = {
             'amount': abs(self.amount),  # A tx may have a negative amount, but a payment must >= 0
             'payment_type': 'inbound' if self.amount > 0 else 'outbound',
@@ -156,7 +147,7 @@ class PaymentTransaction(models.Model):
             'payment_method_line_id': payment_method_line.id,
             'payment_token_id': self.token_id.id,
             'payment_transaction_id': self.id,
-            'ref': reference,
+            'ref': self.reference,
             **extra_create_values,
         }
         payment = self.env['account.payment'].create(payment_values)
@@ -165,15 +156,10 @@ class PaymentTransaction(models.Model):
         # Track the payment to make a one2one.
         self.payment_id = payment
 
-        # Reconcile the payment with the source transaction's invoices in case of a partial capture.
-        if self.operation == self.source_transaction_id.operation:
-            invoices = self.source_transaction_id.invoice_ids
-        else:
-            invoices = self.invoice_ids
-        if invoices:
-            invoices.filtered(lambda inv: inv.state == 'draft').action_post()
+        if self.invoice_ids:
+            self.invoice_ids.filtered(lambda inv: inv.state == 'draft').action_post()
 
-            (payment.line_ids + invoices.line_ids).filtered(
+            (payment.line_ids + self.invoice_ids.line_ids).filtered(
                 lambda line: line.account_id == payment.destination_account_id
                 and not line.reconciled
             ).reconcile()
@@ -195,12 +181,10 @@ class PaymentTransaction(models.Model):
         """
         self.ensure_one()
         self = self.with_user(SUPERUSER_ID)  # Log messages as 'OdooBot'
-        if self.source_transaction_id:
+        if self.source_transaction_id.payment_id:
+            self.source_transaction_id.payment_id.message_post(body=message)
             for invoice in self.source_transaction_id.invoice_ids:
                 invoice.message_post(body=message)
-            payment_id = self.source_transaction_id.payment_id
-            if payment_id:
-                payment_id.message_post(body=message)
         for invoice in self.invoice_ids:
             invoice.message_post(body=message)
 
@@ -214,7 +198,8 @@ class PaymentTransaction(models.Model):
         """
         super()._finalize_post_processing()
         for tx in self.filtered('payment_id'):
-            message = _("The payment related to the transaction with reference %(ref)s has been posted: %(link)s",
-                ref=tx.reference, link=tx.payment_id._get_html_link(),
+            message = _(
+                "The payment related to the transaction with reference %(ref)s has been posted: "
+                "%(link)s", ref=tx.reference, link=tx.payment_id._get_html_link()
             )
             tx._log_message_on_linked_documents(message)

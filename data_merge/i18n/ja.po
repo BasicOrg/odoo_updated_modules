@@ -3,17 +3,18 @@
 # 	* data_merge
 # 
 # Translators:
-# Wil Odoo, 2023
-# Junko Augias, 2023
+# Martin Trigaux, 2022
+# Norimichi Sugimoto <norimichi.sugimoto@tls-ltd.co.jp>, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Junko Augias, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Ryoko Tsuda <ryoko@quartile.co>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,25 +22,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_model.py:0
 #, python-format
 msgid "%s (copy)"
 msgstr "%s (コピー)"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_group.py:0
-#, python-format
-msgid "%s - Similarity: %s%%"
-msgstr "%s - 類似性: %s%%"
-
-#. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "%s records have been merged"
-msgstr "%sレコードがマージされました "
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_duplicate
@@ -47,35 +40,35 @@ msgid ""
 "' deduplication rule.<br/>\n"
 "You can merge them"
 msgstr ""
-"'重複規則。<br/>\n"
-"それらをマージできます。"
+
+#. module: data_merge
+#: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
+msgid ""
+"<span attrs=\"{'invisible': [('custom_merge_method', '=', False)]}\">Model "
+"specific</span>"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">毎</span>"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "<span class=\"oe_inline\">%</span>"
-msgstr "<span class=\"oe_inline\">%</span>"
-
-#. module: data_merge
-#: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
-msgid "<span invisible=\"not custom_merge_method\">Model specific</span>"
-msgstr "<span invisible=\"not custom_merge_method\">モデル固有</span>"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.constraint,message:data_merge.constraint_data_merge_rule_uniq_model_id_field_id
 msgid "A field can only appear once!"
-msgstr "フィールドは1度しか表示されません！"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__active
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__active
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__active
 msgid "Active"
-msgstr "有効化"
+msgstr "有効"
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__removal_mode__archive
@@ -89,25 +82,25 @@ msgid "Archived"
 msgstr "アーカイブ済"
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid ""
 "Are you sure that you want to merge the selected records in their respective"
 " group?"
-msgstr "選択したレコードをそれぞれのグループにマージするで、間違いありませんか？"
+msgstr ""
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "Are you sure that you want to merge these records?"
-msgstr "本当にこれらのレコードをマージしますか？"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__merge_mode__automatic
 msgid "Automatic"
-msgstr "自動"
+msgstr "オートマ"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_ir_model__is_merge_enabled
@@ -116,11 +109,10 @@ msgid "Can Be Merged"
 msgstr "マージ可"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_rule.py:0
 #, python-format
 msgid "Case/Accent Insensitive Match"
-msgstr "大文字/小文字を区別しない一致"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__company_id
@@ -142,7 +134,7 @@ msgstr "連絡先"
 #: model:ir.model.fields,help:data_merge.field_ir_model__ref_merge_ir_act_server_id
 msgid ""
 "Contextual menu action that redirects to the deduplicate view of data_merge."
-msgstr "data_merge の重複排除ビューにリダイレクトするコンテキストメニューアクション。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__record_create_uid
@@ -178,17 +170,21 @@ msgstr "会社間"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__custom_merge_method
 msgid "Custom Merge Method"
-msgstr "マージ方法をカスタム"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.actions.server,name:data_merge.ir_cron_cleanup_ir_actions_server
+#: model:ir.cron,cron_name:data_merge.ir_cron_cleanup
+#: model:ir.cron,name:data_merge.ir_cron_cleanup
 msgid "Data Merge: Cleanup Records"
-msgstr "データマージ: レコードをクリーンナップ"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.actions.server,name:data_merge.ir_cron_find_duplicates_ir_actions_server
+#: model:ir.cron,cron_name:data_merge.ir_cron_find_duplicates
+#: model:ir.cron,name:data_merge.ir_cron_find_duplicates
 msgid "Data Merge: Find Duplicate Records"
-msgstr "データマージ: 重複レコードを見つける"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__notify_frequency_period__days
@@ -196,7 +192,6 @@ msgid "Days"
 msgstr "日"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 #, python-format
@@ -212,7 +207,7 @@ msgstr "重複"
 #. module: data_merge
 #: model:ir.model,name:data_merge.model_data_merge_group
 msgid "Deduplication Group"
-msgstr "重複グループ"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model,name:data_merge.model_data_merge_model
@@ -220,7 +215,7 @@ msgstr "重複グループ"
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__model_id
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__model_id
 msgid "Deduplication Model"
-msgstr "重複モデル"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model,name:data_merge.model_data_merge_record
@@ -240,13 +235,6 @@ msgid "Deduplication Rules"
 msgstr "重複ルール"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Deduplication is forbidden on the model: %s"
-msgstr "モデルでは重複は禁止されています: %s"
-
-#. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__removal_mode__delete
 msgid "Delete"
 msgstr "削除"
@@ -259,7 +247,7 @@ msgstr "差異"
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_record__differences
 msgid "Differences with the master record"
-msgstr "マスタレコードとの相違"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.ir_model_view_form
@@ -288,7 +276,7 @@ msgstr "表示名"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__divergent_fields
 msgid "Divergent Fields"
-msgstr "不一致のフィールド"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__domain
@@ -308,17 +296,10 @@ msgid "Duplicates"
 msgstr "重複"
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Duplicates to Merge"
-msgstr "マージする重複"
-
-#. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__create_threshold
 msgid ""
 "Duplicates with a similarity below this threshold will not be suggested"
-msgstr "このしきい値を下回る類似度の重複は提案されません。"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.ir_model_view_form
@@ -326,7 +307,6 @@ msgid "Enable Merge"
 msgstr "マージ有効化"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_rule.py:0
 #, python-format
 msgid "Exact Match"
@@ -340,12 +320,12 @@ msgstr "項目値"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_ir_model__hide_merge_action
 msgid "Hide merge action button"
-msgstr "マージアクションボタンを隠す"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_duplicate
 msgid "I've identified"
-msgstr "以下を識別しました:"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__id
@@ -361,14 +341,14 @@ msgstr "ID"
 msgid ""
 "If True, the generic data merge tool is available in the contextual menu of "
 "this model."
-msgstr "TRUEの場合、このモデルのコンテクストメニューで汎用データマージツールが利用できます。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__is_contextual_merge_action
 msgid ""
 "If True, this record is used for contextual menu action \"Merge\" on the "
 "target model."
-msgstr "TRUEの場合、このレコードはターゲットモデルのコンテキストメニューのアクション\"マージ\"に使用されます。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_ir_model__hide_merge_action
@@ -376,18 +356,16 @@ msgid ""
 "If the model already has a custom merge method, the class attribute `_merge_disabled` is set to true on\n"
 "             that model and the generic data merge action should not be available on that model."
 msgstr ""
-"もしモデルが既にカスタムマージ方法を持っている場合、クラス属性 `_merge_disabled` はそのモデルで\n"
-"　　　TRUEに設定され、汎用データマージアクションはそのモデルでは利用できません。"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__is_deleted
 msgid "Is Deleted"
-msgstr "削除済"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__is_discarded
 msgid "Is Discarded"
-msgstr "破棄済"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__is_master
@@ -395,9 +373,17 @@ msgid "Is Master"
 msgstr "マスターレコード"
 
 #. module: data_merge
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_group____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_model____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_record____last_update
+#: model:ir.model.fields,field_description:data_merge.field_data_merge_rule____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
+
+#. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__last_notification
 msgid "Last Notification"
-msgstr "最終通知"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__write_uid
@@ -418,12 +404,12 @@ msgstr "最終更新日"
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_record__used_in
 msgid "List of other models referencing this record"
-msgstr "このレコードを参照する他のモデルのリスト"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__notify_user_ids
 msgid "List of users to notify when there are new records to merge"
-msgstr "マージする新しいレコードがあるときに通知するユーザのリスト"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields.selection,name:data_merge.selection__data_merge_model__merge_mode__manual
@@ -431,15 +417,13 @@ msgid "Manual"
 msgstr "手動"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "Manual Selection - %s"
-msgstr "手動選択 - %s"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/models/ir_model.py:0
 #: code:addons/data_merge/static/src/views/data_merge_list_view.xml:0
 #: model:ir.actions.server,name:data_merge.merge_action_crm_lost_reason
@@ -479,24 +463,17 @@ msgstr "マージモード"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_ir_model__ref_merge_ir_act_server_id
 msgid "Merge Server Action"
-msgstr "サーバアクションをマージ"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.actions.act_window,name:data_merge.ir_model_action_merge
 msgid "Merge action Manager"
-msgstr "マージアクション管理者"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__is_contextual_merge_action
 msgid "Merge action attached"
-msgstr "添付済アクションをマージ"
-
-#. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_model.py:0
-#, python-format
-msgid "Missing required PostgreSQL extension: unaccent"
-msgstr "必要な PostgreSQL 拡張モジュールがありません: unaccent"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__res_model_id
@@ -532,7 +509,6 @@ msgid "Name"
 msgstr "名称"
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #: model_terms:ir.actions.act_window,help:data_merge.action_data_merge_record
 #: model_terms:ir.actions.act_window,help:data_merge.action_data_merge_record_notification
@@ -543,25 +519,17 @@ msgstr "重複は見つかりませんでした"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__notify_frequency
 msgid "Notify"
-msgstr "通知"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__notify_frequency_period
 msgid "Notify Frequency Period"
-msgstr "通知頻度期間"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__notify_user_ids
 msgid "Notify Users"
 msgstr "ユーザ通知"
-
-#. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "Query Failed."
-msgstr "クエリーに失敗しました。"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__record_ids
@@ -571,7 +539,7 @@ msgstr "レコード"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__group_id
 msgid "Record Group"
-msgstr "レコードグループ"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__res_id
@@ -587,26 +555,19 @@ msgstr "レコード"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__records_to_merge_count
 msgid "Records To Merge Count"
-msgstr "マージするレコード数"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__domain
 msgid "Records eligible for the deduplication process"
-msgstr "重複除外処理の対象となるレコード"
-
-#. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "Records must be of the same model"
-msgstr "レコードは同一モデルのものである必要があります。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__merge_threshold
 msgid ""
 "Records with a similarity percentage above this threshold will be "
 "automatically merged"
-msgstr "このしきい値以上の類似度を持つレコードは自動的にマージされます。"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_record_search
@@ -616,12 +577,12 @@ msgstr "ルール"
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.view_data_merge_model_form
 msgid "Select a model to configure deduplication rules"
-msgstr "モデルを選択して重複規則を設定します。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__sequence
 msgid "Sequence"
-msgstr "シーケンス"
+msgstr "付番"
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_group__similarity
@@ -637,12 +598,12 @@ msgstr "類似性しきい値"
 #: model:ir.model.fields,help:data_merge.field_data_merge_group__similarity
 msgid ""
 "Similarity coefficient based on the amount of text fields exactly in common."
-msgstr "テキストフィールドが正確に共通している量に基づく類似度係数。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__rule_ids
 msgid "Suggest to merge records matching at least one of these rules"
-msgstr "これらの規則の少なくとも1つに一致するレコードをマージするよう提案します。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_model__create_threshold
@@ -652,40 +613,31 @@ msgstr "提案のしきい値"
 #. module: data_merge
 #: model:ir.model.constraint,message:data_merge.constraint_data_merge_model_check_notif_freq
 msgid "The notification frequency should be greater than 0"
-msgstr "通知頻度は0より大きくする必要があります。"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
-#: code:addons/data_merge/models/data_merge_record.py:0
-#, python-format
-msgid "The referenced record does not exist"
-msgstr "参照されたレコードは存在しません。"
-
-#. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.js:0
 #, python-format
 msgid "The selected records have been merged"
-msgstr "選択されたレコードがマージされました。"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "The target model does not exists."
-msgstr "ターゲットモデルは存在しません。"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "There is not referenced record"
-msgstr "参照されたレコードがありません。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.constraint,message:data_merge.constraint_data_merge_model_uniq_name
 msgid "This name is already taken"
-msgstr "この名前は既に使用されています。"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_rule__field_id
@@ -693,7 +645,7 @@ msgid "Unique ID Field"
 msgstr "ユニークID項目"
 
 #. module: data_merge
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_merge/static/src/views/data_merge_list_view.xml:0
 #, python-format
 msgid "Unselect"
@@ -702,12 +654,12 @@ msgstr "選択解除"
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__record_write_uid
 msgid "Updated By"
-msgstr "更新者:"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__record_write_date
 msgid "Updated On"
-msgstr "更新日:"
+msgstr ""
 
 #. module: data_merge
 #: model:ir.model.fields,field_description:data_merge.field_data_merge_record__used_in
@@ -722,31 +674,30 @@ msgstr "週"
 #. module: data_merge
 #: model:ir.model.fields,help:data_merge.field_data_merge_model__mix_by_company
 msgid "When enabled, duplicates across different companies will be suggested"
-msgstr "有効にすると、異なる会社間での重複が提案されます。"
+msgstr ""
 
 #. module: data_merge
-#. odoo-python
 #: code:addons/data_merge/models/data_merge_record.py:0
 #, python-format
 msgid "You must select at least two %s in order to merge them."
-msgstr "マージするには少なくとも2つの%sを選択する必要があります。"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_duplicate
 msgid "duplicate records with the '"
-msgstr "以下と重複したレコード:"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_duplicate
 msgid "here"
-msgstr "クリック"
+msgstr "こちら"
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_merged
 msgid "merged into"
-msgstr "以下にマージ済"
+msgstr ""
 
 #. module: data_merge
 #: model_terms:ir.ui.view,arch_db:data_merge.data_merge_main
 msgid "merged into this one"
-msgstr "これにマージ済:"
+msgstr ""

@@ -1,15 +1,14 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { useBus, useService } from "@web/core/utils/hooks";
 
-export const LunchRendererMixin = (T) => class LunchRendererMixin extends T {
+export const LunchRendererMixin = {
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
 
         this.action = useService("action");
         useBus(this.env.bus, 'lunch_open_order', (ev) => this.openOrderLine(ev.detail.productId));
-    }
+    },
 
     openOrderLine(productId, orderId) {
         let context = {};
@@ -20,7 +19,7 @@ export const LunchRendererMixin = (T) => class LunchRendererMixin extends T {
 
         let action = {
             res_model: 'lunch.order',
-            name: _t('Configure Your Order'),
+            name: this.env._t('Configure Your Order'),
             type: 'ir.actions.act_window',
             views: [[false, 'form']],
             target: 'new',
@@ -37,5 +36,5 @@ export const LunchRendererMixin = (T) => class LunchRendererMixin extends T {
         this.action.doAction(action, {
             onClose: () => this.env.bus.trigger('lunch_update_dashboard')
         });
-    }
-};
+    },
+}

@@ -1,15 +1,16 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { SocialPostFormatterMixin } from './social_post_formatter_mixin';
 import { StreamPostCommentsReply } from './stream_post_comments_reply';
 
 import { ConfirmationDialog } from '@web/core/confirmation_dialog/confirmation_dialog';
-import { escape } from '@web/core/utils/strings';
+import { escape, sprintf } from '@web/core/utils/strings';
+import { patch } from '@web/core/utils/patch';
 import { useService } from '@web/core/utils/hooks';
-import { Component, markup, useState } from "@odoo/owl";
 
-export class StreamPostComment extends SocialPostFormatterMixin(Component) {
+const { Component, markup, useState } = owl;
+
+export class StreamPostComment extends Component {
 
     setup() {
         super.setup();
@@ -42,8 +43,8 @@ export class StreamPostComment extends SocialPostFormatterMixin(Component) {
 
     _deleteComment() {
         this.dialog.add(ConfirmationDialog, {
-            title: _t('Delete Comment'),
-            body: _t('Do you really want to delete %s', this.commentName),
+            title: this.env._t('Delete Comment'),
+            body: sprintf(this.env._t('Do you really want to delete %s'), this.commentName),
             confirm: () => {
                 this._confirmDeleteComment();
             },
@@ -105,7 +106,7 @@ export class StreamPostComment extends SocialPostFormatterMixin(Component) {
     }
 
     get commentName() {
-        return _t('comment/reply');
+        return this.env._t('comment/reply');
     }
 
     get link() {
@@ -120,7 +121,7 @@ export class StreamPostComment extends SocialPostFormatterMixin(Component) {
         return this.isAuthor;
     }
 
-    isManageable() {
+    get isManageable() {
         return this.isDeletable || this.isEditable;
     }
 
@@ -144,12 +145,8 @@ export class StreamPostComment extends SocialPostFormatterMixin(Component) {
         return StreamPostCommentsReply;
     }
 
-    /**
-     * @returns {DateTime} luxon DateTime representation of the created time
-     */
-    get commentCreatedTime() {
-        return luxon.DateTime.fromISO(this.comment.created_time);
-    }
 }
+
+patch(StreamPostComment.prototype, 'social_post_formatter_mixin', SocialPostFormatterMixin);
 
 StreamPostComment.template = 'social.StreamPostComment';

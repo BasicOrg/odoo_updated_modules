@@ -37,7 +37,7 @@ Content-Transfer-Encoding: 8bit
 
 This is an example email. All sensitive content has been stripped out.
 
-ALL GLORY TO THE HYPNOTOAD!
+ALL GLORY TO THE HYPNOTOAD !
 
 Cheers,
 
@@ -51,7 +51,7 @@ class TestCrmCommon(TestSalesCommon, MailCase):
         'team_id', 'state_id', 'stage_id', 'medium_id', 'source_id', 'user_id',
         'title', 'city', 'contact_name', 'mobile', 'partner_name',
         'phone', 'probability', 'expected_revenue', 'street', 'street2', 'zip',
-        'create_date', 'date_automation_last', 'email_from', 'email_cc', 'website'
+        'create_date', 'date_action_last', 'email_from', 'email_cc', 'website'
     ]
     merge_fields = ['description', 'type', 'priority']
 
@@ -264,18 +264,6 @@ class TestCrmCommon(TestSalesCommon, MailCase):
             'currency_id': cls.env.ref('base.AUD').id,
             'email': 'company.2@test.example.com',
             'name': 'New Test Company',
-        })
-        cls.alias_bounce_c2 = 'bounce.c2'
-        cls.alias_catchall_c2 = 'catchall.c2'
-        cls.alias_default_from_c2 = 'notifications.c2'
-        cls.alias_domain_c2_name = 'test.mycompany2.com'
-        cls.mail_alias_domain_c2 = cls.env['mail.alias.domain'].create({
-            'bounce_alias': cls.alias_bounce_c2,
-            'catchall_alias': cls.alias_catchall_c2,
-            'company_ids': [(4, cls.company_2.id)],
-            'default_from': cls.alias_default_from_c2,
-            'name': cls.alias_domain_c2_name,
-            'sequence': 2,
         })
 
         cls.user_sales_manager_mc = mail_new_test_user(

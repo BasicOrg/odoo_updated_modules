@@ -3,6 +3,7 @@
     <record id="hr_contract_salary_personal_info_action" model="ir.actions.act_window">
         <field name="name">Personal Info</field>
         <field name="res_model">hr.contract.salary.personal.info</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -14,7 +15,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="res_field_id"/>
-                <field name="field" column_invisible="True"/>
+                <field name="field" invisible="1"/>
                 <field name="structure_type_id"/>
             </tree>
         </field>
@@ -32,28 +33,28 @@
                     </div>
                     <group>
                         <group>
-                            <field name="applies_on" string="Related Model" required="1"/>
+                            <field name="applies_on"/>
                             <field name="res_field_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"/>
                             <field name="res_model" invisible="1"/>
                             <field name="field" invisible="1"/>
-                            <field name="info_type_id" string="Category"/>
+                            <field name="info_type_id"/>
+                            <field name="structure_type_id"/>
                             <field name="placeholder"/>
                             <field name="helper"/>
                             <field name="is_required"/>
+                            <field name="impacts_net_salary"/>
                         </group>
                         <group>
-                            <field name="structure_type_id"/>
                         	<field name="position"/>
-                            <field name="display_type" required="1"/>
-                            <field name="dropdown_selection" invisible="display_type != 'dropdown'" required="display_type == 'dropdown'"/>
-                            <field name="value_ids" invisible="display_type not in ['dropdown', 'radio'] or dropdown_selection != 'specific'">
+                            <field name="display_type"/>
+                            <field name="dropdown_selection" attrs="{'invisible': [('display_type', '!=', 'dropdown')]}"/>
+                            <field name="value_ids" attrs="{'invisible': [('display_type', 'not in', ['dropdown', 'radio'])]}">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="value"/>
                                 </tree>
                             </field>
-                            <field name="impacts_net_salary" invisible="display_type in ['text', 'email', 'document']"/>
                         </group>
                     </group>
                 </sheet>

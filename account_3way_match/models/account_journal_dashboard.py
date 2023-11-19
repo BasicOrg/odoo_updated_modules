@@ -14,27 +14,19 @@ class AccountJournal(models.Model):
             action['search_view_id'] = account_purchase_filter and [account_purchase_filter.id, account_purchase_filter.name] or False
         return action
 
-    def _patch_dashboard_query_3way_match(self, query):
-        query.add_where("("
-            "account_move.move_type NOT IN %s "
-            "OR account_move.release_to_pay = 'yes' "
-            "OR account_move.invoice_date_due < %s"
-        ")", [
-            tuple(self.env['account.move'].get_purchase_types(include_receipts=True)),
-            fields.Date.context_today(self),
-        ])
-
     def _get_open_bills_to_pay_query(self):
-        query = super()._get_open_bills_to_pay_query()
-        self._patch_dashboard_query_3way_match(query)
-        return query
-
-    def _get_draft_bills_query(self):
-        query = super()._get_draft_bills_query()
-        self._patch_dashboard_query_3way_match(query)
-        return query
-
-    def _get_late_bills_query(self):
-        query = super()._get_late_bills_query()
-        self._patch_dashboard_query_3way_match(query)
-        return query
+        """
+        Overriden to take the 'release_to_pay' status into account when getting the
+        vendor bills to pay (for other types of journal, its result
+        remains unchanged).
+        """
+        if self.type == 'purchase':
+            return ("""SELECT state, (CASE WHEN move_type = 'in_refund' THEN -1 ELSE 1 END) *
+                   amount_residual as amount_total, currency_id AS currency
+                   FROM account_move
+                   WHERE journal_id = %(journal_id)s
+                   AND (release_to_pay = 'yes' OR invoice_date_due < %(today)s)
+                   AND state = 'posted'
+                   AND payment_state in ('not_paid', 'partial');""",
+                   {'journal_id': self.id, 'today': fields.Date.today()})
+        return super(AccountJournal, self)._get_open_bills_to_pay_query()

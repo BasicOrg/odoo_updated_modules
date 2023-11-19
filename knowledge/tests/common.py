@@ -10,6 +10,8 @@ class KnowledgeCommon(MailCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls._activate_multi_company()
+
         cls.user_portal = cls._create_portal_user()
         cls.partner_portal = cls.user_portal.partner_id
 
@@ -135,7 +137,6 @@ class KnowledgeCommonWData(KnowledgeCommon):
              ],
              'name': 'Playground',
              'sequence': cls._base_sequence,
-             'is_article_visible_by_everyone': True,
             }
         )
         cls.workspace_children = cls.env['knowledge.article'].create([
@@ -247,7 +248,6 @@ class KnowledgeArticlePermissionsCase(KnowledgeCommon):
         # ------------------------------------------------------------
         cls.article_roots = cls.env['knowledge.article'].create([
             {'name': 'Writable Root',
-             'is_article_visible_by_everyone': True,
             },
             {'article_member_ids': [
                 (0, 0, {'partner_id': cls.partner_employee_manager.id,
@@ -256,7 +256,6 @@ class KnowledgeArticlePermissionsCase(KnowledgeCommon):
              ],  # ensure at least one write access
              'internal_permission': 'read',
              'name': 'Readable Root',
-             'is_article_visible_by_everyone': True,
             },
             {'article_member_ids': [
                 (0, 0, {'partner_id': cls.partner_employee_manager.id,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_l10n_at_paragraph_231_ugb" model="account.report">
-        <field name="name">Profit and Loss statement according to § 231 UGB (GKV)</field>
+        <field name="name">Gewinn- und Verlustrechnung nach § 231 UGB (GKV)</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
         <field name="filter_date_range" eval="True"/>
         <field name="filter_analytic_groupby" eval="True"/>
@@ -15,8 +15,8 @@
         </field>
         <field name="line_ids">
             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_root" model="account.report.line">
-                <field name="name">Balance sheet profit/loss</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Bilanzgewinn/Bilanzverlust</field>
+                <field name="foldable" eval="True"/>
                 <field name="expression_ids">
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_root_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -27,7 +27,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl1" model="account.report.line">
-                        <field name="name">1. Sales revenue</field>
+                        <field name="name">1. Umsatzerlöse</field>
                         <field name="code">EBIT1</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -42,7 +42,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl2" model="account.report.line">
-                        <field name="name">2. Change in inventories of finished and unfinished goods and services not yet billable (+/-)</field>
+                        <field name="name">2. Veränderung des Bestands an fertigen und unfertigen Erzeugnissen sowie an noch nicht abrechenbaren Leistungen (+/-)</field>
                         <field name="code">EBIT2</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -57,7 +57,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl3" model="account.report.line">
-                        <field name="name">3. Other own work capitalized</field>
+                        <field name="name">3. andere aktivierte Eigenleistungen</field>
                         <field name="code">EBIT3</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -73,7 +73,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl4" model="account.report.line">
-                        <field name="name">4. Other operating income</field>
+                        <field name="name">4. sonstige betriebliche Erträge, wobei Gesellschaften, die nicht klein sind, folgende Beträge aufgliedern müssen</field>
                         <field name="code">EBIT4</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -87,7 +87,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl41" model="account.report.line">
-                                <field name="name">a. Income from the disposal of and additions to fixed assets with the exception of financial assets</field>
+                                <field name="name">a. Erträge aus dem Abgang vom und der Zuschreibung zum Anlagevermögen mit Ausnahme der Finanzanlagen</field>
                                 <field name="code">EBIT4I</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -103,7 +103,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl42" model="account.report.line">
-                                <field name="name">b. Income from the reversal of provisions</field>
+                                <field name="name">b. Erträge aus der Auflösung von Rückstellungen</field>
                                 <field name="code">EBIT4II</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -119,7 +119,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl43" model="account.report.line">
-                                <field name="name">c. Other income</field>
+                                <field name="name">c. übrige Erträge</field>
                                 <field name="code">EBIT4III</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -137,7 +137,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl5" model="account.report.line">
-                        <field name="name">5. Expenses for material and other purchased manufacturing services</field>
+                        <field name="name">5. Aufwendungen für Material und sonstige bezogene Herstellungsleistungen</field>
                         <field name="code">EBIT5</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -151,7 +151,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl51" model="account.report.line">
-                                <field name="name">a. Cost of materials</field>
+                                <field name="name">a. Materialaufwand</field>
                                 <field name="code">EBIT5I</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -167,7 +167,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl52" model="account.report.line">
-                                <field name="name">b. Expenses for purchased services</field>
+                                <field name="name">b. Aufwendungen für bezogene Leistungen</field>
                                 <field name="code">EBIT5II</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -185,7 +185,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl6" model="account.report.line">
-                        <field name="name">6. Personnel expenses</field>
+                        <field name="name">6. Personalaufwand</field>
                         <field name="code">EBIT6</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -199,7 +199,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl61" model="account.report.line">
-                                <field name="name">a. Wages and salaries</field>
+                                <field name="name">a. Löhne und Gehälter</field>
                                 <field name="code">EBIT6I</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -215,7 +215,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl62" model="account.report.line">
-                                <field name="name">b. Social expenses</field>
+                                <field name="name">b. soziale Aufwendungen</field>
                                 <field name="code">EBIT6II</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -233,7 +233,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl7" model="account.report.line">
-                        <field name="name">7. Depreciation</field>
+                        <field name="name">7. Abschreibungen</field>
                         <field name="code">EBIT7</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
@@ -247,7 +247,7 @@
                         </field>
                         <field name="children_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl71" model="account.report.line">
-                                <field name="name">a. Of intangible fixed assets and property, plant and equipment</field>
+                                <field name="name">a. auf immaterielle Gegenstände des Anlagevermögens und Sachanlagen</field>
                                 <field name="code">EBIT7I</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -263,7 +263,7 @@
                                 </field>
                             </record>
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl72" model="account.report.line">
-                                <field name="name">b. Of current assets, insofar as these exceed the normal depreciation in the company</field>
+                                <field name="name">b. auf Gegenstände des Umlaufvermögens, soweit diese die im Unternehmen üblichen Abschreibungen überschreiten</field>
                                 <field name="code">EBIT7II</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -281,7 +281,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl8" model="account.report.line">
-                        <field name="name">8. Other operating expenses</field>
+                        <field name="name">8. sonstige betriebliche Aufwendungen</field>
                         <field name="code">EBIT8</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -297,7 +297,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl9" model="account.report.line">
-                        <field name="name">9. Operating result (subtotal from items 1 to 8)</field>
+                        <field name="name">9. Betriebsergebnis (Zwischensumme aus Z 1 bis 8)</field>
                         <field name="code">EBIT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl9_balance" model="account.report.expression">
@@ -309,7 +309,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl10" model="account.report.line">
-                        <field name="name">10. Income from participations</field>
+                        <field name="name">10. Erträge aus Beteiligungen</field>
                         <field name="code">FIN10</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -324,7 +324,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl11" model="account.report.line">
-                        <field name="name">11. Income from other securities and loans classified as financial assets</field>
+                        <field name="name">11. Erträge aus anderen Wertpapieren und Ausleihungen des Finanzanlagevermögens</field>
                         <field name="code">FIN11</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -339,7 +339,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl12" model="account.report.line">
-                        <field name="name">12. Other interest and similar income</field>
+                        <field name="name">12. sonstige Zinsen und ähnliche Erträge</field>
                         <field name="code">FIN12</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -354,7 +354,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl13" model="account.report.line">
-                        <field name="name">13. Income from the disposal of and additions to financial assets and marketable securities</field>
+                        <field name="name">13. Erträge aus dem Abgang von und der Zuschreibung zu Finanzanlagen und Wertpapieren des Umlaufvermögens</field>
                         <field name="code">FIN13</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -369,7 +369,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl14" model="account.report.line">
-                        <field name="name">14. Expenses from financial assets and marketable securities</field>
+                        <field name="name">14. Aufwendungen aus Finanzanlagen und aus Wertpapieren des Umlaufvermögens</field>
                         <field name="code">FIN14</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -385,7 +385,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl15" model="account.report.line">
-                        <field name="name">15. Interest and similar expenses</field>
+                        <field name="name">15. Zinsen und ähnliche Aufwendungen, davon betreffend verbundene Unternehmen</field>
                         <field name="code">FIN15</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -401,7 +401,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl16" model="account.report.line">
-                        <field name="name">16. Financial result (subtotal from items 10 to 15)</field>
+                        <field name="name">16. Finanzergebnis (Zwischensumme aus Z 10 bis 15)</field>
                         <field name="code">FIN</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl16_balance" model="account.report.expression">
@@ -413,7 +413,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl17" model="account.report.line">
-                        <field name="name">17. Result from ordinary business activities (subtotal from items 9 and 16)</field>
+                        <field name="name">17. Ergebnis der gewöhnlichen Geschäftstätigkeit (Zwischensumme aus Z 9 und Z 16)</field>
                         <field name="code">EBT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl17_balance" model="account.report.expression">
@@ -425,7 +425,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl18" model="account.report.line">
-                        <field name="name">18. Taxes on income and earnings</field>
+                        <field name="name">18. Steuern vom Einkommen und vom Ertrag</field>
                         <field name="code">TAX</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -441,7 +441,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl19" model="account.report.line">
-                        <field name="name">19. Result after taxes</field>
+                        <field name="name">19. Ergebnis nach Steuern </field>
                         <field name="code">EBTAT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl19_balance" model="account.report.expression">
@@ -453,7 +453,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl20" model="account.report.line">
-                        <field name="name">20. Other taxes, unless included under items 1 to 19</field>
+                        <field name="name">20. sonstige Steuern, soweit nicht unter den Posten 1 bis 19 enthalten </field>
                         <field name="code">MTAX</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -469,7 +469,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl21" model="account.report.line">
-                        <field name="name">21. Net income/loss for the year</field>
+                        <field name="name">21. Jahresüberschuss/Jahresfehlbetrag</field>
                         <field name="code">PL</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl21_balance" model="account.report.expression">
@@ -481,7 +481,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl22" model="account.report.line">
-                        <field name="name">22. Release of capital reserves</field>
+                        <field name="name">22. Auflösung von Kapitalrücklagen</field>
                         <field name="code">RCR</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -496,7 +496,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl23" model="account.report.line">
-                        <field name="name">23. Release of retained earnings</field>
+                        <field name="name">23. Auflösung von Gewinnrücklagen</field>
                         <field name="code">RRR</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -511,7 +511,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl24" model="account.report.line">
-                        <field name="name">24. Allocation to retained earnings</field>
+                        <field name="name">24. Zuweisung zu Gewinnrücklagen</field>
                         <field name="code">ARR</field>
                         <field name="groupby">account_id</field>
                         <field name="foldable" eval="True"/>
@@ -526,9 +526,9 @@
                         </field>
                     </record>
                     <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl25" model="account.report.line">
+                        <field name="name">25. Gewinnvortrag/Verlustvortrag aus dem Vorjahr (+/-)</field>
                         <field name="code">RL</field>
                         <field name="groupby">account_id</field>
-                        <field name="name">25. Profit/loss carried forward from the previous year (+/-)</field>
                         <field name="foldable" eval="True"/>
                         <field name="expression_ids">
                             <record id="account_financial_report_l10n_at_paragraph_231_ugb_line_pl25_balance" model="account.report.expression">

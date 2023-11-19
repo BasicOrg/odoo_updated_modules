@@ -33,14 +33,6 @@ class SocialLivePostPushNotifications(models.Model):
 
             # TODO awa: force push_token domain here in case user manually removed it in form view?
             visitor_domain = ast.literal_eval(live_post.post_id.visitor_domain)
-            if account.website_id:
-                if account.website_id.firebase_enable_push_notifications:
-                    visitor_domain = expression.AND([visitor_domain, [('website_id', '=', account.website_id.id)]])
-                else:
-                    # If the website doesn't have push notifications enabled, we don't send any push notifications
-                    live_post.write({'state': 'posted'})
-                    continue
-
             target_link = ''
             if post.push_notification_target_url:
                 link_tracker_values = live_post._get_utm_values()

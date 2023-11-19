@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-from odoo.addons.web_editor.tools import handle_history_divergence
 
 
 class Job(models.Model):
@@ -24,10 +23,9 @@ class Job(models.Model):
     no_of_hired_employee = fields.Integer(string='Hired Employees', copy=False,
         help='Number of hired employees for this job position during recruitment phase.')
     employee_ids = fields.One2many('hr.employee', 'job_id', string='Employees', groups='base.group_user')
-    description = fields.Html(string='Job Description', sanitize_attributes=False,
-                              default="Perform assigned responsibilities, collaborate with team members, and adhere to company policies. Strong communication, problem-solving, and work ethic required. Adaptability, initiative, and willingness to learn are valued.")
+    description = fields.Html(string='Job Description')
     requirements = fields.Text('Requirements')
-    department_id = fields.Many2one('hr.department', string='Department', check_company=True)
+    department_id = fields.Many2one('hr.department', string='Department', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     contract_type_id = fields.Many2one('hr.contract.type', string='Employment Type')
 
@@ -38,8 +36,8 @@ class Job(models.Model):
 
     @api.depends('no_of_recruitment', 'employee_ids.job_id', 'employee_ids.active')
     def _compute_employees(self):
-        employee_data = self.env['hr.employee']._read_group([('job_id', 'in', self.ids)], ['job_id'], ['__count'])
-        result = {job.id: count for job, count in employee_data}
+        employee_data = self.env['hr.employee']._read_group([('job_id', 'in', self.ids)], ['job_id'], ['job_id'])
+        result = dict((data['job_id'][0], data['job_id_count']) for data in employee_data)
         for job in self:
             job.no_of_employee = result.get(job.id, 0)
             job.expected_employees = result.get(job.id, 0) + job.no_of_recruitment
@@ -54,10 +52,5 @@ class Job(models.Model):
         self.ensure_one()
         default = dict(default or {})
         if 'name' not in default:
-            default['name'] = _("%s (copy)", self.name)
+            default['name'] = _("%s (copy)") % (self.name)
         return super(Job, self).copy(default=default)
-
-    def write(self, vals):
-        if len(self) == 1:
-            handle_history_divergence(self, 'description', vals)
-        return super(Job, self).write(vals)

@@ -7,9 +7,10 @@ from odoo.addons.mail.tests.common import mail_new_test_user
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
 from odoo.tools import mute_logger, convert_file
+from odoo.modules.module import get_module_resource
 
 
-@tagged('post_install', '-at_install')
+@tagged('post_install')
 class TestSmsTemplateAccessRights(TransactionCase):
 
     @classmethod
@@ -109,17 +110,16 @@ class TestSmsTemplateAccessRights(TransactionCase):
         self.assertIn(self.partner.name, body, 'Template Editor should be able to write new Jinja code')
 
 
-@tagged('post_install', '-at_install')
+@tagged('post_install')
 class TestSMSTemplateReset(TransactionCase):
 
-    def _load(self, module, filepath):
-        # pylint: disable=no-value-for-parameter
-        convert_file(self.env, module='sms',
-                     filename=filepath,
+    def _load(self, module, *args):
+        convert_file(self.cr, module='sms',
+                     filename=get_module_resource(module, *args),
                      idref={}, mode='init', noupdate=False, kind='test')
 
     def test_sms_template_reset(self):
-        self._load('sms', 'tests/test_sms_template.xml')
+        self._load('sms', 'tests', 'test_sms_template.xml')
 
         sms_template = self.env.ref('sms.sms_template_test').with_context(lang=self.env.user.lang)
 

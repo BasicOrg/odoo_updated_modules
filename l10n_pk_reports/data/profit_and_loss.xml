@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_pk_profitandloss" model="account.report">
         <field name="name">Profit and Loss</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
@@ -19,7 +19,7 @@
     <record id="action_account_report_pkpnl" model="ir.actions.client">
         <field name="name">Profit and Loss</field>
         <field name="tag">account_report</field>
-        <field name="context" eval="{'model': 'account.report', 'report_id': ref('account_financial_report_pk_profitandloss')}"/>
+        <field name="context" eval="{'model': 'account.financial.html.report', 'id': ref('account_financial_report_pk_profitandloss')}"/>
     </record>
     <record id="account_financial_report_pk_current_year_earnings" model="account.report.line">
         <field name="action_id" ref="action_account_report_pkpnl"/>

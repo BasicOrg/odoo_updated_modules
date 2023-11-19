@@ -7,6 +7,7 @@ import { registry } from "@web/core/registry";
 import { notificationService } from "@web/core/notifications/notification_service";
 import { uiService } from "@web/core/ui/ui_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
+import { registerCleanup } from "../helpers/cleanup";
 import { clearRegistryWithCleanup, makeTestEnv } from "../helpers/mock_env";
 import { makeFakeLocalizationService, makeFakeRPCService } from "../helpers/mock_services";
 import {
@@ -18,10 +19,8 @@ import {
     patchWithCleanup,
 } from "../helpers/utils";
 import { Dialog } from "../../src/core/dialog/dialog";
-import { popoverService } from "@web/core/popover/popover_service";
-import { usePopover } from "@web/core/popover/popover_hook";
-import { useAutofocus } from "@web/core/utils/hooks";
-import { Component, onMounted, xml } from "@odoo/owl";
+
+const { Component, onMounted, xml } = owl;
 
 let env;
 let target;
@@ -61,13 +60,13 @@ QUnit.test("Simple rendering with a single dialog", async (assert) => {
     CustomDialog.components = { Dialog };
     CustomDialog.template = xml`<Dialog title="'Welcome'">content</Dialog>`;
     await mount(PseudoWebClient, target, { env });
-    assert.containsNone(target, ".o_dialog");
+    assert.containsNone(target, ".o_dialog_container .o_dialog");
     env.services.dialog.add(CustomDialog);
     await nextTick();
-    assert.containsOnce(target, ".o_dialog");
+    assert.containsOnce(target, ".o_dialog_container .o_dialog");
     assert.strictEqual(target.querySelector("header .modal-title").textContent, "Welcome");
-    await click(target.querySelector(".o_dialog footer button"));
-    assert.containsNone(target, ".o_dialog");
+    await click(target.querySelector(".o_dialog_container .o_dialog footer button"));
+    assert.containsNone(target, ".o_dialog_container .o_dialog");
 });
 
 QUnit.test("Simple rendering and close a single dialog", async (assert) => {
@@ -78,16 +77,16 @@ QUnit.test("Simple rendering and close a single dialog", async (assert) => {
     CustomDialog.template = xml`<Dialog title="'Welcome'">content</Dialog>`;
 
     await mount(PseudoWebClient, target, { env });
-    assert.containsNone(target, ".o_dialog");
+    assert.containsNone(target, ".o_dialog_container .o_dialog");
 
     const removeDialog = env.services.dialog.add(CustomDialog);
     await nextTick();
-    assert.containsOnce(target, ".o_dialog");
+    assert.containsOnce(target, ".o_dialog_container .o_dialog");
     assert.strictEqual(target.querySelector("header .modal-title").textContent, "Welcome");
 
     removeDialog();
     await nextTick();
-    assert.containsNone(target, ".o_dialog");
+    assert.containsNone(target, ".o_dialog_container .o_dialog");
 
     // Call a second time, the close on the dialog.
     // As the dialog is already close, this call is just ignored. No error should be raised.
@@ -102,20 +101,20 @@ QUnit.test("rendering with two dialogs", async (assert) => {
     CustomDialog.template = xml`<Dialog title="props.title">content</Dialog>`;
 
     await mount(PseudoWebClient, target, { env });
-    assert.containsNone(target, ".o_dialog");
+    assert.containsNone(target, ".o_dialog_container .o_dialog");
     env.services.dialog.add(CustomDialog, { title: "Hello" });
     await nextTick();
-    assert.containsOnce(target, ".o_dialog");
+    assert.containsOnce(target, ".o_dialog_container .o_dialog");
     assert.strictEqual(target.querySelector("header .modal-title").textContent, "Hello");
     env.services.dialog.add(CustomDialog, { title: "Sauron" });
     await nextTick();
-    assert.containsN(target, ".o_dialog", 2);
+    assert.containsN(target, ".o_dialog_container .o_dialog", 2);
     assert.deepEqual(
         [...target.querySelectorAll("header .modal-title")].map((el) => el.textContent),
         ["Hello", "Sauron"]
     );
-    await click(target.querySelector(".o_dialog footer button"));
-    assert.containsOnce(target, ".o_dialog");
+    await click(target.querySelector(".o_dialog_container .o_dialog footer button"));
+    assert.containsOnce(target, ".o_dialog_container .o_dialog");
     assert.strictEqual(target.querySelector("header .modal-title").textContent, "Sauron");
 });
 
@@ -128,63 +127,31 @@ QUnit.test("multiple dialogs can become the UI active element", async (assert) =
 
     env.services.dialog.add(CustomDialog, { title: "Hello" });
     await nextTick();
-    let dialogModal = target.querySelector(".o_dialog:not(.o_inactive_modal) .modal");
+    let dialogModal = target.querySelector(
+        ".o_dialog_container .o_dialog .modal:not(.o_inactive_modal)"
+    );
 
     assert.strictEqual(dialogModal, env.services.ui.activeElement);
 
     env.services.dialog.add(CustomDialog, { title: "Sauron" });
     await nextTick();
-    dialogModal = target.querySelector(".o_dialog:not(.o_inactive_modal) .modal");
+    dialogModal = target.querySelector(
+        ".o_dialog_container .o_dialog .modal:not(.o_inactive_modal)"
+    );
 
     assert.strictEqual(dialogModal, env.services.ui.activeElement);
 
     env.services.dialog.add(CustomDialog, { title: "Rafiki" });
     await nextTick();
-    dialogModal = target.querySelector(".o_dialog:not(.o_inactive_modal) .modal");
+    dialogModal = target.querySelector(
+        ".o_dialog_container .o_dialog .modal:not(.o_inactive_modal)"
+    );
 
     assert.strictEqual(dialogModal, env.services.ui.activeElement);
 });
 
-QUnit.test("a popover with an autofocus child can become the UI active element", async (assert) => {
-    class TestPopover extends Component {
-        static template = xml`<input type="text" t-ref="autofocus" />`;
-        setup() {
-            useAutofocus();
-        }
-    }
-    class CustomDialog extends Component {
-        static components = { Dialog };
-        static template = xml`<Dialog title="props.title">
-            <button class="btn test" t-on-click="showPopover">show</button>
-        </Dialog>`;
-        setup() {
-            this.popover = usePopover(TestPopover);
-        }
-        showPopover(event) {
-            this.popover.open(event.target, {});
-        }
-    }
-    serviceRegistry.add("popover", popoverService);
-    await nextTick(); // wait for the popover service to be started
-    await mount(PseudoWebClient, target, { env });
-    assert.strictEqual(env.services.ui.activeElement, document);
-    assert.strictEqual(document.activeElement, document.body);
-
-    env.services.dialog.add(CustomDialog, { title: "Hello" });
-    await nextTick();
-    const dialogModal = target.querySelector(".o_dialog:not(.o_inactive_modal) .modal");
-    assert.strictEqual(env.services.ui.activeElement, dialogModal);
-    assert.strictEqual(document.activeElement, dialogModal.querySelector(".btn.o-default-button"));
-
-    await click(dialogModal, ".btn.test");
-    const popover = target.querySelector(".o_popover");
-    const input = popover.querySelector("input");
-    assert.strictEqual(env.services.ui.activeElement, popover);
-    assert.strictEqual(document.activeElement, input);
-});
-
 QUnit.test("Interactions between multiple dialogs", async (assert) => {
-    assert.expect(10);
+    assert.expect(14);
     function activity(modals) {
         const active = [];
         const names = [];
@@ -207,37 +174,40 @@ QUnit.test("Interactions between multiple dialogs", async (assert) => {
     env.services.dialog.add(CustomDialog, { title: "Rafiki" });
     await nextTick();
 
-    let modals = document.querySelectorAll(".o_dialog");
+    let modals = document.querySelectorAll(".modal");
     assert.containsN(target, ".o_dialog", 3);
     let res = activity(modals);
     assert.deepEqual(res.active, [false, false, true]);
     assert.deepEqual(res.names, ["Hello", "Sauron", "Rafiki"]);
+    assert.hasClass(target.querySelector(".o_dialog_container"), "modal-open");
 
     let lastDialog = modals[modals.length - 1];
     lastDialog.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Escape" }));
     await nextTick();
-    modals = document.querySelectorAll(".o_dialog");
+    modals = document.querySelectorAll(".modal");
     assert.containsN(target, ".o_dialog", 2);
     res = activity(modals);
     assert.deepEqual(res.active, [false, true]);
     assert.deepEqual(res.names, ["Hello", "Sauron"]);
+    assert.hasClass(target.querySelector(".o_dialog_container"), "modal-open");
 
     lastDialog = modals[modals.length - 1];
     await click(lastDialog, "footer button");
-    modals = document.querySelectorAll(".o_dialog");
+    modals = document.querySelectorAll(".modal");
     assert.containsN(target, ".o_dialog", 1);
     res = activity(modals);
     assert.deepEqual(res.active, [true]);
     assert.deepEqual(res.names, ["Hello"]);
+    assert.hasClass(target.querySelector(".o_dialog_container"), "modal-open");
 
     lastDialog = modals[modals.length - 1];
     await click(lastDialog, "footer button");
-    assert.containsNone(target, ".o_dialog");
+    assert.containsNone(target, ".o_dialog_container .modal");
+    assert.containsOnce(target, ".o_dialog_container");
 });
 
 QUnit.test("dialog component crashes", async (assert) => {
-    assert.expect(3);
-    assert.expectErrors();
+    assert.expect(4);
 
     class FailingDialog extends Component {
         setup() {
@@ -250,15 +220,27 @@ QUnit.test("dialog component crashes", async (assert) => {
     const prom = makeDeferred();
     patchWithCleanup(ErrorDialog.prototype, {
         setup() {
-            super.setup();
+            this._super();
             onMounted(() => {
                 prom.resolve();
             });
         },
     });
 
+    const handler = (ev) => {
+        assert.step("error");
+        // need to preventDefault to remove error from console (so python test pass)
+        ev.preventDefault();
+    };
+
+    window.addEventListener("unhandledrejection", handler);
+    registerCleanup(() => window.removeEventListener("unhandledrejection", handler));
+    patchWithCleanup(QUnit, {
+        onUnhandledRejection: () => {},
+    });
+
     const rpc = makeFakeRPCService();
-    serviceRegistry.add("rpc", rpc, { force: true });
+    serviceRegistry.add("rpc", rpc);
     serviceRegistry.add("notification", notificationService);
     serviceRegistry.add("error", errorService);
 
@@ -267,7 +249,7 @@ QUnit.test("dialog component crashes", async (assert) => {
     env.services.dialog.add(FailingDialog);
     await prom;
 
+    assert.verifySteps(["error"]);
     assert.containsOnce(target, ".modal");
-    assert.containsOnce(target, ".modal .o_error_dialog");
-    assert.verifyErrors(["Some Error"]);
+    assert.containsOnce(target, ".modal .o_dialog_error");
 });

@@ -16,16 +16,17 @@ class ResPartner(models.Model):
 
     l10n_mx_type_of_third = fields.Char(
         compute='_compute_type_of_third',
-        help='Mexico: Describes what type of third party the supplier is. This is the first column in DIOT report.')
+        help='Indicate the type of third that is the supplier. Is the first '
+        'column in DIOT report.')
     l10n_mx_type_of_operation = fields.Selection([
         ('03', ' 03 - Provision of Professional Services'),
         ('06', ' 06 - Renting of buildings'),
         ('85', ' 85 - Others')],
-        help='Mexico: The type of operations that this supplier performs. This is the second column in DIOT report.',
-        string='Type of Operation',
-    )
+        help='Indicate the operations type that makes this supplier. Is the '
+        'second column in DIOT report')
     l10n_mx_nationality = fields.Char(
-        help='Mexico: Nationality based in the supplier country. Is the seventh column in DIOT report.',
+        help='Nationality based in the supplier country. Is the '
+        'seventh column in DIOT report',
         compute='_compute_nationality', readonly=True)
 
     @api.depends('country_id')

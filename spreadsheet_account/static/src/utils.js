@@ -8,7 +8,9 @@ import { getOdooFunctions } from "@spreadsheet/helpers/odoo_functions_helpers";
  * @returns {number}
  */
 export function getNumberOfAccountFormulas(formula) {
-    return getOdooFunctions(formula, ["ODOO.BALANCE", "ODOO.CREDIT", "ODOO.DEBIT"]).length;
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.BALANCE", "ODOO.CREDIT", "ODOO.DEBIT"].includes(functionName)
+    ).filter((fn) => fn.isMatched).length;
 }
 
 /**
@@ -18,5 +20,7 @@ export function getNumberOfAccountFormulas(formula) {
  * @returns {OdooFunctionDescription | undefined}
  */
 export function getFirstAccountFunction(formula) {
-    return getOdooFunctions(formula, ["ODOO.BALANCE", "ODOO.CREDIT", "ODOO.DEBIT"])[0];
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.BALANCE", "ODOO.CREDIT", "ODOO.DEBIT"].includes(functionName)
+    ).find((fn) => fn.isMatched);
 }

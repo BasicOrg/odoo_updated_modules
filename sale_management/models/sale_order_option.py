@@ -17,7 +17,7 @@ class SaleOrderOption(models.Model):
     product_id = fields.Many2one(
         comodel_name='product.product',
         required=True,
-        domain=lambda self: self._product_id_domain())
+        domain=[('sale_ok', '=', True)])
     line_id = fields.Many2one(
         comodel_name='sale.order.line', ondelete='set null', copy=False)
     sequence = fields.Integer(
@@ -82,7 +82,7 @@ class SaleOrderOption(models.Model):
     @api.depends('product_id', 'uom_id', 'quantity')
     def _compute_price_unit(self):
         for option in self:
-            if not option.product_id:
+            if not option.product_id or not option.order_id.pricelist_id:
                 continue
             # To compute the price_unit a so line is created in cache
             values = option._get_values_to_add_to_order()
@@ -129,11 +129,6 @@ class SaleOrderOption(models.Model):
             return [('line_id', '=', False)]
         return [('line_id', '!=', False)]
 
-    @api.model
-    def _product_id_domain(self):
-        """ Returns the domain of the products that can be added as a sale order option. """
-        return [('sale_ok', '=', True)]
-
     #=== ACTION METHODS ===#
 
     def button_add_to_order(self):
@@ -144,7 +139,7 @@ class SaleOrderOption(models.Model):
 
         sale_order = self.order_id
 
-        if not sale_order._can_be_edited_on_portal():
+        if sale_order.state not in ['draft', 'sent']:
             raise UserError(_('You cannot add options to a confirmed order.'))
 
         values = self._get_values_to_add_to_order()
@@ -153,5 +148,3 @@ class SaleOrderOption(models.Model):
         self.write({'line_id': order_line.id})
         if sale_order:
             sale_order.add_option_to_order_with_taxcloud()
-
-        return order_line

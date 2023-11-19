@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields
+from odoo import models, fields, api, _
 
 
 L10N_BE_PAYROLL_READABLE_FIELDS = [
@@ -12,6 +12,7 @@ L10N_BE_PAYROLL_WRITABLE_FIELDS = [
     'disabled',
     'disabled_spouse_bool',
     'disabled_children_bool',
+    'resident_bool',
     'disabled_children_number',
     'dependent_children',
     'other_dependent_people',
@@ -33,6 +34,7 @@ class User(models.Model):
     disabled = fields.Boolean(related='employee_ids.disabled', readonly=False)
     disabled_spouse_bool = fields.Boolean(related='employee_ids.disabled_spouse_bool', readonly=False)
     disabled_children_bool = fields.Boolean(related='employee_ids.disabled_children_bool', readonly=False)
+    resident_bool = fields.Boolean(related='employee_ids.resident_bool', readonly=False)
     disabled_children_number = fields.Integer(related='employee_ids.disabled_children_number', readonly=False)
     dependent_children = fields.Integer(related='employee_ids.dependent_children', readonly=False)
     other_dependent_people = fields.Boolean(related='employee_ids.other_dependent_people', readonly=False)

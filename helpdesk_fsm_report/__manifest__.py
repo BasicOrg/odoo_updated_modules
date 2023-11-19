@@ -4,7 +4,7 @@
     'name': "Helpdesk FSM Reports",
     'summary': "Worksheet template when planning an intervention",
     'description': """
-Display the worksheet template when planning an Intervention from a ticket
+        Display the worksheet template when planning an Intervention from a ticket
     """,
     'category': 'Services/Helpdesk',
     'depends': ['helpdesk_fsm', 'industry_fsm_report'],

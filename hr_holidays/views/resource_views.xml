@@ -34,13 +34,12 @@
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
                 <attribute name="string">Name</attribute>
-                <attribute name="required">1</attribute>
             </xpath>
             <xpath expr="//field[@name='resource_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='date_to']" position="after">
-                <field name="company_id" column_invisible="True"/>
+                <field name="company_id" invisible="1"/>
                 <xpath expr="//field[@name='calendar_id']" position="move"/>
             </xpath>
         </field>
@@ -81,6 +80,7 @@
 
     <record id="open_view_public_holiday" model="ir.actions.act_window">
         <field name="name">Public Holidays</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">resource.calendar.leaves</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('resource_id', '=', False)]</field>

@@ -15,17 +15,15 @@ class AccountMove(models.Model):
     tax_closing_end_date = fields.Date()
     # technical field used to know if there was a failed control check
     tax_report_control_error = fields.Boolean()
-    # technical field used to know whether to show the tax closing alert or not
-    tax_closing_alert = fields.Boolean(compute='_compute_tax_closing_alert')
 
     def _post(self, soft=True):
         # Overridden to create carryover external values and join the pdf of the report when posting the tax closing
         processed_moves = self.env['account.move']
-        for move in self.filtered(lambda m: m.tax_closing_end_date):
+        for move in self.filtered(lambda m: not m.posted_before and m.tax_closing_end_date):
             # Generate carryover values
             report, options = move._get_report_options_from_tax_closing_entry()
 
-            company_ids = report.get_report_company_ids(options)
+            company_ids = [comp_opt['id'] for comp_opt in options.get('multi_company', [])] or self.env.company.ids
             if len(company_ids) >= 2:
                 # For tax units, we only do the carryover for all the companies when the last of their closing moves for the period is posted.
                 # If a company has no closing move for this tax_closing_date, we consider the closing hasn't been done for it.
@@ -48,37 +46,15 @@ class AccountMove(models.Model):
             processed_moves += move
 
             # Post the pdf of the tax report in the chatter, and set the lock date if possible
-            move._close_tax_period()
+            self._close_tax_period()
 
         return super()._post(soft)
 
-    def button_draft(self):
-        # Overridden in order to delete the carryover values when resetting the tax closing to draft
-        super().button_draft()
-        for closing_move in self.filtered(lambda m: m.tax_closing_end_date):
-            report, options = closing_move._get_report_options_from_tax_closing_entry()
-            closing_months_delay = closing_move.company_id._get_tax_periodicity_months_delay()
-
-            carryover_values = self.env['account.report.external.value'].search([
-                ('carryover_origin_report_line_id', 'in', report.line_ids.ids),
-                ('date', '=', options['date']['date_to']),
-            ])
-
-            carryover_impacted_period_end = fields.Date.from_string(options['date']['date_to']) + relativedelta(months=closing_months_delay)
-            tax_lock_date = closing_move.company_id.tax_lock_date
-            if carryover_values and tax_lock_date and tax_lock_date >= carryover_impacted_period_end:
-                raise UserError(_("You cannot reset this closing entry to draft, as it would delete carryover values impacting the tax report of a "
-                                  "locked period. To do this, you first need to modify you tax return lock date."))
-
-            carryover_values.unlink()
-
     def action_open_tax_report(self):
         action = self.env["ir.actions.actions"]._for_xml_id("account_reports.action_account_report_gt")
-        if not self.tax_closing_end_date:
-            raise UserError(_("You can't open a tax report from a move without a VAT closing date."))
         options = self._get_report_options_from_tax_closing_entry()[1]
-        # Pass options in context and set ignore_session: true to prevent using session options
-        action.update({'params': {'options': options, 'ignore_session': True}})
+        # Pass options in context and set ignore_session: read to prevent reading previous options
+        action.update({'params': {'options': options, 'ignore_session': 'read'}})
         return action
 
     def _close_tax_period(self):
@@ -105,7 +81,7 @@ class AccountMove(models.Model):
                 ('id', '!=', move.id),
             ], limit=1)
 
-            if not open_previous_closing and (not move.company_id.tax_lock_date or move.tax_closing_end_date > move.company_id.tax_lock_date):
+            if not open_previous_closing:
                 move.company_id.sudo().tax_lock_date = move.tax_closing_end_date
 
             # Add pdf report as attachment to move
@@ -136,7 +112,7 @@ class AccountMove(models.Model):
     def refresh_tax_entry(self):
         for move in self.filtered(lambda m: m.tax_closing_end_date and m.state == 'draft'):
             report, options = move._get_report_options_from_tax_closing_entry()
-            self.env['account.generic.tax.report.handler']._generate_tax_closing_entries(report, options, closing_moves=move)
+            self.env[report.custom_handler_model_name]._generate_tax_closing_entries(report, options, closing_moves=move)
 
     def _get_report_options_from_tax_closing_entry(self):
         self.ensure_one()
@@ -188,7 +164,7 @@ class AccountMove(models.Model):
         else:
             company_ids = self.env.company.ids
 
-        report_options = tax_report.with_context(allowed_company_ids=company_ids).get_options(previous_options=options)
+        report_options = tax_report.with_context(allowed_company_ids=company_ids)._get_options(previous_options=options)
         if 'tax_report_control_error' in report_options:
             # This key will be set to False in the options by a custom init_options for reports adding control lines to themselves.
             # Its presence indicate that we need to compute the report in order to run the actual checks. The options dictionary will then be
@@ -201,12 +177,3 @@ class AccountMove(models.Model):
         # Fetch pdf
         pdf_data = report.export_to_pdf(options)
         return [(pdf_data['file_name'], pdf_data['file_content'])]
-
-    def _compute_tax_closing_alert(self):
-        for move in self:
-            move.tax_closing_alert = (
-                move.state == 'posted'
-                and move.tax_closing_end_date
-                and move.company_id.tax_lock_date
-                and move.company_id.tax_lock_date < move.tax_closing_end_date
-            )

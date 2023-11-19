@@ -31,9 +31,8 @@ class L10nArAfipWsConsult(models.TransientModel):
         self.available_document_type_ids = False
         with_journal = self.filtered('journal_id')
         for rec in with_journal:
-            rec.available_document_type_ids = self.env['l10n_latam.document.type'].search(
-                rec.journal_id._get_journal_codes_domain()
-            )
+            codes = rec.journal_id._get_journal_codes()
+            rec.available_document_type_ids = self.env['l10n_latam.document.type'].search([('code', 'in', codes)]) if codes else False
         remaining = self - with_journal
         remaining.available_document_type_ids = False
 
@@ -48,7 +47,7 @@ class L10nArAfipWsConsult(models.TransientModel):
         afip_ws = self.journal_id.l10n_ar_afip_ws
 
         if not afip_ws:
-            raise UserError(_('No AFIP WS selected on point of sale %s', self.journal_id.name))
+            raise UserError(_('No AFIP WS selected on point of sale %s') % (self.journal_id.name))
         if not self.number:
             raise UserError(_('Please set the number you want to consult'))
 

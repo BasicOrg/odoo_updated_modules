@@ -10,8 +10,8 @@ class TestBfe(common.TestEdi):
         super(TestBfe, cls).setUpClass('wsbfe')
         cls.partner = cls.res_partner_adhoc
         cls.journal = cls._create_journal(cls, 'wsbfe')
-        cls.product_iva_21.l10n_ar_ncm_code = '84.24.81.19'
-        cls.service_iva_27.l10n_ar_ncm_code = '85.02.13.19'
+        cls.product_iva_21.l10n_ar_ncm_code = '8421.12.10'
+        cls.service_iva_27.l10n_ar_ncm_code = '8422.11.00'
 
     def _test_case(self, document_type, concept, forced_values=None, expected_document=None, expected_result=None):
         """ Force Responsable Inscripto partner for "B" documents since this webservice can only invoice to partner with CUIT. Also all the documents will be

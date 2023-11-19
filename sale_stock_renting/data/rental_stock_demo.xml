@@ -29,11 +29,11 @@
       <field name="price" eval="5.0"/>
   </record>
   <record id="rental_stock_pricing_2" model="product.pricing">
-      <field name="recurrence_id" ref="sale_renting.recurrence_daily"/>
+      <field name="recurrence_id" ref="sale_temporal.recurrence_daily"/>
       <field name="price" eval="20.0"/>
   </record>
   <record id="rental_stock_pricing_3" model="product.pricing">
-      <field name="recurrence_id" ref="sale_renting.recurrence_weekly"/>
+      <field name="recurrence_id" ref="sale_temporal.recurrence_weekly"/>
       <field name="price" eval="100.0"/>
   </record>
 
@@ -70,12 +70,6 @@
   </record>
 
   <!-- Set available meeting room serial numbers -->
-  <function model="stock.quant" name="unlink">
-    <value model="stock.quant" eval="obj().search([
-            ('product_id', '=', ref('rental_stock_product_1'))
-        ]).ids"/>
-  </function>
-
   <record id="rental_stock_inventory_1" model="stock.quant">
     <field name="product_id" ref="rental_stock_product_1"/>
     <field name="location_id" model="stock.location" eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
@@ -107,10 +101,10 @@
       <field name="partner_invoice_id" ref="base.res_partner_2"/>
       <field name="partner_shipping_id" ref="base.res_partner_2"/>
       <field name="user_id" ref="base.user_admin"/>
+      <field name="pricelist_id" ref="product.list0"/>
       <field name="team_id" ref="sales_team.team_sales_department"/>
       <field name="date_order" eval="DateTime.today() - relativedelta(months=3)"/>
-      <field name="rental_start_date" eval="DateTime.today() + relativedelta(days=1)"/>
-      <field name="rental_return_date" eval="DateTime.today() + relativedelta(days=5)"/>
+      <field name="is_rental_order" eval="True"/>
   </record>
 
   <record id="rental_stock_order_line_1" model="sale.order.line">
@@ -119,11 +113,10 @@
       <field name="product_uom_qty">3</field>
       <field name="product_uom" ref="uom.product_uom_unit"/>
       <field name="name" eval="'[RENT003] Printer'"/>
-      <field name="price_unit" eval="100.0"/>
-  </record>
-
-  <record id="rental_stock_order_line_1" model="sale.order.line"> <!-- After creation to avoid the compute and force the value -->
       <field name="is_rental" eval="True"/>
+      <field name="start_date" eval="DateTime.today() + relativedelta(days=1)"/>
+      <field name="return_date" eval="DateTime.today() + relativedelta(days=5)"/>
+      <field name="price_unit" eval="100.0"/>
   </record>
 
   <record id="rental_stock_order_line_2" model="sale.order.line">
@@ -132,12 +125,11 @@
       <field name="product_uom_qty">2</field>
       <field name="product_uom" ref="uom.product_uom_unit"/>
       <field name="name" eval="'[RENT003] Printer'"/>
+      <field name="is_rental" eval="True"/>
+      <field name="start_date" eval="DateTime.today() + relativedelta(days=4)"/>
+      <field name="return_date" eval="DateTime.today() + relativedelta(days=10)"/>
       <field name="price_unit" eval="150.0"/>
       <field name="reserved_lot_ids" eval="[(6,0,[ref('rental_stock_lot_1'), ref('rental_stock_lot_2')])]"/>
-  </record>
-
-  <record id="rental_stock_order_line_2" model="sale.order.line"> <!-- After creation to avoid the compute and force the value -->
-      <field name="is_rental" eval="True"/>
   </record>
 
   <!-- CONFIRM Rental Sale Order -->

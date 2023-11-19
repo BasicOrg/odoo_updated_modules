@@ -3,17 +3,16 @@
 # 	* hr_appraisal_skills
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,22 +20,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: hr_appraisal_skills
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.view_hr_appraisal_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_view_form
 msgid ""
-"<span class=\"o_appraisal_overlay\" invisible=\"state != 'new'\">\n"
+"<span class=\"o_appraisal_overlay\" attrs=\"{'invisible': [('state', '!=', 'new')]}\">\n"
 "                            Skills tab will be active once the appraisal is confirmed.\n"
 "                        </span>"
 msgstr ""
-"<span class=\"o_appraisal_overlay\" invisible=\"state != 'new'\">\n"
+"<span class=\"o_appraisal_overlay\" attrs=\"{'invisible': [('state', '!=', 'new')]}\">\n"
 "                            La scheda delle competenze sarà attiva una volta confermata la valutazione.\n"
 "                        </span>"
 
 #. module: hr_appraisal_skills
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_appraisal_skills/static/src/js/appraisal_skills_one2many.xml:0
 #, python-format
 msgid "Add new skills"
-msgstr "Aggiungi nuove competenze"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__appraisal_id
@@ -47,13 +46,12 @@ msgstr "Valutazione"
 #: model:ir.actions.act_window,name:hr_appraisal_skills.hr_appraisal_skill_report_action
 #: model:ir.model,name:hr_appraisal_skills.model_hr_appraisal_skill_report
 msgid "Appraisal Skills Report"
-msgstr "Resoconto competenze valutazione"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model_terms:ir.actions.act_window,help:hr_appraisal_skills.hr_appraisal_skill_report_action
 msgid "Appraisal skills appear only for marked appraisals."
 msgstr ""
-"Le competenze di valutazione appiano solo per le valutazioni contrassegnate."
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__company_id
@@ -73,12 +71,12 @@ msgstr "Data creazione"
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__current_skill_level_id
 msgid "Current Skill Level"
-msgstr "Livello competenza attuale"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__current_level_progress
 msgid "Current Skill Progress"
-msgstr "Avanzamento competenza attuale"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields.selection,name:hr_appraisal_skills.selection__hr_appraisal_skill_report__evolution__decline
@@ -127,12 +125,12 @@ msgstr "Competenze dipendente"
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__evolution
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_report_view_search
 msgid "Evolution"
-msgstr "Evoluzione"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__evolution_sequence
 msgid "Evolution Sequence"
-msgstr "Sequenza evoluzione"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__id
@@ -144,18 +142,23 @@ msgstr "ID"
 #: model:ir.model.fields.selection,name:hr_appraisal_skills.selection__hr_appraisal_skill_report__evolution__improvement
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_report_view_search
 msgid "Improvement"
-msgstr "Miglioramento"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields.selection,name:hr_appraisal_skills.selection__hr_appraisal_skill_report__evolution__just_added
 msgid "Just added"
-msgstr "Appena aggiunta"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__justification
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__justification
 msgid "Justification"
 msgstr "Giustificazione"
+
+#. module: hr_appraisal_skills
+#: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__write_uid
@@ -175,18 +178,18 @@ msgstr "Supervisore"
 #. module: hr_appraisal_skills
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_report_view_search
 msgid "No Change"
-msgstr "Nessuna modifica"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__previous_skill_level_id
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__previous_skill_level_id
 msgid "Previous Skill Level"
-msgstr "Livello competenza precedente"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__previous_level_progress
 msgid "Previous Skill Progress"
-msgstr "Avanzamento competenza precedente"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__level_progress
@@ -201,12 +204,12 @@ msgstr "Avanzamento da conoscenza zero (0%) a padronanza completa (100%)."
 #. module: hr_appraisal_skills
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_report_view_search
 msgid "Regression"
-msgstr "Regressione"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields.selection,name:hr_appraisal_skills.selection__hr_appraisal_skill_report__evolution__same
 msgid "Same"
-msgstr "Uguale"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__skill_id
@@ -228,7 +231,7 @@ msgstr "Tipo di competenza"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal__skill_ids
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.view_hr_appraisal_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_view_form
 msgid "Skills"
 msgstr "Competenze"
 
@@ -236,7 +239,7 @@ msgstr "Competenze"
 #: model:ir.ui.menu,name:hr_appraisal_skills.menu_appraisal_skills_report
 #: model_terms:ir.actions.act_window,help:hr_appraisal_skills.hr_appraisal_skill_report_action
 msgid "Skills Evolution"
-msgstr "Evoluzione competenze"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.constraint,message:hr_appraisal_skills.constraint_hr_appraisal_skill__unique_skill

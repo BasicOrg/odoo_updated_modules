@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* repair
-#
+# 
 # Translators:
 # Susanna Pujol, 2022
 # M Palau <mpalau@tda.ad>, 2022
@@ -20,22 +20,19 @@
 # Quim - eccit <quim@eccit.com>, 2022
 # marcescu, 2022
 # José Cabrera Lozano <jose.cabrera@edukative.es>, 2022
-# Ivan Espinola, 2023
-# Óscar Fonseca <tecnico@extreme-micro.com>, 2023
-# martioodo hola, 2023
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 13:48+0000\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
 "PO-Revision-Date: 2022-09-22 05:54+0000\n"
-"Last-Translator: martioodo hola, 2023\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Last-Translator: José Cabrera Lozano <jose.cabrera@edukative.es>, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: repair
@@ -79,7 +76,6 @@ msgstr ""
 "* L'estat 'Cancel·lat' s'utilitza quan l'usuari cancel·la l'ordre de reparació."
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid ": Insufficient Quantity To Repair"
@@ -90,24 +86,43 @@ msgstr ": Quantitat insuficient per reparar"
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p style=\"margin: 0px; padding: 0px;font-size: 13px;\">\n"
-"        Hello <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t>,<br>\n"
+"        Hello <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t>,<br/>\n"
 "        Here is your repair order <strong t-out=\"object.name or ''\">RO/00004</strong>\n"
 "        <t t-if=\"object.invoice_method != 'none'\">\n"
-"            amounting in <strong><t t-out=\"format_amount(object.amount_total, object.currency_id) or ''\">$ 100.00</t>.</strong><br>\n"
+"            amounting in <strong><t t-out=\"format_amount(object.amount_total, object.pricelist_id.currency_id) or ''\">$ 100.00</t>.</strong><br/>\n"
 "        </t>\n"
 "        <t t-else=\"\">\n"
-"            .<br>\n"
+"            .<br/>\n"
 "        </t>\n"
 "        You can reply to this email if you have any questions.\n"
-"        <br><br>\n"
+"        <br/><br/>\n"
 "        Thank you,\n"
 "        <t t-if=\"user.signature\">\n"
-"            <br>\n"
-"            <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"            <br/>\n"
+"            <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "        </t>\n"
 "    </p>\n"
 "</div>"
 msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p style=\"margin: 0px; padding: 0px;font-size: 13px;\">\n"
+"        Hola <t t-out=\"object.partner_id.name or ''\">Brandon Freeman</t>,<br/>\n"
+"        Aquí està la seva ordre de reparació <strong t-out=\"object.name or ''\">RO/00004</strong>\n"
+"        <t t-if=\"object.invoice_method != 'none'\">\n"
+"           que ascendeix a<strong><t t-out=\"format_amount(object.amount_total, object.pricelist_id.currency_id) or ''\">$ 100.00</t>.</strong><br/>\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            .<br/>\n"
+"        </t>\n"
+"        Podeu respondre a aquest correu electrònic si teniu cap pregunta.\n"
+"        <br/><br/>\n"
+"        Gràcies,\n"
+"        <t t-if=\"user.signature\">\n"
+"            <br/>\n"
+"            <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
+"        </t>\n"
+"    </p>\n"
+"</div>"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.report_repairorder
@@ -122,11 +137,6 @@ msgid ""
 msgstr ""
 "<span class=\"o_stat_text\">1</span>\n"
 "                                <span class=\"o_stat_text\">Factures</span>"
-
-#. module: repair
-#: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
-msgid "<span class=\"o_stat_text\">Product Moves</span>"
-msgstr ""
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.stock_production_lot_view_form
@@ -160,8 +170,8 @@ msgstr "<strong>Producte a reparar:</strong>"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.report_repairorder
-msgid "<strong>Shipping address:</strong>"
-msgstr ""
+msgid "<strong>Shipping address :</strong>"
+msgstr "<strong>Adreça d'enviament :</strong>"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.report_repairorder
@@ -221,7 +231,7 @@ msgstr "Afegeix notes internes."
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
 msgid "Add quotation notes."
-msgstr "Afegeix notes de pressupost."
+msgstr "Afegeix notes de cita."
 
 #. module: repair
 #: model:ir.model.fields.selection,name:repair.selection__repair_order__invoice_method__after_repair
@@ -231,7 +241,7 @@ msgstr "Després de la reparació"
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__allowed_picking_type_ids
 msgid "Allowed Picking Type"
-msgstr "Tipus de selecció permès"
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__message_attachment_count
@@ -268,8 +278,12 @@ msgstr "Categoria"
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__partner_id
-msgid "Choose partner for whom the order will be invoiced and delivered. You can find a partner by its Name, TIN, Email or Internal Reference."
-msgstr "Trieu soci per a qui se li facturarà i lliurarà la comanda. Pots trobar un soci pel seu Nom, TIN, Correu electrònic o Referència Interna. "
+msgid ""
+"Choose partner for whom the order will be invoiced and delivered. You can "
+"find a partner by its Name, TIN, Email or Internal Reference."
+msgstr ""
+"Trieu soci per a qui se li facturarà i lliurarà la comanda. Pots trobar un "
+"soci pel seu Nom, TIN, Correu electrònic o Referència Interna. "
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_tags__color
@@ -305,8 +319,22 @@ msgstr "Confirmada"
 #: model:ir.model.fields,help:repair.field_repair_fee__product_uom_category_id
 #: model:ir.model.fields,help:repair.field_repair_line__product_uom_category_id
 #: model:ir.model.fields,help:repair.field_repair_order__product_uom_category_id
-msgid "Conversion between Units of Measure can only occur if they belong to the same category. The conversion will be made based on the ratios."
-msgstr "La conversió entre les unitats de mesura només és possible si pertanyen a la mateixa categoria. La conversió es basarà en les ràtios establertes."
+msgid ""
+"Conversion between Units of Measure can only occur if they belong to the "
+"same category. The conversion will be made based on the ratios."
+msgstr ""
+"La conversió entre les unitats de mesura només és possible si pertanyen a la"
+" mateixa categoria. La conversió es basarà en les ràtios establertes."
+
+#. module: repair
+#: code:addons/repair/models/repair.py:0 code:addons/repair/models/repair.py:0
+#, python-format
+msgid ""
+"Couldn't find a pricelist line matching this product and quantity.\n"
+"You have to change either the product, the quantity or the pricelist."
+msgstr ""
+"No s'ha trobat una línia de tarifa que concordi amb aquest producte i quantitat.\n"
+"Ha de canviar el producte, la quantitat o la tarifa."
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_make_invoice
@@ -320,17 +348,16 @@ msgid "Create Mass Invoice (repair)"
 msgstr "Crea factura massiva (reparació)"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/stock_picking.py:0
 #, python-format
 msgid "Create Repair"
-msgstr "Crea una reparació"
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_stock_picking__is_repairable
 #: model:ir.model.fields,field_description:repair.field_stock_picking_type__is_repairable
 msgid "Create Repair Orders from Returns"
-msgstr "Crea comandes de reparació a partir dels retorns"
+msgstr ""
 
 #. module: repair
 #: model_terms:ir.actions.act_window,help:repair.action_repair_order_tag
@@ -416,7 +443,7 @@ msgstr "Confirmes que vols reparar"
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_make_invoice
 msgid "Do you really want to create the invoice(s)?"
-msgstr "Voleu crear la factura(es)?"
+msgstr "Voleu crear la(es) factura(es)?"
 
 #. module: repair
 #: model:ir.model.fields.selection,name:repair.selection__repair_line__state__done
@@ -430,8 +457,11 @@ msgstr "Esborrany"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
-msgid "Draft invoices for this order will be cancelled. Do you confirm the action?"
-msgstr "Es cancel·laran les factures d'esborrany per a aquesta comanda. Confirma l'acció?"
+msgid ""
+"Draft invoices for this order will be cancelled. Do you confirm the action?"
+msgstr ""
+"Es cancel·laran les factures d'esborrany per a aquesta comanda. Confirma "
+"l'acció?"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
@@ -442,7 +472,8 @@ msgstr "Fi reparació"
 #: model:ir.model.fields,help:repair.field_repair_line__tracking
 #: model:ir.model.fields,help:repair.field_repair_order__tracking
 msgid "Ensure the traceability of a storable product in your warehouse."
-msgstr "Assegura la traçabilitat d’un producte emmagatzemable al vostre magatzem."
+msgstr ""
+"Assegura la traçabilitat d’un producte emmagatzemable al vostre magatzem."
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
@@ -517,7 +548,8 @@ msgstr "Icona que indica una activitat d'excepció."
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Si està marcat, hi ha nous missatges que requereixen la vostra atenció."
+msgstr ""
+"Si està marcat, hi ha nous missatges que requereixen la vostra atenció."
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__message_has_error
@@ -528,8 +560,9 @@ msgstr "Si està marcat, alguns missatges tenen un error d'entrega."
 #. module: repair
 #: model:ir.model.fields,help:repair.field_stock_picking__is_repairable
 #: model:ir.model.fields,help:repair.field_stock_picking_type__is_repairable
-msgid "If ticked, you will be able to directly create repair orders from a return."
-msgstr "Si està marcat, podreu crear directament ordres de reparació a partir d'un retorn."
+msgid ""
+"If ticked, you will be able to directly create repair orders from a return."
+msgstr ""
 
 #. module: repair
 #: model_terms:ir.actions.act_window,help:repair.action_repair_order_tree
@@ -537,7 +570,10 @@ msgid ""
 "In a repair order, you can detail the components you remove,\n"
 "                add or replace and record the time you spent on the different\n"
 "                operations."
-msgstr "En una ordre de reparació, es pot detallar els components que s'eliminen, s'afegeixen o substitueixen i registrar el temps que passa en les diferents operacions."
+msgstr ""
+"En una ordre de reparació, es pot detallar els components que s'eliminen, "
+"s'afegeixen o substitueixen i registrar el temps que passa en les diferents "
+"operacions."
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__internal_notes
@@ -587,7 +623,6 @@ msgid "Invoice and shipping address:"
 msgstr "Direcció de facturació i d'enviament:"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Invoice created"
@@ -620,6 +655,16 @@ msgstr "Assentament comptable"
 #: model:ir.model,name:repair.model_account_move_line
 msgid "Journal Item"
 msgstr "Apunt comptable"
+
+#. module: repair
+#: model:ir.model.fields,field_description:repair.field_repair_fee____last_update
+#: model:ir.model.fields,field_description:repair.field_repair_line____last_update
+#: model:ir.model.fields,field_description:repair.field_repair_order____last_update
+#: model:ir.model.fields,field_description:repair.field_repair_order_make_invoice____last_update
+#: model:ir.model.fields,field_description:repair.field_repair_tags____last_update
+#: model:ir.model.fields,field_description:repair.field_stock_warn_insufficient_qty_repair____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_fee__write_uid
@@ -658,6 +703,11 @@ msgstr "Ubicació"
 #: model:ir.model.fields,field_description:repair.field_repair_order__lot_id
 msgid "Lot/Serial"
 msgstr "Lot/núm. de sèrie"
+
+#. module: repair
+#: model:ir.model.fields,field_description:repair.field_repair_order__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunt principal"
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__message_has_error
@@ -700,14 +750,18 @@ msgid "No Invoice"
 msgstr "No facturar"
 
 #. module: repair
-#. odoo-python
-#: code:addons/repair/models/repair.py:0
+#: code:addons/repair/models/repair.py:0 code:addons/repair/models/repair.py:0
 #, python-format
 msgid "No account defined for product \"%s\"."
 msgstr "No s'ha definit un compte per al producte \"%s\"."
 
 #. module: repair
-#. odoo-python
+#: code:addons/repair/models/repair.py:0 code:addons/repair/models/repair.py:0
+#, python-format
+msgid "No pricelist found."
+msgstr "Llistat de preus no trobat"
+
+#. module: repair
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "No product defined on fees."
@@ -719,16 +773,15 @@ msgid "No repair order found. Let's create one!"
 msgstr "No s'ha trobat cap ordre de reparació. Crearem una!"
 
 #. module: repair
+#: code:addons/repair/models/repair.py:0 code:addons/repair/models/repair.py:0
+#, python-format
+msgid "No valid pricelist line found."
+msgstr "No s'ha trobat cap línia de llista de llista vàlida."
+
+#. module: repair
 #: model:ir.model.fields.selection,name:repair.selection__repair_order__priority__0
 msgid "Normal"
 msgstr "Normal"
-
-#. module: repair
-#. odoo-python
-#: code:addons/repair/models/repair.py:0
-#, python-format
-msgid "Note that the warehouses of the return and repair locations don't match!"
-msgstr "Tingueu en compte que els magatzems de les ubicacions de retorn i reparació no coincideixen!"
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__message_needaction_counter
@@ -753,10 +806,9 @@ msgstr "Nombre de missatges amb error d'entrega"
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_stock_picking__nbr_repairs
 msgid "Number of repairs linked to this picking"
-msgstr "Nombre de reparacions enllaçades a aquesta recol·lecció"
+msgstr ""
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Only draft repairs can be confirmed."
@@ -887,11 +939,6 @@ msgid "Quotations"
 msgstr "Pressupostos"
 
 #. module: repair
-#: model:ir.model.fields,field_description:repair.field_repair_order__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form_filter
 msgid "Ready To Repair"
 msgstr "Preparat per reparar"
@@ -966,7 +1013,6 @@ msgid "Repair Order Reference"
 msgstr "Referència ordre reparació"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/stock_picking.py:0
 #: model:ir.actions.act_window,name:repair.action_repair_order_graph
 #: model:ir.actions.act_window,name:repair.action_repair_order_tree
@@ -995,6 +1041,7 @@ msgid "Repair Reference"
 msgstr "Referència de la reparació"
 
 #. module: repair
+#: model:product.product,name:repair.product_service_order_repair
 #: model:product.template,name:repair.product_service_order_repair_product_template
 msgid "Repair Services"
 msgstr "Serveis de reparació"
@@ -1006,28 +1053,25 @@ msgid "Repair Tags"
 msgstr "Repara les etiquetes"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Repair must be canceled in order to reset it to draft."
-msgstr "La reparació ha d'estar cancel·lada per poder ser ficada en esborrany."
+msgstr ""
+"La reparació ha d'estar cancel·lada per poder ser ficada en esborrany."
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Repair must be confirmed before starting reparation."
 msgstr "La reparació ha d'estar confirmada abans de començar-la."
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Repair must be repaired in order to make the product moves."
 msgstr "La reparació ha de ser acabada per generar els moviments de productes"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Repair must be under repair in order to end reparation."
@@ -1039,7 +1083,6 @@ msgid "Repair order count"
 msgstr "Reparar el recompte d'ordres "
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/stock_lot.py:0
 #, python-format
 msgid "Repair orders of %s"
@@ -1048,7 +1091,7 @@ msgstr "Reparar ordres de %s"
 #. module: repair
 #: model:mail.template,name:repair.mail_template_repair_quotation
 msgid "Repair: Quotation"
-msgstr "Repara: pressupost"
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__repaired
@@ -1092,12 +1135,12 @@ msgstr "Retorna"
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__picking_id
 msgid "Return Order from which the product to be repaired comes from."
-msgstr "Ordre de retorn del qual prové el producte a reparar."
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_stock_picking_type__return_type_of_ids
 msgid "Return Type Of"
-msgstr "Tipus de retorn de"
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__is_returned
@@ -1118,7 +1161,7 @@ msgstr "Comanda de venda"
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__sale_order_id
 msgid "Sale Order from which the product to be repaired comes from."
-msgstr "Comanda de venda de la qual procedeix el producte a reparar."
+msgstr "Ordre de venda del qual procedeix el producte a reparar."
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__schedule_date
@@ -1132,8 +1175,15 @@ msgstr "Cercar ordres de reparació"
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__invoice_method
-msgid "Selecting 'Before Repair' or 'After Repair' will allow you to generate invoice before or after the repair is done respectively. 'No invoice' means you don't want to generate invoice for this repair order."
-msgstr "Seleccionat 'Abans de reparar' o ' Després de reparar' permetrà generar les factures abans o després que es realitzi la reparació respectivament. 'Sense factura' significa que no vol generar factures per aquesta ordre de reparació."
+msgid ""
+"Selecting 'Before Repair' or 'After Repair' will allow you to generate "
+"invoice before or after the repair is done respectively. 'No invoice' means "
+"you don't want to generate invoice for this repair order."
+msgstr ""
+"Seleccionat 'Abans de reparar' o ' Després de reparar' permetrà generar les "
+"factures abans o després que es realitzi la reparació respectivament. 'Sense"
+" factura' significa que no vol generar factures per aquesta ordre de "
+"reparació."
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
@@ -1143,14 +1193,14 @@ msgstr "Enviar Pressupost"
 #. module: repair
 #: model:mail.template,description:repair.mail_template_repair_quotation
 msgid "Sent manually when clicking on \"Send Quotation\" on a repair order"
-msgstr "Enviat manualment en fer clic a «Envia la cita» en una ordre de reparació"
+msgstr ""
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Serial number is required for operation lines with products: %s"
-msgstr "El número de sèrie és necessari per a les línies d'operació amb productes:%s"
+msgstr ""
+"El número de sèrie és necessari per a les línies d'operació amb productes:%s"
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
@@ -1160,7 +1210,8 @@ msgstr "Canvia a esborrany"
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form_filter
 msgid "Show all records which has next action date is before today"
-msgstr "Mostra tots els registres en que la data de següent acció és abans d'avui"
+msgstr ""
+"Mostra tots els registres en que la data de següent acció és abans d'avui"
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_line__location_id
@@ -1227,22 +1278,6 @@ msgid "Tax"
 msgstr "Impost"
 
 #. module: repair
-#: model:ir.model.fields,field_description:repair.field_repair_line__tax_calculation_rounding_method
-#: model:ir.model.fields,field_description:repair.field_repair_order__tax_calculation_rounding_method
-msgid "Tax calculation rounding method"
-msgstr ""
-
-#. module: repair
-#: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
-msgid "Tax excl."
-msgstr ""
-
-#. module: repair
-#: model_terms:ir.ui.view,arch_db:repair.view_repair_order_form
-msgid "Tax incl."
-msgstr ""
-
-#. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_fee__tax_id
 #: model:ir.model.fields,field_description:repair.field_repair_line__tax_id
 #: model:ir.model.fields,field_description:repair.field_repair_order__amount_tax
@@ -1256,16 +1291,23 @@ msgid "The name of the Repair Order must be unique!"
 msgstr "El nom de la comanda ha de ser únic!"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
-msgid "The product unit of measure you chose has a different category than the product unit of measure."
-msgstr "La mesura d'unitat del producte escollida té una categoria diferent a la unitat de mesura del producte."
+msgid ""
+"The product unit of measure you chose has a different category than the "
+"product unit of measure."
+msgstr ""
+"La mesura d'unitat del producte escollida té una categoria diferent a la "
+"unitat de mesura del producte."
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_line__state
-msgid "The status of a repair line is set automatically to the one of the linked repair order."
-msgstr "L'estat d'una línia de reparació s'estableix automàticament en el de l'ordre de reparació vinculada."
+msgid ""
+"The status of a repair line is set automatically to the one of the linked "
+"repair order."
+msgstr ""
+"L'estat d'una línia de reparació s'estableix automàticament en el de l'ordre"
+" de reparació vinculada."
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__location_id
@@ -1306,8 +1348,10 @@ msgstr "Transferència"
 
 #. module: repair
 #: model:ir.model.fields,help:repair.field_repair_order__is_returned
-msgid "True if this repair is linked to a Return Order and the order is 'Done'. False otherwise."
-msgstr "Cert si aquesta reparació està vinculada a una ordre de retorn i la comanda és «Fet». En cas contrari, seria fals."
+msgid ""
+"True if this repair is linked to a Return Order and the order is 'Done'. "
+"False otherwise."
+msgstr ""
 
 #. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_line__type
@@ -1339,6 +1383,12 @@ msgid "Unit of Measure"
 msgstr "Unitat de mesura"
 
 #. module: repair
+#: model:product.product,uom_name:repair.product_service_order_repair
+#: model:product.template,uom_name:repair.product_service_order_repair_product_template
+msgid "Units"
+msgstr "Unitats"
+
+#. module: repair
 #: model:ir.model.fields,field_description:repair.field_repair_order__amount_untaxed
 msgid "Untaxed Amount"
 msgstr "Base imposable"
@@ -1364,7 +1414,6 @@ msgid "Warn Insufficient Repair Quantity"
 msgstr "Advertència de quantitat de reparació insuficient "
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "Warning"
@@ -1387,46 +1436,47 @@ msgid "Website communication history"
 msgstr "Historial de comunicacions del lloc web"
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
-msgid "You can not delete a repair order once it has been confirmed. You must first cancel it."
-msgstr "No podeu suprimir una comanda de reparació una vegada que s'hagi confirmat. Primer l'has de cancel·lar."
+msgid ""
+"You can not delete a repair order once it has been confirmed. You must first"
+" cancel it."
+msgstr ""
+"No podeu suprimir una comanda de reparació una vegada que s'hagi confirmat. "
+"Primer l'has de cancel·lar."
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
-msgid "You can not delete a repair order which is linked to an invoice which has been posted once."
-msgstr "No podeu suprimir una ordre de reparació que està enllaçada a una factura que s'ha enviat una vegada."
+msgid ""
+"You can not delete a repair order which is linked to an invoice which has "
+"been posted once."
+msgstr ""
+"No podeu suprimir una ordre de reparació que està enllaçada a una factura "
+"que s'ha enviat una vegada."
 
 #. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "You can not enter negative quantities."
 msgstr "No pots introduir quantitats negatives."
 
 #. module: repair
-#. odoo-python
-#: code:addons/repair/models/repair.py:0
+#: code:addons/repair/models/repair.py:0 code:addons/repair/models/repair.py:0
 #, python-format
-msgid "You cannot cancel a completed repair order."
-msgstr "No podeu cancel·lar un ordre de reparació completat."
+msgid ""
+"You have to select a pricelist in the Repair form !\n"
+" Please set one before choosing a product."
+msgstr ""
+"Ha de seleccionar una tarifa en el formulari de reparació!\n"
+"Si us plau, indiqui una abans d'elegir un producte."
 
 #. module: repair
-#. odoo-python
-#: code:addons/repair/models/repair.py:0
-#, python-format
-msgid "You cannot delete a completed repair order."
-msgstr "No podeu suprimir una ordre de reparació completa."
-
-#. module: repair
-#. odoo-python
 #: code:addons/repair/models/repair.py:0
 #, python-format
 msgid "You have to select an invoice address in the repair form."
-msgstr "Has de seleccionar una direcció de facturació en el formulari de reparació."
+msgstr ""
+"Has de seleccionar una direcció de facturació en el formulari de reparació."
 
 #. module: repair
 #: model_terms:ir.ui.view,arch_db:repair.stock_warn_insufficient_qty_repair_form_view
@@ -1434,6 +1484,14 @@ msgid "from location"
 msgstr "des de la ubicació"
 
 #. module: repair
+#: model:mail.template,report_name:repair.mail_template_repair_quotation
+msgid "{{ (object.name or '').replace('/','_') }}"
+msgstr "{{ (object.name or '').replace('/','_') }}"
+
+#. module: repair
 #: model:mail.template,subject:repair.mail_template_repair_quotation
-msgid "{{ object.partner_id.name }} Repair Orders (Ref {{ object.name or 'n/a' }})"
-msgstr "{{ object.partner_id.name }} Reparar comandes (Ref {{ object.name or 'n/a' }})"
+msgid ""
+"{{ object.partner_id.name }} Repair Orders (Ref {{ object.name or 'n/a' }})"
+msgstr ""
+"{{ object.partner_id.name }} Reparar comandes (Ref {{ object.name or 'n/a' "
+"}})"

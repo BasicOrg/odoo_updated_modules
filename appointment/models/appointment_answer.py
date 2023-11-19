@@ -24,7 +24,7 @@ class CalendarAppointmentAnswerInput(models.Model):
     value_text_box = fields.Text('Text Answer')
     # Reporting
     appointment_type_id = fields.Many2one(related='question_id.appointment_type_id', required=True, store=True, ondelete="cascade")
-    calendar_event_id = fields.Many2one('calendar.event', 'Calendar Event', required=True, ondelete="cascade")
+    calendar_event_id = fields.Many2one('calendar.event', 'Calendar Event')
     partner_id = fields.Many2one('res.partner', 'Customer')
     question_type = fields.Selection(related='question_id.question_type')
 

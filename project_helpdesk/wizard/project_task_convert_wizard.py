@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 from odoo import api, fields, models, _
 
 class ProjectTaskConvertWizard(models.TransientModel):
@@ -27,6 +28,7 @@ class ProjectTaskConvertWizard(models.TransientModel):
 
     def action_convert(self):
         tasks_to_convert = self._get_tasks_to_convert()
+        subtype_id = self.env.ref('helpdesk.mt_ticket_new').id
 
         created_tickets = self.env['helpdesk.ticket'].with_context(mail_create_nolog=True).create(
             [self._get_ticket_values(task) for task in tasks_to_convert]
@@ -35,13 +37,12 @@ class ProjectTaskConvertWizard(models.TransientModel):
         for task, ticket in zip(tasks_to_convert, created_tickets):
             task.active = False
 
-            task_sudo, ticket_sudo = task.sudo(), ticket.sudo()
-            task_sudo.message_post(body=_("Task converted into ticket %s", ticket_sudo._get_html_link()))
-            ticket_sudo.message_post_with_source(
-                'mail.message_origin_link',
-                render_values={'self': ticket_sudo, 'origin': task_sudo},
-                subtype_xmlid='mail.mt_note',
+            task.sudo().message_post(body=f"Task converted into ticket <a href='#' data-oe-model='helpdesk.ticket' data-oe-id='{ticket.id}'>{ticket.name}</a>")
+            ticket_message = ticket.sudo().message_post(
+                body=f"Ticket created from task <a href='#' data-oe-model='project.task' data-oe-id='{task.id}'>{task.name}</a>",
+                is_internal=True,
             )
+            ticket._notify_thread(ticket_message, {'subtype_id': subtype_id})
 
         if len(created_tickets) == 1:
             return {

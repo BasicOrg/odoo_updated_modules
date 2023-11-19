@@ -3,17 +3,16 @@
 # 	* account_invoice_extract
 # 
 # Translators:
-# Thi Huong Nguyen, 2023
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,34 +20,66 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_invoice_extract
+#: model:mail.template,body_html:account_invoice_extract.account_invoice_extract_no_credit
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>Dear,<br/></p>\n"
+"    <p>There are no more credits on your IAP Invoice OCR account.<br/>\n"
+"    You can charge your IAP Invoice OCR account in the Accounting settings page.</p>\n"
+"    <p>Best regards,<br/></p>\n"
+"    <p>Odoo S.A.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>Dear,<br/></p>\n"
+"    <p>There are no more credits on your IAP Invoice OCR account.<br/>\n"
+"    You can charge your IAP Invoice OCR account in the Accounting settings page.</p>\n"
+"    <p>Best regards,<br/></p>\n"
+"    <p>Odoo S.A.</p>\n"
+"</div>"
+
+#. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
 "                        Buy credits"
 msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        Mua tín dụng"
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
 "                        Refresh"
 msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        Làm mới"
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        Retry"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
+"                        Reload AI Data"
 msgstr ""
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_needaction
-msgid "Action Needed"
-msgstr "Hành động cần thiết"
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid ""
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
+"                        Resend For Digitization"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Giá trị được nhập ở đây là "
+"công ty cụ thể.\"/>"
+
+#. module: account_invoice_extract
+#: model:mail.template,name:account_invoice_extract.account_invoice_extract_no_credit
+#: model:mail.template,subject:account_invoice_extract.account_invoice_extract_no_credit
+msgid "Account Invoice Extract Notification"
+msgstr "Account Invoice Extract Notification"
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
@@ -56,34 +87,52 @@ msgid ""
 "All fields will be automated by Artificial Intelligence, it might take 5 "
 "seconds."
 msgstr ""
-"Tất cả các trường sẽ được Trí tuệ nhân tạo tự động hóa, có thể mất 5 giây."
+"All fields will be automated by Artificial Intelligence, it might take 5 "
+"seconds."
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__error_status
+#, python-format
+msgid "An error occurred"
+msgstr "Một lỗi đã xảy ra"
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_ir_attachment
 msgid "Attachment"
-msgstr "Tệp đính kèm"
+msgstr "Đính kèm"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_attachment_count
-msgid "Attachment Count"
-msgstr "Số lượng tệp đính kèm"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill Date"
+msgstr "Ngày hóa đơn"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_journal__alias_auto_extract_pdfs_only
-msgid "Auto extract PDFs only"
-msgstr "Chỉ tự động trích xuất tệp PDF"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill Reference"
+msgstr "Mã/Số hoá đơn"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_banners
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_banners
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_banners
-msgid "Can show the ocr banners"
-msgstr "Có thể hiển thị các biểu ngữ ocr"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill is being Digitized"
+msgstr ""
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_resend_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_resend_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_resend_button
+msgid "Can show the ocr resend button"
+msgstr "Can show the ocr resend button"
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_send_button
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_send_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_send_button
 msgid "Can show the ocr send button"
-msgstr "Có thể hiển thị nút gửi ocr"
+msgstr "Can show the ocr send button"
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_res_company
@@ -91,19 +140,23 @@ msgid "Companies"
 msgstr "Công ty"
 
 #. module: account_invoice_extract
-#: model:ir.model,name:account_invoice_extract.model_res_config_settings
-msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__done
+msgid "Completed flow"
+msgstr "Completed flow"
 
 #. module: account_invoice_extract
-#. odoo-python
+#: model:ir.model,name:account_invoice_extract.model_res_config_settings
+msgid "Config Settings"
+msgstr "Cấu hình"
+
+#. module: account_invoice_extract
 #: code:addons/account_invoice_extract/models/account_invoice.py:0
 #, python-format
 msgid "Couldn't reload AI data."
-msgstr "Không thể tải lại dữ liệu AI."
+msgstr ""
 
 #. module: account_invoice_extract
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_invoice_extract/static/src/js/invoice_extract_form_renderer.js:0
 #, python-format
 msgid "Create"
@@ -120,41 +173,37 @@ msgid "Created on"
 msgstr "Được tạo vào"
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Customer"
+msgstr "Khách hàng"
+
+#. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_out_invoice_digitalization_mode
 msgid "Customer Invoices"
-msgstr "Hóa đơn bán hàng"
+msgstr "Công nợ khách hàng"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_out_invoice_digitalization_mode
 msgid "Digitization mode on customer invoices"
-msgstr "Chế độ số hóa trên hóa đơn bán hàng"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_in_invoice_digitalization_mode
 msgid "Digitization mode on vendor bills"
-msgstr "Chế độ số hóa trên hóa đơn mua hàng"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__auto_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__auto_send
 msgid "Digitize automatically"
-msgstr "Số hóa tự động"
-
-#. module: account_invoice_extract
-#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
-msgid "Digitize document"
 msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__manual_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__manual_send
 msgid "Digitize on demand only"
-msgstr "Số hóa theo yêu cầu"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_journal__display_alias_auto_extract_pdfs_only
-msgid "Display Alias Auto Extract Pdfs Only"
-msgstr "Hiển thị bí danh chỉ tự động trích xuất tệp PDF"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__display_name
@@ -165,15 +214,17 @@ msgstr "Tên hiển thị"
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__no_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__no_send
 msgid "Do not digitize"
-msgstr "Không số hóa"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.res_config_settings_view_form
 msgid "Enable to get only one invoice line per tax"
-msgstr "Cho phép chỉ nhận một dòng hóa đơn cho mỗi loại thuế"
+msgstr "Enable to get only one invoice line per tax"
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_error_message
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_error_message
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_error_message
 msgid "Error message"
 msgstr "Thông báo lỗi"
 
@@ -182,53 +233,38 @@ msgstr "Thông báo lỗi"
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_attachment_id
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_attachment_id
 msgid "Extract Attachment"
-msgstr "Trích xuất tệp đính kèm"
+msgstr ""
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_detected_layout
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_detected_layout
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_detected_layout
-msgid "Extract Detected Layout Id"
-msgstr "Trích xuất ID bố cục được phát hiện"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_partner_name
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_partner_name
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_partner_name
-msgid "Extract Detected Partner Name"
-msgstr "Trích xuất tên đối tác được phát hiện"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_state_processed
-msgid "Extract State Processed"
-msgstr "Trạng thái trích xuất Đã xử lý"
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_populated_fields
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_populated_fields
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_populated_fields
+msgid "Extract Populated Fields"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_word_ids
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_word_ids
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_word_ids
 msgid "Extract Word"
-msgstr "Trích xuất từ"
+msgstr "Extract Word"
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_state
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_state
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_state
 msgid "Extract state"
-msgstr "Trích xuất trạng thái"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_status
-msgid "Extract status"
-msgstr "Trạng thái trích xuất"
+msgstr "Extract state"
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_account_invoice_extract_words
 msgid "Extracted words from invoice scan"
-msgstr "Các từ được trích xuất từ ​​việc quét hóa đơn"
+msgstr "Extracted words from invoice scan"
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid "Extraction Information"
-msgstr "Thông tin trích xuất"
+msgstr "Extraction Information"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__field
@@ -236,40 +272,28 @@ msgid "Field"
 msgstr "Trường"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_follower_ids
-msgid "Followers"
-msgstr "Người theo dõi"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "Người theo dõi (Đối tác)"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__has_message
-msgid "Has Message"
-msgstr "Có tin nhắn"
-
-#. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__id
 msgid "ID"
 msgstr "ID"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_document_uuid
-msgid "ID of the request to IAP-OCR"
-msgstr "ID của yêu cầu tới IAP-OCR"
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_remote_id
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_remote_id
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_remote_id
+msgid "Id of the request to IAP-OCR"
+msgstr "Id of the request to IAP-OCR"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_needaction
-msgid "If checked, new messages require your attention."
-msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invalid PDF (Conversion error)"
+msgstr ""
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_error
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_sms_error
-msgid "If checked, some messages have a delivery error."
-msgstr "Nếu chọn, một số tin nhắn sẽ có lỗi gửi."
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invalid PDF (Unable to get page count)"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__invoice_id
@@ -277,39 +301,46 @@ msgid "Invoice"
 msgstr "Hóa đơn"
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invoice Date"
+msgstr "Ngày hóa đơn"
+
+#. module: account_invoice_extract
+#: model:ir.actions.server,name:account_invoice_extract.ir_cron_ocr_parse_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_ocr_parse
+#: model:ir.cron,name:account_invoice_extract.ir_cron_ocr_parse
+msgid "Invoice OCR: Parse Invoices"
+msgstr ""
+
+#. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.ir_cron_update_ocr_status_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_update_ocr_status
+#: model:ir.cron,name:account_invoice_extract.ir_cron_update_ocr_status
 msgid "Invoice OCR: Update All Status"
-msgstr "Hóa đơn OCR: Cập nhật tất cả trạng thái"
+msgstr "Invoice OCR: Update All Status"
 
 #. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.ir_cron_ocr_validate_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_ocr_validate
+#: model:ir.cron,name:account_invoice_extract.ir_cron_ocr_validate
 msgid "Invoice OCR: Validate Invoices"
-msgstr "Hóa đơn OCR: Xác thực hóa đơn"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_is_follower
-msgid "Is Follower"
-msgstr "Là người theo dõi"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__is_in_extractable_state
-msgid "Is In Extractable State"
-msgstr "Trong trạng thái có thể trích xuất"
-
-#. module: account_invoice_extract
-#: model:ir.model,name:account_invoice_extract.model_account_journal
-msgid "Journal"
-msgstr "Sổ nhật ký"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_account_move
 msgid "Journal Entry"
-msgstr "Bút toán"
+msgstr "Bút toán "
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__write_date
@@ -317,77 +348,73 @@ msgid "Last Updated on"
 msgstr "Cập nhật lần cuối vào"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "Tệp đính kèm chính"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "No document name provided"
+msgstr "No document name provided"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_error
-msgid "Message Delivery error"
-msgstr "Lỗi gửi tin nhắn"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__no_extract_requested
+msgid "No extract requested"
+msgstr "No extract requested"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_ids
-msgid "Messages"
-msgstr "Tin nhắn"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_needaction_counter
-msgid "Number of Actions"
-msgstr "Số lượng hành động"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_error_counter
-msgid "Number of errors"
-msgstr "Số lượng lỗi"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Số tin nhắn cần xử lý"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_error_counter
-msgid "Number of messages with delivery error"
-msgstr "Số tin nhắn bị gửi lỗi"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__not_enough_credit
+msgid "Not enough credit"
+msgstr "Not enough credit"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__ocr_selected
 msgid "Ocr Selected"
-msgstr "Ocr đã chọn"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_journal__alias_auto_extract_pdfs_only
-msgid ""
-"Only extract PDF files attached to email arriving trough this email alias."
 msgstr ""
-"Chỉ trích xuất các tệp PDF đính kèm với email gửi đến qua bí danh email này."
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__rating_ids
-msgid "Ratings"
-msgstr "Đánh giá"
-
-#. module: account_invoice_extract
-#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
-msgid "Reload AI Data"
-msgstr "Tải lại dữ liệu AI"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Lỗi gửi SMS"
 
 #. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.model_account_send_for_digitalization
 msgid "Send Bills for digitization"
-msgstr "Gửi hóa đơn để số hóa"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid "Send For Digitization"
+msgstr ""
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Server is currently under maintenance. Please retry later"
+msgstr "Server is currently under maintenance. Please retry later"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Server not available. Please retry later"
+msgstr "Server not available. Please retry later"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_single_line_per_tax
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_single_line_per_tax
 msgid "Single Invoice Line Per Tax"
-msgstr "Dòng hóa đơn duy nhất cho mỗi loại thuế"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_status_code
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_status_code
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_status_code
+msgid "Status code"
+msgstr "Status code"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"The 'invoice_ocr' IAP account token is invalid. Please delete it to let Odoo"
+" generate a new one or fill it with a valid token."
+msgstr ""
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid "The bill has been populated by AI."
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
@@ -395,28 +422,67 @@ msgid ""
 "The data extraction is not finished yet. The extraction usually takes "
 "between 5 and 10 seconds."
 msgstr ""
-"Quá trình trích xuất dữ liệu vẫn chưa kết thúc. Quá trình trích xuất thường "
-"mất từ 5 đến 10 giây."
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "The document could not be found"
+msgstr "The document could not be found"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "The document has been rejected because it is too small"
+msgstr ""
+
+#. module: account_invoice_extract
+#. openerp-web
+#: code:addons/account_invoice_extract/static/src/xml/populated_fields_tooltip.xml:0
+#, python-format
+msgid "The following fields were populated by the OCR:"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__to_validate
+msgid "To validate"
+msgstr "Để xác nhận"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Unsupported image format"
+msgstr "Unsupported image format"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__user_selected
 msgid "User Selected"
-msgstr "Người dùng đã chọn"
+msgstr "User Selected"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Vendor"
+msgstr "Nhà cung cấp"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_in_invoice_digitalization_mode
 msgid "Vendor Bills"
-msgstr "Hoá đơn mua hàng"
+msgstr "Hoá đơn Nhà cung cấp"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__website_message_ids
-msgid "Website Messages"
-msgstr "Thông báo trên trang web"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_extraction
+msgid "Waiting extraction"
+msgstr "Waiting extraction"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__website_message_ids
-msgid "Website communication history"
-msgstr "Lịch sử trao đổi qua trang web"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_upload
+msgid "Waiting upload"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_validation
+msgid "Waiting validation"
+msgstr "Waiting validation"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__word_box_angle
@@ -454,13 +520,44 @@ msgid "Word Text"
 msgstr "Word Text"
 
 #. module: account_invoice_extract
-#. odoo-python
-#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#. openerp-web
+#: code:addons/account_invoice_extract/static/src/xml/populated_fields_tooltip.xml:0
 #, python-format
-msgid "You cannot send a expense that is not in draft state!"
-msgstr "Bạn không thể gửi chi phí không ở trạng thái nháp!"
+msgid ""
+"You can always change the mapping by clicking on one field in the Invoice "
+"form and select the appropriate value in the PDF."
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid "You don't have enough credit to extract data from your invoice."
-msgstr "Bạn không có đủ tín dụng để trích xuất dữ liệu từ hóa đơn của mình."
+msgstr "You don't have enough credit to extract data from your invoice."
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "You must send the same quantity of documents and file names"
+msgstr "You must send the same quantity of documents and file names"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"Your PDF file is protected by a password. The OCR can't extract data from it"
+msgstr ""
+"Your PDF file is protected by a password. The OCR can't extract data from it"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"Your invoice is too heavy to be processed by the OCR. Try to reduce the "
+"number of pages and avoid pages with too many text"
+msgstr ""
+"Your invoice is too heavy to be processed by the OCR. Try to reduce the "
+"number of pages and avoid pages with too many text"
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__extract_not_ready
+msgid "waiting extraction, but it is not ready"
+msgstr "waiting extraction, but it is not ready"

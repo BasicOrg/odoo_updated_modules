@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
         	<xpath expr="//field[@name='source_id']" position="after">
                 <field name="marketing_trace_id"
-                    invisible="not marketing_trace_id"/>
+                    attrs="{'invisible': [('marketing_trace_id', '=', False)]}"/>
         	</xpath>
         </field>
     </record>

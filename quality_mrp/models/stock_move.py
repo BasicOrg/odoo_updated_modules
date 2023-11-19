@@ -15,11 +15,6 @@ class StockMove(models.Model):
 
         return moves
 
-    def _search_quality_points(self, product_id, picking_type_id, measure_on):
-        quality_points_domain = self.env['quality.point']._get_domain(product_id, picking_type_id, measure_on=measure_on)
-        quality_points_domain = self.env['quality.point']._get_domain_for_production(quality_points_domain)
-        return self.env['quality.point'].sudo().search(quality_points_domain)
-
     def _create_quality_checks_for_mo(self):
         # Groupby move by production order. Use it in order to generate missing quality checks.
         mo_moves = defaultdict(lambda: self.env['stock.move'])
@@ -30,11 +25,13 @@ class StockMove(models.Model):
 
         # QC of product type
         for production, moves in mo_moves.items():
-            quality_points = self._search_quality_points(moves.product_id, production.picking_type_id, 'product')
-
+            quality_points_domain = self.env['quality.point']._get_domain(moves.product_id, production.picking_type_id, measure_on='product')
+            quality_points_domain = self.env['quality.point']._get_domain_for_production(quality_points_domain)
+            quality_points = self.env['quality.point'].sudo().search(quality_points_domain)
 
             # Since move lines are created too late for the manufactured product, we create the QC of move_line type directly here instead, excluding by-products
-            quality_points_lot_type = self._search_quality_points(production.product_id, production.picking_type_id, 'move_line')
+            domain_lot_type = self.env['quality.point']._get_domain(production.product_id, production.picking_type_id, measure_on='move_line')
+            quality_points_lot_type = self.env['quality.point'].sudo().search(domain_lot_type)
 
             quality_points = quality_points | quality_points_lot_type
             if not quality_points:
@@ -48,7 +45,9 @@ class StockMove(models.Model):
 
         # QC of operation type
         for production, moves in mo_moves.items():
-            quality_points_operation = self._search_quality_points(self.env['product.product'], production.picking_type_id, 'operation')
+            domain_operation_type = self.env['quality.point']._get_domain(self.env['product.product'], production.picking_type_id, measure_on='operation')
+            domain_operation_type = self.env['quality.point']._get_domain_for_production(domain_operation_type)
+            quality_points_operation = self.env['quality.point'].sudo().search(domain_operation_type)
 
             for point in quality_points_operation:
                 if point.check_execute_now():

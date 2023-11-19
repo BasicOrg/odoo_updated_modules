@@ -1,23 +1,21 @@
 /** @odoo-module */
 
-import { endKnowledgeTour } from '@knowledge/../tests/tours/knowledge_tour_utils';
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('knowledge_pick_emoji_tour', {
+tour.register('knowledge_pick_emoji_tour', {
     test: true,
     url: '/web',
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     // open Knowledge App
     trigger: '.o_app[data-menu-xmlid="knowledge.knowledge_menu_root"]',
 }, {
-    // click on the main "New" action
-    trigger: '.o_knowledge_header .btn:contains("New")',
+    // click on the main "Create" action
+    trigger: '.o_knowledge_header .btn:contains("Create")',
 }, {
     trigger: 'section[data-section="private"] .o_article .o_article_name:contains("Untitled")',
     run: () => {}, // check that the article is correctly created (private section)
 }, {
-    trigger: '.o_knowledge_add_buttons',
+    trigger: '.o_knowledge_icon_cover_buttons',
     run: () => {
         // force the cover buttons to be visible (it's only visible on hover)
         $('.o_knowledge_add_icon, .o_knowledge_add_cover').css({
@@ -33,7 +31,7 @@ registry.category("web_tour.tours").add('knowledge_pick_emoji_tour', {
     trigger: '.o_knowledge_body .o_article_emoji',
     run: 'click',
 }, {
-    trigger: '.o-Emoji[data-codepoints="😃"]',
+    trigger: '.o_EmojiView[data-codepoints="😃"]',
     run: 'click',
 }, {
     // check that the emoji has been properly changed in the article body
@@ -45,7 +43,6 @@ registry.category("web_tour.tours").add('knowledge_pick_emoji_tour', {
     run: () => {},
 }, {
     // check that the emoji has been properly changed in the aside block
-    trigger: '.o_knowledge_sidebar .o_article_emoji:contains(😃)',
+    trigger: '.o_knowledge_aside .o_article_emoji_active:contains(😃)',
     run: () => {}
-}, ...endKnowledgeTour()
-]});
+}]);

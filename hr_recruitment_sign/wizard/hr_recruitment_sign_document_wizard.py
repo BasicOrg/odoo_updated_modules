@@ -140,14 +140,13 @@ class HrRecruitmentSignDocumentWizard(models.TransientModel):
         else:
             signatories_text = _('Only %s has to sign.', self.partner_id.display_name)
         record_to_post = self.applicant_id
-        record_to_post.message_post_with_source(
+        record_to_post.message_post_with_view(
             'hr_recruitment_sign.message_signature_request',
-            render_values={
+            values={
                 'user_name': self.env.user.display_name,
                 'document_names': self.sign_template_ids.mapped('name'),
                 'signatories_text': signatories_text
-            },
-            subtype_xmlid='mail.mt_comment',
+            }
         )
 
         if len(sign_requests) == 1 and self.env.user.id == self.responsible_id.id:

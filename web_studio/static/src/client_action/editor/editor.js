@@ -1,53 +1,27 @@
 /** @odoo-module **/
-import { Component, EventBus, onWillDestroy, useState, useSubEnv, xml } from "@odoo/owl";
 
-import { registry } from "@web/core/registry";
+import { StudioActionContainer } from "../studio_action_container";
 import { actionService } from "@web/webclient/actions/action_service";
 import { useBus, useService } from "@web/core/utils/hooks";
+import { registry } from "@web/core/registry";
 
-import { StudioActionContainer } from "./studio_action_container";
 import { EditorMenu } from "./editor_menu/editor_menu";
 
-import { AppMenuEditor } from "./app_menu_editor/app_menu_editor";
-import { NewModelItem } from "./new_model_item/new_model_item";
-import { EditionFlow } from "./edition_flow";
-import { useStudioServiceAsReactive } from "@web_studio/studio_service";
-import { useSubEnvAndServices, useServicesOverrides } from "@web_studio/client_action/utils";
-import { omit } from "@web/core/utils/objects";
+import { mapDoActionOptionAPI } from "@web/legacy/backend_utils";
 
-class DialogWithEnv extends Component {
-    static template = xml`<t t-component="props.Component" t-props="componentProps" />`;
-    static props = ["*"];
+const { Component, EventBus, onWillStart, useSubEnv } = owl;
 
-    setup() {
-        useSubEnvAndServices(this.props.env);
-    }
-
-    get componentProps() {
-        const additionalProps = omit(this.props, "Component", "env", "componentProps");
-        return { ...this.props.componentProps, ...additionalProps };
-    }
-}
-const dialogService = {
-    dependencies: ["dialog"],
-    start(env, { dialog }) {
-        function addDialog(Component, _props, options) {
-            const props = { env, Component, componentProps: _props };
-            return dialog.add(DialogWithEnv, props, options);
-        }
-        return { add: addDialog };
-    },
-};
+const editorTabRegistry = registry.category("web_studio.editor_tabs");
 
 const actionServiceStudio = {
-    dependencies: ["studio", "dialog"],
-    start(env, { studio }) {
+    dependencies: ["studio"],
+    start(env) {
         const action = actionService.start(env);
         const _doAction = action.doAction;
 
         async function doAction(actionRequest, options) {
             if (actionRequest === "web_studio.action_edit_report") {
-                return studio.setParams({
+                return env.services.studio.setParams({
                     editedReport: options.report,
                 });
             }
@@ -58,71 +32,37 @@ const actionServiceStudio = {
     },
 };
 
-const routerService = {
-    start() {
-        return {
+export class Editor extends Component {
+    setup() {
+        const services = Object.create(this.env.services);
+
+        useSubEnv({
+            bus: new EventBus(),
+            services,
+        });
+        // Assuming synchronousness
+        services.router = {
             current: { hash: {} },
             pushState() {},
         };
-    },
-};
+        services.action = actionServiceStudio.start(this.env);
 
-const menuButtonsRegistry = registry.category("studio_navbar_menubuttons");
-export class Editor extends Component {
-    static menuButtonsId = 1;
-    setup() {
-        const globalBus = this.env.bus;
-        const newBus = new EventBus();
-        newBus.addEventListener("CLEAR-CACHES", () => globalBus.trigger("CLEAR-CACHES"));
-
-        useSubEnv({
-            bus: newBus,
-        });
-
-        useServicesOverrides({
-            router: routerService,
-            dialog: dialogService,
-            action: actionServiceStudio,
-        });
         this.studio = useService("studio");
-
-        const editionFlow = new EditionFlow(this.env, {
-            rpc: useService("rpc"),
-            dialog: useService("dialog"),
-            studio: useStudioServiceAsReactive(),
-            view: useService("view"),
-        });
-        useSubEnv({
-            editionFlow,
-        });
-
         this.actionService = useService("action");
         this.rpc = useService("rpc");
 
-        this.state = useState({ actionContainerId: 1 });
         useBus(this.studio.bus, "UPDATE", async () => {
-            this.state.actionContainerId++;
+            const action = await this.getStudioAction();
+            this.actionService.doAction(action, {
+                clearBreadcrumbs: true,
+            });
         });
 
-        // Push instance-specific components in the navbar. Because we want those elements
-        // immediately, we add them at setup time, not onMounted.
-        // Also, because they are Editor instance-specific, and that Destroyed is mostly called
-        // after the new instance is created, we need to remove the old entries before adding the new ones
-        menuButtonsRegistry.getEntries().forEach(([name]) => {
-            if (name.startsWith("app_menu_editor_") || name.startsWith("new_model_item_")) {
-                menuButtonsRegistry.remove(name);
-            }
-        });
-        const menuButtonsId = this.constructor.menuButtonsId++;
-        menuButtonsRegistry.add(`app_menu_editor_${menuButtonsId}`, {
-            Component: AppMenuEditor,
-            props: { env: this.env },
-        });
-        menuButtonsRegistry.add(`new_model_item_${menuButtonsId}`, { Component: NewModelItem });
-        onWillDestroy(() => {
-            menuButtonsRegistry.remove(`app_menu_editor_${menuButtonsId}`);
-            menuButtonsRegistry.remove(`new_model_item_${menuButtonsId}`);
-        });
+        onWillStart(this.onWillStart);
+    }
+
+    async onWillStart() {
+        this.initialAction = await this.getStudioAction();
     }
 
     switchView({ viewType }) {
@@ -135,9 +75,34 @@ export class Editor extends Component {
     switchTab({ tab }) {
         this.studio.setParams({ editorTab: tab });
     }
+
+    async getStudioAction() {
+        const { editorTab, editedAction, editedReport } = this.studio;
+        const tab = editorTabRegistry.get(editorTab);
+        if (tab.action) {
+            return tab.action;
+        } else if (editorTab === "reports" && editedReport) {
+            return "web_studio.report_editor";
+        } else {
+            return this.rpc("/web_studio/get_studio_action", {
+                action_name: editorTab,
+                model: editedAction.res_model,
+                view_id: editedAction.view_id && editedAction.view_id[0], // Not sure it is correct or desirable
+            });
+        }
+    }
+
+    onDoAction(ev) {
+        // @legacy;
+        const payload = ev.detail;
+        const legacyOptions = mapDoActionOptionAPI(payload.options);
+        this.actionService.doAction(
+            payload.action,
+            Object.assign(legacyOptions || {}, { clearBreadcrumbs: true })
+        );
+    }
 }
 Editor.template = "web_studio.Editor";
-Editor.props = {};
 Editor.components = {
     EditorMenu,
     StudioActionContainer,

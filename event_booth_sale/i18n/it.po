@@ -3,27 +3,21 @@
 # 	* event_booth_sale
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: it\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#. module: event_booth_sale
-#: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
-msgid "<span class=\"o_stat_text\">Sale Order</span>"
-msgstr "<span class=\"o_stat_text\">Ordine di vendita</span>"
 
 #. module: event_booth_sale
 #: model:ir.model.fields,help:event_booth_sale.field_product_product__detailed_type
@@ -108,6 +102,11 @@ msgid "Contact Email"
 msgstr "Contatto Email"
 
 #. module: event_booth_sale
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__contact_mobile
+msgid "Contact Mobile"
+msgstr "Contatto cellulare"
+
+#. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__contact_name
 msgid "Contact Name"
 msgstr "Nome contatto"
@@ -160,6 +159,7 @@ msgstr "Evento"
 #. module: event_booth_sale
 #: model:ir.model,name:event_booth_sale.model_event_booth
 #: model:ir.model.fields.selection,name:event_booth_sale.selection__product_template__detailed_type__event_booth
+#: model:product.product,name:event_booth_sale.product_product_event_booth
 msgid "Event Booth"
 msgstr "Stand eventi"
 
@@ -221,6 +221,12 @@ msgid "Journal Entry"
 msgstr "Registrazione contabile"
 
 #. module: event_booth_sale
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator____last_update
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__write_uid
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__write_uid
 msgid "Last Updated by"
@@ -253,17 +259,6 @@ msgid "Pending Booths"
 msgstr "Stand in attesa"
 
 #. module: event_booth_sale
-#. odoo-python
-#: code:addons/event_booth_sale/models/sale_order.py:0
-#, python-format
-msgid ""
-"Please make sure all your event-booth related lines are configured before "
-"confirming this order:%s"
-msgstr ""
-"Assicurati che tutte le righe relative agli stand per l'evento siano "
-"configurate prima di confermare l'ordine:%s"
-
-#. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__price
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__price
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_type_booth__price
@@ -281,16 +276,12 @@ msgid "Price Reduce Tax inc"
 msgstr "Prezzo ridotto tasse incluse"
 
 #. module: event_booth_sale
-#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__price_incl
-msgid "Price incl"
-msgstr "Prezzo incl"
-
-#. module: event_booth_sale
 #: model:ir.model,name:event_booth_sale.model_product_template
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_type_booth__product_id
+#: model:ir.model.fields,field_description:event_booth_sale.field_sale_order_template_line__product_id
 msgid "Product"
 msgstr "Prodotto"
 
@@ -306,12 +297,16 @@ msgid "Product Variant"
 msgstr "Variante prodotto"
 
 #. module: event_booth_sale
+#: model:ir.model,name:event_booth_sale.model_sale_order_template_line
+msgid "Quotation Template Line"
+msgstr "Riga modello di preventivo"
+
+#. module: event_booth_sale
 #: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
 msgid "Registrations"
 msgstr "Registrazioni"
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/sale_order_line.py:0
 #, python-format
 msgid "Registrations from the same Order Line must belong to a single event."
@@ -323,6 +318,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__sale_order_line_registration_ids
 msgid "SO Lines with reservations"
 msgstr "Linee di ordini di vendita con prenotazioni"
+
+#. module: event_booth_sale
+#: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
+msgid "Sale Order"
+msgstr "Ordine di vendita"
 
 #. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__sale_order_line_id
@@ -346,7 +346,6 @@ msgid "Select an event booth"
 msgstr "Seleziona uno stand dell'evento"
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/sale_order_line.py:0
 #, python-format
 msgid ""
@@ -369,6 +368,11 @@ msgid "Total"
 msgstr "Totale"
 
 #. module: event_booth_sale
+#: model:product.product,uom_name:event_booth_sale.product_product_event_booth
+msgid "Units"
+msgstr "Unità"
+
+#. module: event_booth_sale
 #: model:ir.model.fields,help:event_booth_sale.field_sale_order_line__event_booth_pending_ids
 msgid "Used to create registration when providing the desired event booth."
 msgstr ""
@@ -376,7 +380,6 @@ msgstr ""
 "dell'evento desiderato."
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/event_booth.py:0
 #, python-format
 msgid ""
@@ -387,14 +390,12 @@ msgstr ""
 "vendita: %(booths)s"
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/wizard/event_booth_configurator.py:0
 #, python-format
 msgid "You have to select at least one booth."
 msgstr "Devi selezionare almeno uno stand."
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/event_booth_registration.py:0
 #, python-format
 msgid ""

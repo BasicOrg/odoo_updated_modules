@@ -1,15 +1,15 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { ReorderDialog } from "@website_sale/js/website_sale_reorder";
 import { patch } from "@web/core/utils/patch";
+import { sprintf } from "@web/core/utils/strings";
 
-patch(ReorderDialog.prototype, {
+patch(ReorderDialog.prototype, "website_sale_stock_reorder", {
     /**
      * @override
      */
     async onWillStartHandler() {
-        const res = await super.onWillStartHandler(...arguments);
+        const res = await this._super(...arguments);
         for (const product of this.content.products) {
             this.stockCheckCombinationInfo(product);
         }
@@ -20,7 +20,7 @@ patch(ReorderDialog.prototype, {
      * @override
      */
     async loadProductCombinationInfo(product) {
-        await super.loadProductCombinationInfo(...arguments);
+        await this._super(...arguments);
     },
 
     stockCheckCombinationInfo(product) {
@@ -33,16 +33,16 @@ patch(ReorderDialog.prototype, {
             product.add_to_cart_allowed = false;
         }
         if (product.max_quantity_available < product.qty) {
-            product.qty_warning = _t(
-                "You ask for %s Units but only %s are available.",
+            product.qty_warning = sprintf(
+                this.env._t("You ask for %s Units but only %s are available."),
                 product.qty.toFixed(1),
                 product.max_quantity_available.toFixed(1)
             );
             product.qty = product.max_quantity_available;
             product.stock_warning = true;
         } else if (product.combinationInfo.cart_qty) {
-            product.qty_warning = _t(
-                "You already have %s Units in your cart.",
+            product.qty_warning = sprintf(
+                this.env._t("You already have %s Units in your cart."),
                 product.combinationInfo.cart_qty.toFixed(1)
             );
         }
@@ -53,9 +53,9 @@ patch(ReorderDialog.prototype, {
      */
     getWarningForProduct(product) {
         if (product.hasOwnProperty("max_quantity_available") && !product.max_quantity_available) {
-            return _t("This product is out of stock.");
+            return this.env._t("This product is out of stock.");
         }
-        return super.getWarningForProduct(...arguments);
+        return this._super(...arguments);
     },
 
     /**
@@ -63,8 +63,8 @@ patch(ReorderDialog.prototype, {
      */
     changeProductQty(product, newQty) {
         if (product.max_quantity_available && newQty > product.max_quantity_available) {
-            product.qty_warning = _t(
-                "You ask for %s Units but only %s are available.",
+            product.qty_warning = sprintf(
+                this.env._t("You ask for %s Units but only %s are available."),
                 newQty.toFixed(1),
                 product.max_quantity_available.toFixed(1)
             );
@@ -74,6 +74,6 @@ patch(ReorderDialog.prototype, {
             product.qty_warning = false;
             product.stock_warning = false;
         }
-        super.changeProductQty(product, newQty);
+        this._super(product, newQty);
     },
 });

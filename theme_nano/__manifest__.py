@@ -5,6 +5,7 @@
     'summary': 'Maker, Agencies, Creative, Design, IT, Services, Fancy',
     'sequence': 270,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -21,7 +22,6 @@
         'views/snippets/s_text_block.xml',
         'views/snippets/s_text_image.xml',
         'views/snippets/s_three_columns.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/nano_cover.gif',
@@ -43,21 +43,8 @@
         'website.s_reference_demo_image_5': '/theme_nano/static/src/img/snippets/s_reference_05.png',
         'website.s_reference_default_image_6': '/theme_nano/static/src/img/snippets/s_reference_06.png',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_features', 's_text_block', 's_images_wall', 's_parallax', 's_references'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
-        'landing': {
-            '1': ['s_banner', 's_features', 's_masonry_block', 's_call_to_action', 's_references', 's_quotes_carousel'],
-            '2': ['s_cover', 's_text_image', 's_text_block_h2', 's_three_columns_landing_1', 's_call_to_action'],
-            '3': ['s_text_cover', 's_text_block_h2', 's_three_columns', 's_showcase', 's_color_blocks_2', 's_quotes_carousel', 's_call_to_action'],
-        },
-        'services': {
-            '2': ['s_text_cover', 's_image_text', 's_text_image', 's_image_text_2nd', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-nano.odoo.com',

@@ -18,11 +18,11 @@ class AccountSalesReportCommon(TestAccountReportsCommon):
             "vat": "BE0477472701",
         })
 
-    def _create_invoices(self, data, is_refund=False):
+    def _create_invoices(self, data):
         move_vals_list = []
         for partner, tax, price_unit in data:
             move_vals_list.append({
-                'move_type': 'out_refund' if is_refund else 'out_invoice',
+                'move_type': 'out_invoice',
                 'partner_id': partner.id,
                 'invoice_date': fields.Date.from_string('2019-12-01'),
                 'invoice_line_ids': [

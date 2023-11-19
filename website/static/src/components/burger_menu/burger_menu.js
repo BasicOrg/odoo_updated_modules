@@ -3,13 +3,13 @@
 import { BurgerMenu } from '@web/webclient/burger_menu/burger_menu';
 import { useService } from '@web/core/utils/hooks';
 import { registry } from "@web/core/registry";
-import { patch } from "@web/core/utils/patch";
+import { patch } from 'web.utils';
 
 const websiteSystrayRegistry = registry.category('website_systray');
 
-patch(BurgerMenu.prototype, {
+patch(BurgerMenu.prototype, 'website_burger_menu', {
     setup() {
-        super.setup();
+        this._super();
         this.websiteCustomMenus = useService('website_custom_menus');
 
         if (!websiteSystrayRegistry.contains('burger_menu')) {
@@ -21,7 +21,7 @@ patch(BurgerMenu.prototype, {
      * @override
      */
     get currentAppSections() {
-        const currentAppSections = super.currentAppSections;
+        const currentAppSections = this._super();
         if (this.currentApp && this.currentApp.xmlid === 'website.menu_website_configuration') {
             return this.websiteCustomMenus.addCustomMenus(currentAppSections).filter(section => section.childrenTree.length);
         }
@@ -43,7 +43,7 @@ patch(BurgerMenu.prototype, {
             this.websiteCustomMenus.open(menu);
             this._closeBurger();
         } else {
-            super._onMenuClicked(menu);
+            this._super(menu);
         }
     },
 });

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <data>
         <record id="account_financial_report_pnl_by_cost" model="account.report">
             <field name="name">Profit and Loss</field>
@@ -28,7 +28,6 @@
             <field name="name">Operating income, stock changes, etc.</field>
             <field name="code">SE_PNL_I_TOTAL</field>
             <field name="report_id" ref="account_financial_report_pnl_by_cost"/>
-            <field name="hierarchy_level" eval="0"/>
             <field name="expression_ids">
                 <record id="account_financial_report_pnl_by_cost_I_TOTAL_balance" model="account.report.expression">
                     <field name="label">balance</field>
@@ -106,7 +105,6 @@
             <field name="name">Operating costs</field>
             <field name="code">SE_PNL_K_TOTAL</field>
             <field name="report_id" ref="account_financial_report_pnl_by_cost"/>
-            <field name="hierarchy_level" eval="0"/>
             <field name="expression_ids">
                 <record id="account_financial_report_pnl_by_cost_K_TOTAL_balance" model="account.report.expression">
                     <field name="label">balance</field>
@@ -229,7 +227,6 @@
             <field name="name">Financial items</field>
             <field name="code">SE_PNL_FP_TOTAL</field>
             <field name="report_id" ref="account_financial_report_pnl_by_cost"/>
-            <field name="hierarchy_level" eval="0"/>
             <field name="expression_ids">
                 <record id="account_financial_report_pnl_by_cost_FP_TOTAL_balance" model="account.report.expression">
                     <field name="label">balance</field>
@@ -372,7 +369,6 @@
             <field name="name">Taxes</field>
             <field name="code">SE_PNL_RS_TOTAL</field>
             <field name="report_id" ref="account_financial_report_pnl_by_cost"/>
-            <field name="hierarchy_level" eval="0"/>
             <field name="expression_ids">
                 <record id="account_financial_report_pnl_by_cost_RS_TOTAL_balance" model="account.report.expression">
                     <field name="label">balance</field>

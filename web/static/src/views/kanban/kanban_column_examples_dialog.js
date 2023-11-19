@@ -2,29 +2,23 @@
 
 import { Dialog } from "@web/core/dialog/dialog";
 import { Notebook } from "@web/core/notebook/notebook";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 
-import { Component, useRef } from "@odoo/owl";
+const { Component, useRef } = owl;
 
 const random = (min, max) => Math.floor(Math.random() * (max - min) + min);
 
 class KanbanExamplesNotebookTemplate extends Component {
-    static defaultProps = {
-        columns: [],
-        foldedColumns: [],
-    };
     setup() {
         this.columns = [];
         const hasBullet = this.props.bullets && this.props.bullets.length;
-        const allColumns = [...this.props.columns, ...this.props.foldedColumns];
-        for (const title of allColumns) {
+        for (const title of this.props.columns) {
             const col = { title, records: [] };
             this.columns.push(col);
             for (let i = 0; i < random(1, 5); i++) {
                 const rec = { id: i };
                 if (hasBullet && Math.random() > 0.3) {
-                    const sampleId = Math.floor(Math.random() * this.props.bullets.length);
-                    rec.bullet = this.props.bullets[sampleId];
+                    rec.bullet = _.sample(this.props.bullets);
                 }
                 col.records.push(rec);
             }
@@ -60,4 +54,4 @@ export class KanbanColumnExamplesDialog extends Component {
 }
 KanbanColumnExamplesDialog.template = "web.KanbanColumnExamplesDialog";
 KanbanColumnExamplesDialog.components = { Dialog, Notebook };
-KanbanColumnExamplesDialog.title = _t("Kanban Examples");
+KanbanColumnExamplesDialog.title = _lt("Kanban Examples");

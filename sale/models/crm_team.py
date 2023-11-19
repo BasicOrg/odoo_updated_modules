@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 class CrmTeam(models.Model):
     _inherit = 'crm.team'
 
+    use_quotations = fields.Boolean(string='Quotations', help="Check this box if you send quotations to your customers rather than confirming orders straight away.")
     invoiced = fields.Float(
         compute='_compute_invoiced',
         string='Invoiced This Month', readonly=True,
@@ -62,8 +63,8 @@ class CrmTeam(models.Model):
         sale_order_data = self.env['sale.order']._read_group([
             ('team_id', 'in', self.ids),
             ('invoice_status','=','to invoice'),
-        ], ['team_id'], ['__count'])
-        data_map = {team.id: count for team, count in sale_order_data}
+        ], ['team_id'], ['team_id'])
+        data_map = {datum['team_id'][0]: datum['team_id_count'] for datum in sale_order_data}
         for team in self:
             team.sales_to_invoice_count = data_map.get(team.id,0.0)
 
@@ -92,11 +93,13 @@ class CrmTeam(models.Model):
             team.invoiced = data_map.get(team.id, 0.0)
 
     def _compute_sale_order_count(self):
-        sale_order_data = self.env['sale.order']._read_group([
-            ('team_id', 'in', self.ids),
-            ('state', '!=', 'cancel'),
-        ], ['team_id'], ['__count'])
-        data_map = {team.id: count for team, count in sale_order_data}
+        data_map = {}
+        if self.ids:
+            sale_order_data = self.env['sale.order']._read_group([
+                ('team_id', 'in', self.ids),
+                ('state', '!=', 'cancel'),
+            ], ['team_id'], ['team_id'])
+            data_map = {datum['team_id'][0]: datum['team_id_count'] for datum in sale_order_data}
         for team in self:
             team.sale_order_count = data_map.get(team.id, 0)
 
@@ -130,7 +133,7 @@ class CrmTeam(models.Model):
 
     def _extra_sql_conditions(self):
         if self._in_sale_scope():
-            return "AND state = 'sale'"
+            return "AND state in ('sale', 'done', 'pos_done')"
         return super()._extra_sql_conditions()
 
     def _graph_title_and_key(self):

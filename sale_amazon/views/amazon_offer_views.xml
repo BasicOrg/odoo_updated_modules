@@ -6,8 +6,8 @@
         <field name="model">amazon.offer</field>
         <field name="arch" type="xml">
             <tree string="Amazon Offers" editable="top">
-                <field name="account_id" column_invisible="True"/>
-                <field name="active_marketplace_ids" column_invisible="True"/>
+                <field name="account_id" invisible="1"/>
+                <field name="active_marketplace_ids" invisible="1"/>
                 <field name="marketplace_id" options="{'no_create_edit': True, 'no_open': True}"/>
                 <field name="product_id"/>
                 <field name="sku"/>
@@ -15,14 +15,6 @@
                         type="object"
                         string="View on Seller Central"
                         icon="fa-external-link"/>
-                <field name="amazon_sync_status"
-                       widget="badge"
-                       decoration-warning="amazon_sync_status == 'processing'"
-                       decoration-success="amazon_sync_status == 'done'"
-                       decoration-danger="amazon_sync_status == 'error'"
-                       optional="hide"
-                />
-                <field name="amazon_feed_ref" optional="hide" groups="base.group_no_one"/>
             </tree>
         </field>
     </record>

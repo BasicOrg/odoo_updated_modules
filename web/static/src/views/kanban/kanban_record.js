@@ -1,39 +1,32 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { ColorList } from "@web/core/colorlist/colorlist";
-import { evaluateBooleanExpr } from "@web/core/py_js/py";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 import { registry } from "@web/core/registry";
 import { useTooltip } from "@web/core/tooltip/tooltip_hook";
 import { useService } from "@web/core/utils/hooks";
+import { sprintf } from "@web/core/utils/strings";
 import { url } from "@web/core/utils/urls";
-import { useRecordObserver } from "@web/model/relational_model/utils";
 import { Field } from "@web/views/fields/field";
 import { fileTypeMagicWordMap, imageCacheKey } from "@web/views/fields/image/image_field";
 import { ViewButton } from "@web/views/view_button/view_button";
 import { useViewCompiler } from "@web/views/view_compiler";
 import { Widget } from "@web/views/widgets/widget";
-import { getFormattedValue } from "../utils";
-import {
-    KANBAN_BOX_ATTRIBUTE,
-    KANBAN_MENU_ATTRIBUTE,
-    KANBAN_TOOLTIP_ATTRIBUTE,
-} from "./kanban_arch_parser";
+import { evalDomain } from "../utils";
+import { KANBAN_BOX_ATTRIBUTE, KANBAN_TOOLTIP_ATTRIBUTE } from "./kanban_arch_parser";
 import { KanbanCompiler } from "./kanban_compiler";
 import { KanbanCoverImageDialog } from "./kanban_cover_image_dialog";
 import { KanbanDropdownMenuWrapper } from "./kanban_dropdown_menu_wrapper";
 
-import { Component, onMounted, onWillUpdateProps, useRef, useState } from "@odoo/owl";
+const { Component, onMounted, onWillUpdateProps, useRef } = owl;
 const { COLORS } = ColorList;
 
 const formatters = registry.category("formatters");
 
 // These classes determine whether a click on a record should open it.
-export const CANCEL_GLOBAL_CLICK = ["a", ".dropdown", ".oe_kanban_action", "[data-bs-toggle]"].join(
-    ","
-);
+export const CANCEL_GLOBAL_CLICK = ["a", ".dropdown", ".oe_kanban_action"].join(",");
 const ALLOW_GLOBAL_CLICK = [".oe_kanban_global_click", ".oe_kanban_global_click_edit"].join(",");
 
 /**
@@ -65,13 +58,48 @@ function getColorName(value) {
 }
 
 /**
+ * Returns the image URL of a given field on the record.
+ *
+ * @param {Record} record
+ * @param {string} [model] model name
+ * @param {string} [field] field name
+ * @param {number | [number, ...any[]]} [idOrIds] id or array
+ *      starting with the id of the desired record.
+ * @param {string} [placeholder] fallback when the image does not
+ *  exist
+ * @returns {string}
+ */
+function getImageSrcFromRecordInfo(record, model, field, idOrIds, placeholder) {
+    const id = (Array.isArray(idOrIds) ? idOrIds[0] : idOrIds) || null;
+    const isCurrentRecord =
+        record.resModel === model && (record.resId === id || (!record.resId && !id));
+    const fieldVal = record.data[field];
+    if (isCurrentRecord && fieldVal && !isBinSize(fieldVal)) {
+        // Use magic-word technique for detecting image type
+        const type = fileTypeMagicWordMap[fieldVal[0]];
+        return `data:image/${type};base64,${fieldVal}`;
+    } else if (placeholder && (!model || !field || !id || !fieldVal)) {
+        // Placeholder if either the model, field, id or value is missing or null.
+        return placeholder;
+    } else {
+        // Else: fetches the image related to the given id.
+        return url("/web/image", {
+            model,
+            field,
+            id,
+            unique: imageCacheKey(record.data.__last_update),
+        });
+    }
+}
+
+/**
  * Returns a "raw" version of the field value on a given record.
  *
  * @param {Record} record
  * @param {string} fieldName
  * @returns {any}
  */
-export function getRawValue(record, fieldName) {
+function getRawValue(record, fieldName) {
     const field = record.fields[fieldName];
     const value = record.data[fieldName];
     switch (field.type) {
@@ -106,58 +134,6 @@ function getValue(record, fieldName) {
     return formatter(value, { field, data: record.data });
 }
 
-export function getFormattedRecord(record) {
-    const formattedRecord = {
-        id: {
-            value: record.resId,
-            raw_value: record.resId,
-        },
-    };
-
-    for (const fieldName of record.fieldNames) {
-        formattedRecord[fieldName] = {
-            value: getValue(record, fieldName),
-            raw_value: getRawValue(record, fieldName),
-        };
-    }
-    return formattedRecord;
-}
-
-/**
- * Returns the image URL of a given field on the record.
- *
- * @param {Record} record
- * @param {string} [model] model name
- * @param {string} [field] field name
- * @param {number | [number, ...any[]]} [idOrIds] id or array
- *      starting with the id of the desired record.
- * @param {string} [placeholder] fallback when the image does not
- *  exist
- * @returns {string}
- */
-export function getImageSrcFromRecordInfo(record, model, field, idOrIds, placeholder) {
-    const id = (Array.isArray(idOrIds) ? idOrIds[0] : idOrIds) || null;
-    const isCurrentRecord =
-        record.resModel === model && (record.resId === id || (!record.resId && !id));
-    const fieldVal = record.data[field];
-    if (isCurrentRecord && fieldVal && !isBinSize(fieldVal)) {
-        // Use magic-word technique for detecting image type
-        const type = fileTypeMagicWordMap[fieldVal[0]];
-        return `data:image/${type};base64,${fieldVal}`;
-    } else if (placeholder && (!model || !field || !id || !fieldVal)) {
-        // Placeholder if either the model, field, id or value is missing or null.
-        return placeholder;
-    } else {
-        // Else: fetches the image related to the given id.
-        return url("/web/image", {
-            model,
-            field,
-            id,
-            unique: imageCacheKey(record.data.write_date),
-        });
-    }
-}
-
 function isBinSize(value) {
     return /^\d+(\.\d*)? [^0-9]+$/.test(value);
 }
@@ -173,91 +149,88 @@ function isBinSize(value) {
  * @param {string} innerHTML
  * @returns {boolean} true if no content found or if containing only formatting tags
  */
-export function isHtmlEmpty(innerHTML = "") {
+function isHtmlEmpty(innerHTML = "") {
     const div = Object.assign(document.createElement("div"), { innerHTML });
     return div.innerText.trim() === "";
 }
 
 export class KanbanRecord extends Component {
     setup() {
-        this.evaluateBooleanExpr = evaluateBooleanExpr;
         this.action = useService("action");
         this.dialog = useService("dialog");
         this.notification = useService("notification");
         this.user = useService("user");
 
-        const { Compiler, templates } = this.props;
-        const ViewCompiler = Compiler || this.constructor.Compiler;
+        const { archInfo, Compiler, templates } = this.props;
+        const { arch } = archInfo;
+        const ViewCompiler = Compiler || KanbanCompiler;
 
-        this.templates = useViewCompiler(ViewCompiler, templates);
-
-        if (this.constructor.KANBAN_MENU_ATTRIBUTE in templates) {
-            this.showMenu = true;
-        }
+        this.templates = useViewCompiler(ViewCompiler, arch, templates, KANBAN_BOX_ATTRIBUTE);
 
         if (KANBAN_TOOLTIP_ATTRIBUTE in templates) {
             useTooltip("root", {
-                info: { ...this, record: getFormattedRecord(this.props.record) },
+                info: this,
                 template: this.templates[KANBAN_TOOLTIP_ATTRIBUTE],
             });
         }
 
-        this.dataState = useState({ record: {}, widget: {} });
-        this.createWidget(this.props);
-        onWillUpdateProps(this.createWidget);
-        useRecordObserver((record) =>
-            Object.assign(this.dataState.record, getFormattedRecord(record))
-        );
+        this.createRecordAndWidget(this.props);
         this.rootRef = useRef("root");
         onMounted(() => {
             // FIXME: this needs to be changed to an attribute on the root node...
             this.allowGlobalClick = !!this.rootRef.el.querySelector(ALLOW_GLOBAL_CLICK);
         });
-    }
-
-    get record() {
-        return this.dataState.record;
-    }
-
-    getFormattedValue(fieldId) {
-        const { archInfo, record } = this.props;
-        const { attrs, name } = archInfo.fieldNodes[fieldId];
-        return getFormattedValue(record, name, attrs);
+        onWillUpdateProps(this.createRecordAndWidget);
     }
 
     /**
-     * Assigns "widget" properties on the kanban record.
+     * Assigns both "record" and "widget" properties on the kanban record.
      *
      * @param {Object} props
      */
-    createWidget(props) {
-        const { archInfo, list } = props;
+    createRecordAndWidget(props) {
+        const { archInfo, list, record } = props;
         const { activeActions } = archInfo;
+
+        // Record
+        this.record = Object.create(null);
+        for (const fieldName in record.data) {
+            this.record[fieldName] = {
+                get value() {
+                    return getValue(record, fieldName);
+                },
+                get raw_value() {
+                    return getRawValue(record, fieldName);
+                },
+            };
+        }
+
         // Widget
-        const deletable =
-            activeActions.delete && (!list.groupByField || list.groupByField.type !== "many2many");
+        const deletable = activeActions.delete && (!list.groupedBy || !list.groupedBy("m2m"));
         const editable = activeActions.edit;
-        this.dataState.widget = {
+        this.widget = {
             deletable,
             editable,
             isHtmlEmpty,
         };
     }
 
+    evalDomainFromRecord(record, expr) {
+        return evalDomain(expr, record.evalContext);
+    }
+
     getRecordClasses() {
-        const { archInfo, canResequence, forceGlobalClick, record, progressBarState } = this.props;
+        const { archInfo, canResequence, forceGlobalClick, group, record } = this.props;
         const classes = ["o_kanban_record d-flex"];
         if (canResequence) {
-            classes.push("o_draggable");
+            classes.push("o_record_draggable");
         }
         if (forceGlobalClick || archInfo.openAction) {
             classes.push("oe_kanban_global_click");
         }
-        if (progressBarState) {
-            const { fieldName, colors } = progressBarState.progressAttributes;
-            const value = record.data[fieldName];
-            const color = colors[value];
-            classes.push(`oe_kanban_card_${color}`);
+        if (group && record.model.hasProgressBars) {
+            const progressBar = group.findProgressValueFromRecord(record);
+            classes.push(`oe_kanban_card_${progressBar.color}`);
         }
         if (archInfo.cardColorField) {
             const value = record.data[archInfo.cardColorField];
@@ -287,6 +260,7 @@ export class KanbanRecord extends Component {
                 context: record.context,
                 onClose: async () => {
                     await record.model.root.load();
+                    record.model.notify();
                 },
             });
         } else if (forceGlobalClick || this.allowGlobalClick) {
@@ -296,14 +270,16 @@ export class KanbanRecord extends Component {
 
     async selectColor(colorIndex) {
         const { archInfo, record } = this.props;
-        await record.update({ [archInfo.colorField]: colorIndex }, { save: true });
+        await record.update({ [archInfo.colorField]: colorIndex });
+        await record.save();
     }
 
     /**
      * @param {Object} params
      */
     triggerAction(params) {
-        const { archInfo, openRecord, deleteRecord, record } = this.props;
+        const env = this.env;
+        const { archInfo, group, list, openRecord, record } = this.props;
         const { type } = params;
         switch (type) {
             case "edit": {
@@ -313,23 +289,34 @@ export class KanbanRecord extends Component {
                 return openRecord(record);
             }
             case "delete": {
-                return deleteRecord(record);
+                const listOrGroup = group || list;
+                if (listOrGroup.deleteRecords) {
+                    this.dialog.add(ConfirmationDialog, {
+                        body: env._t("Are you sure you want to delete this record?"),
+                        confirm: () => listOrGroup.deleteRecords([record]),
+                        cancel: () => {},
+                    });
+                } else {
+                    // static list case
+                    listOrGroup.removeRecord(record);
+                }
+                return;
             }
             case "set_cover": {
                 const { autoOpen, fieldName } = params;
-                const widgets = Object.values(archInfo.fieldNodes)
-                    .filter((x) => x.name === fieldName)
-                    .map((x) => x.widget);
+                const { widget } = archInfo.fieldNodes[fieldName];
                 const field = record.fields[fieldName];
                 if (
                     field.type === "many2one" &&
                     field.relation === "ir.attachment" &&
-                    widgets.includes("attachment_image")
+                    widget === "attachment_image"
                 ) {
                     this.dialog.add(KanbanCoverImageDialog, { autoOpen, fieldName, record });
                 } else {
-                    const warning = _t(
-                        `Could not set the cover image: incorrect field ("%s") is provided in the view.`,
+                    const warning = sprintf(
+                        env._t(
+                            `Could not set the cover image: incorrect field ("%s") is provided in the view.`
+                        ),
                         fieldName
                     );
                     this.notification.add({ title: warning, type: "danger" });
@@ -337,39 +324,61 @@ export class KanbanRecord extends Component {
                 break;
             }
             default: {
-                return this.notification.add(_t("Kanban: no action for type: ") + type, {
+                return this.notification.add(env._t("Kanban: no action for type: ") + type, {
                     type: "danger",
                 });
             }
         }
     }
 
-    /**
-     * Returns the kanban-box template's rendering context.
-     *
-     * Note: the keys answer to outdated standards but should not be altered for
-     * the sake of compatibility.
-     *
-     * @returns {Object}
-     */
-    get renderingContext() {
-        return {
-            context: this.props.record.context,
-            JSON,
-            kanban_color: getColorClass,
-            kanban_getcolor: getColorIndex,
-            kanban_getcolorname: getColorName,
-            kanban_image: (...args) => getImageSrcFromRecordInfo(this.props.record, ...args),
-            luxon,
-            read_only_mode: this.props.readonly,
-            record: this.dataState.record,
-            selection_mode: this.props.forceGlobalClick,
-            user_context: this.user.context,
-            widget: this.dataState.widget,
-            __comp__: Object.assign(Object.create(this), { this: this }),
-        };
+    //-------------------------------------------------------------------------
+    // KANBAN SPECIAL GETTERS AND FUNCTIONS
+    //
+    // Note: the names of these getters and functions answer to outdated standards
+    // but should not be altered for the sake of compatibility.
+    //-------------------------------------------------------------------------
+
+    get context() {
+        return this.props.record.context;
+    }
+
+    get luxon() {
+        return luxon;
+    }
+
+    get JSON() {
+        return JSON;
+    }
+
+    get read_only_mode() {
+        return this.props.readonly;
+    }
+
+    get selection_mode() {
+        return this.props.forceGlobalClick;
+    }
+
+    get user_context() {
+        return this.user.context;
+    }
+
+    kanban_color() {
+        return getColorClass(...arguments);
+    }
+
+    kanban_getcolor() {
+        return getColorIndex(...arguments);
+    }
+
+    kanban_getcolorname() {
+        return getColorName(...arguments);
+    }
+
+    kanban_image() {
+        return getImageSrcFromRecordInfo(this.props.record, ...arguments);
     }
 }
+
 KanbanRecord.components = {
     Dropdown,
     DropdownItem,
@@ -381,7 +390,6 @@ KanbanRecord.components = {
 };
 KanbanRecord.defaultProps = {
     colors: COLORS,
-    deleteRecord: () => {},
     openRecord: () => {},
 };
 KanbanRecord.props = [
@@ -392,15 +400,10 @@ KanbanRecord.props = [
     "forceGlobalClick?",
     "group?",
     "list",
-    "deleteRecord?",
     "openRecord?",
     "readonly?",
     "record",
     "templates",
-    "progressBarState?",
 ];
-KanbanRecord.Compiler = KanbanCompiler;
 KanbanRecord.KANBAN_BOX_ATTRIBUTE = KANBAN_BOX_ATTRIBUTE;
-KanbanRecord.KANBAN_MENU_ATTRIBUTE = KANBAN_MENU_ATTRIBUTE;
-KanbanRecord.menuTemplate = "web.KanbanRecordMenu";
 KanbanRecord.template = "web.KanbanRecord";

@@ -3,11 +3,13 @@
 
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from odoo import api, SUPERUSER_ID
 from . import models
 from . import wizard
 
+def _generate_attendances(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
 
-def _generate_attendances(env):
     hne_contract = env.ref('hr_work_entry_contract_attendance.hr_contract_hne', raise_if_not_found=False)
     if not hne_contract or env['hr.attendance'].sudo().search_count([('employee_id', '=', hne_contract.employee_id.id)]):
         return

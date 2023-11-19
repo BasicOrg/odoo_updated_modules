@@ -1,13 +1,12 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import * as BarcodeScanner from '@web/webclient/barcode/barcode_scanner';
+import { bus } from 'web.core';
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { registry } from "@web/core/registry";
-import { useBus, useService } from "@web/core/utils/hooks";
-import { session } from "@web/session";
-import { serializeDate, today } from "@web/core/l10n/dates";
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
+
+const { Component, onMounted, onWillUnmount, onWillStart, useState } = owl;
 
 export class MainMenu extends Component {
     setup() {
@@ -19,49 +18,46 @@ export class MainMenu extends Component {
         this.notificationService = useService("notification");
         this.rpc = useService('rpc');
         this.state = useState({ displayDemoMessage });
-        this.barcodeService = useService('barcode');
-        useBus(this.barcodeService.bus, "barcode_scanned", (ev) => this._onBarcodeScanned(ev.detail.barcode));
-        const orm = useService('orm');
 
         this.mobileScanner = BarcodeScanner.isBarcodeScannerSupported();
 
         onWillStart(async () => {
             this.locationsEnabled = await user.hasGroup('stock.group_stock_multi_locations');
             this.packagesEnabled = await user.hasGroup('stock.group_tracking_lot');
-            const args = [
-                ["user_id", "=?", session.uid],
-                ["location_id.usage", "in", ["internal", "transit"]],
-                ["inventory_date", "<=", serializeDate(today())],
-            ]
-            this.quantCount = await orm.searchCount("stock.quant", args);
+        });
+        onMounted(() => {
+            bus.on('barcode_scanned', this, this._onBarcodeScanned);
+        });
+        onWillUnmount(() => {
+            bus.off('barcode_scanned', this, this._onBarcodeScanned);
         });
     }
 
     async openMobileScanner() {
-        const barcode = await BarcodeScanner.scanBarcode(this.env);
+        const barcode = await BarcodeScanner.scanBarcode();
         if (barcode){
             this._onBarcodeScanned(barcode);
             if ('vibrate' in window.navigator) {
                 window.navigator.vibrate(100);
             }
         } else {
-            this.notificationService.add(_t("Please, Scan again!"), { type: 'warning' });
+            this.notificationService.add(this.env._t("Please, Scan again !"), { type: 'warning' });
         }
     }
 
     removeDemoMessage() {
         this.state.displayDemoMessage = false;
         const params = {
-            title: _t("Don't show this message again"),
-            body: _t("Do you want to permanently remove this message?\
+            title: this.env._t("Don't show this message again"),
+            body: this.env._t("Do you want to permanently remove this message ?\
                     It won't appear anymore, so make sure you don't need the barcodes sheet or you have a copy."),
             confirm: () => {
                 this.rpc('/stock_barcode/rid_of_message_demo_barcodes');
                 location.reload();
             },
             cancel: () => {},
-            confirmLabel: _t("Remove it"),
-            cancelLabel: _t("Leave it"),
+            confirmLabel: this.env._t("Remove it"),
+            cancelLabel: this.env._t("Leave it"),
         };
         this.dialogService.add(ConfirmationDialog, params);
     }
@@ -74,13 +70,6 @@ export class MainMenu extends Component {
         this.notificationService.add(res.warning, { type: 'danger' });
     }
 }
-MainMenu.props = ["action", "actionId", "className"];
-MainMenu.props = {
-    action: { Object },
-    actionId: { type: Number, optional: true },
-    className: String,
-    globalState: { type: Object, optional: true },
-};
 MainMenu.template = 'stock_barcode.MainMenu';
 
 registry.category('actions').add('stock_barcode_main_menu', MainMenu);

@@ -233,9 +233,9 @@ export class PyDate {
      * @returns {PyDate}
      */
     static convertDate(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
         return new PyDate(year, month, day);
     }
 
@@ -340,12 +340,12 @@ export class PyDateTime {
      * @returns {PyDateTime}
      */
     static convertDate(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const second = date.getSeconds();
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
+        const hour = date.getUTCHours();
+        const minute = date.getUTCMinutes();
+        const second = date.getUTCSeconds();
         return new PyDateTime(year, month, day, hour, minute, second, 0);
     }
 
@@ -489,7 +489,7 @@ export class PyDateTime {
      * @returns {PyDateTime}
      */
     to_utc() {
-        const d = new Date(this.year, this.month -1, this.day, this.hour, this.minute, this.second);
+        const d = new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
         const timedelta = PyTimeDelta.create({ minutes: d.getTimezoneOffset() });
         return this.add(timedelta);
     }
@@ -511,8 +511,8 @@ export class PyTime extends PyDate {
     constructor(hour, minute, second) {
         const now = new Date();
         const year = now.getFullYear();
-        const month = now.getMonth();
-        const day = now.getDate();
+        const month = now.getUTCMonth();
+        const day = now.getUTCDate();
         super(year, month, day);
         this.hour = hour;
         this.minute = minute;

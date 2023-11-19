@@ -21,16 +21,10 @@ class TestUnslug(BaseCase):
             '--1': (None, None),
             'foo---1': (None, None),
             'foo1': (None, None),
-            # qs & anchor & trailing slash
-            'foo-1/': ('foo', 1),
-            'foo-1/?qs=1': ('foo', 1),
-            'foo-1/#anchor': ('foo', 1),
-            'foo-1?qs=1': ('foo', 1),
-            'foo-1#anchor': ('foo', 1),
         }
 
         for slug, expected in tests.items():
-            self.assertEqual(unslug(slug), expected, "%r case failed" % slug)
+            self.assertEqual(unslug(slug), expected)
 
 class TestTitleToSlug(BaseCase):
     """

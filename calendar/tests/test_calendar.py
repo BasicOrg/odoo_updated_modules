@@ -2,13 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import datetime
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta, time
 
 from odoo import fields, Command
-from odoo.tests import Form, HttpCase, tagged
+from odoo.tests import Form
 from odoo.addons.base.tests.common import SavepointCaseWithUserDemo
-
-import freezegun
 import pytz
 import re
 
@@ -153,32 +151,6 @@ class TestCalendar(SavepointCaseWithUserDemo):
         self.assertEqual(test_event.res_id, test_record.id)
         self.assertEqual(len(test_record.activity_ids), 1)
 
-    def test_event_activity_user_sync(self):
-        # ensure phonecall activity type exists
-        activty_type = self.env['mail.activity.type'].create({
-            'name': 'Call',
-            'category': 'phonecall'
-        })
-        activity = self.env['mail.activity'].create({
-            'summary': 'Call with Demo',
-            'activity_type_id': activty_type.id,
-            'note': 'Schedule call with Admin',
-            'res_model_id': self.env['ir.model']._get_id('res.partner'),
-            'res_id': self.env['res.partner'].create({'name': 'Test Partner'}).id,
-            'user_id': self.user_demo.id,
-        })
-        action_context = activity.action_create_calendar_event().get('context', {})
-        event_from_activity = self.env['calendar.event'].with_context(action_context).create({
-            'start': '2022-07-27 14:30:00',
-            'stop': '2022-07-27 16:30:00',
-        })
-        # Check that assignation of the activity hasn't changed, and event is having
-        # correct values set in attendee and organizer related fields
-        self.assertEqual(activity.user_id, self.user_demo)
-        self.assertEqual(event_from_activity.partner_ids, activity.user_id.partner_id)
-        self.assertEqual(event_from_activity.attendee_ids.partner_id, activity.user_id.partner_id)
-        self.assertEqual(event_from_activity.user_id, activity.user_id)
-
     def test_event_allday(self):
         self.env.user.tz = 'Pacific/Honolulu'
 
@@ -216,9 +188,8 @@ class TestCalendar(SavepointCaseWithUserDemo):
             self.assertEqual(d.minute, 30)
 
     def test_recurring_ny(self):
-        self.user_demo.tz = 'US/Eastern'
-        event = self.CalendarEvent.create({'user_id': self.user_demo.id, 'name': 'test', 'partner_ids': [Command.link(self.user_demo.partner_id.id)]})
-        f = Form(event.with_context(tz='US/Eastern').with_user(self.user_demo))
+        self.env.user.tz = 'US/Eastern'
+        f = Form(self.CalendarEvent.with_context(tz='US/Eastern'))
         f.name = 'test'
         f.start = '2022-07-07 01:00:00'  # This is in UTC. In NY, it corresponds to the 6th of july at 9pm.
         f.recurrency = True
@@ -298,10 +269,8 @@ class TestCalendar(SavepointCaseWithUserDemo):
 
         self.assertEqual(str(activity_id.date_deadline), '2018-10-16')
 
-    @freezegun.freeze_time('2023-10-06 10:00:00')
     def test_event_creation_mail(self):
         """
-        Freezegun used because we don't send mail for past events
         Check that mail are sent to the attendees on event creation
         Check that mail are sent to the added attendees on event edit
         Check that mail are NOT sent to the attendees when the event date is past
@@ -320,14 +289,15 @@ class TestCalendar(SavepointCaseWithUserDemo):
             self.env['res.partner'].create({'name': 'testuser1', 'email': u'alice@example.com'}),
         ]
         partner_ids = [(6, False, [p.id for p in partners]),]
+        now = fields.Datetime.context_timestamp(partners[0], fields.Datetime.now())
         m = self.CalendarEvent.create({
             'name': "mailTest1",
             'allday': False,
             'rrule': u'FREQ=DAILY;INTERVAL=1;COUNT=5',
             'recurrency': True,
             'partner_ids': partner_ids,
-            'start': "2023-10-29 08:00:00",
-            'stop': "2023-11-03 08:00:00",
+            'start': fields.Datetime.to_string(now + timedelta(days=10)),
+            'stop': fields.Datetime.to_string(now + timedelta(days=15)),
             })
 
         # every partner should have 1 mail sent
@@ -354,8 +324,8 @@ class TestCalendar(SavepointCaseWithUserDemo):
             'allday': False,
             'recurrency': False,
             'partner_ids': partner_ids,
-            'start': "2023-10-04 08:00:00",
-            'stop': "2023-10-10 08:00:00",
+            'start': fields.Datetime.to_string(now - timedelta(days=10)),
+            'stop': fields.Datetime.to_string(now - timedelta(days=9)),
         })
 
         # no more email should be sent
@@ -420,81 +390,3 @@ class TestCalendar(SavepointCaseWithUserDemo):
             'partner_ids': [Command.link(new_partner) for new_partner in new_partners]
         })
         self.assertTrue(set(new_partners) == set(self.event_tech_presentation.videocall_channel_id.channel_partner_ids.ids), 'new partners must be invited to the channel')
-@tagged('post_install', '-at_install')
-class TestCalendarTours(HttpCase):
-    def test_calendar_month_view_start_hour_displayed(self):
-        """ Test that the time is displayed in the month view. """
-        self.start_tour("/web", 'calendar_appointments_hour_tour', login="demo")
-
-    def test_calendar_delete_tour(self):
-        """
-            Check that we can delete events with the "Everybody's calendars" filter.
-        """
-        user_admin = self.env.ref('base.user_admin')
-        start = datetime.combine(date.today(), datetime.min.time()).replace(hour=9)
-        stop = datetime.combine(date.today(), datetime.min.time()).replace(hour=12)
-        event = self.env['calendar.event'].with_user(user_admin).create({
-            'name': 'Test Event',
-            'description': 'Test Description',
-            'start': start.strftime("%Y-%m-%d %H:%M:%S"),
-            'stop': stop.strftime("%Y-%m-%d %H:%M:%S"),
-            'duration': 3,
-            'location': 'Odoo S.A.',
-            'privacy': 'public',
-            'show_as': 'busy',
-        })
-        action_id = self.env.ref('calendar.action_calendar_event')
-        url = "/web#action=" + str(action_id.id) + '&view_type=calendar'
-        self.start_tour(url, 'test_calendar_delete_tour', login='admin')
-        event = self.env['calendar.event'].search([('name', '=', 'Test Event')])
-        self.assertFalse(event) # Check if the event has been correctly deleted
-
-    def test_calendar_decline_tour(self):
-        """
-            Check that we can decline events.
-        """
-        user_admin = self.env.ref('base.user_admin')
-        user_demo = self.env.ref('base.user_demo')
-        start = datetime.combine(date.today(), datetime.min.time()).replace(hour=9)
-        stop = datetime.combine(date.today(), datetime.min.time()).replace(hour=12)
-        event = self.env['calendar.event'].with_user(user_admin).create({
-            'name': 'Test Event',
-            'description': 'Test Description',
-            'start': start.strftime("%Y-%m-%d %H:%M:%S"),
-            'stop': stop.strftime("%Y-%m-%d %H:%M:%S"),
-            'duration': 3,
-            'location': 'Odoo S.A.',
-            'privacy': 'public',
-            'show_as': 'busy',
-        })
-        event.partner_ids = [Command.link(user_demo.partner_id.id)]
-        action_id = self.env.ref('calendar.action_calendar_event')
-        url = "/web#action=" + str(action_id.id) + '&view_type=calendar'
-        self.start_tour(url, 'test_calendar_decline_tour', login='demo')
-        attendee = self.env['calendar.attendee'].search([('event_id', '=', event.id), ('partner_id', '=', user_demo.partner_id.id)])
-        self.assertEqual(attendee.state, 'declined') # Check if the event has been correctly declined
-
-    def test_calendar_decline_with_everybody_filter_tour(self):
-        """
-            Check that we can decline events with the "Everybody's calendars" filter.
-        """
-        user_admin = self.env.ref('base.user_admin')
-        user_demo = self.env.ref('base.user_demo')
-        start = datetime.combine(date.today(), datetime.min.time()).replace(hour=9)
-        stop = datetime.combine(date.today(), datetime.min.time()).replace(hour=12)
-        event = self.env['calendar.event'].with_user(user_admin).create({
-            'name': 'Test Event',
-            'description': 'Test Description',
-            'start': start.strftime("%Y-%m-%d %H:%M:%S"),
-            'stop': stop.strftime("%Y-%m-%d %H:%M:%S"),
-            'duration': 3,
-            'location': 'Odoo S.A.',
-            'privacy': 'public',
-            'show_as': 'busy',
-        })
-        event.partner_ids = [Command.link(user_demo.partner_id.id)]
-        action_id = self.env.ref('calendar.action_calendar_event')
-        url = "/web#action=" + str(action_id.id) + '&view_type=calendar'
-        self.start_tour(url, 'test_calendar_decline_with_everybody_filter_tour', login='demo')
-        attendee = self.env['calendar.attendee'].search([('event_id', '=', event.id), ('partner_id', '=', user_demo.partner_id.id)])
-        self.assertEqual(attendee.state, 'declined') # Check if the event has been correctly declined

@@ -42,7 +42,7 @@ class WebsiteSlidesSurvey(WebsiteSlides):
     # Overrides
     # ------------------------------------------------------------
 
-    @http.route()
+    @http.route(['/slides/add_slide'], type='json', auth='user', methods=['POST'], website=True)
     def create_slide(self, *args, **post):
         create_new_survey = post['slide_category'] == "certification" and post.get('survey') and not post['survey']['id']
         linked_survey_id = int(post.get('survey', {}).get('id') or 0)
@@ -148,8 +148,9 @@ class WebsiteSlidesSurvey(WebsiteSlides):
         # 2. sort by granted users (done here, and not in search directly, because non stored field)
         certification_badges = certification_badges.sorted("granted_users_count", reverse=True)
 
-        # 3. Remove certification badge from badges
+        # 3. Remove certification badge from badges and keep only certification badge linked to opened survey
         badges = values['badges'] - certification_badges
+        certification_badges = certification_badges.filtered(lambda b: b.survey_id.state == 'open')
 
         # 4. Getting all course url for each badge
         certification_slides = request.env['slide.slide'].sudo().search([('survey_id', 'in', certification_badges.mapped('survey_id').ids)])

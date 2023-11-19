@@ -1,7 +1,9 @@
 /** @odoo-module **/
 
-import { RelationalModel } from "@web/model/relational_model/relational_model";
-export class StreamPostKanbanModel extends RelationalModel {
+import { KanbanModel } from '@web/views/kanban/kanban_model';
+
+export class StreamPostKanbanModel extends KanbanModel {
+
     /**
      * Method responsible for refreshing the configured streams.
      * It will be called on view loading as well as when the user clicks on the 'Refresh' button.

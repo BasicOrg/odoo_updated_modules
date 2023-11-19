@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "../registry";
+import { sprintf } from "../utils/strings";
 
-import { EventBus, reactive } from "@odoo/owl";
+const { EventBus, reactive } = owl;
 
 export const fileUploadService = {
     dependencies: ["notification"],
@@ -24,7 +24,7 @@ export const fileUploadService = {
 
         /**
          * @param {string}                          route
-         * @param {FileList|Array<File>}            files
+         * @param {FileList}                        files
          * @param {Object}                          [params]
          * @param {function(formData): void}        [params.buildFormData]
          * @param {Boolean}                         [params.displayErrorNotification]
@@ -56,7 +56,7 @@ export const fileUploadService = {
                 loaded: 0,
                 total: 0,
                 state: "pending",
-                title: files.length === 1 ? files[0].name : _t("%s Files", files.length),
+                title: files.length === 1 ? files[0].name : sprintf(env._t("%s Files"), files.length),
                 type: files.length === 1 ? files[0].type : undefined,
             });
             uploads[upload.id] = upload;
@@ -78,12 +78,9 @@ export const fileUploadService = {
                 delete uploads[upload.id];
                 upload.state = "error";
                 // Disable this option if you need more explicit error handling.
-                if (
-                    params.displayErrorNotification !== undefined &&
-                    params.displayErrorNotification
-                ) {
-                    notificationService.add(_t("An error occured while uploading."), {
-                        title: _t("Error"),
+                if (params.displayErrorNotification !== undefined && params.displayErrorNotification) {
+                    notificationService.add(env._t("An error occured while uploading."), {
+                        title: env._t("Error"),
                         sticky: true,
                     });
                 }

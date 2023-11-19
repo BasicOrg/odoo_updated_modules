@@ -1,429 +1,282 @@
-/** @odoo-module */
+odoo.define('point_of_sale.tour.ProductScreenTourMethods', function (require) {
+    'use strict';
 
-import * as Numpad from "@point_of_sale/../tests/tours/helpers/NumpadTourMethods";
-import * as Order from "@point_of_sale/../tests/tours/helpers/generic_components/OrderWidgetMethods";
-import { inLeftSide } from "@point_of_sale/../tests/tours/helpers/utils";
-import * as TextAreaPopup from "@point_of_sale/../tests/tours/helpers/TextAreaPopupTourMethods";
+    const { createTourMethods } = require('point_of_sale.tour.utils');
+    const { TextAreaPopup } = require('point_of_sale.tour.TextAreaPopupTourMethods');
 
-export function clickLine(productName, quantity = "1.0") {
-    return inLeftSide([
-        ...Order.hasLine({
-            withoutClass: ".selected",
-            run: "click",
-            productName,
-            quantity,
-        }),
-        ...Order.hasLine({ withClass: ".selected", productName, quantity }),
-    ]);
-}
-export function clickReview() {
-    return {
-        content: "click review button",
-        trigger: ".btn-switchpane.review-button",
-        mobile: true,
-    };
-}
-export function clickDisplayedProduct(name) {
-    return [
-        {
-            content: `click product '${name}'`,
-            trigger: `article.product .product-content .product-name:contains("${name}")`,
-        },
-    ];
-}
-export function clickOrderline(productName, quantity = "1.0") {
-    return [
-        ...clickLine(productName, quantity),
-        {
-            content: "Check the product page",
-            trigger: ".product-list-container .product-list",
-            isCheck: true,
-        },
-    ];
-}
-export function clickSubcategory(name) {
-    return [
-        {
-            content: `selecting '${name}' subcategory`,
-            trigger: `.products-widget > .products-widget-control .category-button:contains("${name}")`,
-        },
-        {
-            content: `'${name}' subcategory selected`,
-            trigger: `i.fa-caret-right ~ button.category-button:contains("${name}")`,
-            run: () => {},
-        },
-    ];
-}
-export function clickHomeCategory() {
-    return [
-        {
-            content: `click Home subcategory`,
-            trigger: `button.category-button i.fa-home`,
-        },
-    ];
-}
-/**
- * Press the numpad in sequence based on the given space-separated keys.
- * NOTE: Maximum of 2 characters because NumberBuffer only allows 2 consecutive
- * fast inputs. Fast inputs is the case in tours.
- *
- * @param {...String} keys space-separated numpad keys
- */
-export function pressNumpad(...keys) {
-    return inLeftSide(keys.map(Numpad.click));
-}
-export function clickPayButton(shouldCheck = true) {
-    const steps = [
-        {
-            content: "click pay button",
-            trigger: ".product-screen .pay-order-button",
-            mobile: false,
-        },
-        {
-            content: "click pay button",
-            trigger: ".btn-switchpane:contains('Pay')",
-            mobile: true,
-        },
-    ];
-    if (shouldCheck) {
-        steps.push({
-            content: "now in payment screen",
-            trigger: ".pos-content .payment-screen",
-            run: () => {},
-        });
-    }
-    return steps;
-}
-export function clickPartnerButton() {
-    return [
-        clickReview(),
-        {
-            content: "click customer button",
-            trigger: ".product-screen .set-partner",
-        },
-        {
-            content: "partner screen is shown",
-            trigger: ".pos-content .partnerlist-screen",
-            run: () => {},
-        },
-    ];
-}
-export function clickCustomer(name) {
-    return [
-        {
-            content: `select customer '${name}'`,
-            trigger: `.partnerlist-screen .partner-line td:contains("${name}")`,
-        },
-        {
-            content: "go back to the products",
-            trigger: ".pos-rightheader .floor-button",
-            mobile: true,
-        },
-    ];
-}
-export function clickRefund() {
-    return [
-        clickReview(),
-        {
-            content: "click more button",
-            trigger: ".mobile-more-button",
-            mobile: true,
-        },
-        {
-            trigger: '.control-button:contains("Refund")',
-        },
-    ];
-}
-export function confirmOpeningPopup() {
-    return [{ trigger: '.opening-cash-control .button:contains("Open session")' }];
-}
-export function selectPriceList(name) {
-    return inLeftSide([
-        {
-            content: "click more button",
-            trigger: ".mobile-more-button",
-            mobile: true,
-        },
-        { trigger: ".o_pricelist_button" },
-        {
-            content: `select price list '${name}'`,
-            trigger: `.selection-item:contains("${name}")`,
-        },
-    ]);
-}
-export function enterOpeningAmount(amount) {
-    return [
-        {
-            content: "enter opening amount",
-            trigger: ".cash-input-sub-section input",
-            run: "text " + amount,
-        },
-    ];
-}
-export function changeFiscalPosition(name) {
-    return [
-        clickReview(),
-        {
-            content: "click more button",
-            trigger: ".mobile-more-button",
-            mobile: true,
-        },
-        {
-            content: "click fiscal position button",
-            trigger: ".o_fiscal_position_button",
-        },
-        {
-            content: "fiscal position screen is shown",
-            trigger: `.selection-item:contains("${name}")`,
-        },
-        {
-            content: "go back to the products",
-            trigger: ".pos-rightheader .floor-button",
-            mobile: true,
-        },
-    ];
-}
-export function clickCloseButton() {
-    return [
-        {
-            trigger: ".close-button",
-        },
-    ];
-}
-export function closeWithCashAmount(val) {
-    return [
-        {
-            trigger: "div.popup.close-pos-popup input",
-            run: `text ${val}`,
-        },
-    ];
-}
-export function clickCloseSession() {
-    return [
-        {
-            trigger: "footer .button:contains('Close Session')",
-        },
-    ];
-}
-export function scan_barcode(barcode) {
-    return [
-        {
-            content: `PoS model scan barcode '${barcode}'`,
-            trigger: ".pos", // The element here does not really matter as long as it is present
-            run: () => {
-                window.posmodel.env.services.barcode_reader.scan(barcode);
-            },
-        },
-    ];
-}
-export function scan_ean13_barcode(barcode) {
-    return [
-        {
-            content: `PoS model scan EAN13 barcode '${barcode}'`,
-            trigger: ".pos", // The element here does not really matter as long as it is present
-            run: () => {
-                const barcode_reader = window.posmodel.env.services.barcode_reader;
-                barcode_reader.scan(barcode_reader.parser.sanitize_ean(barcode));
-            },
-        },
-    ];
-}
-export function goBackToMainScreen() {
-    return [
-        {
-            content: "go back to the products",
-            trigger: ".pos-rightheader .floor-button",
-            mobile: true,
-        },
-    ];
-}
-export function clickLotIcon() {
-    return [
-        {
-            content: "click lot icon",
-            trigger: ".line-lot-icon",
-        },
-    ];
-}
-export function enterLotNumber(number) {
-    return [
-        {
-            content: "enter lot number",
-            trigger: ".list-line-input:first()",
-            run: "text " + number,
-        },
-        {
-            content: "click validate lot number",
-            trigger: ".popup .button.confirm",
-        },
-    ];
-}
-
-export function isShown() {
-    return [
-        {
-            content: "product screen is shown",
-            trigger: ".product-screen",
-            run: () => {},
-        },
-    ];
-}
-export function selectedOrderlineHas(productName, quantity, price) {
-    return inLeftSide(
-        Order.hasLine({
-            withClass: ".selected",
-            productName,
-            quantity,
-            price,
-        })
-    );
-}
-export function orderIsEmpty() {
-    return inLeftSide(Order.doesNotHaveLine());
-}
-export function productIsDisplayed(name) {
-    return [
-        {
-            content: `'${name}' should be displayed`,
-            trigger: `.product-list .product-name:contains("${name}")`,
-            run: () => {},
-        },
-    ];
-}
-export function totalAmountIs(amount) {
-    return inLeftSide(Order.hasTotal(amount));
-}
-export function modeIsActive(mode) {
-    return inLeftSide(Numpad.isActive(mode));
-}
-export function checkSecondCashClosingDetailsLineAmount(amount, sign) {
-    return [
-        {
-            content: "Open menu",
-            trigger: ".menu-button",
-        },
-        {
-            content: "Click close session button",
-            trigger: ".close-button",
-        },
-        {
-            content: "Check closing details",
-            trigger: `.cash-overview tr:nth-child(2) td:contains("${amount}")`,
-            run: () => {}, // it's a check
-        },
-        {
-            content: "Check closing details",
-            trigger: `.cash-overview tr:nth-child(2) .cash-sign:contains("${sign}")`,
-            run: () => {}, // it's a check
-        },
-    ];
-}
-export function noDiscountApplied(originalPrice) {
-    return inLeftSide({
-        content: "no discount is applied",
-        trigger: `.orderline .info-list:not(:contains(${originalPrice}))`,
-    });
-}
-export function cashDifferenceIs(val) {
-    return [
-        {
-            trigger: `.payment-methods-overview tr td:nth-child(4):contains(${val})`,
-            isCheck: true,
-        },
-    ];
-}
-// Temporarily put it here. It should be in the utility methods for the backend views.
-export function lastClosingCashIs(val) {
-    return [
-        {
-            trigger: `[name=last_session_closing_cash]:contains(${val})`,
-            isCheck: true,
-        },
-    ];
-}
-export function checkFirstLotNumber(number) {
-    return [
-        {
-            content: "Check lot number",
-            trigger: `.popup-input:propValue(${number})`,
-            run: () => {}, // it's a check
-        },
-    ];
-}
-
-/**
- * Create an orderline for the given `productName` and `quantity`.
- * - If `unitPrice` is provided, price of the product of the created line
- *   is changed to that value.
- * - If `expectedTotal` is provided, the created orderline (which is the currently
- *   selected orderline) is checked if it contains the correct quantity and total
- *   price.
- *
- * @param {string} productName
- * @param {string} quantity
- * @param {string} unitPrice
- * @param {string} expectedTotal
- */
-export function addOrderline(productName, quantity = 1, unitPrice, expectedTotal) {
-    const res = clickDisplayedProduct(productName);
-    const mapKey = (key) => {
-        if (key === "-") {
-            return "+/-";
+    class Do {
+        clickDisplayedProduct(name) {
+            return [
+                {
+                    content: `click product '${name}'`,
+                    trigger: `.product-list .product-name:contains("${name}")`,
+                },
+            ];
         }
-        return key;
-    };
-    const numpadWrite = (val) =>
-        val
-            .toString()
-            .split("")
-            .flatMap((key) => pressNumpad(mapKey(key)));
-    res.push(...selectedOrderlineHas(productName, "1.00"));
-    if (unitPrice) {
-        res.push(
-            ...[
-                pressNumpad("Price"),
-                modeIsActive("Price"),
-                numpadWrite(unitPrice),
-                pressNumpad("Qty"),
-                modeIsActive("Qty"),
-            ].flat()
-        );
-    }
-    if (quantity.toString() !== "1") {
-        res.push(...numpadWrite(quantity));
-    }
-    res.push(...selectedOrderlineHas(productName, quantity, expectedTotal));
-    return res;
-}
-export function addCustomerNote(note) {
-    return inLeftSide(
-        [
-            {
-                content: "click more button",
-                trigger: ".mobile-more-button",
-                mobile: true,
-            },
-            {
-                content: "click customer note button",
-                trigger: '.control-buttons .control-button span:contains("Customer Note")',
-            },
-            TextAreaPopup.inputText(note),
-            TextAreaPopup.clickConfirm(),
-        ].flat()
-    );
-}
 
-export function checkOrderlinesNumber(number) {
-    return [
-        {
-            content: `check orderlines number`,
-            trigger: `.order .orderlines .orderline`,
-            run: () => {
-                const orderline_amount = $('.order .orderlines .orderline').length;
-                if (orderline_amount !== number) {
-                    throw new Error(`Expected ${number} orderlines, got ${orderline_amount}`);
+        clickOrderline(name, quantity) {
+            return [
+                {
+                    content: `selecting orderline with product '${name}' and quantity '${quantity}'`,
+                    trigger: `.order .orderline:not(:has(.selected)) .product-name:contains("${name}") ~ .info-list em:contains("${quantity}")`,
+                },
+                {
+                    content: `orderline with product '${name}' and quantity '${quantity}' has been selected`,
+                    trigger: `.order .orderline.selected .product-name:contains("${name}") ~ .info-list em:contains("${quantity}")`,
+                    run: () => {},
+                },
+            ];
+        }
+
+        clickSubcategory(name) {
+            return [
+                {
+                    content: `selecting '${name}' subcategory`,
+                    trigger: `.products-widget > .products-widget-control .category-simple-button:contains("${name}")`,
+                },
+                {
+                    content: `'${name}' subcategory selected`,
+                    trigger: `.breadcrumbs .breadcrumb-button:contains("${name}")`,
+                    run: () => {},
+                },
+            ];
+        }
+
+        clickHomeCategory() {
+            return [
+                {
+                    content: `click Home subcategory`,
+                    trigger: `.breadcrumbs .breadcrumb-home`,
+                },
+            ];
+        }
+
+        /**
+         * Press the numpad in sequence based on the given space-separated keys.
+         * NOTE: Maximum of 2 characters because NumberBuffer only allows 2 consecutive
+         * fast inputs. Fast inputs is the case in tours.
+         *
+         * @param {String} keys space-separated numpad keys
+         */
+        pressNumpad(keys) {
+            const numberChars = '. 0 1 2 3 4 5 6 7 8 9'.split(' ');
+            const modeButtons = 'Qty Price Disc'.split(' ');
+            function generateStep(key) {
+                let trigger;
+                if (numberChars.includes(key)) {
+                    trigger = `.numpad .number-char:contains("${key}")`;
+                } else if (modeButtons.includes(key)) {
+                    trigger = `.numpad .mode-button:contains("${key}")`;
+                } else if (key === 'Backspace') {
+                    trigger = `.numpad .numpad-backspace`;
+                } else if (key === '+/-') {
+                    trigger = `.numpad .numpad-minus`;
                 }
-            },
-        },
-    ];
-}
+                return {
+                    content: `'${key}' pressed in product screen numpad`,
+                    trigger,
+                };
+            }
+            return keys.split(' ').map(generateStep);
+        }
+
+        clickPayButton(shouldCheck = true) {
+            const steps = [{ content: 'click pay button', trigger: '.product-screen .actionpad .button.pay' }];
+            if (shouldCheck) {
+                steps.push({
+                    content: 'now in payment screen',
+                    trigger: '.pos-content .payment-screen',
+                    run: () => {},
+                });
+            }
+            return steps;
+        }
+
+        clickPartnerButton() {
+            return [
+                { content: 'click customer button', trigger: '.actionpad .button.set-partner' },
+                {
+                    content: 'partner screen is shown',
+                    trigger: '.pos-content .partnerlist-screen',
+                    run: () => {},
+                },
+            ];
+        }
+
+        clickCustomer(name) {
+            return [
+                {
+                    content: `select customer '${name}'`,
+                    trigger: `.partnerlist-screen .partner-line td:contains("${name}")`,
+                },
+            ];
+        }
+
+        clickOrderlineCustomerNoteButton() {
+            return [
+                {
+                    content: 'click customer note button',
+                    trigger: '.control-buttons .control-button span:contains("Customer Note")',
+                }
+            ]
+        }
+        clickRefund() {
+            return [
+                {
+                    trigger: '.control-button:contains("Refund")',
+                },
+            ];
+        }
+        confirmOpeningPopup() {
+            return [{ trigger: '.opening-cash-control .button:contains("Open session")' }];
+        }
+    }
+
+    class Check {
+        isShown() {
+            return [
+                {
+                    content: 'product screen is shown',
+                    trigger: '.product-screen',
+                    run: () => {},
+                },
+            ];
+        }
+        selectedOrderlineHas(name, quantity, price) {
+            const res = [
+                {
+                    // check first if the order widget is there and has orderlines
+                    content: 'order widget has orderlines',
+                    trigger: '.order .orderlines',
+                    run: () => {},
+                },
+                {
+                    content: `'${name}' is selected`,
+                    trigger: `.order .orderline.selected .product-name:contains("${name}")`,
+                    run: function () {}, // it's a check
+                },
+            ];
+            if (quantity) {
+                res.push({
+                    content: `selected line has ${quantity} quantity`,
+                    trigger: `.order .orderline.selected .product-name:contains("${name}") ~ .info-list em:contains("${quantity}")`,
+                    run: function () {}, // it's a check
+                });
+            }
+            if (price) {
+                res.push({
+                    content: `selected line has total price of ${price}`,
+                    trigger: `.order .orderline.selected .product-name:contains("${name}") ~ .price:contains("${price}")`,
+                    run: function () {}, // it's a check
+                });
+            }
+            return res;
+        }
+        orderIsEmpty() {
+            return [
+                {
+                    content: `order is empty`,
+                    trigger: `.order .order-empty`,
+                    run: () => {},
+                },
+            ];
+        }
+
+        productIsDisplayed(name) {
+            return [
+                {
+                    content: `'${name}' should be displayed`,
+                    trigger: `.product-list .product-name:contains("${name}")`,
+                    run: () => {},
+                },
+            ];
+        }
+        totalAmountIs(amount) {
+            return [
+                {
+                    content: `order total amount is '${amount}'`,
+                    trigger: `.order-container .order .summary .value:contains("${amount}")`,
+                    run: () => {},
+                }
+            ]
+        }
+        modeIsActive(mode) {
+            return [
+                {
+                    content: `'${mode}' is active`,
+                    trigger: `.numpad button.selected-mode:contains('${mode}')`,
+                    run: function () {},
+                },
+            ];
+        }
+        orderlineHasCustomerNote(name, quantity, note) {
+            return [
+                {
+                    content: `line has ${quantity} quantity`,
+                    trigger: `.order .orderline .product-name:contains("${name}") ~ .info-list em:contains("${quantity}")`,
+                    run: function () {}, // it's a check
+                },
+                {
+                    content: `line has '${note}' as customer note`,
+                    trigger: `.order .orderline .info-list .orderline-note:contains("${note}")`,
+                    run: function () {}, // it's a check
+                },
+            ]
+        }
+    }
+
+    class Execute {
+        /**
+         * Create an orderline for the given `productName` and `quantity`.
+         * - If `unitPrice` is provided, price of the product of the created line
+         *   is changed to that value.
+         * - If `expectedTotal` is provided, the created orderline (which is the currently
+         *   selected orderline) is checked if it contains the correct quantity and total
+         *   price.
+         *
+         * @param {string} productName
+         * @param {string} quantity
+         * @param {string} unitPrice
+         * @param {string} expectedTotal
+         */
+        addOrderline(productName, quantity, unitPrice = undefined, expectedTotal = undefined) {
+            const res = this._do.clickDisplayedProduct(productName);
+            if (unitPrice) {
+                res.push(...this._do.pressNumpad('Price'));
+                res.push(...this._check.modeIsActive('Price'));
+                res.push(...this._do.pressNumpad(unitPrice.toString().split('').join(' ')));
+                res.push(...this._do.pressNumpad('Qty'));
+                res.push(...this._check.modeIsActive('Qty'));
+            }
+            for (let char of (quantity.toString() == '1' ? '' : quantity.toString())) {
+                if ('.0123456789'.includes(char)) {
+                    res.push(...this._do.pressNumpad(char));
+                } else if ('-'.includes(char)) {
+                    res.push(...this._do.pressNumpad('+/-'));
+                }
+            }
+            if (expectedTotal) {
+                res.push(...this._check.selectedOrderlineHas(productName, quantity, expectedTotal));
+            } else {
+                res.push(...this._check.selectedOrderlineHas(productName, quantity));
+            }
+            return res;
+        }
+        addMultiOrderlines(...list) {
+            const steps = [];
+            for (let [product, qty, price] of list) {
+                steps.push(...this.addOrderline(product, qty, price));
+            }
+            return steps;
+        }
+        addCustomerNote(note) {
+            const res = [];
+            res.push(...this._do.clickOrderlineCustomerNoteButton());
+            res.push(...TextAreaPopup._do.inputText(note));
+            res.push(...TextAreaPopup._do.clickConfirm());
+            return res;
+        }
+    }
+
+    return createTourMethods('ProductScreen', Do, Check, Execute);
+});

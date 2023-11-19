@@ -3,17 +3,17 @@
 # 	* social_crm
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,31 +23,31 @@ msgstr ""
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_view_form
 msgid ""
-"<span class=\"o_stat_text\" invisible=\"not use_leads\">Leads</span>\n"
-"                        <span class=\"o_stat_text\" invisible=\"use_leads\">Opportunities</span>"
+"<span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', False)]}\">Leads</span>\n"
+"                        <span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', True)]}\">Opportunities</span>"
 msgstr ""
-"<span class=\"o_stat_text\" invisible=\"not use_leads\">العملاء المهتمون</span>\n"
-"                        <span class=\"o_stat_text\" invisible=\"use_leads\">الفرص</span>"
+"<span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', False)]}\">العملاء المهتمين</span>\n"
+"                        <span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', True)]}\">الفرص</span> "
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_description
 msgid "<span>at</span>"
-msgstr "<span>في</span> "
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_description
 msgid "<span>posted on</span>"
-msgstr "<span>تم النشر في</span> "
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__conversion_source
 msgid "Conversion Source"
-msgstr "مصدر التحويل"
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
@@ -58,20 +58,20 @@ msgstr "تحويل "
 #: model:ir.actions.act_window,name:social_crm.social_post_to_lead_action
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
 msgid "Convert Post to Lead"
-msgstr "تحويل المنشور إلى فرصة عميل مهتم "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model,name:social_crm.model_social_post_to_lead
 msgid "Convert Social Post to Lead"
-msgstr "تحويل المنشور الاجتماعي إلى فرصة عميل مهتم "
+msgstr ""
 
 #. module: social_crm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_crm/static/src/xml/social_crm_button.xml:0
 #: code:addons/social_crm/static/src/xml/social_crm_button.xml:0
 #, python-format
 msgid "Create Lead"
-msgstr "إنشاء عميل مهتم "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__action__create
@@ -107,17 +107,22 @@ msgstr "عدم الربط بعميل "
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__conversion_source__comment
 msgid "From a comment"
-msgstr "من تعليق "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__conversion_source__stream_post
 msgid "From a stream post"
-msgstr "من منشور وسائط "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__id
 msgid "ID"
 msgstr "المُعرف"
+
+#. module: social_crm
+#: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__write_uid
@@ -152,17 +157,17 @@ msgstr "الفرص: "
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__author_name
 msgid "Post Author Name"
-msgstr "اسم كاتب المنشور "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_content
 msgid "Post Content"
-msgstr "محتوى المنشور "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_datetime
 msgid "Post Datetime"
-msgstr "تاريخ ووقت المنشور "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_link
@@ -175,11 +180,10 @@ msgid "Related Customer"
 msgstr "العميل ذو الصلة "
 
 #. module: social_crm
-#. odoo-python
 #: code:addons/social_crm/wizard/social_post_to_lead.py:0
 #, python-format
 msgid "Request from %s"
-msgstr "طلب من %s "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__social_account_id
@@ -194,14 +198,13 @@ msgstr "منشور اجتماعي "
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__social_stream_post_id
 msgid "Social Stream Post"
-msgstr "منشور الوسائط الاجتماعية "
+msgstr "منشور التدفق الاجتماعي "
 
 #. module: social_crm
-#. odoo-python
 #: code:addons/social_crm/wizard/social_post_to_lead.py:0
 #, python-format
 msgid "The lead has been created successfully."
-msgstr "لقد تم إنشاء العميل المهتم بنجاح. "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post__use_leads
@@ -211,14 +214,14 @@ msgstr "استخدم بيانات العملاء المهتمين "
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_campaign_id
 msgid "Utm Campaign"
-msgstr "حملة Utm "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_medium_id
 msgid "Utm Medium"
-msgstr "وسط Utm "
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_source_id
 msgid "Utm Source"
-msgstr "مصدر Utm "
+msgstr ""

@@ -12,10 +12,7 @@ Easily access your documents from your employee profile.
     'website': ' ',
     'depends': ['documents', 'hr'],
     'data': [
-        'data/documents_folder_data.xml',
-        'data/documents_facet_data.xml',
-        'data/documents_tag_data.xml',
-        'data/res_company_data.xml',
+        'data/documents_hr_data.xml',
         'data/mail_template_data.xml',
         'data/ir_actions_server_data.xml',
         'views/res_config_settings_views.xml',

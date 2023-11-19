@@ -3,26 +3,20 @@
 import { registerCleanup } from "@web/../tests/helpers/cleanup";
 import { makeTestEnv } from "@web/../tests/helpers/mock_env";
 import { makeFakeLocalizationService } from "@web/../tests/helpers/mock_services";
-import {
-    getFixture,
-    nextTick,
-    triggerHotkey,
-    patchWithCleanup,
-    drag,
-} from "@web/../tests/helpers/utils";
+import { getFixture, nextTick, triggerHotkey, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { commandService } from "@web/core/commands/command_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { ormService } from "@web/core/orm_service";
 import { registry } from "@web/core/registry";
 import { uiService } from "@web/core/ui/ui_service";
 import { HomeMenu } from "@web_enterprise/webclient/home_menu/home_menu";
-import { browser } from "@web/core/browser/browser";
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
+import testUtils from "web.test_utils";
 import { enterpriseSubscriptionService } from "@web_enterprise/webclient/home_menu/enterprise_subscription_service";
 import { session } from "@web/session";
 import { templates } from "@web/core/assets";
 
-import { App, EventBus } from "@odoo/owl";
+
+const { App, EventBus } = owl;
 const patchDate = testUtils.mock.patchDate;
 const serviceRegistry = registry.category("services");
 let target;
@@ -31,8 +25,8 @@ let target;
 // Helpers
 // -----------------------------------------------------------------------------
 
-async function createHomeMenu(homeMenuProps, config = {}) {
-    const env = await makeTestEnv(config);
+async function createHomeMenu(homeMenuProps) {
+    const env = await makeTestEnv();
     const app = new App(HomeMenu, {
         env,
         props: homeMenuProps,
@@ -138,8 +132,8 @@ QUnit.module(
         QUnit.module("HomeMenu");
 
         QUnit.test("ESC Support", async function (assert) {
-            bus.addEventListener("toggle", (ev) => {
-                assert.step(`toggle ${ev.detail}`);
+            bus.on("toggle", null, (show) => {
+                assert.step(`toggle ${show}`);
             });
             await createHomeMenu(homeMenuProps);
             await testUtils.dom.triggerEvent(window, "keydown", { key: "Escape" });
@@ -147,8 +141,8 @@ QUnit.module(
         });
 
         QUnit.test("Click on an app", async function (assert) {
-            bus.addEventListener("selectMenu", (ev) => {
-                assert.step(`selectMenu ${ev.detail}`);
+            bus.on("selectMenu", null, (menuId) => {
+                assert.step(`selectMenu ${menuId}`);
             });
             await createHomeMenu(homeMenuProps);
 
@@ -166,6 +160,22 @@ QUnit.module(
                 isMailInstalled: false,
                 warning: "admin",
             });
+            let cookie = false;
+            const mockedCookieService = {
+                name: "cookie",
+                start() {
+                    return {
+                        get current() {
+                            return cookie;
+                        },
+                        setCookie() {
+                            cookie = true;
+                        },
+                    };
+                },
+            };
+
+            serviceRegistry.add(mockedCookieService.name, mockedCookieService);
 
             await createHomeMenu(homeMenuProps);
 
@@ -261,8 +271,8 @@ QUnit.module(
         QUnit.test("Navigation and open an app in the home menu", async function (assert) {
             assert.expect(7);
 
-            bus.addEventListener("selectMenu", (ev) => {
-                assert.step(`selectMenu ${ev.detail}`);
+            bus.on("selectMenu", null, (menuId) => {
+                assert.step(`selectMenu ${menuId}`);
             });
             await createHomeMenu(homeMenuProps);
 
@@ -283,75 +293,6 @@ QUnit.module(
             await testUtils.dom.triggerEvent(window, "keydown", { key: "Enter" });
 
             assert.verifySteps(["selectMenu 2"]);
-        });
-
-        QUnit.test("Reorder apps in home menu using drag and drop", async function (assert) {
-            homeMenuProps = {
-                apps: new Array(8).fill().map((x, i) => {
-                    return {
-                        actionID: 121,
-                        appID: i + 1,
-                        id: i + 1,
-                        label: `0${i}`,
-                        parents: "",
-                        webIcon: false,
-                        xmlid: `app.${i}`,
-                    };
-                }),
-            };
-            patchWithCleanup(browser, {
-                setTimeout: (callback, delay) => {
-                    assert.step(`setTimeout of ${delay}ms`);
-                    callback();
-                },
-            });
-            patchWithCleanup(session, { user_settings: { id: 1, homemenu_config: "" } });
-            const mockRPC = (route, args) => {
-                if (args.method === "set_res_users_settings") {
-                    assert.step(`set_res_users_settings`);
-                    return {
-                        id: 1,
-                        homemenu_config:
-                            '["app.1","app.2","app.3","app.0","app.4","app.5","app.6","app.7"]',
-                    };
-                }
-            };
-            const serverData = {
-                models: {
-                    "res.users.settings": {
-                        fields: {
-                            id: {
-                                type: "number",
-                            },
-                            homemenu_config: {
-                                type: "string",
-                            },
-                        },
-                        records: [
-                            {
-                                id: 1,
-                                homemenu_config: "",
-                            },
-                        ],
-                    },
-                },
-            };
-            await createHomeMenu(homeMenuProps, { serverData, mockRPC });
-
-            const { drop } = await drag(".o_draggable:first-child");
-            await drop(".o_draggable:nth-child(4)");
-            assert.verifySteps(["setTimeout of 500ms", "set_res_users_settings"]);
-            const apps = document.querySelectorAll(".o_app");
-            assert.strictEqual(
-                apps[0].getAttribute("data-menu-xmlid"),
-                "app.1",
-                "first displayed app has app.1 xmlid"
-            );
-            assert.strictEqual(
-                apps[3].getAttribute("data-menu-xmlid"),
-                "app.0",
-                "app 0 is now at 4th position"
-            );
         });
 
         QUnit.test(
@@ -423,29 +364,6 @@ QUnit.module(
                 await testUtils.dom.triggerEvent(window, "keydown", { key: "a" });
                 await nextTick();
                 assert.strictEqual(document.activeElement, homeMenuInput);
-            }
-        );
-
-        QUnit.test(
-            "home search input shouldn't be focused on mobile devices [REQUIRE FOCUS]",
-            async function (assert) {
-                // simulate a mobile devices
-                patchWithCleanup(
-                    browser,
-                    Object.assign({}, browser, {
-                        setTimeout: (fn) => fn(),
-                        navigator: {
-                            userAgent: "Chrome/0.0.0 (Linux; Android 13; Odoo TestSuite)",
-                        },
-                    })
-                );
-                const target = getFixture();
-                await createHomeMenu(homeMenuProps);
-                const homeMenuInput = target.querySelector(".o_search_hidden");
-                assert.notOk(
-                    homeMenuInput.matches(":focus"),
-                    "home menu search input shouldn't be have the focus"
-                );
             }
         );
     }

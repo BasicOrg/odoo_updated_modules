@@ -28,7 +28,7 @@
                 <FirstName t-out="partner_contact.name[:35]"/>
                 <LastName/>
             </ContactPerson>
-            <Telephone t-if="partner_contact.phone or partner_contact.mobile" t-out="(partner_contact.phone or partner_contact.mobile)[:18]"/>
+            <Telephone t-out="(partner_contact.phone or partner_contact.mobile)[:18]"/>
             <Email t-if="partner_contact.email" t-out="partner_contact.email[:70]"/>
             <Website t-if="partner_contact.website" t-out="partner_contact.website"/>
         </Contact>
@@ -76,19 +76,19 @@
         </CreditAmount>
         <!-- When both debit and credit are 0.0, we still need to display one or the other, depending on the move_type -->
         <DebitAmount t-if="not line_vals.get('debit') and not line_vals.get('credit') and line_vals.get('move_type', '') in ('in_invoice', 'out_refund')">
-            <Amount t-out="format_float(line_vals['debit'])"/>
+            <Amount t-esc="format_float(line_vals['debit'])"/>
             <t t-if="line_vals['currency_id'] != company.currency_id.id">
-                <CurrencyCode t-out="line_vals['currency_code']"/>
-                <CurrencyAmount t-out="format_float(abs(line_vals['amount_currency']))"/>
-                <ExchangeRate t-out="format_float(line_vals['rate'], digits=8)"/>
+                <CurrencyCode t-esc="line_vals['currency_code']"/>
+                <CurrencyAmount t-esc="format_float(abs(line_vals['amount_currency']))"/>
+                <ExchangeRate t-esc="format_float(line_vals['rate'], digits=8)"/>
             </t>
         </DebitAmount>
         <CreditAmount t-if="not line_vals.get('debit') and not line_vals.get('credit') and line_vals.get('move_type', '') in ('out_invoice', 'in_refund')">
-            <Amount t-out="format_float(line_vals['credit'])"/>
+            <Amount t-esc="format_float(line_vals['credit'])"/>
             <t t-if="line_vals['currency_id'] != company.currency_id.id">
-                <CurrencyCode t-out="line_vals['currency_code']"/>
-                <CurrencyAmount t-out="format_float(abs(line_vals['amount_currency']))"/>
-                <ExchangeRate t-out="format_float(line_vals['rate'], digits=8)"/>
+                <CurrencyCode t-esc="line_vals['currency_code']"/>
+                <CurrencyAmount t-esc="format_float(abs(line_vals['amount_currency']))"/>
+                <ExchangeRate t-esc="format_float(line_vals['rate'], digits=8)"/>
             </t>
         </CreditAmount>
     </template>
@@ -133,9 +133,6 @@
                         <AccountID t-out="account.id"/>
                         <AccountDescription t-out="account.name[:256]"/>
                         <StandardAccountID t-out="account.code"/>
-                        <t t-if="account_vals['saft_account_type']">
-                            <AccountType t-esc="account_vals['saft_account_type']"/>
-                        </t>
                         <t t-if="account_vals['opening_balance'] &lt; 0.0">
                             <OpeningCreditBalance t-out="format_float(-account_vals['opening_balance'])"/>
                         </t>

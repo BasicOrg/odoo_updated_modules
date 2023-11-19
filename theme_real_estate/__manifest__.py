@@ -5,6 +5,7 @@
     'summary': 'Real Estate, Agencies, Construction, Services, Accomodations, Lodging, Hosting, Houses, Appartments, Vacations, Holidays, Travels',
     'sequence': 320,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -22,7 +23,6 @@
         'views/snippets/s_title.xml',
         'views/snippets/s_image_gallery.xml',
         'views/snippets/s_call_to_action.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/real_estate_description.png',
@@ -38,14 +38,9 @@
         'website.s_masonry_block_default_image_1': '/theme_real_estate/static/src/img/snippets/s_masonry_block.jpg',
         'website.s_quotes_carousel_demo_image_1': '/theme_real_estate/static/src/img/snippets/s_quotes_carousel_1.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_banner', 's_text_block', 's_text_image', 's_image_text', 's_title', 's_three_columns',
                      's_title', 's_masonry_block', 's_numbers', 's_quotes_carousel'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-real-estate.odoo.com',

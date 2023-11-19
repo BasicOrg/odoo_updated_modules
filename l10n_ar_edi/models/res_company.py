@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.misc import file_open
+from odoo.modules.module import get_module_resource
 from datetime import datetime
 import base64
 import random
@@ -56,7 +56,7 @@ class ResCompany(models.Model):
         with_crt = self.filtered(lambda x: x.l10n_ar_afip_ws_crt)
         remaining = self - with_crt
         for rec in with_crt:
-            certificate = self._l10n_ar_get_certificate_object(rec.with_context(bin_size=False).l10n_ar_afip_ws_crt)
+            certificate = self._l10n_ar_get_certificate_object(rec.l10n_ar_afip_ws_crt)
             rec.l10n_ar_afip_ws_crt_fname = certificate.get_subject().CN
         remaining.l10n_ar_afip_ws_crt_fname = ''
 
@@ -117,7 +117,7 @@ class ResCompany(models.Model):
         exception when it has not been defined yet """
         self.ensure_one()
         if not self.l10n_ar_afip_ws_environment:
-            raise UserError(_('AFIP environment not configured for company %r, please check accounting settings', self.name))
+            raise UserError(_('AFIP environment not configured for company "%s", please check accounting settings') % (self.name))
         return self.l10n_ar_afip_ws_environment
 
     def _l10n_ar_get_connection(self, afip_ws):
@@ -157,7 +157,7 @@ class ResCompany(models.Model):
         """ Return the pkey and certificate string representations in order to be used. Also raise exception if any key or certificate is not defined """
         self.ensure_one()
         pkey = base64.decodebytes(self.with_context(bin_size=False).l10n_ar_afip_ws_key) if self.l10n_ar_afip_ws_key else ''
-        cert = base64.decodebytes(self.with_context(bin_size=False).l10n_ar_afip_ws_crt) if self.l10n_ar_afip_ws_crt else ''
+        cert = base64.decodebytes(self.l10n_ar_afip_ws_crt) if self.l10n_ar_afip_ws_crt else ''
         res = (pkey, cert)
         if not all(res):
             error = '\n * ' + _(' Missing private key.') if not pkey else ''
@@ -211,6 +211,6 @@ class ResCompany(models.Model):
         is using the same certificate in another database) """
         for rec in self:
             old = rec.l10n_ar_afip_ws_crt_fname
-            cert_file = 'l10n_ar_edi/demo/cert%d.crt' % random.randint(1, 10)
-            rec.l10n_ar_afip_ws_crt = base64.b64encode(file_open(cert_file, 'rb').read())
+            cert_file = get_module_resource('l10n_ar_edi', 'demo', 'cert%d.crt' % random.randint(1, 10))
+            rec.l10n_ar_afip_ws_crt = base64.b64encode(open(cert_file, 'rb').read())
             _logger.log(25, 'Setting demo certificate from %s to %s in %s company' % (old, rec.l10n_ar_afip_ws_crt_fname, rec.name))

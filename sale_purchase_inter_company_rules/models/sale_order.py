@@ -16,7 +16,7 @@ class sale_order(models.Model):
         for order in self:
             if not order.company_id: # if company_id not found, return to normal behavior
                 continue
-            # if company allow to create a Purchase Order from Sales Order, then do it!
+            # if company allow to create a Purchase Order from Sales Order, then do it !
             company = self.env['res.company']._find_company_from_partner(order.partner_id.id)
             if company and company.rule_type in ('sale', 'sale_purchase') and (not order.auto_generated):
                 order.with_user(company.intercompany_user_id).with_context(default_company_id=company.id).with_company(company).inter_company_create_purchase_order(company)
@@ -36,7 +36,7 @@ class sale_order(models.Model):
             # find user for creating and validating SO/PO from company
             intercompany_uid = company.intercompany_user_id and company.intercompany_user_id.id or False
             if not intercompany_uid:
-                raise UserError(_('Provide one user for intercompany relation for %(name)s '), name=company.name)
+                raise UserError(_('Provide one user for intercompany relation for % ') % company.name)
             # check intercompany user access rights
             if not self.env['purchase.order'].with_user(intercompany_uid).check_access_rights('create', raise_exception=False):
                 raise UserError(_("Inter company user of company %s doesn't have enough access rights", company.name))

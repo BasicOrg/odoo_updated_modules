@@ -8,12 +8,13 @@ if [[ $testRealPath == "" ]]; then
 fi
 
 enableInDir () {
-    cd "$1" || exit
+    cd $1
     hooksPath="$(realpath --relative-to=. "$tooling/hooks")"
     git config core.hooksPath "$hooksPath"
     cp "$tooling/_eslintignore" .eslintignore
+    cp "$tooling/_prettierignore" .prettierignore
     cp "$tooling/_eslintrc.json" .eslintrc.json
-    cp "$tooling/_jsconfig.json" jsconfig.json
+    cp "$tooling/_prettierrc.json" .prettierrc.json
     cp "$tooling/_package.json" package.json
     if [[ $2 == "copy" ]]; then
         # copy over node_modules and package-lock to avoid double "npm install"
@@ -30,7 +31,7 @@ if [[ $willingToInstallToolingInEnterprise != "n" ]]
 then
     read -p "What is the relative path from community to enterprise ? (../enterprise)" pathToEnterprise
     pathToEnterprise=${pathToEnterprise:-../enterprise}
-    pathToEnterprise=$(realpath "$community/$pathToEnterprise")
+    pathToEnterprise=$(realpath $community/$pathToEnterprise)
 fi
 
 enableInDir "$community"
@@ -42,6 +43,6 @@ fi
 
 echo ""
 echo "JS tooling have been added to the roots"
-echo "Make sure to refresh the eslint and typescript service and configure your IDE so it uses the config files"
+echo "Make sure to refresh the eslint service and configure your IDE so it uses the config files"
 echo 'For VSCode, look inside your .vscode/settings.json file ("editor.defaultFormatter": "dbaeumer.vscode-eslint")'
 echo ""

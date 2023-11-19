@@ -3,41 +3,36 @@
 
     <template id="sign_request_logs_user">
         <t t-call="web.html_container">
-            <div class="oe_structure"></div>
             <t t-set="print_date" t-value="datetime.datetime.utcnow().strftime('%Y-%m-%d - %H:%M:%S')"/>
             <t t-foreach="docs" t-as="o">
-                <div class="oe_structure"></div>
                 <!-- we want UTC for the reports-->
                 <t t-set="o" t-value="o.with_context(tz='UTC')"/>
                 <t t-set="view_logs" t-value="o.sudo().sign_log_ids.filtered(lambda l: l.action == 'open')"/>
                 <t t-set="change_logs" t-value="o.sudo().sign_log_ids - view_logs"/>
                 <t t-set="creation_log" t-value="o.sudo().sign_log_ids.filtered(lambda l: l.action == 'create')"/>
                 <t t-call="web.external_layout">
-                    <div class="oe_structure"></div>
                     <h2 class="mt16">
                         Certificate of Completion<br/>
                     </h2>
                     <h4>
                         <strong t-field="o.reference"/>
                     </h4>
-                    <div class="text-muted small">Printed on <span t-out="print_date">2023-08-18 - 12:30:45</span> UTC</div>
-                    <div class="oe_structure"></div>
+                    <div class="text-muted small">Printed on <t t-esc="print_date"/> UTC</div>
                     <h5 class="mt16">Document Details</h5>
 
                     <div class="row">
                         <div class="col-6">
-                            <div><b>Created by:</b> <span t-field="o.create_uid.sudo().partner_id.name">John Doe</span></div>
-                            <div><b>Created on:</b> <span t-field="o.create_date">2023-08-18</span> (UTC)</div>
-                            <div><b>Creation IP Address:</b> <span t-out="creation_log and creation_log[0].ip">192.168.1.1</span></div>
-                            <div><b>Signers:</b> <span t-out="len(o.sudo().request_item_ids)">5</span></div>
+                            <div><b>Created by:</b> <span t-field="o.create_uid.sudo().partner_id"/></div>
+                            <div><b>Created on:</b> <span t-field="o.create_date"/> (UTC)</div>
+                            <div><b>Creation IP Address:</b> <span t-esc="creation_log and creation_log[0].ip"/></div>
+                            <div><b>Signers:</b> <span t-esc="len(o.sudo().request_item_ids)"/></div>
                         </div>
                         <div class="col-6">
-                            <div><b>Document ID:</b> <span t-out="o.id">1001</span></div>
-                            <div><b>Signature:</b> <small t-out="creation_log and creation_log[0].log_hash">ABCD1234</small></div>
+                            <div><b>Document ID:</b> <t t-esc="o.id"/></div>
+                            <div><b>Signature:</b> <small t-esc="creation_log and creation_log[0].log_hash"/></div>
                         </div>
                     </div>
                     <br/>
-                    <div class="oe_structure"></div>
                     <h5>Participants</h5>
                     <table class="table table-sm o_main_table small mb-1">
                         <t t-set="has_sms_validation" t-value="o.sudo().request_item_ids.filtered(lambda i: i.sms_token)"/>
@@ -55,8 +50,8 @@
                             <tbody>
                                 <t t-foreach="o.sudo().request_item_ids" t-as="sri">
                                     <tr>
-                                        <td><span t-field="sri.partner_id.name">John Smith</span></td>
-                                        <td><span t-field="sri.partner_id.email">john@example.com</span></td>
+                                        <td><span t-field="sri.partner_id.name"/></td>
+                                        <td><span t-field="sri.partner_id.email"/></td>
                                         <td class="text-center">
                                             <t t-if="sri.access_via_link or sri.partner_id.user_id != False">
                                                 <i class="fa fa-check-square-o"/>
@@ -68,13 +63,13 @@
                                         <td class="participant_sms_validation" t-if="has_sms_validation">
                                             <t t-if="sri.sms_token">
                                                 <t t-set="number" t-value="''.join(['******', sri.sms_number[-4:]])"/>
-                                                <span t-out="number">******1234</span>
+                                                <span t-esc="number"/>
                                             </t>
                                         </td>
                                     </tr>
                                     <tr t-if="sri.frame_hash">
                                         <td colspan="7" class="text-end text-muted small" style="border-end-style:hidden;border-start-style:hidden;">
-                                            Signatory's hash: <pre style="display:inline" t-field="sri.frame_hash">XYZ123456</pre>
+                                            Signatory's hash : <pre style="display:inline" t-field="sri.frame_hash"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -88,7 +83,6 @@
                         <div class="text-muted sms_footnote" t-if="has_sms_validation">
                             <small>SMS: The signatory has confirmed their control of the phone number using a unique code sent by SMS</small>
                         </div>
-                        <div class="oe_structure"></div>
                     </section>
                     <h5>Signing Events</h5>
                     <table class="table table-sm o_main_table small mb-4">
@@ -106,18 +100,19 @@
                             <t t-foreach="change_logs" t-as="log">
                                 <tr>
                                     <td>
-                                        <span t-field="log.action">Demo Action</span>
+                                        <span t-field="log.action"/>
                                         <img t-if="log.action == 'sign' and log.sign_request_item_id.signature" class="text-start" t-att-src="image_data_uri(log.sign_request_item_id.signature)" style="max-height: 40px"/>
                                     </td>
-                                    <td>
-                                        <span t-field="log.partner_id">Marc Demo</span>
-                                        <span t-if="log.partner_id.email" t-field="log.partner_id.email">demo@email.com</span>
+                                    <td> <span t-field="log.partner_id"/>
+                                    <t t-if="log.partner_id.email">
+                                        <br/><span t-field="log.partner_id.email"/>
+                                    </t>
                                     </td>
-                                    <td> <span t-field="log.log_date">20-03-2000</span> </td>
+                                    <td> <span t-field="log.log_date"/> </td>
                                     <td groups="sign.group_sign_manager">
                                         <t t-if="log.latitude and log.longitude">
-                                            <span t-field="log.latitude">Demo Latitude</span>,
-                                            <span t-field="log.longitude">Demo Longitude</span>
+                                            <span t-field="log.latitude"/>,
+                                            <span t-field="log.longitude"/>
                                             <div>
                                                 <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{log.latitude}},{{log.longitude}}">
                                                     <i class="fa fa-globe"/> View
@@ -128,11 +123,11 @@
                                             <span class="text-muted">Not available</span>
                                         </t>
                                     </td>
-                                    <td groups="sign.group_sign_manager"> <span t-field="log.ip">Demo IP</span> </td>
+                                    <td groups="sign.group_sign_manager"> <span t-field="log.ip"/> </td>
                                 </tr>
                                 <tr t-if="log.log_hash">
                                     <td colspan="7" class="text-end text-muted small" style="border-end-style:hidden;border-start-style:hidden;">
-                                         Signature: <pre style="display:inline" t-field="log.log_hash">#7898678</pre>
+                                         Signature: <pre style="display:inline" t-field="log.log_hash"/>
                                     </td>
                                 </tr>
                             </t>
@@ -145,7 +140,7 @@
                         <p><i class="fa fa-exclamation-circle"/> The document's integrity could not be verified.</p>
                     </div>
                     <div class="small" t-if="o.state == 'signed'">
-                        <p>The final document and this completion history have been sent by email on&amp;nbsp; <span t-field="o.completion_date">20-03-2000</span> to: <t t-out="', '.join(o.sudo()._get_final_recipients())"/>.</p>
+                        <p>The final document and this completion history have been sent by email on&amp;nbsp; <span t-field="o.completion_date"/> to: <t t-esc="', '.join(o.sudo()._get_final_recipients())"/>.</p>
                     </div>
                     <h5>Access Logs</h5>
                     <table class="table table-sm o_main_table small mb-4">
@@ -160,16 +155,13 @@
                         </thead>
                         <tbody>
                             <tr t-foreach="view_logs" t-as="log">
-                                <td>
-                                    <span t-field="log.partner_id">Demo Partner</span>
-                                    <span t-field="log.partner_id.email">demo@email.com</span>
-                                </td>
-                                <td> <span t-field="log.log_date">20-03-2000</span> </td>
-                                <td> <span t-field="log.request_state">Antwrep</span> </td>
+                                <td> <span t-field="log.partner_id"/> <span t-field="log.partner_id.email"/></td>
+                                <td> <span t-field="log.log_date"/> </td>
+                                <td> <span t-field="log.request_state"/> </td>
                                 <td groups="sign.group_sign_manager">
                                     <t t-if="log.latitude and log.longitude">
-                                        <span t-field="log.latitude">Demo Latitude</span>,
-                                        <span t-field="log.longitude">Demo Longitude</span>
+                                        <span t-field="log.latitude"/>,
+                                        <span t-field="log.longitude"/>
                                         <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{log.latitude}},{{log.longitude}}">
                                             <i class="fa fa-globe"/> View
                                         </a>
@@ -178,7 +170,7 @@
                                         <span class="text-muted">Not available</span>
                                     </t>
                                 </td>
-                                <td groups="sign.group_sign_manager"> <span t-field="log.ip">IP</span> </td>
+                                <td groups="sign.group_sign_manager"> <span t-field="log.ip"/> </td>
                             </tr>
                         </tbody>
                     </table>

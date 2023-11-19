@@ -18,21 +18,20 @@
             <tbody>
                 <t t-foreach="slots" t-as="slot">
                     <tr>
-                        <td t-if="show_role" name="role_record" class="align-middle"><span t-out="slot.role_id.name">Manager</span></td>
-                        <td class="align-middle"><span t-out="slot._format_datetime_to_user_tz(slot.start_datetime, env, slot.resource_id.tz)">01/01/2023 9:00 AM</span></td>
-                        <td class="align-middle"><span t-out="slot._format_datetime_to_user_tz(slot.end_datetime, env, slot.resource_id.tz)">01/01/2023 5:00 PM</span></td>
+                        <td t-if="show_role" name="role_record" class="align-middle"><t t-if="slot.role_id" t-esc="slot.role_id.name" /></td>
+                        <td class="align-middle"><t t-esc="slot._format_datetime_to_user_tz(slot.start_datetime, env, slot.resource_id.tz)" /></td>
+                        <td class="align-middle"><t t-esc="slot._format_datetime_to_user_tz(slot.end_datetime, env, slot.resource_id.tz)" /></td>
                         <td t-if="show_time" class="align-middle">
-                            <span t-if="slot.allocated_hours" t-out="ceil(slot.allocated_hours)" t-options="{'widget': 'float_time'}">8 hours</span>
-                            <span t-if="slot.allocated_percentage and show_percentage">
-                                (<span t-out="ceil(slot.allocated_percentage)" t-options="{'widget': 'float', 'precision': 0}">100</span>%)
-                            </span>
+                            <t t-if="slot.allocated_hours" t-out="ceil(slot.allocated_hours)" t-options="{'widget': 'float_time'}"/>
+                            <t t-if="slot.allocated_percentage and show_percentage">
+                                (<t t-out="ceil(slot.allocated_percentage)" t-options="{'widget': 'float', 'precision': 0}"/>%)
+                            </t>
                         </td>
-                        <td t-if="show_name" class="align-middle"><span t-if="slot.name" t-out="slot.name">Planning Meeting</span></td>
+                        <td t-if="show_name" class="align-middle"><t t-if="slot.name" t-esc="slot.name" /></td>
                     </tr>
                 </t>
             </tbody>
         </table>
-        <div class="oe_structure"></div>
         <p style="page-break-before: always;"></p>
     </template>
 
@@ -44,16 +43,14 @@
                 <div class="page">
                     <h1>Planning</h1>
 
-                    <div class="oe_structure"></div>
                     <t t-foreach="grouped_slots" t-as="resource">
                         <h4>
-                            <span t-out="resource.name" t-if="resource">Marc Demo</span>
+                            <t t-esc="resource.name" t-if="resource" />
                             <t t-else="">Open Shifts</t>
                         </h4>
                         <t t-set="slots" t-value="grouped_slots[resource]" />
                         <t t-call="planning.resource_planning" />
                     </t>
-                    <div class="oe_structure"></div>
                 </div>
             </t>
         </t>

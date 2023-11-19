@@ -1,8 +1,6 @@
-/** @odoo-module */
-
 import { setSelection } from '../../src/OdooEditor.js';
 import { Powerbox } from '../../src/powerbox/Powerbox.js';
-import { BasicEditor, _isMobile, insertText, testEditor, triggerEvent } from '../utils.js';
+import { BasicEditor, insertText, testEditor, triggerEvent } from '../utils.js';
 
 const getCurrentCommandNames = powerbox => {
     return [...powerbox.el.querySelectorAll('.oe-powerbox-commandName')].map(c => c.innerText);
@@ -28,7 +26,7 @@ describe('Powerbox', () => {
                 stepFunction: async editor => {
                     await insertText(editor, '/');
                     await insertText(editor, 'head');
-                    await triggerEvent(editor.editable, 'keyup');
+                    triggerEvent(editor.editable, 'keyup');
                     window.chai.expect(getCurrentCommandNames(editor.powerbox)).to.eql(['Heading 1', 'Heading 2', 'Heading 3']);
                 },
             });
@@ -40,31 +38,16 @@ describe('Powerbox', () => {
                     editor.powerbox.el.classList.add('yo');
                     await insertText(editor, '/');
                     await insertText(editor, 'head');
-                    await triggerEvent(editor.editable, 'keyup');
-                    await triggerEvent(editor.editable, 'keydown', { key: 'Enter' });
+                    triggerEvent(editor.editable, 'keyup');
+                    triggerEvent(editor.editable, 'keydown', { key: 'Enter' });
                 },
                 contentAfter: '<h1>ab[]</h1>',
             });
         });
     });
-    it('should insert a 3x3 table on type `/table` in mobile view', async () => {
-        if(_isMobile()){
-            await testEditor(BasicEditor, {
-                contentBefore: `<p>[]<br></p>`,
-                stepFunction: async editor => {
-                    await insertText(editor,'/');
-                    await insertText(editor, 'table');
-                    await triggerEvent(editor.editable,'keyup');
-                    await triggerEvent(editor.editable,'keydown', {key: 'Enter'});
-                },
-                contentAfter: `<table class="table table-bordered o_table"><tbody><tr><td>[]<p><br></p></td><td><p><br></p></td><td><p><br></p></td></tr><tr><td><p><br></p></td><td><p><br></p></td><td><p><br></p></td></tr><tr><td><p><br></p></td><td><p><br></p></td><td><p><br></p></td></tr></tbody></table><p><br></p>`,
-            });
-        }
-    });
     describe('class', () => {
         it('should properly order default commands and categories', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             const powerbox = new Powerbox({
                 categories: [
@@ -98,7 +81,6 @@ describe('Powerbox', () => {
         });
         it('should navigate through commands with arrow keys', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             const powerbox = new Powerbox({
                 categories: [],
@@ -111,20 +93,19 @@ describe('Powerbox', () => {
             });
             powerbox.open();
             window.chai.expect(powerbox._context.selectedCommand.name).to.eql('1');
-            await triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
+            triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
             window.chai.expect(powerbox._context.selectedCommand.name).to.eql('2');
-            await triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
+            triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
             window.chai.expect(powerbox._context.selectedCommand.name).to.eql('3');
-            await triggerEvent(editable, 'keydown', { key: 'ArrowUp'});
+            triggerEvent(editable, 'keydown', { key: 'ArrowUp'});
             window.chai.expect(powerbox._context.selectedCommand.name).to.eql('2');
-            await triggerEvent(editable, 'keydown', { key: 'ArrowUp'});
+            triggerEvent(editable, 'keydown', { key: 'ArrowUp'});
             window.chai.expect(powerbox._context.selectedCommand.name).to.eql('1');
             powerbox.destroy();
             editable.remove();
         });
         it('should execute command on press Enter', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             const powerbox = new Powerbox({
                 categories: [],
@@ -135,21 +116,18 @@ describe('Powerbox', () => {
                 ],
                 editable,
             });
-            setSelection(editable, 0);
             powerbox.open();
             window.chai.expect(editable.innerText).to.eql('');
-            await triggerEvent(editable, 'keydown', { key: 'Enter'});
+            triggerEvent(editable, 'keydown', { key: 'Enter'});
             window.chai.expect(editable.innerText).to.eql('1');
-            powerbox.open();
-            await triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
-            await triggerEvent(editable, 'keydown', { key: 'Enter'});
+            triggerEvent(editable, 'keydown', { key: 'ArrowDown'});
+            triggerEvent(editable, 'keydown', { key: 'Enter'});
             window.chai.expect(editable.innerText).to.eql('2');
             powerbox.destroy();
             editable.remove();
         });
         it('should filter commands with `commandFilters`', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             const powerbox = new Powerbox({
                 categories: [],
@@ -175,7 +153,6 @@ describe('Powerbox', () => {
         });
         it('should filter commands with `isDisabled`', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             let disableCommands = false;
             const powerbox = new Powerbox({
@@ -205,7 +182,6 @@ describe('Powerbox', () => {
         });
         it('should filter commands with filter text', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             editable.append(document.createTextNode('original text'));
             setSelection(editable.firstChild, 13);
@@ -226,25 +202,24 @@ describe('Powerbox', () => {
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'a2', 'a3', 'b1y', 'b2x', 'b3x']);
             // filter: '1'
             editable.append(document.createTextNode('1'));
-            await triggerEvent(editable, 'keyup');
+            triggerEvent(editable, 'keyup');
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'b1y']);
             // filter: ''
             editable.lastChild.remove();
-            await triggerEvent(editable, 'keyup');
+            triggerEvent(editable, 'keyup');
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'a2', 'a3', 'b1y', 'b2x', 'b3x']);
             // filter: 'a'
             editable.append(document.createTextNode('a'));
-            await triggerEvent(editable, 'keyup'); // filter: 'a'.
+            triggerEvent(editable, 'keyup'); // filter: 'a'.
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'a2', 'a3']);
             editable.append(document.createTextNode('1'));
-            await triggerEvent(editable, 'keyup'); // filter: 'a1'.
+            triggerEvent(editable, 'keyup'); // filter: 'a1'.
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1']);
             powerbox.destroy();
             editable.remove();
         });
         it('should close the Powerbox on remove last filter text with Backspace', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             editable.append(document.createTextNode('1'));
             setSelection(editable.firstChild, 13);
@@ -266,19 +241,19 @@ describe('Powerbox', () => {
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'a2', 'a3', 'b1y', 'b2x', 'b3x']);
             // Text: '1y' -> filter: 'y'
             editable.append(document.createTextNode('x'));
-            await triggerEvent(editable, 'keyup');
+            triggerEvent(editable, 'keyup');
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['b2x', 'b3x']);
             // Text: '1'
             editable.lastChild.remove();
-            await triggerEvent(editable, 'keydown', { key: 'Backspace' });
-            await triggerEvent(editable, 'keyup');
+            triggerEvent(editable, 'keydown', { key: 'Backspace' });
+            triggerEvent(editable, 'keyup');
             window.chai.expect(getCurrentCommandNames(powerbox)).to.eql(['a1', 'a2', 'a3', 'b1y', 'b2x', 'b3x']);
             window.chai.expect(powerbox.isOpen).to.eql(true);
             window.chai.expect(powerbox.el.style.display).not.to.eql('none');
             // Text: ''
             editable.lastChild.remove();
-            await triggerEvent(editable, 'keydown', { key: 'Backspace' });
-            await triggerEvent(editable, 'keyup');
+            triggerEvent(editable, 'keydown', { key: 'Backspace' });
+            triggerEvent(editable, 'keyup');
             window.chai.expect(powerbox.isOpen).to.eql(false);
             window.chai.expect(powerbox.el.style.display).to.eql('none');
             powerbox.destroy();
@@ -286,7 +261,6 @@ describe('Powerbox', () => {
         });
         it('should close the Powerbox on press Escape', async () => {
             const editable = document.createElement('div');
-            editable.classList.add('odoo-editor-editable');
             document.body.append(editable);
             const powerbox = new Powerbox({
                 categories: [],
@@ -300,7 +274,7 @@ describe('Powerbox', () => {
             powerbox.open();
             window.chai.expect(powerbox.isOpen).to.eql(true);
             window.chai.expect(powerbox.el.style.display).not.to.eql('none');
-            await triggerEvent(editable, 'keydown', { key: 'Escape' });
+            triggerEvent(editable, 'keydown', { key: 'Escape' });
             window.chai.expect(powerbox.isOpen).to.eql(false);
             window.chai.expect(powerbox.el.style.display).to.eql('none');
             powerbox.destroy();

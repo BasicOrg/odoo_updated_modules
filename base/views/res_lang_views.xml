@@ -12,24 +12,24 @@
                     <field name="name"/>
                     <field name="code" groups="base.group_no_one"/>
                     <field name="iso_code" groups="base.group_no_one"/>
-                    <field name="url_code" groups="base.group_no_one" column_invisible="True"/>
+                    <field name="url_code" groups="base.group_no_one" invisible="1"/>
                     <field name="direction" groups="base.group_no_one"/>
                     <field name="active"/>
                     <button name="%(base.action_view_base_language_install)d"
                         string="Activate"
                         type="action"
                         icon="fa-check"
-                        invisible="active"/>
+                        attrs="{'invisible': [('active', '=', True)]}"/>
                     <button name="%(base.action_view_base_language_install)d"
                         string="Update"
                         type="action"
                         icon="fa-refresh"
-                        invisible="not active"/>
+                        attrs="{'invisible': [('active', '!=', True)]}"/>
                     <button name="action_archive"
                         string="Disable"
                         type="object"
                         icon="fa-times"
-                        invisible="not active"/>
+                        attrs="{'invisible': [('active', '!=', True)]}"/>
                 </tree>
             </field>
         </record>
@@ -41,14 +41,11 @@
                 <form string="Languages">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="%(base.action_view_base_language_install)d"
+                            <button string="Activate and Translate"
+                                name="%(base.action_view_base_language_install)d"
                                 type="action"
                                 class="oe_stat_button"
-                                icon="fa-refresh">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">Activate and Translate</span>
-                                </div>
-                            </button>
+                                icon="fa-refresh" />
                         </div>
                         <field name="flag_image" widget="image" class="oe_avatar"/>
                         <div class="oe_title">

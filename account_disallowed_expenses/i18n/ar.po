@@ -3,21 +3,27 @@
 # 	* account_disallowed_expenses
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: account_disallowed_expenses
+#: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.disallowed_expenses_main_template
+msgid ""
+"<span>There are multiple disallowed expenses rates in this period</span>"
+msgstr "<span>توجد عدة معدلات نفقات غير مسموح بها في هذه الفترة</span>"
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_account
@@ -49,7 +55,7 @@ msgstr "اسم الفئة"
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__code
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "Code"
-msgstr "رمز "
+msgstr "الكود"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__company_id
@@ -77,7 +83,7 @@ msgstr "السعر الحالي"
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__rate
 msgid "Disallowed %"
-msgstr "النسبة % غير المسموح بها "
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_disallowed_amount
@@ -105,7 +111,7 @@ msgstr "فئة النفقات غير المسموح بها "
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_report_handler
 msgid "Disallowed Expenses Custom Handler"
-msgstr "الأداة المخصصة للتعامل مع النفقات غير المسموح بها "
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_rate
@@ -119,9 +125,10 @@ msgid "Disallowed Expenses Report"
 msgstr "تقرير النفقات غير المسموح بها "
 
 #. module: account_disallowed_expenses
-#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code
-msgid "Disallowed expenses category code should be unique."
+#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code_in_country
+msgid "Disallowed expenses category code should be unique in each company."
 msgstr ""
+"يجب أن يكون الكود الخاص بفئة النفقات غير المسموح بها فريداً في كل شركة. "
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__display_name
@@ -130,24 +137,16 @@ msgid "Display Name"
 msgstr "اسم العرض "
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "General Ledger"
-msgstr "دفتر الأستاذ العام"
-
-#. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__id
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__id
 msgid "ID"
 msgstr "المُعرف"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Journal Items"
-msgstr "عناصر اليومية"
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category____last_update
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__write_uid
@@ -167,7 +166,6 @@ msgid "Name"
 msgstr "الاسم"
 
 #. module: account_disallowed_expenses
-#. odoo-python
 #: code:addons/account_disallowed_expenses/models/account_disallowed_expenses.py:0
 #, python-format
 msgid "No Rate"
@@ -182,18 +180,18 @@ msgstr "المعدل "
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "Rates"
-msgstr "الأسعار"
+msgstr "المعدلات "
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Related Account(s)"
-msgstr "الحسابات ذات الصلة "
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Set Rates"
-msgstr "إعداد الأسعار "
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,help:account_disallowed_expenses.field_account_disallowed_expenses_category__active
@@ -203,21 +201,7 @@ msgstr "قم بتعيين القيمة النشطة كغير صحيحة لإخف
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__date_from
 msgid "Start Date"
-msgstr "تاريخ البدء "
-
-#. module: account_disallowed_expenses
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "There are multiple disallowed expenses rates in this period"
-msgstr "توجد عدة معدلات نفقات غير مسموح بها في هذه الفترة "
-
-#. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Total"
-msgstr "الإجمالي"
+msgstr "تاريخ البداية"
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_total_amount
@@ -227,9 +211,9 @@ msgstr "المبلغ الإجمالي"
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. 1201"
-msgstr "مثال: 1201 "
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. Non-Deductible Tax"
-msgstr "مثال: الضريبة غير القابلة للخصم "
+msgstr ""

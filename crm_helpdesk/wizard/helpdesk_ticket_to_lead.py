@@ -95,6 +95,7 @@ class HelpdeskTicketConvert2Lead(models.TransientModel):
             body=_('This lead has been created from ticket: %s', ticket_link),
             message_type='comment',
             subtype_xmlid='mail.mt_note',
+            author_id=self.env.user.partner_id.id,
         )
 
         # move the mail thread and attachments
@@ -104,10 +105,9 @@ class HelpdeskTicketConvert2Lead(models.TransientModel):
         self.ticket_id.action_archive()
 
         # After mail thread move, add linked lead message to ticket
-        self.ticket_id.message_post_with_source(
-            'helpdesk.ticket_conversion_link',
-            render_values={'created_record': lead_sudo, 'message': _('Lead created')},
-            subtype_xmlid='mail.mt_note',
+        self.ticket_id.message_post_with_view(
+            'helpdesk.ticket_conversion_link', values={'created_record': lead_sudo, 'message': _('Lead created')},
+            subtype_id=self.env.ref('mail.mt_note').id, author_id=self.env.user.partner_id.id
         )
 
         # return to lead (if can see) or ticket (if cannot)

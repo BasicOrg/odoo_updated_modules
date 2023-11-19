@@ -9,8 +9,9 @@ class ProjectUpdate(models.Model):
     @api.model
     def _get_services_values(self, project):
         services = super()._get_services_values(project)
-        if not project.allow_billable:
+        if not project.allow_billable or not project.allow_forecast:
             return services
+        services['total_planned'] = 0
         sol_ids = [
             service['sol'].id
             for service in services['data']
@@ -19,13 +20,16 @@ class ProjectUpdate(models.Model):
             ('project_id', '=', project.id),
             ('sale_line_id', 'in', sol_ids),
             ('start_datetime', '>=', fields.Date.today())
-        ], ['sale_line_id'], ['allocated_hours:sum'])
-        slots_by_order_line = {sale_line.id: allocated_hours_sum for sale_line, allocated_hours_sum in slots}
+        ], ['sale_line_id', 'allocated_hours'], ['sale_line_id'])
+        slots_by_order_line = {res['sale_line_id'][0]: res['allocated_hours'] for res in slots}
+        total_planned = 0
         uom_hour = self.env.ref('uom.product_uom_hour')
         for service in services['data']:
-            if service['is_unit']:
-                continue
             allocated_hours = uom_hour._compute_quantity(slots_by_order_line.get(service['sol'].id, 0), self.env.company.timesheet_encode_uom_id, raise_if_failure=False)
             service['planned_value'] = allocated_hours
             service['remaining_value'] = service['remaining_value'] - allocated_hours
+            if service['sol'].product_uom.category_id == self.env.company.timesheet_encode_uom_id.category_id:
+                total_planned += allocated_hours
+        services['total_planned'] = total_planned
+        services['total_remaining'] = services['total_remaining'] - services['total_planned']
         return services

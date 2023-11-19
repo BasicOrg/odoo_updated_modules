@@ -16,7 +16,7 @@
         @include o-bg-color(color-contrast(o-color('primary')), o-color('primary'), $with-extras: false);
         box-shadow: $box-shadow-sm;
         cursor: pointer;
-        @include font-size($font-size-lg);
+        font-size: $font-size-lg;
         text-align: center;
     }
 
@@ -64,8 +64,7 @@
 
             .modal-content {
                 max-height:100%;
-                overflow-y: auto;
-                overflow-x: hidden;
+                overflow: auto;
             }
         }
     }

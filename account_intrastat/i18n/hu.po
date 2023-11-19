@@ -1,62 +1,51 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* account_intrastat
-#
+# 
 # Translators:
-# Zsolt Godó <zsolttokio@gmail.com>, 2022
-# Tamás Dombos, 2022
-# Martin Trigaux, 2022
-# krnkris, 2022
-# Tamás Németh <ntomasz81@gmail.com>, 2022
-# Kovács Tibor <kovika@gmail.com>, 2022
-# gezza <geza.nagy@oregional.hu>, 2023
-#
+# Martin Trigaux, 2019
+# krnkris, 2019
+# gezza <geza.nagy@oregional.hu>, 2019
+# Ákos Nagy <akos.nagy@oregional.hu>, 2019
+# Tibor Kőnig <konig.tibor@evitalit.hu>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: gezza <geza.nagy@oregional.hu>, 2023\n"
-"Language-Team: Hungarian (https://app.transifex.com/odoo/teams/41243/hu/)\n"
-"Language: hu\n"
+"POT-Creation-Date: 2019-08-26 08:04+0000\n"
+"PO-Revision-Date: 2019-08-26 09:34+0000\n"
+"Last-Translator: Tibor Kőnig <konig.tibor@evitalit.hu>, 2019\n"
+"Language-Team: Hungarian (https://www.transifex.com/odoo/teams/41243/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__1_000_kwh
-msgid "1 000 kWh"
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_intrastat_type
+msgid ""
+"<span class=\"fa fa-filter\"/>\n"
+"                Types:"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__1_000_m3
-msgid "1 000 m3"
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_intrastat_extended
+msgid "<span class=\"fa fa-filter\"/> Options:"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__1_000_p/st
-msgid "1 000 p/st"
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_vat
+msgid "<span class=\"fa fa-filter\"/> Partners:"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__100_p/st
-msgid "100 p/st"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_vat
+msgid "All"
+msgstr "Összes"
 
 #. module: account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.account_move_line_tree_view_account_intrastat_transaction_codes
-msgid "Account move line"
-msgstr ""
-
-#. module: account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.view_intrastat_code_search
-msgid "Active"
-msgstr "Aktív"
-
-#. module: account_intrastat
-#. odoo-python
 #: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #, python-format
 msgid "Arrival"
@@ -78,36 +67,18 @@ msgid "By type"
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "Check the expired"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "Check the premature"
-msgstr ""
-
-#. module: account_intrastat
 #: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__type__commodity
 #: model_terms:ir.ui.view,arch_db:account_intrastat.view_intrastat_code_search
 msgid "Commodity"
 msgstr ""
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_commodity_code
-#: model:ir.model.fields,field_description:account_intrastat.field_product_template__intrastat_code_id
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat_supplementary_unit
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat_weight
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#: model:ir.model.fields,field_description:account_intrastat.field_product_category__intrastat_id
+#: model:ir.model.fields,field_description:account_intrastat.field_product_product__intrastat_id
+#: model:ir.model.fields,field_description:account_intrastat.field_product_template__intrastat_id
+#, python-format
 msgid "Commodity Code"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_product_product__intrastat_code_id
-msgid "Commodity code"
 msgstr ""
 
 #. module: account_intrastat
@@ -118,18 +89,24 @@ msgstr "Vállalatok"
 #. module: account_intrastat
 #: model:ir.model.fields,field_description:account_intrastat.field_res_config_settings__company_country_id
 msgid "Company country"
-msgstr "Ország"
+msgstr ""
 
 #. module: account_intrastat
 #: model:ir.model,name:account_intrastat.model_res_config_settings
 msgid "Config Settings"
-msgstr "Beállítások módosítása"
+msgstr "Konfigurációs beállítások"
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_country_code
 #: model:ir.model,name:account_intrastat.model_res_country
 msgid "Country"
 msgstr "Ország"
+
+#. module: account_intrastat
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#: code:addons/account_intrastat/models/account_sales_report.py:0
+#, python-format
+msgid "Country Code"
+msgstr "Országkód"
 
 #. module: account_intrastat
 #: model:ir.model.fields,field_description:account_intrastat.field_product_product__intrastat_origin_country_id
@@ -138,45 +115,84 @@ msgid "Country of Origin"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_res_company__intrastat_default_invoice_transaction_code_id
-#: model:ir.model.fields,field_description:account_intrastat.field_res_config_settings__intrastat_default_invoice_transaction_code_id
-msgid "Default invoice transaction code"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_res_company__intrastat_default_refund_transaction_code_id
-#: model:ir.model.fields,field_description:account_intrastat.field_res_config_settings__intrastat_default_refund_transaction_code_id
-msgid "Default refund transaction code"
-msgstr ""
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
+msgid "Date"
+msgstr "Dátum"
 
 #. module: account_intrastat
 #: model:ir.model.fields,field_description:account_intrastat.field_res_company__intrastat_transport_mode_id
-msgid "Default transport mode"
+msgid "Default Transport Mode"
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-python
+#: model:ir.model.fields,field_description:account_intrastat.field_res_company__incoterm_id
+#: model:ir.model.fields,field_description:account_intrastat.field_res_config_settings__incoterm_id
+msgid "Default incoterm for Intrastat"
+msgstr "alapértelmezett  Intrastat incoterm"
+
+#. module: account_intrastat
 #: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #, python-format
 msgid "Dispatch"
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/filters/filter_intrastat_options.xml:0
+#: model:ir.model.fields,field_description:account_intrastat.field_account_intrastat_report__display_name
+#: model:ir.model.fields,field_description:account_intrastat.field_account_sales_report__display_name
+msgid "Display Name"
+msgstr "Megjelenített név"
+
+#. module: account_intrastat
+#: code:addons/account_intrastat/models/account_sales_report.py:0
+#: model:ir.actions.client,name:account_intrastat.action_account_report_sales
+#: model:ir.model,name:account_intrastat.model_account_sales_report
+#: model:ir.ui.menu,name:account_intrastat.menu_action_account_report_sales
 #, python-format
+msgid "EC Sales List"
+msgstr ""
+
+#. module: account_intrastat
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_intrastat_extended
+msgid "Extended"
+msgstr "Részletes"
+
+#. module: account_intrastat
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_intrastat_extended
 msgid "Extended Mode"
 msgstr ""
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_incoterm_code
+#: model:ir.model.fields,field_description:account_intrastat.field_account_intrastat_report__id
+#: model:ir.model.fields,field_description:account_intrastat.field_account_sales_report__id
+msgid "ID"
+msgstr "Azonosító"
+
+#. module: account_intrastat
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_vat
+msgid "Include VAT"
+msgstr ""
+
+#. module: account_intrastat
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
 msgid "Incoterm Code"
 msgstr ""
 
 #. module: account_intrastat
+#: model:ir.model.fields,help:account_intrastat.field_res_company__incoterm_id
+#: model:ir.model.fields,help:account_intrastat.field_res_config_settings__incoterm_id
+msgid ""
+"International Commercial Terms are a series of predefined commercial terms "
+"used in international transactions."
+msgstr ""
+"Nemzetközi üzleti feltételek, olyan előredefiniált üzleti feltételek, "
+"melyeket nemzetközi ügyleteknél használnak."
+
+#. module: account_intrastat
 #: model:ir.model.fields,field_description:account_intrastat.field_account_move_line__intrastat_transaction_id
 #: model_terms:ir.ui.view,arch_db:account_intrastat.invoice_form_inherit_account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_form_view_inherit_account_intrastat
+#: model_terms:ir.ui.view,arch_db:account_intrastat.product_category_form_view_inherit_account_intrastat
 #: model_terms:ir.ui.view,arch_db:account_intrastat.product_template_form_view_inherit_account_intrastat
 msgid "Intrastat"
 msgstr "Intrastat"
@@ -190,28 +206,21 @@ msgid "Intrastat Code"
 msgstr "Intrastat kód"
 
 #. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_account_bank_statement_line__intrastat_country_id
 #: model:ir.model.fields,field_description:account_intrastat.field_account_move__intrastat_country_id
-#: model:ir.model.fields,field_description:account_intrastat.field_account_payment__intrastat_country_id
 msgid "Intrastat Country"
 msgstr "Intrastat ország"
 
 #. module: account_intrastat
-#: model:account.report,name:account_intrastat.intrastat_report
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #: model:ir.actions.client,name:account_intrastat.action_account_report_intrastat
+#: model:ir.model,name:account_intrastat.model_account_intrastat_report
 #: model:ir.ui.menu,name:account_intrastat.menu_action_account_report_intrastat
+#, python-format
 msgid "Intrastat Report"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model,name:account_intrastat.model_account_intrastat_report_handler
-msgid "Intrastat Report Custom Handler"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_account_bank_statement_line__intrastat_transport_mode_id
 #: model:ir.model.fields,field_description:account_intrastat.field_account_move__intrastat_transport_mode_id
-#: model:ir.model.fields,field_description:account_intrastat.field_account_payment__intrastat_transport_mode_id
 msgid "Intrastat Transport Mode"
 msgstr "Intrastat szállítási mód"
 
@@ -221,9 +230,7 @@ msgid "Intrastat code"
 msgstr "Intrastat kód"
 
 #. module: account_intrastat
-#: model:ir.model.fields,help:account_intrastat.field_account_bank_statement_line__intrastat_country_id
 #: model:ir.model.fields,help:account_intrastat.field_account_move__intrastat_country_id
-#: model:ir.model.fields,help:account_intrastat.field_account_payment__intrastat_country_id
 msgid "Intrastat country, arrival for sales, dispatch for purchases"
 msgstr ""
 
@@ -238,82 +245,41 @@ msgid "Intrastat region"
 msgstr "Intrastat körzet"
 
 #. module: account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.account_move_line_tree_view_account_intrastat_transaction_codes
-msgid "Intrastat transaction code"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-python
-#: code:addons/account_intrastat/models/account_intrastat_report.py:0
-#, python-format
-msgid "Invalid commodity intrastat code products."
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-python
-#: code:addons/account_intrastat/models/account_intrastat_report.py:0
-#, python-format
-msgid "Invalid transaction intrastat code entries."
-msgstr ""
-
-#. module: account_intrastat
 #: model:ir.model,name:account_intrastat.model_account_move
-msgid "Journal Entry"
-msgstr "Könyvelési tétel"
+msgid "Journal Entries"
+msgstr "Könyvelési tételek"
 
 #. module: account_intrastat
 #: model:ir.model,name:account_intrastat.model_account_move_line
 msgid "Journal Item"
-msgstr "Könyvelési tételsor"
+msgstr "Könyvelési napló tételsor"
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/filters/filter_intrastat_partner.xml:0
-#, python-format
+#: model:ir.model.fields,field_description:account_intrastat.field_account_intrastat_report____last_update
+#: model:ir.model.fields,field_description:account_intrastat.field_account_sales_report____last_update
+msgid "Last Modified on"
+msgstr "Legutóbb frissítve"
+
+#. module: account_intrastat
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_vat
 msgid "Only with VAT numbers"
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/filters/filter_intrastat_options.xml:0
-#, python-format
-msgid "Options:"
-msgstr ""
-
-#. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_product_origin_country
-#: model_terms:ir.ui.view,arch_db:account_intrastat.report_invoice_document_intrastat_2019
-msgid "Origin"
-msgstr "Eredet"
-
-#. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_partner_vat
-msgid "Partner VAT"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/filters/filter_intrastat_partner.xml:0
-#, python-format
-msgid "Partners:"
-msgstr ""
+#: model:ir.model,name:account_intrastat.model_product_category
+msgid "Product Category"
+msgstr "Termék kategória"
 
 #. module: account_intrastat
 #: model:ir.model,name:account_intrastat.model_product_template
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat_weight
-msgid "Product"
-msgstr "Termék"
+msgid "Product Template"
+msgstr "Terméksablon"
 
 #. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_account_move_line__intrastat_product_origin_country_id
-msgid "Product Country"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model,name:account_intrastat.model_product_product
-msgid "Product Variant"
-msgstr "Termékváltozat"
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
+msgid "Quantity"
+msgstr "Mennyiség"
 
 #. module: account_intrastat
 #: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__type__region
@@ -322,76 +288,25 @@ msgid "Region"
 msgstr "Régió"
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_region_code
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
 msgid "Region Code"
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_intrastat_extended
+msgid "Standard"
+msgstr "Általános"
+
+#. module: account_intrastat
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #, python-format
-msgid "Some lines have expired intrastat"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "Some lines have premature intrastat"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "Some lines have undefined"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "Some products have undefined"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields,field_description:account_intrastat.field_product_product__intrastat_supplementary_unit
-#: model:ir.model.fields,field_description:account_intrastat.field_product_template__intrastat_supplementary_unit
-#: model_terms:ir.ui.view,arch_db:account_intrastat.view_intrastat_code_search
-msgid "Supplementary Unit"
-msgstr ""
-
-#. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_supplementary_units
-#: model:ir.model.fields,field_description:account_intrastat.field_product_product__intrastat_supplementary_unit_amount
-#: model:ir.model.fields,field_description:account_intrastat.field_product_template__intrastat_supplementary_unit_amount
-msgid "Supplementary Units"
-msgstr ""
-
-#. module: account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat_supplementary_unit
-msgid "Supplementary Units per Product"
-msgstr ""
-
-#. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_system
 msgid "System"
 msgstr ""
 
 #. module: account_intrastat
-#: model:ir.model.fields,help:account_intrastat.field_res_config_settings__company_country_id
-msgid "The country to use the tax reports from for this company"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields,help:account_intrastat.field_product_product__intrastat_supplementary_unit_amount
-#: model:ir.model.fields,help:account_intrastat.field_product_template__intrastat_supplementary_unit_amount
-msgid "The number of supplementary units per product quantity."
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-python
 #: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#: code:addons/account_intrastat/models/account_sales_report.py:0
 #, python-format
 msgid "Total"
 msgstr "Összesen"
@@ -403,17 +318,20 @@ msgid "Transaction"
 msgstr "Tranzakció"
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_transaction_code
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
 msgid "Transaction Code"
 msgstr ""
 
 #. module: account_intrastat
+#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__type__transport
 #: model_terms:ir.ui.view,arch_db:account_intrastat.view_intrastat_code_search
 msgid "Transport"
 msgstr ""
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_transport_code
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#, python-format
 msgid "Transport Code"
 msgstr ""
 
@@ -423,186 +341,31 @@ msgid "Triplet code/type/country_id must be unique."
 msgstr ""
 
 #. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/filters/filter_intrastat_type.xml:0
-#, python-format
-msgid "Types:"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-python
 #: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #, python-format
-msgid "Undefined supplementary unit products."
-msgstr ""
+msgid "Type"
+msgstr "Típus"
 
 #. module: account_intrastat
-#. odoo-python
-#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#: code:addons/account_intrastat/models/account_sales_report.py:0
 #, python-format
-msgid "Undefined weight products."
-msgstr ""
+msgid "VAT"
+msgstr "ÁFA"
 
 #. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_value
+#: code:addons/account_intrastat/models/account_intrastat_report.py:0
+#: code:addons/account_intrastat/models/account_sales_report.py:0
+#, python-format
 msgid "Value"
 msgstr "Érték"
 
 #. module: account_intrastat
-#. odoo-python
 #: code:addons/account_intrastat/models/account_intrastat_report.py:0
 #, python-format
-msgid "View Journal Entry"
-msgstr "Napló tételek mutatása"
-
-#. module: account_intrastat
-#: model:account.report.column,name:account_intrastat.intrastat_report_column_weight
 msgid "Weight"
-msgstr "Tömeg"
+msgstr "Súly"
 
 #. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__c/k
-msgid "c/k"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__ce/el
-msgid "ce/el"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "commodity codes"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__ct/l
-msgid "ct/l"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__gi_f_/_s
-msgid "gi F / S"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_90_%_sdt
-msgid "kg 90 % sdt"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_h2o2
-msgid "kg H2O2"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_k2o
-msgid "kg K2O"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_koh
-msgid "kg KOH"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_n
-msgid "kg N"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_naoh
-msgid "kg NaOH"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_p2o5
-msgid "kg P2O5"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_u
-msgid "kg U"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg_met_am_
-msgid "kg met.am."
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__kg/net_eda
-msgid "kg/net eda"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__l_alc__100_%
-msgid "l alc. 100 %"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__m2
-msgid "m2"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__m3
-msgid "m3"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__p/st
-msgid "p/st"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__pa
-msgid "pa"
-msgstr ""
-
-#. module: account_intrastat
-#: model_terms:ir.ui.view,arch_db:account_intrastat.product_product_tree_view_account_intrastat_supplementary_unit
-msgid "product"
-msgstr "termék"
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "product's commodity codes"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "supplementary units"
-msgstr ""
-
-#. module: account_intrastat
-#: model:ir.model.fields.selection,name:account_intrastat.selection__account_intrastat_code__supplementary_unit__t__co2
-msgid "t. CO2"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "transaction codes"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "weights"
-msgstr ""
-
-#. module: account_intrastat
-#. odoo-javascript
-#: code:addons/account_intrastat/static/src/components/account_report.xml:0
-#, python-format
-msgid "when they are required."
+#: model_terms:ir.ui.view,arch_db:account_intrastat.search_template_vat
+msgid "With VAT numbers"
 msgstr ""

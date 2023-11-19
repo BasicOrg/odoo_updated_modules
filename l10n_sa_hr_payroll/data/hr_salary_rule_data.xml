@@ -44,11 +44,11 @@
             <field name="code">UNPAID</field>
             <field name="sequence">5</field>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = 'LEAVE90' in worked_days and worked_days['LEAVE90'].number_of_days and payslip.sum_worked_hours and contract.resource_calendar_id.hours_per_day
+            <field name="condition_python">result = worked_days.LEAVE90 and worked_days.LEAVE90.number_of_days and payslip.sum_worked_hours and contract.resource_calendar_id.hours_per_day
             </field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">
-result = -(worked_days['LEAVE90'].number_of_days * (contract.wage + contract.l10n_sa_transportation_allowance + contract.l10n_sa_housing_allowance + contract.l10n_sa_other_allowances) / (payslip.sum_worked_hours / contract.resource_calendar_id.hours_per_day))
+result = -(worked_days.LEAVE90.number_of_days * (contract.wage + contract.l10n_sa_transportation_allowance + contract.l10n_sa_housing_allowance + contract.l10n_sa_other_allowances) / (payslip.sum_worked_hours / contract.resource_calendar_id.hours_per_day))
             </field>
             <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_saudi_employee_payroll_structure"/>
         </record>
@@ -58,11 +58,11 @@ result = -(worked_days['LEAVE90'].number_of_days * (contract.wage + contract.l10
             <field name="code">OT</field>
             <field name="sequence">5</field>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = 'OT' in worked_days and worked_days['OT'].number_of_hours and contract.resource_calendar_id.hours_per_day
+            <field name="condition_python">result = worked_days.OT and worked_days.OT.number_of_hours and contract.resource_calendar_id.hours_per_day
             </field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">
-result = 1.5 * worked_days['OT'].number_of_hours * (contract.wage + contract.l10n_sa_housing_allowance + contract.l10n_sa_transportation_allowance + contract.l10n_sa_other_allowances)/((payslip.date_to - payslip.date_from).days+1)/contract.resource_calendar_id.hours_per_day
+result = 1.5 * worked_days.OT.number_of_hours * (contract.wage + contract.l10n_sa_housing_allowance + contract.l10n_sa_transportation_allowance + contract.l10n_sa_other_allowances)/((payslip.date_to - payslip.date_from).days+1)/contract.resource_calendar_id.hours_per_day
             </field>
             <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_saudi_employee_payroll_structure"/>
         </record>
@@ -94,7 +94,7 @@ if employee.departure_reason_id in [contract.env.ref('hr.departure_fired'), cont
             result = (compensation / 3 * 5 * 360 + compensation * 2 / 3 * (total_days - 5 * 360)) / 360
         elif 10 * 360 &lt;= total_days:
             result = (compensation / 2 * 5 * 360 + compensation * (total_days - 5 * 360)) / 360
-result = payslip.company_id.currency_id.round(result)
+result = payslip.dict.company_id.currency_id.round(result)
             </field>
             <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_saudi_employee_payroll_structure"/>
         </record>
@@ -146,11 +146,11 @@ result = (contract.l10n_sa_number_of_days / 12) * ((contract.wage + contract.l10
             <field name="code">UNPAID</field>
             <field name="sequence">5</field>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = 'LEAVE90' in worked_days and worked_days['LEAVE90'].number_of_days and payslip.sum_worked_hours and contract.resource_calendar_id.hours_per_day
+            <field name="condition_python">result = worked_days.LEAVE90 and worked_days.LEAVE90.number_of_days and payslip.sum_worked_hours and contract.resource_calendar_id.hours_per_day
             </field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">
-result = -(worked_days['LEAVE90'].number_of_days * (contract.wage + contract.l10n_sa_transportation_allowance + contract.l10n_sa_housing_allowance + contract.l10n_sa_other_allowances) / payslip.sum_worked_hours / contract.resource_calendar_id.hours_per_day)
+result = -(worked_days.LEAVE90.number_of_days * (contract.wage + contract.l10n_sa_transportation_allowance + contract.l10n_sa_housing_allowance + contract.l10n_sa_other_allowances) / payslip.sum_worked_hours / contract.resource_calendar_id.hours_per_day)
             </field>
             <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_expat_employee_payroll_structure"/>
         </record>
@@ -160,11 +160,11 @@ result = -(worked_days['LEAVE90'].number_of_days * (contract.wage + contract.l10
             <field name="code">OT</field>
             <field name="sequence">5</field>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = 'OT' in worked_days and worked_days['OT'].number_of_hours and contract.resource_calendar_id.hours_per_day
+            <field name="condition_python">result = worked_days.OT and worked_days.OT.number_of_hours and contract.resource_calendar_id.hours_per_day
             </field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">
-result = 1.5 * worked_days['OT'].number_of_hours * (contract.wage + contract.l10n_sa_housing_allowance + contract.l10n_sa_transportation_allowance + contract.l10n_sa_other_allowances)/((payslip.date_to - payslip.date_from).days+1)/contract.resource_calendar_id.hours_per_day
+result = 1.5 * worked_days.OT.number_of_hours * (contract.wage + contract.l10n_sa_housing_allowance + contract.l10n_sa_transportation_allowance + contract.l10n_sa_other_allowances)/((payslip.date_to - payslip.date_from).days+1)/contract.resource_calendar_id.hours_per_day
             </field>
             <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_expat_employee_payroll_structure"/>
         </record>
@@ -189,7 +189,7 @@ elif total_days &lt;= 5 * 360:
     result = compensation / 2 * total_days / 360
 else:
     result = (compensation / 2 * 5 * 360 + compensation * (total_days - 5 * 360)) / 360
-result = payslip.company_id.currency_id.round(result)
+result = payslip.dict.company_id.currency_id.round(result)
                 </field>
                 <field name="struct_id" ref="l10n_sa_hr_payroll.ksa_expat_employee_payroll_structure"/>
             </record>

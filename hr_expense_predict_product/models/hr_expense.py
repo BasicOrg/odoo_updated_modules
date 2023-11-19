@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
@@ -10,19 +11,14 @@ class HrExpense(models.Model):
 
     # Description is the field from which we would find the product
     # Limit_parameter should be the limit of expenses to analyse ( 10000 seems to be the best )
-    predicted_category = fields.Selection(
-        selection=[
-            ('toll', "Toll"),
-            ('parking', "Parking"),
-            ('gasoline', "Gasoline"),
-            ('transport', "Transport"),
-            ('miscellaneous', "Miscellaneous"),
-            ('food', "Food"),
-            ('accommodation', "Accommodation"),
-        ],
-        string="Predicted Category",
-        index=True,
-        default='miscellaneous')
+    predicted_category = fields.Selection([('toll','Toll'), 
+                                 ('parking','Parking'), 
+                                 ('gasoline','Gasoline'), 
+                                 ('transport', 'Transport'), 
+                                 ('miscellaneous','Miscellaneous'), 
+                                 ('food','Food'), 
+                                 ('accommodation','Accommodation')], 
+                                 "Predicted Category", index=True, default= 'miscellaneous')
 
     def _get_predict_postgres_dictionary(self):
         lang = self._context.get('lang') and self._context.get('lang')[:2]
@@ -59,7 +55,7 @@ class HrExpense(models.Model):
     def _predict_product(self, description, category = False):
         if not description:
             return False
-        if not category:
+        if not category: 
             sql_query = """
                 SELECT
                     max(f.rel) AS ranking,
@@ -123,5 +119,6 @@ class HrExpense(models.Model):
             predicted_product_id = self._predict_product(self.name)
             default_product = self.env['product.product'].search([('can_be_expensed', '=', True)])
             if default_product:
-                default_product = default_product.filtered(lambda p: p.default_code == "EXP_GEN")[:1] or default_product[0]
+                default_product = default_product.filtered(lambda p: p.default_code == "EXP_GEN") or default_product[0]
                 self.product_id = predicted_product_id if predicted_product_id else default_product
+            

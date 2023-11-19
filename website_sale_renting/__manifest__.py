@@ -24,7 +24,7 @@ appropriate views and selling choices.
     'assets': {
         'web.assets_frontend': [
             'website_sale_renting/static/src/scss/*.scss',
-            ('prepend', 'website_sale_renting/static/src/js/*.js'),
+            'website_sale_renting/static/src/js/*.js',
         ],
         'web.assets_tests': [
             'website_sale_renting/static/tests/tours/**/*',

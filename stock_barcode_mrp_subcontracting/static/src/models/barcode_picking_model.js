@@ -1,20 +1,20 @@
 /** @odoo-module **/
 
 import BarcodePickingModel from '@stock_barcode/models/barcode_picking_model';
-import { patch } from "@web/core/utils/patch";
-import { _t } from "@web/core/l10n/translation";
+import { patch } from 'web.utils';
+import { _t } from 'web.core';
 
 
-patch(BarcodePickingModel.prototype, {
-
+patch(BarcodePickingModel.prototype, 'stock_barcode_mrp_subcontracting', {
+    
     showSubcontractingDetails(line) {
         return line.is_subcontract_stock_barcode && !['done', 'cancel'].includes(line.state) && this.getQtyDone(line);
     },
-
+    
     getPickingToRecordComponents() {
         const displayValues = ["hide", "facultative", "mandatory"];
         let picking = this.record;
-        if (this.resModel === "stock.picking.batch") {
+        if (this.params.model === "stock.picking.batch") {
             const picking_id = this.record.picking_ids.reduce((prevId, currentId) => {
                 const currentPicking = this.cache.getRecord("stock.picking", currentId);
                 const currentValue = currentPicking.display_action_record_components;
@@ -38,8 +38,8 @@ patch(BarcodePickingModel.prototype, {
     _actionRecordComponents(line) {
         const moveId = line && line.move_id || false;
         return this._getActionRecordComponents(moveId).then(
-            ({ action, options }) => this.action.doAction(action, options),
-            error => this.notification(error)
+            res => this.trigger('do-action', res),
+            error => this.trigger('notification', error)
         );
     },
 
@@ -66,7 +66,7 @@ patch(BarcodePickingModel.prototype, {
             });
         }
         const options = {
-            onClose: () => {
+            on_close: () => {
                 this.trigger('refresh');
             },
         };
@@ -80,11 +80,19 @@ patch(BarcodePickingModel.prototype, {
             'action_show_subcontract_details',
             [[line.move_id]]
         );
-        return action;
+        const options = {
+            on_no_action: () => {
+                this.trigger('notification', {
+                    message: _t('Nothing to show'),
+                    type: 'danger',
+                });
+            }
+        };
+        return {action, options};
     },
 
     _getCommands() {
-        return Object.assign(super._getCommands(), {
+        return Object.assign(this._super(), {
             'O-BTN.record-components': this._actionRecordComponents.bind(this),
         });
     },
@@ -98,7 +106,7 @@ patch(BarcodePickingModel.prototype, {
         ) {
             await this._actionRecordComponents(line);
         } else {
-            super._updateLineQty(...arguments);
+            this._super(...arguments);
         }
     },
 });

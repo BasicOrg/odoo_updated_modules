@@ -10,34 +10,33 @@
                 </div>
                 <field name="company_id" invisible="1"/>
                 <field name="task_id" invisible="1"/>
+                <field name="fsm_done" invisible="1"/>
                 <field name="tracking" invisible="1"/>
-                <field name="is_same_warehouse" invisible="1"/>
-                <field name="tracking_line_ids" context="{'default_product_id': product_id, 'default_company_id': company_id}">
-                    <tree editable="bottom" decoration-muted="not is_same_warehouse">
-                        <field name="lot_id" groups="stock.group_production_lot" context="{'default_product_id': product_id, 'default_company_id': company_id}" readonly="not is_same_warehouse"/>
-                        <field name="warehouse_id" column_invisible="parent.is_same_warehouse"/>
-                        <field name="quantity" column_invisible="parent.tracking == 'serial'" readonly="not is_same_warehouse"/>
-                        <field name="product_id" column_invisible="True"/>
-                        <field name="company_id" column_invisible="True"/>
-                        <field name="sale_order_line_id" column_invisible="True"/>
-                        <field name="is_same_warehouse" column_invisible="True"/>
+                <field name="tracking_line_ids" context="{'default_product_id': product_id, 'default_company_id': company_id}" attrs="{'readonly': [('fsm_done', '=', True)]}">
+                    <tree editable="bottom">
+                        <field name="lot_id" context="{'default_product_id': product_id, 'default_company_id': company_id}"/>
+                        <field name="quantity" attrs="{'column_invisible': [('parent.tracking', '=', 'serial')]}"/>
+                        <field name="product_id" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="sale_order_line_id" invisible="1"/>
                     </tree>
                 </field>
 
-                <separator string="Already Delivered" invisible="not tracking_validated_line_ids"/>
-                <field name="tracking_validated_line_ids" readonly="1" invisible="not tracking_validated_line_ids">
+                <separator string="Already Delivered" attrs="{'invisible': [('tracking_validated_line_ids', '=', [])]}"/>
+                <field name="tracking_validated_line_ids" attrs="{'invisible': [('tracking_validated_line_ids', '=', [])]}" readonly="1">
                     <tree>
-                        <field name="lot_id" groups="stock.group_production_lot"/>
-                        <field name="quantity" column_invisible="parent.tracking == 'serial'"/>
-                        <field name="product_id" column_invisible="True"/>
-                        <field name="sale_order_line_id" column_invisible="True"/>
-                        <field name="company_id" column_invisible="True"/>
+                        <field name="lot_id" />
+                        <field name="quantity" attrs="{'column_invisible': [('parent.tracking', '=', 'serial')]}"/>
+                        <field name="product_id" invisible="1"/>
+                        <field name="sale_order_line_id" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
                     </tree>
                 </field>
 
                 <footer>
-                    <button name="generate_lot" string="Validate" type="object" class="oe_highlight" data-hotkey="q"/>
-                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    <button name="generate_lot" string="Validate" type="object" class="oe_highlight" attrs="{'invisible': [('fsm_done', '=', True)]}" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z" attrs="{'invisible': [('fsm_done', '=', True)]}"/>
+                    <button string="Close" special="cancel" data-hotkey="z" class="oe_highlight" attrs="{'invisible': [('fsm_done', '=', False)]}"/>
                 </footer>
             </form>
         </field>
@@ -50,7 +49,7 @@
             <form string="Track Stock">
                 <group>
                     <group>
-                        <field name="lot_id" groups="stock.group_production_lot" readonly="1"/>
+                        <field name="lot_id" readonly="1"/>
                         <field name="quantity" readonly="1"/>
                         <field name="product_id" invisible="1"/>
                         <field name="sale_order_line_id" invisible="1"/>

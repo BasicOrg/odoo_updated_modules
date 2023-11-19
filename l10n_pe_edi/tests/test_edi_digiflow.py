@@ -9,7 +9,7 @@ from time import sleep
 class TestEdiDigiflow(TestPeEdiCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='pe', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
+    def setUpClass(cls, chart_template_ref='l10n_pe.pe_chart_template', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
         super().setUpClass(chart_template_ref=chart_template_ref, edi_format_ref=edi_format_ref)
 
         cls.company_data['company'].l10n_pe_edi_provider = 'digiflow'
@@ -125,9 +125,9 @@ class TestEdiDigiflow(TestPeEdiCommon):
         self.assertRecordValues(move, [{'edi_state': 'sent'}])
 
         # Slightly tweak the cancellation request template so that SUNAT's response will contain an error in the CDR's ResponseCode.
-        cancel_request_template = self.env.ref('l10n_pe_edi.ubl_pe_21_voided_documents')
+        cancel_request_template = self.env.ref('l10n_pe_edi.pe_ubl_2_1_void_documents')
         arch = cancel_request_template.arch
-        arch_new = arch.replace('<cbc:ReferenceDate t-out="reference_date"/>', '<cbc:ReferenceDate>{}</cbc:ReferenceDate>'.format(today))
+        arch_new = arch.replace('<cbc:ReferenceDate t-esc="reference_date"/>', '<cbc:ReferenceDate>{}</cbc:ReferenceDate>'.format(today))
         cancel_request_template.write({'arch': arch_new})
 
         # Cancel step 1

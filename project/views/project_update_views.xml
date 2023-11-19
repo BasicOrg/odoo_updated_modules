@@ -27,7 +27,7 @@
         <field name="name">project.update.view.form</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
-            <form string="Project Update" js_class="form_description_expander">
+            <form string="Project Update" class="o_form_project_update" js_class="form_description_expander">
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -38,7 +38,7 @@
                         <group>
                             <field name="project_id" invisible="1"/>
                             <field name="color" invisible="1"/>
-                            <field name="status" widget="status_with_color"/>
+                            <field name="status" widget="status_with_color" options="{'color_field': 'color'}"/>
                             <field name="progress" widget="progressbar" options="{'editable': true}"/>
                         </group>
                         <group>
@@ -66,7 +66,7 @@
         <field name="name">project.update.view.kanban</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
-            <kanban sample="1" js_class="project_update_kanban">
+            <kanban class="o_pupdate_kanban" sample="1" js_class="project_update_kanban">
                 <field name="color"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -75,23 +75,18 @@
                             <div class="o_kanban_detail_ungrouped row">
                                 <div class="col-sm-4 col-6 o_pupdate_name">
                                     <b><field name="name_cropped"/></b>
-                                    <div class="d-flex gap-1">
+                                    <div>
                                         <field name="user_id" widget="many2one_avatar_user"/>
                                         <t t-esc="record.user_id.value"/>
                                     </div>
                                 </div>
                                 <div class="col-sm-2 text-sm-start col-6 align-end">
                                     <field name="color" invisible="1"/>
-                                    <b><field name="status" widget="status_with_color"/></b>
+                                    <b><field name="status" widget="status_with_color" options="{'color_field': 'color'}"/></b>
                                 </div>
                                 <div class="col-sm-2 col-6 pb-0">
                                     <b><field name="progress_percentage" widget="percentage"/></b>
                                     <div>Progress</div>
-                                </div>
-                                <div class="col-sm-2 col-6 pb-0">
-                                    <b id="tasks_stats">
-                                        <field name="closed_task_count"/> / <field name="task_count"/> Tasks<span invisible="not task_count"> (<field name="closed_task_percentage"/>%)</span>
-                                    </b>
                                 </div>
                                 <div class="col-sm-2 col-6 pb-0">
                                     <b><field name="date"/></b>
@@ -113,15 +108,16 @@
                 <field name="name"/>
                 <field name="user_id" widget="many2one_avatar_user" class="fw-bold" optional="show"/>
                 <field name="date" optional="show"/>
-                <field name="progress" string="Progress" widget="progressbar" optional="show"/>
-                <field name="color" column_invisible="True"/>
-                <field name="status" widget="status_with_color"/>
+                <field name="progress_percentage" string="Progress" widget="percentage" optional="show"/>
+                <field name="color" invisible="1"/>
+                <field name="status" widget="status_with_color" options="{'color_field': 'color'}"/>
             </tree>
         </field>
     </record>
 
     <record id="project_update_all_action" model="ir.actions.act_window">
         <field name="name">Project Updates</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.update</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[('project_id', '=', active_id)]</field>
@@ -134,4 +130,5 @@
             </p>
         </field>
     </record>
+
 </odoo>

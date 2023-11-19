@@ -1,9 +1,10 @@
 /** @odoo-module **/
 
 import { CheckBox } from "@web/core/checkbox/checkbox";
-import { useService, useBus } from "@web/core/utils/hooks";
-import { formatFloat } from "@web/core/utils/numbers";
-import { Component, useRef, onPatched } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
+import fieldUtils from 'web.field_utils';
+
+const { Component, useRef, onPatched, onWillStart } = owl;
 
 export default class MpsLineComponent extends Component {
 
@@ -11,6 +12,7 @@ export default class MpsLineComponent extends Component {
         this.actionService = useService("action");
         this.dialogService = useService("dialog");
         this.orm = useService("orm");
+        this.field_utils = fieldUtils;
         this.model = this.env.model;
         this.forecastRow = useRef("forecastRow");
         this.replenishRow = useRef("replenishRow");
@@ -27,8 +29,10 @@ export default class MpsLineComponent extends Component {
             }
         });
 
-        useBus(this.model, 'mouse-over', () => this._onMouseOverReplenish());
-        useBus(this.model, 'mouse-out', () => this._onMouseOutReplenish());
+        onWillStart(async () => {
+            this.model.on('mouse-over', this, () => this._onMouseOverReplenish());
+            this.model.on('mouse-out', this, () => this._onMouseOutReplenish());
+        });
     }
 
     get productionSchedule() {
@@ -39,12 +43,12 @@ export default class MpsLineComponent extends Component {
         return this.props.groups;
     }
 
-    get isSelected() {
-        return this.model.selectedRecords.has(this.productionSchedule.id);
+    get formatFloat() {
+        return this.field_utils.format.float;
     }
 
-    formatFloat(value) {
-        return formatFloat(value, { digits: [false, this.productionSchedule.precision_digits] });
+    get isSelected() {
+        return this.model.selectedRecords.has(this.productionSchedule.id);
     }
 
     /**
@@ -176,16 +180,16 @@ export default class MpsLineComponent extends Component {
     }
 
     _onMouseOverReplenish(ev) {
-        const el = this.replenishRow.el.getElementsByClassName('o_mrp_mps_forced_replenish');
-        if (el && el[0]) {
-            el[0].classList.add('o_mrp_mps_hover');
+        const el = this.replenishRow.el.getElementsByClassName('o_mrp_mps_forced_replenish')[0];
+        if (el) {
+            el.classList.add('o_mrp_mps_hover');
         }
     }
 
     _onMouseOutReplenish(ev) {
-        const el = this.replenishRow.el.getElementsByClassName('o_mrp_mps_hover');
-        if (el && el[0]) {
-            el[0].classList.remove('o_mrp_mps_hover');
+        const el = this.replenishRow.el.getElementsByClassName('o_mrp_mps_hover')[0];
+        if (el) {
+            el.classList.remove('o_mrp_mps_hover');
         }
     }
 

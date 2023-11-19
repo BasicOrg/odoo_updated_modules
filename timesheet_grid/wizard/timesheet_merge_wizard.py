@@ -24,7 +24,7 @@ class MergeTimesheets(models.TransientModel):
     def _check_timesheet_ids(self):
         for wizard in self:
             if len(set(wizard.timesheet_ids.mapped('encoding_uom_id'))) > 1:
-                raise ValidationError(_('The timesheets must have the same encoding unit'))
+                raise ValidationError('The timesheets must have the same encoding unit')
 
     @api.model
     def default_get(self, fields_list):
@@ -33,7 +33,7 @@ class MergeTimesheets(models.TransientModel):
 
         if 'timesheet_ids' in fields_list and active_ids:
             timesheets = self.env['account.analytic.line'].browse(active_ids)
-            timesheets = timesheets.filtered(lambda l: l.is_timesheet and not l.validated and not l.is_timer_running)
+            timesheets = timesheets.filtered(lambda l: l.is_timesheet and not l.validated)
             if timesheets:
                 res['timesheet_ids'] = timesheets.ids
 

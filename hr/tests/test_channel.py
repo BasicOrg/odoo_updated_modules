@@ -1,17 +1,16 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo.addons.hr.tests.common import TestHrCommon
-from odoo.tests.common import tagged
 
 
-@tagged("post_install", "-at_install")
 class TestChannel(TestHrCommon):
 
     @classmethod
     def setUpClass(cls):
         super(TestChannel, cls).setUpClass()
 
-        cls.channel = cls.env['discuss.channel'].create({'name': 'Test'})
+        cls.channel = cls.env['mail.channel'].create({'name': 'Test'})
 
         emp0 = cls.env['hr.employee'].create({
             'user_id': cls.res_users_hr_officer.id,

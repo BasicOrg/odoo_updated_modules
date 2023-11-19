@@ -12,14 +12,19 @@
                     </a>
                 </div>
             </div>
-            <setting id="process_mrp_barcodes" position="before">
-                <setting id="mrp_wo_shop_floor" help="Manage your manufacturing orders from the shop floor app">
-                    <field name="group_mrp_wo_shop_floor"/>
-                </setting>
-                <setting invisible="not group_mrp_routings" id="mrp_wo_tablet_view_timer" help="Show the timer on the work order screen">
-                    <field name="group_mrp_wo_tablet_timer"/>
-                </setting>
-            </setting>
+            <div id="quality_control_mrp" position="before">
+                <div class="col-lg-6 col-12 o_setting_box" attrs="{'invisible': [('group_mrp_routings', '=', False)]}" id="mrp_wo_tablet_view_timer">
+                    <div class="o_setting_left_pane">
+                        <field name="group_mrp_wo_tablet_timer"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="group_mrp_wo_tablet_timer"/>
+                        <div class="text-muted">
+                            Show the timer on the work order screen
+                        </div>
+                    </div>
+                </div>
+            </div>
         </field>
     </record>
 </odoo>

@@ -1,156 +1,127 @@
-/** @odoo-module */
+odoo.define('pos_restaurant.tour.TipScreen', function (require) {
+    'use strict';
 
-import * as ProductScreenPos from "@point_of_sale/../tests/tours/helpers/ProductScreenTourMethods";
-import * as ProductScreenResto from "@pos_restaurant/../tests/tours/helpers/ProductScreenTourMethods";
-const ProductScreen = { ...ProductScreenPos, ...ProductScreenResto };
-import * as PaymentScreen from "@point_of_sale/../tests/tours/helpers/PaymentScreenTourMethods";
-import * as ReceiptScreen from "@point_of_sale/../tests/tours/helpers/ReceiptScreenTourMethods";
-import * as FloorScreen from "@pos_restaurant/../tests/tours/helpers/FloorScreenTourMethods";
-import * as TicketScreen from "@point_of_sale/../tests/tours/helpers/TicketScreenTourMethods";
-import * as TipScreen from "@pos_restaurant/../tests/tours/helpers/TipScreenTourMethods";
-import * as NumberPopup from "@point_of_sale/../tests/tours/helpers/NumberPopupTourMethods";
-import * as Chrome from "@point_of_sale/../tests/tours/helpers/ChromeTourMethods";
-import { registry } from "@web/core/registry";
+    const { ProductScreen } = require('point_of_sale.tour.ProductScreenTourMethods');
+    const { PaymentScreen } = require('point_of_sale.tour.PaymentScreenTourMethods');
+    const { ReceiptScreen } = require('point_of_sale.tour.ReceiptScreenTourMethods');
+    const { FloorScreen } = require('pos_restaurant.tour.FloorScreenTourMethods');
+    const { TicketScreen } = require('point_of_sale.tour.TicketScreenTourMethods');
+    const { TipScreen } = require('pos_restaurant.tour.TipScreenTourMethods');
+    const { NumberPopup } = require('point_of_sale.tour.NumberPopupTourMethods');
+    const { Chrome } = require('pos_restaurant.tour.ChromeTourMethods');
+    const { getSteps, startSteps } = require('point_of_sale.tour.utils');
+    var Tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add("PosResTipScreenTour", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            // Create order that is synced when draft.
-            // order 1
-            ProductScreen.confirmOpeningPopup(),
-            FloorScreen.clickTable("2"),
-            ProductScreen.addOrderline("Minute Maid", "1", "2"),
-            ProductScreen.totalAmountIs("2.0"),
-            FloorScreen.backToFloor(),
-            FloorScreen.orderCountSyncedInTableIs("2", "1"),
-            FloorScreen.clickTable("2"),
-            ProductScreen.totalAmountIs("2.0"),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickPaymentMethod("Bank"),
-            PaymentScreen.clickValidate(),
-            TipScreen.isShown(),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
-            TicketScreen.clickNewTicket(),
-            // order 2
-            ProductScreen.addOrderline("Coca-Cola", "2", "2"),
-            ProductScreen.totalAmountIs("4.0"),
-            FloorScreen.backToFloor(),
-            FloorScreen.orderCountSyncedInTableIs("2", "2"),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
-            TicketScreen.nthRowContains("2", "Tipping"),
-            TicketScreen.clickDiscard(),
+    startSteps();
 
-            // Create without syncing the draft.
-            // order 3
-            FloorScreen.clickTable("5"),
-            ProductScreen.addOrderline("Minute Maid", "3", "2"),
-            ProductScreen.totalAmountIs("6.0"),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickPaymentMethod("Bank"),
-            PaymentScreen.clickValidate(),
-            TipScreen.isShown(),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
-            TicketScreen.clickNewTicket(),
-            // order 4
-            ProductScreen.addOrderline("Coca-Cola", "4", "2"),
-            ProductScreen.totalAmountIs("8.0"),
-            FloorScreen.backToFloor(),
-            FloorScreen.orderCountSyncedInTableIs("5", "4"),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
-            TicketScreen.nthRowContains("4", "Tipping"),
+    // Create order that is synced when draft.
+    // order 1
+    FloorScreen.do.clickTable('T2');
+    ProductScreen.do.confirmOpeningPopup();
+    ProductScreen.exec.addOrderline('Minute Maid', '1', '2');
+    ProductScreen.check.totalAmountIs('2.0');
+    Chrome.do.backToFloor();
+    FloorScreen.check.orderCountSyncedInTableIs('T2', '1');
+    FloorScreen.do.clickTable('T2');
+    ProductScreen.check.totalAmountIs('2.0');
+    ProductScreen.do.clickPayButton();
+    PaymentScreen.do.clickPaymentMethod('Bank');
+    PaymentScreen.do.clickValidate();
+    TipScreen.check.isShown();
+    Chrome.do.clickTicketButton();
+    TicketScreen.do.clickNewTicket();
+    // order 2
+    ProductScreen.exec.addOrderline('Coca-Cola', '2', '2');
+    ProductScreen.check.totalAmountIs('4.0');
+    Chrome.do.backToFloor();
+    FloorScreen.check.orderCountSyncedInTableIs('T2', '1');
+    Chrome.do.clickTicketButton();
+    TicketScreen.check.nthRowContains('2', 'Tipping');
+    TicketScreen.do.clickDiscard();
 
-            // Tip 20% on order1
-            TicketScreen.selectOrder("-0001"),
-            TicketScreen.loadSelectedOrder(),
-            TipScreen.isShown(),
-            TipScreen.totalAmountIs("2.0"),
-            TipScreen.percentAmountIs("15%", "0.30"),
-            TipScreen.percentAmountIs("20%", "0.40"),
-            TipScreen.percentAmountIs("25%", "0.50"),
-            TipScreen.clickPercentTip("20%"),
-            TipScreen.inputAmountIs("0.40"),
-            FloorScreen.backToFloor(),
-            FloorScreen.isShown(),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
+    // Create without syncing the draft.
+    // order 3
+    FloorScreen.do.clickTable('T5');
+    ProductScreen.exec.addOrderline('Minute Maid', '3', '2');
+    ProductScreen.check.totalAmountIs('6.0');
+    ProductScreen.do.clickPayButton();
+    PaymentScreen.do.clickPaymentMethod('Bank');
+    PaymentScreen.do.clickValidate();
+    TipScreen.check.isShown();
+    Chrome.do.clickTicketButton();
+    TicketScreen.do.clickNewTicket();
+    // order 4
+    ProductScreen.exec.addOrderline('Coca-Cola', '4', '2');
+    ProductScreen.check.totalAmountIs('8.0');
+    Chrome.do.backToFloor();
+    FloorScreen.check.orderCountSyncedInTableIs('T5', '1');
+    Chrome.do.clickTicketButton();
+    TicketScreen.check.nthRowContains('3', 'Tipping');
 
-            // Tip 25% on order3
-            TicketScreen.selectOrder("-0003"),
-            TicketScreen.loadSelectedOrder(),
-            TipScreen.isShown(),
-            TipScreen.totalAmountIs("6.0"),
-            TipScreen.percentAmountIs("15%", "0.90"),
-            TipScreen.percentAmountIs("20%", "1.20"),
-            TipScreen.percentAmountIs("25%", "1.50"),
-            TipScreen.clickPercentTip("25%"),
-            TipScreen.inputAmountIs("1.50"),
-            FloorScreen.backToFloor(),
-            FloorScreen.isShown(),
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
+    // Tip 20% on order1
+    TicketScreen.do.selectOrder('-0001');
+    TipScreen.check.isShown();
+    TipScreen.check.totalAmountIs('2.0');
+    TipScreen.check.percentAmountIs('15%', '0.30');
+    TipScreen.check.percentAmountIs('20%', '0.40');
+    TipScreen.check.percentAmountIs('25%', '0.50');
+    TipScreen.do.clickPercentTip('20%');
+    TipScreen.check.inputAmountIs('0.40')
+    Chrome.do.backToFloor();
+    FloorScreen.check.isShown();
+    Chrome.do.clickTicketButton();
 
-            // finalize order 4 then tip custom amount
-            TicketScreen.selectOrder("-0004"),
-            TicketScreen.loadSelectedOrder(),
-            ProductScreen.isShown(),
-            ProductScreen.totalAmountIs("8.0"),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickPaymentMethod("Bank"),
-            PaymentScreen.clickValidate(),
-            TipScreen.isShown(),
-            TipScreen.totalAmountIs("8.0"),
-            TipScreen.percentAmountIs("15%", "1.20"),
-            TipScreen.percentAmountIs("20%", "1.60"),
-            TipScreen.percentAmountIs("25%", "2.00"),
-            TipScreen.setCustomTip("1.00"),
-            TipScreen.inputAmountIs("1.00"),
-            FloorScreen.backToFloor(),
-            FloorScreen.isShown(),
+    // Tip 25% on order3
+    TicketScreen.do.selectOrder('-0003');
+    TipScreen.check.isShown();
+    TipScreen.check.totalAmountIs('6.0');
+    TipScreen.check.percentAmountIs('15%', '0.90');
+    TipScreen.check.percentAmountIs('20%', '1.20');
+    TipScreen.check.percentAmountIs('25%', '1.50');
+    TipScreen.do.clickPercentTip('25%');
+    TipScreen.check.inputAmountIs('1.50');
+    Chrome.do.backToFloor();
+    FloorScreen.check.isShown();
+    Chrome.do.clickTicketButton();
 
-            // settle tips here
-            Chrome.clickMenuButton(),
-            Chrome.clickTicketButton(),
-            TicketScreen.selectFilter("Tipping"),
-            TicketScreen.tipContains("1.00"),
-            TicketScreen.settleTips(),
-            TicketScreen.selectFilter("All active orders"),
-            TicketScreen.nthRowContains(2, "Ongoing"),
+    // finalize order 4 then tip custom amount
+    TicketScreen.do.selectOrder('-0004');
+    ProductScreen.check.isShown();
+    ProductScreen.check.totalAmountIs('8.0');
+    ProductScreen.do.clickPayButton();
+    PaymentScreen.do.clickPaymentMethod('Bank');
+    PaymentScreen.do.clickValidate();
+    TipScreen.check.isShown();
+    TipScreen.check.totalAmountIs('8.0');
+    TipScreen.check.percentAmountIs('15%', '1.20');
+    TipScreen.check.percentAmountIs('20%', '1.60');
+    TipScreen.check.percentAmountIs('25%', '2.00');
+    TipScreen.do.setCustomTip('1.00');
+    TipScreen.check.inputAmountIs('1.00')
+    Chrome.do.backToFloor();
+    FloorScreen.check.isShown();
 
-            // tip order2 during payment
-            // tip screen should not show after validating payment screen
-            TicketScreen.selectOrder("-0002"),
-            TicketScreen.loadSelectedOrder(),
-            ProductScreen.isShown(),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickTipButton(),
-            NumberPopup.isShown(),
-            NumberPopup.enterValue("1"),
-            NumberPopup.inputShownIs("1"),
-            NumberPopup.clickConfirm(),
-            PaymentScreen.emptyPaymentlines("5.0"),
-            PaymentScreen.clickPaymentMethod("Cash"),
-            PaymentScreen.clickValidate(),
-            ReceiptScreen.isShown(),
+    // settle tips here
+    Chrome.do.clickTicketButton();
+    TicketScreen.do.selectFilter('Tipping');
+    TicketScreen.check.tipContains('1.00');
+    TicketScreen.do.settleTips();
+    TicketScreen.do.selectFilter('All active orders');
+    TicketScreen.check.nthRowContains(2, 'Ongoing');
 
-            // order 5
-            // Click directly on "settle" without selecting a Tip
-            ReceiptScreen.clickNextOrder(),
-            FloorScreen.clickTable("2"),
-            ProductScreen.addOrderline("Minute Maid", "3", "2"),
-            ProductScreen.totalAmountIs("6.0"),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickPaymentMethod("Bank"),
-            PaymentScreen.clickValidate(),
-            TipScreen.isShown(),
-            TipScreen.clickSettle(),
-            ReceiptScreen.isShown(),
-            ReceiptScreen.clickNextOrder(),
-            FloorScreen.isShown(),
-        ].flat(),
+    // tip order2 during payment
+    // tip screen should not show after validating payment screen
+    TicketScreen.do.selectOrder('-0002');
+    ProductScreen.check.isShown();
+    ProductScreen.do.clickPayButton();
+    PaymentScreen.do.clickTipButton();
+    NumberPopup.check.isShown();
+    NumberPopup.do.pressNumpad('1');
+    NumberPopup.check.inputShownIs('1');
+    NumberPopup.do.clickConfirm();
+    PaymentScreen.do.clickPaymentMethod('Cash');
+    PaymentScreen.do.clickValidate();
+    ReceiptScreen.check.isShown();
+
+    Tour.register('PosResTipScreenTour', { test: true, url: '/pos/ui' }, getSteps());
 });

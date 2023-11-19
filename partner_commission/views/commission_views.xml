@@ -56,7 +56,7 @@
                 <field name="pricelist_id"/>
                 <field name="rate"/>
                 <field name="is_capped"/>
-                <field name="max_commission" readonly="not is_capped"/>
+                <field name="max_commission" attrs="{'readonly': [('is_capped', '=', False)]}"/>
             </tree>
         </field>
     </record>

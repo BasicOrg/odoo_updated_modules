@@ -1,14 +1,3 @@
-:root {
-    // Make sure black and white CSS variables are defined as they are needed
-    // for the colorpickers to work properly. In the frontend, those are
-    // automatically defined because they are part of the $grays map. In the
-    // backend, bootstrap is more standard and those are not added in the $grays
-    // map (not needed and was actually a problem to make the enterprise dark
-    // mode work properly).
-    --white: #{$white};
-    --black: #{$black};
-}
-
 .o_field_html {
     position: relative;
     word-wrap: break-word;
@@ -41,8 +30,8 @@
     table.table.table-bordered {
         table-layout: fixed;
     }
-    a:not(.btn) {
-        // Ensure non-button links are visible enough in the editor.
+    a {
+        // Ensure the link is visible enough in the editor.
         $oe-link-color: o-color('o-cc3-link');
         @if ($oe-link-color) {
             color: $oe-link-color;
@@ -50,11 +39,10 @@
     }
 }
 
-.o_form_view:not(.o_field_highlight) {
+.o_form_view:not(o_field_highlight) {
     .o_field_html .note-editable {
         border: $input-border-width solid transparent;
         border-width: 0 0 $input-border-width 0;
-        border-radius: 0;
 
         &:hover, &:focus {
             border-color: var(--o-input-border-color);

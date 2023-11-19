@@ -65,6 +65,7 @@ class PortalWizard(models.TransientModel):
             'name': _('Portal Access Management'),
             'type': 'ir.actions.act_window',
             'res_model': 'portal.wizard',
+            'view_type': 'form',
             'view_mode': 'form',
             'res_id': self.id,
             'target': 'new',
@@ -183,7 +184,11 @@ class PortalWizardUser(models.TransientModel):
 
         # remove the user from the portal group
         if user_sudo and user_sudo.has_group('base.group_portal'):
-            user_sudo.write({'groups_id': [(3, group_portal.id), (4, group_public.id)], 'active': False})
+            # if user belongs to portal only, deactivate it
+            if len(user_sudo.groups_id) <= 1:
+                user_sudo.write({'groups_id': [(3, group_portal.id), (4, group_public.id)], 'active': False})
+            else:
+                user_sudo.write({'groups_id': [(3, group_portal.id), (4, group_public.id)]})
 
         return self.action_refresh_modal()
 

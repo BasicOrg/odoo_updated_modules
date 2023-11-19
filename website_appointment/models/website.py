@@ -3,6 +3,9 @@
 
 from odoo import models, _
 from odoo.addons.http_routing.models.ir_http import url_for
+from odoo.addons.website.models.website import SEARCH_TYPE_MODELS
+
+SEARCH_TYPE_MODELS['appointments'] |= 'appointment.type',
 
 
 class Website(models.Model):
@@ -21,9 +24,3 @@ class Website(models.Model):
                 'cta_btn_href': '/appointment',
             })
         return cta_data
-
-    def _search_get_details(self, search_type, order, options):
-        result = super()._search_get_details(search_type, order, options)
-        if search_type in ['all', 'appointments']:
-            result.append(self.env['appointment.type']._search_get_detail(self, order, options))
-        return result

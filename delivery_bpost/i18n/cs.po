@@ -1,25 +1,23 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* delivery_bpost
-#
+# 
 # Translators:
-# Martin Trigaux, 2022
-# Michal Veselý <michal@veselyberanek.net>, 2022
-# Jiří Podhorecký, 2022
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
-#
+# Martin Trigaux, 2019
+# trendspotter <j.podhorecky@volny.cz>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: Rastislav Brencic <rastislav.brencic@azet.sk>, 2022\n"
-"Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
-"Language: cs\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:35+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>, 2019\n"
+"Language-Team: Czech (https://www.transifex.com/odoo/teams/41243/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #. module: delivery_bpost
@@ -38,7 +36,6 @@ msgid "Allow deliveries on Saturday (extra charges apply)"
 msgstr "Povolit dodávky v sobotu (platí se navíc)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -63,6 +60,7 @@ msgstr "Bpost Domestic Deliver Type"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_domestic
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_domestic
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
 msgid "Bpost Domestic bpack 24h Pro"
 msgstr "Bpost Domestic bpack 24h Pro"
@@ -83,11 +81,6 @@ msgid "Bpost Label Stock Type"
 msgstr ""
 
 #. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Bpost Package Type"
-msgstr "Typ balíku Bpost"
-
-#. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_parcel_return_instructions
 msgid "Bpost Parcel Return Instructions"
 msgstr "Bpost Parcel instrukce k vrácení"
@@ -99,12 +92,13 @@ msgstr ""
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_inter
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_world
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_world_product_template
 msgid "Bpost World Express Pro"
 msgstr "Bpost World Express Pro"
 
 #. module: delivery_bpost
-#: model:ir.model.fields,field_description:delivery_bpost.field_stock_package_type__package_carrier_type
+#: model:ir.model.fields,field_description:delivery_bpost.field_product_packaging__package_carrier_type
 msgid "Carrier"
 msgstr "Přepravce"
 
@@ -116,7 +110,7 @@ msgstr "DOKUMENTY"
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_saturday
 msgid "Delivery on Saturday"
-msgstr "Doručení v sobotu"
+msgstr "Dodávka v sobotu"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_parcel_return_instructions__abandoned
@@ -144,24 +138,9 @@ msgid "International"
 msgstr "Mezinárodní"
 
 #. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Label Format"
-msgstr "Formát štítku"
-
-#. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Label Type"
-msgstr "Typ štítku"
-
-#. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_shipment_type__other
 msgid "OTHER"
 msgstr "OSTATNÍ"
-
-#. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Options"
-msgstr "Možnosti"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_label_format__pdf
@@ -174,7 +153,6 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Packages over 30 Kg are not accepted by bpost."
@@ -186,11 +164,15 @@ msgid "Passphrase"
 msgstr "Přístupová fráze"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
 msgstr "Zadejte alespoň jednu položku k odeslání."
+
+#. module: delivery_bpost
+#: model:ir.model,name:delivery_bpost.model_product_packaging
+msgid "Product Packaging"
+msgstr "Balení produktu"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__delivery_type
@@ -198,17 +180,10 @@ msgid "Provider"
 msgstr "Poskytovatel"
 
 #. module: delivery_bpost
-#. odoo-python
+#: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return labels created into bpost"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Return shipment created into bpost"
+msgid "Return shipment created into bpost <br/> <b>Tracking Number : </b>%s"
 msgstr ""
 
 #. module: delivery_bpost
@@ -219,7 +194,7 @@ msgstr "Vrátit odesílateli letecky"
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_parcel_return_instructions__rts
 msgid "Return to sender by road"
-msgstr "Zpět k odesílateli po silnici"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_shipment_type__sample
@@ -227,17 +202,15 @@ msgid "SAMPLE"
 msgstr "VZOREK"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment #%s has been cancelled"
-msgstr "Zásilka číslo %s byla zrušena"
+msgid "Shipment N° %s has been cancelled"
+msgstr "Dodávka číslo %s byla zrušena"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment created into bpost"
+msgid "Shipment created into bpost <br/> <b>Tracking Number : </b>%s"
 msgstr ""
 
 #. module: delivery_bpost
@@ -246,85 +219,69 @@ msgid "Shipping Methods"
 msgstr "Způsoby přepravy"
 
 #. module: delivery_bpost
-#: model:ir.model,name:delivery_bpost.model_stock_package_type
-msgid "Stock package type"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "The BPost shipping service is unresponsive, please retry later."
-msgstr "Přepravní služba BPost neodpovídá, zkuste to prosím později."
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The address of your company/warehouse is incomplete or wrong (Missing field(s):  \n"
 " %s)"
-msgstr "Adresa vaší společnosti / skladu je neúplná nebo nesprávná (Chybí pole (více polí): %s)"
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/bpost_request.py:0
-#, python-format
-msgid "The estimated shipping price cannot be computed because all your products are service."
 msgstr ""
+"Adresa vaší společnosti / skladu je neúplná nebo nesprávná (Chybí pole (více"
+" polí): %s)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
-"The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
-" %s"
+"The estimated shipping cannot be computed because the weight of your product"
+" is missing."
 msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
+#: code:addons/delivery_bpost/models/bpost_request.py:0
+#, python-format
+msgid ""
+"The estimated shipping price cannot be computed because all your products "
+"are service/digital."
+msgstr ""
+"Odhadovanou cenu za dopravu nelze vypočítat, protože všechny vaše produkty "
+"jsou služby / digitální produkty."
+
+#. module: delivery_bpost
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The recipient address is incomplete or wrong (Missing field(s):  \n"
 " %s)"
-msgstr "Adresa příjemce je neúplná nebo nesprávná (Chybí pole (více polí): %s)"
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Links"
 msgstr ""
+"Adresa příjemce je neúplná nebo nesprávná (Chybí pole (více polí): %s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr ""
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_domestic
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_world
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_world_product_template
+msgid "Units"
+msgstr "Jednotky"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Numbers:"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "You cannot compute a passphrase for non-bpost carriers."
 msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Your company/warehouse address must be in Belgium to ship with bpost"
-msgstr "Adresa společnosti / skladu musí být v Belgii, aby mohla být doručena s bpost"
+msgstr ""
+"Adresa společnosti / skladu musí být v Belgii, aby mohla být doručena s "
+"bpost"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_domestic_deliver_type__bpack_24h_pro
@@ -358,7 +315,7 @@ msgstr "bpack World Express Pro"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__delivery_type__bpost
-#: model:ir.model.fields.selection,name:delivery_bpost.selection__stock_package_type__package_carrier_type__bpost
+#: model:ir.model.fields.selection,name:delivery_bpost.selection__product_packaging__package_carrier_type__bpost
 msgid "bpost"
 msgstr "bpost"
 
@@ -368,32 +325,37 @@ msgid "bpost Configuration"
 msgstr "konfigurace bpost"
 
 #. module: delivery_bpost
-#: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_package_type_id
-msgid "bpost Default Package Type"
+#: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_packaging_id
+msgid "bpost Default Packaging Type"
+msgstr "bpost Default Packaging Type"
+
+#. module: delivery_bpost
+#: code:addons/delivery_bpost/models/bpost_request.py:0
+#, python-format
+msgid ""
+"bpost Domestic is used only to ship inside Belgium. Please change the "
+"delivery method into bpost International."
 msgstr ""
+"bpost Domestic se používá pouze k přepravě uvnitř Belgie. Změňte způsob "
+"doručení do bpost International."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
-msgid "bpost Domestic is used only to ship inside Belgium. Please change the delivery method into bpost International."
-msgstr "bpost Domestic se používá pouze k přepravě uvnitř Belgie. Změňte způsob doručení do bpost International."
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/bpost_request.py:0
-#, python-format
-msgid "bpost International is used only to ship outside Belgium. Please change the delivery method into bpost Domestic."
-msgstr "bpost International se používá pouze k přepravě mimo Belgii. Změňte způsob doručení do bpost Domestic."
+msgid ""
+"bpost International is used only to ship outside Belgium. Please change the "
+"delivery method into bpost Domestic."
+msgstr ""
+"bpost International se používá pouze k přepravě mimo Belgii. Změňte způsob "
+"doručení do bpost Domestic."
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_sale
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_stock
 msgid "bpost Shipping Methods"
-msgstr "Přepravní možnosti bpost"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "bpost did not return prices for this destination country."

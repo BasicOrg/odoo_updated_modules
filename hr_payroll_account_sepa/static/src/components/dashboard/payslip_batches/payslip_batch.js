@@ -1,11 +1,33 @@
 /** @odoo-module **/
 
+import { ComponentAdapter } from 'web.OwlCompatibility';
+import { FieldBinaryFile } from 'web.basic_fields';
+
 import { patch } from "@web/core/utils/patch";
-import { BinaryField } from "@web/views/fields/binary/binary_field";
-import { Record } from "@web/model/record";
+
 import { PayrollDashboardPayslipBatch } from '@hr_payroll/components/dashboard/payslip_batch/payslip_batch';
 
-patch(PayrollDashboardPayslipBatch.prototype, {
+export class PayrollDashboardPayslipBatchAdapter extends ComponentAdapter {
+    /**
+     * @override
+     */
+    setup() {
+        // FieldBinaryFile requires getSession which requires the legacy environment.
+        super.setup();
+        this.env = owl.Component.env;
+    }
+}
+
+
+patch(PayrollDashboardPayslipBatch.prototype, 'payroll_sepa', {
+    /**
+     * @override
+     */
+    setup() {
+        this._super.apply(this, arguments);
+        this.FieldBinaryFile = FieldBinaryFile;
+    },
+
     /**
      * @returns {boolean} Whether any batch has a sepa export to display
      */
@@ -13,26 +35,35 @@ patch(PayrollDashboardPayslipBatch.prototype, {
         return this.props.batches.find(elem => elem.sepa_export);
     },
 
-    getRecordProps(batch) {
-        const fields = {
-            sepa_export: { name: "sepa_export", type: "binary" },
-            sepa_export_filename: { name: "sepa_export_filename", type: "char" },
-        };
+    /**
+     * Creates a fake record with the necessary data.
+     *
+     * @param batchData data from hr.payslip.run
+     * @returns a fake record with the necessary data to render the widget
+     */
+    _generateRecord(batchData) {
         return {
-            resModel: "hr.payslip.run",
-            resId: batch.id,
-            fields,
-            fieldNames: Object.keys(fields),
-            values: {
-                sepa_export: "coucou==\n",//batch.sepa_export,
+            id: batchData.id,
+            res_id: batchData.id,
+            model: 'hr.payslip.run',
+            data: {
+                id: batchData.id,
+                sepa_export: batchData.sepa_export,
                 sepa_export_filename: 'SEPA',
             },
+            fields: {
+                sepa_export: {string: '', type: 'binary'},
+                sepa_export_filename: {string: '', type: 'char'},
+            },
+            fieldsInfo: {
+                default: {
+                    sepa_export: {
+                        filename: 'sepa_export_filename',
+                    },
+                },
+            }
         };
-    }
+    },
 });
 
-PayrollDashboardPayslipBatch.components = Object.assign(
-    {},
-    PayrollDashboardPayslipBatch.components,
-    { BinaryField, Record }
-);
+PayrollDashboardPayslipBatch.components = Object.assign({}, PayrollDashboardPayslipBatch.components, {PayrollDashboardPayslipBatchAdapter});

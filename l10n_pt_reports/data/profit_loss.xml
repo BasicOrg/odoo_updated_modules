@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_l10n_pt_ddr" model="account.report">
         <field name="name">Demonstração de Resultados</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
@@ -19,7 +19,6 @@
         <field name="name">RENDIMENTOS E GASTOS</field>
         <field name="code">RENDIMENTOS_E_GASTOS</field>
         <field name="report_id" ref="account_financial_report_l10n_pt_ddr"/>
-        <field name="hierarchy_level">0</field>
     </record>
     <record id="account_financial_report_l10n_pt_ddr_reg_vendas_e_servicos_prestados" model="account.report.line">
         <field name="name">Vendas e serviços prestados</field>
@@ -114,7 +113,6 @@
                 <field name="engine">account_codes</field>
                 <field name="formula">61</field>
                 <field name="date_scope">normal</field>
-                <field name="green_on_positive" eval="False"/>
             </record>
         </field>
     </record>
@@ -129,7 +127,6 @@
                 <field name="engine">account_codes</field>
                 <field name="formula">62</field>
                 <field name="date_scope">normal</field>
-                <field name="green_on_positive" eval="False"/>
             </record>
         </field>
     </record>
@@ -144,7 +141,6 @@
                 <field name="engine">account_codes</field>
                 <field name="formula">63</field>
                 <field name="date_scope">normal</field>
-                <field name="green_on_positive" eval="False"/>
             </record>
         </field>
     </record>
@@ -537,7 +533,13 @@
             <record id="account_financial_report_l10n_pt_ddr_reg_resultado_liquido_do_periodo_balance" model="account.report.expression">
                 <field name="label">balance</field>
                 <field name="engine">aggregation</field>
-                <field name="formula">REG_RESULTADO_LIQUIDO_DO_PERIODO.balance_account_codes + REG_RESULTADO_ANTES_DE_IMPOSTOS.balance - IMPOSTO_RENDIMENTO_PERIODO.balance</field>
+                <field name="formula">REG_RESULTADO_ANTES_DE_IMPOSTOS.balance - IMPOSTO_RENDIMENTO_PERIODO.balance</field>
+                <field name="date_scope">normal</field>
+            </record>
+            <record id="account_financial_report_l10n_pt_ddr_reg_resultado_liquido_do_periodo_balance" model="account.report.expression">
+                <field name="label">balance</field>
+                <field name="engine">aggregation</field>
+                <field name="formula">REG_RESULTADO_LIQUIDO_DO_PERIODO.balance_account_codes + REG_RESULTADO_LIQUIDO_DO_PERIODO.balance</field>
                 <field name="date_scope">normal</field>
             </record>
         </field>

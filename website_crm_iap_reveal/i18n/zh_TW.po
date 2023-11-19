@@ -3,16 +3,16 @@
 # 	* website_crm_iap_reveal
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-02-11 14:34+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -44,7 +44,7 @@ msgstr "啟用"
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_view_search
 msgid "Archived"
-msgstr "已封存"
+msgstr "已歸檔"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_crm_reveal_rule
@@ -111,7 +111,7 @@ msgstr "建立規則以從您的網站訪問者那裡生成 B2B 潛在商機/商
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__create_uid
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__create_date
@@ -130,7 +130,6 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Enter Valid Regex."
@@ -154,12 +153,12 @@ msgstr "根據規模過濾"
 #. module: website_crm_iap_reveal
 #: model_terms:ir.ui.view,arch_db:website_crm_iap_reveal.crm_reveal_rule_form
 msgid "From"
-msgstr "由"
+msgstr "來自"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__lead_ids
 msgid "Generated Lead / Opportunity"
-msgstr "建立的潛在商機/商機"
+msgstr "生成的潛在商機/商機"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model,name:website_crm_iap_reveal.model_ir_http
@@ -172,6 +171,11 @@ msgid "High"
 msgstr "高"
 
 #. module: website_crm_iap_reveal
+#: model:ir.model,name:website_crm_iap_reveal.model_iap_account
+msgid "IAP Account"
+msgstr "IAP 帳戶"
+
+#. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_lead__reveal_iap_credits
 msgid "IAP Credits"
 msgstr "IAP 點數"
@@ -180,18 +184,24 @@ msgstr "IAP 點數"
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__id
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_lead__reveal_ip
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__reveal_ip
 msgid "IP Address"
-msgstr "IP 位址"
+msgstr "IP地址"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__industry_tag_ids
 msgid "Industries"
 msgstr "行業"
+
+#. module: website_crm_iap_reveal
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule____last_update
+#: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__write_uid
@@ -233,7 +243,17 @@ msgid "Lead Generation Views"
 msgstr "潛在商機生成視圖"
 
 #. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid ""
+"Lead Generation requires a GeoIP resolver which could not be found on your "
+"system. Please consult https://pypi.org/project/GeoIP/."
+msgstr "潛在商機生成需要在您的系統上找不到的 GeoIP 解析器。請參考 https://pypi.org/project/GeoIP/。"
+
+#. module: website_crm_iap_reveal
 #: model:ir.actions.server,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead_ir_actions_server
+#: model:ir.cron,cron_name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
+#: model:ir.cron,name:website_crm_iap_reveal.ir_cron_crm_reveal_lead
 msgid "Lead Generation: Leads/Opportunities Generation"
 msgstr "商機生成：潛在商機/商機生成"
 
@@ -268,6 +288,12 @@ msgstr "最多允許 5 個聯絡人！"
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_rule__priority__1
 msgid "Medium"
 msgstr "媒體"
+
+#. module: website_crm_iap_reveal
+#: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
+#, python-format
+msgid "Missing Library"
+msgstr ""
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields.selection,name:website_crm_iap_reveal.selection__crm_reveal_view__reveal_state__not_found
@@ -319,7 +345,6 @@ msgid "Opportunity Generation Conditions"
 msgstr "商機產生條件"
 
 #. module: website_crm_iap_reveal
-#. odoo-python
 #: code:addons/website_crm_iap_reveal/models/crm_reveal_rule.py:0
 #, python-format
 msgid "Opportunity created by Odoo Lead Generation"
@@ -392,17 +417,17 @@ msgstr "Seniority"
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "序號"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_view__reveal_state
 msgid "State"
-msgstr "狀態"
+msgstr "縣市"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__state_ids
 msgid "States"
-msgstr "狀態"
+msgstr "縣市"
 
 #. module: website_crm_iap_reveal
 #: model:ir.model.fields,field_description:website_crm_iap_reveal.field_crm_reveal_rule__suffix

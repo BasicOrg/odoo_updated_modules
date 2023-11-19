@@ -7,16 +7,16 @@
             <field name="inherit_id" ref="account.product_template_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='invoicing']//group[@name='accounting']" position="inside">
-                    <group name="intrastat" string="Intrastat" invisible="product_variant_count &gt; 1 and not is_product_variant" >
+                    <group name="intrastat" string="Intrastat" attrs="{'invisible': [('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}" >
                         <field name="intrastat_code_id"/>
-                        <label for="intrastat_supplementary_unit_amount" invisible="not intrastat_code_id or not intrastat_supplementary_unit"/>
-                        <div class="o_row" invisible="not intrastat_code_id or not intrastat_supplementary_unit">
+                        <label for="intrastat_supplementary_unit_amount" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '=', False)]}"/>
+                        <div class="o_row" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '=', False)]}">
                             <field name="intrastat_supplementary_unit_amount"/>
                             <span class="oe_inline"></span>
                             <field name="intrastat_supplementary_unit"/>
                         </div>
-                        <label for="weight" invisible="not intrastat_code_id or intrastat_supplementary_unit"/>
-                        <div class="o_row" invisible="not intrastat_code_id or intrastat_supplementary_unit">
+                        <label for="weight" attrs="{'invisible': ['|',('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '!=', False)]}"/>
+                        <div class="o_row" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '!=', False)]}">
                             <field name="weight"/>
                             <span class="oe_inline"></span>
                             <field name="weight_uom_name"/>
@@ -25,7 +25,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//page[@name='inventory']" position="attributes">
-                    <attribute name="groups" add="account.group_account_invoice" separator=","/>
+                    <attribute name="groups" add="account.group_account_invoice" seperator=","/>
                 </xpath>
             </field>
         </record>
@@ -39,14 +39,14 @@
                     <group>
                         <group name="intrastat" string="Intrastat">
                             <field name="intrastat_code_id"/>
-                            <label for="intrastat_supplementary_unit_amount" invisible="not intrastat_code_id or not intrastat_supplementary_unit"/>
-                            <div class="o_row" invisible="not intrastat_code_id or not intrastat_supplementary_unit">
+                            <label for="intrastat_supplementary_unit_amount" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '=', False)]}"/>
+                            <div class="o_row" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '=', False)]}">
                                 <field name="intrastat_supplementary_unit_amount"/>
                                 <span class="oe_inline"></span>
                                 <field name="intrastat_supplementary_unit"/>
                             </div>
-                            <label for="weight" invisible="not intrastat_code_id or intrastat_supplementary_unit"/>
-                            <div class="o_row" invisible="not intrastat_code_id or intrastat_supplementary_unit">
+                            <label for="weight" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '!=', False)]}"/>
+                            <div class="o_row" attrs="{'invisible': ['|', ('intrastat_code_id', '=', False), ('intrastat_supplementary_unit', '!=', False)]}">
                                 <field name="weight"/>
                                 <span class="oe_inline"></span>
                                 <field name="weight_uom_name"/>
@@ -115,10 +115,10 @@
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
                 <field name="type" position="after">
-                    <field name="intrastat_code_id" invisible="type != 'product'" optional="hide"/>
-                    <field name="intrastat_supplementary_unit_amount" invisible="type != 'product'" optional="hide"/>
-                    <field name="intrastat_supplementary_unit" invisible="type != 'product'" optional="hide"/>
-                    <field name="intrastat_origin_country_id" invisible="type != 'product'" optional="hide"/>
+                    <field name="intrastat_code_id" attrs="{'invisible':[('type', '!=', 'product')]}" optional="hide"/>
+                    <field name="intrastat_supplementary_unit_amount" attrs="{'invisible':[('type', '!=', 'product')]}" optional="hide"/>
+                    <field name="intrastat_supplementary_unit" attrs="{'invisible':[('type', '!=', 'product')]}" optional="hide"/>
+                    <field name="intrastat_origin_country_id" attrs="{'invisible':[('type', '!=', 'product')]}" optional="hide"/>
                 </field>
             </field>
         </record>

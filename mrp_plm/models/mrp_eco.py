@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
+from markupsafe import escape
 from random import randint
 
 import ast
@@ -68,7 +69,7 @@ class MrpEcoApprovalTemplate(models.Model):
         ('optional', 'Approves, but the approval is optional'),
         ('mandatory', 'Is required to approve'),
         ('comment', 'Comments only')], 'Approval Type',
-        default='mandatory', required=True, index=True)
+        default='mandatory', required=True)
     user_ids = fields.Many2many('res.users', string='Users', domain=lambda self: [('groups_id', 'in', self.env.ref('mrp_plm.group_plm_user').id)], required=True)
     stage_id = fields.Many2one('mrp.eco.stage', 'Stage', required=True)
 
@@ -100,7 +101,7 @@ class MrpEcoApproval(models.Model):
         ('comment', 'Commented'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected')], string='Status',
-        default='none', required=True, index=True)
+        default='none', required=True)
     approval_date = fields.Datetime('Approval Date')
     is_closed = fields.Boolean()
     is_approved = fields.Boolean(
@@ -150,7 +151,7 @@ class MrpEcoStage(models.Model):
 
     @api.model
     def _get_sequence(self):
-        others = self.search([('sequence', '!=', False)], order='sequence desc', limit=1)
+        others = self.search([('sequence','<>',False)], order='sequence desc', limit=1)
         if others:
             return (others[0].sequence or 0) + 1
         return 1
@@ -225,7 +226,7 @@ class MrpEco(models.Model):
         ('rebase', 'Rebase'),
         ('conflict', 'Conflict'),
         ('done', 'Done')], string='Status',
-        copy=False, default='confirmed', readonly=True, required=True, index=True)
+        copy=False, default='confirmed', readonly=True, required=True)
     user_can_approve = fields.Boolean(
         'Can Approve', compute='_compute_user_approval',
         help='Technical field to check if approval by current user is required')
@@ -249,8 +250,6 @@ class MrpEco(models.Model):
         'Show Apply Change', compute='_compute_allow_apply_change')
 
     product_tmpl_id = fields.Many2one('product.template', "Product", check_company=True)
-    production_id = fields.Many2one(
-        'mrp.production', string='Manufacturing Orders', readonly=True, copy=False)
     type = fields.Selection(selection=_get_type_selection, string='Apply on',
         default='bom', required=True)
     bom_id = fields.Many2one(
@@ -306,22 +305,12 @@ class MrpEco(models.Model):
 
     def _get_difference_bom_lines(self, old_bom, new_bom):
         # Return difference lines from two bill of material.
-        def bom_line_key(line):
-            return (
-                line.product_id, line.operation_id._get_comparison_values(),
-                tuple(line.bom_product_template_attribute_value_ids.ids),
-            )
         new_bom_commands = [(5,)]
-        old_bom_lines = list(old_bom.bom_line_ids)
+        old_bom_lines = dict(((line.product_id, tuple(line.bom_product_template_attribute_value_ids.ids), line.operation_id._get_comparison_values()), line) for line in old_bom.bom_line_ids)
         if self.new_bom_id:
             for line in new_bom.bom_line_ids:
-                old_line = False
-                for i, bom_line in enumerate(old_bom_lines):
-                    if bom_line_key(line) == bom_line_key(bom_line):
-                        old_line = old_bom_lines.pop(i)
-                        break
-                if old_line and (line.product_uom_id != old_line.product_uom_id or
-                   tools.float_compare(line.product_qty, old_line.product_qty, precision_rounding=line.product_uom_id.rounding)):
+                old_line = old_bom_lines.pop((line.product_id, tuple(line.bom_product_template_attribute_value_ids.ids), line.operation_id._get_comparison_values()), None)
+                if old_line and (line.product_uom_id, line.product_qty) != (old_line.product_uom_id, old_line.product_qty):
                     new_bom_commands += [(0, 0, {
                         'change_type': 'update',
                         'product_id': line.product_id.id,
@@ -339,7 +328,7 @@ class MrpEco(models.Model):
                         'new_operation_id': line.operation_id.id,
                         'new_product_qty': line.product_qty
                     })]
-            for old_line in old_bom_lines:
+            for key, old_line in old_bom_lines.items():
                 new_bom_commands += [(0, 0, {
                     'change_type': 'remove',
                     'product_id': old_line.product_id.id,
@@ -378,27 +367,27 @@ class MrpEco(models.Model):
         # Rebase logic applied..
         vals = {'state': 'progress'}
         if self.bom_rebase_ids:
-            new_bom_lines = {line.product_id: line for line in self.new_bom_id.bom_line_ids}
+            new_bom_lines = dict(((line.product_id), line) for line in self.new_bom_id.bom_line_ids)
             if self._is_conflict(new_bom_lines, self.bom_rebase_ids):
                 return self.write({'state': 'conflict'})
             else:
-                old_bom_lines = {line.product_id: line for line in self.bom_id.bom_line_ids}
+                old_bom_lines = dict(((line.product_id), line) for line in self.bom_id.bom_line_ids)
                 self.rebase(old_bom_lines, new_bom_lines, self.bom_rebase_ids)
                 # Remove all rebase line of current eco.
                 self.bom_rebase_ids.unlink()
         if self.previous_change_ids:
-            new_bom_lines = {line.product_id: line for line in self.new_bom_id.bom_line_ids}
+            new_bom_lines = dict(((line.product_id), line) for line in self.new_bom_id.bom_line_ids)
             if self._is_conflict(new_bom_lines, self.previous_change_ids):
                 return self.write({'state': 'conflict'})
             else:
-                new_activated_bom_lines = {line.product_id: line for line in self.current_bom_id.bom_line_ids}
+                new_activated_bom_lines = dict(((line.product_id), line) for line in self.current_bom_id.bom_line_ids)
                 self.rebase(new_activated_bom_lines, new_bom_lines, self.previous_change_ids)
                 # Remove all rebase line of current eco.
                 self.previous_change_ids.unlink()
         if self.current_bom_id:
             self.new_bom_id.write({'version': self.current_bom_id.version + 1, 'previous_bom_id': self.current_bom_id.id})
             vals.update({'bom_id': self.current_bom_id.id, 'current_bom_id': False})
-        self.message_post(body=_('Successfully Rebased!'))
+        self.message_post(body=_('Successfully Rebased !'))
         return self.write(vals)
 
     @api.depends('bom_id.bom_line_ids', 'new_bom_id.bom_line_ids', 'new_bom_id.bom_line_ids.product_qty', 'new_bom_id.bom_line_ids.product_uom_id', 'new_bom_id.bom_line_ids.operation_id')
@@ -503,7 +492,7 @@ class MrpEco(models.Model):
     @api.depends('stage_id.approval_template_ids')
     def _compute_allow_change_kanban_state(self):
         for rec in self:
-            rec.allow_change_kanban_state = not rec.stage_id.approval_template_ids
+            rec.allow_change_kanban_state = False if rec.stage_id.approval_template_ids else True
 
     @api.depends('stage_id', 'kanban_state')
     def _compute_kanban_state_label(self):
@@ -518,9 +507,7 @@ class MrpEco(models.Model):
     @api.onchange('product_tmpl_id')
     def onchange_product_tmpl_id(self):
         if self.product_tmpl_id.bom_ids:
-            bom_product_tmpl = self.bom_id.product_tmpl_id or self.bom_id.product_id.product_tmpl_id
-            if bom_product_tmpl != self.product_tmpl_id:
-                self.bom_id = self.product_tmpl_id.bom_ids.ids[0]
+            self.bom_id = self.product_tmpl_id.bom_ids.ids[0]
 
     @api.onchange('type_id')
     def onchange_type_id(self):
@@ -633,11 +620,11 @@ class MrpEco(models.Model):
                         'approval_date': fields.Datetime.now(),
                     })
 
-                message = _("%(approval_name)s %(approver_name)s %(approval_status)s this ECO",
-                    approval_name=approval.name,
-                    approver_name=approval.user_id.name,
-                    approval_status=approval.status,
-                )
+                message = escape(_("%(approval_name)s %(approver_name)s %(approval_status)s this ECO")) % {
+                    'approval_name': approval.name,
+                    'approver_name': approval.user_id.name,
+                    'approval_status': approval.status,
+                }
                 eco.message_post(body=message, subtype_xmlid='mail.mt_comment')
 
     def approve(self):
@@ -663,15 +650,11 @@ class MrpEco(models.Model):
         IrAttachment = self.env['ir.attachment']
         for eco in self:
             if eco.type == 'bom':
-                if eco.production_id:
-                    # This ECO was generated from a MO. Uses it MO as base for the revision.
-                    eco.new_bom_id = eco.production_id._create_revision_bom()
-                if not eco.new_bom_id:
-                    eco.new_bom_id = eco.bom_id.sudo().copy(default={
-                        'version': eco.bom_id.version + 1,
-                        'active': False,
-                        'previous_bom_id': eco.bom_id.id,
-                    })
+                eco.new_bom_id = eco.bom_id.copy(default={
+                    'version': eco.bom_id.version + 1,
+                    'active': False,
+                    'previous_bom_id': eco.bom_id.id,
+                })
                 attachments = IrAttachment.search([('res_model', '=', 'mrp.bom'),
                                                    ('res_id', '=', eco.bom_id.id)])
             else:
@@ -766,12 +749,6 @@ class MrpEco(models.Model):
             'context': context,
         }
 
-    def action_open_production(self):
-        self.ensure_one()
-        action = self.env['ir.actions.act_window']._for_xml_id('mrp.action_mrp_production_form')
-        action["res_id"] = self.production_id.id
-        return action
-
     def open_new_bom(self):
         self.ensure_one()
         return {
@@ -806,19 +783,15 @@ class MrpEcoBomChange(models.Model):
     new_product_qty = fields.Float('New revision quantity', default=0)
     old_operation_id = fields.Many2one('mrp.routing.workcenter', 'Previous Consumed in Operation')
     new_operation_id = fields.Many2one('mrp.routing.workcenter', 'New Consumed in Operation')
-    upd_product_qty = fields.Float('Quantity', compute='_compute_upd_product_qty', store=True)
+    upd_product_qty = fields.Float('Quantity', compute='_compute_change', store=True)
     uom_change = fields.Char('Unit of Measure', compute='_compute_change', compute_sudo=True)
     operation_change = fields.Char(compute='_compute_change', string='Consumed in Operation', compute_sudo=True)
     conflict = fields.Boolean()
 
-    @api.depends('new_product_qty', 'old_product_qty')
-    def _compute_upd_product_qty(self):
-        for rec in self:
-            rec.upd_product_qty = rec.new_product_qty - rec.old_product_qty
-
-    @api.depends('old_operation_id', 'new_operation_id', 'old_uom_id', 'new_uom_id')
+    @api.depends('new_product_qty', 'old_product_qty', 'old_operation_id', 'new_operation_id', 'old_uom_id', 'new_uom_id')
     def _compute_change(self):
         for rec in self:
+            rec.upd_product_qty = rec.new_product_qty - rec.old_product_qty
             rec.operation_change = rec.new_operation_id.name if rec.change_type == 'add' else rec.old_operation_id.name
             rec.uom_change = False
             if (rec.old_uom_id and rec.new_uom_id) and rec.old_uom_id != rec.new_uom_id:
@@ -857,5 +830,5 @@ class MrpEcoTag(models.Model):
     color = fields.Integer('Color Index', default=_get_default_color)
 
     _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+        ('name_uniq', 'unique (name)', "Tag name already exists !"),
     ]

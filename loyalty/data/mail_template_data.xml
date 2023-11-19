@@ -5,7 +5,6 @@
         <field name="model_id" ref="model_loyalty_card"/>
         <field name="subject">Your Gift Card at {{ object.company_id.name }}</field>
         <field name="partner_to">{{ object._get_mail_partner().id }}</field>
-        <field name="lang">{{ object._get_mail_partner().lang }}</field>
         <field name="description">Sent to customer who purchased a gift card</field>
         <field name="body_html" type="html">
             <div style="background: #ffffff">
@@ -35,7 +34,8 @@
                 </div>
             </div>
         </field>
-        <field name="report_template_ids" eval="[(4, ref('loyalty.report_gift_card'))]"/>
+        <field name="report_template" ref="loyalty.report_gift_card"/>
+        <field name="report_name">Your Gift Card</field>
         <field name="auto_delete" eval="True"/>
     </record>
 
@@ -96,7 +96,8 @@
 </tr>
 </tbody></table>
         </field>
-        <field name="report_template_ids" eval="[(4, ref('loyalty.report_loyalty_card'))]"/>
+        <field name="report_template" ref="loyalty.report_loyalty_card"/>
+        <field name="report_name">Your Coupon Code</field>
         <field name="auto_delete" eval="True"/>
     </record>
 </odoo>

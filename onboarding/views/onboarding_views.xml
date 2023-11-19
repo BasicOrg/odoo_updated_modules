@@ -23,9 +23,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="current_progress_id" invisible="1"/>
-                    <button name="action_toggle_visibility" type="object" string="Toggle visibility"
-                            invisible="not current_progress_id"/>
+                    <button name="action_toggle_visibility" type="object" string="Toggle visibility"/>
                 </header>
                 <sheet>
                     <group col="2">
@@ -36,8 +34,11 @@
                     </group>
                     <notebook>
                         <page name="Onboarding steps">
-                            <group string="Steps">
-                                <field name="step_ids" nolabel="1" colspan="2"/>
+                            <field name="step_ids"/>
+                        </page>
+                        <page name="Panel Rendering">
+                            <group>
+                                <field name="panel_background_color" string="Background color"/>
                             </group>
                         </page>
                     </notebook>
@@ -53,9 +54,8 @@
             <tree string="Onboarding Steps">
                 <field name="sequence" widget="handle"/>
                 <field name="title"/>
-                <field name="onboarding_ids" optional="hide"/>
+                <field name="onboarding_id" optional="hide"/>
                 <field name="current_step_state"/>
-                <field name="is_per_company" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -68,25 +68,16 @@
                 <sheet>
                     <group>
                         <field name="title"/>
-                        <field name="current_step_state"/>
+                        <field name="onboarding_id"/>
                         <field name="panel_step_open_action_name"/>
-                        <field name="is_per_company"/>
                     </group>
                     <notebook>
-                        <page name="Onboardings using this step">
-                            <group string="Onboardings">
-                                <field name="onboarding_ids" nolabel="1" colspan="2"/>
-                            </group>
-                        </page>
                         <page name="Step rendering">
                             <group>
                                 <field name="description"/>
                                 <field name="button_text"/>
                                 <field name="done_text"/>
                                 <field name="done_icon"/>
-                                <field name="step_image_filename" invisible="1"/>
-                                <field name="step_image" filename="step_image_filename"/>
-                                <field name="step_image_alt"/>
                             </group>
                         </page>
                     </notebook>

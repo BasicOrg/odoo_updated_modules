@@ -1,11 +1,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-from xml.etree import ElementTree
 
 from odoo import api, fields, models
-
-from odoo.addons.sale_amazon import utils as amazon_utils
 
 
 _logger = logging.getLogger(__name__)
@@ -46,19 +43,11 @@ class AmazonOffer(models.Model):
         related="product_id.product_tmpl_id", store=True, readonly=True
     )
     sku = fields.Char(string="SKU", help="The Stock Keeping Unit.", required=True)
-    amazon_sync_status = fields.Selection(
-        string="Amazon Synchronization Status",
-        help="The synchronization status of the product's stock level to Amazon:\n"
-             "- Processing: The stock level has been sent and is being processed.\n"
-             "- Done: The stock level has been processed.\n"
-             "- Error: The synchronization of the stock level failed.",
-        selection=[('processing', "Processing"), ('done', "Done"), ('error', "Error")],
-        readonly=True,
-    )
-    amazon_feed_ref = fields.Char(string="Amazon Feed Reference", readonly=True)
 
     _sql_constraints = [(
-        'unique_sku', 'UNIQUE(account_id, sku)', "SKU must be unique for a given account."
+        'unique_sku',
+        'UNIQUE(account_id, marketplace_id, sku)',
+        "SKU must be unique for a given account and marketplace."
     )]
 
     @api.onchange('product_id')
@@ -75,46 +64,3 @@ class AmazonOffer(models.Model):
             'url': url,
             'target': 'new',
         }
-
-    def _update_inventory_availability(self, account):
-        """
-        Update the stock quantity of Amazon products to Amazon.
-
-        :param record account: The Amazon account of the delivery to confirm on Amazon, as an
-                               `amazon.account` record.
-        :return: None
-        """
-
-        def build_feed_messages(root_):
-            """ Build the 'Message' elements to add to the feed.
-
-            :param Element root_: The root XML element to which messages should be added.
-            :return: None
-            """
-            for offer_ in self:
-                # Build the message base.
-                message_ = ElementTree.SubElement(root_, 'Message')
-                inventory_ = ElementTree.SubElement(message_, 'Inventory')
-                ElementTree.SubElement(inventory_, 'SKU').text = offer_.sku
-                # We don't filter FBA products out because Amazon will ignore them anyway.
-                quantity_ = offer_.product_id.free_qty
-                ElementTree.SubElement(inventory_, 'Quantity').text = str(int(quantity_))
-
-        xml_feed = amazon_utils.build_feed(account, 'Inventory', build_feed_messages)
-        try:
-            feed_ref = amazon_utils.submit_feed(
-                account, xml_feed, 'POST_INVENTORY_AVAILABILITY_DATA'
-            )
-        except amazon_utils.AmazonRateLimitError:
-            _logger.info(
-                "Rate limit reached while sending inventory availability notification for Amazon"
-                " account with id %s.", account.id
-            )
-        else:
-            _logger.info(
-                "Sent inventory availability notification (feed_ref %s) to amazon for offers with"
-                " SKU %s.",
-                feed_ref,
-                ', '.join(self.mapped('sku')),
-            )
-            self.write({'amazon_sync_status': 'processing', 'amazon_feed_ref': feed_ref})

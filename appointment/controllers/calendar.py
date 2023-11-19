@@ -5,14 +5,13 @@ import pytz
 
 from babel.dates import format_datetime, format_date
 from datetime import datetime, timedelta
-from werkzeug.exceptions import Forbidden, BadRequest
 from werkzeug.urls import url_encode
 
 from odoo import fields, _
 from odoo.addons.base.models.ir_qweb import keep_query
 from odoo.addons.calendar.controllers.main import CalendarController
 from odoo.http import request, route
-from odoo.tools import is_html_empty
+from odoo.tools import html2plaintext, is_html_empty
 from odoo.tools.misc import get_lang
 
 
@@ -25,7 +24,7 @@ class AppointmentCalendarController(CalendarController):
     @route(website=True)
     def view_meeting(self, token, id):
         """Redirect the internal logged in user to the form view of calendar.event, and redirect
-           regular attendees to the website page of the calendar.event for appointments"""
+           regular attendees to the website page of the calendar.event for online appointments"""
         super(AppointmentCalendarController, self).view_meeting(token, id)
         attendee = request.env['calendar.attendee'].sudo().search([
             ('access_token', '=', token),
@@ -40,12 +39,12 @@ class AppointmentCalendarController(CalendarController):
                 'view_type': 'form',
                 'model': attendee.event_id._name,
             })
-            return request.redirect(f'/web?db={request.env.cr.dbname}#{url_params}')
+            return request.redirect('/web?db=%s#%s' % (request.env.cr.dbname, url_params))
 
         request.session['timezone'] = attendee.partner_id.tz
         if not attendee.event_id.access_token:
             attendee.event_id._generate_access_token()
-        return request.redirect(f'/calendar/view/{attendee.event_id.access_token}?partner_id={attendee.partner_id.id}')
+        return request.redirect('/calendar/view/%s?partner_id=%s' % (attendee.event_id.access_token, attendee.partner_id.id))
 
     @route(['/calendar/view/<string:access_token>'], type='http', auth="public", website=True)
     def appointment_view(self, access_token, partner_id, state=False, **kwargs):
@@ -53,12 +52,10 @@ class AppointmentCalendarController(CalendarController):
         Render the validation of an appointment and display a summary of it
 
         :param access_token: the access_token of the event linked to the appointment
-        :param partner_id: id of the partner who booked the appointment
         :param state: allow to display an info message, possible values:
             - new: Info message displayed when the appointment has been correctly created
             - no-cancel: Info message displayed when an appointment can no longer be canceled
         """
-        partner_id = int(partner_id)
         event = request.env['calendar.event'].sudo().search([('access_token', '=', access_token)], limit=1)
         if not event:
             return request.not_found()
@@ -82,12 +79,14 @@ class AppointmentCalendarController(CalendarController):
 
         locale = get_lang(request.env).code
         day_name = format_func(date_start, 'EEE', locale=locale)
-        date_start = f'{day_name} {format_func(date_start, locale=locale)}{date_start_suffix}'
+        date_start = day_name + ' ' + format_func(date_start, locale=locale) + date_start_suffix
+        # convert_online_event_desc_to_text method for correct data formatting in external calendars
+        details = event.appointment_type_id and event.appointment_type_id.message_confirmation or event.convert_online_event_desc_to_text(event.description) or ''
         params = {
             'action': 'TEMPLATE',
-            'text': event._get_customer_summary(),
-            'dates': f'{url_date_start}/{url_date_stop}',
-            'details': event._get_customer_description(),
+            'text': event.name,
+            'dates': url_date_start + '/' + url_date_stop,
+            'details': html2plaintext(details.encode('utf-8'))
         }
         if event.location:
             params.update(location=event.location.replace('\n', ' '))
@@ -100,31 +99,8 @@ class AppointmentCalendarController(CalendarController):
             'google_url': google_url,
             'state': state,
             'partner_id': partner_id,
-            'attendee_status': event.attendee_ids.filtered(lambda a: a.partner_id.id == partner_id).state,
             'is_html_empty': is_html_empty,
         })
-
-    @route(['/calendar/<string:access_token>/add_attendees_from_emails'], type="json", auth="public", website=True)
-    def appointment_add_attendee(self, access_token, emails_str):
-        """
-        Add the attendee at the time of the validation of an appointment page
-
-        :param access_token: access_token of the event linked to the appointment
-        :param emails_str: guest emails in the block of text
-        """
-        event_sudo = request.env['calendar.event']
-        event_sudo = event_sudo.sudo().search([('access_token', '=', access_token)], limit=1)
-        if not event_sudo:
-            return request.not_found()
-        if not event_sudo.appointment_type_id.allow_guests:
-            raise BadRequest()
-        if not emails_str:
-            return []
-        guests = event_sudo.sudo()._find_or_create_partners(emails_str)
-        if guests:
-            event_sudo.write({
-                'partner_ids': [(4, pid.id, False) for pid in guests]
-            })
 
     @route(['/calendar/cancel/<string:access_token>',
             '/calendar/<string:access_token>/cancel',
@@ -139,18 +115,12 @@ class AppointmentCalendarController(CalendarController):
         if not event:
             return request.not_found()
         if fields.Datetime.from_string(event.allday and event.start_date or event.start) < datetime.now() + timedelta(hours=event.appointment_type_id.min_cancellation_hours):
-            return request.redirect(f'/calendar/view/{access_token}?state=no-cancel&partner_id={partner_id}')
+            return request.redirect('/calendar/view/' + access_token + '?state=no-cancel&partner_id=%s' % partner_id)
         event.sudo().action_cancel_meeting([int(partner_id)])
         if appointment_invite:
-            redirect_url = appointment_invite.redirect_url + '&state=cancel'
+            redirect_url = "%s&state=cancel" % appointment_invite.redirect_url
         else:
-            reset_params = {'state': 'cancel'}
-            if appointment_type.schedule_based_on == 'resources':
-                reset_params.update({
-                    'resource_selected_id': '',
-                    'available_resource_ids': '',
-                })
-            redirect_url = f'/appointment/{appointment_type.id}?{keep_query("*", **reset_params)}'
+            redirect_url = '/appointment/%s?%s' % (appointment_type.id, keep_query('*', state="cancel"))
         return request.redirect(redirect_url)
 
     @route(['/calendar/ics/<string:access_token>.ics'], type='http', auth="public", website=True)
@@ -168,16 +138,3 @@ class AppointmentCalendarController(CalendarController):
             ('Content-Length', len(content)),
             ('Content-Disposition', 'attachment; filename=Appoinment.ics')
         ])
-
-    @route('/calendar/videocall/<string:access_token>', type='http', auth='public')
-    def calendar_videocall(self, access_token):
-        if not access_token:
-            raise Forbidden()
-        event = request.env['calendar.event'].sudo().search([('access_token', '=', access_token)], limit=1)
-        if not event or not event.videocall_location:
-            return request.not_found()
-
-        if event.videocall_source == 'discuss':
-            return self.calendar_join_videocall(access_token)
-        # custom / google_meet
-        return request.redirect(event.videocall_location, local=False)

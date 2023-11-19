@@ -17,6 +17,7 @@ class HrWorkEntryType(models.Model):
     representation_fees = fields.Boolean(
         string="Representation Fees",
         help="Work entries counts for representation fees")
+    # YTI TODO: Make a new model for dmfa prestation type
     # CODE - LABEL
     # 1   toutes les données relatives au temps de travail couvertes par une rémunération avec cotisations ONSS, à l'exception des vacances légales et complémentaires des ouvriers
     #    - travail effectif normal (également le travail adapté avec perte de salaire);
@@ -81,6 +82,12 @@ class HrWorkEntryType(models.Model):
     leave_right = fields.Boolean(
         string="Keep Time Off Right", default=False,
         help="Work entries counts for time off right for next year.")
+    sdworx_code = fields.Char("SDWorx code", groups="hr.group_hr_user")
+
+    @api.constrains('sdworx_code')
+    def _check_sdworx_code(self):
+        if self.sdworx_code and len(self.sdworx_code) != 4:
+            raise ValidationError(_('The code should have 4 characters!'))
 
     @api.model
     def get_work_entry_type_benefits(self):

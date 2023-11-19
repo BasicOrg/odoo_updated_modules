@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import pytz
 from contextlib import contextmanager
 from datetime import date, datetime
 from unittest.mock import patch
 
 from odoo.addons.appointment.models.res_partner import Partner
 from odoo.addons.calendar.models.calendar_event import Meeting
-from odoo.addons.resource.models.resource_calendar import ResourceCalendar
+from odoo.addons.resource.models.resource import ResourceCalendar
 from odoo.addons.mail.tests.common import mail_new_test_user, MailCommon
 from odoo.tests import common
 
@@ -19,6 +18,8 @@ class AppointmentCommon(MailCommon, common.HttpCase):
     def setUpClass(cls):
         super(AppointmentCommon, cls).setUpClass()
 
+        # give default values for all email aliases and domain
+        cls._init_mail_gateway()
         # ensure admin configuration
         cls.admin_user = cls.env.ref('base.user_admin')
         cls.admin_user.write({
@@ -36,7 +37,6 @@ class AppointmentCommon(MailCommon, common.HttpCase):
         cls.reference_now = datetime(2022, 2, 13, 20, 0, 0)
         cls.reference_monday = datetime(2022, 2, 14, 7, 0, 0)
         cls.reference_now_monthweekstart = date(2022, 1, 30)  # starts on a Sunday, first week containing Feb day
-        cls.global_slots_enddate = date(2022, 3, 5)  # last day of last week of February
 
         cls.apt_manager = mail_new_test_user(
             cls.env,
@@ -68,17 +68,7 @@ class AppointmentCommon(MailCommon, common.HttpCase):
             login='staff_user_aust',
             tz='Australia/West'  # UTC + 8 (at least in February)
         )
-        cls.staff_user_nz = mail_new_test_user(
-            cls.env,
-            company_id=cls.company_admin.id,
-            email='new_zealand@test.example.com',
-            groups='base.group_user',
-            name='Employee New Zealand',
-            notification_type='email',
-            login='staff_user_nz',
-            tz='Pacific/Auckland'  # UTC + 12
-        )
-        cls.staff_users = cls.staff_user_bxls + cls.staff_user_aust + cls.staff_user_nz
+        cls.staff_users = cls.staff_user_bxls + cls.staff_user_aust
 
         # Default (test) appointment type
         # Slots are each hours from 8 to 13 (UTC + 1)
@@ -86,8 +76,8 @@ class AppointmentCommon(MailCommon, common.HttpCase):
         cls.apt_type_bxls_2days = cls.env['appointment.type'].create({
             'appointment_tz': 'Europe/Brussels',
             'appointment_duration': 1,
-            'assign_method': 'time_auto_assign',
-            'category': 'recurring',
+            'assign_method': 'random',
+            'category': 'website',
             'location_id': cls.staff_user_bxls.partner_id.id,
             'name': 'Bxls Appt Type',
             'max_schedule_days': 15,
@@ -104,27 +94,12 @@ class AppointmentCommon(MailCommon, common.HttpCase):
             'staff_user_ids': [(4, cls.staff_user_bxls.id)],
         })
 
-        cls.apt_type_resource = cls.env['appointment.type'].create({
-            'appointment_tz': 'UTC',
-            'assign_method': 'time_auto_assign',
-            'min_schedule_hours': 1.0,
-            'max_schedule_days': 5,
-            'name': 'Test',
-            'resource_manage_capacity': True,
-            'schedule_based_on': 'resources',
-            'slot_ids': [(0, 0, {
-                'weekday': str(cls.reference_monday.isoweekday()),
-                'start_hour': 15,
-                'end_hour': 16,
-            })],
-        })
-
     def _test_url_open(self, url):
         """ Call url_open with nocache parameter """
         url += ('?' not in url and '?' or '&') + 'nocache'
         return self.url_open(url)
 
-    def _create_meetings(self, user, time_info, appointment_type_id=None):
+    def _create_meetings(self, user, time_info):
         return self.env['calendar.event'].with_context(self._test_context).create([
             {'allday': allday,
              'attendee_ids': [(0, 0, {'partner_id': user.partner_id.id})],
@@ -133,7 +108,6 @@ class AppointmentCommon(MailCommon, common.HttpCase):
              'start': start,
              'stop': stop,
              'user_id': user.id,
-             'appointment_type_id': appointment_type_id
             }
             for start, stop, allday in time_info
         ])
@@ -150,7 +124,7 @@ class AppointmentCommon(MailCommon, common.HttpCase):
             'appointment_type_ids': self.all_apts.ids,
         })
 
-    def _filter_appointment_slots(self, slots, filter_months=False, filter_weekdays=False, filter_users=False, filter_resources=False):
+    def _filter_appointment_slots(self, slots, filter_months=False, filter_weekdays=False, filter_users=False):
         """ Get all the slots info computed.
         Can target a part of slots by referencing the expected months or days we want.
         :param list slots: slots content computed from _get_appointment_slots() method.
@@ -179,11 +153,14 @@ class AppointmentCommon(MailCommon, common.HttpCase):
                     for slot in day['slots']:
                         if filter_users and slot.get('staff_user_id') not in filter_users.ids:
                             continue
-                        if filter_resources:
-                            if any(slot_resource['id'] not in filter_resources.ids for slot_resource in slot.get('available_resources')):
-                                continue
                         slots_info.append(slot)
         return slots_info
+
+    def _flush_tracking(self):
+        """ Force the creation of tracking values notably, and ensure tests are
+        reproducible. """
+        self.env.flush_all()
+        self.cr.flush()
 
     def assertSlots(self, slots, exp_months, slots_data):
         """ Check slots content. Method to be improved soon, currently doing
@@ -243,21 +220,6 @@ class AppointmentCommon(MailCommon, common.HttpCase):
                         self.assertFalse(len(day['slots']), 'Slot: out of range should have no slot for %s' % day)
                     else:
                         self.assertFalse(len(day['slots']), 'Slot: not worked should have no slot for %s' % day)
-
-    def _test_slot_generate_available_resources(self, appointment_type, asked_capacity, timezone, start_dt, end_dt, filter_resources, expected_available_resource_ids, reference_date=None):
-        """ Simulate the check done after selecting a particular time slot
-        :param appointment_type: appointment type tested
-        :param asked_capacity<int>: asked capacity for the appointment
-        :param timezone<str>: timezone selected
-        :param start_dt<datetime>: start datetime of the slot (naive UTC)
-        :param end_dt<datetime>: end datetime of the slot (naive UTC)
-        :param filter_resources<recordset>: the resources for which the appointment was booked for
-        :param expected_available_resource_ids<list>: list of resource ids available for the slot we want to check
-        """
-        slots = appointment_type._slots_generate(start_dt.astimezone(pytz.utc), end_dt.astimezone(pytz.utc), timezone, reference_date=reference_date)
-        slots = [slot for slot in slots if slot['UTC'] == (start_dt.replace(tzinfo=None), end_dt.replace(tzinfo=None))]
-        appointment_type._slots_fill_resources_availability(slots, start_dt, end_dt, filter_resources=filter_resources, asked_capacity=asked_capacity)
-        self.assertEqual(set(expected_available_resource_ids), set(slots[0]['available_resource_ids'].ids))
 
     @contextmanager
     def mockAppointmentCalls(self):

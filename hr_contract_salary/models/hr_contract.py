@@ -19,7 +19,7 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
 
     origin_contract_id = fields.Many2one('hr.contract', string="Origin Contract", domain="[('company_id', '=', company_id)]", help="The contract from which this contract has been duplicated.")
-    is_origin_contract_template = fields.Boolean(compute='_compute_is_origin_contract_template', string='Is origin contract a contract template?', readonly=True)
+    is_origin_contract_template = fields.Boolean(compute='_compute_is_origin_contract_template', string='Is origin contract a contract template ?', readonly=True)
     hash_token = fields.Char('Created From Token', copy=False)
     applicant_id = fields.Many2one('hr.applicant', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     contract_reviews_count = fields.Integer(compute="_compute_contract_reviews_count", string="Proposed Contracts Count")
@@ -28,7 +28,7 @@ class HrContract(models.Model):
         compute="_compute_default_contract", store=True, readonly=False,
         domain="[('company_id', '=', company_id), ('employee_id', '=', False)]",
         help="Default contract used when making an offer to an applicant.")
-    sign_template_id = fields.Many2one('sign.template', compute='_compute_sign_template_id', readonly=False, store=True, string="New Contract Document Template",
+    sign_template_id = fields.Many2one('sign.template', string="New Contract Document Template",
         help="Default document that the applicant will have to sign to accept a contract offer.")
     contract_update_template_id = fields.Many2one(
         'sign.template', string="Contract Update Document Template",
@@ -36,16 +36,13 @@ class HrContract(models.Model):
         help="Default document that the employee will have to sign to update his contract.")
     signatures_count = fields.Integer(compute='_compute_signatures_count', string='# Signatures',
         help="The number of signatures on the pdf contract with the most signatures.")
-    image_1920_filename = fields.Char()
-    image_1920 = fields.Image(related='employee_id.image_1920', groups="hr_contract.group_hr_contract_manager", readonly=False)
+    image_1920 = fields.Image(related='employee_id.image_1920', groups="hr_contract.group_hr_contract_manager")
     # YTI FIXME: holidays and wage_with_holidays are defined twice...
     holidays = fields.Float(string='Extra Time Off',
         help="Number of days of paid leaves the employee gets per year.")
     wage_with_holidays = fields.Monetary(compute='_compute_wage_with_holidays', inverse='_inverse_wage_with_holidays',
         tracking=True, string="Wage with Holidays")
-    wage_on_signature = fields.Monetary(string="Wage on Payroll", help="Wage on contract signature", tracking=True, group_operator="avg")
-    salary_offer_ids = fields.One2many('hr.contract.salary.offer', 'employee_contract_id')
-    salary_offers_count = fields.Integer(compute='_compute_salary_offers_count', compute_sudo=True)
+    wage_on_signature = fields.Monetary(string="Wage on Payroll", help="Wage on contract signature", tracking=True)
 
     # Employer costs fields
     final_yearly_costs = fields.Monetary(
@@ -53,8 +50,7 @@ class HrContract(models.Model):
         readonly=False, store=True,
         string="Yearly Cost (Real)",
         tracking=True,
-        help="Total real yearly cost of the employee for the employer.",
-        group_operator="avg")
+        help="Total real yearly cost of the employee for the employer.")
     monthly_yearly_costs = fields.Monetary(
         compute='_compute_monthly_yearly_costs', string='Monthly Cost (Real)', readonly=True,
         help="Total real monthly cost of the employee for the employer.")
@@ -70,8 +66,7 @@ class HrContract(models.Model):
         super()._compute_contract_wage()
 
     def _get_contract_wage_field(self):
-        self.ensure_one()
-        if self._is_struct_from_country('BE'):
+        if (self and len(self) == 1 and self.structure_type_id.country_id.code == 'BE') or (not self and self.env.company.country_id.code == 'BE'):
             return 'wage_on_signature'
         return super()._get_contract_wage_field()
 
@@ -87,20 +82,6 @@ class HrContract(models.Model):
                 continue
             contract.default_contract_id = contract.job_id.default_contract_id
 
-    @api.onchange('default_contract_id')
-    def _onchange_default_contract_id(self):
-        if self.default_contract_id.hr_responsible_id:
-            self.hr_responsible_id = self.default_contract_id.hr_responsible_id
-
-    def _compute_salary_offers_count(self):
-        offers_data = self.env['hr.contract.salary.offer']._read_group(
-            domain=[('employee_contract_id', 'in', self.ids)],
-            groupby=['employee_contract_id'],
-            aggregates=['__count'])
-        mapped_data = {contract.id: count for contract, count in offers_data}
-        for contract in self:
-            contract.salary_offers_count = mapped_data.get(contract.id, 0)
-
     def _get_yearly_cost_sacrifice_ratio(self):
         return 1.0 - self.holidays / 231.0
 
@@ -112,7 +93,7 @@ class HrContract(models.Model):
         ratio = self._get_yearly_cost_sacrifice_ratio()
         fixed = self._get_yearly_cost_sacrifice_fixed()
         if inverse:
-            return (self._get_benefits_costs() + self._get_salary_costs_factor() * self.wage_with_holidays + fixed) / ratio
+            return (self._get_advantages_costs() + self._get_salary_costs_factor() * self.wage_with_holidays + fixed) / ratio
         return self.final_yearly_costs * ratio - fixed
 
     def _is_salary_sacrifice(self):
@@ -143,53 +124,39 @@ class HrContract(models.Model):
                 if contract.wage != contract.wage_with_holidays:
                     contract.wage = contract.wage_with_holidays
 
-    def _get_benefit_description(self, benefit, new_value=None):
+    def _get_advantage_description(self, advantage, new_value=None):
         self.ensure_one()
-        if hasattr(self, '_get_description_%s' % benefit.field):
-            description = getattr(self, '_get_description_%s' % benefit.field)(new_value)
+        if hasattr(self, '_get_description_%s' % advantage.field):
+            description = getattr(self, '_get_description_%s' % advantage.field)(new_value)
         else:
-            description = benefit.description
+            description = advantage.description
         return html_sanitize(description)
 
-    def _get_benefit_fields(self, triggers=True):
+    def _get_advantage_fields(self):
         types = ('float', 'integer', 'monetary', 'boolean')
-        if not triggers:
-            types += ('text',)
-        nonstored_whitelist = self._benefit_white_list()
-        benefit_fields = set(
+        nonstored_whitelist = self._advantage_white_list()
+        advantage_fields = set(
             field.name for field in self._fields.values() if field.type in types and (field.store or not field.store and field.name in nonstored_whitelist))
-        if not triggers:
-            benefit_fields |= {'wage_with_holidays'}
-        return tuple(benefit_fields - self._benefit_black_list())
+        return tuple(advantage_fields - self._advantage_black_list())
 
     @api.model
-    def _benefit_black_list(self):
+    def _advantage_black_list(self):
         return set(MAGIC_COLUMNS + [
-            'wage_on_signature', 'active',
+            'wage_with_holidays', 'wage_on_signature', 'active',
             'date_generated_from', 'date_generated_to'])
 
     @api.model
-    def _benefit_white_list(self):
+    def _advantage_white_list(self):
         return []
 
     @api.depends(lambda self: (
         'wage',
-        'structure_type_id.salary_benefits_ids.res_field_id',
-        'structure_type_id.salary_benefits_ids.impacts_net_salary',
-        *self._get_benefit_fields()))
+        'structure_type_id.salary_advantage_ids.res_field_id',
+        'structure_type_id.salary_advantage_ids.impacts_net_salary',
+        *self._get_advantage_fields()))
     def _compute_final_yearly_costs(self):
         for contract in self:
-            contract.final_yearly_costs = contract._get_benefits_costs() + contract._get_salary_costs_factor() * contract.wage
-
-    @api.depends('company_id', 'job_id')
-    def _compute_structure_type_id(self):
-        contracts = self.env['hr.contract']
-        for contract in self:
-            if contract.job_id and contract.job_id.default_contract_id and contract.job_id.default_contract_id.structure_type_id:
-                contract.structure_type_id = contract.job_id.default_contract_id.structure_type_id
-            else:
-                contracts |= contract
-        super(HrContract, contracts)._compute_structure_type_id()
+            contract.final_yearly_costs = contract._get_advantages_costs() + contract._get_salary_costs_factor() * contract.wage
 
     @api.onchange("wage_with_holidays")
     def _onchange_wage_with_holidays(self):
@@ -211,23 +178,23 @@ class HrContract(models.Model):
         self.ensure_one()
         return 12.0
 
-    def _get_benefits_costs(self):
+    def _get_advantages_costs(self):
         self.ensure_one()
-        benefits = self.env['hr.contract.salary.benefit'].search([
+        advantages = self.env['hr.contract.salary.advantage'].search([
             ('impacts_net_salary', '=', True),
             ('structure_type_id', '=', self.structure_type_id.id),
             ('cost_res_field_id', '!=', False),
         ])
-        if not benefits:
+        if not advantages:
             return 0
-        monthly_benefits = benefits.filtered(lambda a: a.benefit_type_id.periodicity == 'monthly')
-        monthly_cost = sum(self[benefit.cost_field] if benefit.cost_field in self else 0 for benefit in monthly_benefits)
-        yearly_cost = sum(self[benefit.cost_field] if benefit.cost_field in self else 0 for benefit in benefits - monthly_benefits)
+        monthly_advantages = advantages.filtered(lambda a: a.advantage_type_id.periodicity == 'monthly')
+        monthly_cost = sum(self[advantage.cost_field] if advantage.cost_field in self else 0 for advantage in monthly_advantages)
+        yearly_cost = sum(self[advantage.cost_field] if advantage.cost_field in self else 0 for advantage in advantages - monthly_advantages)
         return monthly_cost * 12 + yearly_cost
 
     def _get_gross_from_employer_costs(self, yearly_cost):
         self.ensure_one()
-        remaining_for_gross = yearly_cost - self._get_benefits_costs()
+        remaining_for_gross = yearly_cost - self._get_advantages_costs()
         return remaining_for_gross / self._get_salary_costs_factor()
 
     @api.depends('sign_request_ids.nb_closed')
@@ -241,21 +208,16 @@ class HrContract(models.Model):
             contract.contract_reviews_count = self.with_context(active_test=False).search_count(
                 [('origin_contract_id', '=', contract.id)])
 
-    @api.depends('default_contract_id')
-    def _compute_sign_template_id(self):
-        for contract in self:
-            if contract.default_contract_id:
-                contract.sign_template_id = contract.default_contract_id.sign_template_id
-
-    @api.depends('default_contract_id')
+    @api.depends('sign_template_id')
     def _compute_contract_update_template_id(self):
         for contract in self:
-            if contract.default_contract_id and contract.id != contract.default_contract_id.id:
-                contract.contract_update_template_id = contract.default_contract_id.contract_update_template_id
+            if contract.sign_template_id and not contract.contract_update_template_id:
+                contract.contract_update_template_id = contract.sign_template_id
 
     def _get_redundant_salary_data(self):
         employees = self.mapped('employee_id').filtered(lambda employee: not employee.active)
-        partners = employees.work_contact_id.filtered(lambda partner: not partner.active)
+        partners = employees.mapped('address_home_id').filtered(
+            lambda partner: not partner.active and partner.type == 'private')
         return [employees, partners]
 
     def _clean_redundant_salary_data(self):
@@ -293,44 +255,30 @@ class HrContract(models.Model):
         action['res_id'] = self.origin_contract_id.id
         return action
 
-    def action_show_offers(self):
-        self.ensure_one()
-        action = self.env['ir.actions.act_window']._for_xml_id('hr_contract_salary.hr_contract_salary_offer_action')
-        action['domain'] = [('id', 'in', self.salary_offer_ids.ids)]
-        action['context'] = {'default_employee_contract_id': self.id}
-        if self.salary_offers_count == 1:
-            action.update({
-                "views": [[False, "form"]],
-                "res_id": self.salary_offer_ids.id,
-            })
-        return action
-
     def send_offer(self):
         self.ensure_one()
-        try:
-            template_id = self.env.ref('hr_contract_salary.mail_template_send_offer').id
-        except ValueError:
-            template_id = False
-        path = '/salary_package/contract/' + str(self.id)
-        ctx = {
-            'default_email_layout_xmlid': 'mail.mail_notification_light',
-            'default_model': 'hr.contract',
-            'default_res_ids': self.ids,
-            'default_template_id': template_id,
-            'default_composition_mode': 'comment',
-            'salary_package_url': self.get_base_url() + path,
-        }
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'views': [[False, 'form']],
-            'target': 'new',
-            'context': ctx,
-        }
-
-    def action_archive(self):
-        res = super().action_archive()
-        job_positions = self.env['hr.job'].search([('default_contract_id', 'in', self.ids)])
-        job_positions.default_contract_id = False
-        return res
+        if self.employee_id.address_home_id:
+            try:
+                template_id = self.env.ref('hr_contract_salary.mail_template_send_offer').id
+            except ValueError:
+                template_id = False
+            path = '/salary_package/contract/' + str(self.id)
+            ctx = {
+                'default_model': 'hr.contract',
+                'default_res_id': self.ids[0],
+                'default_use_template': bool(template_id),
+                'default_template_id': template_id,
+                'default_composition_mode': 'comment',
+                'salary_package_url': self.get_base_url() + path,
+                'default_email_layout_xmlid': 'mail.mail_notification_light'
+            }
+            return {
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'mail.compose.message',
+                'views': [[False, 'form']],
+                'target': 'new',
+                'context': ctx,
+            }
+        else:
+            raise ValidationError(_("No private address defined on the employee!"))

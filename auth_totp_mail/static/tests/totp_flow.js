@@ -1,7 +1,7 @@
-/** @odoo-module **/
+odoo.define('auth_totp_mail.tours', function(require) {
+"use strict";
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+const tour = require('web_tour.tour');
 
 function openAccountSettingsTab() {
     return [{
@@ -36,10 +36,10 @@ function openAccountSettingsTab() {
     }];
 }
 
-registry.category("web_tour.tours").add('totp_admin_self_invite', {
+tour.register('totp_admin_self_invite', {
     test: true,
-    url: '/web',
-    steps: () => [stepUtils.showAppsMenuItem(), ...openAccountSettingsTab(), {
+    url: '/web'
+}, [tour.stepUtils.showAppsMenuItem(), ...openAccountSettingsTab(), {
     content: "open the user's form",
     trigger: "td.o_data_cell:contains(admin)",
 }, {
@@ -56,14 +56,13 @@ registry.category("web_tour.tours").add('totp_admin_self_invite', {
     }
 }, {
     content: "check that user cannot invite themself.",
-    trigger: "body.CannotInviteYourself",
-    isCheck: true,
-}]});
+    trigger: "body.CannotInviteYourself"
+}]);
 
-registry.category("web_tour.tours").add('totp_admin_invite', {
+tour.register('totp_admin_invite', {
     test: true,
-    url: '/web',
-    steps: () => [stepUtils.showAppsMenuItem(), ...openAccountSettingsTab(), {
+    url: '/web'
+}, [tour.stepUtils.showAppsMenuItem(), ...openAccountSettingsTab(), {
     content: "open the user's form",
     trigger: "td.o_data_cell:contains(demo)",
 }, {
@@ -72,5 +71,6 @@ registry.category("web_tour.tours").add('totp_admin_invite', {
 }, {
     content: "check that demo user can be invited to use 2FA.",
     trigger: "button:contains(Invite to use 2FA)",
-    isCheck: true,
-}]});
+}]);
+
+});

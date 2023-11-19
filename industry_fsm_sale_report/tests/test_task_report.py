@@ -45,7 +45,7 @@ class TestTaskReport(TestFsmFlowSaleCommon):
         self.assertEqual(total_price, self.task.material_line_total_price, "Total price should not change")
 
         html_content = self.env['ir.actions.report']._render_qweb_pdf(
-            'industry_fsm_report.worksheet_custom', [self.task.id])[0].decode('utf-8').split('\n')
+            'industry_fsm.worksheet_custom', [self.task.id])[0].decode('utf-8').split('\n')
 
         product_lines_to_find_in_file = {
             "<td><span>Acoustic Bloc Screens</span></td>",

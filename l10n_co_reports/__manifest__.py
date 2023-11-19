@@ -10,7 +10,7 @@
 
 {
     'name': 'Colombian - Accounting Reports',
-    'countries': ['co'],
+    'icon': '/l10n_co/static/description/icon.png',
     'version': '1.1',
     'description': """
 Accounting reports for Colombia
@@ -25,8 +25,6 @@ Accounting reports for Colombia
         'data/l10n_co_reports_ica.xml',
         'data/l10n_co_reports_iva.xml',
         'data/l10n_co_reports_fuente.xml',
-        'data/profit_loss_pymes.xml',
-        'data/balance_sheet_pymes.xml',
         'wizard/retention_report_views.xml',
         'report/certification_report_templates.xml',
     ],

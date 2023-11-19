@@ -4,11 +4,11 @@
     <record id="hr_salary_rule_expense_refund" model="hr.salary.rule">
         <field name="condition_select">python</field>
         <field name="condition_python">
-result = inputs['EXPENSES'].amount > 0.0 if 'EXPENSES' in inputs else False
+result = inputs.EXPENSES.amount > 0.0 if inputs.EXPENSES else False
         </field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = inputs['EXPENSES'].amount if 'EXPENSES' in inputs else 0
+result = inputs.EXPENSES.amount if inputs.EXPENSES else 0
         </field>
         <field name="code">EXPENSES</field>
         <field name="category_id" ref="hr_payroll.ALW"/>

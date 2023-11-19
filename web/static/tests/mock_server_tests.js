@@ -44,10 +44,6 @@ QUnit.module("MockServer", (hooks) => {
                             relation: "foo",
                             inverse_fname_by_model_name: { foo: "many2many_field" },
                         },
-                        partner_ref: {
-                            type: "reference",
-                            selection: [["partner", "Partner"]],
-                        },
                     },
                     records: [
                         {
@@ -58,7 +54,6 @@ QUnit.module("MockServer", (hooks) => {
                             name: "zzz",
                             partner_ids: [1, 2],
                             select: "dev",
-                            partner_ref: "partner,1",
                         },
                         {
                             foo: 1,
@@ -69,7 +64,6 @@ QUnit.module("MockServer", (hooks) => {
                             partner_id: 2,
                             partner_ids: [1],
                             select: "new",
-                            partner_ref: "partner,2",
                         },
                         {
                             foo: 17,
@@ -193,6 +187,105 @@ QUnit.module("MockServer", (hooks) => {
             },
         });
         assert.deepEqual(result, [{ id: 1, name: "Jean-Michel" }]);
+    });
+
+    QUnit.test("performRPC: name_get with no args", async function (assert) {
+        const server = new MockServer(data, {});
+        try {
+            await server.performRPC("", {
+                model: "partner",
+                method: "name_get",
+                args: [],
+                kwargs: {},
+            });
+        } catch (_) {
+            assert.step("name_get failed");
+        }
+        assert.verifySteps(["name_get failed"]);
+    });
+
+    QUnit.test("performRPC: name_get with undefined arg", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [undefined],
+            kwargs: {},
+        });
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("performRPC: name_get with a single id", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [1],
+            kwargs: {},
+        });
+        assert.deepEqual(result, [[1, "Jean-Michel"]]);
+    });
+
+    QUnit.test("performRPC: name_get with array of ids", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [[1]],
+            kwargs: {},
+        });
+        assert.deepEqual(result, [[1, "Jean-Michel"]]);
+    });
+
+    QUnit.test("performRPC: name_get with invalid id", async function (assert) {
+        const server = new MockServer(data, {});
+        try {
+            await server.performRPC("", {
+                model: "partner",
+                method: "name_get",
+                args: [11111],
+                kwargs: {},
+            });
+        } catch (_) {
+            assert.step("name_get failed");
+        }
+        assert.verifySteps(["name_get failed"]);
+    });
+
+    QUnit.test("performRPC: name_get with id and undefined id", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [[undefined, 1]],
+            kwargs: {},
+        });
+        assert.deepEqual(result, [
+            [null, ""],
+            [1, "Jean-Michel"],
+        ]);
+    });
+
+    QUnit.test("performRPC: name_get with single id 0", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [0],
+            kwargs: {},
+        });
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("performRPC: name_get with array of id 0", async function (assert) {
+        const server = new MockServer(data, {});
+        const result = await server.performRPC("", {
+            model: "partner",
+            method: "name_get",
+            args: [[0]],
+            kwargs: {},
+        });
+        assert.deepEqual(result, [[null, ""]]);
     });
 
     QUnit.test("performRPC: search_count", async function (assert) {
@@ -592,35 +685,35 @@ QUnit.module("MockServer", (hooks) => {
             result.map((x) => x.__domain),
             [
                 [
-                    ["datetime", ">=", "2016-04-11 12:00:00"],
-                    ["datetime", "<", "2016-04-11 13:00:00"],
+                    ["datetime", ">=", "2022-04-11 12:00:00"],
+                    ["datetime", "<", "2022-04-11 13:00:00"],
                 ],
                 [
-                    ["datetime", ">=", "2016-10-26 12:00:00"],
-                    ["datetime", "<", "2016-10-26 13:00:00"],
+                    ["datetime", ">=", "2022-10-26 12:00:00"],
+                    ["datetime", "<", "2022-10-26 13:00:00"],
                 ],
                 [
-                    ["datetime", ">=", "2016-12-14 12:00:00"],
-                    ["datetime", "<", "2016-12-14 13:00:00"],
+                    ["datetime", ">=", "2022-12-14 12:00:00"],
+                    ["datetime", "<", "2022-12-14 13:00:00"],
                 ],
                 [
-                    ["datetime", ">=", "2016-12-15 12:00:00"],
-                    ["datetime", "<", "2016-12-15 13:00:00"],
+                    ["datetime", ">=", "2022-12-15 12:00:00"],
+                    ["datetime", "<", "2022-12-15 13:00:00"],
                 ],
                 [
-                    ["datetime", ">=", "2019-12-30 12:00:00"],
-                    ["datetime", "<", "2019-12-30 13:00:00"],
+                    ["datetime", ">=", "2022-12-30 12:00:00"],
+                    ["datetime", "<", "2022-12-30 13:00:00"],
                 ],
             ]
         );
         assert.deepEqual(
             result.map((x) => x.__range["datetime:hour"]),
             [
-                { from: "2016-04-11 12:00:00", to: "2016-04-11 13:00:00" },
-                { from: "2016-10-26 12:00:00", to: "2016-10-26 13:00:00" },
-                { from: "2016-12-14 12:00:00", to: "2016-12-14 13:00:00" },
-                { from: "2016-12-15 12:00:00", to: "2016-12-15 13:00:00" },
-                { from: "2019-12-30 12:00:00", to: "2019-12-30 13:00:00" },
+                { from: "2022-04-11 12:00:00", to: "2022-04-11 13:00:00" },
+                { from: "2022-10-26 12:00:00", to: "2022-10-26 13:00:00" },
+                { from: "2022-12-14 12:00:00", to: "2022-12-14 13:00:00" },
+                { from: "2022-12-15 12:00:00", to: "2022-12-15 13:00:00" },
+                { from: "2022-12-30 12:00:00", to: "2022-12-30 13:00:00" },
             ]
         );
 
@@ -1015,201 +1108,18 @@ QUnit.module("MockServer", (hooks) => {
                     __domain: [["bool", "=", false]],
                     bool: false,
                     float: 0,
-                    foo_sum: 17,
+                    foo: 17,
                 },
                 {
                     __count: 4,
                     __domain: [["bool", "=", true]],
                     bool: true,
                     float: 2,
-                    foo_sum: 57,
+                    foo: 57,
                 },
             ]);
         }
     );
-
-    QUnit.test("performRPC: read_group with array_agg", async function (assert) {
-        const server = new MockServer(data, {});
-        const aggregateValue = [null, 2, null, 1, null, 1];
-        const result1 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["aggregateLabel:array_agg(partner_id)"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result1, [
-            {
-                __count: 6,
-                aggregateLabel: aggregateValue,
-            },
-        ]);
-        const result2 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["partner_id:array_agg"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result2, [
-            {
-                __count: 6,
-                partner_id: aggregateValue,
-            },
-        ]);
-    });
-
-    QUnit.test("performRPC: read_group with array_agg on id", async function (assert) {
-        const server = new MockServer(data, {});
-        const result1 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["aggregateLabel:array_agg(id)"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result1, [
-            {
-                __count: 6,
-                aggregateLabel: [1, 2, 3, 4, 5, 6],
-            },
-        ]);
-        const result2 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["id:array_agg"],
-                domain: [["id", "in", [2, 3, 5]]],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result2, [
-            {
-                __count: 3,
-                id: [2, 3, 5],
-            },
-        ]);
-    });
-
-    QUnit.test(
-        "performRPC: read_group with array_agg on an integer field",
-        async function (assert) {
-            const server = new MockServer(data, {});
-            const aggregateValue = [12, 1, 17, 2, 0, 42];
-            const result1 = await server.performRPC("", {
-                model: "bar",
-                method: "read_group",
-                args: [[]],
-                kwargs: {
-                    fields: ["aggregateLabel:array_agg(foo)"],
-                    domain: [],
-                    groupby: [],
-                },
-            });
-            assert.deepEqual(result1, [
-                {
-                    __count: 6,
-                    aggregateLabel: aggregateValue,
-                },
-            ]);
-            const result2 = await server.performRPC("", {
-                model: "bar",
-                method: "read_group",
-                args: [[]],
-                kwargs: {
-                    fields: ["foo:array_agg"],
-                    domain: [],
-                    groupby: [],
-                },
-            });
-            assert.deepEqual(result2, [
-                {
-                    __count: 6,
-                    foo: aggregateValue,
-                },
-            ]);
-        }
-    );
-
-    QUnit.test("performRPC: read_group with count_distinct", async function (assert) {
-        const server = new MockServer(data, {});
-        const result1 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["aggregateLabel:count_distinct(partner_id)"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result1, [
-            {
-                __count: 6,
-                aggregateLabel: 2,
-            },
-        ]);
-        const result2 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["partner_id:count_distinct"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result2, [
-            {
-                __count: 6,
-                partner_id: 2,
-            },
-        ]);
-
-        const result3 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["partner_id:count_distinct"],
-                domain: [[0, "=", 1]],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result3, [
-            {
-                __count: 0,
-                partner_id: 0,
-            },
-        ]);
-
-        const result4 = await server.performRPC("", {
-            model: "bar",
-            method: "read_group",
-            args: [[]],
-            kwargs: {
-                fields: ["partner_ref:count_distinct"],
-                domain: [],
-                groupby: [],
-            },
-        });
-        assert.deepEqual(result4, [
-            {
-                __count: 6,
-                partner_ref: 2,
-            },
-        ]);
-    });
 
     QUnit.test("performRPC: read_progress_bar grouped by boolean", async (assert) => {
         const server = new MockServer(data, {});
@@ -1228,8 +1138,8 @@ QUnit.module("MockServer", (hooks) => {
         });
 
         assert.deepEqual(result, {
-            False: { new: 0, dev: 0, done: 2 },
-            True: { new: 3, dev: 1, done: 0 },
+            false: { new: 0, dev: 0, done: 2 },
+            true: { new: 3, dev: 1, done: 0 },
         });
     });
 
@@ -1343,8 +1253,8 @@ QUnit.module("MockServer", (hooks) => {
             },
         ];
         const mockServer = new MockServer(data);
-        mockServer.mockWrite("foo", [[2], { many2many_field: [] }]); // save nothing
-        assert.deepEqual(mockServer.models.bar.records[0].many2many_field, [2]);
+        mockServer.mockWrite("foo", [[2], { many2many_field: [] }]);
+        assert.deepEqual(mockServer.models.bar.records[0].many2many_field, []);
     });
 
     QUnit.test("many2one update should update inverse field", async function (assert) {
@@ -1377,67 +1287,18 @@ QUnit.module("MockServer", (hooks) => {
         data.views = {
             "bar,10001,list": `
                 <tree>
-                    <field name="bool" column_invisible="1"/>
+                    <field name="bool" invisible="1"/>
                     <field name="foo"/>
                 </tree>
             `,
             "bar,10001,search": `<search></search>`,
         };
         const expectedList = `<tree>
-                    <field name="bool" column_invisible="True"/>
+                    <field name="bool" modifiers="{&quot;column_invisible&quot;:true}"/>
                     <field name="foo"/>
                 </tree>`;
         const mockServer = new MockServer(data);
         const { views } = mockServer.mockGetViews("bar", { views: [[10001, "list"]], options: {} });
         assert.deepEqual(views.list.arch, expectedList);
-    });
-
-    QUnit.test("performRPC: create one record (old API)", async function (assert) {
-        const server = new MockServer(data, {});
-        const result = await server.performRPC("", {
-            model: "bar",
-            method: "create",
-            args: [{ foo: "A" }],
-        });
-        assert.strictEqual(result, 7);
-        assert.strictEqual(data.models.bar.records.find((r) => r.id === 7).foo, "A");
-    });
-
-    QUnit.test("performRPC: create one record (new API)", async function (assert) {
-        const server = new MockServer(data, {});
-        const result = await server.performRPC("", {
-            model: "bar",
-            method: "create",
-            args: [[{ foo: "A" }]],
-        });
-        assert.deepEqual(result, [7]);
-        assert.strictEqual(data.models.bar.records.find((r) => r.id === 7).foo, "A");
-    });
-
-    QUnit.test("performRPC: create several records (new API)", async function (assert) {
-        const server = new MockServer(data, {});
-        const result = await server.performRPC("", {
-            model: "bar",
-            method: "create",
-            args: [[{ foo: "A" }, { foo: "B" }]],
-        });
-        assert.deepEqual(result, [7, 8]);
-        assert.strictEqual(data.models.bar.records.find((r) => r.id === 7).foo, "A");
-        assert.strictEqual(data.models.bar.records.find((r) => r.id === 8).foo, "B");
-    });
-
-    QUnit.test("performRPC: trigger onchange for new record", async function (assert) {
-        data.models.bar.onchanges = {
-            foo: (obj) => {
-                obj.bool = true;
-            },
-        };
-        const server = new MockServer(data, {});
-        const result = await server.performRPC("", {
-            model: "bar",
-            method: "onchange",
-            args: [[], {}, [], { foo: {} }],
-        });
-        assert.deepEqual(result.value, { foo: 0 });
     });
 });

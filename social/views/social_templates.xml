@@ -7,16 +7,11 @@
                 <t t-call-assets="web.assets_frontend" t-js="false"/>
             </t>
             <div class="row h-75">
-                <div class="alert alert-danger m-auto col-10 col-lg-4 w-auto" role="alert">
+                <div class="alert alert-danger m-auto col-10 col-lg-4" role="alert">
                     <h4 class="alert-heading"><b>An error occurred while trying to link your account</b></h4>
-                    <t t-out="error_message" />
-                    <t t-if="documentation_data and documentation_data['documentation_link']">
-                        <a t-att-href="documentation_data['documentation_link']" target="_blank">
-                            <t t-out="documentation_data['documentation_link_label']"/> <i t-att-class="documentation_data['documentation_link_icon_class']"/>
-                        </a>
-                    </t>
+                    <p class="display-5" t-esc="error_message"></p>
                     <hr/>
-                    <a href="/web#action=social.action_social_stream_post"><i class="oi oi-arrow-left"/> Go back to Odoo</a>
+                    <a href="/web#action=social.action_social_stream_post">Go back to Odoo</a>
                 </div>
             </div>
         </t>

@@ -52,6 +52,6 @@ class HrSalaryRuleParameter(models.Model):
         if rule_parameter:
             return ast.literal_eval(rule_parameter.parameter_value)
         if raise_if_not_found:
-            raise UserError(_("No rule parameter with code %r was found for %s ", code, date))
+            raise UserError(_("No rule parameter with code '%s' was found for %s ") % (code, date))
         else:
             return None

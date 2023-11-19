@@ -3,9 +3,6 @@
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 
-from .product_template import MX_PACKAGING_CATALOG
-
-
 class Picking(models.Model):
     _inherit = 'stock.picking'
 
@@ -24,13 +21,6 @@ class Picking(models.Model):
              ' - 6 digits of the progressive numbering of the custom.\n'
              'example: 15  48  3009  0001235')
 
-    def _l10n_mx_edi_cfdi_check_external_trade_config(self):
-        # EXTENDS 'l10n_mx_edi_stock'
-        self.ensure_one()
-        errors = []
-        if not self.partner_id.zip or not self.partner_id.state_id:
-            errors.append(_("A zip code and state are required to generate a delivery guide"))
-        return errors
-
-    def _l10n_mx_edi_get_packaging_desc(self, code):
-        return dict(MX_PACKAGING_CATALOG).get(code, None)
+    def _l10n_mx_edi_check_comex_availability(self):
+        if self.filtered(lambda p: not p.partner_id.zip or not p.partner_id.state_id):
+            raise UserError(_('A zip code and state are required to generate a delivery guide'))

@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import json
-from collections import defaultdict
 
 from odoo import api, fields, models, _lt
 from odoo.osv import expression
@@ -21,8 +20,8 @@ class Project(models.Model):
         subscriptions_data = self.env['sale.order']._read_group([
             ('analytic_account_id', 'in', self.analytic_account_id.ids),
             ('is_subscription', '=', True),
-        ], ['analytic_account_id'], ['__count'])
-        mapped_data = {analytic_account.id: count for analytic_account, count in subscriptions_data}
+        ], ['analytic_account_id'], ['analytic_account_id'])
+        mapped_data = {data['analytic_account_id'][0]: data['analytic_account_id_count'] for data in subscriptions_data}
         for project in self:
             project.subscriptions_count = mapped_data.get(project.analytic_account_id.id, 0)
 
@@ -35,8 +34,8 @@ class Project(models.Model):
             return {}
         action = self.env["ir.actions.actions"]._for_xml_id("sale_subscription.sale_subscription_action")
         action_context = {'default_analytic_account_id': self.analytic_account_id.id}
-        if self.partner_id.commercial_partner_id:
-            action_context['default_partner_id'] = self.partner_id.commercial_partner_id.id
+        if self.commercial_partner_id:
+            action_context['default_partner_id'] = self.commercial_partner_id.id
         action.update({
             'views': [[False, 'tree'], [False, 'kanban'], [False, 'form'], [False, 'pivot'], [False, 'graph'], [False, 'cohort']],
             'context': action_context,
@@ -85,60 +84,46 @@ class Project(models.Model):
             return profitability_items
         subscription_read_group = self.env['sale.order'].sudo()._read_group(
             [('analytic_account_id', 'in', self.analytic_account_id.ids),
-             ('subscription_state', 'not in', ['1_draft', '5_renewed']),
+             ('stage_category', '!=', 'draft'),
              ('is_subscription', '=', True),
             ],
-            ['sale_order_template_id', 'subscription_state', 'currency_id'],
-            ['recurring_monthly:sum', 'id:array_agg'],
+            ['stage_category', 'sale_order_template_id', 'recurring_monthly', 'ids:array_agg(id)'],
+            ['sale_order_template_id', 'stage_category'],
+            lazy=False,
         )
         if not subscription_read_group:
             return profitability_items
         all_subscription_ids = []
+        subscription_data_per_template_id = {}
         amount_to_invoice = 0.0
-        set_currency_ids = {self.currency_id.id}
-        amount_to_invoice_per_currency = defaultdict(lambda: 0.0)
-        recurring_per_currency_per_template = defaultdict(lambda: defaultdict(lambda: 0.0))
-        for sale_order_template_id, subscription_state, currency, recurring_monthly, ids in subscription_read_group:
-            all_subscription_ids.extend(ids)
-            set_currency_ids.add(currency.id)
-            if subscription_state != '3_progress':  # then the subscriptions are closed and so nothing is to invoice.
+        for res in subscription_read_group:
+            all_subscription_ids.extend(res['ids'])
+            if res['stage_category'] != 'progress':  # then the subscriptions are closed and so nothing is to invoice.
                 continue
-            if not sale_order_template_id:  # then we will take the recurring monthly amount that we will invoice in the next invoice(s).
-                amount_to_invoice_per_currency[currency.id] += recurring_monthly
+            if not res['sale_order_template_id']:  # then we will take the recurring monthly amount that we will invoice in the next invoice(s).
+                amount_to_invoice += res['recurring_monthly']
                 continue
-            recurring_per_currency_per_template[sale_order_template_id.id][currency.id] += recurring_monthly
-        # fetch the data needed for the 'invoiced' section before handling the 'to invoice' one, in order to have all the currencies available and make only one fetch on the rates
-        aal_read_group = self.env['account.analytic.line'].sudo()._read_group(
-            [('move_line_id.subscription_id', 'in', all_subscription_ids),
-             ('account_id', 'in', self.analytic_account_id.ids)],
-            ['currency_id'],
-            ['amount:sum'],
-        )
-        set_currency_ids.union({currency.id for currency, dummy in aal_read_group})
-        rates_per_currency_id = self.env['res.currency'].browse(set_currency_ids)._get_rates(self.company_id or self.env.company, fields.Date.context_today(self))
-        project_currency_rate = rates_per_currency_id[self.currency_id.id]
+            subscription_data_per_template_id[res['sale_order_template_id'][0]] = res['recurring_monthly']
 
-        for currency_id in amount_to_invoice_per_currency:
-            rate = project_currency_rate / rates_per_currency_id[currency_id]
-            amount_to_invoice += amount_to_invoice_per_currency[currency_id] * rate
         subscription_template_dict = {}
-        if recurring_per_currency_per_template.keys():
+        if subscription_data_per_template_id:
             subscription_template_dict = {
-                res['id']: res['duration_value']
+                res['id']: res['recurring_rule_count']
                 for res in self.env['sale.order.template'].sudo().search_read(
-                    [('id', 'in', list(recurring_per_currency_per_template.keys())), ('is_unlimited', '=', False)],
-                    ['id', 'duration_value'],
+                    [('id', 'in', list(subscription_data_per_template_id.keys())), ('recurring_rule_boundary', '=', 'limited')],
+                    ['id', 'recurring_rule_count'],
                 )
             }
-        for subcription_template_id in recurring_per_currency_per_template:
+        for subcription_template_id, recurring_monthly in subscription_data_per_template_id.items():
             nb_period = subscription_template_dict.get(subcription_template_id, 1)
-            for currency_id in recurring_per_currency_per_template[subcription_template_id]:
-                rate = project_currency_rate / rates_per_currency_id[currency_id]
-                amount_to_invoice += recurring_per_currency_per_template[subcription_template_id][currency_id] * nb_period * rate
-        amount_invoiced = 0.0
-        for currency, amount in aal_read_group:
-            rate = project_currency_rate / rates_per_currency_id[currency_id]
-            amount_invoiced += amount * rate
+            amount_to_invoice += recurring_monthly * nb_period
+
+        aal_read_group = self.env['account.analytic.line'].sudo()._read_group(
+            [('move_line_id.subscription_id', 'in', all_subscription_ids), ('account_id', 'in', self.analytic_account_id.ids)],
+            ['amount'],
+            [],
+        )
+        amount_invoiced = aal_read_group[0]['amount'] if aal_read_group and aal_read_group[0]['__count'] else 0.0
         revenues = profitability_items['revenues']
         section_id = 'subscriptions'
         subscription_revenue = {
@@ -147,7 +132,6 @@ class Project(models.Model):
             'invoiced': amount_invoiced,
             'to_invoice': amount_to_invoice,
         }
-
         if with_action and all_subscription_ids and self.user_has_groups('sales_team.group_sale_salesman'):
             args = [section_id, [('id', 'in', all_subscription_ids)]]
             if len(all_subscription_ids) == 1:
@@ -158,15 +142,3 @@ class Project(models.Model):
         revenues['total']['invoiced'] += amount_invoiced
         revenues['total']['to_invoice'] += amount_to_invoice
         return profitability_items
-
-    def _get_profitability_sale_order_items_domain(self, domain=None):
-        return expression.AND([
-            super()._get_profitability_sale_order_items_domain(domain),
-            [('order_id.is_subscription', '=', False)],
-        ])
-
-    def _get_revenues_items_from_invoices_domain(self, domain=None):
-        return expression.AND([
-            super()._get_revenues_items_from_invoices_domain(domain),
-            [('subscription_id', '=', False)],
-        ])

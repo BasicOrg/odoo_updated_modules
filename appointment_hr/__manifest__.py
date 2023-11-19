@@ -4,7 +4,7 @@
 {
     'name': "Employees on Appointments",
     'version': "1.0",
-    'category': 'Services/Appointment',
+    'category': 'Marketing/Online Appointment',
     'sequence': 2140,
     'summary': "Manage Appointments with Employees",
     'website': 'https://www.odoo.com/app/appointments',
@@ -14,8 +14,7 @@ Take into account the working schedule (sick leaves, part time, ...) of employee
 """,
     'depends': ['appointment', 'hr'],
     'data': [
-        'views/appointment_type_views.xml',
-        'views/calendar_event_views.xml'
+        'views/appointment_type_views.xml'
     ],
     'auto_install': True,
     'license': 'OEEL-1',

@@ -1,28 +1,14 @@
 /* @odoo-module */
 
-import { KanbanRecord } from "@web/views/kanban/kanban_record";
-import { useState } from "@odoo/owl";
-import { ProjectTaskKanbanCompiler } from "./project_task_kanban_compiler";
-import { SubtaskKanbanList } from "@project/components/subtask_kanban_list/subtask_kanban_list"
+import { Record } from '@web/views/relational_model';
 
-export class ProjectTaskKanbanRecord extends KanbanRecord {
-    setup() {
-        super.setup();
-        this.state = useState({folded: true});
-    }
-
-    /**
-     * @override
-     */
-    get renderingContext() {
-        const context = super.renderingContext;
-        context["state"] = this.state;
-        return context;
+export class ProjectTaskRecord extends Record {
+    async _applyChanges(changes) {
+        const value = changes.personal_stage_type_ids;
+        if (value && Array.isArray(value) && value.length === 1) {
+            delete changes.personal_stage_type_ids;
+            changes.personal_stage_type_id = value;
+        }
+        await super._applyChanges(changes);
     }
 }
-
-ProjectTaskKanbanRecord.Compiler = ProjectTaskKanbanCompiler;
-ProjectTaskKanbanRecord.components = {
-    ...KanbanRecord.components,
-    SubtaskKanbanList,
-};

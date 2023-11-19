@@ -3,7 +3,7 @@
 
 {
     'name': 'Indian - Point of Sale',
-    'countries': ['in'],
+    'icon': '/l10n_in/static/description/icon.png',
     'version': '1.0',
     'description': """GST Point of Sale""",
     'category': 'Accounting/Localizations/Point of Sale',
@@ -16,8 +16,9 @@
     ],
     'auto_install': True,
     'assets': {
-        'point_of_sale._assets_pos': [
-            'l10n_in_pos/static/src/**/*',
+        'point_of_sale.assets': [
+            'l10n_in_pos/static/src/js/**/*',
+            'l10n_in_pos/static/src/xml/**/*',
         ],
     },
     'license': 'LGPL-3',

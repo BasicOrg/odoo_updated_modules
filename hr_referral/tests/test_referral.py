@@ -23,7 +23,7 @@ class TestHrReferral(TestHrReferralBase):
         # Create an applicant
         job_applicant = self.env['hr.applicant'].create({
             'name': 'Technical worker',
-            'description': 'A nice job offer!',
+            'description': 'A nice job offer !',
             'job_id': self.job_dev.id,
             'ref_user_id': self.richard_user.id
         })
@@ -43,7 +43,7 @@ class TestHrReferral(TestHrReferralBase):
             self.mug_shop.sudo().buy()
         job_applicant = self.env['hr.applicant'].create({
             'name': 'Technical worker',
-            'description': 'A nice applicant!',
+            'description': 'A nice applicant !',
             'job_id': self.job_dev.id,
             'ref_user_id': self.richard_user.id,
             'company_id': self.company_1.id
@@ -67,7 +67,7 @@ class TestHrReferral(TestHrReferralBase):
 
         job_applicant = self.env['hr.applicant'].create({
             'name': 'Technical worker',
-            'description': 'A nice applicant!',
+            'description': 'A nice applicant !',
             'job_id': self.job_dev.id,
             'source_id': self.richard_user.utm_source_id.id
         })
@@ -84,7 +84,6 @@ class TestHrReferral(TestHrReferralBase):
         self.assertEqual(self.red_mug_shop.points_missing, self.red_mug_shop.cost, "10 points are missing")
 
     def test_referral_no_hired_stage(self):
-        self.env.ref('hr_recruitment.stage_job0').use_in_referral = False
         self.env.ref('hr_recruitment.stage_job3').use_in_referral = False
         stage_parking_1 = self.env['hr.recruitment.stage'].create({
             'name': 'parking1',
@@ -102,14 +101,12 @@ class TestHrReferral(TestHrReferralBase):
         })
         job_applicant = self.env['hr.applicant'].create({
             'name': 'Technical worker',
-            'description': 'A nice applicant!',
+            'description': 'A nice applicant !',
             'job_id': self.job_dev.id,
             'ref_user_id': self.richard_user.id,
-            'company_id': self.company_1.id,
-            'stage_id': self.env.ref('hr_recruitment.stage_job1').id,
+            'company_id': self.company_1.id
         })
-
-        self.assertEqual(self.job_dev.max_points, 85, "Max points for this job is 85 (points for the 3 'not hired stage' are ignored).")
+        self.assertEqual(self.job_dev.max_points, 76, "Max points for this job is 76 (points for the 3 'not hired stage' are ignored).")
         self.assertEqual(job_applicant.earned_points, self.env.ref('hr_recruitment.stage_job1').points, "Richard received points corresponding to the first stage.")
         self.assertEqual(len(job_applicant.referral_points_ids), 1, "Richard received points corresponding to the first stage.")
         info_dashboard = json.loads(job_applicant.shared_item_infos)
@@ -128,7 +125,7 @@ class TestHrReferral(TestHrReferralBase):
         self.assertEqual(len(job_applicant.referral_points_ids), 1, "Richard received points corresponding to the first stage.")
         # We jump from not hired stage to another stage. All points between last valuable stage (stage 1) and new stage (stage 4) must be added
         job_applicant.stage_id = self.env.ref('hr_recruitment.stage_job4')
-        self.assertEqual(job_applicant.earned_points, 35, "He received points for stage 2 and stage 4 (in addition to stage 1 that he already received).")
+        self.assertEqual(job_applicant.earned_points, 26, "He received points for stage 2 and stage 4 (in addition to stage 1 that he already received).")
         self.assertEqual(len(job_applicant.referral_points_ids), 3, "3 lines in received points (2 new [for stage 2 and 4] and 1 old [for stage 1]).")
         info_dashboard = json.loads(job_applicant.shared_item_infos)
         self.assertEqual([x['done'] for x in info_dashboard], [True, True, True, False], "In dashboard, we have only not 'not hired stage' and state are correct.")
@@ -139,12 +136,12 @@ class TestHrReferral(TestHrReferralBase):
         job_applicant.stage_id = stage_parking_1
         job_applicant.stage_id = self.env.ref('hr_recruitment.stage_job3')
         job_applicant.stage_id = self.env.ref('hr_recruitment.stage_job4')  # We come back to previous not 'not hired stage'
-        self.assertEqual(job_applicant.earned_points, 35, "Nothing change as it was only 'not hired stage'.")
+        self.assertEqual(job_applicant.earned_points, 26, "Nothing change as it was only 'not hired stage'.")
         self.assertEqual(len(job_applicant.referral_points_ids), 3, "Nothing change as it was only 'not hired stage'.")
 
         # The applicant reach last not 'not hired stage'
         job_applicant.stage_id = self.env.ref('hr_recruitment.stage_job5')
-        self.assertEqual(job_applicant.earned_points, 85, "He received all points.")
+        self.assertEqual(job_applicant.earned_points, 76, "He received all points.")
         self.assertEqual(len(job_applicant.referral_points_ids), 4, "We add a line in received points.")
         self.assertEqual(job_applicant.referral_state, 'hired', "Referral is hired, even if stage (not hired) exist with bigger sequence.")
 
@@ -170,18 +167,16 @@ class TestHrReferral(TestHrReferralBase):
         })
         job_applicant = self.env['hr.applicant'].create({
             'name': 'Technical worker',
-            'description': 'A nice applicant!',
+            'description': 'A nice applicant !',
             'job_id': self.job_dev.id,
             'ref_user_id': self.richard_user.id,
-            'company_id': self.company_1.id,
-            'stage_id': self.env.ref('hr_recruitment.stage_job1').id,
+            'company_id': self.company_1.id
         })
-
         info_dashboard = json.loads(job_applicant.shared_item_infos)
-        self.assertEqual([x['done'] for x in info_dashboard], [True, True, False, False, False, False, False, False])
+        self.assertEqual([x['done'] for x in info_dashboard], [True, False, False, False, False, False, False])
         job_applicant.stage_id = stage_parking_2
         info_dashboard = json.loads(job_applicant.shared_item_infos)
-        self.assertEqual([x['done'] for x in info_dashboard], [True, True, True, True, True, True, True, False], "parking1 and parking2 should be marked as done")
+        self.assertEqual([x['done'] for x in info_dashboard], [True, True, True, True, True, True, False], "parking1 and parking2 should be marked as done")
         job_applicant.stage_id = stage_parking_1
         info_dashboard = json.loads(job_applicant.shared_item_infos)
-        self.assertEqual([x['done'] for x in info_dashboard], [True, True, True, True, True, True, False, False], 'parking2 should not be marked as done anymore')
+        self.assertEqual([x['done'] for x in info_dashboard], [True, True, True, True, True, False, False], 'parking2 should not be marked as done anymore')

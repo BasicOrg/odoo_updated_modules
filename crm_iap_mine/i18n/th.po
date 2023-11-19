@@ -3,17 +3,17 @@
 # 	* crm_iap_mine
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-23 08:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "%d credits will be consumed to find %d companies."
@@ -37,19 +36,30 @@ msgstr "<b>ติดต่อ</b>"
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p>Dear,</p>\n"
-"    <p>There are no more credits on your IAP Lead Generation account.<br>\n"
-"    You can charge your IAP Lead Generation account in the settings of the CRM app.<br></p>\n"
+"    <p>There are no more credits on your IAP Lead Generation account.<br/>\n"
+"    You can charge your IAP Lead Generation account in the settings of the CRM app.<br/></p>\n"
 "    <p>Best regards,</p>\n"
 "    <p>Odoo S.A.</p>\n"
 "</div>"
 msgstr ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p>เรียน</p>\n"
-"    <p>ไม่มีเครดิตเพียงพอในบัญชี IAP การสร้างลูกค้าเป้าหมาย ของคุณ<br>\n"
-"    คุณสามารถเพิ่มเครดิตจากบัญชี IAP การสร้างลูกค้าเป้าหมาย ของคุณได้ในการตั้งค่าของแอป ลูกค้าสัมพันธ์ (CRM)<br></p>\n"
+"    <p>ไม่มีเครดิตในบัญชี IAP สำหรับสร้างลูกค้าเป้าหมายของคุณอีกต่อไป<br/>\n"
+"  คุณสามารถเรียกเก็บเงินจากบัญชี IAP สำหรับลูกค้าเป้าหมายได้ในการตั้งค่าของแอป CRM<br/></p>\n"
 "    <p>ขอแสดงความนับถือ</p>\n"
 "    <p>Odoo S.A.</p>\n"
 "</div>"
+
+#. module: crm_iap_mine
+#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
+msgid ""
+"<span attrs=\"{'invisible': [('error_type', '!=', 'no_result')]}\">Your "
+"request did not return any result (no credits were used). Try removing some "
+"filters.</span>"
+msgstr ""
+"<span attrs=\"{'invisible': [('error_type', '!=', "
+"'no_result')]}\">คำขอของคุณไม่ส่งคืนผลลัพธ์ใด ๆ (ไม่ได้ใช้เครดิต) "
+"ลองลบตัวกรองบางตัว</span>"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -67,16 +77,6 @@ msgid "<span class=\"o_stat_text\">Opportunities</span>"
 msgstr "<span class=\"o_stat_text\">โอกาส</span>"
 
 #. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid ""
-"<span invisible=\"error_type != 'no_result'\">Your request did not return "
-"any result (no credits were used). Try removing some filters.</span>"
-msgstr ""
-"<span invisible=\"error_type != "
-"'no_result'\">คำขอของคุณไม่ได้ส่งคืนผลลัพธ์ใดๆ (ไม่มีการใช้เครดิต) "
-"ลองลบตัวกรองบางตัวออก</span>"
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_238
 msgid "Automobiles & Components"
 msgstr "รถยนต์และส่วนประกอบ"
@@ -84,7 +84,7 @@ msgstr "รถยนต์และส่วนประกอบ"
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__available_state_ids
 msgid "Available State"
-msgstr "ขั้นตอนที่มีอยู่"
+msgstr "รัฐที่มีอยู่"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_69_157
@@ -109,7 +109,7 @@ msgstr "อุตสาหกรรมของลูกค้าเป้าห
 #. module: crm_iap_mine
 #: model:ir.model,name:crm_iap_mine.model_crm_iap_lead_mining_request
 msgid "CRM Lead Mining Request"
-msgstr "คำขอการขุดลูกค้าเป้าหมาย CRM"
+msgstr "คำขอขุดลูกค้าเป้าหมาย CRM"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -133,14 +133,9 @@ msgid "Commercial & Professional Services"
 msgstr "บริการเชิงพาณิชย์และมืออาชีพ"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_2
-msgid "Communications"
-msgstr "การติดต่อสื่อสาร"
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__search_type__companies
 msgid "Companies"
-msgstr "บริษัท"
+msgstr "หลายบริษัท"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__search_type__people
@@ -158,19 +153,14 @@ msgid "Construction Materials"
 msgstr "วัสดุก่อสร้าง"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_3
-msgid "Consulting"
-msgstr "ปรึกษา"
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_30_155
 msgid "Consumer Discretionary"
-msgstr "การตัดสินใจของผู้บริโภค"
+msgstr "สินค้าฟุ่มเฟือย"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_239
 msgid "Consumer Durables & Apparel"
-msgstr "สินค้าคงทนและเครื่องแต่งกายของผู้บริโภค"
+msgstr "สินค้าคงทนและเครื่องแต่งกาย"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_150_151
@@ -188,11 +178,10 @@ msgid "Countries"
 msgstr "ประเทศ"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Create a Lead Mining Request"
-msgstr "สร้างคำขอการขุดลูกค้าเป้าหมาย"
+msgstr "สร้างคำขอขุดลูกค้าเป้าหมาย"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_helpers__create_uid
@@ -211,11 +200,6 @@ msgstr "สร้างโดย"
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_seniority__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_4
-msgid "Customer Service"
-msgstr "บริการลูกค้า"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -254,11 +238,6 @@ msgid "Draft"
 msgstr "ร่าง"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_5
-msgid "Education"
-msgstr "การศึกษา"
-
-#. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.enrich_company
 msgid "Email"
 msgstr "อีเมล"
@@ -267,11 +246,6 @@ msgstr "อีเมล"
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_138_156
 msgid "Energy & Utilities "
 msgstr "พลังงานและสาธารณูปโภค"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_6
-msgid "Engineering"
-msgstr "วิศวกรรม"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__state__error
@@ -295,19 +269,9 @@ msgid "Filter on Size"
 msgstr "กรองตามขนาด"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_7
-msgid "Finance"
-msgstr "การเงิน"
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_153_154
 msgid "Food, Beverage & Tobacco"
 msgstr "อาหาร เครื่องดื่ม และยาสูบ"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_8
-msgid "Founder"
-msgstr "ผู้ก่อตั้ง"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -315,19 +279,15 @@ msgid "From"
 msgstr "จาก"
 
 #. module: crm_iap_mine
-#. odoo-python
+#. openerp-web
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_case_kanban_view_leads
+#: code:addons/crm_iap_mine/static/src/views/generate_leads_views.xml:0
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_lead_view_tree_lead
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_lead_view_tree_opportunity
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.view_crm_lead_kanban
 #, python-format
 msgid "Generate Leads"
 msgstr "สร้างลูกค้าเป้าหมาย"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Generate new leads based on their country, industry, size, etc."
@@ -349,24 +309,9 @@ msgid "Health Care Equipment & Services"
 msgstr "อุปกรณ์และบริการดูแลสุขภาพ"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_9
-msgid "Health Professional"
-msgstr "ผู้เชี่ยวชาญด้านสุขภาพ"
-
-#. module: crm_iap_mine
 #: model:ir.model,name:crm_iap_mine.model_crm_iap_lead_helpers
 msgid "Helper methods for crm_iap_mine modules"
 msgstr "วิธีการช่วยเหลือสำหรับโมดูล crm_iap_mine "
-
-#. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid "How many leads would you like?"
-msgstr "คุณต้องการลูกค้าเป้าหมายกี่ราย?"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_10
-msgid "Human Resources"
-msgstr "ทรัพยากรบุคคล"
 
 #. module: crm_iap_mine
 #: model:mail.template,name:crm_iap_mine.lead_generation_no_credits
@@ -404,14 +349,18 @@ msgid "Industry name already exists!"
 msgstr "มีชื่ออุตสาหกรรมนี้แล้ว!"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_11
-msgid "Information Technology"
-msgstr "เทคโนโลยีสารสนเทศ"
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__error_type__credits
 msgid "Insufficient Credits"
 msgstr "เครดิตไม่เพียงพอ"
+
+#. module: crm_iap_mine
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_helpers____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_industry____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_role____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_seniority____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_helpers__write_uid
@@ -475,24 +424,13 @@ msgid "Leads"
 msgstr "ลูกค้าเป้าหมาย"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_12
-msgid "Legal"
-msgstr "กฎหมาย"
-
-#. module: crm_iap_mine
-#. odoo-javascript
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid ""
-"Looking for more opportunities?<br>Try the <b>Lead Generation</b> tool."
+"Looking for more opportunities ?<br>Try the <b>Lead Generation</b> tool."
 msgstr ""
-"กำลังมองหาโอกาสเพิ่มเติมอยู่ใช่ไหม<br>ลองใช้เครื่องมือ "
-"<b>สร้างลูกค้าเป้าหมาย</b> "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_13
-msgid "Marketing"
-msgstr "การตลาด"
+"มองหาโอกาสอื่น ๆ เหรอ ?<br>ลองใช้เครื่องมือ<b>สร้างลูกค้าเป้าหมาย</b>สิ"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_148
@@ -516,14 +454,6 @@ msgid "Name already exists!"
 msgstr "มีชื่ออยู่แล้ว!"
 
 #. module: crm_iap_mine
-#. odoo-python
-#: code:addons/crm_iap_mine/models/crm_lead.py:0
-#, python-format
-msgid "Need help reaching your target?"
-msgstr "ต้องการความช่วยเหลือในการบรรลุเป้าหมายของคุณหรือไม่?"
-
-#. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
@@ -538,11 +468,11 @@ msgid "No Result"
 msgstr "ไม่มีผลลัพธ์"
 
 #. module: crm_iap_mine
-#. odoo-javascript
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid "Now, just let the magic happen!"
-msgstr "เอาล่ะ ปล่อยให้ความมหัศจรรย์ได้เกิดขึ้น!"
+msgstr "เอาล่ะ ปล่อยให้เวทมนตร์เกิดขึ้นเถอะ!"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__contact_number
@@ -561,18 +491,12 @@ msgid "Number of Leads"
 msgstr "จำนวนลูกค้าเป้าหมาย"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_14
-msgid "Operations"
-msgstr "การปฏิบัติการ"
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__lead_type__opportunity
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_search
 msgid "Opportunities"
 msgstr "โอกาสในการขาย"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Opportunity created by Odoo Lead Generation"
@@ -581,12 +505,7 @@ msgstr "โอกาสที่สร้างโดย ตัวสร้า�
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__role_ids
 msgid "Other Roles"
-msgstr "บทบาทอื่น "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_15
-msgid "Owner"
-msgstr "เจ้าของ"
+msgstr "บทบาทอื่น ๆ "
 
 #. module: crm_iap_mine
 #: model:ir.model,name:crm_iap_mine.model_crm_iap_lead_role
@@ -609,50 +528,19 @@ msgid "Phone"
 msgstr "โทรศัพท์"
 
 #. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid "Pick States..."
-msgstr "เลือกขั้นตอน..."
-
-#. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__preferred_role_id
 msgid "Preferred Role"
 msgstr "บทบาทที่ต้องการ"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_16
-msgid "President"
-msgstr "ประธาน"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_17
-msgid "Product"
-msgstr "สินค้า"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_18
-msgid "Public Relations"
-msgstr "ประชาสัมพันธ์"
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_114
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_19
 msgid "Real Estate"
 msgstr "อสังหาริมทรัพย์"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_20
-msgid "Recruiting"
-msgstr "รับสมัคร"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__name
 msgid "Request Number"
 msgstr "ขอหมายเลข"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_21
-msgid "Research"
-msgstr "วิจัย"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_152
@@ -685,11 +573,6 @@ msgstr "ชื่อบทบาท"
 #: model:ir.model.constraint,message:crm_iap_mine.constraint_crm_iap_lead_role_name_uniq
 msgid "Role name already exists!"
 msgstr "ชื่อบทบาทมีอยู่แล้ว!"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_22
-msgid "Sale"
-msgstr "การขาย"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__team_id
@@ -727,7 +610,7 @@ msgstr "ซอฟต์แวร์และบริการ"
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__state_ids
 msgid "States"
-msgstr "ขั้นตอน"
+msgstr "รัฐ"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__state
@@ -760,7 +643,6 @@ msgid "Telecommunication Services"
 msgstr "บริการด้านโทรคมนาคม"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "This makes a total of %d credits for this request."
@@ -778,7 +660,6 @@ msgid "Type"
 msgstr "ประเภท"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid ""
@@ -787,7 +668,12 @@ msgid ""
 msgstr "สูงสุดถึง %d เครดิตเพิ่มเติมจะถูกใช้เพื่อระบุ %d ผู้ติดต่อต่อบริษัท"
 
 #. module: crm_iap_mine
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
+msgid "What do you need ?"
+msgstr "คุณต้องการอะไร?"
+
+#. module: crm_iap_mine
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid "Which Industry do you want to target?"
@@ -799,16 +685,35 @@ msgid "You do not have enough credits to submit this request."
 msgstr "คุณมีเครดิตไม่เพียงพอที่จะส่งคำขอนี้"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Your request could not be executed: %s"
 msgstr "ไม่สามารถดำเนินการตามคำขอของคุณได้: %s"
 
 #. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_2
+msgid "communications"
+msgstr "การสื่อสาร"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_3
+msgid "consulting"
+msgstr "ที่ปรึกษา"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_4
+msgid "customer_service"
+msgstr "customer_service"
+
+#. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_1
 msgid "director"
-msgstr "ผู้อำนวยการ"
+msgstr "ผูกำกับ"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_5
+msgid "education"
+msgstr "การศึกษา"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -816,14 +721,99 @@ msgid "employees"
 msgstr "พนักงาน"
 
 #. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_6
+msgid "engineering"
+msgstr "วิศวกรรม"
+
+#. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_2
 msgid "executive"
 msgstr "ผู้บริหาร"
 
 #. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_7
+msgid "finance"
+msgstr "การเงิน"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_8
+msgid "founder"
+msgstr "ผู้ก่อตั้ง"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_9
+msgid "health_professional"
+msgstr "health_professional"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_10
+msgid "human_resources"
+msgstr "human_resources"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_11
+msgid "information_technology"
+msgstr "information_technology"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_12
+msgid "legal"
+msgstr "กฎหมาย"
+
+#. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_3
 msgid "manager"
 msgstr "ผู้จัดการ"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_13
+msgid "marketing"
+msgstr "การตลาด"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_14
+msgid "operations"
+msgstr "ปฏิบัติการ"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_15
+msgid "owner"
+msgstr "เจ้าของ"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_16
+msgid "president"
+msgstr "ประธาน"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_17
+msgid "product"
+msgstr "สินค้า"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_18
+msgid "public_relations"
+msgstr "public_relations"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_19
+msgid "real_estate"
+msgstr "real_estate"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_20
+msgid "recruiting"
+msgstr "สรรหา"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_21
+msgid "research"
+msgstr "research"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_22
+msgid "sale"
+msgstr "sale"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form

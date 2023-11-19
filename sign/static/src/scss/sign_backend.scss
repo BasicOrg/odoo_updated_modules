@@ -28,6 +28,116 @@
         .note-editable {
             border: 0;
         }
+        .o_field_one2many.o_sign_flat_o2m {
+            table {
+                border-collapse: initial;
+                border: none;
+                --table-hover-bg: #{$o-view-background-color};
+                --table-striped-bg: #{$o-view-background-color};
+            }
+            thead > tr > th {
+                border: none;
+                .o_resize {
+                    display: none;
+                }
+                &:nth-child(-n+2) {
+                    visibility: hidden;
+                }
+                &:nth-child(3) {
+                    // fix alignment bug on safari
+                    width: initial !important;
+                }
+                padding-left: 0px;
+                @include media-breakpoint-down(sm, $o-extra-grid-breakpoints) {
+                    font-weight: 400;
+                    color: $o-brand-secondary !important;
+                    &:nth-child(1) {
+                        display: none;
+                    }
+                    &:nth-child(3) {
+                        width: 80px;
+                    }
+                }
+            }
+            tr.o_data_row {
+                border-bottom: none !important;
+                background-color: white !important;
+                cursor: pointer !important;
+            }
+            tbody > tr {
+                border: none;
+                border-bottom: none
+            }
+            tbody > tr:not(.o_data_row) {
+                display: none;
+            }
+            tbody .o_form_uri:first-line {
+                color: #666666 !important;
+                background-color: white;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            tbody > tr:nth-child(1) {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            tbody > tr > td.o_list_many2one:nth-child(1) {
+                @include media-breakpoint-down(lg) {
+                    width: 100px !important;
+                }
+                @include media-breakpoint-down(sm, $o-extra-grid-breakpoints) {
+                    display: block;
+                    font-weight: normal;
+                    color: $o-brand-secondary!important;
+                    > span {
+                        margin-bottom: 0!important;
+                    }
+                }
+                width: 150px !important;
+                color: $o-gray-900 !important;
+                font-weight: 500;
+                padding-left: 0px;
+                cursor: default !important;
+                border: none;
+            }
+            tbody > tr > td:not(:nth-child(1)){
+                color: $o-gray-900 !important;
+                padding-left: 0px;
+                cursor: default !important;
+                border: none;
+                border-bottom: 1px solid $o-gray-800;
+                &:focus-within {
+                    border-color: #017e84 !important;
+                }
+                &:nth-child(2) {
+                    @include media-breakpoint-down(sm, $o-extra-grid-breakpoints) {
+                        display: block !important;
+                        min-height: 47px;
+                    }
+                }
+                &:nth-child(3) {
+                    width: 80px !important;
+                    text-align:right;
+                    @include media-breakpoint-down(sm, $o-extra-grid-breakpoints) {
+                        vertical-align: bottom !important;
+                        padding-bottom: 20px;
+                        input {
+                            margin-bottom: 0px;
+                        }
+                    }
+                }
+            }
+            tfoot {
+                display: none;
+            }
+            // hide the optionalColumnsDropdown button in a listview added by web_enterprise
+            div.o_optional_columns_dropdown {
+                display: none;
+            }
+            th.o_column_sortable:not(:empty):last-child {
+                padding-right: 1px !important;
+            }
+        }
     }
 
     /* Module pages */
@@ -36,6 +146,7 @@
         flex-flow: column nowrap;
         @include o-position-absolute(0, 0, 0, 0);
         @include media-breakpoint-down(md) {
+            position: static;
             .o_sign_pdf_iframe {
                 flex: 0 0 100%;
             }
@@ -76,14 +187,7 @@
             padding: 0;
             margin-bottom: 2px;
         }
-
-        .o_sign_template_header_wrapper {
-            .o_sign_template_tags_and_save .o_field_many2many_selection {
-                width: auto !important; //makes many2many field one line
-            }
-        }
     }
-
 
     .o_sign_create_partner {
         .fa-exclamation-circle {
@@ -94,10 +198,6 @@
             padding-left: 10px;
             color: map-get($theme-colors, 'success');
         }
-    }
-
-    #o_sign_select_options_input .o_field_tags {
-        width: 100%;
     }
 
     .o_sign_add_partner {
@@ -127,6 +227,44 @@
         left: 4px !important #{"/*rtl:remove*/"};
     }
 
+    .o_sign_item_custom_popover{
+
+        label {
+            display: inline-block;
+            max-width: 100%;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .o_input {
+            padding: 5px;
+        }
+
+        .o_sign_responsible_select {
+            display: block;
+            position: relative;
+        }
+    }
+
+    .popover {
+        .o_sign_delete_field_button {
+            float: right;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .o_sign_delete_field_button.fa-trash {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity ease 250ms;
+            margin-top: 8px;
+        }
+        :hover > .o_sign_delete_field_button.fa-trash {
+            opacity: 1.0;
+        }
+    }
+
     .o_sign_close_button {
         padding: 0;
         background-color: transparent;
@@ -150,20 +288,35 @@
                 overflow: auto;
             }
         }
+
+        &.o_sign_sticky_bottom {
+            .o_kanban_record_body {
+                margin-bottom: 2rem;
+            }
+
+            .o_kanban_record_bottom {
+                position: absolute;
+                bottom: 0.5rem;
+                width: 100%;
+                @extend .pe-4;
+            }
+        }
     }
 }
 
-.o_sign_template_kanban .o_kanban_renderer {
+.o_sign_template_kanban {
     .o_kanban_record {
-        .o_dropdown_kanban {
-            .dropdown-menu {
-                // the content of items in the dropdown menu of sign template is very long
-                // the width of the dropdown menu is extended to 12.9rem
-                // which leaves the same space on the left and right of the colorpicker
-                min-width: 12.9rem;
-                .oe_kanban_colorpicker {
-                    // the colorpicker is allowed to display more than 3 colors per line
-                    max-width: 12.9rem;
+        .o_kanban_record_top {
+            .o_dropdown_kanban {
+                .dropdown-menu {
+                    // the content of items in the dropdown menu of sign template is very long
+                    // the width of the dropdown menu is extended to 12.9rem
+                    // which leaves the same space on the left and right of the colorpicker
+                    min-width: 12.9rem;
+                    .oe_kanban_colorpicker {
+                        // the colorpicker is allowed to display more than 3 colors per line
+                        max-width: 12.9rem;
+                    }
                 }
             }
         }
@@ -177,6 +330,24 @@
                 }
                 span {
                     margin-left: 1.3rem;
+                }
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_kanban_view {
+        .o_kanban_record {
+            &.o_sign_sticky_bottom {
+                .o_kanban_record_body {
+                    margin-bottom: 3rem;
+                }
+                .o_kanban_record_bottom {
+                    position: absolute;
+                    bottom: 0.5rem;
+                    width: 100%;
+                    padding-right: 32px !important;
                 }
             }
         }

@@ -11,7 +11,7 @@ class AccountMove(models.Model):
         # add a next activity on the moves, as the attachments should be sent to the administration
         MailActivity = self.env['mail.activity'].with_context(mail_activity_quick_update=True)
         activity_type = self.env.ref('account_reports_tax_reminder.mail_activity_type_tax_report_to_be_sent')
-        for move in self.filtered(lambda x: not x.posted_before):
+        for move in self:
             MailActivity.create({
                 'res_id': move.id,
                 'res_model_id': self.env.ref('account.model_account_move').id,

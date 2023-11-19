@@ -26,6 +26,11 @@ class QualityCheck(models.Model):
         res = super().action_print()
 
         if quality_point_id.device_id:
-            res['device_ids'] = quality_point_id.device_id.id
+            res['device_id'] = quality_point_id.device_id.id
 
         return res
+
+    def _get_fields_list_for_tablet(self):
+        result = super()._get_fields_list_for_tablet()
+        result.append('boxes')
+        return result

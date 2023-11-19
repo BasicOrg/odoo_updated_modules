@@ -18,6 +18,7 @@ import {
     makeSeparator,
 } from "@web/views/view_compiler";
 import { ViewCompiler } from "../view_compiler";
+import { localization } from "@web/core/l10n/localization";
 
 const compilersRegistry = registry.category("form_compilers");
 
@@ -30,7 +31,10 @@ function appendAttf(el, attr, string) {
 function appendToExpr(expr, string) {
     const re = /{{.*}}/;
     const oldString = re.exec(expr);
-    return oldString ? `${oldString} {{${string} }}` : `{{${string} }}`;
+    if (oldString) {
+        string = `${oldString} ${string}`;
+    }
+    return `{{${string} }}`;
 }
 
 /**
@@ -52,40 +56,40 @@ export class FormCompiler extends ViewCompiler {
         this.compilers.push(
             ...compilersRegistry.getAll(),
             { selector: "div[name='button_box']", fn: this.compileButtonBox },
-            { selector: "form", fn: this.compileForm, doNotCopyAttributes: true },
+            { selector: "form", fn: this.compileForm },
             { selector: "group", fn: this.compileGroup },
             { selector: "header", fn: this.compileHeader },
             { selector: "label", fn: this.compileLabel, doNotCopyAttributes: true },
             { selector: "notebook", fn: this.compileNotebook },
-            { selector: "setting", fn: this.compileSetting },
             { selector: "separator", fn: this.compileSeparator },
             { selector: "sheet", fn: this.compileSheet }
         );
     }
 
-    compile(key, params = {}) {
+    compile() {
         const compiled = super.compile(...arguments);
-        if (!params.isSubView) {
-            compiled.children[0].setAttribute("t-ref", "compiled_view_root");
-        }
+        compiled.children[0].setAttribute("t-ref", "compiled_view_root");
         return compiled;
     }
 
     createLabelFromField(fieldId, fieldName, fieldString, label, params) {
+        const props = {
+            id: `'${fieldId}'`,
+            fieldName: `'${fieldName}'`,
+            record: `props.record`,
+            fieldInfo: `props.archInfo.fieldNodes['${fieldId}']`,
+            className: `"${label.className}"`,
+        };
         let labelText = label.textContent || fieldString;
         if (label.hasAttribute("data-no-label")) {
             labelText = toStringExpression("");
         } else {
             labelText = labelText
                 ? toStringExpression(labelText)
-                : `__comp__.props.record.fields['${fieldName}'].string`;
+                : `props.record.fields['${fieldName}'].string`;
         }
         const formLabel = createElement("FormLabel", {
-            id: `'${fieldId}'`,
-            fieldName: `'${fieldName}'`,
-            record: `__comp__.props.record`,
-            fieldInfo: `__comp__.props.archInfo.fieldNodes['${fieldId}']`,
-            className: `"${label.className}"`,
+            "t-props": objectToString(props),
             string: labelText,
         });
         const condition = label.getAttribute("t-if");
@@ -134,19 +138,15 @@ export class FormCompiler extends ViewCompiler {
         let hasContent = false;
         for (const child of el.children) {
             const invisible = getModifier(child, "invisible");
-            if (!params.compileInvisibleNodes && (invisible === "True" || invisible === "1")) {
+            if (this.isAlwaysInvisible(invisible, params)) {
                 continue;
             }
             hasContent = true;
             let isVisibleExpr;
-            if (!invisible || invisible === "False" || invisible === "0") {
-                isVisibleExpr = "true";
-            } else if (invisible === "True" || invisible === "1") {
-                isVisibleExpr = "false";
+            if (typeof invisible === "boolean") {
+                isVisibleExpr = `${invisible ? false : true}`;
             } else {
-                isVisibleExpr = `!__comp__.evaluateBooleanExpr(${JSON.stringify(
-                    invisible
-                )},__comp__.props.record.evalContextWithVirtualIds)`;
+                isVisibleExpr = `!evalDomainFromRecord(props.record,${JSON.stringify(invisible)})`;
             }
             const mainSlot = createElement("t", {
                 "t-set-slot": `slot_${slotId++}`,
@@ -155,24 +155,34 @@ export class FormCompiler extends ViewCompiler {
             if (child.tagName === "button" || child.children.tagName === "button") {
                 child.classList.add(
                     "oe_stat_button",
-                    "btn",
-                    "btn-outline-secondary",
-                    "flex-grow-1",
-                    "flex-lg-grow-0"
+                    "btn-light",
+                    "flex-shrink-0",
+                    "mb-0",
+                    "py-0",
+                    "border-0",
+                    "border-start",
+                    "border-bottom",
+                    "rounded-0",
+                    "text-start",
+                    "text-nowrap",
+                    "text-capitalize"
                 );
             }
             if (child.tagName === "field") {
-                child.classList.add("d-inline-block", "mb-0", "z-index-0");
+                child.classList.add("d-inline-block", "mb-0");
             }
             append(mainSlot, this.compileNode(child, params, false));
             append(buttonBox, mainSlot);
         }
 
-        return hasContent ? buttonBox : "";
+        return hasContent ? buttonBox : null;
     }
 
     compileButton(el, params) {
-        return super.compileButton(el, params);
+        const compiled = super.compileButton(el, params);
+        compiled.setAttribute("disable", "props.disableViewButtons");
+        compiled.setAttribute("enable", "props.enableViewButtons");
+        return compiled;
     }
 
     /**
@@ -183,7 +193,7 @@ export class FormCompiler extends ViewCompiler {
 
         const fieldName = el.getAttribute("name");
         const fieldString = el.getAttribute("string");
-        const fieldId = el.getAttribute("field_id");
+        const fieldId = el.getAttribute("field_id") || fieldName;
         const labelsForAttr = el.getAttribute("id") || fieldName;
         const labels = this.getLabels(labelsForAttr);
         const dynamicLabel = (label) => {
@@ -213,24 +223,19 @@ export class FormCompiler extends ViewCompiler {
     compileForm(el, params) {
         const sheetNode = el.querySelector("sheet");
         const displayClasses = sheetNode
-            ? `d-flex {{ __comp__.uiService.size < ${SIZES.XXL} ? "flex-column" : "flex-nowrap h-100" }}`
+            ? `d-flex {{ uiService.size < ${SIZES.XXL} ? "flex-column" : "flex-nowrap h-100" }}`
             : "d-block";
         const stateClasses =
-            "{{ __comp__.props.record.dirty ? 'o_form_dirty' : !__comp__.props.record.isNew ? 'o_form_saved' : '' }}";
+            "{{ props.record.isDirty ? 'o_form_dirty' : !props.record.isVirtual ? 'o_form_saved' : '' }}";
         const form = createElement("div", {
-            class: "o_form_renderer",
-            "t-att-class": "__comp__.props.class",
-            "t-attf-class": `{{__comp__.props.record.isInEdition ? 'o_form_editable' : 'o_form_readonly'}} ${displayClasses} ${stateClasses}`,
+            "t-att-class": "props.class",
+            "t-attf-class": `{{props.record.isInEdition ? 'o_form_editable' : 'o_form_readonly'}} ${displayClasses} ${stateClasses}`,
         });
         if (!sheetNode) {
             for (const child of el.childNodes) {
-                // ButtonBox are already compiled for the control panel and should not
-                // be recompiled for the renderer of the view
-                if (child.attributes?.name?.value !== "button_box") {
-                    append(form, this.compileNode(child, params));
-                }
+                append(form, this.compileNode(child, params));
             }
-            form.classList.add("o_form_nosheet");
+            form.className = "o_form_nosheet";
         } else {
             let compiledList = [];
             for (const child of el.childNodes) {
@@ -244,6 +249,20 @@ export class FormCompiler extends ViewCompiler {
                 }
             }
             append(form, compiledList);
+        }
+        if (localization.multiLang) {
+            const statusBar = form.querySelector(".o_form_statusbar");
+            const translateAlert = createElement("t", {
+                "t-if": "props.translateAlert",
+                "t-call": "web.TranslateAlert",
+            });
+            if (statusBar) {
+                statusBar.parentElement.insertBefore(translateAlert, statusBar.nextSibling);
+            } else if (form.querySelector(".o_form_sheet_bg")) {
+                form.querySelector(".o_form_sheet_bg").prepend(translateAlert);
+            } else {
+                form.prepend(translateAlert);
+            }
         }
         return form;
     }
@@ -279,7 +298,7 @@ export class FormCompiler extends ViewCompiler {
             }
 
             const invisible = getModifier(child, "invisible");
-            if (!params.compileInvisibleNodes && (invisible === "True" || invisible === "1")) {
+            if (this.isAlwaysInvisible(invisible, params)) {
                 continue;
             }
 
@@ -310,21 +329,21 @@ export class FormCompiler extends ViewCompiler {
                     ? child.getAttribute("nolabel") !== "1"
                     : true;
                 slotContent = this.compileNode(child, { ...params, currentSlot: mainSlot }, false);
-                if (slotContent && addLabel && !isOuterGroup && !isTextNode(slotContent)) {
+                if (addLabel && !isOuterGroup && !isTextNode(slotContent)) {
                     itemSpan = itemSpan === 1 ? itemSpan + 1 : itemSpan;
                     const fieldName = child.getAttribute("name");
                     const fieldId = slotContent.getAttribute("id") || fieldName;
                     const props = {
                         id: `${fieldId}`,
                         fieldName: `'${fieldName}'`,
-                        record: `__comp__.props.record`,
+                        record: `props.record`,
                         string: child.hasAttribute("string")
                             ? toStringExpression(child.getAttribute("string"))
-                            : `__comp__.props.record.fields.${fieldName}.string`,
-                        fieldInfo: `__comp__.props.archInfo.fieldNodes[${fieldId}]`,
+                            : `props.record.fields.${fieldName}.string`,
+                        fieldInfo: `props.archInfo.fieldNodes[${fieldId}]`,
                     };
                     mainSlot.setAttribute("props", objectToString(props));
-                    mainSlot.setAttribute("Component", "__comp__.constructor.components.FormLabel");
+                    mainSlot.setAttribute("Component", "constructor.components.FormLabel");
                     mainSlot.setAttribute("subType", "'item_component'");
                 }
             } else {
@@ -342,14 +361,12 @@ export class FormCompiler extends ViewCompiler {
 
             if (slotContent && !isTextNode(slotContent)) {
                 let isVisibleExpr;
-                if (!invisible || invisible === "False" || invisible === "0") {
-                    isVisibleExpr = "true";
-                } else if (invisible === "True" || invisible === "1") {
-                    isVisibleExpr = "false";
+                if (typeof invisible === "boolean") {
+                    isVisibleExpr = `${invisible ? false : true}`;
                 } else {
-                    isVisibleExpr = `!__comp__.evaluateBooleanExpr(${JSON.stringify(
+                    isVisibleExpr = `!evalDomainFromRecord(props.record,${JSON.stringify(
                         invisible
-                    )},__comp__.props.record.evalContextWithVirtualIds)`;
+                    )})`;
                 }
                 mainSlot.setAttribute("isVisible", isVisibleExpr);
                 if (itemSpan > 0) {
@@ -358,20 +375,7 @@ export class FormCompiler extends ViewCompiler {
 
                 const groupClassExpr = `scope && scope.className`;
                 if (isComponentNode(slotContent)) {
-                    if (getTag(slotContent) === "FormLabel") {
-                        mainSlot.prepend(
-                            createElement("t", {
-                                "t-set": "addClass",
-                                "t-value": groupClassExpr,
-                            })
-                        );
-                        combineAttributes(
-                            slotContent,
-                            "className",
-                            `(addClass ? " " + addClass : "")`,
-                            `+`
-                        );
-                    } else if (getTag(child, true) !== "button") {
+                    if (getTag(child, true) !== "button") {
                         if (slotContent.hasAttribute("class")) {
                             mainSlot.prepend(
                                 createElement("t", {
@@ -407,7 +411,7 @@ export class FormCompiler extends ViewCompiler {
     compileHeader(el, params) {
         const statusBar = createElement("div");
         statusBar.className =
-            "o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0";
+            "o_form_statusbar position-relative d-flex justify-content-between border-bottom";
         const buttons = [];
         const others = [];
         for (const child of el.childNodes) {
@@ -427,6 +431,7 @@ export class FormCompiler extends ViewCompiler {
         }
         let slotId = 0;
         const statusBarButtons = createElement("StatusBarButtons");
+        statusBarButtons.setAttribute("readonly", "!props.record.isInEdition");
         for (const button of buttons) {
             const slot = createElement("t", {
                 "t-set-slot": `button_${slotId++}`,
@@ -491,11 +496,11 @@ export class FormCompiler extends ViewCompiler {
 
         noteBook.setAttribute(
             "defaultPage",
-            `__comp__.props.record.isNew ? undefined : __comp__.props.activeNotebookPages[${noteBookId}]`
+            `props.record.isNew ? undefined : props.activeNotebookPages[${noteBookId}]`
         );
         noteBook.setAttribute(
             "onPageUpdate",
-            `(page) => __comp__.props.onNotebookPageChange(${noteBookId}, page)`
+            `(page) => this.props.onNotebookPageChange(${noteBookId}, page)`
         );
 
         for (const child of el.children) {
@@ -503,7 +508,7 @@ export class FormCompiler extends ViewCompiler {
                 continue;
             }
             const invisible = getModifier(child, "invisible");
-            if (!params.compileInvisibleNodes && (invisible === "True" || invisible === "1")) {
+            if (this.isAlwaysInvisible(invisible, params)) {
                 continue;
             }
 
@@ -526,7 +531,7 @@ export class FormCompiler extends ViewCompiler {
             if (child.getAttribute("autofocus") === "autofocus") {
                 noteBook.setAttribute(
                     "defaultPage",
-                    `__comp__.props.record.isNew ? "${pageId}" : (__comp__.props.activeNotebookPages[${noteBookId}] || "${pageId}")`
+                    `props.record.isNew ? "${pageId}" : (props.activeNotebookPages[${noteBookId}] || "${pageId}")`
                 );
             }
 
@@ -541,17 +546,13 @@ export class FormCompiler extends ViewCompiler {
                 };
             }
 
-            let isVisibleExpr;
-            if (!invisible || invisible === "False" || invisible === "0") {
-                isVisibleExpr = "true";
-            } else if (invisible === "True" || invisible === "1") {
-                isVisibleExpr = "false";
+            let isVisible;
+            if (typeof invisible === "boolean") {
+                isVisible = `${!invisible}`;
             } else {
-                isVisibleExpr = `!__comp__.evaluateBooleanExpr(${JSON.stringify(
-                    invisible
-                )},__comp__.props.record.evalContextWithVirtualIds)`;
+                isVisible = `!evalDomainFromRecord(props.record,${JSON.stringify(invisible)})`;
             }
-            pageSlot.setAttribute("isVisible", isVisibleExpr);
+            pageSlot.setAttribute("isVisible", isVisible);
 
             for (const contents of child.children) {
                 append(pageSlot, this.compileNode(contents, { ...params, currentSlot: pageSlot }));
@@ -584,52 +585,6 @@ export class FormCompiler extends ViewCompiler {
      * @param {Record<string, any>} params
      * @returns {Element}
      */
-    compileSetting(el, params) {
-        const setting = createElement(params.componentName || "Setting", {
-            title: toStringExpression(el.getAttribute("title") || ""),
-            help: toStringExpression(el.getAttribute("help") || ""),
-            companyDependent: el.getAttribute("company_dependent") === "1" || "false",
-            documentation: toStringExpression(el.getAttribute("documentation") || ""),
-            record: `__comp__.props.record`,
-        });
-        let string = toStringExpression(el.getAttribute("string") || "");
-        let addLabel = true;
-        Array.from(el.children).forEach((child, index) => {
-            if (getTag(child, true) === "field" && index === 0) {
-                const fieldSlot = createElement("t", { "t-set-slot": "fieldSlot" });
-                const field = this.compileNode(child, params);
-                if (field) {
-                    append(fieldSlot, field);
-                    setting.setAttribute("fieldInfo", field.getAttribute("fieldInfo"));
-
-                    addLabel = child.hasAttribute("nolabel")
-                        ? child.getAttribute("nolabel") !== "1"
-                        : true;
-                    const fieldName = child.getAttribute("name");
-                    string = child.hasAttribute("string")
-                        ? toStringExpression(child.getAttribute("string"))
-                        : string;
-                    setting.setAttribute("fieldName", toStringExpression(fieldName));
-                    setting.setAttribute(
-                        "fieldId",
-                        toStringExpression(child.getAttribute("field_id"))
-                    );
-                }
-                append(setting, fieldSlot);
-            } else {
-                append(setting, this.compileNode(child, params));
-            }
-        });
-        setting.setAttribute("string", string);
-        setting.setAttribute("addLabel", addLabel);
-        return setting;
-    }
-
-    /**
-     * @param {Element} el
-     * @param {Record<string, any>} params
-     * @returns {Element}
-     */
     compileSeparator(el, params = {}) {
         const separator = makeSeparator(el.getAttribute("string"));
         copyAttributes(el, separator);
@@ -654,19 +609,20 @@ export class FormCompiler extends ViewCompiler {
             if (!compiled) {
                 continue;
             }
-            if (compiled.nodeName === "ButtonBox") {
-                let isVisibleExpr = "__comp__.env.inDialog";
-                if (compiled.hasAttribute("t-if")) {
-                    const formerTif = compiled.getAttribute("t-if");
-                    isVisibleExpr = `( ${formerTif} ) and ${isVisibleExpr}`;
-                }
-                compiled.setAttribute("t-if", isVisibleExpr);
-            }
             if (getTag(child, true) === "field") {
                 compiled.setAttribute("showTooltip", true);
             }
             append(sheetFG, compiled);
         }
         return sheetBG;
+    }
+
+    /**
+     * @override
+     */
+    compileWidget(el) {
+        const widget = super.compileWidget(el);
+        widget.setAttribute("readonly", `!props.record.isInEdition`);
+        return widget;
     }
 }

@@ -1,13 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
-import configuratorTourUtils from "@test_sale_product_configurators/js/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('event_sale_with_product_configurator_tour', {
+tour.register('event_sale_with_product_configurator_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale.sale_menu_root"]',
 }, {
     trigger: '.o_list_button_add',
@@ -19,16 +17,18 @@ registry.category("web_tour.tours").add('event_sale_with_product_configurator_to
     trigger: '.ui-menu-item > a:contains("Tajine Saucisse")',
     auto: true,
 }, {
-    trigger: 'a:contains("Add a product")',
+    trigger: "a:contains('Add a product')",
 }, {
     trigger: 'div[name="product_template_id"] input',
     run: 'text event (',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Registration Event (TEST variants)")',
 }, {
-    trigger: 'tr:has(div[name="o_sale_product_configurator_name"]:contains("Memorabilia")) button:has(i.fa-plus)',
+    trigger: '.js_product:has(strong:contains(Memorabilia)) .js_add',
+    extra_trigger: '.oe_advanced_configurator_modal',
 }, {
-    trigger: 'button:contains(Confirm)',
+    trigger: 'button span:contains(Confirm)',
+    extra_trigger: '.oe_advanced_configurator_modal',  // to confirm the first wizard
 }, {
     trigger: '.o_input_dropdown input',
     extra_trigger: '.o_technical_modal',  // to be in the event wizard
@@ -47,22 +47,24 @@ registry.category("web_tour.tours").add('event_sale_with_product_configurator_to
     trigger: '.o_event_sale_js_event_configurator_ok'
 }, {
     trigger: 'a:contains("Add a product")',
-    extra_trigger: 'td[name="price_subtotal"]:contains("16.50")',  // wait for the optional product line
+    extra_trigger: '.o_monetary_cell span:contains("16.50")',  // wait for the optional product line
 }, {
     trigger: 'div[name="product_template_id"] input',
-    extra_trigger: '.o_data_row:nth-child(3)',  // wait for the new row to be created
+    extra_trigger: '[name="product_template_id"] .o_dropdown_button',
     run: 'text event (',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Registration Event (TEST variants)")',
 }, {
-    trigger: 'tr:has(div[name="o_sale_product_configurator_name"]:contains("Registration Event (TEST variants)")) label:contains("Adult")',
+    trigger: '.radio_input_value span:contains(Adult)',
 }, {
-    trigger: 'tr:has(div[name="o_sale_product_configurator_name"]:contains("Registration Event (TEST variants)")) .o_sale_product_configurator_qty input',
+    trigger: '.js_quantity',
+    extra_trigger: '.oe_advanced_configurator_modal',
     run: 'text 5',
-},
-    configuratorTourUtils.assertPriceTotal("150.00"),
-{
-    trigger: 'button:contains(Confirm)',
+}, {
+    trigger: '.js_price_total span:contains("150.00")',  // to be sure the correct variant is set
+}, {
+    trigger: 'button span:contains(Confirm)',
+    extra_trigger: '.oe_advanced_configurator_modal',
 }, {
     trigger: '.o_input_dropdown input',
     extra_trigger: '.o_technical_modal',
@@ -81,19 +83,20 @@ registry.category("web_tour.tours").add('event_sale_with_product_configurator_to
     trigger: '.o_event_sale_js_event_configurator_ok'
 }, {
     trigger: 'a:contains("Add a product")',
-    extra_trigger: 'td[name="price_subtotal"]:contains("150.00")',  // wait for the adult tickets line
+    extra_trigger: '.o_monetary_cell span:contains("150.00")',  // wait for the adult tickets line
 }, {
     trigger: 'div[name="product_template_id"] input',
-    extra_trigger: '.o_data_row:nth-child(4)',  // wait for the new row to be created
+    extra_trigger: '[name="product_template_id"] .o_dropdown_button',
     run: 'text event (',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Registration Event (TEST variants)")',
 }, {
-    trigger: 'tr:has(div[name="o_sale_product_configurator_name"]:contains("Registration Event (TEST variants)")) label:contains("VIP")',
-},
-    configuratorTourUtils.assertPriceTotal(60.00),
-{
-    trigger: 'button:contains(Confirm)',
+    trigger: '.radio_input_value span:contains(VIP)',
+}, {
+    trigger: '.js_price_total span:contains("60.00")',  // to be sure the correct variant is set
+}, {
+    trigger: 'button span:contains(Confirm)',
+    extra_trigger: '.oe_advanced_configurator_modal',
 }, {
     trigger: '.o_input_dropdown input',
     extra_trigger: '.o_technical_modal',
@@ -110,5 +113,5 @@ registry.category("web_tour.tours").add('event_sale_with_product_configurator_to
     in_modal: false,
 }, {
     trigger: '.o_event_sale_js_event_configurator_ok',
-}, ...stepUtils.saveForm({ extra_trigger: '.o_field_cell.o_data_cell.o_list_number:contains("60.00")' }),
-]});
+}, ...tour.stepUtils.saveForm({ extra_trigger: '.o_field_cell.o_data_cell.o_list_number:contains("60.00")' }),
+]);

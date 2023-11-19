@@ -3,18 +3,16 @@
 # 	* payment
 # 
 # Translators:
-# 敬雲 林 <chingyun@yuanchih-consult.com>, 2023
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -27,7 +25,16 @@ msgid " Data Fetched"
 msgstr "獲取的資料"
 
 #. module: payment
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:payment.pay
+msgid "<b>Amount:</b>"
+msgstr "<b>金額</b>"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.pay
+msgid "<b>Reference:</b>"
+msgstr "<b>編碼</b>"
+
+#. module: payment
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid ""
@@ -37,13 +44,9 @@ msgstr ""
 "<h3>請依已下資訊付款：</h3><ul><li>銀行： %s</li><li>帳號： %s</li><li>戶名： %s</li></ul>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<i class=\"fa fa-exclamation-triangle\"/> These properties are set to\n"
-"                                match the behavior of providers and that of their integration with\n"
-"                                Odoo regarding this payment method. Any change may result in errors\n"
-"                                and should be tested on a test database first."
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:payment.confirm
+msgid "<i class=\"fa fa-arrow-circle-right\"/> Back to My Account"
+msgstr "<i class=\"fa fa-arrow-circle-right\"/> 返回我的帳戶"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.portal_breadcrumb
@@ -51,47 +54,9 @@ msgid "<i class=\"fa fa-home\" role=\"img\" title=\"Home\" aria-label=\"Home\"/>
 msgstr "<i class=\"fa fa-home\" role=\"img\" title=\"Home\" aria-label=\"Home\"/>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<i class=\"fa fa-info-circle oe_inline\" invisible=\"support_partial_capture"
-" != 'full_only'\" title=\"Some of the transactions you intend to capture can"
-" only be captured in full. Handle the transactions individually to capture a"
-" partial amount.\"/>"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.token_form
-msgid ""
-"<i class=\"fa fa-trash\" title=\"Delete payment method\" data-bs-"
-"toggle=\"tooltip\" data-bs-placement=\"top\" data-bs-delay=\"0\"/>"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_method
-msgid "<i class=\"oi oi-arrow-right me-1\"></i> Configure a payment provider"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                                            Enable Payment Methods"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.method_form
-msgid "<small class=\"text-600\">Save my payment details</small>"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "<span class=\"o_stat_text text-danger\">Unpublished</span>"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "<span class=\"o_stat_text text-success\">Published</span>"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:payment.manage
+msgid "<i class=\"fa fa-trash\"/> Delete"
+msgstr "<i class=\"fa fa-trash\"/>刪除"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.view_partners_form_payment_defaultcreditcard
@@ -99,66 +64,41 @@ msgid "<span class=\"o_stat_text\">Saved Payment Methods</span>"
 msgstr "<span class=\"o_stat_text\">儲存的付款方式</span>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_country_ids\">\n"
-"                                All countries are supported.\n"
-"                            </span>"
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "<span class=\"text-danger\">Unpublished</span>"
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_currency_ids\">\n"
-"                                All currencies are supported.\n"
-"                            </span>"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.method_form
-#: model_terms:ir.ui.view,arch_db:payment.token_form
-msgid "<span><i class=\"fa fa-lock\"/> Secured by</span>"
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "<span class=\"text-success\">Published</span>"
 msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
 msgid ""
-"<span><i class=\"oi oi-arrow-right\"/> How to configure your PayPal "
+"<span><i class=\"fa fa-arrow-right\"/> How to configure your PayPal "
 "account</span>"
-msgstr ""
+msgstr "<span><i class=\"fa fa-arrow-right\"/>如何配置您的 PayPal 帳戶</i></span>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "<span>Your payment methods</span>"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
+msgid ""
+"<span>Start selling directly without an account; an email will be sent by "
+"Paypal to create your new account and collect your payments.</span>"
+msgstr "<span>在沒有帳戶的情況下開始直接銷售;Paypal 將發送一封電子郵件，以建立您的新帳戶並收取您的付款。</span>"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
+msgid ""
+"<strong>No suitable payment option could be found.</strong><br/>\n"
+"                                If you believe that it is an error, please contact the website administrator."
+msgstr ""
+"<strong>找不到合適的付款方式.</strong><br/>\n"
+"                                如果您認為這是一個錯誤，請聯繫網站管理員"
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_methods
-msgid ""
-"<strong>No suitable payment method could be found.</strong><br/>\n"
-"                                If you believe that it is an error, please contact the website\n"
-"                                administrator."
-msgstr ""
-"<strong>找不到合適的支付方式。</strong><br/>\n"
-"                                如果您認為出現錯誤，請聯繫網站管理員。"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<strong>Warning!</strong> There is a partial capture pending. Please wait a\n"
-"                    moment for it to be processed. Check your payment provider configuration if\n"
-"                    the capture is still pending after a few minutes."
-msgstr ""
-"<strong>警告！</strong>有一項未足額收款正待處理。\n"
-"                    請稍等，讓系統先完成處理該筆收款。\n"
-"                    若幾分鐘後，收款仍在處理中，請檢查付款服務商相關設置。"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<strong>Warning!</strong> You can not capture a negative amount nor more\n"
-"                    than"
+msgid "<strong>No suitable payment provider could be found.</strong>"
 msgstr ""
 
 #. module: payment
@@ -171,9 +111,9 @@ msgstr ""
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid ""
-"<strong>Warning</strong> Make sure you are logged in as the\n"
-"                                    correct partner before making this payment."
-msgstr ""
+"<strong>Warning</strong> Make sure your are logged in as the right partner "
+"before making this payment."
+msgstr "<strong>警告</strong>在付款之前，請確保您以正確的合作夥伴身份登入。"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
@@ -186,7 +126,6 @@ msgid "<strong>Warning</strong> You must be logged in to pay."
 msgstr "<strong>警告</strong>您必須登入後才能付款。"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -195,14 +134,12 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_token.py:0
 #, python-format
 msgid "A token cannot be unarchived once it has been archived."
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -210,7 +147,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -219,7 +155,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -228,7 +163,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Account"
@@ -245,10 +179,14 @@ msgid "Activate"
 msgstr "啟動"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__active
 #: model:ir.model.fields,field_description:payment.field_payment_token__active
 msgid "Active"
 msgstr "啟用"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_active
+msgid "Add Extra Fees"
+msgstr "添加額外的費用"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_address
@@ -267,35 +205,27 @@ msgid "Allow Express Checkout"
 msgstr ""
 
 #. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__payment_provider_selection
+msgid "Allow Payment Provider"
+msgstr ""
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__allow_tokenization
 msgid "Allow Saving Payment Methods"
 msgstr "允許儲存付款方式"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__captured_amount
-msgid "Already Captured"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__voided_amount
-msgid "Already Voided"
-msgstr ""
-
-#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_aps
 #: model:payment.provider,name:payment.payment_provider_aps
 msgid "Amazon Payment Services"
 msgstr ""
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__amount
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__amount
 #: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.pay
-#, python-format
 msgid "Amount"
-msgstr "金額"
+msgstr "總額"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__amount_max
@@ -303,9 +233,11 @@ msgid "Amount Max"
 msgstr "最大金額"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__amount_to_capture
-msgid "Amount To Capture"
-msgstr ""
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "An error occurred during the processing of this payment."
+msgstr "處理此付款時出錯"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
@@ -321,11 +253,11 @@ msgstr "套用"
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_form
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_search
 msgid "Archived"
-msgstr "已封存"
+msgstr "歸檔"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_form_templates.xml:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Are you sure you want to delete this payment method?"
 msgstr "確定要刪除此付款方式嗎？"
@@ -358,22 +290,11 @@ msgid "Authorized"
 msgstr "授權"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__authorized_amount
-msgid "Authorized Amount"
-msgstr ""
-
-#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Availability"
 msgstr "可用"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_search
-msgid "Available methods"
-msgstr ""
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Bank"
@@ -383,12 +304,6 @@ msgstr "銀行"
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__journal_name
 msgid "Bank Name"
 msgstr "銀行名稱"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__brand_ids
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Brands"
-msgstr ""
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_buckaroo
@@ -421,7 +336,10 @@ msgid "Callback Record ID"
 msgstr "Callback Record ID"
 
 #. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
+#, python-format
 msgid "Cancel"
 msgstr "取消"
 
@@ -436,27 +354,11 @@ msgid "Canceled Message"
 msgstr "已取消訊息"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Cannot delete payment method"
-msgstr ""
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#, python-format
-msgid "Cannot save payment method"
-msgstr ""
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_transaction.py:0
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-#, python-format
-msgid "Capture"
-msgstr ""
+msgid "Cancelled payments"
+msgstr "取消付款"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__capture_manually
@@ -485,38 +387,34 @@ msgid "Child Transactions"
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
-msgid "Child transactions"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
 msgid "Choose a payment method"
 msgstr "選擇付款方式"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Choose another method <i class=\"oi oi-arrow-down\"/>"
-msgstr ""
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_city
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
 msgid "City"
-msgstr "縣市"
+msgstr "城市"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Click here to be redirected to the confirmation page."
+msgstr "點選此處可重導向到確認頁面。"
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
 msgid "Close"
 msgstr "關閉"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__code
 #: model:ir.model.fields,field_description:payment.field_payment_provider__code
+#: model:ir.model.fields,field_description:payment.field_payment_token__provider_code
+#: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_code
 msgid "Code"
-msgstr "程式碼"
+msgstr "代號"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__color
@@ -540,14 +438,13 @@ msgid "Company"
 msgstr "公司"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Configuration"
 msgstr "配置"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Confirm Deletion"
 msgstr "確認刪除"
@@ -589,20 +486,28 @@ msgid "Create a new payment provider"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__create_uid
+#: model_terms:ir.actions.act_window,help:payment.action_payment_token
+msgid "Create a new payment token"
+msgstr "建立一個新的支付密鑰"
+
+#. module: payment
+#: model_terms:ir.actions.act_window,help:payment.action_payment_icon
+msgid "Create a payment icon"
+msgstr "建立付款圖示"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__create_uid
-#: model:ir.model.fields,field_description:payment.field_payment_method__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_token__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__create_date
+#: model:ir.model.fields,field_description:payment.field_payment_icon__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__create_date
-#: model:ir.model.fields,field_description:payment.field_payment_method__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_token__create_date
@@ -611,7 +516,6 @@ msgid "Created on"
 msgstr "建立於"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Creating a transaction from an archived token is forbidden."
@@ -623,27 +527,59 @@ msgid "Credentials"
 msgstr "授權認證"
 
 #. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_stripe
+msgid "Credit & Debit Card"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_razorpay
+msgid "Credit & Debit Card, UPI (Powered by Razorpay)"
+msgstr ""
+
+#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__stripe
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__stripe
 msgid "Credit & Debit card (via Stripe)"
-msgstr "信用卡和借記卡 (通過 Stripe)"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__available_currency_ids
-msgid "Currencies"
-msgstr "幣別"
+#: model:payment.provider,display_as:payment.payment_provider_adyen
+msgid "Credit Card (powered by Adyen)"
+msgstr "Credit Card (powered by Adyen)"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__currency_id
+#: model:payment.provider,display_as:payment.payment_provider_asiapay
+msgid "Credit Card (powered by Asiapay)"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_authorize
+msgid "Credit Card (powered by Authorize)"
+msgstr "Credit Card (powered by Authorize)"
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_buckaroo
+msgid "Credit Card (powered by Buckaroo)"
+msgstr "Credit Card (powered by Buckaroo)"
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_mercado_pago
+msgid "Credit Card (powered by Mercado Pago)"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_sips
+msgid "Credit Card (powered by Sips)"
+msgstr "Credit Card (powered by Sips)"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__currency_id
 #: model:ir.model.fields,field_description:payment.field_payment_provider__main_currency_id
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__currency_id
 msgid "Currency"
-msgstr "貨幣"
+msgstr "幣別"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__manual
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__manual
 msgid "Custom payment instructions"
 msgstr "自訂付款說明"
 
@@ -660,7 +596,12 @@ msgstr "定義資料排序"
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_demo
 msgid "Demo"
-msgstr "範例"
+msgstr "示範"
+
+#. module: payment
+#: model:ir.model.fields,help:payment.field_payment_provider__display_as
+msgid "Description of the provider for customers"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__state__disabled
@@ -669,15 +610,29 @@ msgid "Disabled"
 msgstr "停用"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__display_name
+#: model_terms:ir.ui.view,arch_db:payment.transaction_status
+msgid "Dismiss"
+msgstr "解除"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__display_name
-#: model:ir.model.fields,field_description:payment.field_payment_method__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_token__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__display_name
 msgid "Display Name"
 msgstr "顯示名稱"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__display_as
+msgid "Displayed as"
+msgstr "顯示為"
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__done
+msgid "Done"
+msgstr "完成"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__done_msg
@@ -695,7 +650,7 @@ msgstr "草稿"
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_email
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
 msgid "Email"
-msgstr "電郵"
+msgstr "Email"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__state__enabled
@@ -713,8 +668,9 @@ msgid "Error"
 msgstr "錯誤"
 
 #. module: payment
-#. odoo-python
+#. openerp-web
 #: code:addons/payment/models/payment_transaction.py:0
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
 #, python-format
 msgid "Error: %s"
 msgstr "錯誤: %s"
@@ -725,18 +681,31 @@ msgid "Express Checkout Form Template"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_express_checkout
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_express_checkout
 msgid "Express Checkout Supported"
-msgstr "支援快速結賬"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_express_checkout
-msgid ""
-"Express checkout allows customers to pay faster by using a payment method "
-"that provides all required billing and shipping information, thus allowing "
-"to skip the checkout process."
+#: model:ir.model.fields,field_description:payment.field_payment_transaction__fees
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "Fees"
+msgstr "費用"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__support_fees
+msgid "Fees Supported"
 msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_dom_fixed
+msgid "Fixed domestic fees"
+msgstr "國內固定費用"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_int_fixed
+msgid "Fixed international fees"
+msgstr "固定的手續費"
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_flutterwave
@@ -744,11 +713,14 @@ msgid "Flutterwave"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields.selection,name:payment.selection__payment_method__support_refund__full_only
-#: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_manual_capture__full_only
+#: model_terms:ir.ui.view,arch_db:payment.confirm
+msgid "From"
+msgstr "來自"
+
+#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_refund__full_only
 msgid "Full Only"
-msgstr "只支援全額"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
@@ -759,16 +731,6 @@ msgstr "生成付款連結"
 #: model:ir.model,name:payment.model_payment_link_wizard
 msgid "Generate Sales Payment Link"
 msgstr "生成付款連結"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
-msgid "Generate and Copy Payment Link"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.confirm
-msgid "Go to my Account <i class=\"oi oi-arrow-right ms-2\"/>"
-msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
@@ -783,13 +745,8 @@ msgid "HTTP Routing"
 msgstr "HTTP 路由"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__has_draft_children
-msgid "Has Draft Children"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__has_remaining_amount
-msgid "Has Remaining Amount"
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__has_multiple_providers
+msgid "Has Multiple Providers"
 msgstr ""
 
 #. module: payment
@@ -803,28 +760,62 @@ msgid "Help Message"
 msgstr "幫助訊息"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__id
+#: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__paypal_user_type__new_user
+msgid "I don't have a Paypal account"
+msgstr "我沒有 Paypal帳戶"
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__paypal_user_type__existing_user
+msgid "I have a Paypal account"
+msgstr "我有一個 Paypal帳戶"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__id
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__id
-#: model:ir.model.fields,field_description:payment.field_payment_method__id
 #: model:ir.model.fields,field_description:payment.field_payment_provider__id
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__id
 #: model:ir.model.fields,field_description:payment.field_payment_token__id
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: payment
-#. odoo-javascript
+#: model:ir.model.fields,help:payment.field_payment_link_wizard__payment_provider_selection
+msgid ""
+"If a specific payment provider is selected, customers will only be allowed "
+"to pay via this one. If 'All' is selected, customers can pay via any "
+"available payment provider."
+msgstr ""
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "If not defined, the provider name will be used."
+msgstr ""
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "If the payment hasn't been confirmed you can contact us."
 msgstr "如果付款尚未確認，您可以聯繫我們。"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__image
+#: model_terms:ir.ui.view,arch_db:payment.payment_methods
+msgid ""
+"If you believe that it is an error, please contact the website "
+"administrator."
+msgstr "如果您認為這是一個錯誤，請聯繫網站管理員。"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__image
 #: model:ir.model.fields,field_description:payment.field_payment_provider__image_128
 msgid "Image"
-msgstr "圖片"
+msgstr "圖像"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__image_payment_form
+msgid "Image displayed on the payment form"
+msgstr "在付款表單上顯示的圖像"
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__state
@@ -832,8 +823,6 @@ msgid ""
 "In test mode, a fake payment is processed through a test payment interface.\n"
 "This mode is advised when setting up the provider."
 msgstr ""
-"在測試模式中，會以測試的付款介面處理一筆模擬付款。\n"
-"建議在設置付款服務商時，使用此模式測試。"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__inline_form_view_id
@@ -857,16 +846,11 @@ msgid "Installed"
 msgstr "已安裝"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "Internal server error"
 msgstr "內部伺服器錯誤"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__is_amount_to_capture_valid
-msgid "Is Amount To Capture Valid"
-msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__is_post_processed
@@ -874,16 +858,16 @@ msgid "Is Post-processed"
 msgstr "是否後處理"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__is_primary
-msgid "Is Primary Payment Method"
-msgstr ""
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_form_templates.xml:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "It is currently linked to the following documents:"
 msgstr "它目前連接到以下文件："
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__just_done
+msgid "Just done"
+msgstr "完成"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__landing_route
@@ -896,14 +880,23 @@ msgid "Language"
 msgstr "語言"
 
 #. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_provider____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_token____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_transaction____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__last_state_change
 msgid "Last State Change Date"
 msgstr "最後狀態更改日期"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__write_uid
+#: model:ir.model.fields,field_description:payment.field_payment_icon__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__write_uid
-#: model:ir.model.fields,field_description:payment.field_payment_method__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_token__write_uid
@@ -912,9 +905,8 @@ msgid "Last Updated by"
 msgstr "最後更新者"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__write_date
+#: model:ir.model.fields,field_description:payment.field_payment_icon__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__write_date
-#: model:ir.model.fields,field_description:payment.field_payment_method__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_token__write_date
@@ -923,12 +915,6 @@ msgid "Last Updated on"
 msgstr "最後更新於"
 
 #. module: payment
-#: model:onboarding.onboarding.step,button_text:payment.onboarding_onboarding_step_payment_provider
-msgid "Let's do it"
-msgstr "立即開始"
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -937,9 +923,9 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.portal_my_home_payment
-msgid "Manage your payment methods"
-msgstr "管理您的付款方式"
+#: model_terms:ir.ui.view,arch_db:payment.pay_meth_link
+msgid "Manage payment methods"
+msgstr "管理付款條件"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__manual
@@ -949,7 +935,7 @@ msgstr "手動"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_manual_capture
 msgid "Manual Capture Supported"
-msgstr "支援人手收款"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__maximum_amount
@@ -957,14 +943,14 @@ msgid "Maximum Amount"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__available_amount
-msgid "Maximum Capture Allowed"
-msgstr ""
-
-#. module: payment
 #: model:payment.provider,name:payment.payment_provider_mercado_pago
 msgid "Mercado Pago"
 msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_seller_account
+msgid "Merchant Account ID"
+msgstr "商戶帳戶 ID"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__state_message
@@ -988,10 +974,16 @@ msgid "Mollie"
 msgstr "Mollie"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__name
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Multiple payment options selected"
+msgstr "選擇了多種付款方式"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__name
 #: model:ir.model.fields,field_description:payment.field_payment_provider__name
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_search
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Name"
 msgstr "名稱"
@@ -1002,7 +994,6 @@ msgid "No Provider Set"
 msgstr "無服務商"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid ""
@@ -1011,16 +1002,28 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_method
-msgid "No payment methods found for your payment providers."
-msgstr ""
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "No payment has been processed."
+msgstr "未處理任何付款。"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_token.py:0
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
 #, python-format
-msgid "No token can be assigned to the public partner."
-msgstr ""
+msgid "No payment option selected"
+msgstr "未選擇付款方式"
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__not_done
+msgid "Not done"
+msgstr "尚未完成"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "Not verified"
+msgstr "未驗證"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__module_to_buy
@@ -1033,19 +1036,12 @@ msgid "Offline payment by token"
 msgstr "密鑰離線支付"
 
 #. module: payment
-#: model:ir.model,name:payment.model_onboarding_onboarding_step
-msgid "Onboarding Step"
-msgstr "新手簡介步驟"
-
-#. module: payment
-#: model:onboarding.onboarding.step,step_image_alt:payment.onboarding_onboarding_step_payment_provider
-msgid "Onboarding Step Image"
-msgstr "新手簡介步驟圖片"
-
-#. module: payment
-#: model:onboarding.onboarding.step,title:payment.onboarding_onboarding_step_payment_provider
-msgid "Online Payments"
-msgstr "網上付款"
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+#, python-format
+msgid "Ok"
+msgstr "確定"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__online_direct
@@ -1063,21 +1059,24 @@ msgid "Online payment with redirection"
 msgstr "帶重定向的線上支付"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Only administrators can access this data."
 msgstr "只有系統管理員可以存取此筆資料。"
 
 #. module: payment
-#. odoo-python
+#: code:addons/payment/models/payment_transaction.py:0
+#, python-format
+msgid "Only authorized transactions can be captured."
+msgstr "只能抓取授權交易。"
+
+#. module: payment
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Only authorized transactions can be voided."
 msgstr "只有授權交易才能作廢。"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Only confirmed transactions can be refunded."
@@ -1089,21 +1088,9 @@ msgid "Operation"
 msgstr "製程"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid "Operation not supported."
-msgstr "不支援該操作。"
-
-#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__other
 msgid "Other"
 msgstr "其他"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Other payment methods"
-msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_pdt_token
@@ -1111,8 +1098,6 @@ msgid "PDT Identity Token"
 msgstr "PDT 標識 Token"
 
 #. module: payment
-#: model:ir.model.fields.selection,name:payment.selection__payment_method__support_refund__partial
-#: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_manual_capture__partial
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_refund__partial
 msgid "Partial"
 msgstr "部分"
@@ -1131,22 +1116,16 @@ msgid "Partner Name"
 msgstr "合作夥伴名稱"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
+#: model_terms:ir.ui.view,arch_db:payment.checkout
 msgid "Pay"
 msgstr "付款"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__paypal
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__paypal
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__paypal
 #: model:payment.provider,name:payment.payment_provider_paypal
 msgid "PayPal"
 msgstr "PayPal"
-
-#. module: payment
-#: model:ir.model,name:payment.model_payment_capture_wizard
-msgid "Payment Capture Wizard"
-msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_token__payment_details
@@ -1164,6 +1143,17 @@ msgid "Payment Form"
 msgstr "付款表单"
 
 #. module: payment
+#: model:ir.model,name:payment.model_payment_icon
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
+msgid "Payment Icon"
+msgstr "支付圖示"
+
+#. module: payment
+#: model:ir.actions.act_window,name:payment.action_payment_icon
+msgid "Payment Icons"
+msgstr "支付圖示"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__manual_post_msg
 msgid "Payment Instructions"
 msgstr "支付說明"
@@ -1174,40 +1164,30 @@ msgid "Payment Link"
 msgstr "付款連結"
 
 #. module: payment
-#: model:ir.model,name:payment.model_payment_method
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__payment_method
-#: model:ir.model.fields,field_description:payment.field_payment_token__payment_method_id
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__payment_method_id
-#: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
 msgid "Payment Method"
 msgstr "付款方法"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__payment_method_code
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__payment_method_code
-msgid "Payment Method Code"
-msgstr ""
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_provider.py:0
-#: model:ir.actions.act_window,name:payment.action_payment_method
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-#, python-format
-msgid "Payment Methods"
-msgstr "付款方式"
-
-#. module: payment
 #: model:ir.model,name:payment.model_payment_provider
 msgid "Payment Provider"
-msgstr "支付提供商"
+msgstr ""
 
 #. module: payment
 #: model:ir.actions.act_window,name:payment.action_payment_provider
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_list
 msgid "Payment Providers"
-msgstr "支付提供商"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__available_provider_ids
+msgid "Payment Providers Available"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__description
+msgid "Payment Ref"
+msgstr "付款编号"
 
 #. module: payment
 #: model:ir.model,name:payment.model_payment_token
@@ -1250,22 +1230,9 @@ msgid "Payment Transactions Linked To Token"
 msgstr "與密鑰相關的支付交易"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_token.py:0
 #, python-format
 msgid "Payment details saved on %(date)s"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.portal_my_home_payment
-msgid "Payment methods"
-msgstr "付款方式"
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#, python-format
-msgid "Payment processing failed"
 msgstr ""
 
 #. module: payment
@@ -1284,6 +1251,25 @@ msgid "Payments"
 msgstr "付款"
 
 #. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Payments failed"
+msgstr "付款失敗"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Payments received"
+msgstr "付款已收到"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_user_type
+msgid "Paypal User Type"
+msgstr "Paypal用戶類型"
+
+#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__state__pending
 msgid "Pending"
 msgstr "暫停"
@@ -1299,35 +1285,31 @@ msgid "Phone"
 msgstr "電話"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
 #, python-format
-msgid "Please make sure that %(payment_method)s is supported by %(provider)s."
-msgstr ""
+msgid "Please select a payment option."
+msgstr "請選擇付款方式。"
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Please select only one payment option."
+msgstr "請僅選擇一種付款方式。"
+
+#. module: payment
 #: code:addons/payment/wizards/payment_link_wizard.py:0
 #, python-format
-msgid "Please set a positive amount."
-msgstr ""
+msgid "Please set an amount smaller than %s."
+msgstr "請設置小於 %s 的金額。"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_link_wizard.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Please set an amount lower than %s."
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.company_mismatch_warning
-msgid "Please switch to company"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__primary_payment_method_id
-msgid "Primary Payment Method"
-msgstr ""
+msgid "Please wait ..."
+msgstr "請稍候..."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.confirm
@@ -1335,7 +1317,6 @@ msgid "Processed by"
 msgstr "處理人"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__provider_id
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_id
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_search
@@ -1344,28 +1325,26 @@ msgid "Provider"
 msgstr "服務商"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__provider_code
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_code
-msgid "Provider Code"
-msgstr ""
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_token__provider_ref
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_reference
 msgid "Provider Reference"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__provider_ids
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
+#: model:ir.model.fields,field_description:payment.field_payment_icon__provider_ids
 msgid "Providers"
 msgstr "服務商"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
+msgid "Providers list"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__is_published
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_kanban
 msgid "Published"
-msgstr "已發佈"
+msgstr "已公開"
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_razorpay
@@ -1373,7 +1352,13 @@ msgid "Razorpay"
 msgstr ""
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Reason:"
+msgstr "原因："
+
+#. module: payment
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Reason: %s"
@@ -1385,12 +1370,8 @@ msgid "Redirect Form Template"
 msgstr "重定向表單模板"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__reference
 #: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.pay
-#, python-format
 msgid "Reference"
 msgstr "編號"
 
@@ -1400,7 +1381,6 @@ msgid "Reference must be unique!"
 msgstr "引用必須唯一!"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__refund
 #, python-format
@@ -1408,16 +1388,9 @@ msgid "Refund"
 msgstr "折讓"
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_refund
-msgid ""
-"Refund is a feature allowing to refund customers directly from the payment "
-"in Odoo."
-msgstr ""
-
-#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
 msgid "Refunds"
-msgstr "折讓"
+msgstr "退款"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__refunds_count
@@ -1435,38 +1408,23 @@ msgid "Related Document Model"
 msgstr "相關的單據模型"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__require_currency
-msgid "Require Currency"
-msgstr ""
-
-#. module: payment
 #: model:payment.provider,name:payment.payment_provider_sepa_direct_debit
 msgid "SEPA Direct Debit"
-msgstr "SEPA 直接扣賬"
+msgstr "SEPA 直接借記"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Save"
-msgstr "儲存"
+#: model_terms:ir.ui.view,arch_db:payment.manage
+msgid "Save Payment Method"
+msgstr "儲存付款方式"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Select countries. Leave empty to allow any."
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+msgid "Save my payment details"
+msgstr "儲存我的付款詳情"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Select countries. Leave empty to make available everywhere."
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "Select currencies. Leave empty not to restrict any."
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Select currencies. Leave empty to allow any."
 msgstr ""
 
 #. module: payment
@@ -1475,10 +1433,27 @@ msgid "Selected onboarding payment method"
 msgstr "選擇付款方式"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__sequence
+#: model:ir.model.fields,field_description:payment.field_payment_icon__sequence
 #: model:ir.model.fields,field_description:payment.field_payment_provider__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "序號"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Server Error"
+msgstr "伺服器錯誤"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Server error:"
+msgstr "伺服器錯誤:"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_allow_express_checkout
@@ -1511,6 +1486,11 @@ msgid "Show Done Msg"
 msgstr "顯示完成消息"
 
 #. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__show_payment_icon_ids
+msgid "Show Payment Icon"
+msgstr "顯示付款圖示"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_pending_msg
 msgid "Show Pending Msg"
 msgstr "顯示待處理消息"
@@ -1526,22 +1506,6 @@ msgid "Sips"
 msgstr "Sips"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
-#, python-format
-msgid "Skip"
-msgstr "跳過"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_capture_wizard.py:0
-#, python-format
-msgid ""
-"Some of the transactions you intend to capture can only be captured in full."
-" Handle the transactions individually to capture a partial amount."
-msgstr "你打算收款的交易中，有部份只能作全額收款。若要進行未足額收款，請分開處理個別交易。"
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__source_transaction_id
 msgid "Source Transaction"
 msgstr "來源交易"
@@ -1555,15 +1519,15 @@ msgid "State"
 msgstr "狀態"
 
 #. module: payment
+#: model:ir.model.fields,field_description:payment.field_res_company__payment_provider_onboarding_state
+msgid "State of the onboarding payment provider step"
+msgstr ""
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__state
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_search
 msgid "Status"
 msgstr "狀態"
-
-#. module: payment
-#: model:onboarding.onboarding.step,done_text:payment.onboarding_onboarding_step_payment_provider
-msgid "Step Completed!"
-msgstr "步驟已完成!"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__stripe
@@ -1572,66 +1536,27 @@ msgid "Stripe"
 msgstr "Stripe"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__support_partial_capture
-msgid "Support Partial Capture"
-msgstr "支援未足額收款"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__supported_country_ids
-msgid "Supported Countries"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__supported_currency_ids
-msgid "Supported Currencies"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__payment_method_ids
-msgid "Supported Payment Methods"
-msgstr ""
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Supported by"
-msgstr ""
+#: model:ir.model.fields,field_description:payment.field_payment_provider__payment_icon_ids
+msgid "Supported Payment Icons"
+msgstr "支援的支付圖示"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__state__test
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.manage
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Test Mode"
 msgstr "測試模式"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid "The access token is invalid."
 msgstr "存取代碼(token)無效。"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_capture_wizard.py:0
-#, python-format
-msgid "The amount to capture must be positive and cannot be superior to %s."
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__image
-#: model:ir.model.fields,help:payment.field_payment_method__image_payment_form
-msgid "The base image used for this payment method; in a 64x64 px format."
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__brand_ids
-msgid ""
-"The brands of the payment methods that will be displayed on the payment "
-"form."
-msgstr ""
-
-#. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__child_transaction_ids
-msgid "The child transactions of the transaction."
+msgid "The child transactions of the source transaction."
 msgstr ""
 
 #. module: payment
@@ -1657,25 +1582,15 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_provider__available_currency_ids
-msgid ""
-"The currencies available with this payment provider. Leave empty not to "
-"restrict any."
+#: model:ir.model.fields,help:payment.field_payment_transaction__fees
+msgid "The fees amount; set by the system as it depends on the provider"
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "The following fields must be filled: %s"
 msgstr "必須填寫以下欄位：%s"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/controllers/portal.py:0
-#, python-format
-msgid "The following kwargs are not whitelisted: %s"
-msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__reference
@@ -1683,24 +1598,8 @@ msgid "The internal reference of the transaction"
 msgstr "交易編號"
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__supported_country_ids
-msgid ""
-"The list of countries in which this payment method can be used (if the "
-"provider allows it). In other countries, this payment method is not "
-"available to customers."
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__supported_currency_ids
-msgid ""
-"The list of currencies for that are supported by this payment method (if the"
-" provider allows it). When paying with another currency, this payment method"
-" is not available to customers."
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__provider_ids
-msgid "The list of providers supporting this payment method."
+#: model:ir.model.fields,help:payment.field_payment_icon__provider_ids
+msgid "The list of providers supporting this payment icon"
 msgstr ""
 
 #. module: payment
@@ -1744,7 +1643,6 @@ msgid "The message displayed to explain and help the payment process"
 msgstr "顯示的消息解釋和幫助支付過程"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid ""
@@ -1752,25 +1650,13 @@ msgid ""
 msgstr "付款應該是直接的、重定向的或通過密鑰進行的。"
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__primary_payment_method_id
-msgid ""
-"The primary payment method of the current payment method, if the latter is a brand.\n"
-"For example, \"Card\" is the primary payment method of the card brand \"VISA\"."
-msgstr ""
-
-#. module: payment
 #: model:ir.model.fields,help:payment.field_payment_token__provider_ref
-msgid "The provider reference of the token of the transaction."
+msgid "The provider reference of the token of the transaction"
 msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__provider_reference
 msgid "The provider reference of the transaction"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__image_payment_form
-msgid "The resized image displayed on the payment form."
 msgstr ""
 
 #. module: payment
@@ -1780,22 +1666,15 @@ msgstr "交易後用戶被重定向到的路由"
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__source_transaction_id
-msgid "The source transaction of the related child transactions"
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__code
-#: model:ir.model.fields,help:payment.field_payment_token__payment_method_code
-#: model:ir.model.fields,help:payment.field_payment_transaction__payment_method_code
-msgid "The technical code of this payment method."
-msgstr ""
+msgid "The source transaction of related refund transactions"
+msgstr "關聯退款交易的來源交易"
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__code
 #: model:ir.model.fields,help:payment.field_payment_token__provider_code
 #: model:ir.model.fields,help:payment.field_payment_transaction__provider_code
 msgid "The technical code of this payment provider."
-msgstr "此付款服務商的技術代碼。"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__redirect_form_view_id
@@ -1823,7 +1702,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -1832,7 +1710,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -1841,7 +1718,6 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -1850,21 +1726,15 @@ msgid ""
 msgstr ""
 
 #. module: payment
+#: code:addons/payment/wizards/payment_link_wizard.py:0
+#, python-format
+msgid "The value of the payment amount must be positive."
+msgstr "付款金額的值必須為正數。"
+
+#. module: payment
 #: model_terms:ir.actions.act_window,help:payment.action_payment_transaction
 msgid "There are no transactions to show"
 msgstr "沒有交易可顯示"
-
-#. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_token
-msgid "There is no token created yet."
-msgstr ""
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_link_wizard.py:0
-#, python-format
-msgid "There is nothing to be paid."
-msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
@@ -1872,16 +1742,6 @@ msgid "There is nothing to pay."
 msgstr "沒有須付款項目。"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid ""
-"This action will also archive %s tokens that are registered with this "
-"payment method. Archiving tokens is irreversible."
-msgstr ""
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid ""
@@ -1906,29 +1766,35 @@ msgid ""
 msgstr ""
 
 #. module: payment
+#: model:ir.model.fields,help:payment.field_payment_icon__image
+#: model:ir.model.fields,help:payment.field_payment_icon__image_payment_form
+msgid ""
+"This field holds the image used for this payment icon, limited to 64x64 px"
+msgstr "此欄位包含用於此付款圖示的圖像，限制為 64x64 像素"
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
 msgid ""
-"This partner has no email, which may cause issues with some payment providers.\n"
-"                     Setting an email for this partner is advised."
+"This partner has no email, which may cause issues with some payment "
+"providers. Setting an email for this partner is advised."
 msgstr ""
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid ""
-"This payment method needs a partner in crime; you should enable a payment "
-"provider supporting this method first."
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "This payment method has been verified by our system."
+msgstr "此付款方式已通過我們的系統驗證。"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_transaction.py:0
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "This payment method has not been verified by our system."
+msgstr "我們的系統尚未驗證此付款方式。"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid ""
-"This transaction has been confirmed following the processing of its partial "
-"capture and partial void transactions (%(provider)s)."
-msgstr "交易的未足額收款及未足額取消交易，已完成處理（服務商：%(provider)s），整項交易現予確認。"
+msgid "This transaction has been cancelled."
+msgstr "該交易已被取消。"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__token_inline_form_view_id
@@ -1936,25 +1802,11 @@ msgid "Token Inline Form Template"
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_tokenization
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_tokenization
 msgid "Tokenization Supported"
 msgstr "Tokenization Supported"
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_tokenization
-msgid ""
-"Tokenization is the process of saving the payment details as a token that "
-"can later be reused without having to enter the payment details again."
-msgstr ""
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__transaction_ids
-msgid "Transaction"
-msgstr "交易"
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
@@ -1963,19 +1815,20 @@ msgid ""
 msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_refund
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_refund
 msgid "Type of Refund Supported"
 msgstr "支持的退款類型"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Unable to contact the server. Please wait."
-msgstr ""
+msgid "Unable to contact the Odoo server."
+msgstr "無法連接到Odoo伺服器。"
 
 #. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.manage
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_kanban
 msgid "Unpublished"
 msgstr "未公開"
@@ -1992,9 +1845,25 @@ msgid "Validation of the payment method"
 msgstr "驗證付款方式"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__void_remaining_amount
-msgid "Void Remaining Amount"
-msgstr ""
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_dom_var
+msgid "Variable domestic fees (in percents)"
+msgstr "動態內部費用(百分比)"
+
+#. module: payment
+#: code:addons/payment/models/payment_provider.py:0
+#, python-format
+msgid "Variable fees must always be positive and below 100%."
+msgstr "可變費用必須始終為正且低於 100%。"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_int_var
+msgid "Variable international fees (in percents)"
+msgstr "可變的交易費用（百分比）"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_token__verified
+msgid "Verified"
+msgstr "已驗證"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
@@ -2002,38 +1871,66 @@ msgid "Void Transaction"
 msgstr "無效交易"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#: code:addons/payment/models/payment_method.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Waiting for payment"
+msgstr "等待付款"
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "Warning"
 msgstr "警告"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__warning_message
-msgid "Warning Message"
-msgstr "警告訊息"
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Warning!"
 msgstr "警告！"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#, python-format
+msgid "We are not able to delete your payment method."
+msgstr "我們無法刪除您的付款方式。"
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "We are not able to find your payment, but don't worry."
 msgstr "我們找不到您的付款，但別擔心。"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "We are not able to process your payment."
+msgstr "我們無法處理您的付款。"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#, python-format
+msgid "We are not able to save your payment method."
+msgstr "我們無法儲存您的付款方式。"
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/js/post_processing.js:0
 #, python-format
-msgid "We are processing your payment. Please wait."
+msgid "We are processing your payment, please wait ..."
+msgstr "我們正在處理您的付款，請稍候..."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "We are waiting for the payment provider to confirm the payment."
 msgstr ""
 
 #. module: payment
@@ -2042,12 +1939,6 @@ msgid ""
 "Whether a payment token should be created when post-processing the "
 "transaction"
 msgstr "交易後處理時是否應建立支付密鑰"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_capture_wizard__support_partial_capture
-msgid ""
-"Whether each of the transactions' provider supports the partial capture."
-msgstr "是否全部交易服務商，都支援未足額收款。"
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__callback_is_done
@@ -2067,35 +1958,60 @@ msgid "Wire Transfer"
 msgstr "電匯"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_provider.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "You cannot delete the payment provider %s; archive it instead."
-msgstr ""
+msgid "You can click here to be redirected to the confirmation page."
+msgstr "您可以點選這裡然後被重導向到確認頁面。"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "You cannot publish a disabled provider."
 msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid "You do not have access to this payment token."
 msgstr ""
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "You should receive an email confirming your payment in a few minutes."
 msgstr "您應該在幾分鐘內收到一封確認付款的電子信件。"
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "You will be notified when the payment is confirmed."
+msgstr "付款確認後會通知您。"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "You will be notified when the payment is fully confirmed."
+msgstr "付款完全確認後，會通知您。"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your order has been processed."
+msgstr "您的訂單已經處理完畢。"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your order is being processed, please wait ..."
+msgstr "您的訂單正在處理中，請稍候…"
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_aps
@@ -2117,7 +2033,6 @@ msgid "Your payment has been authorized."
 msgstr "您的付款已獲授權。"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_aps
@@ -2139,7 +2054,13 @@ msgid "Your payment has been cancelled."
 msgstr "您的付款已被取消。"
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your payment has been received but need to be confirmed manually."
+msgstr "您的付款已經收到，但需要手工確認。"
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_aps
@@ -2161,7 +2082,6 @@ msgid ""
 msgstr "您的付款已成功處理，但正在等待批准。"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,done_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,done_msg:payment.payment_provider_aps
@@ -2179,8 +2099,8 @@ msgstr "您的付款已成功處理，但正在等待批准。"
 #: model_terms:payment.provider,done_msg:payment.payment_provider_stripe
 #: model_terms:payment.provider,done_msg:payment.payment_provider_transfer
 #, python-format
-msgid "Your payment has been successfully processed."
-msgstr ""
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr "交易完成，您的線上付款已成功處理完畢。 感謝您的訂購。"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
@@ -2188,19 +2108,26 @@ msgid "Your payment has not been processed yet."
 msgstr ""
 
 #. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your payment is in pending state."
+msgstr "您的付款處於待處理狀態。"
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
 msgid "ZIP"
-msgstr "郵遞區號"
+msgstr "郵編"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_zip
 msgid "Zip"
-msgstr "郵遞區號"
+msgstr "郵政編碼"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "danger"
-msgstr "危險"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
@@ -2208,12 +2135,9 @@ msgid "info"
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
-msgid "payment method"
-msgstr ""
-
-#. module: payment
 #: model:ir.actions.server,name:payment.cron_post_process_payment_tx_ir_actions_server
+#: model:ir.cron,cron_name:payment.cron_post_process_payment_tx
+#: model:ir.cron,name:payment.cron_post_process_payment_tx
 msgid "payment: post-process transactions"
 msgstr "付款：後處理交易"
 
@@ -2224,15 +2148,23 @@ msgid "provider"
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.transaction_status
-msgid "success"
+#: model:ir.model.fields,field_description:payment.field_payment_token__provider_id
+msgid "provider Account"
 msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.company_mismatch_warning
-msgid ""
-"to make this\n"
-"                    payment."
+#: model_terms:ir.ui.view,arch_db:payment.icon_list
+msgid "show less"
+msgstr "顯示部分"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.icon_list
+msgid "show more"
+msgstr "顯示更多"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.transaction_status
+msgid "success"
 msgstr ""
 
 #. module: payment

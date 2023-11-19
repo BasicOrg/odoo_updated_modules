@@ -10,12 +10,10 @@
 Notify that a matching sale order exists in the reconciliation widget.
     """,
     'depends': ['sale', 'account_accountant'],
+    'data': [
+        'views/bank_rec_widget_views.xml',
+    ],
     'installable': True,
     'auto_install': True,
     'license': 'OEEL-1',
-    'assets': {
-        'web.assets_backend': [
-            'sale_account_accountant/static/src/components/**/*',
-        ],
-    },
 }

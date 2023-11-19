@@ -89,6 +89,9 @@ class TestProjectBilling(TestCommonSaleTimesheet):
             'employee_id': cls.employee_user.id,
         })
 
+        cls.project_task_rate = cls.env['project.project'].search([('sale_line_id', '=', cls.so2_line_deliver_project_task.id)], limit=1)
+        cls.project_task_rate2 = cls.env['project.project'].search([('sale_line_id', '=', cls.so2_line_deliver_project_template.id)], limit=1)
+
     def test_make_billable_at_task_rate(self):
         """ Starting from a non billable project, make it billable at task rate """
         Timesheet = self.env['account.analytic.line']
@@ -102,7 +105,7 @@ class TestProjectBilling(TestCommonSaleTimesheet):
         task = Task.with_context(default_project_id=self.project_non_billable.id).create({
             'name': 'first task',
             'partner_id': self.project_non_billable.partner_id.id,
-            'allocated_hours': 10,
+            'planned_hours': 10,
         })
         timesheet1 = Timesheet.create({
             'name': 'Test Line',
@@ -160,7 +163,7 @@ class TestProjectBilling(TestCommonSaleTimesheet):
         task = Task.with_context(default_project_id=self.project_non_billable.id).create({
             'name': 'first task',
             'partner_id': self.project_non_billable.partner_id.id,
-            'allocated_hours': 10,
+            'planned_hours': 10,
         })
         timesheet1 = Timesheet.create({
             'name': 'Test Line',
@@ -262,15 +265,14 @@ class TestProjectBilling(TestCommonSaleTimesheet):
         self.assertEqual(self.project_employee_rate_manager.project_id, timesheet1.project_id, "The timesheet should be linked to the project of the map entry")
 
         # create a subtask
-        subtask = Task.create({
+        subtask = Task.with_context(default_project_id=self.project_subtask.id).create({
             'name': 'first subtask task',
             'parent_id': task.id,
-            'project_id': self.project_subtask.id,
         })
 
         self.assertFalse(subtask.allow_billable, "Subtask in non billable project should be non billable too")
         self.assertFalse(subtask.project_id.allow_billable, "The subtask project is non billable even if the subtask is")
-        self.assertFalse(subtask.partner_id, "Subtask in non billable project should not have a customer")
+        self.assertEqual(subtask.partner_id, subtask.parent_id.partner_id, "Subtask should have the same customer as the one from their mother")
 
         # log timesheet on subtask
         timesheet2 = Timesheet.create({
@@ -294,12 +296,12 @@ class TestProjectBilling(TestCommonSaleTimesheet):
         self.assertEqual(task.sale_line_id, self.so1_line_deliver_no_task, "The task should keep the same SOL since the partner_id has not changed when the project of the task has changed.")
         self.assertEqual(task.partner_id, self.partner_a, "Task created in a project billed on 'employee rate' should have the same customer when it has been created.")
         # the `subtask.sale_line_id` is consider to be recompute,
-        # but the result differ after the write of project_id without depend on it
+        # but the result differ after the write of display_project_id without depend on it
         task.flush_model(["sale_line_id"])
 
         # move subtask into task rate project
         subtask.write({
-            'project_id': self.project_task_rate2.id,
+            'display_project_id': self.project_task_rate2.id,
         })
 
         self.assertTrue(subtask.allow_billable, "Subtask should keep the billable type from its parent, even when they are moved into another project")
@@ -365,20 +367,20 @@ class TestProjectBilling(TestCommonSaleTimesheet):
         subtask = Task.with_context(default_project_id=self.project_task_rate.id).create({
             'name': 'first subtask task',
             'parent_id': task.id,
-            'project_id': self.project_subtask.id,
+            'display_project_id': self.project_subtask.id,
         })
 
-        self.assertFalse(subtask.partner_id, "Subtask should not have the customer if it's project is not billable")
+        self.assertEqual(subtask.partner_id, subtask.parent_id.partner_id, "Subtask should have the same customer as the one from their mother")
 
         # log timesheet on subtask
         timesheet2 = Timesheet.create({
             'name': 'Test Line on subtask',
-            'project_id': subtask.project_id.id,
+            'project_id': subtask.display_project_id.id,
             'task_id': subtask.id,
             'unit_amount': 50,
             'employee_id': self.employee_user.id,
         })
-        self.assertEqual(subtask.project_id, timesheet2.project_id, "The timesheet is in the subtask project")
+        self.assertEqual(subtask.display_project_id, timesheet2.project_id, "The timesheet is in the subtask project")
         self.assertFalse(timesheet2.so_line, "The timesheet should not be linked to SOL as it's a non billable project")
         # the `subtask.sale_line_id` is consider to be recompute,
         # but the result differ after the write of project_id
@@ -389,7 +391,7 @@ class TestProjectBilling(TestCommonSaleTimesheet):
             'project_id': self.project_employee_rate.id,
         })
         subtask.write({
-            'project_id': self.project_employee_rate.id,
+            'display_project_id': self.project_employee_rate.id,
         })
 
         self.assertEqual(task.sale_line_id, self.project_task_rate.sale_line_id, "Task moved in a employee rate billable project should keep its SOL because the partner_id has not changed too.")
@@ -444,8 +446,8 @@ class TestProjectBilling(TestCommonSaleTimesheet):
             # As the behavior of the test is to check the partner on the project
             # is set to the partner of the order line, temporary make the field visible
             # even if it's not the case in the reality, in the web client
-            # not allow_billable or not partner_id
-            project_form._view['modifiers']['sale_line_employee_ids']['invisible'] = 'False'
+            # {'invisible': ['|', ('allow_billable', '=', False), ('partner_id', '=', False)]}
+            project_form._view['modifiers']['sale_line_employee_ids']['invisible'] = False
             with project_form.sale_line_employee_ids.new() as mapping_form:
                 mapping_form.employee_id = self.employee_manager
                 mapping_form.sale_line_id = self.so.order_line[:1]

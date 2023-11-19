@@ -51,5 +51,6 @@ class HrContract(models.Model):
                 min(end_dt, pytz.utc.localize(planning_slot.end_datetime)),
                 planning_slot))
         mapped_intervals = {r: WorkIntervals(intervals[r]) for r in resource_ids}
-        mapped_intervals.update(super()._get_attendance_intervals(start_dt, end_dt))
+        mapped_intervals.update(super(HrContract, self - planning_based_contracts)._get_attendance_intervals(
+            start_dt, end_dt))
         return mapped_intervals

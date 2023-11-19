@@ -1,36 +1,35 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* hr_contract_reports
-#
+# 
 # Translators:
-# Jan Horzinka <jan.horzinka@centrum.cz>, 2022
-# karolína schusterová <karolina.schusterova@vdp.sk>, 2022
-# Martin Trigaux, 2022
-# Jiří Podhorecký, 2022
-#
+# Martin Trigaux, 2019
+# Jan Horzinka <jan.horzinka@centrum.cz>, 2019
+# trendspotter <j.podhorecky@volny.cz>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-17 10:16+0000\n"
-"PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Jiří Podhorecký, 2022\n"
-"Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
-"Language: cs\n"
+"POT-Creation-Date: 2019-09-23 11:38+0000\n"
+"PO-Revision-Date: 2019-08-26 09:36+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>, 2019\n"
+"Language-Team: Czech (https://www.transifex.com/odoo/teams/41243/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__count_employee_exit
 msgid "# Departure Employee"
-msgstr "Počet odešlých zaměstnanců"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__count_new_employee
 msgid "# New Employees"
-msgstr "Počet nových zaměstnanců"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__company_id
@@ -46,7 +45,7 @@ msgstr "Smlouva"
 #. module: hr_contract_reports
 #: model:ir.model,name:hr_contract_reports.model_hr_contract_employee_report
 msgid "Contract and Employee Analysis Report"
-msgstr "Zpráva o analýze smluv a zaměstnanců"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.ui.menu,name:hr_contract_reports.menu_report_contract_employee_all
@@ -61,7 +60,7 @@ msgstr "Datum"
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__date_end_contract
 msgid "Date Last Contract Ended"
-msgstr "Datum ukončení poslední smlouvy"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__department_id
@@ -70,9 +69,15 @@ msgid "Department"
 msgstr "Oddělení"
 
 #. module: hr_contract_reports
-#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__departure_reason_id
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Departure Employees"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__departure_reason
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
 msgid "Departure Reason"
-msgstr "Důvod odchodu"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__display_name
@@ -82,7 +87,7 @@ msgstr "Zobrazované jméno"
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__age_sum
 msgid "Duration Contract"
-msgstr "Trvání smlouvy"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__employee_id
@@ -95,9 +100,13 @@ msgstr "Zaměstnanec"
 #: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_search
-#: model_terms:ir.ui.view,arch_db:hr_contract_reports.hr_contract_employee_report_view_tree
 msgid "Employees Analysis"
-msgstr "Analýza zaměstnanců"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model:ir.model.fields.selection,name:hr_contract_reports.selection__hr_contract_employee_report__departure_reason__fired
+msgid "Fired"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_search
@@ -115,21 +124,86 @@ msgid "Last 365 Days"
 msgstr "Posledních 365 dní"
 
 #. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Last Contract Ended"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report____last_update
+msgid "Last Modified on"
+msgstr "Naposled změněno"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Max Date in Months"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Mean Contract Duration"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Min Date in Months"
+msgstr ""
+
+#. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__start_date_months
 msgid "Months of first date of this month since 01/01/1970"
-msgstr "Měsíce prvního data tohoto měsíce od 01/01/1970"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__end_date_months
 msgid "Months of last date of this month since 01/01/1970"
-msgstr "Měsíce posledního data tohoto měsíce od roku 01/01/1970"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "New Employees"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model:ir.model.fields.selection,name:hr_contract_reports.selection__hr_contract_employee_report__departure_reason__resigned
+msgid "Resigned"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model:ir.model.fields.selection,name:hr_contract_reports.selection__hr_contract_employee_report__departure_reason__retired
+msgid "Retired"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model_terms:ir.actions.act_window,help:hr_contract_reports.contract_employee_report_action
 msgid "This report performs analysis on your contracts."
-msgstr "Tato zpráva provádí analýzu vašich smluv."
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Contract Length"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Contracts"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Employees"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Turnover Rate"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__wage
 msgid "Wage"
 msgstr "Mzda"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "months"
+msgstr "měsíce"

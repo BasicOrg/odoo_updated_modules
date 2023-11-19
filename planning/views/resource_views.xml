@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="resource_resource_form_inherit_resource" model="ir.ui.view">
+        <field name="inherit_id" ref="resource.resource_resource_form" />
+        <field name="model">resource.resource</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='calendar_id']" position="before">
+                <field name="flexible_hours"/>
+            </xpath>
+            <xpath expr="//field[@name='calendar_id']" position="attributes">
+                <attribute name="attrs">{'invisible': [('flexible_hours', '=', True)]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record id="resource_resource_form_tags_view_inherit" model="ir.ui.view">
         <field name="inherit_id" ref="resource.resource_resource_form" />
         <field name="model">resource.resource</field>
@@ -17,7 +30,7 @@
     </record>
 
     <record id="resource_resource_with_employee_form_view_inherit" model="ir.ui.view">
-        <field name="inherit_id" ref="resource.resource_resource_form" />
+        <field name="inherit_id" ref="resource_resource_form_inherit_resource" />
         <field name="model">resource.resource</field>
         <field name="mode">primary</field>
         <field name="priority">70</field>
@@ -37,17 +50,11 @@
         <field name="mode">primary</field>
         <field name="priority">50</field>
         <field name="arch" type="xml">
-            <xpath expr="//form" position="attributes">
-                <attribute name="js_class">resource_form_view</attribute>
-            </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
                 <attribute name="placeholder">e.g. Crane</attribute>
             </xpath>
             <xpath expr="//field[@name='resource_type']" position="before">
                 <field name="color" widget="color_picker" />
-            </xpath>
-            <xpath expr="//field[@name='resource_type']" position="attributes">
-                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>
@@ -59,7 +66,6 @@
         <field name="priority">50</field>
         <field name="arch" type="xml">
             <xpath expr="//tree" position="attributes">
-                <attribute name="js_class">resource_list_view</attribute>
                 <attribute name="editable">bottom</attribute>
                 <attribute name="sample">1</attribute>
             </xpath>
@@ -76,42 +82,36 @@
                 <field name="color" widget="color_picker" optional="hide"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <field name="role_ids" widget="many2many_tags" optional="show" options="{'color_field': 'color'}"/>
-                <field name="default_role_id" optional="show"/>
+                <field name="role_ids" widget="many2many_tags"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
                 <attribute name="placeholder">e.g. Crane</attribute>
             </xpath>
+            <xpath expr="//field[@name='calendar_id']" position="before">
+                <field name="flexible_hours" optional="show"/>
+            </xpath>
         </field>
     </record>
 
-    <record id="resource_resource_search_view_roles" model="ir.ui.view">
-        <field name="name">resource.resource.search.view.roles</field>
+    <record id="view_resource_resource_search_inherit" model="ir.ui.view">
+        <field name="name">resource.resource.view.search.inherit</field>
         <field name="model">resource.resource</field>
-        <field name="mode">primary</field>
         <field name="inherit_id" ref="resource.view_resource_resource_search"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='working_period']" position="before">
-                <field name="role_ids" filter_domain="['|', ('role_ids', 'in', [self]), ('role_ids', '=', False)]"/>
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <filter name="fixed_hours" string="Fixed Hours" domain="[('flexible_hours', '=', False)]" />
+                <filter name="flexible_hours" string="Flexible Hours" domain="[('flexible_hours', '=', True)]" />
                 <separator/>
             </xpath>
         </field>
     </record>
 
     <record id="resource_resource_search_view_inherit" model="ir.ui.view">
-        <field name="inherit_id" ref="resource.view_resource_resource_search"/>
+        <field name="inherit_id" ref="view_resource_resource_search_inherit"/>
         <field name="model">resource.resource</field>
         <field name="mode">primary</field>
         <field name="priority">50</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="default_role_id"/>
-                <field name="role_ids"/>
-            </xpath>
-            <xpath expr="//group/filter[@name='working_period']" position="before">
-                <filter string="Roles" name="role_ids" context="{'group_by': 'role_ids'}"/>
-                <filter string="Default Roles" name="default_role_id" context="{'group_by': 'default_role_id'}"/>
-            </xpath>
             <xpath expr="//field[@name='user_id']" position="replace"/>
             <xpath expr="//field[@name='resource_type']" position="replace"/>
             <xpath expr="//field[@name='company_id']" position="after">
@@ -130,9 +130,6 @@
             <kanban class="o_kanban_dashboard" sample="1">
                 <field name="color" invisible="1" />
                 <templates>
-                    <t t-name="kanban-menu">
-                        <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
-                    </t>
                     <t t-name="kanban-box">
                         <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_record_top">
@@ -140,6 +137,14 @@
                                     <div class="o_kanban_record_title">
                                         <field name="name" />
                                     </div>
+                                </div>
+                            </div>
+                            <div class="o_dropdown_kanban dropdown" groups="planning.group_planning_manager">
+                                <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
                                 </div>
                             </div>
                             <div class="text-truncate">

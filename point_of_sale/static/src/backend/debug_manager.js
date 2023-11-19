@@ -1,15 +1,14 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 
 function runPoSJSTests({ env }) {
     return {
         type: "item",
-        description: _t("Run Point of Sale JS Tests"),
+        description: env._t("Run Point of Sale JS Tests"),
         callback: () => {
             env.services.action.doAction({
-                name: _t("JS Tests"),
+                name: env._t("JS Tests"),
                 target: "new",
                 type: "ir.actions.act_url",
                 url: "/pos/ui/tests?debug=assets",

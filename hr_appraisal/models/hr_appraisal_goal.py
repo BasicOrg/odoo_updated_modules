@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import fields, api, models, _
-from odoo.exceptions import UserError
 from odoo.tools.misc import get_lang
 
 
@@ -16,7 +15,7 @@ class HrAppraisalGoal(models.Model):
         'hr.employee', string="Employee",
         default=lambda self: self.env.user.employee_id, required=True)
     employee_autocomplete_ids = fields.Many2many('hr.employee', compute='_compute_is_manager')
-    company_id = fields.Many2one(related='employee_id.company_id')
+    is_implicit_manager = fields.Boolean(compute='_compute_is_manager', search='_search_is_implicit_manager')
     manager_id = fields.Many2one('hr.employee', string="Manager", compute="_compute_manager_id", readonly=False, store=True, required=True)
     manager_user_id = fields.Many2one('res.users', related='manager_id.user_id')
     progression = fields.Selection(selection=[
@@ -28,28 +27,41 @@ class HrAppraisalGoal(models.Model):
     ], string="Progress", default="000", tracking=True, required=True)
     description = fields.Html()
     deadline = fields.Date(tracking=True)
-    is_manager = fields.Boolean(compute='_compute_is_manager', search='_search_is_manager')
-    tag_ids = fields.Many2many('hr.appraisal.goal.tag', string="Tags")
+    is_manager = fields.Boolean(compute='_compute_is_manager')
 
     @api.depends_context('uid')
     @api.depends('employee_id')
     def _compute_is_manager(self):
-        self.employee_autocomplete_ids = self.env.user.get_employee_autocomplete_ids()
-        self.is_manager =\
-            self.env.user.has_group('hr_appraisal.group_hr_appraisal_user')\
-            or len(self.employee_autocomplete_ids) > 1
+        self.is_manager = self.env.user.has_group('hr_appraisal.group_hr_appraisal_user')
+        for goal in self:
+            if goal.is_manager:
+                goal.is_implicit_manager = False
+                goal.employee_autocomplete_ids = self.env['hr.employee'].search([])
+            else:
+                if not self.env.user.employee_id:
+                    goal.employee_autocomplete_ids = False
+                    goal.is_implicit_manager = False
+                else:
+                    child_ids = self.env.user.employee_id.child_ids
+                    goal.employee_autocomplete_ids = child_ids\
+                        + self.env.user.employee_id\
+                        + self.env['hr.appraisal'].search([]).employee_id
+                    goal.is_implicit_manager = len(goal.employee_autocomplete_ids) > 1
 
-    def _search_is_manager(self, operator, value):
-        if operator not in ('=', '!=') or not isinstance(value, bool):
-            raise UserError(_('Operation not supported'))
-        if self.env.user.has_group('hr_appraisal.group_hr_appraisal_user'):
-            return [(1, '=', 1)]
-        domain_operator = 'not in' if (operator == '=') ^ value else 'in'
-        return [(
-            'employee_id',
-            domain_operator,
-            self.env.user.get_employee_autocomplete_ids().ids
-        )]
+    @api.model
+    def _search_is_implicit_manager(self, operator, value):
+        if operator not in ['=', '!='] or not isinstance(value, bool):
+            raise NotImplementedError(_('Operation not supported'))
+        if not self.env.user.employee_id:
+            managered_appraisal_goals = self.env['hr.appraisal.goal']
+        else:
+            managered_appraisal_goals = self.env['hr.appraisal.goal'].search(
+                [('manager_id', '=', self.env.user.employee_id.id)]
+            )
+
+        if operator == '!=':
+            value = not value
+        return [('id', 'in' if value else 'not in', managered_appraisal_goals.ids)]
 
     @api.depends('employee_id')
     def _compute_manager_id(self):

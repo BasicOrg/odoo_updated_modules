@@ -1,26 +1,24 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from contextlib import contextmanager
 from freezegun import freeze_time
 from unittest.mock import patch
 
-from odoo.addons.mail.tests.common import MockEmail
+from odoo import fields
 from odoo.tests.common import TransactionCase
 
 
-class HelpdeskCommon(TransactionCase, MockEmail):
+class HelpdeskCommon(TransactionCase):
 
     @classmethod
     def setUpClass(cls):
         super(HelpdeskCommon, cls).setUpClass()
-        cls._init_mail_gateway()
         cls.env.user.tz = 'Europe/Brussels'
         cls.env['resource.calendar'].search([]).write({'tz': 'Europe/Brussels'})
 
         # we create a helpdesk user and a manager
         Users = cls.env['res.users'].with_context(tracking_disable=True)
-        cls.main_company_id = cls.env.user.company_id.id
+        cls.main_company_id = cls.env.ref('base.main_company').id
         cls.partner = cls.env['res.partner'].create({
             'name': 'Customer Credee'
         })
@@ -30,8 +28,7 @@ class HelpdeskCommon(TransactionCase, MockEmail):
             'name': 'Helpdesk Manager',
             'login': 'hm',
             'email': 'hm@example.com',
-            'groups_id': [(6, 0, [cls.env.ref('helpdesk.group_helpdesk_manager').id,
-                                  cls.env.ref('base.group_partner_manager').id])],
+            'groups_id': [(6, 0, [cls.env.ref('helpdesk.group_helpdesk_manager').id])],
             'tz': 'Europe/Brussels',
         })
         cls.helpdesk_user = Users.create({

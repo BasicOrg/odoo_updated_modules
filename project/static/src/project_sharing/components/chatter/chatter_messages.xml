@@ -1,6 +1,6 @@
 <templates id="template" xml:space="preserve">
 
-    <t t-name="project.ChatterMessages">
+    <t t-name="project.ChatterMessages" owl="1">
         <div class="o_portal_chatter_messages">
             <t t-foreach="props.messages" t-as="message" t-key="message.id">
                 <div class="d-flex o_portal_chatter_message">
@@ -28,7 +28,7 @@
                         </t>
                         <div class="o_portal_chatter_message_title">
                             <h5 class='mb-1'><t t-out="message.author_id[1]"/></h5>
-                            <p class="o_portal_chatter_puslished_date">Published on <t t-out="message.published_date_str"/></p>
+                            <p class="o_portal_chatter_puslished_date"><t t-out="message.published_date_str"/></p>
                         </div>
                         <t t-out="message.body"/>
                         <div class="o_portal_chatter_attachments">

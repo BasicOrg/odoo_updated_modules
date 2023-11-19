@@ -1,9 +1,10 @@
-/** @odoo-module **/
+odoo.define('mrp_workorder.tourHelper', function (require) {
+'use strict';
 
-import { TourError } from "@web_tour/tour_service/tour_utils";
+var tour = require('web_tour.tour');
 
 function fail(errorMessage) {
-    throw new TourError(errorMessage);
+    tour._consume_tour(tour.running_tour, errorMessage);
 }
 
 function assertIn(item, itemList, info) {
@@ -24,12 +25,12 @@ function assertRainbow(present = false) {
 }
 
 function assertDoneButton(present = false) {
-    const $doneButton = $('button.btn-primary[name=do_finish]');
+    const $doneButton = $('button.btn-primary[name=do_finish');
     assert(Boolean(present ? $doneButton.length : !$doneButton.length), true, 'mark as done check');
 }
 
 function assertQtyToProduce(qty_producing, qty_remaining) {
-    let $qty_producing = $('input[id="qty_producing_0"]');
+    let $qty_producing = $('input[id="qty_producing"]');
     if ($qty_producing.length === 0) {
         $qty_producing = $('div[name="qty_producing"]');
         assert(Number($qty_producing[0].textContent), qty_producing, `wrong quantity done`);
@@ -53,7 +54,7 @@ function assertComponent(name, style, qty_done, qty_remaining) {
         assert($qty_done.length, 1, `no qty_done`);
         assert(Number($qty_done[0].textContent), qty_done, `wrong quantity done`);
     } else {
-        const $qty_done = $('input[id="qty_done_0"]');
+        const $qty_done = $('input[id="qty_done"]');
         assert($qty_done.length, 1, `no qty_done`);
         assert(Number($qty_done[0].value), qty_done, `wrong quantity done`);
     }
@@ -77,7 +78,7 @@ function assertValidatedCheckLength(length) {
     assert(marks.length, length, `There should be "${length}" validated steps`);
 }
 
-export default {
+return {
     assert: assert,
     assertCurrentCheck: assertCurrentCheck,
     assertCheckLength: assertCheckLength,
@@ -88,3 +89,5 @@ export default {
     assertDoneButton: assertDoneButton,
     fail: fail,
 };
+
+});

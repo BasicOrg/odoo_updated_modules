@@ -5,6 +5,7 @@
     'summary': 'Furniture, Toys, Games, Kids, Boys, Girls, Stores',
     'sequence': 130,
     'version': '2.1.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -25,7 +26,6 @@
         'views/snippets/s_features_grid.xml',
         'views/snippets/s_comparisons.xml',
         'views/snippets/s_product_catalog.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/loftspace_description.jpg',
@@ -44,13 +44,8 @@
         'website.library_image_16': '/theme_loftspace/static/src/img/snippets/s_images_wall_04.jpg',
         'website.library_image_13': '/theme_loftspace/static/src/img/snippets/s_images_wall_03.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_three_columns', 's_title', 's_images_wall', 's_call_to_action'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-loftspace.odoo.com',

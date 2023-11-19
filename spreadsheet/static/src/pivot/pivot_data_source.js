@@ -3,9 +3,8 @@
 import { _t } from "@web/core/l10n/translation";
 import { OdooViewsDataSource } from "../data_sources/odoo_views_data_source";
 import { SpreadsheetPivotModel } from "./pivot_model";
-import { Domain } from "@web/core/domain";
 
-export class PivotDataSource extends OdooViewsDataSource {
+export default class PivotDataSource extends OdooViewsDataSource {
     /**
      *
      * @override
@@ -48,16 +47,13 @@ export class PivotDataSource extends OdooViewsDataSource {
                 metadataRepository: this._metadataRepository,
             }
         );
-
-        const userContext = this._orm.user.context;
-        const domain = new Domain(this._initialSearchParams.domain).toList({
-            ...this._initialSearchParams.context,
-            ...userContext,
-        });
-
-        const searchParams = { ...this._initialSearchParams, domain };
-        await model.load(searchParams);
+        await model.load(this._initialSearchParams);
         return model;
+    }
+
+    getReportMeasures() {
+        this._assertDataIsLoaded();
+        return this._model.getReportMeasures();
     }
 
     /**
@@ -145,12 +141,11 @@ export class PivotDataSource extends OdooViewsDataSource {
     /**
      * @param {string} fieldName
      * @param {string} value raw string value
-     * @param {object} locale
      * @returns {string}
      */
-    getGroupByDisplayLabel(fieldName, value, locale) {
+    getGroupByDisplayLabel(fieldName, value) {
         this._assertDataIsLoaded();
-        return this._model.getGroupByDisplayLabel(fieldName, value, locale);
+        return this._model.getGroupByDisplayLabel(fieldName, value);
     }
 
     /**

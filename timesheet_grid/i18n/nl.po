@@ -3,17 +3,17 @@
 # 	* timesheet_grid
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Erwin van der Ploeg <erwin@odooexperts.nl>, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,18 +21,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "%s Spent"
 msgstr "%s Besteed"
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#, python-format
-msgid "+ [A] to add"
-msgstr "+ [A] om toe te voegen"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_kanban
@@ -46,8 +38,17 @@ msgstr "<i class=\"fa fa-play text-success\" title=\"Timer loopt\"/>"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
-msgid "<span class=\"col-auto ms-2\">min</span>"
-msgstr "<span class=\"col-auto ms-2\">min</span>"
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"De waarden die hier worden "
+"ingesteld, zijn bedrijfsspecifiek.\" groups=\"base.group_multi_company\"/>"
+
+#. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
+msgid "<strong>Time Rounding</strong>"
+msgstr "<strong>Tijdafronding</strong>"
 
 #. module: timesheet_grid
 #: model:mail.template,body_html:timesheet_grid.mail_template_timesheet_reminder_user
@@ -60,13 +61,13 @@ msgid ""
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"middle\">\n"
-"                    <span style=\"font-size: 10px;\">Your Timesheets</span><br>\n"
+"                    <span style=\"font-size: 10px;\">Your Timesheets</span><br/>\n"
 "                    <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Abigail Peterson</span>\n"
-"                </td><td valign=\"middle\" align=\"right\" t-if=\"not object.company_id.uses_default_logo\">\n"
-"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\">\n"
+"                </td><td valign=\"middle\" align=\"right\">\n"
+"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\"/>\n"
 "                </td></tr>\n"
 "                <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
-"                  <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                  <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -76,23 +77,23 @@ msgid ""
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
-"                    <t t-set=\"timesheet_hours\" t-value=\"ctx.get('timesheet_hours', 0)\"></t>\n"
-"                    <t t-set=\"working_hours\" t-value=\"ctx.get('working_hours', 0)\"></t>\n"
+"                    <t t-set=\"timesheet_hours\" t-value=\"ctx.get('timesheet_hours', 0)\"/>\n"
+"                    <t t-set=\"working_hours\" t-value=\"ctx.get('working_hours', 0)\"/>\n"
 "                    <div>\n"
-"                        Hello <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br><br>\n"
-"                        This is a friendly reminder to log your hours for the following period: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> <i class=\"fa fa-long-arrow-right\"></i> <t t-out=\"ctx.get('date_stop') or ''\">05/06/2021</t>.\n"
-"                        For the time being, you <t t-if=\"timesheet_hours != 0\">only</t> logged <t t-out=\"'%d' %int(timesheet_hours)\">2</t><t t-if=\"timesheet_hours % 1 != 0\" t-out=\"':%02d' % (round(timesheet_hours % 1 * 60))\">:30</t> hours on the <t t-out=\"'%d' %int(working_hours)\">8</t><t t-if=\"working_hours % 1 != 0\" t-out=\"':%02d' % (round(working_hours % 1 * 60))\">:30</t> requested.<br>\n"
+"                        Hello <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br/><br/>\n"
+"                        This is a friendly reminder to log your hours for the following period: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> <i class=\"fa fa-long-arrow-right\"/> <t t-out=\"ctx.get('date_stop') or ''\">05/06/2021</t>.\n"
+"                        For the time being, you <t t-if=\"timesheet_hours != 0\">only</t> logged <t t-out=\"'%d' %int(timesheet_hours)\">2</t><t t-if=\"timesheet_hours % 1 != 0\" t-out=\"':%02d' % (round(timesheet_hours % 1 * 60))\">:30</t> hours on the <t t-out=\"'%d' %int(working_hours)\">8</t><t t-if=\"working_hours % 1 != 0\" t-out=\"':%02d' % (round(working_hours % 1 * 60))\">:30</t> requested.<br/>\n"
 "                        <div t-if=\"ctx.get('action_url')\" style=\"margin: 16px 0px 16px 0px;\">\n"
 "                            <a t-att-href=\"ctx.get('action_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;\">Fill in your timesheet</a>\n"
 "                        </div>\n"
-"                        <br>Thank you,<br>\n"
+"                        <br/>Thank you,<br/>\n"
 "                        <t t-if=\"user.signature\">\n"
-"                            <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                            <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "                        </t>\n"
 "                    </div>\n"
 "                </td></tr>\n"
 "                <tr><td style=\"text-align:center;\">\n"
-"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -130,47 +131,47 @@ msgid ""
 "</table>\n"
 "            "
 msgstr ""
-"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; breedte: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
 "<tbody>\n"
 "    <!-- HEADER -->\n"
 "    <tr>\n"
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate; \">\n"
 "                <tr><td valign=\"middle\">\n"
-"                    <span style=\"font-size: 10px;\">Je urenstaten</span><br>\n"
-"                    <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Abigail Peterson</span>\n"
-"                </td><td valign=\"middle\" align=\"right\" t-if=\"not object.company_id.uses_default_logo\">\n"
-"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\">\n"
+"                    <span style=\"font-size: 10px;\">Uw urenstaten</span><br/>\n"
+"                    <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name of ''\">Abigail Peterson</span>\n"
+"                </td><td valign=\"middle\" align=\"right\">\n"
+"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\"/>\n"
 "                </td></tr>\n"
 "                <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
-"                  <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                  <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0 ; marge: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
 "    </tr>\n"
-"    <!-- CONTENT -->\n"
+"    <!-- INHOUD -->\n"
 "    <tr>\n"
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate; \">\n"
 "                <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
-"                    <t t-set=\"timesheet_hours\" t-value=\"ctx.get('timesheet_hours', 0)\"></t>\n"
-"                    <t t-set=\"working_hours\" t-value=\"ctx.get('working_hours', 0)\"></t>\n"
+"                    <t t-set=\"timesheet_hours\" t-value=\"ctx.get('timesheet_hours', 0)\"/>\n"
+"                    <t t-set=\"werkuren\" t-value=\"ctx.get('werkuren', 0)\"/>\n"
 "                    <div>\n"
-"                        Hallo <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br><br>\n"
-"                        Dit is een vriendelijke herinnering om je uren te registreren voor de volgende periode: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> <i class=\"fa fa-long-arrow-right\"></i> <t t-out=\"ctx.get('date_stop') or ''\">05/06/2021</t>.\n"
-"                        Voorlopig heb je <t t-if=\"timesheet_hours != 0\">enkel</t> <t t-out=\"'%d' %int(timesheet_hours)\">2</t><t t-if=\"timesheet_hours % 1 != 0\" t-out=\"':%02d' % (round(timesheet_hours % 1 * 60))\">:30</t> uren van de gevraagde <t t-out=\"'%d' %int(working_hours)\">8</t><t t-if=\"working_hours % 1 != 0\" t-out=\"':%02d' % (round(working_hours % 1 * 60))\">:30</t> geregistreerd.<br>\n"
-"                        <div t-if=\"ctx.get('action_url')\" style=\"margin: 16px 0px 16px 0px;\">\n"
+"                        Hallo <t t-out=\"object.name of ''\">Abigail Peterson</t>,<br/><br/>\n"
+"                        Dit is een vriendelijke herinnering om uw uren te registreren voor de volgende periode: <t t-out=\"ctx.get('date_start') of ''\">05/05/2021</t> <i class=\"fa fa -long-arrow-right\"/> <t t-out=\"ctx.get('date_stop') of ''\">05/06/2021</t>.\n"
+"                        Voorlopig heb je <t t-if=\"timesheet_hours != 0\">alleen</t> <t t-out=\"'%d' %int(timesheet_hours)\">2</t><t t-if=\"timesheet_hours % 1 != 0\" t-out=\"':%02d' % (round(timesheet_hours % 1 * 60))\">:30</t> uur op de <t t-out= \"'%d' %int(working_hours)\">8</t><t t-if=\"working_hours % 1 != 0\" t-out=\"':%02d' % (round(working_hours % 1 * 60 ))\">:30</t> aangevraagd.<br/>\n"
+"                        <div t-if=\"ctx.get('action_url')\" style=\"marge: 16px 0px 16px 0px;\">\n"
 "                            <a t-att-href=\"ctx.get('action_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;\">Vul je urenstaat in</a>\n"
 "                        </div>\n"
-"                        <br>Hartelijk dank,<br>\n"
-"                        <t t-if=\"user.signature\">\n"
-"                            <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                        <br/>Bedankt,<br/>\n"
+"                        <t t-if=\"gebruiker.handtekening\">\n"
+"                            <t t-out=\"user.signature of ''\">--<br/>Mitchell-beheerder</t>\n"
 "                        </t>\n"
 "                    </div>\n"
 "                </td></tr>\n"
 "                <tr><td style=\"text-align:center;\">\n"
-"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0 ; marge: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -178,17 +179,17 @@ msgstr ""
 "    <!-- FOOTER -->\n"
 "    <tr>\n"
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:apart;\">\n"
 "                <tr><td valign=\"middle\" align=\"left\">\n"
-"                    <t t-out=\"object.company_id.name or ''\">YourCompany</t>\n"
+"                    <t t-out=\"object.company_id.name of ''\">Uw Bedrijf</t>\n"
 "                </td></tr>\n"
-"                <tr><td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
-"                    <t t-out=\"object.company_id.phone or ''\">+1 650-123-4567</t>\n"
+"                <tr><td valign=\"middle\" align=\"left\" style=\"dekking: 0.7;\">\n"
+"                    <t t-out=\"object.company_id.phone of ''\">+1 650-123-4567</t>\n"
 "                    <t t-if=\"object.company_id.email\">\n"
-"                        | <a t-attf-href=\"'mailto:%s' % {{ object.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.company_id.email or ''\">info@yourcompany.com</a>\n"
+"                        | <a t-attf-href=\"'mailto:%s' % {{ object.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.company_id.email of ''\">info@uwbedrijf.com</a>\n"
 "                    </t>\n"
 "                    <t t-if=\"object.company_id.website\">\n"
-"                        | <a t-attf-href=\"'%s' % {{ object.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.company_id.website or ''\">http://www.example.com</a>\n"
+"                        | <a t-attf-href=\"'%s' % {{ object.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.company_id.website of ''\">http://www.example.com</a>\n"
 "                    </t>\n"
 "                </td></tr>\n"
 "            </table>\n"
@@ -197,11 +198,11 @@ msgstr ""
 "</tbody>\n"
 "</table>\n"
 "</td></tr>\n"
-"<!-- POWERED BY -->\n"
+"<!-- AANGEDREVEN DOOR -->\n"
 "<tr><td align=\"center\" style=\"min-width: 590px;\">\n"
-"    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
+"    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse :apart;\">\n"
 "      <tr><td style=\"text-align: center; font-size: 13px;\">\n"
-"        Aangeboden door <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=mail\" style=\"color: #875A7B;\">Odoo</a>\n"
+"        Mogelijk gemaakt door <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=mail\" style=\"color: #875A7B;\">Odoo</a>\n"
 "      </td></tr>\n"
 "    </table>\n"
 "</td></tr>\n"
@@ -209,7 +210,7 @@ msgstr ""
 "            "
 
 #. module: timesheet_grid
-#: model:mail.template,body_html:timesheet_grid.mail_template_timesheet_reminder
+#: model:mail.template,body_html:timesheet_grid.mail_template_timesheet_reminder_manager
 msgid ""
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
@@ -219,13 +220,13 @@ msgid ""
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"middle\">\n"
-"                    <span style=\"font-size: 10px;\">Your Timesheets</span><br>\n"
+"                    <span style=\"font-size: 10px;\">Your Timesheets</span><br/>\n"
 "                    <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Abigail Peterson</span>\n"
-"                </td><td valign=\"middle\" align=\"right\" t-if=\"not object.company_id.uses_default_logo\">\n"
-"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\">\n"
+"                </td><td valign=\"middle\" align=\"right\">\n"
+"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\"/>\n"
 "                </td></tr>\n"
 "                <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
-"                <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -236,19 +237,19 @@ msgid ""
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
 "                    <div>\n"
-"                        Hello <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br><br>\n"
-"                        This is a friendly reminder to approve your team's timesheets for the following period: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> - <t t-out=\"ctx.get('date_stop') or ''\">06/05/2021</t>.<br>\n"
+"                        Hello <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br/><br/>\n"
+"                        This is a friendly reminder to approve your team's timesheets for the following period: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> - <t t-out=\"ctx.get('date_stop') or ''\">06/05/2021</t>.<br/>\n"
 "                        <div t-if=\"ctx.get('action_url')\" style=\"margin: 16px 0px 16px 0px;\">\n"
 "                            <a t-att-href=\"ctx.get('action_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;\">Validate the Timesheets</a>\n"
 "                        </div>\n"
-"                        <br>Thank you,<br>\n"
+"                        <br/>Thank you,<br/>\n"
 "                        <t t-if=\"user.signature\">\n"
-"                            <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                            <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "                        </t>\n"
 "                    </div>\n"
 "                </td></tr>\n"
 "                <tr><td style=\"text-align:center;\">\n"
-"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -294,13 +295,13 @@ msgstr ""
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"middle\">\n"
-"                    <span style=\"font-size: 10px;\">Je urenstaten</span><br>\n"
+"                    <span style=\"font-size: 10px;\">Je urenstaten</span><br/>\n"
 "                    <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Abigail Peterson</span>\n"
-"                </td><td valign=\"middle\" align=\"right\" t-if=\"not object.company_id.uses_default_logo\">\n"
-"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\">\n"
+"                </td><td valign=\"middle\" align=\"right\">\n"
+"                    <img t-attf-src=\"/logo.png?company={{ object.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.company_id.name\"/>\n"
 "                </td></tr>\n"
 "                <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
-"                <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -311,19 +312,19 @@ msgstr ""
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
 "                    <div>\n"
-"                        Hallo <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br><br>\n"
-"                        Dit is een vriendelijke herinnering om de urenstaten van je team voor de volgende periode goed te keuren: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> - <t t-out=\"ctx.get('date_stop') or ''\">06/05/2021</t>.<br>\n"
+"                        Hallo <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br/><br/>\n"
+"                        Dit is een vriendelijke herinnering om de urenstaten van je team voor de volgende periode goed te keuren: <t t-out=\"ctx.get('date_start') or ''\">05/05/2021</t> - <t t-out=\"ctx.get('date_stop') or ''\">06/05/2021</t>.<br/>\n"
 "                        <div t-if=\"ctx.get('action_url')\" style=\"margin: 16px 0px 16px 0px;\">\n"
-"                            <a t-att-href=\"ctx.get('action_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;\">Keur de urenstaten goed</a>\n"
+"                            <a t-att-href=\"ctx.get('action_url')\" style=\"background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;\">Urenstaten goedkeuren</a>\n"
 "                        </div>\n"
-"                        <br>Hartelijk dank,<br>\n"
+"                        <br/>Dank je,<br/>\n"
 "                        <t t-if=\"user.signature\">\n"
-"                            <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                            <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "                        </t>\n"
 "                    </div>\n"
 "                </td></tr>\n"
 "                <tr><td style=\"text-align:center;\">\n"
-"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                    <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
 "                </td></tr>\n"
 "            </table>\n"
 "        </td>\n"
@@ -354,7 +355,7 @@ msgstr ""
 "<tr><td align=\"center\" style=\"min-width: 590px;\">\n"
 "    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
 "      <tr><td style=\"text-align: center; font-size: 13px;\">\n"
-"        Aangeboden door <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=mail\" style=\"color: #875A7B;\">Odoo</a>\n"
+"        Powered by <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=mail\" style=\"color: #875A7B;\">Odoo</a>\n"
 "      </td></tr>\n"
 "    </table>\n"
 "</td></tr>\n"
@@ -362,11 +363,18 @@ msgstr ""
 "            "
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#, python-format
-msgid "A timer is running in another company."
-msgstr "Er loopt een timer in een ander bedrijf."
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_form
+msgid "Add a Task"
+msgstr "Taak toevoegen"
+
+#. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
+msgid ""
+"After a certain date, users will not be able to create, modify, or delete "
+"their timesheets. However, managers will still be able to do so."
+msgstr ""
+"Na een bepaalde datum kunnen gebruikers hun urenstaten niet meer maken, "
+"wijzigen of verwijderen. Managers kunnen dit echter nog steeds doen."
 
 #. module: timesheet_grid
 #: model:ir.ui.menu,name:timesheet_grid.menu_timesheet_grid_validate_all_timesheets
@@ -379,7 +387,6 @@ msgid "Amount"
 msgstr "Bedrag"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "An employee must be linked to your user to record time."
@@ -393,21 +400,26 @@ msgid "Analytic Account"
 msgstr "Kostenplaats"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_allow
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_allow
-msgid "Approver Reminder"
-msgstr "Herinnering goedkeurder"
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "Apple App Store"
+msgstr "Apple App Store"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_delay
-msgid "Approver Reminder Days"
-msgstr "Goedkeurder herinnering dagen"
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
+msgid "Block encoding of timesheets after a certain date"
+msgstr "Blokkeer codering van urenstaten na een bepaalde datum"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_interval
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_interval
-msgid "Approver Reminder Frequency"
-msgstr "Goedkeurder herinnering frequentie"
+#: model:ir.model.fields,field_description:timesheet_grid.field_account_analytic_line__can_edit
+msgid "Can Edit"
+msgstr "Kan wijzigen"
+
+#. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_merge_wizard_view_form
+msgid "Cancel"
+msgstr "Annuleren"
 
 #. module: timesheet_grid
 #: model_terms:ir.actions.act_window,help:timesheet_grid.timesheet_grid_to_validate_action
@@ -415,19 +427,8 @@ msgid ""
 "Check that your employees correctly filled in their timesheets and that "
 "their time is billable."
 msgstr ""
-"Controleer of je werknemers hun urenstaten correct hebben ingevuld en of hun"
-" tijd factureerbaar is."
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
-#: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
-#, python-format
-msgid ""
-"Click on the cell to set the number of hours you spent on this project."
-msgstr ""
-"Klik op de cel om het aantal uren dat je aan dit project besteed hebt te "
-"bepalen."
+"Controleer of uw medewerkers hun urenstaten correct hebben ingevuld en of "
+"hun tijd factureerbaar is."
 
 #. module: timesheet_grid
 #: model:ir.model,name:timesheet_grid.model_res_company
@@ -440,27 +441,24 @@ msgid "Config Settings"
 msgstr "Configuratie instellingen"
 
 #. module: timesheet_grid
-#: model:mail.template,description:timesheet_grid.mail_template_timesheet_reminder
+#: model:mail.template,description:timesheet_grid.mail_template_timesheet_reminder_manager
 msgid ""
-"Configure reminders in timesheet settings to remind approvers to validate "
+"Configure reminders in timesheet settings to remind managers to validate "
 "timesheets"
 msgstr ""
-"Configureer herinnering in de urenstaatinstellingen om goedkeurders eraan te"
-" herinneren urenstaten te valideren"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/task.py:0
 #, python-format
 msgid "Confirm Time Spent"
 msgstr "Bevestig gespendeerde tijd"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid "Congratulations, you are now a master of Timesheets."
-msgstr "Gefeliciteerd, je bent nu een meester in urenstaten."
+msgstr "Gefeliciteerd, u bent nu een meester in urenstaten."
 
 #. module: timesheet_grid
 #: model_terms:ir.actions.act_window,help:timesheet_grid.action_timesheet_previous_month
@@ -490,13 +488,6 @@ msgid "Created on"
 msgstr "Aangemaakt op"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/views/timer_timesheet_grid/timer_timesheet_grid_renderer.xml:0
-#, python-format
-msgid "Daily overtime"
-msgstr "Dagelijkse overuren"
-
-#. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__date
 msgid "Date"
 msgstr "Datum"
@@ -505,6 +496,7 @@ msgstr "Datum"
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_employee
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_project
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_task_readonly
 msgid "Day"
 msgstr "Dag"
 
@@ -514,9 +506,9 @@ msgid "Days Spent —"
 msgstr "Dagen besteed —"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_delay
-msgid "Days to Remind Approver"
-msgstr "Dagen tot herinnering goedkeurder"
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_manager_delay
+msgid "Days to Remind Manager"
+msgstr "Dagen om manager te herinneren"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_user_delay
@@ -524,12 +516,12 @@ msgid "Days to Remind User"
 msgstr "Dagen tot herinnering gebruiker"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,help:timesheet_grid.field_account_analytic_line__employee_id
-msgid ""
-"Define an 'hourly cost' on the employee to track the cost of their time."
-msgstr ""
-"Bepaal een 'uurtarief' op de werknemer om de kost van hun tijd bij te "
-"houden."
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/components/timesheet_uom_hour_toggle/timesheet_uom_hour_toggle.xml:0
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#, python-format
+msgid "Decrease Time"
+msgstr "Tijd verminderen"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_create_timesheet_view_form
@@ -538,11 +530,12 @@ msgstr "Verwijderen"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_merge_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_form
 msgid "Describe your activity"
 msgstr "Omschrijf je activiteit"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid ""
@@ -553,9 +546,8 @@ msgstr ""
 "klant...)</i>."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/grid_timesheet_timer_header/grid_timesheet_timer_header.js:0
-#: code:addons/timesheet_grid/static/src/hooks/timesheet_timer_hooks.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_create_timesheet_view_form
 #, python-format
 msgid "Describe your activity..."
@@ -568,51 +560,58 @@ msgid "Description"
 msgstr "Omschrijving"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_overtime_indication/timesheet_overtime_indication.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/widgets/timesheets_m2o_project.js:0
 #, python-format
 msgid ""
 "Difference between the number of %s allocated to the project and the number "
-"of %s recorded"
+"of %s recorded."
 msgstr ""
 "Verschil tussen het aantal %s dat aan het project is toegewezen en het "
-"aantal geregistreerde %s "
+"aantal geregistreerde %s."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_overtime_indication/timesheet_overtime_indication.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/widgets/timesheets_m2o_task.js:0
 #, python-format
 msgid ""
 "Difference between the number of %s allocated to the task and the number of "
-"%s recorded"
+"%s recorded."
 msgstr ""
 "Verschil tussen het aantal %s dat aan de taak is toegewezen en het aantal "
-"geregistreerde %s"
+"geregistreerde %s."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/employee_overtime_indication/employee_overtime_indication.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/widgets/timesheets_m2o_avatar_employee.js:0
+#, python-format
+msgid ""
+"Difference between the number of days recorded and the number of days the "
+"employee was supposed to work according to his contract."
+msgstr ""
+"Verschil tussen het aantal geregistreerde dagen en het aantal dagen dat de "
+"werknemer volgens zijn contract zou werken."
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/widgets/timesheets_m2o_avatar_employee.js:0
 #, python-format
 msgid ""
 "Difference between the number of hours recorded and the number of hours the "
-"employee was supposed to work according to his contract"
+"employee was supposed to work according to his contract."
 msgstr ""
 "Verschil tussen het aantal geregistreerde uren en het aantal uren dat de "
-"werknemer volgens zijn contract zou moeten werken"
+"werknemer volgens zijn contract zou werken."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_overtime_indication/timesheet_overtime_indication.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/widgets/timesheets_m2o_widget.js:0
 #, python-format
-msgid "Difference between the time allocated and the time recorded"
-msgstr "Verschil tussen de toegewezen tijd en de geregistreerde tijd"
+msgid "Difference between the time allocated and the time recorded."
+msgstr "Verschil tussen de toegewezen tijd en de geregistreerde tijd."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_create_timesheet_view_form
-#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_merge_wizard_view_form
-#, python-format
 msgid "Discard"
 msgstr "Negeren"
 
@@ -662,7 +661,18 @@ msgid "Display Timesheet Time"
 msgstr "Toon urenstaten tijd"
 
 #. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid ""
+"Download our web/mobile apps to track your time from anywhere, even offline."
+msgstr ""
+"Download onze web-/mobiele apps om uw tijd overal bij te houden, zelfs "
+"offline."
+
+#. module: timesheet_grid
 #: model:ir.model.fields.selection,name:timesheet_grid.selection__account_analytic_line__validated_status__draft
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "Draft"
 msgstr "Concept"
@@ -677,7 +687,7 @@ msgstr "Werknemer"
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_employee_interval
 msgid "Employee Frequency"
-msgstr "Werknemerfrequentie"
+msgstr "Werknemer frequentie"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_employee_allow
@@ -688,17 +698,16 @@ msgstr "Werknemer herinnering"
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_employee_delay
 msgid "Employee Reminder Days"
-msgstr "Werknemerherinnering dagen"
+msgstr "Werknemer herinnering dagen"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__encoding_uom_id
 msgid "Encoding Uom"
-msgstr "Coderingsmaateenheid"
+msgstr "Encodering maateenheid"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
 msgid "Enter"
 msgstr "Enter"
@@ -709,8 +718,22 @@ msgid "Frequency"
 msgstr "Frequentie"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/views/timesheet_grid/timesheet_grid_search_model.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "Google Chrome Store"
+msgstr "Google Chrome Store"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "Google Play Store"
+msgstr "Google Play Store"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timesheet_grid_group_by_no_date_mixin.js:0
 #, python-format
 msgid "Grouping by date is not supported"
 msgstr "Groeperen op datum wordt niet ondersteund"
@@ -732,11 +755,58 @@ msgid "ID"
 msgstr "ID"
 
 #. module: timesheet_grid
+#: model:ir.model.fields,help:timesheet_grid.field_res_company__prevent_old_timesheets_encoding
+#: model:ir.model.fields,help:timesheet_grid.field_res_config_settings__prevent_old_timesheets_encoding
+msgid ""
+"If checked, encoding of timesheets older than a certain number of days will "
+"be blocked"
+msgstr ""
+"Indien aangevinkt, wordt de codering van urenstaten die ouder zijn dan een "
+"bepaald aantal dagen geblokkeerd"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,help:timesheet_grid.field_res_config_settings__reminder_manager_allow
+msgid "If checked, send an email to all manager"
+msgstr "Indien aangevinkt, verzend een e-mail naar alle managers"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,help:timesheet_grid.field_res_company__timesheet_mail_manager_allow
+msgid ""
+"If checked, send an email to all managers who have not validated their "
+"timesheet"
+msgstr ""
+"Indien aangevinkt, verzend een e-mail naar alle managers die hun urenstaten "
+"niet bevestigd hebben"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,help:timesheet_grid.field_res_company__timesheet_mail_employee_allow
+#: model:ir.model.fields,help:timesheet_grid.field_res_config_settings__reminder_user_allow
+msgid ""
+"If checked, send an email to all users who have not recorded their timesheet"
+msgstr ""
+"Indien aangevinkt, verzend een e-mail naar alle gebruikers die hun "
+"urenstaten niet hebben ingegeven"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/components/timesheet_uom_hour_toggle/timesheet_uom_hour_toggle.xml:0
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#, python-format
+msgid "Increase Time"
+msgstr "Verhoog de tijd"
+
+#. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_account_analytic_line__is_timer_running
 #: model:ir.model.fields,field_description:timesheet_grid.field_project_task__is_timer_running
 #: model:ir.model.fields,field_description:timesheet_grid.field_timesheets_analysis_report__is_timer_running
 msgid "Is Timer Running"
 msgstr "Loopt de timer"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard____last_update
+#: model:ir.model.fields,field_description:timesheet_grid.field_project_task_create_timesheet____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
 
 #. module: timesheet_grid
 #: model:ir.ui.menu,name:timesheet_grid.menu_timesheet_grid_validate_previous_month
@@ -766,7 +836,7 @@ msgid "Last Week"
 msgstr "Vorige week"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid ""
@@ -781,11 +851,34 @@ msgstr ""
 "toevoegen door op de <b>shift + [A]-toetsen</b> te drukken.</i>"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid "Launch the <b>timer</b> to start a new activity."
 msgstr "Start de <b>timer</b> om een nieuwe activiteit te starten."
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__prevent_old_timesheets_encoding
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__prevent_old_timesheets_encoding
+msgid "Lock Dates"
+msgstr "Blokkeerdatums"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_manager_allow
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_manager_allow
+msgid "Manager Reminder"
+msgstr "Manager herinnering"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_manager_delay
+msgid "Manager Reminder Days"
+msgstr "Manager herinnering dagen"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_manager_interval
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__reminder_manager_interval
+msgid "Manager Reminder Frequency"
+msgstr "Manager herinneringsfrequentie"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_merge_wizard_view_form
@@ -798,7 +891,6 @@ msgid "Merge Timesheet"
 msgstr "Urenstaat samenvoegen"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #: model:ir.actions.server,name:timesheet_grid.merge_timesheet_action
 #: model:ir.model,name:timesheet_grid.model_hr_timesheet_merge_wizard
@@ -820,38 +912,50 @@ msgstr "Module"
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_employee
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_project
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_task_readonly
 msgid "Month"
 msgstr "Maand"
 
 #. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "My Department"
 msgstr "Mijn afdeling"
 
 #. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "My Projects"
 msgstr "Mijn projecten"
 
 #. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "My Tasks"
 msgstr "Mijn taken"
 
 #. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "My Team"
 msgstr "Mijn team"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_nextdate
-msgid "Next scheduled date for approver reminder"
-msgstr "Volgende geplande datum voor herinnering goedkeurder"
-
-#. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_employee_nextdate
 msgid "Next scheduled date for employee reminder"
 msgstr "Volgende geplande datum voor werknemer herinnering"
+
+#. module: timesheet_grid
+#: model:ir.model.fields,field_description:timesheet_grid.field_res_company__timesheet_mail_manager_nextdate
+msgid "Next scheduled date for manager reminder"
+msgstr "Volgende geplande datum voor een manager herinnering"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "No activities found. Let's start a new one!"
+msgstr "Geen activiteiten gevonden. Laten we een nieuwe beginnen!"
 
 #. module: timesheet_grid
 #: model_terms:ir.actions.act_window,help:timesheet_grid.action_timesheet_previous_month
@@ -865,29 +969,6 @@ msgid "No timesheets to validate"
 msgstr "Geen urenstaten om te valideren"
 
 #. module: timesheet_grid
-#: model:ir.model.fields,help:timesheet_grid.field_res_config_settings__reminder_delay
-msgid ""
-"Number of days after the end of the week/month after which an automatic "
-"email reminder will be sent to timesheet managers that still have timesheets"
-" to validate."
-msgstr ""
-"Aantal dagen na het einde van de week/maand waarna een automatische "
-"e-mailherinnering wordt verzonden naar de urenstaatmanagers die nog "
-"urenstaten moeten valideren."
-
-#. module: timesheet_grid
-#: model:ir.model.fields,help:timesheet_grid.field_res_config_settings__reminder_user_delay
-msgid ""
-"Numbers of days after the end of the week/month after which an automatic "
-"email reminder will be sent to timesheet users that still have timesheets to"
-" encode (according to their working hours)."
-msgstr ""
-"Aantal dagen na het einde van de week/maand waarna een automatische "
-"e-mailherinnering wordt verzonden naar urenstaatgebruikers die nog "
-"urenstaten moeten encoderen (volgens hun werkuren)."
-
-#. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
@@ -903,25 +984,31 @@ msgid "Pause"
 msgstr "Pauze"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#, python-format
-msgid "Press"
-msgstr "druk op"
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
+msgid "Pause timer"
+msgstr "Pauzeer timer"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#, python-format
+msgid "Play"
+msgstr "Play"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
 msgid "Press Esc to discard"
-msgstr "Druk op Esc om te negeren"
+msgstr "Druk op Esc om te verwijderen"
 
 #. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timer_m2o.js:0
 #: model:ir.model,name:timesheet_grid.model_project_project
+#: model:ir.model.fields,field_description:timesheet_grid.field_account_analytic_line__project_id
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__project_id
+#, python-format
 msgid "Project"
 msgstr "Project"
 
@@ -933,7 +1020,7 @@ msgstr "Openbare werknemer"
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__unit_amount
 msgid "Quantity"
-msgstr "Hoeveelheid"
+msgstr "Aantal"
 
 #. module: timesheet_grid
 #: model:mail.template,subject:timesheet_grid.mail_template_timesheet_reminder_user
@@ -941,13 +1028,14 @@ msgid "Reminder to log your timesheets"
 msgstr "Herinnering om je urenstaten in te vullen"
 
 #. module: timesheet_grid
-#: model:mail.template,subject:timesheet_grid.mail_template_timesheet_reminder
+#: model:mail.template,subject:timesheet_grid.mail_template_timesheet_reminder_manager
 msgid "Reminder to validate your team's timesheets"
 msgstr "Herinnering om de urenstaten van je team te bevestigen"
 
 #. module: timesheet_grid
 #: model:ir.actions.server,name:timesheet_grid.invalidate_timesheet_action
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_form_view
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_form
 msgid "Reset to draft"
 msgstr "Reset naar concept"
 
@@ -955,6 +1043,11 @@ msgstr "Reset naar concept"
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
 msgid "Resume"
 msgstr "Hervatten"
+
+#. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
+msgid "Resume timer"
+msgstr "Timer hervatten"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_res_config_settings__timesheet_rounding
@@ -978,7 +1071,28 @@ msgid "Save time"
 msgstr "Bespaar tijd"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "See all the records aggregated in this cell"
+msgstr "Bekijk alle regels opgeteld in deze cel"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timer_m2o.js:0
+#, python-format
+msgid "Select a Project"
+msgstr "Selecteer een project"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timer_m2o.js:0
+#, python-format
+msgid "Select a Task"
+msgstr "Selecteer een taak"
+
+#. module: timesheet_grid
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid "Select the <b>project</b> on which you are working."
@@ -989,16 +1103,16 @@ msgstr "Selecteer het <b>project</b> waaraan je werkt."
 #: model:ir.model.fields,help:timesheet_grid.field_res_users__timesheet_manager_id
 msgid ""
 "Select the user responsible for approving \"Timesheet\" of this employee.\n"
-"If empty, the approval is done by a Timesheets > Administrator or a Timesheets > User: all timesheets (as determined in the users settings)."
+"If empty, the approval is done by an Administrator or Team Approver (determined in settings/users)."
 msgstr ""
-"Selecteer de gebruiker die verantwoordelijke is voor het goedkeuren van de \"Urenstaten\" van deze werknemer. \n"
-"Indien leeg, wordt de goedkeuring gegeven door een Urenstaten > Beheerder of een Urenstaten > Gebruiker: alle urenstaten (zoals bepaald in de gebruikersinstellingen)."
+"Selecteer de gebruiker die verantwoordelijk is voor het goedkeuren van het \"Urenstaten\" van deze werknemer.\n"
+"Indien leeg, wordt de goedkeuring gedaan door een administrator of team goedkeurder (bepaald in instellingen / gebruikers)."
 
 #. module: timesheet_grid
 #: model:ir.model.fields,help:timesheet_grid.field_account_analytic_line__is_timesheet
 msgid "Set if this analytic line represents a line of timesheet."
 msgstr ""
-"Ingesteld als deze analytsiche regel een regel van een urenstaat voorstelt."
+"Ingesteld als deze kostenplaatsregel een regel van een urenstaat voorstelt."
 
 #. module: timesheet_grid
 #: model:mail.template,description:timesheet_grid.mail_template_timesheet_reminder_user
@@ -1006,11 +1120,9 @@ msgid ""
 "Set reminders in settings to notify employees who didn't record their "
 "timesheet"
 msgstr ""
-"Stel herinneringen in de instellingen in om werknemers op de hoogte te "
-"stellen die hun urenstaat niet hebben geregistreerd"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid ""
@@ -1022,40 +1134,33 @@ msgstr ""
 "naar de andere te navigeren.</i>"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#, python-format
-msgid "Shift"
-msgstr "Dienst"
-
-#. module: timesheet_grid
-#. odoo-python
-#: code:addons/timesheet_grid/models/analytic.py:0
-#, python-format
-msgid "Sorry, you cannot use a timer for a validated timesheet"
-msgstr "Sorry, je kunt geen timer gebruiken voor een goedgekeurde urenstaat."
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_uom_hour_timer/timesheet_uom_hour_timer.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/components/timesheet_uom_hour_timer/timesheet_uom_hour_timer.js:0
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
 #, python-format
 msgid "Start"
 msgstr "Start"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#: code:addons/timesheet_grid/static/src/components/timesheet_uom_hour_timer/timesheet_uom_hour_timer.js:0
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
+msgid "Start timer"
+msgstr "Start timer"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/components/timesheet_uom_hour_timer/timesheet_uom_hour_timer.js:0
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#: code:addons/timesheet_grid/static/src/js/timesheet_uom_timer.js:0
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
 #, python-format
 msgid "Stop"
 msgstr "Stoppen"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid ""
@@ -1066,9 +1171,23 @@ msgstr ""
 " beschrijving om je activiteit automatisch te registreren.</i>"
 
 #. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.project_task_view_form
+msgid "Stop timer"
+msgstr "Stop timer"
+
+#. module: timesheet_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
+msgid "Suspicious Durations"
+msgstr "Verdachte duur"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timer_m2o.js:0
 #: model:ir.model,name:timesheet_grid.model_project_task
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__task_id
 #: model:ir.model.fields,field_description:timesheet_grid.field_project_task_create_timesheet__task_id
+#, python-format
 msgid "Task"
 msgstr "Taak"
 
@@ -1086,27 +1205,11 @@ msgstr ""
 "coderingseenheid 'Uren' is."
 
 #. module: timesheet_grid
-#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
-msgid ""
-"The duration of timesheets encoded through the timer will automatically be "
-"rounded up to this number. For instance, if you stop your timer at 00:16:56,"
-" the duration of the timesheet entry will automatically be rounded up to "
-"00:30 (assuming you have a round up of 15 min). We recommend having the same"
-" value for the minimal duration and for the round up."
-msgstr ""
-"De duur van urenstaten die via de timer zijn gecodeerd, wordt automatisch "
-"naar boven afgerond op dit cijfer. Als je bijvoorbeeld je timer stopt op "
-"00:16:56, wordt de duur van de urenstaat automatisch naar boven afgerond op "
-"00:30 (ervan uitgaande dat je een afronding van 15 min ingesteld hebt). We "
-"raden aan om dezelfde waarde te gebruiken voor de minimale duur en voor de "
-"afronding."
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/views/timesheet_grid/timesheet_grid_controller.js:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/timesheet_grid/timesheet_grid_controller_mixin.js:0
 #, python-format
 msgid "The timesheet entry has successfully been created."
-msgstr "De urenstaatpost is succesvol aangemaakt."
+msgstr "De urenregistratiepost is succesvol aangemaakt."
 
 #. module: timesheet_grid
 #: model:ir.model.constraint,message:timesheet_grid.constraint_project_task_create_timesheet_time_positive
@@ -1114,42 +1217,30 @@ msgid "The timesheet's time must be positive"
 msgstr "De tijd van de urenstaat moet positief zijn"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/wizard/timesheet_merge_wizard.py:0
 #, python-format
 msgid "The timesheets have successfully been merged."
 msgstr "De urenstaten zijn succesvol samengevoegd."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "The timesheets have successfully been reset to draft."
 msgstr "De urenstaten zijn succesvol teruggezet naar concept."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "The timesheets have successfully been validated."
 msgstr "De urenstaten zijn succesvol gevalideerd."
 
 #. module: timesheet_grid
-#. odoo-python
-#: code:addons/timesheet_grid/wizard/timesheet_merge_wizard.py:0
-#, python-format
-msgid "The timesheets must have the same encoding unit"
-msgstr "De urenstaten moeten dezelfde codeereenheid hebben"
-
-#. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "There are no timesheets to merge."
 msgstr "Er zijn geen urenstaten om samen te voegen."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
@@ -1160,7 +1251,6 @@ msgstr ""
 "gefactureerd."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/task.py:0
 #, python-format
 msgid ""
@@ -1173,11 +1263,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:timesheet_grid.field_project_task_create_timesheet__time_spent
 msgid "Time"
 msgstr "Tijd"
-
-#. module: timesheet_grid
-#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
-msgid "Time Rounding"
-msgstr "Afronden van tijd"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_merge_wizard_view_form
@@ -1230,20 +1315,35 @@ msgid "Timesheet Unit Time"
 msgstr "Urenstaat Eenheid Tijd"
 
 #. module: timesheet_grid
-#: model:ir.actions.server,name:timesheet_grid.timesheet_reminder_ir_actions_server
-msgid "Timesheet: Approvers Email Reminder"
-msgstr "Urenstaat: E-mailherinnering goedkeurder"
+#: model:ir.actions.server,name:timesheet_grid.timesheet_reminder_user_ir_actions_server
+#: model:ir.cron,cron_name:timesheet_grid.timesheet_reminder_user
+#: model:ir.cron,name:timesheet_grid.timesheet_reminder_user
+msgid "Timesheet: Employees Email Reminder"
+msgstr "Urenstaat: Werknemer e-mail herinnering"
 
 #. module: timesheet_grid
-#: model:ir.actions.server,name:timesheet_grid.timesheet_reminder_user_ir_actions_server
-msgid "Timesheet: Employees Email Reminder"
-msgstr "Urenstaat: Werknemer e-mailherinnering"
+#: model:mail.template,name:timesheet_grid.mail_template_timesheet_reminder_user
+msgid "Timesheet: Employees Reminder"
+msgstr "Urenstaat: Herinnering werknemers"
+
+#. module: timesheet_grid
+#: model:mail.template,name:timesheet_grid.mail_template_timesheet_reminder_manager
+msgid "Timesheet: Manager Reminder"
+msgstr "Urenstaat: Managerherinnering"
+
+#. module: timesheet_grid
+#: model:ir.actions.server,name:timesheet_grid.timesheet_reminder_manager_ir_actions_server
+#: model:ir.cron,cron_name:timesheet_grid.timesheet_reminder_manager
+#: model:ir.cron,name:timesheet_grid.timesheet_reminder_manager
+msgid "Timesheet: Managers Email Reminder"
+msgstr "Urenstaat: Manager e-mail herinnering"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_hr_timesheet_merge_wizard__timesheet_ids
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_employee
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_project
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_task_readonly
 msgid "Timesheets"
 msgstr "Urenstaten"
 
@@ -1253,7 +1353,6 @@ msgid "Timesheets Analysis Report"
 msgstr "Analyserapport urenstaten"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
@@ -1264,23 +1363,6 @@ msgstr ""
 " zijn."
 
 #. module: timesheet_grid
-#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
-msgid ""
-"Timesheets encoded via the timer that do not meet the minimal duration will "
-"automatically be rounded up to the defined value. For instance, if you stop "
-"your timer at 00:04:36, the duration of the timesheet entry will "
-"automatically be rounded up to 00:15 (assuming you have a minimal duration "
-"of 15 min). We recommend having the same value for the minimal duration and "
-"for the round up."
-msgstr ""
-"Via de timer gecodeerde urenstaten die niet aan de minimale duur voldoen, "
-"worden automatisch naar boven afgerond op de bepaalde waarde. Als je "
-"bijvoorbeeld je timer stopt op 00:04:36, wordt de duur van de urenstaat "
-"automatisch naar boven afgerond op 00:15 (ervan uitgaande dat je een "
-"minimale duur van 15 min ingesteld hebt). We raden aan om dezelfde waarde te"
-" gebruiken voor de minimale duur en voor de afronding."
-
-#. module: timesheet_grid
 #: model:ir.actions.act_window,name:timesheet_grid.action_timesheet_previous_month
 #: model:ir.actions.act_window,name:timesheet_grid.action_timesheet_previous_week
 #: model:ir.actions.act_window,name:timesheet_grid.timesheet_grid_to_validate_action
@@ -1288,28 +1370,29 @@ msgid "Timesheets to Validate"
 msgstr "Urenstaten om goed te keuren"
 
 #. module: timesheet_grid
-#: model:mail.template,name:timesheet_grid.mail_template_timesheet_reminder
-msgid "Timesheets: Approver Reminder"
-msgstr "Urenstaten: Herinnering goedkeurder"
-
-#. module: timesheet_grid
-#: model:mail.template,name:timesheet_grid.mail_template_timesheet_reminder_user
-msgid "Timesheets: Employee Reminder"
-msgstr "Urenstaten: Herinnering werknemer"
-
-#. module: timesheet_grid
 #: model:ir.ui.menu,name:timesheet_grid.menu_timesheet_grid_validate
 msgid "To Validate"
-msgstr "Te bevestigen"
+msgstr "Goedkeuren"
 
 #. module: timesheet_grid
-#. odoo-javascript
+#. openerp-web
 #: code:addons/timesheet_grid/static/src/js/tours/timesheet_grid.js:0
 #, python-format
 msgid "Track the <b>time spent</b> on your projects. <i>It starts here.</i>"
 msgstr ""
 "Houd de <b>tijd</b> bij die aan je projecten wordt besteed. <i>Het begint "
 "hier.</i>"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid ""
+"Track your working hours by projects every day and invoice this time to your"
+" customers."
+msgstr ""
+"Houd elke dag je werkuren per project bij en factureer deze tijd aan je "
+"klanten."
 
 #. module: timesheet_grid
 #: model:ir.model,name:timesheet_grid.model_res_users
@@ -1340,22 +1423,24 @@ msgstr ""
 "manager moeten zijn."
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/js/views/timesheet_pivot/timesheet_validation_pivot_controller.xml:0
-#: code:addons/timesheet_grid/static/src/views/timesheet_kanban/timesheet_validation_kanban_controller.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/js/views/timesheet_kanban/timesheet_validation_kanban_controler.xml:0
+#: code:addons/timesheet_grid/static/src/xml/timesheet_kanban.xml:0
 #: model:ir.actions.server,name:timesheet_grid.timesheet_validate_action
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_form_view
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_form
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_employee_validation
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_tree_user_inherited
 #, python-format
 msgid "Validate"
-msgstr "Bevestigen"
+msgstr "Goedkeuren"
 
 #. module: timesheet_grid
 #: model:ir.model.fields.selection,name:timesheet_grid.selection__account_analytic_line__validated_status__validated
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.hr_timesheet_report_search_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_search
 msgid "Validated"
-msgstr "Bevestigd"
+msgstr "Goedgekeurd"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,field_description:timesheet_grid.field_account_analytic_line__validated_status
@@ -1371,31 +1456,25 @@ msgstr "Goedgekeurde regel"
 #. module: timesheet_grid
 #: model:ir.actions.server,name:timesheet_grid.timesheet_grid_all_timesheets_action_server
 msgid "Validation All Timesheet Server Action"
-msgstr "Bevestigen alle urenstaten serveractie"
+msgstr "Validatie Alle actie op de urenstaatserver"
 
 #. module: timesheet_grid
 #: model:ir.actions.server,name:timesheet_grid.timesheet_grid_week_action_server
 msgid "Validation Timesheet Week_view Server Action"
-msgstr "Bevestig urenstaat week_view serveractie"
+msgstr "Validatie urenstaat week_view serveractie"
 
 #. module: timesheet_grid
 #: model:ir.actions.server,name:timesheet_grid.timesheet_grid_month_action_server
 msgid "Validation Timesheet month_view Server Action"
-msgstr "Bevestig urenstaat month_view serveractie"
+msgstr "Validatie urenstaat month_view serveractie"
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_employee
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_project
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.timesheet_view_grid_by_task_readonly
 msgid "Week"
 msgstr "Week"
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/views/timer_timesheet_grid/timer_timesheet_grid_renderer.xml:0
-#, python-format
-msgid "Weekly overtime"
-msgstr "Wekelijkse overuren"
 
 #. module: timesheet_grid
 #: model:ir.model.fields,help:timesheet_grid.field_account_analytic_line__user_can_validate
@@ -1406,15 +1485,6 @@ msgstr ""
 " te stellen."
 
 #. module: timesheet_grid
-#. odoo-python
-#: code:addons/timesheet_grid/models/hr_employee.py:0
-#: code:addons/timesheet_grid/models/res_users.py:0
-#, python-format
-msgid "You are not allowed to see timesheets."
-msgstr ""
-
-#. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
@@ -1425,7 +1495,6 @@ msgstr ""
 "wie je de manager of de urenstaatgoedkeurder bent."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
@@ -1437,26 +1506,12 @@ msgstr ""
 " of de urenstaatgoedkeurder bent."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "You cannot access timesheets that are not yours."
 msgstr "Je kunt geen urenstaten bekijken die niet van jezelf zijn."
 
 #. module: timesheet_grid
-#. odoo-python
-#: code:addons/timesheet_grid/models/analytic.py:0
-#: code:addons/timesheet_grid/models/analytic.py:0
-#, python-format
-msgid ""
-"You cannot adjust the time of the timesheet for a project with timesheets "
-"disabled."
-msgstr ""
-"Je kan de tijd van een urenstaat voor een project met uitgeschakelde "
-"urenstaten niet aanpassen."
-
-#. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
@@ -1467,7 +1522,6 @@ msgstr ""
 "manager of je urenstaatgoedkeurder."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/project.py:0
 #, python-format
 msgid ""
@@ -1478,7 +1532,6 @@ msgstr ""
 "urenstaten in dagen ingeeft."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #: code:addons/timesheet_grid/models/analytic.py:0
 #: code:addons/timesheet_grid/models/analytic.py:0
@@ -1489,36 +1542,26 @@ msgid "You cannot use the timer on validated timesheets."
 msgstr "Je kunt de timer niet gebruiken op bevestigde urenstaten."
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid ""
-"You cannot validate the selected timesheets as they either belong to "
-"employees who are not part of your team or are not in a state that can be "
-"validated. This may be due to the fact that they are dated in the future."
+"You cannot validate the timesheets from employees that are not part of your "
+"team or there are no timesheets to validate."
 msgstr ""
-"Je kan de geselecteerde urenstaten niet goedkeuren als ze tot werknemers "
-"behoren die geen deel uitmaken van je team of hun status laat niet toe om ze"
-" goed te keuren. Mogelijk komt dit doordat ze in de toekomst zijn gedateerd."
+"Je kunt de urenstaten van werknemers die geen deel uitmaken van je team niet"
+" bevestigen of er zijn geen urenstaten om te bevestigen."
 
 #. module: timesheet_grid
 #: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_employee_interval__months
-#: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_interval__months
+#: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_manager_interval__months
 msgid "after the end of the month"
 msgstr "na het einde van de maand"
 
 #. module: timesheet_grid
 #: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_employee_interval__weeks
-#: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_interval__weeks
+#: model:ir.model.fields.selection,name:timesheet_grid.selection__res_company__timesheet_mail_manager_interval__weeks
 msgid "after the end of the week"
 msgstr "na het einde van de week"
-
-#. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
-#, python-format
-msgid "and click on"
-msgstr ""
 
 #. module: timesheet_grid
 #: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
@@ -1526,50 +1569,60 @@ msgid "days"
 msgstr "dagen"
 
 #. module: timesheet_grid
-#. odoo-python
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "deleted"
 msgstr "verwijderd"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
+#, python-format
+msgid "letter shortcut"
+msgstr "letter snelkoppeling"
+
+#. module: timesheet_grid
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
 msgid "min"
 msgstr "min"
 
 #. module: timesheet_grid
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:timesheet_grid.res_config_settings_view_form
+msgid "minutes"
+msgstr "minuten"
+
+#. module: timesheet_grid
 #: code:addons/timesheet_grid/models/analytic.py:0
 #, python-format
 msgid "modified"
 msgstr "aangepast"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
-msgid "or [a] to launch the timer"
-msgstr "of [a] om de timer te lanceren"
+msgid "or a"
+msgstr "of een"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
-msgid "or click on"
-msgstr "of klik op"
+msgid "press"
+msgstr "druk"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
-msgid "to add 15 min"
-msgstr ""
+msgid "press Shift + a letter shortcut"
+msgstr "druk op Shift + een sneltoets voor letters"
 
 #. module: timesheet_grid
-#. odoo-javascript
-#: code:addons/timesheet_grid/static/src/components/timesheet_timer_header/timesheet_timer_header.xml:0
+#. openerp-web
+#: code:addons/timesheet_grid/static/src/xml/timesheet_grid.xml:0
 #, python-format
-msgid "to launch the timer"
-msgstr ""
+msgid "to add"
+msgstr "toevoegen"

@@ -8,7 +8,7 @@
     'summary': 'Add sale subscription support in mass mailing',
     'description': """Mass mailing on sale subscriptions""",
     'depends': [
-        'mass_mailing_sale',
+        'mass_mailing',
         'sale_subscription',
     ],
     'auto_install': True,

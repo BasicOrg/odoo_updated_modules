@@ -9,8 +9,8 @@ from odoo.addons.sign.controllers.main import Sign
 
 class SignContract(Sign):
 
-    def _update_contract_on_signature(self, request_item, contract, offer):
-        result = super()._update_contract_on_signature(request_item, contract, offer)
+    def _update_contract_on_signature(self, request_item, contract):
+        result = super()._update_contract_on_signature(request_item, contract)
         if request_item.sign_request_id.nb_closed == 2 and not contract.leave_allocation_id:
             auto_allocation = contract.company_id.hr_contract_timeoff_auto_allocation
             if auto_allocation and contract.holidays:

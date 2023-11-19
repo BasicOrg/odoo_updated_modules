@@ -9,7 +9,7 @@ from odoo import _, api, fields, models
 from odoo.osv import expression
 from odoo.tools import float_utils, DEFAULT_SERVER_DATETIME_FORMAT
 
-from odoo.addons.resource.models.utils import Intervals
+from odoo.addons.resource.models.resource import Intervals
 
 class PlanningSlot(models.Model):
     _inherit = 'planning.slot'
@@ -17,11 +17,10 @@ class PlanningSlot(models.Model):
     start_datetime = fields.Datetime(required=False)
     end_datetime = fields.Datetime(required=False)
     sale_line_id = fields.Many2one('sale.order.line', string='Sales Order Item', domain=[('product_id.type', '=', 'service'), ('state', 'not in', ['draft', 'sent'])],
-        index=True, ondelete='cascade', group_expand='_group_expand_sale_line_id',
+        index=True, group_expand='_group_expand_sale_line_id',
         help="Sales order item for which this shift will be performed. When sales orders are automatically planned,"
              " the remaining hours of the sales order item, as well as the role defined on the service, are taken into account.")
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', related='sale_line_id.order_id', store=True)
-    partner_id = fields.Many2one('res.partner', related='sale_order_id.partner_id')
     role_product_ids = fields.One2many('product.template', related='role_id.product_ids')
     sale_line_plannable = fields.Boolean(related='sale_line_id.product_id.planning_enabled')
     allocated_hours = fields.Float(compute_sudo=True)
@@ -52,8 +51,6 @@ class PlanningSlot(models.Model):
                     0.0
                 )
         super(PlanningSlot, planned_slots)._compute_allocated_hours()
-        SaleOrderLine = self.env['sale.order.line']
-        self.env.add_to_compute(SaleOrderLine._fields['planning_hours_planned'], self.sale_line_id)
 
     @api.depends('start_datetime')
     def _compute_allocated_percentage(self):
@@ -117,21 +114,21 @@ class PlanningSlot(models.Model):
             if sale_line_id.product_id.planning_enabled and res.get('start_datetime') and res.get('end_datetime'):
                 remaining_hours_to_plan = sale_line_id.planning_hours_to_plan - sale_line_id.planning_hours_planned
                 if float_utils.float_compare(remaining_hours_to_plan, 0, precision_digits=2) < 1:
+                    res['end_datetime'] = res['start_datetime']
                     return res
                 allocated_hours = (res['end_datetime'] - res['start_datetime']).total_seconds() / 3600.0
                 if float_utils.float_compare(remaining_hours_to_plan, allocated_hours, precision_digits=2) < 1:
                     res['end_datetime'] = res['start_datetime'] + timedelta(hours=remaining_hours_to_plan)
         return res
 
-    def _display_name_fields(self):
-        """ List of fields that can be displayed in the display_name """
-        return ['partner_id'] + super()._display_name_fields() + ['sale_line_id']
+    def _name_get_fields(self):
+        """ List of fields that can be displayed in the name_get """
+        return super()._name_get_fields() + ['sale_line_id']
 
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
         if res.sale_line_id:
-            res.sale_line_id.sudo()._compute_planning_hours_planned()  # ensure it is computed before doing postprocess
             res.sale_line_id.sudo()._post_process_planning_sale_line(ids_to_exclude=res.ids)
         return res
 
@@ -216,9 +213,7 @@ class PlanningSlot(models.Model):
         to_allocate = self.sale_line_id.planning_hours_to_plan - self.sale_line_id.planning_hours_planned
         if to_allocate < 0.0:
             return [], [], None
-        work_intervals, unforecastable_intervals, resource, partial_interval_slots = self.sudo().with_context(
-            default_end_datetime=self.env.context.get('default_end_datetime')
-        )._get_resource_work_info(vals, slot_vals_list_per_resource)
+        work_intervals, unforecastable_intervals, resource, partial_interval_slots = self.sudo()._get_resource_work_info(vals, slot_vals_list_per_resource)
         following_slots_vals_list = []
         if work_intervals:
             following_slots_vals_list = self._get_slots_values(
@@ -331,8 +326,6 @@ class PlanningSlot(models.Model):
         return following_slots_vals_list
 
     def _add_slot_to_list(self, start_datetime, end_datetime, resource, following_slots_vals_list, allocable=100.0):
-        if end_datetime <= start_datetime:
-            return
         allocated_hours = ((end_datetime - start_datetime).total_seconds() / 3600.0) * (allocable / 100.0)
         following_slots_vals_list.append({
             **self.sale_line_id._planning_slot_values(),
@@ -356,12 +349,12 @@ class PlanningSlot(models.Model):
             :param slot_vals_list_per_resource: a dict with the vals list that will be passed to the create method - sorted per key:resource_id
         """
         self.ensure_one()
-        assert self.env.context.get('default_end_datetime')
+        assert self.env.context.get('stop_date')
         if isinstance(vals['start_datetime'], str):
             start_dt = pytz.utc.localize(datetime.strptime(vals['start_datetime'], DEFAULT_SERVER_DATETIME_FORMAT))
         else:
             start_dt = pytz.utc.localize(vals['start_datetime'])
-        end_dt = pytz.utc.localize(datetime.strptime(self.env.context['default_end_datetime'], DEFAULT_SERVER_DATETIME_FORMAT))
+        end_dt = pytz.utc.localize(datetime.strptime(self.env.context['stop_date'], DEFAULT_SERVER_DATETIME_FORMAT))
         # retrieve the resource and its calendar validity intervals
         resource_calendar_validity_intervals, resource = self._get_slot_calendar_and_resource(vals, start_dt, end_dt)
         attendance_intervals = Intervals()
@@ -443,25 +436,25 @@ class PlanningSlot(models.Model):
         if priority in cache:
             return cache[priority].pop(0) if cache.get(priority) else None
         if priority == 'previous_slot':
-            search = self._read_group([
+            search = self.read_group([
                 ('sale_line_id', '=', self.sale_line_id.id),
                 ('employee_id', '!=', False),
                 ('start_datetime', '!=', False),
                 ('employee_id', 'not in', employee_ids_to_exclude),
-            ], ['employee_id'], order='end_datetime:max desc, employee_id')
-            cache[priority] = [employee.id for [employee] in search]
+            ], ['employee_id', 'end_datetime:max'], ['employee_id'], orderby='end_datetime desc')
+            cache[priority] = [res['employee_id'][0] for res in search]
         elif priority == 'default_role':
-            search = self.env['hr.employee'].sudo().search([
+            search = self.env['hr.employee'].sudo().search_read([
                 ('default_planning_role_id', '=', self.role_id.id),
                 ('id', 'not in', employee_ids_to_exclude),
-            ])
-            cache[priority] = search.ids
+            ], ['id'])
+            cache[priority] = [res['id'] for res in search]
         elif priority == 'roles':
-            search = self.env['hr.employee'].search([
+            search = self.env['hr.employee'].search_read([
                 ('planning_role_ids', '=', self.role_id.id),
                 ('id', 'not in', employee_ids_to_exclude),
-            ])
-            cache[priority] = search.ids
+            ], ['id'])
+            cache[priority] = [res['id'] for res in search]
         return cache[priority].pop(0) if cache.get(priority) else None
 
     def _get_employee_to_assign(self, default_priority, employee_ids_to_exclude, cache, employee_per_sol):
@@ -512,37 +505,30 @@ class PlanningSlot(models.Model):
             ('start_datetime', '<', end),
             ('end_datetime', '>', start),
             ('employee_id', '!=', False),
-        ], ['sale_line_id'], ['employee_id:array_agg'])
+        ], ['sale_line_id', 'employee_ids:array_agg(employee_id)'], ['sale_line_id'])
 
         return {
-            sale_line.id: employee_ids
-            for sale_line, employee_ids in employee_per_sol
+            sol['sale_line_id'][0]: sol['employee_ids']
+            for sol in employee_per_sol
         }
 
-    def _get_shifts_to_plan_domain(self, view_domain=None):
+    @api.model
+    def action_plan_sale_order(self, view_domain):
+        assert self.env.context.get('start_date') and self.env.context.get('stop_date'), "`start_date` and `stop_date` attributes should be in the context"
         new_view_domain = []
-        if view_domain:
-            for clause in view_domain:
-                if isinstance(clause, str) or clause[0] not in ['start_datetime', 'end_datetime']:
-                    new_view_domain.append(clause)
-                elif clause[0] in ['start_datetime', 'end_datetime']:
-                    new_view_domain.append([clause[0], '=', False])
-        else:
+        for clause in view_domain:
+            if isinstance(clause, str) or clause[0] not in ['start_datetime', 'end_datetime']:
+                new_view_domain.append(clause)
+            elif clause[0] in ['start_datetime', 'end_datetime']:
+                new_view_domain.append([clause[0], '=', False])
+        if not view_domain:
             new_view_domain = [('start_datetime', '=', False)]
         domain = expression.AND([new_view_domain, [('sale_line_id', '!=', False)]])
         if self.env.context.get('planning_gantt_active_sale_order_id'):
             domain = expression.AND([domain, [('sale_order_id', '=', self.env.context.get('planning_gantt_active_sale_order_id'))]])
-        return domain
-
-    @api.model
-    def auto_plan_ids(self, view_domain):
-        res = super(PlanningSlot, self).auto_plan_ids(view_domain)
-        if self._context.get('planning_slot_id'):
-            # It means we are looking to assign one shift in particular to an available resource, which we do in planning.
-            return res
-        slots_to_assign = self._get_ordered_slots_to_assign(self._get_shifts_to_plan_domain(view_domain))
-        start_datetime = max(datetime.strptime(self.env.context.get('default_start_datetime'), DEFAULT_SERVER_DATETIME_FORMAT), fields.Datetime.now().replace(hour=0, minute=0, second=0))
-        employee_per_sol = self._get_employee_per_sol_within_period(slots_to_assign, start_datetime, self.env.context.get('default_end_datetime'))
+        slots_to_assign = self._get_ordered_slots_to_assign(domain)
+        start_datetime = max(datetime.strptime(self.env.context.get('start_date'), DEFAULT_SERVER_DATETIME_FORMAT), fields.Datetime.now().replace(hour=0, minute=0, second=0))
+        employee_per_sol = self._get_employee_per_sol_within_period(slots_to_assign, start_datetime, self.env.context.get('stop_date'))
         PlanningShift = self.env['planning.slot']
         slots_assigned = PlanningShift
         employee_ids_to_exclude = []
@@ -563,13 +549,13 @@ class PlanningSlot(models.Model):
                     'end_datetime': start_datetime + timedelta(days=1),
                     'resource_id': employee.resource_id.id
                 }
-                # With the context keys, the maximal date to assign the slot will be self.env.context.get('default_end_datetime')
+                # With the context keys, the maximal date to assign the slot will be self.env.context.get('stop_date')
                 slot_assigned = slot.assign_slot(vals)
                 if not slot_assigned:
                     # if no slot was generated (it uses the write method), then the employee_id is excluded from the employees assignable on this slot.
                     employee_ids_to_exclude.append(employee_id)
             slots_assigned += slot_assigned
-        return res + slots_assigned.ids
+        return slots_assigned.ids
 
     # -------------------------------------------
     # Copy slots
@@ -588,9 +574,8 @@ class PlanningSlot(models.Model):
             # if the slot is linked to a slot, we only need to allocate the remaining hours to plan
             # we keep track of those hours in a dict and decrease it each time we create a slot.
             if self.sale_line_id not in remaining_hours_to_plan:
-                self.sale_line_id._compute_planning_hours_planned()
                 remaining_hours_to_plan[self.sale_line_id] = self.sale_line_id.planning_hours_to_plan - self.sale_line_id.planning_hours_planned
-            if float_utils.float_compare(remaining_hours_to_plan[self.sale_line_id], 0.0, precision_digits=2) != 1:
+            if float_utils.float_compare(remaining_hours_to_plan[self.sale_line_id], 0.0, precision_digits=2) < 1:
                 return False  # nothing left to allocate.
         return res
 
@@ -605,8 +590,8 @@ class PlanningSlot(models.Model):
 
             :return a bool representing wether or not there are still hours remaining
         """
-        if self.allocated_percentage and self.sale_line_id.product_id.planning_enabled:
-            if float_utils.float_compare(remaining_hours_to_plan[self.sale_line_id], 0.0, precision_digits=2) != 1:
+        if self.sale_line_id.product_id.planning_enabled:
+            if float_utils.float_compare(remaining_hours_to_plan[self.sale_line_id], 0.0, precision_digits=2) < 1:
                 return False
             # The allocated hours of the slot can be computed as for a slot with allocation_type == 'planning'
             # since it is build from an employee work interval, thus will last less than 24hours.
@@ -614,11 +599,12 @@ class PlanningSlot(models.Model):
             # Allocated_hours is discounted from remaining hours with a maximum of : remaining_hours
             # So, the difference between the two values must be checked, if remaining_hours is less than the
             # allocated hours, than update the end_datetime.
-            ratio = self.allocated_percentage / 100.00
-            remaining_hours = min(remaining_hours_to_plan[self.sale_line_id] / ratio, allocated_hours)
-            values['end_datetime'] = values['start_datetime'] + timedelta(hours=remaining_hours)
-            values.pop('allocated_hours', None) # we want that to be computed again.
-            remaining_hours_to_plan[self.sale_line_id] -= remaining_hours * ratio
+            if float_utils.float_compare(remaining_hours_to_plan[self.sale_line_id], allocated_hours, precision_digits=2) < 0:
+                remaining_hours = remaining_hours_to_plan[self.sale_line_id] * 100.0 / self.allocated_percentage
+                values['end_datetime'] = values['start_datetime'] + timedelta(hours=remaining_hours)
+                remaining_hours_to_plan[self.sale_line_id] -= remaining_hours
+            else:
+                remaining_hours_to_plan[self.sale_line_id] -= allocated_hours
         return True
 
     def action_unschedule(self):
@@ -659,17 +645,3 @@ class PlanningSlot(models.Model):
                 warning=_("This Sale Order Item doesn't have a target value of planned hours. Planned hours :")
             )
         return super()._gantt_progress_bar(field, res_ids, start, stop)
-
-    def _prepare_shift_vals(self):
-        return {
-            **super()._prepare_shift_vals(),
-            'sale_line_id': self.sale_line_id.id,
-        }
-
-    def _gantt_progress_bar_resource_id(self, res_ids, start, stop):
-        results = super()._gantt_progress_bar_resource_id(res_ids, start, stop)
-        resource_per_id = {r.id: r for r in self.env['resource.resource'].browse(list(results.keys()))}
-        for key, val in results.items():
-            resource = resource_per_id[key]
-            val['role_ids'] = resource.role_ids.ids
-        return results

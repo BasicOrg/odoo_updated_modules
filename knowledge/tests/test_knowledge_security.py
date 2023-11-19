@@ -81,15 +81,8 @@ class TestKnowledgeSecurity(KnowledgeArticlePermissionsCase):
 
         # MEMBERS
         my_members = self.env['knowledge.article.member'].search([])
-        self.assertEqual(len(my_members), 4)
-        self.assertEqual(
-            my_members, (
-                self.article_read_contents[0] |
-                self.article_read_contents[1] |
-                self.article_write_contents[2]
-            ).article_member_ids,
-            msg="Portal can read all members from articles he has access to"
-        )
+        self.assertEqual(len(my_members), 3)
+        self.assertEqual(my_members.partner_id, self.env.user.partner_id)
         sudo_members = self.article_roots.article_member_ids.with_env(self.env)
         with self.assertRaises(exceptions.AccessError,
                                msg='Breaking rule for portal'):

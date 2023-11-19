@@ -5,8 +5,6 @@ from collections import defaultdict
 
 from odoo import api, fields, models
 
-from .project_task import CLOSED_STATES
-
 class ProjectMilestone(models.Model):
     _name = 'project.milestone'
     _description = "Project Milestone"
@@ -27,7 +25,6 @@ class ProjectMilestone(models.Model):
     is_deadline_exceeded = fields.Boolean(compute="_compute_is_deadline_exceeded")
     is_deadline_future = fields.Boolean(compute="_compute_is_deadline_future")
     task_count = fields.Integer('# of Tasks', compute='_compute_task_count', groups='project.group_project_milestone')
-    done_task_count = fields.Integer('# of Done Tasks', compute='_compute_task_count', groups='project.group_project_milestone')
     can_be_marked_as_done = fields.Boolean(compute='_compute_can_be_marked_as_done', groups='project.group_project_milestone')
 
     @api.depends('is_reached')
@@ -48,40 +45,36 @@ class ProjectMilestone(models.Model):
 
     @api.depends('task_ids.milestone_id')
     def _compute_task_count(self):
-        all_and_done_task_count_per_milestone = {
-            milestone.id: (count, sum(state in CLOSED_STATES for state in state_list))
-            for milestone, count, state_list in self.env['project.task']._read_group(
-                [('milestone_id', 'in', self.ids), ('allow_milestones', '=', True)],
-                ['milestone_id'], ['__count', 'state:array_agg'],
-            )
-        }
+        task_read_group = self.env['project.task']._read_group([('milestone_id', 'in', self.ids), ('allow_milestones', '=', True)], ['milestone_id'], ['milestone_id'])
+        task_count_per_milestone = {res['milestone_id'][0]: res['milestone_id_count'] for res in task_read_group}
         for milestone in self:
-            milestone.task_count, milestone.done_task_count = all_and_done_task_count_per_milestone.get(milestone.id, (0, 0))
+            milestone.task_count = task_count_per_milestone.get(milestone.id, 0)
 
     def _compute_can_be_marked_as_done(self):
         if not any(self._ids):
             for milestone in self:
-                milestone.can_be_marked_as_done = not milestone.is_reached and all(milestone.task_ids.mapped(lambda t: t.state in CLOSED_STATES))
+                milestone.can_be_marked_as_done = not milestone.is_reached and all(milestone.task_ids.is_closed)
             return
-
         unreached_milestones = self.filtered(lambda milestone: not milestone.is_reached)
         (self - unreached_milestones).can_be_marked_as_done = False
-        task_read_group = self.env['project.task']._read_group(
-            [('milestone_id', 'in', unreached_milestones.ids)],
-            ['milestone_id', 'state'],
-            ['__count'],
-        )
-        task_count_per_milestones = defaultdict(lambda: (0, 0))
-        for milestone, state, count in task_read_group:
-            opened_task_count, closed_task_count = task_count_per_milestones[milestone.id]
-            if state in CLOSED_STATES:
-                closed_task_count += count
-            else:
-                opened_task_count += count
-            task_count_per_milestones[milestone.id] = opened_task_count, closed_task_count
-        for milestone in unreached_milestones:
-            opened_task_count, closed_task_count = task_count_per_milestones[milestone.id]
-            milestone.can_be_marked_as_done = closed_task_count > 0 and not opened_task_count
+        if unreached_milestones:
+            task_read_group = self.env['project.task']._read_group(
+                [('milestone_id', 'in', unreached_milestones.ids)],
+                ['milestone_id', 'is_closed', 'task_count:count(id)'],
+                ['milestone_id', 'is_closed'],
+                lazy=False,
+            )
+            task_count_per_milestones = defaultdict(lambda: (0, 0))
+            for res in task_read_group:
+                opened_task_count, closed_task_count = task_count_per_milestones[res['milestone_id'][0]]
+                if res['is_closed']:
+                    closed_task_count += res['task_count']
+                else:
+                    opened_task_count += res['task_count']
+                task_count_per_milestones[res['milestone_id'][0]] = opened_task_count, closed_task_count
+            for milestone in unreached_milestones:
+                opened_task_count, closed_task_count = task_count_per_milestones[milestone.id]
+                milestone.can_be_marked_as_done = closed_task_count > 0 and not opened_task_count
 
     def toggle_is_reached(self, is_reached):
         self.ensure_one()
@@ -109,13 +102,3 @@ class ProjectMilestone(models.Model):
 
     def _get_data_list(self):
         return [ms._get_data() for ms in self]
-
-    @api.returns('self', lambda value: value.id)
-    def copy(self, default=None):
-        if default is None:
-            default = {}
-        milestone_copy = super(ProjectMilestone, self).copy(default)
-        if self.project_id.allow_milestones:
-            milestone_mapping = self.env.context.get('milestone_mapping', {})
-            milestone_mapping[self.id] = milestone_copy.id
-        return milestone_copy

@@ -104,52 +104,41 @@ class FecImportWizard(models.TransientModel):
     # ------------------------------------
     # Generators
     # -----------------------------------
-    def _make_xml_id(self, prefix, key):
-        if '_' in prefix:
-            raise ValueError('`prefix` cannot contain an underscore')
-        key = key.replace(' ', '_')
-        return f"l10n_fr_fec_import.{self.company_id.id}_{prefix}_{key}"
-
-    def _parse_xml_id(self, xml_id):
-        components = xml_id.split('.', 1)[1].split('_', 2)
-        components[0] = int(components[0])
-        return components
 
     def _generator_fec_account_account(self, rows, cache):
         """ Import the accounts from the FEC file """
-        data = self.env['account.chart.template']._get_chart_template_data('fr')
-        template_data = data.pop('template_data')
-        accounts = cache['account.account'].copy()
-        new_ids = {}
 
-        digits = template_data['code_digits']
+        accounts_set = set()
+        digits = self.company_id.chart_template_id.code_digits
         for record in rows:
-            account_code_orig = record.get("CompteNum", "")
+            account_code = record.get("CompteNum", "")
             account_name = record.get("CompteLib", "")
-            account_code = account_code_orig[:digits] + account_code_orig[digits:].rstrip('0')
-            account_code_stripped = account_code.rstrip('0')
-            account_xml_id = self._make_xml_id('account', account_code)
-            if account_code_stripped in accounts.keys():
-                account = accounts[account_code_stripped]
-                if account_code not in new_ids:
-                    new_ids[account_code] = {
-                        'xml_id': account_xml_id,
-                        'record': account,
-                        'noupdate': True,
+
+            # Should the account appear in many lines, and the first not have the "reconcile" flag
+            # then it will eventually be applied by the account template or when reconciling the move_lines.
+            # The "reconcile" flag will then be set to True anyway, and this also applies
+            # for already existent accounts that will have moves with reconcilable lines
+            reconcile = bool(record.get("EcritureLet", ""))
+
+            # The accounts are matched with existing ones by stripping the trailing '0's from their codes.
+            if account_code and account_code not in accounts_set:
+                accounts_set.add(account_code)
+                existing = cache["account.account"].get(account_code.rstrip('0'), None)
+
+                # Shouldn't the account be found, if there are only zeroes after the 6th digit, they are truncated.
+                if not existing:
+                    account_code = account_code[:digits] + account_code[digits:].rstrip('0')
+                    data = {
+                        "company_id": self.company_id.id,
+                        "code": account_code,
+                        "name": account_name,
+                        "reconcile": reconcile,
+                        "account_type": 'asset_current',
                     }
-            else:
-                data = {
-                    "company_id": self.company_id.id,
-                    "code": account_code,
-                    "name": account_name,
-                    "account_type": 'asset_current',
-                }
-                cache['account.account'][account_code_stripped] = data
-                yield account_xml_id, data
-        self.env['ir.model.data']._update_xmlids(new_ids.values())
 
+                    yield data
 
-    def _shorten_code(self, value, max_len, cache, reserved_digits=2):
+    def _shorten_code(self, field_name, value, max_len, cache, reserved_digits=2):
         """ In case that given value is too long, this function shortens it like this:
 
             PACMAN, max_len=5, reserved_digits = 2 -> PAC01
@@ -167,75 +156,77 @@ class FecImportWizard(models.TransientModel):
         if len(value) <= max_len:
             return value
 
-        code_cache = cache.setdefault("mapping_journal_code", {})
+        mapping_key = "mapping_%s" % field_name
+        cache.setdefault(mapping_key, {})
 
-        if value in code_cache:
-            return code_cache[value]
+        if value in cache[mapping_key]:
+            return cache[mapping_key][value]
 
         prefix = value[0:(max_len - reserved_digits)]
         for idx in range(1, 10 ** reserved_digits):
             new_value = ("%%s%%0%dd" % reserved_digits) % (prefix, idx)
-            if new_value not in code_cache.values():
-                code_cache[value] = new_value
+            if new_value not in cache[mapping_key].values():
+                cache[mapping_key][value] = new_value
                 return new_value
 
         return False
 
     def _generator_fec_account_journal(self, rows, cache):
         """ Import the journals from fec data files """
-        journals = {journal.code: journal for journal in self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(self.company_id),
-        ])}
-        new_ids = {}
+
+        journals_set = set()
         for record in rows:
             journal_code = record.get("JournalCode")
+            journal_code = self._shorten_code('journal_code', journal_code, 5, cache)
             journal_name = record.get("JournalLib")
-            journal_xml_id = self._make_xml_id('journal', journal_code)
-            if journal_code in journals.keys():
-                journal = journals[journal_code]
-                if journal_code not in new_ids:
-                    new_ids[journal_code] = {
-                        'xml_id': journal_xml_id,
-                        'record': journal,
-                        'noupdate': True,
-                    }
-            data = {
-                "company_id": self.company_id.id,
-                "code": self._shorten_code(journal_code, 5, cache),
-                "name": "FEC-%s" % (journal_name or journal_code),
-                "type": "general"
-            }
-            yield journal_xml_id, data
 
-        self.env['ir.model.data']._update_xmlids(new_ids.values())
+            # Check for an existing journal
+            if journal_code and journal_code not in journals_set:
+                journals_set.add(journal_code)
+
+                # Journals are created with the "general" type
+                # The type will be inferred by _get_journal_type() once that the move_lines have been imported
+                existing = cache["account.journal"].get(journal_code, None)
+                if not existing:
+                    data = {
+                        "company_id": self.company_id.id,
+                        "code": journal_code,
+                        "name": "FEC-%s" % (journal_name or journal_code),
+                        "type": "general"
+                    }
+                    yield data
 
     def _generator_fec_res_partner(self, rows, cache):
         """ Import the partners from FEC data files """
+
+        partners_set = set()
         for record in rows:
             partner_ref = record.get("CompAuxNum", "")
             partner_name = record.get("CompAuxLib", "")
             account_code = record.get("CompteNum", "")
-            if partner_ref:
-                partner_ref = partner_ref.replace(' ', '_')
-                data = {
-                    "company_id": self.company_id.id,
-                    "name": partner_name,
-                    "ref": partner_ref,
-                }
 
-                # Setup account properties
-                if account_code:
-                    template_data = self.env['account.chart.template']._get_chart_template_data('fr').get('template_data')
-                    digits = template_data['code_digits']
-                    account_code = account_code[:digits] + account_code[digits:].rstrip('0')
-                    account = cache['account.account'].get(account_code.rstrip('0'))
-                    account_xml_id = self._make_xml_id('account', account_code)
-                    if account['account_type'] == 'asset_receivable':
-                        data["property_account_receivable_id"] = account_xml_id
-                    elif account['account_type'] == 'liability_payable':
-                        data["property_account_payable_id"] = account_xml_id
+            # Check for an existing partner with both the same name and ref
+            if partner_name and (partner_name, partner_ref) not in partners_set:
+                partners_set.add((partner_name, partner_ref))
 
-                yield self._make_xml_id('partner', partner_ref), data
+                # Check if the partner is already existing
+                existing = cache["res.partner"].get(partner_name, None)
+                if not existing or (partner_ref and partner_ref != existing.ref):
+                    data = {
+                        "company_id": self.company_id.id,
+                        "name": partner_name,
+                        "ref": partner_ref,
+                    }
+
+                    # Setup account properties
+                    account = account_code and cache["account.account"].get(account_code.rstrip('0'), None)
+                    if account:
+                        if account.account_type == 'asset_receivable':
+                            data["property_account_receivable_id"] = account.id
+                        elif account.account_type == 'liability_payable':
+                            data["property_account_payable_id"] = account.id
+
+                    yield data
 
     def _check_rounding_issues(self, moves_dict, balance_dict):
         """ If journals are unbalanced, check if they can be balanced by adding some counterpart line
@@ -243,11 +234,11 @@ class FecImportWizard(models.TransientModel):
 
         # Get the accounts for the debit and credit differences
         debit_account, credit_account = [
-            self.env["account.account"].search([
-                *self.env['account.account']._check_company_domain(self.company_id),
-                ('code', '=like', code),
-            ], order='code', limit=1)
-            for code in ('6580%', '7580%')
+            self.env["account.account"].search(
+                [('code', '=like', code), ('company_id', '=', self.company_id.id)],
+                order='code',
+                limit=1,
+            ) for code in ('6580%', '7580%')
         ]
 
         # Check the moves for rounding issues
@@ -274,7 +265,7 @@ class FecImportWizard(models.TransientModel):
 
         return imbalanced_journals
 
-    def _try_balance_moves(self, key_function, currency, journal_id, lines_grouped_by_date):
+    def _try_balance_moves(self, key_function, currency, journal_id, journal_code, lines_grouped_by_date):
         """ Try to balance moves by grouping them by date.
             The key_function is applied on the date to group lines toghether.
             Throws UnbalancedMovesError if the grouping cannot produce zero-balanced moves,
@@ -298,7 +289,6 @@ class FecImportWizard(models.TransientModel):
                 raise UnbalancedMovesError("Cannot group moves")
 
             # Build the keys with the same format that was used in moves_dict
-            _cid, _prefix, journal_code = self._parse_xml_id(journal_id)
             if len(key) == 2:
                 move_key = "%s/%04d%02d" % (journal_code, *key)
                 move_date = datetime.date(*key, 1)
@@ -327,11 +317,13 @@ class FecImportWizard(models.TransientModel):
         imbalanced_moves = []
         for move_key in list(moves_dict.keys()):
             if moves_dict[move_key]["journal_id"] in imbalanced_journals:
-                imbalanced_moves.append((move_key, moves_dict.pop(move_key)))
+                imbalanced_moves.append(moves_dict.pop(move_key))
 
         # For each journal, try to group it with different key functions
         # until you find one that produces groups of lines which are zero-balanced
+        journal_codes = {journal.id: journal_code for journal_code, journal in cache["account.journal"].items()}
         for journal_id in imbalanced_journals:
+            journal_code = journal_codes[journal_id]
             lines_grouped_by_date = imbalances[journal_id]
             for _grouping, key_function in [
                 ("day", lambda x: (x.year, x.month, x.day)),
@@ -341,7 +333,7 @@ class FecImportWizard(models.TransientModel):
                 # we save the moves and stop looking for other ways of grouping them.
                 try:
                     rebalanced_moves = self._try_balance_moves(
-                        key_function, currency, journal_id, lines_grouped_by_date)
+                        key_function, currency, journal_id, journal_code, lines_grouped_by_date)
                     moves_dict.update(rebalanced_moves)
                     break
                 except UnbalancedMovesError:
@@ -351,8 +343,9 @@ class FecImportWizard(models.TransientModel):
             # then alert the user that the file cannot be understood
             else:
                 balance_issues = ""
-                for key, move in imbalanced_moves:
-                    balance = balance_dict[key]["balance"]
+                for move in imbalanced_moves:
+                    balance_key = "%s/%s" % (journal_code, move["name"])
+                    balance = balance_dict[balance_key]["balance"]
                     if not float_is_zero(balance, precision_rounding=currency.rounding):
                         balance_issues += _("Move with name '%s' has a balance of %s\n",
                                             move["name"], float_repr(balance, currency.decimal_places))
@@ -382,7 +375,7 @@ class FecImportWizard(models.TransientModel):
         if credit < 0 or debit < 0:
             debit, credit = -credit, -debit
 
-        balance = currency.round(debit - credit)
+        balance = currency.round(credit - debit)
 
         return credit, debit, balance
 
@@ -421,45 +414,58 @@ class FecImportWizard(models.TransientModel):
             move_date = record.get("EcritureDate", "")
             move_date = (move_date and datetime.datetime.strptime(move_date, "%Y%m%d")) or piece_date
             partner_ref = record.get("CompAuxNum", "")
+            partner_name = record.get("CompAuxLib", "")
             journal_code = record.get("JournalCode", "")
 
             # Move line data ------------------------------------
-            template_data = self.env['account.chart.template']._get_chart_template_data('fr').get('template_data')
-            digits = template_data['code_digits']
             move_line_name = record.get("EcritureLib", "")
-            account_code_orig = record.get("CompteNum", "")
-            account_code = account_code_orig[:digits] + account_code_orig[digits:].rstrip('0')
-
+            account_code = record.get("CompteNum", "")
             currency_name = record.get("Idevise", "")
             amount_currency = self._normalize_float_value(record, "Montantdevise")
             matching = record.get("EcritureLet", "")
 
             # Move import --------------------------------------
 
+            # Journal
+            journal = cache["account.journal"].get(journal_code, None)
+            if not journal:
+
+                # Look for a shortened code
+                journal_code = cache.get("mapping_journal_code", {}).get(journal_code, None)
+                if journal_code:
+                    journal = cache["account.journal"].get(journal_code, None)
+
+                if not journal:
+                    raise UserError(_("Line %s has an invalid journal code", idx))
+
             # Use the journal and the move_name as key for the move in the moves_dict
-            move_key = self._make_xml_id('move', f"{journal_code}_{move_name}")
+            move_key = "%s/%s" % (journal.code, move_name)
 
             # Many move_lines may belong to the same move, the move info gets saved in the moves_dict
-            data = moves_dict.setdefault(move_key, {
+            data = moves_dict.get(move_key, {
                 "company_id": self.company_id.id,
                 "name": move_name,
                 "date": move_date,
                 "ref": piece_ref,
-                "journal_id": self._make_xml_id('journal', journal_code),
+                "journal_id": journal.id,
                 "line_ids": [],
             })
-            balance_data = balance_dict.setdefault(move_key, {"balance": 0.0, "matching": False})
+            balance_data = balance_dict.get(move_key, {"balance": 0.0, "matching": False})
 
             # Move line import ----------------------------------
+
+            # Account
+            account = cache["account.account"].get(account_code.rstrip('0'), None)
+            if not account:
+                raise UserError(_("Line %s has an invalid account %r", idx, account_code))
 
             # Build the basic data
             line_data = {
                 "company_id": self.company_id.id,
                 "name": move_line_name,
                 "ref": piece_ref,
-                "account_id": self._make_xml_id('account', account_code),
+                "account_id": account.id,
                 "fec_matching_number": matching or False,
-                "tax_ids": [],  # Avoid default taxes on the accounts to be set
             }
 
             # Save the matching number for eventual balance issues
@@ -468,15 +474,19 @@ class FecImportWizard(models.TransientModel):
             # Partner. As we are creating Journal Entries and not invoices/vendor bills,
             # the partner information will stay just on the line.
             # It may be updated in the post-processing after all the imports are done.
-            if partner_ref:
-                line_data["partner_id"] = self._make_xml_id('partner', partner_ref)
+            if partner_name:
+                partner = cache["res.partner"].get(partner_name, None)
+                if not partner:
+                    partner = cache["res.partner.ref"].get(partner_ref, None)
+                line_data["partner_id"] = partner.id if partner else False
 
             # Currency
-            if currency_name in cache["res.currency"] and amount_currency:
+            if currency_name in cache["res.currency"]:
                 currency = cache["res.currency"][currency_name]
                 line_data.update({
                     "currency_id": currency.id,
                     "amount_currency": amount_currency,
+                    "amount_residual_currency": amount_currency,
                 })
             else:
                 currency = self.company_id.currency_id
@@ -487,16 +497,13 @@ class FecImportWizard(models.TransientModel):
             line_data["debit"] = debit
             balance_data["balance"] = currency.round(balance_data["balance"] + balance)
 
-            # Montantdevise can be positive while the line is credited:
-            # => amount_currency and balance (debit - credit) should always have the same sign
-            if currency_name in cache["res.currency"] and amount_currency and line_data['amount_currency'] * balance < 0:
-                line_data["amount_currency"] *= -1
-
             # Append the move_line data to the move
             data["line_ids"].append(fields.Command.create(line_data))
 
             # Update the data in the moves_dict
-            imbalances[data['journal_id']][move_date].append(line_data)
+            moves_dict[move_key] = data
+            imbalances[journal.id][move_date].append(line_data)
+            balance_dict[move_key] = balance_data
 
         # Check for imbalanced journals, fix rounding issues
         imbalanced_journals = self._check_rounding_issues(moves_dict, balance_dict)
@@ -506,7 +513,7 @@ class FecImportWizard(models.TransientModel):
         if imbalanced_journals:
             self._check_imbalanced_journals(cache, moves_dict, balance_dict, imbalanced_journals, imbalances)
 
-        yield from moves_dict.items()
+        yield from moves_dict.values()
 
     # -----------------------------------
     # Templates
@@ -516,8 +523,12 @@ class FecImportWizard(models.TransientModel):
         """ Find all the templates for the considered entities.
             These templates will be used to fill out missing information coming from the records.
             For accounts, account_type and reconcile flags are used.  """
-        account_data = self.env['account.chart.template']._get_account_account('fr')
-        all_templates = {"account.account": {x['code']: x for x in account_data.values()}}
+
+        # account.account templates
+        domain = [('chart_template_id', '=', self.env.company.chart_template_id.id)]
+        account_templates = self.env["account.account.template"].search_read(domain, ['code', 'display_name', 'account_type', 'reconcile'])
+
+        all_templates = {"account.account": {x['code']: x for x in account_templates}}
         return all_templates
 
     def _apply_template(self, templates, model, record):
@@ -661,21 +672,25 @@ class FecImportWizard(models.TransientModel):
         self.env.cr.execute(sql, (tuple(moves.ids), ))
         for record in self.env.cr.fetchall():
             matched_move_line_ids, account_id = record
-            self.env["account.account"].browse(account_id).reconcile = True
-            lines = self.env["account.move.line"].browse(matched_move_line_ids)
+            self.env["account.account"].browse([account_id]).reconcile = True
+            self.env["account.move.line"].browse(matched_move_line_ids).with_context(no_exchange_difference=True).reconcile()
 
-            # Since the accounts are now 'reconcile', we need to force the update of the residual amounts.
-            self.env.add_to_compute(lines._fields['amount_residual'], lines)
-
-            lines.with_context(no_exchange_difference=True, no_cash_basis=True).reconcile()
+    def _post_process(self, journals, moves):
+        """ Post-process the imported entities.
+            Sets the partner_id on account.moves if they target Purchase/Sale Journals"""
+        for move in moves:
+            for move_line in move.line_ids:
+                if move_line.partner_id:
+                    move.partner_id = move_line.partner_id
+                    break
 
     def _build_import_cache(self):
         """ Build a cache with all the data needed by the generators, so that the query is done just one time """
 
         # Retrieve all the data from the database
-        accounts = self.env["account.account"].search(self.env['account.account']._check_company_domain(self.company_id))
-        journals = self.env["account.journal"].search(self.env['account.journal']._check_company_domain(self.company_id))
-        partners = self.env["res.partner"].search(self.env['res.partner']._check_company_domain(self.company_id))
+        accounts = self.env["account.account"].search([("company_id", "=", self.company_id.id)])
+        journals = self.env["account.journal"].search([("company_id", "=", self.company_id.id)])
+        partners = self.env["res.partner"].search([("company_id", "in", [self.company_id.id, False])])
         currencies = self.env["res.currency"].search([])
 
         # Build the cache dictionary
@@ -715,7 +730,7 @@ class FecImportWizard(models.TransientModel):
         """ Start the import by gathering generators and templates and applying them to attached files. """
 
         # Basic checks to start
-        if not self.company_id.account_fiscal_country_id or not self.company_id.chart_template:
+        if not self.company_id.account_fiscal_country_id or not self.company_id.chart_template_id:
             action = self.env.ref('account.action_account_config')
             raise RedirectWarning(_('You should install a Fiscal Localization first.'), action.id, _('Accounting Settings'))
 
@@ -737,7 +752,7 @@ class FecImportWizard(models.TransientModel):
         # Build a cache with all the cache needed by the generators, so that the query is done just one time
         cache = self._build_import_cache()
 
-        data = defaultdict(dict)
+        all_records = {}
         all_templates = self._gather_templates()
         rows = self._get_rows(self.attachment_id, self.attachment_name)
 
@@ -750,21 +765,26 @@ class FecImportWizard(models.TransientModel):
             model_templates = all_templates.get(model, {})
 
             # Generate the records for the model
-            records = defaultdict(dict)
+            records = []
             generator_name = "_generator_fec_%s" % model.replace(".", "_")
             generator = getattr(self, generator_name)
 
             # Loop over generated records and apply a template if a matching one is found
-            for xml_id, record in generator(rows, cache):
+            for idx, record in enumerate(generator(rows, cache)):
                 self._apply_template(model_templates, model, record)
-                records[xml_id].update(record)
+                records.append({"values": record})
 
-            data[model] = dict(records)
+                # Notify the user every 100 records
+                if idx and idx % 100 == 0:
+                    _logger.info("%5d records gathered", idx)
 
-        created_vals = self.env['account.chart.template']._load_data(data)
+            # Import records, then flush and update the cache with the inserted records
+            if records:
+                all_records[model] = self.env[model]._load_records(records)
+                self._update_import_cache(cache, model, all_records[model])
 
         # If there are moves, post them
-        moves = created_vals.get("account.move", [])
+        moves = all_records.get("account.move", [])
         if moves:
             _logger.info("Posting moves...")
             moves.action_post()
@@ -772,20 +792,18 @@ class FecImportWizard(models.TransientModel):
             _logger.info("Reconciling move_lines...")
             self._reconcile_imported_move_lines(moves)
 
-            for move in moves:
-                for move_line in move.line_ids:
-                    if move_line.partner_id:
-                        move.partner_id = move_line.partner_id
-                        break
+            journals = all_records.get("account.journal", [])
+            if journals:
+                journals_dict = {journal.id: journal for journal in cache["account.journal"].values()}
+                for journal_id, journal_type in self._get_journal_type(journals, ratio=0.7, min_moves=3):
+                    journal = journals_dict[journal_id]
+                    journal.type = journal_type
 
-        journals = created_vals.get("account.journal", [])
-        if journals:
-            for journal_id, journal_type in self._get_journal_type(journals, ratio=0.7, min_moves=3):
-                journal = self.env['account.journal'].browse(journal_id)
-                # The bank journal needs a default liquidity account and outstanding payments accounts to be set
-                if journal_type == 'bank':
-                    self._setup_bank_journal(journal)
-                journal.type = journal_type
+                    # The bank journal needs a default liquidity account and outstanding payments accounts to be set
+                    if journal_type == 'bank':
+                        self._setup_bank_journal(journal)
+
+                self._post_process(journals, moves)
 
         return {
             "type": "ir.actions.client",

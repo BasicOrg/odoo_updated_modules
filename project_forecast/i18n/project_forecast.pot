@@ -4,16 +4,22 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 22:21+0000\n"
+"POT-Creation-Date: 2022-10-04 09:43+0000\n"
+"PO-Revision-Date: 2022-10-04 09:43+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: project_forecast
+#: code:addons/project_forecast/models/project.py:0
+#, python-format
+msgid "%s's Planning"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.ui.menu,name:project_forecast.planning_menu_schedule_by_project
@@ -26,6 +32,7 @@ msgid "Let's start your planning by adding a new shift."
 msgstr ""
 
 #. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_template_inherit_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 msgid "My Projects"
@@ -39,7 +46,16 @@ msgid "No shifts found. Let's create one!"
 msgstr ""
 
 #. module: project_forecast
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_form_inherit_project_forecast
+msgid "Plan your resources for this project"
+msgstr ""
+
+#. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_project_view_form_simplified_inherit_forecast
+msgid "Plan your resources on project tasks"
+msgstr ""
+
+#. module: project_forecast
 #: code:addons/project_forecast/models/project.py:0
 #, python-format
 msgid "Planned"
@@ -47,6 +63,9 @@ msgstr ""
 
 #. module: project_forecast
 #: model:ir.actions.act_window,name:project_forecast.project_forecast_action_from_project
+#: model:ir.model.fields,field_description:project_forecast.field_planning_slot__allow_forecast
+#: model:ir.model.fields,field_description:project_forecast.field_project_project__allow_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_kanban_inherit_project_forecast
 msgid "Planning"
 msgstr ""
 
@@ -65,8 +84,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:project_forecast.field_planning_analysis_report__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot_template__project_id
-#: model_terms:ir.ui.view,arch_db:project_forecast.open_slots_list_template
 #: model_terms:ir.ui.view,arch_db:project_forecast.period_report_template
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.resource_planning_project_forecast
 msgid "Project"
@@ -91,7 +110,6 @@ msgid ""
 msgstr ""
 
 #. module: project_forecast
-#. odoo-python
 #: code:addons/project_forecast/controllers/main.py:0
 #, python-format
 msgid "Shift"

@@ -22,22 +22,14 @@
 }
 
 html[lang] > body.editor_enable [data-oe-translation-state] {
-    &, .o_translation_select_option, &[data-oe-field="mega_menu_content"] * {
-        background: rgba($o-we-content-to-translate-color, 0.5) !important;
-    }
+    background: rgba($o-we-content-to-translate-color, 0.5) !important;
 
     &[data-oe-translation-state="translated"] {
-        &, .o_translation_select_option, &[data-oe-field="mega_menu_content"] * {
-            background: rgba($o-we-translated-content-color, 0.5) !important;
-        }
+        background: rgba($o-we-translated-content-color, 0.5) !important;
     }
 
-    &.o_dirty, &.oe_translated, .oe_translated {
+    &.o_dirty {
         background: rgba($o-we-translated-content-color, 0.25) !important;
-
-        &[data-oe-field="mega_menu_content"] * {
-            background: rgba($o-we-translated-content-color, 0.25) !important;
-        }
     }
 }
 
@@ -52,10 +44,6 @@ html[data-edit_translations="1"] {
     opacity: 70%;
     position: relative;
 
-    &.d-lg-flex, &.d-md-flex, &.o_half_screen_height, &.o_full_screen_height {
-        // e.g. Useful if "Height" option (50% or 100%) is enabled.
-        display: flex !important;
-    }
     &::before {
         position: absolute;
         // Content is 0px wide => use available width.
@@ -67,17 +55,24 @@ html[data-edit_translations="1"] {
         font-size: 0px;
         content: "."; // Content is mandatory.
     }
-    &.d-md-none::before, &.d-lg-none::before {
+    &.d-md-none::before {
         height: 50px;
         -webkit-mask: url("/website/static/src/img/snippets_options/desktop_invisible.svg") no-repeat 100% 100%;
     }
-    &:not(.d-md-none):not(.d-lg-none)::before {
+    &:not(.d-md-none)::before {
         height: 30px;
         -webkit-mask: url("/website/static/src/img/snippets_options/mobile_invisible.svg") no-repeat 100% 100%;
     }
 }
 
 // SNIPPET PANEL
+$i: 1;
+@each $font-name, $font-config in $o-theme-font-configs {
+    we-toggler.o_we_option_font_#{$i}, we-button.o_we_option_font_#{$i} > div {
+        font-family: o-safe-get($font-config, 'family', $font-family-base);
+    }
+    $i: $i + 1;
+}
 .o_we_add_google_font_btn {
     border-top: 1px solid currentColor !important;
 }
@@ -161,26 +156,19 @@ html[data-edit_translations="1"] {
         > we-title {
             display: none
         }
-        .o_we_theme_colors_selector_group {
-            flex: 1 0 auto;
-            display: flex;
-            justify-content: flex-start;
-            padding-top: 2em;
+        .o_we_so_color_palette.o_we_user_value_widget {
 
-            > we-title {
-                font-style: italic;
-                white-space: nowrap;
-                position: absolute;
-                margin-top: -2em;
-            }
+            + .o_we_so_color_palette {
+                margin-left: $o-we-item-spacing * .5;
 
-            > .o_we_user_value_widget {
-                margin-right: $o-we-sidebar-content-field-multi-spacing;
+                &:nth-child(4) {
+                    margin-left: $o-we-item-spacing * 3;
+                }
             }
-        }
-        .o_we_so_color_palette.o_we_user_value_widget .o_we_color_preview {
-            width: $o-we-sidebar-content-field-colorpicker-size-large;
-            height: $o-we-sidebar-content-field-colorpicker-size-large;
+            .o_we_color_preview {
+                width: $o-we-sidebar-content-field-colorpicker-size-large;
+                height: $o-we-sidebar-content-field-colorpicker-size-large;
+            }
         }
         > div, we-select.o_we_theme_colors_select, we-toggler {
             display: flex;
@@ -190,8 +178,10 @@ html[data-edit_translations="1"] {
             width: 100%;
         }
         we-select.o_we_theme_colors_select {
+            justify-content: flex-end;
+            margin-left: auto;
+
             > div, we-toggler {
-                justify-content: flex-end;
                 height: 100%;
             }
 
@@ -219,10 +209,11 @@ html[data-edit_translations="1"] {
 
     // CC Edition
     .o_we_cc_preview_wrapper {
-        // Use box-shadow rather than borders in order to
+        // Use box-shadow rather than border-bottom in order to
         // avoid misalignments in the 'Options' tab.
-        border: $o-we-item-border-width solid $o-we-item-border-color;
-        box-shadow: 0 0 0 1px $o-we-sidebar-content-field-dropdown-border-color;
+        border: 1px solid;
+        border-color: rgba($o-we-item-standup-color-light, .2) $o-we-sidebar-content-field-dropdown-border-color transparent;
+        box-shadow: 0 1px 0 $o-we-item-standup-color-dark;
 
         + .o_we_collapse_toggler {
             height: 35px; // FIXME hardcoded...
@@ -240,54 +231,29 @@ html[data-edit_translations="1"] {
     border-bottom: none !important;
 }
 
-.pac-container { // google map autosuggestion (note: their CSS lib is not used)
+.pac-container { // google map autosuggestion
     z-index: $zindex-modal-backdrop; // > $o-we-zindex
-    width: ceil($o-we-sidebar-width * 0.9) !important;
+    width: $o-we-sidebar-width !important;
     font-size: $o-we-sidebar-font-size;
     margin-left: -$o-we-sidebar-width/2;
-    border: $o-we-sidebar-content-field-border-width solid $o-we-sidebar-content-field-dropdown-border-color;
     border-top: none;
-    border-radius: $o-we-item-border-radius;
-    overflow: hidden;
     background-color: $o-we-sidebar-content-field-dropdown-bg;
     box-shadow: $o-we-sidebar-content-field-dropdown-shadow;
-    margin-top: $o-we-sidebar-content-field-dropdown-spacing;
-    transform: translate(41px);
-
     &:after {
         display: none;
     }
-
     .pac-item {
-        @include o-text-overflow(block);
-        line-height: $o-we-sidebar-content-field-dropdown-item-height;
-        color: $o-we-sidebar-content-field-clickable-color;
-        padding: 0 1em 0 (2 * $o-we-sidebar-content-field-control-item-spacing + $o-we-sidebar-content-field-control-item-size);
         border-top: $o-we-sidebar-content-field-border-width solid lighten($o-we-sidebar-content-field-dropdown-border-color, 15%);
         border-radius: $o-we-sidebar-content-field-border-radius;
         background-color: $o-we-sidebar-content-field-clickable-bg;
         color: $o-we-sidebar-content-field-clickable-color;
-        font-size: $o-we-sidebar-font-size;
-
-        &:hover, &:focus, &.pac-item-selected {
+        &:hover {
             background-color: $o-we-sidebar-content-field-dropdown-item-bg-hover;
             cursor: pointer;
         }
-
-        .pac-icon-marker {
-            position: absolute;
-            margin-left: -1em;
-
-            &::after {
-                content: '\f041';
-                font-family: FontAwesome;
-            }
-        }
-
-        .pac-item-query {
-            margin-right: 0.4em;
-            color: inherit;
-        }
+    }
+    .pac-item-query {
+        color: $o-we-sidebar-content-field-clickable-color;
     }
 }
 

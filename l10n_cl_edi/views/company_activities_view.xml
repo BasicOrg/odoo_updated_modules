@@ -17,14 +17,12 @@
         <field name="model">l10n_cl.company.activities</field>
         <field name="arch" type="xml">
             <form string="SII Economic Activities">
-                <sheet>
-                    <group>
-                        <field name="code"/>
-                        <field name="name"/>
-                        <field name="tax_category"/>
-                        <field name="active"/>
-                    </group>
-                </sheet>
+                <group>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="tax_category"/>
+                    <field name="active"/>
+                </group>
             </form>
         </field>
     </record>
@@ -43,12 +41,13 @@
 
     <record model="ir.actions.act_window" id="act_partner_activities">
         <field name="name">SII Partner Activities</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">l10n_cl.company.activities</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <menuitem name="SII Partner Activities"
         id="menu_action_act_partner_activities"
-        action="act_partner_activities"
+        action="act_partner_activities" 
         parent="l10n_cl_edi.menu_sii_chile"/>
 </odoo>

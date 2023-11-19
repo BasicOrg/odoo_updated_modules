@@ -28,11 +28,18 @@ class Board(models.AbstractModel):
 
         res = super().get_view(view_id, view_type, **options)
 
-        custom_view = self.env['ir.ui.view.custom'].sudo().search([('user_id', '=', self.env.uid), ('ref_id', '=', view_id)], limit=1)
+        custom_view = self.env['ir.ui.view.custom'].search([('user_id', '=', self.env.uid), ('ref_id', '=', view_id)], limit=1)
         if custom_view:
             res.update({'custom_view_id': custom_view.id,
                         'arch': custom_view.arch})
         res['arch'] = self._arch_preprocessing(res['arch'])
+        return res
+
+    @api.model
+    def get_views(self, views, options=None):
+        res = super().get_views(views, options)
+        for view in res['views'].values():
+            view['toolbar'] = {'print': [], 'action': [], 'relate': []}
         return res
 
     @api.model

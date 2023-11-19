@@ -86,8 +86,8 @@ class StockWarehouse(models.Model):
         })
         return routes
 
-    def _generate_global_route_rules_values(self):
-        rules = super()._generate_global_route_rules_values()
+    def _get_global_route_rules_values(self):
+        rules = super(StockWarehouse, self)._get_global_route_rules_values()
         subcontract_location_id = self._get_subcontracting_location()
         production_location_id = self._get_production_location()
         rules.update({
@@ -98,7 +98,7 @@ class StockWarehouse(models.Model):
                     'company_id': self.company_id.id,
                     'action': 'pull',
                     'auto': 'manual',
-                    'route_id': self._find_global_route('stock.route_warehouse0_mto', _('Replenish on Order (MTO)'), raise_if_not_found=False).id,
+                    'route_id': self._find_global_route('stock.route_warehouse0_mto', _('Make To Order')).id,
                     'name': self._format_rulename(self.lot_stock_id, subcontract_location_id, 'MTO'),
                     'location_dest_id': subcontract_location_id.id,
                     'location_src_id': self.lot_stock_id.id,
@@ -116,7 +116,7 @@ class StockWarehouse(models.Model):
                     'action': 'pull',
                     'auto': 'manual',
                     'route_id': self._find_global_route('mrp_subcontracting.route_resupply_subcontractor_mto',
-                                                        _('Resupply Subcontractor on Order'), raise_if_not_found=False).id,
+                                                        _('Resupply Subcontractor on Order')).id,
                     'name': self._format_rulename(subcontract_location_id, production_location_id, False),
                     'location_dest_id': production_location_id.id,
                     'location_src_id': subcontract_location_id.id,
@@ -156,7 +156,7 @@ class StockWarehouse(models.Model):
 
     def _get_sequence_values(self, name=False, code=False):
         values = super(StockWarehouse, self)._get_sequence_values(name=name, code=code)
-        count = self.env['ir.sequence'].search_count([('prefix', '=like', self.code + '/SBC%/%')])
+        count = self.env['ir.sequence'].search_count([('prefix', 'like', self.code + '/SBC%/%')])
         values.update({
             'subcontracting_type_id': {
                 'name': self.name + ' ' + _('Sequence subcontracting'),
@@ -184,7 +184,7 @@ class StockWarehouse(models.Model):
                 'default_location_dest_id': production_location_id.id,
             },
             'subcontracting_resupply_type_id': {
-                'default_location_src_id': self.lot_stock_id.id,
+                'default_location_src_id': production_location_id.id,
                 'default_location_dest_id': subcontract_location_id.id,
                 'barcode': self.code.replace(" ", "").upper() + "-RESUPPLY",
                 'active': self.subcontracting_to_resupply and self.active

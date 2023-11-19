@@ -1,18 +1,17 @@
 /** @odoo-module **/
 
-import { Deferred } from "@web/core/utils/concurrency";
-import { useAutofocus, useForwardRefToParent, useService } from "@web/core/utils/hooks";
+import { useForwardRefToParent, useService } from "@web/core/utils/hooks";
 import { useDebounced } from "@web/core/utils/timing";
 import { getActiveHotkey } from "@web/core/hotkeys/hotkey_service";
 import { usePosition } from "@web/core/position_hook";
-import { Component, onWillUpdateProps, useExternalListener, useRef, useState } from "@odoo/owl";
+
+const { Component, useExternalListener, useRef, useState } = owl;
 
 export class AutoComplete extends Component {
     setup() {
         this.nextSourceId = 0;
         this.nextOptionId = 0;
         this.sources = [];
-        this.inEdition = false;
 
         this.state = useState({
             navigationRev: 0,
@@ -23,61 +22,27 @@ export class AutoComplete extends Component {
         });
 
         this.inputRef = useForwardRefToParent("input");
-        if (this.props.autofocus) {
-            useAutofocus({ refName: "input" });
-        }
         this.root = useRef("root");
-
-        this.debouncedProcessInput = useDebounced(async () => {
-            const currentPromise = this.pendingPromise;
-            this.pendingPromise = null;
-            this.props.onInput({
-                inputValue: this.inputRef.el.value,
-            });
-            try {
-                await this.open(true);
-                currentPromise.resolve();
-            } catch {
-                currentPromise.reject();
-            } finally {
-                if (currentPromise === this.loadingPromise) {
-                    this.loadingPromise = null;
-                }
-            }
-        }, this.constructor.timeout);
-
+        this.debouncedOnInput = useDebounced(this.onInput, this.constructor.timeout);
         useExternalListener(window, "scroll", this.onWindowScroll, true);
 
         this.hotkey = useService("hotkey");
         this.hotkeysToRemove = [];
 
-        onWillUpdateProps((nextProps) => {
+        owl.onWillUpdateProps((nextProps) => {
             if (this.props.value !== nextProps.value || this.forceValFromProp) {
                 this.forceValFromProp = false;
-                if (!this.inEdition) {
-                    this.state.value = nextProps.value;
-                    this.inputRef.el.value = nextProps.value;
-                }
+                this.state.value = nextProps.value;
+                this.inputRef.el.value = nextProps.value;
                 this.close();
             }
         });
 
         // position and size
-        if (this.props.dropdown) {
-            usePosition("sourcesList", () => this.targetDropdown, this.dropdownOptions);
-        } else {
-            this.open(false);
-        }
-    }
-
-    get targetDropdown() {
-        return this.inputRef.el;
-    }
-
-    get dropdownOptions() {
-        return {
+        usePosition(() => this.inputRef.el, {
+            popper: "sourcesList",
             position: "bottom-start",
-        };
+        });
     }
 
     get isOpened() {
@@ -95,7 +60,7 @@ export class AutoComplete extends Component {
 
     open(useInput = false) {
         this.state.open = true;
-        return this.loadSources(useInput);
+        this.loadSources(useInput);
     }
 
     close() {
@@ -103,13 +68,12 @@ export class AutoComplete extends Component {
         this.state.activeSourceOption = null;
     }
 
-    async loadSources(useInput) {
-        this.sources = [];
-        this.state.activeSourceOption = null;
+    loadSources(useInput) {
+        const sources = [];
         const proms = [];
         for (const pSource of this.props.sources) {
             const source = this.makeSource(pSource);
-            this.sources.push(source);
+            sources.push(source);
 
             const options = this.loadOptions(
                 pSource.options,
@@ -127,12 +91,10 @@ export class AutoComplete extends Component {
                 source.options = options.map((option) => this.makeOption(option));
             }
         }
-
-        await Promise.all(proms);
-        this.navigate(0);
-    }
-    get displayOptions() {
-        return !this.props.dropdown || (this.isOpened && this.hasOptions);
+        this.sources = sources;
+        Promise.all(proms).then(() => {
+            this.navigate(0);
+        });
     }
     loadOptions(options, request) {
         if (typeof options === "function") {
@@ -165,7 +127,6 @@ export class AutoComplete extends Component {
     }
     selectOption(indices, params = {}) {
         const option = this.sources[indices[0]].options[indices[1]];
-        this.inEdition = false;
         if (option.unselectable) {
             this.inputRef.el.value = "";
             this.close();
@@ -224,9 +185,7 @@ export class AutoComplete extends Component {
 
             if (source) {
                 const optionIndex = step < 0 ? source.options.length - 1 : 0;
-                if (optionIndex < source.options.length) {
-                    this.state.activeSourceOption = [sourceIndex, optionIndex];
-                }
+                this.state.activeSourceOption = [sourceIndex, optionIndex];
             }
         }
     }
@@ -244,7 +203,6 @@ export class AutoComplete extends Component {
             this.props.onBlur({
                 inputValue: value,
             });
-            this.inEdition = false;
             this.close();
         }
     }
@@ -260,52 +218,15 @@ export class AutoComplete extends Component {
             inputValue: this.inputRef.el.value,
         });
     }
-    async onInput() {
-        this.inEdition = true;
-        this.pendingPromise = this.pendingPromise || new Deferred();
-        this.loadingPromise = this.pendingPromise;
-        this.debouncedProcessInput();
+    onInput() {
+        this.props.onInput({
+            inputValue: this.inputRef.el.value,
+        });
+        this.open(true);
     }
 
-    onInputFocus(ev) {
-        this.inputRef.el.setSelectionRange(0, this.inputRef.el.value.length);
-        this.props.onFocus(ev);
-    }
-
-    get autoCompleteRootClass() {
-        let classList = "";
-        if (this.props.class) {
-            classList += this.props.class;
-        }
-        if (this.props.dropdown) {
-            classList += " dropdown";
-        }
-        return classList;
-    }
-
-    get ulDropdownClass() {
-        let classList = "";
-        if (this.props.dropdown) {
-            classList += " dropdown-menu ui-autocomplete";
-        } else {
-            classList += " list-group";
-        }
-        return classList;
-    }
-
-    async onInputKeydown(ev) {
+    onInputKeydown(ev) {
         const hotkey = getActiveHotkey(ev);
-        const isSelectKey = hotkey === "enter" || hotkey === "tab";
-
-        if (this.loadingPromise && isSelectKey) {
-            if (hotkey === "enter") {
-                ev.stopPropagation();
-                ev.preventDefault();
-            }
-
-            await this.loadingPromise;
-        }
-
         switch (hotkey) {
             case "enter":
                 if (!this.isOpened || !this.state.activeSourceOption) {
@@ -371,7 +292,7 @@ export class AutoComplete extends Component {
 Object.assign(AutoComplete, {
     template: "web.AutoComplete",
     props: {
-        value: { type: String, optional: true },
+        value: { type: String },
         id: { type: String, optional: true },
         onSelect: { type: Function },
         sources: {
@@ -391,21 +312,14 @@ Object.assign(AutoComplete, {
         onInput: { type: Function, optional: true },
         onChange: { type: Function, optional: true },
         onBlur: { type: Function, optional: true },
-        onFocus: { type: Function, optional: true },
         input: { type: Function, optional: true },
-        dropdown: { type: Boolean, optional: true },
-        autofocus: { type: Boolean, optional: true },
-        class: { type: String, optional: true },
     },
     defaultProps: {
-        value: "",
         placeholder: "",
         autoSelect: false,
-        dropdown: true,
         onInput: () => {},
         onChange: () => {},
         onBlur: () => {},
-        onFocus: () => {},
     },
     timeout: 250,
 });

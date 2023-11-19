@@ -1,7 +1,5 @@
 /** @odoo-module **/
-/* global checkVATNumber */
 
-import { loadJS } from "@web/core/assets";
 import { _t } from "@web/core/l10n/translation";
 import { KeepLast } from "@web/core/utils/concurrency";
 import { useService } from "@web/core/utils/hooks";
@@ -23,42 +21,8 @@ export function usePartnerAutocomplete() {
     const notification = useService("notification");
     const orm = useService("orm");
 
-    function sanitizeVAT(value) {
-        return value ? value.replace(/[^A-Za-z0-9]/g, '') : '';
-    }
-
-    async function isVATNumber(value) {
-        // Lazyload jsvat only if the component is being used.
-        await loadJS("/partner_autocomplete/static/lib/jsvat.js");
-
-        // checkVATNumber is defined in library jsvat.
-        // It validates that the input has a valid VAT number format
-        return checkVATNumber(sanitizeVAT(value));
-    }
-
-    async function checkGSTNumber(value) {
-        // Lazyload jsvat only if the component is being used.
-        // Check if the input is a valid GST number.
-        let isGST = false;
-        if (value && value.length === 15) {
-            const allGSTinRe = [
-                /\d{2}[a-zA-Z]{5}\d{4}[a-zA-Z][1-9A-Za-z][Zz1-9A-Ja-j][0-9a-zA-Z]/, // Normal, Composite, Casual GSTIN
-                /\d{4}[A-Z]{3}\d{5}[UO]N[A-Z0-9]/, // UN/ON Body GSTIN
-                /\d{4}[a-zA-Z]{3}\d{5}NR[0-9a-zA-Z]/, // NRI GSTIN
-                /\d{2}[a-zA-Z]{4}[a-zA-Z0-9]\d{4}[a-zA-Z][1-9A-Za-z][DK][0-9a-zA-Z]/, // TDS GSTIN
-                /\d{2}[a-zA-Z]{5}\d{4}[a-zA-Z][1-9A-Za-z]C[0-9a-zA-Z]/ // TCS GSTIN
-            ];
-
-            isGST = allGSTinRe.some((re) => re.test(value));
-        }
-
-        return isGST;
-    }
-
-    async function autocomplete(value) {
+    function autocomplete(value, isVAT = false) {
         value = value.trim();
-
-        const isVAT = await isVATNumber(value) || await checkGSTNumber(value);
         let odooSuggestions = [];
         let clearbitSuggestions = [];
         return new Promise((resolve, reject) => {
@@ -328,5 +292,5 @@ export function usePartnerAutocomplete() {
             notification.add(title);
         }
     }
-    return { autocomplete, getCreateData, isVATNumber };
+    return { autocomplete, getCreateData };
 }

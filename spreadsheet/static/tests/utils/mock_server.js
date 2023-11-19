@@ -7,7 +7,7 @@ registry
     .add("res.currency/get_currencies_for_spreadsheet", function (route, args) {
         const currencyNames = args.args[0];
         const result = [];
-        for (const currencyName of currencyNames) {
+        for (let currencyName of currencyNames) {
             const curr = this.models["res.currency"].records.find(
                 (curr) => curr.name === currencyName
             );

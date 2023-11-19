@@ -10,9 +10,8 @@
 Create Credit Notes from Helpdesk tickets
     """,
     'data': [
-        'data/mail_message_subtype_data.xml',
         'wizard/account_move_reversal_views.xml',
-        'views/helpdesk_ticket_views.xml',
+        'views/helpdesk_views.xml',
     ],
     'demo': [
        'data/helpdesk_account_demo.xml'

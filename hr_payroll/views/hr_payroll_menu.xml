@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
+     <!-- Root Menus -->
+    <menuitem id="menu_hr_payroll_root" name="Payroll" sequence="195" web_icon="hr_payroll,static/description/icon.svg" groups="hr_payroll.group_hr_payroll_employee_manager"/>
+
     <menuitem
         id="menu_hr_payroll_dashboard_root"
         name="Dashboard"
@@ -38,6 +41,14 @@
         groups="hr_payroll.group_hr_payroll_manager"/>
 
     <!-- **** Employees **** -->
+    <menuitem
+        id="menu_hr_payroll_contracts_configuration"
+        name="Employees"
+        action="hr_contract.hr_contract_history_view_list_action"
+        parent="menu_hr_payroll_employees_root"
+        groups="hr_payroll.group_hr_payroll_manager"
+        sequence="20"/>
+
     <menuitem
         id="hr_menu_all_contracts"
         name="Contracts"
@@ -160,10 +171,4 @@
         name="Other Input Types"
         sequence="40"/>
 
-    <menuitem
-        id="menu_hr_salary_attachment_type"
-        action="action_hr_salary_attachment_type"
-        parent="menu_hr_salary_configuration"
-        name="Salary Attachment Types"
-        sequence="45"/>
 </odoo>

@@ -4,7 +4,7 @@ import { formatDate, deserializeDate } from "@web/core/l10n/dates";
 import { useService } from "@web/core/utils/hooks";
 import { Dialog } from "@web/core/dialog/dialog";
 
-import { useState, Component } from "@odoo/owl";
+const { useState, Component } = owl;
 
 export class StudioApprovalInfos extends Component {
     setup() {

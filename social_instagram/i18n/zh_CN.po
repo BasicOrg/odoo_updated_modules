@@ -3,16 +3,17 @@
 # 	* social_instagram
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,23 +27,23 @@ msgstr "34秒前"
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
-msgstr "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
+msgstr "<i class=\"fa fa-comments\" title=“评论”/>"
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-heart me-1\" title=\"Likes\"/>"
-msgstr "<i class=\"fa fa-heart me-1\" title=\"Likes\"/>"
+msgid "<i class=\"fa fa-heart\" title=\"Likes\"/>"
+msgstr "<i class=\"fa fa-heart\" title=“喜欢”/>"
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 msgid "<span class=\"fw-bold pe-1\">My_instagram_page</span>"
-msgstr "<span class=\"fw-bold pe-1\">My_instagram_page</span>"
+msgstr ""
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 msgid "<span class=\"mt-1 fw-bold\">My Instagram Page</span>"
-msgstr "<span class=\"mt-1 fw-bold\">我的Instagram页面</span>"
+msgstr ""
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
@@ -62,7 +63,6 @@ msgid "Access Token"
 msgstr "访问令牌"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/models/social_post.py:0
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 #, python-format
@@ -80,7 +80,7 @@ msgid "App Secret"
 msgstr "App 密钥"
 
 #. module: social_instagram
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_instagram/static/src/xml/social_instagram_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_instagram.social_stream_post_view_kanban
 #, python-format
@@ -100,7 +100,6 @@ msgid "Config Settings"
 msgstr "配置设置"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/controllers/main.py:0
 #, python-format
 msgid "Could not find any account to add."
@@ -164,8 +163,8 @@ msgid "Instagram App Secret"
 msgstr "Instagram 应用密钥"
 
 #. module: social_instagram
-#. odoo-javascript
-#: code:addons/social_instagram/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_instagram/static/src/js/stream_post_instagram_comments.js:0
 #: model:ir.model.fields,field_description:social_instagram.field_social_stream_post__instagram_comments_count
 #, python-format
 msgid "Instagram Comments"
@@ -174,7 +173,7 @@ msgstr "Instagram评论"
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.res_config_settings_view_form
 msgid "Instagram Developer Account"
-msgstr "Instagram开发者账户"
+msgstr ""
 
 #. module: social_instagram
 #: model:ir.model.fields,field_description:social_instagram.field_social_account__instagram_facebook_account_id
@@ -220,14 +219,13 @@ msgid "Instagram Preview"
 msgstr "Instagram预览"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/controllers/main.py:0
 #, python-format
 msgid "Instagram did not provide a valid access token."
 msgstr "Instagram没有提供一个有效的访问令牌。"
 
 #. module: social_instagram
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_instagram/static/src/xml/social_instagram_templates.xml:0
 #, python-format
 msgid "Likes"
@@ -239,7 +237,12 @@ msgid "Media Type"
 msgstr "媒体类型"
 
 #. module: social_instagram
-#. odoo-python
+#: code:addons/social_instagram/controllers/main.py:0
+#, python-format
+msgid "No Instagram accounts linked with your Facebook page"
+msgstr "没有与您的Facebook页面链接的Instagram账户"
+
+#. module: social_instagram
 #: code:addons/social_instagram/models/social_post.py:0
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 #, python-format
@@ -255,13 +258,6 @@ msgstr "只有第一张附图会被张贴在Instagram上。"
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 msgid "Post Image"
 msgstr "文章图像"
-
-#. module: social_instagram
-#. odoo-python
-#: code:addons/social_instagram/controllers/main.py:0
-#, python-format
-msgid "Read More about Instagram Accounts"
-msgstr "了解更多关于 Instagram 账户的信息"
 
 #. module: social_instagram
 #: model:ir.model,name:social_instagram.model_social_account
@@ -306,14 +302,12 @@ msgid ""
 msgstr "该Instagram帖子作者的Facebook ID，用于获取个人资料图片。"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/controllers/main.py:0
 #, python-format
 msgid "There was a authentication issue during your request."
 msgstr "在您的请求中，有一个认证问题。"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator."
@@ -338,25 +332,12 @@ msgid ""
 msgstr "当我们需要将某些功能限制在特定的媒体（'facebook', 'twitter', ...）时，用于进行比较。"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr "你没有一个有效的订阅。请在这里购买一个:%s"
 
 #. module: social_instagram
-#. odoo-python
-#: code:addons/social_instagram/controllers/main.py:0
-#, python-format
-msgid ""
-"You need to link your Instagram page to your Facebook account to post with Odoo Social.\n"
-" Please create one and make sure it is linked to your account."
-msgstr ""
-"您需要将 Instagram 页面链接到 Facebook 帐户，才能使用 Odoo Social 发布信息。\n"
-"请创建一个Instagram页面并确保将其链接到您的账户。"
-
-#. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/models/social_post.py:0
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview
 #, python-format
@@ -364,13 +345,19 @@ msgid "Your image appears to be corrupted, please try loading it again."
 msgstr "您的图像似乎被破坏了，请尝试重新加载它。"
 
 #. module: social_instagram
-#. odoo-python
 #: code:addons/social_instagram/models/social_post.py:0
 #, python-format
 msgid ""
 "Your image has to be within the 4:5 and the 1.91:1 aspect ratio as required "
 "by Instagram."
 msgstr "您的图像必须在Instagram要求的4:5和1.91:1的长宽比之内。"
+
+#. module: social_instagram
+#. openerp-web
+#: code:addons/social_instagram/static/src/js/stream_post_instagram_comments.js:0
+#, python-format
+msgid "comment/reply"
+msgstr "评论/回复"
 
 #. module: social_instagram
 #: model_terms:ir.ui.view,arch_db:social_instagram.instagram_preview

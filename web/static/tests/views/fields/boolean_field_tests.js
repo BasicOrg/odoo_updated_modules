@@ -190,10 +190,9 @@ QUnit.module("Fields", (hooks) => {
             "the row is now selected, in edition"
         );
         assert.ok(
-            !cell.querySelector(".o-checkbox input:not(:checked)").disabled,
-            "input should now be enabled and unchecked"
+            !cell.querySelector(".o-checkbox input:checked").disabled,
+            "input should now be enabled"
         );
-        await click(cell, ".o-checkbox");
         await click(cell);
         assert.notOk(
             cell.querySelector(".o-checkbox input:checked").disabled,
@@ -221,8 +220,9 @@ QUnit.module("Fields", (hooks) => {
             "should now have only 3 checked input"
         );
 
-        // Fake-check the checkbox
+        // Re-Edit the line and fake-check the checkbox
         await click(cell);
+        await click(cell, ".o-checkbox");
         await click(cell, ".o-checkbox");
 
         // Save
@@ -271,36 +271,6 @@ QUnit.module("Fields", (hooks) => {
             target,
             ".o_field_boolean input:disabled",
             "checkbox should still be disabled"
-        );
-    });
-
-    QUnit.test("onchange return value before toggle checkbox", async function (assert) {
-        serverData.models.partner.onchanges = {
-            bar(obj) {
-                obj.bar = true;
-            },
-        };
-
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            resId: 1,
-            serverData,
-            arch: `<form><field name="bar"/></form>`,
-        });
-
-        assert.containsOnce(
-            target,
-            ".o_field_boolean input:checked",
-            "checkbox should still be checked"
-        );
-
-        await click(target, ".o_field_boolean .o-checkbox");
-        await nextTick();
-        assert.containsOnce(
-            target,
-            ".o_field_boolean input:checked",
-            "checkbox should still be checked"
         );
     });
 });

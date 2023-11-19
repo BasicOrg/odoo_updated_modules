@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="rating_rating_view_tree_inherit_helpdesk" model="ir.ui.view">
         <field name="name">rating.rating.tree.helpdesk</field>
         <field name="model">rating.rating</field>
@@ -115,6 +114,9 @@
             <filter name="customer" position="after">
                 <filter string="Helpdesk Team" name="res_team" context="{'group_by':'parent_res_name'}"/>
             </filter>
+            <filter name="resource" position="attributes">
+                <attribute name="string">Ticket</attribute>
+            </filter>
             <xpath expr="//filter[@name='resource']" position="after">
                 <filter name="rating_text" position="move"/>
             </xpath>
@@ -137,14 +139,8 @@
             <field name="resource_ref" position="attributes">
                 <attribute name="string">Ticket</attribute>
             </field>
-            <field name="parent_ref" position="after">
-                <field name="resource_ref" position="move"/>
-            </field>
             <field name="parent_ref" position="attributes">
-                <attribute name="string">Team</attribute>
-            </field>
-            <field name="parent_ref" position="before">
-                <field name="rated_partner_id" position="move"/>
+                <attribute name="string">Helpdesk Team</attribute>
             </field>
             <field name="rated_partner_id" position="attributes">
                 <attribute name="string">Assigned to</attribute>
@@ -159,24 +155,15 @@
             <field name="feedback" position="attributes">
                 <attribute name="readonly">1</attribute>
             </field>
-            <field name="create_date" position="after">
-                <field name="is_internal" position="move"/>
-            </field>
             <div name="rating_image_container" position="replace">
                 <label for="rating_text"/>
                 <div name="rating_image_container">
-                    <field name="rating_text" decoration-danger="rating_text == 'ko'" decoration-warning="rating_text == 'ok'" decoration-success="rating_text == 'top'" widget="badge"/>
+                    <field name="rating_text" decoration-danger="rating_text == 'ko'" decoration-warning="rating_text == 'ok'" decoration-success="rating_text == 'top'" class="fw-bold"/>
                 </div>
             </div>
-        </field>
-    </record>
-
-     <record id="helpdesk_ratings_server_action" model="ir.actions.server">
-        <field name="name">helpdesk view rating</field>
-        <field name="model_id" ref="helpdesk.model_helpdesk_team"/>
-        <field name="state">code</field>
-        <field name="code">
-            action = model.action_view_helpdesk_rating()
+            <xpath expr="//sheet/group" position="inside">
+                <field name="feedback" position="move"/>
+            </xpath>
         </field>
     </record>
 
@@ -233,4 +220,11 @@
         <field name="view_id" ref="rating_rating_view_graph_inherit_helpdesk"/>
     </record>
 
+    <menuitem
+        id="helpdesk_ticket_report_menu_ratings"
+        name="Customer Ratings"
+        action="rating_rating_action_helpdesk"
+        sequence="30"
+        groups="helpdesk.group_use_rating"
+        parent="helpdesk_ticket_report_menu_main"/>
 </odoo>

@@ -1,5 +1,4 @@
-from odoo import fields, models, api, _
-from odoo.exceptions import UserError
+from odoo import fields, models
 
 
 class SpreadsheetDashboardGroup(models.Model):
@@ -7,14 +6,6 @@ class SpreadsheetDashboardGroup(models.Model):
     _description = 'Group of dashboards'
     _order = 'sequence'
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(required=True)
     dashboard_ids = fields.One2many('spreadsheet.dashboard', 'dashboard_group_id')
     sequence = fields.Integer()
-
-    @api.ondelete(at_uninstall=False)
-    def _unlink_except_spreadsheet_data(self):
-        external_ids = self.get_external_id()
-        for group in self:
-            external_id = external_ids[group.id]
-            if external_id and not external_id.startswith('__export__'):
-                raise UserError(_("You cannot delete %s as it is used in another module.", group.name))

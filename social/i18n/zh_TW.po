@@ -3,17 +3,16 @@
 # 	* social
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,14 +25,13 @@ msgid "# Accounts"
 msgstr "# Accounts"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid "%s (max %s chars)"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid ", you must first link a social media."
@@ -50,22 +48,12 @@ msgid "<i class=\"fa fa-globe\" title=\"See the post\"/>"
 msgstr ""
 
 #. module: social
-#: model_terms:ir.ui.view,arch_db:social.social_http_error_view
-msgid "<i class=\"oi oi-arrow-left\"/> Go back to Odoo"
-msgstr ""
-
-#. module: social
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_kanban
-msgid "<small class=\"pe-1\">Clicks:</small>"
-msgstr ""
+msgid "<small>Clicks:</small>"
+msgstr "<small>點擊：</small>"
 
 #. module: social
-#: model_terms:ir.ui.view,arch_db:social.social_post_view_kanban
-msgid "<small class=\"pe-1\">Engagement:</small>"
-msgstr ""
-
-#. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid ""
@@ -77,7 +65,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:social.field_social_media__message_needaction
 #: model:ir.model.fields,field_description:social.field_social_post__message_needaction
 msgid "Action Needed"
-msgstr "需要採取行動"
+msgstr "需採取行動"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_account__active
@@ -105,11 +93,12 @@ msgid "Activity Type Icon"
 msgstr "活動類型圖示"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Add"
-msgstr "加入"
+msgstr "增加"
 
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.utm_campaign_view_form
@@ -117,7 +106,7 @@ msgid "Add Post"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/add_stream_modal.js:0
 #: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
@@ -131,14 +120,14 @@ msgid "Add a stream"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Add an image"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "All Companies"
@@ -157,7 +146,7 @@ msgstr ""
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.social_account_view_search
 msgid "Archived"
-msgstr "已封存"
+msgstr "已歸檔"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_post__has_active_accounts
@@ -178,7 +167,7 @@ msgid "Attachment Count"
 msgstr "附件數"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model:ir.model.fields,field_description:social.field_social_account__audience
 #, python-format
@@ -225,15 +214,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:social.field_social_post__calendar_date
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_search
 msgid "Calendar Date"
-msgstr "日曆日期"
+msgstr ""
 
 #. module: social
-#: model:ir.model.fields,field_description:social.field_social_post__utm_campaign_id
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_form
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_search
 #: model_terms:ir.ui.view,arch_db:social.utm_campaign_view_form_quick_create_social
 msgid "Campaign"
-msgstr "行銷活動"
+msgstr "行銷"
 
 #. module: social
 #: model:ir.actions.act_window,name:social.action_view_utm_campaigns
@@ -250,11 +238,12 @@ msgstr "行銷活動用於集中您的營銷工作並跟踪其結果。"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_media__can_link_accounts
-msgid "Can link accounts?"
+msgid "Can link accounts ?"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_comment_delete.js:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_form
 #, python-format
@@ -262,15 +251,15 @@ msgid "Cancel"
 msgstr "取消"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Choose which <b>account</b> you would like to link first."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/xml/social_templates.xml:0
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_kanban_renderer.js:0
 #, python-format
 msgid "Click to refresh."
 msgstr ""
@@ -281,11 +270,18 @@ msgid "Clicks"
 msgstr "點選"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Comment Image"
 msgstr ""
+
+#. module: social
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_comments.js:0
+#, python-format
+msgid "Comments"
+msgstr "備註"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_account__company_id
@@ -302,7 +298,7 @@ msgstr "公司"
 #. module: social
 #: model:ir.model,name:social.model_res_config_settings
 msgid "Config Settings"
-msgstr "配置設定"
+msgstr "設定"
 
 #. module: social
 #: model:ir.ui.menu,name:social.menu_social_configuration
@@ -310,7 +306,7 @@ msgid "Configuration"
 msgstr "配置"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Connecting Problem"
@@ -321,7 +317,7 @@ msgstr ""
 msgid ""
 "Contains the social media handle of the person that created this account. "
 "E.g: '@odoo.official' for the 'Odoo' Twitter account"
-msgstr "對於建立此帳戶的人，此處包括其社交媒體用戶名稱。例如：@odoo.official 即是 Odoo 的官方 Twitter 帳戶"
+msgstr ""
 
 #. module: social
 #: model:ir.model.fields,help:social.field_social_live_post__message
@@ -351,7 +347,6 @@ msgid "Create a Post"
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_account.py:0
 #, python-format
 msgid ""
@@ -370,7 +365,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:social.field_social_stream_post_image__create_uid
 #: model:ir.model.fields,field_description:social.field_social_stream_type__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_account__create_date
@@ -398,8 +393,8 @@ msgid "Defines whether this account has statistics tends or not."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/stream_post_comment.js:0
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_comment_delete.js:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Delete Comment"
@@ -434,10 +429,10 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/stream_post_comment.js:0
+#. openerp-web
+#: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
-msgid "Do you really want to delete %s"
+msgid "Do you really want to delete that"
 msgstr ""
 
 #. module: social
@@ -446,7 +441,6 @@ msgid "Draft"
 msgstr "草稿"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid ""
@@ -455,7 +449,7 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Edit Comment"
@@ -469,12 +463,12 @@ msgstr ""
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.res_config_settings_view_form
 msgid ""
-"Enable this option and load demo data to test the social module. This must "
-"never be used on a production database!"
+"Enable this option and load demo data to test the social module.<br/>\n"
+"                                        This must never be used on a production database!"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model:ir.model.fields,field_description:social.field_social_account__engagement
 #: model:ir.model.fields,field_description:social.field_social_live_post__engagement
@@ -516,7 +510,6 @@ msgid "Feed"
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_form
 #, python-format
@@ -557,6 +550,11 @@ msgid ""
 msgstr ""
 
 #. module: social
+#: model_terms:ir.ui.view,arch_db:social.social_http_error_view
+msgid "Go back to Odoo"
+msgstr ""
+
+#. module: social
 #: model_terms:ir.actions.act_window,help:social.action_social_stream
 msgid "Go to the"
 msgstr ""
@@ -575,7 +573,7 @@ msgid "Handle / Short Name"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Happy with the result? Let's post it!"
@@ -598,11 +596,6 @@ msgid "Has Trends?"
 msgstr ""
 
 #. module: social
-#: model:ir.model.fields,field_description:social.field_social_post__is_hatched
-msgid "Hatched"
-msgstr "Hatched"
-
-#. module: social
 #: model:ir.model.fields,field_description:social.field_social_account__id
 #: model:ir.model.fields,field_description:social.field_social_live_post__id
 #: model:ir.model.fields,field_description:social.field_social_media__id
@@ -613,7 +606,7 @@ msgstr "Hatched"
 #: model:ir.model.fields,field_description:social.field_social_stream_post_image__id
 #: model:ir.model.fields,field_description:social.field_social_stream_type__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_post__activity_exception_icon
@@ -643,7 +636,7 @@ msgstr "勾選代表有訊息發生傳送錯誤。"
 #: model:ir.model.fields,field_description:social.field_social_account__image
 #: model:ir.model.fields,field_description:social.field_social_media__image
 msgid "Image"
-msgstr "圖片"
+msgstr "圖像"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_stream_post_image__image_url
@@ -651,7 +644,7 @@ msgid "Image URL"
 msgstr "圖像網址"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Image Url"
@@ -669,15 +662,10 @@ msgid "Images that were shared with this post."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Insights"
-msgstr ""
-
-#. module: social
-#: model:ir.model.fields,field_description:social.field_social_stream_post__is_author
-msgid "Is Author"
 msgstr ""
 
 #. module: social
@@ -687,7 +675,7 @@ msgid "Is Follower"
 msgstr "是關注人"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid ""
@@ -696,11 +684,24 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #, python-format
 msgid "It will appear in the Feed once it has posts to display."
 msgstr ""
+
+#. module: social
+#: model:ir.model.fields,field_description:social.field_social_account____last_update
+#: model:ir.model.fields,field_description:social.field_social_live_post____last_update
+#: model:ir.model.fields,field_description:social.field_social_media____last_update
+#: model:ir.model.fields,field_description:social.field_social_post____last_update
+#: model:ir.model.fields,field_description:social.field_social_post_template____last_update
+#: model:ir.model.fields,field_description:social.field_social_stream____last_update
+#: model:ir.model.fields,field_description:social.field_social_stream_post____last_update
+#: model:ir.model.fields,field_description:social.field_social_stream_post_image____last_update
+#: model:ir.model.fields,field_description:social.field_social_stream_type____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_account__write_uid
@@ -729,35 +730,35 @@ msgid "Last Updated on"
 msgstr "最後更新於"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Let's <b>connect</b> to Facebook, LinkedIn or Twitter."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Let's create your own <b>social media</b> dashboard."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Let's start posting."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Like"
-msgstr "讚好"
+msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Likes"
@@ -769,7 +770,7 @@ msgid "Link Description"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social.social_stream_post_view_kanban
@@ -790,10 +791,10 @@ msgstr ""
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_stream_post__link_url
 msgid "Link URL"
-msgstr "連結網址"
+msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Link a new account"
@@ -850,11 +851,17 @@ msgid "Live Posts by Social Media"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Load more comments..."
 msgstr ""
+
+#. module: social
+#: model:ir.model.fields,field_description:social.field_social_media__message_main_attachment_id
+#: model:ir.model.fields,field_description:social.field_social_post__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "主要附件"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_media__max_post_length
@@ -894,18 +901,16 @@ msgid "Message Length"
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid "Message posted"
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid ""
-"Message posted partially. These are the ones that couldn't be posted:%s"
+"Message posted partially. These are the ones that couldn't be posted: <br>%s"
 msgstr ""
 
 #. module: social
@@ -947,7 +952,7 @@ msgid "Name"
 msgstr "名稱"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
@@ -955,18 +960,18 @@ msgid "New Post"
 msgstr "新貼文"
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/xml/social_templates.xml:0
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_kanban_renderer.js:0
 #, python-format
-msgid "New content available"
+msgid "New content available."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Next"
-msgstr "下一頁"
+msgstr "下一個"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_post__activity_calendar_event_id
@@ -1004,14 +1009,14 @@ msgid "No Stream added yet!"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "No comments yet."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #, python-format
 msgid "No social accounts configured, please contact your administrator."
@@ -1024,7 +1029,7 @@ msgid "Number of Actions"
 msgstr "動作數量"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Number of Followers of your channel"
@@ -1050,8 +1055,8 @@ msgstr ""
 #. module: social
 #: model:ir.model.fields,help:social.field_social_media__message_needaction_counter
 #: model:ir.model.fields,help:social.field_social_post__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "需要採取行動的訊息數目"
+msgid "Number of messages which requires an action"
+msgstr "需要處理的消息數量"
 
 #. module: social
 #: model:ir.model.fields,help:social.field_social_media__message_has_error_counter
@@ -1076,7 +1081,7 @@ msgid "Number of stories created from your posts (Shares, Re-tweets, ...)."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid ""
@@ -1085,7 +1090,7 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid ""
@@ -1094,7 +1099,14 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_comment_delete.js:0
+#, python-format
+msgid "Ok"
+msgstr "確定"
+
+#. module: social
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Or add"
@@ -1117,22 +1129,20 @@ msgid "Percentage of increase/decrease of the stories over a defined period."
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid "Please specify at least one account to post into (for post ID(s) %s)."
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_form
 #, python-format
 msgid "Post"
-msgstr "過賬"
+msgstr "發佈"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_kanban
@@ -1142,10 +1152,8 @@ msgid "Post Image"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/post_kanban_view.js:0
-#: code:addons/social/static/src/js/stream_post_comments.js:0
-#: code:addons/social/static/src/js/stream_post_kanban_renderer.js:0
+#. openerp-web
+#: code:addons/social/static/src/js/post_kanban_images_carousel.js:0
 #, python-format
 msgid "Post Images"
 msgstr ""
@@ -1183,7 +1191,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:social.selection__social_live_post__state__posted
 #: model:ir.model.fields.selection,name:social.selection__social_post__state__posted
 msgid "Posted"
-msgstr "已過賬"
+msgstr "已過帳"
 
 #. module: social
 #: model:ir.model.fields.selection,name:social.selection__social_live_post__state__posting
@@ -1210,11 +1218,11 @@ msgid "Posts By Accounts"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Press Enter to post. Press Shift+Enter to insert a Line Break."
-msgstr "按輸入鍵發帖。按 Shift+輸入鍵換行。"
+msgstr ""
 
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.social_post_template_view_form
@@ -1222,7 +1230,7 @@ msgid "Preview your post"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Previous"
@@ -1249,12 +1257,6 @@ msgid "Published date"
 msgstr "發佈日期"
 
 #. module: social
-#: model:ir.model.fields,field_description:social.field_social_media__rating_ids
-#: model:ir.model.fields,field_description:social.field_social_post__rating_ids
-msgid "Ratings"
-msgstr "點評"
-
-#. module: social
 #: model:ir.model.fields.selection,name:social.selection__social_live_post__state__ready
 msgid "Ready"
 msgstr "準備好"
@@ -1275,7 +1277,7 @@ msgid "Related social Account"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Reply"
@@ -1301,7 +1303,7 @@ msgstr "簡訊發送錯誤"
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_form
 msgid "Schedule"
-msgstr "預約"
+msgstr "安排"
 
 #. module: social
 #: model:ir.model.fields.selection,name:social.selection__social_post__post_method__scheduled
@@ -1311,15 +1313,14 @@ msgstr ""
 #. module: social
 #: model:ir.model.fields.selection,name:social.selection__social_post__state__scheduled
 msgid "Scheduled"
-msgstr "已排程"
+msgstr "安排"
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_post__scheduled_date
 msgid "Scheduled Date"
-msgstr "預定日期"
+msgstr "預定交貨日期"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid "Selected accounts (%s) do not match the selected company (%s)"
@@ -1333,7 +1334,7 @@ msgstr "立即傳送"
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_stream__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "序號"
 
 #. module: social
 #: model:ir.model.fields,help:social.field_social_stream__sequence
@@ -1358,7 +1359,7 @@ msgstr "設定"
 #: model:ir.model.fields,field_description:social.field_social_stream__account_id
 #: model_terms:ir.ui.view,arch_db:social.social_account_view_form
 msgid "Social Account"
-msgstr "社交媒體帳號"
+msgstr ""
 
 #. module: social
 #: model:ir.actions.act_window,name:social.action_social_account
@@ -1383,10 +1384,10 @@ msgstr ""
 #. module: social
 #: model:ir.ui.menu,name:social.menu_social_global
 msgid "Social Marketing"
-msgstr "社交媒體推廣"
+msgstr "社群 Marketing"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model:ir.actions.act_window,name:social.action_social_media
 #: model:ir.model,name:social.model_social_media
@@ -1411,7 +1412,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:social.field_social_live_post__post_id
 #: model_terms:ir.ui.view,arch_db:social.social_live_post_view_form
 msgid "Social Post"
-msgstr "社交帖文"
+msgstr ""
 
 #. module: social
 #: model:ir.model,name:social.model_social_post_template
@@ -1429,7 +1430,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_calendar
 #: model_terms:ir.ui.view,arch_db:social.social_post_view_pivot
 msgid "Social Posts"
-msgstr "社交貼文"
+msgstr ""
 
 #. module: social
 #: model:ir.model,name:social.model_social_stream
@@ -1462,21 +1463,14 @@ msgstr ""
 
 #. module: social
 #: model:ir.actions.server,name:social.ir_cron_post_scheduled_ir_actions_server
+#: model:ir.cron,cron_name:social.ir_cron_post_scheduled
+#: model:ir.cron,name:social.ir_cron_post_scheduled
 msgid "Social: Publish Scheduled Posts"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/stream_post_comments_reply.js:0
-#, python-format
-msgid ""
-"Something went wrong while posting the comment. \n"
-"%s"
-msgstr ""
-
-#. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/stream_post_kanban_dashboard.js:0
+#. openerp-web
+#: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #, python-format
 msgid ""
 "Sorry, you're not allowed to re-link this account, please contact your "
@@ -1520,7 +1514,7 @@ msgstr ""
 " 計劃：未來活動。"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #: model:ir.model.fields,field_description:social.field_social_account__stories
 #, python-format
@@ -1533,7 +1527,7 @@ msgid "Stories Trend"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/stream_post_kanban_controller.js:0
 #, python-format
 msgid "Stream Added (%s)"
@@ -1576,18 +1570,17 @@ msgid "Sub-posts that will be published on each selected social accounts."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Synchronize"
 msgstr "同步"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post_template.py:0
 #, python-format
 msgid "The 'message' field is required for post ID %s"
-msgstr "帖文必須填寫「訊息」欄位（帖文識別碼：%s）"
+msgstr ""
 
 #. module: social
 #: model:ir.model.fields,help:social.field_social_post__account_ids
@@ -1618,7 +1611,7 @@ msgstr ""
 msgid ""
 "The reason why a post is not successfully posted on the Social Media (eg: "
 "connection error, duplicated post, ...)."
-msgstr "貼文未能成功張貼至社交媒體的原因（例如：連線錯誤、貼文重複⋯⋯等）。"
+msgstr ""
 
 #. module: social
 #: model:ir.model.fields,field_description:social.field_social_stream__media_image
@@ -1648,7 +1641,7 @@ msgid "Title"
 msgstr "稱謂"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "To add a stream"
@@ -1666,6 +1659,7 @@ msgstr "記錄的異常活動的類型。"
 
 #. module: social
 #: model:ir.model,name:social.model_utm_campaign
+#: model:ir.model.fields,field_description:social.field_social_post__utm_campaign_id
 msgid "UTM Campaign"
 msgstr "UTM 行銷活動"
 
@@ -1673,7 +1667,7 @@ msgstr "UTM 行銷活動"
 #: model:ir.model,name:social.model_utm_medium
 #: model:ir.model.fields,field_description:social.field_social_account__utm_medium_id
 msgid "UTM Medium"
-msgstr "UTM 媒介"
+msgstr "UTM媒體"
 
 #. module: social
 #: model:ir.model,name:social.model_utm_source
@@ -1681,14 +1675,12 @@ msgid "UTM Source"
 msgstr "UTM來源"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post.py:0
 #, python-format
 msgid "Unknown error"
 msgstr "未知的錯誤"
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/social_post_template.py:0
 #, python-format
 msgid "Uploaded file does not seem to be a valid image."
@@ -1697,8 +1689,8 @@ msgstr ""
 #. module: social
 #: model_terms:ir.ui.view,arch_db:social.res_config_settings_view_form
 msgid ""
-"Use your own Developer Accounts on our Social app. Those credentials are "
-"provided in the developer section of your professional social media account."
+"Use your own Developer Accounts on our Social app.\n"
+"                            Those credentials are provided in the developer section of your professional social media account."
 msgstr ""
 
 #. module: social
@@ -1711,7 +1703,7 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "View"
@@ -1748,21 +1740,21 @@ msgid "Will attach images to your posts (if the social media supports it)."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Write a comment..."
 msgstr "編輯一個評論..."
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/js/tours/social.js:0
 #, python-format
 msgid "Write a message to get a preview of your post."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "Write a reply..."
@@ -1776,7 +1768,12 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-python
+#: code:addons/social/models/social_post.py:0
+#, python-format
+msgid "You can only move posts that are scheduled."
+msgstr ""
+
+#. module: social
 #: code:addons/social/models/utm_medium.py:0
 #, python-format
 msgid ""
@@ -1785,7 +1782,6 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-python
 #: code:addons/social/models/utm_source.py:0
 #, python-format
 msgid ""
@@ -1794,26 +1790,12 @@ msgid ""
 msgstr ""
 
 #. module: social
-#. odoo-python
-#: code:addons/social/models/social_post.py:0
-#, python-format
-msgid "You cannot reschedule a post that has already been posted."
-msgstr ""
-
-#. module: social
-#. odoo-python
-#: code:addons/social/models/social_post.py:0
-#, python-format
-msgid "You cannot schedule a post in the past."
-msgstr ""
-
-#. module: social
 #: model_terms:ir.ui.view,arch_db:social.social_post_template_view_form
 msgid "Your Post"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "a Stream from an existing account"
@@ -1825,26 +1807,19 @@ msgid "before posting."
 msgstr ""
 
 #. module: social
-#. odoo-javascript
-#: code:addons/social/static/src/js/stream_post_comment.js:0
-#, python-format
-msgid "comment/reply"
-msgstr ""
-
-#. module: social
 #: model_terms:ir.actions.act_window,help:social.action_social_stream
 msgid "dashboard"
 msgstr ""
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "for"
 msgstr "給予"
 
 #. module: social
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social/static/src/xml/social_templates.xml:0
 #, python-format
 msgid "replies..."

@@ -10,9 +10,14 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'auth_password_policy/static/src/**/*',
+            'auth_password_policy/static/src/password_meter.js',
+            'auth_password_policy/static/src/password_field.js',
         ],
         'web.assets_frontend': [
+            'auth_password_policy/static/src/css/password_field.css',
+            'auth_password_policy/static/src/password_policy.js',
+        ],
+        'web.assets_common': [
             'auth_password_policy/static/src/css/password_field.css',
             'auth_password_policy/static/src/password_policy.js',
         ],

@@ -33,7 +33,7 @@ class TestPayslipComputation(TestPayslipContractBase):
     def test_worked_days_amount_with_unpaid(self):
 
         self._reset_work_entries(self.richard_payslip.contract_id)
-        work_entries = self.richard_emp.contract_ids.generate_work_entries(date(2016, 1, 1), date(2016, 2, 1))
+        work_entries = self.richard_emp.contract_ids._generate_work_entries(date(2016, 1, 1), date(2016, 2, 1))
         work_entries.action_validate()
 
         self.richard_payslip._compute_worked_days_line_ids()

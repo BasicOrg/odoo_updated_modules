@@ -2,12 +2,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from os.path import join, dirname, realpath
-from odoo import tools
-from odoo.tools.misc import file_open
+from odoo import api, tools, SUPERUSER_ID
 import csv
 
 
-def post_init_hook(env):
+def post_init_hook(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     mx_country = env["res.country"].search([("code", "=", "MX")])
     # Load cities
     res_city_vals_list = []
@@ -28,7 +28,7 @@ def post_init_hook(env):
     if res_city_vals_list:
         cities = env['res.city'].create(res_city_vals_list)
 
-        env.cr.execute('''
+        cr.execute('''
            INSERT INTO ir_model_data (name, res_id, module, model, noupdate)
                SELECT
                     'res_city_mx_' || lower(res_country_state.code) || '_' || res_city.l10n_mx_edi_code,
@@ -46,7 +46,7 @@ def post_init_hook(env):
     if not env['l10n_mx_edi.res.locality'].search_count([]):
         csv_path = join(dirname(realpath(__file__)), 'data', 'l10n_mx_edi.res.locality.csv')
         tariff_fraction_vals_list = []
-        with file_open(csv_path, 'r') as csv_file:
+        with open(csv_path, 'r') as csv_file:
             for row in csv.DictReader(csv_file, delimiter='|', fieldnames=['code', 'name', 'state_xml_id']):
                 state = env.ref('base.%s' % row['state_xml_id'], raise_if_not_found=False)
                 tariff_fraction_vals_list.append({
@@ -59,7 +59,7 @@ def post_init_hook(env):
         localities = env['l10n_mx_edi.res.locality'].create(tariff_fraction_vals_list)
 
         if localities:
-            env.cr.execute('''
+            cr.execute('''
                INSERT INTO ir_model_data (name, res_id, module, model, noupdate)
                    SELECT 
                         'res_locality_mx_' || lower(res_country_state.code) || '_' || l10n_mx_edi_res_locality.code,
@@ -77,14 +77,14 @@ def post_init_hook(env):
     if not env['l10n_mx_edi.tariff.fraction'].search_count([]):
         csv_path = join(dirname(realpath(__file__)), 'data', 'l10n_mx_edi.tariff.fraction.csv')
         tariff_fraction_vals_list = []
-        with file_open(csv_path, 'r') as csv_file:
+        with open(csv_path, 'r') as csv_file:
             for row in csv.DictReader(csv_file, delimiter='|', fieldnames=['code', 'name', 'uom_code']):
                 tariff_fraction_vals_list.append(row)
 
         tariff_fractions = env['l10n_mx_edi.tariff.fraction'].create(tariff_fraction_vals_list)
 
         if tariff_fractions:
-            env.cr.execute('''
+            cr.execute('''
                INSERT INTO ir_model_data (name, res_id, module, model, noupdate)
                    SELECT 
                         'tariff_fraction_' || l10n_mx_edi_tariff_fraction.code,
@@ -97,5 +97,5 @@ def post_init_hook(env):
             ''', [tuple(tariff_fractions.ids)])
 
 
-def uninstall_hook(env):
-    env.cr.execute("DELETE FROM ir_model_data WHERE model='l10n_mx_edi.tariff.fraction';")
+def uninstall_hook(cr, registry):
+    cr.execute("DELETE FROM ir_model_data WHERE model='l10n_mx_edi.tariff.fraction';")

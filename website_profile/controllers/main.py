@@ -11,7 +11,7 @@ import math
 from dateutil.relativedelta import relativedelta
 from operator import itemgetter
 
-from odoo import _, fields, http, tools
+from odoo import fields, http, modules, tools
 from odoo.http import request
 from odoo.osv import expression
 
@@ -36,22 +36,14 @@ class WebsiteProfile(http.Controller):
         return False
 
     def _check_user_profile_access(self, user_id):
-        """ Takes a user_id and returns:
-            - (user record, False) when the user is granted access
-            - (False, str) when the user is denied access
-            Raises a Not Found Exception when the profile does not exist
-        """
         user_sudo = request.env['res.users'].sudo().browse(user_id)
         # User can access - no matter what - his own profile
         if user_sudo.id == request.env.user.id:
-            return user_sudo, False
-        if request.env.user.karma < request.website.karma_profile_min:
-            return False, _("Not have enough karma to view other users' profile.")
-        elif not user_sudo.exists():
-            raise request.not_found()
-        elif user_sudo.karma == 0 or not user_sudo.website_published:
-            return False, _('This profile is private!')
-        return user_sudo, False
+            return user_sudo
+        if user_sudo.karma == 0 or not user_sudo.website_published or \
+            (user_sudo.id != request.session.uid and request.env.user.karma < request.website.karma_profile_min):
+            return False
+        return user_sudo
 
     def _prepare_user_values(self, **kwargs):
         kwargs.pop('edit_translations', None) # avoid nuking edit_translations
@@ -92,14 +84,14 @@ class WebsiteProfile(http.Controller):
             field_name=field, width=int(width), height=int(height), crop=crop
         ).get_response()
 
-    @http.route('/profile/user/<int:user_id>', type='http', auth='public', website=True)
+    @http.route(['/profile/user/<int:user_id>'], type='http', auth="public", website=True)
     def view_user_profile(self, user_id, **post):
-        user_sudo, denial_reason = self._check_user_profile_access(user_id)
-        if denial_reason:
-            return request.render('website_profile.profile_access_denied', {'denial_reason': denial_reason})
+        user = self._check_user_profile_access(user_id)
+        if not user:
+            return request.render("website_profile.private_profile")
         values = self._prepare_user_values(**post)
         params = self._prepare_user_profile_parameters(**post)
-        values.update(self._prepare_user_profile_values(user_sudo, **params))
+        values.update(self._prepare_user_profile_values(user, **params))
         return request.render("website_profile.user_profile_main", values)
 
     # Edit Profile
@@ -227,8 +219,7 @@ class WebsiteProfile(http.Controller):
         if user_count:
             page_count = math.ceil(user_count / self._users_per_page)
             pager = request.website.pager(url="/profile/users", total=user_count, page=page, step=self._users_per_page,
-                                          scope=page_count if page_count < self._pager_max_pages else self._pager_max_pages,
-                                          url_args=kwargs)
+                                          scope=page_count if page_count < self._pager_max_pages else self._pager_max_pages)
 
             users = User.sudo().search(dom, limit=self._users_per_page, offset=pager['offset'], order='karma DESC')
             user_values = self._prepare_all_users_values(users)

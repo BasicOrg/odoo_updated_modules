@@ -7,19 +7,25 @@
                 <field name="filter_partial_month" invisible="1"/>
                 <field name="filter_partial_journals" invisible="1"/>
                 <field name="filter_all_entries" invisible="1"/>
-                <div class="alert alert-info" role="alert" invisible="not filter_partial_month">
+                <div class="alert alert-info" role="alert" attrs="{'invisible':[('filter_partial_month', '=', False)]}">
                     The filter is selecting <strong>an incomplete period</strong>. The resulting XML files may be incomplete.
                 </div>
-                <div class="alert alert-info" role="alert" invisible="not filter_partial_journals">
+                <div class="alert alert-info" role="alert" attrs="{'invisible':[('filter_partial_journals', '=', False)]}">
                     The filter is selecting <strong>only some of the journals</strong>. The resulting XML files may be incomplete.
                 </div>
-                <div class="alert alert-info" role="alert" invisible="not filter_all_entries">
+                <div class="alert alert-info" role="alert" attrs="{'invisible':[('filter_all_entries', '=', False)]}">
                     The resulting XML will contain also <strong>unposted entries</strong>. The resulting XML files may be incorrect.
                 </div>
                 <group>
                     <field name="export_type"/>
-                    <field name="order_number" placeholder="ABC6987654/99" invisible="export_type not in ['AF', 'FC']" required="export_type in ['AF', 'FC']"/>
-                    <field name="process_number" placeholder="AB123451234512" invisible="export_type not in ['DE', 'CO']" required="export_type in ['DE', 'CO']"/>
+                    <field name="order_number" placeholder="ABC6987654/99" attrs="{
+                        'required': [('export_type', 'in', ['AF', 'FC'])],
+                        'invisible': [('export_type', 'not in', ['AF', 'FC'])]
+                     }"/>
+                    <field name="process_number" placeholder="AB123451234512" attrs="{
+                        'required': [('export_type', 'in', ['DE', 'CO'])],
+                        'invisible': [('export_type', 'not in', ['DE', 'CO'])]
+                     }"/>
                 </group>
                 <footer>
                     <button name="export_xml" string="Export" type="object" class="btn-primary"/>

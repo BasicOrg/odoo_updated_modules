@@ -1,7 +1,6 @@
 /** @odoo-module **/
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { PivotDataSource } from "@spreadsheet/pivot/pivot_data_source";
-import { Domain } from "@web/core/domain";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+import PivotDataSource from "@spreadsheet/pivot/pivot_data_source";
 
 const uuidGenerator = new spreadsheet.helpers.UuidGenerator();
 
@@ -15,21 +14,14 @@ export function insertPivot(pivotData) {
             fields: pivotData.metaData.fields,
             sortedColumn: pivotData.metaData.sortedColumn,
         },
-        searchParams: {
-            ...pivotData.searchParams,
-            domain: new Domain(pivotData.searchParams.domain).toJson(),
-            // groups from the search bar are included in `fullRowGroupBys` and `fullColGroupBys`
-            // but takes precedence if they are defined
-            groupBy: [],
-        },
+        searchParams: { ...pivotData.searchParams },
         name: pivotData.name,
     };
     return async (model) => {
-        const pivotId = model.getters.getNextPivotId();
-        const dataSourceId = model.getters.getPivotDataSourceId(pivotId);
-        model.config.custom.dataSources.add(dataSourceId, PivotDataSource, definition);
-        await model.config.custom.dataSources.load(dataSourceId);
-        const pivotDataSource = model.config.custom.dataSources.get(dataSourceId);
+        const dataSourceId = uuidGenerator.uuidv4();
+        model.config.dataSources.add(dataSourceId, PivotDataSource, definition);
+        await model.config.dataSources.load(dataSourceId);
+        const pivotDataSource = model.config.dataSources.get(dataSourceId);
         // Add an empty sheet in the case of an existing spreadsheet.
         if (!this.isEmptySpreadsheet) {
             const sheetId = uuidGenerator.uuidv4();
@@ -46,17 +38,15 @@ export function insertPivot(pivotData) {
 
         const defWithoutFields = JSON.parse(JSON.stringify(definition));
         defWithoutFields.metaData.fields = undefined;
-        const result = model.dispatch("INSERT_PIVOT", {
+        model.dispatch("INSERT_PIVOT", {
             sheetId,
             col: 0,
             row: 0,
             table,
-            id: pivotId,
+            id: model.getters.getNextPivotId(),
+            dataSourceId,
             definition: defWithoutFields,
         });
-        if (!result.isSuccessful) {
-            throw new Error(`Couldn't insert pivot in spreadsheet. Reasons : ${result.reasons}`);
-        }
         const columns = [];
         for (let col = 0; col <= table.cols[table.cols.length - 1].length; col++) {
             columns.push(col);

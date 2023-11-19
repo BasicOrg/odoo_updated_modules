@@ -6,10 +6,13 @@ from . import wizard
 
 import logging
 
+from odoo import api, SUPERUSER_ID
+
 _logger = logging.getLogger(__name__)
 
 
-def _account_accountant_post_init(env):
+def _account_accountant_post_init(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     country_code = env.company.country_id.code
     if country_code:
         module_list = []
@@ -23,22 +26,15 @@ def _account_accountant_post_init(env):
             module_list.append('account_bank_statement_import_camt')
         if country_code in ('AU', 'CA', 'US'):
             module_list.append('account_reports_cash_basis')
-        # The customer statement is customary in Australia and New Zealand.
-        if country_code in ('AU', 'NZ'):
-            module_list.append('l10n_account_customer_statements')
 
         module_ids = env['ir.module.module'].search([('name', 'in', module_list), ('state', '=', 'uninstalled')])
         if module_ids:
             module_ids.sudo().button_install()
 
-    for company in env['res.company'].search([('chart_template', '!=', False)]):
-        ChartTemplate = env['account.chart.template'].with_company(company)
-        ChartTemplate._load_data({
-            'res.company': ChartTemplate._get_account_accountant_res_company(company.chart_template),
-        })
 
+def uninstall_hook(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
 
-def uninstall_hook(env):
     try:
         group_user = env.ref("account.group_account_user")
         group_user.write({

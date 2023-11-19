@@ -28,7 +28,7 @@ class ResConfigSettings(models.TransientModel):
     module_sale_renting_sign = fields.Boolean(string="Digital Documents")
 
     @api.onchange('extra_hour')
-    def _onchange_extra_hour(self):
+    def _onchange_extra_day(self):
         self.env['ir.property']._set_default("extra_hourly", "product.template", self.extra_hour)
 
     @api.onchange('extra_day')

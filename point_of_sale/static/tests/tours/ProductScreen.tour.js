@@ -1,185 +1,143 @@
-/** @odoo-module */
+odoo.define('point_of_sale.tour.ProductScreen', function (require) {
+    'use strict';
 
-import * as PaymentScreen from "@point_of_sale/../tests/tours/helpers/PaymentScreenTourMethods";
-import * as ProductScreen from "@point_of_sale/../tests/tours/helpers/ProductScreenTourMethods";
-import * as Chrome from "@point_of_sale/../tests/tours/helpers/ChromeTourMethods";
-import * as ReceiptScreen from "@point_of_sale/../tests/tours/helpers/ReceiptScreenTourMethods";
-import { registry } from "@web/core/registry";
-import * as Order from "@point_of_sale/../tests/tours/helpers/generic_components/OrderWidgetMethods";
-import { inLeftSide } from "./helpers/utils";
+    const { ProductScreen } = require('point_of_sale.tour.ProductScreenTourMethods');
+    const { TextAreaPopup } = require('point_of_sale.tour.TextAreaPopupTourMethods');
+    const { getSteps, startSteps } = require('point_of_sale.tour.utils');
+    var Tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add("ProductScreenTour", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            // Go by default to home category
-            ProductScreen.clickHomeCategory(),
+    // signal to start generating steps
+    // when finished, steps can be taken from getSteps
+    startSteps();
 
-            // Clicking product multiple times should increment quantity
-            ProductScreen.clickDisplayedProduct("Desk Organizer"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "1.0", "5.10"),
-            ProductScreen.clickDisplayedProduct("Desk Organizer"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "2.0", "10.20"),
+    // Go by default to home category
+    ProductScreen.do.clickHomeCategory();
 
-            // Clicking product should add new orderline and select the orderline
-            // If orderline exists, increment the quantity
-            ProductScreen.clickDisplayedProduct("Letter Tray"),
-            ProductScreen.selectedOrderlineHas("Letter Tray", "1.0", "5.28"),
-            ProductScreen.clickDisplayedProduct("Desk Organizer"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "3.0", "15.30"),
+    // Clicking product multiple times should increment quantity
+    ProductScreen.do.clickDisplayedProduct('Desk Organizer');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '1.0', '5.10');
+    ProductScreen.do.clickDisplayedProduct('Desk Organizer');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '2.0', '10.20');
 
-            // Check effects of clicking numpad buttons
-            ProductScreen.clickOrderline("Letter Tray", "1"),
-            ProductScreen.selectedOrderlineHas("Letter Tray", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Letter Tray", "0.0", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "3", "15.30"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "0.0", "0.0"),
-            ProductScreen.pressNumpad("1"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "1.0", "5.1"),
-            ProductScreen.pressNumpad("2"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "12.0", "61.2"),
-            ProductScreen.pressNumpad("3"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "123.0", "627.3"),
-            ProductScreen.pressNumpad(".", "5"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "123.5", "629.85"),
-            ProductScreen.pressNumpad("Price"),
-            ProductScreen.modeIsActive("Price"),
-            ProductScreen.pressNumpad("1"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "123.5", "123.5"),
-            ProductScreen.pressNumpad("1", "."),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "123.5", "1,358.5"),
-            ProductScreen.pressNumpad("% Disc"),
-            ProductScreen.modeIsActive("% Disc"),
-            ProductScreen.pressNumpad("5", "."),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "123.5", "1,290.58"),
-            ProductScreen.pressNumpad("Qty"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.orderIsEmpty(),
+    // Clicking product should add new orderline and select the orderline
+    // If orderline exists, increment the quantity
+    ProductScreen.do.clickDisplayedProduct('Letter Tray');
+    ProductScreen.check.selectedOrderlineHas('Letter Tray', '1.0', '5.28');
+    ProductScreen.do.clickDisplayedProduct('Desk Organizer');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '3.0', '15.30');
 
-            // Check different subcategories
-            ProductScreen.clickSubcategory("Desks"),
-            ProductScreen.productIsDisplayed("Desk Pad"),
-            ProductScreen.clickHomeCategory(),
-            ProductScreen.clickSubcategory("Misc"),
-            ProductScreen.productIsDisplayed("Whiteboard Pen"),
-            ProductScreen.clickHomeCategory(),
-            ProductScreen.clickSubcategory("Chairs"),
-            ProductScreen.productIsDisplayed("Letter Tray"),
-            ProductScreen.clickHomeCategory(),
+    // Check effects of clicking numpad buttons
+    ProductScreen.do.clickOrderline('Letter Tray', '1');
+    ProductScreen.check.selectedOrderlineHas('Letter Tray', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Letter Tray', '0.0', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '3', '15.30');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '0.0', '0.0');
+    ProductScreen.do.pressNumpad('1');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '1.0', '5.1');
+    ProductScreen.do.pressNumpad('2');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '12.0', '61.2');
+    ProductScreen.do.pressNumpad('3');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '123.0', '627.3');
+    ProductScreen.do.pressNumpad('. 5');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '123.5', '629.85');
+    ProductScreen.do.pressNumpad('Price');
+    ProductScreen.do.pressNumpad('1');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '123.5', '123.5');
+    ProductScreen.do.pressNumpad('1 .');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '123.5', '1,358.5');
+    ProductScreen.do.pressNumpad('Disc');
+    ProductScreen.do.pressNumpad('5 .');
+    ProductScreen.check.selectedOrderlineHas('Desk Organizer', '123.5', '1,290.58');
+    ProductScreen.do.pressNumpad('Qty');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.orderIsEmpty();
 
-            // Add two orderlines and update quantity
-            ProductScreen.clickDisplayedProduct("Whiteboard Pen"),
-            ProductScreen.clickDisplayedProduct("Wall Shelf Unit"),
-            ProductScreen.clickOrderline("Whiteboard Pen", "1.0"),
-            ProductScreen.pressNumpad("2"),
-            ProductScreen.selectedOrderlineHas("Whiteboard Pen", "2.0"),
-            ProductScreen.clickOrderline("Wall Shelf Unit", "1.0"),
-            ProductScreen.pressNumpad("2"),
-            ProductScreen.selectedOrderlineHas("Wall Shelf Unit", "2.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Wall Shelf Unit", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Whiteboard Pen", "2.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Whiteboard Pen", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.orderIsEmpty(),
+    // Check different subcategories
+    ProductScreen.do.clickSubcategory('Desks');
+    ProductScreen.check.productIsDisplayed('Desk Pad');
+    ProductScreen.do.clickHomeCategory();
+    ProductScreen.do.clickSubcategory('Miscellaneous');
+    ProductScreen.check.productIsDisplayed('Whiteboard Pen');
+    ProductScreen.do.clickHomeCategory();
+    ProductScreen.do.clickSubcategory('Chairs');
+    ProductScreen.check.productIsDisplayed('Letter Tray');
+    ProductScreen.do.clickHomeCategory();
 
-            // Add multiple orderlines then delete each of them until empty
-            ProductScreen.clickDisplayedProduct("Whiteboard Pen"),
-            ProductScreen.clickDisplayedProduct("Wall Shelf Unit"),
-            ProductScreen.clickDisplayedProduct("Small Shelf"),
-            ProductScreen.clickDisplayedProduct("Magnetic Board"),
-            ProductScreen.clickDisplayedProduct("Monitor Stand"),
-            ProductScreen.clickOrderline("Whiteboard Pen", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Whiteboard Pen", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Monitor Stand", "1.0"),
-            ProductScreen.clickOrderline("Wall Shelf Unit", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Wall Shelf Unit", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Monitor Stand", "1.0"),
-            ProductScreen.clickOrderline("Small Shelf", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Small Shelf", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Monitor Stand", "1.0"),
-            ProductScreen.clickOrderline("Magnetic Board", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Magnetic Board", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Monitor Stand", "1.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.selectedOrderlineHas("Monitor Stand", "0.0"),
-            ProductScreen.pressNumpad("⌫"),
-            ProductScreen.orderIsEmpty(),
+    // Add multiple orderlines then delete each of them until empty
+    ProductScreen.do.clickDisplayedProduct('Whiteboard Pen');
+    ProductScreen.do.clickDisplayedProduct('Wall Shelf Unit');
+    ProductScreen.do.clickDisplayedProduct('Small Shelf');
+    ProductScreen.do.clickDisplayedProduct('Magnetic Board');
+    ProductScreen.do.clickDisplayedProduct('Monitor Stand');
+    ProductScreen.do.clickOrderline('Whiteboard Pen', '1.0');
+    ProductScreen.check.selectedOrderlineHas('Whiteboard Pen', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Whiteboard Pen', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Monitor Stand', '1.0');
+    ProductScreen.do.clickOrderline('Wall Shelf Unit', '1.0');
+    ProductScreen.check.selectedOrderlineHas('Wall Shelf Unit', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Wall Shelf Unit', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Monitor Stand', '1.0');
+    ProductScreen.do.clickOrderline('Small Shelf', '1.0');
+    ProductScreen.check.selectedOrderlineHas('Small Shelf', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Small Shelf', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Monitor Stand', '1.0');
+    ProductScreen.do.clickOrderline('Magnetic Board', '1.0');
+    ProductScreen.check.selectedOrderlineHas('Magnetic Board', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Magnetic Board', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Monitor Stand', '1.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.selectedOrderlineHas('Monitor Stand', '0.0');
+    ProductScreen.do.pressNumpad('Backspace');
+    ProductScreen.check.orderIsEmpty();
 
-            // Test OrderlineCustomerNoteButton
-            ProductScreen.clickDisplayedProduct("Desk Organizer"),
-            ProductScreen.selectedOrderlineHas("Desk Organizer", "1.0"),
-            ProductScreen.addCustomerNote("Test customer note"),
-            inLeftSide(
-                Order.hasLine({
-                    productName: "Desk Organizer",
-                    quantity: "1.0",
-                    customerNote: "Test customer note",
-                    withClass: ".selected",
-                })
-            ),
-            ProductScreen.isShown(),
-        ].flat(),
+    // Test OrderlineCustomerNoteButton
+    ProductScreen.do.clickDisplayedProduct('Desk Organizer');
+    ProductScreen.do.clickOrderlineCustomerNoteButton();
+    TextAreaPopup.check.isShown();
+    TextAreaPopup.do.inputText('Test customer note');
+    TextAreaPopup.do.clickConfirm();
+    ProductScreen.check.orderlineHasCustomerNote('Desk Organizer', '1', 'Test customer note');
+
+
+    Tour.register('ProductScreenTour', { test: true, url: '/pos/ui' }, getSteps());
 });
 
-registry.category("web_tour.tours").add("FiscalPositionNoTax", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            ProductScreen.clickHomeCategory(),
-            ProductScreen.clickDisplayedProduct("Test Product"),
-            ProductScreen.totalAmountIs("100.00"),
-            ProductScreen.changeFiscalPosition("No Tax"),
-            ProductScreen.noDiscountApplied("100.00"),
-            ProductScreen.totalAmountIs("86.96"),
-            ProductScreen.clickPayButton(),
-            PaymentScreen.clickPaymentMethod("Bank"),
-            PaymentScreen.remainingIs("0.00"),
-            PaymentScreen.clickValidate(),
-            ReceiptScreen.isShown(),
-            Order.doesNotHaveLine({ discount: "" }),
-        ].flat(),
-});
+odoo.define('point_of_sale.tour.FixedPriceNegativeQty', function (require) {
+    'use strict';
 
-registry.category("web_tour.tours").add("CashClosingDetails", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            ProductScreen.enterOpeningAmount("90"),
-            ProductScreen.confirmOpeningPopup(),
-            ProductScreen.checkSecondCashClosingDetailsLineAmount("10.00", "-"),
-        ].flat(),
-});
+    const { ProductScreen } = require('point_of_sale.tour.ProductScreenTourMethods');
+    const { PaymentScreen } = require('point_of_sale.tour.PaymentScreenTourMethods');
+    const { ReceiptScreen } = require('point_of_sale.tour.ReceiptScreenTourMethods');
+    const { getSteps, startSteps } = require('point_of_sale.tour.utils');
+    var Tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add("ShowTaxExcludedTour", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            ProductScreen.confirmOpeningPopup(),
+    startSteps();
 
-            ProductScreen.clickHomeCategory(),
+    ProductScreen.do.clickHomeCategory();
 
-            ProductScreen.clickDisplayedProduct("Test Product"),
-            ProductScreen.selectedOrderlineHas("Test Product", "1.0", "100.0"),
-            ProductScreen.totalAmountIs("110.0"),
-            Chrome.endTour(),
-        ].flat(),
+    ProductScreen.do.clickDisplayedProduct('Zero Amount Product');
+    ProductScreen.check.selectedOrderlineHas('Zero Amount Product', '1.0', '1.0');
+    ProductScreen.do.pressNumpad('+/- 1');
+    ProductScreen.check.selectedOrderlineHas('Zero Amount Product', '-1.0', '-1.0');
+
+    ProductScreen.do.clickPayButton();
+    PaymentScreen.do.clickPaymentMethod('Bank');
+    PaymentScreen.check.remainingIs('0.00');
+    PaymentScreen.do.clickValidate();
+
+    ReceiptScreen.check.receiptIsThere();
+
+    Tour.register('FixedTaxNegativeQty', { test: true, url: '/pos/ui' }, getSteps());
 });

@@ -2,14 +2,16 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import logging
 
-from odoo import fields
+from odoo import api, fields, SUPERUSER_ID
 from odoo.fields import Datetime
 from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__)
 
 
-def _generate_payslips(env):
+def _generate_payslips(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
+
     # Do this only when demo data is activated
     if env.ref('l10n_be_hr_payroll.res_company_be', raise_if_not_found=False):
         if not env['hr.payslip'].sudo().search_count([('employee_id.name', '=', 'Marian Weaver')]):
@@ -34,7 +36,7 @@ def _generate_payslips(env):
                 })
                 training_leave._compute_date_from_to()
                 leaves |= env['hr.leave'].create(training_leave._convert_to_write(training_leave._cache))
-            env['hr.leave'].search([]).write({'payslip_state': 'done'})  # done or normal : to check!!!
+            env['hr.leave'].search([]).write({'payslip_state': 'done'})#done or normal : to check!!!
 
             wizard_vals = {
                 'employee_ids': [(4, employee.id) for employee in employees],

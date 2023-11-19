@@ -3,13 +3,13 @@
 import { fieldVisualFeedback } from "@web/views/fields/field";
 import { session } from "@web/session";
 import { getTooltipInfo } from "@web/views/fields/field_tooltip";
-import { _t } from "@web/core/l10n/translation";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class FormLabel extends Component {
     get className() {
         const { invalid, empty, readonly } = fieldVisualFeedback(
-            this.props.fieldInfo.field,
+            this.props.fieldInfo.FieldComponent,
             this.props.record,
             this.props.fieldName,
             this.props.fieldInfo
@@ -21,7 +21,7 @@ export class FormLabel extends Component {
         if (empty) {
             classes.push("o_form_label_empty");
         }
-        if (readonly && !this.props.notMuttedLabel) {
+        if (readonly) {
             classes.push("o_form_label_readonly");
         }
         return classes.join(" ");
@@ -33,9 +33,9 @@ export class FormLabel extends Component {
 
     get tooltipHelp() {
         const field = this.props.record.fields[this.props.fieldName];
-        let help = this.props.fieldInfo.help || field.help || "";
+        let help = field.help || "";
         if (field.company_dependent && session.display_switch_company_menu) {
-            help += (help ? "\n\n" : "") + _t("Values set here are company-specific.");
+            help += (help ? "\n\n" : "") + this.env._t("Values set here are company-specific.");
         }
         return help;
     }
@@ -57,12 +57,3 @@ export class FormLabel extends Component {
     }
 }
 FormLabel.template = "web.FormLabel";
-FormLabel.props = {
-    fieldInfo: { type: Object },
-    record: { type: Object },
-    fieldName: { type: String },
-    className: { type: String, optional: true },
-    string: { type: String },
-    id: { type: String },
-    notMuttedLabel: { type: Boolean, optional: true },
-};

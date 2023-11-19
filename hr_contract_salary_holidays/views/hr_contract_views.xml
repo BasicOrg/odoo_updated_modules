@@ -12,7 +12,7 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_list_leaves"
                     type="object" icon="fa-sun-o" class="oe_stat_button"
-                    invisible="not leave_allocation_id">
+                    attrs="{'invisible': [('leave_allocation_id', '=', False)]}">
                     <span>Allocations</span>
                 </button>
             </xpath>

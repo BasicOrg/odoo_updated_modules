@@ -1,64 +1,65 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* google_calendar
-#
+# 
 # Translators:
 # Arnau Ros, 2022
 # Bàrbara Partegàs <barbararof@gmail.com>, 2022
 # AncesLatino2004, 2022
-# Manel Fernandez Ramirez <manelfera@outlook.com>, 2022
 # jabelchi, 2022
+# Manel Fernandez Ramirez <manelfera@outlook.com>, 2022
 # Marc Tormo i Bochaca <mtbochaca@gmail.com>, 2022
 # RGB Consulting <odoo@rgbconsulting.com>, 2022
 # Quim - eccit <quim@eccit.com>, 2022
 # Martin Trigaux, 2022
 # marcescu, 2022
-# Ivan Espinola, 2022
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0beta\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 13:49+0000\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
 "PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Ivan Espinola, 2022\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Last-Translator: marcescu, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_sync.py:0
 #, python-format
 msgid "%(id)s and %(length)s following"
 msgstr "%(id)s i %(length)s següent"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "%(reminder_type)s - %(duration)s Days"
 msgstr "%(reminder_type)s - %(duration)s Dies"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "%(reminder_type)s - %(duration)s Hours"
 msgstr "%(reminder_type)s - %(duration)s Hores"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "%(reminder_type)s - %(duration)s Minutes"
 msgstr "%(reminder_type)s - %(duration)s Minuts"
 
 #. module: google_calendar
-#. odoo-python
+#. openerp-web
+#: code:addons/google_calendar/static/src/xml/base_calendar.xml:0
+#, python-format
+msgid "&nbsp;Google"
+msgstr "&nbsp;Google"
+
+#. module: google_calendar
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "(No title)"
@@ -72,18 +73,36 @@ msgid "Active"
 msgstr "Actiu"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
-msgid "An administrator needs to configure Google Synchronization before you can use it!"
-msgstr "És necessari un administrador per a configurar la Sincronització de Google abans de que la pugueu utilitzar!"
+msgid ""
+"An administrator needs to configure Google Synchronization before you can "
+"use it!"
+msgstr ""
+"És necessari un administrador per a configurar la Sincronització de Google "
+"abans de que la pugueu utilitzar!"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_credentials.py:0
 #, python-format
-msgid "An error occurred while generating the token. Your authorization code may be invalid or has already expired [%s]. You should check your Client ID and secret on the Google APIs plateform or try to stop and restart your calendar synchronisation."
-msgstr "S'ha produït un error en generar el token. És possible que el seu codi d'autorització no sigui vàlid o que ja hagi caducat [%s]. Has de comprovar el teu ANEU de client i el teu secret en la plataforma de les API de Google o intentar detenir i reiniciar la sincronització del calendari."
+msgid ""
+"An error occurred while generating the token. Your authorization code may be"
+" invalid or has already expired [%s]. You should check your Client ID and "
+"secret on the Google APIs plateform or try to stop and restart your calendar"
+" synchronisation."
+msgstr ""
+"S'ha produït un error en generar el token. És possible que el seu codi "
+"d'autorització no sigui vàlid o que ja hagi caducat [%s]. Has de comprovar "
+"el teu ANEU de client i el teu secret en la plataforma de les API de Google "
+"o intentar detenir i reiniciar la sincronització del calendari."
+
+#. module: google_calendar
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
+#, python-format
+msgid "Are you sure you want to delete this record ?"
+msgstr "Estàs segur d'eliminar aquest registre?"
 
 #. module: google_calendar
 #: model:ir.model,name:google_calendar.model_calendar_attendee
@@ -132,8 +151,9 @@ msgid "Config Settings"
 msgstr "Ajustos de configuració"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
 msgid "Configuration"
 msgstr "Configuració"
@@ -142,6 +162,13 @@ msgstr "Configuració"
 #: model_terms:ir.ui.view,arch_db:google_calendar.google_calendar_reset_account_view_form
 msgid "Confirm"
 msgstr "Confirmar"
+
+#. module: google_calendar
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
+#, python-format
+msgid "Confirmation"
+msgstr "Confirmació"
 
 #. module: google_calendar
 #: model:ir.model.fields,field_description:google_calendar.field_google_calendar_account_reset__create_uid
@@ -154,6 +181,13 @@ msgstr "Creat per"
 #: model:ir.model.fields,field_description:google_calendar.field_google_calendar_credentials__create_date
 msgid "Created on"
 msgstr "Creat el"
+
+#. module: google_calendar
+#. openerp-web
+#: code:addons/google_calendar/static/src/xml/google_calendar_popover.xml:0
+#, python-format
+msgid "Delete"
+msgstr "Eliminar"
 
 #. module: google_calendar
 #: model:ir.model.fields.selection,name:google_calendar.selection__google_calendar_account_reset__delete_policy__delete_odoo
@@ -177,7 +211,6 @@ msgid "Display Name"
 msgstr "Nom a mostrar"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "Email"
@@ -189,8 +222,8 @@ msgid "Event Recurrence Rule"
 msgstr "Regla de recurrència d'esdeveniments"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.xml:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/xml/base_calendar.xml:0
 #, python-format
 msgid "Google"
 msgstr "Google"
@@ -203,7 +236,7 @@ msgstr "Google Calendar"
 #. module: google_calendar
 #: model:ir.model.fields,field_description:google_calendar.field_res_users__google_calendar_account_id
 msgid "Google Calendar Account"
-msgstr "Compte de Google Calendar"
+msgstr ""
 
 #. module: google_calendar
 #: model:ir.model,name:google_calendar.model_google_calendar_credentials
@@ -229,6 +262,8 @@ msgstr "Id del Google Calendar"
 
 #. module: google_calendar
 #: model:ir.actions.server,name:google_calendar.ir_cron_sync_all_cals_ir_actions_server
+#: model:ir.cron,cron_name:google_calendar.ir_cron_sync_all_cals
+#: model:ir.cron,name:google_calendar.ir_cron_sync_all_cals
 msgid "Google Calendar: synchronization"
 msgstr "Calendari de Google: sincronització"
 
@@ -239,7 +274,6 @@ msgid "Google Synchronization stopped"
 msgstr "Sincronització de Google detinguda"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_sync.py:0
 #, python-format
 msgid "Google gave the following explanation: %s"
@@ -253,21 +287,28 @@ msgstr "ID"
 
 #. module: google_calendar
 #: model:ir.model.fields,help:google_calendar.field_calendar_event__active
-msgid "If the active field is set to false, it will allow you to hide the event alarm information without removing it."
-msgstr "Si el camp actiu és fals,  li permetrà ocultar la notificació d'avís de l'esdeveniment sense esborrar-lo."
-
-#. module: google_calendar
-#. odoo-python
-#: code:addons/google_calendar/models/google_sync.py:0
-#, python-format
-msgid "It will not be synced as long at it is not updated."
+msgid ""
+"If the active field is set to false, it will allow you to hide the event "
+"alarm information without removing it."
 msgstr ""
+"Si el camp actiu és fals,  li permetrà ocultar la notificació d'avís de "
+"l'esdeveniment sense esborrar-lo."
 
 #. module: google_calendar
 #: model:ir.model.fields,help:google_calendar.field_google_calendar_credentials__calendar_cal_id
 #: model:ir.model.fields,help:google_calendar.field_res_users__google_calendar_cal_id
-msgid "Last Calendar ID who has been synchronized. If it is changed, we remove all links between GoogleID and Odoo Google Internal ID"
-msgstr "Darrer ID del calendari que s'ha sincronitzat. Si es canvia, eliminem tots els enllaços entre GoogleID i Odoo Google Internal ID"
+msgid ""
+"Last Calendar ID who has been synchronized. If it is changed, we remove all "
+"links between GoogleID and Odoo Google Internal ID"
+msgstr ""
+"Darrer ID del calendari que s'ha sincronitzat. Si es canvia, eliminem tots "
+"els enllaços entre GoogleID i Odoo Google Internal ID"
+
+#. module: google_calendar
+#: model:ir.model.fields,field_description:google_calendar.field_google_calendar_account_reset____last_update
+#: model:ir.model.fields,field_description:google_calendar.field_google_calendar_credentials____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
 
 #. module: google_calendar
 #: model:ir.model.fields,field_description:google_calendar.field_google_calendar_account_reset__write_uid
@@ -305,7 +346,6 @@ msgid "Next Synchronization"
 msgstr "Següent sincronització"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/calendar.py:0
 #, python-format
 msgid "Notification"
@@ -328,8 +368,8 @@ msgid "Reset Google Calendar Account"
 msgstr "Restableix el compte del calendari de Google"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
 msgid "Success"
 msgstr "Èxit"
@@ -350,32 +390,39 @@ msgid "Synchronize only new events"
 msgstr "Sincronitza només els esdeveniments nous"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
-msgid "The Google Synchronization needs to be configured before you can use it, do you want to do it now?"
-msgstr "La sincronització de Google s'ha de configurar abans de poder utilitzar-la, voleu fer-ho ara?"
+msgid ""
+"The Google Synchronization needs to be configured before you can use it, do "
+"you want to do it now?"
+msgstr ""
+"La sincronització de Google s'ha de configurar abans de poder utilitzar-la, "
+"voleu fer-ho ara?"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_credentials.py:0
 #, python-format
 msgid "The account for the Google Calendar service is not configured."
 msgstr "El compte del servei de Google Calendar no està configurat."
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_sync.py:0
 #, python-format
-msgid "The following event could not be synced with Google Calendar."
+msgid ""
+"The following event could not be synced with Google Calendar. </br>It will "
+"not be synced as long at it is not updated.</br>%(reason)s"
 msgstr ""
+"El següent esdeveniment no s'ha pogut sincronitzar amb Google "
+"Calendar.</br>No es sincronitzarà mentre no s'actualitzi.</br>%(reason)s"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
 msgid "The synchronization with Google calendar was successfully stopped."
-msgstr "La sincronització amb el calendari de Google s'ha aturat correctament."
+msgstr ""
+"La sincronització amb el calendari de Google s'ha aturat correctament."
 
 #. module: google_calendar
 #: model:ir.model.constraint,message:google_calendar.constraint_res_users_google_token_uniq
@@ -385,7 +432,8 @@ msgstr "L'usuari ja té un compte de google"
 #. module: google_calendar
 #: model:ir.model.fields,help:google_calendar.field_google_calendar_account_reset__delete_policy
 msgid "This will only affect events for which the user is the owner"
-msgstr "Això només afectarà els esdeveniments pels quals l'usuari és el propietari"
+msgstr ""
+"Això només afectarà els esdeveniments pels quals l'usuari és el propietari"
 
 #. module: google_calendar
 #: model:ir.model.fields,field_description:google_calendar.field_google_calendar_credentials__calendar_token_validity
@@ -412,22 +460,28 @@ msgid "User's Existing Events"
 msgstr "Esdeveniments existents de l'usuari"
 
 #. module: google_calendar
-#. odoo-javascript
-#: code:addons/google_calendar/static/src/views/google_calendar/google_calendar_controller.js:0
+#. openerp-web
+#: code:addons/google_calendar/static/src/js/google_calendar.js:0
 #, python-format
-msgid "You are about to stop the synchronization of your calendar with Google. Are you sure you want to continue?"
-msgstr "Estàs a punt de detenir la sincronització del teu calendari amb Google. ¿Estàs segur que vols continuar?"
+msgid ""
+"You are about to stop the synchronization of your calendar with Google. Are "
+"you sure you want to continue?"
+msgstr ""
+"Estàs a punt de detenir la sincronització del teu calendari amb Google. "
+"¿Estàs segur que vols continuar?"
 
 #. module: google_calendar
-#. odoo-python
+#: code:addons/google_calendar/models/google_sync.py:0
 #: code:addons/google_calendar/models/google_sync.py:0
 #, python-format
 msgid "undefined time"
 msgstr "temps indefinit"
 
 #. module: google_calendar
-#. odoo-python
 #: code:addons/google_calendar/models/google_sync.py:0
 #, python-format
-msgid "you don't seem to have permission to modify this event on Google Calendar"
-msgstr "sembla que no teniu permís per modificar aquest esdeveniment al Calendari de Google"
+msgid ""
+"you don't seem to have permission to modify this event on Google Calendar"
+msgstr ""
+"sembla que no teniu permís per modificar aquest esdeveniment al Calendari de"
+" Google"

@@ -9,7 +9,7 @@
                 <field name="journal_id" position="after">
                   <field name="country_code" invisible="1"/>
                   <field name="l10n_co_edi_description_code_debit"
-                         required="country_code == 'CO'"/>
+                         attrs="{'required': [('country_code', '=', 'CO')]}"/>
                 </field>
             </field>
         </record>

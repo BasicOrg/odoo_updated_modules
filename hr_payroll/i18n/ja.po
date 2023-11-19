@@ -3,18 +3,18 @@
 # 	* hr_payroll
 # 
 # Translators:
-# Ryoko Tsuda <ryoko@quartile.co>, 2023
-# Wil Odoo, 2023
-# Junko Augias, 2023
+# Martin Trigaux, 2022
+# Tim Siu Lai <tl@roomsfor.hk>, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Junko Augias, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Ryoko Tsuda <ryoko@quartile.co>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,85 +22,40 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip_worked_days.py:0
-#, python-format
-msgid " (Half-Day)"
-msgstr " (半日)"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count
 msgid "# Payslip"
-msgstr "# 給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__payslips_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__payslips_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__payslip_count
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "# Payslips"
-msgstr "# 給与明細"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "$100"
-msgstr "$100"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "$100.0"
-msgstr "$100.0"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid ""
-"%s\n"
+"%s:\n"
 "- Employee: %s\n"
 "- Contract: %s\n"
 "- Payslip: %s\n"
 "- Salary rule: %s (%s)\n"
 "- Error: %s"
 msgstr ""
-"%s\n"
-"- 従業員: %s\n"
-"- 契約書: %s\n"
-"- 給与: %s\n"
-"- 給与規則: %s (%s)\n"
-"- エラー: %s"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
-#, python-format
-msgid "%s (copy)"
-msgstr "%s (コピー)"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "%s and %s"
-msgstr "%s と %s"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "%s-declaration-%s"
-msgstr "%s-申告-%s"
 
 #. module: hr_payroll
 #: model:ir.actions.report,print_report_name:hr_payroll.action_report_payslip
 msgid "'Payslip - %s' % (object.name)"
-msgstr "'給与明細 - %s' % (object.name)"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "(%s Payslips)"
-msgstr "(%s給与明細 )"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__state
@@ -124,126 +79,37 @@ msgstr ""
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "-> Report"
-msgstr "-> 報告"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_kanban
 msgid "/ Hour"
-msgstr "/ 時"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_kanban
 msgid "/ Month"
-msgstr "/ 月"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ day"
-msgstr "/ 日"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ half-month"
-msgstr "/ 半月"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ half-year"
-msgstr "/ 半期"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ quarter"
-msgstr "/ 四半期"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ two months"
-msgstr "/ 2か月"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ two weeks"
-msgstr "/ 2週間"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ week"
-msgstr "/ 週"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "/ year"
-msgstr "/ 年"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "1. Save documents to terminated employees"
-msgstr "1. 契約終了した従業員に対してドキュメントを保存"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
-msgid "100"
-msgstr "100"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_13th_month_salary
 msgid "13th pay salary"
-msgstr "年度末賞与"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "1st semester of %s"
-msgstr "%sの前期"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "2. Index salaries for Marketing department"
-msgstr "2. マーケティング部門の給与指標"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
-msgid "2023 Payroll"
-msgstr "2023 給与"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "2023-08-10"
-msgstr "2023-08-10"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "2023-09-10"
-msgstr "2023-09-10"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "2nd semester of %s"
-msgstr "%sの後期"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "3. Create a new contract for Marc Demo with his new position"
-msgstr "3. Marc Demoの新規職位で新しい契約を結ぶ"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "380055"
-msgstr "380055"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "39560123456"
-msgstr "39560123456"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "40"
-msgstr "40"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
@@ -252,55 +118,58 @@ msgid ""
 "                            Save your Salary Rule in order to add Parameter Values.\n"
 "                        </span>"
 msgstr ""
-"<span class=\"bg-white opacity-75 w-100 h-100 o_salary_rule_overlay position-absolute top-0 end-0 w-100 h-100 text-center d-flex justify-content-center flex-column fs-3\">\n"
-"                            パラメータ値を追加するには、給与規則を保存します。\n"
-"                        </span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "<span class=\"ms-2\"> hours/week</span>"
-msgstr "<span class=\"ms-2\"> 時間/週</span>"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
-msgid ""
-"<span class=\"o_stat_text\">\n"
-"                            Work Entries\n"
-"                            </span>"
-msgstr ""
-"<span class=\"o_stat_text\">\n"
-"                            ワークエントリ\n"
-"                            </span>"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Payroll Rules</span>"
+msgstr "<span class=\"o_form_label\">給与規則</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 msgid "<span class=\"o_stat_text\">Payslips</span>"
-msgstr "<span class=\"o_stat_text\">給与明細</span>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 msgid ""
-"<span nolabel=\"1\" colspan=\"2\">This wizard will generate payslips for all"
+"<span class=\"text-muted\">Set a specific department if you wish to select "
+"all the employees from this department (and subdepartments) at once.</span>"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"<span class=\"text-muted\">Set a specific structure if you wish to make an "
+"extra payslip (eg: End of the year bonus). If you leave this field empty, a "
+"regular payslip will be generated for all the selected employees, based on "
+"their contracts configuration.</span>"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"<span colspan=\"4\" nolabel=\"1\">This wizard will generate payslips for all"
 " selected employee(s) based on the dates and credit note specified on "
 "Payslips Run.</span>"
 msgstr ""
-"<span nolabel=\"1\" "
-"colspan=\"2\">このウィザードは、給与明細実行で指定された日付とクレジットノートに基づいて、選択された全ての従業員の給与明細を作成します。</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_index_form_view
 msgid ""
-"<span role=\"status\" class=\"alert alert-warning d-block\" invisible=\"not "
-"display_warning\">You have selected contracts that are not running, this "
-"wizard can only index running contracts.</span>"
+"<span role=\"status\" class=\"alert alert-warning\" attrs=\"{'invisible': "
+"[('display_warning', '=', False)]}\">You have selected contracts that are "
+"not running, this wizard can only index running contracts.</span>"
 msgstr ""
-"<span role=\"status\" class=\"alert alert-warning d-block\" invisible=\"not "
-"display_warning\">このウィザードは実行中の契約にのみインデックスを付けることができます。</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "<span> %</span>"
-msgstr "<span> %</span>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
@@ -310,7 +179,7 @@ msgstr "<span> 時間/週</span>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 msgid "<span>/ hour</span>"
-msgstr "<span>/ 時間</span>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_edit_payslip_lines_form_wizard
@@ -321,18 +190,11 @@ msgid ""
 "automatic recalculation. Be careful that reordering the lines doesn't "
 "recompute them.</span>"
 msgstr ""
-"<span><strong>ヒント:</strong>明細の数量または金額を編集するたびに、次の行を再計算します。自動再計算によって編集が上書きされるのを防ぐため、上から下に編集することをお勧めします。明細の順番を変えても再計算されないように注意して下さい。"
-" </span>"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "<span>Days</span>"
-msgstr "<span>日</span>"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
 msgid "<span>Versions</span>"
-msgstr "<span>バージョン</span>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -342,17 +204,17 @@ msgstr "<strong>基本給</strong>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Computed on </strong>"
-msgstr "<strong>以下で計算済: </strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Contract Start Date</strong>"
-msgstr "<strong>契約開始日</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Contract Type</strong>"
-msgstr "<strong>契約タイプ</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -362,27 +224,27 @@ msgstr "<strong>指定</strong>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Employee</strong>"
-msgstr "<strong>従業員</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Identification</strong>"
-msgstr "<strong>識別</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Marital Status</strong>"
-msgstr "<strong>配偶者の有無</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Pay Period</strong>"
-msgstr "<strong>給与支払い期間</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Person in charge</strong>"
-msgstr "<strong>担当者</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -397,35 +259,31 @@ msgstr "<strong>合計</strong>"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "<strong>Working Schedule</strong>"
-msgstr "<strong>勤務スケジュール</strong>"
+msgstr ""
 
 #. module: hr_payroll
 #: model:mail.template,body_html:hr_payroll.mail_template_new_payslip
 msgid ""
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; margin:0px auto;\"><tbody>\n"
 "    <tr><td valign=\"top\" style=\"text-align: left; font-size: 14px;\">\n"
-"        Dear <t t-esc=\"object.employee_id.name\"></t>, a new payslip is available for you.<br><br>\n"
-"        Please find the PDF in your employee portal.<br><br>\n"
-"        Have a nice day,<br>\n"
+"        Dear <t t-esc=\"object.employee_id.name\"/>, a new payslip is available for you.<br/><br/>\n"
+"        Please find the PDF in your employee portal.<br/><br/>\n"
+"        Have a nice day,<br/>\n"
 "        The HR Team\n"
 "    </td></tr>\n"
 "</tbody></table>\n"
 "            "
 msgstr ""
-"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%; margin:0px auto;\"><tbody>\n"
-"    <tr><td valign=\"top\" style=\"text-align: left; font-size: 14px;\">\n"
-"         <t t-esc=\"object.employee_id.name\"></t>様、新しい給与明細の用意ができました。<br><br>\n"
-"        従業員ポータルでPDFをご確認下さい。<br><br>\n"
-"        よろしくお願いします。<br>\n"
-"        人事部\n"
-"    </td></tr>\n"
-"</tbody></table>\n"
-"            "
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_work_entry_type_is_unforeseen_is_leave
 msgid "A unforeseen absence must be a leave."
-msgstr "急な欠勤は、必ず休暇となります。"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Absenteeism Rate"
+msgstr "欠勤率"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -444,12 +302,12 @@ msgstr "要アクション"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__active
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 msgid "Active"
-msgstr "有効化"
+msgstr "有効"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__active_amount
 msgid "Active Amount"
-msgstr "有効金額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_ids
@@ -461,7 +319,7 @@ msgstr "活動"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_exception_decoration
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "例外活動文字装飾"
+msgstr "例外の活動を示す文字装飾"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_state
@@ -476,30 +334,26 @@ msgid "Activity Type Icon"
 msgstr "活動種別アイコン"
 
 #. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/views/add_payslips_hook.js:0
-#: code:addons/hr_payroll/static/src/views/payslip_batch_form/payslip_batch_form.js:0
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
-#, python-format
-msgid "Add Payslips"
-msgstr "給与明細を追加"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Add a <strong>name</strong> to the contract."
-msgstr " <strong>名前</strong>を契約書に追加"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_view_hr_payroll_structure_from_type
 msgid "Add a new salary structure"
-msgstr "新規給与体系を追加"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Add an internal note..."
-msgstr "内部メモを追加..."
+msgstr "内部注記を追加..."
+
+#. module: hr_payroll
+#: model:ir.actions.server,name:hr_payroll.action_hr_payslip_run_generate
+msgid "Add payslips"
+msgstr ""
 
 #. module: hr_payroll
 #: model:res.groups,name:hr_payroll.group_hr_payroll_manager
@@ -507,7 +361,7 @@ msgid "Administrator"
 msgstr "管理者"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.xml:0
 #, python-format
 msgid "All"
@@ -547,24 +401,19 @@ msgstr "金額タイプ"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__monthly_amount
 msgid "Amount to pay each month."
-msgstr "月次支払額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__active_amount
 msgid ""
 "Amount to pay for this month, Monthly Amount or less depending on the "
 "Remaining Amount."
-msgstr "今月の支払額、月次支払額、または残額に応じた支払額"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.constraint,message:hr_payroll.constraint_hr_payroll_employee_declaration_unique_employee_sheet
-msgid "An employee can only have one declaration per sheet."
-msgstr "従業員は1枚につき1つの申告しかできません。"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payroll_stats/payroll_stats.xml:0
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__annually
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__annually
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__annually
 #, python-format
 msgid "Annually"
@@ -574,8 +423,8 @@ msgstr "年次"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid ""
 "Another refund payslip with the same amount has been found. Do you want to "
-"create a new one?"
-msgstr "同じ金額の払戻伝票が見つかりました。新しいものを作成しますか？"
+"create a new one ?"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__appears_on_payslip
@@ -593,7 +442,7 @@ msgstr "条件が正しければこのルールが計算に適用されます。
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__date_estimated_end
 msgid "Approximated end date."
-msgstr "およその終了日"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
@@ -604,28 +453,26 @@ msgid "Archived"
 msgstr "アーカイブ済"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.js:0
 #, python-format
-msgid ""
-"Are you sure you want to delete this note? All content will be definitely "
-"lost."
-msgstr "本当にこのメモを削除しますか？全内容が確実に消去されます。"
+msgid "Are you sure you want to delete this note?"
+msgstr ""
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_assignment
-#: model:hr.salary.rule,name:hr_payroll.default_assignment_of_salary_rule
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__assignment_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__assignment
+#, python-format
 msgid "Assignment of Salary"
-msgstr "給与割当"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "At least one previous negative net could be reported on this payslip for %s"
-msgstr "この給与明細には、少なくとも過去に1回、以下の負の正価が報告されています%s"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_attachment_count
@@ -640,22 +487,23 @@ msgid "Attachment Name"
 msgstr "添付ファイル名"
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_attachment
-#: model:hr.salary.rule,name:hr_payroll.default_attachment_of_salary_rule
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__attachment_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__attachment
+#, python-format
 msgid "Attachment of Salary"
-msgstr "給与の添付"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Attendance Rate"
+msgstr "出勤率"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_entry_source__attendance
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__work_entry_source__attendance
 msgid "Attendances"
-msgstr "出勤"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "August 2023 Payslip"
-msgstr "2023年8月給与明細"
+msgstr "勤怠"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__struct_ids
@@ -663,24 +511,34 @@ msgid "Availability in Structure"
 msgstr "使用可能給与体系"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__avatar_1920
-msgid "Avatar"
-msgstr "アバター"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Basic Wage"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__avatar_128
-msgid "Avatar 128"
-msgstr "アバター 128"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Gross Wage"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Hours per Day of Work"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Average Net Wage"
+msgstr "平均正味賃金"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_report_view_tree
 msgid "Average of Basic Wage"
-msgstr "平均基本賃金"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_report_view_tree
 msgid "Average of Net Wage"
-msgstr "平均正味賃金"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule.category,name:hr_payroll.BASIC
@@ -688,9 +546,8 @@ msgid "Basic"
 msgstr "基本"
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_basic_salary_rule
 #, python-format
 msgid "Basic Salary"
 msgstr "基本給"
@@ -698,13 +555,14 @@ msgstr "基本給"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__basic_wage
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__basic_wage
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Basic Wage"
 msgstr "基本給"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__leave_basic_wage
 msgid "Basic Wage for Time Off"
-msgstr "休暇用基本賃金"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
@@ -719,7 +577,7 @@ msgid "Batch Name"
 msgstr "バッチ名"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.xml:0
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payslip_run
 #, python-format
@@ -729,24 +587,24 @@ msgstr "一括処理"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__module_l10n_be_hr_payroll
 msgid "Belgium Payroll"
-msgstr "ベルギー給与"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__bi-monthly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__bi-monthly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__bi-monthly
 msgid "Bi-monthly"
 msgstr "隔月"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__bi-weekly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__bi-weekly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__bi-weekly
 msgid "Bi-weekly"
 msgstr "隔週"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Board meeting summary:"
-msgstr "取締役会のまとめ:"
+msgid "Board meeting summary :"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_line_form
@@ -756,7 +614,7 @@ msgstr "計算"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__calendar_changed
 msgid "Calendar Changed"
-msgstr "カレンダが変更されました"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_hr_payroll_cancel_payroll
@@ -765,7 +623,7 @@ msgstr "カレンダが変更されました"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "取消"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__state__cancel
@@ -774,18 +632,16 @@ msgid "Cancelled"
 msgstr "取消済"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Cannot cancel a payslip that is done."
 msgstr "実行済の給与明細をキャンセルすることはできません。"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Cannot mark payslip as paid if not confirmed."
-msgstr "未確認の場合、給与明細を支払済にすることはできません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__code
@@ -793,7 +649,7 @@ msgstr "未確認の場合、給与明細を支払済にすることはできま
 msgid ""
 "Careful, the Code is used in many references, changing it could lead to "
 "unwanted changes."
-msgstr "注意:このコードは多くの参照で使用されているため、変更すると望ましくない変更につながる可能性があります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__category_id
@@ -801,37 +657,43 @@ msgstr "注意:このコードは多くの参照で使用されているため�
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__category_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
 msgid "Category"
-msgstr "カテゴリー"
+msgstr "カテゴリ"
 
 #. module: hr_payroll
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
+msgid "Change of Occupation"
+msgstr ""
+
+#. module: hr_payroll
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Check the <strong>Salary Structure Type</strong>."
-msgstr " <strong>給与体系タイプ</strong>を確認して下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Check the <strong>Work Entries</strong> linked to your newly created "
 "Contract."
-msgstr "新しく作成された契約にリンクした<strong>ワークエントリ</strong>を確認して下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Check the <strong>Working Schedule</strong>."
-msgstr "<strong>勤務スケジュール</strong>を確認して下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#: model:hr.salary.attachment.type,name:hr_payroll.hr_salary_attachment_type_child_support
-#: model:hr.salary.rule,name:hr_payroll.default_child_support
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__child_support_amount
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__deduction_type__child_support
+#, python-format
 msgid "Child Support"
-msgstr "育児支援"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__children_ids
@@ -844,87 +706,80 @@ msgid "Choose a Payroll Localization"
 msgstr "給与計算のローカリゼーションを選択"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click here to create a new <strong>Contract</strong>."
-msgstr "新しい<strong>契約</strong>を作成するには、ここをクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click here to generate a <strong>Batch</strong> for the displayed Employees."
-msgstr "表示された従業員用に<strong>バッチ</strong>を作成するには、ここをクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click here to go back to the <strong>Employee's profile</strong>."
-msgstr "<strong>従業員プロフィール</strong>に戻るには、ここをクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click on <strong>Salary Information</strong> to access additional fields."
-msgstr " <strong>給与情報</strong>をクリックして追加フィールドにアクセスして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on Employees to pick one of your <strong>Employees</strong>."
-msgstr "<strong>従業員</strong>の1人を選択するには従業員をクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Click on Payroll to manage your employee's <strong>Work Entries</strong>, "
 "<strong>Contracts</strong> and <strong>Payslips</strong>."
 msgstr ""
-"従業員の<strong>ワークエントリ</strong>、<strong>契約書</strong> そして "
-"<strong>給与明細</strong>を管理するには給与をクリックして下さい。"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on the <strong>Payslip</strong>."
-msgstr "<strong>給与明細</strong>をクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Click on the <strong>Work Entries</strong> menu."
-msgstr " <strong>ワークエントリ</strong>メニューをクリックして下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.xml:0
 #, python-format
 msgid "Close"
 msgstr "閉じる"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__paid_date
-msgid "Close Date"
-msgstr "完了日"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Close the window."
-msgstr "ウィンドウを閉じる"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days_type__half-up
@@ -933,15 +788,14 @@ msgstr "最も近い値"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__code
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__structure_code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__code
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -959,9 +813,6 @@ msgid "Companies"
 msgstr "会社"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__company_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__company_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__company_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__company_id
@@ -982,12 +833,6 @@ msgid "Company Contribution"
 msgstr "会社の拠出金"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__full_time_required_hours
-#: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__full_time_required_hours
-msgid "Company Full Time"
-msgstr "会社フルタイム"
-
-#. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__state__close
 msgid "Completed"
 msgstr "完了"
@@ -1006,7 +851,7 @@ msgstr "計算表"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__compute_date
 msgid "Computed On"
-msgstr "以下で計算:"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__condition_select
@@ -1030,11 +875,11 @@ msgid "Confirm"
 msgstr "確認"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Confirm the <strong>Payslip</strong>."
-msgstr "<strong>給与明細</strong>を確認して下さい。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip_run__state__verify
@@ -1047,20 +892,19 @@ msgid "Conflict"
 msgstr "不整合"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Conflicts"
 msgstr "不整合"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Congratulations! You created your first contract and generated your first "
 "payslip!"
-msgstr "おめでとうございます！最初の契約書を作成し、最初の給与明細を作成しました！"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__contract_id
@@ -1074,12 +918,7 @@ msgstr "契約"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__contract_domain_ids
 msgid "Contract Domain"
-msgstr "契約書ドメイン"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Contract Expiration Notice Period"
-msgstr "契約満了通知期間"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_structure_type_view_search
@@ -1094,7 +933,7 @@ msgstr "契約履歴"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_index_form_view
 msgid "Contract indexing"
-msgstr "契約書インデックス作成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_contract_repository
@@ -1124,7 +963,7 @@ msgstr "通勤手当"
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_ca_gravie
 msgid "Conveyance Allowance For Gravie"
-msgstr "Gravie通勤手当"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__amount
@@ -1138,13 +977,11 @@ msgstr "カウント"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__country_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__country_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__country_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__country_id
 msgid "Country"
 msgstr "国"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__country_code
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__country_code
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__country_code
 msgid "Country Code"
 msgstr "国コード"
@@ -1155,19 +992,14 @@ msgid "Create Draft Entry"
 msgstr "ドラフトエントリを作成"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
-msgid "Create Individual Attachments"
-msgstr "個別の添付を作成"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Create SEPA payment"
-msgstr "SEPA支払を作成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_new_salary_attachment
 msgid "Create Salary Attachment"
-msgstr "給与添付を作成"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_hr_contract_repository
@@ -1175,19 +1007,17 @@ msgid "Create a new contract"
 msgstr "新しい契約を作成しましょう"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/todo_list/todo_list.xml:0
 #, python-format
 msgid "Create new todo note"
-msgstr "新規Todoメモを作成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__create_uid
@@ -1199,7 +1029,6 @@ msgstr "新規Todoメモを作成"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__create_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__create_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__create_uid
 msgid "Created by"
@@ -1209,9 +1038,7 @@ msgstr "作成者"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__create_date
@@ -1223,7 +1050,6 @@ msgstr "作成者"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__create_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__create_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__create_date
 msgid "Created on"
@@ -1232,7 +1058,7 @@ msgstr "作成日"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__credit_note
 msgid "Credit Note"
-msgstr "クレジットノート"
+msgstr "返金通知"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
@@ -1240,21 +1066,13 @@ msgid "Credit Notes"
 msgstr "クレジットノート"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__is_credit_time
-msgid "Credit Time"
-msgstr "クレジット時間"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__time_credit
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry__is_credit_time
 msgid "Credit time"
-msgstr "クレジット時間"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__currency_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__currency_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__currency_id
 msgid "Currency"
@@ -1264,12 +1082,6 @@ msgstr "通貨"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
 msgid "Current month"
 msgstr "今月"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__daily
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__daily
-msgid "Daily"
-msgstr "日次"
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_dashboard_root
@@ -1300,7 +1112,7 @@ msgstr "終了日"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__date_end
 msgid "Date at which this assignment has been set as completed or cancelled."
-msgstr "この課題が完了または取消として設定された日付。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__full
@@ -1309,58 +1121,37 @@ msgstr "日"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__number_of_days
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Days"
 msgstr "日"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count_leave
 msgid "Days of Paid Time Off"
-msgstr "有給休暇日数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count_unforeseen_absence
 msgid "Days of Unforeseen Absence"
-msgstr "急な欠勤の日数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count_leave_unpaid
 msgid "Days of Unpaid Time Off"
-msgstr "無給休暇日数"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__res_id
-msgid "Declaration Model Id"
-msgstr "申告モデルID"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__res_model
-msgid "Declaration Model Name"
-msgstr "申告モデル名"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__line_ids
-msgid "Declarations"
-msgstr "申告"
-
-#. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_deduction_salary_rule
 #: model:hr.salary.rule.category,name:hr_payroll.DED
 #, python-format
 msgid "Deduction"
 msgstr "控除"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__schedule_pay
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_schedule_pay
 msgid "Default Scheduled Pay"
 msgstr "支払予定のデフォルト値"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__wage_type
-msgid "Default Wage Type"
-msgstr "デフォルト賃金タイプ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_work_entry_type_id
@@ -1368,17 +1159,18 @@ msgid "Default Work Entry Type"
 msgstr "デフォルトの作業エントリタイプ"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Define a <strong>Wage</strong>."
-msgstr "<strong>賃金</strong>を定義"
+msgstr ""
 
 #. module: hr_payroll
+#: model:ir.model.fields,help:hr_payroll.field_hr_contract__schedule_pay
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__schedule_pay
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure_type__default_schedule_pay
 msgid "Defines the frequency of the wage payment."
-msgstr "賃金の支払い頻度を定義します。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_edit_payslip_line__struct_id
@@ -1389,7 +1181,6 @@ msgid ""
 "anymore and all the valid rules of the structures of the employee's "
 "contracts will be applied."
 msgstr ""
-"選択した契約に従って、この給与明細に適用する規則を定義します。契約が空の場合、このフィールドは必須ではなくなり、従業員の契約構造の全ての有効な規則が適用されます。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__department_id
@@ -1404,10 +1195,12 @@ msgid "Department"
 msgstr "部門"
 
 #. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__description
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type__name
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__note
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__description
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__description
@@ -1427,9 +1220,7 @@ msgstr "破棄"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__display_name
@@ -1443,7 +1234,6 @@ msgstr "破棄"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__display_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__display_name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__display_name
@@ -1451,19 +1241,9 @@ msgid "Display Name"
 msgstr "表示名"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Display Payslip PDF File on a payslip form"
-msgstr "給与明細フォームに給与明細PDFファイルを表示"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_work_entry_type_view_form_inherit
 msgid "Display in Payslip"
 msgstr "給与明細上の表示"
-
-#. module: hr_payroll
-#: model:res.groups,name:hr_payroll.group_payslip_display
-msgid "Display payslip PDF"
-msgstr "給与明細PDFを表示"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__attachment
@@ -1489,11 +1269,10 @@ msgid "Done Slip"
 msgstr "明細完了"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Double Holiday Pay"
-msgstr "ダブルホリデーペイ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days_type__down
@@ -1501,12 +1280,11 @@ msgid "Down"
 msgstr "切り捨て"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__draft
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__draft
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__state__draft
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 msgid "Draft"
-msgstr "下書き"
+msgstr "ドラフト"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -1519,53 +1297,42 @@ msgid "Draft Slip"
 msgstr "ドラフトの明細書"
 
 #. module: hr_payroll
-#: model:ir.actions.server,name:hr_payroll.ir_actions_server_duplicate_structure
-msgid "Duplicate"
-msgstr "複製"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.actions.server,name:hr_payroll.action_edit_payslip_lines
 #, python-format
 msgid "Edit Payslip Lines"
-msgstr "給与明細の明細を編集"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__edit_payslip_lines_wizard_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__edit_payslip_lines_wizard_id
 msgid "Edit Payslip Lines Wizard"
-msgstr "給与明細の明細編集ウィザード"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_worked_days_line
 msgid "Edit payslip line wizard worked days"
-msgstr "給与明細の明細編集ウィザード勤務日"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_lines_wizard
 msgid "Edit payslip lines wizard"
-msgstr "給与明細の明細編集ウィザード"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_edit_payslip_line
 msgid "Edit payslip lines wizard line"
-msgstr "給与明細の明細編集ウィザード明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__edited
 msgid "Edited"
-msgstr "編集済"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_edit_payslip_lines_form_wizard
 msgid "Edition of Payslip Lines in the Payslip"
-msgstr "給与明細の給与明細書明細のエディション"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Eghezee"
-msgstr "Eghezee"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__email_cc
@@ -1575,10 +1342,10 @@ msgstr "メールCC"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_employee
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__employee_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__employee_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__employee_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__employee_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
@@ -1590,31 +1357,15 @@ msgid "Employee"
 msgstr "従業員"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
-#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_search
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
-msgid "Employee Code"
-msgstr "従業員コード"
-
-#. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_contract
 msgid "Employee Contract"
 msgstr "従業員契約"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_count
 #, python-format
 msgid "Employee Count"
 msgstr "従業員数"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "Employee Declarations"
-msgstr "従業員申告"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
@@ -1623,7 +1374,7 @@ msgid "Employee Function"
 msgstr "従業員の仕事"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payslip_batch/payslip_batch.js:0
 #: model:ir.actions.act_window,name:hr_payroll.action_view_hr_payslip_form
 #: model:ir.actions.act_window,name:hr_payroll.action_view_hr_payslip_month_form
@@ -1632,34 +1383,31 @@ msgid "Employee Payslips"
 msgstr "従業員給与明細"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employee Trends"
-msgstr "従業員トレンド"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employee whose contracts and company are differents"
-msgstr "契約書と会社が違う従業員"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__hourly_wage
 msgid "Employee's hourly gross wage."
-msgstr "従業員の時間当たり総賃金"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__resource_calendar_id
 msgid "Employee's working schedule."
-msgstr "従業員の勤務スケジュール"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__employee_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__employee_ids
+#: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_contracts_configuration
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_line_filter
@@ -1668,80 +1416,52 @@ msgid "Employees"
 msgstr "従業員"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees (With Running Contracts) missing from open batches"
-msgstr "処理中バッチに入っていない従業員（実行中の契約あり）"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Both New And Running Contracts"
-msgstr "新しい契約と実行中の契約の両方がある従業員"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Multiple Open Payslips of Same Type"
-msgstr "同じ種類の給与明細が複数処理中である従業員"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Employees Without Bank account Number"
-msgstr "銀行口座番号のない従業員"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Employees Without Identification Number"
-msgstr "識別情報のない従業員"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees Without Running Contracts"
-msgstr "有効な契約がない従業員"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employees with payslips generated on the previous contract"
-msgstr "前回の契約書で生成された給与明細のある従業員"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Employer Cost"
-msgstr "雇用コスト"
-
-#. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__hide_basic_on_pdf
-msgid ""
-"Enable this option if you don't want to display the Basic Salary on the "
-"printed pdf."
-msgstr "印刷したPDFに基本給を表示したくない場合は、このオプションを有効にします。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__date_to
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__date_end
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "End Date"
 msgstr "終了日"
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_salary_attachment_check_dates
 msgid "End date may not be before the starting date."
-msgstr "終了日は開始日より前であってはなりません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__display_warning
@@ -1749,11 +1469,10 @@ msgid "Error"
 msgstr "エラー"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule_category.py:0
 #, python-format
 msgid "Error! You cannot create recursive hierarchy of Salary Rule Category."
-msgstr "エラー！給与規則カテゴリの再帰階層を作成できません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__date_estimated_end
@@ -1769,14 +1488,14 @@ msgstr "従業員の給与支払いに第三者がかかわっています。"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Export Payslip"
-msgstr "給与明細をエクスポート"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "First, we'll create a new <strong>Contract</strong>."
-msgstr "まず、新しい <strong>契約書</strong>を作成しましょう。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__amount_fix
@@ -1784,12 +1503,6 @@ msgstr "まず、新しい <strong>契約書</strong>を作成しましょう。
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_rule__amount_select__fix
 msgid "Fixed Amount"
 msgstr "固定金額"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__wage_type__monthly
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__monthly
-msgid "Fixed Wage"
-msgstr "定額賃金"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_follower_ids
@@ -1826,21 +1539,25 @@ msgstr "French Payroll"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__date_from
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "From"
-msgstr "from"
+msgstr "開始日"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "From %s to %s"
-msgstr "%s から %sへ"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "Full Time"
 msgstr "フルタイム"
+
+#. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__full_time_required_hours
+#: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__full_time_required_hours
+msgid "Fulltime Hours"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
@@ -1853,16 +1570,10 @@ msgid "Generate"
 msgstr "作成"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_tree
-msgid "Generate PDFs"
-msgstr "PDFを生成する"
-
-#. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/js/hr_work_entries_gantt.xml:0
+#. openerp-web
+#: code:addons/hr_payroll/static/src/js/work_entries_controller_mixin.js:0
 #: code:addons/hr_payroll/static/src/views/work_entry_calendar/work_entry_calendar.xml:0
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
-#: model:ir.actions.server,name:hr_payroll.action_hr_payslip_run_generate
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #, python-format
 msgid "Generate Payslips"
@@ -1871,32 +1582,26 @@ msgstr "給与明細を作成"
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_generate_payslips_from_work_entries
 msgid "Generate payslips"
-msgstr "給与明細を生成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payslip_employees
 msgid "Generate payslips for all selected employees"
-msgstr "選択した全ての従業員の給与明細を作成する。"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__pdf_generated
-msgid "Generated PDF"
-msgstr "生成済PDF"
+msgstr "選択した全ての従業員の給与明細書を作成する。"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 msgid "Generated Payslips"
-msgstr "生成済給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Give insurance card to new registered employees"
-msgstr "新規登録社員に保険証を渡す"
+msgid "Give assurance card to new registered employees"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_gross_salary_rule
 #: model:hr.salary.rule.category,name:hr_payroll.GROSS
 #, python-format
 msgid "Gross"
@@ -1904,12 +1609,10 @@ msgstr "総額"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__gross_wage
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__gross_wage
 msgid "Gross Wage"
-msgstr "賃金総額"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
@@ -1922,19 +1625,14 @@ msgid "Group By"
 msgstr "グループ化"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__group_payslip_display
-msgid "Group Payslip Display"
-msgstr "グループ給与明細表示"
-
-#. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_work_entry
 msgid "HR Work Entry"
-msgstr "HR作業エントリ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_work_entry_type
 msgid "HR Work Entry Type"
-msgstr "HR作業エントリタイプ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__half
@@ -1951,58 +1649,55 @@ msgstr "メッセージあり"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__has_negative_net_to_report
 msgid "Has Negative Net To Report"
-msgstr "報告するべき債務超過あり"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__has_refund_slip
 msgid "Has Refund Slip"
-msgstr "払戻伝票あり"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_similar_attachment
 msgid "Has Similar Attachment"
-msgstr "類似の添付あり"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_similar_attachment_warning
 msgid "Has Similar Attachment Warning"
-msgstr "類似の添付警告あり"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__has_total_amount
 msgid "Has Total Amount"
-msgstr "合計金額あり"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__hide_basic_on_pdf
-msgid "Hide Basic On Pdf"
-msgstr "PDF上で基本給を隠す"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__hourly_wage
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__wage_type__hourly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__hourly
 msgid "Hourly Wage"
 msgstr "時間給"
 
 #. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Hours of Work"
+msgstr ""
+
+#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__hours_per_week
 #: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__hours_per_week
 msgid "Hours per Week"
-msgstr "1週間ごとの時間"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_houserentallowance1
 msgid "House Rent Allowance"
-msgstr "家賃補助"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__id
@@ -2016,7 +1711,6 @@ msgstr "家賃補助"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__id
@@ -2033,14 +1727,14 @@ msgstr "アイコン"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_exception_icon
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "例外活動を示すアイコン"
+msgstr "例外的なアクティビティを示唆するアイコン"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_needaction
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_needaction
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "チェックした場合は、新しいメッセージに注意が必要です。"
+msgstr "チェックされている場合は、新しいメッセージに注意が必要です。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_has_error
@@ -2050,46 +1744,32 @@ msgstr "チェックした場合は、新しいメッセージに注意が必要
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_error
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "チェックした場合は、一部のメッセージに配信エラーが発生されました。"
-
-#. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_employee__is_non_resident
-#: model:ir.model.fields,help:hr_payroll.field_res_users__is_non_resident
-msgid "If recipient lives in a foreign country"
-msgstr "受領者が海外に住んでいる場合"
+msgstr "チェックした場合、一部のメッセージで配信エラーが発生しています。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__active
 msgid ""
 "If the active field is set to false, it will allow you to hide the salary "
 "rule without removing it."
-msgstr "当該項目を無効に設定すると、給与規則を削除せずに非表示にすることができます。"
+msgstr "もし当該項目が誤りであると、それを削除しないでも給与ルールを隠すことができます。"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__image_1920
-msgid "Image"
-msgstr "画像"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__image_128
-msgid "Image 128"
-msgstr "画像128"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_tree
+#. openerp-web
+#: code:addons/hr_payroll/static/src/xml/hr_contract_tree_views.xml:0
+#, python-format
 msgid "Index Contracts"
-msgstr "インデックス契約書"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payroll_index
 #: model:ir.actions.server,name:hr_payroll.action_index_contracts
 msgid "Index contract(s)"
-msgstr "インデックス契約書"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_index
 msgid "Index contracts"
-msgstr "インデックス契約書"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__module_l10n_in_hr_payroll
@@ -2114,7 +1794,13 @@ msgstr "内部注釈"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__internet_invoice
 msgid "Internet Subscription Invoice"
-msgstr "インターネットサブスクリプション請求書"
+msgstr ""
+
+#. module: hr_payroll
+#: code:addons/hr_payroll/models/note.py:0
+#, python-format
+msgid "Invite Follower"
+msgstr "フォロワーを招待"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_is_follower
@@ -2127,51 +1813,43 @@ msgstr "フォロー中　"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__is_fulltime
 #: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__is_fulltime
 msgid "Is Full Time"
-msgstr "フルタイム"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__is_paid
 msgid "Is Paid"
-msgstr "支払済"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
 msgid "Is Register"
-msgstr "登録"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_regular
 msgid "Is Regular"
-msgstr "定期的"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_superuser
 msgid "Is Superuser"
-msgstr "スーパーユーザ"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__is_wrong_duration
-msgid "Is Wrong Duration"
-msgstr "誤った期間"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__quantity
 msgid ""
 "It is used in computation for percentage and fixed amount. E.g. a rule for "
 "Meal Voucher having fixed amount of 1€ per worked day can have its quantity "
-"defined in expression like worked_days['WORK100'].number_of_days."
+"defined in expression like worked_days.WORK100.number_of_days."
 msgstr ""
-"これはパーセンテージや固定金額の計算に使用されます。例えば、勤務日数1日あたり1ユーロの食事券の規則は、worked_days['WORK100'].number_of_daysのような式で数量を定義することができます。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input__amount
 msgid ""
 "It is used in computation. E.g. a rule for salesmen having 1%% commission of"
 " basic salary per product can defined in expression like: result = "
-"inputs['SALEURO'].amount * contract.wage * 0.01."
+"inputs.SALEURO.amount * contract.wage * 0.01."
 msgstr ""
-"これは計算に使用されます。例えば、プロダクトごとに基本給の1%の手数料を支払う販売担当の規則は、次のような式で定義できます: result = "
-"inputs['SALEURO'].amount * contract.wage * 0.01."
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__job_id
@@ -2182,26 +1860,39 @@ msgid "Job Position"
 msgstr "職位"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "John Smith"
-msgstr "John Smith"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "John123"
-msgstr "John123"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_search
 msgid "Last 365 Days Payslip"
 msgstr "過去365日の給与明細"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Last Departures"
-msgstr "最後の退社"
+msgstr ""
+
+#. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input_type____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category____last_update
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_line_view_search_register
@@ -2217,9 +1908,7 @@ msgstr "前四半期"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__write_uid
@@ -2231,7 +1920,6 @@ msgstr "前四半期"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__write_uid
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__write_uid
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__write_uid
 msgid "Last Updated by"
@@ -2241,9 +1929,7 @@ msgstr "最終更新者"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_employees__write_date
@@ -2255,7 +1941,6 @@ msgstr "最終更新者"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__write_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__write_date
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__write_date
 msgid "Last Updated on"
@@ -2264,12 +1949,7 @@ msgstr "最終更新日"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_line_form
 msgid "Line Name"
-msgstr "明細名"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__lines_count
-msgid "Lines Count"
-msgstr "明細数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule_category__parent_id
@@ -2280,18 +1960,30 @@ msgstr "給与の分類をその親項目に連係させるのは、報告書の
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Links:"
-msgstr "リンク:"
+msgid "Links :"
+msgstr ""
+
+#. module: hr_payroll
+#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__email_cc
+msgid "List of cc from incoming emails."
+msgstr "受信メールからのccのリスト。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__paid
-msgid "Made Payment Order? "
-msgstr "支払オーダを作成しましたか？"
+msgid "Made Payment Order ? "
+msgstr "支払いの処理をしましたか？ "
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
+msgid "Made by Odoo with ❤️"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_main_attachment_id
 msgid "Main Attachment"
-msgstr "主要添付"
+msgstr "主な添付"
 
 #. module: hr_payroll
 #: model:res.groups,name:hr_payroll.group_hr_payroll_employee_manager
@@ -2307,18 +1999,13 @@ msgstr "完了としてマーク"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Mark as paid"
-msgstr "支払済にする"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Married"
-msgstr "既婚"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__master_department_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_search
 msgid "Master Department"
-msgstr "マスター部門"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__condition_range_max
@@ -2352,17 +2039,17 @@ msgstr "最小範囲"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__mobile_invoice
 msgid "Mobile Subscription Invoice"
-msgstr "携帯サブスクリプション請求書"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_report_hr_payroll_contribution_register
 msgid "Model for Printing hr.payslip.line grouped by register"
-msgstr "登録ごとにグループ化されたhr.payslip.lineの印刷モデル"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/payroll_stats/payroll_stats.xml:0
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__monthly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__monthly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__monthly
 #, python-format
 msgid "Monthly"
@@ -2375,6 +2062,11 @@ msgid "Monthly Amount"
 msgstr "月額"
 
 #. module: hr_payroll
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__wage_type__monthly
+msgid "Monthly Fixed Wage"
+msgstr "月額固定給"
+
+#. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_salary_attachment_check_monthly_amount
 msgid "Monthly amount must be strictly positive."
 msgstr "月額はプラスの値でなければなりません。"
@@ -2383,18 +2075,16 @@ msgstr "月額はプラスの値でなければなりません。"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__my_activity_date_deadline
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "活動期限"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__rule_parameter_name
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__name
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__name
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -2407,27 +2097,27 @@ msgstr "名称"
 msgid ""
 "Name to be set on a payslip. Example: 'End of the year bonus'. If not set, "
 "the default value is 'Salary Slip'"
-msgstr "給与明細に設定する名前。例:\"年度末賞与\"。設定されていない場合、デフォルト値は'給与明細'です。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_amount
 msgid "Negative Net To Report Amount"
-msgstr "未報告の負の正価金額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_display
 msgid "Negative Net To Report Display"
-msgstr "未報告の負の正価金額表示"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__negative_net_to_report_message
 msgid "Negative Net To Report Message"
-msgstr "未報告の負の正価金額メッセージ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:mail.activity.type,name:hr_payroll.mail_activity_data_hr_payslip_negative_net
 msgid "Negative Net to Report"
-msgstr "未報告の負の正価"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule.category,name:hr_payroll.NET
@@ -2437,15 +2127,14 @@ msgstr "課税対象"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_view_kanban
 msgid "Net -"
-msgstr "正価 -"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_net_salary
 #, python-format
 msgid "Net Salary"
-msgstr "正味給与額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__net_wage
@@ -2454,7 +2143,6 @@ msgid "Net Wage"
 msgstr "正味賃金"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/report/hr_contract_history.py:0
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip_run__state__draft
 #, python-format
@@ -2462,31 +2150,28 @@ msgid "New"
 msgstr "新規"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "New Contracts"
-msgstr "新規契約"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "New Employees"
-msgstr "新規入社"
+msgstr "新入社員"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "New Payslip"
-msgstr "新規給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_calendar_event_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "次の活動カレンダーイベント"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_date_deadline
@@ -2498,30 +2183,13 @@ msgstr "次の活動期限"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_summary
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_summary
 msgid "Next Activity Summary"
-msgstr "次の活動概要"
+msgstr "次の活動サマリ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_type_id
 msgid "Next Activity Type"
 msgstr "次の活動タイプ"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__no_end_date
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_type__no_end_date
-msgid "No End Date"
-msgstr "終了日なし"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"No Other Input Type was found for the following Salary Attachment Types codes:\n"
-"%s"
-msgstr ""
-"以下の給与添付タイプコードでは、その他の入力タイプが見つかりませんでした:\n"
-"%s"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days__no
@@ -2531,44 +2199,33 @@ msgstr "丸めなし"
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_employee_unique_registration_number
 msgid "No duplication of registration numbers is allowed"
-msgstr "登録番号の重複は許可されていません"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_rule_parameter.py:0
 #, python-format
-msgid "No rule parameter with code %r was found for %s "
-msgstr "コード%sを持つ規則パラメータが見つかりませんでした。"
+msgid "No rule parameter with code '%s' was found for %s "
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__is_non_resident
-#: model:ir.model.fields,field_description:hr_payroll.field_res_users__is_non_resident
-msgid "Non-resident"
-msgstr "非居住民"
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__normal_wage
+msgid "Normal Wage"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/res_company.py:0
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_note__note
+#: model:ir.model,name:hr_payroll.model_note_note
 #, python-format
 msgid "Note"
-msgstr "メモ"
+msgstr "ノート"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
-msgid ""
-"Note a description of your parameter, when it's used, how is it computed, "
-"what's the source, ..."
-msgstr "パラメータの説明や、いつ使用されるか、計算方法、情報源などを記載してください、"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "Note: There are previous payslips with a negative amount for a total of %s "
 "to report."
-msgstr "注: 過去の給与明細に合計%sの負の額があり、報告する必要があります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_category_form
@@ -2578,14 +2235,14 @@ msgstr "ノート"
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_contribution_registers
 msgid "Nothing to show"
-msgstr "表示対象なし"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_needaction_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_needaction_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_needaction_counter
 msgid "Number of Actions"
-msgstr "アクション数"
+msgstr "アクションの数"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__number_of_days
@@ -2604,20 +2261,6 @@ msgid "Number of Hours"
 msgstr "時間"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid ""
-"Number of days prior to the contract end date that a contract expiration "
-"warning is triggered."
-msgstr "契約終了日の何日前に契約終了警告が発生するか。"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid ""
-"Number of days prior to the work permit expiration date that a warning is "
-"triggered."
-msgstr "警告が発動される労働許可証の有効期限前の日数。"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_has_error_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__message_has_error_counter
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__message_has_error_counter
@@ -2627,16 +2270,14 @@ msgstr "エラー数"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__full_time_required_hours
 #: model:ir.model.fields,help:hr_payroll.field_resource_calendar__full_time_required_hours
-msgid ""
-"Number of hours to work on the company schedule to be considered as "
-"fulltime."
-msgstr "フルタイムとみなされるために、会社のスケジュールで勤務する必要のある時間数。"
+msgid "Number of hours to work to be considered as fulltime."
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__message_needaction_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_needaction_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "アクションを必要とするメッセージの数"
 
 #. module: hr_payroll
@@ -2644,12 +2285,12 @@ msgstr "アクションを必要とするメッセージの数"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__message_has_error_counter
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "配信エラーが発生されたメッセージ数"
+msgstr "配信エラーのメッセージ数"
 
 #. module: hr_payroll
 #: model:res.groups,name:hr_payroll.group_hr_payroll_user
-msgid "Officer: Manage all contracts"
-msgstr "役員: 全ての契約書の管理"
+msgid "Officer : Manage all contracts"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
@@ -2657,36 +2298,36 @@ msgid "On the"
 msgstr "　"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the first tab is the amount of worked time giving you a <strong>gross "
 "amount</strong>."
-msgstr "最初のタブは、<strong>総計</strong>の労働時間です。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the second tab is the computation of the rules linked to the Structure "
 "resulting in a <strong>net amount</strong>."
-msgstr "2つ目のタブは、<strong>正味時間</strong>となる、支払構造にリンクされた規則の計算です。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "On the smartbutton, you can find all the <strong>Payslips</strong> included "
 "in the Batch."
-msgstr "スマートボタンでは、一括に含まれる全ての<strong>給与明細</strong>を見ることができます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_actions_server_action_open_reporting
 msgid "Open Payroll Reporting"
-msgstr "給与レポートを開く"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
@@ -2696,13 +2337,13 @@ msgstr "その他情報"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
 msgid "Other Input"
-msgstr "その他入力"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__input_line_type_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input___allowed_input_type_ids
 msgid "Other Input Line"
-msgstr "その他入力行"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payslip_entry_type_view
@@ -2717,24 +2358,7 @@ msgstr "その他の入力"
 #. module: hr_payroll
 #: model:hr.work.entry.type,name:hr_payroll.hr_work_entry_type_out_of_contract
 msgid "Out of Contract"
-msgstr "契約外"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__pdf_error
-msgid "PDF Error Message"
-msgstr "PDFエラーメッセージ"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_file
-msgid "PDF File"
-msgstr "PDFファイル"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_employee_declaration.py:0
-#, python-format
-msgid "PDF generation started. It will be available shortly."
-msgstr "PDF生成が開始されました。まもなく利用可能になります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__paid
@@ -2745,17 +2369,23 @@ msgstr "支払済"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__paid_amount
 msgid "Paid Amount"
-msgstr "支払済金額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_type__2
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Paid Time Off"
 msgstr "有給休暇"
 
 #. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Paid Time Off (Basic Wage)"
+msgstr ""
+
+#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_rule_parameter_value__parameter_value
 msgid "Parameter Value"
-msgstr "パラメータ値"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_category__parent_id
@@ -2764,19 +2394,14 @@ msgstr "親"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__time_credit
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_search_inherit
+#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 msgid "Part Time"
-msgstr "パートタイム"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__time_credit_type_id
 msgid "Part Time Work Entry Type"
-msgstr "パートタイム作業エントリタイプ"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
-msgid "Part time"
-msgstr "パートタイム"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__partner_id
@@ -2796,7 +2421,7 @@ msgstr "給与明細"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__slip_id
 msgid "PaySlip"
-msgstr "給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.contribution_register
@@ -2810,16 +2435,16 @@ msgstr "給与明細名"
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.open_payroll_modules
+#: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_root
 #: model:ir.ui.menu,name:hr_payroll.menu_report_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Payroll"
-msgstr "給与計算"
+msgstr "給与"
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_reset_work_entries
 msgid "Payroll - Technical: Reset Work Entries"
-msgstr "給与 - 技術的: ワークエントリを再設定"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.payroll_report_action
@@ -2836,24 +2461,10 @@ msgid "Payroll Analysis Report"
 msgstr "給与分析レポート"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__code
-msgid "Payroll Code"
-msgstr "給与コード"
-
-#. module: hr_payroll
 #: model:ir.actions.client,name:hr_payroll.hr_payroll_dashboard_open
+#: model:note.tag,name:hr_payroll.payroll_note_tag
 msgid "Payroll Dashboard"
-msgstr "給与ダッシュボード"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_declaration_mixin
-msgid "Payroll Declaration Mixin"
-msgstr "給与申請Mixin"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_employee_declaration
-msgid "Payroll Employee Declaration"
-msgstr "給与従業員申請"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
@@ -2861,19 +2472,9 @@ msgid "Payroll Entries"
 msgstr "給与計算のエントリ"
 
 #. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_payroll_note
-msgid "Payroll Note"
-msgstr "給与明細メモ"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Payroll Rules"
-msgstr "給与明細規則"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Payroll SEPA"
-msgstr "給与明細SEPA"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payroll_structure_filter
@@ -2883,40 +2484,43 @@ msgstr "給与体系"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Payroll rules that apply to your country"
-msgstr "自国に適用される給与規則"
+msgstr "自国に適用される給与ルール"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
-msgid "Payroll tips &amp; tricks:"
-msgstr "給与明細ヒント &amp; コツ:"
+msgid "Payroll tips &amp; tricks :"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__module_hr_payroll_account
 msgid "Payroll with Accounting"
-msgstr "会計での給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_res_config_settings__module_hr_payroll_account_sepa
 msgid "Payroll with SEPA payment"
-msgstr "SEPA支払での給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_cron_generate_payslip_pdfs_ir_actions_server
+#: model:ir.cron,cron_name:hr_payroll.ir_cron_generate_payslip_pdfs
+#: model:ir.cron,name:hr_payroll.ir_cron_generate_payslip_pdfs
 msgid "Payroll: Generate pdfs"
-msgstr "給与：PDF生成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:mail.template,name:hr_payroll.mail_template_new_payslip
 msgid "Payroll: New Payslip"
-msgstr "給与：新規給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.ir_cron_update_payroll_data_ir_actions_server
+#: model:ir.cron,cron_name:hr_payroll.ir_cron_update_payroll_data
+#: model:ir.cron,name:hr_payroll.ir_cron_update_payroll_data
 msgid "Payroll: Update data"
-msgstr "給与：データ更新"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: model:ir.actions.report,name:hr_payroll.action_report_payslip
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__payslip_id
@@ -2926,32 +2530,31 @@ msgid "Payslip"
 msgstr "給与明細"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
-msgid "Payslip 'Date From' must be earlier than 'Date To'."
-msgstr "給与明細 '開始日' は、'終了日'より前にして下さい。"
+msgid "Payslip 'Date From' must be earlier 'Date To'."
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
 msgid "Payslip Batch"
-msgstr "給与明細バッチ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payslip_run
 msgid "Payslip Batches"
-msgstr "給与明細のバッチ"
+msgstr "給与明細書のバッチ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__payslip_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__payslip_count
 msgid "Payslip Count"
-msgstr "給与明細数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__payslip_end_date
 msgid "Payslip End Date"
-msgstr "給与明細終了日"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payslip_input
@@ -2963,12 +2566,12 @@ msgstr "給与明細の入力"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_input_type_view_tree
 msgid "Payslip Input Name"
-msgstr "給与明細入力名"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payslip_input_type
 msgid "Payslip Input Type"
-msgstr "給与明細入力タイプ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__input_line_ids
@@ -3005,14 +2608,9 @@ msgid "Payslip Other Input Types"
 msgstr "給与明細その他入力タイプ"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Payslip PDF Display"
-msgstr "給与明細PDF表示"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment_report__payslip_start_date
 msgid "Payslip Start Date"
-msgstr "給与明細開始日"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payslip_worked_days
@@ -3021,7 +2619,6 @@ msgid "Payslip Worked Days"
 msgstr "給与明細の労働日"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #: model:ir.actions.act_window,name:hr_payroll.act_hr_employee_payslip_list
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__slip_ids
@@ -3031,8 +2628,8 @@ msgstr "給与明細の労働日"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_history_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_employee_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_pivot
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_tree
 #, python-format
 msgid "Payslips"
@@ -3048,14 +2645,13 @@ msgstr "給与明細のバッチ"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_tree
 msgid "Payslips Count"
-msgstr "給与明細数"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips Generated On Previous Contract"
-msgstr "前契約の給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_payslip_action_view_to_pay
@@ -3063,33 +2659,21 @@ msgid "Payslips To Pay"
 msgstr "要支払給与明細"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips With Negative Amounts"
-msgstr "マイナス金額のある給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
 msgid "Payslips by Employees"
-msgstr "従業員ごとの給与明細"
+msgstr "従業員ごとの給与明細書"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Payslips with negative NET"
-msgstr "純額がマイナスの給与明細"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_filename
-msgid "Pdf Filename"
-msgstr "PDFファイル名"
-
-#. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__pdf_to_generate
-msgid "Pdf To Generate"
-msgstr "未生成PDF"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_index__percentage
@@ -3115,11 +2699,11 @@ msgid "Period"
 msgstr "期間"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Pick an Employee to see his <strong>Contract's History</strong>."
-msgstr "従業員を選択して、その<strong>契約履歴</strong>を見る"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_entry_source__planning
@@ -3128,46 +2712,39 @@ msgid "Planning"
 msgstr "計画"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_employee_declaration.py:0
-#, python-format
-msgid "Please select the declarations for which you want to generate a PDF."
-msgstr "PDFを作成したい申告書を選択して下さい。"
-
-#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
 msgid "Post payroll slips in accounting"
-msgstr "給与明細を会計に転記"
+msgstr "給与明細書を会計に転記"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Previous Negative Payslip to Report"
-msgstr "未報告の前回のマイナス給与明細"
+msgstr ""
 
 #. module: hr_payroll
+#. openerp-web
+#: code:addons/hr_payroll/static/src/xml/payslip_tree_views.xml:0
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_tree
+#, python-format
 msgid "Print"
 msgstr "印刷"
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_professionaltax1
 msgid "Professional Tax"
-msgstr "プロフェッショナル税"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Prorated end-of-year bonus"
-msgstr "年末賞与の比例配分"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_providentfund1
 msgid "Provident Fund"
-msgstr "従業員退職金準備基金"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__amount_python_compute
@@ -3188,7 +2765,7 @@ msgstr "Pythonの表記"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_rule_parameter_value__parameter_value
 msgid "Python data structure"
-msgstr "Pythonデータ構造"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__quantity
@@ -3203,27 +2780,15 @@ msgid "Quantity/Rate"
 msgstr "数量 / 割合"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Quarter %s of %s"
-msgstr "4半期 %s (%sの)"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__quarterly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__quarterly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__quarterly
 msgid "Quarterly"
-msgstr "四半期毎に"
+msgstr "四半期ごと"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__queued_for_pdf
 msgid "Queued For Pdf"
-msgstr "PDF待機"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_employee_declaration__state__pdf_to_generate
-msgid "Queued PDF generation"
-msgstr "待機中PDF生成"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_rule__condition_select__range
@@ -3242,28 +2807,20 @@ msgid "Rate (%)"
 msgstr "レート（%）"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__rating_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__rating_ids
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__rating_ids
-msgid "Ratings"
-msgstr "評価"
-
-#. module: hr_payroll
 #: model:ir.actions.server,name:hr_payroll.action_hr_payroll_recompute_whole_sheet
 msgid "Recompute Whole Sheet"
-msgstr "シート全体を再計算"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Recompute the payslip lines only, not the worked days / input lines"
-msgstr "勤務日数/入力明細ではなく、給与明細の明細のみを再計算します。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "Recorded a new payment of %s."
-msgstr "%sの新規支払を記録しました"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__number
@@ -3276,21 +2833,15 @@ msgid "Refund"
 msgstr "返金"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Refund: %(payslip)s"
-msgstr "返金: %(payslip)s"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__registration_number
 msgid "Registration Number of the Employee"
 msgstr "社員番号"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Regular Hours"
-msgstr "通常時間"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__default_struct_id
@@ -3300,15 +2851,14 @@ msgstr "正規の給与体系"
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_type__1
 msgid "Regular Working Day"
-msgstr "通常勤務日"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
+#: code:addons/hr_payroll/models/hr_payroll_structure.py:0
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model:hr.salary.rule,name:hr_payroll.default_reimbursement_salary_rule
 #, python-format
 msgid "Reimbursement"
-msgstr "払戻"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__cancel
@@ -3318,17 +2868,17 @@ msgstr "拒否済"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__remaining_amount
 msgid "Remaining Amount"
-msgstr "払戻額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_salary_attachment_check_remaining_amount
 msgid "Remaining amount must be positive."
-msgstr "残額は正の値にして下さい。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__remaining_amount
 msgid "Remaining amount to be paid."
-msgstr "未払の残額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__report_id
@@ -3344,13 +2894,13 @@ msgstr "レポーティング"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_resource_calendar
 msgid "Resource Working Time"
-msgstr "リソース作業時間"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__activity_user_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__activity_user_id
 msgid "Responsible User"
-msgstr "担当ユーザ"
+msgstr "担当者"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_type__round_days_type
@@ -3361,11 +2911,6 @@ msgstr "端数処理"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_type__round_days
 msgid "Rounding"
 msgstr "端数丸め単位"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Rue du Paradis"
-msgstr "Rue du Paradis"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__salary_rule_id
@@ -3402,19 +2947,18 @@ msgstr "規則"
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_salary_attachment__state__open
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
 msgid "Running"
-msgstr "実行中"
+msgstr "契約実行中"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Running contracts coming to an end"
-msgstr "継続中の契約書が終了します"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__sim_card
 msgid "SIM Card Copy"
-msgstr "SIMカードコピー"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__message_has_sms_error
@@ -3429,7 +2973,6 @@ msgid "Salary"
 msgstr "給与"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_contract.py:0
 #: code:addons/hr_payroll/report/hr_contract_history.py:0
 #: model:ir.actions.act_window,name:hr_payroll.hr_salary_attachment_action
@@ -3438,64 +2981,42 @@ msgstr "給与"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_form
 #, python-format
 msgid "Salary Attachment"
-msgstr "給与添付"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_salary_attachment_report
 msgid "Salary Attachment / Report"
-msgstr "給与添付/報告"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__salary_attachments_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__salary_attachment_count
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__salary_attachment_count
 msgid "Salary Attachment Count"
-msgstr "給与添付数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_salary_attachment_report_action
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_attachment_salary_report
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_report_view_pivot
 msgid "Salary Attachment Report"
-msgstr "給与添付報告"
-
-#. module: hr_payroll
-#: model:ir.model,name:hr_payroll.model_hr_salary_attachment_type
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_form
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_tree
-msgid "Salary Attachment Type"
-msgstr "給与添付タイプ"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_type_view_tree
-msgid "Salary Attachment Type Name"
-msgstr "給与添付タイプ名"
-
-#. module: hr_payroll
-#: model:ir.actions.act_window,name:hr_payroll.action_hr_salary_attachment_type
-#: model:ir.ui.menu,name:hr_payroll.menu_hr_salary_attachment_type
-msgid "Salary Attachment Types"
-msgstr "給与添付タイプ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__salary_attachment_count
 msgid "Salary Attachment count"
-msgstr "給与添付数"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_employee__salary_attachment_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__salary_attachment_ids
 #: model:ir.ui.menu,name:hr_payroll.hr_menu_salary_attachments
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_form_inherit
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_history_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 #, python-format
 msgid "Salary Attachments"
-msgstr "給与添付"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_category_form
@@ -3510,14 +3031,14 @@ msgstr "給与計算"
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_salary_rule
 msgid "Salary Rule"
-msgstr "給与規則"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_salary_rule_category
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_category_tree
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_salary_rule_category_filter
 msgid "Salary Rule Categories"
-msgstr "給与規則の項目"
+msgstr "給与ルールの項目"
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_salary_rule_category
@@ -3530,12 +3051,12 @@ msgstr "給与ツールの分類"
 #: model:ir.model,name:hr_payroll.model_hr_rule_parameter
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_rule_parameter_view_form
 msgid "Salary Rule Parameter"
-msgstr "給与規則パラメータ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_rule_parameter_value
 msgid "Salary Rule Parameter Value"
-msgstr "給与規則パラメータ値"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_rule_parameter_action
@@ -3550,14 +3071,13 @@ msgstr "給与規則パラメータ"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
 msgid "Salary Rules"
-msgstr "給与規則"
+msgstr "給与ルール"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Salary Slip"
-msgstr "給与明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_payroll_structure
@@ -3585,13 +3105,9 @@ msgstr "給与体系"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__schedule_pay
-msgid "Schedule Pay"
-msgstr ""
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
-msgid "Search Declarations"
-msgstr "申告を検索"
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__schedule_pay
+msgid "Scheduled Pay"
+msgstr "定期の給与"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_filter
@@ -3612,12 +3128,12 @@ msgstr "給与明細を検索"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 msgid "Search Salary Attachment"
-msgstr "給与添付を検索"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_rule_filter
 msgid "Search Salary Rule"
-msgstr "給与規則を検索"
+msgstr "給与ルールを検索"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_structure_type_view_search
@@ -3625,70 +3141,45 @@ msgid "Search Structure Type"
 msgstr "給与体系タイプを検索"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Select an <strong>HR Responsible</strong> for the contract."
-msgstr "契約書用に<strong>人事担当者</strong>を選択"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__semi-annually
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__semi-annually
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__semi-annually
 msgid "Semi-annually"
 msgstr "半年ごと"
 
 #. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__semi-monthly
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__semi-monthly
-msgid "Semi-monthly"
-msgstr "半月毎"
-
-#. module: hr_payroll
 #: model:mail.template,description:hr_payroll.mail_template_new_payslip
 msgid "Sent to employee to notify them about their new payslip"
-msgstr "新規給与明細を通知するために従業員に送付済"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__sequence
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__sequence
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__sequence
 msgid "Sequence"
-msgstr "シーケンス"
+msgstr "付番"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
-msgid ""
-"Set a specific department if you wish to select all the employees from this "
-"department (and subdepartments) at once."
-msgstr "その部門(およびサブ部門)の従業員全員を一度に選択したい場合は、特定の部門を設定します。"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
-msgid ""
-"Set a specific structure if you wish to make an extra payslip (eg: End of "
-"the year bonus). If you leave this field empty, a regular payslip will be "
-"generated for all the selected employees, based on their contracts "
-"configuration."
-msgstr ""
-"臨時の給与明細書(例: "
-"年末賞与)を作成したい場合は、特定の構成を設定します。このフィールドを空にした場合、選択された全ての従業員に対して、契約設定に基づいて通常の給与明細が作成されます。"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "Set the Contract as <strong><q>Running</q></strong>."
-msgstr "契約書を<strong><q>継続中</q></strong>として設定します。"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Set to Draft"
-msgstr "下書きとして設定"
+msgstr "ドラフトに設定"
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payroll_configuration
@@ -3699,39 +3190,38 @@ msgstr "管理設定"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Slips to Confirm"
-msgstr "未確認の給与明細"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "Software Engineer"
-msgstr "ソフトウェアエンジニア"
+#: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
+#, python-format
+msgid ""
+"Some part of %s's calendar is not covered by any work entry. Please complete"
+" the schedule. Time intervals to look for:%s"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "Some work entries could not be validated."
-msgstr "検証できなかったワークエントリがあります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__standard_calendar_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__standard_calendar_id
 msgid "Standard Calendar"
-msgstr "標準カレンダ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__date_from
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__date_start
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "Start Date"
 msgstr "開始日"
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_employee_declaration__state
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__state
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_employee_declaration_view_search
 msgid "State"
-msgstr "都道府県・州"
+msgstr "都道府県/州"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__state
@@ -3741,7 +3231,7 @@ msgstr "都道府県・州"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Status"
-msgstr "状態"
+msgstr "ステータス"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_state
@@ -3752,23 +3242,23 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"活動に基づいての状態\n"
-"延滞: 期限は既に過ぎました\n"
-"当日: 活動日は本日です\n"
-"予定: 将来の活動。"
+"活動に基づく状態\n"
+"延滞：期限は既に過ぎました\n"
+"当日：活動日は本日です\n"
+"予定：将来の活動。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__struct_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__struct_id
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "Structure"
-msgstr "給与体系"
+msgstr "構成"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payroll_structure_filter
 msgid "Structure Name"
-msgstr "給与体系名"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__name
@@ -3781,7 +3271,7 @@ msgstr "給与体系タイプ"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__struct_type_count
 msgid "Structure Type Count"
-msgstr "構成タイプ数"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.action_hr_payroll_structure_type
@@ -3799,7 +3289,7 @@ msgstr "給与体系"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__sum_worked_hours
 msgid "Sum Worked Hours"
-msgstr "合計勤務時間"
+msgstr ""
 
 #. module: hr_payroll
 #: model:hr.salary.rule,name:hr_payroll.hr_salary_rule_sum_alw_category
@@ -3809,11 +3299,10 @@ msgstr "手当合計"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_tree
 msgid "Sum of Days"
-msgstr "日数計"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__country_code
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input_type__country_code
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__country_code
 msgid ""
 "The ISO country code in two chars. \n"
@@ -3827,14 +3316,14 @@ msgstr ""
 msgid ""
 "The Standard Calendar is the calendar used by the people working at a 100% "
 "rate. It's used here to compute your part-time percentage."
-msgstr "標準カレンダは、100％割合で働く人たちが使うカレンダです。ここでは、パートタイム比率を計算するために使用します。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__is_unforeseen
 msgid ""
 "The Work Entry checked as Unforeseen Absence will be counted in absenteeism "
 "at work report."
-msgstr "急な欠勤としてチェックされた作業エントリは、作業レポートで欠勤としてカウントされます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_edit_payslip_line__code
@@ -3843,14 +3332,14 @@ msgstr "急な欠勤としてチェックされた作業エントリは、作業
 msgid ""
 "The code of salary rules can be used as reference in computation of other "
 "rules. In that case, it is case sensitive."
-msgstr "給与規則のコードを他の規則の計算に使うことができます。その場合、大文字と小文字の違いに注意してください。"
+msgstr "給与ルールのコードを他のルールの計算に使うことができます。その場合、大文字と小文字の違いに注意してください。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input__code
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input_type__code
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_worked_days__work_entry_type_id
 msgid "The code that can be used in the salary rules"
-msgstr "給与規則に使われるコード"
+msgstr "給与ルールに使われるコード"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_line__amount_select
@@ -3861,47 +3350,28 @@ msgstr "ルール合計の計算法"
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input__contract_id
 msgid "The contract this input should be applied to"
-msgstr "この入力が適用される契約書"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_worked_days__contract_id
 msgid "The contract this worked days should be applied to"
-msgstr "この勤務日が適応される契約書"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__paid_date
-msgid "The date on which the payment is made to the employee."
-msgstr "従業員に支払いが行われる日付。"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"The duration of the payslip is not accurate according to the structure type."
-msgstr "給与明細の期間は、構造タイプによって正確ではありません。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "The following employees have a contract outside of the payslip period:\n"
 "%s"
 msgstr ""
-"以下の従業員は給与明細期間外に契約を結んでいます：\n"
-"%s"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "The following values are not valid:\n"
 "%s"
 msgstr ""
-"以下の値は有効ではありません:\n"
-"%s"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__condition_range_max
@@ -3918,115 +3388,75 @@ msgstr "このルールに適用された最小金額"
 msgid ""
 "The net amount will be recovered from the first positive remuneration "
 "established after this."
-msgstr "正味の金額は、この後成立する最初の正の報酬から回収されます。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "The payslips should be in Draft or Waiting state."
-msgstr "給与明細はドラフトまたは待機ステータスである必要があります。"
-
-#. module: hr_payroll
-#. odoo-javascript
-#: code:addons/hr_payroll/static/src/views/add_payslips_hook.js:0
-#, python-format
-msgid "The payslips(s) are now added to the batch"
-msgstr "給与明細がバッチに追加されます"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "The period selected does not match the contract validity period."
-msgstr "選択された期間は契約書の有効期間と一致しません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__time_credit_type_id
 msgid ""
 "The work entry type used when generating work entries to fit full time "
 "working schedule."
-msgstr "フルタイムの勤務スケジュールに合わせてワークエントリを作成する際に使用されるワークエントリのタイプ。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__unpaid_structure_ids
 msgid "The work entry won’t grant any money to employee in payslip."
-msgstr "この作業エントリは、給与明細で従業員にお金を付与することはありません。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "There is no declaration to generate for the given period"
-msgstr "指定された期間に発生する申告はありません"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"There's no contract set on payslip %s for %s. Check that there is at least a"
-" contract set on the employee form."
-msgstr "給与明細%sに設定されている%s用の契約書がありません。少なくとも従業員フォームに契約書が設定されていることを確認して下さい。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "This action is forbidden on validated payslips."
-msgstr "このアクションは、有効な給与明細書では禁止されています。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "This action is restricted to payroll managers only."
-msgstr "このアクションは給与明細マネジャーのみに限られています。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_rule_parameter__code
 #: model:ir.model.fields,help:hr_payroll.field_hr_rule_parameter_value__code
 msgid "This code is used in salary rules to refer to this parameter."
-msgstr "このコードは、このパラメータを参照するために給与規則で使用されます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_input_type__struct_ids
 msgid ""
 "This input will be only available in those structure. If empty, it will be "
 "available in all payslip."
-msgstr "この入力は、その給与体系でのみ利用可能です。空の場合、すべての給与明細で利用可能です。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract_history__time_credit
 msgid "This is a credit time contract."
-msgstr "これはクレジットタイム契約です。"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,help:hr_payroll.field_hr_work_entry__is_credit_time
-msgid "This is a credit time work entry."
-msgstr "これはクレジット・タイム作業エントリです。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
-msgid "This payslip can be erroneous :"
-msgstr "この給与明細は誤りである可能性があります:"
+msgid ""
+"This payslip can be erroneous! Work entries may not be generated for the "
+"period from %(start)s to %(end)s."
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_edit_payslip_lines_wizard.py:0
 #, python-format
 msgid "This payslip has been manually edited by %s."
-msgstr "この給与明細は%sにより手動で編集されました。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 #, python-format
 msgid "This payslip is not validated. This is not a legal document."
-msgstr "この給与明細は検証されていません。これは法的文書ではありません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.payroll_report_action
@@ -4036,7 +3466,7 @@ msgstr "このレポートはあなたの給与明細の分析を表示します
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.hr_work_entry_report_action
 msgid "This report performs analysis on your work entries."
-msgstr "このレポートはワークエントリの分析を実行します。"
+msgstr "このレポートは作業エントリの分析を実行します。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__condition_range
@@ -4049,23 +3479,21 @@ msgstr ""
 "など）と基本変数を指定することができます。"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "Time intervals to look for:%s"
-msgstr "探すべき時間間隔: %s"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__date_to
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line__date_to
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "To"
 msgstr "終了日"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
 msgid "To Compute"
-msgstr "計算する"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_filter
@@ -4080,12 +3508,12 @@ msgstr "要支払"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
 msgid "To pay on"
-msgstr "以下に支払う:"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.actions.act_window,help:hr_payroll.action_contribution_registers
 msgid "To see something in this report, compute a payslip."
-msgstr "この報告で何かを見るには、給与明細を計算して下さい。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_line__total
@@ -4102,6 +3530,16 @@ msgid "Total Amount"
 msgstr "合計金額"
 
 #. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Total Gross Wage"
+msgstr ""
+
+#. module: hr_payroll
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "Total Net Wage"
+msgstr "正味賃金合計"
+
+#. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Total Working Days"
 msgstr "全労働日"
@@ -4109,24 +3547,24 @@ msgstr "全労働日"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Total Working Hours"
-msgstr "合計就業時間"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_salary_attachment_check_total_amount
 msgid ""
 "Total amount must be strictly positive and greater than or equal to the "
 "monthly amount."
-msgstr "総額は厳密に正でなければならず、月次金額以上である必要があります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__total_amount
 msgid "Total amount to be paid."
-msgstr "支払べき合計金額"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__sum_worked_hours
 msgid "Total hours of attendance and time off (paid or not)"
-msgstr "総就業時間および休暇時間(有給か無給)"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_rule_parameter__unique
@@ -4136,14 +3574,14 @@ msgstr "２つの規則パラメータが同じコードを持つことはでき
 #. module: hr_payroll
 #: model:ir.model.constraint,message:hr_payroll.constraint_hr_rule_parameter_value__unique
 msgid "Two rules with the same code cannot start the same day"
-msgstr "同じコードを持つ2つの規則を同じ日に開始することはできません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__struct_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_input__input_type_id
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_worked_days__work_entry_type_id
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__deduction_type_id
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__deduction_type
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_attachment_view_search
 msgid "Type"
 msgstr "タイプ"
@@ -4152,27 +3590,27 @@ msgstr "タイプ"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__activity_exception_decoration
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "記録上の例外活動の種類。"
+msgstr "記録上の例外アクティビティのタイプ。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_type__is_unforeseen
 msgid "Unforeseen Absence"
-msgstr "急な欠勤"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Unknown State"
-msgstr "不明なステータス"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_hr_work_entry_type_view_form_inherit
 msgid "Unpaid"
-msgstr "未払い"
+msgstr "無給"
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_type__3
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Unpaid Time Off"
 msgstr "無給休暇"
 
@@ -4189,7 +3627,7 @@ msgstr "無給作業エントリタイプ"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_type__unpaid_structure_ids
 msgid "Unpaid in Structures Types"
-msgstr "無給の給与体系"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_type__round_days_type__up
@@ -4198,9 +3636,8 @@ msgstr "切り上げ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure__use_worked_day_lines
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__use_worked_day_lines
 msgid "Use Worked Day Lines"
-msgstr "就業日明細を使用"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_line__sequence
@@ -4212,12 +3649,12 @@ msgstr "計算の順序を決めるために使用"
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_line__appears_on_payslip
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__appears_on_payslip
 msgid "Used to display the salary rule on payslip."
-msgstr "給与明細に給与規則を表示するために使用されます。"
+msgstr "給与明細に給与ルールを表示するために使用されます。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_rule__appears_on_employee_cost_dashboard
 msgid "Used to display the value in the employer cost dashboard."
-msgstr "雇用コストダッシュボードで値を表示するために使用します。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_res_users
@@ -4227,19 +3664,19 @@ msgstr "ユーザ"
 #. module: hr_payroll
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_user
 msgid "User can manage all contracts, work entries and create payslips."
-msgstr "ユーザは、全ての契約、ワークエントリを管理し、給与明細を作成することができます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_employee_manager
 msgid ""
 "User can see his own contracts and the contracts of the people he's manager "
 "of."
-msgstr "ユーザは自分自身の契約と、自分がマネジャーを務める人たちの契約を見ることができます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:res.groups,comment:hr_payroll.group_hr_payroll_manager
 msgid "User have full access on the application."
-msgstr "ユーザは応募へフルアクセスする権利があります。"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
@@ -4249,7 +3686,7 @@ msgstr "検証"
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_edit_payslip_lines_form_wizard
 msgid "Validate Edition"
-msgstr "エディションを検証"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__state__validated
@@ -4266,31 +3703,26 @@ msgstr "バージョン"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__appears_on_employee_cost_dashboard
 msgid "View on Employer Cost Dashboard"
-msgstr "雇用コストダッシュボードで表示"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule__appears_on_payroll_report
 msgid "View on Payroll Reporting"
-msgstr "給与レポートで表示"
-
-#. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.hr_contract_view_kanban
-msgid "Wage :"
-msgstr "賃金:　"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__wage_type
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__wage_type
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_structure_type__wage_type
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__wage_type
 msgid "Wage Type"
 msgstr "賃金タイプ"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_index_wizard.py:0
 #, python-format
 msgid "Wage indexed by %.2f%% on %s"
-msgstr "%.2f%% によって %sでインデックス化された賃金"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payslip__state__verify
@@ -4303,108 +3735,78 @@ msgid "Warning Message"
 msgstr "警告メッセージ"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "Warning, a similar attachment has been found."
-msgstr "注意。類似の添付が見つかりました。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/components/dashboard/action_box/action_box.xml:0
 #, python-format
 msgid "Warnings"
 msgstr "警告"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_work_entry.py:0
-#, python-format
-msgid ""
-"Watch out for gaps in %(employee_name)s's calendar\n"
-"\n"
-"Please complete the missing work entries of %(employee_name)s:%(time_intervals_str)s \n"
-"\n"
-"Missing work entries are like the Bermuda Triangle for paychecks. Let's keep your colleague's earnings from vanishing into thin air!"
-msgstr ""
-" %(employee_name)sのカレンダのギャップに注意して下さい。\n"
-"\n"
-"%(employee_name)s:%(time_intervals_str)s の不明な作業エントリを漏れなく記入して下さい。\n"
-"\n"
-"仕事の入力漏れは、給料のバミューダ三角海域のようなものです。同僚の収入が消滅してしまわないようにしましょう！"
-
-#. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__round_days_type
 msgid "Way of rounding the work entry type."
-msgstr "作業入力タイプの丸め方。"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "We have to improve our Payroll flow with the new Odoo process"
-msgstr "Odooの新しいプロセスで給与計算フローを改善しなければなりません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip__website_message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_run__website_message_ids
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_attachment__website_message_ids
 msgid "Website Messages"
-msgstr "サイトメッセージ"
+msgstr "ウェブサイトメッセージ"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip__website_message_ids
 #: model:ir.model.fields,help:hr_payroll.field_hr_payslip_run__website_message_ids
 #: model:ir.model.fields,help:hr_payroll.field_hr_salary_attachment__website_message_ids
 msgid "Website communication history"
-msgstr "サイト通信履歴"
+msgstr "ウェブサイトコミュニケーション履歴"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Week %(week_number)s of %(year)s"
-msgstr "週 %(week_number)s (%(year)sの)"
-
-#. module: hr_payroll
-#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_contract__schedule_pay__weekly
+#: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure__schedule_pay__weekly
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_structure_type__default_schedule_pay__weekly
 msgid "Weekly"
 msgstr "週次"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid "Weeks %(week)s and %(week1)s of %(year)s"
-msgstr "週 %(week)s と %(week1)s (%(year)sの)"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_work_entry_type__round_days
 msgid ""
 "When the work entry is displayed in the payslip, the value is rounded "
 "accordingly."
-msgstr "ワークエントリが給与明細に表示される際、値はそれに応じて丸められます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__calendar_changed
 msgid "Whether the previous or next contract has a different schedule or not"
-msgstr "前契約と次契約のスケジュールが異なるか否か"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_index__description
 msgid ""
 "Will be used as the message specifying why the wage on the contract has been"
 " modified"
-msgstr "契約上の賃金が変更された理由を示すメッセージとして使用されます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__count_work
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
 msgid "Work Days"
 msgstr "作業日"
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_payroll_work_entries_root
+#: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
 msgid "Work Entries"
-msgstr "ワークエントリ"
+msgstr "作業エントリ"
 
 #. module: hr_payroll
 #: model:ir.actions.act_window,name:hr_payroll.hr_work_entry_report_action
@@ -4412,21 +3814,21 @@ msgstr "ワークエントリ"
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_work_entry_report_view_tree
 msgid "Work Entries Analysis"
-msgstr "ワークエントリ分析"
+msgstr "作業エントリ分析"
 
 #. module: hr_payroll
 #: model:ir.model,name:hr_payroll.model_hr_work_entry_report
 msgid "Work Entries Analysis Report"
-msgstr "ワークエントリ分析レポート"
+msgstr "作業エントリ分析レポート"
 
 #. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid ""
 "Work Entries are generated for each <strong>time period</strong> defined in "
 "the Working Schedule of the Contract."
-msgstr "ワークエントリは契約書の勤務スケジュールで定義されている各<strong>時間期間</strong>用に生成されます。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.ui.menu,name:hr_payroll.menu_hr_work_entry_report
@@ -4437,7 +3839,7 @@ msgstr "作業エントリ分析"
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__work_entry_source
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_work_entry_report__work_entry_source
 msgid "Work Entry Source"
-msgstr "作業エントリ元"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_worked_days_line__work_entry_type_id
@@ -4452,57 +3854,44 @@ msgid "Work Hours"
 msgstr "就業時間"
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.res_config_settings_view_form
-msgid "Work Permit Expiration Notice Period"
-msgstr "労働許可証期限通知期間"
-
-#. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_resource_calendar__work_time_rate
 #: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_resource_calendar_view_form
 msgid "Work Time Rate"
 msgstr "労働時間比率"
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip.py:0
-#, python-format
-msgid ""
-"Work entries may not be generated for the period from %(start)s to %(end)s."
-msgstr "ワークエントリは%(start)sから%(end)sの期間中は生成されなません。"
-
-#. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure_type__default_work_entry_type_id
 msgid "Work entry type for regular attendances."
-msgstr "通常出勤の作業エントリタイプ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__work_time_rate
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract_history__work_time_rate
 msgid "Work time rate"
-msgstr "就業時間レート"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_resource_calendar__work_time_rate
 msgid ""
 "Work time rate versus full time working schedule, should be between 0 and "
 "100 %."
-msgstr "フルタイム勤務スケジュールに対する労働時間比率は、0～100％の間でなければなりません。"
+msgstr "フルタイム勤務に対する労働時間比率は、0～100％の間でなければなりません。"
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract__work_time_rate
 #: model:ir.model.fields,help:hr_payroll.field_hr_contract_history__work_time_rate
 msgid "Work time rate versus full time working schedule."
-msgstr "就業時間対フルタイム就業スケジュール"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__work_code
 msgid "Work type"
-msgstr "業務タイプ"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_report__work_type
 msgid "Work, (un)paid Time Off"
-msgstr "業務、(無給)有給休暇"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_form
@@ -4523,109 +3912,76 @@ msgstr "労働日と入力"
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_edit_payslip_lines_wizard__worked_days_line_ids
 msgid "Worked Days Lines"
-msgstr "労働日明細"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,help:hr_payroll.field_hr_payroll_structure__use_worked_day_lines
-#: model:ir.model.fields,help:hr_payroll.field_hr_payslip__use_worked_day_lines
 msgid "Worked days won't be computed/displayed in payslips."
-msgstr "労働日は計算されず、給与明細に表示されません。"
+msgstr ""
 
 #. module: hr_payroll
 #: model:ir.model.fields,field_description:hr_payroll.field_hr_contract__resource_calendar_id
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_payroll_report__work_entry_source__calendar
 #: model:ir.model.fields.selection,name:hr_payroll.selection__hr_work_entry_report__work_entry_source__calendar
 msgid "Working Schedule"
-msgstr "勤務スケジュール"
+msgstr "作業予定"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "Working Schedule Changes"
-msgstr "勤務スケジュール変更"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong percentage base or quantity defined for:"
-msgstr "誤った割合のベースまたは数量が定義されています:"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong python code defined for:"
-msgstr "間違った Pythonコードが定義されています:"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong python condition defined for:"
-msgstr "間違った Python条件が定義されています:"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong quantity defined for:"
-msgstr "間違った量が定義されています:"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_rule.py:0
 #, python-format
 msgid "Wrong range condition defined for:"
-msgstr "間違った範囲条件が定義されています:"
+msgstr ""
 
 #. module: hr_payroll
-#: model:ir.model.fields,field_description:hr_payroll.field_hr_payroll_declaration_mixin__year
-msgid "Year"
-msgstr "年"
-
-#. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/res_users.py:0
-#, python-format
-msgid ""
-"You are receiving this message because you are the HR Responsible of this "
-"employee."
-msgstr "あなたはこの従業員の人事担当者であるため、このメッセージを受信しています。"
-
-#. module: hr_payroll
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_payroll/static/src/js/tours/hr_payroll.js:0
 #, python-format
 msgid "You can access the Payslips from the Employee's Profile."
-msgstr "従業員プロフィールから給与明細にアクセスできます。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "You can't validate a cancelled payslip."
-msgstr "取消された給与明細を検証できません。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payslip_input_type.py:0
-#, python-format
-msgid ""
-"You cannot delete %s as it is used in another module but you can archive it "
-"instead."
-msgstr "他のモジュールで使用されているため%sを削除できませんが、代わりにアーカイブすることができます。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
 msgid "You cannot delete a payslip batch which is not draft!"
-msgstr "ドラフトでない給与明細バッチを削除することはできません。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
@@ -4633,106 +3989,85 @@ msgid "You cannot delete a payslip which is not draft or cancelled!"
 msgstr "ドラフトやキャンセルされていない給与明細を削除することはできません！"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_salary_attachment.py:0
 #, python-format
 msgid "You cannot delete a running salary attachment!"
-msgstr "現行の給与添付を削除できません。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_salary_attachment.py:0
-#, python-format
-msgid "You cannot record a payment on multi employees attachments."
-msgstr "複数従業員添付に支払を記録することはできません。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_run.py:0
 #, python-format
 msgid ""
 "You cannot reset a batch to draft if some of the payslips have already been "
 "paid."
-msgstr "給与明細の一部が既に支払われている場合、バッチをドラフトに再設定することはできません。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip.py:0
 #, python-format
 msgid "You cannot validate a payslip on which the contract is cancelled"
-msgstr "契約が解除された給与明細は検証できません"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_index_wizard.py:0
 #, python-format
 msgid ""
 "You have selected non running contracts, if you really need to index them, "
 "please do it by hand"
-msgstr "稼働していない契約を選択しているので、インデックスを作成する必要がある場合は、手作業で行って下さい。"
+msgstr ""
 
 #. module: hr_payroll
-#. odoo-python
-#: code:addons/hr_payroll/models/hr_payroll_declaration_mixin.py:0
-#, python-format
-msgid "You must be logged in a %s company to use this feature"
-msgstr "この機能を使用するには%s会社にログインする必要があります。"
-
-#. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/wizard/hr_payroll_payslips_by_employees.py:0
 #, python-format
 msgid "You must select employee(s) to generate payslip(s)."
 msgstr "給与明細(s)を生成するには、従業員(s)を選択する必要があります。"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payslip_line.py:0
 #, python-format
 msgid "You must set a contract to create a payslip line."
 msgstr "あなたは、給与明細行を作成するための契約を設定する必要があります。"
 
 #. module: hr_payroll
-#. odoo-python
 #: code:addons/hr_payroll/models/hr_payroll_structure_type.py:0
 #, python-format
 msgid "You should also be logged into a company in %s to set this country."
-msgstr "この国を設定するには %sの会社にログインしている必要もあります。"
+msgstr ""
 
 #. module: hr_payroll
-#: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
-msgid "demo@email.com"
-msgstr "demo@email.com"
+#: model_terms:ir.ui.view,arch_db:hr_payroll.payroll_report_view_dashboard
+msgid "days"
+msgstr "日"
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
 msgid "e.g. April 2021"
-msgstr "例: 2021年4月"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_structure_type_view_form
 msgid "e.g. Employee"
-msgstr "例: 従業員"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
 msgid "e.g. Net"
-msgstr "例:正価"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_salary_rule_form
 msgid "e.g. Net Salary"
-msgstr "例: 正味給与額"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.view_hr_employee_grade_form
 msgid "e.g. Regular Pay"
-msgstr "例: 通常支払"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.hr_payroll_note_demo_content
 msgid "https://www.odoo.com/fr_FR/slides/slide/manage-payroll-1002"
-msgstr "https://www.odoo.com/fr_FR/slides/slide/manage-payroll-1002"
+msgstr ""
 
 #. module: hr_payroll
 #: model_terms:ir.ui.view,arch_db:hr_payroll.report_payslip
@@ -4747,4 +4082,4 @@ msgstr "結果は変数に影響します。"
 #. module: hr_payroll
 #: model:mail.template,subject:hr_payroll.mail_template_new_payslip
 msgid "{{ object.employee_id.name }}, a new payslip is available for you"
-msgstr "{{ object.employee_id.name }}、新規給与明細の用意ができました。"
+msgstr ""

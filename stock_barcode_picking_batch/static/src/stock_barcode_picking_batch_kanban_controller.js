@@ -1,9 +1,9 @@
 /** @odoo-module */
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from 'web.utils';
 import { StockBarcodeKanbanController } from '@stock_barcode/kanban/stock_barcode_kanban_controller';
 
-patch(StockBarcodeKanbanController.prototype, {
+patch(StockBarcodeKanbanController.prototype, 'stock_barcode_picking_batch', {
     /**
      * Add a new batch picking from barcode
      *
@@ -21,6 +21,6 @@ patch(StockBarcodeKanbanController.prototype, {
                 return this.actionService.doAction(action);
             }
         }
-        return super.createRecord(...arguments);
+        return this._super(...arguments);
     }
 });

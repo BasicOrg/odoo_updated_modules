@@ -1,10 +1,13 @@
-/** @odoo-module **/
+odoo.define('web.Dialog', function (require) {
+"use strict";
 
-import dom from "@web/legacy/js/core/dom";
-import Widget from "@web/legacy/js/core/widget";
-import { _t } from "@web/core/l10n/translation";
-import { renderToElement } from "@web/core/utils/render";
-import { uniqueId } from "@web/core/utils/functions";
+var core = require('web.core');
+var dom = require('web.dom');
+var Widget = require('web.Widget');
+const OwlDialog = require('web.OwlDialog');
+
+var QWeb = core.qweb;
+var _t = core._t;
 
 /**
  * A useful class to handle dialogs.
@@ -16,11 +19,11 @@ import { uniqueId } from "@web/core/utils/functions";
  **/
 var Dialog = Widget.extend({
     tagName: 'main',
-    custom_events: Object.assign({}, Widget.prototype.custom_events, {
+    custom_events: _.extend({}, Widget.prototype.custom_events, {
         focus_control_button: '_onFocusControlButton',
         close_dialog: '_onCloseDialog',
     }),
-    events: Object.assign({}, Widget.prototype.events, {
+    events: _.extend({}, Widget.prototype.events, {
         'keydown .modal-footer button': '_onFooterButtonKeyDown',
     }),
     /**
@@ -71,7 +74,7 @@ var Dialog = Widget.extend({
         if (this.on_attach_callback) {
             this._opened = this.opened(this.on_attach_callback);
         }
-        options = Object.assign({
+        options = _.defaults(options || {}, {
             title: _t('Odoo'), subtitle: '',
             size: 'large',
             fullscreen: false,
@@ -84,7 +87,7 @@ var Dialog = Widget.extend({
             renderHeader: true,
             renderFooter: true,
             onForceClose: false,
-        }, options || {});
+        });
 
         this.$content = options.$content;
         this.title = options.title;
@@ -99,6 +102,8 @@ var Dialog = Widget.extend({
         this.renderHeader = options.renderHeader;
         this.renderFooter = options.renderFooter;
         this.onForceClose = options.onForceClose;
+
+        core.bus.on('close_dialogs', this, this.destroy.bind(this));
     },
     /**
      * Wait for XML dependencies and instantiate the modal structure (except
@@ -110,14 +115,13 @@ var Dialog = Widget.extend({
         var self = this;
         return this._super.apply(this, arguments).then(function () {
             // Render modal once xml dependencies are loaded
-            self.$modal = $(renderToElement('web.DialogWidget', {
+            self.$modal = $(QWeb.render('web.DialogWidget', {
                 fullscreen: self.fullscreen,
                 title: self.title,
                 subtitle: self.subtitle,
                 technical: self.technical,
                 renderHeader: self.renderHeader,
                 renderFooter: self.renderFooter,
-                uniqueId: uniqueId("modal_"),
             }));
             switch (self.size) {
                 case 'extra-large':
@@ -134,7 +138,7 @@ var Dialog = Widget.extend({
                 self.$footer = self.$modal.find(".modal-footer");
                 self.set_buttons(self.buttons);
             }
-            self.$modal.on('hidden.bs.modal', self.destroy.bind(self));
+            self.$modal.on('hidden.bs.modal', _.bind(self.destroy, self));
         });
     },
     /**
@@ -195,6 +199,7 @@ var Dialog = Widget.extend({
             }
             self.$modal.find(".modal-body").replaceWith(self.$el);
             self.$modal.attr('open', true);
+            self.$modal.removeAttr("aria-hidden");
             if (self.$parentNode) {
                 self.$modal.appendTo(self.$parentNode);
             }
@@ -208,6 +213,12 @@ var Dialog = Widget.extend({
             if (options && options.shouldFocusButtons) {
                 self._onFocusControlButton();
             }
+
+            // Notifies OwlDialog to adjust focus/active properties on owl dialogs
+            OwlDialog.display(self);
+
+            // Notifies new webclient to adjust UI active element
+            core.bus.trigger("legacy_dialog_opened", self);
         });
 
         return self;
@@ -237,6 +248,15 @@ var Dialog = Widget.extend({
 
         if (this.isDestroyed()) {
             return;
+        }
+
+        // Notifies OwlDialog to adjust focus/active properties on owl dialogs.
+        // Only has to be done if the dialog has been opened (has an el).
+        if (this.el) {
+            OwlDialog.hide(this);
+
+            // Notifies new webclient to adjust UI active element
+            core.bus.trigger("legacy_dialog_destroyed", this);
         }
 
         // Triggers the onForceClose event if the callback is defined
@@ -294,7 +314,7 @@ var Dialog = Widget.extend({
     _setButtonsTo($target, buttons) {
         var self = this;
         $target.empty();
-        buttons.forEach((buttonData) => {
+        _.each(buttons, function (buttonData) {
             var $button = dom.renderButton({
                 attrs: {
                     class: buttonData.classes || (buttons.length > 1 ? 'btn-secondary' : 'btn-primary'),
@@ -367,15 +387,15 @@ var Dialog = Widget.extend({
      * @private
      */
     _onFooterButtonKeyDown: function (e) {
-        switch(e.key) {
-            case "Tab":
+        switch(e.which) {
+            case $.ui.keyCode.TAB:
                 if (!e.shiftKey && e.target.classList.contains("btn-primary")) {
                     e.preventDefault();
                     var $primaryButton = $(e.target);
                     $primaryButton.tooltip({
                         delay: {show: 200, hide:0},
                         title: function(){
-                            return renderToElement('FormButton.tooltip',{title:$primaryButton.text().toUpperCase()});
+                            return QWeb.render('FormButton.tooltip',{title:$primaryButton.text().toUpperCase()});
                         },
                         trigger: 'manual',
                     });
@@ -393,7 +413,7 @@ Dialog.alert = function (owner, message, options) {
         close: true,
         click: options && options.confirm_callback,
     }];
-    return new Dialog(owner, Object.assign({
+    return new Dialog(owner, _.extend({
         size: 'medium',
         buttons: buttons,
         $content: $('<main/>', {
@@ -407,47 +427,20 @@ Dialog.alert = function (owner, message, options) {
 
 // static method to open simple confirm dialog
 Dialog.confirm = function (owner, message, options) {
-    /**
-     * Creates an improved callback from the given callback value at the given
-     * key from the parent function's options parameter. This is improved to:
-     *
-     * - Prevent calling given callbacks once one has been called.
-     *
-     * - Re-allow calling callbacks once a previous callback call's returned
-     *   Promise is rejected.
-     */
-    let isBlocked = false;
-    function makeCallback(key) {
-        const callback = options && options[key];
-        return function () {
-            if (isBlocked) {
-                // Do not (re)call any callback and return a rejected Promise
-                // to prevent closing the Dialog.
-                return Promise.reject();
-            }
-            isBlocked = true;
-            const callbackRes = callback && callback.apply(this, arguments);
-            Promise.resolve(callbackRes).catch((e) => {
-                isBlocked = false;
-                return Promise.reject(e);
-            });
-            return callbackRes;
-        };
-    }
     var buttons = [
         {
             text: _t("Ok"),
             classes: 'btn-primary',
             close: true,
-            click: makeCallback('confirm_callback'),
+            click: options && options.confirm_callback,
         },
         {
             text: _t("Cancel"),
             close: true,
-            click: makeCallback('cancel_callback'),
+            click: options && options.cancel_callback
         }
     ];
-    return new Dialog(owner, Object.assign({
+    return new Dialog(owner, _.extend({
         size: 'medium',
         buttons: buttons,
         $content: $('<main/>', {
@@ -459,4 +452,64 @@ Dialog.confirm = function (owner, message, options) {
     }, options)).open({shouldFocusButtons:true});
 };
 
-export default Dialog;
+/**
+ * Static method to open double confirmation dialog.
+ *
+ * @param {Widget} owner
+ * @param {string} message
+ * @param {Object} [options] @see Dialog.init @see Dialog.confirm
+ * @param {string} [options.securityLevel="warning"] - bootstrap color
+ * @param {string} [options.securityMessage="I am sure about this"]
+ * @returns {Dialog} (open() is automatically called)
+ */
+Dialog.safeConfirm = function (owner, message, options) {
+    var $checkbox = dom.renderCheckbox({
+        text: options && options.securityMessage || _t("I am sure about this."),
+    }).addClass('mb0');
+    var $securityCheck = $('<div/>', {
+        class: 'alert alert-' + (options && options.securityLevel || 'warning') + ' mt8 mb0',
+    }).prepend($checkbox);
+    var $content;
+    if (options && options.$content) {
+        $content = options.$content;
+        delete options.$content;
+    } else {
+        $content = $('<div>', {
+            text: message,
+        });
+    }
+    $content = $('<main/>', {role: 'alert'}).append($content, $securityCheck);
+
+    var buttons = [
+        {
+            text: _t("Ok"),
+            classes: 'btn-primary o_safe_confirm_button',
+            close: true,
+            click: options && options.confirm_callback,
+            disabled: true,
+        },
+        {
+            text: _t("Cancel"),
+            close: true,
+            click: options && options.cancel_callback
+        }
+    ];
+    var dialog = new Dialog(owner, _.extend({
+        size: 'medium',
+        buttons: buttons,
+        $content: $content,
+        title: _t("Confirmation"),
+        onForceClose: options && (options.onForceClose || options.cancel_callback),
+    }, options));
+    dialog.opened(function () {
+        var $button = dialog.$footer.find('.o_safe_confirm_button');
+        $securityCheck.on('click', 'input[type="checkbox"]', function (ev) {
+            $button.prop('disabled', !$(ev.currentTarget).prop('checked'));
+        });
+    });
+    return dialog.open();
+};
+
+return Dialog;
+
+});

@@ -62,7 +62,7 @@ class LuxembourgishFinancialReportCustomHandler(models.AbstractModel):
         return True
 
     def _validate_xml_content(self, content):
-        self.env['ir.attachment'].l10n_lu_reports_validate_xml_from_attachment(content, 'ecdf')
+        self.env['ir.attachment'].l10n_lu_reports_validate_xml_from_attachment(content, 'xsd_lu_eCDF.xsd')
         return True
 
     def get_financial_reports(self):
@@ -93,7 +93,7 @@ class LuxembourgishFinancialReportCustomHandler(models.AbstractModel):
         lu_template_values = self.get_electronic_report_values(options)
 
         # Add comparison filter to get data from last year
-        options = report.get_options({**options, 'comparison': {
+        report._init_options_comparison(options, {**options, 'comparison': {
             'filter': 'same_last_year',
             'number_period': 1,
         }})
@@ -109,23 +109,21 @@ class LuxembourgishFinancialReportCustomHandler(models.AbstractModel):
             '03': {'value': self.env.company.currency_id.name, 'field_type': 'char'}
         })
 
-        # we only need `account.report.line` records' IDs, so we need to check the model
-        # as some of these could be `account.account` records
-        for line in lines:
-            model, res_id = self.env['account.report']._get_model_info_from_id(line['id'])
-            if model != 'account.report.line':
-                continue
-
+        # we only need `account.report.line` records' IDs and line['id'] could hold account.account
+        # record's IDs as well. Such can be identified by `financial_group_line_id` in line dictionary's key. So,
+        # below first condition filters those lines and second one filters lines having ID such as `total_*`
+        for line in filter(lambda l: 'financial_group_line_id' not in l and l.get('model_ref'), lines):
+            line_id = line['model_ref'][1]
             # financial report's `code` would contain alpha-numeric string like `LU_BS_XXX/LU_BSABR_XXX`
             # where characters at last three positions will be digits, hence we split with `_`
             # and build dictionary having `code` as dictionary key
-            split_line_code = (report_line.browse(res_id).code or '').split('_') or []
+            split_line_code = (report_line.browse(line['id']).code or '').split('_') or []
             columns = line['columns']
             # since we have enabled comparison by default, `columns` element will atleast have two dictionary items.
             # First dict will be holding current year's balance and second one will be holding previous year's balance.
             if len(split_line_code) > 2:
                 parent_code = None
-                parent_id = report_line.browse(res_id).parent_id
+                parent_id = report_line.browse(line['id']).parent_id
                 if parent_id and parent_id.code:
                     parent_split_code = parent_id.code.split('_')
                     if len(parent_split_code) > 2:
@@ -199,15 +197,13 @@ class LuxembourgishFinancialReportCustomHandler(models.AbstractModel):
             return references, names
 
         report = self.env['account.report'].browse(options['report_id'])
-        if not self.env.context.get('skip_options_recompute'):
-            options = report.get_options(options)
-        lu_template_values = self.get_financial_electronic_report_values(options)
+        lu_template_values = self.get_financial_electronic_report_values(report._get_options(options))
         for form in lu_template_values['forms']:
             if references:
                 references, names = _get_references(report)
                 # Only add those references on accounts with reported values (for the current or previous year);
                 # the reference has an eCDF code equal to the report code of the referred account for the current year + 1000,
-                # to equal to the report code of the ref. account for the previous year + 999
+                # ot equal to the report code of the ref. account for the previous year + 999
                 references = {r: references[r] for r in references
                               if str(int(r) - 1000) in form['field_values'] or str(int(r) - 999) in form['field_values']}
                 names = {r: names[r] for r in references
@@ -229,6 +225,11 @@ class LuxembourgishFinancialReportCustomHandler(models.AbstractModel):
         """ Creates a new export wizard for this report."""
         new_context = self.env.context.copy()
         new_context['report_generation_options'] = options
+        new_context['report_generation_options']['report_id'] = options['report_id']
+        # When exporting from the balance sheet, the date_from must be adjusted
+        if options['date']['mode'] == 'single':
+            date_from = datetime.strptime(options['date']['date_to'], '%Y-%m-%d') + relativedelta(years=-1, days=1)
+            new_context['report_generation_options']['date']['date_from'] = date_from.strftime('%Y-%m-%d')
         return {
             'type': 'ir.actions.act_window',
             'name': _('Export'),

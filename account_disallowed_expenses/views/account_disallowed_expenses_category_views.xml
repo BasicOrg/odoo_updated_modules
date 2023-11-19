@@ -20,7 +20,7 @@
                 <field name="name"/>
                 <field name="account_ids" string="Related Account(s)" widget="many2many_tags" domain="[('internal_group', 'in', ('expense', 'income')), ('disallowed_expenses_category_id', '=', None)]" options="{'no_create': True}"/>
                 <field name="company_id" optional="hide"/>
-                <field name="current_rate" invisible="not current_rate"/>
+                <field name="current_rate" attrs="{'invisible': [('current_rate', '=', False)]}"/>
                 <button name="action_read_category" type="object" string="Set Rates" class="float-end btn-secondary"/>
             </tree>
         </field>
@@ -47,18 +47,19 @@
                     <div>
                         <h1 style="font-size: 1.9rem;">
                             <div class="row">
-                                <div class="col">
+                                <div class="col col-md-auto">
                                     <label for="code" string="Code"/>
                                     <div>
-                                        <field name="code" placeholder="e.g. 1201"/>
+                                        <field name="code" placeholder="e.g. 1201" class="oe_inline"/>
                                     </div>
                                 </div>
-                                <div class="col col-md-10">
+                                <div class="col col-md-8">
                                     <label for="name" string="Category Name"/>
                                     <div>
                                         <field name="name"
                                                placeholder="e.g. Non-Deductible Tax"
-                                               class="oe_inline"/>
+                                               class="oe_inline"
+                                               style="width:80% !important;"/>
                                     </div>
                                 </div>
                             </div>
@@ -72,13 +73,15 @@
                     </group>
                     <notebook>
                         <page name="rates" string="Rates">
-                            <field name="rate_ids" nolabel="1">
-                                <tree order="date_from desc" editable="bottom">
-                                    <field name="date_from" width="200px"/>
-                                    <field name="rate" width="200px"/>
-                                    <field name="company_id" groups="base.group_multi_company"/>
-                                </tree>
-                            </field>
+                            <group>
+                                <field name="rate_ids" nolabel="1" editable="bottom">
+                                    <tree order="date_from desc" editable="bottom">
+                                        <field name="date_from"/>
+                                        <field name="rate"/>
+                                        <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                                    </tree>
+                                </field>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>

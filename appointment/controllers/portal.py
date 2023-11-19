@@ -89,7 +89,7 @@ class AppointmentPortal(portal.CustomerPortal):
         order = '%s, %s' % (groupby_field, sort_order) if groupby_field else sort_order
 
         if not filterby:
-            filterby = 'all'
+            filterby = 'upcoming'
         domain = AND([domain, searchbar_filters[filterby]['domain']])
 
         if search and search_in:

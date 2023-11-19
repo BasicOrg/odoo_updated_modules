@@ -1,47 +1,26 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* quality_mrp_workorder
-#
+# 
 # Translators:
-# שהאב חוסיין <shhab89@gmail.com>, 2022
-# דודי מלכה <Dudimalka6@gmail.com>, 2022
-# Martin Trigaux, 2022
-# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2022
-# Ha Ketem <haketem@gmail.com>, 2022
-#
+# Martin Trigaux, 2019
+# Yihya Hugirat <hugirat@gmail.com>, 2019
+# דודי מלכה <Dudimalka6@gmail.com>, 2019
+# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:48+0000\n"
-"Last-Translator: Ha Ketem <haketem@gmail.com>, 2022\n"
-"Language-Team: Hebrew (https://app.transifex.com/odoo/teams/41243/he/)\n"
-"Language: he\n"
+"POT-Creation-Date: 2019-08-26 08:04+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: ZVI BLONDER <ZVIBLONDER@gmail.com>, 2019\n"
+"Language-Team: Hebrew (https://www.transifex.com/odoo/teams/41243/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: he\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Lot/Serial Number: </strong>"
-msgstr ""
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Work Order: </strong>"
-msgstr ""
-
-#. module: quality_mrp_workorder
-#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_production__check_ids
-msgid "Checks"
-msgstr "שיקים"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_inherit_mrp_workorder
-msgid "Component Lot/Serial"
-msgstr ""
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_form_inherit_mrp
@@ -49,37 +28,35 @@ msgid "Discard"
 msgstr "בטל"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_production_workorder_tree_editable_view_inherit_quality
-msgid "Done"
-msgstr "בוצע"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Fail"
 msgstr "נכשל"
 
 #. module: quality_mrp_workorder
-#. odoo-python
 #: code:addons/quality_mrp_workorder/models/quality.py:0
 #, python-format
 msgid "Failure"
 msgstr "כישלון"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_quality_mrp_workorder
-msgid "Finished Lot/Serial"
-msgstr ""
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__measure
+msgid "Measure"
+msgstr "מדידה"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_point_view_search_inherit_mrp_workorder
-msgid "Manufacturing Steps"
-msgstr ""
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__measure_success
+msgid "Measure Success"
+msgstr "מדד הצלחה"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Measure:"
-msgstr "מדד:"
+msgstr "מדידה:"
+
+#. module: quality_mrp_workorder
+#: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_workorder__norm_unit
+msgid "Norm Unit"
+msgstr ""
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_search_inherit_quality_mrp_workorder
@@ -87,36 +64,14 @@ msgid "Operation"
 msgstr "פעולה"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Pass"
-msgstr "עבר"
-
-#. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_product_template
-msgid "Product"
-msgstr "מוצר"
-
-#. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_stock_move_line
-msgid "Product Moves (Stock Move Line)"
-msgstr "תנועות המוצר (תנועת שורת מלאי)"
-
-#. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_product_product
-msgid "Product Variant"
-msgstr "וריאנט מוצר"
+msgstr "לעבור"
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_mrp_production
 msgid "Production Order"
-msgstr "הוראת ייצור"
-
-#. module: quality_mrp_workorder
-#. odoo-javascript
-#: code:addons/quality_mrp_workorder/static/src/components/menuPopup.xml:0
-#, python-format
-msgid "Quality Alert"
-msgstr "התראת איכות"
+msgstr "הזמנת ייצור"
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_quality_check
@@ -124,27 +79,14 @@ msgid "Quality Check"
 msgstr "בדיקת איכות"
 
 #. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/quality.py:0
-#, python-format
-msgid "Quality Check Failed"
-msgstr "בדיקת איכות נכשלה"
-
-#. module: quality_mrp_workorder
 #: model:ir.actions.act_window,name:quality_mrp_workorder.quality_check_action_wo
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_mrp_workorder
 msgid "Quality Checks"
 msgstr "בדיקות איכות"
 
 #. module: quality_mrp_workorder
-#: model:ir.model,name:quality_mrp_workorder.model_quality_point
-msgid "Quality Control Point"
-msgstr "נקודת בקרת איכות"
-
-#. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_point_view_search_inherit_mrp_workorder
-msgid "Quality Points"
-msgstr "נקודות איכות"
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_tablet_view_form_inherit_maintenance
+msgid "Quality alert"
+msgstr "התראת איכות"
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_form_inherit_mrp
@@ -152,25 +94,17 @@ msgid "Save"
 msgstr "שמור"
 
 #. module: quality_mrp_workorder
-#. odoo-python
 #: code:addons/quality_mrp_workorder/models/quality.py:0
 #, python-format
 msgid "Success"
 msgstr "הצלחה"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_tablet_inherit_quality
+#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_workorder_view_form_tablet_inherit_quality
 msgid "Validate"
-msgstr "אשר"
+msgstr "לאמת"
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_mrp_workorder
 msgid "Work Order"
-msgstr "הוראת עבודה"
-
-#. module: quality_mrp_workorder
-#. odoo-python
-#: code:addons/quality_mrp_workorder/models/mrp_workorder.py:0
-#, python-format
-msgid "You first need to complete the Quality Check using the Tablet View before marking the Operation as Done."
-msgstr ""
+msgstr "הזמנת עבודה"

@@ -28,6 +28,7 @@
 
         <record id="action_slide_tag" model="ir.actions.act_window">
             <field name="name">Content Tags</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">slide.tag</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
@@ -52,34 +53,42 @@
                         <div class="oe_button_box" name="button_box">
                             <button name="%(slide_slide_partner_action_from_slide)d"
                                     class="oe_stat_button" type="action" icon="fa-graduation-cap"
-                                    invisible="slide_views == 0">
-                                <field name="slide_views" widget="statinfo" string="Attendees"/>
+                                    attrs="{'invisible': [('slide_views', '=', 0)]}">
+                                <span class="o_stat_value">
+                                    <field name="slide_views" widget="statinfo" nolabel="1"/> Attendees
+                                </span>
                             </button>
                             <button disabled="1" icon="fa-thumbs-up" class="oe_stat_button"
-                                invisible="channel_type == 'training' or likes == 0">
-                                <field class="ms-1" name="likes" widget="statinfo" string="Likes"/>
+                                attrs="{'invisible': ['|', ('channel_type', '=', 'training'), ('likes', '=', 0)]}">
+                                <span class="o_stat_value" >
+                                    <field class="ms-1" name="likes" widget="statinfo" nolabel="1"/> Likes
+                                </span>
                              </button>
                              <button disabled="1" icon="fa-thumbs-down" class="oe_stat_button"
-                                invisible="channel_type == 'training' or dislikes == 0">
-                                <field class="ms-1" name="dislikes" widget="statinfo" string="Dislikes"/>
+                                attrs="{'invisible': ['|', ('channel_type', '=', 'training'), ('dislikes', '=', 0)]}">
+                                 <span class="o_stat_value">
+                                    <field class="ms-1" name="dislikes" widget="statinfo" nolabel="1"/> Dislikes
+                                 </span>
                              </button>
                              <button disabled="1" icon="fa-comments" class="oe_stat_button"
-                                 invisible="not channel_allow_comment or comments_count == 0">
-                                <field class="ms-1" name="comments_count" widget="statinfo" string="Comments"/>
+                                 attrs="{'invisible': ['|', ('channel_allow_comment', '!=', True), ('comments_count','=', 0)]}">
+                                <span class="o_stat_value">
+                                    <field class="ms-1" name="comments_count" widget="statinfo" nolabel="1"/> Comments
+                                </span>
                             </button>
                             <button name="action_view_embeds" class="oe_stat_button" type="object" icon="fa-share-alt"
-                                invisible="embed_count == 0">
+                                attrs="{'invisible': [('embed_count', '=', 0)]}">
                                 <div class="o_stat_info">
-                                    <span class="o_stat_value"><field name="embed_count"/></span>
+                                    <field name="embed_count"/>
                                     <span class="o_stat_text">Embed Views</span>
                                 </div>
                             </button>
-                            <field name="is_published" widget="website_redirect_button"
-                                   invisible="is_category or not channel_id"/>
+                            <field name="is_published" class="ms-1" widget="website_redirect_button"
+                                   attrs="{'invisible': ['|',('is_category', '=', True), ('channel_id', '=', False)]}"/>
                         </div>
-                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="image_1920" widget="image" class="oe_avatar" options='{"preview_image": "image_256"}'
-                            invisible="is_category"/>
+                            attrs="{'invisible': [('is_category', '=', True)]}"/>
                         <div class="oe_title pe-xl-0">
                             <div>
                                 <label for="name" string="Content Title"/>
@@ -88,9 +97,9 @@
                                 <field name="name" default_focus="1" placeholder="e.g. Setting up your computer" class="me-0"/>
                                 <field name="is_category" invisible="1"/>
                             </h1>
-                            <field name="tag_ids" invisible="is_category" widget="many2many_tags" placeholder="Tags..."/>
+                            <field name="tag_ids" attrs="{'invisible': [('is_category', '=', True)]}" widget="many2many_tags" placeholder="Tags..."/>
                         </div>
-                        <notebook invisible="is_category">
+                        <notebook attrs="{'invisible': [('is_category', '=', True)]}">
                             <page name="document" string="Document">
                                 <group>
                                     <group name="lesson_details">
@@ -98,26 +107,38 @@
                                         <field name="channel_id"/>
                                         <field name="slide_category" string="Content Type"/>
                                         <field name="slide_type" invisible="1"/>
-                                        <div class="text-muted" colspan="2" invisible="slide_category != 'quiz'">
+                                        <div class="text-muted" colspan="2" attrs="{
+                                            'invisible': [('slide_category', '!=', 'quiz')]}">
                                             You can add questions to this quiz in the 'Quiz' tab.
                                         </div>
-                                        <label for="source_type" string="" invisible="slide_category not in ['infographic', 'document']"/>
-                                        <field name="source_type" widget="radio" nolabel="1" invisible="slide_category not in ['infographic', 'document']" />
-                                        <field name="video_url" invisible="slide_category != 'video'" readonly="slide_category != 'video'" required="slide_category == 'video'"
+                                        <label for="source_type" string="" attrs="{
+                                            'invisible': [('slide_category', 'not in', ['infographic', 'document'])]}"/>
+                                        <field name="source_type" widget="radio" nolabel="1" attrs="{
+                                            'invisible': [('slide_category', 'not in', ['infographic', 'document'])]}" />
+                                        <field name="video_url" attrs="{
+                                            'required': [('slide_category', '=', 'video')],
+                                            'invisible': [('slide_category', '!=', 'video')],
+                                            'readonly': [('slide_category', '!=', 'video')]}"
                                             placeholder='e.g "www.youtube.com/watch?v=ebBez6bcSEc"'
                                             widget="url"/>
-                                        <field name="document_google_url" invisible="source_type != 'external' or slide_category != 'document'" readonly="source_type != 'external' or slide_category != 'document'"
+                                        <field name="document_google_url" attrs="{
+                                            'invisible': ['|', ('source_type', '!=', 'external'), ('slide_category', '!=', 'document')],
+                                            'readonly': ['|', ('source_type', '!=', 'external'), ('slide_category', '!=', 'document')]}"
                                             placeholder='e.g "https://drive.google.com/file/..."'
                                             widget="url"/>
-                                        <field name="image_google_url" invisible="source_type != 'external' or slide_category != 'infographic'" readonly="source_type != 'external' or slide_category != 'infographic'"
+                                        <field name="image_google_url" attrs="{
+                                            'invisible': ['|', ('source_type', '!=', 'external'), ('slide_category', '!=', 'infographic')],
+                                            'readonly': ['|', ('source_type', '!=', 'external'), ('slide_category', '!=', 'infographic')]}"
                                             placeholder='e.g "https://drive.google.com/file/..."'
                                             widget="url"/>
                                         <field name="document_binary_content" string="" options="{'accepted_file_extensions': '.pdf'}"
-                                            invisible="source_type == 'external' or slide_category != 'document'"
-                                            readonly="source_type == 'external' or slide_category != 'document'"/>
+                                            attrs="{
+                                                'invisible': ['|', ('source_type', '=', 'external'), ('slide_category', '!=', 'document')],
+                                                'readonly': ['|', ('source_type', '=', 'external'), ('slide_category', '!=', 'document')]}"/>
                                         <field name="image_binary_content" string="" options="{'accepted_file_extensions': 'image/*'}"
-                                            invisible="source_type == 'external' or slide_category != 'infographic'"
-                                            readonly="source_type == 'external' or slide_category != 'infographic'"/>
+                                            attrs="{
+                                                'invisible': ['|', ('source_type', '=', 'external'), ('slide_category', '!=', 'infographic')],
+                                                'readonly': ['|', ('source_type', '=', 'external'), ('slide_category', '!=', 'infographic')]}"/>
                                     </group>
                                     <group name="related_details">
                                         <field name="user_id" string="Responsible" domain="[('share', '=', False)]" widget="many2one_avatar"/>
@@ -126,8 +147,8 @@
                                             <field name="completion_time" widget="float_time" class="oe_inline"/>
                                             <span> hours</span>
                                         </div>
-                                        <field name="slide_resource_downloadable" invisible="slide_category != 'document' or source_type != 'local_file'"/>
-                                        <field name="date_published" string="Published Date" invisible="not date_published" groups="base.group_no_one"/>
+                                        <field name="slide_resource_downloadable" attrs="{'invisible': ['|', ('slide_category', '!=', 'document'), ('source_type', '!=', 'local_file')]}"/>
+                                        <field name="date_published" string="Published Date" attrs="{'invisible': [('date_published', '=', False)]}" groups="base.group_no_one"/>
                                         <field name="is_preview"/>
                                         <field name="public_views"/>
                                         <field name="total_views"/>
@@ -139,15 +160,14 @@
                             </page>
                             <page string="Additional Resources" name="external_links" >
                                 <group>
-                                    <field name="slide_resource_ids" widget="one2many" nolabel="1" colspan="2">
+                                    <field name="slide_resource_ids" widget="one2many" nolabel="1">
                                         <tree editable="top">
                                             <field name="resource_type"/>
                                             <field name="name" required="1"/>
-                                            <field name="file_name" column_invisible="True"/>
-                                            <field name="data" readonly="resource_type == 'url'" filename="file_name"/>
+                                            <field name="file_name" invisible="1"/>
+                                            <field name="data" attrs="{'readonly': [('resource_type', '=', 'url')]}" filename="file_name"/>
                                             <field name="link" string="Link"
-                                                readonly="resource_type == 'file'"
-                                                required="resource_type == 'url'"/>
+                                                attrs="{'readonly': [('resource_type', '=', 'file')],'required': [('resource_type', '=', 'url')],}"/>
                                         </tree>
                                     </field>
                                 </group>
@@ -162,8 +182,8 @@
                                             <field string="Fourth Try &amp; More" name="quiz_fourth_attempt_reward"/>
                                         </group>
                                     </group>
-                                    <group name="questions" string="Questions">
-                                        <field name="question_ids" nolabel="1" colspan="2">
+                                    <group name="questions">
+                                        <field name="question_ids" nolabel="1">
                                             <tree>
                                                 <field name="sequence" widget="handle"/>
                                                 <field name="question" string="Question"/>
@@ -189,6 +209,7 @@
             <field name="inherit_id" ref="view_slide_slide_form"/>
             <field name="priority" eval="50"/>
             <field name="mode">primary</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="channel_id" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -216,14 +237,14 @@
                                 <t t-set="placeholder" t-value="'/website_slides/static/src/img/channel-training-default.jpg'"/>
                                 <t t-if="record.image_128.raw_value" t-set="image" t-value="kanban_image('slide.slide', 'image_128', record.id.raw_value, placeholder)"/>
                                 <t t-else="" t-set="image" t-value="'/website_slides/static/src/img/channel-training-default.jpg'"/>
-                                <div class="o_kanban_image_fill_left d-none d-md-block">
-                                    <img t-attf-src="#{image}" t-att-alt="record.id.value"/>
+                                <div class="o_kanban_image_fill_left d-none d-md-block"
+                                    t-attf-style="background-image:url('#{image}')">
                                     <img class="o_kanban_image_inner_pic"
                                         t-att-alt="record.channel_id.value"
                                         t-att-src="kanban_image('slide.channel', 'image_128', record.channel_id.raw_value)"/>
                                 </div>
-                                <div class="o_kanban_image d-md-none">
-                                    <img class="rounded-circle" t-attf-src="#{image}" t-att-alt="record.id.value"/>
+                                <div class="o_kanban_image rounded-circle d-md-none"
+                                    t-attf-style="background-image:url('#{image}')">
                                     <img class="o_kanban_image_inner_pic"
                                         t-att-alt="record.channel_id.value"
                                         t-att-src="kanban_image('slide.channel', 'image_128', record.channel_id.raw_value)"/>
@@ -312,13 +333,9 @@
             <field name="arch" type="xml">
                 <search string="Search Contents">
                     <field name="name"/>
-                    <field name="channel_id"/>
-                    <field name="user_id"/>
-                    <field name="tag_ids"/>
-                    <filter name="filter_user_id_uid" string="My Content" domain="[('user_id', '=', uid)]"/>
-                    <separator/>
                     <filter name="published" string="Published" domain="[('is_published', '=', True)]"/>
                     <filter name="not_published" string="Waiting for validation" domain="[('is_published', '=', False)]"/>
+                    <filter name="filter_user_id_uid" string="My Content" domain="[('user_id', '=', uid)]"/>
                     <separator/>
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                     <group expand="0" string="Group By">
@@ -377,6 +394,7 @@
 
         <record id="slide_slide_action_report" model="ir.actions.act_window">
             <field name="name">Contents</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">slide.slide</field>
             <field name="view_mode">graph,tree,form,pivot</field>
             <field name="context">{"search_default_published": 1}</field>

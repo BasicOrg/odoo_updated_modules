@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="hr_appraisal.BooleanToggleConfirm">
+    <t t-name="hr_appraisal.BooleanToggleConfirm" owl="1">
         <ConfirmCheckBox
             className="'o_field_boolean o_boolean_toggle form-switch'"
             id="props.id"
-            value="props.record.data[props.name] or false"
+            value="props.value or false"
             disabled="isReadonly"
             onChange="(value) => this.onChange(value)"
         />

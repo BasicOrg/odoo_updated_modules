@@ -2,7 +2,8 @@
 
 import { ControlPanel } from "@web/search/control_panel/control_panel";
 import { useService } from "@web/core/utils/hooks";
-import { onWillStart } from "@odoo/owl";
+
+const { onWillStart, onWillUpdateProps } = owl;
 
 export class ProjectControlPanel extends ControlPanel {
     setup() {
@@ -14,6 +15,12 @@ export class ProjectControlPanel extends ControlPanel {
         this.projectId = this.showProjectUpdate ? active_id : false;
 
         onWillStart(async () => {
+            if (this.showProjectUpdate) {
+                await this.loadData();
+            }
+        });
+
+        onWillUpdateProps(async () => {
             if (this.showProjectUpdate) {
                 await this.loadData();
             }

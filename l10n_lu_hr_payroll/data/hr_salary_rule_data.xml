@@ -22,7 +22,7 @@ result = contract.l10n_lu_atn_transport
         <field name="amount_select">code</field>
         <field name="appears_on_payslip" eval="False"/>
         <field name="amount_python_compute">
-result = categories['BASIC'] + categories['BIK_TRANSPORT']
+result = categories.BASIC + categories.BIK_TRANSPORT
         </field>
         <field name="struct_id" ref="l10n_lu_hr_payroll.hr_payroll_structure_lux_employee_salary"/>
     </record>
@@ -32,17 +32,16 @@ result = categories['BASIC'] + categories['BIK_TRANSPORT']
         <field name="name">Meal Vouchers</field>
         <field name="code">MEAL_VOUCHERS</field>
         <field name="sequence">15</field>
-        <field name="condition_select">python</field>
-        <field name="condition_python">result = bool(contract.l10n_lu_meal_voucher_amount)</field>
+        <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-if 'WORK100' not worked_days:
+if not worked_days.WORK100:
     result_qty = 0
-elif worked_days['WORK100'].number_of_days >= 18:
+elif worked_days.WORK100.number_of_days >= 18:
     result_qty = 18
 else:
-    total_number_of_days = sum(payslip.worked_days_line_ids.mapped('number_of_days'))
-    result_qty = int(18 * worked_days['WORK100'].number_of_days / total_number_of_days)
+    total_number_of_days = sum(payslip.dict.worked_days_line_ids.mapped('number_of_days'))
+    result_qty = int(18 * worked_days.WORK100.number_of_days / total_number_of_days)
 result = 2.8
         </field>
         <field name="struct_id" ref="l10n_lu_hr_payroll.hr_payroll_structure_lux_employee_salary"/>
@@ -152,7 +151,7 @@ result = GROSS - result_rules['TAXES_TOTAL']['total'] - result_rules['ALW_TOTAL'
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = payslip._get_lux_tax(localdict)
+result = compute_lux_tax(payslip, categories, worked_days, inputs)
 </field>
         <field name="struct_id" ref="l10n_lu_hr_payroll.hr_payroll_structure_lux_employee_salary"/>
     </record>
@@ -165,7 +164,7 @@ result = payslip._get_lux_tax(localdict)
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-min_social_pay = payslip._rule_parameter('l10n_lu_min_social_pay')
+min_social_pay = payslip.rule_parameter('l10n_lu_min_social_pay')
 result = - (contract.wage - (min_social_pay / 4.0)) * 1.4 / 100.0
 </field>
         <field name="struct_id" ref="l10n_lu_hr_payroll.hr_payroll_structure_lux_employee_salary"/>
@@ -187,7 +186,7 @@ result = - (contract.wage - (min_social_pay / 4.0)) * 1.4 / 100.0
             ('struct_id', '=', ref('l10n_lu_hr_payroll.hr_payroll_structure_lux_employee_salary')),
             ('code', '=', 'NET')]"/>
         <value eval="{
-            'amount_python_compute': &quot;result = categories['TAXABLE'] + result_rules['TAXES']['total'] + result_rules['DEP_INS']['total'] + result_rules['TAX_CREDIT']['total']&quot;, 'appears_on_employee_cost_dashboard': True}"/>
+            'amount_python_compute': &quot;result = categories.TAXABLE + result_rules['TAXES']['total'] + result_rules['DEP_INS']['total'] + result_rules['TAX_CREDIT']['total']&quot;, 'appears_on_employee_cost_dashboard': True}"/>
     </function>
 
 </odoo>

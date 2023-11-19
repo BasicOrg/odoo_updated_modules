@@ -36,51 +36,38 @@ class HelpdeskSLA(TransactionCase):
             'email': 'hu@example.com',
             'groups_id': [(6, 0, [cls.env.ref('helpdesk.group_helpdesk_user').id])]
         })
-        # the manager defines three teams for our tests (the .sudo() at the end is to avoid potential uid problems)
-        teams = cls.env['helpdesk.team'].with_user(cls.helpdesk_manager).create([
-            {
-                'name': 'Test Team SLA Reached',
-                'use_sla': True,
-            },
-            {
-                'name': 'Test Team SLA Late',
-                'use_sla': True,
-            },
-            {
-                'name': 'Test Team No Tickets',
-                'use_sla': True,
-            },
-        ]).sudo()
-        cls.test_team_reached = teams[0]
-        cls.test_team_late = teams[1]
-        cls.test_team_no_tickets = teams[2]
-        # He then defines the stages
+        # the manager defines a team for our tests (the .sudo() at the end is to avoid potential uid problems)
+        cls.test_team = cls.env['helpdesk.team'].with_user(cls.helpdesk_manager).create({
+            'name': 'Test Team',
+            'use_sla': True
+        }).sudo()
+        # He then defines its stages
         stage_as_manager = cls.env['helpdesk.stage'].with_user(cls.helpdesk_manager)
         cls.stage_new = stage_as_manager.create({
             'name': 'New',
             'sequence': 10,
-            'team_ids': [(6, 0, (cls.test_team_reached.id, cls.test_team_late.id))],
+            'team_ids': [(4, cls.test_team.id, 0)],
         })
         cls.stage_progress = stage_as_manager.create({
             'name': 'In Progress',
             'sequence': 20,
-            'team_ids': [(6, 0, (cls.test_team_reached.id, cls.test_team_late.id))],
+            'team_ids': [(4, cls.test_team.id, 0)],
         })
         cls.stage_wait = stage_as_manager.create({
             'name': 'Waiting',
             'sequence': 25,
-            'team_ids': [(6, 0, (cls.test_team_reached.id, cls.test_team_late.id))],
+            'team_ids': [(4, cls.test_team.id, 0)],
         })
         cls.stage_done = stage_as_manager.create({
             'name': 'Done',
             'sequence': 30,
-            'team_ids': [(6, 0, (cls.test_team_reached.id, cls.test_team_late.id))],
+            'team_ids': [(4, cls.test_team.id, 0)],
             'fold': True,
         })
         cls.stage_cancel = stage_as_manager.create({
             'name': 'Cancelled',
             'sequence': 40,
-            'team_ids': [(6, 0, (cls.test_team_reached.id, cls.test_team_late.id))],
+            'team_ids': [(4, cls.test_team.id, 0)],
             'fold': True,
         })
 
@@ -90,26 +77,17 @@ class HelpdeskSLA(TransactionCase):
 
         cls.sla = cls.env['helpdesk.sla'].create({
             'name': 'SLA',
-            'team_id': cls.test_team_reached.id,
+            'team_id': cls.test_team.id,
             'time': 32,
             'stage_id': cls.stage_progress.id,
-            'priority': '1',
         })
         cls.sla_2 = cls.env['helpdesk.sla'].create({
             'name': 'SLA done stage with freeze time',
-            'team_id': cls.test_team_reached.id,
+            'team_id': cls.test_team.id,
             'time': 10.033333333333333,
             'tag_ids': [(4, cls.tag_freeze.id)],
             'exclude_stage_ids': cls.stage_wait.ids,
             'stage_id': cls.stage_done.id,
-            'priority': '1',
-        })
-        cls.sla_3 = cls.env['helpdesk.sla'].create({
-            'name': 'SLA Team 2',
-            'team_id': cls.test_team_late.id,
-            'time': 16,
-            'stage_id': cls.stage_progress.id,
-            'priority': '1',
         })
 
         # He also creates a ticket types for Question and Issue
@@ -126,10 +104,10 @@ class HelpdeskSLA(TransactionCase):
             yield
             self.env.flush_all()
 
-    def create_ticket(self, team, *arg, **kwargs):
+    def create_ticket(self, *arg, **kwargs):
         default_values = {
             'name': "Help me",
-            'team_id': team.id,
+            'team_id': self.test_team.id,
             'tag_ids': [(4, self.tag_urgent.id)],
             'stage_id': self.stage_new.id,
             'priority': '1',
@@ -143,17 +121,17 @@ class HelpdeskSLA(TransactionCase):
     def test_sla_no_tag(self):
         """ SLA without tag should apply to all tickets """
         self.sla.tag_ids = [(5,)]
-        ticket = self.create_ticket(tag_ids=self.tag_urgent, team=self.test_team_reached)
+        ticket = self.create_ticket(tag_ids=self.tag_urgent)
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied")
 
     def test_sla_single_tag(self):
         self.sla.tag_ids = [(4, self.tag_urgent.id)]
-        ticket = self.create_ticket(tag_ids=self.tag_urgent, team=self.test_team_reached)
+        ticket = self.create_ticket(tag_ids=self.tag_urgent)
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied")
 
     def test_sla_multiple_tags(self):
         self.sla.tag_ids = [(6, False, (self.tag_urgent | self.tag_vip).ids)]
-        ticket = self.create_ticket(tag_ids=self.tag_urgent, team=self.test_team_reached)
+        ticket = self.create_ticket(tag_ids=self.tag_urgent)
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied when atleast one tag set on ticket from sla policy")
         ticket.tag_ids = [(4, self.tag_vip.id)]
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied")
@@ -161,21 +139,21 @@ class HelpdeskSLA(TransactionCase):
     def test_sla_tag_and_ticket_type(self):
         self.sla.tag_ids = [(6, False, self.tag_urgent.ids)]
         self.sla.ticket_type_ids = [Command.link(self.type_question.id)]
-        ticket = self.create_ticket(tag_ids=self.tag_urgent, team=self.test_team_reached)
+        ticket = self.create_ticket(tag_ids=self.tag_urgent)
         self.assertFalse(ticket.sla_status_ids, "SLA should not have been applied yet")
         ticket.ticket_type_id = self.type_question
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied")
 
     def test_sla_remove_tag(self):
         self.sla.tag_ids = [(6, False, (self.tag_urgent | self.tag_vip).ids)]
-        ticket = self.create_ticket(tag_ids=self.tag_urgent | self.tag_vip, team=self.test_team_reached)
+        ticket = self.create_ticket(tag_ids=self.tag_urgent | self.tag_vip)
         self.assertEqual(ticket.sla_status_ids.sla_id, self.sla, "SLA should have been applied")
         ticket.tag_ids = [(5,)]  # Remove all tags
         self.assertFalse(ticket.sla_status_ids, "SLA should no longer apply")
 
     def test_sla_waiting(self):
         with self._ticket_patch_now(NOW2):
-            ticket = self.create_ticket(tag_ids=self.tag_freeze, team=self.test_team_reached)
+            ticket = self.create_ticket(tag_ids=self.tag_freeze)
             status = ticket.sla_status_ids.filtered(lambda sla: sla.sla_id.id == self.sla_2.id)
             self.assertEqual(status.deadline, datetime(2019, 1, 9, 12, 2, 0), 'No waiting time, deadline = creation date + 1 day + 2 hours + 2 minutes')
 
@@ -220,10 +198,10 @@ class HelpdeskSLA(TransactionCase):
         with self._ticket_patch_now(NOW):
             self.sla.time = 3
             # Failed ticket
-            self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id, create_date=NOW - relativedelta(hours=3, minutes=2))
+            self.create_ticket(user_id=self.env.user.id, create_date=NOW - relativedelta(hours=3, minutes=2))
 
             # Not failed ticket
-            self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id, create_date=NOW - relativedelta(hours=2, minutes=2))
+            self.create_ticket(user_id=self.env.user.id, create_date=NOW - relativedelta(hours=2, minutes=2))
 
             data = self.env['helpdesk.team'].retrieve_dashboard()
             self.assertEqual(data['my_all']['count'], 2, "There should be 2 tickets")
@@ -234,18 +212,13 @@ class HelpdeskSLA(TransactionCase):
             self.sla.time = 3
             # Set the calendar tz to UTC in order to ease test comprehension
             self.sla.company_id.resource_calendar_id.tz = 'UTC'
-            ticket = self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id)
+            ticket = self.create_ticket(user_id=self.env.user.id)
             # We set ticket create date to 20:00 which is out of the working calendar => The first possible time to work
             # on the ticket is the next day at 08:00
             self.assertEqual(ticket.sla_deadline, fields.Datetime.now() + relativedelta(days=1, hour=11), "Day0:20h + 3h = Day1:8h + 3h = Day1:11h")
 
-            self.sla.exclude_stage_ids = [Command.link(self.stage_wait.id)]  # same test as above, but the sla has excluded stages
-            ticket = self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id)
-            self.assertEqual(ticket.sla_deadline, fields.Datetime.now() + relativedelta(days=1, hour=11), "Day0:20h + 3h = Day1:8h + 3h = Day1:11h")
-            self.sla.exclude_stage_ids = [Command.clear()]
-
             self.sla.time = 11
-            ticket = self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id)
+            ticket = self.create_ticket(user_id=self.env.user.id)
             self.assertEqual(ticket.sla_deadline, fields.Datetime.now() + relativedelta(days=2, hour=11), "Day0:20h + 11h = Day0:20h + 1day:3h = Day1:8h + 1day:3h = Day2:8h + 3h = Day2:11h")
 
     def test_deadlines_during_work(self):
@@ -253,35 +226,11 @@ class HelpdeskSLA(TransactionCase):
             self.sla.time = 3
             # Set the calendar tz to UTC in order to ease test comprehension
             self.sla.company_id.resource_calendar_id.tz = 'UTC'
-            ticket = self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id)
+            ticket = self.create_ticket(user_id=self.env.user.id)
             # We set ticket create date to 20:00 which is out of the working calendar => The first possible time to work
             # on the ticket is the next day at 08:00
             self.assertEqual(ticket.sla_deadline, fields.Datetime.now() + relativedelta(days=0, hour=11), "Day0:8h + 3h = Day0:11h")
 
             self.sla.time = 11
-            ticket = self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id)
+            ticket = self.create_ticket(user_id=self.env.user.id)
             self.assertEqual(ticket.sla_deadline, fields.Datetime.now() + relativedelta(days=1, hour=11), "Day0:8h + 11h = Day0:8h + 1day:3h = Day1:8h + 3h = Day1:11h")
-
-    def test_teams_success_rate(self):
-        # Create 6 tickets, 3 on-time according to SLA, 3 late.
-        with self._ticket_patch_now(NOW):
-            tickets_reached = self.env['helpdesk.ticket'].concat(*[self.create_ticket(team=self.test_team_reached, user_id=self.env.user.id) for _ in range(3)])
-            tickets_late = self.env['helpdesk.ticket'].concat(*[self.create_ticket(team=self.test_team_late, user_id=self.env.user.id) for _ in range(3)])
-            tickets = tickets_reached + tickets_late
-
-        # Move tickets in-progress 5 days after creation date.
-        with self._ticket_patch_now(NOW + relativedelta(days=5)):
-            tickets.write({'stage_id': self.stage_progress.id})
-            initial_values = {ticket.id: {'stage_id': self.stage_new} for ticket in tickets}
-            tickets._message_track(['stage_id'], initial_values)
-
-        # Set tickets to done and check teams success rates.
-        with self._ticket_patch_now(NOW + relativedelta(days=6)):
-            tickets.write({'stage_id': self.stage_done.id})
-            initial_values = {ticket.id: {'stage_id': self.stage_progress} for ticket in tickets}
-            tickets._message_track(['stage_id'], initial_values)
-            # Sentinel check for no ticket team.
-            self.assertEqual(self.test_team_no_tickets.success_rate, -1.0, "Teams without tickets should have -1.0 sentinel success rate")
-            # Success rate checks
-            self.assertEqual(self.test_team_reached.success_rate, 100.0, "Team without late tickets should have 100.0 success rate")
-            self.assertEqual(self.test_team_late.success_rate, 0.0, "Team with only late tickets should have 0.0 success rate")

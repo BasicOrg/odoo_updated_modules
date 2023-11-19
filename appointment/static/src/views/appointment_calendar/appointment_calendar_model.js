@@ -3,14 +3,13 @@
 import { AttendeeCalendarModel } from "@calendar/views/attendee_calendar/attendee_calendar_model";
 import { patch } from "@web/core/utils/patch";
 
-patch(AttendeeCalendarModel.prototype, {
+patch(AttendeeCalendarModel.prototype, "appointment_calendar_model_prototype", {
     /**
      * @override
      */
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
         this.data.slots = {};
-        this.defaultSlotDurationMinutes = 30;
         this.slotId = 1;
     },
 
@@ -19,15 +18,11 @@ patch(AttendeeCalendarModel.prototype, {
             if (record.isAllDay) {
                 record.end = record.start;
             } else {
-                record.end = record.start.plus({ minutes: this.defaultSlotDurationMinutes });
+                record.end = record.start.plus({ minutes: 30 });
             }
         }
         if (!record.isAllDay) {
             record.title = "";
-            if (record.start && record.end) {
-                const datesInterval = luxon.Interval.fromDateTimes(record.start, record.end);
-                this.defaultSlotDurationMinutes = datesInterval.length('minutes');
-            }
         } else {
             const isSameDay = record.start.hasSame(record.end, "day");
             if (!isSameDay && record.start.hasSame(record.end, "month")) {

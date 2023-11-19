@@ -3,7 +3,6 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
-from odoo.tools.misc import format_datetime
 
 
 class SocialPostConvert2Lead(models.TransientModel):
@@ -130,8 +129,7 @@ class SocialPostConvert2Lead(models.TransientModel):
             'medium_id': self.utm_medium_id.id,
             'campaign_id': self.utm_campaign_id.id,
             'description': self.env['ir.qweb']._render("social_crm.social_post_to_lead_description", {
-                'object': self,
-                'post_datetime': format_datetime(self.env, self.post_datetime, dt_format='yyyy-MM-dd HH:mm:ss (ZZZZ)'),
+                'object': self
             }),
         }
 

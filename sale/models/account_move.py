@@ -35,7 +35,7 @@ class AccountMove(models.Model):
     @api.depends('invoice_user_id')
     def _compute_team_id(self):
         for move in self:
-            if not move.invoice_user_id.sale_team_id or not move.is_sale_document(include_receipts=True):
+            if not move.invoice_user_id.sale_team_id:
                 continue
             move.team_id = self.env['crm.team']._get_default_team_id(
                 user_id=move.invoice_user_id.id,
@@ -61,33 +61,41 @@ class AccountMove(models.Model):
     def action_post(self):
         #inherit of the function from account.move to validate a new tax and the priceunit of a downpayment
         res = super(AccountMove, self).action_post()
-        down_payment_lines = self.line_ids.filtered('is_downpayment')
+        down_payment_lines = self.line_ids.filtered(lambda line: line.sale_line_ids.is_downpayment)
         for line in down_payment_lines:
-            if any(order.locked for order in line.sale_line_ids.order_id):
-                # We cannot change lines content on locked SO, changes on invoices are not
-                # forwarded to the SO if the SO is locked.
-                continue
 
             if not line.sale_line_ids.display_type:
                 line.sale_line_ids._compute_name()
 
-            line.sale_line_ids.tax_id = line.tax_ids
-            line.sale_line_ids.price_unit = line.price_unit
+            try:
+                line.sale_line_ids.tax_id = line.tax_ids
+                if all(line.tax_ids.mapped('price_include')):
+                    line.sale_line_ids.price_unit = line.price_unit
+                else:
+                    #To keep positive amount on the sale order and to have the right price for the invoice
+                    #We need the - before our untaxed_amount_to_invoice
+                    line.sale_line_ids.price_unit = -line.sale_line_ids.untaxed_amount_to_invoice
+            except UserError:
+                # a UserError here means the SO was locked, which prevents changing the taxes
+                # just ignore the error - this is a nice to have feature and should not be blocking
+                pass
         return res
 
     def button_draft(self):
         res = super().button_draft()
 
-        self.line_ids.filtered('is_downpayment').sale_line_ids.filtered(
-            lambda sol: not sol.display_type)._compute_name()
+        self.line_ids.filtered(
+            lambda line: line.sale_line_ids.is_downpayment and not line.sale_line_ids.display_type
+        ).sale_line_ids._compute_name()
 
         return res
 
     def button_cancel(self):
         res = super().button_cancel()
 
-        self.line_ids.filtered('is_downpayment').sale_line_ids.filtered(
-            lambda sol: not sol.display_type)._compute_name()
+        self.line_ids.filtered(
+            lambda line: line.sale_line_ids.is_downpayment and not line.sale_line_ids.display_type
+        ).sale_line_ids._compute_name()
 
         return res
 
@@ -144,24 +152,3 @@ class AccountMove(models.Model):
         # OVERRIDE
         self.ensure_one()
         return self.line_ids.sale_line_ids and all(sale_line.is_downpayment for sale_line in self.line_ids.sale_line_ids) or False
-
-    @api.depends('line_ids.sale_line_ids.order_id', 'currency_id', 'tax_totals', 'date')
-    def _compute_partner_credit(self):
-        super()._compute_partner_credit()
-        for move in self.filtered(lambda m: m.is_invoice(include_receipts=True)):
-            sale_orders = move.line_ids.sale_line_ids.order_id
-            amount_total_currency = move.currency_id._convert(
-                move.tax_totals['amount_total'],
-                move.company_currency_id,
-                move.company_id,
-                move.date
-            )
-            amount_to_invoice_currency = sum(
-                sale_order.currency_id._convert(
-                    sale_order.amount_to_invoice,
-                    move.company_currency_id,
-                    move.company_id,
-                    move.date
-                ) for sale_order in sale_orders
-            )
-            move.partner_credit += max(amount_total_currency - amount_to_invoice_currency, 0.0)

@@ -34,19 +34,17 @@ class SaleOrderLine(models.Model):
     def _compute_planning_hours_planned(self):
         PlanningSlot = self.env['planning.slot']
         sol_planning = self.filtered_domain([('product_id.planning_enabled', '=', True), ('state', 'not in', ['draft', 'sent'])])
-
-        # For every confirmed SO service lines with slot generation, the allocated hours on planned slots are summed
-        group_data = PlanningSlot.with_context(sale_planning_prevent_recompute=True)._read_group([
-            ('sale_line_id', 'in', sol_planning.ids),
-            ('start_datetime', '!=', False),
-            '|',
-                ('resource_id', '=', False),
-                ('resource_type', '!=', 'material'),
-        ], ['sale_line_id'], ['allocated_hours:sum'])
-        mapped_data = {sale_line.id: allocated_hours_sum for sale_line, allocated_hours_sum in group_data}
-        for line in self:
-            line.planning_hours_planned = mapped_data.get(line.id, 0.0)
-
+        if sol_planning:
+            # For every confirmed SO service lines with slot generation, the allocated hours on planned slots are summed
+            group_data = PlanningSlot.with_context(sale_planning_prevent_recompute=True)._read_group([
+                ('sale_line_id', 'in', sol_planning.ids),
+                ('start_datetime', '!=', False)
+            ], ['sale_line_id', 'allocated_hours:sum'], ['sale_line_id'])
+            mapped_data = {data['sale_line_id'][0]: data['allocated_hours'] for data in group_data}
+            for line in sol_planning:
+                line.planning_hours_planned = mapped_data.get(line.id, 0.0)
+        for line in self - sol_planning:
+            line.planning_hours_planned = 0.0
         self.env.add_to_compute(PlanningSlot._fields['allocated_hours'], PlanningSlot.search([
             ('start_datetime', '=', False),
             ('sale_line_id', 'in', self.ids),
@@ -69,19 +67,25 @@ class SaleOrderLine(models.Model):
         self.filtered(lambda sol: not sol.is_expense)._post_process_planning_sale_line()
         return res
 
-    @api.depends('product_id', 'planning_hours_to_plan', 'planning_hours_planned')
-    @api.depends_context('with_planning_remaining_hours')
-    def _compute_display_name(self):
-        super()._compute_display_name()
-        if not self.env.context.get('with_planning_remaining_hours'):
-            return
+    def name_get(self):
+        res = super().name_get()
+        with_planning_remaining_hours = self.env.context.get('with_planning_remaining_hours')
+        if not with_planning_remaining_hours:
+            return res
+        names = dict(res)
+        res = []
         remaining = _("remaining")
         for line in self:
-            name = line.display_name
+            name = names.get(line.id)
             if line.product_id.planning_enabled:
                 remaining_hours = line.planning_hours_to_plan - line.planning_hours_planned
-                name = f'{name} ({format_duration(remaining_hours)} {remaining})'
-            line.display_name = name
+                name = '{name} ({duration} {remaining})'.format(
+                    name=name,
+                    duration=format_duration(remaining_hours),
+                    remaining=remaining,
+                )
+            res.append((line.id, name))
+        return res
 
     # -----------------------------------------------------------------
     # Business methods

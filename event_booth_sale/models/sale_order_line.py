@@ -90,21 +90,13 @@ class SaleOrderLine(models.Model):
             return self.event_booth_pending_ids._get_booth_multiline_description()
         return super()._get_sale_order_line_multiline_description_sale()
 
-    def _use_template_name(self):
-        """ We do not want configured description to get rewritten by template default"""
-        if self.event_booth_pending_ids:
-            return False
-        return super()._use_template_name()
-
     def _get_display_price(self):
         if self.event_booth_pending_ids and self.event_id:
             company = self.event_id.company_id or self.env.company
-            pricelist = self.order_id.pricelist_id
-            if pricelist.discount_policy == "with_discount":
-                event_booths = self.event_booth_pending_ids.with_context(**self._get_pricelist_price_context())
-                total_price = sum(booth.booth_category_id.price_reduce for booth in event_booths)
-            else:
-                total_price = sum(booth.price for booth in self.event_booth_pending_ids)
-
-            return self._convert_to_sol_currency(total_price, company.currency_id)
+            currency = company.currency_id
+            total_price = sum([booth.price for booth in self.event_booth_pending_ids])
+            return currency._convert(
+                total_price, self.order_id.currency_id,
+                self.order_id.company_id or self.env.company.id,
+                self.order_id.date_order or fields.Date.today())
         return super()._get_display_price()

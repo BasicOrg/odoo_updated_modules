@@ -24,6 +24,9 @@
         'views/marketing_campaign_views.xml',
         'data/ir_cron_data.xml',
     ],
+    'demo': [
+        'data/marketing_automation_demo.xml'
+    ],
     'application': True,
     'license': 'OEEL-1',
     'uninstall_hook': 'uninstall_hook',
@@ -39,7 +42,7 @@
             # Don't include dark mode files in light mode
             ('remove', 'marketing_automation/static/src/scss/*.dark.scss'),
         ],
-        "web.assets_web_dark": [
+        "web.dark_mode_assets_backend": [
             'marketing_automation/static/src/scss/*.dark.scss',
         ],
         'web.qunit_suite_tests': [

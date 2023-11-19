@@ -23,8 +23,6 @@ class TimesheetForecastReport(models.Model):
     difference = fields.Float('Remaining Hours', readonly=True)
     user_id = fields.Many2one('res.users', string='Assigned to', readonly=True)
     is_published = fields.Boolean(readonly=True)
-    effective_costs = fields.Float('Effective Costs', readonly=True)
-    planned_costs = fields.Float('Planned Costs', readonly=True)
 
     @api.model
     def _select(self):
@@ -36,9 +34,7 @@ class TimesheetForecastReport(models.Model):
                 F.project_id AS project_id,
                 F.user_id AS user_id,
                 0.0 AS effective_hours,
-                0.0 As effective_costs,
                 F.allocated_hours / GREATEST(F.working_days_count, 1) AS planned_hours,
-                (F.allocated_hours / GREATEST(F.working_days_count, 1) * E.hourly_cost) AS planned_costs,
                 F.allocated_hours / GREATEST(F.working_days_count, 1) AS difference,
                 'forecast' AS line_type,
                 F.id AS id,
@@ -69,9 +65,7 @@ class TimesheetForecastReport(models.Model):
                 A.project_id AS project_id,
                 A.user_id AS user_id,
                 A.unit_amount / UOM.factor * HOUR_UOM.factor AS effective_hours,
-                (A.unit_amount / UOM.factor * HOUR_UOM.factor) * E.hourly_cost AS effective_costs,
                 0.0 AS planned_hours,
-                0.0 AS planned_costs,
                 -A.unit_amount / UOM.factor * HOUR_UOM.factor AS difference,
                 'timesheet' AS line_type,
                 -A.id AS id,
@@ -81,21 +75,18 @@ class TimesheetForecastReport(models.Model):
 
     @api.model
     def _from_union(self):
-        return """
+        from_str = """
             FROM account_analytic_line A
                 LEFT JOIN hr_employee E ON A.employee_id = E.id
-        """
-
-    @api.model
-    def _from_union_timesheet_uom(self):
-        return """
-            LEFT JOIN uom_uom UOM ON A.product_uom_id = UOM.id,
-            (
-                SELECT U.factor
-                  FROM uom_uom U
-                 WHERE U.id = %s
-            ) HOUR_UOM
+                LEFT JOIN uom_uom UOM ON A.product_uom_id = UOM.id,
+                (
+                    SELECT
+                        U.factor
+                    FROM uom_uom U
+                    WHERE U.id = %s
+                ) HOUR_UOM
         """ % (self.env.ref('uom.product_uom_hour').id)
+        return from_str
 
     @api.model
     def _where_union(self):
@@ -105,12 +96,11 @@ class TimesheetForecastReport(models.Model):
         return where_str
 
     def init(self):
-        query = "(%s %s) UNION (%s %s %s %s)" % (
+        query = "(%s %s) UNION (%s %s %s)" % (
             self._select(),
             self._from(),
             self._select_union(),
             self._from_union(),
-            self._from_union_timesheet_uom(),
             self._where_union()
         )
 

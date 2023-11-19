@@ -3,7 +3,6 @@ import functools
 import hashlib
 import json
 import logging
-import os
 import psycopg2
 import random
 import socket
@@ -15,7 +14,6 @@ from collections import defaultdict, deque
 from contextlib import closing, suppress
 from enum import IntEnum
 from psycopg2.pool import PoolError
-from urllib.parse import urlparse
 from weakref import WeakSet
 
 from werkzeug.local import LocalStack
@@ -24,7 +22,7 @@ from werkzeug.exceptions import BadRequest, HTTPException
 import odoo
 from odoo import api
 from .models.bus import dispatch
-from odoo.http import root, Request, Response, SessionExpiredException, get_default_session
+from odoo.http import root, Request, Response, SessionExpiredException
 from odoo.modules.registry import Registry
 from odoo.service import model as service_model
 from odoo.service.server import CommonServer
@@ -241,11 +239,7 @@ class Websocket:
         self._channels = set()
         self._last_notif_sent_id = 0
         # Websocket start up
-        self._selector = (
-            selectors.PollSelector()
-            if odoo.evented and hasattr(selectors, 'PollSelector')
-            else selectors.DefaultSelector()
-        )
+        self._selector = selectors.DefaultSelector()
         self._selector.register(self._socket, selectors.EVENT_READ)
         self._selector.register(self._notif_sock_r, selectors.EVENT_READ)
         self.state = ConnectionState.OPEN
@@ -420,8 +414,7 @@ class Websocket:
         """
         frame = self._get_next_frame()
         if frame.opcode in CTRL_OP:
-            self._handle_control_frame(frame)
-            return
+            return self._handle_control_frame(frame)
         if self.state is not ConnectionState.OPEN:
             # After receiving a control frame indicating the connection
             # should be closed, a peer discards any further data
@@ -578,13 +571,7 @@ class Websocket:
             code = CloseCode.SESSION_EXPIRED
         if code is CloseCode.SERVER_ERROR:
             reason = None
-            registry = Registry(self._session.db)
-            sequence = registry.registry_sequence
-            registry = registry.check_signaling()
-            if sequence != registry.registry_sequence:
-                _logger.warning("Bus operation aborted; registry has been reloaded")
-            else:
-                _logger.error(exc, exc_info=True)
+            _logger.error(exc, exc_info=True)
         self.disconnect(code, reason)
 
     def _limit_rate(self):
@@ -615,8 +602,6 @@ class Websocket:
         registered for this event type. Every callback is given both the
         environment and the related websocket.
         """
-        if not type(self)._event_callbacks[event_type]:
-            return
         with closing(acquire_cursor(self._session.db)) as cr:
             env = api.Environment(cr, self._session.uid, self._session.context)
             for callback in type(self)._event_callbacks[event_type]:
@@ -661,8 +646,8 @@ class TimeoutManager:
     """
     This class handles the Websocket timeouts. If no response to a
     PING/CLOSE frame is received after `TIMEOUT` seconds or if the
-    connection is opened for more than `self._keep_alive_timeout` seconds,
-    the connection is considered to have timed out. To determine if the
+    connection is opened for more than `KEEP_ALIVE_TIMEOUT` seconds, the
+    connection is considered to have timed out. To determine if the
     connection has timed out, use the `has_timed_out` method.
     """
     TIMEOUT = 15
@@ -675,11 +660,6 @@ class TimeoutManager:
         self._awaited_opcode = None
         # Time in which the connection was opened.
         self._opened_at = time.time()
-        # Custom keep alive timeout for each TimeoutManager to avoid multiple
-        # connections timing out at the same time.
-        self._keep_alive_timeout = (
-            type(self).KEEP_ALIVE_TIMEOUT + random.uniform(0, type(self).KEEP_ALIVE_TIMEOUT / 2)
-        )
         self.timeout_reason = None
         # Start time recorded when we started awaiting an answer to a
         # PING/CLOSE frame.
@@ -709,10 +689,10 @@ class TimeoutManager:
         Determine whether the connection has timed out or not. The
         connection times out when the answer to a CLOSE/PING frame
         is not received within `TIMEOUT` seconds or if the connection
-        is opened for more than `self._keep_alive_timeout` seconds.
+        is opened for more than `KEEP_ALIVE_TIMEOUT` seconds.
         """
         now = time.time()
-        if now - self._opened_at >= self._keep_alive_timeout:
+        if now - self._opened_at >= type(self).KEEP_ALIVE_TIMEOUT:
             self.timeout_reason = TimeoutReason.KEEP_ALIVE
             return True
         if self._awaited_opcode and now - self._waiting_start_time >= type(self).TIMEOUT:
@@ -756,7 +736,6 @@ class WebsocketRequest:
                 f'Invalid JSON data, {exc.args[0]}'
             ) from exc
         data = jsonrequest.get('data')
-        context = jsonrequest.get('context')
         self.session = self._get_session()
 
         try:
@@ -771,24 +750,23 @@ class WebsocketRequest:
             self.env = api.Environment(cr, self.session.uid, self.session.context)
             threading.current_thread().uid = self.env.uid
             service_model.retrying(
-                functools.partial(self._serve_ir_websocket, event_name, data, context),
+                functools.partial(self._serve_ir_websocket, event_name, data),
                 self.env,
             )
 
-    def _serve_ir_websocket(self, event_name, data, context=None):
+    def _serve_ir_websocket(self, event_name, data):
         """
         Delegate most of the processing to the ir.websocket model
         which is extensible by applications. Directly call the
         appropriate ir.websocket method since only two events are
         tolerated: `subscribe` and `update_presence`.
         """
-        self.env['ir.websocket']._authenticate()
-        if context:
-            self.update_context(**context)
+        ir_websocket = self.env['ir.websocket']
+        ir_websocket._authenticate()
         if event_name == 'subscribe':
-            self.env['ir.websocket']._subscribe(data)
+            ir_websocket._subscribe(data)
         if event_name == 'update_presence':
-            self.env['ir.websocket']._update_bus_presence(**data)
+            ir_websocket._update_bus_presence(**data)
 
     def _get_session(self):
         session = root.session_store.get(self.ws._session.sid)
@@ -802,14 +780,6 @@ class WebsocketRequest:
         """
         Request.update_env(self, user, context, su)
 
-    def update_context(self, **overrides):
-        """
-        Override the environment context of the current request with the
-        values of ``overrides``. To replace the entire context, please
-        use :meth:`~update_env` instead.
-        """
-        self.update_env(context=dict(self.env.context, **overrides))
-
 
 class WebsocketConnectionHandler:
     SUPPORTED_VERSIONS = {'13'}
@@ -818,7 +788,7 @@ class WebsocketConnectionHandler:
     _HANDSHAKE_GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
     _REQUIRED_HANDSHAKE_HEADERS = {
         'connection', 'host', 'sec-websocket-key',
-        'sec-websocket-version', 'upgrade', 'origin',
+        'sec-websocket-version', 'upgrade',
     }
 
     @classmethod
@@ -831,31 +801,17 @@ class WebsocketConnectionHandler:
         versions the client supports and those we support.
         :raise: BadRequest if the handshake data is incorrect.
         """
-        cls._handle_public_configuration(request)
-        try:
-            response = cls._get_handshake_response(request.httprequest.headers)
-            socket = request.httprequest.environ['socket']
-            response.call_on_close(functools.partial(
-                cls._serve_forever,
-                Websocket(socket, request.session),
-                request.db,
-                request.httprequest
-            ))
-            # Force save the session. Session must be persisted to handle
-            # WebSocket authentication.
-            request.session.is_dirty = True
-            return response
-        except KeyError as exc:
-            raise RuntimeError(
-                f"Couldn't bind the websocket. Is the connection opened on the evented port ({config['gevent_port']})?"
-            ) from exc
-        except HTTPException as exc:
-            # The HTTP stack does not log exceptions derivated from the
-            # HTTPException class since they are valid responses.
-            _logger.error(exc)
-            raise
-
-
+        response = cls._get_handshake_response(request.httprequest.headers)
+        response.call_on_close(functools.partial(
+            cls._serve_forever,
+            Websocket(request.httprequest.environ['socket'], request.session),
+            request.db,
+            request.httprequest
+        ))
+        # Force save the session. Session must be persisted to handle
+        # WebSocket authentication.
+        request.session.is_dirty = True
+        return response
 
     @classmethod
     def _get_handshake_response(cls, headers):
@@ -874,19 +830,8 @@ class WebsocketConnectionHandler:
         return Response(status=101, headers={
             'Upgrade': 'websocket',
             'Connection': 'Upgrade',
-            'Sec-WebSocket-Accept': accept_header.decode(),
+            'Sec-WebSocket-Accept': accept_header,
         })
-
-    @classmethod
-    def _handle_public_configuration(cls, request):
-        if not os.getenv('ODOO_BUS_PUBLIC_SAMESITE_WS'):
-            return
-        headers = request.httprequest.headers
-        origin_url = urlparse(headers.get('origin'))
-        if origin_url.netloc != headers.get('host') or origin_url.scheme != request.httprequest.scheme:
-            request.session = root.session_store.new()
-            request.session.update(get_default_session(), db=request.session.db)
-            request.session.is_explicit = True
 
     @classmethod
     def _assert_handshake_validity(cls, headers):

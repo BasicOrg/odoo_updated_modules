@@ -3,16 +3,17 @@
 # 	* social_facebook
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,13 +27,13 @@ msgstr "<b class=\"d-block mb-2\">เพจเฟสบุ๊ค</b>"
 
 #. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
-msgstr ""
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
+msgstr "<i class=\"fa fa-comments\" title=\"ความคิดเห็น\"/>"
 
 #. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
-msgstr ""
+msgid "<i class=\"fa fa-thumbs-up\" title=\"Likes\"/>"
+msgstr "<i class=\"fa fa-thumbs-up\" title=\"ถูกใจ\"/>"
 
 #. module: social_facebook
 #: model:ir.model.fields,field_description:social_facebook.field_social_live_post__facebook_post_id
@@ -40,7 +41,6 @@ msgid "Actual Facebook ID of the post"
 msgstr "ไอดี Facebook ที่แท้จริงของโพสต์"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
 msgid "An error occurred."
@@ -57,7 +57,7 @@ msgid "App Secret"
 msgstr "รหัสแอป"
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
 #, python-format
@@ -121,8 +121,8 @@ msgid "Facebook Author ID"
 msgstr "ไอดีผู้เขียน Facebook"
 
 #. module: social_facebook
-#. odoo-javascript
-#: code:addons/social_facebook/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_facebook/static/src/js/stream_post_facebook_comments.js:0
 #, python-format
 msgid "Facebook Comments"
 msgstr "ความคิดเห็น Facebook"
@@ -160,14 +160,12 @@ msgid "Facebook Preview"
 msgstr "ดูตัวอย่าง Facebook"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Facebook did not provide a valid access token or it may have expired."
 msgstr "Facebook ไม่ได้ให้โทเคนการเข้าถึงที่ถูกต้อง หรือโทเคนอาจหมดอายุแล้ว"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Facebook did not provide a valid access token."
@@ -179,7 +177,7 @@ msgid "Is event post"
 msgstr "เป็นโพสต์อีเวนต์"
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model:ir.model.fields,field_description:social_facebook.field_social_stream_post__facebook_likes_count
 #, python-format
@@ -207,7 +205,6 @@ msgid "Post Image"
 msgstr "โพสต์รูปภาพ"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
 msgid ""
@@ -226,14 +223,7 @@ msgid "Reach"
 msgstr "เข้าถึง"
 
 #. module: social_facebook
-#. odoo-python
-#: code:addons/social_facebook/controllers/main.py:0
-#, python-format
-msgid "Read More about Facebook Pages"
-msgstr ""
-
-#. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model:ir.model.fields,field_description:social_facebook.field_social_stream_post__facebook_shares_count
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
@@ -277,14 +267,18 @@ msgid "Social Stream Post"
 msgstr "โพสต์สตรีมโซเชียล"
 
 #. module: social_facebook
-#. odoo-python
+#: code:addons/social_facebook/controllers/main.py:0
+#, python-format
+msgid "There is no page linked to this account"
+msgstr "ไม่มีเพจที่เชื่อมโยงกับบัญชีนี้"
+
+#. module: social_facebook
 #: code:addons/social_facebook/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator. "
 msgstr "ไม่ได้รับอนุญาต โปรดติดต่อผู้ดูแลระบบของคุณ"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #: code:addons/social_facebook/models/social_stream_post.py:0
 #, python-format
@@ -311,15 +305,14 @@ msgid "User Likes"
 msgstr "การถูกใจของผู้ใช้"
 
 #. module: social_facebook
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_facebook/static/src/xml/social_facebook_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
 #, python-format
 msgid "Views"
-msgstr "มุมมอง"
+msgstr "ยอดเข้าชม"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_live_post.py:0
 #: code:addons/social_facebook/models/social_post.py:0
 #, python-format
@@ -331,25 +324,22 @@ msgstr ""
 "(ข้อผิดพลาด:%s)"
 
 #. module: social_facebook
-#. odoo-python
 #: code:addons/social_facebook/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr "คุณไม่มีการสมัครสมาชิกที่ใช้งานอยู่ กรุณาซื้อที่นี้: %s"
 
 #. module: social_facebook
-#. odoo-python
-#: code:addons/social_facebook/controllers/main.py:0
-#, python-format
-msgid ""
-"You need to be the manager of a Facebook Page to post with Odoo Social.\n"
-" Please create one and make sure it is linked to your account."
-msgstr ""
-
-#. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.social_stream_post_view_kanban
 msgid "added an event"
 msgstr "เพิ่มอีเวนต์แล้ว"
+
+#. module: social_facebook
+#. openerp-web
+#: code:addons/social_facebook/static/src/js/stream_post_facebook_comments.js:0
+#, python-format
+msgid "comment/reply"
+msgstr "แสดงความคิดเห็น/ตอบกลับ"
 
 #. module: social_facebook
 #: model_terms:ir.ui.view,arch_db:social_facebook.facebook_preview

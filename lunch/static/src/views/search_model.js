@@ -4,7 +4,9 @@ import { useService } from "@web/core/utils/hooks";
 
 import { Domain } from '@web/core/domain';
 import { SearchModel } from '@web/search/search_model';
-import { useState, onWillStart } from "@odoo/owl";
+
+const { useState, onWillStart } = owl;
+
 
 export class LunchSearchModel extends SearchModel {
     setup() {
@@ -56,10 +58,10 @@ export class LunchSearchModel extends SearchModel {
         if (!this.lunchState.locationId) {
             return domain;
         }
-        const result = Domain.and([
+
+        return Domain.and([
             domain,
             [['is_available_at', '=', this.lunchState.locationId]]
-        ]);
-        return params.raw ? result : result.toList();
+        ]).toList();
     }
 }

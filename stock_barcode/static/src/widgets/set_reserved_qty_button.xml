@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <button t-name="stock_barcode.SetReservedQuantityButtonTemplate"
+    <button t-name="stock_barcode.SetReservedQuantityButtonTemplate" owl="1"
         class="o_button_qty_done d-flex btn"
-        t-attf-class="{{props.record.data[props.name] ? 'btn-primary' : 'btn-secondary'}}"
-        t-on-click="_setQuantity" t-att-disabled="!props.record.data[props.name]">
-        <t t-if="props.record.data[props.name]">
-            / <span name="product_uom_qty" class="ms-1" t-out="props.record.data[props.name]"/>
+        t-attf-class="{{props.value ? 'btn-primary' : 'btn-secondary'}}"
+        t-on-click="_setQuantity" t-att-disabled="!props.value">
+        <t t-if="props.value">
+            / <span name="product_uom_qty" class="ms-1" t-out="props.value"/>
         </t>
         <span t-if="displayUOM" name="product_uom_id" class="text-capitalize ms-1" t-out="uom.name"/>
     </button>

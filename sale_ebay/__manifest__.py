@@ -4,7 +4,8 @@
 {
   'name': "eBay Connector",
 
-  'summary': "Publish your products on eBay",
+  'summary': """
+  Publish your products on eBay""",
 
   'description': """
 Publish your products on eBay
@@ -30,7 +31,7 @@ Key Features
   'application': True,
 
   # any module necessary for this one to work correctly
-  'depends': ['base', 'sale_management', 'stock_delivery', 'attachment_indexation'],
+  'depends': ['base', 'sale_management', 'stock', 'delivery', 'attachment_indexation'],
   'external_dependencies': {'python': ['ebaysdk']},
 
   # always loaded

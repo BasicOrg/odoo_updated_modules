@@ -14,11 +14,11 @@
             <form string="Sign Documents">
                 <sheet>
                     <group>
-                        <field name="template_id" options="{'no_create': True, 'no_open': True, 'no_create_edit': True}" context="{'kanban_view_ref': 'sign.sign_template_view_kanban_mobile'}"/>
+                        <field name="template_id" options="{'no_create': True, 'no_open': True, 'no_create_edit': True}" kanban_view_ref="%(sign.sign_template_view_kanban_mobile)s"/>
                     </group>
                     <footer>
                         <button name="next_step" string="Sign Document" type="object" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </sheet>
             </form>

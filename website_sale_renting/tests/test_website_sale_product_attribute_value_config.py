@@ -3,7 +3,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import Command, fields
+from odoo import fields
 from odoo.tests import tagged
 from odoo.addons.sale.tests.test_sale_product_attribute_value_config import TestSaleProductAttributeValueCommon
 from odoo.addons.website.tools import MockRequest
@@ -12,73 +12,25 @@ from odoo.addons.website.tools import MockRequest
 @tagged('post_install', '-at_install', 'product_attribute')
 class TestWebsiteSaleRentingProductAttributeValueConfig(TestSaleProductAttributeValueCommon):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.computer.rent_ok = True
-        cls.website = cls.env['website'].get_current_website()
-
-        recurrence_3_hour, recurrence_week = cls.env['sale.temporal.recurrence'].create([
-            {
-                'duration': 3,
-                'unit': 'hour',
-            },
-            {
-                'duration': 1,
-                'unit': 'week',
-            },
-        ])
-        cls.price_3_hours = 5.
-        cls.price_1_week = 25.
-        cls.env['product.pricing'].create([
-            {
-                'recurrence_id': recurrence_3_hour.id,
-                'price': cls.price_3_hours,
-                'product_template_id': cls.computer.id,
-            }, {
-                'recurrence_id': recurrence_week.id,
-                'price': cls.price_1_week,
-                'product_template_id': cls.computer.id,
-            },
-        ])
-
-    def test_product_tax_included_get_combination_info(self):
-        config = self.env['res.config.settings'].create({})
-        config.show_line_subtotals_tax_selection = 'tax_included'
-        config.execute()
-
-        tax_percent = 15.0
-        tax_15_incl = self.env['account.tax'].create({
-            'name': 'VAT 5 perc Incl',
-            'amount_type': 'percent',
-            'amount': tax_percent,
-            'price_include': False,
-        })
-        self.computer.write({
-            'taxes_id': [Command.set([tax_15_incl.id])],
-        })
-        factor = 1 + tax_percent / 100
-        price_3_hours = self.website.currency_id.round(self.price_3_hours * factor)
-        price_1_week = self.website.currency_id.round(self.price_1_week * factor)
-        with MockRequest(self.env, website=self.website):
-            computer = self.computer.with_context(website_id=self.website.id)
-            combination_info = computer._get_combination_info()
-            self.assertEqual(combination_info['price'], price_3_hours)
-            self.assertEqual(combination_info['list_price'], price_3_hours)
-            self.assertEqual(
-                combination_info['price_extra'], self.website.currency_id.round(222 * factor)
-            )
-            self.assertEqual(combination_info['has_discounted_price'], False)
-            self.assertEqual(combination_info['current_rental_price'], price_3_hours)
-            self.assertEqual(combination_info['current_rental_duration'], 3)
-            self.assertEqual(str(combination_info['current_rental_unit']), 'Hours')
-            self.assertEqual(
-                combination_info['pricing_table'],
-                [('3 Hours', f'$\xa0{price_3_hours}'), ('1 Week', f'$\xa0{price_1_week}')],
-            )
-
     def test_product_attribute_value_config_get_combination_info(self):
-        pricelist = self.website.pricelist_id
+        current_website = self.env['website'].get_current_website()
+        pricelist = current_website.get_current_pricelist()
+
+        self.computer = self.computer.with_context(website_id=current_website.id)
+        self.computer.rent_ok = True
+        recurrence_hour = self.env['sale.temporal.recurrence'].sudo().create({'duration': 1, 'unit': 'hour'})
+        recurrence_5_hour = self.env['sale.temporal.recurrence'].sudo().create({'duration': 1, 'unit': 'hour'})
+        self.env['product.pricing'].create([
+            {
+                'recurrence_id': recurrence_hour.id,
+                'price': 3.5,
+                'product_template_id': self.computer.id,
+            }, {
+                'recurrence_id': recurrence_5_hour.id,
+                'price': 15.0,
+                'product_template_id': self.computer.id,
+            },
+        ])
 
         # make sure the pricelist has a 10% discount
         self.env['product.pricelist.item'].create({
@@ -95,32 +47,24 @@ class TestWebsiteSaleRentingProductAttributeValueConfig(TestSaleProductAttribute
         # ensure pricelist is set to with_discount
         pricelist.discount_policy = 'with_discount'
 
-        computer = self.computer.with_context(website_id=self.website.id)
-        price_3_hours = self.website.currency_id.round(
-            self.price_3_hours * discount_rate * currency_ratio
-        )
-        price_1_week = self.website.currency_id.round(
-            self.price_1_week * discount_rate * currency_ratio
-        )
-        with MockRequest(self.env, website=self.website):
-            combination_info = computer._get_combination_info()
-            self.assertEqual(combination_info['price'], price_3_hours)
-            self.assertEqual(combination_info['list_price'], price_3_hours)
+        with MockRequest(self.env, website=current_website):
+            combination_info = self.computer._get_combination_info()
+            self.assertEqual(combination_info['price'], 3.5 * discount_rate * currency_ratio)
+            self.assertEqual(combination_info['list_price'], 3.5 * discount_rate * currency_ratio)
             self.assertEqual(combination_info['price_extra'], 222 * currency_ratio)
             self.assertEqual(combination_info['has_discounted_price'], False)
-            self.assertEqual(combination_info['current_rental_price'], price_3_hours)
-            self.assertEqual(combination_info['current_rental_duration'], 3)
-            self.assertEqual(str(combination_info['current_rental_unit']), 'Hours')
-
-        with MockRequest(self.env, website=self.website):
-            now = fields.Datetime.now()
-            combination_info = computer.with_context(
-                start_date=now, end_date=now + relativedelta(days=6)
-            )._get_combination_info()
-            self.assertEqual(combination_info['price'], price_3_hours)
-            self.assertEqual(combination_info['list_price'], price_3_hours)
-            self.assertEqual(combination_info['price_extra'], 222 * currency_ratio)
-            self.assertEqual(combination_info['has_discounted_price'], False)
-            self.assertEqual(combination_info['current_rental_price'], price_1_week)
+            self.assertEqual(combination_info['current_rental_price'], 3.5 * discount_rate * currency_ratio)
             self.assertEqual(combination_info['current_rental_duration'], 1)
-            self.assertEqual(str(combination_info['current_rental_unit']), 'Week')
+
+        with MockRequest(self.env, website=current_website):
+            combination_info = self.computer.with_context(
+                arj=True,
+                start_date=fields.Datetime.now(),
+                end_date=fields.Datetime.now() + relativedelta(hours=5)
+            )._get_combination_info()
+            self.assertEqual(combination_info['price'], 3.5 * discount_rate * currency_ratio)
+            self.assertEqual(combination_info['list_price'], 3.5 * discount_rate * currency_ratio)
+            self.assertEqual(combination_info['price_extra'], 222 * currency_ratio)
+            self.assertEqual(combination_info['has_discounted_price'], False)
+            self.assertEqual(combination_info['current_rental_price'], 35, "The 5h rental is equal to 5 * 3.5")
+            self.assertEqual(combination_info['current_rental_duration'], 5)

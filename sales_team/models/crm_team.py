@@ -20,7 +20,7 @@ class CrmTeam(models.Model):
     _order = "sequence ASC, create_date DESC, id DESC"
     _check_company_auto = True
 
-    def _get_default_team_id(self, user_id=False, domain=False):
+    def _get_default_team_id(self, user_id=None, domain=None):
         """ Compute default team id for sales related documents. Note that this
         method is not called by default_get as it takes some additional
         parameters and is meant to be called by other default methods.
@@ -44,7 +44,7 @@ class CrmTeam(models.Model):
         :param user_id: salesperson to target, fallback on env.uid;
         :domain: optional domain to filter teams (like use_lead = True);
         """
-        if not user_id:
+        if user_id is None:
             user = self.env.user
         else:
             user = self.env['res.users'].sudo().browse(user_id)
@@ -118,7 +118,6 @@ class CrmTeam(models.Model):
     member_warning = fields.Text('Membership Issue Warning', compute='_compute_member_warning')
     crm_team_member_ids = fields.One2many(
         'crm.team.member', 'crm_team_id', string='Sales Team Members',
-        context={'active_test': True},
         help="Add members to automatically assign their documents to this sales team.")
     crm_team_member_all_ids = fields.One2many(
         'crm.team.member', 'crm_team_id', string='Sales Team Members (incl. inactive)',
@@ -191,9 +190,7 @@ class CrmTeam(models.Model):
     def _search_member_ids(self, operator, value):
         return [('crm_team_member_ids.user_id', operator, value)]
 
-    # 'name' should not be in the trigger, but as 'company_id' is possibly not present in the view
-    # because it depends on the multi-company group, we use it as fake trigger to force computation
-    @api.depends('company_id', 'name')
+    @api.depends('company_id')
     def _compute_member_company_ids(self):
         """ Available companies for members. Either team company if set, either
         any company if not set on team. """

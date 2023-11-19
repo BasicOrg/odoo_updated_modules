@@ -55,8 +55,8 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="ribbon ribbon-top-right" invisible="active">
-                                <span class="text-bg-danger">Archived</span>
+                            <div class="ribbon ribbon-top-right" attrs="{'invisible': [('active', '=', True)]}">
+                                <span class="bg-odoo">Archived</span>
                             </div>
                             <div class="o_kanban_card_content d-flex">
                                 <div>
@@ -102,12 +102,12 @@
                 <field name="user_company_ids" invisible="1"/>
                 <sheet>
                     <div class="alert alert-info text-center" role="alert"
-                        invisible="not member_warning">
+                        attrs="{'invisible': [('member_warning', '=', False)]}">
                         <field name="member_warning"/>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="image_1920" widget='image' class="oe_avatar"
-                        invisible="not user_id"
+                        attrs="{'invisible': [('user_id', '=', False)]}"
                         options='{"preview_image": "image_128"}'/>
                     <div class="oe_title">
                         <label for="user_id" class="oe_edit_only"/>
@@ -118,14 +118,14 @@
                     </div>
                     <group name="member_partner_info">
                         <group name="group_owner">
-                            <field name="crm_team_id" context="{'kanban_view_ref': 'sales_team.crm_team_view_kanban'}"/>
+                            <field name="crm_team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"/>
                         </group>
-                        <group class="ps-0" name="group_user">
-                            <field name="company_id" invisible="not user_id"
+                        <group name="group_user">
+                            <field name="company_id" attrs="{'invisible': [('user_id', '=', False)]}"
                                 groups="base.group_multi_company"/>
-                            <field name="email" invisible="not user_id"/>
-                            <field name="mobile" invisible="not user_id"/>
-                            <field name="phone" invisible="not user_id"/>
+                            <field name="email" attrs="{'invisible': [('user_id', '=', False)]}"/>
+                            <field name="mobile" attrs="{'invisible': [('user_id', '=', False)]}"/>
+                            <field name="phone" attrs="{'invisible': [('user_id', '=', False)]}"/>
                         </group>
                     </group>
                 </sheet>

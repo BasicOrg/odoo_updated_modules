@@ -27,11 +27,12 @@ class ComparisonBuilder(AbstractBuilder):
             ('account_id', '=', account.id),
             ('period_id', 'in', kwargs.get('period_ids', []))
         ]
-        total_lines = self.env['consolidation.journal.line']._read_group(domain, ['period_id'], ['amount:sum'])
+        groupby = ('period_id',)
+        total_lines = self.env['consolidation.journal.line']._read_group(domain, ('total:sum(amount)',), groupby)
         if len(total_lines) == 0:
             return []
         totals = []
-        total_dict = {period.id: total for period, total in total_lines}
+        total_dict = {line['period_id'][0]: line['total'] for line in total_lines}
         # Need to keep the order of periods as nothing in DB can order them
         for period_id in kwargs.get('period_ids', []):
             totals.append(account.sign * total_dict.get(period_id, 0.0))
@@ -40,8 +41,8 @@ class ComparisonBuilder(AbstractBuilder):
     def _get_default_line_totals(self, options: dict, **kwargs) -> list:
         return kwargs.get('cols_amount', len(kwargs.get('period_ids', []))) * [0.0]
 
-    def _format_account_line(self, account, parent_id, level: int, totals: list, options: dict, **kwargs) -> dict:
-        account_line = super()._format_account_line(account, parent_id, level, totals, options, **kwargs)
+    def _format_account_line(self, account, level: int, totals: list, options: dict, **kwargs) -> dict:
+        account_line = super()._format_account_line(account, level, totals, options, **kwargs)
         if kwargs.get('include_percentage', False) and totals and account_line:
             account_line['columns'].append(self._build_percentage_column(*totals))
         return account_line
@@ -85,7 +86,6 @@ class ComparisonBuilder(AbstractBuilder):
             return {
                 'name': ('%s%%' % val),
                 'no_format': val,
-                'figure_type': 'percentage',
                 'class': ' '.join(classes)
             }
         # res > 0
@@ -96,4 +96,4 @@ class ComparisonBuilder(AbstractBuilder):
         # orig > 0 :: RED
 
         else:
-            return {'name': _('n/a'), 'figure_type': 'percentage'}
+            return {'name': _('n/a')}

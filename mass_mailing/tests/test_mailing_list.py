@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import datetime
-from freezegun import freeze_time
-from unittest.mock import patch
-
 from odoo import exceptions
 from odoo.addons.mass_mailing.tests.common import MassMailCommon
-from odoo.tests.common import Form, tagged, users
+from odoo.tests.common import Form, users
 
 
-@tagged('mailing_list')
 class TestMailingContactToList(MassMailCommon):
 
     @users('user_marketing')
@@ -29,7 +24,7 @@ class TestMailingContactToList(MassMailCommon):
 
         # create wizard with context values
         wizard_form = Form(self.env['mailing.contact.to.list'].with_context(default_contact_ids=contacts.ids))
-        self.assertEqual(wizard_form.contact_ids.ids, contacts.ids)
+        self.assertEqual(wizard_form.contact_ids._get_ids(), contacts.ids)
 
         # set mailing list and add contacts
         wizard_form.mailing_list_id = mailing
@@ -57,7 +52,6 @@ class TestMailingContactToList(MassMailCommon):
         self.assertEqual(subaction["context"]["default_contact_list_ids"], [mailing2.id])
 
 
-@tagged('mailing_list')
 class TestMailingListMerge(MassMailCommon):
 
     @classmethod
@@ -87,7 +81,7 @@ class TestMailingListMerge(MassMailCommon):
         new = self.env['mailing.contact'].with_context(default_list_ids=default_list_ids).create([{
             'name': 'Contact_%d' % x,
             'email': 'contact_%d@test.example.com' % x,
-            'subscription_ids': [(0, 0, {
+            'subscription_list_ids': [(0, 0, {
                 'list_id': self.mailing_list_1.id,
                 'opt_out': True,
             }), (0, 0, {
@@ -105,40 +99,13 @@ class TestMailingListMerge(MassMailCommon):
             new = new.with_context(default_list_ids=[list_id])
             self.assertFalse(any(contact.opt_out for contact in new))
 
-        with freeze_time('2022-01-01 12:00'), \
-             patch.object(self.env.cr, 'now', lambda: datetime(2022, 1, 1, 12, 0, 0)):
-            contact_form = Form(self.env['mailing.contact'])
-            contact_form.name = 'Contact_test'
-            with contact_form.subscription_ids.new() as subscription:
-                subscription.list_id = self.mailing_list_1
-                subscription.opt_out = True
-            with contact_form.subscription_ids.new() as subscription:
-                subscription.list_id = self.mailing_list_2
-                subscription.opt_out = False
-            contact = contact_form.save()
-        self.assertEqual(contact.subscription_ids[0].opt_out_datetime, datetime(2022, 1, 1, 12, 0, 0))
-        self.assertFalse(contact.subscription_ids[1].opt_out_datetime)
-
-    @users('user_marketing')
-    def test_mailing_list_action_send_mailing(self):
-        mailing_ctx = self.mailing_list_1.action_send_mailing().get('context', {})
-        form = Form(self.env['mailing.mailing'].with_context(mailing_ctx))
-        form.subject = 'Test Mail'
-        mailing = form.save()
-        # Check that mailing model and mailing list are set properly
-        self.assertEqual(
-            mailing.mailing_model_id, self.env['ir.model']._get('mailing.list'),
-            'Should have correct mailing model set')
-        self.assertEqual(mailing.contact_list_ids, self.mailing_list_1, 'Should have correct mailing list set')
-        self.assertEqual(mailing.mailing_type, 'mail', 'Should have correct mailing_type')
-
     @users('user_marketing')
     def test_mailing_list_contact_copy_in_context_of_mailing_list(self):
         MailingContact = self.env['mailing.contact']
         contact_1 = MailingContact.create({
             'name': 'Sam',
             'email': 'gamgee@shire.com',
-            'subscription_ids': [(0, 0, {'list_id': self.mailing_list_3.id})],
+            'subscription_list_ids': [(0, 0, {'list_id': self.mailing_list_3.id})],
         })
         # Copy the contact with default_list_ids in context, which should not raise anything
         contact_2 = contact_1.with_context(default_list_ids=self.mailing_list_3.ids).copy()
@@ -192,7 +159,6 @@ class TestMailingListMerge(MassMailCommon):
         self.assertEqual(merge.dest_list_id, self.mailing_list_3)
 
 
-@tagged('mailing_list')
 class TestMailingContactImport(MassMailCommon):
     """Test the transient <mailing.contact.import>."""
 
@@ -256,7 +222,6 @@ class TestMailingContactImport(MassMailCommon):
         # Test that the context key "default_list_ids" is ignored (because we manually set list_ids)
         contact_import.with_context(default_list_ids=(first_list | second_list).ids).action_import()
 
-        self.env['mailing.list'].invalidate_model(['contact_ids'])
         # Check the contact of the first mailing list
         contacts = [
             (contact.name, contact.email)
@@ -288,49 +253,3 @@ class TestMailingContactImport(MassMailCommon):
 
         contact = self.env['mailing.contact'].search([('email', '=', 'already_exists_list_1@example.com')])
         self.assertEqual(len(contact), 1, 'Should have updated the existing contact instead of creating a new one')
-
-
-@tagged('mailing_list')
-class TestSubscriptionManagement(MassMailCommon):
-
-    @users('user_marketing')
-    def test_mailing_update_optout(self):
-        _email_formatted = '"Mireille Labeille" <mireille@test.example.com>'
-        _email_formatted_upd = '"Mireille Oreille-Labeille" <mireille@test.example.com>'
-        _email_normalized = 'mireille@test.example.com'
-        self._create_mailing_list()
-        ml_1, ml_2 = self.mailing_list_1.with_env(self.env), self.mailing_list_2.with_env(self.env)
-        ml_3 = self._create_mailing_list_of_x_contacts(3)
-        self.assertEqual(ml_1.contact_count, 3)
-        self.assertEqual(ml_1.contact_count_blacklisted, 0)
-        self.assertEqual(ml_1.contact_count_email, 3)
-        self.assertEqual(ml_1.contact_count_opt_out, 0)
-        self.assertEqual(ml_2.contact_count, 4)
-        self.assertEqual(ml_2.contact_count_blacklisted, 0)
-        self.assertEqual(ml_2.contact_count_email, 4)
-        self.assertEqual(ml_2.contact_count_opt_out, 0)
-        self.assertEqual(ml_3.contact_count, 3)
-        self.assertEqual(ml_3.contact_count_blacklisted, 0)
-        self.assertEqual(ml_3.contact_count_email, 3)
-        self.assertEqual(ml_3.contact_count_opt_out, 0)
-
-        # create a new test contact
-        contact = self.env['mailing.contact'].browse(
-            self.env['mailing.contact'].name_create(_email_formatted)[0]
-        )
-        self.assertEqual(contact.email, _email_normalized)
-        self.assertEqual(contact.name, 'Mireille Labeille')
-
-        # add new subscriptions (and ensure email_normalized is used)
-        (ml_1 + ml_2)._update_subscription_from_email(_email_formatted_upd, opt_out=False)
-        subs = self.env['mailing.subscription'].search(
-            [('contact_id', '=', contact.id)]
-        )
-        self.assertEqual(subs.list_id, ml_1 + ml_2)
-
-        # opt-out from opted-in mailing list + 1 non opted-in mailing list
-        (ml_2 + ml_3)._update_subscription_from_email(_email_formatted_upd, opt_out=True)
-        subs = self.env['mailing.subscription'].search(
-            [('contact_id', '=', contact.id)]
-        )
-        self.assertEqual(subs.list_id, ml_1 + ml_2)

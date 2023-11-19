@@ -10,56 +10,42 @@ class AccountReconcileModel(models.Model):
         assert self.rule_type == 'invoice_matching'
         self.env['account.batch.payment'].flush_model()
 
-        _numerical_tokens, _exact_tokens, text_tokens = self._get_invoice_matching_st_line_tokens(st_line)
-        if not text_tokens:
+        st_line_text_values = st_line._get_st_line_strings_for_matching(allowed_fields=(
+            'payment_ref' if self.match_text_location_label else None,
+            'narration' if self.match_text_location_note else None,
+            'ref' if self.match_text_location_reference else None,
+        ))
+        if not st_line_text_values:
             return
 
-        batch_sequence_code = 'account.inbound.batch.payment' if st_line.amount > 0.0 else 'account.outbound.batch.payment'
+        if self.matching_order == 'new_first':
+            order_by = 'account_move_line.date_maturity DESC, account_move_line.date DESC, account_move_line.id DESC'
+        else:
+            order_by = 'account_move_line.date_maturity ASC, account_move_line.date ASC, account_move_line.id ASC'
 
-        sequence_prefix = self.env['ir.sequence'].sudo()\
-            .search(
-                [('code', '=', batch_sequence_code), ('company_id', 'in', (st_line.company_id.id, False))],
-                order='company_id',
-                limit=1,
-            )\
-            .prefix
-        if not sequence_prefix:
-            return
-
-        sequence_prefix = sequence_prefix.lower()
-        text_tokens = [x.lower() for x in text_tokens if x.lower().startswith(sequence_prefix)]
-        if not text_tokens:
-            return
+        sub_queries = [
+            r'''(
+                SUBSTRING(REGEXP_REPLACE(LOWER(%s), '[^0-9a-z\s]', '', 'g'), '\S(?:.*\S)*')
+                ~ SUBSTRING(REGEXP_REPLACE(LOWER(batch.name), '[^0-9a-z\s]', '', 'g'), '\S(?:.*\S)*')
+            )'''
+        ] * len(st_line_text_values)
 
         aml_domain = self._get_invoice_matching_amls_domain(st_line, partner)
         query = self.env['account.move.line']._where_calc(aml_domain)
         tables, where_clause, where_params = query.get_sql()
 
-        additional_conditions = []
-        for token in text_tokens:
-            additional_conditions.append(r"%s ~ sub.name")
-            where_params.append(token)
-
         self._cr.execute(
             f'''
-                WITH account_batch_payment_name AS (
-                    SELECT DISTINCT
-                        batch.id,
-                        SUBSTRING(REGEXP_REPLACE(LOWER(batch.name), '[^0-9a-z\s]', '', 'g'), '\S(?:.*\S)*') AS name,
-                        ARRAY_AGG(account_move_line.id) AS aml_ids
-                    FROM {tables}
-                    JOIN account_payment pay ON pay.id = account_move_line.payment_id
-                    JOIN account_batch_payment batch ON
-                        batch.id = pay.batch_payment_id
-                        AND batch.state != 'reconciled'
-                    WHERE {where_clause}
-                    GROUP BY batch.id, batch.name
-                )
-                SELECT sub.aml_ids
-                FROM account_batch_payment_name sub
-                WHERE {' OR '.join(additional_conditions)}
+                SELECT account_move_line.id
+                FROM {tables}
+                JOIN account_payment pay ON pay.id = account_move_line.payment_id
+                JOIN account_batch_payment batch ON batch.id = pay.batch_payment_id
+                WHERE {where_clause}
+                    AND batch.name IS NOT NULL
+                    AND (''' + ' OR '.join(sub_queries) + f''')
+                ORDER BY {order_by}
             ''',
-            where_params,
+            where_params + st_line_text_values,
         )
         candidate_ids = [r[0] for r in self._cr.fetchall()]
         if candidate_ids:

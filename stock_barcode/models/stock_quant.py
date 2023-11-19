@@ -7,8 +7,6 @@ class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
     dummy_id = fields.Char(compute='_compute_dummy_id', inverse='_inverse_dummy_id')
-    image_1920 = fields.Image(related="product_id.image_1920")
-    product_reference_code = fields.Char(related="product_id.code", string="Product Reference Code")
 
     def _compute_dummy_id(self):
         self.dummy_id = ''
@@ -69,11 +67,6 @@ class StockQuant(models.Model):
         """
         action = self.env['ir.actions.actions']._for_xml_id('stock_barcode.stock_barcode_inventory_client_action')
         return dict(action, target='fullscreen')
-
-    @api.model
-    def get_existing_quant_and_related_data(self, domain):
-        quants = self.search(domain)
-        return quants.get_stock_barcode_data_records()
 
     def _get_stock_barcode_data(self):
         locations = self.env['stock.location']

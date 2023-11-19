@@ -5,10 +5,10 @@
     <field name="model">res.config.settings</field>
     <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
     <field name="arch" type="xml">
-      <xpath expr="//setting[@id='shipping_costs_bpost']" position="inside">
+      <xpath expr="//div[@id='sale_delivery_bpost']" position="after">
         <div class="content-group">
-          <div class="mt8" invisible="not module_delivery_bpost">
-            <button name="%(delivery.action_delivery_carrier_form)d" icon="oi-arrow-right" type="action" string="bpost Shipping Methods" class="btn-link" context="{'search_default_delivery_type': 'bpost'}"/>
+          <div class="mt8" attrs="{'invisible': [('module_delivery_bpost','=',False)]}">
+            <button name="%(delivery.action_delivery_carrier_form)d" icon="fa-arrow-right" type="action" string="bpost Shipping Methods" class="btn-link" context="{'search_default_delivery_type': 'bpost'}"/>
           </div>
          </div>
        </xpath>
@@ -20,11 +20,9 @@
     <field name="model">res.config.settings</field>
     <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
     <field name="arch" type="xml">
-      <xpath expr="//setting[@id='compute_shipping_costs_bpost']" position="inside">
-        <div class="content-group">
-          <div class="mt8" invisible="not module_delivery_bpost">
-            <button name="%(delivery.action_delivery_carrier_form)d" icon="oi-arrow-right" type="action" string="bpost Shipping Methods" class="btn-link" context="{'search_default_delivery_type': 'bpost'}"/>
-          </div>
+      <xpath expr="//div[@id='stock_delivery_bpost']" position="replace">
+        <div class="mt8" attrs="{'invisible': [('module_delivery_bpost', '=', False)]}">
+          <button name="%(delivery.action_delivery_carrier_form)d" icon="fa-arrow-right" type="action" string="bpost Shipping Methods" class="btn-link" context="{'search_default_delivery_type': 'bpost'}"/>
         </div>
       </xpath>
     </field>

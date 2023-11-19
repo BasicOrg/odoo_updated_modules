@@ -1,4 +1,4 @@
-.o_kanban_view.o_event_kanban_view .o_kanban_renderer {
+.o_kanban_view .o_event_kanban_view {
     .o_kanban_record > div {
         min-height: 140px;
     }
@@ -7,24 +7,43 @@
             font-size: .9rem;
         }
 
+        .o_event_fontsize_11 {
+            font-size: 1.1rem;
+        }
+
         .o_event_fontsize_20 {
             font-size: 2rem;
         }
     }
 }
 
-.o_kanban_view.o_event_attendee_kanban_view .o_kanban_renderer {
+.o_kanban_view .o_event_attendee_kanban_view {
     @media (max-width: 768px) {
         .o_event_registration_kanban {
             min-height: 80px;
         }
     }
-    // Used to align the kanban buttons as fa-check and fa-undo don't have the same width
-    .o_event_registration_kanban .fa-undo {
-        padding-left: 1px;
-        padding-right: 1px;
-    }
     .oe_kanban_card_ribbon {
+        min-height: 95px;
+        .ribbon {
+            &::before, &::after {
+                display: none;
+            }
+            span {
+                padding: 5px;
+                font-size: small;
+                z-index: 0;
+            }
+        }
+        .ribbon-top-right {
+            margin-top: -1px;
+            span {
+                left: 7px;
+                right: 30px;
+                height: 25px;
+                top: 18px;
+            }
+        }
         // Used for "Group By"
         div.row {
             min-height: 95px;

@@ -1,115 +1,149 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { sprintf } from "@web/core/utils/strings";
+import { _t } from "web.core";
 import { inspectorFields } from "./inspector/documents_inspector";
-import { makeActiveField } from "@web/model/relational_model/utils";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
-export const DocumentsModelMixin = (component) =>
-    class extends component {
-        /**
-         * Add inspector fields to the list of fields to load
-         * @override
-         */
-        setup(params) {
-            for (const field of inspectorFields) {
-                if (!(field in params.config.activeFields)) {
-                    params.config.activeFields[field] = makeActiveField();
-                }
-            }
-            params.config.activeFields.available_rule_ids = Object.assign(
-                {},
-                params.config.activeFields.available_rule_ids,
-                {
-                    related: {
-                        activeFields: {
-                            display_name: makeActiveField(),
-                            note: makeActiveField(),
-                            limited_to_single_record: makeActiveField(),
-                            create_model: makeActiveField(),
-                        },
-                        fields: {
-                            display_name: {
-                                type: "string",
-                            },
-                            note: {
-                                type: "string",
-                            },
-                            limited_to_single_record: {
-                                type: "boolean",
-                            },
-                            create_model: {
-                                type: "string",
-                            },
-                        },
+export const DocumentsModelMixin = (component) => class extends component {
+    /**
+     * Add inspector fields to the list of fields to load
+     * @override
+     */
+    setup(params) {
+        _.defaults(params.activeFields, _.pick(params.fields, inspectorFields));
+        inspectorFields.forEach((field) => {
+            const fieldInfo = params.activeFields[field];
+            fieldInfo.options = fieldInfo.options || {};
+            fieldInfo.attrs = fieldInfo.attrs || {};
+            fieldInfo.rawAttrs = fieldInfo.rawAttrs || {};
+            // Domains in params.fields is in array format while in string format for activeFields
+            fieldInfo.domain = (typeof fieldInfo.domain === "string" && fieldInfo.domain) || "[]";
+        });
+        params.activeFields.available_rule_ids = Object.assign({}, params.activeFields.available_rule_ids, {
+            fieldsToFetch: {
+                id: {
+                    type: "integer",
+                    options: {
+                        always_reload: true,
                     },
-                }
-            );
-            super.setup(...arguments);
-            if (this.config.resModel === "documents.document") {
-                this.originalSelection = params.state?.sharedSelection;
-            }
-        }
+                },
+                display_name: {
+                    type: "string",
+                    options: {
+                        always_reload: true,
+                    },
+                },
+                note: {
+                    type: "string",
+                    options: {
+                        always_reload: true,
+                    },
+                },
+                limited_to_single_record: {
+                    type: "boolean",
+                    options: {
+                        always_reload: true,
+                    },
+                },
+                create_model: {
+                    type: "string",
+                    options: {
+                        always_reload: true,
+                    },
+                },
+            },
+        });
+        super.setup(...arguments);
+    }
+};
 
-        exportSelection() {
-            return this.root.selection.map((rec) => rec.resId);
-        }
-
-        /**
-         * Also load the total file size
-         * @override
-         */
-        async load() {
-            const selection = this.root?.selection;
-            if (selection && selection.length > 0) {
-                this.originalSelection = selection.map((rec) => rec.resId);
-            }
-            const res = await super.load(...arguments);
-            if (this.config.resModel !== "documents.document") {
-                return res;
-            }
-            this.env.bus.trigger("documents-close-preview");
-            this._reapplySelection();
-            this._computeFileSize();
-            return res;
-        }
-
-        _reapplySelection() {
-            const records = this.root.records;
-            if (this.originalSelection && this.originalSelection.length > 0 && records) {
-                const originalSelection = new Set(this.originalSelection);
-                records.forEach((record) => {
-                    record.selected = originalSelection.has(record.resId);
-                });
-                delete this.originalSelection;
-            }
-        }
-
-        _computeFileSize() {
-            let size = 0;
-            if (this.root.groups) {
-                size = this.root.groups.reduce((size, group) => {
-                    return size + group.aggregates.file_size;
-                }, 0);
-            } else if (this.root.records) {
-                size = this.root.records.reduce((size, rec) => {
-                    return size + rec.data.file_size;
-                }, 0);
-            }
-            size /= 1000 * 1000; // in MB
-            this.fileSize = Math.round(size * 100) / 100;
-        }
-    };
-
-export const DocumentsRecordMixin = (component) => class extends component {
-
-    async update() {
-        const originalFolderId = this.data.folder_id[0];
-        await super.update(...arguments);
-        if (this.data.folder_id[0] !== originalFolderId) {
-            this.model.root._removeRecords(this.model.root.selection.map((rec) => rec.id));
+export const DocumentsDataPointMixin = (component) => class extends component {
+    /**
+     * Keep selection
+     * @override
+     */
+    setup(_params, state) {
+        super.setup(...arguments);
+        if (this.resModel === "documents.document") {
+            this.originalSelection = state.selection;
         }
     }
+
+    /**
+     * @override
+     */
+    exportState() {
+        return {
+            ...super.exportState(...arguments),
+            selection: (this.selection || []).map((rec) => rec.resId),
+        };
+    }
+
+    /**
+     * Also load the total file size
+     * @override
+     */
+    async load() {
+        const selection = this.selection;
+        if (selection && selection.length > 0) {
+            this.originalSelection = selection.map((rec) => rec.resId);
+        }
+        const res = await super.load(...arguments);
+        if (this.resModel !== "documents.document") {
+            return res;
+        }
+        this.model.env.bus.trigger("documents-close-preview");
+        if (this.originalSelection && this.originalSelection.length > 0 && this.records) {
+            const originalSelection = new Set(this.originalSelection);
+            this.records.forEach((rec) => {
+                rec.selected = originalSelection.has(rec.resId);
+            });
+            delete this.originalSelection;
+        }
+        let size = 0;
+        if (this.groups) {
+            size = this.groups.reduce((size, group) => {
+                return size + group.aggregates.file_size;
+            }, 0);
+        } else if (this.records) {
+            size = this.records.reduce((size, rec) => {
+                return size + rec.data.file_size;
+            }, 0);
+        }
+        size /= 1000 * 1000; // in MB
+        this.fileSize = Math.round(size * 100) / 100;
+        return res;
+    }
+
+    /**
+     * Remove the confirmation dialog upon multiSave + keep selection.
+     * Warning: we do remove some validation -> see original DynamicList._multiSave
+     * @override
+     */
+    async _multiSave(record, changes = undefined) {
+        if (this.blockUpdate) {
+            return;
+        }
+        changes = changes || record.getChanges();
+        if (!changes) {
+            return;
+        }
+        const resIds = this.selection.map((rec) => rec.resId);
+        try {
+            const context = this.context;
+            await this.model.orm.write(this.resModel, resIds, changes, { context });
+            this.invalidateCache();
+            await Promise.all(this.selection.map((rec) => rec.load()));
+            this.model.notify();
+        } catch (_) {
+            if (record.getChanges()) {
+                record.discard();
+            }
+        }
+    }
+};
+
+export const DocumentsRecordMixin = (component) => class extends component {
 
     isPdf() {
         return this.data.mimetype === "application/pdf" || this.data.mimetype === "application/pdf;base64";
@@ -129,7 +163,6 @@ export const DocumentsRecordMixin = (component) => class extends component {
                 "image/svg+xml",
                 "image/tiff",
                 "image/x-icon",
-                "image/webp",
                 "application/javascript",
                 "application/json",
                 "text/css",
@@ -215,9 +248,9 @@ export const DocumentsRecordMixin = (component) => class extends component {
         if (draggableRecords.length === 1) {
             dragText = draggableRecords[0].data.name ? draggableRecords[0].data.display_name : _t("Unnamed");
         } else if (lockedCount > 0) {
-            dragText = _t("%s Documents (%s locked)", draggableRecords.length, lockedCount);
+            dragText = sprintf(_t("%s Documents (%s locked)"), draggableRecords.length, lockedCount);
         } else {
-            dragText = _t("%s Documents", draggableRecords.length);
+            dragText = sprintf(_t("%s Documents"), draggableRecords.length);
         }
         const newElement = document.createElement("span");
         newElement.classList.add("o_documents_drag_icon");
@@ -225,25 +258,5 @@ export const DocumentsRecordMixin = (component) => class extends component {
         document.body.append(newElement);
         ev.dataTransfer.setDragImage(newElement, -5, -5);
         setTimeout(() => newElement.remove());
-    }
-
-    async openDeleteConfirmationDialog(root, callback, isPermanent) {
-        const dialogProps = {
-            title: isPermanent ? _t("Delete permanently") : _t("Move to trash"),
-            body: isPermanent ? root.isDomainSelected || root.selection.length > 1
-                ? _t("Are you sure you want to permanently erase the documents?")
-                : _t("Are you sure you want to permanently erase the document?")
-                : _t("Items moved to the trash will be deleted forever after %s days.", 
-                    this.model.env.searchModel.deletionDelay
-                    ),
-            confirmLabel: isPermanent ? _t("Delete permanently") : _t("Move to trash"),
-            cancelLabel: _t("Discard"),
-            confirm: async () => {
-                await callback();
-                await this.model.env.documentsView.bus.trigger("documents-close-preview");
-            },
-            cancel: () => {},
-        };
-        this.model.dialog.add(ConfirmationDialog, dialogProps);
     }
 };

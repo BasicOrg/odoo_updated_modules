@@ -4,25 +4,19 @@
         <field name="name">fleet.vehicle.form</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-        <field name="priority" eval="25"/>
         <field name="arch" type="xml">
-            <group name="fiscality_first_group" position="inside">
-                <field name="atn" widget="monetary" invisible="country_code != 'BE' or vehicle_type != 'car'"/>
-                <label for="co2_fee" invisible="country_code != 'BE' or vehicle_type != 'car'"/>
-                <div class="o_row o_hr_narrow_field" invisible="country_code != 'BE' or vehicle_type != 'car'">
+            <xpath expr="//field[@name='horsepower_tax']" position="before">
+                <field name="atn" widget="monetary" attrs="{'invisible': ['|', ('country_code', '!=', 'BE'), ('vehicle_type', '!=', 'car')]}"/>
+                <field name="tax_deduction" widget="percentage" attrs="{'invisible': [('country_code', '!=', 'BE')]}"/>
+                <label for="co2_fee" attrs="{'invisible': ['|', ('country_code', '!=', 'BE'), ('vehicle_type', '!=', 'car')]}"/>
+                <div class="o_row" attrs="{'invisible': ['|', ('country_code', '!=', 'BE'), ('vehicle_type', '!=', 'car')]}">
                     <field name="co2_fee" widget="monetary"/>
                     <span> / month</span>
                 </div>
-            </group>
-            <field name="horsepower_tax" position="after">
-                <label for="tax_deduction" invisible="country_code != 'BE'"/>
-                <div col="1" class="o_hr_narrow_field o_row" name="tax_deduction_div">
-                    <field name="tax_deduction" widget="percentage" invisible="country_code != 'BE'"/>
-                </div>
-            </field>
+            </xpath>
             <xpath expr="//field[@name='residual_value']" position="after">
-                <label for="total_depreciated_cost" invisible="country_code != 'BE'"/>
-                <div class="o_row o_hr_narrow_field" invisible="country_code != 'BE'">
+                <label for="total_depreciated_cost" attrs="{'invisible': [('country_code', '!=', 'BE')]}"/>
+                <div class="o_row" attrs="{'invisible': [('country_code', '!=', 'BE')]}">
                     <field name="total_depreciated_cost" nolabel="1" widget="monetary"/>
                     <span>/ month</span>
                 </div>
@@ -35,9 +29,9 @@
         <field name="model">fleet.vehicle.log.contract</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_contract_view_form"/>
         <field name="arch" type="xml">
-            <field name="date" position="before">
+            <xpath expr="//field[@name='cost_generated']/../.." position="after">
                 <field name="recurring_cost_amount_depreciated" widget="monetary" class="w-25"/>
-            </field>
+            </xpath>
         </field>
     </record>
 
@@ -64,8 +58,8 @@
                     <div class="o_row">
                         <field name="default_car_value" nolabel="1"/>
                     </div>
-                    <label for="co2_fee" invisible="vehicle_type != 'car'"/>
-                    <div class="o_row" invisible="vehicle_type != 'car'">
+                    <label for="co2_fee" attrs="{'invisible': [('vehicle_type', '!=', 'car')]}"/>
+                    <div class="o_row" attrs="{'invisible': [('vehicle_type', '!=', 'car')]}">
                         <field name="co2_fee" nolabel="1"/>
                         <span> / month</span>
                     </div>
@@ -80,8 +74,8 @@
                         <span> / month</span>
                     </div>
                     <field name="current_country_code" invisible="1"/>
-                    <label for="default_atn" invisible="vehicle_type != 'car' or current_country_code != 'BE'"/>
-                    <div class="o_row" invisible="vehicle_type != 'car' or current_country_code != 'BE'">
+                    <label for="default_atn" attrs="{'invisible': ['|', ('vehicle_type', '!=', 'car'), ('current_country_code', '!=', 'BE')]}"/>
+                    <div class="o_row" attrs="{'invisible': ['|', ('vehicle_type', '!=', 'car'), ('current_country_code', '!=', 'BE')]}">
                         <field name="default_atn" nolabel="1"/>
                         <span> / month</span>
                     </div>

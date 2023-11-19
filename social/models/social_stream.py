@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import requests
-
 from odoo import models, fields, api
 
 
@@ -55,13 +53,7 @@ class SocialStream(models.Model):
 
         new_content = False
         for stream in self.env['social.stream'].search([]):
-            # as refreshing the streams is a recurring task, we ignore occasional "read timeouts"
-            # from the third party services, as it would most likely mean a temporary slow connection
-            # and/or a slow response from their side
-            try:
-                new_content |= stream._fetch_stream_data()
-            except requests.exceptions.ReadTimeout:
-                pass
+            new_content |= stream._fetch_stream_data()
 
         return new_content
 

@@ -74,7 +74,7 @@ def l10n_cl_edi_retry(max_retries=MAX_RETRIES, logger=None, custom_msg=None):
                 except Exception as error:
                     self._report_connection_err(error)
                     break
-            msg = _('- It was not possible to get a response after %s retries.', max_retries)
+            msg = _('- It was not possible to get a response after %s retries.') % max_retries
             if custom_msg is not None:
                 msg = custom_msg + msg
             self._report_connection_err(msg)
@@ -123,17 +123,18 @@ class L10nClEdiUtilMixin(models.AbstractModel):
 
     def _l10n_cl_append_sig(self, xml_type, sign, message):
         tag_to_replace = {
-            'doc': Markup('</DTE>'),
-            'bol': Markup('</EnvioBOLETA>'),
-            'env': Markup('</EnvioDTE>'),
-            'recep': Markup('</Recibo>'),
-            'env_recep': Markup('</EnvioRecibos>'),
-            'env_resp': Markup('</RespuestaDTE>'),
-            'consu': Markup('</ConsumoFolios>'),
-            'token': Markup('</getToken>')
+            'doc': '</DTE>',
+            'bol': '</EnvioBOLETA>',
+            'env': '</EnvioDTE>',
+            'recep': '</Recibo>',
+            'env_recep': '</EnvioRecibos>',
+            'env_resp': '</RespuestaDTE>',
+            'consu': '</ConsumoFolios>',
+            'token': '</getToken>'
         }
-        tag = tag_to_replace.get(xml_type, Markup('</EnvioBOLETA>'))
-        return message.replace(tag, sign + tag)
+        tag = tag_to_replace.get(xml_type, '</EnvioBOLETA>')
+        # With %s we make sure we return a string and not a Markup
+        return message.replace(tag, '%s%s' % (sign, tag))
 
     def _l10n_cl_format_vat(self, value, with_zero=False):
         if not value or value in ['', 0]:
@@ -204,29 +205,34 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         :return: whether the xml is valid. If the XSD files are not found returns True
         """
         validation_types = {
-            'doc': 'DTE_v10.xsd',
-            'env': 'EnvioDTE_v10.xsd',
-            'bol': 'EnvioBOLETA_v11.xsd',
-            'recep': 'Recibos_v10.xsd',
-            'env_recep': 'EnvioRecibos_v10.xsd',
-            'env_resp': 'RespuestaEnvioDTE_v10.xsd',
-            'sig': 'xmldsignature_v10.xsd',
-            'book': 'LibroCV_v10.xsd',
-            'consu': 'ConsumoFolio_v10.xsd',
+            'doc': 'l10n_cl_edi.DTE_v10.xsd',
+            'env': 'l10n_cl_edi.EnvioDTE_v10.xsd',
+            'bol': 'l10n_cl_edi.EnvioBOLETA_v11.xsd',
+            'recep': 'l10n_cl_edi.Recibos_v10.xsd',
+            'env_recep': 'l10n_cl_edi.EnvioRecibos_v10.xsd',
+            'env_resp': 'l10n_cl_edi.RespuestaEnvioDTE_v10.xsd',
+            'sig': 'l10n_cl_edi.xmldsignature_v10.xsd',
+            'book': 'l10n_cl_edi.LibroCV_v10.xsd',
+            'consu': 'l10n_cl_edi.ConsumoFolio_v10.xsd',
         }
         # Token document doesn't required validation and the "Boleta" document is not validated since the DescuentoPct
         # tag doesn't work properly
         if validation_type in ('token', 'bol') or (validation_type == 'doc' and is_doc_type_voucher):
             return True
         xsd_fname = validation_types[validation_type]
-        return tools.validate_xml_from_attachment(self.env, xml_to_validate, xsd_fname, prefix='l10n_cl_edi')
+        try:
+            return tools.validate_xml_from_attachment(self.env, xml_to_validate, xsd_fname, self.env['ir.attachment']._l10n_cl_edi_load_xsd_files, prefix='l10n_cl_edi')
+        except FileNotFoundError:
+            _logger.warning(
+                _('The XSD validation files from SII have not been found'))
+            return True
 
     def _sign_full_xml(self, message, digital_signature, uri, xml_type, is_doc_type_voucher=False):
         """
         Signed the xml following the SII documentation:
         http://www.sii.cl/factura_electronica/factura_mercado/instructivo_emision.pdf
         """
-        digest_value = Markup(re.sub(r'\n\s*$', '', message, flags=re.MULTILINE))
+        digest_value = re.sub(r'\n\s*$', '', message, flags=re.MULTILINE)
         digest_value_tree = etree.tostring(etree.fromstring(digest_value)[0])
         if xml_type in ['doc', 'recep', 'token']:
             signed_info_template = 'l10n_cl_edi.signed_info_template'
@@ -252,13 +258,15 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         full_doc = self._l10n_cl_append_sig(xml_type, signature, digest_value)
         # The validation of the full document
         self._xml_validator(full_doc, xml_type, is_doc_type_voucher)
-        return Markup('<?xml version="1.0" encoding="ISO-8859-1" ?>'
-                      if xml_type != 'token' else '<?xml version="1.0" ?>') + full_doc
+        return '{header}{full_doc}'.format(
+            header='<?xml version="1.0" encoding="ISO-8859-1" ?>' if xml_type != 'token' else '<?xml version="1.0" ?>',
+            full_doc=full_doc
+        )
 
     def _report_connection_err(self, error):
         # raise error
         if not self.env.context.get('cron_skip_connection_errs'):
-            self.message_post(body=str(error))
+            self.message_post(body=error)
         else:
             _logger.warning(error)
 
@@ -301,9 +309,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         http://www.sii.cl/factura_electronica/factura_mercado/envio.pdf
         it says: as mentioned previously, the client program must include in the request header the following.....
         """
-        if mode == 'SIIDEMO':
-            # mocked response
-            return None
         token = self._get_token(mode, digital_signature)
         if token is None:
             self._report_connection_err(_('No response trying to get a token'))
@@ -385,8 +390,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         """
         Request the status of a DTE file sent to the SII.
         """
-        if mode == 'SIIDEMO':
-            return None
         token = self._get_token(mode, digital_signature)
         if token is None:
             self._report_connection_err(_('Token cannot be generated. Please try again'))
@@ -404,8 +407,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
         )
 
     def _get_dte_claim(self, mode, company_vat, digital_signature, document_type_code, document_number):
-        if mode == 'SIIDEMO':
-            return None
         token = self._get_token(mode, digital_signature)
         if token is None:
             self._report_connection_err(_('Token cannot be generated. Please try again'))
@@ -424,8 +425,6 @@ class L10nClEdiUtilMixin(models.AbstractModel):
             claim_type)
 
     def _send_sii_claim_response(self, mode, company_vat, digital_signature, document_type_code, document_number, claim_type):
-        if mode == 'SIIDEMO':
-            return None
         token = self._get_token(mode, digital_signature)
         if token is None:
             self._report_connection_err(_('Token cannot be generated. Please try again'))

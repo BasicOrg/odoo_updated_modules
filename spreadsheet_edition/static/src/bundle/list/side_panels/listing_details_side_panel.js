@@ -4,22 +4,25 @@ import { Domain } from "@web/core/domain";
 import { DomainSelector } from "@web/core/domain_selector/domain_selector";
 import { DomainSelectorDialog } from "@web/core/domain_selector_dialog/domain_selector_dialog";
 import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+import { _t } from "web.core";
+import { time_to_str } from "web.time";
 
-import { EditableName } from "../../o_spreadsheet/editable_name/editable_name";
+import EditableName from "../../o_spreadsheet/editable_name/editable_name";
 
-import { Component, onWillStart, onWillUpdateProps } from "@odoo/owl";
+const { Component, onWillStart, onWillUpdateProps } = owl;
 
 export class ListingDetailsSidePanel extends Component {
     setup() {
         this.getters = this.env.model.getters;
         this.dialog = useService("dialog");
-        const loadData = async (listId) => {
-            this.dataSource = await this.env.model.getters.getAsyncListDataSource(listId);
+        const loadData = async () => {
+            this.dataSource = await this.env.model.getters.getAsyncListDataSource(
+                this.props.listId
+            );
             this.modelDisplayName = await this.dataSource.getModelLabel();
         };
-        onWillStart(() => loadData(this.props.listId));
-        onWillUpdateProps((nextProps) => loadData(nextProps.listId));
+        onWillStart(loadData);
+        onWillUpdateProps(loadData);
     }
 
     get listDefinition() {
@@ -34,17 +37,15 @@ export class ListingDetailsSidePanel extends Component {
     }
 
     formatSort(sort) {
-        const sortName = this.dataSource.getListHeaderValue(sort.name);
-        if (sort.asc) {
-            return _t("%(sortName)s (ascending)", { sortName });
-        }
-        return _t("%(sortName)s (descending)", { sortName });
+        return `${this.dataSource.getListHeaderValue(sort.name)} (${
+            sort.asc ? _t("ascending") : _t("descending")
+        })`;
     }
 
     getLastUpdate() {
         const lastUpdate = this.dataSource.lastUpdate;
         if (lastUpdate) {
-            return new Date(lastUpdate).toLocaleTimeString();
+            return time_to_str(new Date(lastUpdate));
         }
         return _t("never");
     }
@@ -64,12 +65,13 @@ export class ListingDetailsSidePanel extends Component {
     openDomainEdition() {
         this.dialog.add(DomainSelectorDialog, {
             resModel: this.listDefinition.model,
-            domain: this.listDefinition.domain,
+            initialValue: this.listDefinition.domain,
+            readonly: false,
             isDebugMode: !!this.env.debug,
-            onConfirm: (domain) =>
+            onSelected: (domain) =>
                 this.env.model.dispatch("UPDATE_ODOO_LIST_DOMAIN", {
                     listId: this.props.listId,
-                    domain: new Domain(domain).toJson(),
+                    domain: new Domain(domain).toList(),
                 }),
         });
     }

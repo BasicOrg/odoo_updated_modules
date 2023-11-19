@@ -1,18 +1,17 @@
 /** @odoo-module **/
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from 'web.utils';
 import { useService } from '@web/core/utils/hooks';
 import { WebsiteSwitcherSystray } from '@website/systray_items/website_switcher';
-import { onMounted, useState } from "@odoo/owl";
 
-patch(WebsiteSwitcherSystray.prototype, {
+const { onMounted, useState } = owl;
+
+patch(WebsiteSwitcherSystray.prototype, 'test_themes_website_switcher_systray', {
     setup() {
-        super.setup();
+        this._super();
 
         this.orm = useService('orm');
         this.tooltips = useState({});
-        // Disable the notification service to avoid having a notification for each theme.
-        this.notificationService = { add: () => () => null };
 
         onMounted(async () => {
             const themesWebsites = await this.orm.call('website', 'get_test_themes_websites_theme_preview');

@@ -31,10 +31,10 @@ class UtmCampaign(models.Model):
         domain = expression.AND([self._get_social_posts_domain(), [('utm_campaign_id', 'in', self.ids)]])
         post_data = self.env['social.post']._read_group(
             domain,
-            ['utm_campaign_id'], ['__count']
+            ['utm_campaign_id'], ['utm_campaign_id']
         )
 
-        mapped_data = {utm_campaign.id: count for utm_campaign, count in post_data}
+        mapped_data = {datum['utm_campaign_id'][0]: datum['utm_campaign_id_count'] for datum in post_data}
 
         for campaign in self:
             campaign.social_posts_count = mapped_data.get(campaign.id, 0)

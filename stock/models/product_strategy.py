@@ -10,8 +10,8 @@ class RemovalStrategy(models.Model):
     _name = 'product.removal'
     _description = 'Removal Strategy'
 
-    name = fields.Char('Name', required=True, translate=True)
-    method = fields.Char("Method", required=True, translate=True, help="FIFO, LIFO...")
+    name = fields.Char('Name', required=True)
+    method = fields.Char("Method", required=True, help="FIFO, LIFO...")
 
 
 class StockPutawayRule(models.Model):
@@ -28,7 +28,7 @@ class StockPutawayRule(models.Model):
         if self.env.context.get('active_model') == 'stock.location':
             return self.env.context.get('active_id')
         if not self.env.user.has_group('stock.group_stock_multi_warehouses'):
-            wh = self.env['stock.warehouse'].search(self.env['stock.warehouse']._check_company_domain(self.env.company), limit=1)
+            wh = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
             input_loc, _ = wh._get_input_output_locations(wh.reception_steps, wh.delivery_steps)
             return input_loc
 
@@ -41,20 +41,33 @@ class StockPutawayRule(models.Model):
         elif self.env.context.get('active_model') == 'product.product':
             return self.env.context.get('active_id')
 
+    def _domain_category_id(self):
+        active_model = self.env.context.get('active_model')
+        if active_model in ('product.template', 'product.product') and self.env.context.get('active_id'):
+            product = self.env[active_model].browse(self.env.context.get('active_id'))
+            product = product.exists()
+            if product:
+                return [('id', '=', product.categ_id.id)]
+        return []
+
+    def _domain_product_id(self):
+        domain = "[('type', '!=', 'service'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+        if self.env.context.get('active_model') == 'product.template':
+            return [('product_tmpl_id', '=', self.env.context.get('active_id'))]
+        return domain
+
     product_id = fields.Many2one(
         'product.product', 'Product', check_company=True,
-        default=_default_product_id,
-        domain="[('product_tmpl_id', '=', context.get('active_id', False))] if context.get('active_model') == 'product.template' else [('type', '!=', 'service')]",
-        ondelete='cascade')
+        default=_default_product_id, domain=_domain_product_id, ondelete='cascade')
     category_id = fields.Many2one('product.category', 'Product Category',
-        default=_default_category_id, domain=[('filter_for_stock_putaway_rule', '=', True)], ondelete='cascade')
+        default=_default_category_id, domain=_domain_category_id, ondelete='cascade')
     location_in_id = fields.Many2one(
         'stock.location', 'When product arrives in', check_company=True,
-        domain="[('child_ids', '!=', False)]",
+        domain="[('child_ids', '!=', False), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         default=_default_location_id, required=True, ondelete='cascade', index=True)
     location_out_id = fields.Many2one(
         'stock.location', 'Store to sublocation', check_company=True,
-        domain="[('id', 'child_of', location_in_id)]",
+        domain="[('id', 'child_of', location_in_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         required=True, ondelete='cascade')
     sequence = fields.Integer('Priority', help="Give to the more specialized category, a higher priority to have them in top of the list.")
     company_id = fields.Many2one(
@@ -108,7 +121,6 @@ class StockPutawayRule(models.Model):
         checked_locations = set()
         for putaway_rule in self:
             location_out = putaway_rule.location_out_id
-            child_locations = location_out.child_internal_location_ids
 
             if not putaway_rule.storage_category_id:
                 if location_out in checked_locations:
@@ -116,9 +128,8 @@ class StockPutawayRule(models.Model):
                 if location_out._check_can_be_used(product, quantity, package, qty_by_location[location_out.id]):
                     return location_out
                 continue
-            else:
-                child_locations = child_locations.filtered(lambda loc: loc.storage_category_id == putaway_rule.storage_category_id)
 
+            child_locations = location_out.child_internal_location_ids
             # check if already have the product/package type stored
             for location in child_locations:
                 if location in checked_locations:

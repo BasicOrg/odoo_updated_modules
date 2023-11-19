@@ -35,27 +35,23 @@ class PaymentTransaction(models.Model):
             return res
 
         base_url = self.provider_id.get_base_url()
-        cancel_url = urls.url_join(base_url, PaypalController._cancel_url)
-        cancel_url_params = {
-            'tx_ref': self.reference,
-            'access_token': payment_utils.generate_access_token(self.reference),
-        }
         partner_first_name, partner_last_name = payment_utils.split_partner_name(self.partner_name)
+        webhook_url = urls.url_join(base_url, PaypalController._webhook_url)
         return {
             'address1': self.partner_address,
             'amount': self.amount,
             'business': self.provider_id.paypal_email_account,
-            'cancel_url': f'{cancel_url}?{urls.url_encode(cancel_url_params)}',
             'city': self.partner_city,
             'country': self.partner_country_id.code,
             'currency_code': self.currency_id.name,
             'email': self.partner_email,
             'first_name': partner_first_name,
+            'handling': self.fees,
             'item_name': f"{self.company_id.name}: {self.reference}",
             'item_number': self.reference,
             'last_name': partner_last_name,
             'lc': self.partner_lang,
-            'notify_url': urls.url_join(base_url, PaypalController._webhook_url),
+            'notify_url': webhook_url if self.provider_id.paypal_use_ipn else None,
             'return_url': urls.url_join(base_url, PaypalController._return_url),
             'state': self.partner_state_id.name,
             'zip_code': self.partner_zip,
@@ -96,11 +92,6 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'paypal':
             return
 
-        if not notification_data:
-            self._set_canceled(_("The customer left the payment page."))
-            return
-
-        # Update the provider reference.
         txn_id = notification_data.get('txn_id')
         txn_type = notification_data.get('txn_type')
         if not all((txn_id, txn_type)):
@@ -113,13 +104,12 @@ class PaymentTransaction(models.Model):
         self.provider_reference = txn_id
         self.paypal_type = txn_type
 
-        # Force PayPal as the payment method if it exists.
-        self.payment_method_id = self.env['payment.method'].search(
-            [('code', '=', 'paypal')], limit=1
-        ) or self.payment_method_id
-
-        # Update the payment state.
         payment_status = notification_data.get('payment_status')
+
+        if payment_status in PAYMENT_STATUS_MAPPING['pending'] + PAYMENT_STATUS_MAPPING['done'] \
+            and not (self.provider_id.paypal_pdt_token and self.provider_id.paypal_seller_account):
+            # If a payment is made on an account waiting for configuration, send a reminder email
+            self.provider_id._paypal_send_configuration_reminder()
 
         if payment_status in PAYMENT_STATUS_MAPPING['pending']:
             self._set_pending(state_message=notification_data.get('pending_reason'))

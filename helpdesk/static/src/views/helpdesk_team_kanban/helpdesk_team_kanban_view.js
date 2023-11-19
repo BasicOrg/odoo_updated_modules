@@ -1,6 +1,6 @@
 /** @odoo-module  **/
 
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from '@web/core/l10n/translation';
 import { kanbanView } from '@web/views/kanban/kanban_view';
 import { registry } from '@web/core/registry';
 import { HelpdeskTeamKanbanController } from './helpdesk_team_kanban_controller';
@@ -8,7 +8,7 @@ import { HelpdeskTeamKanbanController } from './helpdesk_team_kanban_controller'
 export const HelpdeskTeamKanbanView = {
     ...kanbanView,
     Controller: HelpdeskTeamKanbanController,
-    display_name: _t('Dashboard'),
+    display_name: _lt('Dashboard'),
     icon: 'fa-dashboard',
     searchview_hidden: true,
 };

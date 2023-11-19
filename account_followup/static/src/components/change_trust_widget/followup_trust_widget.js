@@ -3,7 +3,8 @@
 import { registry } from "@web/core/registry";
 import { usePopover } from "@web/core/popover/popover_hook";
 import { localization } from "@web/core/l10n/localization";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 class FollowupTrustPopOver extends Component {}
 FollowupTrustPopOver.template = "account_followup.FollowupTrustPopOver";
@@ -11,13 +12,12 @@ FollowupTrustPopOver.template = "account_followup.FollowupTrustPopOver";
 class FollowupTrustWidget extends Component {
     setup() {
         super.setup();
-        const position = localization.direction === "rtl" ? "bottom" : "right";
-        this.popover = usePopover(FollowupTrustPopOver, { position });
+        this.popover = usePopover();
     }
 
     displayTrust() {
         var selections = this.props.record.fields.trust.selection;
-        var trust = this.props.record.data[this.props.name];
+        var trust = this.props.value;
         for (var i=0; i < selections.length; i++) {
             if (selections[i][0] == trust) {
                 return selections[i][1];
@@ -26,19 +26,33 @@ class FollowupTrustWidget extends Component {
     }
 
     onTrustClick(ev) {
-        this.popover.open(ev.currentTarget, {
-            record: this.props.record,
-            widget: this,
-        });
+        if (this.popoverCloseFn) {
+            this.closePopover();
+        }
+        this.popoverCloseFn = this.popover.add(
+            ev.currentTarget,
+            FollowupTrustPopOver,
+            {
+                record: this.props.record,
+                widget: this,
+                onClose: this.closePopover,
+            },
+            {
+                position: localization.direction === "rtl" ? "bottom" : "right",
+            },
+        );
     }
 
     async setTrust(trust) {
-        this.props.record.update({ [this.props.name]: trust });
-        this.popover.close();
+        this.props.update(trust);
+        this.closePopover();
+    }
+
+    closePopover() {
+        this.popoverCloseFn();
+        this.popoverCloseFn = null;
     }
 }
 
 FollowupTrustWidget.template = "account_followup.FollowupTrustWidget";
-registry.category("fields").add("followup_trust_widget", {
-    component: FollowupTrustWidget,
-});
+registry.category("fields").add("followup_trust_widget", FollowupTrustWidget);

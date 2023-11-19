@@ -2,13 +2,13 @@
 # Co-Authors: Silvija Butko, Andrius Laukavičius. Copyright: JSC Focusate
 # See LICENSE file for full copyright and licensing details.
 {
-    'name': 'Lithuania - Accounting Reports',
-    'countries': ['lt'],
+    'name': 'LT - Accounting Reports',
+    'icon': '/l10n_lt/static/description/icon.png',
     'version': '1.0.0',
     'description': """
-Accounting reports for Lithuania
+        Accounting reports for Lithuania
 
-Contains Balance Sheet, Profit/Loss reports
+        Contains Balance Sheet, Profit/Loss reports
     """,
     'license': 'OEEL-1',
     'author': "Focusate",

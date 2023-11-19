@@ -1,14 +1,16 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
-import { multiFileUpload } from "@sign/backend_components/multi_file_upload";
+import { multiFileUpload } from "@sign/js/backend/multi_file_upload";
 import { getDataURLFromFile } from "@web/core/utils/urls";
-import { TemplateAlertDialog } from "@sign/backend_components/template_alert_dialog/template_alert_dialog";
-import { onWillStart, useComponent, useRef } from "@odoo/owl";
+import { TemplateAlertDialog } from "@sign/components/template_alert_dialog/template_alert_dialog";
+import { sprintf } from "@web/core/utils/strings";
+
+const { onWillStart, useComponent, useEnv, useRef } = owl;
 
 export function useSignViewButtons() {
     const component = useComponent();
+    const env = useEnv();
     const fileInput = useRef("uploadFileInput");
     const user = useService("user");
     const orm = useService("orm");
@@ -37,16 +39,20 @@ export function useSignViewButtons() {
         }
         const file = templates.shift();
         multiFileUpload.addNewFiles(templates);
-        action.doAction({
-            type: "ir.actions.client",
-            tag: "sign.Template",
-            name: _t("Template %s", file.name),
-            params: {
-                sign_edit_call: latestRequestContext,
-                id: file.template,
-                sign_directly_without_mail: false,
+        action.doAction(
+            {
+                type: "ir.actions.client",
+                tag: "sign.Template",
+                name: sprintf(env._t("Template %s"), file.name),
             },
-        });
+            {
+                additionalContext: {
+                    sign_edit_call: latestRequestContext,
+                    id: file.template,
+                    sign_directly_without_mail: false,
+                },
+            }
+        );
     };
 
     return {
@@ -63,20 +69,17 @@ export function useSignViewButtons() {
                 template,
                 name: files[index].name,
             }));
-            const { true: succesfulTemplates, false: failedTemplates } = templates.reduce(
-                (result, item) => {
-                    const key = Boolean(item.template);
-                    if (!result[key]) {
-                        result[key] = [];
-                    }
-                    result[key].push(item);
-                    return result;
-                },
-                {}
-            );
+            const { true: succesfulTemplates, false: failedTemplates } = templates.reduce((result, item) => {
+                const key = Boolean(item.template);
+                if (!result[key]) {
+                    result[key] = [];
+                }
+                result[key].push(item);
+                return result;
+            }, {});
             if (failedTemplates && failedTemplates.length) {
                 dialog.add(TemplateAlertDialog, {
-                    title: _t("File Error"),
+                    title: env._t("File Error"),
                     failedTemplates,
                     successTemplateCount: succesfulTemplates && succesfulTemplates.length,
                     confirm: handleTemplates.bind(undefined, succesfulTemplates),

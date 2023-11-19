@@ -34,7 +34,7 @@ class WebCohort(http.Controller):
                 col_range = range(columns_length)
 
             worksheet.merge_range(row, col + 2, row, columns_length + 1,
-                _('%s - By %s', result['date_stop_string'], result['interval_string']), style_highlight)
+                _('%s - By %s') % (result['date_stop_string'], result['interval_string']), style_highlight)
             row += 1
             worksheet.write(row, col, result['date_start_string'], style_highlight)
             # set minimum width to date_start_string cell to 15 which is around 83px
@@ -63,7 +63,7 @@ class WebCohort(http.Controller):
 
             # Total
             col = 0
-            worksheet.write(row, col, _('Average'), style_highlight)
+            worksheet.write(row, col, _('Average Value'), style_highlight)
             col += 1
             worksheet.write(row, col, '%.1f' % result[report]['avg']['avg_value'], style_highlight)
             col += 1

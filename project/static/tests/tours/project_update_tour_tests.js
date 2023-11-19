@@ -1,17 +1,17 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
 function openProjectUpdateAndReturnToTasks(view, viewClass) {
+    const legacyViewClass = viewClass.replace("o_", "o_legacy_");
     return [{
             trigger: '.o_project_updates_breadcrumb',
             content: 'Open Project Update from view : ' + view,
-            extra_trigger: `.${viewClass}`,
+            extra_trigger: `.${viewClass}, .${legacyViewClass}`,
         }, {
             trigger: ".o-kanban-button-new",
             content: "Create a new update from project task view : " + view,
-            extra_trigger: '.o_project_update_kanban_view',
+            extra_trigger: '.o_pupdate_kanban',
         }, {
             trigger: "button.o_form_button_cancel",
             content: "Discard project update from project task view : " + view,
@@ -21,19 +21,16 @@ function openProjectUpdateAndReturnToTasks(view, viewClass) {
         }, {
             trigger: '.o_back_button',
             content: 'Go back to the task view : ' + view,
-            // extra_trigger: '.o_list_view', // FIXME: [XBO] uncomment it when the sample data will be displayed after discarding the creation of a project update record.
-        }, {
-            trigger: `.${viewClass}`,
-            content: 'Check the task view : ' + view,
-            isCheck: true,
-        }
+            // extra_trigger: '.o_list_view, .o_legacy_list_view', // FIXME: [XBO] uncomment it when the sample data will be displayed after discarding the creation of a project update record.
+        },
     ];
 }
 
-registry.category("web_tour.tours").add('project_update_tour', {
+tour.register('project_update_tour', {
     test: true,
     url: '/web',
-    steps: () => [stepUtils.showAppsMenuItem(), {
+},
+[tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="project.menu_main_pm"]',
 }, {
     trigger: '.o-kanban-button-new',
@@ -68,7 +65,7 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: '.o-kanban-button-new',
     extra_trigger: '.o_kanban_group:eq(0)'
 }, {
-    trigger: '.o_kanban_quick_create div.o_field_char[name=display_name] input',
+    trigger: '.o_kanban_quick_create div.o_field_char[name=name] input',
     extra_trigger: '.o_kanban_project_tasks',
     run: 'text New task'
 }, {
@@ -78,7 +75,7 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: '.o-kanban-button-new',
     extra_trigger: '.o_kanban_group:eq(0)'
 }, {
-    trigger: '.o_kanban_quick_create div.o_field_char[name=display_name] input',
+    trigger: '.o_kanban_quick_create div.o_field_char[name=name] input',
     extra_trigger: '.o_kanban_project_tasks',
     run: 'text Second task'
 }, {
@@ -109,7 +106,7 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: "div.o_field_widget[name=name] input",
     run: 'text New milestone'
 }, {
-    trigger: "input[data-field=deadline]",
+    trigger: "div[name=deadline] .datetimepicker-input",
     run: 'text 12/12/2099'
 }, {
     trigger: ".modal-footer .o_form_button_save"
@@ -119,14 +116,14 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: "div.o_field_widget[name=name] input",
     run: 'text Second milestone'
 }, {
-    trigger: "input[data-field=deadline]",
+    trigger: "div[name=deadline] .datetimepicker-input",
     run: 'text 12/12/2022'
 }, {
     trigger: ".modal-footer .o_form_button_save"
 }, {
     trigger: ".o_rightpanel_milestone:eq(1) .o_milestone_detail",
 }, {
-    trigger: "input[data-field=deadline]",
+    trigger: "div[name=deadline] .datetimepicker-input",
     run: 'text 12/12/2100'
 }, {
     trigger: ".modal-footer .o_form_button_save"
@@ -148,10 +145,10 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: ".o_field_widget[name='description'] div[name='milestone'] ul li:contains('(12/12/2099 => 12/12/2100)')",
     run: function () {},
 }, {
-    trigger: ".o_field_widget[name='description'] div[name='milestone'] ul li:contains('(due 12/12/2022)')",
+    trigger: ".o_field_widget[name='description'] div[name='milestone'] ul li span:contains('(due 12/12/2022)')",
     run: function () {},
 }, {
-    trigger: ".o_field_widget[name='description'] div[name='milestone'] ul li:contains('(due 12/12/2100)')",
+    trigger: ".o_field_widget[name='description'] div[name='milestone'] ul li span:contains('(due 12/12/2100)')",
     run: function () {},
 }, {
     trigger: '.o_back_button',
@@ -162,7 +159,7 @@ registry.category("web_tour.tours").add('project_update_tour', {
 }, {
     trigger: '.o_back_button',
     content: 'Go back to the kanban view the project',
-    extra_trigger: '.o_list_view',
+    extra_trigger: '.o_list_view, .o_legacy_list_view',
 }, {
     trigger: '.o_switch_view.o_graph',
     content: 'Open Graph View of Tasks',
@@ -180,4 +177,4 @@ registry.category("web_tour.tours").add('project_update_tour', {
     trigger: '.o_switch_view.o_activity',
     content: 'Open Activity View of Tasks',
 }, ...openProjectUpdateAndReturnToTasks("Activity", "o_activity_view"),
-]});
+]);

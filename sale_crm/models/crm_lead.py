@@ -39,7 +39,6 @@ class CrmLead(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("sale_crm.sale_action_quotations_new")
         action['context'] = self._prepare_opportunity_quotation_context()
         action['context']['search_default_opportunity_id'] = self.id
-        action['context']['active_test'] = True
         return action
 
     def action_view_sale_quotation(self):
@@ -47,8 +46,8 @@ class CrmLead(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("sale.action_quotations_with_onboarding")
         action['context'] = self._prepare_opportunity_quotation_context()
         action['context']['search_default_draft'] = 1
-        action['domain'] = expression.AND([[('opportunity_id', '=', self.id)], self._get_action_view_sale_quotation_domain()])
-        quotations = self.order_ids.filtered_domain(self._get_action_view_sale_quotation_domain())
+        action['domain'] = expression.AND([[('opportunity_id', '=', self.id)], self._get_lead_quotation_domain()])
+        quotations = self.order_ids.filtered_domain(self._get_lead_quotation_domain())
         if len(quotations) == 1:
             action['views'] = [(self.env.ref('sale.view_order_form').id, 'form')]
             action['res_id'] = quotations.id
@@ -68,9 +67,6 @@ class CrmLead(models.Model):
             action['views'] = [(self.env.ref('sale.view_order_form').id, 'form')]
             action['res_id'] = orders.id
         return action
-
-    def _get_action_view_sale_quotation_domain(self):
-        return [('state', 'in', ('draft', 'sent', 'cancel'))]
 
     def _get_lead_quotation_domain(self):
         return [('state', 'in', ('draft', 'sent'))]

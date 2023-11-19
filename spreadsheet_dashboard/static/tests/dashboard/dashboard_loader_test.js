@@ -29,9 +29,9 @@ async function createDashboardLoader(params = {}) {
         const [record] = await env.services.orm.read(
             "spreadsheet.dashboard",
             [dashboardId],
-            ["spreadsheet_data"]
+            ["raw"]
         );
-        return { data: JSON.parse(record.spreadsheet_data), revisions: [] };
+        return { data: record.raw, revisions: [] };
     });
 }
 
@@ -98,14 +98,7 @@ QUnit.test("load spreadsheet data", async (assert) => {
 QUnit.test("load spreadsheet data only once", async (assert) => {
     const loader = await createDashboardLoader({
         mockRPC: function (route, args) {
-            if (args.model === "spreadsheet.dashboard" && args.method === "read") {
-                // read names
-                assert.step(`spreadsheet ${args.args[0]} loaded`);
-            }
-            if (
-                args.model === "spreadsheet.dashboard" &&
-                args.method === "get_readonly_dashboard"
-            ) {
+            if (args.method === "read") {
                 assert.step(`spreadsheet ${args.args[0]} loaded`);
             }
         },
@@ -114,7 +107,7 @@ QUnit.test("load spreadsheet data only once", async (assert) => {
     let result = loader.getDashboard(3);
     await nextTick();
     assert.strictEqual(result.status, Status.Loaded);
-    assert.verifySteps(["spreadsheet 3 loaded"]);
+    assert.verifySteps(["spreadsheet 1,2,3 loaded", "spreadsheet 3 loaded"]);
     result = loader.getDashboard(3);
     await nextTick();
     assert.strictEqual(result.status, Status.Loaded);
@@ -124,22 +117,19 @@ QUnit.test("load spreadsheet data only once", async (assert) => {
 QUnit.test("don't return empty dashboard group", async (assert) => {
     const loader = await createDashboardLoader({
         mockRPC: async function (route, args) {
-            if (args.method === "web_search_read" && args.model === "spreadsheet.dashboard.group") {
-                return {
-                    length: 2,
-                    records: [
-                        {
-                            id: 45,
-                            name: "Group A",
-                            dashboard_ids: [{ id: 1, name: "Dashboard CRM 1" }],
-                        },
-                        {
-                            id: 46,
-                            name: "Group B",
-                            dashboard_ids: [],
-                        },
-                    ],
-                };
+            if (args.method === "search_read" && args.model === "spreadsheet.dashboard.group") {
+                return [
+                    {
+                        id: 45,
+                        name: "Group A",
+                        dashboard_ids: [1],
+                    },
+                    {
+                        id: 46,
+                        name: "Group B",
+                        dashboard_ids: [],
+                    },
+                ];
             }
         },
     });
@@ -162,23 +152,13 @@ QUnit.test("don't return empty dashboard group", async (assert) => {
 QUnit.test("load multiple spreadsheets", async (assert) => {
     const loader = await createDashboardLoader({
         mockRPC: function (route, args) {
-            if (args.method === "web_search_read" && args.model === "spreadsheet.dashboard.group") {
-                assert.step("load groups");
-            }
-            if (args.method === "read" && args.model === "spreadsheet.dashboard") {
-                // read names
-                assert.step(`spreadsheet ${args.args[0]} loaded`);
-            }
-            if (
-                args.model === "spreadsheet.dashboard" &&
-                args.method === "get_readonly_dashboard"
-            ) {
+            if (args.method === "read") {
                 assert.step(`spreadsheet ${args.args[0]} loaded`);
             }
         },
     });
     await loader.load();
-    assert.verifySteps(["load groups"]);
+    assert.verifySteps(["spreadsheet 1,2,3 loaded"]);
     loader.getDashboard(1);
     await nextTick();
     assert.verifySteps(["spreadsheet 1 loaded"]);
@@ -194,8 +174,9 @@ QUnit.test("load spreadsheet data with error", async (assert) => {
     const loader = await createDashboardLoader({
         mockRPC: function (route, args) {
             if (
-                args.method === "get_readonly_dashboard" &&
-                args.model === "spreadsheet.dashboard"
+                args.method === "read" &&
+                args.model === "spreadsheet.dashboard" &&
+                args.args[1][0] === "raw"
             ) {
                 throw new Error("Bip");
             }
@@ -225,7 +206,7 @@ QUnit.test("async formulas are correctly evaluated", async (assert) => {
     serverData.models["spreadsheet.dashboard"].records = [
         {
             id: dashboardId,
-            spreadsheet_data: JSON.stringify(spreadsheetData),
+            raw: JSON.stringify(spreadsheetData),
             json_data: JSON.stringify(spreadsheetData),
             name: "Dashboard Accounting 1",
             dashboard_group_id: 2,

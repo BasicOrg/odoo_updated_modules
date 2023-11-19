@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models, _
-from odoo.exceptions import AccessError
+from odoo import api, fields, models
 
 
 class Channel(models.Model):
@@ -33,10 +32,10 @@ class Channel(models.Model):
             ('state', 'in', self.env['sale.report']._get_done_states()),
             ('product_id', 'in', self.product_id.ids),
         ]
-        rg_data = {
-            product.id: price_total
-            for product, price_total in self.env['sale.report']._read_group(domain, ['product_id'], ['price_total:sum'])
-        }
+        rg_data = dict(
+            (item['product_id'][0], item['price_total'])
+            for item in self.env['sale.report']._read_group(domain, ['product_id', 'price_total'], ['product_id'])
+        )
         for channel in self:
             channel.product_sale_revenues = rg_data.get(channel.product_id.id, 0)
 
@@ -62,11 +61,12 @@ class Channel(models.Model):
         self.filtered(lambda channel: channel.is_published and not channel.product_id.is_published).sudo().product_id.write({'is_published': True})
 
         unpublished_channel_products = self.filtered(lambda channel: not channel.is_published).product_id
-        group_data = self._read_group(
+        group_data = self.read_group(
             [('is_published', '=', True), ('product_id', 'in', unpublished_channel_products.ids)],
             ['product_id'],
+            ['product_id'],
         )
-        used_product_ids = {product.id for [product] in group_data}
+        used_product_ids = [product['product_id'][0] for product in group_data if product['product_id_count'] > 0]
         product_to_unpublish = unpublished_channel_products.filtered(lambda product: product.id not in used_product_ids)
         if product_to_unpublish:
             product_to_unpublish.sudo().write({'is_published': False})
@@ -76,18 +76,17 @@ class Channel(models.Model):
         action['domain'] = [('product_id', 'in', self.product_id.ids)]
         return action
 
-    def _filter_add_members(self, target_partners, raise_on_access=False):
+    def _filter_add_members(self, target_partners, **member_values):
         """ Overridden to add 'payment' channels to the filtered channels. People
         that can write on payment-based channels can add members. """
-        result = super(Channel, self)._filter_add_members(target_partners, raise_on_access=raise_on_access)
+        result = super(Channel, self)._filter_add_members(target_partners, **member_values)
         on_payment = self.filtered(lambda channel: channel.enroll == 'payment')
         if on_payment:
             try:
                 on_payment.check_access_rights('write')
                 on_payment.check_access_rule('write')
-            except AccessError:
-                if raise_on_access:
-                    raise AccessError(_('You are not allowed to add members to this course. Please contact the course responsible or an administrator.'))
+            except:
+                pass
             else:
                 result |= on_payment
         return result

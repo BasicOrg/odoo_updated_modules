@@ -1,12 +1,10 @@
 /** @odoo-module **/
-
-import { _t } from "@web/core/l10n/translation";
 import { HomeMenu } from "@web_enterprise/webclient/home_menu/home_menu";
 import { useService } from "@web/core/utils/hooks";
 import { NotEditableActionError } from "../../studio_service";
 import { IconCreatorDialog } from "./icon_creator_dialog/icon_creator_dialog";
 
-import { onMounted, onWillUnmount, useRef } from "@odoo/owl";
+const { onMounted, useRef } = owl;
 const NEW_APP_BUTTON = {
     isNewAppButton: true,
     label: "New App",
@@ -46,18 +44,6 @@ export class StudioHomeMenu extends HomeMenu {
 
         onMounted(() => {
             this.canEditIcons = true;
-            document.body.classList.add("o_home_menu_background");
-            document.body.classList.toggle(
-                "o_home_menu_background_custom",
-                this.menus.getMenu("root").backgroundImage
-            );
-        });
-
-        onWillUnmount(() => {
-            document.body.classList.remove(
-                "o_home_menu_background",
-                "o_home_menu_background_custom"
-            );
         });
     }
 
@@ -84,16 +70,15 @@ export class StudioHomeMenu extends HomeMenu {
             } catch (e) {
                 if (e instanceof NotEditableActionError) {
                     const options = { type: "danger" };
-                    this.notifications.add(_t("This action is not editable by Studio"), options);
+                    this.notifications.add(
+                        this.env._t("This action is not editable by Studio"),
+                        options
+                    );
                     return;
                 }
                 throw e;
             }
         }
-    }
-
-    _enableAppsSorting() {
-        return false;
     }
 
     //--------------------------------------------------------------------------

@@ -6,31 +6,33 @@
         <field name="inherit_id" ref="marketing_automation.mailing_mailing_view_form_marketing_activity"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='email_from']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail'</attribute>
-                <attribute name="readonly">state in ('sending', 'done') and not use_in_marketing_automation</attribute>
+                <attribute name="attrs">{
+                    'invisible': [('mailing_type', '!=', 'mail')],
+                    'readonly': ['&amp;', ('state', 'in', ('sending', 'done')), ('use_in_marketing_automation', '=', False)]}
+                </attribute>
             </xpath>
             <xpath expr="//button[@name='action_set_favorite']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail' or favorite</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('mailing_type', '!=', 'mail'), ('favorite', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//button[@name='action_remove_favorite']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail' or not favorite</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('mailing_type', '!=', 'mail'), ('favorite', '=', False)]}</attribute>
             </xpath>
             <xpath expr="//page[@name='mail_body']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail'</attribute>
+                <attribute name="attrs">{'invisible': [('mailing_type', '!=', 'mail')]}</attribute>
             </xpath>
             <xpath expr="//group[@name='group_mailing']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail'</attribute>
+                <attribute name="attrs">{'invisible': [('mailing_type', '!=', 'mail')]}</attribute>
             </xpath>
             <xpath expr="//group[@name='group_mailing']" position="after">
-                <group string="SMS Options" name="group_sms" invisible="mailing_type == 'mail'">
+                <group string="SMS Options" name="group_sms" attrs="{'invisible': [('mailing_type', '=', 'mail')]}">
                     <field name="keep_archives" groups="base.group_no_one"/>
                     <field name="sms_allow_unsubscribe"/>
                 </group>
             </xpath>
             <xpath expr="//page[@name='mail_body']" position="after">
-                <page string="SMS Content" name="sms_body" invisible="mailing_type != 'sms'">
+                <page string="SMS Content" name="sms_body" attrs="{'invisible': [('mailing_type', '!=', 'sms')]}">
                     <field name="sms_template_id" domain="[('model', '=', mailing_model_real)]" invisible="1"/>
-                    <field name="body_plaintext" widget="sms_widget" required="mailing_type == 'sms'"
+                    <field name="body_plaintext" widget="sms_widget" attrs="{'required': [('mailing_type', '=', 'sms')]}"
                            options="{'dynamic_placeholder': true}"/>
                 </page>
             </xpath>
@@ -43,19 +45,16 @@
         <field name="inherit_id" ref="marketing_automation.mailing_mailing_view_form_marketing_automation"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='mail_body']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail'</attribute>
+                <attribute name="attrs">{'invisible': [('mailing_type', '!=', 'mail')]}</attribute>
             </xpath>
             <xpath expr="//field[@name='subject']" position="attributes">
-                <attribute name="invisible">mailing_type == 'sms'</attribute>
-                <attribute name="required">mailing_type == 'mail'</attribute>
+                <attribute name="attrs">{'invisible': [('mailing_type', '=', 'sms')], 'required': [('mailing_type', '=', 'mail')]}</attribute>
             </xpath>
             <xpath expr="//field[@name='sms_subject']" position="attributes">
-                <attribute name="invisible">mailing_type == 'mail'</attribute>
-                <attribute name="required">mailing_type == 'sms'</attribute>
+                <attribute name="attrs">{'invisible': [('mailing_type', '=', 'mail')], 'required': [('mailing_type', '=', 'sms')]}</attribute>
             </xpath>
             <xpath expr="//field[@name='body_plaintext']" position="attributes">
-                <attribute name="readonly">mailing_type == 'mail'</attribute>
-                <attribute name="required">mailing_type == 'sms'</attribute>
+                <attribute name="attrs">{'readonly': [('mailing_type', '=', 'mail')], 'required': [('mailing_type', '=', 'sms')]}</attribute>
             </xpath>
         </field>
     </record>

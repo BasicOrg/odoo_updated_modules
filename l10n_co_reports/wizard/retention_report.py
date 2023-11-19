@@ -10,7 +10,7 @@ class RetentionReportWizard(models.TransientModel):
 
     expedition_date = fields.Date(string=u'Fecha de Expedición', default=fields.Date.context_today, required=True)
     declaration_date = fields.Date(string=u'Fecha de Declaración', default=fields.Date.context_today, required=True)
-    article = fields.Char(string=u'Artículo', default='ART. 10 DECRETO 836/91', required=True)
+    article = fields.Char(string=u'Artículo', default='ART. 10 DECRETO 386/91', required=True)
 
     def generate_report(self):
         data = {'wizard_values': self.read()[0]}

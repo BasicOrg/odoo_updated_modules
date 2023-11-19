@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { useComponent, useEffect } from "@odoo/owl";
+const { useComponent, useEffect } = owl;
 
 /**
  * Hook used to enrich html and provide automatic links to action.

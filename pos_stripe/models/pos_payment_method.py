@@ -31,23 +31,13 @@ class PosPaymentMethod(models.Model):
                 raise ValidationError(_('Terminal %s is already used on payment method %s.',\
                      payment_method.stripe_serial_number, existing_payment_method.display_name))
 
-    def _get_stripe_payment_provider(self):
-        stripe_payment_provider = self.env['payment.provider'].search([
-            ('code', '=', 'stripe'),
-            ('company_id', '=', self.env.company.id)
-        ], limit=1)
-
-        if not stripe_payment_provider:
-            raise UserError(_("Stripe payment provider for company %s is missing", self.env.company.name))
-
-        return stripe_payment_provider
 
     @api.model
     def _get_stripe_secret_key(self):
-        stripe_secret_key = self._get_stripe_payment_provider().stripe_secret_key
+        stripe_secret_key = self.env['payment.provider'].search([('code', '=', 'stripe')], limit=1).stripe_secret_key
 
         if not stripe_secret_key:
-            raise ValidationError(_('Complete the Stripe onboarding for company %s.', self.env.company.name))
+            raise ValidationError(_('Complete the Stripe onboarding.'))
 
         return stripe_secret_key
 
@@ -64,39 +54,42 @@ class PosPaymentMethod(models.Model):
             _logger.exception("Failed to call stripe_connection_token endpoint")
             raise UserError(_("There are some issues between us and Stripe, try again later."))
 
-        return resp.json()
+        if resp.ok:
+            return resp.json()
+
+        _logger.error("Unexpected stripe_connection_token response: %s", resp.status_code)
+        raise UserError(_("Unexpected error between us and Stripe."))
 
     def _stripe_calculate_amount(self, amount):
         currency = self.journal_id.currency_id or self.company_id.currency_id
-        return round(amount/currency.rounding)
+        return int(amount/currency.rounding)
 
     def stripe_payment_intent(self, amount):
         if not self.env.user.has_group('point_of_sale.group_pos_user'):
             raise AccessError(_("Do not have access to fetch token from Stripe"))
 
         # For Terminal payments, the 'payment_method_types' parameter must include
-        # at least 'card_present' and the 'capture_method' must be set to 'manual'.
+        # 'card_present' and the 'capture_method' must be set to 'manual'
         endpoint = 'https://api.stripe.com/v1/payment_intents'
         currency = self.journal_id.currency_id or self.company_id.currency_id
 
-        params = [
-            ("currency", currency.name),
-            ("amount", self._stripe_calculate_amount(amount)),
-            ("payment_method_types[]", "card_present"),
-            ("capture_method", "manual"),
-        ]
-
-        if currency.name == 'CAD' and self.company_id.country_code == 'CA':
-            params.append(("payment_method_types[]", "interac_present"))
-
         try:
-            data = werkzeug.urls.url_encode(params)
+            data = werkzeug.urls.url_encode({
+                "currency": currency.name,
+                "amount": self._stripe_calculate_amount(amount),
+                "payment_method_types[]": "card_present",
+                "capture_method": "manual",
+            })
             resp = requests.post(endpoint, data=data, auth=(self.sudo()._get_stripe_secret_key(), ''), timeout=TIMEOUT)
         except requests.exceptions.RequestException:
             _logger.exception("Failed to call stripe_payment_intent endpoint")
             raise UserError(_("There are some issues between us and Stripe, try again later."))
 
-        return resp.json()
+        if resp.ok:
+            return resp.json()
+
+        _logger.error("Unexpected stripe_payment_intent response: %s", resp.status_code)
+        raise UserError(_("Unexpected error between us and Stripe."))
 
     @api.model
     def stripe_capture_payment(self, paymentIntentId, amount=None):
@@ -110,7 +103,8 @@ class PosPaymentMethod(models.Model):
         if not self.env.user.has_group('point_of_sale.group_pos_user'):
             raise AccessError(_("Do not have access to fetch token from Stripe"))
 
-        endpoint = ('payment_intents/%s/capture') % (werkzeug.urls.url_quote(paymentIntentId))
+        endpoint = ('https://api.stripe.com/v1/payment_intents/%s/capture') % \
+            (werkzeug.urls.url_quote(paymentIntentId))
 
         data = None
         if amount is not None:
@@ -118,10 +112,20 @@ class PosPaymentMethod(models.Model):
                 "amount_to_capture": self._stripe_calculate_amount(amount),
             }
 
-        return self.sudo()._get_stripe_payment_provider()._stripe_make_request(endpoint, data)
+        try:
+            resp = requests.post(endpoint, data=data, auth=(self.sudo()._get_stripe_secret_key(), ''), timeout=TIMEOUT)
+        except requests.exceptions.RequestException:
+            _logger.exception("Failed to call stripe_capture_payment endpoint")
+            raise UserError(_("There are some issues between us and Stripe, try again later."))
+
+        if resp.ok:
+            return resp.json()
+
+        _logger.error("Unexpected stripe_capture_payment response: %s", resp.status_code)
+        raise UserError(_("Unexpected error between us and Stripe."))
 
     def action_stripe_key(self):
-        res_id = self._get_stripe_payment_provider().id
+        res_id = self.env['payment.provider'].search([('code', '=', 'stripe')], limit=1).id
         # Redirect
         return {
             'name': _('Stripe'),

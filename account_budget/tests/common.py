@@ -11,8 +11,8 @@ class TestAccountBudgetCommon(AccountTestInvoicingCommon):
 
         # ==== Analytic accounts ====
 
-        cls.analytic_plan_projects = cls.env['account.analytic.plan'].create({'name': 'Projects'})
-        cls.analytic_plan_departments = cls.env['account.analytic.plan'].create({'name': 'Departments test'})
+        cls.analytic_plan_projects = cls.env['account.analytic.plan'].create({'name': 'Projects', 'company_id': False})
+        cls.analytic_plan_departments = cls.env['account.analytic.plan'].create({'name': 'Departments', 'company_id': False})
 
         cls.analytic_account_partner_a_1 = cls.env['account.analytic.account'].create({
             'name': 'analytic_account_partner_a_1',

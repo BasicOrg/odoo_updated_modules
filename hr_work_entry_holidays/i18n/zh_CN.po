@@ -3,17 +3,18 @@
 # 	* hr_work_entry_holidays
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
+# Raymond Yu <cl_yu@hotmail.com>, 2022
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:52+0000\n"
+"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +22,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_work_entry_holidays
-#. odoo-python
+#: code:addons/hr_work_entry_holidays/models/hr_leave.py:0
+#, python-format
+msgid "%s: Time Off"
+msgstr "%s:休息时间"
+
+#. module: hr_work_entry_holidays
 #: code:addons/hr_work_entry_holidays/models/hr_leave.py:0
 #, python-format
 msgid ""
@@ -43,24 +49,6 @@ msgstr ""
 "%s\n"
 "合同：\n"
 "%s"
-
-#. module: hr_work_entry_holidays
-#: model:ir.model,name:hr_work_entry_holidays.model_hr_employee_base
-msgid "Basic Employee"
-msgstr "基本雇员"
-
-#. module: hr_work_entry_holidays
-#. odoo-python
-#: code:addons/hr_work_entry_holidays/models/hr_contract.py:0
-#, python-format
-msgid ""
-"Changing the contract on this employee changes their working schedule in a "
-"period they already took leaves. Changing this working schedule changes the "
-"duration of these leaves in such a way the employee no longer has the "
-"required allocation for them. Please review these leaves and/or allocations "
-"before changing the contract."
-msgstr ""
-"更改该员工的合同会改变其已休假期间的工作安排。更改工作时间表会改变这些假期的持续时间，从而使该员工不再拥有所需的假期分配。请在更改合同前审查这些假期和/或分配。"
 
 #. module: hr_work_entry_holidays
 #: model:ir.model,name:hr_work_entry_holidays.model_hr_contract
@@ -101,7 +89,6 @@ msgstr ""
 "当经理批准休假时，状态为“已批准”。"
 
 #. module: hr_work_entry_holidays
-#. odoo-python
 #: code:addons/hr_work_entry_holidays/models/hr_leave.py:0
 #, python-format
 msgid ""
@@ -129,4 +116,4 @@ msgstr "工作条目类型"
 #. module: hr_work_entry_holidays
 #: model:ir.model.fields,help:hr_work_entry_holidays.field_hr_work_entry_type__leave_type_ids
 msgid "Work entry used in the payslip."
-msgstr "工资单中使用的工作条目。"
+msgstr ""

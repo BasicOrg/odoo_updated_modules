@@ -1,108 +1,69 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* sign
-#
+# 
 # Translators:
-# Lilach Gilliam <lilach@apprcase.com>, 2022
-# Leandro Noijovich <eliel.sorcerer@gmail.com>, 2022
-# Moshe Flam <pashute@gmail.com>, 2022
-# Lilach Gilliam <lilach.gilliam@gmail.com>, 2022
-# Netta Waizer, 2022
-# Fishfur A Banter <fishfurbanter@gmail.com>, 2022
-# Amit Spilman <amit@laylinetech.com>, 2022
-# דודי מלכה <Dudimalka6@gmail.com>, 2022
-# hed shefer <hed@laylinetech.com>, 2022
-# david danilov, 2022
-# ExcaliberX <excaliberx@gmail.com>, 2022
-# Yihya Hugirat <hugirat@gmail.com>, 2022
-# Ofir Blum <ofir.blum@gmail.com>, 2022
-# Martin Trigaux, 2022
-# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2022
-# NoaFarkash, 2022
-# Ha Ketem <haketem@gmail.com>, 2022
-# Roy Sayag, 2023
-#
+# Moshe Flam <pashute@gmail.com>, 2019
+# Leandro Noijovich <eliel.sorcerer@gmail.com>, 2019
+# Martin Trigaux, 2019
+# Fishfur A Banter <fishfurbanter@gmail.com>, 2019
+# ExcaliberX <excaliberx@gmail.com>, 2019
+# Yihya Hugirat <hugirat@gmail.com>, 2019
+# שהאב חוסיין <shhab89@gmail.com>, 2019
+# hed shefetr <hed@laylinetech.com>, 2019
+# דודי מלכה <Dudimalka6@gmail.com>, 2019
+# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2019
+# Amit Spilman <amit@laylinetech.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:49+0000\n"
-"Last-Translator: Roy Sayag, 2023\n"
-"Language-Team: Hebrew (https://app.transifex.com/odoo/teams/41243/he/)\n"
-"Language: he\n"
+"POT-Creation-Date: 2019-09-27 09:19+0000\n"
+"PO-Revision-Date: 2019-08-26 09:38+0000\n"
+"Last-Translator: Amit Spilman <amit@laylinetech.com>, 2019\n"
+"Language-Team: Hebrew (https://www.transifex.com/odoo/teams/41243/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: he\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid " You can safely close this window."
-msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_res_partner__signature_count
 #: model:ir.model.fields,field_description:sign.field_res_users__signature_count
 msgid "# Signatures"
-msgstr "מס' חתימות"
+msgstr ""
 
 #. module: sign
-#. odoo-python
+#: code:addons/sign/models/sign_request.py:0
+#, python-format
+msgid "%s : Signature request"
+msgstr ""
+
+#. module: sign
 #: code:addons/sign/controllers/main.py:0
 #, python-format
 msgid "%s couldn't sign the document due to an insufficient credit error."
-msgstr "%s לא היה יכול לחתום על המסמך בגלל שגיאת אשראי לא מספק."
+msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "%s has been edited and signed"
-msgstr "%s נערך ונחתם"
-
-#. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_request.py:0
 #, python-format
 msgid "%s has been signed"
-msgstr "%s נחתם"
+msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/controllers/main.py:0
 #, python-format
 msgid "%s validated the signature by SMS with the phone number %s."
-msgstr "%s  אימת את החתימה באמצעות SMS עם מספר הטלפון %s."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "%s: missing credits for extra-authentication"
-msgstr "%sחסרים קרדיטים עבור אימות נוסף"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "(Ignored)"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "(UTC)"
-msgstr "(UTC)"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_refused
-msgid ""
-")\n"
-"            has refused the document"
 msgstr ""
-")\n"
-"סירב למסמך"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
@@ -110,266 +71,163 @@ msgid ""
 ")\n"
 "        has requested your signature on the document"
 msgstr ""
-")\n"
-"        ביקש את חתימתך על המסמך"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "- <em>Canceled</em>"
-msgstr "- <em>מבוטל</em>"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_follower
+msgid ") has added you as a follower of the document"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_template_action
-msgid "- or -"
-msgstr "- או -"
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
+msgid "- <em>Waiting Signature</em>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Created by:</b>"
-msgstr "<b>נוצר ע\"י:</b>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Created on:</b>"
-msgstr "<b>נוצר ב:</b>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Creation IP Address:</b>"
-msgstr "<b>יצירת כתובת IP:</b>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Document ID:</b>"
-msgstr "<b>מזהה מסמך:</b>"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "<b>Drag & drop “Signature”</b> into the bottom of the document."
-msgstr "<b>משוך ושחרר \"חתימה\"</b> לתחתית הדף של המסמך."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "<b>Gas:</b> 18,700 Pounds of CO² = 18,700*0.4536 = 8482.32 kg"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Signature:</b>"
-msgstr "<b>חתימה:</b>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<b>Signers:</b>"
-msgstr "<b>חותמים:</b>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "<b>Solid Waste:</b> 1290 Pounds = 1290*0.4536 = 585.14 kg"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "<b>Total Energy:</b> 27 Millions BTU = 27,000,000*0.0002931 = 7.91 kWh"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "<b>Water:</b> 23,400 Gallons = 23,400*3.78541 = 88578.59 L"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "<b>Wood Use:</b> 4 US Short Tons = 4*907.18474 = 3628.73 kg"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
 msgid "<br/>(the email access has not been sent)"
-msgstr "<br/>(גישת הדוא\"ל לא נשלחה)"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<i class=\"fa fa-check\"/> The document's integrity is valid."
-msgstr "<i class=\"fa fa-check\"/> המסמך תקין."
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "<i class=\"fa fa-exclamation-circle\"/> The document's integrity could not be verified."
-msgstr "<i class=\"fa fa-exclamation-circle\"/> לא ניתן לאמת את תקינות המסמך."
+msgid ""
+"<i class=\"fa fa-exclamation-circle\"/> The document's integrity could not "
+"be verified."
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<i class=\"fa fa-globe\"/> View"
-msgstr "<i class=\"fa fa-globe\"/> תצוגה"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_terms_conditions_setting_banner
-msgid "<i class=\"oi oi-arrow-right me-1\"/>Back to settings"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_share_view_form
 msgid ""
-"<i class=\"oi oi-arrow-right\"/>\n"
-"                                            Preview"
+"<span attrs=\"{'invisible': [('url', '!=', False)]}\">To be able to share, "
+"there should be only one responsible for all the fields.</span>"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
-msgid "<i class=\"oi oi-arrow-right\"/> Buy credits"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
+msgid "<span class=\"o_stat_text\"> Signed</span>"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "<small><i> Canceled </i></small>"
-msgstr "<small><i> בוטל </i></small>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "<small>Email Verification: The signatory has confirmed control of their email inbox by clicking on a unique link</small>"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
+msgid "<span class=\"o_stat_text\">Activity Logs</span>"
 msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "<small>SMS: The signatory has confirmed their control of the phone number using a unique code sent by SMS</small>"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
-msgid "<span class=\"badge rounded-pill text-bg-light\">Ignored</span>"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "<span class=\"o_portal_category\">Summary</span>"
-msgstr "<span class=\"o_portal_category\"> סיכום </span>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "<span class=\"o_portal_category\">Your Information</span>"
-msgstr "<span class=\"o_portal_category\">המידע שלך </span>"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.res_partner_view_form
-msgid "<span class=\"o_stat_text\">Signature Requested</span>"
-msgstr "<span class=\"o_stat_text\">בקשת חתימה</span>"
+msgid "<span class=\"o_stat_text\">Signature Requests</span>"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
-msgid "<span class=\"o_stat_text\">Signed Document</span>"
-msgstr "<span class=\"o_stat_text\"> מסמך חתום </span>"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
+msgid "<span class=\"o_stat_text\">View</span>"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_share_view_form
-msgid "<span class=\"text-muted\" attrs=\"{'invisible': [('share_link', '=', False)]}\">Sharing will create a copy of the file to sign. That file can be reached by the link below. Every public user using the link will generate a document when the Signature is complete. The link is private, only those that receive the link will be able to sign it.</span>"
-msgstr "<span class=\"text-muted\" attrs=\"{'invisible': [('share_link', '=', False)]}\">שיתוף יצור עותק של הקובץ לחתימה. ניתן להגיע לקובץ הזה בקישור למטה. כל משתמש ציבורי המשתמש בקישור יפיק מסמך כאשר החתימה תושלם. הקישור הוא פרטי, רק מי שיקבל את הקישור יוכל לחתום עליו.</span>"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_share_view_form
+msgid ""
+"<span class=\"text-muted\" attrs=\"{'invisible': [('url', '=', "
+"False)]}\">Share this link and Odoo will create a new document per person "
+"who clicks on the link. The link is private, only those that receive the "
+"link will be able to sign it.</span>"
+msgstr ""
+
+#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
+msgid "<span class=\"text-muted\"><i class=\"fa fa-times\"/> No SMS Validation</span>"
+msgstr ""
+
+#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
+msgid ""
+"<span class=\"text-muted\"><i class=\"fa fa-times\"/> No email "
+"Validation</span>"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "<span class=\"text-muted\">Not available</span>"
-msgstr "<span class=\"text-muted\">לא זמין</span>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "<span> days</span>."
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_item_type_view_form
 msgid "<span>(1.0 = full page size)</span>"
-msgstr "<span>(1.0 = גודל עמוד מלא)</span>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "<span>Send a reminder every </span>"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_terms_conditions_setting_banner
-msgid "<span>This is a preview of your Terms &amp; Conditions.</span>"
-msgstr "<span>זוהי תצוגה מקדימה של התנאים שלך &amp; תנאים.</span>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "<strong>Creation Date:</strong>"
-msgstr "<strong>תאריך יצירה: </strong>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "<strong>Message and communication history</strong>"
-msgstr "<strong>היסטוריית הודעות ותקשורת</strong>"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_refused
-msgid "<strong>Warning</strong> do not forward this email to other people!<br/>"
-msgstr "<strong>אזהרה</strong>אל תעביר את האימייל הזה לאנשים אחרים! <br/>"
-
-#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
 msgid ""
 "<strong>Warning</strong> do not forward this email to other people!<br/>\n"
 "            They will be able to access this document and sign it as yourself.<br/>\n"
 "            <span>Your IP address and localization are associated to your signature to ensure traceability.</span>"
 msgstr ""
-"<strong>אזהרה</strong> אל תעביר דוא\"ל זה לאנשים אחרים!<br/>\n"
-"            הם יוכלו לגשת למסמך זה ולחתום כמוך.<br/>\n"
-"            <span>כתובת ה- IP והמיקום שלך משויכים לחתימה שלך לצורך מעקב.</span>"
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
-msgid "A SMS will be sent to the following phone number. Please update it if it's not relevant."
-msgstr "SMS יישלח למספר הטלפון הבא. אנא עדכן אותו אם הוא לא רלוונטי."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "A non-shared sign request's should not have any signer with an empty partner"
+msgid ""
+"A SMS will be sent to the following phone number. Please update it if it's "
+"not relevant."
 msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_request.py:0
 #, python-format
-msgid "A shared sign request should only have one signer with an empty partner"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "A shower uses approximately 65 L of water"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "A valid sign request needs at least one sign request item"
+msgid "Access History"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Access Logs"
-msgstr "רישומי גישה"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__access_warning
-msgid "Access warning"
-msgstr "אזהרת גישה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__access_via_link
 msgid "Accessed Through Token"
-msgstr "גישה דרך אסימון"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_mail_activity_type__category
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Action"
 msgstr "פעולה"
 
@@ -381,12 +239,7 @@ msgstr "נדרשת פעולה"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__action
 msgid "Action Performed"
-msgstr "הפעולה בוצעה"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_mail_activity_type__category
-msgid "Actions may trigger specific behavior like opening calendar view or automatically mark as done when a document is uploaded"
-msgstr "פעולות עשויות להפעיל התנהגות מסוימת כמו פתיחת תצוגת לוח שנה או סימון אוטומטי כבוצע בעת העלאת המסמך"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__active
@@ -402,16 +255,16 @@ msgstr "פעילויות"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "סימון פעילות חריגה"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #: model:ir.actions.report,name:sign.action_sign_request_print_logs
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
 #, python-format
 msgid "Activity Logs"
-msgstr "רישומי פעילות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_state
@@ -419,114 +272,53 @@ msgid "Activity State"
 msgstr "מצב פעילות"
 
 #. module: sign
-#: model:ir.model,name:sign.model_mail_activity_type
-msgid "Activity Type"
-msgstr "סוג פעילות"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "סוג פעילות"
-
-#. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__sign_log_ids
 msgid "Activity logs linked to this request"
-msgstr "רישומי פעילות המקושרים לבקשה זו"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_iframe.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
 msgid "Add Initials"
-msgstr "הוסף ראשי תיבות"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/dialogs/initial_all_pages_dialog.xml:0
-#, python-format
-msgid "Add Once"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "Add document tags here"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#, python-format
+msgid "Add on all pages"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/dialogs/initial_all_pages_dialog.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
-msgid "Add to all pages"
-msgstr "הוסף לכל הדפים"
+msgid "Add once"
+msgstr ""
 
 #. module: sign
 #: model:res.groups,name:sign.group_sign_manager
-msgid "Administrator"
-msgstr "מנהל מערכת"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Adopt Your Signature"
-msgstr "הגדר את חתימתך"
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__signed
-msgid "After Signature"
-msgstr "לאחר חתימה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
-#: model:ir.model.fields,field_description:sign.field_sign_item__alignment
-#, python-format
-msgid "Alignment"
-msgstr "יישור"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "All"
-msgstr "הכל"
-
-#. module: sign
-#: model:ir.ui.menu,name:sign.sign_request_documents
-msgid "All documents"
-msgstr "כל המסמכים"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "All signers must have valid email addresses"
-msgstr "לכל החותמים חייבת להיות כתובת דוא\"ל תקינה"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Allow signatories to provide their identity using itsme® (available in Belgium and the Netherlands)."
+msgid "Administrator: All Templates"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,help:sign.field_sign_request__refusal_allowed
-#: model:ir.model.fields,help:sign.field_sign_send_request__refusal_allowed
-msgid "Allow the contacts to refuse the document for a specific reason."
-msgstr "אפשר לאנשי קשר לסרב למסמך מסיבה מסוימת."
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Adopt Your Signature"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Allow users to define a signing order, where recipients are only notified when it is their turn to sign."
-msgstr "אפשר למשתמשים להגדיר סדר חתימה, שבו נמענים מקבלים הודעה רק כאשר מגיע תורם לחתום."
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Adopt and Sign"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Allow users to define the users or groups which have access to the template."
-msgstr "אפשר למשתמשים להגדיר את המשתמשים או הקבוצות שיש להם גישה לתבנית."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "An average computer will consume 750 Wh"
+#: model:ir.model.fields.selection,name:sign.selection__sign_template__privacy__employee
+msgid "All Users"
 msgstr ""
 
 #. module: sign
@@ -536,21 +328,15 @@ msgid "Archive"
 msgstr "ארכיון"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_search
 msgid "Archived"
-msgstr "בארכיון"
+msgstr "התווסף לארכיון"
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__start_sign
 msgid "At least one signer has signed the document."
-msgstr "לפחות חותם אחד חתם על המסמך."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Attach a file"
-msgstr "צרף קובץ"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__attachment_id
@@ -560,91 +346,43 @@ msgstr "קובץ מצורף"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_attachment_count
 msgid "Attachment Count"
-msgstr "כמות קבצים מצורפים"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__attachment_ids
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__attachment_ids
-msgid "Attachments"
-msgstr "קבצים מצורפים"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Authenticate by SMS"
-msgstr "אימות באמצעות SMS"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__group_ids
-msgid "Authorized Groups"
-msgstr "קבוצות מורשות"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.xml:0
-#, python-format
-msgid "Authorized Groups:"
-msgstr "קבוצות מורשות:"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__authorized_ids
-msgid "Authorized Users"
-msgstr "משתמשים מורשים"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.xml:0
-#, python-format
-msgid "Authorized Users:"
-msgstr "משתמשים מורשים:"
+msgstr "ספירת קבצים מצורפים"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item_type__auto_field
-msgid "Auto-fill Partner Field"
+msgid "Automatic Partner Field"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "Based on"
-msgstr "מבוסס על"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
+msgid "Avatar"
+msgstr "אווטר"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "Based on various websites, here are our comparisons:"
-msgstr "בהתבסס על אתרי אינטרנט שונים, הנה ההשוואות שלנו:"
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__sent
-msgid "Before Signature"
-msgstr "לפני חתימה"
+#: model_terms:ir.ui.view,arch_db:sign.sign_item_role_view_form
+msgid "Buy SMS credit"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "By"
-msgstr "לפי"
+msgstr "על פי"
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
-msgid "By clicking Adopt & Sign, I agree that the chosen signature/initials will be a valid electronic representation of my hand-written signature/initials for all purposes when it is used on documents, including legally binding contracts."
-msgstr "על ידי לחיצה על אמץ וחתום, אני מסכים שהחתימה/ראשי התיבות שנבחרו יהיו ייצוג אלקטרוני תקף של החתימה/ראשי התיבות שלי בכתב יד לכל מטרה כאשר היא משמשת במסמכים, לרבות חוזים מחייבים מבחינה משפטית."
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__message_cc
-msgid "CC Message"
+msgid ""
+"By clicking Adopt and Sign, I agree that the chosen signature/initials will "
+"be a valid electronic representation of my hand-written signature/initials "
+"for all purposes when it is used on documents, including legally binding "
+"contracts."
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__refusal_allowed
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__refusal_allowed
-msgid "Can be refused"
-msgstr "ניתן לסרב"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__action__cancel
-#: model_terms:ir.ui.view,arch_db:sign.sign_duplicate_template_with_pdf_view_form
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
 #, python-format
@@ -654,75 +392,38 @@ msgstr "בטל"
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__canceled
 #: model:ir.model.fields.selection,name:sign.selection__sign_request__state__canceled
-#: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__canceled
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
 msgid "Canceled"
-msgstr "בוטל"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.js:0
-#, python-format
-msgid "Center"
-msgstr "מרכז"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
-msgid "Certificate <i class=\"fa fa-download\"/>"
 msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "Certificate of Completion<br/>"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item_role__change_authorized
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__change_authorized
-msgid "Change Authorized"
-msgstr "רשאי לשנות"
 
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_item_type__item_type__checkbox
 #: model:sign.item.type,name:sign.sign_item_type_checkbox
 msgid "Checkbox"
-msgstr "תיבת סימון"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_template__is_sharing
-msgid "Checked if this template has created a shared document for you"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Click on the field to specify who should fill it in, or if it's mandatory or not."
-msgstr "לחץ על השדה כדי לציין מי צריך למלא אותו, או אם זה חובה או לא."
+#: model:ir.actions.act_window,name:sign.sign_template_action
+#: model:ir.actions.act_window,name:sign.sign_template_with_archived_action
+msgid "Choose a Template"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Click to start"
-msgstr "לחץ כדי להתחיל"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-#: model_terms:ir.ui.view,arch_db:sign.sign_terms_conditions_setting_banner
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_share_view_form
 #, python-format
 msgid "Close"
 msgstr "סגור"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item_role__color
 #: model:ir.model.fields,field_description:sign.field_sign_request__color
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__color
 #: model:ir.model.fields,field_description:sign.field_sign_template__color
 msgid "Color"
 msgstr "צבע"
@@ -730,12 +431,7 @@ msgstr "צבע"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__color
 msgid "Color Index"
-msgstr "אינדקס צבעים"
-
-#. module: sign
-#: model:ir.model,name:sign.model_res_company
-msgid "Companies"
-msgstr "חברות"
+msgstr "מפתח צבעים"
 
 #. module: sign
 #: model:sign.item.role,name:sign.sign_item_role_company
@@ -745,43 +441,29 @@ msgid "Company"
 msgstr "חברה"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__communication_company_id
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__communication_company_id
-msgid "Company used for communication"
-msgstr "חברה המשמשת לתקשורת"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__completed
-#, python-format
 msgid "Completed"
-msgstr "הושלם"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__completed_document
 msgid "Completed Document"
-msgstr "מסמך שהושלם"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__completed_document_attachment_ids
-msgid "Completed Documents"
-msgstr "מסמכים שהושלמו"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__nb_closed
 msgid "Completed Signatures"
-msgstr "חתימות שהושלמו"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__completion_date
 msgid "Completion Date"
-msgstr "תאריך סיום"
+msgstr ""
 
 #. module: sign
-#: model:ir.model,name:sign.model_res_config_settings
-msgid "Config Settings"
-msgstr "הגדר הגדרות"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
+msgid "Completion History<br/>"
+msgstr ""
 
 #. module: sign
 #: model:ir.ui.menu,name:sign.menu_sign_configuration
@@ -789,72 +471,26 @@ msgid "Configuration"
 msgstr "תצורה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Configure the field types that can be used to sign documents (placeholder, auto-completion, ...)"
-msgstr "הגדר את סוגי השדות שבהם ניתן להשתמש כדי לחתום על מסמכים (מציין מיקום, השלמה אוטומטית, ...)"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_duplicate_template_with_pdf_view_form
-msgid "Confirm"
-msgstr "אשר"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Congrats, your signature is ready to be submitted!"
-msgstr "מזל טוב, החתימה שלך מוכנה!"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Congratulations, you signed your first document!"
-msgstr "מזל טוב, חתמת על המסמך הראשון שלך!"
-
-#. module: sign
 #: model:ir.model,name:sign.model_res_partner
+#: model:ir.model.fields,field_description:sign.field_sign_request_item__partner_id
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__partner_ids
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__partner_id
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 msgid "Contact"
 msgstr "איש קשר"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Contacts"
-msgstr "אנשי קשר"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Contacts in copy"
-msgstr "אנשי קשר משויכים"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_send_request__cc_partner_ids
-msgid "Contacts in copy will be notified by email once the document is either fully signed or refused."
-msgstr "אנשי קשר משויכים יקבלו התראה באימייל כשהמסמך חתום במלואו או סורב."
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__cc_partner_ids
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__cc_partner_ids
+#: model:ir.model.fields,field_description:sign.field_sign_send_request__follower_ids
 msgid "Copy to"
-msgstr "העתק ל"
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_template_tag_action
-msgid "Create Sign Tags"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-msgid "Create date"
-msgstr "יצירת תאריך"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Create: \""
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_item__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__create_uid
@@ -863,15 +499,16 @@ msgstr "יצירת תאריך"
 #: model:ir.model.fields,field_description:sign.field_sign_request__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__create_uid
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_template__create_uid
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__create_uid
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__create_uid
 msgid "Created by"
 msgstr "נוצר על-ידי"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_item__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__create_date
@@ -880,9 +517,11 @@ msgstr "נוצר על-ידי"
 #: model:ir.model.fields,field_description:sign.field_sign_request__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__create_date
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_template__create_date
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__create_date
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__create_date
 msgid "Created on"
 msgstr "נוצר ב-"
@@ -893,87 +532,38 @@ msgid "Creation"
 msgstr "יצירה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "Current status of the signature request"
-msgstr "סטטוס עדכני של בקשת החתימה"
-
-#. module: sign
 #: model:sign.item.role,name:sign.sign_item_role_customer
 msgid "Customer"
 msgstr "לקוח"
 
 #. module: sign
-#: model:ir.model.fields,help:sign.field_sign_request_item__access_url
-msgid "Customer Portal URL"
-msgstr "כתובת אתר של פורטל לקוחות"
-
-#. module: sign
-#: model:ir.ui.menu,name:sign.sign_template_menu
-msgid "Dashboard"
-msgstr "לוח בקרה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
 #: model:sign.item.type,name:sign.sign_item_type_date
 #: model:sign.item.type,placeholder:sign.sign_item_type_date
-#, python-format
 msgid "Date"
 msgstr "תאריך"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Date (UTC)"
-msgstr "תאריך (UTC)"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item_role__default
-msgid "Default"
-msgstr "ברירת מחדל"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item_type__default_height
 msgid "Default Height"
-msgstr "גובה ברירת מחדל"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item_type__default_width
 msgid "Default Width"
-msgstr "רוחב ברירת מחדל"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item_role__sequence
-msgid "Default order"
 msgstr ""
 
 #. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Delete"
 msgstr "מחק"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_items.xml:0
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Delete sign"
-msgstr "מחיקת חתימה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_items.xml:0
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Delete sign item"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Deliver one-time codes by SMS to identify signatories when signing a document."
-msgstr "מסור קודים חד-פעמיים באמצעות SMS לזיהוי חותמים בעת חתימה על מסמך."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
 msgid "Details"
 msgstr "פרטים"
@@ -981,27 +571,22 @@ msgstr "פרטים"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_res_users__sign_signature
 msgid "Digital Signature"
-msgstr "חתימה דיגיטלית"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_users__sign_signature_frame
-msgid "Digital Signature Frame"
-msgstr "מסגרת חתימה דיגיטלית"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.res_users_view_form
 msgid "Digital Signatures"
-msgstr "חתימות דיגיטליות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_res_users__sign_initials
 msgid "Digitial Initials"
-msgstr "ראשי תיבות דיגיטליות"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_users__sign_initials_frame
-msgid "Digitial Initials Frame"
-msgstr "מסגרת ראשי תיבות דיגיטלית"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_send_copy_view_form
+msgid "Discard"
+msgstr "בטל"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_item_view_form
@@ -1009,7 +594,6 @@ msgid "Display"
 msgstr "הצג"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_item__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__display_name
@@ -1018,41 +602,30 @@ msgstr "הצג"
 #: model:ir.model.fields,field_description:sign.field_sign_request__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__display_name
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_template__display_name
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__display_name
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__display_name
 msgid "Display Name"
-msgstr "שם לתצוגה"
+msgstr "הצג שם"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__sign_preview_ready
-msgid "Display sign preview button"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 msgid "Document"
 msgstr "מסמך"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
-msgid "Document <i class=\"fa fa-download\"/>"
-msgstr "מסמך <i class=\"fa fa-download\"/>"
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Document Details"
-msgstr "פרטי המסמך"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__reference
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__reference
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_search
 msgid "Document Name"
-msgstr "שם מסמך"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__page
@@ -1067,121 +640,84 @@ msgstr "תבנית מסמך"
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Document/Signer"
-msgstr "מסמך/חותם"
-
-#. module: sign
-#: model:ir.actions.act_window,name:sign.sign_request_action
-#: model:ir.ui.menu,name:sign.sign_request_menu
-msgid "Documents"
-msgstr "מסמכים"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-msgid "Download"
-msgstr "הורד"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign._doc_sign
-msgid "Download Certificate"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/PDFIframe.js:0
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #: model_terms:ir.ui.view,arch_db:sign._doc_sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 #, python-format
 msgid "Download Document"
-msgstr "הורד את המסמך"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/PDFIframe.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Download original document"
-msgstr "הורד מסמך מקורי"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_type_buttons.xml:0
+#: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__draft
+msgid "Draft"
+msgstr "טיוטה"
+
+#. module: sign
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Drag & Drop a field in the PDF"
-msgstr "גרור ושחרר שדה ב PDF"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Draw your most beautiful signature!<br>You can also create one automatically or load a signature from your computer."
-msgstr "צייר את החתימה היפה ביותר שלך! <br> אתה יכול גם ליצור אחת אוטומטית או לטעון חתימה מהמחשב שלך."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Dropdown menu"
 msgstr "תפריט נשלף"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Duplicate"
 msgstr "שכפל"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
 msgid "Duplicated Template"
-msgstr "תבנית משוכפלת"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "ERROR: Invalid PDF file!"
-msgstr "שגיאה: קובץ PDF לא חוקי!"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
+msgid "Edit Fields"
+msgstr ""
 
 #. module: sign
-#: model:ir.actions.report,name:sign.sign_report_green_savings_action
-msgid "Ecological Savings by using Electronical Signatures"
-msgstr "חיסכון אקולוגי על ידי שימוש בחתימות אלקטרוניות"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
+msgid "Edit fields"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign._doc_sign
-msgid "Edit"
-msgstr "ערוך"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Edit field types"
-msgstr "ערוך סוגי שדות"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Edit template name"
-msgstr "ערוך את שם התבנית"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__signer_email
 #: model:sign.item.type,name:sign.sign_item_type_email
 #: model:sign.item.type,placeholder:sign.sign_item_type_email
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Email"
 msgstr "דוא\"ל"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__subject
-msgid "Email Subject"
-msgstr "נושא האימייל"
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "Email Verification"
-msgstr "אימות אימייל"
+msgid "Email Validation"
+msgstr ""
 
 #. module: sign
 #: model:sign.item.role,name:sign.sign_item_role_employee
@@ -1189,66 +725,34 @@ msgid "Employee"
 msgstr "עובד"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__group_show_sign_order
-#: model:res.groups,name:sign.show_sign_order
-msgid "Enable Signing Order"
-msgstr "הפעל סדר בתהליך החתימה"
-
-#. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Enter the code received through SMS to complete your signature"
-msgstr "הזן את הקוד שהתקבל באמצעות SMS להשלמת חתימתך"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Error"
 msgstr "שגיאה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-msgid "Error 404"
-msgstr "שגיאה 404"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "Existing sign items are not allowed to be changed"
-msgstr "פריטי חתימה קיימים לא ניתנים לשינוי"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Expiration & Reminders"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_request__state__expired
-msgid "Expired"
-msgstr ""
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-msgid "Expiring Soon"
-msgstr "פג תוקף בקרוב"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item_role__auth_method
-msgid "Extra Authentication Step"
-msgstr "שלב אימות נוסף"
+msgid "Exception Activities"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__favorited_ids
 msgid "Favorite of"
-msgstr "מועדף של"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__favorited_ids
-msgid "Favorited Users"
-msgstr "משתמשים מועדפים"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__name
@@ -1258,40 +762,18 @@ msgstr "שם שדה"
 
 #. module: sign
 #: model:ir.ui.menu,name:sign.sign_item_type_menu
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
 msgid "Field Types"
-msgstr "סוגי שדה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_type_buttons.xml:0
-#: code:addons/sign/static/src/xml/sign_backend.xml:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
-#, python-format
-msgid "Fields"
-msgstr "שדות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_item
 msgid "Fields to be sign on Document"
-msgstr "שדות לחתימה במסמך"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__datas
-msgid "File Content (base64)"
-msgstr "תוכן קובץ (base64)"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/views/hooks.js:0
-#, python-format
-msgid "File Error"
-msgstr "שגיאת קובץ"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__new_pdf
-msgid "File name"
-msgstr "שם קובץ"
+msgid "File Content"
+msgstr "תכולת קובץ"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__filename
@@ -1299,25 +781,19 @@ msgid "Filename"
 msgstr "שם קובץ"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Filled by"
-msgstr "ממולא על ידי"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Final Validation"
-msgstr "אימות סופי"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Follow the guide to sign the document."
-msgstr "עקוב אחר ההוראות לחתימה על מסמך."
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_follower_ids
@@ -1325,58 +801,25 @@ msgid "Followers"
 msgstr "עוקבים"
 
 #. module: sign
+#: model:ir.model.fields,field_description:sign.field_sign_request__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "עוקבים (ערוצים)"
+
+#. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "עוקבים (לקוחות/ספקים)"
+msgstr "עוקבים (שותפים)"
 
 #. module: sign
-#: model:ir.model.fields,help:sign.field_sign_request__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "פונט מדהים למשל עבור משימות fa-tasks"
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
+msgid "From:"
+msgstr "מאת:"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "For 1000kg of paper usage, with 10% of recycled paper, environmental savings are based on"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_item_role__auth_method
-msgid "Force the signatory to identify using a second authentication method"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_items.xml:0
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#: code:addons/sign/static/src/xml/sign_modal.xml:0
-#, python-format
-msgid "Frame"
-msgstr "מסגרת"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item_value__frame_has_hash
-msgid "Frame Has Hash"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__frame_hash
-msgid "Frame Hash"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item_value__frame_value
-msgid "Frame Value"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
+#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__signed
 #: model:ir.model.fields.selection,name:sign.selection__sign_request__state__signed
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-#, python-format
 msgid "Fully Signed"
-msgstr "חתום במלואו"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
@@ -1384,11 +827,11 @@ msgid "Future Activities"
 msgstr "פעילויות עתידיות"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Generate PDF"
-msgstr "צור PDF"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
@@ -1396,54 +839,9 @@ msgid "Geolocation"
 msgstr "מיקום גיאוגרפי"
 
 #. module: sign
-#: model:ir.ui.menu,name:sign.sign_report_green_savings
-msgid "Green Savings"
-msgstr "חיסכון ירוק"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_container_pdf
-msgid "Green Savings Report"
-msgstr "דוחות חיסכון ירוק"
-
-#. module: sign
-#: model:ir.model,name:sign.model_report_sign_green_savings_report
-msgid "Green Savings Report model"
-msgstr "מודל דו\"ח חיסכון ירוק"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_container
-msgid "Green Savings Summary"
-msgstr "סיכום חסכון ירוק"
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Group By"
 msgstr "קבץ לפי"
-
-#. module: sign
-#: model:sign.template.tag,name:sign.sign_template_tag_1
-msgid "HR"
-msgstr "משאבי אנוש"
-
-#. module: sign
-#: model:ir.model,name:sign.model_ir_http
-msgid "HTTP Routing"
-msgstr "ניתוב HTTP"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__has_default_template
-msgid "Has Default Template"
-msgstr "יש תבנית ברירת מחדל"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__has_message
-msgid "Has Message"
-msgstr "יש הודעה"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__has_sign_requests
-msgid "Has Sign Requests"
-msgstr "יש בקשות לחתימה"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__height
@@ -1451,40 +849,6 @@ msgid "Height"
 msgstr "גובה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_refused
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
-msgid "Hello"
-msgstr "שלום"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_item_type__tip
-msgid "Hint displayed in the signing hint"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
-msgid "Home"
-msgstr "בית"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_container
-msgid "How are these results calculated?"
-msgstr "כיצד מחושבות תוצאות אלו?"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "How do we calculate?"
-msgstr "איך אנחנו מחשבים?"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "I've got a total weight, and now?"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__id
 #: model:ir.model.fields,field_description:sign.field_sign_item__id
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__id
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__id
@@ -1493,27 +857,24 @@ msgstr ""
 #: model:ir.model.fields,field_description:sign.field_sign_request__id
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__id
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__id
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__id
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__id
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__id
 #: model:ir.model.fields,field_description:sign.field_sign_template__id
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__id
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__id
 msgid "ID"
-msgstr "מזהה"
+msgstr "תעודה מזהה"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "IP"
-msgstr "IP"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "IP Address"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__ip
 msgid "IP address of the visitor"
-msgstr "כתובת ה- IP של המבקר"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_exception_icon
@@ -1523,77 +884,30 @@ msgstr "סמל"
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "סמל לציון פעילות חריגה."
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__module_sign_itsme
-msgid "Identify with itsme®"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__message_needaction
+#: model:ir.model.fields,help:sign.field_sign_request__message_unread
 msgid "If checked, new messages require your attention."
-msgstr "אם מסומן, הודעות חדשות דורשות את תשומת לבך."
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_item_role__change_authorized
-#: model:ir.model.fields,help:sign.field_sign_request_item__change_authorized
-msgid "If checked, recipient of a document with this role can be changed after having sent the request. Useful to replace a signatory who is out of office, etc."
-msgstr "אם מסומן, ניתן לשנות נמען של מסמך עם תפקיד זה לאחר שליחת הבקשה. שימושי להחלפת חותם שאינו מתפקידו וכו'."
+msgstr "אם מסומן, אז הודעה חדשה דורשת התייחסותכם."
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__message_has_error
 #: model:ir.model.fields,help:sign.field_sign_request__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "אם מסומן, בחלק מההודעות קיימת שגיאת משלוח."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
-msgid ""
-"If you do not want to receive these notifications anymore, you can disable the extra-authentication step in the \n"
-"                        <code>\n"
-"                            Sign &gt; Configuration &gt; Roles\n"
-"                        </code> \n"
-"                        menu."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
-msgid "If you do not wish to receive future reminders about this document,"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
-msgid "If you wish, you can request the document again after buying more credits for the operation."
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Ignore"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__ignored
-msgid "Ignored"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__in_progress_count
-msgid "In Progress Count"
-msgstr ""
+msgstr "אם סומן, בחלק מההודעות קיימת שגיאת משלוח."
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "In favorites, remove it"
-msgstr "במועדפים, הסר אותו"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__log_hash
 msgid "Inalterability Hash"
-msgstr "הצפנת המידע עם רישומו בספרים"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_item_view_form
@@ -1603,56 +917,63 @@ msgstr "מידע"
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_item_type__item_type__initial
 msgid "Initial"
-msgstr "התחלתי"
+msgstr ""
 
 #. module: sign
 #: model:sign.item.type,name:sign.sign_item_type_initial
 #: model:sign.item.type,placeholder:sign.sign_item_type_initial
 msgid "Initials"
-msgstr "ראשי תיבות"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Insert your terms & conditions here..."
-msgstr "הכנס את התנאים וההגבלות שלך כאן..."
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__integrity
 msgid "Integrity of the Sign request"
-msgstr "תקינות של בקשת החתימה"
+msgstr ""
+
+#. module: sign
+#: model:ir.model.fields,field_description:sign.field_sign_template__favorited_ids
+msgid "Invited Users"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_is_follower
 msgid "Is Follower"
-msgstr "עוקב"
+msgstr "האם עוקב"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__is_mail_sent
-msgid "Is Mail Sent"
-msgstr "האם דוא\"ל נשלח"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__is_sharing
-msgid "Is Sharing"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "Is Signing"
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__is_one_responsible
+msgid "Is One Responsible"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__is_user_signer
 msgid "Is User Signer"
-msgstr "חתימת משתמש"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__last_action_date
 msgid "Last Action Date"
-msgstr "תאריך הפעולה האחרון"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__write_uid
+#: model:ir.model.fields,field_description:sign.field_sign_item____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_item_option____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_item_role____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_item_type____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_log____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_request____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_request_item____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_request_item_value____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_send_request____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_send_request_signer____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_template____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_template_share____last_update
+#: model:ir.model.fields,field_description:sign.field_sign_template_tag____last_update
+msgid "Last Modified on"
+msgstr "שינוי אחרון ב"
+
+#. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__write_uid
@@ -1661,15 +982,16 @@ msgstr "תאריך הפעולה האחרון"
 #: model:ir.model.fields,field_description:sign.field_sign_request__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__write_uid
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_template__write_uid
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__write_uid
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__write_uid
 msgid "Last Updated by"
 msgstr "עודכן לאחרונה על-ידי"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_item__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_item_option__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_item_role__write_date
@@ -1678,77 +1000,51 @@ msgstr "עודכן לאחרונה על-ידי"
 #: model:ir.model.fields,field_description:sign.field_sign_request__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__write_date
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_template__write_date
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__write_date
 #: model:ir.model.fields,field_description:sign.field_sign_template_tag__write_date
 msgid "Last Updated on"
 msgstr "עדכון אחרון ב"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__last_reminder
-msgid "Last reminder"
-msgstr ""
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Late Activities"
-msgstr "פעילויות באיחור"
+msgstr "פעילויות מאוחרות"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__latitude
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__latitude
 msgid "Latitude"
-msgstr "קו רוחב"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.js:0
-#, python-format
-msgid "Left"
-msgstr "שמאל"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Let's <b>prepare & sign</b> our first document."
-msgstr "בואו <b> נכין & נחתום </b>את המסמך הראשון."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Let's send the request by email."
-msgstr "בואו נשלח את הבקשה באימייל."
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__redirect_url_text
 msgid "Link Label"
-msgstr "קשר תווית"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__activity_id
-msgid "Linked Activity"
-msgstr "פעילות מקושרת"
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__url
+msgid "Link to Share"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__log_date
 msgid "Log Date"
-msgstr "תאריך רישום"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_log.py:0
-#, python-format
-msgid "Log history of sign requests cannot be deleted!"
 msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_log.py:0
 #, python-format
-msgid "Log history of sign requests cannot be modified!"
+msgid "Log history of sign requests cannot be deleted !"
+msgstr ""
+
+#. module: sign
+#: code:addons/sign/models/sign_log.py:0
+#, python-format
+msgid "Log history of sign requests cannot be modified !"
 msgstr ""
 
 #. module: sign
@@ -1760,43 +1056,25 @@ msgstr "לוגו"
 #: model:ir.model.fields,field_description:sign.field_sign_request__sign_log_ids
 #: model_terms:ir.ui.view,arch_db:sign.sign_log_view_tree
 msgid "Logs"
-msgstr "רישומים"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__longitude
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__longitude
 msgid "Longitude"
-msgstr "קו אורך"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__mail_sent_order
-msgid "Mail Sent Order"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__action__update_mail
-msgid "Mail Update"
-msgstr "עדכון במייל"
+#: model:ir.model.fields,field_description:sign.field_sign_request__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "קובץ ראשי מצורף "
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
-#, python-format
-msgid "Malformed expression: %(exp)s"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__group_manage_template_access
-#: model:res.groups,name:sign.manage_template_access
-msgid "Manage template access"
-msgstr "נהל את הגישה לתבנית"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Mandatory field"
-msgstr "שדה חובה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__message
@@ -1806,17 +1084,7 @@ msgstr "הודעה"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_has_error
 msgid "Message Delivery error"
-msgstr "הודעת שגיאת שליחה"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_send_request__message_cc
-msgid "Message to be sent to contacts in copy of the signed document"
-msgstr "ההודעה תשלח לאנשי קשר המשויכים למסמך החתימה"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_send_request__message
-msgid "Message to be sent to signers of the specified document"
-msgstr "הודעה לשלוח לחותמים על המסמך הזה"
+msgstr "הודעת שגיאת משלוח"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_ids
@@ -1826,7 +1094,12 @@ msgstr "הודעות"
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.encrypted_ask_password
 msgid "Missing Password"
-msgstr "סיסמה חסרה"
+msgstr ""
+
+#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
+msgid "Missing signature request"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__sms_number
@@ -1834,31 +1107,21 @@ msgid "Mobile"
 msgstr "נייד"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Modify Template"
-msgstr "שינוי תבנית"
-
-#. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_item_type__item_type__textarea
 #: model:sign.item.type,name:sign.sign_item_type_multiline_text
 #: model:sign.item.type,placeholder:sign.sign_item_type_multiline_text
 msgid "Multiline Text"
-msgstr "טקסט מרובה שורות"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_share_view_form
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_share_view_form
 msgid "Multiple Signature Requests"
-msgstr "בקשות חתימה מרובות"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "מועד אחרון לפעילות שלי"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "My Documents"
-msgstr "המסמכים שלי"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
@@ -1869,22 +1132,11 @@ msgstr "המועדפים שלי"
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "My Requests"
-msgstr "הבקשות שלי"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_search
 msgid "My Templates"
-msgstr "התבניות שלי"
-
-#. module: sign
-#: model:ir.actions.act_window,name:sign.sign_request_my_requests_action
-#: model:ir.ui.menu,name:sign.sign_request_my_requests
-msgid "My requests"
-msgstr "הבקשות שלי"
-
-#. module: sign
-#: model:sign.template.tag,name:sign.sign_template_tag_2
-msgid "NDA"
 msgstr ""
 
 #. module: sign
@@ -1896,71 +1148,41 @@ msgid "Name"
 msgstr "שם"
 
 #. module: sign
-#: model:ir.model.constraint,message:sign.constraint_sign_item_role_name_uniq
-msgid "Name already exists!"
-msgstr ""
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
 msgid "Name for the file"
-msgstr "שם הקובץ"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 msgid "Name of the file"
-msgstr "שם הקובץ"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
 msgid "Name or email..."
-msgstr "שם או דוא\"ל ..."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Nearly there, keep going!"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__need_my_signature
-msgid "Need My Signature"
-msgstr "צריך את החתימה שלי"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_iframe.js:0
-#: code:addons/sign/static/src/js/common/PDFIframe.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Need a valid PDF to add signature fields!"
+msgid "Need a valid PDF to add signature fields !"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__new_template
-msgid "New Template Name"
-msgstr "שם תבנית חדש"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "Newest"
-msgstr "החדש ביותר"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "הפעילות הבאה ביומן"
+#: model_terms:ir.ui.view,arch_db:sign.doc_sign
+msgid "Need to sign? Check your inbox to get your secure access"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "מועד אחרון לפעילות הבאה"
+msgstr "מועד האחרון לפעילות הבאה"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_summary
 msgid "Next Activity Summary"
-msgstr "תיאור הפעילות הבאה "
+msgstr "תקציר הפעילות הבאה "
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_type_id
@@ -1968,108 +1190,49 @@ msgid "Next Activity Type"
 msgstr "סוג הפעילות הבאה"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Next Document"
-msgstr "מסמך הבא"
+msgid "Next signatory (%s)"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Next Template"
-msgstr "תבנית הבאה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Next signatory (\"%s\")"
-msgstr "החתימה הבאה (\"%s\")"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Next signatory is \"%s\""
-msgstr "החתימה הבאה היא \"%s\""
+msgid "Next signatory is %s"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.actions.act_window,help:sign.sign_request_action
-msgid "No document yet"
-msgstr "אין מסמך עדיין"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "No specified reason"
-msgstr "אין סיבה ספציפית"
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_template_action
-msgid "No template yet"
-msgstr "אין תבנית עדיין"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "None"
-msgstr "אף אחד"
+msgid "No documents to sign"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Not in favorites, add it"
-msgstr "לא במועדפים, הוסף אותו"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Not in favorites, set it"
-msgstr "לא במועדפים, הגדר את זה"
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_waiting_for_me_action
-msgid "Nothing to sign at the moment!"
-msgstr "אין על מה לחתום כרגע!"
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_my_requests_action
-msgid "Nothing yet!"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_needaction_counter
 msgid "Number of Actions"
-msgstr "מספר פעולות"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_send_request__reminder
-msgid "Number of day between two reminder"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Number of documents in progress for this template."
-msgstr "מספר המסמכים הנמצאים בתהליך עבור תבנית זו"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Number of documents signed for this template."
-msgstr "מספר המסמכים החתומים עבור תבנית זו"
+msgstr "מספר הפעולות"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_has_error_counter
 msgid "Number of errors"
-msgstr "מספר השגיאות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr "מספר הודעות המחייבות פעולה"
+msgstr "מספר ההודעות המחייבות פעולה"
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__message_has_error_counter
@@ -2077,54 +1240,20 @@ msgid "Number of messages with delivery error"
 msgstr "מספר הודעות עם שגיאת משלוח"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__num_pages
-msgid "Number of pages"
-msgstr "מספר דפים"
+#: model:ir.model.fields,help:sign.field_sign_request__message_unread_counter
+msgid "Number of unread messages"
+msgstr "מספר ההודעות שלא נקראו"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "One can weights 15 g"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "One liter of gas fuel will produce 8.9 kg of CO²"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
-msgid "One or more selection items have no associated options"
-msgstr ""
+msgid "Ok"
+msgstr "אישור"
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
-#, python-format
-msgid "One uploaded file cannot be read. Is it a valid PDF?"
-msgstr "לא ניתן לקרוא קובץ אחד שהועלה. האם זה PDF חוקי?"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/terms.py:0
-#, python-format
-msgid "Oops"
-msgstr "אופס"
-
-#. module: sign
-#: model:sign.template,redirect_url_text:sign.template_sign_1
-#: model:sign.template,redirect_url_text:sign.template_sign_2
-#: model:sign.template,redirect_url_text:sign.template_sign_3
-#: model:sign.template,redirect_url_text:sign.template_sign_4
-#: model:sign.template,redirect_url_text:sign.template_sign_5
-#: model:sign.template,redirect_url_text:sign.template_sign_tour
-msgid "Open Link"
-msgstr "פתיחת קישור"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.ignore_sign_request_item
-msgid "Operation successful"
+#: model:ir.model.fields.selection,name:sign.selection__sign_template__privacy__invite
+msgid "On Invitation"
 msgstr ""
 
 #. module: sign
@@ -2135,104 +1264,110 @@ msgstr "אפשרות"
 #. module: sign
 #: model:ir.model,name:sign.model_sign_item_option
 msgid "Option of a selection Field"
-msgstr "אפשרות של שדה בחירה"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
 msgid "Optional Message..."
-msgstr "הודעה אופציונלית ..."
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_template__redirect_url
 msgid "Optional link for redirection after signature"
-msgstr "קישור אופציונלי להפניה מחדש לאחר חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_template__redirect_url_text
 msgid "Optional text to display on the button link"
-msgstr "טקסט אופציונלי להצגה בקישור הכפתור"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Options"
 msgstr "אפשרויות"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_duplicate_template_pdf__original_template_id
-msgid "Original File"
-msgstr "קובץ מקורי"
+#: model_terms:ir.actions.act_window,help:sign.sign_template_action
+msgid "Or,"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #: model_terms:ir.ui.view,arch_db:sign.encrypted_ask_password
 #, python-format
 msgid "PDF is encrypted"
-msgstr "PDF מוצפן"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "Participants"
-msgstr "משתתף"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__partner_id
 msgid "Partner"
-msgstr "לקוח/ספק"
+msgstr "שותף"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#: model:ir.model.fields,help:sign.field_sign_item_type__auto_field
+msgid "Partner field to use to auto-complete the fields of this type"
+msgstr ""
+
+#. module: sign
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Password is incorrect."
-msgstr "הסיסמה שגויה."
+msgstr ""
 
 #. module: sign
 #: model:sign.item.type,name:sign.sign_item_type_phone
 #: model:sign.item.type,placeholder:sign.sign_item_type_phone
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Phone"
 msgstr "טלפון"
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Phone Number"
 msgstr "מספר טלפון"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #: model:ir.model.fields,field_description:sign.field_sign_item_type__placeholder
 #, python-format
 msgid "Placeholder"
-msgstr "שומר מקום"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "Please configure senders'(%s) email addresses"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__access_url
-msgid "Portal Access URL"
-msgstr "כתובת גישה לפורטל"
+#: model_terms:ir.ui.view,arch_db:sign.doc_sign
+msgid "Please Review And Act On This Document"
+msgstr ""
+
+#. module: sign
+#: code:addons/sign/models/sign_request.py:0
+#: code:addons/sign/models/sign_request.py:0
+#: code:addons/sign/models/sign_request.py:0
+#, python-format
+msgid "Please configure the sender's email address"
+msgstr ""
+
+#. module: sign
+#: code:addons/sign/models/sign_request.py:0
+#: code:addons/sign/models/sign_request.py:0
+#, python-format
+msgid "Please configure the signer's email address"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__posX
 msgid "Position X"
-msgstr "מיקום X"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__posY
 msgid "Position Y"
-msgstr "מיקום Y"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
@@ -2240,16 +1375,21 @@ msgid "Preview"
 msgstr "תצוגה מקדימה"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/PDFIframe.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Print original document"
-msgstr "הדפס את המסמך המקורי "
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Printed on"
-msgstr "הודפס ב"
+msgstr ""
+
+#. module: sign
+#: model:ir.model.fields,field_description:sign.field_sign_template__privacy
+msgid "Privacy"
+msgstr "פרטיות"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__progress
@@ -2257,107 +1397,50 @@ msgid "Progress"
 msgstr "התקדמות"
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "Public User"
-msgstr "משתמש כללי"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
+msgid "Properties"
+msgstr "מאפיינים"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Re-send SMS"
-msgstr "שלח מחדש SMS"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Reason"
-msgstr "סיבה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__redirect_url
 msgid "Redirect Link"
-msgstr "קישור להפניה מחדש"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__action__refuse
-#, python-format
-msgid "Refuse"
-msgstr "דחה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#: model_terms:ir.ui.view,arch_db:sign._doc_sign
-#: model_terms:ir.ui.view,arch_db:sign.doc_sign
-#, python-format
-msgid "Refuse Document"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_request__state__refused
-#: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__refused
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
-msgid "Refused"
-msgstr "נדחה"
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__refused
-msgid "Refused Signature"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "Refused on"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__reminder
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__reminder
-msgid "Reminder"
-msgstr ""
-
-#. module: sign
-#: model:ir.ui.menu,name:sign.sign_reports
-msgid "Reports"
-msgstr "דוחות"
+#: model:ir.model.fields,field_description:sign.field_sign_request_send_copy__request_id
+msgid "Request"
+msgstr "בקשה"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__request_item_infos
 msgid "Request Item Infos"
-msgstr "בקש מידע על פריט"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/activity/activity_patch.xml:0
-#: model:ir.model.fields.selection,name:sign.selection__mail_activity_type__category__sign_request
-#: model:mail.activity.type,name:sign.mail_activity_data_signature_request
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
-msgid "Request Signature"
-msgstr "בקשת חתימה"
+msgid "Request a Signature"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/wizard/sign_send_request.py:0
-#, python-format
-msgid "Request expiration date must be set in the future."
+#: model_terms:ir.actions.act_window,help:sign.sign_request_action
+msgid ""
+"Request a signature to upload a template (or use an existing one)\n"
+"                to automate your signature process."
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__nb_total
 msgid "Requested Signatures"
-msgstr "חתימות דרושות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__required
@@ -2365,33 +1448,31 @@ msgid "Required"
 msgstr "נדרש"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_item_view_tree
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 #, python-format
 msgid "Resend"
-msgstr "שלח שוב"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#, python-format
-msgid "Resend the invitation"
-msgstr "שלח שוב את ההזמנה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#, python-format
-msgid "Resent!"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/dialogs/initial_all_pages_dialog.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#, python-format
+msgid "Resend the invitation"
+msgstr ""
+
+#. module: sign
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#, python-format
+msgid "Resent !"
+msgstr ""
+
+#. module: sign
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #: model:ir.model.fields,field_description:sign.field_sign_item__responsible_id
-#: model:ir.model.fields,field_description:sign.field_sign_template__user_id
 #, python-format
 msgid "Responsible"
 msgstr "אחראי"
@@ -2399,7 +1480,7 @@ msgstr "אחראי"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__responsible_count
 msgid "Responsible Count"
-msgstr "כמות אחראים"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__activity_user_id
@@ -2410,14 +1491,7 @@ msgstr "משתמש אחראי"
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
 msgid "Restore"
-msgstr "שחזר"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.js:0
-#, python-format
-msgid "Right"
-msgstr "ימין"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__role_id
@@ -2428,81 +1502,70 @@ msgstr "תפקיד"
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_item_role_view_tree
 msgid "Role Name"
-msgstr "שם תפקיד"
+msgstr ""
 
 #. module: sign
 #: model:ir.ui.menu,name:sign.sign_item_role_menu
 msgid "Roles"
-msgstr "תפקידים"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_iframe.js:0
-#, python-format
-msgid "Rotate Clockwise"
-msgstr "לסובב עם כיוון השעון"
+#: model:ir.model.fields,field_description:sign.field_sign_item_role__sms_authentification
+msgid "SMS Authentication"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "שגיאה בשליחת SMS"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "SMS Sent"
-msgstr "SMS נשלח"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__sms_token
 msgid "SMS Token"
-msgstr "אסימון SMS"
+msgstr ""
 
 #. module: sign
-#: model:sign.template.tag,name:sign.sign_template_tag_3
-msgid "Sales"
-msgstr "מכירות"
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
+msgid "SMS Validation"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__action__save
-#, python-format
-msgid "Save"
-msgstr "שמור"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_body.js:0
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.js:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Saved"
-msgstr "נשמר"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "Search <span class=\"nolabel\"> (in Document)</span>"
-msgstr "לחפש <span class=\"nolabel\">(במסמך)</span>"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__access_token
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__access_token
 msgid "Security Token"
-msgstr "אסימון אבטחה"
+msgstr ""
 
 #. module: sign
 #: model:sign.item.type,tip:sign.sign_item_type_selection
 msgid "Select an option"
-msgstr "בחר אפשרות"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Select the contact who should sign, according to their role.<br>In this example, select your own contact to sign the document yourself."
+msgid "Select available options"
+msgstr ""
+
+#. module: sign
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Select the responsible"
 msgstr ""
 
 #. module: sign
@@ -2515,22 +1578,21 @@ msgstr "בחירה"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__option_ids
 msgid "Selection options"
-msgstr "אפשרויות בחירה"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_item_view_tree
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_send_copy_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_tree
 #, python-format
 msgid "Send"
 msgstr "שלח"
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Send SMS"
@@ -2539,569 +1601,343 @@ msgstr "שלח SMS"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__signer_id
 msgid "Send To"
-msgstr "שלח אל"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Send a reminder every"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
+msgid "Send a Copy"
+msgstr ""
+
+#. module: sign
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
-msgid "Send the invitation"
-msgstr "שליחת ההזמנה"
+msgid "Send a Request"
+msgstr ""
+
+#. module: sign
+#: model:ir.actions.act_window,name:sign.action_sign_request_send_copy
+msgid "Send a copy"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_request__state__sent
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Sent"
 msgstr "נשלח"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__nb_wait
 msgid "Sent Requests"
-msgstr "שלח בקשות"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Sent by"
 msgstr ""
 
 #. module: sign
-#: model:ir.actions.act_window,name:sign.sign_settings_action
-#: model:ir.ui.menu,name:sign.sign_item_settings_menu
-msgid "Settings"
-msgstr "הגדרות"
+#: model:ir.model.fields,help:sign.field_sign_template__privacy
+msgid ""
+"Set who can use this template:\n"
+"- All Users: all users of the Sign application can view and use the template\n"
+"- On Invitation: only invited users can view and use the template\n"
+"Invited users can always edit the document template.\n"
+"Existing requests based on this template will not be affected by changes."
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_tree
 #, python-format
 msgid "Share"
-msgstr "שתף"
+msgstr "שיתוף"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_share_view_form
-msgid "Share & Close"
+#: model:ir.actions.act_window,name:sign.action_sign_template_share
+msgid "Share Document by Link"
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
-#, python-format
-msgid "Share Document by Link"
-msgstr "שתף מסמך באמצעות קישור"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__share_link
+#: model:ir.model.fields,field_description:sign.field_sign_template__share_link
 msgid "Share Link"
-msgstr "שתף קישור"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/main.py:0
-#: code:addons/sign/models/sign_template.py:0
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__shared
-#: model:ir.model.fields.selection,name:sign.selection__sign_request__state__shared
-#, python-format
-msgid "Shared"
-msgstr "משותף"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Show all records which has next action date is before today"
-msgstr "הצג את כל הרשומות שתאריך הפעולה הבא שלהן הוא עד היום"
+msgstr "הצג את כל הרשומות שתאריך הפעולה הבא שלהם הוא לפני היום"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Show standard terms & conditions on signature requests"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#: code:addons/sign/static/src/xml/sign_common.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/wizard/sign_send_request.py:0
+#: code:addons/sign/wizard/sign_send_request.py:0
+#: code:addons/sign/wizard/sign_template_share.py:0
 #: model:ir.ui.menu,name:sign.menu_document
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
 #, python-format
 msgid "Sign"
-msgstr "חתימות"
+msgstr "חתום"
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__use_sign_terms
-msgid "Sign Default Terms & Conditions"
-msgstr "הגדר ברירת מחדל של תנאים והגבלות במסמך"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_company__sign_terms
-msgid "Sign Default Terms and Conditions"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_company__sign_terms_html
-msgid "Sign Default Terms and Conditions as a Web page"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
 #, python-format
 msgid "Sign Document"
-msgstr "חתום על מסמך"
-
-#. module: sign
-#: model:ir.model,name:sign.model_sign_duplicate_template_pdf
-msgid "Sign Duplicate Template with new PDF"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Sign Next Document"
-msgstr "חתימה על המסמך הבא"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_share_view_form
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_share_view_form
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_tree
 #, python-format
 msgid "Sign Now"
-msgstr "חתום עכשיו"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__mail_sent_order
-msgid "Sign Order"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__sign_request_id
 msgid "Sign Request"
-msgstr "בקשת חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__sign_request_item_id
 msgid "Sign Request Item"
-msgstr "פריט בקשת חתימה"
+msgstr ""
+
+#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
+msgid "Sign Requests"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request_signer__sign_send_request_id
 msgid "Sign Send Request"
-msgstr "חתימה שלח בקשה"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.res_config_settings_view_form
-msgid "Sign Settings"
-msgstr "הגדרות חתימות"
+#: model:ir.model,name:sign.model_sign_template_share
+msgid "Sign Share Template"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_template_tag
 msgid "Sign Template Tag"
-msgstr "חתימה תגית תבנית"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__sign_terms
-msgid "Sign Terms & Conditions"
-msgstr "חתימה על תנאים והגבלות"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__sign_terms_html
-msgid "Sign Terms & Conditions as a Web page"
 msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_res_company__sign_terms_type
-#: model:ir.model.fields,field_description:sign.field_res_config_settings__sign_terms_type
-msgid "Sign Terms & Conditions format"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Sign Up for free"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Sign all"
-msgstr "חתימה על הכל"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
 msgid "Sign document"
-msgstr "חתום על מסמך"
+msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_template.py:0
 #, python-format
 msgid "Sign requests"
-msgstr "בקשות חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_log
 msgid "Sign requests access history"
-msgstr "חתימה היסטורית גישה של בקשות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_send_request
 msgid "Sign send request"
-msgstr "חתום על בקשה שנשלחה"
+msgstr ""
+
+#. module: sign
+#: model:ir.model,name:sign.model_sign_request_send_copy
+msgid "Sign send request copy"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_send_request_signer
 msgid "Sign send request signer"
-msgstr "חתימה שלח בקשה לחותם"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-#: model_terms:ir.ui.view,arch_db:sign.ignore_sign_request_item
-msgid "Sign up for Odoo Sign to manage your own documents and signature requests!"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Sign up for Odoo Sign to manage your own documents and signature requests."
-msgstr ""
-
-#. module: sign
-#: model:ir.actions.server,name:sign.sign_reminder_cron_ir_actions_server
-msgid "Sign: Send mail reminder"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "Signatory"
-msgstr "חותם"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "Signatory's hash:"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#. odoo-javascript
-#: code:addons/sign/models/sign_request.py:0
-#: code:addons/sign/static/src/backend_components/sign_template/sign_items.xml:0
-#: code:addons/sign/static/src/js/tours/sign.js:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__signature
 #: model:ir.model.fields.selection,name:sign.selection__sign_item_type__item_type__signature
 #: model:ir.model.fields.selection,name:sign.selection__sign_log__action__sign
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
 #: model:sign.item.type,name:sign.sign_item_type_signature
 #: model:sign.item.type,placeholder:sign.sign_item_type_signature
-#: model_terms:ir.ui.view,arch_db:sign._doc_sign
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
 #, python-format
 msgid "Signature"
 msgstr "חתימה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
-msgid "Signature Date"
-msgstr "תאריך חתימה"
-
-#. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__sign_item_id
 msgid "Signature Item"
-msgstr "פריט חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_item_role
 msgid "Signature Item Party"
-msgstr "צד פריט חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.actions.act_window,name:sign.sign_item_role_action
 msgid "Signature Item Role"
-msgstr "תפקיד פריט חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.actions.act_window,name:sign.sign_item_type_action
 #: model:ir.model,name:sign.model_sign_item_type
 msgid "Signature Item Type"
-msgstr "סוג פריט חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_request_item_value
 msgid "Signature Item Value"
-msgstr "ערך פריט חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__sign_item_ids
 msgid "Signature Items"
-msgstr "פריטי חתימה"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "Signature Options"
-msgstr "אפשרויות חתימה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/activity/activity_service_patch.js:0
 #: model:ir.actions.act_window,name:sign.action_sign_send_request
 #: model:ir.model,name:sign.model_sign_request
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__sign_request_id
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__sign_request_id
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-#, python-format
 msgid "Signature Request"
-msgstr "בקשת חתימה"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/wizard/sign_send_request.py:0
-#, python-format
-msgid "Signature Request - %(file_name)s"
-msgstr "בקרת חתימה - %(file_name)s"
-
-#. module: sign
-#. odoo-python
+#: code:addons/sign/models/sign_request.py:0
+#: code:addons/sign/models/sign_request.py:0
 #: code:addons/sign/wizard/sign_send_request.py:0
 #, python-format
 msgid "Signature Request - %s"
-msgstr "בקשת חתימה - %s"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_request_item
 msgid "Signature Request Item"
-msgstr "פריט בקשת חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.actions.act_window,name:sign.sign_request_item_action
 msgid "Signature Request Items"
-msgstr "פריטי בקשת חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item_value__sign_request_item_id
 msgid "Signature Request item"
-msgstr "פריט בקשת חתימה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_template__sign_request_ids
 msgid "Signature Requests"
-msgstr "בקשות לחתימה"
+msgstr ""
+
+#. module: sign
+#: model:ir.ui.menu,name:sign.sign_request_item_menu
+msgid "Signature Requests Items"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__start_sign
 msgid "Signature Started"
-msgstr "חתימה התחילה"
+msgstr ""
 
 #. module: sign
 #: model:ir.model,name:sign.model_sign_template
 msgid "Signature Template"
-msgstr "תבנית חתימה"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_items.xml:0
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Signature configuration"
-msgstr "תצורת חתימה"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/wizard/sign_send_request.py:0
-#, python-format
-msgid ""
-"Signature requested for template: %s\n"
-"Signatories: %s"
 msgstr ""
-"חתימה מבוקשת עבור תבנית: %s\n"
-"חתומים: %s"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/res_partner.py:0
-#, python-format
-msgid "Signature(s)"
-msgstr "חתימה/ות"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Signature:"
-msgstr "חתימה:"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.portal_my_home_menu_sign
-#: model_terms:ir.ui.view,arch_db:sign.portal_my_home_sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
+#: model:ir.actions.act_window,name:sign.sign_request_action
+#: model:ir.ui.menu,name:sign.sign_request_menu
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 msgid "Signatures"
-msgstr "חתימות"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,help:sign.field_sign_send_request__set_sign_order
-msgid "Signatures will be requested from lowest order to highest order."
+#: model:ir.model.fields.selection,name:sign.selection__sign_log__request_state__sent
+msgid "Signatures in Progress"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.doc_sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Signed"
-msgstr "נחתם "
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_template__signed_count
-msgid "Signed Count"
-msgstr "מספר חתימות"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Signed Documents"
-msgstr "מסמכים חתומים"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__signed_without_extra_auth
-msgid "Signed Without Extra Authentication"
-msgstr "נחתם ללא שלב אימות נוסף"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-msgid "Signed document"
-msgstr "מסמכים שנחתמו"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__signing_date
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "Signed on"
-msgstr "נחתם ב"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Signed with Odoo Sign"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request_item__partner_id
-msgid "Signer"
+#: model:ir.model.fields,field_description:sign.field_sign_request_item__signing_date
+#: model_terms:ir.ui.view,arch_db:sign._doc_sign
+msgid "Signed on"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__request_item_ids
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__signer_ids
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
 msgid "Signers"
-msgstr "חותמים"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__signers_count
 msgid "Signers Count"
-msgstr "מספר חותמים"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "Signing Date"
-msgstr "תאריך חתימה"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Signing Events"
-msgstr "אירועי חתימה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Since you're the one signing this document, you can do it directly within Odoo.<br>External users can use the link provided by email."
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Some fields have still to be completed!"
+msgid "Some fields have still to be completed !"
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "Some required items are not filled"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "Some unauthorised items are filled"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#. odoo-javascript
-#: code:addons/sign/models/sign_template.py:0
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_body.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
 #, python-format
 msgid "Somebody is already filling a document which uses this template"
-msgstr "מישהו כבר ממלא מסמך המשתמש בתבנית זו"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Sorry, an error occurred, please try to fill the document again."
-msgstr "סליחה, אירעה שגיאה. נא לנסות למלא שוב את המסמך."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Sorry, you cannot refuse this document"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__set_sign_order
-msgid "Specify Signing Order"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Sorry, an error occured, please try to fill the document again."
 msgstr ""
-
-#. module: sign
-#: model:sign.item.role,name:sign.sign_item_role_default
-msgid "Standard"
-msgstr "סטנדרט"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__state
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__state
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "State"
-msgstr "סטטוס"
+msgstr "מצב"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__request_state
 msgid "State of the request on action log"
-msgstr "מצב הבקשה ברישום הפעולות"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
-#, python-format
-msgid "Status"
-msgstr "סטטוס"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__activity_state
@@ -3111,17 +1947,10 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"סטטוס על בסיס פעילויות\n"
+"מצב על בסיס פעילויות\n"
 "איחור: תאריך היעד כבר חלף\n"
 "היום: תאריך הפעילות הוא היום\n"
 "מתוכנן: פעילויות עתידיות."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Stop Sharing"
-msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__subject
@@ -3135,106 +1964,32 @@ msgstr "שם תגית"
 
 #. module: sign
 #: model:ir.model.constraint,message:sign.constraint_sign_template_tag_name_uniq
-msgid "Tag name already exists!"
-msgstr ""
+msgid "Tag name already exists !"
+msgstr "שם תגית כבר קיים !"
 
 #. module: sign
-#: model:ir.actions.act_window,name:sign.sign_template_tag_action
-#: model:ir.model.fields,field_description:sign.field_sign_request__template_tags
 #: model:ir.model.fields,field_description:sign.field_sign_template__tag_ids
-#: model:ir.ui.menu,name:sign.sign_template_tag_menu
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_tag_view_form
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_tag_view_tree
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_view_form
 msgid "Tags"
 msgstr "תגיות"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.xml:0
-#, python-format
-msgid "Tags:"
-msgstr "תגיות:"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_item_type__auto_field
-msgid "Technical name of the field on the partner model to auto-complete this signature field at the time of signature."
-msgstr ""
-
-#. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__template_id
 #: model:ir.model.fields,field_description:sign.field_sign_send_request__template_id
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_kanban
+#: model:ir.model.fields,field_description:sign.field_sign_template_share__template_id
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Template"
 msgstr "תבנית"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/backend/document_signable.js:0
-#: code:addons/sign/static/src/js/backend/sign_request.js:0
-#, python-format
-msgid "Template \"%s\""
-msgstr "תבנית \"%s\""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.js:0
-#: code:addons/sign/static/src/views/hooks.js:0
-#, python-format
-msgid "Template %s"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_top_bar.xml:0
-#, python-format
-msgid "Template Properties"
-msgstr "מאפייני תבנית"
-
-#. module: sign
-#: model:ir.actions.server,name:sign.sign_template_tour_trigger_action
-msgid "Template Sample Contract.pdf trigger"
-msgstr ""
-
-#. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Template or Tag"
-msgstr "תבנית או תגית"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#: model:ir.actions.act_window,name:sign.sign_template_action
-#, python-format
+#: model:ir.ui.menu,name:sign.sign_template_menu
 msgid "Templates"
 msgstr "תבניות"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
-msgid "Terms &amp; Conditions"
-msgstr "תנאים והגבלות"
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__res_company__sign_terms_type__html
-msgid "Terms as Web Page"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__res_company__sign_terms_type__plain
-msgid "Terms in Email"
-msgstr ""
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_res_company__sign_terms_type
-#: model:ir.model.fields,help:sign.field_res_config_settings__sign_terms_type
-msgid ""
-"Terms in Email - The text will be displayed at the bottom of every signature request email.\n"
-"\n"
-"        Terms as Web Page - A link will be pasted at the bottom of every signature request email, leading to your content.\n"
-"        "
-msgstr ""
 
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_item_type__item_type__text
@@ -3244,324 +1999,83 @@ msgid "Text"
 msgstr "טקסט"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Thank You!"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Thank you!"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "That's it, all done!<br>The document is signed, and a copy has been sent by email to all participants, along with a traceability report."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-msgid "The Odoo Sign document you are trying to reach does not exist. The signature request might have been deleted or modified."
+msgid "Thank You !"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.encrypted_ask_password
 msgid "The PDF's password is required to generate the final document."
-msgstr "סיסמת ה- PDF נדרשת כדי ליצור את המסמך הסופי."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The completed document cannot be created because the sign request is not fully signed"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "The computation is based on the website"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The contact of %(role)s has been changed from %(old_partner)s to %(new_partner)s."
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
 msgid "The document"
-msgstr "המסמך"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The document (%s) has been rejected by one of the signers"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "The document has been refused"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The document has been signed by a signer and cannot be edited"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
-msgid "The document will expire on"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
-msgid "The final document and this completion history have been sent by email on&amp;nbsp;"
-msgstr "המסמך הסופי והיסטוריית השלמות זו נשלחו בדוא\"ל ב "
+msgid ""
+"The final document and this completion history have been sent by email "
+"on&amp;nbsp;"
+msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/wizard/sign_send_request.py:0
 #, python-format
-msgid "The following roles must be set to create the signature request: %(roles)s"
+msgid "The following roles must be set to create the signature request: "
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "The integrity of the document's history cannot be verified. This could mean that signature values or the underlying PDF document may have been modified after the fact."
-msgstr "לא ניתן לאמת את שלמות היסטוריית המסמך. פירוש הדבר יכול להיות ששינוי ערכי החתימה או מסמך ה- PDF הבסיסי השתנו לאחר מעשה."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/res_partner.py:0
-#, python-format
-msgid "The mail address of %(partner)s has been updated. The request will be automatically resent."
+msgid ""
+"The integrity of the document's history cannot be verified. This could mean "
+"that signature values or the underlying PDF document may have been modified "
+"after the fact."
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The mail has been sent to contacts in copy: "
-msgstr "האימייל נשלח לאנשי הקשר המשויכים: "
+#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
+msgid ""
+"The signature access you are trying to reach does not exist. Maybe the signature request has been deleted or modified. <br/>\n"
+"                    If there still exists a signature request for this document, check your inbox to get your access!"
+msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/terms.py:0
-#, python-format
-msgid "The requested page is invalid, or doesn't exist anymore."
-msgstr "הדף המבוקש אינו חוקי, או אינו קיים יותר."
-
-#. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_template.py:0
 #, python-format
-msgid "The role %s is required by the Sign application and cannot be deleted."
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The sign request has not been fully signed"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The signature has been refused by %s(%s)"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The signature mail has been sent to: "
-msgstr "המייל חתימה נשלח ל:"
-
-#. module: sign
-#: model:ir.model.fields,help:sign.field_sign_request_item__is_mail_sent
-msgid "The signature mail has been sent."
-msgstr "מייל החתימה נשלח."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "The signature request has been edited by: %s."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.ignore_sign_request_item
-msgid "The signature request has been ignored"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_action.js:0
-#, python-format
-msgid "The template doesn't exist anymore."
-msgstr "התבנית הזו לא קיימת יותר."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/wizard/sign_duplicate_template_with_pdf.py:0
-#, python-format
-msgid "The template has more pages than the current file, it can't be applied."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "The total of sheets you saved is based on: the number of sent sign requests x number of sheets in the document x (number of contacts who need to sign + number of contacts in copy if the sign request is signed) = total of pages. We assume that one page weights 0.005 kilograms."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_requests
-msgid "There are no signatures request."
-msgstr "אין חתימות לבקש."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "There are other documents waiting for your signature:"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/template_alert_dialog/template_alert_dialog.xml:0
-#, python-format
-msgid "These files cannot be read, they may be corrupted or encrypted."
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/template_alert_dialog/template_alert_dialog.xml:0
-#, python-format
-msgid "They will be removed from the uploaded files"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This function can only be called with sudo."
+msgid "This file cannot be read. Is it a valid PDF?"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__reference
-#: model:ir.model.fields,help:sign.field_sign_request_item__reference
 msgid "This is how the document will be named in the mail"
-msgstr "כך ייקרא המסמך בדואר"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request cannot be refused"
-msgstr "לא ניתן לסרב לבקשת חתימה זו"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request cannot be signed"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request is not valid anymore"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request item cannot be filled"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request item cannot be refused"
-msgstr "לא ניתן לסרב לפריט בקשת חתימה זה"
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "This sign request item cannot be signed"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "This will keep all the already completed signature of this request and disable every sent access, are you sure?"
+msgid ""
+"This will delete all the already completed documents of this request and "
+"disable every sent accesses, are you sure?"
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item_type__tip
 msgid "Tip"
-msgstr "עצה"
+msgstr "טיפ"
 
 #. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__sent
+#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "To Sign"
-msgstr "לחתום"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "To produce 1000 kg of wood, we have to cut 12 trees"
 msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/controllers/portal.py:0
-#, python-format
-msgid "To sign"
-msgstr "לחתימה"
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
 msgid "Today Activities"
-msgstr "פעילויות היום"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_item__transaction_id
-msgid "Transaction"
-msgstr "עסקה"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-#: model_terms:ir.ui.view,arch_db:sign.ignore_sign_request_item
-msgid "Try Odoo Sign"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_template_action
-msgid "Try our sample document"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Try out this sample contract."
-msgstr "נסו את ההסכם הזה לדוגמא."
+msgstr "פעילויות של היום"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__type_id
@@ -3572,97 +2086,53 @@ msgstr "סוג"
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "סוג הפעילות החריגה ברשומה."
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_tag_view_form
-msgid "Type tag name here"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_backend.js:0
+#, python-format
+msgid "UPLOAD A PDF TEMPLATE"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "UTC"
-msgstr "UTC"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Unable to send the SMS, please contact the sender of the document."
-msgstr "אין אפשרות לשלוח את ה- SMS, אנא צור קשר עם שולח המסמך."
-
-#. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_item_role__auth_method__sms
-msgid "Unique Code via SMS"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields.selection,name:sign.selection__sign_log__action__update
-msgid "Update"
-msgstr "עדכן"
+#: model:ir.model.fields,field_description:sign.field_sign_request__message_unread
+msgid "Unread Messages"
+msgstr "הודעות שלא נקראו"
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
-#, python-format
-msgid "Upload a PDF"
-msgstr "העלה PDF"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/views/common.xml:0
-#, python-format
-msgid "Upload a PDF & Sign"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_action
-msgid "Upload a PDF file or use an existing template to begin."
-msgstr ""
+#: model:ir.model.fields,field_description:sign.field_sign_request__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "מספר הודעות שלא נקראו"
 
 #. module: sign
 #: model_terms:ir.actions.act_window,help:sign.sign_template_action
-msgid "Upload a PDF file to create your first template"
+#: model_terms:ir.actions.act_window,help:sign.sign_template_with_archived_action
+msgid "Upload a PDF"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/views/common.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
-msgid "Upload a PDF file to use as a template."
+msgid "Used by a signature request."
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/views/common.xml:0
-#, python-format
-msgid "Upload a PDF template"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/views/common.xml:0
-#, python-format
-msgid "Upload a pdf that you want to sign directly"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_view_kanban
-msgid "Use Layout"
-msgstr "שימוש בפריסה"
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_template_tag_action
-msgid "Use Tags to manage your Sign Templates and Sign Requests"
-msgstr ""
-
-#. module: sign
-#: model:ir.actions.act_window,name:sign.action_sign_duplicate_template_with_pdf
-msgid "Use the layout of fields on a new PDF"
-msgstr "שימוש בפריסה בשדות שב-PDF החדש."
-
-#. module: sign
-#: model:ir.model,name:sign.model_res_users
 #: model:ir.model.fields,field_description:sign.field_sign_log__user_id
 msgid "User"
 msgstr "משתמש"
@@ -3670,51 +2140,50 @@ msgstr "משתמש"
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_log__token
 msgid "User token"
-msgstr "אסימון משתמש"
+msgstr ""
 
 #. module: sign
 #: model:res.groups,name:sign.group_sign_user
-msgid "User: Own Templates"
+msgid "User: Own and Shared Templates"
 msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__validity
-#: model:ir.model.fields,field_description:sign.field_sign_send_request__validity
-msgid "Valid Until"
-msgstr ""
+#: model:ir.model,name:sign.model_res_users
+msgid "Users"
+msgstr "משתמשים"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_item_custom_popover.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
 msgid "Validate"
-msgstr "אשר"
+msgstr "לאמת"
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Validate & Send"
-msgstr "אמת ושלח"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Validate & the next signatory is \"%s\""
+msgid "Validate & the next signatory is %s"
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign._doc_sign
 msgid "Validate &amp; Send Completed Document"
-msgstr "אמת ושלח מסמך מושלם"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Validation Code"
-msgstr "קוד אימות"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request_item__sign_item_value_ids
@@ -3723,120 +2192,67 @@ msgid "Value"
 msgstr "ערך"
 
 #. module: sign
-#: model:ir.model.constraint,message:sign.constraint_sign_item_option_value_uniq
-msgid "Value already exists!"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "Verify"
 msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Verify"
-msgstr "אשר"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-msgid "View Document"
-msgstr "צפה במסמך"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_refused
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
 msgid "View document"
-msgstr "צפה במסמך"
+msgstr ""
+
+#. module: sign
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_follower
+msgid "View signature request"
+msgstr ""
 
 #. module: sign
 #: model:ir.model.fields.selection,name:sign.selection__sign_log__action__open
 msgid "View/Download"
-msgstr "צפה/הורד"
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "Viewed/downloaded by"
-msgstr "נצפה/הורד ע\"י"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_portal_my_request
-#: model_terms:ir.ui.view,arch_db:sign.signer_status_wrapper
-msgid "Waiting Signature"
 msgstr ""
 
 #. module: sign
-#: model:ir.actions.act_window,name:sign.sign_request_waiting_for_me_action
-#: model:ir.ui.menu,name:sign.sign_request_waiting_for_me
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-msgid "Waiting for me"
-msgstr "ממתין לי"
+#: model:ir.model.fields.selection,name:sign.selection__sign_request_item__state__sent
+msgid "Waiting for completion"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-msgid "Waiting for others"
-msgstr "ממתין לאחרים"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_action.js:0
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Warning"
 msgstr "אזהרה"
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-msgid "We couldn't find the signature request you're looking for!"
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_common.xml:0
+#, python-format
+msgid "We will let you know by email once everyone has signed."
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "We display to you a ratio based on the saved weight versus 1000 kg of paper usage."
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "We will send you this document by email once everyone has signed."
-msgstr "אנו נשלח לך מסמך זה בדוא\"ל ברגע שכולם יחתמו."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "We'll send an email to warn other contacts in copy & signers with the reason you provided."
 msgstr ""
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_request__website_message_ids
 msgid "Website Messages"
-msgstr "הודעות מאתר האינטרנט"
+msgstr "הודעות מהאתר אינטרנט"
 
 #. module: sign
 #: model:ir.model.fields,help:sign.field_sign_request__website_message_ids
 msgid "Website communication history"
-msgstr "היסטורית התקשרויות מאתר האינטרנט"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/tours/sign.js:0
-#, python-format
-msgid "Well done, your document is ready!<br>Let's send it to get our first signature."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "What about those conversions I see?"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
-msgid "Why am I seeing this?"
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "Why do you refuse to sign this document?"
-msgstr ""
+msgstr "היסטורית התקשרויות מהאתר"
 
 #. module: sign
 #: model:ir.model.fields,field_description:sign.field_sign_item__width
@@ -3846,223 +2262,94 @@ msgstr "רוחב"
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
 msgid "Write email or search contact..."
-msgstr "כתוב דוא\"ל או חפש איש קשר ..."
+msgstr ""
 
 #. module: sign
-#. odoo-python
 #: code:addons/sign/controllers/main.py:0
 #, python-format
 msgid "Wrong password"
-msgstr "סיסמה שגויה"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.deleted_sign_request
-msgid "You can contact the person who invited you to sign the document by email for help."
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "You can only add new items for the current role"
-msgstr ""
-
-#. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_template.py:0
 #, python-format
-msgid "You can't delete a template for which signature requests exist but you can archive it instead."
-msgstr "אינך יכול למחוק תבנית שלגביה קיימות בקשות חתימה אך אתה יכול להעביר אותה לארכיון במקום זאת."
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "You cannot reassign this signatory"
-msgstr ""
-
-#. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_template.py:0
-#, python-format
-msgid "You cannot share this document by link, because it has fields to be filled by different roles. Use Send button instead."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
-msgid "You have less than 20 credits remaining for"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_refused
-msgid "You have refused the document"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
 msgid ""
-"You have templates or requests using a role with an extra-authentication step with few credits remaining.<br/>\n"
-"                To remove this warning, disable the extra-authentication step in the <code>Configuration &gt; Roles</code> menu, or buy credits."
+"You can't delete a template for which signature requests exist but you can "
+"archive it instead."
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "You must specify one signer for each role of your sign template"
+#: model_terms:ir.ui.view,arch_db:sign.doc_sign
+msgid "You have completed the document"
 msgstr ""
 
 #. module: sign
-#. odoo-python
-#: code:addons/sign/models/sign_request.py:0
-#, python-format
-msgid "You need to define a signatory"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_follower
+msgid ""
+"You will be notified once the document has been signed by everyone involved."
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_my_requests_action
-msgid "You will find all documents that you participate in here, either as a signatory or as the person who requested the signature."
-msgstr "תמצא כאן את כל המסמכים שאתה משתתף בהם, בין אם כחותמים ובין אם כמי שביקש את החתימה."
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_waiting_for_me_action
-msgid "You will find documents waiting for your signature here."
-msgstr "תמצא כאן מסמכים שמחכים לחתימתך."
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "You will receive the final signed document by email."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.ignore_sign_request_item
-msgid "You won't receive any notification for this signature request anymore."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.actions.act_window,help:sign.sign_request_action
-#: model_terms:ir.actions.act_window,help:sign.sign_template_action
-msgid "You're one click away from automating your signature process!"
-msgstr ""
-
-#. module: sign
-#. odoo-python
 #: code:addons/sign/models/sign_request.py:0
 #, python-format
 msgid "Your confirmation code is %s"
-msgstr "קוד האישור שלך הוא %s"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_common.xml:0
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Your email"
-msgstr "הדוא\"ל שלך"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
-msgid "Your file is encrypted, PDF's password is required to generate final document. The final document will be encrypted with the same password."
-msgstr "הקובץ שלך מוצפן, סיסמת PDF נדרשת כדי ליצור מסמך סופי. המסמך הסופי יוצפן עם אותה סיסמה."
+msgid ""
+"Your file is encrypted, PDF's password is required to generate final "
+"document. The final document will be encrypted with the same password."
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_common.xml:0
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "Your name"
-msgstr "השם שלך"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
 msgid "Your signature has been saved."
-msgstr "החתימה שלך נשמרה."
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
 #, python-format
-msgid "Your signature has been submitted."
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "Your signature was not submitted. Ensure the SMS validation code is correct."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-msgid "and"
-msgstr "וגם"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/template_alert_dialog/template_alert_dialog.xml:0
-#, python-format
-msgid "and the process will continue"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "and:"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
-msgid "authentication step will be skipped if you are out of credits."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_iap_credits_banner
-msgid "authentication. The"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
 msgid ""
-"because you don't have enough credits for this operation. \n"
-"                    The signatory was able to finish signing, but was not asked to authenticate fully."
+"Your signature was not submitted. Ensure that all required field of the "
+"documents are completed and that the SMS validation code is correct."
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_request
-msgid "click here."
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_send_request_view_form
-msgid "days."
-msgstr ""
-
-#. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "e.g. +1 415 555 0100"
-msgstr "למשל +1 415 555 0100"
+msgstr ""
 
 #. module: sign
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sign/static/src/xml/sign_common.xml:0
 #, python-format
 msgid "e.g. 314159"
-msgstr "למשל 314159"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_item_role_view_form
-msgid "e.g. Employee"
-msgstr "למשל עובד"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_form
-msgid "e.g. Non-disclosure agreement"
-msgstr "דוג' הסכם שמירת סודיות"
+msgstr ""
 
 #. module: sign
 #: model:sign.item.type,tip:sign.sign_item_type_checkbox
@@ -4074,118 +2361,49 @@ msgstr "דוג' הסכם שמירת סודיות"
 #: model:sign.item.type,tip:sign.sign_item_type_phone
 #: model:sign.item.type,tip:sign.sign_item_type_text
 msgid "fill in"
-msgstr "מלא"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-msgid "has been completed and signed by"
-msgstr "הושלם ונחתם על-ידי"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-msgid "has been edited, completed and signed by"
-msgstr "נערך הושלם ונחתם על-ידי"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
-msgid "has been signed by"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "https://c.environmentalpaper.org/"
+#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
+msgid "has been completed and signed by everyone."
 msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "ip"
-msgstr "ip"
+msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el_pdf
-msgid "like"
+#: model_terms:ir.actions.act_window,help:sign.sign_template_action
+msgid "load our templates of contract"
 msgstr ""
 
 #. module: sign
 #: model:sign.item.type,tip:sign.sign_item_type_initial
 msgid "mark it"
-msgstr "סמן את זה"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/js/common/document_signable.js:0
-#, python-format
-msgid "next"
-msgstr "הבא"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/xml/sign_common.xml:0
-#, python-format
-msgid "on"
 msgstr ""
 
 #. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_tree
-msgid "sign"
-msgstr "חתימה"
+#. openerp-web
+#: code:addons/sign/static/src/js/sign_common.js:0
+#: code:addons/sign/static/src/js/sign_common.js:0
+#, python-format
+msgid "next"
+msgstr ""
 
 #. module: sign
 #: model:sign.item.type,tip:sign.sign_item_type_signature
 msgid "sign it"
-msgstr "חתום על זה"
+msgstr ""
 
 #. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__message
-msgid "sign.message"
-msgstr "sign.message"
-
-#. module: sign
-#: model:ir.model.fields,field_description:sign.field_sign_request__message_cc
-msgid "sign.message_cc"
-msgstr "sign.message_cc"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_request_view_search
-msgid "tags"
-msgstr "תגיות"
-
-#. module: sign
-#. odoo-javascript
-#: code:addons/sign/static/src/backend_components/sign_template/sign_template_control_panel.xml:0
+#. openerp-web
+#: code:addons/sign/static/src/xml/sign_backend.xml:0
 #, python-format
-msgid "this template to modify it."
-msgstr "תבנית זו כדי לשנות אותה."
+msgid "to modify it."
+msgstr ""
 
 #. module: sign
 #: model_terms:ir.ui.view,arch_db:sign.sign_request_logs_user
 msgid "to:"
-msgstr "ל:"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_savings_report
-msgid "we've got a list of consumption for 1000 kg of paper usage."
-msgstr "יש לנו רשימה של צריכה עבור 1000 ק\"ג של שימוש בנייר."
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_not_enough_credits
-msgid "without the requested extra-authentification step ("
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.sign_template_mail_completed
-msgid "you"
-msgstr "את/ה"
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el_pdf
-msgid "{{green_report_el_title}}"
-msgstr ""
-
-#. module: sign
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el
-#: model_terms:ir.ui.view,arch_db:sign.green_report_el_pdf
-msgid "{{green_report_el_title}} Summary"
 msgstr ""

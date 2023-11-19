@@ -8,9 +8,6 @@ import {
     getNodesTextContent,
     patchWithCleanup,
     selectDropdownItem,
-    triggerEvent,
-    clickDiscard,
-    clickOpenedDropdownItem,
 } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { browser } from "@web/core/browser/browser";
@@ -88,7 +85,6 @@ QUnit.module("Fields", (hooks) => {
             target,
             '.o_m2o_avatar > img[data-src="/web/image/user/17/avatar_128"]'
         );
-        assert.containsOnce(target, ".o_field_many2one_avatar > div");
 
         assert.containsOnce(target, ".o_input_dropdown");
         assert.strictEqual(target.querySelector(".o_input_dropdown input").value, "Aline");
@@ -187,7 +183,7 @@ QUnit.module("Fields", (hooks) => {
         });
 
         assert.deepEqual(
-            getNodesTextContent(target.querySelectorAll(".o_data_cell[name='user_id']")),
+            getNodesTextContent(target.querySelectorAll(".o_data_cell[name='user_id'] span span")),
             ["Aline", "Christine", "Aline", ""]
         );
         const imgs = target.querySelectorAll(".o_m2o_avatar > img");
@@ -205,7 +201,7 @@ QUnit.module("Fields", (hooks) => {
         });
 
         assert.deepEqual(
-            getNodesTextContent(target.querySelectorAll(".o_data_cell[name='user_id']")),
+            getNodesTextContent(target.querySelectorAll(".o_data_cell[name='user_id'] span span")),
             ["Aline", "Christine", "Aline", ""]
         );
 
@@ -227,7 +223,8 @@ QUnit.module("Fields", (hooks) => {
             type: "form",
             resModel: "partner",
             serverData,
-            arch: '<form><field name="user_id" widget="many2one_avatar" placeholder="Placeholder"/></form>',
+            arch:
+                '<form><field name="user_id" widget="many2one_avatar" placeholder="Placeholder"/></form>',
         });
 
         assert.strictEqual(
@@ -255,7 +252,7 @@ QUnit.module("Fields", (hooks) => {
         });
 
         await click(target.querySelectorAll(".o_data_row")[0], ".o_list_record_selector input");
-        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id']"));
+        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id'] span span"));
         assert.hasClass(target.querySelector(".o_data_row"), "o_selected_row");
 
         assert.verifySteps([]);
@@ -280,7 +277,7 @@ QUnit.module("Fields", (hooks) => {
         });
 
         await click(target.querySelectorAll(".o_data_row")[0], ".o_list_record_selector input");
-        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id']"));
+        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id'] span span"));
         assert.hasClass(target.querySelector(".o_data_row"), "o_selected_row");
 
         assert.verifySteps([]);
@@ -304,228 +301,9 @@ QUnit.module("Fields", (hooks) => {
                 </tree>`,
         });
 
-        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id']"));
+        await click(target.querySelector(".o_data_row .o_data_cell [name='user_id'] span span"));
         assert.containsNone(target, ".o_selected_row");
 
         assert.verifySteps(["openRecord"]);
     });
-
-    QUnit.test(
-        "readonly many2one_avatar in form view should contain a link",
-        async function (assert) {
-            await makeView({
-                type: "form",
-                serverData,
-                resModel: "partner",
-                resId: 1,
-                arch: `<form><field name="user_id" widget="many2one_avatar" readonly="1"/></form>`,
-            });
-
-            assert.containsOnce(target, "[name='user_id'] a");
-        }
-    );
-
-    QUnit.test(
-        "readonly many2one_avatar in list view should not contain a link",
-        async function (assert) {
-            await makeView({
-                type: "list",
-                serverData,
-                resModel: "partner",
-                arch: `<tree><field name="user_id" widget="many2one_avatar"/></tree>`,
-            });
-
-            assert.containsNone(target, "[name='user_id'] a");
-        }
-    );
-
-    QUnit.test("cancelling create dialog should clear value in the field", async function (assert) {
-        serverData.views = {
-            "user,false,form": `
-                <form>
-                    <field name="name" />
-                </form>`,
-        };
-
-        await makeView({
-            type: "list",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <tree editable="top">
-                    <field name="user_id" widget="many2one_avatar"/>
-                </tree>`,
-        });
-
-        await click(target.querySelectorAll(".o_data_cell")[0]);
-        const input = target.querySelector(".o_field_widget[name=user_id] input");
-        input.value = "yy";
-        await triggerEvent(input, null, "input");
-        await clickOpenedDropdownItem(target, "user_id", "Create and edit...");
-
-        await clickDiscard(target.querySelector(".modal"));
-        assert.strictEqual(target.querySelector(".o_field_widget[name=user_id] input").value, "");
-        assert.containsOnce(target, ".o_field_widget[name=user_id] span.o_m2o_avatar_empty");
-    });
-
-    QUnit.test("widget many2one_avatar in kanban view (load more dialog)", async function (assert) {
-        assert.expect(1);
-
-        for (let id = 1; id <= 10; id++) {
-            serverData.models.user.records.push({
-                id,
-                display_name: `record ${id}`,
-            });
-        }
-
-        serverData.views = {
-            "user,false,list": '<tree><field name="display_name"/></tree>',
-            "user,false,search": "<search/>",
-        };
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click">
-                                <div class="oe_kanban_footer">
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="user_id" widget="many2one_avatar"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-        });
-
-        // open popover
-        await click(
-            target.querySelector(
-                ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > a.o_quick_assign"
-            )
-        );
-
-        // load more
-        await click(
-            document.querySelector(".o-overlay-container .o_m2o_dropdown_option_search_more")
-        );
-        await click(document.querySelector(".o_dialog .o_list_table .o_data_row .o_data_cell"));
-        assert.strictEqual(
-            target.querySelector(
-                ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > img"
-            ).dataset.src,
-            "/web/image/user/1/avatar_128",
-            "should have correct avatar image"
-        );
-    });
-
-    QUnit.test("widget many2one_avatar in kanban view", async function (assert) {
-        assert.expect(5);
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click">
-                                <div class="oe_kanban_footer">
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="user_id" widget="many2one_avatar"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-        });
-        assert.strictEqual(
-            target.querySelector(
-                ".o_kanban_record:nth-child(1) .o_field_many2one_avatar .o_m2o_avatar > img"
-            ).dataset.src,
-            "/web/image/user/17/avatar_128",
-            "should have correct avatar image"
-        );
-        assert.containsOnce(
-            target,
-            ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > .o_quick_assign",
-            "should have the quick assign icon"
-        );
-        // open popover
-        await click(
-            target.querySelector(
-                ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > .o_quick_assign"
-            )
-        );
-        const popover = document.querySelector(".o-overlay-container");
-        assert.strictEqual(
-            document.activeElement,
-            popover.querySelector("input"),
-            "the input inside the popover should have the focus"
-        );
-        // select first input
-        await click(popover.querySelector(".o-autocomplete--dropdown-item"));
-        assert.strictEqual(
-            target.querySelector(
-                ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > img"
-            ).dataset.src,
-            "/web/image/user/17/avatar_128",
-            "should have correct avatar image"
-        );
-        assert.containsNone(
-            target,
-            ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > .o_quick_assign",
-            "should not have the quick assign icon"
-        );
-    });
-
-    QUnit.test(
-        "widget many2one_avatar in kanban view without access rights",
-        async function (assert) {
-            assert.expect(2);
-            await makeView({
-                type: "kanban",
-                resModel: "partner",
-                serverData,
-                arch: `
-                <kanban edit="0" create="0">
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click">
-                                <div class="oe_kanban_footer">
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="user_id" widget="many2one_avatar"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            });
-            assert.strictEqual(
-                target.querySelector(
-                    ".o_kanban_record:nth-child(1) .o_field_many2one_avatar .o_m2o_avatar > img"
-                ).dataset.src,
-                "/web/image/user/17/avatar_128",
-                "should have correct avatar image"
-            );
-            assert.containsNone(
-                target,
-                ".o_kanban_record:nth-child(4) .o_field_many2one_avatar .o_m2o_avatar > .o_quick_assign",
-                "should not have the quick assign icon"
-            );
-        }
-    );
 });

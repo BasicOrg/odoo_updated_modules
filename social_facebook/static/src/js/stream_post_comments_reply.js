@@ -7,7 +7,7 @@ import { sprintf } from '@web/core/utils/strings';
 export class StreamPostCommentsReplyFacebook extends StreamPostCommentsReply {
 
     get authorPictureSrc() {
-        return sprintf('https://graph.facebook.com/v17.0/%s/picture?height=48&width=48',
+        return sprintf('https://graph.facebook.com/v10.0/%s/picture?height=48&width=48',
             this.props.mediaSpecificProps.pageFacebookId);
     }
 

@@ -15,7 +15,17 @@ $rounded-sizes: map-merge(
 );
 
 $utilities-opacity: () !default;
-$utilities-opacity: map-merge($utilities-opacity, $o-opacities);
+$utilities-opacity: map-merge(
+    $utilities-opacity,
+    (
+        0: 0,
+        25: .25,
+        50: .5,
+        75: .75,
+        100: 1,
+        disabled: $o-opacity-disabled,
+    )
+);
 
 $utilities-sizes: () !default;
 $utilities-sizes: map-merge(
@@ -52,15 +62,6 @@ $utilities: map-merge(
                 values: join(map-get(map-get($utilities, "display"), "values"), contents),
             ),
         ),
-        "white-space": map-merge(
-            map-get($utilities, "white-space"),
-            (
-                values: map-merge(
-                    map-get(map-get($utilities, "white-space"), "values"),
-                    ("prewrap": pre-wrap),
-                ),
-            ),
-        ),
         "position": map-merge(
             map-get($utilities, "position"),
             (
@@ -72,6 +73,17 @@ $utilities: map-merge(
             (
                 values: $utilities-opacity,
             ),
+        ),
+        "background-color": map-merge(
+            map-get($utilities, "background-color"),
+            (
+                values: map-merge(
+                    map-get(map-get($utilities, "background-color"), "values"),
+                    (
+                        "view": $o-view-background-color,
+                    )
+                )
+            )
         ),
         "border-color":  map-merge(
             map-get($utilities, "border-color"),
@@ -194,6 +206,31 @@ $utilities: map-merge(
     )
 );
 
+// Restore text-X from BS4 that use text-emphasis-variant
+// we don't merge $utilities-text-colors into $utilities
+// to avoid same utilises classes generated twice.
+// See bootstrap_review.scss
+$utilities: map-merge(
+    $utilities,
+    (
+        "color": (
+            property: color,
+            class: text,
+            local-vars: (
+                "text-opacity": 1
+            ),
+            values: (
+                "body": $body-color,
+                "black": $black,
+                "white": $white,
+                "muted": $text-muted,
+                "black-50": rgba($black, .5), // deprecated
+                "white-50": rgba($white, .5), // deprecated
+                "reset": inherit,
+            ),
+        ),
+    )
+);
 
 // Define opacity:hover classes while defining the triggerer behavior.
 // Use'.opacity-trigger-hover' class to allow hovered parents to
@@ -204,14 +241,4 @@ $utilities: map-merge(
             opacity: $-opacity-level!important;
         }
     }
-}
-
-// Hide empty elements
-.d-empty-none:empty {
-    display: none !important;
-}
-
-// Define a smaller font-size
-.smaller {
-    font-size: $o-font-size-base-smaller;
 }

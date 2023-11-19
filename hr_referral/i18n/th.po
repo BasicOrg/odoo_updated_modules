@@ -3,16 +3,19 @@
 # 	* hr_referral
 # 
 # Translators:
-# Wil Odoo, 2023
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,13 +23,15 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid ""
-" You've gained {gained} points with this progress.{new_line}It makes you a "
-"new total of {total} points. Visit {link1}this link{link2} to pick a gift!"
+" You've gained %(gained)s points with this progress.<br/>It makes you a new "
+"total of %(total)s points. Visit <a href=\"%(url)s\">this link</a> to pick a"
+" gift!"
 msgstr ""
+"คุณได้เพิ่ม %(gained)s คะแนนพร้อมความคืบหน้า<br/>ซึ่งได้สร้างผลรวมใหม่ของ "
+"%(total)s คะแนน ไปที่ <a href=\"%(url)s\">ลิงก์นี้</a> เพื่อรับของกำนัล!"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_recruitment_report__referral_hired
@@ -90,9 +95,11 @@ msgstr "<span title=\"More info\">ข้อมูลเพิ่มเติม<
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid ""
-"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link\" role=\"img\" "
-"aria-label=\"My Link to Share\"/></span>"
+"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link text-"
+"secondary\" role=\"img\" aria-label=\"My Link to Share\"/></span>"
 msgstr ""
+"<span title=\"ลิงก์ของฉันที่จะแชร์\"><i class=\"fa fa-lg fa-link text-"
+"secondary\" role=\"img\" aria-label=\"ลิงก์ของฉันที่จะแชร์\"/></span>"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -100,7 +107,6 @@ msgid "<span title=\"Send by Mail\">Refer Friend</span>"
 msgstr "<span title=\"ส่งโดยเมล\">แนะนำเพื่อน</span>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid ""
@@ -158,13 +164,6 @@ msgid "Alerts"
 msgstr "การเตือน"
 
 #. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_alert_configuration
-msgid ""
-"Alerts will be displayed on the first screen to give information or "
-"redirects the employees"
-msgstr ""
-
-#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_recruitment_stage__points
 msgid ""
 "Amount of points that the referent will receive when the applicant will "
@@ -179,16 +178,25 @@ msgid "Applicant"
 msgstr "ผู้สมัคร"
 
 #. module: hr_referral
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred"
+msgstr "การสมัครที่แนะนำ"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Hired"
+msgstr "ผู้สมัครที่แนะนำได้รับการจ้าง"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Refused"
+msgstr "ผู้สมัครที่แนะนำถูกปฏิเสธ"
+
+#. module: hr_referral
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Applicant must have a company."
 msgstr "ผู้สมัครต้องมีบริษัท"
-
-#. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_name
-msgid "Applicant's Name"
-msgstr "ชื่อผู้สมัคร"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_alert_view_search
@@ -207,7 +215,6 @@ msgid "Avatar"
 msgstr "อวตาร"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__awarded_employees
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_backend_kanban
@@ -253,14 +260,14 @@ msgid "Channel"
 msgstr "ช่อง"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Choose an avatar for your new friend!"
 msgstr "เลือกอวตารสำหรับเพื่อนใหม่ของคุณ!"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Click to level up!"
@@ -274,17 +281,15 @@ msgstr "ปิด"
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_res_company
 msgid "Companies"
-msgstr "บริษัท"
+msgstr "หลายบริษัท"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__company_id
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__company_id
-#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_res_config_settings
@@ -334,7 +339,7 @@ msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
@@ -382,7 +387,6 @@ msgstr "แผนก"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__description
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_form
 msgid "Description"
 msgstr "คำอธิบาย"
 
@@ -392,7 +396,6 @@ msgid "Direct Clicks"
 msgstr "คลิกโดยตรง"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/report/hr_referral_report.py:0
 #, python-format
 msgid "Direct Referral"
@@ -418,7 +421,6 @@ msgid "Display Name"
 msgstr "แสดงชื่อ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid "Do not have access"
@@ -434,6 +436,7 @@ msgstr "คุณต้องการยืนยันรางวัลนี
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__earned_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__earned_points
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
 msgid "Earned Points"
 msgstr "คะแนนที่ได้รับ"
 
@@ -443,16 +446,11 @@ msgid "Email"
 msgstr "อีเมล"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Email a friend"
 msgstr "ส่งอีเมลถึงเพื่อน"
-
-#. module: hr_referral
-#: model:ir.model.fields,help:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Email subject for applications sent via email"
-msgstr "หัวเรื่องอีเมลสำหรับการสมัครที่ส่งทางอีเมล"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
@@ -483,7 +481,6 @@ msgstr "พนักงาน"
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Employees Analysis"
 msgstr "วิเคราะห์พนักงาน"
@@ -528,11 +525,6 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "ไอคอนแบบฟอนต์ที่ยอดเยี่ยมเช่น fa-tasks"
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid "Force Onboarding"
-msgstr ""
-
-#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__friend_id
 msgid "Friend"
 msgstr "เพื่อน"
@@ -559,14 +551,14 @@ msgid "Front"
 msgstr "ด้านหน้า"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team"
 msgstr "รวบรวมทีมของคุณ"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team!"
@@ -609,7 +601,6 @@ msgid "Has Referrer"
 msgstr "มีผู้แนะนำ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
@@ -620,7 +611,6 @@ msgstr ""
 "มันอาจจะน่าสนใจสำหรับคุณ<a href=\"%s\">ดูข้อเสนองาน</a>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
@@ -646,6 +636,11 @@ msgstr "ระดับการอ้างอิง Hr"
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__hr_referral_onboarding_page
 msgid "Hr Referral Onboarding Page"
 msgstr "เพจแนะนำการเริ่มงาน Hr"
+
+#. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
+msgid "Hr Referral Reward"
+msgstr "รางวัลการแนะนำ Hr"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__id
@@ -721,7 +716,7 @@ msgid "Job Positions"
 msgstr "ตำแหน่งงาน"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Job Referral Program"
@@ -731,6 +726,20 @@ msgstr "โปรแกรมแนะนำงาน"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__job_open_date
 msgid "Job Start Recruitment Date"
 msgstr "วันที่เริ่มรับสมัครงาน"
+
+#. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_level____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_link_to_share____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_send_mail____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__write_date
@@ -784,7 +793,7 @@ msgid "Let's share a job position."
 msgstr "มาแชร์ตำแหน่งงานกัน"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Level"
@@ -828,6 +837,11 @@ msgid "Linkedin Clicks"
 msgstr "คลิก LinkedIn"
 
 #. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "เอกสารหลักที่แนบมา"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__max_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__max_points
 msgid "Max Points"
@@ -859,21 +873,19 @@ msgid "My Referral"
 msgstr "การแนะนำของฉัน"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid "New Alert In Referrals App"
 msgstr "การเตือนใหม่ในแอปการแนะนำ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid "New gift awarded for %s"
 msgstr "ของขวัญใหม่สำหรับ%s"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Next"
@@ -898,11 +910,6 @@ msgstr "สรุปกิจกรรมถัดไป"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_type_id
 msgid "Next Activity Type"
 msgstr "ประเภทกิจกรรมถัดไป"
-
-#. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "No data to display"
-msgstr "ไม่มีข้อมูลให้แสดง"
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_job_employee_referral
@@ -933,8 +940,8 @@ msgstr "จํานวนข้อผิดพลาด"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+msgid "Number of messages which requires an action"
+msgstr "จํานวนข้อความที่ต้องดําเนินการ"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_has_error_counter
@@ -953,11 +960,11 @@ msgid "Onboarding"
 msgstr "การเริ่มงาน"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Ongoing"
-msgstr "กำลังดำเนินการ"
+msgstr "ต่อเนื่อง"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -989,16 +996,14 @@ msgid "Points Given For Not Hired"
 msgstr "คะแนนที่ให้สำหรับการไม่ได้รับการว่าจ้าง"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Points Given For Refused"
+msgstr "คะแนนที่ให้สำหรับการปฏิเสธ"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__points_missing
 msgid "Points Missing"
 msgstr "คะแนนที่หายไป"
-
-#. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points Received"
-msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -1014,13 +1019,6 @@ msgstr "ไลน์คะแนนสำหรับการแนะนำ"
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_kanban
 msgid "Points to buy this"
 msgstr "คะแนนสำหรับซื้อสิ่งนี้"
-
-#. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points to spend"
-msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend__position
@@ -1044,11 +1042,6 @@ msgid "Product Name"
 msgstr "ชื่อสินค้า"
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__rating_ids
-msgid "Ratings"
-msgstr "การให้คะแนน"
-
-#. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_applicant_employee_referral
 msgid "Ready to receive points?"
 msgstr "พร้อมที่จะรับคะแนนแล้วหรือยัง?"
@@ -1064,7 +1057,6 @@ msgid "Recruitment Stages"
 msgstr "ขั้นตอนการสรรหา"
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Referer"
 msgstr "ผู้แนะนำ"
@@ -1101,6 +1093,11 @@ msgid "Referral Points"
 msgstr "คะแนนการแนะนำ"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referral Rate"
+msgstr "เรทการแนะนำ"
+
+#. module: hr_referral
 #: model:res.groups,name:hr_referral.group_hr_referral_reward_responsible_user
 msgid "Referral Reward Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบรางวัลการแนะนำ"
@@ -1117,21 +1114,19 @@ msgid "Referral State"
 msgstr "สถานะการแนะนำ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s"
 msgstr "การแนะนำ: %s"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s (%s)"
 msgstr "การแนะนำ: %s (%s)"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_root
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
@@ -1150,6 +1145,16 @@ msgid "Referred By User"
 msgstr "แนะนำโดยผู้ใช้"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referred Hired People"
+msgstr "ผู้คนแนะนำที่ถูกจ้าง"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referrer People"
+msgstr "ผู้คนแนะนำ"
+
+#. module: hr_referral
 #: model:ir.ui.menu,name:hr_referral.menu_report_employee_referral_all
 msgid "Reporting"
 msgstr "การรายงาน"
@@ -1165,7 +1170,7 @@ msgid "Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบ"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Restart Onboarding"
@@ -1177,9 +1182,8 @@ msgid "Restore Default"
 msgstr ""
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
 #, python-format
 msgid "Reward"
 msgstr "รางวัล"
@@ -1190,7 +1194,7 @@ msgid "Reward for Referrals"
 msgstr "รางวัลสำหรับการแนะนำ"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward_configuration
@@ -1254,7 +1258,7 @@ msgid "Settings"
 msgstr "การตั้งค่า"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Share"
@@ -1286,25 +1290,18 @@ msgid "Show in Referrals"
 msgstr "แสดงในการแนะนำ"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip"
 msgstr "ข้าม"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip and Start"
 msgstr "ข้ามและเริ่ม"
-
-#. module: hr_referral
-#. odoo-python
-#: code:addons/hr_referral/models/hr_applicant.py:0
-#, python-format
-msgid "Sorry, your referral %s has been refused in the recruitment process."
-msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__utm_source_id
@@ -1322,7 +1319,7 @@ msgid "Stage"
 msgstr "ขั้นตอน"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
@@ -1331,11 +1328,16 @@ msgid "Start"
 msgstr "เริ่ม"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Start Now"
 msgstr "เริ่มเลย"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "State"
+msgstr "รัฐ"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_state
@@ -1357,12 +1359,7 @@ msgid "Subject"
 msgstr "หัวเรื่อง"
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Subject / Application"
-msgstr ""
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Successful"
@@ -1372,6 +1369,13 @@ msgstr "ประสบความสำเร็จ"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__text
 msgid "Text"
 msgstr "ข้อความ"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid ""
+"The % is based on the total of applicant that have been referred by someone "
+"else divided by the total of applicant."
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_friend__image
@@ -1419,25 +1423,18 @@ msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "This reports allow you to follow the referrals and their evolution."
-msgstr ""
+msgid "This report performs analysis on your employee referral."
+msgstr "รายงานนี้ทำการวิเคราะห์เกี่ยวกับการแนะนำพนักงานของคุณ"
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid ""
-"This will make the onboarding visible to all employees who have already seen"
-" it. Do you want to continue?"
-msgstr ""
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "To Spend"
 msgstr "เพื่อจ่าย"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Total"
@@ -1488,24 +1485,28 @@ msgid "User"
 msgstr "ผู้ใช้"
 
 #. module: hr_referral
+#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
+msgid "User : Referral only"
+msgstr ""
+
+#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__gift_manager_id
 msgid "User responsible of this gift."
 msgstr "ผู้ใช้ที่รับผิดชอบของขวัญนี้"
 
 #. module: hr_referral
-#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
-msgid "User: Referral only"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Users Referrer"
+msgstr "ผู้แนะนำผู้ใช้"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "View Jobs"
 msgstr "ดูงาน"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_job.py:0
 #, python-format
 msgid "Visit Webpage"
@@ -1527,14 +1528,12 @@ msgid "Welcome Onboarding in Referral App"
 msgstr "ยินดีต้อนรับการเริ่มงานในแอปการแนะนำ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "You are not allowed to access applicant records."
 msgstr "คุณไม่ได้รับอนุญาตให้เข้าถึงบันทึกของผู้สมัคร"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_campaign.py:0
 #, python-format
 msgid ""
@@ -1543,7 +1542,6 @@ msgid ""
 msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_source.py:0
 #, python-format
 msgid ""
@@ -1552,7 +1550,6 @@ msgid ""
 msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid ""
@@ -1572,14 +1569,12 @@ msgid "You need another"
 msgstr "คุณต้องมีอีกรายการ"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer got a step further!"
 msgstr "ผู้อ้างอิงของคุณได้ก้าวไปอีกขั้น!"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer is hired!"
@@ -1591,7 +1586,7 @@ msgid "click(s)"
 msgstr "คลิก"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "has been hired!"
@@ -1603,14 +1598,14 @@ msgid "https://www.google.com"
 msgstr "https://www.google.com"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "reward"
 msgstr "รางวัล"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "share"

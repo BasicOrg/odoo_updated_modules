@@ -3,16 +3,17 @@
 # 	* quality_control_worksheet
 # 
 # Translators:
-# Wil Odoo, 2023
+# Friederike Fasterling-Nesselbosch, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-10-04 09:43+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,17 +26,22 @@ msgid "Check Worksheet"
 msgstr "Arbeitsblatt prüfen"
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.x_quality_check_worksheet_template_2_ir_ui_view_3
-msgid "Created on"
-msgstr "Erstellt am"
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.quality_check_view_form_failure_worksheet
+msgid "Confirm Worksheet"
+msgstr "Arbeitsblatt bestätigen"
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_2
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.quality_check_view_form_failure_worksheet
+msgid "Correct Worksheet"
+msgstr "Arbeitsblatt korrigieren"
+
+#. module: quality_control_worksheet
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_1
 msgid "Date"
 msgstr "Datum"
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_2
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_1
 msgid "Length"
 msgstr "Länge"
 
@@ -45,21 +51,27 @@ msgid "Model Name"
 msgstr "Modellname"
 
 #. module: quality_control_worksheet
-#. odoo-python
 #: code:addons/quality_control_worksheet/models/quality.py:0
 #, python-format
 msgid "Please fill in the worksheet."
 msgstr "Bitte vervollständigen Sie das Arbeitsblatt."
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_2
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_1
 msgid "Product"
 msgstr "Produkt"
 
 #. module: quality_control_worksheet
 #: model:ir.model,name:quality_control_worksheet.model_quality_check
 msgid "Quality Check"
-msgstr "Qualitätsprüfung"
+msgstr "Qualitätskontrolle"
+
+#. module: quality_control_worksheet
+#: code:addons/quality_control_worksheet/models/quality.py:0
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.quality_check_view_form_failure_worksheet
+#, python-format
+msgid "Quality Check Failed"
+msgstr "Qualitätsprüfung fehlgeschlagen"
 
 #. module: quality_control_worksheet
 #: model:ir.model,name:quality_control_worksheet.model_quality_point
@@ -67,7 +79,7 @@ msgid "Quality Control Point"
 msgstr "Qualitätskontrollpunkt"
 
 #. module: quality_control_worksheet
-#: model:ir.model,name:quality_control_worksheet.x_quality_check_worksheet_template_2_ir_model_1
+#: model:ir.model,name:quality_control_worksheet.model_x_custom_worksheet_x_quality_check_worksheet_template_1
 msgid "Quality Issues"
 msgstr "Qualitätsprobleme"
 
@@ -75,21 +87,21 @@ msgstr "Qualitätsprobleme"
 #: model:ir.model.fields,field_description:quality_control_worksheet.field_quality_check__worksheet_template_id
 #: model:ir.model.fields,field_description:quality_control_worksheet.field_quality_check_wizard__worksheet_template_id
 msgid "Quality Template"
-msgstr "Qualitätsvorlage"
+msgstr "Qualitäts-Vorlage"
 
 #. module: quality_control_worksheet
 #: model:ir.model,name:quality_control_worksheet.model_report_quality_control_quality_worksheet
 msgid "Quality Worksheet Report"
-msgstr "Bericht über Qualitätsarbeitsblatt"
+msgstr ""
 
 #. module: quality_control_worksheet
 #: model:ir.actions.act_window,name:quality_control_worksheet.quality_control_worksheet_template_action_settings
 #: model:ir.ui.menu,name:quality_control_worksheet.settings_worksheet_template
 msgid "Quality Worksheet Templates"
-msgstr "Qualitätsarbeitsblattvorlagen"
+msgstr "Arbeitsblattvorlagen Qualität"
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_2
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_1
 msgid "Responsible"
 msgstr "Verantwortlich"
 
@@ -106,15 +118,16 @@ msgstr "Vorlage"
 #. module: quality_control_worksheet
 #: model:ir.model,name:quality_control_worksheet.model_quality_check_wizard
 msgid "Wizard for Quality Check Pop Up"
-msgstr "Assistent für Qualitätsprüfungs-Pop-Up"
+msgstr "Assistent für Qualitätsprüfung Pop Up"
 
 #. module: quality_control_worksheet
-#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_2
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.report_custom_x_quality_check_worksheet_template_1
 msgid "Wood Texture"
 msgstr "Holzstruktur"
 
 #. module: quality_control_worksheet
 #: model_terms:ir.ui.view,arch_db:quality_control_worksheet.quality_check_view_form_inherit_worksheet
+#: model_terms:ir.ui.view,arch_db:quality_control_worksheet.view_quality_check_wizard_inherit_worksheet
 #: model_terms:ir.ui.view,arch_db:quality_control_worksheet.worksheet_custom_page
 msgid "Worksheet"
 msgstr "Arbeitsblatt"
@@ -135,6 +148,6 @@ msgid "Worksheet Template"
 msgstr "Arbeitsblattvorlage"
 
 #. module: quality_control_worksheet
-#: model:ir.actions.act_window,name:quality_control_worksheet.x_quality_check_worksheet_template_2_ir_actions_act_window_1
+#: model:ir.actions.act_window,name:quality_control_worksheet.template_action_Quality_Issues
 msgid "Worksheets"
 msgstr "Arbeitsblätter"

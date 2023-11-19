@@ -18,47 +18,9 @@ class ResConfigSettings(models.TransientModel):
                                        related='company_id.fiscalyear_lock_date', readonly=False)
     tax_lock_date = fields.Date("Tax Lock Date", related='company_id.tax_lock_date', readonly=False)
     use_anglo_saxon = fields.Boolean(string='Anglo-Saxon Accounting', related='company_id.anglo_saxon_accounting', readonly=False)
+    module_account_predictive_bills = fields.Boolean(string="Account Predictive Bills")
     invoicing_switch_threshold = fields.Date(string="Invoicing Switch Threshold", related='company_id.invoicing_switch_threshold', readonly=False)
     group_fiscal_year = fields.Boolean(string='Fiscal Years', implied_group='account_accountant.group_fiscal_year')
-    predict_bill_product = fields.Boolean(string="Predict Bill Product", related='company_id.predict_bill_product', readonly=False)
-
-    # Deferred management
-    deferred_journal_id = fields.Many2one(
-        comodel_name='account.journal',
-        string='Deferred Entries Journal',
-        help='Journal used for deferred entries',
-        readonly=False,
-        related='company_id.deferred_journal_id',
-    )
-    deferred_expense_account_id = fields.Many2one(
-        comodel_name='account.account',
-        string='Deferred Expense',
-        help='Account used for deferred expenses',
-        readonly=False,
-        related='company_id.deferred_expense_account_id',
-    )
-    deferred_revenue_account_id = fields.Many2one(
-        comodel_name='account.account',
-        string='Deferred Revenue',
-        help='Account used for deferred revenues',
-        readonly=False,
-        related='company_id.deferred_revenue_account_id',
-    )
-    generate_deferred_expense_entries_method = fields.Selection(
-        related='company_id.generate_deferred_expense_entries_method',
-        readonly=False, required=True,
-        help='Method used to generate deferred expense entries',
-    )
-    generate_deferred_revenue_entries_method = fields.Selection(
-        related='company_id.generate_deferred_revenue_entries_method',
-        readonly=False, required=True,
-        help='Method used to generate deferred revenue entries',
-    )
-    deferred_amount_computation_method = fields.Selection(
-        related='company_id.deferred_amount_computation_method',
-        readonly=False, required=True,
-        help='Method used to compute the amount of deferred entries',
-    )
 
     @api.constrains('fiscalyear_last_day', 'fiscalyear_last_month')
     def _check_fiscalyear(self):
@@ -70,8 +32,8 @@ class ResConfigSettings(models.TransientModel):
                 date(2020, int(wiz.fiscalyear_last_month), wiz.fiscalyear_last_day)
             except ValueError:
                 raise ValidationError(
-                    _('Incorrect fiscal year date: day is out of range for month. Month: %s; Day: %s',
-                    wiz.fiscalyear_last_month, wiz.fiscalyear_last_day)
+                    _('Incorrect fiscal year date: day is out of range for month. Month: %s; Day: %s') %
+                    (wiz.fiscalyear_last_month, wiz.fiscalyear_last_day)
                 )
 
     @api.model_create_multi

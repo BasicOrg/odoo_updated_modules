@@ -4,12 +4,13 @@
 from . import models
 from . import wizard
 
-from odoo import tools
+from odoo import api, tools, SUPERUSER_ID
 
 
-def _auto_install_apps(env):
+def _auto_install_apps(cr, registry):
     if not tools.config.get('default_productivity_apps', False):
         return
+    env = api.Environment(cr, SUPERUSER_ID, {})
     env['ir.module.module'].sudo().search([
         ('name', 'in', [
             # Community

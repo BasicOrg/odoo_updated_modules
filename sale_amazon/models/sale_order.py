@@ -6,9 +6,7 @@ from odoo import _, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    amazon_order_ref = fields.Char(
-        string="Amazon Reference", help="The Amazon-defined order reference.", readonly=True
-    )
+    amazon_order_ref = fields.Char(help="The Amazon-defined order reference.")
     amazon_channel = fields.Selection(
         string="Fulfillment Channel",
         selection=[('fbm', "Fulfillment by Merchant"), ('fba', "Fulfillment by Amazon")],

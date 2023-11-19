@@ -3,7 +3,7 @@
 import { patch } from "@web/core/utils/patch";
 import { BomOverviewLine } from "@mrp/components/bom_overview_line/mrp_bom_overview_line";
 
-patch(BomOverviewLine.prototype, {
+patch(BomOverviewLine.prototype, "mrp_subcontracting", {
     /**
      * @override
      */
@@ -11,6 +11,6 @@ patch(BomOverviewLine.prototype, {
         if (routeType == "subcontract") {
             return this.goToAction(this.data.link_id, this.data.link_model);
         }
-        return super.goToRoute(...arguments);
+        return this._super(...arguments);
     }
 });

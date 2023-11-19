@@ -4,7 +4,7 @@
         <field name="name">hr.job.employee.referral.kanban</field>
         <field name="model">hr.job</field>
         <field name="arch" type="xml">
-            <kanban create="false" class="o_kanban_dashboard o_kanban_referral_job" js_class="referral_kanban">
+            <kanban create="false" class="oe_background_grey o_kanban_dashboard o_kanban_referral o_kanban_referral_job" js_class="referral_kanban">
                 <field name="name"/>
                 <field name="department_id"/>
                 <field name="website_url"/>
@@ -44,17 +44,17 @@
                                     <t t-out="record.description.value" class="text-muted"/>
                                 </div>
                                 <div>
-                                    <div class="o_button_referral d-flex gap-1">
-                                        <a role="button" name="%(hr_referral_send_mail_action)d" type="action" class="btn btn-secondary">
+                                    <div class="o_button_referral">
+                                        <a role="button" name="%(hr_referral_send_mail_action)d" type="action" class="btn btn-secondary border ">
                                             <span title='Send by Mail'>Refer Friend</span>
                                         </a>
-                                        <a role="button" t-attf-href="#{record.website_url.raw_value}" target="_blank" class="btn btn-secondary">
+                                        <a role="button" t-attf-href="#{record.website_url.raw_value}" target="_blank" class="btn btn-secondary border ">
                                             <span title='More info'>More info</span>
                                         </a>
                                     </div>
-                                    <div class="o_to_share d-flex gap-1 flex-wrap">
+                                    <div class="o_to_share">
                                         <a role="button" name="%(hr_referral_link_to_share_action)d" type="action" class="btn btn-sm p-2 btn-secondary">
-                                            <span title='My Link to Share'><i class='fa fa-lg fa-link' role="img" aria-label="My Link to Share"/></span>
+                                            <span title='My Link to Share'><i class='fa fa-lg fa-link text-secondary' role="img" aria-label="My Link to Share"/></span>
                                             <span class="d-block mt-2 text-primary">
                                                 <t t-if="record.direct_clicks.raw_value &gt; 0"><t t-esc="record.direct_clicks.raw_value"/> click(s)</t>
                                                 <t t-else="">Share Now</t>
@@ -62,7 +62,7 @@
                                         </a>
                                         <t t-foreach="[{'lower': 'facebook', 'name': 'Facebook', 'clicks': record.facebook_clicks.raw_value}, {'lower': 'twitter', 'name': 'Twitter', 'clicks': record.twitter_clicks.raw_value}, {'lower': 'linkedin', 'name': 'Linkedin', 'clicks': record.linkedin_clicks.raw_value}]" t-as="source" t-key="source.name">
                                             <a role="button" name="action_share_external" type="object" class="btn btn-sm p-2 btn-secondary" t-attf-context="{'default_channel': '{{source.lower}}'}">
-                                                <span t-attf-title="Share on {{ source.name }}"><i t-attf-class="fa fa-lg fa-{{source.lower}}" role="img" t-attf-aria-label="Share on {{source.name}}"/></span>
+                                                <span t-attf-title="Share on {{ source.name }}"><i t-attf-class="fa fa-lg fa-{{source.lower}} text-secondary" role="img" t-attf-aria-label="Share on {{source.name}}"/></span>
                                                 <span class="d-block mt-2 text-primary">
                                                     <t t-if="source.clicks &gt; 0"><t t-esc="source['clicks']"/> click(s)</t>
                                                     <t t-else="">Share Now</t>

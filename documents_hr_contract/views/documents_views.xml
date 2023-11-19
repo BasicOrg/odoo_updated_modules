@@ -11,7 +11,7 @@
                     <attribute name="invisible">0</attribute>
                 </xpath>
                 <xpath expr="//span[@name='documents_hr_tags']" position="after">
-                    <div class="row" invisible="not documents_hr_settings">
+                    <div class="row" attrs="{'invisible' : [('documents_hr_settings', '=', False)]}">
                         <label for="documents_hr_contracts_tags" class="col-sm-3 o_light_label"/>
                         <field name="documents_hr_contracts_tags"
                                 domain="[('folder_id','=', documents_hr_folder)]"

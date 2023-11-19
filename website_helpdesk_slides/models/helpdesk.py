@@ -7,9 +7,7 @@ class HelpdeskTeam(models.Model):
     _inherit = "helpdesk.team"
 
     show_knowledge_base_slide_channel = fields.Boolean(compute="_compute_show_knowledge_base_slide_channel")
-    website_slide_channel_ids = fields.Many2many('slide.channel', string='Courses',
-        help="Customers will see only the content from chosen courses in the help center. If you want all courses to be accessible, just leave the field empty. Alternatively, you can make courses private to restrict this feature to internal users.")
-    website_top_channels = fields.Many2many('slide.channel', string='Most Popular Courses', compute="_compute_website_top_channels")
+    website_slide_channel_ids = fields.Many2many('slide.channel', string='Courses', help="In the help center, customers will only be able to see the selected courses.")
 
     @api.depends('website_slide_channel_ids')
     def _compute_show_knowledge_base_slide_channel(self):
@@ -28,31 +26,6 @@ class HelpdeskTeam(models.Model):
             accessible_team_channels = team_channels & accessible_all_teams_channels
             team_sudo.sudo().show_knowledge_base_slide_channel =\
                 bool(team_channels and accessible_team_channels) or bool(not team_channels and accessible_channels)
-
-    def _compute_website_top_channels(self):
-        teams_without_channel = self.filtered(lambda team: not team.website_slide_channel_ids)
-
-        def filtered_channels(channel_ids):
-            return channel_ids.filtered(
-                lambda channel: (
-                    channel.website_published and (
-                        channel.visibility == 'public'
-                        or (channel.visibility == 'members' and channel.is_member)
-                        or (channel.visibility == 'connected' and not self.env.user._is_public())
-                    )
-                )
-            )
-
-        if teams_without_channel:
-            channels = filtered_channels(
-                self.env['slide.channel'].search([('website_published', '=', True)], order='total_views desc')
-            )[:5]
-
-        for team in self:
-            if team.website_slide_channel_ids:
-                team.website_top_channels = filtered_channels(team.website_slide_channel_ids).sorted(key="total_views", reverse=True)[:5]
-            else:
-                team.website_top_channels = channels
 
     @api.model
     def _get_knowledge_base_fields(self):

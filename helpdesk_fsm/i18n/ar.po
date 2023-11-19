@@ -3,22 +3,28 @@
 # 	* helpdesk_fsm
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: helpdesk_fsm
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Blocked"
+msgstr "محجوب"
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__company_id
@@ -28,7 +34,12 @@ msgstr "الشركة "
 #. module: helpdesk_fsm
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "تحويل تذاكر مكتب المساعدة إلى مهام "
+msgstr ""
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,help:helpdesk_fsm.field_helpdesk_ticket__use_fsm
+msgid "Convert tickets into Field Service tasks"
+msgstr "قم بتحويل التذاكر إلى مهام الخدمة الميدانية "
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
@@ -37,12 +48,12 @@ msgstr "إنشاء وعرض المهمة "
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
+#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 msgid "Create Task"
 msgstr "إنشاء مهمة"
 
 #. module: helpdesk_fsm
-#. odoo-python
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_create_fsm_task
 #, python-format
 msgid "Create a Field Service task"
@@ -66,7 +77,7 @@ msgstr "العميل"
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
 msgid "Discard"
-msgstr "إهمال "
+msgstr "تجاهل"
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__display_name
@@ -76,7 +87,7 @@ msgstr "اسم العرض "
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__display_helpdesk_ticket_button
 msgid "Display Ticket"
-msgstr "عرض التذكرة "
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_team__fsm_project_id
@@ -109,6 +120,17 @@ msgid "ID"
 msgstr "المُعرف"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__write_uid
 msgid "Last Updated by"
 msgstr "آخر تحديث بواسطة"
@@ -121,12 +143,7 @@ msgstr "آخر تحديث في"
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__helpdesk_ticket_id
 msgid "Original Ticket"
-msgstr "التذكرة الأصلية "
-
-#. module: helpdesk_fsm
-#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
-msgid "Plan Intervention"
-msgstr "تخطيط التداخل "
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__project_id
@@ -140,23 +157,22 @@ msgid "Project in which to create the task"
 msgstr "المشروع الذي يجب إنشاء المهمة فيه "
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Ready"
+msgstr "جاهز"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__helpdesk_ticket_id
 msgid "Related ticket"
 msgstr "التذكرة ذات الصلة "
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model:ir.model,name:helpdesk_fsm.model_project_task
 #, python-format
 msgid "Task"
 msgstr "المهمة"
-
-#. module: helpdesk_fsm
-#: model:mail.message.subtype,description:helpdesk_fsm.mt_ticket_task_canceled
-#: model:mail.message.subtype,name:helpdesk_fsm.mt_ticket_task_canceled
-msgid "Task Canceled"
-msgstr "تم إلغاء المهمة "
 
 #. module: helpdesk_fsm
 #: model:mail.message.subtype,description:helpdesk_fsm.mt_team_ticket_task_done
@@ -167,16 +183,14 @@ msgid "Task Done"
 msgstr "انتهت المهمة "
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Task created"
-msgstr "تم إنشاء المهمة "
+msgstr ""
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_ticket__fsm_task_ids
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 #, python-format
@@ -184,7 +198,6 @@ msgid "Tasks"
 msgstr "المهام"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Tasks from Tickets"
@@ -196,7 +209,6 @@ msgid "Tasks generated from this ticket"
 msgstr "المهام التي تم إنشاؤها من هذه التذكرة "
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.project_sharing_inherit_project_task_view_form
 #, python-format

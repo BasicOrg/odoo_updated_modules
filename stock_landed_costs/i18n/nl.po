@@ -3,16 +3,16 @@
 # 	* stock_landed_costs
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +20,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
@@ -35,25 +34,20 @@ msgid "<i class=\"fa fa-clock-o\" title=\"Date\" role=\"img\" aria-label=\"Date\
 msgstr "<i class=\"fa fa-clock-o\" title=\"Datum\" role=\"img\" aria-label=\"Datum\"/>"
 
 #. module: stock_landed_costs
-#: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
-msgid "<span class=\"o_stat_text\">Valuation</span>"
-msgstr "<span class=\"o_stat_text\">Waardering</span>"
-
-#. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_account_move_line__product_type
 msgid ""
 "A storable product is a product for which you manage stock. The Inventory app has to be installed.\n"
 "A consumable product is a product for which stock is not managed.\n"
 "A service is a non-material product you provide."
 msgstr ""
-"Een voorraadproduct is een product waarvan je de voorraad beheerd. De voorraad app moet geïnstalleerd zijn.\n"
+"Een voorraad product is een product waarvan je voorraad beheerd. De voorraad app moet geïnstalleerd worden.\n"
 "Een verbruiksproduct, is een product waarvoor geen voorraad wordt bijgehouden.\n"
-"Een dienst is een immaterieel product dat je verkoopt."
+"Een dienst is een immateriëel product dat je verkoopt."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost_lines__account_id
 msgid "Account"
-msgstr "Account"
+msgstr "Rekening"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__account_journal_id
@@ -181,14 +175,13 @@ msgid "Cost Lines"
 msgstr "Kostenregels"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
 "Cost and adjustments lines do not match. You should maybe recompute the "
 "landed costs."
 msgstr ""
-"Kosten en aanpassingen komen niet overeen. De logistieke kosten moeten "
+"Kosten en aanpassing regels komen niet overeen. De logistieke kosten moeten "
 "misschien opnieuw berekend worden."
 
 #. module: stock_landed_costs
@@ -238,7 +231,7 @@ msgstr "Standaard dagboek"
 #: model:ir.model.fields,field_description:stock_landed_costs.field_product_product__split_method_landed_cost
 #: model:ir.model.fields,field_description:stock_landed_costs.field_product_template__split_method_landed_cost
 msgid "Default Split Method"
-msgstr "Standaard splitsingsmethode"
+msgstr "Standaard splitmethode"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_product_product__split_method_landed_cost
@@ -280,17 +273,17 @@ msgstr "Gelijkmatig"
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost_lines__split_method
 msgid ""
-"Equal: Cost will be equally divided.\n"
-"By Quantity: Cost will be divided according to product's quantity.\n"
-"By Current cost: Cost will be divided according to product's current cost.\n"
-"By Weight: Cost will be divided depending on its weight.\n"
-"By Volume: Cost will be divided depending on its volume."
+"Equal : Cost will be equally divided.\n"
+"By Quantity : Cost will be divided according to product's quantity.\n"
+"By Current cost : Cost will be divided according to product's current cost.\n"
+"By Weight : Cost will be divided depending on its weight.\n"
+"By Volume : Cost will be divided depending on its volume."
 msgstr ""
-"Gelijkmatig: Kosten worden gelijkmatig gedeeld.\n"
-"Door aantal: Kosten worden gedeeld op basis van het aantal producten.\n"
-"Door huidige kostprijs: Kosten worden gedeeld op basis van de huidige kostprijs van het proudct.\n"
-"Door gewicht: Kosten worden gedeeld op basis van het gewicht.\n"
-"Door volume: Kosten worden gedeeld op basis van het volume."
+"Gelijkmatig: Kosten zullen gelijkmatig verdeeld worden\n"
+"Door Aantal: Kosten zullen worden verdeeld op product hoeveelheid.\n"
+"Door Kostprijs: Kosten zullen worden verdeeld op product kostprijs.\n"
+"Door Gewicht: Kosten zullen worden verdeeld op product gewicht.\n"
+"Door Volume: Kosten zullen worden verdeeld op product volume."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_follower_ids
@@ -315,7 +308,7 @@ msgstr "Toekomstige activiteiten"
 #. module: stock_landed_costs
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_search
 msgid "Group By"
-msgstr "Groeperen op"
+msgstr "Groepeer op"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__has_message
@@ -348,7 +341,7 @@ msgstr "Indien aangevinkt vragen nieuwe berichten je aandacht."
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost__message_has_error
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Indien aangevinkt hebben sommige berichten een leveringsfout."
+msgstr "indien aangevinkt hebben sommige leveringen een fout."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_product_product__landed_cost_ok
@@ -357,9 +350,6 @@ msgid ""
 "Indicates whether the product is a landed cost: when receiving a vendor "
 "bill, you can allocate this cost on preceding receipts."
 msgstr ""
-"Geeft aan of het product logistieke kosten inhoudt: wanneer je een "
-"leveranciersfactuur ontvangt, kan je deze kosten op voorgaande ontvangsten "
-"toewijzen."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_is_follower
@@ -433,13 +423,11 @@ msgid "Landed cost validated"
 msgstr "Logistieke kosten bevestigd"
 
 #. module: stock_landed_costs
-#: model_terms:ir.actions.act_window,help:stock_landed_costs.action_stock_landed_cost
-msgid ""
-"Landed costs allow you to include additional costs (shipment, insurance, "
-"customs duties, etc) into the cost of the product."
-msgstr ""
-"Met logistieke kosten kan je extra kosten (verzending, verzekering, "
-"douanerechten, enz.) in de kosten van het product opnemen."
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost____last_update
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost_lines____last_update
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_valuation_adjustment_lines____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__write_uid
@@ -466,6 +454,11 @@ msgid "Lc Journal"
 msgstr "LC dagboek"
 
 #. module: stock_landed_costs
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Hoofdbijlage"
+
+#. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_has_error
 msgid "Message Delivery error"
 msgstr "Bericht afleverfout"
@@ -487,7 +480,6 @@ msgid "Name"
 msgstr "Naam"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
@@ -513,7 +505,7 @@ msgstr "Volgende activiteit deadline"
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__activity_summary
 msgid "Next Activity Summary"
-msgstr "Volgende activiteit overzicht"
+msgstr "Omschrijving volgende actie"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__activity_type_id
@@ -532,7 +524,7 @@ msgstr "Aantal fouten"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Aantal berichten die actie vereisen"
 
 #. module: stock_landed_costs
@@ -541,7 +533,6 @@ msgid "Number of messages with delivery error"
 msgstr "Aantal berichten met leveringsfout"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Only draft landed costs can be validated"
@@ -555,17 +546,15 @@ msgstr "Originele waarde"
 #. module: stock_landed_costs
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_search
 msgid "Picking"
-msgstr "Picken"
+msgstr "Picking"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Please configure Stock Expense Account for product: %s."
 msgstr "Je dient een voorraad kosten rekening te definiëren voor product: %s"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Please define %s on which those additional costs should apply."
@@ -597,12 +586,7 @@ msgstr "Inkooporderregel"
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_valuation_adjustment_lines__quantity
 msgid "Quantity"
-msgstr "Hoeveelheid"
-
-#. module: stock_landed_costs
-#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__rating_ids
-msgid "Ratings"
-msgstr "Beoordelingen"
+msgstr "Aantal"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__activity_user_id
@@ -622,12 +606,12 @@ msgstr "Toon alle records welke een actiedatum voor vandaag hebben"
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost_lines__split_method
 msgid "Split Method"
-msgstr "Splitsingsmethode"
+msgstr "Splitmethode"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__state
 msgid "State"
-msgstr "Staat"
+msgstr "Status"
 
 #. module: stock_landed_costs
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_search
@@ -655,7 +639,7 @@ msgstr "Voorraad logistieke kosten"
 #. module: stock_landed_costs
 #: model:ir.model,name:stock_landed_costs.model_stock_landed_cost_lines
 msgid "Stock Landed Cost Line"
-msgstr "Logistieke kostenregel voorraad"
+msgstr "Logistieke kostenregel"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_valuation_adjustment_lines__move_id
@@ -687,15 +671,14 @@ msgstr "Verplaatsingen"
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Type van de geregistreerde uitzonderingsactiviteit."
+msgstr "Type van activiteit uitzondering op record."
 
 #. module: stock_landed_costs
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
 msgid "Validate"
-msgstr "Bevestigen"
+msgstr "Bevestig"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
@@ -706,15 +689,20 @@ msgstr ""
 " negatieve extra kost aanmaken om ze om te keren"
 
 #. module: stock_landed_costs
+#: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
+msgid "Valuation"
+msgstr "Waarde"
+
+#. module: stock_landed_costs
 #: model:ir.model,name:stock_landed_costs.model_stock_valuation_adjustment_lines
 msgid "Valuation Adjustment Lines"
-msgstr "Voorraadwaarde aanpassingsregels"
+msgstr "Voorraadwaarde correctieregels"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__valuation_adjustment_lines
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
 msgid "Valuation Adjustments"
-msgstr "Voorraadwaarde aanpassingen"
+msgstr "Voorraadwaarde correcties"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__vendor_bill_id
@@ -742,7 +730,6 @@ msgid "Weight"
 msgstr "Gewicht"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
@@ -754,7 +741,6 @@ msgstr ""
 "kostprijs (AVCO) kostprijsbepaling."
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/product.py:0
 #, python-format
 msgid ""

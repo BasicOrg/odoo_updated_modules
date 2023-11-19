@@ -1,8 +1,9 @@
-.o_kanban_dashboard.o_account_kanban .o_kanban_renderer {
+.o_kanban_dashboard.o_account_kanban {
     .o_kanban_record {
 
         @include media-breakpoint-up(sm) {
             .oe_kanban_action_button {
+                display: block;
                 margin-bottom: 5px;
             }
         }
@@ -36,6 +37,16 @@
     &.o_kanban_ungrouped {
         .o_kanban_record {
             width: 450px;
+        }
+    }
+
+    .o_kanban_group {
+        &:not(.o_column_folded) {
+            width: 450px + 2*$o-kanban-group-padding;
+
+            @include media-breakpoint-down(md) {
+                width: 100%;
+            }
         }
     }
 }

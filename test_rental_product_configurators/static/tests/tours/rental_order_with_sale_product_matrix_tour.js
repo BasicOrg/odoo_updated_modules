@@ -1,12 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('rental_order_with_sale_product_matrix_tour', {
+tour.register('rental_order_with_sale_product_matrix_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale_renting.rental_menu_root"]',
     edition: 'enterprise'
 }, {
@@ -36,6 +35,10 @@ registry.category("web_tour.tours").add('rental_order_with_sale_product_matrix_t
     run: 'text Projector',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Projector (TEST)")',
+}, {
+    trigger: 'button[special=save]',
+    extra_trigger: '.o_form_nosheet',
+    position: 'bottom',
 },
 // Adding a sale product with a matrix
 {
@@ -47,12 +50,12 @@ registry.category("web_tour.tours").add('rental_order_with_sale_product_matrix_t
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Matrix")',
 }, {
-    trigger: '.o_matrix_input_table',
+    trigger: '.o_product_variant_matrix',
     run: function () {
         $('.o_matrix_input').slice(8, 16).val(4);
     } // set the qty to 4 for half of the matrix products.
 }, {
-    trigger: 'button:contains("Confirm")',
+    trigger: 'span:contains("Confirm")',
 },
-    ...stepUtils.saveForm({ extra_trigger: '.o_field_cell.o_data_cell.o_list_number:contains("26")' }),
-]});
+    ...tour.stepUtils.saveForm({ extra_trigger: '.o_field_cell.o_data_cell.o_list_number:contains("26")' }),
+]);

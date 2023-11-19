@@ -3,16 +3,17 @@
 # 	* hr_recruitment_sign
 # 
 # Translators:
-# Wil Odoo, 2023
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,7 +26,6 @@ msgid "# Signatures"
 msgstr "# Handtekeningen"
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/wizard/hr_recruitment_sign_document_wizard.py:0
 #, python-format
 msgid "%s and %s are the signatories."
@@ -34,18 +34,18 @@ msgstr "%sen %s zijn de ondertekenaars."
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_applicant_sign_view_form
 msgid "<span class=\"o_stat_text\">Signature Requests</span>"
-msgstr "<span class=\"o_stat_text\">Handtekening verzoeken</span>"
+msgstr "<span class=\"o_stat_text\">Handtekening verzoek</span>"
 
 #. module: hr_recruitment_sign
 #: model:ir.model,name:hr_recruitment_sign.model_hr_applicant
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__applicant_id
 msgid "Applicant"
-msgstr "Sollicitant"
+msgstr "Kandidaat"
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__applicant_role_id
 msgid "Applicant Role"
-msgstr "Rol sollicitant"
+msgstr ""
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__partner_name
@@ -58,8 +58,6 @@ msgid ""
 "Applicant's role on the templates to sign. The same role must be present in "
 "all the templates"
 msgstr ""
-"De rol van de sollicitant op de te onderteken sjablonen. Dezelfde rol moet "
-"in alle sjablonen aanwezig zijn."
 
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_recruitment_sign_view
@@ -84,12 +82,12 @@ msgstr "Kopie naar"
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_recruitment_sign_view
@@ -99,7 +97,7 @@ msgstr "Negeren"
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: hr_recruitment_sign
 #: model:ir.actions.act_window,name:hr_recruitment_sign.sign_recruitment_wizard_action
@@ -118,8 +116,6 @@ msgid ""
 "        Documents with 1 responsible will only have to be signed by the applicant while documents with 2 different responsible will have to be signed by both the applicant and the responsible.\n"
 "        "
 msgstr ""
-"Te ondertekenden documenten. Alleen documenten met 1 of 2 verschillende verantwoordelijken kunnen worden geselecteerd. \n"
-"Documenten met 1 verantwoordelijke hoeven alleen door de sollicitant te worden ondertekend, terwijl documenten met 2 verschillende verantwoordelijken zowel door de sollicitant als door de verantwoordelijke moeten worden ondertekend."
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__has_both_template
@@ -132,6 +128,11 @@ msgid "ID"
 msgstr "ID"
 
 #. module: hr_recruitment_sign
+#: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Laatst bijgewerkt door"
@@ -139,12 +140,12 @@ msgstr "Laatst bijgewerkt door"
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_recruitment_sign_view
 msgid "Mail Options"
-msgstr "E-mail opties"
+msgstr ""
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__message
@@ -152,7 +153,6 @@ msgid "Message"
 msgstr "Bericht"
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/wizard/hr_recruitment_sign_document_wizard.py:0
 #, python-format
 msgid ""
@@ -168,7 +168,6 @@ msgid "No template available"
 msgstr "Geen sjabloon beschikbaar"
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/wizard/hr_recruitment_sign_document_wizard.py:0
 #, python-format
 msgid "Only %s has to sign."
@@ -182,7 +181,7 @@ msgstr "Optioneel bericht..."
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__possible_template_ids
 msgid "Possible Template"
-msgstr "Mogelijk sjabloon"
+msgstr ""
 
 #. module: hr_recruitment_sign
 #: model:ir.actions.server,name:hr_recruitment_sign.action_request_signature
@@ -202,7 +201,7 @@ msgstr "Verzenden"
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_recruitment_sign_view
 msgid "Sign Request Options"
-msgstr "Handtekeningsverzoek opties"
+msgstr ""
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__sign_template_responsible_ids
@@ -212,26 +211,24 @@ msgstr "Onderteken sjabloon verantwoordelijke"
 #. module: hr_recruitment_sign
 #: model:ir.model,name:hr_recruitment_sign.model_hr_recruitment_sign_document_wizard
 msgid "Sign document in recruitment"
-msgstr "Onderteken document in werving & selectie"
+msgstr ""
 
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.hr_recruitment_sign_view
 msgid "Signature Request"
-msgstr "Verzoek om handtekening"
+msgstr "Handtekening verzoek"
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/wizard/hr_recruitment_sign_document_wizard.py:0
 #, python-format
 msgid "Signature Request - %s"
-msgstr "Verzoek om handtekening - %s"
+msgstr "Handtekening verzoek - %s"
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/models/hr_applicant.py:0
 #, python-format
 msgid "Signature Requests"
-msgstr "Verzoeken om handtekening"
+msgstr "Handtekening verzoek"
 
 #. module: hr_recruitment_sign
 #: model:ir.model.fields,field_description:hr_recruitment_sign.field_hr_recruitment_sign_document_wizard__subject
@@ -249,13 +246,12 @@ msgid "Write email or search contact..."
 msgstr "Schrijf e-mail of zoek contact..."
 
 #. module: hr_recruitment_sign
-#. odoo-python
 #: code:addons/hr_recruitment_sign/models/hr_applicant.py:0
 #, python-format
 msgid "You must define a Contact Name for this applicant."
-msgstr "Je moet een contactnaam ingeven voor deze sollicitant."
+msgstr "Je moet een contact naam ingeven voor deze sollicitant."
 
 #. module: hr_recruitment_sign
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_sign.message_signature_request
 msgid "requested a new signature on the following documents:"
-msgstr "heeft een nieuwe handtekening gevraagd op de volgende documenten:"
+msgstr ""

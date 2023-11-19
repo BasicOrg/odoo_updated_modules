@@ -2,7 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
+from odoo.tools import formataddr
 
 
 class HrReferralSendMail(models.TransientModel):
@@ -30,9 +31,9 @@ class HrReferralSendMail(models.TransientModel):
     def _compute_body_html(self):
         for wizard in self:
             if not wizard.job_id:
-                wizard.body_html = _('Hello,<br><br>There are some amazing job offers in my company! Have a look, they  can be interesting for you<br><a href="%s">See Job Offers</a>', wizard.url)
+                wizard.body_html = _('Hello,<br><br>There are some amazing job offers in my company! Have a look, they  can be interesting for you<br><a href="%s">See Job Offers</a>') % (wizard.url)
             else:
-                wizard.body_html = _('Hello,<br><br>There is an amazing job offer for %s in my company! It will be a fit for you<br><a href="%s">See Job Offer</a>', wizard.job_id.name, wizard.url)
+                wizard.body_html = _('Hello,<br><br>There is an amazing job offer for %s in my company! It will be a fit for you<br><a href="%s">See Job Offer</a>') % (wizard.job_id.name, wizard.url)
 
     def send_mail_referral(self):
         if not self.env.user.has_group('hr_referral.group_hr_recruitment_referral_user'):

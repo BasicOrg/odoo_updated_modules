@@ -16,17 +16,13 @@ from odoo.osv import expression
 def _generate_random_reward_code():
     return str(random.getrandbits(32))
 
-
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    _inherit = "sale.order"
 
     # Contains how much points should be given to a coupon upon validating the order
-    applied_coupon_ids = fields.Many2many(
-        comodel_name='loyalty.card', string="Manually Applied Coupons", copy=False)
-    code_enabled_rule_ids = fields.Many2many(
-        comodel_name='loyalty.rule', string="Manually Triggered Rules", copy=False)
-    coupon_point_ids = fields.One2many(
-        comodel_name='sale.order.coupon.points', inverse_name='order_id', copy=False)
+    applied_coupon_ids = fields.Many2many('loyalty.card', string="Manually Applied Coupons", copy=False)
+    code_enabled_rule_ids = fields.Many2many('loyalty.rule', string="Manually Triggered Rules", copy=False)
+    coupon_point_ids = fields.One2many('sale.order.coupon.points', 'order_id', copy=False)
     reward_amount = fields.Float(compute='_compute_reward_total')
 
     @api.depends('order_line')
@@ -70,22 +66,19 @@ class SaleOrder(models.Model):
         # Claiming a reward for that program will require either an automated check or a manual input again.
         reward_coupons = self.order_line.coupon_id
         self.coupon_point_ids.filtered(
-            lambda pe: pe.coupon_id.program_id.applies_on == 'current' and pe.coupon_id not in reward_coupons
-        ).coupon_id.sudo().unlink()
+            lambda pe: pe.coupon_id.program_id.applies_on == 'current' and pe.coupon_id not in reward_coupons)\
+            .coupon_id.sudo().unlink()
         # Add/remove the points to our coupons
         for coupon, change in self.filtered(lambda s: s.state != 'sale')._get_point_changes().items():
             coupon.points += change
-        res = super().action_confirm()
         self._send_reward_coupon_mail()
-        return res
+        return super(SaleOrder, self).action_confirm()
 
     def _action_cancel(self):
-        previously_confirmed = self.filtered(lambda s: s.state == 'sale')
+        previously_confirmed = self.filtered(lambda s: s.state in ('sale', 'done'))
         res = super()._action_cancel()
         # Add/remove the points to our coupons
-        for coupon, changes in previously_confirmed.filtered(
-            lambda s: s.state != 'sale'
-        )._get_point_changes().items():
+        for coupon, changes in previously_confirmed.filtered(lambda s: s.state not in ('sale', 'done'))._get_point_changes().items():
             coupon.points -= changes
         # Remove any rewards
         self.order_line.filtered(lambda l: l.is_reward_line).unlink()
@@ -113,7 +106,7 @@ class SaleOrder(models.Model):
         for order in self:
             coupons |= order._get_reward_coupons()
         if coupons:
-            coupons._send_creation_communication(force_send=True)
+            coupons._send_creation_communication()
 
     def _get_applied_global_discount_lines(self):
         """
@@ -144,7 +137,7 @@ class SaleOrder(models.Model):
         claimable_count = float_round(points / reward.required_points, precision_rounding=1, rounding_method='DOWN') if not reward.clear_wallet else 1
         cost = points if reward.clear_wallet else claimable_count * reward.required_points
         return [{
-            'name': _("Free Product - %(product)s", product=product.with_context(display_default_code=False).display_name),
+            'name': _("Free Product - %(product)s", product=product.name),
             'product_id': product.id,
             'discount': 100,
             'product_uom_qty': reward.reward_product_qty * claimable_count,
@@ -153,7 +146,6 @@ class SaleOrder(models.Model):
             'points_cost': cost,
             'reward_identifier_code': _generate_random_reward_code(),
             'product_uom': product.uom_id.id,
-            'sequence': max(self.order_line.filtered(lambda x: not x.is_reward_line).mapped('sequence'), default=10) + 1,
             'tax_id': [(Command.CLEAR, 0, 0)] + [(Command.LINK, tax.id, False) for tax in taxes]
         }]
 
@@ -206,8 +198,7 @@ class SaleOrder(models.Model):
 
         discountable_lines = self.env['sale.order.line']
         for line in (self.order_line - self._get_no_effect_on_threshold_lines()):
-            domain = reward._get_discount_product_domain()
-            if not line.reward_id and line.product_id.filtered_domain(domain):
+            if not line.reward_id and line.product_id in reward.all_discount_product_ids:
                 discountable_lines |= line
         return discountable_lines
 
@@ -230,13 +221,13 @@ class SaleOrder(models.Model):
             if not line.product_uom_qty or not line.price_unit:
                 continue
             remaining_amount_per_line[line] = line.price_total
-            domain = reward._get_discount_product_domain()
-            if not line.reward_id and line.product_id.filtered_domain(domain):
+            if not line.reward_id and line.product_id in reward.all_discount_product_ids:
                 lines_to_discount |= line
             elif line.reward_id.reward_type == 'discount':
+                if line.reward_id == reward:
+                    continue
                 discount_lines[line.reward_identifier_code] |= line
 
-        order_lines -= self.order_line.filtered("reward_id")
         cheapest_line = False
         for lines in discount_lines.values():
             line_reward = lines.reward_id
@@ -260,19 +251,12 @@ class SaleOrder(models.Model):
                 # Fixed prices are per tax
                 discounted_amounts = {line.tax_id: abs(line.price_total) for line in lines}
                 for line in itertools.chain(non_common_lines, common_lines):
-                    # For gift card and eWallet programs we have no tax but we can consume the amount completely
-                    if lines.reward_id.program_id.is_payment_program:
-                        discounted_amount = discounted_amounts[lines.tax_id]
-                    else:
-                        discounted_amount = discounted_amounts[line.tax_id]
+                    discounted_amount = discounted_amounts[line.tax_id]
                     if discounted_amount == 0:
                         continue
                     remaining = remaining_amount_per_line[line]
                     consumed = min(remaining, discounted_amount)
-                    if lines.reward_id.program_id.is_payment_program:
-                        discounted_amounts[lines.tax_id] -= consumed
-                    else:
-                        discounted_amounts[line.tax_id] -= consumed
+                    discounted_amounts[line.tax_id] -= consumed
                     remaining_amount_per_line[line] -= consumed
 
         discountable = 0
@@ -296,39 +280,20 @@ class SaleOrder(models.Model):
         discountable = 0
         discountable_per_tax = defaultdict(int)
         reward_applies_on = reward.discount_applicability
-        sequence = max(self.order_line.filtered(lambda x: not x.is_reward_line).mapped('sequence'), default=10) + 1
         if reward_applies_on == 'order':
             discountable, discountable_per_tax = self._discountable_order(reward)
         elif reward_applies_on == 'specific':
             discountable, discountable_per_tax = self._discountable_specific(reward)
         elif reward_applies_on == 'cheapest':
             discountable, discountable_per_tax = self._discountable_cheapest(reward)
+        # Discountable should never surpass the order's current total amount
+        discountable = min(self.amount_total, discountable)
         if not discountable:
-            if not reward.program_id.is_payment_program and any(line.reward_id.program_id.is_payment_program for line in self.order_line):
-                return [{
-                    'name': _("TEMPORARY DISCOUNT LINE"),
-                    'product_id': reward.discount_line_product_id.id,
-                    'price_unit': 0,
-                    'product_uom_qty': 0,
-                    'product_uom': reward.discount_line_product_id.uom_id.id,
-                    'reward_id': reward.id,
-                    'coupon_id': coupon.id,
-                    'points_cost': 0,
-                    'reward_identifier_code': _generate_random_reward_code(),
-                    'sequence': sequence,
-                    'tax_id': [(Command.CLEAR, 0, 0)]
-                }]
             raise UserError(_('There is nothing to discount'))
         max_discount = reward.currency_id._convert(reward.discount_max_amount, self.currency_id, self.company_id, fields.Date.today()) or float('inf')
-        # discount should never surpass the order's current total amount
-        max_discount = min(self.amount_total, max_discount)
         if reward.discount_mode == 'per_point':
-            points = self._get_real_points_for_coupon(coupon)
-            if reward.program_type == 'loyalty':
-                # Rewards cannot be partially offered to customers
-                points = points // reward.required_points * reward.required_points
             max_discount = min(max_discount,
-                reward.currency_id._convert(reward.discount * points,
+                reward.currency_id._convert(reward.discount * self._get_real_points_for_coupon(coupon),
                     self.currency_id, self.company_id, fields.Date.today()))
         elif reward.discount_mode == 'per_order':
             max_discount = min(max_discount,
@@ -343,7 +308,7 @@ class SaleOrder(models.Model):
             converted_discount = self.currency_id._convert(min(max_discount, discountable), reward.currency_id, self.company_id, fields.Date.today())
             point_cost = converted_discount / reward.discount
         # Gift cards and eWallets are considered gift cards and should not have any taxes
-        if reward.program_id.is_payment_program:
+        if reward.program_id.program_type in ('ewallet', 'gift_card'):
             return [{
                 'name': reward.description,
                 'product_id': reward.discount_line_product_id.id,
@@ -354,8 +319,6 @@ class SaleOrder(models.Model):
                 'coupon_id': coupon.id,
                 'points_cost': point_cost,
                 'reward_identifier_code': reward_code,
-                'sequence': sequence,
-                'tax_id': [(Command.CLEAR, 0, 0)],
             }]
         discount_factor = min(1, (max_discount / discountable)) if discountable else 1
         mapped_taxes = {tax: self.fiscal_position_id.map_tax(tax) for tax in discountable_per_tax}
@@ -373,7 +336,6 @@ class SaleOrder(models.Model):
             'coupon_id': coupon.id,
             'points_cost': 0,
             'reward_identifier_code': reward_code,
-            'sequence': sequence,
             'tax_id': [(Command.CLEAR, 0, 0)] + [(Command.LINK, tax.id, False) for tax in mapped_taxes[tax]]
         } for tax, price in discountable_per_tax.items() if price}
         # We only assign the point cost to one line to avoid counting the cost multiple times
@@ -387,25 +349,18 @@ class SaleOrder(models.Model):
         Returns the base domain that all programs have to comply to.
         """
         self.ensure_one()
-        today = fields.Date.context_today(self)
         return [('active', '=', True), ('sale_ok', '=', True),
                 ('company_id', 'in', (self.company_id.id, False)),
-                '|', ('pricelist_ids', '=', False), ('pricelist_ids', 'in', [self.pricelist_id.id]),
-                '|', ('date_from', '=', False), ('date_from', '<=', today),
-                '|', ('date_to', '=', False), ('date_to', '>=', today)]
+                '|', ('date_to', '=', False), ('date_to', '>=', fields.Date.context_today(self))]
 
     def _get_trigger_domain(self):
         """
         Returns the base domain that all triggers have to comply to.
         """
         self.ensure_one()
-        today = fields.Date.context_today(self)
         return [('active', '=', True), ('program_id.sale_ok', '=', True),
                 ('company_id', 'in', (self.company_id.id, False)),
-                '|', ('program_id.pricelist_ids', '=', False),
-                     ('program_id.pricelist_ids', 'in', [self.pricelist_id.id]),
-                '|', ('program_id.date_from', '=', False), ('program_id.date_from', '<=', today),
-                '|', ('program_id.date_to', '=', False), ('program_id.date_to', '>=', today)]
+                '|', ('program_id.date_to', '=', False), ('program_id.date_to', '>=', fields.Date.context_today(self))]
 
     def _get_applicable_program_points(self, domain=None):
         """
@@ -509,12 +464,11 @@ class SaleOrder(models.Model):
         """
         self.ensure_one()
         points = coupon.points
-        if coupon.program_id.applies_on != 'future' and self.state not in ('sale', 'done'):
+        if (coupon.program_id.applies_on != 'future' and self.state not in ('sale', 'done')) or post_confirm:
             # Points that will be given by the order upon confirming the order
             points += self.coupon_point_ids.filtered(lambda p: p.coupon_id == coupon).points
         # Points already used by rewards
         points -= sum(self.order_line.filtered(lambda l: l.coupon_id == coupon).mapped('points_cost'))
-        points = coupon.currency_id.round(points)
         return points
 
     def _add_points_for_coupon(self, coupon_points):
@@ -522,7 +476,7 @@ class SaleOrder(models.Model):
         Updates (or creates) an entry in coupon_point_ids for the given coupons.
         """
         self.ensure_one()
-        if self.state == 'sale':
+        if self.state in ('sale', 'done'):
             for coupon, points in coupon_points.items():
                 coupon.sudo().points += points
         for pe in self.coupon_point_ids.sudo():
@@ -606,7 +560,6 @@ class SaleOrder(models.Model):
         """
         self.ensure_one()
         all_coupons = forced_coupons or (self.coupon_point_ids.coupon_id | self.order_line.coupon_id | self.applied_coupon_ids)
-        has_payment_reward = any(line.reward_id.program_id.is_payment_program for line in self.order_line)
         total_is_zero = float_is_zero(self.amount_total, precision_digits=2)
         result = defaultdict(lambda: self.env['loyalty.reward'])
         global_discount_reward = self._get_applied_global_discount()
@@ -615,9 +568,7 @@ class SaleOrder(models.Model):
             for reward in coupon.program_id.reward_ids:
                 if reward.is_global_discount and global_discount_reward and global_discount_reward.discount >= reward.discount:
                     continue
-                # Discounts are not allowed if the total is zero unless there is a payment reward, in which case we allow discounts.
-                # If the total is 0 again without the payment reward it will be removed.
-                if reward.reward_type == 'discount' and total_is_zero and (not has_payment_reward or reward.program_id.is_payment_program):
+                if reward.reward_type == 'discount' and total_is_zero:
                     continue
                 if points >= reward.required_points:
                     result[coupon] |= reward
@@ -760,9 +711,9 @@ class SaleOrder(models.Model):
                 continue
             seen_rewards.add(line.reward_identifier_code)
             if line.reward_id.program_id.is_payment_program:
-                payment_rewards.append((line.reward_id, line.coupon_id, line.reward_identifier_code, line.product_id))
-            else:
                 line_rewards.append((line.reward_id, line.coupon_id, line.reward_identifier_code, line.product_id))
+            else:
+                payment_rewards.append((line.reward_id, line.coupon_id, line.reward_identifier_code, line.product_id))
 
         for reward_key in itertools.chain(line_rewards, payment_rewards):
             coupon = reward_key[1]
@@ -1004,7 +955,8 @@ class SaleOrder(models.Model):
 
         if not program or not program.active:
             return {'error': _('This code is invalid (%s).', code), 'not_found': True}
-        elif (program.limit_usage and program.total_order_count >= program.max_usage):
+        elif (program.limit_usage and program.total_order_count >= program.max_usage) or\
+            (program.date_to and program.date_to < fields.Date.context_today(self)):
             return {'error': _('This code is expired (%s).', code)}
 
         # Rule will count the next time the points are updated

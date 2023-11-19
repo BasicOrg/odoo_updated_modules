@@ -14,9 +14,9 @@ class MailMessage(models.Model):
     gateway. """
     _inherit = 'mail.message'
 
-    message_type = fields.Selection(
-        selection_add=[('sms', 'SMS')],
-        ondelete={'sms': lambda recs: recs.write({'message_type': 'comment'})})
+    message_type = fields.Selection(selection_add=[
+        ('sms', 'SMS')
+    ], ondelete={'sms': lambda recs: recs.write({'message_type': 'email'})})
     has_sms_error = fields.Boolean(
         'Has SMS error', compute='_compute_has_sms_error', search='_search_has_sms_error')
 
@@ -33,13 +33,13 @@ class MailMessage(models.Model):
             return ['&', ('notification_ids.notification_status', '=', 'exception'), ('notification_ids.notification_type', '=', 'sms')]
         raise NotImplementedError()
 
-    def message_format(self, format_reply=True, msg_vals=None):
+    def message_format(self, format_reply=True):
         """ Override in order to retrieves data about SMS (recipient name and
             SMS status)
 
         TDE FIXME: clean the overall message_format thingy
         """
-        message_values = super(MailMessage, self).message_format(format_reply=format_reply, msg_vals=msg_vals)
+        message_values = super(MailMessage, self).message_format(format_reply=format_reply)
         all_sms_notifications = self.env['mail.notification'].sudo().search([
             ('mail_message_id', 'in', [r['id'] for r in message_values]),
             ('notification_type', '=', 'sms')

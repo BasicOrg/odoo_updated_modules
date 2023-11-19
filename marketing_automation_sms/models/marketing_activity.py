@@ -49,13 +49,15 @@ class MarketingActivity(models.Model):
     def _execute_sms(self, traces):
         res_ids = [r for r in set(traces.mapped('res_id'))]
 
+        mailing = self.mass_mailing_id.with_context(
+            default_marketing_activity_id=self.ids[0],
+        )
+
         # we only allow to continue if the user has sufficient rights, as a sudo() follows
         if not self.env.is_superuser() and not self.user_has_groups('marketing_automation.group_marketing_automation_user'):
             raise AccessError(_('To use this feature you should be an administrator or belong to the marketing automation group.'))
-
-        mailing = self.mass_mailing_id.sudo().with_context(default_marketing_activity_id=self.ids[0])
         try:
-            mailing.action_send_sms(res_ids)
+            mailing.sudo().action_send_sms(res_ids)
         except Exception as e:
             _logger.warning('Marketing Automation: activity <%s> encountered mass mailing issue %s', self.id, str(e), exc_info=True)
             traces.write({

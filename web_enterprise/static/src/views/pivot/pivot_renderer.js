@@ -3,11 +3,11 @@
 import { patch } from "@web/core/utils/patch";
 import { PivotRenderer } from "@web/views/pivot/pivot_renderer";
 
-import { useEffect, useRef } from "@odoo/owl";
+const { useEffect, useRef } = owl;
 
-patch(PivotRenderer.prototype, {
+patch(PivotRenderer.prototype, "web_enterprise.PivotRendererMobile", {
     setup() {
-        super.setup();
+        this._super();
         this.root = useRef("root");
         if (this.env.isSmall) {
             useEffect(() => {
@@ -24,6 +24,6 @@ patch(PivotRenderer.prototype, {
         if (this.env.isSmall) {
             return 5 + cell.indent * 5;
         }
-        return super.getPadding(...arguments);
+        return this._super(...arguments);
     },
 });

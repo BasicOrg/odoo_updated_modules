@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { listView } from "@web/views/list/list_view";
@@ -12,52 +11,33 @@ import { KanbanController } from "@web/views/kanban/kanban_controller";
 import { KanbanDropdownMenuWrapper } from "@web/views/kanban/kanban_dropdown_menu_wrapper";
 import { KanbanRecord } from "@web/views/kanban/kanban_record";
 import { FileUploader } from "@web/views/fields/file_handler";
-import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 
 export class AccountFileUploader extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        this.notification = useService("notification");
         this.attachmentIdsToProcess = [];
-        const rec = this.props.record ? this.props.record.data : false;
-        this.extraContext = rec ? {
-            default_journal_id: rec.id,
-            default_move_type: (rec.type === 'sale' && 'out_invoice') || (rec.type === 'purchase' && 'in_invoice') || 'entry',
-        } : {};
     }
 
     async onFileUploaded(file) {
-        const att_data = {
+        let att_data = {
             name: file.name,
             mimetype: file.type,
             datas: file.data,
         };
-        const [att_id] = await this.orm.create("ir.attachment", [att_data], {
-            context: { ...this.extraContext, ...this.env.searchModel.context },
+        const att_id = await this.orm.create("ir.attachment", [att_data], {
+            context: { ...this.props.extraContext, ...this.env.searchModel.context },
         });
         this.attachmentIdsToProcess.push(att_id);
     }
 
     async onUploadComplete() {
         const action = await this.orm.call("account.journal", "create_document_from_attachment", ["", this.attachmentIdsToProcess], {
-            context: { ...this.extraContext, ...this.env.searchModel.context },
+            context: { ...this.props.extraContext, ...this.env.searchModel.context },
         });
         this.attachmentIdsToProcess = [];
-        if (action.context && action.context.notifications) {
-            for (let [file, msg] of Object.entries(action.context.notifications)) {
-                this.notification.add(
-                    msg,
-                    {
-                        title: file,
-                        type: "info",
-                        sticky: true,
-                    });
-            }
-            delete action.context.notifications;
-        }
         this.action.doAction(action);
     }
 }
@@ -65,30 +45,6 @@ AccountFileUploader.components = {
     FileUploader,
 };
 AccountFileUploader.template = "account.AccountFileUploader";
-AccountFileUploader.props = {
-    ...standardWidgetProps,
-    record: { type: Object, optional: true},
-    togglerTemplate: { type: String, optional: true },
-    btnClass: { type: String, optional: true },
-    linkText: { type: String, optional: true },
-    slots: { type: Object, optional: true },
-};
-//when file uploader is used on account.journal (with a record)
-
-export const accountFileUploader = {
-    component: AccountFileUploader,
-    extractProps: ({ attrs }) => ({
-        togglerTemplate: attrs.template || "account.JournalUploadLink",
-        btnClass: attrs.btnClass || "",
-        linkText: attrs.linkText || attrs.title || _t("Upload"), //TODO: remove linkText attr in master (not translatable)
-    }),
-    fieldDependencies: [
-        { name: "id", type: "integer" },
-        { name: "type", type: "selection" },
-    ],
-};
-
-registry.category("view_widgets").add("account_file_uploader", accountFileUploader);
 
 export class AccountDropZone extends Component {
     setup() {
@@ -96,7 +52,7 @@ export class AccountDropZone extends Component {
     }
 
     onDrop(ev) {
-        const selector = '.account_file_uploader.o_input_file';
+        const selector = '.account_file_uploader.o_input_file.o_hidden';
         // look for the closest uploader Input as it may have a context
         let uploadInput = ev.target.closest('.o_drop_area').parentElement.querySelector(selector) || document.querySelector(selector);
         let files = ev.dataTransfer ? ev.dataTransfer.files : false;
@@ -105,17 +61,13 @@ export class AccountDropZone extends Component {
             uploadInput.dispatchEvent(new Event("change"));
         } else {
             this.notificationService.add(
-                _t("Could not upload files"),
+                this.env._t("Could not upload files"),
                 {
                     type: "danger",
                 });
         }
         this.props.hideZone();
     }
-}
-AccountDropZone.props = {
-    visible: { type: Boolean, optional: true },
-    hideZone: { type: Function, optional: true },
 }
 AccountDropZone.defaultProps = {
     hideZone: () => {},
@@ -135,28 +87,15 @@ AccountMoveUploadListRenderer.components = {
     AccountDropZone,
 };
 
-export class AccountMoveListController extends ListController {
-    setup() {
-        super.setup();
-        this.account_move_service = useService("account_move");
-    }
-
-    async onDeleteSelectedRecords() {
-        const selectedResIds = await this.getSelectedResIds();
-        if (!await this.account_move_service.addDeletionDialog(this, selectedResIds)) {
-            return super.onDeleteSelectedRecords(...arguments);
-        }
-    }
-};
-
-AccountMoveListController.components = {
+export class AccountMoveUploadListController extends ListController {}
+AccountMoveUploadListController.components = {
     ...ListController.components,
     AccountFileUploader,
 };
 
 export const AccountMoveUploadListView = {
     ...listView,
-    Controller: AccountMoveListController,
+    Controller: AccountMoveUploadListController,
     Renderer: AccountMoveUploadListRenderer,
     buttonTemplate: "account.ListView.Buttons",
 };

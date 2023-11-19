@@ -333,23 +333,12 @@ class AccountJournal(models.Model):
         rslt.append('CODA')
         return rslt
 
-    def _check_coda(self, coda_string):
+    def _check_coda(self, attachment):
         # Matches the first 24 characters of a CODA file, as defined by the febelfin specifications
-        return re.match(r'0{5}\d{9}05[ D] +', coda_string) is not None
+        return re.match(rb'0{5}\d{9}05[ D] +', attachment.raw) is not None
 
     def _parse_bank_statement_file(self, attachment):
-        pattern = re.compile("[\u0020-\u1EFF\n\r]+")  # printable characters
-
-        # Try different encodings for the file
-        for encoding in ('utf_8', 'cp850', 'cp858', 'cp1140', 'cp1252', 'iso8859_15', 'utf_32', 'utf_16', 'windows-1252'):
-            try:
-                record_data = attachment.raw.decode(encoding)
-            except UnicodeDecodeError:
-                continue
-            if pattern.fullmatch(record_data, re.MULTILINE):
-                break  # We only have printable characters, stick with this one
-
-        if not self._check_coda(record_data):
+        if not self._check_coda(attachment):
             return super()._parse_bank_statement_file(attachment)
 
         def rmspaces(s):
@@ -367,7 +356,7 @@ class AccountJournal(models.Model):
             return str(float(rmspaces(s) or 0) / (10 ** precision))
 
         def parse_terminal(s):
-            return _('Name: %(name)s, Town: %(city)s', name=rmspaces(s[:16]), city=rmspaces(s[16:]))
+            return _('Name: {name}, Town: {city}').format(name=rmspaces(s[:16]), city=rmspaces(s[16:]))
 
         def parse_operation(tr_type, family, operation, category):
             return "{tr_type}: {family} ({operation})".format(
@@ -407,7 +396,7 @@ class AccountJournal(models.Model):
                 o_idx = p_idx; p_idx += 15; note.append(_('Detail') + ': ' + _('equivalent in the currency of the account') + ': ' + parsefloat(communication[o_idx:p_idx], 3))
                 o_idx = p_idx; p_idx += 15; note.append(_('Detail') + ': ' + _('interest rates, calculation basis') + ': ' + rmspaces(communication[o_idx:p_idx]))
                 o_idx = p_idx; p_idx += 12; note.append(_('Detail') + ': ' + _('interest') + ': ' + parsefloat(communication[o_idx:p_idx], 8))
-                o_idx = p_idx; p_idx += 12; note.append(_('Detail') + ': ' + _('period from %s to %s', parsedate(communication[o_idx:o_idx+6]), parsedate(communication[o_idx+6:o_idx+12])))
+                o_idx = p_idx; p_idx += 12; note.append(_('Detail') + ': ' + _('period from {} to {}').format(parsedate(communication[o_idx:o_idx+6]), parsedate(communication[o_idx+6:o_idx+12])))
             elif co_type == '111':  # POS credit – Globalisation
                 structured_com = _('POS credit – Globalisation')
                 o_idx = p_idx; p_idx +=  1; note.append(_('Detail') + ': ' + _('card scheme') + ': ' + card_scheme[communication[o_idx:p_idx]])
@@ -534,6 +523,16 @@ class AccountJournal(models.Model):
                 note.append(communication)
             return structured_com, note
 
+        pattern = re.compile("[\u0020-\u1EFF\n\r]+")  # printable characters
+        # Try different encodings for the file
+        for encoding in ('cp850', 'cp858', 'cp1140', 'cp1252', 'iso8859_15', 'utf_32', 'utf_16', 'utf_8', 'windows-1252'):
+            try:
+                record_data = attachment.raw.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+            if pattern.fullmatch(record_data, re.MULTILINE):
+                break  # We only have printable characters, stick with this one
+
         recordlist = record_data.split(u'\n')
         statements = []
         globalisation_comm = {}
@@ -568,8 +567,7 @@ class AccountJournal(models.Model):
                         statement['acc_number'] = rmspaces(line[5:21])
                         statement['currency'] = rmspaces(line[39:42])
                     elif line[1] == '3':    # foreign bank account IBAN structure
-                        statement['acc_number'] = rmspaces(line[5:39])
-                        statement['currency'] = rmspaces(line[39:42])
+                        raise UserError(_('Error') + ' R1002: ' + _('Foreign bank accounts with IBAN structure are not supported '))
                     else:  # Something else, not supported
                         raise UserError(_('Error') + ' R1003: ' + _('Unsupported bank account structure '))
                 statement['description'] = rmspaces(line[90:125])
@@ -733,11 +731,6 @@ class AccountJournal(models.Model):
                                 line['counterpartyNumber'] = False
                         except ValueError:
                             pass
-                        if (
-                            line.get('transaction_family', '') in ('01', '02', '41')  # Credit transfer
-                            and line.get('transaction_code', '') == '07'  # Collective transfer
-                        ):
-                            line['counterpartyNumber'] = False
                         if line['counterpartyNumber']:
                             note.append(_('Counter Party Account') + ': ' + line['counterpartyNumber'])
                     else:
@@ -776,14 +769,6 @@ class AccountJournal(models.Model):
                 statement_data.update({'coda_note': _('Communication: ') + '\n' + statement['coda_note']})
             statement_data.update({'transactions': statement_line})
             ret_statements.append(statement_data)
-
-        # Order the transactions according the newly created statements to ensure valid balances.
-        line_sequence = 1
-        for statement_vals in reversed(ret_statements):
-            for statement_line_vals in reversed(statement_vals.get('transactions', [])):
-                statement_line_vals['sequence'] = line_sequence
-                line_sequence += 1
-
         currency_code = statement['currency']
         acc_number = statements[0] and statements[0]['acc_number'] or False
         return currency_code, acc_number, ret_statements

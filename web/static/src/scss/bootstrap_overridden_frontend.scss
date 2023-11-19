@@ -16,7 +16,7 @@ $primary: $blue !default;
 
 // The contrast ratio to reach against white, to determine if color changes from "light" to "dark". Acceptable values for WCAG 2.0 are 3, 4.5 and 7.
 // See https://www.w3.org/TR/WCAG20/#visual-audio-contrast-contrast
-$min-contrast-ratio: $o-frontend-min-contrast-ratio !default;
+$min-contrast-ratio: 3 !default;
 
 // Body
 
@@ -44,19 +44,6 @@ $blockquote-small-color: inherit !default;
 // Link
 $link-decoration: none !default;
 
-// Tables
-//
-// Customizes the `.table` component with basic values, each used across all table variations.
-
-// Bootstrap tables can basically be customized with the `$table-bg` and
-// `$table-color` variables. The problem is that, by default, BS5 defines them
-// so that the background-color is null (so transparent: displaying the
-// background-color of its ancestors) but the color is forced to the body color
-// (by default: white). This is a problem as soon as the ancestors background
-// colors are a color close to the body text color: the text becomes invisible.
-// We disable this behavior by not forcing a text color for tables.
-$table-color: inherit !default;
-
 // Forms
 
 $input-transition: background-color .05s ease-in-out, border-color .05s ease-in-out, box-shadow .05s ease-in-out !default;
@@ -75,6 +62,17 @@ $form-range-thumb-active-bg: $primary !default;
 // a muted one. This is defined here to be consistent in the whole frontend, as
 // when used with background classes, it should not be forced to a gray color.
 $figure-caption-color: inherit !default;
+
+// Accordion
+
+$accordion-border-width: 0 !default;
+$accordion-button-color: inherit !default;
+$accordion-button-active-bg: inherit !default;
+$accordion-button-active-color:  inherit !default;
+$accordion-icon-color: $accordion-button-color !default;
+$accordion-icon-width: 1rem !default;
+$accordion-icon-transform: rotate(0deg) !default;
+$accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'><path transform='#{rotate(90, 8, 8)}' fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
 
 // Offcanvas
 

@@ -1,27 +1,36 @@
 $wo-border-separation: $border-width solid $border-color;
 
 .o_tablet_popups {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: rgba(60, 60, 60, 0.4);
 
     &.o_unblock {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
         z-index: 100;
-        background-color: rgba(60, 60, 60, 0.4);
-
-        .popup {
-            z-index: 1200;
-            top: 5%;
-            left: 20%;
-            width: 60%;
-            position: fixed;
-            background: $o-gray-100;
-        }
     }
 
     .popup {
+        z-index: 1200;
+        top: 5%;
+        left: 25%;
+        width: 50%;
+        position: fixed;
+        background: $o-gray-200;
+
+        button{
+            box-shadow: none;
+            outline: none;
+            border: none;
+        }
+
+        button:hover{
+            background: default;
+        }
+
         .body.traceback {
             height: 238px;
             overflow: auto;
@@ -34,6 +43,10 @@ $wo-border-separation: $border-width solid $border-color;
                     user-select: text;
         }
 
+        .centered {
+            text-align: center;
+        }
+
         @include media-breakpoint-down(sm) {
             top: 0;
             left: 0;
@@ -42,18 +55,70 @@ $wo-border-separation: $border-width solid $border-color;
             overflow: auto;
         }
 
+        .title {
+            padding: 20px;
+            border-bottom: $wo-border-separation;
+            font-size: large;
+            color: $o-black;
+        }
+
+        .footer {
+            border-top: $wo-border-separation;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .btn {
+            min-width: 40%;
+            line-height: 80px;
+            margin: 5px;
+            font-size: 1.3em;
+            flex: 1 1;
+
+            cursor: pointer;
+            &:not(.btn-link) {
+                border-radius: 2px;
+            }
+        }
+
+        .btn_employee {
+            background-color: $o-gray-100;
+        }
+
+        .button_list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 5px;
+
+            span {
+                margin-top: 1.5em;
+                width: 100%;
+                height: 35px;
+                text-align: center;
+                align-content: center;
+                h2 {
+                    color: $o-black;
+                }
+            }
+        }
+
         &.popup-selection .selection {
+            overflow-y: auto;
+            max-height: 273px;
+            font-size: 16px;
+            width: auto;
             line-height: 50px;
 
             &-item {
-                background: $o-gray-100;
+                background: rgb(230,230,230);
                 cursor: pointer;
                 text-align: left;
                 padding: 0px 16px;
                 color: $o-black;
 
                 &:nth-child(odd) {
-                    background: $o-view-background-color;
+                    background: $o-tooltip-title-background-color;
                 }
                 &.selected {
                     background: #6EC89B;
@@ -74,6 +139,7 @@ $wo-border-separation: $border-width solid $border-color;
             font-family: "Lato";
         }
 
+
         .popup-numpad {
             width: 70%;
             margin: 12px auto;
@@ -88,5 +154,10 @@ $wo-border-separation: $border-width solid $border-color;
                 font-size: large;
             }
         }
+
+    }
+
+    .footer > div {
+        color: $o-black;
     }
 }

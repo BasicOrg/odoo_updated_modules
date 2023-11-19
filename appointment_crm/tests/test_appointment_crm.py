@@ -14,7 +14,7 @@ class AppointmentCRMTest(TestCrmCommon):
             "name": "Test Appointment",
             "appointment_duration": 1,
             "appointment_tz": "Europe/Brussels",
-            "assign_method": "time_auto_assign",
+            "assign_method": "random",
             "max_schedule_days": 15,
             "min_cancellation_hours": 1,
             "min_schedule_hours": 1,
@@ -59,7 +59,7 @@ class AppointmentCRMTest(TestCrmCommon):
     @users('user_employee')
     def test_create_opportunity(self):
         """ Test the creation of a lead based on the creation of an event
-        with appointment type configured to create lead
+            with appointment type configured to create lead
         """
         event = self._create_meetings_from_appointment_type(
             self.appointment_type_create, self.user_sales_leads, self.contact_1
@@ -85,7 +85,7 @@ class AppointmentCRMTest(TestCrmCommon):
     @users('user_employee')
     def test_create_opportunity_multi(self):
         """ Test the creation of a lead based on the creation of an event
-        with appointment type configured to create lead
+            with appointment type configured to create lead
         """
         events = self.env['calendar.event'].create([
             self._prepare_event_value(
@@ -116,34 +116,6 @@ class AppointmentCRMTest(TestCrmCommon):
         next_activity2 = event2.opportunity_id.activity_ids[0]
         self.assertEqual(next_activity2.date_deadline, event2.start_date)
 
-    @users('user_employee')
-    def test_create_opportunity_multi_company(self):
-        """ Test the creation of a lead when the assignee of the event is in a
-        different company than the event creator
-        """
-        self._activate_multi_company()
-        self.user_employee.write({
-            'company_ids': [self.company_2.id],
-            'company_id': self.company_2,
-        })
-
-        event = self.env['calendar.event'].create(self._prepare_event_value(
-            self.appointment_type_create,
-            self.user_sales_leads,
-            self.contact_1,
-        ))
-
-        # Sanity checks
-        # event organizer -> company_main, event creator -> company_2
-        self.assertEqual(event.user_id.company_id, self.company_main)
-        self.assertEqual(self.user_employee.company_id, self.company_2)
-
-        # Check if lead is created in company_main
-        self.assertTrue(event.opportunity_id)
-        lead = event.opportunity_id
-        self.assertEqual(lead.user_id, event.user_id)
-        self.assertEqual(lead.company_id, self.company_main)
-
     def test_no_create_lead(self):
         """ Make sure no lead is created for appointment type with create_lead=False """
         event = self._create_meetings_from_appointment_type(
@@ -152,14 +124,18 @@ class AppointmentCRMTest(TestCrmCommon):
         self.assertFalse(event.opportunity_id)
 
     def test_no_partner(self):
-        """ Make sure no lead is created if there is no external partner attempting the appointment """
+        """ Make sure no lead is created
+            if there is no external partner attempting the appointment
+        """
         event = self._create_meetings_from_appointment_type(
             self.appointment_type_create, self.user_sales_leads, self.user_sales_leads.partner_id
         )
         self.assertFalse(event.opportunity_id)
 
     def test_two_partner(self):
-        """ Make sure lead is created if there is two external partner attempting the appointment """
+        """ Make sure lead is created
+            if there is two external partner attempting the appointment
+        """
         event_values = self._prepare_event_value(
             self.appointment_type_create,
             self.user_sales_leads,
@@ -177,7 +153,9 @@ class AppointmentCRMTest(TestCrmCommon):
         self.assertFalse(event.opportunity_id)
 
     def test_tag_deleted(self):
-        """ Make sure lead is still created if master data is removed """
+        """ Make sure lead is still created
+            if master data is removed
+        """
         self.env.ref('appointment_crm.appointment_crm_tag').unlink()
         event = self._create_meetings_from_appointment_type(
             self.appointment_type_create, self.user_sales_leads, self.contact_1

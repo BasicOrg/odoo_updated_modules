@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { useService, useAutofocus } from '@web/core/utils/hooks';
 import { MediaDialog } from '@web_editor/components/media_dialog/media_dialog';
 import { WebsiteDialog } from './dialog';
-import { Component, useState, reactive, onMounted, onWillStart, useEffect } from "@odoo/owl";
+
+const { Component, useState, reactive, onMounted, onWillStart, useEffect } = owl;
 
 // This replaces \b, because accents(e.g. à, é) are not seen as word boundaries.
 // Javascript \b is not unicode aware, and words beginning or ending by accents won't match \b
@@ -16,7 +16,6 @@ const seoContext = reactive({
     title: '',
     seoName: '',
     metaImage: '',
-    defaultTitle: '',
 });
 
 class MetaImage extends Component {}
@@ -30,7 +29,7 @@ class ImageSelector extends Component {
         this.seoContext = useState(seoContext);
 
         const firstImageId = this.props.hasSocialDefaultImage ? 'social_default_image' : 'logo';
-        const firstImageSrc = `/web/image/website/${encodeURIComponent(this.website.currentWebsite.id)}/${firstImageId}`;
+        const firstImageSrc = `/web/image/website/${this.website.currentWebsite.id}/${firstImageId}`;
         const firstImage = {
             src: firstImageSrc,
             active: this.areSameImages(firstImageSrc, this.seoContext.metaImage),
@@ -173,7 +172,7 @@ class Keyword extends Component {
     }
 
     get usedInTitle() {
-        return this.isKeywordIn(this.seoContext.title || this.seoContext.defaultTitle);
+        return this.isKeywordIn(this.seoContext.title);
     }
 
     get usedInDescription() {
@@ -214,7 +213,7 @@ class MetaKeywords extends Component {
 
     onKeyup(ev) {
         // Add keyword on enter.
-        if (ev.key === "Enter") {
+        if (ev.keyCode === 13) {
             this.addKeyword(this.state.keyword);
         }
     }
@@ -228,7 +227,6 @@ class MetaKeywords extends Component {
     }
 
     addKeyword(keyword) {
-        keyword = keyword.trim();
         if (keyword && !this.isFull && !this.seoContext.keywords.includes(keyword)) {
             this.seoContext.keywords.push(keyword);
             this.state.keyword = '';
@@ -282,10 +280,6 @@ class TitleDescription extends Component {
         }, () => []);
     }
 
-    //--------------------------------------------------------------------------
-    // Getters
-    //--------------------------------------------------------------------------
-
     get seoNameUrl() {
         return this.previousSeoName || this.props.seoNameDefault;
     }
@@ -322,28 +316,11 @@ class TitleDescription extends Component {
             return false;
         }
         if (this.seoContext.description.length < this.minRecommendedDescriptionSize) {
-            return _t("Your description looks too short.");
+            return this.env._t("Your description looks too short.");
         } else if (this.seoContext.description.length > this.maxRecommendedDescriptionSize) {
-            return _t("Your description looks too long.");
+            return this.env._t("Your description looks too long.");
         }
         return false;
-    }
-
-    //--------------------------------------------------------------------------
-    // Handlers
-    //--------------------------------------------------------------------------
-
-    /**
-     * @private
-     * @param {InputEvent} ev
-     */
-    _updateInputValue(ev) {
-        // `NFKD` as in `http_routing` python `slugify()`
-        ev.target.value = ev.target.value.trim().normalize('NFKD').toLowerCase()
-            .replace(/\s+/g, '-') // Replace spaces with -
-            .replace(/[^\w-]+/g, '') // Remove all non-word chars
-            .replace(/--+/g, '-'); // Replace multiple - with single -
-        this.seoContext.seoName = ev.target.value;
     }
 }
 TitleDescription.template = 'website.TitleDescription';
@@ -369,15 +346,15 @@ export class OptimizeSEODialog extends Component {
         this.dialogs = useService('dialog');
         this.orm = useService('orm');
 
-        this.title = _t("Optimize SEO");
-        this.saveButton = _t("Save");
+        this.title = this.env._t("Optimize SEO");
+        this.saveButton = this.env._t("Save");
         this.size = 'lg';
         this.contentClass = "oe_seo_configuration";
 
         onWillStart(async () => {
             const { metadata: { mainObject, seoObject, path } } = this.website.currentWebsite;
 
-            this.object = seoObject || mainObject;
+            this.object = mainObject || seoObject;
             this.data = await this.rpc('/website/get_seo_data', {
                 'res_id': this.object.id,
                 'res_model': this.object.model,
@@ -390,21 +367,20 @@ export class OptimizeSEODialog extends Component {
 
             // If website.page, hide the google preview & tell user his page is currently unindexed
             this.isIndexed = 'website_indexed' in this.data ? this.data.website_indexed : true;
-            this.seoNameHelp = _t("This value will be escaped to be compliant with all major browsers and used in url. Keep it empty to use the default name of the record.");
+            this.seoNameHelp = this.env._t("This value will be escaped to be compliant with all major browsers and used in url. Keep it empty to use the default name of the record.");
             this.previousSeoName = this.canEditUrl && this.data.seo_name;
             seoContext.seoName = this.previousSeoName;
             this.seoNameDefault = this.canEditUrl && this.data.seo_name_default;
 
             seoContext.description = this.getMeta({ name: 'description' });
-            this.previewDescription = _t("The description will be generated by search engines based on page content unless you specify one.");
+            this.previewDescription = this.env._t("The description will be generated by search engines based on page content unless you specify one.");
             this.defaultTitle = this.getMeta({ name: 'default_title' });
-            seoContext.defaultTitle = this.defaultTitle;
             this.url = path;
 
             seoContext.metaImage = this.data.website_meta_og_img || this.getMeta({ property: 'og:image' });
 
             this.pageImages = this.getImages();
-            this.socialPreviewDescription = _t("The description will be generated by social media based on page content unless you specify one.");
+            this.socialPreviewDescription = this.env._t("The description will be generated by social media based on page content unless you specify one.");
             this.hasSocialDefaultImage = this.data.has_social_default_image;
 
             this.canEditKeywords = 'website_meta_keywords' in this.data;
@@ -434,10 +410,8 @@ export class OptimizeSEODialog extends Component {
         }
         const el = this.pageDocumentElement.querySelector(query);
         if (name === 'keywords') {
-            // Keywords might contain spaces which makes them fail the content
-            // check. Trim the strings to prevent this from happening.
-            const parsed = el && el.content.split(',').map(kw => kw.trim());
-            return parsed && parsed[0] ? [...new Set(parsed)] : [];
+            const parsed = el && el.content.split(',');
+            return parsed && parsed[0] ? parsed : [];
         }
         return el && el.content;
     }
@@ -460,10 +434,7 @@ export class OptimizeSEODialog extends Component {
         }
         data.website_meta_og_img = seoContext.metaImage;
         await this.orm.write(this.object.model, [this.object.id], data, {
-            context: {
-                lang: this.website.currentWebsite.metadata.lang,
-                'website_id': this.website.currentWebsite.id,
-            },
+            context: {lang: this.website.currentWebsite.metadata.lang},
         });
         this.website.goToWebsite({path: this.url.replace(this.previousSeoName || this.seoNameDefault, seoContext.seoName)});
     }

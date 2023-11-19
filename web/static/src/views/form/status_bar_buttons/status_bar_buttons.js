@@ -3,7 +3,7 @@
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class StatusBarButtons extends Component {
     get visibleSlotNames() {
@@ -19,7 +19,4 @@ StatusBarButtons.template = "web.StatusBarButtons";
 StatusBarButtons.components = {
     Dropdown,
     DropdownItem,
-};
-StatusBarButtons.props = {
-    slots: { type: Object, optional: 1 },
 };

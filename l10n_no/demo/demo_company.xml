@@ -3,11 +3,11 @@
     <record id="partner_demo_company_no" model="res.partner">
         <field name="name">NO Company</field>
         <field name="vat">NO072274687MVA</field>
-        <field name="street"/>
+        <field name="street"></field>
         <field name="city">Åmot</field>
         <field name="country_id" ref="base.no"/>
         
-        <field name="zip"/>
+        <field name="zip"></field>
         <field name="phone">+47 406 12 345</field>
         <field name="email">info@company.noexample.com</field>
         <field name="website">www.noexample.com</field>
@@ -17,12 +17,6 @@
     <record id="demo_company_no" model="res.company">
         <field name="name">NO Company</field>
         <field name="partner_id" ref="partner_demo_company_no"/>
-    </record>
-
-    <record id="demo_bank_no" model="res.partner.bank">
-        <field name="acc_number">NO8330001234567</field>
-        <field name="partner_id" ref="partner_demo_company_no"/>
-        <field name="company_id" ref="demo_company_no"/>
     </record>
 
     <function model="res.company" name="_onchange_country_id">
@@ -35,8 +29,7 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>no</value>
+        <value eval="[ref('l10n_no.no_chart_template')]"/>
         <value model="res.company" eval="obj().env.ref('l10n_no.demo_company_no')"/>
     </function>
 </odoo>

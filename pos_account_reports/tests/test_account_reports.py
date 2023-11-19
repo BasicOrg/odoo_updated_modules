@@ -2,8 +2,13 @@
 
 from odoo import Command, fields
 from odoo.tests import tagged
+from odoo.tools.misc import formatLang
+
 from odoo.addons.account_reports.tests.common import TestAccountReportsCommon
 
+import datetime
+from contextlib import contextmanager
+from unittest.mock import patch
 from freezegun import freeze_time
 
 
@@ -14,13 +19,13 @@ class POSTestTaxReport(TestAccountReportsCommon):
     def setUpClass(cls):
         super().setUpClass()
 
-        company = cls.company_data['company']
         test_country = cls.env['res.country'].create({
             'name': "Hassaleh",
             'code': 'HH',
         })
-        company.country_id = test_country
-        company.account_fiscal_country_id = test_country
+
+        cls.company_data['company'].country_id = test_country
+        cls.company_data['company'].chart_template_id.country_id = test_country # So that we can easily instantiate test tax templates within this country
 
         # Create some tax report
         cls.tax_report = cls.env['account.report'].create({
@@ -37,40 +42,49 @@ class POSTestTaxReport(TestAccountReportsCommon):
         cls.pos_tax_report_line_refund_tax = cls._create_tax_report_line("Refund Tax", cls.tax_report, tag_name='pos_refund_tax', sequence=3)
 
         # Create a tax using the created report
-        cls.pos_tax = cls.env['account.tax'].create({
+        tax_template = cls.env['account.tax.template'].create({
             'name': 'Impôt recto',
             'amount': '10',
             'amount_type': 'percent',
             'type_tax_use': 'sale',
+            'chart_template_id': cls.company_data['company'].chart_template_id.id,
             'invoice_repartition_line_ids': [
                 (0,0, {
                     'repartition_type': 'base',
-                    'tag_ids': cls._get_tag_ids("+", cls.pos_tax_report_line_invoice_base.expression_ids),
+                    'plus_report_expression_ids': cls.pos_tax_report_line_invoice_base.expression_ids.ids,
                 }),
 
                 (0,0, {
                     'repartition_type': 'tax',
-                    'tag_ids': cls._get_tag_ids("+", cls.pos_tax_report_line_invoice_tax.expression_ids),
+                    'plus_report_expression_ids': cls.pos_tax_report_line_invoice_tax.expression_ids.ids,
                 }),
             ],
             'refund_repartition_line_ids': [
                 (0,0, {
                     'repartition_type': 'base',
-                    'tag_ids': cls._get_tag_ids("+", cls.pos_tax_report_line_refund_base.expression_ids),
+                    'plus_report_expression_ids': cls.pos_tax_report_line_refund_base.expression_ids.ids,
                 }),
 
                 (0,0, {
                     'repartition_type': 'tax',
-                    'tag_ids': cls._get_tag_ids("+", cls.pos_tax_report_line_refund_tax.expression_ids),
+                    'plus_report_expression_ids': cls.pos_tax_report_line_refund_tax.expression_ids.ids,
                 }),
             ],
         })
+        # Needed in order to be able to instantiate the template
+        cls.env['ir.model.data'].create({
+            'name': 'pos_account_reports.test_tax',
+            'module': 'account_reports',
+            'res_id': tax_template.id,
+            'model': 'account.tax.template',
+        })
+        cls.pos_tax = tax_template._generate_tax(cls.company_data['company'])['tax_template_to_tax'][tax_template]
 
         pos_tax_account = cls.env['account.account'].create({
             'name': 'POS tax account',
             'code': 'POSTaxTest',
             'account_type': 'asset_current',
-            'company_id': company.id,
+            'company_id': cls.company_data['company'].id,
         })
 
         rep_ln_tax = cls.pos_tax.invoice_repartition_line_ids + cls.pos_tax.refund_repartition_line_ids
@@ -81,12 +95,12 @@ class POSTestTaxReport(TestAccountReportsCommon):
             'name': 'POS journal',
             'type': 'sale',
             'code': 'POS',
-            'company_id': company.id,
+            'company_id': cls.company_data['company'].id,
         })
 
         cls.pos_config = cls.env['pos.config'].create({
             'name': 'Crab Shop',
-            'company_id': company.id,
+            'company_id': cls.company_data['company'].id,
             'journal_id': pos_journal.id,
         })
 
@@ -95,7 +109,6 @@ class POSTestTaxReport(TestAccountReportsCommon):
             'type': 'consu',
         })
 
-        cls.company_data['default_journal_cash'].pos_payment_method_ids.unlink()
         cls.pos_payment_method = cls.env['pos.payment.method'].create({
             'name': 'POS test payment method',
             'receivable_account_id': cls.company_data['default_account_receivable'].id,
@@ -126,7 +139,6 @@ class POSTestTaxReport(TestAccountReportsCommon):
             'amount_tax': self.company_data['company'].currency_id.round(tax_amount),
             'amount_paid': 0,
             'amount_return': 0,
-            'last_order_preparation_change': '{}'
         })
 
         # Pay the order
@@ -163,5 +175,4 @@ class POSTestTaxReport(TestAccountReportsCommon):
                 (self.pos_tax_report_line_refund_base.name,         40),
                 (self.pos_tax_report_line_refund_tax.name,          4),
             ],
-            report_opt,
         )

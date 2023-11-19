@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.PdfViewerField">
+    <t t-name="web.PdfViewerField" owl="1">
         <t t-if="!props.readonly">
-            <div class="o_form_pdf_controls d-flex gap-1">
-                <t t-if="props.record.data[props.name]">
+            <div  class="o_form_pdf_controls">
+                <t t-if="props.value">
                     <FileUploader
                         acceptedFileExtensions="'.pdf'"
+                        file="{ data: props.value, name: fileName }"
                         onUploaded.bind="onFileUploaded"
                     >
                         <t t-set-slot="toggler">
@@ -38,7 +39,7 @@
                 </t>
             </div>
         </t>
-        <t t-if="props.record.data[props.name]">
+        <t t-if="props.value">
             <iframe class="o_pdfview_iframe"
                 alt="PDF file"
                 t-att-src="url"

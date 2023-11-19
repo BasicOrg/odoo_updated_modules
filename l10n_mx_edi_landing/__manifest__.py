@@ -3,8 +3,10 @@
 
 {
     'name': 'Odoo Mexico Localization for Stock/Landing',
-    'countries': ['mx'],
-    'summary': 'Generate Electronic Invoice with custom numbers',
+    'icon': '/l10n_mx/static/description/icon.png',
+    'summary': '''
+Generate Electronic Invoice with custom numbers
+    ''',
     'version': '1.0',
     'category': 'Accounting/Localizations/EDI',
     'depends': [

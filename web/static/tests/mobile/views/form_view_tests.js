@@ -11,7 +11,6 @@ import {
     patchWithCleanup,
 } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { AttachDocumentWidget } from "@web/views/widgets/attach_document/attach_document";
 
 let fixture;
 let serverData;
@@ -104,8 +103,8 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
                 arch: `
                     <form>
                         <header>
-                            <button string="Confirm" invisible="display_name == 'first record'" />
-                            <button string="Do it" invisible="display_name == 'first record'" />
+                            <button string="Confirm" attrs="{'invisible': [['display_name', '=', 'first record']]}" />
+                            <button string="Do it" attrs="{'invisible': [['display_name', '=', 'first record']]}" />
                         </header>
                         <sheet>
                             <group>
@@ -145,7 +144,7 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
                 arch: `
                     <form>
                         <header>
-                            <button string="Hola" invisible="display_name == 'first record'" />
+                            <button string="Hola" attrs="{'invisible': [['display_name', '=', 'first record']]}" />
                             <button string="Ciao" />
                         </header>
                         <sheet>
@@ -197,7 +196,7 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
                     <form>
                         <header>
                             <widget name="attach_document" string="Attach document" />
-                            <button string="Ciao" invisible="display_name == 'first record'" />
+                            <button string="Ciao" attrs="{'invisible': [['display_name', '=', 'first record']]}" />
                         </header>
                         <sheet>
                             <group>
@@ -251,8 +250,8 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
                     <form>
                         <header>
                             <button string="Just more than one" />
-                            <button string="Confirm" invisible="display_name == ''" />
-                            <button string="Do it" invisible="display_name != ''" />
+                            <button string="Confirm" attrs="{'invisible': [['display_name', '=', '']]}" />
+                            <button string="Do it" attrs="{'invisible': [['display_name', '!=', '']]}" />
                         </header>
                         <sheet>
                             <field name="display_name" />
@@ -319,8 +318,8 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
                         </sheet>
                     </form>
                 `,
-                mockRPC(route, { method, args }) {
-                    if (method === "onchange" && args[2][0] === "display_name") {
+                mockRPC(route, { method, args: [, , changedField] }) {
+                    if (method === "onchange" && changedField === "display_name") {
                         return onchangeDef;
                     }
                 },
@@ -422,7 +421,7 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
             );
 
             // click on back button
-            await click(fixture, ".modal .modal-header .oi-arrow-left");
+            await click(fixture, ".modal .modal-header .fa-arrow-left");
             assert.strictEqual(
                 window.scrollY,
                 265,
@@ -431,52 +430,4 @@ QUnit.module("Mobile Views", ({ beforeEach }) => {
             assert.strictEqual(window.screenLeft, 0, "Should be 0 px from left as it is");
         }
     );
-
-    QUnit.test("attach_document widget also works inside a dropdown", async (assert) => {
-        let fileInput;
-        patchWithCleanup(AttachDocumentWidget.prototype, {
-            setup() {
-                super.setup();
-                fileInput = this.fileInput;
-            },
-        });
-
-        serviceRegistry.add("http", {
-            start: () => ({
-                post: (route, params) => {
-                    assert.step("post");
-                    assert.strictEqual(route, "/web/binary/upload_attachment");
-                    assert.strictEqual(params.model, "partner");
-                    assert.strictEqual(params.id, 1);
-                    return '[{ "id": 5 }, { "id": 2 }]';
-                },
-            }),
-        });
-
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            resId: 1,
-            serverData,
-            arch: `
-                <form>
-                    <header>
-                        <button string="Confirm" />
-                        <widget name="attach_document" string="Attach Document"/>
-                    </header>
-                    <sheet>
-                        <group>
-                            <button name="display_name" />
-                        </group>
-                    </sheet>
-                </form>
-            `,
-        });
-
-        await click(fixture, ".o_statusbar_buttons .dropdown-toggle");
-        await click(fixture, ".o_attach_document");
-        fileInput.dispatchEvent(new Event("change"));
-        await nextTick();
-        assert.verifySteps(["post"]);
-    });
 });

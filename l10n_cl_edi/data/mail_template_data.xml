@@ -104,26 +104,5 @@
             ]]>
             </field>
         </record>
-        <record id="email_template_receipt_goods" model="mail.template">
-            <field name="name">DTE Reception of Services Or Goods</field>
-            <field name="subject">DTE Reception of Services Or Goods - {{ object.name }}</field>
-            <field name="email_from">{{ object.company_id.l10n_cl_dte_email }}</field>
-            <field name="email_to">{{ object.partner_id.l10n_cl_dte_email or object.commercial_partner_id.l10n_cl_dte_email }}</field>
-            <field name="model_id" ref="account.model_account_move" />
-            <field name="auto_delete" eval="False"/>
-            <field name="body_html">
-            <![CDATA[
-                <header>
-                <strong>Electronic Invoicing - Reception of Services or Goods RG 19.983 - <t t-out="object.display_name or ''"></t></strong>
-                </header>
-                <p>In the attached file you will find the reception of goods RG 19.983 for Electronic Tax Document(s).</p>
-                <p>El acuse de recibo que se declara en este acto, de acuerdo a lo dispuesto en la letra b)
-                del Art. 4, y la letra c) del Art. 5 de la Ley 19.983, acredita que la entrega de
-                mercaderias o servicio(s) prestado(s) ha(n) sido recibido(s).</p>
-                <br /><br /><br /><br />
-                <p>Sent Using Odoo</p>
-            ]]>
-            </field>
-        </record>
     </data>
 </odoo>

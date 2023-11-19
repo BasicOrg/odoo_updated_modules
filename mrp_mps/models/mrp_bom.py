@@ -17,9 +17,11 @@ class MrpBom(models.Model):
                     ('product_id', 'in', self.product_id.ids),
                     ('product_id.product_tmpl_id', 'in', self.product_tmpl_id.ids),
         ]
-        grouped_data = self.env['mrp.production.schedule']._read_group(
-            domain, ['product_id'], ['__count'])
-        product_schedule_counts = {product.id: count for product, count in grouped_data}
+        grouped_data = self.env['mrp.production.schedule'].read_group(
+            domain, ['product_id'], ['product_id'])
+        product_schedule_counts = {}
+        for data in grouped_data:
+            product_schedule_counts[data['product_id'][0]] = data['product_id_count']
         for bom in self:
             schedule_count = 0
             if bom.product_id:

@@ -3,16 +3,18 @@
 # 	* account_accountant
 # 
 # Translators:
-# Wil Odoo, 2023
+# Gunther Clauwaert <gclauwae@hotmail.com>, 2022
+# Martin Trigaux, 2022
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Erwin van der Ploeg <erwin@odooexperts.nl>, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,59 +22,39 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "%(display_name_html)s with an open amount of %(open_amount)s will be fully "
 "reconciled by the transaction."
 msgstr ""
-"%(display_name_html)s met een openstaand bedrag van %(open_amount)s wordt "
-"volledig afgeletterd met de transactie."
+"%(display_name_html)s met een open bedrag van %(open_amount)s wordt volledig"
+" in overeenstemming gebracht met de transactie."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "%(display_name_html)s with an open amount of %(open_amount)s will be reduced"
 " by %(amount)s."
 msgstr ""
-"%(display_name_html)s met een openstaand bedrag van %(open_amount)s wordt "
+"%(display_name_html)s met een open bedrag van %(open_amount)s wordt "
 "verminderd met %(amount)s."
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "'Discuss'"
-msgstr "'Chat'"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "'Manual Operations'"
-msgstr "'Handmatige bewerkingen'"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "'Match Existing Entries'"
-msgstr "'Afletteren met bestaande boekingen'"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "'Transaction Details'"
-msgstr "'Details transactie'"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_form
 msgid "-> Reconcile"
 msgstr "-> Afletteren"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "/&gt;"
+msgstr "/&gt;"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
+msgid "1 Bank Transaction"
+msgstr ""
 
 #. module: account_accountant
 #: model_terms:digest.tip,tip_description:account_accountant.digest_tip_account_accountant_0
@@ -89,7 +71,7 @@ msgstr ""
 "accountantskantoor</b>"
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid ""
@@ -100,13 +82,9 @@ msgstr ""
 "<b>Klanten/Facturen</b>"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.account_reconcile_model_form_inherit_account_accountant
-msgid ""
-"<i title=\"Run manually\" role=\"img\" aria-label=\"Run manually\" class=\"fa fa-refresh\"/>\n"
-"                            Run manually"
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_kanban_bank_rec_widget
+msgid "<i class=\"fa fa-check\"/> Matched"
 msgstr ""
-"<i title=\"Voer handmatig uit\" role=\"img\" aria-label=\"Voer handmatig uit\" class=\"fa fa-refresh\"/>\n"
-"                            Voer handmatig uit"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_change_lock_date
@@ -119,14 +97,64 @@ msgid "<i>Lock specific journal entries</i>"
 msgstr "<i>Blokkeer specifieke boekingen</i>"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
-msgid "<span class=\"o_stat_text\">1 Bank Transaction</span>"
-msgstr "<span class=\"o_stat_text\">1 Banktransactie</span>"
+#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" role=\"img\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"De waarden die hier worden "
+"ingesteld, zijn bedrijfsspecifiek.\" role=\"img\" aria-label=\"De waarden "
+"die hier worden ingesteld, zijn bedrijfsspecifiek.\" "
+"groups=\"base.group_multi_company\"/>"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
-msgid "<span class=\"o_stat_text\">Bank Statement</span>"
-msgstr "<span class=\"o_stat_text\">Rekeningafschrift</span>"
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid ""
+"<span class=\"ml4 mr4\" attrs=\"{'invisible': ['|', "
+"('form_single_currency_mode', '=', True), ('form_index', '=', "
+"False)]}\">in</span>"
+msgstr ""
+"<span class=\"ml4 mr4\" attrs=\"{'invisible': ['|', "
+"('form_single_currency_mode', '=', True), ('form_index', '=', "
+"False)]}\">in</span>"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "<span class=\"ml4 mr4\">-</span>"
+msgstr "<span class=\"ml4 mr4\">-</span>"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "<span class=\"ml4 mr4\">in</span>"
+msgstr "<span class=\"ml4 mr4\">in</span>"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid ""
+"<span class=\"o_form_label\" attrs=\"{'invisible': ['|', '|', "
+"('form_single_currency_mode', '=', True), ('form_force_negative_sign', '=', "
+"False), ('form_index', '=', False)]}\">-</span>"
+msgstr ""
+"<span class=\"o_form_label\" attrs=\"{'invisible': ['|', '|', "
+"('form_single_currency_mode', '=', True), ('form_force_negative_sign', '=', "
+"False), (' form_index', '=', False)]}\">-</span>"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid ""
+"<span class=\"o_form_label\" attrs=\"{'invisible': ['|', "
+"('form_force_negative_sign', '=', False), ('form_index', '=', "
+"False)]}\">-</span>"
+msgstr ""
+"<span class=\"o_form_label\" attrs=\"{'invisible': ['|', "
+"('form_force_negative_sign', '=', False), ('form_index', '=', "
+"False)]}\">-</span>"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Fiscal Year</span>"
+msgstr "<span class=\"o_form_label\">Boekjaar</span>"
 
 #. module: account_accountant
 #: model_terms:digest.tip,tip_description:account_accountant.digest_tip_account_accountant_1
@@ -139,7 +167,7 @@ msgid "<span class=\"tip_button_text\">Register your Accounting Firm</span>"
 msgstr "<span class=\"tip_button_text\">Registreer je accountantskantoor</span>"
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid ""
@@ -149,21 +177,24 @@ msgstr ""
 "doorlopen.</strong>"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
-#: model:ir.model,name:account_accountant.model_account_account
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__account_id
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__account_id
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
+#: code:addons/account_accountant/models/reconciliation_widget.py:0
 #, python-format
-msgid "Account"
-msgstr "Account"
+msgid "A reconciliation must involve at least 2 move lines."
+msgstr "Een aflettering moet minstens 2 boekingsregels hebben."
 
 #. module: account_accountant
-#: model:ir.model,name:account_accountant.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "Grootboekschema sjabloon"
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model:ir.model,name:account_accountant.model_account_account
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__account_id
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+#, python-format
+msgid "Account"
+msgstr "Rekening"
 
 #. module: account_accountant
 #: model:ir.actions.act_window,name:account_accountant.action_account_group_tree
@@ -172,35 +203,20 @@ msgid "Account Groups"
 msgstr "Rubrieken"
 
 #. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__module_account_predictive_bills
+msgid "Account Predictive Bills"
+msgstr "Rekening voorspellende facturen"
+
+#. module: account_accountant
+#: model:ir.model,name:account_accountant.model_account_reconciliation_widget
+msgid "Account Reconciliation widget"
+msgstr "Boekhoudkundige verwerkingswidget"
+
+#. module: account_accountant
 #: model:ir.actions.act_window,name:account_accountant.account_tag_action
 #: model:ir.ui.menu,name:account_accountant.account_tag_menu
 msgid "Account Tags"
 msgstr "Grootboeklabels"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__transfer_from_account_id
-msgid "Account Transfer From"
-msgstr "Overboeking van"
-
-#. module: account_accountant
-#: model:ir.model,name:account_accountant.model_account_auto_reconcile_wizard
-msgid "Account automatic reconciliation wizard"
-msgstr "Wizard automatische aflettering"
-
-#. module: account_accountant
-#: model:ir.model,name:account_accountant.model_account_reconcile_wizard
-msgid "Account reconciliation wizard"
-msgstr "Assistent boekhoudkundige aftellering"
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__deferred_expense_account_id
-msgid "Account used for deferred expenses"
-msgstr "Rekening gebruikt voor de uitgestelde kosten"
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__deferred_revenue_account_id
-msgid "Account used for deferred revenues"
-msgstr "Rekening gebruikt voor de uitgestelde omzet"
 
 #. module: account_accountant
 #: model:ir.ui.menu,name:account_accountant.menu_accounting
@@ -220,14 +236,10 @@ msgid "Accounting closing dates"
 msgstr "Boekhoudkundige sluitingsdata"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__account_ids
-msgid "Accounts"
-msgstr "Rekeningen"
-
-#. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__account_auto_reconcile_wizard__search_mode__zero_balance
-msgid "Accounts with zero balances"
-msgstr "Rekeningen met nulsaldo"
+#: model:ir.actions.act_window,name:account_accountant.action_bank_statement_line_form_bank_rec_widget
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_form_bank_rec_widget
+msgid "Add a Transaction"
+msgstr ""
 
 #. module: account_accountant
 #: model_terms:ir.actions.act_window,help:account_accountant.account_tag_action
@@ -235,35 +247,20 @@ msgid "Add a new tag"
 msgstr "Voeg een nieuw label toe"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
-#, python-format
-msgid ""
-"After the data extraction, check and validate the bill. If no vendor has "
-"been found, add one before validating."
-msgstr ""
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/finish_buttons.xml:0
-#, python-format
-msgid "All Transactions"
-msgstr "Alle transacties"
-
-#. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__fiscalyear_lock_date
 msgid "All Users Lock Date"
 msgstr "Alle gebruikers vergrendelingsdatum"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__reco_model_autocomplete_ids
-msgid "All reconciliation models"
-msgstr "Alle aflettermodellen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__allow_partials
-msgid "Allow partials"
-msgstr "Sta gedeeltelijke toe"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid ""
+"All invoices and payments have been matched, your accounts' balances are "
+"clean."
+msgstr ""
+"Alle facturen en betalingen zijn afgeletterd, je rekeningsaldo's zijn "
+"bijgewerkt."
 
 #. module: account_accountant
 #: model:res.groups,name:account_accountant.group_fiscal_year
@@ -271,18 +268,18 @@ msgid "Allow to define fiscal years of more or less than a year"
 msgstr "Sta het definiëren van boekjaren van meer of minder dan een jaar toe"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__amount_currency
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__amls_widget
+msgid "Amls Widget"
+msgstr "Amls-widget"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Amount"
 msgstr "Bedrag"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-msgid "Amount Computation"
-msgstr "Bedrag Berekening"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__amount_currency
@@ -290,49 +287,34 @@ msgid "Amount Currency"
 msgstr "Bedrag valuta"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Amount in Currency"
 msgstr "Bedrag in valuta"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__amount
-msgid "Amount in company currency"
-msgstr "Bedrag in valuta van het bedrijf"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
-#, python-format
-msgid ""
-"An entry will transfer %(amount)s from %(from_account)s to %(to_account)s."
-msgstr ""
-"Een boeking zal %(amount)s overschrijven van %(from_account)s naar "
-"%(to_account)s."
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__analytic_distribution
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__analytic_distribution
 #, python-format
 msgid "Analytic"
 msgstr "Kostenplaats"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__analytic_distribution
-msgid "Analytic Distribution"
-msgstr "Kostenverdeling"
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#, python-format
+msgid "Analytic Account"
+msgstr "Kostenplaats"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__analytic_distribution_search
-msgid "Analytic Distribution Search"
-msgstr "Zoeken kostenplaatsverdeling"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__analytic_precision
-msgid "Analytic Precision"
-msgstr "Kostenplaats nauwkeurigheid"
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__analytic_distribution_stored_char
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__analytic_distribution_stored_char
+msgid "Analytic Distribution Stored Char"
+msgstr "Analytische distributie Opgeslagen Char"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__use_anglo_saxon
@@ -340,44 +322,16 @@ msgid "Anglo-Saxon Accounting"
 msgstr "Angelsaksische boekhouding"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_with_buttons
-msgid "Are you sure you want to delete this statement?"
-msgstr "Weet je zeker dat je dit afschrift wilt verwijderen?"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/move_line_list_reconcile/move_line_list_reconcile.xml:0
-#: code:addons/account_accountant/static/src/components/move_line_list_reconcile/move_line_list_reconcile.xml:0
-#, python-format
-msgid "Auto-reconcile"
-msgstr ""
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_auto_reconcile_wizard.py:0
-#, python-format
-msgid "Automatically Reconciled Entries"
-msgstr "Automatisch afgeletterde boekingen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__available_reco_model_ids
-msgid "Available Reco Model"
-msgstr "Beschikbaar aflettermodel"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/finish_buttons.xml:0
-#, python-format
-msgid "Back to"
-msgstr "Terug naar"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/global_info.xml:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__balance
-#, python-format
 msgid "Balance"
 msgstr "Saldo"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget.xml:0
+#, python-format
+msgid "Balance:"
+msgstr "Saldo:"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_digest_digest__kpi_account_bank_cash
@@ -385,13 +339,9 @@ msgid "Bank & Cash Moves"
 msgstr "Bank & kas boekingen"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__bank_account
-msgid "Bank Account"
-msgstr "Bankrekening"
-
-#. module: account_accountant
-#. odoo-python
+#. openerp-web
 #: code:addons/account_accountant/models/account_bank_statement.py:0
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form.js:0
 #, python-format
 msgid "Bank Reconciliation"
 msgstr "Bank afletteren"
@@ -400,36 +350,17 @@ msgstr "Bank afletteren"
 #: model:ir.model,name:account_accountant.model_account_bank_statement
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_bank_rec_widget
 msgid "Bank Statement"
-msgstr "Rekeningafschrift"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_bank_statement.py:0
-#, python-format
-msgid "Bank Statement %s.pdf"
-msgstr "Rekeningafschrift %s.pdf"
+msgstr "Bankafschrift"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_account_bank_statement_line
 msgid "Bank Statement Line"
-msgstr "Rekeningafschriftregel"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_bank_statement.py:0
-#, python-format
-msgid "Bank Statement.pdf"
-msgstr "Rekeningafschrift.pdf"
+msgstr "Bankafschriftregel"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_bank_rec_widget
 msgid "Bank reconciliation widget for a single statement line"
-msgstr "Bankafletterswidget voor een enkele afschriftregel"
-
-#. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__deferred_amount_computation_method__day
-msgid "Based on days"
-msgstr "Gebaseerd op dagen"
+msgstr "Bankafstemmingswidget voor een enkele afschriftregel"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_change_lock_date
@@ -444,18 +375,37 @@ msgid "Change Lock Date"
 msgstr "Verander blokkeerdatum"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_account_reconcile_wizard__to_check
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#, python-format
 msgid ""
-"Check if you are not certain of all the information of the counterpart."
+"Check & validate the bill. If no vendor has been found, add one before "
+"validating."
 msgstr ""
-"Controleer als je niet zeker bent van alle informatie van de tegenrekening."
+"Controleer en bevestig de factuur. Als er geen leverancier is gevonden, voeg"
+" je er een toe voordat je bevestigt."
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Check all"
+msgstr "Controleer alle"
+
+#. module: account_accountant
+#. openerp-web
 #: code:addons/account_accountant/static/src/components/move_line_list/move_line_list.xml:0
+#: code:addons/account_accountant/static/src/js/legacy_move_line_list_view.js:0
 #, python-format
 msgid "Choose a line to preview its attachments."
 msgstr "Kies een regel om de bijlagen te bekijken."
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Choose counterpart or Create Write-off"
+msgstr "Kies een tegenrekening of maak een afschrijving"
 
 #. module: account_accountant
 #: model_terms:ir.actions.act_window,help:account_accountant.actions_account_fiscal_year
@@ -472,12 +422,11 @@ msgstr ""
 "wilt vermelden"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid ""
-"Click on a fetched bank transaction to start the reconciliation process."
-msgstr ""
+msgid "Close"
+msgstr "Sluiten"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_res_company
@@ -485,18 +434,10 @@ msgid "Companies"
 msgstr "Bedrijven"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__company_id
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__company_id
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__company_id
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__company_id
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__company_id
 msgid "Company"
 msgstr "Bedrijf"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__company_currency_id
-msgid "Company currency"
-msgstr "Valuta bedrijf"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_res_config_settings
@@ -504,26 +445,29 @@ msgid "Config Settings"
 msgstr "Configuratie instellingen"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "Congrats, you're all done!"
 msgstr "Gefeliciteerd, alles is voltooid!"
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#, python-format
+msgid ""
+"Congrats, you're all done! You reconciled %s transactions in %s. That's on "
+"average %s seconds per transaction."
+msgstr ""
+"Gefeliciteerd, je bent helemaal klaar! Je heeft %s transacties afgeletterd "
+"in %s. Dat is gemiddeld %s seconden per transactie."
+
+#. module: account_accountant
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid "Connect your bank and get your latest transactions."
 msgstr "Verbind je bank en ontvang je laatste transacties."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
-#, python-format
-msgid "Couldn't find an appropriate currency to reconcile selected lines."
-msgstr ""
-"Kon geen geschikte valuta vinden om geselecteerde regels af te letteren."
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_reconcile_model_widget_wizard
@@ -531,9 +475,22 @@ msgid "Counterpart Values"
 msgstr "Tegenwaardes"
 
 #. module: account_accountant
+#: code:addons/account_accountant/models/reconciliation_widget.py:0
+#, python-format
+msgid "Create Reconciliation Model"
+msgstr "Maak afletter model"
+
+#. module: account_accountant
 #: model:ir.actions.act_window,name:account_accountant.action_bank_statement_form_bank_rec_widget
 msgid "Create Statement"
-msgstr "Verklaring maken"
+msgstr ""
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Create a counterpart"
+msgstr "Maak een tegenboeking"
 
 #. module: account_accountant
 #: model_terms:ir.actions.act_window,help:account_accountant.action_account_group_tree
@@ -541,14 +498,15 @@ msgid "Create a new account group"
 msgstr "Maak een nieuwe rekeningrubriek"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "Create model"
 msgstr "Maak model"
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid ""
@@ -559,24 +517,20 @@ msgstr ""
 "heeft, kun je onze voorbeeldfactuur gebruiken.</i>"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__create_uid
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__create_uid
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__create_uid
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__create_uid
 msgid "Created by"
 msgstr "Aangemaakt door"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__create_date
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__create_date
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__create_date
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__create_date
 msgid "Created on"
 msgstr "Aangemaakt op"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__credit
 #, python-format
 msgid "Credit"
@@ -588,33 +542,19 @@ msgid "Cron Last Check"
 msgstr "Cron laatste controle"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__currency_id
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Currency"
 msgstr "Valuta"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__reco_currency_id
-msgid "Currency to use for reconciliation"
-msgstr "Te gebruiken valuta voor aflettering"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget.py:0
-#, python-format
-msgid "Customer/Vendor"
-msgstr "Klant/Leverancier"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__date
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__date
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 #, python-format
@@ -622,87 +562,17 @@ msgid "Date"
 msgstr "Datum"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_account_move_line__deferred_end_date
-msgid "Date at which the deferred expense/revenue ends"
-msgstr "Datum waarop de uitgestelde kosten/omzet eindigen"
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_account_move_line__deferred_start_date
-msgid "Date at which the deferred expense/revenue starts"
-msgstr "Datum waarop de uitgestelde kosten/omzet beginnen"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__debit
 #, python-format
 msgid "Debit"
 msgstr "Debet"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid "Deferral of %s"
-msgstr "Uitstel van %s"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__deferred_amount_computation_method
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__deferred_amount_computation_method
-msgid "Deferred Amount Computation Method"
-msgstr "Berekeningsmethode uitgesteld bedrag"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#: model:ir.model.fields,field_description:account_accountant.field_account_bank_statement_line__deferred_move_ids
-#: model:ir.model.fields,field_description:account_accountant.field_account_move__deferred_move_ids
-#: model:ir.model.fields,field_description:account_accountant.field_account_payment__deferred_move_ids
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
-#, python-format
-msgid "Deferred Entries"
-msgstr "Uitgestelde boekingen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__deferred_journal_id
-msgid "Deferred Entries Journal"
-msgstr "Dagboek uitgestelde boekingen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_bank_statement_line__deferred_entry_type
-#: model:ir.model.fields,field_description:account_accountant.field_account_move__deferred_entry_type
-#: model:ir.model.fields,field_description:account_accountant.field_account_payment__deferred_entry_type
-msgid "Deferred Entry Type"
-msgstr "Type uitgestelde boeking"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__deferred_expense_account_id
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__deferred_expense_account_id
-#: model:ir.model.fields.selection,name:account_accountant.selection__account_move__deferred_entry_type__expense
-msgid "Deferred Expense"
-msgstr "Uitgestelde kosten"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__deferred_journal_id
-msgid "Deferred Journal"
-msgstr "Uitgesteld dagboek"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__deferred_revenue_account_id
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__deferred_revenue_account_id
-#: model:ir.model.fields.selection,name:account_accountant.selection__account_move__deferred_entry_type__revenue
-msgid "Deferred Revenue"
-msgstr "Uitgestelde omzet"
-
-#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
 msgid "Define fiscal years of more or less than one year"
 msgstr "Definieer boekjaren van meer of minder dan een jaar"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_with_buttons
-msgid "Delete"
-msgstr "Verwijderen"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
@@ -712,30 +582,21 @@ msgstr "Deposito's"
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_digest_digest
 msgid "Digest"
-msgstr "Overzicht"
+msgstr "Samenvatting"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_auto_reconcile_wizard
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_reconcile_wizard
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_with_buttons
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_bank_rec_widget
 msgid "Discard"
 msgstr "Negeren"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Discount Amount"
-msgstr "Kortingsbedrag"
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "Discuss"
+msgstr "Discussieer"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Discount Date"
-msgstr "Kortingsdatum"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__display_name
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__display_name
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__display_name
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__display_name
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__display_name
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__display_name
 msgid "Display Name"
@@ -752,24 +613,22 @@ msgid "Display Stroked Balance"
 msgstr "Gestreken balans weergeven"
 
 #. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/models/digest.py:0
 #, python-format
 msgid "Do not have access, skip this data for user's digest email"
 msgstr ""
-"Heeft geen toegang, sla deze gegevens over voor de gebruikers "
-"samenvattingsmail"
+"Heeft geen toegang, sla deze gegevens over voor de gebruikers overzicht "
+"e-mail"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "Edit Statement"
-msgstr "Afschrift bewerken"
+msgid "Due Date"
+msgstr "Vervaldatum"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__date_to
-#: model:ir.model.fields,field_description:account_accountant.field_account_move_line__deferred_end_date
 msgid "End Date"
 msgstr "Einddatum"
 
@@ -777,11 +636,6 @@ msgstr "Einddatum"
 #: model:ir.model.fields,help:account_accountant.field_account_fiscal_year__date_to
 msgid "Ending Date, included in the fiscal year."
 msgstr "Einddatum, inbegrepen in het boekjaar."
-
-#. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__deferred_amount_computation_method__month
-msgid "Equal per month"
-msgstr "Gelijk per maand"
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_res_company__invoicing_switch_threshold
@@ -798,21 +652,22 @@ msgstr ""
 "gebruikte, voordat je al je werkelijke boekhoudgegevens in Odoo importeert."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "Exchange Difference: %s"
-msgstr "Koersverschil: %s"
+msgid "External link"
+msgstr "Externe link"
 
 #. module: account_accountant
-#: model:ir.actions.act_window,name:account_accountant.action_open_auto_reconcile_wizard
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_auto_reconcile_wizard
-msgid "Find Entries to Reconcile Automatically"
-msgstr "Vind automatisch af te letteren boekingen"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Filter on account, label, partner, amount,..."
+msgstr "Filter op rekening, label, relatie, bedrag,...."
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_account_fiscal_year
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
 msgid "Fiscal Year"
 msgstr "Boekjaar"
 
@@ -842,32 +697,112 @@ msgstr "Laatste maand boekjaar"
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__flag
 msgid "Flag"
-msgstr "Vlag"
+msgstr "Markeren"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__force_price_included_taxes
 msgid "Force Price Included Taxes"
-msgstr "Forceer prijs inclusief BTW"
+msgstr "Forceer prijs inclusief belastingen"
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_account_id
+msgid "Form Account"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_amount_currency
+msgid "Form Amount Currency"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_balance
+msgid "Form Balance"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_currency_id
+msgid "Form Currency"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_date
+msgid "Form Date"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_extra_text
+msgid "Form Extra Text"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_flag
+msgid "Form Flag"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_force_negative_sign
+msgid "Form Force Negative Sign"
+msgstr ""
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_index
 msgid "Form Index"
-msgstr "Formulier Index"
+msgstr ""
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__from_date
-msgid "From"
-msgstr "Van"
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_name
+msgid "Form Name"
+msgstr ""
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "From Trade Payable accounts"
-msgstr "Van handelscrediteuren"
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_id
+msgid "Form Partner"
+msgstr ""
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "From Trade Receivable accounts"
-msgstr "Van handelsvorderingen"
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_currency_id
+msgid "Form Partner Currency"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_payable_account_id
+msgid "Form Partner Payable Account"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_payable_amount
+msgid "Form Partner Payable Amount"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_receivable_account_id
+msgid "Form Partner Receivable Account"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_partner_receivable_amount
+msgid "Form Partner Receivable Amount"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_single_currency_mode
+msgid "Form Single Currency Mode"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_suggest_amount_currency
+msgid "Form Suggest Amount Currency"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_suggest_balance
+msgid "Form Suggest Balance"
+msgstr ""
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__form_tax_ids
+msgid "Form Tax"
+msgstr ""
 
 #. module: account_accountant
 #: model_terms:digest.tip,tip_description:account_accountant.digest_tip_account_accountant_0
@@ -883,29 +818,21 @@ msgstr ""
 "het grootboek of een dagboekweergave."
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__generate_deferred_expense_entries_method
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__generate_deferred_expense_entries_method
-msgid "Generate Deferred Expense Entries Method"
-msgstr ""
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "From now on, you may want to:"
+msgstr "Nu kun je:"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__generate_deferred_revenue_entries_method
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__generate_deferred_revenue_entries_method
-msgid "Generate Deferred Revenue Entries Method"
-msgstr ""
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#, python-format
+msgid "Get back to the dashboard using your previous path…"
+msgstr "Ga terug naar het dashboard via je vorige pad..."
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-msgid "Generate Expense Entries"
-msgstr ""
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-msgid "Generate Revenue Entries"
-msgstr ""
-
-#. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
@@ -914,41 +841,34 @@ msgid "Go to invoicing"
 msgstr "Ga naar facturatie"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid ""
-"Great! Let’s continue.<br/><br/><i>Tip: If you choose to upload your bill, "
-"don’t forget to attach it.</i>"
-msgstr ""
+msgid "Good Job!"
+msgstr "Goed gedaan!"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "Group By"
-msgstr "Groeperen op"
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#, python-format
+msgid "Great! Let’s continue."
+msgstr "Top! Laten we doorgaan."
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__group_tax_id
 msgid "Group Tax"
-msgstr "Groeper BTW"
+msgstr "Groepsbelasting"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_move_line__has_deferred_moves
-msgid "Has Deferred Moves"
-msgstr "Heeft uitgestelde boekingen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__id
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__id
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__id
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__id
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__id
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__id
 msgid "ID"
 msgstr "ID"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_bank_rec_widget__st_line_to_check
+#: model:ir.model.fields,help:account_accountant.field_bank_rec_widget__to_check
 msgid ""
 "If this checkbox is ticked, it means that the user was not sure of all the "
 "related information at the time of the creation of the move and that the "
@@ -959,12 +879,6 @@ msgstr ""
 " gemaakt en dat de boeking opnieuw moet worden gecontroleerd."
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
-msgid "Incoming"
-msgstr "Inkomend"
-
-#. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -987,7 +901,7 @@ msgstr "Ongeldig"
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 msgid "Invalid statements"
-msgstr "Ongeldige afschriften"
+msgstr ""
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_bank_rec_widget__state
@@ -1001,19 +915,10 @@ msgstr ""
 "Afgestemd: de banktransactie is al verwerkt. Niets meer te doen."
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Invoice Date"
-msgstr "Factuurdatum"
-
-#. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_res_company__invoicing_switch_threshold
 #: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__invoicing_switch_threshold
 msgid "Invoicing Switch Threshold"
-msgstr "Overstapdatum facturatie"
+msgstr "Drempel voor facturering"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__st_line_is_reconciled
@@ -1021,24 +926,13 @@ msgid "Is Reconciled"
 msgstr "Afgeletterd"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__is_write_off_required
-msgid "Is a write-off move required to reconcile"
-msgstr "Een afschrijving is nodig om af te letteren"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__is_transfer_required
-msgid "Is an account transfer required"
-msgstr "Een overboeking is nodig"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__transfer_warning_message
-msgid "Is an account transfer required to reconcile"
-msgstr "Een overboeking is nodig om af te letteren"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__lock_date_violated_warning_message
-msgid "Is the date violating the lock date of moves"
-msgstr "De datum schendt de blokkeerdatum van boekingen"
+#: code:addons/account_accountant/models/reconciliation_widget.py:0
+#, python-format
+msgid ""
+"It is mandatory to specify an account and a journal to create a write-off."
+msgstr ""
+"Het is vereist om een rekening en dagboek te specifiëren om een afschrijving"
+" te kunnen aanmaken."
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.account_journal_dashboard_kanban_view
@@ -1046,12 +940,12 @@ msgid "Items"
 msgstr "Items"
 
 #. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #: model:ir.model,name:account_accountant.model_account_journal
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__journal_id
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__st_line_journal_id
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
+#, python-format
 msgid "Journal"
 msgstr "Dagboek"
 
@@ -1068,39 +962,24 @@ msgstr "Vergrendelingsdatum boekingen"
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_account_move
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__move_id
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
 msgid "Journal Entry"
 msgstr "Boeking"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_account_move_line
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
 msgid "Journal Item"
 msgstr "Boekingsregel"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Journal Items"
-msgstr "Boekingsregels"
-
-#. module: account_accountant
-#: model:ir.actions.act_window,name:account_accountant.action_move_line_posted_unreconciled
-msgid "Journal Items to reconcile"
-msgstr ""
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "Journal items where matching number isn't set"
-msgstr "Boekingen waar het matchende nummer niet is ingesteld"
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__deferred_journal_id
-msgid "Journal used for deferred entries"
-msgstr "Dagboek gebruik voor uitgestelde boekingen"
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_action.js:0
+#: model:ir.actions.client,name:account_accountant.action_manual_reconcile
+#, python-format
+msgid "Journal Items to Reconcile"
+msgstr "Af te letteren boekingsregels"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_digest_digest__kpi_account_bank_cash_value
@@ -1108,9 +987,12 @@ msgid "Kpi Account Bank Cash Value"
 msgstr "KPI Bankrekening saldo waarde"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__label
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Label"
 msgstr "Omschrijving"
@@ -1121,28 +1003,34 @@ msgid "Last Day"
 msgstr "Laatste dag"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__write_uid
+#: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date____last_update
+#: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year____last_update
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget____last_update
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Last Reconciliation:"
+msgstr "Laatste aflettering:"
+
+#. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__write_uid
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__write_uid
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Laatst bijgewerkt door"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__write_date
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__write_date
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__write_date
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__write_date
 msgid "Last Updated on"
 msgstr "Laatst bijgewerkt op"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_auto_reconcile_wizard
-msgid "Launch"
-msgstr "Lanceer"
-
-#. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid "Let’s automate your bills, bank transactions and accounting processes."
@@ -1150,21 +1038,28 @@ msgstr ""
 "Laten we je facturen, banktransacties en boekhoudprocessen automatiseren."
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid "Let’s go back to the dashboard."
 msgstr "Laten we teruggaan naar het dashboard."
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#, python-format
+msgid "Let’s reconcile the fetched bank transactions."
+msgstr "Laten we de opgehaalde banktransacties afletteren."
+
+#. module: account_accountant
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid "Let’s see how a bill looks like in form view."
 msgstr "Laten we eens kijken hoe een factuur eruitziet in formulierweergave."
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
 #, python-format
 msgid ""
@@ -1176,15 +1071,26 @@ msgstr ""
 " opnieuw.</i>"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__line_ids
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__line_ids
 msgid "Line"
-msgstr "Regel"
+msgstr "Lijn"
 
 #. module: account_accountant
 #: model:ir.model,name:account_accountant.model_bank_rec_widget_line
-msgid "Line of the bank reconciliation widget"
-msgstr "Regel van de bankafletterwidget"
+msgid "Line of the lines_widget"
+msgstr "Regel van de lines_widget"
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__lines_widget
+msgid "Lines Widget"
+msgstr "Lijnenwidget"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Load more... ("
+msgstr "Laad meer... ("
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__fiscalyear_lock_date
@@ -1207,36 +1113,44 @@ msgid "Management Closing"
 msgstr "Management afsluiting"
 
 #. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__generate_deferred_expense_entries_method__manual
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__generate_deferred_revenue_entries_method__manual
-msgid "Manually & Grouped"
-msgstr "Handmatig & Gegroupeerd"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+#, python-format
+msgid "Manual Operations"
+msgstr "Handmatige bewerkingen"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__manually_modified
-msgid "Manually Modified"
-msgstr "Handmatig aangepast"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/list_view_switcher.js:0
+#. openerp-web
 #: code:addons/account_accountant/static/src/components/matching_link_widget/matching_link_widget.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_tree_bank_rec_widget
 #, python-format
 msgid "Match"
 msgstr "Match"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_kanban_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
-msgid "Matched"
-msgstr "Afgeletterd"
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "Match Existing Entries"
+msgstr "Overeenkomen met bestaande inzendingen"
 
 #. module: account_accountant
-#. odoo-python
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Match with entries that are not from receivable/payable accounts"
+msgstr ""
+"Match met boekingen die niet van debiteuren/crediteuren rekeningen zijn"
+
+#. module: account_accountant
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
+msgid "Matched"
+msgstr "Op elkaar afgestemd"
+
+#. module: account_accountant
 #: code:addons/account_accountant/models/account_payment.py:0
 #, python-format
 msgid "Matched Transactions"
-msgstr "Afgeletterde transacties"
+msgstr "Overeenkomende transacties"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__matching_rules_allow_auto_reconcile
@@ -1244,30 +1158,22 @@ msgid "Matching Rules Allow Auto Reconcile"
 msgstr "Overeenkomende regels staan automatische afstemming toe"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__deferred_amount_computation_method
-msgid "Method used to compute the amount of deferred entries"
-msgstr "Methode gebruikt om het bedrag van uitgestelde boekingen te berekenen"
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__generate_deferred_expense_entries_method
-msgid "Method used to generate deferred expense entries"
-msgstr ""
-
-#. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_res_config_settings__generate_deferred_revenue_entries_method
-msgid "Method used to generate deferred revenue entries"
-msgstr ""
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "Misc"
-msgstr "Overige"
+msgid "Miscellaneous Matching"
+msgstr "Diversen matching"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Modify models"
+msgstr "Wijzig modellen"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget.xml:0
 #, python-format
 msgid "More"
 msgstr "Meer"
@@ -1278,33 +1184,28 @@ msgid "Move Attachment"
 msgstr "Boekingsbijlage"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__move_line_ids
-msgid "Move lines to reconcile"
-msgstr "Af te letteren boekingsregels"
-
-#. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__name
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__name
 msgid "Name"
 msgstr "Naam"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "New"
 msgstr "Nieuw"
 
 #. module: account_accountant
-#: model:ir.actions.act_window,name:account_accountant.action_bank_statement_line_form_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.account_journal_dashboard_kanban_view
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_form_bank_rec_widget
-msgid "New Transaction"
-msgstr "Nieuwe transactie"
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__next_action_todo
+msgid "Next Action Todo"
+msgstr "Volgende actie Todo"
 
 #. module: account_accountant
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_accountant/static/src/components/move_line_list/move_line_list.xml:0
+#: code:addons/account_accountant/static/src/js/legacy_move_line_list_view.js:0
 #, python-format
 msgid "No attachments linked."
 msgstr "Geen bijlagen gekoppeld."
@@ -1312,14 +1213,7 @@ msgstr "Geen bijlagen gekoppeld."
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 msgid "No statement"
-msgstr "Geen afschrift"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_bank_statement.py:0
-#, python-format
-msgid "No transactions matching your filters were found."
-msgstr "Er zijn geen transacties gevonden die overeenkomen met je filters."
+msgstr ""
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_res_config_settings__tax_lock_date
@@ -1343,37 +1237,14 @@ msgstr ""
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 msgid "Not Matched"
-msgstr "Openstaand"
+msgstr "Niet geëvenaard"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_tree_bank_rec_widget
-#, python-format
 msgid "Notes"
 msgstr "Notities"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_bank_statement.py:0
-#, python-format
-msgid "Nothing to do here!"
-msgstr "Niets te doen hier!"
-
-#. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__generate_deferred_expense_entries_method__on_validation
-msgid "On bill validation"
-msgstr ""
-
-#. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__res_company__generate_deferred_revenue_entries_method__on_validation
-msgid "On invoice validation"
-msgstr ""
-
-#. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/wizard/account_change_lock_date.py:0
 #, python-format
 msgid "Only Billing Administrators are allowed to change lock dates!"
@@ -1393,107 +1264,64 @@ msgstr ""
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
 msgid "Open Amount"
-msgstr "Openstaand bedrag"
+msgstr "Open hoeveelheid"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
 msgid "Open Amount in Currency"
-msgstr "Openstaanbd bedrag in valuta"
+msgstr ""
 
 #. module: account_accountant
-#. odoo-python
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Open balance"
+msgstr "Openstaand saldo"
+
+#. module: account_accountant
 #: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid "Open balance: %s"
 msgstr "Open saldo: %s"
 
 #. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__account_auto_reconcile_wizard__search_mode__one_to_one
-msgid "Opposite balances one by one"
-msgstr "Tegenovergestelde saldos, één per één"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid "Original Deferred Entries"
-msgstr "Originele uitgestelde boekingen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_bank_statement_line__deferred_original_move_ids
-#: model:ir.model.fields,field_description:account_accountant.field_account_move__deferred_original_move_ids
-#: model:ir.model.fields,field_description:account_accountant.field_account_payment__deferred_original_move_ids
-msgid "Original Invoices"
-msgstr "Originele facturen"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Originator Tax"
-msgstr "Herkomst van de BTW"
+#: model_terms:ir.ui.view,arch_db:account_accountant.account_journal_dashboard_kanban_view
+msgid "Operations"
+msgstr "Bewerkingen"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
-msgid "Outgoing"
-msgstr "Uitgaand"
+msgid "Paid"
+msgstr "Betaald"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__partner_id
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_id
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Partner"
 msgstr "Relatie"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_currency_id
-msgid "Partner Currency"
-msgstr "Valuta relatie"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Pay your"
+msgstr "Betaal je"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__partner_name
-msgid "Partner Name"
-msgstr "Relatienaam"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_payable_account_id
-msgid "Partner Payable Account"
-msgstr "Crediteurenrekening relatie"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_payable_amount
-msgid "Partner Payable Amount"
-msgstr "Te betalen bedrag relatie"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_receivable_account_id
-msgid "Partner Receivable Account"
-msgstr "Debiteurenrekening relatie"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__partner_receivable_amount
-msgid "Partner Receivable Amount"
-msgstr "Te ontvangen bedrag relatie"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__partner_ids
-msgid "Partners"
-msgstr "Relaties"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#, python-format
 msgid "Payable"
 msgstr "Crediteuren"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 msgid "Payable:"
-msgstr "Te betalen:"
+msgstr "te betalen:"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_payment_form_inherit_account_accountant
@@ -1519,115 +1347,103 @@ msgid "Payments Matching"
 msgstr "Betalingen afletteren"
 
 #. module: account_accountant
+#: code:addons/account_accountant/models/account_payment.py:0
+#, python-format
+msgid "Payments without a customer can't be matched"
+msgstr "Betalingen zonder klant kunnen niet worden afgeletterd"
+
+#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_change_lock_date
 msgid "Pick a date to lock"
 msgstr "Kies een datum om te blokkeren"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
-msgid "Please set the deferred accounts in the accounting settings."
-msgstr "Stel eerst de uitgestelde rekeningen in de boekhoudinstellingen in."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid "Please set the deferred journal in the accounting settings."
-msgstr "Stel eerst het uitgestelde dagboek in de boekhoudinstellingen in."
+msgid "Please install the 'Accounting Reports' module."
+msgstr "Installeer de module 'Boekhoudingsrapporten'."
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-msgid "Post Deferred entries in:"
-msgstr "Uitgestelde boekingen boeken in:"
+msgid "Predict vendor bill accounts"
+msgstr "Voorspel leveranciersfacturen"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_res_company__predict_bill_product
-#: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__predict_bill_product
-msgid "Predict Bill Product"
-msgstr "Product factuur voorspellen"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
-msgid "Predict vendor bill product"
-msgstr "Product leveranciersfactuur voorspellen"
-
-#. module: account_accountant
-#: model:ir.model,name:account_accountant.model_account_reconcile_model
-msgid ""
-"Preset to create journal entries during a invoices and payments matching"
-msgstr ""
-"Voorinstelling om boekingen aan te maken bij het afletteren van facturen met"
-" betalingen"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Presets config"
+msgstr "Voorinstellingen"
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_account_change_lock_date__fiscalyear_lock_date
 msgid ""
-"Prevents Journal Entry creation or modification up to the defined date "
-"inclusive for all users. As a closed period, all accounting operations are "
-"prohibited."
+"Prevents Journal Entry creation or modification prior to the defined date "
+"for all users. As a closed period, all accounting operations are prohibited."
 msgstr ""
-"Voorkomt het aanmaken of wijzigen van boekingen tot en met de gedefinieerde "
-"datum voor alle gebruikers. Als gesloten periode zijn alle boekhoudkundige "
+"Voorkomt het aanmaken of wijzigen van boekingen vóór de gedefinieerde datum "
+"voor alle gebruikers. Als gesloten periode zijn alle boekhoudkundige "
 "handelingen verboden."
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_account_change_lock_date__period_lock_date
 msgid ""
-"Prevents Journal entries creation up to the defined date inclusive. Except "
-"for Accountant users."
+"Prevents Journal entries creation prior to the defined date. Except for "
+"Accountants users."
 msgstr ""
-"Voorkomt het aanmaken van boekingen tot en met de gedefinieerde datum. "
+"Voorkomt dat boekingen worden aangemaakt vóór de gedefinieerde datum. "
 "Behalve voor accountants-gebruikers."
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_account_change_lock_date__tax_lock_date
 msgid ""
-"Prevents Tax Returns modification up to the defined date inclusive (Journal "
-"Entries involving taxes). The Tax Return Lock Date is automatically set when"
-" the corresponding Journal Entry is posted."
+"Prevents Tax Returns modification prior to the defined date (Journal Entries"
+" involving taxes). The Tax Return Lock Date is automatically set when the "
+"corresponding Journal Entry is posted."
 msgstr ""
-"Voorkomt het wijzigen van de BTW-aangifte tot en met de gedefinieerde datum "
-"(boekingen met BTW). De blokkeerdatum van de BTW-aangifte wordt automatisch "
-"ingesteld wanneer de bijbehorende boeking wordt geboekt."
+"Voorkomt wijziging aan de BTW-aangifte vóór de vastgestelde datum (boekingen"
+" met BTW). De blokkeerdatum BTW-aangifte wordt automatisch ingesteld wanneer"
+" de bijbehorende boeking wordt geboekt."
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_with_buttons
-msgid "Print"
-msgstr "Afdrukken"
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/tours/account_accountant.js:0
+#, python-format
+msgid "Process this transaction."
+msgstr "Verwerk deze transactie."
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#, python-format
 msgid "Receivable"
 msgstr "Debiteuren"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 msgid "Receivable:"
-msgstr "Te ontvangen:"
+msgstr "te ontvangen:"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__search_mode
-#: model:ir.ui.menu,name:account_accountant.menu_account_reconcile
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_search_bank_rec_widget
+msgid "Received"
+msgstr "Ontvangen"
+
+#. module: account_accountant
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__reco_models_widget
+msgid "Reco Models Widget"
+msgstr "Reco Models-widget"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/models/account_move.py:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model:ir.actions.server,name:account_accountant.action_view_account_move_line_reconcile
 #: model_terms:ir.ui.view,arch_db:account_accountant.account_journal_dashboard_kanban_view
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_reconcile_wizard
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_tree
+#, python-format
 msgid "Reconcile"
 msgstr "Afletteren"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_reconcile_wizard
-msgid "Reconcile & open"
-msgstr "Afletteren & openen"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__reco_account_id
-msgid "Reconcile Account"
-msgstr "Afletteringsaccount"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__reconcile_model_id
@@ -1640,9 +1456,10 @@ msgid "Reconciled"
 msgstr "Afgeletterd"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__reco_model_id
-msgid "Reconciliation model"
-msgstr "Aflettermodel"
+#: model:ir.actions.client,name:account_accountant.action_manual_reconciliation
+#: model:ir.ui.menu,name:account_accountant.menu_action_manual_reconciliation
+msgid "Reconciliation"
+msgstr "Aflettering"
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
@@ -1650,45 +1467,27 @@ msgid "Record cost of goods sold in your journal entries"
 msgstr "Registreer de kostprijs van goederen in je boekingen"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
-msgid "Related Purchase(s)"
-msgstr ""
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_form_inherit
-msgid "Related Sale(s)"
-msgstr ""
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "Reset"
-msgstr "Resetten"
+msgid "Ref"
+msgstr "Ref"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
+msgid "Reset"
+msgstr "Reset"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
 msgid "Residual"
 msgstr "Resterend"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Residual in Currency"
-msgstr "Rest in valuta"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__return_todo_command
-msgid "Return Todo Command"
-msgstr "Retourneer Todo commando"
-
-#. module: account_accountant
-#: model:ir.model,name:account_accountant.model_account_reconcile_model_line
-msgid "Rules for the reconciliation model"
-msgstr "Aflettermodelregels"
-
-#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_change_lock_date
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_with_buttons
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_form_bank_rec_widget
 msgid "Save"
 msgstr "Opslaan"
 
@@ -1703,9 +1502,18 @@ msgid "Save & New"
 msgstr "Opslaan & Nieuw"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "Search Journal Items to Reconcile"
-msgstr ""
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Save and New"
+msgstr "Opslaan & nieuw"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#, python-format
+msgid "Select Partner"
+msgstr "Relatie selecteren"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__selected_aml_ids
@@ -1713,21 +1521,30 @@ msgid "Selected Aml"
 msgstr "Geselecteerde Aml"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__selected_reco_model_id
-msgid "Selected Reco Model"
-msgstr "Geselecteerd aflettermodel"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 msgid "Set as Checked"
 msgstr "Instellen als aangevinkt"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__single_currency_mode
-msgid "Single Currency Mode"
-msgstr "Modus voor één valuta"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Settings"
+msgstr "Instellingen"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Skip"
+msgstr "Overslaan"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_renderer.js:0
+#, python-format
+msgid "Some fields are undefined"
+msgstr "Sommige velden zijn niet ingevuld"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__source_aml_id
@@ -1770,15 +1587,9 @@ msgid "St Line"
 msgstr "St Line"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__st_line_transaction_details
-msgid "St Line Transaction Details"
-msgstr "Transactiedetails St regel"
-
-#. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_fiscal_year__date_from
-#: model:ir.model.fields,field_description:account_accountant.field_account_move_line__deferred_start_date
 msgid "Start Date"
-msgstr "Begindatum"
+msgstr "Startdatum"
 
 #. module: account_accountant
 #: model:ir.model.fields,help:account_accountant.field_account_fiscal_year__date_from
@@ -1788,10 +1599,9 @@ msgstr "Startdatum, in dit boekjaar inbegrepen."
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__state
 msgid "State"
-msgstr "Staat"
+msgstr "Provincie / Staat"
 
 #. module: account_accountant
-#: model:ir.actions.server,name:account_accountant.action_bank_statement_attachment
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_kanban_bank_rec_widget
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 msgid "Statement"
@@ -1803,40 +1613,26 @@ msgid "Statement Line"
 msgstr "Bankafschriftregel"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__suggestion_amount_currency
-msgid "Suggestion Amount Currency"
-msgstr "Valuta voorstel bedrag"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__suggestion_balance
-msgid "Suggestion Balance"
-msgstr "Voorstel saldo"
-
-#. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__suggestion_html
-msgid "Suggestion Html"
-msgstr "Voorstel Html"
-
-#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
 msgid "Suggestions"
 msgstr "Suggesties"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__tax_id
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__tax_ids
 msgid "Tax"
-msgstr "BTW"
+msgstr "Btw"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__tax_base_amount_currency
 msgid "Tax Base Amount Currency"
-msgstr "BTW grondslag in valuta"
+msgstr "Valuta belastinggrondslag"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Tax Grids"
-msgstr "BTW-rubriek"
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "Tax Included in Price"
+msgstr "Prijs inclusief BTW"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_res_config_settings__tax_lock_date
@@ -1851,79 +1647,61 @@ msgstr "BTW verdelingsregel"
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_account_change_lock_date__tax_lock_date
 msgid "Tax Return Lock Date"
-msgstr "Vergrendelingsdatum BTW-aangifte"
+msgstr "Vergrendelingsdatum btw-aangifte"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__tax_tag_ids
 msgid "Tax Tag"
-msgstr "BTW-label"
+msgstr "Belastinglabel"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/kanban.js:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget_form_lines_widget.js:0
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #, python-format
 msgid "Taxes"
-msgstr "Belastingen"
+msgstr "Btw"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__st_line_narration
-msgid "Terms and Conditions"
-msgstr "Algemene voorwaarden"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "That's on average"
 msgstr "Dat is gemiddeld"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/js/reconciliation/reconciliation_model.js:0
 #, python-format
-msgid ""
-"The date you set violates the lock date of one of your entry. It will be "
-"overriden by the following date : %(replacement_date)s"
-msgstr ""
-"De bepaalde datum schendt de blokkeerdatum van één van je boekingen. Het "
-"wordt overschreven door de volgende datum: %(replacement_date)s"
+msgid "The amount %s is not a valid partial amount"
+msgstr "Het bedrag %s is geen geldig gedeeltelijk bedrag"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_account_bank_statement_line__deferred_move_ids
-#: model:ir.model.fields,help:account_accountant.field_account_move__deferred_move_ids
-#: model:ir.model.fields,help:account_accountant.field_account_payment__deferred_move_ids
-msgid "The deferred entries created by this invoice"
-msgstr "De uitgestelde boekingen aangemaakt door deze factuur"
-
-#. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/models/account_fiscal_year.py:0
 #, python-format
 msgid "The ending date must not be prior to the starting date."
 msgstr "De eind datum mag niet voor de start datum liggen."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "The invoice %(display_name_html)s with an open amount of %(open_amount)s "
 "will be entirely paid by the transaction."
 msgstr ""
-"Factuur %(display_name_html)s met een openstaand bedrag van %(open_amount)s "
-"wordt volledig betaald door de transactie."
+"De factuur %(display_name_html)s met een openstaand bedrag van "
+"%(open_amount)s wordt volledig betaald door de transactie."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "The invoice %(display_name_html)s with an open amount of %(open_amount)s "
 "will be reduced by %(amount)s."
 msgstr ""
-"Factuur %(display_name_html)s met een openstaand bedrag van %(open_amount)s "
-"wordt verminderd met %(amount)s."
+"De factuur %(display_name_html)s met een openstaand bedrag van "
+"%(open_amount)s wordt verminderd met %(amount)s."
 
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
@@ -1935,49 +1713,34 @@ msgstr ""
 "aanmerking genomen"
 
 #. module: account_accountant
-#: model:ir.model.fields,help:account_accountant.field_account_bank_statement_line__deferred_original_move_ids
-#: model:ir.model.fields,help:account_accountant.field_account_move__deferred_original_move_ids
-#: model:ir.model.fields,help:account_accountant.field_account_payment__deferred_original_move_ids
-msgid "The original invoices that created the deferred entries"
-msgstr "De originele facturen die de uitgestelde boekingen hebben aangemaakt"
-
-#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.res_config_settings_view_form
 msgid ""
-"The system will try to predict the product on vendor bill lines based on the"
-" label of the line"
+"The system will try to predict the accounts on vendor bill lines based on "
+"history of previous bills"
 msgstr ""
-"Het systeem zal het product op de leveranciersfacturen proberen te "
-"voorspellen op basis van het label van de regel"
+"Het systeem zal de rekeningen op de leveranciersfacturen proberen te "
+"voorspellen op basis van de vorige rekeningen"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_bank_statement.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid ""
-"This bank transaction has been automatically validated using the "
-"reconciliation model '%s'."
-msgstr ""
-"Deze banktransactie is automatisch gevalideerd met behulp van het "
-"aflettermodel '%s'."
+msgid "There is nothing to reconcile."
+msgstr "Er is niets af te letteren."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "This can only be used on journal items"
-msgstr "Dit kan alleen op dagboek items gebruikt worden"
+msgid "This payment is registered but not reconciled."
+msgstr "Deze betaling werd geregistreerd maar niet afgeletterd."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_reconcile_model_line.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid ""
-"This reconciliation model can't be used in the manual reconciliation widget "
-"because its configuration is not adapted"
-msgstr ""
-"Dit afstemmingsmodel kan niet worden gebruikt in de handmatige "
-"afstemmingswidget omdat de configuratie niet is aangepast"
+msgid "This was the model that generated the lines suggested"
+msgstr "Dit was het model dat de voorgestelde regels genereerde"
 
 #. module: account_accountant
 #: model:digest.tip,name:account_accountant.digest_tip_account_accountant_0
@@ -1990,16 +1753,10 @@ msgid "Tip: Find an Accountant or register your Accounting Firm"
 msgstr "Tip: Zoek een accountant of registreer je accountantskantoor"
 
 #. module: account_accountant
-#: model:ir.model.fields,field_description:account_accountant.field_account_auto_reconcile_wizard__to_date
-msgid "To"
-msgstr "Aan"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: model:ir.model.fields,field_description:account_accountant.field_account_reconcile_wizard__to_check
-#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__st_line_to_check
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__to_check
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 #, python-format
 msgid "To Check"
@@ -2008,7 +1765,14 @@ msgstr "Te controleren"
 #. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_kanban_bank_rec_widget
 msgid "To check"
-msgstr "Controleren"
+msgstr ""
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "To speed up reconciliation, define"
+msgstr "Om afletteren te versnellen definieer je"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__todo_command
@@ -2016,39 +1780,9 @@ msgid "Todo Command"
 msgstr "Todo-opdracht"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Total Balance"
-msgstr "Totaal balans"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Total Credit"
-msgstr "Totaal credit"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Total Debit"
-msgstr "Totaal debet"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Total Residual"
-msgstr "Totaal restand"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_move_line_reconcile_tree
-msgid "Total Residual in Currency"
-msgstr "Totaal resterend in valuta"
-
-#. module: account_accountant
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_statement_line_search_bank_rec_widget
 msgid "Transaction"
 msgstr "Transactie"
-
-#. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.account_journal_dashboard_kanban_view
-msgid "Transactions"
-msgstr "Transacties"
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget__transaction_currency_id
@@ -2056,42 +1790,23 @@ msgid "Transaction Currency"
 msgstr "Munteenheid van de transactie"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#: code:addons/account_accountant/models/account_move.py:0
 #, python-format
-msgid "Transaction Details"
-msgstr "Details transactie"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
-#, python-format
-msgid "Transfer from %s"
-msgstr "Overboeken van %s"
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
-#, python-format
-msgid "Transfer to %s"
-msgstr "Overboeken naar %s"
+msgid "Transfer Accounts"
+msgstr "Overboekingsrekeningen"
 
 #. module: account_accountant
 #: model:ir.actions.server,name:account_accountant.auto_reconcile_bank_statement_line_ir_actions_server
+#: model:ir.cron,cron_name:account_accountant.auto_reconcile_bank_statement_line
+#: model:ir.cron,name:account_accountant.auto_reconcile_bank_statement_line
 msgid "Try to reconcile automatically your statement lines"
-msgstr "Probeer je afschriftregels automatisch op elkaar af te stemmen"
+msgstr "Probeer uw afschriftregels automatisch op elkaar af te stemmen"
 
 #. module: account_accountant
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_reconcile_search
-msgid "Unreconciled"
-msgstr "Onafgeletterd"
-
-#. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/models/res_company.py:0
 #, python-format
 msgid "Unreconciled statements lines"
-msgstr "Niet-afgeletterde afschriftregels"
+msgstr ""
 
 #. module: account_accountant
 #: model:ir.model.fields.selection,name:account_accountant.selection__bank_rec_widget__state__valid
@@ -2099,28 +1814,29 @@ msgid "Valid"
 msgstr "Geldig"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
 #: model_terms:ir.ui.view,arch_db:account_accountant.view_account_reconcile_model_widget_wizard
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_bank_rec_widget_form
 msgid "Validate"
-msgstr "Bevestigen"
+msgstr "Bevestig"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/list_view_switcher.js:0
-#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "View"
-msgstr "Bekijk"
+msgid "Verify"
+msgstr "Controleer"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#: model_terms:ir.ui.view,arch_db:account_accountant.view_account_move_line_list_bank_rec_widget
+msgid "View"
+msgstr "Weergave"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_widget.xml:0
 #, python-format
 msgid "View models"
-msgstr "Bekijk modellen"
+msgstr ""
 
 #. module: account_accountant
 #: model:ir.model.fields,field_description:account_accountant.field_bank_rec_widget_line__wizard_id
@@ -2134,103 +1850,76 @@ msgid "Wizard Company Currency"
 msgstr "Wizard Bedrijfsvaluta"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
+#: code:addons/account_accountant/models/reconciliation_widget.py:0
 #, python-format
 msgid "Write-Off"
 msgstr "Afschrijving"
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
-msgid "Write-Off Entry"
-msgstr "Afschrijving"
+msgid "Writeoff Date"
+msgstr "Afschrijfdatum"
 
 #. module: account_accountant
-#. odoo-python
 #: code:addons/account_accountant/models/account_fiscal_year.py:0
 #, python-format
 msgid ""
 "You can not have an overlap between two fiscal years, please correct the "
 "start and/or end dates of your fiscal years."
 msgstr ""
-"Je kunt geen overlapping hebben tussen twee boekjaren, wijzig a.je.b. de "
+"Je kunt geen overlapping hebben tussen twee boekjaren, wijzig a.u.b. de "
 "start en/of einddatum van je boekjaren."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_reconcile_wizard.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
-msgid "You can only reconcile entries with up to two different accounts: %s"
+msgid ""
+"You can't have maximum one auto balance line at the same time in the bank "
+"reconciliation widget"
 msgstr ""
-"Je kan enkel boekingen afletteren met tot twee verschillende rekeningen: %s"
+"Je kunt niet maximaal één automatische saldoregel tegelijkertijd hebben in "
+"de bankafstemmingswidget"
 
 #. module: account_accountant
-#. odoo-python
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#, python-format
+msgid ""
+"You can't have multiple liquidity journal item at the same time in the bank "
+"reconciliation widget"
+msgstr ""
+"Je kunt niet meerdere liquiditeitsboekingen tegelijk hebben in de "
+"afletterwidget"
+
+#. module: account_accountant
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
+#, python-format
+msgid ""
+"You can't have multiple times the same journal item in the bank "
+"reconciliation widget"
+msgstr "Je kunt niet meerdere keren dezelfde boek in de afletterwidget hebben"
+
+#. module: account_accountant
 #: code:addons/account_accountant/models/account_move.py:0
 #, python-format
 msgid ""
-"You cannot change the account for a deferred line in %(move_name)s if it has"
-" already been deferred."
+"You cannot reconcile the payable and receivable accounts of multiple "
+"partners together at the same time."
 msgstr ""
+"Je kunt de te betalen en te ontvangen rekeningen van meerdere relaties niet "
+"tegelijkertijd afletteren."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid "You cannot create a deferred entry with a start date but no end date."
-msgstr ""
-"Je kan geen uitgestelde boekingen maken met startdatum en zonder einddatum."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid ""
-"You cannot create a deferred entry with a start date later than the end "
-"date."
-msgstr ""
-"Je kan geen uitgestelde boekingen maken met een startdatum na de einddatum."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid ""
-"You cannot generate deferred entries for a miscellaneous journal entry."
-msgstr "Je kan geen uitgestelde boekingen genereren voor een diverse boeking."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/account_move.py:0
-#, python-format
-msgid ""
-"You cannot reset to draft an invoice that is grouped in deferral entry. You "
-"can create a credit note instead."
-msgstr ""
-"Je kan een factuur die gegroepeerd is in een uitstelboeking niet terugzetten"
-" naar concept. Maak liever een creditfactuur aan."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/wizard/account_change_lock_date.py:0
-#, python-format
-msgid "You cannot set a lock date in the future."
-msgstr "Je kan geen vergrendelingsdatum vastleggen in de toekomst."
-
-#. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "You might want to %(btn_start)sfully reconcile%(btn_end)s the document."
 msgstr ""
-"Misschien wil je het document %(btn_start)svolledig afletteren%(btn_end)s."
+"Misschien wil je %(btn_start)s%(btn_end)s het document zorgvuldig afstemmen."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "You might want to make a %(btn_start)spartial reconciliation%(btn_end)s "
@@ -2240,8 +1929,7 @@ msgstr ""
 "aflettering%(btn_end)s maken."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid "You might want to record a %(btn_start)spartial payment%(btn_end)s."
 msgstr ""
@@ -2249,18 +1937,16 @@ msgstr ""
 "opnemen."
 
 #. module: account_accountant
-#. odoo-python
-#: code:addons/account_accountant/models/bank_rec_widget_line.py:0
+#: code:addons/account_accountant/models/bank_rec_widget.py:0
 #, python-format
 msgid ""
 "You might want to set the invoice as %(btn_start)sfully paid%(btn_end)s."
 msgstr ""
-"Misschien wil je de factuur instellen als %(btn_start)svolledig "
-"betaald%(btn_end)s."
+"Misschien wil je de factuur instellen als %(btn_start)sfullypaid%(btn_end)s."
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "You reconciled"
 msgstr "Je hebt afgeletterd"
@@ -2269,6 +1955,13 @@ msgstr "Je hebt afgeletterd"
 #: model:ir.model.fields.selection,name:account_accountant.selection__bank_rec_widget_line__flag__aml
 msgid "aml"
 msgstr "aml"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "and follow-up customers"
+msgstr "en stuur betaalherinneringen"
 
 #. module: account_accountant
 #: model:ir.model.fields.selection,name:account_accountant.selection__bank_rec_widget_line__flag__auto_balance
@@ -2286,19 +1979,6 @@ msgid "early_payment"
 msgstr "vroege_betaling"
 
 #. module: account_accountant
-#: model:ir.model.fields.selection,name:account_accountant.selection__bank_rec_widget_line__flag__exchange_diff
-msgid "exchange_diff"
-msgstr "exchange_diff"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "in"
-msgstr "in"
-
-#. module: account_accountant
 #: model:ir.model.fields.selection,name:account_accountant.selection__bank_rec_widget_line__flag__liquidity
 msgid "liquidity"
 msgstr "liquiditeit"
@@ -2314,8 +1994,22 @@ msgid "new_aml"
 msgstr "nieuwe_aml"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "reconciliation models"
+msgstr "afletterregels"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "remaining)"
+msgstr "resterend)"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "seconds per transaction."
 msgstr "seconden per transactie."
@@ -2331,15 +2025,29 @@ msgid "to check"
 msgstr "te controleren"
 
 #. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
-#, python-format
-msgid "transaction in"
-msgstr "transactie in"
-
-#. module: account_accountant
-#. odoo-javascript
-#: code:addons/account_accountant/static/src/components/bank_reconciliation/rainbowman_content.xml:0
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
 #, python-format
 msgid "transactions in"
 msgstr "transacties in"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "unpaid invoices"
+msgstr "onbetaalde facturen"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "unreconciled entries"
+msgstr "onafgeletterde boekingen"
+
+#. module: account_accountant
+#. openerp-web
+#: code:addons/account_accountant/static/src/xml/account_reconciliation.xml:0
+#, python-format
+msgid "vendor bills"
+msgstr "leveranciersfacturen"

@@ -3,16 +3,20 @@
 # 	* social_push_notifications
 # 
 # Translators:
-# Wil Odoo, 2023
+# Seksan Poltree <seksan.poltree@gmail.com>, 2022
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Martin Trigaux, 2022
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -31,7 +35,7 @@ msgid "All related social media posts"
 msgstr "โพสต์โซเชียลมีเดียที่เกี่ยวข้องทั้งหมด"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Allow"
@@ -53,7 +57,7 @@ msgid "Delay"
 msgstr "ล่าช้า"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Deny"
@@ -89,7 +93,6 @@ msgid "Enable Web Push Notifications"
 msgstr "เปิดใช้งานการแจ้งเตือนแบบพุชของเว็บ"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -104,7 +107,6 @@ msgid "Firebase Admin Key File"
 msgstr "ไฟล์คีย์ผู้ดูแลระบบ Firebase"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "Firebase Admin Key File is missing from the configuration."
@@ -169,6 +171,11 @@ msgid "Key File"
 msgstr "ไฟล์คีย์"
 
 #. module: social_push_notifications
+#: model:ir.model.fields,field_description:social_push_notifications.field_website_visitor_push_subscription____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.social_post_view_form
 msgid "Local Time"
 msgstr "เวลาท้องถิ่น"
@@ -179,7 +186,6 @@ msgid "Media Type"
 msgstr "ประเภทมีเดีย"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_live_post.py:0
 #: code:addons/social_push_notifications/models/social_post_template.py:0
 #, python-format
@@ -194,7 +200,7 @@ msgid "Notification Request Delay (seconds)"
 msgstr "การแจ้งเตือนคำขอล่าช้า (วินาที)"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #: model:ir.model.fields,field_description:social_push_notifications.field_res_config_settings__notification_request_icon
 #: model:ir.model.fields,field_description:social_push_notifications.field_social_account__notification_request_icon
@@ -387,7 +393,6 @@ msgid "Social Post Template"
 msgstr "เทมเพลตโพสต์โซเชียล"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/website_visitor.py:0
 #, python-format
 msgid "Some selected visitors do not allow push notifications."
@@ -418,7 +423,7 @@ msgstr "ไอคอนนี้จะแสดงในการแจ้งเ
 #. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 msgid "Title"
-msgstr "คำนำหน้าชื่อ"
+msgstr "ชื่อเรื่อง"
 
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_utm_campaign
@@ -458,7 +463,6 @@ msgid "Visitors"
 msgstr "ผู้เยี่ยมชม"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -483,20 +487,20 @@ msgid "Website Visitor"
 msgstr "ผู้เยี่ยมชมเว็บไซต์"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "You can't delete a Push Notification account."
 msgstr "คุณไม่สามารถลบบัญชีการแจ้งเตือนแบบพุชได้"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid ""
-"You have to install \"google_auth>=1.18.0\" to be able to send push "
-"notifications."
+"You have to either install \"firebase_admin>=2.17.0\" or "
+"\"google_auth>=1.18.0\" to be able to send push notifications."
 msgstr ""
+"คุณต้องติดตั้ง \"firebase_admin>=2.17.0\" หรือ \"google_auth>=1.18.0\" "
+"เพื่อส่งการแจ้งเตือนแบบพุช"
 
 #. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form

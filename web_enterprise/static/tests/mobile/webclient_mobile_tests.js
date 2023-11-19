@@ -6,22 +6,14 @@ import { ormService } from "@web/core/orm_service";
 import { enterpriseSubscriptionService } from "@web_enterprise/webclient/home_menu/enterprise_subscription_service";
 import { registry } from "@web/core/registry";
 import { createEnterpriseWebClient } from "../helpers";
-import { click, getFixture, mount, patchWithCleanup } from "@web/../tests/helpers/utils";
-import { shareUrlMenuItem } from "@web_enterprise/webclient/share_url/share_url";
-import { browser } from "@web/core/browser/browser";
-import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
-import { menuService } from "@web/webclient/menus/menu_service";
-import { actionService } from "@web/webclient/actions/action_service";
-import { makeTestEnv } from "@web/../tests/helpers/mock_env";
-import { UserMenu } from "@web/webclient/user_menu/user_menu";
+import { click, getFixture } from "@web/../tests/helpers/utils";
 
-let serverData, target;
 const serviceRegistry = registry.category("services");
 
 QUnit.module("WebClient Mobile", (hooks) => {
+    let serverData;
     hooks.beforeEach(() => {
         serverData = getActionManagerServerData();
-        target = getFixture();
         serviceRegistry.add("home_menu", homeMenuService);
         serviceRegistry.add("orm", ormService);
         serviceRegistry.add("enterprise_subscription", enterpriseSubscriptionService);
@@ -41,6 +33,7 @@ QUnit.module("WebClient Mobile", (hooks) => {
         }
 
         // force the html node to be scrollable element
+        const target = getFixture();
         const webClient = await createEnterpriseWebClient({ serverData });
 
         await doAction(webClient, 3); // partners in list/kanban
@@ -57,36 +50,4 @@ QUnit.module("WebClient Mobile", (hooks) => {
 
         assert.strictEqual(target.querySelector(".o_kanban_view").scrollTop, 123);
     });
-
-    QUnit.test(
-        "Share URL item is not present in the user menu when screen is small",
-        async function (assert) {
-            patchWithCleanup(browser, {
-                matchMedia: (media) => {
-                    if (media === "(display-mode: standalone)") {
-                        return { matches: true };
-                    } else {
-                        this._super();
-                    }
-                },
-            });
-            serviceRegistry.add("hotkey", hotkeyService);
-            serviceRegistry.add("action", actionService);
-            serviceRegistry.add("menu", menuService);
-
-            const env = await makeTestEnv();
-
-            registry.category("user_menuitems").add("share_url", shareUrlMenuItem);
-            await mount(UserMenu, target, { env });
-            assert.containsOnce(target, ".o_user_menu");
-            // remove the "d-none" class to make the menu visible before interacting with it
-            target.querySelector(".o_user_menu").classList.remove("d-none");
-            await click(target.querySelector(".o_user_menu button"));
-            assert.containsNone(
-                target,
-                ".o_user_menu .dropdown-item",
-                "share button is not visible"
-            );
-        }
-    );
 });

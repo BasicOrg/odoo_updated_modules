@@ -1,18 +1,19 @@
 /** @odoo-module */
 
-import { registry } from "@web/core/registry";
+import tour from "web_tour.tour";
 
 /**
  * @param {string} tourName
  * @param {string} templateName
  */
 export function registerTemplateTour(tourName, templateName) {
-    registry.category("web_tour.tours").add(
+    tour.register(
         tourName,
         {
             test: true,
             url: "/web",
-            steps: () => [
+        },
+        [
             {
                 trigger: '.o_app[data-menu-xmlid="documents.menu_root"]',
                 content: "Open document app",
@@ -56,8 +57,7 @@ export function registerTemplateTour(tourName, templateName) {
             {
                 trigger: ".o-spreadsheet",
                 content: "Redirected to spreadsheet",
-                isCheck: true,
             },
         ]
-    });
+    );
 }

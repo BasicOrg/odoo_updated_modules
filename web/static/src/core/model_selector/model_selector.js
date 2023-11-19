@@ -5,7 +5,7 @@ import { useService } from "@web/core/utils/hooks";
 import { fuzzyLookup } from "@web/core/utils/search";
 import { _t } from "@web/core/l10n/translation";
 
-import { Component, onWillStart } from "@odoo/owl";
+const { Component, onWillStart } = owl;
 
 export class ModelSelector extends Component {
     setup() {
@@ -31,7 +31,7 @@ export class ModelSelector extends Component {
     }
 
     get placeholder() {
-        return _t("Type a model here...");
+        return _t("Search a Model...");
     }
 
     get sources() {
@@ -53,17 +53,9 @@ export class ModelSelector extends Component {
 
     filterModels(name) {
         if (!name) {
-            const visibleModels = this.models.slice(0, 8);
-            if (this.models.length - visibleModels.length > 0) {
-                visibleModels.push({
-                    label: _t("Start typing..."),
-                    unselectable: true,
-                    classList: "o_m2o_start_typing",
-                });
-            }
-            return visibleModels;
+            return this.models.slice(0, 8);
         }
-        return fuzzyLookup(name, this.models, (model) => model.technical + model.label);
+        return fuzzyLookup(name, this.models, (model) => model.technical + model.label).slice(0, 8);
     }
 
     loadOptionsSource(request) {
@@ -93,7 +85,6 @@ ModelSelector.template = "web.ModelSelector";
 ModelSelector.components = { AutoComplete };
 ModelSelector.props = {
     onModelSelected: Function,
-    id: { type: String, optional: true },
     value: { type: String, optional: true },
     // list of models technical name, if not set
     // we will fetch all models we have access to

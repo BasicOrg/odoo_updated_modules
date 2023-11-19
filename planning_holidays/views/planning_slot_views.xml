@@ -6,10 +6,10 @@
         <field name="inherit_id" ref="planning.planning_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@role='alert']" position="attributes">
-                <attribute name="invisible">overlap_slot_count == 0 and not request_to_switch and (not leave_warning or not employee_id)</attribute>
+                <attribute name="attrs">{'invisible': [('overlap_slot_count', '=', 0), '|', ('leave_warning', '=', False), ('employee_id', '=', False)]}</attribute>
             </xpath>
             <xpath expr="//button[@name='action_see_overlaping_slots']" position="before">
-                <p class="align-middle mb-0" invisible="not leave_warning or not employee_id">
+                <p class="align-middle mb-0" attrs="{'invisible': ['|', ('leave_warning', '=', False), ('employee_id', '=', False)]}">
                     <field name="leave_warning" nolabel="1"/>
                 </p>
             </xpath>
@@ -45,11 +45,14 @@
     <record id="planning_slot_view_search_inherit_planning_holidays" model="ir.ui.view">
         <field name="name">planning.slot.search.inherit.planning_holidays</field>
         <field name="model">planning.slot</field>
-        <field name="inherit_id" ref="planning.planning_view_search_base"/>
+        <field name="inherit_id" ref="planning.planning_view_search"/>
         <field name="priority">25</field>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='conflict_shifts']" position="after">
                 <filter name="is_absent" string="Employees on Time Off" domain="[('is_absent', '=', True)]" groups="planning.group_planning_manager"/>
+            </xpath>
+            <xpath expr="//filter[@name='publication_warning']" position="attributes">
+                <attribute name="domain">[('publication_warning', '=', True), ('overlap_slot_count', '=', 0), ('is_absent', '=', False)]</attribute>
             </xpath>
         </field>
     </record>

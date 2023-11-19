@@ -3,16 +3,16 @@
 # 	* sale_ebay
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,26 +20,24 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 " If you want to set quantity to 0, the Out Of Stock option should be enabled"
 " and the listing duration should set to Good 'Til Canceled"
 msgstr ""
-"Nếu bạn muốn đặt số lượng là 0, tùy chọn Hết hàng phải được bật và khoảng "
-"thời gian đăng sản phẩm phải đặt là Good 'Til Canceled"
+"Nếu bạn muốn đặt số lượng là 0, tùy chọn Hết hàng phải được bật và thời gian"
+" niêm yết phải đặt là Good 'Til Canceled"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 " You need to have at least 2 variations selected for a multi-variations listing.\n"
 " Or if you try to delete a variation, you cannot do it by unselecting it. Setting the quantity to 0 is the safest method to make a variation unavailable."
 msgstr ""
-" Bạn cần có ít nhất 2 biến thể được lựa chọn cho bản đăng sản phẩm đa biến thể.\n"
-" Hoặc nếu bạn muốn xóa một biến thể, bạn không thể thực hiện bằng cách bỏ chọn. Đặt số lượng thành 0 là phương thức an toàn nhất để không ẩn mất một biến thể. "
+" Bạn cần có ít nhất 2 biến thể được lựa chọn cho mục niêm yết đa biến thể.\n"
+" Hoặc nếu bạn muốn xóa một biến thể, bạn không thể làm thế bằng cách bỏ chọn. Đặt số lượng là 0 là phương thức an toàn nhất để không đăng một biến thể. "
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_duration__days_10
@@ -68,6 +66,40 @@ msgstr "7 ngày"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Sales Team</span>"
+msgstr "<span class=\"o_form_label\">Sales Team</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Storage</span>"
+msgstr "<span class=\"o_form_label\">Kho</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Synchronization</span>"
+msgstr "<span class=\"o_form_label\">Đồng bộ hóa</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Account</span>"
+msgstr "<span class=\"o_form_label\">Tài khoản eBay</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">eBay Marketplace Account Deletion/Closure "
+"Notifications</span>"
+msgstr ""
+"<span class=\"o_form_label\">Thông báo đóng/xóa tài khoản sàn giao dịch "
+"eBay</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Options</span>"
+msgstr "<span class=\"o_form_label\">Tùy chọn eBay</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Activate Other Currencies"
 msgstr "Kích hoạt các đơn vị tiền tệ khác"
 
@@ -77,7 +109,6 @@ msgid "Add other countries"
 msgstr "Thêm các quốc gia khác"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -100,7 +131,7 @@ msgstr "Đấu giá"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_buy_it_now_price
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_buy_it_now_price
 msgid "Buy It Now Price"
-msgstr "Giá mua ngay"
+msgstr "Giá Buy It Now"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
@@ -132,7 +163,7 @@ msgstr "ID danh mục chính"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__category_type
 msgid "Category Type"
-msgstr "Loại danh mục"
+msgstr "Kiểu Danh mục"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition__code
@@ -142,19 +173,18 @@ msgstr "Mã"
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Configure The eBay Integrator Now"
-msgstr "Cấu hình trình tích hợp eBay ngay"
+msgstr "Định cấu hình trình tích hợp eBay ngay"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_res_partner
 msgid "Contact"
-msgstr "Liên hệ"
+msgstr "Danh bạ"
 
 #. module: sale_ebay
 #: model:ir.actions.act_window,name:sale_ebay.action_country_all_form
@@ -164,7 +194,7 @@ msgstr "Quốc gia"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Countries & Currencies"
-msgstr "Quốc gia & tiền tệ"
+msgstr "Quốc gia & Tiền tệ"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_res_country
@@ -215,7 +245,7 @@ msgstr "Mẫu mô tả"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_dev_id
 msgid "Developer Key"
-msgstr "Mã khoá của nhà phát triển"
+msgstr "Developer Key"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__display_name
@@ -227,24 +257,27 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "Documentation"
+msgstr "Tài liệu"
+
+#. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_listing_duration
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_listing_duration
 msgid "Duration"
-msgstr "Thời hạn"
+msgstr "Thời lượng"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
 "Ebay Synchronisation could not confirm because of the following error:\n"
 "%s"
 msgstr ""
-"Không thể xác nhận Đồng bộ eBay vì lỗi sau:\n"
+"Đồng bộ hóa eBay không thể xác nhận vì lỗi sau:\n"
 "%s"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -256,6 +289,8 @@ msgstr ""
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_orders_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_orders_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_orders_sync
 msgid "Ebay: get new orders"
 msgstr "eBay: nhận đơn hàng mới"
 
@@ -266,21 +301,24 @@ msgstr "eBay: phục hồi đơn hàng"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_stock_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_stock_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_stock_sync
 msgid "Ebay: synchronise stock"
-msgstr "eBay: đồng bộ tồn kho"
+msgstr "eBay: đồng bộ kho hàng"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_categories_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_categories
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_categories
 msgid "Ebay: update categories"
 msgstr "eBay: cập nhật danh mục"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
 msgid "End Item's Listing"
-msgstr "Kết thúc đăng mặt hàng"
+msgstr "Kết thúc niêm yết mặt hàng"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -288,16 +326,17 @@ msgid ""
 " No Variant Set To Be Listed On eBay."
 msgstr ""
 "Đã gặp lỗi.\n"
-" Không có biến thể nào được đăng trên eBay. "
+" Không có biến thể nào được liệt kê trên eBay. "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 "Error Encountered.\n"
-"%r"
+"'%s'"
 msgstr ""
+"Đã gặp lỗi.\n"
+"'%s'"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -322,7 +361,7 @@ msgstr "Gallery Plus"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Generate Token"
-msgstr "Tạo token"
+msgstr "Tạo mã token"
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_duration__gtc
@@ -350,15 +389,14 @@ msgid "Import eBay config data and sync transactions"
 msgstr "Nhập dữ liệu cấu hình eBay và đồng bộ các giao dịch. "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 "Impossible to revise a listing into a multi-variations listing.\n"
 " Create a new listing."
 msgstr ""
-"Không thể điều chỉnh một bản đăng sản phẩm thành bản đăng sản phẩm có nhiều biến thể. \n"
-" Tạo một bản đăng sản phẩm mới. "
+"Không thể điều chỉnh một mục niêm yết thành mục có nhiều biến thể. \n"
+" Tạo một mục niêm yết mới. "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_item_condition_id
@@ -367,13 +405,22 @@ msgid "Item Condition"
 msgstr "Tình trạng mặt hàng"
 
 #. module: sale_ebay
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_category____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_site____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
+
+#. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__write_uid
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition__write_uid
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing__write_uid
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy__write_uid
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_site__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__write_date
@@ -393,48 +440,48 @@ msgstr "Cập nhật lần cuối"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__leaf_category
 msgid "Leaf Category"
-msgstr "Danh mục dạng lá"
+msgstr "Danh mục lá"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
 msgid "Link Existing Listing"
-msgstr "Liên kết bản đăng sản phẩm hiện có"
+msgstr "Kết nối với mục niêm yết đã có"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
 msgid "Link With Existing eBay Listing"
-msgstr "Liên kết với bản đăng sản phẩm eBay hiện có"
+msgstr "Kết nối với mục niêm yết eBay đã có"
 
 #. module: sale_ebay
 #: model:ir.actions.act_window,name:sale_ebay.action_ebay_link_listing
 msgid "Link with Existing eBay Listing"
-msgstr "Liên kết với bản đăng sản phẩm eBay hiện có"
+msgstr "Kết nối với mục niêm yết eBay đã có"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
 msgid "Link with eBay Listing"
-msgstr "Liên kết với bản đăng sản phẩm eBay "
+msgstr "Kết nối với mục niêm yết eBay "
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
 msgid "List Item on eBay"
-msgstr "Đăng mặt hàng trên eBay"
+msgstr "Niêm yết mặt hàng trên eBay"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_listing_type
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_listing_type
 msgid "Listing Type"
-msgstr "Loại bản đăng sản phẩm"
+msgstr "Kiểu niêm yết"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_location
 msgid "Location"
-msgstr "Vị trí"
+msgstr "Địa điểm"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_account_deletion_endpoint
 msgid "Marketplace account deletion notification endpoint"
-msgstr "Điểm cuối thông báo xóa tài khoản marketplace"
+msgstr "Điểm cuối thông báo xóa tài khoản sàn giao dịch"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -455,7 +502,6 @@ msgid "Name"
 msgstr "Tên"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid "No Business Policies"
@@ -467,18 +513,16 @@ msgid "Official eBay Category"
 msgstr "Danh mục eBay chính thức"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "One parameter is missing."
 msgstr "Một tham chiếu bị thiếu. "
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Or the condition is not compatible with the category."
-msgstr "Hoặc tình trạng không tương thích với danh mục."
+msgstr "Hoặc tình trạng không tương thích với danh mục. "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_out_of_stock
@@ -492,14 +536,14 @@ msgid "Payment Policy"
 msgstr "Chính sách thanh toán"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "Please provide your ebay production keys before enabling the account "
 "deletion notifications."
 msgstr ""
-"Vui lòng cung cấp khóa sản phẩm eBay trước khi bật thông báo xóa tài khoản. "
+"Vui lòng cung cấp mã khóa sản phẩm ebay trước khi bật thông báo xóa tài "
+"khoản. "
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -515,7 +559,7 @@ msgstr "ID chính sách"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_private_listing
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_private_listing
 msgid "Private Listing"
-msgstr "Bản đăng sản phẩm riêng tư"
+msgstr "Niêm yết riêng tư"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_product_template
@@ -525,7 +569,7 @@ msgstr "Sản phẩm"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Product Categories"
-msgstr "Danh mục sản phẩm"
+msgstr "Nhóm sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_product_product
@@ -533,7 +577,6 @@ msgid "Product Variant"
 msgstr "Biến thể sản phẩm"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "Product created from eBay transaction %s"
@@ -547,17 +590,17 @@ msgstr "Sản xuất"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_prod_app_id
 msgid "Production App Key"
-msgstr "Khóa ứng dụng sản xuất"
+msgstr "Khóa ứng dụng Production"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_prod_cert_id
 msgid "Production Cert Key"
-msgstr "Khóa chứng nhận sản xuất"
+msgstr "Khóa chứng nhận Production"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_prod_token
 msgid "Production Token"
-msgstr "Token sản xuất"
+msgstr "Mã token Production"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_use
@@ -579,7 +622,7 @@ msgstr "Số lượng đã bán"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
 msgid "Relist Item"
-msgstr "Đăng lại mặt hàng"
+msgstr "Niêm yết lại "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_seller_return_policy_id
@@ -600,7 +643,7 @@ msgstr "Đơn bán hàng"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Sales Team"
-msgstr "Đội ngũ kinh doanh"
+msgstr "Đội ngũ bán hàng"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -610,7 +653,7 @@ msgstr "Đội kinh doanh quản lý bán hàng eBay"
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__res_config_settings__ebay_domain__sand
 msgid "Sandbox"
-msgstr "Sandbox"
+msgstr "Dùng thử"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sandbox_app_id
@@ -625,7 +668,7 @@ msgstr "Khóa chứng nhận Sandbox"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sandbox_token
 msgid "Sandbox Token"
-msgstr "Token Sanbox"
+msgstr "Mã token Sanbox"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -636,7 +679,7 @@ msgstr "Bán trên eBay"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_seller_shipping_policy_id
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_seller_shipping_policy_id
 msgid "Shipping Policy"
-msgstr "Chính sách vận chuyển"
+msgstr "Chính sách giao hàng"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_start_date
@@ -652,13 +695,8 @@ msgstr "Giá đấu giá khởi điểm"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Storage"
-msgstr "Lưu kho"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Storage location of your products"
-msgstr "Vị trí lưu kho của sản phẩm"
+msgstr "Vị trí kho hàng của sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_store_category_id
@@ -681,7 +719,7 @@ msgstr "Phụ đề"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy__short_summary
 msgid "Summary"
-msgstr "Tóm tắt"
+msgstr "Tổng kết"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -689,34 +727,26 @@ msgid "Sync now"
 msgstr "Đồng bộ ngay"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Synchronization"
-msgstr "Đồng bộ"
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Chose The Following Delivery Method :\n"
 msgstr "Người mua chọn phương thức giao hàng sau :\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Posted :\n"
 msgstr "Người mua đã đăng :\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "The python 'cryptography' module is not installed on your server.\n"
 "It is necessary to support eBay account deletion notifications, please contact your system administrator to install it."
 msgstr ""
-"Phân hệ 'cryptography' python chưa được cài đặt trên máy chủ của bạn.\n"
-"Đây là phân hệ cần thiết để hỗ trợ thông báo xóa tài khoản eBay, vui lòng liên hệ quản trị viên hệ thống để cài đặt. "
+"Mô-đun 'cryptography' python chưa được cài đặt trên máy chủ của bạn.\n"
+"Đây là mô-đun cần thiết để hỗ trợ thông báo xóa tài khoản eBay, vui lòng liên hệ quản trị hệ thống để cài đặt. "
 
 #. module: sale_ebay
 #: model:ir.model.fields,help:sale_ebay.field_product_product__ebay_subtitle
@@ -724,7 +754,7 @@ msgstr ""
 msgid ""
 "The subtitle is restricted to 55 characters. Fees can be claimed by eBay for"
 " this feature"
-msgstr "Phụ đề có giới hạn 55 ký tự. eBay có thể tính phí cho tính năng này"
+msgstr "Tiêu đề phụ giới hạn 55 ký tự. eBay có thể tính phí cho tính năng này"
 
 #. module: sale_ebay
 #: model:ir.model.fields,help:sale_ebay.field_product_product__ebay_title
@@ -739,11 +769,10 @@ msgid ""
 "The use of a secondary category is not allowed on every eBay sites. Fees can"
 " be claimed by eBay for this feature"
 msgstr ""
-"Không được phép sử dụng danh mục thứ hai trên mọi trang eBay. eBay có thể "
-"tính phí cho tính năng này"
+"Việc sử dụng danh mục thứ hai không được phép trên mọi trang eBay. eBay có "
+"thể tính phí cho tính năng này"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -752,25 +781,11 @@ msgid ""
 " the date of the oldest order you wish to synchronize in the format \"YYYY-"
 "MM-DD\"."
 msgstr ""
-"Không có ngày đồng bộ hóa cuối cùng trong Tham số hệ thống. Tạo tập dữ liệu "
-"Tham số hệ thống với khóa \"ebay_last_sync\" và giá trị đặt cho ngày của đơn"
-" hàng cũ nhất bạn muốn đồng bộ hóa ở định dạng \"YYYY-MM-DD\"."
+"Không có ngày đồng bộ hóa cuối cùng trong Tham số hệ thống. Tạo hồ sơ tham "
+"số hệ thống với khóa \"ebay_last_sync\" và giá trị đặt cho ngày của đơn hàng"
+" cũ nhất bạn muốn đồng bộ hóa ở định dạng \"YYYY-MM-DD\"."
 
 #. module: sale_ebay
-#. odoo-python
-#: code:addons/sale_ebay/models/product.py:0
-#, python-format
-msgid ""
-"This function should not be called with a range of more than 30 days, as "
-"eBay does not handle longer timespans. Instead use synchronize_orders which "
-"split in as many calls as needed."
-msgstr ""
-"Không nên gọi tính năng này với phạm vi hơn 30 ngày, vì eBay không xử lý các"
-" khoảng thời gian dài hơn. Thay vào đó, hãy sử dụng sync_orders để chia "
-"thành nhiều lần gọi nếu cần."
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_partner.py:0
 #, python-format
 msgid ""
@@ -778,9 +793,9 @@ msgid ""
 "\n"
 "However, personal information might remain in linked documents, please review them according to laws that apply."
 msgstr ""
-"Đây là thông báo tự động vì đã nhận được yêu cầu xóa tài khoản \"%s (%s)\" từ eBay. Tài khoản đã được ẩn danh và quyền truy cập cổng thông tin đã bị thu hồi (nếu có).\n"
+"Đây là thông báo tự động vì đã nhận được yêu cầu xóa từ eBay liên quan tới tài khoản \"%s (%s)\". Tài khoản đã được ẩn danh và quyền truy cập cổng thông tin đã bị thu hồi (nếu có).\n"
 "\n"
-"Tuy nhiên, thông tin cá nhân có thể còn lưu lại trên tài liệu được liên kết, vui lòng xem lại theo luật áp dụng. "
+"Tuy nhiên, thông tin cá nhân có thể còn lưu lại trên tài liệu được liên kết, vui lòng xem xét theo luật áp dụng. "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_title
@@ -802,7 +817,7 @@ msgstr "Loại"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_sync_stock
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_sync_stock
 msgid "Use Stock Quantity"
-msgstr "Sử dụng số lượng hàng tồn kho"
+msgstr "Sử dụng số lượng kho hàng"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_use
@@ -823,7 +838,7 @@ msgstr "Biến thể"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_verification_token
 msgid "Verification Token"
-msgstr "Token xác thực"
+msgstr "Mã token xác nhận"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_zip_code
@@ -835,11 +850,6 @@ msgstr "Mã bưu chính"
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "eBay"
 msgstr "eBay"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Account"
-msgstr "Tài khoản eBay"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_category
@@ -879,27 +889,17 @@ msgstr "Tình trạng mặt hàng eBay"
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_link_listing
 msgid "eBay Link Listing"
-msgstr "Đường dẫn bản đăng sản phẩm eBay"
+msgstr "Niêm yết link eBay"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing__ebay_id
 msgid "eBay Listing ID"
-msgstr "ID bản đăng sản phẩm eBay"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Marketplace Account Deletion/Closure Notifications"
-msgstr "Thông báo đóng/xóa tài khoản marketplace eBay"
+msgstr "ID niêm yết eBay"
 
 #. module: sale_ebay
 #: model:mail.activity.type,summary:sale_ebay.ebay_GDPR_notification
 msgid "eBay Odoo connector notification - account deletion"
 msgstr "Thông báo kết nối Odoo eBay - xóa tài khoản"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Options"
-msgstr "Tuỳ chọn eBay"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_policy
@@ -931,7 +931,7 @@ msgstr "URL biến thể eBay"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_site
 msgid "eBay Website"
-msgstr "Trang web eBay"
+msgstr "Website eBay"
 
 #. module: sale_ebay
 #: model:mail.activity.type,name:sale_ebay.ebay_GDPR_notification
@@ -939,7 +939,11 @@ msgid "eBay connector: account deletion notification"
 msgstr "Kết nối eBay: thông báo xóa tài khoản"
 
 #. module: sale_ebay
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "eBay documentation"
+msgstr "Tài liệu hướng dẫn eBay"
+
+#. module: sale_ebay
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid ""
@@ -950,7 +954,6 @@ msgstr ""
 "'%s'"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "eBay is unreachable. Please try again later."
@@ -964,8 +967,11 @@ msgstr "Tham số eBay"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid ""
-"eBay requires supporting customer account deletion/closure notifications."
-msgstr "eBay yêu cầu hỗ trợ thông báo đóng/xóa tài khoản khách hàng."
+"eBay requires supporting customer account deletion/closure notifications.\n"
+"                                Please follow the"
+msgstr ""
+"eBay yêu cầu hỗ trợ thông báo đóng/xóa tài khoản khách hàng.\n"
+"                                Vui lòng theo"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_url
@@ -976,17 +982,17 @@ msgstr "URL eBay"
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_end_items_listings
 msgid "eBay: End product listings"
-msgstr "eBay: Kết thúc đăng sản phẩm"
+msgstr "eBay: Kết thúc niêm yết sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_list_items
 msgid "eBay: List products"
-msgstr "eBay: Đăng sản phẩm"
+msgstr "eBay: Niêm yết sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_relist_items
 msgid "eBay: Relist products"
-msgstr "eBay: Đăng lại sản phẩm"
+msgstr "eBay: Niêm yết lại sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_revise_items
@@ -996,12 +1002,12 @@ msgstr "eBay: Sửa đổi sản phẩm"
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_unlink_items_listings
 msgid "eBay: Unlink product listings"
-msgstr "eBay: Huỷ liên kết bản đăng sản phẩm"
+msgstr "eBay: Bỏ liên kết niêm yết sản phẩm"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.action_ebay_update_carrier
 msgid "eBay: Update carrier information"
-msgstr "eBay: Cập nhật thông tin đơn vị vận chuyển"
+msgstr "eBay: Cập nhật thông tin nhà vận chuyển"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_currency
@@ -1011,4 +1017,9 @@ msgstr "Tiền tệ eBay"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sales_team
 msgid "ebay Sales Team"
-msgstr "Đội ngũ kinh doanh eBay"
+msgstr "Đội kinh doanh eBay"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "to setup this mechanism."
+msgstr "để thiết lập cơ chế này. "

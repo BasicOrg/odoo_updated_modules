@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <div t-name="website_helpdesk.knowledge_base_autocomplete" class="dropdown-menu show w-100">
-        <a t-foreach="results" t-as="result" t-key="result_index" class="dropdown-item p-2 text-wrap" t-attf-href="{{result.url}}">
+        <a t-foreach="results" t-as="result" class="dropdown-item p-2 text-wrap" t-attf-href="{{result.url}}">
             <i t-attf-class="fa fa-fw {{result.icon}}" /> <t t-esc="result.name" />
         </a>
         <span t-if="!results.length" class="dropdown-item-text">

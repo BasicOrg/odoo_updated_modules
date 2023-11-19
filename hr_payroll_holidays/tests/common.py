@@ -11,7 +11,7 @@ class TestPayrollHolidaysBase(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.context = {'tz': 'Europe/Brussels'}
+
         cls.dep_rd = cls.env['hr.department'].create({
             'name': 'Research & Development - Test',
         })

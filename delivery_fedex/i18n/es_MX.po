@@ -1,24 +1,23 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* delivery_fedex
-#
+# 
 # Translators:
 # Martin Trigaux, 2022
 # Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2022
-# Fernanda Alvarez, 2023
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
 "PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Fernanda Alvarez, 2023\n"
-"Language-Team: Spanish (Mexico) (https://app.transifex.com/odoo/teams/41243/es_MX/)\n"
-"Language: es_MX\n"
+"Last-Translator: Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2022\n"
+"Language-Team: Spanish (Mexico) (https://www.transifex.com/odoo/teams/41243/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: es_MX\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: delivery_fedex
@@ -28,22 +27,12 @@ msgstr ", de clic en \"obtener clave de producción\" y siga los pasos."
 
 #. module: delivery_fedex
 #: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
-msgid "<br/>According to your needs, you will need to contact different certifications:"
-msgstr ""
-
-#. module: delivery_fedex
-#: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
 msgid ""
-"<span attrs=\"{'invisible': [('fedex_weight_unit', '!=', 'KG')]}\">CM</span>\n"
-"                                <span attrs=\"{'invisible': [('fedex_weight_unit', '!=', 'LB')]}\">IN</span>"
+"<br/>According to your needs, you will need to contact different "
+"certifications :"
 msgstr ""
-"<span attrs=\"{'invisible': [('fedex_weight_unit', '!=', 'KG')]}\">CM</span>\n"
-"                                <span attrs=\"{'invisible': [('fedex_weight_unit', '!=', 'LB')]}\">IN \"</span>"
-
-#. module: delivery_fedex
-#: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
-msgid "<span class=\"o_form_label\">Package Length Unit</span>"
-msgstr "<span class=\"o_form_label\">Unidad de longitud del paquete</span>"
+"<br/>Dependiendo sus necesidades deberá contactar distintas certificaciones "
+":"
 
 #. module: delivery_fedex
 #: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
@@ -101,7 +90,6 @@ msgid "EPL2"
 msgstr "EPL2"
 
 #. module: delivery_fedex
-#. odoo-python
 #: code:addons/delivery_fedex/models/delivery_fedex.py:0
 #, python-format
 msgid ""
@@ -114,22 +102,22 @@ msgstr ""
 #. module: delivery_fedex
 #: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
 msgid "Extra Data"
-msgstr "Datos adicionales"
+msgstr ""
 
 #. module: delivery_fedex
 #: model:ir.model.fields,field_description:delivery_fedex.field_delivery_carrier__fedex_extra_data_rate_request
 msgid "Extra data for rate"
-msgstr "Datos adicionales para tarifa"
+msgstr ""
 
 #. module: delivery_fedex
 #: model:ir.model.fields,field_description:delivery_fedex.field_delivery_carrier__fedex_extra_data_return_request
 msgid "Extra data for return"
-msgstr "Datos adicionales para devolución"
+msgstr ""
 
 #. module: delivery_fedex
 #: model:ir.model.fields,field_description:delivery_fedex.field_delivery_carrier__fedex_extra_data_ship_request
 msgid "Extra data for ship"
-msgstr "Datos adicionales para envío"
+msgstr ""
 
 #. module: delivery_fedex
 #: model:ir.model.fields,field_description:delivery_fedex.field_delivery_carrier__fedex_label_file_type
@@ -229,13 +217,6 @@ msgid "Fedex Configuration"
 msgstr "Configuración FedEx"
 
 #. module: delivery_fedex
-#. odoo-python
-#: code:addons/delivery_fedex/models/delivery_fedex.py:0
-#, python-format
-msgid "Fedex Documents"
-msgstr ""
-
-#. module: delivery_fedex
 #: model:ir.model.fields,field_description:delivery_fedex.field_delivery_carrier__fedex_droppoff_type
 msgid "Fedex Drop-Off Type"
 msgstr "Tipo de recolección FedEx"
@@ -247,6 +228,7 @@ msgstr "Pago de impuestos FedEx"
 
 #. module: delivery_fedex
 #: model:delivery.carrier,name:delivery_fedex.delivery_carrier_fedex_inter
+#: model:product.product,name:delivery_fedex.product_product_delivery_fedex_inter
 #: model:product.template,name:delivery_fedex.product_product_delivery_fedex_inter_product_template
 msgid "Fedex International"
 msgstr "FedEx internacional"
@@ -268,6 +250,7 @@ msgstr "Tutorial FedEx"
 
 #. module: delivery_fedex
 #: model:delivery.carrier,name:delivery_fedex.delivery_carrier_fedex_us
+#: model:product.product,name:delivery_fedex.product_product_delivery_fedex_us
 #: model:product.template,name:delivery_fedex.product_product_delivery_fedex_us_product_template
 msgid "Fedex US"
 msgstr "FedEx EE. UU."
@@ -298,11 +281,10 @@ msgid "INTERNATIONAL_PRIORITY"
 msgstr "INTERNATIONAL_PRIORITY"
 
 #. module: delivery_fedex
-#. odoo-python
 #: code:addons/delivery_fedex/models/delivery_fedex.py:0
 #, python-format
 msgid "Invalid syntax for FedEx extra data."
-msgstr "Sintaxis inválida para los datos extra de FedEx."
+msgstr ""
 
 #. module: delivery_fedex
 #: model:ir.model.fields.selection,name:delivery_fedex.selection__delivery_carrier__fedex_weight_unit__kg
@@ -433,13 +415,6 @@ msgid "Recipient"
 msgstr "Destinatario"
 
 #. module: delivery_fedex
-#. odoo-python
-#: code:addons/delivery_fedex/models/delivery_fedex.py:0
-#, python-format
-msgid "Return Label"
-msgstr ""
-
-#. module: delivery_fedex
 #: model:ir.model.fields.selection,name:delivery_fedex.selection__delivery_carrier__fedex_service_type__standard_overnight
 msgid "STANDARD_OVERNIGHT"
 msgstr "STANDARD_OVERNIGHT"
@@ -513,18 +488,20 @@ msgid "Sender"
 msgstr "Remitente"
 
 #. module: delivery_fedex
-#. odoo-python
 #: code:addons/delivery_fedex/models/delivery_fedex.py:0
 #, python-format
 msgid "Shipment #%s has been cancelled"
 msgstr "El envío #%s ha sido cancelado"
 
 #. module: delivery_fedex
-#. odoo-python
 #: code:addons/delivery_fedex/models/delivery_fedex.py:0
 #, python-format
-msgid "Shipment created into Fedex<br/><b>Tracking Numbers:</b> %s<br/><b>Packages:</b> %s"
-msgstr "Envío creado en Fedex <br/><b>Número de seguimiento:</b> %s<br/><b>Paquetes:</b>%s"
+msgid ""
+"Shipment created into Fedex<br/><b>Tracking Numbers:</b> "
+"%s<br/><b>Packages:</b> %s"
+msgstr ""
+"Envío creado en Fedex <br/><b>Número de seguimiento:</b> "
+"%s<br/><b>Paquetes:</b>%s"
 
 #. module: delivery_fedex
 #: model:ir.model,name:delivery_fedex.model_delivery_carrier
@@ -579,15 +556,6 @@ msgid ""
 "With the above example, the AdditionalInformation of each piece will be updated.\n"
 "More info on https://www.fedex.com/en-us/developer/web-services/process.html#documentation"
 msgstr ""
-"Los datos extra en FedEx se organizan como el contenido de un archivo json.\n"
-"Esta función es avanzada/técnica y solo la debería usar si sabe lo que está haciendo.\n"
-"\n"
-"Ejemplo de un valor válido: ```\n"
-"\"ShipmentDetails\": {\"Pieces\": {\"Piece\": {\"AdditionalInformation\": \"extra info\"}}}\n"
-"```\n"
-"\n"
-"Con el ejemplo de arriba, la información adicional de cada pieza se actualizará.\n"
-"Más información en https://www.fedex.com/en-us/developer/web-services/process.html#documentation"
 
 #. module: delivery_fedex
 #: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
@@ -596,11 +564,22 @@ msgstr "El último paso es "
 
 #. module: delivery_fedex
 #: model_terms:ir.ui.view,arch_db:delivery_fedex.view_delivery_carrier_form_with_provider_fedex
-msgid "These certifications usually require that you contact the FedEx support team by email."
-msgstr "Este tipo de certificaciones requieren que contacte al servicio de soporte de FedEx por correo electrónico."
+msgid ""
+"These certifications usually require that you contact the FedEx support team"
+" by email."
+msgstr ""
+"Este tipo de certificaciones requieren que contacte al servicio de soporte "
+"de FedEx por correo electrónico."
 
 #. module: delivery_fedex
-#. odoo-python
+#: model:product.product,uom_name:delivery_fedex.product_product_delivery_fedex_inter
+#: model:product.product,uom_name:delivery_fedex.product_product_delivery_fedex_us
+#: model:product.template,uom_name:delivery_fedex.product_product_delivery_fedex_inter_product_template
+#: model:product.template,uom_name:delivery_fedex.product_product_delivery_fedex_us_product_template
+msgid "Units"
+msgstr "Unidades"
+
+#. module: delivery_fedex
 #: code:addons/delivery_fedex/models/delivery_fedex.py:0
 #, python-format
 msgid ""

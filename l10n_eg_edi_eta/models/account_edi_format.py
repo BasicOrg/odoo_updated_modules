@@ -7,8 +7,6 @@ import logging
 import requests
 from werkzeug.urls import url_quote
 from base64 import b64encode
-from odoo.addons.account.tools import LegacyHTTPAdapter
-from json.decoder import JSONDecodeError
 
 from odoo import api, models, _
 from odoo.tools.float_utils import json_float_round
@@ -19,8 +17,6 @@ _logger = logging.getLogger(__name__)
 ETA_DOMAINS = {
     'preproduction': 'https://api.preprod.invoicing.eta.gov.eg',
     'production': 'https://api.invoicing.eta.gov.eg',
-    'invoice.preproduction': 'https://preprod.invoicing.eta.gov.eg/',
-    'invoice.production': 'https://invoicing.eta.gov.eg',
     'token.preproduction': 'https://id.preprod.eta.gov.eg',
     'token.production': 'https://id.eta.gov.eg',
 }
@@ -28,10 +24,6 @@ ETA_DOMAINS = {
 
 class AccountEdiFormat(models.Model):
     _inherit = 'account.edi.format'
-
-    @api.model
-    def _l10n_eg_get_eta_qr_domain(self, production_enviroment=False):
-        return production_enviroment and ETA_DOMAINS['invoice.production'] or ETA_DOMAINS['invoice.preproduction']
 
     @api.model
     def _l10n_eg_get_eta_api_domain(self, production_enviroment=False):
@@ -46,27 +38,23 @@ class AccountEdiFormat(models.Model):
         api_domain = is_access_token_req and self._l10n_eg_get_eta_token_domain(production_enviroment) or self._l10n_eg_get_eta_api_domain(production_enviroment)
         request_url = api_domain + request_url
         try:
-            session = requests.session()
-            session.mount("https://", LegacyHTTPAdapter())
-            request_response = session.request(method, request_url, data=request_data.get('body'), headers=request_data.get('header'), timeout=(5, 10))
+            request_response = requests.request(method, request_url, data=request_data.get('body'), headers=request_data.get('header'), timeout=(5, 10))
         except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError) as ex:
             return {
                 'error': str(ex),
                 'blocking_level': 'warning'
             }
         if not request_response.ok:
-            try:
-                response_data = request_response.json()
-            except JSONDecodeError as ex:
+            response_data = request_response.json()
+            if isinstance(response_data, dict) and response_data.get('error'):
                 return {
-                    'error': str(ex),
+                    'error': response_data.get('error', _('Unknown error')),
                     'blocking_level': 'error'
                 }
-            if response_data and response_data.get('error'):
-                return {
-                    'error': response_data.get('error'),
-                    'blocking_level': 'error'
-                }
+            return {
+                'error': request_response.reason,
+                'blocking_level': 'error'
+            }
         return {'response': request_response}
 
     @api.model
@@ -233,10 +221,6 @@ class AccountEdiFormat(models.Model):
             'extraDiscountAmount': 0.0,
             'totalItemsDiscountAmount': 0.0,
         })
-        if invoice.ref:
-            eta_invoice['purchaseOrderReference'] = invoice.ref
-        if invoice.invoice_origin:
-            eta_invoice['salesOrderReference'] = invoice.invoice_origin
         return eta_invoice
 
     @api.model
@@ -275,7 +259,7 @@ class AccountEdiFormat(models.Model):
                         'taxType': tax['tax_repartition_line'].tax_id.l10n_eg_eta_code.split('_')[0].upper().upper(),
                         'amount': self._l10n_eg_edi_round(abs(tax['tax_amount'])),
                         'subType': tax['tax_repartition_line'].tax_id.l10n_eg_eta_code.split('_')[1].upper(),
-                        **({'rate': abs(tax['tax_repartition_line'].tax_id.amount)} if tax['tax_repartition_line'].tax_id.amount_type != 'fixed' else {}),
+                        'rate': abs(tax['tax_repartition_line'].tax_id.amount),
                     }
                 for tax_details in line_tax_details.get('tax_details', {}).values() for tax in tax_details.get('group_tax_details')
                 ],

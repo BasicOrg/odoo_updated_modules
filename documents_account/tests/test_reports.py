@@ -5,7 +5,7 @@ from odoo.tests import tagged
 
 from odoo.addons.account_reports.tests.common import TestAccountReportsCommon
 
-@tagged('post_install', '-at_install')
+@tagged('post_install')
 class TestReports(TestAccountReportsCommon):
     @classmethod
     def setUpClass(cls, chart_template_ref=None):

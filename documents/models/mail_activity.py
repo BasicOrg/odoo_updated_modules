@@ -17,7 +17,7 @@ class MailActivity(models.Model):
             if 'summary' not in vals:
                 vals['summary'] = self.summary or _('Upload file request')
             new_doc_request = self.env['documents.document'].create({
-                'owner_id': existing_document.owner_id.id,
+                'owner_id': next_activity_type.default_user_id.id,
                 'folder_id': next_activity_type.folder_id.id if next_activity_type.folder_id else existing_document.folder_id.id,
                 'tag_ids': [(6, 0, next_activity_type.tag_ids.ids)],
                 'name': vals['summary'],
@@ -36,7 +36,7 @@ class MailActivity(models.Model):
                 if to_remove:
                     to_remove.unlink()
                 if not feedback:
-                    feedback = _("Document Request: %s Uploaded by: %s", documents[0].name, self.env.user.name)
+                    feedback = _("Document Request: %s Uploaded by: %s") % (documents[0].name, self.env.user.name)
                 documents.write({
                     'attachment_id': attachment_ids[0],
                     'request_activity_id': False

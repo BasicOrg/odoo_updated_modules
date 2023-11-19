@@ -8,11 +8,11 @@
                     t-attf-src="data:image/png;base64, #{icon}" />
                 <img t-elif="icon_url" t-attf-class="o_social_push_notification_preview_image"
                     t-att-src="icon_url" />
-                <div t-else="" class="p-1 rounded" style="background-color: #FFF">
+                <div t-else="" class="p-1 rounded-circle" style="background-color: #FFF">
                     <img src="/mail/static/src/img/odoobot_transparent.png" />
                 </div>
                 <div class="o_social_push_notification_preview_content_body ps-4">
-                    <strong class="o_social_push_notification_preview_content_title text-white" t-esc="title"/>
+                    <strong class="o_social_push_notification_preview_content_title" t-esc="title"/>
                     <div class="o_social_push_notification_preview_content_message text-white-75" t-esc="message" />
                     <div class="o_social_push_notification_preview_content_info text-white-75 small pt-3">
                         Google Chrome &#183; <t t-esc="host_name" />

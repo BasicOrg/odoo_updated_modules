@@ -37,6 +37,7 @@ class AuthorizeAPI:
         self.state = provider.state
         self.name = provider.authorize_login
         self.transaction_key = provider.authorize_transaction_key
+        self.payment_method_type = provider.authorize_payment_method_type
 
     def _make_request(self, operation, data=None):
         request = {
@@ -79,12 +80,10 @@ class AuthorizeAPI:
                 'x_response_reason_text': response.get('err_msg')
             }
         else:
-            tx_response = response.get('transactionResponse', {})
             return {
-                'x_response_code': tx_response.get('responseCode'),
-                'x_trans_id': tx_response.get('transId'),
+                'x_response_code': response.get('transactionResponse', {}).get('responseCode'),
+                'x_trans_id': response.get('transactionResponse', {}).get('transId'),
                 'x_type': operation,
-                'payment_method_code': tx_response.get('accountType'),
             }
 
     # Customer profiles
@@ -138,7 +137,7 @@ class AuthorizeAPI:
         })
 
         payment = response.get('paymentProfile', {}).get('payment', {})
-        if 'creditCard' in payment:
+        if self.payment_method_type == 'credit_card':
             # Authorize.net pads the card and account numbers with X's.
             res['payment_details'] = payment.get('creditCard', {}).get('cardNumber')[-4:]
         else:
@@ -162,14 +161,11 @@ class AuthorizeAPI:
         # but is not allowed for transactions with a payment.token.
         bill_to = {}
         if 'profile' not in tx_data:
-            if tx.partner_id.is_company:
-                split_name = '', tx.partner_name
-            else:
-                split_name = payment_utils.split_partner_name(tx.partner_name)
+            split_name = payment_utils.split_partner_name(tx.partner_name)
             # max lengths are defined by the Authorize API
             bill_to = {
                 'billTo': {
-                    'firstName': split_name[0][:50],
+                    'firstName': '' if tx.partner_id.is_company else split_name[0][:50],
                     'lastName': split_name[1][:50],  # lastName is always required
                     'company': tx.partner_name[:50] if tx.partner_id.is_company else '',
                     'address': tx.partner_address,

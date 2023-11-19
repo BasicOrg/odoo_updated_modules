@@ -1,6 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import contextlib
-import functools
 import logging
 from lxml import etree
 import os
@@ -11,8 +10,10 @@ import werkzeug
 import werkzeug.routing
 import werkzeug.utils
 
+from functools import partial
+
 import odoo
-from odoo import api, models, tools
+from odoo import api, models
 from odoo import SUPERUSER_ID
 from odoo.exceptions import AccessError
 from odoo.http import request
@@ -37,7 +38,7 @@ def sitemap_qs2dom(qs, route, field='name'):
         if len(needles) == 1:
             dom = [(field, 'ilike', needles[0])]
         else:
-            dom = list(FALSE_DOMAIN)
+            dom = FALSE_DOMAIN
     return dom
 
 
@@ -61,10 +62,15 @@ def get_request_website():
 class Http(models.AbstractModel):
     _inherit = 'ir.http'
 
-    def routing_map(self, key=None):
-        if not key and request:
-            key = request.website_routing
-        return super().routing_map(key=key)
+    @classmethod
+    def routing_map(cls, key=None):
+        key = key or (request and request.website_routing)
+        return super(Http, cls).routing_map(key=key)
+
+    @classmethod
+    def clear_caches(cls):
+        super()._clear_routing_map()
+        return super().clear_caches()
 
     @classmethod
     def _slug_matching(cls, adapter, endpoint, **kw):
@@ -74,23 +80,14 @@ class Http(models.AbstractModel):
         qs = request.httprequest.query_string.decode('utf-8')
         return adapter.build(endpoint, kw) + (qs and '?%s' % qs or '')
 
-    @tools.ormcache('website_id', cache='routing')
-    def _rewrite_len(self, website_id):
-        rewrites = self._get_rewrites(website_id)
-        return len(rewrites)
-
-    def _get_rewrites(self, website_id):
-        domain = [('redirect_type', 'in', ('308', '404')), '|', ('website_id', '=', False), ('website_id', '=', website_id)]
-        return  {x.url_from: x for x in self.env['website.rewrite'].sudo().search(domain)}
-
-    def _generate_routing_rules(self, modules, converters):
-        if not request:
-            yield from super()._generate_routing_rules(modules, converters)
-            return
+    @classmethod
+    def _generate_routing_rules(cls, modules, converters):
         website_id = request.website_routing
         logger.debug("_generate_routing_rules for website: %s", website_id)
-        rewrites = self._get_rewrites(website_id)
-        self._rewrite_len.cache.add_value(self, website_id, cache_value=len(rewrites))
+        domain = [('redirect_type', 'in', ('308', '404')), '|', ('website_id', '=', False), ('website_id', '=', website_id)]
+
+        rewrites = dict([(x.url_from, x) for x in request.env['website.rewrite'].sudo().search(domain)])
+        cls._rewrite_len[website_id] = len(rewrites)
 
         for url, endpoint in super()._generate_routing_rules(modules, converters):
             if url in rewrites:
@@ -102,12 +99,9 @@ class Http(models.AbstractModel):
 
                     if url != url_to:
                         logger.debug('Redirect from %s to %s for website %s' % (url, url_to, website_id))
-                        # duplicate the endpoint to only register the redirect_to for this specific url
-                        redirect_endpoint = functools.partial(endpoint)
-                        functools.update_wrapper(redirect_endpoint, endpoint)
-                        _slug_matching = functools.partial(self._slug_matching, endpoint=endpoint)
-                        redirect_endpoint.routing = dict(endpoint.routing, redirect_to=_slug_matching)
-                        yield url, redirect_endpoint  # yield original redirected to new url
+                        _slug_matching = partial(cls._slug_matching, endpoint=endpoint)
+                        endpoint.routing['redirect_to'] = _slug_matching
+                        yield url, endpoint  # yield original redirected to new url
                 elif rewrite.redirect_type == '404':
                     logger.debug('Return 404 for %s for website %s' % (url, website_id))
                     continue
@@ -123,14 +117,6 @@ class Http(models.AbstractModel):
             super()._get_converters(),
             model=ModelConverter,
         )
-
-    @classmethod
-    def _get_public_users(cls):
-        public_users = super()._get_public_users()
-        website = request.env(user=SUPERUSER_ID)['website'].get_current_website()  # sudo
-        if website:
-            public_users.append(website._get_cached('user_id'))
-        return public_users
 
     @classmethod
     def _auth_method_public(cls):
@@ -203,7 +189,8 @@ class Http(models.AbstractModel):
 
         if not request.context.get('tz'):
             with contextlib.suppress(pytz.UnknownTimeZoneError):
-                request.update_context(tz=pytz.timezone(request.geoip.location.time_zone).zone)
+                tz = request.geoip.get('time_zone', '')
+                request.update_context(tz=pytz.timezone(tz).zone)
 
         website = request.env['website'].get_current_website()
         user = request.env.user
@@ -266,22 +253,13 @@ class Http(models.AbstractModel):
     @classmethod
     def _serve_page(cls):
         req_page = request.httprequest.path
+        page_domain = [('url', '=', req_page)] + request.website.website_domain()
 
-        def _search_page(comparator='='):
-            page_domain = [('url', comparator, req_page)] + request.website.website_domain()
-            return request.env['website.page'].sudo().search(page_domain, order='website_id asc', limit=1)
-
+        published_domain = page_domain
         # specific page first
-        page = _search_page()
+        page = request.env['website.page'].sudo().search(published_domain, order='website_id asc', limit=1)
 
-        # case insensitive search
-        if not page:
-            page = _search_page('=ilike')
-            if page:
-                logger.info("Page %r not found, redirecting to existing page %r", req_page, page.url)
-                return request.redirect(page.url)
-
-        # redirect without trailing /
+        # redirect withtout trailing /
         if not page and req_page != "/" and req_page.endswith("/"):
             # mimick `_postprocess_args()` redirect
             path = request.httprequest.path[:-1]
@@ -388,13 +366,12 @@ class Http(models.AbstractModel):
     @api.model
     def get_frontend_session_info(self):
         session_info = super(Http, self).get_frontend_session_info()
-        geoip_country_code = request.geoip.country_code
+        geoip_country_code = request.geoip.get('country_code')
         geoip_phone_code = request.env['res.country']._phone_code_for(geoip_country_code) if geoip_country_code else None
         session_info.update({
             'is_website_user': request.env.user.id == request.website.user_id.id,
             'geoip_country_code': geoip_country_code,
             'geoip_phone_code': geoip_phone_code,
-            'lang_url_code': request.lang._get_cached('url_code'),
         })
         if request.env.user.has_group('website.group_website_restricted_editor'):
             session_info.update({
@@ -412,13 +389,6 @@ class Http(models.AbstractModel):
                 # Cookies bar is disabled on this website
                 return True
             accepted_cookie_types = json_scriptsafe.loads(request.httprequest.cookies.get('website_cookies_bar', '{}'))
-
-            # pre-16.0 compatibility, `website_cookies_bar` was `"true"`.
-            # In that case we delete that cookie and let the user choose again.
-            if not isinstance(accepted_cookie_types, dict):
-                request.future_response.set_cookie('website_cookies_bar', max_age=0)
-                return False
-
             if 'optional' in accepted_cookie_types:
                 return accepted_cookie_types['optional']
             return False

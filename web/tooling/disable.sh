@@ -2,19 +2,15 @@
 community=$(cd -- "$(dirname "$0")" &> /dev/null && cd ../../.. && pwd)
 
 disableInDir () {
-    cd "$1" || exit
+    cd "$1"
     git config --unset core.hooksPath
     rm .eslintignore
+    rm .prettierignore
     rm .eslintrc.json
-    rm jsconfig.json
+    rm .prettierrc.json
     rm package.json
     rm package-lock.json
     rm -r node_modules
-
-    # to support old versions
-    rm -f .prettierignore
-    rm -r .prettierrc.json
-
     cd - &> /dev/null
 }
 
@@ -23,7 +19,7 @@ if [[ $willingToDeleteToolingInEnterprise != "n" ]]
 then
     read -p "What is the relative path from community to enterprise ? (../enterprise)" pathToEnterprise
     pathToEnterprise=${pathToEnterprise:-../enterprise}
-    pathToEnterprise=$(realpath "$community/$pathToEnterprise")
+    pathToEnterprise=$(realpath $community/$pathToEnterprise)
 fi
 
 disableInDir "$community"

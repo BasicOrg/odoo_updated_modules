@@ -1,98 +1,71 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* hr_appraisal
-#
+# 
 # Translators:
-# Jaroslav Helemik Nemec <nemec@helemik.cz>, 2022
-# Ladislav Tomm <tomm@helemik.cz>, 2022
-# Jan Horzinka <jan.horzinka@centrum.cz>, 2022
-# Martin Trigaux, 2022
-# Michal Veselý <michal@veselyberanek.net>, 2022
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
-# karolína schusterová <karolina.schusterova@vdp.sk>, 2022
-# Jiří Podhorecký, 2022
-# Aleš Fiala <f.ales1@seznam.cz>, 2023
-#
+# Jaroslav Helemik Nemec <nemec@helemik.cz>, 2019
+# Jakub Lohnisky <jakub@lepremier.cz>, 2019
+# Ladislav Tomm <tomm@helemik.cz>, 2019
+# Jan Horzinka <jan.horzinka@centrum.cz>, 2019
+# Martin Trigaux, 2019
+# Michal Veselý <michal@veselyberanek.net>, 2019
+# trendspotter <j.podhorecky@volny.cz>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Aleš Fiala <f.ales1@seznam.cz>, 2023\n"
-"Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
-"Language: cs\n"
+"POT-Creation-Date: 2019-09-09 11:58+0000\n"
+"PO-Revision-Date: 2019-08-26 09:36+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>, 2019\n"
+"Language-Team: Czech (https://www.transifex.com/odoo/teams/41243/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model:mail.template,report_name:hr_appraisal.mail_template_appraisal_request
+#: model:mail.template,report_name:hr_appraisal.mail_template_appraisal_request_from_employee
+msgid "${(object.name or '').replace('/','_')}"
+msgstr "${(object.name or '').replace('/','_')}"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
 #, python-format
-msgid "%(user)s decided, as %(role)s, to publish the employee's feedback"
+msgid "${(object.name)} appraisal reminder"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
 #, python-format
-msgid "%s Goals"
-msgstr "%s Cíle"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "1 Meeting"
+msgid "${(object.name)}'s appraisal reminder"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_goal__progression__100
-msgid "100%"
-msgstr "100%"
+#: model:mail.template,subject:hr_appraisal.mail_template_appraisal_request_from_employee
+msgid "${object.name} requests an Appraisal"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_goal__progression__025
-msgid "25%"
-msgstr "25%"
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#, python-format
+msgid "%s appraisal"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__module_hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "360 Feedback"
-msgstr "Zpětná vazba 360"
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
+#, python-format
+msgid "%s: %s months %s"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_goal__progression__050
-msgid "50%"
-msgstr "50%"
-
-#. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_goal__progression__075
-msgid "75%"
-msgstr "75%"
-
-#. module: hr_appraisal
-#: model:mail.template,body_html:hr_appraisal.mail_template_appraisal_confirm
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#, python-format
 msgid ""
-"<div style=\"margin: 0px; padding: 0px;\">\n"
-"                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                        An appraisal of <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t> has been confirmed.\n"
-"                        <br><br>\n"
-"                        Please schedule an appraisal date together.\n"
-"                        <br><br>\n"
-"                        <t t-if=\"ctx.get('recipient_users')\">\n"
-"                            <p style=\"margin: 16px 0px 16px 0px; text-align: center;\">\n"
-"                                <a t-att-href=\"ctx.get('url')\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
-"                                    View Appraisal\n"
-"                                </a>\n"
-"                            </p>\n"
-"                        </t>\n"
-"                    </p>\n"
-"                </div>\n"
-"            "
+"<a href=\"#\" data-oe-model=\"%s\" data-oe-id=\"%s\">Meeting</a> for <a "
+"href=\"#\" data-oe-model=\"%s\" data-oe-id=\"%s\">%s's</a> appraisal"
 msgstr ""
 
 #. module: hr_appraisal
@@ -100,21 +73,17 @@ msgstr ""
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                        Dear <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t>,\n"
-"                        <br>\n"
-"                        <t t-out=\"ctx.get('author_name', '')\">Addison Olson</t> (<t t-out=\"ctx.get('author_mail', '')\">addison.olson28@example.com</t>) wishes an appraisal.\n"
-"                        <t t-if=\"ctx.get('user_body')\">\n"
-"                            <div style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; background-color: #F1F1F1;\">\n"
-"                                <t t-out=\"ctx.get('user_body')\">Annual appraisal.</t>\n"
-"                            </div>\n"
-"                        </t>\n"
-"                        <t t-if=\"ctx.get('recipient_users')\">\n"
-"                            <p style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; text-align: center;\">\n"
-"                                <a t-att-t-att-href=\"ctx.get('url')\" style=\" margin: auto; background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
-"                                    View Appraisal\n"
-"                                </a>\n"
-"                            </p>\n"
-"                        </t>\n"
+"                        Dear ${ctx['partner_to_name']},\n"
+"                        <br/><br/>\n"
+"                        I wish to request an appraisal.<br/>\n"
+"                        Here is the link of my appraisal:\n"
+"                        <p style=\"margin: 16px 0px 16px 0px;\">\n"
+"                            <a href=\"${ctx['url']}\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
+"                                View Appraisal\n"
+"                            </a>\n"
+"                        </p>\n"
+"                        <br/><br/>\n"
+"                        <tr><td style=\"padding:15px 20px 10px 20px;\">${(object.employee_id.user_id.signature or '')| safe}</td></tr>\n"
 "                    </p>\n"
 "                </div>\n"
 "            "
@@ -125,305 +94,97 @@ msgstr ""
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"                        Dear <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t>,\n"
-"                        <br>\n"
-"                        An appraisal has been requested by <t t-out=\"ctx.get('author_name', '')\">Addison Olson</t>\n"
-"                        <br>\n"
-"                        (<t t-out=\"ctx.get('author_mail', '')\">addison.olson28@example.com</t>).\n"
-"                        <t t-if=\"ctx.get('user_body')\">\n"
-"                            <div style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; background-color: #F1F1F1;\">\n"
-"                                <t t-out=\"ctx.get('user_body')\">Annual appraisal.</t>\n"
-"                            </div>\n"
-"                        </t>\n"
-"                        <t t-if=\"ctx.get('recipient_users')\">\n"
-"                            <p style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; text-align: center;\">\n"
-"                                <a t-att-t-att-href=\"ctx.get('url')\" style=\" margin: auto; background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
-"                                    View Appraisal\n"
-"                                </a>\n"
-"                            </p>\n"
-"                        </t>\n"
-"                        <br>\n"
+"                        Dear ${ctx['partner_to_name']},\n"
+"                        <br/><br/>\n"
+"                        I would like to start an Appraisal for you.\n"
+"                        <p style=\"margin: 16px 0px 16px 0px;\">\n"
+"                            <a href=\"${ctx['url']}\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
+"                                View Appraisal\n"
+"                            </a>\n"
+"                        </p>\n"
+"                        <br/><br/>\n"
+"                        <tr><td style=\"padding:15px 20px 10px 20px;\">${(object.signature or '')| safe}</td></tr>\n"
 "                    </p>\n"
 "                </div>\n"
 "            "
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid ""
-"<em>\n"
-"                Describe something that made you proud, a piece of work positive for\n"
-"                the company.\n"
-"            </em>"
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" role=\"img\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "<span class=\"fa fa-lg\" title=\"Values set here are company-specific.\"/>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid ""
-"<em>\n"
-"                Did you face new difficulties? Did you confront yourself to new\n"
-"                obstacles?\n"
-"            </em>"
+"<span class=\"o_form_label\">Default Appraisal Invitations </span>\n"
+"                                    <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid ""
-"<em>\n"
-"                Every job has strong points, what are, in your opinion, the tasks that\n"
-"                you enjoy the most/the least?\n"
-"            </em>"
+"<span class=\"o_form_label\">Default Appraisal Participants </span>\n"
+"                                <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid ""
-"<em>\n"
-"                From a manager point of view, how could you help the employee to\n"
-"                overcome their weaknesses?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>\n"
-"                How can the company help you with your need and objectives in order\n"
-"                for you to reach your goals and look for the best collaboration.\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<em>\n"
-"                How do you see the employee in the future, do your vision follow the\n"
-"                employee's desire?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<em>\n"
-"                Some achievements comforting you in their strengths to face job's\n"
-"                issues.\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Autonomy</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Culture/Behavior:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-1\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Do you need rapid answer to the current situation?</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "<em>Give an example of long-term objective (&gt; 6 months)</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "<em>Give an example of short-term objective (&lt; 6 months)</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Internal Communication:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-2\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Job's content:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-3\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Pro-activity</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Remuneration:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-5\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Stress Resistance</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Teamwork</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Time Management</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Work organization:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-4\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_employee_base.py:0
-#, python-format
-msgid ""
-"<p class=\"o_view_nocontent_smiling_face\">\n"
-"                            Schedule an appraisal\n"
-"                        </p><p>\n"
-"                            Plan appraisals with your colleagues, collect and discuss feedback.\n"
-"                        </p>"
+"<span class=\"o_form_label\">Reminders</span>\n"
+"                                <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+msgid ""
+"<span class=\"o_stat_text\">\n"
+"                        <span attrs=\"{'invisible': [('appraisal_date', '=', False)]}\">Next</span> Appraisal\n"
+"                    </span>"
+msgstr ""
+
+#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_users_view_form
 msgid ""
 "<span class=\"o_stat_text\">\n"
-"                            Last Appraisal\n"
-"                        </span>"
-msgstr ""
-"<span class=\"o_stat_text\">\n"
-"                            Poslední hodnocení\n"
-"                        </span>"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "<span class=\"o_stat_text\">Appraisals</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "<span class=\"o_stat_text\">Goals</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-info\">Ready</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-secondary\">Canceled</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_kanban
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-success\">Done</span>"
+"                        Next Appraisal\n"
+"                    </span>"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 msgid ""
-"<span class=\"text-end\" attrs=\"{'invisible': ['|', ('manager_feedback_published', '=', True), ('can_see_manager_publish', '=', False)]}\">Not Visible to Employee</span>\n"
-"                                                <span class=\"text-end\" attrs=\"{'invisible': ['|', ('manager_feedback_published', '=', False), ('can_see_manager_publish', '=', False)]}\">Visible to Employee</span>"
+"<span class=\"o_stat_value\" attrs=\"{'invisible': [('meeting_id', '=', False)]}\">1 Meeting</span>\n"
+"                            <span class=\"o_stat_value\" attrs=\"{'invisible': [('meeting_id', '!=', False)]}\">No Meeting</span>"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid ""
-"<span class=\"text-end\" attrs=\"{'invisible': [('employee_feedback_published', '=', True)]}\">Not Visible to Manager</span>\n"
-"                                                <span class=\"text-end\" attrs=\"{'invisible': [('employee_feedback_published', '=', False)]}\">Visible to Manager</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Evaluation\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Feedback\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Improvements\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My feelings\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My future\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My work\n"
-"            </span>"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_reminder_form
+msgid "<span> months</span>"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<strong><span>Meeting: </span></strong>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_report_view_gantt
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_view_gantt
-msgid "<strong>Date — </strong>"
-msgstr ""
+msgid "<strong><span>Final Interview: </span></strong>"
+msgstr "<strong><span>Závěrečný pohovor: </span></strong>"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_needaction
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_needaction
 msgid "Action Needed"
 msgstr "Vyžaduje akci"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__action_plan
+msgid "Action Plan"
+msgstr "Akční plán"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__active
@@ -432,27 +193,24 @@ msgstr "Aktivní"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_ids
 msgid "Activities"
 msgstr "Aktivity"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_exception_decoration
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Dekorace výjimky aktivity"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_state
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_state
 msgid "Activity State"
 msgstr "Stav aktivity"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_type_icon
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "Ikona typu aktivity"
+#: model:ir.actions.act_window,name:hr_appraisal.mail_activity_type_action_config_hr_appraisal
+#: model:ir.ui.menu,name:hr_appraisal.hr_appraisal_menu_config_activity_type
+msgid "Activity Types"
+msgstr "Typy aktivit"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.request_appraisal_view_form
@@ -465,93 +223,112 @@ msgid "Administrator"
 msgstr "Administrátor"
 
 #. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__event
+msgid "After event"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "An appraisal can be requested by the employee or manager"
+msgstr ""
+
+#. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action
+#: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree
 #: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree2
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__appraisal_id
+#: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_root
+#: model:ir.ui.menu,name:hr_appraisal.menu_open_view_hr_appraisal_tree
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_view_activity
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_users_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_tree
 msgid "Appraisal"
-msgstr "Hodnocení"
+msgstr "Posouzení"
 
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.action_appraisal_report_all
-#: model:ir.ui.menu,name:hr_appraisal.menu_appraisal_analysis_report
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_report_view_form
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_report_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_graph
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_pivot
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
 msgid "Appraisal Analysis"
-msgstr "Analýza hodnocení"
+msgstr "Analýza posouzení"
 
 #. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_appraisal_note
-msgid "Appraisal Assessment Note"
-msgstr "Poznámka k posouzení"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_confirm_mail_template
-msgid "Appraisal Confirm Mail Template"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_by_collaborators
+msgid "Appraisal By Collaborators"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_appraisal_count
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_count
-msgid "Appraisal Count"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_by_colleagues
+msgid "Appraisal By Colleagues"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_by_manager
+msgid "Appraisal By Manager"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_collaborators_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_collaborators_ids
+msgid "Appraisal Collaborators"
+msgstr "Posouzení od spolupracovníků"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_colleagues_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_colleagues_ids
+msgid "Appraisal Colleagues"
+msgstr "Posouzení od kolegů"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_date
+msgid "Appraisal Date"
 msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__date_close
-msgid "Appraisal Date"
-msgstr "Datum hodnocení"
+msgid "Appraisal Deadline"
+msgstr "Termín posouzení"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__employee_id
 msgid "Appraisal Employee"
-msgstr "Hodnocení zaměstnanců"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_employee_feedback_template
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_employee_feedback_template
-msgid "Appraisal Employee Feedback Template"
-msgstr "Šablona hodnocení zaměstnanců"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
+#: model:mail.activity.type,name:hr_appraisal.mail_act_appraisal_form
 msgid "Appraisal Form to Fill"
 msgstr "Formulář hodnocení k vyplnění"
 
 #. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_appraisal_goal
-msgid "Appraisal Goal"
-msgstr "Cíl hodnocení"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_manager_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_manager_ids
+msgid "Appraisal Manager"
+msgstr "Posouzení manažera"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_manager_feedback_template
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_manager_feedback_template
-msgid "Appraisal Manager Feedback Template"
-msgstr "Šablona zpětné vazby správce hodnocení"
-
-#. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Appraisal Officer"
+msgid "Appraisal Meeting For %s"
+msgstr "Hodnotící schůzka pro %s"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_reminder
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_reminder_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_reminder_tree
+msgid "Appraisal Reminder"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__appraisal_plan_posted
-msgid "Appraisal Plan Posted"
+#: model:ir.actions.act_window,name:hr_appraisal.appraisal_reminderlist_action
+#: model:ir.ui.menu,name:hr_appraisal.menu_appraisal_reminder
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "Appraisal Reminders"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/wizard/request_appraisal.py:0
 #, python-format
 msgid "Appraisal Request"
 msgstr ""
@@ -559,37 +336,37 @@ msgstr ""
 #. module: hr_appraisal
 #: model:mail.template,subject:hr_appraisal.mail_template_appraisal_request
 msgid "Appraisal Requested"
-msgstr "Požadováno hodnocení"
+msgstr ""
 
 #. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__pending
 #: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__pending
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
+#, python-format
 msgid "Appraisal Sent"
-msgstr "Hodnocení odesláno"
+msgstr "Posouzení odesláno"
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_hr_appraisal_report
 msgid "Appraisal Statistics"
-msgstr "Statistika hodnocení"
+msgstr "Statistika posouzení"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_department_view_form
-msgid "Appraisal Templates"
-msgstr ""
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_appraisal
+msgid "Appraisal by Manager"
+msgstr "Hodnocení podle nadřízeného"
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Appraisal of %s"
-msgstr ""
+msgid "Appraisal form(s) have been sent"
+msgstr "Posudkové formulář(e) byly zaslány"
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Appraisal to Confirm and Send"
-msgstr "Posouzení k potvrzení a odeslání"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "Appraisal plan for new employees"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action_from_department
@@ -597,58 +374,47 @@ msgid "Appraisal to start"
 msgstr "Hodnocení začátku"
 
 #. module: hr_appraisal
-#: model:ir.actions.server,name:hr_appraisal.ir_cron_scheduler_appraisal_ir_actions_server
-msgid "Appraisal: Run employee appraisal"
-msgstr "Hodnocení: spusťte hodnocení zaměstnanců"
-
-#. module: hr_appraisal
-#: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree
-#: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_root
-#: model:ir.ui.menu,name:hr_appraisal.menu_open_view_hr_appraisal_tree
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_department_view_kanban
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_departure_wizard_view_form
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Appraisals"
-msgstr "Hodnocení"
+msgid "Appraisal(s)"
+msgstr "Hodnocení(í)"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Appraisals Plans"
+#: model:ir.actions.server,name:hr_appraisal.ir_cron_scheduler_appraisal_ir_actions_server
+#: model:ir.cron,cron_name:hr_appraisal.ir_cron_scheduler_appraisal
+#: model:ir.cron,name:hr_appraisal.ir_cron_scheduler_appraisal
+msgid "Appraisal: Run employee appraisal"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_count
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_department_view_kanban
+msgid "Appraisals"
+msgstr "Posouzení"
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_users_view_form
+msgid "Appraisals Set Up"
 msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_department__appraisals_to_process_count
 msgid "Appraisals to Process"
-msgstr "Hodnocení k procesu"
+msgstr "Posouzení k procesu"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 msgid "Archived"
 msgstr "Archivováno"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Ask to fill a survey to other employees"
-msgstr "Požádejte o vyplnění dotazníku dalším zaměstnancům"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "Assessment"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__assessment_note_ids
-msgid "Assessment Note"
-msgstr "Poznámka k posouzení"
-
-#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_attachment_count
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_attachment_count
 msgid "Attachment Count"
 msgstr "Počet příloh"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__attachment_ids
+msgid "Attachments"
+msgstr "Přílohy"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__author_id
@@ -656,55 +422,34 @@ msgid "Author"
 msgstr "Autor"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_plan
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_plan
-msgid "Automatically Generate Appraisals"
-msgstr "Automaticky generovat hodnocení"
+#: model:ir.model.fields,help:hr_appraisal.field_request_appraisal__author_id
+msgid "Author of the message."
+msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Automatically generate appraisals"
-msgstr "Automaticky generovat hodnocení"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__avatar_1920
-msgid "Avatar"
-msgstr "Avatar"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__avatar_128
-msgid "Avatar 128"
-msgstr "Avatar 128"
-
-#. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_employee_base
-msgid "Basic Employee"
-msgstr "Základní zaměstnanec"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__body_has_template_value
-msgid "Body content is the same as tmeplate"
+msgid "Automatic appraisal after the maximum number of months"
 msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "Automatically send appraisal reminders by email"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__is_autorized_to_send
+msgid "Autorized Employee to Start Appraisal"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__body_html
+msgid "Body"
+msgstr "Tělo"
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_calendar_event
 msgid "Calendar Event"
-msgstr "Událost kalendáře"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__can_edit_body
-msgid "Can Edit Body"
-msgstr "Může upravovat tělo"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__can_see_employee_publish
-msgid "Can See Employee Publish"
-msgstr "Může vidět publikování zaměstnanců"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__can_see_manager_publish
-msgid "Can See Manager Publish"
-msgstr "Může vidět publikování správce"
+msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.request_appraisal_view_form
@@ -713,25 +458,70 @@ msgid "Cancel"
 msgstr "Zrušit"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_departure_wizard__cancel_appraisal
-msgid "Cancel Future Appraisals"
-msgstr "Zrušte budoucí hodnocení"
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__cancel
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__cancel
+#, python-format
+msgid "Cancelled"
+msgstr "Zrušeno"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_departure_wizard__cancel_appraisal
-msgid "Cancel all appraisal after contract end date."
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__collaborators_appraisal
+msgid "Collaborator Appraisal"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__cancel
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__cancel
-msgid "Cancelled"
-msgstr "Zrušeno"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_collaborators_body_html
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_collaborators_body_html
+msgid "Collaborator Mail Content"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__collaborators_body_html
+msgid "Collaborator's Appraisal Invite Body Email"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__collaborators_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_by_collaborators
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_collaborators
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_collaborators
+msgid "Collaborators"
+msgstr "Spolupracovníci"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_colleagues_body_html
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_colleagues_body_html
+msgid "Colleague Mail Content"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__colleagues_body_html
+msgid "Colleague's Appraisal Invite Body Email"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__colleagues_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_by_colleagues
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_colleagues
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_colleagues
+msgid "Colleagues"
+msgstr "Kolegové"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__colleagues_appraisal
+msgid "Colleagues Appraisal"
+msgstr "Hodnocení kolegů"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__color
 msgid "Color"
 msgstr "Barva"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__color
+msgid "Color Index"
+msgstr "Barevný index"
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_res_company
@@ -740,7 +530,7 @@ msgstr "Společnosti"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__company_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__company_id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__company_id
 msgid "Company"
 msgstr "Firma"
 
@@ -760,19 +550,9 @@ msgid "Configuration"
 msgstr "Konfigurace"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Configure General Feedback Template"
-msgstr "Konfigurace šablony obecné zpětné vazby"
-
-#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Confirm"
-msgstr "Potvrdit"
-
-#. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__pending
-msgid "Confirmed"
-msgstr "Potvrzeno"
+msgid "Confirm Appraisal and Send Forms"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__body
@@ -785,40 +565,20 @@ msgid "Create Date"
 msgstr "Vytvořit datum"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__duration_first_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__duration_first_appraisal
-msgid "Create a first Appraisal after"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__duration_next_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__duration_next_appraisal
-msgid "Create a second Appraisal after"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__duration_after_recruitment
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__duration_after_recruitment
-msgid "Create an Appraisal after recruitment"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.actions.act_window,help:hr_appraisal.action_hr_appraisal_goal
-msgid "Create new goals"
-msgstr ""
+#: model_terms:ir.actions.act_window,help:hr_appraisal.open_view_hr_appraisal_tree
+msgid "Create a new appraisal"
+msgstr "Vytvořit nové hodnocení"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__create_uid
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__create_uid
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__create_uid
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__create_uid
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__create_uid
 msgid "Created by"
 msgstr "Vytvořeno od"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__create_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__create_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__create_date
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__create_date
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__create_date
 msgid "Created on"
 msgstr "Vytvořeno"
@@ -829,46 +589,33 @@ msgid "Creation Date"
 msgstr "Datum vytvoření"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_department__custom_appraisal_templates
-msgid "Custom Appraisal Templates"
-msgstr ""
-
-#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
 msgid "Date"
 msgstr "Datum"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__date_close
-msgid "Date of the appraisal, automatically updated when the appraisal is Done or Cancelled."
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__deadline
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__deadline
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_search
 msgid "Deadline"
 msgstr "Uzávěrka"
 
 #. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_view_activity
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.mail_template_appraisal_reminder
 msgid "Deadline:"
 msgstr "Uzávěrka:"
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal_goal.py:0
-#, python-format
-msgid "Deadline: %s"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "Default messages for appraisal invitation"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
 msgid "Delete"
 msgstr "Smazat"
 
 #. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_department
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__department_id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__department_id
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
@@ -876,101 +623,106 @@ msgid "Department"
 msgstr "Oddělení"
 
 #. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_departure_wizard
-msgid "Departure Wizard"
-msgstr "Průvodce odjezdem"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__description
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
-msgid "Description"
-msgstr "Popis"
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__deadline
+msgid "Desired Deadline"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__display_name
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__display_name
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__display_name
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__display_name
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__display_name
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__display_name
 msgid "Display Name"
 msgstr "Zobrazované jméno"
 
 #. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__done
 #: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__done
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+#, python-format
 msgid "Done"
 msgstr "Hotovo"
 
 #. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "Dropdown menu"
+msgstr "Rozbalovací nabídka"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__last_duration_reminder_send
+msgid "Duration after last appraisal when we send last reminder mail"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "Edit"
+msgstr "Upravit"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,help:hr_appraisal.field_request_appraisal__email_from
+msgid "Email address of the sender"
+msgstr ""
+
+#. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_hr_employee
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__employee_id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__employee_id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_self
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_employee
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_employee
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_department_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
 msgid "Employee"
 msgstr "Zaměstnanec"
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_appraisal
 msgid "Employee Appraisal"
-msgstr "Hodnocení zaměstnance"
+msgstr "Posouzení zaměstnance"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_autocomplete_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__employee_autocomplete_ids
-msgid "Employee Autocomplete"
+#: model:ir.model,name:hr_appraisal.model_hr_appraisal_reminder
+msgid "Employee Appraisal Reminder Setting"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_feedback
-msgid "Employee Feedback"
-msgstr "Zpětná vazba zaměstnanců"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__appraisal_self
+msgid "Employee Himself"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_feedback_published
-msgid "Employee Feedback Published"
-msgstr "Zpětná vazba zaměstnanců zveřejněna"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_employee_body_html
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_employee_body_html
+msgid "Employee Mail Content"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_feedback_template
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_department__employee_feedback_template
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Employee Feedback Template"
-msgstr "Šablona zpětné vazby zaměstnanců"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.mail_template_appraisal_reminder
+msgid "Employee name:"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__name
-msgid "Employee Name"
-msgstr "jméno zaměstnance"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.mail_template_appraisal_reminder
+msgid "Employee profile creation:"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_user_id
-msgid "Employee User"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__employee_body_html
+msgid "Employee's Appraisal Invite Body Email"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Employee's Feedback"
-msgstr ""
+msgid "Employee's Name"
+msgstr "Jméno zaměstnance"
 
 #. module: hr_appraisal
-#: model:ir.actions.act_window,name:hr_appraisal.action_hr_appraisal_note
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__assessment_note_ids
-#: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_note
-msgid "Evaluation Scale"
-msgstr "Hodnotící stupnice"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Exceeds expectations"
-msgstr "Překonává očekávání"
+#: model:ir.ui.menu,name:hr_appraisal.hr_appraisal_menu_employee
+msgid "Employees"
+msgstr "Zaměstnanci"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
@@ -978,16 +730,15 @@ msgid "Extended Filters..."
 msgstr "Rozšířené filtry…"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Feedback Templates"
-msgstr "Šablony zpětné vazby"
-
-#. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Fill appraisal for %s"
+msgid "Fill appraisal for <a href=\"#\" data-oe-model=\"%s\" data-oe-id=\"%s\">%s</a>"
 msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Final Evaluation"
+msgstr "Závěrečné hodnocení"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__date_final_interview
@@ -1000,51 +751,29 @@ msgid "Final Interview Date"
 msgstr "Datum konečného pohovoru"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__assessment_note
-msgid "Final Rating"
-msgstr ""
-
-#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_follower_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_follower_ids
 msgid "Followers"
 msgstr "Sledující"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_partner_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "Sledující (partneři)"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Sledující (Kanály)"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__activity_type_icon
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Skvělá ikona písma, např. fa-úkoly"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Sledující (Partneři)"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__email_from
+msgid "From"
+msgstr "Od"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "Future Activities"
 msgstr "Budoucí činnosti"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"Give one positive achievement that convinced you of the employee's\n"
-"            value."
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
-msgid "Goal"
-msgstr "Cíl"
-
-#. module: hr_appraisal
-#: model:ir.actions.act_window,name:hr_appraisal.action_hr_appraisal_goal
-#: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_goal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_graph
-msgid "Goals"
-msgstr "Cíle"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
@@ -1057,45 +786,18 @@ msgid "Group by..."
 msgstr "Seskupit podle..."
 
 #. module: hr_appraisal
-#: model:mail.template,name:hr_appraisal.mail_template_appraisal_confirm
-msgid "HR: Appraisal Confirmation"
-msgstr ""
+#: model:ir.model,name:hr_appraisal.model_hr_department
+msgid "HR Department"
+msgstr "Oddělení lidských zdrojů"
 
 #. module: hr_appraisal
-#: model:mail.template,name:hr_appraisal.mail_template_appraisal_request_from_employee
-msgid "HR: Employee Appraisal Request"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:mail.template,name:hr_appraisal.mail_template_appraisal_request
-msgid "HR: Manager appraisal request"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__has_message
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__has_message
-msgid "Has Message"
-msgstr "Má zprávu"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "How could the employee improve?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "How do I feel about my own..."
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "How do I feel about the company..."
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.mail_template_appraisal_reminder
+msgid "Hello"
+msgstr "Ahoj"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__id
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__id
 msgid "ID"
@@ -1103,42 +805,42 @@ msgstr "ID"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_exception_icon
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_exception_icon
 msgid "Icon"
 msgstr "Ikona"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__activity_exception_icon
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr "Ikona označuje vyjímečnou aktivitu."
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_needaction
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_needaction
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Pokud je zaškrtnuto, nové zprávy vyžadují vaši pozornost."
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_has_error
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_has_error
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Pokud je zaškrtnuto, některé zprávy mají chybu při doručení."
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__image_1920
-msgid "Image"
-msgstr "Obrázek"
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__action_plan
+msgid ""
+"If the evaluation does not meet the expectations, you can propose an action "
+"plan"
+msgstr "Pokud hodnocení nesplňuje očekávání, můžete navrhnout akční plán"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__image_128
-msgid "Image 128"
-msgstr "Obrázek 128"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "In #{kanban_getcolorname(record.color.raw_value)}"
+msgstr "V #{kanban_getcolorname(record.color.raw_value)}"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
 msgid "In progress Evaluations"
-msgstr "Probíhá hodnocení"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__final_interview
@@ -1146,78 +848,54 @@ msgid "Interview"
 msgstr "Pohovor"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__is_appraisal_manager
-msgid "Is Appraisal Manager"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__is_mail_template_editor
-msgid "Is Editor"
-msgstr "Je Editor"
-
-#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_is_follower
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_is_follower
 msgid "Is Follower"
-msgstr "Je sledující"
+msgstr "je Sledující"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__is_implicit_manager
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__is_implicit_manager
-msgid "Is Implicit Manager"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__is_manager
-msgid "Is Manager"
-msgstr "Je manažer"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__lang
-msgid "Language"
-msgstr "Jazyk"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__last_appraisal_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__last_appraisal_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_base__last_appraisal_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_public__last_appraisal_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__last_appraisal_id
-msgid "Last Appraisal"
-msgstr "Poslední hodnocení"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__last_appraisal_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__last_appraisal_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__last_appraisal_date
-msgid "Last Appraisal Date"
-msgstr "Datum posledního hodnocení"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
 #, python-format
-msgid "Last Meeting"
+msgid ""
+"It has been a while since the last appraisal of one of your employee, go to "
+"his employee profile to request an appraisal."
 msgstr ""
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
+#, python-format
+msgid ""
+"It has been a while since your last appraisal, go to your employee profile "
+"to request an appraisal to your manager."
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal____last_update
+msgid "Last Modified on"
+msgstr "Naposled změněno"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__write_uid
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__write_uid
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__write_uid
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__write_uid
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__write_uid
 msgid "Last Updated by"
 msgstr "Naposledy upraveno od"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__write_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__write_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__write_date
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__write_date
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__write_date
 msgid "Last Updated on"
 msgstr "Naposled upraveno"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_search
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.mail_template_appraisal_reminder
+msgid "Last appraisal:"
+msgstr ""
+
+#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "Late"
 msgstr "Zpožděné"
@@ -1228,278 +906,159 @@ msgid "Late Activities"
 msgstr "Zpožděné činnosti"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"Long term (&gt; 6 months) career discussion, where does the employee\n"
-"            wants to go, how to help them reach this path?"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Collaborators"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__template_id
-msgid "Mail Template"
-msgstr "Šablona e-mailu"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Colleagues"
+msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Employee"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Manager"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Send"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Mail To Subordinates"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Hlavní příloha"
+
+#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__manager_id
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_department_view_form
-#, python-format
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_manager
 msgid "Manager"
 msgstr "Manažer"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Manager Assessment will show here"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_by_manager_body_html
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_manager_body_html
+msgid "Manager Mail Content"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_feedback
-msgid "Manager Feedback"
-msgstr "Zpětná vazba manažera"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_feedback_published
-msgid "Manager Feedback Published"
-msgstr "Zpětná vazba manažera zveřejněna"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_feedback_template
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_department__manager_feedback_template
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Manager Feedback Template"
-msgstr "Šablona zpětné vazby správce"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_user_ids
-msgid "Manager Users"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_body_html
+msgid "Manager's Appraisal Invite Body Email"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Manager's Feedback"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_by_manager
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_by_manager
+msgid "Managers"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Mark as Done"
-msgstr "Označit jako hotovo"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_max_period
+msgid "Maximum Time between Appraisals"
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__meeting_count_display
-msgid "Meeting Count"
-msgstr "Počet schůzek"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__meeting_ids
-msgid "Meetings"
-msgstr "Schůzky"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Meets expectations"
-msgstr "Splňuje očekávání"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__meeting_id
+msgid "Meeting"
+msgstr "Schůzka"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_has_error
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_has_error
 msgid "Message Delivery error"
 msgstr "Chyba při doručování zpráv"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_ids
 msgid "Messages"
 msgstr "Zprávy"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__my_activity_date_deadline
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Termín mé aktivity"
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_min_period
+msgid "Minimum Time between Appraisals"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action_my
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "My Appraisals"
-msgstr "Moje hodnocení"
+msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_search
-msgid "My Goals"
-msgstr "Moje cíle"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__name
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__name
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_employee
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_tree
 msgid "Name"
-msgstr "Jméno"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Needs improvement"
-msgstr "Potřebuje zlepšení"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_calendar_event_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Další událost z kalendáře aktivit"
+msgstr "Název"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_date_deadline
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr "Termín další aktivity"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_summary
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_summary
 msgid "Next Activity Summary"
 msgstr "Souhrn další aktivity"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_type_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_type_id
 msgid "Next Activity Type"
 msgstr "Další typ aktivity"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__next_appraisal_date
-#: model:ir.model.fields,field_description:hr_appraisal.field_res_users__next_appraisal_date
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_date
 msgid "Next Appraisal Date"
-msgstr "Datum dalšího hodnocení"
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "Next Meeting"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "No Meeting"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__notify
+msgid "Notify"
 msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "Note"
-msgstr "Poznámka"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_needaction_counter
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_needaction_counter
 msgid "Number of Actions"
 msgstr "Počet akcí"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_has_error_counter
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_has_error_counter
 msgid "Number of errors"
 msgstr "Počet chyb"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_needaction_counter
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_needaction_counter
 msgid "Number of messages which requires an action"
 msgstr "Počet zpráv, které vyžadují akci"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_has_error_counter
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "Počet zpráv s chybou při doručení"
 
 #. module: hr_appraisal
-#: model:res.groups,name:hr_appraisal.group_hr_appraisal_user
-msgid "Officer: Access all appraisals"
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Počet nepřečtených zpráv"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__periodic_appraisal_created
+msgid "Periodic Appraisal has been created"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__ongoing_appraisal_count
-msgid "Ongoing Appraisal Count"
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal_goal.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr "Provoz není podporován"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_request_appraisal__lang
-msgid "Optional translation language (ISO code) to select when sending out an email. If not set, the english version will be used. This should usually be a placeholder expression that provides the appropriate language, e.g. {{ object.partner_id.lang }}."
-msgstr "Volitelný překladový jazyk (kód ISO), který lze vybrat při odesílání e-mailu. Pokud není nastavena, bude použita anglická verze. To by měl být obvykle zástupný výraz, který poskytuje vhodný jazyk, např. {{object.partner_id.lang}}."
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__parent_user_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_base__parent_user_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_public__parent_user_id
-msgid "Parent User"
-msgstr "Rodičovský uživatel"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_search
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
-msgid "People I Manage"
-msgstr "Lidé, které spravuji"
-
-#. module: hr_appraisal
-#: model_terms:ir.actions.act_window,help:hr_appraisal.open_view_hr_appraisal_tree
-msgid "Plan appraisals with your colleagues, collect and discuss feedback."
-msgstr "Plánujte ohodnocení se svými kolegy, sbírejte zpětnou vazbu a diskutujte o ní."
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "Previous Appraisals"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__note
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Private Note"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Private note (only accessible to people set as managers)"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__progression
-msgid "Progress"
-msgstr "Průběh"
-
-#. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_hr_employee_public
-msgid "Public Employee"
-msgstr "Veřejný zaměstnanec"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__rating_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__recipient_ids
-msgid "Recipients"
-msgstr "Příjemci"
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__recipient_id
+msgid "Recipient"
+msgstr "Adresát"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__related_partner_id
@@ -1507,95 +1066,71 @@ msgid "Related Partner"
 msgstr "Související kontakt"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__employee_user_id
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__manager_user_id
 #: model:ir.model.fields,help:hr_appraisal.field_hr_employee__parent_user_id
-#: model:ir.model.fields,help:hr_appraisal.field_hr_employee_base__parent_user_id
 msgid "Related user name for the resource to manage its access."
 msgstr "Vztažené uživatelské jméno pro zdroj ke spravování jeho přístupu."
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__render_model
-msgid "Rendering Model"
-msgstr "Vykreslování modelu"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Reopen"
-msgstr "Znovu otevřít"
-
-#. module: hr_appraisal
 #: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_report
 msgid "Reporting"
-msgstr "Přehledy"
+msgstr "Sestavy"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_public_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_users_view_form
 msgid "Request Appraisal"
-msgstr "Žádost o hodnocení"
-
-#. module: hr_appraisal
-#: model:ir.actions.server,name:hr_appraisal.action_create_multi_appraisals
-msgid "Request Appraisals"
 msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_request_appraisal
 msgid "Request an Appraisal"
-msgstr "Požádejte o posouzení"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_user_id
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_user_id
 msgid "Responsible User"
 msgstr "Zodpovědný uživatel"
 
 #. module: hr_appraisal
-#: model_terms:ir.actions.act_window,help:hr_appraisal.open_view_hr_appraisal_tree
-msgid "Schedule an appraisal"
-msgstr "Plánování ohodnocení"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Chyba doručení SMS"
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "Schedule The Final Interview"
+msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "Search Appraisal"
-msgstr "Hledat hodnocení"
+msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Self Assessment will show here"
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+msgid "Select Appraisal Reviewer..."
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+msgid "Send Appraisals Form To"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_company__appraisal_send_reminder
+#: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__appraisal_send_reminder
+msgid "Send Automatic Appraisals Reminder"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__appraisal_reminder
+msgid "Send Reminder (in months)"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.request_appraisal_view_form
-msgid "Send"
-msgstr "Odeslat"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "Send by email"
-msgstr "Odeslat e-mailem"
-
-#. module: hr_appraisal
-#: model:mail.template,description:hr_appraisal.mail_template_appraisal_confirm
-msgid "Sent automatically to both employee and manager when appraisal is confirmed"
+msgid "Send Request"
 msgstr ""
-
-#. module: hr_appraisal
-#: model:mail.template,description:hr_appraisal.mail_template_appraisal_request_from_employee
-msgid "Sent manually to the employee by the manager who wants to do an appraisal"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:mail.template,description:hr_appraisal.mail_template_appraisal_request
-msgid "Sent manually to the manager by the employee who wants an appraisal"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__sequence
-msgid "Sequence"
-msgstr "Číselná řada"
 
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_config_settings_action
@@ -1604,24 +1139,10 @@ msgid "Settings"
 msgstr "Nastavení"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "Short term (6-months) actions / decisions / objectives"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__show_employee_feedback_full
-msgid "Show Employee Feedback Full"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__show_manager_feedback_full
-msgid "Show Manager Feedback Full"
-msgstr ""
-
-#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "Show all records which has next action date is before today"
-msgstr "Zobrazit všechny záznamy, které mají následující datum akce před dneškem"
+msgstr ""
+"Zobrazit všechny záznamy, které mají následující datum akce před dneškem"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__state
@@ -1632,7 +1153,6 @@ msgstr "Stav"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__activity_state
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__activity_state
 msgid ""
 "Status based on activities\n"
 "Overdue: Due date is already passed\n"
@@ -1645,13 +1165,7 @@ msgstr ""
 "Plánováno: Budoucí aktivity."
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Strongly Exceed Expectations"
-msgstr "Silně překračujte očekávání"
-
-#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_reminder__subject
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__subject
 msgid "Subject"
 msgstr "Předmět"
@@ -1662,86 +1176,52 @@ msgid "Subject..."
 msgstr "Předmět..."
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Subordinates"
+msgstr "Podřízení"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_employee.py:0
 #, python-format
-msgid "Such grouping is not allowed."
-msgstr "Takové seskupení není povoleno."
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "Thanks to your Appraisal Plan, without any new manual Appraisal, the new Appraisal will be automatically created on %s."
+msgid "The date of the next appraisal cannot be in the past"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "The appraisal's status has been set to Done by %s"
+#: model:ir.model.fields,help:hr_appraisal.field_hr_employee__appraisal_date
+msgid ""
+"The date of the next appraisal is computed by the appraisal plan's dates "
+"(first appraisal + periodicity)."
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__note
-msgid "The content of this note is not visible by the Employee."
+#: model:ir.model.constraint,message:hr_appraisal.constraint_hr_appraisal_reminder_positif_number_months
+msgid "The reminder time must be bigger or equal to 1 month."
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__last_appraisal_date
-#: model:ir.model.fields,help:hr_appraisal.field_hr_employee__last_appraisal_date
-#: model:ir.model.fields,help:hr_appraisal.field_res_users__last_appraisal_date
-msgid "The date of the last appraisal"
-msgstr "Datum posledního hodnocení"
-
-#. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_employee__next_appraisal_date
-#: model:ir.model.fields,help:hr_appraisal.field_res_users__next_appraisal_date
-msgid "The date of the next appraisal is computed by the appraisal plan's dates (first appraisal + periodicity)."
-msgstr "Datum příštího hodnocení se počítá podle dat plánu hodnocení (první hodnocení + periodicita)."
-
-#. module: hr_appraisal
-#: model:ir.model.constraint,message:hr_appraisal.constraint_res_company_positif_number_months
-msgid "The duration time must be bigger or equal to 1 month."
-msgstr "Doba trvání musí být větší nebo rovna 1 měsíci."
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "The employee %s arrived %s months ago. An appraisal for %s is created. You can assess %s & determinate the date for '1to1' meeting before %s."
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__color
+msgid "This color will be used in the kanban view."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "The employee feedback cannot be changed by managers."
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__collaborators_appraisal
+msgid "This employee will be appraised by his collaborators"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-javascript
-#: code:addons/hr_appraisal/static/src/fields/boolean_confirm.js:0
-#, python-format
-msgid "The employee's feedback will be published without their consent. Do you really want to publish it? This action will be logged in the chatter."
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__colleagues_appraisal
+msgid "This employee will be appraised by his colleagues"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
-#, python-format
-msgid "The manager feedback cannot be changed by an employee."
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__manager_appraisal
+msgid "This employee will be appraised by his managers"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__assessment_note
-msgid "This field is not visible to the Employee."
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__employee_appraisal
+msgid "This employee will do a self-appraisal"
 msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__new
-msgid "To Confirm"
-msgstr "Potvrdit"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
@@ -1749,10 +1229,13 @@ msgid "To Do"
 msgstr "K udělání"
 
 #. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal__state__new
 #: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__new
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
+#, python-format
 msgid "To Start"
-msgstr "Potvrdit"
+msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
@@ -1761,127 +1244,132 @@ msgstr "Dnešní činnosti"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__activity_exception_decoration
-#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Typ zaznamenané výjimečné aktivity."
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__uncomplete_goals_count
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__uncomplete_goals_count
-msgid "Uncomplete Goals Count"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/wizard/request_appraisal.py:0
 #, python-format
-msgid "Unpublished"
-msgstr "Nepublikovaný"
+msgid "Unable to post message, please configure the sender's email address."
+msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model,name:hr_appraisal.model_res_users
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__manager_user_id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_unread
+msgid "Unread Messages"
+msgstr "Nepřečtené zprávy"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Počítadlo nepřečtených zpráv"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__template_id
+msgid "Use template"
+msgstr "Použít šablonu"
+
+#. module: hr_appraisal
+#: model:res.groups,name:hr_appraisal.group_hr_appraisal_user
 msgid "User"
 msgstr "Uživatel"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__user_body
-msgid "User Contents"
-msgstr ""
+#: model:ir.model,name:hr_appraisal.model_res_users
+msgid "Users"
+msgstr "Uživatelé"
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__waiting_feedback
-msgid "Waiting Feedback from Employee/Managers"
-msgstr "Zpětná vazba od zaměstnanců / manažerů"
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__website_message_ids
+msgid "Website Messages"
+msgstr "Zprávy Webové stránky"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "What are my best achievement(s) since my last appraisal?"
-msgstr ""
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__website_message_ids
+msgid "Website communication history"
+msgstr "Historie komunikace Webové stránky"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"What are my short and long-term goals with the company, and for my\n"
-"            carreer?"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_reminder_form
+msgid "When"
+msgstr "Kdy"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"What has been the most challenging aspect of my work this past year and\n"
-"            why?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "What would I need to improve my work?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "Which parts of my job do I most / least enjoy?"
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "You arrived %s months ago. Your appraisal is created you can assess yourself here. Your manager will determinate the date for your '1to1' meeting."
-msgstr "Přijel si %s před měsíci. Vaše hodnocení je vytvořeno, zde se můžete sami posoudit. Váš nadřízený určí datum schůzky „1 ku 1“."
-
-#. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "You cannot delete appraisal which is not in draft or canceled state"
-msgstr "Nemůžete odstranit hodnocení, které není ve stavu konceptu nebo zrušeno"
+msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Your Appraisal has been completed"
+msgid "You must configure your mail address."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
+#: model_terms:ir.actions.act_window,help:hr_appraisal.open_view_hr_appraisal_tree
+msgid ""
+"You will be able to choose which forms will be sent (Employee,Managers,Collaborators or Colleagues),\n"
+"            to whom and the evaluation deadline. Once you have defined it,\n"
+"            change the stage to send it and view the results."
+msgstr ""
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Your employee's last appraisal was %s months ago. An appraisal for %s is created. You can assess %s & determinate the date for '1to1' meeting before %s."
+msgid ""
+"Your last appraisal was on %s %s. You will be able to request a new "
+"appraisal on %s %s. If you think it's too late, feel free to have a chat "
+"with your manager."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__parent_user_id
+msgid "Zboub"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_reminder__event__arrival
+msgid "after the arrival date"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_reminder__event__last_appraisal
+msgid "after the last appraisal"
+msgstr ""
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
 #, python-format
-msgid "Your last appraisal was %s months ago. Your appraisal is created you can assess yourself here. Your manager will determinate the date for your '1to1' meeting."
-msgstr "Vaše poslední hodnocení bylo%spřed měsíci. Vaše hodnocení je vytvořeno, zde se můžete sami posoudit. Váš nadřízený určí datum schůzky „1 ku 1“."
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "e.g. John Doe"
-msgstr "např. Honza Dlouhý"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
-msgid "e.g. Present yourself to your new team"
-msgstr "např. Prezentujte se svému novému týmu"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "months after recruitment, then after"
+msgid "appraisal"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "months, then every"
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/models/hr_appraisal_reminder.py:0
+#, python-format
+msgid "appraisal about %s"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "months."
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_reminder_form
+msgid "e.g. Need an appraisal with your manager? You can schedule it."
 msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_reminder__notify__employee
+msgid "employee"
+msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_reminder__notify__manager
+msgid "manager"
+msgstr "manažer"
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "months"
+msgstr "měsíce"
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
@@ -1889,21 +1377,6 @@ msgid "oe_kanban_text_red"
 msgstr "oe_kanban_text_red"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
-msgid "once published"
-msgstr ""
-
-#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_view_activity
 msgid "text-danger"
-msgstr "textové nebezpečí"
-
-#. module: hr_appraisal
-#: model:mail.template,subject:hr_appraisal.mail_template_appraisal_request_from_employee
-msgid "{{ hasattr(object, 'name') and object.name or '' }} requests an Appraisal"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:mail.template,subject:hr_appraisal.mail_template_appraisal_confirm
-msgid "{{ object.employee_id.name }}: Appraisal Confirmed"
 msgstr ""

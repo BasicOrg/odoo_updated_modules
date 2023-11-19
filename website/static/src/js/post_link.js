@@ -1,7 +1,8 @@
-/** @odoo-module **/
+odoo.define('website.post_link', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import wUtils from "@website/js/utils";
+const publicWidget = require('web.public.widget');
+const wUtils = require('website.utils');
 
 publicWidget.registry.postLink = publicWidget.Widget.extend({
     selector: '.post_link',
@@ -40,4 +41,6 @@ publicWidget.registry.postLink = publicWidget.Widget.extend({
         }
         wUtils.sendRequest(url, data);
     },
+});
+
 });

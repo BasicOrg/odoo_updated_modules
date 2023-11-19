@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website.s_dynamic_snippet_options', function (require) {
+'use strict';
 
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 const dynamicSnippetOptions = options.Class.extend({
     /**
@@ -33,8 +34,6 @@ const dynamicSnippetOptions = options.Class.extend({
         this.dynamicFilterTemplates = {};
         // Indicates that some current options are a default selection.
         this.isOptionDefault = {};
-
-        this.rpc = this.bindService("rpc");
     },
     /**
      * @override
@@ -151,14 +150,10 @@ const dynamicSnippetOptions = options.Class.extend({
      * @returns {Promise}
      */
     async _fetchDynamicFilters() {
-        const dynamicFilters = await this.rpc('/website/snippet/options_filters', {
+        const dynamicFilters = await this._rpc({route: '/website/snippet/options_filters', params: {
             model_name: this.modelNameFilter,
             search_domain: this.contextualFilterDomain,
-        });
-        if (!dynamicFilters.length) {
-            // Additional modules are needed for dynamic filters to be defined.
-            return;
-        }
+        }});
         for (let index in dynamicFilters) {
             this.dynamicFilters[dynamicFilters[index].id] = dynamicFilters[index];
         }
@@ -176,9 +171,9 @@ const dynamicSnippetOptions = options.Class.extend({
         if (!filter) {
             return [];
         }
-        const dynamicFilterTemplates = await this.rpc('/website/snippet/filter_templates', {
+        const dynamicFilterTemplates = await this._rpc({route: '/website/snippet/filter_templates', params: {
             filter_name: filter.model_name.replaceAll('.', '_'),
-        });
+        }});
         for (let index in dynamicFilterTemplates) {
             this.dynamicFilterTemplates[dynamicFilterTemplates[index].key] = dynamicFilterTemplates[index];
         }
@@ -343,4 +338,5 @@ const dynamicSnippetOptions = options.Class.extend({
 
 options.registry.dynamic_snippet = dynamicSnippetOptions;
 
-export default dynamicSnippetOptions;
+return dynamicSnippetOptions;
+});

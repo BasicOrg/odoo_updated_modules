@@ -8,7 +8,7 @@
     'description': 'Spreadsheet Accounting templates',
     'depends': ['documents_spreadsheet', 'account'],
     'data': [
-        'data/spreadsheet_template_data.xml',
+        'data/documents_data.xml',
     ],
     'installable': True,
     'auto_install': True,

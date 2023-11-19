@@ -7,8 +7,10 @@
         <t t-set="additional_title">Resellers</t>
         <div id="wrap">
             <div class="oe_structure" id="oe_structure_website_crm_partner_assign_layout_1"/>
-            <div class="container my-4">
-                <t t-out="0" />
+            <div class="container mt16">
+                <div class="row">
+                    <t t-out="0" />
+                </div>
             </div>
             <div class="oe_structure" id="oe_structure_website_crm_partner_assign_layout_2"/>
         </div>
@@ -17,169 +19,98 @@
 
 <template id="index" name="Find Resellers">
     <t t-call="website_crm_partner_assign.layout">
-        <div class="o_wcrm_filters_top d-flex d-print-none align-items-center justify-content-end flex-wrap gap-2 w-100">
-            <h4 class="my-0 me-auto pe-sm-4">
-                Find a reseller <t t-foreach="countries" t-as="country"><span t-if="country['active'] and country['country_id'][0] != 0 and country['country_id']">in <t t-out="country['country_id'][1]"/></span></t>
-            </h4>
-            <div class="dropdown d-none d-lg-block">
-                <a role="button" href="#" data-bs-toggle="dropdown" t-attf-class="dropdown-toggle btn btn-light #{'d-none' if not partners else ''}" aria-expanded="true" aria-label="Open categories dropdown">
-                    <t t-foreach="grades" t-as="grade">
-                        <span t-if="grade['active']" t-out="grade['grade_id'][1]"/>
-                    </t>
-                </a>
-                <div class="dropdown-menu">
-                    <t t-foreach="grades" t-as="grade">
+        <div class="col-lg-12">
+            <h1 class="text-center">
+                Looking For a Local Store?
+            </h1><h2 class="text-center text-muted">
+                Contact a reseller
+            </h2>
+        </div>
+
+        <div class="col-lg-3 mb32" id="partner_left">
+
+            <ul id="reseller_grades" class="nav nav-pills flex-column mt16">
+                <li class="nav-header nav-item"><h3>Filter by Level</h3></li>
+                <t t-foreach="grades" t-as="grade">
+                    <li class="nav-item">
                         <a t-attf-href="/partners#{ grade['grade_id'][0] and '/grade/%s' % grade['grade_id'][0] or '' }#{ current_country and '/country/%s' % slug(current_country) or '' }#{ '?' + (search_path or '') + '&amp;' + keep_query('country_all') }"
-                        class="dropdown-item" t-out="grade['grade_id'][1]"/>
-                    </t>
-                </div>
-            </div>
-            <div class="dropdown d-none d-lg-block">
-                <a role="button" href="#" data-bs-toggle="dropdown" t-attf-class="dropdown-toggle btn btn-light #{'d-none' if not partners else ''}" aria-expanded="true" aria-label="Open countries dropdown">
-                    <t t-foreach="countries" t-as="country">
-                        <span t-if="partners and country['active']" t-out="country['country_id'][1]"/>
-                    </t>
-                </a>
-                <div class="dropdown-menu">
-                    <t t-foreach="countries" t-as="country" t-if="country['country_id']">
+                           t-attf-class="nav-link#{grade['active'] and ' active' or ''}">
+                            <span class="badge rounded-pill float-end" t-esc="grade['grade_id_count'] or ''"/>
+                            <t t-esc="grade['grade_id'][1]"/>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+
+            <ul id="reseller_countries" class="nav nav-pills flex-column mt16">
+                <li class="nav-header nav-item"><h3>Filter by Country</h3></li>
+                <t t-foreach="countries" t-as="country">
+                    <li t-if="country['country_id']" class="nav-item">
                         <a t-attf-href="/partners#{ current_grade and '/grade/%s' % slug(current_grade) or ''}#{country['country_id'][0] and '/country/%s' % country['country_id'][0] or '' }#{ '?' + (search_path or '') + (country['country_id'][0] == 0 and '&amp;country_all=True' or '')}"
-                        class="dropdown-item" t-out="country['country_id'][1]"/>
-                    </t>
-                </div>
-            </div>
-            <div class="o_wcrm_search d-flex w-100 w-lg-auto">
-                <form class="flex-grow-1" action="" method="get">
-                    <input t-if="country_all" type="hidden" name="country_all" value="True" />
-                    <div class="input-group" role="search">
-                        <input type="text" name="search" class="search-query form-control border-0 bg-light" placeholder="Search" t-att-value="searches.get('search', '')"/>
-                        <button type="submit" aria-label="Search" title="Search" class="oe_search_button btn btn-light">
-                            <i class="oi oi-search"/>
-                        </button>
+                           t-attf-class="nav-link#{country['active'] and ' active' or ''}">
+                            <span class="badge rounded-pill float-end" t-esc="country['country_id_count'] or ''"/>
+                            <t t-esc="country['country_id'][1]"/>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+
+        </div>
+
+        <div class="col-lg-8 offset-lg-1" id="ref_content">
+            <div class="d-flex p-2">
+                <t t-call="website.pager"/>
+                <form action="" method="get" class="ms-auto">
+                    <div class="mb-3">
+                        <input t-if="country_all" type="hidden" name="country_all" value="True" />
+                        <input type="text" name="search" class="search-query form-control" placeholder="Search" t-att-value="searches.get('search', '')"/>
                     </div>
                 </form>
-                <button class="btn btn-light position-relative ms-2 d-lg-none"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#o_wcrm_offcanvas">
-                    <i class="fa fa-sliders"/>
-                </button>
             </div>
-        </div>
-        <!-- Off canvas filters on mobile-->
-        <div id="o_wcrm_offcanvas" class="o_website_offcanvas offcanvas offcanvas-end d-lg-none p-0 overflow-visible">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Filters</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"/>
-            </div>
-            <div class="offcanvas-body p-0">
-                <div class="accordion accordion-flush">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target=".o_wcrm_offcanvas_grade"
-                                aria-expanded="false"
-                                aria-controls="o_wcrm_offcanvas_grade">
-                                Filter by category
-                            </button>
-                        </h2>
-                        <div class="o_wcrm_offcanvas_grade accordion-collapse collapse">
-                            <div class="accordion-body pt-0">
-                                <ul class="list-group list-group-flush">
-                                    <t t-foreach="grades" t-as="grade">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center ps-0 pb-0 border-0">
-                                            <a t-attf-href="/partners#{ grade['grade_id'][0] and '/grade/%s' % grade['grade_id'][0] or '' }#{ current_country and '/country/%s' % slug(current_country) or '' }#{ '?' + (search_path or '') + '&amp;' + keep_query('country_all') }"
-                                            class="text-reset" aria-label="See categories filters">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" t-attf-name="#{grade['grade_id'][1]}" t-att-checked="bool(grade['active'])"/>
-                                                    <label class="form-check-label" t-attf-for="#{grade['grade_id'][1]}" t-out="grade['grade_id'][1]"/>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    </t>
-                                </ul>
-                            </div>
+            <div>
+                <p t-if="not partners">No result found</p>
+                <t t-foreach="partners" t-as="partner">
+                    <t t-if="last_grade != partner.grade_id.id">
+                        <h3 class="text-center mt-4">
+                            <span t-field="partner.grade_id"/> Partners
+                            <t t-call="website.publish_management">
+                                <t t-set="object" t-value="partner.grade_id"/>
+                                <t t-set="publish_edit" t-value="True"/>
+                            </t>
+                        </h3>
+                        <t t-set="last_grade" t-value="partner.grade_id.id"/>
+                    </t>
+                    <div class="d-flex mt-3">
+                        <a t-attf-href="/partners/#{slug(partner)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}"
+                           t-field="partner.avatar_128"
+                           class="me-3 text-center o_width_128"
+                           t-options='{"widget": "image", "qweb_img_responsive": False, "class": "o_image_128_max"}'
+                        ></a>
+                        <div class="flex-grow-1 o_partner_body" style="min-height: 64px;">
+                            <a t-attf-href="/partners/#{slug(partner)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}">
+                                <span t-field="partner.display_name"/>
+                            </a>
+                            <div t-field="partner.website_short_description"/>
+                            <t t-if="any(p.website_published for p in partner.implemented_partner_ids)">
+                                <small><a t-attf-href="/partners/#{slug(partner)}#right_column">
+                                    <t t-esc="partner.implemented_partner_count"/> reference(s)
+                                </a></small>
+                            </t>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button border-top collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target=".o_wcrm_offcanvas_country"
-                                aria-expanded="false"
-                                aria-controls="o_wcrm_offcanvas_country">
-                                Filter by country
-                            </button>
-                        </h2>
-                        <div class="o_wcrm_offcanvas_country accordion-collapse collapse">
-                            <div class="accordion-body pt-0">
-                                <ul class="list-group list-group-flush">
-                                    <t t-foreach="countries" t-as="country">
-                                        <li t-if="country['country_id']" class="list-group-item d-flex justify-content-between align-items-center ps-0 pb-0 border-0">
-                                            <a t-attf-href="/partners#{ current_grade and '/grade/%s' % slug(current_grade) or ''}#{country['country_id'][0] and '/country/%s' % country['country_id'][0] or '' }#{ '?' + (search_path or '') + (country['country_id'][0] == 0 and '&amp;country_all=True' or '')}"
-                                            class="text-reset" aria-label="See countries filters">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" t-attf-name="#{country['country_id'][1]}" t-att-checked="bool(country['active'])"/>
-                                                    <label class="form-check-label" t-attf-for="#{country['country_id'][1]}" t-out="country['country_id'][1]"/>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    </t>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-4">
-            <div class="my-5 py-5 text-center" t-if="not partners">
-                <h5>No results found for "<span t-out="searches.get('search', '')"/>"</h5>
-                <a href="/partners">See all resellers</a>
-            </div>
-            <t t-set="last_grade" t-value="None"/>
-            <t t-foreach="partners" t-as="partner">
-                <t t-if="last_grade != partner.grade_id.id">
-                    <h5 class="mt-4 mb-2 col-12">
-                        <span t-field="partner.grade_id"/> Resellers
-                        <t t-call="website.publish_management">
-                            <t t-set="object" t-value="partner.grade_id"/>
-                            <t t-set="publish_edit" t-value="True"/>
-                        </t>
-                    </h5>
-                    <t t-set="last_grade" t-value="partner.grade_id.id"/>
                 </t>
-                <div class="col-md-4 col-xl-3 col-12 mb-4">
-                    <div class="card h-100 text-decoration-none">
-                        <a class="text-decoration-none" t-attf-href="/partners/#{slug(partner)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}" aria-label="Go to reseller">
-                            <div t-field="partner.image_1920"
-                                class="card-img-top border-bottom"
-                                t-options='{"widget": "image", "qweb_img_responsive": False, "class": "img img-fluid h-100 w-100 mw-100", "style": "max-height: 208px; min-height: 208px; object-fit: cover"}'
-                                />
-                            <div class="card-body">
-                                <h5 class="card-title m-0" t-attf-href="/partners/#{slug(partner)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}" t-field="partner.display_name"/>
-                                <small id="o_wcrm_partners_address"/>
-                                <small class="o_wcrm_short_description text-muted overflow-hidden" t-field="partner.website_short_description"/>
-                                <small t-if="not partner.website_short_description" class="css_editable_mode_hidden text-muted fst-italic" groups="website.group_website_restricted_editor">
-                                    Edit to add a short description
-                                </small>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </t>
-            <div class="navbar">
+            </div>
+            <div class='navbar'>
                 <t t-call="website.pager">
-                   <t t-set="classname" t-valuef="mx-auto"/>
+                   <t t-set="classname" t-valuef="float-start"/>
                 </t>
             </div>
         </div>
     </t>
 </template>
 
-<template id="ref_country" inherit_id="website_crm_partner_assign.index" name="World Map">
-    <xpath expr="//div[hasclass('o_wcrm_search')]" position="inside">
+<template id="ref_country" inherit_id="website_crm_partner_assign.index" name="Left World Map">
+    <xpath expr="//ul[@id='reseller_countries']" position="after">
         <t t-if="google_maps_api_key">
             <!-- modal for large map -->
             <div role="dialog" class="modal fade partner_map_modal" tabindex="-1">
@@ -187,71 +118,54 @@
                 <div class="modal-content">
                     <header class="modal-header">
                         <h4 class="modal-title">World Map</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </header>
-                    <iframe t-attf-src="/google_map/?height=485&amp;partner_ids=#{ google_map_partner_ids }&amp;partner_url=/partners/"
-                    style="height:485px;"/>
+                    <iframe t-attf-src="/google_map/?width=898&amp;height=485&amp;partner_ids=#{ google_map_partner_ids }&amp;partner_url=/partners/"
+                    style="width:898px; height:485px; border:0; padding:0; margin:0;"></iframe>
                 </div>
               </div>
             </div>
             <!-- modal end -->
-            <div class="btn-group ms-2">
-                <button class="btn btn-light border-primary active">
-                    <i class="fa fa-th-large"/>
-                </button>
-                <button class="btn btn-light" data-bs-toggle="modal" data-bs-target=".partner_map_modal">
-                    <i class="fa fa-map-marker" role="img" aria-label="Open map" title="Open map"/>
-                </button>
-            </div>
+            <h3>World Map<button class="btn btn-link" data-bs-toggle="modal" data-bs-target=".partner_map_modal"><span class="fa fa-external-link" role="img" aria-label="External link" title="External link"/></button></h3>
+            <ul class="nav">
+                <iframe t-attf-src="/google_map?width=260&amp;height=240&amp;partner_ids=#{ google_map_partner_ids }&amp;partner_url=/partners/"
+                    style="width:260px; height:240px; border:0; padding:0; margin:0;" scrolling="no"></iframe>
+            </ul>
         </t>
-    </xpath>
-</template>
-
-<template id="o_wcrm_partner_address" inherit_id="website_crm_partner_assign.index" name="Address">
-    <xpath expr="//small[@id='o_wcrm_partners_address']" position="inside">
-        <div t-field="partner.self" 
-            t-options="{
-                'widget': 'contact',
-                'fields': ['country_id']
-            }"
-            class="py-2"
-        />
     </xpath>
 </template>
 
 <template id="partner" name="Partner Detail">
     <t t-call="website_crm_partner_assign.layout">
-        <div t-if="not edit_page" class="mb-3">
-            <a t-attf-href="/partners#{current_grade and '/grade/%s' % slug(current_grade)}#{current_country and '/country/%s' % slug(current_country)}" aria-label="Back to resellers list"><i class="fa fa-chevron-left me-2"/>Back to resellers</a>
+        <div class="col-lg-5">
+            <ol t-if="not edit_page" class="breadcrumb">
+                <li class="breadcrumb-item"><a t-attf-href="/partners#{current_grade and '/grade/%s' % slug(current_grade)}#{current_country and '/country/%s' % slug(current_country)}">Our Partners</a></li>
+                <li class="breadcrumb-item active"><span t-field="partner.display_name"/></li>
+            </ol>
         </div>
         <t t-call="website_partner.partner_detail">
             <t t-set="right_column">
-                <div id="right_column"><t t-call="website_crm_partner_assign.references_block"/></div>
+                <div id="right_column" class="mb16"><t t-call="website_crm_partner_assign.references_block"/></div>
             </t>
         </t>
     </t>
 </template>
 
 <template id="grade_in_detail" inherit_id="website_partner.partner_detail">
-    <xpath expr="//*[@id='partner_name']" position="before">
-        <span class="col-lg-12 text-muted" t-if="partner.grade_id and partner.grade_id.website_published">
-            <span t-field="partner.grade_id"/>
-        </span>
-    </xpath>
+  <xpath expr="//*[@id='partner_name']" position="after">
+    <h3 class="col-lg-12 text-center text-muted" t-if="partner.grade_id and partner.grade_id.website_published">
+      <span t-field="partner.grade_id"/> Partner</h3>
+  </xpath>
 </template>
 
 <template id="references_block" name="Partner References Block">
     <t t-if="any(p.website_published for p in partner.implemented_partner_ids)">
-        <h4 id="references">References</h4>
-        <div t-foreach="partner.implemented_partner_ids" t-if="reference.website_published" t-as="reference" class="card mt-3 border-0">
-            <div class="row">
-                <div class="col-md-2">
-                    <span t-field="reference.avatar_128" class="d-flex justify-content-center h-100" t-options='{"widget": "image", "qweb_img_responsive": False, "class": "img-fluid rounded"}'/>
-                </div>
-                <div class="card-body col-md-10">
-                    <span t-field="reference.self"/>
-                    <div t-field='reference.website_short_description'/>
-                </div>
+        <h3 id="references">References</h3>
+        <div t-foreach="partner.implemented_partner_ids" t-if="reference.website_published" t-as="reference" class="d-flex mt-3">
+            <span t-field="reference.avatar_128" class="d-block me-3 text-center o_width_128" t-options='{"widget": "image", "qweb_img_responsive": False, "class": "o_image_128_max"}'/>
+            <div class="flex-grow-1" style="min-height: 64px;">
+                <span t-field="reference.self"/>
+                <div t-field='reference.website_short_description'/>
             </div>
         </div>
     </t>
@@ -286,25 +200,18 @@
     </template>
 
     <template id="portal_my_home_lead" name="Show Leads / Opps" inherit_id="portal.portal_my_home" priority="15">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-            <t t-set="portal_vendor_category_enable" t-value="True"/>
-        </xpath>
-        <div id="portal_vendor_category" position="inside">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/website_crm_partner_assign/static/src/img/leads.svg'"/>
-                <t t-set="text">Follow and convert your leads</t>
                 <t t-set="title">Leads</t>
                 <t t-set="url" t-value="'/my/leads'"/>
                 <t t-set="placeholder_count" t-value="'lead_count'"/>
             </t>
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/website_crm_partner_assign/static/src/img/quotation.svg'"/>
-                <t t-set="text">Follow and convert your opportunities</t>
                 <t t-set="title">Opportunities</t>
                 <t t-set="url" t-value="'/my/opportunities'"/>
                 <t t-set="placeholder_count" t-value="'opp_count'"/>
             </t>
-        </div>
+        </xpath>
     </template>
 
     <template id="portal_my_leads" name="My Leads">
@@ -314,28 +221,24 @@
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Leads</t>
             </t>
-            <div t-if="not leads" class="alert alert-warning" role="alert">
+            <div t-if="not leads" class="alert alert-warning mt8" role="alert">
                 There are no leads.
             </div>
             <t t-if="leads" t-call="portal.portal_table">
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th class="w-25">Lead</th>
+                        <th class="w-75">Name</th>
                         <th>Contact Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="leads" t-as="lead">
                         <td><span t-field="lead.create_date" t-options='{"widget": "date"}' /></td>
-                        <td class="text-wrap">
+                        <td>
                             <a t-attf-href="/my/lead/#{lead.id}"><span t-field="lead.name"/></a>
                         </td>
-                        <td><span t-field="lead.contact_name"/></td>
-                        <td><span t-field="lead.email_from"/></td>
-                        <td><span t-field="lead.phone"/></td>
+                        <td><span t-field="lead.contact_name" /></td>
                     </tr>
                 </tbody>
             </t>
@@ -349,8 +252,8 @@
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Opportunities</t>
 
-                <div t-if="request.env.user.partner_id.grade_id or request.env.user.commercial_partner_id.grade_id">
-                    <button class="btn btn-primary" name='new_opp' data-bs-toggle="modal" data-bs-target=".modal_new_opp" title="Add an opportunity" aria-label="Add an opportunity">
+                <div class="ms-lg-4" t-if="request.env.user.partner_id.grade_id or request.env.user.commercial_partner_id.grade_id">
+                    <button class="btn btn-success btn-sm" name='new_opp' data-bs-toggle="modal" data-bs-target=".modal_new_opp" title="Add an opportunity" aria-label="Add an opportunity">
                         Create Opportunity
                     </button>
                 </div>
@@ -386,7 +289,7 @@
                 </div>
             </div>
             <t t-if="not opportunities">
-                <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning mt8" role="alert">
                     There are no opportunities.
                 </div>
             </t>
@@ -394,10 +297,8 @@
                 <thead>
                     <tr class="active">
                         <th>Date</th>
-                        <th class="w-25">Opportunity</th>
+                        <th class="w-50">Name</th>
                         <th>Contact</th>
-                        <th>Email</th>
-                        <th>Phone</th>
                         <th>Expected</th>
                         <th>Stage</th>
                     </tr>
@@ -405,12 +306,10 @@
                 <tbody>
                     <tr t-foreach="opportunities" t-as="opp">
                         <td><span t-field="opp.create_date" t-options='{"widget": "date"}' /></td>
-                        <td class="text-wrap">
+                        <td>
                             <a t-attf-href="/my/opportunity/#{opp.id}"><span t-field="opp.name"/></a>
                         </td>
-                        <td><span t-field="opp.contact_name"/></td>
-                        <td><span t-field="opp.email_from"/></td>
-                        <td><span t-field="opp.phone"/></td>
+                        <td><span t-field="opp.contact_name" /></td>
                         <td>
                             <span t-if="opp.company_currency" class="text-nowrap" t-esc="opp.expected_revenue" t-options="{'widget': 'monetary', 'display_currency': opp.company_currency}"/>
                             <span t-else="" class="text-nowrap" t-esc="opp.expected_revenue"/>
@@ -428,24 +327,26 @@
 
     <template id="portal_my_lead" name="My Lead">
         <t t-call="portal.portal_layout">
-            <div class="card border-0">
-                <div class="card-header bg-view">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4>
-                            Lead - <span t-field="lead.name"/>
-                        </h4>
-                        <span title="Rating" role="img" t-attf-aria-label="Rating: #{lead.priority} on 3">
-                            <t t-foreach="range(1, 4)" t-as="i">
-                                <span t-attf-class="fa fa-lg fa-star#{'' if i &lt;= int(lead.priority) else '-o'}"/>
-                            </t>
-                        </span>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <span class="float-end" title="Rating" role="img" t-attf-aria-label="Rating: #{lead.priority} on 3">
+                                <t t-foreach="range(1, 4)" t-as="i">
+                                    <span t-attf-class="fa fa-lg fa-star#{'' if i &lt;= int(lead.priority) else '-o'}"/>
+                                </t>
+                            </span>
+                            <h4>
+                                Lead - <span t-field="lead.name"/>
+                            </h4>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="row" t-if="lead.partner_name or lead.email_from or lead.partner_id">
-                                <label class="col-4 fw-bold">Customer</label>
+                                <label class="col-4">Customer</label>
                                 <address class="col-8">
                                     <div>
                                         <span t-if="lead.partner_name" itemprop="name" t-field="lead.partner_name" />
@@ -463,7 +364,7 @@
                                 </address>
                             </div>
                             <div class="row" t-if="lead.street or lead.street2 or lead.city or lead.state_id or lead.country_id">
-                                <label class="col-4 fw-bold">Address</label>
+                                <label class="col-4">Address</label>
                                 <address class="col-8">
                                     <div t-if="lead.street"><span t-field="lead.street"/></div>
                                     <div t-if="lead.street2"><span t-field="lead.street2"/></div>
@@ -476,21 +377,21 @@
                                 </address>
                             </div>
                             <div class="row" t-if="lead.user_id">
-                                <label class="col-4 fw-bold">Salesperson</label>
+                                <label class="col-4">Salesperson</label>
                                 <span class="col-8" t-field="lead.user_id" />
                             </div>
                             <div class="row" t-if="lead.team_id">
-                                <label class="col-4 fw-bold">Sales Team</label>
+                                <label class="col-4">Sales Team</label>
                                 <span class="col-8" t-field="lead.team_id" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="row" t-if="lead.date_deadline">
-                                <label class="col-4 fw-bold">Expected Closing</label>
+                                <label class="col-4">Expected Closing</label>
                                 <span class="col-8" t-field="lead.date_deadline" />
                             </div>
                             <div class="row" groups="!base.group_portal" t-if="lead.tag_ids">
-                                <label class="col-4 fw-bold">Tags</label>
+                                <label class="col-4">Tags</label>
                                 <span class="col-8">
                                     <t t-foreach="lead.tag_ids" t-as="tag">
                                         <span class="badge text-bg-info" t-esc="tag.name" />
@@ -498,22 +399,22 @@
                                 </span>
                             </div>
                             <div class="row mt16" t-if="lead.partner_assigned_id">
-                                <label class="col-4 fw-bold">Assigned Partner</label>
+                                <label class="col-4">Assigned Partner</label>
                                 <address class="col-8" t-field="lead.partner_assigned_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"], "no_marker": True}'/>
                             </div>
                             <div class="row mt16" t-if="lead.campaign_id">
-                                <label class="col-4 fw-bold">Campaign</label>
+                                <label class="col-4">Campaign</label>
                                 <span class="col-8" t-field="lead.campaign_id" />
                             </div>
                             <div class="row" t-if="lead.medium_id">
-                                <label class="col-4 fw-bold">Medium</label>
+                                <label class="col-4">Medium</label>
                                 <span class="col-8" t-field="lead.medium_id" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class='d-flex justify-content-center gap-2'>
+            <div class='mt8'>
                 <a role="button" href="#" class="btn btn-primary btn" data-bs-toggle="modal" data-bs-target=".modal_partner_assign_interested"><i class="fa fa-file-text-o"/> I'm interested</a>
                 <a role="button" href="#" class="btn btn-primary btn" data-bs-toggle="modal" data-bs-target=".modal_partner_assign_desinterested"><i class="fa fa-fw fa-times"/> I'm not interested</a>
                 <div class="modal fade modal_partner_assign_interested" role="form">
@@ -579,10 +480,11 @@
                     </div>
                 </div>
             </div>
-            <hr/>
-            <div>
-                <h3>Communication history</h3>
-                <div>
+            <div class="row mt32">
+                <div class="col-lg-12">
+                    <h4><strong>Message and communication history</strong></h4>
+                </div>
+                <div class="col-lg-10 offset-lg-1 mt16">
                     <t t-call="portal.message_thread">
                         <t t-set="object" t-value="lead"/>
                     </t>
@@ -595,19 +497,22 @@
         <t t-call="portal.portal_layout">
             <t t-call="portal.portal_record_layout">
                 <t t-set="card_header">
-                    <div class="d-flex justify-content-between flex-wrap">
-                        <h4 class="mb-2 mb-md-0">
-                            Opportunity -
-                            <span t-field="opportunity.name"/>
-                        </h4>
-                        <!-- todo: replace by design system wizard -->
-                        <div class="d-flex justify-content-between align-items-center gap-2">
-                            <p class="mb-0 fw-bold">Stage:</p>
-                            <div t-foreach="stages[::-1]" t-as="stage" class="d-flex justify-content-between align-items-center gap-2">
-                                <i t-if="not stage_first" class="oi oi-chevron-right small" style="opacity: 0.5"/>
-                                <button type="button" t-att-data="stage.id" t-att-opp="opportunity.id" t-attf-class="btn btn-sm px-2 opp-stage-button #{'btn-secondary' if opportunity.stage_id.name != stage.name else 'btn-primary disabled'}">
-                                    <span t-field="stage.name"/>
-                                </button>
+                    <div class="row g-0">
+                        <div class="col-md">
+                            <h5 class="mb-2 mb-md-0">
+                                <small class="text-muted">Opportunity - </small>
+                                <span t-field="opportunity.name"/>
+                            </h5>
+                        </div>
+                        <div class="col-md text-md-end">
+                            <div class="d-inline-block">
+                                <small class="me-2 mt-1 float-start"><b>Stage:</b></small>
+                                <div t-foreach="stages[::-1]" t-as="stage" class="float-start">
+                                    <i t-if="not stage_first" class="fa fa-chevron-right ms-2 me-1 small" style="opacity: 0.5"/>
+                                    <button type="button" t-att-data="stage.id" t-att-opp="opportunity.id" t-attf-class="btn btn-sm px-2 opp-stage-button #{'btn-secondary' if opportunity.stage_id.name != stage.name else 'btn-primary disabled'}">
+                                        <span t-field="stage.name"/>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -617,11 +522,10 @@
                     <div class="row">
                         <div class="col-lg-5 mb-4 mb-lg-0">
                             <div class="border-bottom d-flex justify-content-between py-2 mb-3 align-items-center">
-                                <h5 class="d-flex align-items-center justify-content-between gap-2 mb-0 ">
-                                    <span>
-                                        <t t-if="opportunity.company_currency" t-out="opportunity.expected_revenue"
-                                           t-options="{'widget': 'monetary', 'display_currency': opportunity.company_currency}"/>
-                                        <t t-else="" t-out="opportunity.expected_revenue"/> at  </span>
+                                <h5 class="mb-0">
+                                    <span t-if="opportunity.company_currency" class="text-nowrap" t-esc="opportunity.expected_revenue" t-options="{'widget': 'monetary', 'display_currency': opportunity.company_currency}"/>
+                                    <span t-else="" class="text-nowrap" t-esc="opportunity.expected_revenue"/>
+                                    <span> at </span>
                                     <span class="badge text-bg-info rounded-pill"><span t-field="opportunity.probability"/>%</span>
                                 </h5>
                                 <button type="button" data-bs-toggle="modal" data-bs-target=".modal_edit_opp" class="btn btn-link btn-sm"><i class="fa fa-pencil me-1"/>Edit</button>
@@ -665,36 +569,42 @@
                             <div class="row mb-3" t-if="opportunity.partner_name or opportunity.email_from or opportunity.contact_name">
                                 <strong class="col-12 col-sm-3">Customer</strong>
                                 <div class="col">
-                                    <div class="d-flex justify-content-start align-items-center gap-2 mb-2" t-if="opportunity.partner_name or opportunity.contact_name">
-                                        <img t-if="opportunity.partner_id.avatar_1024" class="o_avatar o_portal_contact_img rounded"
-                                             t-att-src="image_data_uri(opportunity.partner_id.avatar_512)"
-                                        alt="Contact" width="50"/>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h5 class="mb-0" t-if="opportunity.partner_name" t-out="opportunity.partner_name"/>
-                                            <p class="mb-0 text-muted" t-else="" t-out="opportunity.contact_name"/>
-                                        </div>
+                                    <div t-if="opportunity.partner_name or opportunity.contact_name">
+                                        <span class="fa fa-user fa-fw" role="img" aria-label="User" title="User"/>
+                                        <strong class="fst-italic" t-if="opportunity.partner_name" itemprop="name" t-field="opportunity.partner_name" />
+                                        <strong class="fst-italic" t-else="" itemprop="name" t-field="opportunity.contact_name" />
                                     </div>
-                                    <div>
-                                        <div t-field="opportunity.partner_id" t-options='{"widget": "contact", "fields": ["email", "phone", "mobile"]}'/>
+                                    <div t-if="opportunity.phone">
+                                        <span class="fa fa-phone fa-fw" role="img" aria-label="Phone" title="Phone"/>
+                                        <span itemprop="telephone" t-field="opportunity.phone"/>
                                     </div>
-                                 <address t-if="opportunity.street or opportunity.street2 or opportunity.city or opportunity.zip or opportunity.state_id or opportunity.country_id"
-                                    class="col d-flex align-items-baseline mb-0 mt-2">
-                                        <div class="d-flex flex-nowrap gap-3">
-                                            <div class="fa fa-map-marker fa-fw text-muted"></div>
-                                            <div>
-                                                <div t-if="opportunity.street"><span t-field="opportunity.street"/></div>
-                                                <span t-else="" class="text-muted"> - </span>
-                                                <div t-if="opportunity.street2"><span t-field="opportunity.street2"/></div>
-                                                <div t-if="opportunity.city or opportunity.zip">
-                                                    <span t-field="opportunity.city"/> <span t-field="opportunity.zip"/>
-                                                </div>
-                                                <div t-if="opportunity.state_id or opportunity.country_id">
-                                                    <span t-field="opportunity.state_id"/> <span t-field="opportunity.country_id"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </address>
+                                    <div t-if="opportunity.mobile">
+                                        <span class="fa fa-mobile fa-fw" role="img" aria-label="Mobile" title="Mobile"/>
+                                        <span itemprop="mobile" t-field="opportunity.mobile"/>
+                                    </div>
+                                    <div t-if="opportunity.email_from">
+                                        <span class="fa fa-envelope fa-fw" role="img" aria-label="Email" title="Email"/>
+                                        <span itemprop="email" t-field="opportunity.email_from"/>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <strong class="col-12 col-sm-3">Address</strong>
+                                <address t-if="opportunity.street or opportunity.street2 or opportunity.city or opportunity.zip or opportunity.state_id or opportunity.country_id"
+                                    class="col d-flex align-items-baseline mb-0">
+                                    <span class="fa fa-map-marker fa-fw" role="img" aria-label="Address" title="Address"/>
+                                    <div>
+                                        <div t-if="opportunity.street"><span t-field="opportunity.street"/></div>
+                                        <span t-else="" class="text-muted"> - </span>
+                                        <div t-if="opportunity.street2"><span t-field="opportunity.street2"/></div>
+                                        <div t-if="opportunity.city or opportunity.zip">
+                                            <span t-field="opportunity.city"/> <span t-field="opportunity.zip"/>
+                                        </div>
+                                        <div t-if="opportunity.state_id or opportunity.country_id">
+                                            <span t-field="opportunity.state_id"/> <span t-field="opportunity.country_id"/>
+                                        </div>
+                                    </div>
+                                </address>
                             </div>
                         </div>
 
@@ -755,10 +665,10 @@
                                                     </div>
                                                     <div class="col-md-7">
                                                         <label>Expected Closing:</label>
-                                                        <div class="input-group date" id="exp_closing_div">
+                                                        <div class="input-group date" id="exp_closing_div" data-target-input="nearest">
                                                             <t t-set='date_formatted'><t t-options='{"widget": "date"}' t-esc="opportunity.date_deadline"/></t>
-                                                            <input type="text" data-widget="datetime-picker" data-widget-type="date" name="date_deadline" t-att-value="date_formatted" class="datetimepicker-input form-control date_deadline" t-att-name="prefix"/>
-                                                            <span class="input-group-text">
+                                                            <input type="text" name="date_deadline" data-target="#exp_closing_div" t-att-value="date_formatted" class="datetimepicker-input form-control date_deadline" t-att-name="prefix"/>
+                                                            <span class="input-group-text" data-target="#exp_closing_div" data-toggle="datetimepicker">
                                                                 <span class="fa fa-calendar" role="img" aria-label="Calendar"></span>
                                                             </span>
                                                         </div>
@@ -780,10 +690,10 @@
                                                     </div>
                                                     <div class="col-md-7">
                                                         <label class="col-form-label" for="activity_date_deadline">Next Activity Date</label>
-                                                        <div class="input-group date" id="next_activity_div" >
+                                                        <div class="input-group date" id="next_activity_div" data-target-input="nearest">
                                                             <t t-set='date_formatted'><t t-options='{"widget": "date"}' t-esc="user_activity.date_deadline"/></t>
-                                                            <input type="text" data-widget="datetime-picker" data-widget-type="date" name="activity_date_deadline" t-att-value="date_formatted" class="form-control activity_date_deadline datetimepicker-input" t-att-name="prefix"/>
-                                                            <span class="input-group-text">
+                                                            <input type="text" name="activity_date_deadline" data-target="#next_activity_div" t-att-value="date_formatted" class="form-control activity_date_deadline datetimepicker-input" t-att-name="prefix"/>
+                                                            <span class="input-group-text" data-target="#next_activity_div" data-toggle="datetimepicker">
                                                                 <span class="fa fa-calendar" role="img" aria-label="Calendar" title="Calendar"></span>
                                                             </span>
                                                         </div>
@@ -888,11 +798,9 @@
                 </t>
             </t>
 
-            <hr/>
-
-            <div>
-                <h3>Communication history</h3>
-                <div>
+            <div class="mt32">
+                <h4><strong>Message and communication history</strong></h4>
+                <div class="mt16">
                     <t t-call="portal.message_thread">
                         <t t-set="object" t-value="opportunity"/>
                     </t>

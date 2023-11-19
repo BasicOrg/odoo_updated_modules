@@ -23,9 +23,13 @@
             <field name="name">Administrator</field>
             <field name="comment">the user will have an access to the sales configuration as well as statistic reports.</field>
             <field name="category_id" ref="base.module_category_sales_sales"/>
-            <field name="implied_ids" eval="[(4, ref('group_sale_salesman_all_leads')),
-                (4, ref('mail.group_mail_template_editor'))]"/>
+            <field name="implied_ids" eval="[(4, ref('group_sale_salesman_all_leads'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="sales_team.menu_sale_config">
+            <field name="name">Configuration</field>
+            <field eval="[(6,0,[ref('base.group_system')])]" name="groups_id"/>
         </record>
 
     <data noupdate="1">

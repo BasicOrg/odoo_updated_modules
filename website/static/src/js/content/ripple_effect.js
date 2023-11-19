@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website.ripple_effect', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+const publicWidget = require('web.public.widget');
 
 publicWidget.registry.RippleEffect = publicWidget.Widget.extend({
     selector: '.btn, .dropdown-toggle, .dropdown-item',
@@ -64,4 +65,5 @@ publicWidget.registry.RippleEffect = publicWidget.Widget.extend({
         this._toggleRippleEffect(true);
         this.timeoutID = setTimeout(() => this._toggleRippleEffect(false), this.duration);
     },
+});
 });

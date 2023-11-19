@@ -2,15 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import dateutil.parser
-import logging
 import requests
-from html import unescape
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from werkzeug.urls import url_join
-
-_logger = logging.getLogger(__name__)
 
 
 class SocialStreamTwitter(models.Model):
@@ -48,49 +44,43 @@ class SocialStreamTwitter(models.Model):
 
     def _fetch_stream_data(self):
         if self.media_id.media_type != 'twitter':
-            return super()._fetch_stream_data()
+            return super(SocialStreamTwitter, self)._fetch_stream_data()
 
         if self.stream_type_id.stream_type == 'twitter_user_mentions':
-            return self._fetch_tweets('/2/users/%s/mentions' % self.account_id.twitter_user_id)
-        if self.stream_type_id.stream_type == 'twitter_follow':
-            return self._fetch_tweets('/2/users/%s/tweets' % self.twitter_followed_account_id.twitter_id)
-        if self.stream_type_id.stream_type == 'twitter_likes':
-            return self._fetch_tweets('/2/users/%s/liked_tweets' % self.twitter_followed_account_id.twitter_id)
-        if self.stream_type_id.stream_type == 'twitter_keyword':
-            keyword = self.twitter_searched_keyword
-            if not keyword.startswith("#"):
-                keyword = "#%s" % keyword
-            return self._fetch_tweets('/2/tweets/search/recent', {'query': keyword + ' -is:retweet'})
+            return self._fetch_tweets('statuses/mentions_timeline')
+        elif self.stream_type_id.stream_type == 'twitter_follow':
+            return self._fetch_tweets('statuses/user_timeline', {'user_id': self.twitter_followed_account_id.twitter_id})
+        elif self.stream_type_id.stream_type == 'twitter_likes':
+            return self._fetch_tweets('favorites/list', {'user_id': self.twitter_followed_account_id.twitter_id})
+        elif self.stream_type_id.stream_type == 'twitter_keyword':
+            return self._fetch_tweets('search/tweets', {'q': self.twitter_searched_keyword + ' -filter:retweets', 'result_type': 'recent'})
 
     def _fetch_tweets(self, endpoint_name, extra_params={}):
         self.ensure_one()
+
         query_params = {
-            'max_results': 100,
-            'tweet.fields': 'created_at,public_metrics,referenced_tweets,conversation_id',
-            'expansions': 'author_id,attachments.media_keys,referenced_tweets.id,referenced_tweets.id.author_id',
-            'user.fields': 'id,name,username,profile_image_url',
-            'media.fields': 'type,url,preview_image_url',
+            'tweet_mode': 'extended',
+            'count': 100
         }
         query_params.update(extra_params)
-        tweets_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, endpoint_name)
+        tweets_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/%s.json" % endpoint_name)
         # TODO awa: check the "TE" header (Transfer-Encoding) to get a (smaller) gzip response
         headers = self.account_id._get_twitter_oauth_header(
             tweets_endpoint_url,
             params=query_params,
-            method='GET',
+            method='GET'
         )
-        response = requests.get(
+        result = requests.get(
             tweets_endpoint_url,
-            query_params,
+            params=query_params,
             headers=headers,
             timeout=5
         )
-        result = response.json()
 
-        if not response.ok:
-            _logger.error('Failed to fetch social stream posts: %r for account %i.', response.text, self.account_id.id)
+        if not result.ok:
             # an error occurred
-            if 'Not authorized' in result.get('title', ''):
+            result = result.json()
+            if 'Not authorized' in result.get('error', ''):
                 # no error code is returned by the Twitter API in that case
                 # it's probably because the Twitter account we tried to add
                 # is private
@@ -98,32 +88,27 @@ class SocialStreamTwitter(models.Model):
                     "You cannot create a Stream from this Twitter account.\n"
                     "It may be because it's protected. To solve this, please make sure you follow it before trying again."
                 )
-            elif response.status_code == 400 and result.get('errors', [{}])[0].get('parameters', {}).get('query'):
-                # invalid query
-                error_message = _("The keyword you've typed in does not look valid. Please try again with other words.")
             else:
-                error_code = result.get('status')
-                error_message = result.get('title')
+                error_code = result.get('errors', [{}])[0].get('code')
+                error_message = result.get('errors', [{}])[0].get('message')
                 ERROR_MESSAGES = {
-                    429: _("Looks like you've made too many requests. Please wait a few minutes before giving it another try."),
+                    195: _("The keyword you've typed in does not look valid. Please try again with other words."),
+                    88: _("Looks like you've made too many requests. Please wait a few minutes before giving it another try."),
                 }
                 error_message = ERROR_MESSAGES.get(error_code, error_message)
 
             if error_message:
                 raise UserError(error_message)
 
-        if isinstance(result, dict) and not result.get('data') and result.get('errors') or result is None:
-            self.account_id._action_disconnect_accounts(result)
+        result_tweets = result.json() if endpoint_name != 'search/tweets' else result.json().get('statuses')
+        if isinstance(result_tweets, dict) and result_tweets.get('errors') or result_tweets is None:
+            self.account_id._action_disconnect_accounts(result_tweets)
             return False
 
-        tweets_by_tweet_id = {
-            tweet['id']: tweet
-            for tweet in result.get('data', [])
-        }
-
-        existing_tweets = self.env['social.stream.post'].sudo().search([
+        tweets_ids = [tweet.get('id_str') for tweet in result_tweets]
+        existing_tweets = self.env['social.stream.post'].search([
             ('stream_id', '=', self.id),
-            ('twitter_tweet_id', 'in', list(tweets_by_tweet_id)),
+            ('twitter_tweet_id', 'in', tweets_ids)
         ])
         existing_tweets_by_tweet_id = {
             tweet.twitter_tweet_id: tweet for tweet in existing_tweets
@@ -132,79 +117,117 @@ class SocialStreamTwitter(models.Model):
         # TODO awa: handle deleted tweets ?
         tweets_to_create = []
 
-        users_per_id = {
-            user['id']: user
-            for user in result.get('includes', {}).get('users', [])
-        }
-        medias_per_id = {
-            media['media_key']: media
-            for media in result.get('includes', {}).get('media', [])
-        }
+        favorites_by_id = self._lookup_tweets([tweet.get('id_str') for tweet in result_tweets])
 
-        quote_and_retweet_per_ids = {
-            tweet.get('id'): tweet
-            for tweet in result.get('includes', {}).get('tweets', [])
-        }
-
-        for twitter_tweet_id, tweet in tweets_by_tweet_id.items():
-            public_metrics = tweet.get('public_metrics', {})
-            user_info = users_per_id.get(tweet.get('author_id'), {})
-            created_date = tweet.get('created_at')
-            if created_date:
-                created_date = fields.Datetime.from_string(dateutil.parser.parse(created_date).strftime('%Y-%m-%d %H:%M:%S'))
+        for tweet in result_tweets:
             values = {
                 'stream_id': self.id,
-                'message': unescape(tweet.get('text', '')),
-                'author_name': user_info.get('name'),
-                'published_date': created_date,
-                'twitter_likes_count': public_metrics.get('like_count'),
-                'twitter_retweet_count': public_metrics.get('retweet_count'),
-                'twitter_tweet_id': twitter_tweet_id,
-                'twitter_conversation_id': tweet.get('conversation_id'),
-                'twitter_author_id': tweet.get('author_id'),
-                'twitter_screen_name': user_info.get('username'),
-                'twitter_profile_image_url': user_info.get('profile_image_url'),
+                'message': tweet.get('full_text'),
+                'author_name': tweet.get('user').get('name'),
+                'published_date': dateutil.parser.parse(tweet.get('created_at'), ignoretz=True),
+                'twitter_likes_count': tweet.get('favorite_count'),
+                'twitter_user_likes': favorites_by_id.get(tweet.get('id_str'), {'favorited': False})['favorited'],
+                'twitter_retweet_count': tweet.get('retweet_count'),
+                'twitter_tweet_id': tweet.get('id_str'),
+                'twitter_author_id': tweet.get('user').get('id_str'),
+                'twitter_screen_name': tweet.get('user').get('screen_name'),
+                'twitter_profile_image_url': tweet.get('user').get('profile_image_url_https')
             }
 
-            # Handle quote and retweet
-            referenced_tweets = tweet.get('referenced_tweets', [])
-            if referenced_tweets and referenced_tweets[0]['type'] == 'retweeted':
-                values['twitter_retweeted_tweet_id_str'] = referenced_tweets[0]['id']
-            elif referenced_tweets and referenced_tweets[0]['type'] == 'quoted':
-                quote = quote_and_retweet_per_ids.get(referenced_tweets[0]['id'], {})
-                quote_author = users_per_id.get(quote.get('author_id'), {})
+            if 'quoted_status' in tweet:
+                quoted_status = tweet['quoted_status']
+                if 'id_str' in quoted_status:
+                    user = quoted_status.get('user', {})
+                    values.update({
+                        'twitter_quoted_tweet_id_str': quoted_status['id_str'],
+                        'twitter_quoted_tweet_message': quoted_status.get('full_text', ''),
+                        'twitter_quoted_tweet_author_name': user.get('name', ''),
+                        'twitter_quoted_tweet_profile_image_url': user.get('profile_image_url_https', '')
+                    })
+                    if 'id_str' in user:
+                        values.update({
+                            'twitter_quoted_tweet_author_link': 'https://twitter.com/intent/user?user_id=%s' % user['id_str'],
+                        })
+            if 'retweeted_status' in tweet:
+                retweet = tweet['retweeted_status']
+                if 'id_str' in retweet:
+                    values.update({
+                        'twitter_retweeted_tweet_id_str': retweet['id_str']
+                    })
 
-                values.update({
-                    'twitter_quoted_tweet_id_str': quote.get('id'),
-                    'twitter_quoted_tweet_message': quote.get('text', ''),
-                    'twitter_quoted_tweet_author_name': quote_author.get('name', ''),
-                    'twitter_quoted_tweet_profile_image_url': quote_author.get('profile_image_url', ''),
-                })
-                if quote_author.get('username'):
-                    values['twitter_quoted_tweet_author_link'] = 'https://twitter.com/%s' % quote_author['username']
-
-            existing_tweet = existing_tweets_by_tweet_id.get(tweet.get('id'))
+            existing_tweet = existing_tweets_by_tweet_id.get(tweet.get('id_str'))
             if existing_tweet:
                 existing_tweet.sudo().write(values)
             else:
                 # attachments are only extracted for new posts
-                values.update(self._extract_twitter_attachments(tweet, medias_per_id))
+                values.update(self._extract_twitter_attachments(tweet))
                 tweets_to_create.append(values)
 
         stream_posts = self.env['social.stream.post'].sudo().create(tweets_to_create)
         return any(stream_post.stream_id.create_uid.id == self.env.uid for stream_post in stream_posts)
 
     @api.model
-    def _extract_twitter_attachments(self, tweet, medias_per_id=None):
-        if not medias_per_id:
-            return {}
-        medias = [
-            medias_per_id[media]
-            for media in tweet.get('attachments', {}).get('media_keys', [])
-        ]
-        images = [
-            {'image_url': media['url']}
-            for media in medias
-            if media['type'] == 'photo'
-        ]
-        return {'stream_post_image_ids': [(0, 0, attachment) for attachment in images]} if images else {}
+    def _extract_twitter_attachments(self, tweet):
+        result = {}
+
+        images = []
+        images_urls = []
+        for attachment in tweet.get('extended_entities', {}).get('media', []):
+            if attachment.get('type') == 'photo':
+                image_url = attachment.get('media_url_https')
+                images_urls.append(image_url)
+                images.append({
+                    'image_url': image_url
+                })
+
+        if images:
+            result.update({
+                'stream_post_image_ids': [(0, 0, attachment) for attachment in images],
+            })
+
+        return result
+
+    def _lookup_tweets(self, tweet_ids):
+        """ Search API doesn't correctly supply the 'favorited' status of the tweet.
+        Solution suggested by twitter: lookup the IDs again...
+        Check: https://twittercommunity.com/t/favorited-reports-as-false-even-if-status-is-already-favorited-by-the-user/11145/7
+
+        This method will lookup all provided tweets and return a dict containing {'tweet_id': favorited} """
+
+        page = 1
+        lookup_endpoint_ul = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/statuses/lookup.json")
+        favorites_by_id = {}
+        while len(tweet_ids) >= ((page - 1) * 100):
+            start = (page - 1) * 100
+            end = start + 100
+            params = {
+                'id': ','.join(tweet_ids[start:end])
+            }
+            headers = self.account_id._get_twitter_oauth_header(
+                lookup_endpoint_ul,
+                params=params
+            )
+            response = requests.post(
+                lookup_endpoint_ul,
+                data=params,
+                headers=headers,
+                timeout=5
+            )
+            try:
+                response.raise_for_status()
+                result = response.json()
+                if not (isinstance(result, dict) and result.get('errors')):
+                    favorites_by_id.update({
+                        tweet.get('id_str'): {
+                            'favorited': tweet.get('favorited', False)
+                        }
+                        for tweet in result
+                    })
+            except requests.HTTPError:
+                # we let it fail silently because the lookup doesn't do anything essential, unless
+                # checking the # of likes, so we can continue, instead of stopping the process.
+                pass
+
+            page += 1
+
+        return favorites_by_id

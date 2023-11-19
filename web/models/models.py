@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import Dict, List
-
 import babel.dates
-import base64
-import copy
-import itertools
-import json
 import pytz
+from lxml import etree
+import base64
+import json
 
 from odoo import _, _lt, api, fields, models
-from odoo.fields import Command
-from odoo.models import BaseModel, NewId
 from odoo.osv.expression import AND, TRUE_DOMAIN, normalize_domain
-from odoo.tools import date_utils, unique
-from odoo.tools.misc import OrderedSet, get_lang
+from odoo.tools import date_utils, lazy
+from odoo.tools.misc import get_lang
 from odoo.exceptions import UserError
 from collections import defaultdict
 
@@ -38,189 +33,53 @@ DISPLAY_DATE_FORMATS = {
 }
 
 
+class IrActionsActWindowView(models.Model):
+    _inherit = 'ir.actions.act_window.view'
+
+    view_mode = fields.Selection(selection_add=[
+        ('qweb', 'QWeb')
+    ], ondelete={'qweb': 'cascade'})
+
+
 class Base(models.AbstractModel):
     _inherit = 'base'
 
     @api.model
-    def web_search_read(self, domain, specification, offset=0, limit=None, order=None, count_limit=None):
-        records = self.search_fetch(domain, specification.keys(), offset=offset, limit=limit, order=order)
-        values_records = records.web_read(specification)
-        return self._format_web_search_read_results(domain, values_records, offset, limit, count_limit)
+    def web_search_read(self, domain=None, fields=None, offset=0, limit=None, order=None, count_limit=None):
+        """
+        Performs a search_read and a search_count.
 
-    def _format_web_search_read_results(self, domain, records, offset=0, limit=None, count_limit=None):
+        :param domain: search domain
+        :param fields: list of fields to read
+        :param limit: maximum number of records to read
+        :param offset: number of records to skip
+        :param order: columns to sort results
+        :return: {
+            'records': array of read records (result of a call to 'search_read')
+            'length': number of records matching the domain (result of a call to 'search_count')
+        }
+        """
+        records = self.search_read(domain, fields, offset=offset, limit=limit, order=order)
         if not records:
             return {
                 'length': 0,
-                'records': [],
+                'records': []
             }
-        current_length = len(records) + offset
-        limit_reached = len(records) == limit
-        force_search_count = self._context.get('force_search_count')
-        count_limit_reached = count_limit and count_limit <= current_length
-        if limit and ((limit_reached and not count_limit_reached) or force_search_count):
+        if limit and (len(records) == limit or self.env.context.get('force_search_count')):
             length = self.search_count(domain, limit=count_limit)
         else:
-            length = current_length
+            length = len(records) + offset
         return {
             'length': length,
-            'records': records,
+            'records': records
         }
 
-    def web_save(self, vals, specification: Dict[str, Dict], next_id=None) -> List[Dict]:
-        if self:
-            self.write(vals)
-        else:
-            self = self.create(vals)
-        if next_id:
-            self = self.browse(next_id)
-        return self.with_context(bin_size=True).web_read(specification)
-
-    def web_read(self, specification: Dict[str, Dict]) -> List[Dict]:
-        fields_to_read = list(specification) or ['id']
-
-        if fields_to_read == ['id']:
-            # if we request to read only the ids, we have them already so we can build the return dictionaries immediately
-            # this also avoid a call to read on the co-model that might have different access rules
-            values_list = [{'id': id_} for id_ in self._ids]
-        else:
-            values_list: List[Dict] = self.read(fields_to_read, load=None)
-
-        if not values_list:
-            return values_list
-
-        def cleanup(vals: Dict) -> Dict:
-            """ Fixup vals['id'] of a new record. """
-            if not vals['id']:
-                vals['id'] = vals['id'].origin or False
-            return vals
-
-        for field_name, field_spec in specification.items():
-            field = self._fields.get(field_name)
-            if field is None:
-                continue
-
-            if field.type == 'many2one':
-                if 'fields' not in field_spec:
-                    for values in values_list:
-                        if isinstance(values[field_name], NewId):
-                            values[field_name] = values[field_name].origin
-                    continue
-
-                co_records = self[field_name]
-                if 'context' in field_spec:
-                    co_records = co_records.with_context(**field_spec['context'])
-
-                extra_fields = dict(field_spec['fields'])
-                extra_fields.pop('display_name', None)
-
-                many2one_data = {
-                    vals['id']: cleanup(vals)
-                    for vals in co_records.web_read(extra_fields)
-                }
-
-                if 'display_name' in field_spec['fields']:
-                    for rec in co_records.sudo():
-                        many2one_data[rec.id]['display_name'] = rec.display_name
-
-                for values in values_list:
-                    if values[field_name] is False:
-                        continue
-                    vals = many2one_data[values[field_name]]
-                    values[field_name] = vals['id'] and vals
-
-            elif field.type in ('one2many', 'many2many'):
-                if not field_spec:
-                    continue
-
-                co_records = self[field_name]
-
-                if 'order' in field_spec and field_spec['order']:
-                    co_records = co_records.search([('id', 'in', co_records.ids)], order=field_spec['order'])
-                    order_key = {
-                        co_record.id: index
-                        for index, co_record in enumerate(co_records)
-                    }
-                    for values in values_list:
-                        # filter out inaccessible corecords in case of "cache pollution"
-                        values[field_name] = [id_ for id_ in values[field_name] if id_ in order_key]
-                        values[field_name] = sorted(values[field_name], key=order_key.__getitem__)
-
-                if 'context' in field_spec:
-                    co_records = co_records.with_context(**field_spec['context'])
-
-                if 'fields' in field_spec:
-                    if field_spec.get('limit') is not None:
-                        limit = field_spec['limit']
-                        ids_to_read = OrderedSet(
-                            id_
-                            for values in values_list
-                            for id_ in values[field_name][:limit]
-                        )
-                        co_records = co_records.browse(ids_to_read)
-
-                    x2many_data = {
-                        vals['id']: vals
-                        for vals in co_records.web_read(field_spec['fields'])
-                    }
-
-                    for values in values_list:
-                        values[field_name] = [x2many_data.get(id_) or {'id': id_} for id_ in values[field_name]]
-
-            elif field.type in ('reference', 'many2one_reference'):
-                if not field_spec:
-                    continue
-
-                values_by_id = {
-                    vals['id']: vals
-                    for vals in values_list
-                }
-                for record in self:
-                    if not record[field_name]:
-                        continue
-
-                    if field.type == 'reference':
-                        co_record = record[field_name]
-                    else:  # field.type == 'many2one_reference'
-                        co_record = self.env[record[field.model_field]].browse(record[field_name])
-
-                    if 'context' in field_spec:
-                        co_record = co_record.with_context(**field_spec['context'])
-
-                    if 'fields' in field_spec:
-                        reference_read = co_record.web_read(field_spec['fields'])
-                        if any(fname != 'id' for fname in field_spec['fields']):
-                            # we can infer that if we can read fields for the co-record, it exists
-                            co_record_exists = bool(reference_read)
-                        else:
-                            co_record_exists = co_record.exists()
-                    else:
-                        # If there are no fields to read (field_spec.get('fields') --> None) and we web_read ids, it will
-                        # not actually read the records so we do not know if they exist.
-                        # This ensures the record actually exists
-                        co_record_exists = co_record.exists()
-
-                    record_values = values_by_id[record.id]
-
-                    if not co_record_exists:
-                        record_values[field_name] = False
-                        if field.type == 'many2one_reference':
-                            record_values[field.model_field] = False
-                        continue
-
-                    if 'fields' in field_spec:
-                        record_values[field_name] = reference_read[0]
-                        if field.type == 'reference':
-                            record_values[field_name]['id'] = {
-                                'id': co_record.id,
-                                'model': co_record._name
-                            }
-
-        return values_list
-
     @api.model
-    def web_read_group(self, domain, fields, groupby, limit=None, offset=0, orderby=False, lazy=True):
+    def web_read_group(self, domain, fields, groupby, limit=None, offset=0, orderby=False,
+                       lazy=True, expand=False, expand_limit=None, expand_orderby=False):
         """
-        Returns the result of a read_group and the total number of groups matching the search domain.
+        Returns the result of a read_group (and optionally search for and read records inside each
+        group), and the total number of groups matching the search domain.
 
         :param domain: search domain
         :param fields: list of fields to read (see ``fields``` param of ``read_group``)
@@ -229,22 +88,29 @@ class Base(models.AbstractModel):
         :param offset: see ``offset`` param of ``read_group``
         :param orderby: see ``orderby`` param of ``read_group``
         :param lazy: see ``lazy`` param of ``read_group``
+        :param expand: if true, and groupby only contains one field, read records inside each group
+        :param expand_limit: maximum number of records to read in each group
+        :param expand_orderby: order to apply when reading records in each group
         :return: {
             'groups': array of read groups
             'length': total number of groups
         }
         """
-        groups = self._web_read_group(domain, fields, groupby, limit, offset, orderby, lazy)
+        groups = self._web_read_group(domain, fields, groupby, limit, offset, orderby, lazy, expand,
+                                      expand_limit, expand_orderby)
 
         if not groups:
             length = 0
         elif limit and len(groups) == limit:
-            length = limit + len(self._read_group(
-                domain,
-                groupby=groupby if not lazy else [groupby[0]],
-                offset=limit,
-            ))
-
+            # We need to fetch all groups to know the total number
+            # this cannot be done all at once to avoid MemoryError
+            length = limit
+            chunk_size = 100000
+            while True:
+                more = len(self.read_group(domain, ['display_name'], groupby, offset=length, limit=chunk_size, lazy=True))
+                length += more
+                if more < chunk_size:
+                    break
         else:
             length = len(groups) + offset
         return {
@@ -253,14 +119,23 @@ class Base(models.AbstractModel):
         }
 
     @api.model
-    def _web_read_group(self, domain, fields, groupby, limit=None, offset=0, orderby=False, lazy=True):
+    def _web_read_group(self, domain, fields, groupby, limit=None, offset=0, orderby=False,
+                        lazy=True, expand=False, expand_limit=None, expand_orderby=False):
         """
+        Performs a read_group and optionally a web_search_read for each group.
         See ``web_read_group`` for params description.
 
         :returns: array of groups
         """
         groups = self.read_group(domain, fields, groupby, offset=offset, limit=limit,
                                  orderby=orderby, lazy=lazy)
+
+        if expand and len(groupby) == 1:
+            for group in groups:
+                group['__data'] = self.web_search_read(domain=group['__domain'], fields=fields,
+                                                       offset=0, limit=expand_limit,
+                                                       order=expand_orderby)
+
         return groups
 
     @api.model
@@ -277,9 +152,8 @@ class Base(models.AbstractModel):
         :return a dictionnary mapping group_by values to dictionnaries mapping
                 progress bar field values to the related number of records
         """
-        group_by_fullname = group_by.partition(':')[0]
-        group_by_fieldname = group_by_fullname.split(".")[0]  # split on "." in case we group on a property
-        field_type = self._fields[group_by_fieldname].type
+        group_by_fname = group_by.partition(':')[0]
+        field_type = self._fields[group_by_fname].type
         if field_type == 'selection':
             selection_labels = dict(self.fields_get()[group_by]['selection'])
 
@@ -307,40 +181,26 @@ class Base(models.AbstractModel):
         try:
             fname = progress_bar['field']
             return self.read_group(domain, [fname], [group_by, fname], lazy=False)
-        except ValueError:
+        except UserError:
             # possibly failed because of grouping on or aggregating non-stored
             # field; fallback on alternative implementation
             pass
 
         # Workaround to match read_group's infrastructure
         # TO DO in master: harmonize this function and readgroup to allow factorization
-        group_by_fullname = group_by.partition(':')[0]
-        group_by_fieldname = group_by_fullname.split(".")[0]  # split on "." in case we group on a property
+        group_by_name = group_by.partition(':')[0]
         group_by_modifier = group_by.partition(':')[2] or 'month'
 
-        records_values = self.search_read(domain or [], [progress_bar['field'], group_by_fieldname])
-        field_type = self._fields[group_by_fieldname].type
+        records_values = self.search_read(domain or [], [progress_bar['field'], group_by_name])
+        field_type = self._fields[group_by_name].type
 
         for record_values in records_values:
-            group_by_value = record_values.pop(group_by_fieldname)
-            property_name = group_by_fullname.partition('.')[2]
-            if field_type == "properties" and group_by_value:
-                group_by_value = next(
-                    (definition['value'] for definition in group_by_value
-                     if definition['name'] == property_name),
-                    False,
-                )
+            group_by_value = record_values.pop(group_by_name)
 
             # Again, imitating what _read_group_format_result and _read_group_prepare_data do
             if group_by_value and field_type in ['date', 'datetime']:
                 locale = get_lang(self.env).code
-                group_by_value = fields.Datetime.to_datetime(group_by_value)
-                if group_by_modifier != 'week':
-                    # start_of(v, 'week') does not take into account the locale
-                    # to determine the first day of the week; this part is not
-                    # necessary, since the formatting below handles the locale
-                    # as expected, and outputs correct results
-                    group_by_value = date_utils.start_of(group_by_value, group_by_modifier)
+                group_by_value = date_utils.start_of(fields.Datetime.to_datetime(group_by_value), group_by_modifier)
                 group_by_value = pytz.timezone('UTC').localize(group_by_value)
                 tz_info = None
                 if field_type == 'datetime' and self._context.get('tz') in pytz.all_timezones:
@@ -360,6 +220,32 @@ class Base(models.AbstractModel):
             record_values['__count'] = 1
 
         return records_values
+
+    ##### qweb view hooks #####
+    @api.model
+    def qweb_render_view(self, view_id, domain):
+        assert view_id
+        return self.env['ir.qweb']._render(
+            view_id,
+            {
+                'model': self,
+                'domain': domain,
+                # not necessarily necessary as env is already part of the
+                # non-minimal qcontext
+                'context': self.env.context,
+                'records': lazy(self.search, domain),
+            })
+
+    @api.model
+    def _get_view(self, view_id=None, view_type='form', **options):
+        arch, view = super()._get_view(view_id, view_type, **options)
+        # avoid leaking the raw (un-rendered) template, also avoids bloating
+        # the response payload for no reason. Only send the root node,
+        # to send attributes such as `js_class`.
+        if view_type == 'qweb':
+            root = arch
+            arch = etree.Element('qweb', root.attrib)
+        return arch, view
 
     @api.model
     def _search_panel_field_image(self, field_name, **kwargs):
@@ -886,231 +772,6 @@ class Base(models.AbstractModel):
 
             return { 'values': field_range, }
 
-    def onchange(self, values: Dict, field_names: List[str], fields_spec: Dict):
-        """
-        Perform an onchange on the given fields, and return the result.
-
-        :param values: dictionary mapping field names to values on the form view,
-            giving the current state of modification
-        :param field_names: names of the modified fields
-        :param fields_spec: dictionary specifying the fields in the view,
-            just like the one used by :meth:`web_read`; it is used to format
-            the resulting values
-
-        When creating a record from scratch, the client should call this with an
-        empty list as ``field_names``. In that case, the method first adds
-        default values to ``values``, computes the remaining fields, applies
-        onchange methods to them, and return all the fields in ``fields_spec``.
-
-        The result is a dictionary with two optional keys. The key ``"value"``
-        is used to return field values that should be modified on the caller.
-        The corresponding value is a dict mapping field names to their value,
-        in the format of :meth:`web_read`, except for x2many fields, where the
-        value is a list of commands to be applied on the caller's field value.
-
-        The key ``"warning"`` provides a warning message to the caller. The
-        corresponding value is a dictionary like::
-
-            {
-                "title": "Be careful!",         # subject of message
-                "message": "Blah blah blah.",   # full warning message
-                "type": "dialog",               # how to display the warning
-            }
-
-        """
-        # this is for tests using `Form`
-        self.env.flush_all()
-
-        env = self.env
-        cache = env.cache
-        first_call = not field_names
-
-        if any(fname not in self._fields for fname in field_names):
-            return {}
-
-        if first_call:
-            field_names = [fname for fname in values if fname != 'id']
-            missing_names = [fname for fname in fields_spec if fname not in values]
-            defaults = self.default_get(missing_names)
-            for field_name in missing_names:
-                values[field_name] = defaults.get(field_name, False)
-                if field_name in defaults:
-                    field_names.append(field_name)
-
-        # prefetch x2many lines: this speeds up the initial snapshot by avoiding
-        # computing fields on new records as much as possible, as that can be
-        # costly and is not necessary at all
-        self.fetch(fields_spec.keys())
-        for field_name, field_spec in fields_spec.items():
-            field = self._fields[field_name]
-            if field.type not in ('one2many', 'many2many'):
-                continue
-            sub_fields_spec = field_spec.get('fields') or {}
-            if sub_fields_spec and values.get(field_name):
-                # retrieve all line ids in commands
-                line_ids = OrderedSet(self[field_name].ids)
-                for cmd in values[field_name]:
-                    if cmd[0] in (Command.UPDATE, Command.LINK):
-                        line_ids.add(cmd[1])
-                    elif cmd[0] == Command.SET:
-                        line_ids.update(cmd[2])
-                # prefetch stored fields on lines
-                lines = self[field_name].browse(line_ids)
-                lines.fetch(sub_fields_spec.keys())
-                # copy the cache of lines to their corresponding new records;
-                # this avoids computing computed stored fields on new_lines
-                new_lines = lines.browse(map(NewId, line_ids))
-                for field_name in sub_fields_spec:
-                    field = lines._fields[field_name]
-                    line_values = [
-                        field.convert_to_cache(line[field_name], new_line, validate=False)
-                        for new_line, line in zip(new_lines, lines)
-                    ]
-                    cache.update(new_lines, field, line_values)
-
-        # Isolate changed values, to handle inconsistent data sent from the
-        # client side: when a form view contains two one2many fields that
-        # overlap, the lines that appear in both fields may be sent with
-        # different data. Consider, for instance:
-        #
-        #   foo_ids: [line with value=1, ...]
-        #   bar_ids: [line with value=1, ...]
-        #
-        # If value=2 is set on 'line' in 'bar_ids', the client sends
-        #
-        #   foo_ids: [line with value=1, ...]
-        #   bar_ids: [line with value=2, ...]
-        #
-        # The idea is to put 'foo_ids' in cache first, so that the snapshot
-        # contains value=1 for line in 'foo_ids'. The snapshot is then updated
-        # with the value of `bar_ids`, which will contain value=2 on line.
-        #
-        # The issue also occurs with other fields. For instance, an onchange on
-        # a move line has a value for the field 'move_id' that contains the
-        # values of the move, among which the one2many that contains the line
-        # itself, with old values!
-        #
-        initial_values = dict(values)
-        changed_values = {fname: initial_values.pop(fname) for fname in field_names}
-
-        # do not force delegate fields to False
-        for parent_name in self._inherits.values():
-            if not initial_values.get(parent_name, True):
-                initial_values.pop(parent_name)
-
-        # create a new record with initial values
-        if self:
-            # fill in the cache of record with the values of self
-            cache_values = {fname: self[fname] for fname in fields_spec}
-            record = self.new(cache_values, origin=self)
-            # apply initial values on top of the values of self
-            record._update_cache(initial_values)
-        else:
-            # set changed values to null in initial_values; not setting them
-            # triggers default_get() on the new record when creating snapshot0
-            initial_values.update(dict.fromkeys(field_names, False))
-            record = self.new(initial_values, origin=self)
-
-        # make parent records match with the form values; this ensures that
-        # computed fields on parent records have all their dependencies at
-        # their expected value
-        for field_name in initial_values:
-            field = self._fields.get(field_name)
-            if field and field.inherited:
-                parent_name, field_name = field.related.split('.', 1)
-                record[parent_name]._update_cache({field_name: record[field_name]})
-
-        # make a snapshot based on the initial values of record
-        snapshot0 = RecordSnapshot(record, fields_spec, fetch=(not first_call))
-
-        # store changed values in cache; also trigger recomputations based on
-        # subfields (e.g., line.a has been modified, line.b is computed stored
-        # and depends on line.a, but line.b is not in the form view)
-        record._update_cache(changed_values)
-
-        # update snapshot0 with changed values
-        for field_name in field_names:
-            snapshot0.fetch(field_name)
-
-        # Determine which field(s) should be triggered an onchange. On the first
-        # call, 'names' only contains fields with a default. If 'self' is a new
-        # line in a one2many field, 'names' also contains the one2many's inverse
-        # field, and that field may not be in nametree.
-        todo = list(unique(itertools.chain(field_names, fields_spec))) if first_call else list(field_names)
-        done = set()
-
-        # mark fields to do as modified to trigger recomputations
-        protected = [self._fields[fname] for fname in field_names]
-        with self.env.protecting(protected, record):
-            record.modified(todo)
-            for field_name in todo:
-                field = self._fields[field_name]
-                if field.inherited:
-                    # modifying an inherited field should modify the parent
-                    # record accordingly; because we don't actually assign the
-                    # modified field on the record, the modification on the
-                    # parent record has to be done explicitly
-                    parent = record[field.related.split('.')[0]]
-                    parent[field_name] = record[field_name]
-
-        result = {'warnings': OrderedSet()}
-
-        # process names in order
-        while todo:
-            # apply field-specific onchange methods
-            for field_name in todo:
-                record._apply_onchange_methods(field_name, result)
-                done.add(field_name)
-
-            if not env.context.get('recursive_onchanges', True):
-                break
-
-            # determine which fields to process for the next pass
-            todo = [
-                field_name
-                for field_name in fields_spec
-                if field_name not in done and snapshot0.has_changed(field_name)
-            ]
-
-        # make the snapshot with the final values of record
-        snapshot1 = RecordSnapshot(record, fields_spec)
-
-        # determine values that have changed by comparing snapshots
-        result['value'] = snapshot1.diff(snapshot0, force=first_call)
-
-        # format warnings
-        warnings = result.pop('warnings')
-        if len(warnings) == 1:
-            title, message, type_ = warnings.pop()
-            if not type_:
-                type_ = 'dialog'
-            result['warning'] = dict(title=title, message=message, type=type_)
-        elif len(warnings) > 1:
-            # concatenate warning titles and messages
-            title = _("Warnings")
-            message = '\n\n'.join([warn_title + '\n\n' + warn_message for warn_title, warn_message, warn_type in warnings])
-            result['warning'] = dict(title=title, message=message, type='dialog')
-
-        return result
-
-    def web_override_translations(self, values):
-        """
-        This method is used to override all the modal translations of the given fields
-        with the provided value for each field.
-
-        :param values: dictionary of the translations to apply for each field name
-        ex: { "field_name": "new_value" }
-        """
-        self.ensure_one()
-        for field_name in values:
-            field = self._fields[field_name]
-            if field.translate is True:
-                translations = {lang: False for lang, _ in self.env['res.lang'].get_installed()}
-                translations['en_US'] = values[field_name]
-                translations[self.env.lang or 'en_US'] = values[field_name]
-                self.update_field_translations(field_name, translations)
-
-
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
@@ -1147,114 +808,3 @@ class ResCompany(models.Model):
         b64_val = self._get_asset_style_b64()
         if b64_val != asset_attachment.datas:
             asset_attachment.write({'datas': b64_val})
-
-
-class RecordSnapshot(dict):
-    """ A dict with the values of a record, following a prefix tree. """
-    __slots__ = ['record', 'fields_spec']
-
-    def __init__(self, record: BaseModel, fields_spec: Dict, fetch=True):
-        # put record in dict to include it when comparing snapshots
-        super().__init__()
-        self.record = record
-        self.fields_spec = fields_spec
-        if fetch:
-            for name in fields_spec:
-                self.fetch(name)
-
-    def __eq__(self, other: 'RecordSnapshot'):
-        return self.record == other.record and super().__eq__(other)
-
-    def fetch(self, field_name):
-        """ Set the value of field ``name`` from the record's value. """
-        if self.record._fields[field_name].type in ('one2many', 'many2many'):
-            # x2many fields are serialized as a dict of line snapshots
-            lines = self.record[field_name]
-            if 'context' in self.fields_spec[field_name]:
-                lines = lines.with_context(**self.fields_spec[field_name]['context'])
-            sub_fields_spec = self.fields_spec[field_name].get('fields') or {}
-            self[field_name] = {line.id: RecordSnapshot(line, sub_fields_spec) for line in lines}
-        else:
-            self[field_name] = self.record[field_name]
-
-    def has_changed(self, field_name) -> bool:
-        """ Return whether a field on the record has changed. """
-        if field_name not in self:
-            return True
-        if self.record._fields[field_name].type not in ('one2many', 'many2many'):
-            return self[field_name] != self.record[field_name]
-        return self[field_name].keys() != set(self.record[field_name]._ids) or any(
-            line_snapshot.has_changed(subname)
-            for line_snapshot in self[field_name].values()
-            for subname in self.fields_spec[field_name].get('fields') or {}
-        )
-
-    def diff(self, other: 'RecordSnapshot', force=False):
-        """ Return the values in ``self`` that differ from ``other``. """
-
-        # determine fields to return
-        simple_fields_spec = {}
-        x2many_fields_spec = {}
-        for field_name, field_spec in self.fields_spec.items():
-            if field_name == 'id':
-                continue
-            if not force and other.get(field_name) == self[field_name]:
-                continue
-            field = self.record._fields[field_name]
-            if field.type in ('one2many', 'many2many'):
-                x2many_fields_spec[field_name] = field_spec
-            else:
-                simple_fields_spec[field_name] = field_spec
-
-        # use web_read() for simple fields
-        [result] = self.record.web_read(simple_fields_spec)
-
-        # discard the NewId from the dict
-        result.pop('id')
-
-        # for x2many fields: serialize value as commands
-        for field_name, field_spec in x2many_fields_spec.items():
-            commands = []
-
-            self_value = self[field_name]
-            other_value = {} if force else other.get(field_name) or {}
-            if any(other_value):
-                # other may be a snapshot for a real record, adapt its x2many ids
-                other_value = {NewId(id_): snap for id_, snap in other_value.items()}
-
-            # commands for removed lines
-            field = self.record._fields[field_name]
-            remove = Command.delete if field.type == 'one2many' else Command.unlink
-            for id_ in other_value:
-                if id_ not in self_value:
-                    commands.append(remove(id_.origin or id_.ref or 0))
-
-            # commands for modified or extra lines
-            for id_, line_snapshot in self_value.items():
-                if not force and id_ in other_value:
-                    # existing line: check diff and send update
-                    line_diff = line_snapshot.diff(other_value[id_])
-                    if line_diff:
-                        commands.append(Command.update(id_.origin or id_.ref or 0, line_diff))
-
-                elif not id_.origin:
-                    # new line: send diff from scratch
-                    line_diff = line_snapshot.diff({})
-                    commands.append((Command.CREATE, id_.origin or id_.ref or 0, line_diff))
-
-                else:
-                    # link line: send data to client
-                    base_line = line_snapshot.record._origin
-                    [base_data] = base_line.web_read(field_spec.get('fields') or {})
-                    commands.append((Command.LINK, base_line.id, base_data))
-
-                    # check diff and send update
-                    base_snapshot = RecordSnapshot(base_line, field_spec.get('fields') or {})
-                    line_diff = line_snapshot.diff(base_snapshot)
-                    if line_diff:
-                        commands.append(Command.update(id_.origin, line_diff))
-
-            if commands:
-                result[field_name] = commands
-
-        return result

@@ -10,7 +10,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     unspsc_code_id = fields.Many2one('product.unspsc.code', 'UNSPSC Category', domain=[('applies_to', '=', 'product')],
-        help='The UNSPSC code related to this product.  Used for edi in Colombia, Peru, Mexico and Denmark')
+        help='The UNSPSC code related to this product.  Used for edi in Colombia, Peru and Mexico')
 
 
 class UomUom(models.Model):
@@ -23,19 +23,20 @@ class UomUom(models.Model):
 
 class ProductCode(models.Model):
     """Product and UoM codes defined by UNSPSC
-    Used by Mexico, Peru, Colombia and Denmark localizations
+    Used by Mexico, Peru and Colombia localizations
     """
     _name = 'product.unspsc.code'
     _description = "Product and UOM Codes from UNSPSC"
-    _rec_names_search = ['name', 'code']
+    _rec_names_get = ['name', 'code']
 
     code = fields.Char('Code', required=True)
-    name = fields.Char('Name', required=True, translate=True)
+    name = fields.Char('Name', required=True)
     applies_to = fields.Selection([('product', 'Product'), ('uom', 'UoM'),], required=True,
         help='Indicate if this code could be used in products or in UoM',)
     active = fields.Boolean()
 
-    @api.depends('code')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         for prod in self:
-            prod.display_name = f"{prod.code} {prod.name or ''}"
+            result.append((prod.id, "%s %s" % (prod.code, prod.name or '')))
+        return result

@@ -7,6 +7,8 @@ from odoo import models, fields
 class HrContract(models.Model):
     _inherit = 'hr.contract.history'
 
+    sign_request_ids = fields.Many2many('sign.request', string='Requested Signatures')
+
     def action_sign_contract_wizard(self):
         self.ensure_one()
         action = self.env['ir.actions.actions']._for_xml_id('hr_contract_sign.sign_contract_wizard_action')

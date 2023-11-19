@@ -27,7 +27,7 @@ def mocked_l10n_pe_edi_post_invoice_web_service(edi_format, invoice, edi_filenam
 class TestPeEdiCommon(AccountEdiTestCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='pe', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
+    def setUpClass(cls, chart_template_ref='l10n_pe.pe_chart_template', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
         super().setUpClass(chart_template_ref=chart_template_ref, edi_format_ref=edi_format_ref)
 
         cls.frozen_today = datetime(year=2017, month=1, day=1, hour=0, minute=0, second=0, tzinfo=timezone('utc'))
@@ -38,13 +38,12 @@ class TestPeEdiCommon(AccountEdiTestCommon):
         # Replace USD by the fake currency created in setup (GOL).
         cls.env.ref('base.USD').name = "OLD_USD"
         cls.currency_data['currency'].name = 'USD'
-        cls.currency_data['currency'].rounding = 0.01
 
         # ==== Config ====
 
+        resource_path = modules.get_resource_path('l10n_pe_edi', 'demo/certificates', 'certificate.pfx')
         cls.certificate = cls.env['l10n_pe_edi.certificate'].create({
-            'content': base64.encodebytes(
-                misc.file_open('l10n_pe_edi/demo/certificates/certificate.pfx', 'rb').read()),
+            'content': base64.encodebytes(misc.file_open(resource_path, 'rb').read()),
             'password': '12345678a',
         })
         cls.certificate.write({
@@ -59,7 +58,7 @@ class TestPeEdiCommon(AccountEdiTestCommon):
             'l10n_pe_edi_test_env': True,
         })
 
-        cls.national_bank = cls.env.ref("l10n_pe.peruvian_national_bank")
+        cls.national_bank = cls.env.ref("l10n_pe_edi.peruvian_national_bank")
         cls.national_bank_account = cls.env['res.partner.bank'].create({
             'acc_number': 'CUENTAPRUEBA',
             'bank_id': cls.national_bank.id,
@@ -146,7 +145,6 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                 <CustomizationID>2.0</CustomizationID>
                 <ID>___ignore___</ID>
                 <IssueDate>2017-01-01</IssueDate>
-                <DueDate>2017-01-01</DueDate>
                 <InvoiceTypeCode
                     listID="0101"
                     listAgencyName="PE:SUNAT"
@@ -154,9 +152,6 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                     listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</InvoiceTypeCode>
                 <Note languageLocaleID="1000">NUEVE MIL CUATROCIENTOS CUARENTA Y 00/100 GOLD</Note>
                 <DocumentCurrencyCode>USD</DocumentCurrencyCode>
-                <OrderReference>
-                    <ID>___ignore___</ID>
-                </OrderReference>
                 <Signature>
                     <ID>IDSignKG</ID>
                     <SignatoryParty>
@@ -182,40 +177,12 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyName>
                             <Name>company_1_data</Name>
                         </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
                             <RegistrationAddress>
                                 <AddressTypeCode>0000</AddressTypeCode>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
                             </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>company_1_data</Name>
-                        </Contact>
                     </Party>
                 </AccountingSupplierParty>
                 <AccountingCustomerParty>
@@ -224,54 +191,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyIdentification>
                             <ID schemeID="6">20462509236</ID>
                         </PartyIdentification>
-                        <PartyName>
-                            <Name>partner_a</Name>
-                        </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>partner_a</Name>
-                        </Contact>
                     </Party>
                 </AccountingCustomerParty>
-                <Delivery>
-                    <DeliveryLocation>
-                        <Address>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </Address>
-                    </DeliveryLocation>
-                </Delivery>
                 <PaymentTerms>
                     <ID>FormaPago</ID>
                     <PaymentMeansID>Contado</PaymentMeansID>
@@ -292,13 +216,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                 </TaxTotal>
                 <LegalMonetaryTotal>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
-                    <TaxExclusiveAmount currencyID="USD">8000.00</TaxExclusiveAmount>
                     <TaxInclusiveAmount currencyID="USD">9440.00</TaxInclusiveAmount>
-                    <PrepaidAmount currencyID="USD">0.00</PrepaidAmount>
                     <PayableAmount currencyID="USD">9440.00</PayableAmount>
                 </LegalMonetaryTotal>
                 <InvoiceLine>
-                    <ID>___ignore___</ID>
+                    <ID>1</ID>
                     <InvoicedQuantity unitCode="KGM">5.0</InvoicedQuantity>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
                     <PricingReference>
@@ -325,17 +247,9 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                     </TaxTotal>
                     <Item>
                         <Description>product_pe</Description>
-                        <Name>product_pe</Name>
                         <CommodityClassification>
                             <ItemClassificationCode>01010101</ItemClassificationCode>
                         </CommodityClassification>
-                        <ClassifiedTaxCategory>
-                            <ID>S</ID>
-                            <Percent>18.0</Percent>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </ClassifiedTaxCategory>
                     </Item>
                     <Price>
                         <PriceAmount currencyID="USD">1600.00</PriceAmount>
@@ -359,15 +273,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                 <CustomizationID>2.0</CustomizationID>
                 <ID>___ignore___</ID>
                 <IssueDate>2017-01-01</IssueDate>
-                <CreditNoteTypeCode>381</CreditNoteTypeCode>
                 <DocumentCurrencyCode>USD</DocumentCurrencyCode>
                 <DiscrepancyResponse>
                     <ResponseCode>01</ResponseCode>
                     <Description>abc</Description>
                 </DiscrepancyResponse>
-                <OrderReference>
-                    <ID>abc</ID>
-                </OrderReference>
                 <BillingReference>
                     <InvoiceDocumentReference>
                         <ID>___ignore___</ID>
@@ -399,40 +309,12 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyName>
                             <Name>company_1_data</Name>
                         </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
                             <RegistrationAddress>
                                 <AddressTypeCode>0000</AddressTypeCode>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
                             </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>company_1_data</Name>
-                        </Contact>
                     </Party>
                 </AccountingSupplierParty>
                 <AccountingCustomerParty>
@@ -441,54 +323,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyIdentification>
                             <ID schemeID="6">20462509236</ID>
                         </PartyIdentification>
-                        <PartyName>
-                            <Name>partner_a</Name>
-                        </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>partner_a</Name>
-                        </Contact>
                     </Party>
                 </AccountingCustomerParty>
-                <Delivery>
-                    <DeliveryLocation>
-                        <Address>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </Address>
-                    </DeliveryLocation>
-                </Delivery>
                 <TaxTotal>
                     <TaxAmount currencyID="USD">1440.00</TaxAmount>
                     <TaxSubtotal>
@@ -505,13 +344,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                 </TaxTotal>
                 <LegalMonetaryTotal>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
-                    <TaxExclusiveAmount currencyID="USD">8000.00</TaxExclusiveAmount>
                     <TaxInclusiveAmount currencyID="USD">9440.00</TaxInclusiveAmount>
-                    <PrepaidAmount currencyID="USD">0.00</PrepaidAmount>
                     <PayableAmount currencyID="USD">9440.00</PayableAmount>
                 </LegalMonetaryTotal>
                 <CreditNoteLine>
-                    <ID>___ignore___</ID>
+                    <ID>1</ID>
                     <CreditedQuantity unitCode="KGM">5.0</CreditedQuantity>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
                     <PricingReference>
@@ -538,17 +375,9 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                     </TaxTotal>
                     <Item>
                         <Description>product_pe</Description>
-                        <Name>product_pe</Name>
                         <CommodityClassification>
                             <ItemClassificationCode>01010101</ItemClassificationCode>
                         </CommodityClassification>
-                        <ClassifiedTaxCategory>
-                            <ID>S</ID>
-                            <Percent>18.0</Percent>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </ClassifiedTaxCategory>
                     </Item>
                     <Price>
                         <PriceAmount currencyID="USD">1600.00</PriceAmount>
@@ -577,9 +406,6 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                     <ResponseCode>01</ResponseCode>
                     <Description>abc</Description>
                 </DiscrepancyResponse>
-                <OrderReference>
-                    <ID>abc</ID>
-                </OrderReference>
                 <BillingReference>
                     <InvoiceDocumentReference>
                         <ID>___ignore___</ID>
@@ -611,40 +437,12 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyName>
                             <Name>company_1_data</Name>
                         </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>company_1_data</RegistrationName>
-                            <CompanyID>20557912879</CompanyID>
                             <RegistrationAddress>
                                 <AddressTypeCode>0000</AddressTypeCode>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
                             </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>company_1_data</Name>
-                        </Contact>
                     </Party>
                 </AccountingSupplierParty>
                 <AccountingCustomerParty>
@@ -653,54 +451,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                         <PartyIdentification>
                             <ID schemeID="6">20462509236</ID>
                         </PartyIdentification>
-                        <PartyName>
-                            <Name>partner_a</Name>
-                        </PartyName>
-                        <PostalAddress>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </PostalAddress>
-                        <PartyTaxScheme>
-                            <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </PartyTaxScheme>
                         <PartyLegalEntity>
                             <RegistrationName>partner_a</RegistrationName>
-                            <CompanyID>20462509236</CompanyID>
-                            <RegistrationAddress>
-                                <Country>
-                                    <IdentificationCode>PE</IdentificationCode>
-                                    <Name>Peru</Name>
-                                </Country>
-                            </RegistrationAddress>
                         </PartyLegalEntity>
-                        <Contact>
-                            <ID>___ignore___</ID>
-                            <Name>partner_a</Name>
-                        </Contact>
                     </Party>
                 </AccountingCustomerParty>
-                <Delivery>
-                    <DeliveryLocation>
-                        <Address>
-                            <Country>
-                                <IdentificationCode>PE</IdentificationCode>
-                                <Name>Peru</Name>
-                            </Country>
-                        </Address>
-                    </DeliveryLocation>
-                </Delivery>
                 <PaymentTerms>
                     <ID>FormaPago</ID>
                     <PaymentMeansID>Contado</PaymentMeansID>
@@ -721,13 +476,11 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                 </TaxTotal>
                 <RequestedMonetaryTotal>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
-                    <TaxExclusiveAmount currencyID="USD">8000.00</TaxExclusiveAmount>
                     <TaxInclusiveAmount currencyID="USD">9440.00</TaxInclusiveAmount>
-                    <PrepaidAmount currencyID="USD">0.00</PrepaidAmount>
                     <PayableAmount currencyID="USD">9440.00</PayableAmount>
                 </RequestedMonetaryTotal>
                 <DebitNoteLine>
-                    <ID>___ignore___</ID>
+                    <ID>1</ID>
                     <DebitedQuantity unitCode="KGM">5.0</DebitedQuantity>
                     <LineExtensionAmount currencyID="USD">8000.00</LineExtensionAmount>
                     <PricingReference>
@@ -754,17 +507,9 @@ class TestPeEdiCommon(AccountEdiTestCommon):
                     </TaxTotal>
                     <Item>
                         <Description>product_pe</Description>
-                        <Name>product_pe</Name>
                         <CommodityClassification>
                             <ItemClassificationCode>01010101</ItemClassificationCode>
                         </CommodityClassification>
-                        <ClassifiedTaxCategory>
-                            <ID>S</ID>
-                            <Percent>18.0</Percent>
-                            <TaxScheme>
-                                <ID>VAT</ID>
-                            </TaxScheme>
-                        </ClassifiedTaxCategory>
                     </Item>
                     <Price>
                         <PriceAmount currencyID="USD">1600.00</PriceAmount>

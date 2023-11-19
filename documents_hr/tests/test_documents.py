@@ -28,7 +28,7 @@ class TestCaseDocumentsBridgeHR(TransactionCase):
         self.employee = self.env['hr.employee'].create({
             'name': 'User Empl Employee',
             'user_id': self.documents_user.id,
-            'work_contact_id': partner.id,
+            'address_home_id': partner.id,
         })
 
     def test_bridge_hr_settings_on_write(self):
@@ -47,7 +47,7 @@ class TestCaseDocumentsBridgeHR(TransactionCase):
         document = self.env['documents.document'].search([('attachment_id', '=', attachment_txt_test.id)])
         self.assertTrue(document.exists(), "There should be a new document created from the attachment")
         self.assertEqual(document.owner_id, self.documents_user, "The owner_id should be the document user")
-        self.assertEqual(document.partner_id, self.employee.work_contact_id, "The partner_id should be the employee's address")
+        self.assertEqual(document.partner_id, self.employee.address_home_id, "The partner_id should be the employee's address")
 
     def test_upload_employee_attachment(self):
         """

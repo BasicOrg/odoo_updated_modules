@@ -32,8 +32,8 @@ class MailingTrace(models.Model):
             marketing_trace.process_event('mail_reply')
         return traces
 
-    def set_bounced(self, domain=None, bounce_message=False):
-        traces = super(MailingTrace, self).set_bounced(domain=domain, bounce_message=bounce_message)
+    def set_bounced(self, domain=None):
+        traces = super(MailingTrace, self).set_bounced(domain=domain)
         marketing_mail_traces = traces.filtered(lambda trace: trace.marketing_trace_id and trace.marketing_trace_id.activity_type == 'email')
         for marketing_trace in marketing_mail_traces.marketing_trace_id:
             marketing_trace.process_event('mail_bounce')

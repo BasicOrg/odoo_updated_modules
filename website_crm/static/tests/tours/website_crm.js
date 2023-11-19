@@ -1,15 +1,17 @@
-/** @odoo-module **/
+odoo.define('website_crm.tour', function(require) {
+    'use strict';
 
-    import { registry } from "@web/core/registry";
-    import wTourUtils from "@website/js/tours/tour_utils";
+    const tour = require('web_tour.tour');
+    const wTourUtils = require('website.tour_utils');
 
     wTourUtils.registerWebsitePreviewTour('website_crm_pre_tour', {
         test: true,
         url: '/contactus',
         edition: true,
-    }, () => [{
+    }, [{
         content: "Select contact form",
         trigger: "iframe #wrap.o_editable section.s_website_form",
+        extra_trigger: "iframe body.editor_enable",
     }, {
         content: "Open action select",
         trigger: "we-select:has(we-button:contains('Create an Opportunity')) we-toggler",
@@ -17,18 +19,19 @@
     }, {
         content: "Select 'Create an Opportunity' as form action",
         trigger: "we-select we-button:contains('Create an Opportunity')",
-    },
-    ...wTourUtils.clickOnSave(),
-    {
+    }, {
+        content: "Save the settings",
+        trigger: "button[data-action=save]",
+    }, {
         content: "Ensure form model has changed and page reload is done after save",
         trigger: "iframe section.s_website_form form[data-model_name='crm.lead']",
-        isCheck: true,
+        extra_trigger: "iframe body:not(.editor_enable)",
     }]);
 
-    registry.category("web_tour.tours").add('website_crm_tour', {
+    tour.register('website_crm_tour', {
         test: true,
         url: '/contactus',
-        steps: () => [{
+    }, [{
         content: "Complete name",
         trigger: "input[name=contact_name]",
         run: "text John Smith",
@@ -57,14 +60,13 @@
         trigger: ".s_website_form_send"
     }, {
         content: "Check we were redirected to the success page",
-        trigger: "#wrap:has(h1:contains('Thank You!'))",
-        isCheck: true,
-    }]});
+        trigger: "#wrap:has(h1:contains('Thank You!'))"
+    }]);
 
-    registry.category("web_tour.tours").add('website_crm_catch_logged_partner_info_tour', {
+    tour.register('website_crm_catch_logged_partner_info_tour', {
         test: true,
         url: '/contactus',
-        steps: () => [{
+    }, [{
         content: "Complete Subject",
         trigger: "input[name=name]",
         run: "text Useless subject"
@@ -77,8 +79,8 @@
         trigger: ".s_website_form_send"
     }, {
         content: "Check we were redirected to the success page",
-        trigger: "#wrap:has(h1:contains('Thank You!'))",
-        isCheck: true,
-    }]});
+        trigger: "#wrap:has(h1:contains('Thank You!'))"
+    }]);
 
-    export default {};
+    return {};
+});

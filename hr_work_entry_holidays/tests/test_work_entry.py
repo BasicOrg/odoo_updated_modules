@@ -5,9 +5,8 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import pytz
 
-from odoo.exceptions import ValidationError
 from odoo.tests.common import tagged
-from odoo.fields import Date
+from odoo.fields import Date, Datetime
 from odoo.addons.hr_work_entry_holidays.tests.common import TestWorkEntryHolidaysBase
 
 
@@ -45,8 +44,9 @@ class TestWorkeEntryHolidaysWorkEntry(TestWorkEntryHolidaysBase):
             'name': 'Doctor Appointment',
             'employee_id': self.richard_emp.id,
             'holiday_status_id': self.leave_type.id,
-            'request_date_from': self.start.date() - relativedelta(days=1),
-            'request_date_to': self.start.date(),
+            'date_from': self.start - relativedelta(days=1),
+            'date_to': self.start + relativedelta(days=1),
+            'number_of_days': 2,
         })
         self.assertFalse(work_entry1.action_validate(), "It should not validate work_entries conflicting with non approved leaves")
         self.assertEqual(work_entry1.state, 'conflict')
@@ -58,8 +58,9 @@ class TestWorkeEntryHolidaysWorkEntry(TestWorkEntryHolidaysBase):
             'name': 'Doctor Appointment',
             'employee_id': self.richard_emp.id,
             'holiday_status_id': self.leave_type.id,
-            'request_date_from': start,
-            'request_date_to': start + relativedelta(days=1),
+            'date_from': start,
+            'date_to': start + relativedelta(days=1),
+            'number_of_days': 2,
         })
         work_entry = self.env['hr.work.entry'].create({
             'name': '1',
@@ -77,19 +78,20 @@ class TestWorkeEntryHolidaysWorkEntry(TestWorkEntryHolidaysBase):
 
     def test_time_week_leave_work_entry(self):
         # /!\ this is a week day => it exists an calendar attendance at this time
+        start = datetime(2015, 11, 2, 10, 0, 0)
+        end = datetime(2015, 11, 2, 17, 0, 0)
+        work_days_data = self.jules_emp._get_work_days_data_batch(start, end)
         leave = self.env['hr.leave'].create({
             'name': '1leave',
             'employee_id': self.richard_emp.id,
             'holiday_status_id': self.leave_type.id,
-            'request_date_from': date(2015, 11, 2),
-            'request_date_to': date(2015, 11, 2),
-            'request_unit_hours': True,
-            'request_hour_from': '11',
-            'request_hour_to': '17',
+            'date_from': start,
+            'date_to': end,
+            'number_of_days': work_days_data[self.jules_emp.id]['days'],
         })
         leave.action_validate()
 
-        work_entries = self.richard_emp.contract_id.generate_work_entries(self.start.date(), self.end.date())
+        work_entries = self.richard_emp.contract_id._generate_work_entries(self.start, self.end)
         work_entries.action_validate()
         leave_work_entry = work_entries.filtered(lambda we: we.work_entry_type_id in self.work_entry_type_leave)
         sum_hours = sum(leave_work_entry.mapped('duration'))
@@ -131,8 +133,9 @@ class TestWorkeEntryHolidaysWorkEntry(TestWorkEntryHolidaysBase):
             'name': 'Sick 1 week during christmas snif',
             'employee_id': employee.id,
             'holiday_status_id': leave_type.id,
-            'request_date_from': '2019-12-23',
-            'request_date_to': '2019-12-27',
+            'date_from': Datetime.from_string('2019-12-23 06:00:00'),
+            'date_to': Datetime.from_string('2019-12-27 20:00:00'),
+            'number_of_days': 5,
         })
         leave1.action_approve()
         leave1.action_validate()
@@ -178,53 +181,15 @@ class TestWorkeEntryHolidaysWorkEntry(TestWorkEntryHolidaysBase):
             'name': "Sick 1 that doesn't make sense, but it's the prod so YOLO",
             'employee_id': employee.id,
             'holiday_status_id': leave_type.id,
+            'date_from': date(2020, 9, 4),
             'request_date_from': date(2020, 9, 4),
+            'date_to': date(2020, 9, 4),
             'request_date_to': date(2020, 9, 4),
+            'number_of_days': 1,
         })
-
-        # TODO I don't know what this test is supposed to test, but I feel that
-        # in any case it should raise a Validation Error, as it's trying to
-        # validate a leave in a period the employee is not supposed to work.
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            leave.action_approve()
-            leave.action_validate()
-
-        work_entries = contract.generate_work_entries(date(2020, 7, 1), date(2020, 9, 30))
-
-        self.assertEqual(len(work_entries), 0)
-
-    def test_work_entries_leave_if_leave_conflict_with_public_holiday(self):
-        date_from = datetime(2023, 2, 1, 0, 0, 0)
-        date_to = datetime(2023, 2, 28, 23, 59, 59)
-        work_entry_type_holiday = self.env['hr.work.entry.type'].create({
-            'name': 'Public Holiday',
-            'is_leave': True,
-            'code': 'LEAVETEST500'
-        })
-        self.env['resource.calendar.leaves'].create({
-            'name': 'Public Holiday',
-            'date_from': datetime(2023, 2, 6, 0, 0, 0),
-            'date_to': datetime(2023, 2, 7, 23, 59, 59),
-            'calendar_id': self.richard_emp.resource_calendar_id.id,
-            'work_entry_type_id': work_entry_type_holiday.id,
-        })
-        leave = self.env['hr.leave'].create({
-            'name': 'AL',
-            'employee_id': self.richard_emp.id,
-            'holiday_status_id': self.leave_type.id,
-            'request_date_from': date(2023, 2, 3),
-            'request_date_to': date(2023, 2, 9),
-        })
+        leave.action_approve()
         leave.action_validate()
 
-        self.richard_emp.generate_work_entries(date_from, date_to, True)
-        work_entries = self.env['hr.work.entry'].search([
-            ('employee_id', '=', self.richard_emp.id),
-            ('date_stop', '>=', date_from),
-            ('date_start', '<=', date_to),
-            ('state', '!=', 'validated')])
-        leave_work_entry = work_entries.filtered(lambda we: we.work_entry_type_id in self.work_entry_type_leave)
-        self.assertEqual(leave_work_entry.leave_id.id, leave.id, "Leave work entry should have leave_id value")
+        work_entries = contract._generate_work_entries(date(2020, 7, 1), date(2020, 9, 30))
 
-        public_holiday_work_entry = work_entries.filtered(lambda we: we.work_entry_type_id == work_entry_type_holiday)
-        self.assertEqual(len(public_holiday_work_entry.leave_id), 0, "Public holiday work entry should not have leave_id")
+        self.assertEqual(len(work_entries), 0)

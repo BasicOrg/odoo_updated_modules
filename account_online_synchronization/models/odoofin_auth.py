@@ -6,7 +6,6 @@ import requests
 import time
 import werkzeug.urls
 
-
 class OdooFinAuth(requests.auth.AuthBase):
     """ This is used to sign the request going towards OdooFin
         e.g.:

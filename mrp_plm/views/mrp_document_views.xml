@@ -13,15 +13,15 @@
                 <field name="origin_attachment_id"/>
             </field>
             <xpath expr="//div[hasclass('o_kanban_image')]" position="before">
-                <div class="ribbon ribbon-top-right" invisible="active">
-                    <span class="text-bg-danger">Archived</span>
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': [('active', '=', True)]}">
+                    <span class="bg-danger">Archived</span>
                 </div>
-                <div class="ribbon ribbon-top-right" invisible="origin_attachment_id or not active">
-                    <span class="text-bg-primary">New</span>
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': ['|', ('origin_attachment_id', '!=', False), ('active', '=', False)]}">
+                    <span class="bg-primary">New</span>
                 </div>
             </xpath>
             <xpath expr="//a[@type='delete']" position="replace">
-                <a t-if="widget.deletable" type="delete" class="dropdown-item" invisible="res_model == 'mrp.eco'">Delete</a>
+                <a t-if="widget.deletable" type="delete" class="dropdown-item" attrs="{'invisible': [('res_model', '=', 'mrp.eco')]}">Delete</a>
                 <a name="toggle_active" type="object" class="dropdown-item" t-if="record.active.raw_value and record.res_model.raw_value=='mrp.eco'">Remove</a>
                 <a name="toggle_active" type="object" class="dropdown-item" t-if="!record.active.raw_value and record.res_model.raw_value=='mrp.eco'">Undo</a>
             </xpath>

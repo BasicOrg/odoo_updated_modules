@@ -9,9 +9,8 @@
         <field name="arch" type="xml">
             <xpath expr="//group[@name='previews_placeholder']" position="inside">
                 <field name="display_facebook_preview" invisible="1" />
-                <field name="facebook_preview" nolabel="1" colspan="2" widget="social_post_preview" media_type="facebook_preview"
-                    readonly="1"
-                    invisible="not display_facebook_preview"
+                <field name="facebook_preview" readonly="1" nolabel="1" colspan="2" widget="social_post_preview" media_type="facebook_preview"
+                    attrs="{'invisible': [('display_facebook_preview', '=', False)]}"
                     class="o_social_preview_wrapper m-0 px-4 py-4 bg-200"/>
             </xpath>
         </field>

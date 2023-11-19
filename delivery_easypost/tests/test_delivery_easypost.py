@@ -18,11 +18,10 @@ class TestDeliveryEasypost(EasypostTestCommon):
         """
         wiz_action = picking.action_put_in_pack()
         self.assertEqual(wiz_action['res_model'], 'choose.delivery.package', 'Wrong wizard returned')
-        wiz = Form(self.env[wiz_action['res_model']].with_context(wiz_action['context']).create({
+        wiz = self.env[wiz_action['res_model']].with_context(wiz_action['context']).create({
             'delivery_package_type_id': picking.carrier_id.easypost_default_package_type_id.id
-        }))
-        choose_delivery_carrier = wiz.save()
-        choose_delivery_carrier.action_put_in_pack()
+        })
+        wiz.action_put_in_pack()
 
     def test_easypost_one_package_shipping(self):
         """ Try to rate and ship an order from
@@ -53,7 +52,7 @@ class TestDeliveryEasypost(EasypostTestCommon):
         picking_fedex = sale_order_fedex.picking_ids[0]
 
         picking_fedex.action_assign()
-        picking_fedex.move_line_ids.write({'quantity': 1})
+        picking_fedex.move_line_ids.write({'qty_done': 1})
         self.assertGreater(picking_fedex.weight, 0.0, "Picking weight should be positive.(ep-fedex)")
 
         # Set a service in order to test rate request for a specific service.
@@ -62,13 +61,11 @@ class TestDeliveryEasypost(EasypostTestCommon):
         if not self.easypost_fedex_carrier.easypost_default_service_id:
             _logger.warning('"STANDARD_OVERNIGHT" is not anymore a fedex service, easypost default service is not tested.')
 
-        picking_fedex.move_ids.picked = True
         picking_fedex._action_done()
         self.assertGreater(picking_fedex.carrier_price, 0.0, "Easypost carrying price is probably incorrect(fedex)")
         self.assertIsNot(picking_fedex.carrier_tracking_ref, False,
                          "Easypost did not return any tracking number (fedex)")
 
-    # broken -> FedEx returned error: Ground Shipping is not authorized for this User
     def test_easypost_multiple_packages_shipping(self):
         """ Same than test with one package. This
         time it will use the put in pack functionality.
@@ -99,11 +96,11 @@ class TestDeliveryEasypost(EasypostTestCommon):
                           "Carrier is not the same on Picking and on SO(easypost-fedex).")
 
         picking_fedex.action_assign()
-        picking_fedex.move_ids[0].write({'quantity': 2, 'picked': True})
+        picking_fedex.move_ids[0].write({'quantity_done': 2})
         self.wiz_put_in_pack(picking_fedex)
         picking_fedex.move_ids[0].move_line_ids.result_package_id.package_type_id = self.fedex_default_package_type.id
         picking_fedex.move_ids[0].move_line_ids.result_package_id.shipping_weight = 10.0
-        picking_fedex.move_ids[1].write({'quantity': 3, 'picked': True})
+        picking_fedex.move_ids[1].write({'quantity_done': 3})
         self.wiz_put_in_pack(picking_fedex)
         picking_fedex.move_ids[1].move_line_ids.result_package_id.package_type_id = self.fedex_default_package_type.id
         picking_fedex.move_ids[1].move_line_ids.result_package_id.shipping_weight = 10.0
@@ -147,8 +144,7 @@ class TestDeliveryEasypost(EasypostTestCommon):
                           "Carrier is not the same on Picking and on SO(easypost-fedex).")
 
         picking_fedex.action_assign()
-        picking_fedex.move_line_ids.write({'quantity': 1})
-        picking_fedex.move_ids.picked = True
+        picking_fedex.move_line_ids.write({'qty_done': 1})
         self.assertGreater(picking_fedex.weight, 0.0, "Picking weight should be positive.(ep-fedex)")
         try:
             picking_fedex._action_done()
@@ -186,31 +182,3 @@ class TestDeliveryEasypost(EasypostTestCommon):
     def test_easypost_sends_correct_delivery_type_for_amazon(self):
         amazon_expected_delivery_type = self.easypost_fedex_carrier._get_delivery_type()
         self.assertEqual(amazon_expected_delivery_type, 'FedEx')
-
-
-@tagged('standard', '-external')
-class TestMockedDeliveryEasypost(TestDeliveryEasypost):
-    def setUp(self):
-        # this is needed because we use call the API for the carrier setup.
-        with self.patch_easypost_requests():
-            super().setUp()
-
-    def test_easypost_one_package_shipping(self):
-        with self.patch_easypost_requests():
-            super().test_easypost_one_package_shipping()
-
-    def test_easypost_multiple_packages_shipping(self):
-        with self.patch_easypost_requests():
-            super().test_easypost_multiple_packages_shipping()
-
-    def test_easypost_one_package_international_shipping(self):
-        with self.patch_easypost_requests():
-            super().test_easypost_one_package_international_shipping()
-
-    def test_easypost_extralight_package_shipping(self):
-        with self.patch_easypost_requests():
-            super().test_easypost_extralight_package_shipping()
-
-    def test_easypost_sends_correct_delivery_type_for_amazon(self):
-        with self.patch_easypost_requests():
-            super().test_easypost_sends_correct_delivery_type_for_amazon()

@@ -1,7 +1,8 @@
-/** @odoo-module **/
+odoo.define('survey.session_leaderboard', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import SESSION_CHART_COLORS from "@survey/js/survey_session_colors";
+var publicWidget = require('web.public.widget');
+var SESSION_CHART_COLORS = require('survey.session_colors');
 
 publicWidget.registry.SurveySessionLeaderboard = publicWidget.Widget.extend({
     init: function (parent, options) {
@@ -13,8 +14,6 @@ publicWidget.registry.SurveySessionLeaderboard = publicWidget.Widget.extend({
         this.BAR_MIN_WIDTH = '3rem';
         this.BAR_WIDTH = '24rem';
         this.BAR_HEIGHT = '3.8rem';
-
-        this.rpc = this.bindService("rpc");
     },
 
     //--------------------------------------------------------------------------
@@ -45,7 +44,9 @@ publicWidget.registry.SurveySessionLeaderboard = publicWidget.Widget.extend({
             self.$('.o_survey_session_leaderboard_container').empty();
         }
 
-        var leaderboardPromise = this.rpc(`/survey/session/leaderboard/${this.surveyAccessToken}`);
+        var leaderboardPromise = this._rpc({
+            route: _.str.sprintf('/survey/session/leaderboard/%s', this.surveyAccessToken)
+        });
 
         Promise.all([fadeOutPromise, leaderboardPromise]).then(function (results) {
             var leaderboardResults = results[1];
@@ -329,4 +330,6 @@ publicWidget.registry.SurveySessionLeaderboard = publicWidget.Widget.extend({
     }
 });
 
-export default publicWidget.registry.SurveySessionLeaderboard;
+return publicWidget.registry.SurveySessionLeaderboard;
+
+});

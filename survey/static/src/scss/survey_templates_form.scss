@@ -114,6 +114,12 @@ _::-webkit-full-page-media, _:future, :root .o_survey_wrap {
         }
     }
 
+    .o_survey_form_date [data-toggle="datetimepicker"]  {
+        right: 0;
+        bottom: 5px;
+        top: auto;
+    }
+
     .o_survey_choice_btn {
         transition: background-color 0.3s ease;
         flex: 1 0 300px;
@@ -125,18 +131,35 @@ _::-webkit-full-page-media, _:future, :root .o_survey_wrap {
         i {
             top: 0px;
             font-size: large;
+            &.fa-check-circle {
+                display: none;
+            }
         }
 
-        &.o_survey_selected i.fa-circle-thin,
-        &.o_survey_selected i.fa-square-o,
-        &:not(.o_survey_selected) i.fa-check-circle,
-        &:not(.o_survey_selected) i.fa-check-square {
+        &.o_survey_selected i {
             display: none;
+            &.fa-check-circle {
+                display: inline;
+            }
         }
     }
 
     input::placeholder, textarea::placeholder {
         font-weight: 300;
+    }
+
+    .o_survey_page_per_question.o_survey_simple_choice.o_survey_minimized_display,
+    .o_survey_page_per_question.o_survey_multiple_choice.o_survey_minimized_display,
+    .o_survey_page_per_question.o_survey_numerical_box,
+    .o_survey_page_per_question.o_survey_date,
+    .o_survey_page_per_question.o_survey_datetime {
+        // 'pixel perfect' layouting for choice questions having less than 5 choices in page_per_question mode
+        // we use media queries instead of bootstrap classes because they don't provide everything needed here
+        @media (min-width: 768px) {
+            width: 50%;
+            position: relative;
+            left: 25%;
+        }
     }
 
     .o_survey_question_matrix {
@@ -292,12 +315,6 @@ _::-webkit-full-page-media, _:future, :root .o_survey_wrap {
 
         &.o_survey_session_navigation_next {
             right: 1rem;
-            border: 2px solid #35979c;
-            border-radius: 5px;
-
-            &:hover {
-                border-color: #2a797c;
-            }
         }
 
         &.o_survey_session_navigation_previous {
@@ -438,7 +455,7 @@ _::-webkit-full-page-media, _:future, :root .o_survey_wrap {
             background-color: $gray-600;
             opacity: 1;
         }
-        i.fa-circle-thin, i.fa-square-o {
+        i.fa-circle-thin {
             display: none;
         }
     }

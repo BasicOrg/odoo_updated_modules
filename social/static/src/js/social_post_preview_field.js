@@ -2,13 +2,14 @@
 
 import { SocialPostFormatterMixin } from "./social_post_formatter_mixin";
 
-import { HtmlField, htmlField } from "@web_editor/js/backend/html_field";
+import { HtmlField } from "@web_editor/js/backend/html_field";
+import { patch } from '@web/core/utils/patch';
 import { registry } from "@web/core/registry";
-import { markup } from "@odoo/owl";
+const { markup } = owl;
 
-export class FieldPostPreview extends SocialPostFormatterMixin(HtmlField) {
+export class FieldPostPreview extends HtmlField {
     get markupValue() {
-        const $html = $(this.props.record.data[this.props.name] + '');
+        const $html = $(this.props.value + '');
         $html.find('.o_social_preview_message').each((index, previewMessage) => {
             $(previewMessage).html(this._formatPost($(previewMessage).text().trim()));
         });
@@ -22,14 +23,14 @@ FieldPostPreview.props = {
     mediaType: { type: String, optional: true },
 };
 
-export const fieldPostPreview = {
-    ...htmlField,
-    component: FieldPostPreview,
-    extractProps({ attrs }) {
-        const props = htmlField.extractProps(...arguments);
-        props.mediaType = attrs.media_type || '';
-        return props;
-    },
+FieldPostPreview.extractProps = ({ attrs, field }) => {
+    return {
+        ...HtmlField.extractProps({ attrs, field }),
+        mediaType: attrs.media_type || false,
+    }
 };
 
-registry.category("fields").add("social_post_preview", fieldPostPreview);
+
+patch(FieldPostPreview.prototype, 'social_preview_formatter_mixin', SocialPostFormatterMixin);
+
+registry.category("fields").add("social_post_preview", FieldPostPreview);

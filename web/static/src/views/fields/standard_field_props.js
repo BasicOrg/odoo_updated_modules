@@ -1,16 +1,13 @@
 /** @odoo-module **/
 
-/**
- * @typedef StandardFieldProps
- * @property {string} [id]
- * @property {string} name
- * @property {boolean} [readonly]
- * @property {import("@web/model/relational_model/record").Record} record
- */
-
 export const standardFieldProps = {
     id: { type: String, optional: true },
-    name: { type: String },
+    name: { type: String, optional: true },
     readonly: { type: Boolean, optional: true },
-    record: { type: Object },
+    record: { type: Object, optional: true },
+    type: { type: String, optional: true },
+    update: { type: Function, optional: true },
+    value: true,
+    decorations: { type: Object, optional: true },
+    setDirty: { type: Function, optional: true },
 };

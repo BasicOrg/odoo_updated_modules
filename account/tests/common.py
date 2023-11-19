@@ -1,32 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import fields, Command
+from odoo import fields
 from odoo.tests.common import TransactionCase, HttpCase, tagged, Form
 
 import json
 import time
 import base64
 from lxml import etree
-from unittest import SkipTest
 
-
-def instantiate_accountman(cls):
-    cls.user = cls.env['res.users'].create({
-        'name': 'Because I am accountman!',
-        'login': 'accountman',
-        'password': 'accountman',
-        'groups_id': [
-            Command.set(cls.env.user.groups_id.ids),
-            Command.link(cls.env.ref('account.group_account_manager').id),
-            Command.link(cls.env.ref('account.group_account_user').id),
-        ],
-    })
-    cls.user.partner_id.email = 'accountman@test.com'
-
-    # Shadow the current environment/cursor with one having the report user.
-    # This is mandatory to test access rights.
-    cls.env = cls.env(user=cls.user)
-    cls.cr = cls.env.cr
 
 class AccountTestInvoicingCommon(TransactionCase):
 
@@ -46,22 +27,42 @@ class AccountTestInvoicingCommon(TransactionCase):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass()
-        instantiate_accountman(cls)
+        super(AccountTestInvoicingCommon, cls).setUpClass()
 
         assert 'post_install' in cls.test_tags, 'This test requires a CoA to be installed, it should be tagged "post_install"'
 
         if chart_template_ref:
-            template_vals = cls.env['account.chart.template']._get_chart_template_mapping()[chart_template_ref]
-            template_module = cls.env.ref(f"base.module_{template_vals['module']}")
-            if template_module.state != 'installed':
-                raise SkipTest(f"Module required for the test is not installed ({template_module.name})")
+            chart_template = cls.env.ref(chart_template_ref)
+        else:
+            chart_template = cls.env.ref('l10n_generic_coa.configurable_chart_template', raise_if_not_found=False)
+        if not chart_template:
+            cls.tearDownClass()
+            # skipTest raises exception
+            cls.skipTest(cls, "Accounting Tests skipped because the user's company has no chart of accounts.")
 
-        cls.company_data_2 = cls.setup_company_data('company_2_data', chart_template=chart_template_ref)
-        cls.company_data = cls.setup_company_data('company_1_data', chart_template=chart_template_ref)
+        # Create user.
+        user = cls.env['res.users'].create({
+            'name': 'Because I am accountman!',
+            'login': 'accountman',
+            'password': 'accountman',
+            'groups_id': [
+                (6, 0, cls.env.user.groups_id.ids),
+                (4, cls.env.ref('account.group_account_manager').id),
+                (4, cls.env.ref('account.group_account_user').id),
+            ],
+        })
+        user.partner_id.email = 'accountman@test.com'
 
-        cls.user.write({
-            'company_ids': [Command.set((cls.company_data['company'] + cls.company_data_2['company']).ids)],
+        # Shadow the current environment/cursor with one having the report user.
+        # This is mandatory to test access rights.
+        cls.env = cls.env(user=user)
+        cls.cr = cls.env.cr
+
+        cls.company_data_2 = cls.setup_company_data('company_2_data', chart_template=chart_template)
+        cls.company_data = cls.setup_company_data('company_1_data', chart_template=chart_template)
+
+        user.write({
+            'company_ids': [(6, 0, (cls.company_data['company'] + cls.company_data_2['company']).ids)],
             'company_id': cls.company_data['company'].id,
         })
 
@@ -82,8 +83,8 @@ class AccountTestInvoicingCommon(TransactionCase):
             'standard_price': 800.0,
             'property_account_income_id': cls.company_data['default_account_revenue'].id,
             'property_account_expense_id': cls.company_data['default_account_expense'].id,
-            'taxes_id': [Command.set(cls.tax_sale_a.ids)],
-            'supplier_taxes_id': [Command.set(cls.tax_purchase_a.ids)],
+            'taxes_id': [(6, 0, cls.tax_sale_a.ids)],
+            'supplier_taxes_id': [(6, 0, cls.tax_purchase_a.ids)],
         })
         cls.product_b = cls.env['product.product'].create({
             'name': 'product_b',
@@ -92,8 +93,8 @@ class AccountTestInvoicingCommon(TransactionCase):
             'standard_price': 160.0,
             'property_account_income_id': cls.copy_account(cls.company_data['default_account_revenue']).id,
             'property_account_expense_id': cls.copy_account(cls.company_data['default_account_expense']).id,
-            'taxes_id': [Command.set((cls.tax_sale_a + cls.tax_sale_b).ids)],
-            'supplier_taxes_id': [Command.set((cls.tax_purchase_a + cls.tax_purchase_b).ids)],
+            'taxes_id': [(6, 0, (cls.tax_sale_a + cls.tax_sale_b).ids)],
+            'supplier_taxes_id': [(6, 0, (cls.tax_purchase_a + cls.tax_purchase_b).ids)],
         })
 
         # ==== Fiscal positions ====
@@ -127,13 +128,13 @@ class AccountTestInvoicingCommon(TransactionCase):
                 (0, 0, {
                     'value': 'percent',
                     'value_amount': 30.0,
-                    'nb_days': 0,
+                    'days': 0,
                 }),
                 (0, 0, {
-                    'value': 'percent',
-                    'value_amount': 70.0,
-                    'delay_type': 'days_after_end_of_next_month',
-                    'nb_days': 0,
+                    'value': 'balance',
+                    'value_amount': 0.0,
+                    'months': 1,
+                    'end_month': True,
                 }),
             ],
         })
@@ -175,6 +176,7 @@ class AccountTestInvoicingCommon(TransactionCase):
 
         # ==== Payment methods ====
         bank_journal = cls.company_data['default_journal_bank']
+
         cls.inbound_payment_method_line = bank_journal.inbound_payment_method_line_ids[0]
         cls.outbound_payment_method_line = bank_journal.outbound_payment_method_line_ids[0]
 
@@ -188,18 +190,26 @@ class AccountTestInvoicingCommon(TransactionCase):
         :param company_name: The name of the company.
         :return: A dictionary will be returned containing all relevant accounting data for testing.
         '''
+        def search_account(company, chart_template, field_name, domain):
+            template_code = chart_template[field_name].code
+            domain = [('company_id', '=', company.id)] + domain
 
+            account = None
+            if template_code:
+                account = cls.env['account.account'].search(domain + [('code', '=like', template_code + '%')], limit=1)
+
+            if not account:
+                account = cls.env['account.account'].search(domain, limit=1)
+            return account
+
+        chart_template = chart_template or cls.env.company.chart_template_id
         company = cls.env['res.company'].create({
             'name': company_name,
             **kwargs,
         })
         cls.env.user.company_ids |= company
 
-        # Install the chart template
-        chart_template = chart_template or cls.env['account.chart.template']._guess_chart_template(company.country_id)
-        cls.env['account.chart.template'].try_loading(chart_template, company=company, install_demo=False)
-        if not company.account_fiscal_country_id:
-            company.account_fiscal_country_id = cls.env.ref('base.us')
+        chart_template.try_loading(company=company, install_demo=False)
 
         # The currency could be different after the installation of the chart template.
         if kwargs.get('currency_id'):
@@ -218,24 +228,16 @@ class AccountTestInvoicingCommon(TransactionCase):
                     ('account_type', '=', 'expense'),
                     ('id', '!=', company.account_journal_early_pay_discount_loss_account_id.id)
                 ], limit=1),
-            'default_account_receivable': cls.env['ir.property'].with_company(company)._get(
-                'property_account_receivable_id', 'res.partner'
-            ),
+            'default_account_receivable': search_account(company, chart_template, 'property_account_receivable_id', [
+                ('account_type', '=', 'asset_receivable')
+            ]),
             'default_account_payable': cls.env['account.account'].search([
                     ('company_id', '=', company.id),
                     ('account_type', '=', 'liability_payable')
                 ], limit=1),
             'default_account_assets': cls.env['account.account'].search([
                     ('company_id', '=', company.id),
-                    ('account_type', '=', 'asset_fixed')
-                ], limit=1),
-            'default_account_deferred_expense': cls.env['account.account'].search([
-                    ('company_id', '=', company.id),
                     ('account_type', '=', 'asset_current')
-                ], limit=1),
-            'default_account_deferred_revenue': cls.env['account.account'].search([
-                    ('company_id', '=', company.id),
-                    ('account_type', '=', 'liability_current')
                 ], limit=1),
             'default_account_tax_sale': company.account_sale_tax_id.mapped('invoice_repartition_line_ids.account_id'),
             'default_account_tax_purchase': company.account_purchase_tax_id.mapped('invoice_repartition_line_ids.account_id'),
@@ -291,19 +293,6 @@ class AccountTestInvoicingCommon(TransactionCase):
             'currency': foreign_currency,
             'rates': rate1 + rate2,
         }
-
-    @classmethod
-    def _instantiate_basic_test_tax_group(cls, company=None, country=None):
-        company = company or cls.env.company
-        vals = {
-            'name': 'Test tax group',
-            'company_id': company.id,
-            'tax_receivable_account_id': cls.company_data['default_account_receivable'].sudo().copy({'company_id': company.id}).id,
-            'tax_payable_account_id': cls.company_data['default_account_payable'].sudo().copy({'company_id': company.id}).id,
-        }
-        if country:
-            vals['country_id'] = country.id
-        return cls.env['account.tax.group'].sudo().create(vals)
 
     @classmethod
     def setup_armageddon_tax(cls, tax_name, company_data):
@@ -383,12 +372,10 @@ class AccountTestInvoicingCommon(TransactionCase):
         })
 
     @classmethod
-    def init_invoice(cls, move_type, partner=None, invoice_date=None, post=False, products=None, amounts=None, taxes=None, company=False, currency=None):
-        products = [] if products is None else products
-        amounts = [] if amounts is None else amounts
+    def init_invoice(cls, move_type, partner=None, invoice_date=None, post=False, products=None, amounts=None, taxes=None, company=False):
         move_form = Form(cls.env['account.move'] \
                     .with_company(company or cls.env.company) \
-                    .with_context(default_move_type=move_type))
+                    .with_context(default_move_type=move_type, account_predictive_bills_disable_prediction=True))
         move_form.invoice_date = invoice_date or fields.Date.from_string('2019-01-01')
         # According to the state or type of the invoice, the date field is sometimes visible or not
         # Besides, the date field can be put multiple times in the view
@@ -399,22 +386,21 @@ class AccountTestInvoicingCommon(TransactionCase):
         if not move_form._get_modifier('date', 'invisible'):
             move_form.date = move_form.invoice_date
         move_form.partner_id = partner or cls.partner_a
-        if currency:
-            move_form.currency_id = currency
 
         for product in (products or []):
             with move_form.invoice_line_ids.new() as line_form:
                 line_form.product_id = product
-                if taxes is not None:
+                if taxes:
                     line_form.tax_ids.clear()
-                    for tax in taxes:
-                        line_form.tax_ids.add(tax)
+                    line_form.tax_ids.add(taxes)
 
         for amount in (amounts or []):
             with move_form.invoice_line_ids.new() as line_form:
                 line_form.name = "test line"
+                # We use account_predictive_bills_disable_prediction context key so that
+                # this doesn't trigger prediction in case enterprise (hence account_predictive_bills) is installed
                 line_form.price_unit = amount
-                if taxes is not None:
+                if taxes:
                     line_form.tax_ids.clear()
                     for tax in taxes:
                         line_form.tax_ids.add(tax)
@@ -425,41 +411,6 @@ class AccountTestInvoicingCommon(TransactionCase):
             rslt.action_post()
 
         return rslt
-
-    def create_line_for_reconciliation(self, balance, amount_currency, currency, move_date, account_1=None, partner=None):
-        write_off_account_to_be_reconciled = account_1 if account_1 else self.receivable_account
-        move = self.env['account.move'].create({
-            'move_type': 'entry',
-            'date': move_date,
-            'line_ids': [
-                Command.create({
-                    'debit': balance if balance > 0.0 else 0.0,
-                    'credit': -balance if balance < 0.0 else 0.0,
-                    'amount_currency': amount_currency,
-                    'account_id': write_off_account_to_be_reconciled.id,
-                    'currency_id': currency.id,
-                    'partner_id': partner.id if partner else None,
-                }),
-                Command.create({
-                    'debit': -balance if balance < 0.0 else 0.0,
-                    'credit': balance if balance > 0.0 else 0.0,
-                    'amount_currency': -amount_currency,
-                    'account_id': self.company_data['default_account_revenue'].id,
-                    'currency_id': currency.id,
-                    'partner_id': partner.id if partner else None,
-                }),
-            ],
-        })
-        move.action_post()
-        line = move.line_ids.filtered(lambda x: x.account_id == write_off_account_to_be_reconciled)
-
-        self.assertRecordValues(line, [{
-            'amount_residual': balance,
-            'amount_residual_currency': amount_currency,
-            'reconciled': False,
-        }])
-
-        return line
 
     def assertInvoiceValues(self, move, expected_lines_values, expected_move_values):
         def sort_lines(lines):
@@ -499,27 +450,21 @@ class AccountTestInvoicingCommon(TransactionCase):
     # Xml Comparison
     ####################################################
 
-    def _turn_node_as_dict_hierarchy(self, node, path=''):
+    def _turn_node_as_dict_hierarchy(self, node):
         ''' Turn the node as a python dictionary to be compared later with another one.
         Allow to ignore the management of namespaces.
         :param node:    A node inside an xml tree.
-        :param path:    The optional path of tags for recursive call.
         :return:        A python dictionary.
         '''
         tag_split = node.tag.split('}')
         tag_wo_ns = tag_split[-1]
         attrib_wo_ns = {k: v for k, v in node.attrib.items() if '}' not in k}
-        full_path = f'{path}/{tag_wo_ns}'
         return {
             'tag': tag_wo_ns,
-            'full_path': full_path,
             'namespace': None if len(tag_split) < 2 else tag_split[0],
             'text': (node.text or '').strip(),
             'attrib': attrib_wo_ns,
-            'children': [
-                self._turn_node_as_dict_hierarchy(child_node, path=path)
-                for child_node in node.getchildren()
-            ],
+            'children': [self._turn_node_as_dict_hierarchy(child_node) for child_node in node.getchildren()],
         }
 
     def assertXmlTreeEqual(self, xml_tree, expected_xml_tree):
@@ -543,7 +488,7 @@ class AccountTestInvoicingCommon(TransactionCase):
             self.assertDictEqual(
                 node_dict_attrib,
                 expected_node_dict_attrib,
-                f"Element attributes are different for node {node_dict['full_path']}",
+                "Element attributes are different for node %s" % node_dict['tag'],
             )
 
             # Check text.
@@ -551,14 +496,14 @@ class AccountTestInvoicingCommon(TransactionCase):
                 self.assertEqual(
                     node_dict['text'],
                     expected_node_dict['text'],
-                    f"Element text are different for node {node_dict['full_path']}",
+                    "Element text are different for node %s" % node_dict['tag'],
                 )
 
             # Check children.
             self.assertEqual(
                 [child['tag'] for child in node_dict['children']],
                 [child['tag'] for child in expected_node_dict['children']],
-                f"Number of children elements for node {node_dict['full_path']} is different.",
+                "Number of children elements for node %s is different." % node_dict['tag'],
             )
 
             for child_node_dict, expected_child_node_dict in zip(node_dict['children'], expected_node_dict['children']):
@@ -595,3 +540,168 @@ class AccountTestInvoicingCommon(TransactionCase):
 
 class AccountTestInvoicingHttpCommon(AccountTestInvoicingCommon, HttpCase):
     pass
+
+
+class TestAccountReconciliationCommon(AccountTestInvoicingCommon):
+
+    """Tests for reconciliation (account.tax)
+
+    Test used to check that when doing a sale or purchase invoice in a different currency,
+    the result will be balanced.
+    """
+
+    @classmethod
+    def setUpClass(cls, chart_template_ref=None):
+        super().setUpClass(chart_template_ref=chart_template_ref)
+
+        cls.company = cls.company_data['company']
+        cls.company.currency_id = cls.env.ref('base.EUR')
+
+        cls.partner_agrolait = cls.env['res.partner'].create({
+            'name': 'Deco Addict',
+            'is_company': True,
+            'country_id': cls.env.ref('base.us').id,
+        })
+        cls.partner_agrolait_id = cls.partner_agrolait.id
+        cls.currency_swiss_id = cls.env.ref("base.CHF").id
+        cls.currency_usd_id = cls.env.ref("base.USD").id
+        cls.currency_euro_id = cls.env.ref("base.EUR").id
+        cls.account_rcv = cls.company_data['default_account_receivable']
+        cls.account_rsa = cls.company_data['default_account_payable']
+        cls.product = cls.env['product.product'].create({
+            'name': 'Product Product 4',
+            'standard_price': 500.0,
+            'list_price': 750.0,
+            'type': 'consu',
+            'categ_id': cls.env.ref('product.product_category_all').id,
+        })
+
+        cls.bank_journal_euro = cls.env['account.journal'].create({'name': 'Bank', 'type': 'bank', 'code': 'BNK67'})
+        cls.account_euro = cls.bank_journal_euro.default_account_id
+
+        cls.bank_journal_usd = cls.env['account.journal'].create({'name': 'Bank US', 'type': 'bank', 'code': 'BNK68', 'currency_id': cls.currency_usd_id})
+        cls.account_usd = cls.bank_journal_usd.default_account_id
+
+        cls.fx_journal = cls.company.currency_exchange_journal_id
+        cls.diff_income_account = cls.company.income_currency_exchange_account_id
+        cls.diff_expense_account = cls.company.expense_currency_exchange_account_id
+
+        cls.expense_account = cls.company_data['default_account_expense']
+        # cash basis intermediary account
+        cls.tax_waiting_account = cls.env['account.account'].create({
+            'name': 'TAX_WAIT',
+            'code': 'TWAIT',
+            'account_type': 'liability_current',
+            'reconcile': True,
+            'company_id': cls.company.id,
+        })
+        # cash basis final account
+        cls.tax_final_account = cls.env['account.account'].create({
+            'name': 'TAX_TO_DEDUCT',
+            'code': 'TDEDUCT',
+            'account_type': 'asset_current',
+            'company_id': cls.company.id,
+        })
+        cls.tax_base_amount_account = cls.env['account.account'].create({
+            'name': 'TAX_BASE',
+            'code': 'TBASE',
+            'account_type': 'asset_current',
+            'company_id': cls.company.id,
+        })
+        cls.company.account_cash_basis_base_account_id = cls.tax_base_amount_account.id
+
+
+        # Journals
+        cls.purchase_journal = cls.company_data['default_journal_purchase']
+        cls.cash_basis_journal = cls.env['account.journal'].create({
+            'name': 'Test CABA',
+            'code': 'tCABA',
+            'type': 'general',
+        })
+        cls.general_journal = cls.company_data['default_journal_misc']
+
+        # Tax Cash Basis
+        cls.tax_cash_basis = cls.env['account.tax'].create({
+            'name': 'cash basis 20%',
+            'type_tax_use': 'purchase',
+            'company_id': cls.company.id,
+            'country_id': cls.company.account_fiscal_country_id.id,
+            'amount': 20,
+            'tax_exigibility': 'on_payment',
+            'cash_basis_transition_account_id': cls.tax_waiting_account.id,
+            'invoice_repartition_line_ids': [
+                    (0,0, {
+                        'repartition_type': 'base',
+                    }),
+
+                    (0,0, {
+                        'repartition_type': 'tax',
+                        'account_id': cls.tax_final_account.id,
+                    }),
+                ],
+            'refund_repartition_line_ids': [
+                    (0,0, {
+                        'repartition_type': 'base',
+                    }),
+
+                    (0,0, {
+                        'repartition_type': 'tax',
+                        'account_id': cls.tax_final_account.id,
+                    }),
+                ],
+        })
+        cls.env['res.currency.rate'].create([
+            {
+                'currency_id': cls.env.ref('base.EUR').id,
+                'name': '2010-01-02',
+                'rate': 1.0,
+            }, {
+                'currency_id': cls.env.ref('base.USD').id,
+                'name': '2010-01-02',
+                'rate': 1.2834,
+            }, {
+                'currency_id': cls.env.ref('base.USD').id,
+                'name': time.strftime('%Y-06-05'),
+                'rate': 1.5289,
+            }
+        ])
+
+    def _create_invoice(self, move_type='out_invoice', invoice_amount=50, currency_id=None, partner_id=None, date_invoice=None, payment_term_id=False, auto_validate=False):
+        date_invoice = date_invoice or time.strftime('%Y') + '-07-01'
+
+        invoice_vals = {
+            'move_type': move_type,
+            'partner_id': partner_id or self.partner_agrolait_id,
+            'invoice_date': date_invoice,
+            'date': date_invoice,
+            'invoice_line_ids': [(0, 0, {
+                'name': 'product that cost %s' % invoice_amount,
+                'quantity': 1,
+                'price_unit': invoice_amount,
+                'tax_ids': [(6, 0, [])],
+            })]
+        }
+
+        if payment_term_id:
+            invoice_vals['invoice_payment_term_id'] = payment_term_id
+
+        if currency_id:
+            invoice_vals['currency_id'] = currency_id
+
+        invoice = self.env['account.move'].with_context(default_move_type=move_type).create(invoice_vals)
+        if auto_validate:
+            invoice.action_post()
+        return invoice
+
+    def create_invoice(self, move_type='out_invoice', invoice_amount=50, currency_id=None):
+        return self._create_invoice(move_type=move_type, invoice_amount=invoice_amount, currency_id=currency_id, auto_validate=True)
+
+    def create_invoice_partner(self, move_type='out_invoice', invoice_amount=50, currency_id=None, partner_id=False, payment_term_id=False):
+        return self._create_invoice(
+            move_type=move_type,
+            invoice_amount=invoice_amount,
+            currency_id=currency_id,
+            partner_id=partner_id,
+            payment_term_id=payment_term_id,
+            auto_validate=True
+        )

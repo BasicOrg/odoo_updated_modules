@@ -12,7 +12,7 @@ from odoo.tools.float_utils import float_compare
 class TestPayslipValidation(AccountTestInvoicingCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='be_comp'):
+    def setUpClass(cls, chart_template_ref='l10n_be.l10nbe_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].write({
@@ -29,6 +29,16 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
         cls.env.user.tz = 'Europe/Brussels'
 
         cls.EMPLOYEES_COUNT = 5
+
+        cls.private_addresses = cls.env['res.partner'].create([{
+            'name': "Test Employee %s" % (i),
+            'company_id': cls.env.company.id,
+            'type': "private",
+            'street': 'Employee Street %s' %(i),
+            'zip': '100%s' % (i),
+            'city': 'Employee City %s' %(i),
+            'country_id': cls.env.ref('base.be').id,
+        } for i in range(cls.EMPLOYEES_COUNT)])
 
         cls.resource_calendar_38_hours_per_week = cls.env['resource.calendar'].create([{
             'name': "Test Calendar : 38 Hours/Week",
@@ -48,19 +58,14 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
 
             }) for dayofweek, hour_from, hour_to, day_period in [
                 ("0", 8.0, 12.0, "morning"),
-                ("0", 12.0, 13.0, "lunch"),
                 ("0", 13.0, 16.6, "afternoon"),
                 ("1", 8.0, 12.0, "morning"),
-                ("1", 12.0, 13.0, "lunch"),
                 ("1", 13.0, 16.6, "afternoon"),
                 ("2", 8.0, 12.0, "morning"),
-                ("2", 12.0, 13.0, "lunch"),
                 ("2", 13.0, 16.6, "afternoon"),
                 ("3", 8.0, 12.0, "morning"),
-                ("3", 12.0, 13.0, "lunch"),
                 ("3", 13.0, 16.6, "afternoon"),
                 ("4", 8.0, 12.0, "morning"),
-                ("4", 12.0, 13.0, "lunch"),
                 ("4", 13.0, 16.6, "afternoon"),
 
             ]],
@@ -68,10 +73,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
 
         cls.employees = cls.env['hr.employee'].create([{
             'name': "Test Employee %s" % (i),
-            'private_street': 'Employee Street %s' %(i),
-            'private_zip': '100%s' % (i),
-            'private_city': 'Employee City %s' %(i),
-            'private_country_id': cls.env.ref('base.be').id,
+            'address_home_id': cls.private_addresses[i].id,
             'resource_calendar_id': cls.resource_calendar_38_hours_per_week.id,
             'company_id': cls.env.company.id,
             'km_home_work': 75,
@@ -91,7 +93,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
         cls.cars = cls.env['fleet.vehicle'].create([{
             'name': "Test Car %s" % (i),
             'license_plate': "TEST%s" % (i),
-            'driver_id': cls.employees[i].work_contact_id.id,
+            'driver_id': cls.employees[i].address_home_id.id,
             'company_id': cls.env.company.id,
             'model_id': cls.model.id,
             'first_contract_date': datetime.date(2020, 10, 8),
@@ -138,7 +140,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
             'rd_percentage': 100,
         } for i in range(cls.EMPLOYEES_COUNT)])
 
-        cls.contracts.generate_work_entries(datetime.date(2021, 1, 1), datetime.date(2021, 12, 31))
+        cls.contracts._generate_work_entries(datetime.date(2021, 1, 1), datetime.date(2021, 12, 31))
 
         cls.batch = cls.env['hr.payslip.run'].create({
             'name': 'History Batch',
@@ -568,7 +570,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
         total_declared_pp = sum(declarations_274.mapped('pp_amount'))
 
         declaration_281 = self.env['l10n_be.281_10'].create({
-            'year': '2021',
+            'reference_year': '2021',
         })
         data_281 = declaration_281.with_context(no_round_281_10=True)._get_rendering_data(self.employees)
         declared_pp = data_281['total_data']['r9014_controletotaal']
@@ -608,7 +610,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
         })
         self.assertEqual(self.employees[0].first_contract_date, datetime.date(2022, 3, 1))
         declaration_281 = self.env['l10n_be.281_10'].create({
-            'year': '2021',
+            'reference_year': '2021',
         })
         data_281 = declaration_281.with_context(no_round_281_10=True)._get_rendering_data(self.employees)
         for employee_data in data_281['employees_data']:
@@ -645,7 +647,7 @@ class TestPayslipValidation(AccountTestInvoicingCommon):
 
         # 281.10 Declaration
         declaration_281 = self.env['l10n_be.281_10'].create({
-            'year': '2021',
+            'reference_year': '2021',
         })
         data_281 = declaration_281.with_context(no_round_281_10=True)._get_rendering_data(self.employees)
         for employee_data in data_281['employees_data']:

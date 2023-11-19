@@ -15,6 +15,23 @@ class Company(models.Model):
     account_consolidation_currency_is_different = fields.Boolean(
         compute='_compute_account_consolidation_currency_is_different')
 
+    # ONBOARDING
+    # Global onboarding state
+    consolidation_dashboard_onboarding_state = fields.Selection(
+        [('not_done', "Not done"), ('just_done', "Just done"), ('done', "Done"), ('closed', "Closed")],
+        string="State Of The Account Consolidation Dashboard Onboarding Panel", default='not_done')
+
+    # Onboarding steps states
+    consolidation_setup_consolidation_state = fields.Selection(
+        [('not_done', "Not done"), ('just_done', "Just done"), ('done', "Done")],
+        string="State Of The Onboarding Consolidation Step", default='not_done')
+    consolidation_setup_ccoa_state = fields.Selection(
+        [('not_done', "Not done"), ('just_done', "Just done"), ('done', "Done")],
+        string="State Of The Onboarding Consolidated Chart Of Account Step", default='not_done')
+    consolidation_create_period_state = fields.Selection(
+        [('not_done', "Not done"), ('just_done', "Just done"), ('done', "Done")],
+        string="State Of The Onboarding Create Period Step", default='not_done')
+
     @api.depends('currency_id')
     @api.depends_context('consolidation_currency_id')
     def _compute_account_consolidation_currency_is_different(self):
@@ -54,3 +71,15 @@ class Company(models.Model):
             'display_name': _('Historical Rates: %(company)s', company=self.name),
         })
         return action
+
+    def get_and_update_consolidation_dashboard_onboarding_state(self):
+        """
+        This method is called on the controller rendering method and ensures that the animations
+        are displayed only one time.
+        :return: the state of the onboarding.
+        """
+        return self._get_and_update_onboarding_state('consolidation_dashboard_onboarding_state', [
+            'consolidation_setup_consolidation_state',
+            'consolidation_setup_ccoa_state',
+            'consolidation_create_period_state',
+        ])

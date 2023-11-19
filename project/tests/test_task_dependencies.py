@@ -93,6 +93,43 @@ class TestTaskDependencies(TestProjectCommon):
             })
         self.assertEqual(len(self.task_2.depend_on_ids), 1, "The number of dependencies should no change in the task 2 because of a cyclic dependency.")
 
+    def test_tracking_dependencies(self):
+        # Enable the company setting
+        self.env['res.config.settings'].create({
+            'group_project_task_dependencies': True
+        }).execute()
+        # `depend_on_ids` is tracked
+        self.task_1.with_context(mail_notrack=True).write({
+            'depend_on_ids': [Command.link(self.task_2.id)]
+        })
+        self.cr.precommit.clear()
+        # Check that changing a dependency tracked field in task_2 logs a message in task_1.
+        self.task_2.write({'date_deadline': date(1983, 3, 1)}) # + 1 message in task_1 and task_2
+        self.flush_tracking()
+        self.assertEqual(len(self.task_1.message_ids), 1,
+            'Changing the deadline on task 2 should have logged a message in task 1.')
+
+        # Check that changing a dependency tracked field in task_1 does not log a message in task_2.
+        self.task_1.date_deadline = date(2020, 1, 2) # + 1 message in task_1
+        self.flush_tracking()
+        self.assertEqual(len(self.task_2.message_ids), 1,
+            'Changing the deadline on task 1 should not have logged a message in task 2.')
+
+        # Check that changing a field that is not tracked at all on task 2 does not impact task 1.
+        self.task_2.color = 100 # no new message
+        self.flush_tracking()
+        self.assertEqual(len(self.task_1.message_ids), 2,
+            'Changing the color on task 2 should not have logged a message in task 1 since it is not tracked.')
+
+        # Check that changing multiple fields does not log more than one message.
+        self.task_2.write({
+            'date_deadline': date(2020, 1, 1),
+            'kanban_state': 'blocked',
+        }) # + 1 message in task_1 and task_2
+        self.flush_tracking()
+        self.assertEqual(len(self.task_1.message_ids), 3,
+            'Changing multiple fields on task 2 should only log one message in task 1.')
+
     def test_task_dependencies_settings_change(self):
 
         def set_task_dependencies_setting(enabled):
@@ -103,7 +140,7 @@ class TestTaskDependencies(TestProjectCommon):
             'allow_task_dependencies': False,
         })
 
-        # As the Project General Setting group_project_task_dependencies needs to be toggled in order
+        # As the the Project General Setting group_project_task_dependencies needs to be toggled in order
         # to be applied on the existing projects we need to force it so that it does not depends on anything
         # (like demo data for instance)
         set_task_dependencies_setting(False)
@@ -147,13 +184,14 @@ class TestTaskDependencies(TestProjectCommon):
 
     def test_duplicate_project_with_subtask_dependencies(self):
         self.project_goats.allow_task_dependencies = True
+        self.project_goats.allow_subtasks = True
         parent_task = self.env['project.task'].with_context({'mail_create_nolog': True}).create({
             'name': 'Parent Task',
             'project_id': self.project_goats.id,
             'child_ids': [
-                Command.create({'name': 'Node 1', 'project_id': self.project_goats.id}),
-                Command.create({'name': 'SuperNode 2', 'project_id': self.project_goats.id, 'child_ids': [Command.create({'name': 'Node 2', 'project_id': self.project_goats.id})]}),
-                Command.create({'name': 'Node 3', 'project_id': self.project_goats.id}),
+                Command.create({'name': 'Node 1'}),
+                Command.create({'name': 'SuperNode 2', 'child_ids': [Command.create({'name': 'Node 2'})]}),
+                Command.create({'name': 'Node 3'}),
             ],
         })
 

@@ -5,7 +5,7 @@ from datetime import timedelta
 from pytz import utc
 from random import randint
 
-from odoo import api, fields, models, tools
+from odoo import api, fields, models
 from odoo.addons.http_routing.models.ir_http import slug
 from odoo.osv import expression
 from odoo.tools.mail import is_html_empty
@@ -30,7 +30,7 @@ class Track(models.Model):
     company_id = fields.Many2one('res.company', related='event_id.company_id')
     tag_ids = fields.Many2many('event.track.tag', string='Tags')
     description = fields.Html(translate=html_translate, sanitize_attributes=False, sanitize_form=False)
-    color = fields.Integer('Agenda Color')
+    color = fields.Integer('Color')
     priority = fields.Selection([
         ('0', 'Low'), ('1', 'Medium'),
         ('2', 'High'), ('3', 'Highest')],
@@ -59,20 +59,22 @@ class Track(models.Model):
     kanban_state_label = fields.Char(
         string='Kanban State Label', compute='_compute_kanban_state_label', store=True,
         tracking=True)
-    partner_id = fields.Many2one('res.partner', 'Contact')
+    partner_id = fields.Many2one('res.partner', 'Contact', help="Contact of the track, may be different from speaker.")
     # speaker information
     partner_name = fields.Char(
         string='Name', compute='_compute_partner_name',
-        readonly=False, store=True, tracking=10)
+        readonly=False, store=True, tracking=10,
+        help='Speaker name is used for public display and may vary from contact name')
     partner_email = fields.Char(
         string='Email', compute='_compute_partner_email',
-        readonly=False, store=True, tracking=20)
+        readonly=False, store=True, tracking=20,
+        help='Speaker email is used for public display and may vary from contact email')
     partner_phone = fields.Char(
         string='Phone', compute='_compute_partner_phone',
-        readonly=False, store=True, tracking=30)
+        readonly=False, store=True, tracking=30,
+        help='Speaker phone is used for public display and may vary from contact phone')
     partner_biography = fields.Html(
         string='Biography', compute='_compute_partner_biography',
-        sanitize_attributes=False,
         readonly=False, store=True)
     partner_function = fields.Char(
         'Job Position', compute='_compute_partner_function',
@@ -90,15 +92,17 @@ class Track(models.Model):
     # contact information
     contact_email = fields.Char(
         string='Contact Email', compute='_compute_contact_email',
-        readonly=False, store=True, tracking=20)
+        readonly=False, store=True, tracking=20,
+        help="Contact email is private and used internally")
     contact_phone = fields.Char(
         string='Contact Phone', compute='_compute_contact_phone',
-        readonly=False, store=True, tracking=30)
+        readonly=False, store=True, tracking=30,
+        help="Contact phone is private and used internally")
     location_id = fields.Many2one('event.track.location', 'Location')
     # time information
     date = fields.Datetime('Track Date')
     date_end = fields.Datetime('Track End Date', compute='_compute_end_date', store=True)
-    duration = fields.Float('Duration', default=0.5)
+    duration = fields.Float('Duration', default=0.5, help="Track duration in hours.")
     is_track_live = fields.Boolean(
         'Is Track Live', compute='_compute_track_time_data')
     is_track_soon = fields.Boolean(
@@ -142,7 +146,7 @@ class Track(models.Model):
                                  help="Display a Call to Action button to your Attendees while they watch your Track.")
     website_cta_title = fields.Char('Button Title')
     website_cta_url = fields.Char('Button Target URL')
-    website_cta_delay = fields.Integer('Show Button')
+    website_cta_delay = fields.Integer('Button appears')
     # time information for CTA
     is_website_cta_live = fields.Boolean(
         'Is CTA Live', compute='_compute_cta_time_data',
@@ -325,10 +329,10 @@ class Track(models.Model):
     def _compute_wishlist_visitor_ids(self):
         results = self.env['event.track.visitor']._read_group(
             [('track_id', 'in', self.ids), ('is_wishlisted', '=', True)],
-            ['track_id'],
-            ['visitor_id:array_agg'],
+            ['track_id', 'visitor_id:array_agg'],
+            ['track_id']
         )
-        visitor_ids_map = {track.id: visitor_ids for track, visitor_ids in results}
+        visitor_ids_map = {result['track_id'][0]: result['visitor_id'] for result in results}
         for track in self:
             track.wishlist_visitor_ids = visitor_ids_map.get(track.id, [])
             track.wishlist_visitor_count = len(visitor_ids_map.get(track.id, []))
@@ -400,16 +404,16 @@ class Track(models.Model):
 
         tracks = super(Track, self).create(vals_list)
 
-        post_values = {} if self.env.user.email else {'email_from': self.env.company.catchall_formatted}
         for track in tracks:
-            track.event_id.message_post_with_source(
+            email_values = {} if self.env.user.email else {'email_from': self.env.company.catchall_formatted}
+            track.event_id.message_post_with_view(
                 'website_event_track.event_track_template_new',
-                render_values={
+                values={
                     'track': track,
                     'is_html_empty': is_html_empty,
                 },
-                subtype_xmlid='website_event_track.mt_event_track',
-                **post_values,
+                subtype_id=self.env.ref('website_event_track.mt_event_track').id,
+                **email_values,
             )
             track._synchronize_with_stage(track.stage_id)
 
@@ -445,7 +449,7 @@ class Track(models.Model):
         return {
             track.id: {
                 'partner_ids': [],
-                'email_to': ','.join(tools.email_normalize_all(track.contact_email or track.partner_email)) or track.contact_email or track.partner_email,
+                'email_to': track.contact_email or track.partner_email,
                 'email_cc': False
             } for track in self
         }
@@ -472,19 +476,15 @@ class Track(models.Model):
             #  Contact(s) created from chatter set on track : we verify if at least one is the expected contact
             #  linked to the track. (created from contact_email if any, then partner_email if any)
             main_email = self.contact_email or self.partner_email
-            main_email_normalized = tools.email_normalize(main_email)
-            new_partner = message.partner_ids.filtered(
-                lambda partner: partner.email == main_email or (main_email_normalized and partner.email_normalized == main_email_normalized)
-            )
-            if new_partner:
-                mail_email_fname = 'contact_email' if self.contact_email else 'partner_email'
-                if new_partner[0].email_normalized:
-                    email_domain = (mail_email_fname, 'in', [new_partner[0].email, new_partner[0].email_normalized])
-                else:
-                    email_domain = (mail_email_fname, '=', new_partner[0].email)
-                self.search([
-                    ('partner_id', '=', False), email_domain, ('stage_id.is_cancel', '=', False),
-                ]).write({'partner_id': new_partner[0].id})
+            if main_email:
+                new_partner = message.partner_ids.filtered(lambda partner: partner.email == main_email)
+                if new_partner:
+                    main_email_string = 'contact_email' if self.contact_email else 'partner_email'
+                    self.search([
+                        ('partner_id', '=', False),
+                        (main_email_string, '=', new_partner.email),
+                        ('stage_id.is_cancel', '=', False),
+                    ]).write({'partner_id': new_partner.id})
         return super(Track, self)._message_post_after_hook(message, msg_vals)
 
     def _track_template(self, changes):
@@ -492,10 +492,10 @@ class Track(models.Model):
         track = self[0]
         if 'stage_id' in changes and track.stage_id.mail_template_id:
             res['stage_id'] = (track.stage_id.mail_template_id, {
-                'auto_delete_keep_log': False,
                 'composition_mode': 'comment',
-                'email_layout_xmlid': 'mail.mail_notification_light',
+                'auto_delete_message': True,
                 'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note'),
+                'email_layout_xmlid': 'mail.mail_notification_light'
             })
         return res
 

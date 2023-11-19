@@ -1,9 +1,14 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from dateutil.parser import parse
+
 from odoo.http import request
-from odoo import fields, http
+from odoo import http
 
 from odoo.addons.website_sale.controllers.main import WebsiteSale
+
+def parse_date(date):
+    return date and parse(date).replace(tzinfo=None)
 
 
 class WebsiteSaleRenting(WebsiteSale):
@@ -12,16 +17,16 @@ class WebsiteSaleRenting(WebsiteSale):
     def cart_update(self, *args, start_date=None, end_date=None, **kw):
         """ Override to parse to datetime optional pickup and return dates.
         """
-        start_date = fields.Datetime.to_datetime(start_date)
-        end_date = fields.Datetime.to_datetime(end_date)
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
         return super().cart_update(*args, start_date=start_date, end_date=end_date, **kw)
 
     @http.route()
     def cart_update_json(self, *args, start_date=None, end_date=None, **kwargs):
         """ Override to parse to datetime optional pickup and return dates.
         """
-        start_date = fields.Datetime.to_datetime(start_date)
-        end_date = fields.Datetime.to_datetime(end_date)
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
         return super().cart_update_json(
             *args, start_date=start_date, end_date=end_date, **kwargs
         )

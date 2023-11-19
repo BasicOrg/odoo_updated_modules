@@ -41,27 +41,23 @@ class TestChatbotCreateTicket(HelpdeskChatbotCase):
         self.assertEqual(created_ticket.team_id, self.helpdesk_team)
 
     def _chatbot_create_helpdesk_ticket(self, user):
-        channel_info = self.make_jsonrpc_request("/im_livechat/get_session", {
-            'anonymous_name': 'Test Visitor',
-            'channel_id': self.livechat_channel.id,
-            'chatbot_script_id': self.chatbot_script.id,
-            'user_id': user.id,
-        })
-        discuss_channel = self.env['discuss.channel'].sudo().browse(channel_info['id'])
+        channel_info = self.livechat_channel._open_livechat_mail_channel(
+            anonymous_name='Test Visitor', chatbot_script=self.chatbot_script, user_id=user.id)
+        mail_channel = self.env['mail.channel'].sudo().browse(channel_info['id'])
 
         self._post_answer_and_trigger_next_step(
-            discuss_channel,
+            mail_channel,
             self.step_selection_ticket.name,
             chatbot_script_answer=self.step_selection_ticket
         )
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_helpdesk_issue)
-        self._post_answer_and_trigger_next_step(discuss_channel, 'There is a problem with my printer.')
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_helpdesk_issue)
+        self._post_answer_and_trigger_next_step(mail_channel, 'There is a problem with my printer.')
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_helpdesk_email)
-        self._post_answer_and_trigger_next_step(discuss_channel, 'helpme@example.com')
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_helpdesk_email)
+        self._post_answer_and_trigger_next_step(mail_channel, 'helpme@example.com')
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_helpdesk_phone)
-        self._post_answer_and_trigger_next_step(discuss_channel, '+32499112233')
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_helpdesk_phone)
+        self._post_answer_and_trigger_next_step(mail_channel, '+32499112233')
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_helpdesk_create_ticket)
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_helpdesk_create_ticket)

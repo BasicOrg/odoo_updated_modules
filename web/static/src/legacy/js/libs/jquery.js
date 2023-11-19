@@ -1,4 +1,5 @@
-/** @odoo-module **/
+odoo.define('web.jquery.extensions', function () {
+'use strict';
 
 /**
  * The jquery library extensions and fixes should be done here to avoid patching
@@ -114,7 +115,7 @@ $.fn.extend({
         events = events.split(' ');
         return this.each(function () {
             var el = this;
-            events.forEach((evNameNamespaced) => {
+            _.each(events, function (evNameNamespaced) {
                 var evName = evNameNamespaced.split('.')[0];
                 var handler = $._data(el, 'events')[evName].pop();
                 $._data(el, 'events')[evName].unshift(handler);
@@ -145,37 +146,6 @@ $.fn.extend({
             $el = $el.parent();
         }
         return $el;
-    },
-    /**
-     * Adapt the given css property by adding the size of a scrollbar if any.
-     * Limitation: only works if the given css property is not already used as
-     * inline style for another reason.
-     *
-     * @param {boolean} [add=true]
-     * @param {boolean} [isScrollElement=true]
-     * @param {string} [cssProperty='padding-right']
-     */
-    compensateScrollbar(add = true, isScrollElement = true, cssProperty = 'padding-right') {
-        for (const el of this) {
-            // Compensate scrollbar
-            const scrollableEl = isScrollElement ? el : $(el).parent().closestScrollable()[0];
-            const isRTL = scrollableEl.matches(".o_rtl");
-            if (isRTL) {
-                cssProperty = cssProperty.replace("right", "left");
-            }
-            el.style.removeProperty(cssProperty);
-            if (!add) {
-                return;
-            }
-            const style = window.getComputedStyle(el);
-            // Round up to the nearest integer to be as close as possible to
-            // the correct value in case of browser zoom.
-            const borderLeftWidth = Math.ceil(parseFloat(style.borderLeftWidth.replace('px', '')));
-            const borderRightWidth = Math.ceil(parseFloat(style.borderRightWidth.replace('px', '')));
-            const bordersWidth = borderLeftWidth + borderRightWidth;
-            const newValue = parseInt(style[cssProperty]) + scrollableEl.offsetWidth - scrollableEl.clientWidth - bordersWidth;
-            el.style.setProperty(cssProperty, `${newValue}px`, 'important');
-        }
     },
     /**
      * @returns {jQuery}
@@ -258,3 +228,4 @@ $.fn.animate = function (properties, ...rest) {
     }
     return originalAnimate.call(this, props, ...rest);
 };
+});

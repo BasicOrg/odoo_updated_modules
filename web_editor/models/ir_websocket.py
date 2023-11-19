@@ -23,12 +23,10 @@ class IrWebsocket(models.AbstractModel):
                         res_id = int(match[3])
 
                         # Verify access to the edition channel.
-                        if self.env.user._is_public():
+                        if not self.env.user._is_internal():
                             raise AccessDenied()
 
                         document = self.env[model_name].browse([res_id])
-                        if not document.exists():
-                            continue
 
                         document.check_access_rights('read')
                         document.check_field_access_rights('read', [field_name])

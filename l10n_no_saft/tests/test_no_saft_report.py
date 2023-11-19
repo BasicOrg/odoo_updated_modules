@@ -11,7 +11,7 @@ from freezegun import freeze_time
 class TestNoSaftReport(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='no'):
+    def setUpClass(cls, chart_template_ref='l10n_no.no_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         (cls.partner_a + cls.partner_b).write({
@@ -30,19 +30,12 @@ class TestNoSaftReport(TestAccountReportsCommon):
             'l10n_no_bronnoysund_number': '987654325',
         })
 
-        cls.env['res.partner'].create({
-            'name': 'Mr Big CEO',
-            'is_company': False,
-            'phone': '+47 11 11 12 34',
-            'parent_id': cls.company_data['company'].partner_id.id,
-        })
-
         cls.product_a.default_code = 'PA'
         cls.product_b.default_code = 'PB'
 
         # Create invoices
 
-        cls.invoices = cls.env['account.move'].create([
+        invoices = cls.env['account.move'].create([
             {
                 'move_type': 'out_invoice',
                 'invoice_date': '2019-01-01',
@@ -80,7 +73,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                 })],
             },
         ])
-        cls.invoices.action_post()
+        invoices.action_post()
 
     @freeze_time('2019-12-31')
     def test_saft_report_values(self):
@@ -89,7 +82,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
 
         self.assertXmlTreeEqual(
             self.get_xml_tree_from_string(self.env[report.custom_handler_model_name].with_context(skip_xsd=True).l10n_no_export_saft_to_xml(options)['file_content']),
-            self.get_xml_tree_from_string(f'''
+            self.get_xml_tree_from_string('''
                 <AuditFile xmlns="urn:StandardAuditFile-Taxation-Financial:NO">
                     <Header>
                         <AuditFileVersion>1.10</AuditFileVersion>
@@ -108,10 +101,10 @@ class TestNoSaftReport(TestAccountReportsCommon):
                             </Address>
                             <Contact>
                                 <ContactPerson>
-                                    <FirstName>Mr Big CEO</FirstName>
+                                    <FirstName>company_1_data</FirstName>
                                     <LastName/>
                                 </ContactPerson>
-                                <Telephone>+47 11 11 12 34</Telephone>
+                                <Telephone>+47 11 11 11 11</Telephone>
                             </Contact>
                         </Company>
                         <DefaultCurrencyCode>NOK</DefaultCurrencyCode>
@@ -125,7 +118,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                         <GeneralLedgerAccounts>
                             <Account>
                                 <AccountID>___ignore___</AccountID>
-                                <AccountDescription>Accounts receivable</AccountDescription>
+                                <AccountDescription>Kundefordringer</AccountDescription>
                                 <StandardAccountID>1500</StandardAccountID>
                                 <AccountType>GL</AccountType>
                                 <OpeningDebitBalance>0.00</OpeningDebitBalance>
@@ -133,7 +126,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                             </Account>
                             <Account>
                                 <AccountID>___ignore___</AccountID>
-                                <AccountDescription>Accounts payable (copy)</AccountDescription>
+                                <AccountDescription>Leverandørgjeld (copy)</AccountDescription>
                                 <StandardAccountID>2410</StandardAccountID>
                                 <AccountType>GL</AccountType>
                                 <OpeningCreditBalance>10000.00</OpeningCreditBalance>
@@ -141,7 +134,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                             </Account>
                             <Account>
                                 <AccountID>___ignore___</AccountID>
-                                <AccountDescription>Outbound VAT high rate</AccountDescription>
+                                <AccountDescription>Utgående merverdiavgift høy sats</AccountDescription>
                                 <StandardAccountID>2701</StandardAccountID>
                                 <AccountType>GL</AccountType>
                                 <OpeningDebitBalance>0.00</OpeningDebitBalance>
@@ -149,7 +142,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                             </Account>
                             <Account>
                                 <AccountID>___ignore___</AccountID>
-                                <AccountDescription>Input VAT high rate</AccountDescription>
+                                <AccountDescription>Inngående merverdiavgift høy sats</AccountDescription>
                                 <StandardAccountID>2711</StandardAccountID>
                                 <AccountType>GL</AccountType>
                                 <OpeningDebitBalance>2000.00</OpeningDebitBalance>
@@ -157,7 +150,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                             </Account>
                             <Account>
                                 <AccountID>___ignore___</AccountID>
-                                <AccountDescription>Revenue from sales of merchandise tax pl. high rate</AccountDescription>
+                                <AccountDescription>Salgsinntekt handelsvarer avgiftspl. høy sats</AccountDescription>
                                 <StandardAccountID>3000</StandardAccountID>
                                 <AccountType>GL</AccountType>
                                 <OpeningDebitBalance>0.00</OpeningDebitBalance>
@@ -198,7 +191,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                 <Description>Merverdiavgift</Description>
                                 <TaxCodeDetails>
                                     <TaxCode>___ignore___</TaxCode>
-                                    <Description>25%</Description>
+                                    <Description>3 Utgående mva høy sats 25%</Description>
                                     <TaxPercentage>25.0</TaxPercentage>
                                     <Country>NO</Country>
                                     <StandardTaxCode>02</StandardTaxCode>
@@ -217,10 +210,10 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                 </Address>
                                 <Contact>
                                     <ContactPerson>
-                                        <FirstName>Mr Big CEO</FirstName>
+                                        <FirstName>company_1_data</FirstName>
                                         <LastName/>
                                     </ContactPerson>
-                                    <Telephone>+47 11 11 12 34</Telephone>
+                                    <Telephone>+47 11 11 11 11</Telephone>
                                 </Contact>
                                 <OwnerID>___ignore___</OwnerID>
                             </Owner>
@@ -258,7 +251,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                         <TaxType>MVA</TaxType>
                                         <TaxCode>___ignore___</TaxCode>
                                         <TaxPercentage>25.0</TaxPercentage>
-                                        <TaxBaseDescription>25%</TaxBaseDescription>
+                                        <TaxBaseDescription>3 Utgående mva høy sats 25%</TaxBaseDescription>
                                         <TaxAmount>
                                             <Amount>1250.00</Amount>
                                         </TaxAmount>
@@ -270,7 +263,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                     <ValueDate>2019-01-01</ValueDate>
                                     <SourceDocumentID>___ignore___</SourceDocumentID>
                                     <CustomerID>___ignore___</CustomerID>
-                                    <Description>25%</Description>
+                                    <Description>3 Utgående mva høy sats 25%</Description>
                                     <CreditAmount>
                                         <Amount>1250.00</Amount>
                                     </CreditAmount>
@@ -281,7 +274,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                     <ValueDate>2019-01-01</ValueDate>
                                     <SourceDocumentID>___ignore___</SourceDocumentID>
                                     <CustomerID>___ignore___</CustomerID>
-                                    <Description>{self.invoices[0]._get_kid_number()}</Description>
+                                    <Description>INV/2019/00001</Description>
                                     <DebitAmount>
                                         <Amount>6250.00</Amount>
                                     </DebitAmount>
@@ -311,7 +304,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                         <TaxType>MVA</TaxType>
                                         <TaxCode>___ignore___</TaxCode>
                                         <TaxPercentage>25.0</TaxPercentage>
-                                        <TaxBaseDescription>25%</TaxBaseDescription>
+                                        <TaxBaseDescription>3 Utgående mva høy sats 25%</TaxBaseDescription>
                                         <TaxAmount>
                                             <Amount>750.00</Amount>
                                         </TaxAmount>
@@ -323,7 +316,7 @@ class TestNoSaftReport(TestAccountReportsCommon):
                                     <ValueDate>2019-03-01</ValueDate>
                                     <SourceDocumentID>___ignore___</SourceDocumentID>
                                     <CustomerID>___ignore___</CustomerID>
-                                    <Description>25%</Description>
+                                    <Description>3 Utgående mva høy sats 25%</Description>
                                     <DebitAmount>
                                         <Amount>750.00</Amount>
                                     </DebitAmount>

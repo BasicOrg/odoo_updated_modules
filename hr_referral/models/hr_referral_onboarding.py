@@ -14,9 +14,3 @@ class HrReferralOnboarding(models.Model):
     text = fields.Text(required=True)
     image = fields.Binary(required=True)
     company_id = fields.Many2one('res.company', 'Company')
-
-    def action_relaunch_onboarding(self):
-        self.env['res.users'].sudo().search([
-            ('company_id', 'in', self.env.companies.ids),
-            ('share', '=', False),
-        ]).write({'hr_referral_onboarding_page': False})

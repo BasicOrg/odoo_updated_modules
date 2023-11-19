@@ -3,7 +3,7 @@
 {
     'name': 'Extended Addresses',
     'summary': 'Add extra fields on addresses',
-    'sequence': 19,
+    'sequence': '19',
     'version': '1.1',
     'category': 'Hidden',
     'description': """
@@ -20,6 +20,6 @@ It is primarily used for EDIs that might need a special city code.
         'views/res_city_view.xml',
         'views/res_country_view.xml',
     ],
-    'depends': ['base', 'contacts'],
+    'depends': ['base'],
     'license': 'LGPL-3',
 }

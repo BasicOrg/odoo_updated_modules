@@ -9,7 +9,7 @@ import { useBus, useService } from "@web/core/utils/hooks";
 import { ActionContainer } from "./actions/action_container";
 import { NavBar } from "./navbar/navbar";
 
-import { Component, onMounted, onWillStart, useExternalListener, useState } from "@odoo/owl";
+const { Component, onMounted, useExternalListener, useState } = owl;
 
 export class WebClient extends Component {
     setup() {
@@ -18,6 +18,7 @@ export class WebClient extends Component {
         this.title = useService("title");
         this.router = useService("router");
         this.user = useService("user");
+        useService("legacy_service_provider");
         useOwnDebugContext({ categories: ["default"] });
         if (this.env.debug) {
             registry.category("systray").add(
@@ -46,7 +47,6 @@ export class WebClient extends Component {
             this.env.bus.trigger("WEB_CLIENT_READY");
         });
         useExternalListener(window, "click", this.onGlobalClick, { capture: true });
-        onWillStart(this.registerServiceWorker);
     }
 
     async loadRouterState() {
@@ -100,22 +100,11 @@ export class WebClient extends Component {
         // we do not want any other listener to execute.
         if (
             ev.ctrlKey &&
-            !ev.target.isContentEditable &&
             ((ev.target instanceof HTMLAnchorElement && ev.target.href) ||
                 (ev.target instanceof HTMLElement && ev.target.closest("a[href]:not([href=''])")))
         ) {
             ev.stopImmediatePropagation();
             return;
-        }
-    }
-
-    registerServiceWorker() {
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker
-                .register("/web/service-worker.js", { scope: "/web" })
-                .catch((error) => {
-                    console.error("Service worker registration failed, error:", error);
-                });
         }
     }
 }
@@ -125,4 +114,3 @@ WebClient.components = {
     MainComponentsContainer,
 };
 WebClient.template = "web.WebClient";
-WebClient.props = {};

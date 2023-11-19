@@ -1,12 +1,11 @@
-/** @odoo-module **/
 /* global OdooDeviceUtility */
-
-import { uniqueId } from "@web/core/utils/functions";
+odoo.define('web_mobile.core', function () {
+"use strict";
 
 var available = typeof OdooDeviceUtility !== 'undefined';
 var DeviceUtility;
 var deferreds = {};
-export var methods = {};
+var methods = {};
 
 if (available){
     DeviceUtility = OdooDeviceUtility;
@@ -22,10 +21,10 @@ if (available){
  * @returns Promise Object
  */
 function native_invoke(name, args) {
-    if (args === undefined) {
+    if(_.isUndefined(args)){
         args = {};
     }
-    var id = uniqueId();
+    var id = _.uniqueId();
     args = JSON.stringify(args);
     DeviceUtility.execute(name, args, id);
     return new Promise(function (resolve, reject) {
@@ -53,7 +52,7 @@ window.odoo.native_notify = function (id, result) {
 };
 
 var plugins = available ? JSON.parse(DeviceUtility.list_plugins()) : [];
-plugins.forEach((plugin) => {
+_.each(plugins, function (plugin) {
     methods[plugin.name] = function (args) {
         return native_invoke(plugin.action, args);
     };
@@ -66,7 +65,7 @@ if (methods.hashChange) {
     var currentHash;
     $(window).bind('hashchange', function (event) {
         var hash = event.getState();
-        if (JSON.stringify(currentHash) !== JSON.stringify(hash)) {
+        if (!_.isEqual(currentHash, hash)) {
             methods.hashChange(hash);
         }
         currentHash = hash;
@@ -97,7 +96,7 @@ class BackButtonManager {
     /**
      * Enables the func listener, overriding default back button behavior.
      *
-     * @param {Component} listener
+     * @param {Widget|Component} listener
      * @param {function} func
      * @throws {BackButtonListenerError} if the listener has already been registered
      */
@@ -118,7 +117,7 @@ class BackButtonManager {
      * Disables the func listener, restoring the default back button behavior if
      * no other listeners are present.
      *
-     * @param {Component} listener
+     * @param {Widget|Component} listener
      * @throws {BackButtonListenerError} if the listener has already been unregistered
      */
     removeListener(listener) {
@@ -149,9 +148,11 @@ class BackButtonManager {
 
 const backButtonManager = new BackButtonManager();
 
-export default {
+return {
     BackButtonManager,
     BackButtonListenerError,
     backButtonManager,
     methods,
 };
+
+});

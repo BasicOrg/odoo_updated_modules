@@ -18,12 +18,6 @@
         <field name="partner_id" ref="partner_demo_company_bg"/>
     </record>
 
-    <record id="demo_bank_bg" model="res.partner.bank">
-        <field name="acc_number">BG24IORT80949894218256</field>
-        <field name="partner_id" ref="partner_demo_company_bg"/>
-        <field name="company_id" ref="demo_company_bg"/>
-    </record>
-
     <function model="res.company" name="_onchange_country_id">
         <value eval="[ref('demo_company_bg')]"/>
     </function>
@@ -34,8 +28,7 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>bg</value>
+        <value eval="[ref('l10n_bg.l10n_bg_chart_template')]"/>
         <value model="res.company" eval="obj().env.ref('l10n_bg.demo_company_bg')"/>
     </function>
 </odoo>

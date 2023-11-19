@@ -12,6 +12,8 @@ from odoo.tools.float_utils import float_compare
 class HrPayslipWorkedDays(models.Model):
     _inherit = 'hr.payslip.worked_days'
 
+    is_credit_time = fields.Boolean(string='Credit Time')
+
     @api.depends('is_paid', 'is_credit_time', 'number_of_hours', 'payslip_id', 'contract_id.wage', 'payslip_id.sum_worked_hours')
     def _compute_amount(self):
         super_self = self.env['hr.payslip.worked_days']
@@ -35,8 +37,7 @@ class HrPayslipWorkedDays(models.Model):
                 amount = amount / 25.0
                 if not float_compare(worked_day.payslip_id.contract_id.resource_calendar_id.work_time_rate, 100, precision_digits=2):
                     amount *= 1.2
-                number_of_days = worked_day.payslip_id._get_worked_days_line_number_of_days('LEAVE500')
-                worked_day.amount = amount * number_of_days
+                worked_day.amount = amount
             else:
                 payslip = worked_day.payslip_id
                 contract = payslip.contract_id
@@ -62,8 +63,26 @@ class HrPayslipWorkedDays(models.Model):
                 out_worked_day = worked_day.payslip_id.worked_days_line_ids.filtered(lambda wd: wd.code == 'OUT')
                 if out_worked_day:
                     out_hours = sum([wd.number_of_hours for wd in out_worked_day])
-                    out_hours_per_week = worked_day.payslip_id._get_out_of_contract_calendar().hours_per_week
-                    out_ratio = 1 - 3 / (13 * out_hours_per_week) * out_hours if out_hours_per_week else 1
+                    # Don't count out of contract time that actually was a credit time 
+                    if payslip.contract_id.time_credit:
+                        if contract.date_start > payslip.date_from:
+                            start = payslip.date_from
+                            end = contract.date_start
+                            start_dt = tz.localize(fields.Datetime.to_datetime(start))
+                            end_dt = tz.localize(fields.Datetime.to_datetime(end) + timedelta(days=1, seconds=-1))
+                            credit_time_attendances = payslip.contract_id.resource_calendar_id._attendance_intervals_batch(start_dt, end_dt)[False]
+                            standard_attendances = payslip.contract_id.standard_calendar_id._attendance_intervals_batch(start_dt, end_dt)[False]
+                            out_hours -= sum([(stop - start).total_seconds() / 3600 for start, stop, dummy in standard_attendances - credit_time_attendances])
+                        if contract.date_end and contract.date_end < payslip.date_to:
+                            start = contract.date_end
+                            end = payslip.date_to
+                            start_dt = tz.localize(fields.Datetime.to_datetime(start))
+                            end_dt = tz.localize(fields.Datetime.to_datetime(end) + timedelta(days=1, seconds=-1))
+                            credit_time_attendances = payslip.contract_id.resource_calendar_id._attendance_intervals_batch(start_dt, end_dt)[False]
+                            standard_attendances = payslip.contract_id.standard_calendar_id._attendance_intervals_batch(start_dt, end_dt)[False]
+                            out_hours -= sum([(stop - start).total_seconds() / 3600 for start, stop, dummy in standard_attendances - credit_time_attendances])
+
+                    out_ratio = 1 - 3 / (13 * hours_per_week) * out_hours if hours_per_week else 1
                 else:
                     out_ratio = 1
 
@@ -78,14 +97,11 @@ class HrPayslipWorkedDays(models.Model):
                 #
                 #  TOTAL PAID : WORK100 + PAID + UNPAID = (1 - 3/13/38 * 15 ) * wage
                 ####################################################################################
-                paid_worked_days = worked_day.payslip_id.worked_days_line_ids.filtered(
-                    lambda wd: wd.is_paid and wd.code not in ['OUT', 'LEAVE300', 'LEAVE301', 'LEAVE260', 'LEAVE216', 'LEAVE1731', 'LEAVE6665', 'LEAVE214']
-                ).sorted('number_of_hours', reverse=True)
-                if not paid_worked_days:
-                    # In case there is only european time off for instance
-                    paid_worked_days = worked_day.payslip_id.worked_days_line_ids.filtered(
+                main_worked_day = "WORK100"
+                if main_worked_day not in worked_day.payslip_id.worked_days_line_ids.mapped('code'):
+                    main_worked_day = worked_day.payslip_id.worked_days_line_ids.filtered(
                         lambda wd: wd.is_paid and wd.code not in ['LEAVE300', 'LEAVE301'])
-                main_worked_day = paid_worked_days[0].code if paid_worked_days else False
+                    main_worked_day = main_worked_day[0].code if main_worked_day else False
 
                 worked_day_amount = 0
                 if worked_day.code == 'OUT':
@@ -111,12 +127,11 @@ class HrPayslipWorkedDays(models.Model):
                         worked_day_amount = wage * 3 / (13 * hours_per_week) * training_hours if hours_per_week else 0
                 elif worked_day.code == main_worked_day:  # WORK100 (Generally)
                     # Case with half days mixed with full days
-                    work100_wds = worked_day.payslip_id.worked_days_line_ids.filtered(lambda wd: wd.code == main_worked_day)
+                    work100_wds = worked_day.payslip_id.worked_days_line_ids.filtered(lambda wd: wd.code == "WORK100")
                     number_of_hours = sum([
                         wd.number_of_hours
                         for wd in worked_day.payslip_id.worked_days_line_ids
-                        if wd.code not in [main_worked_day, 'OUT', 'OVERTIME'] and not wd.is_credit_time])
-
+                        if wd.code not in [main_worked_day, 'OUT'] and not wd.is_credit_time])
                     if len(work100_wds) > 1:
                         # In this case, we cannot use the hourly formula since the monthly
                         # salary must always be the same, without having an identical number of

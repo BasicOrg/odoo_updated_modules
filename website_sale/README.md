@@ -144,7 +144,7 @@ Fully Integrated With Other Apps
 
 Easily create awesome websites with no technical knowledge required.
 
-### Blog
+### Blogs
 
 Write news, attract new visitors, build customer loyalty.
 

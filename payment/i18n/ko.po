@@ -3,19 +3,16 @@
 # 	* payment
 # 
 # Translators:
-# JH CHOI <hwangtog@gmail.com>, 2023
-# Wil Odoo, 2023
-# Daye Jeong, 2023
-# Sarah Park, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -28,161 +25,82 @@ msgid " Data Fetched"
 msgstr "데이터를 가져왔습니다"
 
 #. module: payment
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:payment.pay
+msgid "<b>Amount:</b>"
+msgstr "<b>금액 :</b>"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.pay
+msgid "<b>Reference:</b>"
+msgstr "<b>참조 :</b>"
+
+#. module: payment
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid ""
 "<h3>Please make a payment to: </h3><ul><li>Bank: %s</li><li>Account Number: "
 "%s</li><li>Account Holder: %s</li></ul>"
 msgstr ""
-"<h3>다음의 결제 정보를 참조하세요.</h3><ul><li>은행 : %s</li><li>계좌 번호: %s</li><li>계좌명 : "
+"<h3>결제 안내입니다 : </h3><ul><li>은행 : %s</li><li>계좌번호 : %s</li><li>계좌 소유자 : "
 "%s</li></ul>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<i class=\"fa fa-exclamation-triangle\"/> These properties are set to\n"
-"                                match the behavior of providers and that of their integration with\n"
-"                                Odoo regarding this payment method. Any change may result in errors\n"
-"                                and should be tested on a test database first."
-msgstr ""
-"<i class=\"fa fa-exclamation-triangle\"/> 해당 속성은 결제 방법과 관련하여\n"
-"                                대행업체에서의 작업이 Odoo와 통합 진행되도록\n"
-"                                일치하도록 설정됩니다. 변경 시 오류가 발생할 수 있으므로\n"
-"                                테스트 데이터베이스에서 먼저 테스트해야 합니다."
+#: model_terms:ir.ui.view,arch_db:payment.confirm
+msgid "<i class=\"fa fa-arrow-circle-right\"/> Back to My Account"
+msgstr "<i class=\"fa fa-arrow-circle-right\"/> 내 계정으로 돌아가기"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.portal_breadcrumb
 msgid "<i class=\"fa fa-home\" role=\"img\" title=\"Home\" aria-label=\"Home\"/>"
-msgstr "<i class=\"fa fa-home\" role=\"img\" title=\"Home\" aria-label=\"Home\"/>"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<i class=\"fa fa-info-circle oe_inline\" invisible=\"support_partial_capture"
-" != 'full_only'\" title=\"Some of the transactions you intend to capture can"
-" only be captured in full. Handle the transactions individually to capture a"
-" partial amount.\"/>"
 msgstr ""
-"<i class=\"fa fa-info-circle oe_inline\" invisible=\"support_partial_capture"
-" != 'full_only'\" title=\"Some of the transactions you intend to capture can"
-" only be captured in full. Handle the transactions individually to capture a"
-" partial amount.\"/>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.token_form
-msgid ""
-"<i class=\"fa fa-trash\" title=\"Delete payment method\" data-bs-"
-"toggle=\"tooltip\" data-bs-placement=\"top\" data-bs-delay=\"0\"/>"
-msgstr ""
-"<i class=\"fa fa-trash\" title=\"Delete payment method\" data-bs-"
-"toggle=\"tooltip\" data-bs-placement=\"top\" data-bs-delay=\"0\"/>"
-
-#. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_method
-msgid "<i class=\"oi oi-arrow-right me-1\"></i> Configure a payment provider"
-msgstr "<i class=\"oi oi-arrow-right me-1\"></i> 결제대행업체 설정하기"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                                            Enable Payment Methods"
-msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                                            결제 방법 활성화"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.method_form
-msgid "<small class=\"text-600\">Save my payment details</small>"
-msgstr "<small class=\"text-600\">결제 세부 내용 저장</small>"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "<span class=\"o_stat_text text-danger\">Unpublished</span>"
-msgstr "<span class=\"o_stat_text text-danger\">발행 취소</span>"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "<span class=\"o_stat_text text-success\">Published</span>"
-msgstr "<span class=\"o_stat_text text-success\">발행 완료</span>"
+#: model_terms:ir.ui.view,arch_db:payment.manage
+msgid "<i class=\"fa fa-trash\"/> Delete"
+msgstr "<i class=\"fa fa-trash\"/> 삭제하기"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.view_partners_form_payment_defaultcreditcard
 msgid "<span class=\"o_stat_text\">Saved Payment Methods</span>"
-msgstr "<span class=\"o_stat_text\">저장된 결제 방법</span>"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_country_ids\">\n"
-"                                All countries are supported.\n"
-"                            </span>"
 msgstr ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_country_ids\">\n"
-"                                모든 국가에서 지원됩니다.\n"
-"                            </span>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_currency_ids\">\n"
-"                                All currencies are supported.\n"
-"                            </span>"
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "<span class=\"text-danger\">Unpublished</span>"
 msgstr ""
-"<span class=\"oe_inline text-muted\" invisible=\"supported_currency_ids\">\n"
-"                                모든 통화가 지원됩니다.\n"
-"                            </span>"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.method_form
-#: model_terms:ir.ui.view,arch_db:payment.token_form
-msgid "<span><i class=\"fa fa-lock\"/> Secured by</span>"
-msgstr "<span><i class=\"fa fa-lock\"/> 보안 대상</span>"
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "<span class=\"text-success\">Published</span>"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
 msgid ""
-"<span><i class=\"oi oi-arrow-right\"/> How to configure your PayPal "
+"<span><i class=\"fa fa-arrow-right\"/> How to configure your PayPal "
 "account</span>"
-msgstr "<span><i class=\"oi oi-arrow-right\"/> PayPal 계정 설정 방법 보기</span>"
+msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "<span>Your payment methods</span>"
-msgstr "<span>결제 방법</span>"
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
+msgid ""
+"<span>Start selling directly without an account; an email will be sent by "
+"Paypal to create your new account and collect your payments.</span>"
+msgstr ""
+"<span>계정 없이도 바로 판매를 시작하십시오. Paypal은 새 계정을 만들고 지불금을 수령하기 위해 이메일을 "
+"발송합니다.</span>"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
+msgid ""
+"<strong>No suitable payment option could be found.</strong><br/>\n"
+"                                If you believe that it is an error, please contact the website administrator."
+msgstr ""
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_methods
-msgid ""
-"<strong>No suitable payment method could be found.</strong><br/>\n"
-"                                If you believe that it is an error, please contact the website\n"
-"                                administrator."
+msgid "<strong>No suitable payment provider could be found.</strong>"
 msgstr ""
-"<strong>알맞은 결제 옵션을 찾을 수 없습니다.</strong><br/>\n"
-"                                오류가 발생한 경우, 웹사이트 관리자에게 문의하시기\n"
-"                                바랍니다."
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<strong>Warning!</strong> There is a partial capture pending. Please wait a\n"
-"                    moment for it to be processed. Check your payment provider configuration if\n"
-"                    the capture is still pending after a few minutes."
-msgstr ""
-"<strong>경고!</strong> 일부 보류 중인 매입 항목이 있습니다. 처리될 때까지\n"
-"                    잠시만 기다려주시기 바랍니다. 매입 상태가 몇 분 후까지도\n"
-"                    대기 중으로 표시될 경우에는 결제대행업체 환경 설정을 확인하시기 바랍니다."
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-msgid ""
-"<strong>Warning!</strong> You can not capture a negative amount nor more\n"
-"                    than"
-msgstr ""
-"<strong>경고!</strong> 매입 금액은 마이너스가 될 수 없으며 다음 금액보다\n"
-"                    클 수 없습니다."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
@@ -190,73 +108,62 @@ msgid ""
 "<strong>Warning</strong> Creating a payment provider from the <em>CREATE</em> button is not supported.\n"
 "                        Please use the <em>Duplicate</em> action instead."
 msgstr ""
-"<strong>경고</strong> <em>생성</em> 버튼으로 결제대행업체 생성 기능이 지원되지 않습니다.\n"
-"                        그 대신 <em>복사</em> 기능을 사용하십시오."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid ""
-"<strong>Warning</strong> Make sure you are logged in as the\n"
-"                                    correct partner before making this payment."
-msgstr "<strong>주의</strong> 결제를 진행하기 전에 로그인한 협력사가 맞는지 확인하시기 바랍니다."
+"<strong>Warning</strong> Make sure your are logged in as the right partner "
+"before making this payment."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid "<strong>Warning</strong> The currency is missing or incorrect."
-msgstr "<strong>주의</strong> 잘못되거나 누락된 통화입니다."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid "<strong>Warning</strong> You must be logged in to pay."
-msgstr "<strong>경고</strong> 결제를 진행하시려면 로그인해야 합니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "A refund request of %(amount)s has been sent. The payment will be created "
 "soon. Refund transaction reference: %(ref)s (%(provider_name)s)."
 msgstr ""
-"%(amount)s 환불 요청이 전송되었습니다. 잠시 후 결제 항목이 생성됩니다. 환불 거래 참조: %(ref)s "
-"(%(provider_name)s)."
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_token.py:0
 #, python-format
 msgid "A token cannot be unarchived once it has been archived."
-msgstr "일단 보관 처리된 토큰은 보관을 취소할 수 없습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "A transaction with reference %(ref)s has been initiated (%(provider_name)s)."
-msgstr "참조 번호 %(ref)s인 거래가 시작되었습니다 (%(provider_name)s). "
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "A transaction with reference %(ref)s has been initiated to save a new "
 "payment method (%(provider_name)s)"
-msgstr "참조 번호 %(ref)s인 거래가 시작되어 새로운 결제 방법이 저장되었습니다 (%(provider_name)s)."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "A transaction with reference %(ref)s has been initiated using the payment "
 "method %(token)s (%(provider_name)s)."
 msgstr ""
-"참조 번호 %(ref)s인 거래가 시작되어 %(token)s 결제 방법을 사용하고 있습니다 (%(provider_name)s)."
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Account"
@@ -273,10 +180,14 @@ msgid "Activate"
 msgstr "활성화"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__active
 #: model:ir.model.fields,field_description:payment.field_payment_token__active
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_active
+msgid "Add Extra Fees"
+msgstr "추가 수수료 추가하기"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_address
@@ -292,36 +203,28 @@ msgstr "Adyen"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__allow_express_checkout
 msgid "Allow Express Checkout"
-msgstr "간편 결제 허용"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__payment_provider_selection
+msgid "Allow Payment Provider"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__allow_tokenization
 msgid "Allow Saving Payment Methods"
-msgstr "결제 방법 저장 허용"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__captured_amount
-msgid "Already Captured"
-msgstr "이미 매입이 완료됨"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__voided_amount
-msgid "Already Voided"
-msgstr "이미 무효 처리됨"
-
-#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_aps
 #: model:payment.provider,name:payment.payment_provider_aps
 msgid "Amazon Payment Services"
-msgstr "Amazon 결제 서비스"
+msgstr ""
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__amount
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__amount
 #: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.pay
-#, python-format
 msgid "Amount"
 msgstr "금액"
 
@@ -331,14 +234,16 @@ msgid "Amount Max"
 msgstr "최대 금액"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__amount_to_capture
-msgid "Amount To Capture"
-msgstr "매입할 금액"
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "An error occurred during the processing of this payment."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "An error occurred during the processing of your payment."
-msgstr "결제를 처리하는 중 오류가 발생했습니다."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
@@ -352,11 +257,11 @@ msgid "Archived"
 msgstr "보관됨"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_form_templates.xml:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Are you sure you want to delete this payment method?"
-msgstr "이 결제 방법을 삭제하시겠습니까?"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
@@ -368,7 +273,7 @@ msgstr "승인된 거래를 취소 하시겠습니까? 이 작업은 되돌릴 �
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_asiapay
 msgid "Asiapay"
-msgstr "Asiapay"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__auth_msg
@@ -378,7 +283,7 @@ msgstr "승인 메시지"
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_authorize
 msgid "Authorize.net"
-msgstr "Authorize.net"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__state__authorized
@@ -386,22 +291,11 @@ msgid "Authorized"
 msgstr "승인됨"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__authorized_amount
-msgid "Authorized Amount"
-msgstr "승인 금액"
-
-#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Availability"
-msgstr "적용 여부"
+msgstr "가용성"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_search
-msgid "Available methods"
-msgstr "가능한 방법"
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Bank"
@@ -411,12 +305,6 @@ msgstr "은행"
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__journal_name
 msgid "Bank Name"
 msgstr "은행명"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__brand_ids
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Brands"
-msgstr "브랜드"
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_buckaroo
@@ -431,7 +319,7 @@ msgstr "답신 문서 모델"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__callback_is_done
 msgid "Callback Done"
-msgstr "회신 완료"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__callback_hash
@@ -446,10 +334,13 @@ msgstr "답신 메서드"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__callback_res_id
 msgid "Callback Record ID"
-msgstr "회신 레코드 ID"
+msgstr ""
 
 #. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
+#, python-format
 msgid "Cancel"
 msgstr "취소"
 
@@ -461,30 +352,14 @@ msgstr "취소됨"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__cancel_msg
 msgid "Canceled Message"
-msgstr "취소된 메시지"
+msgstr ""
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Cannot delete payment method"
-msgstr "결제 방법을 삭제할 수 없습니다."
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#, python-format
-msgid "Cannot save payment method"
-msgstr "결제 방법을 저장할 수 없습니다."
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_transaction.py:0
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
-#, python-format
-msgid "Capture"
-msgstr "매입"
+msgid "Cancelled payments"
+msgstr "취소된 결제"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__capture_manually
@@ -503,30 +378,16 @@ msgid ""
 "Use this if you want to charge your customers cards only when\n"
 "you are sure you can ship the goods to them."
 msgstr ""
-"배송이 완료되면 Odoo에서 금액을 매입 처리합니다.\n"
-"이 기능은 고객 신용카드로 결제를 청구할 때 사용하며,\n"
-"배송 여부가 확실한 경우에만 진행하시기 바랍니다."
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__child_transaction_ids
 msgid "Child Transactions"
-msgstr "하위 거래"
+msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
-msgid "Child transactions"
-msgstr "하위 거래"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_onboarding_wizard_form
 msgid "Choose a payment method"
 msgstr "결제 방법 선택"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Choose another method <i class=\"oi oi-arrow-down\"/>"
-msgstr "다른 방법을 선택하세요. <i class=\"oi oi-arrow-down\"/>"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_city
@@ -535,14 +396,21 @@ msgid "City"
 msgstr "시/군/구"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_capture_wizard_view_form
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Click here to be redirected to the confirmation page."
+msgstr "확인 페이지로 이동하려면 여기를 클릭하십시오."
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
 msgid "Close"
 msgstr "닫기"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__code
 #: model:ir.model.fields,field_description:payment.field_payment_provider__code
+#: model:ir.model.fields,field_description:payment.field_payment_token__provider_code
+#: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_code
 msgid "Code"
 msgstr "코드"
 
@@ -568,14 +436,13 @@ msgid "Company"
 msgstr "회사"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Configuration"
-msgstr "설정"
+msgstr "구성"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Confirm Deletion"
 msgstr "삭제 확인"
@@ -609,17 +476,26 @@ msgstr "국가"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__tokenize
 msgid "Create Token"
-msgstr "토큰 생성"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.actions.act_window,help:payment.action_payment_provider
 msgid "Create a new payment provider"
-msgstr "새로운 결제대행업체 생성"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__create_uid
+#: model_terms:ir.actions.act_window,help:payment.action_payment_token
+msgid "Create a new payment token"
+msgstr ""
+
+#. module: payment
+#: model_terms:ir.actions.act_window,help:payment.action_payment_icon
+msgid "Create a payment icon"
+msgstr "결제 아이콘 만들기"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__create_uid
-#: model:ir.model.fields,field_description:payment.field_payment_method__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__create_uid
 #: model:ir.model.fields,field_description:payment.field_payment_token__create_uid
@@ -628,9 +504,8 @@ msgid "Created by"
 msgstr "작성자"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__create_date
+#: model:ir.model.fields,field_description:payment.field_payment_icon__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__create_date
-#: model:ir.model.fields,field_description:payment.field_payment_method__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__create_date
 #: model:ir.model.fields,field_description:payment.field_payment_token__create_date
@@ -639,30 +514,62 @@ msgid "Created on"
 msgstr "작성일자"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Creating a transaction from an archived token is forbidden."
-msgstr "보관 처리된 토큰에서 거래를 생성하는 것은 금지하고 있습니다."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Credentials"
-msgstr "자격 증명"
+msgstr "자격 인증"
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_stripe
+msgid "Credit & Debit Card"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_razorpay
+msgid "Credit & Debit Card, UPI (Powered by Razorpay)"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__stripe
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__stripe
 msgid "Credit & Debit card (via Stripe)"
-msgstr "신용카드 및 직불카드 (Stripe)"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__available_currency_ids
-msgid "Currencies"
-msgstr "통화"
+#: model:payment.provider,display_as:payment.payment_provider_adyen
+msgid "Credit Card (powered by Adyen)"
+msgstr "신용 카드 (Adyen 제공)"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__currency_id
+#: model:payment.provider,display_as:payment.payment_provider_asiapay
+msgid "Credit Card (powered by Asiapay)"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_authorize
+msgid "Credit Card (powered by Authorize)"
+msgstr "신용 카드 (승인 제공)"
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_buckaroo
+msgid "Credit Card (powered by Buckaroo)"
+msgstr "신용 카드 (Buckaroo 제공)"
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_mercado_pago
+msgid "Credit Card (powered by Mercado Pago)"
+msgstr ""
+
+#. module: payment
+#: model:payment.provider,display_as:payment.payment_provider_sips
+msgid "Credit Card (powered by Sips)"
+msgstr "신용 카드 (Sip 제공)"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__currency_id
 #: model:ir.model.fields,field_description:payment.field_payment_provider__main_currency_id
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__currency_id
@@ -671,7 +578,6 @@ msgstr "통화"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__manual
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__manual
 msgid "Custom payment instructions"
 msgstr "맞춤 결제 안내"
 
@@ -683,12 +589,17 @@ msgstr "고객"
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__sequence
 msgid "Define the display order"
-msgstr "표시 순서 설정"
+msgstr ""
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_demo
 msgid "Demo"
 msgstr "데모"
+
+#. module: payment
+#: model:ir.model.fields,help:payment.field_payment_provider__display_as
+msgid "Description of the provider for customers"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__state__disabled
@@ -697,15 +608,29 @@ msgid "Disabled"
 msgstr "비활성화"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__display_name
+#: model_terms:ir.ui.view,arch_db:payment.transaction_status
+msgid "Dismiss"
+msgstr "해산"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__display_name
-#: model:ir.model.fields,field_description:payment.field_payment_method__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_provider__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_token__display_name
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__display_name
 msgid "Display Name"
 msgstr "표시명"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__display_as
+msgid "Displayed as"
+msgstr "다음으로 표시함"
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__done
+msgid "Done"
+msgstr "완료"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__done_msg
@@ -715,7 +640,7 @@ msgstr "완료 메시지"
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__state__draft
 msgid "Draft"
-msgstr "미결"
+msgstr "임시"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__partner_email
@@ -733,7 +658,7 @@ msgstr "활성화"
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_kanban
 msgid "Enterprise"
-msgstr "기업"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__state__error
@@ -741,44 +666,59 @@ msgid "Error"
 msgstr "오류"
 
 #. module: payment
-#. odoo-python
+#. openerp-web
 #: code:addons/payment/models/payment_transaction.py:0
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
 #, python-format
 msgid "Error: %s"
-msgstr "오류: %s"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__express_checkout_form_view_id
 msgid "Express Checkout Form Template"
-msgstr "간편 결제 서식"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_express_checkout
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_express_checkout
 msgid "Express Checkout Supported"
-msgstr "간편 결제 지원"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_express_checkout
-msgid ""
-"Express checkout allows customers to pay faster by using a payment method "
-"that provides all required billing and shipping information, thus allowing "
-"to skip the checkout process."
+#: model:ir.model.fields,field_description:payment.field_payment_transaction__fees
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "Fees"
+msgstr "수수료"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__support_fees
+msgid "Fees Supported"
 msgstr ""
-"빠른 결제를 통해 신속하게 결제할 수 있습니다. 필수적인 청구 및 배송 정보 전체가 결제 방법에서 제공되므로 결제 단계를 건너뛸 수 "
-"있습니다. "
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_dom_fixed
+msgid "Fixed domestic fees"
+msgstr "고정 국내 수수료"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_int_fixed
+msgid "Fixed international fees"
+msgstr "고정 국외 수수료"
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_flutterwave
 msgid "Flutterwave"
-msgstr "Flutterwave"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields.selection,name:payment.selection__payment_method__support_refund__full_only
-#: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_manual_capture__full_only
+#: model_terms:ir.ui.view,arch_db:payment.confirm
+msgid "From"
+msgstr "출발"
+
+#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_refund__full_only
 msgid "Full Only"
-msgstr "전체 적용"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
@@ -789,16 +729,6 @@ msgstr "결제 링크 생성"
 #: model:ir.model,name:payment.model_payment_link_wizard
 msgid "Generate Sales Payment Link"
 msgstr "판매 결제 링크 생성"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
-msgid "Generate and Copy Payment Link"
-msgstr "결제 링크 생성 및 복사"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.confirm
-msgid "Go to my Account <i class=\"oi oi-arrow-right ms-2\"/>"
-msgstr "내 계정으로 가기 <i class=\"oi oi-arrow-right ms-2\"/>"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
@@ -813,19 +743,14 @@ msgid "HTTP Routing"
 msgstr "HTTP 라우팅"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__has_draft_children
-msgid "Has Draft Children"
-msgstr "하위 미결 항목 있음"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__has_remaining_amount
-msgid "Has Remaining Amount"
-msgstr "잔액이 있습니다"
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__has_multiple_providers
+msgid "Has Multiple Providers"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__is_post_processed
 msgid "Has the payment been post-processed"
-msgstr "결제가 후속 처리되었습니다"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__pre_msg
@@ -833,9 +758,18 @@ msgid "Help Message"
 msgstr "도움 메시지"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__id
+#: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__paypal_user_type__new_user
+msgid "I don't have a Paypal account"
+msgstr "Paypal 계정이 없습니다"
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__paypal_user_type__existing_user
+msgid "I have a Paypal account"
+msgstr "Paypal 계정이 있습니다"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__id
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__id
-#: model:ir.model.fields,field_description:payment.field_payment_method__id
 #: model:ir.model.fields,field_description:payment.field_payment_provider__id
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__id
 #: model:ir.model.fields,field_description:payment.field_payment_token__id
@@ -844,17 +778,42 @@ msgid "ID"
 msgstr "ID"
 
 #. module: payment
-#. odoo-javascript
+#: model:ir.model.fields,help:payment.field_payment_link_wizard__payment_provider_selection
+msgid ""
+"If a specific payment provider is selected, customers will only be allowed "
+"to pay via this one. If 'All' is selected, customers can pay via any "
+"available payment provider."
+msgstr ""
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
+msgid "If not defined, the provider name will be used."
+msgstr ""
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "If the payment hasn't been confirmed you can contact us."
 msgstr "결제가 확인되지 않는다면 저희에게 문의해 주시기 바랍니다."
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__image
+#: model_terms:ir.ui.view,arch_db:payment.payment_methods
+msgid ""
+"If you believe that it is an error, please contact the website "
+"administrator."
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__image
 #: model:ir.model.fields,field_description:payment.field_payment_provider__image_128
 msgid "Image"
 msgstr "이미지"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__image_payment_form
+msgid "Image displayed on the payment form"
+msgstr "결제 양식에 이미지가 표시됩니다."
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__state
@@ -862,13 +821,11 @@ msgid ""
 "In test mode, a fake payment is processed through a test payment interface.\n"
 "This mode is advised when setting up the provider."
 msgstr ""
-"테스트 모드에서는 테스트 결제용 인터페이스를 통해서 결제를 가짜로 처리합니다.\n"
-"공급업체 설정 시 이 모드를 사용하시는 것이 좋습니다."
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__inline_form_view_id
 msgid "Inline Form Template"
-msgstr "인라인 양식 서식"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
@@ -887,38 +844,33 @@ msgid "Installed"
 msgstr "설치됨"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "Internal server error"
 msgstr "내부 서버 오류"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__is_amount_to_capture_valid
-msgid "Is Amount To Capture Valid"
-msgstr "유효한 매입 금액입니다"
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__is_post_processed
 msgid "Is Post-processed"
-msgstr "후속 처리되었습니다"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__is_primary
-msgid "Is Primary Payment Method"
-msgstr "기본 결제 방법입니다."
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_form_templates.xml:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "It is currently linked to the following documents:"
-msgstr "현재 다음 문서에 연결되어 있습니다:"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__just_done
+msgid "Just done"
+msgstr "즉시 완료"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__landing_route
 msgid "Landing Route"
-msgstr "도착 경로"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_lang
@@ -926,14 +878,23 @@ msgid "Language"
 msgstr "사용 언어"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__last_state_change
-msgid "Last State Change Date"
-msgstr "최근 상태 변경일"
+#: model:ir.model.fields,field_description:payment.field_payment_icon____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_provider____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_token____last_update
+#: model:ir.model.fields,field_description:payment.field_payment_transaction____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__write_uid
+#: model:ir.model.fields,field_description:payment.field_payment_transaction__last_state_change
+msgid "Last State Change Date"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__write_uid
-#: model:ir.model.fields,field_description:payment.field_payment_method__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__write_uid
 #: model:ir.model.fields,field_description:payment.field_payment_token__write_uid
@@ -942,9 +903,8 @@ msgid "Last Updated by"
 msgstr "최근 갱신한 사람"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__write_date
+#: model:ir.model.fields,field_description:payment.field_payment_icon__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__write_date
-#: model:ir.model.fields,field_description:payment.field_payment_method__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__write_date
 #: model:ir.model.fields,field_description:payment.field_payment_token__write_date
@@ -953,22 +913,16 @@ msgid "Last Updated on"
 msgstr "최근 갱신 일자"
 
 #. module: payment
-#: model:onboarding.onboarding.step,button_text:payment.onboarding_onboarding_step_payment_provider
-msgid "Let's do it"
-msgstr "이제 시작합니다"
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "Making a request to the provider is not possible because the provider is "
 "disabled."
-msgstr "공급업체가 비활성화되어 업체에 요청할 수 없습니다."
+msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.portal_my_home_payment
-msgid "Manage your payment methods"
+#: model_terms:ir.ui.view,arch_db:payment.pay_meth_link
+msgid "Manage payment methods"
 msgstr "결제 수단 관리"
 
 #. module: payment
@@ -979,22 +933,22 @@ msgstr "수동"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_manual_capture
 msgid "Manual Capture Supported"
-msgstr "수기 매입 지원"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__maximum_amount
 msgid "Maximum Amount"
-msgstr "최대 금액"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__available_amount
-msgid "Maximum Capture Allowed"
-msgstr "최대 매입 허용 금액"
+msgstr ""
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_mercado_pago
 msgid "Mercado Pago"
-msgstr "Mercado Pago"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_seller_account
+msgid "Merchant Account ID"
+msgstr "판매자 계정의 ID"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__state_message
@@ -1015,13 +969,19 @@ msgstr "방법"
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_mollie
 msgid "Mollie"
-msgstr "Mollie"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__name
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Multiple payment options selected"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_icon__name
 #: model:ir.model.fields,field_description:payment.field_payment_provider__name
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_search
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Name"
 msgstr "이름"
@@ -1029,28 +989,39 @@ msgstr "이름"
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__code__none
 msgid "No Provider Set"
-msgstr "설정된 업체 없음"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid ""
 "No manual payment method could be found for this company. Please create one "
 "from the Payment Provider menu."
-msgstr "이 회사에 대한 수동 결제 방법을 찾을 수 없습니다. 결제대행업체 메뉴에서 생성하시기 바랍니다."
+msgstr ""
 
 #. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_method
-msgid "No payment methods found for your payment providers."
-msgstr "결제대행업체에 대한 결제 방법을 찾을 수 없습니다."
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_token.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "No token can be assigned to the public partner."
-msgstr "일반 협력사에게는 토큰을 배정할 수 없습니다."
+msgid "No payment has been processed."
+msgstr "결제가 처리되지 않았습니다."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "No payment option selected"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields.selection,name:payment.selection__res_company__payment_provider_onboarding_state__not_done
+msgid "Not done"
+msgstr "미완료"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "Not verified"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__module_to_buy
@@ -1060,58 +1031,54 @@ msgstr "Odoo 유료버전 모듈"
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__offline
 msgid "Offline payment by token"
-msgstr "토큰으로 오프라인 결제 진행"
+msgstr ""
 
 #. module: payment
-#: model:ir.model,name:payment.model_onboarding_onboarding_step
-msgid "Onboarding Step"
-msgstr "온보딩 단계"
-
-#. module: payment
-#: model:onboarding.onboarding.step,step_image_alt:payment.onboarding_onboarding_step_payment_provider
-msgid "Onboarding Step Image"
-msgstr "온보딩 단계 이미지"
-
-#. module: payment
-#: model:onboarding.onboarding.step,title:payment.onboarding_onboarding_step_payment_provider
-msgid "Online Payments"
-msgstr "온라인 결제"
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+#, python-format
+msgid "Ok"
+msgstr "확인"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__online_direct
 msgid "Online direct payment"
-msgstr "온라인 직접 결제"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__online_token
 msgid "Online payment by token"
-msgstr "토큰으로 온라인 결제 진행"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__online_redirect
 msgid "Online payment with redirection"
-msgstr "이동하여 온라인 결제 진행"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/wizards/payment_onboarding_wizard.py:0
 #, python-format
 msgid "Only administrators can access this data."
 msgstr "관리자만 이 데이터에 접근할 수 있습니다."
 
 #. module: payment
-#. odoo-python
+#: code:addons/payment/models/payment_transaction.py:0
+#, python-format
+msgid "Only authorized transactions can be captured."
+msgstr ""
+
+#. module: payment
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Only authorized transactions can be voided."
-msgstr "승인된 거래만 무효 처리를 할 수 있습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Only confirmed transactions can be refunded."
-msgstr "확인된 거래만 환불할 수 있습니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__operation
@@ -1119,21 +1086,9 @@ msgid "Operation"
 msgstr "생산 관리"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid "Operation not supported."
-msgstr "지원되지 않는 작업"
-
-#. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__other
 msgid "Other"
 msgstr "기타"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Other payment methods"
-msgstr "기타 결제 방법"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_pdt_token
@@ -1141,8 +1096,6 @@ msgid "PDT Identity Token"
 msgstr "PDT 식별 토큰"
 
 #. module: payment
-#: model:ir.model.fields.selection,name:payment.selection__payment_method__support_refund__partial
-#: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_manual_capture__partial
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__support_refund__partial
 msgid "Partial"
 msgstr "부분"
@@ -1153,7 +1106,7 @@ msgstr "부분"
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_search
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_search
 msgid "Partner"
-msgstr "협력사"
+msgstr "파트너"
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__partner_name
@@ -1161,27 +1114,21 @@ msgid "Partner Name"
 msgstr "협력사 이름"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
+#: model_terms:ir.ui.view,arch_db:payment.checkout
 msgid "Pay"
 msgstr "지불"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider_onboarding_wizard__payment_method__paypal
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__paypal
-#: model:ir.model.fields.selection,name:payment.selection__sale_payment_provider_onboarding_wizard__payment_method__paypal
 #: model:payment.provider,name:payment.payment_provider_paypal
 msgid "PayPal"
 msgstr "페이팔"
 
 #. module: payment
-#: model:ir.model,name:payment.model_payment_capture_wizard
-msgid "Payment Capture Wizard"
-msgstr "결제 매입 마법사"
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_token__payment_details
 msgid "Payment Details"
-msgstr "결제 상세 정보"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
@@ -1194,6 +1141,17 @@ msgid "Payment Form"
 msgstr "결제 양식"
 
 #. module: payment
+#: model:ir.model,name:payment.model_payment_icon
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
+msgid "Payment Icon"
+msgstr "결제 아이콘"
+
+#. module: payment
+#: model:ir.actions.act_window,name:payment.action_payment_icon
+msgid "Payment Icons"
+msgstr "결제 아이콘"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__manual_post_msg
 msgid "Payment Instructions"
 msgstr "결제 안내"
@@ -1204,40 +1162,30 @@ msgid "Payment Link"
 msgstr "결제 링크"
 
 #. module: payment
-#: model:ir.model,name:payment.model_payment_method
 #: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__payment_method
-#: model:ir.model.fields,field_description:payment.field_payment_token__payment_method_id
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__payment_method_id
-#: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
 msgid "Payment Method"
 msgstr "결제 방법"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__payment_method_code
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__payment_method_code
-msgid "Payment Method Code"
-msgstr "결제 방법 코드"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_provider.py:0
-#: model:ir.actions.act_window,name:payment.action_payment_method
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-#, python-format
-msgid "Payment Methods"
-msgstr "지급 방법"
-
-#. module: payment
 #: model:ir.model,name:payment.model_payment_provider
 msgid "Payment Provider"
-msgstr "결제대행업체"
+msgstr ""
 
 #. module: payment
 #: model:ir.actions.act_window,name:payment.action_payment_provider
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_list
 msgid "Payment Providers"
-msgstr "결제대행업체"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__available_provider_ids
+msgid "Payment Providers Available"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__description
+msgid "Payment Ref"
+msgstr "결제 참조"
 
 #. module: payment
 #: model:ir.model,name:payment.model_payment_token
@@ -1249,7 +1197,7 @@ msgstr "결제 토큰"
 #: model:ir.model.fields,field_description:payment.field_res_partner__payment_token_count
 #: model:ir.model.fields,field_description:payment.field_res_users__payment_token_count
 msgid "Payment Token Count"
-msgstr "결제 토큰 수"
+msgstr ""
 
 #. module: payment
 #: model:ir.actions.act_window,name:payment.action_payment_token
@@ -1264,7 +1212,7 @@ msgstr "결제 토큰"
 #. module: payment
 #: model:ir.model,name:payment.model_payment_transaction
 msgid "Payment Transaction"
-msgstr "지불 거래"
+msgstr "결제 내역"
 
 #. module: payment
 #: model:ir.actions.act_window,name:payment.action_payment_transaction
@@ -1277,41 +1225,47 @@ msgstr "결제 거래"
 #. module: payment
 #: model:ir.actions.act_window,name:payment.action_payment_transaction_linked_to_token
 msgid "Payment Transactions Linked To Token"
-msgstr "토큰에 연결되어 있는 결제 거래"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_token.py:0
 #, python-format
 msgid "Payment details saved on %(date)s"
-msgstr "결제 세부 정보가 %(date)s에 저장되었습니다"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.portal_my_home_payment
-msgid "Payment methods"
-msgstr "지급 방법"
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
-#, python-format
-msgid "Payment processing failed"
-msgstr "결제 프로세스 실패"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Payment provider"
-msgstr "결제대행업체"
+msgstr ""
 
 #. module: payment
 #: model:ir.model,name:payment.model_payment_provider_onboarding_wizard
 msgid "Payment provider onboarding wizard"
-msgstr "결제대행업체 시작 마법사"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_form
 msgid "Payments"
 msgstr "결제"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Payments failed"
+msgstr "결제 실패"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Payments received"
+msgstr "결제 완료"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider_onboarding_wizard__paypal_user_type
+msgid "Paypal User Type"
+msgstr "페이팔 사용자 유형"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__state__pending
@@ -1329,35 +1283,31 @@ msgid "Phone"
 msgstr "전화번호"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
 #, python-format
-msgid "Please make sure that %(payment_method)s is supported by %(provider)s."
-msgstr "%(provider)s에서 %(payment_method)s 방법을 지원하는지 확인하세요."
+msgid "Please select a payment option."
+msgstr ""
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Please select only one payment option."
+msgstr ""
+
+#. module: payment
 #: code:addons/payment/wizards/payment_link_wizard.py:0
 #, python-format
-msgid "Please set a positive amount."
-msgstr "양수의 금액을 설정하십시오."
+msgid "Please set an amount smaller than %s."
+msgstr "%s 보다 작은 금액을 설정하십시오."
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_link_wizard.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Please set an amount lower than %s."
-msgstr "%s보다 금액을 적게 설정하십시오."
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.company_mismatch_warning
-msgid "Please switch to company"
-msgstr "회사 항목을 전환하십시오"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__primary_payment_method_id
-msgid "Primary Payment Method"
-msgstr "기본 결제 방법"
+msgid "Please wait ..."
+msgstr "잠시 기다려 주십시오 ..."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.confirm
@@ -1365,7 +1315,6 @@ msgid "Processed by"
 msgstr "처리자"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__provider_id
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_id
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
 #: model_terms:ir.ui.view,arch_db:payment.payment_token_search
@@ -1374,22 +1323,20 @@ msgid "Provider"
 msgstr "공급업체"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_token__provider_code
-#: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_code
-msgid "Provider Code"
-msgstr "업체 코드"
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_token__provider_ref
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__provider_reference
 msgid "Provider Reference"
-msgstr "업체 참조"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__provider_ids
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
+#: model:ir.model.fields,field_description:payment.field_payment_icon__provider_ids
 msgid "Providers"
 msgstr "공급자"
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.payment_icon_form
+msgid "Providers list"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__is_published
@@ -1400,27 +1347,29 @@ msgstr "게시 됨"
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_razorpay
 msgid "Razorpay"
-msgstr "Razorpay"
+msgstr ""
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Reason:"
+msgstr "사유 :"
+
+#. module: payment
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid "Reason: %s"
-msgstr "사유: %s"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__redirect_form_view_id
 msgid "Redirect Form Template"
-msgstr "이동 양식 서식"
+msgstr ""
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__reference
 #: model_terms:ir.ui.view,arch_db:payment.confirm
-#: model_terms:ir.ui.view,arch_db:payment.pay
-#, python-format
 msgid "Reference"
 msgstr "참조"
 
@@ -1430,19 +1379,11 @@ msgid "Reference must be unique!"
 msgstr "참조는 고유해야 합니다!"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__refund
 #, python-format
 msgid "Refund"
 msgstr "환불"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_refund
-msgid ""
-"Refund is a feature allowing to refund customers directly from the payment "
-"in Odoo."
-msgstr "환불 기능으로 결제 금액을 Odoo에서 고객에게 직접 환불합니다."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
@@ -1452,7 +1393,7 @@ msgstr "환불"
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__refunds_count
 msgid "Refunds Count"
-msgstr "환불 수"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_link_wizard__res_id
@@ -1465,39 +1406,24 @@ msgid "Related Document Model"
 msgstr "관련 문서 모델"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__require_currency
-msgid "Require Currency"
-msgstr "통화 필요"
-
-#. module: payment
 #: model:payment.provider,name:payment.payment_provider_sepa_direct_debit
 msgid "SEPA Direct Debit"
-msgstr "SEPA 직불 결제"
+msgstr "SEPA 출금 이체"
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.form
-msgid "Save"
-msgstr "저장"
+#: model_terms:ir.ui.view,arch_db:payment.manage
+msgid "Save Payment Method"
+msgstr ""
 
 #. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Select countries. Leave empty to allow any."
-msgstr "국가를 선택하세요. 제한하지 않으려면 비워두세요."
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+msgid "Save my payment details"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Select countries. Leave empty to make available everywhere."
-msgstr "국가를 선택하십시오. 전체로 지정하시려면 공란으로 두십시오."
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
-msgid "Select currencies. Leave empty not to restrict any."
-msgstr "통화를 선택하십시오. 제한을 두지 않으려면 공란으로 두십시오."
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Select currencies. Leave empty to allow any."
-msgstr "통화를 선택하세요. 제한하지 않으려면 비워두세요."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_res_company__payment_onboarding_payment_method
@@ -1505,50 +1431,72 @@ msgid "Selected onboarding payment method"
 msgstr "선택된 온보딩 결제 방법 "
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__sequence
+#: model:ir.model.fields,field_description:payment.field_payment_icon__sequence
 #: model:ir.model.fields,field_description:payment.field_payment_provider__sequence
 msgid "Sequence"
 msgstr "순서"
 
 #. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "Server Error"
+msgstr "서버 오류"
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Server error:"
+msgstr "서버 오류 :"
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_allow_express_checkout
 msgid "Show Allow Express Checkout"
-msgstr "간편 결제 허용 표시"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_allow_tokenization
 msgid "Show Allow Tokenization"
-msgstr "토큰화 허용 표시"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_auth_msg
 msgid "Show Auth Msg"
-msgstr "인증 메시지 표시"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_cancel_msg
 msgid "Show Cancel Msg"
-msgstr "취소 메시지 표시"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_credentials_page
 msgid "Show Credentials Page"
-msgstr "자격 증명 페이지 확인"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_done_msg
 msgid "Show Done Msg"
-msgstr "완료 메시지 표시"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__show_payment_icon_ids
+msgid "Show Payment Icon"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_pending_msg
 msgid "Show Pending Msg"
-msgstr "보류 메시지 표시"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__show_pre_msg
 msgid "Show Pre Msg"
-msgstr "사전 메시지 표시"
+msgstr ""
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_sips
@@ -1556,25 +1504,9 @@ msgid "Sips"
 msgstr "Sips"
 
 #. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
-#, python-format
-msgid "Skip"
-msgstr "건너뛰기"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_capture_wizard.py:0
-#, python-format
-msgid ""
-"Some of the transactions you intend to capture can only be captured in full."
-" Handle the transactions individually to capture a partial amount."
-msgstr "매입하려는 거래 중 일부 항목은 전체 매입만 가능합니다. 일부 금액만 매입하려면 개별 거래별로 처리하십시오."
-
-#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__source_transaction_id
 msgid "Source Transaction"
-msgstr "원 거래"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__state
@@ -1585,15 +1517,15 @@ msgid "State"
 msgstr "시/도"
 
 #. module: payment
+#: model:ir.model.fields,field_description:payment.field_res_company__payment_provider_onboarding_state
+msgid "State of the onboarding payment provider step"
+msgstr ""
+
+#. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_transaction__state
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_search
 msgid "Status"
 msgstr "상태"
-
-#. module: payment
-#: model:onboarding.onboarding.step,done_text:payment.onboarding_onboarding_step_payment_provider
-msgid "Step Completed!"
-msgstr "설정 완료!"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__res_company__payment_onboarding_payment_method__stripe
@@ -1602,328 +1534,218 @@ msgid "Stripe"
 msgstr "Stripe"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__support_partial_capture
-msgid "Support Partial Capture"
-msgstr "부분 매입 지원"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__supported_country_ids
-msgid "Supported Countries"
-msgstr "지원 국가"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__supported_currency_ids
-msgid "Supported Currencies"
-msgstr "지원 통화"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_provider__payment_method_ids
-msgid "Supported Payment Methods"
-msgstr "지원되는 결제 방법"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_method_form
-msgid "Supported by"
-msgstr "지원 대상"
+#: model:ir.model.fields,field_description:payment.field_payment_provider__payment_icon_ids
+msgid "Supported Payment Icons"
+msgstr "지원되는 결제 아이콘"
 
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_provider__state__test
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.manage
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_form
 msgid "Test Mode"
 msgstr "테스트 모드"
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid "The access token is invalid."
-msgstr "유효하지 않은 액세스 토큰입니다."
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_capture_wizard.py:0
-#, python-format
-msgid "The amount to capture must be positive and cannot be superior to %s."
-msgstr "매입할 금액은 양수여야 하며 %s보다 클 수 없습니다."
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__image
-#: model:ir.model.fields,help:payment.field_payment_method__image_payment_form
-msgid "The base image used for this payment method; in a 64x64 px format."
-msgstr "이 결제 방법에서 사용되는 기본 이미지입니다. 64x64 픽셀 형식으로 지원됩니다."
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__brand_ids
-msgid ""
-"The brands of the payment methods that will be displayed on the payment "
-"form."
-msgstr "결제 양식에 표시될 결제 방법 브랜드입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__child_transaction_ids
-msgid "The child transactions of the transaction."
-msgstr "해당 거래의 하위 거래입니다."
+msgid "The child transactions of the source transaction."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_token__payment_details
 msgid "The clear part of the payment method's payment details."
-msgstr "해당 결제 방법에 대한 세부 내용 중 명확한 정보입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__color
 msgid "The color of the card in kanban view"
-msgstr "칸반 화면에서의 카드 색상"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__state_message
 msgid "The complementary information message about the state"
-msgstr "상태에 대한 보완용 정보 메시지"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__available_country_ids
 msgid ""
 "The countries in which this payment provider is available. Leave blank to "
 "make it available in all countries."
-msgstr "이 결제대행업체를 선택할 수 있는 국가입니다. 비워두시면 모든 국가에서 선택할 수 있게 합니다."
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_provider__available_currency_ids
-msgid ""
-"The currencies available with this payment provider. Leave empty not to "
-"restrict any."
-msgstr "이 결제대행업체에서 사용되는 통화입니다. 비워두시면 제한을 하지 않습니다."
+#: model:ir.model.fields,help:payment.field_payment_transaction__fees
+msgid "The fees amount; set by the system as it depends on the provider"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "The following fields must be filled: %s"
-msgstr "다음 필드는 필수 입력 항목입니다: %s"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/controllers/portal.py:0
-#, python-format
-msgid "The following kwargs are not whitelisted: %s"
-msgstr "다음은 허용 목록에 없습니다: %s"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__reference
 msgid "The internal reference of the transaction"
-msgstr "해당 거래의 내부 참조"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__supported_country_ids
-msgid ""
-"The list of countries in which this payment method can be used (if the "
-"provider allows it). In other countries, this payment method is not "
-"available to customers."
 msgstr ""
-"이 결제 방법을 사용할 수 있는 국가 목록입니다 (업체에서 허용하는 경우). 다른 국가에서는 고객이 해당 결제 방법을 사용할 수 "
-"없습니다."
 
 #. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__supported_currency_ids
-msgid ""
-"The list of currencies for that are supported by this payment method (if the"
-" provider allows it). When paying with another currency, this payment method"
-" is not available to customers."
+#: model:ir.model.fields,help:payment.field_payment_icon__provider_ids
+msgid "The list of providers supporting this payment icon"
 msgstr ""
-"이 결제 방법을 사용할 수 있는 통화 목록입니다 (업체에서 허용하는 경우). 다른 통화로 결제하는 경우 고객은 해당 결제 방법을 사용할 "
-"수 없습니다."
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__provider_ids
-msgid "The list of providers supporting this payment method."
-msgstr "이 결제 방법을 지원하는 대행업체 목록입니다"
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__main_currency_id
 msgid "The main currency of the company, used to display monetary fields."
-msgstr "통화 필드를 표시하는데 사용되는 회사의 기본 통화입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__maximum_amount
 msgid ""
 "The maximum payment amount that this payment provider is available for. "
 "Leave blank to make it available for any payment amount."
-msgstr "이 결제대행업체에서 사용할 수 있는 최대 결제 금액입니다. 비워두시면 금액을 제한하지 않습니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__auth_msg
 msgid "The message displayed if payment is authorized"
-msgstr "결제가 승인되면 표시되는 메시지"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__cancel_msg
 msgid ""
 "The message displayed if the order is canceled during the payment process"
-msgstr "결제 단계 중에 주문을 취소할 경우 표시되는 메시지"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__done_msg
 msgid ""
 "The message displayed if the order is successfully done after the payment "
 "process"
-msgstr "결제가 처리되어 주문이 성공적으로 완료된 경우 표시되는 메시지입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__pending_msg
 msgid "The message displayed if the order pending after the payment process"
-msgstr "결제 처리가 완료되었으나 주문이 보류 중인 경우 표시되는 메시지입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__pre_msg
 msgid "The message displayed to explain and help the payment process"
-msgstr "결제 단계에 대한 설명 및 지원을 위해 표시되는 메시지"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid ""
 "The payment should either be direct, with redirection, or made by a token."
-msgstr "결제는 이동 후 직접 또는 토큰을 사용하여 진행되어야 합니다."
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__primary_payment_method_id
-msgid ""
-"The primary payment method of the current payment method, if the latter is a brand.\n"
-"For example, \"Card\" is the primary payment method of the card brand \"VISA\"."
 msgstr ""
-"현재 결제 방법의 기본 결제 방법입니다. 현재 방법이 브랜드인 경우에 해당합니다.\n"
-"예를 들어, 'Visa' 카드 브랜드의 기본 결제 수단은 '카드'입니다."
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_token__provider_ref
-msgid "The provider reference of the token of the transaction."
-msgstr "거래용 토큰의 업체 참조"
+msgid "The provider reference of the token of the transaction"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__provider_reference
 msgid "The provider reference of the transaction"
-msgstr "거래의 업체 참조"
-
-#. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__image_payment_form
-msgid "The resized image displayed on the payment form."
-msgstr "결제 양식에 크기가 조정된 이미지가 표시됩니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__landing_route
 msgid "The route the user is redirected to after the transaction"
-msgstr "거래 후 사용자를 이동시키는 경로"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__source_transaction_id
-msgid "The source transaction of the related child transactions"
-msgstr "관련 하위 거래의 원 거래입니다"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__code
-#: model:ir.model.fields,help:payment.field_payment_token__payment_method_code
-#: model:ir.model.fields,help:payment.field_payment_transaction__payment_method_code
-msgid "The technical code of this payment method."
-msgstr "이 결제 방법의 기술 코드입니다."
+msgid "The source transaction of related refund transactions"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__code
 #: model:ir.model.fields,help:payment.field_payment_token__provider_code
 #: model:ir.model.fields,help:payment.field_payment_transaction__provider_code
 msgid "The technical code of this payment provider."
-msgstr "이 결제대행업체의 기술 코드입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__redirect_form_view_id
 msgid ""
 "The template rendering a form submitted to redirect the user when making a "
 "payment"
-msgstr "결제 시 사용자를 이동시키기 위해 제출된 양식을 렌더링하는 서식"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__express_checkout_form_view_id
 msgid "The template rendering the express payment methods' form."
-msgstr "간편 결제 방식에서의 양식을 렌더링하는 서식"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__inline_form_view_id
 msgid ""
 "The template rendering the inline payment form when making a direct payment"
-msgstr "직접 결제 시 인라인 결제 양식을 렌더링하는 서식"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__token_inline_form_view_id
 msgid ""
 "The template rendering the inline payment form when making a payment by "
 "token."
-msgstr "토큰으로 결제 시 인라인 결제 양식을 렌더링하는 서식"
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "The transaction with reference %(ref)s for %(amount)s encountered an error "
 "(%(provider_name)s)."
-msgstr "%(amount)s에 대한 참조 번호 %(ref)s 거래에서 오류 (%(provider_name)s)가 발생하였습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "The transaction with reference %(ref)s for %(amount)s has been authorized "
 "(%(provider_name)s)."
-msgstr "%(amount)s에 대한 참조 번호 %(ref)s 거래가 승인되었습니다 (%(provider_name)s)."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "The transaction with reference %(ref)s for %(amount)s has been confirmed "
 "(%(provider_name)s)."
-msgstr "%(amount)s에 대한 참조 번호 %(ref)s 거래가 확인되었습니다 (%(provider_name)s)."
+msgstr ""
+
+#. module: payment
+#: code:addons/payment/wizards/payment_link_wizard.py:0
+#, python-format
+msgid "The value of the payment amount must be positive."
+msgstr "결제 금액은 양수여야 합니다."
 
 #. module: payment
 #: model_terms:ir.actions.act_window,help:payment.action_payment_transaction
 msgid "There are no transactions to show"
-msgstr "표시할 거래 내용이 없습니다"
-
-#. module: payment
-#: model_terms:ir.actions.act_window,help:payment.action_payment_token
-msgid "There is no token created yet."
-msgstr "아직 생성된 토큰이 없습니다"
-
-#. module: payment
-#. odoo-python
-#: code:addons/payment/wizards/payment_link_wizard.py:0
-#, python-format
-msgid "There is nothing to be paid."
-msgstr "결제받을 금액이 없습니다."
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid "There is nothing to pay."
-msgstr "지불할 금액이 없습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid ""
-"This action will also archive %s tokens that are registered with this "
-"payment method. Archiving tokens is irreversible."
-msgstr "이 작업으로 결제 방법에 등록되어 있는 %s 토큰도 보관 처리합니다. 보관 처리된 토큰은 취소할 수 없습니다."
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid ""
 "This action will also archive %s tokens that are registered with this "
 "provider. Archiving tokens is irreversible."
-msgstr "이 작업은 이 업체에 등록되어 있는 %s 토큰도 보관 처리합니다. 보관 처리된 토큰은 취소할 수 없습니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__allow_tokenization
@@ -1932,9 +1754,6 @@ msgid ""
 "A payment token is an anonymous link to the payment method details saved in the\n"
 "provider's database, allowing the customer to reuse it for a next purchase."
 msgstr ""
-"고객이 결제 방법을 결제 토큰으로 저장할 수 있도록 할지 여부를 관리합니다.\n"
-"결제 토큰은 업체의 데이터베이스에 저장되어 있는 결제 세부 정보에 대해 식별이\n"
-"불가능하도록 되어 있는 링크로, 고객이 다음 구매 시 다시 사용할 수 있도록 합니다."
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__allow_express_checkout
@@ -1943,83 +1762,71 @@ msgid ""
 "checkout enables customers to pay with Google Pay and Apple Pay from which "
 "address information is collected at payment."
 msgstr ""
-"고객이 간편 결제 방법을 사용할 수 있도록 할지 여부를 관리합니다. 간편 결제를 통해 Google 페이나 Apple 페이로 결제할 수 "
-"있으며 결제 시 주소 정보를 수집하게 됩니다. "
+
+#. module: payment
+#: model:ir.model.fields,help:payment.field_payment_icon__image
+#: model:ir.model.fields,help:payment.field_payment_icon__image_payment_form
+msgid ""
+"This field holds the image used for this payment icon, limited to 64x64 px"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_link_wizard_view_form
 msgid ""
-"This partner has no email, which may cause issues with some payment providers.\n"
-"                     Setting an email for this partner is advised."
+"This partner has no email, which may cause issues with some payment "
+"providers. Setting an email for this partner is advised."
 msgstr ""
-"협력사 이메일 정보가 없으므로 결제대행업체 사용 시 문제가 발생할 수 있습니다.\n"
-"                   협력사 이메일을 지정하세요."
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#, python-format
-msgid ""
-"This payment method needs a partner in crime; you should enable a payment "
-"provider supporting this method first."
-msgstr "해당 결제 방법에 관련된 협력사에 문제가 있습니다. 먼저 해당 방법을 지원하는 결제대행업체를 활성화하세요."
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "This payment method has been verified by our system."
+msgstr ""
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_transaction.py:0
+#: model_terms:ir.ui.view,arch_db:payment.verified_token_checkmark
+msgid "This payment method has not been verified by our system."
+msgstr ""
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid ""
-"This transaction has been confirmed following the processing of its partial "
-"capture and partial void transactions (%(provider)s)."
-msgstr "이 거래는 다음과 같이 부분 매입 및 부분 거래 무효 처리 후 확인이 완료되었습니다 (%(provider)s)."
+msgid "This transaction has been cancelled."
+msgstr "이 거래는 취소되었습니다."
 
 #. module: payment
 #: model:ir.model.fields,field_description:payment.field_payment_provider__token_inline_form_view_id
 msgid "Token Inline Form Template"
-msgstr "토큰 인라인 양식 서식"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_tokenization
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_tokenization
 msgid "Tokenization Supported"
-msgstr "토큰화 지원"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_method__support_tokenization
-msgid ""
-"Tokenization is the process of saving the payment details as a token that "
-"can later be reused without having to enter the payment details again."
 msgstr ""
-"토큰화는 결제 세부 정보를 토큰으로 저장하는 프로세스입니다. 결제 세부 정보를 다시 입력하지 않고도 나중에 다시 사용할 수 있습니다."
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__transaction_ids
-msgid "Transaction"
-msgstr "거래"
-
-#. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_transaction.py:0
 #, python-format
 msgid ""
 "Transaction authorization is not supported by the following payment "
 "providers: %s"
-msgstr "거래 인증은 다음 결제대행업체에서는 지원되지 않습니다: %s"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_method__support_refund
 #: model:ir.model.fields,field_description:payment.field_payment_provider__support_refund
 msgid "Type of Refund Supported"
-msgstr "지원되는 환불 유형"
+msgstr ""
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "Unable to contact the server. Please wait."
-msgstr "서버에 접속할 수 없습니다. 잠시만 기다리세요."
+msgid "Unable to contact the Odoo server."
+msgstr "Odoo 서버에 접속할 수 없습니다."
 
 #. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.checkout
+#: model_terms:ir.ui.view,arch_db:payment.manage
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_kanban
 msgid "Unpublished"
 msgstr "게시 안 함"
@@ -2033,12 +1840,28 @@ msgstr "업그레이드"
 #. module: payment
 #: model:ir.model.fields.selection,name:payment.selection__payment_transaction__operation__validation
 msgid "Validation of the payment method"
-msgstr "결제 방법 승인"
+msgstr ""
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_capture_wizard__void_remaining_amount
-msgid "Void Remaining Amount"
-msgstr "잔액 무효 처리"
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_dom_var
+msgid "Variable domestic fees (in percents)"
+msgstr "가변 국내 수수료 (퍼센트)"
+
+#. module: payment
+#: code:addons/payment/models/payment_provider.py:0
+#, python-format
+msgid "Variable fees must always be positive and below 100%."
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_provider__fees_int_var
+msgid "Variable international fees (in percents)"
+msgstr "가변 국외 수수료 (퍼센트)"
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_token__verified
+msgid "Verified"
+msgstr "확인됨"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
@@ -2046,64 +1869,86 @@ msgid "Void Transaction"
 msgstr "금지된 거래"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_method.py:0
-#: code:addons/payment/models/payment_method.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Waiting for payment"
+msgstr "결제를 기다리는 중"
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "Warning"
 msgstr "경고"
 
 #. module: payment
-#: model:ir.model.fields,field_description:payment.field_payment_link_wizard__warning_message
-msgid "Warning Message"
-msgstr "경고 메시지"
-
-#. module: payment
-#. odoo-javascript
-#: code:addons/payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
 #, python-format
 msgid "Warning!"
 msgstr "경고!"
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#: code:addons/payment/static/src/js/manage_form.js:0
+#, python-format
+msgid "We are not able to delete your payment method."
+msgstr ""
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "We are not able to find your payment, but don't worry."
 msgstr "귀하의 결제를 찾을 수 없지만 걱정하지 마십시오."
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
+#: code:addons/payment/static/src/js/payment_form_mixin.js:0
+#, python-format
+msgid "We are not able to process your payment."
+msgstr ""
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/js/manage_form.js:0
+#, python-format
+msgid "We are not able to save your payment method."
+msgstr ""
+
+#. module: payment
+#. openerp-web
 #: code:addons/payment/static/src/js/post_processing.js:0
 #, python-format
-msgid "We are processing your payment. Please wait."
-msgstr "결제를 처리 중입니다. 잠시만 기다리세요."
+msgid "We are processing your payment, please wait ..."
+msgstr "귀하의 결제가 처리중입니다. 잠시 기다려 주십시오 ..."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "We are waiting for the payment provider to confirm the payment."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__tokenize
 msgid ""
 "Whether a payment token should be created when post-processing the "
 "transaction"
-msgstr "거래 후속 처리 시 결제 토큰을 생성할지 여부입니다"
-
-#. module: payment
-#: model:ir.model.fields,help:payment.field_payment_capture_wizard__support_partial_capture
-msgid ""
-"Whether each of the transactions' provider supports the partial capture."
-msgstr "각 거래와 관련하여 업체에서 부분 매입을 지원하는지 여부입니다."
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_transaction__callback_is_done
 msgid "Whether the callback has already been executed"
-msgstr "콜백이 이미 실행되었는지 여부입니다"
+msgstr ""
 
 #. module: payment
 #: model:ir.model.fields,help:payment.field_payment_provider__is_published
 msgid ""
 "Whether the provider is visible on the website or not. Tokens remain "
 "functional but are only visible on manage forms."
-msgstr "공급업체를 웹사이트에 표시할지 여부입니다. 토큰은 계속 작동하지만 관리 양식에서만 확인할 수 있습니다."
+msgstr ""
 
 #. module: payment
 #: model:payment.provider,name:payment.payment_provider_transfer
@@ -2111,35 +1956,60 @@ msgid "Wire Transfer"
 msgstr "계좌 이체"
 
 #. module: payment
-#. odoo-python
-#: code:addons/payment/models/payment_provider.py:0
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
-msgid "You cannot delete the payment provider %s; archive it instead."
-msgstr "%s 결제대행업체를 삭제할 수 없습니다: 대신 보관 처리하시기 바랍니다."
+msgid "You can click here to be redirected to the confirmation page."
+msgstr "여기를 클릭하여 확인 페이지로 이동할 수 있습니다."
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #, python-format
 msgid "You cannot publish a disabled provider."
-msgstr "대행업체 사용 설정이 되지 않은 경우에는 발행할 수 없습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/controllers/portal.py:0
 #, python-format
 msgid "You do not have access to this payment token."
-msgstr "이 결제 토큰에 대한 접근 권한이 없습니다."
+msgstr ""
 
 #. module: payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/payment/static/src/xml/payment_post_processing.xml:0
 #, python-format
 msgid "You should receive an email confirming your payment in a few minutes."
 msgstr "몇 분 후에 결제 확인 이메일이 발송됩니다."
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "You will be notified when the payment is confirmed."
+msgstr "결제가 확인되면 알려드립니다."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "You will be notified when the payment is fully confirmed."
+msgstr "결제가 완전히 확인되면 알려드립니다."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your order has been processed."
+msgstr "주문이 처리되었습니다."
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your order is being processed, please wait ..."
+msgstr "주문이 처리 중입니다. 잠시만 기다려주십시오 ..."
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_aps
@@ -2161,7 +2031,6 @@ msgid "Your payment has been authorized."
 msgstr "귀하의 결제가 승인되었습니다."
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_aps
@@ -2183,7 +2052,13 @@ msgid "Your payment has been cancelled."
 msgstr "귀하의 결제가 취소되었습니다."
 
 #. module: payment
-#. odoo-python
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your payment has been received but need to be confirmed manually."
+msgstr "결제가 접수되었지만 수동으로 확인해야 합니다."
+
+#. module: payment
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_aps
@@ -2205,7 +2080,6 @@ msgid ""
 msgstr "결제가 성공적으로 처리되었지만 승인 대기 중입니다."
 
 #. module: payment
-#. odoo-python
 #: code:addons/payment/models/payment_provider.py:0
 #: model_terms:payment.provider,done_msg:payment.payment_provider_adyen
 #: model_terms:payment.provider,done_msg:payment.payment_provider_aps
@@ -2223,13 +2097,20 @@ msgstr "결제가 성공적으로 처리되었지만 승인 대기 중입니다.
 #: model_terms:payment.provider,done_msg:payment.payment_provider_stripe
 #: model_terms:payment.provider,done_msg:payment.payment_provider_transfer
 #, python-format
-msgid "Your payment has been successfully processed."
-msgstr "성공적으로 결제가 완료되었습니다."
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr "귀하의 결제가 성공적으로 처리되었습니다. 감사합니다."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "Your payment has not been processed yet."
-msgstr "결제가 아직 처리되지 않았습니다."
+msgstr ""
+
+#. module: payment
+#. openerp-web
+#: code:addons/payment/static/src/xml/payment_post_processing.xml:0
+#, python-format
+msgid "Your payment is in pending state."
+msgstr "결제가 보류 상태입니다."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_transaction_form
@@ -2244,44 +2125,47 @@ msgstr "우편번호"
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "danger"
-msgstr "위험"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "info"
-msgstr "정보"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
-msgid "payment method"
-msgstr "결제 방법"
+msgstr ""
 
 #. module: payment
 #: model:ir.actions.server,name:payment.cron_post_process_payment_tx_ir_actions_server
+#: model:ir.cron,cron_name:payment.cron_post_process_payment_tx
+#: model:ir.cron,name:payment.cron_post_process_payment_tx
 msgid "payment: post-process transactions"
-msgstr "결제: 후속 처리 거래"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_kanban
 #: model_terms:ir.ui.view,arch_db:payment.payment_provider_search
 msgid "provider"
-msgstr "업체"
+msgstr ""
+
+#. module: payment
+#: model:ir.model.fields,field_description:payment.field_payment_token__provider_id
+msgid "provider Account"
+msgstr ""
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.icon_list
+msgid "show less"
+msgstr ""
+
+#. module: payment
+#: model_terms:ir.ui.view,arch_db:payment.icon_list
+msgid "show more"
+msgstr ""
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "success"
-msgstr "성공"
-
-#. module: payment
-#: model_terms:ir.ui.view,arch_db:payment.company_mismatch_warning
-msgid ""
-"to make this\n"
-"                    payment."
 msgstr ""
-"이 결제를\n"
-"                    진행합니다."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.transaction_status
 msgid "warning"
-msgstr "경고"
+msgstr ""

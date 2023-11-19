@@ -5,26 +5,22 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="hr_timesheet.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//setting[@name='invoice_policy']" position="replace">
-                <setting string="Invoicing Policy" help="Timesheets taken into account when invoicing your time">
-                    <div class="content-group">
-                        <div class="mt16">
-                            <label for="invoiced_timesheet" string="Invoice" class="mr16"/>
-                            <field name="invoiced_timesheet" widget="radio" class="o_light_label"/>
+            <xpath expr="//div[@name='invoice_policy']" position="replace">
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Invoicing Policy</span>
+                        <div class="text-muted">
+                            Timesheets taken into account when invoicing your time
+                        </div>
+                        <div class="content-group">
+                            <div class="mt16">
+                                <label for="invoiced_timesheet" string="Invoice" class="mr16"/>
+                                <field name="invoiced_timesheet" widget="radio" class="o_light_label"/>
+                            </div>
                         </div>
                     </div>
-                </setting>
-                <setting help="Set a target billing rate for your employees. If their current rate falls below the target, it will be highlighted in red." name="group_timesheet_leaderboard_show_rates">
-                    <field name="group_timesheet_leaderboard_show_rates"/>
-                    <span invisible="not group_timesheet_leaderboard_show_rates">
-                        <label for="billing_rate_target"/>
-                        <field name="billing_rate_target" class="p-1 text-center w-25"/> <span>%</span>
-                    </span>
-                </setting>
-                <setting help="Boost productivity and competitiveness by displaying a leaderboard based on the billing rates." name="group_use_timesheet_leaderboard" invisible="not group_timesheet_leaderboard_show_rates">
-                    <field name="group_use_timesheet_leaderboard"/>
-                    <button name="%(hr.open_view_employee_list_my)d" string="Set employee billing time targets" type="action" class="btn-link" icon="oi-arrow-right" invisible="not group_use_timesheet_leaderboard"/>
-                </setting>
+                </div>
             </xpath>
         </field>
     </record>

@@ -6,13 +6,12 @@ import datetime
 
 from freezegun import freeze_time
 
-from odoo.addons.mail.tests.common import MailCommon
-from odoo.addons.test_mail.tests.common import TestRecipients
+from odoo.addons.test_mail.tests.common import TestMailCommon, TestRecipients
 from odoo.tests import tagged, users
 from odoo.tools import mute_logger
 
 
-class TestMailTemplateCommon(MailCommon, TestRecipients):
+class TestMailTemplateCommon(TestMailCommon, TestRecipients):
 
     @classmethod
     def setUpClass(cls):
@@ -65,19 +64,8 @@ class TestMailTemplateCommon(MailCommon, TestRecipients):
         cls.test_template.invalidate_recordset(['attachment_ids'])
 
 
-@tagged('mail_template')
+@tagged('mail_template', 'multi_lang')
 class TestMailTemplate(TestMailTemplateCommon):
-
-    def test_template_add_context_action(self):
-        self.test_template.create_action()
-
-        # check template act_window has been updated
-        self.assertTrue(bool(self.test_template.ref_ir_act_window))
-
-        # check those records
-        action = self.test_template.ref_ir_act_window
-        self.assertEqual(action.name, 'Send Mail (%s)' % self.test_template.name)
-        self.assertEqual(action.binding_model_id.model, 'mail.test.lang')
 
     @mute_logger('odoo.addons.mail.models.mail_mail')
     @users('employee')
@@ -105,10 +93,6 @@ class TestMailTemplate(TestMailTemplateCommon):
         self.assertFalse(mail.scheduled_date)
         self.assertEqual(mail.state, 'outgoing')
 
-
-@tagged('mail_template', 'multi_lang')
-class TestMailTemplateLanguages(TestMailTemplateCommon):
-
     @mute_logger('odoo.addons.mail.models.mail_mail')
     def test_template_send_email(self):
         mail_id = self.test_template.send_mail(self.test_record.id)
@@ -120,19 +104,16 @@ class TestMailTemplateLanguages(TestMailTemplateCommon):
 
     @mute_logger('odoo.addons.mail.models.mail_mail')
     def test_template_translation_lang(self):
-        test_record = self.test_record.with_env(self.env)
+        test_record = self.env['mail.test.lang'].browse(self.test_record.ids)
         test_record.write({
             'lang': 'es_ES',
         })
-        test_template = self.test_template.with_env(self.env)
-        test_template.write({
-            'email_layout_xmlid': 'mail.test_layout',
-        })
+        test_template = self.env['mail.template'].browse(self.test_template.ids)
 
-        mail_id = test_template.send_mail(test_record.id)
+        mail_id = test_template.send_mail(test_record.id, email_layout_xmlid='mail.test_layout')
         mail = self.env['mail.mail'].sudo().browse(mail_id)
         self.assertEqual(mail.body_html,
-                         '<body><p>SpanishBody for %s</p> Spanish Layout para Spanish Model Description</body>' % self.test_record.name)
+                         '<body><p>SpanishBody for %s</p> Spanish Layout para Spanish description</body>' % self.test_record.name)
         self.assertEqual(mail.subject, 'SpanishSubject for %s' % self.test_record.name)
 
     @mute_logger('odoo.addons.mail.models.mail_mail')
@@ -151,5 +132,56 @@ class TestMailTemplateLanguages(TestMailTemplateCommon):
         mail_id = test_template.send_mail(test_record.id, email_layout_xmlid='mail.test_layout')
         mail = self.env['mail.mail'].sudo().browse(mail_id)
         self.assertEqual(mail.body_html,
-                         '<body><p>SpanishBody for %s</p> Spanish Layout para Spanish Model Description</body>' % self.test_record.name)
+                         '<body><p>SpanishBody for %s</p> Spanish Layout para Spanish description</body>' % self.test_record.name)
         self.assertEqual(mail.subject, 'SpanishSubject for %s' % self.test_record.name)
+
+    def test_template_add_context_action(self):
+        self.test_template.create_action()
+
+        # check template act_window has been updated
+        self.assertTrue(bool(self.test_template.ref_ir_act_window))
+
+        # check those records
+        action = self.test_template.ref_ir_act_window
+        self.assertEqual(action.name, 'Send Mail (%s)' % self.test_template.name)
+        self.assertEqual(action.binding_model_id.model, 'mail.test.lang')
+
+    # def test_template_scheduled_date(self):
+    #     from unittest.mock import patch
+
+    #     self.email_template_in_2_days = self.email_template.copy()
+
+    #     with patch('odoo.addons.mail.tests.test_mail_template.datetime', wraps=datetime) as mock_datetime:
+    #         mock_datetime.now.return_value = datetime(2017, 11, 15, 11, 30, 28)
+    #         mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
+
+    #         self.email_template_in_2_days.write({
+    #             'scheduled_date': "{{ (datetime.datetime.now() + relativedelta(days=2)).strftime('%s') }}" % DEFAULT_SERVER_DATETIME_FORMAT,
+    #         })
+
+    #         mail_now_id = self.email_template.send_mail(self.test_record.id)
+    #         mail_in_2_days_id = self.email_template_in_2_days.send_mail(self.test_record.id)
+
+    #         mail_now = self.env['mail.mail'].browse(mail_now_id)
+    #         mail_in_2_days = self.env['mail.mail'].browse(mail_in_2_days_id)
+
+    #         # mail preparation
+    #         self.assertEqual(mail_now.exists() | mail_in_2_days.exists(), mail_now | mail_in_2_days)
+    #         self.assertEqual(bool(mail_now.scheduled_date), False)
+    #         self.assertEqual(mail_now.state, 'outgoing')
+    #         self.assertEqual(mail_in_2_days.state, 'outgoing')
+    #         scheduled_date = datetime.strptime(mail_in_2_days.scheduled_date, DEFAULT_SERVER_DATETIME_FORMAT)
+    #         date_in_2_days = datetime.now() + timedelta(days = 2)
+    #         self.assertEqual(scheduled_date, date_in_2_days)
+    #         # self.assertEqual(scheduled_date.month, date_in_2_days.month)
+    #         # self.assertEqual(scheduled_date.year, date_in_2_days.year)
+
+    #         # Launch the scheduler on the first mail, it should be reported in self.mails
+    #         # and the mail_mail is now deleted
+    #         self.env['mail.mail'].process_email_queue()
+    #         self.assertEqual(mail_now.exists() | mail_in_2_days.exists(), mail_in_2_days)
+
+    #         # Launch the scheduler on the first mail, it's still in 'outgoing' state
+    #         self.env['mail.mail'].process_email_queue(ids=[mail_in_2_days.id])
+    #         self.assertEqual(mail_in_2_days.state, 'outgoing')
+    #         self.assertEqual(mail_now.exists() | mail_in_2_days.exists(), mail_in_2_days)

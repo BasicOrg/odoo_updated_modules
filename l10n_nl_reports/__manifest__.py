@@ -66,11 +66,11 @@
 
 {
     'name': 'Netherlands - Accounting Reports',
-    'countries': ['nl'],
+    'icon': '/l10n_nl/static/description/icon.png',
     'version': '1.5',
     'category': 'Accounting/Localizations/Reporting',
     'description': """
-Accounting reports for Netherlands
+        Accounting reports for Netherlands
     """,
     'author': 'Veritos - Jan Verlaan',
     'website': 'http://www.veritos.nl',
@@ -78,6 +78,7 @@ Accounting reports for Netherlands
     'data': [
         'data/account_financial_report_profit_loss.xml',
         'data/account_financial_report_balance_sheet.xml',
+        "data/ir_cron_data.xml",
         'data/xml_audit_file_3_2.xml',
     ],
     'installable': True,

@@ -1,18 +1,15 @@
 /** @odoo-module */
 
 import { registry } from '@web/core/registry';
-import { CharField, charField } from '@web/views/fields/char/char_field';
+import { CharField } from '@web/views/fields/char/char_field';
+import { formatChar } from '@web/views/fields/formatters';
 
-export class ProjectTaskNameWithSubtaskCountCharField extends CharField {
-    static template = "project.ProjectTaskNameWithSubtaskCountCharField";
+class ProjectTaskNameWithSubtaskCountCharField extends CharField {
+    get formattedSubtaskCount() {
+        return formatChar(this.props.record.data.allow_subtasks && this.props.record.data.child_text || '');
+    }
 }
 
-export const projectTaskNameWithSubtaskCountCharField = {
-    ...charField,
-    component: ProjectTaskNameWithSubtaskCountCharField,
-    fieldsDependencies: [
-        { name: "subtask_count", type: "integer" },
-        { name: "closed_subtask_count", type: "integer" },
-    ],
-}
-registry.category("fields").add("name_with_subtask_count", projectTaskNameWithSubtaskCountCharField);
+ProjectTaskNameWithSubtaskCountCharField.template = 'project.ProjectTaskNameWithSubtaskCountCharField';
+
+registry.category('fields').add('name_with_subtask_count', ProjectTaskNameWithSubtaskCountCharField);

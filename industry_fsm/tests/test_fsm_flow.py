@@ -47,22 +47,35 @@ class TestFsmFlow(TestIndustryFsmCommon):
         self.assertFalse(tasks_running_timer_ids, 'There is no more timer linked to the task')
         self.assertEqual(len(self.task.sudo().timesheet_ids), 2, 'There are two timesheets')
 
-    def test_mark_task_done_state_change(self):
-        self.task.write({
-            'state': '01_in_progress',
+    def test_mark_task_done_stage_assignment(self):
+        self.assertFalse(self.fsm_project.type_ids)
+        fold = [False, True, True, True]
+        sequences = [5, 10, 40, 50]
+        stage_1, stage_2, stage_3, stage_4 = self.env['project.task.type'].create([{
+            'name': f'stage {i+1}',
+            'fold': fold[i],
+            'sequence': sequences[i],
+            'project_ids': self.fsm_project.ids,
+        } for i in range(len(fold))])
+        self.assertTrue(self.fsm_project.type_ids)
+
+        (self.task + self.second_task).write({
+            'stage_id': stage_1.id,
         })
         self.task.action_fsm_validate()
-        self.assertEqual(self.task.state, '1_done', 'task state should change to done')
+        self.assertEqual(self.task.stage_id, stage_2, 'task is in stage 2 which is fold and with the lowest sequence of fold stages')
+
+        (stage_2 + stage_3 + stage_4).fold = False
 
         second_task = self.env['project.task'].create({
             'name': 'Fsm task 2',
             'project_id': self.fsm_project.id,
             'partner_id': self.partner.id,
-            'state': '02_changes_requested',
+            'stage_id': stage_1.id,
         })
 
         second_task.action_fsm_validate()
-        self.assertEqual(second_task.state, '1_done', 'second task state should change to done')
+        self.assertEqual(second_task.stage_id, stage_4, "second_task is in stage 4 as there isn't any fold stages in second_task's project stages and as stage_4 has the highest sequence number.")
 
     @users('Project user', 'Project admin', 'Base user')
     def test_base_user_no_create_stop_timers_wizard(self):

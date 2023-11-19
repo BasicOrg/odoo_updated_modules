@@ -3,17 +3,16 @@
 # 	* delivery_easypost
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-06-09 14:09+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -42,22 +41,18 @@ msgstr ""
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_stock_package_type_form_inherit_easypost
-msgid "<span invisible=\"package_carrier_type != 'easypost'\">Inches</span>"
-msgstr "<span invisible=\"package_carrier_type != 'easypost'\">英寸</span>"
+msgid ""
+"<span attrs=\"{'invisible': [('package_carrier_type', '!=', "
+"'easypost')]}\">Inches</span>"
+msgstr ""
+"<span attrs=\"{'invisible': [('package_承运商_type', '!=', "
+"'easypost')]}\">寸</span>"
 
 #. module: delivery_easypost
-#. odoo-python
-#: code:addons/delivery_easypost/models/delivery_carrier.py:0
-#, python-format
-msgid "A production key is required in order to load your easypost carriers."
-msgstr "需要生产密钥，以加载easypost载体。"
-
-#. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "A production key is required in order to load your insurance fees."
-msgstr "为了加载您的保险费，需要一个生产密钥。"
+msgstr ""
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
@@ -103,7 +98,7 @@ msgstr "创建人"
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost__create_date
 #: model:ir.model.fields,field_description:delivery_easypost.field_easypost_service__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
@@ -136,7 +131,7 @@ msgstr "显示名称"
 msgid ""
 "Do not forget to load your Easypost carrier accounts for a valid "
 "configuration."
-msgstr "不要忘记加载 Easypost 运营商账户，以便进行有效配置。"
+msgstr "别忘了加载您有效的Easypost承运商账户"
 
 #. module: delivery_easypost
 #: model:ir.model.fields.selection,name:delivery_easypost.selection__delivery_carrier__easypost_label_file_type__epl2
@@ -165,11 +160,10 @@ msgid "Easypost Configuration"
 msgstr "Easypost 配置"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
-msgid "Easypost Documents:"
-msgstr "Easypost 文档："
+msgid "Easypost Documents:<br/>"
+msgstr ""
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_label_file_type
@@ -203,7 +197,6 @@ msgid "Easypost Website"
 msgstr "Easypost 网站"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Easypost returned an error: %s"
@@ -217,7 +210,7 @@ msgstr "请输入您的 Easypost 账号的API密钥"
 #. module: delivery_easypost
 #: model:ir.model.fields,help:delivery_easypost.field_delivery_carrier__easypost_test_api_key
 msgid "Enter your API test key from Easypost account."
-msgstr "输入 Easypost 账户中的 API 测试密钥。"
+msgstr "请输入您的 Easypost 测试账号的API密钥"
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
@@ -238,26 +231,32 @@ msgstr "如未设置，那么将选择较低级的扩展服务。"
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_insurance_fee_minimum
 msgid "Insurance fee minimum (USD)"
-msgstr "最小保险费 (USD)"
+msgstr ""
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_insurance_fee_rate
 msgid "Insurance fee rate (USD)"
-msgstr "保险费率 (USD)"
+msgstr ""
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
 "It seems Easypost do not provide shipments for this order.                We"
 " advise you to try with another package type or service level."
-msgstr "看来 Easypost 不提供此订单的货运服务。                我们建议您尝试其他包裹类型或服务级别。"
+msgstr ""
+"‎Easypost 可能不提供此‎‎订单‎‎的装运。‎‎              我们‎‎建议‎‎您‎‎尝试使用其他‎‎包‎‎类型‎‎或服务级别。‎"
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
 msgid "Label Format"
 msgstr "标签格式"
+
+#. module: delivery_easypost
+#: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost____last_update
+#: model:ir.model.fields,field_description:delivery_easypost.field_easypost_service____last_update
+msgid "Last Modified on"
+msgstr "最后修改日"
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost__write_uid
@@ -269,7 +268,7 @@ msgstr "最后更新人"
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier_easypost__write_date
 #: model:ir.model.fields,field_description:delivery_easypost.field_easypost_service__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: delivery_easypost
 #: model_terms:ir.ui.view,arch_db:delivery_easypost.view_delivery_carrier_form_inherit_delivery_easypost
@@ -292,19 +291,17 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Package type used in pack %s is not configured for easypost."
 msgstr "包%s中使用的包类型没有被配置为easyypost。"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
-msgstr "请提供至少一件要运送的物品。"
+msgstr "请至少提供一个发货项目"
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_production_api_key
@@ -317,14 +314,12 @@ msgid "Provider"
 msgstr "物流商"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Return Label<br/>"
-msgstr "退货标签<br/>"
+msgstr ""
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Sale Order/Stock Picking is missing."
@@ -346,7 +341,6 @@ msgid "Service Level Name"
 msgstr "服务等级名称"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Shipment created into Easypost<br/><b>Tracking Numbers:</b> %s<br/>"
@@ -365,7 +359,7 @@ msgstr "注册"
 #. module: delivery_easypost
 #: model:ir.model,name:delivery_easypost.model_stock_package_type
 msgid "Stock package type"
-msgstr "库存包裹类型"
+msgstr "库存包装类型"
 
 #. module: delivery_easypost
 #: model:ir.model.fields,field_description:delivery_easypost.field_delivery_carrier__easypost_test_api_key
@@ -373,7 +367,6 @@ msgid "Test API Key"
 msgstr "测试 API 密钥"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -381,10 +374,9 @@ msgid ""
 " Default Package Type)"
 msgstr ""
 "缺少%s承运商（缺少字段。\n"
-" 默认包裹类型)"
+" 默认包装类型)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -395,7 +387,6 @@ msgstr ""
 "‎ ‎‎交货‎‎承运商‎‎类型‎)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -406,7 +397,6 @@ msgstr ""
 "‎ ‎‎生产‎‎API 密钥)‎"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -417,16 +407,14 @@ msgstr ""
 "‎测试 API 密钥)"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
 "The estimated price cannot be computed because the weight of your product is"
 " missing."
-msgstr "由于缺少产品重量，因此无法计算估计价格。"
+msgstr "因为产品重量缺失所以无法估算价格"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
@@ -437,55 +425,51 @@ msgstr ""
 " %s"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
 "There is no rate available for the selected service level for one of your "
 "package. Please choose another service level."
-msgstr "您所选的服务级别中没有适合您的套餐之一的费率。请选择其他服务级别。"
+msgstr "‎您‎‎的某个‎‎包‎‎的选定服务级别没有可用的速率。请选择其他服务级别。‎"
 
 #. module: delivery_easypost
 #: model:ir.model,name:delivery_easypost.model_stock_picking
 msgid "Transfer"
-msgstr "转账"
+msgstr "调拨"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "Unable to retrieve your default insurance rates."
-msgstr "无法检索您的默认保险费率。"
+msgstr ""
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Unknown error"
 msgstr "未知错误"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid "Unspecified field"
 msgstr "未指定的字段"
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/delivery_carrier.py:0
 #, python-format
 msgid "You can't cancel Easypost shipping."
 msgstr "您不能取消 Easypost 运输."
 
 #. module: delivery_easypost
-#. odoo-python
 #: code:addons/delivery_easypost/models/easypost_request.py:0
 #, python-format
 msgid ""
 "You have no carrier linked to your Easypost Account.                Please "
 "connect to Easypost, link your account to carriers and then retry."
-msgstr "您的 Easypost 帐户未链接任何运营商。                请连接 Easypost，将您的账户与运营商链接，然后重试。"
+msgstr ""
+"‎您‎‎没有链接到‎‎您‎‎的 Easypost 账户的‎‎承运商‎‎。‎             ‎请连接到 Easypost, "
+"将‎‎您‎‎的账户‎‎链接到‎‎运营商, 然后重试。‎"
 
 #. module: delivery_easypost
 #: model:ir.model.fields.selection,name:delivery_easypost.selection__delivery_carrier__easypost_label_file_type__zpl

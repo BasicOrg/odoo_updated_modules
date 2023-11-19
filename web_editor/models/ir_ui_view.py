@@ -74,7 +74,7 @@ class IrUiView(models.Model):
         vals = {
             'inherit_id': self.id,
             'name': '%s (%s)' % (self.name, el.get('id')),
-            'arch': etree.tostring(arch, encoding='unicode'),
+            'arch': self._pretty_arch(arch),
             'key': '%s_%s' % (self.key, el.get('id')),
             'type': 'qweb',
             'mode': 'extension',
@@ -87,6 +87,19 @@ class IrUiView(models.Model):
     @api.model
     def _save_oe_structure_hook(self):
         return {}
+
+    @api.model
+    def _pretty_arch(self, arch):
+        # remove_blank_string does not seem to work on HTMLParser, and
+        # pretty-printing with lxml more or less requires stripping
+        # whitespace: http://lxml.de/FAQ.html#why-doesn-t-the-pretty-print-option-reformat-my-xml-output
+        # so serialize to XML, parse as XML (remove whitespace) then serialize
+        # as XML (pretty print)
+        arch_no_whitespace = etree.fromstring(
+            etree.tostring(arch, encoding='utf-8'),
+            parser=etree.XMLParser(encoding='utf-8', remove_blank_text=True))
+        return etree.tostring(
+            arch_no_whitespace, encoding='unicode', pretty_print=True)
 
     @api.model
     def _are_archs_equal(self, arch1, arch2):
@@ -104,10 +117,6 @@ class IrUiView(models.Model):
             return False
         return all(self._are_archs_equal(arch1, arch2) for arch1, arch2 in zip(arch1, arch2))
 
-    @api.model
-    def _get_allowed_root_attrs(self):
-        return ['style', 'class']
-
     def replace_arch_section(self, section_xpath, replacement, replace_tail=False):
         # the root of the arch section shouldn't actually be replaced as it's
         # not really editable itself, only the content truly is editable.
@@ -123,7 +132,7 @@ class IrUiView(models.Model):
         root.text = replacement.text
 
         # We need to replace some attrib for styles changes on the root element
-        for attribute in self._get_allowed_root_attrs():
+        for attribute in ('style', 'class'):
             if attribute in replacement.attrib:
                 root.attrib[attribute] = replacement.attrib[attribute]
 
@@ -194,7 +203,7 @@ class IrUiView(models.Model):
         old_arch = etree.fromstring(self.arch.encode('utf-8'))
         if not self._are_archs_equal(old_arch, new_arch):
             self._set_noupdate()
-            self.write({'arch': etree.tostring(new_arch, encoding='unicode')})
+            self.write({'arch': self._pretty_arch(new_arch)})
 
     @api.model
     def _view_get_inherited_children(self, view):

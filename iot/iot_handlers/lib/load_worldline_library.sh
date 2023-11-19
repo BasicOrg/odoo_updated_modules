@@ -6,7 +6,7 @@ sudo mount -o remount,rw /root_bypass_ramdisks
 PATH_ZIP_LIB=/home/pi/odoo/addons/hw_drivers/iot_handlers/lib/
 PATH_LIB=${PATH_ZIP_LIB}ctep/lib/
 
-curl -sS https://download.odoo.com/master/posbox/iotbox/worldline-ctepv21_07.zip -o  "${PATH_ZIP_LIB}worldline-ctepv21_07.zip"
+curl -sS http://download.odoo.com/master/posbox/iotbox/worldline-ctepv21_07.zip -o  "${PATH_ZIP_LIB}worldline-ctepv21_07.zip"
 
 if [ -f "${PATH_ZIP_LIB}worldline-ctepv21_07.zip" ]; then
 	unzip ${PATH_ZIP_LIB}worldline-ctepv21_07.zip -d ${PATH_ZIP_LIB}

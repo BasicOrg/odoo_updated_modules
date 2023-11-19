@@ -1,85 +1,67 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { markup, onMounted, useState } from "@odoo/owl";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { formView } from "@web/views/form/form_view";
+import { FormController } from "@web/views/form/form_controller";
+import { FormViewDialog } from "@web/views/view_dialogs/form_view_dialog";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { escape } from "@web/core/utils/strings";
-import { FormController } from "@web/views/form/form_controller";
-import { formView } from "@web/views/form/form_view";
-import { FormViewDialog } from "@web/views/view_dialogs/form_view_dialog";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { AddressRecurrencyConfirmationDialog } from "@planning/components/address_recurrency_confirmation_dialog/address_recurrency_confirmation_dialog";
+import { Record, RelationalModel } from "@web/views/basic_relational_model";
 
-export class PlanningFormController extends FormController {
-    setup() {
-        super.setup();
-        this.action = useService("action");
-        this.notification = useService("notification");
-        this.orm = useService("orm");
-        this.state = useState({
-            recurrenceUpdate: "this",
-        });
-        onMounted(() => {
-            this.initialTemplateCreation = this.model.root.data.template_creation;
-        });
-    }
+const { markup, onMounted } = owl;
 
-    async saveButtonClicked(params = {}) {
-        // In case this is the nth occurence,
-        // and we update the number of occurences of the recurrency to < n,
-        // ths occurence will be deleted. In that case, we need to go back to previous view.
-        try {
-            return await super.saveButtonClicked(params);
-        } catch {
-            this.env.config.historyBack()
-        }
-        return false;
-    }
 
-    async onRecordSaved(record, changes) {
-        if ("repeat" in changes && record.data["repeat"]) {
-            const message = _t("The recurring shifts have successfully been created.");
-            this.notification.add(
+class PlanningFormRecord extends Record {
+    async save() {
+        const dirtyFields = this.dirtyFields.map((f) => f.name);
+        const res = await super.save(...arguments);
+
+        if (dirtyFields.includes("repeat") && this.data["repeat"]) {
+            const message = this.model.env._t("The recurring shifts have successfully been created.");
+            this.model.notificationService.add(
                 markup(
                     `<i class="fa fa-fw fa-check"></i><span class="ms-1">${escape(message)}</span>`
                 ),
                 { type: "success" }
             );
         }
+        return res;
+    }
+}
+
+class PlanningFormModel extends RelationalModel {}
+PlanningFormModel.Record = PlanningFormRecord;
+
+export class PlanningFormController extends FormController {
+
+    setup() {
+        super.setup();
+        this.notification = useService("notification");
+        this.orm = useService("orm");
+        onMounted(() => {
+            this.initialTemplateCreation = this.model.root.data.template_creation;
+        });
     }
 
     async beforeExecuteActionButton(clickParams) {
-        const shift = this.model.root;
+        const resId = this.model.root.resId;
         if (clickParams.name === "unlink") {
             const canProceed = await new Promise((resolve) => {
-                if (shift.data.recurrency_id) {
-                    this.dialogService.add(AddressRecurrencyConfirmationDialog, {
-                        cancel: () => resolve(false),
-                        close: () => resolve(false),
-                        confirm: async () => {
-                            await this._actionAddressRecurrency(shift);
-                            return resolve(true);
-                        },
-                        onChangeRecurrenceUpdate: this._setRecurrenceUpdate.bind(this),
-                    });
-                } else {
-                    this.dialogService.add(ConfirmationDialog, {
-                        body: _t("Are you sure you want to delete this shift?"),
-                        confirmLabel: _t("Delete"),
-                        cancel: () => resolve(false),
-                        close: () => resolve(false),
-                        confirm: () => resolve(true),
-                    });
-                }
+                this.dialogService.add(ConfirmationDialog, {
+                    body: this.env._t("Are you sure you want to delete this shift?"),
+                    cancel: () => resolve(false),
+                    close: () => resolve(false),
+                    confirm: () => resolve(true),
+                });
             });
             if (!canProceed) {
                 return false;
             }
-        } else if (clickParams.name === 'action_send' && shift.resId) {
+        } else if (clickParams.name === 'action_send' && resId) {
             // We want to check if all employees impacted to this action have a email.
             // For those who do not have any email in work_email field, then a FormViewDialog is displayed for each employee who is not email.
-            const result = await this.orm.call(this.props.resModel, "get_employees_without_work_email", [shift.resId]);
+            const result = await this.orm.call(this.props.resModel, "get_employees_without_work_email", [resId]);
             if (result) {
                 const { res_ids: resIds, relation: resModel, context } = result;
                 const canProceed = await this.displayDialogWhenEmployeeNoEmail(resIds, resModel, context);
@@ -88,9 +70,10 @@ export class PlanningFormController extends FormController {
                 }
             }
         }
-        if (!this.initialTemplateCreation && shift.data.template_creation) {
+        const templateCreation = this.model.root.data.template_creation;
+        if (!this.initialTemplateCreation && templateCreation) {
             // then the shift should be saved as a template too.
-            const message = _t("This shift was successfully saved as a template.");
+            const message = this.env._t("This shift was successfully saved as a template.");
             this.notification.add(
                 markup(`<i class="fa fa-fw fa-check"></i><span class="ms-1">${escape(message)}</span>`),
                 { type: "success" },
@@ -123,49 +106,12 @@ export class PlanningFormController extends FormController {
         }));
         return results.every((r) => r);
     }
-
-    async deleteRecord() {
-        const shift = this.model.root;
-        if (shift.data.recurrency_id) {
-            this.dialogService.add(AddressRecurrencyConfirmationDialog, {
-                confirm: async () => {
-                    await this._actionAddressRecurrency(shift);
-                    await shift.delete().then(
-                        () => {
-                            if (!shift.resId) {
-                                this.env.config.historyBack();
-                            }
-                        },
-                        () => {
-                            this.env.config.historyBack();
-                        }
-                    );
-                },
-                onChangeRecurrenceUpdate: this._setRecurrenceUpdate.bind(this),
-            });
-        } else {
-            await super.deleteRecord(...arguments);
-        }
-    }
-
-    async _actionAddressRecurrency(shift) {
-        if (['subsequent', 'all'].includes(this.state.recurrenceUpdate)) {
-            await this.orm.call(
-                shift.resModel,
-                'action_address_recurrency',
-                [shift.resId, this.state.recurrenceUpdate],
-            );
-        }
-    }
-
-    _setRecurrenceUpdate(recurrenceUpdate) {
-        this.state.recurrenceUpdate = recurrenceUpdate;
-    }
 }
 
 export const planningFormView = {
     ...formView,
     Controller: PlanningFormController,
+    Model: PlanningFormModel,
 };
 
 registry.category("views").add("planning_form", planningFormView);

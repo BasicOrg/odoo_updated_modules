@@ -6,16 +6,13 @@
         <field name="arch" type="xml">
             <xpath expr="//widget[@name='web_ribbon']" position="before">
             <div class="oe_button_box" name="button_box">
-                <button class="oe_stat_button" name="action_mrp_workorder_show_steps" type="object" icon="fa-wrench" invisible="quality_point_count == 0">
+                <button class="oe_stat_button" name="action_mrp_workorder_show_steps" type="object" icon="fa-wrench" attrs="{'invisible': [('quality_point_count', '=', 0)]}">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value"><field name="quality_point_count"/></span>
                         <span class="o_stat_text">Instructions</span>
                     </div>
                 </button>
             </div>
-            </xpath>
-            <xpath expr="//field[@name='time_cycle']" position="before">
-                <field name="employee_ratio" groups="base.group_no_one"/>
             </xpath>
         </field>
     </record>

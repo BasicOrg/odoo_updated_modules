@@ -1,8 +1,10 @@
 /** @odoo-module **/
 
+import { useWowlService } from '@web/legacy/utils';
 import { Dialog } from "@web/core/dialog/dialog";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
-import { onRendered, useRef, useEffect, useState } from "@odoo/owl";
+
+const { Component, onRendered, useRef, useEffect, useState, xml } = owl;
 
 const ZOOM_STEP = 0.1;
 
@@ -143,3 +145,14 @@ ProductImageViewer.props = {
 };
 delete ProductImageViewer.props.slots;
 ProductImageViewer.template = "website_sale.ProductImageViewer";
+
+export class ProductImageViewerWrapper extends Component {
+    setup() {
+        this.dialogs = useWowlService('dialog');
+
+        onRendered(() => {
+            this.dialogs.add(ProductImageViewer, this.props);
+        });
+    }
+}
+ProductImageViewerWrapper.template = xml``;

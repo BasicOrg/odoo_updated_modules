@@ -6,16 +6,16 @@ from odoo import fields, models, _
 class Task(models.Model):
     _inherit = 'project.task'
 
-    leave_types_count = fields.Integer(compute='_compute_leave_types_count', string="Time Off Types Count")
+    leave_types_count = fields.Integer(compute='_compute_leave_types_count')
     is_timeoff_task = fields.Boolean("Is Time off Task", compute="_compute_is_timeoff_task", search="_search_is_timeoff_task")
 
     def _compute_leave_types_count(self):
         time_off_type_read_group = self.env['hr.leave.type']._read_group(
             [('timesheet_task_id', 'in', self.ids)],
             ['timesheet_task_id'],
-            ['__count'],
+            ['timesheet_task_id'],
         )
-        time_off_type_count_per_task = {timesheet_task.id: count for timesheet_task, count in time_off_type_read_group}
+        time_off_type_count_per_task = {res['timesheet_task_id'][0]: res['timesheet_task_id_count'] for res in time_off_type_read_group}
         for task in self:
             task.leave_types_count = time_off_type_count_per_task.get(task.id, 0)
 
@@ -29,10 +29,10 @@ class Task(models.Model):
             raise NotImplementedError(_('Operation not supported'))
         leave_type_read_group = self.env['hr.leave.type']._read_group(
             [('timesheet_task_id', '!=', False)],
+            ['timesheet_task_ids:array_agg(timesheet_task_id)'],
             [],
-            ['timesheet_task_id:array_agg'],
         )
-        [timeoff_task_ids] = leave_type_read_group[0]
+        timeoff_task_ids = leave_type_read_group[0]['timesheet_task_ids'] if leave_type_read_group else []
         if self.env.company.leave_timesheet_task_id:
             timeoff_task_ids.append(self.env.company.leave_timesheet_task_id.id)
         if operator == '!=':

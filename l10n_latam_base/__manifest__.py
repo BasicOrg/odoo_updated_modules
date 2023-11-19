@@ -4,7 +4,7 @@
     'version': '1.0',
     'category': 'Accounting/Localizations',
     'sequence': 14,
-    'author': 'Odoo S.A., ADHOC SA',
+    'author': 'Odoo, ADHOC SA',
     'summary': 'LATAM Identification Types',
     'description': """
 Add a new model named "Identification Type" that extend the vat field functionality in the partner and let the user to identify (an eventually invoice) to contacts not only with their fiscal tax ID (VAT) but with other types of identifications like national document, passport, foreign ID, etc. With this module installed you will see now in the partner form view two fields:
@@ -37,7 +37,7 @@ Rules when creating a new partner: We will only see the identification types tha
 
 * If the partner have not country address set: Will show the generic identification types plus the ones defined in the partner's related company country (If the partner has not specific company then will show the identification types related to the current user company)
 
-* If the partner has country address: will show the generic identification types plus the ones defined for the country of the partner.
+* If the partner has country address : will show the generic identification types plus the ones defined for the country of the partner.
 
 When creating a new company, will set to the related partner always the related country is_vat identification type.
 

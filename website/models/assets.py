@@ -44,7 +44,7 @@ class Assets(models.AbstractModel):
             # Also reset gradients which are in the "website" values palette
             self.make_scss_customization('/website/static/src/scss/options/user_values.scss', {
                 'menu-gradient': 'null',
-                'menu-secondary-gradient': 'null',
+                'header-boxed-gradient': 'null',
                 'footer-gradient': 'null',
                 'copyright-gradient': 'null',
             })
@@ -55,7 +55,7 @@ class Assets(models.AbstractModel):
             IrAttachment.search([
                 '|', ('id', '=', delete_attachment_id),
                 ('original_id', '=', delete_attachment_id),
-                ('name', 'like', 'google-font'),
+                ('name', 'like', '%google-font%')
             ]).unlink()
 
         google_local_fonts = values.get('google-local-fonts')
@@ -123,13 +123,6 @@ class Assets(models.AbstractModel):
         updatedFileContent = self._get_content_from_url(custom_url) or self._get_content_from_url(url)
         updatedFileContent = updatedFileContent.decode('utf-8')
         for name, value in values.items():
-            # Protect variable names so they cannot be computed as numbers
-            # on SCSS compilation (e.g. var(--700) => var(700)).
-            if isinstance(value, str):
-                value = re.sub(
-                    r"var\(--([0-9]+)\)",
-                    lambda matchobj: "var(--#{" + matchobj.group(1) + "})",
-                    value)
             pattern = "'%s': %%s,\n" % name
             regex = re.compile(pattern % ".+")
             replacement = pattern % value
@@ -150,13 +143,7 @@ class Assets(models.AbstractModel):
             self = self.sudo()
         website = self.env['website'].get_current_website()
         res = super()._get_custom_attachment(custom_url, op=op)
-        # See _save_asset_attachment_hook -> it is guaranteed that the
-        # attachment we are looking for has a website_id. When we serve an
-        # attachment we normally serve the ones which have the right website_id
-        # or no website_id at all (which means "available to all websites", of
-        # course if they are marked "public"). But this does not apply in this
-        # case of customized asset files.
-        return res.with_context(website_id=website.id).filtered(lambda x: x.website_id == website)
+        return res.with_context(website_id=website.id).filtered(lambda x: not x.website_id or x.website_id == website)
 
     @api.model
     def _get_custom_asset(self, custom_url):
@@ -173,23 +160,14 @@ class Assets(models.AbstractModel):
         return res.with_context(website_id=website.id).filter_duplicate()
 
     @api.model
-    def _add_website_id(self, values):
-        website = self.env['website'].get_current_website()
-        values['website_id'] = website.id
-        return values
-
-    @api.model
-    def _save_asset_attachment_hook(self):
-        """
-        See web_editor.Assets._save_asset_attachment_hook
-        Extend to add website ID at ir.attachment creation.
-        """
-        return self._add_website_id(super()._save_asset_attachment_hook())
-
-    @api.model
     def _save_asset_hook(self):
         """
         See web_editor.Assets._save_asset_hook
-        Extend to add website ID at ir.asset creation.
+        Extend to add website ID at attachment creation.
         """
-        return self._add_website_id(super()._save_asset_hook())
+        res = super()._save_asset_hook()
+
+        website = self.env['website'].get_current_website()
+        if website:
+            res['website_id'] = website.id
+        return res

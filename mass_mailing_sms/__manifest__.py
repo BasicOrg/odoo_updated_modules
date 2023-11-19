@@ -4,7 +4,7 @@
 {
     'name': 'SMS Marketing',
     'summary': 'Design, send and track SMS',
-    'version': '1.1',
+    'version': '1.0',
     'category': 'Marketing/Email Marketing',
     'sequence': 245,
     'depends': [
@@ -13,7 +13,7 @@
         'sms',
     ],
     'data': [
-        'data/utm.xml',
+        'data/utm_data.xml',
         'security/ir.model.access.csv',
         'report/mailing_trace_report_views.xml',
         'views/mailing_list_views.xml',
@@ -27,17 +27,10 @@
         'wizard/mailing_sms_test_views.xml',
     ],
     'demo': [
-        'demo/utm.xml',
-        'demo/mailing_list_contact.xml',
-        'demo/mailing_subscription.xml',
-        'demo/mailing_mailing.xml',
-        'demo/mailing_trace.xml',
+        'data/utm_demo.xml',
+        'data/mailing_list_demo.xml',
+        'data/mailing_demo.xml',
     ],
-    'assets': {
-        'web.assets_tests': [
-            'mass_mailing_sms/static/tests/tours/**/*',
-        ],
-    },
     'application': True,
     'license': 'LGPL-3',
 }

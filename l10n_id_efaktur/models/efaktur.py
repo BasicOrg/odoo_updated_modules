@@ -98,14 +98,12 @@ class Efaktur(models.Model):
 
     @api.onchange('min')
     def _onchange_min(self):
-        min_val = re.sub(r'\D', '', str(self.min)) or 0
-        self.min = '%013d' % int(min_val)
+        self.min = '%013d' % int(re.sub(r'\D', '', self.min))
         if not self.max or int(self.min) > int(self.max):
             self.max = self.min
 
     @api.onchange('max')
     def _onchange_max(self):
-        max_val = re.sub(r'\D', '', str(self.max)) or 0
-        self.max = '%013d' % int(max_val)
+        self.max = '%013d' % int(re.sub(r'\D', '', self.max))
         if not self.min or int(self.min) > int(self.max):
             self.min = self.max

@@ -1,193 +1,254 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
+from odoo import models, _
+from odoo.http import request
+from odoo.exceptions import ValidationError
 
-from odoo import models
 
-
-class AccountChartTemplate(models.AbstractModel):
+class AccountChartTemplate(models.Model):
     _inherit = "account.chart.template"
 
-    def _configure_payroll_account_be(self, companies):
-        account_codes = [
+    def _load(self, company):
+        """
+        Override to configure payroll accounting data as well as accounting data.
+        """
+        res = super()._load(company)
+        if self == self.env.ref('l10n_be.l10nbe_chart_template'):
+            self._configure_payroll_account_data(company)
+        return res
+
+    def _configure_payroll_account_data(self, companies):
+        accounts_codes = [
             '453000',  # Withholding taxes, IP Deduction
             '454000',  # ONSS (Employee, Employer, Miscellaneous)
-            '455000',  # Due amount (net)
+            '455000',  # Due amount (net), Meal Vouchers
             '620200',  # Remuneration, Representation Fees; Private Car
             '621000',  # ONSS Employer (debit)
             '643000',  # IP
-            '743000',  # Meal Vouchers
         ]
-        default_account = '620200'
-        rules_mapping = defaultdict(dict)
+        belgian_structures = self.env['hr.payroll.structure'].search([('country_id.code', '=', "BE")])
+        for company in companies:
+            self = self.with_company(company)
 
-        # ================================================ #
-        #              CP200: 13th month                   #
-        # ================================================ #
+            accounts = {}
+            for code in accounts_codes:
+                account = self.env['account.account'].search([('company_id', '=', company.id), ('code', 'like', '%s%%' % code)], limit=1)
+                if not account:
+                    raise ValidationError(_('No existing account for code %s', code))
+                accounts[code] = account
 
-        basic_rule = self.env['hr.salary.rule'].search([
-            ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_thirteen_month').id),
-            ('code', '=', 'BASIC')
-        ])
-        rules_mapping[basic_rule]['credit'] = '455000'
+            journal = self.env['account.journal'].search([
+                ('code', '=', 'SLR'),
+                ('name', '=', 'Salaries'),
+                ('company_id', '=', company.id)])
 
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_onss_rule')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            if journal:
+                if not journal.default_account_id:
+                    journal.default_account_id = accounts['620200'].id
+            else:
+                journal = self.env['account.journal'].create({
+                    'name': 'Salaries',
+                    'code': 'SLR',
+                    'type': 'general',
+                    'company_id': company.id,
+                    'default_account_id': accounts['620200'].id,
+                })
 
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_p_p')
-        rules_mapping[pp_rule]['credit'] = '453000'
+                self.env['ir.property']._set_multi(
+                    "journal_id",
+                    "hr.payroll.structure",
+                    {structure.id: journal for structure in belgian_structures},
+                )
 
-        monss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_mis_ex_onss')
-        rules_mapping[monss_rule]['debit'] = '454000'  # Note: this is a credit, but the amount is negative
+            # ================================================ #
+            #              CP200: 13th month                   #
+            # ================================================ #
+            salary_rule_domain = [
+                ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_thirteen_month').id),
+                ('code', '=', 'BASIC')
+            ]
+            self.env['hr.salary.rule'].search(salary_rule_domain).write({'account_credit': accounts['455000'].id})
 
-        net_rule = self.env['hr.salary.rule'].search([
-            ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_thirteen_month').id),
-            ('code', '=', 'NET')
-        ])
-        rules_mapping[net_rule]['credit'] = '455000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_onss_rule').write({
+                'account_credit': accounts['454000'].id
+            })
 
-        # ================================================ #
-        #              CP200: Double Holidays              #
-        # ================================================ #
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_double_holiday_onss_rule')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_p_p').write({
+                'account_credit': accounts['453000'].id
+            })
 
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_double_holiday_pay_p_p')
-        rules_mapping[pp_rule]['credit'] = '453000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_thirteen_month_mis_ex_onss').write({
+                'account_debit': accounts['454000'].id  # Note: this is a credit, but the amount is negative
+            })
 
-        net_rule = self.env['hr.salary.rule'].search([
-            ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_double_holiday').id),
-            ('code', '=', 'NET')
-        ])
-        rules_mapping[net_rule]['credit'] = '455000'
+            self.env['hr.salary.rule'].search([
+                ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_thirteen_month').id),
+                ('code', '=', 'NET')
+            ]).write({
+                'account_credit': accounts['455000'].id
+            })
 
-        # ================================================ #
-        #         CP200: Employees Monthly Pay             #
-        # ================================================ #
+            # ================================================ #
+            #              CP200: Double Holidays              #
+            # ================================================ #
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_double_holiday_onss_rule').write({
+                'account_credit': accounts['454000'].id
+            })
 
-        # Remunerations
-        remun_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_remuneration')
-        rules_mapping[remun_rule]['debit'] = '620200'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_double_holiday_pay_p_p').write({
+                'account_credit': accounts['453000'].id
+            })
 
-        # IP
-        ip_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ip')
-        rules_mapping[ip_rule]['debit'] = '643000'
+            self.env['hr.salary.rule'].search([
+                ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_double_holiday').id),
+                ('code', '=', 'NET')
+            ]).write({
+                'account_credit': accounts['455000'].id
+            })
 
-        # ONSS (Onss - employment bonus)
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_onss_total')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            # ================================================ #
+            #         CP200: Employees Monthly Pay             #
+            # ================================================ #
 
+            # Remunerations
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_remuneration').write({
+                'account_debit': accounts['620200'].id
+            })
 
-        # Private car reimbursement
-        car_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_private_car')
-        rules_mapping[car_rule]['debit'] = '620200'
+            # IP
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ip').write({
+                'account_debit': accounts['643000'].id,
+            })
 
+            # ONSS (Onss - employment bonus)
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_onss_total').write({
+                'account_credit': accounts['454000'].id,
+            })
 
-        # Total withholding taxes
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_withholding_taxes_total')
-        rules_mapping[pp_rule]['credit'] = '453000'
+            # Private car reimbursement
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_private_car').write({
+                'account_debit': accounts['620200'].id,
+            })
 
-        # Special Social Cotisation (MISC ONSS)
-        monss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_mis_ex_onss')
-        rules_mapping[monss_rule]['debit'] = '454000'  # Note: this is a credit, but the amount is negative
+            # Total withholding taxes
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_withholding_taxes_total').write({
+                'account_credit': accounts['453000'].id,
+            })
 
-        # Representation Fees
-        rep_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_representation_fees')
-        rules_mapping[rep_rule]['debit'] = '620200'
+            # Special Social Cotisation (MISC ONSS)
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_mis_ex_onss').write({
+                'account_debit': accounts['454000'].id,  # Note: this is a credit, but the amount is negative
+            })
 
-        # IP Deduction
-        ip_ded_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ip_deduction')
-        rules_mapping[ip_ded_rule]['debit'] = '453000'  # Note: This is a credit, but the amount is negative
+            # Representation Fees
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_representation_fees').write({
+                'account_debit': accounts['620200'].id,
+            })
 
-        # Meal vouchers
-        meal_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ch_worker')
-        rules_mapping[meal_rule]['debit'] = '743000'  # Note: this is a credit, but the amount is negative
+            # IP Deduction
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ip_deduction').write({
+                'account_debit': accounts['453000'].id,  # Note: This is a credit, but the amount is negative
+            })
 
-        # Owed Remunerations (NET)
-        net_rule = self.env['hr.salary.rule'].search([
-            ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary').id),
-            ('code', '=', 'NET')
-        ])
-        rules_mapping[net_rule]['credit'] = '455000'
+            # Meal vouchers
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_ch_worker').write({
+                'account_debit': accounts['455000'].id,  # Note: this is a credit, but the amount is negative
+            })
 
-        # ONSS Employer
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_onss_employer')
-        rules_mapping[onss_rule]['debit'] = '621000'
-        rules_mapping[onss_rule]['credit'] = '454000'
+            # Owed Remunerations (NET)
+            self.env['hr.salary.rule'].search([
+                ('struct_id', '=', self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary').id),
+                ('code', '=', 'NET')
+            ]).write({
+                'account_credit': accounts['455000'].id
+            })
 
-        # ================================================ #
-        #              CP200: Termination Fees             #
-        # ================================================ #
+            # ONSS Employer
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_onss_employer').write({
+                'account_debit': accounts['621000'].id,
+                'account_credit': accounts['454000'].id,
+            })
 
-        # Remuneration
-        remun_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_remuneration')
-        rules_mapping[remun_rule]['debit'] = '620200'
+            # ================================================ #
+            #              CP200: Termination Fees             #
+            # ================================================ #
 
-        # ONSS (Onss - employment bonus)
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_onss_total')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            # Remuneration
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_remuneration').write({
+                'account_debit': accounts['620200'].id
+            })
 
-        # Total withholding taxes
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_withholding_taxes_total')
-        rules_mapping[pp_rule]['credit'] = '453000'
+            # ONSS (Onss - employment bonus)
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_onss_total').write({
+                'account_credit': accounts['454000'].id,
+            })
 
-        # Owed Remunerations (NET)
-        net_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_withholding_taxes_total')
-        rules_mapping[net_rule]['credit'] = '455000'
+            # Total withholding taxes
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_salary_withholding_taxes_total').write({
+                'account_credit': accounts['453000'].id,
+            })
 
-        # ONSS Employer
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_termination_ONSS')
-        rules_mapping[onss_rule]['debit'] = '621000'
-        rules_mapping[onss_rule]['credit'] = '454000'
+            # Owed Remunerations (NET)
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_withholding_taxes_total').write({
+                'account_credit': accounts['455000'].id
+            })
 
-        # ================================================ #
-        #              CP200: Termination Holidays N       #
-        # ================================================ #
+            # ONSS Employer
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_fees_termination_ONSS').write({
+                'account_debit': accounts['621000'].id,
+                'account_credit': accounts['454000'].id,
+            })
 
-        basic_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_total_n')
-        rules_mapping[basic_rule]['credit'] = '455000'
+            # ================================================ #
+            #              CP200: Termination Holidays N       #
+            # ================================================ #
 
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_rules_onss_termination')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_total_n').write({
+                'account_credit': accounts['455000'].id,
+            })
 
-        monss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_rules_special_contribution_termination')
-        rules_mapping[monss_rule]['credit'] = '454000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_rules_onss_termination').write({
+                'account_credit': accounts['454000'].id,
+            })
 
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_rules_professional_tax_termination')
-        rules_mapping[pp_rule]['credit'] = '453000'
+            self.env.ref(
+                'l10n_be_hr_payroll.cp200_employees_termination_n_rules_special_contribution_termination').write({
+                'account_credit': accounts['454000'].id,
+            })
 
-        net_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_pay_net_termination')
-        rules_mapping[net_rule]['debit'] = '455000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_rules_professional_tax_termination').write({
+                'account_credit': accounts['453000'].id,
+            })
 
-        # ================================================ #
-        #        CP200: Termination Holidays N-1           #
-        # ================================================ #
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n_pay_net_termination').write({
+                'account_debit': accounts['455000'].id,
+            })
 
-        basic_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_total_n')
-        rules_mapping[basic_rule]['credit'] = '455000'
+            # ================================================ #
+            #        CP200: Termination Holidays N-1           #
+            # ================================================ #
 
-        onss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_rules_onss_termination')
-        rules_mapping[onss_rule]['credit'] = '454000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_total_n').write({
+                'account_credit': accounts['455000'].id,
+            })
 
-        monss_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_rules_special_contribution_termination')
-        rules_mapping[monss_rule]['credit'] = '454000'
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_rules_onss_termination').write({
+                'account_credit': accounts['454000'].id,
+            })
 
-        pp_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_rules_professional_tax_termination')
-        rules_mapping[pp_rule]['credit'] = '453000'
+            self.env.ref(
+                'l10n_be_hr_payroll.cp200_employees_termination_n1_rules_special_contribution_termination').write({
+                'account_credit': accounts['454000'].id,
+            })
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_rules_professional_tax_termination').write({
+                'account_credit': accounts['453000'].id,
+            })
+            self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_pay_net_termination').write({
+                'account_debit': accounts['455000'].id,
+            })
 
-        net_rule = self.env.ref('l10n_be_hr_payroll.cp200_employees_termination_n1_pay_net_termination')
-        rules_mapping[net_rule]['debit'] = '455000'
-
-        self._configure_payroll_account(
-            companies,
-            "BE",
-            account_codes=account_codes,
-            rules_mapping=rules_mapping,
-            default_account=default_account)
-
-    def _configure_payroll_account_be_comp(self, companies):
-        return self._configure_payroll_account_be(companies)
-
-    def _configure_payroll_account_be_asso(self, companies):
-        return self._configure_payroll_account_be(companies)
+    def _configure_additional_structures(self, accounts, journal):
+        # Could be overridden to add a specific structure without having to
+        # recompute the accounts and the journal.
+        return

@@ -3,46 +3,30 @@
 import logging
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class PaymentToken(models.Model):
     _name = 'payment.token'
     _order = 'partner_id, id desc'
     _description = 'Payment Token'
-    _check_company_auto = True
 
-    provider_id = fields.Many2one(string="Provider", comodel_name='payment.provider', required=True)
-    provider_code = fields.Selection(string="Provider Code", related='provider_id.code')
-    company_id = fields.Many2one(
-        related='provider_id.company_id', store=True, index=True
-    )  # Indexed to speed-up ORM searches (from ir_rule or others).
-    payment_method_id = fields.Many2one(
-        string="Payment Method", comodel_name='payment.method', readonly=True, required=True
-    )
-    payment_method_code = fields.Char(
-        string="Payment Method Code", related='payment_method_id.code'
-    )
+    provider_id = fields.Many2one(
+        string="provider Account", comodel_name='payment.provider', required=True)
+    provider_code = fields.Selection(related='provider_id.code')
     payment_details = fields.Char(
         string="Payment Details", help="The clear part of the payment method's payment details.",
     )
     partner_id = fields.Many2one(string="Partner", comodel_name='res.partner', required=True)
+    company_id = fields.Many2one(  # Indexed to speed-up ORM searches (from ir_rule or others)
+        related='provider_id.company_id', store=True, index=True)
     provider_ref = fields.Char(
-        string="Provider Reference",
-        help="The provider reference of the token of the transaction.",
-        required=True,
-    )  # This is not the same thing as the provider reference of the transaction.
+        string="Provider Reference", help="The provider reference of the token of the transaction",
+        required=True)  # This is not the same thing as the provider reference of the transaction.
     transaction_ids = fields.One2many(
-        string="Payment Transactions", comodel_name='payment.transaction', inverse_name='token_id'
-    )
+        string="Payment Transactions", comodel_name='payment.transaction', inverse_name='token_id')
+    verified = fields.Boolean(string="Verified")
     active = fields.Boolean(string="Active", default=True)
-
-    #=== COMPUTE METHODS ===#
-
-    @api.depends('payment_details', 'create_date')
-    def _compute_display_name(self):
-        for token in self:
-            token.display_name = token._build_display_name()
 
     #=== CRUD METHODS ===#
 
@@ -91,13 +75,6 @@ class PaymentToken(models.Model):
 
         return super().write(values)
 
-    @api.constrains('partner_id')
-    def _check_partner_is_never_public(self):
-        """ Check that the partner associated with the token is never public. """
-        for token in self:
-            if token.partner_id.is_public:
-                raise ValidationError(_("No token can be assigned to the public partner."))
-
     def _handle_archiving(self):
         """ Handle the archiving of tokens.
 
@@ -108,32 +85,10 @@ class PaymentToken(models.Model):
         """
         return
 
+    def name_get(self):
+        return [(token.id, token._build_display_name()) for token in self]
+
     #=== BUSINESS METHODS ===#
-
-    def _get_available_tokens(self, providers_ids, partner_id, is_validation=False, **kwargs):
-        """ Return the available tokens linked to the given providers and partner.
-
-        For a module to retrieve the available tokens, it must override this method and add
-        information in the kwargs to define the context of the request.
-
-        :param list providers_ids: The ids of the providers available for the transaction.
-        :param int partner_id: The id of the partner.
-        :param bool is_validation: Whether the transaction is a validation operation.
-        :param dict kwargs: Locally unused keywords arguments.
-        :return: The available tokens.
-        :rtype: payment.token
-        """
-        if not is_validation:
-            return self.env['payment.token'].search(
-                [('provider_id', 'in', providers_ids), ('partner_id', '=', partner_id)]
-            )
-        else:
-            # Get all the tokens of the partner and of their commercial partner, regardless of
-            # whether the providers are available.
-            partner = self.env['res.partner'].browse(partner_id)
-            return self.env['payment.token'].search(
-                [('partner_id', 'in', [partner.id, partner.commercial_partner_id.id])]
-            )
 
     def _build_display_name(self, *args, max_length=34, should_pad=True, **kwargs):
         """ Build a token name of the desired maximum length with the format `•••• 1234`.
@@ -158,10 +113,7 @@ class PaymentToken(models.Model):
         """
         self.ensure_one()
 
-        if not self.create_date:
-            return ''
-
-        padding_length = max_length - len(self.payment_details or '')
+        padding_length = max_length - len(self.payment_details)
         if not self.payment_details:
             create_date_str = self.create_date.strftime('%Y/%m/%d')
             display_name = _("Payment details saved on %(date)s", date=create_date_str)

@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo.addons.crm_livechat.tests import chatbot_common
-from odoo.tests.common import tagged, users
+from odoo.tests.common import users
 
 
-@tagged("post_install", "-at_install")
 class CrmChatbotCase(chatbot_common.CrmChatbotCase):
 
     @users('user_public')
@@ -33,23 +33,19 @@ class CrmChatbotCase(chatbot_common.CrmChatbotCase):
         self.assertEqual(created_lead.type, 'lead')
 
     def _chatbot_create_lead(self, user):
-        channel_info = self.make_jsonrpc_request("/im_livechat/get_session", {
-            'anonymous_name': 'Test Visitor',
-            'channel_id': self.livechat_channel.id,
-            'chatbot_script_id': self.chatbot_script.id,
-            'user_id': user.id,
-        })
-        discuss_channel = self.env['discuss.channel'].sudo().browse(channel_info['id'])
+        channel_info = self.livechat_channel._open_livechat_mail_channel(
+            anonymous_name='Test Visitor', chatbot_script=self.chatbot_script, user_id=user.id)
+        mail_channel = self.env['mail.channel'].sudo().browse(channel_info['id'])
 
         self._post_answer_and_trigger_next_step(
-            discuss_channel,
+            mail_channel,
             self.step_dispatch_create_lead.name,
             chatbot_script_answer=self.step_dispatch_create_lead
         )
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_create_lead_email)
-        self._post_answer_and_trigger_next_step(discuss_channel, 'test2@example.com')
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_create_lead_email)
+        self._post_answer_and_trigger_next_step(mail_channel, 'test2@example.com')
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_create_lead_phone)
-        self._post_answer_and_trigger_next_step(discuss_channel, '123456')
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_create_lead_phone)
+        self._post_answer_and_trigger_next_step(mail_channel, '123456')
 
-        self.assertEqual(discuss_channel.chatbot_current_step_id, self.step_create_lead)
+        self.assertEqual(mail_channel.chatbot_current_step_id, self.step_create_lead)

@@ -1,7 +1,8 @@
 /** @odoo-module */
 
 import { ListRenderer } from "@web/views/list/list_renderer";
-import { onWillStart, useState, useSubEnv } from "@odoo/owl";
+
+const { onWillStart, useState, useSubEnv } = owl;
 
 export class PurchaseOrderLineCompareListRenderer extends ListRenderer {
     setup() {
@@ -29,7 +30,7 @@ export class PurchaseOrderLineCompareListRenderer extends ListRenderer {
          this.bestFields.best_price_unit_ids] = await this.props.list.model.orm.call(
             "purchase.order",
             "get_tender_best_lines",
-            [this.props.list.context.purchase_order_id || this.props.list.context.active_id],
+            [this.props.list.context.active_id],
             { context: this.props.list.context }
         );
     }

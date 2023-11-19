@@ -3,22 +3,17 @@
 
 import ast
 import json
-import re
 
 from collections import defaultdict
 from datetime import datetime, timedelta
-from lxml import html
 from markupsafe import Markup
-from urllib import parse
 from werkzeug.urls import url_join
 
 from odoo import api, Command, fields, models, _
-from odoo.addons.web_editor.tools import handle_history_divergence
+from odoo.addons.web.controllers.utils import clean_action
 from odoo.exceptions import AccessError, ValidationError, UserError
 from odoo.osv import expression
 from odoo.tools import get_lang
-from odoo.tools.translate import html_translate
-from odoo.tools.sql import SQL
 
 ARTICLE_PERMISSION_LEVEL = {'none': 0, 'read': 1, 'write': 2}
 
@@ -26,23 +21,19 @@ ARTICLE_PERMISSION_LEVEL = {'none': 0, 'read': 1, 'write': 2}
 class Article(models.Model):
     _name = "knowledge.article"
     _description = "Knowledge Article"
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'html.field.history.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "favorite_count desc, write_date desc, id desc"
     _mail_post_access = 'read'
     _parent_store = True
 
-    def _get_versioned_fields(self):
-        return [Article.body.name]
-
     DEFAULT_ARTICLE_TRASH_LIMIT_DAYS = 30
 
     active = fields.Boolean(default=True)
-    name = fields.Char(string="Title", tracking=20, default_export_compatible=True)
+    name = fields.Char(string="Title", default=lambda self: _('Untitled'), required=True, tracking=20)
     body = fields.Html(string="Body")
     icon = fields.Char(string='Emoji')
     cover_image_id = fields.Many2one("knowledge.cover", string='Article cover')
     cover_image_url = fields.Char(related="cover_image_id.attachment_url", string="Cover url")
-    cover_image_position = fields.Float(string="Cover vertical offset")
     is_locked = fields.Boolean(
         string='Locked',
         help="When locked, users cannot write on the body or change the title, "
@@ -54,12 +45,12 @@ class Article(models.Model):
     article_url = fields.Char('Article URL', compute='_compute_article_url', readonly=True)
     # Access rules and members + implied category
     internal_permission = fields.Selection(
-        [('write', 'Can edit'), ('read', 'Can read'), ('none', 'Restricted')],
+        [('write', 'Can write'), ('read', 'Can read'), ('none', 'No access')],
         string='Internal Permission', required=False,
         help="Default permission for all internal users. "
              "(External users can still have access to this article if they are added to its members)")
     inherited_permission = fields.Selection(
-        [('write', 'Can edit'), ('read', 'Can read'), ('none', 'Restricted')],
+        [('write', 'Can write'), ('read', 'Can read'), ('none', 'No access')],
         string='Inherited Permission',
         compute="_compute_inherited_permission", compute_sudo=True,
         store=True, recursive=True)
@@ -73,15 +64,11 @@ class Article(models.Model):
     user_has_access = fields.Boolean(
         string='Has Access',
         compute="_compute_user_has_access", search="_search_user_has_access")
-    user_has_access_parent_path = fields.Boolean(
-        string='Can the user join?', compute='_compute_user_has_access_parent_path', recursive=True,
-        help="Has the user access to each parent from current article until its root?",
-    )
     user_has_write_access = fields.Boolean(
         string='Has Write Access',
         compute="_compute_user_has_write_access", search="_search_user_has_write_access")
     user_can_read = fields.Boolean(string='Can Read', compute='_compute_user_can_read')  # ACL-like
-    user_can_write = fields.Boolean(string='Can Edit', compute='_compute_user_can_write')  # ACL-like
+    user_can_write = fields.Boolean(string='Can Write', compute='_compute_user_can_write')  # ACL-like
     user_permission = fields.Selection(
         [('write', 'write'), ('read', 'read'), ('none', 'none')],
         string='User permission',
@@ -96,9 +83,9 @@ class Article(models.Model):
     child_ids = fields.One2many(
         "knowledge.article", "parent_id", string="Child Articles and Items",
         copy=True)
-    has_item_parent = fields.Boolean('Is the parent an Item?', related='parent_id.is_article_item')
     has_item_children = fields.Boolean('Has article item children?', compute="_compute_has_article_children")
     has_article_children = fields.Boolean('Has normal article children?', compute="_compute_has_article_children")
+    is_article_item = fields.Boolean('Is Item?', index=True)
     is_desynchronized = fields.Boolean(
         string="Desyncronized with parents",
         help="If set, this article won't inherit access rules from its parents anymore.")
@@ -110,27 +97,26 @@ class Article(models.Model):
         'knowledge.article', string="Menu Article", recursive=True,
         compute="_compute_root_article_id", store=True, compute_sudo=True, tracking=10,
         help="The subject is the title of the highest parent in the article hierarchy.")
-    # Item management
-    is_article_item = fields.Boolean('Is Item?', index=True)
-    stage_id = fields.Many2one('knowledge.article.stage', string="Item Stage",
-        compute='_compute_stage_id', store=True, readonly=False, tracking=True,
-        group_expand='_read_group_stage_ids', domain="[('parent_id', '=', parent_id)]")
-
     # categories and ownership
     category = fields.Selection(
         [('workspace', 'Workspace'), ('private', 'Private'), ('shared', 'Shared')],
-        compute="_compute_category", compute_sudo=True, store=True, index=True, string="Section",
+        compute="_compute_category", compute_sudo=True, store=True, string="Section",
         help='Used to categozie articles in UI, depending on their main permission definitions.')
         # Stored to improve performance when loading the article tree. (avoid looping through members if 'workspace')
     # Same as write_uid/_date but limited to the body
     last_edition_uid = fields.Many2one(
-        "res.users", string="Last Edited by", readonly=True, copy=False)
+        "res.users", string="Last Edited by",
+        compute='_compute_last_edition_data', store=True,
+        readonly=False, copy=False)
     last_edition_date = fields.Datetime(
-        string="Last Edited on", readonly=True, copy=False)
+        string="Last Edited on",
+        compute='_compute_last_edition_data', store=True,
+        readonly=False, copy=False)
     # Favorite
     is_user_favorite = fields.Boolean(
         string="Is Favorited",
         compute="_compute_is_user_favorite",
+        inverse="_inverse_is_user_favorite",
         search="_search_is_user_favorite")
     user_favorite_sequence = fields.Integer(string="User Favorite Sequence", compute="_compute_is_user_favorite")
     favorite_ids = fields.One2many(
@@ -140,15 +126,6 @@ class Article(models.Model):
     favorite_count = fields.Integer(
         string="#Is Favorite",
         compute="_compute_favorite_count", store=True, copy=False, default=0)
-    # Visibility
-    is_article_visible_by_everyone = fields.Boolean(
-        string="Can everyone see the Article?", compute="_compute_is_article_visible_by_everyone",
-        readonly=False, recursive=True, store=True,
-    )
-    is_article_visible = fields.Boolean(
-        string='Can the user see the article?', compute='_compute_is_article_visible',
-        search='_search_is_article_visible', recursive=True
-    )
     # Trash management
     to_delete = fields.Boolean(string="Trashed", tracking=100,
         help="""When sent to trash, articles are flagged to be deleted
@@ -158,18 +135,9 @@ class Article(models.Model):
     deletion_date = fields.Date(string="Deletion Date", compute="_compute_deletion_date")
     # Property fields
     article_properties_definition = fields.PropertiesDefinition('Article Item Properties')
-    article_properties = fields.Properties('Properties', definition="parent_id.article_properties_definition", copy=True)
-
-    # Templates
-    is_template = fields.Boolean(string="Is Template")
-    template_body = fields.Text(string="Template Body", translate=html_translate)
-    template_category_id = fields.Many2one("knowledge.article.template.category", string="Template Category",
-        compute="_compute_template_category_id", inverse="_inverse_template_category_id", store=True)
-    template_category_sequence = fields.Integer(string="Template Category Sequence", related="template_category_id.sequence")
-    template_description = fields.Char(string="Template Description", translate=True)
-    template_name = fields.Char(string="Template Title", translate=True)
-    template_preview = fields.Html(string="Template Preview", compute="_compute_template_preview")
-    template_sequence = fields.Integer(string="Template Sequence", help="It determines the display order of the template within its category")
+    article_properties = fields.Properties('Properties', definition="parent_id.article_properties_definition")
+    article_properties_is_empty = fields.Boolean('Is Property Field Empty?',
+         compute="_compute_article_properties_is_empty")
 
     _sql_constraints = [
         ('check_permission_on_root',
@@ -191,14 +159,6 @@ class Article(models.Model):
         ('check_trash',
          'check(to_delete IS NOT TRUE or active IS NOT TRUE)',
          'Trashed articles must be archived.'
-        ),
-        ('check_template_category_on_root',
-         'check(is_template IS NOT TRUE OR parent_id IS NOT NULL OR template_category_id IS NOT NULL)',
-         'Root templates must have a category.'
-        ),
-        ('check_template_name_required',
-         'check(is_template IS NOT TRUE OR template_name IS NOT NULL)',
-         'Templates should have a name.'
         ),
     ]
 
@@ -231,26 +191,6 @@ class Article(models.Model):
                  )
             )
 
-    @api.constrains('is_template', 'parent_id')
-    def _check_template_hierarchy(self):
-        for article in self:
-            if not article.parent_id:
-                continue
-            if article.is_template and not article.parent_id.is_template:
-                raise ValidationError(
-                    _('"%(article_name)s" is a template and can not be a child of an article ("%(parent_article_name)s").',
-                        article_name=article.name,
-                        parent_article_name=article.parent_id.name
-                    )
-                )
-            if not article.is_template and article.parent_id.is_template:
-                raise ValidationError(
-                    _('"%(article_name)s" is an article and can not be a child of a template ("%(parent_article_name)s")."',
-                        article_name=article.name,
-                        parent_article_name=article.parent_id.name
-                    )
-                )
-
     # ------------------------------------------------------------
     # COMPUTED FIELDS
     # ------------------------------------------------------------
@@ -264,13 +204,14 @@ class Article(models.Model):
 
     @api.depends('child_ids', 'child_ids.is_article_item')
     def _compute_has_article_children(self):
-        results = self.env['knowledge.article']._read_group(
+        results = self.env['knowledge.article'].read_group(
             [('parent_id', 'in', self.ids)],
-            ['parent_id', 'is_article_item'])
-        count_by_article_id = {(parent.id, is_article_item) for parent, is_article_item in results}
+            ['parent_id', 'is_article_item'], ['parent_id', 'is_article_item'], lazy=False)
+        items_count_by_article_id = {result['parent_id'][0]: result['__count'] for result in results if result['is_article_item']}
+        article_count_by_article_id = {result['parent_id'][0]: result['__count'] for result in results if not result['is_article_item']}
         for article in self:
-            article.has_item_children = (article.id, True) in count_by_article_id
-            article.has_article_children = (article.id, False) in count_by_article_id
+            article.has_item_children = bool(items_count_by_article_id.get(article.id, 0))
+            article.has_article_children = bool(article_count_by_article_id.get(article.id, 0))
 
     @api.depends('parent_id', 'parent_id.root_article_id')
     def _compute_root_article_id(self):
@@ -297,50 +238,6 @@ class Article(models.Model):
                 ancestors += parent
                 parent = parent.parent_id
             articles.root_article_id = ancestors[-1:]
-
-    @api.depends('parent_id', 'is_article_item')
-    def _compute_stage_id(self):
-        articles = self.filtered(lambda article: not article.is_article_item)
-        articles.stage_id = False
-        if articles == self:
-            return
-
-        # Put the new article(s) in the first stage (specific by parent_id)
-        items = self - articles
-        results = self.env['knowledge.article.stage'].search_read(
-            [('parent_id', 'in', items.parent_id.ids)],
-            ['parent_id', 'id'])
-        stages_by_parent_id = dict()
-        # keep only the first stage by parent_id
-        for result in results:
-            parent_id = result['parent_id'][0] if result.get('parent_id') else False
-            if parent_id and not stages_by_parent_id.get(parent_id):
-                stages_by_parent_id[parent_id] = result['id']
-        for item in items:
-            item.stage_id = stages_by_parent_id.get(item.parent_id.id)
-
-    @api.depends('parent_id')
-    def _compute_template_category_id(self):
-        self._propagate_template_category_id()
-
-    def _inverse_template_category_id(self):
-        self._propagate_template_category_id()
-
-    def _propagate_template_category_id(self):
-        """ The templates inherit the category from their parents. This method will
-            ensure that the categories will be consistent over the whole template
-            hierarchy. To update the category of a template, the user will have to
-            update the category of the root template. """
-        for article in self:
-            if article.parent_id:
-                article.template_category_id = article.parent_id.template_category_id
-            for child in article.child_ids:
-                child.template_category_id = article.template_category_id
-
-    @api.depends('template_body')
-    def _compute_template_preview(self):
-        for template in self:
-            template.template_preview = template._render_template()
 
     @api.depends('parent_id', 'parent_id.inherited_permission_parent_id', 'internal_permission')
     def _compute_inherited_permission(self):
@@ -468,24 +365,18 @@ class Article(models.Model):
                 ('id', 'in', articles_with_no_member_access)]
 
     @api.depends_context('uid')
-    @api.depends('user_has_access', 'parent_id.user_has_access_parent_path')
-    def _compute_user_has_access_parent_path(self):
-        roots = self.filtered(lambda article: not article.parent_id)
-        for article in roots:
-            article.user_has_access_parent_path = article.user_has_access
-        children = self - roots
-        for article in children:
-            ancestors = self.env['knowledge.article'].browse(article._get_ancestor_ids())
-            article.user_has_access_parent_path = not any(not ancestor.user_has_access for ancestor in ancestors)
-
-    @api.depends_context('uid')
     @api.depends('user_permission')
     def _compute_user_has_write_access(self):
         """ Compute if the current user has write access to the article based on
         permissions and memberships.
 
+        Note that share user can never write and we therefore shorten the computation.
+
         Note that admins have all access through ACLs by default but fields are
         still using the permission-based computation. """
+        if self.env.user.share:
+            self.user_has_write_access = False
+            return
         for article in self:
             article.user_has_write_access = article.user_permission == 'write'
 
@@ -527,9 +418,8 @@ class Article(models.Model):
         if self.env.is_system():
             self.user_can_read = True
         else:
-            readable = self.filtered_domain(self._get_read_domain())
-            readable.user_can_read = True
-            (self - readable).user_can_read = False
+            for article in self:
+                article.user_can_read = article.user_has_access
 
     @api.depends_context('uid')
     @api.depends('user_has_write_access')
@@ -554,26 +444,35 @@ class Article(models.Model):
         if not remaining_articles:
             return
 
-        results = self.env['knowledge.article.member']._read_group([
+        results = self.env['knowledge.article.member'].read_group([
             ('article_id', 'in', remaining_articles.root_article_id.ids), ('permission', '!=', 'none')
-        ], ['article_id'], ['__count'])  # each returned member is read on write.
-        access_member_per_root_article = {article.id: count for article, count in results}
+        ], ['article_id'], ['article_id'])  # each returned member is read on write.
+        access_member_per_root_article = dict.fromkeys(remaining_articles.root_article_id.ids, 0)
+        for result in results:
+            access_member_per_root_article[result['article_id'][0]] += result["article_id_count"]
 
         for article in remaining_articles:
             # should never crash as non workspace articles always have at least one member with access.
-            if access_member_per_root_article.get(article.root_article_id.id, 0) > 1:
+            if access_member_per_root_article[article.root_article_id.id] > 1:
                 article.category = 'shared'
             else:
                 article.category = 'private'
 
     @api.depends('favorite_ids')
     def _compute_favorite_count(self):
-        favorites = self.env['knowledge.article.favorite']._read_group(
-            [('article_id', 'in', self.ids)], ['article_id'], ['__count']
+        favorites = self.env['knowledge.article.favorite'].read_group(
+            [('article_id', 'in', self.ids)], ['article_id'], ['article_id']
         )
-        favorites_count_by_article = {article.id: count for article, count in favorites}
+        favorites_count_by_article = {
+            favorite['article_id'][0]: favorite['article_id_count'] for favorite in favorites}
         for article in self:
             article.favorite_count = favorites_count_by_article.get(article.id, 0)
+
+    @api.depends('body')
+    def _compute_last_edition_data(self):
+        """ Each change of body is considered as a content edition update. """
+        self.last_edition_uid = self.env.uid
+        self.last_edition_date = self.env.cr.now()
 
     @api.depends_context('uid')
     @api.depends('favorite_ids.user_id')
@@ -581,20 +480,20 @@ class Article(models.Model):
         if self.env.user._is_public():
             self.is_user_favorite = False
             return
-        favorites = self.env['knowledge.article.favorite'].search([
-            ("article_id", "in", self.ids),
-            ("user_id", "=", self.env.user.id),
-        ])
-        not_fav_articles = self - favorites.article_id
-        fav_articles = self - not_fav_articles
-        fav_sequence_by_article = {f.article_id.id: f.sequence for f in favorites}
-        if not_fav_articles:
-            not_fav_articles.is_user_favorite = False
-            not_fav_articles.user_favorite_sequence = -1
-        if fav_articles:
-            fav_articles.is_user_favorite = True
-        for fav_article in fav_articles:
-            fav_article.user_favorite_sequence = fav_sequence_by_article[fav_article.id]
+        for article in self:
+            favorite = article.favorite_ids.filtered(lambda f: f.user_id == self.env.user)
+            article.is_user_favorite = bool(favorite)
+            article.user_favorite_sequence = favorite.sequence if favorite else -1
+
+    def _inverse_is_user_favorite(self):
+        """ Read access is sufficient for toggling its own favorite status. """
+        to_fav = self.filtered(lambda article: self.env.user not in article.favorite_ids.user_id)
+        to_unfav = self - to_fav
+
+        if to_fav:
+            to_fav.favorite_ids = [(0, 0, {'user_id': self.env.uid})]
+        if to_unfav:
+            to_unfav.favorite_ids.filtered(lambda u: u.user_id == self.env.user).sudo().unlink()
 
     def _search_is_user_favorite(self, operator, value):
         if operator not in ('=', '!='):
@@ -611,64 +510,6 @@ class Article(models.Model):
             [('user_id', '=', self.env.uid)]
         ))]
 
-    @api.depends('is_article_visible_by_everyone', 'article_member_ids', 'root_article_id.article_member_ids')
-    @api.depends_context('uid')
-    def _compute_is_article_visible(self):
-        """Compute if the user can see a specific article.
-        The user can see it in two cases: when the article can be seen by everyone
-        and when he is a member of the said article if it is visible only by its members.
-        """
-        visible_articles = self.filtered(lambda article: article.is_article_visible_by_everyone)
-        visible_articles.is_article_visible = True
-        if visible_articles == self:
-            return
-
-        member_only_articles = self - visible_articles
-        results = self.env['knowledge.article.member']._read_group(
-            domain=[('partner_id', '=', self.env.user.partner_id.id), ('permission', '!=', 'none')],
-            groupby=['partner_id', 'article_id'],
-        )
-
-        pids_by_article = defaultdict(list)
-        for partner, article in results:
-            pids_by_article[article.id].append(partner.id)
-
-        current_pid = self.env.user.partner_id.id
-        for article in member_only_articles:
-            article.is_article_visible = current_pid in (
-                pids_by_article[article.id] + pids_by_article[article.root_article_id.id]
-            )
-
-    def _search_is_article_visible(self, operator, value):
-        if operator not in ('=', '!='):
-            raise NotImplementedError(_("Unsupported search operation"))
-        members_from_partner = self.env['knowledge.article.member']._search(
-            [('partner_id', '=', self.env.user.partner_id.id)]
-        )
-        if (value and operator == '=') or (not value and operator == '!='):
-            return [
-                    '|',
-                        ('is_article_visible_by_everyone', '=', True),
-                        '|',
-                            ('article_member_ids', 'in', members_from_partner),
-                            ('root_article_id.article_member_ids', 'in', members_from_partner)
-            ]
-
-        return [
-                '&',
-                    ('is_article_visible_by_everyone', '=', False),
-                    '&',
-                        ('article_member_ids', 'not in', members_from_partner),
-                        ('root_article_id.article_member_ids', 'not in', members_from_partner)
-        ]
-
-    @api.depends('root_article_id.is_article_visible_by_everyone')
-    def _compute_is_article_visible_by_everyone(self):
-        root_articles = self.filtered(lambda article: not article.parent_id)
-        for article in (self - root_articles):
-            article.is_article_visible_by_everyone = article.root_article_id.is_article_visible_by_everyone
-        root_articles.is_article_visible_by_everyone = False # Forces initialization of the field if not already set.
-
     @api.depends('to_delete', 'write_date')
     def _compute_deletion_date(self):
         trashed_articles = self.filtered(lambda article: article.to_delete)
@@ -684,12 +525,24 @@ class Article(models.Model):
             for article in trashed_articles:
                 article.deletion_date = article.write_date + timedelta(days=limit_days)
 
+    @api.depends("article_properties")
+    def _compute_article_properties_is_empty(self):
+        """ When deleting the last property it is not deleted but flagged as to
+        be deleted (property['definition_deleted'] = True). This method checks
+        if the properties field is empty or contains properties about to be
+        removed. This field is meant to be used for conditional display. """
+        for article in self:
+            article.article_properties_is_empty = not article.article_properties or all(
+                article_property.get('definition_deleted')
+                for article_property in article.article_properties
+            )
+
     # ------------------------------------------------------------
     # CRUD
     # ------------------------------------------------------------
 
     @api.model
-    def search_fetch(self, domain, field_names, offset=0, limit=None, order=None):
+    def search(self, args, offset=0, limit=None, order=None, count=False):
         """ Override to support ordering on is_user_favorite.
 
         Ordering through web client calls search_read with an order parameter set.
@@ -713,15 +566,15 @@ class Article(models.Model):
         All other search and search_read are left untouched by this override to avoid
         side effects. Search_count is not affected by this override.
         """
-        if not order or 'is_user_favorite' not in order:
-            return super().search_fetch(domain, field_names, offset, limit, order)
+        if count or not order or 'is_user_favorite' not in order:
+            return super(Article, self).search(args, offset=offset, limit=limit, order=order, count=count)
         order_items = [order_item.strip().lower() for order_item in (order or self._order).split(',')]
         favorite_asc = any('is_user_favorite asc' in item for item in order_items)
 
         # Search articles that are favorite of the current user.
-        my_articles_domain = expression.AND([[('favorite_ids.user_id', 'in', [self.env.uid])], domain])
+        my_articles_domain = expression.AND([[('favorite_ids.user_id', 'in', [self.env.uid])], args])
         my_articles_order = ', '.join(item for item in order_items if 'is_user_favorite' not in item)
-        articles_ids = super().search_fetch(my_articles_domain, field_names, order=my_articles_order).ids
+        articles_ids = super(Article, self).search(my_articles_domain, offset=0, limit=None, order=my_articles_order, count=count).ids
 
         # keep only requested window (offset + limit, or offset+)
         my_articles_ids_keep = articles_ids[offset:(offset + limit)] if limit else articles_ids[offset:]
@@ -743,9 +596,9 @@ class Article(models.Model):
             article_offset = 0
         article_order = ', '.join(item for item in order_items if 'is_user_favorite' not in item)
 
-        other_article_res = super().search_fetch(
-            expression.AND([[('id', 'not in', my_articles_ids_skip)], domain]),
-            field_names, article_offset, article_limit, article_order,
+        other_article_res = super(Article, self).search(
+            expression.AND([[('id', 'not in', my_articles_ids_skip)], args]),
+            offset=article_offset, limit=article_limit, order=article_order, count=count
         )
         if favorite_asc in order_items:
             return other_article_res + self.browse(my_articles_ids_keep)
@@ -774,41 +627,16 @@ class Article(models.Model):
             manipulation to sudo only those and keep requested ordering based
             on vals_list;
         """
-        if any(vals.get('is_template', False) for vals in vals_list) and not self.env.user.has_group('base.group_system'):
-            raise ValidationError(_('You are not allowed to create a new template.'))
-
         defaults = self.default_get(['article_member_ids', 'internal_permission', 'parent_id'])
         vals_by_parent_id = {}
         vals_as_sudo = []
-        parent_ids = set()
 
         for vals in vals_list:
-            # Set body to match title if any, or prepare a void header to ease
-            # article onboarding.
-            if not vals.get('is_template', False) and "body" not in vals:
-                vals["body"] = Markup('<h1>%s</h1>') % vals["name"] if vals.get("name") \
-                               else Markup('<h1 class="oe-hint"><br></h1>')
-
-            vals.update({
-                'last_edition_date': fields.Datetime.now(),
-                'last_edition_uid': self.env.user.id,
-            })
-
             can_sudo = False
             # get values from vals or defaults
             member_ids = vals.get('article_member_ids') or defaults.get('article_member_ids') or False
             internal_permission = vals.get('internal_permission') or defaults.get('internal_permission') or False
             parent_id = vals.get('parent_id') or defaults.get('parent_id') or False
-            if parent_id:
-                parent_ids.add(parent_id)
-
-            if not self.env.user._is_internal() and not self.env.su:
-                if not parent_id and internal_permission != 'none':
-                    raise AccessError(_('Only internal users are allowed to create workspace root articles.'))
-
-                if internal_permission != 'none' and 'is_article_visible_by_everyone' in vals:
-                    # do not let portal specify the visibility, it will inherit from the root article
-                    del vals['is_article_visible_by_everyone']
 
             # force write permission for workspace articles
             if not parent_id and not internal_permission:
@@ -816,24 +644,12 @@ class Article(models.Model):
                              'parent_id': False,  # just be sure we don't grant privileges
                 })
 
-            # We need to check if the article creation needs to be done with sudo permissions and that
-            # it is authorized.
-            # This is authorized if :
-            #   * The user is not the superuser
-            #   * We do not try to create any favorite records or children articles in the same call
-            #   * We do not try to create a child article
-            #   * We want to create a single member that is the user creating the article
-
-            # The reason why we would want to add the creator as a member for all articles is that
-            # with the new visibility logic, when a user creates a new article in the workspace it is
-            # set to only be visible to members.
-            # This means that in order for him to see the article he just created, we add him to the
-            # members, which needs sudo access.
-
+            # allow private articles creation if given values are considered as safe
             check_for_sudo = not self.env.su and \
                              not self.env.user._is_system() and \
                              not any(fname in vals for fname in ['favorite_ids', 'child_ids']) and \
-                             not parent_id and member_ids and len(member_ids) == 1
+                             not parent_id and internal_permission == 'none' and \
+                             member_ids and len(member_ids) == 1
             if check_for_sudo:
                 self_member = member_ids[0][0] == Command.CREATE and \
                               member_ids[0][2].get('partner_id') == self.env.user.partner_id.id
@@ -845,18 +661,15 @@ class Article(models.Model):
                 vals_by_parent_id.setdefault(parent_id, []).append(vals)
             vals_as_sudo.append(can_sudo)
 
-        # check access to parents
-        if parent_ids:
-            try:
-                self.check_access_rights('write')
-                self.env['knowledge.article'].browse(list(parent_ids)).check_access_rule('write')
-            except AccessError:
-                raise AccessError(_("You cannot create an article under articles on which you cannot write"))
-
         # compute all maximum sequences / parent
         max_sequence_by_parent = {}
         if vals_by_parent_id:
             parent_ids = list(vals_by_parent_id.keys())
+            try:
+                self.check_access_rights('write')
+                self.env['knowledge.article'].browse(parent_ids).check_access_rule('write')
+            except AccessError:
+                raise AccessError(_("You cannot create an article under articles on which you cannot write"))
             max_sequence_by_parent = self._get_max_sequence_inside_parents(parent_ids)
 
         # update sequences
@@ -891,39 +704,11 @@ class Article(models.Model):
         return articles
 
     def write(self, vals):
-        if any(article.is_template \
-            for article in self) and not self.env.user.has_group('base.group_system'):
-            raise ValidationError(_('You are not allowed to update a template.'))
-        if any(article.is_template != vals.get('is_template', False) \
-            for article in self) and not self.env.user.has_group('base.group_system'):
-            raise ValidationError(_('You are not allowed to update the type of a article or a template.'))
-
         # Move under a parent is considered as a write on it (permissions, ...)
         _resequence = False
-        if not self.env.user._is_internal() and not self.env.su:
-            writable_fields = self._get_portal_write_fields_allowlist()
-            if all(article.category == 'private' for article in self):
-                # let non internal users re-organize their private articles
-                # and send them to trash if they wish
-                writable_fields |= {'active', 'to_delete', 'parent_id'}
-
-            if vals.keys() - writable_fields:
-                raise AccessError(_('Only internal users are allowed to modify this information.'))
-
-        if 'body' in vals:
-            if len(self) == 1:
-                handle_history_divergence(self, 'body', vals)
-            vals.update({
-                'last_edition_date': fields.Datetime.now(),
-                'last_edition_uid': self.env.user.id,
-            })
-        else:
-            vals.pop('last_edition_date', False)
-            vals.pop('last_edition_uid', False)
-
         if 'parent_id' in vals:
             parent = self.env['knowledge.article']
-            if vals.get('parent_id') and self.filtered(lambda r: r.parent_id.id != vals['parent_id']):
+            if vals.get('parent_id'):
                 parent = self.browse(vals['parent_id'])
                 try:
                     parent.check_access_rights('write')
@@ -946,17 +731,13 @@ class Article(models.Model):
 
         return result
 
-    @api.ondelete(at_uninstall=False)
-    def _check_template_deletion(self):
-        if self.filtered('is_template') and not self.env.user.has_group('base.group_system'):
-            raise ValidationError(_('You are not allowed to delete a template.'))
-
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
-        default = default or {}
-        if not default.get('name') and self.name:
-            default['name'] = self.name if self.parent_id else _('%(article_name)s (copy)', article_name=self.name)
-        return super().copy(default)
+        defaults = dict(
+            {"name": _("%s (copy)", self.name)},
+            **(default or {})
+        )
+        return super().copy(default=defaults)
 
     @api.returns(None, lambda value: value[0])
     def copy_data(self, default=None):
@@ -966,8 +747,7 @@ class Article(models.Model):
         if not default or 'name' not in default:
             if default is None:
                 default = {}
-            if self.name:
-                default['name'] = self.name if self.parent_id else _('%(article_name)s (copy)', article_name=self.name)
+            default['name'] = _("%s (copy)", self.name)
         return super().copy_data(default=default)
 
     def copy_batch(self, default=None):
@@ -992,28 +772,8 @@ class Article(models.Model):
 
         return duplicates
 
-    @api.model
-    def _read_group_stage_ids(self, stages, domain, order):
-        search_domain = [('id', 'in', stages.ids)]
-        if self.env.context.get('default_parent_id'):
-            search_domain = expression.OR([[('parent_id', '=', self.env.context['default_parent_id'])], search_domain])
-        stage_ids = stages._search(search_domain, order=order)
-        return stages.browse(stage_ids)
-
-    def _get_read_domain(self):
-        """ Independently from admin bypass, give the domain allowing to read
-        articles. """
-        return [('user_has_access', '=', True)]
-
-    @api.model
-    def _get_portal_write_fields_allowlist(self):
-        """" Fields that can be written on by a portal user. """
-        return {'article_properties', 'article_properties_definition', 'body',
-                'full_width', 'icon', 'is_article_item', 'is_locked', 'name',
-                'sequence', 'stage_id'}
-
     # ------------------------------------------------------------
-    # BASE MODEL METHODS
+    # LOW-LEVEL MODELS
     # ------------------------------------------------------------
 
     @api.autovacuum
@@ -1032,35 +792,8 @@ class Article(models.Model):
     def action_archive(self):
         return self._action_archive_articles()
 
-    @api.model
-    def name_create(self, name):
-        """" This override is meant to make the 'name_create' symmetrical to the display_name.
-        When creating an article, we attempt to extract a potential icon from the beginning of the
-        name to correctly split the 'name' and 'icon' fields.
-
-        This is especially important since some flows, such as importing records, are based on
-        name_create to create missing records.
-        It also allows pasting an article display_name into a m2o field and using the quick creation
-        if it does not exist.
-
-        Without this override, you would get '📄🚀 Article With Icon' (placeholder added as icon is
-        not detected) instead of '🚀 Article With Icon' as result. """
-
-        article_name, icon = self._extract_icon_from_name(name)
-        if not icon:
-            return super().name_create(name)
-
-        record = self.create({
-            'name': article_name,
-            'icon': icon,
-        })
-        return record.id, record.display_name
-
-    @api.depends('icon')
-    def _compute_display_name(self):
-        for rec in self:
-            name = (rec.template_name if rec.is_template else rec.name) or _('Untitled')
-            rec.display_name = f"{rec.icon or self._get_no_icon_placeholder()} {name}"
+    def name_get(self):
+        return [(rec.id, "%s %s" % (rec.icon or "📄", rec.name)) for rec in self]
 
     def _get_no_icon_placeholder(self):
         """ Emoji used in templates as a placeholder when icon is False. It's
@@ -1071,51 +804,6 @@ class Article(models.Model):
         emojis to be parsed directly from a template on those devices.
         """
         return "📄"
-
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
-        """ This override is meant to make the 'name_search' symmetrical to the display_name.
-        As we append the icon (emoji) before the article name, when searching based on that same
-        syntax '[emoji] name' we need to return the appropriate results.
-
-        This is especially important since some flows, such as exporting and re-importing records,
-        are based on display_name / name_search to match records (for example when importing the article
-        parent record, without this override it will never match). """
-
-        if operator not in ('=', 'ilike'):
-            return super()._name_search(name, domain, operator, limit, order)
-
-        article_name, icon = self._extract_icon_from_name(name)
-        if not icon:
-            return super()._name_search(name, domain, operator, limit, order)
-
-        domain = domain or []
-        if icon == self._get_no_icon_placeholder():
-            # special case using the icon placeholder (no icon stored but the display_name returns one)
-            domain = expression.AND([domain, [
-                ('name', operator, article_name),
-                '|',
-                ('icon', '=', icon),
-                ('icon', '=', False),
-            ]])
-        else:
-            domain = expression.AND([domain, [
-                ('name', operator, article_name),
-                ('icon', '=', icon),
-            ]])
-
-        return self._search(domain, limit=limit, order=order)
-
-    def _get_common_copied_data(self):
-        return {
-            "body": self.body,
-            "cover_image_id": self.cover_image_id.id,
-            "cover_image_position": self.cover_image_position,
-            "full_width": self.full_width,
-            "icon": self.icon,
-            "is_desynchronized": False,
-            "is_locked": False,
-            "name": _("%(article_name)s (copy)", article_name=self.name) if self.name else False,
-        }
 
     # ------------------------------------------------------------
     # ACTIONS
@@ -1128,36 +816,22 @@ class Article(models.Model):
         but drops other fields such as members, childs, permissions etc.
         """
         self.ensure_one()
-        article_vals = self._get_common_copied_data()
-        article_vals.update({
+        article_vals = {
             "article_member_ids": [(0, 0, {
                 "partner_id": self.env.user.partner_id.id,
                 "permission": 'write'
             })],
+            "body": self.body,
+            "cover_image_id": self.cover_image_id.id,
+            "full_width": False,
+            "name": _("%s (copy)", self.name),
+            "icon": self.icon,
             "internal_permission": "none",
+            "is_desynchronized": False,
+            "is_locked": False,
             "parent_id": False,
-        })
+        }
         return self.create(article_vals)
-
-    @api.returns('self', lambda value: value.id)
-    def action_clone(self):
-        """Creates a duplicate of an article in the same context as the original.
-        This means that this methods create a copy with the same parent,
-        permission and properties as the original
-        """
-        self.ensure_one()
-        if not self.user_can_write or not (self.parent_id and self.parent_id.user_can_write):
-            return self.action_make_private_copy()
-        article_vals = self._get_common_copied_data()
-        article_vals.update({
-            "internal_permission": self.internal_permission,
-            "parent_id": self.parent_id.id,
-            "article_properties": self.article_properties,
-            "is_article_item": self.is_article_item,
-            "article_properties_definition": self.article_properties_definition,
-        })
-        return self.create(article_vals)
-
 
     def action_home_page(self):
         """ Redirect to the home page of knowledge, which displays an article.
@@ -1171,13 +845,16 @@ class Article(models.Model):
         article = self[0] if self else False
         if not article and self.env.context.get('res_id', False):
             article = self.browse([self.env.context["res_id"]])
-            if not article.exists():
-                raise UserError(_("The Article you are trying to access has been deleted"))
         if not article:
             article = self._get_first_accessible_article()
 
+        mode = 'edit' if article.user_has_write_access else 'readonly'
         action = self.env['ir.actions.act_window']._for_xml_id('knowledge.knowledge_article_action_form')
         action['res_id'] = article.id
+        action['context'] = dict(
+            ast.literal_eval(action.get('context')),
+            form_view_initial_mode=mode,
+        )
         return action
 
     def action_set_lock(self):
@@ -1195,16 +872,7 @@ class Article(models.Model):
             # Return a meaningful error message as this may be called through UI
             raise AccessError(_("You cannot add or remove this article to your favorites"))
 
-        # need to sudo to be able to write on the article model even with read access
-        to_favorite_sudo = self.sudo().filtered(lambda article: not article.is_user_favorite)
-        to_unfavorite = self - to_favorite_sudo
-        to_favorite_sudo.write({'favorite_ids': [(0, 0, {'user_id': self.env.user.id})]})
-        if to_unfavorite:
-            self.env['knowledge.article.favorite'].sudo().search([
-                ('article_id', 'in', to_unfavorite.ids), ('user_id', '=', self.env.user.id)
-            ]).unlink()
-        # manually invalidate cache to recompute the favorites related fields
-        self.invalidate_recordset(fnames=["is_user_favorite", "favorite_ids"])
+        self.sudo()._inverse_is_user_favorite()
         return self[0].is_user_favorite if self else False
 
     def action_article_archive(self):
@@ -1212,11 +880,8 @@ class Article(models.Model):
         return self.env["knowledge.article"].action_home_page()
 
     def action_send_to_trash(self):
-        action_home_page = self._action_archive_articles(send_to_trash=True)
-        # no need to reload when inside the tree view
-        if self.env.context.get('in_tree_view'):
-            return False
-        return action_home_page
+        return self._action_archive_articles(send_to_trash=True)
+
     def _action_archive_articles(self, send_to_trash=False):
         """ When archiving
                   * archive the current article and all its writable descendants;
@@ -1238,9 +903,11 @@ class Article(models.Model):
 
     def action_unarchive_article(self):
         """ Called by the archive action from the form view action menu.
-        """
+        When restoring an article, we need to reload the form view (to refresh
+        the hierarchy tree) on the target article."""
         self.ensure_one()
         self.action_unarchive()
+        return self.action_home_page()
 
     def action_unarchive(self):
         """ When unarchiving
@@ -1270,21 +937,6 @@ class Article(models.Model):
             # sudo to write on members
             article.sudo().write(write_values)
         return res
-
-    def action_join(self):
-        self.ensure_one()
-        current_user = self.env.user
-        if current_user.share or not self.user_has_access or not self.user_has_access_parent_path:
-            raise AccessError(
-                _("You need to have access to this article in order to join its members.") if not self.parent_id else
-                _("You need to have access to this article's root in order to join its members.")
-            )
-        if self.parent_id:
-            self.root_article_id.sudo()._add_members(current_user.partner_id, self.root_article_id.internal_permission)
-            return self.action_home_page()
-        else:
-            self.sudo()._add_members(current_user.partner_id, self.internal_permission)
-            return False
 
     # ------------------------------------------------------------
     # SEQUENCE / ORDERING
@@ -1389,16 +1041,21 @@ class Article(models.Model):
 
     @api.model
     def _get_max_sequence_inside_parents(self, parent_ids):
+        max_sequence_by_parent = {}
         if parent_ids:
             domain = [('parent_id', 'in', parent_ids)]
         else:
             domain = [('parent_id', '=', False)]
-        rg_results = self.env['knowledge.article'].sudo()._read_group(
+        rg_results = self.env['knowledge.article'].sudo().read_group(
             domain,
-            ['parent_id'],
-            ['sequence:max']
+            ['sequence:max'],
+            ['parent_id']
         )
-        return {parent.id: sequence_max for parent, sequence_max in rg_results}
+        for rg_line in rg_results:
+            # beware name_get like returns either 0, either (id, 'name')
+            index = rg_line['parent_id'][0] if rg_line['parent_id'] else False
+            max_sequence_by_parent[index] = rg_line['sequence']
+        return max_sequence_by_parent
 
     # ------------------------------------------------------------
     # HELPERS
@@ -1406,7 +1063,7 @@ class Article(models.Model):
 
     @api.model
     @api.returns('knowledge.article', lambda article: article.id)
-    def article_create(self, title=False, parent_id=False, is_private=False, is_article_item=False, article_properties=False):
+    def article_create(self, title=False, parent_id=False, is_private=False, is_article_item=False):
         """ Helper to create articles, allowing to pre-compute some configuration
         values.
 
@@ -1422,7 +1079,12 @@ class Article(models.Model):
             'parent_id': parent.id
         }
         if title:
-            values['name'] = title
+            values.update({
+                'body': Markup('<h1>%s</h1>') % title,
+                'name': title,
+            })
+        else:
+            values['body'] = Markup('<h1 class="oe-hint"><br></h1>')
 
         if parent:
             if not is_private and parent.category == "private":
@@ -1430,17 +1092,6 @@ class Article(models.Model):
         else:
             # child do not have to setup an internal permission as it is inherited
             values['internal_permission'] = 'none' if is_private else 'write'
-            # For private articles, we need to set a member because the internal_permission is set to
-            # 'none' which restricts the access to only members of the article.
-
-            # For workspace articles, we need to add a member because the visibility of a brand new root
-            # article is always set to 'Members', meaning that only the members are able to see it at all times in
-            # their tree.
-            # And we need the creator to be able to see it in order for him to easily edit it later.
-            values['article_member_ids'] = [(0, 0, {
-                'partner_id': self.env.user.partner_id.id,
-                'permission': 'write',
-            })]
 
         if is_private:
             if parent and parent.category != "private":
@@ -1448,13 +1099,15 @@ class Article(models.Model):
                     _("Cannot create an article under article %(parent_name)s which is a non-private parent",
                       parent_name=parent.display_name)
                 )
-
-        if is_article_item and article_properties:
-            values['article_properties'] = article_properties
+            if not parent:
+                values['article_member_ids'] = [(0, 0, {
+                    'partner_id': self.env.user.partner_id.id,
+                    'permission': 'write'
+                })]
 
         return self.create(values)
 
-    def get_user_sorted_articles(self, search_query, limit=40, hidden_mode=False):
+    def get_user_sorted_articles(self, search_query, limit=40):
         """ Called when using the Command palette to search for articles matching the search_query.
         As the article should be sorted also in function of the current user's favorite sequence, a search_read rpc
         won't be enough to returns the articles in the correct order.
@@ -1464,85 +1117,27 @@ class Article(models.Model):
             - root.name = query & is_user_favorite - by Favorite sequence
             - root.name = query & Favorite count
         and returned result mimic a search_read result structure.
-
-        The parameter hidden_mode separates the search into 2 modes: visible and hidden.
-        When hidden_mode is True, we search for articles that are hidden, hence that have
-        is_article_visible at False.
-        When hidden_mode is False, we search for articles that are visible, hence that have
-        is_article_visible at True.
-
-        This means that we need to add in the search_domain the leaf ('is_article_visible', '!=', hidden_mode)
-        since the value of is_article_visible is the opposite of hidden_mode.
         """
+        search_query = search_query.casefold()
         search_domain = [
-            ("is_template", "=", False),
-            ("is_article_visible", "!=", hidden_mode),
-            ("user_has_access", "=", True),  # Admins won't see other's private articles.
+            "&",
+                ('user_has_access', '=', True), # Admins won't see other's private articles.
+                "|", ("name", "ilike", search_query), ("root_article_id.name", "ilike", search_query)
         ]
-        if search_query:
-            search_domain = expression.AND([search_domain, [
-                "|",
-                    ("name", "ilike", search_query),
-                    ("root_article_id.name", "ilike", search_query),
-            ]])
 
-        articles_query = self._search(search_domain)
-        self.env.cr.execute(SQL('''
-       SELECT knowledge_article.id,
-              knowledge_article.name,
-              COALESCE(CAST(fav.id AS BOOLEAN), FALSE) AS is_user_favorite,
-              knowledge_article.favorite_count,
-              knowledge_article.root_article_id,
-              root_article.icon AS root_article_icon,
-              root_article.name AS root_article_name,
-              knowledge_article.icon
-         FROM knowledge_article
-    LEFT JOIN knowledge_article_favorite AS fav
-           ON knowledge_article.id = fav.article_id AND fav.user_id = %s
-    LEFT JOIN knowledge_article AS root_article
-           ON knowledge_article.root_article_id = root_article.id
-        WHERE %s
-     ORDER BY CASE
-                  WHEN knowledge_article.name IS NOT NULL THEN
-                      POSITION(LOWER(%s) IN LOWER(knowledge_article.name)) > 0
-                  ELSE
-                      FALSE
-              END DESC,
-              CASE
-                  WHEN %s THEN
-                      NOT COALESCE(CAST(knowledge_article.parent_id AS BOOLEAN), FALSE)
-                  ELSE
-                      FALSE
-              END DESC,
-              is_user_favorite DESC,
-              COALESCE(fav.sequence, -1),
-              knowledge_article.favorite_count DESC,
-              knowledge_article.write_date DESC,
-              knowledge_article.id DESC
-           %s
-            ''',
-            self.env.user.id,
-            articles_query.where_clause,
-            search_query,
-            hidden_mode,
-            SQL("LIMIT %s", limit) if limit else SQL()
-        ))
-        sorted_articles = self.env.cr.dictfetchall()
-        # Create a tuple with the id and name_get for root_article_id to
-        # mimic the result of a read.
-        for sorted_article in sorted_articles:
-            # Get the display name of the root article using the same logic as
-            # in name_get.
-            sorted_article['root_article_id'] = (
-                sorted_article['root_article_id'],
-                "%s %s" % (
-                    sorted_article['root_article_icon'] or self._get_no_icon_placeholder(),
-                    sorted_article['root_article_name']
-                )
-            )
-            del sorted_article['root_article_icon']
-            del sorted_article['root_article_name']
-        return sorted_articles
+        matching_articles = self.search(search_domain)
+        sorted_articles = matching_articles.sorted(
+            key=lambda a: (search_query in a.name.casefold(),
+                           a.is_user_favorite,
+                           -1 * a.user_favorite_sequence,
+                           a.favorite_count,
+                           a.write_date,
+                           a.id),
+            reverse=True
+        )[:limit]
+
+        return sorted_articles.read(['id', 'name', 'is_user_favorite',
+                                     'favorite_count', 'root_article_id', 'icon'])
 
     # ------------------------------------------------------------
     # PERMISSIONS / MEMBERS MANAGEMENT
@@ -1555,7 +1150,6 @@ class Article(models.Model):
 
         Security note: this method checks for write access on current article,
         considering it as sufficient to restore access and members.
-        (side-note: portal users cannot alter article access)
         """
         self.ensure_one()
         if not self.parent_id:
@@ -1564,8 +1158,6 @@ class Article(models.Model):
             raise AccessError(
                 _('You have to be editor on %(article_name)s to restore it.',
                   article_name=self.display_name))
-        if not self.env.su and not self.env.user._is_internal():
-            raise _('Only internal users are allowed to restore the original article access information.')
 
         member_permission = (self | self.parent_id)._get_article_member_permissions()
         article_members_permission = member_permission[self.id]
@@ -1585,7 +1177,7 @@ class Article(models.Model):
             'is_desynchronized': False
         })
 
-    def invite_members(self, partners, permission, message=None):
+    def invite_members(self, partners, permission):
         """ Invite the given partners to the current article. Inviting to remove
         access is straightforward (just set permission). Inviting with rights
         requires to check for privilege escalation in descendants.
@@ -1603,9 +1195,11 @@ class Article(models.Model):
             for child in unreachable_children:
                 child._add_members(partners, 'none', force_update=False)
 
-            members_command = self._add_members_command(partners, permission)
+            share_partner_ids = partners.filtered(lambda partner: partner.partner_share)
+            members_command = self._add_members_command(share_partner_ids, 'read')
+            members_command += self._add_members_command(partners - share_partner_ids, permission)
             self.sudo().write({'article_member_ids': members_command})
-            self._send_invite_mail(partners, permission, message)
+            self._send_invite_mail(partners)
 
         return True
 
@@ -1660,10 +1254,8 @@ class Article(models.Model):
             the article is desynchronized form its parent;
           Else we add a new member with the higher permission;
 
-        Security notes:
-        - this method checks for write access on current article,
-          considering it as sufficient to modify members permissions.
-        - portal users cannot alter memberships in any way.
+        Security note: this method checks for write access on current article,
+        considering it as sufficient to modify members permissions.
 
         :param <knowledge.article.member> member: member whose permission
           is to be updated. Can be a member of 'self' or one of its ancestors;
@@ -1675,8 +1267,6 @@ class Article(models.Model):
             raise AccessError(
                 _('You have to be editor on %(article_name)s to modify members permissions.',
                   article_name=self.display_name))
-        elif not self.env.su and not self.env.user._is_internal():
-            raise AccessError(_("Only internal users are allowed to alter memberships."))
 
         if is_based_on:
             downgrade = ARTICLE_PERMISSION_LEVEL[member.permission] > ARTICLE_PERMISSION_LEVEL[permission]
@@ -1695,18 +1285,6 @@ class Article(models.Model):
                 'article_member_ids': [(1, member.id, {'permission': permission})]
             })
 
-    def set_is_article_visible_by_everyone(self, is_article_visible_by_everyone):
-        """Set the visibility of an article to the provided value.
-        If the new value is False, we need to check if the user is a member of the article.
-        If that's not the case then we add it as a member of the article with the same permission as the
-        article.
-        This ensures that the user can see the article when modifying its visibility."""
-        self.ensure_one()
-        self.write({'is_article_visible_by_everyone': is_article_visible_by_everyone})
-
-        if (not is_article_visible_by_everyone) and not self.env.user.partner_id in self.article_member_ids.partner_id:
-            self._add_members(self.env.user.partner_id, self.internal_permission)
-
     def _remove_member(self, member):
         """ Removes a member from the article. If the member was based on a
         parent article, the current article will be desynchronized form its parent.
@@ -1716,7 +1294,6 @@ class Article(models.Model):
         archived instead.
 
         Security note
-          * portal users cannot alter article membership
           * when removing themselves: users need only read access on the article
             (automatically checked by access on self);
           * when removing someone else: write access is required on the article
@@ -1727,9 +1304,6 @@ class Article(models.Model):
         self.ensure_one()
         if not member:
             raise ValueError(_('Trying to remove wrong member.'))
-
-        if not self.env.su and not self.env.user._is_internal():
-            raise AccessError(_("Only internal users are allowed to remove memberships."))
 
         # belongs to current article members
         current_membership = self.article_member_ids.filtered(lambda m: m == member)
@@ -1768,7 +1342,6 @@ class Article(models.Model):
 
         Security note: this method checks for write access on current article,
         considering it as sufficient to add new members.
-        (side-note: portal users can't alter memberships, see '_add_members_command')
 
         :param <res.partner> partners: recordset of res.partner for which
           new members are added;
@@ -1787,16 +1360,12 @@ class Article(models.Model):
         the article. Used when caller prefers commands compared to updating
         directly the article.
 
-        Note that portal users cannot alter memberships in any way.
-
         See main method for more details. """
         self.ensure_one()
         if not self.env.su and not self.user_can_write:
             raise AccessError(
                 _("You have to be editor on %(article_name)s to add members.",
                   article_name=self.display_name))
-        if not self.env.su and not self.env.user._is_internal():
-            raise AccessError(_("Only internal users are allowed to alter memberships."))
 
         members_to_update = self.article_member_ids.filtered_domain([('partner_id', 'in', partners.ids)])
         partners_to_create = partners - members_to_update.mapped('partner_id')
@@ -2294,70 +1863,43 @@ class Article(models.Model):
     # MAILING
     # ------------------------------------------------------------
 
-    def _mail_track(self, tracked_fields, initial_values):
-        changes, tracking_value_ids = super()._mail_track(tracked_fields, initial_values)
+    def _mail_track(self, tracked_fields, initial):
+        changes, tracking_value_ids = super(Article, self)._mail_track(tracked_fields, initial)
         if {'parent_id', 'root_article_id'} & changes and not self.user_has_write_access:
             partner_name = self.env.user.partner_id.display_name
             message_body = _("Logging changes from %(partner_name)s without write access on article %(article_name)s due to hierarchy tree update",
                 partner_name=partner_name, article_name=self.display_name)
-            self._track_set_log_message(Markup("<p>%s</p>") % message_body)
+            self._track_set_log_message("<p>%s</p>" % message_body)
         return changes, tracking_value_ids
 
-    def _send_invite_mail(self, partners, permission, message=None):
+    def _send_invite_mail(self, partners):
         self.ensure_one()
 
         partner_to_bodies = {}
         for partner in partners:
+            member = self.article_member_ids.filtered(lambda member: member.partner_id == partner)
+            invite_url = url_join(
+                self.get_base_url(),
+                f"/knowledge/article/invite/{member.id}/{member._get_invitation_hash()}"
+            )
             partner_to_bodies[partner] = self.env['ir.qweb'].with_context(lang=partner.lang)._render(
                 'knowledge.knowledge_article_mail_invite',
                 {
                     'record': self,
                     'user': self.env.user,
-                    'permission': permission,
-                    'message': message,
+                    'recipient': partner,
+                    'link': invite_url,
                 }
             )
 
-        if self.display_name:
-            subject = _('Article shared with you: %s', self.display_name)
-        else:
-            subject = _('Invitation to access an article')
-
-        if permission == 'read':
-            permission_label = _('Read')
-        else:
-            permission_label = _('Write')
-
+        subject = _("Invitation to access %s", self.name)
         for partner, body in partner_to_bodies.items():
             self.with_context(lang=partner.lang).message_notify(
                 body=body,
-                email_layout_xmlid='mail.mail_notification_layout',
+                email_layout_xmlid='mail.mail_notification_light',
                 partner_ids=partner.ids,
                 subject=subject,
-                subtitles=[self.display_name, _('Your Access: %s', permission_label)],
             )
-
-    def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
-        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
-        if not self or not msg_vals.get('partner_ids'):
-            return groups
-        new_group = []
-        for member in self.article_member_ids.filtered(
-            lambda member: member.partner_id.id in msg_vals['partner_ids'] and member.partner_id.partner_share
-        ):
-            url = url_join(
-                self.get_base_url(),
-                f"/knowledge/article/invite/{member.id}/{member._get_invitation_hash()}"
-            )
-            new_group.append(
-                (f'group_knowledge_member_{member.id}', lambda pdata: pdata['id'] == member.partner_id.id, {
-                    'has_button_access': True,
-                    'button_access': {
-                        'url': url,
-                    },
-                })
-            )
-        return new_group + groups
 
     def _send_trash_notifications(self):
         """ This method searches all the partners that should be notified about
@@ -2370,7 +1912,7 @@ class Article(models.Model):
             lambda member: member.permission in ['read', 'write']
         ).partner_id
 
-        KnowledgeArticle = self.env["knowledge.article"].with_context(active_test=False, allowed_company_ids=[])
+        KnowledgeArticle = self.env["knowledge.article"].with_context(active_test=False)
         sent_messages = self.env['mail.message']
         for partner in partners_to_notify.filtered(lambda p: not p.partner_share):
             # if only one article, all the partner_to_notify have access to the article.
@@ -2398,7 +1940,7 @@ class Article(models.Model):
             self = self.with_context(lang=partner_lang)  # force translation of subject
 
             if len(main_articles) == 1:
-                subject = _("%s has been sent to Trash", main_articles.name or _("Untitled"))
+                subject = _("%s has been sent to Trash", main_articles.name)
             else:
                 subject = _("Some articles have been sent to Trash")
 
@@ -2425,208 +1967,100 @@ class Article(models.Model):
     # BUSINESS METHODS
     # ------------------------------------------------------------
 
-    def create_article_from_template(self):
-        self.ensure_one()
-        article = self.env["knowledge.article"].article_create(is_private=True)
-        article.apply_template(self.id, skip_body_update=False)
-        return article.id
-
-    def apply_template(self, template_id, skip_body_update=False):
-        """Applies the given template on the current article
-        :param int template_id: Template id
-        :param boolean skip_body_update: Whether the method should skip writing
-          the body and return it for further management by the caller. Note that
-          this does to apply to child articles as they are not managed the same
-          way and are side records. Typically
-          - False: when creating a template based article from scratch;
-          - True: in other cases to avoid collaborative issues (write on
-            body should be done at client side);
-        :return str: body of the article, used notably client side for
-          collaborative mode
+    def append_embedded_view(self, act_window_id_or_xml_id, view_type, name, context=None):
+        """
+        Append a new HTML tag to the body of the article that will be recognized
+        as an embedded view by the editor. This tag will contain all data needed
+        to load the embedded view.
+        :param int | str act_window_id_or_xml_id: id or xml id of the action
+        :param str view_type: type of the view ('kanban', 'list', ...)
+        :param str name: display name of the embedded view
+        :param dict context: context of the view
         """
         self.ensure_one()
-        template = self.env['knowledge.article'].browse(template_id)
-        template.ensure_one()
+        embedded_view = self.render_embedded_view(act_window_id_or_xml_id, view_type, name, context)
+        self.write({
+            'body': self.body + Markup('<p><br></p>') + Markup(embedded_view) + Markup('<p><br></p>')
+        })
 
-        # The following algorithm will proceed in 3 steps:
-        # 1. In the first step, we will recursively create the articles and the
-        #    stages following the same structure as the templates. This will
-        #    ensure that the records exist in the database for the following steps.
-        # 2. In the second step, we will build a dict mapping the template
-        #    xml ids with the article ids created from it. The dict will be
-        #    used to convert the template xml ids mentionned in the templates
-        #    with the ids of the articles generated from them.
-        # 3. In the third step, we will populate the articles using the values
-        #    set on the associated templates.
-
-        # Step 1: Create the articles and the stages
-
-        template_to_article_pairs = []
-        stack = [(template, self)]
-
-        while stack:
-            (parent_template, parent_article) = stack.pop()
-            template_to_article_pairs.append((parent_template, parent_article))
-
-            # Create the stages:
-            parent_template_stages = self.env['knowledge.article.stage'].search([
-                ('parent_id', '=', parent_template.id)
-            ])
-            parent_article_stages = self.env['knowledge.article.stage'].create([{
-                'name': stage.name,
-                'sequence': stage.sequence,
-                'fold': stage.fold,
-                'parent_id': parent_article.id
-            } for stage in parent_template_stages])
-
-            # Create the child articles:
-            child_templates = parent_template.child_ids.sorted(
-                lambda template: (template.write_date, template.id))
-            if not child_templates:
-                continue
-
-            child_articles_values = []
-            for template in child_templates:
-                article_values = {
-                    'is_article_item': template.is_article_item,
-                    'parent_id': parent_article.id,
-                }
-                article_stage = next((article_stage for (article_stage, template_stage) in \
-                    zip(parent_article_stages, parent_template_stages) \
-                        if template_stage == template.stage_id), False)
-                if article_stage:
-                    article_values['stage_id'] = article_stage.id
-                child_articles_values.append(article_values)
-
-            child_articles = self.env['knowledge.article'].create(child_articles_values)
-            stack.extend(zip(child_templates, child_articles))
-
-        # Step 2: Build the dict mapping the template xml ids with the article ids
-
-        template_xml_id_to_article_id_mapping = {}
-        all_ir_model_data = self.env['ir.model.data'].sudo().search([
-            ('model', '=', 'knowledge.article'),
-            ('res_id', 'in', [template.id for (template, _) in template_to_article_pairs])
-        ])
-
-        for (template, article) in template_to_article_pairs:
-            ir_model_data = all_ir_model_data.filtered(
-                lambda ir_model_data: ir_model_data.res_id == template.id)
-
-            if ir_model_data:
-                template_xml_id = 'knowledge.' + ir_model_data.name
-                template_xml_id_to_article_id_mapping[template_xml_id] = article.id
-
-        # When rendering the template, the `ref` function should return the id
-        # of the article created from the template having the given xml id.
-        # This will ensure that the ids stored in the body of the newly created
-        # article will refer to the right article and not to the original template.
-
-        def ref(xml_id):
-            return template_xml_id_to_article_id_mapping[xml_id] \
-                if xml_id in template_xml_id_to_article_id_mapping \
-                    else self.env.ref(xml_id).id
-
-        # Step 3: Copy the template values to the new articles
-
-        (root_template, root_article) = template_to_article_pairs.pop(0)
-        for (template, article) in reversed(template_to_article_pairs):
-            article.write({
-                'article_properties': template.article_properties or {},
-                'article_properties_definition': template.article_properties_definition,
-                'body': template._render_template(ref),
-                'cover_image_id': template.cover_image_id.id,
-                'full_width': template.full_width,
-                'icon': template.icon,
-                'name': template.template_name,
-            })
-
-        values = {
-            'article_properties': root_template.article_properties or {},
-            'article_properties_definition': root_template.article_properties_definition,
-            'cover_image_id': root_template.cover_image_id.id,
-            'full_width': root_template.full_width,
-            'icon': root_template.icon,
-            'name': root_article.name or root_template.template_name,
-        }
-        body = root_template._render_template(ref)
-        if not skip_body_update:
-            values['body'] = body
-        root_article.write(values)
-
-        return body
-
-    def _render_template(self, ref=False):
+    def append_view_link(self, act_window_id_or_xml_id, view_type, name, context=None):
         """
-        Generates the HTML body based on the template content.
-        :param callable ref: The `ref` function will be used to refer to an
-          external record and integrate advanced elements such as embedded views
-          of article items and article links.
+        Append a new HTML tag to the body of the article that will be recognized
+        as a view link by the editor. This tag will contain all data needed to
+        open the given view.
+        :param int | str act_window_id_or_xml_id: id or xml id of the action
+        :param str view_type: type of the view ('kanban', 'list', ...)
+        :param str name: display name
+        :param dict context: context of the view
         """
         self.ensure_one()
-        if not self.is_template or not self.template_body:
-            return False
+        action_data = self._extract_act_window_data(act_window_id_or_xml_id, name)
+        link = self.env['ir.qweb']._render(
+            'knowledge.knowledge_view_link', {
+                'behavior_props': json.dumps({
+                    'act_window': action_data,
+                    'context': context or {},
+                    'name': name,
+                    'view_type': view_type,
+                })
+            },
+            minimal_qcontext=True,
+            raise_if_not_found=False
+        )
+        self.write({
+            'body': self.body + Markup('<p><br></p>') + Markup(link) + Markup('<p><br></p>')
+        })
 
-        if not ref:
-            def ref(xml_id):
-                return self.env.ref(xml_id).id
+    def render_embedded_view(self, act_window_id_or_xml_id, view_type, name, context=None):
+        """
+        Returns the HTML tag that will be recognized by the editor as an embedded view.
+        :param int | str act_window_id_or_xml_id: id or xml id of the action
+        :param str view_type: type of the view ('kanban', 'list', ...)
+        :param str name: display name
+        :param dict context: context of the view
 
-        def transform_xmlid_to_res_id(match):
-            return str(ref(match.group('xml_id')))
-
-        fragment = html.fragment_fromstring(self.template_body, create_parent='div')
-        for element in fragment.xpath('//*[@data-behavior-props]'):
-            # When encoding the "behavior props", we find and replace the function
-            # calls of `ref` with the ids returned by the given `ref` function for
-            # the given xml ids. The generated HTML will then only contain ids.
-            # Example:
-            # When the "behavior props" contains `ref('knowledge.article_template_1')`,
-            # we replace that string occurence with the id returned by the given
-            # `ref` function evaluated with the xml_id 'knowledge.article_template_1'.
-            behavior_props = ast.literal_eval(re.sub(
-                r'(?<![\w])ref\(\'(?P<xml_id>\w+\.\w+)\'\)',
-                transform_xmlid_to_res_id,
-                element.get('data-behavior-props')))
-            element.set('data-behavior-props',
-                parse.quote(json.dumps(behavior_props), safe="()*!'"))
-            if 'o_knowledge_behavior_type_article' in element.get('class'):
-                element.set('href', '/knowledge/article/%s' % (behavior_props.get('article_id')))
-
-        return ''.join(html.tostring(child, encoding='unicode', method='html') \
-            for child in fragment.getchildren()) # unwrap the elements from the parent node
-
-    def create_default_item_stages(self):
-        """ Need to create stages if this article has no stage yet. """
-        stage_count = self.env['knowledge.article.stage'].search_count(
-            [('parent_id', '=', self.id)])
-        if not stage_count:
-            self.env['knowledge.article.stage'].create([{
-                "name": stage_name,
-                "sequence": sequence,
-                "parent_id": self.id,
-                "fold": fold
-            } for stage_name, sequence, fold in [
-                (_("New"), 0, False), (_("Ongoing"), 1, False), (_("Done"), 2, True)]
-            ])
+        :return: rendered template for embedded views
+        """
+        self.ensure_one()
+        action_data = self._extract_act_window_data(act_window_id_or_xml_id, name)
+        return self.env['ir.qweb']._render(
+            'knowledge.knowledge_embedded_view', {
+                'behavior_props': json.dumps({
+                    'act_window': action_data,
+                    'context': context or {},
+                    'view_type': view_type,
+                }),
+            },
+            minimal_qcontext=True,
+            raise_if_not_found=False
+        )
 
     # ------------------------------------------------------------
     # TOOLS
     # ------------------------------------------------------------
 
-    @api.model
-    def _extract_icon_from_name(self, name):
-        """ See name_create / _name_search overrides for details. """
-        if not isinstance(name, str) or len(name) < 3:
-            return name, None
+    def _extract_act_window_data(self, act_window_id_or_xml_id, name):
+        """
+        Returns a dictionary containing a copy of the attributes of the action
+        window identified by the given id or xml id.
+        :param int | str act_window_id_or_xml_id: id or xml id of the action
+        :param str name: display name
+        :return dict:
+        """
+        self.ensure_one()
+        act_window = self.env.ref(act_window_id_or_xml_id) if isinstance(act_window_id_or_xml_id, str) else \
+            self.env['ir.actions.act_window'].browse(act_window_id_or_xml_id)
+        if act_window._name != 'ir.actions.act_window':
+            raise ValidationError(_('Error: The given action is not an act_window. This action can not be used to create an embedded view or a view link'))
 
-        # we consider that a non-alphabetical and non-special character is an emoji
-        emoji_match = re.match(r'([^\w.,;:_%+!\\/@$€#&()*=~-]) (.*)', name)
-        if not emoji_match or len(emoji_match.groups()) != 2:
-            return name, None
-
-        emoji = emoji_match.groups(1)[0]
-        article_name = emoji_match.groups(1)[1]
-        return article_name, emoji
+        action = act_window.sudo().read()[0]
+        action_data = clean_action(action, self.env)
+        # from this point on, the act_window is considered apart from the original record
+        del action_data['id']
+        del action_data['xml_id']
+        action_data['display_name'] = name or action_data['display_name']
+        action_data['name'] = name or action_data['name']
+        return action_data
 
     def _get_ancestor_ids(self):
         """ Return the union of sets including the ids for the ancestors of
@@ -2663,14 +2097,9 @@ class Article(models.Model):
             ], limit=1).article_id
         if not article:
             # retrieve workspace articles first, then private/shared ones.
-            article = self.search(
-                expression.AND([
-                    [('parent_id', '=', False), ('is_template', '=', False)],
-                    self._get_read_domain(),
-                ]),
-                limit=1,
-                order='sequence, internal_permission desc'
-            )
+            article = self.search([
+                ('parent_id', '=', False, ), ('user_has_access', '=', True)
+            ], limit=1, order='sequence, internal_permission desc')
         return article
 
     def get_valid_parent_options(self, search_term=""):
@@ -2678,8 +2107,7 @@ class Article(models.Model):
         current article (to avoid recursions) """
         return self.search_read(
             domain=[
-                '&', '&', '&', '&',
-                    ('is_template', '=', False),
+                '&', '&', '&',
                     ('name', 'ilike', search_term),
                     ('id', 'not in', self.ids),
                     '!', ('parent_id', 'child_of', self.ids),
@@ -2698,7 +2126,7 @@ class Article(models.Model):
         # Meant to target knowledge_article_action_trashed action only.
         # -> Use the specific context key of that action to target it.
         if not "search_default_filter_trashed" in self.env.context:
-            return super().get_empty_list_help(help_message)
+            return help_message
         get_param = self.env['ir.config_parameter'].sudo().get_param
         limit_days = get_param('knowledge.knowledge_article_trash_limit_days')
         try:
@@ -2706,90 +2134,13 @@ class Article(models.Model):
         except ValueError:
             limit_days = self.DEFAULT_ARTICLE_TRASH_LIMIT_DAYS
         title = _("No Article in Trash")
-        description = Markup(
-            _("""Deleted articles are stored in Trash an extra <b>%(threshold)s</b> days
-                 before being permanently removed for your database""")) % {"threshold": limit_days}
-
-        return super().get_empty_list_help(
-            f'<p class="o_view_nocontent_smiling_face">{title}</p><p>{description}</p>'
+        description = _("""
+            Deleted articles are stored in Trash an extra
+            <b>%(threshold)s</b> days
+            before being permanently removed for your database""",
+            threshold=limit_days
         )
 
-    def get_visible_articles(self, root_articles_ids, unfolded_ids):
-        """ Get the articles that are visible in the sidebar with the given
-        root articles and unfolded ids.
-
-        An article is visible if it is a root article, or if it is a child
-        article (not item) of an unfolded visible article.
-        """
-        if root_articles_ids:
-            visible_articles_domain = [
-            '|',
-                ('id', 'in', root_articles_ids),
-                '&',
-                    '&',
-                        ('parent_id', 'in', unfolded_ids),
-                        ('id', 'child_of', root_articles_ids),  # Don't fetch hidden unfolded
-                    ('is_article_item', '=', False)
-            ]
-
-            return self.env['knowledge.article'].search(
-                visible_articles_domain,
-                order='sequence, id',
-            )
-        return self.env['knowledge.article']
-
-    def get_sidebar_articles(self, unfolded_ids=False):
-        """ Get the data used by the sidebar on load in the form view.
-        It returns some information from every article that is accessible by
-        the user and that is either:
-            - a visible root article
-            - a favorite article or a favorite item (for the current user)
-            - the current article (except if it is a descendant of a hidden
-              root article or of an non accessible article - but even if it is
-              a hidden root article)
-            - an ancestor of the current article, if the current article is
-              shown
-            - a child article of any unfolded article that is shown
-        """
-
-        root_articles_domain = [
-            ("parent_id", "=", False),
-            ("is_template", "=", False)
-        ]
-        if self.env.user._is_internal():
-            # Do not fetch articles that the user did not join (articles with
-            # internal permissions may be set as visible to members only)
-            root_articles_domain.append(("is_article_visible", "=", True))
-
-        # Fetch root article_ids as sudo, ACLs will be checked on next global call fetching 'all_visible_articles'
-        # this helps avoiding 2 queries done for ACLs (and redundant with the global fetch)
-        root_articles_ids = self.env['knowledge.article'].sudo().search(root_articles_domain).ids
-
-        favorite_articles_ids = self.env['knowledge.article.favorite'].sudo().search(
-            [("user_id", "=", self.env.user.id), ('is_article_active', '=', True)]
-        ).article_id.ids
-
-        # Add favorite articles and items (they are root articles in the
-        # favorite tree)
-        root_articles_ids += favorite_articles_ids
-
-        if unfolded_ids is False:
-            unfolded_ids = []
-
-        # Add active article and its parents in list of unfolded articles
-        if self.is_article_visible:
-            if self.parent_id:
-                unfolded_ids += self._get_ancestor_ids()
-        # If the current article is a hidden root article, show the article
-        elif not self.parent_id and self.id:
-            root_articles_ids += [self.id]
-
-        all_visible_articles = self.get_visible_articles(root_articles_ids, unfolded_ids)
-
-        return {
-            "articles": all_visible_articles.read(
-                ['name', 'icon', 'parent_id', 'category', 'is_locked', 'user_can_write', 'is_user_favorite', 'is_article_item', 'has_article_children'],
-                None,  # To not fetch the name of parent_id
-            ),
-            "favorite_ids": favorite_articles_ids,
-        }
+        return '''<p class="o_view_nocontent_smiling_face">%s</p><p>%s</p>''' % (
+            title, description
+        )

@@ -48,11 +48,7 @@ class AccountPayment(models.Model):
     def _compute_amount_available_for_refund(self):
         for payment in self:
             tx_sudo = payment.payment_transaction_id.sudo()
-            if (
-                tx_sudo.provider_id.support_refund
-                and tx_sudo.payment_method_id.support_refund
-                and tx_sudo.operation != 'refund'
-            ):
+            if tx_sudo.provider_id.support_refund and tx_sudo.operation != 'refund':
                 # Only consider refund transactions that are confirmed by summing the amounts of
                 # payments linked to such refund transactions. Indeed, should a refund transaction
                 # be stuck forever in a transient state (due to webhook failure, for example), the
@@ -66,11 +62,17 @@ class AccountPayment(models.Model):
     @api.depends('payment_method_line_id')
     def _compute_suitable_payment_token_ids(self):
         for payment in self:
+            related_partner_ids = (
+                    payment.partner_id
+                    | payment.partner_id.commercial_partner_id
+                    | payment.partner_id.commercial_partner_id.child_ids
+            )._origin
+
             if payment.use_electronic_payment_method:
                 payment.suitable_payment_token_ids = self.env['payment.token'].sudo().search([
-                    *self.env['payment.token']._check_company_domain(payment.company_id),
+                    ('company_id', '=', payment.company_id.id),
                     ('provider_id.capture_manually', '=', False),
-                    ('partner_id', '=', payment.partner_id.id),
+                    ('partner_id', 'in', related_partner_ids.ids),
                     ('provider_id', '=', payment.payment_method_line_id.payment_provider_id.id),
                 ])
             else:
@@ -90,10 +92,10 @@ class AccountPayment(models.Model):
                 ('source_payment_id', 'in', self.ids),
                 ('payment_transaction_id.operation', '=', 'refund')
             ],
-            groupby=['source_payment_id'],
-            aggregates=['__count']
+            fields=['source_payment_id'],
+            groupby=['source_payment_id']
         )
-        data = {source_payment.id: count for source_payment, count in rg_data}
+        data = {x['source_payment_id'][0]: x['source_payment_id_count'] for x in rg_data}
         for payment in self:
             payment.refunds_count = data.get(payment.id, 0)
 
@@ -106,9 +108,15 @@ class AccountPayment(models.Model):
             self.payment_token_id = False
             return
 
-        self.payment_token_id = self.env['payment.token'].search([
-            *self.env['payment.token']._check_company_domain(self.company_id),
-            ('partner_id', '=', self.partner_id.id),
+        related_partner_ids = (
+                self.partner_id
+                | self.partner_id.commercial_partner_id
+                | self.partner_id.commercial_partner_id.child_ids
+        )._origin
+
+        self.payment_token_id = self.env['payment.token'].sudo().search([
+            ('company_id', '=', self.company_id.id),
+            ('partner_id', 'in', related_partner_ids.ids),
             ('provider_id.capture_manually', '=', False),
             ('provider_id', '=', self.payment_method_line_id.payment_provider_id.id),
          ], limit=1)
@@ -196,19 +204,13 @@ class AccountPayment(models.Model):
         self.ensure_one()
         return {
             'provider_id': self.payment_token_id.provider_id.id,
-            'payment_method_id': self.payment_token_id.payment_method_id.id,
-            'reference': self.env['payment.transaction']._compute_reference(
-                self.payment_token_id.provider_id.code, prefix=self.ref
-            ),
+            'reference': self.ref,
             'amount': self.amount,
             'currency_id': self.currency_id.id,
             'partner_id': self.partner_id.id,
             'token_id': self.payment_token_id.id,
             'operation': 'offline',
             'payment_id': self.id,
-            **({'invoice_ids': [Command.set(self._context.get('active_ids', []))]}
-                if self._context.get('active_model') == 'account.move'
-                else {}),
             **extra_create_values,
         }
 

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from dateutil.relativedelta import relativedelta
-
 from odoo import api, fields, models, _, Command
 from odoo.exceptions import UserError
 
@@ -24,21 +22,19 @@ class SignSendRequest(models.TransientModel):
         if 'subject' in fields:
             res['subject'] = _("Signature Request - %(file_name)s", file_name=template.attachment_id.name)
         if 'signers_count' in fields or 'signer_ids' in fields or 'signer_id' in fields:
-            roles = template.sign_item_ids.responsible_id.sorted()
+            roles = template.sign_item_ids.responsible_id
             if 'signers_count' in fields:
                 res['signers_count'] = len(roles)
             if 'signer_ids' in fields:
                 res['signer_ids'] = [(0, 0, {
                     'role_id': role.id,
                     'partner_id': False,
-                    'mail_sent_order': default_signing_order + 1 if self.set_sign_order else 1,
-                }) for default_signing_order, role in enumerate(roles)]
+                }) for role in roles]
             if self.env.context.get('sign_directly_without_mail'):
-                default_signer = res.get("signer_id") or self.env.user.partner_id.id
                 if len(roles) == 1 and 'signer_ids' in fields and res.get('signer_ids'):
-                    res['signer_ids'][0][2]['partner_id'] = default_signer
+                    res['signer_ids'][0][2]['partner_id'] = self.env.user.partner_id.id
                 elif not roles and 'signer_id' in fields:
-                    res['signer_id'] = default_signer
+                    res['signer_id'] = self.env.user.partner_id.id
         return res
 
     activity_id = fields.Many2one('mail.activity', 'Linked Activity', readonly=True)
@@ -48,15 +44,12 @@ class SignSendRequest(models.TransientModel):
         default=lambda self: self.env.context.get('active_id', None),
     )
     signer_ids = fields.One2many('sign.send.request.signer', 'sign_send_request_id', string="Signers")
-    set_sign_order = fields.Boolean(string="Specify Signing Order",
-                                    help="""Specify the order for each signer. The signature request only gets sent to \
-                                    the next signers in the sequence when all signers from the previous level have \
-                                    signed the document.
-                                    """)
+    set_sign_order = fields.Boolean(string="Specify Signing Order", help="Signatures will be requested from lowest order to highest order.")
     signer_id = fields.Many2one('res.partner', string="Send To")
     signers_count = fields.Integer()
     cc_partner_ids = fields.Many2many('res.partner', string="Copy to", help="Contacts in copy will be notified by email once the document is either fully signed or refused.")
     is_user_signer = fields.Boolean(compute='_compute_is_user_signer')
+    refusal_allowed = fields.Boolean(default=False, string="Can be refused", help="Allow the contacts to refuse the document for a specific reason.")
 
     subject = fields.Char(string="Subject", required=True)
     message = fields.Html("Message", help="Message to be sent to signers of the specified document")
@@ -64,43 +57,21 @@ class SignSendRequest(models.TransientModel):
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
     filename = fields.Char("Filename", required=True)
 
-    validity = fields.Date(string='Valid Until', default=lambda self: fields.Date.today() + relativedelta(months=6))
-    reminder = fields.Integer(string='Reminder', help='Number of day between two reminder', default=7)
-
-    @api.onchange('validity')
-    def _onchange_validity(self):
-        if self.validity < fields.Date.today():
-            raise UserError(_('Request expiration date must be set in the future.'))
-
-    @api.onchange('reminder')
-    def _onchange_reminder(self):
-        if self.reminder > 365:
-            self.reminder = 365
-
-    @api.onchange('template_id', 'set_sign_order')
+    @api.onchange('template_id')
     def _onchange_template_id(self):
         self.signer_id = False
         self.filename = self.template_id.display_name
-        self.subject = _("Signature Request - %s", self.template_id.attachment_id.name or '')
-        roles = self.template_id.mapped('sign_item_ids.responsible_id').sorted()
-        if self.signer_ids and len(self.signer_ids) == len(roles):
-            signer_ids = [(0, 0, {
-                'role_id': signer.role_id,
-                'partner_id': signer.partner_id,
-                'mail_sent_order': default_signing_order + 1 if self.set_sign_order else 1
-            }) for default_signing_order, signer in enumerate(self.signer_ids)]
-        else:
-            signer_ids = [(0, 0, {
-                'role_id': role.id,
-                'partner_id': False,
-                'mail_sent_order': default_signing_order + 1 if self.set_sign_order else 1
-            }) for default_signing_order, role in enumerate(roles)]
+        self.subject = _("Signature Request - %s") % (self.template_id.attachment_id.name or '')
+        roles = self.template_id.mapped('sign_item_ids.responsible_id')
+        signer_ids = [(0, 0, {
+            'role_id': role.id,
+            'partner_id': False,
+        }) for role in roles]
         if self.env.context.get('sign_directly_without_mail'):
-            default_signer = self.env.context.get("default_signer_id", self.env.user.partner_id.id)
             if len(roles) == 1:
-                signer_ids[0][2]['partner_id'] = default_signer
+                signer_ids[0][2]['partner_id'] = self.env.user.partner_id.id
             elif not roles:
-                self.signer_id = default_signer
+                self.signer_id = self.env.user.partner_id.id
         self.signer_ids = [(5, 0, 0)] + signer_ids
         self.signers_count = len(roles)
 
@@ -115,7 +86,7 @@ class SignSendRequest(models.TransientModel):
 
     def _activity_done(self):
         signatories = self.signer_id.name or ', '.join(self.signer_ids.partner_id.mapped('name'))
-        feedback = _('Signature requested for template: %s\nSignatories: %s', self.template_id.name, signatories)
+        feedback = _('Signature requested for template: %s\nSignatories: %s') % (self.template_id.name, signatories)
         self.activity_id._action_done(feedback=feedback)
 
     def create_request(self):
@@ -130,6 +101,7 @@ class SignSendRequest(models.TransientModel):
         message = self.message
         message_cc = self.message_cc
         attachment_ids = self.attachment_ids
+        refusal_allowed = self.refusal_allowed
         sign_request = self.env['sign.request'].create({
             'template_id': template_id,
             'request_item_ids': [Command.create({
@@ -142,8 +114,7 @@ class SignSendRequest(models.TransientModel):
             'message': message,
             'message_cc': message_cc,
             'attachment_ids': [Command.set(attachment_ids.ids)],
-            'validity': self.validity,
-            'reminder': self.reminder,
+            'refusal_allowed': refusal_allowed,
         })
         sign_request.message_subscribe(partner_ids=cc_partner_ids)
         return sign_request
@@ -183,7 +154,7 @@ class SignSendRequestSigner(models.TransientModel):
         if missing_roles:
             missing_roles_str = ', '.join(missing_roles)
             raise UserError(_(
-                'Please select recipients for the following roles: %(roles)s',
+                'The following roles must be set to create the signature request: %(roles)s',
                 roles=missing_roles_str,
             ))
         return super().create(vals_list)

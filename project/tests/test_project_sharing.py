@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import Command
-from odoo.osv import expression
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
 from odoo.tests.common import Form
@@ -145,6 +144,10 @@ class TestProjectSharing(TestProjectSharingCommon):
             3.2) Create a sub-task
             3.3) Create a second sub-task
         """
+        # 0) Allow to create subtasks in the project tasks
+        # Required for `child_ids` to be visible in the view
+        # {'invisible': [('allow_subtasks', '=', False)]}
+        self.project_cows.allow_subtasks = True
         # 1) Give the 'read' access mode to a portal user in a project and try to create task with this user.
         with self.assertRaises(AccessError, msg="Should not accept the portal user create a task in the project when he has not the edit access right."):
             with self.get_project_sharing_form_view(self.task_cow.with_context({'tracking_disable': True, 'default_project_id': self.project_cows.id}), self.user_portal) as form:
@@ -177,7 +180,7 @@ class TestProjectSharing(TestProjectSharingCommon):
             with form.child_ids.new() as subtask_form:
                 subtask_form.name = 'Test Subtask'
                 with self.assertRaises(AssertionError, msg="Should not accept the portal user changes the project of the task."):
-                    subtask_form.project_id = self.project_portal
+                    subtask_form.display_project_id = self.project_portal
         self.assertEqual(task.child_ids.name, 'Test Subtask')
         self.assertEqual(task.child_ids.project_id, self.project_cows)
         self.assertFalse(task.child_ids.portal_user_names, 'by default no user should be assigned to a subtask created by the portal user.')
@@ -243,55 +246,3 @@ class TestProjectSharing(TestProjectSharingCommon):
             ],
         })
         self.task_portal.with_user(self.user_portal).write({'stage_id': self.project_portal.type_ids[-1].id})
-
-    def test_orm_method_with_true_false_domain(self):
-        """ Test orm method overriden in project for project sharing works with TRUE_LEAF/FALSE_LEAF
-
-            Test Case
-            =========
-            1) Share a project in edit mode for portal user
-            2) Search the portal task contained in the project shared by using a domain with TRUE_LEAF
-            3) Check the task is found with the `search` method
-            4) filter the task with `TRUE_DOMAIN` and check if the task is always returned by `filtered_domain` method
-            5) filter the task with `FALSE_DOMAIN` and check if no task is returned by `filtered_domain` method
-            6) Search the task with `FALSE_LEAF` and check no task is found with `search` method
-            7) Call `read_group` method with `TRUE_LEAF` in the domain and check if the task is found
-            8) Call `read_group` method with `FALSE_LEAF` in the domain and check if no task is found
-        """
-        domain = [('id', '=', self.task_portal.id)]
-        self.project_portal.write({
-            'collaborator_ids': [Command.create({
-                'partner_id': self.user_portal.partner_id.id,
-            })],
-        })
-        task = self.env['project.task'].with_user(self.user_portal).search(
-            expression.AND([
-                expression.TRUE_DOMAIN,
-                domain,
-            ])
-        )
-        self.assertTrue(task, 'The task should be found.')
-        self.assertEqual(task, task.filtered_domain(expression.TRUE_DOMAIN), 'The task found should be kept since the domain is truly')
-        self.assertFalse(task.filtered_domain(expression.FALSE_DOMAIN), 'The task should not be found since the domain is falsy')
-        task = self.env['project.task'].with_user(self.user_portal).search(
-            expression.AND([
-                expression.FALSE_DOMAIN,
-                domain,
-            ]),
-        )
-        self.assertFalse(task, 'No task should be found since the domain contained a falsy tuple.')
-
-        task_read_group = self.env['project.task'].read_group(
-            expression.AND([expression.TRUE_DOMAIN, domain]),
-            ['id:min'],
-            [],
-        )
-        self.assertEqual(task_read_group[0]['__count'], 1, 'The task should be found with the read_group method containing a truly tuple.')
-        self.assertEqual(task_read_group[0]['id'], self.task_portal.id, 'The task should be found with the read_group method containing a truly tuple.')
-
-        task_read_group = self.env['project.task'].read_group(
-            expression.AND([expression.FALSE_DOMAIN, domain]),
-            ['id:min'],
-            [],
-        )
-        self.assertFalse(task_read_group[0]['__count'], 'No result should found with the read_group since the domain is falsy.')

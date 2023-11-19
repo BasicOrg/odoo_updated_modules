@@ -3,7 +3,7 @@ import { registry } from "./registry";
 import { ErrorHandler } from "./utils/components";
 import { useBus } from "@web/core/utils/hooks";
 
-import { Component, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 
 export class MainComponentsContainer extends Component {
     setup() {
@@ -40,4 +40,3 @@ MainComponentsContainer.template = xml`
 </div>
 `;
 MainComponentsContainer.components = { ErrorHandler };
-MainComponentsContainer.props = {};

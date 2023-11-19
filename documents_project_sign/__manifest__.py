@@ -12,7 +12,7 @@ Adds an action to sign documents attached to tasks.
     'website': ' ',
     'depends': ['documents_project', 'documents_sign'],
     'data': [
-        'data/documents_workflow_rule_data.xml',
+        'data/data.xml',
     ],
     'installable': True,
     'auto_install': True,

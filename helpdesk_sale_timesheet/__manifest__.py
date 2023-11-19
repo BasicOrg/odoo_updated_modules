@@ -13,9 +13,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/hr_timesheet_views.xml',
-        'views/helpdesk_team_views.xml',
-        'views/helpdesk_ticket_views.xml',
-        'views/helpdesk_sla_views.xml',
+        'views/helpdesk_views.xml',
         'views/helpdesk_portal_templates.xml',
         'views/project_project_views.xml',
         'views/product_views.xml',

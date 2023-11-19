@@ -2,8 +2,8 @@
 
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 class IAPActionButtonsWidget extends Component {
     setup() {
@@ -12,7 +12,11 @@ class IAPActionButtonsWidget extends Component {
     }
 
     async onViewServicesClicked() {
-        this.action.doAction("iap.iap_account_action");
+        const url = await this.orm.silent.call("iap.account", "get_account_url");
+        this.action.doAction({
+            type: "ir.actions.act_url",
+            url: url,
+        });
     }
 
     async onBuyLinkClicked() {
@@ -24,19 +28,11 @@ class IAPActionButtonsWidget extends Component {
     }
 }
 IAPActionButtonsWidget.template = "iap.ActionButtonsWidget";
-IAPActionButtonsWidget.props = {
-    ...standardWidgetProps,
-    serviceName: String,
-    showServiceButtons: Boolean,
+IAPActionButtonsWidget.extractProps = ({ attrs }) => {
+    return {
+        serviceName: attrs.service_name,
+        showServiceButtons: !Boolean(attrs.hide_service),
+    };
 };
 
-export const iapActionButtonsWidget = {
-    component: IAPActionButtonsWidget,
-    extractProps: ({ attrs }) => {
-        return {
-            serviceName: attrs.service_name,
-            showServiceButtons: !Boolean(attrs.hide_service),
-        };
-    },
-};
-registry.category("view_widgets").add("iap_buy_more_credits", iapActionButtonsWidget);
+registry.category("view_widgets").add("iap_buy_more_credits", IAPActionButtonsWidget);

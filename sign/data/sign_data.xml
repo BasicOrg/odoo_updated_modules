@@ -11,18 +11,6 @@
         <field name="active" eval="False"/>
     </record>
 
-    <!-- Reminder CRON -->
-    <record model="ir.cron" id="sign_reminder_cron">
-        <field name="name">Sign: Send mail reminder</field>
-        <field name="model_id" ref="sign.model_sign_request"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_reminder()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="nextcall" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d 10:00:00')"/>
-    </record>
-
     <!-- Item types -->
     <record model="sign.item.type" id="sign_item_type_signature">
         <field name="name">Signature</field>

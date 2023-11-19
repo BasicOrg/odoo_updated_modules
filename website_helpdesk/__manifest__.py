@@ -18,16 +18,11 @@
         'security/website_helpdesk_security.xml',
         'views/snippets.xml',
     ],
-    'auto_install': True,
     'license': 'OEEL-1',
     'post_init_hook': '_configure_teams',
     'assets': {
         'web.assets_frontend': [
             'website_helpdesk/static/**/*',
-            ('remove', 'website_helpdesk/static/src/js/website_helpdesk_form_editor.js'),
-        ],
-        'website.assets_wysiwyg': [
-            'website_helpdesk/static/src/js/website_helpdesk_form_editor.js',
         ],
     }
 }

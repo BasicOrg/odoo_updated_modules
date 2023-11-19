@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, onError, xml, useSubEnv } from "@odoo/owl";
+const { Component, onError, xml, useSubEnv } = owl;
 
 export class ErrorHandler extends Component {
     setup() {
@@ -10,7 +10,7 @@ export class ErrorHandler extends Component {
     }
 }
 ErrorHandler.template = xml`<t t-slot="default" />`;
-ErrorHandler.props = ["onError", "slots"];
+ErrorEvent.props = ["onError"];
 
 export class WithEnv extends Component {
     setup() {
@@ -18,4 +18,3 @@ export class WithEnv extends Component {
     }
 }
 WithEnv.template = xml`<t t-slot="default"/>`;
-WithEnv.props = ["env", "slots"];

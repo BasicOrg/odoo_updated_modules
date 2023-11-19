@@ -4,8 +4,6 @@
 
 from odoo import http, _
 from odoo.http import request
-from odoo.tools import format_duration
-from odoo.osv import expression
 
 import pytz
 from odoo.tools.misc import get_lang
@@ -35,34 +33,12 @@ class ShiftController(http.Controller):
         employee_tz = pytz.timezone(employee_sudo.tz or 'UTC')
         employee_fullcalendar_data = []
         open_slots = []
-        unwanted_slots = []
 
-        domain = [
-            ('start_datetime', '>=', planning_sudo.start_datetime),
-            ('end_datetime', '<=', planning_sudo.end_datetime),
-            ('state', '=', 'published'),
-        ]
         if planning_sudo.include_unassigned:
-            domain = expression.AND([
-                domain,
-                [
-                    '|',
-                    ('employee_id', '=', employee_sudo.id),
-                    '|',
-                        ('resource_id', '=', False),
-                        ('request_to_switch', '=', True),
-                ],
-            ])
+            planning_slots = planning_sudo.slot_ids.filtered(lambda s: s.employee_id == employee_sudo or not s.resource_id and s.state == 'published')
         else:
-            domain = expression.AND([
-                domain,
-                [
-                    '|',
-                        ('employee_id', '=', employee_sudo.id),
-                        ('request_to_switch', '=', True),
-                ],
-            ])
-        planning_slots = request.env['planning.slot'].sudo().search(domain)
+            planning_slots = planning_sudo.slot_ids.filtered(lambda s: s.employee_id == employee_sudo and s.state == 'published')
+
         # filter and format slots
         slots_start_datetime = []
         slots_end_datetime = []
@@ -73,7 +49,6 @@ class ShiftController(http.Controller):
         planning_values = {
             'employee_slots_fullcalendar_data': employee_fullcalendar_data,
             'open_slots_ids': open_slots,
-            'unwanted_slots_ids': unwanted_slots,
             'planning_planning_id': planning_sudo,
             'employee': employee_sudo,
             'employee_token': employee_token,
@@ -81,41 +56,29 @@ class ShiftController(http.Controller):
             'no_data': True
         }
         for slot in planning_slots:
-            if slot.employee_id:
-                slot_start_datetime = pytz.utc.localize(slot.start_datetime).astimezone(employee_tz).replace(tzinfo=None)
-                slot_end_datetime = pytz.utc.localize(slot.end_datetime).astimezone(employee_tz).replace(tzinfo=None)
-                if slot.request_to_switch and (
-                    not slot.role_id
-                    or slot.employee_id == employee_sudo
-                    or not employee_sudo.planning_role_ids
-                    or slot.role_id in employee_sudo.planning_role_ids
-                ):
-                    unwanted_slots.append(slot)
-                if slot.employee_id == employee_sudo:
+            if planning_sudo.start_datetime <= slot.start_datetime <= planning_sudo.end_datetime:
+                # We only display slots starting in the planning_sudo range
+                # If a slot is moved outside the planning_sudo range, the url remains valid but the slot is hidden.
+                if slot.employee_id:
                     employee_fullcalendar_data.append({
-                        'title': '%s%s' % (slot.role_id.name or _('Shift'), u' \U0001F4AC' if slot.name else ''),
-                        'start': str(slot_start_datetime),
-                        'end': str(slot_end_datetime),
+                        'title': '%s%s' % (slot.role_id.name or _("Shift"), u' \U0001F4AC' if slot.name else ''),
+                        'start': str(pytz.utc.localize(slot.start_datetime).astimezone(employee_tz).replace(tzinfo=None)),
+                        'end': str(pytz.utc.localize(slot.end_datetime).astimezone(employee_tz).replace(tzinfo=None)),
                         'color': self._format_planning_shifts(slot.role_id.color),
-                        'alloc_hours': format_duration(slot.allocated_hours),
+                        'alloc_hours': '%d:%02d' % (int(slot.allocated_hours), round(slot.allocated_hours % 1 * 60)),
                         'alloc_perc': f'{slot.allocated_percentage:.2f}',
                         'slot_id': slot.id,
                         'note': slot.name,
                         'allow_self_unassign': slot.allow_self_unassign,
                         'is_unassign_deadline_passed': slot.is_unassign_deadline_passed,
                         'role': slot.role_id.name,
-                        'request_to_switch': slot.request_to_switch,
-                        'is_past': slot.is_past,
                     })
-                # We add the slot start and stop into the list after converting it to the timezone of the employee
-                slots_start_datetime.append(slot_start_datetime)
-                slots_end_datetime.append(slot_end_datetime)
-            elif not slot.is_past and (
-                not employee_sudo.planning_role_ids
-                or not slot.role_id
-                or slot.role_id in employee_sudo.planning_role_ids
-            ):
-                open_slots.append(slot)
+                    # We add the slot start and stop into the list after converting it to the timezone of the employee
+                    slots_start_datetime.append(pytz.utc.localize(slot.start_datetime).astimezone(employee_tz).replace(tzinfo=None))
+                    slots_end_datetime.append(pytz.utc.localize(slot.end_datetime).astimezone(employee_tz).replace(tzinfo=None))
+                elif not slot.is_past and (
+                        not employee_sudo.planning_role_ids or not slot.role_id or slot.role_id in employee_sudo.planning_role_ids):
+                    open_slots.append(slot)
         # Calculation of the events to define the default calendar view:
         # If the planning_sudo only spans a week, default view is week, else it is month.
         min_start_datetime = slots_start_datetime and min(slots_start_datetime) \
@@ -147,20 +110,17 @@ class ShiftController(http.Controller):
         else:
             # Fallback when no slot is available. Still needed because open slots display a calendar
             mintime_weekview, maxtime_weekview = checkin_min, checkout_max
-        if employee_fullcalendar_data or open_slots or unwanted_slots:
+        if employee_fullcalendar_data or open_slots:
             planning_values.update({
                 'employee_slots_fullcalendar_data': employee_fullcalendar_data,
                 'open_slots_ids': open_slots,
-                'unwanted_slots_ids': unwanted_slots,
                 # fullcalendar does not understand complex iso code like fr_BE
                 'locale': get_lang(request.env).iso_code.split("_")[0],
                 'format_datetime': lambda dt, dt_format: tools.format_datetime(request.env, dt, tz=employee_tz.zone, dt_format=dt_format),
-                'notification_text': message in ['assign', 'unassign', 'already_assign', 'deny_unassign', 'switch', 'cancel_switch'],
+                'notification_text': message in ['assign', 'unassign', 'already_assign', 'deny_unassign'],
                 'message_slug': message,
-                'open_slot_has_role': any(s.role_id.id for s in open_slots),
-                'open_slot_has_note': any(s.name for s in open_slots),
-                'unwanted_slot_has_role': any(s.role_id.id for s in unwanted_slots),
-                'unwanted_slot_has_note': any(s.name for s in unwanted_slots),
+                'has_role': any([s.role_id.id for s in open_slots]),
+                'has_note': any([s.name for s in open_slots]),
                 # start_datetime and end_datetime are used in the banner. This ensure that these values are
                 # coherent with the sended mail.
                 'start_datetime': planning_sudo.start_datetime,
@@ -184,10 +144,10 @@ class ShiftController(http.Controller):
             return request.not_found()
 
         planning_sudo = request.env['planning.planning'].sudo().search([('access_token', '=', token_planning)], limit=1)
-        if not planning_sudo._is_slot_in_planning(slot_sudo):
+        if not planning_sudo or slot_sudo.id not in planning_sudo.slot_ids._ids:
             return request.not_found()
 
-        if slot_sudo.resource_id and not slot_sudo.request_to_switch:
+        if slot_sudo.resource_id:
             return request.redirect('/planning/%s/%s?message=%s' % (token_planning, token_employee, 'already_assign'))
 
         slot_sudo.write({'resource_id': employee_sudo.resource_id.id})
@@ -210,7 +170,7 @@ class ShiftController(http.Controller):
             return request.not_found()
 
         planning_sudo = request.env['planning.planning'].sudo().search([('access_token', '=', token_planning)], limit=1)
-        if not planning_sudo._is_slot_in_planning(slot_sudo):
+        if not planning_sudo or slot_sudo.id not in planning_sudo.slot_ids._ids:
             return request.not_found()
 
         slot_sudo.write({'resource_id': False})
@@ -218,40 +178,6 @@ class ShiftController(http.Controller):
             return request.redirect('/planning/%s/%s?message=%s' % (token_planning, token_employee, 'unassign'))
         else:
             return request.redirect('/planning/%s/%s' % (token_planning, token_employee))
-
-    @http.route('/planning/<string:token_planning>/<string:token_employee>/switch/<int:shift_id>', type="http", auth="public", website=True)
-    def planning_switch_shift(self, token_planning, token_employee, shift_id, **kwargs):
-        slot_sudo = request.env['planning.slot'].sudo().browse(shift_id)
-        if not slot_sudo.exists():
-            return request.not_found()
-
-        employee_sudo = request.env['hr.employee'].sudo().search([('employee_token', '=', token_employee)], limit=1)
-        if not employee_sudo or employee_sudo != slot_sudo.employee_id:
-            return request.not_found()
-
-        planning_sudo = request.env['planning.planning'].sudo().search([('access_token', '=', token_planning)], limit=1)
-        if not planning_sudo._is_slot_in_planning(slot_sudo):
-            return request.not_found()
-
-        slot_sudo.write({'request_to_switch': True})
-        return request.redirect(f'/planning/{token_planning}/{token_employee}?message=switch')
-
-    @http.route('/planning/<string:token_planning>/<string:token_employee>/cancel_switch/<int:shift_id>', type="http", auth="public", website=True)
-    def planning_cancel_shift_switch(self, token_planning, token_employee, shift_id, **kwargs):
-        slot_sudo = request.env['planning.slot'].sudo().browse(shift_id)
-        if not slot_sudo.exists():
-            return request.not_found()
-
-        employee_sudo = request.env['hr.employee'].sudo().search([('employee_token', '=', token_employee)], limit=1)
-        if not employee_sudo or employee_sudo != slot_sudo.employee_id:
-            return request.not_found()
-
-        planning_sudo = request.env['planning.planning'].sudo().search([('access_token', '=', token_planning)], limit=1)
-        if not planning_sudo._is_slot_in_planning(slot_sudo):
-            return request.not_found()
-
-        slot_sudo.write({'request_to_switch': False})
-        return request.redirect(f'/planning/{token_planning}/{token_employee}?message=cancel_switch')
 
     @http.route('/planning/assign/<string:token_employee>/<int:shift_id>', type="http", auth="user", website=True)
     def planning_self_assign_with_user(self, token_employee, shift_id, **kwargs):

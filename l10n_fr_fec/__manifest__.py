@@ -5,14 +5,13 @@
 
 {
     'name': 'France - FEC Export',
-    'countries': ['fr'],
+    'icon': '/l10n_fr/static/description/icon.png',
     'category': 'Accounting/Localizations/Reporting',
     'summary': "Fichier d'Échange Informatisé (FEC) for France",
     'author': "Akretion,Odoo Community Association (OCA)",
     'depends': ['l10n_fr', 'account'],
     'data': [
         'security/ir.model.access.csv',
-        'security/security.xml',
         'wizard/account_fr_fec_view.xml',
     ],
     'auto_install': True,

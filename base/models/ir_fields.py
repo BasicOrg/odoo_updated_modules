@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import json
 import functools
 import itertools
 
@@ -192,17 +191,6 @@ class IrFieldsConverter(models.AbstractModel):
         if not converter:
             return None
         return functools.partial(converter, model, field)
-
-    def _str_to_json(self, model, field, value):
-        try:
-            return json.loads(value), []
-        except ValueError:
-            msg = _("'%s' does not seem to be a valid JSON for field '%%(field)s'")
-            raise self._format_import_error(ValueError, msg, value)
-
-    def _str_to_properties(self, model, field, value):
-        msg = _("Unable to import field type '%s'  ", field.type)
-        raise self._format_import_error(ValueError, msg)
 
     @api.model
     def _str_to_boolean(self, model, field, value):
@@ -398,7 +386,7 @@ class IrFieldsConverter(models.AbstractModel):
         :param model: model to which the field belongs
         :param field: relational field for which references are provided
         :param subfield: a relational subfield allowing building of refs to
-                         existing records: ``None`` for a name_search,
+                         existing records: ``None`` for a name_get/name_search,
                          ``id`` for an external id and ``.id`` for a database
                          id
         :param value: value of the reference to match to an actual record
@@ -462,24 +450,22 @@ class IrFieldsConverter(models.AbstractModel):
             ids = RelatedModel.name_search(name=value, operator='=')
             if ids:
                 if len(ids) > 1:
-                    warnings.append(ImportWarning(_(
-                        "Found multiple matches for value %r in field %%(field)r (%d matches)",
-                        str(value).replace('%', '%%'),
-                        len(ids),
-                    )))
+                    warnings.append(ImportWarning(
+                        _(u"Found multiple matches for value '%s' in field '%%(field)s' (%d matches)")
+                        %(str(value).replace('%', '%%'), len(ids))))
                 id, _name = ids[0]
             else:
                 name_create_enabled_fields = self.env.context.get('name_create_enabled_fields') or {}
                 if name_create_enabled_fields.get(field.name):
                     try:
-                        with self.env.cr.savepoint():
-                            id, _name = RelatedModel.name_create(name=value)
+                        id, _name = RelatedModel.name_create(name=value)
                     except (Exception, psycopg2.IntegrityError):
-                        error_msg = _("Cannot create new '%s' records from their name alone. Please create those records manually and try importing again.", RelatedModel._description)
+                        error_msg = _(u"Cannot create new '%s' records from their name alone. Please create those records manually and try importing again.", RelatedModel._description)
         else:
             raise self._format_import_error(
                 Exception,
-                _("Unknown sub-field %r", subfield)
+                _(u"Unknown sub-field '%s'"),
+                subfield
             )
 
         set_empty = False
@@ -544,7 +530,7 @@ class IrFieldsConverter(models.AbstractModel):
         :return: the record subfield to use for referencing and a list of warnings
         :rtype: str, list
         """
-        # Can import by display_name, external id or database id
+        # Can import by name_get, external id or database id
         fieldset = set(record)
         if fieldset - REFERENCING_FIELDS:
             raise ValueError(
@@ -618,7 +604,7 @@ class IrFieldsConverter(models.AbstractModel):
         def log(f, exception):
             if not isinstance(exception, Warning):
                 current_field_name = self.env[field.comodel_name]._fields[f].string
-                arg0 = exception.args[0].replace('%(field)s', '%(field)s/' + current_field_name)
+                arg0 = exception.args[0] % {'field': '%(field)s/' + current_field_name}
                 exception.args = (arg0, *exception.args[1:])
                 raise exception
             warnings.append(exception)
@@ -654,3 +640,37 @@ class IrFieldsConverter(models.AbstractModel):
                 commands.append(Command.create(writable))
 
         return commands, warnings
+
+class O2MIdMapper(models.AbstractModel):
+    """
+    Updates the base class to support setting xids directly in create by
+    providing an "id" key (otherwise stripped by create) during an import
+    (which should strip 'id' from the input data anyway)
+    """
+    _inherit = 'base'
+
+    # sadly _load_records_create is only called for the toplevel record so we
+    # can't hook into that
+    @api.model_create_multi
+    @api.returns('self', lambda value: value.id)
+    def create(self, vals_list):
+        recs = super().create(vals_list)
+
+        import_module = self.env.context.get('_import_current_module')
+        if not import_module: # not an import -> bail
+            return recs
+        noupdate = self.env.context.get('noupdate', False)
+
+        xids = (v.get('id') for v in vals_list)
+        self.env['ir.model.data']._update_xmlids([
+            {
+                'xml_id': xid if '.' in xid else ('%s.%s' % (import_module, xid)),
+                'record': rec,
+                # note: this is not used when updating o2ms above...
+                'noupdate': noupdate,
+            }
+            for rec, xid in zip(recs, xids)
+            if xid and isinstance(xid, str)
+        ])
+
+        return recs

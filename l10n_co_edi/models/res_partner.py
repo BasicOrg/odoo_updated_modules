@@ -8,10 +8,8 @@ class ResPartner(models.Model):
 
     l10n_co_edi_large_taxpayer = fields.Boolean(string='Gran Contribuyente')
     l10n_co_edi_fiscal_regimen = fields.Selection([
-        ('48', 'IVA'),
-        ('49', 'No Aplica'),
-        ('04', 'IC'),
-        ('ZA', 'IVA en IC'),
+        ('48', 'Responsable del Impuesto sobre las ventas - IVA'),
+        ('49', 'No responsables del IVA'),
     ], string="Fiscal Regimen", required=True, default='48')
     l10n_co_edi_commercial_name = fields.Char('Commercial Name')
     l10n_co_edi_obligation_type_ids = fields.Many2many('l10n_co_edi.type_code',
@@ -70,13 +68,3 @@ class ResPartner(models.Model):
         """
         self.ensure_one()
         return '%s %s' % (self.street or '', self.street2 or '')
-
-    def _l10n_co_edi_get_fiscal_regimen_code(self):
-        if self.l10n_co_edi_fiscal_regimen == '48':
-            return '01'
-        if self.l10n_co_edi_fiscal_regimen == '49':
-            return 'ZZ'
-        return self.l10n_co_edi_fiscal_regimen
-
-    def _l10n_co_edi_get_fiscal_regimen_name(self):
-        return dict(self._fields["l10n_co_edi_fiscal_regimen"].selection).get(self.l10n_co_edi_fiscal_regimen)

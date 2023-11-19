@@ -1,7 +1,7 @@
 /** @odoo-module */
 
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { Component } from '@odoo/owl';
+import core from 'web.core';
+import publicWidget from 'web.public.widget';
 
 publicWidget.registry.PaymentExpressCheckoutForm = publicWidget.Widget.extend({
     selector: 'form[name="o_payment_express_checkout_form"]',
@@ -11,15 +11,14 @@ publicWidget.registry.PaymentExpressCheckoutForm = publicWidget.Widget.extend({
      */
     start: async function () {
         await this._super(...arguments);
-        this.paymentContext = {};
-        Object.assign(this.paymentContext, this.el.dataset);
-        this.paymentContext.shippingInfoRequired = !!this.paymentContext['shippingInfoRequired'];
+        this.txContext = {};
+        Object.assign(this.txContext, this.$el.data());
         const expressCheckoutForms = this._getExpressCheckoutForms();
         for (const expressCheckoutForm of expressCheckoutForms) {
             await this._prepareExpressCheckoutForm(expressCheckoutForm.dataset);
         }
         // Monitor updates of the amount on eCommerce's cart pages.
-        Component.env.bus.addEventListener('cart_amount_changed', (ev) => this._updateAmount(...ev.detail));
+        core.bus.on('cart_amount_changed', this, this._updateAmount.bind(this));
     },
 
     //--------------------------------------------------------------------------
@@ -39,33 +38,51 @@ publicWidget.registry.PaymentExpressCheckoutForm = publicWidget.Widget.extend({
     },
 
     /**
+     * Return whether the shipping information is required or not.
+     *
+     * For a module to request shipping information to the customer, it must override this method.
+     *
+     * @private
+     * @return {Boolean} - Whether the shipping information is required or not.
+     */
+    _isShippingInformationRequired: () => false,
+
+    /**
      * Prepare the provider-specific express checkout form based on the provided data.
      *
      * For a provider to manage an express checkout form, it must override this method.
      *
      * @private
      * @param {Object} providerData - The provider-specific data.
-     * @return {void}
+     * @return {Promise}
      */
-    async _prepareExpressCheckoutForm(providerData) {},
+    async _prepareExpressCheckoutForm(providerData) {
+        return Promise.resolve();
+    },
 
     /**
-     * Prepare the params for the RPC to the transaction route.
+     * Prepare the params to send to the transaction route.
+     *
+     * For a provider to overwrite generic params or to add provider-specific ones, it must override
+     * this method and return the extended transaction route params.
      *
      * @private
      * @param {number} providerId - The id of the provider handling the transaction.
-     * @returns {object} - The transaction route params.
+     * @returns {object} - The transaction route params
      */
     _prepareTransactionRouteParams(providerId) {
         return {
-            'provider_id': parseInt(providerId),
-            'payment_method_id': parseInt(this.paymentContext['paymentMethodUnknownId']),
-            'token_id': null,
+            'payment_option_id': parseInt(providerId),
+            'reference_prefix': this.txContext.referencePrefix &&
+                                this.txContent.referencePrefix.toString(),
+            'currency_id': this.txContext.currencyId &&
+                           parseInt(this.txContext.currencyId),
+            'partner_id': parseInt(this.txContext.partnerId),
             'flow': 'direct',
             'tokenization_requested': false,
-            'landing_route': this.paymentContext['landingRoute'],
-            'access_token': this.paymentContext['accessToken'],
-            'csrf_token': odoo.csrf_token,
+            'landing_route': this.txContext.landingRoute,
+            'access_token': this.txContext.accessToken,
+            'csrf_token': core.csrf_token,
         };
     },
 
@@ -77,11 +94,11 @@ publicWidget.registry.PaymentExpressCheckoutForm = publicWidget.Widget.extend({
      * @private
      * @param {number} newAmount - The new amount.
      * @param {number} newMinorAmount - The new minor amount.
-     * @return {void}
+     * @return {undefined}
      */
     _updateAmount(newAmount, newMinorAmount) {
-        this.paymentContext.amount = parseFloat(newAmount);
-        this.paymentContext.minorAmount = parseInt(newMinorAmount);
+        this.txContext.amount = parseFloat(newAmount);
+        this.txContext.minorAmount = parseInt(newMinorAmount);
     },
 
 });

@@ -11,20 +11,22 @@ class LunchOrder(models.Model):
     _order = 'id desc'
     _display_name = 'product_id'
 
-    name = fields.Char(related='product_id.name', string="Product Name", readonly=True)
+    name = fields.Char(related='product_id.name', string="Product Name", store=True, readonly=True)
     topping_ids_1 = fields.Many2many('lunch.topping', 'lunch_order_topping', 'order_id', 'topping_id', string='Extras 1', domain=[('topping_category', '=', 1)])
     topping_ids_2 = fields.Many2many('lunch.topping', 'lunch_order_topping', 'order_id', 'topping_id', string='Extras 2', domain=[('topping_category', '=', 2)])
     topping_ids_3 = fields.Many2many('lunch.topping', 'lunch_order_topping', 'order_id', 'topping_id', string='Extras 3', domain=[('topping_category', '=', 3)])
     product_id = fields.Many2one('lunch.product', string="Product", required=True)
     category_id = fields.Many2one(
         string='Product Category', related='product_id.category_id', store=True)
-    date = fields.Date('Order Date', required=True, readonly=False,
+    date = fields.Date('Order Date', required=True, readonly=True,
+                       states={'new': [('readonly', False)]},
                        default=fields.Date.context_today)
     supplier_id = fields.Many2one(
         string='Vendor', related='product_id.supplier_id', store=True, index=True)
     available_today = fields.Boolean(related='supplier_id.available_today')
     order_deadline_passed = fields.Boolean(related='supplier_id.order_deadline_passed')
-    user_id = fields.Many2one('res.users', 'User', readonly=False,
+    user_id = fields.Many2one('res.users', 'User', readonly=True,
+                              states={'new': [('readonly', False)]},
                               default=lambda self: self.env.uid)
     lunch_location_id = fields.Many2one('lunch.location', default=lambda self: self.env.user.last_lunch_location_id)
     note = fields.Text('Notes')
@@ -86,19 +88,16 @@ class LunchOrder(models.Model):
         """
             If called in api.multi then it will pop topping_ids_1,2,3 from values
         """
-        topping_1_values = values.get('topping_ids_1', False)
-        topping_2_values = values.get('topping_ids_2', False)
-        topping_3_values = values.get('topping_ids_3', False)
         if self.ids:
             # TODO This is not taking into account all the toppings for each individual order, this is usually not a problem
             # since in the interface you usually don't update more than one order at a time but this is a bug nonetheless
-            topping_1 = values.pop('topping_ids_1')[0][2] if topping_1_values else self[:1].topping_ids_1.ids
-            topping_2 = values.pop('topping_ids_2')[0][2] if topping_2_values else self[:1].topping_ids_2.ids
-            topping_3 = values.pop('topping_ids_3')[0][2] if topping_3_values else self[:1].topping_ids_3.ids
+            topping_1 = values.pop('topping_ids_1')[0][2] if 'topping_ids_1' in values else self[:1].topping_ids_1.ids
+            topping_2 = values.pop('topping_ids_2')[0][2] if 'topping_ids_2' in values else self[:1].topping_ids_2.ids
+            topping_3 = values.pop('topping_ids_3')[0][2] if 'topping_ids_3' in values else self[:1].topping_ids_3.ids
         else:
-            topping_1 = values['topping_ids_1'][0][2] if topping_1_values else []
-            topping_2 = values['topping_ids_2'][0][2] if topping_2_values else []
-            topping_3 = values['topping_ids_3'][0][2] if topping_3_values else []
+            topping_1 = values['topping_ids_1'][0][2] if 'topping_ids_1' in values else []
+            topping_2 = values['topping_ids_2'][0][2] if 'topping_ids_2' in values else []
+            topping_3 = values['topping_ids_3'][0][2] if 'topping_ids_3' in values else []
 
         return topping_1 + topping_2 + topping_3
 

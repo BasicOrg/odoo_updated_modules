@@ -5,6 +5,7 @@
     'summary': 'Technology, Tech, IT, Computers, Stores, Virtual Reality',
     'sequence': 200,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -22,7 +23,6 @@
         'views/snippets/s_numbers.xml',
         'views/snippets/s_features.xml',
         'views/snippets/s_image_gallery.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/kea_description.png',
@@ -37,13 +37,8 @@
         'website.s_media_list_default_image_2': '/theme_kea/static/src/img/snippets/s_media_list_2.jpg',
         'website.s_media_list_default_image_3': '/theme_kea/static/src/img/snippets/s_media_list_3.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_text_image', 's_picture', 's_image_text', 's_color_blocks_2', 's_media_list'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-kea.odoo.com',

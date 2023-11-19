@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('o_kanban_card_header')]" position="before">
                 <field name="website_published" invisible="1"/>
-                <div class="ribbon ribbon-top-right" invisible="not website_published">
-                    <span class="text-bg-success">Published</span>
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': [('website_published', '=', False)]}">
+                    <span class="bg-odoo">Published</span>
                 </div>
             </xpath>
             <xpath expr="//div[@name='kanban_boxes']" position="attributes">
@@ -17,7 +17,7 @@
             <xpath expr="//div[@name='kanban_boxes']" position="inside">
                 <field name="website_url" invisible="1"/>
                 <div class="col-6">
-                    <field name="is_published" widget="boolean_toggle" class="me-1"/>
+                    <field name="is_published" widget='boolean_toggle'/>
                     <t t-if="record.is_published.raw_value">Published</t>
                     <t t-else="">Not published</t>
                 </div>
@@ -32,8 +32,8 @@
         <field name="inherit_id" ref="hr.view_hr_job_form"/>
         <field name="arch" type="xml">
             <page name="recruitment_page" position="inside">
-                <separator string="Process Details"/>
-                <field name="job_details" nolabel="1"/>
+                <label for="job_details" class="mb-2"/>
+                <field name="job_details"/>
             </page>
         </field>
     </record>

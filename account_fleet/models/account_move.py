@@ -18,7 +18,10 @@ class AccountMove(models.Model):
         posted = super()._post(soft)  # We need the move name to be set, but we also need to know which move are posted for the first time.
         for line in (not_posted_before & posted).line_ids.filtered(lambda ml: ml.vehicle_id and ml.move_id.move_type == 'in_invoice'):
             val = line._prepare_fleet_log_service()
-            log = _('Service Vendor Bill: %s', line.move_id._get_html_link())
+            log = _(
+                'Service Vendor Bill: %s',
+                line.move_id._get_html_link(),
+            )
             val_list.append(val)
             log_list.append(log)
         log_service_ids = self.env['fleet.vehicle.log.services'].create(val_list)

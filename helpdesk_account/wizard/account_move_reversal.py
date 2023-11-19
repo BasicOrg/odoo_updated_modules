@@ -10,11 +10,7 @@ class AccountMoveReversal(models.TransientModel):
 
     @api.model
     def _get_default_so_domain(self, ticket):
-        return [('partner_id', '=', ticket.partner_id.id), ('state', '=', 'sale'), ('invoice_ids.state', '=', 'posted'), ('invoice_ids.move_type', '=', 'out_invoice')]
-
-    @api.model
-    def _get_default_moves_domain(self, ticket):
-        return [('state', '=', 'posted'), ('move_type', '=', 'out_invoice'), ('reversal_move_id', '=', False)]
+        return [('partner_id', '=', ticket.partner_id.id), ('state', '=', 'sale')]
 
     @api.model
     def default_get(self, fields):
@@ -26,17 +22,17 @@ class AccountMoveReversal(models.TransientModel):
             # set default Invoice
             ticket = self.env['helpdesk.ticket'].browse(ticket_id)
             domain = self._get_default_so_domain(ticket)
-            last_so = self.env['sale.order'].search(domain, limit=1, order='date_order desc')
+            last_so = self.env['sale.order'].search(domain, limit=1)
             if last_so:
                 result['helpdesk_sale_order_id'] = last_so.id
-                moves = last_so.invoice_ids.filtered_domain(self._get_default_moves_domain(ticket))
+                moves = last_so.invoice_ids.filtered(lambda inv: inv.state == 'posted' and inv.move_type == 'out_invoice' and not inv.reversal_move_id)
                 if moves:
                     result['move_ids'] = [Command.set(moves.ids)]
         return result
 
     # Add compute method
     move_ids = fields.Many2many('account.move', 'account_move_reversal_move', 'reversal_id', 'move_id',
-        compute="_compute_move_ids", readonly=False, store=True, required=True)
+        compute="_compute_move_ids", readonly=False, store=True)
     helpdesk_ticket_id = fields.Many2one('helpdesk.ticket')
     helpdesk_sale_order_id = fields.Many2one('sale.order', string='Sales Order', domain="[('id', 'in', suitable_sale_order_ids)]")
     suitable_move_ids = fields.Many2many('account.move', compute='_compute_suitable_moves')
@@ -54,7 +50,7 @@ class AccountMoveReversal(models.TransientModel):
             domain.append(('partner_id', 'child_of', self.helpdesk_ticket_id.partner_id.commercial_partner_id.id))
         if self.helpdesk_sale_order_id:
             domain.append(('id', 'in', self.helpdesk_sale_order_id.invoice_ids.ids))
-        if all(reversal_move.payment_state in ['paid', 'in_payment'] for reversal_move in self.helpdesk_sale_order_id.invoice_ids.reversal_move_id):
+        if self.helpdesk_sale_order_id.invoice_ids.reversal_move_id.payment_state in ['paid', 'in_payment']:
             domain.append(('reversal_move_id', '=', False))
         return domain
 
@@ -77,24 +73,21 @@ class AccountMoveReversal(models.TransientModel):
             domain = r._get_suitable_so_domain()
             r.suitable_sale_order_ids = self.env['sale.order'].search(domain)
 
-    def reverse_moves(self, is_modify=False):
+    def reverse_moves(self):
         # OVERRIDE
-        res = super(AccountMoveReversal, self).reverse_moves(is_modify)
+        res = super(AccountMoveReversal, self).reverse_moves()
 
         if self.helpdesk_ticket_id:
             self.helpdesk_ticket_id.invoice_ids |= self.new_move_ids
             message = _('Refund created')
-            subtype_id = self.env['ir.model.data']._xmlid_to_res_id('helpdesk_account.mt_ticket_refund_created')
+            subtype_id = self.env.ref('mail.mt_note').id
             for move_id in self.new_move_ids:
-                move_id.message_post_with_source(
-                    'helpdesk.ticket_creation',
-                    render_values={'self': move_id, 'ticket': self.helpdesk_ticket_id},
-                    subtype_id=subtype_id,
-                )
-                self.helpdesk_ticket_id.message_post_with_source(
+                move_id.message_post_with_view('helpdesk.ticket_creation', values={'self': move_id, 'ticket': self.helpdesk_ticket_id}, subtype_id=subtype_id)
+                self.helpdesk_ticket_id.message_post_with_view(
                     'helpdesk.ticket_conversion_link',
-                    render_values={'created_record': move_id, 'message': message},
+                    values={'created_record': move_id, 'message': message},
                     subtype_id=subtype_id,
+                    author_id=self.env.user.partner_id.id
                 )
 
         return res

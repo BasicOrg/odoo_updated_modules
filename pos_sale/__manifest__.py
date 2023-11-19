@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'POS - Sales',
+    'name': 'pos_sale',
     'version': '1.1',
     'category': 'Hidden',
     'sequence': 6,
@@ -27,11 +27,17 @@ This module adds a custom Sales Team for the Point of Sale. This enables you to 
     'installable': True,
     'auto_install': True,
     'assets': {
-        'point_of_sale._assets_pos': [
-            'pos_sale/static/src/**/*',
-        ],
-        'web.assets_tests': [
-            'pos_sale/static/tests/**/*',
+        'point_of_sale.assets': [
+            'pos_sale/static/src/css/pos_sale.css',
+            'pos_sale/static/src/js/models.js',
+            'pos_sale/static/src/js/SetSaleOrderButton.js',
+            'pos_sale/static/src/js/OrderManagementScreen/MobileSaleOrderManagementScreen.js',
+            'pos_sale/static/src/js/OrderManagementScreen/SaleOrderFetcher.js',
+            'pos_sale/static/src/js/OrderManagementScreen/SaleOrderList.js',
+            'pos_sale/static/src/js/OrderManagementScreen/SaleOrderManagementControlPanel.js',
+            'pos_sale/static/src/js/OrderManagementScreen/SaleOrderManagementScreen.js',
+            'pos_sale/static/src/js/OrderManagementScreen/SaleOrderRow.js',
+            'pos_sale/static/src/xml/**/*',
         ],
     },
     'license': 'LGPL-3',

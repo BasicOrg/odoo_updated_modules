@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
 /**
  * Global use case:
@@ -11,10 +11,10 @@ import { registry } from "@web/core/registry";
  * they use fullscreen player to complete the course;
  * they rate the course;
  */
-registry.category("web_tour.tours").add('course_member', {
+tour.register('course_member', {
     url: '/slides',
-    test: true,
-    steps: () => [
+    test: true
+}, [
 // eLearning: go on free course and join it
 {
     trigger: 'a:contains("Basics of Gardening - Test")'
@@ -31,21 +31,6 @@ registry.category("web_tour.tours").add('course_member', {
     trigger: '.o_wslides_fs_slide_name:contains("Home Gardening")',
     run: 'click',
 },
-// eLearning: share the first slide
-{
-    trigger: '.o_wslides_fs_share'
-}, {
-    trigger: '.o_wslides_js_share_email input',
-    run: 'text friend@example.com'
-}, {
-    trigger: '.o_wslides_js_share_email button',
-}, {
-    trigger: '.o_wslides_js_share_email:contains("Sharing is caring")',
-    run: function () {}  // check email has been sent
-}, {
-    trigger: '.modal-footer button:contains("Close")',
-},
-// eLeaning: course completion
 {
     trigger: '.o_wslides_fs_sidebar_header',
     run: function () {
@@ -125,7 +110,7 @@ registry.category("web_tour.tours").add('course_member', {
     trigger: '.o_wslides_js_lesson_quiz_submit'
 }, {
     // check that we have a properly motivational message to motivate us!
-    trigger: '.o_wslides_quiz_modal_rank_motivational > div > div:contains("Reach the next rank and gain a very nice mug!")'
+    trigger: '.o_wslides_quiz_modal_rank_motivational > div > div:contains("Reach the next rank and gain a very nice mug !")'
 }, {
     trigger: 'a:contains("End course")'
 },
@@ -157,4 +142,4 @@ registry.category("web_tour.tours").add('course_member', {
     trigger: '.o_portal_chatter_message:contains("This is a great course. Top !")',
     run: function () {}, // check review is correctly added
 }
-]});
+]);

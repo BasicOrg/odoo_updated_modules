@@ -1,75 +1,61 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* sale_renting
-#
+# 
 # Translators:
-# Stjepan Lovasić <stjepan.lovasic@gmail.com>, 2022
-# Milan Tribuson <one.mile.code@gmail.com>, 2022
-# Vladimir Olujić <olujic.vladimir@storm.hr>, 2022
-# Hrvoje Sić <hrvoje.sic@gmail.com>, 2022
-# Ivica Dimjašević <ivica.dimjasevic@storm.hr>, 2022
-# Tina Milas, 2022
-# Karolina Tonković <karolina.tonkovic@storm.hr>, 2022
-# Đurđica Žarković <durdica.zarkovic@storm.hr>, 2022
-# Davor Bojkić <davor.bojkic@storm.hr>, 2022
-# Bole <bole@dajmi5.com>, 2022
-# Vladimir Vrgoč, 2022
-# Martin Trigaux, 2022
-#
+# Davor Bojkić <davor.bojkic@storm.hr>, 2019
+# Đurđica Žarković <durdica.zarkovic@storm.hr>, 2019
+# Ivica Dimjašević <ivica.dimjasevic@storm.hr>, 2019
+# Karolina Tonković <karolina.tonkovic@storm.hr>, 2019
+# Tina Milas, 2019
+# Vladimir Olujić <olujic.vladimir@storm.hr>, 2019
+# Stjepan Lovasić <stjepan.lovasic@gmail.com>, 2019
+# Martin Trigaux, 2019
+# Bole <bole@dajmi5.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:48+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Croatian (https://app.transifex.com/odoo/teams/41243/hr/)\n"
-"Language: hr\n"
+"POT-Creation-Date: 2019-09-30 09:48+0000\n"
+"PO-Revision-Date: 2019-08-26 09:38+0000\n"
+"Last-Translator: Bole <bole@dajmi5.com>, 2019\n"
+"Language-Team: Croatian (https://www.transifex.com/odoo/teams/41243/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_product.py:0
-#: code:addons/sale_renting/models/product_template.py:0
+#: code:addons/sale_renting/models/product.py:0
+#: code:addons/sale_renting/models/product.py:0
 #, python-format
-msgid "%s (Rental)"
+msgid "(Rental)"
 msgstr ""
 
 #. module: sale_renting
 #: model:ir.actions.report,print_report_name:sale_renting.action_report_rental_saleorder
-msgid "(object.rental_status not in ('draft', 'sent') and 'Delivery or Return Receipt - %s' %(object.name)) or 'Order - %s' % (object.name)"
+msgid ""
+"(object.rental_status not in ('draft', 'sent') and 'Delivery or Return "
+"Receipt - %s' %(object.name)) or 'Order - %s' % (object.name)"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_configurator.py:0
 #, python-format
 msgid "/day"
-msgstr "/dan"
+msgstr ""
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_configurator.py:0
 #, python-format
 msgid "/hour"
-msgstr "/sat"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_2_weeks
-msgid "2 Weeks"
 msgstr ""
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_3_hours
-msgid "3 Hours"
-msgstr ""
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_kanban
-msgid "<i class=\"fa fa-warning\"/> Late"
+#: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Default Delay Costs</span>"
 msgstr ""
 
 #. module: sale_renting
@@ -79,18 +65,23 @@ msgid "<span class=\"o_stat_text\">in Rental</span>"
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
-msgid "<strong>Order # — </strong>"
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
+msgid "<span> to </span>"
 msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
-msgid "<strong>Pickup  — </strong>"
+msgid "<strong>Order #: </strong>"
 msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
-msgid "<strong>Return — </strong>"
+msgid "<strong>Pickup : </strong>"
+msgstr ""
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
+msgid "<strong>Return : </strong>"
 msgstr ""
 
 #. module: sale_renting
@@ -101,17 +92,22 @@ msgstr "<strong>Prodavač:</strong>"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "<strong>Shipping Address:</strong>"
-msgstr "<strong>Adresa isporuke</strong>"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
-msgid "<strong>Status — </strong>"
+msgid "<strong>Status : </strong>"
 msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
 msgid "Add"
 msgstr "Dodaj"
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
+msgid "Add a pricing"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -133,7 +129,7 @@ msgstr "Konto analitike"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
 msgid "Apply after"
-msgstr "Primjeni nakon"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -141,7 +137,7 @@ msgid "Ask customer to sign documents on the spot."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "At first, let's create some products to rent."
@@ -153,19 +149,12 @@ msgid "Best Pricing Rule based on duration"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__pickup
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
-msgid "Booked"
-msgstr ""
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__rent_ok
 #: model:ir.model.fields,field_description:sale_renting.field_product_template__rent_ok
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__is_product_rentable
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_product_template_search_view
 msgid "Can be Rented"
-msgstr "Može biti iznajmljen"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
@@ -182,28 +171,28 @@ msgid "Cancelled"
 msgstr "Otkazano"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to create a new quotation."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to register the pickup."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to set up your first rental product."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to start filling the quotation."
@@ -220,7 +209,6 @@ msgid "Companies"
 msgstr "Tvrtke"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__company_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__company_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__company_id
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
@@ -244,14 +232,14 @@ msgid "Configure the rental of a product"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Confirm the order when the customer agrees with the terms."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Confirm the returned quantities and hit Validate."
@@ -264,8 +252,9 @@ msgid "Confirmed Orders"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.actions.act_window,name:sale_renting.action_create_rental_order
-msgid "Create Rental Orders"
+#: code:addons/sale_renting/models/rental_pricing.py:0
+#, python-format
+msgid "Conversion between Months and another duration unit are not supported!"
 msgstr ""
 
 #. module: sale_renting
@@ -274,17 +263,12 @@ msgid "Create a new quotation, the first step of a new rental!"
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.actions.act_window,help:sale_renting.action_rental_report
-msgid "Create a new rental order"
-msgstr ""
-
-#. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_product_template_action
 msgid "Create a new rental product!"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Create or select a customer here."
@@ -298,6 +282,7 @@ msgstr ""
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__create_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__create_uid
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__create_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__create_uid
 msgid "Created by"
 msgstr "Kreirao"
@@ -305,11 +290,13 @@ msgstr "Kreirao"
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__create_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__create_date
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__create_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__create_date
 msgid "Created on"
 msgstr "Kreirano"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__currency_id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__currency_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__currency_id
 msgid "Currency"
@@ -333,10 +320,10 @@ msgstr "Država kupca"
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__commercial_partner_id
 msgid "Customer Entity"
-msgstr "Kupčev entitet"
+msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__card_name
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__partner_name
 msgid "Customer Name"
 msgstr "Naziv kupca"
 
@@ -346,51 +333,38 @@ msgid "Customers"
 msgstr "Kupci"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__price
-msgid "Daily Amount"
-msgstr ""
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__quantity
-msgid "Daily Ordered Qty"
-msgstr ""
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__qty_delivered
-msgid "Daily Picked-Up Qty"
-msgstr ""
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__qty_returned
-msgid "Daily Returned Qty"
-msgstr ""
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__date
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_search
 msgid "Date"
 msgstr "Datum"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
-msgid "Dates"
-msgstr "Datumi"
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__pickup_date
+msgid "Date of Pickup"
+msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__return_date
+msgid "Date of Return"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_pricing__unit__day
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__day
 msgid "Days"
-msgstr "Dani/a"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
-msgid "Default Delay Costs"
-msgstr ""
+msgstr "Dani"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_res_config_settings__extra_product
 msgid "Delay Product"
 msgstr ""
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
+msgid "Delivered"
+msgstr "Isporučeno"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__description
@@ -406,6 +380,7 @@ msgstr ""
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__display_name
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__display_name
@@ -419,9 +394,23 @@ msgid "Draft Quotation"
 msgstr "Nacrt ponude"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__duration
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__duration
 msgid "Duration"
 msgstr "Trajanje"
+
+#. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__duration
+msgid "Duration of the rental (in unit of the pricing)"
+msgstr ""
+
+#. module: sale_renting
+#. openerp-web
+#: code:addons/sale_renting/static/src/js/rental_configurator_widget.js:0
+#: code:addons/sale_renting/static/src/js/rental_configurator_widget.js:0
+#, python-format
+msgid "Edit dates"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
@@ -429,14 +418,14 @@ msgid "Edited Rental Line"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Enter the product name."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid ""
@@ -445,8 +434,7 @@ msgid ""
 msgstr ""
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
+#: code:addons/sale_renting/models/sale.py:0
 #, python-format
 msgid "Expected"
 msgstr "Očekivano"
@@ -457,23 +445,33 @@ msgid "Expected Return"
 msgstr ""
 
 #. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_search
+msgid "Extended Filters"
+msgstr "Prošireni filteri"
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__extra_daily
 #: model:ir.model.fields,field_description:sale_renting.field_product_template__extra_daily
 msgid "Extra Day"
-msgstr "Dodatno dan"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__extra_hourly
 #: model:ir.model.fields,field_description:sale_renting.field_product_template__extra_hourly
 msgid "Extra Hour"
-msgstr "Dodatno sat"
+msgstr ""
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_configurator.py:0
 #, python-format
 msgid "Extras:"
-msgstr "Dodaci:"
+msgstr ""
+
+#. module: sale_renting
+#: code:addons/sale_renting/models/product.py:0
+#, python-format
+msgid "Fallback on Sales price"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_product_product__extra_daily
@@ -488,14 +486,13 @@ msgid "Fine by hour overdue"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/wizard/rental_configurator.py:0
-#, python-format
-msgid "Fixed rental price"
-msgstr "Fiksna cijena najma"
+#: model:ir.model.fields,help:sale_renting.field_product_product__display_price
+#: model:ir.model.fields,help:sale_renting.field_product_template__display_price
+msgid "First rental pricing of the product"
+msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Go to the orders menu."
@@ -520,11 +517,6 @@ msgid "Has Pickable Lines"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_rented_products
-msgid "Has Rented Products"
-msgstr ""
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_returnable_lines
 msgid "Has Returnable Lines"
 msgstr ""
@@ -535,19 +527,15 @@ msgid "Helper text to understand rental price computation."
 msgstr ""
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_hourly
-msgid "Hourly"
-msgstr ""
-
-#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_pricing__unit__hour
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__hour
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__hour
 msgid "Hours"
 msgstr "Sati"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__id
@@ -557,12 +545,12 @@ msgstr "ID"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "Invoicing Address:"
-msgstr "Adresa računa:"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "Invoicing and Shipping Address:"
-msgstr "Adresa računa i dostave:"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__is_late
@@ -581,8 +569,19 @@ msgid "Is overdue"
 msgstr "Je dospjelo"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule____last_update
+msgid "Last Modified on"
+msgstr "Zadnja promjena"
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__write_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__write_uid
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__write_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Promijenio"
@@ -590,6 +589,7 @@ msgstr "Promijenio"
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__write_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__write_date
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__write_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__write_date
 msgid "Last Updated on"
 msgstr "Vrijeme promjene"
@@ -601,8 +601,12 @@ msgid "Late"
 msgstr "Kasni"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
+msgid "Late Delivery"
+msgstr ""
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 msgid "Late Pickup"
 msgstr ""
 
@@ -613,15 +617,10 @@ msgid "Late Return"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Let's now create an order."
-msgstr ""
-
-#. module: sale_renting
-#: model:product.template,name:sale_renting.rental_product_2_product_template
-msgid "Meeting Room"
 msgstr ""
 
 #. module: sale_renting
@@ -636,6 +635,14 @@ msgid "Minimum delay time before applying fines."
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_pricing__duration
+msgid ""
+"Minimum duration before this rule is applied. If set to 0, it represents a "
+"fixed rental price."
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_pricing__unit__month
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__month
 msgid "Months"
 msgstr "Mjeseci"
@@ -647,17 +654,6 @@ msgid "My Orders"
 msgstr "Moji nalozi"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__next_action_date
-msgid "Next Action"
-msgstr "Sljedeća akcija"
-
-#. module: sale_renting
-#: model_terms:ir.actions.act_window,help:sale_renting.action_rental_report
-msgid "No data yet!"
-msgstr "Nema još podataka!"
-
-#. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_configurator.py:0
 #, python-format
 msgid ""
@@ -666,17 +662,14 @@ msgid ""
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
-msgid "Ok"
-msgstr "U redu"
-
-#. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_order_action
-msgid "Once the quotation is confirmed, it becomes a rental order.<br> You will be able to create an invoice and collect the payment."
+msgid ""
+"Once the quotation is confirmed, it becomes a rental order.<br> You will be "
+"able to create an invoice and collect the payment."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Once the rental is done, you can register the return."
@@ -750,13 +743,12 @@ msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_delivered
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__return
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
 msgid "Picked-up"
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__return
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__return
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__report_line_status__pickedup
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
@@ -765,6 +757,7 @@ msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pickup_date
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__pickup_date
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_order_wizard__status__pickup
 #: model:ir.ui.menu,name:sale_renting.rental_orders_pickup
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
@@ -795,15 +788,16 @@ msgid "Pickup date - padding time"
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_kanban
-msgid "Pickup:"
-msgstr ""
-
-#. module: sale_renting
 #: model:ir.model.constraint,message:sale_renting.constraint_rental_wizard_rental_period_coherence
 #: model:ir.model.constraint,message:sale_renting.constraint_sale_order_line_rental_period_coherence
 msgid "Please choose a return date that is after the pickup date."
 msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__price
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__price
+msgid "Price"
+msgstr "Cijena"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pricing_explanation
@@ -811,6 +805,7 @@ msgid "Price Computation"
 msgstr "Izračun cijene"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__pricelist_id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pricelist_id
 msgid "Pricelist"
 msgstr "Cjenik"
@@ -821,7 +816,12 @@ msgid "Pricing"
 msgstr "Cijene"
 
 #. module: sale_renting
-#: model:ir.model,name:sale_renting.model_product_template
+#: model:ir.model,name:sale_renting.model_rental_pricing
+msgid "Pricing rule of rentals"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model,name:sale_renting.model_product_product
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__product_id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__product_id
 #: model:ir.model.fields,field_description:sale_renting.field_res_company__extra_product
@@ -848,15 +848,21 @@ msgid "Product Reference"
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model,name:sale_renting.model_product_template
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__product_tmpl_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_tmpl_id
 msgid "Product Template"
 msgstr "Predložak proizvoda"
 
 #. module: sale_renting
-#: model:ir.model,name:sale_renting.model_product_product
-msgid "Product Variant"
-msgstr "Varijanta proizvoda"
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__product_template_id
+msgid "Product Templates"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__product_variant_ids
+msgid "Product Variants"
+msgstr "Varijante proizvoda"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -875,21 +881,23 @@ msgid "Products"
 msgstr "Proizvodi"
 
 #. module: sale_renting
-#: model:product.template,name:sale_renting.rental_product_1_product_template
-msgid "Projector"
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__qty_delivered
+msgid "Qty Delivered"
+msgstr "Isporučena količina"
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__quantity
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_uom_qty
+msgid "Qty Ordered"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_uom_qty
-msgid "Qty Ordered"
-msgstr "Kol. naručeno"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__qty_delivered
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__qty_delivered
 msgid "Qty Picked-Up"
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__qty_returned
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__qty_returned
 msgid "Qty Returned"
 msgstr ""
@@ -936,8 +944,8 @@ msgid "Rent a product"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order_line__temporal_type__rental
 #: model:ir.ui.menu,name:sale_renting.rental_menu_root
+#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -950,13 +958,17 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_pivot_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_search
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
 msgid "Rental Analysis"
 msgstr ""
 
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_sale_rental_report
 msgid "Rental Analysis Report"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order__next_action_date
+msgid "Rental Next Action Date"
 msgstr ""
 
 #. module: sale_renting
@@ -982,6 +994,17 @@ msgid "Rental Orders"
 msgstr ""
 
 #. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
+msgid "Rental Pricing"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_product_product__rental_pricing_ids
+#: model:ir.model.fields,field_description:sale_renting.field_product_template__rental_pricing_ids
+msgid "Rental Pricings"
+msgstr ""
+
+#. module: sale_renting
 #: model:ir.model,name:sale_renting.model_sale_rental_schedule
 msgid "Rental Schedule"
 msgstr ""
@@ -998,13 +1021,19 @@ msgid "Rental Status (advanced)"
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__rental_updatable
+msgid "Rental Updatable"
+msgstr ""
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__rental_wizard_line_ids
 msgid "Rental Wizard Line"
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.ui.menu,name:sale_renting.menu_sale_renting_periods
-msgid "Rental periods"
+#: model:ir.model.fields,field_description:sale_renting.field_product_product__display_price
+#: model:ir.model.fields,field_description:sale_renting.field_product_template__display_price
+msgid "Rental price"
 msgstr ""
 
 #. module: sale_renting
@@ -1025,12 +1054,15 @@ msgstr "Izvještavanje"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
 msgid "Reservations"
-msgstr "Rezervirano"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_reserved
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__pickup
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__pickup
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__report_line_status__reserved
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "Reserved"
 msgstr "Rezervirano"
@@ -1052,13 +1084,7 @@ msgid "Return Date"
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_kanban
-msgid "Return:"
-msgstr ""
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
+#: code:addons/sale_renting/models/sale.py:0
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_returned
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__qty_returned
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__returned
@@ -1071,11 +1097,6 @@ msgstr ""
 #, python-format
 msgid "Returned"
 msgstr "Vraćeno"
-
-#. module: sale_renting
-#: model:ir.model,name:sale_renting.model_sale_temporal_recurrence
-msgid "Sale temporal Recurrence"
-msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_report__state__done
@@ -1116,14 +1137,14 @@ msgid "Salesperson"
 msgstr "Prodavač"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Save the product."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Save the quotation."
@@ -1135,16 +1156,27 @@ msgid "Schedule"
 msgstr "Planer"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_product.py:0
-#: code:addons/sale_renting/models/product_template.py:0
+#: code:addons/sale_renting/models/product.py:0
+#: code:addons/sale_renting/models/product.py:0
 #: model:ir.actions.act_window,name:sale_renting.action_rental_order_schedule
 #, python-format
 msgid "Scheduled Rentals"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#: model:ir.model.fields,help:sale_renting.field_rental_pricing__product_variant_ids
+msgid ""
+"Select Variants of the Product for which this rule applies.\n"
+" Leave empty if this rule applies for any variant of this template."
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_pricing__product_template_id
+msgid "Select products on which this pricing will be applied."
+msgstr ""
+
+#. module: sale_renting
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Select your rental product."
@@ -1162,14 +1194,9 @@ msgid "Some delay cost will be added to the sales order."
 msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__start_date
-msgid "Start Date"
-msgstr "Početni datum"
-
-#. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
 msgid "State"
-msgstr "Županija/fed.država"
+msgstr "Stanje"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__status
@@ -1182,28 +1209,13 @@ msgid "Status"
 msgstr "Status"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
-msgid "Sum of Daily Amount"
+#: model:ir.model.constraint,message:sale_renting.constraint_rental_pricing_rental_pricing_duration
+msgid "The pricing duration has to be greater or equal to 0."
 msgstr ""
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
-msgid "Sum of Daily Ordered Qty"
-msgstr ""
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
-msgid "Sum of Daily Picked-Up Qty"
-msgstr ""
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__temporal_type
-msgid "Temporal Type"
-msgstr ""
-
-#. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_rental_wizard__duration
-msgid "The duration unit is based on the unit of the rental pricing rule."
+#: model:ir.model.constraint,message:sale_renting.constraint_rental_pricing_rental_pricing_price
+msgid "The pricing price has to be greater or equal to 0."
 msgstr ""
 
 #. module: sale_renting
@@ -1217,7 +1229,7 @@ msgid "The products haven't been returned in time"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "The rental configuration is available here."
@@ -1231,17 +1243,23 @@ msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_res_config_settings__extra_day
-msgid "This is the default extra cost per day set on newly created products. You can change this value for existing products directly on the product itself."
+msgid ""
+"This is the default extra cost per day set on newly created products. You "
+"can change this value for existing products directly on the product itself."
 msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_res_config_settings__extra_hour
-msgid "This is the default extra cost per hour set on newly created products. You can change this value for existing products directly on the product itself."
+msgid ""
+"This is the default extra cost per hour set on newly created products. You "
+"can change this value for existing products directly on the product itself."
 msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_rental_wizard__unit_price
-msgid "This price is based on the rental price rule that gives the cheapest price for requested duration."
+msgid ""
+"This price is based on the rental price rule that gives the cheapest price "
+"for requested duration."
 msgstr ""
 
 #. module: sale_renting
@@ -1251,7 +1269,9 @@ msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
-msgid "Those values are applied to any new rental product and can be changed on product forms."
+msgid ""
+"Those values are applied to any new rental product and can be changed on "
+"product forms."
 msgstr ""
 
 #. module: sale_renting
@@ -1277,8 +1297,8 @@ msgid "Total Tax Included"
 msgstr "Ukupan uračunati porez"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_pricing__unit
 #: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__duration_unit
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__unit
 msgid "Unit"
 msgstr "Jedinica"
 
@@ -1297,31 +1317,29 @@ msgstr "Jedinica mjere"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_wizard_view_form
 msgid "Validate"
-msgstr "Odobri"
+msgstr "Ovjeri"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order.py:0
+#: code:addons/sale_renting/models/sale.py:0
 #, python-format
 msgid "Validate a pickup"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order.py:0
+#: code:addons/sale_renting/models/sale.py:0
 #, python-format
 msgid "Validate a return"
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Validate the operation after checking the picked-up quantities."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid ""
@@ -1330,18 +1348,16 @@ msgid ""
 msgstr ""
 
 #. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_pricing__unit__week
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__week
 msgid "Weeks"
 msgstr "Tjedni"
 
 #. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__year
-msgid "Years"
-msgstr "Godine"
-
-#. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_product_template_action
-msgid "You can also create additional products or services to sell by checking *Can be Sold* in the product form (e.g. insurance)."
+msgid ""
+"You can also create additional products or services to sell by checking *Can"
+" be Sold* in the product form (e.g. insurance)."
 msgstr ""
 
 #. module: sale_renting
@@ -1349,12 +1365,11 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_order_today_return_action
 msgid ""
 "You can search on a larger period using the filters here above\n"
-"                <br>\n"
-"                or create a new rental order."
+"              <br>\n"
+"              or create a new rental order."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_processing.py:0
 #, python-format
 msgid "You can't return more than what's been picked-up."
@@ -1366,20 +1381,12 @@ msgid "You cannot return more than what has been picked up."
 msgstr ""
 
 #. module: sale_renting
-#. odoo-javascript
-#: code:addons/sale_renting/static/src/js/tours/rental.js:0
-#, python-format
-msgid "You're done with your fist rental. Congratulations!"
-msgstr ""
-
-#. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
 msgid "hours"
 msgstr "sati"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
+#: code:addons/sale_renting/models/sale.py:0
 #, python-format
 msgid "to"
 msgstr "do"

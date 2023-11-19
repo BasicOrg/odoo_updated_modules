@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'POS - Sales Loyality',
+    'name': 'pos_sale_loyalty',
     'version': '1.0',
     'category': 'Hidden',
     'sequence': 6,
@@ -15,8 +15,8 @@ This module correct some behaviors when both module are installed.
     'installable': True,
     'auto_install': True,
     'assets': {
-        'point_of_sale._assets_pos': [
-            'pos_sale_loyalty/static/src/**/*',
+        'point_of_sale.assets': [
+            'pos_sale_loyalty/static/src/js/**/*.js',
         ],
     },
     'license': 'LGPL-3',

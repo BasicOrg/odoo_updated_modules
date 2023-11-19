@@ -16,16 +16,11 @@ class res_company(models.Model):
     def _compute_intercompany_transaction_message(self):
         for record in self:
             if record.rule_type == 'invoice_and_refund':
-                record.intercompany_transaction_message = _(
-                    "Generate a bill/invoice when a company confirms an invoice/bill for %s. "
-                    "The new bill/invoice will be created in the first Purchase/Sales Journal of the Journals list view.",
-                    record.name)
+                record.intercompany_transaction_message = _('Generate a bill/invoice when a company confirms an invoice/bill for %s.', record.name)
             else:
                 record.intercompany_transaction_message = ''
 
     @api.model
     def _find_company_from_partner(self, partner_id):
-        if not partner_id:
-            return False
-        company = self.sudo().search([('partner_id', 'parent_of', partner_id)], limit=1)
+        company = self.sudo().search([('partner_id', '=', partner_id)], limit=1)
         return company or False

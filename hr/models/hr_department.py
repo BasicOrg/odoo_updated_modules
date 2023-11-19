@@ -13,17 +13,17 @@ class Department(models.Model):
     _rec_name = 'complete_name'
     _parent_store = True
 
-    name = fields.Char('Department Name', required=True, translate=True)
+    name = fields.Char('Department Name', required=True)
     complete_name = fields.Char('Complete Name', compute='_compute_complete_name', recursive=True, store=True)
     active = fields.Boolean('Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
-    parent_id = fields.Many2one('hr.department', string='Parent Department', index=True, check_company=True)
+    parent_id = fields.Many2one('hr.department', string='Parent Department', index=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     child_ids = fields.One2many('hr.department', 'parent_id', string='Child Departments')
-    manager_id = fields.Many2one('hr.employee', string='Manager', tracking=True, check_company=True)
+    manager_id = fields.Many2one('hr.employee', string='Manager', tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     member_ids = fields.One2many('hr.employee', 'department_id', string='Members', readonly=True)
     total_employee = fields.Integer(compute='_compute_total_employee', string='Total Employee')
     jobs_ids = fields.One2many('hr.job', 'department_id', string='Jobs')
-    plan_ids = fields.One2many('mail.activity.plan', 'department_id')
+    plan_ids = fields.One2many('hr.plan', 'department_id')
     plans_count = fields.Integer(compute='_compute_plan_count')
     note = fields.Text('Note')
     color = fields.Integer('Color Index')
@@ -31,17 +31,14 @@ class Department(models.Model):
     master_department_id = fields.Many2one(
         'hr.department', 'Master Department', compute='_compute_master_department_id', store=True)
 
-    @api.depends_context('hierarchical_naming')
-    def _compute_display_name(self):
-        if self.env.context.get('hierarchical_naming', True):
-            return super()._compute_display_name()
-        for record in self:
-            record.display_name = record.name
+    def name_get(self):
+        if not self.env.context.get('hierarchical_naming', True):
+            return [(record.id, record.name) for record in self]
+        return super(Department, self).name_get()
 
     @api.model
     def name_create(self, name):
-        record = self.create({'name': name})
-        return record.id, record.display_name
+        return self.create({'name': name}).name_get()[0]
 
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
@@ -53,18 +50,20 @@ class Department(models.Model):
 
     @api.depends('parent_path')
     def _compute_master_department_id(self):
+        # Don't use the cache as the value is updated in SQL
+        parent_path_values = {e['id']: e['parent_path'] for e in self.read(['parent_path'])}
         for department in self:
-            department.master_department_id = int(department.parent_path.split('/')[0])
+            department.master_department_id = int(parent_path_values[department.id].split('/')[0])
 
     def _compute_total_employee(self):
-        emp_data = self.env['hr.employee']._read_group([('department_id', 'in', self.ids)], ['department_id'], ['__count'])
-        result = {department.id: count for department, count in emp_data}
+        emp_data = self.env['hr.employee']._read_group([('department_id', 'in', self.ids)], ['department_id'], ['department_id'])
+        result = dict((data['department_id'][0], data['department_id_count']) for data in emp_data)
         for department in self:
             department.total_employee = result.get(department.id, 0)
 
     def _compute_plan_count(self):
-        plans_data = self.env['mail.activity.plan']._read_group([('department_id', 'in', self.ids)], ['department_id'], ['__count'])
-        plans_count = {department.id: count for department, count in plans_data}
+        plans_data = self.env['hr.plan']._read_group([('department_id', 'in', self.ids)], ['department_id'], ['department_id'])
+        plans_count = {x['department_id'][0]: x['department_id_count'] for x in plans_data}
         for department in self:
             department.plans_count = plans_count.get(department.id, 0)
 
@@ -120,6 +119,7 @@ class Department(models.Model):
             res.update({
                 'name': self.name,
                 'res_model': 'hr.employee.public',
+                'view_type': 'kanban',
                 'view_mode': 'kanban',
                 'views': [(False, 'kanban'), (False, 'form')],
                 'context': {'searchpanel_default_department_id': self.id},
@@ -128,35 +128,9 @@ class Department(models.Model):
         return res
 
     def action_plan_from_department(self):
-        action = self.env['ir.actions.actions']._for_xml_id('hr.mail_activity_plan_action')
+        action = self.env['ir.actions.actions']._for_xml_id('hr.hr_plan_action')
         action['context'] = {'default_department_id': self.id, 'search_default_department_id': self.id}
         return action
 
     def get_children_department_ids(self):
         return self.env['hr.department'].search([('id', 'child_of', self.ids)])
-
-    def get_department_hierarchy(self):
-        if not self:
-            return {}
-
-        hierarchy = {
-            'parent': {
-                'id': self.parent_id.id,
-                'name': self.parent_id.name,
-                'employees': self.parent_id.total_employee,
-            } if self.parent_id else False,
-            'self': {
-                'id': self.id,
-                'name': self.name,
-                'employees': self.total_employee,
-            },
-            'children': [
-                {
-                    'id': child.id,
-                    'name': child.name,
-                    'employees': child.total_employee
-                } for child in self.child_ids
-            ]
-        }
-
-        return hierarchy

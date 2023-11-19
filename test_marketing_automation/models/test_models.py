@@ -36,7 +36,6 @@ class MarketingTestBlPhone(models.Model):
     mobile = fields.Char(compute='_compute_from_customer', readonly=False, store=True)
     description = fields.Text()
     customer_id = fields.Many2one('res.partner', 'Partner')
-    text_trans = fields.Char(translate=True)
 
     @api.depends('customer_id')
     def _compute_from_customer(self):
@@ -48,6 +47,10 @@ class MarketingTestBlPhone(models.Model):
             if not record.mobile and record.customer_id.mobile:
                 record.mobile = record.customer_id.mobile
 
-    def _mail_get_partner_fields(self, introspect_fields=False):
+    def _sms_get_partner_fields(self):
         """ Override to return the recipient linked to SMS sending. """
         return ['customer_id']
+
+    def _phone_get_number_fields(self):
+        """ Override to return the fields used to send SMS """
+        return ['mobile', 'phone']

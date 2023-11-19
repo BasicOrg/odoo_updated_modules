@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import tour from 'web_tour.tour';
+import wTourUtils from 'website.tour_utils';
 
-wTourUtils.registerWebsitePreviewTour("website_snippets_menu_tabs", {
+tour.register("website_snippets_menu_tabs", {
     test: true,
-    url: "/",
-    edition: true,
-}, () => [
+    url: "/?enable_editor=1",
+}, [
     wTourUtils.goToTheme(),
     {
         content: "Click on the empty 'DRAG BUILDING BLOCKS HERE' area.",

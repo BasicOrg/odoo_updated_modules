@@ -17,21 +17,18 @@
     'data': [
         'data/event_data.xml',
         'data/website_snippet_data.xml',
+        'views/res_config_settings_views.xml',
         'views/event_snippets.xml',
         'views/snippets/s_events.xml',
         'views/snippets/snippets.xml',
         'views/event_templates_list.xml',
-        'views/event_templates_svg.xml',
         'views/event_templates_page.xml',
         'views/event_templates_page_registration.xml',
         'views/event_templates_page_misc.xml',
         'views/event_templates_widgets.xml',
         'views/event_event_views.xml',
         'views/event_registration_views.xml',
-        'views/event_question_views.xml',
-        'views/event_registration_answer_views.xml',
         'views/event_tag_category_views.xml',
-        'views/event_tag_views.xml',
         'views/event_type_views.xml',
         'views/website_event_menu_views.xml',
         'views/website_visitor_views.xml',
@@ -44,13 +41,11 @@
     'demo': [
         'data/res_partner_demo.xml',
         'data/event_demo.xml',
-        'data/event_question_demo.xml',
         'data/event_registration_demo.xml',
-        'data/event_registration_answer_demo.xml',
     ],
     'application': True,
     'assets': {
-        'web.assets_backend': [
+        'web.assets_common': [
             'website_event/static/src/js/tours/**/*',
         ],
         'web.assets_tests': [

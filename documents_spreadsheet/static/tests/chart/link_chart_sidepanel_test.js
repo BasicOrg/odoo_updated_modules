@@ -1,13 +1,6 @@
 /** @odoo-module */
 
-import {
-    click,
-    editInput,
-    getFixture,
-    nextTick,
-    patchWithCleanup,
-    triggerEvent,
-} from "@web/../tests/helpers/utils";
+import { click, getFixture, nextTick, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { session } from "@web/session";
 import { createSpreadsheet } from "../spreadsheet_test_utils";
 import { getBasicData } from "@spreadsheet/../tests/utils/data";
@@ -29,14 +22,16 @@ const chartId = "uuid1";
  * able to interact with it.
  */
 async function showChartMenu() {
-    const chart = target.querySelector(".o-chart-container");
-    const { x, y } = chart.getBoundingClientRect();
-    await triggerEvent(chart, null, "contextmenu", { clientX: x, clientY: y });
+    const chartMenu = target.querySelector(".o-chart-menu");
+    chartMenu.style.display = "flex";
+    await nextTick();
 }
 
 /** Open the chart side panel of the first chart found in the page*/
 async function openChartSidePanel() {
     await showChartMenu();
+    const chartMenuItem = target.querySelector(".o-chart-menu-item:not(.o-chart-external-link)");
+    await click(chartMenuItem);
     await click(target, ".o-menu-item[title='Edit']");
 }
 
@@ -49,24 +44,16 @@ QUnit.module(
             this.serverData.menus = {
                 root: {
                     id: "root",
-                    children: [3],
+                    children: [1, 2],
                     name: "root",
                     appID: "root",
-                },
-                3: {
-                    id: 3,
-                    children: [1, 2],
-                    name: "MyApp",
-                    xmlid: "documents_spreadsheet.test.app",
-                    appID: 3,
-                    actionID: "menuAction",
                 },
                 1: {
                     id: 1,
                     children: [],
                     name: "test menu 1",
                     xmlid: "documents_spreadsheet.test.menu",
-                    appID: 3,
+                    appID: 1,
                     actionID: "menuAction",
                 },
                 2: {
@@ -74,7 +61,7 @@ QUnit.module(
                     children: [],
                     name: "test menu 2",
                     xmlid: "documents_spreadsheet.test.menu2",
-                    appID: 3,
+                    appID: 1,
                     actionID: "menuAction2",
                 },
             };
@@ -166,13 +153,13 @@ QUnit.module(
                 let odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(odooMenu, undefined, "No menu linked with chart at start");
 
-                const irMenuField = target.querySelector(".o-ir-menu-selector input");
+                const irMenuField = target.querySelector(".o_field_many2one input");
                 assert.ok(
                     irMenuField,
                     "A menu to link charts to odoo menus was added to the side panel"
                 );
                 await click(irMenuField);
-                await editInput(irMenuField, null, "");
+                await nextTick();
                 await click(document.querySelectorAll(".ui-menu-item")[0]);
                 odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(
@@ -195,13 +182,13 @@ QUnit.module(
                 let odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(odooMenu, undefined, "No menu linked with chart at start");
 
-                const irMenuField = target.querySelector(".o-ir-menu-selector input");
+                const irMenuField = target.querySelector(".o_field_many2one input");
                 assert.ok(
                     irMenuField,
                     "A menu to link charts to odoo menus was added to the side panel"
                 );
                 await click(irMenuField);
-                await editInput(irMenuField, null, "");
+                await nextTick();
                 await click(document.querySelectorAll(".ui-menu-item")[0]);
                 odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(
@@ -224,13 +211,13 @@ QUnit.module(
                 let odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(odooMenu, undefined, "No menu linked with chart at start");
 
-                const irMenuField = target.querySelector(".o-ir-menu-selector input");
+                const irMenuField = target.querySelector(".o_field_many2one input");
                 assert.ok(
                     irMenuField,
                     "A menu to link charts to odoo menus was added to the side panel"
                 );
                 await click(irMenuField);
-                await editInput(irMenuField, null, "");
+                await nextTick();
                 await click(document.querySelectorAll(".ui-menu-item")[0]);
                 odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(
@@ -255,8 +242,9 @@ QUnit.module(
                 });
                 await openChartSidePanel();
                 await nextTick();
-                const irMenuField = target.querySelector(".o-ir-menu-selector input");
-                await editInput(irMenuField, null, "");
+                const irMenuField = target.querySelector(".o_field_many2one input");
+                // only way found to make it work
+                $(irMenuField).val("").trigger("keyup").trigger("focusout");
                 await nextTick();
                 const odooMenu = model.getters.getChartOdooMenu(chartId);
                 assert.equal(odooMenu, undefined, "no menu is linked to chart");
@@ -284,16 +272,16 @@ QUnit.module(
                 await openChartSidePanel();
                 await nextTick();
 
-                let irMenuInput = target.querySelector(".o-ir-menu-selector input");
-                assert.equal(irMenuInput.value, "MyApp/test menu 1");
+                let irMenuInput = target.querySelector(".o_field_many2one input");
+                assert.equal(irMenuInput.value, "test menu 1");
 
                 const figure2 = target.querySelectorAll(".o-figure")[1];
                 // click() doesn't work, I guess because we are using the mousedown event on figures and not the click
                 const clickEvent = new Event("mousedown", { bubbles: true });
                 figure2.dispatchEvent(clickEvent);
                 await nextTick();
-                irMenuInput = target.querySelector(".o-ir-menu-selector input");
-                assert.equal(irMenuInput.value, "MyApp/test menu 2");
+                irMenuInput = target.querySelector(".o_field_many2one input");
+                assert.equal(irMenuInput.value, "test menu 2");
             }
         );
     }

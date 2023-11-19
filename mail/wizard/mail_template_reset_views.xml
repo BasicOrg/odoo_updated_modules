@@ -10,8 +10,8 @@
                     Are you sure you want to reset these email templates to their original configuration? Changes and translations will be lost.
                 </div>
                 <footer>
-                    <button string="Reset Template" class="btn btn-primary" type="object" name="reset_template" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Proceed" class="btn btn-primary" type="object" name="reset_template" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>
@@ -22,6 +22,7 @@
         <field name="res_model">mail.template.reset</field>
         <field name="binding_model_id" ref="mail.model_mail_template"/>
         <field name="binding_view_types">list</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{

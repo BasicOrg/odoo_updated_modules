@@ -12,12 +12,8 @@ Cash Basis for Accounting Reports
     'data': [
         'data/account_reports_data.xml',
         'views/account_report_view.xml',
+        'views/report_financial.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'account_reports_cash_basis/static/src/components/**/*',
-        ],
-    },
     'installable': True,
     'license': 'OEEL-1',
 }

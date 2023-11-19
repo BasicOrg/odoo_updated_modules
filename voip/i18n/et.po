@@ -1,36 +1,37 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* voip
-#
+# * voip
+# 
 # Translators:
-# Maidu Targama <m.targama@gmail.com>, 2022
-# Triine Aavik <triine@avalah.ee>, 2022
-# Martin Aavastik <martin@avalah.ee>, 2022
-# Piia Paurson <piia@avalah.ee>, 2022
-# Martin Trigaux, 2022
-# Egon Raamat <egon@avalah.ee>, 2022
-# Algo Kärp <algokarp@gmail.com>, 2022
-# Andre Roomet <andreroomet@gmail.com>, 2022
-# Eneli Õigus <enelioigus@gmail.com>, 2022
-# Arma Gedonsky <armagedonsky@hot.ee>, 2022
-# Rivo Zängov <eraser@eraser.ee>, 2022
-# JanaAvalah, 2023
-# Anna, 2023
-# Leaanika Randmets, 2023
-#
+# Rivo Zängov <eraser@eraser.ee>, 2018
+# Martin Trigaux, 2018
+# Wanradt Koell <wanradt@gmail.com>, 2018
+# Arma Gedonsky <armagedonsky@hot.ee>, 2018
+# Egon Raamat <egon@avalah.ee>, 2018
+# Eneli Õigus <enelioigus@gmail.com>, 2018
+# Martin Aavastik <martin@avalah.ee>, 2018
+# Helen Sulaoja <helen@avalah.ee>, 2018
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:49+0000\n"
-"Last-Translator: Leaanika Randmets, 2023\n"
-"Language-Team: Estonian (https://app.transifex.com/odoo/teams/41243/et/)\n"
-"Language: et\n"
+"POT-Creation-Date: 2018-09-21 14:06+0000\n"
+"PO-Revision-Date: 2018-08-24 11:48+0000\n"
+"Last-Translator: Helen Sulaoja <helen@avalah.ee>, 2018\n"
+"Language-Team: Estonian (https://www.transifex.com/odoo/teams/41243/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: et\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:207
+#, python-format
+msgid " Please check your configuration."
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_report__nbr
@@ -38,108 +39,50 @@ msgid "# of Cases"
 msgstr "Juhtumite arv"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "%(number of missed calls)s missed calls"
-msgstr "%(vastamata kõnede arv) vastamata kõne"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "1 missed call"
-msgstr "1 vastamata kõne"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "2 missed calls"
-msgstr "2 vastamata kõne"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "A hardware error occured while trying to access audio recording device. Please make sure your drivers are up to date and try again."
-msgstr "Helisalvestusseadmele juurdepääsu proovimisel ilmnes viga riistvaraga. Veenduge, et teie draiverid on ajakohased, ja proovige uuesti."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Accept"
-msgstr "Nõustu"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:131
 #: model:ir.model,name:voip.model_mail_activity
 #, python-format
 msgid "Activity"
 msgstr "Tegevus"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/components/call_queue_switch/call_queue_switch.js:0
-#, python-format
-msgid "Add to Call Queue"
-msgstr "Lisa kõne järjekorda"
+#: model:ir.model,name:voip.model_mail_activity_type
+msgid "Activity Type"
+msgstr "Tegevuse tüüp"
 
 #. module: voip
-#: model:ir.actions.server,name:voip.action_add_to_call_queue
-msgid "Add to call queue"
-msgstr "Lisa kõne järjekorda"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "An error occured involving the audio recording device (%(errorName)s):</br>%(errorMessage)s"
-msgstr "Seoses helisalvestusseadmega ilmnes viga (%(errorName)s):</br>%(errorMessage)s"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "An error occurred during the instantiation of the User Agent:</br></br> %(error message)s"
+#: model:ir.model.fields,field_description:voip.field_res_users__sip_always_transfer
+msgid "Always Redirect to Handset"
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "Are you sure that you want to close this website? There's a call ongoing."
-msgstr "Kas olete kindel, et soovite lehekülje sulgeda? Kõne on pooleli."
-
-#. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__res_users_settings__how_to_call_on_mobile__ask
-msgid "Ask"
-msgstr "Küsi"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:12
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:17
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:73
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:78
 #, python-format
 msgid "Avatar"
-msgstr "Avatar"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:49
 #, python-format
 msgid "Backspace"
-msgstr "Tagasilükkeklahv"
+msgstr ""
 
 #. module: voip
-#. odoo-python
-#. odoo-javascript
-#: code:addons/voip/models/voip_queue_mixin.py:0
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:35
+#, python-format
+msgid "CONTACTS"
+msgstr "KONTAKTID"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:68
 #, python-format
 msgid "Call"
 msgstr "Helista"
@@ -155,118 +98,77 @@ msgid "Call Name"
 msgstr "Kõne nimi"
 
 #. module: voip
-#. odoo-python
-#: code:addons/voip/models/voip_phonecall.py:0
+#: code:addons/voip/models/voip_phonecall.py:193
 #, python-format
-msgid "Call duration: %(min)smin %(sec)ssec"
-msgstr "Kõne kestus: %(min)smin %(sec)ssek  "
+msgid "Call from "
+msgstr "Helistaja"
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__should_call_from_another_device
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__should_call_from_another_device
-msgid "Call from another device"
-msgstr "Helista teisest seadmest"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
+#: code:addons/voip/models/voip_phonecall.py:183
+#: code:addons/voip/models/voip_phonecall.py:225
 #, python-format
-msgid "Call rejected (reason: \"%(reasonPhrase)s\")"
-msgstr "Kõnest keelduti (põhjus: \"%(reasonPhrase)s\")"
-
-#. module: voip
-#. odoo-python
-#: code:addons/voip/models/voip_phonecall.py:0
-#, python-format
-msgid "Call to %s"
-msgstr "Helista %s"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/voip_service.js:0
-#, python-format
-msgid "Calling %(phone number)s"
+msgid "Call to "
 msgstr ""
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:589
+#, python-format
+msgid "Calling "
+msgstr "Helistamine"
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
 msgid "Calls Date"
-msgstr "Kõnede kuupäev"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/audio_input_device.js:0
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:153
+#: model_terms:ir.ui.view,arch_db:voip.wizard_transfer_call_form_view
 #, python-format
 msgid "Cancel"
 msgstr "Tühista"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:43
 #, python-format
 msgid "Cancel the activity"
 msgstr "Tühista tegevus"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__cancel
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_report__state__cancel
+#: selection:voip.phonecall,state:0 selection:voip.phonecall.report,state:0
 msgid "Cancelled"
 msgstr "Tühistatud"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "Cannot access audio recording device. If you have denied access to your microphone, please grant it and try again. Otherwise, make sure this website runs over HTTPS and that your browser is not set to deny access to media devices."
-msgstr "Helisalvestusseadmele ei ole juurdepääsu. Kui olete keelanud juurdepääsu oma mikrofonile, andke juurdepääs ja proovige uuesti. Muul juhul veenduge, et see veebisait töötaks HTTPS-i kaudu ja brauseril on juurdepääsu meediumiseadmetele."
-
-#. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__how_to_call_on_mobile
-#: model:ir.model.fields,help:voip.field_res_users_settings__how_to_call_on_mobile
-msgid ""
-"Choose the method to be used to place a call when using the mobile application:\n"
-"            • VoIP: Always use the Odoo softphone\n"
-"            • Device's phone: Always use the device's phone\n"
-"            • Ask: Always ask whether the softphone or the device's phone must be used\n"
-"        "
+#: model:ir.model.fields,help:voip.field_mail_activity_type__category
+msgid "Categories may trigger specific behavior like opening calendar view"
 msgstr ""
-"Valige mobiilirakenduse kasutamisel helistamiseks kasutatav meetod:\n"
-"• VoIP: kasutage alati Odoo tarkvara\n"
-"• Seadme telefon: kasutage alati seadme telefoni\n"
-"• Küsi: küsige alati, kas kasutada tuleb tarkvara telefoni või seadme telefoni"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
+#: model:ir.model.fields,field_description:voip.field_mail_activity_type__category
+msgid "Category"
+msgstr "Kategooria"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:421
 #, python-format
 msgid "Click to unblock"
-msgstr "Klikkige blokeeringu tühistamiseks"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:16
 #, python-format
 msgid "Close"
-msgstr "Sulge"
+msgstr "Kinnitatud"
 
 #. module: voip
 #: model:ir.model,name:voip.model_res_config_settings
 msgid "Config Settings"
-msgstr "Seadistused"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/audio_input_device.js:0
-#, python-format
-msgid "Confirm"
-msgstr ""
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "Connecting…"
 msgstr ""
 
 #. module: voip
@@ -277,21 +179,18 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
-#, python-format
-msgid "Contacts"
-msgstr "Kontaktid"
-
-#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__create_uid
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__create_uid
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__create_uid
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__create_uid
 msgid "Created by"
 msgstr "Loonud"
 
 #. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__create_date
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__create_date
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__create_date
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__create_date
 msgid "Created on"
 msgstr "Loomise kuupäev"
 
@@ -301,11 +200,18 @@ msgid "Creation Date"
 msgstr "Loomise kuupäev"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:126
 #, python-format
 msgid "Customer"
 msgstr "Klient"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:405
+#, python-format
+msgid "Customer unavailable"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_report__call_date
@@ -314,38 +220,30 @@ msgid "Date"
 msgstr "Kuupäev"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__res_config_settings__mode__demo
+#: selection:res.config.settings,mode:0
 msgid "Demo"
 msgstr "Esitlus"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__res_users_settings__how_to_call_on_mobile__phone
-msgid "Device's phone"
-msgstr "Seadme telefon"
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:6
+#, python-format
+msgid "Display Dialing Panel"
+msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_voip_phonecall__direction
-msgid "Direction"
-msgstr "Suund"
-
-#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__display_name
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__display_name
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__display_name
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_report__display_name
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__display_name
 msgid "Display Name"
-msgstr "Kuva nimi"
+msgstr "Näidatav nimi"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Document"
-msgstr "Dokument"
-
-#. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__no_reschedule
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
 msgid "Don't Reschedule"
-msgstr "Ära planeeri uuesti"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__date_deadline
@@ -356,7 +254,7 @@ msgstr "Tähtaeg"
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__duration
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_report__duration
 msgid "Duration"
-msgstr "Kestus"
+msgstr "Kestvus"
 
 #. module: voip
 #: model:ir.model.fields,help:voip.field_voip_phonecall__duration
@@ -364,133 +262,60 @@ msgid "Duration in minutes."
 msgstr "Kestus minutites."
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Edit"
-msgstr "Muuda"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "End Call"
-msgstr "Lõpeta kõne"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Enter number or name"
-msgstr "Sisesta number või nimi"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:48
 #, python-format
 msgid "Enter the number..."
 msgstr "Sisesta number..."
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__external_device_number
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__external_device_number
-msgid "External device number"
-msgstr "Välise seadme number"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "Failed to start the user agent. The URL of the websocket server may be wrong. Please have an administrator verify the websocket server URL in the General Settings."
-msgstr ""
-
-#. module: voip
 #: model:ir.model.fields,help:voip.field_voip_phonecall__sequence
 msgid "Gives the sequence order when displaying a list of Phonecalls."
-msgstr "Annab telefonikõnede loendi kuvamisel järjestuse."
+msgstr ""
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
 msgid "Group By"
-msgstr "Grupeeri"
+msgstr "Rühmitamine"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
-#, python-format
-msgid "Hang up but keep call in queue"
-msgstr "Katkesta kõne, kuid hoia kõne järjekorras"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Headphones"
+#: model:ir.model.fields,field_description:voip.field_res_users__sip_external_phone
+msgid "Handset Extension"
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__done
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_report__state__done
+#: selection:voip.phonecall,state:0 selection:voip.phonecall.report,state:0
 msgid "Held"
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__how_to_call_on_mobile
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__how_to_call_on_mobile
-msgid "How to place calls on mobile"
-msgstr "Kuidas mobiiliga helistada"
-
-#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__id
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__id
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__id
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_report__id
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__id
 msgid "ID"
 msgstr "ID"
 
 #. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__should_auto_reject_incoming_calls
-#: model:ir.model.fields,help:voip.field_res_users_settings__should_auto_reject_incoming_calls
-msgid "If enabled, incoming calls will be automatically declined in Odoo."
-msgstr "Kui see on lubatud, lükatakse Odoos sissetulevad kõned automaatselt tagasi."
-
-#. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__should_call_from_another_device
-#: model:ir.model.fields,help:voip.field_res_users_settings__should_call_from_another_device
-msgid "If enabled, placing a call in Odoo will transfer the call to the \"External device number\". Use this option to place the call in Odoo but handle it from another device - e.g. your desk phone."
-msgstr "Kui see on lubatud, suunatakse Odoost helistamisel kõne \"Välise seadme numbrile\". Kasutage seda valikut, et helistada Odoost, kuid saate käsitleda seda teisest seadmest – nt. teie lauatelefon."
-
-#. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__external_device_number
-#: model:ir.model.fields,help:voip.field_res_users_settings__external_device_number
-msgid "If the \"Call from another device\" option is enabled, calls placed in Odoo will be transfered to this phone number."
-msgstr "Kui valik \"Helista teisest seadmest\" on lubatud, suunatakse Odoosse tehtud kõned sellele telefoninumbrile."
-
-#. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__7d
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
 msgid "In 1 Week"
-msgstr "1 nädala jooksul"
+msgstr "Ühe nädala jooksul"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__15d
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
 msgid "In 15 Day"
-msgstr "15 päeva jooksul"
+msgstr ""
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__2m
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
 msgid "In 2 Months"
-msgstr "2 kuu jooksul"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__in_queue
 msgid "In Call Queue"
-msgstr "Kõne järjekorras"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "In call for:"
-msgstr "Kutsudes:"
+msgstr ""
 
 #. module: voip
 #: model_terms:ir.actions.act_window,help:voip.voip_phonecall_view
@@ -500,122 +325,93 @@ msgid ""
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__direction__incoming
+#: selection:voip.phonecall,type:0
 msgid "Incoming"
 msgstr "Sisenev"
 
 #. module: voip
-#. odoo-python
-#. odoo-javascript
-#: code:addons/voip/models/voip_phonecall.py:0
-#: code:addons/voip/static/src/legacy/user_agent.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:362
 #, python-format
-msgid "Incoming call from %s"
-msgstr "Sisenev kõne %s"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "Incoming call from %s (%s)"
-msgstr "Sisenev kõne %s (%s)"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Incoming call from..."
-msgstr "Sisenev kõne..."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/audio_input_device.js:0
-#, python-format
-msgid "Input/output audio settings"
+msgid "Incoming call from "
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_partner__has_call_in_queue
-#: model:ir.model.fields,field_description:voip.field_res_users__has_call_in_queue
-#: model:ir.model.fields,field_description:voip.field_voip_queue_mixin__has_call_in_queue
-msgid "Is in the Call Queue"
-msgstr "On kõne järjekorras"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:67
 #, python-format
 msgid "Keypad"
-msgstr "Klahvistik"
+msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__last_seen_phone_call
-msgid "Last Seen Phone Call"
-msgstr "Viimati nähtud telefonikõne"
+#: model:ir.model.fields,field_description:voip.field_voip_configurator____last_update
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall____last_update
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard____last_update
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_report____last_update
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard____last_update
+msgid "Last Modified on"
+msgstr "Viimati muudetud (millal)"
 
 #. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__write_uid
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__write_uid
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__write_uid
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Viimati uuendatud"
+msgstr "Viimati uuendatud (kelle poolt)"
 
 #. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_configurator__write_date
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__write_date
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__write_date
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__write_date
 msgid "Last Updated on"
-msgstr "Viimati uuendatud"
+msgstr "Viimati uuendatud (millal)"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__activity_id
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__activity_id
 msgid "Linked Activity"
-msgstr "Seotud tegevus"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__mail_message_id
 msgid "Linked Chatter Message"
-msgstr "Seotud sõnum logis"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_mail_activity__voip_phonecall_id
 msgid "Linked Voip Phonecall"
-msgstr "Seotud Voip telefonikõne"
+msgstr ""
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:143
+#, python-format
+msgid "Log"
+msgstr "Logi"
 
 #. module: voip
 #: model_terms:ir.actions.act_window,help:voip.voip_phonecall_view
 msgid "Log the summary of a phonecall"
-msgstr "Logige telefonikõne kokkuvõte"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__phonecall_id
 msgid "Logged Phonecall"
-msgstr "Logitud telefonikõne"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "Make a call using:"
-msgstr "Tehke kõne kasutades:"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:148
 #, python-format
 msgid "Mark as done"
-msgstr "Märgi lõpetatuks"
+msgstr "Märgi tehtuks"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__missed
-msgid "Missed"
-msgstr "Vastamata"
-
-#. module: voip
-#. odoo-python
-#: code:addons/voip/models/voip_phonecall.py:0
-#, python-format
-msgid "Missed Call from %s"
-msgstr "Vastamata kõne %s"
+#: selection:mail.activity.type,category:0
+msgid "Meeting"
+msgstr "Kalendrisse lisamine"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_mail_activity__mobile
@@ -630,18 +426,11 @@ msgid "Mobile number sanitized"
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/components/activity/activity_patch.xml:0
-#, python-format
-msgid "Mobile:"
-msgstr "Mobiiltelefon:"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:164
 #, python-format
 msgid "Mute"
-msgstr "Vaigista"
+msgstr ""
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
@@ -649,22 +438,21 @@ msgid "My Phonecalls"
 msgstr "Minu kõned"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:32
 #, python-format
-msgid "Next activities"
-msgstr "Järgmised tegevused"
+msgid "NEXT ACTIVITIES"
+msgstr "JÄRGMISED TEGEVUSED"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:136
 #, python-format
-msgid "No audio recording device available. The application requires a microphone in order to be used."
-msgstr "Helisalvestusseade pole saadaval. Rakenduse kasutamiseks on vaja mikrofoni."
+msgid "Next"
+msgstr "Järgmine"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__pending
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_report__state__pending
+#: selection:voip.phonecall,state:0 selection:voip.phonecall.report,state:0
 msgid "Not Held"
 msgstr "Ära hoia"
 
@@ -672,7 +460,7 @@ msgstr "Ära hoia"
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__note
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__note
 msgid "Note"
-msgstr "Märkus"
+msgstr "Märkused"
 
 #. module: voip
 #: model_terms:ir.actions.act_window,help:voip.voip_phonecall_view
@@ -683,9 +471,26 @@ msgid ""
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__direction__outgoing
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:155
+#, python-format
+msgid "One or more parameter is missing. Please check your configuration."
+msgstr ""
+
+#. module: voip
+#: selection:mail.activity.type,category:0
+msgid "Other"
+msgstr "Meeldetuletuse lisamine"
+
+#. module: voip
+#: selection:voip.phonecall,type:0
 msgid "Outgoing"
 msgstr "Väljuv"
+
+#. module: voip
+#: model_terms:ir.ui.view,arch_db:voip.res_user_form
+msgid "PBX Configuration"
+msgstr "PBX seadistamine"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_res_config_settings__pbx_ip
@@ -693,25 +498,15 @@ msgid "PBX Server IP"
 msgstr "PBX serveri IP"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "PBX or Websocket address is missing. Please check your settings."
-msgstr ""
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:32
 #, python-format
 msgid "Pending"
-msgstr "Ootel"
+msgstr "Lahtine"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
 #: model:ir.model.fields,field_description:voip.field_mail_activity__phone
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__phone
-#, python-format
 msgid "Phone"
 msgstr "Telefon"
 
@@ -722,18 +517,16 @@ msgid "Phone number sanitized"
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/components/activity/activity_patch.xml:0
-#, python-format
-msgid "Phone:"
-msgstr "Telefon:"
+#: selection:mail.activity.type,category:0
+msgid "Phonecall"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:66
 #, python-format
 msgid "Phonecall details"
-msgstr "Telefonikõne detailid"
+msgstr ""
 
 #. module: voip
 #: model:ir.actions.act_window,name:voip.voip_phonecall_view
@@ -744,97 +537,58 @@ msgid "Phonecalls"
 msgstr "Telefonikõned"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:161
 #, python-format
-msgid "Please accept the use of the microphone."
-msgstr "Nõustuge mikrofoni kasutamisega."
+msgid "Please check if a phone number is given for the current phonecall"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/js/registerer.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:251
 #, python-format
-msgid "Please try again later. If the problem persists, you may want to ask an administrator to check the configuration."
-msgstr "Palun proovige hiljem uuesti. Kui probleem püsib, paluge administraatoril seadistusi kontrollida."
+msgid "Please check your configuration.</br> (Reason receives :"
+msgstr ""
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__res_config_settings__mode__prod
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:102
+#, python-format
+msgid ""
+"Problem during the connection. Check if the application is allowed to access"
+" your microphone from your browser."
+msgstr ""
+
+#. module: voip
+#: selection:res.config.settings,mode:0
 msgid "Production"
 msgstr "Tootmine"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:29
 #, python-format
-msgid "Recent"
-msgstr "Hiljutine"
+msgid "RECENT"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:23
 #, python-format
 msgid "Refresh the Panel"
 msgstr "Värskenda paneeli"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/js/registerer.js:0
-#, python-format
-msgid "Registration rejected: %(statusCode)s %(reasonPhrase)s."
-msgstr "Registreerimine tagasi lükatud: %(statusCode)s%(reasonPhrase)s."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Reject"
-msgstr "Keeldu"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Reject call"
-msgstr "Keeldu kõnest"
-
-#. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__should_auto_reject_incoming_calls
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__should_auto_reject_incoming_calls
-msgid "Reject incoming calls"
-msgstr "Keeldu sissetulevatest kõnedest"
-
-#. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__rejected
-msgid "Rejected"
-msgstr "Tagasi lükatud"
-
-#. module: voip
-#. odoo-python
-#: code:addons/voip/models/voip_phonecall.py:0
-#, python-format
-msgid "Rejected Incoming Call from %s"
-msgstr "Keeldu sissetulevad kõned %s"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "Remember?"
+#: model:ir.model.fields,field_description:voip.field_res_users__sip_ignore_incoming
+msgid "Reject All Incoming Calls"
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/components/call_queue_switch/call_queue_switch.js:0
-#, python-format
-msgid "Remove from Call Queue"
-msgstr "Eemalda kõne järjekorrast"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:40
 #, python-format
 msgid "Remove from the queue"
-msgstr "Eemalda järjekorrast"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__user_id
@@ -844,15 +598,25 @@ msgid "Responsible"
 msgstr "Vastutaja"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#: model:ir.model.fields,field_description:voip.field_res_users__sip_login
+msgid "SIP Login / Browser's Extension"
+msgstr ""
+
+#. module: voip
+#: model:ir.model.fields,field_description:voip.field_res_users__sip_password
+msgid "SIP Password"
+msgstr "SIP parool"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:136
 #, python-format
-msgid "Ringing..."
-msgstr "Kutsub..."
+msgid "Schedule"
+msgstr "Planeeri"
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.res_config_settings_view_form
-msgid "Schedule & make calls from your database"
+msgid "Schedule &amp; make calls from CRM app"
 msgstr ""
 
 #. module: voip
@@ -861,25 +625,11 @@ msgid "Schedule A New Activity"
 msgstr "Planeeri uus tegeuvs"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:22
 #, python-format
-msgid "Schedule Activity"
-msgstr "Planeeri tegevus"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Schedule Next"
-msgstr "Planeeri järgmine"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/dialing_panel.xml:0
-#, python-format
-msgid "Search"
-msgstr "Otsi"
+msgid "Search Phone Calls..."
+msgstr "Otsi telefonikõnesid..."
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
@@ -887,11 +637,11 @@ msgid "Search Phonecalls"
 msgstr "Otsi telefonikõnesi"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:121
 #, python-format
 msgid "Send mail"
-msgstr "Saada kiri"
+msgstr "Send mail"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__sequence
@@ -899,24 +649,22 @@ msgid "Sequence"
 msgstr "Järjestus"
 
 #. module: voip
-#. odoo-python
-#: code:addons/voip/models/voip_queue_mixin.py:0
-#, python-format
-msgid "Some documents cannot be added to the call queue as they do not have a phone number set: %(record_names)s"
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__reschedule_date
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
+msgid "Specific Date"
 msgstr ""
-"Mõnda dokumenti ei saa kõnejärjekorda lisada, kuna neile pole määratud telefoninumbrit:\n"
-"%(record_names)s"
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_voip_phonecall_log_wizard__reschedule_date
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__custom
-msgid "Specific Date"
-msgstr "Kindel kuupäev"
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:589
+#, python-format
+msgid "Start Calling"
+msgstr "Alusta kõnet"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__start_time
 msgid "Start time"
-msgstr "Algusaeg"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_voip_phonecall__state
@@ -930,68 +678,45 @@ msgid "Summary"
 msgstr "Kokkuvõte"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
-#, python-format
-msgid "Take call"
-msgstr "Võta kõne"
-
-#. module: voip
 #: model:ir.model.fields,help:voip.field_res_config_settings__pbx_ip
-msgid "The IP address of your PBX Server"
-msgstr "PBX Serveri IP aadress"
+msgid "The IP adress of your PBX Server"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,help:voip.field_res_config_settings__wsServer
 msgid "The URL of your WebSocket"
-msgstr "Teie WebSocket'i URL"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "The connection cannot be made.</br> Please check your configuration."
-msgstr "Ühendust ei saa luua. </br> Palun kontrollige seadistusi."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/js/registerer.js:0
-#, python-format
-msgid "The error may come from the transport layer. Please have an administrator verify the websocket server URL in the General Settings. If the problem persists, this is probably an issue with the server."
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:406
 #, python-format
-msgid "The number is incorrect, the user credentials could be wrong or the connection cannot be made. Please check your configuration.</br> (Reason received: %(reasonPhrase)s)"
+msgid "The customer is temporary unavailable. Please try later."
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__voip_secret
-#: model:ir.model.fields,help:voip.field_res_users_settings__voip_secret
-msgid "The password that will be used to register with the PBX server."
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:468
+#, python-format
+msgid ""
+"The number is incorrect, the user credentials could be wrong or the "
+"connection cannot be made. Please check your configuration.</br> (Reason "
+"received: %s)"
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/user_agent.js:0
-#, python-format
-msgid "The person you try to contact is currently unavailable."
-msgstr "Isik, kellega proovite ühendust võtta, pole praegu saadaval."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:160
 #, python-format
 msgid "The phonecall has no number"
-msgstr "Telefonikõnel puudub number"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/js/registerer.js:0
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:163
 #, python-format
-msgid "The server failed to authenticate you. Please have an administrator verify that you are reaching the right server (PBX server IP in the General Settings) and that the credentials in your user preferences are correct."
+msgid ""
+"The server configuration could be wrong. Please check your configuration."
 msgstr ""
 
 #. module: voip
@@ -1003,36 +728,39 @@ msgid ""
 msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,help:voip.field_res_users__voip_username
-#: model:ir.model.fields,help:voip.field_res_users_settings__voip_username
-msgid "The username (typically the extension number) that will be used to register with the PBX server."
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:206
+#, python-format
+msgid "The websocket uri could be wrong."
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "The websocket connection with the server has been lost. Please try to refresh the page."
-msgstr "Websocketi ühendus serveriga on katkenud. Palun proovige lehte värskendada."
-
-#. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall__state__open
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_report__state__open
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
+#: selection:voip.phonecall,state:0 selection:voip.phonecall.report,state:0
 msgid "To Do"
 msgstr "Tegemiseks"
 
 #. module: voip
-#: model:ir.model.fields.selection,name:voip.selection__voip_phonecall_log_wizard__reschedule_option__1d
+#: selection:voip.phonecall.log.wizard,reschedule_option:0
 msgid "Tomorrow"
 msgstr "Homme"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:159
 #, python-format
 msgid "Transfer"
 msgstr "Ülekanne"
+
+#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__transfer_choice
+msgid "Transfer Choice"
+msgstr ""
+
+#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall__type
+msgid "Type"
+msgstr "Tüüp"
 
 #. module: voip
 #: model_terms:ir.ui.view,arch_db:voip.view_voip_case_phonecalls_filter
@@ -1040,119 +768,139 @@ msgid "Unassigned"
 msgstr "Määramata"
 
 #. module: voip
-#: model:ir.model,name:voip.model_res_users
-msgid "User"
-msgstr "Kasutaja"
+#. openerp-web
+#: code:addons/voip/static/src/xml/dialing_panel.xml:18
+#, python-format
+msgid "Unfold"
+msgstr "Ava"
 
 #. module: voip
-#: model:ir.model,name:voip.model_res_users_settings
-msgid "User Settings"
-msgstr "Kasutaja seaded"
+#. openerp-web
+#: code:addons/voip/static/src/js/voip_phonecall.js:130
+#, python-format
+msgid "Unknown"
+msgstr "Tundmatu"
+
+#. module: voip
+#: model:ir.model,name:voip.model_res_users
+msgid "Users"
+msgstr "Kasutajad"
+
+#. module: voip
+#: model_terms:ir.ui.view,arch_db:voip.view_voip_user_config
+msgid "VOIP Configuration"
+msgstr ""
+
+#. module: voip
+#: model:ir.model,name:voip.model_voip_configurator
+msgid "VOIP Configurator"
+msgstr ""
 
 #. module: voip
 #: model:ir.model,name:voip.model_voip_phonecall
 msgid "VOIP Phonecall"
-msgstr "VOIP telefonikõne"
+msgstr ""
 
 #. module: voip
 #: model:ir.model,name:voip.model_voip_phonecall_log_wizard
 msgid "VOIP Phonecall log Wizard"
-msgstr "VOIP telefonikõne logi Wizard"
+msgstr ""
 
 #. module: voip
 #: model:ir.model,name:voip.model_voip_phonecall_report
 msgid "VOIP Phonecalls by user report"
-msgstr "VOIP telefonikõned kasutaja järgi"
+msgstr ""
 
 #. module: voip
-#: model:ir.model,name:voip.model_voip_queue_mixin
-msgid "VOIP Queue support"
-msgstr "VOIP järjekorra tugi"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#: model:ir.model.fields.selection,name:voip.selection__res_users_settings__how_to_call_on_mobile__voip
-#: model_terms:ir.ui.view,arch_db:voip.res_user_form
-#: model_terms:ir.ui.view,arch_db:voip.res_users_view_form_preferences
-#, python-format
-msgid "VoIP"
-msgstr "VoIP"
-
-#. module: voip
-#: model_terms:ir.ui.view,arch_db:voip.voip_res_users_settings_view_form
-msgid "VoIP Configuration"
-msgstr "VoIP seadistused"
+#: model:ir.model,name:voip.model_voip_phonecall_transfer_wizard
+msgid "VOIP Transfer Wizard of Phonecalls"
+msgstr ""
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_res_config_settings__mode
 msgid "VoIP Environment"
-msgstr "VoIP keskkond"
+msgstr ""
 
 #. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__voip_secret
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__voip_secret
-msgid "VoIP secret"
-msgstr "VoIP secret"
-
-#. module: voip
-#: model:ir.model.fields,field_description:voip.field_res_users__voip_username
-#: model:ir.model.fields,field_description:voip.field_res_users_settings__voip_username
-msgid "VoIP username / Extension number"
-msgstr "VoIP kasutajanimi / laienduse number"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
+#: code:addons/voip/wizard/voip_phonecall_transfer_wizard.py:35
 #, python-format
-msgid "Voip"
-msgstr "Voip"
+msgid "Warning"
+msgstr "Hoiatus"
 
 #. module: voip
 #: model:ir.model.fields,field_description:voip.field_res_config_settings__wsServer
 msgid "WebSocket"
-msgstr "WebSocket"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "You are already in a call"
-msgstr "Olete juba kõnes"
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/legacy/dialing_panel.js:0
-#, python-format
-msgid "Your browser could not support WebRTC. Please check your configuration."
-msgstr "Teie brauser ei toeta WebRTC-d. Kontrollige oma konfiguratsiooni."
-
-#. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
-#, python-format
-msgid "Your browser does not support some of the features needed for VoIP to work. Please try to update your browser or use a different one."
 msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/user_agent_service.js:0
+#: code:addons/voip/wizard/voip_phonecall_transfer_wizard.py:36
 #, python-format
-msgid "Your credentials are not correctly set. Please contact your administrator."
-msgstr "Teie mandaadid pole õigesti seadistatud. Võtke ühendust oma administraatoriga."
+msgid ""
+"Wrong configuration for the call. There is no external phone number "
+"configured"
+msgstr ""
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/js/dialing_panel.js:171
+#: code:addons/voip/static/src/js/dialing_panel.js:258
+#: code:addons/voip/static/src/js/dialing_panel.js:279
+#, python-format
+msgid "You are already in a call"
+msgstr ""
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:94
+#, python-format
+msgid ""
+"Your browser could not support WebRTC. Please check your configuration."
+msgstr ""
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:53
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:94
 #, python-format
 msgid "min"
 msgstr "min"
 
 #. module: voip
-#. odoo-javascript
-#: code:addons/voip/static/src/xml/phone_call.xml:0
-#: code:addons/voip/static/src/xml/phone_call_details.xml:0
+#. openerp-web
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:53
+#: code:addons/voip/static/src/xml/voip_phonecall.xml:94
 #, python-format
 msgid "sec"
 msgstr "sek"
+
+#. module: voip
+#. openerp-web
+#: code:addons/voip/static/src/js/user_agent.js:250
+#, python-format
+msgid "the connection cannot be made. "
+msgstr "seda ühendust ei saa teha."
+
+#. module: voip
+#: model_terms:ir.ui.view,arch_db:voip.wizard_transfer_call_form_view
+msgid "transfer Option"
+msgstr ""
+
+#. module: voip
+#: model:ir.model.fields,field_description:voip.field_voip_phonecall_transfer_wizard__transfer_number
+msgid "transfer To"
+msgstr ""
+
+#. module: voip
+#: model_terms:ir.ui.view,arch_db:voip.wizard_transfer_call_form_view
+msgid "transfer the Call"
+msgstr ""
+
+#. module: voip
+#: selection:voip.phonecall.transfer.wizard,transfer_choice:0
+msgid "transfer to another External Phone"
+msgstr ""
+
+#. module: voip
+#: selection:voip.phonecall.transfer.wizard,transfer_choice:0
+msgid "transfer to your external phone"
+msgstr ""

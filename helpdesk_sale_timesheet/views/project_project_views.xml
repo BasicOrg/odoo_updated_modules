@@ -10,7 +10,7 @@
                 <field name="has_helpdesk_team" invisible="1"/>
             </xpath>
             <xpath expr="//page[@name='billing_employee_rate']" position="attributes">
-                <attribute name="invisible">not allow_billable or not partner_id</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('allow_billable', '=', False), ('partner_id', '=', False)]}</attribute>
             </xpath>
         </field>
     </record>

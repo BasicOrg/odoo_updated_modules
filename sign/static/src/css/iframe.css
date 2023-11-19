@@ -1,60 +1,6 @@
-:root {
-    --gray-200-rgb: 231, 233, 237;
-    --gray-300-rgb: 216, 218, 221;
-    --bs-primary-rgb: 113, 75, 103;
-    --bs-secondary-rgb: var(--gray-200-rgb);
-    --bs-danger-rgb: 212, 76, 89;
-    --bs-dark-rgb: 17, 24, 39;
-    --bs-white-rgb: 255, 255, 255;
-    --bs-body-color-rgb: 55, 65, 81;
-    --bs-body-bg-rgb: 249, 250, 251;
-    --btn-font-weight: 500;
-    --btn-font-size: 0.875rem;
-    --btn-line-height: 1.5;
-    --border-radius: 0.25rem;
-}
-
-.btn {
-    display: inline-block;
-    vertical-align: middle;
-    border: 1px solid transparent;
-    border-radius: var(--border-radius);
-    padding: 0.3125rem 0.625rem;
-    background-color: rgba(var(--btn-bg-color-rgb, --bs-body-bg-rgb), 1);
-    text-align: center;
-    font-size: var(--btn-font-weight);
-    font-weight: var(--btn-font-weight);
-    line-height: var(--btn-line-height);
-    color: rgba(var(--btn-body-color-rgb, --bs-body-color-rgba), 1);
-    user-select: none;
-    cursor: pointer;
-    transition: none;
-}
-
-.btn-primary {
-    --btn-body-color-rgb: var(--bs-white-rgb);
-    --btn-bg-color-rgb: var(--bs-primary-rgb);
-}
-
-.btn-primary:hover {
-    --btn-bg-color-rgb: 98, 65, 89;
-}
-
-.btn-secondary {
-    --btn-bg-color-rgb: var(--bs-secondary-rgb);
-}
-
-.btn-secondary:hover {
-    --btn-bg-color-rgb: var(--gray-300-rgb);
-}
-
-.toolbar {
-    z-index: 1020;
-}
-
 #viewerContainer { /* PDFJS Viewer */
     visibility: hidden;
-    opacity: 1;
+    opacity: 0.01;
 }
 
 #viewer { /* PDFJS Viewer */
@@ -67,21 +13,27 @@
 
 .o_sign_sign_item {
     position: absolute;
+
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     text-align: center;
-    border: 1px dashed rgb(var(--bs-primary-rgb));
+
+    border: 1px dashed #875A7B;
     vertical-align: middle;
     display: inline-block;
     margin: 0;
     padding: 0;
-    box-shadow: 0px 0px 3px 1px rgb(var(--bs-primary-rgb));
+    box-shadow: 0px 0px 3px 1px #875A7B;
     resize: none;
-    background-color: rgba(var(--bs-white-rgb), 0.9);
+
+    background-color: rgba(255, 255, 255, 0.9);
+
     font-family: Helvetica;
     line-height: 1.25;
+
     z-index: 100;
+
     overflow: hidden;
     cursor: pointer;
 }
@@ -100,7 +52,7 @@ textarea.o_sign_sign_item {
 }
 
 .o_sign_sign_item_required {
-    background-color: rgba(var(--bs-danger-rgb), 0.1);
+    background-color: rgba(255, 235, 235, 0.9);
     font-size: 10pt;
 }
 
@@ -164,7 +116,6 @@ textarea.o_sign_sign_item {
     width: 25px;
     border: 1px dashed black;
     text-align: center;
-    cursor: url(/web/static/img/openhand.cur), grab;
 }
 
 .o_sign_config_handle .fa-arrows {
@@ -218,38 +169,8 @@ textarea.o_sign_sign_item {
 .ui-selected, .ui-selecting { /* jQuery UI */
     box-shadow: 0px 0px 5px 1px orange;
 }
-.o_resize_handler {
+.ui-resizable {
     text-align: center;
-    display: block;
-    float: right;
-    position: absolute;
-    z-index: 90;
-}
-
-.resize_both {
-    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
-    right: 0px;
-    bottom: 0px;
-    cursor: se-resize;
-    height: 10px;
-    width: 10px;
-    background-color: black;
-}
-
-.resize_height {
-    width: calc(100% - 25px);
-    height: 7px;
-    cursor: s-resize;
-    right: 0;
-    bottom: -5px;
-}
-
-.resize_width {
-    height: 100%;
-    width: 7px;
-    cursor: e-resize;
-    right: -5px;
-    top: 0;
 }
 
 .ui-draggable .ui-draggable-handle, .o_sign_field_type_button.ui-draggable { /* jQuery UI */
@@ -269,26 +190,21 @@ textarea.o_sign_sign_item {
     position: fixed;
     top: 15%;
     left: 0;
+    background-color: transparent;
+    background-image: url(../../img/navigator.png);
+    background-size: 100% 100%;
+
     line-height: 50px;
     height: 50px;
     font-size: 1.4em;
     text-transform: uppercase;
-    z-index: 90;
-    padding: 0 10px 0 5px;
-    color: white;
-    cursor: pointer;
-    background-color:rgb(var(--bs-primary-rgb));
-}
 
-.o_sign_sign_item_navigator:after {
-    content: "";
-    position: absolute;
-    margin-left: 10px;
-    width: 0px;
-    height: 1px;
-    border-top: 24px solid transparent;
-    border-bottom: 25px solid transparent;
-    border-left: 25px solid rgb(var(--bs-primary-rgb));
+    z-index: 90;
+
+    padding: 0 20px 0 10px;
+    color: white;
+
+    cursor: pointer;
 }
 
 @media (max-width: 767px) { /* @screen-xs-max */
@@ -300,7 +216,9 @@ textarea.o_sign_sign_item {
         line-height: 25px;
         height: 35px;
         padding: 5px 0 0;
-        font-size: var(--btn-font-size);
+        font-size: 0.8em;
+        background-image: none;
+        background-color: #875A7B;
         box-shadow: 0 0 5px 0 rgba(0,0,0,0.75);
         text-align: center;
     }
@@ -335,19 +253,49 @@ textarea.o_sign_sign_item {
     z-index: 1030;
     height: 100%;
     position: absolute;
-    border: 1px solid rgb(var(--gray-300-rgb)) !important;
+    background-color: #404040;
+    background-image: url(../../img/texture.png);
+}
+
+.o_sign_field_type_button {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    border: none;
+
+    background-color: #00A09D;
+    color: white;
+
+    min-height: 30px;
+    margin: 0.5rem 0.5rem 0 0.5rem;
+    padding: 0.5rem 2rem;
+}
+
+.o_sign_field_type_button:hover {
+    transition: transform 200ms ease 0s;
+    box-shadow: 0 8px 15px -10px black;
+    transform: translateX(1px) translateY(-1px) scale(1.05) rotate(1deg);
+}
+
+.toolbarButton.rotateCw::before {
+    content: url(../../img/secondaryToolbarButton-rotateCw.png);
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 1.1), screen and (min-resolution: 1.1dppx) {
+    .toolbarButton.rotateCw::before {
+        content: url(../../img/secondaryToolbarButton-rotateCw@2x.png);
+    }
 }
 
 .o_sign_field_type_toolbar_title {
     height: 12px;
+    color: white;
     font-size: 12px;
-}
-
-.o_sign_field_type_button:hover {
-    cursor: move;
-    transition: transform 200ms ease 0s;
-    box-shadow: 0 5px 15px -10px rgb(var(--bs-dark-rgb));
-    transform: translateX(1px) translateY(-1px) scale(1.05) rotate(1deg);
+    background-color: #474747;
+    background-image: url(../../img/texture.png), -webkit-gradient(linear, left top, left bottom, from(hsla(0,0%,32%,.99)), to(hsla(0,0%,27%,.95)));
+    box-shadow: inset 0 1px 1px hsla(0,0%,0%,.15), inset 0 -1px 0 hsla(0,0%,100%,.05), 0 1px 0 hsla(0,0%,0%,.15), 0 1px 1px hsla(0,0%,0%,.1);
+    padding: 10px;
 }
 
 .o_sign_field_type_toolbar_items {
@@ -419,8 +367,6 @@ textarea.o_sign_sign_item {
 .o_sign_drag_helper {
     position: fixed;
     z-index: 103;
-    pointer-events: none;
-    visibility: hidden;
 }
 
 .o_sign_drag_side_helper {

@@ -4,7 +4,6 @@ import unittest
 
 from odoo.tests.common import TransactionCase
 
-
 class TestCommon(TransactionCase):
     def setUp(self):
         super(TestCommon, self).setUp()
@@ -41,14 +40,6 @@ class TestCommon(TransactionCase):
             ]
         })
 
-        self.DMTestModelCompanyDependent = self.env['ir.model'].create({
-            'name': 'Test Model Company Dependent',
-            'model': 'x_dm_test_model_cd',
-            'field_id': [
-                (0, 0, {'name': 'x_name', 'ttype': 'char', 'field_description': 'Name'}),
-                (0, 0, {'name': 'x_cd', 'ttype': 'char', 'field_description': 'CD'}),
-            ]
-        })
 
         self.MyModel = self.DMModel.create({
             'name': 'test of test model',

@@ -3,16 +3,17 @@
 # 	* data_cleaning
 # 
 # Translators:
-# Wil Odoo, 2023
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -31,14 +32,14 @@ msgstr ""
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_merge_model_form
 msgid "<span class=\"me-1\">Every</span>"
-msgstr "<span class=\"me-1\">每</span>"
+msgstr ""
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_list
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_merge_model_form
 msgid "Action"
-msgstr "操作"
+msgstr "动作"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__action_display
@@ -53,16 +54,15 @@ msgstr "技术动作"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__action
 msgid "Actions"
-msgstr "操作"
+msgstr "动作"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__active
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__active
 msgid "Active"
-msgstr "已启用"
+msgstr "启用"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__lower
 #, python-format
@@ -70,7 +70,6 @@ msgid "All Lowercase"
 msgstr "全部小写"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__all
 #, python-format
@@ -78,7 +77,6 @@ msgid "All Spaces"
 msgstr "所有空间"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__upper
 #, python-format
@@ -147,7 +145,7 @@ msgstr "配置规则以标识要清理的记录"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__country_id
 msgid "Country"
-msgstr "国家/地区"
+msgstr "国家"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__create_uid
@@ -161,7 +159,7 @@ msgstr "创建人"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__create_date
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__current_value
@@ -170,15 +168,10 @@ msgstr "当前"
 
 #. module: data_cleaning
 #: model:ir.actions.server,name:data_cleaning.ir_cron_clean_records_ir_actions_server
+#: model:ir.cron,cron_name:data_cleaning.ir_cron_clean_records
+#: model:ir.cron,name:data_cleaning.ir_cron_clean_records
 msgid "Data Cleaning: Clean Records"
 msgstr "数据清理：清除记录"
-
-#. module: data_cleaning
-#. odoo-python
-#: code:addons/data_cleaning/models/data_cleaning_model.py:0
-#, python-format
-msgid "Data to Clean"
-msgstr "待清理的数据"
 
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__notify_frequency_period__days
@@ -237,7 +230,6 @@ msgid "Field To Clean"
 msgstr "要清理的字段"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_case__first
 #, python-format
@@ -245,7 +237,6 @@ msgid "First Letters to Uppercase"
 msgstr "大写字母的第一个字母"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__phone
 #, python-format
@@ -273,6 +264,13 @@ msgid "ID"
 msgstr "ID"
 
 #. module: data_cleaning
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record____last_update
+#: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
+
+#. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__last_notification
 msgid "Last Notification"
 msgstr "上次通知"
@@ -289,7 +287,7 @@ msgstr "最后更新人"
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_record__write_date
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: data_cleaning
 #: model:ir.model.fields,help:data_cleaning.field_data_cleaning_model__notify_user_ids
@@ -318,7 +316,7 @@ msgstr "模型名称"
 #. module: data_cleaning
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_model__notify_frequency_period__months
 msgid "Months"
-msgstr "个月"
+msgstr "月份"
 
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_model__name
@@ -378,7 +376,6 @@ msgid "Rules"
 msgstr "规则"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__html
 #, python-format
@@ -393,10 +390,9 @@ msgstr "选择要配置清洁动作的模型"
 #. module: data_cleaning
 #: model:ir.model.fields,field_description:data_cleaning.field_data_cleaning_rule__sequence
 msgid "Sequence"
-msgstr "序列"
+msgstr "序号"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__case
 #, python-format
@@ -414,7 +410,6 @@ msgid "Suggested Value"
 msgstr "建议值"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action_trim__superfluous
 #, python-format
@@ -422,7 +417,6 @@ msgid "Superfluous Spaces"
 msgstr "剩余空间"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #, python-format
 msgid ""
@@ -441,7 +435,6 @@ msgid "Trim"
 msgstr "整理"
 
 #. module: data_cleaning
-#. odoo-python
 #: code:addons/data_cleaning/models/data_cleaning_rule.py:0
 #: model:ir.model.fields.selection,name:data_cleaning.selection__data_cleaning_rule__action__trim
 #, python-format
@@ -449,14 +442,14 @@ msgid "Trim Spaces"
 msgstr "整理空间"
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #, python-format
 msgid "Unselect"
 msgstr "取消选择"
 
 #. module: data_cleaning
-#. odoo-javascript
+#. openerp-web
 #: code:addons/data_cleaning/static/src/views/data_cleaning_list_view.xml:0
 #: model_terms:ir.ui.view,arch_db:data_cleaning.view_data_cleaning_record_list
 #, python-format
@@ -478,7 +471,7 @@ msgstr "哪些空格按规则进行修剪。前导空格、尾随空格和连续
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.notification
 msgid "here"
-msgstr "此处"
+msgstr "这里"
 
 #. module: data_cleaning
 #: model_terms:ir.ui.view,arch_db:data_cleaning.notification

@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export default class RankingPanel extends Component {}
 

@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('pos_iot_config')]" position="replace">
-                <div class="content-group pos_iot_config" invisible="not pos_is_posbox">
+                <div class="content-group pos_iot_config" attrs="{'invisible' : [('pos_is_posbox', '=', False)]}">
                     <div class="row">
                         <label string="Receipt Printer" for="pos_iface_printer_id" class="col-lg-4 o_light_label"/>
                         <field name="pos_iface_printer_id"/>
                     </div>
-                    <div class="row" invisible="not pos_iface_printer_id">
+                    <div class="row" attrs="{'invisible': [('pos_iface_printer_id', '=', False)]}">
                         <label string="Cashdrawer" for="pos_iface_cashdrawer" class="col-lg-4 o_light_label"/>
                         <field name="pos_iface_cashdrawer"/>
                     </div>
@@ -28,19 +28,35 @@
                         <field name="pos_iface_scale_id"/>
                     </div>
                     <div>
-                        <button name="%(iot.iot_device_action)d" icon="oi-arrow-right" type="action" string="IoT Devices" class="btn-link mt8"/>
+                        <button name="%(iot.iot_device_action)d" icon="fa-arrow-right" type="action" string="IoT Devices" class="btn-link mt8"/>
                     </div>
                 </div>
             </xpath>
-            <block id="pos_payment_terminals_section" position="inside">
-                <setting title="The transactions are processed by Ingenico. Set your Ingenico device on the related payment method." string="Ingenico (BENELUX)" documentation="/applications/sales/point_of_sale/payment_methods/terminals/ingenico.html" help="Accept payments with an Ingenico payment terminal">
-                    <field name="ingenico_payment_terminal"/>
-                </setting>
-                <setting title="The transactions are processed by Worldline. Set your Worldline device on the related payment method." string="Worldline" help="Accept payments with a Worldline payment terminal"
-                         documentation="/applications/sales/point_of_sale/payment_methods/terminals/worldline.html">
-                    <field name="worldline_payment_terminal"/>
-                </setting>
-            </block>
+            <div id="pos_payment_terminals_section" position="inside">
+                <div class="col-12 col-lg-6 o_setting_box" title="The transactions are processed by Ingenico. Set your Ingenico device on the related payment method.">
+                    <div class="o_setting_left_pane">
+                        <field name="ingenico_payment_terminal"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="ingenico_payment_terminal" string="Ingenico (BENELUX)"/>
+                        <a href="https://www.odoo.com/documentation/master/applications/sales/point_of_sale/payment/ingenico.html" title="Documentation" class="o_doc_link" target="_blank"></a>
+                        <div class="text-muted">
+                            Accept payments with an Ingenico payment terminal
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box" title="The transactions are processed by Worldline. Set your Worldline device on the related payment method.">
+                    <div class="o_setting_left_pane">
+                        <field name="worldline_payment_terminal"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="worldline_payment_terminal" string="Worldline"/>
+                        <div class="text-muted">
+                            Accept payments with a Worldline payment terminal
+                        </div>
+                    </div>
+                </div>
+            </div>
         </field>
     </record>
 </odoo>

@@ -1,13 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
-import configuratorTourUtils from "@test_sale_product_configurators/js/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('rental_product_configurator_tour', {
+tour.register('rental_product_configurator_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale_renting.rental_menu_root"]',
     edition: 'enterprise'
 }, {
@@ -27,37 +25,51 @@ registry.category("web_tour.tours").add('rental_product_configurator_tour', {
     trigger: 'ul.ui-autocomplete a:contains("Customizable Desk (TEST)")',
 },
 // Product Configurator Wizard
-    configuratorTourUtils.selectAttribute("Customizable Desk", "Legs", "Aluminium"),
-    // Check on the style to ensure that the color is the one set in backend.
-    configuratorTourUtils.selectAttribute("Customizable Desk", "Color", "Black", "color"),
 {
-    trigger: '.btn-primary:disabled:contains("Confirm")',
-    isCheck: true, // check confirm button is disabled
-},
-    // Check on the style to ensure that the color is the one set in backend.
-    configuratorTourUtils.selectAttribute("Customizable Desk", "Color", "White", "color"),
-{
-    trigger: '.btn-primary:not(:disabled):contains("Confirm")',
-    isCheck: true, // check confirm is available
-},
-    configuratorTourUtils.addOptionalProduct("Conference Chair"),
-    configuratorTourUtils.addOptionalProduct("Chair floor protection"),
-{
-    trigger: 'button:contains(Confirm)',
+    trigger: '.main_product span:contains("Steel")',
+}, {
+    trigger: '.main_product span:contains("Aluminium")',
+}, {
+    trigger: 'input[data-value_name="Black"]'
+}, {
+    trigger: '.btn-primary.disabled',
+    extra_trigger: '.show .modal-footer'
+}, {
+    trigger: 'input[data-value_name="White"]'
+}, {
+    trigger: '.btn-primary:not(.disabled)',
+    extra_trigger: '.show .modal-footer'
+}, {
+    trigger: '.js_product:has(strong:contains(Chair floor protection)) .js_add',
+    extra_trigger: '.oe_advanced_configurator_modal',
+}, {
+    trigger: 'button span:contains(Confirm)',
+    extra_trigger: '.oe_advanced_configurator_modal',
     id: 'quotation_product_selected',
+},
+// Rental Wizard
+{
+    trigger: 'button[special=save]',
+    extra_trigger: '.o_form_nosheet',
+    position: 'bottom',
+},
+
+// Editing a custom desk => reopen the rental wizard
+{
+    trigger: '[name="product_template_id"] span:contains("Customizable Desk (TEST)")',
 }, {
-    trigger: 'td.o_data_cell:contains("Customizable Desk (TEST)")',
-    run: "click",
+    trigger: 'button.fa-calendar',
+    extra_trigger: '[data-tooltip*=Customizable]',
+},{
+    trigger: 'div[name="qty_to_reserve"] input',
+    run: 'text 2',
 }, {
-    trigger: ".o_data_row:eq(0) .o_data_cell[name='product_uom_qty'] input",
-    run: "text 2.0",
+    trigger: 'div[name="unit_price"] input',
+    run: 'text 42',
 }, {
-    trigger: ".o_data_row:eq(0) .o_data_cell[name='price_unit'] input",
-    run: "text 42.0",
-}, {
-    content: 'Wait for the unit price to be rerendered.',
-    trigger: '.o_selected_row [name=price_unit] input:propValue(42.00)',
-    run() {},
+    trigger: 'button[special=save]',
+    extra_trigger: '.o_form_nosheet',
+    position: 'bottom',
 },
 
 // Adding a line with a more expensive custom desk
@@ -70,27 +82,32 @@ registry.category("web_tour.tours").add('rental_product_configurator_tour', {
     trigger: 'ul.ui-autocomplete a:contains("Customizable Desk (TEST)")',
 },
 // Product Configurator Wizard
-    configuratorTourUtils.selectAttribute("Customizable Desk", "Legs", "Steel"),
-    // Check on the style to ensure that the color is the one set in backend.
-    configuratorTourUtils.selectAttribute("Customizable Desk", "Color", "Black", "color"),
 {
-    trigger: '.btn-primary:not(:disabled):contains("Confirm")',
-    isCheck: true, // check confirm is available
+    trigger: '.main_product span:contains("Steel")',
 }, {
-    trigger: 'button:contains(Confirm)',
+    trigger: 'input[data-value_name="White"]'
+}, {
+    trigger: '.btn-primary:not(.disabled)',
+    extra_trigger: '.show .modal-footer'
+}, {
+    trigger: 'button span:contains(Confirm)',
+    extra_trigger: '.oe_advanced_configurator_modal',
     id: 'quotation_product_selected',
+},
+// Rental Wizard
+{
+    trigger: 'div[name="qty_to_reserve"] input',
+    run: 'text 5',
 }, {
-    trigger: ".o_data_row:eq(3) .o_data_cell[name='product_uom_qty']",
-    run: "click",
-}, {
-    trigger: ".o_data_row:eq(3) .o_data_cell[name='product_uom_qty'] input",
-    run: "text 5.0",
+    trigger: 'button[special=save]',
+    extra_trigger: '.o_form_nosheet',
+    position: 'bottom',
 }, {
     trigger: 'button[name=action_confirm]',
     position: 'bottom',
 }, {
     content: "verify that the rental has been confirmed",
     trigger: '.o_statusbar_status button.o_arrow_button_current:contains("Sales Order")',
-    isCheck: true,
-}, ...stepUtils.discardForm(),
-]});
+    run() {},
+}, ...tour.stepUtils.discardForm(),
+]);

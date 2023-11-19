@@ -1,10 +1,12 @@
-/** @odoo-module **/
 /**
  * This code has been more that widely inspired by the multirange library
  * which can be found on https://github.com/LeaVerou/multirange.
  *
  * The license file can be found in the same folder as this file.
  */
+
+odoo.define('website_sale.multirange', function () {
+'use strict';
 
 /**
  * The multirange library will display the two values as one range input with
@@ -60,7 +62,7 @@
 const HTMLInputElement = window.HTMLInputElement;
 const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
 
-export class Multirange {
+class Multirange {
     constructor(input, options = {}) {
         const self = this;
 
@@ -95,7 +97,8 @@ export class Multirange {
         this.leftCounter = document.createElement("span");
         this.leftCounter.classList.add("multirange-min", "position-absolute", "opacity-75", "opacity-100-hover", "mt-1");
         this.rightCounter = document.createElement("span");
-        this.rightCounter.classList.add("multirange-max", "position-absolute", "opacity-75", "opacity-100-hover", "mt-1", "end-0");
+        this.rightCounter.classList.add("multirange-max", "position-absolute", "opacity-75", "opacity-100-hover", "mt-1");
+        this.rightCounter.style.right = 0;
         this.countersWrapper.append(this.leftCounter, this.rightCounter);
 
         /* Add the counterInput */
@@ -264,11 +267,11 @@ export class Multirange {
     }
 
     formatNumber(number) {
-        const locale = document.querySelector("html").getAttribute("lang");
-        let formatedNumber = number.toLocaleString(locale, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        });
+        number = String(number).split('.');
+        if (number[1] && number[1].length === 1) {
+            number[1] += '0';
+        }
+        let formatedNumber = number[0].replace(/(?=(?:\d{3})+$)(?!\b)/g, ',') + (number[1] ? '.' + number[1] : '.00');
         if (this.currency.length) {
             if (this.currencyPosition === 'after') {
                 formatedNumber = formatedNumber + ' ' + this.currency;
@@ -280,14 +283,35 @@ export class Multirange {
     }
 }
 
-export function multirange(input, options) {
+function multirange(input, options) {
     if (input.classList.contains('multirange')) {
         return;
     }
     new Multirange(input, options);
 }
 
-export default {
+return {
     Multirange: Multirange,
     init: multirange,
 };
+});
+
+odoo.define('website_sale.multirange.instance', function (require) {
+'use strict';
+
+const publicWidget = require('web.public.widget');
+const multirange = require('website_sale.multirange');
+
+publicWidget.registry.WebsiteMultirangeInputs = publicWidget.Widget.extend({
+    selector: 'input[type=range][multiple]:not(.multirange)',
+
+    /**
+     * @override
+     */
+    start() {
+        return this._super.apply(this, arguments).then(() => {
+            multirange.init(this.el);
+        });
+    },
+});
+});

@@ -3,17 +3,19 @@
 # 	* sale_product_configurator
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Potsawat Manuthamathorn <firmpotsawat@hotmail.com>, 2022
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:25+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,25 +23,34 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
-msgid "Add"
-msgstr "เพิ่ม"
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.optional_product_items
+msgid "<i class=\"fa fa-shopping-cart add-optionnal-item\"/> Add to cart"
+msgstr "<i class=\"fa fa-shopping-cart add-optionnal-item\"/> เพิ่มในรถเข็น"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+msgid "<span class=\"label\">Price</span>"
+msgstr "<span class=\"label\">ราคา</span>"
+
+#. module: sale_product_configurator
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+msgid "<span class=\"label\">Product</span>"
+msgstr "<span class=\"label\">สินค้า</span>"
+
+#. module: sale_product_configurator
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+msgid "<span class=\"label\">Quantity</span>"
+msgstr "<span class=\"label\">จำนวน</span>"
+
+#. module: sale_product_configurator
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+msgid "<strong>Total:</strong>"
+msgstr "<strong>ทั้งหมด:</strong>"
+
+#. module: sale_product_configurator
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.product_quantity_config
 msgid "Add one"
-msgstr "เพิ่มหนึ่งรายการ"
-
-#. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_list/product_list.xml:0
-#, python-format
-msgid "Add optional products"
-msgstr "เพิ่มผลิตภัณฑ์เสริม"
+msgstr "เพิ่มหนึ่ง"
 
 #. module: sale_product_configurator
 #: model:ir.model.fields,field_description:sale_product_configurator.field_sale_order_line__product_template_attribute_value_ids
@@ -47,11 +58,16 @@ msgid "Attribute Values"
 msgstr "ค่าคุณลักษณะ"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_configurator_dialog/product_configurator_dialog.xml:0
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+msgid "Available Options:"
+msgstr "ตัวเลือกที่มีอยู่:"
+
+#. module: sale_product_configurator
+#. openerp-web
+#: code:addons/sale_product_configurator/static/src/js/sale_product_field.js:0
 #, python-format
-msgid "Cancel"
-msgstr "ยกเลิก"
+msgid "Back"
+msgstr "กลับ"
 
 #. module: sale_product_configurator
 #: model:product.template,name:sale_product_configurator.product_product_1_product_template
@@ -59,25 +75,18 @@ msgid "Chair floor protection"
 msgstr "เก้าอี้ป้องกันพื้น"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_configurator_dialog/product_configurator_dialog.js:0
+#. openerp-web
+#: code:addons/sale_product_configurator/static/src/js/sale_product_field.js:0
 #, python-format
-msgid "Configure your product"
-msgstr "กำหนดค่าผลิตภัณฑ์ของคุณ"
+msgid "Configure"
+msgstr "กำหนดค่า"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_configurator_dialog/product_configurator_dialog.xml:0
+#. openerp-web
+#: code:addons/sale_product_configurator/static/src/js/sale_product_field.js:0
 #, python-format
 msgid "Confirm"
 msgstr "ยืนยัน"
-
-#. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_template_attribute_line/product_template_attribute_line.xml:0
-#, python-format
-msgid "Enter a customized value"
-msgstr "ป้อนค่าที่กำหนดเอง"
 
 #. module: sale_product_configurator
 #: model:ir.model.fields,field_description:sale_product_configurator.field_sale_order_line__is_configurable_product
@@ -88,6 +97,12 @@ msgstr "สินค้าสามารถกำหนดค่าได้ห
 #: model:product.template,description_sale:sale_product_configurator.product_product_1_product_template
 msgid "Office chairs can harm your floor: protect it."
 msgstr "เก้าอี้สำนักงานสามารถทำร้ายพื้นของคุณได้: ปกป้องมัน"
+
+#. module: sale_product_configurator
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.optional_product_items
+msgid "Option not available"
+msgstr "ไม่มีตัวเลือก"
 
 #. module: sale_product_configurator
 #: model:ir.model.fields,field_description:sale_product_configurator.field_product_product__optional_product_ids
@@ -106,25 +121,14 @@ msgstr ""
 "เช่น สำหรับคอมพิวเตอร์: การรับประกันซอฟต์แวร์และอื่น ๆ )"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_list/product_list.xml:0
-#, python-format
-msgid "Price"
-msgstr "ราคา"
-
-#. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_list/product_list.xml:0
 #: model:ir.model,name:sale_product_configurator.model_product_template
-#, python-format
 msgid "Product"
 msgstr "สินค้า"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure_optional_products
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.optional_product_items
 msgid "Product Image"
 msgstr "รูปภาพสินค้า"
 
@@ -134,46 +138,31 @@ msgid "Product Variant"
 msgstr "ตัวแปรสินค้า"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_list/product_list.xml:0
-#, python-format
-msgid "Quantity"
-msgstr "ปริมาณ"
-
-#. module: sale_product_configurator
 #: model_terms:ir.ui.view,arch_db:sale_product_configurator.product_template_view_form
 msgid "Recommend when 'Adding to Cart' or quotation"
 msgstr "แนะนำเมื่อ 'เพิ่มในรถเข็น' หรือใบเสนอราคา"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.product_quantity_config
 msgid "Remove one"
-msgstr "นำออกหนึ่งรายการ"
-
-#. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
-msgid "Remove product"
-msgstr "ลบผลิตภัณฑ์"
+msgstr "นำออกหนึ่ง"
 
 #. module: sale_product_configurator
 #: model:ir.model,name:sale_product_configurator.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "รายการคำสั่งขาย"
+msgstr "ไลน์คำสั่งขาย"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product/product.xml:0
-#, python-format
-msgid "This option or combination of options is not available"
-msgstr "ไม่มีตัวเลือกนี้หรือตัวเลือกรวมกัน"
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure
+msgid "This combination does not exist."
+msgstr "ไม่มีการรวมนี้"
 
 #. module: sale_product_configurator
-#. odoo-javascript
-#: code:addons/sale_product_configurator/static/src/js/product_list/product_list.xml:0
-#, python-format
-msgid "Total:"
-msgstr "ทั้งหมด:"
+#: model_terms:ir.ui.view,arch_db:sale_product_configurator.configure
+msgid "This product has no valid combination."
+msgstr "สินค้านี้ไม่มีการรวมกันที่ถูกต้อง"
+
+#. module: sale_product_configurator
+#: model:product.template,uom_name:sale_product_configurator.product_product_1_product_template
+msgid "Units"
+msgstr "หน่วย"

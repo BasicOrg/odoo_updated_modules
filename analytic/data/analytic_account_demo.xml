@@ -2,6 +2,10 @@
 <odoo>
     <data noupdate="1">
         <!-- Analytic Plans -->
+        <record id="analytic_plan_projects" model="account.analytic.plan">
+            <field name="name">Projects</field>
+            <field name="default_applicability">optional</field>
+        </record>
         <record id="analytic_plan_departments" model="account.analytic.plan">
             <field name="name">Departments</field>
             <field name="default_applicability">optional</field>
@@ -82,11 +86,6 @@
         <record id="analytic_partners_camp_to_camp" model="account.analytic.account">
             <field name="name">Camp to Camp</field>
             <field name="partner_id" ref="base.res_partner_12"/>
-            <field name="plan_id" ref="analytic.analytic_plan_projects"/>
-        </record>
-        <record id="analytic_active_account" model="account.analytic.account">
-            <field name="name">Active account</field>
-            <field name="active" eval="True"/>
             <field name="plan_id" ref="analytic.analytic_plan_projects"/>
         </record>
         <record id="analytic_administratif" model="account.analytic.account">

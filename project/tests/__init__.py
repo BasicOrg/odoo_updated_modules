@@ -11,9 +11,7 @@ from . import test_project_recurrence
 from . import test_project_sharing
 from . import test_project_sharing_portal_access
 from . import test_project_sharing_ui
-from . import test_project_stage_multicompany
 from . import test_project_subtasks
-from . import test_project_tags_filter
 from . import test_project_task_type
 from . import test_project_ui
 from . import test_project_update_access_rights
@@ -26,6 +24,3 @@ from . import test_task_dependencies
 from . import test_task_follow
 from . import test_task_tracking
 from . import test_project_report
-from . import test_project_task_quick_create
-from . import test_task_state
-from . import test_project_task_mail_tracking_duration

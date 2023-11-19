@@ -6,8 +6,8 @@
         <field name="model">res.company</field>
         <field name="arch" type="xml">
             <field name="rule_type" position="after">
-                <field name="warehouse_id" options="{'no_create_edit': True}" domain="[('company_id', '=', id)]" invisible="rule_type not in ('sale_purchase', 'purchase')"/>
-                <field name="auto_validation" invisible="rule_type not in ('sale', 'purchase', 'sale_purchase')"/>
+                <field name="warehouse_id" options="{'no_create_edit': True}" domain="[('company_id', '=', id)]" attrs="{'invisible': [('rule_type', 'not in', ('sale_purchase', 'purchase'))]}"/>
+                <field name="auto_validation" attrs="{'invisible': [('rule_type', 'not in', ('sale', 'purchase', 'sale_purchase'))]}"/>
             </field>
         </field>
     </record>

@@ -7,10 +7,10 @@
             <form string="Regenerate Employee Work Entries">
                 <group>
                     <group>
-                        <field name="employee_ids" widget="many2many_avatar_user"/>
+                        <field name="employee_ids" widget="many2many_tags"/>
                         <label for="date_from"></label>
                         <div name="date_from">
-                            <div class="text-info" invisible="earliest_available_date_message == ''">
+                            <div class="text-info" attrs="{'invisible': [('earliest_available_date_message', '=', '')]}">
                                 <i class="fa fa-info-circle me-1" title="Hint"/>
                                 <field name="earliest_available_date_message" nolabel="1"/>
                             </div >
@@ -18,7 +18,7 @@
                         </div>
                         <label for="date_to"></label>
                         <div name="date_to">
-                            <div class="text-info" invisible="latest_available_date_message == ''">
+                            <div class="text-info" attrs="{'invisible': [('latest_available_date_message', '=', '')]}">
                                 <i class="fa fa-info-circle me-1" title="Hint"/>
                                 <field name="latest_available_date_message" nolabel="1"/>
                             </div>
@@ -27,11 +27,12 @@
                     </group>
                 </group>
                 <div>
-                    <span class="text-muted">Warning: The work entry regeneration will delete all manual changes on the selected period.</span>
+                    <span class="text-muted">Attention: Regenerating these work entries will result in all the manual
+                        configurations (work entry type, homeworking location, ...) to be lost.</span>
                 </div>
                 <field name="search_criteria_completed" invisible="1"/>
                 <field name="valid" invisible="1"/>
-                <div invisible="not search_criteria_completed or valid">
+                <div attrs="{'invisible': ['|', ('search_criteria_completed', '=', False), ('valid', '=', True)]}">
                     <div class="text-danger"><i class="fa fa-exclamation-triangle me-1" title="Warning"/>You are not allowed to regenerate validated work entries</div>
                     <field name="validated_work_entry_ids" widget="many2many" nolabel="1">
                         <tree string="Work Entries"
@@ -39,7 +40,7 @@
 
                               editable="bottom"
                               no_open="1" decoration-danger="state == 'validated'">
-                            <field name="state" column_invisible="True"/>
+                            <field name="state" invisible="1"/>
                             <field name="date_start"/>
                             <field name="date_stop"/>
                             <field name="work_entry_type_id"/>
@@ -50,14 +51,12 @@
                 <footer>
                     <button name="regenerate_work_entries"
                             string="Regenerate Work Entries" data-hotkey="q"
-                            class="btn btn-primary oe_highlight"
-                            type="object"
-                            invisible="not search_criteria_completed or not valid"/>
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|', ('search_criteria_completed', '=', False), ('valid', '=', False)]}"/>
                     <button name="regenerate_work_entries_disabled"
                             string="Regenerate Work Entries"
-                            class="btn btn-primary disabled"
-                            invisible="search_criteria_completed and valid"/>
-                    <button name="cancel_button" string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                            disabled="1"
+                            attrs="{'invisible': [('search_criteria_completed', '=', True), ('valid', '=', True)]}"/>
                 </footer>
             </form>
         </field>

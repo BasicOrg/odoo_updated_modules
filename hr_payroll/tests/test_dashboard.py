@@ -20,7 +20,7 @@ class TestDashboardUi(HttpCase):
         })
         user = mail_new_test_user(
             self.env, name="Laurie Poiret", login="dashboarder",
-            groups="base.group_user,hr_payroll.group_hr_payroll_manager,sign.group_sign_manager",
+            groups="base.group_user,hr_payroll.group_hr_payroll_manager",
             company_id=company.id)
         department = self.env['hr.department'].create({
             'name': 'Payroll',
@@ -31,7 +31,6 @@ class TestDashboardUi(HttpCase):
             'user_id': user.id,
             'company_id': company.id,
             'department_id': department.id,
-            'resource_calendar_id': company.resource_calendar_id.id,
         })
         self.start_tour("/", "payroll_dashboard_ui_tour", login='dashboarder', timeout=300)
 
@@ -106,12 +105,19 @@ class TestDashboard(TransactionCase):
             self.assertEqual(len(dashboard['batches']), len(batches_to_return))
             self.assertEqual(set(read['id'] for read in dashboard['batches']), set(batches_to_return.ids))
 
+    def test_dashboard_notes(self):
+        #Test that we get the payroll note tag
+        dashboard_note_tag = self.env.ref('hr_payroll.payroll_note_tag')
+        dashboard = self.env['hr.payslip'].with_user(self.user).get_payroll_dashboard_data(sections=['notes'])
+        self.assertTrue('notes' in dashboard)
+        self.assertEqual(dashboard['notes']['tag_id'], dashboard_note_tag.id)
+
     def test_dashboard_empty_stats(self):
         # Tests that when stats are empty they are tagged as sample
         dashboard = self.env['hr.payslip'].with_user(self.user).get_payroll_dashboard_data(sections=['stats'])
         self.assertTrue(all(stats['is_sample'] is True for stats in dashboard['stats']))
 
-    def _test_dashboard_stats(self):
+    def test_dashboard_stats(self):
         # Tests that the result inside of the stats dashboard is somewhat coherent
         emp_1, emp_2, emp_3 = self.env['hr.employee'].create([
             {'name': 'Employee 1', 'company_id': self.company.id},
@@ -119,7 +125,7 @@ class TestDashboard(TransactionCase):
             {'name': 'Employee 3', 'company_id': self.company.id}
         ])
         today = date.today()
-        self.env['hr.contract'].create([
+        contracts = self.env['hr.contract'].create([
             {
                 'name': 'Contract 1',
                 'employee_id': emp_1.id,
@@ -157,6 +163,7 @@ class TestDashboard(TransactionCase):
             elif section['id'] == 'employees':
                 employees = section
         self.assertTrue(all([employer_cost, employees]))
+        contract_3_this_year = contracts[2].date_start.year == today.year
 
         # Check employees monthly
         # Employees contains the number of unique employees that worked on that period
@@ -165,47 +172,14 @@ class TestDashboard(TransactionCase):
         self.assertEqual(employees_stat[1]['value'], 2)
         self.assertEqual(employees_stat[2]['value'], 3)
 
-        # Check yearly employees outside the function as the assertions are dependent on the freeze time date
-        return employees['data']['yearly']
+        # Check yearly
+        employees_stat = employees['data']['yearly']
+        self.assertEqual(employees_stat[0]['value'], 0)
+        self.assertEqual(employees_stat[1]['value'], 3 if contract_3_this_year else 2)
+        self.assertEqual(employees_stat[2]['value'], 3)
+
 
     def test_dashboard_stat_end_of_year(self):
-        # Tests the dashboard at the end of a year
+        # Tests the dashboard again but at the end of a year
         with freeze_time(date(2021, 12, 1)):
-            employees_stat = self._test_dashboard_stats()
-            self.assertEqual(employees_stat[0]['value'], 0)
-            self.assertEqual(employees_stat[1]['value'], 2)
-            self.assertEqual(employees_stat[2]['value'], 3)
-
-    def test_dashboard_stat_start_of_year(self):
-        # Tests the dashboard again but at the start of a year
-        with freeze_time(date(2021, 1, 1)):
-            employees_stat = self._test_dashboard_stats()
-            self.assertEqual(employees_stat[0]['value'], 1)
-            self.assertEqual(employees_stat[1]['value'], 3)
-            self.assertEqual(employees_stat[2]['value'], 3)
-
-    def test_dashboard_stat_middle_of_year(self):
-        # Tests the dashboard again but at the middle of the year
-        with freeze_time(date(2021, 6, 1)):
-            employees_stat = self._test_dashboard_stats()
-            self.assertEqual(employees_stat[0]['value'], 0)
-            self.assertEqual(employees_stat[1]['value'], 3)
-            self.assertEqual(employees_stat[2]['value'], 3)
-
-    def test_dashboard_no_english_language_access(self):
-        # Tests that we can access the dashboard when we don't have english language active
-        Payslip = self.env['hr.payslip']
-        # We remove english from every model of the app that needed it to get french as main and unique language
-        self.env['res.lang']._activate_lang('fr_FR')
-        fr_lang = self.env['res.lang'].search([['code', '=', 'fr_FR']])
-        if 'website' in self.env:
-            self.env['website'].search([]).write({'language_ids': fr_lang.ids, 'default_lang_id': fr_lang.id})
-        self.env['res.users'].search([]).write({'lang' : 'fr_FR'})
-        self.env['res.partner'].search([]).write({'lang' : 'fr_FR'})
-
-        self.env['res.lang'].search([['code', '=', 'en_US']]).active = False
-
-        # We only test that we won't receive a traceback when we don't have access to the english language
-        # The normal flow of the functions are tested above
-        Payslip.get_payroll_dashboard_data()
-        Payslip._get_dashboard_warnings()
+            self.test_dashboard_stats()

@@ -20,11 +20,11 @@ class TestRepair(HelpdeskCommon):
         ro_form = Form(self.env['repair.order'].with_context(default_lot_id=product_lot.id))
         ro_form.product_id = product
         ro_form.partner_id = company.partner_id
-        with ro_form.move_ids.new() as ro_line:
+        with ro_form.operations.new() as ro_line:
             ro_line.product_id = component
 
         repair_order = ro_form.save()
-        repair_order.action_validate()
+        repair_order.action_repair_confirm()
         repair_order.action_repair_start()
         repair_order.action_repair_end()
 
@@ -43,7 +43,7 @@ class TestRepair(HelpdeskCommon):
         ro_form.product_id = product
 
         repair_order = ro_form.save()
-        repair_order._action_repair_confirm()
+        repair_order.action_repair_confirm()
 
         self.assertEqual(ticket.repairs_count, 1, 'The ticket should be linked to a return')
         self.assertEqual(repair_order.id, ticket.repair_ids[0].id, 'The correct return should be referenced in the ticket')
@@ -52,6 +52,7 @@ class TestRepair(HelpdeskCommon):
         repair_order.action_repair_end()
 
         last_message = str(ticket.message_ids[0].body)
+        repair_text = self.env.ref("helpdesk.mt_ticket_repair_done").name
 
-        self.assertTrue(repair_order.display_name in last_message and 'Repair' in last_message,
+        self.assertTrue(repair_order.display_name in last_message and repair_text in last_message,
             'Repair validation should be logged on the ticket')

@@ -5,13 +5,12 @@ from lxml import etree
 from unittest.mock import patch
 
 from odoo.tools import misc
-from odoo.tests.common import tagged
+from odoo.tests import tagged
 from .common import TestL10nClEdiCommon, _check_with_xsd_patch
 
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
 @patch('odoo.tools.xml_utils._check_with_xsd', _check_with_xsd_patch)
-@tagged('post_install', '-at_install')
 class TestL10nClDte(TestL10nClEdiCommon):
     @patch('odoo.addons.l10n_cl_edi.models.l10n_cl_edi_util.L10nClEdiUtilMixin._get_seed_ws')
     def test_get_seed_none(self, get_seed_ws):

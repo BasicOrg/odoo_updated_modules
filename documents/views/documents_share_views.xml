@@ -46,34 +46,33 @@
                         <field name="can_upload" invisible="1"/>
                         <field name="type" invisible="1"/>
                         <field name="name" placeholder="Name of the share link"/>
-                        <field name="action" widget="radio" invisible="type == 'ids' or not can_upload"/>
+                        <field name="action" widget="radio" attrs="{'invisible' : ['|', ('type', 'in', ['ids']), ('can_upload', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="date_deadline" widget="date"/>
-                            <label for="email_drop" invisible="action == 'download'"/>
-                            <div invisible="action == 'download'">
+                            <label for="email_drop" attrs="{'invisible' : [('action', 'in', ['download'])] }"/>
+                            <div attrs="{'invisible' : [('action', 'in', ['download'])] }">
+                                <div class="o_row">
                                 <field name="email_drop"/>
-                                <div invisible="not email_drop" class="oe_inline">
-                                    <div name="alias_def">
+                                <div attrs="{'invisible': [('email_drop', '!=', True)]}" class="oe_inline">
+                                    <div name="alias_def" attrs="{'invisible': [('alias_domain', '=', False)]}">
                                         <field name="alias_id" class="oe_read_only oe_inline" required="0"/>
                                         <div class="oe_edit_only oe_inline" name="edit_alias" style="display: inline;">
-                                            <field name="alias_name" class="oe_inline"/>@
-                                            <field name="alias_domain_id" class="oe_inline" placeholder="e.g. domain.com"
-                                                   options="{'no_create': True, 'no_open': True}"/>
+                                            <field name="alias_name" class="oe_inline"/>@<field name="alias_domain" class="oe_inline" readonly="1"/>
                                         </div>
                                     </div>
-                                    <div class="content-group" invisible="alias_domain_id">
-                                        <button name="%(settings_action)d" icon="oi-arrow-right" type="action"
-                                                string="Choose or Configure Email Servers" class="btn btn-sm btn-link"/>
+                                    <div class="content-group" attrs="{'invisible': [('alias_domain', '!=', False)]}">
+                                        <button name="%(settings_action)d" icon="fa-arrow-right" type="action" string="Configure Email Servers" class="btn btn-sm btn-link"/>
                                     </div>
                                 </div>
+                                </div>
                             </div>
-                            <field name="folder_id" readonly="1" invisible="type == 'ids'"/>
-                            <field name="include_sub_folders" readonly="1" invisible="type == 'ids'"/>
-                            <field name="tag_ids" groups="base.group_no_one" widget="many2many_tags" readonly="1" invisible="type == 'ids'"/>
+                            <field name="folder_id" readonly="1" attrs="{'invisible' : [('type', 'in', ['ids'])] }"/>
+                            <field name="include_sub_folders" readonly="1" attrs="{'invisible' : [('type', 'in', ['ids'])] }"/>
+                            <field name="tag_ids" readonly="1" groups="base.group_no_one" widget="many2many_tags" attrs="{'invisible' : [('type', 'in', ['ids'])] }"/>
                         </group>
                     </group>
-                    <group string="Default values for uploaded documents" invisible="action == 'download'">
+                    <group string="Default values for uploaded documents" attrs="{'invisible' : [('action', 'in', ['download'])] }">
                         <group>
                             <field name="owner_id"/>
                             <field name="partner_id"/>
@@ -82,9 +81,9 @@
                             <field name="activity_option"/>
                         </group>
                     </group>
-                    <group string="Activity" name="next_activity" autofocus="autofocus" invisible="not activity_option">
+                    <group string="Activity" name="next_activity" autofocus="autofocus" attrs="{'invisible': [('activity_option', '=', False)]}">
                         <group>
-                            <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" required="activity_option"/>
+                            <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" attrs="{'required': [('activity_option', '=', True)]}"/>
                             <field name="activity_summary" placeholder="e.g. Discuss proposal"/>
                         </group>
                         <group>
@@ -101,9 +100,6 @@
                     </group>
                     <field name="document_ids" groups="base.group_no_one" readonly="1"/>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_ids"/>
-                </div>
             </form>
         </field>
     </record>
@@ -116,23 +112,19 @@
                 <sheet class="o_share_sheet">
                     <field name="type" invisible="1"/>
                     <field name="can_upload" invisible="1"/>
-                    <field name="links_count" invisible="1"/>
-                    <div class="alert alert-warning" role="alert" invisible="links_count == 0">
-                        Links cannot be shared and therefore will be excluded.
-                    </div>
                     <group class="o_url_group">
                         <field name="full_url" widget="CopyClipboardChar" readonly="1"/>
                     </group>
-                    <group invisible="type != 'ids'">
+                    <group attrs="{'invisible': [('type', '!=', 'ids')]}">
                         <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_edit_color': True}"/>
                     </group>
-                    <group invisible="type != 'domain'">
+                    <group attrs="{'invisible': [('type', '!=', 'domain')]}">
                         <group>
                             <label string="Shared" for="folder_id"/>
                             <div class="o_documents_content d-flex align-items-baseline">
-                                <i class="fa fa fa-folder text-primary me-2" title="Workspace"/>
+                                <i class="fa fa fa-folder text-odoo me-2" title="Workspace"/>
                                 <field name="folder_id" readonly="1" options="{'no_open': True}" class="w-100"/>
-                                <i class="fa fa-tag o_documents_tag_color ms-2" invisible="not tag_ids" title="Tags"/>
+                                <i class="fa fa-tag o_documents_tag_color ms-2" attrs="{'invisible': [('tag_ids', '=', [])]}" title="Tags"/>
                                 <field name="tag_ids" readonly="1" widget="many2many_tags" options="{'no_edit_color': True}"/>
                             </div>
                         </group>
@@ -143,25 +135,22 @@
                     <group>
                         <group>
                             <field name="name" placeholder="Name of the share link"/>
-                            <field name="action" widget="radio" invisible="type == 'ids' or not can_upload"/>
+                            <field name="action" widget="radio" attrs="{'invisible' : ['|', ('type', 'in', ['ids']), ('can_upload', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="date_deadline" widget="date" placeholder="No limit"/>
                         </group>
                     </group>
-                    <group string="Upload by email" invisible="action != 'downloadupload'">
-                        <div class="content-group" invisible="alias_domain_id" colspan="2">
-                            <button name="%(settings_action)d" icon="oi-arrow-right" type="action"
-                                    string="Choose or Configure Email Servers" class="btn btn-sm btn-link"/>
+                    <group string="Upload by email" attrs="{'invisible': [('action', '!=', 'downloadupload')]}">
+                        <div class="content-group" attrs="{'invisible': [('alias_domain', '!=', False)]}" colspan="2">
+                            <button name="%(settings_action)d" icon="fa-arrow-right" type="action" string="Configure Email Servers" class="btn btn-sm btn-link"/>
                         </div>
                         <label for="alias_name" string="Email Alias"/>
                         <span class="oe_edit_only">
-                            <field name="alias_name" class="oe_inline"/>@
-                            <field name="alias_domain_id" class="oe_inline" placeholder="e.g. domain.com"
-                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="alias_name" class="oe_inline"/>@<field name="alias_domain" class="oe_inline" readonly="1"/>
                         </span>
                     </group>
-                    <group string="Default values for uploaded documents" invisible="action == 'download'">
+                    <group string="Default values for uploaded documents" attrs="{'invisible' : [('action', 'in', ['download'])] }">
                         <group>
                             <field name="owner_id"/>
                             <field name="partner_id"/>
@@ -170,9 +159,9 @@
                             <field name="activity_option"/>
                         </group>
                     </group>
-                    <group string="Activity" name="next_activity" autofocus="autofocus" invisible="not activity_option">
+                    <group string="Activity" name="next_activity" autofocus="autofocus" attrs="{'invisible': [('activity_option', '=', False)]}">
                         <group>
-                            <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" required="activity_option"/>
+                            <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" attrs="{'required': [('activity_option', '=', True)]}"/>
                             <field name="activity_summary" placeholder="e.g. Discuss proposal"/>
                         </group>
                         <group>
@@ -185,8 +174,8 @@
                         </group>
                     </group>
                     <footer>
-                        <button special="save" data-hotkey="q" string="Share" class="btn btn-primary"/>
-                        <button special="cancel" string="Discard" class="btn btn-secondary" data-hotkey="x"/>
+                        <button special="save" data-hotkey="v" string="Share" class="btn btn-primary"/>
+                        <button special="cancel" string="Cancel" class="btn btn-secondary" data-hotkey="w"/>
                     </footer>
                 </sheet>
             </form>

@@ -6,10 +6,9 @@
         <field name="inherit_id" ref="hr_skills.resume_line_view_form"/>
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='display_type']" position="after">
-                <field name="channel_id"
-                    readonly="0"
-                    invisible="display_type != 'course'"/>
+            <xpath expr="//field[@name='line_type_id']" position="after">
+                <field name="channel_id" readonly="0"
+                    attrs="{'invisible': [('display_type', '!=', 'course')]}"/>
                 <field name="course_url" invisible="1"/>
             </xpath>
         </field>

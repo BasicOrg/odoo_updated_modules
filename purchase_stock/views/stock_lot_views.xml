@@ -8,7 +8,7 @@
             <xpath expr="//div[hasclass('oe_button_box')]/button" position="before">
                 <button class="oe_stat_button" name="action_view_po"
                         type="object" icon="fa-credit-card" help="Purchase Orders"
-                        invisible="purchase_order_count == 0 or not display_complete">
+                        attrs="{'invisible': ['|', ('purchase_order_count', '=', 0), ('display_complete', '=', False)]}">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">
                             <field name="purchase_order_count" widget="statinfo" nolabel="1" class="mr4"/>
@@ -19,14 +19,13 @@
             </xpath>
             <xpath expr="//group[@name='main_group']" position="after">
                 <group>
-                    <field name="purchase_order_ids" widget="many2many"
-                           readonly="True"
-                           invisible="not purchase_order_ids or display_complete">
+                    <field name="purchase_order_ids" widget="many2many" readonly="True"
+                           attrs="{'invisible': ['|', ('purchase_order_ids', '=', []), ('display_complete', '=', True)]}">
                         <tree>
                             <field name="name"/>
-                            <field name="partner_id" readonly="state in ['cancel', 'done', 'purchase']"/>
-                            <field name="date_order" readonly="state in ['cancel', 'done', 'purchase']"/>
-                            <field name="state" column_invisible="True"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                            <field name="state" invisible="1"/>
                         </tree>
                     </field>
                 </group>

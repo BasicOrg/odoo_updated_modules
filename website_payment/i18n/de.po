@@ -3,17 +3,17 @@
 # 	* website_payment
 # 
 # Translators:
-# Wil Odoo, 2023
-# Larissa Manderfeld, 2023
+# Martin Trigaux, 2022
+# Friederike Fasterling-Nesselbosch, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Larissa Manderfeld, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-10-04 09:26+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Friederike Fasterling-Nesselbosch, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -43,7 +43,7 @@ msgstr "<b>Kommentar:</b>"
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_mail_body
 msgid "<b>Donation Date:</b>"
-msgstr "<b>Datum der Spende:</b>"
+msgstr "<b>Spendendatum:</b>"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_mail_body
@@ -66,18 +66,13 @@ msgid "<b>Payment Method:</b>"
 msgstr "<b>Zahlungsmethode:</b>"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
-msgid "<option value=\"\">Country...</option>"
-msgstr "<option value=\"\">Land ...</option>"
-
-#. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_pay
 msgid ""
 "<strong>No suitable payment option could be found.</strong><br/>\n"
 "                                If you believe that it is an error, please contact the website administrator."
 msgstr ""
 "<strong>Es konnte keine geeignete Zahlungsmethode gefunden werden.</strong><br/>\n"
-"                                Wenn Sie glauben, dass es sich um einen Fehler handelt, wenden Sie sich bitte an den Administrator der Website."
+"                                Wenn Sie dies für einen Fehler halten, kontaktieren Sie bitte den Website Administrator."
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_pay
@@ -85,7 +80,6 @@ msgid "<strong>Warning</strong> The currency is missing or incorrect."
 msgstr "<strong>Warnung</strong> Währung fehlt oder ist nicht korrekt."
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/models/payment_transaction.py:0
 #, python-format
 msgid "A donation has been made on your website"
@@ -102,27 +96,26 @@ msgid "Activate Payments"
 msgstr "Zahlungen aktivieren"
 
 #. module: website_payment
-#: model:ir.actions.server,name:website_payment.action_activate_stripe
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
 msgid "Activate Stripe"
 msgstr "Stripe aktivieren"
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/options.js:0
 #, python-format
 msgid "Add a description here"
 msgstr "Hier eine Beschreibung hinzufügen"
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/options.js:0
 #, python-format
 msgid "Add new pre-filled option"
 msgstr "Neue vorausgefüllte Option hinzufügen"
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/options.xml:0
 #: code:addons/website_payment/static/src/snippets/s_donation/options.xml:0
 #, python-format
@@ -130,7 +123,7 @@ msgid "Amount"
 msgstr "Betrag"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid "Amount ("
 msgstr "Betrag ("
 
@@ -145,7 +138,7 @@ msgid "Caring for a baby for 1 month."
 msgstr "Für einen Monat ein Baby versorgen."
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/options.xml:0
 #, python-format
 msgid "Choose Your Amount"
@@ -157,38 +150,46 @@ msgid "Config Settings"
 msgstr "Konfigurationseinstellungen"
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/models/res_config_settings.py:0
 #, python-format
 msgid "Configure %s"
 msgstr "%s konfigurieren"
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#: model:ir.actions.server,name:website_payment.action_stripe_connect_account
+msgid "Connect to Stripe"
+msgstr "Mit Stripe verbinden"
+
+#. module: website_payment
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #: model:ir.model,name:website_payment.model_res_country
 #, python-format
 msgid "Country"
 msgstr "Land"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid ""
 "Country\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 msgstr ""
 "Land\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/controllers/portal.py:0
 #, python-format
 msgid "Country is required."
 msgstr "Land ist erforderlich."
 
 #. module: website_payment
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
+msgid "Country..."
+msgstr "Bitte Land auswählen..."
+
+#. module: website_payment
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/options.xml:0
 #: code:addons/website_payment/static/src/snippets/s_donation/options.xml:0
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_input
@@ -218,89 +219,74 @@ msgid "Display Options"
 msgstr "Optionen anzeigen"
 
 #. module: website_payment
-#. odoo-python
-#: code:addons/website_payment/controllers/portal.py:0
-#, python-format
-msgid "Donate"
-msgstr "Spenden"
-
-#. module: website_payment
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_button
 msgid "Donate Now"
 msgstr "Jetzt spenden"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_mail_body
-#: model_terms:ir.ui.view,arch_db:website_payment.snippets
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid "Donation"
 msgstr "Spende"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.snippets
-msgid "Donation Button"
-msgstr "„Spende“-Schaltfläche"
-
-#. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/controllers/portal.py:0
 #, python-format
 msgid "Donation amount must be at least %.2f."
 msgstr "Mindestspendenbetrag ist %.2f."
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/models/payment_transaction.py:0
 #, python-format
 msgid "Donation confirmation"
-msgstr "Bestätigung der Spende"
+msgstr "Spendenbestätigung"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_mail_body
 msgid "Donation notification"
-msgstr "Benachrichtigung über Spende"
+msgstr "Spendenbenachrichtigung"
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #, python-format
 msgid "Email"
 msgstr "E-Mail"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid ""
 "Email\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 msgstr ""
 "E-Mail\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #, python-format
 msgid "Email is invalid"
 msgstr "E-Mail ist ungültig"
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/controllers/portal.py:0
 #, python-format
 msgid "Email is required."
 msgstr "E-Mail ist erforderlich."
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #, python-format
 msgid "Field '%s' is mandatory"
-msgstr "Feld „%s“ ist erforderlich"
+msgstr "Feld '%s' ist erforderlich"
 
 #. module: website_payment
 #: model:ir.model.fields,field_description:website_payment.field_res_config_settings__first_provider_label
 msgid "First Provider Label"
-msgstr "Erstes Anbieterlabel"
+msgstr ""
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_options
@@ -316,7 +302,7 @@ msgstr "Ist Spende"
 #: model:ir.model.fields,field_description:website_payment.field_res_config_settings__is_stripe_supported_country
 #: model:ir.model.fields,field_description:website_payment.field_res_country__is_stripe_supported_country
 msgid "Is Stripe Supported Country"
-msgstr "Ist ein Land, das Stripe unterstützt"
+msgstr ""
 
 #. module: website_payment
 #: model:ir.model.fields,field_description:website_payment.field_payment_transaction__is_donation
@@ -339,23 +325,22 @@ msgid "Minimum"
 msgstr "Minimum"
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #, python-format
 msgid "Name"
 msgstr "Name"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid ""
 "Name\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 msgstr ""
 "Name\n"
-"                    <span class=\"s_website_form_mark\"> *</span>"
+"                            <span class=\"s_website_form_mark\"> *</span>"
 
 #. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/controllers/portal.py:0
 #, python-format
 msgid "Name is required."
@@ -375,7 +360,7 @@ msgstr "Ein Jahr in der Grundschule."
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_button
 msgid "One year in high school."
-msgstr "Ein Jahr in der Sekundarschule."
+msgstr "Ein Jahr Highschool"
 
 #. module: website_payment
 #: model:ir.model.fields.selection,name:website_payment.selection__res_config_settings__providers_state__other_than_paypal
@@ -383,14 +368,14 @@ msgid "Other than Paypal"
 msgstr "Außer Paypal"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid "Payment Details"
 msgstr "Zahlungsdetails"
 
 #. module: website_payment
 #: model:ir.model,name:website_payment.model_payment_provider
 msgid "Payment Provider"
-msgstr "Zahlungsanbieter"
+msgstr ""
 
 #. module: website_payment
 #: model:ir.model,name:website_payment.model_payment_transaction
@@ -398,14 +383,6 @@ msgid "Payment Transaction"
 msgstr "Zahlungstransaktion"
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
-#, python-format
-msgid "Payment processing failed"
-msgstr "Zahlungsverarbeitung fehlgeschlagen"
-
-#. module: website_payment
-#. odoo-python
 #: code:addons/website_payment/models/payment_transaction.py:0
 #, python-format
 msgid "Payment received from donation with following details:"
@@ -417,12 +394,18 @@ msgid "Payments"
 msgstr "Zahlungen"
 
 #. module: website_payment
+#: model:ir.model.fields,field_description:website_payment.field_res_config_settings__module_payment_paypal
+#: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
+msgid "Paypal - Express Checkout"
+msgstr "Paypal - Express Checkout"
+
+#. module: website_payment
 #: model:ir.model.fields.selection,name:website_payment.selection__res_config_settings__providers_state__paypal_only
 msgid "Paypal Only"
 msgstr "Nur Paypal"
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/000.js:0
 #, python-format
 msgid "Please select or enter an amount"
@@ -436,7 +419,7 @@ msgstr "Vorausgefüllte Optionen"
 #. module: website_payment
 #: model:ir.model.fields,field_description:website_payment.field_res_config_settings__providers_state
 msgid "Providers State"
-msgstr "Anbieterland"
+msgstr ""
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_options
@@ -444,9 +427,16 @@ msgid "Recipient Email"
 msgstr "Empfänger-E-Mail"
 
 #. module: website_payment
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
+#, python-format
+msgid "Server Error"
+msgstr "Server fehler"
+
+#. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
 msgid "Shop - Payment"
-msgstr "Shop - Zahlung"
+msgstr "Shop - Bezahlung"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_options
@@ -459,8 +449,8 @@ msgid "Small or large, your contribution is essential."
 msgstr "Ob klein oder groß, Ihr Beitrag zählt."
 
 #. module: website_payment
-#. odoo-javascript
-#: code:addons/website_payment/static/src/js/payment_form.js:0
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
 #, python-format
 msgid "Some information is missing to process your payment."
 msgstr "Zur Bearbeitung Ihrer Zahlung sind weitere Informationen nötig."
@@ -468,7 +458,7 @@ msgstr "Zur Bearbeitung Ihrer Zahlung sind weitere Informationen nötig."
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.s_donation_options
 msgid "Step"
-msgstr "Schritt"
+msgstr "Schrittweise Erhöhung"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
@@ -476,8 +466,14 @@ msgid ""
 "Stripe Connect is not available in your country, please use another payment "
 "provider."
 msgstr ""
-"Stripe Connect ist in Ihrem Land nicht verfügbar. Bitte verwenden Sie einen "
-"anderen Zahlungsanbieter."
+
+#. module: website_payment
+#: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
+msgid ""
+"Support most credit &amp; debit cards like Visa, Mastercard, Maestro, etc."
+msgstr ""
+"Unterstützt die meisten Kredit- und Debitkarten wie Visa, Mastercard, "
+"Maestro, etc."
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
@@ -494,7 +490,7 @@ msgid "Thank you for your donation of"
 msgstr "Danke für Ihre Spende in Höhe von"
 
 #. module: website_payment
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_payment/static/src/snippets/s_donation/000.js:0
 #, python-format
 msgid "The minimum donation amount is %s%s%s"
@@ -506,14 +502,28 @@ msgid "There is nothing to pay."
 msgstr "Es gibt keine ausstehenden Zahlungen."
 
 #. module: website_payment
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
+#, python-format
+msgid "Validation Error"
+msgstr "Prüfungsfehler"
+
+#. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
 msgid "View Alternatives"
-msgstr "Alternativen anzeigen"
+msgstr "Alternativen ansehen"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.res_config_settings_view_form
 msgid "View other providers"
 msgstr "Andere Anbieter anzeigen"
+
+#. module: website_payment
+#. openerp-web
+#: code:addons/website_payment/static/src/js/website_payment_form.js:0
+#, python-format
+msgid "We could not obtain payment fees."
+msgstr "Wir konnten keine Zahlungsgebühren erhalten."
 
 #. module: website_payment
 #: model:ir.model.fields,field_description:website_payment.field_payment_provider__website_id
@@ -523,19 +533,19 @@ msgstr "Website"
 #. module: website_payment
 #: model:mail.template,name:website_payment.mail_template_donation
 msgid "Website: Donation"
-msgstr "Website: Spende"
+msgstr ""
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid "Write us a comment"
 msgstr "Hinterlassen Sie einen Kommentar"
 
 #. module: website_payment
-#: model_terms:ir.ui.view,arch_db:website_payment.donation_information
+#: model_terms:ir.ui.view,arch_db:website_payment.payment_checkout
 msgid "Your comment"
 msgstr "Ihr Kommentar"
 
 #. module: website_payment
 #: model_terms:ir.ui.view,arch_db:website_payment.donation_mail_body
 msgid "made on"
-msgstr "gemacht am"
+msgstr ""

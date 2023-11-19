@@ -5,8 +5,8 @@
 <template id="lesson_content_quiz" inherit_id="website_slides.lesson_content_quiz">
     <xpath expr="//div[hasclass('o_wslides_js_lesson_quiz')]" position="attributes">
         <attribute name="t-att-data-price">product_info['price'] if product_info else None</attribute>
-        <attribute name="t-att-data-currency-name">product_info['currency'].name if product_info else None</attribute>
-        <attribute name="t-att-data-currency-symbol">product_info['currency'].symbol if product_info else None</attribute>
+        <attribute name="t-att-data-currency-name">product_info['currency_id'].name if product_info else None</attribute>
+        <attribute name="t-att-data-currency-symbol">product_info['currency_id'].symbol if product_info else None</attribute>
         <attribute name="t-att-data-has-discounted-price">product_info['has_discounted_price'] if product_info else None</attribute>
         <attribute name="t-att-data-product-id">slide.channel_id.product_id.id if slide.channel_id.product_id else None</attribute>
         <attribute name="t-att-data-list-price">product_info['list_price'] if product_info else None</attribute>
@@ -26,7 +26,7 @@
 </template>
 
 <template name="Buy Course To Access Resources or Interact Slide Detail" id="slide_content_detailed_buy_course" inherit_id="website_slides.slide_content_detailed">
-    <xpath expr="//div[hasclass('o_wslides_js_course_join') and hasclass('o_wslides_no_access')] //div[@t-else='']" position="before">
+    <xpath expr="//div[hasclass('o_wslides_js_course_join') and hasclass('o_wslides_no_access')]" position="inside">
         <span t-elif="slide.channel_id.enroll == 'payment'" class="text-muted me-auto border-start ps-3">
             <t t-call="website_sale_slides.course_buy_course_link">
                 <t t-set="for_resources" t-value="1"/>
@@ -58,8 +58,8 @@
 <template id="slide_fullscreen" inherit_id="website_slides.slide_fullscreen">
     <xpath expr="//div[hasclass('o_wslides_fs_main')]" position="attributes">
         <attribute name="t-att-data-price">product_info['price'] if product_info else None</attribute>
-        <attribute name="t-att-data-currency-name">product_info['currency'].name if product_info else None</attribute>
-        <attribute name="t-att-data-currency-symbol">product_info['currency'].symbol if product_info else None</attribute>
+        <attribute name="t-att-data-currency-name">product_info['currency_id'].name if product_info else None</attribute>
+        <attribute name="t-att-data-currency-symbol">product_info['currency_id'].symbol if product_info else None</attribute>
         <attribute name="t-att-data-has-discounted-price">product_info['has_discounted_price'] if product_info else None</attribute>
         <attribute name="t-att-data-product-id">slide.channel_id.product_id.id if product_info else None</attribute>
         <attribute name="t-att-data-list-price">product_info['list_price'] if product_info else None</attribute>
@@ -112,45 +112,20 @@
                 <!-- real price -->
                 <div class="oe_price fw-bold text-nowrap h2 my-2"
                      t-esc="product_info['price']"
-                     t-options="{'widget': 'monetary', 'display_currency': product_info['currency']}"/>
+                     t-options="{'widget': 'monetary', 'display_currency': product_info['currency_id']}"/>
                 <span itemprop="price" style="display:none;" t-esc="product_info['price']"/>
-                <span itemprop="priceCurrency" style="display:none;" t-esc="product_info['currency'].name"/>
+                <span itemprop="priceCurrency" style="display:none;" t-esc="product_info['currency_id'].name"/>
                 <!-- original discounted price, if any -->
                 <del t-att-class="'text-600 text-nowrap oe_default_price %s' % ('' if product_info['has_discounted_price'] else 'd-none')"
                      t-esc="product_info['list_price']"
-                     t-options="{'widget': 'monetary', 'display_currency': product_info['currency']}"/>
+                     t-options="{'widget': 'monetary', 'display_currency': product_info['currency_id']}"/>
             </div>
             <div class="css_non_editable_mode_hidden decimal_precision oe_price fw-bold text-nowrap h2 my-2"
-                 t-att-data-precision="str(product_info['currency'].decimal_places)">
-                <span t-field="channel.product_id.list_price" t-options="{'widget': 'monetary', 'display_currency': product_info['currency']}"/>
+                 t-att-data-precision="str(product_info['currency_id'].decimal_places)">
+                <span t-field="channel.product_id.list_price" t-options="{'widget': 'monetary', 'display_currency': product_info['currency_id']}"/>
             </div>
         </div>
-        <t t-if="not invite_preview and channel.prerequisite_channel_ids and not channel.prerequisite_user_has_completed">
-            <small t-if="len(channel.prerequisite_channel_ids) == 1" class="text-center mb-2">
-                Prerequisite:
-                <a t-attf-href="/slides/{{channel.prerequisite_channel_ids[0].id}}"
-                   t-out="channel.prerequisite_channel_ids[0].name"/>
-            </small>
-            <small t-else="" class="text-center mb-2">
-                There are some
-                <a href="#" class="o_wslides_js_prerequisite_course"
-                   t-att-data-channels="json.dumps([
-                      {'course_id': course.id, 'course_name': course.name}
-                      for course in channel.prerequisite_channel_ids]
-                   )">
-                    prerequisite courses.
-                </a>
-            </small>
-        </t>
-        <t t-if="invite_preview">
-            <a type="button" class="btn btn-primary text-uppercase ms-2"
-                t-att-aria-label="'Sign up' if is_partner_without_user else 'Log in'"
-                t-attf-href="/slides/#{channel.id}/identify?#{keep_query('invite_partner_id', 'invite_hash')}">
-                <t t-if="is_partner_without_user">Sign up</t>
-                <t t-else="">Log in</t>
-            </a>
-        </t>
-        <div t-else="" class="oe_website_sale">
+        <div class="oe_website_sale">
             <div class="add_to_cart_button">
                 <form action="/shop/cart/update" method="POST">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
@@ -175,13 +150,13 @@
 <template name="Display 'Buy Now'" id="course_option_buy_course_now" inherit_id="website_sale_slides.course_buy_course_button" active="False">
     <xpath expr="//div[hasclass('add_to_cart_button')]" position="before">
         <div class="mb-1">
-            <a role="button" class="post_link btn btn-primary d-block" t-attf-href="/shop/cart/update?product_id={{channel.product_id.id}}&amp;express=1">
+            <a role="button" class="post_link btn btn-primary btn-block" t-attf-href="/shop/cart/update?product_id={{channel.product_id.id}}&amp;express=1">
                 <i class="fa fa-bolt"></i> Buy Now
             </a>
         </div>
     </xpath>
     <xpath expr="//div[hasclass('add_to_cart_button')]//a[@id='add_to_cart']" position="attributes">
-        <attribute name="class">btn btn-outline-primary d-block js_check_product o_js_add_to_cart a-submit</attribute>
+        <attribute name="class">btn btn-outline-primary btn-block js_check_product o_js_add_to_cart a-submit</attribute>
     </xpath>
 </template>
 

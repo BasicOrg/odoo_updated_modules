@@ -2,7 +2,7 @@
 
 import { click, getFixture, patchDate, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-const { DateTime } = luxon;
+
 let target;
 
 QUnit.module("Planning.planning_calendar_tests", ({ beforeEach }) => {
@@ -39,8 +39,8 @@ QUnit.module("Planning.planning_calendar_tests", ({ beforeEach }) => {
                         {
                             id: 1,
                             name: "First Record",
-                            start: DateTime.now().toFormat("yyyy-MM-dd HH':00:00'"),
-                            stop: DateTime.now().plus({hours:4}).toFormat("yyyy-MM-dd HH':00:00'"),
+                            start: moment().format("YYYY-MM-DD HH:00:00"),
+                            stop: moment().add(4, "hours").format("YYYY-MM-DD HH:00:00"),
                             resource_id: 1,
                             color: 7,
                             role_id: 1,
@@ -49,8 +49,8 @@ QUnit.module("Planning.planning_calendar_tests", ({ beforeEach }) => {
                         {
                             id: 2,
                             name: "Second Record",
-                            start: DateTime.now().plus({days:2}).toFormat("yyyy-MM-dd HH':00:00'"),
-                            stop: DateTime.now().plus({hours:4, days:2}).toFormat("yyyy-MM-dd HH':00:00'"),
+                            start: moment().add(2, "days").format("YYYY-MM-DD HH:00:00"),
+                            stop: moment().add(2, "days").add(4, "hours").format("YYYY-MM-DD HH:00:00"),
                             resource_id: 2,
                             color: 9,
                             role_id: 2,
@@ -104,7 +104,7 @@ QUnit.module("Planning.planning_calendar_tests", ({ beforeEach }) => {
             mockRPC: function (route, args) {
                 if (args.method === "action_copy_previous_week") {
                     assert.step("copy_previous_week()");
-                    return Promise.resolve(false);
+                    return Promise.resolve({});
                 }
             },
         });
@@ -119,13 +119,13 @@ QUnit.module("Planning.planning_calendar_tests", ({ beforeEach }) => {
             },
         });
 
-        await click(target.querySelector(".o_control_panel_main_buttons .d-none.d-xl-inline-flex .o_button_copy_previous_week"));
+        await click(target.querySelector(".o_button_copy_previous_week"));
         assert.verifySteps(["copy_previous_week()"], "verify action_copy_previous_week() invoked.");
 
         // deselect "Maganlal" from Assigned to
         await click(target.querySelector(".o_calendar_filter_item[data-value='2'] > input"));
         assert.containsN(target, ".fc-event", 1, "should display 1 events on the week");
 
-        await click(target.querySelector(".o_control_panel_main_buttons .d-none.d-xl-inline-flex .o_button_send_all"));
+        await click(target.querySelector(".o_button_send_all"));
     });
 });

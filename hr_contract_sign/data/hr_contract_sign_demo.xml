@@ -89,13 +89,13 @@
         <field name="height" type="float">0.015</field>
     </record>
 
-    <record id="offboard_sign_termination_request" model="mail.activity.plan.template">
+    <record id="offboard_sign_termination_request" model="hr.plan.activity.type">
         <field name="summary">Termination Request</field>
         <field name="activity_type_id" ref="sign.mail_activity_data_signature_request"/>
         <field name="sign_template_id" ref="template_sign_termination"/>
         <field name="employee_role_id" ref="sign.sign_item_role_employee"/>
         <field name="plan_id" ref="hr.offboarding_plan"/>
-        <field name="responsible_type">other</field>
+        <field name="responsible">other</field>
         <field name="responsible_id" ref="base.user_demo"/>
     </record>
 </odoo>

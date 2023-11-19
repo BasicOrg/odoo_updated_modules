@@ -66,12 +66,12 @@ def ensure_account_is_set_up(account, require_marketplaces=True):
     """
     # Check that the API keys and tokens are set.
     if not account.refresh_token or not account.seller_key:
-        raise UserError(_("You first need to authorize the Amazon account %s.", account.name))
+        raise UserError(_("You first need to authorize the Amazon account %s.") % account.name)
     # Check that the marketplaces are set when required.
     if require_marketplaces and not account.active_marketplace_ids:
         raise UserError(_(
-            "You first need to set the marketplaces to synchronize for the Amazon account %s.",
-            account.name))
+            "You first need to set the marketplaces to synchronize for the Amazon account %s."
+        ) % account.name)
 
 
 #=== PROXY COMMUNICATIONS ===#
@@ -106,10 +106,10 @@ def make_proxy_request(endpoint, env, payload=None):
                 error_code, error_description, pformat(data)
             )
             raise ValidationError(
-                _("Error code: %s; description: %s", error_code, error_description)
+                _("Error code: %s; description: %s") % (error_code, error_description)
             )
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        _logger.warning("Could not establish the connection to the proxy.", exc_info=True)
+        _logger.exception("Could not establish the connection to the proxy.")
         raise ValidationError(_("Could not establish the connection to the proxy."))
     return response.json()
 
@@ -182,14 +182,12 @@ def make_sp_api_request(account, operation, path_parameter='', payload=None, met
                     error_code, error_message, pformat(payload)
                 )
                 raise ValidationError(_(
-                    "The communication with the API failed.\nError code: %s; description: %s",
-                    error_code, error_message))
+                    "The communication with the API failed.\nError code: %s; description: %s"
+                ) % (error_code, error_message))
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
         _logger.exception("Unable to reach endpoint at %s", url)
         raise ValidationError(_("Could not establish the connection to the API."))
-    json_response = response.json()
-    _logger.info("SPAPI response for operation %s: %s", operation, pformat(json_response))
-    return json_response
+    return response.json()
 
 
 def refresh_access_token(account):
@@ -437,39 +435,6 @@ def submit_feed(account, feed, feed_type):
     _upload_feed_data()
     feed_id = _create_feed()
     return feed_id
-
-
-def get_feed_document(account, document_ref):
-    """ Return the document corresponding to the provided document reference.
-
-    The document reference is first used to fetch the URL of the document; the document is then read
-    directly from that URL.
-
-    :param amazon.account account: The Amazon account on behalf of which the document is fetched.
-    :param str document_ref: The reference of the document.
-    :return: The report content in an `ElementTree` element.
-    :raise ValidationError: If an HTTP error occurs.
-    """
-    response_content = make_sp_api_request(account, 'getFeedDocument', path_parameter=document_ref)
-    document_url = response_content['url']
-    try:
-        response = requests.get(document_url, timeout=60)
-        response.raise_for_status()
-        report_content = ElementTree.fromstring(response.content).find('Message/ProcessingReport')
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        _logger.exception(
-            "Could not establish the connection to download the feed document at %s", document_url
-        )
-        raise ValidationError(_("Could not establish the connection to the API."))
-    except requests.exceptions.HTTPError:
-        _logger.exception(
-            "Invalid API request while downloading the feed document at %s", document_url
-        )
-        raise ValidationError(_("The communication with the API failed."))
-    except ElementTree.ParseError:
-        _logger.exception("Could not parse the feed document at %s", document_url)
-        raise ValidationError(_("Could not process the feed document send by Amazon."))
-    return report_content
 
 
 #=== HELPERS ====#

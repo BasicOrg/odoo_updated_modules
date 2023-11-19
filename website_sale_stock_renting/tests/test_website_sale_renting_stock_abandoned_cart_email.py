@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
-from odoo import fields
 from odoo.addons.website_sale_stock.tests.test_website_sale_stock_abandoned_cart_email import TestWebsiteSaleCartAbandonedCommon
 from odoo.tests.common import tagged
 
@@ -22,27 +21,30 @@ class TestWebsiteSaleStockRentingAbandonedCartEmail(TestWebsiteSaleCartAbandoned
             'rent_ok': True,
             'allow_out_of_stock_order': False
         })
-        renting_product_product = renting_product_template.product_variant_id
-        now = fields.Datetime.now()
+        renting_product_product = self.env['product.product'].create({
+            'name': 'renting_product_product',
+            'product_tmpl_id': renting_product_template.id,
+        })
         order_line = [[0, 0, {
             'product_id': renting_product_product.id,
             'product_uom_qty': 1,
+            'start_date': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'return_date': datetime.utcnow() + relativedelta(days=1),
+            'is_rental': True,
         }]]
         customer = self.env['res.partner'].create({
             'name': 'a',
             'email': 'a@example.com',
         })
-        order_vals = {
+        abandoned_sale_order_with_not_available_rental = self.env['sale.order'].create({
             'partner_id': customer.id,
             'website_id': website.id,
             'state': 'draft',
-            'date_order': now - relativedelta(hours=website.cart_abandoned_delay, minutes=1),
-            'order_line': order_line,
-            'rental_start_date': now - relativedelta(hours=website.cart_abandoned_delay, minutes=1),
-            'rental_return_date': now + relativedelta(days=1),
-        }
-        abandoned_sale_order_with_not_available_rental = self.env['sale.order'].create(order_vals)
-        abandoned_sale_order_with_not_available_rental.order_line.update({'is_rental': True})
+            'date_order': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'order_line': order_line
+        })
 
         self.assertFalse(self.send_mail_patched(abandoned_sale_order_with_not_available_rental.id))
         # Reset cart_recovery sent state
@@ -60,11 +62,40 @@ class TestWebsiteSaleStockRentingAbandonedCartEmail(TestWebsiteSaleCartAbandoned
 
         # Test if the email is not sent if the rental is not available anymore
 
-        sale_order = self.env['sale.order'].create(order_vals)
-        sale_order.order_line.update({'is_rental': True})
-        sale_order.state = 'sale'
+        order_line = [[0, 0, {
+            'product_id': renting_product_product.id,
+            'product_uom_qty': 1,
+            'start_date': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'return_date': datetime.utcnow() + relativedelta(days=1),
+            'is_rental': True,
+        }]]
 
-        sale_order2 = self.env['sale.order'].create(order_vals)
-        sale_order2.order_line.update({'is_rental': True})
+        sale_order = self.env['sale.order'].create({
+            'partner_id': customer.id,
+            'website_id': website.id,
+            'state': 'draft',
+            'date_order': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'order_line': order_line
+        })
+        sale_order.state = 'sale'
+        order_line = [[0, 0, {
+            'product_id': renting_product_product.id,
+            'product_uom_qty': 1,
+            'start_date': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'return_date': datetime.utcnow() + relativedelta(days=1),
+            'is_rental': True,
+        }]]
+
+        sale_order2 = self.env['sale.order'].create({
+            'partner_id': customer.id,
+            'website_id': website.id,
+            'state': 'draft',
+            'date_order': (datetime.utcnow() - relativedelta(hours=website.cart_abandoned_delay)) - relativedelta(
+                minutes=1),
+            'order_line': order_line
+        })
 
         self.assertFalse(self.send_mail_patched(sale_order2.id))

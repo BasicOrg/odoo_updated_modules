@@ -6,8 +6,7 @@
             <field name="model_id" ref="hr.model_hr_employee"/>
             <field name="subject">{{ object.name }}, your personal documents access link is available</field>
             <field name="email_from">{{ user.email_formatted }}</field>
-            <field name="partner_to"></field>
-            <field name="email_to">{{ object.private_email }}</field>
+            <field name="partner_to">{{ object.address_home_id.id }}</field>
             <field name="description">Sent manually when recording an employee departure</field>
             <field name="body_html" type="html">
     <table border="0" cellpadding="0" cellspacing="0" style="width:100%; margin:0px auto;"><tbody>
@@ -27,7 +26,7 @@
         </td></tr>
     </tbody></table>
                 </field>
-                <field name="lang">{{ object.lang }}</field>
+                <field name="lang">{{ object.address_home_id.lang }}</field>
                 <field name="auto_delete" eval="True"/>
           </record>
     </data>

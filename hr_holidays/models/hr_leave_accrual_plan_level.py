@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import datetime
+import calendar
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.date_utils import get_timedelta
 
 
 DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
@@ -15,7 +19,6 @@ DAY_SELECT_SELECTION_NO_LAST = tuple(zip(DAY_SELECT_VALUES, (str(i) for i in ran
 def _get_selection_days(self):
     return DAY_SELECT_SELECTION_NO_LAST + (("last", _("last day")),)
 
-
 class AccrualPlanLevel(models.Model):
     _name = "hr.leave.accrual.level"
     _description = "Accrual Plan Level"
@@ -24,28 +27,28 @@ class AccrualPlanLevel(models.Model):
     sequence = fields.Integer(
         string='sequence', compute='_compute_sequence', store=True,
         help='Sequence is generated automatically by start time delta.')
-    accrual_plan_id = fields.Many2one('hr.leave.accrual.plan', "Accrual Plan", required=True, ondelete="cascade")
-    accrued_gain_time = fields.Selection(related='accrual_plan_id.accrued_gain_time')
+    accrual_plan_id = fields.Many2one('hr.leave.accrual.plan', "Accrual Plan", required=True)
     start_count = fields.Integer(
         "Start after",
-        help="The accrual starts after a defined period from the allocation start date. This field defines the number of days, months or years after which accrual is used.", default="1")
+        help="The accrual starts after a defined period from the employee start date. This field defines the number of days, months or years after which accrual is used.", default="1")
     start_type = fields.Selection(
-        [('day', 'Days'),
-         ('month', 'Months'),
-         ('year', 'Years')],
+        [('day', 'day(s)'),
+         ('month', 'month(s)'),
+         ('year', 'year(s)')],
         default='day', string=" ", required=True,
         help="This field defines the unit of time after which the accrual starts.")
+    is_based_on_worked_time = fields.Boolean("Based on worked time",
+        help="If checked, the rate will be prorated on time off type where type is set on Working Time in the configuration.")
 
     # Accrue of
     added_value = fields.Float(
-        "Rate", digits=(16, 5), required=True, default=1,
+        "Rate", required=True,
         help="The number of hours/days that will be incremented in the specified Time Off Type for every period")
-    added_value_type = fields.Selection([
-        ('day', 'Days'),
-        ('hour', 'Hours')
-    ], compute="_compute_added_value_type", store=True, required=True, default="day")
+    added_value_type = fields.Selection(
+        [('days', 'Days'),
+         ('hours', 'Hours')],
+        default='days', required=True)
     frequency = fields.Selection([
-        ('hourly', 'Hourly'),
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
         ('bimonthly', 'Twice a month'),
@@ -107,23 +110,23 @@ class AccrualPlanLevel(models.Model):
     yearly_day = fields.Integer(default=1)
     yearly_day_display = fields.Selection(
         _get_selection_days, compute='_compute_days_display', inverse='_inverse_yearly_day_display')
-    cap_accrued_time = fields.Boolean("Cap accrued time", default=True)
     maximum_leave = fields.Float(
-        'Limit to', digits=(16, 2), compute="_compute_maximum_leave", readonly=False, store=True,
-        help="Choose a cap for this accrual.")
+        'Limit to', required=False, default=100,
+        help="Choose a cap for this accrual. 0 means no cap.")
+    parent_id = fields.Many2one(
+        'hr.leave.accrual.level', string="Previous Level",
+        help="If this field is empty, this level is the first one.")
     action_with_unused_accruals = fields.Selection(
-        [('lost', 'None. Accrued time reset to 0'),
-         ('all', 'All accrued time carried over'),
-         ('maximum', 'Carry over with a maximum')],
-        string="Carry over",
-        default='all', required=True)
+        [('postponed', 'Transferred to the next year'),
+         ('lost', 'Lost')],
+        string="At the end of the calendar year, unused accruals will be",
+        default='postponed', required='True')
     postpone_max_days = fields.Integer("Maximum amount of accruals to transfer",
-        help="Set a maximum of accruals an allocation keeps at the end of the year.")
-    can_modify_value_type = fields.Boolean(compute="_compute_can_modify_value_type")
+        help="Set a maximum of days an allocation keeps at the end of the year. 0 for no limit.")
 
     _sql_constraints = [
         ('check_dates',
-         "CHECK( (frequency IN ('daily', 'hourly')) or"
+         "CHECK( (frequency = 'daily') or"
          "(week_day IS NOT NULL AND frequency = 'weekly') or "
          "(first_day > 0 AND second_day > first_day AND first_day <= 31 AND second_day <= 31 AND frequency = 'bimonthly') or "
          "(first_day > 0 AND first_day <= 31 AND frequency = 'monthly')or "
@@ -145,19 +148,6 @@ class AccrualPlanLevel(models.Model):
         for level in self:
             level.sequence = level.start_count * start_type_multipliers[level.start_type]
 
-    @api.depends('accrual_plan_id', 'accrual_plan_id.level_ids', 'accrual_plan_id.time_off_type_id')
-    def _compute_can_modify_value_type(self):
-        for level in self:
-            level.can_modify_value_type = not level.accrual_plan_id.time_off_type_id and level.accrual_plan_id.level_ids and level.accrual_plan_id.level_ids[0] == level
-
-    @api.depends('accrual_plan_id', 'accrual_plan_id.level_ids', 'accrual_plan_id.time_off_type_id')
-    def _compute_added_value_type(self):
-        for level in self:
-            if level.accrual_plan_id.time_off_type_id:
-                level.added_value_type = "day" if level.accrual_plan_id.time_off_type_id.request_unit in ["day", "half_day"] else "hour"
-            elif level.accrual_plan_id.level_ids and level.accrual_plan_id.level_ids[0] != level:
-                level.added_value_type = level.accrual_plan_id.level_ids[0].added_value_type
-
     @api.depends('first_day', 'second_day', 'first_month_day', 'second_month_day', 'yearly_day')
     def _compute_days_display(self):
         days_select = _get_selection_days(self)
@@ -167,11 +157,6 @@ class AccrualPlanLevel(models.Model):
             level.first_month_day_display = days_select[min(level.first_month_day - 1, 28)][0]
             level.second_month_day_display = days_select[min(level.second_month_day - 1, 28)][0]
             level.yearly_day_display = days_select[min(level.yearly_day - 1, 28)][0]
-
-    @api.depends('cap_accrued_time')
-    def _compute_maximum_leave(self):
-        for level in self:
-            level.maximum_leave = 100 if level.cap_accrued_time else 0
 
     def _inverse_first_day_display(self):
         for level in self:
@@ -213,7 +198,7 @@ class AccrualPlanLevel(models.Model):
         Returns the next date with the given last call
         """
         self.ensure_one()
-        if self.frequency in ['hourly', 'daily']:
+        if self.frequency == 'daily':
             return last_call + relativedelta(days=1)
         elif self.frequency == 'weekly':
             daynames = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
@@ -262,7 +247,7 @@ class AccrualPlanLevel(models.Model):
         Contrary to `_get_next_date` this function will return the 01/02 if that date is given
         """
         self.ensure_one()
-        if self.frequency in ['hourly', 'daily']:
+        if self.frequency == 'daily':
             return last_call
         elif self.frequency == 'weekly':
             daynames = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']

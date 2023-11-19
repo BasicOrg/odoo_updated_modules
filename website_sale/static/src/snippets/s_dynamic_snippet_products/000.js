@@ -1,8 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_sale.s_dynamic_snippet_products', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import DynamicSnippetCarousel from "@website/snippets/s_dynamic_snippet_carousel/000";
-import wSaleUtils from "@website_sale/js/website_sale_utils";
+const publicWidget = require('web.public.widget');
+const DynamicSnippetCarousel = require('website.s_dynamic_snippet_carousel');
+var wSaleUtils = require('website_sale.utils');
 
 const DynamicSnippetProducts = DynamicSnippetCarousel.extend({
     selector: '.s_dynamic_snippet_products',
@@ -115,7 +116,6 @@ const DynamicSnippetProductsCard = publicWidget.Widget.extend({
     init(root, options) {
         const parent = options.parent || root;
         this._super(parent, options);
-        this.rpc = this.bindService("rpc");
     },
 
     start() {
@@ -128,18 +128,21 @@ const DynamicSnippetProductsCard = publicWidget.Widget.extend({
 
     /**
      * Event triggered by a click on the Add to cart button
-     *
-     * @param {OdooEvent} ev
+     * 
+     * @param {OdooEvent} ev 
      */
     async _onClickAddToCart(ev) {
         const $card = $(ev.currentTarget).closest('.card');
-        const data = await this.rpc("/shop/cart/update_json", {
-            product_id: $card.find('input[data-product-id]').data('product-id'),
-            add_qty: 1,
-            display: false,
+        const data = await this._rpc({
+            route: "/shop/cart/update_json",
+            params: {
+                product_id: $card.find('input[data-product-id]').data('product-id'),
+                add_qty: 1
+            },
         });
+        const $navButton = $('header .o_wsale_my_cart').first();
+        await wSaleUtils.animateClone($navButton, $(ev.currentTarget).parents('.card'), 25, 40);
         wSaleUtils.updateCartNavBar(data);
-        wSaleUtils.showCartNotification(this.call.bind(this), data.notification_info);
         if (this.add2cartRerender) {
             this.trigger_up('widgets_start_request', {
                 $target: this.$el.closest('.s_dynamic'),
@@ -154,8 +157,11 @@ const DynamicSnippetProductsCard = publicWidget.Widget.extend({
      */
     async _onRemoveFromRecentlyViewed(ev) {
         const $card = $(ev.currentTarget).closest('.card');
-        await this.rpc("/shop/products/recently_viewed_delete", {
-            product_id: $card.find('input[data-product-id]').data('product-id'),
+        await this._rpc({
+            route: "/shop/products/recently_viewed_delete",
+            params: {
+                product_id: $card.find('input[data-product-id]').data('product-id'),
+            },
         });
         this.trigger_up('widgets_start_request', {
             $target: this.$el.closest('.s_dynamic'),
@@ -166,4 +172,5 @@ const DynamicSnippetProductsCard = publicWidget.Widget.extend({
 publicWidget.registry.dynamic_snippet_products_cta = DynamicSnippetProductsCard;
 publicWidget.registry.dynamic_snippet_products = DynamicSnippetProducts;
 
-export default DynamicSnippetProducts;
+return DynamicSnippetProducts;
+});

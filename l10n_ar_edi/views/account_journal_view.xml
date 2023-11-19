@@ -11,7 +11,7 @@
             </form>
             <sheet position="before">
                 <header>
-                    <button name="l10n_ar_check_afip_pos_number" string="Check Available AFIP PoS" help="Consult in AFIP the available numbers we can use to configure the electronic journal" type="object" invisible="not l10n_ar_afip_ws"  groups="base.group_no_one"/>
+                    <button name="l10n_ar_check_afip_pos_number" string="Check Available AFIP PoS" help="Consult in AFIP the available numbers we can use to configure the electronic journal" type="object" attrs="{'invisible':[('l10n_ar_afip_ws', '=', False)]}"  groups="base.group_no_one"/>
                 </header>
             </sheet>
         </field>

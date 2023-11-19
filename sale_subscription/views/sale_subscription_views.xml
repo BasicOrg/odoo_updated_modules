@@ -1,11 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Action Show all sales documents related to a subscription (upsells, renew etc)-->
+    <record id="sale_order_view_tree_subscription" model="ir.ui.view">
+        <field name="name">sale.order.list.subscription</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Orders" class="o_sale_order" decoration-info="state in ['draft', 'sent']" decoration-muted="state == 'cancel'">
+                <field name="message_needaction" invisible="1"/>
+                <field name="name" string="Order Number" decoration-bf="1"/>
+                <field name="state"
+                    decoration-success="state == 'sale' or state == 'done'"
+                    decoration-info="state == 'draft' or state == 'sent'"
+                    widget="badge"/>
+                <field name="subscription_management"/>
+                <field name="date_order"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                <field name="invoice_status"/>
+                <field name="currency_id" invisible="1"/>
+           </tree>
+        </field>
+    </record>
+
+    <record id="sale_order_log_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.log.tree</field>
+        <field name="model">sale.order.log</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="event_type == '2_snapshot'" decoration-success="event_type == '1_change' and amount_signed &gt; 0" decoration-danger="event_type == '3_churn'" decoration-warning="event_type == '1_change' and amount_signed &lt; 0" editable="bottom">
+                <field name="order_id"/>
+                <field name="event_date"/>
+                <field name="event_type"/>
+                <field name="user_id"/>
+                <field name="team_id"/>
+                <field name="amount_signed"/>
+                <field name="recurring_monthly"/>
+                <field name="category" groups="base.group_no_one"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_order_log_view_graph" model="ir.ui.view">
+        <field name="name">sale.order.log.graph</field>
+        <field name="model">sale.order.log</field>
+        <field name="arch" type="xml">
+            <graph string="MRR Analysis" disable_linking="1" sample="1" stacked="0">
+                <field name="order_id"/>
+                <field name="event_type"/>
+                <field name="event_date" interval="day"/>
+                <field name="amount_signed" type="measure"/>
+                <field name="recurring_monthly" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_sale_order_log" model="ir.actions.act_window">
+        <field name="name">MRR Analysis</field>
+        <field name="view_mode">tree,graph,form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.log</field>
+    </record>
 
     <!--  SO Lines  -->
+    <record id="sale_order_line_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.tree.sale.subscription</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="pricing_id" string="Recurrence" options="{'no_open': True}"/>
+            </field>
+
+        </field>
+    </record>
 
     <record id="action_sale_order_lines" model="ir.actions.act_window">
         <field name="name">Sale Order Lines</field>
         <field name="view_mode">tree,kanban,form</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order.line</field>
     </record>
 
@@ -20,29 +93,28 @@
                 <field name="user_id"/>
                 <field name="team_id"/>
                 <field name="order_line" string="Product" filter_domain="[('order_line.product_id', 'ilike', self)]"/>
-                <field name="sale_order_template_id" groups="sales_team.group_sale_manager"/>
+                <field name="sale_order_template_id"/>
                 <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
-                <filter name="my_subscriptions" string="My Subscriptions" domain="[('user_id','=',uid), ('subscription_state', '!=', False)]"/>
+                <filter name="my_subscriptions" string="My Orders" domain="[('user_id','=',uid), ('is_subscription', '=', True)]"/>
                 <filter string="Unassigned" name="contracts_not_assigned" help="Subscriptions that are not assigned to an account manager." domain="[('user_id', '=', False)]"/>
                 <separator/>
-                <filter name="quotations" string="Quotations" domain="[('subscription_state','in', ['1_draft', '2_renewal'])]"/>
-                <filter name="progress" string="In Progress" domain="[('subscription_state','=', '3_progress')]"/>
-                <filter name="paused" string="Paused" domain="[('subscription_state','=', '4_paused')]"/>
-                <filter name="churned" string="Churned" domain="[('subscription_state','=', '6_churn')]"/>
+                <filter name="is_subscription" string="Subscriptions" domain="[('is_subscription', '=', True)]"/>
                 <separator/>
-                <filter name="to_renew" string="To Invoice" domain="[('next_invoice_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('subscription_state', 'in', ('3_progress', '4_paused'))]"/>
+                <filter name="alive" string="Alive" domain="[('recurring_live','=', True), ]" help="Running Subscriptions"/>
+                <separator/>
+                <filter name="pending" string="To Renew" domain="[('to_renew','=',True)]" help="Pending subscriptions"/>
                 <separator/>
                 <filter name="payment_exception" string="Failed Payments" domain="[('payment_exception','=', True)]" help="Contracts whose payment has failed"/>
+                <separator/>
+                <filter name="closed" string="Closed" domain="[('stage_category','=','closed')]" help="Closed subscriptions"/>
+                <filter name="future" string="Not Started Yet" domain="[('stage_category','=','progress'), ('start_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]" help="Confirmed and not yet started"/>
+                <separator/>
                 <separator/>
                 <filter name="good" string="Good Health" domain="[('health', '=', 'done')]"/>
                 <filter name="bad" string="Bad Health" domain="[('health', '=', 'bad')]"/>
                 <separator/>
-                <filter name="first_contract_date" date="first_contract_date"/>
-                <separator/>
-                <filter name="recurring_next_date" string="Next invoice Date" date="next_invoice_date"/>
-                <separator/>
-                <filter name="end_date" date="end_date"/>
-                <separator/>
+                <filter name="filter_order_date" date="date_order"/>
+                <filter name="filter_recurring_next_date" date="next_invoice_date"/>
                 <filter invisible="1" string="Late Activities" name="activities_overdue"
                     domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
                     help="Show all records which has next action date is before today"/>
@@ -55,13 +127,13 @@
                 <group expand="0" string="Group By">
                     <filter string="Salesperson" name="sales_person" domain="[]" context="{'group_by':'user_id'}"/>
                     <filter string="Sales Team" name="sales_team" domain="[]" context="{'group_by':'team_id'}"/>
-                    <filter string="Subscription Status" name="subscription_state" domain="[]" context="{'group_by':'subscription_state'}"/>
-                    <filter string="Template" name="template" domain="[]" context="{'group_by':'sale_order_template_id'}" groups="sales_team.group_sale_manager"/>
-                    <filter string="Recurring Plan" name="plan" domain="[]" context="{'group_by' : 'plan_id'}" />
                     <filter string="Customer" name="customer" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="First Contract Date" name="first_contract_month" domain="[]" context="{'group_by' : 'first_contract_date'}"/>
+                    <filter string="Template" name="template" domain="[]" context="{'group_by':'sale_order_template_id'}"/>
+                    <filter string="Stage" name="stage" domain="[]" context="{'group_by':'stage_id'}"/>
                     <filter string="End Date" name="end_month" domain="[]" context="{'group_by' : 'end_date'}" />
                     <filter string="Next Invoice Date" name="next_invoice_date" domain="[]" context="{'group_by' : 'next_invoice_date'}" />
+                    <filter string="Recurrence" name="recurrence" domain="[]" context="{'group_by' : 'recurrence_id'}" />
+                    <filter string="Pricelist" name="pricelist_id" domain="[]" context="{'group_by' : 'pricelist_id'}" />
                 </group>
             </search>
         </field>
@@ -80,13 +152,11 @@
     <record id="sale_subscription_action" model="ir.actions.act_window">
         <field name="name">Subscriptions</field>
         <field name="res_model">sale.order</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph,cohort,activity</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph,cohort,activity</field>
         <field name="context">{
-            'default_subscription_state': '1_draft',
-            'search_default_progress': 1,
-            'search_default_paused': 1,
+            'default_is_subscription': 1
         }</field>
-        <field name="domain">[('subscription_state', 'not in', ['2_renewal', '5_renewed', '7_upsell', False])]</field>
+        <field name="domain">[('is_subscription', '=', True)]</field>
         <field name="search_view_id" eval='sale_subscription_view_search'/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -123,15 +193,16 @@
     </record>
 
     <record id="sale_subscription_action_pending" model="ir.actions.act_window">
-        <field name="name">To Renew</field>
+        <field name="name">Subscriptions to Renew</field>
         <field name="res_model">sale.order</field>
         <field name="view_mode">tree,form,pivot,graph,kanban,cohort,activity</field>
         <field name="context">{
             'search_default_my_subscription':1,
-            'search_default_to_renew':1,
-            'default_subscription_state': '1_draft',
+            'search_default_is_subscriptions':1,
+            'search_default_stage':1,
+            'search_default_pending':1,
         }</field>
-        <field name="domain" eval="[('subscription_state', '!=', False)]"/>
+        <field name="domain">[]</field>
         <field name="search_view_id" eval='sale_subscription_view_search'/>
         <field name="help" type="html">
           <p class="o_view_nocontent_smiling_face">
@@ -149,32 +220,11 @@
         </field>
     </record>
 
-
-    <record id="sale_subscription_upsell_primary_view_tree" model="ir.ui.view">
-      <field name="name">sale.subscription.order.tree</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_quotation_tree"/>
-      <field name="mode">primary</field>
-      <field name="priority">999</field>
-      <field name="arch" type="xml">
-          <tree position="attributes">
-                <!-- use the default order defined on the model -->
-              <attribute name="default_order">id desc</attribute>
-          </tree>
-      </field>
-    </record>
-
     <record id="sale_subscription_action_upsell" model="ir.actions.act_window">
         <field name="name">Upsells</field>
         <field name="res_model">sale.order</field>
         <field name="view_mode">tree,form,pivot,graph,kanban,cohort,activity</field>
-        <field name="domain">[('subscription_state', '=', '7_upsell')]</field>
-        <field name="context">{'create': False}</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'tree', 'view_id': ref('sale_subscription_upsell_primary_view_tree'), 'sequence': 1}),
-                (0, 0, {'view_mode': 'kanban', 'sequence': 2}),
-                (0, 0, {'view_mode': 'form'}),
-            ]"/>
+        <field name="domain">[('subscription_management', '=', 'upsell')]</field>
         <field name="search_view_id" eval='sale_subscription_view_search'/>
     </record>
 
@@ -183,41 +233,55 @@
         <field name="name">sale.order.kanban</field>
         <field name="model">sale.order</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="subscription_state" class="o_kanban_mobile o_kanban_order" sample="1" quick_create="false">
+            <kanban default_group_by="stage_id" class="o_kanban_mobile o_kanban_order" sample="1">
                 <field name="user_id"/>
-                <field name="state"/>
-                <field name="subscription_state" options="{'group_by_tooltip': {'description': 'Description'}}"/>
+                <field name="stage_id" options="{'group_by_tooltip': {'description': 'Description'}}"/>
                 <field name="starred"/>
-                <field name="sale_order_template_id" groups="sales_team.group_sale_manager"/>
+                <field name="sale_order_template_id"/>
                 <field name="currency_id"/>
                 <field name="activity_ids"/>
-                <field name="health"/>
+                <field name="health" attrs="{'invisible': [('health', '!=', 'bad')]}"/>
+                <field name="to_renew"/>
                 <field name="payment_exception"/>
                 <field name="rating_ids"/>
                 <field name="activity_state" />
                 <field name="rating_last_value" />
                 <field name="next_invoice_date"/>
-                <field name="start_date"/>
+                <field name="renew_state"/>
+                <field name="is_upselling"/>
+                 <field name="subscription_management"/>
                 <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' help="This bar allows to filter the opportunities based on scheduled activities."/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <strong class="float-end">
-                                    <field name="recurring_total" widget="monetary"/>
+                                    <field name="amount_untaxed" widget="monetary"/>
                                 </strong>
                                 <div class="o_kanban_record_title">
-                                    <field name="partner_id" readonly="state in ['cancel', 'sale']"/>
+                                    <field name="partner_id"/>
                                 </div>
                                 <div class="o_kanban_record_body">
-                                    <field name="plan_id" class="float-end"/>
-                                    <field name="name" readonly="state != 'draft'"/>
-                                    <div t-if="record.payment_exception.raw_value" class="badge rounded-pill text-bg-danger me-2 mt-1">
+                                    <div t-if="record.to_renew.raw_value &amp;&amp; record.renew_state.raw_value != 'renewing'" class="badge text-bg-warning float-end mt4">
+                                        To Renew
+                                    </div>
+                                    <div t-if="record.payment_exception.raw_value" class="badge text-bg-danger float-end mt4">
                                         Payment Failure
                                     </div>
-                                    <div t-if="record.subscription_state.raw_value == '3_progress' and luxon.DateTime.fromISO(record.start_date.raw_value) &gt; luxon.DateTime.now()" class="badge rounded-pill float-end text-bg-info me-2 mt-1">
-                                        Future
+                                    <div t-if="record.subscription_management.raw_value == 'upsell' or  record.subscription_management.raw_value == 'renew'"
+                                         class="badge bg-light border-1 float-end mt4">
+                                        <field name="subscription_management"/>
                                     </div>
+                                    <div t-if="record.renew_state.raw_value == 'renewing'" class="badge bg-warning float-end mt4">
+                                        <field name="renew_state"/>
+                                    </div>
+                                    <div t-if="record.renew_state.raw_value == 'renewed'" class="badge bg-success float-end mt4">
+                                        <field name="renew_state"/>
+                                    </div>
+                                    <div t-if="record.is_upselling.raw_value" class="badge bg-info float-end mt4">
+                                        Upselling
+                                    </div>
+                                    <field name="name"/>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
@@ -230,7 +294,7 @@
                                         </b>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="health" widget="state_selection" readonly="1" invisible="health != 'bad'"/>
+                                        <field name="health" widget="state_selection" readonly="1" attrs="{'invisible': [('health', '!=', 'bad')]}"/>
                                         <field name="user_id" widget="many2one_avatar_user"/>
                                     </div>
                                 </div>
@@ -244,7 +308,7 @@
     </record>
 
     <record id="sale_subscription_kanban" model="ir.actions.act_window.view">
-      <field name="sequence" eval="2"/>
+      <field name="sequence" eval="1"/>
       <field name="view_mode">kanban</field>
       <field name="view_id" ref="sale_subscription_view_kanban"/>
       <field name="act_window_id" ref="sale_subscription_action"/>
@@ -254,213 +318,62 @@
     <record id="sale_subscription_view_tree" model="ir.ui.view">
       <field name="name">sale.subscription.order.tree</field>
       <field name="model">sale.order</field>
+      <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
       <field name="arch" type="xml">
-        <tree sample="1" multi_edit="1" default_order="next_invoice_date asc, end_date asc"
-              decoration-warning="subscription_state == '4_paused'"
-              decoration-muted="state == 'cancel'">
-            <field name="name" string="Number" readonly="1" decoration-bf="1"/>
-            <field name="client_order_ref" optional="hide" readonly="1" decoration-bf="1"/>
+        <tree sample="1">
+            <field name="client_order_ref" readonly="1" decoration-bf="1"/>
             <field name="partner_id" readonly="1"/>
-            <field name="subscription_id" string="Parent Subscription" optional="hide"/>
-            <field name="first_contract_date" optional="hide" readonly="1"/>
-            <field name="start_date" optional="hide" readonly="1"/>
-            <field name="next_invoice_date" string="Next Invoice" class="fw-bold"
-                   decoration-info="first_contract_date and first_contract_date &gt; current_date"
-                   decoration-danger="next_invoice_date and next_invoice_date &lt; current_date"
-                   readonly="1"
-                   invisible="subscription_state not in ['3_progress', '4_paused']"/>
+            <field name="next_invoice_date" string="Next Invoice" widget="remaining_days" attrs="{'invisible': [('stage_category', '!=', 'progress')]}" optional="show"/>
+            <field name="activity_ids" widget="list_activity"/>
+            <field name="pricelist_id" invisible="1"/>
+            <field name="user_id" optional="show" widget="many2one_avatar_user"/>
             <field name="team_id" optional="hide"/>
-            <field name="user_id" widget="many2one_avatar_user"/>
-            <field name="activity_ids" widget="list_activity" optional="show" readonly="1"/>
-            <field name="company_id" readonly="1" column_invisible="True"/>
             <field name="company_id" groups="base.group_multi_company" readonly="1"/>
-            <field name="tag_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}" readonly="1"/>
-            <field name="recurring_monthly" string="MRR" optional="hide" readonly="1"/>
-            <field name="recurring_total" string="Recurring" optional="show" readonly="1"/>
-            <field name="plan_id" optional="show" readonly="1"/>
-            <field name="non_recurring_total" string="Non Recurring" optional="hide" readonly="1"/>
-            <field name="sale_order_template_id" string="Quotation Template" optional="hide" readonly="state in ['cancel', 'sale']" groups="sales_team.group_sale_manager"/>
-            <field name="amount_total" decoration-bf="1" widget='monetary' options="{'currency_field': 'currency_id'}" optional="hide" readonly="1"
-                decoration-info="invoice_status == 'to invoice'"/>
-            <field name="subscription_state" widget="badge"
-                   decoration-success="subscription_state == '3_progress'"
-                   decoration-warning="subscription_state == '4_paused'"
-                   decoration-danger="subscription_state == '6_churn'"
-                   decoration-primary="subscription_state == '7_upsell'"
-                   decoration-info="subscription_state in ['1_draft', '2_renewal']"
-                   readonly="1"/>
-            <field name="state" string="Order Status"
-                    decoration-success="state == 'sale'"
-                    decoration-info="state == 'draft'"
-                    decoration-primary="state == 'sent'"
-                    widget="badge" optional="hide"/>            <field name="pricelist_id" readonly="1" column_invisible="True"/>
-            <field name="currency_id" readonly="1" column_invisible="True"/>
-            <field name="invoice_status" column_invisible="True"/>
+            <field name="amount_untaxed"/>
+            <field name="percentage_satisfaction" optional="hide"/>
+            <field name="amount_total" decoration-bf="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            <field name="stage_id" widget="badge" decoration-info="stage_category == 'draft'" decoration-success="stage_category == 'progress'"/>
+            <field name="to_renew" invisible="1"/>
+            <field name="stage_category" invisible="1"/>
+            <field name="currency_id" invisible="1"/>
         </tree>
       </field>
     </record>
 
     <record id="sale_subscription_tree" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="1"/>
+        <field name="sequence" eval="2"/>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="sale_subscription_view_tree"/>
         <field name="act_window_id" ref="sale_subscription_action"/>
-    </record>
-
-    <record id="sale_subscription_tree_pending" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="1"/>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="sale_subscription_view_tree"/>
-        <field name="act_window_id" ref="sale_subscription_action_pending"/>
-    </record>
-
-    <record id="sale_subscription_quotation_tree_view" model="ir.ui.view">
-        <field name="name">sale.subscription.quotation.tree</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
-        <field name="mode">primary</field>
-        <field name="priority">999</field>
-        <field name="arch" type="xml">
-            <tree position="attributes">
-                <!-- use the default order defined on the model -->
-              <attribute name="default_order">id desc</attribute>
-            </tree>
-            <field name="amount_total" position="attributes">
-                <attribute name="optional">show</attribute>
-            </field>
-            <field name="next_invoice_date" position="before">
-                <field name="validity_date" readonly="1" optional="hide"/>
-            </field>
-            <field name="next_invoice_date" position="attributes">
-                <attribute name="optional">hide</attribute>
-            </field>
-        </field>
-    </record>
-
-    <record id="sale_subscription_action_quotes" model="ir.actions.act_window">
-        <field name="name">Quotations</field>
-        <field name="res_model">sale.order</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph,cohort,activity</field>
-        <field name="context">{
-            'search_default_my_subscriptions': 1,
-            'default_subscription_state': '1_draft',
-        }</field>
-        <!-- All kind of subscription except upsell -->
-        <field name="domain">[('subscription_state', 'in', ['1_draft', '2_renewal', '3_progress', '4_paused', '5_renewed', '6_churn'])]</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'tree', 'view_id': ref('sale_subscription.sale_subscription_quotation_tree_view'), 'sequence': 1}),
-                (0, 0, {'view_mode': 'kanban', 'sequence': 2}),
-                (0, 0, {'view_mode': 'form'}),
-            ]"/>
-        <field name="search_view_id" ref='sale_subscription_view_search'/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create a subscription quotation
-            </p><p>
-                Create subscriptions to manage recurring invoicing and payments. Subscriptions can
-                be time-bounded or not. In case of a limited period, they are flagged as to be renewed
-                one month from the end date.
-            </p><p>
-                Subscriptions can be automatically generated from sales orders in Sales or eCommerce
-                apps.
-            </p>
-        </field>
-    </record>
-
-    <!-- Calendar view -->
-    <record id="view_sale_subscription_calendar" model="ir.ui.view">
-        <field name="name">sale.order.calendar</field>
-        <field name="inherit_id" ref="sale.view_sale_order_calendar"/>
-        <field name="mode">primary</field>
-        <field name="model">sale.order</field>
-        <field name="arch" type="xml">
-            <field name="amount_total" position="replace">
-                <field name="recurring_monthly" widget="monetary"/>
-                <field name="plan_id"/>
-            </field>
-            <xpath expr="//calendar" position="attributes">
-                <attribute name="color">subscription_state</attribute>
-            </xpath>
-            <xpath expr="//field[@name='state']" position="replace">
-                <field name="subscription_state" filters="1" invisible="1"/>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="sale_subscription_calendar" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">calendar</field>
-        <field name="view_id" ref="view_sale_subscription_calendar"/>
-        <field name="act_window_id" ref="sale_subscription_action"/>
-    </record>
-
-    <record id="sale_subscription_calendar_pending" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">calendar</field>
-        <field name="view_id" ref="view_sale_subscription_calendar"/>
-        <field name="act_window_id" ref="sale_subscription_action_pending"/>
-    </record>
-
-    <record id="sale_subscription_calendar_quotes" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">calendar</field>
-        <field name="view_id" ref="view_sale_subscription_calendar"/>
-        <field name="act_window_id" ref="sale_subscription_action_quotes"/>
-    </record>
-
-    <record id="sale_subscription_calendar_upsell" model="ir.actions.act_window.view" >
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">calendar</field>
-        <field name="view_id" ref="view_sale_subscription_calendar"/>
-        <field name="act_window_id" ref="sale_subscription_action_upsell"/>
     </record>
 
     <!-- Form from subscription App -->
     <record id="sale_subscription_primary_form_view" model="ir.ui.view">
-        <field name="name">sale.subscription.order.primary.form</field>
+        <field name="name">sale.subscription.order.form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_subscription.sale_subscription_order_view_form"/>
         <field name="mode">primary</field>
         <field name="priority">999</field>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='order_lines']/field/tree/field[@name='product_id']" position="attributes">
-                <attribute name="context">
-                    {
-                    'partner_id': parent.partner_id,
-                    'quantity': product_uom_qty,
-                    'pricelist': parent.pricelist_id,
-                    'uom':product_uom,
-                    'company_id': parent.company_id,
-                    'default_lst_price': price_unit,
-                    'default_description_sale': name,
-                    'default_recurring_invoice': True
-                    }
-                </attribute>
-            </xpath>
-            <xpath expr="//page[@name='order_lines']/field/tree/field[@name='product_template_id']" position="attributes">
-                <attribute name="context">
-                    {
-                    'partner_id': parent.partner_id,
-                    'quantity': product_uom_qty,
-                    'pricelist': parent.pricelist_id,
-                    'uom':product_uom,
-                    'company_id': parent.company_id,
-                    'default_lst_price': price_unit,
-                    'default_description_sale': name,
-                    'default_recurring_invoice': True
-                    }
-                </attribute>
-            </xpath>
+            <field name="pricing_id" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
             <field name="next_invoice_date" position="attributes">
                  <attribute name="optional">show</attribute>
             </field>
-            <field name="sale_order_template_id" position="attributes">
-                <attribute name="domain">[('is_subscription', '=', True)]</attribute>
+            <field name="recurrence_id" position="attributes">
+                <attribute name="attrs">{'readonly': [('subscription_management', '=', 'upsell')], 'required': [('subscription_management', '!=', 'upsell')]}</attribute>
+            </field>
+            <field name="sale_order_template_id" position="replace">
+                <field name="sale_order_template_id" string="Subscription Plan"
+                       attrs="{'invisible': ['|', ('state', 'in', ['sale', 'done']), ('subscription_management', '=', 'upsell')]}"
+                       domain="[('is_subscription', '=', True)]"/>
             </field>
         </field>
     </record>
 
     <record id="sale_subscription_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
         <field name="view_mode">form</field>
         <field name="view_id" ref="sale_subscription_primary_form_view"/>
         <field name="act_window_id" ref="sale_subscription_action"/>
@@ -475,149 +388,380 @@
                 <templates>
                     <div t-name="activity-box">
                         <div>
-                            <field name="note" display="full" class="o_text_block"/>
-                            <field name="partner_id" muted="1" display="full" class="o_text_block"/>
+                            <field name="note" display="full"/>
+                            <field name="partner_id" muted="1" display="full"/>
                         </div>
                     </div>
                 </templates>
             </activity>
         </field>
     </record>
-
     <!-- Close reasons -->
     <record id="sale_subscription_close_reason_view_tree" model="ir.ui.view">
         <field name="name">sale.subscription.reason.list</field>
         <field name="model">sale.order.close.reason</field>
         <field name="arch" type="xml">
-            <tree string="Close Reasons">
+            <tree string="Close Reasons" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="visible_in_portal"/>
             </tree>
         </field>
     </record>
 
     <record id="sale_subscription_close_reason_action" model="ir.actions.act_window">
         <field name="name">Close Reasons</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order.close.reason</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree</field>
     </record>
 
-    <record id="sale_subscription_close_reason_view_form" model="ir.ui.view">
-        <field name="name">sale.subscription.reason.form</field>
-        <field name="model">sale.order.close.reason</field>
+    <!-- Alerts -->
+    <record id="sale_subscription_alert_view_form" model="ir.ui.view">
+        <field name="name">sale.subscription.alert.view.form</field>
+        <field name="model">sale.order.alert</field>
         <field name="arch" type="xml">
-            <form string="Subscription Close Reason">
+            <form>
+                <header>
+                    <!-- company_id invisible to be available in domains -->
+                    <field name="company_id" invisible="1"/>
+                       <button name="run_cron_manually" string="Trigger Now" type="object" class="btn-primary"
+                       confirm="This will trigger the action on all linked subsccriptions, regardless of possible timed conditions. Are you sure you want to proceed?"/>
+                </header>
                 <sheet>
-                    <field name="empty_retention_message" invisible="1"/>
-                    <group>
-                        <field name="name" placeholder="The reason for closing a subscription"/>
-                        <field name="visible_in_portal"/>
-                    </group>
-                    <separator string="Portal: retention step"/>
-                    <group>
-                        <field name="retention_message" placeholder="This message will be displayed to convince the customer to stay (e.g., We don't want you to leave, can we offer to schedule a meeting with your account manager?)"/>
-                        <field name="retention_button_text" placeholder="The text to display on the call to action"/>
-                        <field name="retention_button_link" placeholder="The redirect link of the call to action"/>
-                    </group>
-                    <div role="alert" class="alert alert-warning" invisible="not visible_in_portal or not empty_retention_message and retention_button_text and retention_button_link or empty_retention_message and not retention_button_text and not retention_button_link">
-                        <strong>Warning:</strong> the survey can only be shown if all information is set. Please complete:
-                        <ul>
-                            <li invisible="not empty_retention_message">message</li>
-                            <li invisible="retention_button_text">button text</li>
-                            <li invisible="retention_button_link">button link</li>
-                        </ul>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                icon="fa-book"
+                                name="action_view_subscriptions"
+                                attrs="{'invisible': [('subscription_count', '=', 0)]}"
+                                type="object">
+                            <field name="subscription_count" widget="statinfo" string="Subscriptions"/>
+                        </button>
                     </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_title">
+                        <label for="name" string="Alert Name"/>
+                        <h1><field name="name" placeholder="e.g. Closed Subscription"/></h1>
+                    </div>
+                    <div attrs="{'invisible': [('cron_nextcall', '=', False)]}">
+                        By default, the alert is triggered weekly and applies on the subscriptions that match
+                        the following criterias. The next run is on <field name="cron_nextcall" nolabel="1"/>.
+                    </div>
+                    <div attrs="{'invisible': ['|', ('cron_nextcall', '!=', False), ('id', '=', False)]}">
+                        The scheduled action for alerts has been deleted. Update the Subscriptions module to re-create it.
+                    </div>
+                    <group name="apply_on_panel" string="Apply on">
+                        <group name="mrr_details">
+                            <field name="currency_id" invisible="1"/>
+                            <label for="mrr_min" string="MRR Between"/>
+                            <div class="o_row">
+                                <field name="mrr_min"/>
+                                <strong> and </strong>
+                                <field name="mrr_max"/>
+                            </div>
+                            <label for="mrr_change_amount" string="MRR Change More"/>
+                            <div class="o_row">
+                                <field name="mrr_change_amount"/>
+                                <field name="mrr_change_unit"/>
+                            </div>
+                            <field name="mrr_change_period" string="Over"/>
+                            <label for="rating_percentage" string="Rating Satisfaction"/>
+                            <div class="o_row">
+                                <field name="rating_operator"/>
+                                <field name="rating_percentage"/>
+                                <strong>%</strong>
+                            </div>
+                            <label for="stage_from_id" string="Stage goes from"/>
+                            <div class="o_row">
+                                <field name="stage_from_id" placeholder="Initial"/>
+                                <strong>to</strong>
+                                <field name="stage_to_id" placeholder=" Destination"/>
+                            </div>
+                        </group>
+                        <group name="subscription_details">
+                            <field name="active" invisible="1"/>
+                            <field name="subscription_template_ids" widget="many2many_tags"/>
+                            <field name="product_ids" string="Products" widget="many2many_tags"/>
+                            <field name="customer_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="team_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Action" name="action_wrapper">
+                        <group name="action_content">
+                            <field name="action"/>
+                            <field name="stage_id"
+                                   attrs="{'invisible': [('action', '!=', 'set_stage')],
+                                           'required': [('action', '=', 'set_stage')]}"/>
+                            <field name="template_id"
+                                   attrs="{'invisible': [('action', '!=', 'email')],
+                                           'required': [('action', '=', 'email')]}"/>
+                            <field name="sms_template_id"
+                                   context="{'default_model_id': model_id}"
+                                   attrs="{'invisible': [('action', '!=', 'sms')],
+                                           'required': [('action', '=', 'sms')]}"/>
+                        </group>
+                        <group name="action_details">
+                            <field name="model_id" invisible="1"/>
+                            <field name="model_name" invisible="1"/>
+                            <field name="trigger_condition"/>
+                            <field name="trg_date_id"
+                                   attrs="{'invisible': [('trigger_condition', '!=', 'on_time')],
+                                           'required': [('trigger_condition', '=', 'on_time')]}"
+                                   options="{'no_open': True, 'no_create_edit': True}"/>
+                            <label for="trg_date_range"
+                                   string="Delay After Trigger"
+                                   attrs="{'invisible': [('trigger_condition', '!=', 'on_time')]}"/>
+                            <div class="o_row" attrs="{'invisible': [('trigger_condition', '!=', 'on_time')]}">
+                                <field name="trg_date_range" attrs="{'required': [('trigger_condition','=','on_time')]}"/>
+                                <field name="trg_date_range_type" attrs="{'required': [('trigger_condition','=','on_time')]}"/>
+                            </div>
+                            <field name="trg_date_calendar_id"
+                                   attrs="{'invisible': ['|', ('trg_date_id', '=', False), ('trg_date_range_type', '!=', 'day')]}"/>
+                        </group>
+                    </group>
+                    <group string="Activity" name="next_activity" autofocus="autofocus" attrs="{'invisible': [('action', '!=', 'next_activity')]}">
+                        <group name="activity_details">
+                            <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" attrs="{'required': [('action', '=', 'next_activity')]}"/>
+                            <field name="activity_summary" placeholder="e.g. Discuss proposal"/>
+                        </group>
+                        <group name="activitity_deadlines">
+                            <label for="activity_date_deadline_range"/>
+                            <div class="o_row">
+                                <field name="activity_date_deadline_range"/>
+                                <field name="activity_date_deadline_range_type"/>
+                            </div>
+                            <field name="activity_user"
+                                attrs="{'invisible': [('action', '!=', 'next_activity')],
+                                        'required': [('action', '=', 'next_activity')]}"/>
+                            <field name="activity_user_ids" widget="many2many_tags"
+                                attrs="{'invisible': ['|', ('action', '!=', 'next_activity'), ('activity_user', '!=', 'users')],
+                                        'required': [('action', '=', 'next_activity'), ('activity_user', '=', 'users')]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="activity_note" placeholder="Log a note..."/>
+                    </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Change customer -->
-    <record id="model_sale_order_subscription_change_customer" model="ir.actions.server">
-        <field name="name">Change customer</field>
-        <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_view_types">form,list</field>
-        <field name="state">code</field>
-        <field name="code">action = env["ir.actions.actions"]._for_xml_id("sale_subscription.sale_subscription_change_customer_wizard_action")</field>
-    </record>
-
-    <record id="model_sale_order_subscription_cancel" model="ir.actions.server">
-        <field name="name">Cancel Subscription</field>
-        <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_view_types">form,list</field>
-        <field name="state">code</field>
-        <field name="code">
-records.filtered('is_subscription')._action_cancel()
-        </field>
-    </record>
-
-
-    <record id="model_sale_order_subscription_pause_record" model="ir.actions.server">
-        <field name="name">Pause Subscription</field>
-        <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_view_types">form,list</field>
-        <field name="state">code</field>
-        <field name="code">
-if records:
-    records.pause_subscription()
-        </field>
-    </record>
-
-    <record id="sale_subscription_plan_search" model="ir.ui.view">
-        <field name="name">sale.subscription.plan.search</field>
-        <field name="model">sale.subscription.plan</field>
+    <record id="sale_subscription_alert_view_tree" model="ir.ui.view">
+        <field name="name">sale.subscription.alert.view.tree</field>
+        <field name="model">sale.order.alert</field>
         <field name="arch" type="xml">
-            <search string="Recurring Plan">
-                <filter string="Recurring Plan" name="plan_id"/>
-            </search>
+            <tree string="Alerts">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="subscription_count"/>
+            </tree>
         </field>
     </record>
 
-    <record id="sale_subscription_plan_action" model="ir.actions.act_window">
-        <field name="name">Recurring Plans</field>
-        <field name="res_model">sale.subscription.plan</field>
+    <record id="sale_subscription_alert_action" model="ir.actions.act_window">
+        <field name="name">Alerts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.alert</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" eval='sale_subscription_plan_search'/>
-        <field name="context">
-            { 'search_default_subscription_plan': 1 }
-        </field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create a new plan
+              Create a new subscription alert
+            </p>
+            <p>
+              Trigger alerts for salespersons or customers: churn, invoice not paid, upsell, etc.
             </p>
         </field>
     </record>
 
+    <record id="sale_subscription_stage_action" model="ir.actions.act_window">
+        <field name="name">Stages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.stage</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new subscription stage
+            </p>
+        </field>
+    </record>
+
+    <record id="sale_subscription_stage_view_list" model="ir.ui.view">
+        <field name="name">sale.subscription.stage.list</field>
+        <field name="model">sale.order.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Subscription Stages">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_subscription_stage_view_form" model="ir.ui.view">
+        <field name="name">sale.subscription.stage.form</field>
+        <field name="model">sale.order.stage</field>
+        <field name="arch" type="xml">
+            <form string="Subscription Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence" groups="base.group_no_one"/>
+                            <field name="rating_template_id"/>
+                        </group>
+                        <group>
+                            <field name="fold"/>
+                            <field name="category" widget="radio"/>
+                        </group>
+                    </group>
+                    <separator string="Requirements"/>
+                    <field name="description"
+                           placeholder="Give your team the requirements to move a subscription to this stage."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Quotation template -->
+
+    <record id="sale_order_template_view_search" model="ir.ui.view">
+        <field name="name">sale.order.template.search</field>
+        <field name="model">sale.order.template</field>
+        <field name="arch" type="xml">
+            <search string="Search Template">
+                <field name="name"/>
+                <filter string="Subscription" name="is_subscription" domain="[('is_subscription','=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active','=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="sale_subscription_template_action" model="ir.actions.act_window">
+        <field name="name">Plans</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{
+            'default_is_subscription': 1,
+            'search_default_is_subscription': 1,
+        }</field>
+        <field name="search_view_id" eval='sale_order_template_view_search'/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new template of subscription
+            </p><p>
+                Templates are used to prefigure subscription that
+                can be selected by the salespeople to quickly configure the
+                terms and conditions of the subscription.
+            </p>
+        </field>
+    </record>
+
+    <record id="sale_order_template_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.template.tree</field>
+        <field name="model">sale.order.template</field>
+        <field name="type">tree</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="recurrence_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+     <record id="sale_subscription_template_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sale_order_template_view_tree"/>
+        <field name="act_window_id" ref="sale_subscription_template_action"/>
+    </record>
+
+
+    <record id="sale_subscription_template_view_form" model="ir.ui.view">
+        <field name="name">sale.order.template.form</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@id='sale_order_template_title']" position="replace">
+                <label for="name" attrs="{'invisible': [('recurrence_id', '!=', False)]}"/>
+                <label for="name" string="Subscription Plan" attrs="{'invisible': [('recurrence_id', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='active']" position="after">
+                <field name="is_subscription" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='order_lines']/field/tree/field[@name='name']" position="after">
+                <field name="recurring_invoice" invisible="1"/>
+                <field name="recurrence_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='order_lines']/field/tree/field[@name='product_uom_id']" position="after">
+                 <button name="open_product_pricing" string="prices" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|', ('recurring_invoice', '=', False), ('recurrence_id', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='optional_products']/field/tree/field[@name='name']" position="after">
+                <field name="recurring_invoice" invisible="1"/>
+            </xpath>
+            <group name="sale_info" position="inside">
+                <field name="invoice_mail_template_id" string="Invoice Email" groups="base.group_no_one"/>
+            </group>
+            <group name="sale_info" position="after">
+                <group name="sale_info2">
+                    <field name="recurrence_id" placeholder="None"
+                           domain="[('unit', 'not in', ['hour', 'day'])]"
+                           options="{'no_create': True}"/>
+                    <field name="recurring_rule_boundary" widget="radio" options="{'horizontal': true}"
+                           attrs="{'invisible': [('recurrence_id','=', False)]}"/>
+                    <label for="recurring_rule_count"
+                           attrs="{'invisible': ['|', ('recurrence_id','=', False), ('recurring_rule_boundary','=','unlimited')]}"/>
+                    <div attrs="{'invisible': ['|', ('recurrence_id','=', False), ('recurring_rule_boundary','=','unlimited')]}">
+                        <field name="recurring_rule_count" style="width: 3rem;"/>
+                        <field name="recurring_rule_type" class="oe_inline"/>
+                    </div>
+                    <field name="user_closable" attrs="{'invisible': [('recurrence_id','=', False)]}"/>
+                    <label for="auto_close_limit" attrs="{'invisible': [('recurrence_id','=', False)]}"/>
+                    <!--  ARJ TODO master ir config parameter or a company setting -->
+                    <div attrs="{'invisible': [('recurrence_id','=', False),]}">
+                        <field name="auto_close_limit" style="width: 3rem;"/>
+                        <div class="d-inline-block">days</div>
+                    </div>
+                    <field name="journal_id" options="{'no_create': True}"
+                           attrs="{'invisible': [('recurrence_id','=', False)]}"
+                           groups="account.group_account_manager"/>
+                    <!-- company_id invisible to be available in domains -->
+                    <field name="company_id" invisible="1"/>
+                </group>
+            </group>
+            <xpath expr="//page[@name='terms_and_conditions']" position="after">
+                <page name="health" string="Health Check" attrs="{'invisible': [('is_subscription', '=', False)]}" groups="base.group_no_one">
+                    <label for="good_health_domain" string="Good Health"/><span class="o_status o_status_green"/>
+                    <field name="good_health_domain" widget="domain" options="{'model': 'sale.order'}"/>
+                    <separator/>
+                    <label for="bad_health_domain" string="Bad Health"/><span class="o_status o_status_red"/>
+                    <field name="bad_health_domain" widget="domain" options="{'model': 'sale.order'}"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_subscription_template_form" model="ir.actions.act_window.view" >
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale_subscription_template_view_form"/>
+        <field name="act_window_id" ref="sale_subscription_template_action"/>
+    </record>
+
     <!-- Menuitems -->
-    <menuitem id="menu_sale_subscription_root" name="Subscriptions" sequence="40" web_icon="sale_subscription,static/description/icon.png" groups="sales_team.group_sale_salesman"/>
+    <menuitem id="menu_sale_subscription_root" name="Subscriptions" sequence="40" web_icon="sale_subscription,static/description/icon.svg" groups="sales_team.group_sale_salesman"/>
 
     <menuitem id="menu_sale_subscription" name="Subscriptions" parent="menu_sale_subscription_root" sequence="5"/>
     <menuitem action="sale_subscription_action" id="menu_sale_subscription_action" sequence="10" parent="menu_sale_subscription"/>
-    <menuitem action="sale_subscription_action_quotes" id="menu_sale_subscription_quotes" sequence="20" parent="menu_sale_subscription"/>
-    <menuitem action="sale_subscription_action_pending" id="menu_sale_subscription_pending" sequence="30" parent="menu_sale_subscription"/>
-    <menuitem action="sale_subscription_action_upsell" id="menu_sale_subscription_upsell" sequence="40" parent="menu_sale_subscription"/>
-    <menuitem id="menu_orders_customers" name="Customers" action="account.res_partner_action_customer" sequence="50" parent="menu_sale_subscription"/>
+    <menuitem action="sale_subscription_action_pending" id="menu_sale_subscription_pending" sequence="20" parent="menu_sale_subscription"/>
+    <menuitem action="sale_subscription_action_upsell" id="menu_sale_subscription_upsell" sequence="30" parent="menu_sale_subscription"/>
 
-    <menuitem id="product_menu_catalog"
-            name="Products"
-            groups="sales_team.group_sale_salesman"
-            parent="menu_sale_subscription_root"
-            sequence="30">
-            <menuitem id="menu_sale_subscription_product"
-                action="product_action_subscription"
-                sequence="10"/>
-        </menuitem>
+    <menuitem action="product_action_subscription" id="menu_sale_subscription_product" sequence="40" parent="menu_sale_subscription"/>
 
-    <menuitem action="product.product_pricelist_action2" id="menu_sale_subscription_pricelist" sequence="50" parent="product_menu_catalog" groups="product.group_product_pricelist"/>
-
-    <menuitem id="menu_sale_subscription_config" name="Configuration" sequence="100" parent="menu_sale_subscription_root" groups="sales_team.group_sale_manager"/>
-    <menuitem id="menu_sale_subscription_settings" name="Settings" parent="menu_sale_subscription_config" sequence="1" action="sale.action_sale_config_settings" groups="base.group_system"/>
-    <menuitem id="menu_sale_subscription_plans" name="Recurring Plans" action="sale_subscription_plan_action" parent="menu_sale_subscription_config" sequence="2"/>
-    <menuitem id="menu_template_of_subscription" action="sale_subscription_template_action" parent="menu_sale_subscription_config" sequence="4" groups="sale_management.group_sale_order_template"/>
-    <menuitem id="menu_sale_subscription_alert" name="Automation Rules" parent="menu_sale_subscription_config" action="sale_subscription_alert_action" sequence="8"/>
-    <menuitem id="menu_sale_subscription_close_reason_action" action="sale_subscription_close_reason_action" parent="menu_sale_subscription_config" sequence="10"/>
+    <menuitem id="menu_sale_subscription_config" name="Configuration" sequence="10" parent="menu_sale_subscription_root"/>
+    <menuitem action="sale_subscription_close_reason_action" id="menu_sale_subscription_close_reason_action" parent="menu_sale_subscription_config" sequence="10" groups="sales_team.group_sale_manager"/>
+    <menuitem action="sale_temporal.sale_temporal_recurrence_action" name="Recurrence periods" id="menu_sale_subscription_periods" parent="menu_sale_subscription_config" sequence="20" groups="sales_team.group_sale_manager"/>
+    <menuitem action="sale_subscription_template_action" id="menu_template_of_subscription" parent="menu_sale_subscription_config" sequence="4" groups="sales_team.group_sale_manager"/>
+    <menuitem id="menu_sale_subscription_stage" name="Subscription Stages" parent="menu_sale_subscription_config" action="sale_subscription_stage_action" sequence="5" groups="sales_team.group_sale_manager"/>
+    <menuitem id="menu_sale_subscription_alert" name="Alerts" parent="menu_sale_subscription_config" action="sale_subscription_alert_action" sequence="8"/>
 </odoo>

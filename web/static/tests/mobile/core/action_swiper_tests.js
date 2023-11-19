@@ -13,7 +13,7 @@ import {
     mockTimeout,
 } from "@web/../tests/helpers/utils";
 
-import { Component, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 const serviceRegistry = registry.category("services");
 
 let env;

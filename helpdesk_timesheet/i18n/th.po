@@ -3,16 +3,18 @@
 # 	* helpdesk_timesheet
 # 
 # Translators:
-# Wil Odoo, 2023
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,16 +27,18 @@ msgid "# Tickets"
 msgstr "# ทิกเก็ต"
 
 #. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
+msgid "<span class=\"o_stat_text\">Recorded</span>"
+msgstr "<span class=\"o_stat_text\">บันทึกแล้ว</span>"
+
+#. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_account_analytic_line
-#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__analytic_account_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__analytic_account_id
-#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__analytic_account_id
 msgid "Analytic Account"
 msgstr "บัญชีวิเคราะห์"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "Confirm Time Spent"
 msgstr "ยืนยันเวลาที่ใช้ไป"
@@ -42,12 +46,12 @@ msgstr "ยืนยันเวลาที่ใช้ไป"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "แปลงทิกเก็ต Helpdesk เป็นงาน"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_task_convert_wizard
 msgid "Convert Project Tasks to Tickets"
-msgstr "แปลงงานโปรเจกต์เป็นทิกเก็ต"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_create_timesheet
@@ -77,6 +81,7 @@ msgstr "ลบ"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__department_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__department_id
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
 msgid "Department"
 msgstr "แผนก"
 
@@ -87,8 +92,14 @@ msgstr "อธิบายกิจกรรมของคุณ..."
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__description
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Description"
 msgstr "คำอธิบาย"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Description of the ticket..."
+msgstr "คำอธิบายของทิกเก็ต..."
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_create_timesheet_view_form
@@ -103,7 +114,7 @@ msgstr "แสดงชื่อ"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_account_analytic_line__display_task
 msgid "Display Task"
-msgstr "แสดงงาน"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__display_timer
@@ -197,9 +208,9 @@ msgid "Is Timer Running"
 msgstr "ตัวจับเวลากำลังทำงาน"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-msgid "Issue with new portal system"
-msgstr "ปัญหาเกี่ยวกับระบบพอร์ทัลใหม่"
+#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__write_uid
@@ -214,27 +225,45 @@ msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_sla_report_analysis__manager_id
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_report_analysis__employee_parent_id
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
 msgid "Manager"
 msgstr "ผู้จัดการ"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_team.py:0
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_search_inherit_helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
+msgid "My Department"
+msgstr "แผนกของฉัน"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
+msgid "My Team's Ratings"
+msgstr "การให้คะแนนของทีมของฉัน"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_sla_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_report_analysis_view_search_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_search_inherit_helpdesk_timesheet
+msgid "My Team's Tickets"
+msgstr "ทิกเก็ตของทีมฉัน"
+
+#. module: helpdesk_timesheet
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "New"
 msgstr "ใหม่"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/project.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr "ไม่รองรับการทำงาน"
-
-#. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Pause"
 msgstr "หยุด"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Pause timer"
+msgstr "หยุดตัวจับเวลา"
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_project
@@ -247,9 +276,8 @@ msgstr "โปรเจกต์"
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__project_id
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__project_id
 msgid ""
-"Project to which the timesheets of this helpdesk team's tickets will be "
-"linked."
-msgstr "โปรเจกต์ที่จะเชื่อมโยงระบบบันทึกเวลาของทิกเก็ตในทีม Helpdesk นี้"
+"Project to which the tickets (and the timesheets) will be linked by default."
+msgstr "โปรเจกต์ที่จะเชื่อมโยงทิกเก็ต (และใบบันทึกเวลา) ตามค่าเริ่มต้น"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.actions.act_window,help:helpdesk_timesheet.act_hr_timesheet_line_helpdesk
@@ -257,14 +285,14 @@ msgid "Record a new activity"
 msgstr "บันทึกกิจกรรมใหม่"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
-msgid "Recorded"
-msgstr "บันทึกแล้ว"
-
-#. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Resume"
 msgstr "ประวัติย่อ"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Resume timer"
+msgstr "จับเวลาต่อ"
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_sla_report_analysis
@@ -288,13 +316,18 @@ msgstr "เริ่ม"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Start timer"
+msgstr "เริ่มตัวจับเวลา"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Stop"
 msgstr "หยุด"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-msgid "Task/Ticket"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Stop timer"
+msgstr "หยุดตัวจับเวลา"
 
 #. module: helpdesk_timesheet
 #: model:project.project,label_tasks:helpdesk_timesheet.helpdesk_team3_projet
@@ -302,12 +335,28 @@ msgid "Tasks"
 msgstr "งาน"
 
 #. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__use_helpdesk_timesheet
+msgid "This requires to have project module installed."
+msgstr "จำเป็นต้องมีการติดตั้งโมดูลของโปรเจกต์"
+
+#. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__timesheet_encode_uom_id
+msgid ""
+"This will set the unit of measure used to encode timesheet. This will simply provide tools\n"
+"        and widgets to help the encoding. All reporting will still be expressed in hours (default value)."
+msgstr ""
+"ซึ่งจะกำหนดหน่วยวัดที่ใช้ในการเข้ารหัสใบบันทึกเวลา สิ่งนี้ก็จะให้เครื่องมือ\n"
+"        และวิดเจ็ตเพื่อช่วยในการเข้ารหัส การรายงานทั้งหมดจะยังคงแสดงเป็นชั่วโมง (ค่าเริ่มต้น)"
+
+#. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__ticket_id
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_search_inherit_helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_tree_inherit_helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_report_search_helpdesk
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.my_timesheet_view_form_helpdesk
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_view_form_helpdesk
 msgid "Ticket"
 msgstr "ทิกเก็ต"
 
@@ -324,10 +373,9 @@ msgstr "ทิกเก็ตที่เรากำลังสร้างค
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 msgid "Ticket:"
-msgstr "ทิกเก็ต:"
+msgstr ""
 
 #. module: helpdesk_timesheet
-#. odoo-python
 #: code:addons/helpdesk_timesheet/models/project.py:0
 #: code:addons/helpdesk_timesheet/models/project.py:0
 #: model:ir.actions.act_window,name:helpdesk_timesheet.project_project_action_view_helpdesk_tickets
@@ -340,15 +388,6 @@ msgstr "ทิกเก็ต"
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__time_spent
 msgid "Time"
 msgstr "เวลา"
-
-#. module: helpdesk_timesheet
-#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__timesheet_ids
-msgid ""
-"Time spent on this ticket. By default, your timesheets will be linked to the sales order item of your ticket.\n"
-"Remove the sales order item to make your timesheet entries non billable."
-msgstr ""
-"เวลาที่ใช้ไปในทิกเก็ตใบนี้ ตามค่าเริ่มต้น ใบบันทึกเวลาของคุณจะเชื่อมโยงกับรายการใบสั่งขายของทิกเก็ตของคุณ\n"
-"ลบรายการในใบสั่งขาย เพื่อทำให้รายการใบบันทึกเวลาของคุณไม่สามารถเรียกเก็บเงินได้"
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__timer_pause
@@ -388,12 +427,7 @@ msgstr "ใบบันทึกเวลา"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_timesheets_analysis_report
 msgid "Timesheets Analysis Report"
-msgstr "รายงานการวิเคราะห์ระบบบันทึกเวลา"
-
-#. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_tree_inherit_helpdesk_timesheet
-msgid "Total"
-msgstr "รวม"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_team__total_timesheet_time
@@ -420,13 +454,11 @@ msgid "VIP Support"
 msgstr "การสนับสนุนวีไอพี"
 
 #. module: helpdesk_timesheet
-#. odoo-python
 #: code:addons/helpdesk_timesheet/models/analytic.py:0
 #, python-format
 msgid ""
 "You cannot link a timesheet entry to a task and a ticket at the same time."
 msgstr ""
-"คุณไม่สามารถเชื่อมโยงรายการใบบันทึกเวลากับงานและทิกเก็ตในเวลาเดียวกันได้"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket

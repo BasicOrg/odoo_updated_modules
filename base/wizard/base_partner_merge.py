@@ -66,7 +66,7 @@ class MergePartnerAutomatic(models.TransientModel):
     number_group = fields.Integer('Group of Contacts', readonly=True)
     current_line_id = fields.Many2one('base.partner.merge.line', string='Current Line')
     line_ids = fields.One2many('base.partner.merge.line', 'wizard_id', string='Lines')
-    partner_ids = fields.Many2many('res.partner', string='Contacts', context={'active_test': False})
+    partner_ids = fields.Many2many('res.partner', string='Contacts')
     dst_partner_id = fields.Many2one('res.partner', string='Destination Contact')
 
     exclude_contact = fields.Boolean('A user associated to the contact')
@@ -217,7 +217,7 @@ class MergePartnerAutomatic(models.TransientModel):
                 # unknown model or field => skip
                 continue
 
-            if Model._abstract or field.compute is not None:
+            if field.compute is not None:
                 continue
 
             for partner in src_partners:
@@ -228,24 +228,6 @@ class MergePartnerAutomatic(models.TransientModel):
                 records_ref.sudo().write(values)
 
         self.env.flush_all()
-
-        # Company-dependent fields
-        with self._cr.savepoint():
-            params = {
-                'destination_id': f'res.partner,{dst_partner.id}',
-                'source_ids': tuple(f'res.partner,{src}' for src in src_partners.ids),
-            }
-            self._cr.execute("""
-        UPDATE ir_property AS _ip1
-        SET res_id = %(destination_id)s
-        WHERE res_id IN %(source_ids)s
-        AND NOT EXISTS (
-             SELECT
-             FROM ir_property AS _ip2
-             WHERE _ip2.res_id = %(destination_id)s
-             AND _ip2.fields_id = _ip1.fields_id
-             AND _ip2.company_id = _ip1.company_id
-        )""", params)
 
     def _get_summable_fields(self):
         """ Returns the list of fields that should be summed when merging partners
@@ -327,10 +309,6 @@ class MergePartnerAutomatic(models.TransientModel):
             child_ids |= Partner.search([('id', 'child_of', [partner_id.id])]) - partner_id
         if partner_ids & child_ids:
             raise UserError(_("You cannot merge a contact with one of his parent."))
-
-        # check if the list of partners to merge are linked to more than one user
-        if len(partner_ids.with_context(active_test=False).user_ids) > 1:
-            raise UserError(_("You cannot merge contacts linked to more than one user even if only one is active."))
 
         if extra_checks and len(set(partner.email for partner in partner_ids)) > 1:
             raise UserError(_("All contacts must have the same email. Only the Administrator can merge contacts with different emails."))
@@ -451,7 +429,7 @@ class MergePartnerAutomatic(models.TransientModel):
             :param partner_ids : list of partner ids to sort
         """
         return self.env['res.partner'].browse(partner_ids).sorted(
-            key=lambda p: (not p.active, (p.create_date or datetime.datetime(1970, 1, 1))),
+            key=lambda p: (p.active, (p.create_date or datetime.datetime(1970, 1, 1))),
             reverse=True,
         )
 

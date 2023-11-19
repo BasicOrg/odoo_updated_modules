@@ -72,18 +72,18 @@ class IrAttachment(models.Model):
     ]
 
     @api.model
-    def _l10n_mx_edi_load_xsd_files_recursion(self, url, force_reload=False):  # force_reload will be removed in master
-        xsd_name = url.split('/')[-1]
+    def _l10n_mx_edi_load_xsd_files_recursion(self, url, force_reload):
+        xsd_name = url.split('/')[-1].replace('.', '_')
+        xsd_name = f'xsd_cached_{xsd_name}'
         modify_xsd_content = None
-        if xsd_name in ('cfdv33.xsd', 'cfdv40.xsd'):
+        if xsd_name == 'xsd_cached_cfdv33_xsd':
             modify_xsd_content = self._load_xsd_complements
-        attachment = tools.load_xsd_files_from_url(self.env, url, xsd_name, modify_xsd_content=modify_xsd_content, xsd_name_prefix='l10n_mx_edi')
-        if not attachment:
-            return
+        attachment = tools.load_xsd_files_from_url(self.env, url, xsd_name, force_reload=force_reload, modify_xsd_content=modify_xsd_content)
+
         raw_object = objectify.fromstring(attachment.raw)
         sub_urls = raw_object.xpath('//xs:import', namespaces={'xs': 'http://www.w3.org/2001/XMLSchema'})
         for s_url in sub_urls:
-            s_url_catch = self._l10n_mx_edi_load_xsd_files_recursion(s_url.get('schemaLocation'))
+            s_url_catch = self._l10n_mx_edi_load_xsd_files_recursion(s_url.get('schemaLocation'), force_reload)
             s_url.attrib['schemaLocation'] = url_quote(s_url_catch)
 
         file_store = tools.config.filestore(self.env.cr.dbname)
@@ -91,14 +91,17 @@ class IrAttachment(models.Model):
 
     @api.model
     def _l10n_mx_edi_load_xsd_files(self, force_reload=False):
-        self._l10n_mx_edi_load_xsd_files_recursion('http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd')
-        self._l10n_mx_edi_load_xsd_files_recursion('http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd')
+        self._l10n_mx_edi_load_xsd_files_recursion('http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd', force_reload)
+        self._l10n_mx_edi_load_xsd_files_recursion('http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd', force_reload)
+        return
 
     @api.model
-    def action_download_xsd_files(self):
-        # EXTENDS account/models/ir_attachment.py
-        self._l10n_mx_edi_load_xsd_files()
-        super().action_download_xsd_files()
+    def l10n_mx_edi_validate_xml_from_attachment(self, xml_content, xsd_name):
+        attachment = self.sudo().env.ref(f'l10n_mx_edi.{xsd_name}', False)
+        if not attachment:
+            return
+        with io.BytesIO(attachment.raw) as xsd:
+            return tools.xml_utils._check_with_xsd(xml_content, xsd)
 
     @api.model
     def _load_xsd_complements(self, content):

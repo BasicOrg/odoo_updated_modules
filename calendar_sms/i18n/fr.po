@@ -3,16 +3,18 @@
 # 	* calendar_sms
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Jolien De Paepe, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2021-10-05 10:53+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,7 +24,7 @@ msgstr ""
 #. module: calendar_sms
 #: model:ir.model,name:calendar_sms.model_calendar_event
 msgid "Calendar Event"
-msgstr "Événement calendrier"
+msgstr "Calendrier de l'événement"
 
 #. module: calendar_sms
 #: model:sms.template,name:calendar_sms.sms_template_data_calendar_reminder
@@ -40,28 +42,15 @@ msgid "Event Alarm Manager"
 msgstr "Gestionnaire de rappel d'événements"
 
 #. module: calendar_sms
-#. odoo-python
 #: code:addons/calendar_sms/models/calendar_event.py:0
 #, python-format
 msgid "Event reminder: %(name)s, %(time)s."
-msgstr "Rappel d'événement : %(name)s, %(time)s."
+msgstr "Rappel d'événement: %(name)s, %(time)s."
 
 #. module: calendar_sms
 #: model:sms.template,body:calendar_sms.sms_template_data_calendar_reminder
-msgid ""
-"Event reminder: {{ object.name }}, {{ "
-"object.get_display_time_tz(object.partner_id.tz) }}"
-msgstr ""
-"Rappel d'événement : {{ object.name }}, {{ "
-"object.get_display_time_tz(object.partner_id.tz) }}"
-
-#. module: calendar_sms
-#. odoo-python
-#: code:addons/calendar_sms/models/calendar_alarm.py:0
-#: model:ir.model.fields,field_description:calendar_sms.field_calendar_alarm__sms_notify_responsible
-#, python-format
-msgid "Notify Responsible"
-msgstr "Notifier le responsable"
+msgid "Event reminder: {{ object.name }}, {{ object.display_time }}"
+msgstr "Rappel d'événement : {{ object.name }}, {{ object.display_time }}"
 
 #. module: calendar_sms
 #: model_terms:ir.ui.view,arch_db:calendar_sms.view_calendar_event_form_inherited
@@ -71,7 +60,7 @@ msgstr "SMS"
 #. module: calendar_sms
 #: model:ir.model.fields,field_description:calendar_sms.field_calendar_alarm__sms_template_id
 msgid "SMS Template"
-msgstr "Modèle SMS"
+msgstr "Modèle de SMS"
 
 #. module: calendar_sms
 #: model:ir.model.fields.selection,name:calendar_sms.selection__calendar_alarm__alarm_type__sms
@@ -81,10 +70,9 @@ msgstr "SMS"
 #. module: calendar_sms
 #: model_terms:ir.ui.view,arch_db:calendar_sms.view_calendar_event_tree_inherited
 msgid "Send SMS"
-msgstr "Envoyer un SMS"
+msgstr "Envoi de SMS"
 
 #. module: calendar_sms
-#. odoo-python
 #: code:addons/calendar_sms/models/calendar_event.py:0
 #, python-format
 msgid "Send SMS Text Message"
@@ -101,7 +89,6 @@ msgid "Template used to render SMS reminder content."
 msgstr "Modèle utilisé pour afficher le contenu des rappels SMS."
 
 #. module: calendar_sms
-#. odoo-python
 #: code:addons/calendar_sms/models/calendar_event.py:0
 #, python-format
 msgid "There are no attendees on these events"

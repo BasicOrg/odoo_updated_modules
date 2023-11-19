@@ -29,13 +29,20 @@ class StockPickingType(models.Model):
 
     def _compute_picking_count(self):
         super()._compute_picking_count()
-        data = self.env['stock.picking.batch']._read_group(
-            [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', self.ids)],
-            ['picking_type_id', 'is_wave'], ['__count'])
-        count = {(picking_type.id, is_wave): count for picking_type, is_wave, count in data}
-        for record in self:
-            record.count_picking_wave = count.get((record.id, True), 0)
-            record.count_picking_batch = count.get((record.id, False), 0)
+        domains = {
+            'count_picking_batch': [('is_wave', '=', False)],
+            'count_picking_wave': [('is_wave', '=', True)],
+        }
+        for field in domains:
+            data = self.env['stock.picking.batch']._read_group(domains[field] +
+                [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', self.ids)],
+                ['picking_type_id'], ['picking_type_id'])
+            count = {
+                x['picking_type_id'][0]: x['picking_type_id_count']
+                for x in data if x['picking_type_id']
+            }
+            for record in self:
+                record[field] = count.get(record.id, 0)
 
     @api.model
     def _get_batch_group_by_keys(self):
@@ -63,6 +70,7 @@ class StockPicking(models.Model):
     batch_id = fields.Many2one(
         'stock.picking.batch', string='Batch Transfer',
         check_company=True,
+        states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
         help='Batch associated to this transfer', index=True, copy=False)
 
     @api.model_create_multi
@@ -70,8 +78,6 @@ class StockPicking(models.Model):
         pickings = super().create(vals_list)
         for picking, vals in zip(pickings, vals_list):
             if vals.get('batch_id'):
-                if not picking.batch_id.picking_type_id:
-                    picking.batch_id.picking_type_id = picking.picking_type_id[0]
                 picking.batch_id._sanity_check()
         return pickings
 
@@ -114,16 +120,14 @@ class StockPicking(models.Model):
             picking._find_auto_batch()
         return res
 
-    def button_validate(self):
-        res = super().button_validate()
+    def _action_done(self):
+        res = super()._action_done()
         to_assign_ids = set()
         if self and self.env.context.get('pickings_to_detach'):
             self.env['stock.picking'].browse(self.env.context['pickings_to_detach']).batch_id = False
             to_assign_ids.update(self.env.context['pickings_to_detach'])
 
         for picking in self:
-            if picking.state != 'done':
-                continue
             # Avoid inconsistencies in states of the same batch when validating a single picking in a batch.
             if picking.batch_id and any(p.state != 'done' for p in picking.batch_id.picking_ids):
                 picking.batch_id = None
@@ -152,7 +156,7 @@ class StockPicking(models.Model):
     def _find_auto_batch(self):
         self.ensure_one()
         # Check if auto_batch is enabled for this picking.
-        if not self.picking_type_id.auto_batch or self.batch_id or not self.move_ids or not self._is_auto_batchable():
+        if not self.picking_type_id.auto_batch or self.immediate_transfer or self.batch_id or not self.move_ids or not self._is_auto_batchable():
             return False
 
         # Try to find a compatible batch to insert the picking
@@ -182,7 +186,7 @@ class StockPicking(models.Model):
     def _is_auto_batchable(self, picking=None):
         """ Verifies if a picking can be put in a batch with another picking without violating auto_batch constrains.
         """
-        if self.state != 'assigned':
+        if self.state not in ('waiting', 'confirmed', 'assigned'):
             return False
         res = True
         if not picking:
@@ -199,7 +203,8 @@ class StockPicking(models.Model):
         domain = [
             ('id', '!=', self.id),
             ('company_id', '=', self.company_id.id if self.company_id else False),
-            ('state', '=', 'assigned'),
+            ('immediate_transfer', '=', False),
+            ('state', 'in', ('waiting', 'confirmed', 'assigned')),
             ('picking_type_id', '=', self.picking_type_id.id),
             ('batch_id', '=', False),
         ]
@@ -238,11 +243,8 @@ class StockPicking(models.Model):
         pickings = self.filtered(lambda p: p.user_id.id != user_id)
         pickings.write({'user_id': user_id})
         for pick in pickings:
-            log_message = _('Assigned to %s Responsible', pick.batch_id._get_html_link())
+            log_message = _('Assigned to %s Responsible', (pick.batch_id._get_html_link()))
             pick.message_post(body=log_message)
-
-    def _package_move_lines(self):
-        return super(StockPicking, self.batch_id.picking_ids if self.batch_id else self)._package_move_lines()
 
     def action_view_batch(self):
         self.ensure_one()

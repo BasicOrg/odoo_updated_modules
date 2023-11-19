@@ -1,9 +1,9 @@
 /** @odoo-module **/
-
 import { useService } from "@web/core/utils/hooks";
 import { Transition } from "@web/core/transition";
-import { _t } from "@web/core/l10n/translation";
-import { Component, useState, useRef } from "@odoo/owl";
+import { sprintf } from "@web/core/utils/strings";
+
+const { Component, useState, useRef } = owl;
 
 /**
  * Expiration panel
@@ -16,6 +16,7 @@ import { Component, useState, useRef } from "@odoo/owl";
 export class ExpirationPanel extends Component {
     setup() {
         this.subscription = useState(useService("enterprise_subscription"));
+        this.cookie = useService("cookie");
 
         this.state = useState({
             displayRegisterForm: false,
@@ -25,7 +26,7 @@ export class ExpirationPanel extends Component {
     }
 
     get buttonText() {
-        return this.subscription.lastRequestStatus === "error" ? _t("Retry") : _t("Register");
+        return this.subscription.lastRequestStatus === "error" ? "Retry" : "Register";
     }
 
     get alertType() {
@@ -42,15 +43,16 @@ export class ExpirationPanel extends Component {
     }
 
     get expirationMessage() {
+        const { _t } = this.env;
         const { daysLeft } = this.subscription;
         if (daysLeft <= 0) {
             return _t("This database has expired. ");
         }
-        const delay = daysLeft === 30 ? _t("1 month") : _t("%s days", daysLeft);
+        const delay = daysLeft === 30 ? _t("1 month") : sprintf(_t("%s days"), daysLeft);
         if (this.subscription.expirationReason === "demo") {
-            return _t("This demo database will expire in %s. ", delay);
+            return sprintf(_t("This demo database will expire in %s. "), delay);
         }
-        return _t("This database will expire in %s. ", delay);
+        return sprintf(_t("This database will expire in %s. "), delay);
     }
 
     showRegistrationForm() {
@@ -66,11 +68,10 @@ export class ExpirationPanel extends Component {
         if (this.subscription.lastRequestStatus === "success") {
             this.state.displayRegisterForm = false;
         } else {
-            this.state.buttonText = _t("Retry");
+            this.state.buttonText = "Retry";
         }
     }
 }
 
 ExpirationPanel.template = "DatabaseExpirationPanel";
-ExpirationPanel.props = {};
 ExpirationPanel.components = { Transition };

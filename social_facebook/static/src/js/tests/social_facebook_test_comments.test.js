@@ -2,11 +2,11 @@
 
 import { StreamPostCommentsReply } from '@social/js/stream_post_comments_reply';
 
-import { getFixture, patchWithCleanup } from "@web/../tests/helpers/utils";
+import { getFixture } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers"
 import { registry } from "@web/core/registry";;
 
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
+import testUtils from "web.test_utils";
 
 let target;
 let serverData;
@@ -52,7 +52,7 @@ return '<kanban class="o_social_stream_post_kanban"' +
 '		<div class="o_social_stream_post_message py-2">' +
 '			<div class="d-flex justify-content-between mb-2 px-2">' +
 '				<t t-set="author_info">' +
-'					<span class="o_social_stream_post_author_image o_social_author_image o_avatar position-relative rounded overflow-hidden"/>' +
+'					<span class="o_social_stream_post_author_image o_social_author_image position-relative rounded-circle overflow-hidden"/>' +
 '					<span class="o_social_stream_post_author_name text-truncate ms-2" t-esc="record.author_name.value or \'Unknown\'" t-att-title="record.author_name.value or \'Unknown\'"/>' +
 '				</t>' +
 '' +
@@ -79,18 +79,20 @@ return '<kanban class="o_social_stream_post_kanban"' +
 '				class="o_social_stream_post_message_body px-2 pb-2 mb-2 border-bottom}">' +
 '' +
 '				<div class="o_social_stream_post_message_text overflow-hidden mb-2">' +
-'					<field name="message" widget="social_post_formatter"/>' +
+'					<div t-if="record.message.raw_value" t-out="formatPost(record.message.value)"/>' +
 '				</div>' +
 '			</div>' +
 '           <div class="o_social_stream_post_facebook_stats px-2 d-flex justify-content-around"' +
 '           	t-if="record.media_type.raw_value === \'facebook\'">' +
-'           	<div t-attf-class="o_social_facebook_likes o_social_subtle_btn ps-2 pe-3 #{record.facebook_user_likes.raw_value ? \'o_social_facebook_user_likes\' : \'\'}">' +
+'           	<div t-attf-class="o_social_facebook_likes o_social_subtle_btn ps-2 pe-3 #{record.facebook_user_likes.raw_value ? \'o_social_facebook_user_likes\' : \'\'}"' +
+'            		t-on-click.stop="_onFacebookPostLike">' +
 '            		<t t-if="record.facebook_likes_count.raw_value !== 0">' +
 '            			<i class="fa fa-thumbs-up me-1" title="Likes"/>' +
-'            			<field name="facebook_likes_count" class="fw-bold"/>' +
+'            			<b class="o_social_kanban_likes_count" t-esc="_insertThousandSeparator(record.facebook_likes_count.raw_value)"/>' +
 '            		</t>' +
 '            	</div>' +
-'            	<div class="o_social_facebook_comments o_social_comments o_social_subtle_btn px-3">' +
+'            	<div class="o_social_facebook_comments o_social_comments o_social_subtle_btn px-3"' +
+'            		 t-on-click.stop="_onFacebookCommentsClick">' +
 '            		<i class="fa fa-comments me-1" title="Comments"/>' +
 '            		<b t-esc="record.facebook_comments_count.value !== \'0\' ? record.facebook_comments_count.value : \'\'"/>' +
 '            	</div>' +
@@ -331,7 +333,7 @@ QUnit.module('Facebook Comments', (hooks) => {
                             removeEventListener: () => {},
                         }
                     });
-                } };
+                } }; 
             }
         }, { force: true });
     });
@@ -525,7 +527,7 @@ QUnit.module('Facebook Comments', (hooks) => {
             ".o_social_comment_wrapper .o_social_comment_message div.o_social_comment_text:contains('Sub Comment 2')",
             "Second sub comment should be loaded");
 
-
+        
         // 3. Check like/dislike behavior
 
         // 3a. Check like status and count
@@ -569,12 +571,12 @@ QUnit.module('Facebook Comments', (hooks) => {
         assert.containsOnce(body,
             ".o_social_comment .o_social_comment:contains('Sub Comment 2') .o_social_likes_count:contains('11')",
             "Sub comment 2 should have 11 likes");
-
+        
         // 4. Add comment
 
         // Patch "addComment" to return new comment
         // Sadly 'XMLHttpRequest' cannot be mocked easily (would have been better)
-        patchWithCleanup(StreamPostCommentsReply.prototype, {
+        testUtils.mock.patch(StreamPostCommentsReply.prototype, {
             _addComment: function (textarea) {
                 const formData = new FormData(textarea.closest('.o_social_write_reply').querySelector('form'));
                 this.props.onAddComment({
@@ -599,7 +601,7 @@ QUnit.module('Facebook Comments', (hooks) => {
         await testUtils.fields.editInput(
             target.querySelector('.o_social_write_reply .o_social_add_comment'), 'New Comment');
         await testUtils.fields.triggerKeydown(
-            target.querySelector('.o_social_write_reply .o_social_add_comment'), 'Enter');
+            target.querySelector('.o_social_write_reply .o_social_add_comment'), 'enter');
 
         assert.containsOnce(body,
             ".o_social_comment_wrapper .o_social_comment_message div.o_social_comment_text:contains('New Comment')",
@@ -614,7 +616,7 @@ QUnit.module('Facebook Comments', (hooks) => {
         await testUtils.fields.editInput(
             target.querySelector(".o_social_comment .o_social_add_comment"), 'New Reply');
         await testUtils.fields.triggerKeydown(
-            target.querySelector(".o_social_comment .o_social_add_comment"), 'Enter');
+            target.querySelector(".o_social_comment .o_social_add_comment"), 'enter');
 
         assert.containsOnce(body,
             ".o_social_comment_wrapper .o_social_comment_message div.o_social_comment_text:contains('New Reply')",

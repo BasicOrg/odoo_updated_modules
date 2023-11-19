@@ -1,22 +1,22 @@
 /** @odoo-module **/
 
-import { getGoogleSlideUrl } from "@mrp/views/fields/google_slides_viewer";
-import { _t } from "@web/core/l10n/translation";
-import { useService } from "@web/core/utils/hooks";
-import { url } from "@web/core/utils/urls";
-import { fileTypeMagicWordMap } from "@web/views/fields/image/image_field";
-import { Component, useEffect, useRef } from "@odoo/owl";
+import { PdfViewerField } from '@web/views/fields/pdf_viewer/pdf_viewer_field';
+import { ImageField } from '@web/views/fields/image/image_field';
+import { SlidesViewer } from "@mrp/views/fields/google_slides_viewer";
+
+const { Component, useEffect, useRef } = owl;
 
 class DocumentViewer extends Component {
 
     setup() {
-        this.notification = useService("notification");
         this.magicNumbers = {
             'JVBER': 'pdf',
-            ...fileTypeMagicWordMap,
+            '/': 'jpg',
+            'R': 'gif',
+            'i': 'png',
+            'P': 'svg+xml',
         };
         this.pdfIFrame = useRef('pdf_viewer');
-        this.slideIFrame = useRef('slide_viewer');
         useEffect(() => {
             this.updatePdf();
         });
@@ -27,24 +27,19 @@ class DocumentViewer extends Component {
             const iframe = this.pdfIFrame.el.firstElementChild;
             iframe.removeAttribute('style');
             // Once the PDF viewer is loaded, hides everything except the page.
-            iframe.addEventListener("load", () => {
-                iframe.contentDocument.querySelector("body").style.background = "none";
-                iframe.contentDocument.querySelector("#viewerContainer").style.boxShadow = "none";
-            });
+                iframe.addEventListener('load', () => {
+                    iframe.contentDocument.querySelector('.toolbar').style.display = 'none';
+                    iframe.contentDocument.querySelector('body').style.background = 'none';
+                    iframe.contentDocument.querySelector('#viewerContainer').style.boxShadow = 'none';
+                    iframe.contentDocument.querySelector('#mainContainer').style.margin = '-2.5em';
+                });
         }
     }
-
-    onLoadFailed() {
-        this.notification.add(_t("Could not display the selected %s", this.type), {
-            type: "danger",
-        });
-    }
-
     get type() {
         if (!this.props || !this.props.value) {
             return false;
         }
-        if (this.props.resField === "worksheet_url" || this.props.resField === "worksheet_google_slide") {
+        if (this.props.resField === "worksheet_url") {
             return "google_slide";
         }
         for (const [magicNumber, type] of Object.entries(this.magicNumbers)) {
@@ -55,32 +50,32 @@ class DocumentViewer extends Component {
         return false;
     }
 
-    get urlPdf() {
-        const page = this.props.page || 1;
-        const file = encodeURIComponent(
-            url("/web/content", {
-                model: this.props.resModel,
-                field: this.props.resField,
-                id: this.props.resId,
-            })
-        );
-        return `/web/static/lib/pdfjs/web/viewer.html?file=${file}#page=${page}`;
-    }
-
-    get urlSlide() {
-        return getGoogleSlideUrl(this.props.value, this.props.page);
-    }
-
-    get urlImage() {
-        return url("/web/image", {
-            model: this.props.resModel,
-            id: this.props.resId,
-            field: this.props.resField,
-        });
+    get viewerProps() {
+        let viewerProps = {
+            record: {
+                resModel: this.props.resModel,
+                resId: this.props.resId,
+                data: {},
+            },
+            name: this.props.resField,
+            value: this.props.value,
+            readonly: true,
+        };
+        viewerProps['record']['data'][this.props.resField] = this.props.resField;
+        viewerProps['record']['data'][`$(this.props.resField)_page`] = this.props.page || 1;
+        if (this.type === 'pdf') {
+            viewerProps['fileNameField'] = this.props.resField;
+        }
+        return viewerProps;
     }
 }
 
-DocumentViewer.template = "mrp_workorder.DocumentViewer";
+DocumentViewer.template = 'mrp_workorder.DocumentViewer';
 DocumentViewer.props = ["resField", "resModel", "resId", "value", "page"];
+DocumentViewer.components = {
+    PdfViewerField,
+    ImageField,
+    SlidesViewer,
+};
 
 export default DocumentViewer;

@@ -7,7 +7,6 @@ import psycopg2
 import pytz
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from psycopg2 import sql
 
 import odoo
 from odoo import api, fields, models, _
@@ -17,9 +16,6 @@ _logger = logging.getLogger(__name__)
 
 BASE_VERSION = odoo.modules.get_manifest('base')['version']
 MAX_FAIL_TIME = timedelta(hours=5)  # chosen with a fair roll of the dice
-
-# custom function to call instead of default PostgreSQL's `pg_notify`
-ODOO_NOTIFY_FUNCTION = os.getenv('ODOO_NOTIFY_FUNCTION', 'pg_notify')
 
 
 class BadVersion(Exception):
@@ -54,7 +50,7 @@ class ir_cron(models.Model):
     ir_actions_server_id = fields.Many2one(
         'ir.actions.server', 'Server action',
         delegate=True, ondelete='restrict', required=True)
-    cron_name = fields.Char('Name', compute='_compute_cron_name', store=True)
+    cron_name = fields.Char('Name', related='ir_actions_server_id.name', store=True, readonly=False)
     user_id = fields.Many2one('res.users', string='Scheduler User', default=lambda self: self.env.user, required=True)
     active = fields.Boolean(default=True)
     interval_number = fields.Integer(default=1, help="Repeat every x.")
@@ -68,11 +64,6 @@ class ir_cron(models.Model):
     nextcall = fields.Datetime(string='Next Execution Date', required=True, default=fields.Datetime.now, help="Next planned execution date for this job.")
     lastcall = fields.Datetime(string='Last Execution Date', help="Previous time the cron ran successfully, provided to the job through the context on the `lastcall` key")
     priority = fields.Integer(default=5, help='The priority of the job, as an integer: 0 means higher priority, 10 means lower priority.')
-
-    @api.depends('ir_actions_server_id.name')
-    def _compute_cron_name(self):
-        for cron in self.with_context(lang='en_US'):
-            cron.cron_name = cron.ir_actions_server_id.name
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -188,7 +179,7 @@ class ir_cron(models.Model):
     def _get_all_ready_jobs(cls, cr):
         """ Return a list of all jobs that are ready to be executed """
         cr.execute("""
-            SELECT *
+            SELECT *, cron_name->>'en_US' as cron_name
             FROM ir_cron
             WHERE active = true
               AND numbercall != 0
@@ -250,7 +241,7 @@ class ir_cron(models.Model):
         # Learn more: https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-ROWS
 
         query = """
-            SELECT *
+            SELECT *, cron_name->>'en_US' as cron_name
             FROM ir_cron
             WHERE active = true
               AND numbercall != 0
@@ -402,8 +393,6 @@ class ir_cron(models.Model):
                           the lock aquired by foreign keys when they
                           reference this row.
         """
-        if not self:
-            return
         row_level_lock = "UPDATE" if lockfk else "NO KEY UPDATE"
         try:
             self._cr.execute(f"""
@@ -469,8 +458,6 @@ class ir_cron(models.Model):
         :param Optional[Union[datetime.datetime, list[datetime.datetime]]] at:
             When to execute the cron, at one or several moments in time instead
             of as soon as possible.
-        :return: the created triggers records
-        :rtype: recordset
         """
         if at is None:
             at_list = [fields.Datetime.now()]
@@ -480,7 +467,7 @@ class ir_cron(models.Model):
             at_list = list(at)
             assert all(isinstance(at, datetime) for at in at_list)
 
-        return self._trigger_list(at_list)
+        self._trigger_list(at_list)
 
     def _trigger_list(self, at_list):
         """
@@ -488,20 +475,14 @@ class ir_cron(models.Model):
 
         :param list[datetime.datetime] at_list:
             Execute the cron later, at precise moments in time.
-        :return: the created triggers records
-        :rtype: recordset
         """
+        if not at_list:
+            return
+
         self.ensure_one()
         now = fields.Datetime.now()
 
-        if not self.sudo().active:
-            # skip triggers that would be ignored
-            at_list = [at for at in at_list if at > now]
-
-        if not at_list:
-            return self.env['ir.cron.trigger']
-
-        triggers = self.env['ir.cron.trigger'].sudo().create([
+        self.env['ir.cron.trigger'].sudo().create([
             {'cron_id': self.id, 'call_at': at}
             for at in at_list
         ])
@@ -511,7 +492,6 @@ class ir_cron(models.Model):
 
         if min(at_list) <= now or os.getenv('ODOO_NOTIFY_CRON_CHANGES'):
             self._cr.postcommit.add(self._notifydb)
-        return triggers
 
     def _notifydb(self):
         """ Wake up the cron workers
@@ -519,19 +499,13 @@ class ir_cron(models.Model):
         ir_cron modification and on trigger creation (regardless of call_at)
         """
         with odoo.sql_db.db_connect('postgres').cursor() as cr:
-            query = sql.SQL("SELECT {}('cron_trigger', %s)").format(sql.Identifier(ODOO_NOTIFY_FUNCTION))
-            cr.execute(query, [self.env.cr.dbname])
+            cr.execute('NOTIFY cron_trigger, %s', [self.env.cr.dbname])
         _logger.debug("cron workers notified")
 
 
 class ir_cron_trigger(models.Model):
     _name = 'ir.cron.trigger'
     _description = 'Triggered actions'
-    _rec_name = 'cron_id'
 
     cron_id = fields.Many2one("ir.cron", index=True)
     call_at = fields.Datetime()
-
-    @api.autovacuum
-    def _gc_cron_triggers(self):
-        self.search([('call_at', '<', datetime.now() + relativedelta(weeks=-1))]).unlink()

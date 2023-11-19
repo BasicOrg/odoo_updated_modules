@@ -26,6 +26,7 @@ class AppointmentType(models.Model):
                     'work_hours_activated': True,
                     'max_schedule_days': 30,
                     'name': f'Meeting with {user_id.name}',
+                    'slot_ids': self._get_default_slots('anytime'),
                 })
         appointment_types |= self.create(appointment_types_anytime)
 

@@ -16,8 +16,8 @@ class BarcodeNomenclature(models.Model):
         string="Is GS1 Nomenclature",
         help="This Nomenclature use the GS1 specification, only GS1-128 encoding rules is accepted is this kind of nomenclature.")
     gs1_separator_fnc1 = fields.Char(
-        string="FNC1 Separator", trim=False, default=r'(Alt029|#|\x1D)',
-        help="Alternative regex delimiter for the FNC1. The separator must not match the begin/end of any related rules pattern.")
+        string="FNC1 Separator", trim=False,
+        help="Alternative regex delimiter for the FNC1 (by default, if not set, it is <GS> ASCII 29 char). The separator must not match the begin/end of any related rules pattern.")
 
     @api.constrains('gs1_separator_fnc1')
     def _check_pattern(self):
@@ -153,10 +153,7 @@ class BarcodeNomenclature(models.Model):
                     data_type = data['rule'].type
                     value = data['value']
                     if data_type in barcode_types:
-                        if data_type == 'lot':
-                            args[i] = (field_name, operator, value)
-                            break
-                        match = re.match('0*([0-9]+)$', str(value))
+                        match = re.match('0*([0-9]+)$', value)
                         if match:
                             unpadded_barcode = match.groups()[0]
                             args[i] = (field_name, replacing_operator, unpadded_barcode)

@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Spain - Real Estates",
-    'countries': ['es'],
+    'icon': '/l10n_es/static/description/icon.png',
     'description': """
 This module allows the user to add real estate related data to the Spanish localization and generates a mod 347 report.
     """,

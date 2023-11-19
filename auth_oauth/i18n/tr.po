@@ -1,32 +1,29 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* auth_oauth
-#
+# 
 # Translators:
-# Ediz Duman <neps1192@gmail.com>, 2022
-# Levent Karakaş <levent@mektup.at>, 2022
-# ANIL TAN SAĞIR <anils@projetgrup.com>, 2022
-# Ertuğrul Güreş <ertugrulg@projetgrup.com>, 2022
-# Umur Akın <umura@projetgrup.com>, 2022
-# Murat Durmuş <muratd@projetgrup.com>, 2022
-# abc Def <hdogan1974@gmail.com>, 2022
-# Ahmet Altinisik <aaltinisik@altinkaya.com.tr>, 2022
-# Martin Trigaux, 2022
-# Murat Kaplan <muratk@projetgrup.com>, 2022
-# Halil, 2022
-#
+# Ediz Duman <neps1192@gmail.com>, 2019
+# Martin Trigaux, 2019
+# Levent Karakaş <levent@mektup.at>, 2019
+# Murat Kaplan <muratk@projetgrup.com>, 2019
+# Ahmet Altinisik <aaltinisik@altinkaya.com.tr>, 2019
+# Umur Akın <umura@projetgrup.com>, 2019
+# Buket Şeker <buket_skr@hotmail.com>, 2019
+# ANIL TAN SAĞIR <anils@projetgrup.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.5alpha1\n"
+"Project-Id-Version: Odoo Server saas~12.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 13:49+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: Halil, 2022\n"
-"Language-Team: Turkish (https://app.transifex.com/odoo/teams/41243/tr/)\n"
-"Language: tr\n"
+"POT-Creation-Date: 2019-08-26 08:16+0000\n"
+"PO-Revision-Date: 2019-08-26 09:09+0000\n"
+"Last-Translator: ANIL TAN SAĞIR <anils@projetgrup.com>, 2019\n"
+"Language-Team: Turkish (https://www.transifex.com/odoo/teams/41243/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: auth_oauth
@@ -36,11 +33,10 @@ msgstr "- yada -"
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
-msgid "<i class=\"oi oi-fw oi-arrow-right\"/>Tutorial"
-msgstr ""
+msgid "<i class=\"fa fa-fw fa-arrow-right\"/>Tutorial"
+msgstr "<i class=\"fa fa-fw fa-arrow-right\"/>Öğretici"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
 msgid "Access Denied"
@@ -63,8 +59,13 @@ msgstr "İzin verildi"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__auth_endpoint
-msgid "Authorization URL"
-msgstr "Yetkilendirme URL'si"
+msgid "Authentication URL"
+msgstr "Kimlik Doğrulama URL"
+
+#. module: auth_oauth
+#: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__body
+msgid "Body"
+msgstr "Gövde"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__css_class
@@ -80,12 +81,12 @@ msgstr "Müşteri ID"
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
 msgid "Client ID:"
-msgstr "Müşteri Kimliği:"
+msgstr "Client ID:"
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_res_config_settings
 msgid "Config Settings"
-msgstr "Yapılandırma Ayarları"
+msgstr "Konfigürasyon Ayarları"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__create_uid
@@ -99,8 +100,8 @@ msgstr "Oluşturulma"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__data_endpoint
-msgid "Data Endpoint"
-msgstr "Veri Uç Noktası"
+msgid "Data URL"
+msgstr "Data URL"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__display_name
@@ -118,6 +119,11 @@ msgid "ID"
 msgstr "ID"
 
 #. module: auth_oauth
+#: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider____last_update
+msgid "Last Modified on"
+msgstr "Son Güncelleme"
+
+#. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__write_uid
 msgid "Last Updated by"
 msgstr "Son Güncelleyen"
@@ -128,34 +134,9 @@ msgid "Last Updated on"
 msgstr "Son Güncelleme"
 
 #. module: auth_oauth
-#: model:ir.model.fields,help:auth_oauth.field_auth_oauth_provider__body
-msgid "Link text in Login Dialog"
-msgstr "Giriş İletişim Kutusunda metin bağlantısı"
-
-#. module: auth_oauth
-#: model:auth.oauth.provider,body:auth_oauth.provider_facebook
-msgid "Log in with Facebook"
-msgstr "Facebook ile giriş"
-
-#. module: auth_oauth
-#: model:auth.oauth.provider,body:auth_oauth.provider_google
-msgid "Log in with Google"
-msgstr "Google ile giriş yap"
-
-#. module: auth_oauth
-#: model:auth.oauth.provider,body:auth_oauth.provider_openerp
-msgid "Log in with Odoo.com"
-msgstr "Odoo.com ile giriş yapın"
-
-#. module: auth_oauth
-#: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__body
-msgid "Login button label"
-msgstr "Giriş butonu etiketi"
-
-#. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_res_users__oauth_access_token
 msgid "OAuth Access Token"
-msgstr "OAuth Erişim Jetonu"
+msgstr "OAuth Access Token"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_res_users__oauth_provider_id
@@ -219,7 +200,6 @@ msgid "Server uri"
 msgstr "Sunucu Adresi (URL)"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
 msgid "Sign up is not allowed on this database."
@@ -228,24 +208,28 @@ msgstr "Bu veritabanına kayıt olmaya izin verilmez."
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_ir_config_parameter
 msgid "System Parameter"
-msgstr "Sistem Parametresi"
+msgstr "Sistem Parametreleri"
 
 #. module: auth_oauth
 #: model:ir.model,name:auth_oauth.model_res_users
-msgid "User"
-msgstr "Kullanıcı"
+msgid "Users"
+msgstr "Kullanıcılar"
 
 #. module: auth_oauth
 #: model:ir.model.fields,field_description:auth_oauth.field_auth_oauth_provider__validation_endpoint
-msgid "UserInfo URL"
-msgstr "UserInfo URL'si"
+msgid "Validation URL"
+msgstr "Onaylama  URL"
 
 #. module: auth_oauth
-#. odoo-python
 #: code:addons/auth_oauth/controllers/main.py:0
 #, python-format
-msgid "You do not have access to this database or your invitation has expired. Please ask for an invitation and be sure to follow the link in your invitation email."
-msgstr "Bu veritabanına giriş izniniz yok ya da davetinizin süresi dolmuş. Lütfen bir davetiye isteyin ve eposta davetiyenizdeki bağlantıyı izleyin."
+msgid ""
+"You do not have access to this database or your invitation has expired. "
+"Please ask for an invitation and be sure to follow the link in your "
+"invitation email."
+msgstr ""
+"Bu veritabanına giriş izniniz yok ya da davetinizin süresi dolmuş. Lütfen "
+"bir davetiye isteyin ve eposta davetiyenizdeki bağlantıyı izleyin."
 
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.view_oauth_provider_form
@@ -256,4 +240,4 @@ msgstr "arch"
 #. module: auth_oauth
 #: model_terms:ir.ui.view,arch_db:auth_oauth.res_config_settings_view_form
 msgid "e.g. 1234-xyz.apps.googleusercontent.com"
-msgstr "örn. 1234-xyz.apps.googleusercontent.com"
+msgstr "ör. 1234-xyz.apps.googleusercontent.com"

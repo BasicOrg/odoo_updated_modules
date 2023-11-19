@@ -2,11 +2,11 @@
 
 import { formatDateTime } from "@web/core/l10n/dates";
 import { localization } from "@web/core/l10n/localization";
-import { patch } from "@web/core/utils/patch";
+import { patch } from '@web/core/utils/patch';
 
 import { QtyAtDatePopover, QtyAtDateWidget } from "@sale_stock/widgets/qty_at_date_widget";
 
-patch(QtyAtDatePopover.prototype, {
+patch(QtyAtDatePopover.prototype, "sale_stock_renting.QtyAtDatePopover", {
     async openRentalGanttView() {
         const action = await this.actionService.loadAction("sale_renting.action_rental_order_schedule", this.props.context);
         action.domain = [['product_id', '=', this.props.record.data.product_id[0]]];
@@ -19,14 +19,14 @@ patch(QtyAtDatePopover.prototype, {
     },
 });
 
-patch(QtyAtDateWidget.prototype, {
+patch(QtyAtDateWidget.prototype, 'sale_stock_renting.QtyAtDateWidget', {
     updateCalcData() {
         const { data } = this.props.record;
         if (!data.product_id) {
             return;
         }
         if (!data.is_rental || !data.return_date || !data.start_date) {
-            return super.updateCalcData();
+            return this._super();
         }
         this.calcData.stock_end_date = formatDateTime(data.return_date, { format: localization.dateFormat });
         this.calcData.stock_start_date = formatDateTime(data.start_date, { format: localization.dateFormat });

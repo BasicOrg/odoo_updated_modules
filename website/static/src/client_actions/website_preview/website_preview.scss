@@ -11,7 +11,6 @@
 
 .o_website_preview {
     position: relative;
-    isolation: isolate;
     height: 100%;
     transition: margin-right ease 400ms;
 
@@ -76,7 +75,6 @@
             height: 0px;
             transform: translateY(-$o-navbar-height);
             border-bottom: 0px;
-            padding: 0;
         }
     }
 
@@ -91,19 +89,6 @@ header {
     }
 }
 
-.editor_has_snippets_hide_backend_navbar header .o_main_navbar {
-    display: none !important;
-}
-
 .o_block_preview {
     z-index: $zindex-dropdown - 1 !important;
-}
-
-.o_resource_editor_wrapper {
-    @include o-position-absolute($o-navbar-height, 0, 0);
-    z-index: $zindex-modal;
-
-    .o_website_fullscreen & {
-        top: 0;
-    }
 }

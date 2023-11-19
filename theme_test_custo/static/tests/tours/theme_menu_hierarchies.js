@@ -1,11 +1,11 @@
 /** @odoo-module */
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 wTourUtils.registerWebsitePreviewTour('theme_menu_hierarchies', {
     url: '/example',
     test: true,
-}, () => [
+}, [
     {
         content: 'Check Mega Menu is correctly created',
         trigger: 'iframe #top_menu a.o_mega_menu_toggle',
@@ -29,9 +29,11 @@ wTourUtils.registerWebsitePreviewTour('theme_menu_hierarchies', {
         trigger: 'iframe footer ul li a[href="/dogs"]',
         run: () => null, // It's a check.
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
     {
         content: 'Click on footer',
+        // TODO: this extra_trigger should be part of the `clickOnEdit` util
+        extra_trigger: "#oe_snippets.o_loaded",
         trigger: 'iframe footer',
     }, {
         content: 'The theme custom footer template should be listed and selected',

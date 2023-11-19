@@ -2,12 +2,11 @@
 // ============================================================================
 
 .o_searchview_facet {
-    @keyframes animate {
-        from {
-            opacity: .5;
-            transform: translateY(20%);
-        }
+    .o_facet_values {
+        border: $border-width solid var(--SearchBar-facet-background, #{$o-brand-odoo});
     }
-
-    animation: animate .25s ease-out;
+    .o_searchview_facet_label {
+        background: var(--SearchBar-facet-background, #{$o-brand-odoo});
+        color: var(--SearchBar-facet-color, #{$o-white});
+    }
 }

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.addons.mail.tests.common import MailCommon
+from odoo.addons.test_mail.tests.common import TestMailCommon
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 
 
 @tagged('mail_followers')
-class TestInvite(MailCommon):
+class TestInvite(TestMailCommon):
 
     @mute_logger('odoo.addons.mail.models.mail_mail')
     def test_invite_email(self):
@@ -21,20 +21,13 @@ class TestInvite(MailCommon):
             'default_res_id': test_record.id
         }).with_user(self.user_employee).create({
             'partner_ids': [(4, test_partner.id), (4, self.user_admin.partner_id.id)],
-            'notify': True})
-        with self.mock_mail_app(), self.mock_mail_gateway():
+            'send_mail': True})
+        with self.mock_mail_gateway():
             mail_invite.add_followers()
 
-        # Check added followers and that notifications are sent.
-        # Admin notification preference is inbox so the notification must be of inbox type
-        # while partner_employee must receive it by email.
+        # check added followers and that emails were sent
         self.assertEqual(test_record.message_partner_ids,
                          test_partner | self.user_admin.partner_id)
-        self.assertEqual(len(self._new_msgs), 1)
-        self.assertEqual(len(self._mails), 1)
         self.assertSentEmail(self.partner_employee, [test_partner])
-        self.assertNotSentEmail([self.partner_admin])
-        self.assertNotified(
-            self._new_msgs[0],
-            [{'partner': self.partner_admin, 'type': 'inbox', 'is_read': False}]
-        )
+        self.assertSentEmail(self.partner_employee, [self.partner_admin])
+        self.assertEqual(len(self._mails), 2)

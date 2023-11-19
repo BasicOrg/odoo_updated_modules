@@ -6,19 +6,19 @@
         <field name="inherit_id" ref="website_sale.product_template_form_view"/>
         <field name="arch" type="xml">
             <field name="is_published" position="attributes">
-                <attribute name="invisible">not sale_ok and not rent_ok</attribute>
+                <attribute name="attrs">{'invisible': [('sale_ok', '=', False), ('rent_ok', '=', False)]}</attribute>
             </field>
             <field name="accessory_product_ids" position="attributes">
-                <attribute name="invisible">not sale_ok and not rent_ok</attribute>
+                <attribute name="attrs">{'invisible': [('sale_ok', '=', False), ('rent_ok', '=', False)]}</attribute>
             </field>
             <field name="alternative_product_ids" position="attributes">
-                <attribute name="invisible">not sale_ok and not rent_ok</attribute>
+                <attribute name="attrs">{'invisible': [('sale_ok', '=', False), ('rent_ok', '=', False)]}</attribute>
             </field>
             <group name="shop" position="attributes">
-                <attribute name="invisible">not sale_ok and not rent_ok</attribute>
+                <attribute name="attrs">{'invisible': [('sale_ok', '=', False), ('rent_ok', '=', False)]}</attribute>
             </group>
             <group name="product_template_images" position="attributes">
-                <attribute name="invisible">not sale_ok and not rent_ok</attribute>
+                <attribute name="attrs">{'invisible': [('sale_ok', '=', False), ('rent_ok', '=', False)]}</attribute>
             </group>
         </field>
     </record>

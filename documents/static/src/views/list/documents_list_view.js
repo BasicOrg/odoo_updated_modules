@@ -9,6 +9,11 @@ import { DocumentsListRenderer } from "./documents_list_renderer";
 import { DocumentsSearchModel } from "../search/documents_search_model";
 import { DocumentsSearchPanel } from "../search/documents_search_panel";
 
+import { device } from "web.config";
+
+const buttonTemplate = device.isMobile
+    ? "documents.DocumentsViews.ControlPanelMobile"
+    : "documents.DocumentsViews.ControlPanel";
 
 export const DocumentsListView = Object.assign({}, listView, {
     SearchModel: DocumentsSearchModel,
@@ -17,6 +22,7 @@ export const DocumentsListView = Object.assign({}, listView, {
     Model: DocumentsListModel,
     Renderer: DocumentsListRenderer,
     searchMenuTypes: ["filter", "groupBy", "favorite"],
+    buttonTemplate: buttonTemplate,
 });
 
 registry.category("views").add("documents_list", DocumentsListView);

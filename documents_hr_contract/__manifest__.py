@@ -11,12 +11,7 @@ Employee contracts files will be automatically integrated to the Document app.
 """,
     'website': ' ',
     'depends': ['documents_hr', 'hr_contract'],
-    'data': [
-        'data/documents_tag_data.xml',
-        'data/res_company_data.xml',
-        'views/documents_views.xml',
-        'security/security.xml',
-    ],
+    'data': ['data/data.xml', 'views/documents_views.xml'],
     'installable': True,
     'auto_install': True,
     'license': 'OEEL-1',

@@ -1,7 +1,8 @@
 /** @odoo-module **/
 
 import BarcodePickingModel from '@stock_barcode/models/barcode_picking_model';
-import { _t } from "@web/core/l10n/translation";
+import {_t} from "web.core";
+import { sprintf } from '@web/core/utils/strings';
 import { session } from '@web/session';
 
 export default class BarcodePickingBatchModel extends BarcodePickingModel {
@@ -44,44 +45,48 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
     }
 
     askBeforeNewLinesCreation(product) {
-        return product && !this.currentState.lines.some(line => line.product_id.id === product.id);
-    }
-
-    get backordersDomain() {
-        return [["backorder_id", "in", this.record.picking_ids]];
+        return !this.picking.immediate_transfer && product &&
+            !this.currentState.lines.some(line => line.product_id.id === product.id);
     }
 
     get barcodeInfo() {
-        const barcodeInfo = {};
         if ((this.needPickings || this.needPickingType) && !this._allowedPickings.length) {
             // Special case: the batch need to be configured but there is no pickings available.
-            barcodeInfo.class = "picking_batch_not_possible";
-            barcodeInfo.message = _t("No ready transfers found");
-            barcodeInfo.warning = true;
+            return {
+                class: 'picking_batch_not_possible',
+                message: _t("No ready transfers found"),
+                warning: true,
+            };
         } else if (this.needPickingType) {
-            barcodeInfo.class = "picking_batch_select_type";
-            barcodeInfo.message = _t("Select an operation type for batch transfer");
+            return {
+                class: 'picking_batch_select_type',
+                message: _t("Select an operation type for batch transfer"),
+            };
         } else if (this.needPickings) {
-            barcodeInfo.class = "picking_batch_select_transfers";
-            barcodeInfo.message = _t("Select transfers for batch transfer");
+            return {
+                class: 'picking_batch_select_transfers',
+                message: _t("Select transfers for batch transfer"),
+            };
         } else if (this.isDone) {
-            barcodeInfo.class = "picking_already_done";
-            barcodeInfo.message = _t("This batch transfer is already done");
-            barcodeInfo.warning = true;
+            return {
+                class: 'picking_already_done',
+                message: _t("This batch transfer is already done"),
+                warning: true,
+            };
         } else if (this.isCancelled) {
-            barcodeInfo.class = "picking_already_cancelled";
-            barcodeInfo.message = _t("This batch transfer is cancelled");
-            barcodeInfo.warning = true;
+            return {
+                class: 'picking_already_cancelled',
+                message: _t("This batch transfer is cancelled"),
+                warning: true,
+            };
         } else if (this.record.state === 'draft') {
-            barcodeInfo.class = "picking_batch_draft";
-            barcodeInfo.message =  _t("This batch transfer is still draft, it must be confirmed before being processed");
-            barcodeInfo.warning = true;
+            return {
+                class: 'picking_batch_draft',
+                message:  _t("This batch transfer is still draft, it must be confirmed before being processed"),
+                warning: true,
+            };
         }
-        if (barcodeInfo.message) {
-            barcodeInfo.icon = barcodeInfo.warning ? "exclamation-triangle" : "hand-pointer-o";
-            barcodeInfo.warning = true;
-        }
-        return barcodeInfo.message ? barcodeInfo : super.barcodeInfo;
+        return super.barcodeInfo;
     }
 
     get canBeProcessed() {
@@ -89,10 +94,6 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
             return this.needPickingType || this.needPickings;
         }
         return super.canBeProcessed;
-    }
-
-    get cancelLabel() {
-        return _t("Cancel Batch Transfer");
     }
 
     get canConfirmSelection() {
@@ -117,7 +118,7 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
             const data = await this.orm.call(
                 'stock.picking.batch',
                 'action_add_pickings_and_confirm',
-                [[this.resId],
+                [[this.params.id],
                 {
                     picking_type_id: this.record.picking_type_id,
                     picking_ids: this.selectedPickings,
@@ -125,9 +126,8 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
                 }]
             );
             await this.refreshCache(data.records);
-            this.selectedPickings = [];
             this.config = data.config || {}; // Get the picking type's scan restrictions configuration.
-            this.trigger('update');
+            this.displayBarcodeLines();
         }
     }
 
@@ -153,10 +153,6 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
             class: 'o_print_picking_batch',
             method: 'action_print',
         }];
-    }
-
-    get reloadingMoveLines() {
-        return super.reloadingMoveLines && !this.selectedPickings?.length;
     }
 
     selectOption(id) {
@@ -188,11 +184,13 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
     }
 
     _cancelNotification() {
-        this.notification(_t("The batch picking has been cancelled"));
+        this.trigger('notification', {
+            message: _t("The batch picking has been cancelled"),
+        });
     }
 
-    _canOverrideTrackingNumber(line, newLotName) {
-        return super._canOverrideTrackingNumber(...arguments) || this.getQtyDone(line) === 0;
+    _canOverrideTrackingNumber(line) {
+        return this.getQtyDone(line) === 0;
     }
 
     _createLinesState() {
@@ -246,14 +244,15 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
 
     _getNewLineDefaultContext() {
         const defaultContextValues = super._getNewLineDefaultContext();
-        defaultContextValues.default_batch_id = this.record.id;
-        defaultContextValues.default_picking_id = this.record.picking_ids[0];
+        const batch = this.cache.getRecord(this.params.model, this.params.id);
+        defaultContextValues.default_batch_id = batch.id;
+        defaultContextValues.default_picking_id = batch.picking_ids[0];
         return defaultContextValues;
     }
 
     _getScanPackageMessage(line) {
         if (line.suggested_package) {
-            return _t("Scan the package %s", line.suggested_package);
+            return sprintf(_t("Scan the package %s"), line.suggested_package);
         }
         return super._getScanPackageMessage(...arguments);
     }
@@ -263,7 +262,7 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
     }
 
     _moveEntirePackage() {
-        return this.picking && this.picking.picking_type_entire_packs;
+        return this.picking.picking_type_entire_packs;
     }
 
     _sortingMethod(l1, l2) {
@@ -303,6 +302,7 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
      */
     async _setUser() {
         if (this._shouldAssignUser()) {
+            await this.orm.write(this.params.model, [this.record.id], { user_id: session.uid });
             this.record.user_id = session.uid;
             const pickings = [];
             for (const pickingId of this.record.picking_ids) {
@@ -311,7 +311,6 @@ export default class BarcodePickingBatchModel extends BarcodePickingModel {
                 pickings.push(picking);
             }
             this.cache.setCache({'stock.picking': pickings});
-            await this.orm.write(this.resModel, [this.record.id], { user_id: session.uid });
         }
     }
 

@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('sale_management.sale_management', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.SaleUpdateLineButton = publicWidget.Widget.extend({
     selector: '.o_portal_sale_sidebar',
@@ -8,11 +9,6 @@ publicWidget.registry.SaleUpdateLineButton = publicWidget.Widget.extend({
         'click a.js_update_line_json': '_onClickOptionQuantityButton',
         'click a.js_add_optional_products': '_onClickAddOptionalProduct',
         'change .js_quantity': '_onChangeOptionQuantity',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
     },
 
     /**
@@ -33,7 +29,10 @@ publicWidget.registry.SaleUpdateLineButton = publicWidget.Widget.extend({
      * @return {Deferred}
      */
      _callUpdateLineRoute(order_id, params) {
-        return this.rpc("/my/orders/" + order_id + "/update_line_dict", params);
+        return this._rpc({
+            route: "/my/orders/" + order_id + "/update_line_dict",
+            params: params,
+        });
     },
 
     /**
@@ -43,7 +42,10 @@ publicWidget.registry.SaleUpdateLineButton = publicWidget.Widget.extend({
      * @param {Object} data: contains order html details
      */
     _refreshOrderUI(data){
-        window.location.reload();
+        const $saleTemplate = $(data['sale_template']);
+        if ($saleTemplate.length) {
+            this.$('#portal_sale_content').html($saleTemplate);
+        }
     },
 
     /**
@@ -100,12 +102,13 @@ publicWidget.registry.SaleUpdateLineButton = publicWidget.Widget.extend({
         // to avoid double click on link with href.
         $target.css('pointer-events', 'none');
 
-        this.rpc(
-            "/my/orders/" + self.orderDetail.orderId + "/add_option/" + $target.data('optionId'),
-            {access_token: self.orderDetail.token}
-        ).then((data) => {
+        this._rpc({
+            route: "/my/orders/" + self.orderDetail.orderId + "/add_option/" + $target.data('optionId'),
+            params: {access_token: self.orderDetail.token}
+        }).then((data) => {
             this._refreshOrderUI(data);
         });
     },
 
+});
 });

@@ -8,12 +8,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
                     <field name="tax_country_code" invisible="1"/>
-                    <page string="AEAT data" name="aeat_data" invisible="tax_country_code != 'ES'">
+                    <page string="AEAT data" name="aeat_data" attrs="{'invisible': [('tax_country_code', '!=', 'ES')]}">
                         <group>
                             <field name="l10n_es_reports_mod347_available" invisible="1"/>
                             <field name="l10n_es_reports_mod349_available" invisible="1"/>
-                            <field name="l10n_es_reports_mod347_invoice_type" invisible="not l10n_es_reports_mod347_available" readonly="state != 'draft'"/>
-                            <field name="l10n_es_reports_mod349_invoice_type" invisible="not l10n_es_reports_mod349_available" readonly="state != 'draft'"/>
+                            <field name="l10n_es_reports_mod347_invoice_type" attrs="{'readonly':[('state', '!=', 'draft')], 'invisible':[('l10n_es_reports_mod347_available', '=', False)]}"/>
+                            <field name="l10n_es_reports_mod349_invoice_type" attrs="{'readonly':[('state', '!=', 'draft')], 'invisible':[('l10n_es_reports_mod349_available', '=', False)]}"/>
                         </group>
                     </page>
                 </xpath>

@@ -1,42 +1,42 @@
 /** @odoo-module **/
 
 import {CheckBox} from '@web/core/checkbox/checkbox';
-import { _t } from "@web/core/l10n/translation";
 import {useService, useAutofocus} from "@web/core/utils/hooks";
 import {sprintf} from "@web/core/utils/strings";
+import {useWowlService} from '@web/legacy/utils';
 import {WebsiteDialog} from './dialog';
 import {FormViewDialog} from "@web/views/view_dialogs/form_view_dialog";
-import { renderToElement } from "@web/core/utils/render";
-import { Component, useEffect, useState, xml, useRef } from "@odoo/owl";
+import {qweb, _t} from 'web.core';
+
+const {Component, onWillStart, useState, xml, useRef} = owl;
 
 export class PageDependencies extends Component {
     setup() {
         super.setup();
-        this.orm = useService('orm');
+        try {
+            this.orm = useService('orm');
+        } catch {
+            // We are in a legacy environment.
+            // TODO check with framework team to know if this is really needed.
+            this.orm = useWowlService('orm');
+        }
 
+        this.dependencies = {};
+        this.depText = '...';
         this.action = useRef('action');
         this.sprintf = sprintf;
 
-        useEffect(
-            () => {
-                this.fetchDependencies();
-            },
-            () => []
-        );
-        this.state = useState({
-            dependencies: {},
-            depText: "...",
-        });
+        onWillStart(() => this.onWillStart());
     }
 
-    async fetchDependencies() {
-        this.state.dependencies = await this.orm.call(
+    async onWillStart() {
+        this.dependencies = await this.orm.call(
             'website',
             'search_url_dependencies',
             [this.props.resModel, this.props.resIds],
         );
         if (this.props.mode === 'popover') {
-            this.state.depText = Object.entries(this.state.dependencies)
+            this.depText = Object.entries(this.dependencies)
                 .map(dependency => `${dependency[1].length} ${dependency[0].toLowerCase()}`)
                 .join(', ');
         }
@@ -44,13 +44,11 @@ export class PageDependencies extends Component {
 
     showDependencies() {
         $(this.action.el).popover({
-            title: _t("Dependencies"),
+            title: this.env._t("Dependencies"),
             boundary: 'viewport',
             placement: 'right',
             trigger: 'focus',
-            content: renderToElement("website.PageDependencies.Tooltip", {
-                dependencies: this.state.dependencies,
-            }),
+            content: qweb.render('website.PageDependencies.Tooltip', {dependencies: this.dependencies}),
         }).popover('toggle');
     }
 }
@@ -71,9 +69,9 @@ PageDependencies.props = {
 export class DeletePageDialog extends Component {
     setup() {
         this.website = useService('website');
-        this.title = _t("Delete Page");
-        this.deleteButton = _t("Ok");
-        this.cancelButton = _t("Cancel");
+        this.title = this.env._t("Delete Page");
+        this.deleteButton = this.env._t("Ok");
+        this.cancelButton = this.env._t("Cancel");
 
         this.state = useState({
             confirm: false,

@@ -44,7 +44,7 @@ class SocialStreamFacebook(models.Model):
         if endpoint_name == 'published_posts':
             facebook_fields.append('insights.metric(post_impressions)')
 
-        posts_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/%s" % (self.account_id.facebook_account_id, endpoint_name))
+        posts_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/%s" % (self.account_id.facebook_account_id, endpoint_name))
         result = requests.get(posts_endpoint_url,
             params={
                 'access_token': self.account_id.facebook_access_token,
@@ -84,13 +84,12 @@ class SocialStreamFacebook(models.Model):
                 'facebook_is_event_post': post.get('attachments', {}).get('data', [{}])[0].get('type') == 'event',
             }
 
-            attachments = self._extract_facebook_attachments(post)
             existing_post = existing_posts_by_facebook_post_id.get(post.get('id'))
             if existing_post:
-                if attachments.get('stream_post_image_ids'):
-                    values['stream_post_image_ids'] = [(5, 0, 0)] + attachments['stream_post_image_ids']
                 existing_post.sudo().write(values)
             else:
+                # attachments are only extracted for new posts
+                attachments = self._extract_facebook_attachments(post)
                 if attachments or values['message']:
                     # do not create post without content
                     values.update(attachments)

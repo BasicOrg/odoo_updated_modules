@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_profitandloss_lt" model="account.report">
         <field name="name">Profit and Loss</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
@@ -20,7 +20,6 @@
                 <field name="code">PNL_1_</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_html_report_line_pnl_lt_1_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -35,7 +34,6 @@
                 <field name="code">PNL_2_</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_html_report_line_pnl_lt_2_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -84,7 +82,6 @@
                         <field name="engine">account_codes</field>
                         <field name="formula">62</field>
                         <field name="date_scope">normal</field>
-                        <field name="green_on_positive" eval="False"/>
                     </record>
                 </field>
             </record>
@@ -99,7 +96,6 @@
                         <field name="engine">account_codes</field>
                         <field name="formula">63</field>
                         <field name="date_scope">normal</field>
-                        <field name="green_on_positive" eval="False"/>
                     </record>
                 </field>
             </record>
@@ -171,7 +167,6 @@
                         <field name="engine">account_codes</field>
                         <field name="formula">67</field>
                         <field name="date_scope">normal</field>
-                        <field name="green_on_positive" eval="False"/>
                     </record>
                 </field>
             </record>
@@ -186,7 +181,6 @@
                         <field name="engine">account_codes</field>
                         <field name="formula">68</field>
                         <field name="date_scope">normal</field>
-                        <field name="green_on_positive" eval="False"/>
                     </record>
                 </field>
             </record>
@@ -213,7 +207,6 @@
                         <field name="engine">account_codes</field>
                         <field name="formula">69</field>
                         <field name="date_scope">normal</field>
-                        <field name="green_on_positive" eval="False"/>
                     </record>
                 </field>
             </record>
@@ -233,7 +226,7 @@
     </record>
     <record id="account_financial_report_l10n_lt_pl_action" model="ir.actions.client">
         <field name="name">Profit and Loss</field>
-        <field name="context" eval="{'model': 'account.report', 'report_id': ref('account_financial_report_profitandloss_lt')}"/>
+        <field name="context" eval="{'model': 'account.financial.html.report', 'id': ref('account_financial_report_profitandloss_lt')}"/>
         <field name="tag">account_report</field>
     </record>
     <record id="account_financial_report_balancesheet_lt" model="account.report">
@@ -254,20 +247,18 @@
             <record id="account_financial_html_report_line_bs_lt_credit" model="account.report.line">
                 <field name="name">TOTAL EQUITY AND LIABILITIES</field>
                 <field name="code">BS_CREDIT</field>
-                <field name="foldable" eval="False"/>
-                <field name="hierarchy_level">0</field>
+                <field name="foldable" eval="True"/>
                 <field name="aggregation_formula">BS_D_.balance + BS_E_.balance + BS_F_.balance + BS_G_.balance + BS_H_.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_html_report_line_bs_lt_d" model="account.report.line">
                         <field name="name">EQUITY </field>
                         <field name="code">BS_D_</field>
-                        <field name="aggregation_formula">BS_D_1_.balance + BS_D_2_.balance + BS_D_3_.balance + BS_D_4_.balance + BS_D_5_.balance + BS_D_6_.balance</field>
+                        <field name="aggregation_formula">BS_D_1_.balance + BS_D_2_.balance + BS_D_3_.balance + BS_D_4_.balance + BS_D_5_.balance</field>
                         <field name="children_ids">
                             <record id="account_financial_html_report_line_bs_lt_d_1" model="account.report.line">
                                 <field name="name">CAPITAL</field>
                                 <field name="code">BS_D_1_</field>
-                                <field name="aggregation_formula">BS_D_1_1_.balance - BS_D_1_2_.balance - BS_D_1_3_.balance</field>
+                                <field name="aggregation_formula">BS_D_1_1_.balance + BS_D_1_2_.balance + BS_D_1_3_.balance</field>
                                 <field name="children_ids">
                                     <record id="account_financial_html_report_line_bs_lt_d_1_1" model="account.report.line">
                                         <field name="name">Authorized (subscribed) or primary capital</field>
@@ -390,7 +381,7 @@
                                                 <field name="label">bs_ppl_balance</field>
                                                 <field name="engine">account_codes</field>
                                                 <field name="formula">-6 - 5</field>
-                                                <field name="date_scope">to_beginning_of_fiscalyear</field>
+                                                <field name="date_scope">to_beginning_of_period</field>
                                             </record>
                                         </field>
                                     </record>
@@ -598,14 +589,12 @@
                 <field name="name">TOTAL ASSETS</field>
                 <field name="code">BS_DEBIT</field>
                 <field name="aggregation_formula">BS_A_.balance + BS_B_.balance + BS_C_.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_html_report_line_bs_lt_a" model="account.report.line">
                         <field name="name">FIXED ASSETS</field>
                         <field name="code">BS_A_</field>
-                        <field name="foldable" eval="False"/>
+                        <field name="foldable" eval="True"/>
                         <field name="aggregation_formula">BS_A_1_.balance + BS_A_2_.balance + BS_A_3_.balance + BS_A_4_.balance</field>
-                        <field name="hierarchy_level">0</field>
                         <field name="children_ids">
                             <record id="account_financial_html_report_line_bs_lt_a_1" model="account.report.line">
                                 <field name="name">INTANGIBLE ASSETS</field>
@@ -949,7 +938,7 @@
                                 <field name="code">BS_B_4_</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
-                                <field name="account_codes_formula">27 + 999</field>
+                                <field name="account_codes_formula">27</field>
                             </record>
                         </field>
                     </record>

@@ -16,8 +16,7 @@ class AccountAnalyticLine(models.Model):
         'account.account',
         string='Financial Account',
         ondelete='restrict',
-        domain="[('deprecated', '=', False)]",
-        check_company=True,
+        domain="[('deprecated', '=', False), ('company_id', '=', company_id)]",
         compute='_compute_general_account_id', store=True, readonly=False
     )
     journal_id = fields.Many2one(
@@ -72,7 +71,7 @@ class AccountAnalyticLine(models.Model):
             unit = self.product_id.uom_po_id
 
         # Compute based on pricetype
-        amount_unit = self.product_id._price_compute('standard_price', uom=unit)[self.product_id.id]
+        amount_unit = self.product_id.price_compute('standard_price', uom=unit)[self.product_id.id]
         amount = amount_unit * self.unit_amount or 0.0
         result = (self.currency_id.round(amount) if self.currency_id else round(amount, 2)) * -1
         self.amount = result

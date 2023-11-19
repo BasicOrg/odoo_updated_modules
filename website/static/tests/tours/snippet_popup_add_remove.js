@@ -1,16 +1,16 @@
 /** @odoo-module */
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 wTourUtils.registerWebsitePreviewTour('snippet_popup_add_remove', {
     test: true,
     url: '/',
     edition: true,
-}, () => [
-    wTourUtils.dragNDrop({
-        name: "Popup",
-        id: "s_popup"
-}), {
+}, [{
+    content: 'Drop s_popup snippet',
+    trigger: '#oe_snippets.o_loaded .oe_snippet:has( > [data-snippet="s_popup"]) .oe_snippet_thumbnail',
+    run: "drag_and_drop iframe #wrap",
+}, {
     content: 'Edit s_popup snippet',
     in_modal: false,
     trigger: 'iframe #wrap.o_editable [data-snippet="s_popup"] .row > div', // Click deep in the snippet structure
@@ -30,10 +30,11 @@ wTourUtils.registerWebsitePreviewTour('snippet_popup_add_remove', {
     run: () => null,
 },
 // Test that undoing dropping the snippet removes the invisible elements panel.
-wTourUtils.dragNDrop({
-    name: "Popup",
-    id: "s_popup"
-}), {
+{
+    content: "Drop the snippet again.",
+    trigger: '#oe_snippets .oe_snippet:has(> [data-snippet="s_popup"]) .oe_snippet_thumbnail',
+    run: "drag_and_drop iframe #wrap",
+}, {
     content: "The popup should be in the invisible elements panel.",
     in_modal: false,
     trigger: '.o_we_invisible_el_panel .o_we_invisible_entry',

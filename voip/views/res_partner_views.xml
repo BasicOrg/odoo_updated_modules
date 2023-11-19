@@ -8,9 +8,19 @@
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='phone']" position="after">
-                <field name="phone" invisible="1"/>
-                <field name="mobile" invisible="1"/>
+                <field name="sanitized_phone" invisible="1"/>
+                <field name="sanitized_mobile" invisible="1"/>
             </xpath>
         </field>
+    </record>
+    <record id="action_add_to_call_queue" model="ir.actions.server">
+      <field name="name">Add to call queue</field>
+      <field name="type">ir.actions.server</field>
+      <field name="state">code</field>
+      <field name="model_id" ref="model_res_partner" />
+      <field name="binding_model_id" ref="model_res_partner"/>
+      <field name="code">
+        records.create_call_in_queue()
+      </field>
     </record>
 </odoo>

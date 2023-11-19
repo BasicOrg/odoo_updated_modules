@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { CheckBox } from "@web/core/checkbox/checkbox";
 import { ColorList } from "@web/core/colorlist/colorlist";
 import { Domain } from "@web/core/domain";
-import { evaluateBooleanExpr } from "@web/core/py_js/py";
+import { getActiveHotkey } from "@web/core/hotkeys/hotkey_service";
 import {
     Many2XAutocomplete,
     useActiveActions,
@@ -12,68 +12,30 @@ import {
 } from "@web/views/fields/relational_utils";
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "../standard_field_props";
-import { TagsList } from "@web/core/tags_list/tags_list";
+import { TagsList } from "./tags_list";
 import { usePopover } from "@web/core/popover/popover_hook";
 import { useService } from "@web/core/utils/hooks";
-import { useTagNavigation } from "@web/core/record_selectors/tag_navigation_hook";
 
-import { Component, useRef } from "@odoo/owl";
+const { Component, useRef } = owl;
 
-class Many2ManyTagsFieldColorListPopover extends Component {
-    static template = "web.Many2ManyTagsFieldColorListPopover";
-    static components = {
-        CheckBox,
-        ColorList,
-    };
-}
+class Many2ManyTagsFieldColorListPopover extends Component {}
+Many2ManyTagsFieldColorListPopover.template = "web.Many2ManyTagsFieldColorListPopover";
+Many2ManyTagsFieldColorListPopover.components = {
+    CheckBox,
+    ColorList,
+};
 
 export class Many2ManyTagsField extends Component {
-    static template = "web.Many2ManyTagsField";
-    static components = {
-        TagsList,
-        Many2XAutocomplete,
-    };
-    static props = {
-        ...standardFieldProps,
-        canCreate: { type: Boolean, optional: true },
-        canQuickCreate: { type: Boolean, optional: true },
-        canCreateEdit: { type: Boolean, optional: true },
-        colorField: { type: String, optional: true },
-        createDomain: { type: [Array, Boolean], optional: true },
-        domain: { type: [Array, Function], optional: true },
-        context: { type: Object, optional: true },
-        placeholder: { type: String, optional: true },
-        nameCreateField: { type: String, optional: true },
-        string: { type: String, optional: true },
-        noSearchMore: { type: Boolean, optional: true },
-    };
-    static defaultProps = {
-        canCreate: true,
-        canQuickCreate: true,
-        canCreateEdit: true,
-        nameCreateField: "name",
-        context: {},
-    };
-
-    static RECORD_COLORS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-    static SEARCH_MORE_LIMIT = 320;
-
     setup() {
         this.orm = useService("orm");
         this.previousColorsMap = {};
-        this.popover = usePopover(this.constructor.components.Popover);
+        this.popover = usePopover();
         this.dialog = useService("dialog");
         this.dialogClose = [];
-        this.onTagKeydown = useTagNavigation(
-            "many2ManyTagsField",
-            this.deleteTagByIndex.bind(this)
-        );
+
         this.autoCompleteRef = useRef("autoComplete");
 
-        const { saveRecord, removeRecord } = useX2ManyCrud(
-            () => this.props.record.data[this.props.name],
-            true
-        );
+        const { saveRecord, removeRecord } = useX2ManyCrud(() => this.props.value, true);
 
         this.activeActions = useActiveActions({
             fieldType: "many2many",
@@ -91,9 +53,6 @@ export class Many2ManyTagsField extends Component {
         });
 
         this.update = (recordlist) => {
-            if (!recordlist) {
-                return;
-            }
             if (Array.isArray(recordlist)) {
                 const resIds = recordlist.map((rec) => rec.id);
                 return saveRecord(resIds);
@@ -103,22 +62,25 @@ export class Many2ManyTagsField extends Component {
 
         if (this.props.canQuickCreate) {
             this.quickCreate = async (name) => {
-                const created = await this.orm.call(this.relation, "name_create", [name], {
-                    context: this.props.context,
+                const created = await this.orm.call(this.props.relation, "name_create", [name], {
+                    context: this.context,
                 });
                 return saveRecord([created[0]]);
             };
         }
     }
 
-    get relation() {
-        return this.props.record.fields[this.props.name].relation;
+    get domain() {
+        return this.props.record.getFieldDomain(this.props.name);
+    }
+    get context() {
+        return this.props.record.getFieldContext(this.props.name);
     }
     get evalContext() {
         return this.props.record.evalContext;
     }
     get string() {
-        return this.props.string || this.props.record.fields[this.props.name].string || "";
+        return this.props.record.activeFields[this.props.name].string;
     }
 
     getTagProps(record) {
@@ -128,207 +90,272 @@ export class Many2ManyTagsField extends Component {
             text: record.data.display_name,
             colorIndex: record.data[this.props.colorField],
             onDelete: !this.props.readonly ? () => this.deleteTag(record.id) : undefined,
-            onKeydown: (ev) => {
-                if (this.props.readonly) {
-                    return;
-                }
-                this.onTagKeydown(ev);
-            },
+            onKeydown: this.onTagKeydown.bind(this),
         };
     }
 
     get tags() {
-        return this.props.record.data[this.props.name].records.map((record) =>
-            this.getTagProps(record)
-        );
+        return this.props.value.records.map((record) => this.getTagProps(record));
     }
 
     get showM2OSelectionField() {
         return !this.props.readonly;
     }
 
-    async deleteTagByIndex(index) {
-        const { id } = this.tags[index] || {};
-        this.deleteTag(id);
-    }
-
-    async deleteTag(id) {
-        const tagRecord = this.props.record.data[this.props.name].records.find(
-            (record) => record.id === id
-        );
-        await this.props.record.data[this.props.name].forget(tagRecord);
+    deleteTag(id) {
+        const tagRecord = this.props.value.records.find((record) => record.id === id);
+        const ids = this.props.value.currentIds.filter((id) => id !== tagRecord.resId);
+        this.props.value.replaceWith(ids);
     }
 
     getDomain() {
-        const domain =
-            typeof this.props.domain === "function" ? this.props.domain() : this.props.domain;
-        const currentIds = this.props.record.data[this.props.name].currentIds.filter(
-            (id) => typeof id === "number"
+        return Domain.and([
+            this.domain,
+            Domain.not([["id", "in", this.props.value.currentIds]]),
+        ]).toList(this.context);
+    }
+
+    focusTag(index) {
+        const autoCompleteParent = this.autoCompleteRef.el.parentElement;
+        const tags = autoCompleteParent.getElementsByClassName("badge");
+        if (tags.length) {
+            if (index === undefined) {
+                tags[tags.length - 1].focus();
+            } else {
+                tags[index].focus();
+            }
+        }
+    }
+
+    onAutoCompleteKeydown(ev) {
+        if (ev.isComposing) {
+            // This case happens with an IME for example: we let it handle all key events.
+            return;
+        }
+        const hotkey = getActiveHotkey(ev);
+        const input = ev.target.closest(".o-autocomplete--input");
+        const autoCompleteMenuOpened = !!this.autoCompleteRef.el.querySelector(
+            ".o-autocomplete--dropdown-menu"
         );
-        return Domain.and([domain, Domain.not([["id", "in", currentIds]])]).toList(
-            this.props.context
-        );
+        switch (hotkey) {
+            case "arrowleft": {
+                if (input.selectionStart || autoCompleteMenuOpened) {
+                    return;
+                }
+                // focus rightmost tag if any.
+                this.focusTag();
+                break;
+            }
+            case "arrowright": {
+                if (input.selectionStart !== input.value.length || autoCompleteMenuOpened) {
+                    return;
+                }
+                // focus leftmost tag if any.
+                this.focusTag(0);
+                break;
+            }
+            case "backspace": {
+                if (input.value) {
+                    return;
+                }
+                const tags = this.tags;
+                if (tags.length) {
+                    const { id } = tags[tags.length - 1];
+                    this.deleteTag(id);
+                }
+                break;
+            }
+            default:
+                return;
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+
+    onTagKeydown(ev) {
+        if (this.props.readonly) {
+            return;
+        }
+        const hotkey = getActiveHotkey(ev);
+        const autoCompleteParent = this.autoCompleteRef.el.parentElement;
+        const tags = [...autoCompleteParent.getElementsByClassName("badge")];
+        const closestTag = ev.target.closest(".badge");
+        const tagIndex = tags.indexOf(closestTag);
+        const input = this.autoCompleteRef.el.querySelector(".o-autocomplete--input");
+        switch (hotkey) {
+            case "arrowleft": {
+                if (tagIndex === 0) {
+                    input.focus();
+                } else {
+                    this.focusTag(tagIndex - 1);
+                }
+                break;
+            }
+            case "arrowright": {
+                if (tagIndex === tags.length - 1) {
+                    input.focus();
+                } else {
+                    this.focusTag(tagIndex + 1);
+                }
+                break;
+            }
+            case "backspace": {
+                input.focus();
+                const { id } = this.tags[tagIndex] || {};
+                this.deleteTag(id);
+                break;
+            }
+            default:
+                return;
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
     }
 }
 
-export const many2ManyTagsField = {
-    component: Many2ManyTagsField,
-    displayName: _t("Tags"),
-    supportedOptions: [
-        {
-            label: _t("Disable creation"),
-            name: "no_create",
-            type: "boolean",
-            help: _t(
-                "If checked, users won't be able to create records through the autocomplete dropdown at all."
-            ),
-        },
-        {
-            label: _t("Disable 'Create' option"),
-            name: "no_quick_create",
-            type: "boolean",
-            help: _t(
-                "If checked, users will not be able to create records based on the text input; they will still be able to create records via a popup form."
-            ),
-        },
-        {
-            label: _t("Disable 'Create and Edit' option"),
-            name: "no_create_edit",
-            type: "boolean",
-            help: _t(
-                "If checked, users will not be able to create records based through a popup form; they will still be able to create records based on the text input."
-            ),
-        },
-        {
-            label: _t("Can create"),
-            name: "create",
-            type: "string",
-            help: _t("Write a domain to allow the creation of records conditionnally."),
-        },
-        {
-            label: _t("Color field"),
-            name: "color_field",
-            type: "field",
-            availableTypes: ["integer"],
-            help: _t("Set an integer field to use colors with the tags."),
-        },
-    ],
-    supportedTypes: ["many2many"],
-    relatedFields: ({ options }) => {
-        const relatedFields = [{ name: "display_name", type: "char" }];
-        if (options.color_field) {
-            relatedFields.push({ name: options.color_field, type: "integer", readonly: false });
-        }
-        return relatedFields;
-    },
-    extractProps({ attrs, options, string }, dynamicInfo) {
-        const noCreate = Boolean(options.no_create);
-        const canCreate = noCreate
-            ? false
-            : attrs.can_create && evaluateBooleanExpr(attrs.can_create);
-        const noQuickCreate = Boolean(options.no_quick_create);
-        const noCreateEdit = Boolean(options.no_create_edit);
-        return {
-            colorField: options.color_field,
-            nameCreateField: options.create_name_field,
-            canCreate,
-            canQuickCreate: canCreate && !noQuickCreate,
-            canCreateEdit: canCreate && !noCreateEdit,
-            createDomain: options.create,
-            context: dynamicInfo.context,
-            domain: dynamicInfo.domain,
-            placeholder: attrs.placeholder,
-            string,
-        };
-    },
+Many2ManyTagsField.RECORD_COLORS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+Many2ManyTagsField.SEARCH_MORE_LIMIT = 320;
+
+Many2ManyTagsField.template = "web.Many2ManyTagsField";
+Many2ManyTagsField.components = {
+    TagsList,
+    Many2XAutocomplete,
 };
 
-registry.category("fields").add("many2many_tags", many2ManyTagsField);
-registry.category("fields").add("calendar.one2many", many2ManyTagsField);
-registry.category("fields").add("calendar.many2many", many2ManyTagsField);
+Many2ManyTagsField.props = {
+    ...standardFieldProps,
+    canCreate: { type: Boolean, optional: true },
+    canQuickCreate: { type: Boolean, optional: true },
+    canCreateEdit: { type: Boolean, optional: true },
+    colorField: { type: String, optional: true },
+    createDomain: { type: [Array, Boolean], optional: true },
+    placeholder: { type: String, optional: true },
+    relation: { type: String },
+    nameCreateField: { type: String, optional: true },
+};
+Many2ManyTagsField.defaultProps = {
+    canCreate: true,
+    canQuickCreate: true,
+    canCreateEdit: true,
+    nameCreateField: "name",
+};
+
+Many2ManyTagsField.displayName = _lt("Tags");
+Many2ManyTagsField.supportedTypes = ["many2many"];
+Many2ManyTagsField.fieldsToFetch = {
+    display_name: { name: "display_name", type: "char" },
+};
+Many2ManyTagsField.isSet = (value) => value.count > 0;
+
+Many2ManyTagsField.extractProps = ({ attrs, field }) => {
+    const noCreate = Boolean(attrs.options.no_create);
+    const canCreate = attrs.can_create && Boolean(JSON.parse(attrs.can_create)) && !noCreate;
+    const noQuickCreate = Boolean(attrs.options.no_quick_create);
+    const noCreateEdit = Boolean(attrs.options.no_create_edit);
+
+    return {
+        colorField: attrs.options.color_field,
+        nameCreateField: attrs.options.create_name_field,
+        relation: field.relation,
+        canCreate,
+        canQuickCreate: canCreate && !noQuickCreate,
+        canCreateEdit: canCreate && !noCreateEdit,
+        createDomain: attrs.options.create,
+        placeholder: attrs.placeholder,
+    };
+};
+
+registry.category("fields").add("many2many_tags", Many2ManyTagsField);
 
 /**
  * A specialization that allows to edit the color with the colorpicker.
  * Used in form view.
  */
 export class Many2ManyTagsFieldColorEditable extends Many2ManyTagsField {
-    static components = {
-        ...super.components,
-        Popover: Many2ManyTagsFieldColorListPopover,
-    };
-    static props = {
-        ...super.props,
-        canEditColor: { type: Boolean, optional: true },
-    };
-    static defaultProps = {
-        ...super.defaultProps,
-        canEditColor: true,
-    };
-
     getTagProps(record) {
         const props = super.getTagProps(record);
         props.onClick = (ev) => this.onBadgeClick(ev, record);
         return props;
     }
 
+    closePopover() {
+        this.popoverCloseFn();
+        this.popoverCloseFn = null;
+    }
+
     onBadgeClick(ev, record) {
         if (!this.props.canEditColor) {
             return;
         }
-        if (this.popover.isOpen) {
-            this.popover.close();
-        } else {
-            this.popover.open(ev.currentTarget, {
-                colors: this.constructor.RECORD_COLORS,
-                tag: {
-                    id: record.id,
-                    colorIndex: record.data[this.props.colorField],
-                },
-                switchTagColor: this.switchTagColor.bind(this),
-                onTagVisibilityChange: this.onTagVisibilityChange.bind(this),
-            });
+        const isClosed = !document.querySelector(".o_tag_popover");
+        if (isClosed) {
+            this.currentPopoverEl = null;
+        }
+        if (this.popoverCloseFn) {
+            this.closePopover();
+        }
+        if (isClosed || this.currentPopoverEl !== ev.currentTarget) {
+            this.currentPopoverEl = ev.currentTarget;
+            this.popoverCloseFn = this.popover.add(
+                ev.currentTarget,
+                this.constructor.components.Popover,
+                {
+                    colors: this.constructor.RECORD_COLORS,
+                    tag: {
+                        id: record.id,
+                        colorIndex: record.data[this.props.colorField],
+                    },
+                    switchTagColor: this.switchTagColor.bind(this),
+                    onTagVisibilityChange: this.onTagVisibilityChange.bind(this),
+                }
+            );
         }
     }
 
     onTagVisibilityChange(isHidden, tag) {
-        const tagRecord = this.props.record.data[this.props.name].records.find(
-            (record) => record.id === tag.id
-        );
+        const tagRecord = this.props.value.records.find((record) => record.id === tag.id);
         if (tagRecord.data[this.props.colorField] != 0) {
             this.previousColorsMap[tagRecord.resId] = tagRecord.data[this.props.colorField];
         }
-        const changes = {
+        tagRecord.update({
             [this.props.colorField]: isHidden ? 0 : this.previousColorsMap[tagRecord.resId] || 1,
-        };
-        tagRecord.update(changes, { save: true });
-        this.popover.close();
+        });
+        tagRecord.save();
+        this.closePopover();
     }
 
     switchTagColor(colorIndex, tag) {
-        const tagRecord = this.props.record.data[this.props.name].records.find(
-            (record) => record.id === tag.id
-        );
-        tagRecord.update({ [this.props.colorField]: colorIndex }, { save: true });
-        this.popover.close();
+        const tagRecord = this.props.value.records.find((record) => record.id === tag.id);
+        tagRecord.update({ [this.props.colorField]: colorIndex });
+        tagRecord.save();
+        this.closePopover();
     }
 }
 
-export const many2ManyTagsFieldColorEditable = {
-    ...many2ManyTagsField,
-    component: Many2ManyTagsFieldColorEditable,
-    supportedOptions: [
-        ...many2ManyTagsField.supportedOptions,
-        {
-            label: _t("Prevent color edition"),
-            name: "no_edit_color",
-            type: "boolean",
-        },
-    ],
-    extractProps({ options }) {
-        const props = many2ManyTagsField.extractProps(...arguments);
-        props.canEditColor = !options.no_edit_color && !!options.color_field;
-        return props;
-    },
+Many2ManyTagsFieldColorEditable.components = {
+    ...Many2ManyTagsField.components,
+    Popover: Many2ManyTagsFieldColorListPopover,
+};
+Many2ManyTagsFieldColorEditable.props = {
+    ...Many2ManyTagsField.props,
+    canEditColor: { type: Boolean, optional: true },
+};
+Many2ManyTagsFieldColorEditable.defaultProps = {
+    ...Many2ManyTagsField.defaultProps,
+    canEditColor: true,
+};
+Many2ManyTagsFieldColorEditable.extractProps = (params) => {
+    const props = Many2ManyTagsField.extractProps(params);
+    const attrs = params.attrs;
+    const noEditColor = Boolean(attrs.options.no_edit_color);
+    const hasColorField = Boolean(attrs.options.color_field);
+    return {
+        ...props,
+        canEditColor: !noEditColor && hasColorField,
+    };
 };
 
-registry.category("fields").add("form.many2many_tags", many2ManyTagsFieldColorEditable);
+registry.category("fields").add("form.many2many_tags", Many2ManyTagsFieldColorEditable);
+
+registry.category("fields").add("calendar.one2many", Many2ManyTagsField);
+registry.category("fields").add("calendar.many2many", Many2ManyTagsField);

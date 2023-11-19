@@ -18,22 +18,6 @@ $-seen-urls: ();
 }
 
 :root {
-    // The color behind the boxed layout is forced by Odoo. The box background
-    // color uses the `$body-bg` variable.
-    // grep: BOXED_BODY_BG_ODOO
-    @if o-website-value('layout') != 'full' {
-        $-boxed-layout-body-bg: o-color('body');
-        --#{$variable-prefix}body-bg-rgb: #{to-rgb($-boxed-layout-body-bg)};
-        --#{$variable-prefix}body-bg: #{$-boxed-layout-body-bg};
-    }
-
-    // Border color
-    // Let borders color adapt according to body and CCs. Also, set a fallback
-    // value for browsers that don't support the color-mix function (used by
-    // 'fade-currentColor').
-    --o-border-color: #{o-color('300')};
-    --o-border-color: #{fade-currentColor()};
-
     // The theme customize modal JS will need to know the value of some scss
     // variables used to render the user website, and those may have been
     // customized by themes, the user or anything else (so there is no file to
@@ -55,7 +39,7 @@ $-seen-urls: ();
     // 3) The values in the $colors map are also printed by Bootstrap. However,
     // we have color variables which can contain a reference to a color
     // combination and that is the info we want in that case.
-    @each $key in ('menu', 'header-sales_one', 'header-sales_two', 'header-sales_three', 'header-sales_four', 'footer', 'copyright') {
+    @each $key in ('menu', 'header-boxed', 'footer', 'copyright') {
         $-value: map-get($o-color-palette, $key);
         @if type-of($-value) == 'number' {
             @include print-variable($key, $-value);
@@ -68,6 +52,8 @@ $-seen-urls: ();
     }
 
     // 5) Use final value used by the theme
+    @include print-variable('body', $body-bg);
+
     @include print-variable('logo-height', $o-theme-navbar-logo-height);
     @include print-variable('fixed-logo-height', $o-theme-navbar-fixed-logo-height);
 
@@ -79,64 +65,6 @@ $-seen-urls: ();
         $i: $i + 1;
     }
 
-    // Note: font-size are not needed as already added by web_editor for the
-    // font-size dropdown
-    @include print-variable('paragraph-margin-top', $paragraph-margin-top);
-    @include print-variable('paragraph-margin-bottom', $paragraph-margin-bottom);
-    @include print-variable('h2-line-height', $h2-line-height);
-    @include print-variable('h3-line-height', $h3-line-height);
-    @include print-variable('h4-line-height', $h4-line-height);
-    @include print-variable('h5-line-height', $h5-line-height);
-    @include print-variable('h6-line-height', $h6-line-height);
-    @include print-variable('display-1-line-height', $display-1-line-height);
-    @include print-variable('display-2-line-height', $display-2-line-height);
-    @include print-variable('display-3-line-height', $display-3-line-height);
-    @include print-variable('display-4-line-height', $display-4-line-height);
-    // We cannot rely on $o-theme-hx-font because they contain the list of
-    // fallback fonts (unicode...).
-    $-headings-or-main-font: o-website-value('headings-font') or o-website-value('font');
-    @include print-variable('h2-font', o-website-value('h2-font') or $-headings-or-main-font);
-    @include print-variable('h3-font', o-website-value('h3-font') or $-headings-or-main-font);
-    @include print-variable('h4-font', o-website-value('h4-font') or $-headings-or-main-font);
-    @include print-variable('h5-font', o-website-value('h5-font') or $-headings-or-main-font);
-    @include print-variable('h6-font', o-website-value('h6-font') or $-headings-or-main-font);
-    @include print-variable('display-1-font', o-website-value('display-1-font') or $-headings-or-main-font);
-    @include print-variable('display-2-font', o-website-value('display-2-font') or $-headings-or-main-font);
-    @include print-variable('display-3-font', o-website-value('display-3-font') or $-headings-or-main-font);
-    @include print-variable('display-4-font', o-website-value('display-4-font') or $-headings-or-main-font);
-    @include print-variable('set-headings-font', o-get-font-info('headings'));
-    @include print-variable('set-h2-font', o-get-font-info('h2'));
-    @include print-variable('set-h3-font', o-get-font-info('h3'));
-    @include print-variable('set-h4-font', o-get-font-info('h4'));
-    @include print-variable('set-h5-font', o-get-font-info('h5'));
-    @include print-variable('set-h6-font', o-get-font-info('h6'));
-    @include print-variable('set-display-1-font', o-get-font-info('display-1'));
-    @include print-variable('set-display-2-font', o-get-font-info('display-2'));
-    @include print-variable('set-display-3-font', o-get-font-info('display-3'));
-    @include print-variable('set-display-4-font', o-get-font-info('display-4'));
-    @include print-variable('headings-line-height', $headings-line-height);
-    @include print-variable('headings-margin-top', $headings-margin-top);
-    @include print-variable('headings-margin-bottom', $headings-margin-bottom);
-    @include print-variable('h2-margin-top', $h2-margin-top);
-    @include print-variable('h3-margin-top', $h3-margin-top);
-    @include print-variable('h4-margin-top', $h4-margin-top);
-    @include print-variable('h5-margin-top', $h5-margin-top);
-    @include print-variable('h6-margin-top', $h6-margin-top);
-    @include print-variable('display-1-margin-top', $display-1-margin-top);
-    @include print-variable('display-2-margin-top', $display-2-margin-top);
-    @include print-variable('display-3-margin-top', $display-3-margin-top);
-    @include print-variable('display-4-margin-top', $display-4-margin-top);
-    @include print-variable('h2-margin-bottom', $h2-margin-bottom);
-    @include print-variable('h3-margin-bottom', $h3-margin-bottom);
-    @include print-variable('h4-margin-bottom', $h4-margin-bottom);
-    @include print-variable('h5-margin-bottom', $h5-margin-bottom);
-    @include print-variable('h6-margin-bottom', $h6-margin-bottom);
-    @include print-variable('display-1-margin-bottom', $display-1-margin-bottom);
-    @include print-variable('display-2-margin-bottom', $display-2-margin-bottom);
-    @include print-variable('display-3-margin-bottom', $display-3-margin-bottom);
-    @include print-variable('display-4-margin-bottom', $display-4-margin-bottom);
-
-    @include print-variable('set-buttons-font', o-get-font-info('buttons'));
     @include print-variable('btn-padding-y', $btn-padding-y);
     @include print-variable('btn-padding-x', $btn-padding-x);
     @include print-variable('btn-font-size', $btn-font-size);
@@ -193,10 +121,7 @@ $-seen-urls: ();
 
     @if o-website-value('layout') != 'full' {
         > main {
-            // The color behind the boxed layout is forced by Odoo. The box
-            // background color uses the `$body-bg` variable.
-            // grep: BOXED_BODY_BG_ODOO
-            background-color: $body-bg;
+            background-color: o-color('o-cc1-bg');
         }
 
         @include media-breakpoint-up(sm) {
@@ -271,18 +196,6 @@ $-seen-urls: ();
     }
 }
 
-// We don't want the area to be visible in edit mode when we edit the popup that
-// is shared on all pages, otherwise the .o_editable area has a minimum height
-// when it is focused.
-#o_shared_blocks {
-    min-height: 0px;
-    height: 0px;
-
-    &:empty {
-        display: none;
-    }
-}
-
 .navbar {
 
     .navbar-collapse {
@@ -321,46 +234,9 @@ $-seen-urls: ();
     @include o-apply-colors('menu-custom');
     $-menu-color: o-color('menu-custom') or o-color('menu');
     @if ($-menu-color and color-contrast($-menu-color) != $color-contrast-dark) {
-        --NavLinkWithBackground-bg-color: #{rgba($navbar-dark-active-color, .1)};
-        --NavLinkWithBackground-bg-color--hover: #{rgba($navbar-dark-active-color, .2)};
-        --NavStretch-placeholder-color: #{rgba($navbar-dark-active-color, .3)};
-        --HeaderSeparator-bg-color: #{rgba($navbar-dark-active-color, .15)};
-
         @extend .navbar-dark;
-
-        .btn-close {
-            filter: $btn-close-white-filter;
-        }
     }
     @include o-add-gradient('menu-gradient');
-}
-
-// TODO this should be reviewed. While it allowed to choose a color for the
-// navbar text, there is no :hover effect, the active item is not visible and
-// the selector is probably too specific and should rather be about extending
-// bootstrap if possible.
-#wrapwrap:not(.o_header_overlay) header, header.o_header_is_scrolled {
-    .nav-item > .nav-link > *, .nav-item > .nav-link::after, .js_language_selector span, .badge {
-        color: o-website-value('header-text-color') !important;
-    }
-}
-
-.o_navlink_background {
-    background: var(--NavLinkWithBackground-bg-color, rgba($navbar-light-active-color, .05));
-
-    &:hover {
-        background: var(--NavLinkWithBackground-bg-color--hover, rgba($navbar-light-active-color, .1));
-    }
-}
-
-.o_navlink_background_hover:hover {
-    background: var(--NavLinkWithBackground-bg-color, rgba($navbar-light-active-color, .05));
-}
-
-// Apply background color to the offcanvas menu
-.o_navbar_mobile {
-    height: 100dvh;
-    background-color: o-color('menu-custom') or o-color('menu');
 }
 
 $-header-nav-link-height: $nav-link-height;
@@ -401,95 +277,21 @@ $-header-nav-link-height: $nav-link-height;
     }
 }
 
-h2 {
+h2, h3, h4, h5, h6 {
     color: map-get($colors, 'o-cc1-h2');
 }
-h3 {
+h3, h4, h5, h6 {
     color: map-get($colors, 'o-cc1-h3');
 }
-h4 {
+h4, h5, h6 {
     color: map-get($colors, 'o-cc1-h4');
 }
-h5 {
+h5, h6 {
     color: map-get($colors, 'o-cc1-h5');
 }
 h6 {
     color: map-get($colors, 'o-cc1-h6');
 }
-
-$heading-font-families: () !default;
-$heading-font-families: map-merge((
-    "h2": $h2-font-family,
-    "h3": $h3-font-family,
-    "h4": $h4-font-family,
-    "h5": $h5-font-family,
-    "h6": $h6-font-family,
-    "display-1": $display-1-font-family,
-    "display-2": $display-2-font-family,
-    "display-3": $display-3-font-family,
-    "display-4": $display-4-font-family,
-), $heading-font-families);
-$heading-line-heights: () !default;
-$heading-line-heights: map-merge((
-    "h2": $h2-line-height,
-    "h3": $h3-line-height,
-    "h4": $h4-line-height,
-    "h5": $h5-line-height,
-    "h6": $h6-line-height,
-    "display-1": $display-1-line-height,
-    "display-2": $display-2-line-height,
-    "display-3": $display-3-line-height,
-    "display-4": $display-4-line-height,
-), $heading-line-heights);
-$heading-margin-tops: () !default;
-$heading-margin-tops: map-merge((
-    "h2": $h2-margin-top,
-    "h3": $h3-margin-top,
-    "h4": $h4-margin-top,
-    "h5": $h5-margin-top,
-    "h6": $h6-margin-top,
-    "display-1": $display-1-margin-top,
-    "display-2": $display-2-margin-top,
-    "display-3": $display-3-margin-top,
-    "display-4": $display-4-margin-top,
-), $heading-margin-tops);
-$heading-margin-bottoms: () !default;
-$heading-margin-bottoms: map-merge((
-    "h2": $h2-margin-bottom,
-    "h3": $h3-margin-bottom,
-    "h4": $h4-margin-bottom,
-    "h5": $h5-margin-bottom,
-    "h6": $h6-margin-bottom,
-    "display-1": $display-1-margin-bottom,
-    "display-2": $display-2-margin-bottom,
-    "display-3": $display-3-margin-bottom,
-    "display-4": $display-4-margin-bottom,
-), $heading-margin-bottoms);
-
-h1, h2, h3, h4, h5, h6 {
-    line-height: $headings-line-height;
-    margin-top: $headings-margin-top;
-    margin-bottom: $headings-margin-bottom;
-}
-@each $selector, $map-key in
-("h2" "h2", "h3" "h3", "h4" "h4", "h5" "h5", "h6" "h6", ".display-1" "display-1",
-".display-2" "display-2", ".display-3" "display-3", ".display-4" "display-4") {
-    #{$selector} {
-        @if ($headings-font-family != map-get($heading-font-families, $map-key)) {
-            font-family: map-get($heading-font-families, $map-key);
-        }
-        @if ($headings-line-height != map-get($heading-line-heights, $map-key)) {
-            line-height: map-get($heading-line-heights, $map-key);
-        }
-        @if ($headings-margin-top != map-get($heading-margin-tops, $map-key)) {
-            margin-top: map-get($heading-margin-tops, $map-key);
-        }
-        @if ($headings-margin-bottom != map-get($heading-margin-bottoms, $map-key)) {
-            margin-bottom: map-get($heading-margin-bottoms, $map-key);
-        }
-    }
-}
-
 .btn {
     @if ($o-theme-buttons-font != $o-theme-font) {
         font-family: $o-theme-buttons-font;
@@ -497,10 +299,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 // Texts
-p {
-    margin-top: $paragraph-margin-top;
-}
-
 font[style*='background']:not(.text-gradient),
 font[class*='bg-'] {
     padding: 2px 6px 4px;
@@ -508,9 +306,8 @@ font[class*='bg-'] {
 
 // Icons
 .fa {
-    $-size: map-get($spacers, 5);
-
     font-family: "FontAwesome" !important;
+    $size: 3rem;
 
     &.rounded-circle,
     &.rounded,
@@ -522,14 +319,14 @@ font[class*='bg-'] {
         vertical-align: middle;
         text-align: center;
         // fa-1x is not ouput
-        width: $-size;
-        height: $-size;
-        line-height: $-size;
+        width: $size;
+        height: $size;
+        line-height: $size;
         @for $i from 2 through 5 {
             &.fa-#{$i}x {
-                width: $-size + $i;
-                height: $-size + $i;
-                line-height: $-size + $i;
+                width: $size + $i;
+                height: $size + $i;
+                line-height: $size + $i;
             }
         }
         // Default, if no background-color already selected
@@ -539,8 +336,8 @@ font[class*='bg-'] {
         padding: 0;
     }
     &.rounded-leaf {
-        border-top-left-radius: $-size;
-        border-bottom-right-radius: $-size;
+        border-top-left-radius: $size;
+        border-bottom-right-radius: $size;
     }
     &.rounded-empty-circle {
         @extend .rounded-circle;
@@ -576,7 +373,6 @@ font[class*='bg-'] {
         &.btn-xs { @include button-size(.15rem, .45rem, ($font-size-base * .75), 30px); }
     }
 }
-
 
 // Background Images
 .oe_img_bg {
@@ -625,7 +421,7 @@ font[class*='bg-'] {
 
 // Probably outdated
 // Disable fixed height
-@include media-breakpoint-down(md) {
+@media (max-width: 400px) {
     section,
     .parallax,
     .row,
@@ -647,13 +443,13 @@ font[class*='bg-'] {
     background-color: #f5f5f5;
     border: 1px solid #dddddd;
     color: #666666;
-    @include font-size(14px);
+    font-size: 14px;
     padding: 4px;
 }
 table.table_desc tr td {
     text-align: left;
     padding: 5px;
-    @include font-size(13px);
+    font-size: 13px;
     &:first-child {
         width: 25%;
         font-weight: bold;
@@ -733,9 +529,6 @@ table.table_desc tr td {
     }
     // Content
     .carousel-inner {
-        // Create a new stacking context to ensure that elements like indicators
-        // and arrows will always appear on top of the carousel content.
-        isolation: isolate;
         overflow: hidden;
         height: 100%;
         .carousel-item {
@@ -759,7 +552,7 @@ table.table_desc tr td {
         .carousel-control-prev-icon:before,
         .carousel-control-next-icon:before {
             background-color: rgba(0,0,0,0);
-            @include font-size(2rem);
+            font-size: 2rem;
             color: #fff;
             text-shadow: $box-shadow-sm;
         }
@@ -787,7 +580,7 @@ table.table_desc tr td {
             width: 2rem;
             height: 6rem;
             line-height: 6rem;
-            @include font-size(1.5rem);
+            font-size: 1.5rem;
         }
         // Indicators
         .carousel-indicators li {
@@ -814,7 +607,7 @@ table.table_desc tr td {
             height: 4rem;
             line-height: 4rem;
             border-radius: 50%;
-            @include font-size(1.25rem);
+            font-size: 1.25rem;
         }
         // Indicators
         .carousel-indicators li {
@@ -846,7 +639,7 @@ table.table_desc tr td {
             width: 2rem;
             height: 2rem;
             line-height: 2rem;
-            @include font-size(1.25rem);
+            font-size: 1.25rem;
         }
         // Indicators
         .carousel-indicators li {
@@ -970,12 +763,31 @@ $-transition-duration: 200ms;
         transition: transform $-transition-duration;
     }
 
+    @if o-website-value('header-template') == 'boxed' {
+        background: transparent;
+    }
+
     &.o_header_is_scrolled {
         .navbar-brand {
-            @include font-size($o-theme-navbar-fixed-logo-height / $line-height-base);
+            font-size: $o-theme-navbar-fixed-logo-height / $line-height-base;
 
             img {
                 height: $o-theme-navbar-fixed-logo-height;
+            }
+        }
+        @if o-website-value('header-template') == 'vertical' {
+            .o_header_centered_logo {
+                display: none;
+            }
+            @include media-breakpoint-up(lg) {
+                .navbar-brand {
+                    font-size: 0;
+                    opacity: 0;
+
+                    img {
+                        height: 0;
+                    }
+                }
             }
         }
     }
@@ -988,16 +800,6 @@ $-transition-duration: 200ms;
             }
         }
     }
-
-    .o_header_hide_on_scroll.hidden {
-        max-height: 0;
-        padding-block: 0 !important;
-        overflow: hidden;
-    }
-}
-
-.o_hoverable_dropdown .nav-link.dropdown-toggle:focus {
-    outline: none;
 }
 
 // Navbar
@@ -1028,6 +830,11 @@ $-transition-duration: 200ms;
     }
 }
 
+$-off-canvas-hamburger: o-website-value('hamburger-type') == 'off-canvas';
+$-hamburger-left: o-website-value('hamburger-position') == 'left';
+$-hamburger-center: o-website-value('hamburger-position') == 'center';
+$-hamburger-right: o-website-value('hamburger-position') == 'right';
+
 $zindex-website-header: $zindex-fixed !default;
 
 header {
@@ -1038,8 +845,8 @@ header {
         z-index: $zindex-website-header;
     }
     &:not(.o_header_no_transition) {
-        #o_main_nav {
-            transition: all $-transition-duration, color 0ms;
+        #top_menu_container {
+            transition: all $-transition-duration;
         }
         .navbar-brand {
             transition: margin $-transition-duration, font-size $-transition-duration, opacity $-transition-duration ease-out;
@@ -1065,19 +872,13 @@ header {
         max-height: 80vh;
         overflow-y: auto;
         overflow-x: hidden; // Needed because of container in container having 0px padding... TODO improve
-
-        @include media-breakpoint-down(lg) {
-            .nav-link, .dropdown-item {
-                white-space: normal;
-            }
-        }
     }
 
     &:not(.o_header_is_scrolled) {
         $-is-hamburger: o-website-value('header-template') == 'hamburger';
         @include media-breakpoint-up(md) {
             @if $-is-hamburger {
-                #o_main_nav {
+                #top_menu_container {
                     padding-top: $spacer * 0.5;
                     padding-bottom: $spacer * 0.5;
                 }
@@ -1085,51 +886,201 @@ header {
         }
     }
 
-    #o_main_nav {
+    #top_menu_container {
         flex-direction: inherit;
+    }
+    @if $-hamburger-center {
+        .collapsing, .show {
+            #top_menu {
+                @if not $-off-canvas-hamburger {
+                    padding-top: 15vh;
+                    padding-bottom: 15vh;
+                }
+                text-align: center !important;
+            }
+        }
+    }
+
+    @include media-breakpoint-up(md) {
+        // Allow to center the logo, ignoring the toggler space
+        .o_navbar_toggler_container {
+            flex: 0 0 0;
+            min-width: 0;
+            direction: if($-hamburger-left, ltr, rtl);
+        }
     }
 
     nav.navbar {
         @if o-website-value('menu-border-width') {
-            border: o-website-value('menu-border-style') o-color('menu-border-color') !important;
-            border-width: 0 0 o-website-value('menu-border-width') 0 !important;
-
-            &.o_border_right_only {
-                border-width: 0 o-website-value('menu-border-width') 0 0 !important;
-            }
-            &.o_full_border {
-                border-width: o-website-value('menu-border-width') !important;
-            }
+            border: o-website-value('menu-border-width') o-website-value('menu-border-style') o-color('menu-border-color') !important;
         }
         border-radius: o-website-value('menu-border-radius') !important;
         box-shadow: o-website-value('menu-box-shadow') !important;
-
-        &.o_header_force_no_radius {
-            border-radius: 0 !important;
-        }
-    }
-    // Prevent the color of the header to impact the color of the nav.
-    &.o_header_is_scrolled, &.o_transitioning.o_header_affixed {
-        background-color: transparent !important;
     }
 }
 
-@if o-website-value('header-template') == 'sidebar' {
+@if $-off-canvas-hamburger {
+    #top_menu_collapse {
+
+        &.collapsing, &.show {
+            // Note: position relatively to the header instead of the viewport
+            // because fixed position cannot work inside an element whose CSS
+            // transform is different to none, which the header element is
+            // because of header effects.
+            @include o-position-absolute(0, 0, 0, 0);
+            z-index: $zindex-sticky;
+            height: 100vh;
+            max-height: 100vh;
+            transition: none;
+            transform: none;
+
+            @if o-website-value('header-template') == 'magazine' {
+                @include media-breakpoint-up(lg) {
+                    position: fixed;
+                }
+                #top_menu {
+                    align-items: normal !important;
+                }
+            }
+
+            &, & > .o_header_collapsed_content_wrapper {
+                // TODO improve: ugly code to reset a potential wrapper
+                display: flex !important;
+                flex-flow: if($-hamburger-left, row, row-reverse) nowrap !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+            }
+            > .o_header_collapsed_content_wrapper {
+                // TODO improve: ugly code to reset a potential wrapper
+                max-width: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .o_offcanvas_menu_backdrop {
+                @include o-position-absolute(0, 0, 0, 0);
+                opacity: .2;
+                cursor: pointer;
+            }
+
+            #top_menu {
+                flex: 0 0 auto !important;
+                overflow: auto;
+                flex-flow: column nowrap !important;
+                @if $-hamburger-center {
+                    width: 100%;
+                    max-width: none;
+                } @else {
+                    max-width: 560px;
+                    text-align: left !important;
+                }
+                min-width: 250px;
+                margin: 0 !important;
+                background-color: o-color('menu-custom') or o-color('menu');
+                @include o-add-gradient('menu-gradient');
+                transition: transform $-transition-duration cubic-bezier(.694, .0482, .335, 1);
+
+                @if $-hamburger-center {
+                    .o_offcanvas_menu_backdrop {
+                        display: none;
+                    }
+                    .o_offcanvas_menu_toggler {
+                        max-width: 90%;
+                    }
+                }
+
+                .nav-item, .o_offcanvas_logo {
+                    padding-left: $grid-gutter-width;
+                    padding-right: $grid-gutter-width;
+                }
+                .nav-item, .dropdown-menu {
+                    text-align: inherit;
+                }
+                .nav-item, .nav-link {
+                    margin: 0 !important;
+                }
+
+                .navbar-toggler {
+                    display: block !important;
+                }
+
+                // Open all dropdowns
+                .dropdown-toggle {
+                    padding-bottom: $nav-link-padding-y*0.5;
+
+                    &:after {
+                        content: none;
+                    }
+                }
+                .dropdown-menu {
+                    display: block;
+                    padding-top:0;
+                    border: 0;
+                    background: inherit;
+                    color: inherit;
+                }
+                .dropdown-item {
+                    padding-left: .5em;
+                    padding-right: .5em;
+                }
+            }
+        }
+        &.collapsing #top_menu {
+            @if $-hamburger-center {
+                transform: translateY(-100%);
+            } @else if $-hamburger-left {
+                transform: translateX(-100%);
+            } @else if $-hamburger-right {
+                transform: translateX(100%);
+            }
+        }
+        &.show #top_menu {
+            transform: translate(0);
+        }
+
+        .o_offcanvas_menu_backdrop {
+            @if $-hamburger-left {
+                background-image: linear-gradient(90deg, currentColor 20%, transparent);
+            } @else {
+                background-image: linear-gradient(-90deg, currentColor 20%, transparent);
+            }
+        }
+    }
+}
+
+@if o-website-value('header-template') == 'vertical' {
+    header .o_header_centered_logo {
+        order: -1;
+        width: 50%;
+        margin-top: $spacer;
+
+        @include media-breakpoint-up(lg) {
+            order: inherit;
+            width: 40%;
+            margin-bottom: $spacer;
+        }
+    }
+    .navbar-nav {
+        padding-top: $navbar-padding-y;
+        padding-bottom: $navbar-padding-y;
+    }
+} @else if o-website-value('header-template') == 'sidebar' {
     @include media-breakpoint-up(lg) {
         #wrapwrap {
-            // Two different website options might add padding:
-            // - The sidebar header template
-            // - The website layout template when different than 'full'
-            // We need to combine both using `calc`. The `border` solution does
-            // not work on Safari.
-            $padding-size: o-website-value('sidebar-width');
-            @if o-website-value('layout') != 'full' {
-                $padding-size: calc(#{$grid-gutter-width} * 2 + #{$padding-size});
+            // Hack: padding is used by layout option (boxed, etc) so use
+            // border here to be able to combine the effect.
+            @if $-hamburger-right {
+                border-right: o-website-value('sidebar-width') solid transparent;
+            } @else {
+                border-left: o-website-value('sidebar-width') solid transparent;
             }
-            padding-left: $padding-size;
 
             > header {
-                inset: 0 auto 0 0;
+                @if $-hamburger-right {
+                    @include o-position-absolute(0, 0, 0, auto);
+                } @else {
+                    @include o-position-absolute(0, auto, 0, 0);
+                }
                 position: fixed;
                 z-index: $zindex-fixed;
                 display: flex;
@@ -1145,7 +1096,7 @@ header {
                         max-width: 100%;
                         padding: 0 0 $spacer 0;
                     }
-                    #o_main_nav {
+                    #top_menu_container {
                         flex-direction: column;
                         align-items: start;
                         padding: 0;
@@ -1164,79 +1115,58 @@ header {
             }
         }
     }
-} @else if o-website-value('header-template') == 'stretch' {
-    #wrapwrap > header input::placeholder {
-        color: #{var(--NavStretch-placeholder-color, $input-placeholder-color)};
+} @else if o-website-value('header-template') == 'boxed' {
+    #wrapwrap:not(.o_header_overlay) .o_header_boxed_background {
+        @include o-apply-colors('header-boxed');
+        @include o-apply-colors('header-boxed-custom');
+        @include o-add-gradient('header-boxed-gradient');
     }
-    #wrapwrap > header .o_extra_menu_items {
-        height: 100%;
-        border-left: $border-width solid var(--NavLinkWithBackground-bg-color--hover, rgba($navbar-light-active-color, .1));
-
-        > .nav-link {
-            display: flex;
-            align-items: center;
-            height: 100%;
+} @else if o-website-value('header-template') == 'centered_logo' {
+    header .o_header_centered_logo {
+        @include media-breakpoint-up(lg) {
+            width: 50%;
         }
     }
-} @else if o-website-value('header-template') == 'sales_one' {
-    #wrapwrap .o_header_sales_one_bot {
-        @include o-apply-colors('header-sales_one');
-        @include o-apply-colors('header-sales_one-custom');
-        @include o-add-gradient('menu-secondary-gradient');
-    }
-} @else if o-website-value('header-template') == 'sales_two' {
-    #wrapwrap .o_header_sales_two_top {
-        @include o-apply-colors('header-sales_two');
-        @include o-apply-colors('header-sales_two-custom');
-        @include o-add-gradient('menu-secondary-gradient');
-    }
-} @else if o-website-value('header-template') == 'sales_three' {
-    #wrapwrap .o_header_sales_three_top {
-        @include o-apply-colors('header-sales_three');
-        @include o-apply-colors('header-sales_three-custom');
-        @include o-add-gradient('menu-secondary-gradient');
-    }
-} @else if o-website-value('header-template') == 'sales_four' {
-    #wrapwrap .o_header_sales_four_bot {
-        @include o-apply-colors('header-sales_four');
-        @include o-apply-colors('header-sales_four-custom');
-        @include o-add-gradient('menu-secondary-gradient');
-    }
-}
+} @else if o-website-value('header-template') == 'hamburger-full' {
+    @if not $-off-canvas-hamburger {
+        @include media-breakpoint-up(md) {
+            #wrapwrap {
+                $o-hamburger-full-navbar-height: $o-theme-navbar-logo-height + ($navbar-padding-y * 2);
+                > header {
+                    .navbar-collapse {
+                        max-height: unset;
 
-.o_grid_header_3_cols {
-    grid-template-columns: 1fr auto 1fr;
-}
-
-.o_grid_header_3_cols_fixed {
-    grid-template-columns: 1fr 33% 1fr;
-}
-
-.o_header_separator > :not(:last-child)::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 0 100%;
-    width: $border-width * 2;
-    height: 50%;
-    margin: auto (map-get($spacers, 2) * -1) auto auto;
-    background: var(--HeaderSeparator-bg-color, rgba($navbar-light-active-color, .1));
-}
-
-// Default border color didn't match with background custom colors.
-// This allows to use the same contrast system than the text but for borders.
-.o_border_contrast {
-    border-color: var(--NavLinkWithBackground-bg-color--hover, rgba($navbar-light-active-color, .1)) !important;
+                        > .container {
+                            height: calc(100vh - #{$o-hamburger-full-navbar-height});
+                            transition: height .3s ease;
+                        }
+                        .nav-link {
+                            padding-right: $nav-link-padding-x;
+                            padding-left: $nav-link-padding-x;
+                        }
+                        .dropdown-menu {
+                            position: absolute;
+                        }
+                    }
+                }
+            }
+        }
+        @include media-breakpoint-up(lg) {
+            #wrapwrap > header #top_menu {
+                align-items: center !important;
+            }
+        }
+    }
 }
 
 // Mega menu
 .o_mega_menu {
     width: 100%;
     padding: 0;
-    margin-top: 0 !important;
+    margin-top: 0;
     border-radius: 0;
     background-clip: unset; // Remove the 1px gap introduced by BS4
     background-color: transparent; // In order to allow the mega menu to be transparent
-    border: 1px solid $gray-200; // Prevent to see the color of the block behind.
 
     .container, .container-fluid {
         // Need to reforce those because they are removed since its a container
@@ -1246,9 +1176,9 @@ header {
     }
 }
 
-.dropdown-menu.o_mega_menu_container_size {
+.o_mega_menu_container_size {
     $-header-template: o-website-value('header-template');
-    @if not index(('sidebar', 'hamburger'), $-header-template) {
+    @if not index(('sidebar', 'hamburger', 'magazine'), $-header-template) {
         $bp: if($-header-template == 'minimalist', md, lg);
         @include media-breakpoint-up($bp) {
             left: 50%;
@@ -1286,15 +1216,13 @@ header {
 }
 
 #wrapwrap.o_header_overlay {
-    > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown):not(.o_header_sidebar) {
+    > header:not(.o_header_affixed):not(.o_top_menu_collapse_shown) {
         @include o-position-absolute(0, 0, auto, 0);
         z-index: 1000;
 
         > .navbar {
             @include o-apply-colors(1); // Reset to default colored components
-            // Prevent the nav color/gradient to impact the header color.
             background-color: transparent !important;
-            background-image: none !important;
             border-color: transparent;
             color: inherit;
 
@@ -1325,7 +1253,7 @@ header {
     }
 }
 .navbar-nav {
-    .nav-link:not(.o_nav-link_secondary) {
+    .nav-link {
         @if o-website-value('header-links-style') == 'outline' {
             // Need to force the padding in this case so that it stays in mobile
             padding-right: $navbar-nav-link-padding-x;
@@ -1385,45 +1313,6 @@ header {
     }
 }
 
-// Step wizard used in /shop, /event, appointment
-.o_wizard {
-    $o_wizard_circle_progress_size: 64px;
-
-    .o_wizard_step_active {
-        @include media-breakpoint-up(md) {
-            color: $body-color;
-        }
-    }
-
-    .o_wizard_circle_progress {
-        &, &:before {
-            width: $o_wizard_circle_progress_size;
-            height: $o_wizard_circle_progress_size;
-            line-height: $o_wizard_circle_progress_size;
-        }
-
-        &:before {
-            position: absolute;
-            border-radius: 50%;
-            box-shadow: inset 0 0 0 map-get($border-widths, 5) currentColor;
-            opacity: .2;
-            content: "";
-        }
-    }
-
-    .o_wizard_circle_progress_left .progress-bar {
-        border-radius: 0 ($o_wizard_circle_progress_size * .5) ($o_wizard_circle_progress_size * .5) 0;
-        transform-origin: center left;
-        transform: rotate(var(--leftProgress));
-    }
-
-    .o_wizard_circle_progress_right .progress-bar {
-        border-radius: ($o_wizard_circle_progress_size * .5) 0 0 ($o_wizard_circle_progress_size * .5);
-        transform-origin: center right;
-        transform: rotate(var(--rightProgress));
-    }
-}
-
 // Language selector
 .js_language_selector {
     .dropdown-menu {
@@ -1431,6 +1320,10 @@ header {
     }
     a.list-inline-item {
         padding: 3px 0;
+
+        > * {
+            vertical-align: middle;
+        }
     }
 }
 .o_lang_flag {
@@ -1438,8 +1331,13 @@ header {
     height: 1em;
     margin-right: 0.2em;
     border-radius: $border-radius-pill;
-    object-fit: cover;
-    box-shadow: rgba(0, 0, 0, 0.429) 1px 1px 1px;
+}
+a.js_change_lang:hover, a.o_add_language:hover {
+    text-decoration: none;
+
+    span {
+        text-decoration: $link-hover-decoration;
+    }
 }
 span.list-inline-item.o_add_language:last-child {
     display: none !important; // Hide the separator if it is the last list item
@@ -1556,7 +1454,7 @@ span.list-inline-item.o_add_language:last-child {
 $ribbon-padding: 100px;
 .o_ribbon {
     margin: 0;
-    @include font-size(1rem);
+    font-size: 1rem;
     font-weight: bold;
     white-space: nowrap;
     text-align: center;
@@ -1609,54 +1507,6 @@ ul.o_checklist > li.o_checked::after {
     display: none !important;
 }
 
-// On translation editor, inputs & textareas with translatable "placeholder" and
-// "value" will get HTML content as translation value for the attributes.
-// The goal here is to hide these values until the editor's code sets the right
-// ones on elements. The `o_text_content_invisible` class is mainly used on JS
-// to have the same behaviour for textareas, since it's not possible to target
-// them on CSS using the "value" attribute unlike inputs.
-.o_text_content_invisible {
-    color: transparent !important;
-}
-[placeholder*="data-oe-translation-initial-sha"] {
-    &::-webkit-input-placeholder{ /* WebKit */
-        color: transparent;
-        opacity: 0;
-    }
-    &::-moz-placeholder { /* Firefox */
-        color: transparent;
-        opacity: 0;
-    }
-}
-input[value*="data-oe-translation-initial-sha"] {
-    @extend .o_text_content_invisible;
-}
-[data-oe-translation-initial-sha] {
-    > .o_translation_select {
-        border: $input-border-width solid $input-border-color;
-        @include border-radius($input-border-radius, 0);
-
-        // Hide translatable `<select/>`s since we use `.o_translation_select`
-        // elements to handle translations.
-        + select {
-            display: none !important;
-        }
-        > div:not(:last-child) {
-            border-bottom: inherit;
-        }
-    }
-}
-
-// Offcanvas menu for in page filters (e.g. product list)
-.o_website_offcanvas .accordion-button {
-    // Since this nav is visible on mobile only, remove all visual
-    // effects related to keyboard/mouse navigation.
-    &, &:focus, &:hover {
-        box-shadow: none;
-        z-index: 0;
-    }
-}
-
 //------------------------------------------------------------------------------
 // Website Animate
 //------------------------------------------------------------------------------
@@ -1687,17 +1537,6 @@ input[value*="data-oe-translation-initial-sha"] {
 }
 .o_wanim_overflow_xy_hidden {
     overflow-x: hidden !important;
-
-    &.o_rtl {
-        // Fix for Chrome and Edge bug: resolves slow/stuck scrolling during
-        // left-overflowing animations on RTL web pages. Note: using overflow on
-        // the main element hides animated elements outside of it (e.g. "Framed"
-        // page layout). This may not be the ideal solution but could be the
-        // best workaround for now.
-        > main {
-            overflow-x: hidden;
-        }
-    }
     .o_footer_slideout {
         overflow-y: hidden !important;
     }
@@ -2373,35 +2212,6 @@ input[value*="data-oe-translation-initial-sha"] {
     transition-timing-function: ease-out;
 }
 
-//------------------------------------------------------------------------------
-// Website Text Highlight Effects
-//------------------------------------------------------------------------------
-
-.o_text_highlight {
-    --text-highlight-color: currentColor;
-
-    // Default style for irregular text highlights.
-    &.o_text_highlight_fill {
-        --text-highlight-color: var(--primary);
-        --text-highlight-width: 0px !important;
-    }
-    // Text highlight SVG container.
-    > .o_text_highlight_item {
-        position: relative;
-        display: inline-block;
-        line-height: normal;
-        white-space: pre-wrap;
-        z-index: 1;
-
-        > * {
-            text-decoration: none;
-        }
-        svg {
-            z-index: -1;
-        }
-    }
-}
-
 // Compatibility <= 13.0
 .o_anim_dur500 {
     animation-duration: 500ms;
@@ -2437,14 +2247,4 @@ input[value*="data-oe-translation-initial-sha"] {
 // Odoo dropdown menu
 .o_dropdown_menu {
     @extend .dropdown-menu;
-}
-
-// Override web_editor's rules
-.o_table tr {
-    border-color: $table-border-color;
-}
-
-// Disables the offset on dropdown to match relative position in mobile/offcanvas.
-.o_dropdown_without_offset {
-    transform: none !important;
 }

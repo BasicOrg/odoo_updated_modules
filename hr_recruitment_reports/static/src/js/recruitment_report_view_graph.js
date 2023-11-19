@@ -9,7 +9,7 @@ export class RecruitmentGraphRenderer extends GraphRenderer {
         const scaleOptions = super.getScaleOptions();
 
         if ('yAxes' in scaleOptions) {
-            scaleOptions.yAxes.suggestedMax = 7;
+            scaleOptions['yAxes'][0]['ticks']['suggestedMax'] = 7;
         }
 
         return scaleOptions;

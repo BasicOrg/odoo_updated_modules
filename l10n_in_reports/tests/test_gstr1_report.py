@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 class TestReports(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref="in"):
+    def setUpClass(cls, chart_template_ref="l10n_in.indian_chart_template_standard"):
         super().setUpClass(chart_template_ref=chart_template_ref)
         cls.maxDiff = None
         cls.company_data["company"].write({
@@ -37,7 +37,7 @@ class TestReports(TestAccountReportsCommon):
             "out_invoice",
             post=True,
             products=cls.product_a,
-            taxes=cls.env["account.chart.template"].ref("sgst_sale_5")
+            taxes=cls.company_data["default_tax_sale"]
         )
 
     @classmethod

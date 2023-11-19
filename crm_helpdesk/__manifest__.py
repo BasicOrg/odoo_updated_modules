@@ -5,7 +5,7 @@
     'name': 'Helpdesk - CRM',
     'summary': 'Convert Tickets from/to Leads',
     'version': '1.1',
-    'sequence': 19,
+    'sequence': '19',
     'category': 'Services/Helpdesk',
     'description': """
 Convert business inquiries that have ended up in the Helpdesk pipeline by mistake,

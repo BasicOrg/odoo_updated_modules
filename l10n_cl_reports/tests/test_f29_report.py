@@ -10,7 +10,7 @@ from odoo.tests import tagged
 class TestF29Reports(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='cl'):
+    def setUpClass(cls, chart_template_ref='l10n_cl.cl_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
         cls.partner_a.write({
             'country_id': cls.env.ref('base.cl').id,
@@ -19,7 +19,7 @@ class TestF29Reports(TestAccountReportsCommon):
         })
         cl_account_310115 = cls.env['account.account'].search([('company_id', '=', cls.company_data['company'].id), ('code', '=', '310115')]).id
         cl_account_410230 = cls.env['account.account'].search([('company_id', '=', cls.company_data['company'].id), ('code', '=', '410230')]).id
-        cl_purchase_tax = cls.env['account.tax'].search([('name', '=', '19% F A'), ('company_id', '=', cls.company_data['company'].id)])
+        cl_purchase_tax = cls.env['account.tax'].search([('name', '=', 'IVA Compra 19% Activo Fijo'), ('company_id', '=', cls.company_data['company'].id)])
 
         invoice = cls.env['account.move'].create({
             'move_type': 'out_invoice',
@@ -68,48 +68,47 @@ class TestF29Reports(TestAccountReportsCommon):
             report._get_lines(options),
             # pylint: disable=C0326
             #   Line Title                                                              Value
-            [   0,                                                                             1],
+            [   0,                                                                         1],
             [
-                ('Taxable Sales Base',                                                        ''),
-                ('Net Sales Taxed VAT',                                                   1000.0),
-                ('Exempt Sales',                                                             0.0),
-                ('Proposed Ratio Factor (%)',                                             '0.0%'),
-                ('Total Sales',                                                           1000.0),
-                ('Taxes Paid on Sale',                                                        ''),
-                ('VAT Tax Debit',                                                          190.0),  # 19% tax of 1000
-                ('Tax Base Purchases',                                                        ''),
-                ('Net Taxable Purchases Recoverable VAT',                                 1200.0),
-                ('Net Purchases Taxed VAT Common Use',                                       0.0),
-                ('Purchases Non-recoverable VAT',                                            0.0),
-                ('Supermarket Shopping',                                                     0.0),
-                ('Purchases of fixed assets',                                                0.0),
-                ('Purchases Not Taxed With VAT',                                             0.0),
-                ('Total Net Purchases',                                                   1200.0),
-                ('Taxes Paid on Purchase',                                                    ''),
-                ('VAT Paid Purchases Recoverable',                                           0.0),
-                ('VAT Common Use',                                                           0.0),
-                ('VAT Shopping Supermarket',                                                 0.0),
-                ('VAT Purchases of Fixed Assets Destined for Exempt Sales',                228.0),  # 19% tax of 3*400
-                ('VAT Purchases Fixed Assets Common Use',                                    0.0),
-                ('VAT Purchases of Non-recoverable Fixed Assets',                            0.0),
-                ('VAT Base Tax Credit Affected by FP',                                        ''),
-                ('Recoverable VAT',                                                          0.0),
-                ('VAT Common Use',                                                           0.0),
-                ('VAT Purchases Supermarket Common Use',                                     0.0),
-                ('VAT Purchases Fixed Assets Earmarked Sales Exempt Sales',                  0.0),
-                ('VAT Purchases Fixed Assets Sales Common Use',                              0.0),
-                ('VAT Purchases Fixed Assets Non Recoverable Sales',                         0.0),
-                ('Totals',                                                                    ''),
-                ('VAT Tax Credit',                                                         228.0),
-                ('VAT Payable (Negative: Balance in Favor of the Company)',                -38.0),  # 190-228
-                ('Remaining CF',                                                             0.0),
-                ('Workers\' Tax',                                                            0.0),
-                ('Withholding Fees',                                                         0.0),
-                ('PPM rate (%)',                                                          '0.0%'),
-                ('PPM',                                                                      0.0),
-                ('Total Taxes for the Period (Negative: Balance in Favor of the Company)', -38.0),
+                ('Base Imponible Ventas',                                                 ''),
+                ('Ventas Netas Gravadas IVA',                                         1000.0),
+                ('Ventas Exentas',                                                        ''),
+                ('Factor de Proporción Propuesto (%)',                                    ''),
+                ('Total Ventas',                                                      1000.0),
+                ('Impuestos Originados por la Venta',                                     ''),
+                ('IVA Debito Fiscal',                                                  190.0),  # 19% tax of 1000
+                ('Base Imponible Compras',                                                ''),
+                ('Compras Netas Gravadas IVA Recuperable',                            1200.0),
+                ('Compra Netas Gravadas IVA Uso Comun',                                   ''),
+                ('Compras Iva No Recuperable',                                            ''),
+                ('Compras Supermercado',                                                  ''),
+                ('Compras de Activo Fijo',                                                ''),
+                ('Compras No Gravadas Con Iva',                                           ''),
+                ('Total Neto Compras',                                                1200.0),
+                ('Impuestos Pagados en la Compra',                                        ''),
+                ('IVA Pagado Compras Recuperables',                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado',                                              ''),
+                ('IVA Compras Activo Fijo Destinados a Ventas Exentas',                228.0),  # 19% tax of 3*400
+                ('IVA Compras Activo Fijo Uso Comun',                                     ''),
+                ('IVA Compras Activo Fijo No Recuperables',                               ''),
+                ('Base IVA Credito Fiscal Afectada por FP',                               ''),
+                ('IVA Recuperable',                                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado Uso Comun',                                    ''),
+                ('IVA Compras Activo Fijo Destinados Ventas Exentas',                     ''),
+                ('IVA Compras Activo Fijo Ventas Uso Comun',                              ''),
+                ('IVA Compras Activo Fijo Ventas No Recuperables',                        ''),
+                ('Totales',                                                               ''),
+                ('IVA Credito Fiscal',                                                 228.0),
+                ('IVA a Pagar (Negativo: Saldo a Favor de la Compañía)',               -38.0),  # 190-228
+                ('Remanente de CF',                                                       ''),
+                ('Impuesto a los Trabajadores',                                           ''),
+                ('Retencion Honorarios',                                                  ''),
+                ('Tasa de PPM (%)',                                                       ''),
+                ('PPM',                                                                   ''),
+                ('Total de Impuesto Periodo (Negativo: Saldo a Favor de la Compañía)', -38.0),
             ],
-            options,
         )
 
     @freeze_time('2022-12-31')
@@ -135,48 +134,47 @@ class TestF29Reports(TestAccountReportsCommon):
             report._get_lines(options),
             # pylint: disable=C0326
             #   Line Title                                                              Value
-            [   0,                                                                                1],
+            [   0,                                                                         1],
             [
-                ('Taxable Sales Base',                                                           ''),
-                ('Net Sales Taxed VAT',                                                      1000.0),
-                ('Exempt Sales',                                                                0.0),
-                ('Proposed Ratio Factor (%)',                                               '10.0%'),  # FPP rate
-                ('Total Sales',                                                              1000.0),
-                ('Taxes Paid on Sale',                                                           ''),
-                ('VAT Tax Debit',                                                             190.0),  # 19% tax of 1000
-                ('Tax Base Purchases',                                                           ''),
-                ('Net Taxable Purchases Recoverable VAT',                                    1200.0),
-                ('Net Purchases Taxed VAT Common Use',                                          0.0),
-                ('Purchases Non-recoverable VAT',                                               0.0),
-                ('Supermarket Shopping',                                                        0.0),
-                ('Purchases of fixed assets',                                                   0.0),
-                ('Purchases Not Taxed With VAT',                                                0.0),
-                ('Total Net Purchases',                                                      1200.0),
-                ('Taxes Paid on Purchase',                                                       ''),
-                ('VAT Paid Purchases Recoverable',                                              0.0),
-                ('VAT Common Use',                                                              0.0),
-                ('VAT Shopping Supermarket',                                                    0.0),
-                ('VAT Purchases of Fixed Assets Destined for Exempt Sales',                   228.0),  # 19% tax of 3*400
-                ('VAT Purchases Fixed Assets Common Use',                                       0.0),
-                ('VAT Purchases of Non-recoverable Fixed Assets',                               0.0),
-                ('VAT Base Tax Credit Affected by FP',                                           ''),
-                ('Recoverable VAT',                                                             0.0),
-                ('VAT Common Use',                                                              0.0),
-                ('VAT Purchases Supermarket Common Use',                                        0.0),
-                ('VAT Purchases Fixed Assets Earmarked Sales Exempt Sales',                    23.0),  # FPP rate 10% of 228 (rounded because of currency decimal_places of 0)
-                ('VAT Purchases Fixed Assets Sales Common Use',                                 0.0),
-                ('VAT Purchases Fixed Assets Non Recoverable Sales',                            0.0),
-                ('Totals',                                                                       ''),
-                ('VAT Tax Credit',                                                            228.0),
-                ('VAT Payable (Negative: Balance in Favor of the Company)',                   -38.0),  # 190-228
-                ('Remaining CF',                                                                0.0),
-                ('Workers\' Tax',                                                               0.0),
-                ('Withholding Fees',                                                            0.0),
-                ('PPM rate (%)',                                                            '25.0%'),  # PPM rate
-                ('PPM',                                                                       250.0),  # PPM rate 25% of 1000
-                ('Total Taxes for the Period (Negative: Balance in Favor of the Company)',    212.0),  # 250 - 38
+                ('Base Imponible Ventas',                                                 ''),
+                ('Ventas Netas Gravadas IVA',                                         1000.0),
+                ('Ventas Exentas',                                                        ''),
+                ('Factor de Proporción Propuesto (%)',                                 '10.0%'),  # FPP rate
+                ('Total Ventas',                                                      1000.0),
+                ('Impuestos Originados por la Venta',                                     ''),
+                ('IVA Debito Fiscal',                                                  190.0),  # 19% tax of 1000
+                ('Base Imponible Compras',                                                ''),
+                ('Compras Netas Gravadas IVA Recuperable',                            1200.0),
+                ('Compra Netas Gravadas IVA Uso Comun',                                   ''),
+                ('Compras Iva No Recuperable',                                            ''),
+                ('Compras Supermercado',                                                  ''),
+                ('Compras de Activo Fijo',                                                ''),
+                ('Compras No Gravadas Con Iva',                                           ''),
+                ('Total Neto Compras',                                                1200.0),
+                ('Impuestos Pagados en la Compra',                                        ''),
+                ('IVA Pagado Compras Recuperables',                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado',                                              ''),
+                ('IVA Compras Activo Fijo Destinados a Ventas Exentas',                228.0),  # 19% tax of 3*400
+                ('IVA Compras Activo Fijo Uso Comun',                                     ''),
+                ('IVA Compras Activo Fijo No Recuperables',                               ''),
+                ('Base IVA Credito Fiscal Afectada por FP',                               ''),
+                ('IVA Recuperable',                                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado Uso Comun',                                    ''),
+                ('IVA Compras Activo Fijo Destinados Ventas Exentas',                   23.0),  # FPP rate 10% of 228 (rounded because of currency decimal_places of 0)
+                ('IVA Compras Activo Fijo Ventas Uso Comun',                              ''),
+                ('IVA Compras Activo Fijo Ventas No Recuperables',                        ''),
+                ('Totales',                                                               ''),
+                ('IVA Credito Fiscal',                                                 228.0),
+                ('IVA a Pagar (Negativo: Saldo a Favor de la Compañía)',               -38.0),  # 190-228
+                ('Remanente de CF',                                                       ''),
+                ('Impuesto a los Trabajadores',                                           ''),
+                ('Retencion Honorarios',                                                  ''),
+                ('Tasa de PPM (%)',                                                    '25.0%'),  # PPM rate
+                ('PPM',                                                                250.0),  # PPM rate 25% of 1000
+                ('Total de Impuesto Periodo (Negativo: Saldo a Favor de la Compañía)', 212.0),  # 250 - 38
             ],
-            options,
         )
         fpp_rate.write({'value': 20})
         ppm_rate.write({'value': 30})
@@ -184,46 +182,45 @@ class TestF29Reports(TestAccountReportsCommon):
             report._get_lines(options),
             # pylint: disable=C0326
             #   Line Title                                                              Value
-            [   0,                                                                                   1],
+            [   0,                                                                         1],
             [
-                ('Taxable Sales Base',                                                              ''),
-                ('Net Sales Taxed VAT',                                                         1000.0),
-                ('Exempt Sales',                                                                   0.0),
-                ('Proposed Ratio Factor (%)',                                                  '20.0%'),  # FPP rate
-                ('Total Sales',                                                                 1000.0),
-                ('Taxes Paid on Sale',                                                              ''),
-                ('VAT Tax Debit',                                                                190.0),  # 19% tax of 1000
-                ('Tax Base Purchases',                                                              ''),
-                ('Net Taxable Purchases Recoverable VAT',                                       1200.0),
-                ('Net Purchases Taxed VAT Common Use',                                             0.0),
-                ('Purchases Non-recoverable VAT',                                                  0.0),
-                ('Supermarket Shopping',                                                           0.0),
-                ('Purchases of fixed assets',                                                      0.0),
-                ('Purchases Not Taxed With VAT',                                                   0.0),
-                ('Total Net Purchases',                                                         1200.0),
-                ('Taxes Paid on Purchase',                                                          ''),
-                ('VAT Paid Purchases Recoverable',                                                 0.0),
-                ('VAT Common Use',                                                                 0.0),
-                ('VAT Shopping Supermarket',                                                       0.0),
-                ('VAT Purchases of Fixed Assets Destined for Exempt Sales',                      228.0),  # 19% tax of 3*400
-                ('VAT Purchases Fixed Assets Common Use',                                          0.0),
-                ('VAT Purchases of Non-recoverable Fixed Assets',                                  0.0),
-                ('VAT Base Tax Credit Affected by FP',                                              ''),
-                ('Recoverable VAT',                                                                0.0),
-                ('VAT Common Use',                                                                 0.0),
-                ('VAT Purchases Supermarket Common Use',                                           0.0),
-                ('VAT Purchases Fixed Assets Earmarked Sales Exempt Sales',                       46.0),  # FPP rate 20% of 228 (rounded because of currency decimal_places of 0)
-                ('VAT Purchases Fixed Assets Sales Common Use',                                    0.0),
-                ('VAT Purchases Fixed Assets Non Recoverable Sales',                               0.0),
-                ('Totals',                                                                          ''),
-                ('VAT Tax Credit',                                                               228.0),
-                ('VAT Payable (Negative: Balance in Favor of the Company)',                      -38.0),  # 190-228
-                ('Remaining CF',                                                                   0.0),
-                ('Workers\' Tax',                                                                  0.0),
-                ('Withholding Fees',                                                               0.0),
-                ('PPM rate (%)',                                                               '30.0%'),  # PPM rate
-                ('PPM',                                                                          300.0),  # PPM rate 30% of 1000
-                ('Total Taxes for the Period (Negative: Balance in Favor of the Company)',       262.0),  # 300 - 38
+                ('Base Imponible Ventas',                                                 ''),
+                ('Ventas Netas Gravadas IVA',                                         1000.0),
+                ('Ventas Exentas',                                                        ''),
+                ('Factor de Proporción Propuesto (%)',                                 '20.0%'),  # FPP rate
+                ('Total Ventas',                                                      1000.0),
+                ('Impuestos Originados por la Venta',                                     ''),
+                ('IVA Debito Fiscal',                                                  190.0),  # 19% tax of 1000
+                ('Base Imponible Compras',                                                ''),
+                ('Compras Netas Gravadas IVA Recuperable',                            1200.0),
+                ('Compra Netas Gravadas IVA Uso Comun',                                   ''),
+                ('Compras Iva No Recuperable',                                            ''),
+                ('Compras Supermercado',                                                  ''),
+                ('Compras de Activo Fijo',                                                ''),
+                ('Compras No Gravadas Con Iva',                                           ''),
+                ('Total Neto Compras',                                                1200.0),
+                ('Impuestos Pagados en la Compra',                                        ''),
+                ('IVA Pagado Compras Recuperables',                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado',                                              ''),
+                ('IVA Compras Activo Fijo Destinados a Ventas Exentas',                228.0),  # 19% tax of 3*400
+                ('IVA Compras Activo Fijo Uso Comun',                                     ''),
+                ('IVA Compras Activo Fijo No Recuperables',                               ''),
+                ('Base IVA Credito Fiscal Afectada por FP',                               ''),
+                ('IVA Recuperable',                                                       ''),
+                ('IVA Uso Comun',                                                         ''),
+                ('IVA Compras Supermercado Uso Comun',                                    ''),
+                ('IVA Compras Activo Fijo Destinados Ventas Exentas',                   46.0),  # FPP rate 20% of 228 (rounded because of currency decimal_places of 0)
+                ('IVA Compras Activo Fijo Ventas Uso Comun',                              ''),
+                ('IVA Compras Activo Fijo Ventas No Recuperables',                        ''),
+                ('Totales',                                                               ''),
+                ('IVA Credito Fiscal',                                                 228.0),
+                ('IVA a Pagar (Negativo: Saldo a Favor de la Compañía)',               -38.0),  # 190-228
+                ('Remanente de CF',                                                       ''),
+                ('Impuesto a los Trabajadores',                                           ''),
+                ('Retencion Honorarios',                                                  ''),
+                ('Tasa de PPM (%)',                                                    '30.0%'),  # PPM rate
+                ('PPM',                                                                300.0),  # PPM rate 30% of 1000
+                ('Total de Impuesto Periodo (Negativo: Saldo a Favor de la Compañía)', 262.0),  # 300 - 38
             ],
-            options,
         )

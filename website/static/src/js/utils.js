@@ -1,11 +1,9 @@
-/** @odoo-module **/
+odoo.define('website.utils', function (require) {
+'use strict';
 
-import { intersection } from "@web/core/utils/arrays";
-import { _t } from "@web/core/l10n/translation";
-import { renderToElement } from "@web/core/utils/render";
-import { App, Component } from "@odoo/owl";
-import { templates } from "@web/core/assets";
-import { UrlAutoComplete } from "@website/components/autocomplete_with_pages/url_autocomplete";
+var core = require('web.core');
+
+const { qweb, _t } = core;
 
 /**
  * Allows to load anchors from a page.
@@ -24,20 +22,9 @@ function loadAnchors(url, body) {
             resolve();
         }
     }).then(function (response) {
-        const anchors = $(response).find('[id][data-anchor=true], .modal[id][data-display="onClick"]').toArray().map((el) => {
+        return _.map($(response).find('[id][data-anchor=true]'), function (el) {
             return '#' + el.id;
         });
-        // Always suggest the top and the bottom of the page as internal link
-        // anchor even if the header and the footer are not in the DOM. Indeed,
-        // the "scrollTo" function handles the scroll towards those elements
-        // even when they are not in the DOM.
-        if (!anchors.includes('#top')) {
-            anchors.unshift('#top');
-        }
-        if (!anchors.includes('#bottom')) {
-            anchors.push('#bottom');
-        }
-        return anchors;
     }).catch(error => {
         console.debug(error);
         return [];
@@ -47,30 +34,77 @@ function loadAnchors(url, body) {
 /**
  * Allows the given input to propose existing website URLs.
  *
- * @param {HTMLInputElement} input
+ * @param {ServicesMixin|Widget} self - an element capable to trigger an RPC
+ * @param {jQuery} $input
  */
-function autocompleteWithPages(input, options= {}) {
-    const owlApp = new App(UrlAutoComplete, {
-        env: Component.env,
-        dev: Component.env.debug,
-        templates,
-        props: {
-            options,
-            loadAnchors,
-            targetDropdown: input,
+function autocompleteWithPages(self, $input, options) {
+    $.widget("website.urlcomplete", $.ui.autocomplete, {
+        options: options || {},
+        _create: function () {
+            this._super();
+            this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
         },
-        translatableAttributes: ["data-tooltip"],
-        translateFn: _t,
+        _renderMenu: function (ul, items) {
+            const self = this;
+            items.forEach(item => {
+                if (item.separator) {
+                    self._renderSeparator(ul, item);
+                }
+                else {
+                    self._renderItem(ul, item);
+                }
+            });
+        },
+        _renderSeparator: function (ul, item) {
+            return $("<li class='ui-autocomplete-category fw-bold text-capitalize p-2'>")
+                   .append(`<div>${item.separator}</div>`)
+                   .appendTo(ul);
+        },
+        _renderItem: function (ul, item) {
+            return $("<li>")
+                   .data('ui-autocomplete-item', item)
+                   .append(`<div>${item.label}</div>`)
+                   .appendTo(ul);
+        },
     });
-
-    const container = document.createElement("div");
-    container.classList.add("ui-widget", "ui-autocomplete", "ui-widget-content", "border-0");
-    document.body.appendChild(container);
-    owlApp.mount(container)
-    return () => {
-        owlApp.destroy();
-        container.remove();
-    }
+    $input.urlcomplete({
+        source: function (request, response) {
+            if (request.term[0] === '#') {
+                loadAnchors(request.term, options && options.body).then(function (anchors) {
+                    response(anchors);
+                });
+            } else if (request.term.startsWith('http') || request.term.length === 0) {
+                // avoid useless call to /website/get_suggested_links
+                response();
+            } else {
+                return self._rpc({
+                    route: '/website/get_suggested_links',
+                    params: {
+                        needle: request.term,
+                        limit: 15,
+                    }
+                }).then(function (res) {
+                    let choices = res.matching_pages;
+                    res.others.forEach(other => {
+                        if (other.values.length) {
+                            choices = choices.concat(
+                                [{separator: other.title}],
+                                other.values,
+                            );
+                        }
+                    });
+                    response(choices);
+                });
+            }
+        },
+        select: function (ev, ui) {
+            // choose url in dropdown with arrow change ev.target.value without trigger_up
+            // so cannot check here if value has been updated
+            ev.target.value = ui.item.value;
+            self.trigger_up('website_url_chosen');
+            ev.preventDefault();
+        },
+    });
 }
 
 /**
@@ -78,7 +112,7 @@ function autocompleteWithPages(input, options= {}) {
  * @param {jQuery} [$excluded]
  */
 function onceAllImagesLoaded($element, $excluded) {
-    var defs = Array.from($element.find("img").addBack("img")).map((img) => {
+    var defs = _.map($element.find('img').addBack('img'), function (img) {
         if (img.complete || $excluded && ($excluded.is(img) || $excluded.has(img).length)) {
             return; // Already loaded
         }
@@ -104,7 +138,7 @@ function prompt(options, _qweb) {
      *
      * Usage Ex:
      *
-     * website.prompt("What... is your quest?").then(function (answer) {
+     * website.prompt("What... is your quest ?").then(function (answer) {
      *     arthur.reply(answer || "To seek the Holy Grail.");
      * });
      *
@@ -130,10 +164,10 @@ function prompt(options, _qweb) {
             text: options
         };
     }
-    if (typeof _qweb === "undefined") {
+    if (_.isUndefined(_qweb)) {
         _qweb = 'website.prompt';
     }
-    options = Object.assign({
+    options = _.extend({
         window_title: '',
         field_name: '',
         'default': '', // dict notation for IE<9
@@ -142,13 +176,13 @@ function prompt(options, _qweb) {
         btn_secondary_title: _t('Cancel'),
     }, options || {});
 
-    var type = intersection(Object.keys(options), ['input', 'textarea', 'select']);
+    var type = _.intersection(Object.keys(options), ['input', 'textarea', 'select']);
     type = type.length ? type[0] : 'input';
     options.field_type = type;
     options.field_name = options.field_name || options[type];
 
     var def = new Promise(function (resolve, reject) {
-        var dialog = $(renderToElement(_qweb, options)).appendTo('body');
+        var dialog = $(qweb.render(_qweb, options)).appendTo('body');
         options.$dialog = dialog;
         var field = dialog.find(options.field_type).first();
         field.val(options['default']); // dict notation for IE<9
@@ -184,7 +218,7 @@ function prompt(options, _qweb) {
         });
         if (field.is('input[type="text"], select')) {
             field.keypress(function (e) {
-                if (e.key === "Enter") {
+                if (e.which === 13) {
                     e.preventDefault();
                     dialog.find('.btn-primary').trigger('click');
                 }
@@ -205,28 +239,6 @@ function websiteDomain(self) {
     return ['|', ['website_id', '=', false], ['website_id', '=', websiteID]];
 }
 
-/**
- * Checks if the 2 given URLs are the same, to prevent redirecting uselessly
- * from one to another.
- * It will consider naked URL and `www` URL as the same URL.
- * It will consider `https` URL `http` URL as the same URL.
- *
- * @param {string} url1
- * @param {string} url2
- * @returns {Boolean}
- */
-function isHTTPSorNakedDomainRedirection(url1, url2) {
-    try {
-        url1 = new URL(url1).host;
-        url2 = new URL(url2).host;
-    } catch {
-        // Incorrect URL, `false` URL..
-        return false;
-    }
-    return url1 === url2 ||
-           url1.replace(/^www\./, '') === url2.replace(/^www\./, '');
-}
-
 function sendRequest(route, params) {
     function _addInput(form, name, value) {
         let param = document.createElement('input');
@@ -239,14 +251,13 @@ function sendRequest(route, params) {
     let form = document.createElement('form');
     form.setAttribute('action', route);
     form.setAttribute('method', params.method || 'POST');
-    // This is an exception for the 404 page create page button, in backend we
-    // want to open the response in the top window not in the iframe.
-    if (params.forceTopWindow) {
+    const isInIframe = window.frameElement && window.frameElement.classList.contains('o_iframe');
+    if (isInIframe) {
         form.setAttribute('target', '_top');
     }
 
-    if (odoo.csrf_token) {
-        _addInput(form, 'csrf_token', odoo.csrf_token);
+    if (core.csrf_token) {
+        _addInput(form, 'csrf_token', core.csrf_token);
     }
 
     for (const key in params) {
@@ -272,7 +283,7 @@ function sendRequest(route, params) {
  *      efficient in that second case.
  * @returns {Promise<string>} a base64 PNG (as result of a Promise)
  */
-export async function svgToPNG(src) {
+async function svgToPNG(src) {
     function checkImg(imgEl) {
         // Firefox does not support drawing SVG to canvas unless it has width
         // and height attributes set on the root <svg>.
@@ -345,7 +356,7 @@ export async function svgToPNG(src) {
  *
  * @returns {HTMLIframeElement}
  */
-export function generateGMapIframe() {
+function generateGMapIframe() {
     const iframeEl = document.createElement('iframe');
     iframeEl.classList.add('s_map_embedded', 'o_not_editable');
     iframeEl.setAttribute('width', '100%');
@@ -364,40 +375,22 @@ export function generateGMapIframe() {
  * @param {DOMStringMap} dataset
  * @returns {string} a Google Maps URL
  */
-export function generateGMapLink(dataset) {
+function generateGMapLink(dataset) {
     return 'https://maps.google.com/maps?q=' + encodeURIComponent(dataset.mapAddress)
         + '&t=' + encodeURIComponent(dataset.mapType)
         + '&z=' + encodeURIComponent(dataset.mapZoom)
         + '&ie=UTF8&iwloc=&output=embed';
 }
 
-/**
- * Checks if the edited content is currently previewed as in a mobile device.
- *
- * @param {Object} self - context object ("this")
- * @returns {boolean}
- */
-function isMobile(self) {
-    let isMobile;
-    self.trigger_up("service_context_get", {
-        callback: (ctx) => {
-            isMobile = ctx["isMobile"];
-        },
-    });
-
-    return isMobile;
-}
-
-export default {
+return {
     loadAnchors: loadAnchors,
     autocompleteWithPages: autocompleteWithPages,
     onceAllImagesLoaded: onceAllImagesLoaded,
     prompt: prompt,
     sendRequest: sendRequest,
     websiteDomain: websiteDomain,
-    isHTTPSorNakedDomainRedirection: isHTTPSorNakedDomainRedirection,
     svgToPNG: svgToPNG,
     generateGMapIframe: generateGMapIframe,
     generateGMapLink: generateGMapLink,
-    isMobile: isMobile,
 };
+});

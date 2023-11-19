@@ -7,7 +7,7 @@
     'sequence': 316,
     'version': '1.0',
     'application': True,
-    'depends': ['stock_delivery', 'mail'],
+    'depends': ['delivery', 'mail'],
     'data': [
         'security/ir.model.access.csv',
         'data/message_templates.xml',
@@ -15,11 +15,5 @@
         'views/res_config_settings_views.xml',
         'wizard/sendcloud_shipping_wizard.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'delivery_sendcloud/static/src/**/*.js',
-            'delivery_sendcloud/static/src/**/*.xml',
-        ],
-    },
     'license': 'OEEL-1',
 }

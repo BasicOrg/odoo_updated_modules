@@ -38,13 +38,6 @@ class SocialStreamPostInstagram(models.Model):
         for post in instagram_posts:
             post.author_link = 'https://www.instagram.com/%s' % url_quote(post.author_name)
 
-    def _compute_is_author(self):
-        instagram_posts = self._filter_by_media_types(['instagram'])
-        super(SocialStreamPostInstagram, (self - instagram_posts))._compute_is_author()
-
-        for post in instagram_posts:
-            post.is_author = post.instagram_facebook_author_id == post.account_id.instagram_facebook_account_id
-
     # ========================================================
     # COMMENTS / LIKES
     # ========================================================

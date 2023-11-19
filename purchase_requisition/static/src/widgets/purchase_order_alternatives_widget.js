@@ -2,13 +2,13 @@
 
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { X2ManyField, x2ManyField } from "@web/views/fields/x2many/x2many_field";
+import { X2ManyField } from "@web/views/fields/x2many/x2many_field";
 import { ListRenderer } from "@web/views/list/list_renderer";
 
 
 export class FieldMany2ManyAltPOsRenderer extends ListRenderer {
    isCurrentRecord(record) {
-      return record.resId === this.props.list.model.root.resId;
+      return record.data.id === this.env.model.root.data.id;
   }
 }
 
@@ -16,13 +16,11 @@ FieldMany2ManyAltPOsRenderer.recordRowTemplate = "purchase_requisition.AltPOsLis
 
 export class FieldMany2ManyAltPOs extends X2ManyField {
    setup() {
-      super.setup();
       this.orm = useService("orm");
       this.action = useService("action");
-   }
-
-   get isMany2Many() {
-      return true;
+      // TODO: this is a terrible hack, make this a proper extension of many2many if/when possible
+      this.props.record.activeFields[this.props.name].widget = "many2many";
+      super.setup();
    }
 
    /**
@@ -31,8 +29,8 @@ export class FieldMany2ManyAltPOs extends X2ManyField {
     * @override
     */
    async openRecord(record) {
-      if (record.resId !== this.props.record.resId) {
-         const action = await this.orm.call(record.resModel, "get_formview_action", [[record.resId]], {
+      if (record.data.id !== this.props.record.data.id) {
+         const action = await this.orm.call(record.resModel, "get_formview_action", [[record.data.id]], {
                context: this.props.context,
          });
          await this.action.doAction(action);
@@ -45,9 +43,4 @@ FieldMany2ManyAltPOs.components = {
    ListRenderer: FieldMany2ManyAltPOsRenderer,
 };
 
-export const fieldMany2ManyAltPOs = {
-    ...x2ManyField,
-    component: FieldMany2ManyAltPOs,
-};
-
-registry.category("fields").add("many2many_alt_pos", fieldMany2ManyAltPOs);
+registry.category("fields").add("many2many_alt_pos", FieldMany2ManyAltPOs);

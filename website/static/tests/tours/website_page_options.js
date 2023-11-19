@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 wTourUtils.registerWebsitePreviewTour('website_page_options', {
     test: true,
     url: '/',
     edition: true,
-}, () => [
+}, [
     wTourUtils.clickOnSnippet({id: 'o_header_standard', name: 'Header'}),
     wTourUtils.changeOption('TopMenuVisibility', 'we-select:has([data-visibility]) we-toggler'),
     wTourUtils.changeOption('TopMenuVisibility', 'we-button[data-visibility="transparent"]'),
@@ -19,7 +19,7 @@ wTourUtils.registerWebsitePreviewTour('website_page_options', {
         trigger: 'iframe #wrapwrap.o_header_overlay',
         run: () => null, // it's a check
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
     wTourUtils.clickOnSnippet({id: 'o_header_standard', name: 'Header'}),
     wTourUtils.changeOption('topMenuColor', 'we-select.o_we_so_color_palette'),
     wTourUtils.changeOption('topMenuColor', 'button[data-color="black-50"]', 'background color', 'bottom', true),
@@ -29,7 +29,7 @@ wTourUtils.registerWebsitePreviewTour('website_page_options', {
         trigger: 'iframe header#top.bg-black-50',
         run: () => null, // it's a check
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
     wTourUtils.clickOnSnippet({id: 'o_header_standard', name: 'Header'}),
     wTourUtils.changeOption('TopMenuVisibility', 'we-select:has([data-visibility]) we-toggler'),
     wTourUtils.changeOption('TopMenuVisibility', 'we-button[data-visibility="hidden"]'),
@@ -39,9 +39,10 @@ wTourUtils.registerWebsitePreviewTour('website_page_options', {
         trigger: 'iframe #wrapwrap:has(header#top.d-none.o_snippet_invisible)',
         run: () => null, // it's a check
     },
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
     {
         content: "Click on 'header' in the invisible elements list",
+        extra_trigger: '#oe_snippets.o_loaded',
         trigger: '.o_we_invisible_el_panel .o_we_invisible_entry',
     },
     wTourUtils.clickOnSnippet({id: 'o_footer', name: 'Footer'}),

@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { _t } from "@web/core/l10n/translation";
+import { sprintf } from "@web/core/utils/strings";
 
 export class Policy {
     /**
@@ -26,38 +27,36 @@ export class ConcretePolicy extends Policy {
     toString() {
         const msgs = [];
         if (this.minlength > 1) {
-            msgs.push(_t("at least %s characters", this.minlength));
+            msgs.push(sprintf(_t("at least %s characters"), this.minlength));
         }
         if (this.minwords > 1) {
-            msgs.push(_t("at least %s words", this.minwords));
+            msgs.push(sprintf(_t("at least %s words"), this.minwords));
         }
         if (this.minclasses > 1) {
-            msgs.push(_t("at least %s character classes", this.minclasses));
+            msgs.push(sprintf(_t("at least %s character classes"), this.minclasses));
         }
         return msgs.join(", ");
     }
 
     score(password) {
-        if (!password) {
-            return 0;
-        }
         const lengthscore = Math.min(password.length / this.minlength, 1.0);
         // we want the number of "words". Splitting on no-words doesn't work
         // because JS will add an empty string when matching a leading or
         // trailing pattern e.g. " foo ".split(/\W+/) will return ['', 'foo', '']
         // by splitting on the words, we should always get wordscount + 1
-
-        // \w includes _ which we don't want, so combine \W and _ then
-        // invert it to know what "word" is
-        //
-        // Sadly JS is absolute garbage, so this splitting is basically
-        // solely ascii-based unless we want to include cset
-        // (http://inimino.org/~inimino/blog/javascript_cset) which can
-        // generate non-trivial character-class-set-based regex patterns
-        // for us. We could generate the regex statically but they're huge
-        // and gnarly as hell.
-        const wordCount = password.split(/[^\W_]+/).length - 1;
-        const wordscore = this.minwords !== 0 ? Math.min(wordCount / this.minwords, 1.0) : 1.0;
+        const wordscore = Math.min(
+            // \w includes _ which we don't want, so combine \W and _ then
+            // invert it to know what "word" is
+            //
+            // Sadly JS is absolute garbage, so this splitting is basically
+            // solely ascii-based unless we want to include cset
+            // (http://inimino.org/~inimino/blog/javascript_cset) which can
+            // generate non-trivial character-class-set-based regex patterns
+            // for us. We could generate the regex statically but they're huge
+            // and gnarly as hell.
+            (password.split(/[^\W_]+/).length - 1) / this.minwords,
+            1.0
+        );
         // See above for issues pertaining to character classification:
         // we'll classify using the ascii range because that's basically our
         // only option

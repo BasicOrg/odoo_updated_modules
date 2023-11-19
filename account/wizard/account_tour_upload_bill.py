@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models, _, Command, tools
+from odoo import fields, models, _, Command
 import base64
 from datetime import timedelta
 
@@ -47,16 +47,12 @@ class AccountTourUploadBill(models.TransientModel):
             record.preview_invoice = html
 
     def _selection_values(self):
-        journal_alias = self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(self.env.company),
-            ('type', '=', 'purchase'),
-        ], limit=1)
+        journal_alias = self.env['account.journal'] \
+            .search([('type', '=', 'purchase'), ('company_id', '=', self.env.company.id)], limit=1)
 
         values = [('sample', _('Try a sample vendor bill')), ('upload', _('Upload your own bill'))]
         if journal_alias.alias_name and journal_alias.alias_domain:
-            values.append(('email', _('Send a bill to \n%s@%s', journal_alias.alias_name, journal_alias.alias_domain)))
-        else:
-            values.append(('email_no_alias', _('Send a bill by email')))
+            values.append(('email', _('Or send a bill to %s@%s', journal_alias.alias_name, journal_alias.alias_domain)))
         return values
 
     def _action_list_view_bill(self, bill_ids=[]):
@@ -81,7 +77,16 @@ class AccountTourUploadBill(models.TransientModel):
         if self.selection == 'upload':
             return purchase_journal.with_context(default_journal_id=purchase_journal.id, default_move_type='in_invoice').create_document_from_attachment(attachment_ids=self.attachment_ids.ids)
         elif self.selection == 'sample':
+            bodies = self.env['ir.actions.report']._prepare_html(self.preview_invoice)[0]
+            sample_pdf = self.env['ir.actions.report']._run_wkhtmltopdf(bodies)
+
             invoice_date = fields.Date.today() - timedelta(days=12)
+            attachment = self.env['ir.attachment'].create({
+                'type': 'binary',
+                'name': 'INV-%s-0001.pdf' % invoice_date.strftime('%Y-%m'),
+                'res_model': 'mail.compose.message',
+                'datas': base64.encodebytes(sample_pdf),
+            })
             partner = self.env['res.partner'].search([('name', '=', 'Deco Addict')], limit=1)
             if not partner:
                 partner = self.env['res.partner'].create({
@@ -108,26 +113,11 @@ class AccountTourUploadBill(models.TransientModel):
                     })
                 ],
             })
-            # In case of test environment, don't create the pdf
-            if tools.config['test_enable'] or tools.config['test_file']:
-                bill.with_context(no_new_invoice=True).message_post()
-            else:
-                bodies = self.env['ir.actions.report']._prepare_html(self.preview_invoice)[0]
-                content = self.env['ir.actions.report']._run_wkhtmltopdf(bodies)
-                attachment = self.env['ir.attachment'].create({
-                    'type': 'binary',
-                    'name': 'INV-%s-0001.pdf' % invoice_date.strftime('%Y-%m'),
-                    'res_model': 'mail.compose.message',
-                    'datas': base64.encodebytes(content),
-                })
-                bill.with_context(no_new_invoice=True).message_post(attachment_ids=[attachment.id])
+            bill.with_context(no_new_invoice=True).message_post(attachment_ids=[attachment.id])
 
             return self._action_list_view_bill(bill.ids)
         else:
-            if self.selection == 'email':
-                email_alias = '%s@%s' % (purchase_journal.alias_name, purchase_journal.alias_domain)
-            else:
-                email_alias = ''
+            email_alias = '%s@%s' % (purchase_journal.alias_name, purchase_journal.alias_domain)
             new_wizard = self.env['account.tour.upload.bill.email.confirm'].create({'email_alias': email_alias})
             view_id = self.env.ref('account.account_tour_upload_bill_email_confirm').id
 

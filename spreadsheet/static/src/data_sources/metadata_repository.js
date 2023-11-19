@@ -5,10 +5,8 @@ import { sprintf } from "@web/core/utils/strings";
 import { ServerData } from "../data_sources/server_data";
 
 import { LoadingDataError } from "../o_spreadsheet/errors";
-import { DisplayNameRepository } from "./display_name_repository";
-import { LabelsRepository } from "./labels_repository";
 
-import { EventBus } from "@odoo/owl";
+const { EventBus } = owl;
 
 /**
  * @typedef {object} Field
@@ -30,28 +28,29 @@ import { EventBus } from "@odoo/owl";
  * for different entities that are defined on the same model.
  *
  * Implementation note:
- * For the labels, when someone is asking for a display name which is not loaded yet,
- * the proxy returns directly (undefined) and a request to read display_name will
+ * For the labels, when someone is asking for a label which is not loaded yet,
+ * the proxy returns directly (undefined) and a request for a name_get will
  * be triggered. All the requests created are batched and send, with only one
  * request per model, after a clock cycle.
  * At the end of this process, an event is triggered (labels-fetched)
  */
 export class MetadataRepository extends EventBus {
-    /**
-     * @param {import("@web/env").OdooEnv} env
-     */
-    constructor(env) {
+    constructor(orm) {
         super();
-        this.orm = env.services.orm.silent;
-        this.nameService = env.services.name;
+        this.orm = orm.silent;
+        /**
+         * Contains the labels of records. It's organized in the following way:
+         * {
+         *     "crm.lead": {
+         *         "city": {
+         *             "bruxelles": "Bruxelles",
+         *         }
+         *     },
+         * }
+         */
+        this._labels = {};
 
         this.serverData = new ServerData(this.orm, {
-            whenDataIsFetched: () => this.trigger("labels-fetched"),
-        });
-
-        this.labelsRepository = new LabelsRepository();
-
-        this.displayNameRepository = new DisplayNameRepository(env, {
             whenDataIsFetched: () => this.trigger("labels-fetched"),
         });
     }
@@ -86,7 +85,13 @@ export class MetadataRepository extends EventBus {
      * @param {string} label
      */
     registerLabel(model, field, value, label) {
-        this.labelsRepository.setLabel(model, field, value, label);
+        if (!this._labels[model]) {
+            this._labels[model] = {};
+        }
+        if (!this._labels[model][field]) {
+            this._labels[model][field] = {};
+        }
+        this._labels[model][field][value] = label;
     }
 
     /**
@@ -98,14 +103,9 @@ export class MetadataRepository extends EventBus {
      * @returns {string}
      */
     getLabel(model, field, value) {
-        return this.labelsRepository.getLabel(model, field, value);
-    }
-
-    /**
-     * Save the result of display_name read request in the cache
-     */
-    setDisplayName(model, id, result) {
-        this.displayNameRepository.setDisplayName(model, id, result);
+        return (
+            this._labels[model] && this._labels[model][field] && this._labels[model][field][value]
+        );
     }
 
     /**
@@ -119,7 +119,8 @@ export class MetadataRepository extends EventBus {
      */
     getRecordDisplayName(model, id) {
         try {
-            return this.displayNameRepository.getDisplayName(model, id);
+            const result = this.serverData.batch.get(model, "name_get", id);
+            return result[1];
         } catch (e) {
             if (e instanceof LoadingDataError) {
                 throw e;

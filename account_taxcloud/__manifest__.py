@@ -17,5 +17,5 @@ Computes the sales tax automatically using TaxCloud and the customer's address i
         'data/account_taxcloud_data.xml',
     ],
     'license': 'OEEL-1',
-    'pre_init_hook': 'pre_init_hook',
+    'auto_install': True
 }

@@ -24,7 +24,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
     _inherit = 'account.report.custom.handler'
     _description = 'Australian Report Custom Handler'
 
-    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
+    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals):
         # dict of the form {partner_id: {column_group_key: {expression_label: value}}}
         partner_info_dict = {}
 
@@ -51,7 +51,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
             column_group_total['tax_withheld'] += result['tax_withheld']
 
         # Create lines
-        report = self.env['account.report'].browse(options['report_id'])
+        report = self.env['account.report']
         lines = []
         company_currency = self.env.company.currency_id
         for partner_id, partner_info in partner_info_dict.items():
@@ -59,12 +59,13 @@ class AustralianReportCustomHandler(models.AbstractModel):
             for column in options['columns']:
                 expression_label = column['expression_label']
                 value = partner_info.get(column['column_group_key'], {}).get(expression_label, False)
-                columns.append(report._build_column_dict(
-                    value,
-                    column,
-                    options=options,
-                    currency=company_currency,
-                ))
+                columns.append({
+                    'name': report.format_value(
+                        value, company_currency, figure_type=column['figure_type']
+                    ) if column['figure_type'] == 'monetary' else value,
+                    'no_format': value,
+                    'class': column['figure_type'],
+                })
             line = {
                 'id': report._get_generic_line_id('res.partner', partner_id),
                 'caret_options': 'res.partner',
@@ -80,11 +81,11 @@ class AustralianReportCustomHandler(models.AbstractModel):
             for column in options['columns']:
                 expression_label = column['expression_label']
                 value = total_values_dict.get(column['column_group_key'], {}).get(expression_label, False)
-                total_columns.append(report._build_column_dict(
-                    value if value else None,
-                    column,
-                    options=options,
-                ))
+                total_columns.append({
+                    'name': report.format_value(value, figure_type=column['figure_type']) if value else None,
+                    'no_format': value,
+                    'class': 'number',
+                })
             total_line = {
                 'id': report._get_generic_line_id(None, None, markup='total'),
                 'name': _('Total'),
@@ -107,7 +108,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
     def _custom_options_initializer(self, report, options, previous_options=None):
         super()._custom_options_initializer(report, options, previous_options=previous_options)
         options['buttons'] += [{
-            'name': _('TPAR'), 'sequence': 30, 'action': 'export_file', 'action_param': 'get_txt', 'file_export_type': _('TPAR')
+            'name': _('TPAR'), 'sequence': 30, 'action': 'export_file', 'action_param': '_get_txt', 'file_export_type': _('TPAR')
         }]
 
     def _build_query(self, options, column_group_key=None):
@@ -121,7 +122,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
             SELECT
                 %s AS column_group_key,
                 payee.id as id,
-                payee.vat as abn,
+                payee.vat as vat,
                 payee.name as name,
                 payee.name as commercial_partner_name,
                 payee.street as street,
@@ -196,10 +197,9 @@ class AustralianReportCustomHandler(models.AbstractModel):
 
         return results
 
-    def get_txt(self, options):
-        report = self.env['account.report'].browse(options['report_id'])
+    def _get_txt(self, options):
         sender_data = {
-            'vat': report.get_vat_for_export(options),
+            'vat': self.env['account.report'].get_vat_for_export(options),
             'name': self.env.company.name,
             'commercial_partner_name': self.env.company.name,
             'street': self.env.company.street,
@@ -221,11 +221,11 @@ class AustralianReportCustomHandler(models.AbstractModel):
         for line in lines:
             if len(line) != 996:
                 raise UserError(_('There was an error while writing the file (line length not 996).'
-                                  '\nPlease contact the support.\n\n%s', line))
+                                  '\nPlease contact the support.\n\n%s') % line)
         file_content = ''.join(lines)
 
         return {
-            'file_name': report.get_default_report_filename(options, 'txt'),
+            'file_name': self.env['account.report'].get_default_report_filename('txt'),
             'file_content': file_content,
             'file_type': 'txt',
         }
@@ -372,7 +372,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
             errors += self._validate_abn(data['vat'])
 
         if errors:
-            raise UserError('\n'.join(errors + ['', _('While processing %s', data['name'])]))
+            raise UserError('\n'.join(errors + ['', _('While processing %s') % data['name']]))
 
         data['email'] = data['email'] or ''
 
@@ -392,7 +392,7 @@ class AustralianReportCustomHandler(models.AbstractModel):
         partner = self.env['res.partner'].browse(record_id)
         tags = self.env.ref('l10n_au.service_tag') + self.env.ref('l10n_au.tax_withheld_tag')
         return {
-            'name': _('TPAR invoices of %s', partner.display_name),
+            'name': _('TPAR invoices of %s') % partner.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'account.move',
             'view_mode': 'tree,form',

@@ -27,16 +27,16 @@
                         </div>
                         <group>
                             <group>
-                                <field name="chart_id" invisible="context.get('default_chart_id', False)"
-                                       options="{'no_quick_create': True}"/>
+                                <field name="chart_id" invisible="context.get('default_chart_id', False)"/>
                                 <field name="show_on_dashboard"/>
                                 <field name="invert_sign"/>
                                 <field name="sign" invisible="1"/>
                             </group>
                             <group>
-                                <field name="parent_id" invisible="not chart_id"
-                                       domain="[('chart_id', '=', chart_id), ('id', '!=', id)]"
-                                       context="{'default_chart_id': chart_id, 'from_section': True}"/>
+                                <field name="parent_id" attrs="{'invisible': [('chart_id', '=', False)]}"
+                                       domain="[('chart_id', '=', chart_id), ('id', '!=', active_id)]"
+                                       context="{'default_chart_id': chart_id, 'from_section': True}"
+                                />
                                 <field name="sequence" groups="base.group_no_one"/>
                             </group>
                         </group>
@@ -44,7 +44,7 @@
                             <page string="Consolidation Accounts" name="accounts" invisible="context.get('from_account', False)">
                                 <field name="account_ids" domain="[('chart_id', '=', chart_id)]"
                                        widget="many2many"
-                                       context="{'default_chart_id':chart_id, 'default_group_id': id}">
+                                       context="{'default_chart_id':chart_id, 'default_group_id': active_id}">
                                     <tree string="Consolidation Account">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>

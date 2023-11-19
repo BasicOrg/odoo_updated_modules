@@ -274,13 +274,13 @@ class HrContract(models.Model):
 
         if foreigner and not all(self.employee_id[field] for field in ['birthday', 'place_of_birth', 'country_of_birth', 'country_id', 'gender']):
             raise UserError(_("Foreigner employees should provide their name, birthdate, birth place, birth country, nationality and the gender"))
-        if foreigner and not all(self.employee_id[f'private_{field}'] for field in ['street', 'zip', 'city', 'country_id']):
+        if foreigner and not all(self.employee_id.address_home_id[field] for field in ['street', 'zip', 'city', 'country_id']):
             raise UserError(_("Foreigner employees should provide a complete address (street, number, zip, city, country"))
-        if not foreigner and self.employee_id.private_zip not in ONSS_VALID_ZIPS:
+        if not foreigner and self.employee_id.address_home_id.zip not in ONSS_VALID_ZIPS:
             raise UserError(_("The employee zip does not exist."))
 
-        if self.employee_id.private_street:
-            street_digits = re.findall(r"[0-9]+", self.employee_id.private_street)
+        if self.employee_id.address_home_id.street:
+            street_digits = re.findall(r"[0-9]+", self.employee_id.address_home_id.street)
             if not street_digits:
                 raise UserError(_('No house number found on employee street'))
             house_number = street_digits[0]
@@ -303,11 +303,11 @@ class HrContract(models.Model):
                 'nationality': ONSS_COUNTRY_CODE_MAPPING.get(self.employee_id.country_id.code),
                 'gender': 'FEMALE' if self.employee_id.gender == 'female' else 'MALE',
                 'address': {
-                    'street': self.employee_id.private_street,
+                    'street': self.employee_id.address_home_id.street,
                     'houseNumber': house_number,
-                    'zipCode': self.employee_id.private_zip,
-                    'city': self.employee_id.private_city,
-                    'country': ONSS_COUNTRY_CODE_MAPPING.get(self.employee_id.private_country_id.code)
+                    'zipCode': self.employee_id.address_home_id.zip,
+                    'city': self.employee_id.address_home_id.city,
+                    'country': ONSS_COUNTRY_CODE_MAPPING.get(self.employee_id.address_home_id.country_id.code)
                 },
             },
             "dimonaIn": {

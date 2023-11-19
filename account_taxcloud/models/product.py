@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, _
 from odoo.osv import expression
-from odoo.exceptions import UserError
+
 
 class ProductTicCategory(models.Model):
     _name = 'product.tic.category'
@@ -13,18 +13,11 @@ class ProductTicCategory(models.Model):
     code = fields.Integer(string="TIC Category Code", required=True)
     description = fields.Char(string='TIC Description', required=True)
 
-    @api.depends('code', 'description')
-    def _compute_display_name(self):
+    def name_get(self):
+        res = []
         for category in self:
-            category.display_name = _('[%s] %s', category.code, (category.description or '')[:50])
-
-    @api.model
-    def name_create(self, name):
-        try:
-            name = int(name)
-        except ValueError:
-            raise UserError(_('The Taxcloud Category must be integer.'))
-        return super().name_create(name)
+            res.append((category.id, _('[%s] %s') % (category.code, category.description[0:50])))
+        return res
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'

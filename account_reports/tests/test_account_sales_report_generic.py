@@ -90,5 +90,4 @@ class AccountSalesReportTest(AccountSalesReportCommon):
                 (self.partner_b.name,  self.partner_b.vat[:2],  self.partner_b.vat[2:],  f'${NON_BREAKING_SPACE}600.00'),
                 ('Total',              '',                      '',                      f'${NON_BREAKING_SPACE}1,600.00'),
             ],
-            options,
         )

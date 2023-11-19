@@ -3,7 +3,6 @@
 
 from datetime import date
 
-from odoo import Command
 from odoo.tests import tagged
 
 from .common import TestPayrollCommon
@@ -22,7 +21,7 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
             'employee_requests': 'no',
             'allocation_validation_type': 'officer',
             'leave_validation_type': 'both',
-            'responsible_ids': [Command.link(cls.env.ref('base.user_admin').id)],
+            'responsible_id': cls.env.ref('base.user_admin').id,
             'request_unit': 'day'
         })
 
@@ -31,35 +30,31 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
                 (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
             ]
         })
+        cls.resource_calendar_24_hours_per_week_5_days_per_week._onchange_hours_per_day()
 
         cls.resource_calendar_24_hours_per_week_4_days_per_week = cls.resource_calendar.copy({
             'name': 'Calendar 24 Hours/Week',
             'full_time_required_hours': 38,
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 15, 'day_period': 'afternoon'}),
             ]
         })
+        cls.resource_calendar_24_hours_per_week_4_days_per_week._onchange_hours_per_day()
 
         cls.resource_calendar_20_hours_per_week = cls.resource_calendar.copy({
             'name': 'Calendar 20 Hours/Week',
@@ -72,6 +67,7 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
                 (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
             ]
         })
+        cls.resource_calendar_20_hours_per_week._onchange_hours_per_day()
 
     def test_credit_time_for_employee_test_example1(self):
         """
@@ -93,6 +89,7 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
 
         view = wizard.generate_allocation()
         allocation = self.env['hr.leave.allocation'].search(view['domain'])
+        allocation.action_confirm()
         allocation.action_validate()
 
         self.assertEqual(allocation.number_of_days, 20)
@@ -133,6 +130,7 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
 
         view = wizard.generate_allocation()
         allocation = self.env['hr.leave.allocation'].search(view['domain'])
+        allocation.action_confirm()
         allocation.action_validate()
 
         self.assertEqual(allocation.number_of_days, 20)
@@ -144,7 +142,10 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
             'holiday_status_id': self.paid_time_off_type.id,
             'employee_id': self.employee_test.id,
             'request_date_from': date(2018, 2, 1),
+            'date_from': date(2018, 2, 1),
             'request_date_to': date(2018, 2, 5),
+            'date_to': date(2018, 2, 5),
+            'number_of_days': 5
         })
         leave.action_validate()
 
@@ -221,6 +222,7 @@ class TestPayrollRightToLegalLeaves(TestPayrollCommon):
 
         view = wizard.generate_allocation()
         allocation = self.env['hr.leave.allocation'].search(view['domain'])
+        allocation.action_confirm()
         allocation.action_validate()
 
         self.assertEqual(allocation.number_of_days, 10)

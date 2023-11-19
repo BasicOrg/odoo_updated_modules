@@ -21,12 +21,9 @@
             @include o-position-sticky($top: 0px, $left: 0px);
             z-index: 10;
             border-top: none;
-            &:first-child,&:nth-child(2) {
+            &:first-child {
                 z-index: 11;
                 height: 1em;
-            }
-            &:nth-child(2) {
-                @include o-position-sticky($top: 0px, $left: 31px);
             }
         }
         tbody th {
@@ -34,10 +31,6 @@
             &:first-child,&:nth-child(2) {
                 z-index: 1;
                 background-color: $gray-200;
-            }
-            &:nth-child(2){
-                @include o-position-sticky($left: 31px);
-                padding-left: 0;
             }
         }
         th {

@@ -32,19 +32,12 @@ class PosPaymentMethod(models.Model):
         for payment_method in self:
             if not payment_method.adyen_terminal_identifier:
                 continue
-            # sudo() to search all companies
-            existing_payment_method = self.sudo().search([('id', '!=', payment_method.id),
+            existing_payment_method = self.search([('id', '!=', payment_method.id),
                                                    ('adyen_terminal_identifier', '=', payment_method.adyen_terminal_identifier)],
                                                   limit=1)
             if existing_payment_method:
-                if existing_payment_method.company_id == payment_method.company_id:
-                    raise ValidationError(_('Terminal %s is already used on payment method %s.',
-                                      payment_method.adyen_terminal_identifier, existing_payment_method.display_name))
-                else:
-                    raise ValidationError(_('Terminal %s is already used in company %s on payment method %s.',
-                                             payment_method.adyen_terminal_identifier,
-                                             existing_payment_method.company_id.name,
-                                             existing_payment_method.display_name))
+                raise ValidationError(_('Terminal %s is already used on payment method %s.')
+                                      % (payment_method.adyen_terminal_identifier, existing_payment_method.display_name))
 
     def _get_adyen_endpoints(self):
         return {
@@ -52,7 +45,7 @@ class PosPaymentMethod(models.Model):
         }
 
     def _is_write_forbidden(self, fields):
-        whitelisted_fields = {'adyen_latest_response', 'adyen_latest_diagnosis'}
+        whitelisted_fields = set(('adyen_latest_response', 'adyen_latest_diagnosis'))
         return super(PosPaymentMethod, self)._is_write_forbidden(fields - whitelisted_fields)
 
     def _adyen_diagnosis_request_data(self, pos_config_name):
@@ -74,15 +67,19 @@ class PosPaymentMethod(models.Model):
             }
         }
 
-    def get_latest_adyen_status(self):
+    def get_latest_adyen_status(self, pos_config_name):
         self.ensure_one()
+
         latest_response = self.sudo().adyen_latest_response
         latest_response = json.loads(latest_response) if latest_response else False
-        return latest_response
+
+        return {
+            'latest_response': latest_response,
+        }
 
     def proxy_adyen_request(self, data, operation=False):
         ''' Necessary because Adyen's endpoints don't have CORS enabled '''
-        if data.get('SaleToPOIRequest') and data['SaleToPOIRequest']['MessageHeader']['MessageCategory'] == 'Payment': # Clear only if it is a payment request
+        if data['SaleToPOIRequest']['MessageHeader']['MessageCategory'] == 'Payment': # Clear only if it is a payment request
             self.sudo().adyen_latest_response = ''  # avoid handling old responses multiple times
 
         if not operation:

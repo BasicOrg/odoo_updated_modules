@@ -18,6 +18,7 @@ class TestEventBoothSaleWData(TestEventBoothSaleCommon, TestSalesCommon):
 
         cls.event_0 = cls.env['event.event'].create({
             'name': 'TestEvent',
+            'auto_confirm': True,
             'date_begin': fields.Datetime.to_string(datetime.today() + timedelta(days=1)),
             'date_end': fields.Datetime.to_string(datetime.today() + timedelta(days=15)),
             'date_tz': 'Europe/Brussels',
@@ -78,14 +79,6 @@ class TestEventBoothSale(TestEventBoothSaleWData):
         self.assertEqual(float_compare(sale_order.amount_total, 220.0, precision_rounding=0.1), 0,
                          "Total amount should be the sum of the booths prices with 10% taxes ($200.0 + $20.0).")
 
-        sale_order.pricelist_id = self.test_pricelist_with_discount_included
-        sale_order._recompute_prices()
-
-        self.assertEqual(float_compare(sale_order.amount_untaxed, 180.0, precision_rounding=0.1), 0,
-                         "Untaxed amount should be the sum of the booths prices with discount 10% ($180.0).")
-        self.assertEqual(float_compare(sale_order.amount_total, 198.0, precision_rounding=0.1), 0,
-                         "Total amount should be the sum of the booths prices with 10% taxes ($180.0 + $18.0).")
-
         # Confirm the SO.
         sale_order.action_confirm()
 
@@ -105,6 +98,9 @@ class TestEventBoothSale(TestEventBoothSaleWData):
             self.assertEqual(
                 booth.contact_name, self.event_customer.name,
                 "Booth contact name should be the same as sale order customer name.")
+            self.assertEqual(
+                booth.contact_mobile, self.event_customer.mobile,
+                "Booth contact mobile should be the same as sale order customer mobile.")
             self.assertEqual(
                 booth.contact_phone, self.event_customer.phone,
                 "Booth contact phone should be the same as sale order customer phone.")

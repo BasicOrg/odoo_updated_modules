@@ -3,19 +3,16 @@
 
 from odoo import api, fields, models
 
-
 class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
+    _inherit = "sale.order.line"
 
-    is_reward_line = fields.Boolean(
-        string="Is a program reward line", compute='_compute_is_reward_line')
-    reward_id = fields.Many2one(
-        comodel_name='loyalty.reward', ondelete='restrict', readonly=True)
-    coupon_id = fields.Many2one(
-        comodel_name='loyalty.card', ondelete='restrict', readonly=True)
-    reward_identifier_code = fields.Char(
-        help="Technical field used to link multiple reward lines from the same reward together.")
-    points_cost = fields.Float(help="How much point this reward costs on the loyalty card.")
+    is_reward_line = fields.Boolean('Is a program reward line', compute='_compute_is_reward_line')
+    reward_id = fields.Many2one('loyalty.reward', ondelete='restrict', readonly=True)
+    coupon_id = fields.Many2one('loyalty.card', ondelete='restrict', readonly=True)
+    reward_identifier_code = fields.Char(help="""
+        Technical field used to link multiple reward lines from the same reward together.
+    """)
+    points_cost = fields.Float(help='How much point this reward cost on the loyalty card.')
 
     def _compute_name(self):
         # Avoid computing the name for reward lines
@@ -75,7 +72,7 @@ class SaleOrderLine(models.Model):
         res = super().create(vals_list)
         # Update our coupon points if the order is in a confirmed state
         for line in res:
-            if line.coupon_id and line.points_cost and line.state == 'sale':
+            if line.coupon_id and line.points_cost and line.order_id.state in ('sale', 'done'):
                 line.coupon_id.points -= line.points_cost
         return res
 
@@ -87,7 +84,7 @@ class SaleOrderLine(models.Model):
         if cost_in_vals:
             # Update our coupon points if the order is in a confirmed state
             for line in self:
-                if previous_cost[line] != line.points_cost and line.state == 'sale':
+                if previous_cost[line] != line.points_cost and line.order_id.state in ('sale', 'done'):
                     line.coupon_id.points += (previous_cost[line] - line.points_cost)
         return res
 
@@ -112,7 +109,7 @@ class SaleOrderLine(models.Model):
                     line.order_id.code_enabled_rule_ids = line.order_id.code_enabled_rule_ids.filtered(lambda r: r.program_id != line.coupon_id.program_id)
         # Give back the points if the order is confirmed, points are given back if the order is cancelled but in this case we need to do it directly
         for line in related_lines:
-            if line.state == 'sale':
+            if line.order_id.state in ('sale', 'done'):
                 line.coupon_id.points += line.points_cost
         res = super(SaleOrderLine, self | related_lines).unlink()
         coupons_to_unlink.sudo().unlink()

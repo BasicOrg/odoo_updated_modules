@@ -15,7 +15,7 @@ class MrpCostStructure(models.AbstractModel):
         ProductProduct = self.env['product.product']
         StockMove = self.env['stock.move']
         res = []
-        currency_table = self.env['res.currency']._get_query_currency_table(self.env.companies.ids, fields.Date.today())
+        currency_table = self.env['res.currency']._get_query_currency_table({'multi_company': True, 'date': {'date_to': fields.Date.today()}})
         for product in productions.mapped('product_id'):
             mos = productions.filtered(lambda m: m.product_id == product)
             # variables to calc cost share (i.e. between products/byproducts) since MOs can have varying distributions
@@ -28,7 +28,31 @@ class MrpCostStructure(models.AbstractModel):
             total_cost_operations = 0.0
             Workorders = self.env['mrp.workorder'].search([('production_id', 'in', mos.ids)])
             if Workorders:
-                total_cost_operations = self._compute_mo_operation_cost(currency_table, Workorders, total_cost_by_mo, operation_cost_by_mo, total_cost_operations, operations)
+                query_str = """SELECT
+                                    wo.production_id,
+                                    wo.id,
+                                    op.id,
+                                    wo.name,
+                                    wc.name,
+                                    wo.duration,
+                                    CASE WHEN wo.costs_hour = 0.0 THEN wc.costs_hour ELSE wo.costs_hour END AS costs_hour,
+                                    currency_table.rate
+                                FROM mrp_workcenter_productivity t
+                                LEFT JOIN mrp_workorder wo ON (wo.id = t.workorder_id)
+                                LEFT JOIN mrp_workcenter wc ON (wc.id = t.workcenter_id)
+                                LEFT JOIN mrp_routing_workcenter op ON (wo.operation_id = op.id)
+                                LEFT JOIN {currency_table} ON currency_table.company_id = t.company_id
+                                WHERE t.workorder_id IS NOT NULL AND t.workorder_id IN %s
+                                GROUP BY wo.production_id, wo.id, op.id, wo.name, wc.costs_hour, wc.name, t.user_id, currency_table.rate
+                                ORDER BY wo.name, wc.name
+                            """.format(currency_table=currency_table,)
+                self.env.cr.execute(query_str, (tuple(Workorders.ids), ))
+                for mo_id, dummy_wo_id, op_id, wo_name, wc_name, duration, cost_hour, currency_rate in self.env.cr.fetchall():
+                    cost = duration / 60.0 * cost_hour * currency_rate
+                    total_cost_by_mo[mo_id] += cost
+                    operation_cost_by_mo[mo_id] += cost
+                    total_cost_operations += cost
+                    operations.append([wc_name, op_id, wo_name, duration / 60.0, cost_hour * currency_rate])
 
             # Get the cost of raw material effectively used
             raw_material_moves = {}
@@ -92,7 +116,11 @@ class MrpCostStructure(models.AbstractModel):
                 total_cost_by_product[product] += total_cost_by_mo[m.id] * cost_share
                 component_cost_by_product[product] += component_cost_by_mo[m.id] * cost_share
                 operation_cost_by_product[product] += operation_cost_by_mo[m.id] * cost_share
-                mo_qty += sum(m.move_finished_ids.filtered(lambda mo: mo.state == 'done' and mo.product_id == product).mapped('product_qty'))
+                qty = sum(m.move_finished_ids.filtered(lambda mo: mo.state == 'done' and mo.product_id == product).mapped('product_uom_qty'))
+                if m.product_uom_id.id == uom.id:
+                    mo_qty += qty
+                else:
+                    mo_qty += m.product_uom_id._compute_quantity(qty, uom)
             res.append({
                 'product': product,
                 'mo_qty': mo_qty,
@@ -123,35 +151,6 @@ class MrpCostStructure(models.AbstractModel):
         if all(production.state == 'done' for production in productions):
             res = self.get_lines(productions)
         return {'lines': res}
-
-    def _compute_mo_operation_cost(self, currency_table, Workorders, total_cost_by_mo, operation_cost_by_mo, total_cost_operations, operations):
-        query_str = """  SELECT
-                        wo.production_id,
-                        wo.id,
-                        op.id,
-                        wo.name,
-                        wc.name,
-                        wo.duration,
-                        CASE WHEN wo.costs_hour = 0.0 THEN wc.costs_hour ELSE wo.costs_hour END AS costs_hour,
-                        currency_table.rate
-                    FROM mrp_workcenter_productivity t
-                    LEFT JOIN mrp_workorder wo ON (wo.id = t.workorder_id)
-                    LEFT JOIN mrp_workcenter wc ON (wc.id = t.workcenter_id)
-                    LEFT JOIN mrp_routing_workcenter op ON (wo.operation_id = op.id)
-                    LEFT JOIN {currency_table} ON currency_table.company_id = t.company_id
-                    WHERE t.workorder_id IS NOT NULL AND t.workorder_id IN %s
-                    GROUP BY wo.production_id, wo.id, op.id, wo.name, wc.costs_hour, wc.name, currency_table.rate
-                    ORDER BY wo.name, wc.name
-                """.format(currency_table=currency_table,)
-        self.env.cr.execute(query_str, (tuple(Workorders.ids), ))
-        for mo_id, dummy_wo_id, op_id, wo_name, wc_name, duration, cost_hour, currency_rate in self.env.cr.fetchall():
-            cost = duration / 60.0 * cost_hour * currency_rate
-            total_cost_by_mo[mo_id] += cost
-            operation_cost_by_mo[mo_id] += cost
-            total_cost_operations += cost
-            operations.append([wc_name, op_id, wo_name, duration / 60.0, cost_hour * currency_rate])
-
-        return total_cost_operations
 
 
 class ProductTemplateCostStructure(models.AbstractModel):

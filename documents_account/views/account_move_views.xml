@@ -10,7 +10,7 @@
                 <xpath expr="//sheet" position="before">
                     <field name="suspense_statement_line_id" invisible="1"/>
                     <div groups="account.group_account_invoice,account.group_account_readonly" class="alert alert-info" role="alert" style="margin-bottom:0px;"
-                         invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt') or not suspense_statement_line_id or state != 'posted'">
+                         attrs="{'invisible': ['|', '|', ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')), ('suspense_statement_line_id', '=', False), ('state', '!=', 'posted')]}">
                         This invoice has been initiated by a bank transaction. <bold><button class="alert-link" type="object" name="button_reconcile_with_st_line" role="button" string="Check them" style="padding: 0;vertical-align: baseline;"/></bold> to mark this invoice as paid.
                     </div>
                 </xpath>

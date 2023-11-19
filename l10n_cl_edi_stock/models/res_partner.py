@@ -9,4 +9,4 @@ class ResPartner(models.Model):
         ('product', 'From Product'),
         ('sale_order', 'From Sale Order'),
         ('none', 'Do Not Show Price')
-    ], string='Delivery Guide Price', default='sale_order', help="Chile: Select which price of the product will be shown in the delivery guide, if any.")
+    ], string='Delivery Guide Price', default='sale_order')

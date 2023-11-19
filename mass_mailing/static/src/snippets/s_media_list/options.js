@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('mass_mailing.s_media_list_options', function (require) {
+'use strict';
 
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 options.registry.MediaItemLayout = options.Class.extend({
 
@@ -45,4 +46,5 @@ options.registry.MediaItemLayout = options.Class.extend({
         }
         return this._super(...arguments);
     },
+});
 });

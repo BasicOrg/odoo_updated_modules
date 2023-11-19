@@ -54,6 +54,7 @@ class Form325(models.Model):
         string='Sender',
         required=True,
         ondelete='restrict',
+        states={'generated': [('readonly', True)]},
     )
     sender_name = fields.Char(
         string='Sender Name',
@@ -134,10 +135,10 @@ class Form325(models.Model):
         compute='_compute_debtor_citizen_identification', store=True,
     )
 
-    reference_year = fields.Char(
+    reference_year = fields.Integer(
         string='Reference Year',
         required=True,
-        default=lambda x: str(fields.Date.context_today(x).year - 1),
+        default=lambda x: fields.Date.context_today(x).year - 1,
         readonly=True,
     )
     is_test = fields.Boolean(
@@ -145,6 +146,7 @@ class Form325(models.Model):
         help="Indicates if the 325 is a test",
         required=True,
         default=False,
+        states={'generated': [('readonly', True)]},
         tracking=True,
     )
     sending_type = fields.Selection(
@@ -157,6 +159,7 @@ class Form325(models.Model):
         required=True,
         help="This field allows to make an original sending(correspond to first send) "
              "or a grouped corrections(if you have made some mistakes before).",
+        states={'generated': [('readonly', True)]},
         tracking=True,
     )
     treatment_type = fields.Selection([
@@ -169,6 +172,7 @@ class Form325(models.Model):
         default='0',
         required=True,
         help="This field represents the nature of the form.",
+        states={'generated': [('readonly', True)]},
         tracking=True,
     )
     currency_id = fields.Many2one(
@@ -179,14 +183,12 @@ class Form325(models.Model):
     form_281_50_ids = fields.One2many('l10n_be.form.281.50', 'form_325_id', string='Forms 281.50')
     form_281_50_count = fields.Integer(string='Forms 281.50 count', compute='_compute_form_281_50_count')
     form_281_50_total_amount = fields.Monetary(
-        string='Forms 281.50 total',
+        string='Forms 281.50 total amount',
         compute='_compute_form_281_50_total_amount',
     )
 
-    @api.depends('reference_year', 'is_test')
-    def _compute_display_name(self):
-        for f_325 in self:
-            f_325.display_name = f"325 - {f_325.reference_year}{' - TEST' if f_325.is_test else ''}"
+    def name_get(self):
+        return [(record.id, f"325 - {record.reference_year}") for record in self]
 
     @api.depends('form_281_50_ids')
     def _compute_form_281_50_count(self):
@@ -367,7 +369,7 @@ class Form325(models.Model):
                 - All account.move.line must be between the first day and the last day
                 of the reference year.
                 - All account.move.line must be in a posted account.move.
-            These information are group by partner!
+            These information are group by partner !
             :param tag_ids: used to compute the balance (normally account with 281.50 - XXXXX tag).
             :return: {partner_id: float}
         """
@@ -376,7 +378,7 @@ class Form325(models.Model):
             return {}
 
         self.env.cr.execute("""
-            SELECT COALESCE(move.commercial_partner_id, line.partner_id),
+            SELECT COALESCE(move.commercial_partner_id, line.partner_id), 
                    ROUND(SUM(line.balance), %(decimal_places)s) AS balance
               FROM account_move_line line
               JOIN account_move move on line.move_id = move.id
@@ -442,10 +444,10 @@ class Form325(models.Model):
         amount_paid_per_partner_based_on_bill_reconciled AS (
             SELECT paid_expense_line.partner_id AS partner_id,
                     -- amount_total_signed is negative for in_invoice
-                   SUM((apr.amount / ABS(move.amount_total_signed)) * (paid_expense_line.balance)) AS paid_amount
+                   SUM((apr.amount / - move.amount_total_signed) * (paid_expense_line.balance)) AS paid_amount
               FROM paid_expense_line
               JOIN account_move move ON paid_expense_line.move_id = move.id
-              JOIN account_partial_reconcile apr ON paid_expense_line.payable_id = apr.credit_move_id OR paid_expense_line.payable_id = apr.debit_move_id
+              JOIN account_partial_reconcile apr ON paid_expense_line.payable_id = apr.credit_move_id
               JOIN account_move_line aml_payment ON aml_payment.id = apr.debit_move_id
              WHERE aml_payment.parent_state = 'posted'
                AND apr.max_date BETWEEN %(payment_date_from)s AND %(payment_date_to)s
@@ -462,7 +464,6 @@ class Form325(models.Model):
                AND line.parent_state = 'posted'
                AND account_tag_rel.account_account_tag_id = ANY(%(tag_ids)s)
                AND line.date BETWEEN %(payment_date_from)s AND %(payment_date_to)s
-               AND line.partner_id = ANY(%(partner_ids)s)
         ),
         amount_paid AS (
             SELECT * FROM amount_paid_per_partner_based_on_bill_reconciled
@@ -547,15 +548,13 @@ class Form325(models.Model):
         return etree.tostring(xml_element, xml_declaration=True, encoding='utf-8')  # Well format the xml and add the xml_declaration
 
     def _validate_form(self):
-        # Once the xml is generated, the 325 and 281.50 forms are in the generated state and can't be edited
+        # Once the xml is generated, we decide that the 325 and 281.50 forms are now generated and can't be edited
         # We save all information from sender and debtor in the form.
         self.ensure_one()
-        if self.state != 'generated':
-            self.form_281_50_ids.assign_official_id()
-            self.write({
-                'state': 'generated',
-                'user_id': self.env.user,
-            })
+        self.write({
+            'state': 'generated',
+            'user_id': self.env.user,
+        })
 
     def get_dict_values(self):
         self.ensure_one()
@@ -630,6 +629,6 @@ class Form325(models.Model):
         return super().unlink()
 
     @api.ondelete(at_uninstall=False)
-    def _unlink_only_if_state_not_generated_and_not_test(self):
-        if self.filtered(lambda f_325: f_325.state == 'generated' and not f_325.is_test):
+    def _unlink_only_if_state_not_generated(self):
+        if self.filtered(lambda x: x.state == 'generated'):
             raise UserError(_("You can't delete a 281.50 for which its form 325 xml has been generated"))

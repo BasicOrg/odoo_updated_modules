@@ -12,7 +12,12 @@ class TestWEventRegister(TestWEventCommon):
 
     def test_register(self):
         with freeze_time(self.reference_now, tick=True):
-            self.start_tour('/event', 'wevent_register', login=None)
+            self.browser_js(
+                '/event',
+                'odoo.__DEBUG__.services["web_tour.tour"].run("wevent_register")',
+                'odoo.__DEBUG__.services["web_tour.tour"].tours.wevent_register.ready',
+                login=None
+            )
         new_registrations = self.event.registration_ids
         visitor = new_registrations.visitor_id
 

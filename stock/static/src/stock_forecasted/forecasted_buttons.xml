@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="stock.ForecastedButtons">
-        <button title="Replenish" t-on-click="_onClickReplenish"
-            class="o_forecasted_replenish_btn btn btn-primary">
+    <t t-name="stock.ForecastedButtons" owl="1">
+        <button t-name="replenish_report_buttons"
+            class="btn btn-primary o_report_replenish_buy"
+            type="button" title="Replenish" t-on-click="_onClickReplenish">
             Replenish
-        </button>
-        <button title="Update Quantity" t-on-click="_onClickUpdateQuantity"
-            class="o_forecasted_update_qty_btn btn btn-secondary">
-            Update Quantity
         </button>
     </t>
 

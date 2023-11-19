@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <data>
         <record id="account_financial_report_bs" model="account.report">
             <field name="name">Balance sheet</field>
@@ -22,7 +22,6 @@
             <field name="code">SE_BS_A_TOTAL</field>
             <field name="report_id" ref="account_financial_report_bs"/>
             <field name="aggregation_formula">SE_BS_A_10_TOTAL.balance + SE_BS_A_20_TOTAL.balance + SE_BS_A_30_TOTAL.balance</field>
-            <field name="hierarchy_level" eval="0"/>
         </record>
         <record id="account_financial_report_bs_A_10_TOTAL" model="account.report.line">
             <field name="name">Subscribed but unpaid capital</field>
@@ -436,14 +435,13 @@
             <field name="parent_id" ref="account_financial_report_bs_A_3030_TOTAL"/>
             <field name="groupby">account_id</field>
             <field name="foldable" eval="True"/>
-            <field name="domain_formula">sum([('account_id.code','=like','19%')])</field>
+            <field name="domain_formula">sum([('account_id.code','=like','19%'), ('account_id.code', '!=', '1931')])</field>
         </record>
         <record id="account_financial_report_bs_EL_TOTAL" model="account.report.line">
             <field name="name">EQUITY, PROVISIONS AND LIABILITIES</field>
             <field name="code">SE_BS_EL_TOTAL</field>
             <field name="report_id" ref="account_financial_report_bs"/>
             <field name="aggregation_formula">SE_BS_EL_10_TOTAL.balance + SE_BS_EL_20_TOTAL.balance + SE_BS_EL_30_TOTAL.balance + SE_BS_EL_40_TOTAL.balance</field>
-            <field name="hierarchy_level" eval="0"/>
         </record>
         <record id="account_financial_report_bs_EL_10_TOTAL" model="account.report.line">
             <field name="name">Equity, with information on what constitutes unrestricted equity and restricted equity</field>
@@ -739,7 +737,7 @@
             <field name="groupby">account_id</field>
             <field name="hide_if_zero" eval="True"/>
             <field name="foldable" eval="True"/>
-            <field name="account_codes_formula">-233 - 234 - 235 - 241 - 248</field>
+            <field name="domain_formula">-sum(['|', ('account_id.code', '=like', '233%'), '|', ('account_id.code', '=like', '234%'), '|', ('account_id.code', '=like', '235%'), '|', ('account_id.code', '=like', '241%'), '|', ('account_id.code', '=like', '248%'), ('account_id.code', '=like', '249%'), ('account_id.code', '!=', '2492')])</field>
         </record>
         <record id="account_financial_report_bs_EL_4030_TOTAL" model="account.report.line">
             <field name="name">Advances from customers</field>
@@ -819,7 +817,7 @@
             <field name="groupby">account_id</field>
             <field name="hide_if_zero" eval="True"/>
             <field name="foldable" eval="True"/>
-            <field name="domain_formula">-sum(['|', ('account_id.code', '=like', '239%'), '|', ('account_id.code', '=like', '249%'), '|', ('account_id.code', '=like', '26%'), '|', ('account_id.code', '=like', '27%'), ('account_id.code', '=like', '28%'), '!', ('account_id.code', '=like', '286%'), '!', ('account_id.code', '=like', '287%'), ('account_id.code', '!=', '2492')])</field>
+            <field name="domain_formula">-sum(['|', ('account_id.code', '=like', '239%'), '|', ('account_id.code', '=like', '249%'), '|', ('account_id.code', '=like', '26%'), '|', ('account_id.code', '=like', '27%'), '|', ('account_id.code', '=like', '28%'), ('account_id.code', '=', '1931'), '!', ('account_id.code', '=like', '286%'), '!', ('account_id.code', '=like', '287%'), ('account_id.code', '!=', '2491'), ('account_id.code', '!=', '2492')])</field>
         </record>
         <record id="account_financial_report_bs_EL_40110_TOTAL" model="account.report.line">
             <field name="name">Accrued expenses and prepaid income</field>

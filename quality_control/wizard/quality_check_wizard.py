@@ -15,11 +15,8 @@ class QualityCheckWizard(models.TransientModel):
     nb_checks = fields.Integer(compute='_compute_nb_checks')
     position_current_check = fields.Integer(compute='_compute_position')
     is_last_check = fields.Boolean(compute='_compute_position')
-    failure_location_id = fields.Many2one('stock.location')
-    qty_failed = fields.Float()
 
     # fields linked to the current_check_id
-    potential_failure_location_ids = fields.Many2many(related='current_check_id.point_id.failure_location_ids')
     name = fields.Char(related='current_check_id.name')
     title = fields.Char(related='current_check_id.title')
     product_id = fields.Many2one(related='current_check_id.product_id')
@@ -58,82 +55,51 @@ class QualityCheckWizard(models.TransientModel):
                 wz.is_last_check = True
 
     def do_measure(self):
-        if self.current_check_id._measure_passes():
-            return self.do_pass()
-        else:
-            return self.do_fail()
-
-    def confirm_measure(self):
         self.current_check_id.do_measure()
-        if self.measure_on == 'move_line':
-            self.current_check_id._move_line_to_failure_location(self.failure_location_id.id, self.qty_failed)
+        if self.quality_state == 'fail' and self.current_check_id._is_pass_fail_applicable() and (self.failure_message or self.warning_message):
+            return self.show_failure_message()
         return self.action_generate_next_window()
 
     def do_pass(self):
         if self.test_type == 'picture' and not self.picture:
-            raise UserError(_('You must provide a picture before validating'))
+            raise UserError('You must provide a picture before validating')
         self.current_check_id.do_pass()
         return self.action_generate_next_window()
 
     def do_fail(self):
-        if self.measure_on == 'move_line' and \
-                not (self.product_tracking == 'serial' and not self.potential_failure_location_ids):
-            return self.show_failure_message()
-        if self.failure_message or self.warning_message:
-            self.current_check_id.do_fail()
-            return self.show_failure_message()
-        return self.confirm_fail()
-
-    def confirm_fail(self):
         self.current_check_id.do_fail()
-        if self.measure_on == 'move_line':
-            self.current_check_id._move_line_to_failure_location(self.failure_location_id.id, self.qty_failed)
+        if self.quality_state == 'fail' and self.current_check_id._is_pass_fail_applicable() and (self.failure_message or self.warning_message):
+            return self.show_failure_message()
         return self.action_generate_next_window()
 
     def action_generate_next_window(self):
-        action = {'type': 'ir.actions.act_window_close'}
         if not self.is_last_check:
             action = self.env["ir.actions.actions"]._for_xml_id("quality_control.action_quality_check_wizard")
-            check_id = self.check_ids[self.position_current_check]
-            action['name'] = check_id._get_check_action_name()
             action['context'] = dict(ast.literal_eval(action['context']))
             action['context'].update(
                 self.env.context,
-                default_current_check_id=check_id.id,
-                from_failure_form=False,
-                default_qty_tested=check_id.qty_to_test,
+                default_current_check_id=self.check_ids[self.position_current_check].id
             )
-        return action
+            return action
 
     def action_generate_previous_window(self):
         action = self.env["ir.actions.actions"]._for_xml_id("quality_control.action_quality_check_wizard")
         action['context'] = dict(ast.literal_eval(action['context']))
-        if self.env.context.get('from_failure_form'):
-            check_id = self.current_check_id
-        else:
-            check_id = self.check_ids[self.position_current_check - 2]
-        action['name'] = check_id._get_check_action_name()
         action['context'].update(
             self.env.context,
-            default_current_check_id=check_id.id,
-            from_failure_form=False,
-            default_qty_tested=check_id.qty_to_test,
+            default_current_check_id=self.check_ids[self.position_current_check - 2].id
         )
         return action
 
     def show_failure_message(self):
-        self.qty_failed = self.qty_line
         return {
-            'name': _('Quality Check Failed for %(product_name)s', product_name=self.product_id.name),
+            'name': _('Quality Check Failed'),
             'type': 'ir.actions.act_window',
             'res_model': 'quality.check.wizard',
             'views': [(self.env.ref('quality_control.quality_check_wizard_form_failure').id, 'form')],
             'target': 'new',
             'res_id': self.id,
-            'context': {
-                **self.env.context,
-                'from_failure_form': True,
-            }
+            'context': self.env.context,
         }
 
     def correct_measure(self):
@@ -144,6 +110,5 @@ class QualityCheckWizard(models.TransientModel):
             self.env.context,
             default_check_ids=self.check_ids.ids,
             default_current_check_id=self.current_check_id.id,
-            from_failure_form=False,
         )
         return action

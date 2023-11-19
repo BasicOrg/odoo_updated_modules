@@ -215,7 +215,7 @@ SNAILMAIL_COUNTRIES = {
     "SV": "El Salvardor",
     "SX": "Sint Maarten",
     "SY": "Syria",
-    "SZ": "Eswatini",
+    "SZ": "Swaziland",
     "TA": "Tristan da Cunha",
     "TC": "Turks and Caicos",
     "TD": "Chad",

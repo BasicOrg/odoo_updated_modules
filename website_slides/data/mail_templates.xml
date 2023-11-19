@@ -15,8 +15,8 @@
                     <span style="font-size: 20px; font-weight: bold;">
                         <t t-esc="message.record_name and message.record_name.replace('/','-') or ''"/>
                     </span>
-                </td><td valign="middle" align="right" t-if="company and not company.uses_default_logo">
-                    <img t-att-src="'/logo.png?company=%s' % company.id" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
+                </td><td valign="middle" align="right">
+                    <img t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
                 </td></tr>
                 <tr><td colspan="2" style="text-align:center;">
                   <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:4px 0px 32px 0px;"/>
@@ -29,13 +29,13 @@
         <td style="min-width: 590px;">
             <t t-out="message.body"/>
             <div style="margin: 32px 0px 32px 0px; text-align: center;">
-                <a t-att-href="record.invitation_link"
+                <a t-att-href="record.channel_id.website_url"
                     style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                    <t t-if="enroll_mode"> Click here to start the course </t> <t t-else=""> Click here to get started </t>
+                    Click here to start the course
                 </a>
             </div>
             <div style="margin: 0px; padding: 0px; font-size:13px;">
-                Enjoy this exclusive content!
+                Enjoy this exclusive content !
             </div>
             <div>&amp;nbsp;</div>
             <div t-if="signature" style="font-size: 13px;">

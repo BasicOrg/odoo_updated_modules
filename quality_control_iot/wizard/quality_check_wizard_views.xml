@@ -15,7 +15,7 @@
             </field>
             <field name="picture" position="replace">
                 <div class="quality_picture">
-                    <field name="picture" widget="iot_picture" options="{'ip_field': 'ip', 'identifier': 'identifier'}" readonly="quality_state != 'none'"/>
+                    <field name="picture" widget="iot_picture" options="{'ip_field': 'ip', 'identifier': 'identifier'}" attrs="{'readonly': [('quality_state', '!=', 'none')]}"/>
                 </div>
             </field>
         </field>

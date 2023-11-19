@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import VariantMixin from "@website_sale_stock/js/variant_mixin";
-import "@website_sale/js/website_sale";
-import { renderToElement } from "@web/core/utils/render";
+import VariantMixin from "website_sale_stock.VariantMixin";
+import "website_sale.website_sale";
+import { qweb as QWeb } from "web.core";
 
 const oldChangeCombinationStock = VariantMixin._onChangeCombinationStock;
 /**
@@ -15,9 +15,9 @@ VariantMixin._onChangeCombinationStock = function (ev, $parent, combination) {
     oldChangeCombinationStock.apply(this, arguments);
     if (this.el.querySelector('.o_add_wishlist_dyn')) {
         const messageEl = this.el.querySelector('div.availability_messages');
-        if (messageEl && !this.el.querySelector('#stock_wishlist_message')) {
-            messageEl.append(
-                renderToElement('website_sale_stock_wishlist.product_availability', combination) || ''
+        if (!this.el.querySelector('#stock_wishlist_message')) {
+            messageEl.insertAdjacentHTML('beforeend',
+                QWeb.render('website_sale_stock_wishlist.product_availability', combination)
             );
         }
     }

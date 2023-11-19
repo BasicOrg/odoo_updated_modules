@@ -17,8 +17,8 @@
                                 <field name="street_type"/>
                                 <field name="street_name"/>
                                 <field name="street_number_type"/>
-                                <field name="street_number" invisible="street_number_type == 'S/N'" required="street_number_type != 'S/N'"/>
-                                <field name="street_number_km_qualifier" invisible="street_number_type != 'KM'" required="street_number_type == 'KM'"/>
+                                <field name="street_number" attrs="{'required': [('street_number_type', '!=', 'S/N')], 'invisible': [('street_number_type', '=', 'S/N')]}"/>
+                                <field name="street_number_km_qualifier" attrs="{'required': [('street_number_type', '=', 'KM')], 'invisible': [('street_number_type', '!=', 'KM')]}"/>
                                 <field name="street_block"/>
                                 <field name="portal"/>
                                 <field name="stairs"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
-    <t t-name="crm.ForecastKanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary">
+    <t t-name="crm.ForecastKanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary" owl="1">
         <KanbanColumnQuickCreate position="replace">
             <t t-if="isGroupedByForecastField()">
                 <ForecastKanbanColumnQuickCreate
@@ -8,7 +8,7 @@
                     onFoldChange="() => {}"
                     onValidate.bind="addForecastColumn"
                     exampleData="exampleData"
-                    groupByField="props.list.groupByField"
+                    groupByFieldString="getForecastQuickCreateTitle()"
                 />
             </t>
             <t t-else="">$0</t>

@@ -1,19 +1,24 @@
 @include media-breakpoint-up(md) {
-    .o_helpdesk_team_kanban_view_view .o_kanban_renderer {
-        --KanbanGroup-width: #{map-get($grid-breakpoints, 'xl') * 0.35};
-        --KanbanRecord-width: #{map-get($grid-breakpoints, 'xl') * 0.35};
+    .o_helpdesk_view .o_kanban_record {
+        min-width: map-get($grid-breakpoints, 'xl') * 0.35;
     }
 }
 
 .o_helpdesk_wrap_kanban_view {
     flex-basis: 100%;
     min-height: auto;
+    overflow-y: auto;
 }
 
 .o_helpdesk_content {
     .o_kanban_group:not(.o_column_folded) {
         width: inherit;
     }
+
+    .o_helpdesk_banner .ribbon::before, .o_helpdesk_banner .ribbon::after {
+        display: none;
+    }
+    
     .o_helpdesk_banner_table {
         border-spacing: map-get($spacers, 1);
         border-collapse: separate;

@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* helpdesk_timesheet
-#
+# 
 # Translators:
 # Arnau Ros, 2022
 # Manel Fernandez Ramirez <manelfera@outlook.com>, 2022
@@ -9,22 +9,19 @@
 # jabelchi, 2022
 # marcescu, 2022
 # Quim - eccit <quim@eccit.com>, 2022
-# jabiri7, 2022
-# Ivan Espinola, 2022
-# Óscar Fonseca <tecnico@extreme-micro.com>, 2023
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
 "PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Óscar Fonseca <tecnico@extreme-micro.com>, 2023\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Last-Translator: Quim - eccit <quim@eccit.com>, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: helpdesk_timesheet
@@ -33,14 +30,18 @@ msgid "# Tickets"
 msgstr "# Tiquets"
 
 #. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
+msgid "<span class=\"o_stat_text\">Recorded</span>"
+msgstr "<span class=\"o_stat_text\">Registrat</span>"
+
+#. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_account_analytic_line
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__analytic_account_id
 msgid "Analytic Account"
 msgstr "Compte analític"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "Confirm Time Spent"
 msgstr "Confirmar el temps invertit"
@@ -48,12 +49,12 @@ msgstr "Confirmar el temps invertit"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "Converteix els tiquets del servei d'ajuda a tasques"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_task_convert_wizard
 msgid "Convert Project Tasks to Tickets"
-msgstr "Converteix les tasques del projecte en tiquets"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_ticket_create_timesheet
@@ -94,8 +95,14 @@ msgstr "Descriviu la vostra activitat..."
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__description
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Description"
 msgstr "Descripció"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Description of the ticket..."
+msgstr "Descripció del bitllet..."
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_create_timesheet_view_form
@@ -110,7 +117,7 @@ msgstr "Nom a mostrar"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_account_analytic_line__display_task
 msgid "Display Task"
-msgstr "Mostra la tasca"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__display_timer
@@ -204,6 +211,11 @@ msgid "Is Timer Running"
 msgstr "S'està executant el temporitzador"
 
 #. module: helpdesk_timesheet
+#: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
+
+#. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__write_uid
 msgid "Last Updated by"
 msgstr "Última actualització per"
@@ -226,7 +238,7 @@ msgstr "Director"
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_search_inherit_helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
 msgid "My Department"
-msgstr "El meu departament"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.rating_rating_view_search_inherit_helpdesk_timesheet
@@ -241,8 +253,7 @@ msgid "My Team's Tickets"
 msgstr "Tiquets del meu equip"
 
 #. module: helpdesk_timesheet
-#. odoo-python
-#: code:addons/helpdesk_timesheet/models/helpdesk_team.py:0
+#: code:addons/helpdesk_timesheet/models/helpdesk.py:0
 #, python-format
 msgid "New"
 msgstr "Nou"
@@ -251,6 +262,11 @@ msgstr "Nou"
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Pause"
 msgstr "Atura"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Pause timer"
+msgstr "Temporitzador de pausa"
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_project_project
@@ -262,8 +278,11 @@ msgstr "Projecte"
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__project_id
 #: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__project_id
-msgid "Project to which the timesheets of this helpdesk team's tickets will be linked."
-msgstr "Projecte al qual s'enllaçaran els fulls d'hores dels bitllets de l'equip del centre d'ajuda."
+msgid ""
+"Project to which the tickets (and the timesheets) will be linked by default."
+msgstr ""
+"Projecte al qual es vincularan per defecte els tiquets (i les fulles de "
+"temps)."
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.actions.act_window,help:helpdesk_timesheet.act_hr_timesheet_line_helpdesk
@@ -271,14 +290,14 @@ msgid "Record a new activity"
 msgstr "Registrar una nova activitat"
 
 #. module: helpdesk_timesheet
-#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_team_view_form_inherit_helpdesk_timesheet
-msgid "Recorded"
-msgstr ""
-
-#. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Resume"
 msgstr "Continua"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Resume timer"
+msgstr "Resum del temporitzador"
 
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_helpdesk_sla_report_analysis
@@ -302,8 +321,18 @@ msgstr "Inicia"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Start timer"
+msgstr "Inicia el temporitzador"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
 msgid "Stop"
 msgstr "Atura"
+
+#. module: helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet
+msgid "Stop timer"
+msgstr "Atura el temporitzador"
 
 #. module: helpdesk_timesheet
 #: model:project.project,label_tasks:helpdesk_timesheet.helpdesk_team3_projet
@@ -311,9 +340,25 @@ msgid "Tasks"
 msgstr "Tasques"
 
 #. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__use_helpdesk_timesheet
+msgid "This requires to have project module installed."
+msgstr "Això requereix tenir instal·lat el mòdul del projecte."
+
+#. module: helpdesk_timesheet
+#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_team__timesheet_encode_uom_id
+msgid ""
+"This will set the unit of measure used to encode timesheet. This will simply provide tools\n"
+"        and widgets to help the encoding. All reporting will still be expressed in hours (default value)."
+msgstr ""
+"D’aquesta manera, s’establirà la unitat de mesura que s’utilitza per codificar el full de temps. Això simplement proporcionarà eines\n"
+"       i widgets per ajudar a la codificació. Tots els informes encara s’expressaran en hores (valor predeterminat)."
+
+#. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__ticket_id
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_search_inherit_helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_line_tree_inherit_helpdesk_timesheet
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.hr_timesheet_report_search_helpdesk
+#: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.my_timesheet_view_form_helpdesk
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_table
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.timesheet_view_form_helpdesk
@@ -333,10 +378,10 @@ msgstr "Tiquet per al qual estem creant una comanda de vendes"
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket
 msgid "Ticket:"
-msgstr "Tiquet:"
+msgstr ""
 
 #. module: helpdesk_timesheet
-#. odoo-python
+#: code:addons/helpdesk_timesheet/models/project.py:0
 #: code:addons/helpdesk_timesheet/models/project.py:0
 #: model:ir.actions.act_window,name:helpdesk_timesheet.project_project_action_view_helpdesk_tickets
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_project_project__ticket_ids
@@ -348,13 +393,6 @@ msgstr "Tiquets"
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket_create_timesheet__time_spent
 msgid "Time"
 msgstr "Temps"
-
-#. module: helpdesk_timesheet
-#: model:ir.model.fields,help:helpdesk_timesheet.field_helpdesk_ticket__timesheet_ids
-msgid ""
-"Time spent on this ticket. By default, your timesheets will be linked to the sales order item of your ticket.\n"
-"Remove the sales order item to make your timesheet entries non billable."
-msgstr "Temps dedicat a aquest tiquet. Per defecte, els fulls d'hores s'enllaçaran al element de la comanda de venda del tiquet. Elimina el element de la comanda per fer les entrades de les fulles de temps no facturables."
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__timer_pause
@@ -394,7 +432,7 @@ msgstr "Fulls d'hores"
 #. module: helpdesk_timesheet
 #: model:ir.model,name:helpdesk_timesheet.model_timesheets_analysis_report
 msgid "Timesheets Analysis Report"
-msgstr "Informe d'anàlisi de fulls d'hores"
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_team__total_timesheet_time
@@ -403,8 +441,12 @@ msgstr "Temps total fulls de treball"
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.actions.act_window,help:helpdesk_timesheet.act_hr_timesheet_line_helpdesk
-msgid "Track your working hours by projects every day and invoice this time to your customers."
-msgstr "Feu seguiment de les hores de treball per projectes cada dia i factureu aquest temps als clients. "
+msgid ""
+"Track your working hours by projects every day and invoice this time to your"
+" customers."
+msgstr ""
+"Feu seguiment de les hores de treball per projectes cada dia i factureu "
+"aquest temps als clients. "
 
 #. module: helpdesk_timesheet
 #: model:ir.model.fields,field_description:helpdesk_timesheet.field_helpdesk_ticket__user_timer_id
@@ -417,11 +459,11 @@ msgid "VIP Support"
 msgstr "Suport VIP"
 
 #. module: helpdesk_timesheet
-#. odoo-python
 #: code:addons/helpdesk_timesheet/models/analytic.py:0
 #, python-format
-msgid "You cannot link a timesheet entry to a task and a ticket at the same time."
-msgstr "No podeu enllaçar una entrada de full de temps a una tasca i un tiquet al mateix temps."
+msgid ""
+"You cannot link a timesheet entry to a task and a ticket at the same time."
+msgstr ""
 
 #. module: helpdesk_timesheet
 #: model_terms:ir.ui.view,arch_db:helpdesk_timesheet.report_timesheet_ticket

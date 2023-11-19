@@ -1,7 +1,5 @@
 /** @odoo-module **/
 
-import { shallowEqual as _shallowEqual } from "./objects";
-
 /**
  * Same values returned as those returned by cartesian function for case n = 0
  * and n > 1. For n = 1, brackets are put around the unique parameter elements.
@@ -34,9 +32,8 @@ function _cartesian() {
  * return a certain attribute or mutated form of the element.
  *
  * @private
- * @template T
- * @param {string | ((element: T) => any)} [criterion]
- * @returns {(element: T) => any}
+ * @param {string | function} [criterion]
+ * @returns {(element: any) => any}
  */
 function _getExtractorFrom(criterion) {
     if (criterion) {
@@ -56,21 +53,11 @@ function _getExtractorFrom(criterion) {
 }
 
 /**
- * @template T
- * @param {T | Iterable<T>} value
- * @returns {T[]}
- */
-export function ensureArray(value) {
-    return value && typeof value === "object" && value[Symbol.iterator] ? [...value] : [value];
-}
-
-/**
  * Returns the array of elements contained in both arrays.
  *
- * @template T
- * @param {T[]} array1
- * @param {T[]} array2
- * @returns {T[]}
+ * @param {any[]} array1
+ * @param {any[]} array2
+ * @returns {any[]}
  */
 export function intersection(array1, array2) {
     return array1.filter((v) => array2.includes(v));
@@ -85,14 +72,12 @@ export function intersection(array1, array2) {
  * - a function: a handler that will return the group name from a given
  * element.
  *
- * @template T
- * @param {T[]} array
- * @param {string | ((element: T) => any)} [criterion]
- * @returns {Record<string, T[]>}
+ * @param {any[]} array
+ * @param {string | function} [criterion]
+ * @returns {Object}
  */
 export function groupBy(array, criterion) {
     const extract = _getExtractorFrom(criterion);
-    /** @type {Record<string, T[]>} */
     const groups = {};
     for (const element of array) {
         const group = String(extract(element));
@@ -111,11 +96,10 @@ export function groupBy(array, criterion) {
  * - a function: a handler that will return the sortable primitive from a given element.
  * The default order is ascending ('asc'). It can be modified by setting the extra param 'order' to 'desc'.
  *
- * @template T
- * @param {T[]} array
- * @param {string | ((element: T) => any)} [criterion]
+ * @param {any[]} array
+ * @param {string | function} [criterion]
  * @param {"asc" | "desc"} [order="asc"]
- * @returns {T[]}
+ * @returns {any[]}
  */
 export function sortBy(array, criterion, order = "asc") {
     const extract = _getExtractorFrom(criterion);
@@ -136,10 +120,9 @@ export function sortBy(array, criterion, order = "asc") {
  * Returns an array containing all the elements of arrayA
  * that are not in arrayB and vice-versa.
  *
- * @template T
- * @param {T[]} arrayA
- * @param {T[]} arrayB
- * @returns {T[]} an array containing all the elements of arrayA
+ * @param {any[]} arrayA
+ * @param {any[]} arrayB
+ * @returns an array containing all the elements of arrayA
  * that are not in arrayB and vice-versa.
  */
 export function symmetricalDifference(arrayA, arrayB) {
@@ -168,15 +151,30 @@ export function cartesian() {
     }
 }
 
-export const shallowEqual = _shallowEqual;
+/**
+ * Shallow compares two arrays.
+ * @param {any[]} arrayA
+ * @param {any[]} arrayB
+ * @returns {boolean} true iff arrayA and arrayB are shallow equal
+ */
+export function shallowEqual(arrayA, arrayB) {
+    if (arrayA.length !== arrayB.length) {
+        return false;
+    }
+    for (let i = 0; i < arrayA.length; i++) {
+        if (arrayA[i] !== arrayB[i]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 /**
  * Returns all initial sections of a given array, e.g. for [1, 2] the array
  * [[], [1], [1, 2]] is returned.
  *
- * @template T
- * @param {T[]} array
- * @returns {T[][]}
+ * @param {Array} array
+ * @returns {Array[]}
  */
 export function sections(array) {
     const sections = [];
@@ -196,31 +194,4 @@ export function sections(array) {
  */
 export function unique(array) {
     return Array.from(new Set(array));
-}
-
-/**
- * @template T1, T2
- * @param {T1[]} array1
- * @param {T2[]} array2
- * @param {boolean} [fill=false]
- * @returns {[T1, T2][]}
- */
-export function zip(array1, array2, fill = false) {
-    const result = [];
-    const getLength = fill ? Math.max : Math.min;
-    for (let i = 0; i < getLength(array1.length, array2.length); i++) {
-        result.push([array1[i], array2[i]]);
-    }
-    return result;
-}
-
-/**
- * @template T1, T2, T
- * @param {T1[]} array1
- * @param {T2[]} array2
- * @param {(e1: T1, e2: T2) => T} func
- * @returns {T[]}
- */
-export function zipWith(array1, array2, func) {
-    return zip(array1, array2).map(([e1, e2]) => func(e1, e2));
 }

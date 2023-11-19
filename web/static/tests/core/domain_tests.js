@@ -52,16 +52,6 @@ QUnit.module("domain", {}, () => {
         );
     });
 
-    QUnit.test("support of '=?' operator", function (assert) {
-        const record = { a: 3 };
-        assert.ok(new Domain([["a", "=?", null]]).contains(record));
-        assert.ok(new Domain([["a", "=?", false]]).contains(record));
-        assert.notOk(new Domain(["!", ["a", "=?", false]]).contains(record));
-        assert.notOk(new Domain([["a", "=?", 1]]).contains(record));
-        assert.ok(new Domain([["a", "=?", 3]]).contains(record));
-        assert.notOk(new Domain(["!", ["a", "=?", 3]]).contains(record));
-    });
-
     QUnit.test("or", function (assert) {
         const currentDomain = [
             "|",
@@ -98,11 +88,9 @@ QUnit.module("domain", {}, () => {
         assert.ok(new Domain(["!", ["group_method", "=", "count"]]).contains(record));
     });
 
-    QUnit.test("like, =like, ilike, =ilike, not like and not ilike", function (assert) {
-        assert.expect(36);
+    QUnit.test("like, =like, ilike and =ilike", function (assert) {
+        assert.expect(16);
 
-        assert.ok(new Domain([["a", "like", "test%value"]]).contains({ a: "test value" }));
-        assert.notOk(new Domain([["a", "like", "test%value"]]).contains({ a: "value test" }));
         assert.ok(new Domain([["a", "like", "value"]]).contains({ a: "value" }));
         assert.ok(new Domain([["a", "like", "value"]]).contains({ a: "some value" }));
         assert.notOk(new Domain([["a", "like", "value"]]).contains({ a: "Some Value" }));
@@ -113,8 +101,6 @@ QUnit.module("domain", {}, () => {
         assert.notOk(new Domain([["a", "=like", "%value"]]).contains({ a: "Some Value" }));
         assert.notOk(new Domain([["a", "=like", "%value"]]).contains({ a: false }));
 
-        assert.ok(new Domain([["a", "ilike", "test%value"]]).contains({ a: "test value" }));
-        assert.notOk(new Domain([["a", "ilike", "test%value"]]).contains({ a: "value test" }));
         assert.ok(new Domain([["a", "ilike", "value"]]).contains({ a: "value" }));
         assert.ok(new Domain([["a", "ilike", "value"]]).contains({ a: "some value" }));
         assert.ok(new Domain([["a", "ilike", "value"]]).contains({ a: "Some Value" }));
@@ -124,24 +110,6 @@ QUnit.module("domain", {}, () => {
         assert.ok(new Domain([["a", "=ilike", "%value"]]).contains({ a: "some value" }));
         assert.ok(new Domain([["a", "=ilike", "%value"]]).contains({ a: "Some Value" }));
         assert.notOk(new Domain([["a", "=ilike", "%value"]]).contains({ a: false }));
-
-        assert.notOk(new Domain([["a", "not like", "test%value"]]).contains({ a: "test value" }));
-        assert.ok(new Domain([["a", "not like", "test%value"]]).contains({ a: "value test" }));
-        assert.notOk(new Domain([["a", "not like", "value"]]).contains({ a: "value" }));
-        assert.notOk(new Domain([["a", "not like", "value"]]).contains({ a: "some value" }));
-        assert.ok(new Domain([["a", "not like", "value"]]).contains({ a: "Some Value" }));
-        assert.ok(new Domain([["a", "not like", "value"]]).contains({ a: "something" }));
-        assert.ok(new Domain([["a", "not like", "value"]]).contains({ a: "Something" }));
-        assert.notOk(new Domain([["a", "not ilike", "test%value"]]).contains({ a: "test value" }));
-        assert.ok(new Domain([["a", "not ilike", "test%value"]]).contains({ a: "value test" }));
-        assert.notOk(new Domain([["a", "not like", "value"]]).contains({ a: false }));
-
-        assert.notOk(new Domain([["a", "not ilike", "value"]]).contains({ a: "value" }));
-        assert.notOk(new Domain([["a", "not ilike", "value"]]).contains({ a: "some value" }));
-        assert.notOk(new Domain([["a", "not ilike", "value"]]).contains({ a: "Some Value" }));
-        assert.ok(new Domain([["a", "not ilike", "value"]]).contains({ a: "something" }));
-        assert.ok(new Domain([["a", "not ilike", "value"]]).contains({ a: "Something" }));
-        assert.notOk(new Domain([["a", "not ilike", "value"]]).contains({ a: false }));
     });
 
     QUnit.test("complex domain", function (assert) {
@@ -223,21 +191,6 @@ QUnit.module("domain", {}, () => {
         assert.strictEqual(
             new Domain('[("name","ilike","foo")]').toString(),
             '[("name", "ilike", "foo")]'
-        );
-    });
-
-    QUnit.test("toJson", function (assert) {
-        assert.deepEqual(new Domain([]).toJson(), []);
-        assert.deepEqual(new Domain("[]").toJson(), []);
-        assert.deepEqual(new Domain([["a", "=", 3]]).toJson(), [["a", "=", 3]]);
-        assert.deepEqual(new Domain('[("a", "=", 3)]').toJson(), [["a", "=", 3]]);
-        assert.strictEqual(
-            new Domain('[("user_id", "=", uid)]').toJson(),
-            '[("user_id", "=", uid)]'
-        );
-        assert.strictEqual(
-            new Domain('[("date", "=", context_today())]').toJson(),
-            '[("date", "=", context_today())]'
         );
     });
 
@@ -391,16 +344,6 @@ QUnit.module("domain", {}, () => {
             /invalid domain .* \(missing 1 segment/
         );
         assert.throws(() => new Domain(["!"]), /invalid domain .* \(missing 1 segment/);
-        assert.throws(() => new Domain(`[(1, 2)]`), /Invalid domain AST/);
-        assert.throws(() => new Domain(`[(1, 2, 3, 4)]`), /Invalid domain AST/);
-        assert.throws(() => new Domain(`["a"]`), /Invalid domain AST/);
-        assert.throws(() => new Domain(`[1]`), /Invalid domain AST/);
-        assert.throws(() => new Domain(`[x]`), /Invalid domain AST/);
-        assert.throws(() => new Domain(`[True]`), /Invalid domain AST/); // will possibly change with CHM work
-        assert.throws(() => new Domain(`[(x.=, "=", 1)]`), /Invalid domain representation/);
-        assert.throws(() => new Domain(`[(+, "=", 1)]`), /Invalid domain representation/);
-        assert.throws(() => new Domain([{}]), /Invalid domain representation/);
-        assert.throws(() => new Domain([1]), /Invalid domain representation/);
     });
 
     QUnit.test("follow relations", function (assert) {
@@ -605,51 +548,5 @@ QUnit.module("domain", {}, () => {
         assert.throws(() => new Domain(`(("field", "like", "string"))`), /Invalid domain AST/);
         assert.throws(() => new Domain(`("&", "&", "|")`), /Invalid domain AST/);
         assert.throws(() => new Domain(`("&", "&", 3)`), /Invalid domain AST/);
-    });
-
-    QUnit.module("RemoveDomainLeaf");
-
-    QUnit.test("Remove leaf in domain.", function (assert) {
-        let domain = [
-            ["start_datetime", "!=", false],
-            ["end_datetime", "!=", false],
-            ["sale_line_id", "!=", false],
-        ];
-        const keysToRemove = ["start_datetime", "end_datetime"];
-        let newDomain = Domain.removeDomainLeaves(domain, keysToRemove);
-        let expectedDomain = new Domain([
-            "&",
-            ...Domain.TRUE.toList({}),
-            ...Domain.TRUE.toList({}),
-            ["sale_line_id", "!=", false],
-        ]);
-        assert.deepEqual(newDomain.toList({}), expectedDomain.toList({}));
-        domain = [
-            "|",
-            ["role_id", "=", false],
-            "&",
-            ["resource_id", "!=", false],
-            ["start_datetime", "=", false],
-            ["sale_line_id", "!=", false],
-        ];
-        newDomain = Domain.removeDomainLeaves(domain, keysToRemove);
-        expectedDomain = new Domain([
-            "|",
-            ["role_id", "=", false],
-            "&",
-            ["resource_id", "!=", false],
-            ...Domain.TRUE.toList({}),
-            ["sale_line_id", "!=", false],
-        ]);
-        assert.deepEqual(newDomain.toList({}), expectedDomain.toList({}));
-        domain = [
-            "|",
-            ["start_datetime", "=", false],
-            ["end_datetime", "=", false],
-            ["sale_line_id", "!=", false],
-        ];
-        newDomain = Domain.removeDomainLeaves(domain, keysToRemove);
-        expectedDomain = new Domain([...Domain.TRUE.toList({}), ["sale_line_id", "!=", false]]);
-        assert.deepEqual(newDomain.toList({}), expectedDomain.toList({}));
     });
 });

@@ -3,16 +3,18 @@
 # 	* website_event_track
 # 
 # Translators:
-# Wil Odoo, 2023
+# Waleed Mohsen <mohsen.waleed@gmail.com>, 2022
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-10-04 09:26+0000\n"
+"PO-Revision-Date: 2022-09-22 05:56+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +22,6 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/website.py:0
 #, python-format
 msgid "\"Events App Name\" field is required."
@@ -33,32 +34,33 @@ msgid "# Wishlisted"
 msgstr "عدد العناصر في قائمة الأمنيات "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track.py:0
 #, python-format
 msgid "%(name)s from %(company)s"
 msgstr "%(name)s من %(company)s "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track.py:0
 #, python-format
 msgid "%(name)s, %(function)s at %(company)s"
 msgstr "%(name)s، %(function)s في %(company)s "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/website.py:0
 #, python-format
 msgid "%s Events"
 msgstr "%s الفعاليات "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/controllers/webmanifest.py:0
 #, python-format
 msgid "%s Online Events Application"
 msgstr "%s تطبيق الفعاليات عبر الإنترنت "
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.tracks_display_list
+msgid "&amp;bull;"
+msgstr "&amp;bull;"
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_17
@@ -96,6 +98,16 @@ msgid "<b>Speaker Biography</b>:"
 msgstr "<b>سيرة المتحدث الذاتية</b>: "
 
 #. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
+msgid "<b>Speaker Profile</b>"
+msgstr "<b>ملف المتحدث التعريفي</b> "
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
+msgid "<b>Talk Intro</b>"
+msgstr "<b>مقدمة الحوار</b> "
+
+#. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_template_new
 msgid "<b>Talk Introduction</b>:"
 msgstr "<b>مقدمة الحوار</b>: "
@@ -104,63 +116,66 @@ msgstr "<b>مقدمة الحوار</b>: "
 #: model:mail.template,body_html:website_event_track.mail_template_data_track_confirmation
 msgid ""
 "<div>\n"
-"    Dear <t t-out=\"object.partner_id.name or object.partner_name or ''\">Brandon Freeman</t><br>\n"
+"    Dear <t t-out=\"object.partner_id.name or object.partner_name or ''\">Brandon Freeman</t><br/>\n"
 "    We are pleased to inform you that your proposal <t t-out=\"object.name or ''\">What This Event Is All About</t> has been accepted and confirmed for the event <t t-out=\"object.event_id.name or ''\">OpenWood Collection Online Reveal</t>.\n"
-"    <br>\n"
+"    <br/>\n"
 "    You will find more details here:\n"
 "    <div style=\"margin: 16px 0px 16px 0px;\">\n"
 "        <a t-attf-href=\"/event/{{ object.event_id.id }}/track/{{ object.id }}\" style=\"padding: 8px 16px 8px 16px; font-size: 14px; color: #FFFFFF; text-decoration: none !important; background-color: #875A7B; border: 0px solid #875A7B; border-radius:3px\">\n"
 "            View Talk\n"
 "        </a>\n"
 "    </div>\n"
-"    <br><br>\n"
+"    <br/><br/>\n"
 "    Thank you,\n"
 "    <t t-if=\"user.signature\">\n"
-"        <br>\n"
-"        <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"        <br/>\n"
+"        <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
 "    </t>\n"
 "</div>"
 msgstr ""
 "<div>\n"
-"    عزيزنا <t t-out=\"object.partner_id.name or object.partner_name or ''\">براندن فريمان</t><br>\n"
-"    يسعدنا إخبارك بأن مقترحك <t t-out=\"object.name or ''\">محور هذه الفعالية</t> قد تم قبوله وتأكيده للفعالية<t t-out=\"object.event_id.name or ''\">الكشف عن مجموعة OpenWood عبر الإنترنت</t>.\n"
-"    <br>\n"
+"    عزيزي <t t-out=\"object.partner_id.name or object.partner_name or ''\">براندن فريمان</t><br/>\n"
+"    يسعدنا إخبارك بأن مقترحك <t t-out=\"object.name or ''\">محور هذه الفعالية</t> قد تم قبوله وتأكيده للفعالية <t t-out=\"object.event_id.name or ''\">الكشف عن مجموعة OpenWood عبر الإنترنت</t>.\n"
+"    <br/>\n"
 "    ستجد المزيد من التفاصيل هنا:\n"
 "    <div style=\"margin: 16px 0px 16px 0px;\">\n"
 "        <a t-attf-href=\"/event/{{ object.event_id.id }}/track/{{ object.id }}\" style=\"padding: 8px 16px 8px 16px; font-size: 14px; color: #FFFFFF; text-decoration: none !important; background-color: #875A7B; border: 0px solid #875A7B; border-radius:3px\">\n"
 "            عرض الحوار\n"
 "        </a>\n"
 "    </div>\n"
-"    <br><br>\n"
+"    <br/><br/>\n"
 "    شكراً لك،\n"
 "    <t t-if=\"user.signature\">\n"
-"        <br>\n"
-"        <t t-out=\"user.signature or ''\">--<br>ميتشل آدمن</t>\n"
+"        <br/>\n"
+"        <t t-out=\"user.signature or ''\">--<br/>ميتشل آدمن</t>\n"
 "    </t>\n"
 "</div>"
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.track_card
 msgid "<i class=\"fa fa-ban me-2\"/>Unpublished"
-msgstr "<i class=\"fa fa-ban me-2\"/>غير منشور "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.tracks_search
-msgid "<i class=\"fa fa-bell mx-2 text-muted\"/> Favorite Talks"
+msgid "<i class=\"fa fa-bell me-2 text-muted\"/> Favorite Talks"
 msgstr ""
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.session_topbar
+msgid "<i class=\"fa fa-folder-open\"/> Favorites"
+msgstr "<i class=\"fa fa-folder-open\"/> المفضلة "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
 msgid ""
-"<i class=\"oi oi-fw oi-arrow-right\"/>\n"
+"<i class=\"fa fa-fw fa-arrow-right\"/>\n"
 "                        Write one."
 msgstr ""
-"<i class=\"oi oi-fw oi-arrow-right\"/>\n"
-"                        اكتب واحدة. "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.tracks_display_list
-msgid "<span class=\"d-none d-md-block\">&amp;bull;</span>"
+msgid "<span class=\"d-none d-md-block ms-2\">&amp;bull;</span>"
 msgstr ""
 
 #. module: website_event_track
@@ -171,12 +186,6 @@ msgid ""
 msgstr ""
 "<span class=\"fa fa-lg fa-globe\" title=\"القيم المحددة هنا خاصة بالشركة "
 "فقط. \" groups=\"website.group_multi_website\"/>"
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_online
-#: model_terms:ir.ui.view,arch_db:website_event_track.tracks_main
-msgid "<span class=\"fa fa-plus me-1\"/> Schedule Tracks"
-msgstr "<span class=\"fa fa-plus me-1\"/> جدولة المسارات "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
@@ -221,7 +230,7 @@ msgstr ""
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.agenda_topbar
 msgid "<span id=\"search_number\" class=\"me-1\">0</span>Results"
-msgstr "<span id=\"search_number\" class=\"me-1\">0</span>نتائج "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
@@ -239,9 +248,32 @@ msgid "<span>New track proposal</span>"
 msgstr "<span>مقترح مسار جديد</span> "
 
 #. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
+msgid "<span>hours</span>"
+msgstr "<span>ساعات</span> "
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
+msgid ""
+"<strong>Lightning Talks</strong>. These are 30 minutes talks on many\n"
+"                                    different topics. Most topics are accepted in lightning talks."
+msgstr ""
+"<strong>الحوارات السريعة</strong>. إنها حوارات مدتها 30 دقيقة تتمحور حول الكثير من\n"
+"                                    المواضيع المختلفة. معظم المواضيع تصلح لأن تكون إحدى الحوارات السريعة."
+
+#. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
 msgid "<strong>Location:</strong>"
 msgstr "<strong>الموقع:</strong> "
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
+msgid ""
+"<strong>Regular Talks</strong>. These are standard talks with slides,\n"
+"                                    alocated in slots of 60 minutes."
+msgstr ""
+"<strong>الحوارات العادية</strong>. إنها الحوارات العادية مع العروض التقديمية،\n"
+"                                    مخصصة للحوارات التي تستغرق أكثر من 60 دقيقة. "
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_track7
@@ -264,7 +296,7 @@ msgstr ""
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__message_needaction
 msgid "Action Needed"
-msgstr "إجراء مطلوب"
+msgstr "يتطلب اتخاذ إجراء "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__active
@@ -319,8 +351,8 @@ msgstr ""
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_track19
-msgid "Advanced lead management: tips and tricks from the fields"
-msgstr "الإدارة المتقدمة للعملاء المهتمين: النصائح والطرق من الحقول "
+msgid "Advanced lead management : tips and tricks from the fields"
+msgstr "إدارة العملاء المهتمين المتقدمة: النصائح والطرق من الحقول "
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_track13
@@ -328,17 +360,10 @@ msgid "Advanced reporting"
 msgstr "إعداد التقارير المتقدمة "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_event.py:0
-#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_topbar
 #, python-format
 msgid "Agenda"
 msgstr "جدول أعمال"
-
-#. module: website_event_track
-#: model:ir.model.fields,field_description:website_event_track.field_event_track__color
-msgid "Agenda Color"
-msgstr "لون الأجندة "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.session_topbar
@@ -351,7 +376,7 @@ msgid "Allow Track Proposals"
 msgstr "السماح بمقترحات المسارات "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid "Allow push notifications?"
@@ -361,8 +386,10 @@ msgstr "السماح بالإشعارات المنبثقة؟ "
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
 msgid ""
 "Allow video and audio recording of their\n"
-"                            presentation, for publishing on our website."
+"                                    presentation, for publishing on our website."
 msgstr ""
+"السماح بتسجيل مقاطع الفيديو والصوت لعرضهم\n"
+"                                    التقديمي، لنشره على موقعنا الإلكتروني. "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__wishlisted_by_default
@@ -376,14 +403,13 @@ msgid "Announced"
 msgstr "معلن عنه "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/xml/event_track_proposal_templates.xml:0
 #, python-format
 msgid "Application"
 msgstr "التطبيق "
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_search
 msgid "Archived"
 msgstr "مؤرشف"
@@ -438,8 +464,67 @@ msgid "Biography"
 msgstr "السيرة الذاتية"
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track_stage.py:0
+#: model:event.track,legend_blocked:website_event_track.event_7_track_1
+#: model:event.track,legend_blocked:website_event_track.event_7_track_10
+#: model:event.track,legend_blocked:website_event_track.event_7_track_11
+#: model:event.track,legend_blocked:website_event_track.event_7_track_12
+#: model:event.track,legend_blocked:website_event_track.event_7_track_13
+#: model:event.track,legend_blocked:website_event_track.event_7_track_14
+#: model:event.track,legend_blocked:website_event_track.event_7_track_15
+#: model:event.track,legend_blocked:website_event_track.event_7_track_16
+#: model:event.track,legend_blocked:website_event_track.event_7_track_17
+#: model:event.track,legend_blocked:website_event_track.event_7_track_18
+#: model:event.track,legend_blocked:website_event_track.event_7_track_19
+#: model:event.track,legend_blocked:website_event_track.event_7_track_2
+#: model:event.track,legend_blocked:website_event_track.event_7_track_20
+#: model:event.track,legend_blocked:website_event_track.event_7_track_21
+#: model:event.track,legend_blocked:website_event_track.event_7_track_22
+#: model:event.track,legend_blocked:website_event_track.event_7_track_23
+#: model:event.track,legend_blocked:website_event_track.event_7_track_24
+#: model:event.track,legend_blocked:website_event_track.event_7_track_25
+#: model:event.track,legend_blocked:website_event_track.event_7_track_26
+#: model:event.track,legend_blocked:website_event_track.event_7_track_3
+#: model:event.track,legend_blocked:website_event_track.event_7_track_4
+#: model:event.track,legend_blocked:website_event_track.event_7_track_5
+#: model:event.track,legend_blocked:website_event_track.event_7_track_6
+#: model:event.track,legend_blocked:website_event_track.event_7_track_7
+#: model:event.track,legend_blocked:website_event_track.event_7_track_8
+#: model:event.track,legend_blocked:website_event_track.event_7_track_9
+#: model:event.track,legend_blocked:website_event_track.event_7_track_l3_1
+#: model:event.track,legend_blocked:website_event_track.event_7_track_l3_10
+#: model:event.track,legend_blocked:website_event_track.event_7_track_l3_11
+#: model:event.track,legend_blocked:website_event_track.event_7_track_l3_2
+#: model:event.track,legend_blocked:website_event_track.event_track1
+#: model:event.track,legend_blocked:website_event_track.event_track10
+#: model:event.track,legend_blocked:website_event_track.event_track11
+#: model:event.track,legend_blocked:website_event_track.event_track12
+#: model:event.track,legend_blocked:website_event_track.event_track13
+#: model:event.track,legend_blocked:website_event_track.event_track14
+#: model:event.track,legend_blocked:website_event_track.event_track15
+#: model:event.track,legend_blocked:website_event_track.event_track16
+#: model:event.track,legend_blocked:website_event_track.event_track17
+#: model:event.track,legend_blocked:website_event_track.event_track18
+#: model:event.track,legend_blocked:website_event_track.event_track19
+#: model:event.track,legend_blocked:website_event_track.event_track2
+#: model:event.track,legend_blocked:website_event_track.event_track20
+#: model:event.track,legend_blocked:website_event_track.event_track21
+#: model:event.track,legend_blocked:website_event_track.event_track22
+#: model:event.track,legend_blocked:website_event_track.event_track23
+#: model:event.track,legend_blocked:website_event_track.event_track24
+#: model:event.track,legend_blocked:website_event_track.event_track25
+#: model:event.track,legend_blocked:website_event_track.event_track27
+#: model:event.track,legend_blocked:website_event_track.event_track28
+#: model:event.track,legend_blocked:website_event_track.event_track29
+#: model:event.track,legend_blocked:website_event_track.event_track3
+#: model:event.track,legend_blocked:website_event_track.event_track30
+#: model:event.track,legend_blocked:website_event_track.event_track31
+#: model:event.track,legend_blocked:website_event_track.event_track4
+#: model:event.track,legend_blocked:website_event_track.event_track5
+#: model:event.track,legend_blocked:website_event_track.event_track6
+#: model:event.track,legend_blocked:website_event_track.event_track7
+#: model:event.track,legend_blocked:website_event_track.event_track8
+#: model:event.track,legend_blocked:website_event_track.event_track9
 #: model:event.track.stage,legend_blocked:website_event_track.event_track_stage0
 #: model:event.track.stage,legend_blocked:website_event_track.event_track_stage1
 #: model:event.track.stage,legend_blocked:website_event_track.event_track_stage2
@@ -476,6 +561,11 @@ msgid "Button Title"
 msgstr "عنوان الزر "
 
 #. module: website_event_track
+#: model:ir.model.fields,field_description:website_event_track.field_event_track__website_cta_delay
+msgid "Button appears"
+msgstr "يظهر الزر "
+
+#. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__is_website_cta_live
 msgid "CTA button is available"
 msgstr "زر الدعوة إلى اتخاذ إجراء متاح "
@@ -498,7 +588,7 @@ msgstr "المرحلة الملغية "
 #. module: website_event_track
 #: model:event.track.stage,name:website_event_track.event_track_stage5
 msgid "Cancelled"
-msgstr "تم الإلغاء "
+msgstr "ملغي"
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
@@ -508,7 +598,7 @@ msgstr "الفئات"
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_tag__category_id
 msgid "Category"
-msgstr "الفئة "
+msgstr "فئة"
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_12
@@ -516,11 +606,7 @@ msgid "Climate positive"
 msgstr "المناخ الإيجابي "
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.session_topbar
-msgid "Close"
-msgstr "إغلاق"
-
-#. module: website_event_track
+#: model:ir.model.fields,field_description:website_event_track.field_event_track__color
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_stage__color
 msgid "Color"
 msgstr "اللون"
@@ -528,10 +614,9 @@ msgstr "اللون"
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_tag__color
 msgid "Color Index"
-msgstr "مؤشر اللون "
+msgstr "معرف اللون"
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/controllers/event_track.py:0
 #, python-format
 msgid "Coming soon"
@@ -565,7 +650,7 @@ msgstr "تأكيد {{ object.name }} "
 #. module: website_event_track
 #: model:event.track.stage,name:website_event_track.event_track_stage1
 msgid "Confirmed"
-msgstr "تم التأكيد "
+msgstr "مؤكد"
 
 #. module: website_event_track
 #: model_terms:event.track,description:website_event_track.event_7_track_13
@@ -579,7 +664,6 @@ msgstr ""
 "عملية البناء والنتائج النهايئة. شرح بسيط خطوة بخطوة! أأنت مهتم؟ "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track.py:0
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__partner_id
 #, python-format
@@ -592,7 +676,6 @@ msgid "Contact Details"
 msgstr "تفاصيل جهة الاتصال"
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track.py:0
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__contact_email
 #, python-format
@@ -605,9 +688,24 @@ msgid "Contact Phone"
 msgstr "رقم الهاتف "
 
 #. module: website_event_track
+#: model:ir.model.fields,help:website_event_track.field_event_track__contact_email
+msgid "Contact email is private and used internally"
+msgstr "البريد الإلكتروني لجهة الاتصال خاص ويُستخدم داخلياً فقط "
+
+#. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal_contact_details
 msgid "Contact me through a different email/phone"
 msgstr "تواصلوا معي عن طريق بريد إلكتروني/رقم هاتف آخر "
+
+#. module: website_event_track
+#: model:ir.model.fields,help:website_event_track.field_event_track__partner_id
+msgid "Contact of the track, may be different from speaker."
+msgstr "يمكن أن تختلف جهة الاتصال للمسار عن المتحدث. "
+
+#. module: website_event_track
+#: model:ir.model.fields,help:website_event_track.field_event_track__contact_phone
+msgid "Contact phone is private and used internally"
+msgstr "رقم هاتف جهة الاتصال خاص ويُستخدم داخلياً فقط "
 
 #. module: website_event_track
 #: model_terms:ir.actions.act_window,help:website_event_track.action_event_track
@@ -678,7 +776,7 @@ msgstr "قم بتحديد علامات التصنيف التي تشرح إدار
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track_location__sequence
 msgid "Define the order in which the location will appear on \"Agenda\" page"
-msgstr "قم بتحديد الترتيب الذي سيظهر فيه الموقع في صفحة \"الأجندة\" "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.actions.act_window,help:website_event_track.event_track_stage_action
@@ -758,6 +856,11 @@ msgid "Dowel Hack"
 msgstr "حيلة العمود "
 
 #. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_kanban
+msgid "Dropdown menu"
+msgstr "القائمة المنسدلة"
+
+#. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__duration
 msgid "Duration"
 msgstr "المدة"
@@ -785,7 +888,7 @@ msgid "Email Template"
 msgstr "قالب البريد الإلكتروني"
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid "Error"
@@ -813,7 +916,7 @@ msgstr "مواقع الفعاليات "
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.snippet_options
 msgid "Event Page"
-msgstr "صفحة الفعالية "
+msgstr ""
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_event__track_proposal_menu_ids
@@ -877,7 +980,7 @@ msgstr "نهاية الفعالية "
 #. module: website_event_track
 #: model:mail.template,name:website_event_track.mail_template_data_track_confirmation
 msgid "Event: Track Confirmation"
-msgstr "الفعالية: تتبع التأكيد "
+msgstr ""
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_res_config_settings__events_app_name
@@ -891,7 +994,7 @@ msgid "Events PWA"
 msgstr "تطبيق الويب التقدمي للفعاليات "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #: model_terms:ir.ui.view,arch_db:website_event_track.track_widget_reminder
@@ -905,14 +1008,14 @@ msgid "Favorites"
 msgstr "المفضلات"
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.snippet_options
-msgid "Filter by Tags"
-msgstr "التصفية حسب علامات التصنيف "
+#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_topbar
+msgid "Filter Tracks..."
+msgstr "تصفية المسارات... "
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.session_topbar
-msgid "Filters"
-msgstr "عوامل التصفية "
+#: model_terms:ir.ui.view,arch_db:website_event_track.snippet_options
+msgid "Filter by Tags"
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.tracks_display_list
@@ -932,7 +1035,7 @@ msgstr "مطوي في عرض كانبان"
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__message_follower_ids
 msgid "Followers"
-msgstr "المتابعين"
+msgstr "المتابعين "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__message_partner_ids
@@ -942,7 +1045,7 @@ msgstr "المتابعين (الشركاء) "
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "أيقونة من Font awesome مثال: fa-tasks "
+msgstr "أيقونة Font awesome مثال fa-tasks "
 
 #. module: website_event_track
 #: model:event.track.tag.category,name:website_event_track.event_track_tag_category_2
@@ -993,7 +1096,7 @@ msgstr "بطاقة عنوان كانبان رمادية"
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_visitor_view_search
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_search
 msgid "Group By"
-msgstr "تجميع حسب"
+msgstr "التجميع حسب "
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_l3_11
@@ -1088,7 +1191,7 @@ msgstr "الأيقونة"
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+msgstr "الأيقونة للإشارة إلى استثناء النشاط"
 
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track_stage__is_fully_accessible
@@ -1102,7 +1205,7 @@ msgstr ""
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+msgstr "إذا كان محددًا، فهناك رسائل جديدة تحتاج لرؤيتها."
 
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__message_has_error
@@ -1143,8 +1246,67 @@ msgid "In"
 msgstr "في"
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track_stage.py:0
+#: model:event.track,legend_normal:website_event_track.event_7_track_1
+#: model:event.track,legend_normal:website_event_track.event_7_track_10
+#: model:event.track,legend_normal:website_event_track.event_7_track_11
+#: model:event.track,legend_normal:website_event_track.event_7_track_12
+#: model:event.track,legend_normal:website_event_track.event_7_track_13
+#: model:event.track,legend_normal:website_event_track.event_7_track_14
+#: model:event.track,legend_normal:website_event_track.event_7_track_15
+#: model:event.track,legend_normal:website_event_track.event_7_track_16
+#: model:event.track,legend_normal:website_event_track.event_7_track_17
+#: model:event.track,legend_normal:website_event_track.event_7_track_18
+#: model:event.track,legend_normal:website_event_track.event_7_track_19
+#: model:event.track,legend_normal:website_event_track.event_7_track_2
+#: model:event.track,legend_normal:website_event_track.event_7_track_20
+#: model:event.track,legend_normal:website_event_track.event_7_track_21
+#: model:event.track,legend_normal:website_event_track.event_7_track_22
+#: model:event.track,legend_normal:website_event_track.event_7_track_23
+#: model:event.track,legend_normal:website_event_track.event_7_track_24
+#: model:event.track,legend_normal:website_event_track.event_7_track_25
+#: model:event.track,legend_normal:website_event_track.event_7_track_26
+#: model:event.track,legend_normal:website_event_track.event_7_track_3
+#: model:event.track,legend_normal:website_event_track.event_7_track_4
+#: model:event.track,legend_normal:website_event_track.event_7_track_5
+#: model:event.track,legend_normal:website_event_track.event_7_track_6
+#: model:event.track,legend_normal:website_event_track.event_7_track_7
+#: model:event.track,legend_normal:website_event_track.event_7_track_8
+#: model:event.track,legend_normal:website_event_track.event_7_track_9
+#: model:event.track,legend_normal:website_event_track.event_7_track_l3_1
+#: model:event.track,legend_normal:website_event_track.event_7_track_l3_10
+#: model:event.track,legend_normal:website_event_track.event_7_track_l3_11
+#: model:event.track,legend_normal:website_event_track.event_7_track_l3_2
+#: model:event.track,legend_normal:website_event_track.event_track1
+#: model:event.track,legend_normal:website_event_track.event_track10
+#: model:event.track,legend_normal:website_event_track.event_track11
+#: model:event.track,legend_normal:website_event_track.event_track12
+#: model:event.track,legend_normal:website_event_track.event_track13
+#: model:event.track,legend_normal:website_event_track.event_track14
+#: model:event.track,legend_normal:website_event_track.event_track15
+#: model:event.track,legend_normal:website_event_track.event_track16
+#: model:event.track,legend_normal:website_event_track.event_track17
+#: model:event.track,legend_normal:website_event_track.event_track18
+#: model:event.track,legend_normal:website_event_track.event_track19
+#: model:event.track,legend_normal:website_event_track.event_track2
+#: model:event.track,legend_normal:website_event_track.event_track20
+#: model:event.track,legend_normal:website_event_track.event_track21
+#: model:event.track,legend_normal:website_event_track.event_track22
+#: model:event.track,legend_normal:website_event_track.event_track23
+#: model:event.track,legend_normal:website_event_track.event_track24
+#: model:event.track,legend_normal:website_event_track.event_track25
+#: model:event.track,legend_normal:website_event_track.event_track27
+#: model:event.track,legend_normal:website_event_track.event_track28
+#: model:event.track,legend_normal:website_event_track.event_track29
+#: model:event.track,legend_normal:website_event_track.event_track3
+#: model:event.track,legend_normal:website_event_track.event_track30
+#: model:event.track,legend_normal:website_event_track.event_track31
+#: model:event.track,legend_normal:website_event_track.event_track4
+#: model:event.track,legend_normal:website_event_track.event_track5
+#: model:event.track,legend_normal:website_event_track.event_track6
+#: model:event.track,legend_normal:website_event_track.event_track7
+#: model:event.track,legend_normal:website_event_track.event_track8
+#: model:event.track,legend_normal:website_event_track.event_track9
 #: model:event.track.stage,legend_normal:website_event_track.event_track_stage0
 #: model:event.track.stage,legend_normal:website_event_track.event_track_stage1
 #: model:event.track.stage,legend_normal:website_event_track.event_track_stage2
@@ -1166,14 +1328,14 @@ msgid "In this video, I covered 6 tips and tricks to help out beginners:"
 msgstr "في هذا الفيديو، قمت بتغطية 6 نصائح وطرق لمساعدة المبتدئين: "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/xml/website_event_pwa.xml:0
 #, python-format
 msgid "Install"
 msgstr "تثبيت"
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/xml/website_event_pwa.xml:0
 #, python-format
 msgid "Install Application"
@@ -1290,6 +1452,16 @@ msgid "Kitchens for the Future"
 msgstr "مطابخ للمستقبل "
 
 #. module: website_event_track
+#: model:ir.model.fields,field_description:website_event_track.field_event_track____last_update
+#: model:ir.model.fields,field_description:website_event_track.field_event_track_location____last_update
+#: model:ir.model.fields,field_description:website_event_track.field_event_track_stage____last_update
+#: model:ir.model.fields,field_description:website_event_track.field_event_track_tag____last_update
+#: model:ir.model.fields,field_description:website_event_track.field_event_track_tag_category____last_update
+#: model:ir.model.fields,field_description:website_event_track.field_event_track_visitor____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__write_uid
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_location__write_uid
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_stage__write_uid
@@ -1328,11 +1500,6 @@ msgstr "البساطة هي الخيار الأمثل دوماً "
 #: model:event.track,name:website_event_track.event_7_track_4
 msgid "Life at Home Around the World: William’s Story"
 msgstr "الحياة في المنزل في شتى أنحاء العالم: قصة ويليام "
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid "Lightning Talks"
-msgstr ""
 
 #. module: website_event_track
 #: model_terms:event.track,description:website_event_track.event_7_track_19
@@ -1396,6 +1563,11 @@ msgstr "الغداء"
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__website_cta
 msgid "Magic Button"
 msgstr "الزر السحري "
+
+#. module: website_event_track
+#: model:ir.model.fields,field_description:website_event_track.field_event_track__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "المرفق الرئيسي"
 
 #. module: website_event_track
 #: model_terms:event.track,description:website_event_track.event_7_track_18
@@ -1464,7 +1636,7 @@ msgstr "استراحة الصباح "
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "الموعد النهائي لنشاطاتي "
+msgstr "نهاية الوقت المعين للنشاط"
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_track27
@@ -1525,7 +1697,7 @@ msgid "No Track Visitors yet!"
 msgstr "لا يوجد زوار لمسارك بعد! "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/website_event_track_proposal_form_tags.js:0
 #, python-format
 msgid "No results found"
@@ -1556,12 +1728,12 @@ msgstr "عدد الإجراءات"
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__message_has_error_counter
 msgid "Number of errors"
-msgstr "عدد الأخطاء "
+msgstr "عدد الاخطاء"
 
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+msgid "Number of messages which requires an action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء "
 
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__message_has_error_counter
@@ -1575,7 +1747,7 @@ msgstr "القديم جديد "
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_20
-msgid "Our Last Day Together!"
+msgid "Our Last Day Together !"
 msgstr "آخر يوم لنا معاً! "
 
 #. module: website_event_track
@@ -1606,14 +1778,14 @@ msgid "Plan your experience by adding your favorites talks to your wishlist"
 msgstr "قم بالتخطيط لتجربتك عن طريق إضافة حواراتك المفضلة إلى قائمة أمنياتك "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/website_event_track_proposal_form.js:0
 #, python-format
 msgid "Please enter either a contact email address or a contact phone number."
 msgstr "يرجى إدخال عنوان بريد إلكتروني أو رقم هاتف للتواصل. "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/website_event_track_proposal_form.js:0
 #, python-format
 msgid "Please fill out the form correctly."
@@ -1676,13 +1848,67 @@ msgid "Raising qualitive insights from your customers"
 msgstr "جمع وجهات نظر قيّمة من عملائك "
 
 #. module: website_event_track
-#: model:ir.model.fields,field_description:website_event_track.field_event_track__rating_ids
-msgid "Ratings"
-msgstr "التقييمات "
-
-#. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track_stage.py:0
+#: model:event.track,legend_done:website_event_track.event_7_track_1
+#: model:event.track,legend_done:website_event_track.event_7_track_10
+#: model:event.track,legend_done:website_event_track.event_7_track_11
+#: model:event.track,legend_done:website_event_track.event_7_track_12
+#: model:event.track,legend_done:website_event_track.event_7_track_13
+#: model:event.track,legend_done:website_event_track.event_7_track_14
+#: model:event.track,legend_done:website_event_track.event_7_track_15
+#: model:event.track,legend_done:website_event_track.event_7_track_16
+#: model:event.track,legend_done:website_event_track.event_7_track_17
+#: model:event.track,legend_done:website_event_track.event_7_track_18
+#: model:event.track,legend_done:website_event_track.event_7_track_19
+#: model:event.track,legend_done:website_event_track.event_7_track_2
+#: model:event.track,legend_done:website_event_track.event_7_track_20
+#: model:event.track,legend_done:website_event_track.event_7_track_21
+#: model:event.track,legend_done:website_event_track.event_7_track_22
+#: model:event.track,legend_done:website_event_track.event_7_track_23
+#: model:event.track,legend_done:website_event_track.event_7_track_24
+#: model:event.track,legend_done:website_event_track.event_7_track_25
+#: model:event.track,legend_done:website_event_track.event_7_track_26
+#: model:event.track,legend_done:website_event_track.event_7_track_3
+#: model:event.track,legend_done:website_event_track.event_7_track_4
+#: model:event.track,legend_done:website_event_track.event_7_track_5
+#: model:event.track,legend_done:website_event_track.event_7_track_6
+#: model:event.track,legend_done:website_event_track.event_7_track_7
+#: model:event.track,legend_done:website_event_track.event_7_track_8
+#: model:event.track,legend_done:website_event_track.event_7_track_9
+#: model:event.track,legend_done:website_event_track.event_7_track_l3_1
+#: model:event.track,legend_done:website_event_track.event_7_track_l3_10
+#: model:event.track,legend_done:website_event_track.event_7_track_l3_11
+#: model:event.track,legend_done:website_event_track.event_7_track_l3_2
+#: model:event.track,legend_done:website_event_track.event_track1
+#: model:event.track,legend_done:website_event_track.event_track10
+#: model:event.track,legend_done:website_event_track.event_track11
+#: model:event.track,legend_done:website_event_track.event_track12
+#: model:event.track,legend_done:website_event_track.event_track13
+#: model:event.track,legend_done:website_event_track.event_track14
+#: model:event.track,legend_done:website_event_track.event_track15
+#: model:event.track,legend_done:website_event_track.event_track16
+#: model:event.track,legend_done:website_event_track.event_track17
+#: model:event.track,legend_done:website_event_track.event_track18
+#: model:event.track,legend_done:website_event_track.event_track19
+#: model:event.track,legend_done:website_event_track.event_track2
+#: model:event.track,legend_done:website_event_track.event_track20
+#: model:event.track,legend_done:website_event_track.event_track21
+#: model:event.track,legend_done:website_event_track.event_track22
+#: model:event.track,legend_done:website_event_track.event_track23
+#: model:event.track,legend_done:website_event_track.event_track24
+#: model:event.track,legend_done:website_event_track.event_track25
+#: model:event.track,legend_done:website_event_track.event_track27
+#: model:event.track,legend_done:website_event_track.event_track28
+#: model:event.track,legend_done:website_event_track.event_track29
+#: model:event.track,legend_done:website_event_track.event_track3
+#: model:event.track,legend_done:website_event_track.event_track30
+#: model:event.track,legend_done:website_event_track.event_track31
+#: model:event.track,legend_done:website_event_track.event_track4
+#: model:event.track,legend_done:website_event_track.event_track5
+#: model:event.track,legend_done:website_event_track.event_track6
+#: model:event.track,legend_done:website_event_track.event_track7
+#: model:event.track,legend_done:website_event_track.event_track8
+#: model:event.track,legend_done:website_event_track.event_track9
 #: model:event.track.stage,legend_done:website_event_track.event_track_stage0
 #: model:event.track.stage,legend_done:website_event_track.event_track_stage1
 #: model:event.track.stage,legend_done:website_event_track.event_track_stage2
@@ -1707,11 +1933,6 @@ msgstr "بطاقة عنوان كانبان حمراء"
 #: model:event.track.stage,name:website_event_track.event_track_stage4
 msgid "Refused"
 msgstr "تم الرفض "
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid "Regular Talks"
-msgstr ""
 
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__track_start_relative
@@ -1762,12 +1983,13 @@ msgstr "تم تحسين محركات البحث"
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+msgstr "خطأ في تسليم الرسائل القصيرة"
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_topbar
-msgid "Search Tracks"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_online
+#: model_terms:ir.ui.view,arch_db:website_event_track.tracks_main
+msgid "Schedule some tracks to get started"
+msgstr "قم بجدولة بعض المسارات للبدء "
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_6
@@ -1775,7 +1997,7 @@ msgid "Securing your Lumber during transport"
 msgstr "وضع الخشب بشكل آمن أثناء النقل "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/website_event_track_proposal_form_tags.js:0
 #, python-format
 msgid "Select categories"
@@ -1787,8 +2009,6 @@ msgid ""
 "Sent to speakers whose track proposal is accepted (set the template on the "
 "right stage)"
 msgstr ""
-"يتم إرساله إلى المتحدثين الذين قد تم قبول مقترح المسار الخاص بهم (قم بإعداد "
-"القالب في المرحلة الصحيحة) "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__seo_name
@@ -1801,10 +2021,10 @@ msgstr "اسم محسنات محرك البحث "
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_tag__sequence
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_tag_category__sequence
 msgid "Sequence"
-msgstr "تسلسل "
+msgstr "التسلسل "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #: model_terms:ir.ui.view,arch_db:website_event_track.track_widget_reminder
@@ -1813,15 +2033,9 @@ msgid "Set Favorite"
 msgstr "تعيين المفضلة "
 
 #. module: website_event_track
-#: model:ir.model.fields,field_description:website_event_track.field_event_track__website_cta_delay
-msgid "Show Button"
-msgstr "إظهار الزر "
-
-#. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_search
 msgid "Show all records which has next action date is before today"
-msgstr ""
-"عرض كافة السجلات التي يسبق تاريخ الإجراء التالي فيها تاريخ اليوم الجاري "
+msgstr "عرض كافة السجلات المُعين لها تاريخ إجراء تالي يسبق تاريخ اليوم الجاري"
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_event_view_form
@@ -1839,7 +2053,6 @@ msgid "Speaker Bio"
 msgstr "النبذة التعريفية للمتحدث "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_track.py:0
 #, python-format
 msgid "Speaker Email"
@@ -1851,12 +2064,26 @@ msgid "Speaker Photo"
 msgstr "صورة المتحدث "
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid "Speaker Profile"
+#: model:ir.model.fields,help:website_event_track.field_event_track__partner_email
+msgid ""
+"Speaker email is used for public display and may vary from contact email"
 msgstr ""
+"يُستخدم البريد الإلكتروني للمتحدث للعرض العام وقد يختلف عن البريد الإلكتروني"
+" للتواصل "
 
 #. module: website_event_track
-#. odoo-python
+#: model:ir.model.fields,help:website_event_track.field_event_track__partner_name
+msgid "Speaker name is used for public display and may vary from contact name"
+msgstr "يُستخدم اسم المتحدث للعرض العام وقد يختلف عن اسم التواصل "
+
+#. module: website_event_track
+#: model:ir.model.fields,help:website_event_track.field_event_track__partner_phone
+msgid ""
+"Speaker phone is used for public display and may vary from contact phone"
+msgstr ""
+"يُستخدم رقم الهاتف للمتحدث للعرض العام وقد يختلف عن رقم الهاتف للتواصل "
+
+#. module: website_event_track
 #: code:addons/website_event_track/models/event_track.py:0
 #, python-format
 msgid "Speakers"
@@ -1881,7 +2108,7 @@ msgstr "اسم المرحلة"
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.track_card
 msgid "Starting now!"
-msgstr "تبدأ الآن!"
+msgstr ""
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_track28
@@ -1896,7 +2123,7 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"الأنشطة المعتمدة على الحالة\n"
+"الحالة على أساس الأنشطة\n"
 "المتأخرة: تاريخ الاستحقاق مر\n"
 "اليوم: تاريخ النشاط هو اليوم\n"
 "المخطط: الأنشطة المستقبلية."
@@ -1923,8 +2150,8 @@ msgstr "اسم علامة التصنيف "
 
 #. module: website_event_track
 #: model:ir.model.constraint,message:website_event_track.constraint_event_track_tag_name_uniq
-msgid "Tag name already exists!"
-msgstr "اسم علامة التصنيف مستخدم بالفعل! "
+msgid "Tag name already exists !"
+msgstr "اسم علامة التصنيف موجود بالفعل! "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__tag_ids
@@ -1934,43 +2161,35 @@ msgid "Tags"
 msgstr "علامات التصنيف "
 
 #. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid "Talk Intro"
-msgstr ""
-
-#. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_event.py:0
 #, python-format
 msgid "Talk Proposals"
 msgstr "مقترحات الحوارات "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid "Talk added to your Favorites"
 msgstr "تمت إضافة الحوار إلى مفضلتك "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid "Talk already in your Favorites"
 msgstr "الحوار موجود في مفضلتك بالفعل "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid "Talk removed from your Favorites"
 msgstr "تمت إزالة الحوار من مفضلتك "
 
 #. module: website_event_track
-#. odoo-python
 #: code:addons/website_event_track/models/event_event.py:0
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_aside
-#: model_terms:ir.ui.view,arch_db:website_event_track.session_topbar
 #, python-format
 msgid "Talks"
 msgstr "الحوارات "
@@ -1991,7 +2210,7 @@ msgid "Task is blocked. Click to unblock or set as done."
 msgstr "المهمة محجوبة. اضغط لإلغاء حظرها أو تعيينها كمكتملة. "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/xml/event_track_proposal_templates.xml:0
 #, python-format
 msgid "Thank you for your proposal."
@@ -2030,18 +2249,6 @@ msgid ""
 msgstr ""
 "توجد العديد من الأصناف المتاحة من الخشب في العالم، ولكننا نتحدث عن الأصناف الأغلى\n"
 "    في العالم، ولذلك قمنا بوضع أغلى عشر أصناف من الخشب. "
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid ""
-"These are 30 minutes talks on many different topics. Most topics are "
-"accepted in lightning talks."
-msgstr ""
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
-msgid "These are standard talks with slides, alocated in slots of 60 minutes."
-msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.actions.act_window,help:website_event_track.event_track_visitor_action
@@ -2096,14 +2303,16 @@ msgstr "هذه الخطوة مكتملة. اضغط لحجبها أو تعيين�
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
 msgid "This track does not have a description."
-msgstr "لا يحتوي هذا المسار على وصف. "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
 msgid ""
 "Timely release of presentation material (slides),\n"
-"                            for publishing on our website."
+"                                    for publishing on our website."
 msgstr ""
+"إصدار مواد العروض التقديمية في الوقت المناسب (الشرائح)\n"
+"                                    لنشرها على موقعنا الإلكتروني. "
 
 #. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_track__name
@@ -2253,6 +2462,11 @@ msgid "Track blocked"
 msgstr "المسار محجوب "
 
 #. module: website_event_track
+#: model:ir.model.fields,help:website_event_track.field_event_track__duration
+msgid "Track duration in hours."
+msgstr "مدة المسار بالساعات "
+
+#. module: website_event_track
 #: model:ir.model.fields,field_description:website_event_track.field_event_event__track_ids
 #: model:ir.model.fields,field_description:website_event_track.field_event_track_tag__track_ids
 #: model:ir.ui.menu,name:website_event_track.menu_event_track
@@ -2290,7 +2504,7 @@ msgstr "المسارات في الموقع الإلكتروني "
 #. module: website_event_track
 #: model:ir.model.fields,help:website_event_track.field_event_track__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "نوع النشاط المستثنى في السجل. "
+msgstr "نوع النشاط الاستثنائي المسجل."
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.agenda_main_track
@@ -2368,14 +2582,8 @@ msgstr "انتظر أن يقوم الزوار بإضافة هذا المسار �
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.agenda_online
 #: model_terms:ir.ui.view,arch_db:website_event_track.tracks_main
-msgid "We could not find any track at this moment."
-msgstr "لم نتمكن من العثور على أي مسار في الوقت الحالي. "
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_online
-#: model_terms:ir.ui.view,arch_db:website_event_track.tracks_main
-msgid "We could not find any track matching your search for:"
-msgstr "لم نتمكن من العثور على أي مسار يطابق بحثك لـ: "
+msgid "We did not find any track matching your"
+msgstr "لم نتمكن من العثور على أي مسار مطابق لـ"
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_proposal
@@ -2402,7 +2610,7 @@ msgstr ""
 "                            ضمه في البرنامج. "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/xml/event_track_proposal_templates.xml:0
 #, python-format
 msgid "We will evaluate your proposition and get back to you shortly."
@@ -2497,7 +2705,7 @@ msgstr "من الذي سيلقي هذا الحوار؟ سنري ذلك لحاض�
 
 #. module: website_event_track
 #: model:event.track,name:website_event_track.event_7_track_l3_2
-msgid "Who's OpenWood anyway?"
+msgid "Who's OpenWood anyway ?"
 msgstr "من هو OpenWood بأي حال؟ "
 
 #. module: website_event_track
@@ -2522,14 +2730,14 @@ msgid "Woodworking: How I got started!"
 msgstr "الأعمال الخشبية: بدايتي! "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/website_event_track_proposal_form.js:0
 #, python-format
 msgid "You cannot access this page."
 msgstr "لا يمكنك الوصول إلى هذه الصفحة. "
 
 #. module: website_event_track
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_track/static/src/js/event_track_reminder.js:0
 #, python-format
 msgid ""
@@ -2545,7 +2753,7 @@ msgstr "أنت غير متصل بالإنترنت! "
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
 msgid "a few seconds"
-msgstr "بضع ثوانٍ "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.track_card
@@ -2555,22 +2763,17 @@ msgstr "مضت "
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
 msgid "e.g. \"John Doe was born in...\""
-msgstr "مثال: \"ولد جون دو في...\" "
-
-#. module: website_event_track
-#: model_terms:ir.ui.view,arch_db:website_event_track.view_event_location_tree
-msgid "e.g. \"Main Conference Room\""
-msgstr "مثال: \"غرفة المؤتمرات الرئيسية\" "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
 msgid "e.g. \"This talk will be about...\""
-msgstr "مثال: \"سيكون هذا الحوار عن...\" "
+msgstr ""
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
-msgid "e.g. Get Yours Now!"
+msgid "e.g. Get Yours Now !"
 msgstr "مثال: احصل على خاصتك الآن! "
 
 #. module: website_event_track
@@ -2590,21 +2793,20 @@ msgid "hours"
 msgstr "ساعات"
 
 #. module: website_event_track
-#. odoo-javascript
-#: code:addons/website_event_track/static/src/js/event_track_timer.js:0
-#, python-format
-msgid "in %s"
-msgstr ""
-
-#. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.view_event_track_form
-msgid "minutes after Track start"
+msgid "minutes after track starts"
 msgstr "دقائق بعد بدء المسار "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.registration_complete
 msgid "register to your favorites talks now."
 msgstr "قم بالتسجيل لحوارتك المفضلة الآن. "
+
+#. module: website_event_track
+#: model_terms:ir.ui.view,arch_db:website_event_track.agenda_online
+#: model_terms:ir.ui.view,arch_db:website_event_track.tracks_main
+msgid "search."
+msgstr "البحث. "
 
 #. module: website_event_track
 #: model_terms:ir.ui.view,arch_db:website_event_track.event_track_content

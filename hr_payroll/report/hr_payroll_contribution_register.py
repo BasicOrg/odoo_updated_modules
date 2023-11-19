@@ -13,11 +13,12 @@ class ContributionRegisterReport(models.AbstractModel):
         lines_data = {}
         lines_total = {}
 
-        for partner, total_sum, records in self.env['hr.payslip.line']._read_group([('id', 'in', docids), ('partner_id', '!=', False)], ['partner_id'], ['total:sum', 'id:recordset']):
-            docid = partner.id
-            docs.append(docid)
-            lines_data[docid] = records
-            lines_total[docid] = total_sum
+        for result in self.env['hr.payslip.line'].read_group([('id', 'in', docids)], ['partner_id', 'total', 'ids:array_agg(id)'], ['partner_id']):
+            if result['partner_id']:
+                docid = result['partner_id'][0]
+                docs.append(docid)
+                lines_data[docid] = self.env['hr.payslip.line'].browse(result['ids'])
+                lines_total[docid] = result['total']
 
         return {
             'docs': self.env['res.partner'].browse(docs),

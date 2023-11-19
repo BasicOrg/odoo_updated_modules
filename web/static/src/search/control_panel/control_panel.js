@@ -1,16 +1,24 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
 import { getActiveHotkey } from "@web/core/hotkeys/hotkey_service";
 import { Pager } from "@web/core/pager/pager";
 import { useService } from "@web/core/utils/hooks";
+import { ComparisonMenu } from "../comparison_menu/comparison_menu";
+import { FavoriteMenu } from "../favorite_menu/favorite_menu";
+import { FilterMenu } from "../filter_menu/filter_menu";
+import { GroupByMenu } from "../group_by_menu/group_by_menu";
 import { SearchBar } from "../search_bar/search_bar";
 import { Dropdown } from "@web/core/dropdown/dropdown";
-import { useCommand } from "@web/core/commands/command_hook";
-import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 
-import { Component, useState, onMounted, useExternalListener, useRef, useEffect } from "@odoo/owl";
+const { Component, useState, onMounted, useExternalListener, useRef, useEffect } = owl;
+
+const MAPPING = {
+    filter: FilterMenu,
+    groupBy: GroupByMenu,
+    comparison: ComparisonMenu,
+    favorite: FavoriteMenu,
+};
 
 const STICKY_CLASS = "o_mobile_sticky";
 
@@ -31,14 +39,6 @@ export class ControlPanel extends Component {
         });
 
         this.onScrollThrottledBound = this.onScrollThrottled.bind(this);
-
-        const { viewSwitcherEntries, viewType } = this.env.config;
-        for (const view of viewSwitcherEntries || []) {
-            useCommand(_t("Show %s view", view.name), () => this.onViewClicked(view.type), {
-                category: "view_switcher",
-                isAvailable: () => view.type !== viewType,
-            });
-        }
 
         useExternalListener(window, "click", this.onWindowClick);
         useEffect(() => {
@@ -66,32 +66,6 @@ export class ControlPanel extends Component {
             this.lastScrollTop = 0;
             this.initialScrollTop = this.getScrollingElement().scrollTop;
         });
-
-        this.mainButtons = useRef("mainButtons");
-
-        useEffect(() => {
-            // on small screen, clean-up the dropdown elements
-            const dropdownButtons = this.mainButtons.el.querySelectorAll(
-                ".o_control_panel_collapsed_create.dropdown-menu button"
-            );
-            if (!dropdownButtons.length) {
-                this.mainButtons.el
-                    .querySelectorAll(
-                        ".o_control_panel_collapsed_create.dropdown-menu, .o_control_panel_collapsed_create.dropdown-toggle"
-                    )
-                    .forEach((el) => el.classList.add("d-none"));
-                this.mainButtons.el
-                    .querySelectorAll(".o_control_panel_collapsed_create.btn-group")
-                    .forEach((el) => el.classList.remove("btn-group"));
-                return;
-            }
-            for (const button of dropdownButtons) {
-                for (const cl of Array.from(button.classList)) {
-                    button.classList.toggle(cl, !cl.startsWith("btn-"));
-                }
-                button.classList.add("dropdown-item", "btn", "btn-link");
-            }
-        });
     }
 
     getScrollingElement() {
@@ -113,10 +87,37 @@ export class ControlPanel extends Component {
      * @returns {Object}
      */
     get display() {
-        return {
-            layoutActions: true,
-            ...this.props.display,
-        };
+        const display = Object.assign(
+            {
+                "top-left": true,
+                "top-right": true,
+                "bottom-left": true,
+                "bottom-left-buttons": true,
+                "bottom-right": true,
+            },
+            this.props.display
+        );
+        display.top = display["top-left"] || display["top-right"];
+        display.bottom = display["bottom-left"] || display["bottom-right"];
+        return display;
+    }
+
+    /**
+     * @returns {Component[]}
+     */
+    get searchMenus() {
+        const searchMenus = [];
+        for (const key of this.env.searchModel.searchMenuTypes) {
+            // look in display instead?
+            if (
+                key === "comparison" &&
+                this.env.searchModel.getSearchItems((i) => i.type === "comparison").length === 0
+            ) {
+                continue;
+            }
+            searchMenus.push({ Component: MAPPING[key], key });
+        }
+        return searchMenus;
     }
 
     /**
@@ -190,7 +191,7 @@ export class ControlPanel extends Component {
     /**
      * @param {KeyboardEvent} ev
      */
-    onMainButtonsKeydown(ev) {
+    onBottomLeftKeydown(ev) {
         const hotkey = getActiveHotkey(ev);
         if (hotkey === "arrowdown") {
             this.env.searchModel.trigger("focus-view");
@@ -201,13 +202,9 @@ export class ControlPanel extends Component {
 }
 
 ControlPanel.components = {
+    ...Object.values(MAPPING),
     Pager,
     SearchBar,
     Dropdown,
-    DropdownItem,
 };
 ControlPanel.template = "web.ControlPanel";
-ControlPanel.props = {
-    display: { type: Object, optional: true },
-    slots: { type: Object, optional: true },
-};

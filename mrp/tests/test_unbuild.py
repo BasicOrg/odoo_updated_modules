@@ -181,10 +181,9 @@ class TestUnbuild(TestMrpCommon):
         details_operation_form = Form(mo.move_raw_ids[1], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
             ml.lot_id = lot
-            ml.quantity = 20
+            ml.qty_done = 20
         details_operation_form.save()
 
-        mo.move_raw_ids.picked = True
         mo.button_mark_done()
         self.assertEqual(mo.state, 'done', "Production order should be in done state.")
         # Check quantity in stock before unbuild.
@@ -273,14 +272,13 @@ class TestUnbuild(TestMrpCommon):
         mo = mo_form.save()
         details_operation_form = Form(mo.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
-            ml.quantity = 5
+            ml.qty_done = 5
         details_operation_form.save()
         details_operation_form = Form(mo.move_raw_ids[1], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
-            ml.quantity = 20
+            ml.qty_done = 20
         details_operation_form.save()
 
-        mo.move_raw_ids.picked = True
         mo.button_mark_done()
         self.assertEqual(mo.state, 'done', "Production order should be in done state.")
         # Check quantity in stock before unbuild.
@@ -307,6 +305,13 @@ class TestUnbuild(TestMrpCommon):
 
         self.assertEqual(self.env['stock.quant']._get_available_quantity(p_final, self.stock_location, lot_id=lot_final), 5, 'You should have consumed 3 final product in stock')
 
+        with self.assertRaises(AssertionError):
+            x.product_id = p_final
+            x.bom_id = bom
+            x.mo_id = mo
+            x.product_qty = 3
+            x.save()
+
         self.assertEqual(self.env['stock.quant']._get_available_quantity(p_final, self.stock_location, lot_id=lot_final), 5, 'You should have consumed 3 final product in stock')
 
         x = Form(self.env['mrp.unbuild'])
@@ -314,6 +319,7 @@ class TestUnbuild(TestMrpCommon):
         x.bom_id = bom
         x.mo_id = mo
         x.product_qty = 3
+        x.lot_id = lot_final
         x.save().action_unbuild()
 
         self.assertEqual(self.env['stock.quant']._get_available_quantity(p_final, self.stock_location, lot_id=lot_final), 2, 'You should have consumed 3 final product in stock')
@@ -325,6 +331,7 @@ class TestUnbuild(TestMrpCommon):
         x.bom_id = bom
         x.mo_id = mo
         x.product_qty = 2
+        x.lot_id = lot_final
         x.save().action_unbuild()
 
         self.assertEqual(self.env['stock.quant']._get_available_quantity(p_final, self.stock_location, lot_id=lot_final), 0, 'You should have 0 finalproduct in stock')
@@ -336,6 +343,7 @@ class TestUnbuild(TestMrpCommon):
         x.bom_id = bom
         x.mo_id = mo
         x.product_qty = 5
+        x.lot_id = lot_final
         x.save().action_unbuild()
 
         self.assertEqual(self.env['stock.quant']._get_available_quantity(p_final, self.stock_location, lot_id=lot_final, allow_negative=True), -5, 'You should have negative quantity for final product in stock')
@@ -373,8 +381,15 @@ class TestUnbuild(TestMrpCommon):
         mo_form = Form(mo)
         mo_form.qty_producing = 5.0
         mo = mo_form.save()
+        details_operation_form = Form(mo.move_raw_ids.filtered(lambda ml: ml.product_id == p2), view=self.env.ref('stock.view_stock_move_operations'))
+        with details_operation_form.move_line_ids.edit(0) as ml:
+            ml.qty_done = ml.reserved_uom_qty
+        with details_operation_form.move_line_ids.edit(1) as ml:
+            ml.qty_done = ml.reserved_uom_qty
+        with details_operation_form.move_line_ids.edit(2) as ml:
+            ml.qty_done = ml.reserved_uom_qty
+        details_operation_form.save()
 
-        mo.move_raw_ids.picked = True
         mo.button_mark_done()
         self.assertEqual(mo.state, 'done', "Production order should be in done state.")
         # Check quantity in stock before unbuild.
@@ -422,13 +437,12 @@ class TestUnbuild(TestMrpCommon):
         mo_form.qty_producing = 3.0
         mo_form.lot_producing_id = lot_finished_1
         mo = mo_form.save()
-        self.assertEqual(mo.move_raw_ids[1].quantity, 12)
+        self.assertEqual(mo.move_raw_ids[1].quantity_done, 12)
         details_operation_form = Form(mo.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
-        with details_operation_form.move_line_ids.edit(0) as ml:
-            ml.quantity = 3
+        with details_operation_form.move_line_ids.new() as ml:
+            ml.qty_done = 3
             ml.lot_id = lot_1
         details_operation_form.save()
-        mo.move_raw_ids.picked = True
         action = mo.button_mark_done()
         backorder = Form(self.env[action['res_model']].with_context(**action['context']))
         backorder.save().action_backorder()
@@ -456,16 +470,16 @@ class TestUnbuild(TestMrpCommon):
         mo = mo_form.save()
         details_operation_form = Form(mo.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.new() as ml:
-            ml.quantity = 2
+            ml.qty_done = 2
             ml.lot_id = lot_2
         details_operation_form.save()
         action = mo.button_mark_done()
 
         mo1 = mo.procurement_group_id.mrp_production_ids[0]
         ml = mo1.finished_move_line_ids[0].consume_line_ids.filtered(lambda m: m.product_id == p1 and lot_finished_1 in m.produce_line_ids.lot_id)
-        self.assertEqual(sum(ml.mapped('quantity')), 12.0, 'Should have consumed 12 for the first lot')
+        self.assertEqual(sum(ml.mapped('qty_done')), 12.0, 'Should have consumed 12 for the first lot')
         ml = mo.finished_move_line_ids[0].consume_line_ids.filtered(lambda m: m.product_id == p1 and lot_finished_2 in m.produce_line_ids.lot_id)
-        self.assertEqual(sum(ml.mapped('quantity')), 8.0, 'Should have consumed 8 for the second lot')
+        self.assertEqual(sum(ml.mapped('qty_done')), 8.0, 'Should have consumed 8 for the second lot')
 
     def test_unbuild_with_routes(self):
         """ This test creates a MO of a stockable product (Table). A new route for rule QC/Unbuild -> Stock
@@ -577,7 +591,7 @@ class TestUnbuild(TestMrpCommon):
 
         # Transfer it
         for ml in picking.move_ids_without_package:
-            ml.write({'quantity': 1, 'picked': True})
+            ml.quantity_done = 1
         picking._action_done()
 
         # Check the available quantity of components and final product in stock
@@ -658,13 +672,12 @@ class TestUnbuild(TestMrpCommon):
 
         details_operation_form = Form(mo.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
-            ml.quantity = 1
+            ml.qty_done = 1
         details_operation_form.save()
         details_operation_form = Form(mo.move_raw_ids[1], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.edit(0) as ml:
-            ml.quantity = 1
+            ml.qty_done = 1
         details_operation_form.save()
-        mo.move_raw_ids.picked = True
         mo.button_mark_done()
 
         uo_form = Form(self.env['mrp.unbuild'])
@@ -705,9 +718,11 @@ class TestUnbuild(TestMrpCommon):
         internal_form.location_dest_id = subloc01
         with internal_form.move_ids_without_package.new() as move:
             move.product_id = p_final
-            move.quantity = 1.0
-            move.picked = True
+            move.product_uom_qty = 1.0
         internal_transfer = internal_form.save()
+        internal_transfer.action_confirm()
+        internal_transfer.action_assign()
+        internal_transfer.move_line_ids.qty_done = 1.0
         internal_transfer.button_validate()
 
         unbuild_order_form = Form(self.env['mrp.unbuild'])
@@ -799,6 +814,7 @@ class TestUnbuild(TestMrpCommon):
         #unbuild order
         unbuild_form = Form(self.env['mrp.unbuild'])
         unbuild_form.mo_id = mo
+        unbuild_form.lot_id = product_1_sn
         unbuild_form.save().action_unbuild()
 
         #mo2
@@ -809,90 +825,10 @@ class TestUnbuild(TestMrpCommon):
         details_operation_form = Form(mo2.move_raw_ids[0], view=self.env.ref('stock.view_stock_move_operations'))
         with details_operation_form.move_line_ids.new() as ml:
             ml.lot_id = product_1_sn
-            ml.quantity = 1
+            ml.qty_done = 1
         details_operation_form.save()
         mo_form = Form(mo2)
         mo_form.qty_producing = 1
         mo2 = mo_form.save()
-        mo2.move_raw_ids.picked = True
         mo2.button_mark_done()
         self.assertEqual(mo2.state, 'done', "Production order should be in done state.")
-
-    def test_unbuild_mo_with_tracked_product_and_component(self):
-        """
-            Test that the unbuild order is correctly created when the finished product
-            and the component is tracked by serial number
-        """
-        finished_product = self.env['product.product'].create({
-            'name': 'Product tracked by sn',
-            'type': 'product',
-            'tracking': 'serial',
-        })
-        finished_product_sn = self.env['stock.lot'].create({
-            'name': 'sn1',
-            'product_id': finished_product.id,
-            'company_id': self.env.company.id
-        })
-        component = self.env['product.product'].create({
-            'name': 'Product component',
-            'type': 'product',
-        })
-        bom_1 = self.env['mrp.bom'].create({
-            'product_id': finished_product.id,
-            'product_tmpl_id': finished_product.product_tmpl_id.id,
-            'product_uom_id': self.env.ref('uom.product_uom_unit').id,
-            'product_qty': 1.0,
-            'type': 'normal',
-            'bom_line_ids': [
-                (0, 0, {'product_id': component.id, 'product_qty': 1}),
-            ],
-        })
-        # mo_1
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.product_id = finished_product
-        mo_form.bom_id = bom_1
-        mo_form.product_qty = 1.0
-        mo = mo_form.save()
-        mo.action_confirm()
-        mo.qty_producing = 1.0
-        mo.lot_producing_id = finished_product_sn
-        mo.move_raw_ids.write({'quantity': 1, 'picked': True})
-        mo.button_mark_done()
-        self.assertEqual(mo.state, 'done', "Production order should be in done state.")
-        # unbuild order mo_1
-        action = mo.button_unbuild()
-        wizard = Form(self.env[action['res_model']].with_context(action['context'])).save()
-        wizard.action_validate()
-        self.assertEqual(mo.unbuild_ids.produce_line_ids[0].product_id, finished_product)
-        self.assertEqual(mo.unbuild_ids.produce_line_ids[0].lot_ids, finished_product_sn)
-        self.assertEqual(mo.unbuild_ids.produce_line_ids[1].product_id, component)
-        self.assertEqual(mo.unbuild_ids.produce_line_ids[1].lot_ids.id, False)
-
-        # set the component as tracked
-        component.tracking = 'serial'
-        component_sn = self.env['stock.lot'].create({
-            'name': 'component-sn1',
-            'product_id': component.id,
-            'company_id': self.env.company.id
-        })
-        self.env['stock.quant']._update_available_quantity(component, self.stock_location, 1, lot_id=component_sn)
-        #mo2 with tracked component
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.product_id = finished_product
-        mo_form.bom_id = bom_1
-        mo_form.product_qty = 1.0
-        mo_2 = mo_form.save()
-        mo_2.action_confirm()
-        mo_2.qty_producing = 1.0
-        mo_2.lot_producing_id = finished_product_sn
-        mo_2.move_raw_ids.write({'quantity': 1, 'picked': True})
-        mo_2.button_mark_done()
-        self.assertEqual(mo_2.state, 'done', "Production order should be in done state.")
-        # unbuild mo_2
-        action = mo_2.button_unbuild()
-        wizard = Form(self.env[action['res_model']].with_context(action['context'])).save()
-        wizard.action_validate()
-        self.assertEqual(mo_2.unbuild_ids.produce_line_ids[0].product_id, finished_product)
-        self.assertEqual(mo_2.unbuild_ids.produce_line_ids[0].lot_ids, finished_product_sn)
-        self.assertEqual(mo_2.unbuild_ids.produce_line_ids[1].product_id, component)
-        self.assertEqual(mo_2.unbuild_ids.produce_line_ids[1].lot_ids, component_sn)

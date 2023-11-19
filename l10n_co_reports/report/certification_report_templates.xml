@@ -13,39 +13,39 @@
                             </h2>
                             <div class="row">
                                 <div class="col-6">
-                                    NIT: <t t-out="partner['partner_id'].vat"/>
+                                    NIT: <t t-esc="partner['partner_id'].vat"/>
                                 </div>
                                 <div class="col-6">
-                                    Fecha de Expedición: <t t-out="options['expedition_date']"/>
+                                    Fecha de Expedición: <t t-esc="options['expedition_date']"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6">
-                                    Nombre/Razón Social: <t t-out="partner['partner_id'].display_name"/>
+                                    Nombre/Razón Social: <t t-esc="partner['partner_id'].display_name"/>
                                 </div>
                                 <div class="col-6">
-                                    Fecha de Declaración: <t t-out="options['declaration_date']"/>
+                                    Fecha de Declaración: <t t-esc="options['declaration_date']"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    Ciudad Tercero: <t t-out="partner['partner_id'].city"/>
+                                    Ciudad Tercero: <t t-esc="partner['partner_id'].city"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    Dirección: <t t-out="partner['partner_id'].street"/>
+                                    Dirección: <t t-esc="partner['partner_id'].street"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    Durante el año gravable de <t t-out="current_year"/>, practicó en la ciudad de
-                                    <t t-out="env.company.city"/>
+                                    Durante el año gravable de <t t-esc="current_year"/>, practicó en la ciudad de
+                                    <t t-esc="env.company.city"/>
                                     <span t-if="report_name.endswith('fuente')"> retención en la fuente a</span>
                                     <span t-if="report_name.endswith('ica')"> retención de ICA a</span>
                                     <span t-if="report_name.endswith('iva')"> retención de IVA a</span>
-                                    <t t-out="partner['partner_id'].display_name"/> con NIT:
-                                    <t t-out="partner['partner_id'].vat"/>.
+                                    <t t-esc="partner['partner_id'].display_name"/> con NIT:
+                                    <t t-esc="partner['partner_id'].vat"/>.
                                 </div>
                             </div>
                             <div class="row">
@@ -65,8 +65,7 @@
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="partner['lines']" t-as="line">
-                                            <td t-if="report_name.endswith('fuente')"><t t-esc="line.get('account_name')"/></td>
-                                            <td t-if="report_name.endswith('ica')"><t t-esc="line.get('bimestre')"/></td>
+                                            <td><t t-esc="line.get('bimestre')"/></td>
                                             <td><t t-esc="line.get('tax_base_amount')"/></td>
                                             <td><t t-esc="line.get('balance')"/></td>
                                         </tr>
@@ -84,11 +83,11 @@
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="partner['lines']" t-as="line">
-                                            <td><t t-out="line.get('bimestre')"/></td>
-                                            <td><t t-out="line.get('tax_base_amount')"/></td>
-                                            <td><t t-out="line.get('balance_15_over_19')"/></td>
-                                            <td><t t-out="line.get('balance')"/></td>
-                                            <td><t t-out="line.get('percentage')"/></td>
+                                            <td><t t-esc="line.get('bimestre')"/></td>
+                                            <td><t t-esc="line.get('tax_base_amount')"/></td>
+                                            <td><t t-esc="line.get('balance_15_over_19')"/></td>
+                                            <td><t t-esc="line.get('balance')"/></td>
+                                            <td><t t-esc="line.get('percentage')"/></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -103,24 +102,24 @@
                                         <div>
                                             <strong>MONTO TOTAL OPERACIONAL:</strong>
                                         </div>
-                                        <t t-out="partner.get('tax_base_amount', 0.0)"/>
+                                        <t t-esc="partner.get('tax_base_amount', 0.0)"/>
                                     </div>
                                     <div t-att-class="not report_name.endswith('iva') and 'col-6' or 'col-4'">
                                         <div>
                                             <strong>MONTO DEL PAGO SUJETO A:</strong>
                                         </div>
                                         <t t-if="report_name.endswith('iva')">
-                                            <t t-out="partner.get('balance_15_over_19', 0.0)"/>
+                                            <t t-esc="partner.get('balance_15_over_19', 0.0)"/>
                                         </t>
                                         <t t-if="not report_name.endswith('iva')">
-                                            <t t-out="partner.get('tax_base_amount', 0.0)"/>
+                                            <t t-esc="partner.get('tax_base_amount', 0.0)"/>
                                         </t>
                                     </div>
                                     <div t-att-class="not report_name.endswith('iva') and 'col-6' or 'col-4'">
                                         <div>
                                             <strong>RETENIDO Y CONSIGNADO:</strong>
                                         </div>
-                                        <t t-out="partner.get('balance', 0.0)"/>
+                                        <t t-esc="partner.get('balance', 0.0)"/>
                                     </div>
                                 </div>
                             </div>
@@ -137,12 +136,12 @@
                             <div class="row">
                                 <div class="col-12">
                                     Dicha Retención fue consignada oportunamente a nombre de la Dirección de Impuestos y Aduanas Nacionales en la Ciudad de
-                                    <t t-out="env.company.city"/>
+                                    <t t-esc="env.company.city"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    NO REQUIRE FIRMA AUTOGRAFA. <t t-out="options['article']"/>
+                                    NO REQUIRE FIRMA AUTOGRAFA. <t t-esc="options['article']"/>
                                 </div>
                             </div>
                         </div>

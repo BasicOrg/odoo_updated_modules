@@ -8,7 +8,7 @@ export class AddForumFormController extends NewContentFormController {
      * @override
      */
     computePath() {
-        return `/forum/${encodeURIComponent(this.model.root.resId)}`;
+        return `/forum/${this.model.root.data.id}`;
     }
 }
 

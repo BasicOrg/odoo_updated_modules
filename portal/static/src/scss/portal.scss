@@ -13,10 +13,16 @@ $o-portal-mobile-toolbar-border: $border-color;
 $o-portal-mobile-toolbar-bg: $gray-200;
 
 // Portal Tables
-$o-portal-table-th-pt: map-get($spacers, 1) !default;
-$o-portal-table-th-pb: map-get($spacers, 1) !default;
-$o-portal-table-td-pt: map-get($spacers, 2) !default;
-$o-portal-table-td-pb: map-get($spacers, 2) !default;
+$o-portal-table-th-pt: map-get($spacers, 2) !default; // bts4 pt-2
+$o-portal-table-th-pb: map-get($spacers, 2) !default; // bts4 pb-2
+$o-portal-table-td-pt: map-get($spacers, 1) !default; // bts4 pt-1
+$o-portal-table-td-pb: map-get($spacers, 1) !default; // bts4 pb-1
+
+// Portal custom bg color
+$o-portal-bg-color: desaturate($gray-200, 100%);
+
+// Check if portal uses default colors
+$o-portal-use-default-colors: $body-bg == $o-portal-default-body-bg;
 
 // Frontend general
 body {
@@ -81,6 +87,48 @@ a, .btn-link {
 }
 
 // Typography
+ul {
+    list-style-type: disc;
+}
+ul ul {
+    list-style-type: circle;
+}
+ul ul ul {
+    list-style-type: square;
+}
+ul ul ul ul {
+    list-style-type: disc;
+}
+ul ul ul ul ul {
+    list-style-type: circle;
+}
+ul ul ul ul ul ul {
+    list-style-type: square;
+}
+ul ul ul ul ul ul ul {
+    list-style-type: disc;
+}
+ol {
+    list-style-type: decimal;
+}
+ol ol {
+    list-style-type: lower-alpha;
+}
+ol ol ol {
+    list-style-type: lower-greek;
+}
+ol ol ol ol {
+    list-style-type: decimal;
+}
+ol ol ol ol ol {
+    list-style-type: lower-alpha;
+}
+ol ol ol ol ol ol {
+    list-style-type: lower-greek;
+}
+ol ol ol ol ol ol ol {
+    list-style-type: decimal;
+}
 li > p {
     margin: 0;
 }
@@ -108,13 +156,6 @@ li > p {
             content: "";
             display: table;
             clear: both;
-        }
-    }
-    .navbar %container-flex-properties {
-        // Bootstrap set-up flex alignment to "space-between" here. The hack
-        // made above to restore the BS3 protection has to be disabled.
-        &::before, &::after {
-            display: none;
         }
     }
 }
@@ -163,7 +204,6 @@ img, .media_iframe_video, .o_image {
 }
 .oe_search_box {
     padding-right: 23px;
-    text-overflow: ellipsis;
 }
 
 // Kept for (up to) saas-12 compatibility
@@ -243,6 +283,15 @@ img, .media_iframe_video, .o_image {
     background-color: #149F2C;
 }
 
+// Portal specific
+// ===  Page custom bg ===
+// To be applied to all portal pages if bg-color is white (default).
+@if ($o-portal-use-default-colors) {
+    #wrapwrap.o_portal {
+        @include o-bg-color($o-portal-bg-color, $with-extras: false);
+    }
+}
+
 .o_portal {
     .breadcrumb {
         @extend %o-portal-breadcrumbs;
@@ -264,6 +313,10 @@ img, .media_iframe_video, .o_image {
             padding-right: 0;
             @extend %o-portal-breadcrumbs;
         }
+
+        @if ($o-portal-use-default-colors) {
+            background-color: white!important;
+        }
     }
 
     .o_portal_my_doc_table {
@@ -280,14 +333,40 @@ img, .media_iframe_video, .o_image {
 
         }
 
+        tr:last-child td {
+            padding-bottom: $o-portal-table-td-pb * 1.5;
+        }
+
         td, th {
             vertical-align: middle;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+    }
 
-            &:has(a) {
-                color: $primary;
+    address {
+        span[itemprop="name"] {
+            margin-bottom: 0.3em;
+        }
+
+        div[itemprop="address"] > div {
+            position: relative;
+
+            span[itemprop="streetAddress"] {
+                line-height: 1.2;
+                margin-bottom: 0.3em;
+            }
+
+            .fa {
+                @include o-position-absolute(0, $left: 0);
+                line-height: $line-height-base;
+
+                + span, + div {
+                    display: block;
+                    // FontAwesome '.fa-fw' fixed-with + margin
+                    padding-left: 1.28571429em + 0.5em;
+                }
             }
         }
     }
@@ -312,37 +391,45 @@ img, .media_iframe_video, .o_image {
     }
 }
 
-.o_portal_address {
-    span[itemprop="name"] {
-        margin-bottom: 0.3em;
-    }
-
-    div[itemprop="address"] > div {
-        position: relative;
-
-        span[itemprop="streetAddress"] {
-            line-height: 1.2;
-            margin-bottom: 0.3em;
-        }
-
-        .fa {
-            line-height: $line-height-base;
-            color: $o-gray-500;
-
-            + span, + div {
-                display: block;
-            }
-        }
-    }
-}
-
 .oe_attachments .o_image_small {
     height: 40px;
     width: 50px;
     background-repeat: no-repeat;
 }
 
+form label {
+    font-weight: $font-weight-bold;
+    &.label-optional {
+        font-weight: $font-weight-normal;
+    }
+}
+
+.o_portal_contact_img {
+    width: 2.3em;
+    height: 2.3em;
+    object-fit: cover;
+}
+
 .o_portal_sidebar {
+    #sidebar_content.card {
+        border-left: 0;
+        border-bottom: 0;
+
+        > div.card-body {
+            border-left: $border-width solid $border-color;
+        }
+
+        > ul > li {
+            border-left: $border-width solid $border-color;
+            margin-bottom: -1px;
+        }
+
+        > div.card-footer {
+            border-left: $border-width solid $border-color;
+            border-bottom: $border-width solid $border-color;
+        }
+    }
+
     .o_portal_html_view {
         overflow: hidden;
         background: white;
@@ -366,8 +453,10 @@ img, .media_iframe_video, .o_image {
 .o_portal_chatter {
     padding: 10px;
 
-    .o_portal_chatter_avatar{
-        --Avatar-size: 45px;
+    .o_portal_chatter_avatar {
+        width: 45px;
+        height: 45px;
+        margin-right: 1rem;
     }
 
     .o_portal_chatter_header {
@@ -391,8 +480,8 @@ img, .media_iframe_video, .o_image {
 
         .o_portal_chatter_message_title {
             p {
-                font-size: 85%;
-                color: $text-muted;
+                font-size:85%;
+                color:$o-main-color-muted;
                 margin: 0px;
             }
         }
@@ -424,30 +513,29 @@ img, .media_iframe_video, .o_image {
     }
 
     .o_portal_message_internal_off {
-        .o_portal_chatter_visibility_on {
+        .btn-danger {
             display: none;
         }
     }
 
     .o_portal_message_internal_on {
-        .o_portal_chatter_visibility_off {
+        .btn-success {
             display: none;
         }
     }
 }
 
 .o_portal_security_body {
+    @extend .mx-auto;
+    max-width: map-get($container-max-widths, sm);
     section {
-        margin-top: map-get($spacers, 5);
-        border-top: $border-width solid $border-color;
-        padding-top: map-get($spacers, 4);
-
+        @extend .mt-4;
         form.oe_reset_password_form {
             max-width: initial;
             margin: initial;
         }
         label, button {
-            white-space: nowrap;
+            @extend .text-nowrap;
         }
     }
     section[name="portal_deactivate_account"] {
@@ -474,3 +562,4 @@ img, .media_iframe_video, .o_image {
         }
     }
 }
+

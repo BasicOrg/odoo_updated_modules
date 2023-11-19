@@ -4,7 +4,6 @@
 from collections import defaultdict
 
 from datetime import datetime
-import pytz
 
 from odoo import api, fields, models
 from odoo.osv import expression
@@ -36,13 +35,13 @@ class HrPayslip(models.Model):
             [('state', '=', 'published')],
             domain,
         ])
-        read_group = self.env['planning.slot']._read_group(domain, groupby=['employee_id', 'start_datetime:day'], aggregates=['__count'])
-        for employee, start_datetime_utc, count in read_group:
-            slips = slip_by_employee[employee.id]
-            start_date_employee = start_datetime_utc.astimezone(pytz.timezone(employee.tz)).date()
+        read_group = self.env['planning.slot'].read_group(domain, fields=['id'], groupby=['employee_id', 'start_datetime:day'], lazy=False)
+        for result in read_group:
+            slips = slip_by_employee[result['employee_id'][0]]
+            date = datetime.strptime(result['start_datetime:day'], '%d %b %Y').date()
             for slip in slips:
-                if slip.date_from <= start_date_employee and start_date_employee <= slip.date_to:
-                    slip.planning_slot_count += count
+                if slip.date_from <= date and date <= slip.date_to:
+                    slip.planning_slot_count += result['__count']
 
     def action_open_planning_slots(self):
         self.ensure_one()

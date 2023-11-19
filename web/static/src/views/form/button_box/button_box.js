@@ -4,11 +4,11 @@ import { useService } from "@web/core/utils/hooks";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 export class ButtonBox extends Component {
     setup() {
         const ui = useService("ui");
-        this.getMaxButtons = () => [3, 3, 3, 7, 3, 4, 7][ui.size] || 7;
+        this.getMaxButtons = () => [2, 2, 2, 4][ui.size] || 7;
     }
 
     getButtons() {

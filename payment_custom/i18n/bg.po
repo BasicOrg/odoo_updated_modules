@@ -11,12 +11,19 @@ msgstr ""
 "POT-Creation-Date: 2016-08-18 14:07+0000\n"
 "PO-Revision-Date: 2015-11-26 13:28+0000\n"
 "Last-Translator: Iliana Ilieva <i.ilieva@sunservice-bg.com>\n"
-"Language-Team: Bulgarian (http://www.transifex.com/odoo/odoo-9/language/bg/)\n"
+"Language-Team: Bulgarian (http://www.transifex.com/odoo/odoo-9/language/"
+"bg/)\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: payment_transfer
+#: code:addons/payment_transfer/models/payment_acquirer.py:68
+#, python-format
+msgid "; multiple order found"
+msgstr ""
 
 #. module: payment_transfer
 #: code:addons/payment_transfer/models/payment_acquirer.py:66
@@ -31,18 +38,32 @@ msgstr "<span><i>Отказ,</i> Вашето плащане е отказано
 
 #. module: payment_transfer
 #: model_terms:payment.acquirer,done_msg:payment_transfer.payment_acquirer_transfer
-msgid "<span><i>Done,</i> Your online payment has been successfully processed. Thank you for your order.</span>"
-msgstr "<span><i>Готово,</i> Вашето онлайн плащане е успешно. Благодарим Ви, за поръчката!.</span>"
+msgid ""
+"<span><i>Done,</i> Your online payment has been successfully processed. "
+"Thank you for your order.</span>"
+msgstr ""
+"<span><i>Готово,</i> Вашето онлайн плащане е успешно. Благодарим Ви, за "
+"поръчката!.</span>"
 
 #. module: payment_transfer
 #: model_terms:payment.acquirer,error_msg:payment_transfer.payment_acquirer_transfer
-msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but won't be paid. Don't hesitate to contact us if you have any questions on the status of your order.</span>"
-msgstr "<span><i>Грешка,</i> Моля, имайте предвид, че възникна грешка по време на транзакцията. Поръчката е потвърдена, но не е платена. Не се колебайте да се свържете с нас ако имате въпроси относно статуса на Вашата поръчка.</span>"
+msgid ""
+"<span><i>Error,</i> Please be aware that an error occurred during the "
+"transaction. The order has been confirmed but won't be paid. Don't hesitate "
+"to contact us if you have any questions on the status of your order.</span>"
+msgstr ""
+"<span><i>Грешка,</i> Моля, имайте предвид, че възникна грешка по време на "
+"транзакцията. Поръчката е потвърдена, но не е платена. Не се колебайте да се "
+"свържете с нас ако имате въпроси относно статуса на Вашата поръчка.</span>"
 
 #. module: payment_transfer
 #: model_terms:payment.acquirer,pending_msg:payment_transfer.payment_acquirer_transfer
-msgid "<span><i>Pending,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>"
-msgstr "<span><i>Задържано,</i>  Вашето онлайн плащане е успешно, но поръчката Ви още не е потвърдена.</span>"
+msgid ""
+"<span><i>Pending,</i> Your online payment has been successfully processed. "
+"But your order is not validated yet.</span>"
+msgstr ""
+"<span><i>Задържано,</i>  Вашето онлайн плащане е успешно, но поръчката Ви "
+"още не е потвърдена.</span>"
 
 #. module: payment_transfer
 #: code:addons/payment_transfer/models/payment_acquirer.py:30
@@ -58,6 +79,11 @@ msgid "Bank Accounts"
 msgstr "Банкови сметки"
 
 #. module: payment_transfer
+#: model_terms:payment.acquirer,post_msg:payment_transfer.payment_acquirer_transfer
+msgid "Communication"
+msgstr ""
+
+#. module: payment_transfer
 #: model:ir.model,name:payment_transfer.model_payment_acquirer
 msgid "Payment Acquirer"
 msgstr "Обработчик на плащането"
@@ -68,9 +94,21 @@ msgid "Payment Transaction"
 msgstr "Плащане"
 
 #. module: payment_transfer
+#: model_terms:payment.acquirer,post_msg:payment_transfer.payment_acquirer_transfer
+msgid "Please use the following transfer details"
+msgstr ""
+
+#. module: payment_transfer
+#: model_terms:payment.acquirer,post_msg:payment_transfer.payment_acquirer_transfer
+msgid "Please use the order name as communication reference."
+msgstr ""
+
+#. module: payment_transfer
 #: model_terms:payment.acquirer,pre_msg:payment_transfer.payment_acquirer_transfer
 msgid "Transfer information will be provided after choosing the payment mode."
-msgstr "Информация за транзакцита ще бъде предоставена след избор на метод на плащане."
+msgstr ""
+"Информация за транзакцита ще бъде предоставена след избор на метод на "
+"плащане."
 
 #. module: payment_transfer
 #: code:addons/payment_transfer/models/payment_acquirer.py:19
@@ -78,3 +116,9 @@ msgstr "Информация за транзакцита ще бъде пред�
 #, python-format
 msgid "Wire Transfer"
 msgstr "Банков превод"
+
+#. module: payment_transfer
+#: code:addons/payment_transfer/models/payment_acquirer.py:64
+#, python-format
+msgid "received data for reference %s"
+msgstr ""

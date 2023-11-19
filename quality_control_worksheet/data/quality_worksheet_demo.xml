@@ -12,6 +12,7 @@
 
         <record id="quality_control_worksheet_template1_form_view" model="ir.ui.view">
             <field name="name">quality.worksheet.template1.form.view</field>
+            <field name="type">form</field>
             <field name="model" model="ir.model" eval="obj().env.ref('quality_control_worksheet.quality_control_worksheet_template1').model_id.model"/>
             <field name="arch" type="xml">
                 <form create="false" js_class="worksheet_validation">

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo.modules.module import get_module_resource
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
 from contextlib import contextmanager
@@ -13,10 +14,17 @@ def _generate_mocked_needs_web_services(needs_web_services):
 
 
 def _mocked_get_move_applicability(edi_format, move):
-    return {
-        'post': edi_format._post_invoice_edi,
-        'cancel': edi_format._cancel_invoice_edi,
-    }
+    if move.is_invoice():
+        return {
+            'post': edi_format._post_invoice_edi,
+            'cancel': edi_format._cancel_invoice_edi,
+        }
+    elif move.payment_id or move.statement_line_id:
+        return {
+            'post': edi_format._post_payment_edi,
+            'cancel': edi_format._cancel_invoice_edi,
+        }
+
 
 def _mocked_check_move_configuration_success(edi_format, move):
     return []
@@ -40,11 +48,10 @@ class AccountEdiTestCommon(AccountTestInvoicingCommon):
         if edi_format_ref:
             cls.edi_format = cls.env.ref(edi_format_ref)
         else:
-            with cls.mock_edi(cls, _needs_web_services_method=_generate_mocked_needs_web_services(True)):
-                cls.edi_format = cls.env['account.edi.format'].sudo().create({
-                    'name': 'Test EDI format',
-                    'code': 'test_edi',
-                })
+            cls.edi_format = cls.env['account.edi.format'].sudo().create({
+                'name': 'Test EDI format',
+                'code': 'test_edi',
+            })
         cls.journal = cls.company_data['default_journal_sale']
         cls.journal.edi_format_ids = [(6, 0, cls.edi_format.ids)]
 
@@ -86,6 +93,39 @@ class AccountEdiTestCommon(AccountTestInvoicingCommon):
 
     def edi_cron(self):
         self.env['account.edi.document'].sudo().search([('state', 'in', ('to_send', 'to_cancel'))])._process_documents_web_services(with_commit=False)
+
+    def _create_empty_vendor_bill(self):
+        invoice = self.env['account.move'].create({
+            'move_type': 'in_invoice',
+            'journal_id': self.company_data['default_journal_purchase'].id,
+        })
+        return invoice
+
+    def update_invoice_from_file(self, module_name, subfolder, filename, invoice):
+        file_path = get_module_resource(module_name, subfolder, filename)
+        file = open(file_path, 'rb').read()
+
+        attachment = self.env['ir.attachment'].create({
+            'name': filename,
+            'datas': base64.encodebytes(file),
+            'res_id': invoice.id,
+            'res_model': 'account.move',
+        })
+
+        invoice.message_post(attachment_ids=[attachment.id])
+
+    def create_invoice_from_file(self, module_name, subfolder, filename):
+        file_path = get_module_resource(module_name, subfolder, filename)
+        file = open(file_path, 'rb').read()
+
+        attachment = self.env['ir.attachment'].create({
+            'name': filename,
+            'datas': base64.encodebytes(file),
+            'res_model': 'account.move',
+        })
+        journal_id = self.company_data['default_journal_sale']
+        action_vals = journal_id.with_context(default_move_type='in_invoice').create_document_from_attachment(attachment.ids)
+        return self.env['account.move'].browse(action_vals['res_id'])
 
     def assert_generated_file_equal(self, invoice, expected_values, applied_xpath=None):
         invoice.action_post()

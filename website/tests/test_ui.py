@@ -30,7 +30,7 @@ class TestUiCustomizeTheme(odoo.tests.HttpCase):
         website_test = Website.create({'name': 'Website Test'})
 
         # simulate attachment state when editing 2 theme through customize
-        custom_url = '/_custom/web.assets_frontend/TEST/website/static/src/scss/options/colors/user_theme_color_palette.scss'
+        custom_url = '/TEST/website/static/src/scss/options/colors/user_theme_color_palette.custom.web.assets_frontend.scss'
         scss_attachment = Attachment.create({
             'name': custom_url,
             'type': 'binary',
@@ -182,14 +182,8 @@ class TestUiTranslate(odoo.tests.HttpCase):
             'language_ids': [(6, 0, [parseltongue.id])],
             'default_lang_id': parseltongue.id,
         })
-        website_2 = self.env['website'].create({
-            'name': 'website en_US',
-            'language_ids': [(6, 0, [self.env.ref('base.lang_en').id, parseltongue.id])],
-            'default_lang_id': parseltongue.id,
-        })
 
         self.start_tour(f"/website/force/{website.id}", 'snippet_translation', login='admin')
-        self.start_tour(f"/website/force/{website_2.id}", 'snippet_translation_changing_lang', login='admin')
 
 
 @odoo.tests.common.tagged('post_install', '-at_install')
@@ -222,9 +216,7 @@ class TestUi(odoo.tests.HttpCase):
         self.start_tour("/", 'website_navbar_menu')
 
     def test_05_specific_website_editor(self):
-        asset_bundle_xmlid = 'website.assets_wysiwyg'
         website_default = self.env['website'].search([], limit=1)
-
         new_website = self.env['website'].create({'name': 'New Website'})
 
         code = b"document.body.dataset.hello = 'world';"
@@ -233,7 +225,7 @@ class TestUi(odoo.tests.HttpCase):
             'mimetype': 'text/javascript',
             'datas': base64.b64encode(code),
         })
-        custom_url = '/_custom/web/content/%s/%s' % (attach.id, attach.name)
+        custom_url = '/web/content/%s/%s' % (attach.id, attach.name)
         attach.url = custom_url
 
         self.env['ir.asset'].create({
@@ -242,17 +234,6 @@ class TestUi(odoo.tests.HttpCase):
             'path': custom_url,
             'website_id': new_website.id,
         })
-
-        base_website_bundle = self.env['ir.qweb']._get_asset_bundle(asset_bundle_xmlid, assets_params={'website_id': website_default.id})
-        self.assertNotIn(custom_url, [f['url'] for f in base_website_bundle.files])
-        base_website_css_version = base_website_bundle.get_version('css')
-        base_website_js_version = base_website_bundle.get_version('js')
-
-        new_website_bundle_modified = self.env['ir.qweb']._get_asset_bundle('website.assets_wysiwyg', assets_params={'website_id': new_website.id})
-        self.assertIn(custom_url, [f['url'] for f in new_website_bundle_modified.files])
-        self.assertEqual(new_website_bundle_modified.get_version('css'), base_website_css_version)
-        self.assertNotEqual(new_website_bundle_modified.get_version('js'), base_website_js_version, "js version for new website should now have been changed")
-
         url_params = url_encode({'path': '/@/'})
         self.start_tour(f'/website/force/{website_default.id}?{url_params}', "generic_website_editor", login='admin')
         self.start_tour(f'/website/force/{new_website.id}?{url_params}', "specific_website_editor", login='admin')
@@ -296,13 +277,11 @@ class TestUi(odoo.tests.HttpCase):
         self.start_tour(self.env['website'].get_client_action_url('/'), 'website_style_edition', login='admin')
 
     def test_09_website_edit_link_popover(self):
-        self.start_tour('/@/', 'edit_link_popover', login='admin')
+        self.start_tour('/@/?enable_editor=1', "edit_link_popover", login="admin")
 
     def test_10_website_conditional_visibility(self):
         self.start_tour(self.env['website'].get_client_action_url('/'), 'conditional_visibility_1', login='admin')
         self.start_tour('/web', 'conditional_visibility_2', login='admin')
-        self.start_tour(self.env['website'].get_client_action_url('/'), 'conditional_visibility_3', login='admin')
-        self.start_tour(self.env['website'].get_client_action_url('/'), 'conditional_visibility_4', login='admin')
 
     def test_11_website_snippet_background_edition(self):
         self.env['ir.attachment'].create({
@@ -368,7 +347,7 @@ class TestUi(odoo.tests.HttpCase):
             """,
         }])
 
-        self.start_tour('/', 'focus_blur_snippets', login='admin')
+        self.start_tour("/?enable_editor=1", "focus_blur_snippets", login="admin")
 
     def test_14_carousel_snippet_content_removal(self):
         self.start_tour(self.env['website'].get_client_action_url('/'), 'carousel_content_removal', login='admin')
@@ -383,13 +362,13 @@ class TestUi(odoo.tests.HttpCase):
         self.start_tour(self.env['website'].get_client_action_url('/'), 'edit_menus', login='admin')
 
     def test_18_website_snippets_menu_tabs(self):
-        self.start_tour('/', 'website_snippets_menu_tabs', login='admin')
+        self.start_tour("/?enable_editor=1", "website_snippets_menu_tabs", login="admin")
 
     def test_19_website_page_options(self):
         self.start_tour("/web", "website_page_options", login="admin")
 
     def test_20_snippet_editor_panel_options(self):
-        self.start_tour('/@/', 'snippet_editor_panel_options', login='admin')
+        self.start_tour("/@/?enable_editor=1", "snippet_editor_panel_options", login="admin")
 
     def test_21_website_start_cloned_snippet(self):
         self.start_tour('/web', 'website_start_cloned_snippet', login='admin')
@@ -398,7 +377,7 @@ class TestUi(odoo.tests.HttpCase):
         self.start_tour('/web', 'website_gray_color_palette', login='admin')
 
     def test_23_website_multi_edition(self):
-        self.start_tour('/@/', 'website_multi_edition', login='admin')
+        self.start_tour('/@?enable_editor=1', 'website_multi_edition', login='admin')
 
     def test_24_snippet_cache_across_websites(self):
         default_website = self.env.ref('website.default_website')
@@ -413,42 +392,3 @@ class TestUi(odoo.tests.HttpCase):
             snippet_key='s_text_block',
             template_key='website.snippets')
         self.start_tour('/@/', 'snippet_cache_across_websites', login='admin')
-
-    def test_25_website_edit_discard(self):
-        self.start_tour('/web', 'homepage_edit_discard', login='admin')
-
-    def test_26_website_media_dialog_icons(self):
-        self.start_tour("/", 'website_media_dialog_icons', login='admin')
-
-    def test_27_website_clicks(self):
-        self.start_tour('/web', 'website_click_tour', login='admin')
-
-    def test_29_website_text_edition(self):
-        self.start_tour('/@/', 'website_text_edition', login='admin')
-
-    def test_29_website_backend_menus_redirect(self):
-        Menu = self.env['ir.ui.menu']
-        menu_root = Menu.create({'name': 'Test Root'})
-        Menu.create({
-            'name': 'Test Child',
-            'parent_id': menu_root.id,
-            'action': 'ir.actions.act_window,%d' % (self.env.ref('base.open_module_tree').id,),
-        })
-        self.env.ref('base.user_admin').action_id = self.env.ref('base.menu_administration').id
-        self.assertFalse(menu_root.action, 'The top menu should not have an action (or the test/tour will not test anything).')
-        self.start_tour('/', 'website_backend_menus_redirect', login='admin')
-
-    def test_30_website_text_animations(self):
-        self.start_tour("/", 'text_animations', login='admin')
-
-    def test_website_media_dialog_image_shape(self):
-        self.start_tour("/", 'website_media_dialog_image_shape', login='admin')
-
-    def test_website_text_font_size(self):
-        self.start_tour('/@/', 'website_text_font_size', login='admin', timeout=300)
-
-    def test_update_column_count(self):
-        self.start_tour(self.env['website'].get_client_action_url('/'), 'website_update_column_count', login="admin", step_delay=100)
-
-    def test_website_text_highlights(self):
-        self.start_tour("/", 'text_highlights', login='admin')

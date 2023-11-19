@@ -13,14 +13,14 @@ class AccountMove(models.Model):
         invoices_map = {}
         posted = super()._post(soft)
         for invoice in posted.filtered(lambda move: move.is_invoice()):
-            company_sudo = self.env['res.company'].sudo()._find_company_from_partner(invoice.partner_id.id)
-            if company_sudo and company_sudo.rule_type == 'invoice_and_refund' and not invoice.auto_generated:
-                invoices_map.setdefault(company_sudo, self.env['account.move'])
-                invoices_map[company_sudo] += invoice
-        for company_sudo, invoices in invoices_map.items():
-            context = dict(self.env.context, default_company_id=company_sudo.id)
+            company = self.env['res.company']._find_company_from_partner(invoice.partner_id.id)
+            if company and company.rule_type == 'invoice_and_refund' and not invoice.auto_generated:
+                invoices_map.setdefault(company, self.env['account.move'])
+                invoices_map[company] += invoice
+        for company, invoices in invoices_map.items():
+            context = dict(self.env.context, default_company_id=company.id)
             context.pop('default_journal_id', None)
-            invoices.with_user(company_sudo.intercompany_user_id.id).with_context(context).with_company(company_sudo.id)._inter_company_create_invoices()
+            invoices.with_user(company.intercompany_user_id).with_context(context).with_company(company)._inter_company_create_invoices()
         return posted
 
     def _inter_company_create_invoices(self):
@@ -43,11 +43,12 @@ class AccountMove(models.Model):
                 invoice_vals['invoice_line_ids'].append((0, 0, line._inter_company_prepare_invoice_line_data()))
 
             inv_new = inv.with_context(default_move_type=invoice_vals['move_type']).new(invoice_vals)
-            for line in inv_new.invoice_line_ids.filtered(lambda l: l.display_type not in ('line_note', 'line_section')):
+            for line in inv_new.invoice_line_ids.filtered(lambda l: not l.display_type):
                 # We need to adapt the taxes following the fiscal position, but we must keep the
                 # price unit.
                 price_unit = line.price_unit
                 line.tax_ids = line._get_computed_taxes()
+                line._set_price_and_tax_after_fpos()
                 line.price_unit = price_unit
 
             invoice_vals = inv_new._convert_to_write(inv_new._cache)
@@ -90,9 +91,8 @@ class AccountMove(models.Model):
             'auto_generated': True,
             'auto_invoice_id': self.id,
             'invoice_date': self.invoice_date,
-            'invoice_date_due': self.invoice_date_due,
             'payment_reference': self.payment_reference,
-            'invoice_origin': _('%s Invoice: %s', self.company_id.name, self.name),
+            'invoice_origin': _('%s Invoice: %s') % (self.company_id.name, self.name),
             'fiscal_position_id': fiscal_position_id,
         }
 
@@ -102,12 +102,13 @@ class AccountMoveLine(models.Model):
 
     def _inter_company_prepare_invoice_line_data(self):
         ''' Get values to create the invoice line.
-        We prioritize the analytic distribution in the following order:
-            - Default Analytic Distribution model specific to Company B
-            - Analytic Distribution set for the line in Company A's document if available to Company B
         :return: Python dictionary of values.
         '''
         self.ensure_one()
+
+        account_ids = self.env['account.analytic.account'].browse(
+            list(self.analytic_distribution.keys()) if self.analytic_distribution else None)
+        analytic_distribution = {self.analytic_distribution[account_id] for account_id in account_ids.filtered(lambda r: not r.company_id).ids}
 
         vals = {
             'display_type': self.display_type,
@@ -118,26 +119,7 @@ class AccountMoveLine(models.Model):
             'quantity': self.quantity,
             'discount': self.discount,
             'price_unit': self.price_unit,
+            'analytic_distribution': analytic_distribution,
         }
-
-        company_b = self.env['res.company']._find_company_from_partner(self.move_id.partner_id.id)
-        company_b_default_distribution = self.env['account.analytic.distribution.model']._get_distribution({
-            "product_id": self.product_id.id,
-            "product_categ_id": self.product_id.categ_id.id,
-            "partner_id": self.partner_id.id,
-            "partner_category_id": self.partner_id.category_id.ids,
-            "account_prefix": self.account_id.code,
-            "company_id": company_b.id,
-        })
-
-        account_ids = [int(account_id) for account_id in self.analytic_distribution or {}]
-        accounts = self.env['account.analytic.account'].browse(account_ids)
-        analytic_distribution = {
-            str(account_id): self.analytic_distribution[str(account_id)]
-            for account_id in accounts.filtered(lambda r: not r.company_id).ids
-        }
-
-        if company_b_default_distribution or analytic_distribution:
-            vals['analytic_distribution'] = dict(company_b_default_distribution, **analytic_distribution)
 
         return vals

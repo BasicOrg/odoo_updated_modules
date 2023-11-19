@@ -36,13 +36,13 @@
         <field name="mode">primary</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='project_id']" position="attributes">
-                <attribute name="column_invisible">context.get('default_project_id')</attribute>
+                <attribute name="invisible">context.get('default_project_id')</attribute>
             </xpath>
             <xpath expr="//field[@name='task_id']" position="attributes">
-                <attribute name="column_invisible">context.get('default_task_id')</attribute>
+                <attribute name="invisible">context.get('default_task_id')</attribute>
             </xpath>
             <xpath expr="//field[@name='date']" position="attributes">
-                <attribute name="column_invisible">context.get('fsm_mode')</attribute>
+                <attribute name="invisible">context.get('fsm_mode')</attribute>
             </xpath>
         </field>
     </record>

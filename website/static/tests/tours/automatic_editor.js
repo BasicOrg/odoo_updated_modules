@@ -1,21 +1,20 @@
-/** @odoo-module **/
+odoo.define('website.tour.automatic_editor', function (require) {
+'use strict';
 
-import wTourUtils from "@website/js/tours/tour_utils";
+const wTourUtils = require("website.tour_utils");
 
 wTourUtils.registerWebsitePreviewTour('automatic_editor_on_new_website', {
     test: true,
-    edition: true,
     url: '/',
 },
-() => [
-    wTourUtils.goToTheme(),
+[
     {
-        content: "click on Add a language",
-        trigger: "we-button[data-add-language]"
+        content: "Select the language dropdown",
+        trigger: 'iframe .js_language_selector .dropdown-toggle'
     },
     {
-        content: "confirm leave editor",
-        trigger: ".modal-dialog button.btn-primary"
+        content: "click on Add a language",
+        trigger: 'iframe a.o_add_language',
     },
     {
         content: "type Parseltongue",
@@ -39,6 +38,7 @@ wTourUtils.registerWebsitePreviewTour('automatic_editor_on_new_website', {
     {
         content: "Select parseltongue",
         trigger: 'iframe a.js_change_lang[data-url_code=pa_GB]',
+        extra_trigger: 'iframe a.js_change_lang .o_lang_flag',
     },
     {
         content: "Check that we're on parseltongue and then go to settings",
@@ -81,10 +81,19 @@ wTourUtils.registerWebsitePreviewTour('automatic_editor_on_new_website', {
         trigger: 'button[name="button_choose_theme"]'
     },
     {
-        content: "Check that the homepage is loaded",
-        trigger: ".o_website_preview[data-view-xmlid='website.homepage']",
-        extra_trigger: ".o_menu_systray .o_user_menu",
+        content: "Check that the editor is loaded",
+        trigger: 'iframe body.editor_enable',
         timeout: 30000,
-        isCheck: true,
+        run: () => null, // it's a check
     },
+    {
+        content: "exit edit mode",
+        trigger: '.o_we_website_top_actions button.btn-primary:contains("Save")',
+    },
+    {
+        content: "wait for editor to close",
+        trigger: 'iframe body:not(.editor_enable)',
+        run: () => null, // It's a check
+    }
 ]);
+});

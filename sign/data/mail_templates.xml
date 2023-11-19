@@ -2,16 +2,14 @@
 <odoo>
     <template id="sign_template_mail_request">
 <table border="0" cellpadding="0" style="background-color: white; padding: 0px; border-collapse:separate;">
-    <tr>
-        <td valign="top">
+    <tr><td valign="top">
         <p>Hello <t t-esc="record.partner_id.name"/>,</p>
         <t t-esc="record.create_uid.name"/>
         (<a t-att-href="record._get_mail_link(record.create_uid.email, subject)"
             style="color:#428BCA; text-decoration:none;"
             target="_blank"><t t-esc="record.create_uid.email"/></a>)
         has requested your signature on the document <t t-esc="record.sign_request_id.reference"/>.
-        </td>
-    </tr>
+    </td></tr>
     <tr t-if="body"><td valign="top">
         <div style="margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; background-color: #F1F1F1;">
             <span>
@@ -27,19 +25,12 @@
             </a>
         </div>
     </td></tr>
-    <t t-if="show_validity">
-        <tr><td>You have until <t t-out="record.sign_request_id.validity"/> to sign the document.</td></tr>
-    </t>
     <tr><td valign="top">
         <div style="opacity: 0.7;">
             <strong>Warning</strong> do not forward this email to other people!<br/>
             They will be able to access this document and sign it as yourself.<br/>
             <span>Your IP address and localization are associated to your signature to ensure traceability.</span>
         </div>
-        <br/>
-        <div style="opacity: 0.7;"><small>If you do not wish to receive future reminders about this document,
-            <a t-att-href="'%s/sign/sign_ignore/%s/%s' % (record.get_base_url(), record.id, record.access_token)"
-            style="color: #000000; text-decoration:none; opacity:0.7;"> click here.</a></small></div>
     </td></tr>
     <t t-set="company" t-value="record.create_uid.company_id"/>
     <tr t-if="use_sign_terms">

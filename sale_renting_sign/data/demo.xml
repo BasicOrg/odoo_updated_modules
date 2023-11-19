@@ -12,11 +12,6 @@
         <field name="group_ids" eval="[(4,ref('sign.group_sign_user'))]"/>
     </record>
 
-    <record id="attachment_rental_sign" model="ir.attachment">
-        <field name="res_model">sign.template</field>
-        <field name="res_id" ref="template_rental_sign"/>
-    </record>
-
     <record model="sign.item" id="sign_item_1">
         <field name="template_id" ref="template_rental_sign"/>
         <field name="type_id" ref="sign.sign_item_type_name"/>

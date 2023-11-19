@@ -7,7 +7,7 @@
     'sequence': 305,
     'version': '1.0',
     'application': True,
-    'depends': ['stock_delivery', 'mail'],
+    'depends': ['delivery', 'mail'],
     'data': [
         'data/delivery_usps_data.xml',
         'views/delivery_usps_view.xml',

@@ -21,6 +21,7 @@
         'wizard/stock_warn_insufficient_qty_views.xml',
         'wizard/mrp_production_backorder.xml',
         'wizard/mrp_consumption_warning_views.xml',
+        'wizard/mrp_immediate_production_views.xml',
         'wizard/stock_assign_serial_numbers.xml',
         'wizard/mrp_production_split.xml',
         'views/mrp_views_menus.xml',
@@ -41,8 +42,8 @@
         'report/report_deliveryslip.xml',
         'report/mrp_report_views_main.xml',
         'report/mrp_report_bom_structure.xml',
-        'report/mrp_report_mo_overview.xml',
         'report/mrp_production_templates.xml',
+        'report/report_stock_forecasted.xml',
         'report/report_stock_reception.xml',
         'report/report_stock_rule.xml',
         'report/mrp_zebra_production_templates.xml',
@@ -58,9 +59,6 @@
     'assets': {
         'web.assets_backend': [
             'mrp/static/src/**/*',
-        ],
-        'web.assets_tests': [
-            'mrp/static/tests/tours/**/*',
         ],
         'web.qunit_suite_tests': [
             'mrp/static/tests/**/*',

@@ -3,16 +3,17 @@
 # 	* sale_amazon
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Friederike Fasterling-Nesselbosch, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Friederike Fasterling-Nesselbosch, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -43,245 +44,15 @@ msgstr ""
 "            <p>Solange die Bestellung nicht in SellerCentral storniert wird, wird keine weitere Synchronisierung angestoßen.</p>\n"
 "            <p>Um einen neuen Synchronisierungsversuch zu unternehmen, gehen Sie wie folgt vor:\n"
 "                <ol>\n"
-"                    <li>Geben Sie die Entwicklertools ein.</li>\n"
+"                    <li>Entwicklertools eingeben.</li>\n"
 "                    <li>Öffnen Sie das Formular des Amazon-Kontos, über das die Bestellung getätigt wurde.</li>\n"
-"                    <li>Navigieren Sie zur Registerkarte der Auftragsverfolgung.</li>\n"
+"                    <li>Navigieren Sie zur Registerkarte Auftragsverfolgung.</li>\n"
 "                    <li>Legen Sie ein Datum für die <em>Synchronisierung der letzten Aufträge</em> fest, das vor der letzten Statusaktualisierung des Auftrags liegt.</li>\n"
 "                    <li>Speichern Sie die Änderungen und klicken Sie auf <em>BESTELLUNGEN SYNCHRONISIEREN</em>.</li>\n"
 "                </ol>\n"
 "            </p>\n"
-"            <p>Sollte das Problem weiterhin bestehen, kontaktieren Sie den <a href=\"https://www.odoo.com/help/\">Odoo-Kundendienst</a>.</p>\n"
+"            <p>Sollte das Problem weiterhin bestehen, kontaktieren Sie den <a href=\"https://www.odoo.com/help/\">Odoo Helpdesk</a>.</p>\n"
 "        </div>\n"
-"        "
-
-#. module: sale_amazon
-#: model:mail.template,body_html:sale_amazon.picking_sync_failure
-msgid ""
-"<style>\n"
-"                .amz_table {\n"
-"                    width: 100%;\n"
-"                    max-width: 900px;\n"
-"                    border-collapse: collapse;\n"
-"                }\n"
-"\n"
-"                .amz_table th,\n"
-"                .amz_table td {\n"
-"                    border: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table th {\n"
-"                    white-space: nowrap;\n"
-"                }\n"
-"\n"
-"                .amz_table thead th {\n"
-"                    padding: 0.5em 0.5em;\n"
-"                    text-align: center;\n"
-"                    border-bottom: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table tbody th,\n"
-"                .amz_table tbody td {\n"
-"                    padding: 0.5em 0.5em 1em;\n"
-"                    vertical-align: top;\n"
-"                }\n"
-"            </style>\n"
-"            <div>\n"
-"                <p>The synchronization of the delivery orders encountered some errors and was not completed.</p>\n"
-"                <p>Please correct the problem before manually synchronizing the delivery orders again, as no other synchronization will be attempted.</p>\n"
-"                <p>Here are the errors sent by Amazon: </p>\n"
-"                <table class=\"amz_table\">\n"
-"                    <thead>\n"
-"                        <tr>\n"
-"                            <th>Order Reference</th>\n"
-"                            <th>Message</th>\n"
-"                        </tr>\n"
-"                    </thead>\n"
-"                    <tbody>\n"
-"                        <tr t-foreach=\"ctx.get('error_messages')\" t-as=\"error\">\n"
-"                            <th><t t-out=\"error['order_ref']\"></t></th>\n"
-"                            <td>\n"
-"                                <t t-if=\"error['message']\" t-out=\"error['message']\"></t>\n"
-"                                <t t-else=\"\">An unknown error occurred during the synchronisation with Amazon.\n"
-"                                    Unfortunately you need to manually check if the state of the order is correct or not.\n"
-"                                    You can find all information about this\n"
-"                                    <a href=\"https://www.odoo.com/documentation/latest/applications/sales/sales/amazon_connector/manage.html#manage_deliveries_errors\">\n"
-"                                        in the documentation\n"
-"                                    </a>.</t>\n"
-"                            </td>\n"
-"                        </tr>\n"
-"                    </tbody>\n"
-"                </table>\n"
-"            </div>\n"
-"        "
-msgstr ""
-"<style>\n"
-"                .amz_table {\n"
-"                    width: 100%;\n"
-"                    max-width: 900px;\n"
-"                    border-collapse: collapse;\n"
-"                }\n"
-"\n"
-"                .amz_table th,\n"
-"                .amz_table td {\n"
-"                    border: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table th {\n"
-"                    white-space: nowrap;\n"
-"                }\n"
-"\n"
-"                .amz_table thead th {\n"
-"                    padding: 0.5em 0.5em;\n"
-"                    text-align: center;\n"
-"                    border-bottom: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table tbody th,\n"
-"                .amz_table tbody td {\n"
-"                    padding: 0.5em 0.5em 1em;\n"
-"                    vertical-align: top;\n"
-"                }\n"
-"            </style>\n"
-"            <div>\n"
-"                <p>Die Synchronisierung der Lieferaufträge ist auf einige Fehler gestoßen und wurde nicht abgeschlossen.</p>\n"
-"                <p>Bitte beheben Sie das Problem, bevor Sie die Lieferaufträge erneut manuell synchronisieren, da keine weitere Synchronisierung versucht wird.</p>\n"
-"                <p>Folgende Fehler wurden von Amazon gemeldet: </p>\n"
-"                <table class=\"amz_table\">\n"
-"                    <thead>\n"
-"                        <tr>\n"
-"                            <th>Bestellreferenz</th>\n"
-"                            <th>Nachricht</th>\n"
-"                        </tr>\n"
-"                    </thead>\n"
-"                    <tbody>\n"
-"                        <tr t-foreach=\"ctx.get('error_messages')\" t-as=\"error\">\n"
-"                            <th><t t-out=\"error['order_ref']\"></t></th>\n"
-"                            <td>\n"
-"                                <t t-if=\"error['message']\" t-out=\"error['message']\"></t>\n"
-"                                <t t-else=\"\">Bei der Synchronisierung mit Amazon ist ein unbekannter Fehler aufgetreten.\n"
-"                                    Leider müssen Sie manuell prüfen, ob der Status der Bestellung korrekt ist oder nicht.\n"
-"                                    Alle Informationen hierzu finden Sie\n"
-"                                    <a href=\"https://www.odoo.com/documentation/latest/applications/sales/sales/amazon_connector/manage.html#manage_deliveries_errors\">\n"
-"                                        in der Dokumentation\n"
-"                                    </a>.</t>\n"
-"                            </td>\n"
-"                        </tr>\n"
-"                    </tbody>\n"
-"                </table>\n"
-"            </div>\n"
-"        "
-
-#. module: sale_amazon
-#: model:mail.template,body_html:sale_amazon.inventory_sync_failure
-msgid ""
-"<style>\n"
-"                .amz_table {\n"
-"                    width: 100%;\n"
-"                    max-width: 900px;\n"
-"                    border-collapse: collapse;\n"
-"                }\n"
-"\n"
-"                .amz_table th,\n"
-"                .amz_table td {\n"
-"                    border: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table th {\n"
-"                    white-space: nowrap;\n"
-"                }\n"
-"\n"
-"                .amz_table thead th {\n"
-"                    padding: 0.5em 0.5em;\n"
-"                    text-align: center;\n"
-"                    border-bottom: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table tbody th,\n"
-"                .amz_table tbody td {\n"
-"                    padding: 0.5em 0.5em 1em;\n"
-"                    vertical-align: top;\n"
-"                }\n"
-"            </style>\n"
-"            <div>\n"
-"                <p>The synchronization of the products availability for Amazon Account\n"
-"                    <b><t t-out=\"ctx.get('amazon_account') or ''\">REF</t></b>\n"
-"                    encountered some errors and was not completed.</p>\n"
-"                <p>Here are the errors sent by Amazon: </p>\n"
-"                <table class=\"amz_table\">\n"
-"                    <thead>\n"
-"                        <tr>\n"
-"                            <th>SKU</th>\n"
-"                            <th>Message</th>\n"
-"                        </tr>\n"
-"                    </thead>\n"
-"                    <tbody>\n"
-"                        <tr t-foreach=\"ctx.get('error_messages')\" t-as=\"error\">\n"
-"                            <th><t t-out=\"error['sku']\"></t></th>\n"
-"                            <td>\n"
-"                                <t t-if=\"error['message']\" t-out=\"error['message']\"></t>\n"
-"                                <t t-else=\"\">An unknown error occurred during the synchronisation with Amazon.\n"
-"                                    Unfortunately you need to manually check if the available quantity for the product is correct or not.\n"
-"                                </t>\n"
-"                            </td>\n"
-"                        </tr>\n"
-"                    </tbody>\n"
-"                </table>\n"
-"            </div>\n"
-"        "
-msgstr ""
-"<style>\n"
-"                .amz_table {\n"
-"                    width: 100%;\n"
-"                    max-width: 900px;\n"
-"                    border-collapse: collapse;\n"
-"                }\n"
-"\n"
-"                .amz_table th,\n"
-"                .amz_table td {\n"
-"                    border: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table th {\n"
-"                    white-space: nowrap;\n"
-"                }\n"
-"\n"
-"                .amz_table thead th {\n"
-"                    padding: 0.5em 0.5em;\n"
-"                    text-align: center;\n"
-"                    border-bottom: 1px solid #888;\n"
-"                }\n"
-"\n"
-"                .amz_table tbody th,\n"
-"                .amz_table tbody td {\n"
-"                    padding: 0.5em 0.5em 1em;\n"
-"                    vertical-align: top;\n"
-"                }\n"
-"            </style>\n"
-"            <div>\n"
-"                <p>Bei der Synchronisierung der Produktverfügbarkeit für das Amazon-Konto\n"
-"                    <b><t t-out=\"ctx.get('amazon_account') or ''\">REF.</t></b>\n"
-"                    sind Fehler aufgetreten und wurde daher nicht beendet.</p>\n"
-"                <p>Hier sind einige Fehler von Amazon: </p>\n"
-"                <table class=\"amz_table\">\n"
-"                    <thead>\n"
-"                        <tr>\n"
-"                            <th>SKU</th>\n"
-"                            <th>Nachricht</th>\n"
-"                        </tr>\n"
-"                    </thead>\n"
-"                    <tbody>\n"
-"                        <tr t-foreach=\"ctx.get('error_messages')\" t-as=\"error\">\n"
-"                            <th><t t-out=\"error['sku']\"></t></th>\n"
-"                            <td>\n"
-"                                <t t-if=\"error['message']\" t-out=\"error['message']\"></t>\n"
-"                                <t t-else=\"\">Bei der Synchronisierung mit Amazon ist ein unbekannter Fehler aufgetreten.\n"
-"                                    Leider müssen Sie manuell prüfen, ob die verfügbare Menge für das Produkt korrekt ist oder nicht.\n"
-"                                </t>\n"
-"                            </td>\n"
-"                        </tr>\n"
-"                    </tbody>\n"
-"                </table>\n"
-"            </div>\n"
 "        "
 
 #. module: sale_amazon
@@ -292,17 +63,17 @@ msgstr "API-Kennung"
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__aws_access_key
 msgid "AWS Access Key"
-msgstr "AWS-Zugriffsschlüssel"
+msgstr "AWS Access Key"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__aws_secret_key
 msgid "AWS Secret Key"
-msgstr "Geheimer Schlüssel von AWS"
+msgstr "AWS Secret Key"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__aws_session_token
 msgid "AWS Session Token"
-msgstr "AWS-Sitzungstoken"
+msgstr "AWS Session Token"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__account_id
@@ -328,7 +99,7 @@ msgid ""
 "                                                to which this account has access will be\n"
 "                                                synchronized and automatically made available."
 msgstr ""
-"Nach der Validierung der Anmeldeinformationen werden die Marketplaces,\n"
+"Nach der Validierung der Anmeldeinformationen werden die Marktplätze\n"
 "auf die dieses Konto Zugriff hat, synchronisiert\n"
 "und automatisch verfügbar gemacht."
 
@@ -336,31 +107,30 @@ msgstr ""
 #: model:ir.model,name:sale_amazon.model_amazon_account
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Amazon Account"
-msgstr "Amazon-Konto"
+msgstr "Amazon Konto"
 
 #. module: sale_amazon
 #: model:ir.actions.act_window,name:sale_amazon.list_amazon_account_action
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_tree
 #: model_terms:ir.ui.view,arch_db:sale_amazon.res_config_settings_view_form
 msgid "Amazon Accounts"
-msgstr "Amazon-Konten"
+msgstr "Amazon Konto"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_res_partner__amazon_email
 #: model:ir.model.fields,field_description:sale_amazon.field_res_users__amazon_email
 msgid "Amazon Email"
-msgstr "Amazon-E-Mail"
-
-#. module: sale_amazon
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__amazon_feed_ref
-#: model:ir.model.fields,field_description:sale_amazon.field_stock_picking__amazon_feed_ref
-msgid "Amazon Feed Reference"
-msgstr "Amazon-Feeds-Referenz"
+msgstr "Amazon Email"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_sale_order_line__amazon_item_ref
 msgid "Amazon Item Ref"
-msgstr "Amazon-Artikelref."
+msgstr ""
+
+#. module: sale_amazon
+#: model:ir.model.fields,field_description:sale_amazon.field_stock_location__amazon_location
+msgid "Amazon Location"
+msgstr "Amazon Lagerort"
 
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_amazon_marketplace
@@ -379,65 +149,58 @@ msgstr "Amazon Marketplaces"
 #: model:ir.model,name:sale_amazon.model_amazon_offer
 #: model:ir.model.fields,field_description:sale_amazon.field_sale_order_line__amazon_offer_id
 msgid "Amazon Offer"
-msgstr "Amazon-Angebot"
+msgstr "Amazon Angebot"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_offer_view_tree
 msgid "Amazon Offers"
-msgstr "Amazon-Angebote"
-
-#. module: sale_amazon
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__amazon_order_ref
-msgid "Amazon Order Reference"
-msgstr "Amazon-Bestellreferenz"
-
-#. module: sale_amazon
-#: model:ir.model,name:sale_amazon.model_amazon_recover_order_wizard
-msgid "Amazon Recover Order Wizard"
-msgstr "Assistent zur Wiederherstellung der Amazon-Bestellung"
+msgstr "Amazon Angebot"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_sale_order__amazon_order_ref
-msgid "Amazon Reference"
-msgstr "Amazon-Referenz"
+msgid "Amazon Order Ref"
+msgstr "Amazon Bestell Ref"
 
 #. module: sale_amazon
+#: model:product.product,name:sale_amazon.default_product
 #: model:product.template,name:sale_amazon.default_product_product_template
 msgid "Amazon Sale"
-msgstr "Amazon-Verkauf"
+msgstr "Amazon Verkauf"
 
 #. module: sale_amazon
+#: model:product.product,name:sale_amazon.shipping_product
 #: model:product.template,name:sale_amazon.shipping_product_product_template
 msgid "Amazon Shipping"
-msgstr "Amazon-Lieferung "
+msgstr "Amazon Lieferung "
 
 #. module: sale_amazon
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__amazon_sync_status
-#: model:ir.model.fields,field_description:sale_amazon.field_stock_picking__amazon_sync_status
-msgid "Amazon Synchronization Status"
-msgstr "Amazon-Synchronisationsstatus"
+#: model:ir.model.fields,field_description:sale_amazon.field_stock_picking__amazon_sync_pending
+msgid "Amazon Sync Pending"
+msgstr "Amazon Sync steht aus"
+
+#. module: sale_amazon
+#: model:ir.model.fields,field_description:sale_amazon.field_crm_team__amazon_team
+msgid "Amazon Team"
+msgstr "Amazon Team"
 
 #. module: sale_amazon
 #: model_terms:ir.actions.act_window,help:sale_amazon.list_amazon_account_action
 msgid "Amazon accounts correspond to Amazon Seller Central accounts."
-msgstr "Amazon-Konten entsprechen den Amazon-Seller-Central-Konten"
+msgstr "Amazon Konten entsprechen dem Amazon Seller Central"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_marketplace.py:0
 #, python-format
 msgid "Amazon marketplaces cannot be deleted."
 msgstr "Amazon Marketplaces können nicht gelöscht werden."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
-msgid "Amazon move: %s"
-msgstr "Amazon-Buchung: %s"
+msgid "Amazon move : %s"
+msgstr "Amazon-Bewegung: %s"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -445,136 +208,64 @@ msgid ""
 "Since the current carrier doesn't automatically provide a tracking "
 "reference, you need to set one manually."
 msgstr ""
-"Amazon verlangt, dass bei jeder Lieferung eine Sendungsverfolgungsnummer "
-"angegeben wird. Da der aktuelle Versanddienstleister nicht automatisch eine "
+"Amazon verlangt, dass bei jeder Lieferung eine Tracking-Referenz angegeben "
+"wird. Da der aktuelle Versanddienstleister nicht automatisch eine "
 "Sendungsverfolgungsnummer bereitstellt, müssen Sie diese manuell eingeben."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/stock_picking.py:0
 #, python-format
 msgid ""
 "Amazon requires that a tracking reference is provided with each delivery. "
 "You need to assign a carrier to this delivery."
 msgstr ""
-"Amazon verlangt, dass bei jeder Lieferung eine Sendungsverfolgungsnummer "
-"angegeben wird. Sie müssen dieser Lieferung einen Versanddienstleister "
-"zuweisen."
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_AE
-msgid "Amazon.ae"
-msgstr "Amazon.ae"
+"Amazon verlangt, dass bei jeder Lieferung eine Tracking-Referenz angegeben "
+"wird. Sie müssen dieser Lieferung einen Spediteur zuweisen."
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_CA
 msgid "Amazon.ca"
-msgstr "Amazon.ca"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_JP
-msgid "Amazon.co.jp"
-msgstr "Amazon.co.jp"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_UK
 msgid "Amazon.co.uk"
-msgstr "Amazon.co.uk"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_US
 msgid "Amazon.com"
-msgstr "Amazon.com"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_AU
-msgid "Amazon.com.au"
-msgstr "Amazon.com.au"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_BE
-msgid "Amazon.com.be"
-msgstr "Amazon.com.be"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_BR
-msgid "Amazon.com.br"
-msgstr "Amazon.com.br"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_MX
 msgid "Amazon.com.mx"
-msgstr "Amazon.com.mx"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_TR
-msgid "Amazon.com.tr"
-msgstr "Amazon.com.tr"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_DE
 msgid "Amazon.de"
-msgstr "Amazon.de"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_EG
-msgid "Amazon.eg"
-msgstr "Amazon.eg"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_ES
 msgid "Amazon.es"
-msgstr "Amazon.es"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_FR
 msgid "Amazon.fr"
-msgstr "Amazon.fr"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_IN
-msgid "Amazon.in"
-msgstr "Amazon.in"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_IT
 msgid "Amazon.it"
-msgstr "Amazon.it"
+msgstr ""
 
 #. module: sale_amazon
 #: model:amazon.marketplace,name:sale_amazon.marketplace_NL
 msgid "Amazon.nl"
-msgstr "Amazon.nl"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_PL
-msgid "Amazon.pl"
-msgstr "Amazon.pl"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_SA
-msgid "Amazon.sa"
-msgstr "Amazon.sa"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_SE
-msgid "Amazon.se"
-msgstr "Amazon.se"
-
-#. module: sale_amazon
-#: model:amazon.marketplace,name:sale_amazon.marketplace_SG
-msgid "Amazon.sg"
-msgstr "Amazon.sg"
-
-#. module: sale_amazon
-#: model:mail.template,name:sale_amazon.inventory_sync_failure
-msgid "Amazon: Available Inventory for Offers Synchronization Failure"
-msgstr "Amazon: Verfügbare Bestände für Angebote Synchronisationsfehler"
-
-#. module: sale_amazon
-#: model:mail.template,name:sale_amazon.picking_sync_failure
-msgid "Amazon: Delivery Order Synchronization Failure"
-msgstr "Amazon: Fehler bei der Synchronisierung von Lieferaufträgen"
+msgstr ""
 
 #. module: sale_amazon
 #: model:mail.template,name:sale_amazon.order_sync_failure
@@ -582,29 +273,23 @@ msgid "Amazon: Order Synchronization Failure"
 msgstr "Amazon: Fehler bei der Synchronisierung von Bestellungen"
 
 #. module: sale_amazon
-#: model:ir.actions.server,name:sale_amazon.ir_cron_sync_amazon_inventory_ir_actions_server
-msgid "Amazon: sync available inventory"
-msgstr "Amazon: verfügbaren Bestand synchronisieren"
+#: model:ir.actions.server,name:sale_amazon.ir_cron_sync_amazon_orders_ir_actions_server
+#: model:ir.cron,cron_name:sale_amazon.ir_cron_sync_amazon_orders
+#: model:ir.cron,name:sale_amazon.ir_cron_sync_amazon_orders
+msgid "Amazon: sync orders"
+msgstr "SYNC BESTELLUNGEN"
 
 #. module: sale_amazon
 #: model:ir.actions.server,name:sale_amazon.ir_cron_sync_amazon_pickings_ir_actions_server
-msgid "Amazon: sync delivery orders"
-msgstr "Amazon: Lieferaufträge synchronisieren"
-
-#. module: sale_amazon
-#: model:ir.actions.server,name:sale_amazon.ir_cron_sync_amazon_feeds_ir_actions_server
-msgid "Amazon: sync feeds"
-msgstr "Amazon: Feeds synchronisieren"
-
-#. module: sale_amazon
-#: model:ir.actions.server,name:sale_amazon.ir_cron_sync_amazon_orders_ir_actions_server
-msgid "Amazon: sync orders"
-msgstr "Amazon: Bestellungen synchronisieren"
+#: model:ir.cron,cron_name:sale_amazon.ir_cron_sync_amazon_pickings
+#: model:ir.cron,name:sale_amazon.ir_cron_sync_amazon_pickings
+msgid "Amazon: sync pickings"
+msgstr ""
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.authorization_error
 msgid "An error occurred"
-msgstr "Ein Fehler ist aufgetreten"
+msgstr "ein Fehler ist aufgetreten"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.authorization_error
@@ -615,7 +300,7 @@ msgstr ""
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__available_marketplace_ids
 msgid "Available Marketplaces"
-msgstr "Verfügbare Marketplaces"
+msgstr "Verfügbare Online-Marktplätze"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.authorization_error
@@ -631,7 +316,7 @@ msgstr "Unternehmen"
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_res_config_settings
 msgid "Config Settings"
-msgstr "Konfigurationseinstellungen "
+msgstr "Konfiguration "
 
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_res_partner
@@ -639,46 +324,33 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/utils.py:0 code:addons/sale_amazon/utils.py:0
+#: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "Could not establish the connection to the API."
 msgstr "Verbindung mit API konnte nicht hergestellt werden."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "Could not establish the connection to the feed URL."
-msgstr "Verbindung zur Feed-URL konnte nicht hergestellt werden."
+msgstr "Die Verbindung zur Feed-URL konnte nicht hergestellt werden."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "Could not establish the connection to the proxy."
 msgstr "Verbindung zum Proxy konnte nicht hergestellt werden."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/controllers/onboarding.py:0
 #, python-format
 msgid "Could not find Amazon account with id %s"
 msgstr "Amazon-Konto mit ID %s konnte nicht gefunden werden"
 
 #. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/utils.py:0
-#, python-format
-msgid "Could not process the feed document send by Amazon."
-msgstr ""
-"Das von Amazon gesendete Feeds-Dokument konnte nicht verarbeitet werden."
-
-#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__create_uid
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__create_uid
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__create_uid
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__create_uid
 msgid "Created by"
 msgstr "Erstellt von"
 
@@ -686,50 +358,29 @@ msgstr "Erstellt von"
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__create_date
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__create_date
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__create_date
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__create_date
 msgid "Created on"
 msgstr "Erstellt am"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Credentials"
-msgstr "Anmeldedaten"
+msgstr "Credentials"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/res_config_settings.py:0
 #: model_terms:ir.ui.view,arch_db:sale_amazon.res_config_settings_view_form
 #, python-format
 msgid "Default Products"
-msgstr "Standardprodukte"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.recover_order_wizard_form
-msgid "Discard"
-msgstr "Verwerfen"
+msgstr "Standard-Produkte"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__display_name
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__display_name
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__display_name
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__display_name
 msgid "Display Name"
 msgstr "Anzeigename"
 
 #. module: sale_amazon
-#: model:ir.model.fields.selection,name:sale_amazon.selection__amazon_offer__amazon_sync_status__done
-#: model:ir.model.fields.selection,name:sale_amazon.selection__stock_picking__amazon_sync_status__done
-msgid "Done"
-msgstr "Erledigt"
-
-#. module: sale_amazon
-#: model:ir.model.fields.selection,name:sale_amazon.selection__amazon_offer__amazon_sync_status__error
-#: model:ir.model.fields.selection,name:sale_amazon.selection__stock_picking__amazon_sync_status__error
-msgid "Error"
-msgstr "Fehler"
-
-#. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "Error code: %s; description: %s"
@@ -748,49 +399,42 @@ msgstr "Ferner Osten"
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_order_view_form
 msgid "Fulfilled by Amazon"
-msgstr "Versand durch Amazon"
+msgstr ""
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_order_view_form
 msgid "Fulfilled by Merchant"
-msgstr "Versand durch Händler"
+msgstr "Vom Händler erfüllt"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_sale_order__amazon_channel
 msgid "Fulfillment Channel"
-msgstr "Bestellabwicklungskanal"
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields.selection,name:sale_amazon.selection__sale_order__amazon_channel__fba
 msgid "Fulfillment by Amazon"
-msgstr "Versand durch Amazon"
+msgstr "Erfüllung durch Amazon"
 
 #. module: sale_amazon
 #: model:ir.model.fields.selection,name:sale_amazon.selection__sale_order__amazon_channel__fbm
 msgid "Fulfillment by Merchant"
-msgstr "Versand durch Händler"
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid ""
 "Gift message:\n"
 "%s"
 msgstr ""
-"Geschenknachricht:\n"
+"Geschenkbenachrichtigung:\n"
 "%s"
-
-#. module: sale_amazon
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__base_marketplace_id
-msgid "Home Marketplace"
-msgstr "Standardmarketplace"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__id
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__id
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__id
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__id
 msgid "ID"
 msgstr "ID"
 
@@ -798,10 +442,9 @@ msgstr "ID"
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__active
 msgid ""
 "If made inactive, this account will no longer be synchronized with Amazon."
-msgstr "Inaktive Konten werden nicht mehr mit Amazon synchronisiert."
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid ""
@@ -812,30 +455,15 @@ msgstr ""
 "Wenn das Datum in der Zukunft liegt, werden Bestellungen, die zwischen dem vorherigen und dem neuen Datum auf diesem Amazon-Konto aufgegeben wurden, nicht mit Odoo synchronisiert."
 
 #. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_order_view_form
-msgid ""
-"If the sale is locked, you can not modify it anymore. However, you will "
-"still be able to invoice or deliver."
-msgstr ""
-"Wenn der Verkauf abgeschlossen ist, können Sie diesen nicht mehr ändern. "
-"Allerdings können Sie immer noch eine Rechnung ausstellen oder eine "
-"Lieferung vornehmen."
-
-#. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid ""
 "If this account gained access to new marketplaces,"
 "                                         synchronize and add them to the "
 "current sync marketplaces"
 msgstr ""
-"Wenn dieses Konto Zugang zu neuen Marketplaces erhalten hat, synchronisieren"
-" Sie diese und fügen Sie sie zu den aktuellen synchronisierten Marketplaces "
+"Wenn dieses Konto Zugang zu neuen Marktplätzen erhalten hat, synchronisieren"
+" Sie diese und fügen Sie sie zu den aktuellen synchronisierten Marktplätzen "
 "hinzu."
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.picking_view_form
-msgid "In Processing by Amazon"
-msgstr "In Bearbeitung bei Amazon"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_search
@@ -843,45 +471,55 @@ msgid "Inactive"
 msgstr "Inaktiv"
 
 #. module: sale_amazon
+#: model:ir.model,name:sale_amazon.model_stock_location
+msgid "Inventory Locations"
+msgstr "Inventurlager"
+
+#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__is_follow_up_displayed
 msgid "Is Follow Up Displayed"
-msgstr "Wird Verfolgung angezeigt"
+msgstr "Wird Follow-up angezeigt"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__access_token
 msgid "LWA Access Token"
-msgstr "LWA-Zugriffstoken"
+msgstr "LWA Access Token"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__refresh_token
 msgid "LWA Refresh Token"
-msgstr "LWA-Aktualisierungstoken"
+msgstr "LWA Refresh Token"
+
+#. module: sale_amazon
+#: model:ir.model.fields,field_description:sale_amazon.field_amazon_account____last_update
+#: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace____last_update
+#: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__last_orders_sync
 msgid "Last Orders Sync"
-msgstr "Letzte Auftragssynchronisierung"
+msgstr "Letzter Sync:"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__write_uid
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__write_uid
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__write_uid
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Zuletzt aktualisiert von"
+msgstr "Zuletzt aktualisiert durch"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__write_date
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__write_date
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__write_date
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_recover_order_wizard__write_date
 msgid "Last Updated on"
 msgstr "Zuletzt aktualisiert am"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Link with Amazon"
-msgstr "Mit Amazon verknüpfen"
+msgstr "Verknüpfung mit Amazon"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
@@ -889,28 +527,16 @@ msgid ""
 "Link your Amazon account with Odoo to start synchronizing your\n"
 "                                Amazon orders."
 msgstr ""
-"Verknüpfen Sie Ihr Amazon-Konto mit Odoo, um Ihre\n"
-"                                Amazon-Bestellungen zu synchronisieren."
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-msgid "Linked Account"
-msgstr "Verknüpftes Konto"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_order_view_form
-msgid "Lock"
-msgstr "Sperren"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__marketplace_id
 msgid "Marketplace"
-msgstr "Marketplace"
+msgstr "Marktplatz"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Marketplaces"
-msgstr "Marketplaces"
+msgstr "Marktplätze"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__name
@@ -931,11 +557,9 @@ msgid "Offer Count"
 msgstr "Anzahl Angebote"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #: code:addons/sale_amazon/models/product_product.py:0
 #: code:addons/sale_amazon/models/product_template.py:0
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__offer_ids
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_product_product_view_form
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_product_template_view_form
@@ -944,40 +568,27 @@ msgid "Offers"
 msgstr "Angebote"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid "Only available marketplaces can be selected"
-msgstr "Nur verfügbare Marketplces können ausgewählt werden"
+msgstr "Nur verfügbare Marktplätze können ausgewählt werden"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__order_count
 msgid "Order Count"
-msgstr "Anzahl Aufträge"
+msgstr "Anzahl der Aufträge"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Order Follow-up"
-msgstr "Auftragsverfolgung"
+msgstr "Bestellungen Nachverfolgen"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 #, python-format
 msgid "Orders"
 msgstr "Aufträge"
-
-#. module: sale_amazon
-#: model:ir.model.fields.selection,name:sale_amazon.selection__stock_picking__amazon_sync_status__pending
-msgid "Pending"
-msgstr "Ausstehend"
-
-#. module: sale_amazon
-#: model:ir.model.fields.selection,name:sale_amazon.selection__amazon_offer__amazon_sync_status__processing
-#: model:ir.model.fields.selection,name:sale_amazon.selection__stock_picking__amazon_sync_status__processing
-msgid "Processing"
-msgstr "Verarbeitung"
 
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_product_template
@@ -993,10 +604,9 @@ msgstr "Produktvorlage"
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_product_product
 msgid "Product Variant"
-msgstr "Produktvariante"
+msgstr "Produktvarianten"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/stock_picking.py:0
 #, python-format
 msgid ""
@@ -1009,20 +619,6 @@ msgstr ""
 "dem Produkt %s wurden nicht alle auf einmal bestätigt."
 
 #. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.recover_order_wizard_form
-msgid "Recover"
-msgstr "Wiederherstellen"
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/amazon_account.py:0
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-#: model_terms:ir.ui.view,arch_db:sale_amazon.recover_order_wizard_form
-#, python-format
-msgid "Recover Order"
-msgstr "Bestellung wiederherstellen"
-
-#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__region
 msgid "Region"
 msgstr "Region"
@@ -1030,7 +626,7 @@ msgstr "Region"
 #. module: sale_amazon
 #: model_terms:ir.actions.act_window,help:sale_amazon.list_amazon_account_action
 msgid "Register your Amazon account"
-msgstr "Ihr Amazon-Konto registrieren"
+msgstr "Registrieren Sie Ihren Amazon-Account"
 
 #. module: sale_amazon
 #: model_terms:ir.actions.act_window,help:sale_amazon.list_amazon_account_action
@@ -1045,19 +641,16 @@ msgid "Restricted Data Token"
 msgstr "Token für eingeschränkte Daten"
 
 #. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.picking_view_form
-msgid "Retry Amazon Sync"
-msgstr "Amazon-Sychronisation wiederholen"
-
-#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__sku
 msgid "SKU"
 msgstr "SKU"
 
 #. module: sale_amazon
 #: model:ir.model.constraint,message:sale_amazon.constraint_amazon_offer_unique_sku
-msgid "SKU must be unique for a given account."
-msgstr "SKU muss für ein bestimmtes Konto eindeutig sein."
+msgid "SKU must be unique for a given account and marketplace."
+msgstr ""
+"SKU muss für ein bestimmtes Konto und einen bestimmten Marktplatz eindeutig "
+"sein."
 
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_sale_order
@@ -1067,9 +660,10 @@ msgstr "Verkaufsauftrag"
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "Verkaufsauftragszeile"
+msgstr "Auftragsposition"
 
 #. module: sale_amazon
+#: model:ir.model,name:sale_amazon.model_crm_team
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__team_id
 msgid "Sales Team"
 msgstr "Verkaufsteam"
@@ -1080,28 +674,28 @@ msgid "Salesperson"
 msgstr "Verkäufer"
 
 #. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.picking_view_form
-msgid "Scheduled for Amazon Synchronization"
-msgstr "Geplant für Amazon-Synchronisation"
-
-#. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid ""
 "Select the marketplace on which your seller account\n"
-"                                                was initially created."
+"                                                was originally created."
 msgstr ""
-"Wählen Sie den Marketplace aus, für den Ihr Verkäufer-Konto\n"
-"                                                ursprünglich erstellt wurde."
+"Wählen Sie den Marktplatz aus, für den Ihr Verkäufer-Konto\n"
+"ursprünglich erstellt wurde."
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__seller_central_url
 msgid "Seller Central URL"
-msgstr "Seller-Central-URL"
+msgstr "Seller Central URL"
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__seller_key
 msgid "Seller Key"
-msgstr "Verkäuferschlüssel"
+msgstr ""
+
+#. module: sale_amazon
+#: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__base_marketplace_id
+msgid "Sign-up Marketplace"
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__location_id
@@ -1109,7 +703,6 @@ msgid "Stock Location"
 msgstr "Lagerort"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid "Successfully updated the marketplaces available to this account!"
@@ -1118,35 +711,20 @@ msgstr ""
 "aktualisiert!"
 
 #. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-msgid "Sync Deliveries"
-msgstr "Lieferungen synchronisieren"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-msgid "Sync FBM Inventory"
-msgstr "FBM-Bestand synchronisieren"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-msgid "Sync Feeds Status"
-msgstr "Feeds-Status synchronisieren"
-
-#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__active_marketplace_ids
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_offer__active_marketplace_ids
 msgid "Sync Marketplaces"
-msgstr "Marketplaces synchronisieren"
+msgstr "Marktplätze synchronisieren"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Sync Orders"
-msgstr "Aufträge synchronisieren"
+msgstr "Sync Bestellungen"
 
 #. module: sale_amazon
-#: model:mail.template,subject:sale_amazon.inventory_sync_failure
-msgid "Synchronization of Amazon Stock has failed"
-msgstr "Synchronisation mit Amazon-Bestand ist fehlgeschlagen"
+#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
+msgid "Sync Pickings"
+msgstr ""
 
 #. module: sale_amazon
 #: model:mail.template,subject:sale_amazon.order_sync_failure
@@ -1157,50 +735,9 @@ msgstr ""
 " fehlgeschlagen"
 
 #. module: sale_amazon
-#: model:mail.template,subject:sale_amazon.picking_sync_failure
-msgid "Synchronization of delivery orders has failed"
-msgstr "Synchronisation von Lieferaufträgen ist fehlgeschlagen"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.picking_view_form
-msgid "Synchronization with Amazon failed"
-msgstr "Synchronisation mit Amazon fehlgeschlagen"
-
-#. module: sale_amazon
-#: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__synchronize_inventory
-msgid "Synchronize FBM Inventory"
-msgstr "FBM-Bestand synchronisieren"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.picking_view_form
-msgid "Synchronized with Amazon"
-msgstr "Mit Amazon synchronisiert"
-
-#. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_marketplace__tax_included
 msgid "Tax Included"
-msgstr "Inklusive Steuern"
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/wizards/recover_order_wizard.py:0
-#, python-format
-msgid "The Amazon order reference must be in 3-7-7 format."
-msgstr "Die Amazon-Bestellreferenz muss das Format 3-7-7 haben."
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/amazon_account.py:0
-#, python-format
-msgid ""
-"The Amazon order with reference %(ref)s was not recovered because its status"
-" (%(status)s) is not eligible for synchronization for its fulfillment "
-"channel (%(channel)s)."
-msgstr ""
-"Die Amazon-Bestellung mit der Referenz %(ref)s wurde nicht "
-"wiederhergestellt, weil ihr Status (%(status)s) nicht für die "
-"Synchronisierung für ihren Bestellabwicklungskanal geeignet ist "
-"(%(channel)s)."
+msgstr "Steuer eingschlossen"
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_marketplace__region
@@ -1208,23 +745,23 @@ msgid ""
 "The Amazon region of the marketplace. Please refer to the Selling Partner "
 "API documentation to find the correct region."
 msgstr ""
-"Die Amazon-Region des Marketplaces. Die richtige Region finden Sie in der "
-"Selling-Partner-API-Dokumentation."
+"Die Amazon-Region des Marketplace. Die richtige Region finden Sie in der "
+"Selling Partner API-Dokumentation."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_sale_order_line__amazon_item_ref
 msgid "The Amazon-defined item reference."
-msgstr "Die von Amazon definierte Artikelreferenz."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_marketplace__api_ref
 msgid "The Amazon-defined marketplace reference."
-msgstr "Die von Amazon definierte Markerplace-Referenz."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_sale_order__amazon_order_ref
 msgid "The Amazon-defined order reference."
-msgstr "Die von Amazon definierte Bestellreferenz."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__team_id
@@ -1236,17 +773,15 @@ msgstr ""
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_offer__sku
 msgid "The Stock Keeping Unit."
-msgstr "Die Lagerhaltungseinheit"
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/utils.py:0 code:addons/sale_amazon/utils.py:0
+#: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "The communication with the API failed."
 msgstr "Die Kommunikation mit der API ist fehlgeschlagen."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid ""
@@ -1260,13 +795,7 @@ msgstr ""
 #: model:ir.model.fields,help:sale_amazon.field_res_partner__amazon_email
 #: model:ir.model.fields,help:sale_amazon.field_res_users__amazon_email
 msgid "The encrypted email of the customer. Does not forward mails."
-msgstr "Die verschlüsselte E-Mail des Kunden. Leitet keine Mails weiter."
-
-#. module: sale_amazon
-#: model:ir.model.fields,help:sale_amazon.field_amazon_account__base_marketplace_id
-msgid "The home marketplace of this account; used for authentication only."
 msgstr ""
-"Der Standardmarketplace dieses Kontos; nur zur Authentifizierung verwendet."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__last_orders_sync
@@ -1285,31 +814,29 @@ msgid ""
 "The location of the stock managed by Amazon under the Amazon Fulfillment "
 "program."
 msgstr ""
-"Der Standort des von Amazon im Rahmen des Amazon-Fulfillment-Programms "
-"verwalteten Bestands."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__refresh_token
 msgid "The long-lived token that can be exchanged for a new access token."
 msgstr ""
-"Das langfristige Token, das gegen ein neues Zugriffstoken ausgetauscht "
-"werden kann."
+"Das Langzeittoken, das gegen ein neues Zugangstoken ausgetauscht werden "
+"kann."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_offer__marketplace_id
 msgid "The marketplace of this offer."
-msgstr "Der Marketplace dieses Angebots."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__available_marketplace_ids
 msgid "The marketplaces this account has access to."
-msgstr "Die Marketplaces, auf die dieses Kontos Zugriff hat."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__active_marketplace_ids
 #: model:ir.model.fields,help:sale_amazon.field_amazon_offer__active_marketplace_ids
 msgid "The marketplaces this account sells on."
-msgstr "Die Marketplaces, auf denen dieses Kontos verkauft."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,field_description:sale_amazon.field_amazon_account__aws_credentials_expiry
@@ -1328,7 +855,6 @@ msgid "The moment at which the token becomes invalid."
 msgstr "Der Zeitpunkt, an dem das Token ungültig wird."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -1336,45 +862,20 @@ msgid ""
 "already been delivered. Please create a return for this order to adjust the "
 "stock."
 msgstr ""
-"Die Bestellung wurde vom Amazon-Kunden storniert, während einige Produkte "
-"bereits geliefert wurden. Bitte erstellen Sie eine Retoure für diese "
-"Bestellung, um den Bestand anzupassen."
 
 #. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/amazon_account.py:0
-#, python-format
-msgid "The order was not found on this account's marketplaces."
-msgstr "Die Bestellung wurde nicht auf dem Marketplace des Kontos gefunden."
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/amazon_account.py:0
-#, python-format
-msgid "The provided reference does not match any Amazon order."
-msgstr ""
-"Die angegebene Referenz stimmt nicht mit einer Amazon-Bestellung überein."
-
-#. module: sale_amazon
-#: model:ir.model.fields,help:sale_amazon.field_amazon_recover_order_wizard__amazon_order_ref
-msgid "The reference to the Amazon order to recover, in 3-7-7 format"
-msgstr ""
-"Die Referenz zur wiederherzustellenden Amazon-Bestellung, im 3-7-7-Format."
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/stock_picking.py:0
-#, python-format
+#: model:ir.model.fields,help:sale_amazon.field_amazon_account__base_marketplace_id
 msgid ""
-"The sales order of this delivery order is not linked to an Amazon account."
+"The original sign-up marketplace of this account. Used for authentication "
+"only."
 msgstr ""
-"Der Verkaufsautrag dieses Lieferauftrags ist mit keinem Amazon-Konto "
-"verknüpft."
+"Der ursprüngliche Anmeldemarktplatz für dieses Konto. Wird nur zur "
+"Authentifizierung verwendet."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_offer__account_id
 msgid "The seller account used to manage this product."
-msgstr "Das Verkäuferkonto, das zur Verwaltung dieses Produkts verwendet wird"
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__aws_access_key
@@ -1389,8 +890,6 @@ msgid ""
 "The short-lived key used to verify the access to the assumed ARN role on "
 "AWS."
 msgstr ""
-"Der kurzzeitige Schlüssel, der verwendet wird, um die angenommene ARN-Rolle "
-"auf AWS zu verfizieren."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__restricted_data_token
@@ -1398,15 +897,11 @@ msgid ""
 "The short-lived token used instead of the LWA Access Token to access "
 "restricted data"
 msgstr ""
-"Das kurzeitige Token, das statt des LWS-Zugriffstokens verwendet wird, um "
-"auf eingeschränkte Daten zuzugreifen."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__access_token
 msgid "The short-lived token used to query Amazon API on behalf of a seller."
 msgstr ""
-"Das kurzzeitige Token, das verwendet wird, um die Amazon-API im Namen eines "
-"Verkäufers abzufragen."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__aws_session_token
@@ -1414,64 +909,23 @@ msgid ""
 "The short-lived token used to query the SP-API with the assumed ARN role on "
 "AWS."
 msgstr ""
-"Das kurzzeitige Token, das verwendet wird, um die SP-API mit der "
-"angenommenen ARN-Rolle auf AWS abzufragen."
-
-#. module: sale_amazon
-#: model:ir.model.fields,help:sale_amazon.field_stock_picking__amazon_sync_status
-msgid ""
-"The synchronization status of the delivery order to Amazon:\n"
-"- Pending: The delivery order has been confirmed and will soon be synchronized.\n"
-"- Processing: The delivery details have been sent and are being processed.\n"
-"- Done: The delivery details have been processed.\n"
-"- Error: The synchronization of the delivery order failed."
-msgstr ""
-"Der Synchronisationsstatus des Lieferauftrags an Amazon:\n"
-"- Ausstehend: Der Lieferauftrag wurde bestätigt und wird in Kürze synchronisiert werden.\n"
-"- In Bearbeitung: Die Lieferdetails wurden gesendet und werden verarbeitet.\n"
-"- Erledigt: Die Lieferdetails wurden verarbeitet.\n"
-"- Fehler: Die Synchronisierung des Lieferauftrags ist fehlgeschlagen."
-
-#. module: sale_amazon
-#: model:ir.model.fields,help:sale_amazon.field_amazon_offer__amazon_sync_status
-msgid ""
-"The synchronization status of the product's stock level to Amazon:\n"
-"- Processing: The stock level has been sent and is being processed.\n"
-"- Done: The stock level has been processed.\n"
-"- Error: The synchronization of the stock level failed."
-msgstr ""
-"Der Status der Synchronisierung des Lagerbestands des Produkts mit Amazon:\n"
-"- In Bearbeitung: Der Lagerbestand wurde gesendet und wird gerade verarbeitet.\n"
-"- Erledigt: Der Lagerbestand wurde verarbeitet.\n"
-"- Fehler: Die Synchronisierung des Lagerbestands ist fehlgeschlagen."
-
-#. module: sale_amazon
-#. odoo-python
-#: code:addons/sale_amazon/models/amazon_account.py:0
-#, python-format
-msgid ""
-"The synchronization with Amazon failed. Amazon gave us this information "
-"about the problem:"
-msgstr ""
-"Die Synchronisierung mit Amazon ist fehlgeschlagen. Amazon hat uns diese "
-"Information über das Problem gegeben:"
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_account__name
 msgid "The user-defined name of the account."
-msgstr "Der benutzerdefinierte Name des Kontos."
+msgstr ""
 
 #. module: sale_amazon
 #: model:ir.model.constraint,message:sale_amazon.constraint_amazon_marketplace_unique_api_ref
 msgid "There can only exist one marketplace for a given API Identifier."
-msgstr "Für eine bestimmte API-Kennung kann es nur einen Marketplace geben."
+msgstr "Für eine bestimmte API-Kennung kann es nur einen Marktplatz geben."
 
 #. module: sale_amazon
 #: model:ir.model.constraint,message:sale_amazon.constraint_sale_order_unique_amazon_order_ref
 msgid ""
 "There can only exist one sale order for a given Amazon Order Reference."
 msgstr ""
-"Es kann nur einen Verkaufsauftrag für eine bestimmte Amazon-Bestellreferenz "
+"Es kann nur einen Verkaufsauftrag für eine bestimmte Amazon Order Reference "
 "geben."
 
 #. module: sale_amazon
@@ -1489,92 +943,91 @@ msgid ""
 "                                          cannot be undone. Are you sure you"
 " want to proceed?"
 msgstr ""
-"Diese Aktion trennt die Verbindung Ihres Kontos mit Amazon und"
-"                                           kann nicht rückgängig gemacht "
-"werden. Sind Sie sicher, dass Sie fortfahren möchten?"
 
 #. module: sale_amazon
 #: model:ir.model,name:sale_amazon.model_stock_picking
 msgid "Transfer"
-msgstr "Transfer"
+msgstr "Lieferung vornehmen"
+
+#. module: sale_amazon
+#: model:product.product,uom_name:sale_amazon.default_product
+#: model:product.product,uom_name:sale_amazon.shipping_product
+#: model:product.template,uom_name:sale_amazon.default_product_product_template
+#: model:product.template,uom_name:sale_amazon.shipping_product_product_template
+msgid "Units"
+msgstr "Einheiten"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Unlink account"
-msgstr "Konto trennen"
-
-#. module: sale_amazon
-#: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
-msgid "Unlinked Account"
-msgstr "Getrenntes Konto"
+msgstr ""
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Update Available Marketplaces"
-msgstr "Verfügbare Marketplaces aktualisieren"
+msgstr "Verfügbare Marktplätze aktualisieren"
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_offer_view_tree
 msgid "View on Seller Central"
-msgstr "Auf Seller Central ansehen"
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid "Warning"
 msgstr "Warnung"
 
 #. module: sale_amazon
-#: model:ir.model.fields,help:sale_amazon.field_amazon_account__synchronize_inventory
-msgid ""
-"Whether the available quantities of FBA products linked to this account are "
-"synchronized with Amazon."
+#: model:ir.model.fields,help:sale_amazon.field_stock_picking__amazon_sync_pending
+msgid "Whether the picking must be notified to Amazon or not."
 msgstr ""
-"Ob die verfügbaren Mengen der mit diesem Konto verbundenen FBA-Produkte mit "
-"Amazon synchronisiert wurden."
 
 #. module: sale_amazon
 #: model:ir.model.fields,help:sale_amazon.field_amazon_marketplace__tax_included
 msgid "Whether the price includes the tax amount or not."
-msgstr "Ob der Preis den Steuerbetrag enthält."
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
+#: model:ir.model.fields,help:sale_amazon.field_stock_location__amazon_location
+msgid ""
+"Whether this location represents the stock of a seller managed by Amazon "
+"under the Amazon Fulfillment program or not."
+msgstr ""
+
+#. module: sale_amazon
+#: model:ir.model.fields,help:sale_amazon.field_crm_team__amazon_team
+msgid "Whether this sales team is associated with Amazon orders or not."
+msgstr ""
+
+#. module: sale_amazon
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid "You first need to authorize the Amazon account %s."
-msgstr "Sie müssen zuerst das Amazon-Konto %s autorisieren."
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/utils.py:0
 #, python-format
 msgid ""
 "You first need to set the marketplaces to synchronize for the Amazon account"
 " %s."
 msgstr ""
-"Sie müssen zunächst die Marketplaces für die Synchronisierung des Amazon-"
-"Kontos %s festlegen."
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid ""
 "You reached the maximum number of requests for this operation; please try "
 "again later."
 msgstr ""
-"Sie haben die maximale Anzahl von Anfragen für diesen Vorgang erreicht; "
-"bitte versuchen Sie es später noch einmal."
 
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "Your Amazon account is linked with Odoo."
-msgstr "Ihr Amazon-Konto ist mit Odoo verknüpft."
+msgstr ""
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid ""
@@ -1585,14 +1038,12 @@ msgstr ""
 "Bedingung: %s - %s"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid "[%s] Delivery Charges for %s"
 msgstr "[%s] Lieferkosten für %s"
 
 #. module: sale_amazon
-#. odoo-python
 #: code:addons/sale_amazon/models/amazon_account.py:0
 #, python-format
 msgid "[%s] Gift Wrapping Charges for %s"
@@ -1601,4 +1052,4 @@ msgstr "[%s] Kosten für die Geschenkverpackung für %s"
 #. module: sale_amazon
 #: model_terms:ir.ui.view,arch_db:sale_amazon.amazon_account_view_form
 msgid "e.g. American Market"
-msgstr "z. B. Amerikanischer Markt"
+msgstr "z.B. Amerikanischer Markt"

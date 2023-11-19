@@ -3,16 +3,16 @@
 # 	* account_inter_company_rules
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,30 +20,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_inter_company_rules
-#. odoo-python
 #: code:addons/account_inter_company_rules/models/account_move.py:0
 #, python-format
 msgid "%s Invoice: %s"
-msgstr "%s 發票： %s"
-
-#. module: account_inter_company_rules
-#: model:ir.model,name:account_inter_company_rules.model_account_move_send
-msgid "Account Move Send"
-msgstr "賬戶分錄傳送"
+msgstr "%s Invoice: %s"
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_bank_statement_line__auto_generated
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_move__auto_generated
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_payment__auto_generated
 msgid "Auto Generated Document"
-msgstr "自動產生的文件"
+msgstr "Auto Generated Document"
 
 #. module: account_inter_company_rules
-#. odoo-python
 #: code:addons/account_inter_company_rules/models/account_move.py:0
 #, python-format
 msgid "Automatically generated from %(origin)s of company %(company)s."
-msgstr "據 %(company)s 公司的「%(origin)s」自動產生"
+msgstr "Automatically generated from %(origin)s of company %(company)s."
 
 #. module: account_inter_company_rules
 #: model:ir.model,name:account_inter_company_rules.model_res_company
@@ -53,29 +46,26 @@ msgstr "公司"
 #. module: account_inter_company_rules
 #: model:ir.model,name:account_inter_company_rules.model_res_config_settings
 msgid "Config Settings"
-msgstr "配置設定"
+msgstr "設定"
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_res_company__intercompany_user_id
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_res_config_settings__intercompany_user_id
 msgid "Create as"
-msgstr "建立為"
+msgstr "Create as"
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields.selection,name:account_inter_company_rules.selection__res_company__rule_type__not_synchronize
 msgid "Do not synchronize"
-msgstr "不要同步"
+msgstr "Do not synchronize"
 
 #. module: account_inter_company_rules
-#. odoo-python
 #: code:addons/account_inter_company_rules/models/res_company.py:0
-#: code:addons/account_inter_company_rules/models/res_config_settings.py:0
 #, python-format
 msgid ""
-"Generate a bill/invoice when a company confirms an invoice/bill for %s. The "
-"new bill/invoice will be created in the first Purchase/Sales Journal of the "
-"Journals list view."
-msgstr "當有公司確認 %s 的發票/賬單時，產生賬單/發票。 新的賬單/發票會建立在日記賬列表檢視畫面的第一個採購/銷售日記賬中。"
+"Generate a bill/invoice when a company confirms an invoice/bill for %s."
+msgstr ""
+"Generate a bill/invoice when a company confirms an invoice/bill for %s."
 
 #. module: account_inter_company_rules
 #: model_terms:ir.ui.view,arch_db:account_inter_company_rules.view_company_inter_change_inherit_form
@@ -86,24 +76,25 @@ msgstr "公司間交易"
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_res_company__intercompany_transaction_message
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_res_config_settings__intercompany_transaction_message
 msgid "Intercompany Transaction Message"
-msgstr "公司間交易訊息"
+msgstr "Intercompany Transaction Message"
 
 #. module: account_inter_company_rules
 #: model:ir.model,name:account_inter_company_rules.model_account_move
 msgid "Journal Entry"
-msgstr "日記賬記項"
+msgstr "日記帳分錄"
 
 #. module: account_inter_company_rules
 #: model:ir.model,name:account_inter_company_rules.model_account_move_line
 msgid "Journal Item"
-msgstr "日記賬項目"
+msgstr "日記帳項目"
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields,help:account_inter_company_rules.field_res_company__intercompany_user_id
 #: model:ir.model.fields,help:account_inter_company_rules.field_res_config_settings__intercompany_user_id
 msgid ""
 "Responsible user for creation of documents triggered by intercompany rules."
-msgstr "負責創建由公司間規則觸發的文件的用戶 。"
+msgstr ""
+"Responsible user for creation of documents triggered by intercompany rules."
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_res_company__rule_type
@@ -120,16 +111,16 @@ msgstr "選擇公司"
 #: model:ir.model.fields,help:account_inter_company_rules.field_res_company__rule_type
 #: model:ir.model.fields,help:account_inter_company_rules.field_res_config_settings__rule_type
 msgid "Select the type to setup inter company rules in selected company."
-msgstr "選擇在所選公司中設置公司間規則的類型 。"
+msgstr "Select the type to setup inter company rules in selected company."
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_bank_statement_line__auto_invoice_id
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_move__auto_invoice_id
 #: model:ir.model.fields,field_description:account_inter_company_rules.field_account_payment__auto_invoice_id
 msgid "Source Invoice"
-msgstr "來源發票"
+msgstr "Source Invoice"
 
 #. module: account_inter_company_rules
 #: model:ir.model.fields.selection,name:account_inter_company_rules.selection__res_company__rule_type__invoice_and_refund
 msgid "Synchronize invoices/bills"
-msgstr "同步發票/賬單"
+msgstr "Synchronize invoices/bills"

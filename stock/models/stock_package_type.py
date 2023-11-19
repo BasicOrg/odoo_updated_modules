@@ -16,9 +16,9 @@ class PackageType(models.Model):
 
     name = fields.Char('Package Type', required=True)
     sequence = fields.Integer('Sequence', default=1, help="The first in the sequence is the default one.")
-    height = fields.Float('Height', help="Packaging Height")
-    width = fields.Float('Width', help="Packaging Width")
-    packaging_length = fields.Float('Length', help="Packaging Length")
+    height = fields.Integer('Height', help="Packaging Height")
+    width = fields.Integer('Width', help="Packaging Width")
+    packaging_length = fields.Integer('Length', help="Packaging Length")
     base_weight = fields.Float(string='Weight', help='Weight of the package type')
     max_weight = fields.Float('Max Weight', help='Maximum weight shippable in this packaging')
     barcode = fields.Char('Barcode', copy=False)
@@ -28,10 +28,10 @@ class PackageType(models.Model):
     storage_category_capacity_ids = fields.One2many('stock.storage.category.capacity', 'package_type_id', 'Storage Category Capacity', copy=True)
 
     _sql_constraints = [
-        ('barcode_uniq', 'unique(barcode)', "A barcode can only be assigned to one package type!"),
-        ('positive_height', 'CHECK(height>=0.0)', 'Height must be positive'),
-        ('positive_width', 'CHECK(width>=0.0)', 'Width must be positive'),
-        ('positive_length', 'CHECK(packaging_length>=0.0)', 'Length must be positive'),
+        ('barcode_uniq', 'unique(barcode)', "A barcode can only be assigned to one package type !"),
+        ('positive_height', 'CHECK(height>=0)', 'Height must be positive'),
+        ('positive_width', 'CHECK(width>=0)', 'Width must be positive'),
+        ('positive_length', 'CHECK(packaging_length>=0)', 'Length must be positive'),
         ('positive_max_weight', 'CHECK(max_weight>=0.0)', 'Max Weight must be positive'),
     ]
 
@@ -45,5 +45,5 @@ class PackageType(models.Model):
 
     def copy(self, default=None):
         default = dict(default or {})
-        default['name'] = _("%s (copy)", self.name)
+        default.update(name=_("%s (copy)") % self.name)
         return super().copy(default)

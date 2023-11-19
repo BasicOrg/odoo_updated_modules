@@ -4,6 +4,8 @@
 from unittest.mock import patch
 
 import odoo.tests
+from odoo.addons.iap.tools.iap_tools import iap_jsonrpc_mocked
+from odoo.tools import mute_logger
 
 class TestConfiguratorCommon(odoo.tests.HttpCase):
 
@@ -19,7 +21,7 @@ class TestConfiguratorCommon(odoo.tests.HttpCase):
             params = kwargs.get('params', {})
             language = params.get('lang', 'en_US')
             if endpoint.endswith('/api/website/1/configurator/industries'):
-                if language in ('fr_FR', 'pa_GB'):
+                if language == 'fr_FR':
                     return {"industries": [
                         {"id": 1, "label": "abbey in fr"},
                         {"id": 2, "label": "aboriginal and torres strait islander organisation in fr"},
@@ -39,8 +41,8 @@ class TestConfiguratorCommon(odoo.tests.HttpCase):
                 return []
             elif '/api/website/2/configurator/custom_resources/' in endpoint:
                 return {'images': {}}
-            elif '/api/olg/1/generate_placeholder' in endpoint:
-                return {"a non existing placeholder": "😠", 'Catchy Headline': 'Welcome to XXXX - Your Super test'}
+
+            iap_jsonrpc_mocked()
 
         iap_patch = patch('odoo.addons.iap.tools.iap_tools.iap_jsonrpc', iap_jsonrpc_mocked_configurator)
         self.startPatcher(iap_patch)
@@ -52,26 +54,15 @@ class TestConfiguratorCommon(odoo.tests.HttpCase):
 class TestConfiguratorTranslation(TestConfiguratorCommon):
 
     def test_01_configurator_translation(self):
-        parseltongue = self.env['res.lang'].create({
-            'name': 'Parseltongue',
-            'code': 'pa_GB',
-            'iso_code': 'pa_GB',
-            'url_code': 'pa_GB',
-        })
         self.env["base.language.install"].create({
             'overwrite': True,
-            'lang_ids': [(6, 0, [parseltongue.id])],
+            'lang_ids': [(6, 0, [self.env.ref('base.lang_fr').id])],
         }).lang_install()
         feature = self.env['website.configurator.feature'].search([('name', '=', 'Privacy Policy')])
-        feature.with_context(lang=parseltongue.code).write({'name': 'Parseltongue_privacy'})
-        self.env.ref('base.user_admin').write({'lang': parseltongue.code})
+        feature.with_context(lang='fr_FR').write({'name': 'Politique de confidentialité'})
+        self.env.ref('base.user_admin').write({'lang': self.env.ref('base.lang_fr').code})
         website_fr = self.env['website'].create({
             'name': "New website",
-        })
-        self.env.ref('web_editor.snippets').update_field_translations('arch_db', {
-            parseltongue.code: {
-                'Save': 'Save_Parseltongue'
-            }
         })
         # disable configurator todo to ensure this test goes through
         active_todo = self.env['ir.actions.todo'].search([('state', '=', 'open')], limit=1)

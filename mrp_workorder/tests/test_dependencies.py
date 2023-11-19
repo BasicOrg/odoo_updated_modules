@@ -2,11 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import Command
-from odoo.addons.mrp_workorder.tests.common import TestMrpWorkorderCommon
+from odoo.addons.mrp.tests import common
 from odoo.tests import Form
 
 
-class TestWorkOrderDependencies(TestMrpWorkorderCommon):
+class TestWorkOrderDependencies(common.TestMrpCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -207,38 +207,3 @@ class TestWorkOrderDependencies(TestMrpWorkorderCommon):
         self.assertEqual(mo_3.state, 'to_close')
         mo_3.button_mark_done()
         self.assertEqual(mo_3.state, 'done')
-
-    def test_allow_operation_dependency_with_deleted_workorder(self):
-        """
-        BoM with dependencies between operations to ensure an order: OP01, OP02
-        and OP03. The user creates a MO based on that BoM and removes WO02. He
-        should still be able to confirm and process the MO.
-        """
-        self.bom.operation_ids[1].blocked_by_operation_ids = [Command.link(self.bom.operation_ids[0].id)]
-        self.bom.operation_ids[2].blocked_by_operation_ids = [Command.link(self.bom.operation_ids[1].id)]
-
-        mo_form = Form(self.env['mrp.production'])
-        mo_form.product_id = self.finished
-        mo_form.product_qty = 20
-        mo = mo_form.save()
-
-        self.assertEqual(mo.state, 'draft')
-
-        wo_1, wo_2, wo_3 = mo.workorder_ids
-
-        wo_2.unlink()
-        mo.action_confirm()
-
-        self.assertEqual(wo_1.state, 'ready')
-        self.assertEqual(wo_3.state, 'ready')
-
-        wo_1.button_start()
-        wo_1.button_finish()
-
-        wo_3.button_start()
-        wo_3.button_finish()
-
-        self.assertEqual(mo.state, 'to_close')
-        mo.button_mark_done()
-        self.assertEqual(mo.state, 'done')
-        self.assertEqual(mo.workorder_ids.operation_id, self.bom.operation_ids[0] | self.bom.operation_ids[2])

@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models
-from odoo.addons.website_sale_picking import const
+
 
 class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
@@ -37,15 +37,8 @@ class PaymentProvider(models.Model):
             product.type in ('consu', 'product')
             for product in order.order_line.product_id
         ):
-            compatible_providers = compatible_providers.filtered(
+            compatible_providers.filtered(
                 lambda p: p.code != 'custom' or p.custom_mode != 'onsite'
             )
 
         return compatible_providers
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.custom_mode != 'onsite':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHOD_CODES

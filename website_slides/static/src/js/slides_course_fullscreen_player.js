@@ -2,31 +2,27 @@
 
 /* global YT, Vimeo */
 
-    import publicWidget from '@web/legacy/js/public/public_widget';
-    import { _t } from "@web/core/l10n/translation";
-    import { renderToElement } from "@web/core/utils/render";
-    import { session } from "@web/session";
+    import publicWidget from 'web.public.widget';
+    import  { qweb as QWeb, _t } from 'web.core';
+    import { Markup } from 'web.utils';
+    import config from 'web.config';
+
+    import session from 'web.session';
     import { Quiz } from '@website_slides/js/slides_course_quiz';
     import { SlideCoursePage } from '@website_slides/js/slides_course_page';
-    import { unhideConditionalElements } from '@website/js/content/inject_dom';
-    import Dialog from '@web/legacy/js/core/dialog';
+    import Dialog from 'web.Dialog';
     import '@website_slides/js/slides_course_join';
-    import { SIZES, utils as uiUtils } from "@web/core/ui/ui_service";
-    import { browser } from '@web/core/browser/browser';
-
-    import { markup } from "@odoo/owl";
 
     /**
      * Helper: Get the slide dict matching the given criteria
      *
      * @private
      * @param {Array<Object>} slideList List of dict reprensenting a slide
-     * @param {[string] : any} matcher
+     * @param {Object} matcher (see https://underscorejs.org/#matcher)
      */
     var findSlide = function (slideList, matcher) {
-        return slideList.find((slide) => {
-            return Object.keys(matcher).every((key) => matcher[key] === slide[key]);
-        });
+        var slideMatch = _.matcher(matcher);
+        return _.find(slideList, slideMatch);
     };
 
     /**
@@ -118,7 +114,7 @@
                     self.currentVideoTime += 1;
                     if (self.totalVideoTime && self.currentVideoTime > self.totalVideoTime - 30){
                         clearInterval(self.tid);
-                        if (self.slide.isMember && !self.slide.hasQuestion && !self.slide.completed){
+                        if (!self.slide.hasQuestion && !self.slide.completed){
                             self.trigger_up('slide_mark_completed', self.slide);
                         }
                     }
@@ -220,7 +216,7 @@
          */
          _onVideoTimeUpdate: async function (eventData) {
             if (eventData.seconds > (this.videoDuration - 30)) {
-                if (this.slide.isMember && !this.slide.hasQuestion && !this.slide.completed){
+                if (!this.slide.hasQuestion && !this.slide.completed){
                     this.trigger_up('slide_mark_completed', this.slide);
                 }
             }
@@ -292,7 +288,7 @@
          */
         _getCurrentIndex: function () {
             var slide = this.get('slideEntry');
-            var currentIndex = this.slideEntries.findIndex(entry =>{
+            var currentIndex = _.findIndex(this.slideEntries, function (entry) {
                 return entry.id === slide.id && entry.isQuiz === slide.isQuiz;
             });
             return currentIndex;
@@ -376,17 +372,14 @@
         },
 
         init: function (parent, options, slide) {
-            options = Object.assign({
+            options = _.defaults(options || {}, {
                 title: _t("Share This Content"),
                 buttons: [{text: "Close", close: true}],
                 size: 'medium',
-            }, options || {});
+            });
             this._super(parent, options);
             this.slide = slide;
             this.session = session;
-
-            this.rpc = this.bindService("rpc");
-            this.notification = this.bindService("notification");
         },
 
         //--------------------------------------------------------------------------
@@ -400,7 +393,7 @@
          * @param {Event} ev
          */
         _onKeypress: function (ev) {
-            if (ev.key === "Enter") {
+            if (ev.keyCode === $.ui.keyCode.ENTER) {
                 ev.preventDefault();
                 this._onShareByEmailClick();
             }
@@ -412,22 +405,25 @@
             if (input.val()) {
                 form.removeClass('o_has_error').find('.form-control, .form-select').removeClass('is-invalid');
                 var slideID = form.find('button').data('slide-id');
-                this.rpc('/slides/slide/send_share_email', {
-                    slide_id: slideID,
-                    emails: input.val(),
-                    fullscreen: true
+                this._rpc({
+                    route: '/slides/slide/send_share_email',
+                    params: {
+                        slide_id: slideID,
+                        emails: input.val(),
+                        fullscreen: true
+                    },
                 }).then((action) => {
                     if (action) {
                         form.find('.alert-info').removeClass('d-none');
                         form.find('.input-group').addClass('d-none');
                     } else {
-                        this.notification.add(_t('Please enter valid email(s)'), { type: 'danger' });
+                        this.displayNotification({ message: _t('Please enter valid email(s)'), type: 'danger' });
                         form.addClass('o_has_error').find('.form-control, .form-select').addClass('is-invalid');
                         input.focus();
                     }
                 });
             } else {
-                this.notification.add(_t('Please enter valid email(s)'), { type: 'danger' });
+                this.displayNotification({ message: _t('Please enter valid email(s)'), type: 'danger' });
                 form.addClass('o_has_error').find('.form-control, .form-select').addClass('is-invalid');
                 input.focus();
             }
@@ -440,13 +436,27 @@
             window.open(popUpURL, 'Share Dialog', 'width=626,height=436');
         },
 
-        _onShareLinkCopy: async function (ev) {
+        _onShareLinkCopy: function (ev) {
             ev.preventDefault();
             var $clipboardBtn = this.$('.o_clipboard_button');
-            $clipboardBtn.tooltip({title: "Copied!", trigger: "manual", placement: "bottom"});
-            await browser.navigator.clipboard.writeText(this.$('.o_wslides_js_share_link')[0].innerText);    
-            $clipboardBtn.tooltip('show');
-            setTimeout(() => $clipboardBtn.tooltip("hide"), 800);
+            $clipboardBtn.tooltip({title: "Copied !", trigger: "manual", placement: "bottom"});
+            var self = this;
+            var clipboard = new ClipboardJS('.o_clipboard_button', {
+                target: function () {
+                    return self.$('.o_wslides_js_share_link')[0];
+                },
+                container: this.el
+            });
+            clipboard.on('success', function () {
+                clipboard.destroy();
+                $clipboardBtn.tooltip('show');
+                _.delay(function () {
+                    $clipboardBtn.tooltip("hide");
+                }, 800);
+            });
+            clipboard.on('error', function (e) {
+                clipboard.destroy();
+            })
         },
 
     });
@@ -484,10 +494,10 @@
      * This widget is rendered sever side, and attached to the existing DOM.
      */
     var Fullscreen = SlideCoursePage.extend({
-        events: Object.assign({}, SlideCoursePage.prototype.events, {
+        events: _.extend({}, SlideCoursePage.prototype.events, {
             'click .o_wslides_fs_toggle_sidebar': '_onClickToggleSidebar',
         }),
-        custom_events: Object.assign({}, SlideCoursePage.prototype.custom_events, {
+        custom_events: _.extend({}, SlideCoursePage.prototype.custom_events, {
             'change_slide': '_onChangeSlideRequest',
             'slide_go_next': '_onSlideGoToNext',
         }),
@@ -503,9 +513,9 @@
             this.slides = this._preprocessSlideData(slides);
             this.channel = channelData;
             var slide;
-            const urlParams = new URL(window.location).searchParams;
+            var urlParams = $.deparam.querystring();
             if (defaultSlideId) {
-                slide = findSlide(this.slides, {id: defaultSlideId, isQuiz: String(urlParams.get("quiz")) === "1" });
+                slide = findSlide(this.slides, {id: defaultSlideId, isQuiz: urlParams.quiz === "1" });
             } else {
                 slide = this.slides[0];
             }
@@ -554,8 +564,11 @@
         _fetchHtmlContent: function (){
             var self = this;
             var currentSlide = this.get('slide');
-            return self.rpc("/slides/slide/get_html_content", {
-                'slide_id': currentSlide.id
+            return self._rpc({
+                route:"/slides/slide/get_html_content",
+                params: {
+                    'slide_id': currentSlide.id
+                }
             }).then(function (data){
                 if (data.html_content) {
                     currentSlide.htmlContent = data.html_content;
@@ -594,19 +607,19 @@
                     }
                     slideData.embedUrl = slideData.embedCode ? scheme + slideData.embedCode + separator + $.param(params) : "";
                 } else if (slideData.category === 'video' && slideData.videoSourceType === 'vimeo') {
-                    slideData.embedCode = markup(slideData.embedCode);
+                    slideData.embedCode = Markup(slideData.embedCode);
                 } else if (slideData.category === 'infographic') {
-                    slideData.embedUrl = `/web/image/slide.slide/${encodeURIComponent(slideData.id)}/image_1024`;
+                    slideData.embedUrl = _.str.sprintf('/web/image/slide.slide/%s/image_1024', slideData.id);
                 } else if (slideData.category === 'document') {
                     slideData.embedUrl = $(slideData.embedCode).attr('src');
                 }
-                // fill empty property to allow searching on it with list.filter(matcher)
+                // fill empty property to allow searching on it with _.filter(list, matcher)
                 slideData.isQuiz = !!slideData.isQuiz;
                 slideData.hasQuestion = !!slideData.hasQuestion;
                 // technical settings for the Fullscreen to work
                 var autoSetDone = false;
                 if (!slideData.hasQuestion) {
-                    if (['infographic', 'document', 'article'].includes(slideData.category)) {
+                    if (_.contains(['infographic', 'document', 'article'], slideData.category)) {
                         autoSetDone = true;  // images, documents (local + external) and articles are marked as completed when opened
                     } else if (slideData.category === 'video' && slideData.videoSourceType === 'google_drive') {
                         autoSetDone = true;  // google drive videos do not benefit from the YouTube integration and are marked as completed when opened
@@ -631,7 +644,7 @@
             if (this.get('slide').isQuiz){
                 params.quiz = 1;
             }
-            var fullscreenUrl = `${url}?${$.param(params)}`;
+            var fullscreenUrl = _.str.sprintf('%s?%s', url, $.param(params));
             history.pushState(null, '', fullscreenUrl);
         },
         /**
@@ -656,8 +669,8 @@
             }
 
             // render slide content
-            if (['document', 'infographic'].includes(slide.category)) {
-                $content.empty().append(renderToElement('website.slides.fullscreen.content', {widget: this}));
+            if (_.contains(['document', 'infographic'], slide.category)) {
+                $content.html(QWeb.render('website.slides.fullscreen.content', {widget: this}));
             } else if (slide.category === 'video' && slide.videoSourceType === 'youtube') {
                 this.videoPlayer = new VideoPlayerYouTube(this, slide);
                 return this.videoPlayer.appendTo($content);
@@ -665,7 +678,7 @@
                 this.videoPlayer = new VideoPlayerVimeo(this, slide);
                 return this.videoPlayer.appendTo($content);
             } else if (slide.category === 'video' && slide.videoSourceType === 'google_drive') {
-                $content.empty().append(renderToElement('website.slides.fullscreen.video.google_drive', {widget: this}));
+                $content.html(QWeb.render('website.slides.fullscreen.video.google_drive', {widget: this}));
             } else if (slide.category === 'article'){
                 var $wpContainer = $('<div>').addClass('o_wslide_fs_article_content bg-white block w-100 overflow-auto');
                 $(slide.htmlContent).appendTo($wpContainer);
@@ -674,7 +687,6 @@
                     $target: $content,
                 });
             }
-            unhideConditionalElements();
             return Promise.resolve();
         },
         //--------------------------------------------------------------------------
@@ -685,7 +697,7 @@
          * When the current slide is changed, widget will be automatically updated
          * and allowed to: fetch the content if needed, render it, update the url,
          * and set slide as "completed" according to its category requirements. In
-         * mobile case (i.e. limited screensize), sidebar will be toggled since
+         * mobile case (i.e. limited screensize), sidebar will be toggled since 
          * sidebar will block most or all of new slide visibility.
          *
          * @private
@@ -697,7 +709,7 @@
             return this._fetchSlideContent().then(function() { // render content
                 var websiteName = document.title.split(" | ")[1]; // get the website name from title
                 document.title =  (websiteName) ? slide.name + ' | ' + websiteName : slide.name;
-                if  (uiUtils.getSize() < SIZES.MD) {
+                if  (config.device.size_class < config.device.SIZES.MD) {
                     self._toggleSidebar(); // hide sidebar when small device screen
                 }
                 return self._renderSlide();
@@ -743,7 +755,8 @@
         _toggleSlideCompleted: async function (slide, completed = true) {
             await this._super(...arguments);
 
-            const fsSlides = this.slides.filter(_slide => _slide.id === slide.id);
+            const slideMatch = _.matcher({id: slide.id});
+            const fsSlides = _.filter(this.slides, slideMatch);
 
             fsSlides.forEach(slide => slide.completed = completed);
 
@@ -792,8 +805,6 @@
             var proms = [this._super.apply(this, arguments)];
             var fullscreen = new Fullscreen(this, this._getSlides(), this._getCurrentSlideID(), this._extractChannelData());
             proms.push(fullscreen.attachTo(".o_wslides_fs_main"));
-            // To prevent double scrollbar due to footer overflow
-            document.querySelector('.o_footer')?.classList.add('d-none');
             return proms;
         },
         _extractChannelData: function (){

@@ -9,4 +9,3 @@ class ResCompany(models.Model):
 
 
     l10n_lu_official_social_security = fields.Char(string="Official Social Security")
-    l10n_lu_seculine = fields.Char(string="SECUline number")

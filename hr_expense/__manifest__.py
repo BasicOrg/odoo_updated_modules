@@ -26,7 +26,7 @@ The whole flow is implemented as:
 This module also uses analytic accounting and is compatible with the invoice on timesheet module so that you are able to automatically re-invoice your customers' expenses if your work by project.
     """,
     'website': 'https://www.odoo.com/app/expenses',
-    'depends': ['account', 'web_tour', 'hr'],
+    'depends': ['hr_contract', 'account', 'web_tour'],
     'data': [
         'security/hr_expense_security.xml',
         'security/ir.model.access.csv',
@@ -45,7 +45,6 @@ This module also uses analytic accounting and is compatible with the invoice on 
         'security/ir_rule.xml',
         'report/hr_expense_report.xml',
         'views/account_move_views.xml',
-        'views/account_payment_views.xml',
         'views/hr_department_views.xml',
         'views/res_config_settings_views.xml',
         'views/account_journal_dashboard.xml',
@@ -61,16 +60,11 @@ This module also uses analytic accounting and is compatible with the invoice on 
             'hr_expense/static/src/views/*.js',
             'hr_expense/static/src/views/*.xml',
             'hr_expense/static/src/scss/hr_expense.scss',
+            'hr_expense/static/src/xml/**/*',
             'hr_expense/static/src/js/tours/*.js',
         ],
         'web.assets_tests': [
             'hr_expense/static/tests/tours/expense_upload_tours.js',
-        ],
-        'web.report_assets_common': [
-            'hr_expense/static/src/scss/hr_expense.scss',
-        ],
-        'web.qunit_suite_tests': [
-            'hr_expense/static/tests/**/*.js',
         ],
     },
     'license': 'LGPL-3',

@@ -2,12 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import json
 from unittest.mock import patch
-from freezegun import freeze_time
 
 from .sign_request_common import SignRequestCommon
 from odoo.tests.common import HttpCase
 from odoo.addons.sign.controllers.main import Sign
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import ValidationError
 from odoo.addons.website.tools import MockRequest
 from odoo.tests import tagged
 
@@ -51,11 +50,6 @@ class TestSignController(TestSignControllerCommon):
         # we set a dummy field that raises an error
         with self.assertRaises(ValidationError):
             text_type.auto_field = 'this_is_not_a_partner_field'
-
-        # we set a field the demo user does not have access and must not be able to set as auto_field
-        self.patch(type(self.env['res.partner']).function, 'groups', 'base.group_system')
-        with self.assertRaises(AccessError):
-            text_type.with_user(self.env.ref('base.user_demo')).auto_field = 'function'
 
     # test auto_field with multiple sub steps
     def test_sign_controller_multi_step_auto_field(self):
@@ -107,54 +101,3 @@ class TestSignController(TestSignControllerCommon):
             self.assertTrue(sign_request_item.state, 'completed')
             self.assertTrue(sign_request.state, 'done')
             self.assertTrue(sign_request_item.signed_without_extra_auth)
-
-    def test_sign_from_mail_no_expiry_params(self):
-        sign_request = self.create_sign_request_1_role(self.partner_1, self.env['res.partner'])
-        url = '/sign/document/mail/%s/%s' % (sign_request.id, sign_request.request_item_ids[0].access_token)
-        response = self.url_open(url)
-        self.assertEqual(response.status_code, 403)
-        self.assertTrue('This link has expired' in response.text)
-
-    def test_sign_from_mail_link_not_expired(self):
-        with freeze_time('2020-01-01'):
-            sign_request = self.create_sign_request_1_role(self.partner_1, self.env['res.partner'])
-            sign_request_item_id = sign_request.request_item_ids[0]
-            timestamp = sign_request_item_id._generate_expiry_link_timestamp()
-            expiry_hash = sign_request_item_id._generate_expiry_signature(sign_request_item_id.id, timestamp)
-
-            url = '/sign/document/mail/%(sign_request_id)s/%(access_token)s?timestamp=%(timestamp)s&exp=%(exp)s' % {
-                'sign_request_id': sign_request.id,
-                'access_token': sign_request.request_item_ids[0].access_token,
-                'timestamp': timestamp,
-                'exp': expiry_hash
-            }
-            response = self.url_open(url)
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue('/sign/document/%s/%s' % (sign_request.id, sign_request_item_id.access_token) in response.url)
-
-    def test_sign_from_mail_with_expired_link(self):
-        with freeze_time('2020-01-01'):
-            sign_request = self.create_sign_request_1_role(self.partner_1, self.env['res.partner'])
-            sign_request_item_id = sign_request.request_item_ids[0]
-            timestamp = sign_request_item_id._generate_expiry_link_timestamp()
-            expiry_hash = sign_request_item_id._generate_expiry_signature(sign_request_item_id.id, timestamp)
-
-        with freeze_time('2020-01-04'):
-            url = '/sign/document/mail/%(sign_request_id)s/%(access_token)s?timestamp=%(timestamp)s&exp=%(exp)s' % {
-                'sign_request_id': sign_request.id,
-                'access_token': sign_request.request_item_ids[0].access_token,
-                'timestamp': timestamp,
-                'exp': expiry_hash
-            }
-            response = self.url_open(url)
-            self.assertEqual(response.status_code, 403)
-            self.assertTrue('This link has expired' in response.text)
-
-    def test_shared_sign_request_without_expiry_params(self):
-        sign_request = self.create_sign_request_1_role(self.partner_1, self.env['res.partner'])
-        sign_request.state = 'shared'
-        sign_request_item_id = sign_request.request_item_ids[0]
-        url = '/sign/document/mail/%s/%s' % (sign_request.id, sign_request_item_id.access_token)
-        response = self.url_open(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('/sign/document/%s/%s' % (sign_request.id, sign_request_item_id.access_token) in response.url)

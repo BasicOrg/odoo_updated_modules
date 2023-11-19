@@ -1,12 +1,13 @@
 /** @odoo-module **/
 
 import BarcodeModel from '@stock_barcode/models/barcode_model';
-import { _t } from "@web/core/l10n/translation";
+import {_t} from "web.core";
+import { sprintf } from '@web/core/utils/strings';
 
 export default class BarcodeQuantModel extends BarcodeModel {
     constructor(params) {
         super(...arguments);
-        this.lineModel = this.resModel;
+        this.lineModel = params.model;
         this.validateMessage = _t("The inventory adjustment has been validated");
         this.validateMethod = 'action_validate';
     }
@@ -21,7 +22,7 @@ export default class BarcodeQuantModel extends BarcodeModel {
         const linesToApply = this.pageLines.filter(line => line.inventory_quantity_set);
         if (linesToApply.length === 0) {
             const message = _t("There is nothing to apply in this page.");
-            return this.notification(message, { type: "warning" });
+            return this.notification.add(message, { type: 'warning' });
         }
         const action = await this.orm.call('stock.quant', 'action_validate',
             [linesToApply.map(quant => quant.id)]
@@ -30,11 +31,12 @@ export default class BarcodeQuantModel extends BarcodeModel {
             if (res && res.special) { // Do nothing if come from a discarded wizard.
                 return this.trigger('refresh');
             }
-            this.notification(_t("The inventory adjustment has been validated"), { type: "success" });
+            this.notification.add(_t("The inventory adjustment has been validated"), { type: 'success' });
             this.trigger('history-back');
         };
         if (action && action.res_model) {
-            return this.action.doAction(action, { onClose: notifyAndGoAhead });
+            const options = { on_close: notifyAndGoAhead };
+            return this.trigger('do-action', { action, options });
         }
         notifyAndGoAhead();
     }
@@ -47,75 +49,67 @@ export default class BarcodeQuantModel extends BarcodeModel {
         // Takes the parent line if the current line is part of a group.
         let line = this._getParentLine(this.selectedLine) || this.selectedLine;
         if (!line && this.lastScanned.packageId) {
-            line = this.pageLines.find(l => l.package_id && l.package_id.id === this.lastScanned.packageId);
+            const lines = this._moveEntirePackage() ? this.packageLines : this.pageLines;
+            line = lines.find(l => l.package_id && l.package_id.id === this.lastScanned.packageId);
         }
-        // Defines some messages who can appear in multiple cases.
-        const messages = {
-            scanProduct: {
-                class: 'scan_product',
-                message: _t("Scan a product"),
-                icon: 'tags',
-            },
-            scanLot: {
-                class: 'scan_lot',
-                message: _t(
-                    "Scan lot numbers for product %s to change their quantity",
-                    line ? line.product_id.display_name : ""
-                ),
-                icon: 'barcode',
-            },
-            scanSerial: {
-                class: 'scan_serial',
-                message: _t(
-                    "Scan serial numbers for product %s to change their quantity",
-                    line ? line.product_id.display_name : ""
-                ),
-                icon: 'barcode',
-            },
-        };
 
         if (line) { // Message depends of the selected line's state.
             const { tracking } = line.product_id;
             const trackingNumber = (line.lot_id && line.lot_id.name) || line.lot_name;
             if (this._lineIsNotComplete(line)) {
-                if (tracking !== 'none') {
-                    return tracking === 'lot' ? messages.scanLot : messages.scanSerial;
+                if (tracking === 'none') {
+                    this.messageType = 'scan_product';
+                } else {
+                    this.messageType = tracking === 'lot' ? 'scan_lot' : 'scan_serial';
                 }
-                return messages.scanProduct;
             } else if (tracking !== 'none' && !trackingNumber) {
                 // Line's quantity is fulfilled but still waiting a tracking number.
-                return tracking === 'lot' ? messages.scanLot : messages.scanSerial;
+                this.messageType = tracking === 'lot' ? 'scan_lot' : 'scan_serial';
             } else { // Line's quantity is fulfilled.
-                if (this.groups.group_stock_multi_locations && line.location_id.id === this.location.id) {
-                    return {
-                        class: 'scan_product_or_src',
-                        message: _t(
-                            "Scan more products in %s or scan another location",
-                            this.location.display_name
-                        ),
-                    };
-                }
-                return messages.scanProduct;
+                this.messageType = this.groups.group_stock_multi_locations && line.location_id.id === this.location.id ?
+                    "scan_product_or_src" :
+                    "scan_product";
             }
+        } else { // Message depends if multilocation is enabled.
+            this.messageType = this.groups.group_stock_multi_locations && !this.lastScanned.sourceLocation ?
+                'scan_src' :
+                'scan_product';
         }
-        // No line selected, returns default message (depends if multilocation is enabled).
-        if (this.groups.group_stock_multi_locations) {
-            if (!this.lastScanned.sourceLocation) {
-                return {
-                    class: 'scan_src',
-                    message: _t("Scan a location"),
-                    icon: 'sign-out',
-                };
-            }
-            return {
-                class: 'scan_product_or_src',
-                message: _t(
-                    "Scan a product in %s or scan another location",
-                    this.location.display_name
-                ),
-            };
+
+        const barcodeInformations = { class: this.messageType, warning: false, icon: 'barcode' };
+        switch (this.messageType) {
+            case 'scan_product':
+                barcodeInformations.message = this.groups.group_stock_multi_locations ?
+                    sprintf(_t("Scan a product in %s or scan another location"), this.location.display_name) :
+                    _t("Scan a product");
+                break;
+            case 'scan_src':
+                barcodeInformations.message = _t("Scan a location");
+                barcodeInformations.icon = 'sign-out';
+                break;
+            case 'scan_product_or_src':
+                barcodeInformations.message = sprintf(
+                    _t("Scan more products in %s or scan another location"),
+                    this.location.display_name);
+                break;
+            case 'scan_product_or_dest':
+                barcodeInformations.message = _t("Scan more products, or scan the destination location");
+                barcodeInformations.icon = 'sign-in';
+                break;
+            case 'scan_lot':
+                barcodeInformations.message = sprintf(
+                    _t("Scan lot numbers for product %s to change their quantity"),
+                    line.product_id.display_name
+                );
+                break;
+            case 'scan_serial':
+                barcodeInformations.message = sprintf(
+                    _t("Scan serial numbers for product %s to change their quantity"),
+                    line.product_id.display_name
+                );
+                break;
         }
-        return messages.scanProduct;
+        return barcodeInformations;
     }
 
     get displayByUnitButton () {
@@ -148,7 +142,7 @@ export default class BarcodeQuantModel extends BarcodeModel {
     }
 
     getQtyDone(line) {
-        return line.inventory_quantity_set ? line.inventory_quantity : 0;
+        return line.inventory_quantity;
     }
 
     getQtyDemand(line) {
@@ -248,7 +242,6 @@ export default class BarcodeQuantModel extends BarcodeModel {
             default_inventory_quantity: 1,
             default_user_id: this.userId,
             inventory_mode: true,
-            display_default_code: false,
         };
     }
 
@@ -278,95 +271,65 @@ export default class BarcodeQuantModel extends BarcodeModel {
         const product = params.fieldsParams.product_id;
         if (product.detailed_type != 'product') {
             const productName = (product.default_code ? `[${product.default_code}] ` : '') + product.display_name;
-            const message = _t(
-                "%s can't be inventoried. Only storable products can be inventoried.",
-                productName
-            );
-            this.notification(message, { type: "warning" });
+            const message = sprintf(
+                _t("%s can't be inventoried. Only storable products can be inventoried."), productName);
+            this.notification.add(message, { type: 'warning' });
             return false;
         }
         const domain = [
             ['location_id', '=', this.location.id],
             ['product_id', '=', product.id],
         ];
-        const { lot_id, package_id } = params.fieldsParams;
         if (product.tracking !== 'none') {
             if (params.fieldsParams.lot_name) { // Search for a quant with the exact same lot.
                 domain.push(['lot_id.name', '=', params.fieldsParams.lot_name]);
-            } else if (params.fieldsParams.lot_id) { // Search for a quant with the exact same lot.
-                domain.push(['lot_id', '=', lot_id.id || lot_id]);
+            } else { // Search for a quant with no lot.
+                domain.push(['lot_id', '=', false]);
             }
         }
         if (params.fieldsParams.package_id) {
-            domain.push(['package_id', '=', package_id.id || package_id]);
+            domain.push(['package_id', '=', params.fieldsParams.package_id]);
         }
-        const res = await this.orm.call( 'stock.quant', 'get_existing_quant_and_related_data', [domain]);
-        this.cache.setCache(res.records);
-        const quants = res.records['stock.quant'];
-        if (quants.length === 1 && (
-            product.tracking === 'none' || params.fieldsParams.lot_name || params.fieldsParams.lot_id)) {
-            const inventory_quantity = params.fieldsParams.inventory_quantity || 1;
-            params.fieldsParams = Object.assign({}, params.fieldsParams, { inventory_quantity });
+        const quant = await this.orm.searchRead(
+            'stock.quant',
+            domain,
+            ['id', 'inventory_date', 'inventory_quantity', 'inventory_quantity_set', 'quantity', 'user_id'],
+            { limit: 1 }
+        );
+        if (quant.length) {
+            Object.assign(params.fieldsParams, quant[0], { inventory_quantity: 1 });
         }
-        let newLine = false;
-        if (quants.length) { // Found existing quants: create a line for each one.
-            const lineIds = this.currentState.lines.map(l => l.id);
-            for (const quant of quants) {
-                if (lineIds.includes(quant.id)) {
-                    continue; // Don't create line for quant if there is already a line for it.
-                }
-                const lineParams = {
-                    fieldsParams: Object.assign({}, quant, params.fieldsParams),
-                };
-                const newlyCreatedLine = await super._createNewLine(lineParams);
-                // Keeps the first created line so that the one who will be selected.
-                newLine = newLine || newlyCreatedLine;
-                // If the quant already exits, we add it into the `initialState` to
-                // avoid comparison issue with the `currentState` when the save occurs.
-                const lineWithOriginalQuantValues = Object.assign({}, newlyCreatedLine, {
-                    inventory_date: quant.inventory_date,
-                    inventory_quantity: quant.inventory_quantity,
-                    inventory_quantity_set: quant.inventory_quantity_set,
-                    quantity: quant.quantity,
-                    user_id: quant.user_id,
-                });
-                this.initialState.lines.push(lineWithOriginalQuantValues);
-            }
-        } else { // No existing quant: creates an empty new line.
-            newLine = await super._createNewLine(params);
+        const newLine = await super._createNewLine(params);
+        if (quant.length) {
+            // If the quant already exits, we add it into the `initialState` to
+            // avoid comparison issue with the `currentState` when the save occurs.
+            this.initialState.lines.push(Object.assign({}, newLine, quant[0]));
         }
         return newLine;
     }
 
     _convertDataToFieldsParams(args) {
-        const params = {};
-        const argsPackage = args.package || args.resultPackage;
-        // Set the fields in `params` only if they are in `args`.
-        args.quantity && (params.inventory_quantity = args.quantity);
-        args.lot && (params.lot_id = args.lot);
-        args.lotName && (params.lot_name = args.lotName);
-        args.owner && (params.owner_id = args.owner);
-        argsPackage && (params.package_id = argsPackage);
-        args.product && (params.product_id = args.product);
-        args.product && args.product.uom_id && (params.product_uom_id = args.product.uom_id);
+        const params = {
+            inventory_quantity: args.quantity,
+            lot_id: args.lot,
+            lot_name: args.lotName,
+            owner_id: args.owner,
+            package_id: args.package || args.resultPackage,
+            product_id: args.product,
+            product_uom_id: args.product && args.product.uom_id,
+        };
         return params;
     }
 
     _getNewLineDefaultValues(fieldsParams) {
         const defaultValues = super._getNewLineDefaultValues(...arguments);
-        Object.assign(defaultValues, {
+        return Object.assign(defaultValues, {
             inventory_date: new Date().toISOString().slice(0, 10),
             inventory_quantity: 0,
+            inventory_quantity_set: true,
             quantity: (fieldsParams && fieldsParams.quantity) || 0,
             user_id: this.userId,
         });
-        // Marks the new line's quantity as set only if it's not an existing quant (no `quantity`)
-        // or if it already has a counted quantity. It's to avoid tragedy if the user applies by
-        // mistake the inventory adjustment after scanned a product with multiple serial/lot numbers
-        if (fieldsParams.quantity === undefined || fieldsParams.inventory_quantity) {
-            defaultValues.inventory_quantity_set = true;
-        }
-        return defaultValues
     }
 
     _getFieldToWrite() {
@@ -389,7 +352,7 @@ export default class BarcodeQuantModel extends BarcodeModel {
             return {
                 route: '/stock_barcode/save_barcode_data',
                 params: {
-                    model: this.resModel,
+                    model: this.params.model,
                     res_id: false,
                     write_field: false,
                     write_vals: commands,
@@ -426,13 +389,12 @@ export default class BarcodeQuantModel extends BarcodeModel {
             await this.orm.write('stock.quant.package', [currentLine.package_id.id], {
                 package_type_id: packageType.id,
             });
-            const message = _t(
-                "Package type %s was correctly applied to the package %s",
-                packageType.name,
-                currentLine.package_id.name
+            const message = sprintf(
+                _t("Package type %s was correctly applied to the package %s"),
+                packageType.name, currentLine.package_id.name
             );
             barcodeData.stopped = true;
-            return this.notification(message, { type: "success" });
+            return this.notification.add(message, { type: 'success' });
         }
         if (!recPackage) {
             if (currentLine && !currentLine.package_id) {
@@ -549,12 +511,11 @@ export default class BarcodeQuantModel extends BarcodeModel {
                 const productUOM = this.cache.getRecord('uom.uom', line.product_id.uom_id);
                 if (args.uom.category_id !== productUOM.category_id) {
                     // Not the same UoM's category -> Can't be converted.
-                    const message = _t(
-                        "Scanned quantity uses %s as Unit of Measure, but this UoM is not compatible with the product's one (%s).",
-                        args.uom.name,
-                        productUOM.name
+                    const message = sprintf(
+                        _t("Scanned quantity uses %s as Unit of Measure, but this UoM is not compatible with the product's one (%s)."),
+                        args.uom.name, productUOM.name
                     );
-                    return this.notification(message, { title: _t("Wrong Unit of Measure"), type: "warning" });
+                    return this.notification.add(message, { title: _t("Wrong Unit of Measure"), type: 'warning' });
                 } else if (args.uom.id !== productUOM.id) {
                     // Compatible but not the same UoM => Need a conversion.
                     args.inventory_quantity = (args.inventory_quantity / args.uom.factor) * productUOM.factor;
@@ -596,10 +557,6 @@ export default class BarcodeQuantModel extends BarcodeModel {
         }
     }
 
-    _canOverrideTrackingNumber(line, newLotName) {
-        return super._canOverrideTrackingNumber(...arguments) && (!line.id || line.lot_id);
-    }
-
     _createLinesState() {
         const today = new Date().toISOString().slice(0, 10);
         const lines = [];
@@ -613,7 +570,6 @@ export default class BarcodeQuantModel extends BarcodeModel {
             // its `virtual_id` (and so, avoid to set a new `virtual_id`).
             const prevLine = this.currentState && this.currentState.lines.find(l => l.id === id);
             const previousVirtualId = prevLine && prevLine.virtual_id;
-            quant.dummy_id = quant.dummy_id && Number(quant.dummy_id);
             quant.virtual_id = quant.dummy_id || previousVirtualId || this._uniqueVirtualId;
             quant.product_id = this.cache.getRecord('product.product', quant.product_id);
             quant.location_id = this.cache.getRecord('stock.location', quant.location_id);
@@ -635,15 +591,7 @@ export default class BarcodeQuantModel extends BarcodeModel {
         if (quantsToPrint.length === 0) {
             return { warning: _t("There is nothing to print in this page.") };
         }
-        options.additionalContext = { active_ids: quantsToPrint.map(quant => quant.id) };
+        options.additional_context = { active_ids: quantsToPrint.map(quant => quant.id) };
         return options;
-    }
-
-    _selectLine(line) {
-        if (this.selectedLineVirtualId !== line.virtual_id) {
-            // Unfolds the group where the line is, folds other lines' group.
-            this.unfoldLineKey = this.groupKey(line);
-        }
-        super._selectLine(...arguments);
     }
 }

@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 class SocialMediaLinkedin(models.Model):
     _inherit = 'social.media'
 
-    _LINKEDIN_ENDPOINT = 'https://api.linkedin.com/rest/'
+    _LINKEDIN_ENDPOINT = 'https://api.linkedin.com/v2/'
 
     # Control the fields returned by the LinkedIn API
     # https://docs.microsoft.com/en-us/linkedin/shared/api-guide/concepts/decoration
@@ -19,7 +19,7 @@ class SocialMediaLinkedin(models.Model):
     _LINKEDIN_PERSON_PROJECTION = 'id,localizedFirstName,localizedLastName,vanityName,profilePicture(displayImage~:playableStreams)'
     _LINKEDIN_TAG_PROJECTION = 'start,length,value(com.linkedin.common.MemberAttributedEntity(member~(vanityName)),com.linkedin.common.CompanyAttributedEntity(company~(vanityName)))'
     _LINKEDIN_COMMENT_PROJECTION = 'id,comments,$URN,content,message(text,attributes*(%s)),likesSummary,created(time, actor~person(%s)~organization(%s)),commentsSummary(totalFirstLevelComments,selectedComments(~comment(id,$URN,created)) )' % (_LINKEDIN_TAG_PROJECTION, _LINKEDIN_PERSON_PROJECTION, _LINKEDIN_ORGANIZATION_PROJECTION)
-    _LINKEDIN_STREAM_POST_PROJECTION = 'id,totalShareStatistics,createdAt,content,author~person(%s)~organization(%s), commentary,content(media(id~($URN)),multiImage(images*(id~($URN))),article(thumbnail, source, title, description))' % (_LINKEDIN_PERSON_PROJECTION, _LINKEDIN_ORGANIZATION_PROJECTION)
+    _LINKEDIN_STREAM_POST_PROJECTION = 'id,totalShareStatistics,created(time), author~person(%s)~organization(%s), specificContent(com.linkedin.ugc.ShareContent(shareCommentary(text), media(originalUrl)))' % (_LINKEDIN_PERSON_PROJECTION, _LINKEDIN_ORGANIZATION_PROJECTION)
 
     media_type = fields.Selection(selection_add=[('linkedin', 'LinkedIn')])
 

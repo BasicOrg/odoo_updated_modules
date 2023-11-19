@@ -55,7 +55,8 @@ class TestCreatePicking(common.TestProductCommon):
 
         # Validate first shipment
         self.picking = self.po.picking_ids[0]
-        self.picking.move_ids.picked = True
+        for ml in self.picking.move_line_ids:
+            ml.qty_done = ml.reserved_uom_qty
         self.picking._action_done()
         self.assertEqual(self.po.order_line.mapped('qty_received'), [7.0], 'Purchase: all products should be received')
 
@@ -168,8 +169,7 @@ class TestCreatePicking(common.TestProductCommon):
 
         # Process pickings
         picking.action_confirm()
-        picking.move_ids.quantity = 100.0
-        picking.move_ids.picked = True
+        picking.move_ids.quantity_done = 100.0
         picking.button_validate()
 
         # mts move will be automatically assigned
@@ -179,7 +179,7 @@ class TestCreatePicking(common.TestProductCommon):
     def test_03_uom(self):
         """ Buy a dozen of products stocked in units. Check that the quantities on the purchase order
         lines as well as the received quantities are handled in dozen while the moves themselves
-        are handled in units. Edit the ordered quantities, check that the quantities are correctly
+        are handled in units. Edit the ordered quantities, check that the quantites are correctly
         updated on the moves. Edit the ir.config_parameter to propagate the uom of the purchase order
         lines to the moves and edit a last time the ordered quantities. Receive, check the quantities.
         """
@@ -219,11 +219,8 @@ class TestCreatePicking(common.TestProductCommon):
         self.assertEqual(move2.product_qty, 12)
 
         # deliver everything
-        move1.quantity = 24
-        move1.picked = True
-        move2.quantity = 1
-        move2.picked = True
-
+        move1.quantity_done = 24
+        move2.quantity_done = 1
         po.picking_ids.button_validate()
 
         # check the delivered quantity
@@ -276,7 +273,8 @@ class TestCreatePicking(common.TestProductCommon):
             'procure_method': 'make_to_order',
             'picking_id': customer_picking.id,
         })
-        customer_picking.action_confirm()
+
+        customer_move._action_confirm()
 
         purchase_order = self.env['purchase.order'].search([('partner_id', '=', partner.id)])
         self.assertTrue(purchase_order, 'No purchase order created.')
@@ -310,15 +308,13 @@ class TestCreatePicking(common.TestProductCommon):
 
         purchase_order_2.button_confirm()
 
-        purchase_order.picking_ids.move_ids.quantity = 80.0
-        purchase_order.picking_ids.move_ids.picked = True
+        purchase_order.picking_ids.move_ids.quantity_done = 80.0
         purchase_order.picking_ids.button_validate()
 
-        purchase_order_2.picking_ids.move_ids.quantity = 20.0
-        purchase_order_2.picking_ids.move_ids.picked = True
+        purchase_order_2.picking_ids.move_ids.quantity_done = 20.0
         purchase_order_2.picking_ids.button_validate()
 
-        self.assertEqual(sum(customer_picking.move_ids.mapped('quantity')), 100.0, 'The total quantity for the customer move should be available and reserved.')
+        self.assertEqual(sum(customer_picking.move_ids.mapped('reserved_availability')), 100.0, 'The total quantity for the customer move should be available and reserved.')
 
     def test_04_rounding(self):
         """ We set the Unit(s) rounding to 1.0 and ensure buying 1.2 units in a PO is rounded to 1.0
@@ -346,8 +342,7 @@ class TestCreatePicking(common.TestProductCommon):
         self.assertEqual(move1.product_qty, 2.0)
 
         # deliver everything
-        move1.quantity = 2.0
-        move1.picked = True
+        move1.quantity_done = 2.0
         po.picking_ids.button_validate()
 
         # check the delivered quantity
@@ -425,7 +420,7 @@ class TestCreatePicking(common.TestProductCommon):
             'picking_id': delivery_order.id,
         })
 
-        delivery_order.action_confirm()
+        customer_move._action_confirm()
         # find created po the product
         purchase_order = self.env['purchase.order'].search([('partner_id', '=', partner.id)])
 
@@ -475,8 +470,7 @@ class TestCreatePicking(common.TestProductCommon):
         po.button_approve()
 
         po.picking_ids.move_line_ids.write({
-            'quantity': 1.0,
-            'picked': True
+            'qty_done': 1.0
         })
         po.picking_ids.button_validate()
 
@@ -491,8 +485,7 @@ class TestCreatePicking(common.TestProductCommon):
         po.button_confirm()
 
         first_picking = po.picking_ids
-        first_picking.move_ids.quantity = 5
-        first_picking.move_ids.picked = True
+        first_picking.move_ids.quantity_done = 5
         # create the backorder
         backorder_wizard_dict = first_picking.button_validate()
         backorder_wizard = Form(self.env[backorder_wizard_dict['res_model']].with_context(backorder_wizard_dict['context'])).save()
@@ -513,8 +506,7 @@ class TestCreatePicking(common.TestProductCommon):
         stock_return_picking_action = stock_return_picking.create_returns()
         return_pick = self.env['stock.picking'].browse(stock_return_picking_action['res_id'])
         return_pick.action_assign()
-        return_pick.move_ids.quantity = 2
-        return_pick.move_ids.picked = True
+        return_pick.move_ids.quantity_done = 2
         return_pick._action_done()
 
         self.assertEqual(po.order_line.qty_received, 3)
@@ -647,70 +639,3 @@ class TestCreatePicking(common.TestProductCommon):
         # check that the price has been updated in the purchase order line and in the stock.move
         self.assertEqual(purchase_order.order_line.price_unit, 0)
         self.assertEqual(purchase_order.picking_ids.move_ids.price_unit, 0)
-
-    def test_return_to_vendor_multi_step(self):
-        self.env.user.groups_id += self.env.ref('stock.group_stock_multi_locations')
-        self.env.user.groups_id += self.env.ref('stock.group_adv_location')
-        warehouse = self.env['stock.warehouse'].search([], limit=1)
-
-        with Form(warehouse) as w:
-            w.reception_steps = 'three_steps'
-
-        vendor_returns_loc = self.env['stock.location'].create({
-            'name': 'Vendor returns processing',
-            'usage': 'internal',
-            'location_id': warehouse.view_location_id.id,
-        })
-
-        self.env['stock.rule'].create({
-            'name': 'Vendor returns',
-            'route_id': warehouse.reception_route_id.id,
-            'location_dest_id': self.env.ref('stock.stock_location_suppliers').id,
-            'location_src_id': vendor_returns_loc.id,
-            'action': 'push',
-            'auto': 'manual',
-            'picking_type_id': self.env.ref('stock.picking_type_out').id,
-        })
-
-        po_form = Form(self.env['purchase.order'])
-        po_form.partner_id = self.partner_id
-        with po_form.order_line.new() as line:
-            line.product_id = self.product_id_1
-            line.product_qty = 10
-        po = po_form.save()
-        po.button_approve()
-        first_picking = po.picking_ids
-        first_picking.move_ids.quantity = 10
-        first_picking.move_ids.picked = True
-        first_picking.button_validate()
-        second_picking = first_picking.move_ids.move_dest_ids.picking_id
-        second_picking.move_ids.quantity = 10
-        second_picking.move_ids.picked = True
-        second_picking.button_validate()
-
-        self.assertEqual(po.order_line.qty_received, 10)
-
-        stock_return_picking_form = Form(
-            self.env['stock.return.picking'].with_context(
-                active_ids=second_picking.ids,
-                active_id=second_picking.ids[0],
-                active_model='stock.picking'
-            )
-        )
-        stock_return_picking_form.location_id = vendor_returns_loc
-        stock_return_picking_form.product_return_moves._records[0]['quantity'] = 2
-        stock_return_picking = stock_return_picking_form.save()
-        stock_return_picking_action = stock_return_picking.create_returns()
-        return_pick = self.env['stock.picking'].browse(stock_return_picking_action['res_id'])
-        return_pick.action_assign()
-        return_pick.move_ids.quantity = 2
-        return_pick.move_ids.picked = True
-        return_pick._action_done()
-        push_pick = return_pick.move_ids.move_dest_ids.picking_id
-        push_pick.action_assign()
-        push_pick.move_ids.quantity = 2
-        push_pick.move_ids.picked = True
-        push_pick._action_done()
-
-        self.assertEqual(po.order_line.qty_received, 8)
-        self.assertEqual(push_pick.partner_id, po.partner_id)

@@ -1,19 +1,17 @@
 /** @odoo-module **/
 
-import { KeepLast } from "@web/core/utils/concurrency";
-import publicWidget from '@web/legacy/js/public/public_widget';
+import concurrency from 'web.concurrency';
+import publicWidget from 'web.public.widget';
 
-import { renderToElement, renderToString } from "@web/core/utils/render";
-import { debounce } from '@web/core/utils/timing';
-
-import { markup } from "@odoo/owl";
+import {qweb} from 'web.core';
+import {Markup} from 'web.utils';
 
 publicWidget.registry.searchBar = publicWidget.Widget.extend({
     selector: '.o_searchbar_form',
     events: {
         'input .search-query': '_onInput',
         'focusout': '_onFocusOut',
-        'keydown .search-query, .dropdown-item': '_onKeydown',
+        'keydown .search-query': '_onKeydown',
         'search .search-query': '_onSearch',
     },
     autocompleteMinWidth: 300,
@@ -24,12 +22,10 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
     init: function () {
         this._super.apply(this, arguments);
 
-        this.keepLast = new KeepLast();
+        this._dp = new concurrency.DropPrevious();
 
-        this._onInput = debounce(this._onInput, 400);
-        this._onFocusOut = debounce(this._onFocusOut, 100);
-
-        this.rpc = this.bindService("rpc");
+        this._onInput = _.debounce(this._onInput, 400);
+        this._onFocusOut = _.debounce(this._onFocusOut, 100);
     },
     /**
      * @override
@@ -68,16 +64,15 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
             for (const keyValue of urlParams.split('&')) {
                 const [key, value] = keyValue.split('=');
                 if (value && key !== 'search') {
-                    // Decode URI parameters: revert + to space then decodeURIComponent.
-                    this.options[decodeURIComponent(key.replace(/\+/g, '%20'))] = decodeURIComponent(value.replace(/\+/g, '%20'));
+                    this.options[key] = value;
                 }
             }
         }
         const pathParts = urlPath.split('/');
         for (const index in pathParts) {
-            const value = decodeURIComponent(pathParts[index]);
+            const value = pathParts[index];
             if (index > 0 && /-[0-9]+$/.test(value)) { // is sluggish
-                this.options[decodeURIComponent(pathParts[index - 1])] = value;
+                this.options[pathParts[index - 1]] = value;
             }
         }
 
@@ -113,19 +108,29 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
      * @private
      */
     async _fetch() {
-        const res = await this.rpc('/website/snippet/autocomplete', {
-            'search_type': this.searchType,
-            'term': this.$input.val(),
-            'order': this.order,
-            'limit': this.limit,
-            'max_nb_chars': Math.round(Math.max(this.autocompleteMinWidth, parseInt(this.$el.width())) * 0.22),
-            'options': this.options,
+        const res = await this._rpc({
+            route: '/website/snippet/autocomplete',
+            params: {
+                'search_type': this.searchType,
+                'term': this.$input.val(),
+                'order': this.order,
+                'limit': this.limit,
+                'max_nb_chars': Math.round(Math.max(this.autocompleteMinWidth, parseInt(this.$el.width())) * 0.22),
+                'options': this.options,
+            },
         });
-        const fieldNames = this._getFieldsNames();
+        const fieldNames = [
+            'name',
+            'description',
+            'extra_link',
+            'detail',
+            'detail_strike',
+            'detail_extra',
+        ];
         res.results.forEach(record => {
             for (const fieldName of fieldNames) {
                 if (record[fieldName]) {
-                    record[fieldName] = markup(record[fieldName]);
+                    record[fieldName] = Markup(record[fieldName]);
                 }
             }
         });
@@ -147,10 +152,10 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
             const results = res['results'];
             let template = 'website.s_searchbar.autocomplete';
             const candidate = template + '.' + this.searchType;
-            if (candidate in renderToString.app.rawTemplates) {
+            if (qweb.has_template(candidate)) {
                 template = candidate;
             }
-            this.$menu = $(renderToElement(template, {
+            this.$menu = $(qweb.render(template, {
                 results: results,
                 parts: res['parts'],
                 hasMoreResults: results.length < res['results_count'],
@@ -199,16 +204,6 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
             $prevMenu.remove();
         }
     },
-    _getFieldsNames() {
-        return [
-            'description',
-            'detail',
-            'detail_extra',
-            'detail_strike',
-            'extra_link',
-            'name',
-        ];
-    },
 
     //--------------------------------------------------------------------------
     // Handlers
@@ -224,7 +219,7 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
         if (this.searchType === 'all' && !this.$input.val().trim().length) {
             this._render();
         } else {
-            this.keepLast.add(this._fetch()).then(this._render.bind(this));
+            this._dp.add(this._fetch()).then(this._render.bind(this));
         }
     },
     /**
@@ -239,24 +234,19 @@ publicWidget.registry.searchBar = publicWidget.Widget.extend({
      * @private
      */
     _onKeydown: function (ev) {
-        switch (ev.key) {
-            case "Escape":
+        switch (ev.which) {
+            case $.ui.keyCode.ESCAPE:
                 this._render();
                 break;
-            case "ArrowUp":
-            case "ArrowDown":
+            case $.ui.keyCode.UP:
+            case $.ui.keyCode.DOWN:
                 ev.preventDefault();
                 if (this.$menu) {
-                    const focusableEls = [this.$input[0], ...this.$menu[0].children];
-                    const focusedEl = document.activeElement;
-                    const currentIndex = focusableEls.indexOf(focusedEl) || 0;
-                    const delta = ev.key === "ArrowUp" ? focusableEls.length - 1 : 1;
-                    const nextIndex = (currentIndex + delta) % focusableEls.length;
-                    const nextFocusedEl = focusableEls[nextIndex];
-                    nextFocusedEl.focus();
+                    let $element = ev.which === $.ui.keyCode.UP ? this.$menu.children().last() : this.$menu.children().first();
+                    $element.focus();
                 }
                 break;
-            case "Enter":
+            case $.ui.keyCode.ENTER:
                 this.limit = 0; // prevent autocomplete
                 break;
         }

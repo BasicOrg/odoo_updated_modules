@@ -43,9 +43,9 @@ class AccountDebitNote(models.TransientModel):
         return [[5]]
 
     def _get_repartition_line(self, line):
-        if line.tax_repartition_line_id.document_type == 'refund':
+        if line.tax_repartition_line_id.refund_tax_id:
             # for credit notes (refund) as originating document, we need to get the opposite repartition line
-            return line.tax_repartition_line_id.tax_id.invoice_repartition_line_ids.filtered(
+            return line.tax_repartition_line_id.refund_tax_id.invoice_repartition_line_ids.filtered(
                 lambda x: x.repartition_type == line.tax_repartition_line_id.repartition_type)
         # otherwise, the repartition line is the same as the originating doc (invoice for example)
         return line.tax_repartition_line_id
@@ -73,8 +73,8 @@ class AccountDebitNote(models.TransientModel):
             # this is needed to reverse a credit note: we must include the same items we have in the credit note
             # if we make this with traditional "with_context(internal_type='debit_note').copy(default=default_values)
             # the values will appear negative in the debit note
-            default_values['line_ids'] = [[5, 0, 0]]
-            for line in move.line_ids.filtered(lambda x: x.display_type in ('product', 'tax', 'payment_term')):
+            default_values['line_ids'] = [[5, 0]]
+            for line in move.line_ids.filtered(lambda x: x.display_type not in ('line_note', 'line_section')):
                 default_values['line_ids'].append([0, 0, {
                     'product_id': line.product_id.id,
                     'account_id': line.account_id.id,
@@ -85,18 +85,13 @@ class AccountDebitNote(models.TransientModel):
                     'tax_repartition_line_id': self._get_repartition_line(line).id,
                     'tax_ids': [[6, 0, line.tax_ids.ids]],
                     'tax_tag_ids': self._get_opposite_tax_tag(line),
-                    'discount': line.discount,
-                    'display_type': line.display_type,
                 }, ])
         elif self.l10n_cl_edi_reference_doc_code == '2':
-            default_values['line_ids'] = [[5, 0, 0], [0, 0, {
+            default_values['line_ids'] = [[5, 0], [0, 0, {
                 'account_id': move.journal_id.default_account_id.id,
-                'name': _('Where it says: %s should say: %s',
+                'name': _('Where it says: %s should say: %s') % (
                     self._context.get('default_l10n_cl_original_text'),
-                    self._context.get('default_l10n_cl_corrected_text')),
-                'quantity': 1,
-                'price_unit': 0.0,
-            }]]
+                    self._context.get('default_l10n_cl_corrected_text')), 'quantity': 1, 'price_unit': 0.0, }, ], ]
         return default_values
 
     def create_debit(self):
@@ -106,5 +101,5 @@ class AccountDebitNote(models.TransientModel):
             r.l10n_cl_journal_point_of_sale_type == 'online' and
             r.l10n_cl_dte_status not in ['accepted', 'objected']
         ):
-            raise UserError(_('You can add a debit note only if the %s is accepted or objected by SII. ', move.name))
+            raise UserError(_('You can add a debit note only if the %s is accepted or objected by SII. ') % move.name)
         return super(AccountDebitNote, self).create_debit()

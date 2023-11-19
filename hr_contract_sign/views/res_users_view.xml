@@ -10,8 +10,9 @@
                 class="oe_stat_button"
                 icon="fa-pencil"
                 type="object"
-                invisible="sign_request_count == 0"
-                groups="sign.group_sign_user">
+                attrs="{'invisible': [('sign_request_count', '=', 0)]}"
+                groups="sign.group_sign_user"
+                >
                 <div class="o_field_widget o_stat_info">
                     <span class="o_stat_value"><field name="sign_request_count"/></span>
                         <span class="o_stat_text">Signature Requests</span>

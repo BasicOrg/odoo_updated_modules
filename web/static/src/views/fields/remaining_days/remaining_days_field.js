@@ -1,66 +1,53 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
+import { DatePicker, DateTimePicker } from "@web/core/datepicker/datepicker";
 import { formatDate, formatDateTime } from "@web/core/l10n/dates";
 import { localization } from "@web/core/l10n/localization";
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { DateTimeField } from "../datetime/datetime_field";
+import { _lt } from "@web/core/l10n/translation";
 import { standardFieldProps } from "../standard_field_props";
 
-const { DateTime } = luxon;
+const { Component } = owl;
 
 export class RemainingDaysField extends Component {
-    static components = { DateTimeField };
-
-    static props = standardFieldProps;
-
-    static template = "web.RemainingDaysField";
-
-    get diffDays() {
-        const { record, name } = this.props;
-        const value = record.data[name];
-        if (!value) {
-            return null;
-        }
-        const today = DateTime.local().startOf("day");
-        const diff = value.startOf("day").diff(today, "days");
-        return Math.floor(diff.days);
+    get hasTime() {
+        return this.props.type === "datetime";
     }
 
-    get diffString() {
-        if (this.diffDays === null) {
-            return "";
+    get pickerComponent() {
+        return this.hasTime ? DateTimePicker : DatePicker;
+    }
+
+    get diffDays() {
+        if (!this.props.value) {
+            return null;
         }
-        switch (this.diffDays) {
-            case -1:
-                return _t("Yesterday");
-            case 0:
-                return _t("Today");
-            case 1:
-                return _t("Tomorrow");
-        }
-        if (Math.abs(this.diffDays) > 99) {
-            return this.formattedValue;
-        }
-        if (this.diffDays < 0) {
-            return _t("%s days ago", -this.diffDays);
-        }
-        return _t("In %s days", this.diffDays);
+        const today = luxon.DateTime.local().startOf("day");
+        return Math.floor(this.props.value.startOf("day").diff(today, "days").days);
     }
 
     get formattedValue() {
-        const { record, name } = this.props;
-        return record.fields[name].type === "datetime"
-            ? formatDateTime(record.data[name], { format: localization.dateFormat })
-            : formatDate(record.data[name]);
+        return this.hasTime
+            ? formatDateTime(this.props.value, { format: localization.dateFormat })
+            : formatDate(this.props.value);
+    }
+
+    onDateTimeChanged(datetime) {
+        if (datetime) {
+            this.props.update(datetime);
+        } else if (typeof datetime === "string") {
+            // when the date is cleared
+            this.props.update(false);
+        }
     }
 }
 
-export const remainingDaysField = {
-    component: RemainingDaysField,
-    displayName: _t("Remaining Days"),
-    supportedTypes: ["date", "datetime"],
+RemainingDaysField.template = "web.RemainingDaysField";
+RemainingDaysField.props = {
+    ...standardFieldProps,
 };
 
-registry.category("fields").add("remaining_days", remainingDaysField);
+RemainingDaysField.displayName = _lt("Remaining Days");
+RemainingDaysField.supportedTypes = ["date", "datetime"];
+
+registry.category("fields").add("remaining_days", RemainingDaysField);

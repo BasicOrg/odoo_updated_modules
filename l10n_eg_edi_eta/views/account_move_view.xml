@@ -2,6 +2,7 @@
     <data>
         <record id="action_sign_invoices" model="ir.actions.server">
             <field name="name">Sign invoices</field>
+            <field name="type">ir.actions.server</field>
             <field name="state">code</field>
             <field name="model_id" ref="account.model_account_move"/>
             <field name="binding_model_id" ref="account.model_account_move"/>
@@ -22,10 +23,10 @@
                             class="oe_highlight"
                             groups="account.group_account_manager"
                             string="Sign Invoice"
-                            invisible="country_code != 'EG' or l10n_eg_is_signed or state != 'posted'"/>
+                            attrs="{'invisible': ['|', '|', ('country_code', '!=', 'EG'), ('l10n_eg_is_signed', '=', True), ('state', '!=', 'posted')]}"/>
                 </xpath>
                 <notebook position="inside">
-                    <page string="ETA E-Invoice" name="page_eta_e_invoice" invisible="country_code != 'EG'">
+                    <page string="ETA E-Invoice" attrs="{'invisible': [('country_code', '!=', 'EG')]}">
                         <group>
                             <group>
                                 <field name="l10n_eg_uuid" readonly="1"/>
@@ -41,7 +42,7 @@
                                         class="oe_link"
                                         icon="fa-clone"
                                         string="Get ETA Invoice PDF"
-                                        invisible="edi_state != 'sent'"/>
+                                        attrs="{'invisible': [('edi_state', '!=', 'sent')]}"/>
                             </group>
                         </group>
                     </page>

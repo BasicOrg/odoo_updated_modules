@@ -2,12 +2,14 @@
 
 import { browser } from "@web/core/browser/browser";
 import { click, getFixture, patchWithCleanup } from "@web/../tests/helpers/utils";
-import { setupControlPanelServiceRegistry, toggleSearchBarMenu, toggleMenuItem, toggleMenuItemOption } from "@web/../tests/search/helpers";
+import { setupControlPanelServiceRegistry, toggleGroupByMenu, toggleMenuItem, toggleMenuItemOption } from "@web/../tests/search/helpers";
+import { dialogService } from "@web/core/dialog/dialog_service";
 import { makeView } from "@web/../tests/views/helpers";
 import { registry } from "@web/core/registry";
 import { makeFakeNotificationService } from "@web/../tests/helpers/mock_services";
 import { getFirstElementForXpath } from './project_test_utils';
 
+const serviceRegistry = registry.category("services");
 QUnit.module("Project", {}, () => {
     QUnit.module("Views", (hooks) => {
         let makeViewParams;
@@ -44,13 +46,7 @@ QUnit.module("Project", {}, () => {
                             { id: 2, name: "In Progress" },
                             { id: 3, name: "Done" },
                         ],
-                    },
-                    "project.task.type": {
-                        fields: {
-                            name: { string: "Name", type: "char" },
-                            sequence: { type: "integer" },
-                        },
-                    },
+                    }
                 },
                 views: {
                     "burndown_chart,false,graph": `
@@ -78,6 +74,7 @@ QUnit.module("Project", {}, () => {
             registry.category("services").add("notification", makeFakeNotificationService(notificationMock), {
                 force: true,
             });
+            serviceRegistry.add("dialog", dialogService);
         });
 
         QUnit.module("BurndownChart");
@@ -131,7 +128,7 @@ QUnit.module("Project", {}, () => {
         }
 
         async function openGroupByMainMenu(target) {
-            await toggleSearchBarMenu(target);
+            await toggleGroupByMenu(target);
         }
 
         async function openGroupByDateMenu(target) {
@@ -162,8 +159,12 @@ QUnit.module("Project", {}, () => {
         QUnit.test("check that removing the group by 'Date: Month > Stage' in the search bar triggers a notification", async function (assert) {
 
             const stepsTriggeringNotification = async () => {
-                // There's only one possibility here
-                await click(target, ".o_facet_remove");
+                const removeFilterXpath = `//div[contains(@class, 'o_searchview_facet')]
+                                                [.//span[@class='o_facet_value']
+                                                [contains(., 'Date: Month')]]
+                                            /i[contains(@class, 'o_facet_remove')]`;
+                const removeFilterElement = getFirstElementForXpath(target, removeFilterXpath);
+                await click(removeFilterElement);
             };
             await testBurnDownChartWithSearchView(stepsTriggeringNotification, assert);
         });
@@ -210,7 +211,7 @@ QUnit.module("Project", {}, () => {
 
         function checkGroupByOrder(assert) {
             const dateSearchFacetXpath = `//div[contains(@class, 'o_searchview_facet')]
-                                            [.//small[@class='o_facet_value']
+                                            [.//span[@class='o_facet_value']
                                             [contains(., 'Date: Month')]]`;
             const dateSearchFacetElement = getFirstElementForXpath(target, dateSearchFacetXpath);
             const dateSearchFacetParts = dateSearchFacetElement.querySelectorAll('.o_facet_value');

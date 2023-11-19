@@ -5,6 +5,7 @@
     <link rel="shortcut icon" href="/web/static/img/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/web/static/src/libs/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" href="/web/static/lib/bootstrap/dist/css/bootstrap.css" />
+    <script src="/web/static/lib/jquery/jquery.js" ></script>
     <script src="/web/static/lib/bootstrap/js/dist/dom/data.js" ></script>
     <script src="/web/static/lib/bootstrap/js/dist/dom/event-handler.js" ></script>
     <script src="/web/static/lib/bootstrap/js/dist/dom/manipulator.js" ></script>
@@ -99,7 +100,7 @@
                         <div class="modal-body">
                             <t t-call="create_form" />
                             <small class="text-muted">
-                                To enhance your experience, some data may be sent to Odoo online services. See our <a href="https://www.odoo.com/privacy" target="_blank">Privacy Policy</a>.
+                                To enhance your experience, some data may be sent to Odoo online services. See our <a href="https://www.odoo.com/privacy">Privacy Policy</a>.
                             </small>
                         </div>
                         <div class="modal-footer">
@@ -133,12 +134,6 @@
                                     <input id="dbname_restore" type="text" name="name" class="form-control" required="required" t-att-pattern="pattern" title="Only alphanumerical characters, underscore, hyphen and dot are allowed"/>
                                 </div>
                             </div>
-                              <div class="row mb-3">
-                                  <label for="neutralize_database_restore" class="col-md-4 col-form-label" >Neutralize</label>
-                                   <div class="col-md-8">
-                                <input id="neutralize_database_restore" type="checkbox" name="neutralize_database" class="form-check-input" />
-                                   </div>
-                              </div>
                             <label for="radio_copy_true">This database might have been moved or copied.</label>
                             <p class="form-text">
                                 In order to avoid conflicts between databases, Odoo needs to know if this database was moved or copied.<br/>
@@ -216,12 +211,6 @@
                                     <input id="new_name" type="text" name="new_name" class="form-control" required="required" t-att-pattern="pattern" title="Only alphanumerical characters, underscore, hyphen and dot are allowed"/>
                                 </div>
                             </div>
-                              <div class="row mb-3">
-                                  <label for="neutralize_database" class="col-md-4 col-form-label" >Neutralize</label>
-                                   <div class="col-md-8">
-                                <input id="neutralize_database" type="checkbox" name="neutralize_database" class="form-check-input" />
-                                   </div>
-                              </div>
                         </div>
                         <div class="modal-footer">
                             <input type="submit" value="Continue" class="btn btn-primary float-end"/>

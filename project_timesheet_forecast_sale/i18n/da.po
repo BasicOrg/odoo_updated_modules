@@ -1,112 +1,52 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* project_timesheet_forecast_sale
-#
+# 
 # Translators:
-# Mads Søndergaard, 2022
-# Mads Søndergaard, 2022
-# Martin Trigaux, 2022
-# lhmflexerp <lhm@flexerp.dk>, 2023
-#
+# Martin Trigaux, 2019
+# Sanne Kristensen <sanne@vkdata.dk>, 2019
+# lhmflexerp <lhm@flexerp.dk>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0beta+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:48+0000\n"
-"Last-Translator: lhmflexerp <lhm@flexerp.dk>, 2023\n"
-"Language-Team: Danish (https://app.transifex.com/odoo/teams/41243/da/)\n"
-"Language: da\n"
+"POT-Creation-Date: 2019-09-23 11:39+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: lhmflexerp <lhm@flexerp.dk>, 2019\n"
+"Language-Team: Danish (https://www.transifex.com/odoo/teams/41243/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: project_timesheet_forecast_sale
-#. odoo-python
 #: code:addons/project_timesheet_forecast_sale/models/project.py:0
 #, python-format
-msgid "%(name)s's Timesheets and Planning Analysis"
-msgstr ""
+msgid "%s (%s remaining hours)"
+msgstr "%s (%s resterende timer)"
 
 #. module: project_timesheet_forecast_sale
-#: model:ir.model,name:project_timesheet_forecast_sale.model_account_analytic_line
-msgid "Analytic Account"
-msgstr "Analysekonto"
+#: code:addons/project_timesheet_forecast_sale/models/project_overview.py:0
+#, python-format
+msgid "After"
+msgstr "Efter"
 
 #. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_planning_analysis_report__billable_allocated_hours
-msgid "Billable Hours Allocated"
-msgstr "Fakturérbare timer tildelt"
+#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.timesheet_plan_inherit
+msgid "Forecasts"
+msgstr "Forecasts"
 
 #. module: project_timesheet_forecast_sale
-#: model:planning.role,name:project_timesheet_forecast_sale.planning_role_consultant
-msgid "Consultant"
-msgstr "Konsulent"
+#: code:addons/project_timesheet_forecast_sale/models/project_overview.py:0
+#, python-format
+msgid "Planning"
+msgstr "Planlægning"
 
 #. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_project__display_planning_timesheet_analysis
-msgid "Display Planning Timesheet Analysis"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__effective_billable_hours
-msgid "Effective Billable Hours"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__effective_margin
-msgid "Effective Margin"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__effective_non_billable_hours
-msgid "Effective Non-Billable Hours"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__effective_revenues
-msgid "Effective Revenues"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.project_update_default_description
-msgid "N/A"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_planning_analysis_report__non_billable_allocated_hours
-msgid "Non-billable Hours Allocated"
-msgstr "Ikke-fakturérbare timer tildelt"
-
-#. module: project_timesheet_forecast_sale
-#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.project_update_default_description
-msgid "Planned"
-msgstr "Planlagt"
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__planned_billable_hours
-msgid "Planned Billable Hours"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__planned_margin
-msgid "Planned Margin"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__planned_non_billable_hours
-msgid "Planned Non-Billable Hours"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_project_timesheet_forecast_report_analysis__planned_revenues
-msgid "Planned Revenues"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model,name:project_timesheet_forecast_sale.model_planning_analysis_report
-msgid "Planning Analysis Report"
+#: model:ir.model,name:project_timesheet_forecast_sale.model_planning_slot
+msgid "Planning Shift"
 msgstr ""
 
 #. module: project_timesheet_forecast_sale
@@ -115,53 +55,53 @@ msgid "Project"
 msgstr "Projekt"
 
 #. module: project_timesheet_forecast_sale
-#: model:ir.model,name:project_timesheet_forecast_sale.model_project_update
-msgid "Project Update"
-msgstr "Projekt update"
+#: code:addons/project_timesheet_forecast_sale/models/project_overview.py:0
+#, python-format
+msgid ""
+"Remaining \n"
+" (Forecasts incl.)"
+msgstr ""
 
 #. module: project_timesheet_forecast_sale
 #: model:ir.model,name:project_timesheet_forecast_sale.model_sale_order_line
+#: model:ir.model.fields,field_description:project_timesheet_forecast_sale.field_planning_slot__order_line_id
 msgid "Sales Order Line"
 msgstr "Salgsordrelinje"
 
 #. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,help:project_timesheet_forecast_sale.field_project_project__display_planning_timesheet_analysis
-msgid "Should we display the planning and timesheet analysis button?"
+#: model:ir.model.fields,help:project_timesheet_forecast_sale.field_planning_slot__order_line_id
+msgid ""
+"Sales order item to which the task is linked. If an employee timesheets on a"
+" this task, and if this employee is not in the 'Employee/Sales Order Item "
+"Mapping' of the project, the timesheet entry will be linked to this sales "
+"order item."
 msgstr ""
 
 #. module: project_timesheet_forecast_sale
-#: model:planning.role,name:project_timesheet_forecast_sale.planning_role_junior_architect
-msgid "Software Junior Architect"
+#: model:ir.model,name:project_timesheet_forecast_sale.model_project_task
+msgid "Task"
+msgstr "Opgave"
+
+#. module: project_timesheet_forecast_sale
+#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.timesheet_plan_inherit
+msgid "Timesheets"
+msgstr "Timesedler"
+
+#. module: project_timesheet_forecast_sale
+#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.timesheet_plan_inherit
+msgid "Timesheets and Forecasts"
 msgstr ""
 
 #. module: project_timesheet_forecast_sale
-#: model:planning.role,name:project_timesheet_forecast_sale.planning_role_senior_architect
-msgid "Software Senior Architect"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,help:project_timesheet_forecast_sale.field_planning_analysis_report__billable_allocated_hours
-msgid "Sum of hours allocated to shifts linked to a SOL."
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model.fields,help:project_timesheet_forecast_sale.field_planning_analysis_report__non_billable_allocated_hours
-msgid "Sum of hours allocated to shifts not linked to a SOL."
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#: model:ir.model,name:project_timesheet_forecast_sale.model_project_timesheet_forecast_report_analysis
-msgid "Timesheet & Planning Statistics"
-msgstr ""
-
-#. module: project_timesheet_forecast_sale
-#. odoo-python
-#: code:addons/project_timesheet_forecast_sale/models/project.py:0
+#: code:addons/project_timesheet_forecast_sale/models/project_overview.py:0
 #, python-format
-msgid "Timesheets and Planning"
-msgstr "Timesedler og Planlægning"
+msgid "Total"
+msgstr "I alt"
 
 #. module: project_timesheet_forecast_sale
-#: model_terms:ir.ui.view,arch_db:project_timesheet_forecast_sale.project_timesheet_forecast_view_kanban_inherit_sale_timesheet
-msgid "Timesheets and Planning Analysis"
+#: code:addons/project_timesheet_forecast_sale/models/project_overview.py:0
+#, python-format
+msgid ""
+"What is still to deliver based on sold hours, hours already done and "
+"forecasted hours. Equals to sold hours - done hours - forecasted hours."
 msgstr ""

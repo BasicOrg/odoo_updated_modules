@@ -1,12 +1,8 @@
 /** @odoo-module **/
 
-import { Component, useEffect, useState } from "@odoo/owl";
+const { Component, useEffect, useState } = owl;
 
 export class DocumentsDropZone extends Component {
-    static props = [
-        "parentRoot", // Parent's root element, used to know the zone to use.
-    ];
-
     setup() {
         this.state = useState({
             dragOver: false,
@@ -32,7 +28,7 @@ export class DocumentsDropZone extends Component {
                     el.removeEventListener("scroll", scrollHandler);
                 };
             },
-            () => [this.props.parentRoot.el]
+            () => [this.props.parentRoot.el],
         );
     }
 
@@ -40,51 +36,41 @@ export class DocumentsDropZone extends Component {
         return this.props.parentRoot;
     }
 
-    get isFolder() {
-        return !!this.env.searchModel.getSelectedFolderId();
-    }
-
-    get rootDropOverClass() {
-        return this.isFolder ? "o_documents_drop_over" : "o_documents_drop_over_unauthorized";
-    }
-
     onDragOver(ev) {
-        if (
-            !ev.dataTransfer.types.includes("Files") ||
-            ev.dataTransfer.types.includes("o_documents_data")
-        ) {
+        if (!this.env.searchModel.getSelectedFolderId() || !ev.dataTransfer.types.includes("Files")) {
             return;
         }
         ev.stopPropagation();
         ev.preventDefault();
-
-        this.root?.el?.classList.toggle(this.rootDropOverClass, true);
+        if (this.root && this.root.el && !this.root.el.classList.contains("o_documents_drop_over")) {
+            this.root.el.classList.add("o_documents_drop_over");
+        }
         this.state.dragOver = true;
     }
 
     onDragLeave(ev) {
         ev.stopPropagation();
         ev.preventDefault();
-
-        this.root?.el?.classList.remove(this.rootDropOverClass);
+        if (this.root && this.root.el) {
+            this.root.el.classList.remove("o_documents_drop_over");
+        }
         this.state.dragOver = false;
     }
 
-    onDrop(ev) {
-        if (!ev.dataTransfer.types.includes("Files")) {
+    async onDrop(ev) {
+        if (!this.env.searchModel.getSelectedFolderId() || !ev.dataTransfer.types.includes("Files")) {
             return;
         }
-
-        this.root?.el?.classList.remove(this.rootDropOverClass);
-        this.state.dragOver = false;
-        if (this.isFolder) {
-            this.env.documentsView.bus.trigger("documents-upload-files", {
-                files: ev.dataTransfer.files,
-                folderId: this.env.searchModel.getSelectedFolderId(),
-                recordId: false,
-                tagIds: this.env.searchModel.getSelectedTagIds(),
-            });
+        if (this.root && this.root.el) {
+            this.root.el.classList.remove("o_documents_drop_over");
         }
+        this.state.dragOver = false;
+        await this.env.documentsView.bus.trigger("documents-upload-files", {
+            files: ev.dataTransfer.files,
+            folderId: this.env.searchModel.getSelectedFolderId(),
+            recordId: false,
+            tagIds: this.env.searchModel.getSelectedTagIds(),
+        });
     }
 }
 DocumentsDropZone.template = "documents.DocumentsDropZone";

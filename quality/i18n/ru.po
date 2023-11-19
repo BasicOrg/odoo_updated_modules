@@ -1,39 +1,31 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* quality
-#
+# 
 # Translators:
-# Диляра Дельтаева <dilya.kz93@gmail.com>, 2022
-# Андрей Гусев <gaussgss@gmail.com>, 2022
-# Иван Дроздов <hiraetari@gmail.com>, 2022
-# Ekaterina <nawsikaya@bk.ru>, 2022
-# Collex100, 2022
-# Vasiliy Korobatov <korobatov@gmail.com>, 2022
-# Сергей Шебанин <sergey@shebanin.ru>, 2022
-# ILMIR <karamov@it-projects.info>, 2022
-# Martin Trigaux, 2022
-# Irina Fedulova <istartlin@gmail.com>, 2022
-# Ivan Kropotkin <yelizariev@itpp.dev>, 2022
-#
+# Martin Trigaux, 2019
+# Андрей Гусев <gaussgss@gmail.com>, 2019
+# Vasiliy Korobatov <korobatov@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:48+0000\n"
-"Last-Translator: Ivan Kropotkin <yelizariev@itpp.dev>, 2022\n"
-"Language-Team: Russian (https://app.transifex.com/odoo/teams/41243/ru/)\n"
-"Language: ru\n"
+"POT-Creation-Date: 2019-09-27 09:17+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: Vasiliy Korobatov <korobatov@gmail.com>, 2019\n"
+"Language-Team: Russian (https://www.transifex.com/odoo/teams/41243/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alert_count
 #: model:ir.model.fields,field_description:quality.field_quality_check__alert_count
 msgid "# Quality Alerts"
-msgstr "# Инциденты по качеству"
+msgstr "# Уведомления о качестве"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__check_count
@@ -42,8 +34,12 @@ msgstr "# Проверка качества"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_defaults
-msgid "A Python dictionary that will be evaluated to provide default values when creating new records for this alias."
-msgstr "Словарь Python, который будет использован для получения значений по умолчанию при создании новых записей для этого алиаса."
+msgid ""
+"A Python dictionary that will be evaluated to provide default values when "
+"creating new records for this alias."
+msgstr ""
+"Словарь Python, который будет использован для получения значений по "
+"умолчанию при создании записей для этого псевдонима."
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_needaction
@@ -56,7 +52,7 @@ msgstr "Требует внимания"
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_2
 msgid "Action Proposed"
-msgstr "предложенная действие"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__active
@@ -65,52 +61,33 @@ msgstr "Активно"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_ids
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_ids
 msgid "Activities"
-msgstr "Действия"
+msgstr "Деятельность"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_exception_decoration
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Оформление исключения активности"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_state
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_state
 msgid "Activity State"
-msgstr "Статус действия"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__activity_type_icon
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "Иконка типа действия"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_check__additional_note
-msgid "Additional Note"
-msgstr "Дополнительное примечание"
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_check__additional_note
-msgid "Additional remarks concerning this check."
-msgstr "Дополнительные заметки по этой проверке."
+msgstr "Этап действия"
 
 #. module: quality
 #: model:res.groups,name:quality.group_quality_manager
 msgid "Administrator"
-msgstr "Администратор"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__done
 msgid "Alert Processed"
-msgstr "Обработано инцидентов"
+msgstr "Обработано оповещений"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__alert_ids
 msgid "Alerts"
-msgstr "Инциденты"
+msgstr "Предупреждения"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_id
@@ -128,29 +105,14 @@ msgid "Alias Name"
 msgstr "Название псевдонима"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_status
-msgid "Alias Status"
-msgstr ""
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
 msgid "Alias domain"
-msgstr "Домен для псевдонима"
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr ""
+msgstr "Псевдоним домена"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_model_id
 msgid "Aliased Model"
-msgstr "Модель псевдонима"
-
-#. module: quality
-#: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
-msgid "Archived"
-msgstr "Архивировано"
+msgstr "Псевдонимная модель"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_attachment_count
@@ -163,7 +125,7 @@ msgstr "Количество вложений"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__reason
 msgid "Cause"
-msgstr "Причина"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__check_id
@@ -174,11 +136,18 @@ msgstr "Проверка"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__check_count
 msgid "Check Count"
-msgstr "проверить подсчет"
+msgstr ""
 
 #. module: quality
-#. odoo-javascript
-#: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
+#. openerp-web
+#: code:addons/quality/static/src/xml/widget_template.xml:0
+#, python-format
+msgid "Clear"
+msgstr "Очистить"
+
+#. module: quality
+#. openerp-web
+#: code:addons/quality/static/src/xml/widget_template.xml:0
 #, python-format
 msgid "Close"
 msgstr "Закрыть"
@@ -204,17 +173,17 @@ msgstr "Компания"
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_1
 msgid "Confirmed"
-msgstr "Подтвержден"
+msgstr "Подтверждено"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__control_date
 msgid "Control Date"
-msgstr "Дата контроля"
+msgstr "Контрольная дата"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__point_id
 msgid "Control Point"
-msgstr "Точка контроля"
+msgstr "Контрольная точка"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__action_corrective
@@ -231,7 +200,7 @@ msgstr "Исправляющее действие"
 #: model:ir.model.fields,field_description:quality.field_quality_reason__create_uid
 #: model:ir.model.fields,field_description:quality.field_quality_tag__create_uid
 msgid "Created by"
-msgstr "Создал"
+msgstr "Создано"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__create_date
@@ -243,17 +212,12 @@ msgstr "Создал"
 #: model:ir.model.fields,field_description:quality.field_quality_reason__create_date
 #: model:ir.model.fields,field_description:quality.field_quality_tag__create_date
 msgid "Created on"
-msgstr "Дата создания"
+msgstr "Создан"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Creation Date"
 msgstr "Дата создания"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_bounced_content
-msgid "Custom Bounced Message"
-msgstr "Пользовательское сообщение о невозможности доставки"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__date_assign
@@ -273,7 +237,7 @@ msgstr "Значения по умолчанию"
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_point__test_type_id
 msgid "Defines the type of the quality control point."
-msgstr "Определяет тип точки контроля качества."
+msgstr ""
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
@@ -283,7 +247,7 @@ msgstr "Опишите проверку качества..."
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
 msgid "Describe why you need to perform this quality check..."
-msgstr "Опишите, почему вам необходимо выполнить проверку качества..."
+msgstr "Опишите, почему вам необходимо выполнить проверку качества ..."
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__description
@@ -300,17 +264,17 @@ msgstr "Описание"
 #: model:ir.model.fields,field_description:quality.field_quality_reason__display_name
 #: model:ir.model.fields,field_description:quality.field_quality_tag__display_name
 msgid "Display Name"
-msgstr "Отображаемое имя"
+msgstr "Отображаемое Имя"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Done"
-msgstr "Выполнено"
+msgstr "Сделано"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__email_cc
 msgid "Email cc"
-msgstr "Копия электронной почты"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_check__quality_state__fail
@@ -331,18 +295,20 @@ msgid "Followers"
 msgstr "Подписчики"
 
 #. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_channel_ids
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_channel_ids
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_channel_ids
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Подписчики (Каналы)"
+
+#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_partner_ids
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_partner_ids
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_partner_ids
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Подписчики (Партнеры)"
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert__activity_type_icon
-#: model:ir.model.fields,help:quality.field_quality_check__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Иконка со шрифтом Font awesome, например. fa-tasks"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -352,15 +318,7 @@ msgstr "Будущие действия"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Group By"
-msgstr "Группировка"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__has_message
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__has_message
-#: model:ir.model.fields,field_description:quality.field_quality_check__has_message
-#: model:ir.model.fields,field_description:quality.field_quality_point__has_message
-msgid "Has Message"
-msgstr "Есть сообщение"
+msgstr "Группировать по"
 
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__2
@@ -377,32 +335,38 @@ msgstr "Высокий"
 #: model:ir.model.fields,field_description:quality.field_quality_reason__id
 #: model:ir.model.fields,field_description:quality.field_quality_tag__id
 msgid "ID"
-msgstr "Идентификатор"
+msgstr "Номер"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_parent_thread_id
-msgid "ID of the parent record holding the alias (example: project holding the task creation alias)"
-msgstr "Идентификатор родительской записи, содержащей алиас (например, проект содержит алиас создания задачи)"
+msgid ""
+"ID of the parent record holding the alias (example: project holding the task"
+" creation alias)"
+msgstr ""
+"Идентификатор записи родителя, содержащей алиас (например, проект содержит "
+"псевдоним для создания записи)"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_exception_icon
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_exception_icon
 msgid "Icon"
 msgstr "Иконка"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_exception_icon
-#: model:ir.model.fields,help:quality.field_quality_check__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Значок, обозначающий действие исключения."
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_needaction
+#: model:ir.model.fields,help:quality.field_quality_alert__message_unread
 #: model:ir.model.fields,help:quality.field_quality_alert_team__message_needaction
+#: model:ir.model.fields,help:quality.field_quality_alert_team__message_unread
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction
+#: model:ir.model.fields,help:quality.field_quality_check__message_unread
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction
+#: model:ir.model.fields,help:quality.field_quality_point__message_unread
 msgid "If checked, new messages require your attention."
-msgstr "Если отмечено, новые сообщения будут требовать вашего внимания."
+msgstr "Если отмечено - новые сообщения требуют Вашего внимания."
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_has_error
@@ -414,22 +378,17 @@ msgstr "Если отмечено, новые сообщения будут тр
 #: model:ir.model.fields,help:quality.field_quality_point__message_has_error
 #: model:ir.model.fields,help:quality.field_quality_point__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Если отмечено - некоторые сообщения имеют ошибку доставки."
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_bounced_content
-msgid "If set, this content will automatically be sent out to unauthorized users instead of the default message."
-msgstr "Если установлено, этот контент будет автоматически отправлен неавторизованным пользователям вместо сообщения по умолчанию."
+msgstr ""
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "In Progress"
-msgstr "В работе"
+msgstr "Выполняется"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
 msgid "Instructions"
-msgstr "Инструкция"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_is_follower
@@ -438,6 +397,18 @@ msgstr "Инструкция"
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_is_follower
 msgid "Is Follower"
 msgstr "Подписчик"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_stage____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_check____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point_test_type____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_reason____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_tag____last_update
+msgid "Last Modified on"
+msgstr "Последнее изменение"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__write_uid
@@ -466,17 +437,18 @@ msgstr "Последнее обновление"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Late Activities"
-msgstr "Просроченные действия"
+msgstr "Действия с опозданием"
+
+#. module: quality
+#: model:ir.model.fields,help:quality.field_quality_alert__email_cc
+msgid "List of cc from incoming emails."
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__lot_id
+#: model:ir.model.fields,field_description:quality.field_quality_check__lot_id
 msgid "Lot"
 msgstr "Партия"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_check__lot_id
-msgid "Lot/Serial"
-msgstr "Партия/Серийный номер"
 
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__1
@@ -484,12 +456,20 @@ msgid "Low"
 msgstr "Низкий"
 
 #. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_has_error
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_has_error
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_has_error
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_has_error
 msgid "Message Delivery error"
-msgstr "Ошибка доставки сообщения"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_ids
@@ -500,65 +480,57 @@ msgid "Messages"
 msgstr "Сообщения"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__my_activity_date_deadline
-#: model:ir.model.fields,field_description:quality.field_quality_check__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Крайний срок моего действия"
-
-#. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "My Alerts"
-msgstr "Мои инциденты"
+msgstr "Мои предупреждения"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__name
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__name
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__name
+#: model:ir.model.fields,field_description:quality.field_quality_check__name
 #: model:ir.model.fields,field_description:quality.field_quality_point_test_type__name
 #: model:ir.model.fields,field_description:quality.field_quality_reason__name
 msgid "Name"
-msgstr "Имя"
+msgstr "Название"
 
 #. module: quality
-#. odoo-python
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
+#: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: model:quality.alert.stage,name:quality.quality_alert_stage_0
 #, python-format
 msgid "New"
-msgstr "Новое"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__activity_calendar_event_id
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Встреча в календаре для следующего действия"
+msgstr "Новый"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_date_deadline
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Крайний срок следующего действия"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_summary
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_summary
 msgid "Next Activity Summary"
-msgstr "Краткое описание следующего действия"
+msgstr "Резюме следующего мероприятия"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_type_id
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_type_id
 msgid "Next Activity Type"
-msgstr "Тип следующего действия"
+msgstr ""
 
 #. module: quality
-#. odoo-python
 #: code:addons/quality/models/quality.py:0
 #, python-format
 msgid ""
 "No quality team found for this company.\n"
 "Please go to configuration and create one first."
-msgstr "Не найдено команды качества для этой компании. Сначала прейдем к настройкам и создайте команду."
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__0
@@ -591,7 +563,7 @@ msgstr "Количество действий"
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_has_error_counter
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_has_error_counter
 msgid "Number of errors"
-msgstr "Количество ошибок"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_needaction_counter
@@ -599,7 +571,7 @@ msgstr "Количество ошибок"
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr "Количество сообщений, требующих действия"
+msgstr "Количество сообщений, требующих внимания"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_has_error_counter
@@ -607,28 +579,42 @@ msgstr "Количество сообщений, требующих действ
 #: model:ir.model.fields,help:quality.field_quality_check__message_has_error_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Количество сообщений с ошибкой отправки"
+msgstr ""
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_point__picking_type_ids
-msgid "Operation Types"
-msgstr "Типы операций"
+#: model:ir.model.fields,help:quality.field_quality_alert__message_unread_counter
+#: model:ir.model.fields,help:quality.field_quality_alert_team__message_unread_counter
+#: model:ir.model.fields,help:quality.field_quality_check__message_unread_counter
+#: model:ir.model.fields,help:quality.field_quality_point__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Количество непрочитанных сообщений"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_tree
-msgid "Operations"
-msgstr "Операции"
+msgid "Operation"
+msgstr "Операция"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_point__picking_type_id
+msgid "Operation Type"
+msgstr "Тип операции"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_force_thread_id
-msgid "Optional ID of a thread (record) to which all incoming messages will be attached, even if they did not reply to it. If set, this will disable the creation of new records completely."
-msgstr "Опциональный ID чата (записи), в который будут направляться все входящие сообщения, даже они не адресованы для него. Если установить, то это отключит создание новых записей полностью."
+msgid ""
+"Optional ID of a thread (record) to which all incoming messages will be "
+"attached, even if they did not reply to it. If set, this will disable the "
+"creation of new records completely."
+msgstr ""
+"Опциональный номер записи к которой все входящие сообщения будут "
+"присоединены, даже если на них не было ответа. Если установлено, это "
+"отключит создание новых записей полностью."
 
 #. module: quality
 #: model:quality.reason,name:quality.reason_other
 msgid "Others"
-msgstr "Другие"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_user_id
@@ -647,18 +633,19 @@ msgstr "ID потока родительской записи"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_parent_model_id
-msgid "Parent model holding the alias. The model holding the alias reference is not necessarily the model given by alias_model_id (example: project (parent_model) and task (model))"
-msgstr "Предок, содержащий алиас. Модель, содержащая ссылку на алиас — не обязательно та, на которую ссылается alias_model_id (например, проект (parent_model) и задача (model))"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_check__partner_id
-msgid "Partner"
-msgstr "Партнёр"
+msgid ""
+"Parent model holding the alias. The model holding the alias reference is not"
+" necessarily the model given by alias_model_id (example: project "
+"(parent_model) and task (model))"
+msgstr ""
+"Предок содержащий алиас. Модель, содержащая ссылку на алиас — не обязательно"
+" та, на которую ссылается alias_model_id (например, проект (parent_model) и "
+"задача (model))"
 
 #. module: quality
 #: model:quality.reason,name:quality.reason_parts
 msgid "Parts Quality"
-msgstr "качество частей"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_check__quality_state__pass
@@ -685,7 +672,7 @@ msgid ""
 "- followers: only followers of the related document or members of following channels\n"
 msgstr ""
 "Политики для сообщений в документе с использованием почтового шлюза:\n"
-"— все: может писать каждый\n"
+"— все: каждый может писать\n"
 "— партнёры: только аутентифицированные партнёры;\n"
 "— подписчики: только подписчики соответствующего документа\n"
 
@@ -702,40 +689,32 @@ msgstr "Приоритет"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__product_tmpl_id
 #: model:ir.model.fields,field_description:quality.field_quality_check__product_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__product_tmpl_id
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Product"
 msgstr "Продукт"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_point__product_category_ids
-msgid "Product Categories"
-msgstr "Категории продуктов"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__product_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__product_id
 msgid "Product Variant"
 msgstr "Вариант продукта"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_point__product_ids
-msgid "Products"
-msgstr "Продукты"
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_alert
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Quality Alert"
-msgstr "Инцидент по качеству"
+msgstr "Предупреждение о качестве"
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_alert_stage
 msgid "Quality Alert Stage"
-msgstr "Этап инцидента по качеству"
+msgstr "Этап оповещения о качестве"
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_alert_team
 msgid "Quality Alert Team"
-msgstr "Команда инцидента по качеству"
+msgstr "Команда контроля качества"
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_check
@@ -745,22 +724,12 @@ msgstr "Проверка качества"
 #. module: quality
 #: model:ir.model,name:quality.model_quality_point
 msgid "Quality Control Point"
-msgstr "Точка контроля качества"
+msgstr ""
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_point_test_type
 msgid "Quality Control Test Type"
-msgstr "Тип теста контроля качества"
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_point__product_category_ids
-msgid "Quality Point will apply to every Products in the selected Product Categories."
-msgstr "Точка контроля будет применена к каждому продукту в выбранных категориях."
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_point__product_ids
-msgid "Quality Point will apply to every selected Products."
-msgstr "Точка контроля будет применена к каждому выбранному продукту."
+msgstr ""
 
 #. module: quality
 #: model:ir.model,name:quality.model_quality_tag
@@ -770,14 +739,6 @@ msgstr "Тег качества"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Quality Team"
-msgstr "команда качества"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_check__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_point__rating_ids
-msgid "Ratings"
 msgstr ""
 
 #. module: quality
@@ -786,7 +747,6 @@ msgid "Record Thread ID"
 msgstr "ID цепочки записей"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_check__name
 #: model:ir.model.fields,field_description:quality.field_quality_point__name
 msgid "Reference"
 msgstr "Ссылка"
@@ -801,7 +761,6 @@ msgstr "Ответственный"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__activity_user_id
-#: model:ir.model.fields,field_description:quality.field_quality_check__activity_user_id
 msgid "Responsible User"
 msgstr "Ответственный"
 
@@ -814,7 +773,7 @@ msgstr "Истинная причина"
 #. module: quality
 #: model:ir.model,name:quality.model_quality_reason
 msgid "Root Cause for Quality Failure"
-msgstr "Начальная причина неудачной качества"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_has_sms_error
@@ -822,7 +781,7 @@ msgstr "Начальная причина неудачной качества"
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_has_sms_error
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "Ошибка доставки SMS"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__sequence
@@ -834,7 +793,7 @@ msgstr "Нумерация"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Show all records which has next action date is before today"
-msgstr "Показать все записи, у которых дата следующего действия не превышает текущей даты"
+msgstr "Показать все записи с просроченой датой следующего действия"
 
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_3
@@ -854,17 +813,12 @@ msgstr "Статус"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_state
-#: model:ir.model.fields,help:quality.field_quality_check__activity_state
 msgid ""
 "Status based on activities\n"
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"Статус основан на плановых действиях\n"
-"Просрочено: срок исполнения истек\n"
-"Сегодня: выполнить сегодня\n"
-"Запланировано: срок в будущем."
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_tag__name
@@ -877,11 +831,11 @@ msgid "Tags"
 msgstr "Теги"
 
 #. module: quality
-#. odoo-javascript
-#: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
+#. openerp-web
+#: code:addons/quality/static/src/xml/widget_template.xml:0
 #, python-format
 msgid "Take a Picture"
-msgstr "сделать изображение"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__team_id
@@ -891,16 +845,11 @@ msgid "Team"
 msgstr "Команда"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_stage__team_ids
-msgid "Teams"
-msgstr "Команды"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__test_type
 #: model:ir.model.fields,field_description:quality.field_quality_point__test_type
 #: model:ir.model.fields,field_description:quality.field_quality_point_test_type__technical_name
 msgid "Technical name"
-msgstr "техническое название"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__test_type_id
@@ -910,18 +859,35 @@ msgstr "Тип испытания"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_model_id
-msgid "The model (Odoo Document Kind) to which this alias corresponds. Any incoming email that does not reply to an existing record will cause the creation of a new record of this model (e.g. a Project Task)"
-msgstr "Модель (тип документа Odoo), которой соответствует этот псевдоним. Любая входящая электронная почта, которая не отвечает существующей записи, вызовет создание новой записи этой модели (например, задача в проекте)"
+msgid ""
+"The model (Odoo Document Kind) to which this alias corresponds. Any incoming"
+" email that does not reply to an existing record will cause the creation of "
+"a new record of this model (e.g. a Project Task)"
+msgstr ""
+"Модель (тип документа Odoo) которой соответствует этот псевдоним. Любая "
+"входящая электронная почта, которая не отвечает существующей записи, вызовет"
+" создание новой записи этой модели (например, задача в проекте)"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_name
-msgid "The name of the email alias, e.g. 'jobs' if you want to catch emails for <jobs@example.odoo.com>"
-msgstr "Название псевдонима электронной почты, наприм 'jobs' если вы хотите получать почту на <jobs@example.odoo.com>"
+msgid ""
+"The name of the email alias, e.g. 'jobs' if you want to catch emails for "
+"<jobs@example.odoo.com>"
+msgstr ""
+"Наименование псевдонима электронной почты, наприм 'вакансии' если вы хотите "
+"получать почту для <jobs@example.odoo.com>"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert_team__alias_user_id
-msgid "The owner of records created upon receiving emails on this alias. If this field is not set the system will attempt to find the right owner based on the sender (From) address, or will use the Administrator account if no system user is found for that address."
-msgstr "Владелец записей, созданных по входящим письмам на этот алиас. Если это поле не задано, система попытается найти подходящего владельца на основе отправителя или сделает владельцем администратора."
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
+msgstr ""
+"Владелец записей, созданных по письмам с этим псевдонимом. Если это поле не "
+"задано, система попытается найти подходящего владельца на основе отправителя"
+" или сделает владельцем администратора."
 
 #. module: quality
 #: model:res.groups,comment:quality.group_quality_manager
@@ -934,7 +900,6 @@ msgid "The quality user uses the quality process"
 msgstr "Качественный пользователь использует процесс качества"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_check__title
 #: model:ir.model.fields,field_description:quality.field_quality_point__title
 msgid "Title"
 msgstr "Заголовок"
@@ -947,19 +912,41 @@ msgstr "Сделать"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Today Activities"
-msgstr "Действия на сегодня"
+msgstr "Сегодняшние мероприятия"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_tree
 msgid "Type"
-msgstr "Раздел"
+msgstr "Тип"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_exception_decoration
-#: model:ir.model.fields,help:quality.field_quality_check__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Тип активности исключения в записи."
+msgstr ""
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_unread
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_unread
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_unread
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_unread
+msgid "Unread Messages"
+msgstr "Непрочитанные Сообщения"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_unread_counter
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_unread_counter
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_unread_counter
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Счетчик непрочитанных сообщений"
+
+#. module: quality
+#. openerp-web
+#: code:addons/quality/static/src/xml/widget_template.xml:0
+#, python-format
+msgid "Uploading..."
+msgstr "Выгрузка…"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_tag__color
@@ -982,11 +969,11 @@ msgid "Very High"
 msgstr "Очень высокий"
 
 #. module: quality
-#. odoo-javascript
-#: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
+#. openerp-web
+#: code:addons/quality/static/src/xml/widget_template.xml:0
 #, python-format
 msgid "Viewer"
-msgstr "зритель"
+msgstr ""
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__website_message_ids
@@ -1002,19 +989,14 @@ msgstr "Сообщения с сайта"
 #: model:ir.model.fields,help:quality.field_quality_check__website_message_ids
 #: model:ir.model.fields,help:quality.field_quality_point__website_message_ids
 msgid "Website communication history"
-msgstr "История общения с сайтом"
+msgstr "История общения с сайта"
 
 #. module: quality
 #: model:quality.reason,name:quality.reason_wo
 msgid "Work Operation"
-msgstr "рабочая операция"
+msgstr ""
 
 #. module: quality
 #: model:quality.reason,name:quality.reason_workcenter
 msgid "Workcenter Failure"
-msgstr "Ошибка рабочего центра"
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_point_test_type__active
-msgid "active"
 msgstr ""

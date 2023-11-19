@@ -82,7 +82,7 @@ class SaleTimesheetCustomerPortal(TimesheetCustomerPortal):
         if search_in in ('so', 'all'):
             search_domain = expression.OR([search_domain, [('so_line.order_id.name', 'ilike', search)]])
         if search_in in ('invoice', 'all'):
-            invoices = request.env['account.move'].sudo().search(['|', ('name', 'ilike', search), ('id', 'ilike', search)])
+            invoices = request.env['account.move'].sudo().search([('name', 'ilike', search)])
             domain = request.env['account.analytic.line']._timesheet_get_sale_domain(invoices.mapped('invoice_line_ids.sale_line_ids'), invoices)
             search_domain = expression.OR([search_domain, domain])
         return search_domain
@@ -115,10 +115,8 @@ class SaleTimesheetCustomerPortal(TimesheetCustomerPortal):
         except (AccessError, MissingError):
             pass
 
-        moves = request.env['account.move']
-        invoice_ids = task.sale_order_id.invoice_ids
-        if invoice_ids and request.env['account.move'].check_access_rights('read', raise_exception=False):
-            moves = request.env['account.move'].search([('id', 'in', invoice_ids.ids)])
+        if task.sale_order_id.invoice_ids:
+            moves = request.env['account.move'].search([('id', 'in', task.sale_order_id.invoice_ids.ids)])
             values['invoices_accessible'] = moves.ids
             if moves:
                 if len(moves) == 1:
@@ -133,6 +131,6 @@ class SaleTimesheetCustomerPortal(TimesheetCustomerPortal):
                 })
         return values
 
-    @http.route()
-    def portal_my_timesheets(self, *args, groupby='sol', **kw):
-        return super().portal_my_timesheets(*args, groupby=groupby, **kw)
+    @http.route(['/my/timesheets', '/my/timesheets/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_timesheets(self, page=1, sortby=None, filterby=None, search=None, search_in='all', groupby='sol', **kw):
+        return super().portal_my_timesheets(page, sortby, filterby, search, search_in, groupby, **kw)

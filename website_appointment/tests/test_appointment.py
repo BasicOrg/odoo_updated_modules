@@ -2,15 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import Counter
-from datetime import datetime
 
 from odoo.addons.appointment.tests.common import AppointmentCommon
-from odoo.addons.website_appointment.controllers.appointment import WebsiteAppointment
 from odoo.addons.website.tests.test_website_visitor import MockVisitor
-from odoo.addons.website.tools import MockRequest
 from odoo.exceptions import ValidationError
 from odoo.tests import users, tagged
-from unittest.mock import patch
 
 
 @tagged('appointment')
@@ -86,19 +82,16 @@ class WAppointmentTest(AppointmentCommon, MockVisitor):
     def test_apt_type_is_published(self):
         for category, default in [
                 ('custom', True),
-                ('punctual', False),
-                ('recurring', False),
+                ('website', False),
                 ('anytime', True)
             ]:
             appointment_type = self.env['appointment.type'].create({
                 'name': 'Custom Appointment',
                 'category': category,
-                'start_datetime': datetime(2023, 10, 3, 8, 0) if category == 'punctual' else False,
-                'end_datetime': datetime(2023, 10, 10, 8, 0) if category == 'punctual' else False,
             })
             self.assertEqual(appointment_type.is_published, default)
 
-            if category in ['custom', 'punctual', 'recurring']:
+            if category in ['custom', 'website']:
                 appointment_copied = appointment_type.copy()
                 self.assertFalse(appointment_copied.is_published, "When we copy an appointment type, the new one should not be published")
 
@@ -113,70 +106,16 @@ class WAppointmentTest(AppointmentCommon, MockVisitor):
     @users('admin')
     def test_apt_type_is_published_update(self):
         appointment = self.env['appointment.type'].create({
-            'name': 'Recurring Appointment',
-            'category': 'recurring',
+            'name': 'Website Appointment',
+            'category': 'website',
         })
-        self.assertFalse(appointment.is_published, "A recurring appointment type should not be published at creation")
+        self.assertFalse(appointment.is_published, "A website appointment type should not be published at creation")
 
         appointment.write({'category': 'custom'})
         self.assertTrue(appointment.is_published, "Modifying an appointment type category to custom auto-published it")
 
-        appointment.write({'category': 'recurring'})
-        self.assertFalse(appointment.is_published, "Modifying an appointment type category to recurring unpublished it")
+        appointment.write({'category': 'website'})
+        self.assertFalse(appointment.is_published, "Modifying an appointment type category to website unpublished it")
 
         appointment.write({'category': 'anytime'})
         self.assertTrue(appointment.is_published, "Modifying an appointment type category to anytime auto-published it")
-
-        appointment.write({
-            'category': 'punctual',
-            'start_datetime': datetime(2022, 2, 14, 8, 0, 0),
-            'end_datetime': datetime(2022, 2, 20, 20, 0, 0),
-        })
-        self.assertFalse(appointment.is_published, "Modifying an appointment type category to punctual unpublished it")
-
-    def test_find_customer_country_from_visitor(self):
-        belgium = self.env.ref('base.be')
-        usa = self.env.ref('base.us')
-        current_website = self.env['website'].get_current_website()
-        appointments_belgium, appointment_usa = self.env['appointment.type'].create([
-            {
-                'name': 'Appointment for Belgium',
-                'country_ids': [(6, 0, [belgium.id])],
-                'website_id': current_website.id
-            }, {
-                'name': 'Appointment for the US',
-                'country_ids': [(6, 0, [usa.id])],
-                'website_id': current_website.id
-            },
-        ])
-
-        visitor_from_the_us = self.env['website.visitor'].create({
-            "name": 'Visitor from the US',
-            'access_token': self.apt_manager.partner_id.id,
-            "country_id": usa.id,
-            'website_id': current_website.id
-        })
-
-        wa_controller = WebsiteAppointment()
-
-        self.env.user.country_id = False
-
-        class MockGeoIPWithCountryCode:
-            country_code = None
-
-        with MockRequest(self.env, website=current_website) as mock_request:
-            with self.mock_visitor_from_request(force_visitor=visitor_from_the_us), \
-                    patch.object(mock_request, 'geoip', new=MockGeoIPWithCountryCode()):
-                # Make sure no country was identified before
-                self.assertFalse(mock_request.env.user.country_id)
-                self.assertFalse(mock_request.geoip.country_code)
-                domain = [
-                    ('category', 'in', ['punctual', 'recurring']),
-                    '|', ('end_datetime', '=', False), ('end_datetime', '>=', datetime.utcnow())
-                ]
-                available_appointments = wa_controller._fetch_and_check_private_appointment_types(None, None, None, "", domain=wa_controller._appointments_base_domain(None, False, None, domain))
-
-                self.assertNotIn(appointments_belgium, available_appointments,
-                                 "US visitor should not have access to an Appointment Type restricted to Belgium.")
-                self.assertIn(appointment_usa, available_appointments,
-                              "US visitor should have access to an Appointment Type restricted to the US.")

@@ -14,12 +14,14 @@ class Digest(models.Model):
     def _compute_kpi_helpdesk_tickets_closed_value(self):
         if not self.env.user.has_group('helpdesk.group_helpdesk_user'):
             raise AccessError(_("Do not have access, skip this data for user's digest email"))
-
-        self._calculate_company_based_kpi(
-            'helpdesk.ticket',
-            'kpi_helpdesk_tickets_closed_value',
-            date_field='close_date',
-        )
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            closed_ticket = self.env['helpdesk.ticket'].search_count([
+                ('close_date', '>=', start),
+                ('close_date', '<', end),
+                ('company_id', '=', company.id)
+            ])
+            record.kpi_helpdesk_tickets_closed_value = closed_ticket
 
     def _compute_kpis_actions(self, company, user):
         res = super(Digest, self)._compute_kpis_actions(company, user)

@@ -3,17 +3,17 @@
 # 	* helpdesk_fsm
 # 
 # Translators:
-# Wil Odoo, 2023
-# Wichanon Jamwutthipreecha, 2023
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wichanon Jamwutthipreecha, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,14 +21,25 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Blocked"
+msgstr "บล็อก"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: helpdesk_fsm
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "แปลงทิกเก็ต Helpdesk เป็นงาน"
+msgstr ""
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,help:helpdesk_fsm.field_helpdesk_ticket__use_fsm
+msgid "Convert tickets into Field Service tasks"
+msgstr "แปลงทิกเก็ตเป็นงานบริการภาคสนาม"
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
@@ -37,12 +48,12 @@ msgstr "สร้างและดูงาน"
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
+#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 msgid "Create Task"
 msgstr "สร้างงาน"
 
 #. module: helpdesk_fsm
-#. odoo-python
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_create_fsm_task
 #, python-format
 msgid "Create a Field Service task"
@@ -76,7 +87,7 @@ msgstr "แสดงชื่อ"
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__display_helpdesk_ticket_button
 msgid "Display Ticket"
-msgstr "แสดงทิกเก็ต"
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_team__fsm_project_id
@@ -109,6 +120,17 @@ msgid "ID"
 msgstr "ไอดี"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "In Progress"
+msgstr "กำลังดำเนินการ"
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__write_uid
 msgid "Last Updated by"
 msgstr "อัปเดตครั้งล่าสุดโดย"
@@ -121,12 +143,7 @@ msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__helpdesk_ticket_id
 msgid "Original Ticket"
-msgstr "ทิกเก็ตเดิม"
-
-#. module: helpdesk_fsm
-#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
-msgid "Plan Intervention"
-msgstr "แผนการแทรกแซง"
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__project_id
@@ -140,23 +157,22 @@ msgid "Project in which to create the task"
 msgstr "โปรเจกต์ที่จะสร้างงาน"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Ready"
+msgstr "พร้อม"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__helpdesk_ticket_id
 msgid "Related ticket"
 msgstr "ทิกเก็ตที่เกี่ยวข้อง"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model:ir.model,name:helpdesk_fsm.model_project_task
 #, python-format
 msgid "Task"
 msgstr "งาน"
-
-#. module: helpdesk_fsm
-#: model:mail.message.subtype,description:helpdesk_fsm.mt_ticket_task_canceled
-#: model:mail.message.subtype,name:helpdesk_fsm.mt_ticket_task_canceled
-msgid "Task Canceled"
-msgstr "งานถูกยกเลิกแล้ว"
 
 #. module: helpdesk_fsm
 #: model:mail.message.subtype,description:helpdesk_fsm.mt_team_ticket_task_done
@@ -167,16 +183,14 @@ msgid "Task Done"
 msgstr "งานเสร็จสิ้น"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Task created"
-msgstr "สร้างงานแล้ว"
+msgstr ""
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_ticket__fsm_task_ids
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 #, python-format
@@ -184,7 +198,6 @@ msgid "Tasks"
 msgstr "งาน"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Tasks from Tickets"
@@ -196,7 +209,6 @@ msgid "Tasks generated from this ticket"
 msgstr "งานที่สร้างจากทิกเก็ตนี้"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.project_sharing_inherit_project_task_view_form
 #, python-format
@@ -216,4 +228,4 @@ msgstr "ลูกค้าของทิกเก็ตจะเชื่อม
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__name
 msgid "Title"
-msgstr "คำนำหน้าชื่อ"
+msgstr "ชื่อเรื่อง"

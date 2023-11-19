@@ -8,7 +8,7 @@ from datetime import timedelta
 class TestEdiSunat(TestPeEdiCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='pe', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
+    def setUpClass(cls, chart_template_ref='l10n_pe.pe_chart_template', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
         super().setUpClass(chart_template_ref=chart_template_ref, edi_format_ref=edi_format_ref)
 
         cls.company_data['company'].l10n_pe_edi_provider = 'sunat'

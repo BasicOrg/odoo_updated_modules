@@ -21,25 +21,34 @@ class TestBurndownChartCommon(TestProjectCommon):
         super().setUpClass()
         cls.current_year = datetime.now().year
         create_date = datetime(cls.current_year - 1, 1, 1)
+        kanban_state_vals = {
+            "legend_blocked": 'Blocked',
+            "legend_done": 'Ready',
+            "legend_normal": 'In Progress'
+        }
         Stage = cls.env['project.task.type']
         cls.todo_stage = Stage.create({
             'sequence': 1,
             'name': 'TODO',
+            **kanban_state_vals,
         })
         cls.set_create_date('project_task_type', cls.todo_stage.id, create_date)
         cls.in_progress_stage = Stage.create({
             'sequence': 10,
             'name': 'In Progress',
+            **kanban_state_vals,
         })
         cls.set_create_date('project_task_type', cls.in_progress_stage.id, create_date)
         cls.testing_stage = Stage.create({
             'sequence': 20,
             'name': 'Testing',
+            **kanban_state_vals,
         })
         cls.set_create_date('project_task_type', cls.testing_stage.id, create_date)
         cls.done_stage = Stage.create({
             'sequence': 30,
             'name': 'Done',
+            **kanban_state_vals,
         })
         cls.set_create_date('project_task_type', cls.done_stage.id, create_date)
         cls.stages = cls.todo_stage + cls.in_progress_stage + cls.testing_stage + cls.done_stage
@@ -188,7 +197,7 @@ class TestBurndownChart(TestBurndownChartCommon):
             )
 
     def test_burndown_chart(self):
-        burndown_chart_domain = [('project_id', '!=', False)]
+        burndown_chart_domain = [('display_project_id', '!=', False)]
         project_domain = [('project_id', '=', self.project.id)]
 
         # Check that we get the expected results for the complete data of `self.project`.

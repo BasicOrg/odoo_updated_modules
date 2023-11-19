@@ -17,4 +17,4 @@ class IrAttachment(models.Model):
         if self.res_model == 'account.move':
             related_record = self.env[self.res_model].browse(self.res_id)
             if related_record._needs_auto_extract():
-                related_record._send_batch_for_digitization()
+                related_record.action_manual_send_for_digitization()

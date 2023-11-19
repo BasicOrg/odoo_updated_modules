@@ -24,6 +24,7 @@ class Form28150(models.Model):
     )
     official_id = fields.Char(
         string='Identification number',
+        compute='_compute_official_id', store=True,
     )
     company_id = fields.Many2one(
         'res.company',
@@ -40,7 +41,7 @@ class Form28150(models.Model):
         string='Income debtor BCE number',
         related='form_325_id.debtor_bce_number',
     )
-    reference_year = fields.Char(
+    reference_year = fields.Integer(
         string='Reference year',
         related='form_325_id.reference_year',
     )
@@ -54,12 +55,14 @@ class Form28150(models.Model):
     partner_name = fields.Char(
         string='Partner Name',
         help='Name of the partner when the form was created',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_name', store=True, readonly=False,
     )
     partner_address = fields.Char(
         string='Address',
         help='Address of the partner when the form was created',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_address', store=True, readonly=False,
     )
@@ -67,33 +70,39 @@ class Form28150(models.Model):
         comodel_name='res.country',
         string='Country',
         help='Country of the partner when the form was created',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_country_id', store=True, readonly=False,
     )
     partner_zip = fields.Char(
         string='Zip',
         help='Zip of the partner when the form was created',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_zip', store=True, readonly=False,
     )
     partner_city = fields.Char(
         string='City',
         help='City of the partner when the form was created',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_city', store=True, readonly=False,
     )
     partner_job_position = fields.Char(
         string='Job position',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_job_position', store=True, readonly=False,
     )
     partner_citizen_identification = fields.Char(
         string='Citizen identification number',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_citizen_identification', store=True, readonly=False,
     )
     partner_bce_number = fields.Char(
         string='BCE number',
+        states={'generated': [('readonly', True)]},
         tracking=True,
         compute='_compute_partner_bce_number', store=True, readonly=False,
     )
@@ -143,43 +152,34 @@ class Form28150(models.Model):
         readonly=True,
     )
 
-    @api.depends('reference_year', 'partner_name')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = f"{record.reference_year} {record.partner_name}"
+    def name_get(self):
+        return [(record.id, f"{record.reference_year} {record.partner_name}") for record in self]
 
-    def assign_official_id(self):
-        """Assigns an official_id pulled from `ir.sequence` or, if in test mode, from a simple enumerate"""
-        # As compute method are batched by 1000 records, it could run the loops several time, breaking the test part
-        # Hence, it's not a compute method
-        sequence_per_company = self._get_sequence_per_company()
-        form_requiring_real_sequence = self.filtered(lambda f: not f.form_325_id.is_test)
-        for form in form_requiring_real_sequence.sorted(lambda f: (f.partner_zip, f.partner_name, f.id)):
-            sequence = sequence_per_company.get(form.company_id.id)
-            form.official_id = sequence.next_by_id(sequence_date=fields.Datetime.to_datetime(str(form.reference_year)))
+    @api.depends('state')
+    def _compute_official_id(self):
+        forms_to_compute = self.filtered(lambda f: f.state == f.state == 'generated')
+        if forms_to_compute:
+            sequences = self.env['ir.sequence'].search([
+                ('code', '=', 'l10n_be.l10n_be.form.281.50'),
+                ('company_id', 'in', self.company_id.ids)
+            ], order='company_id')
 
-        test_forms = self - form_requiring_real_sequence
-        for i, form in enumerate(test_forms.sorted(lambda f: (f.partner_zip, f.partner_name, f.id)), start=1):
-            form.official_id = str(i)
+            companies_missing_sequences = self.company_id - sequences.company_id
+            if companies_missing_sequences:
+                sequences |= self.env['ir.sequence'].create([{
+                    'name': 'l10n_be form 281.50',
+                    'code': 'l10n_be.l10n_be.form.281.50',
+                    'number_next': 1,
+                    'number_increment': 1,
+                    'company_id': company.id,
+                    'use_date_range': True,
+                } for company in companies_missing_sequences])
 
+            sequence_per_company = {seq.company_id.id: seq for seq in sequences}
 
-    def _get_sequence_per_company(self):
-        sequences = self.env['ir.sequence'].search([
-            ('code', '=', 'l10n_be.l10n_be.form.281.50'),
-            ('company_id', 'in', self.company_id.ids)
-        ], order='company_id')
-        companies_missing_sequences = self.company_id - sequences.company_id
-        if companies_missing_sequences and self.env.user.has_group('account.group_account_user'):
-            sequences |= self.env['ir.sequence'].sudo().create([{
-                'name': 'l10n_be form 281.50',
-                'code': 'l10n_be.l10n_be.form.281.50',
-                'number_next': 1,
-                'number_increment': 1,
-                'company_id': company.id,
-                'use_date_range': True,
-            } for company in companies_missing_sequences])
-        sequence_per_company = {seq.company_id.id: seq for seq in sequences}
-        return sequence_per_company
+            for form in forms_to_compute:
+                sequence = sequence_per_company.get(form.company_id.id)
+                form.official_id = sequence.next_by_id(sequence_date=fields.Datetime.to_datetime(str(form.reference_year)))
 
     @api.depends('commissions', 'fees', 'atn', 'exposed_expenses')
     def _compute_total_remuneration(self):
@@ -233,8 +233,8 @@ class Form28150(models.Model):
             form.partner_country = form.partner_id.country_id
 
     @api.ondelete(at_uninstall=False)
-    def _unlink_only_if_state_not_generated_and_not_test(self):
-        if self.filtered(lambda f_250: f_250.state == 'generated' and not f_250.form_325_id.is_test):
+    def _unlink_only_if_state_not_generated(self):
+        if self.filtered(lambda x: x.state == 'generated'):
             raise UserError(_("You can't delete a 281.50 for which its form 325 xml has been generated"))
 
     def get_dict_values(self):

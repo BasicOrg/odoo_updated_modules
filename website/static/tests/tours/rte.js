@@ -1,21 +1,24 @@
-/** @odoo-module **/
+odoo.define('website.tour.rte', function (require) {
+'use strict';
 
-import wTourUtils from "@website/js/tours/tour_utils";
-import { whenReady } from "@odoo/owl";
+var session = require('web.session');
+const wTourUtils = require('website.tour_utils');
+
+var domReady = new Promise(function (resolve) {
+    $(resolve);
+});
+var ready = Promise.all([domReady, session.is_bound]);
 
 wTourUtils.registerWebsitePreviewTour('rte_translator', {
     test: true,
     url: '/',
-    edition: true,
-    wait_for: whenReady(),
-}, () => [
-wTourUtils.goToTheme(),
-{
-    content: "click on Add a language",
-    trigger: "we-button[data-add-language]"
+    wait_for: ready,
+}, [{
+    content: "click language dropdown",
+    trigger: 'iframe .js_language_selector .dropdown-toggle',
 }, {
-    content: "confirm leave editor",
-    trigger: ".modal-dialog button.btn-primary"
+    content: "click on Add a language",
+    trigger: 'iframe a.o_add_language',
 }, {
     content: "type Parseltongue",
     trigger: 'div[name="lang_ids"] .o_input_dropdown input',
@@ -44,33 +47,6 @@ wTourUtils.goToTheme(),
     content: "click on new page",
     trigger: '.o_new_content_element a',
 }, {
-    content: "click on Use this template",
-    trigger: ".o_page_template button.btn-primary",
-}, {
-    content: "insert file name",
-    trigger: '.modal-dialog input[type="text"]',
-    run: 'text rte_translator.xml',
-}, {
-    content: "create file",
-    trigger: '.modal-dialog button.btn-primary',
-    extra_trigger: 'input[type="text"]:propValue(rte_translator.xml)',
-}, {
-    content: "click on the 'page manager' button",
-    trigger: 'button[name="website.action_website_pages_list"]',
-}, {
-    content: "click on the record to display the xml file in the iframe",
-    trigger: 'td:contains("rte_translator.xml")',
-}, {
-    content: "Open new page menu",
-    trigger: ".o_menu_systray .o_new_content_container > a",
-    consumeVisibleOnly: true,
-}, {
-    content: "click on new page",
-    trigger: '.o_new_content_element a',
-}, {
-    content: "click on Use this template",
-    trigger: ".o_page_template button.btn-primary",
-}, {
     content: "insert page name",
     trigger: '.modal-dialog input[type="text"]',
     run: 'text rte_translator',
@@ -78,29 +54,28 @@ wTourUtils.goToTheme(),
     content: "create page",
     trigger: '.modal-dialog button.btn-primary',
     extra_trigger: 'input[type="text"]:propValue(rte_translator)',
-},
-wTourUtils.dragNDrop({
-    id: "s_cover",
-    name: "Cover"
-}), {
+}, {
+    content: "drop a snippet",
+    trigger: "#snippet_structure .oe_snippet:eq(1) .oe_snippet_thumbnail",
+    run: 'drag_and_drop iframe #wrap',
+}, {
     content: "change content",
     trigger: 'iframe #wrap',
     run: function () {
         $('iframe:not(.o_ignore_in_tour)').contents().find("#wrap p:first").replaceWith('<p>Write one or <font style="background-color: yellow;">two paragraphs <b>describing</b></font> your product or\
                 <font style="color: rgb(255, 0, 0);">services</font>. To be successful your content needs to be\
-                useful to your <a href="/999">readers</a>.</p> <input value="test translate default value" placeholder="test translate placeholder"/>\
+                useful to your <a href="/999">readers</a>.</p> <input placeholder="test translate placeholder"/>\
                 <p>&lt;b&gt;&lt;/b&gt; is an HTML&nbsp;tag &amp; is empty</p>');
         $('iframe:not(.o_ignore_in_tour)').contents().find("#wrap img").attr("title", "test translate image title");
     }
 }, {
-    content: "ensure change was applied",
-    trigger: 'iframe #wrap p:first b',
-    isCheck: true,
-},
-...wTourUtils.clickOnSave(),
-{
+    content: "save",
+    trigger: 'button[data-action=save]',
+    extra_trigger: 'iframe #wrap p:first b',
+}, {
     content: "click language dropdown (3)",
     trigger: 'iframe .js_language_selector .dropdown-toggle',
+    extra_trigger: 'iframe body:not(.editor_enable)',
 }, {
     content: "click on Parseltongue version",
     trigger: 'iframe .js_language_selector a[data-url_code="pa_GB"]',
@@ -121,9 +96,9 @@ wTourUtils.dragNDrop({
     trigger: 'iframe #wrap p font:first',
     run: function (actionHelper) {
         actionHelper.text('translated Parseltongue text');
-        const { Wysiwyg } = odoo.loader.modules.get('@web_editor/js/wysiwyg/wysiwyg');
+        const Wysiwyg = odoo.__DEBUG__.services['web_editor.wysiwyg'];
         Wysiwyg.setRange(this.$anchor.contents()[0], 22);
-        this.$anchor.trigger($.Event("keyup", {key: '_'}));
+        this.$anchor.trigger($.Event("keyup", {key: '_', keyCode: 95}));
         this.$anchor.trigger('input');
     },
 }, {
@@ -132,9 +107,9 @@ wTourUtils.dragNDrop({
     run: function (actionHelper) {
         actionHelper.click();
         this.$anchor.prepend('&lt;{translated}&gt;');
-        const { Wysiwyg } = odoo.loader.modules.get('@web_editor/js/wysiwyg/wysiwyg');
+        const Wysiwyg = odoo.__DEBUG__.services['web_editor.wysiwyg'];
         Wysiwyg.setRange(this.$anchor.contents()[0], 0);
-        this.$anchor.trigger($.Event("keyup", {key: '_'}));
+        this.$anchor.trigger($.Event("keyup", {key: '_', keyCode: 95}));
         this.$anchor.trigger('input');
     },
 }, {
@@ -147,22 +122,16 @@ wTourUtils.dragNDrop({
     trigger: '.modal-dialog input:first',
     run: 'text test Parseltongue placeholder',
 }, {
-    content: "translate default value",
-    trigger: '.modal-dialog input:last',
-    run: 'text test Parseltongue default value',
-}, {
     content: "close modal",
     trigger: '.modal-footer .btn-primary',
     extra_trigger: '.modal input:propValue(test Parseltongue placeholder)',
 }, {
-    content: "check: input marked as translated",
-    trigger: 'iframe input[placeholder="test Parseltongue placeholder"].oe_translated',
-    run: () => {},
-},
-...wTourUtils.clickOnSave(),
-{
+    content: "save translation",
+    trigger: 'button[data-action=save]',
+}, {
     content: "check: content is translated",
     trigger: 'iframe #wrap p font:first:contains(translated Parseltongue text)',
+    extra_trigger: 'iframe body:not(.editor_enable)',
     run: function () {}, // it's a check
 }, {
     content: "check: content with special char is translated",
@@ -173,10 +142,7 @@ wTourUtils.dragNDrop({
     content: "check: placeholder translation",
     trigger: 'iframe input[placeholder="test Parseltongue placeholder"]',
     run: function () {}, // it's a check
-}, {
-    content: "check: default value translation",
-    trigger: 'iframe input[value="test Parseltongue default value"]',
-    run: () => {},
+
 }, {
     content: "open language selector",
     trigger: 'iframe .js_language_selector button:first',
@@ -185,13 +151,12 @@ wTourUtils.dragNDrop({
     content: "return to english version",
     trigger: 'iframe .js_language_selector a[data-url_code="en"]',
 }, {
-    content: "Check body",
-    trigger: "iframe body:not(:has(#wrap p font:first:containsExact(paragraphs <b>describing</b>)))",
-    run: function () {}, // it's a check
-},
-...wTourUtils.clickOnEditAndWaitEditMode(),
-{
+    content: "edit english version",
+    trigger: '.o_edit_website_container > a',
+    extra_trigger: 'iframe body:not(:has(#wrap p font:first:containsExact(paragraphs <b>describing</b>)))',
+}, {
     content: "select text",
+    extra_trigger: '#oe_snippets.o_loaded',
     trigger: 'iframe #wrap p',
     run: function (actionHelper) {
         actionHelper.click();
@@ -200,7 +165,7 @@ wTourUtils.dragNDrop({
         mousedown.initMouseEvent('mousedown', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, el);
         el.dispatchEvent(mousedown);
         var mouseup = document.createEvent('MouseEvents');
-        const { Wysiwyg } = odoo.loader.modules.get('@web_editor/js/wysiwyg/wysiwyg');
+        const Wysiwyg = odoo.__DEBUG__.services['web_editor.wysiwyg'];
         Wysiwyg.setRange(el.childNodes[2], 6, el.childNodes[2], 13);
         mouseup.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, el);
         el.dispatchEvent(mouseup);
@@ -213,11 +178,15 @@ wTourUtils.dragNDrop({
 // }, {
 //     content: "underline",
 //     trigger: '.oe-toolbar #underline',
-},
-...wTourUtils.clickOnSave(),
-{
+}, {
+    content: "save new change",
+    trigger: 'button[data-action=save]',
+    // See comment above.
+    // extra_trigger: '#wrap.o_dirty p span[style*="text-decoration-line: underline;"]',
+}, {
     content: "click language dropdown (4)",
     trigger: 'iframe .js_language_selector .dropdown-toggle',
+    extra_trigger: 'iframe body:not(.editor_enable)',
 }, {
     content: "return in Parseltongue",
     trigger: 'iframe html[lang="en-US"] .js_language_selector .js_change_lang[data-url_code="pa_GB"]',
@@ -238,7 +207,7 @@ wTourUtils.dragNDrop({
     content: "Check that the editor is not showing translated content (1)",
     trigger: '.ace_text-layer .ace_line:contains("an HTML")',
     run: function (actions) {
-        var lineEscapedText = $(this.$anchor.text()).last().text();
+        var lineEscapedText = $(this.$anchor.text()).text();
         if (lineEscapedText !== "&lt;b&gt;&lt;/b&gt; is an HTML&nbsp;tag &amp; is empty") {
             console.error('The HTML editor should display the correct untranslated content');
             $('iframe:not(.o_ignore_in_tour)').contents().find('body').addClass('rte_translator_error');
@@ -249,3 +218,4 @@ wTourUtils.dragNDrop({
     trigger: 'iframe body:not(.rte_translator_error)',
     run: function () {},
 }]);
+});

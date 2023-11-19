@@ -3,7 +3,6 @@
 
 from odoo import Command
 from odoo.tests import tagged
-from odoo.tools import float_round
 
 from .common import TestFsmFlowSaleCommon
 
@@ -144,28 +143,3 @@ class TestSoLineDeterminedInTimesheet(TestFsmFlowSaleCommon):
 
         # Check if the timesheet of the employee manager does not change.
         self.assertEqual(employee_manager_timesheet.so_line, task.sale_line_id, 'The timesheet of the employee manager keeps the same SOL than the one in the task because no SOL contains the same product with the same price unit defined in the mapping for this employee.')
-
-    def test_fsm_sale_rounding(self):
-        """
-        Test rounding is correctly applied in the so line
-        """
-        self.task.write({'partner_id': self.partner_1.id})
-        product_uom_qty = 0.333333
-        quantity_precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-        # timesheet
-        values = {
-            'task_id': self.task.id,
-            'project_id': self.task.project_id.id,
-            'name': 'test timesheet',
-            'user_id': self.env.uid,
-            'unit_amount': product_uom_qty,
-            'employee_id': self.employee_user2.id,
-        }
-        self.env['account.analytic.line'].create(values)
-
-        # validation and SO
-        self.task.with_user(self.project_user).action_fsm_validate()
-        order = self.task.sale_order_id
-
-        expected_price_subtotal = order.order_line.price_unit * float_round(product_uom_qty, precision_digits=quantity_precision)
-        self.assertEqual(order.order_line.price_subtotal, expected_price_subtotal, "Order line subtotal is not correct")

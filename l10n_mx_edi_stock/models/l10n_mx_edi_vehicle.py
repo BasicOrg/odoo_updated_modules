@@ -105,10 +105,8 @@ class Vehicle(models.Model):
         default=_default_intermediary,
         help='Information corresponding to the transport intermediaries, as well as those taxpayers related to the transportation method used to transport the goods')
 
-    @api.depends('vehicle_licence')
-    def _compute_display_name(self):
-        for vehicle in self:
-            vehicle.display_name = f'[{vehicle.vehicle_licence}] {vehicle.name}'
+    def name_get(self):
+        return [(vehicle.id, '[%s] %s' % (vehicle.vehicle_licence, vehicle.name)) for vehicle in self]
 
     @api.constrains('figure_ids')
     def _check_figures(self):

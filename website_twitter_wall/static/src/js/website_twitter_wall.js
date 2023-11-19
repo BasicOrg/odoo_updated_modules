@@ -1,11 +1,12 @@
-/** @odoo-module **/
+odoo.define('website_twitter_wall.views', function (require) {
+'use strict';
 
-import { RPCError } from "@web/core/network/rpc_service";
-import { renderToElement } from "@web/core/utils/render";
-import Widget from "@web/legacy/js/core/widget";
-import publicWidget from "@web/legacy/js/public/public_widget";
+var core = require('web.core');
+const {Markup} = require('web.utils');
+var Widget = require('web.Widget');
+var publicWidget = require('web.public.widget');
 
-import { markup } from "@odoo/owl";
+var qweb = core.qweb;
 
 var TweetWall = Widget.extend({
     template: 'website_twitter_wall_tweets',
@@ -32,7 +33,6 @@ var TweetWall = Widget.extend({
         }, this.timeout);
         var zoomLevel = 1 / (window.devicePixelRatio * 0.80);
         this._zoom(zoomLevel);
-        this.rpc = this.bindService("rpc");
     },
 
     //--------------------------------------------------------------------------
@@ -45,7 +45,14 @@ var TweetWall = Widget.extend({
      */
     _zoom: function (level) {
         this.zoomLevel = level;
-        document.body.style.transform = `scale(${this.zoomLevel})`;
+        if ($.browser.mozilla) {
+            $('body').css('MozTransform', 'scale(' + this.zoomLevel + ')');
+        } else {
+            $('body').css('zoom', this.zoomLevel);
+            $('iframe').each(function (iframe) {
+                $(iframe.contentDocument).find('body').css('zoom', level);
+            });
+        }
     },
     /**
      * @private
@@ -54,7 +61,7 @@ var TweetWall = Widget.extend({
         if (this.repeat) {
             this.repeat = false;
             this.limit = 25;
-            Object.values(this.pool_cache).forEach((t) => {
+            _.each(this.pool_cache, function (t) {
                 t.round = t.round ? 1 : 0;
             });
         } else {
@@ -74,26 +81,28 @@ var TweetWall = Widget.extend({
     _getData: function () {
         var self = this;
         if (!this.fetchPromise) {
-            self.fetchPromise = this.rpc('/twitter_wall/get_tweet/' + self.wall_id, {
-                'last_tweet_id': self.last_tweet_id,
+            self.fetchPromise = this._rpc({
+                route: '/twitter_wall/get_tweet/' + self.wall_id,
+                params: {
+                    'last_tweet_id': self.last_tweet_id,
+                },
             }).then(function (res) {
                 self.fetchPromise = undefined;
                 if (res.length) {
                     self.last_tweet_id = res[0].id;
-                    res.forEach((r) => {
+                    _.each(res, function (r) {
                         r.round = 0;
                         self.pool_cache[r.id] = r;
                     });
                 }
-                var atLeastOneNotSeen = self.pool_cache.some((t) => t.round === 0);
+                var atLeastOneNotSeen = _.some(self.pool_cache, function (t) {
+                    return t.round === 0;
+                });
                 if (atLeastOneNotSeen || self.repeat) {
                     self._processTweet();
                 }
-            }).catch(function (e) {
+            }).guardedCatch(function () {
                 self.fetchPromise = undefined;
-                if (!(e instanceof RPCError)) {
-                    Promise.reject(e);
-                }
             });
         }
     },
@@ -102,25 +111,27 @@ var TweetWall = Widget.extend({
      */
     _processTweet: function () {
         var self = this;
-        var leastRound = Math.min(self.pool_cache.map((o) => o.round)).round;
+        var leastRound = _.min(self.pool_cache, function (o) {
+            return o.round;
+        }).round;
         // Filter tweets that have not been seen for the most time,
         // excluding the ones that are visible on the screen
         // (the last case is when there is not much tweets to loop on, when looping)
-        var tweets = self.pool_cache.filter((f) => {
+        var tweets = _.filter(self.pool_cache, function (f) {
             var el = $('*[data-tweet-id="' + f.id + '"]');
             if (f.round <= leastRound && (!el.length || el.offset().top > $(window).height())) {
                 return f;
             }
         });
         if (this.shuffle) {
-            tweets.sort(() => 0.5 - Math.random());
+            tweets = _.shuffle(tweets);
         }
         if (tweets.length) {
             var tweet = tweets[0];
             self.pool_cache[tweet.id].round = leastRound + 1;
-            $(renderToElement('website_twitter_wall_tweets', {
+            $(qweb.render('website_twitter_wall_tweets', {
                 tweet_id: tweet.id,
-                tweet: markup(tweet.tweet_html),
+                tweet: Markup(tweet.tweet_html),
             })).prependTo(self.prependTweetsTo);
             var nextPrepend = self.prependTweetsTo.next('.o-tw-walls-col');
             self.prependTweetsTo = nextPrepend.length ? nextPrepend.first() : $('.o-tw-walls-col').first();
@@ -142,11 +153,6 @@ publicWidget.registry.websiteTwitterWall = publicWidget.Widget.extend({
         'click .o-tw-live-btn': '_onLiveButton',
         'click .o-tw-option': '_onOption',
         'click .o-tw-zoom': '_onZoom',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
     },
 
     /**
@@ -270,7 +276,11 @@ publicWidget.registry.websiteTwitterWall = publicWidget.Widget.extend({
      */
     _onDeleteTweet: function (ev) {
         var tweet = $(ev.target).closest('.o-tw-tweet');
-        this.orm.unlink("website.twitter.tweet", [tweet.data('tweet-id')]).then(function (res) {
+        this._rpc({'model':
+            'website.twitter.tweet',
+            'method': 'unlink',
+            'args': [[tweet.data('tweet-id')]]
+        }).then(function (res) {
             if (res) {
                 tweet.slideUp(500);
             }
@@ -347,4 +357,5 @@ publicWidget.registry.websiteTwitterWall = publicWidget.Widget.extend({
         var step = $(ev.currentTarget).data('operation') === 'plus' ? 0.05 : -0.05;
         this.twitterWall._zoom(this.twitterWall.zoomLevel + step);
     },
+});
 });

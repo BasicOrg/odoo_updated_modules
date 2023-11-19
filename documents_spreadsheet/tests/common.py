@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.tests.common import new_test_user
-from odoo.addons.spreadsheet_edition.tests.spreadsheet_test_case import SpreadsheetTestCase
-
+from odoo.tests.common import TransactionCase, new_test_user
 from uuid import uuid4
+import base64
 
-TEST_CONTENT = "{}"
+
+TEXT = base64.b64encode(bytes("TEST", "utf-8"))
 GIF = b"R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs="
 
 
-class SpreadsheetTestCommon(SpreadsheetTestCase):
+class SpreadsheetTestCommon(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super(SpreadsheetTestCommon, cls).setUpClass()
@@ -26,7 +26,7 @@ class SpreadsheetTestCommon(SpreadsheetTestCase):
             self.env["documents.document"]
             .with_user(user or self.env.user)
             .create({
-                "spreadsheet_data": r"{}",
+                "raw": TEXT,
                 "folder_id": self.folder.id,
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
@@ -35,19 +35,30 @@ class SpreadsheetTestCommon(SpreadsheetTestCase):
             })
         )
 
-    def share_spreadsheet(self, document):
-        share = self.env["documents.share"].create(
-            {
-                "folder_id": document.folder_id.id,
-                "document_ids": [(6, 0, [document.id])],
-                "type": "ids",
-            }
+    def get_revision(self, spreadsheet):
+        return (
+            # should be sorted by `create_date` but tests are so fast,
+            # there are often no difference between consecutive revision creation.
+            spreadsheet.with_context(active_test=False)
+                .spreadsheet_revision_ids.sorted("id")[-1:]
+                .revision_id or "START_REVISION"
         )
-        self.env["documents.shared.spreadsheet"].create(
-            {
-                "share_id": share.id,
-                "document_id": document.id,
-                "spreadsheet_data": document.spreadsheet_data,
-            }
-        )
-        return share
+
+    def new_revision_data(self, spreadsheet, **kwargs):
+        return {
+            "id": spreadsheet.id,
+            "type": "REMOTE_REVISION",
+            "clientId": "john",
+            "commands": [{"type": "A_COMMAND"}],
+            "nextRevisionId": uuid4().hex,
+            "serverRevisionId": self.get_revision(spreadsheet),
+            **kwargs,
+        }
+
+    def snapshot(self, spreadsheet, server_revision_id, snapshot_revision_id, data):
+        return spreadsheet.dispatch_spreadsheet_message({
+            "type": "SNAPSHOT",
+            "nextRevisionId": snapshot_revision_id,
+            "serverRevisionId": server_revision_id,
+            "data": data,
+        })

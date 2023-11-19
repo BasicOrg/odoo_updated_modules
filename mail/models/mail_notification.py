@@ -27,9 +27,7 @@ class MailNotification(models.Model):
         ], string='Notification Type', default='inbox', index=True, required=True)
     notification_status = fields.Selection([
         ('ready', 'Ready to Send'),
-        ('process', 'Processing'),  # being checked by intermediary like IAP for sms
-        ('pending', 'Sent'),  # used with SMS; mail does not differentiate sent from delivered
-        ('sent', 'Delivered'),
+        ('sent', 'Sent'),
         ('bounce', 'Bounced'),
         ('exception', 'Exception'),
         ('canceled', 'Canceled')
@@ -40,11 +38,8 @@ class MailNotification(models.Model):
         # generic
         ("unknown", "Unknown error"),
         # mail
-        ("mail_bounce", "Bounce"),
         ("mail_email_invalid", "Invalid email address"),
         ("mail_email_missing", "Missing email address"),
-        ("mail_from_invalid", "Invalid from address"),
-        ("mail_from_missing", "Missing from address"),
         ("mail_smtp", "Connection failed (outgoing mail server problem)"),
         ], string='Failure type')
     failure_reason = fields.Text('Failure reason', copy=False)
@@ -135,5 +130,5 @@ class MailNotification(models.Model):
             'notification_type': notif.notification_type,
             'notification_status': notif.notification_status,
             'failure_type': notif.failure_type,
-            'persona': {'id': notif.res_partner_id.id, 'displayName': notif.res_partner_id.display_name, 'type': "partner"} if notif.res_partner_id else False,
+            'res_partner_id': [notif.res_partner_id.id, notif.res_partner_id.display_name] if notif.res_partner_id else False,
         } for notif in self]

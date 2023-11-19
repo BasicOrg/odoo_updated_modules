@@ -12,9 +12,3 @@ class StockMoveLine(models.Model):
     def _without_quality_checks(self):
         self.ensure_one()
         return not self.quality_check_ids
-
-    def write(self, vals):
-        res = super().write(vals)
-        if 'lot_id' in vals and self.sudo().quality_check_ids:
-            self.sudo().quality_check_ids._update_lots()
-        return res

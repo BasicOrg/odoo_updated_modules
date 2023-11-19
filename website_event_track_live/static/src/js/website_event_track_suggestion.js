@@ -1,8 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_event_track_live.website_event_track_suggestion', function (require) {
+'use strict';
 
-import { PublicWidget } from "@web/legacy/js/public/public_widget";
+var Widget = require('web.Widget');
 
-var WebsiteEventTrackSuggestion = PublicWidget.extend({
+var WebsiteEventTrackSuggestion = Widget.extend({
     template: 'website_event_track_live.website_event_track_suggestion',
     events: {
         'click .owevent_track_suggestion_next': '_onNextTrackClick',
@@ -74,4 +75,6 @@ var WebsiteEventTrackSuggestion = PublicWidget.extend({
     }
 });
 
-export default WebsiteEventTrackSuggestion;
+return WebsiteEventTrackSuggestion;
+
+});

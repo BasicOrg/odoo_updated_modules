@@ -56,7 +56,7 @@ class AccountMove(models.Model):
             # should be able to select it
             record.l10n_es_reports_mod347_available = record.company_id.country_id.code == "ES"
 
-    @api.depends('partner_id.country_id', 'commercial_partner_id.is_company')
+    @api.depends('partner_id.country_id')
     def _compute_l10n_es_reports_mod349_available(self):
         # Mod 349 is required for all EU operations with companies, except Spain
         mod349_countries = self.env.ref('base.europe').country_ids.filtered_domain([('code', '!=', 'ES')])
@@ -81,12 +81,12 @@ class AccountMove(models.Model):
         """
         posted = super()._post(soft)
         spanish_coa_list = [
-            'es_pymes',
-            'es_assoc',
-            'es_full',
+            self.env.ref('l10n_es.account_chart_template_pymes'),
+            self.env.ref('l10n_es.account_chart_template_assoc'),
+            self.env.ref('l10n_es.account_chart_template_full'),
         ]
         for record in posted.filtered(lambda move: move.is_invoice()):
-            if record.company_id.chart_template in spanish_coa_list and \
+            if record.company_id.chart_template_id in spanish_coa_list and \
             record.partner_id.country_id.code == "ES" and \
             record.l10n_es_reports_mod349_available and not record.l10n_es_reports_mod349_invoice_type:
                 raise UserError(_("Please select a Spanish invoice type for this invoice."))

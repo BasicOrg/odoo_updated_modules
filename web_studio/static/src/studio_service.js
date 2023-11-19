@@ -1,17 +1,17 @@
 /** @odoo-module **/
 import { registry } from "@web/core/registry";
+import { browser } from "@web/core/browser/browser";
+import { getCookie, setCookie } from "web.utils.cookies";
+import { delay } from "web.concurrency";
+import legacyBus from "web_studio.bus";
 import { resetViewCompilerCache } from "@web/views/view_compiler";
-import { _t } from "@web/core/l10n/translation";
-import { cookie } from "@web/core/browser/cookie";
 
-import { EventBus, onWillUnmount, useState } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
+const { EventBus } = owl;
 
 const URL_VIEW_KEY = "_view_type";
 const URL_ACTION_KEY = "_action";
 const URL_TAB_KEY = "_tab";
 const URL_MODE_KEY = "mode";
-const URL_REPORT_ID_KEY = "_report_id";
 
 export const MODES = {
     EDITOR: "editor",
@@ -21,29 +21,24 @@ export const MODES = {
 
 export class NotEditableActionError extends Error {}
 
-const SUPPORTED_VIEW_TYPES = {
-    activity: _t("Activity"),
-    calendar: _t("Calendar"),
-    cohort: _t("Cohort"),
-    form: _t("Form"),
-    gantt: _t("Gantt"),
-    graph: _t("Graph"),
-    kanban: _t("Kanban"),
-    list: _t("List"),
-    map: _t("Map"),
-    pivot: _t("Pivot"),
-    search: _t("Search"),
-};
-
-export function viewTypeToString(vType) {
-    return SUPPORTED_VIEW_TYPES[vType] || vType;
-}
+export const SUPPORTED_VIEW_TYPES = [
+    "activity",
+    "calendar",
+    "cohort",
+    "dashboard",
+    "form",
+    "gantt",
+    "graph",
+    "kanban",
+    "list",
+    "map",
+    "pivot",
+    "search",
+];
 
 export const studioService = {
-    dependencies: ["action", "color_scheme", "home_menu", "router", "rpc", "menu", "notification"],
-    async start(env, { color_scheme, rpc, menu, notification }) {
-        const supportedViewTypes = Object.keys(SUPPORTED_VIEW_TYPES);
-
+    dependencies: ["action", "home_menu", "router", "user"],
+    async start(env, { user }) {
         function _getCurrentAction() {
             const currentController = env.services.action.currentController;
             return currentController ? currentController.action : null;
@@ -70,42 +65,17 @@ export const studioService = {
                     // but not editable by studio
                     return false;
                 }
-                if (action.res_model === "knowledge.article") {
-                    // The knowledge form view is very specific and custom, it doesn't make sense
-                    // to edit it. Editing the list and kanban is more debatable, but for simplicity's sake
-                    // we set them to not editable too.
-                    return false;
-                }
                 return action.res_model ? true : false;
             }
             return false;
         }
 
         function isViewEditable(view) {
-            return view && supportedViewTypes.includes(view);
+            return view && SUPPORTED_VIEW_TYPES.includes(view);
         }
 
         const bus = new EventBus();
         let inStudio = false;
-
-        const menuSelectMenu = menu.selectMenu;
-        menu.selectMenu = async (argMenu) => {
-            if (!inStudio) {
-                return menuSelectMenu.call(menu, argMenu);
-            } else {
-                try {
-                    argMenu = typeof argMenu === "number" ? menu.getMenu(argMenu) : argMenu;
-                    await open(MODES.EDITOR, argMenu.actionID);
-                    menu.setCurrentMenu(argMenu);
-                } catch (e) {
-                    if (e instanceof NotEditableActionError) {
-                        notification.add(_t("This action is not editable by Studio"), { type: "danger" });
-                        return;
-                    }
-                    throw e;
-                }
-            }
-        };
 
         const state = {
             studioMode: null,
@@ -113,22 +83,18 @@ export const studioService = {
             editedAction: null,
             editedControllerState: null,
             editorTab: "views",
+            x2mEditorPath: [],
             editedReport: null,
         };
 
         async function _loadParamsFromURL() {
             const currentHash = env.services.router.current.hash;
+            user.removeFromContext("studio");
             if (currentHash.action === "studio") {
+                user.updateContext({ studio: 1 });
                 state.studioMode = currentHash[URL_MODE_KEY];
                 state.editedViewType = currentHash[URL_VIEW_KEY] || null;
-                const editorTab = currentHash[URL_TAB_KEY] || null;
-                state.editorTab = editorTab;
-                if (editorTab === "reports") {
-                    const reportId = currentHash[URL_REPORT_ID_KEY] || null;
-                    if (reportId) {
-                        state.editedReport = { res_id: reportId };
-                    }
-                }
+                state.editorTab = currentHash[URL_TAB_KEY] || null;
 
                 const editedActionId = currentHash[URL_ACTION_KEY];
                 const additionalContext = {};
@@ -155,7 +121,7 @@ export const studioService = {
         }
 
         let studioProm = _loadParamsFromURL();
-        env.bus.addEventListener("ROUTE_CHANGE", async () => {
+        env.bus.on("ROUTE_CHANGE", null, async () => {
             studioProm = _loadParamsFromURL();
         });
 
@@ -164,7 +130,6 @@ export const studioService = {
                 throw new Error("mode is mandatory");
             }
 
-            const previousState = { ...state };
             const options = {};
             if (targetMode === MODES.EDITOR) {
                 let controllerState;
@@ -176,7 +141,9 @@ export const studioService = {
                         viewType = currentController.view.type;
                         controllerState = Object.assign({}, currentController.getLocalState());
                         const { resIds } = currentController.getGlobalState() || {};
-                        controllerState.resIds = resIds || [controllerState.resId];
+                        if (resIds) {
+                            controllerState.resIds = resIds;
+                        }
                     }
                 }
                 if (!_isStudioEditable(action)) {
@@ -184,7 +151,6 @@ export const studioService = {
                 }
                 if (action !== state.editedAction) {
                     options.clearBreadcrumbs = true;
-                    options.noEmptyTransition = true;
                 }
                 state.editedAction = action;
                 const vtype = viewType || action.views[0][1]; // fallback on first view of action
@@ -196,19 +162,15 @@ export const studioService = {
                 options.stackPosition = "replaceCurrentAction";
             }
             state.studioMode = targetMode;
-
-            let res;
-            try {
-                res = await env.services.action.doAction("studio", options);
-            } catch (e) {
-                Object.assign(state, previousState);
-                throw e;
-            }
+            user.updateContext({ studio: 1 });
+            // LPE: we don't manage errors during do action.....
+            const res = await env.services.action.doAction("studio", options);
             // force color_scheme light
-            if (cookie.get("color_scheme") === "dark") {
+            if (getCookie("color_scheme") === "dark") {
                 // ensure studio is fully loaded
-                await new Promise((resolve) => setTimeout(resolve));
-                color_scheme.switchToColorScheme("light");
+                await delay(0);
+                setCookie("color_scheme", "light");
+                browser.location.reload();
             }
             return res;
         }
@@ -232,10 +194,9 @@ export const studioService = {
             if (!inStudio) {
                 throw new Error("leave when not in studio???");
             }
+            resetViewCompilerCache();
             env.bus.trigger("CLEAR-CACHES");
-
             const options = {
-                onActionReady: () => resetViewCompilerCache(),
                 stackPosition: "replacePreviousAction", // If target is menu, then replaceCurrent, see comment above why we cannot do this
             };
             let actionId;
@@ -244,35 +205,24 @@ export const studioService = {
                 options.additionalContext = state.editedAction.context;
                 options.viewType = state.editedViewType;
                 if (state.editedControllerState) {
-                    options.props = { resId: state.editedControllerState.resId };
+                    options.props = { resId: state.editedControllerState.currentId };
                 }
             } else {
                 actionId = "menu";
             }
+            user.removeFromContext("studio");
             await env.services.action.doAction(actionId, options);
             // force rendering of the main navbar to allow adaptation of the size
             env.bus.trigger("MENUS:APP-CHANGED");
             state.studioMode = null;
+            state.x2mEditorPath = [];
         }
 
-        async function reload(params = {}, reset = true) {
+        async function reload(params = {}) {
             resetViewCompilerCache();
             env.bus.trigger("CLEAR-CACHES");
-            const actionContext = state.editedAction.context;
-            let additionalContext;
-            if (actionContext.active_id) {
-                additionalContext = { active_id: actionContext.active_id };
-            }
-            if (actionContext.active_ids) {
-                additionalContext = Object.assign(additionalContext || {}, {
-                    active_ids: actionContext.active_ids,
-                });
-            }
-            const action = await env.services.action.loadAction(
-                state.editedAction.id,
-                additionalContext
-            );
-            setParams({ action, ...params }, reset);
+            const action = await env.services.action.loadAction(state.editedAction.id);
+            setParams({ action, ...params });
         }
 
         function toggleHomeMenu() {
@@ -311,28 +261,23 @@ export const studioService = {
             ) {
                 hash.active_id = state.editedAction.context.active_id;
             }
-
-            if (state.editorTab === "reports" && state.editedReport) {
-                hash[URL_REPORT_ID_KEY] = state.editedReport.res_id;
-            }
             env.services.router.pushState(hash, { replace: true });
         }
 
-        function setParams(params = {}, reset = true) {
+        function setParams(params = {}) {
             if ("mode" in params) {
                 state.studioMode = params.mode;
             }
             if ("viewType" in params) {
                 state.editedViewType = params.viewType || null;
+                state.x2mEditorPath = [];
             }
             if ("action" in params) {
-                if ((state.editedAction && state.editedAction.id) !== params.action.id) {
-                    state.editedControllerState = null;
-                }
                 state.editedAction = params.action || null;
             }
             if ("editorTab" in params) {
                 state.editorTab = params.editorTab;
+                state.x2mEditorPath = [];
                 if (!("viewType" in params)) {
                     // clean me
                     state.editedViewType = null;
@@ -344,17 +289,21 @@ export const studioService = {
             if ("editedReport" in params) {
                 state.editedReport = params.editedReport;
             }
-            if ("controllerState" in params) {
-                state.editedControllerState = params.controllerState;
+            if ("x2mEditorPath" in params) {
+                state.x2mEditorPath = params.x2mEditorPath;
             }
             if (state.editorTab !== "reports") {
                 state.editedReport = null;
             }
-            bus.trigger("UPDATE", { reset });
+            bus.trigger("UPDATE");
         }
+        legacyBus.on("STUDIO_ENTER_X2M", null, (newX2mPath) => {
+            const x2mEditorPath = state.x2mEditorPath.slice();
+            x2mEditorPath.push(newX2mPath);
+            setParams({ x2mEditorPath });
+        });
 
-        env.bus.addEventListener("ACTION_MANAGER:UI-UPDATED", (ev) => {
-            const mode = ev.detail;
+        env.bus.on("ACTION_MANAGER:UI-UPDATED", null, (mode) => {
             if (mode === "new") {
                 return;
             }
@@ -362,24 +311,14 @@ export const studioService = {
             inStudio = action.tag === "studio";
         });
 
-        const isAllowedCache = {
-            activity: {},
-            chatter: {},
-        };
-
-        function isAllowed(type, resModel) {
-            if (!Object.keys(isAllowedCache).includes(type)) {
-                return;
-            }
-            let val;
-            if (resModel in isAllowedCache[type]) {
-                val = isAllowedCache[type][resModel];
-            } else {
-                val = rpc(`/web_studio/${type}_allowed`, { model: resModel });
-                isAllowedCache[type][resModel] = val;
-            }
-            return val;
+        const legacyBusTrigger = legacyBus.trigger.bind(legacyBus);
+        const busTrigger = bus.trigger.bind(bus);
+        function mappedTrigger(...args) {
+            legacyBusTrigger(...args);
+            busTrigger(...args);
         }
+        legacyBus.trigger = mappedTrigger;
+        bus.trigger = mappedTrigger;
 
         return {
             MODES,
@@ -415,25 +354,11 @@ export const studioService = {
             get editorTab() {
                 return state.editorTab;
             },
-            isAllowed,
+            get x2mEditorPath() {
+                return state.x2mEditorPath;
+            },
         };
     },
 };
 
 registry.category("services").add("studio", studioService);
-
-export function useStudioServiceAsReactive() {
-    const studio = useService("studio");
-    const state = useState({ ...studio });
-    state.requestId = 1;
-
-    function onUpdate({ detail }) {
-        Object.assign(state, studio);
-        if (detail.reset) {
-            state.requestId++;
-        }
-    }
-    studio.bus.addEventListener("UPDATE", onUpdate);
-    onWillUnmount(() => studio.bus.removeEventListener("UPDATE", onUpdate));
-    return state;
-}

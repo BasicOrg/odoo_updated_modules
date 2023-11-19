@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'POS - Sale Margin',
+    'name': 'pos_sale_margin',
     'version': '1.1',
     'category': 'Hidden',
     'summary': 'Link module between Point of Sale and Sales Margin',

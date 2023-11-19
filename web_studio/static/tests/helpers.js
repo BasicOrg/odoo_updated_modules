@@ -1,5 +1,5 @@
 /** @odoo-module */
-import { click } from "@web/../tests/helpers/utils";
+import { legacyExtraNextTick, click } from "@web/../tests/helpers/utils";
 import { registry } from "@web/core/registry";
 
 import { systrayItem } from "@web_studio/systray_item/systray_item";
@@ -9,7 +9,6 @@ import { homeMenuService } from "@web_enterprise/webclient/home_menu/home_menu_s
 import { studioService } from "@web_studio/studio_service";
 import { registerCleanup } from "@web/../tests/helpers/cleanup";
 import { resetViewCompilerCache } from "@web/views/view_compiler";
-import { fakeColorSchemeService } from "@web/../tests/helpers/mock_services";
 
 export function registerStudioDependencies() {
     const serviceRegistry = registry.category("services");
@@ -18,14 +17,14 @@ export function registerStudioDependencies() {
     serviceRegistry.add("enterprise_subscription", enterpriseSubscriptionService);
     serviceRegistry.add("home_menu", homeMenuService);
     serviceRegistry.add("studio", studioService);
-    serviceRegistry.add("color_scheme", fakeColorSchemeService);
     registerCleanup(() => resetViewCompilerCache());
 }
 
 export async function openStudio(target, params = {}) {
-    await click(target.querySelector(".o_main_navbar .o_web_studio_navbar_item button"));
+    await click(target.querySelector(".o_main_navbar .o_web_studio_navbar_item a"));
+    await legacyExtraNextTick();
     if (params.noEdit) {
-        const studioTabViews = target.querySelector(".o_menu_sections a");
+        const studioTabViews = target.querySelector(".o_web_studio_menu_item a");
         await click(studioTabViews);
         const controlElm = target.querySelector(
             ".o_action_manager .o_web_studio_editor .o_web_studio_views"
@@ -35,15 +34,17 @@ export async function openStudio(target, params = {}) {
         }
     }
     if (params.report) {
-        const studioTabReport = target.querySelectorAll(".o_menu_sections a")[1];
+        const studioTabReport = target.querySelectorAll(".o_web_studio_menu_item a")[1];
         await click(studioTabReport);
+        await legacyExtraNextTick();
         let controlElm = target.querySelector(
-            ".o_action_manager .o_web_studio_editor .o_studio_report_kanban_view"
+            ".o_action_manager .o_web_studio_editor .o_web_studio_report_kanban"
         );
         if (!controlElm) {
             throw new Error("We should be in the Tab 'Report' but we are not");
         }
-        await click(controlElm.querySelector(`.o_kanban_record [data-id="${params.report}"`));
+        await click(controlElm.querySelector(`.o_kanban_record[data-id="${params.report}"`));
+        await legacyExtraNextTick();
         controlElm = target.querySelector(
             ".o_action_manager .o_web_studio_editor .o_web_studio_report_editor_manager"
         );
@@ -53,8 +54,9 @@ export async function openStudio(target, params = {}) {
     }
 }
 
-export function leaveStudio(target) {
-    return click(target.querySelector(".o_studio_navbar .o_web_studio_leave a"));
+export async function leaveStudio(target) {
+    await click(target.querySelector(".o_studio_navbar .o_web_studio_leave a"));
+    return legacyExtraNextTick();
 }
 
 export function getReportServerData() {
@@ -71,7 +73,7 @@ export function getReportServerData() {
 
     const views = {
         "ir.actions.report,false,kanban": `
-            <kanban js_class="studio_report_kanban">
+            <kanban class="o_web_studio_report_kanban" js_class="studio_report_kanban">
                 <field name="report_name"/>
                 <field name="report_type"/>
                 <field name="id"/>
@@ -89,24 +91,4 @@ export function getReportServerData() {
     };
 
     return { models, views };
-}
-
-export function fillActionFieldsDefaults(action) {
-    if (action.type !== "ir.actions.act_window") {
-        return action;
-    }
-    action = { ...action };
-    if (!("groups_id" in action)) {
-        action.groups_id = [];
-    }
-    if (!("view_mode" in action)) {
-        action.view_mode = action.views.map((v) => v[0]).join(",");
-    }
-    if (!("name" in action)) {
-        action.name = "";
-    }
-    if (!("help" in action)) {
-        action.help = "";
-    }
-    return action;
 }

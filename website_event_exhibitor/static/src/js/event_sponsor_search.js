@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website_event_exhibitor.event_sponsor_search', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+const publicWidget = require('web.public.widget');
 publicWidget.registry.websiteEventSearchSponsor = publicWidget.Widget.extend({
 
     selector: '.o_wesponsor_index',
@@ -9,12 +10,10 @@ publicWidget.registry.websiteEventSearchSponsor = publicWidget.Widget.extend({
         'click .o_search_tag .btn': '_onTagRemove',
         'click .o_dropdown_reset_tags': '_onTagReset',
         'change .o_wevent_event_tags_form input': '_onTagAdd',
-        'change .o_wevent_event_tags_mobile_form input': '_onTagAddMobile',
     },
 
     start: function () {
         this.form = this.$el.find('.o_wevent_event_tags_form');
-        this.mobileForm = this.$el.find('.o_wevent_event_tags_mobile_form');
         return this._super.apply(this, arguments);
     },
 
@@ -29,10 +28,6 @@ publicWidget.registry.websiteEventSearchSponsor = publicWidget.Widget.extend({
 
     _onTagAdd: function () {
         this.form.submit();
-    },
-
-    _onTagAddMobile: function () {
-        this.mobileForm.submit();
     },
 
     _onTagRemove: function (event) {
@@ -64,10 +59,11 @@ publicWidget.registry.websiteEventSearchSponsor = publicWidget.Widget.extend({
             const ids = JSON.parse(params.get(name));
             params.set(name, JSON.stringify(ids.filter(id => id !== data.value)));
             this.form.attr('action', `${window.location.href.split('?')[0]}?${params.toString()}`);
-        } catch {
+        } catch (_e) {
             return;
         }
     },
 });
 
-export default publicWidget.registry.websiteEventSearchSponsor;
+return publicWidget.registry.websiteEventSearchSponsor;
+});

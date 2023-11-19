@@ -1,53 +1,27 @@
-/** @odoo-module */
+/** @odoo-module **/
 
-import { SaleOrderLineProductField } from '@sale/js/sale_product_field';
-import { serializeDateTime } from "@web/core/l10n/dates";
-import { x2ManyCommands } from "@web/core/orm_service";
-import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
-import { ProductConfiguratorDialog } from "./product_configurator_dialog/product_configurator_dialog";
+import { useService } from "@web/core/utils/hooks";
+import { SaleOrderLineProductField } from '@sale/js/sale_product_field';
+import { OptionalProductsModal } from "@sale_product_configurator/js/product_configurator_modal";
+import {
+    selectOrCreateProduct,
+    getSelectedVariantValues,
+    getNoVariantAttributeValues,
+} from "sale.VariantMixin";
 
-async function applyProduct(record, product) {
-    // handle custom values & no variants
-    const contextRecords = [];
-    for (const ptal of product.attribute_lines) {
-        const selectedCustomPTAV = ptal.attribute_values.find(
-            ptav => ptav.is_custom && ptal.selected_attribute_value_ids.includes(ptav.id)
-        );
-        if (selectedCustomPTAV) {
-            contextRecords.push({
-                default_custom_product_template_attribute_value_id: selectedCustomPTAV.id,
-                default_custom_value: ptal.customValue,
-            });
-        };
-    }
 
-    const proms = [];
-    proms.push(record.data.product_custom_attribute_value_ids.createAndReplace(contextRecords));
-
-    const noVariantPTAVIds = product.attribute_lines.filter(
-        ptal => ptal.create_variant === "no_variant" && ptal.attribute_values.length > 1
-    ).flatMap(ptal => ptal.selected_attribute_value_ids);
-
-    await Promise.all(proms);
-    await record.update({
-        product_id: [product.id, product.display_name],
-        product_uom_qty: product.quantity,
-        product_no_variant_attribute_value_ids: [x2ManyCommands.set(noVariantPTAVIds)],
-    });
-};
-
-patch(SaleOrderLineProductField.prototype, {
+patch(SaleOrderLineProductField.prototype, 'sale_product_configurator', {
 
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
 
-        this.dialog = useService("dialog");
-        this.orm = useService("orm");
+        this.rpc = useService("rpc");
+        this.ui = useService("ui");
     },
 
     async _onProductTemplateUpdate() {
-        super._onProductTemplateUpdate(...arguments);
+        this._super(...arguments);
         const result = await this.orm.call(
             'product.template',
             'get_single_product_variant',
@@ -58,102 +32,235 @@ patch(SaleOrderLineProductField.prototype, {
         );
         if(result && result.product_id) {
             if (this.props.record.data.product_id != result.product_id.id) {
+                await this.props.record.update({
+                    product_id: [result.product_id, result.product_name],
+                });
                 if (result.has_optional_products) {
-                    this._openProductConfigurator();
+                    this._openProductConfigurator('options');
                 } else {
-                    await this.props.record.update({
-                        product_id: [result.product_id, result.product_name],
-                    });
                     this._onProductUpdate();
                 }
             }
         } else {
             if (!result.mode || result.mode === 'configurator') {
-                this._openProductConfigurator();
+                this._openProductConfigurator('add');
             } else {
                 // only triggered when sale_product_matrix is installed.
-                this._openGridConfigurator();
+                this._openGridConfigurator(result.mode);
             }
         }
     },
 
     _editProductConfiguration() {
-        super._editProductConfiguration(...arguments);
+        this._super(...arguments);
         if (this.props.record.data.is_configurable_product) {
-            this._openProductConfigurator(true);
+            this._openProductConfigurator('edit');
         }
     },
 
     get isConfigurableTemplate() {
-        return super.isConfigurableTemplate || this.props.record.data.is_configurable_product;
+        return this._super(...arguments) || this.props.record.data.is_configurable_product;
     },
 
-    async _openProductConfigurator(edit=false) {
+    async _openProductConfigurator(mode) {
         const saleOrderRecord = this.props.record.model.root;
-        let ptavIds = this.props.record.data.product_template_attribute_value_ids.records.map(
-            record => record.resId
+        const pricelistId = saleOrderRecord.data.pricelist_id ? saleOrderRecord.data.pricelist_id[0] : false;
+        const productTemplateId = this.props.record.data.product_template_id[0];
+        const $modal = $(
+            await this.rpc(
+                "/sale_product_configurator/configure",
+                {
+                    product_template_id: productTemplateId,
+                    quantity: this.props.record.data.product_uom_qty || 1,
+                    pricelist_id: pricelistId,
+                    product_template_attribute_value_ids: this.props.record.data.product_template_attribute_value_ids.records.map(
+                        record => record.data.id
+                    ),
+                    product_no_variant_attribute_value_ids: this.props.record.data.product_no_variant_attribute_value_ids.records.map(
+                        record => record.data.id
+                    ),
+                    context: this.context,
+                },
+            )
         );
-        let customAttributeValues = [];
+        const productSelector = `input[type="hidden"][name="product_id"], input[type="radio"][name="product_id"]:checked`;
+        // TODO VFE drop this selectOrCreate and make it so that
+        // get_single_product_variant returns first variant as well.
+        // and use specified product on edition mode.
+        const productId = await selectOrCreateProduct.call(
+            this,
+            $modal,
+            parseInt($modal.find(productSelector).first().val(), 10),
+            productTemplateId,
+            false
+        );
+        $modal.find(productSelector).val(productId);
+        const variantValues = getSelectedVariantValues($modal);
+        const noVariantAttributeValues = getNoVariantAttributeValues($modal);
+        const customAttributeValues = this.props.record.data.product_custom_attribute_value_ids.records.map(
+            record => {
+                // NOTE: this dumb formatting is necessary to avoid
+                // modifying the shared code between frontend & backend for now.
+                return {
+                    custom_value: record.data.custom_value,
+                    custom_product_template_attribute_value_id: {
+                        res_id: record.data.custom_product_template_attribute_value_id[0],
+                    },
+                };
+            }
+        );
+        this.rootProduct = {
+            product_id: productId,
+            product_template_id: productTemplateId,
+            quantity: parseFloat($modal.find('input[name="add_qty"]').val() || 1),
+            variant_values: variantValues,
+            product_custom_attribute_values: customAttributeValues,
+            no_variant_attribute_values: noVariantAttributeValues,
+        };
+        const optionalProductsModal = new OptionalProductsModal(null, {
+            rootProduct: this.rootProduct,
+            pricelistId: pricelistId,
+            okButtonText: this.env._t("Confirm"),
+            cancelButtonText: this.env._t("Back"),
+            title: this.env._t("Configure"),
+            context: this.context,
+            mode: mode,
+        });
+        let modalEl;
+        optionalProductsModal.opened(() => {
+            modalEl = optionalProductsModal.el;
+            this.ui.activateElement(modalEl);
+        });
+        optionalProductsModal.on("closed", null, async () => {
+            // Wait for the event that caused the close to bubble
+            await new Promise(resolve => setTimeout(resolve, 0));
+            this.ui.deactivateElement(modalEl);
+        });
+        optionalProductsModal.open();
 
-        if (edit) {
-            /**
-             * no_variant and custom attribute don't need to be given to the configurator for new
-             * products.
-             */
-            ptavIds = ptavIds.concat(this.props.record.data.product_no_variant_attribute_value_ids.records.map(
-                record => record.resId
-            ));
-            /**
-             *  `product_custom_attribute_value_ids` records are not loaded in the view bc sub templates
-             *  are not loaded in list views. Therefore, we fetch them from the server if the record is
-             *  saved. Else we use the value stored on the line.
-             */
-            customAttributeValues =
-                this.props.record.data.product_custom_attribute_value_ids.records[0]?.isNew ?
-                this.props.record.data.product_custom_attribute_value_ids.records.map(
-                    record => record.data
-                ) :
-                await this.orm.read(
-                    'product.attribute.custom.value',
-                    this.props.record.data.product_custom_attribute_value_ids.currentIds,
-                    ["custom_product_template_attribute_value_id", "custom_value"]
-                )
+        let confirmed = false;
+        optionalProductsModal.on("confirm", null, async () => {
+            confirmed = true;
+            const [
+                mainProduct,
+                ...optionalProducts
+            ] = await optionalProductsModal.getAndCreateSelectedProducts();
+
+            await this.props.record.update(await this._convertConfiguratorDataToUpdateData(mainProduct));
+            this._onProductUpdate();
+            const optionalProductLinesCreationContext = this._convertConfiguratorDataToLinesCreationContext(optionalProducts);
+            for (let optionalProductLineCreationContext of optionalProductLinesCreationContext) {
+                const line = await saleOrderRecord.data.order_line.addNew({
+                    position: 'bottom',
+                    context: optionalProductLineCreationContext,
+                    mode: 'readonly',  // whatever but not edit !
+                });
+                // FIXME: update sets the field dirty otherwise on the next edit and click out it gets deleted
+                line.update({ sequence: line.data.sequence });
+            }
+            saleOrderRecord.data.order_line.unselectRecord();
+        });
+        optionalProductsModal.on("closed", null, () => {
+            if (confirmed) {
+                return;
+            }
+            if (mode != 'edit') {
+                this.props.record.update({
+                    product_template_id: false,
+                    product_id: false,
+                    product_uom_qty: 1.0,
+                    // TODO reset custom/novariant values (and remove onchange logic?)
+                });
+            }
+        });
+    },
+
+    async _convertConfiguratorDataToUpdateData(mainProduct) {
+        const nameGet = await this.orm.nameGet(
+            'product.product',
+            [mainProduct.product_id],
+            { context: this.context }
+        );
+        let result = {
+            product_id: nameGet[0],
+            product_uom_qty: mainProduct.quantity,
+        };
+        var customAttributeValues = mainProduct.product_custom_attribute_values;
+        var customValuesCommands = [{ operation: "DELETE_ALL" }];
+        if (customAttributeValues && customAttributeValues.length !== 0) {
+            _.each(customAttributeValues, function (customValue) {
+                customValuesCommands.push({
+                    operation: "CREATE",
+                    context: [
+                        {
+                            default_custom_product_template_attribute_value_id:
+                                customValue.custom_product_template_attribute_value_id,
+                            default_custom_value: customValue.custom_value,
+                        },
+                    ],
+                });
+            });
         }
 
-        this.dialog.add(ProductConfiguratorDialog, {
-            productTemplateId: this.props.record.data.product_template_id[0],
-            ptavIds: ptavIds,
-            customAttributeValues: customAttributeValues.map(
-                data => {
-                    return {
-                        ptavId: data.custom_product_template_attribute_value_id[0],
-                        value: data.custom_value,
-                    }
-                }
-            ),
-            quantity: this.props.record.data.product_uom_qty,
-            productUOMId: this.props.record.data.product_uom[0],
-            companyId: saleOrderRecord.data.company_id[0],
-            pricelistId: saleOrderRecord.data.pricelist_id[0],
-            currencyId: this.props.record.data.currency_id[0],
-            soDate: serializeDateTime(saleOrderRecord.data.date_order),
-            edit: edit,
-            save: async (mainProduct, optionalProducts) => {
-                await applyProduct(this.props.record, mainProduct);
+        result.product_custom_attribute_value_ids = {
+            operation: "MULTI",
+            commands: customValuesCommands,
+        };
 
-                this._onProductUpdate();
-                saleOrderRecord.data.order_line.leaveEditMode();
-                for (const optionalProduct of optionalProducts) {
-                    const line = await saleOrderRecord.data.order_line.addNewRecord({
-                        position: 'bottom',
-                        mode: "readonly",
-                    });
-                    await applyProduct(line, optionalProduct);
-                }
-            },
-            discard: () => {
-                saleOrderRecord.data.order_line.delete(this.props.record);
-            },
+        var noVariantAttributeValues = mainProduct.no_variant_attribute_values;
+        var noVariantCommands = [{ operation: "DELETE_ALL" }];
+        if (noVariantAttributeValues && noVariantAttributeValues.length !== 0) {
+            var resIds = _.map(noVariantAttributeValues, function (noVariantValue) {
+                return { id: parseInt(noVariantValue.value) };
+            });
+
+            noVariantCommands.push({
+                operation: "ADD_M2M",
+                ids: resIds,
+            });
+        }
+
+        result.product_no_variant_attribute_value_ids = {
+            operation: "MULTI",
+            commands: noVariantCommands,
+        };
+
+        return result;
+    },
+
+    /**
+     * Will map the optional producs data to sale.order.line
+     * creation contexts.
+     *
+     * @param {Array} optionalProductsData The optional products data given by the configurator
+     *
+     * @private
+     */
+    _convertConfiguratorDataToLinesCreationContext: function (optionalProductsData) {
+        return optionalProductsData.map(productData => {
+            return {
+                default_product_id: productData.product_id,
+                default_product_template_id: productData.product_template_id,
+                default_product_uom_qty: productData.quantity,
+                default_product_no_variant_attribute_value_ids: productData.no_variant_attribute_values.map(
+                    noVariantAttributeData => {
+                        return [4, parseInt(noVariantAttributeData.value)];
+                    }
+                ),
+                default_product_custom_attribute_value_ids: productData.product_custom_attribute_values.map(
+                    customAttributeData => {
+                        return [
+                            0,
+                            0,
+                            {
+                                custom_product_template_attribute_value_id:
+                                    customAttributeData.custom_product_template_attribute_value_id,
+                                custom_value: customAttributeData.custom_value,
+                            },
+                        ];
+                    }
+                )
+            };
         });
     },
 });

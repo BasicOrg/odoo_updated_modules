@@ -2,12 +2,8 @@
 
 import { makeFakeLocalizationService } from "@web/../tests/helpers/mock_services";
 import { registry } from "@web/core/registry";
-import { getFixture, nextTick, patchWithCleanup, triggerEvent } from "@web/../tests/helpers/utils";
+import { click, getFixture, nextTick } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { localization } from "@web/core/l10n/localization";
-import { useNumpadDecimal } from "@web/views/fields/numpad_decimal_hook";
-import { makeTestEnv } from "../../helpers/mock_env";
-import { Component, mount, useState, xml } from "@odoo/owl";
 
 let serverData;
 let target;
@@ -81,7 +77,6 @@ QUnit.module("Fields", (hooks) => {
         };
 
         setupViewRegistries();
-        patchWithCleanup(localization, { decimalPoint: ",", thousandsSep: "." });
     });
 
     QUnit.module("Numeric fields");
@@ -105,7 +100,7 @@ QUnit.module("Fields", (hooks) => {
                         <field name="monetary"/>
                         <field name="currency_id" invisible="1"/>
                         <field name="percentage"/>
-                        <field name="progressbar" widget="progressbar" options="{'editable': true, 'max_value': 'qux', 'edit_max_value': true}"/>
+                        <field name="progressbar" widget="progressbar" options="{'editable': true, 'max_value': 'qux', 'edit_max_value': true, 'edit_current_value': true}"/>
                     </form>`,
                 resId: 1,
             });
@@ -116,7 +111,6 @@ QUnit.module("Fields", (hooks) => {
             const integerInput = target.querySelector(".o_field_integer input");
             const monetaryInput = target.querySelector(".o_field_monetary input");
             const percentageInput = target.querySelector(".o_field_percentage input");
-            const progressbarInput = target.querySelector(".o_field_progressbar input");
 
             // Dispatch numpad "dot" and numpad "comma" keydown events to all inputs and check
             // Numpad "comma" is specific to some countries (Brazil...)
@@ -165,210 +159,25 @@ QUnit.module("Fields", (hooks) => {
             await nextTick();
             assert.strictEqual(percentageInput.value, "99🇧🇪🇧🇪");
 
-            progressbarInput.focus();
-            await nextTick();
-
-            // When the input is focused, we get the length of the input value to be
-            // able to set the cursor position at the end of the value.
-            const length = progressbarInput.value.length;
-
-            // Make sure that the cursor position is at the end of the value.
-            progressbarInput.setSelectionRange(length, length);
-            progressbarInput.dispatchEvent(
+            await click(target.querySelector(".o_progress"));
+            const progressbarInputs = target.querySelectorAll(".o_field_progressbar input");
+            progressbarInputs[0].dispatchEvent(
                 new KeyboardEvent("keydown", { code: "NumpadDecimal", key: "." })
             );
-            progressbarInput.dispatchEvent(
+            progressbarInputs[0].dispatchEvent(
                 new KeyboardEvent("keydown", { code: "NumpadDecimal", key: "," })
             );
             await nextTick();
-            assert.strictEqual(progressbarInput.value, "0🇧🇪44🇧🇪🇧🇪");
-        }
-    );
+            assert.strictEqual(progressbarInputs[0].value, "69🇧🇪🇧🇪");
 
-    QUnit.test(
-        "Numeric fields: NumpadDecimal key is different from the decimalPoint",
-        async function (assert) {
-            await makeView({
-                serverData,
-                type: "form",
-                resModel: "partner",
-                arch: /*xml*/ `
-                    <form>
-                        <field name="float_factor_field" options="{'factor': 0.5}"/>
-                        <field name="qux"/>
-                        <field name="int_field"/>
-                        <field name="monetary"/>
-                        <field name="currency_id" invisible="1"/>
-                        <field name="percentage"/>
-                        <field name="progressbar" widget="progressbar" options="{'editable': true, 'max_value': 'qux', 'edit_max_value': true}"/>
-                    </form>`,
-                resId: 1,
-            });
-
-            // Get all inputs
-            const floatFactorField = target.querySelector(".o_field_float_factor input");
-            const floatInput = target.querySelector(".o_field_float input");
-            const integerInput = target.querySelector(".o_field_integer input");
-            const monetaryInput = target.querySelector(".o_field_monetary input");
-            const percentageInput = target.querySelector(".o_field_percentage input");
-            const progressbarInput = target.querySelector(".o_field_progressbar input");
-
-            /**
-             * Common assertion steps are extracted in this procedure.
-             *
-             * @param {object} params
-             * @param {HTMLInputElement} params.el
-             * @param {[number, number]} params.selectionRange
-             * @param {string} params.expectedValue
-             * @param {string} params.msg
-             */
-            async function testInputElementOnNumpadDecimal(params) {
-                const { el, selectionRange, expectedValue, msg } = params;
-
-                el.focus();
-                await nextTick();
-
-                el.setSelectionRange(...selectionRange);
-                const numpadDecimalEvent = new KeyboardEvent("keydown", {
-                    code: "NumpadDecimal",
-                    key: ".",
-                });
-                numpadDecimalEvent.preventDefault = () => assert.step("preventDefault");
-                el.dispatchEvent(numpadDecimalEvent);
-                await nextTick();
-
-                // dispatch an extra keydown event and assert that it's not default prevented
-                const extraEvent = new KeyboardEvent("keydown", { code: "Digit1", key: "1" });
-                extraEvent.preventDefault = () => {
-                    throw new Error("should not be default prevented");
-                };
-                el.dispatchEvent(extraEvent);
-                await nextTick();
-
-                // Selection range should be at 1 + the specified selection start.
-                assert.strictEqual(el.selectionStart, selectionRange[0] + 1);
-                assert.strictEqual(el.selectionEnd, selectionRange[0] + 1);
-                await nextTick();
-                assert.verifySteps(
-                    ["preventDefault"],
-                    "NumpadDecimal event should be default prevented"
-                );
-                assert.strictEqual(el.value, expectedValue, msg);
-            }
-
-            await testInputElementOnNumpadDecimal({
-                el: floatFactorField,
-                selectionRange: [1, 3],
-                expectedValue: "5,0",
-                msg: "Float factor field from 5,00 to 5,0",
-            });
-
-            await testInputElementOnNumpadDecimal({
-                el: floatInput,
-                selectionRange: [0, 2],
-                expectedValue: ",4",
-                msg: "Float field from 0,4 to ,4",
-            });
-
-            await testInputElementOnNumpadDecimal({
-                el: integerInput,
-                selectionRange: [1, 2],
-                expectedValue: "1,",
-                msg: "Integer field from 10 to 1,",
-            });
-
-            await testInputElementOnNumpadDecimal({
-                el: monetaryInput,
-                selectionRange: [0, 3],
-                expectedValue: ",9",
-                msg: "Monetary field from 9,99 to ,9",
-            });
-
-            await testInputElementOnNumpadDecimal({
-                el: percentageInput,
-                selectionRange: [1, 1],
-                expectedValue: "9,9",
-                msg: "Percentage field from 99 to 9,9",
-            });
-
-            await testInputElementOnNumpadDecimal({
-                el: progressbarInput,
-                selectionRange: [1, 3],
-                expectedValue: "0,4",
-                msg: "Progressbar field 2 from 0,44 to 0,4",
-            });
-        }
-    );
-
-    QUnit.test(
-        "useNumpadDecimal should synchronize handlers on input elements",
-        async function (assert) {
-            /**
-             * Takes an array of input elements and asserts that each has the correct event listener.
-             * @param {HTMLInputElement[]} inputEls
-             */
-            async function testInputElements(inputEls) {
-                for (const inputEl of inputEls) {
-                    inputEl.focus();
-                    const numpadDecimalEvent = new KeyboardEvent("keydown", {
-                        code: "NumpadDecimal",
-                        key: ".",
-                    });
-                    numpadDecimalEvent.preventDefault = () => assert.step("preventDefault");
-                    inputEl.dispatchEvent(numpadDecimalEvent);
-                    await nextTick();
-
-                    // dispatch an extra keydown event and assert that it's not default prevented
-                    const extraEvent = new KeyboardEvent("keydown", { code: "Digit1", key: "1" });
-                    extraEvent.preventDefault = () => {
-                        throw new Error("should not be default prevented");
-                    };
-                    inputEl.dispatchEvent(extraEvent);
-                    await nextTick();
-
-                    assert.verifySteps(["preventDefault"]);
-                }
-            }
-
-            class MyComponent extends Component {
-                setup() {
-                    useNumpadDecimal();
-                    this.state = useState({ showOtherInput: false });
-                }
-            }
-            MyComponent.template = xml`
-                <main t-ref="numpadDecimal">
-                    <input type="text" placeholder="input 1" />
-                    <input t-if="state.showOtherInput" type="text" placeholder="input 2" />
-                </main>
-            `;
-            const comp = await mount(MyComponent, target, { env: await makeTestEnv() });
-
-            // Initially, only one input should be rendered.
-            assert.containsOnce(target, "main > input");
-            await testInputElements(target.querySelectorAll("main > input"));
-
-            // We show the second input by manually updating the state.
-            comp.state.showOtherInput = true;
+            progressbarInputs[1].dispatchEvent(
+                new KeyboardEvent("keydown", { code: "NumpadDecimal", key: "." })
+            );
+            progressbarInputs[1].dispatchEvent(
+                new KeyboardEvent("keydown", { code: "NumpadDecimal", key: "," })
+            );
             await nextTick();
-
-            // The second input should also be able to handle numpad decimal.
-            assert.containsN(target, "main > input", 2);
-            await testInputElements(target.querySelectorAll("main > input"));
+            assert.strictEqual(progressbarInputs[1].value, "0🇧🇪44🇧🇪🇧🇪");
         }
     );
-
-    QUnit.test("select all content on focus", async function (assert) {
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `<form><field name="monetary"/></form>`,
-        });
-
-        const input = target.querySelector(".o_field_widget[name='monetary'] input");
-        await triggerEvent(input, null, "focus");
-        assert.strictEqual(input.selectionStart, 0);
-        assert.strictEqual(input.selectionEnd, 4);
-    });
 });

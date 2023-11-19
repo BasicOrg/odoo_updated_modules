@@ -3,7 +3,7 @@
 
 from odoo.addons.event_sale.tests.common import TestEventSaleCommon
 from odoo.addons.mail.tests.common import mail_new_test_user
-from odoo.exceptions import ValidationError
+
 from odoo.tests import tagged
 from odoo.tests.common import users
 
@@ -110,7 +110,7 @@ class TestEventSale(TestEventSaleCommon):
             'sale_order_line_id': ticket1_line.id,
         })
         self.assertEqual(ticket1_reg1.partner_id, self.event_customer)
-        for field in ['name', 'email', 'phone']:
+        for field in ['name', 'email', 'phone', 'mobile']:
             self.assertEqual(ticket1_reg1[field], self.event_customer[field])
 
         # EVENT REGISTRATION EDITOR
@@ -126,7 +126,7 @@ class TestEventSale(TestEventSaleCommon):
 
         # check line linked to existing registration (ticket1_reg1)
         ticket1_editor_reg1 = editor.event_registration_ids.filtered(lambda line: line.registration_id)
-        for field in ['name', 'email', 'phone']:
+        for field in ['name', 'email', 'phone', 'mobile']:
             self.assertEqual(ticket1_editor_reg1[field], ticket1_reg1[field])
 
         # check new lines
@@ -144,8 +144,10 @@ class TestEventSale(TestEventSaleCommon):
         ticket1_editor_other[1].write({
             'name': 'ManualEntry2',
             'email': 'manual.email.2@test.example.com',
+            'mobile': '+32456222222',
         })
 
+        self.assertFalse(editor.seats_available_insufficient)
         editor.action_make_registration()
 
         # check editor correctly created new registrations with information coming from it or SO as fallback
@@ -166,11 +168,14 @@ class TestEventSale(TestEventSaleCommon):
         )
         self.assertEqual(
             set(ticket1_new_reg.mapped('phone')),
-            set(['+32456111111', self.event_customer._phone_format(fname='phone')])
+            set(['+32456111111', self.event_customer.phone])
         )
-        for field in ['name', 'email']:
+        self.assertEqual(
+            set(ticket1_new_reg.mapped('mobile')),
+            set(['+32456222222', self.event_customer.mobile])
+        )
+        for field in ['name', 'email', 'phone', 'mobile']:
             self.assertEqual(ticket2_new_reg[field], self.event_customer[field])
-        self.assertEqual(ticket2_new_reg['phone'], self.event_customer._phone_format(fname='phone'))
 
         # ADDING MANUAL LINES ON SO
         # ------------------------------------------------------------
@@ -196,7 +201,7 @@ class TestEventSale(TestEventSaleCommon):
 
     @users('user_sales_salesman')
     def test_event_sale_free_confirm(self):
-        """Check that free registrations are immediately
+        """Check that even with the event's `no_confirm`, free registrations are immediately
         confirmed if the seats are available.
         """
         TICKET_COUNT = 3
@@ -205,6 +210,7 @@ class TestEventSale(TestEventSaleCommon):
 
         # Limiting seats
         self.event_0.write({
+            "auto_confirm": False,
             "seats_limited": True,
             "seats_max": 5
         })
@@ -225,13 +231,15 @@ class TestEventSale(TestEventSaleCommon):
             'default_sale_order_id': customer_so.id
         }).create({})
 
+        self.assertFalse(editor.seats_available_insufficient)
+
         editor.action_make_registration()
         self.assertEqual(len(self.event_0.registration_ids), TICKET_COUNT)
         self.assertTrue(all(reg.state == "open" for reg in self.event_0.registration_ids))
 
     @users('user_sales_salesman')
     def test_event_sale_free_full_event_no_confirm(self):
-        """Check that even free registrations are not confirmed if there are not
+        """Check that even free registrations are not immediately confirmed if there are not
         enough seats available for the event.
         """
         TICKET_COUNT = 3
@@ -240,6 +248,7 @@ class TestEventSale(TestEventSaleCommon):
 
         # Limiting event seats
         self.event_0.write({
+            "auto_confirm": False,
             "seats_limited": True,
             "seats_max": 2
         })
@@ -264,26 +273,26 @@ class TestEventSale(TestEventSaleCommon):
             ]
         })
 
-        # Confirming the SO will raise an error if there is not enough seats
-        with self.assertRaises(ValidationError):
-            customer_so.action_confirm()
-
         editor = self.env['registration.editor'].with_context({
             'default_sale_order_id': customer_so.id
         }).create({})
 
-        with self.assertRaises(ValidationError):
-            editor.action_make_registration()
+        self.assertTrue(editor.seats_available_insufficient)
+
+        editor.action_make_registration()
+        self.assertEqual(len(self.event_0.registration_ids), TICKET_COUNT)
+        self.assertTrue(all(reg.state == "draft" for reg in self.event_0.registration_ids))
 
     @users('user_sales_salesman')
     def test_event_sale_free_full_ticket_no_confirm(self):
-        """Check that even free registrations are not confirmed if there are not enough
+        """Check that even free registrations are not immediately confirmed if there are not enough
         seats available for the requested tickets.
         """
         TICKET_COUNT = 3
         customer_so = self.customer_so.with_user(self.env.user)
         ticket = self.event_0.event_ticket_ids[0]
 
+        self.event_0.write({"auto_confirm": False})
         # Limiting ticket seats
         ticket.write({
             "seats_limited": True,
@@ -309,89 +318,19 @@ class TestEventSale(TestEventSaleCommon):
             ]
         })
 
-        # Confirming the SO will raise an error if there is not enough seats
-        with self.assertRaises(ValidationError):
-            customer_so.action_confirm()
-
         editor = self.env['registration.editor'].with_context({
             'default_sale_order_id': customer_so.id
         }).create({})
 
-        with self.assertRaises(ValidationError):
-            editor.action_make_registration()
+        self.assertTrue(editor.seats_available_insufficient)
 
-    def test_ticket_price_with_currency_conversion(self):
-        def _prepare_currency(self, currency_name):
-            currency = self.env['res.currency'].with_context(active_test=False).search(
-                [('name', '=', currency_name)]
-            )
-            currency.action_unarchive()
-            return currency
-
-        currency_VEF = _prepare_currency(self, 'VEF')
-        currency_USD = _prepare_currency(self, 'USD')
-
-        company_test = self.env['res.company'].create({
-            'name': 'TestCompany',
-            'country_id': self.env.ref('base.be').id,
-            'currency_id': currency_USD.id,
-        })
-        self.env.user.company_ids += company_test
-        self.env.user.company_id = company_test
-
-        pricelist_USD = self.env['product.pricelist'].create({
-            'name': 'pricelist_USD',
-            'currency_id': currency_USD.id,
-        })
-        pricelist_VEF = self.env['product.pricelist'].create({
-            'name': 'pricelist_VEF',
-            'currency_id': currency_VEF.id,
-        })
-
-        event_product = self.env['product.template'].create({
-            'name': 'Event Product',
-            'list_price': 10.0,
-            'taxes_id': False,
-        })
-
-        event = self.env['event.event'].create({
-            'name': 'New Event',
-            'date_begin': '2020-02-02',
-            'date_end': '2020-04-04',
-        })
-        event_ticket = self.env['event.event.ticket'].create({
-            'name': 'VIP',
-            'price': 1000.0,
-            'event_id': event.id,
-            'product_id': event_product.product_variant_id.id,
-        })
-
-        so = self.env['sale.order'].create({
-            'partner_id': self.env.user.partner_id.id,
-            'pricelist_id': pricelist_USD.id,
-        })
-        self.env['sale.order.line'].create({
-            'product_id': event_product.product_variant_id.id,
-            'order_id': so.id,
-            'event_id': event.id,
-            'event_ticket_id': event_ticket.id,
-        })
-        self.assertEqual(so.amount_total, event_ticket.price)
-
-        so.pricelist_id = pricelist_VEF
-        so.action_update_prices()
-
-        self.assertAlmostEqual(
-            so.amount_total,
-            currency_USD._convert(
-                event_ticket.price, currency_VEF, self.env.user.company_id, so.date_order
-            ),
-            delta=1,
-        )
+        editor.action_make_registration()
+        self.assertEqual(len(self.event_0.registration_ids), TICKET_COUNT)
+        self.assertTrue(all(reg.state == "draft" for reg in self.event_0.registration_ids))
 
     def test_ticket_price_with_pricelist_and_tax(self):
         self.env.user.partner_id.country_id = False
-        pricelist = self.env['product.pricelist'].create({'name': 'Base Pricelist'})
+        pricelist = self.env['product.pricelist'].search([], limit=1)
 
         tax = self.env['account.tax'].create({
             'name': "Tax 10",
@@ -442,30 +381,29 @@ class TestEventSale(TestEventSaleCommon):
     @users('user_salesman')
     def test_unlink_so(self):
         """ This test ensures that when deleting a sale order, if the latter is linked to an event registration,
-        it is also deleted """
+        the number of expected seats will be correctly updated """
         event = self.env['event.event'].browse(self.event_0.ids)
         self.register_person.action_make_registration()
-        self.assertEqual(len(event.registration_ids), 1)
+        self.assertEqual(event.seats_expected, 1)
         self.sale_order.unlink()
-        self.assertEqual(len(event.registration_ids), 0)
+        self.assertEqual(event.seats_expected, 0)
 
     @users('user_salesman')
     def test_unlink_soline(self):
         """ This test ensures that when deleting a sale order line, if the latter is linked to an event registration,
-        it is also deleted """
+        the number of expected seats will be correctly updated """
         event = self.env['event.event'].browse(self.event_0.ids)
         self.register_person.action_make_registration()
-        self.assertEqual(len(event.registration_ids), 1)
+        self.assertEqual(event.seats_expected, 1)
         self.sale_order.order_line.unlink()
-        self.assertEqual(len(event.registration_ids), 0)
+        self.assertEqual(event.seats_expected, 0)
 
     @users('user_salesman')
     def test_cancel_so(self):
         """ This test ensures that when canceling a sale order, if the latter is linked to an event registration,
-        it is also cancelled """
+        the number of expected seats will be correctly updated """
         event = self.env['event.event'].browse(self.event_0.ids)
         self.register_person.action_make_registration()
-        self.assertEqual(len(event.registration_ids), 1)
+        self.assertEqual(event.seats_expected, 1)
         self.sale_order._action_cancel()
-        self.assertEqual(len(event.registration_ids), 1)
-        self.assertEqual(event.registration_ids.state, 'cancel')
+        self.assertEqual(event.seats_expected, 0)

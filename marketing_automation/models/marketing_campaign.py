@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
 import threading
 
 from ast import literal_eval
@@ -10,7 +9,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, tools, _
 from odoo.fields import Datetime
 from odoo.exceptions import ValidationError
-from odoo.tools import convert
 
 
 class MarketingCampaign(models.Model):
@@ -95,8 +93,8 @@ class MarketingCampaign(models.Model):
     def _compute_mailing_filter_count(self):
         filter_data = self.env['mailing.filter']._read_group([
             ('mailing_model_id', 'in', self.model_id.ids)
-        ], ['mailing_model_id'], ['__count'])
-        mapped_data = {mailing_model.id: count for mailing_model, count in filter_data}
+        ], ['mailing_model_id'], ['mailing_model_id'])
+        mapped_data = {data['mailing_model_id'][0]: data['mailing_model_id_count'] for data in filter_data}
         for campaign in self:
             campaign.mailing_filter_count = mapped_data.get(campaign.model_id.id, 0)
 
@@ -113,34 +111,34 @@ class MarketingCampaign(models.Model):
 
     @api.depends('marketing_activity_ids.mass_mailing_id')
     def _compute_link_tracker_click_count(self):
-        click_data = self.env['link.tracker.click'].sudo()._read_group(
+        click_data = self.env['link.tracker.click'].sudo().read_group(
             [('mass_mailing_id', 'in', self.mapped('marketing_activity_ids.mass_mailing_id').ids)],
-            ['mass_mailing_id'],
-            ['__count']
+            ['mass_mailing_id', 'ip'],
+            ['mass_mailing_id']
         )
-        mapped_data = {mass_mailing.id: count for mass_mailing, count in click_data}
+        mapped_data = {data['mass_mailing_id'][0]: data['mass_mailing_id_count'] for data in click_data}
         for campaign in self:
             campaign.link_tracker_click_count = sum(mapped_data.get(mailing_id, 0)
                                                     for mailing_id in campaign.mapped('marketing_activity_ids.mass_mailing_id').ids)
 
     @api.depends('participant_ids.state')
     def _compute_participants(self):
-        participants_data = self.env['marketing.participant']._read_group(
+        participants_data = self.env['marketing.participant'].read_group(
             [('campaign_id', 'in', self.ids)],
             ['campaign_id', 'state', 'is_test'],
-            ['__count'])
-        mapped_data = defaultdict(dict)
-        for campaign, state, is_test, count in participants_data:
-            if is_test:
-                mapped_data[campaign.id]['is_test'] = mapped_data[campaign.id].get('is_test', 0) + count
+            ['campaign_id', 'state', 'is_test'], lazy=False)
+        mapped_data = {campaign.id: {'is_test': 0} for campaign in self}
+        for data in participants_data:
+            if data['is_test']:
+                mapped_data[data['campaign_id'][0]]['is_test'] += data['__count']
             else:
-                mapped_data[campaign.id][state] = count
+                mapped_data[data['campaign_id'][0]][data['state']] = data['__count']
         for campaign in self:
-            campaign_data = mapped_data[campaign.id]
+            campaign_data = mapped_data.get(campaign.id)
             campaign.running_participant_count = campaign_data.get('running', 0)
             campaign.completed_participant_count = campaign_data.get('completed', 0)
             campaign.total_participant_count = campaign.completed_participant_count + campaign.running_participant_count
-            campaign.test_participant_count = campaign_data.get('is_test', 0)
+            campaign.test_participant_count = campaign_data.get('is_test')
 
     def _group_expand_states(self, states, domain, order):
         return [key for key, val in type(self).state.selection]
@@ -183,11 +181,6 @@ class MarketingCampaign(models.Model):
                              "Either update your activity actions to match the new Target Model or delete them.")
             }}
 
-    def write(self, vals):
-        if not vals.get('active', True):
-            vals['state'] = 'stopped'
-        return super().write(vals)
-
     def action_set_synchronized(self):
         self.write({'last_sync_date': Datetime.now()})
         self.mapped('marketing_activity_ids').write({'require_sync': False})
@@ -219,7 +212,7 @@ class MarketingCampaign(models.Model):
                 elif trigger_type in ['activity', 'mail_not_open', 'mail_not_click', 'mail_not_reply'] and trace.parent_id:
                     trace.schedule_date = Datetime.from_string(trace.parent_id.schedule_date) + trace_offset
                 elif trace.parent_id:
-                    process_dt = (trace.parent_id.mailing_trace_ids.mapped('write_date') + [fields.Datetime().now()])[0]
+                    process_dt = trace.parent_id.mailing_trace_ids.state_update
                     trace.schedule_date = Datetime.from_string(process_dt) + trace_offset
 
             # Action 2: On activity creation
@@ -324,8 +317,7 @@ class MarketingCampaign(models.Model):
             if not campaign.last_sync_date:
                 campaign.last_sync_date = now
 
-            user_id = campaign.user_id or self.env.user
-            RecordModel = self.env[campaign.model_name].with_context(lang=user_id.lang)
+            RecordModel = self.env[campaign.model_name]
 
             # Fetch existing participants
             participants_data = participants.search_read([('campaign_id', '=', campaign.id)], ['res_id'])
@@ -381,465 +373,3 @@ class MarketingCampaign(models.Model):
     def execute_activities(self):
         for campaign in self:
             campaign.marketing_activity_ids.execute()
-
-    # --------------------------------------
-    # Prepare actions data
-    # --------------------------------------
-
-    def _prepare_res_partner_category_tag_hot_data(self):
-        return {
-            'xml_id': 'marketing_automation.res_partner_category_tag_hot',
-            'values': {
-                'name': _('Hot')
-            }
-        }
-
-    def _prepare_mailing_list_contact_list_data(self):
-        return {
-            'xml_id': 'marketing_automation.mailing_list_contact_list',
-            'values': {
-                'name': _('Confirmed contacts'),
-                'active': True,
-                'is_public': True
-            }
-        }
-
-    def _prepare_ir_actions_server_partner_tag_data(self):
-        # Add the "Hot" category on partners who will click on a mail sent to them.
-        return {
-            'xml_id': 'marketing_automation.ir_actions_server_partner_tag',
-            'values': {
-                'name': _('Add Hot Category'),
-                'model_id': self.env['ir.model']._get_id('res.partner'),
-                'state': 'code',
-                'code':
-"""
-contact = env['res.partner'].search([('id', '=', record.id)])
-new_tag = env.ref('marketing_automation.res_partner_category_tag_hot', raise_if_not_found=False)
-if new_tag:
-    records.write({'category_id': [(4, new_tag.id)]})
-"""
-            }
-        }
-
-    def _prepare_ir_actions_server_partner_todo_data(self):
-        # Assign activity to admin called Bounced: check email address.
-        return {
-            'xml_id': 'marketing_automation.ir_actions_server_partner_todo',
-            'values': {
-                'name': _('Next activity: Check Email Address'),
-                'model_id': self.env['ir.model']._get_id('res.partner'),
-                'state': 'next_activity',
-                'activity_date_deadline_range': 2,
-                'activity_summary': _('Check Email Address'),
-                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
-                'activity_user_type': 'generic',
-                'activity_user_field_name': 'user_id',
-            }
-        }
-
-    def _prepare_ir_actions_server_contact_blacklist_data(self):
-        # If mail bounces on some contact, blacklist that contact.
-        return {
-            'xml_id': 'marketing_automation.ir_actions_server_contact_blacklist',
-            'values': {
-                'name': _('Blacklist record'),
-                'model_id': self.env['ir.model']._get_id('mailing.contact'),
-                'state': 'code',
-                'code':
-"""
-for record in records:
-    record.env['mail.blacklist']._add(
-    record.email,
-    message='Added in blacklist from automated action',
-    )
-"""
-            }
-        }
-
-    def _prepare_ir_actions_server_contact_add_list_data(self):
-        # If partner clicks on sent mail, add that contact to separate list called 'Confirmed contacts'.
-        return {
-            'xml_id': 'marketing_automation.ir_actions_server_contact_add_list',
-            'values': {
-                'name': _('Add To Confirmed List'),
-                'model_id': self.env['ir.model']._get_id('mailing.contact'),
-                'state': 'code',
-                'code':
-"""
-mailing_list = env.ref('marketing_automation.mailing_list_contact_list', raise_if_not_found=False)
-if mailing_list:
-    records.write({'list_ids': [(4, mailing_list.id)]})
-"""
-            }
-        }
-
-    def _prepare_ir_actions_server_partner_message_data(self):
-        return {
-            'xml_id': 'marketing_automation.ir_actions_server_partner_message',
-            'values': {
-                'name': _('Message for sales person'),
-                'model_id': self.env['ir.model']._get_id('res.partner'),
-                'state': 'code',
-                'code':
-"""
-for record in records:
-    record.message_post(body='%s is interested in becoming partner.' % record.name)
-"""
-            }
-        }
-
-    def _create_records_with_xml_ids(self, create_xmls):
-        for model_name, values in create_xmls.items():
-            for record in values:
-                module, name = record['xml_id'].split('.')
-
-                try:
-                    record = self.env.ref(f'{module}.{name}')
-                except ValueError:
-                    record = self.env[model_name].create(record['values'])
-                    self.env['ir.model.data'].create({
-                        'name': name,
-                        'module': module,
-                        'model': model_name,
-                        'res_id': record.id,
-                    })
-
-    # --------------------------------------
-    # Sample Templates Creation
-    # --------------------------------------
-
-    @api.model
-    def get_action_marketing_campaign_from_template(self, template_str):
-        campaign_templates_info = self.get_campaign_templates_info()
-        if not campaign_templates_info.get(template_str):
-            return False
-
-        load_method = campaign_templates_info[template_str]['function']
-        if not load_method.startswith('_get_marketing_template') or not hasattr(self, load_method):
-            return
-        loaded_method = getattr(self, load_method)
-        campaign = loaded_method()
-
-        return {
-            'name': 'marketing_automation_templates_action',
-            'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
-            'res_id': campaign.id,
-            'res_model': 'marketing.campaign',
-            'views': [[False, 'form']]
-        }
-
-    @api.model
-    def get_campaign_templates_info(self):
-        return {
-            'hot_contacts': {
-                'title': _('Tag Hot Contacts'),
-                'description': _('Send a welcome email to contacts and tag them if they click in it.'),
-                'icon': '/marketing_automation/static/img/tag.svg',
-                'function': '_get_marketing_template_hot_contacts_values'
-            },
-            'welcome': {
-                'title': _('Welcome Flow'),
-                'description': _('Send a welcome email to new subscribers, remove the address that bounced.'),
-                'icon': '/marketing_automation/static/img/hand_peace.svg',
-                'function': '_get_marketing_template_welcome_values'
-            },
-            'double_opt_in': {
-                'title': _('Double Opt-in'),
-                'description': _('Send an email to new recipients to confirm their consent.'),
-                'icon': '/marketing_automation/static/img/square-check.svg',
-                'function': '_get_marketing_template_double_opt_in_values'
-
-            },
-            'commercial_prospection': {
-                'title': _('Commercial prospection'),
-                'description': _('Send a free catalog and follow-up according to reactions.'),
-                'icon': '/marketing_automation/static/img/search.svg',
-                'function': '_get_marketing_template_commercial_prospection_values'
-
-            },
-        }
-
-    def _get_marketing_template_hot_contacts_values(self):
-        convert.convert_file(
-            self.env,
-            'marketing_automation',
-            'data/templates/mail_template_body_welcome_template.xml',
-            idref={}, mode='init', kind='data'
-        )
-        rendered_template = self.env['ir.qweb']._render(self.env.ref('marketing_automation.mail_template_body_welcome_template').id,
-                        {'db_host': self.get_base_url(), 'company_website': self.env.company.website})
-        prerequisites = {
-            'mailing.mailing': [{
-                'subject': _('Welcome!'),
-                'body_arch': rendered_template,
-                'body_html': rendered_template,
-                'mailing_model_id': self.env['ir.model']._get_id('res.partner'),
-                'reply_to_mode': 'update',
-                'use_in_marketing_automation': True,
-                'mailing_type': 'mail',
-            }],
-        }
-
-        create_xmls = {
-            'res.partner.category': [self._prepare_res_partner_category_tag_hot_data()],
-            'ir.actions.server': [
-                self._prepare_ir_actions_server_partner_tag_data(),
-                self._prepare_ir_actions_server_partner_todo_data()
-            ]
-        }
-        self._create_records_with_xml_ids(create_xmls)
-
-        for model_name, values in prerequisites.items():
-            records = self.env[model_name].create(values)
-            for idx, record in enumerate(records):
-                prerequisites[model_name][idx] = record
-
-        campaign = self.env['marketing.campaign'].create({
-            'name': _('Tag Hot Contacts'),
-            'domain': ["&", "&", ("email", "!=", False), ("is_blacklisted", "=", False), ("user_ids", "=", False)],
-            'model_id': self.env['ir.model']._get_id('res.partner'),
-            'unique_field_id': self.env['ir.model.fields']._get('res.partner', 'email').id
-        })
-        self.env['marketing.activity'].create([
-            {
-                'trigger_type': 'begin',
-                'activity_type': 'email',
-                'interval_type': 'hours',
-                'mass_mailing_id': prerequisites['mailing.mailing'][0].id,
-                'interval_number': 2,
-                'name': _('Send Welcome Email'),
-                'campaign_id': campaign.id,
-                'child_ids': [
-                    (0, 0, {
-                        'trigger_type': 'mail_click',
-                        'activity_type': 'action',
-                        'interval_type': 'hours',
-                        'mass_mailing_id': None,
-                        'interval_number': 2,
-                        'name': _('Add Tag'),
-                        'campaign_id': campaign.id,  # use the campaign_id here too,
-                        'server_action_id': self.env.ref('marketing_automation.ir_actions_server_partner_tag').id,
-                    }),
-                    (0, 0, {
-                        'trigger_type': 'mail_bounce',
-                        'activity_type': 'action',
-                        'interval_type': 'hours',
-                        'mass_mailing_id': None,
-                        'interval_number': 2,
-                        'name': _('Check Bounce Contact'),
-                        'campaign_id': campaign.id,  # use the campaign_id here too,
-                        'server_action_id': self.env.ref('marketing_automation.ir_actions_server_partner_todo').id
-                    })
-                ]
-            }
-        ])
-        return campaign
-
-    def _get_marketing_template_welcome_values(self):
-        convert.convert_file(
-            self.env,
-            'marketing_automation',
-            'data/templates/mail_template_body_yellow_discount_template.xml',
-            idref={}, mode='init', kind='data'
-        )
-        rendered_template = self.env['ir.qweb']._render(self.env.ref('marketing_automation.mail_template_body_yellow_discount_template').id,
-                                                        {'db_host': self.get_base_url(), 'company_website': self.env.company.website})
-        prerequisites = {
-            'mailing.mailing': [{
-                'subject': _('Get 10% OFF'),
-                'body_arch': rendered_template,  # set Yellow 10% template
-                'body_html': rendered_template,  # set Yellow 10% template
-                'mailing_model_id': self.env['ir.model']._get_id('mailing.contact'),
-                'reply_to_mode': 'update',
-                'mailing_type': 'mail',
-                'use_in_marketing_automation': True
-            }],
-        }
-        for model_name, values in prerequisites.items():
-            records = self.env[model_name].create(values)
-            for idx, record in enumerate(records):
-                prerequisites[model_name][idx] = record
-
-        create_xmls = {
-            'ir.actions.server': [
-                self._prepare_ir_actions_server_contact_blacklist_data()
-            ],
-        }
-        self._create_records_with_xml_ids(create_xmls)
-
-        campaign = self.env['marketing.campaign'].create({
-            'name': _('Welcome Flow'),
-            'domain': ["&", ("email", "!=", False), ("is_blacklisted", "=", False)],
-            'model_id': self.env['ir.model']._get_id('mailing.contact'),
-            'unique_field_id': self.env['ir.model.fields']._get('mailing.contact', 'email').id
-        })
-
-        self.env['marketing.activity'].create({
-            'trigger_type': 'begin',
-            'activity_type': 'email',
-            'interval_type': 'hours',
-            'mass_mailing_id': prerequisites['mailing.mailing'][0].id,
-            'interval_number': 2,
-            'name': _('Send 10% Welcome Discount'),
-            'campaign_id': campaign.id,
-            'child_ids': [(0, 0, {
-                'trigger_type': 'mail_bounce',
-                'activity_type': 'action',
-                'interval_type': 'hours',
-                'mass_mailing_id': None,
-                'interval_number': 2,
-                'name': _('Blacklist Bounces'),
-                'parent_id': None,
-                'campaign_id': campaign.id,  # use the campaign_id here too,
-                'server_action_id': self.env.ref('marketing_automation.ir_actions_server_contact_blacklist').id
-            })]
-        })
-        return campaign
-
-    def _get_marketing_template_double_opt_in_values(self):
-        convert.convert_file(
-            self.env,
-            'marketing_automation',
-            'data/templates/mail_template_body_confirmation_template.xml',
-            idref={}, mode='init', kind='data'
-        )
-        rendered_template = self.env['ir.qweb']._render(self.env.ref('marketing_automation.mail_template_body_confirmation_template').id,
-                                                {'db_host': self.get_base_url()})
-        prerequisites = {
-            'mailing.mailing': [{
-                'subject': _('Confirmation'),
-                'body_arch': rendered_template,
-                'body_html': rendered_template,
-                'mailing_model_id': self.env['ir.model']._get_id('mailing.contact'),
-                'reply_to_mode': 'update',
-                'mailing_type': 'mail',
-                'use_in_marketing_automation': True
-            }],
-        }
-        for model_name, values in prerequisites.items():
-            records = self.env[model_name].create(values)
-            for idx, record in enumerate(records):
-                prerequisites[model_name][idx] = record
-
-        create_xmls = {
-            'mailing.list': [self._prepare_mailing_list_contact_list_data()],
-            'ir.actions.server': [
-                self._prepare_ir_actions_server_contact_add_list_data()
-            ],
-        }
-        self._create_records_with_xml_ids(create_xmls)
-
-        campaign = self.env['marketing.campaign'].create({
-            'name': _('Double Opt-in'),
-            'domain': ["&", "&", ("email", "!=", False), ("is_blacklisted", "=", False), ("list_ids", "ilike", "Newsletter")],
-            'model_id': self.env['ir.model']._get_id('mailing.contact'),
-            'unique_field_id': self.env['ir.model.fields']._get('mailing.contact', 'email').id
-        })
-        self.env['marketing.activity'].create({
-            'trigger_type': 'begin',
-            'activity_type': 'email',
-            'interval_type': 'hours',
-            'mass_mailing_id': prerequisites['mailing.mailing'][0].id,
-            'interval_number': 1,
-            'name': _('Confirmation'),
-            'campaign_id': campaign.id,
-            'child_ids': [(0, 0, {
-                'trigger_type': 'mail_click',
-                'activity_type': 'action',
-                'interval_type': 'hours',
-                'mass_mailing_id': None,
-                'interval_number': 0,
-                'name': _('Add to list'),
-                'parent_id': None,
-                'campaign_id': campaign.id,  # use the campaign_id here too,
-                'server_action_id': self.env.ref('marketing_automation.ir_actions_server_contact_add_list').id
-            })]
-        })
-        return campaign
-
-    def _get_marketing_template_commercial_prospection_values(self):
-        convert.convert_file(
-            self.env,
-            'marketing_automation',
-            'data/templates/mail_template_body_join_partnership_template.xml',
-            idref={}, mode='init', kind='data'
-        )
-        convert.convert_file(
-            self.env,
-            'marketing_automation',
-            'data/templates/mail_template_body_free_trial_template.xml',
-            idref={}, mode='init', kind='data'
-        )
-
-        free_trial_rendered = self.env['ir.qweb']._render(self.env.ref('marketing_automation.mail_template_body_free_trial_template').id,
-                                                          {'company_website': self.env.company.website})
-        join_partnership_rendered = self.env['ir.qweb']._render(self.env.ref('marketing_automation.mail_template_body_join_partnership_template').id,
-                                                            {'company_website': self.env.company.website})
-
-        prerequisites = {
-            'mailing.mailing': [{
-                'subject': _('Welcome!'),
-                'body_arch': free_trial_rendered,
-                'body_html': free_trial_rendered,
-                'mailing_model_id': self.env['ir.model']._get_id('res.partner'),
-                'reply_to_mode': 'update',
-                'mailing_type': 'mail',
-                'use_in_marketing_automation': True
-            }, {
-                'subject': _('Join partnership!'),
-                'body_arch': join_partnership_rendered,
-                'body_html': join_partnership_rendered,
-                'mailing_model_id': self.env['ir.model']._get_id('res.partner'),
-                'reply_to_mode': 'update',
-                'mailing_type': 'mail',
-                'use_in_marketing_automation': True
-            }],
-        }
-        for model_name, values in prerequisites.items():
-            records = self.env[model_name].create(values)
-            for idx, record in enumerate(records):
-                prerequisites[model_name][idx] = record
-
-        create_xmls = {
-            'ir.actions.server': [
-                self._prepare_ir_actions_server_partner_message_data(),
-            ],
-        }
-        self._create_records_with_xml_ids(create_xmls)
-
-        campaign = self.env['marketing.campaign'].create({
-            'name': _('Commercial prospection'),
-            'model_id': self.env['ir.model']._get_id('res.partner'),
-            'unique_field_id': self.env['ir.model.fields']._get('res.partner', 'email').id
-        })
-        self.env['marketing.activity'].create([{
-            'trigger_type': 'begin',
-            'activity_type': 'email',
-            'interval_type': 'hours',
-            'mass_mailing_id': prerequisites['mailing.mailing'][0].id,
-            'interval_number': 1,
-            'name': _('Offer free catalog'),
-            'campaign_id': campaign.id,
-        }, {
-            'trigger_type': 'begin',
-            'activity_type': 'email',
-            'interval_type': 'days',
-            'mass_mailing_id': prerequisites['mailing.mailing'][1].id,
-            'interval_number': 7,
-            'name': _('After 7 days'),
-            'campaign_id': campaign.id,
-            'child_ids': [(0, 0, {
-                'trigger_type': 'mail_reply',
-                'activity_type': 'action',
-                'interval_type': 'hours',
-                'mass_mailing_id': None,
-                'interval_number': 1,
-                'name': _('Message for sales person'),
-                'parent_id': None,
-                'campaign_id': campaign.id,  # use the campaign_id here too,
-                'server_action_id': self.env.ref('marketing_automation.ir_actions_server_partner_message').id
-            })]
-        }])
-        return campaign

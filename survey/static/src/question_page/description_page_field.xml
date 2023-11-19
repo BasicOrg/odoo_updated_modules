@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="survey.DescriptionPageField" t-inherit="web.CharField">
+    <t t-name="survey.DescriptionPageField" t-inherit="web.CharField" owl="1">
         <xpath expr="//t[@t-else='']" position="replace">
             <t t-else="">
                 <div class="input-group">
@@ -10,11 +10,6 @@
                         <i class="fa fa-fw o_button_icon fa-external-link"/>
                     </button>
                 </div>
-            </t>
-        </xpath>
-        <xpath expr="//span[@t-esc='formattedValue']" position="after">
-            <t t-if="props.record.data.is_page">
-                <i class="fa fa-fw o_button_icon fa-pencil"/>
             </t>
         </xpath>
     </t>

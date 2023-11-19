@@ -1,27 +1,28 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
-import { AutoComplete } from "@web/core/autocomplete/autocomplete";
-import { CheckBox } from "@web/core/checkbox/checkbox";
-import { DateTimeInput } from "@web/core/datetime/datetime_input";
-import { Domain } from "@web/core/domain";
+import { _lt } from "@web/core/l10n/translation";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
+import { CheckBox } from "@web/core/checkbox/checkbox";
+import { DateTimePicker, DatePicker } from "@web/core/datepicker/datepicker";
+import { Domain } from "@web/core/domain";
+import { Many2XAutocomplete, useOpenMany2XRecord } from "@web/views/fields/relational_utils";
+import { useService } from "@web/core/utils/hooks";
+import { TagsList } from "@web/views/fields/many2many_tags/tags_list";
+import { m2oTupleFromData } from "@web/views/fields/many2one/many2one_field";
+import { PropertyTags } from "./property_tags";
+import { AutoComplete } from "@web/core/autocomplete/autocomplete";
+import { formatFloat, formatInteger, formatMany2one } from "@web/views/fields/formatters";
 import {
     deserializeDate,
     deserializeDateTime,
     formatDate,
     formatDateTime,
+    serializeDate,
+    serializeDateTime,
 } from "@web/core/l10n/dates";
-import { _t } from "@web/core/l10n/translation";
-import { TagsList } from "@web/core/tags_list/tags_list";
-import { useService } from "@web/core/utils/hooks";
-import { formatInteger, formatMany2one } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
-import { m2oTupleFromData } from "@web/views/fields/many2one/many2one_field";
-import { parseFloat, parseInteger } from "@web/views/fields/parsers";
-import { Many2XAutocomplete, useOpenMany2XRecord } from "@web/views/fields/relational_utils";
-import { PropertyTags } from "./property_tags";
+
+const { Component } = owl;
 
 /**
  * Represent one property value.
@@ -102,21 +103,16 @@ export class PropertyValue extends Component {
                 const hasAccess = many2manyValue[1] !== null;
                 return {
                     id: many2manyValue[0],
-                    comodel: this.props.comodel,
-                    text: hasAccess ? many2manyValue[1] : _t("No Access"),
-                    onClick:
-                        hasAccess &&
-                        this.clickableRelational &&
-                        (async () => await this._openRecord(this.props.comodel, many2manyValue[0])),
+                    text: hasAccess ? many2manyValue[1] : _lt('No Access'),
+                    onClick: hasAccess && this.clickableRelational
+                        && (async () => await this._openRecord(this.props.comodel, many2manyValue[0])),
                     onDelete:
-                        !this.props.readonly &&
-                        hasAccess &&
-                        (() => this.onMany2manyDelete(many2manyValue[0])),
+                        !this.props.readonly && hasAccess
+                        && (() => this.onMany2manyDelete(many2manyValue[0])),
                     colorIndex: 0,
-                    img:
-                        this.showAvatar && hasAccess
-                            ? `/web/image/${this.props.comodel}/${many2manyValue[0]}/avatar_128`
-                            : null,
+                    img: this.showAvatar && hasAccess
+                        ? `/web/image/${this.props.comodel}/${many2manyValue[0]}/avatar_128`
+                        : null,
                 };
             });
         } else if (this.props.type === "tags") {
@@ -137,10 +133,7 @@ export class PropertyValue extends Component {
         }
         let domain = new Domain(this.props.domain);
         if (this.props.type === "many2many" && this.props.value) {
-            domain = Domain.and([
-                domain,
-                [["id", "not in", this.props.value.map((rec) => rec[0])]],
-            ]);
+            domain = Domain.and([domain, [['id', 'not in', this.props.value.map(rec => rec[0])]]])
         }
         return domain.toList();
     }
@@ -155,10 +148,6 @@ export class PropertyValue extends Component {
 
         if (this.props.type === "many2one" && value && value.length === 2) {
             return formatMany2one(value);
-        } else if (this.props.type === "integer") {
-            return formatInteger(value || 0);
-        } else if (this.props.type === "float") {
-            return formatFloat(value || 0);
         } else if (!value) {
             return false;
         } else if (this.props.type === "datetime" && value) {
@@ -167,6 +156,10 @@ export class PropertyValue extends Component {
             return formatDate(value);
         } else if (this.props.type === "selection") {
             return this.props.selection.find((option) => option[0] === value)[1];
+        } else if (this.props.type === "float") {
+            return formatFloat(value);
+        } else if (this.props.type === "integer") {
+            return formatInteger(value);
         }
         return value.toString();
     }
@@ -186,10 +179,8 @@ export class PropertyValue extends Component {
      * @returns {boolean}
      */
     get showAvatar() {
-        return (
-            ["many2one", "many2many"].includes(this.props.type) &&
-            ["res.users", "res.partner"].includes(this.props.comodel)
-        );
+        return ["many2one", "many2many"].includes(this.props.type)
+            && ["res.users", "res.partner"].includes(this.props.comodel);
     }
 
     /* --------------------------------------------------------
@@ -202,18 +193,14 @@ export class PropertyValue extends Component {
      * @param {object} newValue
      */
     async onValueChange(newValue) {
-        if (this.props.type === "integer") {
-            try {
-                newValue = parseInteger(newValue) || 0;
-            } catch {
-                newValue = 0;
-            }
+        if (this.props.type === "datetime") {
+            newValue = newValue && serializeDateTime(newValue);
+        } else if (this.props.type === "date") {
+            newValue = newValue && serializeDate(newValue);
+        } else if (this.props.type === "integer") {
+            newValue = parseInt(newValue) || 0;
         } else if (this.props.type === "float") {
-            try {
-                newValue = parseFloat(newValue) || 0;
-            } catch {
-                newValue = 0;
-            }
+            newValue = parseFloat(newValue) || 0;
         } else if (["many2one", "many2many"].includes(this.props.type)) {
             // {id: 5, name: 'Demo'} => [5, 'Demo']
             newValue =
@@ -323,10 +310,10 @@ export class PropertyValue extends Component {
      * @returns {array} [record id, record name]
      */
     async _nameGet(recordId) {
-        const result = await this.orm.read(this.props.comodel, [recordId], ["display_name"], {
+        const result = await this.orm.call(this.props.comodel, "name_get", [[recordId]], {
             context: this.props.context,
         });
-        return [result[0].id, result[0].display_name];
+        return result[0];
     }
 }
 
@@ -336,7 +323,8 @@ PropertyValue.components = {
     Dropdown,
     DropdownItem,
     CheckBox,
-    DateTimeInput,
+    DateTimePicker,
+    DatePicker,
     Many2XAutocomplete,
     TagsList,
     AutoComplete,
@@ -344,7 +332,6 @@ PropertyValue.components = {
 };
 
 PropertyValue.props = {
-    id: { type: String, optional: true },
     type: { type: String, optional: true },
     comodel: { type: String, optional: true },
     domain: { type: String, optional: true },
@@ -353,7 +340,6 @@ PropertyValue.props = {
     context: { type: Object },
     readonly: { type: Boolean, optional: true },
     canChangeDefinition: { type: Boolean, optional: true },
-    checkDefinitionWriteAccess: { type: Function, optional: true },
     selection: { type: Array, optional: true },
     tags: { type: Array, optional: true },
     onChange: { type: Function, optional: true },

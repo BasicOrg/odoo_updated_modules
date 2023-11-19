@@ -55,18 +55,17 @@ class SignLog(models.Model):
         ("sent", "Before Signature"),
         ("signed", "After Signature"),
         ("refused", "Refused Signature"),
-        ("canceled", "Canceled"),
-        ("expired", "Expired"),
+        ("canceled", "Canceled")
     ], required=True, string="State of the request on action log", groups="sign.group_sign_manager")
 
     # Not related on purpose :P
 
     def write(self, vals):
-        raise ValidationError(_("Log history of sign requests cannot be modified!"))
+        raise ValidationError(_("Log history of sign requests cannot be modified !"))
 
     @api.ondelete(at_uninstall=False)
     def _unlink_never(self):
-        raise ValidationError(_("Log history of sign requests cannot be deleted!"))
+        raise ValidationError(_("Log history of sign requests cannot be deleted !"))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -143,12 +142,12 @@ class SignLog(models.Model):
         sign_request = request_item.sign_request_id
         # NOTE: We update request_item.latitude/longitude when the request_item is opened and not 'completed'/'refused'
         # And If the signer accepted the browser geolocation request, the coordinates will be more precise.
-        # We should forcely use the GeoIP ones only if the request_item is 'completed'/'refused'
+        # We should forcely use the GeoIP ones only if the the request_item is 'completed'/'refused'
         latitude = 0.0
         longitude = 0.0
         if request:
-            latitude = (request.geoip.location.latitude or 0.0) if request_item.state != 'sent' else request_item.latitude
-            longitude = (request.geoip.location.longitude or 0.0) if request_item.state != 'sent' else request_item.longitude
+            latitude = request.geoip.get('latitude', 0.0) if request_item.state != 'sent' else request_item.latitude
+            longitude = request.geoip.get('longitude', 0.0) if request_item.state != 'sent' else request_item.longitude
         return dict(
             sign_request_item_id=request_item.id,
             sign_request_id=sign_request.id,
@@ -163,7 +162,7 @@ class SignLog(models.Model):
         return dict(
             sign_request_id=sign_request.id,
             request_state=sign_request.state,
-            latitude=(request.geoip.location.latitude or 0.0) if request else 0.0,
-            longitude=(request.geoip.location.longitude or 0.0) if request else 0.0,
+            latitude=request.geoip.get('latitude', 0.0) if request else 0.0,
+            longitude=request.geoip.get('latitude', 0.0) if request else 0.0,
             partner_id=self.env.user.partner_id.id if not self.env.user._is_public() else None,
         )

@@ -2,10 +2,11 @@
 
 import { registry } from "@web/core/registry";
 import { createWebClient, doAction, getActionManagerServerData } from "./../helpers";
-import { click, getFixture, nextTick } from "../../helpers/utils";
+import { registerCleanup } from "../../helpers/cleanup";
+import { click, getFixture, nextTick, patchWithCleanup } from "../../helpers/utils";
 import { errorService } from "@web/core/errors/error_service";
 
-import { Component, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 
 let serverData;
 let target;
@@ -20,51 +21,41 @@ QUnit.module("ActionManager", (hooks) => {
     QUnit.module("Error handling");
 
     QUnit.test("error in a client action (at rendering)", async function (assert) {
-        assert.expect(11);
+        assert.expect(4);
         class Boom extends Component {}
         Boom.template = xml`<div><t t-esc="a.b.c"/></div>`;
         actionRegistry.add("Boom", Boom);
-        const mockRPC = (route, args) => {
-            if (args.method === "web_search_read") {
-                assert.step("web_search_read");
-            }
-        };
-        const webClient = await createWebClient({ serverData, mockRPC });
-        await doAction(webClient, "1");
-        assert.containsOnce(target, ".o_kanban_view");
-        assert.strictEqual(target.querySelector(".o_breadcrumb").textContent, "Partners Action 1");
-        assert.deepEqual(
-            [...target.querySelectorAll(".o_kanban_record span")].map((el) => el.textContent),
-            ["yop", "blip", "gnap", "plop", "zoup"]
-        );
-        assert.verifySteps(["web_search_read"]);
 
+        const webClient = await createWebClient({ serverData });
+        assert.strictEqual(target.querySelector(".o_action_manager").innerHTML, "");
+        await doAction(webClient, "1");
+        const contents = target.querySelector(".o_action_manager").innerHTML;
+        assert.ok(contents !== "");
         try {
             await doAction(webClient, "Boom");
         } catch (e) {
             assert.ok(e.cause instanceof TypeError);
         }
-        await nextTick();
-        assert.containsOnce(target, ".o_kanban_view");
-        assert.strictEqual(target.querySelector(".o_breadcrumb").textContent, "Partners Action 1");
-        assert.deepEqual(
-            [...target.querySelectorAll(".o_kanban_record span")].map((el) => el.textContent),
-            ["yop", "blip", "gnap", "plop", "zoup"]
-        );
-        assert.verifySteps(["web_search_read"]);
+        assert.strictEqual(target.querySelector(".o_action_manager").innerHTML, contents);
     });
 
     QUnit.test("error in a client action (after the first rendering)", async function (assert) {
-        assert.expectErrors();
+        const handler = (ev) => {
+            // need to preventDefault to remove error from console (so python test pass)
+            ev.preventDefault();
+        };
+        window.addEventListener("unhandledrejection", handler);
+        registerCleanup(() => window.removeEventListener("unhandledrejection", handler));
+
+        patchWithCleanup(QUnit, {
+            onUnhandledRejection: () => {},
+        });
+
         registry.category("services").add("error", errorService);
 
         class Boom extends Component {
             setup() {
                 this.boom = false;
-            }
-            get a() {
-                // a bit artificial, but makes the test firefox compliant
-                throw new Error("Cannot read properties of undefined (reading 'b')");
             }
             onClick() {
                 this.boom = true;
@@ -85,7 +76,6 @@ QUnit.module("ActionManager", (hooks) => {
         await click(document.querySelector(".my_button"));
         await nextTick();
         assert.containsOnce(target, ".my_button");
-        assert.containsOnce(target, ".o_error_dialog");
-        assert.verifyErrors(["Cannot read properties of undefined (reading 'b')"]);
+        assert.containsOnce(target, ".o_dialog_error");
     });
 });

@@ -20,14 +20,5 @@ class ResPartner(models.Model):
         # OVERRIDE account_followup/models/res_partner.py
         super()._send_followup(options)
         followup_line = options.get('followup_line')
-        if options.get('snailmail', followup_line.send_letter):
+        if options.get('snailmail', followup_line.send_email):
             self.send_followup_snailmail(options)
-
-    def _has_missing_followup_info(self):
-        res = super()._has_missing_followup_info()
-        followup_contacts = self._get_all_followup_contacts() or self
-        if self.followup_line_id.send_letter \
-            and not any(self.env['snailmail.letter']._is_valid_address(to_send_partner)
-                        for to_send_partner in followup_contacts):
-            return True
-        return res

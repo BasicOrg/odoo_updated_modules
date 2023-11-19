@@ -31,9 +31,9 @@ class AccountTax(models.Model):
 
     l10n_pe_edi_affectation_reason = fields.Selection(
         selection=CATALOG07,
-        string="Affectation Reason",
+        string="EDI Affect. Reason",
         store=True, readonly=False, compute='_compute_l10n_pe_edi_affectation_reason',
-        help="Peru: Type of Affectation to the IGV, Catalog No. 07.")
+        help="Type of Affectation to the IGV, Catalog No. 07")
     l10n_pe_edi_international_code = fields.Char(
         string="EDI International Code",
         compute='_compute_l10n_pe_edi_international_code')

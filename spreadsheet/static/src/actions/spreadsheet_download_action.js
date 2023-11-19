@@ -1,26 +1,55 @@
 /** @odoo-module */
 
+import { DataSources } from "@spreadsheet/data_sources/data_sources";
+import { LoadingDataError } from "@spreadsheet/o_spreadsheet/errors";
+import { migrate } from "@spreadsheet/o_spreadsheet/migration";
 import { download } from "@web/core/network/download";
 import { registry } from "@web/core/registry";
-import { createSpreadsheetModel, waitForDataLoaded } from "@spreadsheet/helpers/model";
+import { browser } from "@web/core/browser/browser";
+import spreadsheet from "../o_spreadsheet/o_spreadsheet_extended";
 
-/**
- * @param {import("@web/env").OdooEnv} env
- * @param {object} action
- */
+const { Model } = spreadsheet;
+
 async function downloadSpreadsheet(env, action) {
-    let { name, data, stateUpdateMessages, xlsxData } = action.params;
-    if (!xlsxData) {
-        const model = await createSpreadsheetModel({ env, data, revisions: stateUpdateMessages });
-        await waitForDataLoaded(model);
-        xlsxData = model.exportXLSX();
-    }
+    const { orm, name, data, stateUpdateMessages } = action.params;
+    const dataSources = new DataSources(orm);
+    const model = new Model(migrate(data), { dataSources }, stateUpdateMessages);
+    await dataSources.waitForAllLoaded();
+    await waitForDataLoaded(model);
+    const { files } = model.exportXLSX();
     await download({
         url: "/spreadsheet/xlsx",
         data: {
             zip_name: `${name}.xlsx`,
-            files: JSON.stringify(xlsxData.files),
+            files: JSON.stringify(files),
         },
+    });
+}
+
+/**
+ * Ensure that the spreadsheet does not contains cells that are in loading state
+ * @param {Model} model
+ * @returns {Promise}
+ */
+async function waitForDataLoaded(model) {
+    model.dispatch("EVALUATE_CELLS");
+    return new Promise((resolve, reject) => {
+        let interval = undefined;
+        interval = browser.setInterval(() => {
+            for (const sheetId of model.getters.getSheetIds()) {
+                for (const cell of Object.values(model.getters.getCells(sheetId))) {
+                    if (
+                        cell.evaluated &&
+                        cell.evaluated.type === "error" &&
+                        cell.evaluated.error instanceof LoadingDataError
+                    ) {
+                        return;
+                    }
+                }
+            }
+            browser.clearInterval(interval);
+            resolve();
+        }, 50);
     });
 }
 

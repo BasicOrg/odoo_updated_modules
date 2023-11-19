@@ -1,104 +1,292 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import helper from '@mrp_workorder/../tests/tours/tour_helper_mrp_workorder';
+import tour from 'web_tour.tour';
+import helper from 'mrp_workorder.tourHelper';
 
-
-registry.category("web_tour.tours").add('test_serial_tracked_and_register', {test: true, steps: () => [
+tour.register('test_add_component', {test: true}, [
     {
         trigger: '.o_tablet_client_action',
-        run: function() {
-            helper.assert($('input[id="finished_lot_id_0"]').val(), 'Magic Potion_1');
+        run: function () {
+            helper.assertCheckLength(2);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Elon Musk"');
+            helper.assertComponent('Elon Musk', 'readonly', 1, 1);
         }
     },
-    { trigger: '.o_tablet_client_action' },
+    {trigger: '.btn[name="button_start"]'},
     {
-        // sn should have been updated to match move_line sn
-        trigger: 'div.o_field_widget[name="lot_id"] input ',
-        run: function() {
-            helper.assert($('input[id="lot_id_0"]').val(), 'Magic_2');
+        trigger: '.o_workorder_icon_btn',
+        extra_trigger: '.btn[name="button_pending"]',
+    },
+    {trigger: '.o_tablet_popups'},
+    {trigger: '.btn:contains("Add Component")'},
+    {trigger: '.modal-title:contains("Add Component")'},
+    {
+        trigger: "div.o_field_widget[name='product_id'] input ",
+        position: 'bottom',
+        run: 'text extra',
+    }, {
+        trigger: '.ui-menu-item > a:contains("extra")',
+        in_modal: false,
+        auto: true,
+    }, {
+        trigger: "div.o_field_widget[name='product_qty'] input",
+        in_modal: true,
+        position: 'bottom',
+        run: 'text 3',
+    },
+    {trigger: '.btn-primary[name="add_product"]'},
+    {
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(3);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "extra"');
+            helper.assertComponent('extra', 'editable', 3, 3);
+        }
+    }, {
+        trigger: "div.o_field_widget[name='lot_id'] input ",
+        position: 'bottom',
+        run: 'text lot1',
+    }, {
+        trigger: '.ui-menu-item > a:contains("lot1")',
+        in_modal: false,
+        auto: true,
+    }, {
+        trigger: '.o_tablet_client_action',
+        run: () => {
+            helper.assertCheckLength(3);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "extra"');
+            helper.assertComponent('extra', 'editable', 3, 3);
+            helper.assert($('div.o_field_widget[name="lot_id"] input').val(), 'lot1');
         }
     },
-    { trigger: '.o_tablet_client_action' },
-    { trigger: '.btn[name="button_start"]' },
+    // go to Elon Musk step (second one since 'extra')
+    {trigger: '.o_tablet_step:nth-child(2)'},
+    {trigger: '.o_selected:contains("Elon")'},
     {
-        trigger: 'div.o_field_widget[name="lot_id"] input ',
-        position: 'bottom',
-        run: 'text Magic_3',
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(3);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Elon Musk"');
+            helper.assertComponent('Elon Musk', 'readonly', 1, 1);
+        }
     },
-    { trigger: '.ui-menu-item > a:contains("Magic_3")' },
-    { trigger: '.o_tablet_client_action' },
+    // go to metal cylinder step
+    {trigger: '.btn[name="action_next"]'},
+    {trigger: 'div[name="component_id"]:contains("Metal")'},
     {
-        trigger: 'div.o_field_widget[name="finished_lot_id"] input ',
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertComponent('Metal cylinder', 'editable', 2, 2);
+            helper.assertCheckLength(3);
+            helper.assertValidatedCheckLength(1);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Metal cylinder"');
+        }
+    }, {
+        trigger: 'input[id="qty_done"]',
         position: 'bottom',
-        run: 'text Magic Potion_2',
-    },
-    { trigger: '.ui-menu-item > a:contains("Magic Potion_2")' },
-    {
-        // comp sn shouldn't change when produced sn is changed
+        run: 'text 1',
+    }, {
         trigger: 'div.o_field_widget[name="lot_id"] input',
-        run: function() {
-            helper.assert($('input[id="lot_id_0"]').val(), 'Magic_3');
-        }
-    },
-    { trigger: '.o_tablet_client_action' },
-    {
-        trigger: 'div.o_field_widget[name="lot_id"] input ',
         position: 'bottom',
-        run: 'text Magic_1',
+        run: 'text mc1',
     },
-    { trigger: '.ui-menu-item > a:contains("Magic_1")' },
-    { trigger: '.o_tablet_client_action' },
+    {trigger: '.o_workorder_icon_btn'},
+    {trigger: '.o_tablet_popups'},
+    {trigger: '.btn:contains("Add By-product")'},
+    {trigger: '.modal-title:contains("Add By-Product")'},
     {
-        // produced sn shouldn't change when comp sn is changed
-        trigger: 'div.o_field_widget[name="finished_lot_id"] input ',
-        run: function() {
-            helper.assert($('input[id="finished_lot_id_0"]').val(), 'Magic Potion_2');
+        trigger: "div.o_field_widget[name='product_id'] input ",
+        position: 'bottom',
+        run: 'text extra-bp',
+    }, {
+        trigger: '.ui-menu-item > a:contains("extra-bp")',
+        in_modal: false,
+        auto: true,
+    }, {
+        trigger: "div.o_field_widget[name='product_qty'] input",
+        in_modal: true,
+        position: 'bottom',
+        run: 'text 1',
+    },
+    {trigger: '.btn-primary[name="add_product"]'},
+    {
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(4);
+            helper.assertValidatedCheckLength(1);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register By-products "extra-bp"');
+            helper.assertComponent('extra-bp', 'editable', 1, 1);
+        }
+    }, {
+        trigger: "div.o_field_widget[name='lot_id'] input ",
+        position: 'bottom',
+        run: 'text lot2',
+    }, {
+        trigger: '.ui-menu-item > a:contains("lot2")',
+        in_modal: false,
+        auto: true,
+    },
+    {trigger: '.btn[name=action_next]'},
+    {
+        trigger: 'div[name="component_id"]:contains("Metal")',
+        run: function () {
+            helper.assertCheckLength(4);
+            helper.assertValidatedCheckLength(2);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Metal cylinder"');
+            helper.assertComponent('Metal cylinder', 'editable', 2, 2);
         }
     },
-    { trigger: '.o_tablet_client_action' },
-    { trigger: '.btn-primary[name="action_next"]' },
-    { trigger: 'button[name=do_finish]' },
-    { trigger: '.o_searchview_input' },
-]});
+    {trigger: '.btn[name=action_next]'},
+    // go back to the first not done check
+    {
+        trigger: 'div[name="component_id"]:contains("extra")',
+        run: function () {
+            helper.assertComponent('extra', 'editable', 3, 3);
+            helper.assertCheckLength(4);
+            helper.assertValidatedCheckLength(3);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "extra"');
+        }
+    },
+    {trigger: '.btn[name=action_next]'},
+    // we have the rainbow man once
+    {
+        trigger: '.o_tablet_step:nth-child(5)',
+        run: function () {
+            helper.assertRainbow(true);
+        }
+    },
+    {trigger: '.o_reward_rainbow_man'},
+    {
+        trigger: 'h1:contains("Good Job")',
+        run: function () {
+            helper.assertDoneButton(true);
+        }
+    },
+    // we do not have it twice
+    {trigger: '.o_tablet_step:nth-child(2)'},
+    {
+        trigger: 'div[name="component_id"]:contains("Elon")',
+        run: function () {
+            helper.assertCheckLength(5);
+            helper.assertValidatedCheckLength(4);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Elon Musk"');
+            helper.assertComponent('Elon Musk', 'readonly', 1, 0);
+        }
+    },
+    {trigger: '.o_tablet_step:nth-child(5)'},
+    {
+        trigger: 'h1:contains("Good Job")',
+        run: function () {
+            helper.assertRainbow(false);
+            helper.assertDoneButton(true);
+        }
+    },
+    {
+        trigger: "input[id='finished_lot_id']",
+        position: 'bottom',
+        run: 'text F0001',
+    },
+    {
+        trigger: '.ui-menu-item > a:contains("F0001")',
+        in_modal: false,
+        auto: true,
+    },
+    {trigger: '.btn[name=do_finish]'},
+    {trigger: '.o_searchview_input'},
+]);
 
-registry.category("web_tour.tours").add('test_access_shop_floor_with_multicomany', {
-    test: true,
-    url: '/web#cids=1&action=menu',
-    steps: () => [{
-        content: 'Select Shop Floor app',
-        trigger: 'a.o_app:contains("Shop Floor")',
-    },{
-        content: 'Close the select workcenter panel',
-        trigger: 'button.btn-close',
-    },{
-        content: 'Check that we entered the app with first company',
-        trigger: 'div.o_mrp_display',
-    },{
-        content: 'Go back to home menu',
-        trigger: '.o_home_menu',
-    },{
-        content: 'Click on switch  company menu',
-        trigger: '.o_switch_company_menu button',
-    },{
-        content: 'Select another company',
-        trigger: 'div[role="button"]:contains("Test Company")',
-    },{
-        context: 'Check that we switched companies',
-        trigger: '.o_switch_company_menu button span:contains("Test Company")',
-        isCheck: true,
-    },{
-        content: 'Select Shop Floor app',
-        trigger: 'a.o_app:contains("Shop Floor")',
-    },{
-        content: 'Close the select workcenter panel again',
-        trigger: '.btn-close',
-    },{
-        content: 'Check that we entered the app with second company',
-        trigger: 'div.o_mrp_display',
-    },{
-        content: 'Check that the WO is not clickable',
-        trigger: 'div.o_mrp_display_record.o_disabled',
-        isCheck: true,
-    }]
-})
+tour.register('test_add_step', {test: true}, [
+    {
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(1);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Metal cylinder"');
+            helper.assertComponent('Metal cylinder', 'editable', 2, 2);
+        }
+    },
+    {trigger: '.btn[name="button_start"]'},
+    {
+        trigger: '.o_workorder_icon_btn',
+        extra_trigger: '.btn[name="button_pending"]',
+    },
+    {trigger: '.o_tablet_popups'},
+    {trigger: '.btn:contains("Add a Step")'},
+    {trigger: '.modal-title:contains("Add a Step")'},
+    {
+        trigger: "div[name=title] input",
+        position: 'bottom',
+        run: 'text my very new step',
+    }, {
+        trigger: "div[name=note] p",
+        position: 'bottom',
+        run: 'text why am I adding a step',
+    },
+    {trigger: '.btn-primary[name="add_check_in_chain"]'},
+    {
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(2);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Metal cylinder"');
+            helper.assertComponent('Metal cylinder', 'editable', 2, 2);
+        }
+    },
+    // go to new step
+    {trigger: '.o_tablet_step:nth-child(2)'},
+    {trigger: 'div:contains("why am I")'},
+    {
+        trigger: '.o_tablet_client_action',
+        run: function () {
+            helper.assertCheckLength(2);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck("my very new step");
+        }
+    },
+    {trigger: 'div[name=note]:contains("why am I adding a step")'},
+    {trigger: '.o_tablet_client_action'},
+    {trigger: '.o_tablet_step:nth-child(1)'},
+    {
+        trigger: 'span:contains("Metal")',
+        run: function () {
+            helper.assertCheckLength(2);
+            helper.assertValidatedCheckLength(0);
+            helper.assertQtyToProduce(1, 1);
+            helper.assertCurrentCheck('Register Consumed Materials "Metal cylinder"');
+            helper.assertComponent('Metal cylinder', 'editable', 2, 2);
+        }
+    },
+    {trigger: 'button[name=openMenuPopup]'},
+    {trigger: '.o_tablet_popups'},
+    {trigger: '.btn:contains("Update Instruction")'},
+    {trigger: '.modal-title:contains("Update Instruction")'},
+    {
+        trigger: 'input#comment',
+        run: 'text my reason',
+    },
+
+    {trigger: '.btn-primary[name="process"]'},
+    {trigger: '.o_tablet_client_action'},
+    {trigger: '.btn[name=action_next]'},
+    {trigger: 'div[name=note]:contains("why am I adding a step")'},
+    {trigger: '.btn[name=action_next]'},
+    {trigger: '.btn[name=action_generate_serial]'},
+    {trigger: '.btn[name=do_finish]'},
+    {trigger: '.o_searchview_input'},
+]);

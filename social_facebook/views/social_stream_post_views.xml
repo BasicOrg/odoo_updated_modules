@@ -16,7 +16,7 @@
                 <field name="facebook_is_event_post"/>
             </xpath>
             <xpath expr="//span[hasclass('o_social_stream_post_author_image')]" position="inside">
-                <img t-if="record.facebook_author_id.raw_value" t-attf-src="https://graph.facebook.com/v17.0/#{record.facebook_author_id.raw_value}/picture" alt="Author Image" class="rounded"/>
+                <img t-if="record.facebook_author_id.raw_value" t-attf-src="https://graph.facebook.com/v10.0/#{record.facebook_author_id.raw_value}/picture" alt="Author Image"/>
             </xpath>
             <xpath expr="//div[hasclass('o_social_author_information')]" position="inside">
                 <span t-if="record.facebook_is_event_post.raw_value" class="text-muted ms-2">added an event</span>
@@ -25,11 +25,14 @@
             <xpath expr="//div[hasclass('o_social_stream_post_message')]" position="inside">
                 <div class="o_social_stream_post_facebook_stats px-2 d-flex justify-content-around"
                     t-if="record.media_type.raw_value === 'facebook'">
-                    <div t-attf-class="o_social_facebook_likes o_social_subtle_btn ps-2 pe-3 #{record.facebook_user_likes.raw_value ? 'o_social_facebook_user_likes' : ''}">
+                    <div t-attf-class="o_social_facebook_likes o_social_subtle_btn ps-2 pe-3 #{record.facebook_user_likes.raw_value ? 'o_social_facebook_user_likes' : ''}"
+                        t-on-click.stop="_onFacebookPostLike">
                         <i class="fa fa-thumbs-up me-1" title="Likes"/>
-                        <field name="facebook_likes_count" t-if="record.facebook_likes_count.value !== '0'" class="fw-bold"/>
+                        <b class="o_social_kanban_likes_count" t-esc="record.facebook_likes_count.raw_value !== 0 ?
+                            _insertThousandSeparator(record.facebook_likes_count.raw_value) : ''"/>
                     </div>
-                    <div class="o_social_facebook_comments o_social_comments o_social_subtle_btn px-3">
+                    <div class="o_social_facebook_comments o_social_comments o_social_subtle_btn px-3"
+                         t-on-click.stop="_onFacebookCommentsClick">
                         <i class="fa fa-comments me-1" title="Comments"/>
                         <b t-esc="record.facebook_comments_count.value !== '0' ? record.facebook_comments_count.value : ''"/>
                     </div>

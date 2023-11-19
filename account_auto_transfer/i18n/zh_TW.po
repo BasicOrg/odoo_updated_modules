@@ -3,16 +3,16 @@
 # 	* account_auto_transfer
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,11 +23,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "<span> to </span>"
 msgstr "<span> 到 </span>"
-
-#. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "項目表模版"
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_transfer_model
@@ -41,13 +36,15 @@ msgstr "轉帳項目模組明細"
 
 #. module: account_auto_transfer
 #: model:ir.actions.server,name:account_auto_transfer.ir_cron_auto_transfer_ir_actions_server
-msgid "Account automatic transfers: Perform transfers"
-msgstr "賬戶自動轉賬：執行轉賬"
+#: model:ir.cron,cron_name:account_auto_transfer.ir_cron_auto_transfer
+#: model:ir.cron,name:account_auto_transfer.ir_cron_auto_transfer
+msgid "Account automatic transfers : Perform transfers"
+msgstr "會計項目自動轉帳 : 執行轉帳"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Activate"
-msgstr "啟動"
+msgstr "啟用"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model_line__analytic_account_ids
@@ -74,21 +71,18 @@ msgid "Automated Transfer"
 msgstr "自動轉帳"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (%s%% from account %s)"
 msgstr "自動轉帳 (%s%% 從項目 %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (-%s%%)"
 msgstr "自動轉帳 (-%s%%)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
@@ -96,21 +90,18 @@ msgid ""
 msgstr "自動轉帳 (分析帳戶的分錄: %s 及合作夥伴: %s）"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with analytic account(s): %s)"
 msgstr "自動轉賬 (帶有分析帳戶的分錄: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with partner(s): %s)"
 msgstr "自動轉賬 (帶有合作夥伴的分錄: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
@@ -119,21 +110,18 @@ msgid ""
 msgstr "自動轉帳 (從項目 %s 與分析帳戶: %s 及合作夥伴: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with analytic account(s): %s)"
 msgstr "自動轉帳 (從帶有分析帳戶的項目 %s: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with partner(s): %s)"
 msgstr "自動轉帳 (從項目 %s 及合作夥伴: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (to account %s)"
@@ -164,7 +152,7 @@ msgstr "計算轉帳"
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__create_uid
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "建立者"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__create_date
@@ -175,7 +163,7 @@ msgstr "建立於"
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Description"
-msgstr "說明"
+msgstr "描述"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__account_id
@@ -227,29 +215,23 @@ msgstr "產生傳票"
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__id
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__id
 msgid "ID"
-msgstr "識別號"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "IFRS Automatic Transfers"
-msgstr "IFRS 自動轉賬"
+msgstr "ID"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Journal"
-msgstr "日記賬"
+msgstr "日記帳"
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_move
 msgid "Journal Entry"
-msgstr "日記賬記項"
+msgstr "日記帳分錄"
 
 #. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_move_line
-msgid "Journal Item"
-msgstr "日記賬項目"
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model____last_update
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__write_uid
@@ -267,13 +249,6 @@ msgstr "最後更新於"
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__frequency__month
 msgid "Monthly"
 msgstr "每月"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Monthly IFRS rent expense transfer"
-msgstr "每月 IFRS 租金開支轉賬"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__move_ids_count
@@ -343,12 +318,12 @@ msgstr "來自來源項目明細總和的百分比將轉帳到目的地項目"
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Period"
-msgstr "期間"
+msgstr "會計期間"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__frequency__quarter
 msgid "Quarterly"
-msgstr "每季"
+msgstr "每季度"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__state__in_progress
@@ -358,7 +333,7 @@ msgstr "執行中"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "序號"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__date_start
@@ -376,14 +351,12 @@ msgid "Stop Date"
 msgstr "截止日期"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The analytic filter %s is duplicated"
 msgstr "分析篩選 %s 重複"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
@@ -392,18 +365,16 @@ msgid ""
 msgstr "合作夥伴篩選 %s 與分析篩選 %s 的組合重複"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The partner filter %s is duplicated"
 msgstr "合作夥伴篩選 %s 重複"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
-msgid "The total percentage (%s) should be less or equal to 100!"
-msgstr "百分比總計（%s）應小於或等於 100！"
+msgid "The total percentage (%s) should be less or equal to 100 !"
+msgstr "整體百分比 (%s) 應小於或等於 100!"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__total_percent
@@ -424,20 +395,6 @@ msgstr "調撥"
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__frequency__year
 msgid "Yearly"
 msgstr "每年"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Yearly liabilites auto transfers"
-msgstr "每年負債自動轉賬"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/models/account_move_line.py:0
-#, python-format
-msgid "You cannot set Tax on Automatic Transfer's entries."
-msgstr ""
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form

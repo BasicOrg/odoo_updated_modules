@@ -22,14 +22,14 @@
             <field name="name">account.move.line.tree.account.intrastat</field>
             <field name="model">account.move.line</field>
             <field name="mode">primary</field>
-            <field eval="110" name="priority"/>
+            <field eval="7" name="priority"/>
             <field name="arch" type="xml">
                 <tree string="Account move line" multi_edit="1" duplicate="false" editable="bottom" expand="context.get('expand', False)">
                     <field name="move_id" readonly="1"/>
                     <field name="product_id" readonly="1"/>
                     <field name="partner_id" readonly="1"/>
                     <field name="price_subtotal" readonly="1"/>
-                    <field name="date" column_invisible="True"/>
+                    <field name="date" invisible="1"/>
                     <field name="intrastat_transaction_id"
                            string="Intrastat transaction code"
                            domain="[

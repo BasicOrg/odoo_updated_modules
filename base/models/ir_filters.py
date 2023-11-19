@@ -72,12 +72,10 @@ class IrFilters(models.Model):
         """
         # available filters: private filters (user_id=uid) and public filters (uid=NULL),
         # and filters for the action (action_id=action_id) or global (action_id=NULL)
-        user_context = self.env['res.users'].context_get()
         action_domain = self._get_action_domain(action_id)
-        return self.with_context(user_context).search_read(
-            action_domain + [('model_id', '=', model), ('user_id', 'in', [self._uid, False])],
-            ['name', 'is_default', 'domain', 'context', 'user_id', 'sort'],
-        )
+        filters = self.search(action_domain + [('model_id', '=', model), ('user_id', 'in', [self._uid, False])])
+        user_context = self.env['res.users'].context_get()
+        return filters.with_context(user_context).read(['name', 'is_default', 'domain', 'context', 'user_id', 'sort'])
 
     @api.model
     def _check_global_default(self, vals, matching_filters):
@@ -108,7 +106,7 @@ class IrFilters(models.Model):
         if matching_filters and (matching_filters[0]['id'] == defaults.id):
             return
 
-        raise UserError(_("There is already a shared filter set as default for %(model)s, delete or change it before setting a new default", model=vals.get('model_id')))
+        raise UserError(_("There is already a shared filter set as default for %(model)s, delete or change it before setting a new default") % {'model': vals.get('model_id')})
 
     @api.model
     @api.returns('self', lambda value: value.id)

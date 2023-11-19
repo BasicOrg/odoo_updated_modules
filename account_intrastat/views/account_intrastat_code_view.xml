@@ -11,8 +11,8 @@
                     <field name="description"/>
                     <field name="country_id"/>
                     <field name="supplementary_unit"/>
-                    <field name="start_date" optional="hide"/>
-                    <field name="expiry_date" optional="hide"/>
+                    <field name="start_date" width="1" optional="hide"/>
+                    <field name="expiry_date" width="1" optional="hide"/>
                 </tree>
             </field>
         </record>
@@ -95,9 +95,9 @@
                             <field name="code"/>
                             <field name="type"/>
                             <field name="supplementary_unit"/>
-                            <field name="country_id" invisible="type != 'region'" required="type == 'region'" options="{'no_create': True}"/>
-                            <field name="start_date" invisible="type not in ('transaction', 'commodity')"/>
-                            <field name="expiry_date" invisible="type not in ('transaction', 'commodity')"/>
+                            <field name="country_id" attrs="{'invisible': [('type', '!=', 'region')], 'required': [('type', '=', 'region')]}" options="{'no_create': True}"/>
+                            <field name="start_date" attrs="{'invisible':[('type', 'not in', ('transaction','commodity'))]}"/>
+                            <field name="expiry_date" attrs="{'invisible':[('type', 'not in', ('transaction','commodity'))]}"/>
                             <field name="description"/>
                         </group>
                     </sheet>
@@ -122,6 +122,7 @@
 
         <record id="action_report_intrastat_code_tree" model="ir.actions.act_window">
             <field name="name">Intrastat Code</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.intrastat.code</field>
             <field name="context">{'search_default_group_by_type': 1, 'search_default_in_use':1}</field>
             <field name="view_mode">tree,form</field>

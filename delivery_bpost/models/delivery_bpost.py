@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import json
 from base64 import b64encode
-from markupsafe import Markup
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -91,11 +90,9 @@ class ProviderBpost(models.Model):
                 quote_currency = self.env['res.currency'].search([('name', '=', 'EUR')], limit=1)
                 carrier_price = quote_currency._convert(shipping['price'], order_currency, company, order.date_order or fields.Date.today())
             carrier_tracking_ref = TRACKING_REF_DELIM.join(shipping['main_label']['tracking_codes'])
-            tracking_links = Markup('<br/>').join(
-                self._tracking_link_element(code, picking.partner_id.zip)
-                for code in shipping['main_label']['tracking_codes'])
-            logmessage = _("Shipment created into bpost") + Markup("<br/> <b>") + _("Tracking Links") + Markup("</b> <br/>") + tracking_links
-            bpost_labels = [('%s.%s' % (self._get_delivery_label_prefix(), self.bpost_label_format), shipping['main_label']['label'])]
+            tracking_links = '<br/>'.join(self._tracking_link_element(code, picking.partner_id.zip) for code in shipping['main_label']['tracking_codes'])
+            logmessage = (_("Shipment created into bpost <br/> <b>Tracking Links</b> <br/>%s") % (tracking_links))
+            bpost_labels = [('Labels-bpost.%s' % self.bpost_label_format, shipping['main_label']['label'])]
             if picking.sale_id:
                 for pick in picking.sale_id.picking_ids:
                     pick.message_post(body=logmessage, attachments=bpost_labels)
@@ -104,7 +101,7 @@ class ProviderBpost(models.Model):
 
             if shipping['return_label']:
                 carrier_return_label_ref = TRACKING_REF_DELIM.join(shipping['return_label']['tracking_codes'])
-                logmessage = _("Return labels created into bpost") + Markup("<br/> <b>") + _("Tracking Numbers:") + Markup("</b><br/>") + carrier_return_label_ref
+                logmessage = (_("Return labels created into bpost <br/> <b>Tracking Numbers: </b><br/>%s") % (carrier_return_label_ref))
                 picking.message_post(body=logmessage, attachments=[('%s-%s.%s' % (self.get_return_label_prefix(), 1, self.bpost_label_format), shipping['return_label']['label'])])
 
             shipping_data = {'exact_price': carrier_price,
@@ -113,10 +110,7 @@ class ProviderBpost(models.Model):
         return res
 
     def _tracking_link_element(self, tracking_code, zip_code=0000):
-        return Markup('<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>') % (
-            self._generate_tracking_link(tracking_code, zip_code),
-            tracking_code
-        )
+        return f'<a href="{self._generate_tracking_link(tracking_code, zip_code)}" target="_blank" rel="noopener noreferrer">{tracking_code}</a>'
 
     def _generate_tracking_link(self, tracking_code, zip_code=0000):
         return f"http://track.bpost.be/btr/web/#/search?itemCode={tracking_code}&lang=en&postalCode={zip_code}"
@@ -164,5 +158,5 @@ class ProviderBpost(models.Model):
             carrier_price = quote_currency._convert(shipping['price'], order_currency, company, order.date_order or fields.Date.today())
         carrier_tracking_ref = shipping['main_label']['tracking_codes']
         # bpost does not seem to handle multipackage
-        logmessage = _("Return shipment created into bpost") + Markup("<br/> <b>") + _("Tracking Number:") + Markup("</b>") + carrier_tracking_ref[0]
+        logmessage = (_("Return shipment created into bpost <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref[0]))
         pickings.message_post(body=logmessage, attachments=[('%s-%s-%s.%s' % (self.get_return_label_prefix(), carrier_tracking_ref[0], 1, self.bpost_label_format), shipping['main_label']['label'])])

@@ -1,10 +1,10 @@
 /** @odoo-module */
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('access_helpdesk_article_portal_tour', {
+tour.register('access_helpdesk_article_portal_tour', {
     test: true,
-    steps: () => [{
+}, [{
     content: "clik on 'Help'",
     trigger: 'a[role="menuitem"]:contains("Help")',
 }, {
@@ -23,4 +23,15 @@ registry.category("web_tour.tours").add('access_helpdesk_article_portal_tour', {
     content: "Check that results don't contain 'Other Article'",
     trigger: '.dropdown-menu:not(:has(.dropdown-item:contains("Other Article")))',
     run() {},
-}]});
+}, {
+    content: "Click on 'Browse Articles'",
+    trigger: 'a:contains("Browse Articles")',
+}, {
+    content: "Check that the 'Helpdesk Article' is selected",
+    trigger: '.o_article_active:contains("Helpdesk Article")',
+    run() {},
+}, {
+    content: "Check that the 'Helpdesk Article' is unfolded",
+    trigger: '.o_article_name:contains("Child Article")',
+    run() {},
+}]);

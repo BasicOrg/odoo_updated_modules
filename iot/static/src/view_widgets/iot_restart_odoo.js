@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { IoTConnectionErrorDialog } from "../iot_connection_error_dialog";
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 let restarting = false;
 
@@ -27,8 +27,8 @@ export class IoTRestartOdooOrReboot extends Component {
         this.dialog.add(ConfirmationDialog, {
             body:
                 this.props.action == "restart_odoo"
-                    ? _t("Are you sure you want to restart Odoo on the IoT box?")
-                    : _t("Are you sure you want to reboot the IoT box?"),
+                    ? this.env._t("Are you sure you want to restart Odoo on the IoT box?")
+                    : this.env._t("Are you sure you want to reboot the IoT box?"),
             confirm: () => this.restartOdooOrReboot(),
             cancel: () => {},
         });
@@ -53,8 +53,8 @@ export class IoTRestartOdooOrReboot extends Component {
         try {
             this.showMsgAndClearInterval(
                 null,
-                _t("Please wait"),
-                _t("Restarting"),
+                this.env._t("Please wait"),
+                this.env._t("Restarting"),
                 "warning"
             );
             restartResponse = await this.rpc(this.ip_url + "/iot_restart_odoo_or_reboot", {
@@ -78,8 +78,8 @@ export class IoTRestartOdooOrReboot extends Component {
                 if (server_response == "ping" && restarting) {
                     this.showMsgAndClearInterval(
                         responseInterval,
-                        _t("Restart finished"),
-                        _t("Success"),
+                        this.env._t("Restart finished"),
+                        this.env._t("Success"),
                         "success"
                     );
                 }
@@ -90,7 +90,7 @@ export class IoTRestartOdooOrReboot extends Component {
                     this.showMsgAndClearInterval(
                         responseInterval,
                         `${error.name} ${error.message}`,
-                        _t("Restart Failed"),
+                        this.env._t("Restart Failed"),
                         "danger"
                     );
                 }
@@ -101,8 +101,8 @@ export class IoTRestartOdooOrReboot extends Component {
             if (restarting) {
                 this.showMsgAndClearInterval(
                     responseInterval,
-                    _t("Timed out"),
-                    _t("Restart Failed"),
+                    this.env._t("Timed out"),
+                    this.env._t("Restart Failed"),
                     "danger"
                 );
                 this.doWarnFail(this.ip_url);
@@ -124,15 +124,15 @@ export class IoTRestartOdooOrReboot extends Component {
                 this.showMsgAndClearInterval(
                     null,
                     restartResponse,
-                    _t("Restart Failed"),
+                    this.env._t("Restart Failed"),
                     "danger"
                 );
             }
         } else {
             this.showMsgAndClearInterval(
                 null,
-                _t("Last restarting process hasn't finished yet"),
-                _t("Please wait"),
+                this.env._t("Last restarting process hasn't finished yet"),
+                this.env._t("Please wait"),
                 "danger"
             );
         }
@@ -151,13 +151,11 @@ IoTRestartOdooOrReboot.props = {
     action: { type: String },
 };
 
-export const ioTRestartOdooOrReboot = {
-    component: IoTRestartOdooOrReboot,
-    extractProps: ({ attrs }) => {
-        return {
-            btn_name: attrs.btn_name,
-            action: attrs.action,
-        };
-    },
+IoTRestartOdooOrReboot.extractProps = ({ field, attrs }) => {
+    return {
+        btn_name: attrs.btn_name,
+        action: attrs.action,
+    };
 };
-registry.category("view_widgets").add("iot_restart_odoo_or_reboot", ioTRestartOdooOrReboot);
+
+registry.category("view_widgets").add("iot_restart_odoo_or_reboot", IoTRestartOdooOrReboot);

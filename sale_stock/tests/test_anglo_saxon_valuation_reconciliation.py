@@ -63,7 +63,7 @@ class TestValuationReconciliationCommon(ValuationReconciliationTestCommon):
         })
         move1._action_confirm()
         move1._action_assign()
-        move1.move_line_ids.write({'quantity': 11, 'picked': True})
+        move1.move_line_ids.qty_done = 11
         move1._action_done()
 
 
@@ -112,17 +112,17 @@ class TestValuationReconciliation(TestValuationReconciliationCommon):
         stock_return_picking_action = stock_return_picking.create_returns()
         return_pick = self.env['stock.picking'].browse(stock_return_picking_action['res_id'])
         return_pick.action_assign()
-        return_pick.move_ids.write({'quantity': 1, 'picked': True})
+        return_pick.move_ids.quantity_done = 1
         return_pick._action_done()
         refund_invoice_wiz = self.env['account.move.reversal'].with_context(active_model='account.move', active_ids=[invoice.id]).create({
             'reason': 'test_invoice_shipment_refund',
+            'refund_method': 'cancel',
             'journal_id': invoice.journal_id.id,
         })
-        new_invoice = self.env['account.move'].browse(refund_invoice_wiz.modify_moves()['res_id'])
+        refund_invoice = self.env['account.move'].browse(refund_invoice_wiz.reverse_moves()['res_id'])
         self.assertEqual(invoice.payment_state, 'reversed', "Invoice should be in 'reversed' state.")
-        self.assertEqual(invoice.reversal_move_id.payment_state, 'paid', "Refund should be in 'paid' state.")
-        self.assertEqual(new_invoice.state, 'draft', "New invoice should be in 'draft' state.")
-        self.check_reconciliation(invoice.reversal_move_id, return_pick, operation='sale')
+        self.assertEqual(refund_invoice.payment_state, 'paid', "Refund should be in 'paid' state.")
+        self.check_reconciliation(refund_invoice, return_pick, operation='sale')
 
     def test_multiple_shipments_invoices(self):
         """ Tests the case into which we deliver part of the goods first, then 2 invoices at different rates, and finally the remaining quantities

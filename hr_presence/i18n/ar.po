@@ -3,16 +3,18 @@
 # 	* hr_presence
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Mustafa J. Kadhem <safi2266@gmail.com>, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:52+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,20 +25,20 @@ msgstr ""
 #: model:mail.template,body_html:hr_presence.mail_template_presence
 msgid ""
 "<div>\n"
-"                    Dear <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br><br>\n"
-"                    Exception made if there was a mistake of ours, it seems that you are not at your office and there is not request of time off from you.<br>\n"
-"                    Please, take appropriate measures in order to carry out this work absence.<br>\n"
+"                    Dear <t t-out=\"object.name or ''\">Abigail Peterson</t>,<br/><br/>\n"
+"                    Exception made if there was a mistake of ours, it seems that you are not at your office and there is not request of time off from you.<br/>\n"
+"                    Please, take appropriate measures in order to carry out this work absence.<br/>\n"
 "                    Do not hesitate to contact your manager or the human resource department.\n"
-"                    <br>Best Regards,<br><br>\n"
+"                    <br/>Best Regards,<br/><br/>\n"
 "                </div>\n"
 "            "
 msgstr ""
 "<div>\n"
-"                    عزيزتنا <t t-out=\"object.name or ''\">أبيغيل بيترسون</t>،<br><br>\n"
-"                    يبدو أنك غير متواجدة في المكتب ولا يوجد طلب إجازة مقدم، إلا إذا كان هذا خطأً من جهتنا.<br>\n"
-"                    يرجى أخذ الإجراء اللازم لتنفيذ هذا الغياب.<br>\n"
+"                    عزيزتنا <t t-out=\"object.name or ''\">أبيغيل بيترسون</t>،<br/><br/>\n"
+"                    يبدو أنك غير متواجدة في المكتب ولا يوجد طلب إجازة مقدم، إلا إذا كان هذا خطأً من جهتنا.<br/>\n"
+"                    يرجى أخذ الإجراء اللازم لتنفيذ هذا الغياب.<br/>\n"
 "                    لا تترددي في التواصل مع مديرك أو قسم الموارد البشرية.\n"
-"                    <br>مع أطيب التحيات،<br><br>\n"
+"                    <br/>مع أطيب التحيات،<br/><br/>\n"
 "                </div>\n"
 "            "
 
@@ -55,15 +57,14 @@ msgstr "غائب"
 #. module: hr_presence
 #: model:ir.model,name:hr_presence.model_hr_employee_base
 msgid "Basic Employee"
-msgstr "الموظف العادي "
+msgstr "الموظف الأساسي"
 
 #. module: hr_presence
 #: model:ir.model,name:hr_presence.model_res_company
 msgid "Companies"
-msgstr "الشركات"
+msgstr "الشركات "
 
 #. module: hr_presence
-#. odoo-python
 #: code:addons/hr_presence/models/hr_employee.py:0
 #, python-format
 msgid "Compose Email"
@@ -87,13 +88,6 @@ msgid "Email Sent"
 msgstr "تم إرسال البريد الإلكتروني "
 
 #. module: hr_presence
-#. odoo-python
-#: code:addons/hr_presence/models/hr_employee.py:0
-#, python-format
-msgid "Employee's Presence to Define"
-msgstr "حضور الموظف لتحديده "
-
-#. module: hr_presence
 #: model:sms.template,name:hr_presence.sms_template_data_hr_presence
 msgid "Employee: Presence Reminder"
 msgstr "الموظف: تذكير الحضور "
@@ -104,7 +98,6 @@ msgid "Employees"
 msgstr "الموظفون"
 
 #. module: hr_presence
-#. odoo-python
 #: code:addons/hr_presence/models/hr_employee.py:0
 #: model:sms.template,body:hr_presence.sms_template_data_hr_presence
 #, python-format
@@ -119,13 +112,15 @@ msgstr ""
 
 #. module: hr_presence
 #: model:ir.actions.server,name:hr_presence.ir_cron_presence_control_ir_actions_server
+#: model:ir.cron,cron_name:hr_presence.ir_cron_presence_control
+#: model:ir.cron,name:hr_presence.ir_cron_presence_control
 msgid "HR Presence: cron"
 msgstr "حضور الموارد البشرية: cron "
 
 #. module: hr_presence
 #: model:mail.template,name:hr_presence.mail_template_presence
 msgid "HR: Employee Absence email"
-msgstr "الموارد البشرية: رسالة غياب الموطف "
+msgstr ""
 
 #. module: hr_presence
 #: model:ir.model.fields,field_description:hr_presence.field_res_company__hr_presence_last_compute_date
@@ -188,8 +183,6 @@ msgid ""
 "Sent manually in presence module when an employee wasn't working despite not"
 " being off"
 msgstr ""
-"يتم إرساله يدوياً في تطبيق الحضور في حال عدم عمل الموظف على الرغم من أنه ليس"
-" في إجازة "
 
 #. module: hr_presence
 #: model_terms:ir.ui.view,arch_db:hr_presence.hr_employee_view_kanban
@@ -202,14 +195,12 @@ msgid "Set as present"
 msgstr "التعيين كحاضر "
 
 #. module: hr_presence
-#. odoo-python
 #: code:addons/hr_presence/models/hr_employee.py:0
 #, python-format
 msgid "There is no professional email address for this employee."
 msgstr "ليس هناك عنوان بريد إلكتروني مهني لهذا الموظف. "
 
 #. module: hr_presence
-#. odoo-python
 #: code:addons/hr_presence/models/hr_employee.py:0
 #, python-format
 msgid "There is no professional mobile for this employee."
@@ -238,7 +229,6 @@ msgid "Users Log"
 msgstr "سجل المستخدمين"
 
 #. module: hr_presence
-#. odoo-python
 #: code:addons/hr_presence/models/hr_employee.py:0
 #: code:addons/hr_presence/models/hr_employee.py:0
 #: code:addons/hr_presence/models/hr_employee.py:0
@@ -249,4 +239,4 @@ msgstr "لا تملك حق القيام بذلك. يرجى التواصل مع �
 #. module: hr_presence
 #: model:ir.model,name:hr_presence.model_ir_websocket
 msgid "websocket message handling"
-msgstr "التعامل مع رسائل websocket "
+msgstr ""

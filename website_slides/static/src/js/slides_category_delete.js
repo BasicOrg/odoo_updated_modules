@@ -1,18 +1,58 @@
 /** @odoo-module **/
 
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { _t } from "@web/core/l10n/translation";
+import publicWidget from 'web.public.widget';
+import Dialog from 'web.Dialog';
+import { _t } from 'web.core';
 
-publicWidget.registry.websiteSlidesCategoryDelete = publicWidget.Widget.extend({
-    selector: ".o_wslides_js_category_delete",
-    events: {
-        click: "_onClickDeleteCateogry",
+const categoryDeleteDialog = Dialog.extend({
+    template: 'slides.category.delete',
+
+    /**
+     * @constructor
+     * @param {Widget} parent
+     * @param {DOM Object} slideTarget
+     */
+    init(parent, slideTarget) {
+        this.categoryId = parseInt(slideTarget.dataset.categoryId);
+        this._super(parent, {
+            title: _t('Delete Category'),
+            size: 'medium',
+            buttons: [{
+                text: _t('Delete'),
+                classes: 'btn-primary',
+                click: () => this._onClickDelete(),
+            }, {
+                text: _t('Cancel'),
+                close: true
+            }]
+        });
     },
 
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+
+    /**
+     * Calls 'unlink' method on slides.slide to delete the category and
+     * reloads page after deletion to re-arrange the content on UI
+     *
+     * @private
+     */
+    _onClickDelete() {
+        this._rpc({
+            model: 'slide.slide',
+            method: 'unlink',
+            args: [this.categoryId],
+        }).then(function () {
+            window.location.reload();
+        });
+    }
+});
+
+publicWidget.registry.websiteSlidesCategoryDelete = publicWidget.Widget.extend({
+    selector: '.o_wslides_js_category_delete',
+    events: {
+        'click': '_onClickDeleteCateogry',
     },
 
     //--------------------------------------------------------------------------
@@ -24,24 +64,11 @@ publicWidget.registry.websiteSlidesCategoryDelete = publicWidget.Widget.extend({
      * @param {MouseEvent} ev
      */
     _onClickDeleteCateogry(ev) {
-        const categoryId = parseInt(ev.currentTarget.dataset.categoryId);
-        this.call("dialog", "add", ConfirmationDialog, {
-            title: _t("Delete Category"),
-            body: _t("Are you sure you want to delete this category?"),
-            confirmLabel: _t("Delete"),
-            confirm: async () => {
-                /**
-                 * Calls 'unlink' method on slides.slide to delete the category and
-                 * reloads page after deletion to re-arrange the content on UI
-                 */
-                await this.orm.unlink("slide.slide", [categoryId]);
-                window.location.reload();
-            },
-            cancel: () => {},
-        });
+        new categoryDeleteDialog(this, ev.currentTarget).open();
     },
 });
 
 export default {
-    websiteSlidesCategoryDelete: publicWidget.registry.websiteSlidesCategoryDelete,
+    categoryDeleteDialog: categoryDeleteDialog,
+    websiteSlidesCategoryDelete: publicWidget.registry.websiteSlidesCategoryDelete
 };

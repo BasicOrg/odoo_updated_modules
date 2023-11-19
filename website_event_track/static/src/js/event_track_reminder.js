@@ -1,9 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_event_track.website_event_track_reminder', function (require) {
+'use strict';
 
-import { debounce } from "@web/core/utils/timing";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { _t } from "@web/core/l10n/translation";
-import { Component } from "@odoo/owl";
+var core = require('web.core');
+var _t = core._t;
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.websiteEventTrackReminder = publicWidget.Widget.extend({
     selector: '.o_wetrack_js_reminder',
@@ -16,9 +16,7 @@ publicWidget.registry.websiteEventTrackReminder = publicWidget.Widget.extend({
      */
     init: function () {
         this._super.apply(this, arguments);
-        this._onReminderToggleClick = debounce(this._onReminderToggleClick, 500, true);
-        this.rpc = this.bindService("rpc");
-        this.notification = this.bindService("notification");
+        this._onReminderToggleClick = _.debounce(this._onReminderToggleClick, 500, true);
     },
 
     //--------------------------------------------------------------------------
@@ -41,14 +39,18 @@ publicWidget.registry.websiteEventTrackReminder = publicWidget.Widget.extend({
 
         var reminderOnValue = !this.reminderOn;
 
-        this.rpc('/event/track/toggle_reminder', {
-            track_id: $trackLink.data('trackId'),
-            set_reminder_on: reminderOnValue,
+        this._rpc({
+            route: '/event/track/toggle_reminder',
+            params: {
+                track_id: $trackLink.data('trackId'),
+                set_reminder_on: reminderOnValue,
+            },
         }).then(function (result) {
             if (result.error && result.error === 'ignored') {
-                self.notification.add(_t('Talk already in your Favorites'), {
+                self.displayNotification({
                     type: 'info',
                     title: _t('Error'),
+                    message: _.str.sprintf(_t('Talk already in your Favorites')),
                 });
             } else {
                 self.reminderOn = reminderOnValue;
@@ -56,18 +58,16 @@ publicWidget.registry.websiteEventTrackReminder = publicWidget.Widget.extend({
                 self.$('.o_wetrack_js_reminder_text').text(reminderText);
                 self._updateDisplay();
                 var message = self.reminderOn ? _t('Talk added to your Favorites') : _t('Talk removed from your Favorites');
-                self.notification.add(message, {
+                self.displayNotification({
                     type: 'info',
+                    title: message
                 });
                 if (self.reminderOn) {
-                    Component.env.bus.trigger('open_notification_request', [
-                        'add_track_to_favorite',
-                        {
-                            title: _t('Allow push notifications?'),
-                            body: _t('You have to enable push notifications to get reminders for your favorite tracks.'),
-                            delay: 0
-                        },
-                    ]);
+                    core.bus.trigger('open_notification_request', 'add_track_to_favorite', {
+                        title: _t('Allow push notifications?'),
+                        body: _t('You have to enable push notifications to get reminders for your favorite tracks.'),
+                        delay: 0
+                    });
                 }
             }
         });
@@ -75,15 +75,28 @@ publicWidget.registry.websiteEventTrackReminder = publicWidget.Widget.extend({
 
     _updateDisplay: function () {
         var $trackLink = this.$el.find('i');
+        var isReminderLight = $trackLink.data('isReminderLight');
         if (this.reminderOn) {
             $trackLink.addClass('fa-bell').removeClass('fa-bell-o');
             $trackLink.attr('title', _t('Favorite On'));
+
+            if (!isReminderLight) {
+                this.$el.addClass('btn-primary');
+                this.$el.removeClass('btn-outline-primary');
+            }
         } else {
             $trackLink.addClass('fa-bell-o').removeClass('fa-bell');
             $trackLink.attr('title', _t('Set Favorite'));
+
+            if (!isReminderLight) {
+                this.$el.removeClass('btn-primary');
+                this.$el.addClass('btn-outline-primary');
+            }
         }
     },
 
 });
 
-export default publicWidget.registry.websiteEventTrackReminder;
+return publicWidget.registry.websiteEventTrackReminder;
+
+});

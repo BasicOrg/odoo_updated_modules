@@ -3,15 +3,12 @@
 
 from odoo import http
 from odoo.http import request
-from odoo.addons.calendar.controllers.main import CalendarController
-
-from dateutil.parser import parse
 
 
-class MicrosoftCalendarController(CalendarController):
+class MicrosoftCalendarController(http.Controller):
 
     @http.route('/microsoft_calendar/sync_data', type='json', auth='user')
-    def microsoft_calendar_sync_data(self, model, **kw):
+    def sync_data(self, model, **kw):
         """ This route/function is called when we want to synchronize Odoo
             calendar with Microsoft Calendar.
             Function return a dictionary with the status :  need_config_from_admin, need_auth,
@@ -42,26 +39,8 @@ class MicrosoftCalendarController(CalendarController):
                     "status": "need_auth",
                     "url": url
                 }
-            # Get synchronization time window form calendar view if received through parameters.
-            sync_context = {}
-            range_start_date = kw.get('rangeStart')
-            range_end_date = kw.get('rangeEnd')
-            if range_start_date and range_end_date:
-                sync_context.update({
-                    'range_start_date': parse(range_start_date),
-                    'range_end_date': parse(range_end_date),
-                })
-
             # If App authorized, and user access accepted, We launch the synchronization
-            need_refresh = request.env.user.sudo().with_context(sync_context)._sync_microsoft_calendar()
-
-            # If synchronization has been stopped or paused
-            sync_status = request.env.user._get_microsoft_sync_status()
-            if not need_refresh and sync_status != "sync_active":
-                return {
-                    "status": sync_status,
-                    "url": ''
-                }
+            need_refresh = request.env.user.sudo()._sync_microsoft_calendar()
             return {
                 "status": "need_refresh" if need_refresh else "no_new_event_from_microsoft",
                 "url": ''

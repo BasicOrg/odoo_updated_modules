@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import fields, models, api
-from odoo.tools import SQL
 
 
 class MrpReport(models.Model):
@@ -34,12 +33,6 @@ class MrpReport(models.Model):
     qty_produced = fields.Float(
         "Quantity Produced", readonly=True,
         help="Total quantity produced in product's UoM")
-    qty_demanded = fields.Float(
-        "Quantity Demanded", readonly=True,
-        help="Total quantity demanded in product's UoM")
-    yield_rate = fields.Float(
-        "Yield Percentage(%)", readonly=True,
-        help="Ratio of quantity produced over quantity demanded")
 
     # note that unit costs take include subtraction of byproduct cost share
     unit_cost = fields.Monetary(
@@ -79,8 +72,6 @@ class MrpReport(models.Model):
                 mo.date_finished       AS date_finished,
                 mo.product_id          AS product_id,
                 prod_qty.product_qty   AS qty_produced,
-                prod_qty.qty_demanded  AS qty_demanded,
-                prod_qty.product_qty / prod_qty.qty_demanded * 100                                                                      AS yield_rate,
                 comp_cost.total * currency_table.rate                                                                                   AS component_cost,
                 op_cost.total * currency_table.rate                                                                                     AS operation_cost,
                 ({self._select_total_cost()}) * currency_table.rate                                                                     AS total_cost,
@@ -109,24 +100,6 @@ class MrpReport(models.Model):
         from_str = """
             FROM mrp_production AS mo
             JOIN res_company AS rc ON rc.id = {company_id}
-            {comp_cost}
-            {op_cost}
-            {byproducts_cost}
-            {total_produced}
-            LEFT JOIN {currency_table} ON currency_table.company_id = mo.company_id
-        """.format(
-            currency_table=self.env['res.currency']._get_query_currency_table(self.env.companies.ids, fields.Date.today()),
-            company_id=int(self.env.company.id),
-            comp_cost=self._join_component_cost(),
-            op_cost=self._join_operations_cost(),
-            byproducts_cost=self._join_byproducts_cost_share(),
-            total_produced=self._join_total_qty_produced()
-        )
-
-        return from_str
-
-    def _join_component_cost(self):
-        return """
             LEFT JOIN (
                 SELECT
                     mo.id                                                                    AS mo_id,
@@ -140,10 +113,6 @@ class MrpReport(models.Model):
                 GROUP BY
                     mo.id
             ) comp_cost ON comp_cost.mo_id = mo.id
-        """
-
-    def _join_operations_cost(self):
-        return """
             LEFT JOIN (
                 SELECT
                     mo_id                                                                    AS mo_id,
@@ -168,10 +137,6 @@ class MrpReport(models.Model):
                     ) AS op_cost_vars
                 GROUP BY mo_id
             ) op_cost ON op_cost.mo_id = mo.id
-        """
-
-    def _join_byproducts_cost_share(self):
-        return """
             LEFT JOIN (
                 SELECT
                     mo.id AS mo_id,
@@ -181,35 +146,30 @@ class MrpReport(models.Model):
                 WHERE
                     mo.state = 'done'
                     AND sm.state = 'done'
-                    AND sm.quantity != 0
+                    AND sm.product_qty != 0
                     AND sm.scrapped != 't'
                 GROUP BY mo.id
             ) cost_share ON cost_share.mo_id = mo.id
-        """
-
-    def _join_total_qty_produced(self):
-        return """
             LEFT JOIN (
                 SELECT
                     mo.id AS mo_id,
-                    mo.name,
-                    SUM(sm.quantity / uom.factor * uom_prod.factor) AS product_qty,
-                    SUM(sm.product_uom_qty / uom.factor * uom_prod.factor) AS qty_demanded
+                    SUM(sm.product_qty) AS product_qty
                 FROM stock_move AS sm
-                JOIN mrp_production AS mo ON sm.production_id = mo.id
-                JOIN uom_uom AS uom ON uom.id = sm.product_uom
-                JOIN product_product AS product ON product.id = sm.product_id
-                JOIN product_template AS template ON template.id = product.product_tmpl_id
-                JOIN uom_uom AS uom_prod ON uom_prod.id = template.uom_id
-                WHERE
+                RIGHT JOIN mrp_production AS mo ON sm.production_id = mo.id
+                 WHERE
                     mo.state = 'done'
                     AND sm.state = 'done'
-                    AND sm.quantity != 0
+                    AND sm.product_qty != 0
                     AND mo.product_id = sm.product_id
-                    AND (sm.scrapped != 't' or sm.scrapped IS NULL)
                 GROUP BY mo.id
             ) prod_qty ON prod_qty.mo_id = mo.id
-        """
+            LEFT JOIN {currency_table} ON currency_table.company_id = mo.company_id
+        """.format(
+            currency_table=self.env['res.currency']._get_query_currency_table({'multi_company': True, 'date': {'date_to': fields.Date.today()}}),
+            company_id=int(self.env.company.id)
+        )
+
+        return from_str
 
     def _where(self):
         where_str = """
@@ -229,23 +189,32 @@ class MrpReport(models.Model):
                 op_cost.total,
                 op_cost.total_duration,
                 prod_qty.product_qty,
-                prod_qty.qty_demanded,
                 currency_table.rate
         """
 
         return group_by_str
 
-    def _read_group_select(self, aggregate_spec, query):
-        if aggregate_spec in ('unit_cost:avg', 'unit_component_cost:avg', 'unit_operation_cost:avg', 'unit_duration:avg'):
-            # Make a weigthed average instead of simple average for these fields
-            fname, *__ = models.parse_read_group_spec(aggregate_spec)
-            sql_field = self._field_to_sql(self._table, fname, query)
-            sql_qty_produced = self._field_to_sql(self._table, 'qty_produced', query)
-            sql_expr = SQL("SUM(%s * %s) / SUM(%s)", sql_field, sql_qty_produced, sql_qty_produced)
-            return sql_expr, [fname, 'qty_produced']
-        if aggregate_spec == 'yield_rate:sum':
-            sql_qty_produced = self._field_to_sql(self._table, 'qty_produced', query)
-            sql_qty_demanded = self._field_to_sql(self._table, 'qty_demanded', query)
-            sql_expr = SQL("SUM(%s) / SUM(%s) * 100", sql_qty_produced, sql_qty_demanded)
-            return sql_expr, ['yield_rate', 'qty_produced', 'qty_demanded']
-        return super()._read_group_select(aggregate_spec, query)
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """
+            overrides the default read_group in order to calculate the average Cost per unit produced in each MO.
+        """
+        additional_fields = [field
+                             for field in ['unit_cost', 'unit_component_cost', 'unit_operation_cost', 'unit_duration']
+                             if ('%s:avg' % field) in fields]
+        if additional_fields:
+            fields.extend(['aggregated_qty_produced:array_agg(qty_produced)'])
+            fields.extend(['aggregated_%s:array_agg(%s)' % (field, field) for field in additional_fields])
+        res = super().read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        if additional_fields:
+            qties = 'aggregated_qty_produced'
+            for data in res:
+                for field in additional_fields:
+                    special_field = 'aggregated_%s' % field
+                    if data[special_field] and data[qties]:
+                        total_unit_cost = sum(float(value) * float(qty) for value, qty in zip(data[special_field], data[qties]) if value and qty)
+                        total_qty_produced = sum(float(qty) for qty in data[qties] if qty)
+                        data[field] = (total_unit_cost / total_qty_produced) if total_qty_produced else 0
+                    del data[special_field]
+                del data[qties]
+        return res

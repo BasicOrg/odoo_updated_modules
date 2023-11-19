@@ -21,8 +21,8 @@ label.o_wbooth_category_unavailable {
     }
 
     & > input + div {
-        opacity: .4;
-        border: 3px solid $o-gray-600;
+        padding: 10px;
+        border: 5px solid mix(map-get($theme-colors, 'secondary'), #e9ecef);
     }
 
     &:not(.o_wbooth_category_unavailable) > input + div {
@@ -30,12 +30,36 @@ label.o_wbooth_category_unavailable {
     }
 
     &:not(.o_wbooth_category_unavailable):hover > input + div {
-        opacity: .8;
+        border-color: map-get($theme-colors, 'secondary');
+    }
+
+    &:hover > input + div:before {
+        color: map-get($theme-colors, 'secondary');
     }
 
     & > input:checked + div,
     &:hover > input:checked + div {
-        opacity: 1;
+        border-color: map-get($theme-colors, 'primary');
+    }
+
+    & > input:checked + div:before,
+    &:hover > input:checked + div:before {
+        color: map-get($theme-colors, 'primary');
+    }
+
+    & > input:checked + div:before,
+    &:not(.o_wbooth_category_unavailable):hover > input + div:before {
+        content: "\f058";
+        font-family: "FontAwesome";
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        line-height: 40px;
+        top: -16px;
+        right: -16px;
+        background-color: $o-wevent-bg-color-base;
+        font-size: 2em;
+        text-align: center;
     }
 
     & img {
@@ -44,41 +68,6 @@ label.o_wbooth_category_unavailable {
 
 }
 
-.o_wbooth_booths .form-check{
-    position: relative;
-    padding-left: 0;
-
-    & > input {
-        visibility: hidden;
-        position: absolute;
-    }
-    & > input + label {
-        opacity: .4;
-        padding: 1rem;
-        border: 1px solid $o-gray-600;
-    }
-
-    &:hover > input + label  {
-        opacity: 1;
-    }
-
-    & > input:checked + label,
-    &:hover > input:checked + label {
-        opacity: 1;
-        background-color: $o-gray-600;
-        color: $o-white;
-    }
-
-}
-
 .o_wevent_booth_category {
     background-color: $o-wevent-bg-color-light;
-}
-
-.o_wevent_booth_order_progress {
-    li {
-        &.o_current_stage {
-            font-weight: bold;
-        }
-    }
 }

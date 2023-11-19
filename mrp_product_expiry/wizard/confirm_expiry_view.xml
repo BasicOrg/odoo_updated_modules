@@ -11,30 +11,30 @@
                 <field name="workorder_id" invisible="1"/>
             </xpath>
             <xpath expr="//button[@name='process']" position="attributes">
-                <attribute name="invisible">not picking_ids</attribute>
+                <attribute name="attrs">{'invisible': [('picking_ids', '=', [])]}</attribute>
             </xpath>
             <xpath expr="//button[@name='process_no_expired']" position="attributes">
-                <attribute name="invisible">not picking_ids</attribute>
+                <attribute name="attrs">{'invisible': [('picking_ids', '=', [])]}</attribute>
             </xpath>
             <xpath expr="//button[@special='cancel']" position="attributes">
-                <attribute name="invisible">production_ids</attribute>
+                <attribute name="attrs">{'invisible': [('production_ids', '!=', [])]}</attribute>
             </xpath>
             <xpath expr="//button[@name='process']" position="after">
                 <!-- From Produce Product wizard -->
-                <button name="confirm_produce" data-hotkey="q"
+                <button name="confirm_produce"
                     string="Confirm"
                     type="object"
-                    invisible="not production_ids"
+                    attrs="{'invisible': [('production_ids', '=', [])]}"
                     class="btn-primary"/>
-                <button special="cancel" data-hotkey="x"
+                <button special="cancel" data-hotkey="z"
                     string="Discard"
-                    invisible="not production_ids"
+                    attrs="{'invisible': [('production_ids', '=', [])]}"
                     class="btn-secondary"/>
                 <!-- From a Workorder -->
                 <button name="confirm_workorder"
                     string="Confirm"
                     type="object"
-                    invisible="not workorder_id"
+                    attrs="{'invisible': [('workorder_id', '=', False)]}"
                     class="btn-primary"/>
             </xpath>
         </field>

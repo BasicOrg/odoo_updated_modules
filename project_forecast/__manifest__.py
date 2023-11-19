@@ -4,7 +4,7 @@
     'name': "Project Planning",
     'summary': """Plan your resources on project tasks""",
     'description': """
-Schedule your teams across projects and estimate deadlines more accurately.
+    Schedule your teams across projects and estimate deadlines more accurately.
     """,
     'category': 'Services/Project',
     'version': '1.0',
@@ -14,6 +14,7 @@ Schedule your teams across projects and estimate deadlines more accurately.
         'data/planning_demo.xml',
     ],
     'data': [
+        'views/planning_report_views.xml',
         'views/planning_template_views.xml',
         'views/planning_templates.xml',
         'views/planning_views.xml',
@@ -22,10 +23,11 @@ Schedule your teams across projects and estimate deadlines more accurately.
         'report/planning_report_templates.xml',
     ],
     'license': 'OEEL-1',
+    'post_init_hook': 'post_init',
     'uninstall_hook': '_uninstall_hook',
     'assets': {
         'web.assets_backend': [
-            'project_forecast/static/src/views/**/*',
+            'project_forecast/static/src/js/forecast_gantt.js',
         ],
         'web.assets_frontend': [
             'project_forecast/static/src/js/forecast_calendar_front.js',

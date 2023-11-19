@@ -1,13 +1,13 @@
 /** @odoo-module **/
 // TODO: avoid empty keys when not necessary to reduce request size
 export function serializeNode(node, nodesToStripFromChildren = new Set()) {
-    if (!node.oid) {
-        return;
-    }
-    const result = {
+    let result = {
         nodeType: node.nodeType,
         oid: node.oid,
     };
+    if (!node.oid) {
+        throw new Error('node.oid can not be falsy.');
+    }
     if (node.nodeType === Node.TEXT_NODE) {
         result.textValue = node.nodeValue;
     } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -18,17 +18,11 @@ export function serializeNode(node, nodesToStripFromChildren = new Set()) {
             result.attributes[node.attributes[i].name] = node.attributes[i].value;
         }
         let child = node.firstChild;
-        // Don't serialize transient nodes
-        if (!["true", ""].includes(node.dataset.oeTransientContent)) {
-            while (child) {
-                if (!nodesToStripFromChildren.has(child.oid)) {
-                    const serializedChild = serializeNode(child, nodesToStripFromChildren);
-                    if (serializedChild) {
-                        result.children.push(serializedChild);
-                    }
-                }
-                child = child.nextSibling;
+        while (child) {
+            if (!nodesToStripFromChildren.has(child.oid)) {
+                result.children.push(serializeNode(child, nodesToStripFromChildren));
             }
+            child = child.nextSibling;
         }
     }
     return result;

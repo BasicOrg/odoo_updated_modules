@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web_cohort.CohortRenderer">
+    <t t-name="web_cohort.CohortRenderer" owl="1">
         <div class="o_cohort_renderer" t-att-class="props.class">
-            <div class="d-flex gap-1 px-3 py-2">
-                <div class="btn-group" role="toolbar" aria-label="Main actions">
-                    <t t-call="web.ReportViewMeasures">
-                        <t t-set="measures" t-value="model.metaData.measures"/>
-                        <t t-set="activeMeasures" t-value="[model.metaData.measure]"/>
-                    </t>
-                </div>
-                    <div class="btn-group">
-                    <ViewScaleSelector scales="scales" currentScale="model.metaData.interval" setScale.bind="setScale" />
-                </div>
-                    <div class="btn-group">
-                    <button class="btn btn-secondary fa fa-download o_cohort_download_button"
-                            title="Download as Excel file"
-                            t-on-click="downloadExcel"></button>
-                </div>
-            </div>
             <t t-foreach="model.data" t-as="data" t-key="data_index">
                 <div t-if="data.title" class="table-responsive">
                     <table class="table text-center mb-0">
@@ -73,7 +57,7 @@
                                     <t t-set="count" t-value="mode === 'churn' ? (col.churn_value === '-' ? '' : col.churn_value) : (col.value === '-' ? '' : col.value)" />
                                     <t t-set="measure" t-value="model.metaData.measures[model.metaData.measure].string" />
                                     <div class="o_cohort_highlight m-1 rounded p-1"
-                                        t-att-title="getCellTitle(col.period, measure, count)"
+                                        t-attf-title="Periode: {{col.period}}&#10;{{measure}}: {{count}}"
                                         t-attf-style="background-color: rgba(0, 160, 157, {{col.percentage/100.0}}); color: {{col.percentage gt 50 and '#FFFFFF' or 'inherit'}}"
                                         t-att-class="{o_cohort_value: col.value !== '-'}"
                                     >

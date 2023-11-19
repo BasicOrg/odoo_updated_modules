@@ -13,15 +13,11 @@ class TestHttpBase(HttpCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        geoip_resolver = MemoryGeoipResolver()
-        session_store = MemorySessionStore(session_class=Session)
-
-        lazy_property.reset_all(odoo.http.root)
         cls.addClassCleanup(lazy_property.reset_all, odoo.http.root)
         cls.classPatch(odoo.conf, 'server_wide_modules', ['base', 'web', 'test_http'])
-        cls.classPatch(odoo.http.Application, 'session_store', session_store)
-        cls.classPatch(odoo.http.Application, 'geoip_city_db', geoip_resolver)
-        cls.classPatch(odoo.http.Application, 'geoip_country_db', geoip_resolver)
+        lazy_property.reset_all(odoo.http.root)
+        cls.classPatch(odoo.http.root, 'session_store', MemorySessionStore(session_class=Session))
+        cls.classPatch(odoo.http.root, 'geoip_resolver', MemoryGeoipResolver())
 
     def setUp(self):
         super().setUp()

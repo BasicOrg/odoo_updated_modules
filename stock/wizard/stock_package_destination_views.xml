@@ -13,12 +13,12 @@
                         <tree>
                             <field name="product_id"/>
                             <field name="location_dest_id"/>
-                            <field name="quantity" String="quantity"/>
+                            <field name="qty_done" String="quantity"/>
                             <field name="lot_id" groups="stock.group_production_lot"/>
                         </tree>
                         <kanban>
                             <field name="product_id"/>
-                            <field name="quantity"/>
+                            <field name="qty_done"/>
                             <field name="location_dest_id"/>
                             <templates>
                                 <t t-name="kanban-box">
@@ -28,7 +28,7 @@
                                                 <field name="product_id"/>
                                             </div>
                                             <div class="col-6 o_kanban_primary_right">
-                                                <field name="quantity" String="quantity"/>
+                                                <field name="qty_done" String="quantity"/>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -43,7 +43,7 @@
                     </field>
                 </div>
                 <div>
-                    <strong>Where do you want to send the products?</strong>
+                    <strong>Where do you want to send the products ?</strong>
                 </div>
                 <div>
                     <field name="filtered_location" invisible="1"/>
@@ -51,7 +51,7 @@
                 </div>
                 <footer>
                     <button string="Confirm" name="action_done" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Discard" name="cancel_button" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Discard" name="cancel_button" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

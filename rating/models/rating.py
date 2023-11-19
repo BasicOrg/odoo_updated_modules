@@ -5,7 +5,7 @@ import uuid
 
 from odoo import api, fields, models
 from odoo.addons.rating.models import rating_data
-from odoo.tools.misc import file_open
+from odoo.modules.module import get_resource_path
 
 
 class Rating(models.Model):
@@ -59,8 +59,8 @@ class Rating(models.Model):
     @api.depends('res_model', 'res_id')
     def _compute_res_name(self):
         for rating in self:
-            name = self.env[rating.res_model].sudo().browse(rating.res_id).display_name
-            rating.res_name = name or f'{rating.res_model}/{rating.res_id}'
+            name = self.env[rating.res_model].sudo().browse(rating.res_id).name_get()
+            rating.res_name = name and name[0][1] or ('%s/%s') % (rating.res_model, rating.res_id)
 
     @api.depends('res_model', 'res_id')
     def _compute_resource_ref(self):
@@ -83,8 +83,8 @@ class Rating(models.Model):
         for rating in self:
             name = False
             if rating.parent_res_model and rating.parent_res_id:
-                name = self.env[rating.parent_res_model].sudo().browse(rating.parent_res_id).display_name
-                name = name or f'{rating.parent_res_model}/{rating.parent_res_id}'
+                name = self.env[rating.parent_res_model].sudo().browse(rating.parent_res_id).name_get()
+                name = name and name[0][1] or ('%s/%s') % (rating.parent_res_model, rating.parent_res_id)
             rating.parent_res_name = name
 
     def _get_rating_image_filename(self):
@@ -96,22 +96,17 @@ class Rating(models.Model):
         self.rating_image_url = False
         self.rating_image = False
         for rating in self:
-            image_path = f'rating/static/src/img/{rating._get_rating_image_filename()}'
-            rating.rating_image_url = f'/{image_path}'
             try:
-                rating.rating_image = base64.b64encode(
-                    file_open(image_path, 'rb', filter_ext=('.png',)).read())
-            except (IOError, OSError, FileNotFoundError):
-                rating.rating_image = False
+                image_path = get_resource_path('rating', 'static/src/img', rating._get_rating_image_filename())
+                rating.rating_image_url = '/rating/static/src/img/%s' % rating._get_rating_image_filename()
+                rating.rating_image = base64.b64encode(open(image_path, 'rb').read()) if image_path else False
+            except (IOError, OSError):
+                pass
 
     @api.depends('rating')
     def _compute_rating_text(self):
         for rating in self:
             rating.rating_text = rating_data._rating_to_text(rating.rating)
-
-    # ------------------------------------------------------------
-    # CRUD
-    # ------------------------------------------------------------
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -146,10 +141,6 @@ class Rating(models.Model):
                 data['parent_res_id'] = parent_res_model.id
         return data
 
-    # ------------------------------------------------------------
-    # ACTIONS
-    # ------------------------------------------------------------
-
     def reset(self):
         for record in self:
             record.write({
@@ -167,29 +158,3 @@ class Rating(models.Model):
             'res_id': self.res_id,
             'views': [[False, 'form']]
         }
-
-    # ------------------------------------------------------------
-    # TOOLS
-    # ------------------------------------------------------------
-
-    def _classify_by_model(self):
-        """ To ease batch computation of various ratings related methods they
-        are classified by model. Ratings not linked to a valid record through
-        res_model / res_id are ignored.
-
-        :return dict: for each model having at least one rating in self, have
-          a sub-dict containing
-            * ratings: ratings related to that model;
-            * record IDs: records linked to the ratings of that model, in same
-              order;
-        """
-        data_by_model = {}
-        for rating in self.filtered(lambda act: act.res_model and act.res_id):
-            if rating.res_model not in data_by_model:
-                data_by_model[rating.res_model] = {
-                    'ratings': self.env['rating.rating'],
-                    'record_ids': [],
-                }
-            data_by_model[rating.res_model]['ratings'] += rating
-            data_by_model[rating.res_model]['record_ids'].append(rating.res_id)
-        return data_by_model

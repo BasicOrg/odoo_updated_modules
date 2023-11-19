@@ -1,45 +1,20 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { StreamPostKanbanRecord } from '@social/js/stream_post_kanban_record';
 import { StreamPostCommentsFacebook } from './stream_post_comments';
 
-import { patch } from "@web/core/utils/patch";
-import { useEffect } from "@odoo/owl";
+import { patch } from '@web/core/utils/patch';
 
-patch(StreamPostKanbanRecord.prototype, {
+patch(StreamPostKanbanRecord.prototype, 'social_facebook.StreamPostKanbanRecord', {
 
-    setup() {
-        super.setup(...arguments);
-        useEffect((commentEl) => {
-            if (commentEl) {
-                const onFacebookCommentsClick = this._onFacebookCommentsClick.bind(this);
-                commentEl.addEventListener('click', onFacebookCommentsClick);
-                return () => {
-                    commentEl.removeEventListener('click', onFacebookCommentsClick);
-                };
-            }
-        }, () => [this.rootRef.el.querySelector('.o_social_facebook_comments')]);
-        useEffect((likeEl) => {
-            if (likeEl) {
-                const onFacebookPostLike = this._onFacebookPostLike.bind(this);
-                likeEl.addEventListener('click', onFacebookPostLike);
-                return () => {
-                    likeEl.removeEventListener('click', onFacebookPostLike);
-                };
-            }
-        }, () => [this.rootRef.el.querySelector('.o_social_facebook_likes')]);
-    },
-
-    _onFacebookCommentsClick(ev) {
-        ev.stopPropagation();
+    _onFacebookCommentsClick() {
         const postId = this.record.id.raw_value;
         this.rpc('/social_facebook/get_comments', {
             stream_post_id: postId,
             comments_count: this.commentsCount,
         }).then((result) => {
             this.dialog.add(StreamPostCommentsFacebook, {
-                title: _t('Facebook Comments'),
+                title: this.env._t('Facebook Comments'),
                 accountId: this.record.account_id.raw_value,
                 originalPost: this.record,
                 commentsCount: this.commentsCount,

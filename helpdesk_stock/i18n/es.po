@@ -3,16 +3,16 @@
 # 	* helpdesk_stock
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -32,7 +32,7 @@ msgstr "Envio para devolver"
 #. module: helpdesk_stock
 #: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__tracking
 msgid "Ensure the traceability of a storable product in your warehouse."
-msgstr "Asegure la trazabilidad de un producto almacenable en su almacén"
+msgstr "Asegura la trazabilidad de un producto almacenable en su almacén"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__has_partner_picking
@@ -42,12 +42,17 @@ msgstr ""
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_helpdesk_ticket
 msgid "Helpdesk Ticket"
-msgstr "Tíquet de asistencia"
+msgstr "Ticket del servicio de asistencia"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__lot_id
 msgid "Lot/Serial Number"
 msgstr "Lote/Nº de serie"
+
+#. module: helpdesk_stock
+#: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__lot_id
+msgid "Lot/Serial number concerned by the ticket"
+msgstr "Número de lote/serie relacionado con el ticket"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__picking_id
@@ -63,10 +68,8 @@ msgstr "Producto"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__product_id
-msgid ""
-"Product this ticket is about. If selected, only the sales orders, deliveries"
-" and invoices including this product will be visible."
-msgstr ""
+msgid "Product concerned by the ticket"
+msgstr "Producto relacionado con el ticket"
 
 #. module: helpdesk_stock
 #: model_terms:ir.ui.view,arch_db:helpdesk_stock.helpdesk_ticket_view_form_inherit_stock_user
@@ -74,15 +77,7 @@ msgid "Return"
 msgstr "Devolver"
 
 #. module: helpdesk_stock
-#. odoo-python
-#: code:addons/helpdesk_stock/models/stock_picking.py:0
-#, python-format
-msgid "Return %(status)s"
-msgstr ""
-
-#. module: helpdesk_stock
-#. odoo-python
-#: code:addons/helpdesk_stock/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_stock/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__picking_ids
 #, python-format
 msgid "Return Orders"
@@ -96,7 +91,7 @@ msgstr "Numero de devoluciones"
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_stock_return_picking
 msgid "Return Picking"
-msgstr "Albarán de devolución"
+msgstr "Recolección de devolución"
 
 #. module: helpdesk_stock
 #: model_terms:ir.ui.view,arch_db:helpdesk_stock.helpdesk_ticket_view_form_inherit_helpdesk_stock
@@ -106,12 +101,12 @@ msgstr "Devoluciones"
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_helpdesk_sla_report_analysis
 msgid "SLA Status Analysis"
-msgstr "Análisis del estado de SLA"
+msgstr "Análisis del estado SLA"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__sale_order_id
 msgid "Sales Order"
-msgstr "Pedido de venta"
+msgstr "Orden de venta"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__suitable_picking_ids
@@ -131,7 +126,7 @@ msgstr ""
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__ticket_id
 msgid "Ticket"
-msgstr "Entrada"
+msgstr "Ticket"
 
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_helpdesk_ticket_report_analysis
@@ -146,4 +141,4 @@ msgstr "Seguimiento"
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_stock_picking
 msgid "Transfer"
-msgstr "Albarán"
+msgstr "Traslado"

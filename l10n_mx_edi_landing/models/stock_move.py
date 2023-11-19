@@ -21,7 +21,7 @@ class StockMove(models.Model):
                 res |= super(StockMove, move)._create_out_svl(
                     forced_quantity=forced_quantity)
                 continue
-            candidates = res.sudo().search([
+            candidates = res.search([
                 ('product_id', '=', product.id),
                 ('remaining_qty', '>', 0),
                 ('company_id', '=', move.company_id.id),

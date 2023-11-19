@@ -6,7 +6,12 @@
         <field name="inherit_id" ref="approvals.approval_product_line_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_id']" position="attributes">
-                <attribute name="required">parent.approval_type != 'purchase' and parent.has_product == 'required'</attribute>
+                <attribute name="attrs">{
+                    'required': [
+                        ('parent.approval_type', '!=', 'purchase'),
+                        ('parent.has_product', '=', 'required'),
+                    ]}
+                </attribute>
             </xpath>
         </field>
     </record>

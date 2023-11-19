@@ -104,7 +104,7 @@ class SpanishMod347TaxReportCustomHandler(models.AbstractModel):
 
         return rslt
 
-    def _report_custom_engine_operations_real_estates_bought(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
+    def _report_custom_engine_operations_real_estates_bought(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None):
         domain = [
             ('debit', '>', 0.0),
             ('move_id.l10n_es_reports_mod347_invoice_type', '=', 'real_estates'),
@@ -113,7 +113,7 @@ class SpanishMod347TaxReportCustomHandler(models.AbstractModel):
 
         return self._custom_threshold_common(domain, expressions, options, date_scope, current_groupby, next_groupby, offset=offset, limit=limit)
 
-    def _report_custom_engine_operations_real_estates_sold(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
+    def _report_custom_engine_operations_real_estates_sold(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None):
         domain = [
             ('debit', '>', 0.0),
             ('move_id.l10n_es_reports_mod347_invoice_type', '=', 'real_estates'),

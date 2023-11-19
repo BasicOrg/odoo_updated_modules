@@ -42,6 +42,5 @@ class RentalSign(models.TransientModel):
                 "active_id": self.template_id.id,
                 "sign_directly_without_mail": True,
                 "default_sale_order_id": self.order_id.id,
-                "default_signer_id": self.order_id.partner_id.id
             }
             return action

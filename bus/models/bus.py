@@ -3,12 +3,11 @@ import contextlib
 import datetime
 import json
 import logging
-import os
 import random
 import selectors
 import threading
 import time
-from psycopg2 import InterfaceError, sql
+from psycopg2 import InterfaceError
 
 import odoo
 from odoo import api, fields, models
@@ -20,9 +19,6 @@ _logger = logging.getLogger(__name__)
 
 # longpolling timeout connection
 TIMEOUT = 50
-
-# custom function to call instead of default PostgreSQL's `pg_notify`
-ODOO_NOTIFY_FUNCTION = os.getenv('ODOO_NOTIFY_FUNCTION', 'pg_notify')
 
 #----------------------------------------------------------
 # Bus
@@ -81,8 +77,7 @@ class ImBus(models.Model):
             @self.env.cr.postcommit.add
             def notify():
                 with odoo.sql_db.db_connect('postgres').cursor() as cr:
-                    query = sql.SQL("SELECT {}('imbus', %s)").format(sql.Identifier(ODOO_NOTIFY_FUNCTION))
-                    cr.execute(query, (json_dump(list(channels)), ))
+                    cr.execute("notify imbus, %s", (json_dump(list(channels)),))
 
     @api.model
     def _sendone(self, channel, notification_type, message):
@@ -107,10 +102,6 @@ class ImBus(models.Model):
                 'message': json.loads(notif['message']),
             })
         return result
-
-    def _bus_last_id(self):
-        last = self.env['bus.bus'].search([], order='id desc', limit=1)
-        return last.id if last else 0
 
 
 #----------------------------------------------------------
@@ -187,9 +178,9 @@ class ImDispatch(threading.Thread):
                 _logger.exception("Bus.loop error, sleep and retry")
                 time.sleep(TIMEOUT)
 
-# Partially undo a2ed3d3d5bdb6025a1ba14ad557a115a86413e65
-# IMDispatch has a lazy start, so we could initialize it anyway
-# And this avoids the Bus unavailable error messages
-dispatch = ImDispatch()
+dispatch = None
 stop_event = threading.Event()
-CommonServer.on_stop(stop_event.set)
+if not odoo.multi_process or odoo.evented:
+    # We only use the event dispatcher in threaded and gevent mode
+    dispatch = ImDispatch()
+    CommonServer.on_stop(stop_event.set)

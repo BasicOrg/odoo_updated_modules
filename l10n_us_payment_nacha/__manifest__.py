@@ -1,11 +1,11 @@
 # coding: utf-8
 {
     "name": "NACHA Payments",
-    'countries': ['us'],
+    'icon': '/l10n_us/static/description/icon.png',
     "summary": """Export payments as NACHA files""",
     "category": "Accounting/Accounting",
     "description": """
-Export payments as NACHA files for use in the United States.
+        Export payments as NACHA files for use in the United States.
     """,
     "version": "1.0",
     "depends": ["account_batch_payment", "l10n_us"],

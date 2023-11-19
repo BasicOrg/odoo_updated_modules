@@ -19,16 +19,17 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         # OVERRIDE
         # Register SDD payments on mandates or trigger an error if no mandate is available.
-        for pay in self.payment_id.filtered(lambda p: p.payment_method_code in p.payment_method_id._get_sdd_payment_method_code()):
-            usable_mandate = pay.get_usable_mandate()
-            if not usable_mandate:
-                raise UserError(_(
-                    "Unable to post payment %(payment)r due to no usable mandate being available at date %(date)s for partner %(partner)r. Please create one before encoding a SEPA Direct Debit payment.",
-                    payment=pay.name,
-                    date=pay.date,
-                    partner=pay.partner_id.name,
-                ))
-            pay.sdd_mandate_id = usable_mandate
+        for pay in self.payment_id:
+            if pay.payment_method_code == 'sdd':
+                usable_mandate = pay.get_usable_mandate()
+                if not usable_mandate:
+                    raise UserError(_(
+                        "Unable to post payment %(payment)r due to no usable mandate being available at date %(date)s for partner %(partner)r. Please create one before encoding a SEPA Direct Debit payment.",
+                        payment=pay.name,
+                        date=pay.date,
+                        partner=pay.partner_id.name,
+                    ))
+                pay.sdd_mandate_id = usable_mandate
 
         return super()._post(soft)
 
@@ -90,9 +91,10 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    def _reconcile_post_hook(self, data):
-        # EXTENDS 'account'
-        super()._reconcile_post_hook(data)
+    def reconcile(self):
+        # OVERRIDE
+        # Copy the payment's mandate to the newly paid invoices.
+        res = super().reconcile()
 
         for pay in self.payment_id:
             if pay.sdd_mandate_id:
@@ -100,3 +102,5 @@ class AccountMoveLine(models.Model):
 
                 if pay.sdd_mandate_id.one_off:
                     pay.sdd_mandate_id.action_close_mandate()
+
+        return res

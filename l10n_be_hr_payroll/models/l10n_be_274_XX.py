@@ -11,8 +11,9 @@ from lxml import etree
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.modules.module import get_resource_path
 from odoo.tools import format_date
-from odoo.tools.misc import file_path, xlsxwriter
+from odoo.tools.misc import xlsxwriter
 from odoo.osv import expression
 
 
@@ -59,19 +60,19 @@ class L10nBe274XX(models.Model):
         ('done', 'Done')], default='draft')
     sheet_274_10 = fields.Binary('274.10 Sheet', readonly=True, attachment=False)
     sheet_274_10_filename = fields.Char()
-    pp_amount = fields.Monetary("Withholding Taxes", compute='_compute_amounts', compute_sudo=True)
-    pp_amount_32 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    pp_amount_33 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    pp_amount_34 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    taxable_amount = fields.Monetary("Taxable Amount", compute='_compute_amounts', compute_sudo=True)
-    taxable_amount_32 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    taxable_amount_33 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    taxable_amount_34 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    deducted_amount = fields.Monetary("Exempted Amount", compute='_compute_amounts', compute_sudo=True)
-    deducted_amount_32 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    deducted_amount_33 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    deducted_amount_34 = fields.Monetary(compute='_compute_amounts', compute_sudo=True)
-    capped_amount_34 = fields.Monetary("Capped Amount", compute='_compute_amounts', compute_sudo=True)
+    pp_amount = fields.Monetary("Withholding Taxes", compute='_compute_line_ids', compute_sudo=True)
+    pp_amount_32 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    pp_amount_33 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    pp_amount_34 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    taxable_amount = fields.Monetary("Taxable Amount", compute='_compute_line_ids', compute_sudo=True)
+    taxable_amount_32 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    taxable_amount_33 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    taxable_amount_34 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    deducted_amount = fields.Monetary("Exempted Amount", compute='_compute_line_ids', compute_sudo=True)
+    deducted_amount_32 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    deducted_amount_33 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    deducted_amount_34 = fields.Monetary(compute='_compute_line_ids', compute_sudo=True)
+    capped_amount_34 = fields.Monetary("Capped Amount", compute='_compute_line_ids', compute_sudo=True)
     xml_file = fields.Binary(string="XML file")
     xml_filename = fields.Char()
     xml_validation_state = fields.Selection([
@@ -84,10 +85,11 @@ class L10nBe274XX(models.Model):
     xls_file = fields.Binary(string="XLS file")
     xls_filename = fields.Char()
 
-    @api.depends('date_start')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = format_date(self.env, record.date_start, date_format="MMMM y", lang_code=self.env.user.lang)
+    def name_get(self):
+        return [(
+            record.id,
+            format_date(self.env, record.date_start, date_format="MMMM y", lang_code=self.env.user.lang)
+        ) for record in self]
 
     @api.depends('year', 'month')
     def _compute_dates(self):
@@ -99,7 +101,11 @@ class L10nBe274XX(models.Model):
 
     @api.depends('xml_file')
     def _compute_validation_state(self):
-        xsd_schema_file_path = file_path('l10n_be_hr_payroll/data/finprof.xsd')
+        xsd_schema_file_path = get_resource_path(
+            'l10n_be_hr_payroll',
+            'data',
+            'finprof.xsd',
+        )
         xsd_root = etree.parse(xsd_schema_file_path)
         schema = etree.XMLSchema(xsd_root)
         for sheet in self:
@@ -137,36 +143,8 @@ class L10nBe274XX(models.Model):
         monthly_pay = self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary')
 
         for sheet in self:
-            mapped_pp = defaultdict(int)
-            mapped_taxable_amount = defaultdict(int)
-            payslips = sheet._get_valid_payslips()
-
-            line_values = payslips._get_line_values([
-                'GROSS', 'PPTOTAL',
-                'DOUBLE.DECEMBER.GROSS', 'DOUBLE.DECEMBER.P.P'], compute_sum=True)
-
-            payslips = payslips.filtered(lambda p: line_values['PPTOTAL'][p.id]['total'])
-
-            # Valid payslips for exemption
-            payslips = payslips.filtered(lambda p: p.contract_id.rd_percentage and p.struct_id == monthly_pay)
-
-            for payslip in payslips:
-                if payslip.contract_id.rd_percentage:
-                    mapped_pp[payslip.employee_id] += payslip.contract_id.rd_percentage / 100 * 0.8 * line_values['PPTOTAL'][payslip.id]['total']
-                    mapped_taxable_amount[payslip.employee_id] += line_values['GROSS'][payslip.id]['total']
-
-            sheet.line_ids = [(5, 0, 0)] + [(0, 0, {
-                'sheet_id': sheet.id,
-                'employee_id': employee.id,
-                'amount': mapped_pp[employee],
-                'taxable_amount': mapped_taxable_amount[employee],
-            }) for employee in mapped_pp.keys()]
-
-    @api.depends('date_start', 'date_end', 'company_id')
-    def _compute_amounts(self):
-        monthly_pay = self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary')
-
-        for sheet in self:
+            mapped_pp = defaultdict(lambda: 0)
+            mapped_taxable_amount = defaultdict(lambda: 0)
             payslips = sheet._get_valid_payslips()
 
             line_values = payslips._get_line_values([
@@ -193,10 +171,12 @@ class L10nBe274XX(models.Model):
             payslips_34 = payslips.filtered(lambda p: p.employee_id.certificate in ['bachelor'])
             sheet.taxable_amount_34 = sum(line_values['GROSS'][p.id]['total'] for p in payslips_34)
             sheet.pp_amount_34 = sum(line_values['PPTOTAL'][p.id]['total'] for p in payslips_34)
-            sheet.deducted_amount = 0
-            sheet.deducted_amount_32 = 0
-            sheet.deducted_amount_33 = 0
-            sheet.deducted_amount_34 = 0
+            sheet.write({
+                'deducted_amount': 0,
+                'deducted_amount_32': 0,
+                'deducted_amount_33': 0,
+                'deducted_amount_34': 0,
+            })
 
             for payslip in payslips:
                 if payslip.contract_id.rd_percentage:
@@ -208,6 +188,8 @@ class L10nBe274XX(models.Model):
                     elif payslip.employee_id.certificate == 'bachelor':
                         sheet.deducted_amount_34 += deducted_amount
                     sheet.deducted_amount += deducted_amount
+                    mapped_pp[payslip.employee_id] += payslip.contract_id.rd_percentage / 100 * 0.8 * line_values['PPTOTAL'][payslip.id]['total']
+                    mapped_taxable_amount[payslip.employee_id] += line_values['GROSS'][payslip.id]['total']
 
             # The total amount of the exemption from payment of the withholding tax granted to
             # researchers who have a bachelor's degree is limited to 25% of the total amount of
@@ -219,6 +201,13 @@ class L10nBe274XX(models.Model):
             sheet.capped_amount_34 = min(
                 sheet.deducted_amount_34,
                 (sheet.deducted_amount_32 + sheet.deducted_amount_33) / 4)
+
+            sheet.line_ids = [(5, 0, 0)] + [(0, 0, {
+                'sheet_id': sheet.id,
+                'employee_id': employee.id,
+                'amount': mapped_pp[employee],
+                'taxable_amount': mapped_taxable_amount[employee],
+            }) for employee in mapped_pp.keys()]
 
     def action_generate_pdf(self):
         self.ensure_one()
@@ -267,7 +256,7 @@ class L10nBe274XX(models.Model):
 
         year_period_code = {
             2022: '6',
-            2023: '7',
+            2019: '7',
             2020: '8',
             2021: '9',
         }

@@ -7,7 +7,7 @@ import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 const userMenuRegistry = registry.category("user_menuitems");
 
@@ -33,7 +33,6 @@ export class UserMenu extends Component {
 }
 UserMenu.template = "web.UserMenu";
 UserMenu.components = { Dropdown, DropdownItem, CheckBox };
-UserMenu.props = {};
 
 export const systrayItem = {
     Component: UserMenu,

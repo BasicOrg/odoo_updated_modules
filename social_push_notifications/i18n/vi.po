@@ -3,16 +3,16 @@
 # 	* social_push_notifications
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -31,7 +31,7 @@ msgid "All related social media posts"
 msgstr "Tất cả bài đăng liên quan của mạng xã hội"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Allow"
@@ -45,15 +45,15 @@ msgstr "Thân"
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 msgid "Delay"
-msgstr "Thời gian trễ"
+msgstr "Độ trễ"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Deny"
@@ -89,7 +89,6 @@ msgid "Enable Web Push Notifications"
 msgstr "Bật thông báo push trên web"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -104,7 +103,6 @@ msgid "Firebase Admin Key File"
 msgstr "Firebase Admin Key File"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "Firebase Admin Key File is missing from the configuration."
@@ -146,7 +144,7 @@ msgstr "Google Chrome ·"
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_ir_http
 msgid "HTTP Routing"
-msgstr "Định tuyến HTTP"
+msgstr "HTTP Routing"
 
 #. module: social_push_notifications
 #: model:ir.model.fields,field_description:social_push_notifications.field_website_visitor_push_subscription__id
@@ -169,6 +167,11 @@ msgid "Key File"
 msgstr "Key File"
 
 #. module: social_push_notifications
+#: model:ir.model.fields,field_description:social_push_notifications.field_website_visitor_push_subscription____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
+
+#. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.social_post_view_form
 msgid "Local Time"
 msgstr ""
@@ -179,7 +182,6 @@ msgid "Media Type"
 msgstr "Media Type"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_live_post.py:0
 #: code:addons/social_push_notifications/models/social_post_template.py:0
 #, python-format
@@ -194,7 +196,7 @@ msgid "Notification Request Delay (seconds)"
 msgstr "Notification Request Delay (seconds)"
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #: model:ir.model.fields,field_description:social_push_notifications.field_res_config_settings__notification_request_icon
 #: model:ir.model.fields,field_description:social_push_notifications.field_social_account__notification_request_icon
@@ -364,7 +366,7 @@ msgstr "ID người gửi"
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_social_account
 msgid "Social Account"
-msgstr "Tài khoản mạng xã hội"
+msgstr ""
 
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_social_live_post
@@ -379,15 +381,14 @@ msgstr "Truyền thông xã hội"
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_social_post
 msgid "Social Post"
-msgstr "Bài đăng mạng xã hội"
+msgstr "Đăng lên mạng xã hội"
 
 #. module: social_push_notifications
 #: model:ir.model,name:social_push_notifications.model_social_post_template
 msgid "Social Post Template"
-msgstr "Mẫu bài đăng trên mạng xã hội"
+msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/website_visitor.py:0
 #, python-format
 msgid "Some selected visitors do not allow push notifications."
@@ -443,8 +444,6 @@ msgid ""
 "Used to make comparisons when we need to restrict some features to a "
 "specific media ('facebook', 'twitter', ...)."
 msgstr ""
-"Dùng để so sánh khi chúng ta cần giới hạn một số tính năng cho một phương "
-"tiện cụ thể ('facebook', 'twitter', ...)."
 
 #. module: social_push_notifications
 #: model:ir.model.fields,field_description:social_push_notifications.field_social_post__visitor_domain
@@ -458,7 +457,6 @@ msgid "Visitors"
 msgstr "Khách truy cập"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -480,22 +478,20 @@ msgstr "Trang web"
 #: model:ir.model,name:social_push_notifications.model_website_visitor
 #: model:ir.model.fields,field_description:social_push_notifications.field_website_visitor_push_subscription__website_visitor_id
 msgid "Website Visitor"
-msgstr "Khách truy cập trang web"
+msgstr "Khách truy cập website"
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "You can't delete a Push Notification account."
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid ""
-"You have to install \"google_auth>=1.18.0\" to be able to send push "
-"notifications."
+"You have to either install \"firebase_admin>=2.17.0\" or "
+"\"google_auth>=1.18.0\" to be able to send push notifications."
 msgstr ""
 
 #. module: social_push_notifications

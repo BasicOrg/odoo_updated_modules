@@ -1,6 +1,5 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
 import { SearchModel } from "@web/search/search_model";
 
@@ -44,7 +43,7 @@ export class BurndownChartSearchModel extends SearchModel {
     deactivateGroup(groupId) {
         // Prevent removing Date & Stage group by from the search
         if (this.searchItems[this.stageIdSearchItemId].groupId == groupId && this.searchItems[this.dateSearchItemId].groupId) {
-            this._addGroupByNotification(_t("Date and Stage"));
+            this._addGroupByNotification(this.env._t("Date and Stage"));
             return;
         }
         super.deactivateGroup(groupId);
@@ -68,7 +67,7 @@ export class BurndownChartSearchModel extends SearchModel {
             if (filtered_query.length !== this.query.length) {
                 this.query = filtered_query;
                 if (triggerNotification) {
-                    this._addGroupByNotification(_t("Date"));
+                    this._addGroupByNotification(this.env._t("Date"));
                 }
             }
         }
@@ -82,7 +81,7 @@ export class BurndownChartSearchModel extends SearchModel {
         // Ensure that stage_id is always selected.
         if (searchItemId === this.stageIdSearchItemId
             && this.query.some(queryElem => queryElem.searchItemId === searchItemId)) {
-            this._addGroupByNotification(_t("Stage"));
+            this._addGroupByNotification(this.env._t("Stage"));
             return;
         }
         super.toggleSearchItem(...arguments);
@@ -94,7 +93,7 @@ export class BurndownChartSearchModel extends SearchModel {
      * @private
      */
     _addGroupByNotification(fieldName) {
-        const notif = _t("The Burndown Chart must be grouped by");
+        const notif = this.env._t("The Burndown Chart must be grouped by");
         this.notificationService.add(
             `${notif} ${fieldName}`,
             { type: "danger" }

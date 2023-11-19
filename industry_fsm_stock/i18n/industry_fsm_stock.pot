@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 22:21+0000\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-23 08:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,18 +16,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: industry_fsm_stock
-#. odoo-python
-#: code:addons/industry_fsm_stock/models/product.py:0
-#, python-format
-msgid ""
-"Adding or updating this product is restricted due to its tracked status. "
-"Your current access rights do not allow you to perform these actions. Please"
-" contact your administrator to request the necessary permissions."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
+msgid "Already Delivered"
 msgstr ""
 
 #. module: industry_fsm_stock
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
-msgid "Already Delivered"
+msgid "Close"
 msgstr ""
 
 #. module: industry_fsm_stock
@@ -60,7 +55,6 @@ msgid "Display Name"
 msgstr ""
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/wizard/fsm_stock_tracking.py:0
 #, python-format
 msgid "Each line needs a Lot/Serial Number"
@@ -80,6 +74,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__id
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__id
 msgid "ID"
+msgstr ""
+
+#. module: industry_fsm_stock
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking____last_update
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line____last_update
+msgid "Last Modified on"
 msgstr ""
 
 #. module: industry_fsm_stock
@@ -105,10 +105,13 @@ msgid "Lot/Serial Number"
 msgstr ""
 
 #. module: industry_fsm_stock
-#. odoo-javascript
-#: code:addons/industry_fsm_stock/static/src/js/product_catalog/sale_order_line/sale_order_line.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
 msgid "Lot/Serial number"
+msgstr ""
+
+#. module: industry_fsm_stock
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "On hand:"
 msgstr ""
 
 #. module: industry_fsm_stock
@@ -133,11 +136,6 @@ msgid "Quantity Decreasable"
 msgstr ""
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__quantity_decreasable_sum
-msgid "Quantity Decreasable Sum"
-msgstr ""
-
-#. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__sale_order_line_id
 msgid "Sale Order Line"
 msgstr ""
@@ -145,12 +143,6 @@ msgstr ""
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_sale_order_line
 msgid "Sales Order Line"
-msgstr ""
-
-#. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__is_same_warehouse
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__is_same_warehouse
-msgid "Same warehouse"
 msgstr ""
 
 #. module: industry_fsm_stock
@@ -170,7 +162,11 @@ msgid "Task"
 msgstr ""
 
 #. module: industry_fsm_stock
-#. odoo-python
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__fsm_done
+msgid "Task Done"
+msgstr ""
+
+#. module: industry_fsm_stock
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid ""
@@ -207,18 +203,17 @@ msgid "Validate"
 msgstr ""
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid "Validate Lot/Serial Number"
 msgstr ""
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_validated
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_valided
 msgid "Validated Tracking Line"
 msgstr ""
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__warehouse_id
-msgid "Warehouse"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "View Availability"
 msgstr ""

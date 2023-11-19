@@ -3,17 +3,16 @@
 # 	* sale_ebay
 # 
 # Translators:
-# Wil Odoo, 2023
-# Sarah Park, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +20,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -30,7 +28,6 @@ msgid ""
 msgstr "수량을 0으로 설정하려면 품절 옵션을 활성화하고 나열 기간을 상품 취소할 때까지로 설정해야 합니다"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -67,6 +64,38 @@ msgstr "7일"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Sales Team</span>"
+msgstr "<span class=\"o_form_label\">판매 팀</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Storage</span>"
+msgstr "<span class=\"o_form_label\">보관소</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Synchronization</span>"
+msgstr "<span class=\"o_form_label\">동기화</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Account</span>"
+msgstr "<span class=\"o_form_label\">eBay 계정</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">eBay Marketplace Account Deletion/Closure "
+"Notifications</span>"
+msgstr ""
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">eBay Options</span>"
+msgstr "<span class=\"o_form_label\">eBay 선택사항</span>"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Activate Other Currencies"
 msgstr "다른 통화 활성화"
 
@@ -76,7 +105,6 @@ msgid "Add other countries"
 msgstr "다른 국가 추가"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -99,7 +127,7 @@ msgstr "옥션"
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_buy_it_now_price
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_buy_it_now_price
 msgid "Buy It Now Price"
-msgstr "즉시 구매가"
+msgstr "바로 구매 가격"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.ebay_link_listing_view
@@ -141,10 +169,9 @@ msgstr "코드"
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_res_config_settings
 msgid "Config Settings"
-msgstr "환경 설정"
+msgstr "설정 구성"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Configure The eBay Integrator Now"
@@ -226,13 +253,17 @@ msgid "Display Name"
 msgstr "표시명"
 
 #. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "Documentation"
+msgstr "문서화"
+
+#. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_listing_duration
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_listing_duration
 msgid "Duration"
-msgstr "소요시간"
+msgstr "기간"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -243,7 +274,6 @@ msgstr ""
 "%s"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -255,6 +285,8 @@ msgstr ""
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_orders_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_orders_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_orders_sync
 msgid "Ebay: get new orders"
 msgstr "이베이 : 새로운 주문 받기"
 
@@ -265,11 +297,15 @@ msgstr "이베이 : 주문 복구"
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_stock_sync_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_stock_sync
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_stock_sync
 msgid "Ebay: synchronise stock"
-msgstr "이베이: 재고 동기화"
+msgstr ""
 
 #. module: sale_ebay
 #: model:ir.actions.server,name:sale_ebay.ir_cron_sale_ebay_categories_ir_actions_server
+#: model:ir.cron,cron_name:sale_ebay.ir_cron_sale_ebay_categories
+#: model:ir.cron,name:sale_ebay.ir_cron_sale_ebay_categories
 msgid "Ebay: update categories"
 msgstr "이베이 : 범주 업데이트"
 
@@ -279,7 +315,6 @@ msgid "End Item's Listing"
 msgstr "최종 품목 목록"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -287,18 +322,17 @@ msgid ""
 " No Variant Set To Be Listed On eBay."
 msgstr ""
 "오류가 발생했습니다. \n"
-"eBay에서 표시할 세부 품목 내역이 없습니다."
+"eBay에 나열될 파생 상품 세트가 없습니다."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
 "Error Encountered.\n"
-"%r"
+"'%s'"
 msgstr ""
 "오류가 발생했습니다.\n"
-"%r"
+"'%s'"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
@@ -323,7 +357,7 @@ msgstr "갤러리 플러스"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Generate Token"
-msgstr "토큰 생성"
+msgstr ""
 
 #. module: sale_ebay
 #: model:ir.model.fields.selection,name:sale_ebay.selection__product_template__ebay_listing_duration__gtc
@@ -351,7 +385,6 @@ msgid "Import eBay config data and sync transactions"
 msgstr "eBay 구성 데이터 및 동기화 트랜잭션을 가져옵니다."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -366,6 +399,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_ebay.field_product_template__ebay_item_condition_id
 msgid "Item Condition"
 msgstr "품목 상태"
+
+#. module: sale_ebay
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_category____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_item_condition____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_link_listing____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_policy____last_update
+#: model:ir.model.fields,field_description:sale_ebay.field_ebay_site____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_ebay_category__write_uid
@@ -435,7 +477,7 @@ msgstr "위치"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_account_deletion_endpoint
 msgid "Marketplace account deletion notification endpoint"
-msgstr "마켓플레이스 계정 삭제 알림 엔드포인트"
+msgstr ""
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -456,7 +498,6 @@ msgid "Name"
 msgstr "이름"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid "No Business Policies"
@@ -468,14 +509,12 @@ msgid "Official eBay Category"
 msgstr "공식 이베이 카테고리"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "One parameter is missing."
 msgstr "하나의 매개 변수가 누락되었습니다."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "Or the condition is not compatible with the category."
@@ -493,13 +532,12 @@ msgid "Payment Policy"
 msgstr "지불 정책"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "Please provide your ebay production keys before enabling the account "
 "deletion notifications."
-msgstr "계정 삭제 알림을 활성화하려면 이베이 프로덕션 키를 입력하십시오."
+msgstr ""
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
@@ -530,10 +568,9 @@ msgstr "품목 카테고리"
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_product_product
 msgid "Product Variant"
-msgstr "품목 세부선택"
+msgstr "파생 품목"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "Product created from eBay transaction %s"
@@ -652,11 +689,6 @@ msgstr "경매 시작가"
 
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Storage"
-msgstr "저장 공간"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "Storage location of your products"
 msgstr "제품 보관 위치"
 
@@ -689,34 +721,24 @@ msgid "Sync now"
 msgstr "지금 동기화"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "Synchronization"
-msgstr "동기화"
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Chose The Following Delivery Method :\n"
 msgstr "구매자는 다음과 같은 배송 방법을 선택했습니다 :\n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/sale_order.py:0
 #, python-format
 msgid "The Buyer Posted :\n"
 msgstr "구매자가 게시 : \n"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_config_settings.py:0
 #, python-format
 msgid ""
 "The python 'cryptography' module is not installed on your server.\n"
 "It is necessary to support eBay account deletion notifications, please contact your system administrator to install it."
 msgstr ""
-"파이썬 '암호화' 모듈이 서버에 설치되어 있지 않습니다.\n"
-"이베이 계정 삭제 알림을 지원하려면, 시스템 관리자에게 문의하여 설치하시기 바랍니다."
 
 #. module: sale_ebay
 #: model:ir.model.fields,help:sale_ebay.field_product_product__ebay_subtitle
@@ -742,7 +764,6 @@ msgstr ""
 "모든 eBay 사이트에서 보조 카테고리를 사용할 수있는 것은 아닙니다. 이 기능에 대해 eBay가 수수료를 청구할 수 있습니다."
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid ""
@@ -755,19 +776,6 @@ msgstr ""
 " 가장 오래된 주문 날짜로 설정된 값으로 시스템 매개 변수 레코드를 작성하십시오."
 
 #. module: sale_ebay
-#. odoo-python
-#: code:addons/sale_ebay/models/product.py:0
-#, python-format
-msgid ""
-"This function should not be called with a range of more than 30 days, as "
-"eBay does not handle longer timespans. Instead use synchronize_orders which "
-"split in as many calls as needed."
-msgstr ""
-"eBay 에서는 기간이 길어질 경우 처리가 불가능하므로, 이 함수는 30일 이상의 기간의 범위로 설정할 수 없습니다. 대신, 필요한 만큼"
-" 분할이 가능한 synchronize_orders 명령어를 사용하십시오."
-
-#. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/res_partner.py:0
 #, python-format
 msgid ""
@@ -775,9 +783,6 @@ msgid ""
 "\n"
 "However, personal information might remain in linked documents, please review them according to laws that apply."
 msgstr ""
-"이베이로부터 계정 \"%s (%s)\" 삭제 요청을 받았음을 자동 안내드립니다. 계정은 이미 익명으로 처리되었으며 포털 액세스가 취소 (해당하는 경우)되었습니다.\n"
-"\n"
-"단, 연결된 문서에 개인 정보가 남아 있을 수 있으니 적용되는 법률에 따라 확인하시기 바랍니다. "
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_title
@@ -815,12 +820,12 @@ msgstr "eBay에서 사용"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.product_template_sale_ebay_form_view
 msgid "Variants"
-msgstr "세부선택"
+msgstr "파생 상품"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_verification_token
 msgid "Verification Token"
-msgstr "인증 토큰"
+msgstr ""
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_zip_code
@@ -832,11 +837,6 @@ msgstr "우편번호"
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid "eBay"
 msgstr "eBay"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Account"
-msgstr "이베이 계정"
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_category
@@ -884,19 +884,9 @@ msgid "eBay Listing ID"
 msgstr "이베이 목록 ID"
 
 #. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Marketplace Account Deletion/Closure Notifications"
-msgstr "이베이 마켓플레이스 계정 삭제/종료 안내"
-
-#. module: sale_ebay
 #: model:mail.activity.type,summary:sale_ebay.ebay_GDPR_notification
 msgid "eBay Odoo connector notification - account deletion"
-msgstr "eBay Odoo 배송 안내 - 계정 삭제"
-
-#. module: sale_ebay
-#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
-msgid "eBay Options"
-msgstr "이베이 옵션"
+msgstr ""
 
 #. module: sale_ebay
 #: model:ir.model,name:sale_ebay.model_ebay_policy
@@ -923,7 +913,7 @@ msgstr "이베이 사용자 ID"
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_variant_url
 msgid "eBay Variant URL"
-msgstr "이베이 세부선택 URL"
+msgstr "이베이 파생 상품 URL"
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_site
@@ -933,10 +923,14 @@ msgstr "이베이 웹 사이트"
 #. module: sale_ebay
 #: model:mail.activity.type,name:sale_ebay.ebay_GDPR_notification
 msgid "eBay connector: account deletion notification"
-msgstr "eBay 배송: 계정 삭제 알림"
+msgstr ""
 
 #. module: sale_ebay
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "eBay documentation"
+msgstr ""
+
+#. module: sale_ebay
 #: code:addons/sale_ebay/models/sale_ebay.py:0
 #, python-format
 msgid ""
@@ -947,7 +941,6 @@ msgstr ""
 "'%s'"
 
 #. module: sale_ebay
-#. odoo-python
 #: code:addons/sale_ebay/models/product.py:0
 #, python-format
 msgid "eBay is unreachable. Please try again later."
@@ -961,8 +954,9 @@ msgstr "이베이 매개 변수"
 #. module: sale_ebay
 #: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
 msgid ""
-"eBay requires supporting customer account deletion/closure notifications."
-msgstr "이베이에서 고객 계정 삭제/종료 알림을 지원해야 합니다."
+"eBay requires supporting customer account deletion/closure notifications.\n"
+"                                Please follow the"
+msgstr ""
 
 #. module: sale_ebay
 #: model:ir.model.fields,field_description:sale_ebay.field_product_product__ebay_url
@@ -1009,3 +1003,8 @@ msgstr "이베이 환율"
 #: model:ir.model.fields,field_description:sale_ebay.field_res_config_settings__ebay_sales_team
 msgid "ebay Sales Team"
 msgstr "이베이 영업팀"
+
+#. module: sale_ebay
+#: model_terms:ir.ui.view,arch_db:sale_ebay.res_config_settings_view_form
+msgid "to setup this mechanism."
+msgstr ""

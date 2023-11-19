@@ -10,16 +10,7 @@ export const crmKanbanView = {
     ...kanbanView,
     ArchParser: CrmKanbanArchParser,
     // Makes it easier to patch
-    Controller: class extends kanbanView.Controller {
-        get progressBarAggregateFields() {
-            const res = super.progressBarAggregateFields;
-            const progressAttributes = this.props.archInfo.progressAttributes;
-            if (progressAttributes && progressAttributes.recurring_revenue_sum_field) {
-                res.push(progressAttributes.recurring_revenue_sum_field);
-            }
-            return res;
-        }
-    },
+    Controller: class extends kanbanView.Controller {},
     Model: CrmKanbanModel,
     Renderer: CrmKanbanRenderer,
 };

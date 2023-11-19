@@ -10,13 +10,12 @@
                     <field name="expense_sheet_id" invisible="1"/>
                     <button name="action_open_expense_report"
                             class="oe_stat_button"
+                            string="Expense Report"
                             icon="fa-file-text-o"
                             type="object"
-                            invisible="not expense_sheet_id">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Expense Report</span>
-                            </div>
-                    </button>
+                            attrs="{'invisible': [('expense_sheet_id', '=', [])]}"
+                            groups="account.group_account_user,account.group_account_readonly">
+                        </button>
                 </xpath>
             </field>
         </record>

@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { spawnListViewForSpreadsheet, toggleCogMenuSpreadsheet } from "../utils/list_helpers";
+import { spawnListViewForSpreadsheet } from "../utils/list_helpers";
 import { SpreadsheetAction } from "@documents_spreadsheet/bundle/actions/spreadsheet_action";
 import { waitForDataSourcesLoaded } from "@spreadsheet/../tests/utils/model";
 import {
@@ -10,9 +10,8 @@ import {
     patchWithCleanup,
     triggerEvent,
 } from "@web/../tests/helpers/utils";
-import { toggleActionMenu } from "@web/../tests/search/helpers";
-import { getSpreadsheetActionModel } from "@spreadsheet_edition/../tests/utils/webclient_helpers";
-import { getBasicServerData } from "@spreadsheet/../tests/utils/data";
+import { toggleFavoriteMenu } from "@web/../tests/search/helpers";
+import { getSpreadsheetActionModel } from "../utils/webclient_helpers";
 
 let target;
 QUnit.module(
@@ -28,21 +27,17 @@ QUnit.module(
 
             await spawnListViewForSpreadsheet({
                 mockRPC: async function (route, args) {
-                    if (
-                        args.method === "action_open_new_spreadsheet" &&
-                        args.model === "documents.document"
-                    ) {
-                        assert.step("action_open_new_spreadsheet");
+                    if (args.method === "create" && args.model === "documents.document") {
+                        assert.step("create");
                     }
                 },
             });
-            await nextTick();
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             await click(target, ".modal button.btn-primary");
             await nextTick();
-            assert.verifySteps(["action_open_new_spreadsheet"]);
+            assert.verifySteps(["create"]);
         });
 
         QUnit.test("Can save a list in existing spreadsheet", async (assert) => {
@@ -63,8 +58,7 @@ QUnit.module(
                 },
             });
 
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             await triggerEvent(target, ".o-sp-dialog-item div[data-id='1']", "focus");
             await click(target, ".modal button.btn-primary");
@@ -84,12 +78,11 @@ QUnit.module(
             let spreadsheetAction;
             patchWithCleanup(SpreadsheetAction.prototype, {
                 setup() {
-                    super.setup();
+                    this._super();
                     spreadsheetAction = this;
                 },
             });
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             /** @type {HTMLInputElement} */
             const name = target.querySelector(".o_spreadsheet_name");
@@ -106,8 +99,7 @@ QUnit.module(
             assert.expect(1);
             await spawnListViewForSpreadsheet();
 
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             assert.strictEqual(target.querySelector(".o_spreadsheet_name").value, "Partners");
         });
@@ -118,8 +110,7 @@ QUnit.module(
                 orderBy: [{ name: "bar", asc: true }],
             });
 
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             assert.strictEqual(
                 target.querySelector(".o_spreadsheet_name").value,
@@ -133,12 +124,11 @@ QUnit.module(
             let spreadsheetAction;
             patchWithCleanup(SpreadsheetAction.prototype, {
                 setup() {
-                    super.setup();
+                    this._super();
                     spreadsheetAction = this;
                 },
             });
-            await toggleActionMenu(target);
-            await toggleCogMenuSpreadsheet(target);
+            await toggleFavoriteMenu(target);
             await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
             target.querySelector(".o_spreadsheet_name").value = "";
             await click(target, ".modal button.btn-primary");
@@ -146,26 +136,5 @@ QUnit.module(
             await waitForDataSourcesLoaded(model);
             assert.strictEqual(model.getters.getListName("1"), "Partners");
         });
-
-        QUnit.test(
-            "Grouped list: we take the number of elements not the number of groups",
-            async function (assert) {
-                const serverData = getBasicServerData();
-                await spawnListViewForSpreadsheet({
-                    serverData,
-                    groupBy: ["product_id"],
-                    red_model: "partner",
-                });
-
-                await toggleActionMenu(target);
-                await toggleCogMenuSpreadsheet(target);
-                await click(target.querySelector(".o_insert_list_spreadsheet_menu"));
-
-                assert.equal(
-                    target.querySelector("input#threshold").value,
-                    String(serverData.models.partner.records.length)
-                );
-            }
-        );
     }
 );

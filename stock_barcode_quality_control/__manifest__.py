@@ -7,7 +7,7 @@
     'category': 'Hidden',
     'version': '1.0',
     'description': """
-This bridge module is auto-installed when the modules stock_barcode and quality_control are installed.
+        This bridge module is auto-installed when the modules stock_barcode and quality_control are installed.
     """,
     'depends': ['stock_barcode', 'quality_control'],
     'installable': True,

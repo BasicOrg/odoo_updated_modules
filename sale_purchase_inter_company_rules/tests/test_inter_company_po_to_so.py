@@ -128,6 +128,8 @@ class TestInterCompanyPurchaseToSale(TestInterCompanyRulesCommonSOPO):
             'rule_type': 'sale_purchase',
             'auto_validation': True
         })
+        # Set parent relation
+        self.company_b.parent_id = self.company_a.id
         supplier = self.env['res.partner'].create({
             'name': 'Blabli car',
             'company_id': False

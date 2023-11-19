@@ -91,7 +91,7 @@ class GoogleService(models.AbstractModel):
             raise self.env['res.config.settings'].get_config_warning(error_msg)
 
     @api.model
-    def _do_request(self, uri, params=None, headers=None, method='POST', preuri=GOOGLE_API_BASE_URL, timeout=TIMEOUT):
+    def _do_request(self, uri, params=None, headers=None, method='POST', preuri="https://www.googleapis.com", timeout=TIMEOUT):
         """ Execute the request to Google API. Return a tuple ('HTTP_CODE', 'HTTP_RESPONSE')
             :param uri : the url to contact
             :param params : dict or already encoded parameters for the request to make
@@ -104,10 +104,6 @@ class GoogleService(models.AbstractModel):
         if headers is None:
             headers = {}
 
-        assert urls.url_parse(preuri + uri).host in [
-            urls.url_parse(url).host for url in (GOOGLE_TOKEN_ENDPOINT, GOOGLE_API_BASE_URL)
-        ]
-
         # Remove client_secret key from logs
         if isinstance(params, str):
             _log_params = json.loads(params) or {}
@@ -116,7 +112,7 @@ class GoogleService(models.AbstractModel):
         if _log_params.get('client_secret'):
             _log_params['client_secret'] = _log_params['client_secret'][0:4] + 'x' * 12
 
-        _logger.debug("Uri: %s - Type : %s - Headers: %s - Params : %s!", uri, method, headers, _log_params)
+        _logger.debug("Uri: %s - Type : %s - Headers: %s - Params : %s !", uri, method, headers, _log_params)
 
         ask_time = fields.Datetime.now()
         try:
@@ -125,7 +121,7 @@ class GoogleService(models.AbstractModel):
             elif method.upper() in ('POST', 'PATCH', 'PUT'):
                 res = requests.request(method.lower(), preuri + uri, data=params, headers=headers, timeout=timeout)
             else:
-                raise Exception(_('Method not supported [%s] not in [GET, POST, PUT, PATCH or DELETE]!', method))
+                raise Exception(_('Method not supported [%s] not in [GET, POST, PUT, PATCH or DELETE]!') % (method))
             res.raise_for_status()
             status = res.status_code
 
@@ -143,6 +139,6 @@ class GoogleService(models.AbstractModel):
                 status = error.response.status_code
                 response = ""
             else:
-                _logger.exception("Bad google request : %s!", error.response.content)
+                _logger.exception("Bad google request : %s !", error.response.content)
                 raise error
         return (status, response, ask_time)

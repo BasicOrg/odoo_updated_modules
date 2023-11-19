@@ -6,7 +6,7 @@
         <field name="model">spreadsheet.dashboard</field>
         <field name="arch" type="xml">
             <tree create="false" editable="bottom">
-                <field name="sequence" widget="handle" groups="base.group_system"/>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="group_ids" widget="many2many_tags"/>
             </tree>
@@ -18,7 +18,7 @@
         <field name="model">spreadsheet.dashboard.group</field>
         <field name="arch" type="xml">
             <tree string="Dashboards">
-                <field name="sequence" widget="handle" groups="base.group_system"/>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </tree>
         </field>
@@ -45,19 +45,4 @@
         </field>
     </record>
 
-    <record id="spreadsheet_dashboard_view_form" model="ir.ui.view">
-        <field name="name">spreadsheet.dashboard.view.form</field>
-        <field name="model">spreadsheet.dashboard</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="name"/>
-                    <field name="dashboard_group_id"/>
-                    <field name="spreadsheet_binary_data"/>
-                    <field name="thumbnail"/>
-                    <field name="group_ids" widget="many2many_tags"/>
-                </group>
-            </form>
-        </field>
-    </record>
 </odoo>

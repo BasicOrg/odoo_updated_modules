@@ -5,6 +5,7 @@ import base64
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError
+from odoo.modules.module import get_module_resource
 
 
 CATEGORY_SELECTION = [
@@ -21,8 +22,8 @@ class ApprovalCategory(models.Model):
     _check_company_auto = True
 
     def _get_default_image(self):
-        default_image_path = 'approvals/static/src/img/Folder.png'
-        return base64.b64encode(tools.misc.file_open(default_image_path, 'rb').read())
+        default_image_path = get_module_resource('approvals', 'static/src/img', 'clipboard-check-solid.svg')
+        return base64.b64encode(open(default_image_path, 'rb').read())
 
     name = fields.Char(string="Name", translate=True, required=True)
     company_id = fields.Many2one(
@@ -61,7 +62,7 @@ class ApprovalCategory(models.Model):
     """)
     user_ids = fields.Many2many('res.users', compute='_compute_user_ids', string="Approver Users")
     approver_ids = fields.One2many('approval.category.approver', 'category_id', string="Approvers")
-    approver_sequence = fields.Boolean('Approvers Sequence?', help="If checked, the approvers have to approve in sequence (one after the other). If Employee's Manager is selected as approver, they will be the first in line.")
+    approver_sequence = fields.Boolean('Approvers Sequence?', help="If checked, the approvers have to approve in sequence (one after the other).")
     request_to_validate_count = fields.Integer("Number of requests to validate", compute="_compute_request_to_validate_count")
     automated_sequence = fields.Boolean('Automated Sequence?',
         help="If checked, the Approval Requests will have an automated generated name based on the given code.")
@@ -71,8 +72,8 @@ class ApprovalCategory(models.Model):
 
     def _compute_request_to_validate_count(self):
         domain = [('request_status', '=', 'pending'), ('approver_ids.user_id', '=', self.env.user.id)]
-        requests_data = self.env['approval.request']._read_group(domain, ['category_id'], ['__count'])
-        requests_mapped_data = {category.id: count for category, count in requests_data}
+        requests_data = self.env['approval.request']._read_group(domain, ['category_id'], ['category_id'])
+        requests_mapped_data = dict((data['category_id'][0], data['category_id_count']) for data in requests_data)
         for category in self:
             category.request_to_validate_count = requests_mapped_data.get(category.id, 0)
 
@@ -154,6 +155,7 @@ class ApprovalCategory(models.Model):
             "res_model": "approval.request",
             "views": [[False, "form"]],
             "context": {
+                'form_view_initial_mode': 'edit',
                 'default_name': _('New') if self.automated_sequence else self.name,
                 'default_category_id': self.id,
                 'default_request_owner_id': self.env.user.id,

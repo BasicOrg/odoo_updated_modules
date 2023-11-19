@@ -1,5 +1,8 @@
 /** @odoo-module **/
 
+import { browser } from "@web/core/browser/browser";
+import { registry } from "@web/core/registry";
+import { session } from "@web/session";
 import { makeFakeNotificationService } from "@web/../tests/helpers/mock_services";
 import {
     click,
@@ -10,12 +13,8 @@ import {
     triggerHotkey,
 } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
-import { browser } from "@web/core/browser/browser";
-import { registry } from "@web/core/registry";
-import { session } from "@web/session";
 
-import { EventBus } from "@odoo/owl";
+const { EventBus } = owl;
 
 let serverData;
 let target;
@@ -248,7 +247,10 @@ QUnit.module("Fields", (hooks) => {
             target.querySelector(".o_statusbar_status button[data-value='4']"),
             "o_arrow_button_current"
         );
-        assert.ok(target.querySelector(".o_statusbar_status button[data-value='4']").disabled);
+        assert.hasClass(
+            target.querySelector(".o_statusbar_status button[data-value='4']"),
+            "disabled"
+        );
 
         const clickableButtons = target.querySelectorAll(
             ".o_statusbar_status button.btn:not(.dropdown-toggle):not(:disabled):not(.o_arrow_button_current)"
@@ -261,7 +263,10 @@ QUnit.module("Fields", (hooks) => {
             target.querySelector(".o_statusbar_status button[data-value='1']"),
             "o_arrow_button_current"
         );
-        assert.ok(target.querySelector(".o_statusbar_status button[data-value='1']").disabled);
+        assert.hasClass(
+            target.querySelector(".o_statusbar_status button[data-value='1']"),
+            "disabled"
+        );
     });
 
     QUnit.test("statusbar with no status", async function (assert) {
@@ -280,9 +285,9 @@ QUnit.module("Fields", (hooks) => {
         });
 
         assert.doesNotHaveClass(target.querySelector(".o_statusbar_status"), "o_field_empty");
-        assert.containsNone(
-            target,
-            ".o_statusbar_status > :not(.d-none)",
+        assert.strictEqual(
+            target.querySelector(".o_statusbar_status").children.length,
+            0,
             "statusbar widget should be empty"
         );
     });
@@ -303,8 +308,9 @@ QUnit.module("Fields", (hooks) => {
         });
 
         assert.doesNotHaveClass(target.querySelector(".o_statusbar_status"), "o_field_empty");
-        const tooltipInfo =
-            target.querySelector(".o_field_statusbar").attributes["data-tooltip-info"];
+        const tooltipInfo = target.querySelector(".o_field_statusbar").attributes[
+            "data-tooltip-info"
+        ];
         assert.strictEqual(
             JSON.parse(tooltipInfo.value).field.help,
             "some info about the field",
@@ -401,7 +407,6 @@ QUnit.module("Fields", (hooks) => {
                 ".o_statusbar_status button:not(.dropdown-toggle)"
             );
             await click(buttons[buttons.length - 1]);
-            await nextTick();
             assert.containsN(target, ".o_statusbar_status button:not(.dropdown-toggle)", 2);
         }
     );
@@ -429,15 +434,15 @@ QUnit.module("Fields", (hooks) => {
                     </form>`,
             });
 
-            await click(target, ".o_statusbar_status .dropdown-toggle:not(.d-none)");
+            await click(target, ".o_statusbar_status .dropdown-toggle");
 
             const status = target.querySelectorAll(".o_statusbar_status");
             assert.containsOnce(status[0], ".dropdown-item.disabled");
-            assert.containsOnce(status[status.length - 1], "button:disabled");
+            assert.containsOnce(status[status.length - 1], "button.disabled");
         }
     );
 
-    QUnit.test("statusbar: choose an item from the folded menu", async function (assert) {
+    QUnit.test("statusbar: choose an item from the 'More' menu", async function (assert) {
         patchWithCleanup(browser, {
             setTimeout: (fn) => fn(),
         });
@@ -466,11 +471,11 @@ QUnit.module("Fields", (hooks) => {
             document
                 .querySelector(".o_statusbar_status .dropdown-toggle.o_arrow_button")
                 .textContent.trim(),
-            "...",
+            "More",
             "button has the correct text"
         );
 
-        await click(target, ".o_statusbar_status .dropdown-toggle:not(.d-none)");
+        await click(target, ".o_statusbar_status .dropdown-toggle");
         await click(target, ".o-dropdown .dropdown-item");
         assert.strictEqual(
             target.querySelector("[aria-label='Current state']").textContent,
@@ -504,10 +509,10 @@ QUnit.module("Fields", (hooks) => {
             },
         });
 
-        assert.containsN(target, ".o_statusbar_status button:disabled", 3);
+        assert.containsN(target, ".o_statusbar_status button.disabled", 3);
         assert.strictEqual(rpcCount, 1, "should have done 1 search_read rpc");
         await editInput(target, ".o_field_widget[name='qux'] input", 9.5);
-        assert.containsN(target, ".o_statusbar_status button:disabled", 2);
+        assert.containsN(target, ".o_statusbar_status button.disabled", 2);
         assert.strictEqual(rpcCount, 2, "should have done 1 more search_read rpc");
         await editInput(target, ".o_field_widget[name='qux'] input", "hey");
         assert.strictEqual(rpcCount, 2, "should not have done 1 more search_read rpc");
@@ -545,166 +550,4 @@ QUnit.module("Fields", (hooks) => {
         );
         await click(target, "#o_command_2");
     });
-
-    QUnit.test("smart actions are unavailable if readonly", async function (assert) {
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                    <form>
-                        <header>
-                            <field name="trululu" widget="statusbar" readonly="1"/>
-                        </header>
-                    </form>`,
-            resId: 1,
-        });
-
-        assert.containsOnce(target, ".o_field_widget");
-
-        triggerHotkey("control+k");
-        await nextTick();
-        const moveStages = [...target.querySelectorAll(".o_command")].map((el) => el.textContent);
-        assert.notOk(moveStages.includes("Move to Trululu...ALT + SHIFT + X"));
-        assert.notOk(moveStages.includes("Move to next...ALT + X"));
-    });
-
-    QUnit.test("hotkeys are unavailable if readonly", async function (assert) {
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                    <form>
-                        <header>
-                            <field name="trululu" widget="statusbar" readonly="1"/>
-                        </header>
-                    </form>`,
-            resId: 1,
-        });
-
-        assert.containsOnce(target, ".o_field_widget");
-        triggerHotkey("alt+shift+x"); // Move to stage...
-        await nextTick();
-        assert.containsNone(target, ".modal", "command palette should not open");
-
-        triggerHotkey("alt+x"); // Move to next
-        await nextTick();
-        assert.containsNone(target, ".modal", "command palette should not open");
-    });
-
-    QUnit.test("auto save record when field toggled", async function (assert) {
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            resId: 1,
-            serverData,
-            arch: `
-                <form>
-                    <header>
-                        <field name="trululu" widget="statusbar" options="{'clickable': 1}" />
-                    </header>
-                </form>`,
-            mockRPC(_route, { method }) {
-                if (method === "web_save") {
-                    assert.step("web_save");
-                }
-            },
-        });
-        const clickableButtons = target.querySelectorAll(
-            ".o_statusbar_status button.btn:not(.dropdown-toggle):not(:disabled):not(.o_arrow_button_current)"
-        );
-        await click(clickableButtons[clickableButtons.length - 1]);
-        assert.verifySteps(["web_save"]);
-    });
-
-    QUnit.test(
-        "For the same record, a single rpc is done to recover the specialData",
-        async function (assert) {
-            serverData.views = {
-                "partner,3,list": '<tree><field name="display_name"/></tree>',
-                "partner,9,search": `<search></search>`,
-                "partner,false,form": `<form>
-                <header>
-                    <field name="trululu" widget="statusbar" readonly="1"/>
-                </header>
-            </form>`,
-            };
-
-            serverData.actions = {
-                1: {
-                    id: 1,
-                    name: "Partners",
-                    res_model: "partner",
-                    type: "ir.actions.act_window",
-                    views: [
-                        [false, "list"],
-                        [false, "form"],
-                    ],
-                },
-            };
-
-            const mockRPC = (route, args) => {
-                if (args.method === "search_read") {
-                    assert.step("search_read");
-                }
-            };
-
-            const webClient = await createWebClient({ serverData, mockRPC });
-            await doAction(webClient, 1);
-
-            await click(target.querySelector(".o_data_row .o_data_cell"));
-            assert.verifySteps(["search_read"]);
-
-            await click(target, ".o_back_button");
-            await click(target.querySelector(".o_data_row .o_data_cell"));
-            assert.verifySteps([]);
-        }
-    );
-
-    QUnit.test(
-        "open form with statusbar, leave and come back to another one with other domain",
-        async function (assert) {
-            serverData.views = {
-                "partner,3,list": '<tree><field name="display_name"/></tree>',
-                "partner,9,search": `<search></search>`,
-                "partner,false,form": `<form>
-                <header>
-                    <field name="trululu" widget="statusbar" domain="[['id', '>', id]]" readonly="1"/>
-                </header>
-            </form>`,
-            };
-
-            serverData.actions = {
-                1: {
-                    id: 1,
-                    name: "Partners",
-                    res_model: "partner",
-                    type: "ir.actions.act_window",
-                    views: [
-                        [false, "list"],
-                        [false, "form"],
-                    ],
-                },
-            };
-
-            const mockRPC = (route, args) => {
-                if (args.method === "search_read") {
-                    assert.step("search_read");
-                }
-            };
-
-            const webClient = await createWebClient({ serverData, mockRPC });
-            await doAction(webClient, 1);
-
-            // open first record
-            await click(target.querySelector(".o_data_row .o_data_cell"));
-            assert.verifySteps(["search_read"]);
-
-            // go back and open second record
-            await click(target, ".o_back_button");
-            await click(target.querySelectorAll(".o_data_row")[1].querySelector(".o_data_cell"));
-            assert.verifySteps(["search_read"]);
-        }
-    );
 });

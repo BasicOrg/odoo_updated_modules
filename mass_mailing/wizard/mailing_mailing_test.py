@@ -4,7 +4,6 @@
 from markupsafe import Markup
 
 from odoo import _, fields, models, tools
-from odoo.tools.misc import file_open
 
 
 class TestMassMailing(models.TransientModel):
@@ -38,11 +37,10 @@ class TestMassMailing(models.TransientModel):
         # Downside: Qweb syntax is only tested when there is atleast one record of the mailing's model
         if record:
             # Returns a proper error if there is a syntax error with Qweb
-            # do not force lang, will simply use user context
-            body = mailing._render_field('body_html', record.ids, compute_lang=False, options={'preserve_comments': True})[record.id]
-            preview = mailing._render_field('preview', record.ids, compute_lang=False)[record.id]
+            body = mailing._render_field('body_html', record.ids, post_process=True)[record.id]
+            preview = mailing._render_field('preview', record.ids, post_process=True)[record.id]
             full_body = mailing._prepend_preview(Markup(body), preview)
-            subject = mailing._render_field('subject', record.ids, compute_lang=False)[record.id]
+            subject = mailing._render_field('subject', record.ids)[record.id]
         else:
             full_body = mailing._prepend_preview(mailing.body_html, mailing.preview)
             subject = mailing.subject
@@ -50,18 +48,13 @@ class TestMassMailing(models.TransientModel):
         # Convert links in absolute URLs before the application of the shortener
         full_body = self.env['mail.render.mixin']._replace_local_links(full_body)
 
-        with file_open("mass_mailing/static/src/scss/mass_mailing_mail.scss", "r") as fd:
-            styles = fd.read()
         for valid_email in valid_emails:
             mail_values = {
                 'email_from': mailing.email_from,
                 'reply_to': mailing.reply_to,
                 'email_to': valid_email,
                 'subject': subject,
-                'body_html': self.env['ir.qweb']._render('mass_mailing.mass_mailing_mail_layout', {
-                    'body': full_body,
-                    'mailing_style': Markup(f'<style>{styles}</style>'),
-                }, minimal_qcontext=True),
+                'body_html': self.env['ir.qweb']._render('mass_mailing.mass_mailing_mail_layout', {'body': full_body}, minimal_qcontext=True),
                 'is_notification': True,
                 'mailing_id': mailing.id,
                 'attachment_ids': [(4, attachment.id) for attachment in mailing.attachment_ids],
@@ -83,16 +76,17 @@ class TestMassMailing(models.TransientModel):
                     _('Test mailing successfully sent to %s', mail_sudo.email_to))
             elif mail_sudo.state == 'exception':
                 notification_messages.append(
-                    _('Test mailing could not be sent to %s:', mail_sudo.email_to) +
-                    (Markup("<br/>") + mail_sudo.failure_reason)
+                    _('Test mailing could not be sent to %s:<br>%s',
+                        mail_sudo.email_to,
+                        mail_sudo.failure_reason)
                 )
 
         # manually delete the emails since we passed 'auto_delete: False'
         mails_sudo.unlink()
 
         if notification_messages:
-            self.mass_mailing_id._message_log(body=Markup('<ul>%s</ul>') % Markup().join(
-                [Markup('<li>%s</li>') % notification_message for notification_message in notification_messages]
+            self.mass_mailing_id._message_log(body='<ul>%s</ul>' % ''.join(
+                ['<li>%s</li>' % notification_message for notification_message in notification_messages]
             ))
 
         return True

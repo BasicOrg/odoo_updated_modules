@@ -15,7 +15,6 @@ from zeep.wsdl.utils import etree_to_string
 
 from odoo import _, _lt
 from odoo.tools.float_utils import float_repr
-from odoo.exceptions import UserError
 
 
 _logger = logging.getLogger(__name__)
@@ -148,7 +147,7 @@ class UPSRequest():
 
     def _set_client(self, wsdl, api, root):
         wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), wsdl)
-        client = Client(wsdl_path, plugins=[FixRequestNamespacePlug(root), LogPlugin(self.debug_logger)])
+        client = Client('file:///%s' % wsdl_path.lstrip('/'), plugins=[FixRequestNamespacePlug(root), LogPlugin(self.debug_logger)])
         self.factory_ns2 = client.type_factory('ns2')
         self.factory_ns3 = client.type_factory('ns3')
         # ns4 only exists for Ship API - we only use it for the invoice
@@ -209,7 +208,7 @@ class UPSRequest():
                 return _("Please provide at least one item to ship.")
             error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
             if error_lines:
-                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s", ", ".join(error_lines.product_id.mapped('name')))
+                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s") % ", ".join(error_lines.product_id.mapped('name'))
         if picking:
             for ml in picking.move_line_ids.filtered(lambda ml: not ml.result_package_id and not ml.product_id.weight):
                 return _("The delivery cannot be done because the weight of your product is missing.")
@@ -296,7 +295,7 @@ class UPSRequest():
 
             # Package and shipment reference text is only allowed for shipments within
             # the USA and within Puerto Rico. This is a UPS limitation.
-            if (p.name and not ' ' in p.name and ship_from.country_id.code in ('US') and ship_to.country_id.code in ('US')):
+            if (p.name and ship_from.country_id.code in ('US') and ship_to.country_id.code in ('US')):
                 reference_number = self.factory_ns2.ReferenceNumberType()
                 reference_number.Code = 'PM'
                 reference_number.Value = p.name
@@ -314,17 +313,14 @@ class UPSRequest():
             uom_type.Code = 'PC' if commodity.qty == 1 else 'PCS'
 
             unit_type = self.factory_ns4.UnitType()
-            unit_type.Number = int(commodity.qty)
-            unit_type.Value = float_repr(commodity.monetary_value, 2)
+            unit_type.Number = commodity.qty
+            unit_type.Value = commodity.monetary_value
             unit_type.UnitOfMeasurement = uom_type
 
             product = self.factory_ns4.ProductType()
-            # split the name of the product to maximum 3 substrings of length 35
-            name = commodity.product_id.name
-            product.Description = [line for line in [name[35 * i:35 * (i + 1)] for i in range(3)] if line]
+            product.Description = commodity.product_id.name
             product.Unit = unit_type
             product.OriginCountryCode = commodity.country_of_origin
-            product.CommodityCode = commodity.product_id.hs_code or ''
 
             invoice_products.append(product)
 
@@ -337,9 +333,7 @@ class UPSRequest():
             address_sold_to.StateProvinceCode = ship_to.state_id.code or ''
 
         sold_to = self.factory_ns4.SoldToType()
-        if len(ship_to.commercial_partner_id.name) > 35:
-            raise UserError(_('The name of the customer should be no more than 35 characters.'))
-        sold_to.Name = ship_to.commercial_partner_id.name
+        sold_to.Name = ship_to.commercial_company_name
         sold_to.AttentionName = ship_to.name
         sold_to.Address = address_sold_to
 
@@ -483,7 +477,6 @@ class UPSRequest():
         shipment.Shipper.ShipperNumber = self.shipper_number or ''
         shipment.Shipper.Phone = self.factory_ns2.ShipPhoneType()
         shipment.Shipper.Phone.Number = self._clean_phone_number(shipper.phone)
-        shipment.Shipper.EmailAddress = shipper.email or ''
 
         shipment.ShipFrom = self.factory_ns2.ShipFromType()
         shipment.ShipFrom.Address = self.factory_ns2.ShipAddressType()
@@ -497,7 +490,6 @@ class UPSRequest():
             shipment.ShipFrom.Address.StateProvinceCode = ship_from.state_id.code or ''
         shipment.ShipFrom.Phone = self.factory_ns2.ShipPhoneType()
         shipment.ShipFrom.Phone.Number = self._clean_phone_number(ship_from.phone)
-        shipment.ShipFrom.EmailAddress = ship_from.email or ''
 
         shipment.ShipTo = self.factory_ns2.ShipToType()
         shipment.ShipTo.Address = self.factory_ns2.ShipToAddressType()
@@ -511,7 +503,6 @@ class UPSRequest():
             shipment.ShipTo.Address.StateProvinceCode = ship_to.state_id.code or ''
         shipment.ShipTo.Phone = self.factory_ns2.ShipPhoneType()
         shipment.ShipTo.Phone.Number = self._clean_phone_number(shipment_info['phone'])
-        shipment.ShipTo.EmailAddress = ship_to.email or ''
         if not ship_to.commercial_partner_id.is_company:
             shipment.ShipTo.Address.ResidentialAddressIndicator = None
 
@@ -557,7 +548,7 @@ class UPSRequest():
 
         sso = self.factory_ns2.ShipmentServiceOptionsType()
         if shipment_info.get('require_invoice'):
-            sso.InternationalForms = self.set_invoice(shipment_info, [c for pkg in packages for c in pkg.commodities], ship_to)
+            sso.InternationalForms = self.set_invoice(shipment_info, packages.commodities, ship_to)
         if saturday_delivery:
             sso.SaturdayDeliveryIndicator = saturday_delivery
         shipment.ShipmentServiceOptions = sso

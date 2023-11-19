@@ -1,3 +1,5 @@
+import base64
+
 from odoo.addons.spreadsheet.tests.validate_spreadsheet_data import (
     ValidateSpreadsheetData,
 )
@@ -12,5 +14,5 @@ class TestSpreadsheetTemplateData(ValidateSpreadsheetData):
         for template in templates:
             with self.subTest(template.name):
                 self.validate_spreadsheet_data(
-                    template.spreadsheet_data, template.name
+                    base64.decodebytes(template.data), template.name
                 )

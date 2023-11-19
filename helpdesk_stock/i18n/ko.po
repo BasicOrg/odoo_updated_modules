@@ -3,16 +3,17 @@
 # 	* helpdesk_stock
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -32,12 +33,12 @@ msgstr "반품 배송"
 #. module: helpdesk_stock
 #: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__tracking
 msgid "Ensure the traceability of a storable product in your warehouse."
-msgstr "창고에 저장 가능한 품목의 추적성을 확인하십시오."
+msgstr "창고에 보관 가능한 품목의 추적성을 확인하십시오."
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__has_partner_picking
 msgid "Has Partner Picking"
-msgstr "협력사 픽업 있음"
+msgstr ""
 
 #. module: helpdesk_stock
 #: model:ir.model,name:helpdesk_stock.model_helpdesk_ticket
@@ -48,6 +49,11 @@ msgstr "고객센터 티켓"
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__lot_id
 msgid "Lot/Serial Number"
 msgstr "LOT/일련번호"
+
+#. module: helpdesk_stock
+#: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__lot_id
+msgid "Lot/Serial number concerned by the ticket"
+msgstr "티켓과 관련된 LOT/일련번호"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__picking_id
@@ -63,10 +69,8 @@ msgstr "품목"
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,help:helpdesk_stock.field_helpdesk_ticket__product_id
-msgid ""
-"Product this ticket is about. If selected, only the sales orders, deliveries"
-" and invoices including this product will be visible."
-msgstr "이 티켓에 대한 품목입니다. 선택하면 이 품목과 함께 판매주문서, 배송 및 청구서만 표시됩니다."
+msgid "Product concerned by the ticket"
+msgstr "티켓과 관련된 상품"
 
 #. module: helpdesk_stock
 #: model_terms:ir.ui.view,arch_db:helpdesk_stock.helpdesk_ticket_view_form_inherit_stock_user
@@ -74,15 +78,7 @@ msgid "Return"
 msgstr "반납"
 
 #. module: helpdesk_stock
-#. odoo-python
-#: code:addons/helpdesk_stock/models/stock_picking.py:0
-#, python-format
-msgid "Return %(status)s"
-msgstr ""
-
-#. module: helpdesk_stock
-#. odoo-python
-#: code:addons/helpdesk_stock/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_stock/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__picking_ids
 #, python-format
 msgid "Return Orders"
@@ -116,17 +112,17 @@ msgstr "판매 주문"
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__suitable_picking_ids
 msgid "Suitable Picking"
-msgstr "적합한 픽업"
+msgstr ""
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_helpdesk_ticket__suitable_product_ids
 msgid "Suitable Product"
-msgstr "적합한 품목"
+msgstr ""
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__suitable_sale_order_ids
 msgid "Suitable Sale Order"
-msgstr "적합한 판매주문서"
+msgstr ""
 
 #. module: helpdesk_stock
 #: model:ir.model.fields,field_description:helpdesk_stock.field_stock_return_picking__ticket_id

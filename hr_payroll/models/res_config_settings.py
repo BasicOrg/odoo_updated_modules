@@ -12,4 +12,3 @@ class ResConfigSettings(models.TransientModel):
     module_l10n_in_hr_payroll = fields.Boolean(string='Indian Payroll')
     module_hr_payroll_account = fields.Boolean(string='Payroll with Accounting')
     module_hr_payroll_account_sepa = fields.Boolean(string='Payroll with SEPA payment')
-    group_payslip_display = fields.Boolean(implied_group="hr_payroll.group_payslip_display")

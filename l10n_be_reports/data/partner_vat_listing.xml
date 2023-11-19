@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="l10n_be_partner_vat_listing" model="account.report">
-        <field name="name">Partner VAT Listing</field>
+        <field name="name">VAT Listing Audit</field>
         <field name="filter_show_draft" eval="False"/>
         <field name="filter_period_comparison" eval="False"/>
-        <field name="default_opening_date_filter">last_year</field>
         <field name="custom_handler_model_id" ref="model_l10n_be_partner_vat_handler"/>
         <field name="load_more_limit" eval="80"/>
         <field name="column_ids">
             <record id="l10n_be_partner_vat_listing_vat_number" model="account.report.column">
                 <field name="name">VAT Number</field>
                 <field name="expression_label">vat_number</field>
-                <field name="figure_type">string</field>
+                <field name="figure_type">none</field>
             </record>
             <record id="l10n_be_partner_vat_listing_turnover" model="account.report.column">
                 <field name="name">Turnover</field>

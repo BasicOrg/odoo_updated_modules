@@ -54,7 +54,7 @@ class TestPaymentTransaction(MercadoPagoCommon, PaymentHttpCommon):
             processing_values = tx._get_processing_values()
         form_info = self._extract_values_from_html_form(processing_values['redirect_form_html'])
         self.assertEqual(form_info['action'], 'https://dummy.com')
-        self.assertEqual(form_info['method'], 'get')
+        self.assertEqual(form_info['method'], 'post')
         self.assertDictEqual(form_info['inputs'], {})
 
     def test_processing_notification_data_confirms_transaction(self):
@@ -62,7 +62,7 @@ class TestPaymentTransaction(MercadoPagoCommon, PaymentHttpCommon):
         successful payment. """
         tx = self._create_transaction(flow='redirect')
         with patch(
-            'odoo.addons.payment_mercado_pago.models.payment_provider.PaymentProvider'
+            'odoo.addons.payment_mercado_pago.models.payment_provider.Paymentprovider'
             '._mercado_pago_make_request', return_value=self.verification_data
         ):
             tx._process_notification_data(self.redirect_notification_data)

@@ -3,19 +3,18 @@
 # 	* sale_renting
 # 
 # Translators:
-# JH CHOI <hwangtog@gmail.com>, 2023
-# Wil Odoo, 2023
-# Daye Jeong, 2023
-# Sarah Park, 2023
+# Linkup <link-up@naver.com>, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Sarah Park, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,44 +22,11 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
-#, python-format
-msgid ""
-"\n"
-"%(from_date)s to %(to_date)s"
-msgstr ""
-"\n"
-"%(from_date)s 에서 %(to_date)s 까지"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_template.py:0
-#, python-format
-msgid "%(amount)s (fixed)"
-msgstr "%(amount)s (고정)"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_pricing.py:0
-#, python-format
-msgid "%(amount)s / %(duration)s"
-msgstr "%(amount)s / %(duration)s"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "%(duration)s %(unit)s"
-msgstr "%(duration)s %(unit)s"
-
-#. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/models/product_product.py:0
 #: code:addons/sale_renting/models/product_template.py:0
 #, python-format
 msgid "%s (Rental)"
-msgstr "%s (렌탈)"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.actions.report,print_report_name:sale_renting.action_report_rental_saleorder
@@ -72,49 +38,24 @@ msgstr ""
 "Receipt - %s' %(object.name)) or 'Order - %s' % (object.name)"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "123 Main St"
-msgstr "123 Main St"
+#: code:addons/sale_renting/wizard/rental_configurator.py:0
+#, python-format
+msgid "/day"
+msgstr "/일"
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_2_weeks
-msgid "2 Weeks"
-msgstr "2주"
+#: code:addons/sale_renting/wizard/rental_configurator.py:0
+#, python-format
+msgid "/hour"
+msgstr "/시간"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "2023-08-01"
-msgstr "2023-08-01"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "2023-08-10"
-msgstr "2023-08-10"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_3_hours
-msgid "3 Hours"
-msgstr "3시간"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_3_year
-msgid "3 years"
-msgstr "3년"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "456 Other St"
-msgstr "456 Other St"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence5_year
-msgid "5 Years"
-msgstr "5년"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_kanban
-msgid "<i class=\"fa fa-warning\"/> Late"
-msgstr "<i class=\"fa fa-warning\"/> 지연"
+#: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">\n"
+"                                    Default Delay Costs\n"
+"                                </span>"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.product_product_form_view_rental_gantt
@@ -123,39 +64,24 @@ msgid "<span class=\"o_stat_text\">in Rental</span>"
 msgstr "<span class=\"o_stat_text\">임대 중</span>"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid ""
-"<span invisible=\"duration_days != 1\"> day </span>\n"
-"                    <span invisible=\"duration_days in [0,1]\"> days </span>\n"
-"                    <span invisible=\"duration_days == 0 or remaining_hours == 0\">and </span>"
-msgstr ""
-"<span invisible=\"duration_days != 1\"> 일 </span>\n"
-"                    <span invisible=\"duration_days in [0,1]\"> 일 </span>\n"
-"                    <span invisible=\"duration_days == 0 or remaining_hours == 0\"> 및 </span>"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid ""
-"<span invisible=\"remaining_hours != 1\"> hour </span>\n"
-"                    <span invisible=\"remaining_hours in [0,1]\"> hours </span>"
-msgstr ""
-"<span invisible=\"remaining_hours != 1\"> 시간 </span>\n"
-"                    <span invisible=\"remaining_hours in [0,1]\"> 시간 </span>"
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
+msgid "<span> to </span>"
+msgstr "<span> 종료 </span>"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "<strong>Order # — </strong>"
-msgstr "<strong>주문번호 — </strong>"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "<strong>Pickup  — </strong>"
-msgstr "<strong>픽업  — </strong>"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "<strong>Return — </strong>"
-msgstr "<strong>반납 — </strong>"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
@@ -165,22 +91,17 @@ msgstr "<strong>영업사원 :</strong>"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "<strong>Shipping Address:</strong>"
-msgstr "<strong>배송지 주소:</strong>"
+msgstr "<strong>배송 주소 :</strong>"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "<strong>Status — </strong>"
-msgstr "<strong>상태 — </strong>"
+msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__active
-msgid "Active"
-msgstr "활성화"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
-msgid "Add a price"
-msgstr "가격 추가하기"
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
+msgid "Add"
+msgstr "추가"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -210,17 +131,16 @@ msgid "Ask customer to sign documents on the spot."
 msgstr "고객에게 즉시 문서에 서명하도록 요청합니다."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "At first, let's create some products to rent."
 msgstr "먼저 임대할 제품을 만들어 봅시다."
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
-msgid "Booked"
-msgstr "예약됨"
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__pricing_id
+msgid "Best Pricing Rule based on duration"
+msgstr "기간에 따른 최상의 가격 규칙"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__rent_ok
@@ -231,6 +151,7 @@ msgid "Can be Rented"
 msgstr "임대 가능"
 
 #. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_wizard_view_form
 msgid "Cancel"
 msgstr "취소"
@@ -241,31 +162,31 @@ msgstr "취소"
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__cancel
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__state__cancel
 msgid "Cancelled"
-msgstr "취소됨"
+msgstr "취소 됨"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to create a new quotation."
 msgstr "새 견적을 작성하려면 여기를 클릭하십시오."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to register the pickup."
 msgstr "수령을 등록하려면 여기를 클릭하십시오."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to set up your first rental product."
 msgstr "첫 번째 임대 상품을 설정하려면 여기를 클릭하십시오."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Click here to start filling the quotation."
@@ -282,7 +203,7 @@ msgid "Companies"
 msgstr "회사"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__company_id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__company_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__company_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__company_id
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
@@ -293,26 +214,37 @@ msgstr "회사"
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_res_config_settings
 msgid "Config Settings"
-msgstr "환경 설정"
+msgstr "설정 구성"
 
 #. module: sale_renting
 #: model:ir.ui.menu,name:sale_renting.menu_rental_config
 msgid "Configuration"
-msgstr "설정"
+msgstr "구성"
 
 #. module: sale_renting
-#. odoo-javascript
+#: model:ir.model,name:sale_renting.model_rental_wizard
+msgid "Configure the rental of a product"
+msgstr "제품 임대 구성"
+
+#. module: sale_renting
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Confirm the order when the customer agrees with the terms."
 msgstr "고객이 약관에 동의하면 주문을 확인하십시오."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Confirm the returned quantities and hit Validate."
 msgstr "반납된 수량을 확인하고 승인을 누릅니다."
+
+#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__pickup
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
+msgid "Confirmed"
+msgstr "확인됨"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
@@ -323,12 +255,7 @@ msgstr "확인된 주문"
 #. module: sale_renting
 #: model:ir.actions.act_window,name:sale_renting.action_create_rental_order
 msgid "Create Rental Orders"
-msgstr "렌탈주문서 생성"
-
-#. module: sale_renting
-#: model_terms:ir.actions.act_window,help:sale_renting.sale_temporal_recurrence_action
-msgid "Create a new period"
-msgstr "새 기간 생성"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_order_action
@@ -336,14 +263,9 @@ msgid "Create a new quotation, the first step of a new rental!"
 msgstr "새로운 임대의 첫 단계인 새로운 견적을 작성하십시오!"
 
 #. module: sale_renting
-#: model_terms:ir.actions.act_window,help:sale_renting.product_pricing_action
-msgid "Create a new recurrence"
-msgstr "새 반복 항목 만들기"
-
-#. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.action_rental_report
 msgid "Create a new rental order"
-msgstr "새로운 렌탈주문서 생성"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_product_template_action
@@ -351,7 +273,7 @@ msgid "Create a new rental product!"
 msgstr "새로운 임대 제품을 만드십시오!"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Create or select a customer here."
@@ -363,32 +285,24 @@ msgid "Created In App Rental"
 msgstr "앱 임대에서 작성됨"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__create_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__create_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__create_uid
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__create_uid
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__create_uid
 msgid "Created by"
 msgstr "작성자"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__create_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__create_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__create_date
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__create_date
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__create_date
 msgid "Created on"
 msgstr "작성일자"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__currency_id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__currency_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__currency_id
 msgid "Currency"
 msgstr "통화"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_product__product_pricing_ids
-#: model:ir.model.fields,field_description:sale_renting.field_product_template__product_pricing_ids
-msgid "Custom Pricings"
-msgstr "맞춤 가격"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__partner_id
@@ -421,11 +335,6 @@ msgid "Customers"
 msgstr "고객"
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_daily
-msgid "Daily"
-msgstr "일별"
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__price
 msgid "Daily Amount"
 msgstr "일일 금액"
@@ -450,24 +359,17 @@ msgstr "일일 반납 수량"
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_search
 msgid "Date"
+msgstr "일자"
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
+msgid "Dates"
 msgstr "날짜"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "Day"
-msgstr "일"
-
-#. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__day
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__day
 msgid "Days"
 msgstr "일"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
-msgid "Default Delay Costs"
-msgstr "기본 지연 비용"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_res_config_settings__extra_product
@@ -475,7 +377,6 @@ msgid "Delay Product"
 msgstr "지연 상품"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__description
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__description
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "Description"
@@ -487,50 +388,58 @@ msgid "Digital Documents"
 msgstr "디지털 문서"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__display_name
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__display_name
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__display_name
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__display_name
 msgid "Display Name"
 msgstr "표시명"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__duration
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_report__state__draft
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__state__draft
+msgid "Draft Quotation"
+msgstr "견적 초안"
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__duration
 msgid "Duration"
-msgstr "소요시간"
+msgstr "기간"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__name
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__duration_display
-msgid "Duration Display"
-msgstr "기간 표시"
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
+msgid "Edited Rental Line"
+msgstr "수정된 임대 내역"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__duration_days
-msgid "Duration in days"
-msgstr "일자로 된 기간"
-
-#. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Enter the product name."
 msgstr "제품 이름을 입력하십시오."
 
 #. module: sale_renting
+#. openerp-web
+#: code:addons/sale_renting/static/src/js/tours/rental.js:0
+#, python-format
+msgid ""
+"Enter the requested dates and check the price.\n"
+" Then, click here to add the product."
+msgstr ""
+"요청한 날짜를 입력하고 가격을 확인하십시오. \n"
+"그런 다음 여기를 클릭하여 제품을 추가하십시오."
+
+#. module: sale_renting
+#: code:addons/sale_renting/models/sale_order_line.py:0
+#, python-format
+msgid "Expected"
+msgstr "예상됨"
+
+#. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
 msgid "Expected Return"
 msgstr "예상 반납일"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
-#, python-format
-msgid "Expected: %(date)s"
-msgstr "예상: %(date)s"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__extra_daily
@@ -545,6 +454,12 @@ msgid "Extra Hour"
 msgstr "추가 시간"
 
 #. module: sale_renting
+#: code:addons/sale_renting/wizard/rental_configurator.py:0
+#, python-format
+msgid "Extras:"
+msgstr "추가 :"
+
+#. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_product_product__extra_daily
 #: model:ir.model.fields,help:sale_renting.field_product_template__extra_daily
 msgid "Fine by day overdue"
@@ -557,13 +472,13 @@ msgid "Fine by hour overdue"
 msgstr "연체 시간 기준 연체료"
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_product_product__display_price
-#: model:ir.model.fields,help:sale_renting.field_product_template__display_price
-msgid "First rental pricing of the product"
-msgstr "제품의 첫 임대 가격"
+#: code:addons/sale_renting/wizard/rental_configurator.py:0
+#, python-format
+msgid "Fixed rental price"
+msgstr "고정된 임대 가격"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Go to the orders menu."
@@ -577,9 +492,10 @@ msgid "Group By"
 msgstr "그룹별"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__show_update_duration
-msgid "Has Duration Changed"
-msgstr "기간이 변경되었습니다."
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__has_late_lines
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_late_lines
+msgid "Has Late Lines"
+msgstr "지연된 내역이 있음"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_pickable_lines
@@ -587,39 +503,27 @@ msgid "Has Pickable Lines"
 msgstr "수령 가능 내역이 있음"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_rented_products
-msgid "Has Rented Products"
-msgstr "렌탈한 품목 있음"
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order__has_returnable_lines
 msgid "Has Returnable Lines"
 msgstr "반납 가능한 내역이 있음"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "Hour"
-msgstr "시간"
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__pricing_explanation
+msgid "Helper text to understand rental price computation."
+msgstr "임대 가격 계산을 이해하기 위한 도우미 텍스트"
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_hourly
-msgid "Hourly"
-msgstr "시간당"
-
-#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__hour
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__hour
 msgid "Hours"
 msgstr "시간"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__id
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__id
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__id
 msgid "ID"
 msgstr "ID"
 
@@ -634,6 +538,7 @@ msgid "Invoicing and Shipping Address:"
 msgstr "청구서 발행 및 배송 주소 :"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__is_late
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__late
 msgid "Is Late"
 msgstr "지연 여부"
@@ -644,46 +549,47 @@ msgid "Is Rental"
 msgstr "임대 여부"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__is_late
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__is_late
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__is_late
 msgid "Is overdue"
 msgstr "연체 여부"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "Jane Doe"
-msgstr "홍길동"
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report____last_update
+#: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "John Doe"
-msgstr "홍길동"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__write_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__write_uid
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__write_uid
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__write_uid
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__write_uid
 msgid "Last Updated by"
 msgstr "최근 갱신한 사람"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__write_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard__write_date
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__write_date
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__write_date
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__write_date
 msgid "Last Updated on"
 msgstr "최근 갱신 일자"
 
 #. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_kanban
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_search
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "Late"
 msgstr "지연"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
+msgid "Late Delivery"
+msgstr "배송 지연"
+
+#. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 msgid "Late Pickup"
 msgstr "수령 지연"
 
@@ -694,13 +600,14 @@ msgid "Late Return"
 msgstr "반납 지연"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Let's now create an order."
 msgstr "이제 주문을 작성해 보겠습니다."
 
 #. module: sale_renting
+#: model:product.product,name:sale_renting.rental_product_2
 #: model:product.template,name:sale_renting.rental_product_2_product_template
 msgid "Meeting Room"
 msgstr "회의실"
@@ -717,26 +624,7 @@ msgid "Minimum delay time before applying fines."
 msgstr "연체료를 적용하기 전에 최소 지연 시간."
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_sale_temporal_recurrence__duration
-msgid ""
-"Minimum duration before this rule is applied. If set to 0, it represents a "
-"fixedrental price."
-msgstr "이 규칙이 적용되기 전까지의 최소 기간입니다. 0으로 설정하면, 고정 렌탈 가격을 나타냅니다."
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "Month"
-msgstr "월"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_monthly
-msgid "Monthly"
-msgstr "월별"
-
-#. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__month
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__month
 msgid "Months"
 msgstr "월"
 
@@ -747,11 +635,6 @@ msgid "My Orders"
 msgstr "내 주문"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__name
-msgid "Name"
-msgstr "이름"
-
-#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order__next_action_date
 msgid "Next Action"
 msgstr "다음 조치"
@@ -759,7 +642,17 @@ msgstr "다음 조치"
 #. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.action_rental_report
 msgid "No data yet!"
-msgstr "데이터가 아직 없습니다."
+msgstr "아직 정보가 없습니다!"
+
+#. module: sale_renting
+#: code:addons/sale_renting/wizard/rental_configurator.py:0
+#, python-format
+msgid ""
+"No rental price is defined on the product.\n"
+"The price used is the sales price."
+msgstr ""
+"제품에 임대 가격이 정의되어 있지 않습니다.\n"
+"사용된 가격은 판매 가격입니다."
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
@@ -774,7 +667,7 @@ msgid ""
 msgstr "견적이 확정되면 임대 주문이 됩니다. <br>송장을 작성하여 결제를 받으실 수 있습니다."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Once the rental is done, you can register the return."
@@ -820,6 +713,11 @@ msgid "Orders"
 msgstr "주문"
 
 #. module: sale_renting
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
+msgid "PICKUP"
+msgstr "수령하기"
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_res_company__extra_day
 #: model:ir.model.fields,field_description:sale_renting.field_res_config_settings__extra_day
 msgid "Per Day"
@@ -830,23 +728,6 @@ msgstr "하루당"
 #: model:ir.model.fields,field_description:sale_renting.field_res_config_settings__extra_hour
 msgid "Per Hour"
 msgstr "시간당"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricelist_view
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
-msgid "Period"
-msgstr "기간"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_temporal_recurrence_view_form
-#: model_terms:ir.ui.view,arch_db:sale_renting.sale_temporal_recurrence_view_tree
-msgid "Periodicity"
-msgstr "주기"
-
-#. module: sale_renting
-#: model:ir.actions.act_window,name:sale_renting.sale_temporal_recurrence_action
-msgid "Periods"
-msgstr "기간"
 
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_rental_order_wizard
@@ -860,13 +741,13 @@ msgstr "수령"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_delivered
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__return
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
 msgid "Picked-up"
 msgstr "수령"
 
 #. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__return
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__return
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__report_line_status__pickedup
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
@@ -874,9 +755,9 @@ msgid "Pickedup"
 msgstr "수령"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pickup_date
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_order_wizard__status__pickup
 #: model:ir.ui.menu,name:sale_renting.rental_orders_pickup
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "Pickup"
 msgstr "수령"
@@ -910,35 +791,30 @@ msgid "Pickup:"
 msgstr "수령 :"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__price
-msgid "Price"
-msgstr "가격"
+#: model:ir.model.constraint,message:sale_renting.constraint_rental_wizard_rental_period_coherence
+#: model:ir.model.constraint,message:sale_renting.constraint_sale_order_line_rental_period_coherence
+msgid "Please choose a return date that is after the pickup date."
+msgstr "수령 날짜 이후로 반납 날짜를 선택하십시오."
 
 #. module: sale_renting
-#: model:ir.model,name:sale_renting.model_product_pricelist
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__pricelist_id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pricing_explanation
+msgid "Price Computation"
+msgstr "가격 계산"
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pricelist_id
 msgid "Pricelist"
 msgstr "가격표"
 
 #. module: sale_renting
-#: model:ir.actions.act_window,name:sale_renting.product_pricing_action
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricing_tree
-msgid "Prices"
-msgstr "가격"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__pricing_id
 msgid "Pricing"
 msgstr "가격 책정"
 
 #. module: sale_renting
-#: model:ir.model,name:sale_renting.model_product_pricing
-msgid "Pricing rule of rental products"
-msgstr "렌탈 품목 가격 책정 규칙"
-
-#. module: sale_renting
 #: model:ir.model,name:sale_renting.model_product_template
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__product_id
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__product_id
 #: model:ir.model.fields,field_description:sale_renting.field_res_company__extra_product
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__product_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_id
@@ -948,11 +824,6 @@ msgstr "렌탈 품목 가격 책정 규칙"
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
 msgid "Product"
 msgstr "품목"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "Product A"
-msgstr "품목 A"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__categ_id
@@ -968,7 +839,6 @@ msgid "Product Reference"
 msgstr "상품 참조"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__product_template_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__product_tmpl_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_tmpl_id
 msgid "Product Template"
@@ -976,9 +846,8 @@ msgstr "품목 양식"
 
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_product_product
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__product_variant_ids
 msgid "Product Variant"
-msgstr "품목 세부선택"
+msgstr "파생 품목"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -986,16 +855,21 @@ msgid "Product to charge extra time"
 msgstr "추가 시간을 청구하는 제품"
 
 #. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__product_id
+msgid "Product to rent (has to be rentable)"
+msgstr "임대할 제품 (임대 가능)"
+
+#. module: sale_renting
 #: model:ir.actions.act_window,name:sale_renting.rental_product_template_action
 #: model:ir.ui.menu,name:sale_renting.menu_rental_products
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricelist_view
 msgid "Products"
 msgstr "품목"
 
 #. module: sale_renting
+#: model:product.product,name:sale_renting.rental_product_1
 #: model:product.template,name:sale_renting.rental_product_1_product_template
 msgid "Projector"
-msgstr "프로젝터"
+msgstr "영사기"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_uom_qty
@@ -1013,21 +887,19 @@ msgid "Qty Returned"
 msgstr "반납 수량"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__quantity
+msgid "Quantity"
+msgstr "수량"
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_product_product__qty_in_rent
 #: model:ir.model.fields,field_description:sale_renting.field_product_template__qty_in_rent
 msgid "Quantity currently in rent"
 msgstr "현재 임대 수량"
 
 #. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_quarterly
-msgid "Quarterly"
-msgstr "분기별"
-
-#. module: sale_renting
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__draft
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_report__state__draft
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__draft
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__state__draft
 msgid "Quotation"
 msgstr "견적서"
 
@@ -1047,16 +919,18 @@ msgstr "견적서"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid "Recompute all prices based on this duration"
-msgstr "이 기간을 기준으로 모든 가격을 재계산합니다."
+msgid "RETURN"
+msgstr "반납"
 
 #. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__remaining_hours
-msgid "Remaining duration in hours"
-msgstr "시간 기준의 남은 기간"
+#: model:ir.actions.act_window,name:sale_renting.rental_configurator_action
+msgid "Rent a product"
+msgstr "상품 임대"
 
 #. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order_line__temporal_type__rental
 #: model:ir.ui.menu,name:sale_renting.rental_menu_root
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_configurator_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
 msgid "Rental"
@@ -1083,6 +957,11 @@ msgid "Rental Order"
 msgstr "임대 주문"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__rental_order_line_id
+msgid "Rental Order Line"
+msgstr "임대 주문 명세"
+
+#. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__rental_order_wizard_id
 msgid "Rental Order Wizard"
 msgstr "임대 주문 마법사"
@@ -1095,26 +974,9 @@ msgid "Rental Orders"
 msgstr "임대 주문"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricelist_view
-msgid "Rental Pricelist Rules"
-msgstr "렌탈 가격표 기준"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__rental_return_date
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__return_date
-msgid "Rental Return Date"
-msgstr "렌탈 반납일"
-
-#. module: sale_renting
 #: model:ir.model,name:sale_renting.model_sale_rental_schedule
 msgid "Rental Schedule"
 msgstr "대여 일정"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order__rental_start_date
-#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__start_date
-msgid "Rental Start Date"
-msgstr "렌탈 시작일"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order__rental_status
@@ -1133,37 +995,9 @@ msgid "Rental Wizard Line"
 msgstr "임대 마법사 명세"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid "Rental period"
-msgstr "렌탈 기간"
-
-#. module: sale_renting
 #: model:ir.ui.menu,name:sale_renting.menu_sale_renting_periods
 msgid "Rental periods"
-msgstr "렌탈 기간"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_product__display_price
-#: model:ir.model.fields,field_description:sale_renting.field_product_template__display_price
-msgid "Rental price"
-msgstr "임대 요금"
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_template_form_view_rental
-msgid "Rental prices"
-msgstr "렌탈 가격"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order.py:0
-#, python-format
-msgid "Rental prices have been recomputed with the new period."
-msgstr "렌탈 가격이 새로운 기간에 맞게 재계산되었습니다."
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricelist_view
-msgid "Rental rules"
-msgstr "렌탈 규칙"
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_rental_order_wizard_line
@@ -1174,16 +1008,6 @@ msgstr "임대 주문 명세 과도 표현"
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_view_search
 msgid "Rentals"
 msgstr "임대"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricing__recurrence_id
-msgid "Renting Period"
-msgstr "렌탈 기간"
-
-#. module: sale_renting
-#: model:ir.model.fields,field_description:sale_renting.field_product_pricelist__product_pricing_ids
-msgid "Renting Price Rules"
-msgstr "렌탈 가격 규칙"
 
 #. module: sale_renting
 #: model:ir.ui.menu,name:sale_renting.menu_rental_reporting
@@ -1197,17 +1021,18 @@ msgstr "예약"
 
 #. module: sale_renting
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_reserved
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__pickup
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__rental_status__pickup
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__report_line_status__reserved
+#: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "Reserved"
 msgstr "예약됨"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__return_date
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__return_date
 #: model:ir.model.fields.selection,name:sale_renting.selection__rental_order_wizard__status__return
 #: model:ir.ui.menu,name:sale_renting.rental_orders_return
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 msgid "Return"
 msgstr "반납"
@@ -1225,6 +1050,7 @@ msgid "Return:"
 msgstr "반납 :"
 
 #. module: sale_renting
+#: code:addons/sale_renting/models/sale_order_line.py:0
 #: model:ir.model.fields,field_description:sale_renting.field_rental_order_wizard_line__qty_returned
 #: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__qty_returned
 #: model:ir.model.fields.selection,name:sale_renting.selection__sale_order__rental_status__returned
@@ -1234,20 +1060,20 @@ msgstr "반납 :"
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_form
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_schedule_view_gantt
 #: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
+#, python-format
 msgid "Returned"
 msgstr "반납함"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_line.py:0
-#, python-format
-msgid "Returned: %(date)s"
-msgstr "반납: %(date)s"
-
-#. module: sale_renting
 #: model:ir.model,name:sale_renting.model_sale_temporal_recurrence
 msgid "Sale temporal Recurrence"
-msgstr "판매 임시 반복"
+msgstr ""
+
+#. module: sale_renting
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_report__state__done
+#: model:ir.model.fields.selection,name:sale_renting.selection__sale_rental_schedule__state__done
+msgid "Sales Done"
+msgstr "판매 완료"
 
 #. module: sale_renting
 #: model:ir.model,name:sale_renting.model_sale_order
@@ -1282,16 +1108,18 @@ msgid "Salesperson"
 msgstr "영업사원"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.report_rental_order_document
-msgid "Sample Document"
-msgstr "예시 문서"
-
-#. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Save the product."
 msgstr "제품을 저장하십시오."
+
+#. module: sale_renting
+#. openerp-web
+#: code:addons/sale_renting/static/src/js/tours/rental.js:0
+#, python-format
+msgid "Save the quotation."
+msgstr "견적을 저장하십시오."
 
 #. module: sale_renting
 #: model:ir.ui.menu,name:sale_renting.menu_rental_schedule
@@ -1299,7 +1127,6 @@ msgid "Schedule"
 msgstr "예약"
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/models/product_product.py:0
 #: code:addons/sale_renting/models/product_template.py:0
 #: model:ir.actions.act_window,name:sale_renting.action_rental_order_schedule
@@ -1308,26 +1135,7 @@ msgid "Scheduled Rentals"
 msgstr "예약된 임대"
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_product_pricing__product_variant_ids
-msgid ""
-"Select Variants of the Product for which this rule applies.Leave empty if "
-"this rule applies for any variant of this template."
-msgstr "이 규칙을 적용시킬 품목별 속성을 선택하세요. 비워둘 경우 서식 속성 전체에 적용됩니다."
-
-#. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_product_pricing__product_template_id
-msgid "Select products on which this pricing will be applied."
-msgstr "이 가격 책정이 적용될 제품을 선택하십시오."
-
-#. module: sale_renting
-#. odoo-javascript
-#: code:addons/sale_renting/static/src/js/tours/rental.js:0
-#, python-format
-msgid "Select the rental dates and check the price."
-msgstr "렌탈 일자를 선택 후 가격을 확인하세요."
-
-#. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Select your rental product."
@@ -1343,6 +1151,11 @@ msgstr "설정"
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_wizard_view_form
 msgid "Some delay cost will be added to the sales order."
 msgstr "판매 주문에 약간의 지연 비용이 추가됩니다."
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__start_date
+msgid "Start Date"
+msgstr "시작일"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_report_search_view
@@ -1362,32 +1175,27 @@ msgstr "상태"
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
 msgid "Sum of Daily Amount"
-msgstr "일일 금액 합계"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
 msgid "Sum of Daily Ordered Qty"
-msgstr "일일 주문 수량 합계"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.sale_rental_report_view_tree
 msgid "Sum of Daily Picked-Up Qty"
-msgstr "일일 픽업 수량 합계"
+msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_sale_order__duration_days
-msgid "The duration in days of the rental period."
-msgstr "렌탈 기간의 일 기준 기간입니다."
+#: model:ir.model.fields,field_description:sale_renting.field_sale_order_line__temporal_type
+msgid "Temporal Type"
+msgstr ""
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_sale_order__remaining_hours
-msgid "The leftover hours of the rental period."
-msgstr "렌탈 기간의 남은 시간입니다."
-
-#. module: sale_renting
-#: model:ir.model.constraint,message:sale_renting.constraint_sale_temporal_recurrence_temporal_recurrence_duration
-msgid "The pricing duration has to be greater or equal to 0."
-msgstr "가격 책정 기간은 0보다 크거나 같아야 합니다."
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__duration
+msgid "The duration unit is based on the unit of the rental pricing rule."
+msgstr ""
 
 #. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_res_company__extra_product
@@ -1395,22 +1203,16 @@ msgid "The product is used to add the cost to the sales order"
 msgstr "이 상품은 판매 주문에 비용을 추가하는 데 사용됩니다"
 
 #. module: sale_renting
-#: model:ir.model.fields,help:sale_renting.field_rental_order_wizard__is_late
-#: model:ir.model.fields,help:sale_renting.field_sale_order__is_late
-msgid "The products haven't been picked-up or returned in time"
-msgstr "품목 픽업 또는 반납이 정확한 시간에 완료되지 않았습니다."
+#: model:ir.model.fields,help:sale_renting.field_sale_order_line__is_late
+msgid "The products haven't been returned in time"
+msgstr "제품이 제 시간에 반납되지 않았습니다"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "The rental configuration is available here."
 msgstr "임대 환경 설정은 여기에서 사용할 수 있습니다."
-
-#. module: sale_renting
-#: model:ir.model.constraint,message:sale_renting.constraint_sale_order_rental_period_coherence
-msgid "The rental start date must be before the rental return date if any."
-msgstr "렌탈 시작일은 반드시 렌탈 반납일 이전이어야 합니다."
 
 #. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_order_today_pickup_action
@@ -1433,16 +1235,16 @@ msgid ""
 msgstr "새로 만든 제품에 설정된 시간당 기본 추가 비용입니다. 기존 제품에 대해 이 값을 제품 자체에서 직접 변경할 수 있습니다."
 
 #. module: sale_renting
+#: model:ir.model.fields,help:sale_renting.field_rental_wizard__unit_price
+msgid ""
+"This price is based on the rental price rule that gives the cheapest price "
+"for requested duration."
+msgstr "이 가격은 요청된 기간 동안 가장 저렴한 가격을 제공하는 임대 가격 규칙을 기반으로 합니다."
+
+#. module: sale_renting
 #: model:ir.model.fields,help:sale_renting.field_res_config_settings__extra_product
 msgid "This product will be used to add fines in the Rental Order."
 msgstr "이 상품은 임대 주문에 연체료를 추가하는 데 사용됩니다."
-
-#. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid ""
-"This will update the unit price of all rental products based on the new "
-"period."
-msgstr "새로운 기간을 기준으로 모든 렌탈 품목의 단가를 업데이트합니다."
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
@@ -1474,20 +1276,30 @@ msgid "Total Tax Included"
 msgstr "세금 포함 총계"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__duration_unit
 #: model:ir.model.fields,field_description:sale_renting.field_sale_temporal_recurrence__unit
 msgid "Unit"
 msgstr "단위"
 
 #. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__unit_price
+msgid "Unit Price"
+msgstr "단가"
+
+#. module: sale_renting
+#: model:ir.model.fields,field_description:sale_renting.field_rental_wizard__uom_id
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_report__product_uom
 #: model:ir.model.fields,field_description:sale_renting.field_sale_rental_schedule__product_uom
 msgid "Unit of Measure"
 msgstr "단위"
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_form_view
-msgid "Update Rental Prices"
-msgstr "렌탈 가격 업데이트"
+#: model:product.product,uom_name:sale_renting.rental_product_1
+#: model:product.product,uom_name:sale_renting.rental_product_2
+#: model:product.template,uom_name:sale_renting.rental_product_1_product_template
+#: model:product.template,uom_name:sale_renting.rental_product_2_product_template
+msgid "Units"
+msgstr "단위"
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.rental_order_wizard_view_form
@@ -1495,33 +1307,26 @@ msgid "Validate"
 msgstr "승인"
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/models/sale_order.py:0
 #, python-format
 msgid "Validate a pickup"
 msgstr "수령 승인"
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/models/sale_order.py:0
 #, python-format
 msgid "Validate a return"
 msgstr "반납 승인"
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid "Validate the operation after checking the picked-up quantities."
 msgstr "수령된 수량을 확인한 후 작업을 승인하십시오."
 
 #. module: sale_renting
-#: model_terms:ir.ui.view,arch_db:sale_renting.product_pricelist_view
-msgid "Variants"
-msgstr "세부선택"
-
-#. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
 msgid ""
@@ -1532,36 +1337,12 @@ msgstr ""
 "Odoo Rental App을 알아 봅시다."
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "Week"
-msgstr "주"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_weekly
-msgid "Weekly"
-msgstr "매주"
-
-#. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__week
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__week
 msgid "Weeks"
 msgstr "주"
 
 #. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/sale_order_recurrence.py:0
-#, python-format
-msgid "Year"
-msgstr "년"
-
-#. module: sale_renting
-#: model:sale.temporal.recurrence,name:sale_renting.recurrence_yearly
-msgid "Yearly"
-msgstr "매년"
-
-#. module: sale_renting
-#: model:ir.model.fields.selection,name:sale_renting.selection__sale_temporal_recurrence__unit__year
+#: model:ir.model.fields.selection,name:sale_renting.selection__rental_wizard__duration_unit__year
 msgid "Years"
 msgstr "년"
 
@@ -1570,14 +1351,7 @@ msgstr "년"
 msgid ""
 "You can also create additional products or services to sell by checking *Can"
 " be Sold* in the product form (e.g. insurance)."
-msgstr "또한 제품 양식(예: 보험)에서 *판매 가능*을 확인하도록 해서 추가 판매할 제품 또는 서비스를 생성할 수도 있습니다."
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_pricelist.py:0
-#, python-format
-msgid "You can not have a time-based rule for products that are not rentable."
-msgstr "렌탈할 수 없는 품목에는 시간 기준 규칙을 적용할 수 없습니다."
+msgstr "또한 제품 양식(예 : 보험)에서 *판매 가능*을 확인하도록 해서 추가 판매할 제품 또는 서비스를 생성할 수도 있습니다."
 
 #. module: sale_renting
 #: model_terms:ir.actions.act_window,help:sale_renting.rental_order_today_pickup_action
@@ -1587,25 +1361,12 @@ msgid ""
 "                <br>\n"
 "                or create a new rental order."
 msgstr ""
-"위의 필터를 사용하여 더 긴 기간을 조건으로 검색하거나\n"
-"                <br>\n"
-"                렌탈 주문을 새로 생성할 수 있습니다."
 
 #. module: sale_renting
-#. odoo-python
 #: code:addons/sale_renting/wizard/rental_processing.py:0
 #, python-format
 msgid "You can't return more than what's been picked-up."
 msgstr "수령한 것 이상을 반납할 수 없습니다."
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_pricing.py:0
-#, python-format
-msgid ""
-"You cannot have multiple pricing for the same variant, recurrence and "
-"pricelist"
-msgstr "동일한 속성과 반복, 가격표에 대해 가격을 다르게 책정할 수 없습니다."
 
 #. module: sale_renting
 #: model:ir.model.constraint,message:sale_renting.constraint_sale_order_line_rental_stock_coherence
@@ -1613,21 +1374,19 @@ msgid "You cannot return more than what has been picked up."
 msgstr "수령한 것 이상을 반납할 수 없습니다."
 
 #. module: sale_renting
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_renting/static/src/js/tours/rental.js:0
 #, python-format
-msgid "You're done with your fist rental. Congratulations!"
-msgstr "첫번째 렌탈이 완료되었습니다. 축하드립니다!"
-
-#. module: sale_renting
-#. odoo-python
-#: code:addons/sale_renting/models/product_pricing.py:0
-#: code:addons/sale_renting/models/product_pricing.py:0
-#, python-format
-msgid "all variants"
-msgstr "전체 세부선택 사항"
+msgid "You're done with your fist rental. Congratulations !"
+msgstr ""
 
 #. module: sale_renting
 #: model_terms:ir.ui.view,arch_db:sale_renting.res_config_settings_view_form
 msgid "hours"
 msgstr "시간"
+
+#. module: sale_renting
+#: code:addons/sale_renting/models/sale_order_line.py:0
+#, python-format
+msgid "to"
+msgstr "종료"

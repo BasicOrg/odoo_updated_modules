@@ -54,7 +54,7 @@ class HrPayrollReport(models.Model):
         select_str = """
             SELECT
                 p.id as id,
-                CASE WHEN wd.id IS NOT DISTINCT FROM min_id.min_line THEN 1 ELSE 0 END as count,
+                CASE WHEN wd.id = min_id.min_line THEN 1 ELSE 0 END as count,
                 CASE WHEN wet.is_leave THEN 0 ELSE wd.number_of_days END as count_work,
                 CASE WHEN wet.is_leave THEN 0 ELSE wd.number_of_hours END as count_work_hours,
                 CASE WHEN wet.is_leave and wd.amount <> 0 THEN wd.number_of_days ELSE 0 END as count_leave,
@@ -81,11 +81,11 @@ class HrPayrollReport(models.Model):
                 continue
             handled_fields.append(field_name)
             select_str += """
-                CASE WHEN wd.id IS NOT DISTINCT FROM min_id.min_line THEN "%s".total ELSE 0 END as "%s",""" % (field_name, field_name)
+                CASE WHEN wd.id = min_id.min_line THEN %s.total ELSE 0 END as %s,""" % (field_name, field_name)
         select_str += """
-                CASE WHEN wd.id IS NOT DISTINCT FROM min_id.min_line THEN pln.total ELSE 0 END as net_wage,
-                CASE WHEN wd.id IS NOT DISTINCT FROM min_id.min_line THEN plb.total ELSE 0 END as basic_wage,
-                CASE WHEN wd.id IS NOT DISTINCT FROM min_id.min_line THEN plg.total ELSE 0 END as gross_wage"""
+                CASE WHEN wd.id = min_id.min_line THEN pln.total ELSE 0 END as net_wage,
+                CASE WHEN wd.id = min_id.min_line THEN plb.total ELSE 0 END as basic_wage,
+                CASE WHEN wd.id = min_id.min_line THEN plg.total ELSE 0 END as gross_wage"""
         return select_str
 
     def _from(self, additional_rules):
@@ -108,7 +108,7 @@ class HrPayrollReport(models.Model):
                 continue
             handled_fields.append(field_name)
             from_str += """
-                left join hr_payslip_line "%s" on ("%s".slip_id = p.id and "%s".code = '%s')""" % (
+                left join hr_payslip_line %s on (%s.slip_id = p.id and %s.code = '%s')""" % (
                     field_name, field_name, field_name, rule.code)
         return from_str
 
@@ -122,7 +122,7 @@ class HrPayrollReport(models.Model):
                 continue
             handled_fields.append(field_name)
             group_by_str += """
-                "%s".total,""" % (field_name)
+                %s.total,""" % (field_name)
         group_by_str += """
                 e.id,
                 e.department_id,

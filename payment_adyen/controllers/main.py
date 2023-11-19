@@ -15,7 +15,7 @@ from odoo.exceptions import ValidationError
 from odoo.http import request
 
 from odoo.addons.payment import utils as payment_utils
-from odoo.addons.payment_adyen import utils as adyen_utils
+from odoo.addons.payment_adyen.const import CURRENCY_DECIMALS
 
 _logger = logging.getLogger(__name__)
 
@@ -24,17 +24,37 @@ class AdyenController(http.Controller):
 
     _webhook_url = '/payment/adyen/notification'
 
-    @http.route('/payment/adyen/payment_methods', type='json', auth='public')
-    def adyen_payment_methods(self, provider_id, formatted_amount=None, partner_id=None):
-        """ Query the available payment methods based on the payment context.
+    @http.route('/payment/adyen/provider_info', type='json', auth='public')
+    def adyen_provider_info(self, provider_id):
+        """ Return public information on the provider.
 
         :param int provider_id: The provider handling the transaction, as a `payment.provider` id
-        :param dict formatted_amount: The Adyen-formatted amount.
+        :return: Public information on the provider, namely: the state and client key
+        :rtype: str
+        """
+        provider_sudo = request.env['payment.provider'].sudo().browse(provider_id).exists()
+        return {
+            'state': provider_sudo.state,
+            'client_key': provider_sudo.adyen_client_key,
+        }
+
+    @http.route('/payment/adyen/payment_methods', type='json', auth='public')
+    def adyen_payment_methods(self, provider_id, amount=None, currency_id=None, partner_id=None):
+        """ Query the available payment methods based on the transaction context.
+
+        :param int provider_id: The provider handling the transaction, as a `payment.provider` id
+        :param float amount: The transaction amount
+        :param int currency_id: The transaction currency, as a `res.currency` id
         :param int partner_id: The partner making the transaction, as a `res.partner` id
         :return: The JSON-formatted content of the response
         :rtype: dict
         """
         provider_sudo = request.env['payment.provider'].sudo().browse(provider_id)
+        currency = request.env['res.currency'].browse(currency_id)
+        currency_code = currency_id and currency.name
+        converted_amount = amount and currency_code and payment_utils.to_minor_currency_units(
+            amount, currency, CURRENCY_DECIMALS.get(currency_code)
+        )
         partner_sudo = partner_id and request.env['res.partner'].sudo().browse(partner_id).exists()
         # The lang is taken from the context rather than from the partner because it is not required
         # to be logged in to make a payment, and because the lang is not always set on the partner.
@@ -45,14 +65,17 @@ class AdyenController(http.Controller):
         shopper_reference = partner_sudo and f'ODOO_PARTNER_{partner_sudo.id}'
         data = {
             'merchantAccount': provider_sudo.adyen_merchant_account,
-            'amount': formatted_amount,
+            'amount': converted_amount,
             'countryCode': partner_sudo.country_id.code or None,  # ISO 3166-1 alpha-2 (e.g.: 'BE')
             'shopperLocale': lang_code,  # IETF language tag (e.g.: 'fr-BE')
             'shopperReference': shopper_reference,
             'channel': 'Web',
         }
         response_content = provider_sudo._adyen_make_request(
-            endpoint='/paymentMethods', payload=data, method='POST'
+            url_field_name='adyen_checkout_api_url',
+            endpoint='/paymentMethods',
+            payload=data,
+            method='POST'
         )
         _logger.info("paymentMethods request response:\n%s", pprint.pformat(response_content))
         return response_content
@@ -97,12 +120,9 @@ class AdyenController(http.Controller):
             'recurringProcessingModel': 'CardOnFile',  # Most susceptible to trigger a 3DS check
             'shopperIP': payment_utils.get_customer_ip_address(),
             'shopperInteraction': 'Ecommerce',
-            'shopperEmail': tx_sudo.partner_email,
-            'shopperName': adyen_utils.format_partner_name(tx_sudo.partner_name),
-            'telephoneNumber': tx_sudo.partner_phone,
             'storePaymentMethod': tx_sudo.tokenize,  # True by default on Adyen side
             'additionalData': {
-                'authenticationData.threeDSRequestData.nativeThreeDS': True,
+                'allow3DS2': True
             },
             'channel': 'web',  # Required to support 3DS
             'origin': provider_sudo.get_base_url(),  # Required to support 3DS
@@ -114,7 +134,6 @@ class AdyenController(http.Controller):
                 # by the /payments endpoint of Adyen.
                 f'/payment/adyen/return?merchantReference={reference}'
             ),
-            **adyen_utils.include_partner_addresses(tx_sudo),
         }
 
         # Force the capture delay on Adyen side if the provider is not configured for capturing
@@ -129,7 +148,10 @@ class AdyenController(http.Controller):
 
         # Make the payment request to Adyen
         response_content = provider_sudo._adyen_make_request(
-            endpoint='/payments', payload=data, method='POST'
+            url_field_name='adyen_checkout_api_url',
+            endpoint='/payments',
+            payload=data,
+            method='POST'
         )
 
         # Handle the payment request response
@@ -142,7 +164,7 @@ class AdyenController(http.Controller):
         )
         return response_content
 
-    @http.route('/payment/adyen/payments/details', type='json', auth='public')
+    @http.route('/payment/adyen/payment_details', type='json', auth='public')
     def adyen_payment_details(self, provider_id, reference, payment_details):
         """ Submit the details of the additional actions and handle the notification data.
 
@@ -158,7 +180,10 @@ class AdyenController(http.Controller):
         # Make the payment details request to Adyen
         provider_sudo = request.env['payment.provider'].browse(provider_id).sudo()
         response_content = provider_sudo._adyen_make_request(
-            endpoint='/payments/details', payload=payment_details, method='POST'
+            url_field_name='adyen_checkout_api_url',
+            endpoint='/payments/details',
+            payload=payment_details,
+            method='POST'
         )
 
         # Handle the payment details request response
@@ -216,7 +241,7 @@ class AdyenController(http.Controller):
         # Redirect the user to the status page
         return request.redirect('/payment/status')
 
-    @http.route(_webhook_url, type='http', methods=['POST'], auth='public', csrf=False)
+    @http.route(_webhook_url, type='json', auth='public')
     def adyen_webhook(self):
         """ Process the data sent by Adyen to the webhook based on the event code.
 
@@ -226,7 +251,7 @@ class AdyenController(http.Controller):
         :return: The '[accepted]' string to acknowledge the notification
         :rtype: str
         """
-        data = request.get_json_data()
+        data = request.dispatcher.jsonrequest
         for notification_item in data['notificationItems']:
             notification_data = notification_item['NotificationRequestItem']
 
@@ -238,11 +263,6 @@ class AdyenController(http.Controller):
                 tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data(
                     'adyen', notification_data
                 )
-            except ValidationError:
-                # Warn rather than log the traceback to avoid noise when a POS payment notification
-                # is received and the corresponding `payment.transaction` record is not found.
-                _logger.warning("unable to find the transaction; skipping to acknowledge")
-            else:
                 self._verify_notification_signature(notification_data, tx_sudo)
 
                 # Check whether the event of the notification succeeded and reshape the notification
@@ -255,20 +275,15 @@ class AdyenController(http.Controller):
                     notification_data['resultCode'] = 'Cancelled' if success else 'Error'
                 elif event_code in ['REFUND', 'CAPTURE']:
                     notification_data['resultCode'] = 'Authorised' if success else 'Error'
-                elif event_code == 'CAPTURE_FAILED' and success:
-                    # The capture failed after a capture notification with success = True was sent
-                    notification_data['resultCode'] = 'Error'
                 else:
                     continue  # Don't handle unsupported event codes and failed events
-                try:
-                    # Handle the notification data as if they were feedback of a S2S payment request
-                    tx_sudo._handle_notification_data('adyen', notification_data)
-                except ValidationError:  # Acknowledge the notification to avoid getting spammed
-                    _logger.exception(
-                        "unable to handle the notification data;skipping to acknowledge"
-                    )
 
-        return request.make_json_response('[accepted]')  # Acknowledge the notification
+                # Handle the notification data as if they were feedback of a S2S payment request
+                tx_sudo._handle_notification_data('adyen', notification_data)
+            except ValidationError:  # Acknowledge the notification to avoid getting spammed
+                _logger.exception("unable to handle the notification data; skipping to acknowledge")
+
+        return '[accepted]'  # Acknowledge the notification
 
     @staticmethod
     def _verify_notification_signature(notification_data, tx_sudo):

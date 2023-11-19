@@ -1,32 +1,23 @@
-/** @odoo-module **/
+odoo.define('survey.tour_test_certification_failure', function (require) {
+'use strict';
 
+var SurveyFormWidget = require('survey.form');
 /**
  * Speed up fade-in fade-out to avoid useless delay in tests.
-*/
-function patchSurveyWidget() {
-    const SurveyFormWidget = odoo.loader.modules.get('@survey/js/survey_form')[Symbol.for('default')]
-    SurveyFormWidget.include({
-        _submitForm: function () {
-            this.fadeInOutDelay = 0;
-            return this._super.apply(this, arguments);
-        }
-    });
-}
+ */
+SurveyFormWidget.include({
+    _submitForm: function () {
+        this.fadeInOutDelay = 0;
+        return this._super.apply(this, arguments);
+    }
+});
 
 /**
  * This tour will test that, for the demo certification allowing 2 attempts, a user can
  * try and fail twice and will no longer be able to take the certification.
  */
 
-import { registry } from "@web/core/registry";
-
-var patch = [{
-    content: "Patching Survey Widget",
-    trigger: 'body',
-    run: function(){
-        patchSurveyWidget();
-    }
-}]
+var tour = require('web_tour.tour');
 
 var failSteps = [{ // Page-1
     content: "Clicking on Start Certification",
@@ -108,10 +99,11 @@ var lastSteps = [{
     }
 }, {
     trigger: 'h1.tour_success',
-    isCheck: true,
 }];
 
-registry.category("web_tour.tours").add('test_certification_failure', {
+tour.register('test_certification_failure', {
     test: true,
-    url: '/survey/start/4ead4bc8-b8f2-4760-a682-1fde8daaaaac',
-    steps: () => [].concat(patch, failSteps, retrySteps, failSteps, lastSteps) });
+    url: '/survey/start/4ead4bc8-b8f2-4760-a682-1fde8daaaaac'
+}, [].concat(failSteps, retrySteps, failSteps, lastSteps));
+
+});

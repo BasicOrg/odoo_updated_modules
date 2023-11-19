@@ -3,16 +3,17 @@
 # 	* industry_fsm_stock
 # 
 # Translators:
-# Wil Odoo, 2023
+# Duy BQ <duybq86@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,19 +21,14 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: industry_fsm_stock
-#. odoo-python
-#: code:addons/industry_fsm_stock/models/product.py:0
-#, python-format
-msgid ""
-"Adding or updating this product is restricted due to its tracked status. "
-"Your current access rights do not allow you to perform these actions. Please"
-" contact your administrator to request the necessary permissions."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
+msgid "Already Delivered"
 msgstr ""
 
 #. module: industry_fsm_stock
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
-msgid "Already Delivered"
-msgstr "Đã giao hàng"
+msgid "Close"
+msgstr "Đóng"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__company_id
@@ -64,22 +60,22 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/wizard/fsm_stock_tracking.py:0
 #, python-format
 msgid "Each line needs a Lot/Serial Number"
-msgstr "Mỗi dòng cần một số lô/sê-ri"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,help:industry_fsm_stock.field_fsm_stock_tracking__tracking
 msgid "Ensure the traceability of a storable product in your warehouse."
 msgstr ""
-"Đảm bảo truy xuất nguồn gốc của một sản phẩm lưu kho trong kho hàng của bạn."
+"Đảm bảo truy xuất nguồn gốc của một sản phẩm có thể lưu trữ trong kho của "
+"bạn."
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_sale_order_line__fsm_lot_id
 msgid "Fsm Lot"
-msgstr "Lô FSM"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__id
@@ -88,10 +84,16 @@ msgid "ID"
 msgstr "ID"
 
 #. module: industry_fsm_stock
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking____last_update
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
+
+#. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__write_uid
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__write_date
@@ -102,19 +104,22 @@ msgstr "Cập nhật lần cuối vào"
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_fsm_stock_tracking_line
 msgid "Lines for FSM Stock Tracking"
-msgstr "Chi tiết theo dõi tồn kho"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__lot_id
 msgid "Lot/Serial Number"
-msgstr "Số lô/sê-ri"
+msgstr "Số Lô/sê-ri"
 
 #. module: industry_fsm_stock
-#. odoo-javascript
-#: code:addons/industry_fsm_stock/static/src/js/product_catalog/sale_order_line/sale_order_line.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
 msgid "Lot/Serial number"
-msgstr "Số lô/sê-ri"
+msgstr "Lô/Số sê-ri"
+
+#. module: industry_fsm_stock
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "On hand:"
+msgstr "Thực tế:"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__product_id
@@ -135,67 +140,58 @@ msgstr "Số lượng"
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__quantity_decreasable
 msgid "Quantity Decreasable"
-msgstr "Số lượng có thể giảm"
-
-#. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__quantity_decreasable_sum
-msgid "Quantity Decreasable Sum"
 msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__sale_order_line_id
 msgid "Sale Order Line"
-msgstr "Dòng đơn bán hàng"
+msgstr "Chi tiết đơn hàng"
 
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "Dòng đơn bán hàng"
-
-#. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__is_same_warehouse
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__is_same_warehouse
-msgid "Same warehouse"
-msgstr ""
+msgstr "Chi tiết đơn hàng"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_product_product__serial_missing
 msgid "Serial Missing"
-msgstr "Thiếu sê-ri"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_stock_move
 msgid "Stock Move"
-msgstr "Dịch chuyển tồn kho"
+msgstr "Dịch chuyển kho"
 
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_project_task
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__task_id
 msgid "Task"
-msgstr "Nhiệm vụ"
+msgstr "Công việc"
 
 #. module: industry_fsm_stock
-#. odoo-python
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__fsm_done
+msgid "Task Done"
+msgstr "Hoàn thành công việc"
+
+#. module: industry_fsm_stock
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid ""
 "The ordered quantity cannot be decreased below the amount already delivered."
 " Instead, create a return in your inventory."
 msgstr ""
-"Không thể giảm số lượng đã đặt xuống dưới số lượng đã giao. Thay vào đó, hãy"
-" tạo một phiếu trả hàng trong tồn kho của bạn."
 
 #. module: industry_fsm_stock
 #: model:ir.model,name:industry_fsm_stock.model_fsm_stock_tracking
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_line_view_form
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
 msgid "Track Stock"
-msgstr "Theo dõi tồn kho"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__tracking
 msgid "Tracking"
-msgstr "Theo dõi"
+msgstr "Theo vết"
 
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__tracking_line_ids
@@ -206,7 +202,7 @@ msgstr "Dòng theo dõi"
 #. module: industry_fsm_stock
 #: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking__tracking_validated_line_ids
 msgid "Tracking Validated Line"
-msgstr "Theo dõi dòng đã xác nhận"
+msgstr ""
 
 #. module: industry_fsm_stock
 #: model_terms:ir.ui.view,arch_db:industry_fsm_stock.fsm_stock_tracking_line_view_form
@@ -214,18 +210,17 @@ msgid "Validate"
 msgstr "Xác nhận"
 
 #. module: industry_fsm_stock
-#. odoo-python
 #: code:addons/industry_fsm_stock/models/product.py:0
 #, python-format
 msgid "Validate Lot/Serial Number"
-msgstr "Xác nhận số lô/sê-ri"
+msgstr ""
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_validated
+#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__wizard_tracking_line_valided
 msgid "Validated Tracking Line"
-msgstr "Dòng theo dõi đã xác nhận"
+msgstr ""
 
 #. module: industry_fsm_stock
-#: model:ir.model.fields,field_description:industry_fsm_stock.field_fsm_stock_tracking_line__warehouse_id
-msgid "Warehouse"
-msgstr "Kho hàng"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_stock.stock_product_product_kanban_material
+msgid "View Availability"
+msgstr ""

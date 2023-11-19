@@ -1,44 +1,78 @@
 /** @odoo-module **/
 
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { _t } from "@web/core/l10n/translation";
-import { escape } from "@web/core/utils/strings";
-import publicWidget from "@web/legacy/js/public/public_widget";
+import { _t } from 'web.core';
+import Dialog from 'web.Dialog';
+import publicWidget from 'web.public.widget';
 
-export const WebsiteSlidesEnroll = publicWidget.Widget.extend({
-    selector: "#wrapwrap",
-    events: {
-        "click .o_wslides_js_channel_enroll": "_onSendRequestClick",
+var SlideEnrollDialog = Dialog.extend({
+    template: 'slide.course.join.request',
+
+    init: function (parent, options, modalOptions) {
+        modalOptions = _.defaults(modalOptions || {}, {
+            title: _t('Request Access.'),
+            size: 'medium',
+            buttons: [{
+                text: _t('Yes'),
+                classes: 'btn-primary',
+                click: this._onSendRequest.bind(this)
+            }, {
+                text: _t('Cancel'),
+                close: true
+            }]
+        });
+        this.$element = options.$element;
+        this.channelId = options.channelId;
+        this._super(parent, modalOptions);
     },
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
-    },
-    async _onSendRequestClick(ev) {
-        ev.preventDefault();
-        const clickedEl = ev.currentTarget;
-        const channelId = parseInt(clickedEl.dataset.channelId);
-        await new Promise((resolve) =>
-            this.call("dialog", "add", ConfirmationDialog, {
-                confirm: resolve,
-                title: _t("Request Access."),
-                body: _t("Do you want to request access to this course?"),
-                confirmLabel: _t("Yes"),
-                cancel: () => {}, // show cancel button
-            })
-        );
-        const { error, done } = await this.orm.call(
-            "slide.channel",
-            "action_request_access",
-            [channelId],
-        );
-        const $alert = $(clickedEl.closest(".alert"));
-        const message = done ? _t("Request sent!") : error || _t("Unknown error, try again.");
-        $alert.replaceWith(`
-            <div class="alert alert-${done ? "success" : "danger"}" role="alert">
-                <strong>${escape(message)}</strong>
-            </div>`);
-    },
+
+    _onSendRequest: function () {
+        var self = this;
+        this._rpc({
+            model: 'slide.channel',
+            method: 'action_request_access',
+            args: [self.channelId]
+        }).then(function (result) {
+            if (result.error) {
+                self.$element.replaceWith('<div class="alert alert-danger" role="alert"><strong>' + result.error + '</strong></div>');
+            } else if (result.done) {
+                self.$element.replaceWith('<div class="alert alert-success" role="alert"><strong>' + _t('Request sent !') + '</strong></div>');
+            } else {
+                self.$element.replaceWith('<div class="alert alert-danger" role="alert"><strong>' + _t('Unknown error, try again.') + '</strong></div>');
+            }
+            self.close();
+        });
+    }
+    
 });
 
-publicWidget.registry.WebsiteSlidesEnroll = WebsiteSlidesEnroll;
+publicWidget.registry.websiteSlidesEnroll = publicWidget.Widget.extend({
+    selector: '.o_wslides_js_channel_enroll',
+    events: {
+        'click': '_onSendRequestClick',
+    },
+
+    //--------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------
+    
+    _openDialog: function (channelId) {
+        new SlideEnrollDialog(this, {
+            channelId: channelId,
+            $element: this.$el
+        }).open();
+    },
+    
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+    
+    _onSendRequestClick: function (ev) {
+        ev.preventDefault();
+        this._openDialog($(ev.currentTarget).data('channelId'));
+    }
+});
+
+export default {
+    slideEnrollDialog: SlideEnrollDialog,
+    websiteSlidesEnroll: publicWidget.registry.websiteSlidesEnroll
+};

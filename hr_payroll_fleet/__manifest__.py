@@ -7,5 +7,7 @@
     'summary': 'Integration between Payroll and Fleet.',
     'depends': ['hr_payroll', 'hr_fleet'],
     'auto_install': True,
+    'data': [],
+    'demo': [],
     'license': 'OEEL-1',
 }

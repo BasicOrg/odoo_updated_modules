@@ -10,7 +10,7 @@ from freezegun import freeze_time
 class SwedishTaxReportTest(AccountSalesReportCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='se'):
+    def setUpClass(cls, chart_template_ref='l10n_se.l10nse_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
     @classmethod
@@ -28,8 +28,8 @@ class SwedishTaxReportTest(AccountSalesReportCommon):
 
     @freeze_time('2019-12-31')
     def test_generate_xml(self):
-        first_tax = self.env.ref("account.%s_purchase_goods_tax_25_NEC" % self.company_data['company'].id)
-        second_tax = self.env.ref("account.%s_purchase_tax_6_goods" % self.company_data['company'].id)
+        first_tax = self.env['account.tax'].search([('name', '=', 'Beskattningsunderlag vid import 25%'), ('company_id', '=', self.company_data['company'].id)], limit=1)
+        second_tax = self.env['account.tax'].search([('name', '=', 'Ingående moms 6%'), ('company_id', '=', self.company_data['company'].id)], limit=1)
 
         # Create and post a move with two move lines to get some data in the report
         move = self.env['account.move'].create({
@@ -55,7 +55,7 @@ class SwedishTaxReportTest(AccountSalesReportCommon):
         move.action_post()
 
         report = self.env.ref('l10n_se.tax_report')
-        options = report.get_options()
+        options = report._get_options()
 
         expected_xml = """
         <!DOCTYPE eSKDUpload PUBLIC "-//Skatteverket, Sweden//DTD Skatteverket eSKDUpload-DTD Version 6.0//SV" "https://www1.skatteverket.se/demoeskd/eSKDUpload_6p0.dtd">
@@ -98,6 +98,6 @@ class SwedishTaxReportTest(AccountSalesReportCommon):
         """
 
         self.assertXmlTreeEqual(
-            self.get_xml_tree_from_string(self.env[report.custom_handler_model_name].l10n_se_export_tax_report_to_xml(options)['file_content']),
+            self.get_xml_tree_from_string(report.l10n_se_export_tax_report_to_xml(options)['file_content']),
             self.get_xml_tree_from_string(expected_xml)
         )

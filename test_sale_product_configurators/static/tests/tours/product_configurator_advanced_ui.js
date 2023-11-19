@@ -1,15 +1,13 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils, TourError } from "@web_tour/tour_service/tour_utils";
-import configuratorTourUtils from "@test_sale_product_configurators/js/tour_utils";
+import tour from 'web_tour.tour';
 
 let optionVariantImage;
 
-registry.category("web_tour.tours").add('sale_product_configurator_advanced_tour', {
+tour.register('sale_product_configurator_advanced_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale.sale_menu_root"]',
 },  {
     trigger: '.o_list_button_add',
@@ -28,49 +26,73 @@ registry.category("web_tour.tours").add('sale_product_configurator_advanced_tour
     run: 'text Custo',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Customizable Desk (TEST)")',
-},
-    ...configuratorTourUtils.selectAndSetCustomAttribute("Customizable Desk", "Legs", "Custom", "Custom 1"),
-    ...configuratorTourUtils.selectAndSetCustomAttribute("Customizable Desk", "PA1", "PAV9", "Custom 2"),
-    configuratorTourUtils.selectAttribute("Customizable Desk", "PA2", "PAV5"),
-    ...configuratorTourUtils.selectAndSetCustomAttribute("Customizable Desk", "PA4", "PAV9", "Custom 3", "select"),
-    configuratorTourUtils.assertProductNameContains("Custom, White, PAV9, PAV5, PAV1"),
-{
-    trigger: 'table.o_sale_product_configurator_table_optional tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Conference Chair (TEST) (Steel)"))',
-    run: function () {
-        optionVariantImage = $('table.o_sale_product_configurator_table_optional tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Conference Chair (TEST) (Aluminium)")) td[name="o_sale_product_configurator_img"]>img').attr('src');
+}, {
+    trigger: 'span:contains("Custom")',
+    extra_trigger: '.oe_advanced_configurator_modal',
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(1) .variant_custom_value',
+    run: 'text Custom 1'
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(3) div:contains("PAV9") input',
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(3) .variant_custom_value',
+    run: 'text Custom 2'
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(4) div:contains("PAV5") input',
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(6) select ',
+    run: function (){
+        let inputValue = $('.oe_advanced_configurator_modal ul.js_add_cart_variants li[data-attribute_id]:nth-child(6) option[data-value_name="PAV9"]').val();
+        $('.oe_advanced_configurator_modal ul.js_add_cart_variants li[data-attribute_id]:nth-child(6) select').val(inputValue);
+        $('.oe_advanced_configurator_modal ul.js_add_cart_variants li[data-attribute_id]:nth-child(6) select').trigger('change');
     }
-},
-    configuratorTourUtils.selectAttribute("Conference Chair", "Legs", "Aluminium"),
-{
-    trigger: 'table.o_sale_product_configurator_table_optional tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Conference Chair (TEST) (Aluminium)"))',
+}, {
+    trigger: 'ul.js_add_cart_variants li[data-attribute_id]:nth-child(6) .variant_custom_value',
+    run: 'text Custom 3'
+}, {
+    trigger: '.main_product strong:contains("Custom, White, PAV9, PAV5, PAV1")',
+    run: function () {} //check
+}, {
+    trigger: '.js_product:eq(1) div:contains("Conference Chair (TEST) (Steel)")',
     run: function () {
-        let newVariantImage = $('table.o_sale_product_configurator_table_optional tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Conference Chair (TEST) (Aluminium)")) td[name="o_sale_product_configurator_img"]>img').attr('src');
+        optionVariantImage = $('.oe_advanced_configurator_modal .js_product:eq(1) img.variant_image').attr('src');
+    }
+}, {
+    trigger: '.js_product:eq(1) input[data-value_name="Aluminium"]',
+}, {
+    trigger: '.js_product:eq(1) div:contains("Conference Chair (TEST) (Aluminium)")',
+    run: function () {
+        let newVariantImage = $('.oe_advanced_configurator_modal .js_product:eq(1) img.variant_image').attr('src');
         if (newVariantImage !== optionVariantImage) {
-            throw new TourError('image variant option src changed');
+            $('<p>').text('image variant option src changed').insertAfter('.oe_advanced_configurator_modal .js_product:eq(1) .product-name');
         }
+
     }
 }, {
-    trigger: 'button:contains(Confirm)',
+    trigger: '.js_product:eq(1) input[data-value_name="Steel"]',
+    extra_trigger: '.js_product:eq(1) div:contains("image variant option src changed")',
 }, {
-    trigger: 'td.o_data_cell:contains("Customizable Desk (TEST) (Custom, White, PAV9, PAV5, PAV1)"):not(:contains("PA9: Single PAV"))',
-    isCheck: true,
+    trigger: 'button span:contains(Confirm)',
+}, {
+    trigger: 'td.o_data_cell:contains("Customizable Desk (TEST) (Custom, White, PAV9, PAV5, PAV1)")',
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("Legs: Custom: Custom 1")',
-    isCheck: true,
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("PA1: PAV9: Custom 2")',
-    isCheck: true,
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("PA4: PAV9: Custom 3")',
-    isCheck: true,
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("PA5: PAV1")',
-    isCheck: true,
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("PA7: PAV1")',
-    isCheck: true,
+    run: function (){} //check
 }, {
     trigger: 'td.o_data_cell:contains("PA8: PAV1")',
-    isCheck: true,
-}, ...stepUtils.saveForm()
-]});
+    run: function (){} //check
+}, ...tour.stepUtils.discardForm()
+]);

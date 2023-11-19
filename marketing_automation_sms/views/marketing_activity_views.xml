@@ -6,11 +6,12 @@
         <field name="inherit_id" ref="marketing_automation.marketing_activity_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//label[@for='mass_mailing_id']" position="after">
-                <label for="mass_mailing_id" string="SMS Template" invisible="activity_type != 'sms'"/>
+                <label for="mass_mailing_id" string="SMS Template" attrs="{'invisible': [('activity_type', '!=', 'sms')]}"/>
             </xpath>
             <xpath expr="//field[@name='mass_mailing_id']" position="attributes">
-                <attribute name="invisible">activity_type not in ['email', 'sms']</attribute>
-                <attribute name="required">activity_type in ['email', 'sms']</attribute>
+                <attribute name="attrs">{
+                        'required': [('activity_type', 'in', ['email', 'sms'])],
+                        'invisible': [('activity_type', 'not in', ['email', 'sms'])]}</attribute>
             </xpath>
         </field>
     </record>

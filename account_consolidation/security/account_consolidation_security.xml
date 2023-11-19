@@ -62,7 +62,7 @@
             <field name="name">Consolidation journals for consolidation group</field>
             <field name="model_id" ref="account_consolidation.model_consolidation_journal"/>
             <field name="groups" eval="[(4, ref('account_consolidation.group_consolidation_user'))]"/>
-            <field name="domain_force">['|', ('chart_id.company_ids', '=', False), ('chart_id.company_ids', 'in', user.company_ids.ids)]</field>
+            <field name="domain_force">['|', ('chart_id', '=', None), ('chart_id.company_ids', 'in', user.company_ids.ids)]</field>
         </record>
         <record id="consolidation_journal_line_consolidation_rule" model="ir.rule">
             <field name="name">Consolidation journal lines for consolidation group</field>

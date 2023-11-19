@@ -3,16 +3,18 @@
 # 	* hr_contract_reports
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
+# Tim Siu Lai <tl@roomsfor.hk>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.2+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-04-19 09:53+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Tim Siu Lai <tl@roomsfor.hk>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,14 +27,9 @@ msgid "# Departure Employee"
 msgstr "# 退職社員"
 
 #. module: hr_contract_reports
-#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__employee_count
-msgid "# Employees"
-msgstr "従業員数"
-
-#. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__count_new_employee
 msgid "# New Employees"
-msgstr "# 新規入社"
+msgstr "# 新入社員"
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__company_id
@@ -48,7 +45,7 @@ msgstr "契約"
 #. module: hr_contract_reports
 #: model:ir.model,name:hr_contract_reports.model_hr_contract_employee_report
 msgid "Contract and Employee Analysis Report"
-msgstr "連絡先と従業員分析レポート"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.ui.menu,name:hr_contract_reports.menu_report_contract_employee_all
@@ -59,11 +56,6 @@ msgstr "契約"
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__date
 msgid "Date"
 msgstr "日付"
-
-#. module: hr_contract_reports
-#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__contract_start
-msgid "Date First Contract Started"
-msgstr "最初の契約開始日"
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__date_end_contract
@@ -77,7 +69,13 @@ msgid "Department"
 msgstr "部門"
 
 #. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Departure Employees"
+msgstr "退職社員"
+
+#. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__departure_reason_id
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
 msgid "Departure Reason"
 msgstr "退職理由"
 
@@ -122,21 +120,76 @@ msgid "Last 365 Days"
 msgstr "過去365日"
 
 #. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Last Contract Ended"
+msgstr "最後の契約終了日"
+
+#. module: hr_contract_reports
+#: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Max Date in Months"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Mean Contract Duration"
+msgstr "平均契約期間"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Min Date in Months"
+msgstr ""
+
+#. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__start_date_months
 msgid "Months of first date of this month since 01/01/1970"
-msgstr "01/01/1970以降の当月初日の月数"
+msgstr ""
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__end_date_months
 msgid "Months of last date of this month since 01/01/1970"
-msgstr "1970年1月1日以降の当月初日の月数"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "New Employees"
+msgstr "新入社員"
 
 #. module: hr_contract_reports
 #: model_terms:ir.actions.act_window,help:hr_contract_reports.contract_employee_report_action
 msgid "This report performs analysis on your contracts."
-msgstr "このレポートは契約の分析をします。"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Contract Length"
+msgstr ""
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Contracts"
+msgstr "全ての契約"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Total Employees"
+msgstr "全ての従業員"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "Turnover Rate"
+msgstr "離職率"
 
 #. module: hr_contract_reports
 #: model:ir.model.fields,field_description:hr_contract_reports.field_hr_contract_employee_report__wage
 msgid "Wage"
 msgstr "賃金"
+
+#. module: hr_contract_reports
+#: model_terms:ir.ui.view,arch_db:hr_contract_reports.contract_employee_report_view_dashboard
+msgid "months"
+msgstr "ヶ月"

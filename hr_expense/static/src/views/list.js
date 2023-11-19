@@ -5,26 +5,33 @@ import { ExpenseMobileQRCode } from '../mixins/qrcode';
 import { ExpenseDocumentUpload, ExpenseDocumentDropZone } from '../mixins/document_upload';
 
 import { registry } from '@web/core/registry';
+import { patch } from '@web/core/utils/patch';
 import { useService } from '@web/core/utils/hooks';
 import { listView } from "@web/views/list/list_view";
 
 import { ListController } from "@web/views/list/list_controller";
 import { ListRenderer } from "@web/views/list/list_renderer";
-import { onWillStart } from "@odoo/owl";
 
-export class ExpenseListController extends ExpenseDocumentUpload(ListController) {
+const { onWillStart } = owl;
+
+export class ExpenseListController extends ListController {
     setup() {
         super.setup();
         this.orm = useService('orm');
         this.actionService = useService('action');
         this.rpc = useService("rpc");
         this.user = useService("user");
-        this.isExpenseSheet = this.model.config.resModel === "hr.expense.sheet";
+        this.isExpenseSheet = this.model.rootParams.resModel === "hr.expense.sheet";
+        this.isExpense = this.model.rootParams.resModel === "hr.expense";
 
         onWillStart(async () => {
-            this.userIsExpenseTeamApprover = await this.user.hasGroup("hr_expense.group_hr_expense_team_approver");
-            this.userIsAccountInvoicing = await this.user.hasGroup("account.group_account_invoice");
+            this.is_expense_team_approver = await this.user.hasGroup("hr_expense.group_hr_expense_team_approver");
+            this.is_account_invoicing = await this.user.hasGroup("account.group_account_invoice");
         });
+    }
+
+    displayCreateReport() {
+        return this.isExpense;
     }
 
     displaySubmit() {
@@ -32,55 +39,39 @@ export class ExpenseListController extends ExpenseDocumentUpload(ListController)
         return records.length && records.every(record => record.data.state === 'draft') && this.isExpenseSheet;
     }
 
-    displayCreateReport() {
-        const records = this.model.root.selection;
-        return !this.isExpenseSheet && (records.length === 0 || records.some(record => record.data.state === "draft"))
-    }
-
     displayApprove() {
         const records = this.model.root.selection;
-        return this.userIsExpenseTeamApprover && records.length && records.every(record => record.data.state === 'submit') && this.isExpenseSheet;
+        return this.is_expense_team_approver && records.length && records.every(record => record.data.state === 'submit') && this.isExpenseSheet;
     }
 
     displayPost() {
         const records = this.model.root.selection;
-        return this.userIsAccountInvoicing && records.length && records.every(record => record.data.state === 'approve') && this.isExpenseSheet;
-    }
-
-    displayPayment() {
-        const records = this.model.root.selection;
-        return this.userIsAccountInvoicing && records.length && records.every(record => record.data.state === 'post' && record.data.payment_state === 'not_paid') && this.isExpenseSheet;
+        return this.is_account_invoicing && records.length && records.every(record => record.data.state === 'approve') && this.isExpenseSheet;
     }
 
     async onClick (action) {
         const records = this.model.root.selection;
         const recordIds = records.map((a) => a.resId);
-        const model = this.model.config.resModel;
-        const res = await this.orm.call(model, action, [recordIds]);
-        if (res) {
-            await this.actionService.doAction(res, {
-                additionalContext: {
-                    dont_redirect_to_payments: 1,
-                },
-                onClose: async () => {
-                    await this.model.root.load();
-                    this.render(true);
-                }
-            });
-        }
+        const model = this.model.rootParams.resModel;
+        await this.orm.call(model, action, [recordIds]);
+        // sgv note: we tried this.model.notify(); and does not work
         await this.model.root.load();
+        this.render(true);
     }
 
-    async action_show_expenses_to_submit () {
+    async onCreateReportClick() {
         const records = this.model.root.selection;
-        const res = await this.orm.call(this.model.config.resModel, 'get_expenses_to_submit', [records.map((record) => record.resId)]);
-        if (res) {
-            await this.actionService.doAction(res, {});
-        }
+        const recordIds = records.map((a) => a.resId);
+        const action = await this.orm.call('hr.expense', 'get_expenses_to_submit', [recordIds]);
+        this.actionService.doAction(action);
     }
-}
 
-export class ExpenseListRenderer extends ExpenseDocumentDropZone(ExpenseMobileQRCode(ListRenderer)) {}
+}
+patch(ExpenseListController.prototype, 'expense_list_controller_upload', ExpenseDocumentUpload);
+
+export class ExpenseListRenderer extends ListRenderer {}
+patch(ExpenseListRenderer.prototype, 'expense_list_renderer_qrcode', ExpenseMobileQRCode);
+patch(ExpenseListRenderer.prototype, 'expense_list_renderer_qrcode_dzone', ExpenseDocumentDropZone);
 ExpenseListRenderer.template = 'hr_expense.ListRenderer';
 
 export class ExpenseDashboardListRenderer extends ExpenseListRenderer {}

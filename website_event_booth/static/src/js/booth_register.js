@@ -1,8 +1,11 @@
-/** @odoo-module **/
+odoo.define('website_event_booth.booth_registration', function (require) {
+'use strict';
 
-import { renderToElement, renderToFragment } from "@web/core/utils/render";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { _t } from "@web/core/l10n/translation";
+var core = require('web.core');
+var dom = require('web.dom');
+var publicWidget = require('web.public.widget');
+var QWeb = core.qweb;
+var _t = core._t;
 
 publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
     selector: '.o_wbooth_registration',
@@ -13,24 +16,12 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
         'click .o_wbooth_registration_confirm': '_onConfirmRegistrationClick',
     },
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
-
     start() {
-        this.eventId = parseInt(this.el.dataset.eventId);
-        this.activeBoothCategoryId = false;
+        this.eventId = parseInt(this.$el.data('event-id'));
+        this.activeType = false;
         this.boothCache = {};
-        this.boothsFirstRendering = true;
-        this.selectedBoothIds = [];
         return this._super.apply(this, arguments).then(() => {
-            this.selectedBoothCategory = this.el.querySelector('input[name="booth_category_id"]:checked');
-            if (this.selectedBoothCategory) {
-                this.selectedBoothIds = this.el.querySelector('.o_wbooth_booths').dataset.selectedBoothIds.split(',').map(Number);
-                this.activeBoothCategoryId = this.selectedBoothCategory.value;
-                this._fetchBoothsAndUpdateUI();
-            }
+            this.$('input[name="booth_category_id"]:enabled:first').click();
         });
     },
 
@@ -40,8 +31,11 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
 
     _check_booths_availability(eventBoothIds) {
         const self = this;
-        return this.rpc("/event/booth/check_availability", {
-            event_booth_ids: eventBoothIds,
+        return this._rpc({
+            route: "/event/booth/check_availability",
+            params: {
+                event_booth_ids: eventBoothIds,
+            },
         }).then(function (result) {
             if (result.unavailable_booths.length) {
                 self.$('input[name="event_booth_ids"]').each(function (i, el) {
@@ -61,13 +55,18 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
     },
 
     _fillBooths() {
-        const boothsElem = this.el.querySelector('.o_wbooth_booths');
-        boothsElem.replaceChildren(renderToFragment('event_booth_checkbox_list', {
-            'event_booth_ids': this.boothCache[this.activeBoothCategoryId],
-            'selected_booth_ids': this.boothsFirstRendering ? this.selectedBoothIds : [],
-        }));
-
-        this.boothsFirstRendering = false;
+        var $boothElem = this.$('.o_wbooth_booths');
+        $boothElem.empty();
+        $.each(this.boothCache[this.activeType], function (key, booth) {
+            let $checkbox = dom.renderCheckbox({
+                text: booth.name,
+                prop: {
+                    name: 'event_booth_ids',
+                    value: booth.id
+                }
+            });
+            $boothElem.append($checkbox);
+        });
     },
 
     /**
@@ -95,7 +94,7 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
 
     _showBoothCategoryDescription() {
         this.$('.o_wbooth_booth_description').addClass('d-none');
-        this.$('#o_wbooth_booth_description_' + this.activeBoothCategoryId).removeClass('d-none');
+        this.$('#o_wbooth_booth_description_' + this.activeType).removeClass('d-none');
     },
 
     /**
@@ -146,29 +145,29 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
         this._updateUiAfterBoothChange(this._countSelectedBooths());
     },
 
-    _onChangeBoothType(ev) {
-        ev.preventDefault();
-        this.activeBoothCategoryId = parseInt(ev.currentTarget.value);
-        this._fetchBoothsAndUpdateUI();
-    },
-
     /**
-     * Load all the booths related to the activeBoothCategoryId booth category and
+     * Load all the booths related to the chosen booth category and
      * add them to a local dictionary to avoid making rpc each time the
      * user change the booth category.
      *
      * Then the selection input will be filled with the fetched booth values.
      *
+     * @param ev
      * @private
      */
-    _fetchBoothsAndUpdateUI() {
-        if (this.boothCache[this.activeBoothCategoryId] === undefined) {
+    _onChangeBoothType(ev) {
+        ev.preventDefault();
+        this.activeType = parseInt(ev.currentTarget.value);
+        if (this.boothCache[this.activeType] === undefined) {
             var self = this;
-            this.rpc('/event/booth_category/get_available_booths', {
-                event_id: this.eventId,
-                booth_category_id: this.activeBoothCategoryId,
+            this._rpc({
+                route: '/event/booth_category/get_available_booths',
+                params: {
+                    event_id: this.eventId,
+                    booth_category_id: this.activeType,
+                },
             }).then(function (result) {
-                self.boothCache[self.activeBoothCategoryId] = result;
+                self.boothCache[self.activeType] = result;
                 self._updateUiAfterBoothCategoryChange();
             });
         } else {
@@ -206,7 +205,7 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
         if (this._isConfirmationFormValid($form)) {
             const formData = new FormData($form[0]);
             const response = await $.ajax({
-                url: `/event/${encodeURIComponent(this.$el.data('eventId'))}/booth/confirm`,
+                url: `/event/${this.$el.data('eventId')}/booth/confirm`,
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -215,14 +214,10 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
 
             const jsonResponse = response && JSON.parse(response);
             if (jsonResponse.success) {
-                this.el.querySelector('.o_wevent_booth_order_progress').remove();
-                const boothCategoryId = this.el.querySelector('input[name=booth_category_id]').value;
-                $form.replaceWith(renderToElement('event_booth_registration_complete', {
-                    'booth_category_id': boothCategoryId,
-                    'event_id': this.eventId,
+                $form.replaceWith($(QWeb.render('event_booth_registration_complete', {
                     'event_name': jsonResponse.event_name,
                     'contact': jsonResponse.contact,
-                }));
+                })));
             } else if (jsonResponse.redirect) {
                 window.location.href = jsonResponse.redirect;
             } else if (jsonResponse.error) {
@@ -235,4 +230,5 @@ publicWidget.registry.boothRegistration = publicWidget.Widget.extend({
 
 });
 
-export default publicWidget.registry.boothRegistration;
+return publicWidget.registry.boothRegistration;
+});

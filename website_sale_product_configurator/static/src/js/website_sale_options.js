@@ -1,10 +1,13 @@
-/** @odoo-module **/
+odoo.define('website_sale_options.website_sale', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import wSaleUtils from "@website_sale/js/website_sale_utils";
-import { OptionalProductsModal } from "@website_sale_product_configurator/js/sale_product_configurator_modal";
-import "@website_sale/js/website_sale";
-import { _t } from "@web/core/l10n/translation";
+var ajax = require('web.ajax');
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+var { OptionalProductsModal } = require('@sale_product_configurator/js/product_configurator_modal');
+require('website_sale.website_sale');
+
+var _t = core._t;
 
 publicWidget.registry.WebsiteSale.include({
 
@@ -40,13 +43,10 @@ publicWidget.registry.WebsiteSale.include({
      * @override
      */
     _submitForm() {
-        var ret = this._super(...arguments);
         if (this.optionalProductsModal && this.stayOnPageOption) {
-            ret.then(()=>{
-                this.optionalProductsModal._openedResolver()
-            });
+            this.optionalProductsModal._openedResolver();
         }
-        return ret;
+        return this._super(...arguments);
     },
     /**
      * Update web shop base form quantity
@@ -81,44 +81,47 @@ publicWidget.registry.WebsiteSale.include({
      * @param {Boolean} goToShop Triggers a page refresh to the url "shop/cart"
      */
     _onModalSubmit: function (goToShop) {
-        const mainProduct = this.$('.js_product.in_cart.main_product').children('.product_id');
-        const productTrackingInfo = mainProduct.data('product-tracking-info');
-        if (productTrackingInfo) {
-            const currency = productTrackingInfo['currency'];
-            const productsTrackingInfo = [];
-            this.$('.js_product.in_cart').each((i, el) => {
-                productsTrackingInfo.push({
-                    'item_id': el.getElementsByClassName('product_id')[0].value,
-                    'item_name': el.getElementsByClassName('product_display_name')[0].textContent,
-                    'quantity': el.getElementsByClassName('js_quantity')[0].value,
-                    'currency': currency,
-                    'price': el.getElementsByClassName('oe_price')[0].getElementsByClassName('oe_currency_value')[0].textContent,
-                });
+        const $product = $('#product_detail');
+        let currency;
+        if ($product.length) {
+            currency = $product.data('product-tracking-info')['currency'];
+        } else {
+            // Add to cart from /shop page
+            currency = this.$('[itemprop="priceCurrency"]').first().text();
+        }
+        const productsTrackingInfo = [];
+        this.$('.js_product.in_cart').each((i, el) => {
+            productsTrackingInfo.push({
+                'item_id': el.getElementsByClassName('product_id')[0].value,
+                'item_name': el.getElementsByClassName('product_display_name')[0].textContent,
+                'quantity': el.getElementsByClassName('js_quantity')[0].value,
+                'currency': currency,
+                'price': el.getElementsByClassName('oe_price')[0].getElementsByClassName('oe_currency_value')[0].textContent,
             });
-            if (productsTrackingInfo) {
-                this.$el.trigger('add_to_cart_event', productsTrackingInfo);
-            }
+        });
+        if (productsTrackingInfo) {
+            this.$el.trigger('add_to_cart_event', productsTrackingInfo);
         }
 
-        const callService = this.call.bind(this)
         this.optionalProductsModal.getAndCreateSelectedProducts()
             .then((products) => {
                 const productAndOptions = JSON.stringify(products);
-                this.rpc('/shop/cart/update_option', {
+                ajax.post('/shop/cart/update_option', {
                     product_and_options: productAndOptions,
-                    ...this._getOptionalCombinationInfoParam(),
-                }).then(function (values) {
-                    if (goToShop) {
-                        window.location.pathname = "/shop/cart";
-                    } else {
-                        wSaleUtils.updateCartNavBar(values);
-                        wSaleUtils.showCartNotification(callService, values.notification_info);
-                    }
-                }).then(() => {
-                    this._getCombinationInfo($.Event('click', {target: $("#add_to_cart")}));
-                });
+                    ...this._getOptionalCombinationInfoParam()
+                }).then(function (quantity) {
+                        if (goToShop) {
+                            window.location.pathname = "/shop/cart";
+                        }
+                        const $quantity = $(".my_cart_quantity");
+                        $quantity.parent().parent().removeClass('d-none');
+                        $quantity.text(quantity).hide().fadeIn(600);
+                        sessionStorage.setItem('website_sale_cart_quantity', quantity);
+                    });
             });
     },
 });
 
-export default publicWidget.registry.WebsiteSaleOptions;
+return publicWidget.registry.WebsiteSaleOptions;
+
+});

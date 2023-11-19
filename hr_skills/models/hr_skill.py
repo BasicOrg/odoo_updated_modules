@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class Skill(models.Model):
@@ -13,10 +13,7 @@ class Skill(models.Model):
     sequence = fields.Integer(default=10)
     skill_type_id = fields.Many2one('hr.skill.type', required=True, ondelete='cascade')
 
-    @api.depends('skill_type_id')
-    @api.depends_context('from_skill_dropdown')
-    def _compute_display_name(self):
+    def name_get(self):
         if not self._context.get('from_skill_dropdown'):
-            return super()._compute_display_name()
-        for record in self:
-            record.display_name = f"{record.name} ({record.skill_type_id.name})"
+            return super().name_get()
+        return [(record.id, f"{record.name} ({record.skill_type_id.name})") for record in self]

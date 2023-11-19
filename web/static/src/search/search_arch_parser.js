@@ -1,12 +1,12 @@
 /** @odoo-module **/
 
 import { makeContext } from "@web/core/context";
-import { _t } from "@web/core/l10n/translation";
-import { evaluateExpr, evaluateBooleanExpr } from "@web/core/py_js/py";
-import { visitXML } from "@web/core/utils/xml";
+import { _lt } from "@web/core/l10n/translation";
+import { evaluateExpr } from "@web/core/py_js/py";
+import { XMLParser } from "@web/core/utils/xml";
 import { DEFAULT_INTERVAL, DEFAULT_PERIOD } from "@web/search/utils/dates";
 
-const ALL = _t("All");
+const ALL = _lt("All");
 const DEFAULT_LIMIT = 200;
 const DEFAULT_VIEWS_WITH_SEARCH_PANEL = ["kanban", "list"];
 
@@ -20,7 +20,7 @@ const DEFAULT_VIEWS_WITH_SEARCH_PANEL = ["kanban", "list"];
 function getContextGroubBy(context) {
     try {
         return makeContext([context]).group_by.split(":");
-    } catch {
+    } catch (_err) {
         return [];
     }
 }
@@ -35,8 +35,10 @@ function reduceType(type) {
     return type;
 }
 
-export class SearchArchParser {
+export class SearchArchParser extends XMLParser {
     constructor(searchViewDescription, fields, searchDefaults = {}, searchPanelDefaults = {}) {
+        super();
+
         const { irFilters, arch } = searchViewDescription;
 
         this.fields = fields || {};
@@ -61,13 +63,14 @@ export class SearchArchParser {
     }
 
     parse() {
-        visitXML(this.arch, (node, visitChildren) => {
+        this.visitXML(this.arch, (node, visitChildren) => {
             switch (node.tagName) {
                 case "search":
                     this.visitSearch(node, visitChildren);
                     break;
                 case "searchpanel":
-                    return this.visitSearchPanel(node);
+                    this.visitSearchPanel(node);
+                    break;
                 case "group":
                     this.visitGroup(node, visitChildren);
                     break;
@@ -107,8 +110,9 @@ export class SearchArchParser {
     visitField(node) {
         this.pushGroup("field");
         const preField = { type: "field" };
-        if (node.hasAttribute("invisible")) {
-            preField.invisible = node.getAttribute("invisible");
+        const modifiers = JSON.parse(node.getAttribute("modifiers") || "{}");
+        if (modifiers.invisible === true) {
+            preField.invisible = true;
         }
         if (node.hasAttribute("domain")) {
             preField.domain = node.getAttribute("domain");
@@ -123,16 +127,15 @@ export class SearchArchParser {
         }
         if (node.hasAttribute("name")) {
             const name = node.getAttribute("name");
-            const fieldType = this.fields[name].type;
             preField.fieldName = name;
-            preField.fieldType = fieldType;
-            if (fieldType !== "properties" && name in this.searchDefaults) {
+            preField.fieldType = this.fields[name].type;
+            if (name in this.searchDefaults) {
                 preField.isDefault = true;
                 let value = this.searchDefaults[name];
                 value = Array.isArray(value) ? value[0] : value;
                 let operator = preField.operator;
                 if (!operator) {
-                    let type = fieldType;
+                    let type = preField.fieldType;
                     if (node.hasAttribute("widget")) {
                         type = node.getAttribute("widget");
                     }
@@ -146,7 +149,8 @@ export class SearchArchParser {
                     }
                 }
                 preField.defaultRank = -10;
-                const { selection, context, relation } = this.fields[name];
+                const { fieldType, fieldName } = preField;
+                const { selection, context, relation } = this.fields[fieldName];
                 preField.defaultAutocompleteValue = { label: `${value}`, operator, value };
                 if (fieldType === "selection") {
                     const option = selection.find((sel) => sel[0] === value);
@@ -156,12 +160,9 @@ export class SearchArchParser {
                     preField.defaultAutocompleteValue.label = option[1];
                 } else if (fieldType === "many2one") {
                     this.labels.push((orm) => {
-                        return orm
-                            .call(relation, "read", [value, ["display_name"]], { context })
-                            .then((results) => {
-                                preField.defaultAutocompleteValue.label =
-                                    results[0]["display_name"];
-                            });
+                        orm.call(relation, "name_get", [value], { context }).then((results) => {
+                            preField.defaultAutocompleteValue.label = results[0][1];
+                        });
                     });
                 }
             }
@@ -219,8 +220,9 @@ export class SearchArchParser {
                 preSearchItem.domain = stringRepr;
             }
         }
-        if (node.hasAttribute("invisible")) {
-            preSearchItem.invisible = node.getAttribute("invisible");
+        const modifiers = JSON.parse(node.getAttribute("modifiers") || "{}");
+        if (modifiers.invisible === true) {
+            preSearchItem.invisible = true;
             const fieldName = preSearchItem.fieldName;
             if (fieldName && !this.fields[fieldName]) {
                 // In some case when a field is limited to specific groups
@@ -287,10 +289,8 @@ export class SearchArchParser {
             if (node.nodeType !== 1 || node.tagName !== "field") {
                 continue;
             }
-            if (
-                node.getAttribute("invisible") === "True" ||
-                node.getAttribute("invisible") === "1"
-            ) {
+            const modifiers = JSON.parse(node.getAttribute("modifiers") || "{}");
+            if (modifiers.invisible === true) {
                 continue;
             }
             const attrs = {};
@@ -302,8 +302,8 @@ export class SearchArchParser {
             const section = {
                 color: attrs.color || null,
                 description: attrs.string || this.fields[attrs.name].string,
-                enableCounters: evaluateBooleanExpr(attrs.enable_counters),
-                expand: evaluateBooleanExpr(attrs.expand),
+                enableCounters: Boolean(evaluateExpr(attrs.enable_counters || "0")),
+                expand: Boolean(evaluateExpr(attrs.expand || "0")),
                 fieldName: attrs.name,
                 icon: attrs.icon || null,
                 id: nextSectionId++,
@@ -314,7 +314,7 @@ export class SearchArchParser {
             if (type === "category") {
                 section.activeValueId = this.searchPanelDefaults[attrs.name];
                 section.icon = section.icon || "fa-folder";
-                section.hierarchize = evaluateBooleanExpr(attrs.hierarchize || "1");
+                section.hierarchize = Boolean(evaluateExpr(attrs.hierarchize || "1"));
                 section.values.set(false, {
                     childrenIds: [],
                     display_name: ALL.toString(),

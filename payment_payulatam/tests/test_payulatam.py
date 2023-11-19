@@ -12,11 +12,21 @@ from odoo.tools import mute_logger
 
 from odoo.addons.payment.tests.http_common import PaymentHttpCommon
 from odoo.addons.payment_payulatam.controllers.main import PayuLatamController
+from odoo.addons.payment_payulatam.models.payment_provider import SUPPORTED_CURRENCIES
 from odoo.addons.payment_payulatam.tests.common import PayULatamCommon
 
 
 @tagged('post_install', '-at_install')
 class PayULatamTest(PayULatamCommon, PaymentHttpCommon):
+
+    def test_compatibility_with_supported_currencies(self):
+        """ Test that the PayULatam provider is compatible with all supported currencies. """
+        for supported_currency_code in SUPPORTED_CURRENCIES:
+            supported_currency = self._prepare_currency(supported_currency_code)
+            compatible_providers = self.env['payment.provider']._get_compatible_providers(
+                self.company.id, self.partner.id, self.amount, currency_id=supported_currency.id
+            )
+            self.assertIn(self.payulatam, compatible_providers)
 
     def test_incompatibility_with_unsupported_currency(self):
         """ Test that the PayULatam provider is not compatible with an unsupported currency. """
@@ -36,7 +46,8 @@ class PayULatamTest(PayULatamCommon, PaymentHttpCommon):
     @freeze_time('2011-11-02 12:00:21')  # Freeze time for consistent singularization behavior
     def test_reference_is_computed_based_on_document_name(self):
         """ Test computation of reference prefixes based on the provided invoice. """
-        self._skip_if_account_payment_is_not_installed()
+        if not self.env['ir.module.module']._get('account').state == 'installed':
+            self.skipTest('account module not installed')
 
         invoice = self.env['account.move'].create({})
         reference = self.env['payment.transaction']._compute_reference(
@@ -58,7 +69,6 @@ class PayULatamTest(PayULatamCommon, PaymentHttpCommon):
             'referenceCode': self.reference,
             'amount': str(self.amount),
             'currency': self.currency.name,
-            'paymentMethods': self.payment_method_code,
             'tax': str(0),
             'taxReturnBase': str(0),
             'buyerEmail': self.partner.email,
@@ -131,6 +141,7 @@ class PayULatamTest(PayULatamCommon, PaymentHttpCommon):
         # Validate the transaction ('pending' state)
         self.env['payment.transaction']._handle_notification_data('payulatam', payulatam_post_data)
         self.assertEqual(tx.state, 'pending', 'Payulatam: wrong state after receiving a valid pending notification')
+        self.assertEqual(tx.state_message, payulatam_post_data['message'], 'Payulatam: wrong state message after receiving a valid pending notification')
         self.assertEqual(tx.provider_reference, 'b232989a-4aa8-42d1-bace-153236eee791', 'Payulatam: wrong txn_id after receiving a valid pending notification')
 
         # Reset the transaction
@@ -149,7 +160,11 @@ class PayULatamTest(PayULatamCommon, PaymentHttpCommon):
         """ Test the processing of a webhook notification. """
         tx = self._create_transaction('redirect')
         url = self._build_url(PayuLatamController._webhook_url)
-        self._make_http_post_request(url, data=self.async_notification_data_webhook)
+        with patch(
+            'odoo.addons.payment_payulatam.controllers.main.PayuLatamController'
+            '._verify_notification_signature'
+        ):
+            self._make_http_post_request(url, data=self.async_notification_data)
         self.assertEqual(tx.state, 'done')
 
     @mute_logger('odoo.addons.payment_payulatam.controllers.main')

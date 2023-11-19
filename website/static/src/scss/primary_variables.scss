@@ -5,18 +5,11 @@
 
 $o-base-color-palette: map-merge($o-base-color-palette, (
     'body': $o-portal-default-body-bg,
-    'input': null,
     'menu': 1, // o_cc1
     'menu-custom': null,
     'menu-border-color': null, // Default to classes used on the template
-    'header-sales_one': 2,
-    'header-sales_one-custom': null,
-    'header-sales_two': 5,
-    'header-sales_two-custom': null,
-    'header-sales_three': 2,
-    'header-sales_three-custom': null,
-    'header-sales_four': 1,
-    'header-sales_four-custom': null,
+    'header-boxed': null,
+    'header-boxed-custom': '200',
     'footer': 5, // o_cc5
     'footer-custom': null,
     'copyright': null,
@@ -47,7 +40,6 @@ $o-social-colors: (
     'instagram': #cf2872,
     'whatsapp': #25d366,
     'pinterest': #C8232C,
-    'tiktok': #000000,
 );
 
 $o-theme-figcaption-opacity: 0.6;
@@ -1961,25 +1953,6 @@ $o-selected-color-palettes-names: (
 
 $o-base-website-values-palette: (
     'font-size-base': 1rem, // Need a set value as the value is used in bootstrap_overridden files
-    'body-line-height': 1.5,
-    'headings-line-height': 1.2,
-    'paragraph-margin-top': 0,
-    'paragraph-margin-bottom': 16px,
-    'headings-margin-top': 0,
-    'headings-margin-bottom': 0.5rem,
-
-    'display-1-font-size': null, // Default to BS
-    'display-2-font-size': null, // Default to BS
-    'display-3-font-size': null, // Default to BS
-    'display-4-font-size': null, // Default to BS
-
-    // Forced to use `rem` by default instead of Bootstrap default using `em` as
-    // the editor would not be working with `em` values for now. This will have
-    // the drawback of changing the default small behavior of bootstrap which
-    // can normally be put inside titles etc... but that's not the way the
-    // editor will allow to use it for now. This is a compromise.
-    'small-font-size': 0.875rem,
-
     'google-fonts': null,
     'google-local-fonts': null,
 
@@ -1991,10 +1964,6 @@ $o-base-website-values-palette: (
 
     'btn-primary-outline': false,
     'btn-secondary-outline': false,
-    'btn-primary-flat': false,
-    'btn-secondary-flat': false,
-    'btn-primary-outline-border-width': 1px,
-    'btn-secondary-outline-border-width': 1px,
     'link-underline': 'hover', // 'never' / 'hover' / 'always'
     'btn-ripple': false,
 
@@ -2002,7 +1971,7 @@ $o-base-website-values-palette: (
     'btn-padding-x': null, // Default to BS
     'btn-font-size': null, // Default to BS
     'btn-padding-y-sm': null, // Default to portal value
-    'btn-padding-x-sm': null, // Default to BS
+    'btn-padding-x-sm': null, // Default to portal value
     'btn-font-size-sm': null, // Default to BS
     'btn-padding-y-lg': null, // Default to BS
     'btn-padding-x-lg': null, // Default to BS
@@ -2035,17 +2004,16 @@ $o-base-website-values-palette: (
 
     // Gradients
     'menu-gradient': null,
-    'menu-secondary-gradient': null,
+    'header-boxed-gradient': null,
     'footer-gradient': null,
     'copyright-gradient': null,
 
     'header-template': 'default', // 'default' / 'hamburger' / 'vertical' / 'sidebar'
     'header-font-size': null, // Default to BS (normal font-size)
-    'header-text-color': null,
     'header-links-style': 'default', // 'default' / 'fill' / 'outline' / 'pills' / 'block' / 'border-bottom'
     'logo-height': null, // Default to navbar height (see portal)
+    'hamburger-type': 'default', // 'default' / 'off-canvas'
     'hamburger-position': 'left', // 'left' / 'center' / 'right'
-    'hamburger-position-mobile': 'left', // 'left' / 'center' / 'right'
     'menu-border-width': null, // Default to classes used on the template
     'menu-border-style': solid, // Default to classes used on the template
     'menu-border-radius': null, // Default to classes used on the template
@@ -2059,15 +2027,6 @@ $o-base-website-values-palette: (
 $o-font-aliases-to-keys: (
     'base': 'font',
     'headings': 'headings-font',
-    'h2': 'h2-font',
-    'h3': 'h3-font',
-    'h4': 'h4-font',
-    'h5': 'h5-font',
-    'h6': 'h6-font',
-    'display-1': 'display-1-font',
-    'display-2': 'display-2-font',
-    'display-3': 'display-3-font',
-    'display-4': 'display-4-font',
     'navbar': 'navbar-font',
     'buttons': 'buttons-font',
 );
@@ -2078,12 +2037,6 @@ $o-website-values-palettes: (
         // define in $o-theme-font-configs (for the base one). For the default
         // website, we want to specifically use the system fonts.
         'font': 'SYSTEM_FONTS',
-
-        'btn-padding-x': 1rem,
-        'btn-padding-x-sm': .5rem,
-        'btn-padding-y-lg': 1rem,
-        'btn-padding-x-lg': 2.5rem,
-        'btn-border-radius-lg': 2rem,
     ),
 ) !default;
 $o-website-values-palette-number: 1 !default;
@@ -2096,17 +2049,14 @@ $o-user-website-values: () !default;
 // Fonts
 //------------------------------------------------------------------------------
 
-// These variables mirror BS multipliers behavior, except that in BS those are
-// hardcoded in '$h[x]-font-size' declarations and are not customizable.
-$o-theme-h1-font-size-multiplier: 3 !default;
-$o-theme-h2-font-size-multiplier: 2.5 !default;
-$o-theme-h3-font-size-multiplier: 2 !default;
+// Those are BS values, except BS hardcodes them inside the $hx-font-size
+// variables directly and don't make them customizable.
+$o-theme-h1-font-size-multiplier: 2.5 !default;
+$o-theme-h2-font-size-multiplier: 2 !default;
+$o-theme-h3-font-size-multiplier: 1.75 !default;
 $o-theme-h4-font-size-multiplier: 1.5 !default;
 $o-theme-h5-font-size-multiplier: 1.25 !default;
 $o-theme-h6-font-size-multiplier: 1 !default;
-
-// Mirror BS default lead multiplier value
-$o-lead-ratio: 1.125 !default;
 
 // Map:
 // <font-name>: (
@@ -2210,9 +2160,4 @@ $o-theme-font-configs: (
         ));
     }
     @return $-map;
-}
-
-// Fade-in 'currentColor' by a customizable amount
-@function fade-currentColor($-opacity: 15%) {
-    @return color-mix(in srgb, currentColor #{$-opacity}, transparent);
 }

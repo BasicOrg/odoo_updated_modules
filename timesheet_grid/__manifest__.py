@@ -9,7 +9,7 @@
 * Activate grid view for timesheets
     """,
     'version': '1.0',
-    'depends': ['project_enterprise', 'web_grid', 'hr_timesheet', 'timer', 'hr_org_chart'],
+    'depends': ['project_enterprise', 'web_grid', 'hr_timesheet', 'timer'],
     'category': 'Services/Timesheets',
     'sequence': 65,
     'data': [
@@ -20,6 +20,7 @@
         'security/ir.model.access.csv',
         'views/hr_timesheet_views.xml',
         'views/res_config_settings_views.xml',
+        'report/timesheets_analysis_report.xml',
         'wizard/timesheet_merge_wizard_views.xml',
         'wizard/project_task_create_timesheet_views.xml',
     ],
@@ -31,21 +32,23 @@
     'application': True,
     'license': 'OEEL-1',
     'pre_init_hook': 'pre_init_hook',
-    'post_init_hook': 'post_init_hook',
     'uninstall_hook': 'uninstall_hook',
     'assets': {
         'web.assets_backend': [
-            'timesheet_grid/static/src/**',
+            'timesheet_grid/static/src/**/*',
         ],
         'web.assets_tests': [
             'timesheet_grid/static/tests/tours/timesheet_record_time.js',
         ],
         'web.qunit_suite_tests': [
-            "timesheet_grid/static/tests/*",
-            ('remove', "timesheet_grid/static/tests/setup_manager_patch.js"),
+            ('after', 'web_grid/static/tests/mock_server.js', 'timesheet_grid/static/tests/legacy/timesheet_uom_tests.js'),
+            ('after', 'web_grid/static/tests/mock_server.js', 'timesheet_grid/static/tests/timesheet_grid_tests.js'),
+            ('after', 'web_grid/static/tests/mock_server.js', 'timesheet_grid/static/tests/timesheet_timer_grid_tests.js'),
+            ('after', 'web_grid/static/tests/mock_server.js', 'timesheet_grid/static/tests/task_progress_gantt_test.js'),
+            "timesheet_grid/static/tests/timesheet_uom_hour_timer_tests.js",
+            "timesheet_grid/static/tests/timesheet_display_timer_tests.js",
+            "timesheet_grid/static/tests/timesheet_validation_kanban_view_tests.js",
+            "timesheet_grid/static/tests/timesheet_uom_hour_toggle_tests.js",
         ],
-        'web.tests_assets': [
-            "timesheet_grid/static/tests/setup_manager_patch.js",
-        ]
     }
 }

@@ -12,7 +12,7 @@
                     </group>
                     <footer>
                         <button name="action_validate" type="object" string="Select" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                     </footer>
                 </form>
             </field>
@@ -20,6 +20,7 @@
 
         <record id="act_delivery_easypost_carrier_type" model="ir.actions.act_window">
             <field name="name">Select a carrier</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">delivery.carrier.easypost</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

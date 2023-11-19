@@ -26,7 +26,7 @@ class PosOrder(models.Model):
     def _order_fields(self, ui_order):
         fields = super()._order_fields(ui_order)
         if self._check_config_germany_floor(session_id=ui_order['pos_session_id']) and 'l10n_de_fiskaly_time_start' not in fields:
-            fields['l10n_de_fiskaly_time_start'] = ui_order['date_order'].replace('T', ' ')[:19]
+            fields['l10n_de_fiskaly_time_start'] = ui_order['creation_date'].replace('T', ' ')[:19]
         return fields
 
     @api.model
@@ -106,9 +106,15 @@ class PosOrder(models.Model):
 
         return line_dict
 
+    def _get_fields_for_draft_order(self):
+        field_list = super()._get_fields_for_draft_order()
+        if self.env.company.l10n_de_is_germany_and_fiskaly():
+            field_list.append('l10n_de_fiskaly_time_start')
+        return field_list
+
     @api.model
-    def export_for_ui_table_draft(self, table_ids):
-        table_orders = super().export_for_ui_table_draft(table_ids)
+    def get_table_draft_orders(self, table_ids):
+        table_orders = super().get_table_draft_orders(table_ids)
         if self.env.company.l10n_de_is_germany_and_fiskaly():
             for order in table_orders:
                 order['tss_info'] = {}

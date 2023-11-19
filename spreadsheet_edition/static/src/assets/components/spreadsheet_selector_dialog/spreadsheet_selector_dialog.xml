@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-    <t t-name="spreadsheet_edition.SpreadsheetSelectorDialog">
+    <t t-name="spreadsheet_edition.SpreadsheetSelectorDialog" owl="1">
         <Dialog title="title">
             <div class="o_spreadsheet_selector_dialog">
                 <div class="o-sp-dialog-meta-container">
@@ -19,8 +19,8 @@
                     <Notebook>
                     </Notebook>
                 </div>
-                <t t-set-slot="footer">
-                    <button class="btn btn-primary" t-att-disabled="state.confirmationIsPending" t-on-click="_confirm">Confirm</button>
+                <t t-set-slot="footer" owl="1">
+                    <button class="btn btn-primary" t-on-click="_confirm">Confirm</button>
                     <button class="btn btn-secondary" t-on-click="_cancel">Cancel</button>
                 </t>
             </div>

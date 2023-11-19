@@ -5,7 +5,7 @@
 {
     'name': 'Appointment Lead Generation',
     'version': '1.0',
-    'category': 'Services/Appointment',
+    'category': 'Marketing/Online Appointment',
     'sequence': 2150,
     'summary': 'Generate leads when prospects schedule appointments',
     'website': 'https://www.odoo.com/app/appointments',
@@ -24,9 +24,6 @@ Allow to generate lead from Scheduled Appointments through your Website
     'assets': {
         'web.assets_backend': [
             'appointment_crm/static/src/views/**/*',
-        ],
-        'web.assets_tests': [
-            'appointment_crm/static/tests/tours/**/*',
         ],
     },
 }

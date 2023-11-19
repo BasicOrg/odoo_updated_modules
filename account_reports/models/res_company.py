@@ -25,10 +25,10 @@ class ResCompany(models.Model):
         ('2_months', 'every 2 months'),
         ('monthly', 'monthly')], string="Delay units", help="Periodicity", default='monthly', required=True)
     account_tax_periodicity_reminder_day = fields.Integer(string='Start from', default=7, required=True)
-    account_tax_periodicity_journal_id = fields.Many2one('account.journal', string='Journal', domain=[('type', '=', 'general')], check_company=True)
-    account_revaluation_journal_id = fields.Many2one('account.journal', domain=[('type', '=', 'general')], check_company=True)
-    account_revaluation_expense_provision_account_id = fields.Many2one('account.account', string='Expense Provision Account', check_company=True)
-    account_revaluation_income_provision_account_id = fields.Many2one('account.account', string='Income Provision Account', check_company=True)
+    account_tax_periodicity_journal_id = fields.Many2one('account.journal', string='Journal', domain=[('type', '=', 'general')])
+    account_revaluation_journal_id = fields.Many2one('account.journal', domain=[('type', '=', 'general')])
+    account_revaluation_expense_provision_account_id = fields.Many2one('account.account', string='Expense Provision Account')
+    account_revaluation_income_provision_account_id = fields.Many2one('account.account', string='Income Provision Account')
     account_tax_unit_ids = fields.Many2many(string="Tax Units", comodel_name='account.tax.unit', help="The tax units this company belongs to.")
     account_representative_id = fields.Many2one('res.partner', string='Accounting Firm',
                                                 help="Specify an Accounting Firm that will act as a representative when exporting reports.")
@@ -52,17 +52,13 @@ class ResCompany(models.Model):
         account_tax_periodicity_journal_id field. This is useful in case a
         CoA was already installed on the company at the time the module
         is installed, so that the field is set automatically when added."""
-        return self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(self),
-            ('type', '=', 'general'),
-            ('show_on_dashboard', '=', True),
-        ], limit=1)
+        return self.env['account.journal'].search([('type', '=', 'general'), ('show_on_dashboard', '=', True), ('company_id', '=', self.id)], limit=1)
 
     def write(self, values):
         tax_closing_update_dependencies = ('account_tax_periodicity', 'account_tax_periodicity_reminder_day', 'account_tax_periodicity_journal_id.id')
         to_update = self.env['res.company']
         for company in self:
-            if company.account_tax_periodicity_journal_id:
+            if company.chart_template_id and company.account_tax_periodicity_journal_id:
 
                 need_tax_closing_update = any(
                     update_dep in values and company.mapped(update_dep)[0] != values[update_dep]
@@ -72,12 +68,10 @@ class ResCompany(models.Model):
                 if need_tax_closing_update:
                     to_update += company
 
-        res = super().write(values)
+        super(ResCompany, self).write(values)
 
         for update_company in to_update:
             update_company._update_tax_closing_after_periodicity_change()
-
-        return res
 
     def _update_tax_closing_after_periodicity_change(self):
         self.ensure_one()
@@ -140,7 +134,6 @@ class ResCompany(models.Model):
 
             # Values for update/creation of closing move
             closing_vals = {
-                'company_id': self.id,# Important to specify together with the journal, for branches
                 'journal_id': self.account_tax_periodicity_journal_id.id,
                 'date': period_end,
                 'tax_closing_end_date': period_end,
@@ -215,9 +208,9 @@ class ResCompany(models.Model):
         if periodicity == 'year':
             return _("Tax return for %s%s", period_start.year, region_string)
         elif periodicity == 'trimester':
-            return _("Tax return for %s%s", format_date(self.env, period_start, date_format='qqq yyyy'), region_string)
+            return _("Tax return for %s%s", format_date(self.env, period_start, date_format='qqq'), region_string)
         elif periodicity == 'monthly':
-            return _("Tax return for %s%s", format_date(self.env, period_start, date_format='LLLL yyyy'), region_string)
+            return _("Tax return for %s%s", format_date(self.env, period_start, date_format='LLLL'), region_string)
         else:
             return _("Tax return from %s to %s%s", format_date(self.env, period_start), format_date(self.env, period_end), region_string)
 
@@ -246,47 +239,3 @@ class ResCompany(models.Model):
             'monthly': 1,
         }
         return periodicities[self.account_tax_periodicity]
-
-    def  _get_branches_with_same_vat(self, accessible_only=False):
-        """ Returns all companies among self and its branch hierachy (considering children and parents) that share the same VAT number
-        as self. An empty VAT number is considered as being the same as the one of the closest parent with a VAT number.
-
-        self is always returned as the first element of the resulting recordset (so that this can safely be used to restore the active company).
-
-        Example:
-        - main company ; vat = 123
-            - branch 1
-                - branch 1_1
-            - branch 2 ; vat = 456
-                - branch 2_1 ; vat = 789
-                - branch 2_2
-
-        In this example, the following VAT numbers will be considered for each company:
-        - main company: 123
-        - branch 1: 123
-        - branch 1_1: 123
-        - branch 2: 456
-        - branch 2_1: 789
-        - branch 2_2: 456
-
-        :param accessible_only: whether the returned companies should exclude companies that are not in self.env.companies
-        """
-        self.ensure_one()
-
-        current = self.sudo()
-        same_vat_branch_ids = [current.id] # Current is always available
-        current_strict_parents = current.parent_ids - current
-        if accessible_only:
-            candidate_branches = current.root_id._accessible_branches()
-        else:
-            candidate_branches = self.env['res.company'].sudo().search([('id', 'child_of', current.root_id.ids)])
-
-        current_vat_check_set = {current.vat} if current.vat else set()
-        for branch in candidate_branches - current:
-            parents_vat_set = set(filter(None, (branch.parent_ids - current_strict_parents).mapped('vat')))
-            if parents_vat_set == current_vat_check_set:
-                # If all the branches between the active company and branch (both included) share the same VAT number as the active company,
-                # we want to add the branch to the selection.
-                same_vat_branch_ids.append(branch.id)
-
-        return self.browse(same_vat_branch_ids)

@@ -1,20 +1,12 @@
 /** @odoo-module **/
 
 import BarcodePickingModel from '@stock_barcode/models/barcode_picking_model';
-import { patch } from "@web/core/utils/patch";
-import { serializeDateTime } from "@web/core/l10n/dates";
-const { DateTime } = luxon;
+import { patch } from 'web.utils';
 
-function getFormattedDate(value) {
-    // convert to noon to avoid most timezone issues
-    const date = DateTime.fromJSDate(value).set({ hours: 12, minutes: 0, seconds: 0 });
-    return serializeDateTime(date);
-}
-
-patch(BarcodePickingModel.prototype, {
+patch(BarcodePickingModel.prototype, 'stock_barcode_product_expiry', {
 
     async updateLine(line, args) {
-        super.updateLine(...arguments);
+        this._super(...arguments);
         if (args.expiration_date) {
             line.expiration_date = args.expiration_date;
         }
@@ -24,30 +16,34 @@ patch(BarcodePickingModel.prototype, {
         const result = {};
         const { rule, value } = data;
         if (rule.type === 'expiration_date') {
-            result.expirationDate = getFormattedDate(value);
+            // convert to noon to avoid most timezone issues
+            value.setHours(12, 0, 0);
+            result.expirationDate = moment.utc(value).format('YYYY-MM-DD HH:mm:ss');
             result.match = true;
         } else if (rule.type === 'use_date') {
             result.useDate = value;
             result.match = true;
         } else {
-            return await super._processGs1Data(...arguments);
+            return await this._super(...arguments);
         }
         return result;
     },
 
     async _parseBarcode(barcode, filters) {
-        const barcodeData = await super._parseBarcode(...arguments);
+        const barcodeData = await this._super(...arguments);
         const {product, useDate, expirationDate} = barcodeData;
         if (product && useDate && !expirationDate) {
             const value = new Date(useDate);
             value.setDate(useDate.getDate() + product.use_time);
-            barcodeData.expirationDate = getFormattedDate(value);
+            // convert to noon to avoid most timezone issues
+            value.setHours(12, 0, 0);
+            barcodeData.expirationDate = moment.utc(value).format('YYYY-MM-DD HH:mm:ss');
         }
         return barcodeData;
     },
 
     _convertDataToFieldsParams(args) {
-        const params = super._convertDataToFieldsParams(...arguments);
+        const params = this._super(...arguments);
         if (args.expirationDate) {
             params.expiration_date = args.expirationDate;
         }
@@ -55,13 +51,13 @@ patch(BarcodePickingModel.prototype, {
     },
 
     _getFieldToWrite() {
-        const fields = super._getFieldToWrite(...arguments);
+        const fields = this._super(...arguments);
         fields.push('expiration_date');
         return fields;
     },
 
     _createCommandVals(line) {
-        const values = super._createCommandVals(...arguments);
+        const values = this._super(...arguments);
         values.expiration_date = line.expiration_date;
         return values;
     },

@@ -10,7 +10,7 @@ from odoo.exceptions import RedirectWarning
 class TestL10nMXTrialBalanceReport(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='mx'):
+    def setUpClass(cls, chart_template_ref='l10n_mx.mx_coa'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].country_id = cls.env.ref('base.mx')
@@ -85,91 +85,16 @@ class TestL10nMXTrialBalanceReport(TestAccountReportsCommon):
             Unaffected Earnings account is not include in this report because
             it's custom Odoo account.
         """
-
         expected_coa_xml = b"""<?xml version='1.0' encoding='utf-8'?>
-        <catalogocuentas:Catalogo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:catalogocuentas="http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas" xsi:schemaLocation="http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd" Version="1.3" RFC="EKU9003173C9" Mes="01" Anio="2021">
-            <catalogocuentas:Ctas CodAgrup="101" NumCta="101" Desc="Cash" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="101.01" NumCta="101.01" Desc="Cash in hand" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="102" NumCta="102" Desc="Bank" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="102.01" NumCta="102.01" Desc="National banks" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="102.02" NumCta="102.02" Desc="Foreign banks" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="105" NumCta="105" Desc="Clients" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="105.01" NumCta="105.01" Desc="National customers" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="107" NumCta="107" Desc="Sundry debtors" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="107.05" NumCta="107.05" Desc="Other sundry debtors" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="108" NumCta="108" Desc="Allowance for doubtful accounts" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="108.01" NumCta="108.01" Desc="Allowance for doubtful accounts national" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="108.02" NumCta="108.02" Desc="Allowance for doubtful accounts foreign" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115" NumCta="115" Desc="Inventory" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.01" NumCta="115.01" Desc="Inventory" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.02" NumCta="115.02" Desc="Raw materials and materials" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.03" NumCta="115.03" Desc="Production in progress" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.04" NumCta="115.04" Desc="Finished products" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.05" NumCta="115.05" Desc="Goods in transit" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="115.06" NumCta="115.06" Desc="Goods held by third parties" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="118" NumCta="118" Desc="Creditable taxes paid" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="118.01" NumCta="118.01" Desc="Creditable VAT paid" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="118.03" NumCta="118.03" Desc="Creditable IEPS paid" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="119" NumCta="119" Desc="Taxes payable" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="119.01" NumCta="119.01" Desc="VAT due" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="119.03" NumCta="119.03" Desc="IEPS pending payment" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="120" NumCta="120" Desc="Advances to suppliers" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="120.01" NumCta="120.01" Desc="Advance to national suppliers" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="120.02" NumCta="120.02" Desc="Advance payment to foreign suppliers" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="201" NumCta="201" Desc="Suppliers" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="201.01" NumCta="201.01" Desc="National suppliers" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="205" NumCta="205" Desc="Short-term sundry creditors" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="205.06" NumCta="205.06" Desc="Other short-term sundry creditors" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="206" NumCta="206" Desc="Customer advance" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="206.01" NumCta="206.01" Desc="Domestic customer advance" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="206.02" NumCta="206.02" Desc="Advance payment from foreign customer" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="206.05" NumCta="206.05" Desc="Other customer advances" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="208" NumCta="208" Desc="Taxes carried forward collected" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="208.01" NumCta="208.01" Desc="VAT carried forward collected" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="208.02" NumCta="208.02" Desc="IEPS carried forward collected" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="209" NumCta="209" Desc="Uncollected taxes carried forward" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="209.01" NumCta="209.01" Desc="VAT carried forward not collected" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="209.02" NumCta="209.02" Desc="IEPS carried forward not collected" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="210" NumCta="210" Desc="Provision for wages and salaries payable" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="210.01" NumCta="210.01" Desc="Provision for wages and salaries payable" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216" NumCta="216" Desc="Taxes withheld" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216.01" NumCta="216.01" Desc="Taxes withheld from income tax on wages and salaries" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216.03" NumCta="216.03" Desc="Withholding of income tax for leasing" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216.04" NumCta="216.04" Desc="Taxes withheld from income tax for professional services" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216.10" NumCta="216.10" Desc="VAT withholding taxes" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="216.11" NumCta="216.11" Desc="IMSS withholdings from workers" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="302" NumCta="302" Desc="Heritage" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="302.01" NumCta="302.01" Desc="Heritage" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="304" NumCta="304" Desc="Result of previous years" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="304.01" NumCta="304.01" Desc="Profit from previous years" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="305" NumCta="305" Desc="Result for the year" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="305.01" NumCta="305.01" Desc="Profit for the year" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="401" NumCta="401" Desc="Income" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="401.01" NumCta="401.01" Desc="Sales and/or services taxed at the general rate" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="501" NumCta="501" Desc="Cost of sale and/or service" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="501.01" NumCta="501.01" Desc="Cost of sales" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="601" NumCta="601" Desc="Overheads" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="601.01" NumCta="601.01" Desc="Wages and salaries" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="601.84" NumCta="601.84" Desc="Other overheads" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="701" NumCta="701" Desc="Financial expenses" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="701.01" NumCta="701.01" Desc="Foreign exchange loss" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="702" NumCta="702" Desc="Financial products" Nivel="1" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="702.01" NumCta="702.01" Desc="Exchange profit" Nivel="2" Natur="A"/>
-            <catalogocuentas:Ctas CodAgrup="811" NumCta="811" Desc="Tax gain or loss on sale and/or derecognition of fixed assets" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="811.01" NumCta="811.01" Desc="Tax gain or loss on sale and/or derecognition of fixed assets" Nivel="2" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="899" NumCta="899" Desc="Other off-balance sheet items" Nivel="1" Natur="D"/>
-            <catalogocuentas:Ctas CodAgrup="899.01" NumCta="899.01" Desc="Other off-balance sheet items" Nivel="2" Natur="D"/>
+        <catalogocuentas:Catalogo xmlns:catalogocuentas="http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas http://www.sat.gob.mx/esquemas/ContabilidadE/1_3/CatalogoCuentas/CatalogoCuentas_1_3.xsd" Version="1.3" RFC="EKU9003173C9" Mes="01" Anio="2021">
+            <catalogocuentas:Ctas CodAgrup="201" NumCta="201" Desc="Proveedores" Nivel="1" Natur="A"/>
+            <catalogocuentas:Ctas CodAgrup="201.01" NumCta="201.01" Desc="Proveedores nacionales" Nivel="2" Natur="A"/>
+            <catalogocuentas:Ctas CodAgrup="401" NumCta="401" Desc="Ingresos" Nivel="1" Natur="A"/>
+            <catalogocuentas:Ctas CodAgrup="401.01" NumCta="401.01" Desc="Ventas y/o servicios gravados a la tasa general" Nivel="2" Natur="A"/>
+            <catalogocuentas:Ctas CodAgrup="601" NumCta="601" Desc="Gastos generales" Nivel="1" Natur="D"/>
+            <catalogocuentas:Ctas CodAgrup="601.84" NumCta="601.84" Desc="Otros gastos generales" Nivel="2" Natur="D"/>
         </catalogocuentas:Catalogo>
         """
-
-        # Add missing tags to Outstanding Receipts, Outstanding Payments, Liquidity Transfer accounts
-        accounts = self.env['account.account'].search([
-            ('company_id', '=', self.env.company.id),
-            ('account_type', '!=', 'equity_unaffected'),
-            ('group_id', '!=', False),
-            ('tag_ids', '=', False)
-        ])
-        accounts.write({'tag_ids': [Command.link(self.env.ref('l10n_mx.tag_credit_balance_account').id)]})
 
         options = self._generate_options(self.report, '2021-01-01', '2021-12-31')
         coa_report = self.env[self.report.custom_handler_model_name].with_context(skip_xsd=True).action_l10n_mx_generate_coa_sat_xml(options)['file_content']
@@ -221,20 +146,6 @@ class TestL10nMXTrialBalanceReport(TestAccountReportsCommon):
         with self.assertRaises(RedirectWarning):
             self.env[self.report.custom_handler_model_name].action_l10n_mx_generate_coa_sat_xml(options)
 
-    def test_generate_coa_xml_with_too_much_tag_in_group(self):
-        """This test verifies that all accounts present in the same group have exactly one Debit or Credit balance account tag"""
-        self.company_data['default_account_receivable'].tag_ids = self.env.ref('l10n_mx.tag_credit_balance_account')
-        options = self._generate_options(self.report, '2021-01-01', '2021-12-31')
-        with self.assertRaises(RedirectWarning):
-            self.env[self.report.custom_handler_model_name].action_l10n_mx_generate_coa_sat_xml(options)
-
-    def test_generate_coa_xml_with_too_much_tag_in_parent(self):
-        """This test verifies that all account groups in the same parent have the same account tag"""
-        self.company_data['default_account_tax_purchase'].tag_ids = self.env.ref('l10n_mx.tag_credit_balance_account')
-        options = self._generate_options(self.report, '2021-01-01', '2021-12-31')
-        with self.assertRaises(RedirectWarning):
-            self.env[self.report.custom_handler_model_name].action_l10n_mx_generate_coa_sat_xml(options)
-
     def test_mx_trial_balance(self):
         """ This test will test the Mexican Trial Balance (with and without the hierarchy) """
         # Testing the report without hierarchy
@@ -243,13 +154,12 @@ class TestL10nMXTrialBalanceReport(TestAccountReportsCommon):
             self.report._get_lines(options),
             [   0,                                                            1,         2,         3,       4,        5,         6],
             [
-                ('201.01.01 National suppliers',                              1000.0,       0.0,     75.0,     0.0,    1075.0,       0.0),
-                ('401.01.01 Sales and/or services taxed at the general rate',    0.0,       0.0,      0.0,   325.0,       0.0,     325.0),
-                ('601.84.01 Other overheads',                                    0.0,       0.0,    250.0,     0.0,     250.0,       0.0),
-                ('999999 Undistributed Profits/Losses',                          0.0,    1000.0,      0.0,     0.0,       0.0,    1000.0),
+                ('201.01.01 Proveedores nacionales',                          1000.0,    '',        75.0,    '',       1075.0,    ''),
+                ('401.01.01 Ventas y/o servicios gravados a la tasa general', '',        '',        '',      325.0,    '',        325.0),
+                ('601.84.01 Otros gastos generales',                          '',        '',        250.0,   '',       250.0,     ''),
+                ('999999 Undistributed Profits/Losses',                       '',        1000.0,    '',      '',       '',        1000.0),
                 ('Total',                                                     1000.0,    1000.0,    325.0,   325.0,    1325.0,    1325.0),
             ],
-            options,
         )
 
         # Testing the report with hierarchy
@@ -258,21 +168,20 @@ class TestL10nMXTrialBalanceReport(TestAccountReportsCommon):
             self.report._get_lines(options),
             [   0,                                                            1,         2,         3,       4,        5,         6],
             [
-                ('2 Passive',                                                 1000.0,       0.0,     75.0,     0.0,    1075.0,        0.0),
-                ('201 Suppliers',                                             1000.0,       0.0,     75.0,     0.0,    1075.0,        0.0),
-                ('201.01 National suppliers',                                 1000.0,       0.0,     75.0,     0.0,    1075.0,        0.0),
-                ('201.01.01 National suppliers',                              1000.0,       0.0,     75.0,     0.0,    1075.0,        0.0),
-                ('4 Income',                                                     0.0,       0.0,      0.0,   325.0,       0.0,      325.0),
-                ('401 Income',                                                   0.0,       0.0,      0.0,   325.0,       0.0,      325.0),
-                ('401.01 Sales and/or services taxed at the general rate',       0.0,       0.0,      0.0,   325.0,       0.0,      325.0),
-                ('401.01.01 Sales and/or services taxed at the general rate',    0.0,       0.0,      0.0,   325.0,       0.0,      325.0),
-                ('6 Expenditure',                                                0.0,       0.0,    250.0,     0.0,     250.0,        0.0),
-                ('601 Overheads',                                                0.0,       0.0,    250.0,     0.0,     250.0,        0.0),
-                ('601.84 Other overheads',                                       0.0,       0.0,    250.0,     0.0,     250.0,        0.0),
-                ('601.84.01 Other overheads',                                    0.0,       0.0,    250.0,     0.0,     250.0,        0.0),
-                ('(No Group)',                                                   0.0,    1000.0,      0.0,     0.0,       0.0,     1000.0),
-                ('999999 Undistributed Profits/Losses',                          0.0,    1000.0,      0.0,     0.0,       0.0,     1000.0),
-                ('Total',                                                     1000.0,    1000.0,    325.0,   325.0,    1325.0,     1325.0),
+                ('2 Pasivos',                                                 1000.0,    '',        75.0,    '',       1075.0,    ''),
+                ('201 Proveedores',                                           1000.0,    '',        75.0,    '',       1075.0,    ''),
+                ('201.01 Proveedores nacionales',                             1000.0,    '',        75.0,    '',       1075.0,    ''),
+                ('201.01.01 Proveedores nacionales',                          1000.0,    '',        75.0,    '',       1075.0,    ''),
+                ('4 Ingresos',                                                '',        '',        '',      325.0,    '',        325.0),
+                ('401 Ingresos',                                              '',        '',        '',      325.0,    '',        325.0),
+                ('401.01 Ventas y/o servicios gravados a la tasa general',    '',        '',        '',      325.0,    '',        325.0),
+                ('401.01.01 Ventas y/o servicios gravados a la tasa general', '',        '',        '',      325.0,    '',        325.0),
+                ('6 Gastos',                                                  '',        '',        250.0,   '',       250.0,     ''),
+                ('601 Gastos generales',                                      '',        '',        250.0,   '',       250.0,     ''),
+                ('601.84 Otros gastos generales',                             '',        '',        250.0,   '',       250.0,     ''),
+                ('601.84.01 Otros gastos generales',                          '',        '',        250.0,   '',       250.0,     ''),
+                ('(No Group)',                                                '',        1000.0,    '',      '',       '',        1000.0),
+                ('999999 Undistributed Profits/Losses',                       '',        1000.0,    '',      '',       '',        1000.0),
+                ('Total',                                                     1000.0,    1000.0,    325.0,   325.0,    1325.0,    1325.0),
             ],
-            options,
         )

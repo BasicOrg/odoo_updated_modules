@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import api, models, _
-from odoo.exceptions import UserError, RedirectWarning
+from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_split_str
 
 from collections import OrderedDict
@@ -11,17 +11,10 @@ import io
 
 class ArgentinianReportCustomHandler(models.AbstractModel):
     _name = 'l10n_ar.tax.report.handler'
-    _inherit = 'account.tax.report.handler'
+    _inherit = 'account.generic.tax.report.handler'
     _description = 'Argentinian Report Custom Handler'
 
-    def _get_custom_display_config(self):
-        return {
-            'templates': {
-                'AccountReportFilters': 'l10n_ar_reports.L10nArReportsFiltersCustomizable',
-            },
-        }
-
-    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
+    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals):
         # dict of the form {move_id: {column_group_key: {expression_label: value}}}
         move_info_dict = {}
 
@@ -49,9 +42,6 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             # Iterate over these results in order to fill the move_info_dict dictionary
             move_id = result['id']
             column_group_key = result['column_group_key']
-
-            # Convert date to string to be displayed in the xlsx report
-            result['date'] = result['date'].strftime("%Y-%m-%d")
 
             # For number rendering, take the opposite for sales taxes
             sign = -1.0 if result['tax_type'] == 'sale' else 1.0
@@ -93,23 +83,14 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             'action_param': 'vat_book_export_files_to_zip',
             'file_export_type': _('ZIP'),
         }
-
         options['buttons'].append(zip_export_button)
+
         options['ar_vat_book_tax_types_available'] = {
             'sale': _('Sales'),
             'purchase': _('Purchases'),
             'all': _('All'),
         }
-        if options.get('_running_export_test'):
-            # Exporting the file is not allowed for 'all'. When executing the export tests, we hence always select 'sales', to avoid raising.
-            options['ar_vat_book_tax_type_selected'] = 'sale'
-        else:
-            options['ar_vat_book_tax_type_selected'] = previous_options.get('ar_vat_book_tax_type_selected', 'all')
-
-        options['forced_domain'] = [
-             *options.get('forced_domain', []),
-             ('journal_id.l10n_latam_use_documents', '!=', False),
-         ]
+        options['ar_vat_book_tax_type_selected'] = previous_options.get('ar_vat_book_tax_type_selected', 'all')
 
         tax_types = self._vat_book_get_selected_tax_types(options)
 
@@ -119,7 +100,6 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             columns_to_remove.append('vat_25')
         if not self.env['account.tax'].search([('type_tax_use', 'in', tax_types), ('tax_group_id.l10n_ar_vat_afip_code', '=', '8')]):
             columns_to_remove.append('vat_5')
-
         options['columns'] = [col for col in options['columns'] if col['expression_label'] not in columns_to_remove]
 
     ####################################################
@@ -127,7 +107,6 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
     ####################################################
 
     def _build_query(self, report, options, column_group_key):
-        #pylint: disable=sql-injection
         tables, where_clause, where_params = report._query_get(options, 'strict_range')
 
         where_clause = f"AND {where_clause}"
@@ -147,7 +126,11 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             expression_label = column['expression_label']
             value = move_vals.get(column['column_group_key'], {}).get(expression_label)
 
-            columns.append(report._build_column_dict(value, column, options=options))
+            columns.append({
+                'name': report.format_value(value, figure_type=column['figure_type']) if value is not None else None,
+                'no_format': value,
+                'class': 'number' if expression_label in number_values else '',
+            })
 
         return {
             'id': report._get_generic_line_id('account.move', move_id),
@@ -167,7 +150,11 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             expression_label = column['expression_label']
             value = total_vals.get(column['column_group_key'], {}).get(expression_label)
 
-            columns.append(report._build_column_dict(value, column, options=options))
+            columns.append({
+                'name': report.format_value(value, figure_type=column['figure_type']) if value is not None else None,
+                'no_format': value,
+                'class': 'number',
+            })
         return {
             'id': report._get_generic_line_id(None, None, markup='total'),
             'name': _('Total'),
@@ -185,7 +172,7 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
         It contains the files that we upload to AFIP for Purchase VAT Book """
         tax_type = self._vat_book_get_selected_tax_types(options)
         if len(tax_type) > 1:
-            raise UserError(_("Only one tax type should be selected."))
+            raise UserError("Only one tax type should be selected.")
         tax_type = tax_type[0]
 
         # Build file name
@@ -284,36 +271,6 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             doc_number = partner.l10n_ar_vat or (commercial_partner.country_id.l10n_ar_legal_entity_vat
                 if commercial_partner.is_company else commercial_partner.country_id.l10n_ar_natural_vat)
             doc_code = '80'
-            if not commercial_partner.country_id:
-                raise RedirectWarning(
-                    message=_("The partner '%s' does not have a country configured.", commercial_partner.name),
-                    action={
-                        'type': 'ir.actions.act_window',
-                        'res_model': 'res.partner',
-                        'views': [(False, 'form')],
-                        'res_id': commercial_partner.id,
-                        'name': _('Partner'),
-                        'view_mode': 'form',
-                    },
-                    button_text=_('Edit Partner'),
-                )
-            if not doc_number:
-                raise RedirectWarning(
-                    message=_(
-                        "The country '%s' does not have a '%s' configured.",
-                        commercial_partner.country_id.name,
-                        _('Legal Entity VAT') if commercial_partner.is_company else _('Natural Person VAT')
-                    ),
-                    action={
-                        'type': 'ir.actions.act_window',
-                        'res_model': 'res.country',
-                        'views': [(False, 'form')],
-                        'res_id': commercial_partner.country_id.id,
-                        'name': _('Country'),
-                        'view_mode': 'form',
-                    },
-                    button_text=_('Edit Country'),
-                )
         else:
             doc_number = partner.ensure_vat()
             doc_code = '80'
@@ -517,10 +474,8 @@ class ArgentinianReportCustomHandler(models.AbstractModel):
             lines = []
             vat_taxes = inv._get_vat()
 
-            # typically this is for invoices with zero amount
-            if not vat_taxes and any(t.tax_group_id.l10n_ar_vat_afip_code
-                                     and t.tax_group_id.l10n_ar_vat_afip_code != '0'
-                                     for t in inv.invoice_line_ids.mapped('tax_ids')):
+            # tipically this is for invoices with zero amount
+            if not vat_taxes and inv.l10n_latam_document_type_id.purchase_aliquots == 'not_zero':
                 lines.append(''.join(self._vat_book_get_tax_row(inv, 0.0, 3, 0.0, options, tax_type)))
 
             # we group by afip_code

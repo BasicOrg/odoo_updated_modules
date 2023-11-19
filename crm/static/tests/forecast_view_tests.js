@@ -3,13 +3,14 @@
 import { getFixture, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { menuService } from "@web/webclient/menus/menu_service";
 import {
-    toggleSearchBarMenu,
+    toggleFilterMenu,
+    toggleGroupByMenu,
     toggleMenuItem,
     toggleMenuItemOption,
 } from "@web/../tests/search/helpers";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { registry } from "@web/core/registry";
-import { mock } from "@web/../tests/legacy/helpers/test_utils";
+import { mock } from "web.test_utils";
 import { browser } from "@web/core/browser/browser";
 
 const patchDate = mock.patchDate;
@@ -41,18 +42,6 @@ QUnit.module("Views", (hooks) => {
                             store: true,
                             sortable: true,
                         },
-                        value: {
-                            string: "Value",
-                            type: "float",
-                            store: true,
-                            sortable: true,
-                        },
-                        number: {
-                            string: "Number",
-                            type: "integer",
-                            store: true,
-                            sortable: true,
-                        }
                     },
                     records: [],
                 },
@@ -112,7 +101,7 @@ QUnit.module("Views", (hooks) => {
             },
         });
 
-        await toggleSearchBarMenu(target);
+        await toggleGroupByMenu(target);
         await toggleMenuItem(target, "Bar");
 
         await toggleMenuItem(target, "Date Field");
@@ -120,13 +109,14 @@ QUnit.module("Views", (hooks) => {
 
         await toggleMenuItemOption(target, "Date Field", "Year");
 
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "Forecast Filter");
 
         unpatchDate();
     });
 
     QUnit.test(
-        "forecast filter domain is combined with other domains following the same rules as other filters (OR in same group, AND between groups)",
+        "forecast filter domain is combined with other domains with an AND",
         async function (assert) {
             assert.expect(1);
 
@@ -134,10 +124,8 @@ QUnit.module("Views", (hooks) => {
 
             serverData.views["foo,false,search"] = `
                 <search>
-                    <filter name="other_group_filter" string="Other Group Filter" domain="[('number', '>', 2)]"/>
-                    <separator/>
-                    <filter name="same_group_filter" string="Same Group Filter" domain="[('bar', '=', 2)]"/>
-                    <filter name="forecast_filter" string="Forecast Filter" context="{ 'forecast_filter': 1 }" domain="[('value', '>', 0.0)]"/>
+                    <filter name="other_filter" string="Other Filter" domain="[('bar', '=', 2)]"/>
+                    <filter name="forecast_filter" string="Forecast Filter" context="{ 'forecast_filter': 1 }"/>
                 </search>
             `;
 
@@ -147,9 +135,8 @@ QUnit.module("Views", (hooks) => {
                 serverData,
                 searchViewId: false,
                 context: {
-                    search_default_same_group_filter: 1,
+                    search_default_other_filter: 1,
                     search_default_forecast_filter: 1,
-                    search_default_other_group_filter: 1,
                     forecast_field: "date_field",
                 },
                 mockRPC(_, args) {
@@ -157,11 +144,7 @@ QUnit.module("Views", (hooks) => {
                         const { domain } = args.kwargs;
                         assert.deepEqual(domain, [
                             "&",
-                            ["number", ">", 2],
-                            "|",
                             ["bar", "=", 2],
-                            "&",
-                            ["value", ">", 0.0],
                             "|",
                             ["date_field", "=", false],
                             ["date_field", ">=", "2021-09-01"],
@@ -169,6 +152,9 @@ QUnit.module("Views", (hooks) => {
                     }
                 },
             });
+
+            // note that the facets of the two filters are combined with an OR.
+            // --> current behavior in legacy
 
             unpatchDate();
         }

@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('conditional_visibility_2', {
+tour.register('conditional_visibility_2', {
     test: true,
     url: '/?utm_medium=Email',
-    steps: () => [{
+},
+[{
     content: 'The content previously hidden should now be visible',
     trigger: 'body #wrap',
     run: function (actions) {
@@ -15,4 +16,4 @@ registry.category("web_tour.tours").add('conditional_visibility_2', {
         }
     },
 },
-]});
+]);

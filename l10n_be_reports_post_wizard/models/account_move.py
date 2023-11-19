@@ -15,7 +15,7 @@ class AccountMove(models.Model):
            consideration when generating the XML report.
         """
         if (self.filtered(lambda am: am.tax_closing_end_date)
-                and self.company_id.account_fiscal_country_id.code == 'BE'
+                and 'BE' in self.mapped('country_code')
                 and 'l10n_be_reports_generation_options' not in self.env.context):
             ctx = self.env.context.copy()
             ctx['l10n_be_reports_generation_options'] = {}

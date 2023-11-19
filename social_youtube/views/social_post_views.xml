@@ -37,54 +37,50 @@
             </xpath>
             <xpath expr="//div[hasclass('o_social_post_empty_preview')]" position="attributes">
                 <!-- Either there are accounts other than youtube and the message is not empty either there is a youtube account and youtube title is not empty, or we have a video -->
-                <attribute name="invisible">youtube_accounts_other_count != 0 and message and message != '' or youtube_accounts_count != 0 and youtube_title and youtube_title != '' or youtube_video_id</attribute>
+                <attribute name="attrs">
+                    {'invisible': ['|', '&amp;', '&amp;', ('youtube_accounts_other_count', '!=', 0), ('message', '!=', False), ('message', '!=', ''), '|', '&amp;', '&amp;', ('youtube_accounts_count', '!=', 0), ('youtube_title', '!=', False), ('youtube_title', '!=', ''), ('youtube_video_id', '!=', False)]}
+                </attribute>
             </xpath>
             <xpath expr="//field[@name='message']" position="attributes">
                 <!-- If we only post on YouTube, hide the 'message' field as it is not used -->
-                <attribute name="invisible">youtube_accounts_other_count == 0 and youtube_accounts_count != 0</attribute>
-                <attribute name="readonly">not has_active_accounts or state in ['posting', 'posted']</attribute>
-                <attribute name="required">youtube_accounts_count == 0 or youtube_accounts_other_count != 0</attribute>
+                <attribute name="attrs">
+                    {'required': ['|', ('youtube_accounts_count', '=', 0), ('youtube_accounts_other_count', '!=', 0)], 'readonly': ['|', ('has_active_accounts', '=', False), ('state', 'in', ['posting', 'posted'])], 'invisible': [('youtube_accounts_other_count', '=', 0), ('youtube_accounts_count', '!=', 0)]}
+                </attribute>
             </xpath>
             <xpath expr="//field[@name='image_ids']" position="attributes">
                 <!-- If we only post on YouTube, hide the 'image_ids' field as it is not used -->
-                <attribute name="invisible">youtube_accounts_other_count == 0 and youtube_accounts_count != 0</attribute>
-                <attribute name="readonly">state in ['posting', 'posted']</attribute>
+                <attribute name="attrs">
+                    {'readonly': [('state', 'in', ['posting', 'posted'])], 'invisible': [('youtube_accounts_other_count', '=', 0), ('youtube_accounts_count', '!=', 0)]}
+                </attribute>
             </xpath>
             <xpath expr="//header" position="after">
                 <div class="alert alert-danger text-center" role="alert"
-                    invisible="youtube_accounts_count &lt;= 1">
+                    attrs="{'invisible': [('youtube_accounts_count', '&lt;=', 1)]}">
                     Please select a single YouTube account at a time.
                 </div>
             </xpath>
             <xpath expr="//group[@name='social_post_global']" position="inside">
                 <field name="youtube_accounts_count" invisible="1"/>
                 <div name="notification_request_parameters" colspan="2" class="o_horizontal_separator mt-5"
-                    invisible="youtube_accounts_count == 0">
+                    attrs="{'invisible': [('youtube_accounts_count', '=', 0)]}">
                     YouTube Options
                 </div>
                 <field name="youtube_video_id" invisible="1"/>
                 <field name="youtube_access_token" invisible="1"/>
-                <field name="youtube_title" string="Video Title" onchange_on_keydown="True"
+                <field name="youtube_title" string="Video Title" options="{'onchange_on_keydown': true}"
                     placeholder="e.g. Odoo Social Tutorial"
-                    invisible="youtube_accounts_count != 1"
-                    readonly="state != 'draft'"
-                    required="youtube_accounts_count != 0"/>
-                <field name="youtube_description" string="Video Description" onchange_on_keydown="True"
+                    attrs="{'invisible': [('youtube_accounts_count', '!=', 1)], 'readonly': [('state', '!=', 'draft')], 'required': [('youtube_accounts_count', '!=', 0)]}"/>
+                <field name="youtube_description" string="Video Description" options="{'onchange_on_keydown': true}"
                     widget="text_emojis" placeholder="e.g. Engage your entire community with a single app! https://www.odoo.com/trial"
-                    invisible="youtube_accounts_count != 1"
-                    readonly="state != 'draft'"
-                    required="youtube_video_id"/>
+                    attrs="{'invisible': [('youtube_accounts_count', '!=', 1)], 'readonly': [('state', '!=', 'draft')], 'required': [('youtube_video_id', '!=', False)]}"/>
                 <field name="youtube_video_privacy"
-                    invisible="youtube_accounts_count != 1"
-                    readonly="state != 'draft'"/>
+                    attrs="{'invisible': [('youtube_accounts_count', '!=', 1)], 'readonly': [('state', '!=', 'draft')]}"/>
                 <field name="youtube_video" widget="youtube_upload"
-                    invisible="youtube_accounts_count != 1"
-                    readonly="state != 'draft'"/>
+                    attrs="{'invisible': [('youtube_accounts_count', '!=', 1)], 'readonly': [('state', '!=', 'draft')]}"/>
             </xpath>
             <xpath expr="//group[@name='previews_placeholder']" position="inside">
-                <field name="youtube_preview" nolabel="1" colspan="2" widget="social_post_preview"
-                    readonly="1"
-                    invisible="youtube_accounts_count != 1 or ((not youtube_title or youtube_title == '') and not youtube_video_id)"
+                <field name="youtube_preview" readonly="1" nolabel="1" colspan="2" widget="social_post_preview"
+                    attrs="{'invisible': ['|', ('youtube_accounts_count', '!=', 1), '&amp;', '|', ('youtube_title', '=', False), ('youtube_title', '=', ''), ('youtube_video_id', '=', False)]}"
                     class="o_social_preview_wrapper m-0 px-4 py-4 bg-200" />
             </xpath>
         </field>

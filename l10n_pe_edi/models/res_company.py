@@ -13,12 +13,10 @@ class ResCompany(models.Model):
         compute="_compute_l10n_pe_edi_certificate")
     l10n_pe_edi_provider_username = fields.Char(
         string="SOL User",
-        help="The username used to login to SUNAT SOL",
-        groups='base.group_system')
+        help="The username used to login to SUNAT SOL")
     l10n_pe_edi_provider_password = fields.Char(
         string="SOL Password",
-        help="The password used to login to SUNAT SOL",
-        groups='base.group_system')
+        help="The password used to login to SUNAT SOL")
     l10n_pe_edi_provider = fields.Selection(
         selection=[('digiflow', 'Digiflow'), ('sunat', 'SUNAT'), ('iap', 'IAP')],
         string="Electronic Service Provider (ESP)", default="iap",
@@ -31,9 +29,8 @@ class ResCompany(models.Model):
         default="0000",
         help="Code of the establishment that SUNAT has registered.")
     l10n_pe_edi_test_env = fields.Boolean(
-        string="Test Environment",
-        help='Peru: Electronic documents in this setting are processed through a test environment that does not have a real '
-             'SUNAT signature. This mode is recommended only for non-production databases that are used for testing purposes.')
+        string="Is test OSE environment",
+        help='Enable the use of test credentials')
 
     @api.depends('country_id')
     def _compute_l10n_pe_edi_certificate(self):

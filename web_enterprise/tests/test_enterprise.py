@@ -20,7 +20,7 @@ class LoadMenusTests(HttpCase):
 
     def test_web_icon(self):
         self.menu.web_icon = False
-        self.menu.web_icon_data = b"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+BCQAHBQICJmhD1AAAAABJRU5ErkJggg=="
+        self.menu.web_icon_data = base64.b64encode(b"encode")
 
         menu_loaded = self.url_open("/web/webclient/load_menus/1234")
 
@@ -33,8 +33,7 @@ class LoadMenusTests(HttpCase):
                 "id": self.menu.id,
                 "name": "test_menu",
                 "webIcon": False,
-                "webIconData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+BCQAHBQICJmhD1AAAAABJRU5ErkJggg==",
-                "webIconDataMimetype": "image/png",
+                "webIconData": "data:image/png;base64,ZW5jb2Rl",
                 "xmlid": ""
             },
             "root": {
@@ -48,9 +47,8 @@ class LoadMenusTests(HttpCase):
                 "name": "root",
                 "webIcon": None,
                 "webIconData": None,
-                "webIconDataMimetype": None,
                 "xmlid": "",
-                "backgroundImage": None,
+                'backgroundImage': None,
             }
         }
 

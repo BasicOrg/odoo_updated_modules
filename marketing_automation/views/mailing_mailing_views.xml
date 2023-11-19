@@ -25,23 +25,21 @@
         <field name="priority">20</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='subject']" position="attributes">
-                <attribute name="readonly"/>
-                </xpath>
+                <attribute name="attrs">{}</attribute>
+            </xpath>
             <xpath expr="//field[@name='preview']" position="attributes">
-                <attribute name="invisible">mailing_type != 'mail'</attribute>
-                <attribute name="readonly">mailing_type != 'mail'</attribute>
+                <attribute name="attrs">{'readonly': [('mailing_type', '!=', 'mail')], 'invisible': [('mailing_type', '!=', 'mail')]}</attribute>
             </xpath>
             <xpath expr="//page[@name='mail_body']" position="replace">
                 <page string="Mail Body" name="mail_body">
                     <field name="body_html" class="oe_read_only" widget="html" options="{
                         'cssReadonly': 'mass_mailing.iframe_css_assets_readonly',
                     }"/>
-                    <field name="body_arch" class="oe_edit_only" iframeHtmlClass="o_mass_mailing_iframe o_fullscreen" widget="mass_mailing_html" options="{
+                    <field name="body_arch" class="oe_edit_only" widget="mass_mailing_html" options="{
                         'snippets': 'mass_mailing.email_designer_snippets',
                         'cssEdit': 'mass_mailing.iframe_css_assets_edit',
                         'inline-field': 'body_html',
                         'dynamic_placeholder': true,
-                        'dynamic_placeholder_model_reference_field': 'mailing_model_real',
                         'filterTemplates': true,
                     }"/>
                 </page>
@@ -78,20 +76,20 @@
                 <group>
                     <label for="subject">Subject</label>
                     <div class="o_mass_mailing_subject d-flex flex-row align-items-baseline">
-                        <field class="o_text_overflow" options="{'dynamic_placeholder': true, 'dynamic_placeholder_model_reference_field': 'mailing_model_real'}" name="subject" string="Subject"/>
+                        <field class="o_text_overflow" options="{'dynamic_placeholder': true}" name="subject" string="Subject"/>
                         <field name="favorite" invisible="1"/>
                         <button type="object" name="action_set_favorite"
                             class="o_mass_mailing_favorite"
                             icon="fa-star-o"
-                            invisible="favorite"
+                            attrs="{'invisible': [('favorite', '=', True)]}"
                             title="Add to Templates"/>
                         <button type="object" name="action_remove_favorite"
                             class="o_mass_mailing_favorite"
                             icon="fa-star"
-                            invisible="not favorite"
+                            attrs="{'invisible': [('favorite', '=', False)]}"
                             title="Remove from Templates"/>
                     </div>
-                    <field name="email_from" readonly="state in ('sending', 'done') and not use_in_marketing_automation"/>
+                    <field name="email_from" attrs="{'readonly': ['&amp;', ('state', 'in', ('sending', 'done')), ('use_in_marketing_automation', '=', False)]}"/>
                     <field name="mailing_type" invisible="1"/>
                     <label for="mailing_model_id" string="Participants" invisible="1"/>
                     <field name="mailing_model_id" invisible="1"/>
@@ -105,12 +103,11 @@
                         <field name="body_html" class="oe_read_only" widget="html" options="{
                             'cssReadonly': 'mass_mailing.iframe_css_assets_readonly',
                         }"/>
-                        <field name="body_arch" class="oe_edit_only" iframeHtmlClass="o_mass_mailing_iframe o_fullscreen" widget="mass_mailing_html" options="{
+                        <field name="body_arch" class="oe_edit_only" widget="mass_mailing_html" options="{
                             'snippets': 'mass_mailing.email_designer_snippets',
                             'cssEdit': 'mass_mailing.iframe_css_assets_edit',
                             'inline-field': 'body_html',
                             'dynamic_placeholder': true,
-                            'dynamic_placeholder_model_reference_field': 'mailing_model_real',
                             'filterTemplates': true,
                         }"/>
                     </page>
@@ -121,8 +118,8 @@
                                 <field name="keep_archives" groups="base.group_no_one"/>
                                 <label for="reply_to"/>
                                 <div>
-                                    <field name="reply_to_mode" widget="radio" invisible="mailing_model_real == 'mailing.contact'"/>
-                                    <field name="reply_to" invisible="reply_to_mode != 'new'" required="reply_to_mode == 'new'"/>
+                                    <field name="reply_to_mode" widget="radio" attrs="{'invisible': [('mailing_model_real', '=', 'mailing.contact')]}"/>
+                                    <field name="reply_to" attrs="{'required': [('reply_to_mode', '=', 'new')], 'invisible': [('reply_to_mode', '!=', 'new')]}"/>
                                 </div>
                             </group>
                         </group>

@@ -3,8 +3,7 @@ import { browser } from "@web/core/browser/browser";
 import { localization } from "@web/core/l10n/localization";
 import { clamp } from "@web/core/utils/numbers";
 
-import { Component, onMounted, onWillUnmount, useRef, useState } from "@odoo/owl";
-import { Deferred } from "@web/core/utils/concurrency";
+const { Component, onMounted, onWillUnmount, useRef, useState } = owl;
 
 const isScrollSwipable = (scrollables) => {
     return {
@@ -165,23 +164,21 @@ export class ActionSwiper extends Component {
         if (this.props.animationType === "bounce") {
             this.state.containerStyle = `transform: translateX(${this.swipedDistance}px)`;
             this.actionTimeoutId = browser.setTimeout(() => {
-                action(Promise.resolve());
+                action();
                 this._reset();
             }, 500);
         } else if (this.props.animationType === "forwards") {
             this.state.containerStyle = `transform: translateX(${this.swipedDistance}px)`;
             this.actionTimeoutId = browser.setTimeout(() => {
-                const prom = new Deferred();
-                action(prom);
+                action();
                 this.state.isSwiping = true;
                 this.state.containerStyle = `transform: translateX(${-this.swipedDistance}px)`;
                 this.resetTimeoutId = browser.setTimeout(() => {
-                    prom.resolve();
                     this._reset();
                 }, 100);
             }, 100);
         } else {
-            return action(Promise.resolve());
+            return action();
         }
     }
 }

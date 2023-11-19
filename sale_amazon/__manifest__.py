@@ -20,7 +20,7 @@ Key Features
     'sequence': 320,
     'version': '1.1',
     'application': True,
-    'depends': ['sale_management', 'stock_delivery'],
+    'depends': ['sale_management', 'stock', 'delivery'],
     'data': [
         'security/ir.model.access.csv',
         'security/sale_amazon_security.xml',
@@ -34,8 +34,6 @@ Key Features
         'views/product_views.xml',
         'views/res_config_settings_views.xml',
         'views/sale_order_views.xml',
-        'views/stock_picking_views.xml',
-        'wizards/recover_order_wizard_views.xml',
     ],
     'license': 'OEEL-1',
 }

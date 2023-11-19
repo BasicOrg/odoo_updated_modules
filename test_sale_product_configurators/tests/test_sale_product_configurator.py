@@ -72,19 +72,6 @@ class TestProductConfiguratorUi(HttpCase, TestProductConfiguratorCommon):
             'attribute_id': product_attribute.id
         } for i in range(1, 11) for product_attribute in product_attributes])
 
-        product_attribute_no_variant_single_pav = self.env['product.attribute'].create({
-            'name': 'PA9',
-            'display_type': 'radio',
-            'create_variant': 'no_variant'
-        })
-
-        self.env['product.attribute.value'].create({
-            'name': 'Single PAV',
-            'attribute_id': product_attribute_no_variant_single_pav.id
-        })
-
-        product_attributes += product_attribute_no_variant_single_pav
-
         product_template = self.product_product_custo_desk
 
         self.env['product.template.attribute.line'].create([{
@@ -100,10 +87,12 @@ class TestProductConfiguratorUi(HttpCase, TestProductConfiguratorCommon):
 
         self.start_tour("/web", 'sale_product_configurator_advanced_tour', login='salesman')
 
-        # Ensures dynamic create variants have been created by the configurator
-        self.assertEqual(len(product_template.product_variant_ids), 1)
+        # Ensures some dynamic create variants have been created by the configurator
+        self.assertEqual(len(product_template.product_variant_ids), 2)
         self.assertEqual(
-            len(product_template.product_variant_ids.product_template_attribute_value_ids), 5
+            len(product_template.product_variant_ids.product_template_attribute_value_ids),
+            8,
+            "2 variants are created during the tour, with each 5 PAV, but only 8 distinct PAV."
         )
 
     def test_03_product_configurator_edition(self):
@@ -144,11 +133,6 @@ class TestProductConfiguratorUi(HttpCase, TestProductConfiguratorCommon):
         Also testing B2C setting: no impact on the backend configurator.
         """
 
-        # Required to see `pricelist_id` in the view
-        self.salesman.write({
-            'groups_id': [(4, self.env.ref('product.group_product_pricelist').id)],
-        })
-
         # Add a 15% tax on desk
         tax = self.env['account.tax'].create({'name': "Test tax", 'amount': 15})
         self.product_product_custo_desk.taxes_id = tax
@@ -181,28 +165,4 @@ class TestProductConfiguratorUi(HttpCase, TestProductConfiguratorCommon):
         ]
         self.start_tour(
             "/web", 'sale_product_configurator_optional_products_tour', login='salesman'
-        )
-
-    def test_07_product_configurator_recursive_optional_products(self):
-        """The goal of this test is to check that the product configurator works correctly with
-        recursive optional products.
-        """
-        # create products with recursive optional products
-        self.product_product_conf_chair_floor_protect.update({
-            'optional_product_ids': [(6, 0, [self.product_product_conf_chair.id])]
-        })
-        self.product_product_conf_chair.optional_product_ids = [
-            (4, self.product_product_conf_chair_floor_protect.id)
-        ]
-        self.product_product_conf_chair_floor_protect.optional_product_ids = [
-            (4, self.product_product_conf_chair.id)
-        ]
-        self.product_product_custo_desk.optional_product_ids = [
-            (4, self.product_product_conf_chair.id)
-        ]
-        self.product_product_conf_chair.optional_product_ids = [
-            (4, self.product_product_custo_desk.id)
-        ]
-        self.start_tour(
-            "/web", 'sale_product_configurator_recursive_optional_products_tour', login='salesman'
         )

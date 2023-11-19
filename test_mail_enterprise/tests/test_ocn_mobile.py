@@ -5,15 +5,14 @@ import socket
 import urllib.parse
 
 from odoo.addons.mail.tests.common import mail_new_test_user
-from odoo.addons.sms.tests.common import SMSCommon
+from odoo.addons.test_mail_sms.tests.common import TestSMSCommon
 from odoo.addons.test_mail.data.test_mail_data import MAIL_TEMPLATE
 from odoo.tests import tagged
-from markupsafe import Markup
 from unittest.mock import patch
 
 
 @tagged('mail_enterprise_mobile')
-class TestMailMobile(SMSCommon):
+class TestMailMobile(TestSMSCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -41,7 +40,7 @@ class TestMailMobile(SMSCommon):
 
 
 @tagged('post_install', '-at_install')
-class TestPushNotification(SMSCommon):
+class TestPushNotification(TestSMSCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -50,7 +49,7 @@ class TestPushNotification(SMSCommon):
         sudo_icp.set_param('odoo_ocn.project_id', 'Test')
         sudo_icp.set_param('mail_mobile.enable_ocn', True)
 
-        channel = cls.env['discuss.channel'].with_context(cls._test_context)
+        channel = cls.env['mail.channel'].with_context(cls._test_context)
 
         cls.user_email = cls.user_employee
         cls.user_email.notification_type = 'email'
@@ -80,7 +79,7 @@ class TestPushNotification(SMSCommon):
             'name': "Direct Message",
         })
 
-        cls.group_channel = cls.env['discuss.channel'].channel_create(name='Channel', group_id=None)
+        cls.group_channel = cls.env['mail.channel'].browse(cls.env['mail.channel'].channel_create(name='Channel', group_id=None)['id'])
         cls.group_channel.add_members((cls.user_email + cls.user_inbox).partner_id.ids)
 
     @patch('odoo.addons.mail_mobile.models.mail_thread.iap_tools.iap_jsonrpc')
@@ -162,12 +161,6 @@ class TestPushNotification(SMSCommon):
             'DirectMessage',
             'The type of Android channel must be DirectMessage'
         )
-        # FIXME: mobile apps use old "mail.channel" and cannot be changed on iOS
-        self.assertEqual(
-            jsonrpc.call_args[1]['params']['data']['model'],
-            'mail.channel',
-            'The model must be mail.channel (for Mobile App)'
-        )
 
         # Reset the mock counter
         jsonrpc.reset_mock()
@@ -200,7 +193,7 @@ class TestPushNotification(SMSCommon):
 
         # Test AtMention Message
         self.record_simple.with_user(self.user_email).message_post(
-            body=Markup('<a href="/web" data-oe-id="%i" data-oe-model="res.partner" >@user</a>') %
+            body='<a href="/web" data-oe-id="%i" data-oe-model="res.partner" >@user</a>' %
                  self.user_inbox.partner_id.id,
             message_type='comment', subtype_xmlid="mail.mt_comment"
         )

@@ -260,7 +260,7 @@
                         <t t-call="l10n_be_hr_payroll.NaturalPerson"/>
                     </t>
 
-                    <ContributionUnrelatedToNP t-if="group_insurance_basis != '00000000000'">
+                    <ContributionUnrelatedToNP>
                         <UnrelatedEmployerClass t-esc="employer_class"/>
                         <UnrelatedWorkerCode>865</UnrelatedWorkerCode>
                         <UnrelatedCalculationBasis t-esc="group_insurance_basis"/>
@@ -314,14 +314,6 @@
                         -->
                         <UnrelatedAmount t-esc="double_holiday_pay_contribution"/>
                     </ContributionUnrelatedToNP>
-
-                    <t t-if="employer_compensation">
-                        <EmployerCompensation>
-                            <CompensationCode>1</CompensationCode>
-                            <CompensationAmount t-esc="employer_compensation"/>
-                        </EmployerCompensation>
-                    </t>
-
                 </EmployerDeclaration>
             </Form>
         </DmfAOriginal>
@@ -1710,29 +1702,33 @@
                     </div>
                     <div class="row">
                         <div class="col-12 border p-2">
-                            <table class="o_dmfa_info">
+                            <table style="width:100%;">
                                 <tr>
-                                    <td>Employer Class:</td>
+                                    <th/>
+                                    <th/>
+                                </tr>
+                                <tr>
+                                    <td>Employer Class :</td>
                                     <td style="text-align: right;"><t t-esc="data['employer_class']"/></td>
                                 </tr>
                                 <tr>
-                                    <td>ONSS Company ID:</td>
+                                    <td>ONSS Company ID :</td>
                                     <td style="text-align: right;"><t t-esc="data['onss_company_id']"/></td>
                                 </tr>
                                 <tr>
-                                    <td>ONSS Registration Number:</td>
+                                    <td>ONSS Registration Number :</td>
                                     <td style="text-align: right;"><t t-esc="data['onss_registration_number']"/></td>
                                 </tr>
                                 <tr>
-                                    <td>Quarter Start:</td>
+                                    <td>Quarter Start :</td>
                                     <td style="text-align: right;"><t t-esc="data['quarter_start']"/></td>
                                 </tr>
                                 <tr>
-                                    <td>Quarter End:</td>
+                                    <td>Quarter End :</td>
                                     <td style="text-align: right;"><t t-esc="data['quarter_end']"/></td>
                                 </tr>
                                 <tr>
-                                    <td>System 5:</td>
+                                    <td>System 5 :</td>
                                     <td style="text-align: right;">No</td>
                                 </tr>
                                 <tr>
@@ -1763,10 +1759,10 @@
                         <p style="page-break-before:always;"> </p>
                         <div class="row">
                             <div class="col-12 border p-2">
-                                <div class="mb-2"><h3>Employee: <t t-esc="natural_person.employee.name"/></h3></div>
-                                <div class="mb-2">NISS: <t t-esc="natural_person.identification_id"/></div>
+                                <div class="mb-2"><h3>Employee : <t t-esc="natural_person.employee.name"/></h3></div>
+                                <div class="mb-2">NISS : <t t-esc="natural_person.identification_id"/></div>
                                 <t t-foreach="natural_person.worker_records" t-as="worker_record">
-                                    <div class="mb-2">Worker Code: <t t-esc="worker_record.worker_code"/></div>
+                                    <div class="mb-2">Worker Code : <t t-esc="worker_record.worker_code"/></div>
                                     <t t-if="worker_record.occupations">
                                         <t t-foreach="worker_record.occupations" t-as="occupation">
                                             <div class="mb-2">
@@ -1774,72 +1770,76 @@
                                                     <b>Occupations # <t t-esc="occupation.sequence"/>:</b> From <t t-esc="occupation.date_start"/><t t-if="occupation.date_stop"> To <t t-esc="occupation.date_stop"/></t>
                                                 </h4>
                                             </div>
-                                            <table class="o_dmfa_info">
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <th/>
+                                                    <th/>
+                                                </tr>
                                                 <tr>
                                                     <td>Reference Mean Working Hours</td>
                                                     <td style="text-align: right;"><t t-esc="pretty_format(occupation.ref_mean_working_hours)"/></td>
                                                 </tr>
                                                 <t t-if="occupation.reorganisation_measure != -1">
                                                     <tr>
-                                                        <td>Reorganization Measures:</td>
+                                                        <td>Reorganization Measures :</td>
                                                         <td style="text-align: right;"><t t-esc="occupation.reorganisation_measure"/></td>
                                                     </tr>
                                                 </t>
                                                 <tr>
-                                                    <td>Days Per Week:</td>
+                                                    <td>Days Per Week :</td>
                                                     <td style="text-align: right;"><t t-esc="pretty_format(occupation.days_per_week)"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Mean Working Hours:</td>
+                                                    <td>Mean Working Hours :</td>
                                                     <td style="text-align: right;"><t t-esc="pretty_format(occupation.mean_working_hours)"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Part Time:</td>
+                                                    <td>Part Time :</td>
                                                     <td style="text-align: right;"><t t-esc="occupation.is_parttime"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Joint Commission:</td>
+                                                    <td>Joint Commission :</td>
                                                     <td style="text-align: right;"><t t-esc="occupation.commission"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Work Place:</td>
+                                                    <td>Work Place :</td>
                                                     <td style="text-align: right;"><t t-esc="occupation.work_place"/></td>
                                                 </tr>
                                             </table>
                                             <t t-if="occupation.services">
-                                                <div class="mb-2 mt-2"><b>Services Summary:</b></div>
-                                                <table class="o_dmfa_table">
+                                                <div class="mb-2"><b>Services Summary :</b></div>
+                                                <table style="border: 1px solid black; width:100%;">
                                                     <tr>
-                                                        <th>Code</th>
-                                                        <th># Days</th>
-                                                        <th># Hours</th>
+                                                        <th style="border: 1px solid black;">Code</th>
+                                                        <th style="border: 1px solid black;"># Days</th>
+                                                        <th style="border: 1px solid black;"># Hours</th>
                                                     </tr>
                                                     <t t-foreach="occupation.services" t-as="service">
                                                         <tr>
-                                                            <td><t t-esc="service.code"/></td>
-                                                            <td><t t-esc="pretty_format(service.nbr_days)"/></td>
-                                                            <td><t t-esc="pretty_format(service.nbr_hours)"/></td>
+                                                            <td style="border: 1px solid black;"><t t-esc="service.code"/></td>
+                                                            <td style="border: 1px solid black;"><t t-esc="pretty_format(service.nbr_days)"/> €</td>
+                                                            <td style="border: 1px solid black;"><t t-esc="pretty_format(service.nbr_hours)"/> €</td>
                                                         </tr>
                                                     </t>
                                                 </table>
                                             </t>
                                             <t t-if="occupation.remunerations">
-                                                <div class="mb-2 mt-2"><b>Remunerations Summary:</b></div>
-                                                <table class="o_dmfa_table">
+                                                <div class="mb-2"><b>Remunerations Summary :</b></div>
+                                                <table style="border: 1px solid black; width:100%;">
                                                     <tr>
-                                                        <th>Code</th>
-                                                        <th>Frequency (Month)</th>
-                                                        <th>Amount</th>
+                                                        <th style="border: 1px solid black;">Code</th>
+                                                        <th style="border: 1px solid black;">Frequency (Month)</th>
+                                                        <th style="border: 1px solid black;">Amount</th>
                                                     </tr>
                                                     <t t-foreach="occupation.remunerations" t-as="remuneration">
                                                         <tr>
-                                                            <td><t t-esc="remuneration.code"/></td>
-                                                            <td>
+                                                            <td style="border: 1px solid black;"><t t-esc="remuneration.code"/></td>
+                                                            <td style="border: 1px solid black;">
                                                                 <t t-if="remuneration.frequency != -1">
                                                                     <t t-esc="remuneration.frequency"/>
                                                                 </t>
                                                             </td>
-                                                            <td><t t-esc="pretty_format(remuneration.amount)"/> €</td>
+                                                            <td style="border: 1px solid black;"><t t-esc="pretty_format(remuneration.amount)"/> €</td>
                                                         </tr>
                                                     </t>
                                                 </table>
@@ -1847,45 +1847,45 @@
                                         </t>
                                     </t>
                                     <t t-if="worker_record.deductions">
-                                        <div class="mb-2 mt-2"><b>Deductions Summary:</b></div>
-                                        <table class="o_dmfa_table">
+                                        <div class="mb-2"><b>Deductions Summary :</b></div>
+                                        <table style="border: 1px solid black; width:100%;">
                                             <tr>
-                                                <th>Code</th>
-                                                <th>Amount</th>
+                                                <th style="border: 1px solid black;">Code</th>
+                                                <th style="border: 1px solid black;">Amount</th>
                                             </tr>
                                             <t t-foreach="worker_record.deductions" t-as="deduction">
                                                 <tr>
-                                                    <td><t t-esc="deduction.code"/></td>
-                                                    <td><t t-esc="pretty_format(deduction.amount)"/> €</td>
+                                                    <td style="border: 1px solid black;"><t t-esc="deduction.code"/></td>
+                                                    <td style="border: 1px solid black;"><t t-esc="pretty_format(deduction.amount)"/> €</td>
                                                 </tr>
                                             </t>
                                         </table>
                                     </t>
                                     <t t-if="worker_record.contributions">
-                                        <div class="mb-2 mt-2"><b>Contributions Summary:</b></div>
-                                        <table class="o_dmfa_table">
+                                        <div class="mb-2"><b>Contributions Summary :</b></div>
+                                        <table style="border: 1px solid black; width:100%;">
                                             <tr>
-                                                <th>Code</th>
-                                                <th>Calculation Basis</th>
-                                                <th>Contribution Type</th>
-                                                <th>Amount</th>
+                                                <th style="border: 1px solid black;">Code</th>
+                                                <th style="border: 1px solid black;">Contribution Type</th>
+                                                <th style="border: 1px solid black;">Calculation Basis</th>
+                                                <th style="border: 1px solid black;">Amount</th>
                                             </tr>
                                             <t t-foreach="worker_record.contributions" t-as="contribution">
                                                 <tr>
-                                                    <td><t t-esc="contribution.worker_code"/></td>
-                                                    <td><t t-esc="contribution.contribution_type"/></td>
-                                                    <td><t t-esc="pretty_format(contribution.calculation_basis)"/> €</td>
-                                                    <td><t t-esc="pretty_format(contribution.amount)"/> €</td>
+                                                    <td style="border: 1px solid black;"><t t-esc="contribution.worker_code"/></td>
+                                                    <td style="border: 1px solid black;"><t t-esc="contribution.contribution_type"/></td>
+                                                    <td style="border: 1px solid black;"><t t-esc="pretty_format(contribution.calculation_basis)"/> €</td>
+                                                    <td style="border: 1px solid black;"><t t-esc="pretty_format(contribution.amount)"/> €</td>
                                                 </tr>
                                             </t>
                                         </table>
                                     </t>
                                     <t t-if="worker_record.student_contributions">
-                                        <div class="mb-2 mt-2"><b>Student Contributions Summary:</b></div>
+                                        <div class="mb-2"><b>Student Contributions Summary :</b></div>
                                         <t t-foreach="worker_record.student_contributions" t-as="contribution">
-                                            <div class="mb-2">Work Address: <t t-esc="contribution.local_unit_id"/></div>
-                                            <div class="mb-2">Contribution: <t t-esc="pretty_format(contribution.student_contribution_amount)"/> €</div>
-                                            <div class="mb-2"># Hours: <t t-esc="pretty_format(contribution.student_hours_nbr)"/></div>
+                                            <div class="mb-2">Work Address : <t t-esc="contribution.local_unit_id"/></div>
+                                            <div class="mb-2">Contribution : <t t-esc="pretty_format(contribution.student_contribution_amount)"/> €</div>
+                                            <div class="mb-2"># Hours : <t t-esc="pretty_format(contribution.student_hours_nbr)"/></div>
                                         </t>
                                     </t>
                                 </t>

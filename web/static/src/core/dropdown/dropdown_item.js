@@ -1,7 +1,7 @@
 /** @odoo-module **/
 import { DROPDOWN } from "./dropdown";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 /**
  * @enum {string}
@@ -15,7 +15,7 @@ const ParentClosingMode = {
 export class DropdownItem extends Component {
     /**
      * Tells the parent dropdown that an item was selected and closes the
-     * parent(s) dropdown according the parentClosingMode prop.
+     * parent(s) dropdown according the the parentClosingMode prop.
      *
      * @param {MouseEvent} ev
      */

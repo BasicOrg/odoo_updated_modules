@@ -14,7 +14,7 @@ class HrAppraisal(models.Model):
             new_appraisals = self.filtered(lambda a: a.state == 'new')
             new_appraisals._copy_skills_when_confirmed()
 
-        if 'state' in vals and (vals['state'] == 'done'):
+        if 'state' in vals and vals['state'] == 'done':
             for appraisal in self:
                 employee_skills = appraisal.employee_id.employee_skill_ids
                 appraisal_skills = appraisal.skill_ids
@@ -56,15 +56,14 @@ class HrAppraisal(models.Model):
         for appraisal in self:
             employee_skills = appraisal.employee_id.employee_skill_ids
             # in case the employee confirms its appraisal
-            if not appraisal.skill_ids: # check in case we are coming from a previously canceled appraisal and not recreate them
-                self.env['hr.appraisal.skill'].sudo().create([{
-                    'appraisal_id': appraisal.id,
-                    'skill_id': skill.skill_id.id,
-                    'previous_skill_level_id': skill.skill_level_id.id,
-                    'skill_level_id': skill.skill_level_id.id,
-                    'skill_type_id': skill.skill_type_id.id,
-                    'employee_skill_id': skill.id,
-                } for skill in employee_skills])
+            self.env['hr.appraisal.skill'].sudo().create([{
+                'appraisal_id': appraisal.id,
+                'skill_id': skill.skill_id.id,
+                'previous_skill_level_id': skill.skill_level_id.id,
+                'skill_level_id': skill.skill_level_id.id,
+                'skill_type_id': skill.skill_type_id.id,
+                'employee_skill_id': skill.id,
+            } for skill in employee_skills])
 
 
 class HrAppraisalSkill(models.Model):
@@ -75,10 +74,10 @@ class HrAppraisalSkill(models.Model):
     appraisal_id = fields.Many2one('hr.appraisal', required=True, ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', related='appraisal_id.employee_id', store=True)
     manager_ids = fields.Many2many('hr.employee', compute='_compute_manager_ids', store=True)
-    skill_id = fields.Many2one('hr.skill', compute='_compute_skill_id', store=True, domain="[('skill_type_id', '=', skill_type_id)]", readonly=False, required=True)
+    skill_id = fields.Many2one('hr.skill', required=True)
     previous_skill_level_id = fields.Many2one('hr.skill.level')
-    skill_level_id = fields.Many2one('hr.skill.level', compute='_compute_skill_level_id', domain="[('skill_type_id', '=', skill_type_id)]", store=True, readonly=False, required=True)
-    skill_type_id = fields.Many2one('hr.skill.type')
+    skill_level_id = fields.Many2one('hr.skill.level', required=True)
+    skill_type_id = fields.Many2one(related='skill_id.skill_type_id', store=True)
     level_progress = fields.Integer(related='skill_level_id.level_progress')
     justification = fields.Char()
     employee_skill_id = fields.Many2one('hr.employee.skill')
@@ -91,20 +90,3 @@ class HrAppraisalSkill(models.Model):
     def _compute_manager_ids(self):
         for skill in self:
             skill.manager_ids = skill.appraisal_id.manager_ids
-
-    @api.depends('skill_id')
-    def _compute_skill_level_id(self):
-        for record in self:
-            if not record.skill_id:
-                record.skill_level_id = False
-            else:
-                skill_levels = record.skill_type_id.skill_level_ids
-                record.skill_level_id = skill_levels.filtered('default_level') or skill_levels[0] if skill_levels else False
-
-    @api.depends('skill_type_id')
-    def _compute_skill_id(self):
-        for record in self:
-            if record.skill_type_id:
-                record.skill_id = record.skill_type_id.skill_ids[0] if record.skill_type_id.skill_ids else False
-            else:
-                record.skill_id = False

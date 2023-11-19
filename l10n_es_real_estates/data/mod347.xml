@@ -7,14 +7,13 @@
         <field name="sequence" eval="3"/>
         <field name="parent_id" ref="l10n_es_reports.mod_347_summary_title"/>
         <field name="foldable" eval="True"/>
-        <field name="hierarchy_level">0</field>
         <field name="expression_ids">
             <record id="mod_347_statistics_real_estates_count_balance" model="account.report.expression">
                 <field name="label">balance</field>
                 <field name="engine">domain</field>
                 <field name="formula" eval="[('move_id.l10n_es_real_estate_id','!=',None), ('account_id.account_type','=','asset_receivable'), ('move_id.move_type','in',['out_invoice','out_refund'])]"/>
                 <field name="subformula">count_rows</field>
-                <field name="figure_type">integer</field>
+                <field name="figure_type">none</field>
             </record>
         </field>
     </record>
@@ -25,7 +24,6 @@
         <field name="groupby">l10n_es_real_estate_id</field>
         <field name="sequence" eval="4"/>
         <field name="foldable" eval="True"/>
-        <field name="hierarchy_level">0</field>
         <field name="expression_ids">
             <record id="mod_347_real_estates_balance" model="account.report.expression">
                 <field name="label">balance</field>
@@ -39,7 +37,6 @@
         <field name="name">Relación de declarados</field>
         <field name="code">aeat_mod_347_operations_title</field>
         <field name="report_id" ref="l10n_es_reports.mod_347"/>
-        <field name="hierarchy_level">0</field>
         <field name="expression_ids">
             <record id="l10n_es_reports.mod_347_operations_title_balance" model="account.report.expression">
                 <field name="label">balance</field>
@@ -55,7 +52,6 @@
         <field name="report_id" ref="l10n_es_reports.mod_347"/>
         <field name="parent_id" ref="l10n_es_reports.mod_347_operations_title"/>
         <field name="sequence" eval="6"/>
-        <field name="hierarchy_level">0</field>
         <field name="children_ids">
             <record id="mod_347_operations_real_estates_bought" model="account.report.line">
                 <field name="name">A - Adquisiciones de bienes y servicios superiores a 3.005,06 €</field>

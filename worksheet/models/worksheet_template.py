@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-import collections
 from ast import literal_eval
 from collections import defaultdict
 from lxml import etree
@@ -21,7 +20,7 @@ class WorksheetTemplate(models.Model):
 
     name = fields.Char(string='Name', required=True)
     sequence = fields.Integer()
-    worksheet_count = fields.Integer(compute='_compute_worksheet_count', compute_sudo=True)
+    worksheet_count = fields.Integer(compute='_compute_worksheet_count')
     model_id = fields.Many2one('ir.model', ondelete='cascade', readonly=True, domain=[('state', '=', 'manual')])
     action_id = fields.Many2one('ir.actions.act_window', readonly=True)
     company_ids = fields.Many2many('res.company', string='Companies', domain=lambda self: [('id', 'in', self.env.companies.ids)])
@@ -57,10 +56,8 @@ class WorksheetTemplate(models.Model):
         return templates
 
     def write(self, vals):
-        old_company_ids = self.company_ids
         res = super().write(vals)
-        if 'company_ids' in vals and self.company_ids:
-            update_company_ids = old_company_ids - self.company_ids
+        if 'company_ids' in vals:
             template_dict = defaultdict(lambda: self.env['worksheet.template'])
             for template in self:
                 template_dict[template.res_model] |= template
@@ -68,9 +65,8 @@ class WorksheetTemplate(models.Model):
                 for model, name in self._get_models_to_check_dict()[res_model]:
                     records = self.env[model].search([('worksheet_template_id', 'in', templates.ids)])
                     for record in records:
-                        company_names = ', '.join(update_company_ids.mapped('name'))
                         if record.company_id not in record.worksheet_template_id.company_ids:
-                            raise UserError(_("Unfortunately, you cannot unlink this worksheet template from %s because the template is still connected to tasks within the company.", company_names))
+                            raise UserError(_("There is still %s linked to this template. Please unlink them first.") % name)
         return res
 
     def unlink(self):
@@ -98,7 +94,7 @@ class WorksheetTemplate(models.Model):
         if default is None:
             default = {}
         if not default.get('name'):
-            default['name'] = _("%s (copy)", self.name)
+            default['name'] = _("%s (copy)") % (self.name)
 
         # force no model
         default['model_id'] = False
@@ -111,44 +107,12 @@ class WorksheetTemplate(models.Model):
         self.ensure_one()
         res_model = self.res_model.replace('.', '_')
         name = 'x_%s_worksheet_template_%d' % (res_model, self.id)
-
-        # create access rights and rules
-        if not hasattr(self, f'_get_{res_model}_manager_group'):
-            raise NotImplementedError(f'Method _get_{res_model}_manager_group not implemented on {res_model}')
-        if not hasattr(self, f'_get_{res_model}_user_group'):
-            raise NotImplementedError(f'Method _get_{res_model}_user_group not implemented on {res_model}')
-        if not hasattr(self, f'_get_{res_model}_access_all_groups'):
-            raise NotImplementedError(f'Method _get_{res_model}_access_all_groups not implemented on {res_model}')
-
         # while creating model it will initialize the init_models method from create of ir.model
         # and there is related field of model_id in mail template so it's going to recursive loop while recompute so used flush
         self.env.flush_all()
 
-        # Generate xml ids for some records: views, actions and models. This will let the ORM handle
-        # the module uninstallation (removing all data belonging to the module using their xml ids).
-        # NOTE: this is not needed for ir.model.fields, ir.model.access and ir.rule, as they are in
-        # delete 'cascade' mode, so their database entries will removed (no need their xml id).
-        module_name = getattr(self, f'_get_{res_model}_module_name')()
-        xid_values = []
-        model_counter = collections.Counter()
-        def register_xids(records):
-            for record in records:
-                model_counter[record._name] += 1
-                xid_values.append({
-                    'name': "{}_{}_{}".format(
-                        name,
-                        record._name.replace('.', '_'),
-                        model_counter[record._name],
-                    ),
-                    'module': module_name,
-                    'model': record._name,
-                    'res_id': record.id,
-                    'noupdate': True,
-                })
-            return records
-
         # generate the ir.model (and so the SQL table)
-        model = register_xids(self.env['ir.model'].sudo().create({
+        model = self.env['ir.model'].sudo().create({
             'name': self.name,
             'model': name,
             'field_id': self._prepare_default_fields_values() + [
@@ -159,10 +123,18 @@ class WorksheetTemplate(models.Model):
                     'related': 'x_%s_id.name' % res_model,
                 }),
             ]
-        }))
+        })
+
+        # create access rights and rules
+        if not hasattr(self, '_get_%s_manager_group' % res_model):
+            raise NotImplementedError('Method _get_%s_manager_group not implemented on %s' % (res_model, res_model))
+        if not hasattr(self, '_get_%s_user_group' % res_model):
+            raise NotImplementedError('Method _get_%s_user_group not implemented on %s' % (res_model, res_model))
+        if not hasattr(self, '_get_%s_access_all_groups' % res_model):
+            raise NotImplementedError('Method _get_%s_access_all_groups not implemented on %s' % (res_model, res_model))
 
         self.env['ir.model.access'].sudo().create([{
-            'name': name + '_manager_access',
+            'name': name + '_access',
             'model_id': model.id,
             'group_id': getattr(self, '_get_%s_manager_group' % res_model)().id,
             'perm_create': True,
@@ -170,7 +142,7 @@ class WorksheetTemplate(models.Model):
             'perm_read': True,
             'perm_unlink': True,
         }, {
-            'name': name + '_user_access',
+            'name': name + '_access',
             'model_id': model.id,
             'group_id': getattr(self, '_get_%s_user_group' % res_model)().id,
             'perm_create': True,
@@ -178,7 +150,8 @@ class WorksheetTemplate(models.Model):
             'perm_read': True,
             'perm_unlink': True,
         }])
-        self.env['ir.rule'].create([{
+
+        self.env['ir.rule'].sudo().create([{
             'name': name + '_own',
             'model_id': model.id,
             'domain_force': "[('create_uid', '=', user.id)]",
@@ -191,24 +164,52 @@ class WorksheetTemplate(models.Model):
         }])
 
         # create the view to extend by 'studio' and add the user custom fields
-        __, __, search_view = register_xids(self.env['ir.ui.view'].sudo().create([
-            self._prepare_default_form_view_values(model),
-            self._prepare_default_tree_view_values(model),
-            self._prepare_default_search_view_values(model)
-        ]))
-        action = register_xids(self.env['ir.actions.act_window'].sudo().create({
+        form_view_values = self._prepare_default_form_view_values(model)
+        tree_view_values = self._prepare_default_tree_view_values(model)
+        search_view_values = self._prepare_default_search_view_values(model)
+        new_views = self.env['ir.ui.view'].sudo().create([form_view_values, tree_view_values, search_view_values])
+        action = self.env['ir.actions.act_window'].sudo().create({
             'name': 'Worksheets',
             'res_model': model.model,
-            'search_view_id': search_view.id,
+            'view_mode': 'tree,form',
+            'views': [(new_views[0].id, 'tree'), (new_views[1].id, 'form')],
+            'target': 'current',
+            'search_view_id': new_views[2].id,
             'context': {
                 'edit': False,
                 'create': False,
                 'delete': False,
                 'duplicate': False,
             }
-        }))
+        })
 
-        self.env['ir.model.data'].sudo().create(xid_values)
+        # Generate xml ids for some records: views, actions and models. This will let the ORM handle
+        # the module uninstallation (removing all data belonging to the module using their xml ids).
+        # NOTE: this is not needed for ir.model.fields, ir.model.access and ir.rule, as they are in
+        # delete 'cascade' mode, so their database entries will removed (no need their xml id).
+        module_name = getattr(self, '_get_%s_module_name' % res_model)()
+        action_xmlid_values = {
+            'name': 'template_action_' + "_".join(self.name.split(' ')),
+            'model': 'ir.actions.act_window',
+            'module': module_name,
+            'res_id': action.id,
+            'noupdate': True,
+        }
+        model_xmlid_values = {
+            'name': 'model_x_custom_worksheet_' + "_".join(model.model.split('.')),
+            'model': 'ir.model',
+            'module': module_name,
+            'res_id': model.id,
+            'noupdate': True,
+        }
+        view_xmlid_values = {
+            'name': 'form_view_custom_' + "_".join(model.model.split('.')),
+            'model': 'ir.ui.view',
+            'module': module_name,
+            'res_id': new_views[0].id,
+            'noupdate': True,
+        }
+        self.env['ir.model.data'].sudo().create([action_xmlid_values, model_xmlid_values, view_xmlid_values])
 
         # link the worksheet template to its generated model and action
         self.write({
@@ -263,7 +264,7 @@ class WorksheetTemplate(models.Model):
                             <field name="x_%s_id"/>
                         </h1>
                         <group>
-                            <field name="x_comments" placeholder="Add details about your intervention..."/>
+                            <field name="x_comments"/>
                         </group>
                     </sheet>
                 </form>
@@ -341,7 +342,8 @@ class WorksheetTemplate(models.Model):
         action = self.action_id.read()[0]
         action.update({
             'views': [[False, "form"]],
-            'context': {'default_x_%s_id' % self.res_model.replace('.', '_'): True},  # to hide model_id from view
+            'context': {'default_x_%s_id' % self.res_model.replace('.', '_'): True,  # to hide model_id from view
+                        'form_view_initial_mode': 'readonly'}  # to avoid edit mode at studio exit
         })
         return action
 
@@ -425,7 +427,7 @@ class WorksheetTemplate(models.Model):
                         container_row.append(container_col)
                         for field_node in col_node.xpath('./field'):
                             new_container_col = self._add_field_node_to_container(field_node, form_view_fields, container_col)
-                            container_row.append(new_container_col)
+                        container_row.append(new_container_col)
                     qweb_arch.append(container_row)
                 # pattern C: whe have a field inside an element group --> field take full width
                 else:
@@ -437,10 +439,10 @@ class WorksheetTemplate(models.Model):
         t_root.append(qweb_arch)
         return etree.tostring(t_root)
 
-    def _generate_qweb_report_template(self, form_view_id=False):
+    def _generate_qweb_report_template(self):
         for worksheet_template in self:
             report_name = worksheet_template.model_id.model.replace('.', '_')
-            new_arch = self._get_qweb_arch(worksheet_template.model_id, report_name, form_view_id)
+            new_arch = self._get_qweb_arch(worksheet_template.model_id, report_name)
             if worksheet_template.report_view_id:  # update existing one
                 worksheet_template.report_view_id.write({'arch': new_arch})
             else:  # create the new one

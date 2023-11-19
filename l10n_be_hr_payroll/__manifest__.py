@@ -3,7 +3,7 @@
 
 {
     'name': 'Belgium - Payroll',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'category': 'Human Resources/Payroll',
     'depends': ['hr_payroll', 'hr_contract_reports', 'hr_work_entry_holidays', 'hr_payroll_holidays'],
     'version': '1.0',
@@ -34,13 +34,13 @@ Prerequisites:
   a technical user (.cer file) and to authenticate remotely to the ONSS (.pem) file. On a UNIX
   system, you may use the following commands:
 
-  - PFX -> CRT: openssl pkcs12 -in my_cert.pfx -out my_cert.crt -nokeys -clcerts
+  - PFX -> CRT : openssl pkcs12 -in my_cert.pfx -out my_cert.crt -nokeys -clcerts
 
-  - CRT -> CER: openssl x509 -inform pem -in my_cert.crt -outform der -out my_cert.cer
+  - CRT -> CER : openssl x509 -inform pem -in my_cert.crt -outform der -out my_cert.cer
 
-  - PFX -> PEM: openssl pkcs12 -in my_cert.pfx -out my_cert.pem -nodes
+  - PFX -> PEM : openssl pkcs12 -in my_cert.pfx -out my_cert.pem -nodes
 
-  - PFX -> KEY: openssl pkcs12 -in my_cert.pfx -out my_cert.key -nocerts
+  - PFX -> KEY : openssl pkcs12 -in my_cert.pfx -out my_cert.key -nocerts
 
 - Before you can use the social security REST web service, you must create an account
   for yourself or for your client and configure the security. (The whole procedure is
@@ -68,6 +68,7 @@ Prerequisites:
         'wizard/hr_payroll_allocating_paid_time_off_views.xml',
         'wizard/l10n_be_december_slip_wizard_views.xml',
         'wizard/l10n_be_group_insurance_wizard_views.xml',
+        'wizard/l10n_be_export_sdworx_leaves_wizard_views.xml',
         'views/l10n_be_double_pay_recovery_line_views.xml',
         'views/l10n_be_meal_voucher_report_views.xml',
         'views/hr_contract_views.xml',
@@ -138,10 +139,8 @@ Prerequisites:
     'assets': {
         'web.assets_backend': [
             'l10n_be_hr_payroll/static/src/js/**/*',
+            'l10n_be_hr_payroll/static/src/xml/**/*',
         ],
-        'web.report_assets_common': [
-            'l10n_be_hr_payroll/static/src/scss/*.scss',
-        ]
     },
     'license': 'OEEL-1',
 }

@@ -7,18 +7,18 @@
     <tr><td valign="top">
         <div style="margin: 0px; padding: 0px; font-size: 13px;">
             <p style="margin: 0px; padding: 0px; font-size: 13px;">
-                <t t-if="record.name">
-                    <t t-out="user.name or ''"/> invited you to <t t-if="permission == 'write'">EDIT</t><t t-if="permission == 'read'">READ</t> the article <t t-out="record.name"/>.<br/>
-                </t>
-                <t t-else="">
-                    <t t-out="user.name or ''"/> invited you to access an article.<br/>
-                </t>
-                <div class="text-muted">
-                    <t t-if="message" t-out="message"/>
-                    <t t-else=""><br/></t>
-                </div>
+                <p>Dear <t t-out="recipient.name"/>,</p>
+                <t t-out="user.name  or ''"></t> invited you to access <t t-out="record.name"></t>.<br/><br/>
             </p>
         </div>
+    </td></tr>
+    <tr><td valign="top">
+        <p style="margin: 16px 0px 16px 0px; text-align: center;">
+            <a t-att-href="link"
+                style="background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                Go to Article
+            </a>
+        </p>
     </td></tr>
 </table>
     </template>

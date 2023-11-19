@@ -3,18 +3,17 @@
 # 	* account_online_synchronization
 # 
 # Translators:
-# Martin Trigaux, 2023
-# Wil Odoo, 2023
-# Larissa Manderfeld, 2023
+# Martin Trigaux, 2022
+# Friederike Fasterling-Nesselbosch, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-31 14:34+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Larissa Manderfeld, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-09-27 15:40+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Friederike Fasterling-Nesselbosch, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,149 +21,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
-#, python-format
-msgid ""
-").\n"
-"                    This might cause duplicate entries."
-msgstr ""
-").\n"
-"                    Das kann zu doppelten Buchungen führen."
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#, python-format
-msgid "0 transaction fetched"
-msgstr "0 Transaktionen abgerufen"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_form
-msgid "<i class=\"oi oi-arrow-right me-2\"/> Send Now"
-msgstr "<i class=\"oi oi-arrow-right me-2\"/> Jetzt senden"
-
-#. module: account_online_synchronization
-#: model:mail.template,body_html:account_online_synchronization.email_template_sync_reminder
-msgid ""
-"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #FFFFFF; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
-"                    <tr>\n"
-"                        <td align=\"center\">\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: #FFFFFF; color: #454748; border-collapse:separate;\">\n"
-"                                <tbody>\n"
-"                                    <!-- CONTENT -->\n"
-"                                    <tr>\n"
-"                                        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                                                <tr>\n"
-"                                                    <td valign=\"top\" style=\"font-size: 13px;\">\n"
-"                                                        <div>\n"
-"                                                            Hello,<br><br>\n"
-"                                                            The connection between <b><a t-att-href=\"object.get_base_url()\" t-out=\"object.get_base_url() or ''\">https://yourcompany.odoo.com</a></b> and <t t-out=\"object.account_online_link_id.name or ''\">Belfius</t> <t t-if=\"not object.expiring_synchronization_due_day\">expired.</t><t t-else=\"\">expires in <t t-out=\"object.expiring_synchronization_due_day or ''\">10</t> days.</t><br>\n"
-"                                                            <div style=\"margin: 16px 0px 16px 0px;\">\n"
-"                                                                <a t-attf-href=\"{{ website_url }}/renew_consent/{{ object.id }}?access_token={{object.access_token}}\" style=\"background-color: #4caf50; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
-"                                                                    Renew Consent\n"
-"                                                                </a>\n"
-"                                                            </div>\n"
-"                                                            Security Tip: Check that the domain name you are redirected to is: <b><a t-att-href=\"object.get_base_url()\" t-out=\"object.get_base_url() or ''\">https://yourcompany.odoo.com</a></b>\n"
-"                                                        </div>\n"
-"                                                    </td>\n"
-"                                                </tr>\n"
-"                                                <tr>\n"
-"                                                    <td style=\"text-align:center;\">\n"
-"                                                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
-"                                                    </td>\n"
-"                                                </tr>\n"
-"                                            </table>\n"
-"                                        </td>\n"
-"                                    </tr>\n"
-"                                </tbody>\n"
-"                            </table>\n"
-"                        </td>\n"
-"                    </tr>\n"
-"                    <!-- POWERED BY -->\n"
-"                    <tr>\n"
-"                        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
-"                                <tr>\n"
-"                                    <td style=\"text-align: center; font-size: 13px;\">\n"
-"                                        Powered by <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=auth\" style=\"color: #875A7B;\">Odoo</a>\n"
-"                                    </td>\n"
-"                                </tr>\n"
-"                            </table>\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; color: #454748; padding: 8px; border-collapse:separate;\">\n"
-"                                <tr>\n"
-"                                    <td style=\"text-align: center; font-size: 11px;\">\n"
-"                                        PS: This is an automated email sent by Odoo Accounting to remind you before a bank sync consent expiration.\n"
-"                                    </td>\n"
-"                                </tr>\n"
-"                            </table>\n"
-"                        </td>\n"
-"                    </tr>\n"
-"                </table>\n"
-"            "
-msgstr ""
-"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #FFFFFF; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
-"                    <tr>\n"
-"                        <td align=\"center\">\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: #FFFFFF; color: #454748; border-collapse:separate;\">\n"
-"                                <tbody>\n"
-"                                    <!-- CONTENT -->\n"
-"                                    <tr>\n"
-"                                        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                                                <tr>\n"
-"                                                    <td valign=\"top\" style=\"font-size: 13px;\">\n"
-"                                                        <div>\n"
-"                                                            Hallo,<br><br>\n"
-"                                                            Die Verbindung zwischen <b><a t-att-href=\"object.get_base_url()\" t-out=\"object.get_base_url() or ''\">https://yourcompany.odoo.com</a></b> und <t t-out=\"object.account_online_link_id.name or ''\">Belfius</t> <t t-if=\"not object.expiring_synchronization_due_day\"> ist abgelaufen.</t><t t-else=\"\">läuft in <t t-out=\"object.expiring_synchronization_due_day or ''\">10</t> Tagen ab.</t><br>\n"
-"                                                            <div style=\"margin: 16px 0px 16px 0px;\">\n"
-"                                                                <a t-attf-href=\"{{ website_url }}/renew_consent/{{ object.id }}?access_token={{object.access_token}}\" style=\"background-color: #4caf50; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
-"                                                                    Zustimmung erneuern\n"
-"                                                                </a>\n"
-"                                                            </div>\n"
-"                                                            Sicherheitstipp: Vergewissern Sie sich, dass der Domain-Name, zu dem Sie weitergeleitet werden, auch der richtige ist: <b><a t-att-href=\"object.get_base_url()\" t-out=\"object.get_base_url() or ''\">https://yourcompany.odoo.com</a></b>\n"
-"                                                        </div>\n"
-"                                                    </td>\n"
-"                                                </tr>\n"
-"                                                <tr>\n"
-"                                                    <td style=\"text-align:center;\">\n"
-"                                                        <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
-"                                                    </td>\n"
-"                                                </tr>\n"
-"                                            </table>\n"
-"                                        </td>\n"
-"                                    </tr>\n"
-"                                </tbody>\n"
-"                            </table>\n"
-"                        </td>\n"
-"                    </tr>\n"
-"                    <!-- POWERED BY -->\n"
-"                    <tr>\n"
-"                        <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
-"                                <tr>\n"
-"                                    <td style=\"text-align: center; font-size: 13px;\">\n"
-"                                        Powered by <a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=auth\" style=\"color: #875A7B;\">Odoo</a>\n"
-"                                    </td>\n"
-"                                </tr>\n"
-"                            </table>\n"
-"                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; color: #454748; padding: 8px; border-collapse:separate;\">\n"
-"                                <tr>\n"
-"                                    <td style=\"text-align: center; font-size: 11px;\">\n"
-"                                        PS: Dies ist eine automatische E-Mail, die von Odoo Buchhaltung verschickt wird, um Sie daran zu erinnern, dass Ihre Zustimmung zur Bankensynchronisation abläuft.\n"
-"                                    </td>\n"
-"                                </tr>\n"
-"                            </table>\n"
-"                        </td>\n"
-"                    </tr>\n"
-"                </table>\n"
-"            "
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
+msgid "<strong>Fantastic! </strong> We've found"
+msgstr "<strong>Fantastisch! </strong> Was wir gefunden haben"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__access_token
 msgid "Access Token"
-msgstr "Zugriffstoken"
+msgstr "Zugriffs-Token"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__account_data
@@ -177,52 +41,46 @@ msgid "Account Name"
 msgstr "Kontoname"
 
 #. module: account_online_synchronization
+#: model:ir.model.fields,help:account_online_synchronization.field_account_link_journal_line__name
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__name
 msgid "Account Name as provided by third party provider"
 msgstr "Kontoname wie vom Drittanbieter angegeben"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__account_number
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__account_number
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__account_number
 msgid "Account Number"
 msgstr "Kontonummer"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__account_online_account_ids
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__online_account_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__account_online_account_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__account_online_account_ids
 msgid "Account Online Account"
 msgstr "Konto Online-Konto"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__account_online_link_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line__online_link_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__account_online_link_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__account_online_link_id
 msgid "Account Online Link"
-msgstr "Konto Online-Link"
+msgstr "Konto Online Link"
 
 #. module: account_online_synchronization
-#: model:ir.actions.server,name:account_online_synchronization.online_sync_cron_waiting_synchronization_ir_actions_server
-msgid "Account: Journal online Waiting Synchronization"
-msgstr "Konto: Ausstehende Online-Journal-Synchronisierung"
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__account_online_wizard_id
+msgid "Account Online Wizard"
+msgstr "Konto Online-Assistent"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__name
+msgid "Account name"
+msgstr "Benutzer Name"
 
 #. module: account_online_synchronization
 #: model:ir.actions.server,name:account_online_synchronization.online_sync_cron_ir_actions_server
+#: model:ir.cron,cron_name:account_online_synchronization.online_sync_cron
+#: model:ir.cron,name:account_online_synchronization.online_sync_cron
 msgid "Account: Journal online sync"
 msgstr "Konto: Onlinejournal synchronisieren"
-
-#. module: account_online_synchronization
-#: model:ir.actions.server,name:account_online_synchronization.online_sync_unused_connection_cron_ir_actions_server
-msgid "Account: Journal online sync cleanup unused connections"
-msgstr ""
-"Konto: Journal-Online-Synchronisation bereinigt ungenutzte Verbindungen"
-
-#. module: account_online_synchronization
-#: model:ir.actions.server,name:account_online_synchronization.online_sync_mail_cron_ir_actions_server
-msgid "Account: Journal online sync reminder"
-msgstr "Konto: Erinnerung zur Synchronisieurng des Onlinejournals"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_needaction
@@ -237,7 +95,7 @@ msgstr "Aktivitäten"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Aktivitätsausnahme-Dekoration"
+msgstr "Aktivität Ausnahme-Dekoration"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_state
@@ -247,20 +105,21 @@ msgstr "Status der Aktivität"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Symbol des Aktivitätstyps"
+msgstr "Aktivitäts-Typ-Icon"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__amount
-msgid "Amount"
-msgstr "Betrag"
+#. openerp-web
+#: code:addons/account_online_synchronization/static/src/xml/online_sync_template.xml:0
+#, python-format
+msgid "Add A Bank Account"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_attachment_count
 msgid "Attachment Count"
-msgstr "Anzahl Anhänge"
+msgstr "# Anhänge"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_journal.py:0
 #, python-format
 msgid "Automated Bank Synchronization"
@@ -272,24 +131,21 @@ msgid "Automatic synchronization"
 msgstr "Automatische Synchronisierung"
 
 #. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__balance
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__balance
 msgid "Balance"
 msgstr "Saldo"
 
 #. module: account_online_synchronization
+#: model:ir.model.fields,help:account_online_synchronization.field_account_link_journal_line__balance
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__balance
 msgid "Balance of the account sent by the third party provider"
 msgstr "Saldo des vom Drittanbieter gesendeten Kontos"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Bank"
-msgstr "Bank"
-
-#. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_account_online_link
 msgid "Bank Connection"
-msgstr "Bankverbindung"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_account_bank_statement_line
@@ -299,57 +155,33 @@ msgstr "Kontoauszugszeile"
 #. module: account_online_synchronization
 #: model:mail.activity.type,name:account_online_synchronization.bank_sync_activity_update_consent
 msgid "Bank Synchronization: Update consent"
-msgstr "Banksynchronisierung: Einwilligung aktualisieren"
+msgstr ""
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Bank Synchronization: Update your consent"
-msgstr "Banksynchronisierung: Ihre Einwilligung aktualisieren"
-
-#. module: account_online_synchronization
-#: model:mail.template,name:account_online_synchronization.email_template_sync_reminder
-msgid "Bank connection expiration reminder"
-msgstr "Erinnerung zum Ablauf der Bankverbindung"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_bank_rec_widget
 msgid "Bank reconciliation widget for a single statement line"
-msgstr "Bankabstimmungswidget für eine einzelne Auszugszeile"
+msgstr "Bankabstimmungs-Widget für eine einzelne Auszugszeile"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_missing_transaction_wizard_view_form
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_bank_selection_form_wizard
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_missing_transaction_wizard_view_form
-msgid "Choose a date and a journal from which you want to fetch transactions"
-msgstr ""
-"Wählen Sie ein Datum und ein Journal aus, von dem Sie Transaktionen abrufen "
-"möchten"
-
-#. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__client_id
 msgid "Client"
-msgstr "Client"
+msgstr "Kunde"
 
 #. module: account_online_synchronization
 #: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_online_link_view_form
 msgid "Client id"
-msgstr "Client-ID"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,help:account_online_synchronization.field_account_journal__renewal_contact_email
-msgid ""
-"Comma separated list of email addresses to send consent renewal "
-"notifications 15, 3 and 1 days before expiry"
-msgstr ""
-"Durch Kommata getrennte Liste von E-Mail-Adressen, an die Benachrichtigungen"
-" über die Verlängerung der Zustimmung 15, 3 und 1 Tag(e) vor Ablauf gesendet"
-" werden sollen"
+msgstr "Kunden-ID"
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_res_company
@@ -368,47 +200,29 @@ msgid "Connect"
 msgstr "Verbinden"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_bank_selection_form_wizard
-msgid "Connect Bank"
-msgstr "Bank verbinden"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Connect my Bank"
-msgstr "Meine Bank verbinden"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Connect your bank account to Odoo"
-msgstr "Verbinden Sie Ihre Bankkonten mit Odoo"
-
-#. module: account_online_synchronization
 #: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_link__state__connected
 msgid "Connected"
 msgstr "Verbunden"
 
 #. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/connected_until_widget/connected_until_widget.xml:0
-#, python-format
-msgid "Connected until"
-msgstr "Verbunden bis"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Consent expired"
+msgstr ""
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__renewal_contact_email
-msgid "Connection Requests"
-msgstr "Verbindungsanfrage"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Consent expires in"
+msgstr ""
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__connection_state_details
-msgid "Connection State Details"
-msgstr "Details zum Verbindungsstatus"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Consent expires on"
+msgstr ""
 
 #. module: account_online_synchronization
-#: model:mail.message.subtype,name:account_online_synchronization.bank_sync_consent_renewal
-msgid "Consent Renewal"
-msgstr "Einwilligungserneuerung"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Consent expires today"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_res_partner
@@ -416,60 +230,76 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Create a Bank Account"
-msgstr "Ein Bankkonto erstellen"
+msgstr "neues Bankkonto hinzu fügen."
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__create_uid
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__create_uid
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__create_uid
+#: code:addons/account_online_synchronization/models/account_journal.py:0
+#, python-format
+msgid "Create bi-monthly statements"
+msgstr "Kontoauszüge zweimal monatlich erstellen"
+
+#. module: account_online_synchronization
+#: code:addons/account_online_synchronization/models/account_journal.py:0
+#, python-format
+msgid "Create daily statements"
+msgstr "Kontoauszüge täglich erstellen"
+
+#. module: account_online_synchronization
+#: code:addons/account_online_synchronization/models/account_journal.py:0
+#, python-format
+msgid "Create monthly statements"
+msgstr "Kontoauszüge monatlich erstellen"
+
+#. module: account_online_synchronization
+#: code:addons/account_online_synchronization/models/account_journal.py:0
+#, python-format
+msgid "Create one statement per synchronization"
+msgstr "Einen Kontoauszug pro Synchronisation erstellen"
+
+#. module: account_online_synchronization
+#: code:addons/account_online_synchronization/models/account_journal.py:0
+#, python-format
+msgid "Create weekly statements"
+msgstr "Kontoauszüge wöchentlich erstellen"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__create_uid
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__create_uid
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__create_uid
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__create_uid
 msgid "Created by"
 msgstr "Erstellt von"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__create_date
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__create_date
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__create_date
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__create_date
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__create_date
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__create_date
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__create_date
 msgid "Created on"
 msgstr "Erstellt am"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__currency_id
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__currency_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__currency_id
 msgid "Currency"
 msgstr "Währung"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__date
-msgid "Date"
-msgstr "Datum"
-
-#. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_journal__expiring_synchronization_date
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__expiring_synchronization_date
 msgid "Date when the consent for this connection expires"
-msgstr "Datum, an dem die Einwilligung für diese Verbindung abläuft"
+msgstr ""
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__display_name
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__display_name
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__display_name
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__display_name
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__display_name
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__display_name
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__display_name
 msgid "Display Name"
 msgstr "Anzeigename"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_account__fetching_status__done
-msgid "Done"
-msgstr "Erledigt"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_link__state__error
@@ -480,19 +310,12 @@ msgstr "Fehler"
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__expiring_synchronization_date
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__expiring_synchronization_date
 msgid "Expiring Synchronization Date"
-msgstr "Ablaufsdatum der Synchronisierung"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__expiring_synchronization_due_day
 msgid "Expiring Synchronization Due Day"
-msgstr "Fälligkeitsdatum der Synchronisierung"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/connected_until_widget/connected_until_widget.xml:0
-#, python-format
-msgid "Extend Connection"
-msgstr "Verbindung erweitern"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__account_data
@@ -500,67 +323,40 @@ msgid "Extra information needed by third party provider"
 msgstr "Vom Drittanbieter benötigte zusätzliche Informationen"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_missing_transaction_wizard_view_form
-msgid "Fetch"
-msgstr "Abrufen"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_missing_transaction_wizard_view_form
-msgid "Fetch Missing Bank Statements Wizard"
-msgstr "Assistent zum Abrufen fehlender Kontoauszüge"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
 #: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_online_link_view_form
-#, python-format
+msgid "Fetch Accounts"
+msgstr "Konten abrufen"
+
+#. module: account_online_synchronization
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_online_link_view_form
 msgid "Fetch Transactions"
 msgstr "Transaktionen abrufen"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Fetched Transactions"
-msgstr "Abgerufene Transaktionen"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__online_sync_fetching_status
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__fetching_status
-msgid "Fetching Status"
-msgstr "Abrufsstatus"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#, python-format
-msgid "Fetching..."
-msgstr "Abrufen ..."
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_journal.py:0
-#: code:addons/account_online_synchronization/static/src/components/bank_reconciliation/fetch_missing_transactions_cog_menu.xml:0
-#: model:ir.actions.server,name:account_online_synchronization.account_journal_action_fetch_missing_transactions
-#, python-format
-msgid "Find Missing Transactions"
-msgstr "Fehlende Transaktionen finden"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_follower_ids
 msgid "Followers"
-msgstr "Follower"
+msgstr "Abonnenten"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Follower (Partner)"
+msgstr "Abonnenten (Partner)"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "FontAwesome-Icon, z. B. fa-tasks"
+msgstr "FontAwesome Icon, z.B. fa-tasks"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__sync_date
+msgid "Get transactions since"
+msgstr "Transaktionen holen seit"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__has_message
@@ -568,21 +364,8 @@ msgid "Has Message"
 msgstr "Hat eine Nachricht"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__has_unlinked_accounts
-msgid "Has Unlinked Accounts"
-msgstr "Hat unverknüpfte Konten"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_online.py:0
-#, python-format
-msgid "Here"
-msgstr "Hier"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__id
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__id
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__id
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__id
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__id
 msgid "ID"
@@ -591,7 +374,7 @@ msgstr "ID"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_exception_icon
 msgid "Icon"
-msgstr "Icon"
+msgstr "Symbol"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__activity_exception_icon
@@ -608,24 +391,23 @@ msgstr ""
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Falls markiert, erfordern neue Nachrichten Ihre Aufmerksamkeit."
+msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__message_has_error
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
-"Falls markiert, weisen einige Nachrichten einen Zustellungsfehler auf."
+msgstr "Wenn gewählt, ist das Senden einiger Nachrichten fehlgeschlagen."
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__inverse_balance_sign
 msgid "If checked, the balance sign will be inverted"
-msgstr "Wenn angekreuzt, wird das Saldovorzeichen umgekehrt"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__inverse_transaction_sign
 msgid "If checked, the transaction sign will be inverted"
-msgstr "Wenn angekreuzt, wird das Transaktionsvorzeichen umgekehrt"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__auto_sync
@@ -634,35 +416,25 @@ msgid ""
 "record"
 msgstr ""
 "Wenn möglich, werden wir versuchen, automatisch neue Transaktionen für "
-"diesen Datensatz abzurufen"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
-#, python-format
-msgid "Import Transactions"
-msgstr "Transaktionen importieren"
+"diesen Datensatz zu holen"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__provider_data
 msgid "Information needed to interact with third party provider"
-msgstr "Erforderliche Informationen für die Zusammenarbeit mit Drittanbietern"
+msgstr ""
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,help:account_online_synchronization.field_account_bank_selection__institution_name
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__name
 msgid "Institution Name"
 msgstr "Name der Institution"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Internal Error"
 msgstr "Interner Fehler"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Invalid value for proxy_mode config parameter."
@@ -671,27 +443,40 @@ msgstr "Ungültiger Wert für den Konfigurationsparameter proxy_mode."
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__inverse_balance_sign
 msgid "Inverse Balance Sign"
-msgstr "Umgekehrtes Saldovorzeichen"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__inverse_transaction_sign
 msgid "Inverse Transaction Sign"
-msgstr "Umgekehrtes Transaktionsvorzeichen"
+msgstr ""
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_is_follower
 msgid "Is Follower"
-msgstr "Ist Follower"
+msgstr "Ist ein Abonnent"
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_account_journal
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__journal_id
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__journal_id
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__journal_id
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__journal_ids
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__journal_ids
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
 msgid "Journal"
 msgstr "Journal"
+
+#. module: account_online_synchronization
+#: code:addons/account_online_synchronization/wizard/account_link_journal_wizard.py:0
+#, python-format
+msgid "Journals linked to a bank account must be of the bank type."
+msgstr ""
+"Journale, die mit einem Bankkonto verknüpft sind, müssen vom Typ der Bank "
+"sein."
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal____last_update
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line____last_update
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account____last_update
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link____last_update
+msgid "Last Modified on"
+msgstr "Letzte Änderung am"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__last_refresh
@@ -699,18 +484,16 @@ msgid "Last Refresh"
 msgstr "Letzte Aktualisierung"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__write_uid
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__write_uid
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__write_uid
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__write_uid
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__write_uid
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__write_uid
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__write_uid
 msgid "Last Updated by"
 msgstr "Zuletzt aktualisiert von"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__write_date
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__write_date
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__write_date
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__write_date
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__write_date
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__write_date
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__write_date
 msgid "Last Updated on"
@@ -724,27 +507,35 @@ msgstr "Letzte Aktualisierung"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__last_sync
 msgid "Last synchronization"
-msgstr "Letzte Synchronisierung"
+msgstr "Letzte Synchronisation"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Latest Balance"
-msgstr "Letzter Saldo"
-
-#. module: account_online_synchronization
-#: model:ir.model,name:account_online_synchronization.model_account_bank_selection
-msgid "Link a bank account to the selected journal"
-msgstr "Verknüpfen Sie ein Bankkonto mit dem ausgewählten Journal"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_journal_missing_transactions.py:0
+#: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
-msgid "Manual Bank Statement Lines"
-msgstr "Manuelle Kontoauszugszeilen"
+msgid "Link Account to Journal"
+msgstr "Konto mit Journal verknüpfen"
 
 #. module: account_online_synchronization
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
+msgid "Link account to journal"
+msgstr "Konto mit Journal verknüpfen"
+
+#. module: account_online_synchronization
+#: model:ir.model,name:account_online_synchronization.model_account_link_journal
+msgid "Link list of bank accounts to journals"
+msgstr "Liste der Bankkonten mit Journalen verknüpfen"
+
+#. module: account_online_synchronization
+#: model:ir.model,name:account_online_synchronization.model_account_link_journal_line
+msgid "Link one bank account to a journal"
+msgstr "Verknüpfen eines Bankkontos mit einem Journal"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Hauptanhänge"
+
+#. module: account_online_synchronization
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Message"
@@ -753,7 +544,7 @@ msgstr "Nachricht"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_has_error
 msgid "Message Delivery error"
-msgstr "Nachricht mit Zustellungsfehler"
+msgstr "Fehler beim Senden der Nachricht"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_ids
@@ -761,19 +552,11 @@ msgid "Messages"
 msgstr "Nachrichten"
 
 #. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_journal_missing_transactions.py:0
-#, python-format
-msgid "Missing and Pending Transactions"
-msgstr "Fehlende und ausstehende Transaktionen"
-
-#. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Frist für meine Aktivitäten"
+msgstr "Deadline für meine Aktivitäten"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__institution_name
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__name
 msgid "Name"
 msgstr "Name"
@@ -791,12 +574,17 @@ msgstr "Nächste Aktivitätsfrist"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_summary
 msgid "Next Activity Summary"
-msgstr "Zusammenfassung der nächsten Aktivität"
+msgstr "Zusammenfassung nächste Aktion"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_type_id
 msgid "Next Activity Type"
 msgstr "Nächster Aktivitätstyp"
+
+#. module: account_online_synchronization
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Next sync:"
+msgstr "Nächster Sync:"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__next_refresh
@@ -807,6 +595,11 @@ msgstr "Nächste Synchronisierung"
 #: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_link__state__disconnected
 msgid "Not Connected"
 msgstr "Nicht verbunden"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__number_added
+msgid "Number Added"
+msgstr "Nummer hinzugefügt"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_needaction_counter
@@ -820,23 +613,19 @@ msgstr "Anzahl der Fehler"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Anzahl der Nachrichten, die eine Aktion erfordern"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Anzahl der Nachrichten mit Zustellungsfehler."
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Odoo"
-msgstr "Odoo"
+msgstr "Anzahl der Nachrichten mit einem Fehler beim Senden."
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line__online_account_id
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal_line__online_account_id
 msgid "Online Account"
-msgstr "Online-Konto"
+msgstr "Online Konto"
 
 #. module: account_online_synchronization
 #: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_online_link_view_form
@@ -846,12 +635,12 @@ msgstr "Online-Konten"
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_account__online_identifier
 msgid "Online Identifier"
-msgstr "Online-Kennung"
+msgstr "Online Identifier"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__next_link_synchronization
 msgid "Online Link Next synchronization"
-msgstr "Online-Link Nächste Synchronisierung"
+msgstr "Online Link Nächste Synchronisation"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line__online_partner_information
@@ -864,134 +653,46 @@ msgstr "Online-Partner-Informationen"
 #: model:ir.actions.act_window,name:account_online_synchronization.action_account_online_link_form
 #: model:ir.ui.menu,name:account_online_synchronization.menu_action_online_link_account
 #: model_terms:ir.actions.act_window,help:account_online_synchronization.action_account_online_link_form
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
 msgid "Online Synchronization"
-msgstr "Online-Synchronisierung"
+msgstr "Online Synchronisation"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line__online_transaction_identifier
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__online_transaction_identifier
 msgid "Online Transaction Identifier"
 msgstr "Kennung der Online-Transaktion"
 
 #. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_bank_statement.py:0
 #, python-format
 msgid "Opening statement: first synchronization"
-msgstr "Eröffnungsauszug: erste Synchronisierung"
+msgstr "Eröffnungsstatement: erste Synchronisation"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__partner_name
-msgid "Partner Name"
-msgstr "Partnername"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__payment_ref
-msgid "Payment Ref"
-msgstr "Zahlungsref."
-
-#. module: account_online_synchronization
-#: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_bank_statement_line_transient__state__pending
-msgid "Pending"
-msgstr "Ausstehend"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_journal_missing_transactions.py:0
-#, python-format
-msgid "Please enter a valid Starting Date to continue."
-msgstr "Bitte geben Sie ein gültiges Startdatum an, um fortzufahren."
-
-#. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid "Please reconnect your online account."
 msgstr "Bitte verbinden Sie Ihr Online-Konto erneut."
 
 #. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_bank_statement_line.py:0
-#, python-format
-msgid "Please select first the transactions you wish to import."
-msgstr ""
-"Bitte wählen Sie zuerst die Transaktionen, die Sie importieren möchten aus."
-
-#. module: account_online_synchronization
-#: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_bank_statement_line_transient__state__posted
-msgid "Posted"
-msgstr "Gebucht"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.missing_bank_statement_line_search
-msgid "Posted Transactions"
-msgstr "Gebuchte Transaktionen"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_account__fetching_status__processing
-msgid "Processing"
-msgstr "Verarbeitung"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Problem during synchronization"
+msgstr "Problem während der Online-Synchronisation"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__provider_data
 msgid "Provider Data"
-msgstr "Anbieterdaten"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__provider_type
-msgid "Provider Type"
-msgstr "Anbietertyp"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__rating_ids
-msgid "Ratings"
-msgstr "Bewertungen"
+msgstr "Anbieter-Daten"
 
 #. module: account_online_synchronization
 #: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_online_link_view_form
 msgid "Reconnect"
-msgstr "Erneut verbinden"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
-#, python-format
-msgid "Reconnect Bank"
-msgstr "Bank neu verbinden"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_online.py:0
-#, python-format
-msgid "Redirect"
-msgstr "Umleiten"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#, python-format
-msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Mit Konto verbinden"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__refresh_token
 msgid "Refresh Token"
-msgstr "Token aktualisieren"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_journal.py:0
-#, python-format
-msgid "Report Issue"
-msgstr "Problem melden"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_online.py:0
-#, python-format
-msgid "Report issue"
-msgstr "Berichtsproblem"
+msgstr "Aktualisiere Token"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__client_id
@@ -1003,64 +704,20 @@ msgstr ""
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__activity_user_id
 msgid "Responsible User"
-msgstr "Verantwortlicher Benutzer"
+msgstr "Manager Veranstaltung"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "SMS-Zustellungsfehler"
+msgstr "SMS Zustellungsfehler"
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid ""
-"Security Tip: always check the domain name of this page, before clicking on "
-"the button."
-msgstr ""
-"Sicherheitstipp: Überprüfen Sie immer den Domainnamen dieser Seite, bevor "
-"Sie auf die Schaltfläche klicken."
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#, python-format
-msgid "See error"
-msgstr "Fehler ansehen"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_online.py:0
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_bank_selection_form_wizard
-#, python-format
-msgid "Select a Bank Account"
-msgstr "Ein Bankkonto auswählen"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_bank_selection_form_wizard
-msgid "Select the"
-msgstr "Wählen Sie das"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_selection__selected_account
-msgid "Selected Account"
-msgstr "Ausgewähltes Konto"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__sequence
-msgid "Sequence"
-msgstr "Sequenz"
-
-#. module: account_online_synchronization
+#: model:ir.model.fields,help:account_online_synchronization.field_account_link_journal_line__account_number
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_account__account_number
 msgid "Set if third party provider has the full account number"
 msgstr "Einstellen, ob der Drittanbieter die vollständige Kontonummer hat"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_missing_transaction_wizard__date
-msgid "Starting Date"
-msgstr "Startdatum"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__state
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_journal__account_online_link_state
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__state
 msgid "State"
@@ -1076,16 +733,26 @@ msgid ""
 msgstr ""
 "Status basierend auf Aktivitäten\n"
 "Überfällig: Fälligkeitsdatum bereits überschritten\n"
-"Heute: Aktivitätsdatum ist heute\n"
+"Heute: Aktivität besitzt heutiges Datum\n"
 "Geplant: anstehende Aktivitäten."
 
 #. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "Thank You!"
-msgstr "Vielen Dank!"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "Synchronization link disconnected"
+msgstr "Synchronisationsverbindung unterbrochen"
 
 #. module: account_online_synchronization
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
+msgid "Synchronize now"
+msgstr "Jetzt synchronisieren"
+
+#. module: account_online_synchronization
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__account_ids
+msgid "Synchronized accounts"
+msgstr "Synchronisierte Konten"
+
+#. module: account_online_synchronization
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid ""
@@ -1096,12 +763,21 @@ msgstr ""
 "versuchen Sie es später erneut."
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__provider_type
-msgid "Third Party Provider"
-msgstr "Drittanbieter"
+#: code:addons/account_online_synchronization/models/account_online.py:0
+#, python-format
+msgid ""
+"The reference of your error is %s. Please mention it when contacting Odoo "
+"support."
+msgstr ""
+"Die Referenz für Ihren Fehler ist %s. Bitte geben Sie diese an, wenn Sie den"
+" Odoo-Support kontaktieren."
 
 #. module: account_online_synchronization
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
+msgid "There is no new bank account to link."
+msgstr "Es ist kein neues Bankkonto zu verknüpfen."
+
+#. module: account_online_synchronization
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
 msgid ""
@@ -1109,7 +785,7 @@ msgid ""
 "sync mode. Installing the latest update might solve this."
 msgstr ""
 "Diese Version von Odoo scheint veraltet zu sein und unterstützt den "
-"Synchronisierungsmodus „%s“ nicht. Die Installation des neuesten Updates "
+"Synchronisationsmodus '%s' nicht. Die Installation des neuesten Updates "
 "könnte dieses Problem lösen."
 
 #. module: account_online_synchronization
@@ -1118,8 +794,6 @@ msgid ""
 "To create a synchronization with your banking institution,<br>\n"
 "                please click on <b>Add a Bank Account</b>."
 msgstr ""
-"Um eine Synchronisierung mit Ihrem Bankinstitut zu erstellen,<br>\n"
-"                klicken Sie auf <b>Bankkonto hinzufügen</b>."
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__access_token
@@ -1134,23 +808,9 @@ msgstr ""
 "niemals preis"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields,field_description:account_online_synchronization.field_account_bank_statement_line_transient__transaction_details
-msgid "Transaction Details"
-msgstr "Transaktionsdetails"
-
-#. module: account_online_synchronization
-#: model:ir.model,name:account_online_synchronization.model_account_bank_statement_line_transient
-msgid "Transient model for bank statement line"
-msgstr "Übergangsmodell für Kontoauszugszeile"
-
-#. module: account_online_synchronization
-#: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__has_unlinked_accounts
-msgid ""
-"True if that connection still has accounts that are not linked to an Odoo "
-"journal"
-msgstr ""
-"Wahr, wenn diese Verbindung noch Konten hat, die nicht mit einem Odoo-"
-"Journal verknüpft sind"
+#: model:ir.model.fields,field_description:account_online_synchronization.field_account_link_journal__transactions
+msgid "Transactions"
+msgstr "Transaktionen"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__activity_exception_decoration
@@ -1163,9 +823,9 @@ msgid "Update Credentials"
 msgstr "Zugangsdaten aktualisieren"
 
 #. module: account_online_synchronization
-#: model:ir.model.fields.selection,name:account_online_synchronization.selection__account_online_account__fetching_status__waiting
-msgid "Waiting"
-msgstr "Wartend"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "View problem"
+msgstr "Problemübersicht"
 
 #. module: account_online_synchronization
 #: model:ir.model.fields,field_description:account_online_synchronization.field_account_online_link__website_message_ids
@@ -1175,52 +835,15 @@ msgstr "Website-Nachrichten"
 #. module: account_online_synchronization
 #: model:ir.model.fields,help:account_online_synchronization.field_account_online_link__website_message_ids
 msgid "Website communication history"
-msgstr "Website-Kommunikationsverlauf"
+msgstr "Website-Kommunikationshistorie"
 
 #. module: account_online_synchronization
-#: model:ir.model,name:account_online_synchronization.model_account_missing_transaction_wizard
-msgid "Wizard for missing transactions"
-msgstr "Assistent für fehlende Transaktionen"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
+#: code:addons/account_online_synchronization/wizard/account_link_journal_wizard.py:0
 #, python-format
-msgid ""
-"You are importing transactions before the creation of your online synchronization\n"
-"                    ("
-msgstr ""
-"Sie importieren Transaktionen vor der Erstellung Ihrer Online-Synchronisierung\n"
-"                    ("
+msgid "You can not link two accounts to the same journal."
+msgstr "Sie können nicht zwei Konten mit demselben Journal verknüpfen."
 
 #. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_online.py:0
-#, python-format
-msgid "You can contact Odoo support"
-msgstr "Sie können den Odoo Support kontaktieren"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_journal.py:0
-#, python-format
-msgid "You can only execute this action for bank-synchronized journals."
-msgstr ""
-"Sie können diese Aktion nur für bankensynchronisierte Journale ausführen."
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/models/account_journal.py:0
-#: code:addons/account_online_synchronization/wizard/account_journal_missing_transactions.py:0
-#, python-format
-msgid ""
-"You can't find missing transactions for a journal that isn't connected."
-msgstr ""
-"Sie können keine fehlenden Transaktionen für ein Journal finden, das nicht "
-"verbunden ist."
-
-#. module: account_online_synchronization
-#. odoo-python
 #: code:addons/account_online_synchronization/models/account_journal.py:0
 #: code:addons/account_online_synchronization/models/account_online.py:0
 #, python-format
@@ -1228,67 +851,20 @@ msgid "You cannot have two journals associated with the same Online Account."
 msgstr "Sie können nicht zwei Journale mit demselben Online-Konto verknüpfen."
 
 #. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_bank_statement_line.py:0
-#, python-format
-msgid "You cannot import pending transactions."
-msgstr "Sie können keine ausstehenden Transaktionen importieren."
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_link_journal_form_wizard
+msgid ""
+"bank account(s).<br/>\n"
+"                            Let's associate each one with an accounting journal."
+msgstr ""
+"bankkonto(s)<br/>\n"
+"                            Verknüpfen wir jedes mit einem Buchhaltungsjournal."
 
 #. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
-#, python-format
-msgid "You have"
-msgstr "Sie haben"
-
-#. module: account_online_synchronization
-#. odoo-python
-#: code:addons/account_online_synchronization/wizard/account_journal_missing_transactions.py:0
-#, python-format
-msgid "You have to select one journal to continue."
-msgstr "Sie müssen ein Journal auswählen, um fortzufahren."
-
-#. module: account_online_synchronization
-#: model:mail.template,subject:account_online_synchronization.email_template_sync_reminder
-msgid "Your bank connection is expiring soon"
-msgstr "Ihre Bankverbindung läuft bald ab"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.view_account_bank_selection_form_wizard
-msgid "account to connect:"
-msgstr "-Konto, das verbunden werden soll:"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
-#, python-format
-msgid "entries"
-msgstr "Buchungen"
-
-#. module: account_online_synchronization
-#: model_terms:ir.ui.view,arch_db:account_online_synchronization.portal_renew_consent
-msgid "on"
-msgstr "am"
+#: model_terms:ir.ui.view,arch_db:account_online_synchronization.account_journal_dashboard_inherit_online_sync
+msgid "day"
+msgstr "Tag"
 
 #. module: account_online_synchronization
 #: model:ir.model,name:account_online_synchronization.model_account_online_account
 msgid "representation of an online bank account"
 msgstr "Darstellung eines Online-Bankkontos"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/refresh_spin_journal_widget/refresh_spin_journal_widget.xml:0
-#, python-format
-msgid "transactions fetched"
-msgstr "Transaktionen abgerufen"
-
-#. module: account_online_synchronization
-#. odoo-javascript
-#: code:addons/account_online_synchronization/static/src/components/transient_bank_statement_line_list_view/transient_bank_statement_line_list_view.xml:0
-#, python-format
-msgid ""
-"within this period that were not created using the online synchronization. "
-"This might cause duplicate entries."
-msgstr ""
-"in diesem Zeitraum, die nicht mit der Online-Synchronisierung erstellt "
-"wurden. Das kann zu doppelten Buchungen führen."

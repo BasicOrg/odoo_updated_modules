@@ -2,12 +2,12 @@
 
 import { StreamPostComments } from '@social/js/stream_post_comments';
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from '@web/core/utils/patch';
 import { useService } from "@web/core/utils/hooks";
 
-patch(StreamPostComments.prototype, {
+patch(StreamPostComments.prototype, 'stream_post_comments_crm', {
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
 
         this.actionService = useService("action");
     },
@@ -25,7 +25,7 @@ patch(StreamPostComments.prototype, {
      * We also give the wizard the content formatted with "_formatPost", which will add support for
      * @mentions, #references, and links.
      */
-     generateLeadFromPost() {
+     generateLeadFromPost: function () {
         this.actionService.doAction("social_crm.social_post_to_lead_action", {
             additionalContext: {
                 default_conversion_source: 'stream_post',

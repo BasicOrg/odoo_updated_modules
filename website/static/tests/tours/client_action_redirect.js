@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
 const testUrl = '/test_client_action_redirect';
 
@@ -40,10 +40,11 @@ const checkEditorSteps = [{
     run: () => null, // It's a check
 }];
 
-registry.category("web_tour.tours").add('client_action_redirect', {
+tour.register('client_action_redirect', {
     test: true,
     url: testUrl,
-    steps: () => [
+},
+[
     // Case 1: From frontend, click on `enable_editor=1` link without `/@/` in it
     ...goToFrontendSteps,
     {
@@ -77,4 +78,4 @@ registry.category("web_tour.tours").add('client_action_redirect', {
         trigger: 'iframe #test_contact_BE',
     },
     ...checkEditorSteps,
-]});
+]);

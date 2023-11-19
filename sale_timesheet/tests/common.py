@@ -55,7 +55,10 @@ class TestCommonSaleTimesheet(TestSaleProjectCommon):
 
         # Account and project
         cls.analytic_account_sale.name = 'Project for selling timesheet - AA'
-        cls.analytic_plan, _other_plans = cls.env['account.analytic.plan']._get_all_plans()
+        cls.analytic_plan = cls.env['account.analytic.plan'].create({
+            'name': 'Plan Test',
+            'company_id': cls.company_data_2['company'].id,
+        })
         cls.analytic_account_sale_company_B = cls.env['account.analytic.account'].create({
             'name': 'Project for selling timesheet Company B - AA',
             'code': 'AA-2030',
@@ -250,16 +253,6 @@ class TestCommonSaleTimesheet(TestSaleProjectCommon):
             'project_id': False,
             'taxes_id': False,
             'property_account_income_id': cls.account_sale.id,
-        })
-        cls.product_service_delivered_timesheet = cls.env['product.product'].create({
-            'name': "Service timesheet",
-            'standard_price': 11,
-            'list_price': 13,
-            'type': 'service',
-            'service_tracking': 'no',
-            'project_id': False,
-            'invoice_policy': 'delivery',
-            'service_type': 'timesheet',
         })
 
     def setUp(self):

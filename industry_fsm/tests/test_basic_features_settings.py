@@ -19,6 +19,7 @@ class TestBasicFeaturesSettings(TestProjectCommon):
 
     def test_basic_features(self):
         for config_flag, project_flag in (
+            ('group_subtask_project', 'allow_subtasks'),
             ('group_project_task_dependencies', 'allow_task_dependencies'),
             ('group_project_milestone', 'allow_milestones'),
         ):
@@ -37,10 +38,17 @@ class TestBasicFeaturesSettings(TestProjectCommon):
             with Form(self.env['project.project']) as project_form:
                 project_form.name = 'My Ducks Project'
                 project_form.is_fsm = True
-                self.assertFalse(project_form[project_flag], f"The {project_flag} feature should be disabled by default on new FSM projects")
+                self.assertFalse(project_form._values[project_flag], f"The {project_flag} feature should be disabled by default on new FSM projects")
 
         self.project_pigs.write({project_flag: True})
         self.assertTrue(self.project_pigs[project_flag], f"The {project_flag} feature should be enabled on the project")
 
         self.env["res.config.settings"].create({config_flag: False}).execute()
         self.assertFalse(self.project_pigs[project_flag], "The feature should be disabled on the FSM project when disabled globally")
+
+    def test_project_worksheets(self):
+        fsm_project = self.env['project.project'].create({
+            'name': 'Test FSM Project',
+            'is_fsm': True,
+        })
+        self.assertTrue(fsm_project.allow_worksheets, "By default, worksheet should be enable for Fsm project")

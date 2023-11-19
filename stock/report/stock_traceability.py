@@ -94,10 +94,10 @@ class MrpStockReport(models.TransientModel):
             res_model = 'stock.move'
             res_id = move_line.move_id.id
             ref = 'Inventory Adjustment'
-        elif move_line.move_id.scrapped and move_line.move_id.scrap_id:
+        elif move_line.move_id.scrapped and move_line.move_id.scrap_ids:
             res_model = 'stock.scrap'
-            res_id = move_line.move_id.scrap_id.id
-            ref = move_line.move_id.scrap_id.name
+            res_id = move_line.move_id.scrap_ids[0].id
+            ref = move_line.move_id.scrap_ids[0].name
         return res_model, res_id, ref
 
     @api.model
@@ -129,7 +129,7 @@ class MrpStockReport(models.TransientModel):
             'model_id': move_line.id,
             'model': 'stock.move.line',
             'product_id': move_line.product_id.display_name,
-            'product_qty_uom': "%s %s" % (self._quantity_to_str(move_line.product_uom_id, move_line.product_id.uom_id, move_line.quantity), move_line.product_id.uom_id.name),
+            'product_qty_uom': "%s %s" % (self._quantity_to_str(move_line.product_uom_id, move_line.product_id.uom_id, move_line.qty_done), move_line.product_id.uom_id.name),
             'lot_name': move_line.lot_id.name,
             'lot_id': move_line.lot_id.id,
             'location_source': move_line.location_id.name,
@@ -185,7 +185,7 @@ class MrpStockReport(models.TransientModel):
                 lines = self._get_move_lines(move_line, line_id=line_id)
         for line in lines:
             unfoldable = False
-            if line.consume_line_ids or (model != "stock.lot" and line.lot_id and self._get_move_lines(line)):
+            if line.consume_line_ids or (line.lot_id and self._get_move_lines(line) and model != "stock.lot"):
                 unfoldable = True
             final_vals += self._make_dict_move(level, parent_id=line_id, move_line=line, unfoldable=unfoldable)
         return final_vals
@@ -211,6 +211,8 @@ class MrpStockReport(models.TransientModel):
         }
 
         context = dict(self.env.context)
+        if not config['test_enable']:
+            context['commit_assetsbundle'] = True
         if context.get('active_id') and context.get('active_model'):
             rcontext['reference'] = self.env[context.get('active_model')].browse(int(context.get('active_id'))).display_name
 
@@ -229,13 +231,17 @@ class MrpStockReport(models.TransientModel):
             specific_paperformat_args={'data-report-margin-top': 17, 'data-report-header-spacing': 12}
         )
 
-    def _get_main_lines(self):
+    def _get_html(self):
+        result = {}
+        rcontext = {}
         context = dict(self.env.context)
-        return self.with_context(context).get_lines()
+        rcontext['lines'] = self.with_context(context).get_lines()
+        result['html'] = self.env['ir.qweb']._render('stock.report_stock_inventory', rcontext)
+        return result
 
     @api.model
-    def get_main_lines(self, given_context=None):
+    def get_html(self, given_context=None):
         res = self.search([('create_uid', '=', self.env.uid)], limit=1)
         if not res:
-            return self.create({}).with_context(given_context)._get_main_lines()
-        return res.with_context(given_context)._get_main_lines()
+            return self.create({}).with_context(given_context)._get_html()
+        return res.with_context(given_context)._get_html()

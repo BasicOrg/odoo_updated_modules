@@ -25,8 +25,7 @@ class SocialAccountFacebook(models.Model):
         super(SocialAccountFacebook, (self - facebook_accounts))._compute_stats_link()
 
         for account in facebook_accounts:
-            account.stats_link = "https://www.facebook.com/%s/insights" % account.facebook_account_id \
-                if account.facebook_account_id else False
+            account.stats_link = "https://www.facebook.com/%s/insights" % account.facebook_account_id
 
     def _compute_statistics(self):
         """ This method computes this Facebook Page's statistics and trends.
@@ -42,12 +41,12 @@ class SocialAccountFacebook(models.Model):
         facebook_accounts = self._filter_by_media_types(['facebook'])
         super(SocialAccountFacebook, (self - facebook_accounts))._compute_statistics()
 
-        for account in facebook_accounts.filtered('facebook_account_id'):
-            insights_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/insights" % account.facebook_account_id)
+        for account in facebook_accounts:
+            insights_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/insights" % account.facebook_account_id)
             statistics_30d = account._compute_statistics_facebook(insights_endpoint_url)
             statistics_360d = account._compute_statistics_facebook_360d(insights_endpoint_url)
 
-            page_global_stats = requests.get(url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, account.facebook_account_id),
+            page_global_stats = requests.get(url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s" % account.facebook_account_id),
                 params={
                     'fields': 'fan_count',
                     'access_token': account.facebook_access_token
@@ -84,7 +83,7 @@ class SocialAccountFacebook(models.Model):
         return total_statistics
 
     def _compute_statistics_facebook(self, endpoint_url, date_preset='last_30d', since=None, until=None):
-        """ Check https://developers.facebook.com/docs/graph-api/reference/v17.0/insights for more information
+        """ Check https://developers.facebook.com/docs/graph-api/reference/v10.0/insights for more information
         about the endpoint used.
         e.g of data structure returned by the endpoint:
         [{

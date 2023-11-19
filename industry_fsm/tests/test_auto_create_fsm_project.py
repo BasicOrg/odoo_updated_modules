@@ -53,24 +53,3 @@ class TestAutoCreateFsmProject(TransactionCase):
         fsm_project = next(project for project in fsm_projects if project.id == fsm_project.id and project.company_id.id == first_company.id)
         self.assertEqual("{} - {}".format(fsm_project_name, first_company.name), fsm_project.display_name)
         self.assertEqual("{} - {}".format(fsm_project_name, second_company.name), second_fsm_project.display_name)
-
-    def test_multi_create_fsm(self):
-        second_company = self.env['res.company'].create({'name': 'New Company'})
-        default_project, default_project_with_company, fsm_project_company_2, fsm_project_main_company = self.env['project.project'].create([{
-            'name': 'Basic project',
-        }, {
-            'name': 'Basic project company 2',
-            'company_id': second_company.id,
-        }, {
-            'name': 'FSM project company 2',
-            'company_id': second_company.id,
-            'is_fsm': True,
-        }, {
-            'name': 'FSM project main company ',
-            'company_id': self.env.company.id,
-            'is_fsm': True,
-        }])
-        self.assertFalse(default_project.company_id, "No company should have been set for the default project.")
-        self.assertEqual(second_company, default_project_with_company.company_id, "The company given in the vals_list should be the company of the project.")
-        self.assertEqual(second_company, fsm_project_company_2.company_id, "The company given in the vals_list should be the company of the project.")
-        self.assertEqual(self.env.company, fsm_project_main_company.company_id, "The company given in the vals_list should be the company of the project.")

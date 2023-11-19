@@ -11,11 +11,10 @@ import {
     triggerEvent,
 } from "@web/../tests/helpers/utils";
 import { getBasicServerData } from "@spreadsheet/../tests/utils/data";
-import { prepareWebClientForSpreadsheet } from "@spreadsheet_edition/../tests/utils/webclient_helpers";
+import { prepareWebClientForSpreadsheet } from "../utils/webclient_helpers";
 import { notificationService } from "@web/core/notifications/notification_service";
 import { registry } from "@web/core/registry";
 import { actionService } from "@web/webclient/actions/action_service";
-import { mockActionService } from "@documents_spreadsheet/../tests/spreadsheet_test_utils";
 
 const serviceRegistry = registry.category("services");
 
@@ -24,7 +23,7 @@ serverData.models["documents.document"].records = [
     {
         id: 1,
         name: "My spreadsheet",
-        spreadsheet_data: "{}",
+        raw: "{}",
         folder_id: 1,
         handler: "spreadsheet",
         is_favorited: false,
@@ -32,7 +31,7 @@ serverData.models["documents.document"].records = [
     {
         id: 2,
         name: "Untitled spreadsheet",
-        spreadsheet_data: "{}",
+        raw: "{}",
         folder_id: 1,
         handler: "spreadsheet",
         is_favorited: false,
@@ -40,7 +39,7 @@ serverData.models["documents.document"].records = [
     {
         id: 3,
         name: "My image",
-        spreadsheet_data: "{}",
+        raw: "{}",
         folder_id: 1,
         handler: "image",
         is_favorited: false,
@@ -94,10 +93,7 @@ function beforeEach() {
 QUnit.module("documents_spreadsheet > Spreadsheet Selector Dialog", { beforeEach }, () => {
     QUnit.test("Display only spreadsheet and a blank spreadsheet", async (assert) => {
         const { target } = await mountSpreadsheetSelectorDialog();
-        assert.strictEqual(
-            target.querySelectorAll(".o-sp-dialog-item:not(.o-sp-dialog-ghost-item)").length,
-            3
-        );
+        assert.strictEqual(target.querySelectorAll(".o-sp-dialog-item").length, 3);
     });
 
     QUnit.test("Threshold is not displayed with pivot type", async (assert) => {
@@ -252,7 +248,7 @@ QUnit.module("documents_spreadsheet > Spreadsheet Selector Dialog", { beforeEach
                 id: i,
                 handler: "spreadsheet",
                 name: `Spreadsheet_${i}`,
-                spreadsheet_data: "{}",
+                raw: "{}",
             });
         }
         const { target } = await mountSpreadsheetSelectorDialog({
@@ -278,34 +274,39 @@ QUnit.module("documents_spreadsheet > Spreadsheet Selector Dialog", { beforeEach
     });
 
     QUnit.test("Can select the empty spreadsheet", async (assert) => {
-        const { target, env } = await mountSpreadsheetSelectorDialog({
-            mockRPC: async function (route, args) {
-                if (
-                    args.model === "documents.document" &&
-                    args.method === "action_open_new_spreadsheet"
-                ) {
-                    assert.step("action_open_new_spreadsheet");
-                    return {
-                        type: "ir.actions.client",
-                        tag: "action_open_spreadsheet",
-                        params: {
-                            spreadsheet_id: 789,
-                        },
-                    };
-                }
+        assert.expect(1);
+        const fakeActionService = {
+            name: "action",
+            start() {
+                return {
+                    doAction(action) {
+                        assert.deepEqual(action.params.spreadsheet_id, false);
+                    },
+                };
             },
-        });
-        mockActionService(env, (action) => assert.deepEqual(action.params.spreadsheet_id, 789));
+        };
+        serviceRegistry.add("action", fakeActionService, { force: true });
+        const { target } = await mountSpreadsheetSelectorDialog();
         const blank = target.querySelector(".o-sp-dialog-item-blank img");
         await triggerEvent(blank, null, "focus");
         await click(document.querySelector(".modal-content > .modal-footer > .btn-primary"));
-        assert.verifySteps(["action_open_new_spreadsheet"]);
     });
 
     QUnit.test("Can select an existing spreadsheet", async (assert) => {
         assert.expect(1);
-        const { target, env } = await mountSpreadsheetSelectorDialog();
-        mockActionService(env, (action) => assert.deepEqual(action.params.spreadsheet_id, 1));
+
+        const fakeActionService = {
+            name: "action",
+            start() {
+                return {
+                    doAction(action) {
+                        assert.deepEqual(action.params.spreadsheet_id, 1);
+                    },
+                };
+            },
+        };
+        serviceRegistry.add("action", fakeActionService, { force: true });
+        const { target } = await mountSpreadsheetSelectorDialog();
         const blank = target.querySelector('.o-sp-dialog-item div[data-id="1"]');
         await triggerEvent(blank, null, "focus");
         await click(document.querySelector(".modal-content > .modal-footer > .btn-primary"));
@@ -321,28 +322,5 @@ QUnit.module("documents_spreadsheet > Spreadsheet Selector Dialog", { beforeEach
         const sp = target.querySelector('.o-sp-dialog-item div[data-id="1"]');
         await triggerEvent(sp, null, "focus");
         assert.hasClass(sp, "selected", "Selected spreadsheet should be identifiable");
-    });
-
-    QUnit.test("Can double click an existing spreadsheet", async (assert) => {
-        const { target, env } = await mountSpreadsheetSelectorDialog();
-        mockActionService(env, (action) => {
-            assert.step(action.tag);
-            assert.deepEqual(action.params.spreadsheet_id, 1);
-        });
-        const spreadsheetItem = target.querySelector('.o-sp-dialog-item div[data-id="1"]');
-        // In practice, the double click will also focus the item
-        await triggerEvent(spreadsheetItem, null, "focus");
-        await triggerEvent(spreadsheetItem, null, "dblclick");
-        assert.verifySteps(["action_open_spreadsheet"]);
-    });
-
-    QUnit.test("Can double click the empty spreadsheet", async (assert) => {
-        const { target, env } = await mountSpreadsheetSelectorDialog();
-        mockActionService(env, (action) => assert.step(action.tag));
-        const blank = target.querySelector(".o-sp-dialog-item-blank img");
-        // In practice, the double click will also focus the item
-        await triggerEvent(blank, null, "focus");
-        await triggerEvent(blank, null, "dblclick");
-        assert.verifySteps(["action_open_spreadsheet"]);
     });
 });

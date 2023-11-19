@@ -7,6 +7,7 @@
     'summary': 'Spreadsheet Dashboard edition',
     'description': 'Spreadsheet Dashboard edition',
     'depends': ['spreadsheet_dashboard', 'spreadsheet_edition'],
+    'demo': [],
     'installable': True,
     'auto_install': True,
     'license': 'OEEL-1',
@@ -21,9 +22,6 @@
             'spreadsheet_dashboard_edition/static/src/assets/**/*.js',
             'spreadsheet_dashboard_edition/static/src/**/*.scss',
             'spreadsheet_dashboard_edition/static/src/**/*.xml',
-        ],
-        'spreadsheet.assets_print': [
-            'spreadsheet_dashboard_edition/static/src/print_assets/**/*',
         ],
         'web.qunit_suite_tests': [
             'spreadsheet_dashboard_edition/static/tests/**/*',

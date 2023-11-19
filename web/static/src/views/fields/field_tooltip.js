@@ -3,7 +3,7 @@
 export function getTooltipInfo(params) {
     let widgetDescription = undefined;
     if (params.fieldInfo.widget) {
-        widgetDescription = params.fieldInfo.field.displayName;
+        widgetDescription = params.fieldInfo.FieldComponent.displayName;
     }
 
     const info = {
@@ -11,17 +11,15 @@ export function getTooltipInfo(params) {
         resModel: params.resModel,
         debug: Boolean(odoo.debug),
         field: {
+            label: params.field.string,
             name: params.field.name,
-            help: params.fieldInfo.help ?? params.field.help,
+            help: params.fieldInfo.help !== null ? params.fieldInfo.help : params.field.help,
             type: params.field.type,
             widget: params.fieldInfo.widget,
             widgetDescription,
             context: params.fieldInfo.context,
-            domain: params.field.domain,
-            invisible: params.fieldInfo.invisible,
-            column_invisible: params.fieldInfo.column_invisible,
-            readonly: params.fieldInfo.readonly,
-            required: params.fieldInfo.required,
+            domain: params.fieldInfo.domain,
+            modifiers: JSON.stringify(params.fieldInfo.modifiers),
             changeDefault: params.field.change_default,
             relation: params.field.relation,
             selection: params.field.selection,

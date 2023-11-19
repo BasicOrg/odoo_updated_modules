@@ -6,7 +6,7 @@
     'version': '1.0',
     'category': 'Manufacturing/Quality',
     'description': """
-Bridge module between MRP subcontracting and Quality
+        Bridge module between MRP subcontracting and Quality
     """,
     'depends': [
         'mrp_subcontracting', 'quality_control'

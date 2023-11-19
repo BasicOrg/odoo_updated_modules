@@ -276,7 +276,7 @@ class Import(models.TransientModel):
             return importable_fields
 
         model_fields = Model.fields_get()
-        blacklist = models.MAGIC_COLUMNS
+        blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
         for name, field in model_fields.items():
             if name in blacklist:
                 continue
@@ -285,7 +285,13 @@ class Import(models.TransientModel):
             if field.get('deprecated', False) is not False:
                 continue
             if field.get('readonly'):
-                continue
+                states = field.get('states')
+                if not states:
+                    continue
+                # states = {state: [(attr, value), (attr2, value2)], state2:...}
+                if not any(attr == 'readonly' and value is False
+                           for attr, value in itertools.chain.from_iterable(states.values())):
+                    continue
             field_value = {
                 'id': name,
                 'name': name,
@@ -348,8 +354,6 @@ class Import(models.TransientModel):
                 return getattr(self, '_read_' + file_extension)(options)
             except ValueError as e:
                 raise e
-            except ImportValidationError as e:
-                raise e
             except Exception:
                 _logger.warning("Failed to read file '%s' (transient id %d) using guessed mimetype %s", self.file_name or '<unknown>', self.id, mimetype)
 
@@ -359,8 +363,6 @@ class Import(models.TransientModel):
             try:
                 return getattr(self, '_read_' + file_extension)(options)
             except ValueError as e:
-                raise e
-            except ImportValidationError as e:
                 raise e
             except Exception:
                 _logger.warning("Failed to read file '%s' (transient id %d) using user-provided mimetype %s", self.file_name or '<unknown>', self.id, self.file_type)
@@ -488,9 +490,6 @@ class Import(models.TransientModel):
                 else: # nobreak
                     separator = options['separator'] = candidate
                     break
-
-        if not len(options['quoting']) == 1:
-            raise ImportValidationError(_("Error while importing records: Text Delimiter should be a single character."))
 
         csv_iterator = pycompat.csv_reader(
             io.BytesIO(csv_data),
@@ -1047,10 +1046,6 @@ class Import(models.TransientModel):
         import_fields = [f for f in fields if f]
 
         _file_length, rows_to_import = self._read_file(options)
-        if len(rows_to_import[0]) != len(fields):
-            raise ImportValidationError(
-                _("Error while importing records: all rows should be of the same size, but the title row has %d entries while the first row has %d. You may need to change the separator character.", len(fields), len(rows_to_import[0]))
-            )
 
         if options.get('has_headers'):
             rows_to_import = rows_to_import[1:]
@@ -1189,7 +1184,7 @@ class Import(models.TransientModel):
                         else:
                             try:
                                 base64.b64decode(line[index], validate=True)
-                            except ValueError:
+                            except binascii.Error:
                                 raise ImportValidationError(
                                     _("Found invalid image data, images should be imported as either URLs or base64-encoded data."),
                                     field=name, field_type=field['type']
@@ -1200,8 +1195,8 @@ class Import(models.TransientModel):
     def _parse_date_from_data(self, data, index, name, field_type, options):
         dt = datetime.datetime
         fmt = fields.Date.to_string if field_type == 'date' else fields.Datetime.to_string
-        d_fmt = options.get('date_format') or DEFAULT_SERVER_DATE_FORMAT
-        dt_fmt = options.get('datetime_format') or DEFAULT_SERVER_DATETIME_FORMAT
+        d_fmt = options.get('date_format')
+        dt_fmt = options.get('datetime_format')
         for num, line in enumerate(data):
             if not line[index]:
                 continue
@@ -1270,13 +1265,14 @@ class Import(models.TransientModel):
 
             return base64.b64encode(content)
         except Exception as e:
-            _logger.warning(e, exc_info=True)
-            raise ValueError(_("Could not retrieve URL: %(url)s [%(field_name)s: L%(line_number)d]: %(error)s") % {
-                'url': url,
-                'field_name': field,
-                'line_number': line_number + 1,
-                'error': e
-            })
+            _logger.exception(e)
+            raise ImportValidationError(
+                _(
+                    "Could not retrieve URL: %(url)s [%(field_name)s: L%(line_number)d]: %(error)s",
+                    url=url, field_name=field, line_number=line_number + 1, error=e
+                ),
+                field=field
+            )
 
     def execute_import(self, fields, columns, options, dryrun=False):
         """ Actual execution of the import
@@ -1343,9 +1339,7 @@ class Import(models.TransientModel):
             if dryrun:
                 self._cr.execute('ROLLBACK TO SAVEPOINT import')
                 # cancel all changes done to the registry/ormcache
-                # we need to clear the cache in case any created id was added to an ormcache and would be missing afterward
-                self.pool.clear_all_caches()
-                # don't propagate to other workers since it was rollbacked
+                self.pool.clear_caches()
                 self.pool.reset_changes()
             else:
                 self._cr.execute('RELEASE SAVEPOINT import')
@@ -1521,7 +1515,7 @@ class Import(models.TransientModel):
                     if fallback_values[field]['field_type'] == "boolean":
                         value = value if value.lower() in ('0', '1', 'true', 'false') else fallback_value
                     # Selection
-                    elif fallback_values[field]['field_type'] == "selection" and value.lower() not in fallback_values[field]["selection_values"]:
+                    elif value.lower() not in fallback_values[field]["selection_values"]:
                         value = fallback_value if fallback_value != 'skip' else None  # don't set any value if we skip
 
                     input_file_data[record_index][column_index] = value

@@ -19,26 +19,21 @@ Keeps track of depreciations, and creates corresponding journal entries.
         'wizard/asset_modify_views.xml',
         'views/account_account_views.xml',
         'views/account_asset_views.xml',
+        'views/account_deferred_revenue.xml',
+        'views/account_deferred_expense.xml',
         'views/account_move_views.xml',
-        'data/assets_report.xml',
+        'data/asset_report.xml',
         'data/account_report_actions.xml',
         'data/menuitems.xml',
     ],
     'demo': [
-        'demo/account_asset_demo.xml',
+        'demo/account_deferred_revenue_demo.xml',
     ],
     'license': 'OEEL-1',
     'auto_install': True,
     'assets': {
-        'account_reports.assets_financial_report': [
-            'account_asset/static/src/scss/account_asset.scss',
-        ],
         'web.assets_backend': [
-            'account_asset/static/src/scss/account_asset.scss',
-            'account_asset/static/src/components/**/*'
-        ],
-        'web.assets_web_dark': [
-            'account_asset/static/src/scss/*.dark.scss',
+            'account_asset/static/src/**/*',
         ],
     }
 }

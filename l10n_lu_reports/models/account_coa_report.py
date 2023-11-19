@@ -110,7 +110,7 @@ class AccountChartOfAccountReport(models.AbstractModel):
             :return: a dictionary in which the values for the different fields (dict keys) are filled in
         """
         account_fields = {}
-        lines = self._get_lines(self.get_options(options))
+        lines = self._get_lines(self._get_options(options))
         # Read the debit and credit from all accounts and add the values to the corresponding fields.
         # Name hierarchy allows easy calculation of the totals.
         # eg the debit from account 106284 will be added to the fields: 106284, 10628, 1062, 106, 10

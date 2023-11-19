@@ -21,6 +21,7 @@ class MicrosoftOutlookMixin(models.AbstractModel):
     _description = 'Microsoft Outlook Mixin'
 
     _OUTLOOK_SCOPE = None
+    _OUTLOOK_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/'
 
     is_microsoft_outlook_configured = fields.Boolean('Is Outlook Credential Configured',
         compute='_compute_is_microsoft_outlook_configured')
@@ -44,13 +45,14 @@ class MicrosoftOutlookMixin(models.AbstractModel):
         Config = self.env['ir.config_parameter'].sudo()
         base_url = self.get_base_url()
         microsoft_outlook_client_id = Config.get_param('microsoft_outlook_client_id')
+        OUTLOOK_ENDPOINT = Config.get_param('microsoft.outlook.endpoint', self._OUTLOOK_ENDPOINT)
 
         for record in self:
             if not record.id or not record.is_microsoft_outlook_configured:
                 record.microsoft_outlook_uri = False
                 continue
 
-            record.microsoft_outlook_uri = url_join(self._get_microsoft_endpoint(), 'authorize?%s' % url_encode({
+            record.microsoft_outlook_uri = url_join(OUTLOOK_ENDPOINT, 'authorize?%s' % url_encode({
                 'client_id': microsoft_outlook_client_id,
                 'response_type': 'code',
                 'redirect_uri': url_join(base_url, '/microsoft_outlook/confirm'),
@@ -94,7 +96,7 @@ class MicrosoftOutlookMixin(models.AbstractModel):
         return (
             response['refresh_token'],
             response['access_token'],
-            int(time.time()) + int(response['expires_in']),
+            int(time.time()) + response['expires_in'],
         )
 
     def _fetch_outlook_access_token(self, refresh_token):
@@ -105,9 +107,8 @@ class MicrosoftOutlookMixin(models.AbstractModel):
         """
         response = self._fetch_outlook_token('refresh_token', refresh_token=refresh_token)
         return (
-            response['refresh_token'],
             response['access_token'],
-            int(time.time()) + int(response['expires_in']),
+            int(time.time()) + response['expires_in'],
         )
 
     def _fetch_outlook_token(self, grant_type, **values):
@@ -122,9 +123,10 @@ class MicrosoftOutlookMixin(models.AbstractModel):
         base_url = self.get_base_url()
         microsoft_outlook_client_id = Config.get_param('microsoft_outlook_client_id')
         microsoft_outlook_client_secret = Config.get_param('microsoft_outlook_client_secret')
+        OUTLOOK_ENDPOINT = Config.get_param('microsoft.outlook.endpoint', self._OUTLOOK_ENDPOINT)
 
         response = requests.post(
-            url_join(self._get_microsoft_endpoint(), 'token'),
+            url_join(OUTLOOK_ENDPOINT, 'token'),
             data={
                 'client_id': microsoft_outlook_client_id,
                 'client_secret': microsoft_outlook_client_secret,
@@ -159,7 +161,6 @@ class MicrosoftOutlookMixin(models.AbstractModel):
             if not self.microsoft_outlook_refresh_token:
                 raise UserError(_('Please connect with your Outlook account before using it.'))
             (
-                self.microsoft_outlook_refresh_token,
                 self.microsoft_outlook_access_token,
                 self.microsoft_outlook_access_token_expiration,
             ) = self._fetch_outlook_access_token(self.microsoft_outlook_refresh_token)
@@ -184,11 +185,4 @@ class MicrosoftOutlookMixin(models.AbstractModel):
             env=self.env(su=True),
             scope='microsoft_outlook_oauth',
             message=(self._name, self.id),
-        )
-
-    @api.model
-    def _get_microsoft_endpoint(self):
-        return self.env["ir.config_parameter"].sudo().get_param(
-            'microsoft_outlook.endpoint',
-            'https://login.microsoftonline.com/common/oauth2/v2.0/',
         )

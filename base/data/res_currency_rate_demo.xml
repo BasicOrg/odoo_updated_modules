@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- The Following currency rates are considered as on 1st Jan,2010 against EUR. -->
         <record forcecreate="0" id="rateUSD" model="res.currency.rate">
-            <field name="rate">1.0</field>
+            <field name="rate">1.2834</field>
             <field name="currency_id" ref="USD"/>
             <field name="name">2010-01-01</field>
+        </record>
+
+        <record id="rateUSDbis" model="res.currency.rate">
+            <field name="rate">1.5289</field>
+            <field name="currency_id" ref="USD"/>
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
         </record>
 
         <record forcecreate="0" id="rateVEF" model="res.currency.rate">
@@ -274,12 +281,6 @@
             <field name="currency_id" ref="UYU" />
             <field name="name">2010-01-01</field>
             <field name="rate">28.36</field>
-        </record>
-
-        <record forcecreate="0" id="rateUYI" model="res.currency.rate">
-            <field name="currency_id" ref="UYI"/>
-            <field name="name">2023-09-13</field>
-            <field name="rate">5.7778</field>
         </record>
 
         <record forcecreate="0" id="rateAFN" model="res.currency.rate">
@@ -747,7 +748,7 @@
         <record forcecreate="0" id="rateEUR" model="res.currency.rate">
             <field name="currency_id" ref="EUR" />
             <field name="name">2010-01-01</field>
-            <field name="rate">1.2834</field>
+            <field name="rate">1.0</field>
         </record>
 
         <record forcecreate="0" id="rateVUV" model="res.currency.rate">
@@ -874,12 +875,6 @@
             <field name="currency_id" ref="SLL" />
             <field name="name">2010-01-01</field>
             <field name="rate">5320.43478</field>
-        </record>
-
-        <record forcecreate="0" id="rateSLE" model="res.currency.rate">
-            <field name="currency_id" ref="SLE" />
-            <field name="name">2023-06-08</field>
-            <field name="rate">22.5847</field>
         </record>
 
         <record forcecreate="0" id="rateSCR" model="res.currency.rate">

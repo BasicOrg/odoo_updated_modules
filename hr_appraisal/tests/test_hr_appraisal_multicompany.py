@@ -46,7 +46,6 @@ class TestHrAppraisal(TransactionCase):
         self.assertEqual(appraisal_count([('employee_id', '=', self.hr_employee.id)]), 0)
         self.assertEqual(appraisal_count([('employee_id', '=', self.hr_employee2.id)]), 0)
 
-        self.hr_employee2.next_appraisal_date = date.today()
         self.env['res.company']._run_employee_appraisal_plans()
         self.assertEqual(appraisal_count([('employee_id', '=', self.hr_employee.id)]), 0)
         self.assertEqual(appraisal_count([('employee_id', '=', self.hr_employee2.id)]), 1)

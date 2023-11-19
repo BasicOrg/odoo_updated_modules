@@ -3,16 +3,16 @@
 # 	* industry_fsm_sale
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,14 +20,20 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#: code:addons/industry_fsm_sale/models/project_task.py:0
+#: code:addons/industry_fsm_sale/models/project_task.py:0
+#, python-format
+msgid "%s - %s"
+msgstr ""
+
+#. module: industry_fsm_sale
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "<b>Invoice your time and material</b> to your customer."
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid ""
@@ -43,12 +49,20 @@ msgid ""
 msgstr ""
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit_sale_timesheet
+msgid ""
+"<span class=\"fa fa-exclamation-triangle text-warning oe_edit_only\" "
+"title=\"By saving this change, the customer phone number will also be "
+"updated.\" attrs=\"{'invisible': ['|', ('partner_id', '=', False), "
+"('is_task_phone_update', '=', False)]}\"/>"
+msgstr ""
+
+#. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
 msgid "<span>Disc.%</span>"
 msgstr "<span>折扣率%</span>"
 
 #. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
 msgid "<span>Products</span>"
 msgstr ""
@@ -57,11 +71,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
 msgid "<strong class=\"mr16\">Subtotal</strong>"
 msgstr "<strong class=\"mr16\">小計</strong>"
-
-#. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
-msgid "<strong>Amount Due: </strong>"
-msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
@@ -79,7 +88,6 @@ msgid "<strong>Untaxed amount</strong>"
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
@@ -87,14 +95,14 @@ msgid "A customer should be set on the task to generate a worksheet."
 msgstr ""
 
 #. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.industry_fsm_sale_product_catalog_inherit_search_view
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
 msgid "Added Products"
 msgstr ""
 
 #. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
 msgid "Amount"
-msgstr "金額"
+msgstr "總額"
 
 #. module: industry_fsm_sale
 #: model:ir.model.constraint,message:industry_fsm_sale.constraint_project_project_fsm_imply_task_rate
@@ -102,7 +110,6 @@ msgid "An FSM project must be billed at task rate or employee rate."
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/wizard/sale_make_invoice_advance.py:0
 #, python-format
 msgid "An invoice has been created: %s"
@@ -119,7 +126,11 @@ msgid "Billable"
 msgstr "可計費"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: model:project.task.type,legend_blocked:industry_fsm_sale.field_service_project_stage_0
+msgid "Blocked"
+msgstr "已封鎖"
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid ""
@@ -128,14 +139,13 @@ msgid ""
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid "Choose Products"
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid ""
@@ -144,12 +154,12 @@ msgid ""
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid ""
-"Click on a product to add it to your <b>list of materials</b>. <i>Tip: for "
-"large quantities, click on the number to edit it directly.</i>"
+"Click on your product to add it to your <b>list of materials</b>. <i>Tip: "
+"for large quantities, click on the number to edit it directly.</i>"
 msgstr ""
 
 #. module: industry_fsm_sale
@@ -158,7 +168,7 @@ msgid "Config Settings"
 msgstr "配置設定"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Confirm the creation of your <b>invoice</b>."
@@ -171,6 +181,11 @@ msgid "Create Invoice"
 msgstr "建立應收憑單"
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+msgid "Create new quotation"
+msgstr "建立新報價單"
+
+#. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_view_form_inherit
 msgid "Create new quotations directly from tasks"
 msgstr ""
@@ -178,12 +193,7 @@ msgstr ""
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__currency_id
 msgid "Currency"
-msgstr "貨幣"
-
-#. module: industry_fsm_sale
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_view_form_inherit
-msgid "Default Service"
-msgstr "預設服務"
+msgstr "幣別"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_sale_order_line__delivered_price_subtotal
@@ -201,6 +211,11 @@ msgid "Delivered Total Tax"
 msgstr ""
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+msgid "Description"
+msgstr "說明"
+
+#. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__display_create_invoice_primary
 msgid "Display Create Invoice Primary"
 msgstr ""
@@ -211,11 +226,14 @@ msgid "Display Create Invoice Secondary"
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/sale_order.py:0
-#, python-format
-msgid "Extra Quotation Created: %s"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Dropdown menu"
+msgstr "下拉選單"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Edit"
+msgstr "編輯"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_project__allow_quotations
@@ -229,9 +247,15 @@ msgid "FSM Tasks Analysis"
 msgstr ""
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Favorites"
+msgstr "最愛"
+
+#. module: industry_fsm_sale
+#: model:product.product,name:industry_fsm_sale.field_service_product
 #: model:product.template,name:industry_fsm_sale.field_service_product_product_template
 msgid "Field Service"
-msgstr "外勤服務"
+msgstr "現場服務"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_product_product__fsm_partner_price_currency_id
@@ -244,21 +268,22 @@ msgid "Fully Invoiced"
 msgstr "已開具全額應收憑單"
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/product_product.py:0
-#, python-format
-msgid "Invalid operator: %s"
-msgstr "運算符無效： %s"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Group By"
+msgstr "分組依據"
 
 #. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/product_product.py:0
-#, python-format
-msgid "Invalid value: %s"
-msgstr "該值無效： %s"
+#: model:product.product,uom_name:industry_fsm_sale.field_service_product
+#: model:product.template,uom_name:industry_fsm_sale.field_service_product_product_template
+msgid "Hours"
+msgstr "小時"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: model:project.task.type,legend_normal:industry_fsm_sale.field_service_project_stage_0
+msgid "In Progress"
+msgstr "進行中"
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #, python-format
 msgid "Invoice"
@@ -273,7 +298,7 @@ msgstr "憑單數"
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__invoice_status
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_report_project_task_user_fsm__invoice_status
 msgid "Invoice Status"
-msgstr "發票狀態"
+msgstr "應收憑單狀態"
 
 #. module: industry_fsm_sale
 #: model_terms:ir.actions.act_window,help:industry_fsm_sale.project_task_action_to_invoice_fsm
@@ -282,23 +307,27 @@ msgid ""
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/models/project_task.py:0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_form_quotation
 #, python-format
 msgid "Invoices"
 msgstr "應收憑單"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__is_task_phone_update
+msgid "Is Task Phone Update"
+msgstr ""
+
+#. module: industry_fsm_sale
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Let's <b>track the material</b> you use for your task."
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Let's create a new <b>product</b>."
@@ -355,25 +384,47 @@ msgid "Portal Quotation Count"
 msgstr ""
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
+msgid "Price:"
+msgstr "價格:"
+
+#. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__pricelist_id
 msgid "Pricelist"
 msgstr "價格表"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_product_template
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.industry_fsm_sale_product_catalog_kanban_view
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_product_product_kanban_material
 msgid "Product"
 msgstr "商品"
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Category"
+msgstr "產品分類"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Template"
+msgstr "產品模板"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Product Type"
+msgstr "產品類型"
+
+#. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_product_product
 msgid "Product Variant"
-msgstr "產品款式"
+msgstr "產品變體"
 
 #. module: industry_fsm_sale
 #: model:ir.actions.act_window,name:industry_fsm_sale.product_action_fsm
 #: model:ir.ui.menu,name:industry_fsm_sale.fsm_menu_settings_product
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
 msgid "Products"
 msgstr "產品"
@@ -402,7 +453,6 @@ msgid "Quantity"
 msgstr "數量"
 
 #. module: industry_fsm_sale
-#. odoo-python
 #: code:addons/industry_fsm_sale/controllers/portal.py:0
 #, python-format
 msgid "Quotation"
@@ -414,18 +464,33 @@ msgid "Quotation Count"
 msgstr "報價計數"
 
 #. module: industry_fsm_sale
-#. odoo-python
+#: code:addons/industry_fsm_sale/models/sale_order.py:0
+#, python-format
+msgid "Quotation created: %s"
+msgstr ""
+
+#. module: industry_fsm_sale
 #: code:addons/industry_fsm_sale/controllers/portal.py:0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_sharing_project_task_inherit_view_form
-#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_task_form2_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_form_quotation
 #, python-format
 msgid "Quotations"
 msgstr "報價單"
 
 #. module: industry_fsm_sale
+#: model:project.task.type,legend_done:industry_fsm_sale.field_service_project_stage_0
+msgid "Ready"
+msgstr "準備好"
+
+#. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.view_order_form_inherit_sale_project
 msgid "Related Task"
 msgstr ""
+
+#. module: industry_fsm_sale
+#: model:ir.model.fields,field_description:industry_fsm_sale.field_report_project_task_user_fsm__remaining_hours_so
+msgid "Remaining Hours on SO"
+msgstr "SO 剩餘時間"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_sale_advance_payment_inv
@@ -441,7 +506,7 @@ msgstr "銷售訂單"
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_project__sale_line_id
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__sale_line_id
 msgid "Sales Order Item"
-msgstr "銷售訂單項目"
+msgstr "銷售訂單專案"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,help:industry_fsm_sale.field_project_task__sale_line_id
@@ -450,9 +515,6 @@ msgid ""
 "By default the sales order item set on the project will be selected. In the absence of one, the last prepaid sales order item that has time remaining will be used.\n"
 "Remove the sales order item in order to make this task non billable. You can also change or remove the sales order item of each timesheet entry individually."
 msgstr ""
-"將會加入此任務花費時間、以向客戶開立發票的銷售訂單項目。\n"
-"預設情況下，會選擇專案設定的銷售訂單項目。如果沒有，將使用尚有剩餘時間的最後一個預付銷售訂單項目。\n"
-"要將此任務設為不計費，可刪除此銷售訂單項目。你也可以單獨修改或刪除工時表每個記項的銷售訂單項目。"
 
 #. module: industry_fsm_sale
 #: model:ir.model,name:industry_fsm_sale.model_sale_order_line
@@ -465,12 +527,30 @@ msgid ""
 "Sales order item that will be selected by default on the tasks and timesheets of this project, except if the employee set on the timesheets is explicitely linked to another sales order item on the project.\n"
 "It can be modified on each task and timesheet entry individually if necessary."
 msgstr ""
-"此專案的任務及工時表預設選擇的銷售訂單項目，除非工時表設定的員工明確連結至專案的另一個銷售訂單項目。\n"
-"如有必要，可在任務或工時表的每個記項上單獨修改。"
+
+#. module: industry_fsm_sale
+#. openerp-web
+#: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
+#, python-format
+msgid "Save your <b>product</b>."
+msgstr ""
+
+#. module: industry_fsm_sale
+#: model:ir.model.fields,help:industry_fsm_sale.field_product_product__project_id
+#: model:ir.model.fields,help:industry_fsm_sale.field_product_template__project_id
+msgid ""
+"Select a billable project on which tasks can be created. This setting must "
+"be set for each company."
+msgstr "選擇可以在其上建立任務的可計費專案。 必須為每個公司設置此設置。"
 
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_sale_line_employee_map__timesheet_product_id
 msgid "Service"
+msgstr "服務"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.product_search_form_view_inherit_fsm_sale
+msgid "Services"
 msgstr "服務"
 
 #. module: industry_fsm_sale
@@ -490,6 +570,12 @@ msgid "Task from which this quotation have been created"
 msgstr ""
 
 #. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_search_fsm_inherit_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.report_project_task_user_fsm_view_search_inherit_sale
+msgid "Tasks in Overtime"
+msgstr "逾時任務"
+
+#. module: industry_fsm_sale
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
 msgid "Taxes"
 msgstr "稅金"
@@ -500,17 +586,10 @@ msgid "The material can be allowed only when the task can be billed."
 msgstr ""
 
 #. module: industry_fsm_sale
-#: model:ir.model.constraint,message:industry_fsm_sale.constraint_project_project_timesheet_product_required_if_billable_and_time
+#: model:ir.model.constraint,message:industry_fsm_sale.constraint_project_project_timesheet_product_required_if_billable_and_timesheets_and_fsm_projects
 msgid ""
 "The timesheet product is required when the fsm project can be billed and "
 "timesheets are allowed."
-msgstr ""
-
-#. module: industry_fsm_sale
-#. odoo-python
-#: code:addons/industry_fsm_sale/models/sale_order.py:0
-#, python-format
-msgid "This Sales Order has been created from Task: %s"
 msgstr ""
 
 #. module: industry_fsm_sale
@@ -522,9 +601,16 @@ msgstr ""
 #: model:ir.actions.act_window,name:industry_fsm_sale.project_task_action_to_invoice_fsm
 #: model:ir.model.fields.selection,name:industry_fsm_sale.selection__report_project_task_user_fsm__invoice_status__to_invoice
 #: model:ir.ui.menu,name:industry_fsm_sale.fsm_menu_all_tasks_invoice
+#: model:project.task.type,name:industry_fsm_sale.field_service_project_stage_0
 #: model_terms:ir.ui.view,arch_db:industry_fsm_sale.project_task_view_search_fsm_inherit_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.report_project_task_user_fsm_view_search_inherit_sale
 msgid "To Invoice"
-msgstr "待開立發票"
+msgstr "待開立應收憑單"
+
+#. module: industry_fsm_sale
+#: model_terms:ir.ui.view,arch_db:industry_fsm_sale.worksheet_time_and_material
+msgid "Total Price"
+msgstr "總價"
 
 #. module: industry_fsm_sale
 #: model_terms:ir.actions.act_window,help:industry_fsm_sale.product_action_fsm
@@ -548,21 +634,21 @@ msgid "Upselling Opportunity"
 msgstr "超售商機"
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Use the breadcrumbs to navigate to your <b>list of products</b>."
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Use the breadcrumbs to return to your <b>task</b>."
 msgstr ""
 
 #. module: industry_fsm_sale
-#. odoo-javascript
+#. openerp-web
 #: code:addons/industry_fsm_sale/static/src/js/tours/industry_fsm_sale_tour.js:0
 #, python-format
 msgid "Wait for the invoice to show up"
@@ -571,4 +657,4 @@ msgstr ""
 #. module: industry_fsm_sale
 #: model:ir.model.fields,field_description:industry_fsm_sale.field_project_task__warning_message
 msgid "Warning Message"
-msgstr "警告訊息"
+msgstr ""

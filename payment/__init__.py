@@ -5,10 +5,14 @@ from . import models
 from . import utils
 from . import wizards
 
+from odoo import api, SUPERUSER_ID
 
-def setup_provider(env, code):
+
+def setup_provider(cr, registry, code):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     env['payment.provider']._setup_provider(code)
 
 
-def reset_payment_provider(env, code):
+def reset_payment_provider(cr, registry, code):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     env['payment.provider']._remove_provider(code)

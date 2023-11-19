@@ -1,7 +1,7 @@
 {
     "name": """Chile - E-invoicing""",
-    'countries': ['cl'],
-    'version': '1.1',
+    'icon': '/l10n_cl/static/description/icon.png',
+    'version': '1.0.',
     'category': 'Accounting/Localizations',
     'sequence': 12,
     'author':  'Blanco Martín & Asociados',
@@ -18,7 +18,7 @@ This code allows to generate the DTE document for Chilean invoicing.
  In order to see the barcode on the invoice, you need the pdf417gen library.
 
     """,
-    'website': 'http://www.bmya.cl',
+    'website': 'http://blancomartin.cl',
     'depends': [
         'l10n_cl',
         'account_edi',
@@ -61,9 +61,8 @@ This code allows to generate the DTE document for Chilean invoicing.
     ],
     'demo': [
         'demo/partner_demo.xml',
-        'demo/edi_demo.xml',
     ],
     'installable': True,
-    'auto_install': ['l10n_cl'],
+    'auto_install': ['l10n_cl', 'account_edi'],
     'license': 'OEEL-1',
 }

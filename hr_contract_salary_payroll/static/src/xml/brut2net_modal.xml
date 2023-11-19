@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <div t-name="hr_contract_salary_payroll.salary_package_brut_to_net_modal" class="px-3">
-        <t t-if="datas?.length === 0">
+        <t t-if="_.isEmpty(datas)">
             <h5>There is no defined payroll structure for your contract. Please contact a responsible for more information.</h5>
         </t>
-        <t t-foreach="datas" t-as="data" t-key="data_index">
+        <t t-foreach="datas" t-as="data">
             <div class="border-top">
                 <div class="row">
                     <label class="col-md-9 col-form-label" t-att-for="data[2]">
@@ -18,14 +18,8 @@
                     </label>
                     <div class="col-md-3">
                         <div class="input-group">
-                            <t t-if="data[4] == 'before'">
-                                <input class="form-control" type="text" t-att="{value: data[5], name: data[2]}" disabled="disabled"/>
-                                <div class="input-group-text"><t t-esc="data[1]"/></div>
-                            </t>
-                            <t t-if="data[4] == 'after'">
-                                <input class="form-control" type="text" t-att="{value: data[1], name:data[2]}" disabled="disabled"/>
-                                <div class="input-group-text"><t t-esc="data[5]"/></div>
-                            </t>
+                            <input class="form-control" type="text" t-att-value="data[1]" disabled="disabled" t-att-name="data[2]"/>
+                            <div class="input-group-text"> €</div>
                         </div>
                     </div>
                 </div>

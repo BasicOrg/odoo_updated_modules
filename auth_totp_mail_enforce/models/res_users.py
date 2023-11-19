@@ -49,12 +49,12 @@ class Users(models.Model):
         if user._mfa_type() != 'totp_mail':
             return super()._totp_check(code)
 
-        key = user._get_totp_mail_key()
+        key = self._get_totp_mail_key()
         match = TOTP(key).match(code, window=3600, timestep=3600)
         if match is None:
-            _logger.info("2FA check (mail): FAIL for %s %r", user, user.login)
+            _logger.info("2FA check (mail): FAIL for %s %r", self, self.login)
             raise AccessDenied(_("Verification failed, please double-check the 6-digit code"))
-        _logger.info("2FA check(mail): SUCCESS for %s %r", user, user.login)
+        _logger.info("2FA check(mail): SUCCESS for %s %r", self, self.login)
         self._totp_rate_limit_purge('code_check')
         self._totp_rate_limit_purge('send_email')
         return True
@@ -74,7 +74,7 @@ class Users(models.Model):
         code = hotp(key, counter)
         expiration = timedelta(seconds=3600)
         lang = babel_locale_parse(self.env.context.get('lang') or self.lang)
-        expiration = babel.dates.format_timedelta(expiration, locale=lang)
+        expiration = babel.dates.format_timedelta(expiration, lang)
 
         return str(code).zfill(6), expiration
 
@@ -88,17 +88,15 @@ class Users(models.Model):
         template = self.env.ref('auth_totp_mail_enforce.mail_template_totp_mail_code').sudo()
         context = {}
         if request:
+            geoip = request.geoip
             device = request.httprequest.user_agent.platform
             browser = request.httprequest.user_agent.browser
             context.update({
-                'location': None,
+                'location': f"{geoip['city']}, {geoip['country_name']}" if geoip else None,
                 'device': device and device.capitalize() or None,
                 'browser': browser and browser.capitalize() or None,
                 'ip': request.httprequest.environ['REMOTE_ADDR'],
             })
-            if request.geoip.city.name:
-                context['location'] = f"{request.geoip.city.name}, {request.geoip.country_name}"
-
         email_values = {
             'email_to': self.email,
             'email_cc': False,

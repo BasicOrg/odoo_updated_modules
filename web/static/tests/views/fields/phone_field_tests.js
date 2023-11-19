@@ -140,11 +140,7 @@ QUnit.module("Fields", (hooks) => {
         await editInput(cell, "input", "new");
 
         // save
-        await click(
-            target.querySelector(
-                ".o_control_panel_main_buttons .d-none.d-xl-inline-flex .o_list_button_save"
-            )
-        );
+        await click(target.querySelector(".o_list_button_save"));
         cell = target.querySelector("tbody td:not(.o_list_record_selector)");
         assert.doesNotHaveClass(
             cell.parentElement,
@@ -236,32 +232,5 @@ QUnit.module("Fields", (hooks) => {
             "a",
             "The readonly field don't contain a link if no value is set"
         );
-    });
-
-    QUnit.test("href is correctly formatted", async function (assert) {
-        serverData.models.partner.records[0].foo = "+12 345 67 89 00";
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            mode: "readonly",
-            arch: `
-                <form>
-                    <sheet>
-                        <group>
-                            <field name="foo" widget="phone"/>
-                        </group>
-                    </sheet>
-                </form>`,
-            resId: 1,
-        });
-
-        const phone = target.querySelector(".o_field_phone a");
-        assert.strictEqual(
-            phone.textContent,
-            "+12 345 67 89 00",
-            "value should be displayed properly with spaces as separators"
-        );
-        assert.hasAttrValue(phone, "href", "tel:+12345678900", "href should not contain any space");
     });
 });

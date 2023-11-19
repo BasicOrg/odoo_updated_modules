@@ -57,8 +57,8 @@ class PosConfig(models.Model):
 
     def write(self, values):
         res = super().write(values)
-        for config in self:
-            if values.get('l10n_de_create_tss_flag') and not config.l10n_de_fiskaly_tss_id:
+        if values.get('l10n_de_create_tss_flag') is True:
+            for config in self:
                 config._l10n_de_create_tss_process()
         return res
 

@@ -1,23 +1,27 @@
-/** @odoo-module **/
+odoo.define("website_sale_product_TESTurator.tour_shop_custom_attribute_value", function (require) {
+"use strict";
 
-import { registry } from "@web/core/registry";
+var tour = require('web_tour.tour');
 var optionVariantImage;
 
-registry.category("web_tour.tours").add("a_shop_custom_attribute_value", {
+tour.register("a_shop_custom_attribute_value", {
     url: "/shop?search=Customizable Desk",
     test: true,
-    steps: () => [{
+}, [{
         content: "click on Customizable Desk",
         trigger: '.oe_product_cart a:contains("Customizable Desk (TEST)")',
 }, {
     trigger: 'a.js_add_cart_json:has(i.fa-plus)',
     run: 'click',
 }, {
-    trigger: 'span.oe_currency_value:contains(750)',
+    trigger: 'span.text-danger span:contains(750)',
+    run: function (){}, // check
+}, {
+    trigger: 'span.oe_price span:contains(600)',
     run: function (){}, // check
 }, {
     id: 'add_cart_step',
-    trigger: 'a:contains(Add to cart)',
+    trigger: 'a:contains(ADD TO CART)',
     run: 'click',
 }, {
     trigger: '.oe_advanced_configurator_modal .js_product:eq(1) div:contains("Conference Chair (TEST) (Steel)")',
@@ -49,9 +53,11 @@ registry.category("web_tour.tours").add("a_shop_custom_attribute_value", {
     extra_trigger: '.oe_advanced_configurator_modal .js_product:has(strong:contains(Chair floor protection))',
     run: 'click'
 }, {
-    trigger: 'span:contains(1,557.00)',
+    trigger: 'span:contains(1,257.00)',
     run: function (){}, // check
 }, {
     trigger: 'button:has(span:contains(Proceed to Checkout))',
     run: 'click',
-}]});
+}]);
+
+});

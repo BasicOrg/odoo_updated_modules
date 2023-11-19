@@ -1,15 +1,10 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { TextField, textField } from "../text/text_field";
+import { TextField } from "../text/text_field";
 
-export class HtmlField extends TextField {
-    static template = "web.HtmlField";
-}
+export class HtmlField extends TextField {}
 
-export const htmlField = {
-    ...textField,
-    component: HtmlField,
-};
+HtmlField.template = "web.HtmlField";
 
-registry.category("fields").add("html", htmlField);
+registry.category("fields").add("html", HtmlField);

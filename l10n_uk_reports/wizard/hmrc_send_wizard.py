@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import uuid
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -36,4 +34,7 @@ class HmrcSendWizard(models.TransientModel):
     obligation_id = fields.Many2one('l10n_uk.vat.obligation', 'Obligation', domain=[('status', '=', 'open')], required=True)
     message = fields.Boolean('Message', readonly=True) # Show message if no obligation corresponds to report options
     accept_legal = fields.Boolean('Accept Legal Statement') # A checkbox to warn the user that what he sends is legally binding
-    hmrc_gov_client_device_id = fields.Char(default=lambda x: uuid.uuid4())
+
+    def send(self):
+        # Check correct obligation and send it to the HMRC
+        self.obligation_id.action_submit_vat_return()

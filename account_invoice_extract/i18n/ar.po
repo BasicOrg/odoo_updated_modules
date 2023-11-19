@@ -3,17 +3,17 @@
 # 	* account_invoice_extract
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,36 +21,66 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: account_invoice_extract
+#: model:mail.template,body_html:account_invoice_extract.account_invoice_extract_no_credit
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>Dear,<br/></p>\n"
+"    <p>There are no more credits on your IAP Invoice OCR account.<br/>\n"
+"    You can charge your IAP Invoice OCR account in the Accounting settings page.</p>\n"
+"    <p>Best regards,<br/></p>\n"
+"    <p>Odoo S.A.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>عزيزي،<br/></p>\n"
+"    <p>لم يتبق لديك رصيد في فاتورة الوكيل المدرك للهوية (IAP) لـ OCR الخاص بحسابك.<br/>\n"
+"    يمكنك شحن فاتورة الوكيل المدرك للهوية (IAP) لـ OCR الخاص بحسابك من صفحة إعدادات المحاسبة.</p>\n"
+"    <p>مع تحيات،<br/></p>\n"
+"    <p>أودو S.A.</p>\n"
+"</div>"
+
+#. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
 "                        Buy credits"
 msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        شراء رصيد "
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
 "                        Refresh"
 msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        تحديث "
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        Retry"
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
+"                        Reload AI Data"
 msgstr ""
-"<i class=\"oi oi-fw o_button_icon oi-arrow-right\"/>\n"
-"                        إعادة المحاولة "
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_needaction
-msgid "Action Needed"
-msgstr "إجراء مطلوب"
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid ""
+"<i class=\"fa fa-fw o_button_icon fa-arrow-right\"/>\n"
+"                        Resend For Digitization"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"القيم المحددة هنا هي قيم خاصة"
+" بالشركة. \"/>"
+
+#. module: account_invoice_extract
+#: model:mail.template,name:account_invoice_extract.account_invoice_extract_no_credit
+#: model:mail.template,subject:account_invoice_extract.account_invoice_extract_no_credit
+msgid "Account Invoice Extract Notification"
+msgstr "إشعار استخلاص الفاتورة من الحساب "
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
@@ -61,36 +91,58 @@ msgstr ""
 "سوف تتم أتمتة كافة الحقول من قِبَل الذكاء الاصطناعي، قد يتطلب الأمر 5 ثوان. "
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__error_status
+#, python-format
+msgid "An error occurred"
+msgstr "حدث خطأ ما "
+
+#. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_ir_attachment
 msgid "Attachment"
 msgstr "مرفق"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_attachment_count
-msgid "Attachment Count"
-msgstr "عدد المرفقات"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill Date"
+msgstr "تاريخ الفاتورة"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_journal__alias_auto_extract_pdfs_only
-msgid "Auto extract PDFs only"
-msgstr "الاستخلاص التلقائي للملفات بصيغة PDF فقط "
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill Reference"
+msgstr "الرقم المرجعي للفاتورة "
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_banners
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_banners
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_banners
-msgid "Can show the ocr banners"
-msgstr "بإمكانه عرضعارضات بتمييز الرموز ضوئياً "
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Bill is being Digitized"
+msgstr ""
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_resend_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_resend_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_resend_button
+msgid "Can show the ocr resend button"
+msgstr "السماح بعرض زر إعادة إرسال ملف بالمسح الضوئي"
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_can_show_send_button
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_can_show_send_button
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_can_show_send_button
 msgid "Can show the ocr send button"
 msgstr "بإمكانه عرض زر إرسال ملف بتمييز الرموز ضوئياً "
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_res_company
 msgid "Companies"
-msgstr "الشركات"
+msgstr "الشركات "
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__done
+msgid "Completed flow"
+msgstr "سير العمل المكتمل "
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_res_config_settings
@@ -98,14 +150,13 @@ msgid "Config Settings"
 msgstr "تهيئة الإعدادات "
 
 #. module: account_invoice_extract
-#. odoo-python
 #: code:addons/account_invoice_extract/models/account_invoice.py:0
 #, python-format
 msgid "Couldn't reload AI data."
-msgstr "تعذر تحميل معلومات الذكاء الاصطناعي "
+msgstr ""
 
 #. module: account_invoice_extract
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_invoice_extract/static/src/js/invoice_extract_form_renderer.js:0
 #, python-format
 msgid "Create"
@@ -122,6 +173,12 @@ msgid "Created on"
 msgstr "أنشئ في"
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Customer"
+msgstr "العميل"
+
+#. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_out_invoice_digitalization_mode
 msgid "Customer Invoices"
 msgstr "فواتير العملاء"
@@ -129,34 +186,24 @@ msgstr "فواتير العملاء"
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_out_invoice_digitalization_mode
 msgid "Digitization mode on customer invoices"
-msgstr "وضع الرقمنة في فواتير العملاء "
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_in_invoice_digitalization_mode
 msgid "Digitization mode on vendor bills"
-msgstr "وضع الرقمنة في فواتير الموردين "
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__auto_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__auto_send
 msgid "Digitize automatically"
-msgstr "الرقمنة تلقائياً "
-
-#. module: account_invoice_extract
-#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
-msgid "Digitize document"
-msgstr "رقمنة المستند "
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__manual_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__manual_send
 msgid "Digitize on demand only"
-msgstr "رقمنة عند الطلب فقط"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_journal__display_alias_auto_extract_pdfs_only
-msgid "Display Alias Auto Extract Pdfs Only"
-msgstr "عرض ملفات PDF للاستخلاص التلقائي للألقاب فقط "
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__display_name
@@ -167,7 +214,7 @@ msgstr "اسم العرض "
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_in_invoice_digitalization_mode__no_send
 #: model:ir.model.fields.selection,name:account_invoice_extract.selection__res_company__extract_out_invoice_digitalization_mode__no_send
 msgid "Do not digitize"
-msgstr "لا تقم بالرقمنة"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.res_config_settings_view_form
@@ -175,7 +222,9 @@ msgid "Enable to get only one invoice line per tax"
 msgstr "التمكين للحصول على بند فاتورة واحد لكل ضريبة "
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_error_message
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_error_message
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_error_message
 msgid "Error message"
 msgstr "رسالة خطأ"
 
@@ -184,26 +233,14 @@ msgstr "رسالة خطأ"
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_attachment_id
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_attachment_id
 msgid "Extract Attachment"
-msgstr "استخراج المرفق "
+msgstr ""
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_detected_layout
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_detected_layout
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_detected_layout
-msgid "Extract Detected Layout Id"
-msgstr "استخلاص معرف المخطط الذي تم رصده "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_partner_name
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_partner_name
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_partner_name
-msgid "Extract Detected Partner Name"
-msgstr "استخلاص اسم الشريك الذي تم رصده "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_state_processed
-msgid "Extract State Processed"
-msgstr "تمت معالجة حالة الاستخلاص "
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_populated_fields
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_populated_fields
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_populated_fields
+msgid "Extract Populated Fields"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_word_ids
@@ -213,14 +250,11 @@ msgid "Extract Word"
 msgstr "استخلاص كلمة "
 
 #. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_state
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_state
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_state
 msgid "Extract state"
 msgstr "استخلاص حالة "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_status
-msgid "Extract status"
-msgstr "حالة الاستخلاص "
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_account_invoice_extract_words
@@ -238,40 +272,28 @@ msgid "Field"
 msgstr "حقل"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_follower_ids
-msgid "Followers"
-msgstr "المتابعين"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "المتابعين (الشركاء) "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__has_message
-msgid "Has Message"
-msgstr "يحتوي على رسالة "
-
-#. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__id
 msgid "ID"
 msgstr "المُعرف"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_document_uuid
-msgid "ID of the request to IAP-OCR"
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_remote_id
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_remote_id
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_remote_id
+msgid "Id of the request to IAP-OCR"
 msgstr "مُعرف طلب IAP-OCR"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_needaction
-msgid "If checked, new messages require your attention."
-msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invalid PDF (Conversion error)"
+msgstr ""
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_error
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_sms_error
-msgid "If checked, some messages have a delivery error."
-msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invalid PDF (Unable to get page count)"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__invoice_id
@@ -279,34 +301,41 @@ msgid "Invoice"
 msgstr "الفاتورة"
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Invoice Date"
+msgstr "تاريخ الفاتورة"
+
+#. module: account_invoice_extract
+#: model:ir.actions.server,name:account_invoice_extract.ir_cron_ocr_parse_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_ocr_parse
+#: model:ir.cron,name:account_invoice_extract.ir_cron_ocr_parse
+msgid "Invoice OCR: Parse Invoices"
+msgstr ""
+
+#. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.ir_cron_update_ocr_status_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_update_ocr_status
+#: model:ir.cron,name:account_invoice_extract.ir_cron_update_ocr_status
 msgid "Invoice OCR: Update All Status"
 msgstr "OCR الفاتورة: تحديث كافة الحالات "
 
 #. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.ir_cron_ocr_validate_ir_actions_server
+#: model:ir.cron,cron_name:account_invoice_extract.ir_cron_ocr_validate
+#: model:ir.cron,name:account_invoice_extract.ir_cron_ocr_validate
 msgid "Invoice OCR: Validate Invoices"
-msgstr "تمييز رموز الفاتورة ضوئياً (OCR): تصديق الفواتير "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_is_follower
-msgid "Is Follower"
-msgstr "متابع"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__is_in_extractable_state
-msgid "Is In Extractable State"
-msgstr "في حالة قابلة للاستخلاص "
-
-#. module: account_invoice_extract
-#: model:ir.model,name:account_invoice_extract.model_account_journal
-msgid "Journal"
-msgstr "دفتر اليومية"
+msgstr ""
 
 #. module: account_invoice_extract
 #: model:ir.model,name:account_invoice_extract.model_account_move
 msgid "Journal Entry"
 msgstr "قيد اليومية"
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__write_uid
@@ -319,78 +348,75 @@ msgid "Last Updated on"
 msgstr "آخر تحديث في"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "المرفق الرئيسي"
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "No document name provided"
+msgstr "لم يتم إعطاء اسم للمستند  "
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_error
-msgid "Message Delivery error"
-msgstr "خطأ في تسليم الرسائل"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__no_extract_requested
+msgid "No extract requested"
+msgstr "لم يتم طلب استخلاص "
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_ids
-msgid "Messages"
-msgstr "الرسائل"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_needaction_counter
-msgid "Number of Actions"
-msgstr "عدد الإجراءات"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_error_counter
-msgid "Number of errors"
-msgstr "عدد الأخطاء "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__message_has_error_counter
-msgid "Number of messages with delivery error"
-msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__not_enough_credit
+msgid "Not enough credit"
+msgstr "لا يوجد رصيد كاف"
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__ocr_selected
 msgid "Ocr Selected"
-msgstr "تم تحديد تمييز الرموز ضوئياً "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_journal__alias_auto_extract_pdfs_only
-msgid ""
-"Only extract PDF files attached to email arriving trough this email alias."
 msgstr ""
-"استخلاص ملفات PDF المرفقة برسالة البريد الإلكتروني التي تصل من خلال لقب "
-"البريد الإلكتروني هذا فقط. "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__rating_ids
-msgid "Ratings"
-msgstr "التقييمات "
-
-#. module: account_invoice_extract
-#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
-msgid "Reload AI Data"
-msgstr "إعادة تحميل بيانات الذكاء الاصطناعي "
-
-#. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "خطأ في تسليم الرسائل النصية القصيرة "
 
 #. module: account_invoice_extract
 #: model:ir.actions.server,name:account_invoice_extract.model_account_send_for_digitalization
 msgid "Send Bills for digitization"
-msgstr "إرسال فواتير الموردين من أجل الرقمنة "
+msgstr ""
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid "Send For Digitization"
+msgstr ""
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Server is currently under maintenance. Please retry later"
+msgstr "الخادم قيد الصيانة حالياً. الرجاء إعادة المحاولة لاحقاً "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Server not available. Please retry later"
+msgstr "الخاتم غير متاح. الرجاء إعادة المحاولة مجدداً "
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_company__extract_single_line_per_tax
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_single_line_per_tax
 msgid "Single Invoice Line Per Tax"
-msgstr "بند فاتورة واحد لكل ضريبة "
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_bank_statement_line__extract_status_code
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__extract_status_code
+#: model:ir.model.fields,field_description:account_invoice_extract.field_account_payment__extract_status_code
+msgid "Status code"
+msgstr "رمز الحالة"
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"The 'invoice_ocr' IAP account token is invalid. Please delete it to let Odoo"
+" generate a new one or fill it with a valid token."
+msgstr ""
+"رمز حساب الوكيل المدرك للهوية (IAP) 'invoice_ocr' غير صالح. قم بحذه رجاءً "
+"حتى يتمكن أودو من إنشاء واحد جديد لتزويده برمز صالح. "
+
+#. module: account_invoice_extract
+#: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
+msgid "The bill has been populated by AI."
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
@@ -398,7 +424,36 @@ msgid ""
 "The data extraction is not finished yet. The extraction usually takes "
 "between 5 and 10 seconds."
 msgstr ""
-"لم تنته عملية استخلاص البيانات بعد. تستغرق العملية عادة ما بين 5 -10 ثواني. "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "The document could not be found"
+msgstr "لم يتم العثور على المستند "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "The document has been rejected because it is too small"
+msgstr ""
+
+#. module: account_invoice_extract
+#. openerp-web
+#: code:addons/account_invoice_extract/static/src/xml/populated_fields_tooltip.xml:0
+#, python-format
+msgid "The following fields were populated by the OCR:"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__to_validate
+msgid "To validate"
+msgstr "بانتظار التصديق "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Unsupported image format"
+msgstr "صيغة الصورة غير مدعومة "
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__user_selected
@@ -406,19 +461,30 @@ msgid "User Selected"
 msgstr "المستخدم المحدد "
 
 #. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "Vendor"
+msgstr "المورد"
+
+#. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_res_config_settings__extract_in_invoice_digitalization_mode
 msgid "Vendor Bills"
 msgstr "فواتير المورد"
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,field_description:account_invoice_extract.field_account_move__website_message_ids
-msgid "Website Messages"
-msgstr "رسائل الموقع الإلكتروني "
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_extraction
+msgid "Waiting extraction"
+msgstr "بانتظار الاستخلاص "
 
 #. module: account_invoice_extract
-#: model:ir.model.fields,help:account_invoice_extract.field_account_move__website_message_ids
-msgid "Website communication history"
-msgstr "سجل تواصل الموقع الإلكتروني "
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_upload
+msgid "Waiting upload"
+msgstr ""
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__waiting_validation
+msgid "Waiting validation"
+msgstr "بانتظار التصديق "
 
 #. module: account_invoice_extract
 #: model:ir.model.fields,field_description:account_invoice_extract.field_account_invoice_extract_words__word_box_angle
@@ -456,13 +522,45 @@ msgid "Word Text"
 msgstr "نص Word "
 
 #. module: account_invoice_extract
-#. odoo-python
-#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#. openerp-web
+#: code:addons/account_invoice_extract/static/src/xml/populated_fields_tooltip.xml:0
 #, python-format
-msgid "You cannot send a expense that is not in draft state!"
-msgstr "لا يمكنك إرسال نفقة ليست بحالة المسودة! "
+msgid ""
+"You can always change the mapping by clicking on one field in the Invoice "
+"form and select the appropriate value in the PDF."
+msgstr ""
 
 #. module: account_invoice_extract
 #: model_terms:ir.ui.view,arch_db:account_invoice_extract.view_move_form_inherit_ocr
 msgid "You don't have enough credit to extract data from your invoice."
 msgstr "ليس لديك الرصيد الكافي لاستخلاص البيانات من فاتورتك. "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid "You must send the same quantity of documents and file names"
+msgstr "عليك إرسال نفس كمية المستندات وأسماء الملفات "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"Your PDF file is protected by a password. The OCR can't extract data from it"
+msgstr ""
+"ملف PDF الخاص بك محمي بكلمة مرور. لن يستطيع التعرف البصري على الأحرف استخلاص"
+" البيانات منه "
+
+#. module: account_invoice_extract
+#: code:addons/account_invoice_extract/models/account_invoice.py:0
+#, python-format
+msgid ""
+"Your invoice is too heavy to be processed by the OCR. Try to reduce the "
+"number of pages and avoid pages with too many text"
+msgstr ""
+"فاتورتك أكبر من أن يتمكن التعرف البصري على الأحرف من معالجتها. حاول تقليل "
+"عدد الصفحات وتجنب الصفحات التي بها نصوص طويلة "
+
+#. module: account_invoice_extract
+#: model:ir.model.fields.selection,name:account_invoice_extract.selection__account_move__extract_state__extract_not_ready
+msgid "waiting extraction, but it is not ready"
+msgstr "بانتظار الاستخلاص، ولكنها ليست جاهزة "

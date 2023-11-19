@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 class ProfilingSystrayItem extends Component {}
 ProfilingSystrayItem.template = "web.ProfilingSystrayItem";

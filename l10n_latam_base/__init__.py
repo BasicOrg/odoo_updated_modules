@@ -1,8 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from . import models
+from odoo import api, SUPERUSER_ID
 
 
-def _set_default_identification_type(env):
+def _set_default_identification_type(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     env.cr.execute(
         """
             UPDATE res_partner

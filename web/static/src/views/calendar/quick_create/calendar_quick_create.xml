@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.CalendarQuickCreate">
+    <t t-name="web.CalendarQuickCreate" owl="1">
         <Dialog size="'sm'" title="dialogTitle">
             <div class="o-calendar-quick-create mb-3">
                 <label for="title" class="col-form-label o_form_label">
-                    Name:
+                    Meeting Subject:
                 </label>
                 <input
                     type="text"
@@ -13,7 +13,6 @@
                     name="title"
                     t-ref="title"
                     t-on-keyup="onInputKeyup"
-                    t-att-value="props.title"
                 />
             </div>
             <t t-set-slot="footer">

@@ -23,20 +23,18 @@ class Partner(models.Model):
 
     def _compute_meeting(self):
         if self.ids:
-            # prefetch 'parent_id'
-            all_partners = self.with_context(active_test=False).search_fetch(
-                [('id', 'child_of', self.ids)], ['parent_id'],
-            )
+            all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
 
-            query = self.env['calendar.event']._search([])  # ir.rules will be applied
-            query_str, params = query.subselect()
+            event_id = self.env['calendar.event']._search([])  # ir.rules will be applied
+            subquery_string, subquery_params = event_id.select()
+            subquery = self.env.cr.mogrify(subquery_string, subquery_params).decode()
 
-            self.env.cr.execute(f"""
+            self.env.cr.execute("""
                 SELECT res_partner_id, calendar_event_id, count(1)
                   FROM calendar_event_res_partner_rel
-                 WHERE res_partner_id IN %s AND calendar_event_id IN {query_str}
+                 WHERE res_partner_id IN %s AND calendar_event_id IN ({})
               GROUP BY res_partner_id, calendar_event_id
-            """, [tuple(all_partners.ids)] + params)
+            """.format(subquery), [tuple(all_partners.ids)])
 
             meeting_data = self.env.cr.fetchall()
 
@@ -46,19 +44,20 @@ class Partner(models.Model):
                 meetings[m[0]].add(m[1])
 
             # Add the events linked to the children of the partner
+            all_partners.read(['parent_id'])
             for p in all_partners:
                 partner = p
                 while partner:
                     if partner in self:
                         meetings[partner.id] |= meetings[p.id]
                     partner = partner.parent_id
-            return {p_id: list(meetings[p_id]) for p_id in self.ids}
+            return {p.id: list(meetings[p.id]) for p in self}
         return {}
 
     def get_attendee_detail(self, meeting_ids):
         """ Return a list of dict of the given meetings with the attendees details
             Used by:
-                - many2many_attendee.js: Many2ManyAttendee
+                - base_calendar.js : Many2ManyAttendee
                 - calendar_model.js (calendar.CalendarModel)
         """
         attendees_details = []

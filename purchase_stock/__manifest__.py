@@ -19,12 +19,11 @@
         'views/res_config_settings_views.xml',
         'views/res_partner_views.xml',
         'views/stock_lot_views.xml',
-        'views/product_views.xml',
         'report/purchase_report_views.xml',
         'report/purchase_report_templates.xml',
+        'report/report_stock_forecasted.xml',
         'report/report_stock_rule.xml',
-        'wizard/stock_replenishment_info.xml',
-        'wizard/product_replenish_views.xml',
+        'wizard/stock_replenishment_info.xml'
     ],
     'demo': [
         'data/purchase_stock_demo.xml',

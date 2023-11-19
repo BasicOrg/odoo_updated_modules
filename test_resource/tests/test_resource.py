@@ -7,7 +7,7 @@ from pytz import timezone, utc
 
 from odoo import fields
 from odoo.exceptions import ValidationError
-from odoo.addons.resource.models.utils import Intervals, sum_intervals
+from odoo.addons.resource.models.resource import Intervals, sum_intervals
 from odoo.addons.test_resource.tests.common import TestResourceCommon
 from odoo.tests.common import TransactionCase
 
@@ -124,7 +124,7 @@ class TestCalendar(TestResourceCommon):
 
     def test_get_work_hours_count(self):
         self.env['resource.calendar.leaves'].create({
-            'name': 'Global Time Off',
+            'name': 'Global Leave',
             'resource_id': False,
             'calendar_id': self.calendar_jean.id,
             'date_from': datetime_str(2018, 4, 3, 0, 0, 0, tzinfo=self.jean.tz),
@@ -248,7 +248,7 @@ class TestCalendar(TestResourceCommon):
 
         # 2 weeks calendar week 2, leave during a day where he doesn't work this week
         leave = self.env['resource.calendar.leaves'].create({
-            'name': 'Time Off Jules week 2',
+            'name': 'Leave Jules week 2',
             'calendar_id': self.calendar_jules.id,
             'resource_id': False,
             'date_from': datetime_str(2018, 4, 11, 4, 0, 0, tzinfo=self.jules.tz),
@@ -265,7 +265,7 @@ class TestCalendar(TestResourceCommon):
 
         # 2 weeks calendar week 2, leave during a day where he works this week
         leave = self.env['resource.calendar.leaves'].create({
-            'name': 'Time Off Jules week 2',
+            'name': 'Leave Jules week 2',
             'calendar_id': self.calendar_jules.id,
             'resource_id': False,
             'date_from': datetime_str(2018, 4, 9, 0, 0, 0, tzinfo=self.jules.tz),
@@ -531,26 +531,6 @@ class TestCalendar(TestResourceCommon):
         start = datetime_tz(2020, 4, 3, 16, 0, 0, tzinfo=self.john.tz)
         calendar_dt = self.calendar_john._get_closest_work_time(dt, resource=self.john.resource_id)
         self.assertEqual(calendar_dt, start, "It should have found the attendance on the 3rd April")
-
-    def test_attendance_interval_edge_tz(self):
-        # When genereting the attendance intervals in an edge timezone, the last interval shouldn't
-        # be truncated if the timezone is correctly set
-        self.env.user.tz = "America/Los_Angeles"
-        self.calendar_jean.tz = "America/Los_Angeles"
-        attendances = self.calendar_jean._attendance_intervals_batch(
-            datetime.combine(date(2023, 1, 1), datetime.min.time(), tzinfo=timezone("UTC")),
-            datetime.combine(date(2023, 1, 31), datetime.max.time(), tzinfo=timezone("UTC")))
-        last_attendance = list(attendances[False])[-1]
-        self.assertEqual(last_attendance[0].replace(tzinfo=None), datetime(2023, 1, 31, 8))
-        self.assertEqual(last_attendance[1].replace(tzinfo=None), datetime(2023, 1, 31, 15, 59, 59, 999999))
-
-        attendances = self.calendar_jean._attendance_intervals_batch(
-            datetime.combine(date(2023, 1, 1), datetime.min.time(), tzinfo=timezone("America/Los_Angeles")),
-            datetime.combine(date(2023, 1, 31), datetime.max.time(), tzinfo=timezone("America/Los_Angeles")))
-        last_attendance = list(attendances[False])[-1]
-        self.assertEqual(last_attendance[0].replace(tzinfo=None), datetime(2023, 1, 31, 8))
-        self.assertEqual(last_attendance[1].replace(tzinfo=None), datetime(2023, 1, 31, 16))
-
 
 class TestResMixin(TestResourceCommon):
 
@@ -1340,21 +1320,3 @@ class TestResource(TestResourceCommon):
         self.assertEqual(31, sum_work_intervals_jules, "Sum of the work intervals for the calendar of jules should be Wodd:15h+Wpair:16h = 31h")
         sum_work_intervals_patel = sum_intervals(calendars_intervals[self.calendar_patel.id])
         self.assertEqual(49, sum_work_intervals_patel, "Sum of the work intervals for the calendar of patel should be 14+35h = 49h")
-
-    def test_switch_two_weeks_resource(self):
-        """
-            Check that it is possible to switch the company's default calendar
-        """
-        self.env.company.resource_calendar_id = self.two_weeks_resource
-        company_resource = self.env.company.resource_calendar_id
-        # Switch two times to be sure to test both cases
-        company_resource.switch_calendar_type()
-        company_resource.switch_calendar_type()
-
-    def test_create_company_using_two_weeks_resource(self):
-        """
-            Check that we can create a new company
-            if the default company calendar is two weeks
-        """
-        self.env.company.resource_calendar_id = self.two_weeks_resource
-        self.env['res.company'].create({'name': 'New Company'})

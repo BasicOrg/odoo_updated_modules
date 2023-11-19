@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { getVisibleElements } from "@web/core/utils/ui";
 import { MacroEngine } from "@web/core/macro";
@@ -27,10 +26,11 @@ function updatePager(position) {
     if (current === next) {
         return;
     }
-    const engine = new MacroEngine({ defaultCheckDelay: 16 });
+    const engine = new MacroEngine();
     engine.activate({
         name: "updating pager",
         timeout: 1000,
+        interval: 0,
         steps: [
             {
                 trigger: "span.o_pager_value",
@@ -45,7 +45,7 @@ function updatePager(position) {
     });
 }
 
-export const COMMANDS = {
+const COMMANDS = {
     "O-CMD.EDIT": () => clickOnButton(".o_form_button_edit"),
     "O-CMD.DISCARD": () => clickOnButton(".o_form_button_cancel"),
     "O-CMD.SAVE": () => clickOnButton(".o_form_button_save"),
@@ -67,7 +67,7 @@ export const barcodeGenericHandlers = {
                     // the scanned barcode could be anything, and could crash the queryselectorall
                     // function
                     targets = getVisibleElements(ui.activeElement, `[barcode_trigger=${barcode.slice(6)}]`);
-                } catch {
+                } catch (_e) {
                     console.warn(`Barcode '${barcode}' is not valid`);
                 }
                 for (let elem of targets) {
@@ -79,8 +79,8 @@ export const barcodeGenericHandlers = {
                 if (fn) {
                     fn();
                 } else {
-                    notification.add(_t("Barcode: ") + `'${barcode}'`, {
-                        title: _t("Unknown barcode command"),
+                    notification.add(env._t("Barcode: ") + `'${barcode}'`, {
+                        title: env._t("Unknown barcode command"),
                         type: "danger"
                     });
                 }

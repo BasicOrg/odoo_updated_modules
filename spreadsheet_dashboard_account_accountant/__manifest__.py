@@ -6,11 +6,13 @@
     'category': 'Hidden',
     'summary': 'Spreadsheet',
     'description': 'Spreadsheet',
-    'depends': ['spreadsheet_dashboard', 'account_reports'],
+    'depends': ['spreadsheet_dashboard', 'account_accountant'],
     'data': [
         "data/dashboards.xml",
     ],
+    'demo': [],
     'installable': True,
-    'auto_install': ['account_reports'],
+    'auto_install': ['account_accountant'],
     'license': 'OEEL-1',
+    'assets': {}
 }

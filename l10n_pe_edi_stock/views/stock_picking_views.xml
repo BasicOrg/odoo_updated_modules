@@ -6,65 +6,65 @@
         <field name="inherit_id" ref="stock.view_picking_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="l10n_pe_edi_status" readonly="1" invisible="state != 'done' or country_code != 'PE'"/>
+                <field name="country_code" invisible="1"/>
+                <field name="l10n_pe_edi_status" readonly="1" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('country_code', '!=', 'PE')]}"/>
                 <field name="l10n_pe_edi_transport_type"
-                    invisible="country_code != 'PE'"
-                    readonly="l10n_pe_edi_status == 'sent'"/>
+                    attrs="{'invisible': [('country_code', '!=', 'PE')],
+                            'readonly': [('l10n_pe_edi_status', '=', 'sent')]}"
+                    string="Transport type"/>
                 <field name="l10n_pe_edi_reason_for_transfer"
-                    invisible="not l10n_pe_edi_transport_type"
-                    readonly="l10n_pe_edi_status == 'sent'"/>
+                    attrs="{'invisible': [('l10n_pe_edi_transport_type', '=', False)],
+                            'readonly': [('l10n_pe_edi_status', '=', 'sent')]}"
+                    string="Reason for transfer"/>
                 <field name="l10n_pe_edi_departure_start_date"
-                    invisible="not l10n_pe_edi_transport_type"
-                    readonly="l10n_pe_edi_status == 'sent'" widget="date"/>
+                    attrs="{'invisible': [('l10n_pe_edi_transport_type', '=', False)],
+                            'readonly': [('l10n_pe_edi_status', '=', 'sent')]}" widget="date"
+                    string="Transfer start date"/>
             </xpath>
             <xpath expr="//header" position="after">
                 <div class="alert alert-warning" role="alert" style="margin-bottom:0px;"
-                    invisible="not l10n_pe_edi_error">
+                    attrs="{'invisible': [('l10n_pe_edi_error', '=', False)]}">
                     <field name="l10n_pe_edi_error" readonly="1"/>
                     <button
                         name="action_send_delivery_guide"
                         type="object"
                         class="oe_link"
-                        string="Retry"/>
+                        string="Retry"
+                        attrs="{'invisible': [('l10n_pe_edi_status', 'not in', (False, 'to_send', 'to_cancel'))]}"/>
+                    <button
+                        name="l10n_pe_edi_action_clear_error"
+                        type="object"
+                        class="oe_link"
+                        string="Ignore"
+                        attrs="{'invisible': [('l10n_pe_edi_status', 'not in', [False, 'to_send', 'cancelled'])]}"/>
                     <button
                         name="l10n_pe_edi_action_download"
                         type="object"
                         class="oe_link"
-                        string="Download"/>
+                        string="Download"
+                        groups="base.group_no_one"
+                        attrs="{'invisible': [('l10n_pe_edi_status', 'not in', [False, 'to_send', 'cancelled'])]}"/>
                 </div>
             </xpath>
             <xpath expr="//header//button[@name='action_cancel']" position="after">
                 <button name="action_send_delivery_guide" type="object"
                     string="Generate Delivery Guide"
-                    invisible="state != 'done' or country_code != 'PE' or picking_type_code != 'outgoing' or l10n_pe_edi_status"/>
+                    attrs="{'invisible':['|', '|', '|',('state', '!=', 'done'), ('country_code', '!=', 'PE'), ('picking_type_code', '!=', 'outgoing'), ('l10n_pe_edi_status', '!=', False)]}"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
-                 <page string="PE EDI" name="pe_edi" invisible="not l10n_pe_edi_transport_type" readonly="l10n_pe_edi_status == 'sent'">
+                 <page string="PE EDI" name="pe_edi" attrs="{'invisible': [('l10n_pe_edi_transport_type', '=', False)], 'readonly': [('l10n_pe_edi_status', 'not in', (False, 'to_send', 'to_cancel'))]}">
                     <group>
-                        <group string="Transport" name="pe_edi_group_transport" readonly="l10n_pe_edi_status == 'sent'">
+                        <group string="Transport" name="pe_edi_group_transport" attrs="{'readonly': [('l10n_pe_edi_status', 'not in', (False, 'to_send', 'to_cancel'))]}">
+                            <field name="l10n_latam_document_number" readonly="1"/>
                             <field
                                 name="l10n_pe_edi_vehicle_id"
-                                invisible="l10n_pe_edi_transport_type == '01'"
-                                readonly="l10n_pe_edi_status == 'sent'"/>
+                                string="Vehicle"
+                                attrs="{'readonly': [('l10n_pe_edi_status', 'not in', (False, 'to_send', 'to_cancel'))], 'invisible': [('l10n_pe_edi_transport_type', '=', '01')]}"/>
                             <field
                                 name="l10n_pe_edi_operator_id"
-                                readonly="l10n_pe_edi_status == 'sent'"/>
+                                string="Operator"
+                                attrs="{'readonly': [('l10n_pe_edi_status', 'not in', (False, 'to_send', 'to_cancel'))]}"/>
                             <field name="l10n_pe_edi_observation"/>
-                        </group>
-                        <group string="SUNAT" name="pe_edi_group_sunat">
-                            <field name="l10n_latam_document_number" readonly="country_code == 'PE'"/>
-                            <field name="l10n_pe_edi_ticket_number"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Related Documents" name="pe_edi_group_related_documents" readonly="l10n_pe_edi_status == 'sent'">
-                            <field
-                                name="l10n_pe_edi_related_document_type"
-                                readonly="l10n_pe_edi_status == 'sent'"/>
-                            <field
-                                name="l10n_pe_edi_document_number"
-                                readonly="l10n_pe_edi_status == 'sent'"
-                                required="l10n_pe_edi_related_document_type"/>
                         </group>
                     </group>
                 </page>

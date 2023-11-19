@@ -1,18 +1,17 @@
 /** @odoo-module **/
 
-import helper from '@stock_barcode/../tests/tours/tour_helper_stock_barcode';
-import { registry } from "@web/core/registry";
-import { stepUtils } from '@stock_barcode/../tests/tours/tour_step_utils';
+import helper from 'stock_barcode.tourHelper';
+import tour from 'web_tour.tour';
 
 
-registry.category("web_tour.tours").add('test_gs1_receipt_expiration_date', {test: true, steps: () => [
+tour.register('test_gs1_receipt_expiration_date', {test: true}, [
     {
         trigger: '.o_barcode_client_action',
         run: function () {
             helper.assertLinesCount(1);
-            const line = helper.getLine({ barcode: "76543210" });
-            helper.assertLineIsHighlighted(line, false);
-            helper.assertLineQty(line, "0 / 20");
+            const $line = helper.getLine({barcode: '76543210'});
+            helper.assertLineIsHighlighted($line, false);
+            helper.assertLineQty($line, '0');
         }
     },
     // The following scanned barcode should be decomposed like that:
@@ -28,12 +27,12 @@ registry.category("web_tour.tours").add('test_gs1_receipt_expiration_date', {tes
         trigger: '.o_barcode_line:contains("b1-b001")',
         run: function () {
             helper.assertLinesCount(1);
-            const line = helper.getLine({ barcode: "76543210" });
-            const lot_with_date = line.querySelector('div[name="lot"]').innerText;
+            const $line = helper.getLine({barcode: '76543210'});
+            const lot_with_date = $line.find('div[name="lot"]').text().trim();
             const date = new Date('2022-05-20').toLocaleDateString();
             helper.assert(lot_with_date, `b1-b001 (${date})`, 'lot line');
-            helper.assertLineIsHighlighted(line, true);
-            helper.assertLineQty(line, "8 / 20");
+            helper.assertLineIsHighlighted($line, true);
+            helper.assertLineQty($line, '8');
         }
     },
     // The following scanned barcode should be decomposed like that:
@@ -51,15 +50,16 @@ registry.category("web_tour.tours").add('test_gs1_receipt_expiration_date', {tes
         run: function () {
             helper.assertLinesCount(1);
             helper.assertSublinesCount(2);
-            const parentLine = helper.getLine({ barcode: "76543210" });
-            const [line1, line2] = helper.getSublines();
-            helper.assertLineQty(parentLine, "12 / 20");
-            helper.assertLineQty(line1, "8 / 20");
-            helper.assertLineQty(line2, "4");
-            helper.assertLineIsHighlighted(line1, false);
-            helper.assertLineIsHighlighted(line2, true);
-            const lot_with_date_1 = line1.querySelector('div[name="lot"]').innerText;
-            const lot_with_date_2 = line2.querySelector('div[name="lot"]').innerText;
+            const $parentLine = helper.getLine({barcode: '76543210'});
+            const $line1 = helper.getSubline(':contains("b1-b001")');
+            const $line2 = helper.getSubline(':contains("b1-b002")');
+            helper.assertLineQty($parentLine, '12');
+            helper.assertLineQty($line1, '8');
+            helper.assertLineQty($line2, '4');
+            helper.assertLineIsHighlighted($line1, true);
+            helper.assertLineIsHighlighted($line2, false);
+            const lot_with_date_1 = $line1.find('div[name="lot"]').text().trim();
+            const lot_with_date_2 = $line2.find('div[name="lot"]').text().trim();
             const date1 = new Date('2022-05-20').toLocaleDateString();
             const date2 = new Date('2022-05-21').toLocaleDateString();
             helper.assert(lot_with_date_1, `b1-b001 (${date1})`, 'lot line');
@@ -81,18 +81,20 @@ registry.category("web_tour.tours").add('test_gs1_receipt_expiration_date', {tes
         run: function () {
             helper.assertLinesCount(1);
             helper.assertSublinesCount(3);
-            const parentLine = helper.getLine({ barcode: "76543210" });
-            const [line1, line2, line3] = helper.getSublines();
-            helper.assertLineQty(parentLine, "20 / 20");
-            helper.assertLineQty(line1, "8 / 20");
-            helper.assertLineQty(line2, "4");
-            helper.assertLineQty(line3, "8");
-            helper.assertLineIsHighlighted(line1, false);
-            helper.assertLineIsHighlighted(line2, false);
-            helper.assertLineIsHighlighted(line3, true);
-            const lot_with_date_1 = line1.querySelector('div[name="lot"]').innerText;
-            const lot_with_date_2 = line2.querySelector('div[name="lot"]').innerText;
-            const lot_with_date_3 = line3.querySelector('div[name="lot"]').innerText;
+            const $parentLine = helper.getLine({barcode: '76543210'});
+            const $line1 = helper.getSubline(':contains("b1-b001")');
+            const $line2 = helper.getSubline(':contains("b1-b002")');
+            const $line3 = helper.getSubline(':contains("b1-b003")');
+            helper.assertLineQty($parentLine, '20');
+            helper.assertLineQty($line1, '8');
+            helper.assertLineQty($line2, '4');
+            helper.assertLineQty($line3, '8');
+            helper.assertLineIsHighlighted($line1, false);
+            helper.assertLineIsHighlighted($line2, false);
+            helper.assertLineIsHighlighted($line3, true);
+            const lot_with_date_1 = $line1.find('div[name="lot"]').text().trim();
+            const lot_with_date_2 = $line2.find('div[name="lot"]').text().trim();
+            const lot_with_date_3 = $line3.find('div[name="lot"]').text().trim();
             const date1 = new Date('2022-05-20').toLocaleDateString();
             const date2 = new Date('2022-05-21').toLocaleDateString();
             const date3 = new Date('2022-05-22').toLocaleDateString();
@@ -101,5 +103,9 @@ registry.category("web_tour.tours").add('test_gs1_receipt_expiration_date', {tes
             helper.assert(lot_with_date_3, `b1-b003 (${date3})`, 'lot line');
         }
     },
-    ...stepUtils.validateBarcodeOperation(".o_validate_page"),
-]});
+    {
+        trigger: '.o_validate_page',
+        run: 'scan O-BTN.validate',
+    },
+    { trigger: '.o_notification.border-success' }
+]);

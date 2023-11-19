@@ -3,17 +3,16 @@
 # 	* documents_account
 # 
 # Translators:
-# Wil Odoo, 2023
-# Thi Huong Nguyen, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Thi Huong Nguyen, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,11 +20,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "<b>Deselect this page</b> as we plan to process all bills first."
 msgstr "<b>Deselect this page</b> as we plan to process all bills first."
+
+#. module: documents_account
+#: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_workflow_rule
@@ -33,8 +43,8 @@ msgid ""
 "A set of condition and actions which will be available to all attachments "
 "matching the conditions"
 msgstr ""
-"Một tập hợp điều kiện và hành động khả dụng cho tất cả tệp đính kèm phù hợp "
-"với điều kiện."
+"Loạt các điều kiện và hành động có sẵn cho tất cả các tệp đính kèm phù hợp "
+"với các điều kiện"
 
 #. module: documents_account
 #: model:ir.model.constraint,message:documents_account.constraint_documents_account_folder_setting_journal_unique
@@ -52,7 +62,7 @@ msgid "Accounting Workspace"
 msgstr "Accounting Workspace"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -63,12 +73,7 @@ msgstr ""
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_ir_attachment
 msgid "Attachment"
-msgstr "Tệp đính kèm"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_bank_statement
-msgid "Bank Statement"
-msgstr "Bảng kê ngân hàng"
+msgstr "Đính kèm"
 
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
@@ -81,21 +86,21 @@ msgid "Check them"
 msgstr "Kiểm tra chúng"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a card to <b>select the document</b>."
 msgstr "Click on a card to <b>select the document</b>."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Click on a thumbnail to <b>preview the document</b>."
 msgstr "Click on a thumbnail to <b>preview the document</b>."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -118,7 +123,7 @@ msgstr "Công ty"
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__create_model
@@ -126,34 +131,19 @@ msgid "Create"
 msgstr "Tạo"
 
 #. module: documents_account
+#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
+msgid "Create Bill"
+msgstr "Tạo hóa đơn"
+
+#. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.credit_note_rule
-msgid "Create Customer Credit Note"
-msgstr ""
+msgid "Create Credit Note"
+msgstr "Create Credit Note"
 
 #. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.customer_invoice_rule
 msgid "Create Customer Invoice"
-msgstr "Tạo hóa đơn bán hàng"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.misc_entry_rule
-msgid "Create Miscellaneous Operations"
-msgstr ""
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
-msgid "Create Vendor Bill"
-msgstr "Tạo hoá đơn mua hàng"
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.documents_vendor_receipt_rule
-msgid "Create Vendor Receipt"
-msgstr ""
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_refund_rule
-msgid "Create Vendor Refund"
-msgstr ""
+msgstr "Create Customer Invoice"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__create_uid
@@ -173,12 +163,7 @@ msgstr "Ghi chú tín dụng"
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_out_invoice
 msgid "Customer invoice"
-msgstr "Hóa đơn bán hàng"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__display_journal_id
-msgid "Display Journal"
-msgstr ""
+msgstr "Customer invoice"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__display_name
@@ -216,8 +201,7 @@ msgid "Folder where to save the generated file"
 msgstr "Folder where to save the generated file"
 
 #. module: documents_account
-#. odoo-python
-#: code:addons/documents_account/wizard/account_reports_export_wizard.py:0
+#: code:addons/documents_account/wizard/report_export_wizard.py:0
 #, python-format
 msgid "Generated Documents"
 msgstr "Tài liệu được tạo"
@@ -228,20 +212,14 @@ msgid "ID"
 msgstr "ID"
 
 #. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.bank_statement_rule
-msgid "Import Bank Statement"
-msgstr "Nhập Sao kê Ngân hàng"
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__journal_id
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__journal_id
 msgid "Journal"
 msgstr "Sổ nhật ký"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_account_move
 msgid "Journal Entry"
-msgstr "Bút toán"
+msgstr "Bút toán "
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_account_folder_setting
@@ -259,9 +237,14 @@ msgid "Journals to synchronize"
 msgstr "Journals to synchronize"
 
 #. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
+
+#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__write_date
@@ -269,7 +252,7 @@ msgid "Last Updated on"
 msgstr "Cập nhật lần cuối vào"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -280,21 +263,21 @@ msgstr ""
 "documents and structure your process.</i>"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process these bills: turn them into vendor bills."
-msgstr "Hãy xử lý các hóa đơn này: biến chúng thành hoá đơn mua hàng."
+msgstr "Let's process these bills: turn them into vendor bills."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Let's process this document, coming from our scanner."
 msgstr "Let's process this document, coming from our scanner."
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -305,19 +288,9 @@ msgstr ""
 "phù hợp với quy trình, tùy theo không gian làm việc.</i>"
 
 #. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_entry
-msgid "Miscellaneous Operations"
-msgstr "Hoạt động khác"
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__move_type
-msgid "Move Type"
-msgstr "Loại phát sinh"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_receipt
-msgid "Purchase Receipt"
-msgstr "Biên lai mua hàng"
+#: model:mail.activity.type,name:documents_account.mail_documents_activity_data_md
+msgid "Reconciliation request"
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_bank_statement_line__suspense_statement_line_id
@@ -327,7 +300,7 @@ msgid "Request document from a bank statement line"
 msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid "Send this letter to the legal department, by assigning the right tags."
@@ -335,15 +308,10 @@ msgstr ""
 "Send this letter to the legal department, by assigning the right tags."
 
 #. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__suitable_journal_ids
-msgid "Suitable Journal"
-msgstr "Sổ nhật ký phù hợp"
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_reports_export_wizard__tag_ids
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__tag_ids
 msgid "Tags"
-msgstr "Thẻ"
+msgstr "Tag"
 
 #. module: documents_account
 #: model:mail.activity.type,name:documents_account.mail_documents_activity_data_vat
@@ -358,15 +326,15 @@ msgstr ""
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_refund
 msgid "Vendor Credit Note"
-msgstr "Giấy báo Có Nhà cung cấp "
+msgstr "Công nợ âm"
 
 #. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_invoice
 msgid "Vendor bill"
-msgstr "Hóa đơn mua hàng"
+msgstr "Hóa đơn nhà cung cấp"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""
@@ -378,10 +346,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__folder_id
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Workspace"
-msgstr "Khu vực làm việc"
+msgstr "Không gian làm việc"
 
 #. module: documents_account
-#. odoo-javascript
+#. openerp-web
 #: code:addons/documents_account/static/src/js/tour.js:0
 #, python-format
 msgid ""

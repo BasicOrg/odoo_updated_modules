@@ -1,37 +1,24 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* mrp_plm
-#
+# 
 # Translators:
-# Munkhbaatar g <muuguu17@gmail.com>, 2022
-# Bayarkhuu Bataa, 2022
-# tserendavaa tsogtoo <tseegii011929@gmail.com>, 2022
-# Batmunkh Ganbat <batmunkh.g@bumanit.mn>, 2022
-# Nurbahyt Kh <nurbahyt.kh@gmail.com>, 2022
-# baaska sh <sh.baaskash@gmail.com>, 2022
-# Munkhbilguun Altankhuyag <munkhbilguunaltankhuyag@gmail.com>, 2022
-# Батболд <batbold.ts@gmail.com>, 2022
-# Minj P <pminj322@gmail.com>, 2022
-# Khoschuluu Khuderchuluu <khoschuluu@gmail.com>, 2022
-# Sanjaajamts Badamjunai <b.sanjaajamtsfc@gmail.com>, 2022
-# tumenjargal hadbaatar <tumenjargal7903@gmail.com>, 2022
-# Батмөнх Ганбат <batmunkh2522@gmail.com>, 2022
-# Uuganbayar Batbaatar <uuganaaub33@gmail.com>, 2022
-# Martin Trigaux, 2022
-# Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2022
-#
+# nurbakhit nurka <nurbakhit@bumanit.mn>, 2019
+# Martin Trigaux, 2019
+# Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:47+0000\n"
-"Last-Translator: Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2022\n"
-"Language-Team: Mongolian (https://app.transifex.com/odoo/teams/41243/mn/)\n"
-"Language: mn\n"
+"POT-Creation-Date: 2019-09-27 09:17+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2019\n"
+"Language-Team: Mongolian (https://www.transifex.com/odoo/teams/41243/mn/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: mn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: mrp_plm
@@ -41,6 +28,7 @@ msgstr "# Хавсралт"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__eco_count
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__eco_count
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__eco_count
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__eco_count
 msgid "# ECOs"
@@ -52,19 +40,45 @@ msgid "# ECOs in progress"
 msgstr "# Боловсруулагдаж буй техник өөрчлөх захиалгууд"
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
+msgid "&amp;nbsp;"
+msgstr "&amp;nbsp;"
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:0
 #, python-format
-msgid "%(approval_name)s %(approver_name)s %(approval_status)s this ECO"
-msgstr ""
+msgid "&times;"
+msgstr "&times;"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "<i class=\"fa fa-comments\" role=\"img\" aria-label=\"Messages\"/>"
+msgstr "<i class=\"fa fa-comments\" role=\"img\" aria-label=\"Messages\"/>"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
-msgid "<i class=\"fa fa-envelope-o\" role=\"img\" aria-label=\"Domain alias\" title=\"Domain alias\"/>&amp;nbsp;"
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+msgstr "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid ""
+"<i class=\"fa fa-envelope-o\" role=\"img\" aria-label=\"Domain alias\" "
+"title=\"Domain alias\"/>&amp;nbsp;"
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+msgid "<i class=\"fa fa-remove\" role=\"img\" aria-label=\"Remove\" title=\"Remove\"/>"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
+msgid "<i class=\"fa fa-undo\" role=\"img\" aria-label=\"Undo\" title=\"Undo\"/>"
+msgstr ""
+
+#. module: mrp_plm
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid ""
@@ -76,24 +90,33 @@ msgid ""
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-danger\">Archived</span>"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "<span>BOM</span><br/>"
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "<span class=\"text-bg-primary\">New</span>"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "<span>New</span>"
+msgstr "<span>Шинэ</span>"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "<span>Revision</span><br/>"
-msgstr ""
+msgid "<span>Routing</span><br/>"
+msgstr "<span>Шугам</span><br/>"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "<span>View</span>"
+msgstr "<span>Харах</span>"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_defaults
-msgid "A Python dictionary that will be evaluated to provide default values when creating new records for this alias."
-msgstr "Энэ алиас-д холбогдуулан шинэ бичлэг үүсгэх үед анхны утгуудыг тодорхойлох Python dictionary."
+msgid ""
+"A Python dictionary that will be evaluated to provide default values when "
+"creating new records for this alias."
+msgstr ""
+"Энэ хуурмаг нэрт шинэ бичлэг үүсгэх үед анхны утгыг олгоход тооцоологдох "
+"Python толь бичиг."
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_needaction
@@ -104,7 +127,7 @@ msgstr "Үйлдэл шаардсан"
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__active
 msgid "Active"
-msgstr "Идэвхтэй"
+msgstr "Идэвхитэй"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_ids
@@ -114,7 +137,7 @@ msgstr "Ажилбар"
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Ажилбарын тайлбар"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_state
@@ -122,20 +145,10 @@ msgid "Activity State"
 msgstr "Ажилбарын төлөв"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "Ажилбарын төрлийн зураг"
-
-#. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__add
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_routing_change__change_type__add
 msgid "Add"
 msgstr "Нэмэх"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Add a description..."
-msgstr "Тайлбар нэмэх..."
 
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_tag_action
@@ -145,57 +158,48 @@ msgstr "Шинэ пайз нэмэх"
 #. module: mrp_plm
 #: model:res.groups,name:mrp_plm.group_plm_manager
 msgid "Administrator"
-msgstr "Администратор"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_id
 msgid "Alias"
-msgstr "Ерөнхий нэр"
+msgstr "Alias"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_contact
 msgid "Alias Contact Security"
-msgstr "Алиас хандалтын нууцлалт"
+msgstr "Хуурмаг холбогчийн нууцлал"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_name
 msgid "Alias Name"
-msgstr "Алиас нэр"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias Status"
-msgstr ""
+msgstr "Хуурмаг нэр"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_domain
 msgid "Alias domain"
-msgstr "Алиас домэйн"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr ""
+msgstr "Имэйл домэйн"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_model_id
 msgid "Aliased Model"
-msgstr "Алиастай модел"
+msgstr "Хуурмаг модель"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 #: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_search_mrp_plm
 msgid "All"
 msgstr "Бүх"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "All Approvals have be done"
+msgstr "Хийгдэх шаардлагатай бүх зөвшөөрлүүд"
+
+#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "All Validations"
 msgstr "Бүх баталгаажуулалтууд"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__allow_change_kanban_state
-msgid "Allow Change Kanban State"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__allow_change_stage
@@ -214,7 +218,6 @@ msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_tree
 msgid "Apply Changes"
 msgstr "Өөрчлөлтүүдийг хадгалах"
 
@@ -247,6 +250,11 @@ msgstr "Зөвшөөрлийн шат"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template__approval_type
 msgid "Approval Type"
 msgstr "Зөвшөөрлийн төрөл"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "Approval:"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__approval_ids
@@ -284,7 +292,6 @@ msgstr "Зөвшөөрнө, гэхдээ зөвшөөрөхгүй байж бо�
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_search_mrp_plm
 msgid "Archived"
 msgstr "Архивласан"
@@ -292,12 +299,19 @@ msgstr "Архивласан"
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__effectivity__asap
 msgid "As soon as possible"
-msgstr "Боломжтой болмогц"
+msgstr "Аль болох эрт"
 
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__effectivity__date
 msgid "At Date"
 msgstr "Тухайн өдрийн ханшаар"
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:0
+#, python-format
+msgid "Attachment"
+msgstr "Хавсралт"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_attachment_count
@@ -306,7 +320,6 @@ msgid "Attachment Count"
 msgstr "Хавсралтын тоо"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__mrp_document_ids
 #, python-format
@@ -314,7 +327,6 @@ msgid "Attachments"
 msgstr "Хавсралтууд"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__awaiting_my_validation
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Awaiting My Validation"
 msgstr ""
@@ -326,7 +338,7 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_report_mrp_report_bom_structure
-msgid "BOM Overview Report"
+msgid "BOM Structure Report"
 msgstr ""
 
 #. module: mrp_plm
@@ -337,10 +349,9 @@ msgstr "Орц"
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_bom_line
 msgid "Bill of Material Line"
-msgstr "Орцын мөр"
+msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.actions.act_window,name:mrp_plm.mrp_bom_action_kanban
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__bom_id
@@ -359,16 +370,9 @@ msgid ""
 msgstr ""
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__blocked
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_blocked:mrp_plm.ecostage_validated
-#, python-format
 msgid "Blocked"
-msgstr "Түгжигдсэн"
+msgstr "Хоригдсон"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__is_blocking
@@ -392,12 +396,15 @@ msgid "BoM Revision"
 msgstr "Орцын үзлэг"
 
 #. module: mrp_plm
-#. odoo-javascript
-#: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
 #: model_terms:ir.ui.view,arch_db:mrp_plm.report_mrp_bom_inherit_mrp_plm
-#, python-format
 msgid "BoM Version"
 msgstr ""
+
+#. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:0
+#, python-format
+msgid "BoM and Routing"
+msgstr "Орц ба шугам"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
@@ -436,8 +443,15 @@ msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Changes made on the operation."
+msgid "Changes made on the routing."
 msgstr ""
+
+#. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:0
+#, python-format
+msgid "Close"
+msgstr "Хаах"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__color
@@ -468,7 +482,6 @@ msgstr "Компани"
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_configuration
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "Configuration"
 msgstr "Тохиргоо"
 
@@ -477,7 +490,7 @@ msgstr "Тохиргоо"
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__conflict
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Conflict"
-msgstr "Зөрчилтэй"
+msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
@@ -487,7 +500,12 @@ msgstr ""
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__operation_change
 msgid "Consumed in Operation"
-msgstr "Ажиллагаанд хангагдсан"
+msgstr "Ажиллагаанд Хангагдсан"
+
+#. module: mrp_plm
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_bom_action_kanban
+msgid "Create a bill of materials"
+msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_stage_action
@@ -498,6 +516,19 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_type_action_dashboard
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_type_action_form
 msgid "Create a new ECO type"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_form
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
+#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_routing
+msgid "Create a new engineering change order"
 msgstr ""
 
 #. module: mrp_plm
@@ -525,11 +556,6 @@ msgid "Created on"
 msgstr "Үүсгэсэн огноо"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__alias_bounced_content
-msgid "Custom Bounced Message"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__effectivity
 msgid "Date on which the changes should be applied. For reference only."
 msgstr ""
@@ -540,31 +566,14 @@ msgid "Default Values"
 msgstr "Анхны утгууд"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Define the approval roles on the ECO stages."
-msgstr ""
-
-#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
 msgid "Delete"
 msgstr "Устгах"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__description
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Description"
-msgstr "Тайлбар"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__description
-msgid "Description and tooltips of the stage states."
-msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Description of the change and its reason."
-msgstr ""
+msgid "Description of the change and its reason ..."
+msgstr "Өөрчлөлт ба өөрчилсөн шалтгааны тайлбар ..."
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__bom_change_ids
@@ -573,7 +582,7 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__routing_change_ids
-msgid "Difference between old operation and new operation revision"
+msgid "Difference between old routing and new routing revision"
 msgstr ""
 
 #. module: mrp_plm
@@ -605,12 +614,18 @@ msgid "Done"
 msgstr "Дууссан"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Dropdown menu"
+msgstr "Эвхэгддэг цэс"
+
+#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_routing_change_view_form
 msgid "Duration"
 msgstr "Үргэлжлэх хугацаа"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__eco_id
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "ECO"
 msgstr "Техник өөрчлөх захиалга "
 
@@ -622,7 +637,6 @@ msgstr "Техник өөрчлөх захиалгын шинжилгээ"
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_eco_approval
-#: model:mail.activity.type,name:mrp_plm.mail_activity_eco_approval
 msgid "ECO Approval"
 msgstr ""
 
@@ -682,6 +696,11 @@ msgid "ECO Types"
 msgstr "Техник өөрчлөх захиалгын төрлүүд"
 
 #. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "ECO approvals"
+msgstr ""
+
+#. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_bom_change_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_routing_change_view_form
 msgid "ECO details"
@@ -690,7 +709,9 @@ msgstr "Техник өөрчлөх захиалгын дэлгэрэнгүй м
 #. module: mrp_plm
 #: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_stage_action
 msgid "ECO stages give the different stages for the Engineering Change Orders"
-msgstr "Техник өөрчлөх захиалгын шатууд нь техник өөрчлөх захиалгад үе шатуудыг өгдөг"
+msgstr ""
+"Техник өөрчлөх захиалгын шатууд нь техник өөрчлөх захиалгад үе шатуудыг "
+"өгдөг"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__eco_ids
@@ -703,16 +724,16 @@ msgid "ECO(s)"
 msgstr "Техник өөрчлөх захиалга(ууд)"
 
 #. module: mrp_plm
-#. odoo-javascript
-#: code:addons/mrp_plm/static/src/components/bom_overview_display_filter/mrp_bom_overview_display_filter.js:0
-#: code:addons/mrp_plm/static/src/components/bom_overview_line/mrp_bom_overview_line.js:0
-#: code:addons/mrp_plm/static/src/components/bom_overview_table/mrp_bom_overview_table.xml:0
+#. openerp-web
+#: code:addons/mrp_plm/static/src/js/mrp_bom_report.js:0
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_ecos
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__eco_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__eco_ids
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_eco_report
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_calendar
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_routing_view_form_inherit_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.product_template_view_form_inherit_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.report_mrp_bom_inherit_mrp_plm
 #, python-format
@@ -720,18 +741,21 @@ msgid "ECOs"
 msgstr "Техник өөрчлөх захиалгууд"
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
 msgid "Eco"
 msgstr "Эко"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Eco BoM"
 msgstr "Эко орц"
+
+#. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:0
+#, python-format
+msgid "Eco Routing"
+msgstr "Эко шугам"
 
 #. module: mrp_plm
 #: model:ir.model,name:mrp_plm.model_mrp_eco_routing_change
@@ -744,26 +768,30 @@ msgid "Edit Task"
 msgstr "Даалгавар засах"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity
 #: model:mrp.eco.stage,name:mrp_plm.ecostage_effective
 msgid "Effective"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity
+msgid "Effectivity"
+msgstr "Нөлөөлөл"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__effectivity_date
-msgid "Effective Date"
-msgstr "Хэрэгжсэн огноо"
+msgid "Effectivity Date"
+msgstr "Нөлөөллийн огноо"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_view_form
 msgid "Email Alias"
-msgstr "Ерөнхий имэйл"
+msgstr "Имэйл өмнөтгөл"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__email_cc
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
 msgid "Email cc"
-msgstr "Имэйл CC"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__eco_id
@@ -780,10 +808,12 @@ msgstr ""
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_approval
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_approval_my
+#: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_form
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_late
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_main
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_product_tmpl
 #: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_report
+#: model:ir.actions.act_window,name:mrp_plm.mrp_eco_action_routing
 msgid "Engineering Change Orders"
 msgstr "Техник өөрчлөх захиалгууд"
 
@@ -791,6 +821,11 @@ msgstr "Техник өөрчлөх захиалгууд"
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
 msgid "Engineering Changes"
 msgstr "Техникийн өөрчлөлтүүд"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+msgid "Exception Activities"
+msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
@@ -819,15 +854,16 @@ msgid "Followers"
 msgstr "Дагагчид"
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_channel_ids
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Дагагчид (Сувагууд)"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_partner_ids
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Дагагчид (Харилцагчид)"
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Font awesome icon ж.ш. fa-tasks"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__effectivity_date
@@ -837,17 +873,7 @@ msgstr ""
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Future Activities"
-msgstr "Ирээдүйн үйл ажиллагаанууд"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_done
-msgid "Green Kanban Label"
-msgstr "Ногоон Канбан Шошго"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_normal
-msgid "Grey Kanban Label"
-msgstr "Саарал Канбан Шошго"
+msgstr "Ирээдүйн ажилбар"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -855,13 +881,7 @@ msgid "Group by..."
 msgstr "Бүлэглэх..."
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__has_message
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__has_message
-msgid "Has Message"
-msgstr "Мессежтэй"
-
-#. module: mrp_plm
-#: model:ir.module.category,description:mrp_plm.module_category_manufacturing_product_lifecycle_management_(plm)
+#: model:ir.module.category,description:mrp_plm.module_category_manufacturing_plm
 msgid "Helps you manage your product's lifecycles."
 msgstr "Барааны мөчлөгийг удирдахад тусладаг."
 
@@ -884,8 +904,12 @@ msgstr "ID"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_parent_thread_id
-msgid "ID of the parent record holding the alias (example: project holding the task creation alias)"
-msgstr "Хуурмаг нэрийг агуулагч эцэг бичлэгийн ID (жишээ: даалгавар үүсгэсэн хуурмаг нэрийг агуулж байгаа төсөл)"
+msgid ""
+"ID of the parent record holding the alias (example: project holding the task"
+" creation alias)"
+msgstr ""
+"Хуурмаг нэрийг агуулагч эцэг бичлэгийн ID (жишээ: даалгавар үүсгэсэн хуурмаг"
+" нэрийг агуулж байгаа төсөл)"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_exception_icon
@@ -895,11 +919,13 @@ msgstr "Дүрс"
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Ажилбар дээр сануулга гарсныг илэрхийлэх зураг."
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_needaction
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_unread
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_needaction
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Хэрэв сонгогдсон бол, шинэ зурвасууд таны анхаарлыг шаардана."
 
@@ -912,19 +938,30 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Үүнийг сонговол алдаа үүсэх үед зурвасууд ирнэ."
 
 #. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_bounced_content
-msgid "If set, this content will automatically be sent out to unauthorized users instead of the default message."
+#: model:ir.model.fields,help:mrp_plm.field_mrp_bom__active
+msgid ""
+"If the active field is set to False, it will allow you to hide the bills of "
+"material without removing it."
 msgstr ""
+"Идэвхитэй талбарыг Худал гэж тохируулсан бол, орцыг устгалгүйгээр нуух "
+"бололцоотой болно."
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__active
-msgid "If the active field is set to False, it will allow you to hide the engineering change order without removing it."
+msgid ""
+"If the active field is set to False, it will allow you to hide the "
+"engineering change order without removing it."
 msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__image_128
 msgid "Image 128"
-msgstr "Зураг 128"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Important Messages"
+msgstr "Чухал зурвасууд"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
@@ -933,17 +970,10 @@ msgid "In #{kanban_getcolorname(record.color.raw_value)}"
 msgstr "#{kanban_getcolorname(record.color.raw_value)} дотор"
 
 #. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__kanban_state__normal
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_normal:mrp_plm.ecostage_validated
-#: model:mrp.eco.stage,name:mrp_plm.ecostage_progress
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
-#, python-format
+#: model:mrp.eco.stage,name:mrp_plm.ecostage_progress
 msgid "In Progress"
 msgstr "Явагдаж буй"
 
@@ -955,7 +985,7 @@ msgstr ""
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__is_closed
 msgid "Is Closed"
-msgstr "Хаагдсан"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_is_follower
@@ -974,29 +1004,26 @@ msgid "Is required to approve"
 msgstr "Батлах шаардлагатай"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_blocked
-msgid "Kanban Blocked Explanation"
-msgstr "Канбан Хаагдсан Тайлбар"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_normal
-msgid "Kanban Ongoing Explanation"
-msgstr "Канбан Үргэлжилж буй Тайлбар"
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__kanban_state
 msgid "Kanban State"
 msgstr "Канбан Төлөв"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__kanban_state_label
-msgid "Kanban State Label"
-msgstr "Канбан Төлөвийн шошго"
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
+msgid "Kit"
+msgstr "Бүрдэл"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__legend_done
-msgid "Kanban Valid Explanation"
-msgstr "Канбан Зөв Тайлбар"
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval_template____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_tag____last_update
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд зассан огноо"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__write_uid
@@ -1028,23 +1055,15 @@ msgid "Late Activities"
 msgstr "Хоцорсон ажилбар"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_production__latest_bom_id
-msgid "Latest Bom"
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__email_cc
+msgid "List of cc from incoming emails."
 msgstr ""
 
 #. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
-msgid ""
-"Manage your products and bills of materials changes with the ECO's.\n"
-"              Gather the related documentation and receive the necessary approvals\n"
-"              before applying your changes."
-msgstr ""
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_main_attachment_id
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Үндсэн хавсралт"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__upd_time_cycle_manual
@@ -1054,13 +1073,13 @@ msgstr "Гараар үргэлжлэх хугацааны өөрчлөлт"
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_master_data
 msgid "Master Data"
-msgstr "Мастер өгөгдөл"
+msgstr "Мастер Өгөгдөл"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_error
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_has_error
 msgid "Message Delivery error"
-msgstr "Зурвас илгээх алдаа"
+msgstr "Алдаа үүссэн талаарх зурвас"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_ids
@@ -1072,11 +1091,6 @@ msgstr "Зурвасууд"
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_tag_view_search
 msgid "Mrp Eco Tags"
 msgstr "Үйлдвэрлэлийн эко шошгууд"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Миний ажилбарын эцсийн огноо"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -1125,24 +1139,19 @@ msgid "New Product UoM"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__new_routing_id
+msgid "New Routing"
+msgstr "Шинэ шугам"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__new_time_cycle_manual
 msgid "New manual duration"
 msgstr "Шинэ гараар үргэлжлэх хугацаа"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__operation_id
-msgid "New or Previous Operation"
-msgstr ""
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__new_product_qty
 msgid "New revision quantity"
 msgstr "Шинэ үзлэгийн тоо"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_date_deadline
@@ -1158,22 +1167,6 @@ msgstr "Дараагийн ажилбарын гарчиг"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_type_id
 msgid "Next Activity Type"
 msgstr "Дараагийн ажилбарын төрөл"
-
-#. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_bom_action_kanban
-msgid "No bill of materials found. Let's create one!"
-msgstr "Одоогоор ямар нэг орцын бүртгэл алга. Шинээр үүсгэнэ үү!"
-
-#. module: mrp_plm
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_approval_my
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_late
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_main
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_product_tmpl
-#: model_terms:ir.actions.act_window,help:mrp_plm.mrp_eco_action_report
-msgid "No engineering change order found"
-msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__priority__0
@@ -1201,7 +1194,7 @@ msgstr "Үйлдлийн тоо"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_error_counter
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_has_error_counter
 msgid "Number of errors"
-msgstr "Алдааны тоо"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_needaction_counter
@@ -1216,6 +1209,12 @@ msgid "Number of messages with delivery error"
 msgstr "Алдааны мэдэгдэл бүхий зурвасын тоо"
 
 #. module: mrp_plm
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__message_unread_counter
+#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Уншаагүй зурвасын тоо"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__old_time_cycle_manual
 msgid "Old manual duration"
 msgstr "Хуучин гараар үргэлжлэх хугацаа"
@@ -1226,49 +1225,15 @@ msgid "Once the changes are applied, the ECOs will be moved to this stage."
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__operation_name
-msgid "Operation"
-msgstr "Ажилбар"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Operation Changes"
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr "Үйлдлийг дэмжих боломжгүй"
-
-#. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_force_thread_id
-msgid "Optional ID of a thread (record) to which all incoming messages will be attached, even if they did not reply to it. If set, this will disable the creation of new records completely."
-msgstr "Бүх ирж буй зурвасуудыг багцын ID бөгөөд зурвасууд нь хариулт биш байсан ч хамаагүй холбогдоно. Хэрэв тохируулвал шинэ бичлэг үүсэх явдлыг бүхэлд нь идэвхигүй болгоно."
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_document__origin_attachment_id
-msgid "Origin Attachment"
+msgid ""
+"Optional ID of a thread (record) to which all incoming messages will be "
+"attached, even if they did not reply to it. If set, this will disable the "
+"creation of new records completely."
 msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_blocked
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_blocked
-msgid "Override the default value displayed for the blocked state for kanban selection, when the ECO is in that stage."
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_done
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_done
-msgid "Override the default value displayed for the done state for kanban selection, when the ECO is in that stage."
-msgstr ""
-
-#. module: mrp_plm
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco__legend_normal
-#: model:ir.model.fields,help:mrp_plm.field_mrp_eco_stage__legend_normal
-msgid "Override the default value displayed for the normal state for kanban selection, when the ECO is in that stage."
-msgstr ""
+"Мөчир (бичлэг) - ийн сонгож болох ID хувийн дугаар бөгөөд ирж буй зурвасууд "
+"нь хариулт биш байсан ч хамаагүй холбогдоно. Хэрэв тохируулвал шинэ бичлэг "
+"үүсэх явдлыг бүхэлд нь идэвхигүй болгоно."
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_dashboard
@@ -1281,7 +1246,7 @@ msgid "Owner"
 msgstr "Эзэмшигч"
 
 #. module: mrp_plm
-#: model:ir.module.category,name:mrp_plm.module_category_manufacturing_product_lifecycle_management_(plm)
+#: model:ir.module.category,name:mrp_plm.module_category_manufacturing_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_root
 msgid "PLM"
 msgstr "Барааны Амьдрах Мөчлөгийн Удирлага"
@@ -1303,8 +1268,14 @@ msgstr "Эцэг салбар бичлэгийн ID"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_parent_model_id
-msgid "Parent model holding the alias. The model holding the alias reference is not necessarily the model given by alias_model_id (example: project (parent_model) and task (model))"
-msgstr "Хуурмаг нэрийг хадгалагч эцэг модель.  Хуурмаг нэрийн сурвалж хадгалагч модель нь alias_model_id -р өгөгдөх модель байх албагүй (жишээ: төсөл (parent_model) ба даалгавар (model))"
+msgid ""
+"Parent model holding the alias. The model holding the alias reference is not"
+" necessarily the model given by alias_model_id (example: project "
+"(parent_model) and task (model))"
+msgstr ""
+"Хуурмаг нэрийг хадгалагч эцэг модель.  Хуурмаг нэрийн сурвалж хадгалагч "
+"модель нь alias_model_id -р өгөгдөх модель байх албагүй (жишээ: төсөл "
+"(parent_model) ба даалгавар (model))"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_contact
@@ -1345,6 +1316,11 @@ msgid "Previous Product UoM"
 msgstr ""
 
 #. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__previous_routing_id
+msgid "Previous Routing"
+msgstr "Өмнөх шугам"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__old_product_qty
 msgid "Previous revision quantity"
 msgstr "Өмнөх үзлэгийн тоо"
@@ -1355,30 +1331,24 @@ msgid "Priority"
 msgstr "Урьтамж"
 
 #. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_product_template
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__product_tmpl_id
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__product_id
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_kanban
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_bom_change_view_form
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Product"
 msgstr "Бараа"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "Product Only"
 msgstr ""
 
 #. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_mrp_document
-msgid "Production Document"
-msgstr "Үйлдвэрлэлийн баримт бичиг"
-
-#. module: mrp_plm
-#: model:ir.model,name:mrp_plm.model_mrp_production
-msgid "Production Order"
-msgstr "Үйлдвэрлэлийн захиалга"
+#: model:ir.model,name:mrp_plm.model_product_template
+msgid "Product Template"
+msgstr "Барааны загвар"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__active
@@ -1394,23 +1364,6 @@ msgstr "Бараа"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__upd_product_qty
 msgid "Quantity"
 msgstr "Тоо хэмжээ"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__rating_ids
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
-#: code:addons/mrp_plm/models/mrp_eco.py:0
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_effective
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_new
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_progress
-#: model:mrp.eco.stage,legend_done:mrp_plm.ecostage_validated
-#, python-format
-msgid "Ready"
-msgstr "Бэлэн"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__rebase_id
@@ -1430,11 +1383,6 @@ msgid "Record Thread ID"
 msgstr "Бичлэгийн Мөчирийн ID"
 
 #. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__legend_blocked
-msgid "Red Kanban Label"
-msgstr "Улаан Канбан Шошго"
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__name
 msgid "Reference"
 msgstr "Холбогдол"
@@ -1447,17 +1395,16 @@ msgstr "Татгалзах"
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_approval__status__rejected
 msgid "Rejected"
-msgstr "Түтгэлзүүлсэн"
+msgstr "Буцаасан"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__displayed_image_attachment_id
 msgid "Related attachment"
-msgstr "Холбоотой хавсралт файл"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__remove
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_routing_change__change_type__remove
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
 msgid "Remove"
 msgstr "Хасах"
 
@@ -1479,7 +1426,18 @@ msgstr "Хариуцагч"
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__activity_user_id
 msgid "Responsible User"
-msgstr "Эд хариуцагч"
+msgstr "Хариуцсан хэрэглэгч"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__revision_ids
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__revision_ids
+msgid "Revision"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Revision :"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_approval__name
@@ -1488,15 +1446,39 @@ msgid "Role"
 msgstr "Дүр"
 
 #. module: mrp_plm
+#: code:addons/mrp_plm/models/mrp_eco.py:0
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__routing_id
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
+#, python-format
 msgid "Routing"
+msgstr "Шугам"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Routing Changes"
+msgstr "Шугамын өөрчлөлтүүд"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__new_routing_revision
+msgid "Routing Revision"
+msgstr "Шугамын үзлэг"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Routing:"
+msgstr "Шугам:"
+
+#. module: mrp_plm
+#: model:ir.model,name:mrp_plm.model_mrp_routing
+#: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_routings
+msgid "Routings"
 msgstr "Шугам"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_has_sms_error
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "SMS илгээлтийн алдаа"
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.ui.menu,name:mrp_plm.menu_mrp_plm_search
@@ -1516,6 +1498,23 @@ msgid "Set Cover Image"
 msgstr "Ковер зураг солих"
 
 #. module: mrp_plm
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:0
+#, python-format
+msgid "Set a Cover Image"
+msgstr "Ковер зураг солих"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_type_dashboard_view_kanban
+msgid "Settings"
+msgstr "Тохиргоо"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Short Summary"
+msgstr "Богино хураангуй"
+
+#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__allow_apply_change
 msgid "Show Apply Change"
 msgstr "Өөрчлөлтийг хадгалахыг харуулах"
@@ -1523,7 +1522,14 @@ msgstr "Өөрчлөлтийг хадгалахыг харуулах"
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "Show all records which has next action date is before today"
-msgstr "Өнөөдрийг хүртэлх хугацаанд дараагийн ажилбарын огноо нь тохируулагдсан бүх тэмдэглэлүүд"
+msgstr ""
+"Өнөөдрийг хүртэлх хугацаанд дараагийн ажилбарын огноо нь тохируулагдсан бүх "
+"тэмдэглэлүүд"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Someone rejected this change"
+msgstr "Хэн нэгэн энэ өөрчлөлтийг татгалзсан"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__stage_id
@@ -1533,19 +1539,14 @@ msgid "Stage"
 msgstr "Үе шат"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Stage Description and Tooltips"
-msgstr "Үеийн тайлбар болон Багажийн зөвлөмжүүд"
-
-#. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__stage_ids
 msgid "Stages"
 msgstr "Үе шат"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "Start Revision"
-msgstr ""
+msgid "Start New Revision"
+msgstr "Шинэ үзлэг эхлүүлэх"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -1572,15 +1573,16 @@ msgstr ""
 "Төлөвлөгдсөн: Ирээдүйд гүйцэтгэх ажилбарууд"
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
-msgid "Successfully Rebased!"
+msgid "Successfully Rebased !"
 msgstr ""
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "System will automatically resolved the conflict(s) and apply changes. Do you agree?"
+msgid ""
+"System will automatically resolved the conflict(s) and apply changes. Do you"
+" agree?"
 msgstr ""
 
 #. module: mrp_plm
@@ -1590,24 +1592,14 @@ msgstr "Пайзын нэр"
 
 #. module: mrp_plm
 #: model:ir.model.constraint,message:mrp_plm.constraint_mrp_eco_tag_name_uniq
-msgid "Tag name already exists!"
-msgstr ""
+msgid "Tag name already exists !"
+msgstr "Пайзын нэр аль хэдийн үүссэн байна !"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__tag_ids
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_tag_view_tree
 msgid "Tags"
 msgstr "Пайз"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Task in progress. Click to block or set as done."
-msgstr "Даалгавар явагдаж байна. Хориглох эсвэл хийсэн -г дарах"
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "Task is blocked. Click to unblock or set as done."
-msgstr "Даалгавар хориглогдсон байна. Хориг цуцлах эсвэл хийсэн-г дарах"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__user_can_approve
@@ -1642,23 +1634,45 @@ msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_model_id
-msgid "The model (Odoo Document Kind) to which this alias corresponds. Any incoming email that does not reply to an existing record will cause the creation of a new record of this model (e.g. a Project Task)"
-msgstr "Хуурмаг нэрийн харгалзах модель (Odoo-н баримтын төрөл). Байгаа бичлэг рүү хариулаагүй бүх ирж буй имэйл нь энэ моделийн шин бичлэгийг үүсгэнэ (Ж. Төслийн даалгавар)"
+msgid ""
+"The model (Odoo Document Kind) to which this alias corresponds. Any incoming"
+" email that does not reply to an existing record will cause the creation of "
+"a new record of this model (e.g. a Project Task)"
+msgstr ""
+"Хуурмаг нэрийн харгалзах модель (Odoo-н баримтын төрөл). Байгаа бичлэг рүү "
+"хариулаагүй бүх ирж буй имэйл нь энэ моделийн шин бичлэгийг үүсгэнэ (Ж. "
+"Төслийн даалгавар)"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_name
-msgid "The name of the email alias, e.g. 'jobs' if you want to catch emails for <jobs@example.odoo.com>"
-msgstr "Имэйл алиасын нэр, ж.нь. <jobs@example.odoo.com> хаягийн имэйлийг хүлээн авах бол 'jobs'"
+msgid ""
+"The name of the email alias, e.g. 'jobs' if you want to catch emails for "
+"<jobs@example.odoo.com>"
+msgstr ""
+"Имэйл хуурмаг нэр, ж.нь. <jobs@example.odoo.com> хаягийн имэйлийг хүлээн "
+"авах бол 'jobs'"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco_type__alias_user_id
-msgid "The owner of records created upon receiving emails on this alias. If this field is not set the system will attempt to find the right owner based on the sender (From) address, or will use the Administrator account if no system user is found for that address."
-msgstr "Энэ хуурмаг нэр дээр хүлээн авсан имэйлээс үүсэх бичлэгүүдийн эзэмшигч. Хэрэв энэ талбар тохируулагдаагүй байвал илгээгчийн (Хэнээс) хаягаас зөв эзэмшигчийг автоматаар тогтоох гэж систем оролдоно. Эсвэл энэ хаяг дээр систем хэрэглэгч олдохгүй бол Administrator-ийг онооно."
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
+msgstr ""
+"Энэ хуурмаг нэр дээр хүлээн авсан имэйлээс үүсэх бичлэгүүдийн эзэмшигч. "
+"Хэрэв энэ талбар тохируулагдаагүй байвал илгээгчийн (Хэнээс) хаягаас зөв "
+"эзэмшигчийг автоматаар тогтоох гэж систем оролдоно. Эсвэл энэ хаяг дээр "
+"систем хэрэглэгч олдохгүй бол Administrator-ийг онооно."
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "This step is done. Click to block or set in progress."
-msgstr "Алхам хийгдсэн.Хориглосон эсвэл Явагдаж буйг дарна"
+#. openerp-web
+#: code:addons/mrp_plm/static/src/xml/mrp_plm_templates.xml:0
+#, python-format
+msgid ""
+"There is no available image to be set as cover. Add an image as an "
+"attachment to the the engineering order."
+msgstr ""
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_validation
@@ -1671,7 +1685,7 @@ msgstr "Хэрэглэх"
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco__state__confirmed
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
 msgid "To Do"
-msgstr "Товлогдсон"
+msgstr "Хийх"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_search
@@ -1682,28 +1696,31 @@ msgstr "Өнөөдрийн ажилбар"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__type_id
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__change_type
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_routing_change__change_type
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__type_id
 msgid "Type"
 msgstr "Төрөл"
 
 #. module: mrp_plm
 #: model:ir.model.fields,help:mrp_plm.field_mrp_eco__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Бичлэг дээрх асуудал бүхий ажилбарын төрөл"
-
-#. module: mrp_plm
-#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_stage__type_ids
-msgid "Types"
 msgstr ""
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.view_document_file_kanban_mrp_plm
-msgid "Undo"
-msgstr "Үйлдлийг буцаах"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_bom_change__uom_change
 msgid "Unit of Measure"
 msgstr "Хэмжих нэгж"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_unread
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_unread
+msgid "Unread Messages"
+msgstr "Уншаагүй зурвас"
+
+#. module: mrp_plm
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco__message_unread_counter
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Уншаагүй зурвасын тоолуур"
 
 #. module: mrp_plm
 #: model:ir.model.fields.selection,name:mrp_plm.selection__mrp_eco_bom_change__change_type__update
@@ -1712,8 +1729,18 @@ msgid "Update"
 msgstr "Шинэчлэлт"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_plm_production_form_view
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
 msgid "Update BoM"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Update Documents"
+msgstr ""
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
+msgid "Update Routing"
 msgstr ""
 
 #. module: mrp_plm
@@ -1733,6 +1760,7 @@ msgstr "Батлагдсан"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_bom__version
+#: model:ir.model.fields,field_description:mrp_plm.field_mrp_routing__version
 #: model:ir.model.fields,field_description:mrp_plm.field_product_product__version
 #: model:ir.model.fields,field_description:mrp_plm.field_product_template__version
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_bom_view_form_inherit_plm
@@ -1743,6 +1771,11 @@ msgstr "Хувилбар"
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_approvals
 msgid "Waiting Approvals"
 msgstr "Зөвшөөрлүүд хүлээж буй"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
+msgid "Waiting for Approvals"
+msgstr "Зөвшөөрлүүдийг хүлээж буй"
 
 #. module: mrp_plm
 #: model:ir.model.fields,field_description:mrp_plm.field_mrp_eco_type__nb_approvals_my
@@ -1772,35 +1805,21 @@ msgid "Work Centers"
 msgstr "Дамжлага"
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid "You can also add a description to help your coworkers understand the meaning and purpose of the stage."
-msgstr "Шатын утга ба зорилгыг хамтран ажиллагсдадаа ойлгуулахын тулд та тайлбар нэмж болно."
-
-#. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
-msgid ""
-"You can define here labels that will be displayed for the state instead\n"
-"                            of the default labels."
-msgstr ""
-
-#. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "You cannot change the stage, as approvals are required in the process."
 msgstr "Яваандаа зөвшөөрөл шаардлагатай тул шатыг өөрчлөх боломжгүй."
 
 #. module: mrp_plm
-#. odoo-python
 #: code:addons/mrp_plm/models/mrp_eco.py:0
 #, python-format
 msgid "You cannot change the stage, as approvals are still required."
 msgstr "Зөвшөөрлүүд шаардлагатай хэвээр байгаа тул шатыг өөрчлөх боломжгүй."
 
 #. module: mrp_plm
-#: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_view_form
-msgid "e.g. Awesome Product 2.0"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "by"
+msgstr "аар"
 
 #. module: mrp_plm
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_stage_view_form
@@ -1811,3 +1830,8 @@ msgstr "ж.нь. техникийн хэлтэс"
 #: model_terms:ir.ui.view,arch_db:mrp_plm.mrp_eco_kanban
 msgid "oe_kanban_text_red"
 msgstr "oe_kanban_text_red"
+
+#. module: mrp_plm
+#: model_terms:ir.ui.view,arch_db:mrp_plm.message_approval
+msgid "was"
+msgstr ""

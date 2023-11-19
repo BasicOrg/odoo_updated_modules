@@ -1,12 +1,8 @@
-body:not(.o_touch_device) .o_settings_container .o_field_selection {
-    &:not(:hover):not(:focus-within) {
-        & select:not(:hover) {
-            background: transparent $o-caret-down no-repeat right center;
-        }
-    }
+.o-settings-form-view .o_view_nocontent {
+   position: static;
 }
 
-.o_base_settings_view .o_form_renderer {
+.o_base_settings {
    height: 100%;
    overflow: auto;
 }
@@ -16,6 +12,44 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
    > * {
       overflow: auto;
       flex: 1 0 auto;
+   }
+}
+
+.o_setting_box {
+   margin-bottom: 8px;
+   margin-top: 8px;
+   position: relative;
+}
+
+.o_setting_left_pane {
+   width: 24px;
+   float: left;
+}
+
+.o_setting_right_pane {
+   margin-left: 24px;
+   border-left: 1px solid $border-color;
+   padding-left: 12px;
+
+   .o_input_dropdown > .o_input {
+      width: 100%;
+   }
+
+   .o_field_widget {
+      width: 50%;
+      flex: 0 0 auto;
+
+      &.o_field_many2manytags > .o_field_widget {
+         flex: 1 0 50px;
+      }
+   }
+
+   button.btn-link:first-child {
+      padding: 0;
+   }
+
+   a.oe-link {
+      font-size: 12px;
    }
 }
 
@@ -35,17 +69,17 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
 }
 
 // Use a very specif selector to overwrite generic form-view rules
-.o_form_view.o_base_settings_view .o_form_renderer.o_form_nosheet {
+.o_form_view.o_form_nosheet.o_base_settings {
    display: flex;
    flex-flow: column nowrap;
    padding: 0px;
 }
 
 // BASE SETTINGS LAYOUT
-.o_base_settings_view .o_form_renderer {
-   --settings__tab-bg: #{map-get($grays, '100')};
-   --settings__tab-bg--active: #{$o-component-active-bg};
-   --settings__tab-color: #{map-get($grays, '700')};
+.o_base_settings {
+   --settings__tab-bg: #{map-get($grays, '900')};
+   --settings__tab-bg--active: #{map-get($grays, '800')};
+   --settings__tab-color: #{map-get($grays, '400')};
    --settings__title-bg: #{map-get($grays, '200')};
 
    height: 100%;
@@ -57,6 +91,33 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
            display: flex;
            flex-flow: row wrap;
            width: 100%;
+
+           .o_settings_title, .o_setting_search {
+               flex: 1 0 auto;
+               width: map-get($o-extra-grid-breakpoints, vsm) / 2;
+           }
+
+           .o_setting_search {
+               position: relative;
+
+               .searchInput {
+                   border: 0px;
+                   max-width: 400px;
+                   border-bottom: 1px solid $border-color;
+                   box-shadow: none;
+               }
+
+               .searchIcon {
+                   @include o-position-absolute($right: 0);
+                   color: map-get($grays, '700');
+               }
+
+               &:focus-within {
+                   .searchInput {
+                       border-bottom-color: $primary;
+                   }
+               }
+           }
        }
 
        .o_form_statusbar {
@@ -79,8 +140,8 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
            overflow: auto;
 
            .selected {
-               background-color: var(--settings__tab-bg--active, #{$o-component-active-bg});
-               box-shadow: inset 2px 0 0 $o-component-active-border;
+               background-color: var(--settings__tab-bg--active);
+               box-shadow: inset 2px 0 0 $o-brand-primary;
            }
 
            .tab {
@@ -100,7 +161,7 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
                }
 
                &:hover, &.selected {
-                   color: $o-gray-900;
+                   color: white;
                }
            }
        }
@@ -114,7 +175,7 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
            > .app_settings_block {
                h2 {
                    margin: 0 0 !important;
-                   @include o-base-settings-horizontal-padding(.7rem);
+                   @include o-base-settings-horizontal-padding(.4rem);
                    background-color: var(--settings__title-bg);
                    font-size: 15px;
 
@@ -125,16 +186,14 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
 
                h3 {
                    margin: 0 0 !important;
-                   @include o-base-settings-horizontal-padding(.7rem);
+                   @include o-base-settings-horizontal-padding(.4rem);
                    font-weight: 400;
                    font-size: 13px;
                }
 
                .o_settings_container {
                    max-width: map-get($grid-breakpoints, lg); // Provide a maximum container size to ensure readability
-                   @include media-breakpoint-up(md) {
-                        @include o-base-settings-horizontal-padding(0);
-                   }
+                   @include o-base-settings-horizontal-padding(0);
                    margin-bottom: 24px;
                }
            }
@@ -164,10 +223,6 @@ body:not(.o_touch_device) .o_settings_container .o_field_selection {
            .highlighter {
                background: yellow;
            }
-
-            .o_datepicker .o_datepicker_button {
-                visibility: visible;
-            }
        }
 
        .d-block {

@@ -10,11 +10,10 @@
                 <attribute name="groups">stock.group_stock_manager</attribute>
             </field>
             <field name="picking_ids" position="after">
-                <field name="target_model" invisible="1" readonly="state == 'done'"/>
+                <field name="target_model" invisible="1"/>
                 <field name="mrp_production_ids" 
                     widget="many2many_tags" options="{'no_create_edit': True}"
-                    invisible="target_model != 'manufacturing'"
-                    readonly="state == 'done'"
+                    attrs="{'invisible': [('target_model', '!=', 'manufacturing')]}"
                     domain="[('company_id', '=', company_id), ('move_finished_ids.stock_valuation_layer_ids', '!=', False)]"/>
             </field>
         </field>

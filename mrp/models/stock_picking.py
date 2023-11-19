@@ -9,7 +9,7 @@ class StockPickingType(models.Model):
 
     code = fields.Selection(selection_add=[
         ('mrp_operation', 'Manufacturing')
-    ], ondelete={'mrp_operation': lambda recs: recs.write({'code': 'incoming', 'active': False})})
+    ], ondelete={'mrp_operation': 'cascade'})
     count_mo_todo = fields.Integer(string="Number of Manufacturing Orders to Process",
         compute='_get_mo_count')
     count_mo_waiting = fields.Integer(string="Number of Manufacturing Orders Waiting",
@@ -26,70 +26,42 @@ class StockPickingType(models.Model):
         help="Allow automatic consumption of tracked components that are reserved",
     )
 
-    auto_print_done_production_order = fields.Boolean(
-        "Auto Print Done Production Order",
-        help="If this checkbox is ticked, Odoo will automatically print the production order of a MO when it is done.")
-    auto_print_done_mrp_product_labels = fields.Boolean(
-        "Auto Print Produced Product Labels",
-        help="If this checkbox is ticked, Odoo will automatically print the product labels of a MO when it is done.")
-    mrp_product_label_to_print = fields.Selection(
-        [('pdf', 'PDF'), ('zpl', 'ZPL')],
-        "Product Label to Print", default='pdf')
-    auto_print_done_mrp_lot = fields.Boolean(
-        "Auto Print Produced Lot Label",
-        help="If this checkbox is ticked, Odoo will automatically print the lot/SN label of a MO when it is done.")
-    done_mrp_lot_label_to_print = fields.Selection(
-        [('pdf', 'PDF'), ('zpl', 'ZPL')],
-        "Lot/SN Label to Print", default='pdf')
-    auto_print_mrp_reception_report = fields.Boolean(
-        "Auto Print Allocation Report",
-        help="If this checkbox is ticked, Odoo will automatically print the allocation report of a MO when it is done and has assigned moves.")
-    auto_print_mrp_reception_report_labels = fields.Boolean(
-        "Auto Print Allocation Report Labels",
-        help="If this checkbox is ticked, Odoo will automatically print the allocation report labels of a MO when it is done.")
-    auto_print_generated_mrp_lot = fields.Boolean(
-        "Auto Print Generated Lot/SN Label",
-        help='Automatically print the lot/SN label when the "Create a new serial/lot number" button is used.')
-    generated_mrp_lot_label_to_print = fields.Selection(
-        [('pdf', 'PDF'), ('zpl', 'ZPL')],
-        "Generated Lot/SN Label to Print", default='pdf')
-
-    @api.depends('code')
-    def _compute_use_create_lots(self):
-        super()._compute_use_create_lots()
-        for picking_type in self:
-            if picking_type.code == 'mrp_operation':
-                picking_type.use_create_lots = True
-
-    @api.depends('code')
-    def _compute_use_existing_lots(self):
-        super()._compute_use_existing_lots()
-        for picking_type in self:
-            if picking_type.code == 'mrp_operation':
-                picking_type.use_existing_lots = True
-
     def _get_mo_count(self):
         mrp_picking_types = self.filtered(lambda picking: picking.code == 'mrp_operation')
-        remaining = (self - mrp_picking_types)
-        remaining.count_mo_waiting = remaining.count_mo_todo = remaining.count_mo_late = False
+        if not mrp_picking_types:
+            self.count_mo_waiting = False
+            self.count_mo_todo = False
+            self.count_mo_late = False
+            return
         domains = {
             'count_mo_waiting': [('reservation_state', '=', 'waiting')],
             'count_mo_todo': ['|', ('state', 'in', ('confirmed', 'draft', 'progress', 'to_close')), ('is_planned', '=', True)],
-            'count_mo_late': [('date_start', '<', fields.Date.today()), ('state', '=', 'confirmed')],
+            'count_mo_late': [('date_planned_start', '<', fields.Date.today()), ('state', '=', 'confirmed')],
         }
-        for key, domain in domains.items():
-            data = self.env['mrp.production']._read_group(domain +
-                [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', mrp_picking_types.ids)],
-                ['picking_type_id'], ['__count'])
-            count = {picking_type.id: count for picking_type, count in data}
+        for field in domains:
+            data = self.env['mrp.production']._read_group(domains[field] +
+                [('state', 'not in', ('done', 'cancel')), ('picking_type_id', 'in', self.ids)],
+                ['picking_type_id'], ['picking_type_id'])
+            count = {x['picking_type_id'] and x['picking_type_id'][0]: x['picking_type_id_count'] for x in data}
             for record in mrp_picking_types:
-                record[key] = count.get(record.id, 0)
+                record[field] = count.get(record.id, 0)
+        remaining = (self - mrp_picking_types)
+        if remaining:
+            remaining.count_mo_waiting = False
+            remaining.count_mo_todo = False
+            remaining.count_mo_late = False
 
     def get_mrp_stock_picking_action_picking_type(self):
         action = self.env["ir.actions.actions"]._for_xml_id('mrp.mrp_production_action_picking_deshboard')
         if self:
             action['display_name'] = self.display_name
         return action
+
+    @api.onchange('code')
+    def _onchange_code(self):
+        if self.code == 'mrp_operation':
+            self.use_create_lots = True
+            self.use_existing_lots = True
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

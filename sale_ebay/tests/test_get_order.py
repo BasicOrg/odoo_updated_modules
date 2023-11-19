@@ -11,7 +11,7 @@ from .test_data import EBAY_ANSWER_1
 class TestEbay(TransactionCase):
     def setUp(self):
         # we just want the response eBay gives us to have a method 'dict' that actually contains the data
-        # e.g. we do response = self._ebay_execute('GetOrders', call_data); order_dict = response.dict()
+        # e.g. we do response = self.ebay_execute('GetOrders', call_data); order_dict = response.dict()
         def fake_execute_data(data):
             class X(object):
                 def dict(self):
@@ -26,7 +26,7 @@ class TestEbay(TransactionCase):
 
     def test_synchronize_order(self):
         """Test importing two basic orders with three transactions."""
-        with patch('odoo.addons.sale_ebay.models.product.ProductTemplate._ebay_execute',
+        with patch('odoo.addons.sale_ebay.models.product.ProductTemplate.ebay_execute',
                    new=self.fake_execute_data(EBAY_ANSWER_1)), patch('odoo.addons.sale_ebay.models.product.ProductTemplate._ebay_configured', new=lambda d: True):
             number_of_sos = []
             number_of_sos.append(self.env['sale.order'].search_count([]))

@@ -9,6 +9,7 @@ class ResPartner(models.Model):
 
     property_stock_subcontractor = fields.Many2one(
         'stock.location', string="Subcontractor Location", company_dependent=True,
+        domain="[('is_subcontracting_location', '=', True)]",
         help="The stock location used as source and destination when sending\
         goods to this contact during a subcontracting process.")
     is_subcontractor = fields.Boolean(
@@ -18,30 +19,30 @@ class ResPartner(models.Model):
     picking_ids = fields.Many2many('stock.picking', compute='_compute_picking_ids', string="Stock Pickings for which the Partner is the subcontractor")
 
     def _compute_bom_ids(self):
-        results = self.env['mrp.bom']._read_group([('subcontractor_ids.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['subcontractor_ids'], ['id:array_agg'])
+        results = self.env['mrp.bom'].read_group([('subcontractor_ids.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['ids:array_agg(id)', 'subcontractor_ids'], ['subcontractor_ids'])
         for partner in self:
             bom_ids = []
-            for subcontractor, ids in results:
-                if partner.id == subcontractor.id or subcontractor.id in partner.child_ids.ids:
-                    bom_ids += ids
+            for res in results:
+                if partner.id == res['subcontractor_ids'][0] or res['subcontractor_ids'][0] in partner.child_ids.ids:
+                    bom_ids += res['ids']
             partner.bom_ids = bom_ids
 
     def _compute_production_ids(self):
-        results = self.env['mrp.production']._read_group([('subcontractor_id.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['subcontractor_id'], ['id:array_agg'])
+        results = self.env['mrp.production'].read_group([('subcontractor_id.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['ids:array_agg(id)'], ['subcontractor_id'])
         for partner in self:
             production_ids = []
-            for subcontractor, ids in results:
-                if partner.id == subcontractor.id or subcontractor.id in partner.child_ids.ids:
-                    production_ids += ids
+            for res in results:
+                if partner.id == res['subcontractor_id'][0] or res['subcontractor_id'][0] in partner.child_ids.ids:
+                    production_ids += res['ids']
             partner.production_ids = production_ids
 
     def _compute_picking_ids(self):
-        results = self.env['stock.picking']._read_group([('partner_id.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['partner_id'], ['id:array_agg'])
+        results = self.env['stock.picking'].read_group([('partner_id.commercial_partner_id', 'in', self.commercial_partner_id.ids)], ['ids:array_agg(id)'], ['partner_id'])
         for partner in self:
             picking_ids = []
-            for partner_rg, ids in results:
-                if partner_rg.id == partner.id or partner_rg.id in partner.child_ids.ids:
-                    picking_ids += ids
+            for res in results:
+                if partner.id == res['partner_id'][0] or res['partner_id'][0] in partner.child_ids.ids:
+                    picking_ids += res['ids']
             partner.picking_ids = picking_ids
 
     def _search_is_subcontractor(self, operator, value):

@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { initCallbackRegistry } from "@spreadsheet/o_spreadsheet/init_callbacks";
-import { Domain } from "@web/core/domain";
+import spreadsheet, {
+    initCallbackRegistry,
+} from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
 const uuidGenerator = new spreadsheet.helpers.UuidGenerator();
 
@@ -14,12 +14,8 @@ export function insertChart(chartData) {
             order: chartData.metaData.order,
             resModel: chartData.metaData.resModel,
         },
-        searchParams: {
-            ...chartData.searchParams,
-            domain: new Domain(chartData.searchParams.domain).toJson(),
-        },
+        searchParams: { ...chartData.searchParams },
         stacked: chartData.metaData.stacked,
-        cumulative: chartData.metaData.cumulated,
         title: chartData.name,
         background: "#FFFFFF",
         legendPosition: "top",

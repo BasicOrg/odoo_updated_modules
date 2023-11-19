@@ -15,19 +15,19 @@
                     <group> 
                         <field name="journal_id" options="{'no_open': True, 'no_create': True}"/>
                         <field name="payment_method_line_id" widget="radio"
-                            invisible="hide_payment_method_line" />
+                            attrs="{'invisible': [('hide_payment_method_line', '=', True)]}" />
                         <field name="partial_mode" widget="radio"
-                            invisible="hide_partial" />
+                            attrs="{'invisible': [('hide_partial', '=', True)]}" />
                     </group>
                     <group> 
-                        <field name="amount" widget="monetary"/>
+                        <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}" />
                         <field name="date" />
                         <field name="memo" />
                     </group>
                 </group>
                 <footer>
                     <button string="Create Payment" name="action_create_payments" type="object" class="oe_highlight" close="1" data-hotkey="q"/>
-                    <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

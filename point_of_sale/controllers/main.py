@@ -6,7 +6,6 @@ from odoo.http import request
 from odoo.osv.expression import AND
 from odoo.tools import format_amount
 from odoo.addons.account.controllers.portal import PortalAccount
-from datetime import timedelta, datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ class PosController(PortalAccount):
 
         The right pos session will be selected to open, if non is open yet a new session will be created.
 
-        /pos/ui and /pos/web both can be used to access the POS. On the SaaS,
+        /pos/ui and /pos/web both can be used to acces the POS. On the SaaS,
         /pos/ui uses HTTPS while /pos/web uses HTTP.
 
         :param debug: The debug mode to load the session in.
@@ -28,9 +27,6 @@ class PosController(PortalAccount):
         :type config_id: str.
         :returns: object -- The rendered pos session.
         """
-        is_internal_user = request.env.user.has_group('base.group_user')
-        if not is_internal_user:
-            return request.not_found()
         domain = [
                 ('state', 'in', ['opening_control', 'opened']),
                 ('user_id', '=', request.session.uid),
@@ -38,7 +34,6 @@ class PosController(PortalAccount):
                 ]
         if config_id:
             domain = AND([domain,[('config_id', '=', int(config_id))]])
-            pos_config = request.env['pos.config'].sudo().browse(int(config_id))
         pos_session = request.env['pos.session'].sudo().search(domain, limit=1)
 
         # The same POS session can be opened by a different user => search without restricting to
@@ -51,15 +46,14 @@ class PosController(PortalAccount):
                 ('config_id', '=', int(config_id)),
             ]
             pos_session = request.env['pos.session'].sudo().search(domain, limit=1)
-        if not pos_session or config_id and not pos_config.active:
+
+        if not pos_session:
             return request.redirect('/web#action=point_of_sale.action_client_pos_menu')
-        # The POS only works in one company, so we enforce the one of the session in the context
+        # The POS only work in one company, so we enforce the one of the session in the context
         company = pos_session.company_id
         session_info = request.env['ir.http'].session_info()
         session_info['user_context']['allowed_company_ids'] = company.ids
         session_info['user_companies'] = {'current_company': company.id, 'allowed_companies': {company.id: session_info['user_companies']['allowed_companies'][company.id]}}
-        session_info['nomenclature_id'] = pos_session.company_id.nomenclature_id.id
-        session_info['fallback_nomenclature_id'] = pos_session._get_pos_fallback_nomenclature_id()
         context = {
             'session_info': session_info,
             'login_number': pos_session.login(),
@@ -91,40 +85,6 @@ class PosController(PortalAccount):
         pdf, _ = request.env['ir.actions.report'].with_context(date_start=date_start, date_stop=date_stop)._render_qweb_pdf('point_of_sale.sale_details_report', r)
         pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdf))]
         return request.make_response(pdf, headers=pdfhttpheaders)
-
-    @http.route(['/pos/ticket'], type='http', auth="public", website=True, sitemap=False)
-    def invoice_request_screen(self, **kwargs):
-        errors = {}
-        form_values = {}
-        if request.httprequest.method == 'POST':
-            for field in ['pos_reference', 'date_order', 'ticket_code']:
-                if not kwargs.get(field):
-                    errors[field] = " "
-                else:
-                    form_values[field] = kwargs.get(field)
-
-            if errors:
-                errors['generic'] = _("Please fill all the required fields.")
-            elif len(form_values['pos_reference']) < 14:
-                errors['pos_reference'] = _("The Ticket Number should be at least 14 characters long.")
-            else:
-                date_order = datetime(*[int(i) for i in form_values['date_order'].split('-')])
-                order = request.env['pos.order'].sudo().search([
-                    ('pos_reference', '=like', '%' + form_values['pos_reference'].replace('%', r'\%').replace('_', r'\_')),
-                    ('date_order', '>=', date_order),
-                    ('date_order', '<', date_order + timedelta(days=1)),
-                    ('ticket_code', '=', form_values['ticket_code']),
-                ], limit=1)
-                if order:
-                    return request.redirect('/pos/ticket/validate?access_token=%s' % (order.access_token))
-                else:
-                    errors['generic'] = _("No sale order found.")
-
-        return request.render("point_of_sale.ticket_request_with_code", {
-            'errors': errors,
-            'banner_error': " ".join(errors.values()),
-            'form_values': form_values,
-        })
 
     @http.route(['/pos/ticket/validate'], type='http', auth="public", website=True, sitemap=False)
     def show_ticket_validation_screen(self, access_token='', **kwargs):
@@ -190,17 +150,14 @@ class PosController(PortalAccount):
             else:
                 form_values.update({'error': error, 'error_message': error_message})
 
-        elif user_is_connected:
-            return self._get_invoice({}, {}, pos_order, additional_invoice_fields, kwargs)
-
         # Most of the time, the country of the customer will be the same as the order. We can prefill it by default with the country of the company.
         if 'country_id' not in form_values:
             form_values['country_id'] = pos_order_country.id
 
         partner = request.env['res.partner']
         # Prefill the customer extra values if there is any and an user is connected
-        partner = (user_is_connected and request.env.user.partner_id) or pos_order.partner_id
-        if partner:
+        if user_is_connected:
+            partner = request.env.user.partner_id
             if additional_partner_fields:
                 form_values['extra_field_values'] = {'partner_' + field.name: partner[field.name] for field in additional_partner_fields if field.name not in form_values['extra_field_values']}
 
@@ -230,7 +187,7 @@ class PosController(PortalAccount):
     def _get_invoice(self, partner_values, invoice_values, pos_order, additional_invoice_fields, kwargs):
         # If the user is not connected, then we will simply create a new partner with the form values.
         # Matching with existing partner was tried, but we then can't update the values, and it would force the user to use the ones from the first invoicing.
-        if request.env.user._is_public() and not pos_order.partner_id.id:
+        if request.env.user._is_public():
             partner_values.update({key: kwargs[key] for key in self.MANDATORY_BILLING_FIELDS})
             partner_values.update({key: kwargs[key] for key in self.OPTIONAL_BILLING_FIELDS if key in kwargs})
             for field in {'country_id', 'state_id'} & set(partner_values.keys()):
@@ -242,7 +199,7 @@ class PosController(PortalAccount):
             partner = request.env['res.partner'].sudo().create(partner_values)  # In this case, partner_values contains the whole partner info form.
         # If the user is connected, then we can update if needed its fields with the additional localized fields if any, then proceed.
         else:
-            partner = (not request.env.user._is_public() and request.env.user.partner_id) or pos_order.partner_id
+            partner = request.env.user.partner_id
             partner.write(partner_values)  # In this case, partner_values only contains the additional fields that can be updated.
 
         pos_order.partner_id = partner

@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class Notification extends Component {}
 
@@ -34,8 +34,6 @@ Notification.props = {
         optional: true,
     },
     close: { type: Function },
-    refresh: { type: Function },
-    freeze: { type: Function },
 };
 Notification.defaultProps = {
     buttons: [],

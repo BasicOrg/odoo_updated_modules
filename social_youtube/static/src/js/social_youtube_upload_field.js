@@ -1,12 +1,20 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { CharField, charField } from '@web/views/fields/char/char_field';
+import { CharField } from '@web/views/fields/char/char_field';
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { useService } from "@web/core/utils/hooks";
-import { humanSize } from "@web/core/utils/binary";
-import { useRef, useState } from "@odoo/owl";
-import { _t } from "@web/core/l10n/translation";
+import {
+    useService,
+} from "@web/core/utils/hooks";
+
+const {
+    useRef,
+    useState,
+} = owl;
+import core from 'web.core';
+import utils from 'web.utils';
+
+const _t = core._t;
 
 /**
  * Override of the FieldChar that will handle the YouTube video upload process.
@@ -30,14 +38,14 @@ import { _t } from "@web/core/l10n/translation";
  * readonly input containing the uploaded file name.
  *
  */
-export class YoutubeUploadField extends CharField {
+class YoutubeUploadField extends CharField {
     setup() {
         super.setup();
         this.fileInputRef = useRef('fileInput');
         this.state = useState({
             uploading: false,
             showSocialYoutubeBar: true,
-            socialYoutubeText: _t("Uploading... 0%"),
+            socialYoutubeText: _.str.sprintf(this.env._t(`Uploading %s`), `... 0%`),
             uploadProgress: 0,
         });
         this.notification = useService("notification");
@@ -81,7 +89,7 @@ export class YoutubeUploadField extends CharField {
             if (e.lengthComputable) {
                 const roundedProgress = Math.round((e.loaded / e.total) * 100);
                 this.state.uploadProgress = roundedProgress;
-                this.state.socialYoutubeText = _t('Uploading... %s%', this.state.uploadProgress);
+                this.state.socialYoutubeText = _.str.sprintf(_t('Uploading... %s%%'), this.state.uploadProgress);
             }
        }, false);
 
@@ -170,7 +178,7 @@ export class YoutubeUploadField extends CharField {
                     }
                 } else {
                     this._uploadFailed();
-                    this._resetYoutubeVideoValues();
+                    this.props.update('');
                 }
             },
         });
@@ -233,11 +241,11 @@ export class YoutubeUploadField extends CharField {
      */
     _onClearClick() {
         this.dialogService.add(ConfirmationDialog, {
-            confirmLabel: _t("Yes, delete it"),
-            cancelLabel: _t("No"),
-            title: _t("Confirmation"),
+            confirmLabel: this.env._t("Yes, delete it"),
+            cancelLabel: this.env._t("No"),
+            title: this.env._t("Confirmation"),
 
-            body: _t("Do you also want to remove the video from your YouTube account?"),
+            body: this.env._t("Do you also want to remove the video from your YouTube account?"),
             confirm: () => {
                 $.ajax({
                         url: 'https://www.googleapis.com/youtube/v3/videos',
@@ -250,19 +258,11 @@ export class YoutubeUploadField extends CharField {
                         },
                     });
                     this.uploadedVideoId = null;
-                    this._resetYoutubeVideoValues();
+                    this.props.update('');
             },
             cancel: () => {
-                this._resetYoutubeVideoValues();
+                this.props.update('');
             },
-        });
-    }
-
-    _resetYoutubeVideoValues() {
-        this.props.record.update({
-            youtube_video: false,
-            youtube_video_id: false,
-            youtube_video_category_id: false,
         });
     }
 
@@ -287,9 +287,9 @@ export class YoutubeUploadField extends CharField {
 
         const file = fileNodes.files[0];
         if (file.size > this.maxUploadSize) {
-            const message = _t(
-                "The selected video exceeds the maximum allowed size of %s.",
-                humanSize(this.maxUploadSize)
+            const message = _.str.sprintf(
+                _t("The selected video exceeds the maximum allowed size of %s."),
+                utils.human_size(this.maxUploadSize)
             );
             this.notification.add(message, {
                 title: _t("Video Upload"),
@@ -319,9 +319,4 @@ export class YoutubeUploadField extends CharField {
 }
 YoutubeUploadField.template = 'social_youtube.YoutubeUploadField';
 
-export const youtubeUploadField = {
-    ...charField,
-    component: YoutubeUploadField,
-};
-
-registry.category("fields").add("youtube_upload", youtubeUploadField);
+registry.category("fields").add("youtube_upload", YoutubeUploadField);

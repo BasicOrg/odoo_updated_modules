@@ -1,11 +1,12 @@
-/** @odoo-module **/
+odoo.define('web.widget_tests', function (require) {
+"use strict";
 
-import Dialog from "@web/legacy/js/core/dialog";
-import Widget from "@web/legacy/js/core/widget";
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
-import { renderToString } from "@web/core/utils/render";
-import { SERVICES_METADATA } from "@web/env";
-import { Component } from "@odoo/owl";
+var AjaxService = require('web.AjaxService');
+var core = require('web.core');
+var Dialog = require('web.Dialog');
+var QWeb = require('web.QWeb');
+var Widget = require('web.Widget');
+var testUtils = require('web.test_utils');
 
 QUnit.module('core', {}, function () {
 
@@ -100,7 +101,7 @@ QUnit.module('core', {}, function () {
 
         assert.strictEqual(widget.el.nodeName, 'DIV', "should have generated the default element");
         assert.strictEqual(widget.el.attributes.length, 0, "should not have generated any attribute");
-        assert.ok(Object.keys(widget.$el.html() || {}).length === 0, "should not have generated any content");
+        assert.ok(_.isEmpty(widget.$el.html(), "should not have generated any content"));
         widget.destroy();
     });
 
@@ -178,18 +179,22 @@ QUnit.module('core', {}, function () {
     QUnit.test('template', function (assert) {
         assert.expect(3);
 
-        renderToString.app.addTemplate(
-            "test.widget.template.1",
-            `<ol>
-                <li t-foreach="[0, 1, 2, 3, 4]" t-as="counter" t-key="counter_index" t-attf-class="class-#{counter}">
-                    <input/>
-                    <t t-esc="counter"/>
-                </li>
-            </ol>`
+        core.qweb.add_template(
+            '<no>' +
+                '<t t-name="test.widget.template">' +
+                    '<ol>' +
+                        '<li t-foreach="5" t-as="counter" ' +
+                            't-attf-class="class-#{counter}">' +
+                            '<input/>' +
+                            '<t t-esc="counter"/>' +
+                        '</li>' +
+                    '</ol>' +
+                '</t>' +
+            '</no>'
         );
 
         var widget = new (Widget.extend({
-            template: 'test.widget.template.1'
+            template: 'test.widget.template'
         }))();
         widget.renderElement();
 
@@ -203,14 +208,15 @@ QUnit.module('core', {}, function () {
         assert.expect(4);
         var $fix = $( "#qunit-fixture");
 
-        renderToString.app.addTemplate(
-            "test.widget.template.2",
-            `<p>
-                <t t-esc="widget.value"/>
-            </p>`
+        core.qweb.add_template(
+            '<no>' +
+                '<t t-name="test.widget.template">' +
+                    '<p><t t-esc="widget.value"/></p>' +
+                '</t>' +
+            '</no>'
         );
         var widget = new (Widget.extend({
-            template: 'test.widget.template.2'
+            template: 'test.widget.template'
         }))();
         widget.value = 42;
 
@@ -227,23 +233,35 @@ QUnit.module('core', {}, function () {
     });
 
 
-    QUnit.module('Widgets, with QWeb');
+    QUnit.module('Widgets, with QWeb', {
+        beforeEach: function() {
+            this.oldQWeb = core.qweb;
+            core.qweb = new QWeb();
+            core.qweb.add_template(
+                '<no>' +
+                    '<t t-name="test.widget.template">' +
+                        '<ol>' +
+                            '<li t-foreach="5" t-as="counter" ' +
+                                't-attf-class="class-#{counter}">' +
+                                '<input/>' +
+                                '<t t-esc="counter"/>' +
+                            '</li>' +
+                        '</ol>' +
+                    '</t>' +
+                '</no>'
+            );
+        },
+        afterEach: function() {
+            core.qweb = this.oldQWeb;
+        },
+    });
 
     QUnit.test('basic-alias', function (assert) {
         assert.expect(1);
 
-        renderToString.app.addTemplate(
-            "test.widget.template.3",
-            `<ol>
-                <li t-foreach="[0,1,2,3,4]" t-as="counter" t-key="counter_index" t-attf-class="class-#{counter}">
-                    <input/>
-                    <t t-esc="counter"/>
-                </li>
-            </ol>`
-        );
 
         var widget = new (Widget.extend({
-            template: 'test.widget.template.3'
+            template: 'test.widget.template'
         }))();
         widget.renderElement();
 
@@ -256,19 +274,9 @@ QUnit.module('core', {}, function () {
     QUnit.test('delegate', async function (assert) {
         assert.expect(5);
 
-        renderToString.app.addTemplate(
-            "test.widget.template.4",
-            `<ol>
-                <li t-foreach="[0,1,2,3,4]" t-as="counter" t-key="counter_index" t-attf-class="class-#{counter}">
-                    <input/>
-                    <t t-esc="counter"/>
-                </li>
-            </ol>`
-        );
-
         var a = [];
         var widget = new (Widget.extend({
-            template: 'test.widget.template.4',
+            template: 'test.widget.template',
             events: {
                 'click': function () {
                     a[0] = true;
@@ -294,21 +302,11 @@ QUnit.module('core', {}, function () {
     QUnit.test('undelegate', async function (assert) {
         assert.expect(4);
 
-        renderToString.app.addTemplate(
-            "test.widget.template.5",
-            `<ol>
-                <li t-foreach="[0,1,2,3,4]" t-as="counter" t-key="counter_index" t-attf-class="class-#{counter}">
-                    <input/>
-                    <t t-esc="counter"/>
-                </li>
-            </ol>`
-        );
-
         var clicked = false;
         var newclicked = false;
 
         var widget = new (Widget.extend({
-            template: 'test.widget.template.5',
+            template: 'test.widget.template',
             events: { 'click li': function () { clicked = true; } }
         }))();
 
@@ -400,36 +398,32 @@ QUnit.module('core', {}, function () {
     });
 
     QUnit.test("calling _rpc on destroyed widgets", async function (assert) {
-        assert.expect(2);
+        assert.expect(3);
 
-        SERVICES_METADATA.rpc = true;
         var def;
-        Component.env = {
-            services: {
-                rpc: () => {
+        var parent = new Widget();
+        await testUtils.mock.addMockEnvironment(parent, {
+            session: {
+                rpc: function () {
                     def = testUtils.makeTestPromise();
+                    def.abort = def.reject;
                     return def;
                 },
             },
-        };
-
-        const ChildWidget = Widget.extend({
-            init() {
-                this._super(...arguments);
-                this.rpc = this.bindService("rpc");
+            services: {
+                ajax: AjaxService
             },
         });
-        var widget = new ChildWidget();
+        var widget = new Widget(parent);
 
-        widget.rpc('/a/route').then(function () {
+        widget._rpc({route: '/a/route'}).then(function () {
             assert.ok(true, "The ajax call should be resolve");
         });
-        await testUtils.nextMicrotaskTick();
         def.resolve();
         await testUtils.nextMicrotaskTick();
         def = null;
 
-        widget.rpc('/a/route').then(function () {
+        widget._rpc({route: '/a/route'}).then(function () {
             throw Error("Calling _rpc on a destroyed widget should return a " +
             "promise that remains pending forever");
         }).catch(function () {
@@ -441,16 +435,19 @@ QUnit.module('core', {}, function () {
         await testUtils.nextMicrotaskTick();
         def = null;
 
-        widget.rpc('/a/route').then(function () {
+        widget._rpc({route: '/a/route'}).then(function () {
             throw Error("Calling _rpc on a destroyed widget should return a " +
                 "promise that remains pending forever");
         }).catch(function () {
             throw Error("Calling _rpc on a destroyed widget should return a " +
             "promise that remains pending forever");
         });
+        assert.ok(!def, "trigger_up is not performed and the call returns a " +
+            "promise that remains pending forever");
 
         assert.ok(true,
             "there should be no crash when calling _rpc on a destroyed widget");
+        parent.destroy();
     });
 
     QUnit.test("calling do_hide on a widget destroyed before being rendered", async function (assert) {
@@ -528,4 +525,6 @@ QUnit.module('core', {}, function () {
 
         dialog.close();
     });
+});
+
 });

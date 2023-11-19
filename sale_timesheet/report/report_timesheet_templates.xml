@@ -4,7 +4,7 @@
         <t t-set="show_project" t-value="true"/>
         <t t-set="show_task" t-value="true"/>
         <t t-call="web.html_container">
-            <t t-call="web.internal_layout">
+            <t t-call="web.external_layout">
                 <div class="page">
                     <t t-foreach="docs" t-as="doc">
                         <t t-set="doc_name" t-value="doc.name"/>
@@ -16,7 +16,7 @@
                                 <t t-if="doc.timesheet_ids">
                                     <h2>
                                         <br/>
-                                        <span>Timesheets for the <t t-out="doc_name">S0001</t> <t t-out="record_name">- Timesheet product</t>
+                                        <span>Timesheets for the <t t-out="doc_name"/> <t t-out="record_name"/>
                                         </span>
                                     </h2>
                                     <t t-set='lines' t-value='doc.timesheet_ids'/>

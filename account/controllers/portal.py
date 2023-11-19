@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import OrderedDict
-
 from odoo import http, _
 from odoo.osv import expression
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
-from odoo.addons.account.controllers.download_docs import _get_zip_headers
 from odoo.exceptions import AccessError, MissingError
+from collections import OrderedDict
 from odoo.http import request
 
 
@@ -16,13 +14,9 @@ class PortalAccount(CustomerPortal):
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         if 'invoice_count' in counters:
-            invoice_count = request.env['account.move'].search_count(self._get_invoices_domain('out'), limit=1) \
+            invoice_count = request.env['account.move'].search_count(self._get_invoices_domain()) \
                 if request.env['account.move'].check_access_rights('read', raise_exception=False) else 0
             values['invoice_count'] = invoice_count
-        if 'bill_count' in counters:
-            bill_count = request.env['account.move'].search_count(self._get_invoices_domain('in'), limit=1) \
-                if request.env['account.move'].check_access_rights('read', raise_exception=False) else 0
-            values['bill_count'] = bill_count
         return values
 
     # ------------------------------------------------------------
@@ -36,12 +30,8 @@ class PortalAccount(CustomerPortal):
         }
         return self._get_page_view_values(invoice, access_token, values, 'my_invoices_history', False, **kwargs)
 
-    def _get_invoices_domain(self, m_type=None):
-        if m_type in ['in', 'out']:
-            move_type = [m_type+move for move in ('_invoice', '_refund', '_receipt')]
-        else:
-            move_type = ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')
-        return [('state', 'not in', ('cancel', 'draft')), ('move_type', 'in', move_type)]
+    def _get_invoices_domain(self):
+        return [('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]
 
     def _get_account_searchbar_sortings(self):
         return {
@@ -54,8 +44,8 @@ class PortalAccount(CustomerPortal):
     def _get_account_searchbar_filters(self):
         return {
             'all': {'label': _('All'), 'domain': []},
-            'invoices': {'label': _('Invoices'), 'domain': [('move_type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]},
-            'bills': {'label': _('Bills'), 'domain': [('move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]},
+            'invoices': {'label': _('Invoices'), 'domain': [('move_type', '=', ('out_invoice', 'out_refund'))]},
+            'bills': {'label': _('Bills'), 'domain': [('move_type', '=', ('in_invoice', 'in_refund'))]},
         }
 
     @http.route(['/my/invoices', '/my/invoices/page/<int:page>'], type='http', auth="user", website=True)
@@ -103,16 +93,12 @@ class PortalAccount(CustomerPortal):
             'date': date_begin,
             # content according to pager and archive selected
             # lambda function to get the invoices recordset when the pager will be defined in the main method of a route
-            'invoices': lambda pager_offset: (
-                AccountInvoice.search(domain, order=order, limit=self._items_per_page, offset=pager_offset)
-                if AccountInvoice.check_access_rights('read', raise_exception=False) else
-                AccountInvoice
-            ),
+            'invoices': lambda pager_offset: AccountInvoice.search(domain, order=order, limit=self._items_per_page, offset=pager_offset),
             'page_name': 'invoice',
             'pager': {  # vals to define the pager.
                 "url": url,
                 "url_args": {'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
-                "total": AccountInvoice.search_count(domain) if AccountInvoice.check_access_rights('read', raise_exception=False) else 0,
+                "total": AccountInvoice.search_count(domain),
                 "page": page,
                 "step": self._items_per_page,
             },
@@ -131,20 +117,7 @@ class PortalAccount(CustomerPortal):
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        if report_type == 'pdf' and download:
-            # Send & Print wizard with only the 'download' checkbox to get the official attachment(s)
-            template = request.env.ref(invoice_sudo._get_mail_template())
-            attachment_ids = invoice_sudo._generate_pdf_and_send_invoice(template, bypass_download=True, checkbox_send_mail=False, checkbox_download=True)
-            attachments = request.env['ir.attachment'].browse(attachment_ids)
-            if len(attachments) > 1:
-                filename = invoice_sudo._get_invoice_report_filename(extension='zip')
-                zip_content = attachments.sudo()._build_zip_from_attachments()
-                headers = _get_zip_headers(zip_content, filename)
-                return request.make_response(zip_content, headers)
-            headers = self._get_http_headers(invoice_sudo, report_type, attachments.raw, download)
-            return request.make_response(attachments.raw, list(headers.items()))
-
-        elif report_type in ('html', 'pdf', 'text'):
+        if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=invoice_sudo, report_type=report_type, report_ref='account.account_invoices', download=download)
 
         values = self._invoice_get_page_view_values(invoice_sudo, access_token, **kw)

@@ -6,35 +6,34 @@
     <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
     <field name="arch" type="xml">
       <page name="destination" position="before">
-        <page string="Easypost Configuration" name="easypost_configuration" invisible="delivery_type != 'easypost'">
+        <page string="Easypost Configuration" name="easypost_configuration" attrs="{'invisible': [('delivery_type', '!=', 'easypost')]}">
           <group>
             <group>
-              <field name="easypost_test_api_key" required="not easypost_production_api_key and delivery_type == 'easypost'"/>
-              <field name="easypost_production_api_key" required="delivery_type == 'easypost'"/>
+              <field name="easypost_test_api_key" attrs="{'required': [('easypost_production_api_key', '=', False), ('delivery_type', '=', 'easypost')]}"/>
+              <field name="easypost_production_api_key" attrs="{'required': [('delivery_type', '=', 'easypost')]}"/>
               <div colspan='2'>
-                <button name="action_get_carrier_type" string="Load your Easypost carrier accounts" type="object" class="oe_inline oi oi-arrow-right oe_link"/>
+                <button name="action_get_carrier_type" string="Load your Easypost carrier accounts" type="object" class="oe_inline fa fa-arrow-right oe_link"/>
               </div>
-              <div colspan="2" class="alert alert-warning" invisible="easypost_delivery_type or delivery_type != 'easypost'" role="status">
+              <div colspan="2" class="alert alert-warning" attrs="{'invisible': ['|', ('easypost_delivery_type', '!=', False), ('delivery_type', '!=', 'easypost')]}" role="status">
                 <p>Do not forget to load your Easypost carrier accounts for a valid configuration.</p>
               </div>
-              <field name="easypost_delivery_type" string="Carrier Type" readonly="1" invisible="not easypost_delivery_type"/>
+              <field name="easypost_delivery_type" string="Carrier Type" readonly="1" attrs="{'invisible': [('easypost_delivery_type', '=', False)]}"/>
               <field
                 name="easypost_default_package_type_id" string="Default Package Type"
                 context="{'default_easypost_carrier': easypost_delivery_type, 'default_package_carrier_type': delivery_type}"
-                invisible="not easypost_delivery_type"
-                required="easypost_delivery_type"/>
-              <field name="easypost_default_service_id" context="{'default_easypost_carrier': easypost_delivery_type}" invisible="not easypost_delivery_type"/>
+                attrs="{'invisible': [('easypost_delivery_type', '=', False)], 'required': [('easypost_delivery_type', '!=', False)]}"/>
+              <field name="easypost_default_service_id" context="{'default_easypost_carrier': easypost_delivery_type}" attrs="{'invisible': [('easypost_delivery_type', '=', False)]}"/>
             </group>
             <group>
-              <field name="easypost_label_file_type" string="Label Format" required="delivery_type == 'easypost'"/>
+              <field name="easypost_label_file_type" string="Label Format" attrs="{'required': [('delivery_type', '=', 'easypost')]}"/>
             </group>
             <group string="Options">
               <field name="can_generate_return" invisible="1"/>
-              <field name="return_label_on_delivery" invisible="not can_generate_return"/>
-              <field name="get_return_label_from_portal" invisible="not return_label_on_delivery"/>
+              <field name="return_label_on_delivery" attrs="{'invisible': [('can_generate_return', '=', False)]}"/>
+              <field name="get_return_label_from_portal" attrs="{'invisible': [('return_label_on_delivery', '=', False)]}"/>
             </group>
           </group>
-          <group string="Easypost Tutorial" invisible="delivery_type != 'easypost'">
+          <group string="Easypost Tutorial" attrs="{'invisible': [('delivery_type', '!=', 'easypost')]}">
             <ul>
               <li>
                 <b>Go to
@@ -66,11 +65,11 @@
     <field name="inherit_id" ref="stock.stock_package_type_form"/>
     <field name="arch" type="xml">
       <xpath expr="//field[@name='package_carrier_type']" position='after'>
-        <field name="easypost_carrier" invisible="package_carrier_type != 'easypost'"/>
+        <field name="easypost_carrier" attrs="{'invisible': [('package_carrier_type', '!=', 'easypost')]}"/>
       </xpath>
       <xpath expr="//field[@name='length_uom_name']" position='replace'>
-        <field name="length_uom_name" invisible="package_carrier_type == 'easypost'"/>
-        <span invisible="package_carrier_type != 'easypost'">Inches</span>
+        <field name="length_uom_name" attrs="{'invisible': [('package_carrier_type', '=', 'easypost')]}"/>
+        <span attrs="{'invisible': [('package_carrier_type', '!=', 'easypost')]}">Inches</span>
       </xpath>
     </field>
   </record>

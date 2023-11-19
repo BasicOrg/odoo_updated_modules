@@ -2,7 +2,9 @@
 {
     'name': "Rental Stock Management",
 
-    'summary': "Allows use of stock application to manage rentals inventory",
+    'summary': """
+Allows use of stock application to manage rentals inventory
+        """,
 
     'description': """
 
@@ -16,8 +18,8 @@
     'depends': ['sale_renting', 'sale_stock'],
 
     'data': [
-        'security/sale_stock_renting_security.xml',
         'data/rental_stock_data.xml',
+        'wizard/rental_configurator_views.xml',
         'wizard/rental_processing_views.xml',
         'report/rental_schedule_views.xml',
         'report/rental_report_views.xml',

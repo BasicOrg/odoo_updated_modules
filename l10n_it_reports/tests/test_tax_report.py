@@ -10,19 +10,21 @@ from odoo.tests import tagged
 class TestItalianTaxReport(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='it'):
+    def setUpClass(cls, chart_template_ref='l10n_it.l10n_it_chart_template_generic'):
         super().setUpClass(chart_template_ref=chart_template_ref)
         company = cls.company_data["company"]
         AccountTax = cls.env['account.tax']
         company.update({
             'vat': 'IT78926680725',
+            'l10n_it_codice_fiscale': '78926680725',
+            'l10n_it_tax_system': 'RF01',
             'country_id': cls.env.ref('base.it').id,
         })
 
-        cls.tax_4a = cls.env.ref(f'account.{cls.env.company.id}_4am')
+        cls.tax_4a = AccountTax.with_context(active_test=False).search([('description', '=', '4am'), ('company_id.id', '=', company.id)])
         cls.tax_4a.active = True
-        cls.tax_4v = cls.env.ref(f'account.{cls.env.company.id}_4v')
-        cls.tax_4v.tax_group_id.tax_payable_account_id = cls.company_data['default_account_payable']
+        cls.tax_4v = AccountTax.with_context(active_test=False).search([('description', '=', '4v'), ('company_id.id', '=', company.id)])
+        cls.tax_4v.tax_group_id.property_tax_payable_account_id = cls.company_data['default_account_payable']
         cls.tax_4v.active = True
 
         cls.l10n_it_tax_report_partner = cls.env['res.partner'].create({

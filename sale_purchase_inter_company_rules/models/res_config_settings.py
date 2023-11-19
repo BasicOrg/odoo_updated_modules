@@ -12,18 +12,15 @@ class ResConfigSettings(models.TransientModel):
         string='Warehouse For Purchase Orders',
         readonly=False,
         domain=lambda self: [('company_id', '=', self.env.company.id)])
-    copy_lots_delivery = fields.Boolean(related='company_id.copy_lots_delivery', readonly=False)
 
     @api.onchange('rule_type')
     def onchange_rule_type(self):
         if self.rule_type not in new_rule_type.keys():
             self.auto_validation = False
             self.warehouse_id = False
-            self.copy_lots_delivery = False
         else:
             warehouse_id = self.warehouse_id or self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
             self.warehouse_id = warehouse_id
-            self.copy_lots_delivery = self.env.user.has_group('stock.group_production_lot')
 
     @api.depends('rule_type', 'auto_validation', 'warehouse_id', 'company_id')
     def _compute_intercompany_transaction_message(self):

@@ -7,12 +7,17 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.tools.misc import formatLang, format_date, get_lang
 from odoo.tools.translate import _
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, html2plaintext, plaintext2html
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, html2plaintext
 
 
 class AccountFollowupReport(models.AbstractModel):
     _name = 'account.followup.report'
     _description = "Follow-up Report"
+
+    # This report, while not an account.report per se, still uses (inherited) templates from account_reports
+    main_table_header_template = 'account_followup.table_header_template_followup_report'
+
+    filter_show_draft = False
 
     ####################################################
     # REPORT COMPUTATION - TEMPLATE RENDERING
@@ -23,26 +28,20 @@ class AccountFollowupReport(models.AbstractModel):
         Return the html of the followup report, based on the report options.
         """
         template = 'account_followup.template_followup_report'
-        partner = self.env['res.partner'].browse(options['partner_id'])
-        render_values = {
-            'doc': partner,
-            'lang': partner.lang or get_lang(self.env).code,
-            'options': options,
-            'context': self.env.context,
-        }
-        return self.env['ir.qweb']._render(template, render_values)
+        render_values = self._get_followup_report_html_render_values(options)
 
-    def _get_followup_report_options(self, partner, options=None):
-        """
-        Compute the report options for a given partner.
-        """
-        options = options or {}
-        options.update({
-            'partner_id': partner.id,
-            'followup_line': options.get('followup_line_id', partner.followup_line_id),
-            'context': self.env.context,
-        })
-        return options
+        headers = [self._get_followup_report_columns_name()]
+        lines = self._get_followup_report_lines(options)
+
+        # Catch negative numbers when present
+        for line in lines:
+            for col in line['columns']:
+                if self.env.company.currency_id.compare_amounts(col.get('no_format', 0.0), 0.0) == -1:
+                    col['class'] = 'number color-red'
+
+        render_values['lines'] = {'columns_header': headers, 'lines': lines}
+
+        return self.env['ir.qweb']._render(template, render_values)
 
     def _get_followup_report_lines(self, options):
         """
@@ -72,8 +71,7 @@ class AccountFollowupReport(models.AbstractModel):
                 invoice_date = {
                     'name': format_date(self.env, aml.move_id.invoice_date or aml.date, lang_code=lang_code),
                     'class': 'date',
-                    'style': 'white-space:nowrap;text-align:left;',
-                    'template': 'account_followup.cell_template_followup_report',
+                    'style': 'white-space:nowrap;text-align:center;'
                 }
                 date_due = format_date(self.env, aml.date_maturity or aml.move_id.invoice_date or aml.date, lang_code=lang_code)
                 total += not aml.blocked and amount or 0
@@ -81,25 +79,16 @@ class AccountFollowupReport(models.AbstractModel):
                 is_payment = aml.payment_id
                 if is_overdue or is_payment:
                     total_issued += not aml.blocked and amount or 0
-                date_due = {
-                    'name': date_due, 'class': 'date',
-                    'style': 'white-space:nowrap;text-align:left;',
-                    'template': 'account_followup.cell_template_followup_report',
-                }
+                date_due = {'name': date_due, 'class': 'date', 'style': 'white-space:nowrap;text-align:center;'}
                 if is_overdue:
                     date_due['style'] += 'color: red;'
                 if is_payment:
                     date_due = ''
                 move_line_name = {
                     'name': self._followup_report_format_aml_name(aml.name, aml.move_id.ref),
-                    'style': 'text-align:left; white-space:normal;',
-                    'template': 'account_followup.cell_template_followup_report',
+                    'style': 'text-align:right; white-space:normal;'
                 }
-                amount = {
-                    'name': formatLang(self.env, amount, currency_obj=currency),
-                    'style': 'text-align:right; white-space:normal;',
-                    'template': 'account_followup.cell_template_followup_report',
-                }
+                amount = formatLang(self.env, amount, currency_obj=currency)
                 line_num += 1
                 invoice_origin = aml.move_id.invoice_origin or ''
                 if len(invoice_origin) > 43:
@@ -107,7 +96,6 @@ class AccountFollowupReport(models.AbstractModel):
                 invoice_origin = {
                     'name': invoice_origin,
                     'style': 'text-align:center; white-space:normal;',
-                    'template': 'account_followup.cell_template_followup_report',
                 }
                 columns = [
                     invoice_date,
@@ -123,22 +111,11 @@ class AccountFollowupReport(models.AbstractModel):
                     'move_id': aml.move_id.id,
                     'type': is_payment and 'payment' or 'unreconciled_aml',
                     'unfoldable': False,
-                    'columns': [isinstance(v, dict) and v or {'name': v, 'template': 'account_followup.cell_template_followup_report'} for v in columns],
+                    'columns': [isinstance(v, dict) and v or {'name': v} for v in columns],
+                    'template': 'account_followup.cell_template_followup_report',
                 })
             total_due = formatLang(self.env, total, currency_obj=currency)
             line_num += 1
-
-            cols = \
-                [{
-                    'name': v,
-                    'template': 'account_followup.cell_template_followup_report',
-                } for v in [''] * 3] + \
-                [{
-                    'name': v,
-                    'style': 'text-align:right; white-space:normal; font-weight: bold;',
-                    'template': 'account_followup.cell_template_followup_report',
-                } for v in [total >= 0 and _('Total Due') or '', total_due]]
-
             lines.append({
                 'id': line_num,
                 'name': '',
@@ -146,30 +123,20 @@ class AccountFollowupReport(models.AbstractModel):
                 'style': 'border-top-style: double',
                 'unfoldable': False,
                 'level': 3,
-                'columns': cols,
+                'columns': [{'name': v} for v in [''] * 3 + [total >= 0 and _('Total Due') or '', total_due]],
+                'template': 'account_followup.cell_template_followup_report',
             })
             if total_issued > 0:
                 total_issued = formatLang(self.env, total_issued, currency_obj=currency)
                 line_num += 1
-
-                cols = \
-                    [{
-                        'name': v,
-                        'template': 'account_followup.cell_template_followup_report',
-                    } for v in [''] * 3] + \
-                    [{
-                        'name': v,
-                        'style': 'text-align:right; white-space:normal; font-weight: bold;',
-                        'template': 'account_followup.cell_template_followup_report',
-                    } for v in [_('Total Overdue'), total_issued]]
-
                 lines.append({
                     'id': line_num,
                     'name': '',
                     'class': 'total',
                     'unfoldable': False,
                     'level': 3,
-                    'columns': cols,
+                    'columns': [{'name': v} for v in [''] * 3 + [_('Total Overdue'), total_issued]],
+                    'template': 'account_followup.cell_template_followup_report',
                 })
             # Add an empty line after the total to make a space between two currencies
             line_num += 1
@@ -180,19 +147,39 @@ class AccountFollowupReport(models.AbstractModel):
                 'style': 'border-bottom-style: none',
                 'unfoldable': False,
                 'level': 0,
-                'columns': [{'template': 'account_followup.cell_template_followup_report'} for col in columns],
+                'columns': [{} for col in columns],
+                'template': 'account_followup.cell_template_followup_report',
             })
         # Remove the last empty line
         if lines:
             lines.pop()
-
-        # Catch negative numbers when present
-        for line in lines:
-            for col in line['columns']:
-                if self.env.company.currency_id.compare_amounts(col.get('no_format', 0.0), 0.0) == -1:
-                    col['class'] = 'number color-red'
-
         return lines
+
+    def _get_followup_report_html_render_values(self, options):
+        # Needed for account_reports templates
+        options['show_debug_column'] = False
+        partner = self.env['res.partner'].browse(options['partner_id'])
+        return {
+            'partner': partner,
+            'lang': partner.lang or get_lang(self.env).code,
+            'invoice_address_id': self.env['res.partner'].browse(partner.address_get(['invoice'])['invoice']),
+            'today': fields.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'report_summary': self._get_main_body(options),
+            'report': self,
+            'report_title': _("Payment Reminder"),
+            'report_company_name': self.env.company.name,
+            'followup_report_email_subject': self._get_email_subject(options),
+            'followup_line': options.get('followup_line_id', partner.followup_line_id),
+            'options': options,
+            'context': self.env.context,
+            'model': self,
+            'table_end': markupsafe.Markup('''
+                </tbody></table>
+                <div style="page-break-after: always"></div>
+                <table class="o_account_reports_table table-hover">
+            '''),
+            'table_start': markupsafe.Markup('<tbody>'),
+        }
 
     @api.model
     def _followup_report_format_aml_name(self, line_name, move_ref, move_name=None):
@@ -213,6 +200,10 @@ class AccountFollowupReport(models.AbstractModel):
             names.append(line_name)
         name = '-'.join(names)
         return name
+
+    def _get_caret_options(self):
+        # Method needed by the account_reports.main_template template, but unused for the followup report
+        return {}
 
     ####################################################
     # DEFAULT BODY AND EMAIL SUBJECT
@@ -243,7 +234,7 @@ class AccountFollowupReport(models.AbstractModel):
         responsible_signature = html2plaintext(partner_followup_responsible_id.signature or partner_followup_responsible_id.name)
         default_body = _("Dear client, we kindly remind you that you still have unpaid invoices. Please check them and take appropriate action. %s", responsible_signature)
 
-        return self._get_rendered_body(partner.id, template_src, default_body, options={'post_process': True})
+        return self._get_rendered_body(partner.id, template_src, default_body, post_process=True)
 
     @api.model
     def _get_main_body(self, options):
@@ -256,11 +247,10 @@ class AccountFollowupReport(models.AbstractModel):
         mail_template = options.get('mail_template', followup_line.mail_template_id)
         template_src = None
         if mail_template:
-            template_src = mail_template.with_context(lang=partner.lang or self.env.user.lang).body_html
+            template_src = mail_template.body_html
 
         partner_followup_responsible_id = partner._get_followup_responsible()
-        responsible_signature = partner_followup_responsible_id.signature or partner_followup_responsible_id.name
-        self = self.with_context(lang=partner.lang or self.env.user.lang)
+        responsible_signature = html2plaintext(partner_followup_responsible_id.signature or partner_followup_responsible_id.name)
         default_body = _("""Dear %s,
 
 
@@ -270,10 +260,10 @@ Would your payment have been carried out after this mail was sent, please ignore
 
 Best Regards,
 
-""", partner.name)
+%s
 
-        default_body_html = plaintext2html(default_body) + responsible_signature  # responsible_signature is an html field
-        return self._get_rendered_body(partner.id, template_src, default_body_html, engine='qweb', options={'post_process': True})
+""", partner.name, responsible_signature)
+        return self._get_rendered_body(partner.id, template_src, default_body, engine='qweb', post_process=True)
 
     @api.model
     def _get_email_subject(self, options):
@@ -286,14 +276,13 @@ Best Regards,
         mail_template = options.get('mail_template', followup_line.mail_template_id)
         template_src = None
         if mail_template:
-            template_src = mail_template.with_context(lang=partner.lang or self.env.user.lang).subject
+            template_src = mail_template.subject
 
         partner_name = partner.name
         company_name = self.env.company.name
-        self = self.with_context(lang=partner.lang or self.env.user.lang)
         default_body = _("%s Payment Reminder - %s", company_name, partner_name)
 
-        return self._get_rendered_body(partner.id, template_src, default_body, options={'post_process': True})
+        return self._get_rendered_body(partner.id, template_src, default_body, post_process=True)
 
     ####################################################
     # REPORT DATA
@@ -304,12 +293,12 @@ Best Regards,
         Return the name of the columns of the follow-ups report
         """
         return [
-            {'name': _('Invoice No.'), 'style': 'text-align:center; white-space:nowrap;'},
+            {},
             {'name': _('Date'), 'class': 'date', 'style': 'text-align:center; white-space:nowrap;'},
             {'name': _('Due Date'), 'class': 'date', 'style': 'text-align:center; white-space:nowrap;'},
             {'name': _('Origin'), 'style': 'text-align:center; white-space:nowrap;'},
-            {'name': _('Communication'), 'style': 'text-align:center; white-space:nowrap;'},
-            {'name': _('Total Due'), 'class': 'number o_price_total', 'style': 'text-align:center; white-space:nowrap;'},
+            {'name': _('Communication'), 'style': 'text-align:right; white-space:nowrap;'},
+            {'name': _('Total Due'), 'class': 'number o_price_total', 'style': 'text-align:right; white-space:nowrap;'},
         ]
 
     ####################################################
@@ -335,7 +324,7 @@ Best Regards,
                 )
                 sent_at_least_once = True
         if not sent_at_least_once:
-            raise UserError(_("You are trying to send an SMS, but no follow-up contact has any mobile/phone number set for customer '%s'", partner.name))
+            raise UserError(_('You are trying to send an SMS, but no follow-up contact has any mobile/phone number set'))
 
     @api.model
     def _send_email(self, options):
@@ -344,7 +333,7 @@ Best Regards,
         """
         partner = self.env['res.partner'].browse(options.get('partner_id'))
         followup_contacts = partner._get_all_followup_contacts() or partner
-        followup_recipients = options.get('email_recipient_ids', followup_contacts)
+        followup_recipients = options.get('email_recipients_ids', followup_contacts)
         sent_at_least_once = False
         for to_send_partner in followup_recipients:
             email = to_send_partner.email
@@ -352,21 +341,21 @@ Best Regards,
                 self = self.with_context(lang=partner.lang or self.env.user.lang)
                 body_html = self.with_context(mail=True).get_followup_report_html(options)
 
-                attachment_ids = options.get('attachment_ids', partner._get_invoices_to_print(options).message_main_attachment_id.ids)
+                attachment_ids = options.get('attachment_ids', partner.unpaid_invoice_ids.message_main_attachment_id.ids)
 
                 partner.with_context(mail_post_autofollow=True, lang=partner.lang or self.env.user.lang).message_post(
                     partner_ids=[to_send_partner.id],
-                    author_id=partner._get_followup_responsible().partner_id.id,
                     body=body_html,
+                    email_from=email,
                     subject=self._get_email_subject(options),
+                    subtype_id=self.env.ref('mail.mt_note').id,
                     model_description=_('payment reminder'),
                     email_layout_xmlid='mail.mail_notification_light',
                     attachment_ids=attachment_ids,
-                    subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note'),
                 )
                 sent_at_least_once = True
         if not sent_at_least_once:
-            raise UserError(_("You are trying to send an Email, but no follow-up contact has any email address set for customer '%s'", partner.name))
+            raise UserError(_('You are trying to send an Email, but no follow-up contact has any email address set'))
 
     @api.model
     def _print_followup_letter(self, partner, options=None):
@@ -377,10 +366,8 @@ Best Regards,
         """
         action = self.env.ref('account_followup.action_report_followup')
         tz_date_str = format_date(self.env, fields.Date.today(), lang_code=self.env.user.lang or get_lang(self.env).code)
-        #to avoid having dots in the name of the file.
-        tz_date_str = tz_date_str.replace('.', '-')
         followup_letter_name = _("Follow-up %s - %s", partner.display_name, tz_date_str)
-        followup_letter = action.with_context(lang=partner.lang or self.env.user.lang)._render_qweb_pdf('account_followup.report_followup_print_all', partner.id, data={'options': options or {}})[0]
+        followup_letter = action._render_qweb_pdf('account_followup.report_followup_print_all', partner.id, data={'options': options or {}})[0]
         attachment = self.env['ir.attachment'].create({
             'name': followup_letter_name,
             'raw': followup_letter,

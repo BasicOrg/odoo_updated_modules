@@ -2,35 +2,24 @@
 
 import { browser } from "../browser/browser";
 import { Dialog } from "../dialog/dialog";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "../l10n/translation";
 import { registry } from "../registry";
 import { useService } from "@web/core/utils/hooks";
 import { capitalize } from "../utils/strings";
 
-import { Component, useState, markup } from "@odoo/owl";
-
-// This props are added by the error handler
-export const standardErrorDialogProps = {
-    traceback: { type: [String, { value: null }], optional: true },
-    message: { type: String, optional: true },
-    name: { type: String, optional: true },
-    exceptionName: { type: [String, { value: null }], optional: true },
-    data: { type: [Object, { value: null }], optional: true },
-    subType: { type: [String, { value: null }], optional: true },
-    code: { type: [Number, String, { value: null }], optional: true },
-    type: { type: [String, { value: null }], optional: true },
-    close: Function, // prop added by the Dialog service
-};
+const { Component, useState } = owl;
 
 export const odooExceptionTitleMap = new Map(
     Object.entries({
-        "odoo.addons.base.models.ir_mail_server.MailDeliveryException": _t("MailDeliveryException"),
-        "odoo.exceptions.AccessDenied": _t("Access Denied"),
-        "odoo.exceptions.MissingError": _t("Missing Record"),
-        "odoo.exceptions.UserError": _t("Invalid Operation"),
-        "odoo.exceptions.ValidationError": _t("Validation Error"),
-        "odoo.exceptions.AccessError": _t("Access Error"),
-        "odoo.exceptions.Warning": _t("Warning"),
+        "odoo.addons.base.models.ir_mail_server.MailDeliveryException": _lt(
+            "MailDeliveryException"
+        ),
+        "odoo.exceptions.AccessDenied": _lt("Access Denied"),
+        "odoo.exceptions.MissingError": _lt("Missing Record"),
+        "odoo.exceptions.UserError": _lt("User Error"),
+        "odoo.exceptions.ValidationError": _lt("Validation Error"),
+        "odoo.exceptions.AccessError": _lt("Access Error"),
+        "odoo.exceptions.Warning": _lt("Warning"),
     })
 );
 
@@ -51,20 +40,19 @@ export class ErrorDialog extends Component {
 }
 ErrorDialog.template = "web.ErrorDialog";
 ErrorDialog.components = { Dialog };
-ErrorDialog.title = _t("Odoo Error");
-ErrorDialog.props = { ...standardErrorDialogProps };
+ErrorDialog.title = _lt("Odoo Error");
 
 // -----------------------------------------------------------------------------
 // Client Error Dialog
 // -----------------------------------------------------------------------------
 export class ClientErrorDialog extends ErrorDialog {}
-ClientErrorDialog.title = _t("Odoo Client Error");
+ClientErrorDialog.title = _lt("Odoo Client Error");
 
 // -----------------------------------------------------------------------------
 // Network Error Dialog
 // -----------------------------------------------------------------------------
 export class NetworkErrorDialog extends ErrorDialog {}
-NetworkErrorDialog.title = _t("Odoo Network Error");
+NetworkErrorDialog.title = _lt("Odoo Network Error");
 
 // -----------------------------------------------------------------------------
 // RPC Error Dialog
@@ -75,7 +63,7 @@ export class RPCErrorDialog extends ErrorDialog {
         this.inferTitle();
         this.traceback = this.props.traceback;
         if (this.props.data && this.props.data.debug) {
-            this.traceback = `${this.props.data.debug}\nThe above server error caused the following client error:\n${this.traceback}`;
+            this.traceback = `${this.props.data.debug}`;
         }
     }
     inferTitle() {
@@ -90,13 +78,13 @@ export class RPCErrorDialog extends ErrorDialog {
         }
         switch (this.props.type) {
             case "server":
-                this.title = _t("Odoo Server Error");
+                this.title = this.env._t("Odoo Server Error");
                 break;
             case "script":
-                this.title = _t("Odoo Client Error");
+                this.title = this.env._t("Odoo Client Error");
                 break;
             case "network":
-                this.title = _t("Odoo Network Error");
+                this.title = this.env._t("Odoo Network Error");
                 break;
         }
     }
@@ -125,15 +113,11 @@ export class WarningDialog extends Component {
         if (this.props.exceptionName && odooExceptionTitleMap.has(this.props.exceptionName)) {
             return odooExceptionTitleMap.get(this.props.exceptionName).toString();
         }
-        return this.props.title || _t("Odoo Warning");
+        return this.props.title || this.env._t("Odoo Warning");
     }
 }
 WarningDialog.template = "web.WarningDialog";
 WarningDialog.components = { Dialog };
-WarningDialog.props = {
-    ...standardErrorDialogProps,
-    title: { type: String, optional: true },
-};
 
 // -----------------------------------------------------------------------------
 // Redirect Warning Dialog
@@ -143,7 +127,7 @@ export class RedirectWarningDialog extends Component {
         this.actionService = useService("action");
         const { data, subType } = this.props;
         const [message, actionId, buttonText, additionalContext] = data.arguments;
-        this.title = capitalize(subType) || _t("Odoo Warning");
+        this.title = capitalize(subType) || this.env._t("Odoo Warning");
         this.message = message;
         this.actionId = actionId;
         this.buttonText = buttonText;
@@ -154,16 +138,12 @@ export class RedirectWarningDialog extends Component {
         if (this.additionalContext) {
             options.additionalContext = this.additionalContext;
         }
-        if (this.actionId.help) {
-            this.actionId.help = markup(this.actionId.help);
-        }
         await this.actionService.doAction(this.actionId, options);
         this.props.close();
     }
 }
 RedirectWarningDialog.template = "web.RedirectWarningDialog";
 RedirectWarningDialog.components = { Dialog };
-RedirectWarningDialog.props = { ...standardErrorDialogProps };
 
 // -----------------------------------------------------------------------------
 // Error 504 Dialog
@@ -171,8 +151,7 @@ RedirectWarningDialog.props = { ...standardErrorDialogProps };
 export class Error504Dialog extends Component {}
 Error504Dialog.template = "web.Error504Dialog";
 Error504Dialog.components = { Dialog };
-Error504Dialog.title = _t("Request timeout");
-Error504Dialog.props = { ...standardErrorDialogProps };
+Error504Dialog.title = _lt("Request timeout");
 
 // -----------------------------------------------------------------------------
 // Expired Session Error Dialog
@@ -184,8 +163,7 @@ export class SessionExpiredDialog extends Component {
 }
 SessionExpiredDialog.template = "web.SessionExpiredDialog";
 SessionExpiredDialog.components = { Dialog };
-SessionExpiredDialog.title = _t("Odoo Session Expired");
-SessionExpiredDialog.props = { ...standardErrorDialogProps };
+SessionExpiredDialog.title = _lt("Odoo Session Expired");
 
 registry
     .category("error_dialogs")

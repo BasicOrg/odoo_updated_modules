@@ -34,11 +34,10 @@ QUnit.test("defaults", (assert) => {
         filtersInfo: {},
         formViewId: false,
         hasEditDialog: false,
-        quickCreate: true,
-        quickCreateViewId: null,
+        hasQuickCreate: true,
         isDateHidden: false,
         isTimeHidden: false,
-        popoverFieldNodes: {},
+        popoverFields: {},
         scale: "week",
         scales: ["day", "week", "month", "year"],
         showUnusualDays: false,
@@ -88,33 +87,14 @@ QUnit.test("hasEditDialog", (assert) => {
     check(assert, "event_open_popup", "0", "hasEditDialog", false);
 });
 
-QUnit.test("quickCreate", (assert) => {
-    check(assert, "quick_create", "", "quickCreate", true);
-    check(assert, "quick_create", "true", "quickCreate", true);
-    check(assert, "quick_create", "True", "quickCreate", true);
-    check(assert, "quick_create", "1", "quickCreate", true);
-    check(assert, "quick_create", "false", "quickCreate", false);
-    check(assert, "quick_create", "False", "quickCreate", false);
-    check(assert, "quick_create", "0", "quickCreate", false);
-    check(assert, "quick_create", "12", "quickCreate", true);
-});
-
-QUnit.test("quickCreateViewId", (assert) => {
-    let arch = parseArch(
-        `<calendar date_start="start_date" quick_create="0" quick_create_view_id="12" />`
-    );
-    assert.strictEqual(arch.quickCreate, false);
-    assert.strictEqual(arch.quickCreateViewId, null);
-
-    arch = parseArch(
-        `<calendar date_start="start_date" quick_create="1" quick_create_view_id="12" />`
-    );
-    assert.strictEqual(arch.quickCreate, true);
-    assert.strictEqual(arch.quickCreateViewId, 12);
-
-    arch = parseArch(`<calendar date_start="start_date" quick_create="1"/>`);
-    assert.strictEqual(arch.quickCreate, true);
-    assert.strictEqual(arch.quickCreateViewId, null);
+QUnit.test("hasQuickCreate", (assert) => {
+    check(assert, "quick_add", "", "hasQuickCreate", true);
+    check(assert, "quick_add", "true", "hasQuickCreate", true);
+    check(assert, "quick_add", "True", "hasQuickCreate", true);
+    check(assert, "quick_add", "1", "hasQuickCreate", true);
+    check(assert, "quick_add", "false", "hasQuickCreate", false);
+    check(assert, "quick_add", "False", "hasQuickCreate", false);
+    check(assert, "quick_add", "0", "hasQuickCreate", false);
 });
 
 QUnit.test("isDateHidden", (assert) => {

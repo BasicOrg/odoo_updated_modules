@@ -5,6 +5,7 @@
         <record id="view_mrp_production_split_multi_form" model="ir.ui.view">
             <field name="name">mrp.production.split.multi.form</field>
             <field name="model">mrp.production.split.multi</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Split Productions">
                     <field name="production_ids">
@@ -14,11 +15,11 @@
                             <field name="product_qty"/>
                             <field name="production_capacity"/>
                             <field name="product_uom_id" groups="uom.group_uom"/>
-                            <button name="action_prepare_split" type="object" icon="fa-scissors" title="Split Production"/>
+                            <button name="action_prepare_split" type="object" icon="fa-scissors" width="0.1" title="Split Production"/>
                         </tree>
                     </field>
                     <footer>
-                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </form>
             </field>
@@ -44,8 +45,15 @@
                         <group>
                             <field name="counter"/>
                         </group>
+                        <group>
+                            <label for="production_capacity"/>
+                            <div class="o_row">
+                                <span><field name="production_capacity"/></span>
+                                <span><field name="product_uom_id" groups="uom.group_uom"/></span>
+                            </div>
+                        </group>
                     </group>
-                    <field name="production_detailed_vals_ids" invisible="counter == 0">
+                    <field name="production_detailed_vals_ids" attrs="{'invisible': [('counter', '=', 0)]}">
                         <tree editable="top">
                             <field name="date"/>
                             <field name="user_id"/>
@@ -55,9 +63,9 @@
                     <field name="production_split_multi_id" invisible="1"/>
                     <field name="valid_details" invisible="1"/>
                     <footer>
-                        <button string="Split" class="btn-primary" type="object" name="action_split" data-hotkey="q" invisible="not valid_details"/>
-                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x" invisible="production_split_multi_id"/>
-                        <button string="Discard" class="btn-secondary" type="object" name="action_return_to_list" data-hotkey="x" invisible="not production_split_multi_id"/>
+                        <button string="Split" class="btn-primary" type="object" name="action_split" data-hotkey="q" attrs="{'invisible': [('valid_details', '=', False)]}"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z" attrs="{'invisible': [('production_split_multi_id', '!=', False)]}"/>
+                        <button string="Discard" class="btn-secondary" type="object" name="action_return_to_list" data-hotkey="z" attrs="{'invisible': [('production_split_multi_id', '=', False)]}"/>
                     </footer>
                 </form>
             </field>
@@ -65,6 +73,7 @@
 
         <record id="action_mrp_production_split_multi" model="ir.actions.act_window">
             <field name="name">Split productions</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">mrp.production.split.multi</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -72,10 +81,11 @@
 
         <record id="action_mrp_production_split" model="ir.actions.act_window">
             <field name="name">Split production</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">mrp.production.split</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
 
     </data>
-</odoo>
+</odoo>    

@@ -32,7 +32,7 @@
                                 <tree editable="bottom" no_open="1">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
-                                    <field name="display_name" column_invisible="True"/>
+                                    <field name="display_name" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -41,6 +41,10 @@
                         </page>
                     </notebook>
                 </sheet>
+                <footer>
+                    <button class="btn btn-primary" special="save" data-hotkey="s">Save</button>
+                    <button class="btn btn-secondary" special="cancel" data-hotkey="j">Discard</button>
+                </footer>
             </form>
         </field>
     </record>

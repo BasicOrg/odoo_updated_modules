@@ -1,7 +1,8 @@
-/** @odoo-module **/
+odoo.define('theme_common.s_mini_nav_bar', function (require) {
+'use strict';
 
-import dom from "@web/legacy/js/core/dom";
-import publicWidget from "@web/legacy/js/public/public_widget";
+const dom = require('web.dom');
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.miniNavbarScroll = publicWidget.Widget.extend({
     selector: '.s_mini_nav_bar a[href*="#"]:not([href="#"])',
@@ -26,4 +27,5 @@ publicWidget.registry.miniNavbarScroll = publicWidget.Widget.extend({
             dom.scrollTo(target);
         }
     },
+});
 });

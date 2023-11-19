@@ -19,9 +19,16 @@ class TestEdiFlows(TestCoEdiCommon):
             self.assertRecordValues(self.invoice, [{'edi_state': 'to_send'}])
             self.assertRecordValues(document, [{'state': 'to_send'}])
 
+            self.invoice.button_draft()
+
+            self.assertRecordValues(self.invoice, [{'edi_state': 'to_send'}])
+            self.assertRecordValues(document, [{'state': 'to_send'}])
+
             self.invoice.button_cancel()
 
-            self.assertFalse(self.invoice.edi_state)
+            self.assertRecordValues(self.invoice, [{'edi_state': 'cancelled'}])
+            self.assertRecordValues(document, [{'state': 'cancelled'}])
+            self.assertFalse(document.attachment_id)
 
     def test_invoice_flow_sent(self):
         with self.mock_carvajal():

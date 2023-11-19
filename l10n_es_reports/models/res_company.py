@@ -6,29 +6,27 @@ from odoo import models, api, fields, _
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    l10n_es_reports_iae_group = fields.Char("IAE Group or Heading", size=7, default='A010000', help="""\
-        This field corresponds to the activity to which the entry refers in 7 alphanumeric characters.\n
-        For example, in the operations of a hardware store, 'A036533' will be entered, which indicates an operation\
-        carried out by a business activity of a commercial nature subject to the IAE for 'retail trade in household\
-        items, hardware, ornaments.'""")
+    @api.model_create_multi
+    def create(self, vals_list):
+        companies = super().create(vals_list)
+        companies._create_mod_boe_sequences()
+        return companies
 
-    def _get_mod_boe_sequence(self, mod_version):
-        """ Get or create mod BOE sequence for the current company
-
-        :param str mod_version: any of "347" or "349"
-        :return: the sequence record
+    def _create_mod_boe_sequences(self):
+        """ Creates two sequences for each element of the record set:
+        one for mod 347 BOE, and another one for mod 349 BOE.
         """
-        self.ensure_one()
-        assert mod_version in ("347", "349")
-        mod_sequence_code = 'l10n_es.boe.mod_%s' % mod_version
-        mod_sequence = self.env['ir.sequence'].search([
-            ('company_id', '=', self.id), ('code', '=', mod_sequence_code),
-        ])
-        if not mod_sequence:
-            mod_sequence = self.env["ir.sequence"].create({
-                'name': "Mod %s BOE sequence for company %s" % (mod_version, self.name),
-                'code': mod_sequence_code,
-                'padding': 10,
-                'company_id': self.id,
+        sequence_model = self.env['ir.sequence']
+        for record in self:
+            sequence_model.create({
+                    'name': "Mod 347 BOE sequence for company " + record.name,
+                    'code': "l10n_es.boe.mod_347",
+                    'padding': 10,
+                    'company_id': record.id,
             })
-        return mod_sequence[0]
+            sequence_model.create({
+                    'name': "Mod 349 BOE sequence for company " + record.name,
+                    'code': "l10n_es.boe.mod_349",
+                    'padding': 10,
+                    'company_id': record.id,
+            })

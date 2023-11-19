@@ -20,7 +20,7 @@
         <field name="arch" type="xml">
             <form string="Notification" duplicate="0">
                 <header>
-                    <field name="notification_status" widget="statusbar" statusbar_visible="ready,sent"/>
+                    <field name="notification_status" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
@@ -34,7 +34,7 @@
                             <field name="is_read"/>
                             <field name="read_date"/>
                             <field name="failure_type"/>
-                            <field name="failure_reason" class="o_text_overflow"/>
+                            <field name="failure_reason"/>
                         </group>
                     </group>
                 </sheet>

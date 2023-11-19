@@ -2,7 +2,8 @@
 
 import { StreamPostComment } from './stream_post_comment';
 import { useService } from '@web/core/utils/hooks';
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class StreamPostCommentList extends Component {
 

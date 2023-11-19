@@ -1,7 +1,6 @@
-import base64
-
 from uuid import uuid4
 from odoo.tests.common import TransactionCase
+
 
 class TestSpreadsheetDocumentToDashboard(TransactionCase):
     def test_create_wizard(self):
@@ -11,7 +10,7 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         document = self.env["documents.document"].create(
             {
                 "name": "a document",
-                "spreadsheet_data": r'{"sheets": []}',
+                "raw": r'{"sheets": []}',
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
             }
@@ -31,8 +30,8 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         self.assertEqual(dashboard.group_ids, self.env.ref("documents.group_documents_user"))
         self.assertEqual(dashboard.dashboard_group_id, group)
         self.assertEqual(
-            dashboard.spreadsheet_data,
-            '{"sheets": []}',
+            dashboard.raw,
+            b'{"sheets": []}',
         )
         self.assertEqual(
             next_action,
@@ -53,7 +52,7 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         document = self.env["documents.document"].create(
             {
                 "name": "a document",
-                "spreadsheet_data": r'{"sheets": []}',
+                "raw": r'{"sheets": []}',
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
             }
@@ -71,8 +70,8 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         self.assertEqual(dashboard.group_ids, self.env.ref("base.group_user"))
         self.assertEqual(dashboard.dashboard_group_id, group)
         self.assertEqual(
-            dashboard.spreadsheet_data,
-            '{"sheets": []}',
+            dashboard.raw,
+            b'{"sheets": []}',
         )
         self.assertEqual(
             next_action,
@@ -93,13 +92,11 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         document = self.env["documents.document"].create(
             {
                 "name": "a document",
-                "spreadsheet_data": r'{"sheets": []}',
+                "raw": r'{"sheets": []}',
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
             }
         )
-        snapshot = base64.b64encode(b'{"sheets": [{ name: "a sheet"}]}')
-        document.spreadsheet_snapshot = snapshot
         revision = self.env["spreadsheet.revision"].create(
             {
                 "commands": [],
@@ -114,22 +111,7 @@ class TestSpreadsheetDocumentToDashboard(TransactionCase):
         dashboard = group.dashboard_ids[0]
         self.assertEqual(dashboard.name, document.name)
         self.assertEqual(dashboard.spreadsheet_snapshot, document.spreadsheet_snapshot)
-        self.assertEqual(dashboard.spreadsheet_snapshot, snapshot)
-        self.assertEqual(dashboard.spreadsheet_binary_data, document.datas)
         dashboard_revision = dashboard.spreadsheet_revision_ids[0]
         self.assertEqual(dashboard_revision.revision_id, revision.revision_id)
         self.assertEqual(dashboard_revision.res_id, dashboard.id)
         self.assertEqual(dashboard_revision.res_model, "spreadsheet.dashboard")
-
-    def test_action_open_new_dashboard(self):
-        group = self.env["spreadsheet.dashboard.group"].create(
-            {"name": "a group"}
-        )
-        action = self.env["spreadsheet.dashboard"].action_open_new_dashboard(group.id)
-        dashboard_id = action["params"]["spreadsheet_id"]
-        dashboard = self.env["spreadsheet.dashboard"].browse(dashboard_id)
-        self.assertTrue(dashboard.exists())
-        self.assertEqual(dashboard.name, "Untitled dashboard")
-        self.assertEqual(dashboard.spreadsheet_binary_data, dashboard._empty_spreadsheet_data_base64())
-        self.assertEqual(action["type"], "ir.actions.client")
-        self.assertEqual(action["tag"], "action_edit_dashboard")

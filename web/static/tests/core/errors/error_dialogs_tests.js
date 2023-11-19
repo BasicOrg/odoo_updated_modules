@@ -12,13 +12,22 @@ import {
 import { registry } from "@web/core/registry";
 import { uiService } from "@web/core/ui/ui_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
-import { makeDialogTestEnv } from "../../helpers/mock_env";
+import { makeTestEnv } from "../../helpers/mock_env";
 import { makeFakeDialogService, makeFakeLocalizationService } from "../../helpers/mock_services";
 import { click, getFixture, mount, nextTick, patchWithCleanup } from "../../helpers/utils";
 
 let target;
 let env;
 const serviceRegistry = registry.category("services");
+
+async function makeDialogTestEnv() {
+    const env = await makeTestEnv();
+    env.dialogData = {
+        isActive: true,
+        close() {},
+    };
+    return env;
+}
 
 QUnit.module("Error dialogs", {
     async beforeEach() {
@@ -49,26 +58,26 @@ QUnit.test("ErrorDialog with traceback", async (assert) => {
     const mainButtons = target.querySelectorAll("main button");
     assert.deepEqual(
         [...mainButtons].map((el) => el.textContent),
-        ["See details"]
-    );
-    const footerButtons = target.querySelectorAll("footer button");
-    assert.deepEqual(
-        [...footerButtons].map((el) => el.textContent),
-        ["Close", "Copy error to clipboard"]
+        ["Copy the full error to clipboard", "See details"]
     );
     assert.deepEqual(
-        [...target.querySelector("main p").childNodes].map((el) => el.textContent),
+        [...target.querySelectorAll("main .clearfix p")].map((el) => el.textContent),
         [
             "An error occurred",
             "Please use the copy button to report the error to your support service.",
         ]
     );
     assert.containsNone(target, "div.o_error_detail");
-    click(mainButtons[0]);
+    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Ok");
+    click(mainButtons[1]);
     await nextTick();
     assert.deepEqual(
         [...target.querySelectorAll("main .clearfix p")].map((el) => el.textContent),
-        ["Something bad happened"]
+        [
+            "An error occurred",
+            "Please use the copy button to report the error to your support service.",
+            "Something bad happened",
+        ]
     );
     assert.deepEqual(
         [...target.querySelectorAll("main .clearfix code")].map((el) => el.textContent),
@@ -103,26 +112,26 @@ QUnit.test("Client ErrorDialog with traceback", async (assert) => {
     const mainButtons = target.querySelectorAll("main button");
     assert.deepEqual(
         [...mainButtons].map((el) => el.textContent),
-        ["See details"]
-    );
-    const footerButtons = target.querySelectorAll("footer button");
-    assert.deepEqual(
-        [...footerButtons].map((el) => el.textContent),
-        ["Close", "Copy error to clipboard"]
+        ["Copy the full error to clipboard", "See details"]
     );
     assert.deepEqual(
-        [...target.querySelector("main p").childNodes].map((el) => el.textContent),
+        [...target.querySelectorAll("main .clearfix p")].map((el) => el.textContent),
         [
             "An error occurred",
             "Please use the copy button to report the error to your support service.",
         ]
     );
     assert.containsNone(target, "div.o_error_detail");
-    click(mainButtons[0]);
+    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Ok");
+    click(mainButtons[1]);
     await nextTick();
     assert.deepEqual(
         [...target.querySelectorAll("main .clearfix p")].map((el) => el.textContent),
-        ["Something bad happened"]
+        [
+            "An error occurred",
+            "Please use the copy button to report the error to your support service.",
+            "Something bad happened",
+        ]
     );
     assert.deepEqual(
         [...target.querySelectorAll("main .clearfix code")].map((el) => el.textContent),
@@ -182,10 +191,10 @@ QUnit.test("WarningDialog", async (assert) => {
         },
     });
     assert.containsOnce(target, ".o_dialog");
-    assert.strictEqual(target.querySelector("header .modal-title").textContent, "Invalid Operation");
-    assert.containsOnce(target, ".o_error_dialog");
+    assert.strictEqual(target.querySelector("header .modal-title").textContent, "User Error");
+    assert.containsOnce(target, "main .o_dialog_warning");
     assert.strictEqual(target.querySelector("main").textContent, "Some strange unreadable message");
-    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Close");
+    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Ok");
 });
 
 QUnit.test("RedirectWarningDialog", async (assert) => {
@@ -224,7 +233,7 @@ QUnit.test("RedirectWarningDialog", async (assert) => {
     const footerButtons = target.querySelectorAll("footer button");
     assert.deepEqual(
         [...footerButtons].map((el) => el.textContent),
-        ["Buy book on cryptography", "Close"]
+        ["Buy book on cryptography", "Cancel"]
     );
     await click(footerButtons[0]); // click on "Buy book on cryptography"
     assert.verifySteps(["buy_action_id", "dialog-closed"]);
@@ -244,7 +253,7 @@ QUnit.test("Error504Dialog", async (assert) => {
         target.querySelector("main p").textContent,
         " The operation was interrupted. This usually means that the current operation is taking too much time. "
     );
-    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Close");
+    assert.strictEqual(target.querySelector(".o_dialog footer button").textContent, "Ok");
 });
 
 QUnit.test("SessionExpiredDialog", async (assert) => {
@@ -269,7 +278,7 @@ QUnit.test("SessionExpiredDialog", async (assert) => {
         " Your Odoo session expired. The current page is about to be refreshed. "
     );
     const footerButton = target.querySelector(".o_dialog footer button");
-    assert.strictEqual(footerButton.textContent, "Close");
+    assert.strictEqual(footerButton.textContent, "Ok");
     click(footerButton);
     assert.verifySteps(["location reload"]);
 });

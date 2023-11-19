@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data auto_sequence="1">
     <record id="account_financial_report_ke_profitandloss0" model="account.report">
         <field name="name">Profit and Loss</field>
         <field name="root_report_id" ref="account_reports.profit_and_loss"/>
@@ -19,7 +18,6 @@
             <record id="account_financial_report_ke_operating_revenue" model="account.report.line">
                 <field name="name">Operating Revenues</field>
                 <field name="code">KE_O_R</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_operating_revenue_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -62,7 +60,6 @@
             <record id="account_financial_report_ke_operating_costs" model="account.report.line">
                 <field name="name">Operating Costs</field>
                 <field name="code">KE_O_C</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_operating_costs_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -119,7 +116,6 @@
             <record id="account_financial_report_ke_operating_profit" model="account.report.line">
                 <field name="name">Operating Profit</field>
                 <field name="code">KE_O_P</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_operating_profit_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -132,7 +128,6 @@
             <record id="account_financial_report_ke_other_revenues_expenses" model="account.report.line">
                 <field name="name">Other Revenues and Expenses</field>
                 <field name="code">KE_O_R_E</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_other_revenues_expenses_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -175,7 +170,6 @@
             <record id="account_financial_report_ke_profit_loss_before_taxes" model="account.report.line">
                 <field name="name">Profit/Loss Before Taxes</field>
                 <field name="code">KE_P_L_B_T</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_profit_loss_before_taxes_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -190,7 +184,6 @@
                 <field name="code">KE_C_T_E</field>
                 <field name="groupby">account_id</field>
                 <field name="foldable" eval="True"/>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_income_tax_expense_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -203,7 +196,6 @@
             <record id="account_financial_report_ke_profit_loss" model="account.report.line">
                 <field name="name">Net profit/Loss for the Year</field>
                 <field name="code">KE_P_L</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_ke_profit_loss_balance" model="account.report.expression">
                         <field name="label">balance</field>
@@ -222,15 +214,12 @@
             </record>
         </field>
     </record>
-</data>
-<data>
     <record id="action_account_report_ke_pnl" model="ir.actions.client">
         <field name="name">Profit and Loss</field>
         <field name="tag">account_report</field>
-        <field name="context" eval="{'model': 'account.report', 'report_id': ref('account_financial_report_ke_profitandloss0')}"/>
+        <field name="context" eval="{'model': 'account.financial.html.report', 'id': ref('account_financial_report_ke_profitandloss0')}"/>
     </record>
     <record id="account_financial_report_ke_bs_B_1_earnings" model="account.report.line">
         <field name="action_id" ref="action_account_report_ke_pnl"/>
     </record>
-</data>
 </odoo>

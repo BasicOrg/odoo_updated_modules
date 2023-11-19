@@ -13,7 +13,6 @@
         'data/hr_contract_salary_resume_data.xml',
         'views/menuitems.xml',
         'views/hr_contract_views.xml',
-        'views/hr_contract_salary_template.xml',
     ],
     'license': 'OEEL-1',
     'auto_install': True,

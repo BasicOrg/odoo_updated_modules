@@ -10,7 +10,6 @@ class HelpdeskTeam(models.Model):
 
     show_knowledge_base_forum = fields.Boolean(compute="_compute_show_knowledge_base_forum")
     website_forum_ids = fields.Many2many('forum.forum', string='Forums', help="In the help center, customers will only be able to see posts from the selected forums.")
-    top_forum_posts = fields.Many2many('forum.post', string='Top Posts', help="These are the top posts in the forums associated with this helpdesk team", compute="_compute_top_forum_posts")
 
     @api.depends('website_forum_ids')
     def _compute_show_knowledge_base_forum(self):
@@ -58,14 +57,6 @@ class HelpdeskTeam(models.Model):
         ], order='posts_count desc', limit=20)
         return res + tags.mapped(lambda t: t.name and t.name.lower())
 
-    def _compute_top_forum_posts(self):
-        for team in self:
-            search_domain = [('parent_id', '=', False)]
-            if team.website_forum_ids:
-                search_domain.append(('forum_id', 'in', team.website_forum_ids.ids))
-
-            team.top_forum_posts = self.env['forum.post'].search(search_domain, order='vote_count desc, last_activity_date desc', limit=5)
-
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
 
@@ -84,8 +75,8 @@ class HelpdeskTicket(models.Model):
     @api.depends_context('uid')
     @api.depends('forum_post_ids')
     def _compute_forum_post_count(self):
-        rg = self.env['forum.post']._read_group([('can_view', '=', True), ('id', 'in', self.forum_post_ids.ids)], ['ticket_id'], ['__count'])
-        posts_count = {ticket.id: count for ticket, count in rg}
+        rg = self.env['forum.post']._read_group([('can_view', '=', True), ('id', 'in', self.forum_post_ids.ids)], ['ticket_id'], ['ticket_id'])
+        posts_count = {r['ticket_id'][0]: r['ticket_id_count'] for r in rg}
         for ticket in self:
             ticket.forum_post_count = posts_count.get(ticket.id, 0)
 
@@ -101,7 +92,7 @@ class HelpdeskTicket(models.Model):
             raise UserError(_('No posts associated to this ticket.'))
 
         if len(self.forum_post_ids) > 1:
-            action = self.env['ir.actions.actions']._for_xml_id('website_forum.forum_post_action_forum_main')
+            action = self.env['ir.actions.actions']._for_xml_id('website_forum.action_forum_posts')
             action['domain'] = [('id', 'in', self.forum_post_ids.ids)]
             return action
 

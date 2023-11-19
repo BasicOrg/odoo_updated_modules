@@ -19,8 +19,6 @@ class L10nMXEdiTariffFraction(models.Model):
     active = fields.Boolean(
         help="If the tariff fraction has expired it could be disabled to do not allow select the record.", default=True)
 
-    @api.depends('code')
-    def _compute_display_name(self):
+    def name_get(self):
         # OVERRIDE
-        for tariff in self:
-            tariff.display_name = f"{tariff.code} {tariff.name or ''}"
+        return [(tariff.id, "%s %s" % (tariff.code, tariff.name or '')) for tariff in self]

@@ -3,7 +3,8 @@
 import { StreamPostComments } from '@social/js/stream_post_comments';
 import { StreamPostCommentListYoutube } from './stream_post_comment_list';
 import { StreamPostCommentsReplyYoutube } from './stream_post_comments_reply';
-import { onWillStart } from "@odoo/owl";
+
+const { onWillStart } = owl;
 
 export class StreamPostCommentsYoutube extends StreamPostComments {
 

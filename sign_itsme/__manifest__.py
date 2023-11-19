@@ -13,17 +13,13 @@
         'views/sign_request_templates.xml'
     ],
     'assets': {
-        'sign.assets_public_sign': [
-            'sign_itsme/static/src/**/*',
-        ],
-        'web.assets_backend': [
-            'sign_itsme/static/src/**/*',
+        'web.assets_common': [
+            'sign_itsme/static/src/js/*',
+            'sign_itsme/static/src/xml/*',
         ],
         'web.assets_frontend': [
-            'sign_itsme/static/src/**/*',
-        ],
-        'web.qunit_suite_tests': [
-            'sign_itsme/static/tests/**/*',
+            'sign_itsme/static/src/js/*',
+            'sign_itsme/static/src/xml/*',
         ],
     },
     'installable': True,

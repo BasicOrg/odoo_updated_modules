@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server saas~14.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"POT-Creation-Date: 2021-09-14 11:00+0000\n"
 "PO-Revision-Date: 2021-09-14 11:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -22,13 +22,6 @@ msgid "Account Move Reversal"
 msgstr ""
 
 #. module: helpdesk_account
-#: code:addons/helpdesk_account/controllers/portal.py:0
-#, python-format
-msgid "Credit Note"
-msgstr "Note de crédit"
-
-#. module: helpdesk_account
-#: code:addons/helpdesk_account/controllers/portal.py:0
 #: code:addons/helpdesk_account/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_account.field_helpdesk_ticket__invoice_ids
 #: model_terms:ir.ui.view,arch_db:helpdesk_account.helpdesk_ticket_view_form_inherit_helpdesk_invoicing
@@ -55,7 +48,7 @@ msgstr ""
 
 #. module: helpdesk_account
 #: model_terms:ir.ui.view,arch_db:helpdesk_account.view_account_move_reversal_inherit_helpdesk_account
-msgid "Invoices to Refund"
+msgid "Invoice to Refund"
 msgstr ""
 
 #. module: helpdesk_account
@@ -64,20 +57,17 @@ msgid "Journal Entry"
 msgstr ""
 
 #. module: helpdesk_account
-#: model:ir.model.fields,field_description:helpdesk_account.field_account_move_reversal__move_ids
-msgid "Move"
+#: model:ir.model.fields,help:helpdesk_account.field_account_move_reversal__helpdesk_sale_order_id
+msgid ""
+"Reference of the Sales Order to which this ticket refers. Setting this "
+"information aims at easing your After Sales process and only serves "
+"indicative purposes."
 msgstr ""
 
 #. module: helpdesk_account
 #: model:ir.actions.act_window,name:helpdesk_account.helpdesk_ticket_action_refund
 #: model_terms:ir.ui.view,arch_db:helpdesk_account.helpdesk_ticket_view_form_inherit_helpdesk_invoicing
 msgid "Refund"
-msgstr ""
-
-#. module: helpdesk_account
-#: code:addons/helpdesk_account/wizard/account_move_reversal.py:0
-#, python-format
-msgid "Refund created"
 msgstr ""
 
 #. module: helpdesk_account
@@ -91,6 +81,6 @@ msgid "Suitable Move"
 msgstr ""
 
 #. module: helpdesk_account
-#: model:ir.model.fields,field_description:helpdesk_account.field_account_move_reversal__suitable_sale_order_ids
-msgid "Suitable Sale Order"
-msgstr ""
+#: code:addons/helpdesk_account/controllers/portal.py:0
+msgid "Credit Note"
+msgstr "Note de crédit"

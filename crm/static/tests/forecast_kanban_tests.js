@@ -5,10 +5,11 @@ import { fillTemporalService } from "@crm/views/fill_temporal_service";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import {
     click,
-    dragAndDrop,
     getFixture,
     patchDate,
 } from '@web/../tests/helpers/utils';
+import testUtils from 'web.test_utils';
+const find = testUtils.dom.find;
 
 const serviceRegistry = registry.category("services");
 
@@ -84,7 +85,7 @@ QUnit.module('Crm Forecast Model Extension', {
                         "2nd column March should contain 2 records");
 
         // remove the filter
-        await click($(target).find(".o_searchview_facet:contains(Forecast)")[0], ".o_facet_remove");
+        await click(find(target, '.o_searchview_facet', "Forecast"), '.o_facet_remove');
 
         assert.containsN(target, '.o_kanban_group', 3, "There should be 3 columns");
         assert.containsN(target, '.o_kanban_group:nth-child(1) .o_kanban_record', 2,
@@ -117,7 +118,7 @@ QUnit.module('Crm Forecast Model Extension', {
                         "2nd column March should contain 2 records");
 
         // remove the filter
-        await click($(target).find(".o_searchview_facet:contains(Forecast)")[0], ".o_facet_remove");
+        await click(find(target, '.o_searchview_facet', "Forecast"), '.o_facet_remove');
 
         assert.containsN(target, '.o_kanban_group', 3, "There should be 3 columns");
         assert.containsN(target, '.o_kanban_group:nth-child(1) .o_kanban_record', 2,
@@ -180,7 +181,7 @@ QUnit.module('Crm Fill Temporal Service', {
 
 }, function () {
     /**
-     * Since mock_server does not support fill_temporal,
+     * Since mock_server does not support fill_temporal, 
      * we only check the domain and the context sent to the read_group, as well
      * as the end value of the FillTemporal Service after the read_group (which should have been updated in the model)
      */
@@ -218,11 +219,11 @@ QUnit.module('Crm Fill Temporal Service', {
                 type: 'date',
             },
             granularity: 'month',
-        }).end.toFormat('yyyy-MM-dd'), '2022-02-01');
+        }).end.format('YYYY-MM-DD'), '2022-02-01');
     });
 
     /**
-     * Since mock_server does not support fill_temporal,
+     * Since mock_server does not support fill_temporal, 
      * we only check the domain and the context sent to the read_group, as well
      * as the end value of the FillTemporal Service after the read_group (which should have been updated in the model)
      */
@@ -261,121 +262,6 @@ QUnit.module('Crm Fill Temporal Service', {
                 type: 'date',
             },
             granularity: 'year',
-        }).end.toFormat('yyyy-MM-dd'), '2023-01-01');
-    });
-});
-
-QUnit.module('Crm Forecast main flow with progressBars', (hooks) => {
-    function getCounters() {
-        return [...target.querySelectorAll(".o_animated_number")].map((counter) => counter.innerText);
-    }
-
-    function getProgressBarsColors() {
-        return [...target.querySelectorAll(".o_column_progress")].map(columnProgressEl => {
-            return [...columnProgressEl.querySelectorAll(".progress-bar")].map(progressBarEl => {
-                return [...progressBarEl.classList.values()].filter(htmlClass => {
-                    return htmlClass.startsWith('bg-');
-                })[0];
-            })
-        });
-    }
-
-    hooks.beforeEach(() => {
-        serviceRegistry.add("fillTemporalService", fillTemporalService);
-        this.testKanbanView = {
-            arch: `
-                <kanban js_class="forecast_kanban">
-                    <progressbar field="color" colors='{"s": "success", "w": "warning", "d": "danger"}'  sum_field="int_field"/>
-                    <field name="date_deadline"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div>
-                                <field name="name"/>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            searchViewArch: `
-                <search>
-                    <filter name="forecast" string="Forecast" context="{'forecast_filter':1}"/>
-                    <filter name='groupby_date_deadline' context="{'group_by':'date_deadline'}"/>
-                </search>`
-            ,
-            serverData: {
-                models: {
-                    'crm.lead': {
-                        fields: {
-                            color: {string: 'Color', type: 'string'},
-                            date_deadline: {string: 'Expected Closing', type: 'date'},
-                            int_field: {string: 'Value', type: 'integer', sortable: true},
-                            name: {string: 'Name', type: 'char'},
-                        },
-                    },
-                },
-                views: {},
-            },
-            resModel: 'crm.lead',
-            type: "kanban",
-            context: {
-                search_default_forecast: true,
-                search_default_groupby_date_deadline: true,
-                forecast_field: 'date_deadline',
-            },
-            groupBy: ['date_deadline'],
-        };
-        target = getFixture();
-        setupViewRegistries();
-        // first september 2023
-        patchDate(2023, 8, 1, 0, 0, 0);
-    });
-
-    QUnit.test("Forecast drag&drop and add column", async (assert) => {
-        this.testKanbanView.serverData.models['crm.lead'].records = [
-            {id: 1, int_field: 7, color: 'd', name: 'Lead 1', date_deadline: '2023-09-03'},
-            {id: 2, int_field: 20, color: 'w', name: 'Lead 2', date_deadline: '2023-09-05'},
-            {id: 3, int_field: 300, color: 's', name: 'Lead 3', date_deadline: '2023-10-10'},
-        ];
-
-        await makeView({
-            ...this.testKanbanView,
-            async mockRPC(route, args) {
-                assert.step(args.method || route);
-            },
-        });
-
-        assert.deepEqual(getCounters(), ["27", "300"]);
-        assert.deepEqual(getProgressBarsColors(), [["bg-warning", "bg-danger"], ["bg-success"]]);
-
-        await dragAndDrop(
-            ".o_kanban_group:first-child .o_kanban_record",
-            ".o_kanban_group:nth-child(2)"
-        );
-
-        assert.deepEqual(getCounters(), ["20", "307"]);
-        assert.deepEqual(getProgressBarsColors(), [["bg-warning"], ["bg-success", "bg-danger"]]);
-
-        await click(target, ".o_kanban_add_column");
-
-        // Counters and progressbars should be unchanged after adding a column.
-        assert.deepEqual(getCounters(), ["20", "307"]);
-        assert.deepEqual(getProgressBarsColors(), [["bg-warning"], ["bg-success", "bg-danger"]]);
-
-        assert.verifySteps([
-            // makeView
-            "get_views",
-            "web_read_group",
-            "read_progress_bar",
-            "web_search_read",
-            "web_search_read",
-            // drag&drop
-            "web_save",
-            "read_progress_bar",
-            "web_read_group",
-            // add column
-            "web_read_group",
-            "web_search_read",
-            "web_search_read",
-            "read_progress_bar"
-        ]);
+        }).end.format('YYYY-MM-DD'), '2023-01-01');
     });
 });

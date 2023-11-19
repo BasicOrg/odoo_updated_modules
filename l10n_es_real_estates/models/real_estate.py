@@ -10,7 +10,7 @@ class RealEstate(models.Model):
     _name = 'l10n_es_reports.real.estate'
     _description = "Real Estate"
 
-    name = fields.Char(string='Name', required=True, help="Name to display to identify this real estate.")
+    name = fields.Char(string='Name', required=True, help="Name to display ot identify this real estate.")
     invoice_ids = fields.One2many(string='Related Invoices', inverse_name='l10n_es_real_estate_id', comodel_name='account.move', required=True)
 
     cadastral_reference = fields.Selection(selection=[('1','Spanish Territory'),

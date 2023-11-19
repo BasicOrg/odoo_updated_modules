@@ -3,17 +3,16 @@
 # 	* hr_fleet
 # 
 # Translators:
-# Wil Odoo, 2023
-# Thi Huong Nguyen, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Thi Huong Nguyen, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -28,9 +27,9 @@ msgid ""
 msgstr ""
 
 #. module: hr_fleet
-#: model:ir.model,name:hr_fleet.model_mail_activity_plan_template
-msgid "Activity plan template"
-msgstr "Mẫu kế hoạch hoạt động"
+#: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_form
+msgid "Application Settings"
+msgstr "Cài đặt ứng dụng"
 
 #. module: hr_fleet
 #: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_assignation_log_employee_view_list
@@ -39,7 +38,6 @@ msgid "Attachments"
 msgstr "Tệp đính kèm"
 
 #. module: hr_fleet
-#. odoo-python
 #: code:addons/hr_fleet/models/employee.py:0
 #, python-format
 msgid "Cannot remove address from employees with linked cars."
@@ -60,6 +58,11 @@ msgstr "Xe công ty"
 #: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_assignation_log_employee_view_list
 msgid "Current Driver"
 msgstr "Current Driver"
+
+#. module: hr_fleet
+#: model_terms:ir.ui.view,arch_db:hr_fleet.fleet_vehicle_view_search_inherit_hr
+msgid "Current Driver (Employee)"
+msgstr "Tài xế hiện tại (Nhân viên)"
 
 #. module: hr_fleet
 #: model:ir.model,name:hr_fleet.model_hr_departure_wizard
@@ -93,28 +96,9 @@ msgid "Employee"
 msgstr "Nhân viên"
 
 #. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "Employee %s is not linked to a vehicle."
-msgstr ""
-
-#. module: hr_fleet
 #: model:ir.model.fields,field_description:hr_fleet.field_fleet_vehicle__driver_employee_name
 msgid "Employee Name"
-msgstr "Tên nhân viên"
-
-#. module: hr_fleet
-#: model:ir.model.fields.selection,name:hr_fleet.selection__mail_activity_plan_template__responsible_type__fleet_manager
-msgid "Fleet Manager"
-msgstr "Fleet Manager"
-
-#. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "Fleet Manager is limited to Employee plans."
-msgstr ""
+msgstr "Tên Nhân viên"
 
 #. module: hr_fleet
 #: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_form
@@ -127,7 +111,7 @@ msgid "Future Driver (Employee)"
 msgstr "Tài xế tương lai (Nhân viên)"
 
 #. module: hr_fleet
-#: model:ir.model.fields,field_description:hr_fleet.field_hr_employee__license_plate
+#: model_terms:ir.ui.view,arch_db:hr_fleet.view_employee_filter
 msgid "License Plate"
 msgstr "Biển số xe"
 
@@ -151,10 +135,9 @@ msgstr "Nhật ký công tơ mét cho từng phương tiện"
 #. module: hr_fleet
 #: model:ir.model,name:hr_fleet.model_hr_employee_public
 msgid "Public Employee"
-msgstr "Nhân viên chung"
+msgstr "Public Employee"
 
 #. module: hr_fleet
-#. odoo-python
 #: code:addons/hr_fleet/models/fleet_vehicle.py:0
 #, python-format
 msgid "Related Employee"
@@ -166,25 +149,13 @@ msgid "Release Company Car"
 msgstr "Release Company Car"
 
 #. module: hr_fleet
-#: model:ir.model.fields,field_description:hr_fleet.field_mail_activity_plan_template__responsible_type
-msgid "Responsible"
-msgstr "Người phụ trách"
-
-#. module: hr_fleet
 #: model:ir.model,name:hr_fleet.model_fleet_vehicle_log_services
 msgid "Services for vehicles"
 msgstr "Các dịch vụ cho phương tiện"
 
 #. module: hr_fleet
-#. odoo-python
-#: code:addons/hr_fleet/models/mail_activity_plan_template.py:0
-#, python-format
-msgid "The vehicle of employee %(employee)s is not linked to a fleet manager."
-msgstr ""
-
-#. module: hr_fleet
-#. odoo-javascript
-#: code:addons/hr_fleet/static/src/views/hr_fleet_kanban/hr_fleet_kanban_controller.xml:0
+#. openerp-web
+#: code:addons/hr_fleet/static/src/xml/attachment_kanban.xml:0
 #, python-format
 msgid "Upload"
 msgstr "Tải lên"

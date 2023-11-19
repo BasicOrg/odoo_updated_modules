@@ -3,16 +3,17 @@
 # 	* sales_team
 # 
 # Translators:
-# Wil Odoo, 2023
+# Friederike Fasterling-Nesselbosch, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-10-04 09:25+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,15 +21,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: sales_team
-#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_member_view_kanban
-#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_form
-msgid "<i class=\"fa fa-envelope me-1\" role=\"img\" aria-label=\"Email\" title=\"Email\"/>"
-msgstr "<i class=\"fa fa-envelope me-1\" role=\"img\" aria-label=\"Email\" title=\"Email\"/>"
+#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_kanban_dashboard
+msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
+msgstr "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Gestisci\"/>"
 
 #. module: sales_team
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_member_view_kanban
-msgid "<span class=\"text-bg-danger\">Archived</span>"
-msgstr "<span class=\"text-bg-danger\">Archiviato</span>"
+#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_form
+msgid "<i class=\"fa fa-envelope me-1\" role=\"img\" aria-label=\"Email\" title=\"Email\"/>"
+msgstr ""
+
+#. module: sales_team
+#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_member_view_kanban
+msgid "<span class=\"bg-odoo\">Archived</span>"
+msgstr ""
 
 #. module: sales_team
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_kanban_dashboard
@@ -38,7 +44,7 @@ msgstr "<span>Nuova</span>"
 #. module: sales_team
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_kanban_dashboard
 msgid "<span>Reporting</span>"
-msgstr "<span>Rendiconto</span>"
+msgstr "<span>Rendicontazione</span>"
 
 #. module: sales_team
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_kanban_dashboard
@@ -65,7 +71,7 @@ msgstr "Tipi di attività"
 #. module: sales_team
 #: model_terms:ir.actions.act_window,help:sales_team.crm_team_member_action
 msgid "Add a Team Member"
-msgstr "Aggiungi un membro del team"
+msgstr ""
 
 #. module: sales_team
 #: model:ir.model.fields,help:sales_team.field_crm_team__crm_team_member_ids
@@ -76,7 +82,6 @@ msgstr ""
 " di vendita."
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid ""
@@ -87,7 +92,6 @@ msgstr ""
 " squadra %(team_name)s."
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team_member.py:0
 #, python-format
 msgid ""
@@ -98,7 +102,6 @@ msgstr ""
 " squadra %(team_names)s."
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid ""
@@ -134,7 +137,6 @@ msgid "Avatar"
 msgstr "Avatar"
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid "Big Pretty Button :)"
@@ -146,7 +148,6 @@ msgid "CRM Tag"
 msgstr "Etichetta CRM"
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid "Cannot delete default team \"%s\""
@@ -165,11 +166,11 @@ msgstr "Indice colore"
 #. module: sales_team
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__company_id
 #: model:ir.model.fields,field_description:sales_team.field_crm_team_member__company_id
-#: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_search
 msgid "Company"
 msgstr "Azienda"
 
 #. module: sales_team
+#: model:ir.ui.menu,name:sales_team.menu_sale_config
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_view_kanban_dashboard
 msgid "Configuration"
 msgstr "Configurazione"
@@ -275,13 +276,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__message_follower_ids
 #: model:ir.model.fields,field_description:sales_team.field_crm_team_member__message_follower_ids
 msgid "Followers"
-msgstr "Seguito da"
+msgstr "Chi sta seguendo"
 
 #. module: sales_team
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__message_partner_ids
 #: model:ir.model.fields,field_description:sales_team.field_crm_team_member__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Seguito da (partner)"
+msgstr "Chi sta seguendo (partner)"
 
 #. module: sales_team
 #: model_terms:ir.ui.view,arch_db:sales_team.crm_team_member_view_search
@@ -369,6 +370,13 @@ msgid "Is Follower"
 msgstr "Sta seguendo"
 
 #. module: sales_team
+#: model:ir.model.fields,field_description:sales_team.field_crm_tag____last_update
+#: model:ir.model.fields,field_description:sales_team.field_crm_team____last_update
+#: model:ir.model.fields,field_description:sales_team.field_crm_team_member____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: sales_team
 #: model:ir.model.fields,field_description:sales_team.field_crm_tag__write_uid
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__write_uid
 #: model:ir.model.fields,field_description:sales_team.field_crm_team_member__write_uid
@@ -381,6 +389,12 @@ msgstr "Ultimo aggiornamento di"
 #: model:ir.model.fields,field_description:sales_team.field_crm_team_member__write_date
 msgid "Last Updated on"
 msgstr "Ultimo aggiornamento il"
+
+#. module: sales_team
+#: model:ir.model.fields,field_description:sales_team.field_crm_team__message_main_attachment_id
+#: model:ir.model.fields,field_description:sales_team.field_crm_team_member__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Allegato principale"
 
 #. module: sales_team
 #: model:ir.model.fields,help:sales_team.field_res_users__sale_team_id
@@ -410,7 +424,7 @@ msgstr "Iscritti"
 #. module: sales_team
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__member_warning
 msgid "Membership Issue Warning"
-msgstr "Avviso problema iscrizione"
+msgstr ""
 
 #. module: sales_team
 #: model:ir.model.fields,field_description:sales_team.field_crm_team__message_has_error
@@ -455,7 +469,7 @@ msgstr "Numero di errori"
 #. module: sales_team
 #: model:ir.model.fields,help:sales_team.field_crm_team__message_needaction_counter
 #: model:ir.model.fields,help:sales_team.field_crm_team_member__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Numero di messaggi che richiedono un'azione"
 
 #. module: sales_team
@@ -488,12 +502,6 @@ msgstr "Pre-vendita"
 #: model:crm.tag,name:sales_team.categ_oppor1
 msgid "Product"
 msgstr "Prodotto"
-
-#. module: sales_team
-#: model:ir.model.fields,field_description:sales_team.field_crm_team__rating_ids
-#: model:ir.model.fields,field_description:sales_team.field_crm_team_member__rating_ids
-msgid "Ratings"
-msgstr "Valutazioni"
 
 #. module: sales_team
 #: model:crm.team,name:sales_team.team_sales_department
@@ -562,7 +570,6 @@ msgid "Salesteams Search"
 msgstr "Ricerca team di vendita"
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid "Sample data"
@@ -595,7 +602,7 @@ msgstr "Nome etichetta"
 
 #. module: sales_team
 #: model:ir.model.constraint,message:sales_team.constraint_crm_tag_name_uniq
-msgid "Tag name already exists!"
+msgid "Tag name already exists !"
 msgstr "Nome etichetta già esistente."
 
 #. module: sales_team
@@ -625,7 +632,6 @@ msgstr "Iscritti al team"
 #: model_terms:ir.actions.act_window,help:sales_team.crm_team_member_action
 msgid "Team Members are salespersons assigned to specific teams."
 msgstr ""
-"I membri del team sono addetti alle vendite assegnati a team specifici."
 
 #. module: sales_team
 #: model:ir.actions.act_window,name:sales_team.crm_team_action_pipeline
@@ -652,7 +658,6 @@ msgstr ""
 "\"Chiamata\" o \" Preparazione Meeting\")."
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
 msgid ""
@@ -672,19 +677,14 @@ msgstr "Formazione"
 msgid ""
 "UX: Give users not to add in the currently chosen team to avoid duplicates"
 msgstr ""
-"Esperienza utente: dai agli utenti la possibilità di non aggiungere membri "
-"al team scelto per evitare doppioni"
 
 #. module: sales_team
 #: model:ir.model.fields,help:sales_team.field_crm_team__member_company_ids
 #: model:ir.model.fields,help:sales_team.field_crm_team_member__user_company_ids
 msgid "UX: Limit to team company or all if no company"
 msgstr ""
-"Esperienza utente: limitare al team aziendale o a tutti se non è stata "
-"definita un'azienda"
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team.py:0
 #: code:addons/sales_team/models/crm_team.py:0
 #, python-format
@@ -715,8 +715,6 @@ msgid ""
 "Use Tags to manage and track your Opportunities (product structure, sales "
 "type, ...)"
 msgstr ""
-"Utilizza i tag per gestire e tracciare le opportunità (struttura prodotto, "
-"tipo di vendite...)"
 
 #. module: sales_team
 #: model:ir.model,name:sales_team.model_res_users
@@ -759,7 +757,6 @@ msgid "Website"
 msgstr "Sito web"
 
 #. module: sales_team
-#. odoo-python
 #: code:addons/sales_team/models/crm_team_member.py:0
 #, python-format
 msgid ""

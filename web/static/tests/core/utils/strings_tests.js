@@ -1,14 +1,7 @@
 /** @odoo-module **/
 
-import {
-    escape,
-    escapeRegExp,
-    intersperse,
-    isEmail,
-    sprintf,
-    unaccent,
-} from "@web/core/utils/strings";
-import { _t, translatedTerms } from "@web/core/l10n/translation";
+import { escapeRegExp, intersperse, sprintf } from "@web/core/utils/strings";
+import { _lt, translatedTerms } from "@web/core/l10n/translation";
 import { patchWithCleanup } from "../../helpers/utils";
 
 QUnit.module("utils", () => {
@@ -59,13 +52,6 @@ QUnit.module("utils", () => {
         assert.deepEqual(intersperse("12345678", [3, 0], "."), "12.345.678");
     });
 
-    QUnit.test("unaccent", function (assert) {
-        assert.strictEqual(unaccent("éèàôù"), "eeaou");
-        assert.strictEqual(unaccent("ⱮɀꝾƶⱵȥ"), "mzgzhz"); // single characters
-        assert.strictEqual(unaccent("ǱǄꝎꜩꝡƕ"), "dzdzootzvyhv"); // doubled characters
-        assert.strictEqual(unaccent("ⱮɀꝾƶⱵȥ", true), "MzGzHz"); // case sensitive characters
-    });
-
     QUnit.test("sprintf properly formats strings", (assert) => {
         assert.deepEqual(sprintf("Hello %s!", "ged"), "Hello ged!");
         assert.deepEqual(sprintf("Hello %s and %s!", "ged", "lpe"), "Hello ged and lpe!");
@@ -102,39 +88,13 @@ QUnit.module("utils", () => {
             two: "två",
         });
 
-        assert.deepEqual(sprintf("Hello %s", _t("one")), "Hello en");
-        assert.deepEqual(sprintf("Hello %s %s", _t("one"), _t("two")), "Hello en två");
+        assert.deepEqual(sprintf("Hello %s", _lt("one")), "Hello en");
+        assert.deepEqual(sprintf("Hello %s %s", _lt("one"), _lt("two")), "Hello en två");
 
         const vals = {
-            one: _t("one"),
-            two: _t("two"),
+            one: _lt("one"),
+            two: _lt("two"),
         };
         assert.deepEqual(sprintf("Hello %(two)s %(one)s", vals), "Hello två en");
-    });
-
-    QUnit.test("escape", (assert) => {
-        assert.strictEqual(escape("<a>this is a link</a>"), "&lt;a&gt;this is a link&lt;/a&gt;");
-        assert.strictEqual(
-            escape(`<a href="https://www.odoo.com">odoo<a>`),
-            `&lt;a href=&quot;https://www.odoo.com&quot;&gt;odoo&lt;a&gt;`
-        );
-        assert.strictEqual(
-            escape(`<a href='https://www.odoo.com'>odoo<a>`),
-            `&lt;a href=&#x27;https://www.odoo.com&#x27;&gt;odoo&lt;a&gt;`
-        );
-        assert.strictEqual(
-            escape("<a href='https://www.odoo.com'>Odoo`s website<a>"),
-            `&lt;a href=&#x27;https://www.odoo.com&#x27;&gt;Odoo&#x60;s website&lt;a&gt;`
-        );
-    });
-
-    QUnit.test("isEmail", (assert) => {
-        assert.notOk(isEmail(""));
-        assert.notOk(isEmail("test"));
-        assert.notOk(isEmail("test@odoo"));
-        assert.notOk(isEmail("test@odoo@odoo.com"));
-        assert.notOk(isEmail("te st@odoo.com"));
-
-        assert.ok(isEmail("test@odoo.com"));
     });
 });

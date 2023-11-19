@@ -182,7 +182,7 @@ class XmlPolizasExportWizard(models.TransientModel):
         """ Execute the query
         """
         tables, where_clause, where_params = ledger._query_get(options, domain=False, date_scope='strict_range')
-        ct_query = self.env['account.report']._get_query_currency_table(options)
+        ct_query = self.env['res.currency']._get_query_currency_table(options)
         query = f'''
             SELECT
                 account_move_line.id,
@@ -304,7 +304,7 @@ class XmlPolizasExportWizard(models.TransientModel):
         options['unfold_all'] = True
 
         # We don't need all companies
-        options['companies'] = [{'name': self.env.company.name, 'id': self.env.company.id}]
+        options.pop('multi_company', None)
 
         # Retrieve --------------------------------
         accounts_results = self._do_query(ledger, options)

@@ -1,18 +1,15 @@
 /** @odoo-module */
 
+import { StreamPostCommentsReplyTwitter } from '@social_twitter/js/stream_post_comments_reply';
+
 import { patch } from '@web/core/utils/patch';
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
 let uniqueSeed = 0;
 
-odoo.loader.bus.addEventListener("module-started", (e) => {
-    if (e.moduleName === "@social_twitter/js/stream_post_comments_reply") {
-        patch(e.module.StreamPostCommentsReplyTwitter.prototype, "social_twitter_spam", {
-            get authorPictureSrc() { return '' }
-        });
-    }
-})
-
+patch(StreamPostCommentsReplyTwitter.prototype, "social_twitter_spam", {
+    get authorPictureSrc() { return '' }
+});
 
 const triggerEnterEvent = (element) => {
     const ev = new window.KeyboardEvent('keydown', { bubbles: true, key: "Enter" });
@@ -83,12 +80,13 @@ function createReplies(textareaSelector) {
   *
   * The spam detection is set to maximum 3 comments.
   **/
-registry.category("web_tour.tours").add(
+tour.register(
     'social_twitter/static/tests/tours/tour_social_twitter_spam.js',
     {
         url: '/web',
         test: true,
-        steps: () => [
+    },
+    [
         {
             trigger: '.o_app[data-menu-xmlid="social.menu_social_global"]',
             content: 'Open the Social App',
@@ -105,4 +103,4 @@ registry.category("web_tour.tours").add(
         // TODO awa: not sure how this one worked, as we have no textarea to reply already opened
         // ...createReplies('.o_social_comment:first textarea[name="message"]'),
     ]
-});
+);

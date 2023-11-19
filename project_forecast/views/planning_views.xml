@@ -20,8 +20,11 @@
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='role_id']" position="after">
-                <field name="project_id" groups="!project.group_project_user" options="{'no_open': True}"/>
-                <field name="project_id" groups="project.group_project_user"/>
+                <field name="project_id" groups="!project.group_project_user" context="{'default_allow_forecast': True}" options="{'no_open': True}"/>
+                <field name="project_id" groups="project.group_project_user" context="{'default_allow_forecast': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='allocated_hours']" position="after">
+                <field name="allow_forecast" invisible="1"/>
             </xpath>
         </field>
     </record>
@@ -46,7 +49,7 @@
             <xpath expr="/kanban" position="inside">
                 <field name="project_id"/>
             </xpath>
-            <xpath expr="//t[@name='role']" position="after">
+            <xpath expr="//span[@name='role']" position="after">
                 <div class="o_kanban_record_title mb-2">
                     <field name="project_id"/>
                 </div>
@@ -57,7 +60,7 @@
     <record id="planning_slot_view_search" model="ir.ui.view">
         <field name="name">planning.slot.search</field>
         <field name="model">planning.slot</field>
-        <field name="inherit_id" ref="planning.planning_view_search_base"/>
+        <field name="inherit_id" ref="planning.planning_view_search"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='role_id']" position="after">
                 <field name="project_id"/>
@@ -80,28 +83,6 @@
         <field name="arch" type="xml">
             <xpath expr="/gantt" position="attributes">
                 <attribute name="js_class">forecast_gantt</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="planning_view_form_in_gantt_inherit_project_forecast" model="ir.ui.view">
-        <field name="name">planning.slot.form.gantt</field>
-        <field name="model">planning.slot</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="planning.planning_view_form_in_gantt"/>
-        <field name="arch" type="xml">
-            <xpath expr="//footer/button[@name='action_self_unassign']" position="replace"/>
-        </field>
-    </record>
-
-    <record id="planning_view_gantt_inherit" model="ir.ui.view">
-        <field name="name">planning.slot.gantt</field>
-        <field name="model">planning.slot</field>
-        <field name="inherit_id" ref="planning_view_gantt"/>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <xpath expr="/gantt" position="attributes">
-                <attribute name="form_view_id">%(planning_view_form_in_gantt_inherit_project_forecast)d</attribute>
             </xpath>
         </field>
     </record>
@@ -266,7 +247,7 @@
     <!-- Override action contexts to allow group_expand to apply for project_id and task_id -->
     <record id="planning.planning_action_my_calendar" model="ir.actions.act_window">
         <field name="context">{
-            'search_default_my_shifts': 1, 'search_default_open_shifts': 1, 'search_default_unwanted_shifts': 1,
+            'search_default_my_shifts': 1, 'search_default_open_shifts': 1,
             'planning_expand_resource': 1, 'planning_expand_role': 1, 'planning_expand_project': 1,
         }</field>
         <field name="help" type="html">

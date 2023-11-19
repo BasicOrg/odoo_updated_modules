@@ -1,91 +1,107 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, onWillUpdateProps, useState } from "@odoo/owl";
-import { KeepLast } from "@web/core/utils/concurrency";
+import { useModelField } from "./model_field_hook";
+import { useUniquePopover } from "./unique_popover_hook";
 import { ModelFieldSelectorPopover } from "./model_field_selector_popover";
-import { useLoadFieldInfo, useLoadPathDescription } from "./utils";
-import { usePopover } from "@web/core/popover/popover_hook";
+
+const { Component, onWillStart, onWillUpdateProps } = owl;
 
 export class ModelFieldSelector extends Component {
-    static template = "web._ModelFieldSelector";
-    static components = {
+    setup() {
+        this.popover = useUniquePopover();
+        this.modelField = useModelField();
+        this.chain = [];
+
+        onWillStart(async () => {
+            this.chain = await this.loadChain(this.props.resModel, this.props.fieldName);
+        });
+        onWillUpdateProps(async (nextProps) => {
+            this.chain = await this.loadChain(nextProps.resModel, nextProps.fieldName);
+        });
+    }
+
+    get fieldNameChain() {
+        return this.getFieldNameChain(this.props.fieldName);
+    }
+
+    getFieldNameChain(fieldName) {
+        return fieldName.length ? fieldName.split(".") : [];
+    }
+
+    async loadChain(resModel, fieldName) {
+        if ("01".includes(fieldName)) {
+            return [{ resModel, field: { string: fieldName } }];
+        }
+        const fieldNameChain = this.getFieldNameChain(fieldName);
+        let currentNode = {
+            resModel,
+            field: null,
+        };
+        const chain = [currentNode];
+        for (const fieldName of fieldNameChain) {
+            const fieldsInfo = await this.modelField.loadModelFields(currentNode.resModel);
+            Object.assign(currentNode, {
+                field: { ...fieldsInfo[fieldName], name: fieldName },
+            });
+            if (fieldsInfo[fieldName].relation) {
+                currentNode = {
+                    resModel: fieldsInfo[fieldName].relation,
+                    field: null,
+                };
+                chain.push(currentNode);
+            }
+        }
+        return chain;
+    }
+    update(chain) {
+        this.props.update(chain.join("."));
+    }
+
+    onFieldSelectorClick(ev) {
+        if (this.props.readonly) {
+            return;
+        }
+        this.popover.add(
+            ev.currentTarget,
+            this.constructor.components.Popover,
+            {
+                chain: this.chain,
+                update: this.update.bind(this),
+                showSearchInput: this.props.showSearchInput,
+                isDebugMode: this.props.isDebugMode,
+                loadChain: this.loadChain.bind(this),
+                filter: this.props.filter,
+                followRelations: this.props.followRelations,
+            },
+            {
+                closeOnClickAway: true,
+                popoverClass: "o_popover_field_selector",
+            }
+        );
+    }
+}
+
+Object.assign(ModelFieldSelector, {
+    template: "web._ModelFieldSelector",
+    components: {
         Popover: ModelFieldSelectorPopover,
-    };
-    static props = {
+    },
+    props: {
+        fieldName: String,
         resModel: String,
-        path: { optional: true },
-        allowEmpty: { type: Boolean, optional: true },
         readonly: { type: Boolean, optional: true },
         showSearchInput: { type: Boolean, optional: true },
         isDebugMode: { type: Boolean, optional: true },
         update: { type: Function, optional: true },
         filter: { type: Function, optional: true },
         followRelations: { type: Boolean, optional: true },
-    };
-    static defaultProps = {
+    },
+    defaultProps: {
         readonly: true,
-        allowEmpty: false,
         isDebugMode: false,
         showSearchInput: true,
-        update: () => { },
+        update: () => {},
+        filter: () => true,
         followRelations: true,
-    };
-
-    setup() {
-        this.loadPathDescription = useLoadPathDescription();
-        const loadFieldInfo = useLoadFieldInfo();
-        this.popover = usePopover(this.constructor.components.Popover, {
-            popoverClass: "o_popover_field_selector",
-            onClose: async () => {
-                if (this.newPath !== null) {
-                    const fieldInfo = await loadFieldInfo(this.props.resModel, this.newPath);
-                    this.props.update(this.newPath, fieldInfo);
-                }
-            },
-        });
-        this.keepLast = new KeepLast();
-        this.state = useState({ isInvalid: false, displayNames: [] });
-        onWillStart(() => this.updateState(this.props));
-        onWillUpdateProps((nextProps) => this.updateState(nextProps));
-    }
-
-    openPopover(currentTarget) {
-        if (this.props.readonly) {
-            return;
-        }
-        this.newPath = null;
-        this.popover.open(currentTarget, {
-            resModel: this.props.resModel,
-            path: this.props.path,
-            update: (path, debug = false) => {
-                this.newPath = path;
-                if (!debug) {
-                    this.updateState({ ...this.props, path }, true);
-                }
-            },
-            showSearchInput: this.props.showSearchInput,
-            isDebugMode: this.props.isDebugMode,
-            filter: this.props.filter,
-            followRelations: this.props.followRelations,
-        });
-    }
-
-    async updateState(params, isConcurrent) {
-        const { resModel, path, allowEmpty } = params;
-        let prom = this.loadPathDescription(resModel, path, allowEmpty);
-        if (isConcurrent) {
-            prom = this.keepLast.add(prom);
-        }
-        const state = await prom;
-        Object.assign(this.state, state);
-    }
-
-    clear() {
-        if (this.popover.isOpen) {
-            this.newPath = "";
-            this.popover.close();
-            return;
-        }
-        this.props.update("", { resModel: this.props.resModel, fieodDef: null });
-    }
-}
+    },
+});

@@ -23,6 +23,7 @@ QUnit.module('Google Calendar', {
                         partner_id: {string: "user", type: "many2one", relation: 'partner', related: 'user_id.partner_id'},
                         name: {string: "name", type: "char"},
                         start_date: {string: "start date", type: "date"},
+                        start_date: {string: "start date", type: "date"},
                         stop_date: {string: "stop date", type: "date"},
                         start: {string: "start datetime", type: "datetime"},
                         stop: {string: "stop datetime", type: "datetime"},
@@ -98,7 +99,7 @@ QUnit.module('Google Calendar', {
 }, function () {
 
     QUnit.test('sync google calendar', async function (assert) {
-        assert.expect(13);
+        assert.expect(11);
 
         let id = 7;
         await makeView({
@@ -126,12 +127,6 @@ QUnit.module('Google Calendar', {
                     assert.step(route);
                 } else if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                     return Promise.resolve([]);
-                } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                    return Promise.resolve(true);
-                } else if (route === '/calendar/check_credentials') {
-                    return Promise.resolve({
-                        google_calendar: true,
-                    });
                 }
             },
         });
@@ -140,11 +135,8 @@ QUnit.module('Google Calendar', {
         // sync_data was called a first time without filter, event from google calendar was created twice
         assert.containsN(target, '.fc-event-container', 4, "should display 4 events on the month");
 
-        await click(target.querySelector('.o_datetime_picker_header .o_next'));
-        await click(target.querySelector('.o_datetime_picker .o_date_item_cell'));
-        await click(target.querySelector('.o_view_scale_selector .dropdown-toggle'));
-        await click(target.querySelector('.o_scale_button_month'));
-        await click(target.querySelector('.o_calendar_button_today'));
+        await click(target.querySelector('.o_calendar_button_next'));
+        await click(target.querySelector('.o_calendar_button_prev'));
 
         assert.verifySteps([
             '/google_calendar/sync_data',
@@ -155,10 +147,8 @@ QUnit.module('Google Calendar', {
             '/web/dataset/call_kw/calendar.event/search_read',
             '/google_calendar/sync_data',
             '/web/dataset/call_kw/calendar.event/search_read',
-            "/google_calendar/sync_data",
-            "/web/dataset/call_kw/calendar.event/search_read",
         ], 'should do a search_read before and after the call to sync_data');
 
-        assert.containsN(target, '.fc-event-container', 7, "should now display 7 events on the month");
+        assert.containsN(target, '.fc-event-container', 6, "should now display 6 events on the month");
     });
 });

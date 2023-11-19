@@ -12,20 +12,16 @@ import {
     makeWithSearch,
     setupControlPanelServiceRegistry,
     switchView,
-    toggleSearchBarMenu,
+    toggleFilterMenu,
     toggleMenuItem,
 } from "@web/../tests/search/helpers";
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
 import { registry } from "@web/core/registry";
-import { SearchBarMenu } from "@web/search/search_bar_menu/search_bar_menu";
+import { FilterMenu } from "@web/search/filter_menu/filter_menu";
+import { GroupByMenu } from "@web/search/group_by_menu/group_by_menu";
 import { SearchPanel } from "@web/search/search_panel/search_panel";
 
-import {
-    Component,
-    xml,
-    onWillStart as onWillStartOWL,
-    onWillUpdateProps as onWillUpdatePropsOWL,
-} from "@odoo/owl";
+const { Component, xml } = owl;
 
 const serviceRegistry = registry.category("services");
 
@@ -111,13 +107,13 @@ function makeTestComponent({ onWillStart, onWillUpdateProps } = {}) {
     let domain;
     class TestComponent extends Component {
         setup() {
-            onWillStartOWL(async () => {
+            owl.onWillStart(async () => {
                 if (onWillStart) {
                     await onWillStart();
                 }
                 domain = this.props.domain;
             });
-            onWillUpdatePropsOWL(async (nextProps) => {
+            owl.onWillUpdateProps(async (nextProps) => {
                 if (onWillUpdateProps) {
                     await onWillUpdateProps();
                 }
@@ -126,11 +122,12 @@ function makeTestComponent({ onWillStart, onWillUpdateProps } = {}) {
         }
     }
 
-    TestComponent.components = { SearchBarMenu, SearchPanel };
+    TestComponent.components = { FilterMenu, GroupByMenu, SearchPanel };
     TestComponent.template = xml`
         <div class="o_test_component">
             <SearchPanel t-if="env.searchModel.display.searchPanel" />
-            <SearchBarMenu />
+            <FilterMenu />
+            <GroupByMenu />
         </div>`;
 
     return { TestComponent, getDomain: () => domain };
@@ -950,9 +947,9 @@ QUnit.module("Search", (hooks) => {
 
         // unfold agrolait
         function getAgrolaitElement() {
-            return [...target.querySelectorAll(".o_search_panel_category_value > header")].find(
-                (el) => el.innerText.includes("agrolait")
-            );
+            return [
+                ...target.querySelectorAll(".o_search_panel_category_value > header"),
+            ].find((el) => el.innerText.includes("agrolait"));
         }
 
         await click(getAgrolaitElement());
@@ -963,7 +960,7 @@ QUnit.module("Search", (hooks) => {
         );
         assert.containsN(target, ".o_search_panel_category_value", 5);
 
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "True Domain");
 
         assert.hasClass(
@@ -990,6 +987,11 @@ QUnit.module("Search", (hooks) => {
         });
         await makeWithSearch({
             serverData,
+            async mockRPC(route) {
+                if (route === "/web/dataset/search_read") {
+                    await promise;
+                }
+            },
             Component: TestComponent,
             resModel: "partner",
             searchViewId: false,
@@ -1081,7 +1083,7 @@ QUnit.module("Search", (hooks) => {
         // Case 2: search domain changed so we wait for the search panel once again
         promise = makeDeferred();
 
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, 0);
 
         assert.verifySteps([]);
@@ -1283,7 +1285,7 @@ QUnit.module("Search", (hooks) => {
         // trigger a reload and delay the get_filter
         promise = makeDeferred();
 
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, 0);
 
         assert.deepEqual(getDomain(), []);
@@ -1432,7 +1434,7 @@ QUnit.module("Search", (hooks) => {
             assert.verifySteps(["search_panel_select_range", "search_panel_select_multi_range"]);
 
             // reload with another domain, so the filters should be reloaded
-            await toggleSearchBarMenu(target);
+            await toggleFilterMenu(target);
             await toggleMenuItem(target, 0);
 
             assert.verifySteps(["search_panel_select_multi_range"]);
@@ -1474,7 +1476,7 @@ QUnit.module("Search", (hooks) => {
             assert.verifySteps(["search_panel_select_range", "search_panel_select_multi_range"]);
 
             // reload with another domain, so the filters should be reloaded
-            await toggleSearchBarMenu(target);
+            await toggleFilterMenu(target);
             await toggleMenuItem(target, 0);
 
             assert.verifySteps(["search_panel_select_multi_range"]);
@@ -1531,7 +1533,7 @@ QUnit.module("Search", (hooks) => {
         ]);
 
         // reload with another domain, so the categories 'state' and 'company_id' should be reloaded
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, 0);
 
         assert.verifySteps(["search_panel_select_range", "state"]);
@@ -1591,7 +1593,7 @@ QUnit.module("Search", (hooks) => {
         assert.deepEqual(getCategoriesContent(target), ["All", "ABC", "DEF", "GHI"]);
 
         // reload with another domain, so the category 'state' should be reloaded
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, 0);
 
         assert.verifySteps([]);
@@ -2267,34 +2269,6 @@ QUnit.module("Search", (hooks) => {
             assert.verifySteps([]);
         }
     );
-
-    QUnit.test("scroll kanban view with searchpanel and kept scroll position", async (assert) => {
-        for (let i = 10; i < 20; i++) {
-            serverData.models.category.records.push({ id: i, name: "Cat " + i });
-            for (let j = 0; j <9; j++)
-            serverData.models.partner.records.push({ id: 100 + i*10 +j, foo: `Record ${i*10 +j}` });
-        }
-
-        const container = document.createElement("div");
-        container.classList.add("o_web_client");
-        container.style = "max-height: 300px";
-        target.appendChild(container);
-        const webclient = await createWebClient({ target: container, serverData });
-
-        await doAction(webclient, 1);
-        await switchView(target, "kanban");
-
-        // simulate a scroll in the kanban view
-        target.querySelector(".o_renderer").scrollTop = 100;
-        await doAction(webclient, 2);
-
-        // execute a second action (in which we don't scroll)
-        assert.strictEqual(target.querySelector(".o_content").scrollTop, 0);
-
-        // go back using the breadcrumbs
-        await click(target.querySelector(".o_control_panel .breadcrumb a"));
-        assert.strictEqual(target.querySelector(".o_renderer").scrollTop, 100);
-    });
 
     QUnit.test("scroll position is kept when switching between controllers", async (assert) => {
         for (let i = 10; i < 20; i++) {
@@ -3348,7 +3322,7 @@ QUnit.module("Search", (hooks) => {
             assert.verifySteps(["search_panel_select_range"]);
 
             // select DEF in filter menu
-            await toggleSearchBarMenu(target);
+            await toggleFilterMenu(target);
             await toggleMenuItem(target, "DEF");
 
             assert.verifySteps(["search_panel_select_range"]);
@@ -3399,7 +3373,7 @@ QUnit.module("Search", (hooks) => {
             assert.deepEqual(getCategoriesContent(target), ["All", "ABC", "DEF", "GHI"]);
 
             // select DEF in filter menu --> the external domain changes --> the values should be updated
-            await toggleSearchBarMenu(target);
+            await toggleFilterMenu(target);
             await toggleMenuItem(target, "DEF");
 
             assert.verifySteps(["search_panel_select_range"]);
@@ -3460,49 +3434,4 @@ QUnit.module("Search", (hooks) => {
 
         assert.verifySteps(["special_key", "special_key"]);
     });
-
-    QUnit.test("Display message when no filter availible", async (assert) => {
-        serverData.models.partner.records = [];
-        serverData.models.company.records = [];
-        serverData.models.category.records = [];
-
-        const { TestComponent } = makeTestComponent();
-        await makeWithSearch({
-            serverData,
-            Component: TestComponent,
-            resModel: "partner",
-            searchViewId: false,
-        });
-
-        assert.containsOnce(
-            target,
-            ".o_search_panel_empty_state",
-            "Search panel has the empty state container"
-        );
-        assert.containsN(
-            target,
-            ".o_search_panel_empty_state button",
-            1,
-            "Empty state has the All button"
-        );
-    });
-
-    QUnit.test(
-        "Don't display empty state message when some filters are availible",
-        async (assert) => {
-            const { TestComponent } = makeTestComponent();
-            await makeWithSearch({
-                serverData,
-                Component: TestComponent,
-                resModel: "partner",
-                searchViewId: false,
-            });
-
-            assert.containsNone(
-                target,
-                ".o_search_panel_empty_state",
-                "Search panel does not have the empty state container"
-            );
-        }
-    );
 });

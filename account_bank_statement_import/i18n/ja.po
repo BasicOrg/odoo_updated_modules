@@ -3,16 +3,16 @@
 # 	* account_bank_statement_import
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-09-23 08:23+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,14 +20,19 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_bank_statement_import
-#. odoo-python
+#. openerp-web
+#: code:addons/account_bank_statement_import/static/src/js/account_bank_statement_import.js:0
+#, python-format
+msgid " Import Template for Bank Statements"
+msgstr "銀行取引明細書のテンプレートをインポートする"
+
+#. module: account_bank_statement_import
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "%d transactions had already been imported and were ignored."
 msgstr "%dトランザクションはすでにインポートされていたため、無視されました。"
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "1 transaction had already been imported and was ignored."
@@ -35,8 +40,14 @@ msgstr "1つのトランザクションはすでにインポートされてお�
 
 #. module: account_bank_statement_import
 #: model:ir.model.constraint,message:account_bank_statement_import.constraint_account_bank_statement_line_unique_import_id
-msgid "A bank account transactions can be imported only once!"
-msgstr "銀行口座取引は一度しかインポートできません！"
+msgid "A bank account transactions can be imported only once !"
+msgstr "銀行口座の取引は一度だけインポートできます！"
+
+#. module: account_bank_statement_import
+#: code:addons/account_bank_statement_import/models/account_journal.py:0
+#, python-format
+msgid "Already imported items"
+msgstr ""
 
 #. module: account_bank_statement_import
 #: model:ir.model,name:account_bank_statement_import.model_account_bank_statement_line
@@ -49,45 +60,40 @@ msgid "Bank setup manual config"
 msgstr "銀行セットアップマニュアルコンフィグ"
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid ""
 "Cannot find in which journal import this statement. Please manually select a"
 " journal."
-msgstr "この明細をインポートする仕訳帳が見つかりません。手動で仕訳帳を選択して下さい。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid ""
 "Could not make sense of the given file.\n"
-"Did you install the module to support this type of file?"
+"Did you install the module to support this type of file ?"
 msgstr ""
-"指定されたファイルを理解できませんでした。\n"
-"このタイプのファイルをサポートするモジュールはインストール済ですか？"
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "Go to Apps"
-msgstr "アプリへ移動"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid ""
 "If it contains transactions for more than one account, it must be imported "
 "on each of them."
-msgstr "複数の口座の取引が含まれている場合は、それぞれの口座でインポートする必要があります。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#: model_terms:ir.ui.view,arch_db:account_bank_statement_import.journal_dashboard_view_inherit
-msgid "Import File"
-msgstr "ファイルをインポート"
+#: code:addons/account_bank_statement_import/models/account_journal.py:0
+#, python-format
+msgid "Import"
+msgstr "インポート"
 
 #. module: account_bank_statement_import
 #: model:ir.model.fields,field_description:account_bank_statement_import.field_account_bank_statement_line__unique_import_id
@@ -95,16 +101,9 @@ msgid "Import ID"
 msgstr "インポートID"
 
 #. module: account_bank_statement_import
-#. odoo-javascript
-#: code:addons/account_bank_statement_import/static/src/account_bank_statement_import_model.js:0
-#, python-format
-msgid "Import Template for Bank Statements"
-msgstr "銀行明細書のテンプレートをインポートする"
-
-#. module: account_bank_statement_import
 #: model_terms:ir.ui.view,arch_db:account_bank_statement_import.journal_dashboard_view_inherit
-msgid "Import Transactions"
-msgstr "取引をインポート"
+msgid "Import Statement"
+msgstr "取引明細書をインポート"
 
 #. module: account_bank_statement_import
 #: model:ir.model,name:account_bank_statement_import.model_account_journal
@@ -112,88 +111,52 @@ msgid "Journal"
 msgstr "仕訳帳"
 
 #. module: account_bank_statement_import
-#. odoo-python
-#: code:addons/account_bank_statement_import/models/account_journal.py:0
-#, python-format
-msgid "Manual (or import %(import_formats)s)"
-msgstr "マニュアル（またはインポート%(import_formats)s）"
-
-#. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "No attachment was provided"
 msgstr "添付がありません"
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "No currency found matching '%s'."
-msgstr " '%s'に一致する通貨が見つかりません"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid ""
 "The account of this statement (%s) is not the same as the journal (%s)."
-msgstr "この明細書の勘定科目（%s）は仕訳帳（%s）と同じではありません。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid ""
 "The currency of the bank statement (%s) is not the same as the currency of "
 "the journal (%s)."
-msgstr "銀行明細書の通貨（%s）は仕訳帳（%s）の通貨と同じではありません。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
-#: code:addons/account_bank_statement_import/models/account_journal.py:0
-#, python-format
-msgid "The following files could not be imported:\n"
-msgstr "以下のファイルはインポートできませんでした。\n"
-
-#. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "This file doesn't contain any statement for account %s."
-msgstr "このファイルには勘定%sの明細書が含まれていません。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "This file doesn't contain any transaction for account %s."
-msgstr "このファイルは勘定%sの取引が含まれていません。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
-#: code:addons/account_bank_statement_import/models/account_journal.py:0
-#, python-format
-msgid "View successfully imported statements"
-msgstr "インポートが成功した明細書を表示する"
-
-#. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "You already have imported that file."
-msgstr "そのファイルはすでにインポート済です。"
+msgstr ""
 
 #. module: account_bank_statement_import
-#. odoo-python
 #: code:addons/account_bank_statement_import/models/account_journal.py:0
 #, python-format
 msgid "You have to set a Default Account for the journal: %s"
-msgstr "仕訳帳用にデフォルト勘定科目を設定しなくてはいけません：%s"
-
-#. module: account_bank_statement_import
-#. odoo-python
-#: code:addons/account_bank_statement_import/models/account_journal.py:0
-#, python-format
-msgid "You uploaded an invalid or empty file."
-msgstr "無効または空のファイルをアップロードしました"
+msgstr ""

@@ -4,22 +4,25 @@ import { Domain } from "@web/core/domain";
 import { DomainSelector } from "@web/core/domain_selector/domain_selector";
 import { DomainSelectorDialog } from "@web/core/domain_selector_dialog/domain_selector_dialog";
 import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
-import { EditableName } from "../../o_spreadsheet/editable_name/editable_name";
+import { _t } from "web.core";
+import { time_to_str } from "web.time";
+import EditableName from "../../o_spreadsheet/editable_name/editable_name";
 
-import { Component, onWillStart, onWillUpdateProps } from "@odoo/owl";
+const { Component, onWillStart, onWillUpdateProps } = owl;
 
-export class PivotDetailsSidePanel extends Component {
+export default class PivotDetailsSidePanel extends Component {
     setup() {
         this.dialog = useService("dialog");
         /** @type {import("@spreadsheet/pivot/pivot_data_source").default} */
         this.dataSource = undefined;
-        const loadData = async (pivotId) => {
-            this.dataSource = await this.env.model.getters.getAsyncPivotDataSource(pivotId);
+        const loadData = async () => {
+            this.dataSource = await this.env.model.getters.getAsyncPivotDataSource(
+                this.props.pivotId
+            );
             this.modelDisplayName = await this.dataSource.getModelLabel();
         };
-        onWillStart(() => loadData(this.props.pivotId));
-        onWillUpdateProps((nextProps) => loadData(nextProps.pivotId));
+        onWillStart(loadData);
+        onWillUpdateProps(loadData);
     }
 
     get pivotDefinition() {
@@ -63,7 +66,7 @@ export class PivotDetailsSidePanel extends Component {
     getLastUpdate() {
         const lastUpdate = this.dataSource.lastUpdate;
         if (lastUpdate) {
-            return new Date(lastUpdate).toLocaleTimeString();
+            return time_to_str(new Date(lastUpdate));
         }
         return _t("never");
     }
@@ -80,12 +83,13 @@ export class PivotDetailsSidePanel extends Component {
         const definition = this.env.model.getters.getPivotDefinition(this.props.pivotId);
         this.dialog.add(DomainSelectorDialog, {
             resModel: definition.model,
-            domain: new Domain(definition.domain).toString(),
+            initialValue: new Domain(definition.domain).toString(),
+            readonly: false,
             isDebugMode: !!this.env.debug,
-            onConfirm: (domain) =>
+            onSelected: (domain) =>
                 this.env.model.dispatch("UPDATE_ODOO_PIVOT_DOMAIN", {
                     pivotId: this.props.pivotId,
-                    domain: new Domain(domain).toJson(),
+                    domain: new Domain(domain).toList(),
                 }),
         });
     }

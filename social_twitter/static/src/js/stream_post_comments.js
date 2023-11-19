@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { StreamPostComments } from '@social/js/stream_post_comments';
 import { StreamPostCommentListTwitter } from './stream_post_comment_list';
 import { StreamPostCommentsReplyTwitter } from './stream_post_comments_reply';
-import { onWillStart } from "@odoo/owl";
+
+const { onWillStart } = owl;
 
 const MAX_ALLOWED_REPLIES = 3;
 
@@ -64,14 +64,10 @@ export class StreamPostCommentsTwitter extends StreamPostComments {
             return result;
         }, []);
 
-        const tweetId = String(
-            replyToCommentId ? replyToCommentId : this.originalPost.twitter_tweet_id.raw_value
-        );
-        const existingAnswers = allCommentsFlatten.filter(
-            (comment) =>
-                comment.from &&
-                comment.from.screen_name === this.mediaSpecificProps.twitterUserScreenName &&
-                String(comment.in_reply_to_tweet_id) === tweetId
+        const tweetId = replyToCommentId ? replyToCommentId : this.originalPost.twitter_tweet_id.raw_value;
+        const existingAnswers = allCommentsFlatten.filter((comment) =>
+            comment.from && comment.from.screen_name === this.mediaSpecificProps.twitterUserScreenName
+            && comment.in_reply_to_status_id_str === tweetId
         );
 
         if (existingAnswers.length >= MAX_ALLOWED_REPLIES) {
@@ -80,7 +76,7 @@ export class StreamPostCommentsTwitter extends StreamPostComments {
                 .closest('.o_social_write_reply')
                 .querySelector('.o_social_textarea_message');
             textAreaMessage.classList.add('text-danger');
-            textAreaMessage.textContent = _t(
+            textAreaMessage.textContent = this.env._t(
                 "You can comment only three times a tweet as it may be considered as spamming by Twitter"
             );
             return true;

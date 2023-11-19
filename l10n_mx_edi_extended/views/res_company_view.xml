@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="base.view_company_form"/>
             <field name="arch" type="xml">
                 <field name="street2" position="after">
-                    <div invisible="country_code != 'MX'">
+                    <div attrs="{'invisible': [('country_code', '!=', 'MX')]}">
                         <div class="o_row">
                             <field name="l10n_mx_edi_colony" placeholder="Colony..."/>
                             <field name="l10n_mx_edi_colony_code" placeholder="Colony Code"/>
@@ -19,7 +19,9 @@
                                    domain="[('state_id','=', state_id)]"
                                    options='{"no_create": True}'/>
                             <field name="l10n_mx_edi_locality"
-                                   invisible="l10n_mx_edi_locality_id or l10n_mx_edi_locality in ['', False]"
+                                   attrs="{'invisible': ['|',
+                                                        ('l10n_mx_edi_locality_id', '!=', False),
+                                                        ('l10n_mx_edi_locality', 'in', ['', False ])]}"
                                    placeholder="Locality..."/>
                         </div>
                     </div>

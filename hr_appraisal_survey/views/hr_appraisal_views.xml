@@ -6,20 +6,17 @@
         <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form"/>
         <field name="arch" type="xml">
             <field name="manager_ids" position="after">
-                <field name="employee_feedback_ids" invisible="1"/>
+                <field name="employee_feedback_ids" widget="many2many_tags" readonly="1" attrs="{'invisible': [('employee_feedback_ids', '=', [])]}"/>
             </field>
             <xpath expr="//button[@name='action_cancel']" position="after">
-                <button name="action_ask_feedback" data-hotkey="a" string="Ask Feedback" invisible="state != 'pending'" type="object"/>
+                <button name="action_ask_feedback" data-hotkey="q" string="Ask Feedback" attrs="{
+                    'invisible': [('state', '!=', 'pending')]}" type="object"/>
             </xpath>
             <xpath expr="//button[@name='action_open_goals']" position="before">
-                <button class="oe_stat_button" name="action_open_survey_inputs" icon="fa-pencil-square-o" type="object" invisible="not employee_feedback_ids or 'uid' not in manager_user_ids and not is_manager">
+                <button class="oe_stat_button" name="action_open_survey_inputs" icon="fa-pencil-square-o" type="object" attrs="{'invisible': &quot;['|', ('employee_feedback_ids', '=', []), '&amp;', ('manager_user_ids', 'not in', uid), ('is_appraisal_manager', '=', False)]&quot;}">
                     <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_value">
-                            <field name="completed_survey_count"/>
-                            <span> / </span>
-                            <field name="total_survey_count"/>
-                        </span>
-                        <span class="o_stat_text">Feedbacks</span>
+                        <span class="o_stat_text">Feedback</span>
+                        <span class="o_stat_text">Survey</span>
                     </div>
                 </button>
             </xpath>

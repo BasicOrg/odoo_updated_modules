@@ -8,7 +8,7 @@
                 top: initial;
                 bottom: 0;
                 left: 0;
-                z-index: $o-dms-kanban-stack-zindex;
+                z-index: 1000 !important;
             }
 
             .o_documents_inspector,
@@ -27,6 +27,7 @@
                 overflow: auto;
                 background-color: $o-dms-inspector-bg;
                 animation: o_documents_sweepup 0.3s ease-in-out;
+                z-index: 1000 !important;
 
                 > summary {
                     @include o-details-modal($bottom: initial);
@@ -56,6 +57,15 @@
         @keyframes o_documents_sweepright {
             0%    {opacity: 0; left: 25%}
             100%  {opacity: 1; left: 0}
+        }
+
+        &.o_chatter_open .o_document_chatter_container {
+            box-shadow: none;
+            animation: o_documents_sweepright 0.3s ease-in-out;
+            
+            .o_ChatterTopbar_buttonClose {
+                display: none;
+            }
         }
     }
 }

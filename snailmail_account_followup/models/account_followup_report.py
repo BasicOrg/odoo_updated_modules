@@ -24,7 +24,7 @@ class AccountFollowupReport(models.AbstractModel):
                 'res_id': to_send_partner.id,
                 'user_id': self.env.user.id,
                 'report_template': self.env.ref('account_followup.action_report_followup').id,
-                'company_id': to_send_partner.company_id.id or self.env.company.id,
+                'company_id': to_send_partner.company_id or self.env.company.id,
             })
             if self.env['snailmail.letter']._is_valid_address(letter):
                 letter._snailmail_print()

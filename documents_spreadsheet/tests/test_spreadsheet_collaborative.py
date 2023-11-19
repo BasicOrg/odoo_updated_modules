@@ -6,7 +6,7 @@ import base64
 from freezegun import freeze_time
 from uuid import uuid4
 
-from .common import SpreadsheetTestCommon
+from .common import SpreadsheetTestCommon, TEXT
 from odoo.tests.common import new_test_user, tagged
 from odoo.exceptions import AccessError
 
@@ -15,7 +15,7 @@ from odoo.exceptions import AccessError
 class SpreadsheetCollaborative(SpreadsheetTestCommon):
     def test_compute_revision_without_session(self):
         spreadsheet = self.create_spreadsheet()
-        self.assertEqual(spreadsheet.server_revision_id, "START_REVISION")
+        self.assertEqual(self.get_revision(spreadsheet), "START_REVISION")
 
     def test_compute_revision_with_session(self):
         spreadsheet = self.create_spreadsheet()
@@ -24,7 +24,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
         spreadsheet.dispatch_spreadsheet_message(commands)
         revision_data2 = self.new_revision_data(spreadsheet, nextRevisionId="nextone")
         spreadsheet.dispatch_spreadsheet_message(revision_data2)
-        self.assertEqual(spreadsheet.server_revision_id, "nextone")
+        self.assertEqual(self.get_revision(spreadsheet), "nextone")
 
     def test_dispatch_new_revision(self):
         spreadsheet = self.create_spreadsheet()
@@ -37,7 +37,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
             "It should have recorded one revision",
         )
         self.assertEqual(
-            spreadsheet.server_revision_id,
+            self.get_revision(spreadsheet),
             commands["nextRevisionId"],
             "It should have updated its revision",
         )
@@ -50,7 +50,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
     def test_dispatch_revision_concurrent_first_revision_id(self):
         spreadsheet = self.create_spreadsheet()
         spreadsheet.join_spreadsheet_session()
-        start_revision = spreadsheet.server_revision_id
+        start_revision = self.get_revision(spreadsheet)
         revision1 = self.new_revision_data(spreadsheet, serverRevisionId=start_revision)
         spreadsheet.dispatch_spreadsheet_message(revision1)
         self.assertEqual(
@@ -66,7 +66,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
             "It should not have recorded the revision",
         )
         self.assertEqual(
-            spreadsheet.server_revision_id,
+            self.get_revision(spreadsheet),
             revision1["nextRevisionId"],
             "The revision should not have been updated",
         )
@@ -74,7 +74,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
     def test_join_spreadsheet_session(self):
         spreadsheet = self.create_spreadsheet()
         data = spreadsheet.join_spreadsheet_session()
-        self.assertEqual(data["data"], {})
+        self.assertEqual(data["raw"], TEXT)
         self.assertEqual(data["revisions"], [], "It should not have past revisions")
 
     def test_join_active_spreadsheet_session(self):
@@ -82,10 +82,10 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
         commands = self.new_revision_data(spreadsheet)
         spreadsheet.join_spreadsheet_session()
         spreadsheet.dispatch_spreadsheet_message(commands)
-        spreadsheet = spreadsheet.join_spreadsheet_session()
+        data = spreadsheet.join_spreadsheet_session()
         del commands["clientId"]
-        self.assertEqual(spreadsheet["data"], {})
-        self.assertEqual(spreadsheet["revisions"], [commands], "It should have past revisions")
+        self.assertEqual(data["raw"], TEXT)
+        self.assertEqual(data["revisions"], [commands], "It should have past revisions")
 
     def test_snapshot_spreadsheet_save_data(self):
         spreadsheet = self.create_spreadsheet()
@@ -95,7 +95,7 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
         )
         is_accepted = self.snapshot(
             spreadsheet,
-            spreadsheet.server_revision_id, "snapshot-revision-id", {"sheets": [], "revisionId": "snapshot-revision-id"},
+            self.get_revision(spreadsheet), "snapshot-revision-id", {"sheets": []},
         )
         self.assertTrue(is_accepted, "It should have accepted the snapshot")
         self.assertEqual(
@@ -109,38 +109,29 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
             {"type": "SNAPSHOT_CREATED", "version": 1},
             "It should have saved a snapshot revision"
         )
-        self.assertEqual(base64.decodebytes(spreadsheet.spreadsheet_snapshot), b'{"sheets": [], "revisionId": "snapshot-revision-id"}', "It should have saved the data")
+        self.assertEqual(base64.decodebytes(spreadsheet.spreadsheet_snapshot), b'{"sheets": []}', "It should have saved the data")
         self.assertEqual(
-            spreadsheet.server_revision_id,
+            self.get_revision(spreadsheet),
             "snapshot-revision-id",
             "It should have updated the snapshot revision"
         )
 
-    def test_snapshot_inconsistent_revision_id(self):
-        spreadsheet = self.create_spreadsheet()
-        with self.assertRaises(ValueError):
-            self.snapshot(
-                spreadsheet,
-                spreadsheet.server_revision_id, "snapshot-revision-id", {"sheets": [], "revisionId": "another-revision-id"},
-            )
-
-
     def test_snapshot_spreadsheet_with_invalid_revision(self):
         spreadsheet = self.create_spreadsheet()
         spreadsheet.join_spreadsheet_session()
-        first_revision = spreadsheet.server_revision_id
+        first_revision = self.get_revision(spreadsheet)
         spreadsheet.dispatch_spreadsheet_message(self.new_revision_data(spreadsheet))
         current_data = spreadsheet.spreadsheet_snapshot
-        current_revision = spreadsheet.server_revision_id
+        current_revision = self.get_revision(spreadsheet)
         self.assertEqual(
             len(spreadsheet.spreadsheet_revision_ids), 1, "It should have 1 revision"
         )
-        is_accepted = self.snapshot(spreadsheet, first_revision, "snapshot-revision-id", {"revisionId": "snapshot-revision-id"})
+        is_accepted = self.snapshot(spreadsheet, first_revision, "snapshot-revision-id", "new data")
         self.assertFalse(is_accepted, "It should not have accepted the snapshot")
         self.assertEqual(spreadsheet.spreadsheet_snapshot, current_data, "It should not have saved the data")
         self.assertEqual(
             current_revision,
-            spreadsheet.server_revision_id,
+            self.get_revision(spreadsheet),
             "The revision should not have been updated",
         )
 
@@ -153,20 +144,27 @@ class SpreadsheetCollaborative(SpreadsheetTestCommon):
         spreadsheet.unlink()
         self.assertFalse(self.env["spreadsheet.revision"].browse(ids).exists())
 
-    def test_unlink_archived_revisions(self):
+    def test_autovacuum_revisions(self):
         spreadsheet = self.create_spreadsheet()
-        spreadsheet.dispatch_spreadsheet_message(
-            self.new_revision_data(spreadsheet)
-        )
-        self.snapshot(
-            spreadsheet,
-            spreadsheet.server_revision_id, "snapshot-id", {"revisionId": "snapshot-id"},
-        )
-        revisions = spreadsheet.with_context(active_test=False).spreadsheet_revision_ids
-        self.assertTrue(revisions)
-        self.assertFalse(any(revisions.mapped('active')))
-        spreadsheet.unlink()
-        self.assertFalse(revisions.exists())
+        with freeze_time("2021-01-10 18:00"):
+            spreadsheet.dispatch_spreadsheet_message(self.new_revision_data(spreadsheet))
+
+        with freeze_time("2021-01-20 18:00"):
+            spreadsheet.dispatch_spreadsheet_message(self.new_revision_data(spreadsheet))
+
+        with freeze_time("2021-03-15 18:00"):
+            self.env["spreadsheet.revision"]._gc_revisions()
+        self.assertEqual(len(self.env["spreadsheet.revision"].with_context(active_test=False).search([])), 2)
+
+        self.env["spreadsheet.revision"].search([]).active = False
+
+        with freeze_time("2021-03-15 18:00"):
+            self.env["spreadsheet.revision"]._gc_revisions()
+        self.assertEqual(len(self.env["spreadsheet.revision"].with_context(active_test=False).search([])), 1)
+
+        with freeze_time("2021-04-15 18:00"):
+            self.env["spreadsheet.revision"]._gc_revisions()
+        self.assertEqual(len(self.env["spreadsheet.revision"].with_context(active_test=False).search([])), 0)
 
 
 @tagged("collaborative_spreadsheet")
@@ -184,7 +182,7 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         )
         cls.spreadsheet = cls.env["documents.document"].create(
             {
-                "spreadsheet_data": b"{}",
+                "raw": TEXT,
                 "folder_id": cls.folder.id,
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
@@ -324,7 +322,7 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         self.folder.read_group_ids = self.group
         spreadsheet = self.env["documents.document"].create(
             {
-                "spreadsheet_data": b"{}",
+                "raw": b"{}",
                 "folder_id": self.folder.id,
                 "handler": "spreadsheet",
                 "mimetype": "application/o-spreadsheet",
@@ -332,7 +330,7 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         )
         # no one ever joined this spreadsheet
         result = spreadsheet.with_user(self.user).join_spreadsheet_session()
-        self.assertEqual(result["data"], {})
+        self.assertEqual(result["raw"], b"{}")
 
     def test_join_snapshot_request(self):
         with freeze_time("2020-02-02 18:00"):
@@ -357,7 +355,7 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         with self.assertRaises(AccessError):
             self.snapshot(
                 self.spreadsheet.with_user(self.user),
-                self.spreadsheet.server_revision_id, "snapshot-id", {"revisionId": "snapshot-id"},
+                self.get_revision(self.spreadsheet), "snapshot-id", "{}",
             )
 
     def test_snapshot_user_with_doc_access(self):
@@ -369,7 +367,7 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         self.env.invalidate_all()
         self.snapshot(
             self.spreadsheet.with_user(self.user),
-            self.spreadsheet.server_revision_id, "snapshot-id", {"revisionId": "snapshot-id"},
+            self.get_revision(self.spreadsheet), "snapshot-id", "{}",
         )
         self.assertEqual(len(self.spreadsheet.spreadsheet_revision_ids), 0)
 
@@ -377,12 +375,12 @@ class SpreadsheetORMAccess(SpreadsheetTestCommon):
         self.user.groups_id |= self.group
         self.folder.group_ids = False
         self.folder.read_group_ids = self.group
-        self.spreadsheet.server_revision_id
+        self.get_revision(self.spreadsheet)
         self.env.invalidate_all()
         with self.assertRaises(AccessError):
             self.snapshot(
                 self.spreadsheet.with_user(self.user),
-                self.spreadsheet.server_revision_id, "snapshot-id", "{}"
+                self.get_revision(self.spreadsheet), "snapshot-id", "{}"
             )
 
     def test_dispatch_user(self):

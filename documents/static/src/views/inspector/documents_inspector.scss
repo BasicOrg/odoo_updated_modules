@@ -53,11 +53,6 @@
                     max-height: 100%;
                     max-width: 100%;
                 }
-
-                .o_documents_inspector_image {
-                    width: 120px;
-                    height: 75px;
-                }
             }
 
             &.o_documents_single_preview {
@@ -70,11 +65,6 @@
                     width: auto;
                     height: 100%;
                     object-fit: contain;
-                }
-
-                .o_documents_inspector_image {
-                    width: 268px;
-                    height: 150px;
                 }
 
                 &.o_documents_preview_mimetype {
@@ -116,8 +106,6 @@
     }
 
     .o_documents_inspector_info {
-        --btn-group-gap: #{-1 * $btn-border-width};
-
         border-top: 1px solid $o-dms-inspector-bg-light;
         padding: $o-dms-p-small $o-dms-p $o-dms-p;
 
@@ -127,6 +115,9 @@
             box-shadow: inset 0 1px 0 fade_out(white, 0.9), 0 1px 0 fade_out(white, 0.9);
             text-shadow: 0 1px 0 $o-dms-inspector-bg-darker;
             color: $o-dms-inspector-txt-light;
+            @include media-breakpoint-up(sm) {
+                width: 32px;
+            }
 
             &:not(:disabled) {
                 @include o-hover-text-color($o-dms-inspector-txt-light, white);
@@ -307,18 +298,13 @@
                 display: flex;
                 align-items: flex-start;
 
-                button {
-                    background-color: $o-dms-color-action;
-                    color: color-contrast($o-dms-color-action);
-
-                    &:hover, &:focus {
-                        background-color: darken($o-dms-color-action, 10%); // Focus state needed for keyboard accessibility
-                    }
-                }
-
                 .o_inspector_trigger_rule {
                     font-size: 10px;
                     padding: 1px 10px;
+                }
+
+                &:hover {
+                    color: white;
                 }
             }
         }
@@ -375,7 +361,7 @@
 
         .o_inspector_model {
             padding: $o-dms-p-tiny;
-            @include o-hover-text-color(lighten($o-dms-color-action, 5%), $o-dms-color-action);
+            @include o-hover-text-color(lighten($o-brand-primary, 5%), $o-brand-primary);
             @include o-text-overflow(block, $o-dms-inspector-width - $o-dms-inspector-label-breakpoint - $o-dms-p*2);
         }
 
@@ -388,19 +374,36 @@
 .o_inspector_open_chatter {
     @include o-hover-text-color($o-dms-inspector-txt-lighter, $white);
     background-color: $o-dms-inspector-bg-light;
-    border: 1px solid $o-dms-inspector-bg-darker;
-    box-shadow: inset 0 1px 0 fade_out(white, 0.9), 0 1px 0 fade_out(white, 0.9);
-    text-shadow: 0 1px 0 $o-dms-inspector-bg-darker;
-    color: $o-dms-inspector-txt-light;
+    box-shadow: inset 0 1px 0 transparentize(white, 0.9), 0 1px 0 $o-dms-inspector-bg-darker;
+
+    &.o_inspector_open_chatter_preview {
+        width: 32px;
+        height: 32px;
+        padding: 8px;
+        font-size: 16px;
+        @include o-position-absolute($right: 5px, $top: 5px);
+    }
+
+    &:not(.o_inspector_open_chatter_preview) {
+        width: 30px;
+        height: 30px;
+        padding: 7px;
+        font-size: 15px;
+        margin-right: 0.5rem;
+    }
 }
 
 .o_document_chatter_container {
     display: block;
     position: relative;
     overflow: auto;
+    box-shadow: inset 0 5px 0 $o-dms-inspector-bg-light;
     flex: 0 0 auto;
-    background-color: $o-webclient-background-color;
+    padding-top: 1px;
 
     --ChatterTopbar-padding-right: calc(#{$o-horizontal-padding});
 
+    .o_ChatterTopbar_buttonClose {
+        max-height: 29.5px;
+    }
 }

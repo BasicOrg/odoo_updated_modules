@@ -5,13 +5,8 @@ import { OdooChart } from "@spreadsheet/chart/odoo_chart/odoo_chart";
 import { OdooLineChart } from "@spreadsheet/chart/odoo_chart/odoo_line_chart";
 import { nextTick } from "@web/../tests/helpers/utils";
 import { createSpreadsheetWithChart, insertChartInSpreadsheet } from "../../utils/chart";
-import { insertListInSpreadsheet } from "../../utils/list";
-import { createModelWithDataSource, waitForDataSourcesLoaded } from "../../utils/model";
-import { addGlobalFilter } from "../../utils/commands";
-import { THIS_YEAR_GLOBAL_FILTER } from "../../utils/global_filter";
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { makeServerError } from "@web/../tests/helpers/mock_server";
-import { session } from "@web/session";
+import { createModelWithDataSource } from "../../utils/model";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
 const { toZone } = spreadsheet.helpers;
 
@@ -138,7 +133,7 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
         assert.deepEqual(model.getters.getChartRuntime(chartId).chartJsConfig.data, {
             datasets: [
                 {
-                    backgroundColor: "#1F77B466",
+                    backgroundColor: "#1f77b466",
                     borderColor: "rgb(31,119,180)",
                     data: [1, 3],
                     label: "Count",
@@ -152,7 +147,7 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
         assert.verifySteps(["web_read_group"], "it should have loaded the data");
     });
 
-    QUnit.test("Data reloaded strictly upon domain update", async (assert) => {
+    QUnit.test("Changing the chart type does not reload the data", async (assert) => {
         const { model } = await createSpreadsheetWithChart({
             type: "odoo_line",
             mockRPC: async function (route, args) {
@@ -168,37 +163,20 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
         // force runtime computation
         model.getters.getChartRuntime(chartId);
         await nextTick();
-        assert.verifySteps(["web_read_group"], "it should have loaded the data");
 
+        assert.verifySteps(["web_read_group"], "it should have loaded the data");
         model.dispatch("UPDATE_CHART", {
             definition: {
                 ...definition,
-                searchParams: { ...definition.searchParams, domain: [["1", "=", "1"]] },
-            },
-            id: chartId,
-            sheetId,
-        });
-        // force runtime computation
-        model.getters.getChartRuntime(chartId);
-        await nextTick();
-        assert.verifySteps(["web_read_group"], "it should have loaded the data with a new domain");
-
-        const newDefinition = model.getters.getChartDefinition(chartId);
-        model.dispatch("UPDATE_CHART", {
-            definition: {
-                ...newDefinition,
                 type: "odoo_bar",
             },
             id: chartId,
             sheetId,
         });
+        await nextTick();
         // force runtime computation
         model.getters.getChartRuntime(chartId);
-        await nextTick();
-        assert.verifySteps(
-            [],
-            "it should have not have loaded the data since the domain was unchanged"
-        );
+        assert.verifySteps([], "it should have not have loaded the data a second time");
     });
 
     QUnit.test("Can import/export an Odoo chart", async (assert) => {
@@ -216,59 +194,6 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
         const chartId = m1.getters.getChartIds(sheetId)[0];
         assert.ok(m1.getters.getChartDataSource(chartId));
         assert.strictEqual(m1.getters.getChartRuntime(chartId).chartJsConfig.type, "line");
-    });
-
-    QUnit.test("can import (export) contextual domain", async function (assert) {
-        const chartId = "1";
-        const uid = session.user_context.uid;
-        const spreadsheetData = {
-            sheets: [
-                {
-                    figures: [
-                        {
-                            id: chartId,
-                            x: 10,
-                            y: 10,
-                            width: 536,
-                            height: 335,
-                            tag: "chart",
-                            data: {
-                                type: "odoo_line",
-                                title: "Partners",
-                                legendPosition: "top",
-                                searchParams: {
-                                    domain: '[("foo", "=", uid)]',
-                                    groupBy: [],
-                                    orderBy: [],
-                                },
-                                metaData: {
-                                    groupBy: ["foo"],
-                                    measure: "__count",
-                                    resModel: "partner",
-                                },
-                            },
-                        },
-                    ],
-                },
-            ],
-        };
-        const model = await createModelWithDataSource({
-            spreadsheetData,
-            mockRPC: function (route, args) {
-                if (args.method === "web_read_group") {
-                    assert.deepEqual(args.kwargs.domain, [["foo", "=", uid]]);
-                    assert.step("web_read_group");
-                }
-            },
-        });
-        model.getters.getChartRuntime(chartId).chartJsConfig.data; // force loading the chart data
-        await nextTick();
-        assert.strictEqual(
-            model.exportData().sheets[0].figures[0].data.searchParams.domain,
-            '[("foo", "=", uid)]',
-            "the domain is exported with the dynamic parts"
-        );
-        assert.verifySteps(["web_read_group"]);
     });
 
     QUnit.test("Can undo/redo an Odoo chart creation", async (assert) => {
@@ -294,15 +219,15 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
         const bar = model.getters.getChartDefinition(barChartId);
         const line = model.getters.getChartDefinition(lineChartId);
         assert.strictEqual(
-            model.getters.getChartRuntime(pieChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(pieChartId).chartJsConfig.options.legend.display,
             true
         );
         assert.strictEqual(
-            model.getters.getChartRuntime(barChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(barChartId).chartJsConfig.options.legend.display,
             true
         );
         assert.strictEqual(
-            model.getters.getChartRuntime(lineChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(lineChartId).chartJsConfig.options.legend.display,
             true
         );
         model.dispatch("UPDATE_CHART", {
@@ -330,15 +255,15 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
             sheetId,
         });
         assert.strictEqual(
-            model.getters.getChartRuntime(pieChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(pieChartId).chartJsConfig.options.legend.display,
             false
         );
         assert.strictEqual(
-            model.getters.getChartRuntime(barChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(barChartId).chartJsConfig.options.legend.display,
             false
         );
         assert.strictEqual(
-            model.getters.getChartRuntime(lineChartId).chartJsConfig.options.plugins.legend.display,
+            model.getters.getChartRuntime(lineChartId).chartJsConfig.options.legend.display,
             false
         );
     });
@@ -356,8 +281,12 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
             id: chartId,
             sheetId,
         });
-        assert.ok(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.x.stacked);
-        assert.ok(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.y.stacked);
+        assert.ok(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.xAxes[0].stacked
+        );
+        assert.ok(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.yAxes[0].stacked
+        );
         model.dispatch("UPDATE_CHART", {
             definition: {
                 ...definition,
@@ -366,8 +295,12 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
             id: chartId,
             sheetId,
         });
-        assert.notOk(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.x.stacked);
-        assert.notOk(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.y.stacked);
+        assert.notOk(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.xAxes[0].stacked
+        );
+        assert.notOk(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.yAxes[0].stacked
+        );
     });
 
     QUnit.test("Can copy/paste Odoo chart", async (assert) => {
@@ -444,8 +377,12 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
             id: chartId,
             sheetId,
         });
-        assert.notOk(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.x.stacked);
-        assert.ok(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.y.stacked);
+        assert.notOk(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.xAxes[0].stacked
+        );
+        assert.ok(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.yAxes[0].stacked
+        );
         model.dispatch("UPDATE_CHART", {
             definition: {
                 ...definition,
@@ -454,82 +391,11 @@ QUnit.module("spreadsheet > odoo chart plugin", {}, () => {
             id: chartId,
             sheetId,
         });
-        assert.notOk(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.x.stacked);
-        assert.notOk(model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.y.stacked);
-    });
-
-    QUnit.test(
-        "Load odoo chart spreadsheet with models that cannot be accessed",
-        async function (assert) {
-            let hasAccessRights = true;
-            const { model } = await createSpreadsheetWithChart({
-                mockRPC: async function (route, args) {
-                    if (
-                        args.model === "partner" &&
-                        args.method === "web_read_group" &&
-                        !hasAccessRights
-                    ) {
-                        throw makeServerError({ description: "ya done!" });
-                    }
-                },
-            });
-            const chartId = model.getters.getFigures(model.getters.getActiveSheetId())[0].id;
-            const chartDataSource = model.getters.getChartDataSource(chartId);
-            await waitForDataSourcesLoaded(model);
-            const data = chartDataSource.getData();
-            assert.equal(data.datasets.length, 1);
-            assert.equal(data.labels.length, 2);
-
-            hasAccessRights = false;
-            chartDataSource.load({ reload: true });
-            await waitForDataSourcesLoaded(model);
-            assert.deepEqual(chartDataSource.getData(), { datasets: [], labels: [] });
-        }
-    );
-
-    QUnit.test("Line chart to support cumulative data", async (assert) => {
-        const { model } = await createSpreadsheetWithChart({ type: "odoo_line" });
-        const sheetId = model.getters.getActiveSheetId();
-        const chartId = model.getters.getChartIds(sheetId)[0];
-        const definition = model.getters.getChartDefinition(chartId);
-        await waitForDataSourcesLoaded(model);
-        assert.deepEqual(
-            model.getters.getChartRuntime(chartId).chartJsConfig.data.datasets[0].data,
-            [1, 3]
+        assert.notOk(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.xAxes[0].stacked
         );
-        model.dispatch("UPDATE_CHART", {
-            definition: {
-                ...definition,
-                cumulative: true,
-            },
-            id: chartId,
-            sheetId,
-        });
-        assert.deepEqual(
-            model.getters.getChartRuntime(chartId).chartJsConfig.data.datasets[0].data,
-            [1, 4]
+        assert.notOk(
+            model.getters.getChartRuntime(chartId).chartJsConfig.options.scales.yAxes[0].stacked
         );
-        model.dispatch("UPDATE_CHART", {
-            definition: {
-                ...definition,
-                cumulative: false,
-            },
-            id: chartId,
-            sheetId,
-        });
-        assert.deepEqual(
-            model.getters.getChartRuntime(chartId).chartJsConfig.data.datasets[0].data,
-            [1, 3]
-        );
-    });
-
-    QUnit.test("Can insert odoo chart from a different model", async (assert) => {
-        const model = await createModelWithDataSource();
-        insertListInSpreadsheet(model, { model: "product", columns: ["name"] });
-        await addGlobalFilter(model, THIS_YEAR_GLOBAL_FILTER);
-        const sheetId = model.getters.getActiveSheetId();
-        assert.strictEqual(model.getters.getChartIds(sheetId).length, 0);
-        insertChartInSpreadsheet(model);
-        assert.strictEqual(model.getters.getChartIds(sheetId).length, 1);
     });
 });

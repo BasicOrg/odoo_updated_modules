@@ -6,8 +6,7 @@ import pytz
 
 from odoo import Command, fields, models, api, _
 from odoo.osv import expression
-from odoo.tools import get_lang
-from odoo.addons.project.models.project_task import CLOSED_STATES
+
 
 class Task(models.Model):
     _inherit = "project.task"
@@ -21,12 +20,56 @@ class Task(models.Model):
             fsm_project = self.env['project.project'].search([('is_fsm', '=', True), ('company_id', '=', company_id)], order='sequence', limit=1)
             if fsm_project:
                 result['stage_id'] = self.stage_find(fsm_project.id, [('fold', '=', False)])
-                result['project_id'] = fsm_project.id
-                result['company_id'] = company_id
+            result['project_id'] = fsm_project.id
+
+        date_begin = result.get('planned_date_begin')
+        date_end = result.get('planned_date_end')
+        if is_fsm_mode and (date_begin or date_end):
+            if not date_begin:
+                date_begin = date_end.replace(hour=0, minute=0, second=1)
+            if not date_end:
+                date_end = date_begin.replace(hour=23, minute=59, second=59)
+            date_diff = date_end - date_begin
+            if date_diff.seconds / 3600 > 23.5:
+                # if the interval between both dates are more than 23 hours and 30 minutes
+                # then we changes those dates to fit with the working schedule of the assigned user or the current company
+                # because we assume here, the planned dates are not the ones chosen by the current user.
+                user_tz = pytz.timezone(self.env.context.get('tz') or 'UTC')
+                date_begin = pytz.utc.localize(date_begin).astimezone(user_tz)
+                date_end = pytz.utc.localize(date_end).astimezone(user_tz)
+                user_ids_list = [res[2] for res in result.get('user_ids', []) if len(res) == 3 and res[0] == Command.SET]  # user_ids = [(Command.SET, 0, <user_ids>)]
+                user_ids = user_ids_list[-1] if user_ids_list else []
+                users = self.env['res.users'].sudo().browse(user_ids)
+                user = len(users) == 1 and users
+                if user and user.employee_id:  # then the default start/end hours correspond to what is configured on the employee calendar
+                    resource_calendar = user.resource_calendar_id
+                else:  # Otherwise, the default start/end hours correspond to what is configured on the company calendar
+                    company = self.env['res.company'].sudo().browse(result.get('company_id')) if result.get(
+                        'company_id') else self.env.user.company_id
+                    resource_calendar = company.resource_calendar_id
+                if resource_calendar:
+                    resources_work_intervals = resource_calendar._work_intervals_batch(date_begin, date_end)
+                    work_intervals = [(start, stop) for start, stop, meta in resources_work_intervals[False]]
+                    if work_intervals:
+                        planned_date_begin = work_intervals[0][0]
+                        planned_date_end = work_intervals[0][1]
+                        for dummy, stop in work_intervals[1:]:
+                            if stop.date() != planned_date_begin.date():  # when it is no longer the case we keep the previous stop date.
+                                break
+                            planned_date_end = stop
+                        result['planned_date_begin'] = planned_date_begin.astimezone(pytz.utc).replace(tzinfo=None)
+                        result['planned_date_end'] = planned_date_end.astimezone(pytz.utc).replace(tzinfo=None)
+                else:
+                    result['planned_date_begin'] = date_begin.replace(hour=9, minute=0, second=1).astimezone(pytz.utc).replace(tzinfo=None)
+                    result['planned_date_end'] = date_end.astimezone(pytz.utc).replace(tzinfo=None)
         return result
 
+    allow_worksheets = fields.Boolean(related='project_id.allow_worksheets')
     is_fsm = fields.Boolean(related='project_id.is_fsm', search='_search_is_fsm')
     fsm_done = fields.Boolean("Task Done", compute='_compute_fsm_done', readonly=False, store=True, copy=False)
+    partner_id = fields.Many2one(group_expand='_read_group_partner_id')
+    project_id = fields.Many2one(group_expand='_read_group_project_id')
+    user_ids = fields.Many2many(group_expand='_read_group_user_ids')
     # Use to count conditions between : time, worksheet and materials
     # If 2 over 3 are enabled for the project, the required count = 2
     # If 1 over 3 is met (enabled + encoded), the satisfied count = 2
@@ -34,16 +77,21 @@ class Task(models.Model):
     display_satisfied_conditions_count = fields.Integer(compute='_compute_display_conditions_count')
     display_mark_as_done_primary = fields.Boolean(compute='_compute_mark_as_done_buttons')
     display_mark_as_done_secondary = fields.Boolean(compute='_compute_mark_as_done_buttons')
-    partner_phone = fields.Char(
-        compute='_compute_partner_phone', inverse='_inverse_partner_phone',
-        string="Phone", readonly=False, store=True, copy=False)
-    partner_city = fields.Char(related='partner_id.city', readonly=False)
-    is_task_phone_update = fields.Boolean(compute='_compute_is_task_phone_update')
+    display_sign_report_primary = fields.Boolean(compute='_compute_display_sign_report_buttons')
+    display_sign_report_secondary = fields.Boolean(compute='_compute_display_sign_report_buttons')
+    display_send_report_primary = fields.Boolean(compute='_compute_display_send_report_buttons')
+    display_send_report_secondary = fields.Boolean(compute='_compute_display_send_report_buttons')
+    worksheet_signature = fields.Binary('Signature', copy=False, attachment=True)
+    worksheet_signed_by = fields.Char('Signed By', copy=False)
+    fsm_is_sent = fields.Boolean('Is Worksheet sent', readonly=True)
+    comment = fields.Html(string='Comments', copy=False)
 
     @property
     def SELF_READABLE_FIELDS(self):
-        return super().SELF_READABLE_FIELDS | {'is_fsm',
+        return super().SELF_READABLE_FIELDS | {'allow_worksheets',
+                                              'is_fsm',
                                               'planned_date_begin',
+                                              'planned_date_end',
                                               'fsm_done',
                                               'partner_phone',
                                               'partner_city',}
@@ -66,27 +114,13 @@ class Task(models.Model):
                 'display_mark_as_done_secondary': secondary,
             })
 
-    @api.depends('partner_id.phone')
-    def _compute_partner_phone(self):
-        for task in self:
-            if task.partner_phone != task.partner_id.phone:
-                task.partner_phone = task.partner_id.phone
-
-    def _inverse_partner_phone(self):
-        for task in self:
-            if task.partner_id and task.partner_phone != task.partner_id.phone:
-                task.partner_id.phone = task.partner_phone
-
-    @api.depends('partner_phone', 'partner_id.phone')
-    def _compute_is_task_phone_update(self):
-        for task in self:
-            task.is_task_phone_update = task.partner_phone != task.partner_id.phone
-
-    @api.depends('project_id.allow_timesheets', 'total_hours_spent')
+    @api.depends('allow_worksheets', 'project_id.allow_timesheets', 'total_hours_spent', 'comment')
     def _compute_display_conditions_count(self):
         for task in self:
             enabled = 1 if task.project_id.allow_timesheets else 0
             satisfied = 1 if enabled and task.total_hours_spent else 0
+            enabled += 1 if task.allow_worksheets else 0
+            satisfied += 1 if task.allow_worksheets and task.comment else 0
             task.update({
                 'display_enabled_conditions_count': enabled,
                 'display_satisfied_conditions_count': satisfied
@@ -104,6 +138,53 @@ class Task(models.Model):
         })
         super(Task, self - fsm_done_tasks)._compute_display_timer_buttons()
 
+    def _hide_sign_button(self):
+        self.ensure_one()
+        return not self.allow_worksheets or self.timer_start or self.worksheet_signature \
+            or not self.display_satisfied_conditions_count
+
+    @api.depends(
+        'allow_worksheets', 'timer_start', 'worksheet_signature',
+        'display_satisfied_conditions_count', 'display_enabled_conditions_count')
+    def _compute_display_sign_report_buttons(self):
+        for task in self:
+            sign_p, sign_s = True, True
+            if task._hide_sign_button():
+                sign_p, sign_s = False, False
+            else:
+                if task.display_enabled_conditions_count == task.display_satisfied_conditions_count:
+                    sign_s = False
+                else:
+                    sign_p = False
+            task.update({
+                'display_sign_report_primary': sign_p,
+                'display_sign_report_secondary': sign_s,
+            })
+
+    def _hide_send_report_button(self):
+        self.ensure_one()
+        return not self.allow_worksheets or self.timer_start or not self.display_satisfied_conditions_count \
+            or self.fsm_is_sent
+
+    @api.depends(
+        'allow_worksheets', 'timer_start',
+        'display_satisfied_conditions_count', 'display_enabled_conditions_count',
+        'fsm_is_sent')
+    def _compute_display_send_report_buttons(self):
+        for task in self:
+            send_p, send_s = True, True
+            if task._hide_send_report_button():
+                send_p, send_s = False, False
+            else:
+                if task.display_enabled_conditions_count == task.display_satisfied_conditions_count:
+                    send_s = False
+                else:
+                    send_p = False
+            task.update({
+                'display_send_report_primary': send_p,
+                'display_send_report_secondary': send_s,
+            })
+
     @api.model
     def _search_is_fsm(self, operator, value):
         query = """
@@ -114,67 +195,68 @@ class Task(models.Model):
         operator_new = operator == "=" and "inselect" or "not inselect"
         return [('project_id', operator_new, (query, ()))]
 
-    @api.onchange('planned_date_begin', 'date_deadline')
-    def _onchange_planned_date(self):
-        if self.is_fsm and self.date_deadline and not self.planned_date_begin:
-            self.date_deadline = False
-
-    def write(self, vals):
-        self_fsm = self.filtered('is_fsm')
-        super(Task, self - self_fsm).write(vals.copy())
-
-        is_start_date_set = bool(vals.get('planned_date_begin', False))
-        is_end_date_set = bool(vals.get("date_deadline", False))
-        both_dates_changed = 'planned_date_begin' in vals and 'date_deadline' in vals
-        self_fsm = self_fsm.with_context(fsm_mode=True)
-
-        if self_fsm and (
-            (both_dates_changed and is_start_date_set != is_end_date_set) or (not both_dates_changed and (
-                ('planned_date_begin' in vals and not all(bool(t.date_deadline) == is_start_date_set for t in self)) or \
-                ('date_deadline' in vals and not all(bool(t.planned_date_begin) == is_end_date_set for t in self))
-            ))
-        ):
-            vals.update({"date_deadline": False, "planned_date_begin": False})
-
-        return super(Task, self_fsm).write(vals)
-
     @api.model
-    def _group_expand_project_ids(self, projects, domain, order):
-        res = super()._group_expand_project_ids(projects, domain, order)
+    def _read_group_partner_id(self, partners, domain, order):
         if self._context.get('fsm_mode'):
-            search_on_comodel = self._search_on_comodel(domain, "project_id", "project.project", order, [('is_fsm', '=', True)])
-            res &= search_on_comodel
-        return res
+            dom_tuples = [dom for dom in domain if isinstance(dom, (list, tuple)) and len(dom) == 3]
+            if any(d[0] == 'partner_id' and d[1] in ('=', 'ilike', 'child_of') for d in dom_tuples):
+                filter_domain = self._expand_domain_m2o_groupby(dom_tuples, 'partner_id')
+                return self.env['res.partner'].search(filter_domain, order=order)
+        return partners
 
     @api.model
-    def _group_expand_user_ids(self, users, domain, order):
-        res = super()._group_expand_user_ids(users, domain, order)
+    def _read_group_project_id(self, projects, domain, order):
+        if self._context.get('fsm_mode'):
+            dom_tuples = [dom for dom in domain if isinstance(dom, (list, tuple)) and len(dom) == 3]
+            if any(d[0] == 'project_id' and d[1] in ('=', 'ilike') for d in dom_tuples):
+                filter_domain = self._expand_domain_m2o_groupby(dom_tuples, 'project_id')
+                domain = expression.AND([filter_domain, [('is_fsm', '=', True)]])
+                return self.env['project.project'].search(domain, order=order)
+        return projects
+
+    @api.model
+    def _expand_domain_m2o_groupby(self, domain, filter_field):
+        filter_domain = []
+        for dom in domain:
+            if dom[0] == filter_field:
+                field = self._fields[dom[0]]
+                if field.type == 'many2one' and len(dom) == 3:
+                    if dom[1] == '=':
+                        filter_domain = expression.OR([filter_domain, [('id', dom[1], dom[2])]])
+                    elif dom[1] == 'ilike':
+                        rec_name = self.env[field.comodel_name]._rec_name
+                        filter_domain = expression.OR([filter_domain, [(rec_name, dom[1], dom[2])]])
+                    elif dom[1] == 'child_of':
+                        rec_name = self.env[field.comodel_name]._rec_name
+                        filter_domain = expression.OR([filter_domain, [(rec_name, 'ilike', dom[2])]])
+        return filter_domain
+
+    @api.model
+    def _read_group_user_ids(self, users, domain, order):
         if self.env.context.get('fsm_mode'):
-            recently_created_tasks_user_ids = self.env['project.task']._read_group([
+            recently_created_tasks = self.env['project.task'].search([
                 ('create_date', '>', datetime.now() - timedelta(days=30)),
                 ('is_fsm', '=', True),
                 ('user_ids', '!=', False)
-            ], [], ['user_ids:array_agg'])[0][0]
-            search_domain = ['&', ('company_id', 'in', self.env.companies.ids), '|', '|', ('id', 'in', users.ids), ('groups_id', 'in', self.env.ref('industry_fsm.group_fsm_user').id), ('id', 'in', recently_created_tasks_user_ids)]
-            res |= users.search(search_domain, order=order)
-        return res
+            ])
+            search_domain = ['&', ('company_id', 'in', self.env.companies.ids), '|', '|', ('id', 'in', users.ids), ('groups_id', 'in', self.env.ref('industry_fsm.group_fsm_user').id), ('id', 'in', recently_created_tasks.mapped('user_ids.id'))]
+            return users.search(search_domain, order=order)
+        return users
 
     def _compute_fsm_done(self):
-        closed_tasks = self.filtered(lambda t: t.state in CLOSED_STATES)
+        closed_tasks = self.filtered('is_closed')
         closed_tasks.fsm_done = True
 
-    def action_timer_start(self):
-        if not self.user_timer_id.timer_start and self.display_timesheet_timer:
-            super(Task, self).action_timer_start()
-            if self.is_fsm:
-                time = fields.Datetime.context_timestamp(self, self.timer_start)
-                self.message_post(
-                    body=_(
-                        'Timer started at: %(date)s %(time)s',
-                        date=time.strftime(get_lang(self.env).date_format),
-                        time=time.strftime(get_lang(self.env).time_format),
-                    ),
-                )
+    def action_fsm_worksheet(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'project.task',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'context': {'form_view_initial_mode': 'edit', 'task_worksheet_comment': True},
+            'views': [[self.env.ref('industry_fsm.fsm_form_view_comment').id, 'form']],
+        }
 
     def action_view_timesheets(self):
         kanban_view = self.env.ref('hr_timesheet.view_kanban_account_analytic_line')
@@ -195,7 +277,7 @@ class Task(models.Model):
         }
 
     def action_fsm_validate(self, stop_running_timers=False):
-        """ Moves Task to done state.
+        """ Moves Task to next stage.
             If allow billable on task, timesheet product set on project and user has privileges :
             Create SO confirmed with time and material.
         """
@@ -224,7 +306,19 @@ class Task(models.Model):
                     'res_id': wizard.id,
                 }
 
-        self.write({'fsm_done': True, 'state': '1_done'})
+        closed_stage_by_project = {
+            project.id:
+                project.type_ids.filtered(lambda stage: stage.fold)[:1] or project.type_ids[-1:]
+            for project in self.project_id
+        }
+        for task in self:
+            # determine closed stage for task
+            closed_stage = closed_stage_by_project.get(self.project_id.id)
+            values = {'fsm_done': True}
+            if closed_stage:
+                values['stage_id'] = closed_stage.id
+
+            task.write(values)
 
         return True
 
@@ -279,12 +373,70 @@ class Task(models.Model):
             }
         return self.partner_id.action_partner_navigate()
 
+    def action_preview_worksheet(self):
+        self.ensure_one()
+        source = 'fsm' if self._context.get('fsm_mode', False) else 'project'
+        return {
+            'type': 'ir.actions.act_url',
+            'target': 'self',
+            'url': self.get_portal_url(query_string=f'&source={source}')
+        }
+
+    def action_send_report(self):
+        tasks_with_report = self.filtered(lambda task: task._is_fsm_report_available())
+        if not tasks_with_report:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': _("There are no reports to send."),
+                    'sticky': False,
+                    'type': 'danger',
+                }
+            }
+
+        template_id = self.env.ref('industry_fsm.mail_template_data_task_report').id
+        return {
+            'name': _("Send report"),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(False, 'form')],
+            'view_id': False,
+            'target': 'new',
+            'context': {
+                'default_composition_mode': 'mass_mail' if len(tasks_with_report.ids) > 1 else 'comment',
+                'default_model': 'project.task',
+                'default_res_id': tasks_with_report.ids[0],
+                'default_use_template': bool(template_id),
+                'default_template_id': template_id,
+                'fsm_mark_as_sent': True,
+                'active_ids': tasks_with_report.ids,
+            },
+        }
+
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return 'Worksheet %s - %s' % (self.name, self.partner_id.name)
+
+    def _is_fsm_report_available(self):
+        self.ensure_one()
+        return self.comment or self.timesheet_ids
+
+    def has_to_be_signed(self):
+        self.ensure_one()
+        return self._is_fsm_report_available() and not self.worksheet_signature
+
+    @api.model
+    def get_views(self, views, options=None):
+        options['toolbar'] = not self._context.get('task_worksheet_comment') and options.get('toolbar')
+        res = super().get_views(views, options)
+        return res
+
     # ---------------------------------------------------------
     # Business Methods
     # ---------------------------------------------------------
 
-    def _get_projects_to_make_billable_domain(self, additional_domain=None):
-        return expression.AND([
-            super()._get_projects_to_make_billable_domain(additional_domain),
-            [('is_fsm', '=', False)],
-        ])
+    def _message_post_after_hook(self, message, *args, **kwargs):
+        if self.env.context.get('fsm_mark_as_sent') and not self.fsm_is_sent:
+            self.fsm_is_sent = True

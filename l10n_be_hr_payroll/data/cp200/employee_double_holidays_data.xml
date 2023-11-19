@@ -16,10 +16,10 @@
         <field name="code">EU.LEAVE.DEDUC</field>
         <field name="sequence">4</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = 'EULEAVEDEDUC' in inputs</field>
+        <field name="condition_python">result = inputs.EULEAVEDEDUC</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = -min(result_rules['BASIC']['total'] + result_rules['DOUBLERECOVERY']['total'], inputs['EULEAVEDEDUC'].amount)
+result = -min(result_rules['BASIC']['total'] + result_rules['DOUBLERECOVERY']['total'], inputs.EULEAVEDEDUC.amount)
 if result > 0:
     result = 0</field>
         <field name="struct_id" ref="hr_payroll_structure_cp200_double_holiday"/>
@@ -31,9 +31,9 @@ if result > 0:
         <field name="code">DOUBLERECOVERY</field>
         <field name="sequence">3</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = 'DOUBLERECOVERY' in inputs</field>
+        <field name="condition_python">result = inputs.DOUBLERECOVERY</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = -min(result_rules['BASIC']['total'], inputs['DOUBLERECOVERY'].amount)</field>
+        <field name="amount_python_compute">result = -min(result_rules['BASIC']['total'], (inputs.DOUBLERECOVERY.amount if inputs.DOUBLERECOVERY else 0))</field>
         <field name="struct_id" ref="hr_payroll_structure_cp200_double_holiday"/>
     </record>
 
@@ -46,7 +46,7 @@ if result > 0:
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = categories['BASIC'] + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total']
+result = categories.BASIC + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total']
 result = max(0, result / 0.92 * 0.85)
         </field>
         <field name="appears_on_payslip" eval="False"/>
@@ -71,7 +71,7 @@ result = max(0, result / 0.92 * 0.85)
         <value model="hr.salary.rule" search="[
             ('struct_id', '=', ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_double_holiday')),
             ('code', '=', 'GROSS')]"/>
-        <value eval="{'amount_python_compute': &quot;result = max(0, categories['BASIC'] + categories['ALW'] + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total'])&quot;, 'sequence': '101'}"/>
+        <value eval="{'amount_python_compute': &quot;result = max(0, categories.BASIC + categories.ALW + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total'])&quot;, 'sequence': '101'}"/>
     </function>
 
     <record id="cp200_employees_double_holiday_pay_p_p" model="hr.salary.rule">
@@ -81,7 +81,7 @@ result = max(0, result / 0.92 * 0.85)
         <field name="sequence">102</field>
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = payslip._get_be_double_holiday_withholding_taxes(localdict)</field>
+        <field name="amount_python_compute">result = compute_double_holiday_withholding_taxes(payslip, categories, worked_days, inputs)</field>
         <field name="struct_id" ref="hr_payroll_structure_cp200_double_holiday"/>
     </record>
 
@@ -95,7 +95,7 @@ result = max(0, result / 0.92 * 0.85)
         <field name="appears_on_payslip" eval="False"/>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = -categories['PP']
+result = -categories.PP
         </field>
         <field name="struct_id" ref="hr_payroll_structure_cp200_double_holiday"/>
         <field name="appears_on_employee_cost_dashboard" eval="True"/>
@@ -105,6 +105,6 @@ result = -categories['PP']
         <value model="hr.salary.rule" search="[
             ('struct_id', '=', ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_double_holiday')),
             ('code', '=', 'NET')]"/>
-        <value eval="{'amount_python_compute': &quot;result = max(0, BASIC + categories['ALW'] + categories['DED'] + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total'])&quot;, 'sequence': '201', 'appears_on_employee_cost_dashboard': True}"/>
+        <value eval="{'amount_python_compute': &quot;result = max(0, BASIC + categories.ALW + categories.DED + result_rules['EU.LEAVE.DEDUC']['total'] + result_rules['DOUBLERECOVERY']['total'])&quot;, 'sequence': '201', 'appears_on_employee_cost_dashboard': True}"/>
     </function>
 </odoo>

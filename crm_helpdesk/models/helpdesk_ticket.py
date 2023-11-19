@@ -22,7 +22,7 @@ class HelpdeskTicket(models.Model):
             partner = self.env['res.partner'].search([('email_normalized', '=', tools.email_normalize(self.partner_email))], limit=1)
 
         if not partner and not email_only and self.partner_name:
-            partner = self.env['res.partner'].search([('name', 'ilike', self.partner_name)], limit=1)
+            partner = self.env['res.partner'].search([('name', 'ilike', '%' + self.partner_name + '%')], limit=1)
 
         if not partner and force_create:
             partner = self.env['res.partner'].create({

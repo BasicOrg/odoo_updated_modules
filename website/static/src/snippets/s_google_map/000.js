@@ -1,7 +1,8 @@
-/** @odoo-module **/
 /* global google */
+odoo.define('website.s_google_map', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+const publicWidget = require('web.public.widget');
 
 publicWidget.registry.GoogleMap = publicWidget.Widget.extend({
     selector: '.s_google_map',
@@ -66,7 +67,7 @@ publicWidget.registry.GoogleMap = publicWidget.Widget.extend({
         map.setCenter(gps);
 
         // Update Map on screen resize
-        window.addEventListener('resize', () => {
+        google.maps.event.addDomListener(window, 'resize', () => {
             map.setCenter(gps);
         });
 
@@ -92,4 +93,5 @@ publicWidget.registry.GoogleMap = publicWidget.Widget.extend({
             map.setMapTypeId('map_style');
         }
     },
+});
 });

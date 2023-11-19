@@ -26,11 +26,6 @@ class ProductTemplate(models.Model):
         readonly=False,
     )
 
-    def _get_related_fields_variant_template(self):
-        fields = super()._get_related_fields_variant_template()
-        fields += ['intrastat_code_id', 'intrastat_origin_country_id', 'intrastat_supplementary_unit', 'intrastat_supplementary_unit_amount']
-        return fields
-
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 

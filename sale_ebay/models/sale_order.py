@@ -23,7 +23,7 @@ class SaleOrder(models.Model):
                     so = self._process_order_new(order, transaction)
                     so._process_order_update(order)
             except Exception as e:
-                message = _("Ebay could not synchronize order:\n%s", e)
+                message = _("Ebay could not synchronize order:\n%s") % str(e)
                 path = str(order)
                 product._log_logging(self.env, message, "_process_order", path)
                 _logger.exception(message)
@@ -134,9 +134,9 @@ class SaleOrder(models.Model):
         tax = False
         if amount > 0 and rate > 0:
             tax = self.env['account.tax'].with_context(active_test=False).sudo().search([
-                *self.env['account.tax']._check_company_domain(company),
                 ('amount', '=', rate),
                 ('amount_type', '=', 'percent'),
+                ('company_id', '=', company.id),
                 ('price_include', '=', True),
                 ('type_tax_use', '=', 'sale')], limit=1)
             if not tax:
@@ -222,7 +222,7 @@ class SaleOrder(models.Model):
             # If multiple variants but only one listed on eBay as Item Specific
             else:
                 call_data = {'ItemID': product.ebay_id, 'IncludeItemSpecifics': True}
-                resp = product._ebay_execute('GetItem', call_data)
+                resp = product.ebay_execute('GetItem', call_data)
                 name_value_list = resp.dict()['Item']['ItemSpecifics']['NameValueList']
                 if not isinstance(name_value_list, list):
                     name_value_list = [name_value_list]

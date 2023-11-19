@@ -82,14 +82,14 @@
                 <header>
                     <field name="user_status" invisible="1"/>
                     <field name="has_access_to_request" invisible="1"/>
-                    <button name="action_confirm" string="Submit" type="object" invisible="not approver_ids or request_status != 'new'" class="btn-primary" data-hotkey="q"/>
-                    <button name="action_approve" string="Approve" type="object" invisible="request_status in ['approved', 'refused', 'cancel'] or user_status != 'pending'" data-hotkey="v"/>
-                    <button name="action_refuse" string="Refuse" type="object" invisible="request_status in ['approved', 'refused', 'cancel'] or user_status != 'pending'" data-hotkey="z"/>
-                    <button name="action_withdraw" string="Withdraw" type="object" invisible="request_status == 'new' or user_status in ['waiting', 'pending', 'cancel'] or not user_status" data-hotkey="y"/>
-                    <button name="action_draft" string="Back To Draft" type="object" invisible="request_status != 'cancel' or not user_status and not has_access_to_request" data-hotkey="w"/>
-                    <button name="action_cancel" string="Cancel" type="object" invisible="request_status in ['new', 'cancel'] or not user_status and not has_access_to_request" data-hotkey="x"/>
-                    <widget name="attach_document" string="Attach Document" action="message_post" invisible="attachment_number &lt; 1"/>
-                    <widget name="attach_document" string="Attach Document" action="message_post" highlight="1" invisible="attachment_number &gt;= 1"/>
+                    <button name="action_confirm" string="Submit" type="object" attrs="{'invisible': ['|', ('approver_ids', '=', []), ('request_status','!=','new')]}" class="btn-primary" data-hotkey="v"/>
+                    <button name="action_approve" string="Approve" type="object" attrs="{'invisible':['|', ('request_status', 'in', ['approved', 'refused', 'cancel']), ('user_status','!=','pending')]}" data-hotkey="q"/>
+                    <button name="action_refuse" string="Refuse" type="object" attrs="{'invisible':['|', ('request_status', 'in', ['approved', 'refused', 'cancel']), ('user_status','!=','pending')]}" data-hotkey="x"/>
+                    <button name="action_withdraw" string="Withdraw" type="object" attrs="{'invisible':['|','|',('request_status','=','new'),('user_status','in',['waiting', 'pending','cancel']),('user_status','=',False)]}" data-hotkey="y"/>
+                    <button name="action_draft" string="Back To Draft" type="object" attrs="{'invisible':['|',('request_status','!=','cancel'),'&amp;',('user_status','=',False),('has_access_to_request','=',False)]}" data-hotkey="w"/>
+                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible':['|',('request_status','in',['new','cancel']),'&amp;',('user_status','=',False),('has_access_to_request','=',False)]}" data-hotkey="z"/>
+                    <widget name="attach_document" string="Attach Document" action="message_post" attrs="{'invisible': [('attachment_number', '&lt;', 1)]}"/>
+                    <widget name="attach_document" string="Attach Document" action="message_post" highlight="1" attrs="{'invisible': [('attachment_number', '&gt;=', 1)]}"/>
                     <field name="request_status" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -106,12 +106,12 @@
                     <field name="approval_minimum" invisible="1"/>
                     <field name="approval_type" invisible="1"/>
                     <field name="change_request_owner" invisible="1"/>
-                    <div class="o_not_full oe_button_box" name="button_box">
+                    <div class="o_not_full oe_button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
                             icon="fa-book"
                             type="object"
-                            invisible="attachment_number == 0">
+                            attrs="{'invisible': [('attachment_number', '=', 0)]}">
                             <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
                         </button>
                     </div>
@@ -123,63 +123,65 @@
                         <h1>
                             <field name="automated_sequence" invisible="1"/>
                             <field name="name" placeholder="E.g: Expenses Paris business trip"
-                                required="1"
-                                readonly="automated_sequence"/>
+                                attrs="{'readonly': [('automated_sequence', '=', True)]}"
+                                required="1"/>
                         </h1>
                     </div>
                     <group>
                         <group name="request_main">
-                            <field name="request_owner_id" domain="[('share', '=', False)]" readonly="not change_request_owner or request_status != 'new'" widget="many2one_avatar_user"/>
-                            <field name="category_id" readonly="request_status != 'new'" force_save="1"/>
+                            <field name="request_owner_id" domain="[('share', '=', False)]" attrs="{'readonly':['|', ('change_request_owner', '=', False), ('request_status','not in',('new', 'pending'))]}"/>
+                            <field name="category_id" attrs="{'readonly':[('request_status','!=','new')]}" force_save="1"/>
                             <field name="date_confirmed" groups="base.group_no_one" readonly="1"/>
-                            <label for="date" string="Date" invisible="has_date == 'no'"/>
-                            <div invisible="has_date == 'no'">
+                            <label for="date" string="Date" attrs="{'invisible':[('has_date','==','no')]}"/>
+                            <div attrs="{'invisible':[('has_date','==','no')]}">
                                 <div>
-                                    <field name="date" class="oe_inline" readonly="request_status != 'new'" required="has_date == 'required'"/>
+                                    <field name="date" class="oe_inline" attrs="{'required': [('has_date','==','required')], 'readonly': [('request_status','not in',('new', 'pending'))]}"/>
                                 </div>
                             </div>
-                            <label for="date_start" string="Period" invisible="has_period == 'no'"/>
-                            <div invisible="has_period == 'no'">
+                            <label for="date_start" string="Period" attrs="{'invisible':[('has_period','==','no')]}"/>
+                            <div attrs="{'invisible':[('has_period','==','no')]}">
                                 <div>
-                                  <span>From: </span><field name="date_start" class="oe_inline" readonly="request_status != 'new'" required="has_period == 'required'"/>
+                                  <span>From: </span><field name="date_start" class="oe_inline" attrs="{'required': [('has_period','==','required')], 'readonly': [('request_status','not in',('new', 'pending'))]}"/>
                                 </div>
                                 <div>
-                                  <span>to: </span><field name="date_end" class="oe_inline ms-4" readonly="request_status != 'new'" required="has_period == 'required'"/>
+                                  <span>to: </span><field name="date_end" class="oe_inline ms-4" attrs="{'required': [('has_period','==','required')], 'readonly': [('request_status','not in',('new', 'pending'))]}"/>
                                 </div>
                             </div>
-                            <field name="location" invisible="has_location == 'no'" readonly="request_status != 'new'" required="has_location == 'required'" placeholder="e.g. Brussels" />
-                            <field name="partner_id" invisible="has_partner == 'no'" readonly="request_status != 'new'" required="has_partner == 'required'"/>
+                            <field name="location" attrs="{'invisible':[('has_location','==','no')], 'required': [('has_location','==','required')], 'readonly': [('request_status','not in',('new', 'pending'))]}" placeholder="e.g. Brussels" />
+                            <field name="partner_id" attrs="{'invisible':[('has_partner','==','no')], 'required': [('has_partner','==','required')], 'readonly': [('request_status','not in',('new', 'pending'))]}"/>
                         </group>
                         <group name="request_details">
-                            <field name="quantity" invisible="has_quantity == 'no' or has_product != 'no'" readonly="request_status != 'new'" required="has_quantity == 'required' and has_product == 'no'"/>
-                            <field name="amount" invisible="has_amount == 'no'" readonly="request_status != 'new'" required="has_amount == 'required'"/>
-                            <field name="reference" invisible="has_reference == 'no'" required="has_reference == 'required'"/>
+                            <field name="quantity" attrs="{
+                                    'invisible':['|', ('has_quantity', '=', 'no'), ('has_product', '!=', 'no')],
+                                    'required': [('has_quantity','=','required'), ('has_product', '=', 'no')],
+                                    'readonly':[('request_status','not in',('new', 'pending'))],
+                                }"/>
+                            <field name="amount" attrs="{'invisible':[('has_amount','==','no')], 'required': [('has_amount','==','required')], 'readonly':[('request_status','not in',('new', 'pending'))]}"/>
+                            <field name="reference" attrs="{'invisible':[('has_reference','==','no')], 'required': [('has_reference','==','required')]}"/>
                             <field name="company_id" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Products" name="products"
-                            invisible="has_product == 'no'">
+                            attrs="{'invisible': [('has_product', '=', 'no')]}">
                             <field name="product_line_ids"
-                                context="{'tree_view_ref': 'approvals.approval_product_line_view_tree'}" readonly="request_status != 'new'"/>
+                                context="{'tree_view_ref': 'approvals.approval_product_line_view_tree'}" attrs="{'readonly':[('request_status','not in',('new', 'pending'))]}"/>
                         </page>
                         <page string="Description" name="description">
-                            <field name="reason" readonly="request_status != 'new'"/>
+                            <field name="reason" attrs="{'readonly':[('request_status','not in',('new', 'pending'))]}"/>
                         </page>
                         <page string="Approver(s)" name="approvers">
-                            <field name="approver_ids" mode="tree,kanban" readonly="request_status != 'new'">
+                            <field name="approver_ids" mode="tree,kanban" attrs="{'readonly': [('request_status', '!=', 'new')]}">
                                 <tree editable="bottom" decoration-success="status=='approved'" decoration-warning="status in ['pending', 'waiting']" decoration-danger="status=='refused'" no_open="1">
-                                    <field name="existing_request_user_ids" column_invisible="True"/>
-                                    <field name="sequence" column_invisible="True"/>
-                                    <field name="can_edit" column_invisible="True"/>
-                                    <field name="can_edit_user_id" column_invisible="True"/>
-                                    <field name="user_id" string="Approver" readonly="not can_edit_user_id or status != 'new'" force_save="1" />
-                                    <field name="required" readonly="not can_edit" force_save="1"/>
+                                    <field name="existing_request_user_ids" invisible="1"/>
+                                    <field name="can_edit" invisible="1"/>
+                                    <field name="user_id" string="Approver" attrs="{'readonly':['|', ('can_edit', '=', False), ('status','!=','new')]}" force_save="1" />
+                                    <field name="required" attrs="{'readonly': [('can_edit', '=', False)]}" force_save="1"/>
                                     <field name="status"/>
-                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="company_id" invisible="1"/>
                                 </tree>
                                 <kanban class="o_kanban_mobile">
-                                    <field name="company_id"/>
+                                    <field name="company_id" invisible="1"/>
                                     <field name="user_id"/>
                                     <field name="status"/>
                                     <templates>
@@ -228,20 +230,26 @@
                 <field name="user_status"/>
                 <field name="name"/>
                 <field name="activity_ids"/>
-                <field name="category_id"/>
+                <field name="category_id" readonly="1"/>
                 <templates>
-                    <t t-name="kanban-menu">
-                        <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit Request</a>
-                        <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
-                        <a name="action_approve" type="object" invisible="user_status != 'pending'"
-                            role="menuitem" class="dropdown-item">Approve</a>
-                        <a name="action_refuse" type="object" invisible="user_status != 'pending'"
-                            role="menuitem" class="dropdown-item">Refuse</a>
-                        <a name="action_withdraw" type="object" invisible="request_status == 'new' or user_status in ['waiting', 'pending', 'cancel']"
-                            role="menuitem" class="dropdown-item">Withdraw</a>
-                    </t>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click container">
+                            <div class="o_dropdown_kanban dropdown" t-if="!selection_mode">
+
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit Request</a>
+                                    <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    <a name="action_approve" type="object" attrs="{'invisible':[('user_status','!=','pending')]}"
+                                        role="menuitem" class="dropdown-item">Approve</a>
+                                    <a name="action_refuse" type="object" attrs="{'invisible':[('user_status','!=','pending')]}"
+                                        role="menuitem" class="dropdown-item">Refuse</a>
+                                    <a name="action_withdraw" type="object" attrs="{'invisible':['|',('request_status','=','new'),('user_status','in',['waiting', 'pending','cancel'])]}"
+                                        role="menuitem" class="dropdown-item">Withdraw</a>
+                                </div>
+                            </div>
                             <div class="oe_kanban_content">
                                 <t t-if="record.user_status.raw_value == 'pending'">
                                     <span class="badge rounded-pill float-end text-bg-warning mt4 mr16"><t t-esc="record.user_status.value"/></span>
@@ -281,7 +289,7 @@
     <menuitem
         id="approvals_menu_root"
         name="Approvals"
-        web_icon="approvals,static/description/icon.png"
+        web_icon="approvals,static/description/icon.svg"
         action="approval_category_action_new_request"
         sequence="255"/>
 

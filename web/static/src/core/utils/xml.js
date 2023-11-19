@@ -1,10 +1,11 @@
 /** @odoo-module **/
 
+import { nbsp } from "@web/core/utils/strings";
+
 /**
  * XML document to create new elements from. The fact that this is a "text/xml"
  * document ensures that tagNames and attribute names are case sensitive.
  */
-const serializer = new XMLSerializer();
 const parser = new DOMParser();
 const xmlDocument = parser.parseFromString("<templates/>", "text/xml");
 
@@ -12,50 +13,51 @@ function hasParsingError(parsedDocument) {
     return parsedDocument.getElementsByTagName("parsererror").length > 0;
 }
 
-/**
- * @param {string} str
- * @returns {Element}
- */
-export function parseXML(str) {
-    const xml = parser.parseFromString(str, "text/xml");
-    if (hasParsingError(xml)) {
-        throw new Error(
-            `An error occured while parsing ${str}: ${xml.getElementsByTagName("parsererror")}`
-        );
-    }
-    return xml.documentElement;
-}
+export class XMLParser {
+    /**
+     * to override. Should return the parsed content of the arch.
+     * It can call the visitArch function if desired
+     */
+    parse() {}
 
-/**
- * @param {Element} xml
- * @returns {string}
- */
-export function serializeXML(xml) {
-    return serializer.serializeToString(xml);
-}
-
-/**
- * @param {Element | string} xml
- * @param {(el: Element, visitChildren: () => any) => any} callback
- */
-export function visitXML(xml, callback) {
-    const visit = (el) => {
-        if (el) {
-            let didVisitChildren = false;
-            const visitChildren = () => {
-                for (const child of el.children) {
-                    visit(child);
+    /**
+     * @param {Element | string} xml
+     * @param {(el: Element, visitChildren: () => any) => any} callback
+     */
+    visitXML(xml, callback) {
+        const visit = (el) => {
+            if (el) {
+                let didVisitChildren = false;
+                const visitChildren = () => {
+                    for (const child of el.children) {
+                        visit(child);
+                    }
+                    didVisitChildren = true;
+                };
+                const shouldVisitChildren = callback(el, visitChildren);
+                if (shouldVisitChildren !== false && !didVisitChildren) {
+                    visitChildren();
                 }
-                didVisitChildren = true;
-            };
-            const shouldVisitChildren = callback(el, visitChildren);
-            if (shouldVisitChildren !== false && !didVisitChildren) {
-                visitChildren();
             }
+        };
+        const xmlDoc = typeof xml === "string" ? this.parseXML(xml) : xml;
+        visit(xmlDoc);
+    }
+
+    /**
+     * @param {string} arch
+     * @returns {Element}
+     */
+    parseXML(arch) {
+        const cleanedArch = arch.replace(/&amp;nbsp;/g, nbsp);
+        const xml = parser.parseFromString(cleanedArch, "text/xml");
+        if (hasParsingError(xml)) {
+            throw new Error(
+                `An error occured while parsing ${arch}: ${xml.getElementsByTagName("parsererror")}`
+            );
         }
-    };
-    const xmlDoc = typeof xml === "string" ? parseXML(xml) : xml;
-    visit(xmlDoc);
+        return xml.documentElement;
+    }
 }
 
 /**

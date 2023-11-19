@@ -1,30 +1,33 @@
-/** @odoo-module **/
+odoo.define('social.tour', function (require) {
+"use strict";
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+var core = require('web.core');
+const {Markup} = require('web.utils');
+var tour = require('web_tour.tour');
 
-import { markup } from "@odoo/owl";
+var _t = core._t;
+const { markup } = owl;
 
-registry.category("web_tour.tours").add('social_tour', {
+tour.register('social_tour', {
         url: "/web",
-        rainbowManMessage: () => markup(_t(`<strong>Congrats! Come back in a few minutes to check your statistics.</strong>`)),
+        rainbowManMessage: markup(_t(`<strong>Congrats! Come back in a few minutes to check your statistics.</strong>`)),
         sequence: 190,
-        steps: () => [
-        stepUtils.showAppsMenuItem(),
+    },
+    [
+        tour.stepUtils.showAppsMenuItem(),
         {
             trigger: '.o_app[data-menu-xmlid="social.menu_social_global"]',
-            content: markup(_t("Let's create your own <b>social media</b> dashboard.")),
+            content: Markup(_t("Let's create your own <b>social media</b> dashboard.")),
             position: 'bottom',
             edition: 'enterprise',
         }, {
             trigger: 'button.o_stream_post_kanban_new_stream',
-            content: markup(_t("Let's <b>connect</b> to Facebook, LinkedIn or Twitter.")),
+            content: Markup(_t("Let's <b>connect</b> to Facebook, LinkedIn or Twitter.")),
             position: 'bottom',
             edition: 'enterprise',
         }, {
             trigger: '.o_social_media_cards',
-            content: markup(_t("Choose which <b>account</b> you would like to link first.")),
+            content: Markup(_t("Choose which <b>account</b> you would like to link first.")),
             position: 'right',
             edition: 'enterprise',
         }, {
@@ -45,4 +48,6 @@ registry.category("web_tour.tours").add('social_tour', {
             edition: 'enterprise',
         },
     ]
+);
+
 });

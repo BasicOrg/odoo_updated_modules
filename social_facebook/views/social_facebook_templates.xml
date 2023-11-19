@@ -21,14 +21,14 @@
                 <t t-esc="message" />
             </div>
             <div class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
-                <t t-foreach="image_urls" t-as="image_url">
-                    <a t-if="image_url_index == 1 and len(image_urls) > 2" class="o_social_stream_post_image_more position-relative d-flex ms-1">
-                        <img t-att-src="image_url" alt="Post Image" />
+                <t t-foreach="images" t-as="image">
+                    <a t-if="image_index == 1 and len(images) > 2" class="o_social_stream_post_image_more position-relative d-flex ms-1">
+                        <img t-attf-src="data:image/png;base64, #{image}" alt="Post Image" />
                         <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
-                            +<t t-esc="len(image_urls) - 2"/>
+                            +<t t-esc="len(images) - 2"/>
                         </div>
                     </a>
-                    <img t-elif="image_url_index &lt; 2" t-att-src="image_url" alt="Post Image"  />
+                    <img t-elif="image_index &lt; 2" t-attf-src="data:image/png;base64, #{image}" alt="Post Image"  />
                 </t>
             </div>
         </div>

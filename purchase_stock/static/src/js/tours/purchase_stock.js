@@ -1,16 +1,22 @@
-/** @odoo-module **/
+odoo.define('purchase_stock.purchase_steps', function (require) {
+"use strict";
 
-import { _t } from "@web/core/l10n/translation";
+var core = require('web.core');
 
-import PurchaseAdditionalTourSteps from "@purchase/js/tours/purchase_steps";
-import { patch } from "@web/core/utils/patch";
+var _t = core._t;
+var PurchaseAdditionalTourSteps = require('purchase.purchase_steps');
 
-patch(PurchaseAdditionalTourSteps.prototype, {
+PurchaseAdditionalTourSteps.include({
+
+    init: function() {
+        this._super.apply(this, arguments);
+    },
 
     _get_purchase_stock_steps: function () {
+        this._super.apply(this, arguments);
         return [{
-            trigger: ".o-form-buttonbox button[name='action_view_picking']",
-            extra_trigger: ".o-form-buttonbox button[name='action_view_picking']",
+            trigger: ".oe_button_box button[name='action_view_picking']",
+            extra_trigger: ".oe_button_box button[name='action_view_picking']",
             content: _t("Receive the ordered products."),
             position: "bottom",
             run: 'click',
@@ -38,4 +44,6 @@ patch(PurchaseAdditionalTourSteps.prototype, {
     }
 });
 
-export default PurchaseAdditionalTourSteps;
+return PurchaseAdditionalTourSteps;
+
+});

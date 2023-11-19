@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define("theme_graphene.tour.graphene", function (require) {
+"use strict";
 
-import wTourUtils from "@website/js/tours/tour_utils";
+const wTourUtils = require("website.tour_utils");
 
 const snippets = [
     {
@@ -26,7 +27,7 @@ const snippets = [
 ];
 
 
-wTourUtils.registerThemeHomepageTour("graphene_tour", () => [
+wTourUtils.registerThemeHomepageTour("graphene_tour", [
     wTourUtils.assertCssVariable('--color-palettes-name', '"graphene-1"'),
     wTourUtils.dragNDrop(snippets[0]),
     wTourUtils.clickOnText(snippets[0], 'h1', 'top'),
@@ -42,3 +43,4 @@ wTourUtils.registerThemeHomepageTour("graphene_tour", () => [
     wTourUtils.changeBackgroundColor('left'),
     wTourUtils.selectColorPalette(),
 ]);
+});

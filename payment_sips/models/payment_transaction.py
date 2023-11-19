@@ -10,8 +10,8 @@ from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 from odoo.addons.payment import utils as payment_utils
-from odoo.addons.payment_sips.const import RESPONSE_CODES_MAPPING, SUPPORTED_CURRENCIES
 from odoo.addons.payment_sips.controllers.main import SipsController
+from .const import RESPONSE_CODES_MAPPING, SUPPORTED_CURRENCIES
 
 _logger = logging.getLogger(__name__)
 
@@ -123,16 +123,7 @@ class PaymentTransaction(models.Model):
             return
 
         data = self._sips_notification_data_to_object(notification_data.get('Data'))
-
-        # Update the provider reference.
         self.provider_reference = data.get('transactionReference')
-
-        # Update the payment method.
-        payment_method_type = notification_data.get('paymentMeanBrand', '').lower()
-        payment_method = self.env['payment.method']._get_from_code(payment_method_type)
-        self.payment_method_id = payment_method or self.payment_method_id
-
-        # Update the payment state.
         response_code = data.get('responseCode')
         if response_code in RESPONSE_CODES_MAPPING['pending']:
             status = "pending"
@@ -159,6 +150,6 @@ class PaymentTransaction(models.Model):
     def _sips_notification_data_to_object(self, data):
         res = {}
         for element in data.split('|'):
-            key, value = element.split('=', 1)
+            key, value = element.split('=')
             res[key] = value
         return res

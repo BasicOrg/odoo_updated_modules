@@ -8,12 +8,12 @@
             <record id="executive_summary_column" model="account.report.column">
                 <field name="name">Balance</field>
                 <field name="expression_label">balance</field>
+                <field name="blank_if_zero" eval="False"/>
             </record>
         </field>
         <field name="line_ids">
             <record id="account_financial_report_executivesummary_cash0" model="account.report.line">
                 <field name="name">Cash</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_executivesummary_cash_received0" model="account.report.line">
                         <field name="name">Cash received</field>
@@ -25,6 +25,7 @@
                                 <field name="formula" eval="[('account_id.account_type', 'in', ('asset_cash', 'liability_credit_card')), ('debit', '&gt;', 0.0)]"/>
                                 <field name="subformula">sum</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -39,6 +40,7 @@
                                 <field name="subformula">sum</field>
                                 <field name="green_on_positive" eval="False"/>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -51,6 +53,7 @@
                                 <field name="formula">CR.balance + CS.balance</field>
                                 <field name="date_scope">normal</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -64,6 +67,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">sum</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -71,7 +75,6 @@
             </record>
             <record id="account_financial_report_executivesummary_profitability0" model="account.report.line">
                 <field name="name">Profitability</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_executivesummary_income0" model="account.report.line">
                         <field name="name">Income</field>
@@ -83,6 +86,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">cross_report</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -97,6 +101,7 @@
                                 <field name="subformula">cross_report</field>
                                 <field name="green_on_positive" eval="False"/>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -110,6 +115,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">cross_report</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -124,6 +130,7 @@
                                 <field name="subformula">cross_report</field>
                                 <field name="green_on_positive" eval="False"/>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -137,6 +144,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">cross_report</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -144,7 +152,6 @@
             </record>
             <record id="account_financial_report_executivesummary_balancesheet0" model="account.report.line">
                 <field name="name">Balance Sheet</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_executivesummary_debtors0" model="account.report.line">
                         <field name="name">Receivables</field>
@@ -157,6 +164,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">sum</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -172,6 +180,7 @@
                                 <field name="subformula">sum</field>
                                 <field name="green_on_positive" eval="False"/>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -185,6 +194,7 @@
                                 <field name="formula">EXEC_SUMMARY_NA.na_balance</field>
                                 <field name="date_scope">normal</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                             <record id="account_financial_report_executivesummary_net_assets0_na_balance" model="account.report.expression">
                                 <field name="label">na_balance</field>
@@ -193,6 +203,7 @@
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">cross_report</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>
@@ -200,7 +211,6 @@
             </record>
             <record id="account_financial_report_executivesummary_performance0" model="account.report.line">
                 <field name="name">Performance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_executivesummary_gpmargin0" model="account.report.line">
                         <field name="name">Gross profit margin (gross profit / operating income)</field>
@@ -248,7 +258,6 @@
             </record>
             <record id="account_financial_report_executivesummary_position0" model="account.report.line">
                 <field name="name">Position</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_executivesummary_avdebt0" model="account.report.line">
                         <field name="name">Average debtors days</field>
@@ -279,7 +288,7 @@
                             <record id="account_financial_report_executivesummary_avgcre0_balance" model="account.report.expression">
                                 <field name="label">balance</field>
                                 <field name="engine">aggregation</field>
-                                <field name="formula">-CRE.balance / (COS.balance + EXP.balance) * AVG_CRED_DAYS.NDays</field>
+                                <field name="formula">-CRE.balance / OPINC.balance * AVG_CRED_DAYS.NDays</field>
                                 <field name="date_scope">normal</field>
                                 <field name="subformula">cross_report</field>
                                 <field name="green_on_positive" eval="False"/>
@@ -303,6 +312,7 @@
                                 <field name="formula">DEB.balance + CRE.balance</field>
                                 <field name="date_scope">normal</field>
                                 <field name="auditable" eval="False"/>
+                                <field name="blank_if_zero" eval="True"/>
                             </record>
                         </field>
                     </record>

@@ -2,6 +2,25 @@
 <odoo>
     <data>
 
+        <record id="view_bank_rec_widget_form_inherit_batch_payment" model="ir.ui.view">
+            <field name="name">bank.rec.widget.form.inherit.batch_payment</field>
+            <field name="model">bank.rec.widget</field>
+            <field name="inherit_id" ref="account_accountant.view_bank_rec_widget_form"/>
+            <field name="arch" type="xml">
+                <page name="amls_tab" position="after">
+                    <page name="batch_payments_tab"
+                          string="Batch Payments"
+                          attrs="{'invisible': [('state', 'in', ('reconciled', 'to_check'))]}">
+                        <field name="batch_payments_widget" invisible="1"/>
+                        <field name="selected_batch_payment_ids" invisible="1"/>
+                        <div class="bank_rec_widget_form_batch_payments_list_anchor">
+                            <widget name="bank_rec_form_list" resModel="account.batch.payment" dataField="batch_payments_widget"/>
+                        </div>
+                    </page>
+                </page>
+            </field>
+        </record>
+
         <!-- Search view on batch payment to be injected inside the form (view_bank_rec_widget_form) -->
         <record id="view_account_batch_payment_search_bank_rec_widget" model="ir.ui.view">
             <field name="name">account.batch.payment.search.bank_rec_widget</field>
@@ -33,17 +52,16 @@
                 <tree string="Suggestions"
                       create="false"
                       edit="false"
-                      limit="40"
-                      js_class="bank_rec_batch_payments_list_view">
+                      js_class="bank_rec_widget_form_batch_payments_list">
                     <!-- Invisible fields -->
-                    <field name="currency_id" column_invisible="True"/>
-                    <field name="company_currency_id" column_invisible="True"/>
-                    <field name="state" column_invisible="True"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="state" invisible="1"/>
 
-                    <field name="date" readonly="state != 'draft'"/>
-                    <field name="name" readonly="state != 'draft'"/>
+                    <field name="date"/>
+                    <field name="name"/>
                     <field name="journal_id"
-                           optional="hidden" readonly="state != 'draft'"/>
+                           optional="hidden"/>
                     <field name="amount_residual_currency"
                            string="Open Amount (in Currency)"/>
                     <field name="amount_residual"

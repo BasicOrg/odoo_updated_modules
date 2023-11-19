@@ -27,8 +27,8 @@ class Users(models.Model):
             'domain': [('owner_id', '=', self.id)],
             'res_model': 'documents.document',
             'type': 'ir.actions.act_window',
-            'views': [(False, 'kanban'), (False, 'tree')],
-            'view_mode': 'kanban,tree',
+            'views': [(False, 'kanban')],
+            'view_mode': 'kanban',
             'context': {
                 "default_owner_id": self.id,
                 "searchpanel_default_folder_id": False

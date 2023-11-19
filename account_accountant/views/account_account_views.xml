@@ -29,10 +29,10 @@
         <field name="inherit_id" ref="account.view_account_form"/>
         <field name="arch" type="xml">
             <field name="currency_id" position="after">
-                <label for="reconcile" invisible="account_type in ('asset_cash', 'liability_credit_card') or internal_group == 'off_balance'"/>
-                <div invisible="account_type in ('asset_cash', 'liability_credit_card') or internal_group == 'off_balance'">
+                <label for="reconcile" attrs="{'invisible': ['|', ('account_type','in', ('asset_cash', 'liability_credit_card')), ('internal_group', '=', 'off_balance')]}"/>
+                <div attrs="{'invisible': ['|', ('account_type','in', ('asset_cash', 'liability_credit_card')), ('internal_group', '=', 'off_balance')]}">
                    <field name="reconcile"/>
-                   <button name="action_open_reconcile" class="oe_link" type="object" string=" -> Reconcile" invisible="not reconcile"/>
+                   <button name="action_open_reconcile" class="oe_link" type="object" string=" -> Reconcile" attrs="{'invisible': [('reconcile', '=', False)]}"/>
                 </div>
             </field>
         </field>

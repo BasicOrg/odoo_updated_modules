@@ -4,6 +4,7 @@ from .common import TestCoEdiCommon
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 
+
 @tagged('post_install_l10n', 'post_install', '-at_install')
 class TestColombianInvoice(TestCoEdiCommon):
 
@@ -30,13 +31,6 @@ class TestColombianInvoice(TestCoEdiCommon):
 
             self.l10n_co_assert_generated_file_equal(credit_note, self.expected_credit_note_xml)
 
-    def test_sugar_tax_invoice(self):
-        ''' Tests if we generate an accepted XML for an invoice with products
-            that have sugar tax applied.
-        '''
-        with self.mock_carvajal():
-            self.l10n_co_assert_generated_file_equal(self.sugar_tax_invoice, self.expected_sugar_tax_invoice_xml)
-
     def test_invoice_with_attachment_url(self):
         with self.mock_carvajal():
             self.invoice.l10n_co_edi_attachment_url = 'http://testing.te/test.zip'
@@ -56,38 +50,3 @@ class TestColombianInvoice(TestCoEdiCommon):
                 })],
             })
             self.l10n_co_assert_generated_file_equal(self.invoice, self.expected_invoice_xml)
-
-    def test_setup_tax_type(self):
-        for xml_id, expected_type in [
-            ("account.l10n_co_tax_4", "l10n_co_edi.tax_type_0"),
-            ("account.l10n_co_tax_8", "l10n_co_edi.tax_type_0"),
-            ("account.l10n_co_tax_9", "l10n_co_edi.tax_type_0"),
-            ("account.l10n_co_tax_10", "l10n_co_edi.tax_type_0"),
-            ("account.l10n_co_tax_11", "l10n_co_edi.tax_type_0"),
-            ("account.l10n_co_tax_53", "l10n_co_edi.tax_type_5"),
-            ("account.l10n_co_tax_54", "l10n_co_edi.tax_type_5"),
-            ("account.l10n_co_tax_55", "l10n_co_edi.tax_type_4"),
-            ("account.l10n_co_tax_56", "l10n_co_edi.tax_type_4"),
-            ("account.l10n_co_tax_57", "l10n_co_edi.tax_type_6"),
-            ("account.l10n_co_tax_58", "l10n_co_edi.tax_type_6"),
-            ("account.l10n_co_tax_covered_goods", "l10n_co_edi.tax_type_0")
-        ]:
-            tax = self.env.ref(xml_id, raise_if_not_found=False)
-            if tax:
-                self.assertEqual(tax.l10n_co_edi_type, expected_type)
-
-    def test_debit_note_creation_wizard(self):
-        """ Test debit note is create succesfully """
-
-        self.invoice.action_post()
-
-        wizard = self.env['account.debit.note'].with_context(active_model="account.move", active_ids=self.invoice.ids).create({
-            'l10n_co_edi_description_code_debit': '1',
-            'copy_lines': True,
-        })
-        wizard.create_debit()
-
-        debit_note = self.env['account.move'].search([
-            ('debit_origin_id', '=', self.invoice.id),
-        ])
-        self.assertRecordValues(debit_note, [{'amount_total': 48750.0}])

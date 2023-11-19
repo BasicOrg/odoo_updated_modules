@@ -3,7 +3,7 @@
 
     <record id="helpdesk_team1" model="helpdesk.team">
         <field name="name">Customer Care</field>
-        <field name="alias_name">customer-care</field>
+        <field name="alias_name">support</field>
         <field name="stage_ids" eval="False"/> <!-- eval=False to don't get the default stage. New stages are setted below-->
         <field name="use_sla" eval="True"/>
         <field name="member_ids" eval="[Command.link(ref('base.user_admin'))]"/>
@@ -36,6 +36,7 @@
         <field name="name">Canceled</field>
         <field name="sequence">4</field>
         <field name="team_ids" eval="[(4, ref('helpdesk_team1'))]"/>
+        <field name="fold" eval="True"/>
     </record>
 
     <record id="type_question" model="helpdesk.ticket.type">
@@ -53,6 +54,32 @@
         <field name="binding_view_types">form</field>
         <field name="state">code</field>
         <field name="code">action = records.action_share()</field>
+    </record>
+
+    <!-- Report Filter -->
+    <record id="helpdesk_sla_report_analysis_filter_status_per_deadline" model="ir.filters">
+        <field name="name">Status Per Deadline</field>
+        <field name="model_id">helpdesk.sla.report.analysis</field>
+        <field name="context">{
+            'pivot_column_groupby': ['sla_deadline:day'],
+            'pivot_row_groupby': ['team_id', 'ticket_id', 'sla_id']
+        }</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="helpdesk_sla_report_analysis_filter_stage_failed" model="ir.filters">
+        <field name="name">Failed SLA Stage per Month</field>
+        <field name="model_id">helpdesk.sla.report.analysis</field>
+        <field name="context">{
+            'pivot_measures': ['__count'],
+            'pivot_column_groupby': ['create_date:month'],
+            'pivot_row_groupby': ['team_id', 'sla_stage_id']
+        }</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="active" eval="True"/>
     </record>
 
 </odoo>

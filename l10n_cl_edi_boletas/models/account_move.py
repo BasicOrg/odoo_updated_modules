@@ -2,7 +2,6 @@
 import base64
 
 from psycopg2 import OperationalError
-from markupsafe import Markup
 
 from odoo import _, _lt, models, fields
 from odoo.exceptions import UserError
@@ -14,13 +13,13 @@ class AccountMove(models.Model):
 
 
     def _l10n_cl_edi_post_validation(self):
-        cid = self.company_id.id
         if self.l10n_latam_document_type_id.code == '39':
             if self.line_ids.filtered(lambda x: x.tax_group_id.id in [
-                    self.env.ref(f'account.{cid}_tax_group_ila').id, self.env.ref(f'account.{cid}_tax_group_retenciones').id]):
+                    self.env.ref('l10n_cl.tax_group_ila').id, self.env.ref('l10n_cl.tax_group_retenciones').id]):
                 raise UserError(_('Receipts with withholding taxes are not allowed'))
-            if self.company_id.currency_id != self.currency_id:
-                raise UserError(_('It is not allowed to create receipts in a different currency than CLP'))
+            if any(self.invoice_line_ids.mapped('tax_ids.price_include')):
+                raise UserError(_('Tax included in price is not supported for boletas. '
+                                  'Please change the tax to not included in price.'))
         super()._l10n_cl_edi_post_validation()
 
     def _l10n_cl_edi_validate_boletas(self):
@@ -43,11 +42,6 @@ class AccountMove(models.Model):
         if self.l10n_cl_dte_status != "not_sent":
             return None
         digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
-        if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO':
-            self.message_post(body=_('This DTE has been generated in DEMO Mode. It is considered as accepted and '
-                                     'it won\'t be sent to SII.'))
-            self.l10n_cl_dte_status = 'accepted'
-            return None
         response = self._send_xml_to_sii_rest(
             self.company_id.l10n_cl_dte_service_provider,
             self.company_id.vat,
@@ -61,8 +55,8 @@ class AccountMove(models.Model):
         self.l10n_cl_sii_send_ident = response.get('trackid')
         sii_response_status = response.get('estado')
         self.l10n_cl_dte_status = 'ask_for_status' if sii_response_status == 'REC' else 'rejected'
-        self.message_post(body=_('DTE has been sent to SII with response: %s',
-                               self._l10n_cl_get_sii_reception_status_message_rest(sii_response_status)))
+        self.message_post(body=_('DTE has been sent to SII with response: %s') %
+                               self._l10n_cl_get_sii_reception_status_message_rest(sii_response_status))
 
     def l10n_cl_verify_dte_status(self, send_dte_to_partner=True):
         if not self.l10n_latam_document_type_id._is_doc_type_ticket():
@@ -91,14 +85,14 @@ class AccountMove(models.Model):
         if self.l10n_cl_dte_status in ['rejected', 'objected']:
             detail = data['detalle_rep_rech']
             if detail:
-                msg += Markup('<br/><li><b>ESTADO</b>: %s</li>') % detail[0]['estado']
+                msg += '<br/><li><b>ESTADO</b>: %s</li>' % html_escape(detail[0]['estado'])
                 errors = detail[0].get('error', [])
                 for error in errors:
-                    msg += Markup('<br/><li><b>ERROR</b>: %s %s</li>') % (
-                        error['descripcion'], error['detalle'] or "")
+                    msg += '<br/><li><b>ERROR</b>: %s %s</li>' % (
+                        html_escape(error['descripcion']), html_escape(error['detalle']) or "")
                 return msg
 
-        return msg + Markup('<br/><li><b>ESTADO</b>: %s</li>') % data['estado']
+        return msg + '<br/><li><b>ESTADO</b>: %s</li>' % html_escape(data['estado'])
 
     def _l10n_cl_get_sii_reception_status_message_rest(self, sii_response_status):
         return {

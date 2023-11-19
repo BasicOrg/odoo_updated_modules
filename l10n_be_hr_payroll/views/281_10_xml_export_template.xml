@@ -377,7 +377,16 @@
                                             (total des zones 2.060 à 2.088 y
                                             compris) -->
 
-                                            <f10_2031_associationactivity t-esc="employee_data['f10_2031_associationactivity']"/>
+                                            <!-- 
+                                            Dépenses propres à l'employeur:
+                                            * Mention : 2.031
+                                            0 (zéro) : si pas d'application
+                                            1: si d'application – Mention « critères sérieux »
+                                            2: si d'application – Mention « justificatifs »
+                                            3: si d'application – Mention « justificatifs et critères sérieux » -->
+                                            <f10_2031_compensationwithstandards t-esc="employee_data['f10_2031_compensationwithstandards']"/>
+
+                                            <f10_2033_compensationwithdocuments t-esc="employee_data['f10_2033_compensationwithdocuments']"/>
 
                                             <!-- - Documents justificatifs pour l’exonération par convention du précompte  professionnel tenus à la disposition de l’Administration 
                                             0 : pas d’application
@@ -818,7 +827,7 @@
                                              Nombre d’heures (*) 2.097
                                             (*) (Attention : heures supplémentaires en centièmes d’heures – voir 4.2.3.2 :
                                              Remarques)  -->
-                                            <f10_2118_overtimehours180 t-esc="employee_data['f10_2118_overtimehours180']"/>
+                                            <f10_2118_amountovertime180secondsemester t-esc="employee_data['f10_2118_amountovertime180secondsemester']"/>
 
                                             <!-- 14. Rémunérations obtenues par des sportifs dans le cadre de leur activité sportive : -->
                                             <f10_2119_sportremuneration t-esc="employee_data['f10_2119_sportremuneration']"/>
@@ -875,7 +884,7 @@
                                             <!-- Précompte -->
                                             <f10_2131_bedrijfsvoorheffingvanwerkgever t-esc="employee_data['f10_2131_bedrijfsvoorheffingvanwerkgever']"/>
 
-                                            <f10_2132_horeca t-esc="employee_data['f10_2132_horeca']"/>
+                                            <f10_2132_amountovertime180firstsemester t-esc="employee_data['f10_2132_amountovertime180firstsemester']"/>
 
                                             <!-- Precompte à l'étranger -->
                                             <f10_2133_bedrijfsvoorheffingbuitenlvenverbondenwerkgever t-esc="employee_data['f10_2133_bedrijfsvoorheffingbuitenlvenverbondenwerkgever']"/>
@@ -907,9 +916,12 @@
                                             quatrième trimestres 2020 2.137 -->
                                             <f10_2137_amountstudent2020oruntilthirdquarter2021 t-esc="employee_data['f10_2137_amountstudent2020oruntilthirdquarter2021']"/>
 
+                                            <!-- l) Chèques consommation 2.138 -->
+                                            <f10_2138_chequesofconsumptions t-esc="employee_data['f10_2138_chequesofconsumptions']"/>
+
                                             <!-- 13. Imposable au taux de 33% :
                                              Travailleur occasionnel dans le secteur Horeca …………………. 263 2.141 -->
-                                            <f10_2141_total t-esc="employee_data['f10_2141_total']"/>
+                                            <f10_2141_occasionalworkhoreca t-esc="employee_data['f10_2141_occasionalworkhoreca']"/>
 
                                             <!-- 21. Heures supplémentaires qui donnent droit à un sursalaire :
                                             a) Nombre total d’heures supplémentaires effectivement prestées
@@ -929,7 +941,7 @@
                                              Nombre d’heures (*) 2.097
                                             (*) (Attention : heures supplémentaires en centièmes d’heures – voir 4.2.3.2 :
                                              Remarques)  -->
-                                            <f10_2142_totalovertimehours180 t-esc="employee_data['f10_2142_totalovertimehours180']"/>
+                                            <f10_2142_aantaloveruren180 t-esc="employee_data['f10_2142_aantaloveruren180']"/>
 
                                             <!-- 20. Rémunérations pour heures supplémentaires dans l’horeca qui entrent en
                                             ligne de compte pour l’exonération :
@@ -972,12 +984,8 @@
                                             Nombre d’heures supplémentaires 398 2170 -->
                                             <f10_2170_achterstallaantaloveruren360horeca t-esc="employee_data['f10_2170_achterstallaantaloveruren360horeca']"/>
 
-                                            <f10_2176_overtimehours180 t-esc="employee_data['f10_2176_overtimehours180']"/>
-
                                             <!--  f) Prime bénéficiaire : ……….………………………………………….. 2.177 -->
                                             <f10_2177_winstpremies t-esc="employee_data['f10_2177_winstpremies']"/>
-
-                                            <f10_2178_pensioner t-esc="employee_data['f10_2178_pensioner']"/>
 
                                             <!--  i) Convention de premier emploi : supplément compensatoire 2.179 -->
                                             <f10_2179_startersjob t-esc="employee_data['f10_2179_startersjob']"/>
@@ -1022,21 +1030,7 @@
 
                                             <f10_2196_covidovertimeremuneration2020 t-esc="employee_data['f10_2196_covidovertimeremuneration2020']"/>
 
-                                            <f10_2197_covidovertimeremuneration2022 t-esc="employee_data['f10_2197_covidovertimeremuneration2022']"/>
-
                                             <f10_2198_coronabonus t-esc="employee_data['f10_2198_coronabonus']"/>
-
-                                            <f10_2199_covidovertimehours2022 t-esc="employee_data['f10_2199_covidovertimehours2022']"/>
-
-                                            <f10_2200_compensationwithstandards t-esc="employee_data['f10_2200_compensationwithstandards']"/>
-
-                                            <f10_2201_compensationwithdocuments t-esc="employee_data['f10_2201_compensationwithdocuments']"/>
-
-                                            <f10_2202_amount t-esc="employee_data['f10_2202_amount']"/>
-
-                                            <f10_2203_amount t-esc="employee_data['f10_2203_amount']"/>
-
-                                            <f10_2204_repaidsums t-esc="employee_data['f10_2204_repaidsums']"/>
 
                                         </Fiche28110>
                                     </t>

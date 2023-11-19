@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import Command
-from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.addons.l10n_eu_oss.models.eu_tag_map import EU_TAG_MAP
+from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.tests import tagged
 
 
@@ -10,7 +9,7 @@ from odoo.tests import tagged
 class OssTemplateTestCase(AccountTestInvoicingCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
+    def load_specific_chart_template(cls, chart_template_ref):
         try:
             super().setUpClass(chart_template_ref=chart_template_ref)
         except ValueError as e:
@@ -23,27 +22,10 @@ class OssTemplateTestCase(AccountTestInvoicingCommon):
 class TestOSSBelgium(OssTemplateTestCase):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='be_comp'):
-        super().setUpClass(chart_template_ref)
-        cls.root_company = cls.company_data['company']
-        cls.root_company.country_id = cls.env.ref('base.be')
-        cls.root_company.child_ids = [Command.create({'name': 'Branch A'})]
-        cls.cr.precommit.run()  # load the CoA
-        cls.child_company = cls.root_company.child_ids
-        cls.child_company.child_ids = [Command.create({'name': 'sub Branch B'})]
-        cls.sub_child_company = cls.root_company.child_ids.child_ids
-        cls.cr.precommit.run()  # load the CoA
-
-        cls.sub_child_company._map_eu_taxes()
-
-    def test_oss_tax_should_be_instantiated_on_root_company(self):
-        # simulate sub child selection in the switcher
-        self.env.user.company_id, self.env.user.company_ids = self.sub_child_company, self.sub_child_company
-
-        another_eu_country_code = (self.env.ref('base.europe').country_ids - self.sub_child_company.country_id)[0].code
-        tax_oss = self.env['account.tax'].search([('name', 'ilike', f'%{another_eu_country_code}%')], limit=1)
-        self.assertTrue(tax_oss)
-        self.assertEqual(tax_oss.company_id, self.root_company)
+    def setUpClass(cls, chart_template_ref='l10n_be.l10nbe_chart_template'):
+        cls.load_specific_chart_template(chart_template_ref)
+        cls.company_data['company'].country_id = cls.env.ref('base.be')
+        cls.company_data['company']._map_eu_taxes()
 
     def test_country_tag_from_belgium(self):
         """
@@ -74,8 +56,8 @@ class TestOSSBelgium(OssTemplateTestCase):
 class TestOSSSpain(OssTemplateTestCase):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='es_full'):
-        super().setUpClass(chart_template_ref)
+    def setUpClass(cls, chart_template_ref='l10n_es.account_chart_template_common'):
+        cls.load_specific_chart_template(chart_template_ref)
         cls.company_data['company'].country_id = cls.env.ref('base.es')
         cls.company_data['company']._map_eu_taxes()
 
@@ -89,16 +71,14 @@ class TestOSSSpain(OssTemplateTestCase):
         tax_oss = self.env['account.tax'].search([('name', 'ilike', f'%{another_eu_country_code}%')], limit=1)
 
         for doc_type, tag_xml_id in (
-                ("invoice", "l10n_es.mod_303_casilla_124_balance"),
+                ("invoice", "l10n_es.mod_303_124"),
         ):
             with self.subTest(doc_type=doc_type, report_line_xml_id=tag_xml_id):
                 oss_tag_id = tax_oss[f"{doc_type}_repartition_line_ids"]\
                     .filtered(lambda x: x.repartition_type == 'base')\
                     .tag_ids
 
-                expected_tag_id = self.env.ref(tag_xml_id)\
-                    ._get_matching_tags()\
-                    .filtered(lambda t: not t.tax_negate)
+                expected_tag_id = self.env.ref(tag_xml_id)
 
                 self.assertIn(expected_tag_id, oss_tag_id, f"{doc_type} tag from Spanish CoA not correctly linked")
 
@@ -108,7 +88,7 @@ class TestOSSUSA(OssTemplateTestCase):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref)
+        cls.load_specific_chart_template(chart_template_ref)
         cls.company_data['company'].country_id = cls.env.ref('base.us')
         cls.company_data['company']._map_eu_taxes()
 
@@ -128,12 +108,11 @@ class TestOSSMap(OssTemplateTestCase):
         In case of failure display the couple (chart_template_xml_id, tax_report_line_xml_id).
         The test doesn't fail for unreferenced char_template or unreferenced tax_report_line.
         """
-        chart_templates = self.env['account.chart.template']._get_chart_template_mapping()
-        for chart_template, template_vals in chart_templates.items():
-            if self.env.ref(f"base.module_{template_vals['module']}").state != 'installed':
-                continue
-            oss_tags = EU_TAG_MAP.get(chart_template, {})
+        chart_templates = self.env['account.chart.template'].search([])
+        for chart_template in chart_templates:
+            [chart_template_xml_id] = chart_template.get_external_id().values()
+            oss_tags = EU_TAG_MAP.get(chart_template_xml_id, {})
             for tax_report_line_xml_id in filter(lambda d: d, oss_tags.values()):
-                with self.subTest(chart_template=chart_template, tax_report_line_xml_id=tax_report_line_xml_id):
+                with self.subTest(chart_template_xml_id=chart_template_xml_id, tax_report_line_xml_id=tax_report_line_xml_id):
                     tag = self.env.ref(tax_report_line_xml_id, raise_if_not_found=False)
-                    self.assertIsNotNone(tag, f"The following xml_id is incorrect in EU_TAG_MAP.py: {tax_report_line_xml_id}")
+                    self.assertIsNotNone(tag, f"The following xml_id is incorrect in EU_TAG_MAP.py:{tax_report_line_xml_id}")

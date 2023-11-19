@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { click, clickSave, editSelect, getFixture } from "@web/../tests/helpers/utils";
+import { click, editSelect, editInput, getFixture, clickSave } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 
 let serverData;
@@ -147,7 +147,7 @@ QUnit.module("Fields", (hooks) => {
             "should have correct value in color field"
         );
 
-        assert.verifySteps(["get_views", "web_read", "name_search", "name_search", "onchange"]);
+        assert.verifySteps(["get_views", "read", "name_search", "name_search", "onchange"]);
     });
 
     QUnit.test("unset selection field with 0 as key", async function (assert) {
@@ -225,7 +225,7 @@ QUnit.module("Fields", (hooks) => {
             serverData,
             arch: '<form><field name="trululu" widget="selection" /></form>',
             mockRPC(route, { args, method }) {
-                if (method === "web_save") {
+                if (method === "write") {
                     assert.strictEqual(
                         args[1].trululu,
                         false,
@@ -257,6 +257,59 @@ QUnit.module("Fields", (hooks) => {
         );
     });
 
+    QUnit.test(
+        "SelectionField on a many2one: domain updated by an onchange",
+        async function (assert) {
+            assert.expect(4);
+
+            serverData.models.partner.onchanges = {
+                int_field() {},
+            };
+
+            let domain = [];
+            await makeView({
+                type: "form",
+                resModel: "partner",
+                resId: 1,
+                serverData,
+                arch: `
+                    <form>
+                        <field name="int_field" />
+                        <field name="trululu" widget="selection" />
+                    </form>`,
+                mockRPC(route, { args, method }) {
+                    if (method === "onchange") {
+                        domain = [["id", "in", [10]]];
+                        return Promise.resolve({
+                            domain: {
+                                trululu: domain,
+                            },
+                        });
+                    }
+                    if (method === "name_search") {
+                        assert.deepEqual(args[1], domain, "sent domain should be correct");
+                    }
+                },
+            });
+
+            assert.containsN(
+                target,
+                ".o_field_widget[name='trululu'] option",
+                4,
+                "should be 4 options in the selection"
+            );
+
+            // trigger an onchange that will update the domain
+            await editInput(target, ".o_field_widget[name='int_field'] input", 2);
+
+            assert.containsOnce(
+                target,
+                ".o_field_widget[name='trululu'] option",
+                "should be 1 option in the selection"
+            );
+        }
+    );
+
     QUnit.test("required selection widget should not have blank option", async function (assert) {
         serverData.models.partner.fields.feedback_value = {
             type: "selection",
@@ -276,7 +329,7 @@ QUnit.module("Fields", (hooks) => {
             arch: `
                 <form>
                     <field name="feedback_value" />
-                    <field name="color" required="feedback_value == 'bad'" />
+                    <field name="color" attrs="{'required': [('feedback_value', '=', 'bad')]}" />
                 </form>`,
         });
 
@@ -329,7 +382,7 @@ QUnit.module("Fields", (hooks) => {
                 arch: `
                 <form>
                     <field name="feedback_value" />
-                    <field name="color" required="feedback_value == 'bad'" />
+                    <field name="color" attrs="{'required': [('feedback_value', '=', 'bad')]}" />
                 </form>`,
             });
 
@@ -367,160 +420,5 @@ QUnit.module("Fields", (hooks) => {
         );
         assert.strictEqual(placeholderOption.textContent, "Placeholder");
         assert.strictEqual(placeholderOption.value, "false");
-    });
-
-    QUnit.test("SelectionField in kanban view", async function (assert) {
-        assert.expect(3);
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div>
-                                <field name="color" widget="selection" />
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            domain: [["id", "=", 1]],
-        });
-
-        assert.containsOnce(
-            target,
-            ".o_field_widget[name='color'] select",
-            "SelectionKanbanField widget applied to selection field"
-        );
-
-        assert.containsN(
-            target.querySelector(".o_field_widget[name='color']"),
-            "option",
-            3,
-            "Three options are displayed (one blank option)"
-        );
-        assert.deepEqual(
-            [...target.querySelectorAll(".o_field_widget[name='color'] option")].map(
-                (option) => option.value
-            ),
-            ["false", "\"red\"", "\"black\""]
-        );
-    });
-
-    QUnit.test("SelectionField - auto save record in kanban view", async function (assert) {
-        assert.expect(2);
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div>
-                                <field name="color" widget="selection" />
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            domain: [["id", "=", 1]],
-            mockRPC(_route, { method }) {
-                if (method === "web_save") {
-                    assert.step("web_save");
-                }
-            },
-        });
-        await editSelect(target, ".o_field_widget[name='color'] select", '"black"');
-        assert.verifySteps(["web_save"]);
-    });
-
-    QUnit.test(
-        "SelectionField don't open form view on click in kanban view",
-        async function (assert) {
-        assert.expect(1);
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click">
-                                <field name="color" widget="selection" />
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            domain: [["id", "=", 1]],
-            selectRecord: () => {
-                assert.step("selectRecord");
-            },
-        });
-
-        await click(target, ".o_field_widget[name='color'] select");
-        assert.verifySteps([]);
-    });
-
-    QUnit.test("SelectionField is disabled if field readonly", async function (assert) {
-        assert.expect(1);
-
-        serverData.models.partner.fields.color.readonly = true;
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div>
-                                <field name="color" widget="selection" />
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            `,
-            domain: [["id", "=", 1]],
-        });
-
-        assert.containsOnce(
-            target,
-            ".o_field_widget[name='color'] span",
-            "field should be readonly"
-        );
-    });
-
-    QUnit.test("SelectionField is disabled with a readonly attribute", async function (assert) {
-        assert.expect(1);
-
-        await makeView({
-            type: "kanban",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <kanban>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div>
-                                <field name="color" widget="selection" readonly="1" />
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            `,
-            domain: [["id", "=", 1]],
-        });
-
-        assert.containsOnce(
-            target,
-            ".o_field_widget[name='color'] span",
-            "field should be readonly"
-        );
     });
 });

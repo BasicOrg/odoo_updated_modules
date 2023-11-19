@@ -33,13 +33,17 @@
                             <th style="padding: 5px;text-align: left;">Role</th>
                             <td style="padding: 5px;" t-out="object.role_id.name or ''">Bartender</td>
                         </tr>
+                        <tr t-if="hasattr(object, 'sale_line_id') and object.sale_line_id">
+                            <th style="padding: 5px;text-align: left;">Sale Order Item</th>
+                            <td style="padding: 5px;" t-out="object.sudo().sale_line_id.name or ''"></td>
+                        </tr>
                         <tr t-if="hasattr(object, 'project_id') and object.project_id">
                             <th style="padding: 5px;text-align: left;">Project</th>
                             <td style="padding: 5px;" t-out="object.sudo().project_id.name or ''">Gathering</td>
                         </tr>
-                        <tr t-if="hasattr(object, 'sale_line_id') and object.sale_line_id">
-                            <th style="padding: 5px; text-align: left;">Sale Order Item</th>
-                            <td style="padding: 5px;" t-out="object.sudo().sale_line_id.name or ''"></td>
+                        <tr t-if="hasattr(object, 'task_id') and object.task_id">
+                            <th style="padding: 5px;text-align: left;">Task</th>
+                            <td style="padding: 5px;" t-out="object.sudo().task_id.name or ''">Chef</td>
                         </tr>
                         <tr t-if="hasattr(object, 'name') and object.name">
                             <th style="padding: 5px;text-align: left;">Note</th>
@@ -93,8 +97,8 @@
                             style="padding: 5px 10px; color: #FFFFFF; text-decoration: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius: 3px">View Your Planning</a>
                     </div>
 
-                    <div t-if="ctx.get('slot_unassigned')">
-                        <p>If an open shift is available and at your convenience, please assign yourself to it</p>
+                    <div t-if="ctx.get('slot_unassigned_count')">
+                        <p>There are new open shifts available. Please, assign yourself if you are available.</p>
                     </div>
                     <br/>
 
@@ -109,50 +113,5 @@
             </field>
         </record>
 
-        <record id="email_template_shift_switch_email" model="mail.template">
-            <field name="name">Planning: Shift Re-assigned</field>
-            <field name="email_from">{{ object.company_id.email_formatted }}</field>
-            <field name="subject">Your shift on {{ ctx.get('start_datetime') }} was re-assigned to {{ ctx.get('new_assignee_name', 'Marc Demo') }}</field>
-            <field name="email_to"></field><!-- Set in the code  -->
-            <field name="model_id" ref="model_planning_slot"/>
-            <field name="auto_delete" eval="False"/><!-- TODO JEM  change this as we are testing -->
-            <field name="description">Email sent automatically when employee self assigns to an unwanted shift of another employee</field>
-            <field name="body_html" type="html">
-                <div>
-                    <p>
-                        Dear <t t-out="ctx.get('old_assignee_name', 'Mitchel Admin')"></t>,
-                        <br/><br/>
-                        Your following shift was re-assigned to <t t-out="ctx.get('new_assignee_name', 'Marc Demo')"></t>.
-                    </p>
-                    <br/>
-                    <table style="width: 80%; margin: auto;">
-                        <tr>
-                            <th style="padding: 5px;text-align: left;">From</th>
-                            <td style="padding: 5px;" t-out="ctx.get('start_datetime') or ''">05/31/2021 08:00:00</td>
-                        </tr>
-                        <tr>
-                            <th style="padding: 5px;text-align: left;">To</th>
-                            <td style="padding: 5px;" t-out="ctx.get('end_datetime') or ''">05/31/2021 16:00:00</td>
-                        </tr>
-                        <tr t-if="object.role_id">
-                            <th style="padding: 5px;text-align: left;">Role</th>
-                            <td style="padding: 5px;" t-out="object.role_id.name or ''">Bartender</td>
-                        </tr>
-                        <tr t-if="hasattr(object, 'project_id') and object.project_id">
-                            <th style="padding: 5px;text-align: left;">Project</th>
-                            <td style="padding: 5px;" t-out="object.sudo().project_id.name or ''">Gathering</td>
-                        </tr>
-                        <tr t-if="hasattr(object, 'sale_line_id') and object.sale_line_id">
-                            <th style="padding: 5px; text-align: left;">Sale Order Item</th>
-                            <td style="padding: 5px;" t-out="object.sudo().sale_line_id.name or ''"></td>
-                        </tr>
-                        <tr t-if="hasattr(object, 'name') and object.name">
-                            <th style="padding: 5px;text-align: left;">Note</th>
-                            <td style="padding: 5px;" t-out="object.name or ''">/</td>
-                        </tr>
-                    </table>
-                </div>
-            </field>
-        </record>
     </data>
 </odoo>

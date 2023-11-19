@@ -9,7 +9,7 @@
     'summary': 'Quality Management with MRP',
     'depends': ['quality_control', 'mrp'],
     'description': """
-Adds workcenters to Quality Control
+    Adds workcenters to Quality Control
 """,
     "data": [
         'security/quality_mrp.xml',

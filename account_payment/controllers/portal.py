@@ -1,20 +1,17 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo.http import request
 
 from odoo.addons.account.controllers import portal
 from odoo.addons.payment.controllers.portal import PaymentPortal
+from odoo.addons.portal.controllers.portal import _build_url_w_params
 
 
-class PortalAccount(portal.PortalAccount, PaymentPortal):
+class PortalAccount(portal.PortalAccount):
 
     def _invoice_get_page_view_values(self, invoice, access_token, **kwargs):
         values = super()._invoice_get_page_view_values(invoice, access_token, **kwargs)
-
-        if not invoice._has_to_be_paid():
-            # Do not compute payment-related stuff if given invoice doesn't have to be paid.
-            return values
-
         logged_in = not request.env.user._is_public()
         # We set partner_id to the partner id of the current user if logged in, otherwise we set it
         # to the invoice partner id. We do this to ensure that payment tokens are assigned to the
@@ -22,51 +19,45 @@ class PortalAccount(portal.PortalAccount, PaymentPortal):
         partner_sudo = request.env.user.partner_id if logged_in else invoice.partner_id
         invoice_company = invoice.company_id or request.env.company
 
-        # Select all the payment methods and tokens that match the payment context.
         providers_sudo = request.env['payment.provider'].sudo()._get_compatible_providers(
             invoice_company.id,
             partner_sudo.id,
             invoice.amount_total,
             currency_id=invoice.currency_id.id
-        )  # In sudo mode to read the fields of providers and partner (if logged out).
-        payment_methods_sudo = request.env['payment.method'].sudo()._get_compatible_payment_methods(
-            providers_sudo.ids,
-            partner_sudo.id,
-            currency_id=invoice.currency_id.id,
-        )  # In sudo mode to read the fields of providers.
-        tokens_sudo = request.env['payment.token'].sudo()._get_available_tokens(
-            providers_sudo.ids, partner_sudo.id
-        )  # In sudo mode to read the partner's tokens (if logged out) and provider fields.
+        )  # In sudo mode to read the fields of providers and partner (if not logged in)
+        tokens = request.env['payment.token'].search(
+            [('provider_id', 'in', providers_sudo.ids), ('partner_id', '=', partner_sudo.id)]
+        )  # Tokens are cleared at the end if the user is not logged in
 
         # Make sure that the partner's company matches the invoice's company.
-        company_mismatch = not PaymentPortal._can_partner_pay_in_company(
-            partner_sudo, invoice_company
-        )
+        if not PaymentPortal._can_partner_pay_in_company(partner_sudo, invoice_company):
+            providers_sudo = request.env['payment.provider'].sudo()
+            tokens = request.env['payment.token']
 
-        portal_page_values = {
-            'company_mismatch': company_mismatch,
-            'expected_company': invoice_company,
+        fees_by_provider = {
+            pro_sudo: pro_sudo._compute_fees(
+                invoice.amount_total, invoice.currency_id, invoice.partner_id.country_id
+            ) for pro_sudo in providers_sudo.filtered('fees_active')
         }
-        payment_form_values = {
-            'show_tokenize_input_mapping': PaymentPortal._compute_show_tokenize_input_mapping(
-                providers_sudo
+        values.update({
+            'providers': providers_sudo,
+            'tokens': tokens,
+            'fees_by_provider': fees_by_provider,
+            'show_tokenize_input': PaymentPortal._compute_show_tokenize_input_mapping(
+                providers_sudo, logged_in=logged_in
             ),
-        }
-        payment_context = {
             'amount': invoice.amount_residual,
             'currency': invoice.currency_id,
             'partner_id': partner_sudo.id,
-            'providers_sudo': providers_sudo,
-            'payment_methods_sudo': payment_methods_sudo,
-            'tokens_sudo': tokens_sudo,
-            'transaction_route': f'/invoice/transaction/{invoice.id}/',
-            'landing_route': invoice.get_portal_url(),
             'access_token': access_token,
-        }
-        values.update(
-            **portal_page_values,
-            **payment_form_values,
-            **payment_context,
-            **self._get_extra_payment_form_values(**kwargs),
-        )
+            'transaction_route': f'/invoice/transaction/{invoice.id}/',
+            'landing_route': _build_url_w_params(invoice.access_url, {'access_token': access_token})
+        })
+        if not logged_in:
+            # Don't display payment tokens of the invoice partner if the user is not logged in, but
+            # inform that logging in will make them available.
+            values.update({
+                'existing_token': bool(tokens),
+                'tokens': request.env['payment.token'],
+            })
         return values

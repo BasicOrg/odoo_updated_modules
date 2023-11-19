@@ -1,9 +1,6 @@
 <odoo>
-    <t t-name="spreadsheet_edition.OdooLineChartConfigPanel"
-        t-inherit="spreadsheet_edition.CommonOdooChartConfigPanel"
-        t-inherit-mode="primary"
-    >
-        <xpath expr="//div[hasclass('o-section')][1]" position="before">
+    <t t-name="spreadsheet_edition.OdooLineChartConfigPanel" owl="1">
+        <div>
             <div class="o-section pt-0">
                 <label>
                     <div class="o_checkbox">
@@ -18,20 +15,7 @@
                     </div>
                 </label>
             </div>
-            <div class="o-section pt-0">
-                <label>
-                    <div class="o_checkbox">
-                        <input
-                            type="checkbox"
-                            name="cumulative"
-                            t-att-checked="props.definition.cumulative"
-                            t-on-change="onUpdateCumulative"
-                            class="align-middle"
-                        />
-                        Cumulative data
-                    </div>
-                </label>
-            </div>
-        </xpath>
+            <t t-call="spreadsheet_edition.OdooMenuChartPanelSection"/>
+        </div>
     </t>
 </odoo>

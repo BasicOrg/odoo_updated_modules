@@ -4,9 +4,9 @@ import { SpreadsheetPivotModel } from "@spreadsheet/pivot/pivot_model";
 import { patch } from "@web/core/utils/patch";
 import { Domain } from "@web/core/domain";
 
-patch(SpreadsheetPivotModel.prototype, {
+patch(SpreadsheetPivotModel.prototype, "documents_spreadsheet_templates_pivot_model", {
     setup() {
-        super.setup(...arguments);
+        this._super.apply(this, arguments);
         /**
          * Contains the possible values for each group by of the pivot. This attribute is used *only* for templates,
          * so it's computed only in prepareForTemplateGeneration
@@ -16,11 +16,9 @@ patch(SpreadsheetPivotModel.prototype, {
 
     /**
      * Get the possible values for the given groupBy
-     * @param {string} groupBy
-     * @returns {any[]}
      */
     getPossibleValuesForGroupBy(groupBy) {
-        return this._fieldsValue[groupBy] || [];
+        return this._fieldsValue[groupBy];
     },
 
     /**
@@ -46,9 +44,7 @@ patch(SpreadsheetPivotModel.prototype, {
         collectValues(this.data.rowGroupTree, rowValues);
 
         for (let i = 0; i < this.metaData.fullRowGroupBys.length; i++) {
-            let vals = [
-                ...new Set(rowValues.map((array) => array[i]).filter((val) => val !== undefined)),
-            ];
+            let vals = [...new Set(rowValues.map((array) => array[i]))];
             if (i !== 0) {
                 vals = await this._orderValues(vals, this.metaData.fullRowGroupBys[i]);
             }
@@ -59,7 +55,7 @@ patch(SpreadsheetPivotModel.prototype, {
             if (i !== 0) {
                 vals = await this._orderValues(vals, this.metaData.fullColGroupBys[i]);
             } else {
-                vals = colValues.map((array) => array[i]).filter((val) => val !== undefined);
+                vals = colValues.map((array) => array[i]);
                 vals = [...new Set(vals)];
             }
             this._fieldsValue[this.metaData.fullColGroupBys[i]] = vals;
@@ -86,7 +82,7 @@ patch(SpreadsheetPivotModel.prototype, {
             domain,
             [requestField],
             {
-                order: field.relation ? undefined : `${field.name} ASC`,
+                order: field.relation ? undefined : [{ name: field.name, asc: true }],
                 context: { ...context, active_test: false },
             }
         );

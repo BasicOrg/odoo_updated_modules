@@ -7,7 +7,11 @@ import { MODES } from "@web_studio/studio_service";
 import { ormService } from "@web/core/orm_service";
 import { enterpriseSubscriptionService } from "@web_enterprise/webclient/home_menu/enterprise_subscription_service";
 
-import { fakeCommandService, makeFakeRPCService } from "@web/../tests/helpers/mock_services";
+import {
+    fakeCommandService,
+    makeFakeNotificationService,
+    makeFakeRPCService,
+} from "@web/../tests/helpers/mock_services";
 import { userService } from "@web/core/user_service";
 import { uiService } from "@web/core/ui/ui_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
@@ -17,7 +21,7 @@ import { click, getFixture, mount } from "@web/../tests/helpers/utils";
 import { dialogService } from "@web/core/dialog/dialog_service";
 import { registry } from "@web/core/registry";
 
-import { Component, EventBus, xml } from "@odoo/owl";
+const { Component, EventBus, xml } = owl;
 const serviceRegistry = registry.category("services");
 
 const genericHomeMenuProps = {
@@ -64,8 +68,8 @@ const genericHomeMenuProps = {
 
 const createStudioHomeMenu = async () => {
     class Parent extends Component {
-        get OverlayContainer() {
-            return registry.category("main_components").get("OverlayContainer");
+        get DialogContainer() {
+            return registry.category("main_components").get("DialogContainer");
         }
     }
     Parent.components = { StudioHomeMenu };
@@ -73,7 +77,7 @@ const createStudioHomeMenu = async () => {
         <div>
             <StudioHomeMenu t-props="props.homeMenuProps" />
             <div class="o_dialog_container" />
-            <t t-component="OverlayContainer.Component" t-props="OverlayContainer.props" />
+            <t t-component="DialogContainer.Component" t-props="DialogContainer.props" />
         </div>`;
 
     const env = await makeTestEnv();
@@ -94,7 +98,10 @@ QUnit.module("Studio", (hooks) => {
         registerCleanup(() => {
             IconCreator.enableTransitions = true;
         });
+
         bus = new EventBus();
+
+        const fakeNotificationService = makeFakeNotificationService();
         const fakeHomeMenuService = {
             start() {
                 return {
@@ -138,6 +145,7 @@ QUnit.module("Studio", (hooks) => {
         serviceRegistry.add("home_menu", fakeHomeMenuService);
         serviceRegistry.add("http", fakeHTTPService);
         serviceRegistry.add("menu", fakeMenuService);
+        serviceRegistry.add("notification", fakeNotificationService);
         serviceRegistry.add("user", userService);
         serviceRegistry.add("studio", fakeStudioService);
         serviceRegistry.add("hotkey", hotkeyService);
@@ -166,13 +174,13 @@ QUnit.module("Studio", (hooks) => {
         assert.containsOnce(target, "div.o_apps");
         assert.containsN(
             target,
-            "div.o_apps > div.o_draggable > a.o_app.o_menuitem",
+            "div.o_apps > a.o_app.o_menuitem",
             4,
             "should contain 3 normal app icons + the new app button"
         );
 
         // App with image
-        const firstApp = target.querySelector("div.o_apps > div.o_draggable > a.o_app.o_menuitem");
+        const firstApp = target.querySelector("div.o_apps > a.o_app.o_menuitem");
         assert.strictEqual(firstApp.dataset.menuXmlid, "app.1");
         assert.containsOnce(firstApp, "img.o_app_icon");
         assert.strictEqual(
@@ -184,9 +192,7 @@ QUnit.module("Studio", (hooks) => {
         assert.containsOnce(firstApp, ".o_web_studio_edit_icon i");
 
         // App with custom icon
-        const secondApp = target.querySelectorAll(
-            "div.o_apps > div.o_draggable > a.o_app.o_menuitem"
-        )[1];
+        const secondApp = target.querySelectorAll("div.o_apps > a.o_app.o_menuitem")[1];
         assert.strictEqual(secondApp.dataset.menuXmlid, "app.2");
         assert.containsOnce(secondApp, "div.o_app_icon");
         assert.strictEqual(
@@ -205,7 +211,7 @@ QUnit.module("Studio", (hooks) => {
         // New app button
         assert.containsOnce(
             target,
-            "div.o_apps > div.o_draggable > a.o_app.o_web_studio_new_app",
+            "div.o_apps > a.o_app.o_web_studio_new_app",
             'should contain a "New App icon"'
         );
         const newApp = target.querySelector("a.o_app.o_web_studio_new_app");
@@ -221,11 +227,11 @@ QUnit.module("Studio", (hooks) => {
     QUnit.test("Click on a normal App", async (assert) => {
         assert.expect(2);
 
-        bus.addEventListener("studio:open", (ev) => {
-            assert.deepEqual(ev.detail, [MODES.EDITOR, 121]);
+        bus.on("studio:open", null, (modeAndActionId) => {
+            assert.deepEqual(modeAndActionId, [MODES.EDITOR, 121]);
         });
-        bus.addEventListener("menu:setCurrentMenu", (ev) => {
-            assert.strictEqual(ev.detail, 1);
+        bus.on("menu:setCurrentMenu", null, (menuId) => {
+            assert.strictEqual(menuId, 1);
         });
         const target = await createStudioHomeMenu();
 
@@ -235,10 +241,10 @@ QUnit.module("Studio", (hooks) => {
     QUnit.test("Click on new App", async (assert) => {
         assert.expect(1);
 
-        bus.addEventListener("studio:open", (ev) => {
-            assert.strictEqual(ev.detail[0], MODES.APP_CREATOR);
+        bus.on("studio:open", null, ([mode]) => {
+            assert.strictEqual(mode, MODES.APP_CREATOR);
         });
-        bus.addEventListener("menu:setCurrentMenu", () => {
+        bus.on("menu:setCurrentMenu", null, () => {
             throw new Error("should not update the current menu");
         });
         const target = await createStudioHomeMenu();
@@ -274,10 +280,10 @@ QUnit.module("Studio", (hooks) => {
         const firstButton = buttons[0];
         const secondButton = buttons[1];
 
-        assert.strictEqual(firstButton.innerText, "Confirm");
+        assert.strictEqual(firstButton.innerText, "CONFIRM");
         assert.hasClass(firstButton, "btn-primary");
 
-        assert.strictEqual(secondButton.innerText, "Cancel");
+        assert.strictEqual(secondButton.innerText, "CANCEL");
         assert.hasClass(secondButton, "btn-secondary");
 
         await click(secondButton);

@@ -1,17 +1,17 @@
 /** @odoo-module **/
 
+import { bus } from 'web.core';
 import LineComponent from '@stock_barcode/components/line';
-import { useService } from "@web/core/utils/hooks";
-import { patch } from "@web/core/utils/patch";
+import { patch } from 'web.utils';
 
-patch(LineComponent.prototype, {
-    setup() {
-        super.setup();
-        this.action = useService("action");
-    },
-
+patch(LineComponent.prototype, 'stock_barcode_mrp_subcontracting', {
     async showSubcontractingDetails() {
-        const action = await this.env.model._getActionSubcontractingDetails(this.line);
-        await this.action.doAction(action);
+        const {action, options} = await this.env.model._getActionSubcontractingDetails(this.line);
+        options.on_close = function (ev) {
+            if (ev === undefined) {
+                this._onRefreshState.call(this, { lineId: this.props.id });
+            }
+        };
+        await bus.trigger('do-action', {action, options});
     },
 });

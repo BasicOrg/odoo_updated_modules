@@ -8,8 +8,8 @@
     'description': 'Spreadsheet',
     'depends': ['spreadsheet'],
     'data': [
+        'data/spreadsheet_data.xml',
         'security/ir.model.access.csv',
-        'views/spreadsheet_views.xml',
     ],
     'installable': True,
     'auto_install': True,
@@ -17,13 +17,9 @@
     'assets': {
         'spreadsheet.o_spreadsheet': [
             'spreadsheet_edition/static/src/bundle/**/*.js',
-            'spreadsheet_edition/static/src/bundle/**/filter_editor_side_panel.xml',
             'spreadsheet_edition/static/src/bundle/**/*.xml',
             ('remove', 'spreadsheet_edition/static/src/bundle/actions/control_panel/spreadsheet_breadcrumbs.xml'),
             ('remove', 'spreadsheet_edition/static/src/bundle/pivot/pivot.xml'),
-        ],
-        'spreadsheet.assets_print': [
-            'spreadsheet_edition/static/src/print_assets/**/*',
         ],
         'web.assets_backend': [
             'spreadsheet_edition/static/src/**/*.scss',
@@ -33,6 +29,7 @@
         ],
         'web.qunit_suite_tests': [
             'spreadsheet_edition/static/tests/**/*',
+            ('include', 'spreadsheet.o_spreadsheet'),
         ],
         'web.qunit_mobile_suite_tests': [
             'spreadsheet_edition/static/tests/utils/mock_server.js',

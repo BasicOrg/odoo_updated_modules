@@ -3,17 +3,16 @@
 # 	* account_winbooks_import
 # 
 # Translators:
-# Wil Odoo, 2023
-# Larissa Manderfeld, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Larissa Manderfeld, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -24,12 +23,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:account_winbooks_import.winbooks_import_form
 msgid ""
 "<span/>\n"
-"                    <span class=\"text-warning mb4 mt16\" invisible=\"only_open\">\n"
+"                    <span class=\"text-warning mb4 mt16\" attrs=\"{'invisible': [('only_open', '=', True)]}\">\n"
 "                        The export of data from Winbooks for closed years might contain unbalanced entries. However if you want to try to import everything, Odoo will set the difference of balance in a Suspense Account.\n"
 "                    </span>"
 msgstr ""
 "<span/>\n"
-"                    <span class=\"text-warning mb4 mt16\" invisible=\"only_open\">\n"
+"                    <span class=\"text-warning mb4 mt16\" attrs=\"{'invisible': [('only_open', '=', True)]}\">\n"
 "                       Der Export von Daten aus Winbooks für abgeschlossene Jahre kann unausgeglichene Einträge enthalten. Wenn Sie jedoch versuchen möchten, alles zu importieren, wird Odoo die Differenz des Saldos in einem Zwischenkonto ausweisen.\n"
 "                    </span>"
 
@@ -39,11 +38,10 @@ msgid "Account Winbooks import wizard"
 msgstr "Assistent für den Import von Winbooks-Konten"
 
 #. module: account_winbooks_import
-#. odoo-python
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid "Accounting Settings"
-msgstr "Buchhaltungseinstellungen"
+msgstr "Konfiguration der Buchhaltung"
 
 #. module: account_winbooks_import
 #: model_terms:ir.ui.view,arch_db:account_winbooks_import.winbooks_import_form
@@ -56,15 +54,12 @@ msgid "Companies"
 msgstr "Unternehmen"
 
 #. module: account_winbooks_import
-#. odoo-python
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid "Company Settings"
-msgstr "Unternehmenseinstellungen"
+msgstr "Firmen Einstellungen"
 
 #. module: account_winbooks_import
-#. odoo-python
-#: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
@@ -87,6 +82,11 @@ msgid "Display Name"
 msgstr "Anzeigename"
 
 #. module: account_winbooks_import
+#: model:ir.model.fields.selection,name:account_winbooks_import.selection__res_company__account_onboarding_winbooks_state__done
+msgid "Done"
+msgstr "Erledigt"
+
+#. module: account_winbooks_import
 #: model:ir.model.fields,field_description:account_winbooks_import.field_account_winbooks_import_wizard__zip_file
 msgid "File"
 msgstr "Datei"
@@ -99,7 +99,7 @@ msgstr "ID"
 #. module: account_winbooks_import
 #: model_terms:ir.ui.view,arch_db:account_winbooks_import.winbooks_import_form
 msgid "Import"
-msgstr "Importieren"
+msgstr "Import"
 
 #. module: account_winbooks_import
 #: model_terms:ir.ui.view,arch_db:account_winbooks_import.winbooks_import_form
@@ -107,21 +107,31 @@ msgid "Import (safe-mode)"
 msgstr "Import (sicherer Modus)"
 
 #. module: account_winbooks_import
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_winbooks_import/static/src/xml/account_winbooks_import.xml:0
 #, python-format
 msgid "Import WBK"
-msgstr "WBK importieren"
+msgstr ""
 
 #. module: account_winbooks_import
 #: model:ir.model.fields,field_description:account_winbooks_import.field_account_winbooks_import_wizard__only_open
 msgid "Import only open years"
-msgstr "Nur offene Jahre importieren"
+msgstr "Importieren Sie nur offene Jahre"
 
 #. module: account_winbooks_import
 #: model:ir.model,name:account_winbooks_import.model_account_move_line
 msgid "Journal Item"
 msgstr "Buchungszeile"
+
+#. module: account_winbooks_import
+#: model:ir.model.fields.selection,name:account_winbooks_import.selection__res_company__account_onboarding_winbooks_state__just_done
+msgid "Just done"
+msgstr "Gerade erledigt"
+
+#. module: account_winbooks_import
+#: model:ir.model.fields,field_description:account_winbooks_import.field_account_winbooks_import_wizard____last_update
+msgid "Last Modified on"
+msgstr "Letzte Änderung am"
 
 #. module: account_winbooks_import
 #: model:ir.model.fields,field_description:account_winbooks_import.field_account_winbooks_import_wizard__write_uid
@@ -134,17 +144,16 @@ msgid "Last Updated on"
 msgstr "Zuletzt aktualisiert am"
 
 #. module: account_winbooks_import
-#: model:ir.model.fields,help:account_winbooks_import.field_account_move_line__winbooks_line_id
-msgid "Line ID that was used in Winbooks"
-msgstr "Zeilen-ID, die in Winbooks verwendet wurde"
-
-#. module: account_winbooks_import
 #: model:ir.model.fields,help:account_winbooks_import.field_account_move_line__winbooks_matching_number
 msgid "Matching number that was used in Winbooks"
 msgstr "Übereinstimmende Nummer, die in Winbooks verwendet wurde"
 
 #. module: account_winbooks_import
-#. odoo-python
+#: model:ir.model.fields.selection,name:account_winbooks_import.selection__res_company__account_onboarding_winbooks_state__not_done
+msgid "Not done"
+msgstr "Nicht fertig"
+
+#. module: account_winbooks_import
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid "Please define the country on your company."
@@ -153,7 +162,12 @@ msgstr "Bitte definieren Sie ein Land für Ihr Unternehmen."
 #. module: account_winbooks_import
 #: model_terms:ir.ui.view,arch_db:account_winbooks_import.winbooks_import_form
 msgid "Stage Search"
-msgstr "Phasensuche"
+msgstr "Suche Stufen"
+
+#. module: account_winbooks_import
+#: model:ir.model.fields,field_description:account_winbooks_import.field_res_company__account_onboarding_winbooks_state
+msgid "State of the onboarding winbooks step"
+msgstr ""
 
 #. module: account_winbooks_import
 #: model:ir.model.fields,field_description:account_winbooks_import.field_account_winbooks_import_wizard__suspense_code
@@ -161,7 +175,6 @@ msgid "Suspense Account Code"
 msgstr "Code des Zwischenkontos"
 
 #. module: account_winbooks_import
-#. odoo-python
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid ""
@@ -171,7 +184,6 @@ msgstr ""
 " überein"
 
 #. module: account_winbooks_import
-#. odoo-python
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid ""
@@ -189,24 +201,19 @@ msgid ""
 "account that you created in Odoo before the import."
 msgstr ""
 "Dies ist der Code des Kontos, in das Sie den Gegenwert der nicht "
-"ausgeglichenen Bewegungen einfügen möchten. Dies kann ein Konto aus Ihren "
+"ausgeglichenen Züge einfügen möchten. Dies kann ein Konto aus Ihren "
 "Winbooks-Daten sein oder ein Konto, das Sie vor dem Import in Odoo erstellt "
 "haben."
 
 #. module: account_winbooks_import
 #: model:ir.actions.act_window,name:account_winbooks_import.winbooks_import_action
 msgid "Winbooks Import"
-msgstr "Winbooks-Import"
-
-#. module: account_winbooks_import
-#: model:ir.model.fields,field_description:account_winbooks_import.field_account_move_line__winbooks_line_id
-msgid "Winbooks Line"
-msgstr "Winbooks-Zeile"
+msgstr "Winbooks Import"
 
 #. module: account_winbooks_import
 #: model:ir.model.fields,field_description:account_winbooks_import.field_account_move_line__winbooks_matching_number
 msgid "Winbooks Matching Number"
-msgstr "Winbooks-Abgleichsnummer"
+msgstr ""
 
 #. module: account_winbooks_import
 #: model:ir.model.fields,help:account_winbooks_import.field_account_winbooks_import_wizard__only_open
@@ -219,8 +226,7 @@ msgstr ""
 "Zwischenkonto verbucht."
 
 #. module: account_winbooks_import
-#. odoo-python
 #: code:addons/account_winbooks_import/wizard/import_wizard.py:0
 #, python-format
 msgid "You should install a Fiscal Localization first."
-msgstr "Sie sollten zuerst eine steuerliche Lokalisierung installieren."
+msgstr "Sie sollten zuerst eine Steuerlokalisierung installieren."

@@ -39,7 +39,7 @@ class AccountMoveLine(models.Model):
         '''
         for line in self:
             taxes_with_code = line.tax_ids.filtered(lambda tax: tax.l10n_pe_edi_tax_code)
-            if not taxes_with_code or line.display_type in ('tax', 'payment_term'):
+            if line.display_type in ('tax', 'payment_term') or not taxes_with_code:
                 line.l10n_pe_edi_affectation_reason = False
             else:
                 line.l10n_pe_edi_affectation_reason = taxes_with_code[0].l10n_pe_edi_affectation_reason

@@ -9,7 +9,7 @@
                 date_stop="date"
                 default_scale="month"
                 scales="week,month,year"
-                color="stage_id"
+                color="color"
                 string="Planning"
                 display_unavailability="1"
                 precision="{'week': 'day:full', 'month': 'day:full'}"
@@ -21,9 +21,9 @@
                         <div t-if="user_id"><strong>Project Manager — </strong> <t t-esc="user_id[1]"/></div>
                         <div t-if="partner_id"><strong>Customer — </strong> <t t-esc="partner_id[1]"/></div>
                         <div>
-                            <t t-esc="date_start.toFormat('D ')"/>
+                            <t t-esc="userTimezoneStartDate.format('l ')"/>
                             <i class="fa fa-long-arrow-right" title="Arrow"/>
-                            <t t-esc="date.toFormat(' D')"/>
+                            <t t-esc="userTimezoneStopDate.format(' l')"/>
                         </div>
                     </div>
                 </templates>
@@ -46,15 +46,10 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_kanban"/>
         <field name="arch" type="xml">
-            <div name="date_deadline" position="attributes">
-                <attribute name="invisible">planned_date_begin or not date_deadline or state in ['1_done', '1_canceled']</attribute>
-            </div>
-            <div name="date_deadline" position="after">
-                <div invisible="not planned_date_begin" t-att-class="(luxon.DateTime.fromISO(record.date_deadline.raw_value) &lt; luxon.DateTime.local() and !['1_done', '1_canceled'].includes(record.state.raw_value)) ? 'text-danger' : ''">
-                    <field name="planned_date_begin" widget="date"/>
-                    <i class="fa fa-long-arrow-right mx-2 oe_read_only" aria-label="Arrow icon" title="Arrow" invisible="not planned_date_begin"/>
-                    <field name="date_deadline" class="oe_date_deadline" widget="date"/>
-                </div>
+            <div name="date_deadline" position="before">
+                <field name="planned_date_begin" widget="date" attrs="{'invisible': [('planned_date_begin', '=', False)]}"/>
+                <i class="fa fa-long-arrow-right mx-2 oe_read_only" aria-label="Arrow icon" title="Arrow" attrs="{'invisible': [('planned_date_begin', '=', False), ('planned_date_end', '=', False)]}"/>
+                <field name="planned_date_end" widget="date" attrs="{'invisible': [('planned_date_begin', '=', False), ('planned_date_end', '=', False)]}"/>
             </div>
         </field>
     </record>

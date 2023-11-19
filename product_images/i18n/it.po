@@ -3,17 +3,16 @@
 # 	* product_images
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:54+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +20,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -34,18 +32,17 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
 msgid ""
-"<span invisible=\"nb_products_selected &lt;= 10000\">\n"
+"<span attrs=\"{'invisible': [('nb_products_selected', '&lt;=', 10000)]}\">\n"
 "                            As only 10,000 products can be processed per day, the remaining will be\n"
 "                            done tomorrow.\n"
 "                        </span>"
 msgstr ""
-"<span invisible=\"nb_products_selected &lt;= 10000\">\n"
+"<span attrs=\"{'invisible': [('nb_products_selected', '&lt;=', 10000)]}\">\n"
 "                            Poiché possono essere elaborati solo 10.000 prodotti al giorno, il resto sarà\n"
 "fatto domani.\n"
 "                        </span>"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -91,8 +88,6 @@ msgid ""
 "Fetch product images from Google Images based on the product's barcode "
 "number."
 msgstr ""
-"Recupera le immagini del prodotto da Google Immagini in base al numero del "
-"codice a barre del prodotto stesso."
 
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.product_fetch_image_wizard_view_form
@@ -118,7 +113,12 @@ msgstr "ID"
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_product__image_fetch_pending
 msgid "Image Fetch Pending"
-msgstr "Recupero immagine in attesa"
+msgstr ""
+
+#. module: product_images
+#: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_product_fetch_image_wizard__write_uid
@@ -156,6 +156,8 @@ msgstr ""
 
 #. module: product_images
 #: model:ir.actions.server,name:product_images.ir_cron_fetch_image_ir_actions_server
+#: model:ir.cron,cron_name:product_images.ir_cron_fetch_image
+#: model:ir.cron,name:product_images.ir_cron_fetch_image
 msgid "Product Images: Get product images from Google"
 msgstr "Immagini dei prodotti: Ottieni le immagini dei prodotti da Google"
 
@@ -165,7 +167,6 @@ msgid "Product Variant"
 msgstr "Variante prodotto"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "Product images"
@@ -177,7 +178,6 @@ msgid "Products To Process"
 msgstr "Prodotti da elaborare"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -190,10 +190,9 @@ msgstr ""
 #. module: product_images
 #: model_terms:ir.ui.view,arch_db:product_images.res_config_settings_view_form
 msgid "Search Engine ID"
-msgstr "ID motore di ricerca"
+msgstr "Search Engine ID"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "The API Key and Search Engine ID must be set in the General Settings."
@@ -202,7 +201,6 @@ msgstr ""
 "Impostazioni generali."
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid ""
@@ -210,10 +208,6 @@ msgid ""
 "your Google Cloud Platform project page and enable it, then retry. If you "
 "enabled this API recently, please wait a few minutes and retry."
 msgstr ""
-"L'API della ricerca personalizzata non è abilitato nel tuo progetto Google. "
-"Visita la pagina del progetto nella piattaforma Google Cloud e attivala per "
-"poi riprovare. Se hai abilitato l'API di recente, aspetta qualche minuto e "
-"riprova."
 
 #. module: product_images
 #: model:ir.model.fields,field_description:product_images.field_res_config_settings__google_pse_id
@@ -230,7 +224,6 @@ msgstr ""
 "a barre e nessuna immagine)"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
@@ -239,12 +232,8 @@ msgid ""
 "been deleted. Please contact your administrator to have the action restored "
 "or to reinstall the module \"product_images\"."
 msgstr ""
-"L'azione pianificata \"Immagini prodotto: ottieni immagini del prodotto da "
-"Google\" è stata eliminata. Contatta l'amministratore per ripristinare "
-"l'azione o installare di nuovo il modulo \"product_images\"."
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/models/ir_cron_trigger.py:0
 #, python-format
 msgid "This action is already scheduled. Please try again later."
@@ -268,7 +257,6 @@ msgid "You selected"
 msgstr "Hai selezionato"
 
 #. module: product_images
-#. odoo-python
 #: code:addons/product_images/wizard/product_fetch_image_wizard.py:0
 #, python-format
 msgid "Your API Key or your Search Engine ID is incorrect."

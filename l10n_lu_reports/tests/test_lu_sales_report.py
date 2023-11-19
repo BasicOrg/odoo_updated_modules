@@ -16,12 +16,12 @@ from freezegun import freeze_time
 class LuxembourgSalesReportTest(AccountSalesReportCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='lu'):
-        super().setUpClass(chart_template_ref)
+    def setUpClass(cls, chart_template_ref='l10n_lu.lu_2011_chart_1'):
+        super().setUpClass('l10n_lu.lu_2011_chart_1')
 
-        cls.l_tax = cls.env['account.tax'].search([('name', '=', '0% IC S G'), ('company_id', '=', cls.company_data['company'].id)])
-        cls.t_tax = cls.env['account.tax'].search([('name', '=', '0% ICT G'), ('company_id', '=', cls.company_data['company'].id)])
-        cls.s_tax = cls.env['account.tax'].search([('name', '=', '0% IC S'), ('company_id', '=', cls.company_data['company'].id)])
+        cls.l_tax = cls.env['account.tax'].search([('name', '=', '0-IC-S-G'), ('company_id', '=', cls.company_data['company'].id)])
+        cls.t_tax = cls.env['account.tax'].search([('name', '=', '0-ICT-S-G'), ('company_id', '=', cls.company_data['company'].id)])
+        cls.s_tax = cls.env['account.tax'].search([('name', '=', '0-IC-S-S'), ('company_id', '=', cls.company_data['company'].id)])
         cls.l_tax.active = cls.t_tax.active = cls.s_tax.active = True
 
         cls.product_1 = cls.env['product.product'].create({'name': 'product_1', 'lst_price': 1.0})
@@ -78,7 +78,7 @@ class LuxembourgSalesReportTest(AccountSalesReportCommon):
             (self.partner_b, self.s_tax, 700),
         ])
         report = self.env.ref('l10n_lu_reports.lux_ec_sales_report')
-        options = report.get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
+        options = report._get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
@@ -93,7 +93,6 @@ class LuxembourgSalesReportTest(AccountSalesReportCommon):
                 (self.partner_b.name,  self.partner_b.vat[:2],  self.partner_b.vat[2:],  'S',   f'700.00{NON_BREAKING_SPACE}€'),
                 ("Total",              '',                      '',                      '',    f'3,000.00{NON_BREAKING_SPACE}€'),
             ],
-            options,
         )
         self.env[report.custom_handler_model_name].get_file_name(options)
         file_ref = options['filename']
@@ -370,7 +369,7 @@ class LuxembourgSalesReportTest(AccountSalesReportCommon):
             self.env[report.custom_handler_model_name].get_correction_data(options, comparison_files=[('', '')])
         # Case 2: ecdf declaration without VAT Intra declarations inside
         asset_report = self.env.ref('account_asset.assets_report')
-        options = asset_report.get_options(None)
+        options = asset_report._get_options(None)
         wizard = self.env['l10n_lu.generate.asset.report'].create({})
         wizard.with_context({'model': 'account.report', 'report_generation_options': options, 'skip_xsd': True}).get_xml()
         declaration_to_compare = base64.b64decode(wizard.report_data.decode("utf-8"))

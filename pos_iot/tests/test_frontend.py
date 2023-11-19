@@ -39,7 +39,7 @@ class TestUi(TestPointOfSaleHttpCommon):
             })],
         })
 
-        self.start_tour("/web", 'payment_terminals_tour', login="pos_user")
+        self.start_tour("/web", 'payment_terminals_tour', login="accountman")
 
         orders = env['pos.order'].search([])
         self.assertEqual(len(orders.ids), 2, "There should be 2 orders.")
@@ -71,4 +71,4 @@ class TestUi(TestPointOfSaleHttpCommon):
             'iface_scale_id': iot_device_id.id,
         })
 
-        self.start_tour("/web", 'pos_iot_scale_tour', login="pos_user")
+        self.start_tour("/web", 'pos_iot_scale_tour', login="accountman")

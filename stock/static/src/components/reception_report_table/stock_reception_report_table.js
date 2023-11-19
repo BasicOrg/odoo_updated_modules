@@ -2,7 +2,8 @@
 
 import { useService } from "@web/core/utils/hooks";
 import { ReceptionReportLine } from "../reception_report_line/stock_reception_report_line";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class ReceptionReportTable extends Component {
     setup() {
@@ -48,7 +49,7 @@ export class ReceptionReportTable extends Component {
         for (const line of this.props.lines) {
             if (!line.is_assigned) continue;
             modelIds.push(line.move_out_id);
-            quantities.push(Math.ceil(line.quantity) || 1);
+            quantities.push(line.quantity || 1);
         }
         if (!modelIds.length) {
             return;

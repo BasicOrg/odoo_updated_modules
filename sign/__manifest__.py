@@ -43,8 +43,12 @@ Let your customers follow the signature process easily.
     'installable': True,
     'license': 'OEEL-1',
     'assets': {
+        'mail.assets_messaging': [
+            'sign/static/src/models/*.js',
+        ],
         'sign.assets_pdf_iframe': [
             'web/static/src/libs/fontawesome/css/font-awesome.css',
+            'web/static/lib/jquery.ui/jquery-ui.css',
             'web/static/lib/select2/select2.css',
             'web/static/lib/bootstrap/scss/_functions.scss',
             'web/static/src/scss/pre_variables.scss',
@@ -58,84 +62,46 @@ Let your customers follow the signature process easily.
             'web/static/lib/bootstrap/scss/_grid.scss',
             'web/static/src/scss/bs_mixins_overrides.scss',
             'web/static/lib/bootstrap/scss/utilities/_api.scss',
-            'web/static/src/scss/utils.scss',
+            'web/static/src/legacy/scss/utils.scss',
             'web/static/src/scss/primary_variables.scss',
             'web_enterprise/static/src/scss/primary_variables.scss',
+            'web_tour/static/src/scss/tip.scss',
             'sign/static/src/css/iframe.css',
             'web/static/src/scss/secondary_variables.scss',
             'sign/static/src/scss/iframe.scss',
         ],
         'sign.assets_green_report': [
-            'sign/static/src/css/green_saving_reports.scss',
+            'sign/report/green_saving_reports.scss'
+        ],
+        'web.assets_common': [
+            'sign/static/src/js/common/*',
+            'sign/static/src/xml/sign_common.xml',
+            'sign/static/src/xml/sign_modal.xml',
+            'sign/static/src/scss/sign_common.scss',
+            'web_editor/static/lib/html2canvas.js',
         ],
         'web.assets_backend': [
+            'sign/static/src/js/backend/*',
             'sign/static/src/js/tours/sign.js',
-            'sign/static/src/scss/sign_common.scss',
+            'sign/static/src/js/activity.js',
             'sign/static/src/scss/sign_backend.scss',
-            'sign/static/src/activity/**',
+            'sign/static/src/xml/*.xml',
             'sign/static/src/components/**/*',
-            'sign/static/src/backend_components/**/*',
             'sign/static/src/views/**/*',
-            'sign/static/src/dialogs/**/*',
-            'sign/static/src/services/**/*',
-            'sign/static/src/fields/**/*',
         ],
         'web.assets_frontend': [
-            'sign/static/src/components/**/*',
+            'sign/static/src/js/common/*',
+            'sign/static/src/xml/sign_common.xml',
+            'sign/static/src/xml/sign_modal.xml',
             'sign/static/src/scss/sign_common.scss',
+            'web_editor/static/lib/html2canvas.js', # FIXME this should definitely not be in assets_frontend and be lazy loaded only when needed
             'sign/static/src/scss/sign_frontend.scss',
-            'sign/static/src/dialogs/**/*',
-            'sign/static/src/services/**/*',
         ],
         'web.assets_tests': [
             'sign/static/tests/tours/**/*',
         ],
         'web.qunit_suite_tests': [
-            'sign/static/tests/**/*',
-            ('remove', 'sign/static/tests/tours/**/*'),
+            'sign/static/tests/document_backend_tests.js',
         ],
-        'sign.assets_public_sign': [
-            ('include', 'web._assets_helpers'),
-            ('include', 'web._assets_frontend_helpers'),
-            'web/static/src/scss/pre_variables.scss',
-            'web/static/lib/bootstrap/scss/_variables.scss',
-            ('include', 'web._assets_bootstrap_frontend'),
-
-            'web/static/src/libs/fontawesome/css/font-awesome.css',
-            ('include', 'web._assets_core'),
-
-            'web/static/lib/jquery/jquery.js',  # to be removed when jSignature is replaced
-
-            'web/static/lib/popper/popper.js',
-            'web/static/lib/bootstrap/js/dist/dom/data.js',
-            'web/static/lib/bootstrap/js/dist/dom/event-handler.js',
-            'web/static/lib/bootstrap/js/dist/dom/manipulator.js',
-            'web/static/lib/bootstrap/js/dist/dom/selector-engine.js',
-            'web/static/lib/bootstrap/js/dist/base-component.js',
-            'web/static/lib/bootstrap/js/dist/alert.js',
-            'web/static/lib/bootstrap/js/dist/button.js',
-            'web/static/lib/bootstrap/js/dist/carousel.js',
-            'web/static/lib/bootstrap/js/dist/collapse.js',
-            'web/static/lib/bootstrap/js/dist/dropdown.js',
-            'web/static/lib/bootstrap/js/dist/modal.js',
-            'web/static/lib/bootstrap/js/dist/offcanvas.js',
-            'web/static/lib/bootstrap/js/dist/tooltip.js',
-            'web/static/lib/bootstrap/js/dist/popover.js',
-            'web/static/lib/bootstrap/js/dist/scrollspy.js',
-            'web/static/lib/bootstrap/js/dist/tab.js',
-            'web/static/lib/bootstrap/js/dist/toast.js',
-
-            'web_editor/static/src/scss/web_editor.common.scss',
-            'web_editor/static/src/scss/web_editor.frontend.scss',
-
-            'sign/static/src/scss/sign_common.scss',
-            'sign/static/src/scss/sign_frontend.scss',
-            'sign/static/src/components/**/*',
-            'sign/static/src/dialogs/**/*',
-            'sign/static/src/services/**/*',
-
-            'web_tour/static/src/tour_pointer/**/*',
-            'web_tour/static/src/tour_service/**/*',
-        ]
     }
 }

@@ -19,6 +19,7 @@ class Applicant(models.Model):
                 raise UserError(_('You must define a Contact Name for this applicant.'))
             self.partner_id = self.env['res.partner'].create({
                 'is_company': False,
+                'type': 'private',
                 'name': self.partner_name,
                 'email': self.email_from,
                 'phone': self.partner_phone,
@@ -49,16 +50,9 @@ class Applicant(models.Model):
                 'domain': [('id', 'in', request_ids.ids)]
             }
 
-    def _get_employee_create_vals(self):
-        vals = super()._get_employee_create_vals()
+    def create_employee_from_applicant(self):
+        res = super().create_employee_from_applicant()
         request_ids = self.env['sign.request.item'].search([
             ('partner_id', '=', self.partner_id.id)]).sign_request_id
-        vals['sign_request_ids'] = request_ids.ids
-        return vals
-
-    def _update_employee_from_applicant(self):
-        for applicant in self:
-            request_ids = self.env['sign.request.item'].search([
-                ('partner_id', '=', applicant.partner_id.id)]).sign_request_id
-            applicant.emp_id.sign_request_ids |= request_ids
-        return super()._update_employee_from_applicant()
+        res['context']['default_sign_request_ids'] = request_ids.ids
+        return res

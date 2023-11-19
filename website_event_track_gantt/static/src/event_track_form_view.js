@@ -1,6 +1,5 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { registry } from '@web/core/registry';
 import { formView } from '@web/views/form/form_view';
@@ -11,7 +10,7 @@ export class EventTrackFormController extends FormController {
         if (clickParams.name === "unlink") {
             const canProceed = await new Promise((resolve) => {
                 this.dialogService.add(ConfirmationDialog, {
-                    body: _t("Are you sure you want to delete this track?"),
+                    body: this.env._t("Are you sure you want to delete this track?"),
                     cancel: () => resolve(false),
                     close: () => resolve(false),
                     confirm: () => resolve(true),

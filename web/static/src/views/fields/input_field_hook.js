@@ -3,7 +3,7 @@
 import { getActiveHotkey } from "@web/core/hotkeys/hotkey_service";
 import { useBus } from "@web/core/utils/hooks";
 
-import { useComponent, useEffect, useRef } from "@odoo/owl";
+const { useComponent, useEffect, useRef, useEnv } = owl;
 
 /**
  * This hook is meant to be used by field components that use an input or
@@ -14,9 +14,9 @@ import { useComponent, useEffect, useRef } from "@odoo/owl";
  * @param {() => string} getValue a function that returns the value to write in
  *   the input, if the user isn't currently editing it
  * @param {string} [refName="input"] the ref of the input/textarea
- * @param {boolean} preventLineBreaks Prevent line breaks in input when set
  */
 export function useInputField(params) {
+    const env = useEnv();
     const inputRef = params.ref || useRef(params.refName || "input");
     const component = useComponent();
 
@@ -34,26 +34,20 @@ export function useInputField(params) {
     let lastSetValue = null;
 
     /**
-     * Track the fact that there is a change sent to the model that hasn't been acknowledged yet
-     * (e.g. because the onchange is still pending). This is necessary if we must do an urgent save,
-     * as we have to re-send that change for the write that will be done directly.
-     * FIXME: this could/should be handled by the model itself, when it will be rewritten
-     */
-    let pendingUpdate = false;
-
-    /**
      * When a user types, we need to set the field as dirty.
      */
     function onInput(ev) {
         isDirty = ev.target.value !== lastSetValue;
-        component.props.record.model.bus.trigger("FIELD_IS_DIRTY", isDirty);
+        if (component.props.setDirty) {
+            component.props.setDirty(isDirty);
+        }
     }
 
     /**
      * On blur, we consider the field no longer dirty, even if it were to be invalid.
      * However, if the field is invalid, the new value will not be committed to the model.
      */
-    async function onChange(ev) {
+    function onChange(ev) {
         if (isDirty) {
             isDirty = false;
             let isInvalid = false;
@@ -61,19 +55,21 @@ export function useInputField(params) {
             if (params.parse) {
                 try {
                     val = params.parse(val);
-                } catch {
-                    component.props.record.setInvalidField(component.props.name);
+                } catch (_e) {
+                    if (component.props.record) {
+                        component.props.record.setInvalidField(component.props.name);
+                    }
                     isInvalid = true;
                 }
             }
 
             if (!isInvalid) {
-                pendingUpdate = true;
-                lastSetValue = inputRef.el.value;
+                component.props.update(val);
+                lastSetValue = ev.target.value;
+            }
 
-                await component.props.record.update({ [component.props.name]: val });
-                pendingUpdate = false;
-                component.props.record.model.bus.trigger("FIELD_IS_DIRTY", isDirty);
+            if (component.props.setDirty) {
+                component.props.setDirty(isDirty);
             }
         }
     }
@@ -81,9 +77,6 @@ export function useInputField(params) {
         const hotkey = getActiveHotkey(ev);
         if (["enter", "tab", "shift+tab"].includes(hotkey)) {
             commitChanges(false);
-        }
-        if (params.preventLineBreaks && ["enter", "shift+enter"].includes(hotkey)) {
-            ev.preventDefault();
         }
     }
 
@@ -110,19 +103,17 @@ export function useInputField(params) {
      * If it is not such a case, we update the field with the new value.
      */
     useEffect(() => {
-        if (
-            inputRef.el &&
-            !isDirty &&
-            !component.props.record.isFieldInvalid(component.props.name)
-        ) {
+        const isInvalid = component.props.record ? component.props.record.isInvalid(component.props.name) : false;
+        if (inputRef.el && !isDirty && !isInvalid) {
             inputRef.el.value = params.getValue();
             lastSetValue = inputRef.el.value;
         }
     });
 
-    const { model } = component.props.record;
-    useBus(model.bus, "WILL_SAVE_URGENTLY", () => commitChanges(true));
-    useBus(model.bus, "NEED_LOCAL_CHANGES", (ev) => ev.detail.proms.push(commitChanges()));
+    useBus(env.bus, "RELATIONAL_MODEL:WILL_SAVE_URGENTLY", () => commitChanges(true));
+    useBus(env.bus, "RELATIONAL_MODEL:NEED_LOCAL_CHANGES", (ev) =>
+        ev.detail.proms.push(commitChanges())
+    );
 
     /**
      * Roughly the same as onChange, but called at more specific / critical times. (See bus events)
@@ -133,18 +124,18 @@ export function useInputField(params) {
         }
 
         isDirty = inputRef.el.value !== lastSetValue;
-        if (isDirty || (urgent && pendingUpdate)) {
+        if (isDirty || urgent) {
             let isInvalid = false;
             isDirty = false;
             let val = inputRef.el.value;
             if (params.parse) {
                 try {
                     val = params.parse(val);
-                } catch {
+                } catch (_e) {
                     isInvalid = true;
                     if (urgent) {
                         return;
-                    } else {
+                    } else if (component.props.record) {
                         component.props.record.setInvalidField(component.props.name);
                     }
                 }
@@ -154,10 +145,12 @@ export function useInputField(params) {
                 return;
             }
 
-            if ((val || false) !== (component.props.record.data[component.props.name] || false)) {
+            if (val !== component.props.value) {
+                await component.props.update(val);
                 lastSetValue = inputRef.el.value;
-                await component.props.record.update({ [component.props.name]: val });
-                component.props.record.model.bus.trigger("FIELD_IS_DIRTY", false);
+                if (component.props.setDirty) {
+                    component.props.setDirty(isDirty);
+                }
             }
         }
     }

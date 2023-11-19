@@ -3,16 +3,16 @@
 # 	* website_event_track_social
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-23 08:25+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,8 +21,12 @@ msgstr ""
 
 #. module: website_event_track_social
 #: model_terms:ir.ui.view,arch_db:website_event_track_social.event_track_view_form
-msgid "<span invisible=\"not push_reminder\">minutes before start</span>"
+msgid ""
+"<span attrs=\"{'invisible': [('push_reminder', '!=', True)]}\">minutes "
+"before start</span>"
 msgstr ""
+"<span attrs=\"{'invisible': [('push_reminder', '!=', True)]}\">phút trước "
+"khi bắt đầu</span>"
 
 #. module: website_event_track_social
 #: model:ir.model.fields,help:website_event_track_social.field_event_track__push_reminder
@@ -84,10 +88,9 @@ msgstr "Nhắc nhở push"
 #. module: website_event_track_social
 #: model:ir.model,name:website_event_track_social.model_social_post
 msgid "Social Post"
-msgstr "Bài đăng mạng xã hội"
+msgstr "Đăng lên mạng xã hội"
 
 #. module: website_event_track_social
-#. odoo-python
 #: code:addons/website_event_track_social/models/event_track.py:0
 #, python-format
 msgid "There are no push reminders associated with this track"
@@ -105,17 +108,15 @@ msgstr ""
 #. module: website_event_track_social
 #: model:ir.model,name:website_event_track_social.model_website_visitor
 msgid "Website Visitor"
-msgstr "Khách truy cập trang web"
+msgstr "Khách truy cập website"
 
 #. module: website_event_track_social
-#. odoo-python
 #: code:addons/website_event_track_social/models/event_track.py:0
 #, python-format
 msgid "Your favorite track '%s' will start in %s minutes!"
 msgstr "Bài yêu thích của bạn '%s' sẽ bắt đầu sau %s phút nữa!"
 
 #. module: website_event_track_social
-#. odoo-python
 #: code:addons/website_event_track_social/models/event_track.py:0
 #, python-format
 msgid "Your track is about to start!"

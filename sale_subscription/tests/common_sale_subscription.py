@@ -3,21 +3,11 @@
 import datetime
 
 from odoo.addons.sale.tests.common import TestSaleCommon
+from odoo.tests import tagged
 from odoo import Command
 
 
 class TestSubscriptionCommon(TestSaleCommon):
-
-    def setUp(self):
-
-        super(TestSubscriptionCommon, self).setUp()
-
-        SO = type(self.env['sale.order'])
-
-        def _subscription_launch_cron_single(self, batch_size):
-            self.env['sale.order']._create_recurring_invoice(batch_size=batch_size)
-
-        self.patch(SO, '_subscription_launch_cron_parallel', _subscription_launch_cron_single)
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
@@ -28,8 +18,6 @@ class TestSubscriptionCommon(TestSaleCommon):
         AnalyticPlan = cls.env['account.analytic.plan'].with_context(context_no_mail)
         Analytic = cls.env['account.analytic.account'].with_context(context_no_mail)
         SaleOrder = cls.env['sale.order'].with_context(context_no_mail)
-        SubPlan = cls.env['sale.subscription.plan'].with_context(context_no_mail)
-        SubPricing = cls.env['sale.subscription.pricing'].with_context(context_no_mail)
         Tax = cls.env['account.tax'].with_context(context_no_mail)
         ProductTmpl = cls.env['product.template'].with_context(context_no_mail)
         cls.country_belgium = cls.env.ref('base.be')
@@ -38,9 +26,6 @@ class TestSubscriptionCommon(TestSaleCommon):
         cls.account_payable = cls.company_data['default_account_payable']
         cls.account_receivable = cls.company_data['default_account_receivable']
         cls.account_income = cls.company_data['default_account_revenue']
-        cls.company_data['company'].deferred_journal_id = cls.company_data['default_journal_misc'].id
-        cls.company_data['company'].deferred_expense_account_id = cls.company_data['default_account_deferred_expense'].id
-        cls.company_data['company'].deferred_revenue_account_id = cls.company_data['default_account_deferred_revenue'].id
 
         cls.tax_10 = Tax.create({
             'name': "10% tax",
@@ -55,21 +40,21 @@ class TestSubscriptionCommon(TestSaleCommon):
         cls.journal = cls.company_data['default_journal_sale']
 
         # Test products
-        cls.plan_week = SubPlan.create({'name': 'Weekly', 'billing_period_value': 1, 'billing_period_unit': 'week'})
-        cls.plan_month = SubPlan.create({'name': 'Monthly', 'billing_period_value': 1, 'billing_period_unit': 'month'})
-        cls.plan_year = SubPlan.create({'name': 'Yearly', 'billing_period_value': 1, 'billing_period_unit': 'year'})
-        cls.plan_2_month = SubPlan.create({'name': '2 Months', 'billing_period_value': 2, 'billing_period_unit': 'month'})
+        cls.recurrence_week = cls.env['sale.temporal.recurrence'].create({'duration': 1, 'unit': 'week'})
+        cls.recurrence_month = cls.env['sale.temporal.recurrence'].create({'duration': 1, 'unit': 'month'})
+        cls.recurrence_year = cls.env['sale.temporal.recurrence'].create({'duration': 1, 'unit': 'year'})
+        cls.recurrence_2_month = cls.env['sale.temporal.recurrence'].create({'duration': 2, 'unit': 'month'})
 
-        cls.pricing_month = SubPricing.create({'plan_id': cls.plan_month.id, 'price': 1})
-        cls.pricing_year = SubPricing.create({'plan_id': cls.plan_year.id, 'price': 100})
-        cls.pricing_year_2 = SubPricing.create({'plan_id': cls.plan_year.id, 'price': 200})
-        cls.pricing_year_3 = SubPricing.create({'plan_id': cls.plan_year.id, 'price': 300})
+        cls.pricing_month = cls.env['product.pricing'].create({'recurrence_id': cls.recurrence_month.id})
+        cls.pricing_year = cls.env['product.pricing'].create({'recurrence_id': cls.recurrence_year.id, 'price': 100})
+        cls.pricing_year_2 = cls.env['product.pricing'].create({'recurrence_id': cls.recurrence_year.id, 'price': 200})
+        cls.pricing_year_3 = cls.env['product.pricing'].create({'recurrence_id': cls.recurrence_year.id, 'price': 300})
         cls.sub_product_tmpl = ProductTmpl.create({
             'name': 'BaseTestProduct',
             'type': 'service',
             'recurring_invoice': True,
             'uom_id': cls.env.ref('uom.product_uom_unit').id,
-            'product_subscription_pricing_ids': [(6, 0, (cls.pricing_month | cls.pricing_year).ids)]
+            'product_pricing_ids': [(6, 0, (cls.pricing_month | cls.pricing_year).ids)]
         })
         cls.product = cls.sub_product_tmpl.product_variant_id
         cls.product.write({
@@ -130,11 +115,12 @@ class TestSubscriptionCommon(TestSaleCommon):
         })
         cls.subscription_tmpl = cls.env['sale.order.template'].create({
             'name': 'Subscription template without discount',
-            'is_unlimited': False,
-            'duration_value': 2,
-            'duration_unit': 'year',
+            'recurring_rule_type': 'year',
+            'recurring_rule_boundary': 'limited',
+            'recurring_rule_count': 2,
             'note': "This is the template description",
-            'plan_id': cls.plan_month.id,
+            'auto_close_limit': 5,
+            'recurrence_id': cls.recurrence_month.id,
             'sale_order_template_line_ids': [Command.create({
                 'name': "Product 1",
                 'product_id': cls.product.id,
@@ -149,32 +135,6 @@ class TestSubscriptionCommon(TestSaleCommon):
                 })
             ]
         })
-        cls.templ_5_days = cls.env['sale.order.template'].create({
-            'name': 'Template 2 days',
-            'is_unlimited': False,
-            'note': "This is the template description",
-            'duration_value': 4,
-            'duration_unit': 'year',
-            'plan_id': cls.plan_year.copy(default={'auto_close_limit': 5}).id,
-            'sale_order_template_line_ids': [
-                (0, 0, {
-                    'name': cls.product.name,
-                    'product_id': cls.product.id,
-                    'product_uom_qty': 3.0,
-                    'product_uom_id': cls.product.uom_id.id,
-                }),
-                (0, 0, {
-                    'name': cls.product2.name,
-                    'product_id': cls.product2.id,
-                    'product_uom_qty': 2.0,
-                    'product_uom_id': cls.product2.uom_id.id,
-                })
-            ],
-
-        })
-        cls.templ_60_days = cls.templ_5_days.copy()
-        cls.templ_60_days.plan_id = cls.plan_year.copy(default={'auto_close_limit': 60})
-
         # Test user
         TestUsersEnv = cls.env['res.users'].with_context({'no_reset_password': True})
         group_portal_id = cls.env.ref('base.group_portal').id
@@ -212,6 +172,7 @@ class TestSubscriptionCommon(TestSaleCommon):
         # Test analytic account
         cls.plan_1 = AnalyticPlan.create({
             'name': 'Test Plan 1',
+            'company_id': False,
         })
         cls.account_1 = Analytic.create({
             'partner_id': cls.user_portal.partner_id.id,
@@ -228,7 +189,7 @@ class TestSubscriptionCommon(TestSaleCommon):
         cls.subscription = SaleOrder.create({
             'name': 'TestSubscription',
             'is_subscription': True,
-            'plan_id': cls.plan_month.id,
+            'recurrence_id': cls.recurrence_month.id,
             'note': "original subscription description",
             'partner_id': cls.user_portal.partner_id.id,
             'pricelist_id': cls.company_data['default_pricelist'].id,
@@ -271,12 +232,10 @@ class TestSubscriptionCommon(TestSaleCommon):
              'company_id': cls.company.id,
              'state': 'test',
              'redirect_form_view_id': cls.env['ir.ui.view'].search([('type', '=', 'qweb')], limit=1).id})
-        cls.payment_method_id = cls.env.ref('payment.payment_method_unknown').id
         cls.payment_method = cls.env['payment.token'].create(
             {'payment_details': 'Jimmy McNulty',
              'partner_id': cls.partner.id,
              'provider_id': cls.provider.id,
-             'payment_method_id': cls.payment_method_id,
              'provider_ref': 'Omar Little'})
         Partner = cls.env['res.partner']
         cls.partner_a_invoice = Partner.create({
@@ -291,37 +250,22 @@ class TestSubscriptionCommon(TestSaleCommon):
 
     # Mocking for 'test_auto_payment_with_token'
     # Necessary to have a valid and done transaction when the cron on subscription passes through
-    def _mock_subscription_do_payment(self, payment_method, invoice, auto_commit=False):
+    def _mock_subscription_do_payment(self, payment_method, invoice):
         tx_obj = self.env['payment.transaction']
-        refs = invoice.invoice_line_ids.sale_line_ids.order_id.mapped('client_order_ref')
-        ref_vals = [r for r in refs if r]
-        reference = "CONTRACT-%s-%s-%s" % (invoice.id,
-                                           ''.join(ref_vals),
-                                           datetime.datetime.now().strftime('%y%m%d_%H%M%S%f'))
-        provider = invoice.env.context.get('test_provider', self.provider)
-        values = [{
+        reference = "CONTRACT-%s-%s" % (self.id, datetime.datetime.now().strftime('%y%m%d_%H%M%S%f'))
+        values = {
             'amount': invoice.amount_total,
-            'provider_id': provider.id,
-            'payment_method_id': self.payment_method_id,
+            'provider_id': self.provider.id,
             'operation': 'offline',
             'currency_id': invoice.currency_id.id,
             'reference': reference,
             'token_id': payment_method.id,
             'partner_id': invoice.partner_id.id,
             'partner_country_id': invoice.partner_id.country_id.id,
-            'sale_order_ids': [(6, 0, invoice.invoice_line_ids.sale_line_ids.order_id.ids)],
             'invoice_ids': [(6, 0, [invoice.id])],
             'state': 'done',
-            'subscription_action': 'automatic_send_mail',
-        }]
+        }
         tx = tx_obj.create(values)
-        return tx
-
-    def _mock_subscription_do_payment_rejected(self, payment_method, invoice, auto_commit=False):
-        tx = self._mock_subscription_do_payment(payment_method, invoice)
-        tx.state = "pending"
-        tx._set_error("Payment declined")
-        tx.env.cr.flush()  # simulate commit after sucessfull `_do_payment()`
         return tx
 
     # Mocking for 'test_auto_payment_with_token'

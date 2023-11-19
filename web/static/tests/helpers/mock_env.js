@@ -2,12 +2,13 @@
 
 import { registry } from "@web/core/registry";
 import { makeEnv, startServices } from "@web/env";
+import FormController from "web.FormController";
+import { patch } from "../../src/core/utils/patch";
 import { SERVICES_METADATA } from "../../src/env";
 import { registerCleanup } from "./cleanup";
 import { makeMockServer } from "./mock_server";
 import { mocks } from "./mock_services";
 import { patchWithCleanup } from "./utils";
-import { Component } from "@odoo/owl";
 
 function prepareRegistry(registry, keepContent = false) {
     const _addEventListener = registry.addEventListener.bind(registry);
@@ -40,57 +41,47 @@ export function clearServicesMetadataWithCleanup() {
     for (const key of Object.keys(SERVICES_METADATA)) {
         delete SERVICES_METADATA[key];
     }
-    registerCleanup(() => {
-        for (const key of Object.keys(SERVICES_METADATA)) {
-            delete SERVICES_METADATA[key];
-        }
-        Object.assign(SERVICES_METADATA, servicesMetadata);
-    });
+    registerCleanup(() => patch(SERVICES_METADATA, servicesMetadata));
 }
 
-export const registryNamesToCloneWithCleanup = [
-    "actions",
-    "command_provider",
-    "command_setup",
-    "error_handlers",
-    "fields",
-    "fields",
-    "main_components",
-    "view_widgets",
-    "views",
-];
+function prepareRegistriesWithCleanup() {
+    // Clone registries
+    cloneRegistryWithCleanup(registry.category("actions"));
+    cloneRegistryWithCleanup(registry.category("views"));
+    cloneRegistryWithCleanup(registry.category("error_handlers"));
+    cloneRegistryWithCleanup(registry.category("command_provider"));
+    cloneRegistryWithCleanup(registry.category("command_setup"));
+    cloneRegistryWithCleanup(registry.category("view_widgets"));
+    cloneRegistryWithCleanup(registry.category("fields"));
+    cloneRegistryWithCleanup(registry.category("wowlToLegacyServiceMappers"));
 
-export const utils = {
-    prepareRegistriesWithCleanup() {
-        // Clone registries
-        registryNamesToCloneWithCleanup.forEach((registryName) =>
-            cloneRegistryWithCleanup(registry.category(registryName))
-        );
+    cloneRegistryWithCleanup(registry.category("main_components"));
+    cloneRegistryWithCleanup(registry.category("fields"));
 
-        // Clear registries
-        clearRegistryWithCleanup(registry.category("command_categories"));
-        clearRegistryWithCleanup(registry.category("debug"));
-        clearRegistryWithCleanup(registry.category("error_dialogs"));
-        clearRegistryWithCleanup(registry.category("favoriteMenu"));
-        clearRegistryWithCleanup(registry.category("ir.actions.report handlers"));
-        clearRegistryWithCleanup(registry.category("main_components"));
+    // Clear registries
+    clearRegistryWithCleanup(registry.category("command_categories"));
+    clearRegistryWithCleanup(registry.category("debug"));
+    clearRegistryWithCleanup(registry.category("error_dialogs"));
+    clearRegistryWithCleanup(registry.category("favoriteMenu"));
+    clearRegistryWithCleanup(registry.category("ir.actions.report handlers"));
+    clearRegistryWithCleanup(registry.category("wowlToLegacyServiceMappers"));
 
-        clearRegistryWithCleanup(registry.category("services"));
-        clearServicesMetadataWithCleanup();
+    clearRegistryWithCleanup(registry.category("services"));
+    clearServicesMetadataWithCleanup();
 
-        clearRegistryWithCleanup(registry.category("systray"));
-        clearRegistryWithCleanup(registry.category("user_menuitems"));
-        clearRegistryWithCleanup(registry.category("kanban_examples"));
-        clearRegistryWithCleanup(registry.category("__processed_archs__"));
-        // fun fact: at least one registry is missing... this shows that we need a
-        // better design for the way we clear these registries...
-    },
-};
+    clearRegistryWithCleanup(registry.category("systray"));
+    clearRegistryWithCleanup(registry.category("user_menuitems"));
+    clearRegistryWithCleanup(registry.category("kanban_examples"));
+    clearRegistryWithCleanup(registry.category("__processed_archs__"));
+    clearRegistryWithCleanup(registry.category("action_menus"));
+    // fun fact: at least one registry is missing... this shows that we need a
+    // better design for the way we clear these registries...
+}
 
 // This is exported in a utils object to allow for patching
-export function prepareRegistriesWithCleanup() {
-    return utils.prepareRegistriesWithCleanup();
-}
+export const utils = {
+    prepareRegistriesWithCleanup,
+};
 
 /**
  * @typedef {import("@web/env").OdooEnv} OdooEnv
@@ -123,26 +114,19 @@ export async function makeTestEnv(config = {}) {
         await makeMockServer(config.serverData, config.mockRPC);
     }
 
+    // remove the multi-click delay for the quick edit in form views
+    // todo: move this elsewhere (setup?)
+    const initialQuickEditDelay = FormController.prototype.multiClickTime;
+    FormController.prototype.multiClickTime = 0;
+    registerCleanup(() => {
+        FormController.prototype.multiClickTime = initialQuickEditDelay;
+    });
+
     let env = makeEnv();
     await startServices(env);
-    Component.env = env;
+    owl.Component.env = env;
     if ("config" in config) {
         env = Object.assign(Object.create(env), { config: config.config });
     }
-    return env;
-}
-
-/**
- * Create a test environment for dialog tests
- *
- * @param {*} config
- * @returns {Promise<OdooEnv>}
- */
-export async function makeDialogTestEnv(config = {}) {
-    const env = await makeTestEnv(config);
-    env.dialogData = {
-        isActive: true,
-        close() {},
-    };
     return env;
 }

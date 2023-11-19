@@ -9,7 +9,7 @@
             <xpath expr="//header" position="inside">
                 <field name="has_push_notifications" invisible="1"/>
                 <button name="action_send_push_notification" string="Send Push Notification" type="object" class="oe_highlight"
-                    invisible="not has_push_notifications"/>
+                    attrs="{'invisible': [('has_push_notifications', '=', False)]}"/>
             </xpath>
             <xpath expr="//field[@name='lang_id']" position="after">
                 <field name="has_push_notifications" />
@@ -23,9 +23,9 @@
         <field name="inherit_id" ref="website.website_visitor_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree" position="inside">
-                <field name="has_push_notifications" column_invisible="True"/>
+                <field name="has_push_notifications" invisible="1"/>
                 <button name="action_send_push_notification" string="Send Push Notification" type="object" icon="fa-bell"
-                   invisible="not has_push_notifications"/>
+                   attrs="{'invisible': [('has_push_notifications', '=', False)]}"/>
             </xpath>
         </field>
     </record>
@@ -40,12 +40,12 @@
             </field>
             <xpath expr="//div[hasclass('w_visitor_kanban_actions')]" position="inside">
                 <button name="action_send_push_notification" type="object" class="btn btn-secondary"
-                        invisible="not has_push_notifications">Push
+                        attrs="{'invisible': [('has_push_notifications', '=', False)]}">Push
                 </button>
             </xpath>
             <xpath expr="//div[hasclass('w_visitor_kanban_actions_ungrouped')]" position="inside">
                 <button name="action_send_push_notification" type="object" class="btn btn-secondary border"
-                        invisible="not has_push_notifications">Push
+                        attrs="{'invisible': [('has_push_notifications', '=', False)]}">Push
                 </button>
             </xpath>
         </field>
@@ -66,6 +66,7 @@
 
     <record id="social_send_push_notifications_action_server" model="ir.actions.server">
         <field name="name">Send Push Notifications</field>
+        <field name="type">ir.actions.server</field>
         <field name="model_id" ref="model_website_visitor"/>
         <field name="binding_model_id" ref="model_website_visitor"/>
         <field name="binding_view_types">list</field>

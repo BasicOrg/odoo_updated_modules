@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import WebsiteSale from '@website_sale_stock/js/website_sale';
+import WebsiteSale from 'website_sale_stock.website_sale';
 
 WebsiteSale.include({
 
@@ -14,7 +14,7 @@ WebsiteSale.include({
     },
 
     _onClickSubmitWishlistStockNotificationForm(ev) {
-        const productId = ev.currentTarget.closest('tr').dataset.productId;
+        const productId = JSON.parse(ev.currentTarget.closest('tr').dataset.productTrackingInfo).item_id;
         this._handleClickSubmitStockNotificationForm(ev, productId);
     },
 });

@@ -3,16 +3,16 @@
 # 	* hr_recruitment_reports
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -40,6 +40,12 @@ msgid "# Meetings"
 msgstr "#會議"
 
 #. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "# Payslips"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__refused
 msgid "# Refused"
 msgstr ""
@@ -52,7 +58,7 @@ msgstr "分析"
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_stage_report__applicant_id
 msgid "Applicant"
-msgstr "申請人"
+msgstr "應徵者"
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__name
@@ -60,6 +66,11 @@ msgstr "申請人"
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Applicant Name"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Applicant that have been enrolled into the company."
 msgstr ""
 
 #. module: hr_recruitment_reports
@@ -93,6 +104,11 @@ msgid "End Date"
 msgstr "結束日期"
 
 #. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+msgid "From creation till hire"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Group By"
@@ -102,20 +118,30 @@ msgstr "分組依據"
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_report__state__is_hired
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_stage_report__state__is_hired
 msgid "Hired"
-msgstr "決定聘用"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Hired People"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Hiring ratio"
 msgstr ""
 
 #. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Hiring ratio (%)"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__id
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_stage_report__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_report__state__in_progress
@@ -133,7 +159,7 @@ msgstr "工作"
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Job Position"
-msgstr "工作職稱"
+msgstr "工作職缺"
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
@@ -142,25 +168,30 @@ msgid "Last 365 Days Applicant"
 msgstr ""
 
 #. module: hr_recruitment_reports
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report____last_update
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_stage_report____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
+
+#. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__medium_id
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 msgid "Medium"
 msgstr "媒體"
 
 #. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_job_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
-msgid "No data to display"
-msgstr "無資料可供顯示"
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__process_duration
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Process Duration"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__process_duration
-msgid "Process Duration"
-msgstr "處理過程時長"
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Process Duration in Days"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__user_id
@@ -170,7 +201,6 @@ msgstr "招募人員"
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_pivot
@@ -181,6 +211,12 @@ msgstr "招募分析"
 #. module: hr_recruitment_reports
 #: model:ir.model,name:hr_recruitment_reports.model_hr_recruitment_report
 msgid "Recruitment Analysis Report"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Recruitment Rate"
 msgstr ""
 
 #. module: hr_recruitment_reports
@@ -197,11 +233,12 @@ msgstr "退回原因"
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_report__state__refused
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_stage_report__state__refused
 msgid "Refused"
-msgstr "已退回"
+msgstr "已拒絕"
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__source_id
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_inherit_kanban_view
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 msgid "Source"
 msgstr "來源"
@@ -209,7 +246,6 @@ msgstr "來源"
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_source_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_source_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_source_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_source_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_team_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_source_pivot
@@ -235,46 +271,44 @@ msgstr "開始日期"
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "State"
-msgstr "狀態"
+msgstr "縣市"
 
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_team_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_team_menu
 msgid "Team Performance"
 msgstr ""
 
 #. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_job_action
-msgid "This report performs analysis on your recruitment."
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid ""
+"The % is based on the total of applicant that have been hired divided by the"
+" total of applicant."
 msgstr ""
 
 #. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
 msgid ""
-"This reports allow you to check the more time-consuming stages of your pipes"
-" and optimize your recruitment flow."
-msgstr ""
-
-#. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
-msgid ""
-"This reports allow you to compare the recruiters and their performance."
+"The process duration is based on the time between the applicant creation and"
+" the stage \"hired\" or \"refused\"."
 msgstr ""
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_action
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_job_action
-msgid ""
-"This reports allow you to compare various measures grouped by your sources "
-"of applicants."
+msgid "This report performs analysis on your recruitment source."
 msgstr ""
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_action
-msgid ""
-"This reports allow you to follow the evolution of the number of applicants "
-"and hired employees over time."
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_job_action
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
+msgid "This report performs analysis on your recruitment."
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
+msgid "This report performs analysis on your teams' performance."
 msgstr ""
 
 #. module: hr_recruitment_reports
@@ -285,7 +319,6 @@ msgstr ""
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_stage_report_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_stage_report_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_stage_report_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
@@ -293,22 +326,36 @@ msgid "Time In Stage Analysis"
 msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Total Hired"
 msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Total Meetings"
 msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
 #, python-format
 msgid "Total applicants"
 msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Total hired"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Total meetings"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "weeks"
+msgstr "周"

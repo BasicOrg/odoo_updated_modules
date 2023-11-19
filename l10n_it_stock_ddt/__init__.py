@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from . import models
+from odoo import api, SUPERUSER_ID
 
-def _create_picking_seq(env):
+
+def _create_picking_seq(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     ptypes = env['stock.picking.type'].search([('code', '=', 'outgoing'), ('warehouse_id', '!=', False)])
     for ptype in ptypes:
         wh = ptype.warehouse_id

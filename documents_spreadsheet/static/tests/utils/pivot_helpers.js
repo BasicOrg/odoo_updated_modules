@@ -15,11 +15,8 @@ import {
     getSpreadsheetActionEnv,
     getSpreadsheetActionModel,
     prepareWebClientForSpreadsheet,
-} from "@spreadsheet_edition/../tests/utils/webclient_helpers";
+} from "./webclient_helpers";
 import { waitForDataSourcesLoaded } from "@spreadsheet/../tests/utils/model";
-import { registry } from "@web/core/registry";
-import { fieldService } from "@web/core/field_service";
-import { onMounted } from "@odoo/owl";
 
 /** @typedef {import("@spreadsheet/o_spreadsheet/o_spreadsheet").Model} Model */
 
@@ -32,7 +29,6 @@ import { onMounted } from "@odoo/owl";
  * @param {object} [params.serverData] Data to be injected in the mock server
  * @param {function} [params.mockRPC] Mock rpc function
  * @param {any[]} [params.domain] Domain of the pivot
- * @param {object} [params.additionalContext] additional context for the action
  * @returns {Promise<object>} Webclient
  */
 export async function spawnPivotViewForSpreadsheet(params = {}) {
@@ -40,21 +36,18 @@ export async function spawnPivotViewForSpreadsheet(params = {}) {
     const webClient = await createWebClient({
         serverData: params.serverData || getBasicServerData(),
         mockRPC: params.mockRPC,
+        legacyParams: {
+            withLegacyMockServer: true,
+        },
     });
 
-    await doAction(
-        webClient,
-        {
-            name: "pivot view",
-            res_model: params.model || "partner",
-            type: "ir.actions.act_window",
-            views: [[false, "pivot"]],
-            domain: params.domain,
-        },
-        {
-            additionalContext: params.additionalContext || {},
-        }
-    );
+    await doAction(webClient, {
+        name: "pivot view",
+        res_model: params.model || "partner",
+        type: "ir.actions.act_window",
+        views: [[false, "pivot"]],
+        domain: params.domain,
+    });
     return webClient;
 }
 
@@ -78,20 +71,18 @@ export async function createSpreadsheetFromPivotView(params = {}) {
     const def = makeDeferred();
     patchWithCleanup(SpreadsheetAction.prototype, {
         setup() {
-            super.setup();
+            this._super();
             spreadsheetAction = this;
-            onMounted(() => {
+            owl.onMounted(() => {
                 def.resolve();
             });
         },
     });
-    registry.category("services").add("field", fieldService, { force: true });
     const webClient = await spawnPivotViewForSpreadsheet({
         model: params.model,
         serverData: params.serverData,
         mockRPC: params.mockRPC,
         domain: params.domain,
-        additionalContext: params.additionalContext || {},
     });
     const target = getFixture();
     if (params.actions) {

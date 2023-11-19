@@ -3,7 +3,7 @@
 {
     'name': 'Helpdesk FSM - Sale',
     'description': """
-Bridge between Helpdesk and Industry FSM Sale
+        Bridge between Helpdesk and Industry FSM Sale
     """,
     'summary': 'Project, Helpdesk, FSM, Timesheet and Sale Orders',
     'category': 'Hidden',

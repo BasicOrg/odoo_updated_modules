@@ -3,17 +3,16 @@
 # 	* sale_purchase_inter_company_rules
 # 
 # Translators:
-# Wil Odoo, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -37,7 +36,6 @@ msgid "Automatic Validation"
 msgstr "Convalida automatica"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -55,7 +53,6 @@ msgid "Config Settings"
 msgstr "Impostazioni di configurazione"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -65,12 +62,6 @@ msgid ""
 msgstr ""
 "Configurare il magazzino corretto per l'azienda (%s) dal menù: "
 "Impostazioni/Utenti/Aziende"
-
-#. module: sale_purchase_inter_company_rules
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__copy_lots_delivery
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_config_settings__copy_lots_delivery
-msgid "Copy Lots on Delivery Validation"
-msgstr "Copia i lotti alla convalida della consegna"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_company__warehouse_id
@@ -84,30 +75,28 @@ msgstr ""
 "questa azienda"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s using warehouse %(warehouse)s"
-" when a company confirms a %(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                using "
+"warehouse %(warehouse)s when a company confirms a %(event_type)s for "
+"%(company)s."
 msgstr ""
-"Genera un %(validation)s %(generated_object)s                usando il "
-"magazzino %(warehouse)squando un'azienda conferma un %(event_type)s per "
+"Genera un(a) %(validation)s %(generated_object)s                usando "
+"magazzino %(warehouse)squando un'azienda conferma un(a) %(event_type)s per "
 "%(company)s."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s when a company confirms a "
-"%(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                when a company"
+" confirms a %(event_type)s for %(company)s."
 msgstr ""
-"Genera una %(validation)s %(generated_object)s                quando "
-"un'azienda conferma un %(event_type)s per %(company)s."
+"Genera un(a) %(validation)s %(generated_object)s                quando "
+"un'azienda conferma un(a) %(event_type)s per %(company)s."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -117,7 +106,6 @@ msgstr ""
 "%(name)s"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
 msgid "Inter company user of company %s doesn't have enough access rights"
@@ -126,7 +114,6 @@ msgstr ""
 "%s"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid "Provide at least one user for inter company relation for %(name)s"
@@ -134,11 +121,10 @@ msgstr ""
 "Fornisci almeno un utente per le relazioni inter-aziendali per %(name)s"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
-msgid "Provide one user for intercompany relation for %(name)s "
-msgstr "Fornisci un utente per la relazione interaziendale per %(name)s"
+msgid "Provide one user for intercompany relation for % "
+msgstr "Fornisci un utente per la relazione interaziendale per %"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_purchase_order
@@ -193,11 +179,6 @@ msgid "Synchronize Sales and Purchase Order"
 msgstr "Sincronizzare le vendite e gli ordini di acquisto"
 
 #. module: sale_purchase_inter_company_rules
-#: model:ir.model,name:sale_purchase_inter_company_rules.model_stock_picking
-msgid "Transfer"
-msgstr "Trasferisci"
-
-#. module: sale_purchase_inter_company_rules
 #: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company_rules.res_config_settings_view_form
 msgid "Use Warehouse"
 msgstr "Usa magazzino"
@@ -213,7 +194,6 @@ msgid "Warehouse For Purchase Orders"
 msgstr "Magazzino per ordini di acquisto"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -222,20 +202,14 @@ msgid ""
 "\n"
 "(SO currency: %(so_currency)s, Pricelist: %(pricelist)s, Partner: %(partner)s (ID: %(id)s))"
 msgstr ""
-"Non puoi creare ordini di vendita a partire da ordini di acquisto perché la valuta del listino prezzi di vendita è diversa rispetto a quella del listino prezzi di acquisto.\n"
-"La valuta dell'ordine di vendita è ottenuta dal listino prezzi dell'azienda del partner.\n"
-"\n"
-"(Valuta ordine di vendita: %(so_currency)s, listino prezzi: %(pricelist)s, partner: %(partner)s (ID: %(id)s))"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "draft"
 msgstr "bozza"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -243,14 +217,12 @@ msgid "purchase order"
 msgstr "ordine di acquisto"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "purchase/sales order"
 msgstr "ordine di acquisto/vendita"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -258,14 +230,12 @@ msgid "sales order"
 msgstr "ordine di vendita"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "sales/purchase order"
 msgstr "ordine di vendita/acquisto"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "validated"

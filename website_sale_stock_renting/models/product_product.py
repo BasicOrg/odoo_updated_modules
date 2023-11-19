@@ -1,12 +1,29 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import models
+from odoo.http import request
 from odoo.osv import expression
 
 from odoo.addons.website.models import ir_http
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
+
+    def _get_cart_qty(self, website=None):
+        """ Override of the website_sale_stock to take into account rental products.
+        """
+        start_date = self.env.context.get('start_date')
+        end_date = self.env.context.get('end_date')
+        if not self.allow_out_of_stock_order and start_date and end_date:
+            website = website or self.env['website'].get_current_website()
+            cart = website and request and website.sale_get_order() or None
+            if cart:
+                return sum(
+                    cart._get_common_product_lines(
+                        product=self, start_date=start_date, end_date=end_date
+                    ).mapped('product_uom_qty')
+                )
+        return super()._get_cart_qty(website)
 
     def _get_rented_quantities(self, from_date, to_date, domain=None):
         """ Get the rented quantities for all the rental sale order line with product self.
@@ -61,17 +78,16 @@ class ProductProduct(models.Model):
             to_date=to_date,
             warehouse=warehouse_id
         ).qty_available
-        qty_available += self.with_context(warehouse=warehouse_id).qty_in_rent
         rented_quantities, key_dates = self._get_rented_quantities(from_date, to_date, domain=[
             ('order_id.warehouse_id', '=', warehouse_id)
         ])
         website = with_cart and ir_http.get_request_website()
         cart = website and website.sale_get_order()
         if cart:
-            common_lines = cart._get_common_product_lines(product=self)
-            so_rented_qties, so_key_dates = common_lines._get_rented_quantities(
-                [from_date, to_date]
+            common_lines = cart._get_common_product_lines(
+                product=self, start_date=from_date, end_date=to_date
             )
+            so_rented_qties, so_key_dates = common_lines._get_rented_quantities([from_date, to_date])
             key_dates = list(set(so_key_dates + key_dates))
             key_dates.sort()
         current_qty_available = qty_available

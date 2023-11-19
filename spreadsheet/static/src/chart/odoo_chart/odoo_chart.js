@@ -1,7 +1,9 @@
 /** @odoo-module */
 
-import { AbstractChart, CommandResult } from "@odoo/o-spreadsheet";
-import { ChartDataSource } from "../data_source/chart_data_source";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+import ChartDataSource from "../data_source/chart_data_source";
+
+const { AbstractChart, CommandResult } = spreadsheet;
 
 /**
  * @typedef {import("@web/search/search_model").SearchParams} SearchParams
@@ -123,7 +125,8 @@ export class OdooChart extends AbstractChart {
     setDataSource(dataSource) {
         if (dataSource instanceof ChartDataSource) {
             this.dataSource = dataSource;
-        } else {
+        }
+        else {
             throw new Error("Only ChartDataSources can be added.");
         }
     }

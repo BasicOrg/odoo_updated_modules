@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-<t t-name="web_studio.NewViewDialog">
+<t t-name="web_studio.NewViewDialog" owl="1">
   <Dialog size="'md'" title="title">
     <div class="o_web_studio_new_view_dialog">
       <div class="o_web_studio_select">
@@ -23,11 +23,11 @@
         </select>
       </div>
     </div>
-    <t t-set-slot="footer">
+    <t t-set-slot="footer" owl="1">
       <button class="btn btn-primary" t-on-click="_confirm">
         Activate View
       </button>
-      <button class="btn btn-secondary" t-on-click="_cancel">
+      <button class="btn btn-secondary" t-on-click="close">
         Cancel
       </button>
     </t>

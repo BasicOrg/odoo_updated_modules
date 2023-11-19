@@ -6,7 +6,7 @@ import { addGlobalFilter, selectCell } from "@spreadsheet/../tests/utils/command
 import { createSpreadsheetWithPivot } from "@spreadsheet/../tests/utils/pivot";
 import { getCellContent } from "@spreadsheet/../tests/utils/getters";
 import { doMenuAction } from "@spreadsheet/../tests/utils/ui";
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
 const { topbarMenuRegistry } = spreadsheet.registries;
 
@@ -25,18 +25,15 @@ QUnit.module("spreadsheet_edition > menu", {}, () => {
                 </pivot>`,
             });
             await addGlobalFilter(model, {
-                id: "41",
-                type: "relation",
-                label: "41",
-                defaultValue: [41],
+                filter: {
+                    id: "41",
+                    type: "relation",
+                    label: "41",
+                    defaultValue: [41],
+                },
             });
             selectCell(model, "A6");
-            const reinsertPivotPath = [
-                "data",
-                "insert_pivot",
-                "reinsert_pivot",
-                "reinsert_pivot_1",
-            ];
+            const reinsertPivotPath = ["data", "reinsert_pivot", "reinsert_pivot_1"];
             await doMenuAction(topbarMenuRegistry, reinsertPivotPath, env);
             await nextTick();
             assert.equal(getCellContent(model, "B6"), getCellContent(model, "B1"));

@@ -3,17 +3,17 @@
 # 	* hr_appraisal_skills
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: 敬雲 林 <chingyun@yuanchih-consult.com>, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,15 +21,15 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_appraisal_skills
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.view_hr_appraisal_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_view_form
 msgid ""
-"<span class=\"o_appraisal_overlay\" invisible=\"state != 'new'\">\n"
+"<span class=\"o_appraisal_overlay\" attrs=\"{'invisible': [('state', '!=', 'new')]}\">\n"
 "                            Skills tab will be active once the appraisal is confirmed.\n"
 "                        </span>"
 msgstr ""
 
 #. module: hr_appraisal_skills
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_appraisal_skills/static/src/js/appraisal_skills_one2many.xml:0
 #, python-format
 msgid "Add new skills"
@@ -59,7 +59,7 @@ msgstr "公司"
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__create_date
@@ -117,7 +117,7 @@ msgstr ""
 #. module: hr_appraisal_skills
 #: model:ir.model,name:hr_appraisal_skills.model_hr_appraisal_skill
 msgid "Employee Skills"
-msgstr "員工技能"
+msgstr ""
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__evolution
@@ -134,7 +134,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__id
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill_report__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields.selection,name:hr_appraisal_skills.selection__hr_appraisal_skill_report__evolution__improvement
@@ -154,6 +154,11 @@ msgid "Justification"
 msgstr "理由"
 
 #. module: hr_appraisal_skills
+#: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
+
+#. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__write_uid
 msgid "Last Updated by"
 msgstr "最後更新者"
@@ -166,7 +171,7 @@ msgstr "最後更新於"
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__manager_ids
 msgid "Manager"
-msgstr "經理"
+msgstr "管理員"
 
 #. module: hr_appraisal_skills
 #: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_report_view_search
@@ -187,7 +192,7 @@ msgstr ""
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal_skill__level_progress
 msgid "Progress"
-msgstr "專案進度"
+msgstr "熟練度"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,help:hr_appraisal_skills.field_hr_appraisal_skill__level_progress
@@ -224,7 +229,7 @@ msgstr "技能類型"
 
 #. module: hr_appraisal_skills
 #: model:ir.model.fields,field_description:hr_appraisal_skills.field_hr_appraisal__skill_ids
-#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.view_hr_appraisal_form
+#: model_terms:ir.ui.view,arch_db:hr_appraisal_skills.hr_appraisal_skill_view_form
 msgid "Skills"
 msgstr "技能"
 

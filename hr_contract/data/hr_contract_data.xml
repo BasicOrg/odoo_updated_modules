@@ -10,15 +10,14 @@
             <field name="name">Worker</field>
             <field name="country_id" eval="False"/>
         </record>
-
         <record id="structure_type_employee_cp200_pfi" model="hr.payroll.structure.type">
             <field name="name">CP200 PFI: Belgian Employee</field>
-            <field name="default_resource_calendar_id" ref="resource.resource_calendar_std"/>
+            <field name="default_resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
             <field name="country_id" ref="base.be"/>
         </record>
         <record id="structure_type_employee_cp200" model="hr.payroll.structure.type">
             <field name="name">CP200: Belgian Employee</field>
-            <field name="default_resource_calendar_id" ref="resource.resource_calendar_std"/>
+            <field name="default_resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
             <field name="country_id" ref="base.be"/>
         </record>
 
@@ -49,8 +48,9 @@
         <record id="ir_cron_data_contract_update_state" model="ir.cron">
             <field name="name">HR Contract: update state</field>
             <field name="model_id" ref="model_hr_contract"/>
+            <field name="type">ir.actions.server</field>
             <field name="state">code</field>
-            <field name="code">model.with_context(from_cron=True).update_state()</field>
+            <field name="code">model.update_state()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

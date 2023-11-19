@@ -18,10 +18,10 @@ class SocialPost(models.Model):
     def _compute_leads_opportunities_count(self):
         mapped_data = {}
         if self.source_id.ids:
-            lead_data = self.env['crm.lead']._read_group(
+            lead_data = self.env['crm.lead'].read_group(
                 [('source_id', 'in', self.source_id.ids)],
-                ['source_id'], ['__count'])
-            mapped_data = {source.id: count for source, count in lead_data}
+                ['source_id'], ['source_id'])
+            mapped_data = {datum['source_id'][0]: datum['source_id_count'] for datum in lead_data}
         for post in self:
             post.leads_opportunities_count = mapped_data.get(post.source_id.id, 0)
 

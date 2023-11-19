@@ -3,7 +3,6 @@
 
 from odoo import api, fields, models, _
 from odoo.tools import float_is_zero
-from odoo.exceptions import UserError
 
 
 class PosMakePayment(models.TransientModel):
@@ -44,12 +43,6 @@ class PosMakePayment(models.TransientModel):
         self.ensure_one()
 
         order = self.env['pos.order'].browse(self.env.context.get('active_id', False))
-        if self.payment_method_id.split_transactions and not order.partner_id:
-            raise UserError(_(
-                "Customer is required for %s payment method.",
-                self.payment_method_id.name
-            ))
-
         currency = order.currency_id
 
         init_data = self.read()[0]
@@ -61,10 +54,10 @@ class PosMakePayment(models.TransientModel):
                 'payment_method_id': init_data['payment_method_id'][0],
             })
 
-        if order.state == 'draft' and order._is_pos_order_paid():
-            order._process_saved_order(False)
-            if order.state in {'paid', 'done', 'invoiced'}:
-                order._send_order()
+        if order._is_pos_order_paid():
+            order.action_pos_order_paid()
+            order._create_order_picking()
+            order._compute_total_cost_in_real_time()
             return {'type': 'ir.actions.act_window_close'}
 
         return self.launch_payment()

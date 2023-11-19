@@ -2,11 +2,20 @@
 
 import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
-import testUtils from "@web/../tests/legacy/helpers/test_utils";
-import { click, getFixture, nextTick, patchWithCleanup } from "../../helpers/utils";
+import core from "web.core";
+import AbstractAction from "web.AbstractAction";
+import testUtils from "web.test_utils";
+import { registerCleanup } from "../../helpers/cleanup";
+import {
+    click,
+    getFixture,
+    legacyExtraNextTick,
+    nextTick,
+    patchWithCleanup,
+} from "../../helpers/utils";
 import { createWebClient, doAction, getActionManagerServerData } from "./../helpers";
 
-import { Component, onMounted, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 
 let serverData;
 let target;
@@ -84,23 +93,33 @@ QUnit.module("ActionManager", (hooks) => {
         }
     );
 
-    QUnit.test("soft_reload will refresh data", async (assert) => {
+    QUnit.test("can execute client actions from tag name (legacy)", async function (assert) {
+        // remove this test as soon as legacy Widgets are no longer supported
+        assert.expect(4);
+        const ClientAction = AbstractAction.extend({
+            start: function () {
+                this.$el.text("Hello World");
+                this.$el.addClass("o_client_action_test");
+            },
+        });
         const mockRPC = async function (route, args) {
-            if (route === "/web/dataset/call_kw/partner/web_search_read") {
-                assert.step("web_search_read");
-            }
+            assert.step((args && args.method) || route);
         };
+        core.action_registry.add("HelloWorldTestLeg", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.HelloWorldTestLeg);
         const webClient = await createWebClient({ serverData, mockRPC });
-        await doAction(webClient, 1);
-        assert.verifySteps(["web_search_read"]);
-        await doAction(webClient, "soft_reload");
-        assert.verifySteps(["web_search_read"]);
-    });
-
-    QUnit.test("soft_reload when there is no controller", async (assert) => {
-        const webClient = await createWebClient({ serverData });
-        await doAction(webClient, "soft_reload");
-        assert.ok(true, "No ControllerNotFoundError when there is no controller to restore");
+        await doAction(webClient, "HelloWorldTestLeg");
+        assert.containsNone(
+            document.body,
+            ".o_control_panel",
+            "shouldn't have rendered a control panel"
+        );
+        assert.strictEqual(
+            $(target).find(".o_client_action_test").text(),
+            "Hello World",
+            "should have correctly rendered the client action"
+        );
+        assert.verifySteps(["/web/webclient/load_menus"]);
     });
 
     QUnit.test("can execute client actions from tag name", async function (assert) {
@@ -158,7 +177,180 @@ QUnit.module("ActionManager", (hooks) => {
         }
     );
 
-    QUnit.test("ClientAction receives breadcrumbs and exports title", async (assert) => {
+    QUnit.test("client action with control panel (legacy)", async function (assert) {
+        assert.expect(4);
+        // LPE Fixme: at this time we don't really know the API that wowl ClientActions implement
+        const ClientAction = AbstractAction.extend({
+            hasControlPanel: true,
+            start() {
+                this.$(".o_content").text("Hello World");
+                this.$el.addClass("o_client_action_test");
+                this.controlPanelProps.title = "Hello";
+                return this._super.apply(this, arguments);
+            },
+        });
+        core.action_registry.add("HelloWorldTest", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.HelloWorldTest);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, "HelloWorldTest");
+        assert.strictEqual(
+            $(".o_control_panel:visible").length,
+            1,
+            "should have rendered a control panel"
+        );
+        assert.containsN(
+            target,
+            ".o_control_panel .breadcrumb-item",
+            1,
+            "there should be one controller in the breadcrumbs"
+        );
+        assert.strictEqual(
+            $(".o_control_panel .breadcrumb-item").text(),
+            "Hello",
+            "breadcrumbs should still display the title of the controller"
+        );
+        assert.strictEqual(
+            $(target).find(".o_client_action_test .o_content").text(),
+            "Hello World",
+            "should have correctly rendered the client action"
+        );
+    });
+
+    QUnit.test("state is pushed for client action (legacy)", async function (assert) {
+        assert.expect(6);
+        const ClientAction = AbstractAction.extend({
+            getTitle: function () {
+                return "a title";
+            },
+            getState: function () {
+                return { foo: "baz" };
+            },
+        });
+        const pushState = browser.history.pushState;
+        patchWithCleanup(browser, {
+            history: Object.assign({}, browser.history, {
+                pushState() {
+                    pushState(...arguments);
+                    assert.step("push_state");
+                },
+            }),
+        });
+
+        core.action_registry.add("HelloWorldTest", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.HelloWorldTest);
+        const webClient = await createWebClient({ serverData });
+        let currentTitle = webClient.env.services.title.current;
+        assert.strictEqual(currentTitle, '{"zopenerp":"Odoo"}');
+        let currentHash = webClient.env.services.router.current.hash;
+        assert.deepEqual(currentHash, {});
+        await doAction(webClient, "HelloWorldTest");
+        currentTitle = webClient.env.services.title.current;
+        assert.strictEqual(currentTitle, '{"zopenerp":"Odoo","action":"a title"}');
+        currentHash = webClient.env.services.router.current.hash;
+        assert.deepEqual(currentHash, {
+            action: "HelloWorldTest",
+            foo: "baz",
+        });
+        assert.verifySteps(["push_state"]);
+    });
+
+    QUnit.test("action can use a custom control panel (legacy)", async function (assert) {
+        assert.expect(1);
+        class CustomControlPanel extends Component {}
+        CustomControlPanel.template = xml`
+        <div class="custom-control-panel">My custom control panel</div>
+      `;
+        const ClientAction = AbstractAction.extend({
+            hasControlPanel: true,
+            config: {
+                ControlPanel: CustomControlPanel,
+            },
+        });
+        core.action_registry.add("HelloWorldTest", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.HelloWorldTest);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, "HelloWorldTest");
+        assert.containsOnce(target, ".custom-control-panel", "should have a custom control panel");
+    });
+
+    QUnit.test("breadcrumb is updated on title change (legacy)", async function (assert) {
+        assert.expect(2);
+        const ClientAction = AbstractAction.extend({
+            hasControlPanel: true,
+            events: {
+                click: function () {
+                    this.updateControlPanel({ title: "new title" });
+                },
+            },
+            start: async function () {
+                this.$(".o_content").text("Hello World");
+                this.$el.addClass("o_client_action_test");
+                this.controlPanelProps.title = "initial title";
+                await this._super.apply(this, arguments);
+            },
+        });
+        core.action_registry.add("HelloWorldTest", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.HelloWorldTest);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, "HelloWorldTest");
+        assert.strictEqual(
+            $("ol.breadcrumb").text(),
+            "initial title",
+            "should have initial title as breadcrumb content"
+        );
+        await testUtils.dom.click($(target).find(".o_client_action_test"));
+        await legacyExtraNextTick();
+        assert.strictEqual(
+            $("ol.breadcrumb").text(),
+            "new title",
+            "should have updated title as breadcrumb content"
+        );
+    });
+
+    QUnit.test("client actions can have breadcrumbs (legacy)", async function (assert) {
+        assert.expect(4);
+        const ClientAction = AbstractAction.extend({
+            hasControlPanel: true,
+            init(parent, action) {
+                action.display_name = "Goldeneye";
+                this._super.apply(this, arguments);
+            },
+            start() {
+                this.$el.addClass("o_client_action_test");
+                return this._super.apply(this, arguments);
+            },
+        });
+        const ClientAction2 = AbstractAction.extend({
+            hasControlPanel: true,
+            init(parent, action) {
+                action.display_name = "No time for sweetness";
+                this._super.apply(this, arguments);
+            },
+            start() {
+                this.$el.addClass("o_client_action_test_2");
+                return this._super.apply(this, arguments);
+            },
+        });
+        core.action_registry.add("ClientAction", ClientAction);
+        core.action_registry.add("ClientAction2", ClientAction2);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, "ClientAction");
+        assert.containsOnce(target, ".breadcrumb-item");
+        assert.strictEqual(
+            target.querySelector(".breadcrumb-item.active").textContent,
+            "Goldeneye"
+        );
+        await doAction(webClient, "ClientAction2", { clearBreadcrumbs: false });
+        assert.containsN(target, ".breadcrumb-item", 2);
+        assert.strictEqual(
+            target.querySelector(".breadcrumb-item.active").textContent,
+            "No time for sweetness"
+        );
+        delete core.action_registry.map.ClientAction;
+        delete core.action_registry.map.ClientAction2;
+    });
+
+    QUnit.test("ClientAction receives breadcrumbs and exports title (wowl)", async (assert) => {
         assert.expect(4);
         class ClientAction extends Component {
             setup() {
@@ -166,7 +358,7 @@ QUnit.module("ActionManager", (hooks) => {
                 const { breadcrumbs } = this.env.config;
                 assert.strictEqual(breadcrumbs.length, 2);
                 assert.strictEqual(breadcrumbs[0].name, "Favorite Ponies");
-                onMounted(() => {
+                owl.onMounted(() => {
                     this.env.config.setDisplayName(this.breadcrumbTitle);
                 });
             }
@@ -184,12 +376,12 @@ QUnit.module("ActionManager", (hooks) => {
         await click(target, ".my_owl_action");
         await doAction(webClient, 3);
         assert.strictEqual(
-            target.querySelector(".o_breadcrumb").textContent,
+            target.querySelector(".breadcrumb").textContent,
             "Favorite PoniesnewOwlTitlePartners"
         );
     });
 
-    QUnit.test("ClientAction receives arbitrary props from doAction", async (assert) => {
+    QUnit.test("ClientAction receives arbitrary props from doAction (wowl)", async (assert) => {
         assert.expect(1);
         class ClientAction extends Component {
             setup() {
@@ -200,6 +392,22 @@ QUnit.module("ActionManager", (hooks) => {
         actionRegistry.add("OwlClientAction", ClientAction);
         const webClient = await createWebClient({ serverData });
         await doAction(webClient, "OwlClientAction", {
+            props: { division: "bell" },
+        });
+    });
+
+    QUnit.test("ClientAction receives arbitrary props from doAction (legacy)", async (assert) => {
+        assert.expect(1);
+        const ClientAction = AbstractAction.extend({
+            init(parent, action, options) {
+                assert.strictEqual(options.division, "bell");
+                this._super.apply(this, arguments);
+            },
+        });
+        core.action_registry.add("ClientAction", ClientAction);
+        registerCleanup(() => delete core.action_registry.map.ClientAction);
+        const webClient = await createWebClient({ serverData });
+        await doAction(webClient, "ClientAction", {
             props: { division: "bell" },
         });
     });
@@ -218,7 +426,6 @@ QUnit.module("ActionManager", (hooks) => {
                 sticky: true,
             },
         });
-        await nextTick(); // wait for the notification to be displayed
         const notificationSelector = ".o_notification_manager .o_notification";
         assert.containsOnce(
             document.body,
@@ -265,7 +472,6 @@ QUnit.module("ActionManager", (hooks) => {
                 ],
             },
         });
-        await nextTick(); // wait for the notification to be displayed
         const notificationSelector = ".o_notification_manager .o_notification";
         assert.containsOnce(
             document.body,
@@ -306,7 +512,6 @@ QUnit.module("ActionManager", (hooks) => {
                 ],
             },
         });
-        await nextTick(); // wait for the notification to be displayed
         assert.containsOnce(
             document.body,
             notificationSelector,
@@ -343,7 +548,6 @@ QUnit.module("ActionManager", (hooks) => {
             },
             options
         );
-        await nextTick(); // wait for the notification to be displayed
         const notificationSelector = ".o_notification_manager .o_notification";
         assert.containsOnce(
             document.body,
@@ -351,50 +555,5 @@ QUnit.module("ActionManager", (hooks) => {
             "a notification should be present"
         );
         assert.verifySteps(["onClose"]);
-    });
-
-    QUnit.test("test reload client action", async function (assert) {
-        patchWithCleanup(browser.location, {
-            assign: (url) => {
-                assert.step(url);
-            },
-            origin: "",
-            hash: "#test=42",
-        });
-
-        const webClient = await createWebClient({ serverData });
-
-        await doAction(webClient, {
-            type: "ir.actions.client",
-            tag: "reload",
-        });
-        await doAction(webClient, {
-            type: "ir.actions.client",
-            tag: "reload",
-            params: {
-                action_id: 2,
-            },
-        });
-        await doAction(webClient, {
-            type: "ir.actions.client",
-            tag: "reload",
-            params: {
-                menu_id: 1,
-            },
-        });
-        await doAction(webClient, {
-            type: "ir.actions.client",
-            tag: "reload",
-            params: {
-                action_id: 1,
-                menu_id: 2,
-            },
-        });
-        assert.verifySteps([
-            "/web/tests?reload=true#test=42",
-            "/web/tests?reload=true#action=2",
-            "/web/tests?reload=true#menu_id=1",
-            "/web/tests?reload=true#menu_id=2&action=1",
-        ]);
     });
 });

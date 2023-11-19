@@ -2,10 +2,12 @@
 
 import { dialogService } from "@web/core/dialog/dialog_service";
 import { notificationService } from "@web/core/notifications/notification_service";
-import { ormService } from "@web/core/orm_service";
 import { popoverService } from "@web/core/popover/popover_service";
 import { registry } from "@web/core/registry";
+import { ormService } from "@web/core/orm_service";
 import { uiService } from "@web/core/ui/ui_service";
+import { viewService } from "@web/views/view_service";
+import { legacyServiceProvider } from "@web/legacy/legacy_service_provider";
 import { actionService } from "@web/webclient/actions/action_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { menuService } from "@web/webclient/menus/menu_service";
@@ -14,7 +16,7 @@ import { clearRegistryWithCleanup, makeTestEnv } from "../helpers/mock_env";
 import { fakeTitleService } from "../helpers/mock_services";
 import { destroy, getFixture, mount, patchWithCleanup, triggerEvent } from "../helpers/utils";
 
-import { Component, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 const mainComponentRegistry = registry.category("main_components");
 const serviceRegistry = registry.category("services");
 
@@ -24,15 +26,17 @@ let target;
 QUnit.module("WebClient", {
     async beforeEach() {
         serviceRegistry
-            .add("orm", ormService)
             .add("action", actionService)
             .add("dialog", dialogService)
             .add("hotkey", hotkeyService)
+            .add("legacy_service_provider", legacyServiceProvider)
             .add("menu", menuService)
             .add("notification", notificationService)
             .add("popover", popoverService)
             .add("title", fakeTitleService)
-            .add("ui", uiService);
+            .add("ui", uiService)
+            .add("view", viewService) // #action-serv-leg-compat-js-class
+            .add("orm", ormService); // #action-serv-leg-compat-js-class
         baseConfig = { activateMockServer: true };
         target = getFixture();
     },
@@ -62,7 +66,7 @@ QUnit.test("control-click propagation stopped on <a href/>", async (assert) => {
     patchWithCleanup(WebClient.prototype, {
         /** @param {MouseEvent} ev */
         onGlobalClick(ev) {
-            super.onGlobalClick(ev);
+            this._super(ev);
             if (ev.ctrlKey) {
                 assert.ok(
                     ev.defaultPrevented === false,

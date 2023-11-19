@@ -3,17 +3,17 @@
 # 	* hr_payroll_account
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,19 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: hr_payroll_account
-#: model:ir.model,name:hr_payroll_account.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "Modèle de plan comptable"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/account_chart_template.py:0
-#, python-format
-msgid "Account Payslip Houserental"
-msgstr "Compte fiche de paie location de maison"
-
-#. module: hr_payroll_account
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_contract_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_salary_rule_view_form
 msgid "Accounting"
 msgstr "Comptabilité"
@@ -44,12 +31,11 @@ msgid "Accounting Entry"
 msgstr "Entrée comptable"
 
 #. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
 #, python-format
 msgid "Adjustment Entry"
-msgstr "Écriture d'ajustement"
+msgstr "Entrée d'ajustement"
 
 #. module: hr_payroll_account
 #: model:ir.model.fields,field_description:hr_payroll_account.field_hr_contract__analytic_account_id
@@ -61,30 +47,8 @@ msgstr "Compte analytique"
 #. module: hr_payroll_account
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_payslip_run_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_payslip_view_form
-msgid "Are you sure you want to proceed?"
-msgstr "Êtes-vous sûr de vouloir continuer ?"
-
-#. module: hr_payroll_account
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account.res_config_settings_view_form
-msgid "Batch Account Move Lines"
-msgstr "Lot de lignes de mouvement de compte"
-
-#. module: hr_payroll_account
-#: model:ir.model.fields,field_description:hr_payroll_account.field_hr_payslip__batch_payroll_move_lines
-#: model:ir.model.fields,field_description:hr_payroll_account.field_res_company__batch_payroll_move_lines
-#: model:ir.model.fields,field_description:hr_payroll_account.field_res_config_settings__batch_payroll_move_lines
-msgid "Batch Payroll Move Lines"
-msgstr "Lot de lignes de mouvement de la paie"
-
-#. module: hr_payroll_account
-#: model:ir.model,name:hr_payroll_account.model_res_company
-msgid "Companies"
-msgstr "Sociétés"
-
-#. module: hr_payroll_account
-#: model:ir.model,name:hr_payroll_account.model_res_config_settings
-msgid "Config Settings"
-msgstr "Paramètres de configuration"
+msgid "Are you sure you want to proceed ?"
+msgstr "Êtes-vous sur de vouloir continuer ?"
 
 #. module: hr_payroll_account
 #: model:ir.model,name:hr_payroll_account.model_hr_contract_history
@@ -95,7 +59,7 @@ msgstr "Historique des Contrats"
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_payslip_run_view_form
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_payslip_view_form
 msgid "Create Draft Entry"
-msgstr "Créer une écriture brouillon"
+msgstr "Créer un brouillon d'entrée"
 
 #. module: hr_payroll_account
 #: model:ir.model.fields,field_description:hr_payroll_account.field_hr_salary_rule__account_credit
@@ -118,27 +82,12 @@ msgid "Employee Contract"
 msgstr "Contrat de l'employé"
 
 #. module: hr_payroll_account
-#: model:ir.model.fields,help:hr_payroll_account.field_res_config_settings__batch_payroll_move_lines
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account.res_config_settings_view_form
-msgid ""
-"Enable this option to merge all the accounting entries for the same period "
-"into a single account move line. This will anonymize the accounting entries "
-"but also disable single payment generations."
-msgstr ""
-"L'activation de cette option permet de fusionner toutes les écritures "
-"comptes pour la même période en une seule ligne de mouvement de compte. Cela"
-" rendra les écritures comptables anonymes, mais désactivera également les "
-"générations de paiements uniques."
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payroll_structure.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
 #, python-format
 msgid ""
 "Incorrect journal: The journal must be in the same currency as the company"
 msgstr ""
-"Journal incorrect : Le journal doit être dans la même devise que "
-"l'entreprise"
+"Journal erroné : Le journal doit être dans la même devise que l'entreprise"
 
 #. module: hr_payroll_account
 #: model:ir.model,name:hr_payroll_account.model_account_journal
@@ -150,14 +99,7 @@ msgstr "Journal"
 msgid "Keep empty to use the period of the validation(Payslip) date."
 msgstr ""
 "Laisser vide si vous voulez utiliser la période de la date de validation (de"
-" la fiche de paie)"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/account_chart_template.py:0
-#, python-format
-msgid "No existing account for code %s"
-msgstr "Il n'y a pas de compte existant pour le code %s"
+" la feuille de paie)"
 
 #. module: hr_payroll_account
 #: model:ir.model.fields,field_description:hr_payroll_account.field_hr_salary_rule__not_computed_in_net
@@ -165,15 +107,13 @@ msgid "Not computed in net accountably"
 msgstr "Non calculé en comptabilité nette"
 
 #. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
 #, python-format
 msgid "One of the contract for these payslips has no structure type."
 msgstr "L'un des contrats de ces fiches de paie n'a pas de type de structure."
 
 #. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
 #, python-format
 msgid "One of the payroll structures has no account journal defined on it."
 msgstr ""
@@ -182,39 +122,7 @@ msgstr ""
 #. module: hr_payroll_account
 #: model:ir.model,name:hr_payroll_account.model_hr_payslip
 msgid "Pay Slip"
-msgstr "Fiche de paie"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/wizard/account_payment_register.py:0
-#, python-format
-msgid "Payment done at %s"
-msgstr "Paiement effectué sur %s"
-
-#. module: hr_payroll_account
-#: model:ir.model,name:hr_payroll_account.model_account_payment
-msgid "Payments"
-msgstr "Paiements"
-
-#. module: hr_payroll_account
-#: model:ir.model,name:hr_payroll_account.model_account_payment_register
-#: model_terms:ir.ui.view,arch_db:hr_payroll_account.hr_payslip_view_form
-msgid "Register Payment"
-msgstr "Enregistrer le paiement"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/account_chart_template.py:0
-#, python-format
-msgid "SLR"
-msgstr "SLR"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/account_chart_template.py:0
-#, python-format
-msgid "Salaries"
-msgstr "Salaires"
+msgstr "Feuille de paie"
 
 #. module: hr_payroll_account
 #: model:ir.model.fields,field_description:hr_payroll_account.field_hr_payroll_structure__journal_id
@@ -225,7 +133,7 @@ msgstr "Journal des salaires"
 #. module: hr_payroll_account
 #: model:ir.model,name:hr_payroll_account.model_hr_salary_rule
 msgid "Salary Rule"
-msgstr "Règle salariale"
+msgstr "Règles salariales"
 
 #. module: hr_payroll_account
 #: model:ir.model,name:hr_payroll_account.model_hr_payroll_structure
@@ -233,29 +141,13 @@ msgid "Salary Structure"
 msgstr "Structure salariale"
 
 #. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
+#: code:addons/hr_payroll_account/models/hr_payroll_account.py:0
 #, python-format
 msgid ""
 "The Expense Journal \"%s\" has not properly configured the default Account!"
 msgstr ""
 "Le compte par défaut n'est pas configuré correctement sur le journal de "
 "notes de frais \"%s\""
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
-#, python-format
-msgid "The credit account on the NET salary rule is not reconciliable"
-msgstr ""
-"Le compte de crédit de la règle salariale NETTE ne peut pas être lettré"
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/hr_payslip.py:0
-#, python-format
-msgid "The employee bank account is untrusted"
-msgstr "Le compte bancaire de l'employé n'est pas fiable"
 
 #. module: hr_payroll_account
 #: model:ir.model.fields,help:hr_payroll_account.field_hr_salary_rule__not_computed_in_net
@@ -270,11 +162,3 @@ msgstr ""
 "valeur de cette règle dans la comptabilité. Par exemple, si vous souhaitez "
 "afficher la valeur de vos honoraires de représentation, vous pouvez cocher "
 "ce champ."
-
-#. module: hr_payroll_account
-#. odoo-python
-#: code:addons/hr_payroll_account/models/account_journal.py:0
-#, python-format
-msgid "You cannot delete the journal linked to a Salary Structure"
-msgstr ""
-"Vous ne pouvez pas supprimer le journal lié à une structure de salaire"

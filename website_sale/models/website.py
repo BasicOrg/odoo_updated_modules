@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, _lt, SUPERUSER_ID, api, fields, models, tools
+import logging
+
+from odoo import api, fields, models, tools, SUPERUSER_ID, _
+
 from odoo.http import request
 from odoo.osv import expression
-
 from odoo.addons.http_routing.models.ir_http import url_for
+from odoo.addons.website.models.website import SEARCH_TYPE_MODELS
+
+SEARCH_TYPE_MODELS['products'] |= 'product.public.category', 'product.template'
+SEARCH_TYPE_MODELS['product_categories_only'] |= 'product.public.category',
+SEARCH_TYPE_MODELS['products_only'] |= 'product.template',
+
+_logger = logging.getLogger(__name__)
 
 
 class Website(models.Model):
@@ -22,21 +31,14 @@ class Website(models.Model):
     salesteam_id = fields.Many2one('crm.team',
         string='Sales Team', ondelete="set null",
         default=_default_salesteam_id)
-    show_line_subtotals_tax_selection = fields.Selection(
-        selection=[
-            ('tax_excluded', "Tax Excluded"),
-            ('tax_included', "Tax Included"),
-        ],
-        string="Line Subtotals Tax Display",
-        required=True, default='tax_excluded',
-    )
 
-    fiscal_position_id = fields.Many2one(
-        'account.fiscal.position', compute='_compute_fiscal_position_id')
     pricelist_id = fields.Many2one(
-        'product.pricelist', compute='_compute_pricelist_id', string="Default Pricelist if any")
+        'product.pricelist',
+        compute='_compute_pricelist_id',
+        string='Default Pricelist')
     currency_id = fields.Many2one(
-        'res.currency', compute='_compute_currency_id', string="Default Currency")
+        related='pricelist_id.currency_id', depends=(), related_sudo=False,
+        string='Default Currency', readonly=False)
     pricelist_ids = fields.One2many('product.pricelist', compute="_compute_pricelist_ids",
                                     string='Price list available for this Ecommerce/Website')
     # Technical: Used to recompute pricelist_ids
@@ -110,7 +112,6 @@ class Website(models.Model):
                                                default="Not Available For Sale")
     contact_us_button_url = fields.Char(string="Contact Us Button URL", translate=True, default="/contactus")
     enabled_portal_reorder_button = fields.Boolean(string="Re-order From Portal")
-    enabled_delivery = fields.Boolean(string="Enable Shipping", compute='_compute_enabled_delivery')
 
     @api.depends('all_pricelist_ids')
     def _compute_pricelist_ids(self):
@@ -123,22 +124,11 @@ class Website(models.Model):
 
     def _compute_pricelist_id(self):
         for website in self:
-            website.pricelist_id = website._get_current_pricelist()
+            website.pricelist_id = website.get_current_pricelist()
 
-    def _compute_fiscal_position_id(self):
-        for website in self:
-            website.fiscal_position_id = website._get_current_fiscal_position()
-
-    @api.depends('all_pricelist_ids', 'pricelist_id', 'company_id')
-    def _compute_currency_id(self):
-        for website in self:
-            website.currency_id = website.pricelist_id.currency_id or website.company_id.currency_id
-
-    def _compute_enabled_delivery(self):
-        for website in self:
-            website.enabled_delivery = bool(website.env['delivery.carrier'].sudo().search_count(
-                [('website_id', 'in', (False, website.id)), ('is_published', '=', True)], limit=1
-            ))
+    # NOTE VFE: moving this computation doesn't change much
+    # Because most of it must still be computed for the pricelist choice template (`pricelist_list`)
+    # Therefore, avoiding all pricelist computation is impossible in fact...
 
     # This method is cached, must not return records! See also #8795
     @tools.ormcache(
@@ -245,12 +235,12 @@ class Website(models.Model):
         return pl_id in self.get_pricelist_available(show_visible=False).ids
 
     def _get_geoip_country_code(self):
-        return request and request.geoip.country_code or False
+        return request and request.geoip.get('country_code') or False
 
     def _get_cached_pricelist_id(self):
         return request and request.session.get('website_sale_current_pl') or None
 
-    def _get_current_pricelist(self):
+    def get_current_pricelist(self):
         """
         :returns: The current pricelist record
         """
@@ -291,6 +281,11 @@ class Website(models.Model):
                 # then this special pricelist is amongs these available pricelists, and therefore it won't fall in this case.
                 pricelist = available_pricelists[0]
 
+            if not pricelist:
+                _logger.error(
+                    'Failed to find pricelist for partner "%s" (id %s)',
+                    partner_sudo.name, partner_sudo.id,
+                )
         return pricelist
 
     def sale_product_domain(self):
@@ -320,8 +315,7 @@ class Website(models.Model):
             sale_order_sudo = self.env.user.partner_id.last_website_so_id
             if sale_order_sudo:
                 available_pricelists = self.get_pricelist_available()
-                so_pricelist_sudo = sale_order_sudo.pricelist_id
-                if so_pricelist_sudo and so_pricelist_sudo not in available_pricelists:
+                if sale_order_sudo.pricelist_id not in available_pricelists:
                     # Do not reload the cart of this user last visit
                     # if the cart uses a pricelist no longer available.
                     sale_order_sudo = SaleOrder
@@ -383,16 +377,12 @@ class Website(models.Model):
             previous_fiscal_position = sale_order_sudo.fiscal_position_id
             previous_pricelist = sale_order_sudo.pricelist_id
 
-            # Reset the session pricelist according to logged partner pl
-            request.session.pop('website_sale_current_pl', None)
-            # Force recomputation of the website pricelist after reset
-            self.invalidate_recordset(['pricelist_id'])
-            pricelist_id = self.pricelist_id.id
-            request.session['website_sale_current_pl'] = pricelist_id
+            pricelist_id = self._get_current_pricelist_id(partner_sudo)
 
             # change the partner, and trigger the computes (fpos)
             sale_order_sudo.write({
                 'partner_id': partner_sudo.id,
+                'partner_invoice_id': partner_sudo.id,
                 'payment_term_id': self.sale_get_payment_term(partner_sudo),
                 # Must be specified to ensure it is not recomputed when it shouldn't
                 'pricelist_id': pricelist_id,
@@ -405,7 +395,7 @@ class Website(models.Model):
                 update_pricelist = True
         elif update_pricelist:
             # Only compute pricelist if needed
-            pricelist_id = self.pricelist_id.id
+            pricelist_id = self._get_current_pricelist_id(partner_sudo)
 
         # update the pricelist
         if update_pricelist:
@@ -417,33 +407,34 @@ class Website(models.Model):
 
     def _prepare_sale_order_values(self, partner_sudo):
         self.ensure_one()
-        addr = partner_sudo.address_get(['delivery', 'invoice'])
+        addr = partner_sudo.address_get(['delivery'])
         if not request.website.is_public_user():
+            # FIXME VFE why not use last_website_so_id field ?
             last_sale_order = self.env['sale.order'].sudo().search(
                 [('partner_id', '=', partner_sudo.id)],
                 limit=1,
                 order="date_order desc, id desc",
             )
-            if last_sale_order:
-                if last_sale_order.partner_shipping_id.active:  # first = me
-                    addr['delivery'] = last_sale_order.partner_shipping_id.id
-                if last_sale_order.partner_invoice_id.active:
-                    addr['invoice'] = last_sale_order.partner_invoice_id.id
+            if last_sale_order and last_sale_order.partner_shipping_id.active:  # first = me
+                addr['delivery'] = last_sale_order.partner_shipping_id.id
 
         affiliate_id = request.session.get('affiliate_id')
         salesperson_user_sudo = self.env['res.users'].sudo().browse(affiliate_id).exists()
         if not salesperson_user_sudo:
             salesperson_user_sudo = self.salesperson_id or partner_sudo.parent_id.user_id or partner_sudo.user_id
 
+        pricelist_id = self._get_current_pricelist_id(partner_sudo)
+        fiscal_position_id = self._get_current_fiscal_position_id(partner_sudo)
+
         values = {
             'company_id': self.company_id.id,
 
-            'fiscal_position_id': self.fiscal_position_id.id,
+            'fiscal_position_id': fiscal_position_id,
             'partner_id': partner_sudo.id,
-            'partner_invoice_id': addr['invoice'],
+            'partner_invoice_id': partner_sudo.id,
             'partner_shipping_id': addr['delivery'],
 
-            'pricelist_id': self.pricelist_id.id,
+            'pricelist_id': pricelist_id,
             'payment_term_id': self.sale_get_payment_term(partner_sudo),
 
             'team_id': self.salesteam_id.id or partner_sudo.parent_id.team_id.id or partner_sudo.team_id.id,
@@ -465,24 +456,27 @@ class Website(models.Model):
             self.env['account.payment.term'].sudo().search([('company_id', '=', self.company_id.id)], limit=1)
         ).id
 
-    def _get_current_fiscal_position(self):
+    def _get_current_pricelist_id(self, partner_sudo):
+        return self.get_current_pricelist().id \
+            or partner_sudo.property_product_pricelist.id
+
+    @api.model
+    def _get_current_fiscal_position_id(self, partner_sudo):
         AccountFiscalPosition = self.env['account.fiscal.position'].sudo()
         fpos = AccountFiscalPosition
-        partner_sudo = self.env.user.partner_id
 
         # If the current user is the website public user, the fiscal position
         # is computed according to geolocation.
-        if request and request.geoip.country_code and self.partner_id.id == partner_sudo.id:
-            country = self.env['res.country'].search(
-                [('code', '=', request.geoip.country_code)],
-                limit=1,
-            )
-            fpos = AccountFiscalPosition._get_fpos_by_region(country.id)
+        if request.website.partner_id.id == partner_sudo.id:
+            country_code = request.geoip.get('country_code')
+            if country_code:
+                country_id = self.env['res.country'].search([('code', '=', country_code)], limit=1).id
+                fpos = AccountFiscalPosition._get_fpos_by_region(country_id)
 
         if not fpos:
             fpos = AccountFiscalPosition._get_fiscal_position(partner_sudo)
 
-        return fpos
+        return fpos.id
 
     def sale_reset(self):
         request.session.pop('sale_order_id', None)
@@ -499,14 +493,6 @@ class Website(models.Model):
         suggested_controllers = super(Website, self).get_suggested_controllers()
         suggested_controllers.append((_('eCommerce'), url_for('/shop'), 'website_sale'))
         return suggested_controllers
-
-    def _search_get_details(self, search_type, order, options):
-        result = super()._search_get_details(search_type, order, options)
-        if search_type in ['products', 'product_categories_only', 'all']:
-            result.append(self.env['product.public.category']._search_get_detail(self, order, options))
-        if search_type in ['products', 'products_only', 'all']:
-            result.append(self.env['product.template']._search_get_detail(self, order, options))
-        return result
 
     def _get_product_page_proportions(self):
         """
@@ -556,75 +542,6 @@ class Website(models.Model):
                 template = self.env.ref('website_sale.mail_template_sale_cart_recovery')
                 template.send_mail(sale_order.id, email_values=dict(email_to=sale_order.partner_id.email))
                 sale_order.cart_recovery_email_sent = True
-
-    def _display_partner_b2b_fields(self):
-        """ This method is to be inherited by localizations and return
-        True if localization should always displayed b2b fields """
-        self.ensure_one()
-
-        return self.is_view_active('website_sale.address_b2b')
-
-    def _get_checkout_steps(self, current_step=None):
-        """ Return an ordered list of steps according to the current template rendered.
-
-        If `current_step` is provided, returns only the corresponding step.
-
-        Note: self.ensure_one()
-
-        :param str current_step: The xmlid of the current step, defaults to None.
-        :rtype: list
-        :return: A list with the following structure:
-            [
-                [xmlid],
-                {
-                    'name': str,
-                    'current_href': str,
-                    'main_button': str,
-                    'main_button_href': str,
-                    'back_button': str,
-                    'back_button_href': str
-                }
-            ]
-        """
-        self.ensure_one()
-        is_extra_step_active = self.viewref('website_sale.extra_info').active
-        redirect_to_sign_in = self.account_on_checkout == 'mandatory' and self.is_public_user()
-
-        steps = [(['website_sale.cart'], {
-            'name': _lt("Review Order"),
-            'current_href': '/shop/cart',
-            'main_button': _lt("Sign In") if redirect_to_sign_in else _lt("Checkout"),
-            'main_button_href': f'{"/web/login?redirect=" if redirect_to_sign_in else ""}/shop/checkout?express=1',
-            'back_button':  _lt("Continue shopping"),
-            'back_button_href': '/shop',
-        }), (['website_sale.checkout', 'website_sale.address'], {
-            'name': _lt("Shipping"),
-            'current_href': '/shop/checkout',
-            'main_button': _lt("Confirm"),
-            'main_button_href': f'{"/shop/extra_info" if is_extra_step_active else "/shop/confirm_order"}',
-            'back_button':  _lt("Back to cart"),
-            'back_button_href': '/shop/cart',
-        })]
-        if is_extra_step_active:
-            steps.append((['website_sale.extra_info'], {
-                'name': _lt("Extra Info"),
-                'current_href': '/shop/extra_info',
-                'main_button': _lt("Continue checkout"),
-                'main_button_href': '/shop/confirm_order',
-                'back_button':  _lt("Return to shipping"),
-                'back_button_href': '/shop/checkout',
-            }))
-        steps.append((['website_sale.payment'], {
-            'name': _lt("Payment"),
-            'current_href': '/shop/payment',
-            'back_button':  _lt("Back to cart"),
-            'back_button_href': '/shop/cart',
-        }))
-
-        if current_step:
-            return next(step for step in steps if current_step in step[0])[1]
-        else:
-            return steps
 
 class WebsiteSaleExtraField(models.Model):
     _name = 'website.sale.extra.field'

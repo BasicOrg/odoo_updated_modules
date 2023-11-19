@@ -14,7 +14,7 @@ const { DateTime } = luxon;
 QUnit.module("timer", (hooks) => {
     let target;
     let viewArguments;
-    const now = DateTime.utc();
+    const now = new DateTime.utc();
     hooks.beforeEach(async function (assert) {
         setupTestEnv();
         registry.category("services").add("timer", timerService, { force: true });

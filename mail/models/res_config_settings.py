@@ -12,13 +12,9 @@ class ResConfigSettings(models.TransientModel):
     the alias domain. """
     _inherit = 'res.config.settings'
 
-    external_email_server_default = fields.Boolean(
-        "Use Custom Email Servers",
-        config_parameter='base_setup.default_external_email_server')
     fail_counter = fields.Integer('Fail Mail', compute="_compute_fail_counter")
-    alias_domain_id = fields.Many2one(
-        'mail.alias.domain', 'Alias Domain',
-        readonly=False, related='company_id.alias_domain_id',
+    alias_domain = fields.Char(
+        'Alias Domain', config_parameter='mail.catchall.domain',
         help="If you have setup a catch-all email domain redirected to the Odoo server, enter the domain name here.")
     module_google_gmail = fields.Boolean('Support Gmail Authentication')
     module_microsoft_outlook = fields.Boolean('Support Outlook Authentication')
@@ -40,36 +36,8 @@ class ResConfigSettings(models.TransientModel):
         'Twilio Account Auth Token',
         config_parameter='mail.twilio_account_token',
     )
-    sfu_server_url = fields.Char("SFU Server URL", config_parameter="mail.sfu_server_url")
-    sfu_server_key = fields.Char("SFU Server key", config_parameter="mail.sfu_server_key", help="Base64 encoded key")
-    email_primary_color = fields.Char(related='company_id.email_primary_color', readonly=False)
-    email_secondary_color = fields.Char(related='company_id.email_secondary_color', readonly=False)
-
-    tenor_api_key = fields.Char(
-        'Tenor API key',
-        config_parameter='discuss.tenor_api_key',
-        help="Add a Tenor GIF API key to enable GIFs support. https://developers.google.com/tenor/guides/quickstart#setup",
-    )
-    tenor_content_filter = fields.Selection(
-        [('high', 'High'),
-        ('medium', 'Medium'),
-        ('low', 'Low'),
-        ('off', 'Off')],
-        string='Tenor content filter',
-        help="https://developers.google.com/tenor/guides/content-filtering",
-        config_parameter='discuss.tenor_content_filter',
-        default='low',
-    )
-    tenor_gif_limit = fields.Integer(
-        default=8,
-        config_parameter='discuss.tenor_gif_limit',
-        help="Fetch up to the specified number of GIF.",
-    )
-    google_translate_api_key = fields.Char(
-        "Message Translation API Key",
-        help="A valid Google API key is required to enable message translation. https://cloud.google.com/translate/docs/setup",
-        config_parameter="mail.google_translate_api_key",
-    )
+    primary_color = fields.Char(related='company_id.primary_color', string="Header Color", readonly=False)
+    secondary_color = fields.Char(related='company_id.secondary_color', string="Button Color", readonly=False)
 
     def _compute_fail_counter(self):
         previous_date = fields.Datetime.now() - datetime.timedelta(days=30)

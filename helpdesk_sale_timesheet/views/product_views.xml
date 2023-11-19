@@ -7,13 +7,9 @@
         <field name="arch" type="xml">
             <group name="sale" position="after">
                 <group>
-                    <group string="Helpdesk" name="helpdesk" invisible="type != 'service' or not sale_ok" groups="helpdesk.group_use_sla">
-                        <div class="o_td_label d-inline-flex" invisible="type != 'service' or not sale_ok">
-                            <label for='sla_id'/>
-                            <span class='fa fa-lg fa-building-o fa-fw' title="Values set here are company-specific." groups="base.group_multi_company"/>
-                        </div>
-                        <field name="sla_id" groups="!helpdesk.group_helpdesk_user" invisible="type != 'service' or not sale_ok" options="{'no_quick_create': True, 'no_open': True}" context="{'with_team_name': True}" nolabel="1"/>
-                        <field name="sla_id" groups="helpdesk.group_helpdesk_user" invisible="type != 'service' or not sale_ok" options="{'no_quick_create': True}" context="{'with_team_name': True}" nolabel="1"/>
+                    <group string="Helpdesk" name="helpdesk" attrs="{'invisible': ['|', ('type', '!=', 'service'), ('sale_ok', '=', False)]}" groups="helpdesk.group_use_sla">
+                        <field name="sla_id" groups="!helpdesk.group_helpdesk_user" attrs="{'invisible': ['|', ('type', '!=', 'service'), ('sale_ok', '=', False)]}" options="{'no_quick_create': True, 'no_open': True}"/>
+                        <field name="sla_id" groups="helpdesk.group_helpdesk_user" attrs="{'invisible': ['|', ('type', '!=', 'service'), ('sale_ok', '=', False)]}" options="{'no_quick_create': True}"/>
                     </group>
                 </group>
             </group>

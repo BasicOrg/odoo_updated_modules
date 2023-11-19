@@ -45,7 +45,6 @@ class TestTimerButtons(TestFsmFlowSaleCommon):
             'allow_billable': True,
             'timesheet_product_id': cls.product_service.id,
             'is_fsm': True,
-            'company_id': cls.env.company.id,
         })
         cls.task = cls.env['project.task'].create({
             'name': 'My Task',
@@ -330,8 +329,7 @@ class TestTimerButtons(TestFsmFlowSaleCommon):
         self.task._fsm_ensure_sale_order()
 
         self.product_material.with_context(fsm_task_id=self.task.id).fsm_add_quantity()
-        if self.task.sale_order_id.state != 'sale':
-            self.task.sale_order_id.action_confirm()
+        self.task.sale_order_id.action_confirm()
 
         # SO is to invoice, but the task is not fsm_done
         self.assertFalse(self.task.display_create_invoice_primary)
@@ -383,3 +381,45 @@ class TestTimerButtons(TestFsmFlowSaleCommon):
         self.assertEqual(self.task.sale_order_id.invoice_status, 'invoiced')
         self.assertFalse(self.task.display_create_invoice_primary)
         self.assertFalse(self.task.display_create_invoice_secondary)
+
+    def test_create_sale_order_01(self):
+        # If customer is set on the project, and if there is no sale_line_id
+        # create order should be visible
+        product_task_in_project = self.env['product.product'].create({
+            'name': 'Task in Project Service',
+            'type': 'service',
+            'service_tracking': 'task_in_project',
+        })
+
+        order = self.env['sale.order'].create({
+            'partner_id': self.task.partner_id.id,
+            'order_line': [(0, 0, {
+                'product_id': product_task_in_project.id,
+                'product_uom_qty': 1,
+                'price_unit': 15,
+            })]
+        })
+        order.action_confirm()
+        self.env.flush_all()
+        project = order.order_line.project_id
+        self.assertTrue(project.sale_line_id)
+        self.assertTrue(project.partner_id)
+        self.assertFalse(project.display_create_order)
+
+        self.project.allow_billable = False
+        self.assertTrue(self.project.partner_id)
+        self.assertFalse(self.project.sale_line_id)
+        self.assertFalse(self.project.sale_order_id)
+        self.assertFalse(self.project.display_create_order)
+
+    def test_create_sale_order_02(self):
+        # If allow_billable is true, "create sales order' should not be visible on tasks and project
+        # as it's a fsm project.
+        self.project.allow_billable = True
+        # self.assertTrue(self.project.billable_type != 'no')
+        self.assertFalse(self.project.display_create_order)
+
+        # If allow_billable is false, "create sales order' should not be visible on project
+        # but no on the tasks. There we could be on project rate, on employee rate
+        self.project.allow_billable = False
+        self.assertFalse(self.project.display_create_order)

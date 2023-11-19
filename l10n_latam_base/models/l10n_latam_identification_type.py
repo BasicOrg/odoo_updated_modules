@@ -11,13 +11,12 @@ class L10nLatamIdentificationType(models.Model):
 
     sequence = fields.Integer(default=10)
     name = fields.Char(translate=True, required=True,)
-    description = fields.Char(translate=True,)
+    description = fields.Char()
     active = fields.Boolean(default=True)
     is_vat = fields.Boolean()
     country_id = fields.Many2one('res.country')
 
-    @api.depends('country_id')
-    def _compute_display_name(self):
+    def name_get(self):
         multi_localization = len(self.search([]).mapped('country_id')) > 1
-        for rec in self:
-            rec.display_name = '{}{}'.format(rec.name, multi_localization and rec.country_id and ' (%s)' % rec.country_id.code or '')
+        return [(rec.id, '%s%s' % (
+            rec.name, multi_localization and rec.country_id and ' (%s)' % rec.country_id.code or '')) for rec in self]

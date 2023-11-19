@@ -12,7 +12,6 @@ class SocialMediaFacebook(models.Model):
     _inherit = 'social.media'
 
     _FACEBOOK_ENDPOINT = 'https://graph.facebook.com'
-    _FACEBOOK_ENDPOINT_VERSIONED = '%s/v17.0/' % _FACEBOOK_ENDPOINT
 
     media_type = fields.Selection(selection_add=[('facebook', 'Facebook')])
 
@@ -37,7 +36,7 @@ class SocialMediaFacebook(models.Model):
             return self._add_facebook_accounts_from_iap()
 
     def _add_facebook_accounts_from_configuration(self, facebook_app_id):
-        base_facebook_url = 'https://www.facebook.com/v17.0/dialog/oauth?%s'
+        base_facebook_url = 'https://www.facebook.com/v10.0/dialog/oauth?%s'
         params = {
             'client_id': facebook_app_id,
             'redirect_uri': url_join(self.get_base_url(), "social_facebook/callback"),

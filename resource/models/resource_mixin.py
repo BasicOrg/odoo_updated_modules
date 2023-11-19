@@ -2,10 +2,16 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
+from dateutil.relativedelta import relativedelta
 from pytz import utc
 
 from odoo import api, fields, models
-from .utils import timezone_datetime
+
+
+def timezone_datetime(time):
+    if not time.tzinfo:
+        time = time.replace(tzinfo=utc)
+    return time
 
 
 class ResourceMixin(models.AbstractModel):
@@ -18,7 +24,7 @@ class ResourceMixin(models.AbstractModel):
     company_id = fields.Many2one(
         'res.company', 'Company',
         default=lambda self: self.env.company,
-        index=True, related='resource_id.company_id', precompute=True, store=True, readonly=False)
+        index=True, related='resource_id.company_id', store=True, readonly=False)
     resource_calendar_id = fields.Many2one(
         'resource.calendar', 'Working Hours',
         default=lambda self: self.env.company.resource_calendar_id,
@@ -74,7 +80,7 @@ class ResourceMixin(models.AbstractModel):
         default['resource_id'] = resource.id
         default['company_id'] = resource.company_id.id
         default['resource_calendar_id'] = resource.calendar_id.id
-        return super().copy_data(default)
+        return super(ResourceMixin, self).copy_data(default)
 
     def _get_work_days_data_batch(self, from_datetime, to_datetime, compute_leaves=True, calendar=None, domain=None):
         """
@@ -104,6 +110,7 @@ class ResourceMixin(models.AbstractModel):
                 for calendar_resource in calendar_resources:
                     result[calendar_resource.id] = {'days': 0, 'hours': 0}
                 continue
+            day_total = calendar._get_resources_day_total(from_datetime, to_datetime, calendar_resources)
 
             # actual hours per day
             if compute_leaves:
@@ -112,10 +119,10 @@ class ResourceMixin(models.AbstractModel):
                 intervals = calendar._attendance_intervals_batch(from_datetime, to_datetime, calendar_resources)
 
             for calendar_resource in calendar_resources:
-                result[calendar_resource.id] = calendar._get_attendance_intervals_days_data(intervals[calendar_resource.id])
+                result[calendar_resource.id] = calendar._get_days_data(intervals[calendar_resource.id], day_total[calendar_resource.id])
 
         # convert "resource: result" into "employee: result"
-        return {mapped_employees[r.id]: result[r.id] for r in resources}
+        return {mapped_employees[r.id]: result[r.id] for r in resources} 
 
     def _get_leave_days_data_batch(self, from_datetime, to_datetime, calendar=None, domain=None):
         """
@@ -141,13 +148,16 @@ class ResourceMixin(models.AbstractModel):
             mapped_resources[calendar or record.resource_calendar_id] |= record.resource_id
 
         for calendar, calendar_resources in mapped_resources.items():
+            day_total = calendar._get_resources_day_total(from_datetime, to_datetime, calendar_resources)
+
             # compute actual hours per day
             attendances = calendar._attendance_intervals_batch(from_datetime, to_datetime, calendar_resources)
             leaves = calendar._leave_intervals_batch(from_datetime, to_datetime, calendar_resources, domain)
 
             for calendar_resource in calendar_resources:
-                result[calendar_resource.id] = calendar._get_attendance_intervals_days_data(
-                    attendances[calendar_resource.id] & leaves[calendar_resource.id]
+                result[calendar_resource.id] = calendar._get_days_data(
+                    attendances[calendar_resource.id] & leaves[calendar_resource.id],
+                    day_total[calendar_resource.id]
                 )
 
         # convert "resource: result" into "employee: result"
@@ -173,7 +183,7 @@ class ResourceMixin(models.AbstractModel):
             containing at least an attendance.
         """
         resource = self.resource_id
-        calendar = calendar or self.resource_calendar_id or self.company_id.resource_calendar_id
+        calendar = calendar or self.resource_calendar_id
 
         # naive datetimes are made explicit in UTC
         if not from_datetime.tzinfo:

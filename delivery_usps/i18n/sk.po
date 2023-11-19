@@ -1,27 +1,27 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* delivery_usps
-#
+# * delivery_usps
+# 
 # Translators:
-# SAKodoo <sak@odoo.com>, 2022
-# Martin Trigaux, 2022
-#
+# Martin Trigaux, 2018
+# Matus Krnac <matus.krnac@gmail.com>, 2018
+# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~11.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Slovak (https://app.transifex.com/odoo/teams/41243/sk/)\n"
-"Language: sk\n"
+"POT-Creation-Date: 2018-09-21 14:06+0000\n"
+"PO-Revision-Date: 2018-09-21 14:06+0000\n"
+"Last-Translator: Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2018\n"
+"Language-Team: Slovak (https://www.transifex.com/odoo/teams/41243/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: sk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_intl_non_delivery_option__abandon
+#: selection:delivery.carrier,usps_intl_non_delivery_option:0
 msgid "Abandon"
 msgstr "Prerušiť"
 
@@ -31,16 +31,22 @@ msgid "Account Validated"
 msgstr "Účet overený"
 
 #. module: delivery_usps
+#: selection:delivery.carrier,delivery_type:0
+msgid "Based on Rules"
+msgstr "Na základe pravidiel"
+
+#. module: delivery_usps
 #: model:ir.model.fields,help:delivery_usps.field_delivery_carrier__usps_account_validated
 msgid "Check this box if your account is validated by USPS"
 msgstr "Zaškrtnite toto políčko ak je váš účet overený USPS"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:64
 #, python-format
 msgid "Company phone number is invalid. Please insert a US phone number."
-msgstr "Telefónne číslo spoločnosti je neplatné. Prosím vložte platné US telefónne číslo."
+msgstr ""
+"Telefónne číslo spoločnosti je neplatné. Prosím vložte platné US telefónne "
+"číslo."
 
 #. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_content_type
@@ -48,103 +54,125 @@ msgid "Content Type"
 msgstr "Typ obsahu"
 
 #. module: delivery_usps
+#: selection:delivery.carrier,delivery_type:0
+msgid "DHL"
+msgstr ""
+
+#. module: delivery_usps
+#: model:ir.model,name:delivery_usps.model_delivery_carrier
+msgid "Delivery Methods"
+msgstr "Dodacie metódy"
+
+#. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_delivery_nature
 msgid "Delivery Nature"
 msgstr "Charakter dodania"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_content_type__documents
+#: selection:delivery.carrier,usps_content_type:0
 msgid "Documents"
 msgstr "Dokumenty"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_delivery_nature__domestic
+#: selection:delivery.carrier,usps_delivery_nature:0
 msgid "Domestic"
-msgstr "Vnútroštátna preprava"
+msgstr "Domáce"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/delivery_usps.py:0
+#: selection:delivery.carrier,delivery_type:0
+msgid "Easypost"
+msgstr ""
+
+#. module: delivery_usps
+#: code:addons/delivery_usps/models/delivery_usps.py:104
 #, python-format
 msgid ""
 "Error:\n"
 "%s"
 msgstr ""
-"Chyba:\n"
-"%s"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_service__express
+#: selection:delivery.carrier,usps_service:0
 msgid "Express"
-msgstr "Express"
+msgstr "Expres"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_service__first_class
+#: selection:delivery.carrier,delivery_type:0
+msgid "FedEx"
+msgstr ""
+
+#. module: delivery_usps
+#: selection:delivery.carrier,usps_service:0
 msgid "First Class"
 msgstr "Prvá trieda"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_first_class_mail_type__flat
+#: selection:delivery.carrier,delivery_type:0
+msgid "Fixed Price"
+msgstr "Pevná cena"
+
+#. module: delivery_usps
+#: selection:delivery.carrier,usps_first_class_mail_type:0
 msgid "Flat"
 msgstr "Plochý"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_mail_type__flatrate
+#: selection:delivery.carrier,usps_mail_type:0
 msgid "Flat Rate"
 msgstr "Jednotná sadzba"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__flat_rate_box
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_international_regular_container__flatratebox
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_mail_type__flatratebox
+#: selection:delivery.carrier,usps_domestic_regular_container:0
+#: selection:delivery.carrier,usps_international_regular_container:0
+#: selection:delivery.carrier,usps_mail_type:0
 msgid "Flat Rate Box"
 msgstr "Box jednotnej sadzby"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__flat_rate_envelope
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_international_regular_container__flatrateenv
+#: selection:delivery.carrier,usps_domestic_regular_container:0
+#: selection:delivery.carrier,usps_international_regular_container:0
 msgid "Flat Rate Envelope"
 msgstr "Obálka jednotnej sadzby"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_content_type__gift
+#: model_terms:ir.ui.view,arch_db:delivery_usps.usps_shipping_request
+msgid "From Company"
+msgstr "Od spoločnosti"
+
+#. module: delivery_usps
+#: selection:delivery.carrier,usps_content_type:0
 msgid "Gift"
 msgstr "Dar"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_delivery_nature__international
+#: selection:delivery.carrier,usps_delivery_nature:0
 msgid "International"
 msgstr "Medzinárodný"
 
 #. module: delivery_usps
-#: model_terms:ir.ui.view,arch_db:delivery_usps.view_delivery_carrier_form_with_provider_usps
-msgid "Label Format"
-msgstr ""
-
-#. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_size_container__large
+#: selection:delivery.carrier,usps_size_container:0
 msgid "Large"
 msgstr "Veľké"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_mail_type__largeenvelope
+#: selection:delivery.carrier,usps_mail_type:0
 msgid "Large Envelope"
 msgstr "Veľká obálka"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__lg_flat_rate_box
+#: selection:delivery.carrier,usps_domestic_regular_container:0
 msgid "Large Flat Rate Box"
 msgstr "Veľký box jednotnej sadzby"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__legal_flat_rate_envelope
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_international_regular_container__legalflatrateenv
+#: selection:delivery.carrier,usps_domestic_regular_container:0
+#: selection:delivery.carrier,usps_international_regular_container:0
 msgid "Legal Flat Rate Envelope"
 msgstr "Právna obálka s jednotnou sadzbou"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_first_class_mail_type__letter
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_mail_type__letter
+#: selection:delivery.carrier,usps_first_class_mail_type:0
+#: selection:delivery.carrier,usps_mail_type:0
 msgid "Letter"
 msgstr "Dopis"
 
@@ -154,12 +182,12 @@ msgid "Machinable"
 msgstr "Spracovateľné"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__md_flat_rate_box
+#: selection:delivery.carrier,usps_domestic_regular_container:0
 msgid "Medium Flat Rate Box"
 msgstr "Stredný box s jendotnou sadzbou"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_content_type__merchandise
+#: selection:delivery.carrier,usps_content_type:0
 msgid "Merchandise"
 msgstr "Tovar"
 
@@ -169,110 +197,108 @@ msgid "Non delivery option"
 msgstr "Nedoručovacia možnosť"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_container__nonrectangular
+#: selection:delivery.carrier,usps_container:0
 msgid "Non-rectangular"
 msgstr "Neštvorcové"
 
 #. module: delivery_usps
-#: model_terms:ir.ui.view,arch_db:delivery_usps.view_delivery_carrier_form_with_provider_usps
-msgid "Options"
-msgstr "Možnosti"
-
-#. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_label_file_type__pdf
+#: selection:delivery.carrier,usps_label_file_type:0
 msgid "PDF"
 msgstr "PDF"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_mail_type__package
+#: selection:delivery.carrier,usps_mail_type:0
 msgid "Package"
 msgstr "Balík"
 
 #. module: delivery_usps
-#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_girth
-msgid "Package Girth"
-msgstr ""
-
-#. module: delivery_usps
-#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_height
-msgid "Package Height"
-msgstr ""
-
-#. module: delivery_usps
-#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_length
-msgid "Package Length"
-msgstr ""
-
-#. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_first_class_mail_type__package_service
+#: selection:delivery.carrier,usps_first_class_mail_type:0
 msgid "Package Service"
 msgstr "Balíková služba"
 
 #. module: delivery_usps
-#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_width
-msgid "Package Width"
-msgstr ""
+#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_girth
+msgid "Package girth (in inches)"
+msgstr "Obvod balíka (v palcoch)"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__padded_flat_rate_envelope
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_international_regular_container__paddedflatrateenv
+#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_height
+msgid "Package height (in inches)"
+msgstr "Výška balíka (v palcoch)"
+
+#. module: delivery_usps
+#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_length
+msgid "Package length (in inches)"
+msgstr "Dĺžka balíka (v palcoch)"
+
+#. module: delivery_usps
+#: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_custom_container_width
+msgid "Package width (in inches)"
+msgstr "Šírka balíka (v palcoch)"
+
+#. module: delivery_usps
+#: selection:delivery.carrier,usps_domestic_regular_container:0
+#: selection:delivery.carrier,usps_international_regular_container:0
 msgid "Padded Flat Rate Envelope"
 msgstr "Vypchaná obálka jednotnej sadzby"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_first_class_mail_type__parcel
+#: selection:delivery.carrier,usps_first_class_mail_type:0
 msgid "Parcel"
 msgstr "Zásielka"
 
 #. module: delivery_usps
 #: model:ir.model.fields,help:delivery_usps.field_delivery_carrier__usps_machinable
-msgid "Please check on USPS website to ensure that your package is machinable."
-msgstr "Prosím skontrolujte na webstránke USPS aby ste sa ubezpečili že váš balík je spracovateľný."
+msgid ""
+"Please check on USPS website to ensure that your package is machinable."
+msgstr ""
+"Prosím skontrolujte na webstránke USPS aby ste sa ubezpečili že váš balík je"
+" spracovateľný."
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:83
 #, python-format
-msgid "Please choose another service (maximum weight of this service is 4 pounds)"
+msgid ""
+"Please choose another service (maximum weight of this service is 4 pounds)"
 msgstr ""
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:69
 #, python-format
 msgid "Please enter a valid ZIP code in recipient address"
 msgstr "Prosím zadajte platné PSČ v adrese príjemcu"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:62
 #, python-format
 msgid "Please enter a valid ZIP code in your Company address"
 msgstr "Prosím zadajte platné PSČ v adrese vašej spoločnosti"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:76
 #, python-format
 msgid "Please provide at least one item to ship."
 msgstr "Prosím poskytnite aspoň jednu položku na poslanie."
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:60
 #, python-format
-msgid "Please set country U.S.A in your company address, Service is only available for U.S.A"
-msgstr "Prosím zadajte krajinu U.S.A. v adrese vašej spoločnosti, služba je dostupná iba pre U.S.A."
+msgid ""
+"Please set country U.S.A in your company address, Service is only available "
+"for U.S.A"
+msgstr ""
+"Prosím zadajte krajinu U.S.A. v adrese vašej spoločnosti, služba je dostupná"
+" iba pre U.S.A."
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_first_class_mail_type__postcard
+#: selection:delivery.carrier,usps_first_class_mail_type:0
 msgid "Postcard"
 msgstr "Pohľadnica"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_service__priority
+#: selection:delivery.carrier,usps_service:0
 msgid "Priority"
-msgstr "Priority"
+msgstr "Priorita"
 
 #. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__delivery_type
@@ -280,26 +306,18 @@ msgid "Provider"
 msgstr "Poskytovateľ"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
-#, python-format
-msgid "Quantity for each move line should be less than 1000."
-msgstr ""
-
-#. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:372
 #, python-format
 msgid "Recipient address cannot be found. Please check the address exists."
 msgstr ""
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_container__rectangular
+#: selection:delivery.carrier,usps_container:0
 msgid "Rectangular"
 msgstr "Štvorcové"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_intl_non_delivery_option__redirect
+#: selection:delivery.carrier,usps_intl_non_delivery_option:0
 msgid "Redirect"
 msgstr "Presmerovať"
 
@@ -309,70 +327,55 @@ msgid "Redirect Partner"
 msgstr "Persmerovať partnera"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_size_container__regular
+#: selection:delivery.carrier,usps_size_container:0
 msgid "Regular"
 msgstr "Bežné"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_container__variable
+#: selection:delivery.carrier,usps_container:0
 msgid "Regular < 12 inch"
 msgstr "Prvidelné < 12 palcov"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_content_type__return
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_intl_non_delivery_option__return
+#: selection:delivery.carrier,usps_content_type:0
+#: selection:delivery.carrier,usps_intl_non_delivery_option:0
 msgid "Return"
 msgstr "Návrat"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_content_type__sample
+#: selection:delivery.carrier,usps_content_type:0
 msgid "Sample"
 msgstr "Vzorka"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/delivery_usps.py:0
+#: code:addons/delivery_usps/models/delivery_usps.py:169
 #, python-format
-msgid "Shipment #%s has been cancelled"
-msgstr ""
+msgid "Shipment N° %s has been cancelled"
+msgstr "Zásielka N° %s bola zrušená"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/delivery_usps.py:0
+#: code:addons/delivery_usps/models/delivery_usps.py:149
 #, python-format
-msgid "Shipment created into USPS"
-msgstr ""
+msgid "Shipment created into USPS <br/> <b>Tracking Number : </b>%s"
+msgstr "Zásielka vytvorená v USPS  <br/> <b>Sledovacie číslo : </b>%s"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/delivery_usps.py:0
-#, python-format
-msgid "Shipment created into USPS <br/> <b>Tracking Number: </b>%s"
-msgstr ""
-
-#. module: delivery_usps
-#: model:ir.model,name:delivery_usps.model_delivery_carrier
-msgid "Shipping Methods"
-msgstr "Spôsoby dopravy"
-
-#. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__sm_flat_rate_box
+#: selection:delivery.carrier,usps_domestic_regular_container:0
 msgid "Small Flat Rate Box"
 msgstr "Malý box s jendotnou sadzbou"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_domestic_regular_container__sm_flat_rate_envelope
+#: selection:delivery.carrier,usps_domestic_regular_container:0
 msgid "Small Flat Rate Envelope"
 msgstr "Malá obálka s jednotnou sadzbou"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__usps_label_file_type__tif
+#: selection:delivery.carrier,usps_label_file_type:0
 msgid "TIF"
-msgstr "TIF"
+msgstr ""
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:58
 #, python-format
 msgid ""
 "The address of your company is missing or wrong (Missing field(s) :  \n"
@@ -382,17 +385,16 @@ msgstr ""
 "%s)"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:78
 #, python-format
 msgid ""
-"The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
-" %s"
+"The estimated price cannot be computed because the weight of your product is"
+" missing."
 msgstr ""
+"Odhadovaná cena nemôže by vypočítaná, pretože chýba váha vášho produktu."
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:67
 #, python-format
 msgid ""
 "The recipient address is missing or wrong (Missing field(s) :  \n"
@@ -402,18 +404,15 @@ msgstr ""
 "%s)"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:167
 #, python-format
 msgid "The selected USPS service (%s) cannot be used to deliver this package."
 msgstr ""
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/delivery_usps.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:delivery_usps.usps_shipping_request
+msgid "To Company"
+msgstr "Spoločnosti"
 
 #. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_international_regular_container
@@ -431,7 +430,12 @@ msgid "Type of container"
 msgstr "Typ kontajnera"
 
 #. module: delivery_usps
-#: model:ir.model.fields.selection,name:delivery_usps.selection__delivery_carrier__delivery_type__usps
+#: selection:delivery.carrier,delivery_type:0
+msgid "UPS"
+msgstr ""
+
+#. module: delivery_usps
+#: selection:delivery.carrier,delivery_type:0
 msgid "USPS"
 msgstr ""
 
@@ -441,16 +445,24 @@ msgid "USPS Configuration"
 msgstr "USPS konfigurácia"
 
 #. module: delivery_usps
+#: model_terms:ir.ui.view,arch_db:delivery_usps.res_config_settings_view_form_sale
+#: model_terms:ir.ui.view,arch_db:delivery_usps.res_config_settings_view_form_stock
+msgid "USPS Delivery Methods"
+msgstr ""
+
+#. module: delivery_usps
 #: model:delivery.carrier,name:delivery_usps.delivery_carrier_usps_domestic
+#: model:product.product,name:delivery_usps.product_product_delivery_usps_domestic
 #: model:product.template,name:delivery_usps.product_product_delivery_usps_domestic_product_template
 msgid "USPS Domestic Flat Rate Envelope"
 msgstr ""
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:73
 #, python-format
-msgid "USPS Domestic is used only to ship inside of the U.S.A. Please change the delivery method into USPS International."
+msgid ""
+"USPS Domestic is used only to ship inside of the U.S.A. Please change the "
+"delivery method into USPS International."
 msgstr ""
 
 #. module: delivery_usps
@@ -460,15 +472,17 @@ msgstr ""
 
 #. module: delivery_usps
 #: model:delivery.carrier,name:delivery_usps.delivery_carrier_usps_international
+#: model:product.product,name:delivery_usps.product_product_delivery_usps_international
 #: model:product.template,name:delivery_usps.product_product_delivery_usps_international_product_template
 msgid "USPS International Flat Rate Box"
 msgstr "USPS medzinárodné box s pevnou sadzbou"
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:71
 #, python-format
-msgid "USPS International is used only to ship outside of the U.S.A. Please change the delivery method into USPS Domestic."
+msgid ""
+"USPS International is used only to ship outside of the U.S.A. Please change "
+"the delivery method into USPS Domestic."
 msgstr ""
 
 #. module: delivery_usps
@@ -487,15 +501,17 @@ msgid "USPS Service"
 msgstr "USPS služba"
 
 #. module: delivery_usps
-#: model_terms:ir.ui.view,arch_db:delivery_usps.res_config_settings_view_form_sale
-#: model_terms:ir.ui.view,arch_db:delivery_usps.res_config_settings_view_form_stock
-msgid "USPS Shipping Methods"
-msgstr ""
-
-#. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_username
 msgid "USPS User ID"
 msgstr "USPS ID používateľa"
+
+#. module: delivery_usps
+#: model:product.product,uom_name:delivery_usps.product_product_delivery_usps_domestic
+#: model:product.product,uom_name:delivery_usps.product_product_delivery_usps_international
+#: model:product.template,uom_name:delivery_usps.product_product_delivery_usps_domestic_product_template
+#: model:product.template,uom_name:delivery_usps.product_product_delivery_usps_international_product_template
+msgid "Unit(s)"
+msgstr "ks"
 
 #. module: delivery_usps
 #: model:ir.model.fields,field_description:delivery_usps.field_delivery_carrier__usps_size_container
@@ -503,13 +519,20 @@ msgid "Usps Size Container"
 msgstr ""
 
 #. module: delivery_usps
-#. odoo-python
-#: code:addons/delivery_usps/models/usps_request.py:0
+#: code:addons/delivery_usps/models/usps_request.py:374
 #, python-format
 msgid "Your company or recipient ZIP code is incorrect."
 msgstr ""
 
 #. module: delivery_usps
-#: model_terms:ir.ui.view,arch_db:delivery_usps.view_delivery_carrier_form_with_provider_usps
-msgid "inch"
+#: selection:delivery.carrier,delivery_type:0
+msgid "bpost"
 msgstr ""
+
+#. module: delivery_usps
+#: model:product.product,weight_uom_name:delivery_usps.product_product_delivery_usps_domestic
+#: model:product.product,weight_uom_name:delivery_usps.product_product_delivery_usps_international
+#: model:product.template,weight_uom_name:delivery_usps.product_product_delivery_usps_domestic_product_template
+#: model:product.template,weight_uom_name:delivery_usps.product_product_delivery_usps_international_product_template
+msgid "kg"
+msgstr "kg"

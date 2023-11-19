@@ -68,8 +68,6 @@ class HrContract(models.Model):
         string="Laptop",
         tracking=True,
         help="A benefit in kind is paid when the employee uses its laptop at home.")
-    has_bicycle = fields.Boolean(string="Bicycle to work", default=False, groups="hr_contract.group_hr_contract_manager",
-        help="Use a bicycle as a transport mode to go to work")
     meal_voucher_amount = fields.Monetary(
         string="Meal Vouchers",
         tracking=True,
@@ -123,10 +121,10 @@ class HrContract(models.Model):
         string="Has Ambulatory Insurance",
         groups="hr_contract.group_hr_contract_employee_manager", tracking=True)
     l10n_be_ambulatory_insured_children = fields.Integer(
-        string="Ambulatory: # Insured Children < 19 y/o",
+        string="Ambulatory: # Insured Children < 19",
         groups="hr_contract.group_hr_contract_employee_manager", tracking=True)
     l10n_be_ambulatory_insured_adults = fields.Integer(
-        string="Ambulatory: # Insured Children >= 19 y/o",
+        string="Ambulatory: # Insured Children >= 19",
         groups="hr_contract.group_hr_contract_employee_manager", tracking=True)
     l10n_be_ambulatory_insured_spouse = fields.Boolean(
         string="Ambulatory: Insured Spouse",
@@ -219,30 +217,6 @@ class HrContract(models.Model):
         return [('id', 'in' if value else 'not in', below_contracts.ids)]
 
 
-    @api.model
-    def _benefit_white_list(self):
-        return super()._benefit_white_list() + [
-            'insurance_amount',
-            'ip_value',
-            'l10n_be_ambulatory_insurance_amount',
-            'meal_voucher_paid_monthly_by_employer',
-        ]
-
-    @api.onchange('has_hospital_insurance')
-    def _onchange_has_hospital_insurance(self):
-        if not self.has_hospital_insurance:
-            self.insured_relative_spouse = False
-            self.insured_relative_adults = 0
-            self.insured_relative_children = 0
-
-    @api.onchange('l10n_be_has_ambulatory_insurance')
-    def _onchange_l10n_be_has_ambulatory_insurance(self):
-        if not self.l10n_be_has_ambulatory_insurance:
-            self.l10n_be_ambulatory_insured_spouse = False
-            self.l10n_be_ambulatory_insured_adults = 0
-            self.l10n_be_ambulatory_insured_children = 0
-
-
     @api.depends('has_hospital_insurance', 'insured_relative_adults', 'insured_relative_spouse')
     def _compute_insured_relative_adults_total(self):
         for contract in self:
@@ -296,7 +270,7 @@ class HrContract(models.Model):
         # maximum of € 6.91 per check and per day provided, while the participation
         # of the second must amount to a minimum of € 1.09.
         for contract in self:
-            contract.meal_voucher_paid_by_employer = max(0, contract.meal_voucher_amount - 1.09)
+            contract.meal_voucher_paid_by_employer = contract.meal_voucher_amount - 1.09
             monthly_nb_meal_voucher = 220.0 / 12
             contract.meal_voucher_paid_monthly_by_employer = contract.meal_voucher_paid_by_employer * monthly_nb_meal_voucher
             contract.meal_voucher_average_monthly_amount = contract.meal_voucher_amount * monthly_nb_meal_voucher
@@ -347,14 +321,6 @@ class HrContract(models.Model):
             self.train_transport_reimbursed_amount = 0
         if not self.transport_mode_public:
             self.public_transport_reimbursed_amount = 0
-        if self.transport_mode_car or self.car_id:
-            self.transport_mode_private_car = False
-
-    @api.onchange('transport_mode_private_car')
-    def _onchange_transport_mode_private_car(self):
-        if self.transport_mode_private_car:
-            self.transport_mode_car = False
-            self.fuel_card = 0
 
     @api.depends('holidays', 'wage', 'final_yearly_costs', 'l10n_be_group_insurance_rate')
     def _compute_wage_with_holidays(self):
@@ -380,10 +346,6 @@ class HrContract(models.Model):
 
     def _get_yearly_cost_sacrifice_fixed(self):
         return super()._get_yearly_cost_sacrifice_fixed() + self._get_salary_costs_factor() * self.wage * self.l10n_be_group_insurance_rate / 100
-
-    @api.depends('schedule_pay')
-    def _compute_final_yearly_costs(self):
-        return super()._compute_final_yearly_costs()
 
     def _get_salary_costs_factor(self):
         self.ensure_one()
@@ -439,17 +401,18 @@ class HrContract(models.Model):
     @api.model
     def update_state(self):
         # Called by a cron
-        # It sets the contract in red before the expiration of a credit time contract
-        date_today = fields.Date.today()
-        outdated_days = date_today + relativedelta(days=14)
-        nearly_expired_contracts = self.search([
-            ('state', '=', 'open'),
-            ('kanban_state', '!=', 'blocked'),
-            ('time_credit', '=', True),
-            ('date_end', '<', outdated_days),
-        ])
+        # It schedules an activity before the expiration of a credit time contract
+        date_today = fields.Date.from_string(fields.Date.today())
+        outdated_days = fields.Date.to_string(date_today + relativedelta(days=+14))
+        nearly_expired_contracts = self.search([('state', '=', 'open'), ('time_credit', '=', True), ('date_end', '<', outdated_days)])
         nearly_expired_contracts.write({'kanban_state': 'blocked'})
-        return super().update_state()
+
+        for contract in nearly_expired_contracts.filtered(lambda contract: contract.hr_responsible_id):
+            contract.with_context(mail_activity_quick_update=True).activity_schedule(
+                'mail.mail_activity_data_todo', contract.date_end,
+                user_id=contract.hr_responsible_id.id)
+
+        return super(HrContract, self).update_state()
 
     def _preprocess_work_hours_data_split_half(self, work_data, date_from, date_to):
         """
@@ -472,27 +435,29 @@ class HrContract(models.Model):
         number_of_hours_full_day = self.resource_calendar_id._get_max_number_of_hours(date_from, date_to)
 
         # First, found work entry that didn't exceed interval.
-        work_entries = self.env['hr.work.entry']._read_group(
+        work_entries = self.env['hr.work.entry'].read_group(
             self._get_work_hours_domain(date_from, date_to, domain=domain, inside=True),
+            ['hours:sum(duration)', 'work_entry_type_id'],
             ['date_start:day', 'work_entry_type_id'],
-            ['duration:sum']
+            lazy=False
         )
 
         self._preprocess_work_hours_data_split_half(work_entries, date_from, date_to)
 
-        for _date_start_day, work_entry_type, duration_sum in work_entries:
-            work_entry_type_id = work_entry_type.id
-            if float_compare(duration_sum, number_of_hours_full_day, 2) != -1:
+        for day_data in work_entries:
+            work_entry_type_id = day_data['work_entry_type_id'][0] if day_data['work_entry_type_id'] else False
+            duration = day_data['hours']
+            if float_compare(day_data['hours'], number_of_hours_full_day, 2) != -1:
                 if number_of_hours_full_day:
-                    number_of_days = float_round(duration_sum / number_of_hours_full_day, precision_rounding=1, rounding_method='HALF-UP')
+                    number_of_days = float_round(duration / number_of_hours_full_day, precision_rounding=1, rounding_method='HALF-UP')
                 else:
                     number_of_days = 1 # If not supposed to work in calendar attendances, then there
                                        # are not time offs
                 work_data[('full', work_entry_type_id)][0] += number_of_days
-                work_data[('full', work_entry_type_id)][1] += duration_sum
+                work_data[('full', work_entry_type_id)][1] += duration
             else:
                 work_data[('half', work_entry_type_id)][0] += 1
-                work_data[('half', work_entry_type_id)][1] += duration_sum
+                work_data[('half', work_entry_type_id)][1] += duration
 
         # Second, find work entry that exceeds interval and compute right duration.
         work_entries = self.env['hr.work.entry'].search(self._get_work_hours_domain(date_from, date_to, domain=domain, inside=False))
@@ -509,9 +474,9 @@ class HrContract(models.Model):
                 )[employee.id]
                 if float_compare(contract_data.get('hours', 0), number_of_hours_full_day, 2) != -1:
                     work_data[('full', work_entry.work_entry_type_id.id)][0] += 1
-                    work_data[('full', work_entry.work_entry_type_id.id)][1] += work_entry.duration
+                    work_data[('full', work_entry.work_entry_type_id.id)][1] += duration
                 else:
-                    work_data[('half', work_entry.work_entry_type_id.id)][1] += work_entry.duration
+                    work_data[('half', work_entry.work_entry_type_id.id)][1] += duration
             else:
                 dt = date_stop - date_start
                 work_data[('half', work_entry.work_entry_type_id.id)] += dt.days * 24 + dt.seconds / 3600  # Number of hours
@@ -520,7 +485,7 @@ class HrContract(models.Model):
     # override to add work_entry_type from leave
     def _get_leave_work_entry_type_dates(self, leave, date_from, date_to, employee):
         result = super()._get_leave_work_entry_type_dates(leave, date_from, date_to, employee)
-        if not self._is_struct_from_country('BE'):
+        if self.structure_type_id.country_id.code != 'BE':
             return result
 
         # The public holidays are paid only during the 14 first days of unemployment
@@ -671,14 +636,7 @@ class HrContract(models.Model):
         return super()._get_bypassing_work_entry_type_codes() + [
             'LEAVE280', # Long term sick
             'LEAVE281', # Partial Incapacity
-            # 'LEAVE110', # Sick Leave - Actually Sick Leave < Public Time Off
-                          # If the employee does not have to work on a public
-                          # holiday but falls ill when he could have benefited
-                          # from a well-deserved day off, he is not entitled to
-                          # a guaranteed salary but to remuneration in accordance
-                          # with the days holidays. In fact, the employee is
-                          # entitled to remuneration for each public holiday falling
-                          # within 30 calendar days of the onset of his illness.
+            'LEAVE110', # Sick Leave
         ]
 
     def _is_same_occupation(self, contract):
@@ -710,7 +668,6 @@ class HrContract(models.Model):
                    dimona_link,
                    self.employee_id.name),
             user_id=self.hr_responsible_id.id or self.env.user.id,
-            summary='Dimona',
             )
 
     def _trigger_l10n_be_next_activities(self):
@@ -720,9 +677,7 @@ class HrContract(models.Model):
             ('id', 'not in', self.ids),
         ]
         employees_already_started = self.env['hr.contract'].search(employees_with_contract_domain).mapped('employee_id')
-        for contract in self:
-            if not contract._is_struct_from_country('BE'):
-                continue
+        for contract in self.filtered(lambda c: c.structure_type_id and c.structure_type_id.country_id.code == "BE"):
             if contract.time_credit:
                 contract._create_credit_time_next_activity()
             if contract.employee_id not in employees_already_started:
@@ -784,11 +739,3 @@ class HrContract(models.Model):
             'no_onss',
             'no_withholding_taxes',
         ]
-
-    def action_work_schedule_change_wizard(self):
-        self.ensure_one()
-        if self.state not in ('draft', 'open'):
-            return False
-        action = self.env['ir.actions.actions']._for_xml_id('l10n_be_hr_payroll.schedule_change_wizard_action')
-        action['context'] = {'active_id': self.id}
-        return action

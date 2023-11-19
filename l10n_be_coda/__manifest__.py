@@ -5,7 +5,7 @@
 
 {
     'name': 'Belgium - Import Bank CODA Statements',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'version': '2.1',
     'author': 'Noviat',
     'category': 'Accounting/Localizations',

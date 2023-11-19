@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { standardFieldProps } from "@web/views/fields/standard_field_props";
 import { useService } from "@web/core/utils/hooks";
-import { Component, onWillStart } from "@odoo/owl";
+
+const { Component, onWillStart } = owl;
 
 export class SetReservedQuantityButton extends Component {
     setup() {
@@ -20,23 +20,15 @@ export class SetReservedQuantityButton extends Component {
 
     _setQuantity (ev) {
         ev.stopPropagation();
-        this.props.record.update({ [this.props.fieldToSet]: this.props.record.data[this.props.name] });
+        this.props.record.update({ [this.props.fieldToSet]: this.props.value });
     }
 }
-SetReservedQuantityButton.props = {
-    ...standardFieldProps,
-    fieldToSet: { type: String },
+
+SetReservedQuantityButton.extractProps = ({ attrs }) => {
+    if (attrs.field_to_set) {
+        return { fieldToSet: attrs.field_to_set };
+    }
 };
+
 SetReservedQuantityButton.template = 'stock_barcode.SetReservedQuantityButtonTemplate';
-
-export const setReservedQuantityButton = {
-    component: SetReservedQuantityButton,
-    extractProps: ({ attrs }) => {
-        if (attrs.field_to_set) {
-            return { fieldToSet: attrs.field_to_set };
-        }
-        return {};
-    },
-};
-
-registry.category("fields").add("set_reserved_qty_button", setReservedQuantityButton);
+registry.category('fields').add('set_reserved_qty_button', SetReservedQuantityButton);

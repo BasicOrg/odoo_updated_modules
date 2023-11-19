@@ -19,6 +19,7 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='sign.use_sign_terms',
         default=False)
 
+    group_show_sign_order = fields.Boolean(string="Enable Signing Order", implied_group='sign.show_sign_order')
     group_manage_template_access = fields.Boolean(string="Manage template access", implied_group='sign.manage_template_access')
 
     module_sign_itsme = fields.Boolean(string="Identify with itsme®")

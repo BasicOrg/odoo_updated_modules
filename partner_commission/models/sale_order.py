@@ -9,7 +9,7 @@ from odoo import api, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    referrer_id = fields.Many2one('res.partner', 'Referrer', domain=[('grade_id', '!=', False)], tracking=True)
+    referrer_id = fields.Many2one('res.partner', 'Referrer', domain=[('grade_id', '!=', False)])
     commission_plan_frozen = fields.Boolean(
         'Freeze Plan', tracking=True,
         help="Whether the commission plan is frozen. When checked, the commission plan won't automatically be updated according to the partner level.")
@@ -56,8 +56,11 @@ class SaleOrder(models.Model):
                 so.commission_plan_id = so.referrer_id.commission_plan_id
 
     def _set_commission_plan(self):
-        updated_plan_sale_order = self.filtered(lambda order: not order.commission_plan_frozen and order.referrer_id and order.referrer_id.commission_plan_id != order.commission_plan_id)
-        updated_plan_sale_order.commission_plan_frozen = True
+        for order in self:
+            if not order.commission_plan_frozen and order.referrer_id and order.referrer_id.commission_plan_id != order.commission_plan_id:
+                order.commission_plan_frozen = True
+            else:
+                order.commission_plan_frozen = False
 
     def _prepare_invoice(self):
         invoice_vals = super()._prepare_invoice()
@@ -67,9 +70,9 @@ class SaleOrder(models.Model):
             })
         return invoice_vals
 
-    def _prepare_upsell_renew_order_values(self, subscription_state):
+    def _prepare_upsell_renew_order_values(self, subscription_management):
         self.ensure_one()
-        values = super()._prepare_upsell_renew_order_values(subscription_state)
+        values = super()._prepare_upsell_renew_order_values(subscription_management)
         if self.referrer_id:
             values.update({
                 'referrer_id': self.referrer_id.id,

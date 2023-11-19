@@ -5,7 +5,7 @@ from freezegun import freeze_time
 
 from odoo import fields
 from odoo.fields import Command
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged, Form
 from odoo.tools import float_compare
 
@@ -79,10 +79,7 @@ class TestSaleOrder(SaleCommon):
         # send quotation
         email_act = self.sale_order.action_quotation_send()
         email_ctx = email_act.get('context', {})
-        self.sale_order.with_context(**email_ctx).message_post_with_source(
-            self.env['mail.template'].browse(email_ctx.get('default_template_id')),
-            subtype_xmlid='mail.mt_comment',
-        )
+        self.sale_order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
         self.assertTrue(self.sale_order.state == 'sent', 'Sale: state after sending is wrong')
         self.sale_order.order_line._compute_product_updatable()
         self.assertTrue(self.sale_order.order_line[0].product_updatable)
@@ -104,10 +101,7 @@ class TestSaleOrder(SaleCommon):
         # sent to to author or not (in case author is present in 'Recipients' of composer).
         mail_template = self.env['mail.template'].browse(email_ctx.get('default_template_id')).copy({'auto_delete': False})
         # send the mail with same user as customer
-        sale_order.with_context(**email_ctx).with_user(self.sale_user).message_post_with_source(
-            mail_template,
-            subtype_xmlid='mail.mt_comment',
-        )
+        sale_order.with_context(**email_ctx).with_user(self.sale_user).message_post_with_template(mail_template.id)
         self.assertTrue(sale_order.state == 'sent', 'Sale : state should be changed to sent')
         mail_message = sale_order.message_ids[0]
         self.assertEqual(mail_message.author_id, sale_order.partner_id, 'Sale: author should be same as customer')
@@ -160,19 +154,18 @@ class TestSaleOrder(SaleCommon):
             so_copy.with_user(self.sale_user).unlink()
         self.assertTrue(so_copy.unlink(), 'Sale: deleting a cancelled SO should be possible')
 
-        # SO in state 'sale' cannot be deleted
+        # SO in state 'sale' or 'done' cannot be deleted
         self.sale_order.action_confirm()
         self.assertTrue(self.sale_order.state == 'sale', 'Sale: SO should be in state "sale"')
         with self.assertRaises(UserError):
             self.sale_order.unlink()
 
-        self.sale_order.action_lock()
-        self.assertTrue(self.sale_order.state == 'sale')
-        self.assertTrue(self.sale_order.locked)
+        self.sale_order.action_done()
+        self.assertTrue(self.sale_order.state == 'done', 'Sale: SO should be in state "done"')
         with self.assertRaises(UserError):
             self.sale_order.unlink()
 
-    def test_compute_packaging_00(self):
+    def test_onchange_packaging_00(self):
         """Create a SO and use packaging. Check we suggested suitable packaging
         according to the product_qty. Also check product_qty or product_packaging
         are correctly calculated when one of them changed.
@@ -212,85 +205,6 @@ class TestSaleOrder(SaleCommon):
         so_form.save()
         self.assertEqual(so.order_line.product_uom_qty, 12)
 
-        packaging_pack_of_10 = self.env['product.packaging'].create({
-            'name': "PackOf10",
-            'product_id': self.product.id,
-            'qty': 10.0,
-        })
-        packaging_pack_of_20 = self.env['product.packaging'].create({
-            'name': "PackOf20",
-            'product_id': self.product.id,
-            'qty': 20.0,
-        })
-
-        so2 = self.env['sale.order'].create({
-            'partner_id': self.partner.id,
-        })
-        so2_form = Form(so2)
-        with so2_form.order_line.new() as line:
-            line.product_id = self.product
-            line.product_uom_qty = 10
-        so2_form.save()
-        self.assertEqual(so2.order_line.product_packaging_id.id, packaging_pack_of_10.id)
-        self.assertEqual(so2.order_line.product_packaging_qty, 1.0)
-
-        with so2_form.order_line.edit(0) as line:
-            line.product_packaging_qty = 2
-        so2_form.save()
-        self.assertEqual(so2.order_line.product_uom_qty, 20)
-        # we should have 2 pack of 10, as we've set the package_qty manually,
-        # we shouldn't recompute the packaging_id, since the package_qty is protected,
-        # therefor cannot be recomputed during the same transaction, which could lead
-        # to an incorrect line like (qty=20,pack_qty=2,pack_id=PackOf20)
-        self.assertEqual(so2.order_line.product_packaging_qty, 2)
-        self.assertEqual(so2.order_line.product_packaging_id.id, packaging_pack_of_10.id)
-
-        with so2_form.order_line.edit(0) as line:
-            line.product_packaging_id = packaging_pack_of_20
-        so2_form.save()
-        self.assertEqual(so2.order_line.product_uom_qty, 20)
-        # we should have 1 pack of 20, as we've set the package type manually
-        self.assertEqual(so2.order_line.product_packaging_qty, 1)
-        self.assertEqual(so2.order_line.product_packaging_id.id, packaging_pack_of_20.id)
-
-    def test_compute_packaging_01(self):
-        """Create a SO and use packaging in a multicompany environment.
-        Ensure any suggested packaging matches the SO's.
-        """
-        company2 = self.env['res.company'].create([{'name': 'Company 2'}])
-        generic_single_pack = self.env['product.packaging'].create({
-            'name': "single pack",
-            'product_id': self.product.id,
-            'qty': 1.0,
-            'company_id': False,
-        })
-        company2_pack_of_10 = self.env['product.packaging'].create({
-            'name': "pack of 10 by Company 2",
-            'product_id': self.product.id,
-            'qty': 10.0,
-            'company_id': company2.id,
-        })
-
-        so1 = self.empty_order
-        so1_form = Form(so1)
-        with so1_form.order_line.new() as line:
-            line.product_id = self.product
-            line.product_uom_qty = 10.0
-        so1_form.save()
-        self.assertEqual(so1.order_line.product_packaging_id, generic_single_pack)
-        self.assertEqual(so1.order_line.product_packaging_qty, 10.0)
-
-        so2 = self.env['sale.order'].with_company(company2).create({
-            'partner_id': self.partner.id,
-        })
-        so2_form = Form(so2)
-        with so2_form.order_line.new() as line:
-            line.product_id = self.product
-            line.product_uom_qty = 10.0
-        so2_form.save()
-        self.assertEqual(so2.order_line.product_packaging_id, company2_pack_of_10)
-        self.assertEqual(so2.order_line.product_packaging_qty, 1.0)
-
     def _create_sale_order(self):
         """Create dummy sale order (without lines)"""
         return self.env['sale.order'].with_context(
@@ -316,6 +230,7 @@ class TestSaleOrder(SaleCommon):
         self.assertTrue(sale_order.note.startswith("<p>Terms &amp; Conditions: "))
 
     def test_validity_days(self):
+        self.env['ir.config_parameter'].sudo().set_param('sale.use_quotation_validity_days', True)
         self.env.company.quotation_validity_days = 5
         with freeze_time("2020-05-02"):
             sale_order = self._create_sale_order()
@@ -328,7 +243,7 @@ class TestSaleOrder(SaleCommon):
             "No validity date must be specified if the company validity duration is 0")
 
     def test_so_names(self):
-        """Test custom context key for display_name & name_search.
+        """Test custom context key for name_get & name_search.
 
         Note: this key is used in sale_expense & sale_timesheet modules.
         """
@@ -340,7 +255,7 @@ class TestSaleOrder(SaleCommon):
         self.assertNotIn(self.sale_order.partner_id.name, self.sale_order.display_name)
         self.assertIn(
             self.sale_order.partner_id.name,
-            self.sale_order.with_context(sale_show_partner_name=True).display_name)
+            self.sale_order.with_context(sale_show_partner_name=True).name_get()[0][1])
 
     def test_state_changes(self):
         """Test some untested state changes methods & logic."""
@@ -351,8 +266,7 @@ class TestSaleOrder(SaleCommon):
 
         self.env.user.groups_id += self.env.ref('sale.group_auto_done_setting')
         self.sale_order.action_confirm()
-        self.assertEqual(self.sale_order.state, 'sale')
-        self.assertTrue(self.sale_order.locked)
+        self.assertEqual(self.sale_order.state, 'done', "The order wasn't automatically locked at confirmation.")
         with self.assertRaises(UserError):
             self.sale_order.action_confirm()
 
@@ -393,64 +307,6 @@ class TestSaleOrder(SaleCommon):
         })
         self.assertEqual(sale_order.order_line.price_subtotal, 49.44, "Subtotal should be equal to 192 * (1 - 0.7425)")
         self.assertEqual(sale_order.order_line.discount, 74.25)
-
-    def test_tax_amount_rounding(self):
-        """ Check order amounts are rounded according to settings """
-
-        tax_a = self.env['account.tax'].create({
-            'name': 'Test tax',
-            'type_tax_use': 'sale',
-            'price_include': False,
-            'amount_type': 'percent',
-            'amount': 15.0,
-        })
-
-        # Test Round per Line (default)
-        self.env.company.tax_calculation_rounding_method = 'round_per_line'
-        sale_order = self.env['sale.order'].create({
-            'partner_id': self.partner.id,
-            'order_line': [
-                Command.create({
-                    'product_id': self.product.id,
-                    'product_uom_qty': 1,
-                    'price_unit': 6.7,
-                    'discount': 0,
-                    'tax_id': tax_a.ids,
-                }),
-                Command.create({
-                    'product_id': self.product.id,
-                    'product_uom_qty': 1,
-                    'price_unit': 6.7,
-                    'discount': 0,
-                    'tax_id': tax_a.ids,
-                }),
-            ],
-        })
-        self.assertEqual(sale_order.amount_total, 15.42, "")
-
-        # Test Round Globally
-        self.env.company.tax_calculation_rounding_method = 'round_globally'
-        sale_order = self.env['sale.order'].create({
-            'partner_id': self.partner.id,
-            'order_line': [
-                Command.create({
-                    'product_id': self.product.id,
-                    'product_uom_qty': 1,
-                    'price_unit': 6.7,
-                    'discount': 0,
-                    'tax_id': tax_a.ids,
-                }),
-                Command.create({
-                    'product_id': self.product.id,
-                    'product_uom_qty': 1,
-                    'price_unit': 6.7,
-                    'discount': 0,
-                    'tax_id': tax_a.ids,
-                }),
-            ],
-        })
-        self.assertEqual(sale_order.amount_total, 15.41, "")
-
 
 @tagged('post_install', '-at_install')
 class TestSalesTeam(SaleCommon):
@@ -521,7 +377,7 @@ class TestSalesTeam(SaleCommon):
     def test_sale_order_analytic_distribution_change(self):
         self.env.user.groups_id += self.env.ref('analytic.group_analytic_accounting')
 
-        analytic_plan = self.env['account.analytic.plan'].create({'name': 'Plan Test'})
+        analytic_plan = self.env['account.analytic.plan'].create({'name': 'Plan Test', 'company_id': False})
         analytic_account_super = self.env['account.analytic.account'].create({'name': 'Super Account', 'plan_id': analytic_plan.id})
         analytic_account_great = self.env['account.analytic.account'].create({'name': 'Great Account', 'plan_id': analytic_plan.id})
         super_product = self.env['product.product'].create({'name': 'Super Product'})
@@ -561,66 +417,3 @@ class TestSalesTeam(SaleCommon):
         })
         so_no_analytic_account.action_confirm()
         self.assertFalse(sol_no_analytic_account.analytic_distribution, "The compute should not overwrite what the user has set.")
-
-        sale_order.action_confirm()
-        sol_on_confirmed_order = self.env['sale.order.line'].create({
-            'name': super_product.name,
-            'product_id': super_product.id,
-            'order_id': sale_order.id,
-        })
-
-        self.assertEqual(
-            sol_on_confirmed_order.analytic_distribution,
-            {str(analytic_account_super.id): 100},
-            "The analytic distribution should be set to Super Account, even for confirmed orders"
-        )
-
-
-    def test_cannot_assign_tax_of_mismatch_company(self):
-        """ Test that sol cannot have assigned tax belonging to a different company from that of the sale order. """
-        company_a = self.env['res.company'].create({'name': 'A'})
-        company_b = self.env['res.company'].create({'name': 'B'})
-        tax_group_a = self.env['account.tax.group'].create({'name': 'A', 'company_id': company_a.id})
-        tax_group_b = self.env['account.tax.group'].create({'name': 'B', 'company_id': company_b.id})
-        country = self.env['res.country'].search([])[0]
-
-        tax_a = self.env['account.tax'].create({
-            'name': 'A',
-            'amount': 10,
-            'company_id': company_a.id,
-            'tax_group_id': tax_group_a.id,
-            'country_id': country.id,
-        })
-        tax_b = self.env['account.tax'].create({
-            'name': 'B',
-            'amount': 10,
-            'company_id': company_b.id,
-            'tax_group_id': tax_group_b.id,
-            'country_id': country.id,
-        })
-
-        sale_order = self.env['sale.order'].create({
-            'partner_id': self.partner.id,
-            'company_id': company_a.id
-        })
-        product = self.env['product.product'].create({'name': 'Product'})
-
-        # In sudo to simulate an user that have access to both companies.
-        sol = self.env['sale.order.line'].sudo().create({
-            'name': product.name,
-            'product_id': product.id,
-            'order_id': sale_order.id,
-            'tax_id': tax_a,
-        })
-
-        with self.assertRaises(UserError):
-            sol.tax_id = tax_b
-
-    def test_downpayment_amount_constraints(self):
-        """Down payment amounts should be in the interval ]0, 1]."""
-
-        self.sale_order.require_payment = True
-        with self.assertRaises(ValidationError):
-            self.sale_order.prepayment_percent = -1
-        with self.assertRaises(ValidationError):
-            self.sale_order.prepayment_percent = 1.01

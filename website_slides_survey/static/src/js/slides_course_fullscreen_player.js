@@ -1,7 +1,9 @@
-/** @odoo-module **/
+odoo.define('website_slides_survey.fullscreen', function (require) {
+"use strict";
 
-import { renderToElement } from "@web/core/utils/render";
-import Fullscreen from "@website_slides/js/slides_course_fullscreen_player";
+var core = require('web.core');
+var QWeb = core.qweb;
+var Fullscreen = require('@website_slides/js/slides_course_fullscreen_player')[Symbol.for("default")];
 
 Fullscreen.include({
     /**
@@ -15,8 +17,11 @@ Fullscreen.include({
         var def = this._super.apply(this, arguments);
         var $content = this.$('.o_wslides_fs_content');
         if (this.get('slide').category === "certification"){
-            $content.empty().append(renderToElement('website.slides.fullscreen.certification',{widget: this}));
+            $content.html(QWeb.render('website.slides.fullscreen.certification',{widget: this}));
         }
         return Promise.all([def]);
     },
 });
+});
+
+

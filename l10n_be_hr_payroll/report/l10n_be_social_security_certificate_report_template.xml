@@ -18,12 +18,12 @@
                         </div>
                         <div class="row">
                             <div class="col-12 border p-2">
-                                <div class="mb-2">VAT Number: <t t-esc="wizard.company_id.vat"/></div>
-                                <div class="mb-2">ONSS Number: <t t-esc="wizard.company_id.onss_registration_number"/></div>
-                                <div class="mb-2">Numbers of joint committees: 20000</div>
-                                <div class="mb-2">Established on: <span t-field="wizard.create_date"/></div>
-                                <div class="mb-2">Period: From <span t-field="wizard.date_from"/> To <span t-field="wizard.date_to"/></div>
-                                <div class="mb-2">Currency: <t t-esc="wizard.company_id.currency_id.name"/></div>
+                                <div class="mb-2">VAT Number : <t t-esc="wizard.company_id.vat"/></div>
+                                <div class="mb-2">ONSS Number : <t t-esc="wizard.company_id.onss_registration_number"/></div>
+                                <div class="mb-2">Numbers of joint committees : 20000</div>
+                                <div class="mb-2">Established on : <span t-field="wizard.create_date"/></div>
+                                <div class="mb-2">Period : From <span t-field="wizard.date_from"/> To <span t-field="wizard.date_to"/></div>
+                                <div class="mb-2">Currency : <t t-esc="wizard.company_id.currency_id.name"/></div>
                             </div>
                         </div>
                         <t t-foreach="data['report_data']" t-as="report_data">
@@ -198,21 +198,9 @@
                                   <td></td>
                                 </tr>
                                 <tr>
-                                  <th>Cycle Allowance</th>
-                                  <td><t t-esc="round(aggregate_data['cycle_allowance'], 2)"/></td>
-                                  <td><t t-esc="round(aggregate_data['cycle_allowance'], 2)"/></td>
-                                  <td></td>
-                                </tr>
-                                <tr>
                                   <th>Benefits in kind (Company Car)</th>
                                   <td><t t-esc="round(aggregate_data['atn_car'], 2)"/></td>
                                   <td><t t-esc="round(aggregate_data['atn_car'], 2)"/></td>
-                                  <td></td>
-                                </tr>
-                                <tr>
-                                  <th>Canteen Costs</th>
-                                  <td><t t-esc="round(aggregate_data['canteen_costs'], 2)"/></td>
-                                  <td><t t-esc="round(aggregate_data['canteen_costs'], 2)"/></td>
                                   <td></td>
                                 </tr>
                                 <tr>
@@ -349,21 +337,9 @@
                                   <td></td>
                                 </tr>
                                 <tr>
-                                  <th>Withholding Taxes Exemption (Scientific Research) - Doctors / Civil Engineers</th>  <!-- No data -->
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_32'], 2)"/></td>
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_32'], 2)"/></td>
-                                  <td></td>
-                                </tr>
-                                <tr>
-                                  <th>Withholding Taxes Exemption (Scientific Research) - Masters</th>  <!-- No data -->
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_33'], 2)"/></td>
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_33'], 2)"/></td>
-                                  <td></td>
-                                </tr>
-                                <tr>
-                                  <th>Withholding Taxes Exemption (Scientific Research) - Bachelors</th>  <!-- No data -->
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_34'], 2)"/></td>
-                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption_34'], 2)"/></td>
+                                  <th>Withholding Taxes Exemption (Scientific Research)</th>  <!-- No data -->
+                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption'], 2)"/></td>
+                                  <td><t t-esc="round(aggregate_data['withholding_taxes_exemption'], 2)"/></td>
                                   <td></td>
                                 </tr>
                                 <tr>

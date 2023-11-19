@@ -10,19 +10,13 @@ class QualityCheckWizard(models.TransientModel):
 
     worksheet_template_id = fields.Many2one(related='current_check_id.worksheet_template_id')
 
-    def action_generate_next_window(self):
-        if self.is_last_check:
-            return super().action_generate_next_window()
-        next_check_id = self.check_ids[self.position_current_check]
-        if next_check_id.test_type == 'worksheet':
-            return self.check_ids.action_open_quality_check_wizard(next_check_id.id)
-        return super().action_generate_next_window()
-
-    def action_generate_previous_window(self):
-        if self.env.context.get('from_failure_form'):
-            check_id = self.current_check_id
-        else:
-            check_id = self.check_ids[self.position_current_check - 2]
-        if check_id.test_type == 'worksheet':
-            return self.check_ids.action_open_quality_check_wizard(check_id.id)
-        return super().action_generate_previous_window()
+    def do_worksheet(self):
+        check = self.current_check_id
+        action = check.action_quality_worksheet()
+        action['name'] = "%s : %s %s" % (check.product_id.display_name, check.name, check.title or '')
+        action['context'].update(
+            hide_check_button=False,
+            check_ids=self.check_ids.ids,
+            current_check_id=check.id,
+        )
+        return action

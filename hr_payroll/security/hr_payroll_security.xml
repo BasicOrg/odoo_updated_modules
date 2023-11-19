@@ -14,31 +14,22 @@
     </record>
 
     <record id="group_hr_payroll_user" model="res.groups">
-        <field name="name">Officer: Manage all contracts</field>
+        <field name="name">Officer : Manage all contracts</field>
         <field name="category_id" ref="base.module_category_human_resources_payroll"/>
-        <field name="implied_ids" eval="[(4, ref('hr.group_hr_user')), (4, ref('hr_payroll.group_hr_payroll_employee_manager')), (4, ref('hr_contract.group_hr_contract_employee_manager'))]"/>
+        <field name="implied_ids" eval="[(4, ref('hr.group_hr_user')), (4, ref('hr_payroll.group_hr_payroll_employee_manager')), (4, ref('hr_contract.group_hr_contract_manager'))]"/>
         <field name="comment">User can manage all contracts, work entries and create payslips.</field>
     </record>
 
-    <record id="group_hr_payroll_manager" model="res.groups"> 
+    <record id="group_hr_payroll_manager" model="res.groups">
         <field name="name">Administrator</field>
         <field name="category_id" ref="base.module_category_human_resources_payroll"/>
-        <field name="implied_ids" eval="[(4, ref('hr_payroll.group_hr_payroll_user')), (4, ref('hr_contract.group_hr_contract_manager'))]"/>
+        <field name="implied_ids" eval="[(4, ref('hr_payroll.group_hr_payroll_user'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">User have full access on the application.</field>
     </record>
 
     <record id="base.default_user" model="res.users">
         <field name="groups_id" eval="[(4,ref('hr_payroll.group_hr_payroll_manager'))]"/>
-    </record>
-
-    <record id="group_payslip_display" model="res.groups">
-        <field name="name">Display payslip PDF</field>
-        <field name="category_id" ref="base.module_category_hidden"/>
-    </record>
-
-    <record id="base.group_user" model="res.groups">
-        <field name="implied_ids" eval="[(4, ref('hr_payroll.group_payslip_display'))]"/>
     </record>
 
     <record id="hr_payroll_rule_officer" model="ir.rule">
@@ -90,12 +81,6 @@
         <field name="domain_force">['|', ('country_id', '=', False), ('country_id', 'in', user.env.companies.mapped('country_id').ids)]</field>
     </record>
 
-    <record id="ir_rule_hr_salary_attachment_type_multi_company" model="ir.rule">
-        <field name="name">HR Salary Attachment Type: Multi Company</field>
-        <field name="model_id" ref="model_hr_salary_attachment_type"/>
-        <field name="domain_force">['|', ('country_id', '=', False), ('country_id', 'in', user.env.companies.mapped('country_id').ids)]</field>
-    </record>
-
     <record id="ir_rule_hr_payslip_multi_company" model="ir.rule">
         <field name="name">HR Payslip: Multi Company</field>
         <field name="model_id" ref="model_hr_payslip"/>
@@ -130,18 +115,6 @@
         <field name="name">HR Salary Rule: Multi Company</field>
         <field name="model_id" ref="model_hr_salary_rule"/>
         <field name="domain_force">['|', ('struct_id.country_id', '=', False), ('struct_id.country_id', 'in', user.env.companies.mapped('country_id').ids)]</field>
-    </record>
-
-    <record id="ir_rule_hr_payroll_note_multi_company" model="ir.rule">
-        <field name="name">HR Payroll Note: Multi Company</field>
-        <field name="model_id" ref="model_hr_payroll_note"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
-
-    <record id="ir_rule_hr_employee_declaration" model="ir.rule">
-        <field name="name">HR Payroll Employee Declaration: Multi Company</field>
-        <field name="model_id" ref="model_hr_payroll_employee_declaration"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 </data>
 </odoo>

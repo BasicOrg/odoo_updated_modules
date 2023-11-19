@@ -13,10 +13,10 @@
             <field name="group_id" ref="helpdesk.group_helpdesk_manager" />
             <field name="tip_description" type="html">
 <div>
-    <t t-set="record" t-value="object.env['helpdesk.team'].search([('alias_name', '!=', False), ('alias_domain_id', '!=', False)],limit=1)" />
+    <t t-set="record" t-value="object.env['helpdesk.team'].search([('alias_name', '!=', False)],limit=1)" />
     <b class="tip_title">Tip: Create tickets from incoming emails</b>
-    <t t-if="record.alias_email">
-        <p class="tip_content">Emails sent to <a t-attf-href="mailto:{{record.alias_email}}" target="_blank" style="color: #875a7b; text-decoration: none;"><t t-out="record.alias_email" /></a> generate tickets in your pipeline.</p>
+    <t t-if="record and record.alias_domain">
+        <p class="tip_content">Emails sent to <a t-attf-href="mailto:{{record.alias_id.display_name}}" target="_blank" style="color: #875a7b; text-decoration: none;"><t t-out="record.alias_id.display_name" /></a> generate tickets in your pipeline.</p>
     </t>
     <t t-else="">
         <p class="tip_content">Emails sent to a Helpdesk Team alias generate tickets in your pipeline.</p>

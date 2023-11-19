@@ -29,20 +29,20 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
         :return:                The newly created options.
         '''
         if isinstance(date_from, datetime):
-            date_from_str = fields.Date.to_string(date_from)
+            date_from_str = fields.Date.to_string(datetime)
         else:
             date_from_str = date_from
 
         if isinstance(date_to, datetime):
-            date_to_str = fields.Date.to_string(date_to)
+            date_to_str = fields.Date.to_string(datetime)
         else:
             date_to_str = date_to
 
         if not default_options:
             default_options = {}
 
-        return report.get_options({
-            'selected_variant_id': report.id,
+        return report._get_options({
+            'report_id': report.id,
             'date': {
                 'date_from': date_from_str,
                 'date_to': date_to_str,
@@ -68,7 +68,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
             'filter': comparison_type,
             'number_period': number_period,
         }}
-        return report.get_options(previous_options)
+        return report._get_options(previous_options)
 
     def _update_multi_selector_filter(self, options, option_key, selected_ids):
         ''' Modify a selector in the options to select .
@@ -105,7 +105,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
             key = 'growth_comparison_data'
             self.assertEqual(len(value[key]) + 1, len(expected_value))
             # Check name, value and class.
-            self.assertEqual(tuple([value['name'], value[key]['name'], value[key]['growth']]), expected_value)
+            self.assertEqual(tuple([value['name'], value[key]['name'], value[key]['class']]), expected_value)
 
     def assertHeadersValues(self, headers, expected_headers):
         ''' Helper to compare the headers returned by the _get_table method
@@ -126,59 +126,16 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
                 # Check name.
                 self.assertEqual(column['name'], self._convert_str_to_date(column['name'], expected_header[i]))
 
-    def assertIdenticalLines(self, reports):
-        """Helper to compare report lines with the same `code` across multiple reports.
-        The helper checks the lines for similarity on:
-        - number of expressions
-        - expression label
-        - expression engine
-        - expression formula
-        - expression subformula
-        - expression date_scope
-
-        :param reports: (recordset of account.report) The reports to check
-        """
-        def expression_to_comparable_values(expr):
-            return (
-                expr.label,
-                expr.engine,
-                expr.formula,
-                expr.subformula,
-                expr.date_scope
-            )
-
-        if not reports:
-            raise UserError('There are no reports to compare.')
-        visited_line_codes = set()
-        for line in reports.line_ids:
-            if not line.code or line.code in visited_line_codes:
-                continue
-            identical_lines = reports.line_ids.filtered(lambda l: l != line and l.code == line.code)
-            if not identical_lines:
-                continue
-            with self.subTest(line_code=line.code):
-                for tested_line in identical_lines:
-                    self.assertCountEqual(
-                        line.expression_ids.mapped(expression_to_comparable_values),
-                        tested_line.expression_ids.mapped(expression_to_comparable_values),
-                        (
-                            f'The line with code {line.code} from reports "{line.report_id.name}" and '
-                            f'"{tested_line.report_id.name}" has different expression values in both reports.'
-                        )
-                    )
-            visited_line_codes.add(line.code)
-
-    def assertLinesValues(self, lines, columns, expected_values, options, currency_map=None, ignore_folded=True):
+    def assertLinesValues(self, lines, columns, expected_values, currency_map=None, ignore_folded=True):
         ''' Helper to compare the lines returned by the _get_lines method
         with some expected results.
         :param lines:               See _get_lines.
         :param columns:             The columns index.
         :param expected_values:     A list of iterables.
-        :param options:             The options from the current report.
         :param currency_map:        A map mapping each column_index to some extra options to test the lines:
             - currency:             The currency to be applied on the column.
             - currency_code_index:  The index of the column containing the currency code.
-        :param ignore_folded:       Will not filter folded lines when True.
+        :param ignore_folded:          Will not filter folded lines when True.
         '''
         if currency_map is None:
             currency_map = {}
@@ -216,10 +173,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
                     used_currency = self.env.company.currency_id
 
                 if type(expected_value) in (int, float) and type(current_value) == str:
-                    if options.get('multi_currency'):
-                        expected_value = formatLang(self.env, expected_value, currency_obj=used_currency)
-                    else:
-                        expected_value = formatLang(self.env, expected_value, digits=used_currency.decimal_places)
+                    expected_value = formatLang(self.env, expected_value, currency_obj=used_currency)
 
                 compared_values[0].append(current_value)
                 compared_values[1].append(expected_value)
@@ -287,15 +241,6 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
             }))
 
         return cls.env['account.report.line'].create(create_vals)
-
-    @classmethod
-    def _get_tag_ids(cls, sign, expressions, company=False):
-        """ Helper function to define tag ids for taxes """
-        return [(6, 0, cls.env['account.account.tag'].search([
-            ('applicability', '=', 'taxes'),
-            ('country_id.code', '=', (company or cls.env.company).account_fiscal_country_id.code),
-            ('name', 'in', [f"{sign}{f}" for f in expressions.mapped('formula')]),
-        ]).ids)]
 
     @classmethod
     def _get_basic_line_dict_id_from_report_line(cls, report_line):

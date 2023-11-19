@@ -1,4 +1,5 @@
-/** @odoo-module **/
+odoo.define("website_event_track.website_event_pwa_widget", function (require) {
+    "use strict";
 
     /*
      * The "deferredPrompt" Promise will resolve only if the "beforeinstallprompt" event
@@ -15,8 +16,8 @@
         });
     });
 
-    import publicWidget from "@web/legacy/js/public/public_widget";
-    import { utils as uiUtils } from "@web/core/ui/ui_service";
+    var config = require("web.config");
+    var publicWidget = require("web.public.widget");
 
     var PWAInstallBanner = publicWidget.Widget.extend({
         template: "pwa_install_banner",
@@ -146,6 +147,9 @@
             var scope = this._getScope();
             return navigator.serviceWorker
                 .register(scope + "/service-worker.js", { scope: scope })
+                .then(function (registration) {
+                    console.info("Registration successful, scope is:", registration.scope);
+                })
                 .catch(function (error) {
                     console.error("Service worker registration failed, error:", error);
                 });
@@ -155,7 +159,7 @@
          * @private
          */
         _showInstallBanner: function () {
-            if (!uiUtils.isSmall()) {
+            if (!config.device.isMobile) {
                 return;
             }
             var self = this;
@@ -202,7 +206,8 @@
         },
     });
 
-    export default {
+    return {
         PWAInstallBanner: PWAInstallBanner,
         WebsiteEventPWAWidget: publicWidget.registry.WebsiteEventPWAWidget,
     };
+});

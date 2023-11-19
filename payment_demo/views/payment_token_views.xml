@@ -9,8 +9,7 @@
             <group name="general_information" position="inside">
                 <field name="provider_code" invisible="1"/>
                 <field name="demo_simulated_state"
-                       invisible="provider_code != 'demo'"
-                       required="provider_code == 'demo'"/>
+                       attrs="{'invisible': [('provider_code', '!=', 'demo')], 'required': [('provider_code', '=', 'demo')]}"/>
             </group>
         </field>
     </record>

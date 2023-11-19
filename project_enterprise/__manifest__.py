@@ -17,23 +17,23 @@ Bridge module for project and enterprise
         'views/project_views.xml',
         'views/project_sharing_templates.xml',
         'views/project_sharing_views.xml',
-        'views/project_portal_project_task_templates.xml',
+        'report/project_report_views.xml',
+        'wizard/task_confirm_schedule_wizard_views.xml',
     ],
     'demo': ['data/project_demo.xml'],
     'auto_install': True,
     'license': 'OEEL-1',
     'assets': {
         'web.assets_backend': [
-            'project_enterprise/static/src/*',
+            'project_enterprise/static/src/js/**/*',
             'project_enterprise/static/src/scss/**/*',
             'project_enterprise/static/src/components/**/*',
-            'project_enterprise/static/src/views/**/*',
             'project_enterprise/static/src/**/*.xml',
 
             # Don't include dark mode files in light mode
             ('remove', 'project_enterprise/static/src/components/**/*.dark.scss'),
         ],
-        "web.assets_web_dark": [
+        "web.dark_mode_assets_backend": [
             'project_enterprise/static/src/components/**/*.dark.scss',
         ],
         'web.qunit_suite_tests': [
@@ -41,6 +41,12 @@ Bridge module for project and enterprise
         ],
         'project.webclient': [
             'web_enterprise/static/src/webclient/**/*.scss',
+            ('remove', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss'), # already in _assets_common_styles
+            ('remove', 'web_enterprise/static/src/webclient/navbar/navbar.scss'), # already in _assets_common_styles
+
+            # Allows events to be added to the ListRenderer before it is extended.
+            # for more info, see: https://github.com/odoo/enterprise/pull/30169#pullrequestreview-1064657223
+            ('prepend', 'web_enterprise/static/src/legacy/js/views/list/list_renderer_mobile.js'),
 
             'web_enterprise/static/src/core/**/*',
             'web_enterprise/static/src/views/kanban/*',
@@ -50,8 +56,13 @@ Bridge module for project and enterprise
             'web_enterprise/static/src/webclient/promote_studio_dialog/*',
             'web_enterprise/static/src/webclient/webclient.js',
 
+            'web_enterprise/static/src/legacy/js/core/*.js',
+            'web_enterprise/static/src/legacy/js/views/*.js',
+            'web_enterprise/static/src/legacy/js/widgets/*.js',
+
+            'web_enterprise/static/src/legacy/scss/fields.scss',
+
             ('remove', 'project/static/src/project_sharing/main.js'),
-            ('remove', 'web_enterprise/static/src/views/list/list_controller.dark.scss'),
             'project_enterprise/static/src/project_sharing/**/*',
         ],
         'web.assets_tests': [

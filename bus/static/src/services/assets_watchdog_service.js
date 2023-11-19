@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
 import { session } from "@web/session";
@@ -12,12 +11,7 @@ export const assetsWatchdogService = {
         let isNotificationDisplayed = false;
         let bundleNotifTimerID = null;
 
-        bus_service.subscribe("bundle_changed", ({ server_version }) => {
-            if (server_version !== session.server_version) {
-                displayBundleChangedNotification();
-            }
-        });
-        bus_service.start();
+        bus_service.addEventListener('notification', onNotification.bind(this));
 
         /**
          * Displays one notification on user's screen when assets have changed
@@ -29,23 +23,26 @@ export const assetsWatchdogService = {
                 // We wait until things settle down
                 browser.clearTimeout(bundleNotifTimerID);
                 bundleNotifTimerID = browser.setTimeout(() => {
-                    notification.add(_t("The page appears to be out of date."), {
-                        title: _t("Refresh"),
-                        type: "warning",
-                        sticky: true,
-                        buttons: [
-                            {
-                                name: _t("Refresh"),
-                                primary: true,
-                                onClick: () => {
-                                    browser.location.reload();
+                    notification.add(
+                        env._t("The page appears to be out of date."),
+                        {
+                            title: env._t("Refresh"),
+                            type: "warning",
+                            sticky: true,
+                            buttons: [
+                                {
+                                    name: env._t("Refresh"),
+                                    primary: true,
+                                    onClick: () => {
+                                        browser.location.reload();
+                                    },
                                 },
+                            ],
+                            onClose: () => {
+                                isNotificationDisplayed = false;
                             },
-                        ],
-                        onClose: () => {
-                            isNotificationDisplayed = false;
-                        },
-                    });
+                        }
+                    );
                     isNotificationDisplayed = true;
                 }, getBundleNotificationDelay());
             }
@@ -60,6 +57,23 @@ export const assetsWatchdogService = {
          */
         function getBundleNotificationDelay() {
             return 10000 + Math.floor(Math.random() * 50) * 1000;
+        }
+
+        /**
+         * Reacts to bus's notification
+         *
+         * @param {CustomEvent} ev
+         * @param {Array} [ev.detail] list of received notifications
+         */
+        function onNotification({ detail: notifications }) {
+            for (const { payload, type } of notifications) {
+                if (type === 'bundle_changed') {
+                    if (payload.server_version !== session.server_version) {
+                        displayBundleChangedNotification();
+                        break;
+                    }
+                }
+            }
         }
     },
 };

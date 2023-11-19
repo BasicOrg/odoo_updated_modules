@@ -18,6 +18,7 @@ class QualityCheck(models.Model):
     production_id = fields.Many2one(
         'mrp.production', 'Production Order', check_company=True)
 
+    @api.depends('move_line_id.qty_done')
     def _compute_qty_line(self):
         record_without_production = self.env['quality.check']
         for qc in self:
@@ -29,20 +30,14 @@ class QualityCheck(models.Model):
 
     @api.depends('production_id.lot_producing_id')
     def _compute_lot_line_id(self):
-        op_level_comp_qc = self.env['quality.check']
+        res = super()._compute_lot_line_id()
         for qc in self:
-            if qc.test_type in ('register_consumed_materials', 'register_byproducts'):
-                continue
-            if qc.product_id == qc.production_id.product_id and qc.production_id.lot_producing_id:
+            if qc.test_type not in ('register_consumed_materials', 'register_byproducts') \
+                    and qc.product_id == qc.production_id.product_id \
+                    and qc.production_id.lot_producing_id:
                 qc.lot_line_id = qc.production_id.lot_producing_id
                 qc.lot_id = qc.lot_line_id
-                continue
-            op_level_comp_qc |= qc
-        return super(QualityCheck, op_level_comp_qc)._compute_lot_line_id()
-
-    def _update_lot_from_lot_line(self):
-        self.ensure_one()
-        return super()._update_lot_from_lot_line() and (not self.production_id or self.move_id.picking_type_id.prefill_lot_tablet)
+        return res
 
 
 class QualityAlert(models.Model):

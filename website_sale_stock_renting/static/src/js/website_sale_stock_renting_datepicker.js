@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { deserializeDateTime, serializeDateTime } from "@web/core/l10n/dates";
 import WebsiteSaleDaterangePicker from '@website_sale_renting/js/website_sale_renting_daterangepicker';
 
 WebsiteSaleDaterangePicker.include({
@@ -50,22 +49,21 @@ WebsiteSaleDaterangePicker.include({
         if (!productId || this.rentingAvailabilities[productId]) {
             return;
         }
-        return this.rpc("/rental/product/availabilities", {
-            product_id: productId,
-            min_date: serializeDateTime(luxon.DateTime.now()),
-            max_date: serializeDateTime(luxon.DateTime.now().plus({years: 3})),
+        return this._rpc({
+            route: "/rental/product/availabilities",
+            params: {
+                product_id: productId,
+                min_date: moment(),
+                max_date: moment().add(3, 'y'),
+            }
         }).then((result) => {
             if (result.renting_availabilities) {
-                result.renting_availabilities = result.renting_availabilities.map(
-                    rentingAvailabilities => {
-                        const {start, end, ...rest} = rentingAvailabilities;
-                        return {
-                            start: deserializeDateTime(start),
-                            end: deserializeDateTime(end),
-                            ...rest
-                        }
-                    }
-                )
+                for (const interval of result.renting_availabilities) {
+                    let utcDate = moment(interval.start);
+                    interval.start = utcDate.add(this.getSession().getTZOffset(utcDate), 'minutes');
+                    utcDate = moment(interval.end);
+                    interval.end = utcDate.add(this.getSession().getTZOffset(utcDate), 'minutes');
+                }
             }
             this.rentingAvailabilities[productId] = result.renting_availabilities || [];
             this.preparationTime = result.preparation_time;
@@ -78,18 +76,43 @@ WebsiteSaleDaterangePicker.include({
     },
 
     /**
+     * Override to invalid dates where the product is unavailable
+     *
+     * @param {moment} date
+     */
+    _isInvalidDate(date) {
+        const result = this._super.apply(this, arguments);
+        if (!result) {
+            const productId = this._getProductId();
+            if (!productId) {
+                return false;
+            }
+            const dateStart = date.startOf('day');
+            for (const interval of this.rentingAvailabilities[productId]) {
+                if (interval.start.startOf('day') > dateStart) {
+                    return false;
+                }
+                if (interval.end.endOf('day') > dateStart && interval.quantity_available <= 0) {
+                    return true;
+                }
+            }
+        }
+        return result;
+    },
+
+    /**
      * Set Custom CSS to a given daterangepicker cell
      *
      * This function is used in the daterange picker objects and meant to be easily overriden.
      *
-     * @param {DateTime} date
+     * @param {moment} date
      * @private
      */
     _isCustomDate(date) {
         const result = this._super.apply(this, arguments);
         const productId = this._getProductId();
         if (!productId) {
-            return [];
+            return;
         }
         const dateStart = date.startOf('day');
         for (const interval of this.rentingAvailabilities[productId]) {

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict
-
 from odoo import models, fields, _, release
 from odoo.tools.float_utils import float_repr
-from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import UserError
+import ast
 import uuid
 
 COUNTRY_CODE_MAP = {
@@ -47,15 +45,9 @@ class PosSession(models.Model):
 
     def _validate_session(self, balancing_account=False, amount_to_balance=0, bank_payment_method_diffs=None):
         res = super()._validate_session(balancing_account, amount_to_balance, bank_payment_method_diffs)
-
-        # If the result is a dict, this means that there was a problem and the _validate_session was not completed.
-        # In this case, a wizard should show up which is represented by the returned dictionary.
-        # Return the dictionary to prevent running the remaining code.
-        if isinstance(res, dict):
-            return res
         orders = self.order_ids.filtered(lambda o: o.state in ['done', 'invoiced'])
         # We don't want to block the user that need to validate his session order in order to create his TSS
-        if self.config_id.is_company_country_germany and self.config_id.l10n_de_fiskaly_tss_id and orders:
+        if self.config_id.is_company_country_germany and self.config_id.l10n_de_fiskaly_tss_id and self.order_ids:
             orders = orders.sorted('l10n_de_fiskaly_time_end')
             json = self._l10n_de_create_cash_point_closing_json(orders)
             self._l10n_de_send_fiskaly_cash_point_closing(json)
@@ -71,7 +63,7 @@ class PosSession(models.Model):
                 LEFT JOIN pos_payment_method pm ON p.payment_method_id=pm.id
                 JOIN account_journal journal ON pm.journal_id=journal.id
             WHERE p.session_id=%s AND journal.type IN ('cash', 'bank')
-            GROUP BY pm.is_cash_count
+            GROUP BY pm.is_cash_count 
         """, [self.id])
         total_payment_result = self.env.cr.dictfetchall()
 
@@ -84,163 +76,33 @@ class PosSession(models.Model):
                 total_bank = payment['amount']
 
         self.env.cr.execute("""
-            SELECT account_tax.amount,
-                   sum(pos_order_line.price_subtotal) as excl_vat,
-                   sum(pos_order_line.price_subtotal_incl) as incl_vat
-            FROM pos_order
-            JOIN pos_order_line ON pos_order.id=pos_order_line.order_id
-            JOIN account_tax_pos_order_line_rel ON account_tax_pos_order_line_rel.pos_order_line_id=pos_order_line.id
+            SELECT account_tax.amount, 
+                   sum(pos_order_line.price_subtotal) as excl_vat, 
+                   sum(pos_order_line.price_subtotal_incl) as incl_vat 
+            FROM pos_order 
+            JOIN pos_order_line ON pos_order.id=pos_order_line.order_id 
+            JOIN account_tax_pos_order_line_rel ON account_tax_pos_order_line_rel.pos_order_line_id=pos_order_line.id 
             JOIN account_tax ON account_tax_pos_order_line_rel.account_tax_id=account_tax.id
-            WHERE pos_order.session_id=%s
+            WHERE pos_order.session_id=%s 
             GROUP BY account_tax.amount
         """, [self.id])
 
         amounts_per_vat_id_result = self.env.cr.dictfetchall()
 
-        return self._get_dsfinvk_cash_point_closing_data(**{
+        json = self.env['ir.qweb']._render('l10n_de_pos_cert.dsfinvk_cash_point_closing_template', {
+            'company': self.company_id,
+            'config': self.config_id,
+            'session': self,
             'orders': orders,
+            'float_repr': float_repr,
+            'COUNTRY_CODE_MAP': COUNTRY_CODE_MAP,
             'total_cash': total_cash,
             'total_bank': total_bank,
             'vat_definitions': vat_definitions,
             'amounts_per_vat_id': amounts_per_vat_id_result
         })
 
-    def _get_dsfinvk_cash_point_closing_data(
-        self,
-        orders,
-        total_cash,
-        total_bank,
-        vat_definitions,
-        amounts_per_vat_id,
-    ) -> Dict:
-
-        company = self.company_id
-        config = self.config_id
-        session = self
-
-        return {
-            "client_id": config.l10n_de_fiskaly_client_id,
-            "cash_point_closing_export_id": session.id,
-            "head": {
-                "export_creation_date": int(session.write_date.timestamp()),
-                "first_transaction_export_id": f"{orders[0].id}",
-                "last_transaction_export_id": f"{orders[-1].id}",
-            },
-            "cash_statement": {
-                "business_cases": [
-                    {
-                        "type": "Umsatz",
-                        "amounts_per_vat_id": [
-                            {
-                                "vat_definition_export_id": vat_definitions[a["amount"]],
-                                "incl_vat": float_repr(a["incl_vat"], 5),
-                                "excl_vat": float_repr(a["excl_vat"], 5),
-                                "vat": float_repr(a["incl_vat"] - a["excl_vat"], 5),
-                            }
-                            for a in amounts_per_vat_id
-                        ],
-                    }
-                ],
-                "payment": {
-                    "full_amount": float_repr(total_cash + total_bank, 5),
-                    "cash_amount": float_repr(total_cash, 5),
-                    "cash_amounts_by_currency": [
-                        {"currency_code": "EUR", "amount": float_repr(total_cash, 5)}
-                    ],
-                    "payment_types":
-                        ([{"type": "Bar", "currency_code": "EUR", "amount": float_repr(total_cash, 5)}]
-                            if total_cash or not total_bank else []) +
-                        ([{"type": "Unbar", "currency_code": "EUR", "amount": float_repr(total_bank, 5)}]
-                            if total_bank else [])
-                }
-            },
-            "transactions": [
-                {
-                    "head": {
-                        "tx_id": f"{o.l10n_de_fiskaly_transaction_uuid}",
-                        "transaction_export_id": f"{o.id}",
-                        "closing_client_id": f"{config.l10n_de_fiskaly_client_id}",
-                        "type": "Beleg",
-                        "storno": False,
-                        "number": o.id,
-                        "timestamp_start": int(o.l10n_de_fiskaly_time_start.timestamp()),
-                        "timestamp_end": int(o.l10n_de_fiskaly_time_end.timestamp()),
-                        "user": {"user_export_id": f"{o.user_id.id}", "name": f"{o.user_id.name[:50]}"},
-                        "buyer": {
-                            "name": f"{o.partner_id.name[:50]}",
-                            "buyer_export_id": f"{o.partner_id.id}",
-                            "type": "Kunde"
-                            if company.id != o.partner_id.company_id.id
-                            else "Mitarbeiter",
-                            **({
-                                    "address": {
-                                        **({"street": f"{o.partner_id.street}"} if o.partner_id.street else {}),
-                                        **({"postal_code": f"{o.partner_id.zip}"} if o.partner_id.zip else {}),
-                                        **({"country_code": f"{COUNTRY_CODE_MAP.get(o.partner_id.country_id.code)}"} if COUNTRY_CODE_MAP.get(o.partner_id.country_id.code) else {}),
-                                    }
-                                }
-                                if o.amount_total > 200
-                                else {}
-                            ),
-                        }
-                        if o.partner_id
-                        else {"name": "Customer", "buyer_export_id": "null", "type": "Kunde"},
-                    },
-                    "data": {
-                        "full_amount_incl_vat": float_repr(o.amount_total, 5),
-                        "payment_types": [
-                            {
-                                "type": f"{p['type']}",
-                                "currency_code": "EUR",
-                                "amount": float_repr(p["amount"], 5),
-                            }
-                            for p in o._l10n_de_payment_types()
-                        ],
-                        "amounts_per_vat_id": [
-                            {
-                                "vat_definition_export_id": vat_definitions[a["amount"]],
-                                "incl_vat": float_repr(a["incl_vat"], 5),
-                                "excl_vat": float_repr(a["excl_vat"], 5),
-                                "vat": float_repr(a["incl_vat"] - a["excl_vat"], 5),
-                            }
-                            for a in o._l10n_de_amounts_per_vat()
-                        ],
-                        "lines": [
-                            {
-                                "business_case": {
-                                    "type": "Umsatz",
-                                    "amounts_per_vat_id": [
-                                        {
-                                            "vat_definition_export_id": vat_definitions[
-                                                l.tax_ids[0].amount
-                                            ],
-                                            "incl_vat": float_repr(l.price_subtotal_incl, 5),
-                                            "excl_vat": float_repr(l.price_subtotal, 5),
-                                            "vat": float_repr(
-                                                l.price_subtotal_incl - l.price_subtotal, 5
-                                            ),
-                                        }
-                                    ],
-                                },
-                                "lineitem_export_id": f"{l.id}",
-                                "storno": False,
-                                "text": f"{l.product_id.product_tmpl_id.name}",
-                                "item": {
-                                    "number": f"{l.product_id.id}",
-                                    "quantity": float_repr(l.qty, 3),
-                                    "price_per_unit": float_repr(l.price_unit, 5)
-                                    if l.qty == 0
-                                    else float_repr(l.price_subtotal_incl / l.qty, 5),
-                                },
-                            }
-                            for l in o.lines
-                        ],
-                    },
-                    "security": {"tss_tx_id": f"{o.l10n_de_fiskaly_transaction_uuid}"},
-                }
-                for o in orders
-            ],
-        }
+        return ast.literal_eval(json.strip())
 
     def _l10n_de_send_fiskaly_cash_point_closing(self, json):
         cash_point_closing_uuid = str(uuid.uuid4())

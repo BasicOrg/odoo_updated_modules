@@ -25,21 +25,16 @@ This module contains all the common features of Sales Management and eCommerce.
         'report/ir_actions_report.xml',
         'report/sale_report_views.xml',
 
-        'data/ir_cron.xml',
         'data/ir_sequence_data.xml',
         'data/mail_activity_type_data.xml',
         'data/mail_message_subtype_data.xml',
         'data/mail_template_data.xml',
-        'data/ir_config_parameter.xml', # Needs mail_template_data
-        'data/onboarding_data.xml',
+        'data/sale_data.xml',
 
         'wizard/account_accrued_orders_wizard_views.xml',
-        'wizard/mass_cancel_orders_views.xml',
         'wizard/payment_link_wizard_views.xml',
-        'wizard/res_config_settings_views.xml',
         'wizard/sale_make_invoice_advance_views.xml',
         'wizard/sale_order_cancel_views.xml',
-        'wizard/sale_order_discount_views.xml',
 
         # Define sale order views before their references
         'views/sale_order_views.xml',
@@ -47,12 +42,14 @@ This module contains all the common features of Sales Management and eCommerce.
         'views/account_views.xml',
         'views/crm_team_views.xml',
         'views/mail_activity_views.xml',
-        'views/mail_activity_plan_views.xml',
+        'views/payment_templates.xml',
         'views/payment_views.xml',
-        'views/product_document_views.xml',
         'views/product_packaging_views.xml',
         'views/product_views.xml',
+        'views/res_config_settings_views.xml',
         'views/res_partner_views.xml',
+        'views/variant_templates.xml',
+        'views/sale_onboarding_views.xml',
         'views/sale_order_line_views.xml',
         'views/sale_portal_templates.xml',
         'views/utm_campaign_views.xml',
@@ -67,23 +64,24 @@ This module contains all the common features of Sales Management and eCommerce.
     'assets': {
         'web.assets_backend': [
             'sale/static/src/scss/sale_onboarding.scss',
+            'sale/static/src/scss/product_configurator.scss',
             'sale/static/src/js/sale_progressbar_field.js',
             'sale/static/src/js/tours/sale.js',
+            'sale/static/src/js/product_discount_field.js',
             'sale/static/src/js/sale_product_field.js',
             'sale/static/src/xml/**/*',
         ],
         'web.assets_frontend': [
             'sale/static/src/scss/sale_portal.scss',
             'sale/static/src/js/sale_portal_sidebar.js',
-            'sale/static/src/js/sale_portal_prepayment.js',
             'sale/static/src/js/sale_portal.js',
+            'sale/static/src/js/payment_form.js',
         ],
         'web.assets_tests': [
             'sale/static/tests/tours/**/*',
         ],
         'web.qunit_suite_tests': [
-            'sale/static/tests/**/*',
-            ('remove', 'sale/static/tests/tours/**/*')
+            'sale/static/tests/sales_team_dashboard_tests.js',
         ],
         'web.report_assets_common': [
             'sale/static/src/scss/sale_report.scss',

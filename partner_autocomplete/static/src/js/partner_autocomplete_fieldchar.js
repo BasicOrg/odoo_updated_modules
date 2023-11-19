@@ -1,11 +1,13 @@
 /** @odoo-module **/
+/* global checkVATNumber */
 
 import { AutoComplete } from "@web/core/autocomplete/autocomplete";
 import { useChildRef } from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
-import { CharField, charField } from "@web/views/fields/char/char_field";
+import { CharField } from "@web/views/fields/char/char_field";
 import { useInputField } from "@web/views/fields/input_field_hook";
+import { loadJS } from "@web/core/assets";
 
 import { usePartnerAutocomplete } from "@partner_autocomplete/js/partner_autocomplete_core"
 
@@ -16,12 +18,22 @@ export class PartnerAutoCompleteCharField extends CharField {
         this.partner_autocomplete = usePartnerAutocomplete();
 
         this.inputRef = useChildRef();
-        useInputField({ getValue: () => this.props.record.data[this.props.name] || "", parse: (v) => this.parse(v), ref: this.inputRef});
+        useInputField({ getValue: () => this.props.value || "", parse: (v) => this.parse(v), ref: this.inputRef});
     }
 
-    async validateSearchTerm(request) {
+    sanitizeVAT(request) {
+        return request ? request.replace(/[^A-Za-z0-9]/g, '') : '';
+    }
+
+    isVAT(request) {
+        // checkVATNumber is defined in library jsvat.
+        // It validates that the input has a valid VAT number format
+        return checkVATNumber(this.sanitizeVAT(request));
+    }
+
+    validateSearchTerm(request) {
         if (this.props.name == 'vat') {
-            return this.partner_autocomplete.isVATNumber(request);
+            return this.isVAT(request);
         }
         else {
             return request && request.length > 2;
@@ -32,8 +44,11 @@ export class PartnerAutoCompleteCharField extends CharField {
         return [
             {
                 options: async (request) => {
-                    if (await this.validateSearchTerm(request)) {
-                        const suggestions = await this.partner_autocomplete.autocomplete(request);
+                    // Lazyload jsvat only if the component is being used.
+                    await loadJS("/partner_autocomplete/static/lib/jsvat.js");
+                    
+                    if (this.validateSearchTerm(request)) {
+                        const suggestions = await this.partner_autocomplete.autocomplete(request, this.isVAT(request));
                         suggestions.forEach((suggestion) => {
                             suggestion.classList = "partner_autocomplete_dropdown_char";
                         });
@@ -82,9 +97,4 @@ PartnerAutoCompleteCharField.components = {
     AutoComplete,
 };
 
-export const partnerAutoCompleteCharField = {
-    ...charField,
-    component: PartnerAutoCompleteCharField,
-};
-
-registry.category("fields").add("field_partner_autocomplete", partnerAutoCompleteCharField);
+registry.category("fields").add("field_partner_autocomplete", PartnerAutoCompleteCharField);

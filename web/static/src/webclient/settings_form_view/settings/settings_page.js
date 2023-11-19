@@ -1,7 +1,7 @@
 /** @odoo-module **/
 import { ActionSwiper } from "@web/core/action_swiper/action_swiper";
 
-import { Component, useState, useRef, useEffect } from "@odoo/owl";
+const { Component, useState } = owl;
 
 export class SettingsPage extends Component {
     setup() {
@@ -13,21 +13,6 @@ export class SettingsPage extends Component {
         if (this.props.modules) {
             this.state.selectedTab = this.props.initialTab || this.props.modules[0].key;
         }
-
-        this.settingsRef = useRef("settings");
-        this.settingsTabRef = useRef("settings_tab");
-        this.scrollMap = Object.create(null);
-        useEffect(
-            (settingsEl, currentTab) => {
-                if (!settingsEl) {
-                    return;
-                }
-
-                const { scrollTop } = this.scrollMap[currentTab] || 0;
-                settingsEl.scrollTop = scrollTop;
-            },
-            () => [this.settingsRef.el, this.state.selectedTab]
-        );
     }
 
     getCurrentIndex() {
@@ -48,37 +33,17 @@ export class SettingsPage extends Component {
             this.getCurrentIndex() !== this.props.modules.length - 1
         );
     }
-    async onRightSwipe(prom) {
+    onRightSwipe() {
         this.state.selectedTab = this.props.modules[this.getCurrentIndex() - 1].key;
-        await prom;
-        this.scrollToSelectedTab();
     }
-    async onLeftSwipe(prom) {
+    onLeftSwipe() {
         this.state.selectedTab = this.props.modules[this.getCurrentIndex() + 1].key;
-        await prom;
-        this.scrollToSelectedTab();
-    }
-
-    scrollToSelectedTab() {
-        const key = this.state.selectedTab;
-        this.settingsTabRef.el
-            .querySelector(`[data-key='${key}']`)
-            .scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     }
 
     onSettingTabClick(key) {
-        if (this.settingsRef.el) {
-            const { scrollTop } = this.settingsRef.el;
-            this.scrollMap[this.state.selectedTab] = { scrollTop };
-        }
         this.state.selectedTab = key;
         this.env.searchState.value = "";
     }
 }
 SettingsPage.template = "web.SettingsPage";
 SettingsPage.components = { ActionSwiper };
-SettingsPage.props = {
-    modules: Array,
-    initialTab: { type: String, optional: 1 },
-    slots: Object,
-};

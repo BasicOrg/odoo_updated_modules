@@ -6,12 +6,10 @@ from psycopg2 import sql
 
 import hashlib
 import pytz
-import threading
 
 from odoo import fields, models, api, _
 from odoo.addons.base.models.res_partner import _tz_get
 from odoo.exceptions import UserError
-from odoo.tools import split_every
 from odoo.tools.misc import _format_time_ago
 from odoo.http import request
 from odoo.osv import expression
@@ -62,8 +60,8 @@ class WebsiteVisitor(models.Model):
     country_flag = fields.Char(related="country_id.image_url", string="Country Flag")
     lang_id = fields.Many2one('res.lang', string='Language', help="Language from the website when visitor has been created")
     timezone = fields.Selection(_tz_get, string='Timezone')
-    email = fields.Char(string='Email', compute='_compute_email_phone', compute_sudo=True)
-    mobile = fields.Char(string='Mobile', compute='_compute_email_phone', compute_sudo=True)
+    email = fields.Char(string='Email', compute='_compute_email_phone')
+    mobile = fields.Char(string='Mobile', compute='_compute_email_phone')
 
     # Visit fields
     visit_count = fields.Integer('# Visits', default=1, readonly=True, help="A new visit is considered if last connection was more than 8 hours ago.")
@@ -77,18 +75,21 @@ class WebsiteVisitor(models.Model):
     create_date = fields.Datetime('First Connection', readonly=True)
     last_connection_datetime = fields.Datetime('Last Connection', default=fields.Datetime.now, help="Last page view date", readonly=True)
     time_since_last_action = fields.Char('Last action', compute="_compute_time_statistics", help='Time since last page view. E.g.: 2 minutes ago')
-    is_connected = fields.Boolean('Is connected?', compute='_compute_time_statistics', help='A visitor is considered as connected if his last page view was within the last 5 minutes.')
+    is_connected = fields.Boolean('Is connected ?', compute='_compute_time_statistics', help='A visitor is considered as connected if his last page view was within the last 5 minutes.')
 
     _sql_constraints = [
         ('access_token_unique', 'unique(access_token)', 'Access token should be unique.'),
     ]
 
     @api.depends('partner_id')
-    def _compute_display_name(self):
+    def name_get(self):
+        res = []
         for record in self:
-            # Accessing name of partner through sudo to avoid infringing
-            # record rule if partner belongs to another company.
-            record.display_name = record.partner_id.sudo().name or _('Website Visitor #%s', record.id)
+            res.append((
+                record.id,
+                record.partner_id.name or _('Website Visitor #%s', record.id)
+            ))
+        return res
 
     @api.depends('access_token')
     def _compute_partner_id(self):
@@ -120,15 +121,15 @@ class WebsiteVisitor(models.Model):
     @api.depends('website_track_ids')
     def _compute_page_statistics(self):
         results = self.env['website.track']._read_group(
-            [('visitor_id', 'in', self.ids), ('url', '!=', False)], ['visitor_id', 'page_id'], ['__count'])
+            [('visitor_id', 'in', self.ids), ('url', '!=', False)], ['visitor_id', 'page_id', 'url'], ['visitor_id', 'page_id', 'url'], lazy=False)
         mapped_data = {}
-        for visitor, page, count in results:
-            visitor_info = mapped_data.get(visitor.id, {'page_count': 0, 'visitor_page_count': 0, 'page_ids': set()})
-            visitor_info['visitor_page_count'] += count
+        for result in results:
+            visitor_info = mapped_data.get(result['visitor_id'][0], {'page_count': 0, 'visitor_page_count': 0, 'page_ids': set()})
+            visitor_info['visitor_page_count'] += result['__count']
             visitor_info['page_count'] += 1
-            if page:
-                visitor_info['page_ids'].add(page.id)
-            mapped_data[visitor.id] = visitor_info
+            if result['page_id']:
+                visitor_info['page_ids'].add(result['page_id'][0])
+            mapped_data[result['visitor_id'][0]] = visitor_info
 
         for visitor in self:
             visitor_info = mapped_data.get(visitor.id, {'page_count': 0, 'visitor_page_count': 0, 'page_ids': set()})
@@ -144,10 +145,10 @@ class WebsiteVisitor(models.Model):
     @api.depends('website_track_ids.page_id')
     def _compute_last_visited_page_id(self):
         results = self.env['website.track']._read_group(
-            [('visitor_id', 'in', self.ids), ('page_id', '!=', False)],
-            ['visitor_id', 'page_id'],
-            order='visit_datetime:max')
-        mapped_data = {visitor.id: page.id for visitor, page in results}
+            [('visitor_id', 'in', self.ids)],
+            ['visitor_id', 'page_id', 'visit_datetime:max'],
+            ['visitor_id', 'page_id'], lazy=False)
+        mapped_data = {result['visitor_id'][0]: result['page_id'][0] for result in results if result['page_id']}
         for visitor in self:
             visitor.last_visited_page_id = mapped_data.get(visitor.id, False)
 
@@ -166,7 +167,7 @@ class WebsiteVisitor(models.Model):
     def _prepare_message_composer_context(self):
         return {
             'default_model': 'res.partner',
-            'default_res_ids': self.partner_id.ids,
+            'default_res_id': self.partner_id.id,
             'default_partner_ids': [self.partner_id.id],
         }
 
@@ -177,6 +178,7 @@ class WebsiteVisitor(models.Model):
         visitor_composer_ctx = self._prepare_message_composer_context()
         compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
         compose_ctx = dict(
+            default_use_template=False,
             default_composition_mode='comment',
         )
         compose_ctx.update(**visitor_composer_ctx)
@@ -203,12 +205,14 @@ class WebsiteVisitor(models.Model):
         :return: a tuple containing the visitor id and the upsert result (either
             `inserted` or `updated).
         """
+        country_code = request.geoip.get('country_code')
+        country_id = request.env['res.country'].sudo().search([
+            ('code', '=', country_code)
+        ], limit=1).id if country_code else None
         create_values = {
             'access_token': access_token,
             'lang_id': request.lang.id,
-            # Note that it's possible for the GEOIP database to return a country
-            # code which is unknown in Odoo
-            'country_code': request.geoip.get('country_code'),
+            'country_id': country_id,
             'website_id': request.website.id,
             'timezone': self._get_visitor_timezone() or None,
             'write_uid': self.env.uid,
@@ -218,17 +222,15 @@ class WebsiteVisitor(models.Model):
             # used instead as the token.
             'partner_id': None if len(str(access_token)) == 32 else access_token,
         }
+
         query = """
             INSERT INTO website_visitor (
                 partner_id, access_token, last_connection_datetime, visit_count, lang_id,
-                website_id, timezone, write_uid, create_uid, write_date, create_date, country_id)
+                country_id, website_id, timezone, write_uid, create_uid, write_date, create_date)
             VALUES (
                 %(partner_id)s, %(access_token)s, now() at time zone 'UTC', 1, %(lang_id)s,
-                %(website_id)s, %(timezone)s, %(create_uid)s, %(write_uid)s,
-                now() at time zone 'UTC', now() at time zone 'UTC', (
-                    SELECT id FROM res_country WHERE code = %(country_code)s
-                )
-            )
+                %(country_id)s, %(website_id)s, %(timezone)s, %(create_uid)s, %(write_uid)s,
+                now() at time zone 'UTC', now() at time zone 'UTC')
             ON CONFLICT (access_token)
             DO UPDATE SET
                 last_connection_datetime=excluded.last_connection_datetime,
@@ -337,16 +339,8 @@ class WebsiteVisitor(models.Model):
         Visitors were previously archived but we came to the conclusion that
         archived visitors have very little value and bloat the database for no
         reason. """
-        auto_commit = not getattr(threading.current_thread(), 'testing', False)
-        visitor_model = self.env['website.visitor']
-        for inactive_visitors_batch in split_every(
-            1000,
-            visitor_model.sudo().search(self._inactive_visitors_domain()).ids,
-            visitor_model.browse,
-        ):
-            inactive_visitors_batch.unlink()
-            if auto_commit:
-                self.env.cr.commit()
+
+        self.env['website.visitor'].sudo().search(self._inactive_visitors_domain()).unlink()
 
     def _inactive_visitors_domain(self):
         """ This method defines the domain of visitors that can be cleaned. By

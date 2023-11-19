@@ -583,7 +583,7 @@ class CAMT:
             ))
 
     _get_partner_name = partial(_generic_get,
-        xpath='.//ns:RltdPties/ns:{placeholder}/ns:Nm/text() | .//ns:RltdPties/ns:{placeholder}/ns:Pty/ns:Nm/text()')
+        xpath='.//ns:RltdPties/ns:{placeholder}/ns:Nm/text()')
 
     _get_account_number = partial(_generic_get,
         xpath=('.//ns:RltdPties/ns:{placeholder}Acct/ns:Id/ns:IBAN/text()'
@@ -627,20 +627,12 @@ class CAMT:
                     return float(value), currency_name
             return None, None
 
-        def get_rate(*entries, target_currency, amount_currency):
+        def get_rate(*entries, target_currency):
             for entry in entries:
-                source_rate = get_value_and_currency_name(entry, CAMT._source_rate_getters, target_currency=target_currency)[0]
-                target_rate = get_value_and_currency_name(entry, CAMT._target_rate_getters, target_currency=target_currency)[0]
-
-                rate = source_rate or target_rate
-                # According to the camt.053 Swiss Payment Standards, the exchange rate should be divided by 100 if the
-                # currency is in YEN, SEK, DKK or NOK.
-                if amount_currency in ['SEK', 'DKK', 'YEN', 'NOK'] and target_currency == 'CHF':
-                    rate = rate and rate / 100
-                else:
-                    if not source_rate and target_rate:
-                        rate = 1 / rate
-
+                rate = get_value_and_currency_name(entry, CAMT._source_rate_getters, target_currency=target_currency)[0]
+                if not rate:
+                    rate = get_value_and_currency_name(entry, CAMT._target_rate_getters, target_currency=target_currency)[0]
+                    rate = rate and 1 / rate
                 if rate:
                     return rate
             return None
@@ -671,7 +663,7 @@ class CAMT:
         if not journal_currency or amount_currency_name == journal_currency_name:
             rate = 1.0
         else:
-            rate = get_rate(entry_details, entry, target_currency=journal_currency_name, amount_currency=amount_currency_name)
+            rate = get_rate(entry_details, entry, target_currency=journal_currency_name)
             entry_amount = entry_details_amount or entry_amount
             if entry_details_amount:
                 entry_amount_in_currency = entry_details_amount_in_currency
@@ -747,11 +739,11 @@ class CAMT:
         if unique_import_ref and not CAMT._is_full_of_zeros(unique_import_ref[0]) and unique_import_ref[0] != 'NOTPROVIDED':
             entry_ref = entry.xpath('ns:NtryRef/text()', namespaces=namespaces)
             if entry_ref:
-                return '{}-{}-{}'.format(name, unique_import_ref[0], entry_ref[0])
+                return '{}-{}'.format(unique_import_ref[0], entry_ref[0])
             elif not entry_ref and unique_import_ref[0] not in unique_import_set:
                 return unique_import_ref[0]
             else:
-                return '{}-{}-{}'.format(name, unique_import_ref[0], sequence)
+                return '{}-{}'.format(unique_import_ref[0], sequence)
         else:
             return '{}-{}-{}'.format(name, date, sequence)
 

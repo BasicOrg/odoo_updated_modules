@@ -3,22 +3,28 @@
 # 	* account_disallowed_expenses
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: th\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: account_disallowed_expenses
+#: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.disallowed_expenses_main_template
+msgid ""
+"<span>There are multiple disallowed expenses rates in this period</span>"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_account
@@ -34,7 +40,7 @@ msgstr "เปิดใช้งาน"
 #. module: account_disallowed_expenses
 #: model_terms:ir.actions.act_window,help:account_disallowed_expenses.action_account_disallowed_expenses_category_list
 msgid "Add a Disallowed Expenses Category"
-msgstr "เพิ่มหมวดหมู่รายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__category_id
@@ -56,7 +62,7 @@ msgstr "โค้ด"
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__company_id
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__create_uid
@@ -78,51 +84,51 @@ msgstr "อัตราแลกเปลี่ยนปัจจุบัน"
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__rate
 msgid "Disallowed %"
-msgstr "ต้องห้าม %"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_disallowed_amount
 msgid "Disallowed Amount"
-msgstr "จำนวนเงินที่ต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.ui.menu,name:account_disallowed_expenses.menu_action_account_report_de
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_form
 msgid "Disallowed Expenses"
-msgstr "รายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.actions.act_window,name:account_disallowed_expenses.action_account_disallowed_expenses_category_list
 #: model:ir.ui.menu,name:account_disallowed_expenses.menu_action_account_disallowed_expenses_category_list
 msgid "Disallowed Expenses Categories"
-msgstr "หมวดหมู่รายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_category
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_account__disallowed_expenses_category_id
 msgid "Disallowed Expenses Category"
-msgstr "หมวดหมู่รายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_report_handler
 msgid "Disallowed Expenses Custom Handler"
-msgstr "ตัวจัดการแบบกำหนดเองของรายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_rate
 msgid "Disallowed Expenses Rate"
-msgstr "อัตรารายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report,name:account_disallowed_expenses.disallowed_expenses_report
 #: model:ir.actions.client,name:account_disallowed_expenses.action_account_report_de
 msgid "Disallowed Expenses Report"
-msgstr "รายงานรายจ่ายต้องห้าม"
+msgstr ""
 
 #. module: account_disallowed_expenses
-#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code
-msgid "Disallowed expenses category code should be unique."
-msgstr "รหัสหมวดหมู่ค่าใช้จ่ายที่ไม่ได้รับอนุญาตควรไม่ซ้ำกัน"
+#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code_in_country
+msgid "Disallowed expenses category code should be unique in each company."
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__display_name
@@ -131,24 +137,16 @@ msgid "Display Name"
 msgstr "แสดงชื่อ"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "General Ledger"
-msgstr "บัญชีแยกประเภททั่วไป"
-
-#. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__id
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__id
 msgid "ID"
 msgstr "ไอดี"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Journal Items"
-msgstr "รายการสมุดรายวัน"
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category____last_update
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__write_uid
@@ -168,11 +166,10 @@ msgid "Name"
 msgstr "ชื่อ"
 
 #. module: account_disallowed_expenses
-#. odoo-python
 #: code:addons/account_disallowed_expenses/models/account_disallowed_expenses.py:0
 #, python-format
 msgid "No Rate"
-msgstr "ไม่มีอัตรา"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_rate
@@ -183,42 +180,28 @@ msgstr "อัตรา"
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "Rates"
-msgstr "อัตรา"
+msgstr "Rates"
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Related Account(s)"
-msgstr "บัญชีที่เกี่ยวข้อง"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Set Rates"
-msgstr "กำหนดอัตรา"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,help:account_disallowed_expenses.field_account_disallowed_expenses_category__active
 msgid "Set active to false to hide the category without removing it."
-msgstr "ตั้งค่า active เป็น false เพื่อซ่อนหมวดหมู่โดยไม่ต้องลบออก"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__date_from
 msgid "Start Date"
 msgstr "วันที่เริ่ม"
-
-#. module: account_disallowed_expenses
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "There are multiple disallowed expenses rates in this period"
-msgstr "มีอัตรารายจ่ายต้องห้ามหลายอัตราในช่วงเวลานี้"
-
-#. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Total"
-msgstr "รวม"
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_total_amount
@@ -228,9 +211,9 @@ msgstr "ยอดรวม"
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. 1201"
-msgstr "เช่น 1201"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. Non-Deductible Tax"
-msgstr "เช่น ภาษีที่ไม่สามารถหักลดหย่อนได้"
+msgstr ""

@@ -91,15 +91,15 @@ class EasypostRequest():
         if order:
             if not order.order_line:
                 raise UserError(_("Please provide at least one item to ship."))
-            error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and line.product_qty != 0 and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
+            error_lines = order.order_line.filtered(lambda line: not line.product_id.weight and not line.is_delivery and line.product_id.type != 'service' and not line.display_type)
             if error_lines:
-                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s", ", ".join(error_lines.product_id.mapped('name')))
+                return _("The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n %s") % ", ".join(error_lines.product_id.mapped('name'))
 
         # check required value for picking
         if picking:
             if not picking.move_ids:
                 raise UserError(_("Please provide at least one item to ship."))
-            if picking.move_ids.filtered(lambda line: not line.weight and line.product_qty != 0):
+            if picking.move_ids.filtered(lambda line: not line.weight):
                 raise UserError(_('The estimated price cannot be computed because the weight of your product is missing.'))
         return True
 
@@ -124,7 +124,7 @@ class EasypostRequest():
                    if addr_obj[addr_obj_field]}
         address['order[%s][name]' % addr_type] = (addr_obj.name or addr_obj.display_name)[:25]
         if addr_obj.state_id:
-            address['order[%s][state]' % addr_type] = addr_obj.state_id.code
+            address['order[%s][state]' % addr_type] = addr_obj.state_id.name
         address['order[%s][country]' % addr_type] = addr_obj.country_id.code
         if addr_obj.commercial_company_name:
             address['order[%s][company]' % addr_type] = addr_obj.commercial_company_name[:25]
@@ -186,8 +186,8 @@ class EasypostRequest():
         For each shipment add a customs items by move line containing
         - Product description (care it crash if bracket are used)
         - Quantity for this product in the current package
-        - Total Value (unit value * qty)
-        - Total Value currency
+        - Product price
+        - Product price currency
         - Total weight in ounces.
         - Original country code(warehouse)
         """
@@ -200,7 +200,7 @@ class EasypostRequest():
             customs_info.update({
                 'order[shipments][%d][customs_info][customs_items][%d][description]' % (shipment_id, customs_item_id): commodity.product_id.name,
                 'order[shipments][%d][customs_info][customs_items][%d][quantity]' % (shipment_id, customs_item_id): commodity.qty,
-                'order[shipments][%d][customs_info][customs_items][%d][value]' % (shipment_id, customs_item_id): commodity.monetary_value * commodity.qty,
+                'order[shipments][%d][customs_info][customs_items][%d][value]' % (shipment_id, customs_item_id): commodity.monetary_value,
                 'order[shipments][%d][customs_info][customs_items][%d][currency]' % (shipment_id, customs_item_id): currency.name,
                 'order[shipments][%d][customs_info][customs_items][%d][weight]' % (shipment_id, customs_item_id): carrier._easypost_convert_weight(commodity.product_id.weight * commodity.qty),
                 'order[shipments][%d][customs_info][customs_items][%d][origin_country]' % (shipment_id, customs_item_id): commodity.country_of_origin,
@@ -360,17 +360,15 @@ class EasypostRequest():
 
         # get tracking code and lable file url
         result['track_shipments_url'] = {res['tracking_code']: res['tracker']['public_url'] for res in response['shipments'] if res['tracker']}
-        result['track_label_data'] = {res['tracking_code']: res['postage_label']['label_url'] for res in response['shipments'] if res['postage_label']}
+        result['track_label_data'] = {res['tracking_code']: res['postage_label']['label_url'] for res in response['shipments']}
 
         # get commercial invoice + other forms
         result['forms'] = {form['form_type']: form['form_url'] for res in response['shipments'] for form in res.get('forms', [])}
 
         # buy insurance after successful order purchase
         for shp_id in result.get('shipment_ids'):
-            insured_amount = result.get('insured_amount')
-            if not float_is_zero(insured_amount, precision_rounding=2):
-                endpoint = "shipments/%s/insure" % shp_id
-                response = self._make_api_request(endpoint, 'post', data={'amount': insured_amount})
+            endpoint = "shipments/%s/insure" % shp_id
+            response = self._make_api_request(endpoint, 'post', data={'amount': result.get('insured_amount')})
         return result
 
     def get_tracking_link(self, order_id):
@@ -411,24 +409,15 @@ class EasypostRequest():
         modify the returned response in order to make it standard compare to
         other carrier.
         """
-        # With multiples shipments, some carrier will return a message explaining that
-        # the rates are on the first shipments and not on the next ones.
-        if response.get('messages') and carrier.easypost_delivery_type in ['Purolator', 'DPD UK', 'UPS'] and \
-                len(response.get('shipments', [])) > 1 and \
-                len(response.get('shipments')[0].get('rates', [])) > 0 and \
-                all(len(s.get('rates', [])) == 0 for s in response['shipments'][1:]):
-            if carrier.easypost_delivery_type == 'UPS' and not all(s.get('messages') for s in response['shipments'][1:]):
-                # UPS also send a message on following shipments explaining that their rates is in the
-                # first shipment (other carrier just return an empty list).
-                return response
-            if carrier.easypost_delivery_type in ['Purolator', 'DPD UK'] and (
-                    len(response['messages']) != 1 or
-                    response['messages'][0].get('type', '') != 'rate_error' or
-                    "multi-shipment rate includes this shipment." not in response['messages'][0].get('message', '')):
-                # Purolator & DPD UK send a rate_error message for this situation.
-                return response
-
-            if picking:
-                picking.message_post(body=response.get('messages'))
-            response['messages'] = False
+        # An order for UPS will generate a rate for first shipment with the
+        # rate for all shipments but compare to other carriers, it will return
+        # messages for following shipments explaining that their rates is in the
+        # first shipment (other carrier just return an empty list).
+        if response.get('messages') and\
+                carrier.easypost_delivery_type == 'UPS' and\
+                len(response.get('shipments', [])) > 1:
+            if len(response.get('shipments')[0].get('rates', [])) > 0 and all(s.get('messages') for s in response['shipments'][1:]):
+                if picking:
+                    picking.message_post(body=response.get('messages'))
+                response['messages'] = False
         return response

@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import PlanningView from '@planning/js/planning_calendar_front';
+import PlanningView from 'planning.calendar_frontend';
 
 PlanningView.include({
     // override popup of calendar

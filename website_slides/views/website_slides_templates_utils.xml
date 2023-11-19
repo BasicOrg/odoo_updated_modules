@@ -39,7 +39,7 @@
 <template id='slide_social_email' name="Share by Email">
     <h5 class="mt-4">Share by Email</h5>
     <div t-if="not is_public_user">
-        <div class="oe_slide_js_share_email">
+        <form class="oe_slide_js_share_email" role="form">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="your-friend@domain.com, your-friend2@domain.com"/>
                 <button class="btn btn-primary" type="button"
@@ -54,7 +54,7 @@
                 <strong>Sharing is caring!</strong> Email(s) sent.
             </div>
             <div class="alert alert-warning d-none" role="alert">Please enter valid email(s)</div>
-        </div>
+        </form>
     </div>
     <div t-if="is_public_user" class="alert alert-info d-inline-block">
         <p class="mb-0">Please <a t-attf-href="/web?redirect=#{request.httprequest.url}" class="fw-bold"> login </a> to share this
@@ -110,7 +110,7 @@
         <t t-call="website_slides.slide_share_link"/>
         <h5 class="mt-3">Share on Social Media</h5>
         <t t-call="website_slides.slide_share_social"/>
-        <t t-if="email_sharing" t-call="website_slides.slide_social_email"/>
+        <t t-call="website_slides.slide_social_email"/>
         <t t-if="include_embed" t-call="website_slides.slide_social_embed"/>
     </div>
 </template>
@@ -139,22 +139,20 @@
 
 <!-- Python equivalent of the JS template "website.slides.sidebar.done.button" -->
 <template id="slide_sidebar_done_button" name="Sidebar Done Button">
-    <t t-set="uncompleted_icon" t-value="use_slide_icon and slide.slide_icon_class or 'fa-circle-thin'"/>
     <div t-if="is_member"
         class="o_wslides_sidebar_done_button align-self-start"
         t-att-data-id="slide.id"
-        t-att-data-uncompleted-icon="uncompleted_icon"
         t-att-data-completed="slide_completed"
         t-att-data-can-self-mark-completed="slide.can_self_mark_completed"
         t-att-data-can-self-mark-uncompleted="slide.can_self_mark_uncompleted"
         t-att-data-is-member="is_member">
         <button class="o_wslides_button_complete btn btn-sm" t-if="slide_completed and slide.can_self_mark_uncompleted or not slide_completed and slide.can_self_mark_completed">
             <i t-if="slide_completed" class="o_wslides_slide_completed fa fa-check-circle fa-fw text-success fa-lg" t-att-data-slide-id="slide.id" title="Mark as not done"/>
-            <i t-else="" t-attf-class="fa #{uncompleted_icon} fa-fw fa-lg" t-att-data-slide-id="slide.id" title="Mark as done"/>
+            <i t-else="" class="fa fa-circle-thin fa-fw fa-lg" t-att-data-slide-id="slide.id" title="Mark as done"/>
         </button>
         <button class="o_wslides_button_complete o_wslides_button_uncompleted btn btn-sm" t-else="" disabled="1">
-            <i t-if="slide_completed" class="o_wslides_slide_completed fa fa-check fa-fw text-success fa-lg" t-att-data-slide-id="slide.id" title="Can not be marked as not done"/>
-            <i t-else="" t-attf-class="fa #{uncompleted_icon} fa-fw fa-lg" t-att-data-slide-id="slide.id" title="Can not be marked as done"/>
+            <i t-if="not slide_completed" class="fa fa-circle-thin fa-fw fa-lg" t-att-data-slide-id="slide.id" title="Can not be marked as done"/>
+            <i t-else="" class="o_wslides_slide_completed fa fa-check fa-fw text-success fa-lg" t-att-data-slide-id="slide.id" title="Can not be marked as not done"/>
         </button>
     </div>
 </template>

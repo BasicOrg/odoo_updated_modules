@@ -6,10 +6,10 @@ from odoo.tests import tagged
 
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
-class TestPayrollCommon(TransactionCase):
+class TestPaymentAdviceBase(TransactionCase):
 
     def setUp(self):
-        super(TestPayrollCommon, self).setUp()
+        super(TestPaymentAdviceBase, self).setUp()
 
         self.Bank = self.env['res.partner.bank']
         self.Employee = self.env['hr.employee']
@@ -17,7 +17,7 @@ class TestPayrollCommon(TransactionCase):
         self.PayslipEmployee = self.env['hr.payslip.employees']
         self.Advice = self.env['hr.payroll.advice']
 
-        self.partner = self.env.ref('base.partner_admin')
+        self.partner = self.env.ref('base.res_partner_4')
         self.bank_1 = self.env.ref('base.res_bank_1')
         self.in_country = self.env.ref('base.in')
         self.rd_dept = self.env.ref('hr.dep_rd')

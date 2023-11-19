@@ -9,7 +9,7 @@
                     <field name="description"/>
                 </p>
                 <field name="show_lots" invisible="1"/>
-                <field name="lot_ids" invisible="not show_lots">
+                <field name="lot_ids" attrs="{'invisible': [('show_lots', '=', False)]}">
                     <tree string="Expired Lot(s)">
                         <field name="product_id"/>
                         <field name="name"/>
@@ -28,7 +28,7 @@
                         class="btn-secondary"/>
                     <button string="Discard"
                         class="btn-secondary"
-                        special="cancel" data-hotkey="x"/>
+                        special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

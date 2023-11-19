@@ -1,17 +1,139 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from odoo.addons.mail.tests.common import mail_new_test_user
+from odoo.tests import common
+from odoo import fields
 from datetime import timedelta
-from odoo.fields import Datetime
-from odoo.tests import Form
-from odoo.addons.sale_stock_renting.tests.test_rental_common import TestRentalCommon
 
-
-class TestRentalWizard(TestRentalCommon):
+class TestRentalCommon(common.TransactionCase):
 
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
+        super(TestRentalCommon, cls).setUpClass()
+
+        cls.product_id = cls.env['product.product'].create({
+            'name': 'Test1',
+            'categ_id': cls.env.ref('product.product_category_all').id,  # remove category if possible?
+            'uom_id': cls.env.ref('uom.product_uom_unit').id,
+            'uom_po_id': cls.env.ref('uom.product_uom_unit').id,
+            'rent_ok': True,
+            'type': 'product',
+        })
+        cls.tracked_product_id = cls.env['product.product'].create({
+            'name': 'Test2',
+            'categ_id': cls.env.ref('product.product_category_all').id,  # remove category if possible?
+            'uom_id': cls.env.ref('uom.product_uom_unit').id,
+            'uom_po_id': cls.env.ref('uom.product_uom_unit').id,
+            'rent_ok': True,
+            'type': 'product',
+            'tracking': 'serial',
+        })
+
+        # Set Stock quantities
+
+        cls.lot_id1 = cls.env['stock.lot'].create({
+            'product_id': cls.tracked_product_id.id,
+            'name': "RentalLot1",
+            'company_id': cls.env.company.id,
+        })
+
+        cls.lot_id2 = cls.env['stock.lot'].create({
+            'product_id': cls.tracked_product_id.id,
+            'name': "RentalLot2",
+            'company_id': cls.env.company.id,
+        })
+
+        cls.lot_id3 = cls.env['stock.lot'].create({
+            'product_id': cls.tracked_product_id.id,
+            'name': "RentalLot3",
+            'company_id': cls.env.company.id,
+        })
+
+        quants = cls.env['stock.quant'].create({
+            'product_id': cls.product_id.id,
+            'inventory_quantity': 4.0,
+            'location_id': cls.env.user._get_default_warehouse_id().lot_stock_id.id
+        })
+        quants |= cls.env['stock.quant'].create({
+            'product_id': cls.tracked_product_id.id,
+            'inventory_quantity': 1.0,
+            'lot_id': cls.lot_id1.id,
+            'location_id': cls.env.user._get_default_warehouse_id().lot_stock_id.id
+        })
+        quants |= cls.env['stock.quant'].create({
+            'product_id': cls.tracked_product_id.id,
+            'inventory_quantity': 1.0,
+            'lot_id': cls.lot_id2.id,
+            'location_id': cls.env.user._get_default_warehouse_id().lot_stock_id.id
+        })
+        quants |= cls.env['stock.quant'].create({
+            'product_id': cls.tracked_product_id.id,
+            'inventory_quantity': 1.0,
+            'lot_id': cls.lot_id3.id,
+            'location_id': cls.env.user._get_default_warehouse_id().lot_stock_id.id
+        })
+        quants.action_apply_inventory()
+
+        # Define rental order and lines
+
+        cls.cust1 = cls.env['res.partner'].create({'name': 'test_rental_1'})
+        # cls.cust2 = cls.env['res.partner'].create({'name': 'test_rental_2'})
+
+        cls.user_id = mail_new_test_user(
+            cls.env,
+            name='Rental',
+            login='renter',
+            email='sale.rental@example.com',
+            notification_type='inbox',
+        )
+
+        cls.sale_order_id = cls.env['sale.order'].create({
+            'partner_id': cls.cust1.id,
+            'partner_invoice_id': cls.cust1.id,
+            'partner_shipping_id': cls.cust1.id,
+            'user_id': cls.user_id.id,
+            # TODO
+        })
+
+        cls.order_line_id1 = cls.env['sale.order.line'].create({
+            'order_id': cls.sale_order_id.id,
+            'product_id': cls.product_id.id,
+            'product_uom_qty': 0.0,
+            'is_rental': True,
+            'start_date': fields.Datetime.today(),
+            'return_date': fields.Datetime.today() + timedelta(days=3),
+            'price_unit': 150,
+        })
+
+        cls.sale_order_id.action_confirm()
+
+        cls.lots_rental_order = cls.env['sale.order'].create({
+            'partner_id': cls.cust1.id,
+            'partner_invoice_id': cls.cust1.id,
+            'partner_shipping_id': cls.cust1.id,
+            'user_id': cls.user_id.id,
+        })
+
+        cls.order_line_id2 = cls.env['sale.order.line'].create({
+            'order_id': cls.lots_rental_order.id,
+            'product_id': cls.tracked_product_id.id,
+            'product_uom_qty': 0.0,
+            'is_rental': True,
+            'start_date': fields.Datetime.today(),
+            'return_date': fields.Datetime.today() + timedelta(days=3),
+            'price_unit': 250,
+        })
+
+        cls.order_line_id3 = cls.env['sale.order.line'].create({
+            'order_id': cls.lots_rental_order.id,
+            'product_id': cls.tracked_product_id.id,
+            'product_uom_qty': 0.0,
+            'is_rental': True,
+            'start_date': fields.Datetime.today(),
+            'return_date': fields.Datetime.today() + timedelta(days=3),
+            'price_unit': 250,
+        })
 
     def test_rental_product_flow(self):
 
@@ -33,59 +155,59 @@ class TestRentalWizard(TestRentalCommon):
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin - timedelta(days=1),
                 self.order_line_id1.return_date,
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin,
                 self.order_line_id1.return_date - timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin - timedelta(days=1),
                 self.order_line_id1.return_date - timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin + timedelta(days=1),
                 self.order_line_id1.return_date + timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin,
                 self.order_line_id1.return_date + timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin + timedelta(days=1),
                 self.order_line_id1.return_date,
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin - timedelta(days=1),
                 self.order_line_id1.return_date + timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         self.assertEqual(
-            self.product_id._get_unavailable_qty(
+            self.product_id._get_unavailable_qty_and_lots(
                 self.order_line_id1.reservation_begin + timedelta(days=1),
                 self.order_line_id1.return_date - timedelta(days=1),
-            ), 3
+            )[0], 3
         )
 
         """
@@ -128,14 +250,6 @@ class TestRentalWizard(TestRentalCommon):
             self.product_id.quantity_svl,
             4
         )
-
-        ####################################
-        # Cancel deliver then re-apply
-        ####################################
-
-        self.order_line_id1.write({'qty_delivered': 0})
-        self.assertEqual(self.product_id.qty_available, 4)
-        self.order_line_id1.write({'qty_delivered': 3})
 
         """
             Partial Return
@@ -217,7 +331,7 @@ class TestRentalWizard(TestRentalCommon):
         sol.product_uom_qty = 1.0
         so.action_confirm()
 
-        wizard_vals = so.action_open_pickup()
+        wizard_vals = so.open_pickup()
         for _i in range(2):
             wizard = self.env[wizard_vals['res_model']].with_context(wizard_vals['context']).create({
                 'rental_wizard_line_ids': [
@@ -300,201 +414,3 @@ class TestRentalWizard(TestRentalCommon):
             scheduling_recs.mapped('report_line_status'),
             ["pickedup", "returned"],
         )
-
-class TestRentalPicking(TestRentalCommon):
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
-        cls.env['res.config.settings'].create({'group_rental_stock_picking': True}).execute()
-
-    def test_flow_1(self):
-        rental_order_1 = self.sale_order_id.copy()
-        rental_order_1.order_line.write({'product_uom_qty': 3, 'is_rental': True})
-        rental_order_1.rental_start_date = self.rental_start_date
-        rental_order_1.rental_return_date = self.rental_return_date
-        rental_order_1.action_confirm()
-        self.assertEqual(len(rental_order_1.picking_ids), 2)
-        self.assertEqual([d.date() for d in rental_order_1.picking_ids.mapped('scheduled_date')],
-                         [rental_order_1.rental_start_date.date(), rental_order_1.rental_return_date.date()])
-        self.assertEqual(rental_order_1.picking_ids.move_ids.mapped('product_uom_qty'), [3.0, 3.0])
-
-        outgoing_picking = rental_order_1.picking_ids.filtered(lambda p: p.picking_type_code == 'outgoing')
-        incoming_picking = rental_order_1.picking_ids.filtered(lambda p: p.picking_type_code == 'incoming')
-
-        outgoing_picking.move_ids.quantity = 2
-        backorder_wizard_dict = outgoing_picking.button_validate()
-        backorder_wizard = Form(self.env[backorder_wizard_dict['res_model']].with_context(backorder_wizard_dict['context'])).save()
-        backorder_wizard.process()
-        self.assertEqual(rental_order_1.order_line.qty_delivered, 2)
-        self.assertEqual(rental_order_1.rental_status, 'pickup')
-        self.assertEqual(len(rental_order_1.picking_ids), 3)
-        self.assertEqual(incoming_picking.move_ids.quantity, 2)
-
-        incoming_picking.move_ids.quantity = 1
-        backorder_wizard_dict = incoming_picking.button_validate()
-        backorder_wizard = Form(self.env[backorder_wizard_dict['res_model']].with_context(backorder_wizard_dict['context'])).save()
-        backorder_wizard.process()
-        self.assertEqual(rental_order_1.order_line.qty_returned, 1)
-        self.assertEqual(rental_order_1.rental_status, 'pickup')
-        self.assertEqual(len(rental_order_1.picking_ids), 4)
-
-        outgoing_picking_2 = rental_order_1.picking_ids.filtered(lambda p: p.picking_type_code == 'outgoing' and p.state == 'assigned')
-        incoming_picking_2 = rental_order_1.picking_ids.filtered(lambda p: p.picking_type_code == 'incoming' and p.state == 'assigned')
-        self.assertEqual(outgoing_picking_2.scheduled_date.date(), rental_order_1.rental_start_date.date())
-        self.assertEqual(incoming_picking_2.scheduled_date.date(), rental_order_1.rental_return_date.date())
-        self.assertEqual(outgoing_picking_2.move_ids.quantity, 1)
-        self.assertEqual(incoming_picking_2.move_ids.quantity, 1)
-
-        rental_order_1.order_line.write({'product_uom_qty': 5})
-        self.assertEqual(outgoing_picking_2.move_ids.product_uom_qty, 3)
-        self.assertEqual(incoming_picking_2.move_ids.product_uom_qty, 4)
-
-        outgoing_picking_2.move_ids.quantity = 1
-        backorder_wizard_dict = outgoing_picking_2.button_validate()
-        backorder_wizard = Form(self.env[backorder_wizard_dict['res_model']].with_context(backorder_wizard_dict['context'])).save()
-        backorder_wizard.process()
-        self.assertEqual(rental_order_1.order_line.qty_delivered, 3)
-        self.assertEqual(rental_order_1.rental_status, 'pickup')
-        self.assertEqual(len(rental_order_1.picking_ids), 5)
-        self.assertEqual(incoming_picking_2.move_ids.quantity, 2)
-
-        rental_order_1.order_line.write({'product_uom_qty': 4})
-        outgoing_picking_3 = rental_order_1.picking_ids.filtered(lambda p: p.picking_type_code == 'outgoing' and p.state == 'assigned')
-        self.assertEqual(outgoing_picking_3.scheduled_date.date(), rental_order_1.rental_start_date.date())
-        self.assertEqual(outgoing_picking_3.move_ids.product_uom_qty, 1)
-        self.assertEqual(incoming_picking_2.move_ids.product_uom_qty, 3)
-
-        outgoing_picking_3.button_validate()
-        self.assertEqual(incoming_picking_2.move_ids.quantity, 3)
-        self.assertEqual(rental_order_1.order_line.qty_delivered, 4)
-        self.assertEqual(rental_order_1.rental_status, 'return')
-
-        incoming_picking_2.button_validate()
-        self.assertEqual(rental_order_1.order_line.qty_returned, 4)
-        self.assertEqual(rental_order_1.rental_status, 'returned')
-
-    def test_flow_multisteps(self):
-        self.warehouse_id.delivery_steps = 'pick_pack_ship'
-        self.warehouse_id.reception_steps = 'three_steps'
-
-        rental_order_1 = self.sale_order_id.copy()
-        rental_order_1.order_line.write({'product_uom_qty': 3, 'is_rental': True})
-        rental_order_1.rental_start_date = self.rental_start_date
-        rental_order_1.rental_return_date = self.rental_return_date
-        rental_order_1.action_confirm()
-        self.assertEqual(len(rental_order_1.picking_ids), 6)
-        self.assertEqual([d.date() for d in rental_order_1.picking_ids.mapped('scheduled_date')],
-                         [rental_order_1.rental_start_date.date(), rental_order_1.rental_start_date.date(), rental_order_1.rental_start_date.date(),
-                          rental_order_1.rental_return_date.date(), rental_order_1.rental_return_date.date(), rental_order_1.rental_return_date.date()])
-        self.assertEqual(rental_order_1.picking_ids.move_ids.mapped('product_uom_qty'), [3.0, 3.0, 3.0, 3.0, 3.0, 3.0])
-
-        rental_order_1.order_line.write({'product_uom_qty': 4})
-        self.assertEqual(len(rental_order_1.picking_ids), 6)
-        self.assertEqual(rental_order_1.picking_ids.move_ids.mapped('product_uom_qty'), [4.0, 4.0, 4.0, 4.0, 4.0, 4.0])
-
-        pick_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(pick_picking.location_dest_id, self.warehouse_id.wh_pack_stock_loc_id)
-        pick_picking.button_validate()
-        rental_order_1.order_line.write({'product_uom_qty': 1})
-        self.assertEqual(len(rental_order_1.picking_ids), 7)
-
-        return_pick_picking = rental_order_1.picking_ids.filtered(lambda p: p.location_id == self.warehouse_id.wh_pack_stock_loc_id and p.location_dest_id == self.warehouse_id.lot_stock_id)
-        all_other_pickings = rental_order_1.picking_ids.filtered(lambda p: p.state != 'done' and p.id != return_pick_picking.id)
-        self.assertEqual(return_pick_picking.move_ids.product_uom_qty, 3.0)
-        self.assertEqual(return_pick_picking.state, 'waiting')
-        self.assertEqual(all_other_pickings.move_ids.mapped('product_uom_qty'), [1.0, 1.0, 1.0, 1.0, 1.0])
-        return_pick_picking.action_assign()
-        return_pick_picking.button_validate()
-
-        pack_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(pack_picking.location_dest_id, self.warehouse_id.wh_output_stock_loc_id)
-        pack_picking.button_validate()
-
-        out_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(out_picking.location_dest_id, self.env.company.rental_loc_id)
-        out_picking.button_validate()
-        self.assertEqual(rental_order_1.order_line.qty_delivered, 1)
-
-        incoming_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(incoming_picking.location_dest_id, self.warehouse_id.wh_input_stock_loc_id)
-        incoming_picking.button_validate()
-        self.assertEqual(rental_order_1.order_line.qty_returned, 1)
-
-        qc_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(qc_picking.location_dest_id, self.warehouse_id.wh_qc_stock_loc_id)
-        qc_picking.button_validate()
-
-        final_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(final_picking.location_dest_id, self.warehouse_id.lot_stock_id)
-        final_picking.button_validate()
-
-    def test_flow_serial(self):
-        rental_order_1 = self.sale_order_id.copy()
-        rental_order_1.order_line.write({'product_id': self.tracked_product_id.id, 'reserved_lot_ids': self.lot_id3, 'product_uom_qty': 2})
-        rental_order_1.order_line.is_rental = True
-        rental_order_1.rental_start_date = self.rental_start_date
-        rental_order_1.rental_return_date = self.rental_return_date
-        rental_order_1.action_confirm()
-        self.assertEqual(len(rental_order_1.picking_ids), 2)
-
-        outgoing_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(len(outgoing_picking.move_ids.move_line_ids), 2)
-        self.assertEqual(outgoing_picking.move_ids.move_line_ids.lot_id, self.lot_id3 + self.lot_id2)
-
-        outgoing_picking.button_validate()
-        self.assertEqual(rental_order_1.order_line.qty_delivered, 2)
-        self.assertEqual(self.lot_id2.quant_ids.filtered(lambda q: q.quantity == 1).location_id, self.env.company.rental_loc_id)
-        self.assertEqual(self.lot_id3.quant_ids.filtered(lambda q: q.quantity == 1).location_id, self.env.company.rental_loc_id)
-
-        incoming_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(len(incoming_picking.move_ids.move_line_ids), 2)
-        self.assertEqual(incoming_picking.move_ids.move_line_ids.lot_id, self.lot_id3 + self.lot_id2)
-
-        incoming_picking.button_validate()
-        self.assertEqual(rental_order_1.order_line.qty_returned, 2)
-        self.assertEqual(self.lot_id2.quant_ids.filtered(lambda q: q.quantity == 1).location_id, self.warehouse_id.lot_stock_id)
-        self.assertEqual(self.lot_id3.quant_ids.filtered(lambda q: q.quantity == 1).location_id, self.warehouse_id.lot_stock_id)
-
-    def test_late_fee(self):
-        rental_order_1 = self.sale_order_id.copy()
-        rental_order_1.order_line.write({'product_uom_qty': 1, 'is_rental': True})
-        rental_order_1.rental_start_date = Datetime.now() - timedelta(days=7)
-        rental_order_1.rental_return_date = Datetime.now() - timedelta(days=3)
-        rental_order_1.action_confirm()
-
-        outgoing_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(outgoing_picking.scheduled_date.date(), rental_order_1.rental_start_date.date())
-        outgoing_picking.button_validate()
-
-        incoming_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        self.assertEqual(incoming_picking.scheduled_date.date(), rental_order_1.rental_return_date.date())
-        incoming_picking.button_validate()
-
-        self.assertEqual(len(rental_order_1.order_line), 2)
-        late_fee_order_line = rental_order_1.order_line.filtered(lambda l: l.product_id.type == 'service')
-        self.assertEqual(late_fee_order_line.price_unit, 30)
-
-    def test_buttons(self):
-        rental_order_1 = self.sale_order_id.copy()
-        rental_order_1.order_line.write({'product_uom_qty': 3, 'is_rental': True})
-        rental_order_1.action_confirm()
-
-        action_open_pickup = rental_order_1.action_open_pickup()
-        action_open_return = rental_order_1.action_open_return()
-        self.assertEqual(action_open_pickup.get('res_id'), rental_order_1.picking_ids[0].id)
-        self.assertEqual(action_open_pickup.get('domain'), '')
-        self.assertEqual(action_open_pickup.get('xml_id'), 'stock.action_picking_tree_all')
-        self.assertEqual(action_open_return.get('res_id'), 0)
-        self.assertEqual(action_open_return.get('domain'), [('id', 'in', rental_order_1.picking_ids.ids)])
-        self.assertEqual(action_open_return.get('xml_id'), 'stock.action_picking_tree_all')
-
-        ready_picking = rental_order_1.picking_ids.filtered(lambda p: p.state == 'assigned')
-        ready_picking.button_validate()
-        self.assertEqual(rental_order_1.rental_status, 'return')
-
-        action_open_return_2 = rental_order_1.action_open_return()
-        self.assertEqual(action_open_return_2.get('res_id'), rental_order_1.picking_ids[1].id)
-        self.assertEqual(action_open_return_2.get('domain'), '')
-        self.assertEqual(action_open_return_2.get('xml_id'), 'stock.action_picking_tree_all')

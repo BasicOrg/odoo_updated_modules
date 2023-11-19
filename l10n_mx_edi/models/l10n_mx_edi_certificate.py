@@ -3,14 +3,10 @@
 import base64
 import logging
 import ssl
-from cryptography.hazmat.primitives import serialization
+import subprocess
+import tempfile
 from datetime import datetime
-from lxml import etree
-from pytz import timezone
-
-from odoo import _, api, fields, models, tools
-from odoo.exceptions import ValidationError, UserError
-from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+from lxml import etree, objectify
 
 _logger = logging.getLogger(__name__)
 
@@ -18,6 +14,29 @@ try:
     from OpenSSL import crypto
 except ImportError:
     _logger.warning('OpenSSL library not found. If you plan to use l10n_mx_edi, please install the library from https://pypi.python.org/pypi/pyOpenSSL')
+
+from pytz import timezone
+
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import ValidationError, UserError
+from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+
+
+KEY_TO_PEM_CMD = 'openssl pkcs8 -in %s -inform der -outform pem -out %s -passin file:%s'
+
+
+def convert_key_cer_to_pem(key, password):
+    # TODO compute it from a python way
+    with tempfile.NamedTemporaryFile('wb', suffix='.key', prefix='edi.mx.tmp.') as key_file, \
+            tempfile.NamedTemporaryFile('wb', suffix='.txt', prefix='edi.mx.tmp.') as pwd_file, \
+            tempfile.NamedTemporaryFile('rb', suffix='.key', prefix='edi.mx.tmp.') as keypem_file:
+        key_file.write(key)
+        key_file.flush()
+        pwd_file.write(password)
+        pwd_file.flush()
+        subprocess.call((KEY_TO_PEM_CMD % (key_file.name, keypem_file.name, pwd_file.name)).split())
+        key_pem = keypem_file.read()
+    return key_pem
 
 
 def str_to_datetime(dt_str, tz=timezone('America/Mexico_City')):
@@ -33,41 +52,29 @@ class Certificate(models.Model):
         string='Certificate',
         help='Certificate in der format',
         required=True,
-        attachment=False,
-    )
-    company_id = fields.Many2one(
-        comodel_name='res.company',
-        string="Company",
-        required=True,
-        default=lambda self: self.env.company,
-    )
+        attachment=False,)
     key = fields.Binary(
         string='Certificate Key',
         help='Certificate Key in der format',
         required=True,
-        attachment=False,
-    )
+        attachment=False,)
     password = fields.Char(
         string='Certificate Password',
         help='Password for the Certificate Key',
-        required=True,
-    )
+        required=True,)
     serial_number = fields.Char(
         string='Serial number',
         help='The serial number to add to electronic documents',
         readonly=True,
-        index=True,
-    )
+        index=True)
     date_start = fields.Datetime(
         string='Available date',
         help='The date on which the certificate starts to be valid',
-        readonly=True,
-    )
+        readonly=True)
     date_end = fields.Datetime(
         string='Expiration date',
         help='The date on which the certificate expires',
-        readonly=True,
-    )
+        readonly=True)
 
     @tools.ormcache('content')
     def _get_pem_cer(self, content):
@@ -81,12 +88,7 @@ class Certificate(models.Model):
         '''Get the current key in PEM format
         '''
         self.ensure_one()
-        private_key = serialization.load_der_private_key(base64.b64decode(key), password.encode())
-        return private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption()
-        )
+        return convert_key_cer_to_pem(base64.decodebytes(key), password.encode('UTF-8'))
 
     def _get_data(self):
         '''Return the content (b64 encoded) and the certificate decrypted
@@ -135,6 +137,25 @@ class Certificate(models.Model):
         cadena_transformer = etree.parse(tools.file_open(xslt_path))
         return str(etree.XSLT(cadena_transformer)(xml_tree))
 
+    def _certify_and_stamp(self, xml_content_str, xslt_path, no_cert_attrib_name='NoCertificado'):
+        """ Appends the Sello stamp, certificate, and serial number to CFDI documents
+        :param xml_content_str: The XML document string to certify and stamp
+        :param xslt_path: Path to the XSLT used to generate the cadena chain (pipe delimited string of important values)
+        :param no_cert_attrib_name: string of the NoCertificado (default) attribute which can be replaced with noCertificado
+        :return: A string of the XML with appended attributes: NoCertificado, Certificado, Sello
+        """
+        # TODO: improve functions _l10n_mx_edi_export_payment_cfdi & _l10n_mx_edi_export_invoice_cfdi in l10n_mx_edi/models/account_edi_format.py
+        self.ensure_one()
+        if not xml_content_str:
+            return None
+        tree = objectify.fromstring(xml_content_str)
+        tree.attrib[no_cert_attrib_name] = self.serial_number
+        tree.attrib['Certificado'] = self._get_data()[0]
+        cadena_chain = self._get_cadena_chain(tree, xslt_path)
+        sello = self._get_encrypted_cadena(cadena_chain)
+        tree.attrib['Sello'] = sello
+        return etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='UTF-8')
+
     @api.constrains('content', 'key', 'password')
     def _check_credentials(self):
         '''Check the validity of content/key/password and fill the fields
@@ -171,8 +192,9 @@ class Certificate(models.Model):
 
     @api.ondelete(at_uninstall=True)
     def _unlink_except_invoices(self):
-        # TODO: missing type ?
-        if self.env['l10n_mx_edi.document'].sudo().search([
+        mx_edi = self.env.ref('l10n_mx_edi.edi_cfdi_3_3')
+        if self.env['account.edi.document'].sudo().search([
+            ('edi_format_id', '=', mx_edi.id),
             ('state', '=', 'sent'),
         ], limit=1):
             raise UserError(_(

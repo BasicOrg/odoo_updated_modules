@@ -1,10 +1,11 @@
-/** @odoo-module **/
+odoo.define('website_twitter.animation', function (require) {
+'use strict';
 
-import { renderToElement } from "@web/core/utils/render";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { escape } from "@web/core/utils/strings";
+var core = require('web.core');
+const {Markup} = require('web.utils');
+var publicWidget = require('web.public.widget');
 
-import { markup } from "@odoo/owl";
+var qweb = core.qweb;
 
 publicWidget.registry.twitter = publicWidget.Widget.extend({
     selector: '.twitter',
@@ -15,11 +16,6 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
         'click .twitter_timeline .tweet': '_onTweetClick',
     },
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
-
     /**
      * @override
      */
@@ -28,21 +24,21 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
         var $timeline = this.$('.twitter_timeline');
 
         $timeline.append('<center><div><img src="/website_twitter/static/src/img/loadtweet.gif"></div></center>');
-        var def = this.rpc('/website_twitter/get_favorites').then(function (data) {
+        var def = this._rpc({route: '/website_twitter/get_favorites'}).then(function (data) {
             $timeline.empty();
 
             if (data.error) {
-                $timeline.append(renderToElement('website.Twitter.Error', {data: data}));
+                $timeline.append(qweb.render('website.Twitter.Error', {data: data}));
                 return;
             }
 
-            if (Object.keys(data || {}).length === 0) {
+            if (_.isEmpty(data)) {
                 return;
             }
 
-            var tweets = data.map((tweet) => {
+            var tweets = _.map(data, function (tweet) {
                 // Parse tweet date
-                if (Object.keys(tweet.created_at || {}).length === 0) {
+                if (_.isEmpty(tweet.created_at)) {
                     tweet.created_at = '';
                 } else {
                     var v = tweet.created_at.split(' ');
@@ -51,7 +47,7 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
                 }
 
                 // Parse tweet text
-                tweet.text = markup(escape(tweet.text)
+                tweet.text = Markup(_.escape(tweet.text)
                     .replace(
                         /[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g,
                         function (url) {
@@ -67,22 +63,22 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
                     .replace(
                         /[#]+[A-Za-z0-9_]+/g,
                         function (hashtag) {
-                            return _makeLink('http://twitter.com/search?q=' + encodeURIComponent(hashtag.replace('#', '')), hashtag);
+                            return _makeLink('http://twitter.com/search?q='+hashtag.replace('#',''), hashtag);
                         }
                     ));
 
-                return renderToElement('website.Twitter.Tweet', {tweet: tweet});
+                return qweb.render('website.Twitter.Tweet', {tweet: tweet});
 
                 function _makeLink(url, text) {
-                    return markup(`<a href="${url}" target="_blank" rel="noreferrer noopener">${text}</a>`);
+                    return Markup`<a href="${url}" target="_blank" rel="noreferrer noopener">${text}</a>`;
                 }
             });
 
             var f = Math.floor(tweets.length / 3);
             var tweetSlices = [tweets.slice(0, f).join(' '), tweets.slice(f, f * 2).join(' '), tweets.slice(f * 2, tweets.length).join(' ')];
 
-            self.$scroller = $(renderToElement('website.Twitter.Scroller')).appendTo($timeline);
-            self.$scroller.find('div[id^="scroller"]').toArray().forEach((element, index) => {
+            self.$scroller = $(qweb.render('website.Twitter.Scroller')).appendTo($timeline);
+            _.each(self.$scroller.find('div[id^="scroller"]'), function (element, index) {
                 var $scrollWrapper = $('<div/>', {class: 'scrollWrapper'});
                 var $scrollableArea = $('<div/>', {class: 'scrollableArea'});
                 $scrollWrapper.append($scrollableArea)
@@ -90,7 +86,7 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
                 $scrollableArea.append(tweetSlices[index]);
                 $(element).append($scrollWrapper);
                 var totalWidth = 0;
-                $scrollableArea.children().forEach((area) => {
+                _.each($scrollableArea.children(), function (area) {
                     totalWidth += $(area).outerWidth(true);
                 });
                 $scrollableArea.width(totalWidth);
@@ -120,7 +116,7 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
         if (!this.$scroller) {
             return;
         }
-        this.$scroller.find('.scrollWrapper').toArray().forEach((el) => {
+        _.each(this.$scroller.find('.scrollWrapper'), function (el) {
             var $wrapper = $(el);
             $wrapper.data('getNextElementWidth', true);
             $wrapper.data('autoScrollingInterval', setInterval(function () {
@@ -145,7 +141,7 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
         if (!this.$scroller) {
             return;
         }
-        this.$scroller.find('.scrollWrapper').toArray().forEach((el) => {
+        _.each(this.$scroller.find('.scrollWrapper'), function (el) {
             var $wrapper = $(el);
             clearInterval($wrapper.data('autoScrollingInterval'));
         });
@@ -180,4 +176,5 @@ publicWidget.registry.twitter = publicWidget.Widget.extend({
             window.open(url, '_blank');
         }
     },
+});
 });

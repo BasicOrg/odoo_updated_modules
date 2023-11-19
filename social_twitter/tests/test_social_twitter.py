@@ -80,7 +80,7 @@ class SocialTwitterCase(SocialCase):
         def _patched_post(*args, **kwargs):
             response = requests.Response()
             if success:
-                response._content = json.dumps({'data': {'id': '42'}}).encode('utf-8')
+                response._content = json.dumps({'id_str': '42'}).encode('utf-8')
                 response.status_code = 200
             else:
                 response.status_code = 404

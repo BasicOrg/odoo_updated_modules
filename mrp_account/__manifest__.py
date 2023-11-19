@@ -25,13 +25,11 @@ If the automated inventory valuation is active, the necessary accounting entries
         "views/mrp_bom_views.xml",
         "views/mrp_production_views.xml",
         "views/analytic_account_views.xml",
-        "report/report_mrp_templates.xml"
     ],
     'demo': [
         'data/mrp_account_demo.xml',
     ],
     'installable': True,
     'auto_install': True,
-    'post_init_hook': '_configure_journals',
     'license': 'LGPL-3',
 }

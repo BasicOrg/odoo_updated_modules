@@ -4,10 +4,10 @@
 
 {
     'name': 'Pakistan - Accounting Reports',
-    'countries': ['pk'],
+    'icon': '/l10n_pk/static/description/icon.png',
     'version': '1.0',
     'description': """
-Accounting reports for Pakistan
+        Accounting reports for Pakistan
     """,
     'category': 'Accounting/Localizations/Reporting',
     'depends': ['l10n_pk', 'account_reports'],

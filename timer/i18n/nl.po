@@ -3,16 +3,17 @@
 # 	* timer
 # 
 # Translators:
-# Wil Odoo, 2023
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.4alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-04-21 08:56+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,17 +23,17 @@ msgstr ""
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_mixin__display_timer_pause
@@ -47,12 +48,12 @@ msgstr "Weergeven timer hervatten"
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_mixin__display_timer_start_primary
 msgid "Display Timer Start Primary"
-msgstr "Geef timer start primair weer"
+msgstr "Geef timerstart primair weer."
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_mixin__display_timer_stop
 msgid "Display Timer Stop"
-msgstr "Geef timer stop weer"
+msgstr "Geef timerstop weer."
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__id
@@ -66,6 +67,11 @@ msgid "Is Timer Running"
 msgstr "Loopt de timer"
 
 #. module: timer
+#: model:ir.model.fields,field_description:timer.field_timer_timer____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__write_uid
 msgid "Last Updated by"
 msgstr "Laatst bijgewerkt door"
@@ -73,7 +79,7 @@ msgstr "Laatst bijgewerkt door"
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: timer
 #: model:ir.model.constraint,message:timer.constraint_timer_timer_unique_timer
@@ -81,11 +87,17 @@ msgid "Only one timer occurrence by model, record and user"
 msgstr "Slechts één timergebeurtenis per model, record en gebruiker"
 
 #. module: timer
-#. odoo-python
 #: code:addons/timer/models/timer_mixin.py:0
 #, python-format
 msgid "Operation not supported"
 msgstr "Bewerking niet ondersteund"
+
+#. module: timer
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
+#, python-format
+msgid "Play"
+msgstr "Play"
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__res_id
@@ -98,15 +110,16 @@ msgid "Res Model"
 msgstr "Res Model"
 
 #. module: timer
-#. odoo-javascript
-#: code:addons/timer/static/src/component/timer_toggle_button/timer_toggle_button.js:0
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
 #, python-format
 msgid "Start"
 msgstr "Start"
 
 #. module: timer
-#. odoo-javascript
-#: code:addons/timer/static/src/component/timer_toggle_button/timer_toggle_button.js:0
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
 #, python-format
 msgid "Stop"
 msgstr "Stoppen"

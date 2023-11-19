@@ -1,60 +1,73 @@
-/** @odoo-module **/
+odoo.define('event.event_steps', function (require) {
+"use strict";
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+var core = require('web.core');
 
-import EventAdditionalTourSteps from "@event/js/tours/event_steps";
+var EventAdditionalTourSteps = core.Class.extend({
 
-import { markup } from "@odoo/owl";
+    _get_website_event_steps: function () {
+        return [false];
+    },
 
-registry.category("web_tour.tours").add('event_tour', {
+});
+
+return EventAdditionalTourSteps;
+
+});
+
+odoo.define('event.event_tour', function (require) {
+"use strict";
+
+const {_t} = require('web.core');
+const {Markup} = require('web.utils');
+
+var tour = require('web_tour.tour');
+var EventAdditionalTourSteps = require('event.event_steps');
+
+tour.register('event_tour', {
     url: '/web',
     rainbowManMessage: _t("Great! Now all you have to do is wait for your attendees to show up!"),
     sequence: 210,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="event.event_main_menu"]',
-    content: markup(_t("Ready to <b>organize events</b> in a few minutes? Let's get started!")),
+    content: Markup(_t("Ready to <b>organize events</b> in a few minutes? Let's get started!")),
     position: 'bottom',
     edition: 'enterprise',
 }, {
     trigger: '.o_app[data-menu-xmlid="event.event_main_menu"]',
-    content: markup(_t("Ready to <b>organize events</b> in a few minutes? Let's get started!")),
+    content: Markup(_t("Ready to <b>organize events</b> in a few minutes? Let's get started!")),
     edition: 'community',
 }, {
     trigger: '.o-kanban-button-new',
     extra_trigger: '.o_event_kanban_view',
-    content: markup(_t("Let's create your first <b>event</b>.")),
+    content: Markup(_t("Let's create your first <b>event</b>.")),
     position: 'bottom',
     width: 175,
 }, {
-    trigger: '.o_event_form_view input[id="name"]',
-    content: markup(_t("This is the <b>name</b> your guests will see when registering.")),
+    trigger: '.o_event_form_view input[name="name"]',
+    content: Markup(_t("This is the <b>name</b> your guests will see when registering.")),
     run: 'text Odoo Experience 2020',
 }, {
-    trigger: '.o_event_form_view div[name="date_end"]',
-    content: _t("Open date range picker. Pick a Start date for your event"),
+    trigger: '.o_event_form_view input[name="date_end"]',
+    content: Markup(_t("When will your event take place? <b>Select</b> the start and end dates <b>and click Apply</b>.")),
     run: function () {
-        $('input[id="date_begin"]').val('09/30/2020 08:00:00').change();
-        $('input[id="date_end"]').val('10/02/2020 23:00:00').change();
-        $('.o_event_form_view input[id="date_end"]').click();
+        $('input[name="date_begin"]').val('09/30/2020 08:00:00').change();
+        $('input[name="date_end"]').val('10/02/2020 23:00:00').change();
     },
 }, {
-    content: _t("Apply change."),
-    trigger: '.daterangepicker .applyBtn',
-    in_modal: false,
-}, {
     trigger: '.o_event_form_view div[name="event_ticket_ids"] .o_field_x2many_list_row_add a',
-    content: markup(_t("Ticket types allow you to distinguish your attendees. Let's <b>create</b> a new one.")),
-}, stepUtils.autoExpandMoreButtons(),
-...new EventAdditionalTourSteps()._get_website_event_steps(), {
+    content: Markup(_t("Ticket types allow you to distinguish your attendees. Let's <b>create</b> a new one.")),
+}, ...new EventAdditionalTourSteps()._get_website_event_steps(), {
     trigger: '.o_event_form_view div[name="stage_id"]',
+    extra_trigger: 'div.o_form_buttons_view:not(.o_hidden)',
     content: _t("Now that your event is ready, click here to move it to another stage."),
     position: 'bottom',
 }, {
     trigger: 'ol.breadcrumb li.breadcrumb-item:first',
     extra_trigger: '.o_event_form_view div[name="stage_id"]',
-    content: markup(_t("Use the <b>breadcrumbs</b> to go back to your kanban overview.")),
+    content: Markup(_t("Use the <b>breadcrumbs</b> to go back to your kanban overview.")),
     position: 'bottom',
     run: 'click',
-}].filter(Boolean)});
+}].filter(Boolean));
+
+});

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
-    <record id="base.user_demo" model="res.users">
-        <field name="groups_id" eval="[(3, ref('fleet.fleet_group_manager'))]"/>
-    </record>
+      <!--Users-->
+      <record id="base.user_demo" model="res.users">
+        <field name="groups_id" eval="[(4, ref('fleet.fleet_group_manager'))]" />
+      </record>
 
         <record id="fleet_vehicle_state_ordered" model="fleet.vehicle.state">
             <field name="name">Ordered</field>
@@ -369,7 +370,18 @@
           <field name="category">service</field>
       </record>
 
-      <record id="type_contract_repairing" model="fleet.service.type">
+
+      <record id="type_contract_omnium" model="fleet.service.type">
+          <field name="name">Omnium</field>
+          <field name="category">contract</field>
+      </record>
+
+      <record id="type_contract_leasing" model="fleet.service.type">
+          <field name="name">Leasing</field>
+          <field name="category">contract</field>
+      </record>
+
+       <record id="type_contract_repairing" model="fleet.service.type">
           <field name="name">Repairing</field>
           <field name="category">contract</field>
       </record>
@@ -427,7 +439,6 @@
           <field name="state_id" ref="fleet_vehicle_state_registered"/>
           <field name="odometer_unit">kilometers</field>
           <field name="car_value">20000</field>
-          <field name="manager_id" ref="base.user_admin"/>
           <field eval="[(6,0,[ref('vehicle_tag_leasing'),ref('fleet.vehicle_tag_purchased'),ref('fleet.vehicle_tag_senior')])]" name="tag_ids"/>
       </record>
 

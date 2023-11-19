@@ -33,21 +33,29 @@ class ColumbianReportCustomHandler(models.AbstractModel):
             current_value = grouped_values.get(column['column_group_key'], {})
 
             if not current_value:
-                column_values.append(report._build_column_dict(None, None))
+                column_values.append({})
             else:
                 col_val = current_value.get(col_expr)
-
+                col_class = ''
                 if col_expr == 'percentage':
-                    col_val = 15 if current_value['balance'] else 0
+                    col_name = col_val = 0.15 if current_value['balance'] else 0
+                    col_class = 'number'
                 else:
                     if col_val is None:
-                        column_values.append(report._build_column_dict(None, None))
+                        column_values.append({})
                         continue
                     else:
                         if col_expr == 'bimestre':
-                            col_val = self._get_bimonth_name(current_value['bimestre'])
+                            col_name = col_val = self._get_bimonth_name(current_value['bimestre'])
+                        else:
+                            col_name = report.format_value(col_val, figure_type=column['figure_type'], blank_if_zero=False)
+                            col_class = 'number'
 
-                column_values.append(report._build_column_dict(col_val, column, options=options))
+                column_values.append({
+                    'name': col_name,
+                    'no_format': col_val,
+                    'class': col_class,
+                })
 
         return column_values
 

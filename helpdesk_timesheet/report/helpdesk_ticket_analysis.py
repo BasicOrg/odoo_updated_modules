@@ -11,7 +11,6 @@ class HelpdeskTicketReport(models.Model):
     employee_parent_id = fields.Many2one('hr.employee', string='Manager', readonly=True)
     department_id = fields.Many2one('hr.department', string='Department', readonly=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True)
-    analytic_account_id = fields.Many2one('account.analytic.account', readonly=True)
 
     def _select(self):
         select_str = super()._select()
@@ -19,19 +18,9 @@ class HelpdeskTicketReport(models.Model):
             NULLIF(T.total_hours_spent, 0) AS total_hours_spent,
             EMP.parent_id AS employee_parent_id,
             DEP.id AS department_id,
-            EMP.id AS employee_id,
-            T.analytic_account_id as analytic_account_id
+            EMP.id AS employee_id
         """
         return select_str
-
-    def _group_by(self):
-        return super()._group_by() + """ ,
-            DEP.id,
-            EMP.parent_id,
-            EMP.id,
-            T.total_hours_spent,
-            T.analytic_account_id
-        """
 
     def _from(self):
         from_str = super()._from()

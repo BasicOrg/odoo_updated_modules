@@ -3,27 +3,22 @@
 # 	* event_booth_sale
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-
-#. module: event_booth_sale
-#: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
-msgid "<span class=\"o_stat_text\">Sale Order</span>"
-msgstr "<span class=\"o_stat_text\">أمر البيع</span> "
 
 #. module: event_booth_sale
 #: model:ir.model.fields,help:event_booth_sale.field_product_product__detailed_type
@@ -84,7 +79,7 @@ msgstr "فئات الأجنحة "
 #. module: event_booth_sale
 #: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_configurator_view_form
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_sale_order_line__event_booth_ids
@@ -105,6 +100,11 @@ msgstr "جهة الاتصال"
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__contact_email
 msgid "Contact Email"
 msgstr "البريد الإلكتروني "
+
+#. module: event_booth_sale
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__contact_mobile
+msgid "Contact Mobile"
+msgstr "رقم الهاتف المحمول "
 
 #. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__contact_name
@@ -159,6 +159,7 @@ msgstr "الفعالية"
 #. module: event_booth_sale
 #: model:ir.model,name:event_booth_sale.model_event_booth
 #: model:ir.model.fields.selection,name:event_booth_sale.selection__product_template__detailed_type__event_booth
+#: model:product.product,name:event_booth_sale.product_product_event_booth
 msgid "Event Booth"
 msgstr "جناح الفعالية "
 
@@ -220,6 +221,12 @@ msgid "Journal Entry"
 msgstr "قيد اليومية"
 
 #. module: event_booth_sale
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator____last_update
+#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__write_uid
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_registration__write_uid
 msgid "Last Updated by"
@@ -252,17 +259,6 @@ msgid "Pending Booths"
 msgstr "الأجنحة قيد الانتظار "
 
 #. module: event_booth_sale
-#. odoo-python
-#: code:addons/event_booth_sale/models/sale_order.py:0
-#, python-format
-msgid ""
-"Please make sure all your event-booth related lines are configured before "
-"confirming this order:%s"
-msgstr ""
-"يرجى التأكد من أن كافة البنود المتعلقة بجناح الفعالية قد تمت تهيئتها قبل "
-"تأكيد هذا الطلب: %s "
-
-#. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__price
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__price
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_type_booth__price
@@ -280,16 +276,12 @@ msgid "Price Reduce Tax inc"
 msgstr "الخصم شامل ضريبة القيمة المضافة "
 
 #. module: event_booth_sale
-#: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__price_incl
-msgid "Price incl"
-msgstr "شامل السعر "
-
-#. module: event_booth_sale
 #: model:ir.model,name:event_booth_sale.model_product_template
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_category__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__product_id
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_type_booth__product_id
+#: model:ir.model.fields,field_description:event_booth_sale.field_sale_order_template_line__product_id
 msgid "Product"
 msgstr "المنتج"
 
@@ -305,12 +297,16 @@ msgid "Product Variant"
 msgstr "متغير المنتج "
 
 #. module: event_booth_sale
+#: model:ir.model,name:event_booth_sale.model_sale_order_template_line
+msgid "Quotation Template Line"
+msgstr "بند قالب عرض السعر"
+
+#. module: event_booth_sale
 #: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
 msgid "Registrations"
 msgstr "التسجيلات"
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/sale_order_line.py:0
 #, python-format
 msgid "Registrations from the same Order Line must belong to a single event."
@@ -320,6 +316,11 @@ msgstr "يجب أن تنتمي التسجيلات من نفس البند إلى 
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth__sale_order_line_registration_ids
 msgid "SO Lines with reservations"
 msgstr "بنود أوامر المبيعات مع الحجوزات "
+
+#. module: event_booth_sale
+#: model_terms:ir.ui.view,arch_db:event_booth_sale.event_booth_view_form_from_event
+msgid "Sale Order"
+msgstr "أمر البيع"
 
 #. module: event_booth_sale
 #: model:ir.model.fields,field_description:event_booth_sale.field_event_booth_configurator__sale_order_line_id
@@ -343,7 +344,6 @@ msgid "Select an event booth"
 msgstr "اختر جناح فعالية "
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/sale_order_line.py:0
 #, python-format
 msgid ""
@@ -362,12 +362,16 @@ msgid "Total"
 msgstr "الإجمالي"
 
 #. module: event_booth_sale
+#: model:product.product,uom_name:event_booth_sale.product_product_event_booth
+msgid "Units"
+msgstr "الوحدات"
+
+#. module: event_booth_sale
 #: model:ir.model.fields,help:event_booth_sale.field_sale_order_line__event_booth_pending_ids
 msgid "Used to create registration when providing the desired event booth."
 msgstr "يُستخدَم لإنشاء التسجيل عند تقديم جناح الفعالية المطلوب. "
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/event_booth.py:0
 #, python-format
 msgid ""
@@ -376,14 +380,12 @@ msgid ""
 msgstr "لا يمكنك حذف الأجنحة التالية لارتباطها بأوامر المبيعات: %(booths)s "
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/wizard/event_booth_configurator.py:0
 #, python-format
 msgid "You have to select at least one booth."
 msgstr "عليك تحديد جناح واحد على الأقل. "
 
 #. module: event_booth_sale
-#. odoo-python
 #: code:addons/event_booth_sale/models/event_booth_registration.py:0
 #, python-format
 msgid ""

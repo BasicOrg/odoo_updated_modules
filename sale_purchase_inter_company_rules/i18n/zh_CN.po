@@ -3,17 +3,16 @@
 # 	* sale_purchase_inter_company_rules
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -37,7 +36,6 @@ msgid "Automatic Validation"
 msgstr "自动验证"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -55,7 +53,6 @@ msgid "Config Settings"
 msgstr "配置设置"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -63,12 +60,6 @@ msgid ""
 "Configure correct warehouse for company(%s) from Menu: "
 "Settings/Users/Companies"
 msgstr "在菜单:设置/用户/公司中,为公司(%s)配置正确的仓库"
-
-#. module: sale_purchase_inter_company_rules
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__copy_lots_delivery
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_config_settings__copy_lots_delivery
-msgid "Copy Lots on Delivery Validation"
-msgstr "交货验证时复制批次"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_company__warehouse_id
@@ -79,54 +70,49 @@ msgid ""
 msgstr "在该公司销售（采购）订单的基础之上再建立的采购（销售）订单的默认值"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s using warehouse %(warehouse)s"
-" when a company confirms a %(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                using "
+"warehouse %(warehouse)s when a company confirms a %(event_type)s for "
+"%(company)s."
 msgstr ""
-"当公司确认 %(event_type)s 为 %(company)s 时，使用仓库 %(warehouse)s 生成 %(validation)s "
+"当公司确认 %(company)s 的 %(event_type)s 时，使用仓库 %(warehouse)s 生成 %(validation)s "
 "%(generated_object)s。"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s when a company confirms a "
-"%(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                when a company"
+" confirms a %(event_type)s for %(company)s."
 msgstr ""
-"当公司确认 %(event_type)s 为 %(company)s 时，生成 %(validation)s %(generated_object)s。"
+"当%(company)s 公司确认 %(event_type)s 时，生成 %(validation)s %(generated_object)s。"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
 "Inter company user of company %(name)s doesn't have enough access rights"
-msgstr "公司 %(name)s 的公司间用户没有足够的访问权限"
+msgstr " %(name)s 公司的公司间用户没有足够的访问权限"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
 msgid "Inter company user of company %s doesn't have enough access rights"
 msgstr "公司内部用户 %s没有足够的访问权限"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid "Provide at least one user for inter company relation for %(name)s"
 msgstr "为 %(name)s 提供至少一名用户进行公司间关系"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
-msgid "Provide one user for intercompany relation for %(name)s "
-msgstr "为%(name)s的跨公司关系，提供一名用户"
+msgid "Provide one user for intercompany relation for % "
+msgstr "请为%提供一个公司间用户"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_purchase_order
@@ -151,7 +137,7 @@ msgstr "销售订单行"
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_company__rule_type
 msgid "Select the type to setup inter company rules in selected company."
-msgstr "在选择的公司中,选择类型用来建立内部公司规则。"
+msgstr "在选择的公司中,选择类型用来建立内部公司规则"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_sale_order__auto_purchase_order_id
@@ -179,11 +165,6 @@ msgid "Synchronize Sales and Purchase Order"
 msgstr "同步销售和采购订单"
 
 #. module: sale_purchase_inter_company_rules
-#: model:ir.model,name:sale_purchase_inter_company_rules.model_stock_picking
-msgid "Transfer"
-msgstr "运输"
-
-#. module: sale_purchase_inter_company_rules
 #: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company_rules.res_config_settings_view_form
 msgid "Use Warehouse"
 msgstr "使用仓库"
@@ -199,7 +180,6 @@ msgid "Warehouse For Purchase Orders"
 msgstr "采购订单仓库"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -212,14 +192,12 @@ msgstr ""
 "货币：%(so_currency)s，价目表：%(pricelist)s，合作伙伴：%(partner)s（ID：%(id)s））"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "draft"
 msgstr "草稿"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -227,14 +205,12 @@ msgid "purchase order"
 msgstr "采购定案"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "purchase/sales order"
 msgstr "采购/销售订单"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -242,14 +218,12 @@ msgid "sales order"
 msgstr "销售订单"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "sales/purchase order"
 msgstr "销售/采购订单"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "validated"

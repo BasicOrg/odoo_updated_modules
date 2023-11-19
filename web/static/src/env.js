@@ -2,7 +2,7 @@
 
 import { registry } from "./core/registry";
 
-import { EventBus } from "@odoo/owl";
+const { EventBus } = owl;
 
 // -----------------------------------------------------------------------------
 // Types
@@ -10,8 +10,9 @@ import { EventBus } from "@odoo/owl";
 
 /**
  * @typedef {Object} OdooEnv
- * @property {import("services").Services} services
+ * @property {Object} services
  * @property {EventBus} bus
+ * @property {QWeb} qweb
  * @property {string} debug
  * @property {(str: string) => string} _t
  * @property {boolean} [isSmall]
@@ -31,6 +32,9 @@ export function makeEnv() {
         bus: new EventBus(),
         services: {},
         debug: odoo.debug,
+        _t: () => {
+            throw new Error("Translations are not ready yet. Maybe use _lt instead?");
+        },
         get isSmall() {
             throw new Error("UI service not initialized!");
         },
@@ -54,11 +58,6 @@ let startServicesPromise = null;
  * @returns {Promise<void>}
  */
 export async function startServices(env) {
-    // Wait for all synchronous code so that if new services that depend on
-    // one another are added to the registry, they're all present before we
-    // start them regardless of the order they're added to the registry.
-    await Promise.resolve();
-
     const toStart = new Set();
     serviceRegistry.addEventListener("UPDATE", async (ev) => {
         // Wait for all synchronous code so that if new services that depend on
@@ -79,6 +78,10 @@ export async function startServices(env) {
             await _startServices(env, toStart);
         }
     });
+    // Wait for all synchronous code so that if new services that depend on
+    // one another are added to the registry, they're all present before we
+    // start them regardless of the order they're added to the registry.
+    await Promise.resolve();
     await _startServices(env, toStart);
 }
 

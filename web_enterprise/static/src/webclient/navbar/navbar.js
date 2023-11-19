@@ -2,8 +2,8 @@
 
 import { NavBar } from "@web/webclient/navbar/navbar";
 import { useService, useBus } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
-import { useEffect, useRef } from "@odoo/owl";
+
+const { useEffect, useRef } = owl;
 
 export class EnterpriseNavBar extends NavBar {
     setup() {
@@ -11,8 +11,7 @@ export class EnterpriseNavBar extends NavBar {
         this.hm = useService("home_menu");
         this.menuAppsRef = useRef("menuApps");
         this.navRef = useRef("nav");
-        this._busToggledCallback = () => this._updateMenuAppsIcon();
-        useBus(this.env.bus, "HOME-MENU:TOGGLED", this._busToggledCallback);
+        useBus(this.env.bus, "HOME-MENU:TOGGLED", () => this._updateMenuAppsIcon());
         useEffect(() => this._updateMenuAppsIcon());
     }
     get hasBackgroundAction() {
@@ -28,6 +27,7 @@ export class EnterpriseNavBar extends NavBar {
             "o_menu_toggle_back",
             !this.isInApp && this.hasBackgroundAction
         );
+        const { _t } = this.env;
         const title =
             !this.isInApp && this.hasBackgroundAction ? _t("Previous view") : _t("Home menu");
         menuAppsEl.title = title;
@@ -36,11 +36,6 @@ export class EnterpriseNavBar extends NavBar {
         const menuBrand = this.navRef.el.querySelector(".o_menu_brand");
         if (menuBrand) {
             menuBrand.classList.toggle("o_hidden", !this.isInApp);
-        }
-
-        const menuBrandIcon = this.navRef.el.querySelector(".o_menu_brand_icon");
-        if (menuBrandIcon) {
-            menuBrandIcon.classList.toggle("o_hidden", !this.isInApp);
         }
 
         const appSubMenus = this.appSubMenus.el;

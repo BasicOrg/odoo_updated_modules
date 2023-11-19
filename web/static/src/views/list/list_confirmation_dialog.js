@@ -1,11 +1,11 @@
 /** @odoo-module */
 
 import { Dialog } from "@web/core/dialog/dialog";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 import { Field } from "@web/views/fields/field";
 import { useAutofocus } from "@web/core/utils/hooks";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class ListConfirmationDialog extends Component {
     setup() {
@@ -45,7 +45,8 @@ ListConfirmationDialog.props = {
     nbRecords: Number,
     nbValidRecords: Number,
     record: Object,
+    fieldNodes: Object,
 };
 ListConfirmationDialog.defaultProps = {
-    title: _t("Confirmation"),
+    title: _lt("Confirmation"),
 };

@@ -3,7 +3,8 @@
 import { useService } from "@web/core/utils/hooks";
 import { View } from "@web/views/view";
 import { makeContext } from "@web/core/context";
-import { Component, onWillStart } from "@odoo/owl";
+
+const { Component, onWillStart } = owl;
 
 export class BoardAction extends Component {
     setup() {
@@ -35,11 +36,6 @@ export class BoardAction extends Component {
                 display: { controlPanel: false },
                 selectRecord: (resId) => this.selectRecord(result.res_model, resId),
             };
-            const view = result.views.find((v) => v[1] === viewMode);
-            if (view) {
-                this.viewProps.viewId = view[0];
-            }
-
             if (action.context) {
                 this.viewProps.context = makeContext([
                     action.context,

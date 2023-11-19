@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-inherit="social.StreamPostCommentsOriginalPost" t-inherit-mode="extension">
+    <t t-inherit="social.StreamPostCommentsOriginalPost" t-inherit-mode="extension" owl="1">
         <xpath expr="//a[hasclass('o_social_post_published_date')]" position="after">
-            <div t-if="isConvertibleToLead?.()"
+            <div t-if="isConvertibleToLead()"
                 class="o_social_icon_dropdown o_social_manage_post dropdown">
                 <button
                     t-attf-class="btn bg-white dropdown-toggle #{bubble_design ? 'bg-200 px-3 rounded-pill' : ''}"
@@ -25,9 +25,9 @@
         </xpath>
     </t>
 
-    <t t-inherit="social.StreamPostComment" t-inherit-mode="extension">
+    <t t-inherit="social.StreamPostComment" t-inherit-mode="extension" owl="1">
         <xpath expr="//div[hasclass('o_social_manage_comment')]/div[hasclass('dropdown-menu')]" position="inside">
-            <a t-if="isConvertibleToLead?.()"
+            <a t-if="isConvertibleToLead()"
                 class="o_social_generate_lead_comment dropdown-item text-decoration-none" href="#"
                 t-on-click="generateLeadFromComment">Create Lead</a>
         </xpath>

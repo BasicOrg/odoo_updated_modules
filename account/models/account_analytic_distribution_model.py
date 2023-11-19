@@ -8,13 +8,12 @@ class AccountAnalyticDistributionModel(models.Model):
 
     account_prefix = fields.Char(
         string='Accounts Prefix',
-        help="This analytic distribution will apply to all financial accounts sharing the prefix specified.",
+        help="Prefix that defines which accounts from the financial accounting this model should apply on.",
     )
     product_id = fields.Many2one(
         'product.product',
         string='Product',
         ondelete='cascade',
-        check_company=True,
         help="Select a product for which the analytic distribution will be used (e.g. create new customer invoice or Sales order if we select this product, it will automatically take this as an analytic account)",
     )
     product_categ_id = fields.Many2one(
@@ -27,3 +26,12 @@ class AccountAnalyticDistributionModel(models.Model):
     def _create_domain(self, fname, value):
         if not fname == 'account_prefix':
             return super()._create_domain(fname, value)
+
+    def _check_score(self, key, value):
+        if key == 'account_prefix':
+            if value.startswith(self.account_prefix):
+                return 1
+            else:
+                return -1
+        else:
+            return super()._check_score(key, value)

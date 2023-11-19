@@ -1,77 +1,73 @@
 /** @odoo-module */
 
-import { Component, useState, onWillStart, onWillUnmount } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { useRecordObserver } from "@web/model/relational_model/utils";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
+
+const { Component, useState, onWillStart, onWillUpdateProps } = owl;
 
 export class TimerStartField extends Component {
     setup() {
         super.setup(...arguments);
         this.timerService = useService("timer");
-        this.state = useState({ timer: undefined, time: "", serverOffset: 0 });
+        this.state = useState({ timer: undefined, time: "" });
+        onWillStart(async () => {
+            this.startTimer(this.props.value);
+        });
 
-        onWillStart(this.onWillStart);
-        useRecordObserver(this.onRecordChange.bind(this));
-        onWillUnmount(() => {
+        onWillUpdateProps(async (nextProps) => {
             clearInterval(this.state.timer);
+            this.state.timer = undefined;
+            if (nextProps.value && !this.timerPause) {
+                if (this.clearTimer) {
+                    this.timerService.clearTimer();
+                }
+                await this.startTimer(nextProps.value);
+            } else if (!nextProps.value) {
+                this.state.time = "";
+            }
         });
     }
 
-    async onWillStart() {
-        const serverTime = await this.timerService.getServerTime();
-        this.timerService.computeOffset(serverTime);
-        this.state.serverOffset = this.timerService.offset;
-    }
-
-    onRecordChange(record) {
-        clearInterval(this.state.timer);
-        this.state.timer = undefined;
-        const timerPause = record.data.timer_pause;
-        if (timerPause && !record.data.timer_pause) {
-            this.timerService.clearTimer();
-        }
-        this.startTimer(record.data[this.props.name], timerPause);
-    }
-
-    startTimer(timerStart, timerPause) {
+    async startTimer(timerStart) {
         if (timerStart) {
             let currentTime;
-            if (timerPause) {
-                currentTime = timerPause;
+            if (!("offset" in this.timerService)) {
+                if (this.timerPause) {
+                    this.clearTimer = true;
+                }
+                currentTime = this.timerPause || (await this.timerService.getServerTime());
                 this.timerService.computeOffset(currentTime);
+                this.timerService.setTimer(0, timerStart, currentTime);
             } else {
-                this.timerService.offset = this.state.serverOffset;
-                currentTime = this.timerService.getCurrentTime();
+                this.timerService.updateTimer(timerStart);
             }
-            this.timerService.setTimer(0, timerStart, currentTime);
             this.state.time = this.timerService.timerFormatted;
-            clearInterval(this.state.timer);
             this.state.timer = setInterval(() => {
-                if (timerPause) {
+                if (this.timerPause) {
                     clearInterval(this.state.timer);
                 } else {
                     this.timerService.updateTimer(timerStart);
                     this.state.time = this.timerService.timerFormatted;
                 }
             }, 1000);
-        } else if (!timerPause) {
+        } else if (!this.timerPause) {
             clearInterval(this.state.timer);
             this.state.time = "";
-            this.timerService.clearTimer();
         }
+    }
+
+    get timerPause() {
+        return this.props.record.data.timer_pause;
     }
 }
 
 TimerStartField.props = {
     ...standardFieldProps,
 };
+TimerStartField.fieldDependencies = {
+    timer_pause: { type: "datetime" },
+};
 TimerStartField.template = "timer.TimerStartField";
 
-export const timerStartField = {
-    component: TimerStartField,
-    fieldDependencies: [ { name: "timer_pause", type: "datetime" } ],
-};
-
-registry.category("fields").add("timer_start_field", timerStartField);
+registry.category("fields").add("timer_start_field", TimerStartField);

@@ -8,7 +8,7 @@ from odoo import api, models
 from odoo.tools import misc
 from odoo.addons.base.models.assetsbundle import EXTENSIONS
 
-_match_asset_file_url_regex = re.compile(r"^(/_custom/([^/]+))?/(\w+)/([/\w]+\.\w+)$")
+_match_asset_file_url_regex = re.compile(r"^/(\w+)/(.+?)(\.custom\.(.+))?\.(\w+)$")
 
 
 class Assets(models.AbstractModel):
@@ -62,7 +62,6 @@ class Assets(models.AbstractModel):
             # If it was already modified, simply override the corresponding
             # attachment content
             custom_attachment.write({"datas": datas})
-            self.env.registry.clear_cache('assets')
         else:
             # If not, create a new attachment to copy the original scss/js file
             # content, with its modifications
@@ -72,8 +71,8 @@ class Assets(models.AbstractModel):
                 'mimetype': (file_type == 'js' and 'text/javascript' or 'text/scss'),
                 'datas': datas,
                 'url': custom_url,
-                **self._save_asset_attachment_hook(),
             }
+            new_attach.update(self._save_asset_hook())
             self.env["ir.attachment"].create(new_attach)
 
             # Create an asset with the new attachment
@@ -94,6 +93,7 @@ class Assets(models.AbstractModel):
                 new_asset['bundle'] = IrAsset._get_related_bundle(url, bundle)
             IrAsset.create(new_asset)
 
+        self.env["ir.qweb"].clear_caches()
 
     @api.model
     def _get_content_from_url(self, url, url_info=None, custom_attachments=None):
@@ -162,10 +162,10 @@ class Assets(models.AbstractModel):
         if not m:
             return False
         return {
-            'module': m.group(3),
-            'resource_path': m.group(4),
-            'customized': bool(m.group(1)),
-            'bundle': m.group(2) or False
+            'module': m.group(1),
+            'resource_path': "%s.%s" % (m.group(2), m.group(5)),
+            'customized': bool(m.group(3)),
+            'bundle': m.group(4) or False
         }
 
     @api.model
@@ -182,7 +182,8 @@ class Assets(models.AbstractModel):
             str: the URL the given asset would have if it was customized in the
                  given bundle
         """
-        return f"/_custom/{bundle_xmlid}{url}"
+        parts = url.rsplit(".", 1)
+        return "%s.custom.%s.%s" % (parts[0], bundle_xmlid, parts[1])
 
     @api.model
     def _get_custom_attachment(self, custom_url, op='='):
@@ -215,21 +216,10 @@ class Assets(models.AbstractModel):
         return self.env['ir.asset'].search([('path', 'like', url)])
 
     @api.model
-    def _save_asset_attachment_hook(self):
-        """
-        Returns the additional values to use to write the DB on customized
-        ir.attachment creation.
-
-        Returns:
-            dict
-        """
-        return {}
-
-    @api.model
     def _save_asset_hook(self):
         """
         Returns the additional values to use to write the DB on customized
-        ir.asset creation.
+        attachment and asset creation.
 
         Returns:
             dict

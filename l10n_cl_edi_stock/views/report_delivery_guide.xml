@@ -22,15 +22,15 @@
                             <span name="company_activity" class="fst-italic"
                                   t-field="o.company_id.l10n_cl_activity_description"/>
                             <div/>
-                            <t t-out="' - '.join([item for item in [', '.join([item for item in [header_address.street, header_address.street2] if item]), header_address.zip, header_address.country_id and header_address.country_id.name] if item])"/>
+                            <t t-esc="' - '.join([item for item in [', '.join([item for item in [header_address.street, header_address.street2] if item]), header_address.zip, header_address.country_id and header_address.country_id.name] if item])"/>
                             <span t-if="header_address.phone">
                                 <br/>
                             </span>
                             <span t-if="header_address.phone" style="white-space: nowrap;"
-                                  t-out="'Tel: ' + header_address.phone"/>
+                                  t-esc="'Tel: ' + header_address.phone"/>
                             <span t-if="header_address.website">
                                 <span t-att-style="'color: %s;' % o.company_id.primary_color"
-                                      t-out="'- Web: %s' %' - '.join([item for item in [header_address.website.replace('https://', '').replace('http://', ''), header_address.email] if item])"/>
+                                      t-esc="'- Web: %s' %' - '.join([item for item in [header_address.website.replace('https://', '').replace('http://', ''), header_address.email] if item])"/>
                             </span>
                         </div>
                         <div name="right-upper-side" class="col-4">
@@ -44,10 +44,10 @@
                                                     <span style="line-height: 180%;">RUT:</span>
                                                     <span t-field="o.company_id.partner_id.vat"/>
                                                     <br/>
-                                                    <span class="text-uppercase" t-out="report_name"/>
+                                                    <span class="text-uppercase" t-esc="report_name"/>
                                                     <br/>
                                                     <span>Nº:</span>
-                                                    <span style="line-height: 200%;" t-out="report_number"/>
+                                                    <span style="line-height: 200%;" t-esc="report_number"/>
                                                     <br/>
                                                     <br/>
                                                 </strong>
@@ -75,7 +75,7 @@
                     <strong>
                         <span t-att-style="'color: %s;' % o.company_id.secondary_color">Date:</span>
                     </strong>
-                    <span t-esc="o._get_effective_date()" t-options='{"widget": "date"}'/>
+                    <span t-esc="o.scheduled_date.date()" t-options='{"widget": "date"}'/>
                     <br/>
                     <strong>Customer:</strong>
                     <span t-field="o.partner_id.name"/>
@@ -83,14 +83,14 @@
 
                     <t t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id">
                         <strong>
-                            <t t-out="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.country_id.vat_label"
+                            <t t-esc="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.country_id.vat_label"
                                id="inv_tax_id_label"/>:
                         </strong>
-                        <span t-out="o.partner_id.vat"/>
+                        <span t-esc="o.partner_id.vat"/>
                         <br/>
                     </t>
                     <strong>GIRO:</strong>
-                    <span t-out="o.partner_id.commercial_partner_id.l10n_cl_activity_description or o.partner_id.l10n_cl_activity_description or ''"/>
+                    <span t-esc="o.partner_id.commercial_partner_id.l10n_cl_activity_description or o.partner_id.l10n_cl_activity_description or ''"/>
                     <br/>
                 </div>
                 <div class="col-6">
@@ -140,7 +140,7 @@
                                         <span>Customer Purchase Order</span>
                                     </td>
                                     <td class="text-start" name="td_reference_date">
-                                        <span t-out="o.sale_id.date_order.date()" t-options="{'widget': 'date'}"/>
+                                        <span t-esc="o.sale_id.date_order.date()" t-options="{'widget': 'date'}"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -214,7 +214,7 @@
                                 <tbody>
                                     <t t-set="total_line_amounts" t-value="prepared_amounts.get('total_line_amounts', {})"/>
                                     <t t-set="float_repr" t-value="prepared_amounts['float_repr']"/>
-                                    <t t-foreach="o.move_ids.filtered(lambda x: x.quantity > 0)" t-as="line">
+                                    <t t-foreach="o.move_ids.filtered(lambda x: x.quantity_done > 0)" t-as="line">
                                         <t t-set="line_amounts" t-value="total_line_amounts.get(line, {})"/>
                                         <tr>
                                             <td>
@@ -226,21 +226,21 @@
                                                 <span t-field="line.product_id.description_picking"/>
                                             </td>
                                             <td class="text-end">
-                                                <span t-field="line.quantity"/>
+                                                <span t-field="line.quantity_done"/>
                                             </td>
                                             <td groups="uom.group_uom">
                                                 <span t-field="line.product_uom"/>
                                             </td>
 
                                             <td class="text-end" t-if="has_unit_price">
-                                                <span t-out="float_repr(line_amounts.get('price_unit', False), 2)"/>
+                                                <span t-esc="float_repr(line_amounts.get('price_unit', False), 2)"/>
                                             </td>
                                             <td class="text-end" t-if="has_discount">
-                                                <span t-out="line_amounts.get('total_discount_fl', 0.0)"
+                                                <span t-esc="line_amounts.get('total_discount_fl', 0.0)"
                                                       t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                             </td>
                                             <td class="text-end" t-if="has_unit_price">
-                                                <span t-out="line_amounts.get('total_amount', 0.0)"
+                                                <span t-esc="line_amounts.get('total_amount', 0.0)"
                                                       t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                             </td>
                                         </tr>
@@ -258,7 +258,7 @@
                                                     <strong>Subtotal Neto</strong>
                                                 </td>
                                                 <td class="text-end">
-                                                    <span t-out="amounts.get('subtotal_amount_taxable', 0)"
+                                                    <span t-esc="amounts.get('subtotal_amount_taxable', 0)"
                                                           t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                                 </td>
                                             </tr>
@@ -267,18 +267,18 @@
                                                     <strong>Subtotal Exento</strong>
                                                 </td>
                                                 <td class="text-end">
-                                                    <span t-out="amounts.get('subtotal_amount_exempt', 0)"
+                                                    <span t-esc="amounts.get('subtotal_amount_exempt', 0)"
                                                           t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                                 </td>
                                             </tr>
                                             <tr t-if="amounts.get('vat_percent', False)"
                                                 class="border-black o_subtotal">
                                                 <td>
-                                                    <strong t-out="'IVA %s ' % amounts['vat_percent']"/>
+                                                    <strong t-esc="'IVA %s ' % amounts['vat_percent']"/>
                                                     <strong>%</strong>
                                                 </td>
                                                 <td class="text-end">
-                                                    <span t-out="amounts.get('vat_amount')"
+                                                    <span t-esc="amounts.get('vat_amount')"
                                                           t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                                 </td>
                                             </tr>
@@ -286,11 +286,11 @@
                                                 <tr>
                                                     <td>
                                                         <span class="text-nowrap"
-                                                              t-out="'%s %s' % (tax['tax_name'], tax['tax_percent'])"/>
+                                                              t-esc="'%s %s' % (tax['tax_name'], tax['tax_percent'])"/>
                                                         <span>%</span>
                                                     </td>
                                                     <td class="text-end o_price_total">
-                                                        <span class="text-nowrap" t-out="tax['tax_amount']"/>
+                                                        <span class="text-nowrap" t-esc="tax['tax_amount']"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -299,7 +299,7 @@
                                                     <strong>Total</strong>
                                                 </td>
                                                 <td class="text-end">
-                                                    <span class="text-nowrap" t-out="amounts.get('total_amount')"
+                                                    <span class="text-nowrap" t-esc="amounts.get('total_amount')"
                                                           t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                                 </td>
                                             </tr>

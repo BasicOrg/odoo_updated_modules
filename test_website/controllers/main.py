@@ -131,7 +131,7 @@ class WebsiteTest(Home):
         return 'Basic Controller Content'
 
     # Test Redirects
-    @http.route(['/test_website/country/<model("res.country"):country>'], type='http', auth="public", website=True, sitemap=True)
+    @http.route(['/test_website/country/<model("res.country"):country>'], type='http', auth="public", website=True, sitemap=False)
     def test_model_converter_country(self, country, **kw):
         return request.render('test_website.test_redirect_view', {'country': country})
 
@@ -142,22 +142,3 @@ class WebsiteTest(Home):
     @http.route(['/test_website/test_redirect_view_qs'], type='http', auth="public", website=True, sitemap=False)
     def test_redirect_view_qs(self, **kw):
         return request.render('test_website.test_redirect_view_qs')
-
-    @http.route([
-        '/test_countries_308',
-        '/test_countries_308/<model("test.model"):rec>',
-    ], type='http', auth='public', website=True, sitemap=False)
-    def test_countries_308(self, **kwargs):
-        return request.make_response('ok')
-
-    # Test Sitemap
-    def sitemap_test(env, rule, qs):
-        if not qs or qs.lower() in '/test_website_sitemap':
-            yield {'loc': '/test_website_sitemap'}
-
-    @http.route([
-        '/test_website_sitemap',
-        '/test_website_sitemap/something/<model("test.model"):rec>',
-    ], type='http', auth='public', website=True, sitemap=sitemap_test)
-    def test_sitemap(self, rec=None, **kwargs):
-        return request.make_response('Sitemap Testing Page')

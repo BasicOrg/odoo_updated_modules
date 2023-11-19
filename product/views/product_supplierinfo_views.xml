@@ -32,7 +32,6 @@
                             </div>
                             <label for="date_start" string="Validity"/>
                             <div class="o_row"><field name="date_start" class="oe_inline"/> to <field name="date_end" class="oe_inline"/></div>
-                            <field name="discount"/>
                             <field name="company_id" options="{'no_create': True}"/>
                         </group>
                     </group>
@@ -48,8 +47,6 @@
             <search string="Vendor">
                 <field name="partner_id"/>
                 <field name="product_tmpl_id"/>
-                <field name="product_name"/>
-                <field name="product_code"/>
                 <filter string="Active Products" name="active_products" domain="['|', ('product_tmpl_id.active', '=', True),('product_id.active', '=', True)]"/>
                 <separator />
                 <filter string="Active" name="active" domain="['|', ('date_end', '=', False), ('date_end', '&gt;=',  (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
@@ -103,13 +100,11 @@
             <tree string="Vendor Information" multi_edit="1">
                 <field name="sequence" widget="handle"/>
                 <field name="partner_id" readonly="1"/>
-                <field name="product_id" optional="hide"
-                    readonly="1"
-                    column_invisible="context.get('product_template_invisible_variant', False)"
+                <field name="product_id" readonly="1" optional="hide"
+                    invisible="context.get('product_template_invisible_variant', False)"
                     groups="product.group_product_variant"/>
-                <field name="product_tmpl_id" string="Product"
-                    readonly="1"
-                    column_invisible="context.get('visible_product_tmpl_id', True)"/>
+                <field name="product_tmpl_id" string="Product" readonly="1"
+                    invisible="context.get('visible_product_tmpl_id', True)"/>
                 <field name="product_name" optional="hide"/>
                 <field name="product_code" optional="hide"/>
                 <field name="date_start" optional="hide"/>
@@ -118,7 +113,6 @@
                 <field name="min_qty" optional="hide"/>
                 <field name="product_uom" groups="uom.group_uom" optional="hide"/>
                 <field name="price" string="Price"/>
-                <field name="discount" optional="hide"/>
                 <field name="currency_id" groups="base.group_multi_currency"/>
                 <field name="delay" optional="hide"/>
             </tree>
@@ -127,6 +121,7 @@
 
     <record id="product_supplierinfo_type_action" model="ir.actions.act_window">
         <field name="name">Vendor Pricelists</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.supplierinfo</field>
         <field name="view_mode">tree,form,kanban</field>
         <field name="context">{'visible_product_tmpl_id': False, 'search_default_active_products': True}</field>

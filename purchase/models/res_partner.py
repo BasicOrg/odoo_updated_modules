@@ -11,42 +11,42 @@ class res_partner(models.Model):
 
     def _compute_purchase_order_count(self):
         # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search_fetch(
-            [('id', 'child_of', self.ids)],
-            ['parent_id'],
-        )
+        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_partners.read(['parent_id'])
+
         purchase_order_groups = self.env['purchase.order']._read_group(
             domain=[('partner_id', 'in', all_partners.ids)],
-            groupby=['partner_id'], aggregates=['__count'],
+            fields=['partner_id'], groupby=['partner_id']
         )
-        self_ids = set(self._ids)
-
-        self.purchase_order_count = 0
-        for partner, count in purchase_order_groups:
+        partners = self.browse()
+        for group in purchase_order_groups:
+            partner = self.browse(group['partner_id'][0])
             while partner:
-                if partner.id in self_ids:
-                    partner.purchase_order_count += count
+                if partner in self:
+                    partner.purchase_order_count += group['partner_id_count']
+                    partners |= partner
                 partner = partner.parent_id
+        (self - partners).purchase_order_count = 0
 
     def _compute_supplier_invoice_count(self):
         # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search_fetch(
-            [('id', 'child_of', self.ids)],
-            ['parent_id'],
-        )
+        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_partners.read(['parent_id'])
+
         supplier_invoice_groups = self.env['account.move']._read_group(
             domain=[('partner_id', 'in', all_partners.ids),
                     ('move_type', 'in', ('in_invoice', 'in_refund'))],
-            groupby=['partner_id'], aggregates=['__count']
+            fields=['partner_id'], groupby=['partner_id']
         )
-        self_ids = set(self._ids)
-
-        self.supplier_invoice_count = 0
-        for partner, count in supplier_invoice_groups:
+        partners = self.browse()
+        for group in supplier_invoice_groups:
+            partner = self.browse(group['partner_id'][0])
             while partner:
-                if partner.id in self_ids:
-                    partner.supplier_invoice_count += count
+                if partner in self:
+                    partner.supplier_invoice_count += group['partner_id_count']
+                    partners |= partner
                 partner = partner.parent_id
+        (self - partners).supplier_invoice_count = 0
 
     @api.model
     def _commercial_fields(self):
@@ -64,4 +64,3 @@ class res_partner(models.Model):
         help="Automatically send a confirmation email to the vendor X days before the expected receipt date, asking him to confirm the exact date.")
     reminder_date_before_receipt = fields.Integer('Days Before Receipt', default=1, company_dependent=True,
         help="Number of days to send reminder email before the promised receipt date")
-    buyer_id = fields.Many2one('res.users', string='Buyer')

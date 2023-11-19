@@ -1,6 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import models, fields, api
-from odoo.tools import SQL
 
 
 class AccountReport(models.Model):
@@ -12,19 +11,13 @@ class AccountReport(models.Model):
         help="Display the option to switch to cash basis mode."
     )
 
-    # OVERRIDE
-    def get_report_information(self, options):
-        info = super().get_report_information(options)
-        info['filters']['show_cash_basis'] = self.filter_cash_basis
-        return info
-
     def _init_options_cash_basis(self, options, previous_options=None):
         if self.filter_cash_basis:
             options['report_cash_basis'] = (previous_options or {}).get('report_cash_basis', False)
 
     @api.model
     def _prepare_lines_for_cash_basis(self):
-        """Prepare the cash_basis_temp_account_move_line substitute.
+        """Prepare the cash_basis_temp_account_move_line substitue.
 
         This method should be used once before all the SQL queries using the
         table account_move_line for reports in cash basis.
@@ -64,9 +57,7 @@ class AccountReport(models.Model):
             {where_journals};
 
             WITH payment_table AS (
-                SELECT
-                    aml.move_id,
-                    GREATEST(aml.date, aml2.date) AS date,
+                SELECT aml.move_id, aml2.date,
                     CASE WHEN (aml.balance = 0 OR sub_aml.total_per_account = 0)
                         THEN 0
                         ELSE part.amount / ABS(sub_aml.total_per_account)
@@ -77,7 +68,7 @@ class AccountReport(models.Model):
                     (aml2.id = part.credit_move_id OR aml2.id = part.debit_move_id)
                     AND aml.id != aml2.id
                 JOIN (
-                    SELECT move_id, account_id, SUM(ABS(balance)) AS total_per_account
+                    SELECT move_id, account_id, ABS(SUM(balance)) AS total_per_account
                     FROM ONLY account_move_line account_move_line
                     GROUP BY move_id, account_id
                 ) sub_aml ON (aml.account_id = sub_aml.account_id AND aml.move_id=sub_aml.move_id)
@@ -125,12 +116,6 @@ class AccountReport(models.Model):
         action['context'].pop('cash_basis', '')
         return action
 
-    def action_audit_cell(self, options, params):
-        action = super().action_audit_cell(options, params)
-        if options.get('report_cash_basis'):
-            action['domain'].append(('move_id.payment_state', 'in', ('in_payment', 'paid', 'partial', 'reversed')))
-        return action
-
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
@@ -139,6 +124,6 @@ class AccountMoveLine(models.Model):
         query = super()._where_calc(domain, active_test)
         if self.env.context.get('account_report_cash_basis'):
             self.env['account.report']._prepare_lines_for_cash_basis()
-            query._tables['account_move_line'] = SQL.identifier('cash_basis_temp_account_move_line')
+            query._tables['account_move_line'] = 'cash_basis_temp_account_move_line'
 
         return query

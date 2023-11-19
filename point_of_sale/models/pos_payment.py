@@ -33,13 +33,15 @@ class PosPayment(models.Model):
     is_change = fields.Boolean(string='Is this payment change?', default=False)
     account_move_id = fields.Many2one('account.move')
 
-    @api.depends('amount', 'currency_id')
-    def _compute_display_name(self):
+    @api.model
+    def name_get(self):
+        res = []
         for payment in self:
             if payment.name:
-                payment.display_name = f'{payment.name} {formatLang(self.env, payment.amount, currency_obj=payment.currency_id)}'
+                res.append((payment.id, '%s %s' % (payment.name, formatLang(self.env, payment.amount, currency_obj=payment.currency_id))))
             else:
-                payment.display_name = formatLang(self.env, payment.amount, currency_obj=payment.currency_id)
+                res.append((payment.id, formatLang(self.env, payment.amount, currency_obj=payment.currency_id)))
+        return res
 
     @api.constrains('payment_method_id')
     def _check_payment_method_id(self):
@@ -51,7 +53,6 @@ class PosPayment(models.Model):
         return {
             'payment_method_id': payment.payment_method_id.id,
             'amount': payment.amount,
-            'pos_order_id': payment.pos_order_id.id,
             'payment_status': payment.payment_status,
             'card_type': payment.card_type,
             'cardholder_name': payment.cardholder_name,
@@ -76,7 +77,7 @@ class PosPayment(models.Model):
             payment_move = self.env['account.move'].with_context(default_journal_id=journal.id).create({
                 'journal_id': journal.id,
                 'date': fields.Date.context_today(payment),
-                'ref': _('Invoice payment for %s (%s) using %s', order.name, order.account_move.name, payment_method.name),
+                'ref': _('Invoice payment for %s (%s) using %s') % (order.name, order.account_move.name, payment_method.name),
                 'pos_payment_ids': payment.ids,
             })
             result |= payment_move

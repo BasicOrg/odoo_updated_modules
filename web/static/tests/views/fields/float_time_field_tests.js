@@ -39,7 +39,7 @@ QUnit.module("Fields", (hooks) => {
                     </sheet>
                 </form>`,
             mockRPC(route, args) {
-                if (route === "/web/dataset/call_kw/partner/web_save") {
+                if (route === "/web/dataset/call_kw/partner/write") {
                     // 48 / 60 = 0.8
                     assert.strictEqual(
                         args.args[1].qux,
@@ -89,7 +89,7 @@ QUnit.module("Fields", (hooks) => {
                     <field name="qux" widget="float_time"/>
                 </form>`,
             mockRPC(route, args) {
-                if (route === "/web/dataset/call_kw/partner/web_save") {
+                if (route === "/web/dataset/call_kw/partner/write") {
                     assert.strictEqual(
                         args.args[1].qux,
                         9.5,
@@ -175,20 +175,5 @@ QUnit.module("Fields", (hooks) => {
             target.querySelector(".o_field_widget[name='qux'] input").placeholder,
             "Placeholder"
         );
-    });
-
-    QUnit.test("float_time field does not have an inputmode attribute", async function (assert) {
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                <form>
-                    <field name="qux" widget="float_time" placeholder="Placeholder"/>
-                </form>`,
-        });
-
-        const input = target.querySelector(".o_field_widget[name='qux'] input");
-        assert.notOk(input.attributes.inputMode);
     });
 });

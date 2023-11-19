@@ -1,8 +1,7 @@
-/** @odoo-module **/
+odoo.define('website_sale.recently_viewed', function (require) {
 
-import { debounce } from "@web/core/utils/timing";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { cookie } from "@web/core/browser/cookie";;
+var publicWidget = require('web.public.widget');
+const {getCookie, setCookie} = require('web.utils.cookies');
 
 publicWidget.registry.productsRecentlyViewedUpdate = publicWidget.Widget.extend({
     selector: '#product_detail',
@@ -16,8 +15,7 @@ publicWidget.registry.productsRecentlyViewedUpdate = publicWidget.Widget.extend(
      */
     init: function () {
         this._super.apply(this, arguments);
-        this._onProductChange = debounce(this._onProductChange, this.debounceValue);
-        this.rpc = this.bindService("rpc");
+        this._onProductChange = _.debounce(this._onProductChange, this.debounceValue);
     },
 
     //--------------------------------------------------------------------------
@@ -35,16 +33,19 @@ publicWidget.registry.productsRecentlyViewedUpdate = publicWidget.Widget.extend(
         if (! parseInt(this.el.dataset.viewTrack, 10)) {
             return; // Is not tracked
         }
-        if (cookie.get(cookieName)) {
+        if (getCookie(cookieName)) {
             return; // Already tracked in the last 30min
         }
         if ($(this.el).find('.js_product.css_not_available').length) {
             return; // Variant not possible
         }
-        this.rpc('/shop/products/recently_viewed_update', {
-            product_id: productId,
+        this._rpc({
+            route: '/shop/products/recently_viewed_update',
+            params: {
+                product_id: productId,
+            }
         }).then(function (res) {
-            cookie.set(cookieName, productId, 30 * 60, 'optional');
+            setCookie(cookieName, productId, 30 * 60, 'optional');
         });
     },
 
@@ -60,4 +61,5 @@ publicWidget.registry.productsRecentlyViewedUpdate = publicWidget.Widget.extend(
     _onProductChange: function (ev) {
         this._updateProductView($(ev.currentTarget));
     },
+});
 });

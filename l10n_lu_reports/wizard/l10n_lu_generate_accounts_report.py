@@ -31,13 +31,12 @@ class L10nLuGenerateAccountsReport(models.TransientModel):
                 self.pl = 'full'
 
     def _get_report_options(self, report):
-        return report.get_options()
+        return report._get_options()
 
     def _lu_get_declarations(self, declaration_template_values):
         # Basic (required) declaration group
         declaration = {'declaration_groups': [], 'declaration_singles': {'forms': []}}
         declaration.update(declaration_template_values)
-        report_options = self.env.context['report_generation_options']
 
         # Balance Sheet Report
         if not self.coa_only:
@@ -46,9 +45,9 @@ class L10nLuGenerateAccountsReport(models.TransientModel):
             else:
                 bs_report = self.env.ref('l10n_lu_reports.account_financial_report_l10n_lu_bs')
             bs_report_options = self._get_report_options(bs_report)
-            bs_report_options['date'].update(report_options.get('date', {}))
-            bs_model = self.env[bs_report.custom_handler_model_name].with_context(skip_options_recompute=True)
-            bs_declaration = bs_model.get_xml_2_0_report_values(bs_report_options, self.import_notes_as_references)[0]
+            bs_report_options['date'].update({'period_type': 'today', 'mode': 'single'})
+            bs_declaration = self.env[bs_report.custom_handler_model_name].get_xml_2_0_report_values(bs_report_options,
+                                                                                          self.import_notes_as_references)[0]
 
         # Profit&Loss Report
         if not self.coa_only:
@@ -57,19 +56,21 @@ class L10nLuGenerateAccountsReport(models.TransientModel):
             else:
                 pl_report = self.env.ref('l10n_lu_reports.account_financial_report_l10n_lu_pl')
             pl_report_options = self._get_report_options(pl_report)
-            pl_report_options['date'].update(report_options.get('date', {}))
-            pl_model = self.env[pl_report.custom_handler_model_name].with_context(skip_options_recompute=True)
-            pl_declaration = pl_model.get_xml_2_0_report_values(pl_report_options, self.import_notes_as_references)[0]
+            pl_declaration = self.env[pl_report.custom_handler_model_name].get_xml_2_0_report_values(pl_report_options,
+                                                                                          self.import_notes_as_references)[0]
 
         # Chart of Accounts Report
+        report_options = self.env.context['report_generation_options']
         options = {
             'journals': report_options['journals'],
             'all_entries': report_options['all_entries'],
+            'unposted_in_period': report_options['unposted_in_period'],
             'date': report_options['date'],
         }
+        if report_options.get('multi_company'):
+            options['multi_company'] = report_options['multi_company']
         coa_report = self.env.ref('account_reports.trial_balance_report')
-        options = coa_report.get_options(options)
-        options['date'].update(report_options.get('date', {}))
+        options = coa_report._get_options(options)
         coa_declaration = coa_report.l10n_lu_get_xml_2_0_report_coa_values(
             options, self.avg_nb_employees, self.size, self.pl, self.bs, self.coa_only, self.optional_remarks)
 

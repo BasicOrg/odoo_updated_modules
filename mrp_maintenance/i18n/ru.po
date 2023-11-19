@@ -1,24 +1,23 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* mrp_maintenance
-#
+# 
 # Translators:
-# Сергей Шебанин <sergey@shebanin.ru>, 2022
-# Martin Trigaux, 2022
-# Максим Дронь <dronmax@gmail.com>, 2022
-#
+# Martin Trigaux, 2019
+# Vasiliy Korobatov <korobatov@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:47+0000\n"
-"Last-Translator: Максим Дронь <dronmax@gmail.com>, 2022\n"
-"Language-Team: Russian (https://app.transifex.com/odoo/teams/41243/ru/)\n"
-"Language: ru\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: Vasiliy Korobatov <korobatov@gmail.com>, 2019\n"
+"Language-Team: Russian (https://www.transifex.com/odoo/teams/41243/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. module: mrp_maintenance
@@ -27,19 +26,9 @@ msgid "<span class=\"o_stat_text\">Maintenance</span>"
 msgstr "<span class=\"o_stat_text\">Обслуживание</span>"
 
 #. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__company_id
-msgid "Company"
-msgstr "Компания"
-
-#. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__estimated_next_failure
 msgid "Computed as Latest Failure Date + MTBF"
 msgstr "Дата последнего отказа + ожидаемое время наработки на отказ"
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture1
-msgid "Crosscut Saw: 8 ppi."
-msgstr "Поперечная пила"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_request_view_form_inherit_mrp
@@ -47,13 +36,13 @@ msgid "Discard"
 msgstr "Отменить"
 
 #. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture3
-msgid "Drill Machine"
-msgstr "Сверлильный станок"
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
+msgid "Equipment"
+msgstr "Оборудование"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
-msgid "Equipment"
+msgid "Equipments"
 msgstr "Оборудование"
 
 #. module: mrp_maintenance
@@ -81,11 +70,6 @@ msgstr "Время отказа"
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_equipment_view_form_inherit_mrp
 msgid "Expected Mean Time Between Failure"
 msgstr "Ожидаемое среднее время наработки на отказ"
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment.category,name:mrp_maintenance.equipment_furniture_tools
-msgid "Furniture Tools"
-msgstr "Ручной инструмент"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_equipment_view_form_inherit_mrp
@@ -124,25 +108,26 @@ msgid "Maintenance Equipment"
 msgstr "Обслуживаемое оборудование"
 
 #. module: mrp_maintenance
-#. odoo-javascript
-#: code:addons/mrp_maintenance/static/src/components/menuPopup.xml:0
 #: model:ir.model,name:mrp_maintenance.model_maintenance_request
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_production_view_form_inherit_maintenance
-#, python-format
 msgid "Maintenance Request"
 msgstr "Запрос обслуживания"
 
 #. module: mrp_maintenance
-#. odoo-python
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "Maintenance Requests"
 msgstr "Запросы обслуживания"
 
 #. module: mrp_maintenance
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workorder_tablet_view_form_inherit_maintenance
+msgid "Maintenance request"
+msgstr "Запрос на техническое обслуживание"
+
+#. module: mrp_maintenance
 #: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__production_id
 msgid "Manufacturing Order"
-msgstr "Заявка на производство"
+msgstr "Производственная заявка"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_equipment_view_form_inherit_mrp
@@ -151,8 +136,11 @@ msgstr "Среднее время между отказами, наработк�
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__mtbf
-msgid "Mean Time Between Failure, computed based on done corrective maintenances."
-msgstr "Среднее время между отказами рассчитывается исходя из регулярного обслуживания."
+msgid ""
+"Mean Time Between Failure, computed based on done corrective maintenances."
+msgstr ""
+"Среднее время между отказами рассчитывается исходя из регулярного "
+"обслуживания."
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__mttr
@@ -161,7 +149,7 @@ msgid "Mean Time To Repair"
 msgstr "Среднее время до восстановления работоспособности"
 
 #. module: mrp_maintenance
-#. odoo-python
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "New Maintenance Request"
@@ -178,11 +166,6 @@ msgid "Operation"
 msgstr "Операция"
 
 #. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__production_company_id
-msgid "Production Company"
-msgstr ""
-
-#. module: mrp_maintenance
 #: model:ir.model,name:mrp_maintenance.model_mrp_production
 msgid "Production Order"
 msgstr "Производственный заказ"
@@ -196,11 +179,6 @@ msgstr "Запрос"
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_request_view_form_inherit_mrp
 msgid "Save"
 msgstr "Сохранить"
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture2
-msgid "Scrub Plane"
-msgstr "Шерхебель"
 
 #. module: mrp_maintenance
 #: model:ir.model,name:mrp_maintenance.model_mrp_workcenter
@@ -226,7 +204,6 @@ msgid "days"
 msgstr "дней"
 
 #. module: mrp_maintenance
-#. odoo-python
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "work centers"

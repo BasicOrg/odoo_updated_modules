@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <templates>
-    <t t-name="account.DropZone">
+    <t t-name="account.DropZone" owl="1">
         <div t-if="props.visible"
             t-attf-class="o_drop_area"
             t-on-dragover.prevent="()=>{}"
@@ -11,8 +11,8 @@
         </div>
     </t>
 
-    <t t-name="account.AccountFileUploader">
-        <div t-att-class="props.record and props.record.data ? 'oe_kanban_color_' + props.record.data.color : ''">
+    <t t-name="account.AccountFileUploader" owl="1">
+        <div>
             <FileUploader
                 acceptedFileExtensions="props.acceptedFileExtensions"
                 fileUploadClass="'account_file_uploader'"
@@ -20,15 +20,13 @@
                 onUploaded.bind="onFileUploaded"
                 onUploadComplete.bind="onUploadComplete">
                 <t t-set-slot="toggler">
-                    <t t-if="props.togglerTemplate" t-call="{{ props.togglerTemplate }}"/>
-                    <t t-else="" t-slot="toggler"/>
+                    <t t-slot="default"/>
                 </t>
-                <t t-slot="default"/>
             </FileUploader>
         </div>
     </t>
 
-    <t t-name="account.ListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+    <t t-name="account.ListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary" owl="1">
         <xpath expr="//div[@t-ref='root']" position="before">
             <AccountDropZone
                 visible="state.dropzoneVisible"
@@ -39,7 +37,7 @@
         </xpath>
     </t>
 
-    <t t-name="account.KanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary">
+    <t t-name="account.KanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary" owl="1">
         <xpath expr="//div[@t-ref='root']" position="before">
             <AccountDropZone
                 visible="state.dropzoneVisible"
@@ -50,30 +48,27 @@
         </xpath>
     </t>
 
-    <t t-name="account.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary">
-        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+    <t t-name="account.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="after">
             <t t-call="account.AccountViewUploadButton"/>
         </xpath>
     </t>
 
-    <t t-name="account.KanbanView.Buttons" t-inherit="web.KanbanView.Buttons" t-inherit-mode="primary">
-        <xpath expr="//div[hasclass('o_cp_buttons')]" position="inside">
+    <t t-name="account.KanbanView.Buttons" t-inherit="web.KanbanView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//*[@class='btn btn-primary o-kanban-button-new']" position="after">
             <t t-call="account.AccountViewUploadButton"/>
         </xpath>
     </t>
 
-    <t t-name="account.AccountViewUploadButton">
-        <!-- No record is available so rely on the action context to contain the default_move_type -->
-        <AccountFileUploader>
-            <t t-set-slot="toggler">
-                <button type="button" class="btn btn-secondary o_button_upload_bill">
-                    Upload
-                </button>
-            </t>
+    <t t-name="account.AccountViewUploadButton" owl="1">
+        <AccountFileUploader extraContext="props.context">
+            <button type="button" class="btn btn-secondary o_button_upload_bill">
+                Upload
+            </button>
         </AccountFileUploader>
     </t>
 
-    <t t-name="account.DashboardKanbanRecord">
+    <t t-name="account.DashboardKanbanRecord" owl="1">
         <div
             role="article"
             t-att-class="getRecordClasses()"
@@ -82,21 +77,7 @@
             t-on-click="onGlobalClick"
             t-on-dragenter.stop.prevent="() => state.dropzoneVisible = true"
             t-ref="root">
-            <AccountFileUploader record="props.record">
-                <t t-set-slot="default">
-                    <AccountDropZone
-                        visible="state.dropzoneVisible"
-                        hideZone="() => state.dropzoneVisible = false"/>
-                    <t t-call="{{ templates[this.constructor.KANBAN_BOX_ATTRIBUTE] }}" t-call-context="renderingContext"/>
-                </t>
-            </AccountFileUploader>
-            <t t-call="{{ this.constructor.menuTemplate }}"/>
-        </div>
-    </t>
-
-    <t t-name="account.JournalUploadLink">
-        <div t-att-class="props.btnClass" groups="account.group_account_invoice">
-            <a href="#" t-out="props.linkText"/>
+            <t t-call="{{ templates['kanban-box'] }}"/>
         </div>
     </t>
 

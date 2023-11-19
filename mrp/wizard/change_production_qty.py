@@ -45,8 +45,7 @@ class ChangeProductionQty(models.TransientModel):
                 move.write({'product_uom_qty': move.product_uom_qty + qty})
 
         if push_moves:
-            push_moves._action_confirm()
-        production.move_finished_ids._action_assign()
+            push_moves._action_confirm()._action_assign()
 
         return modification
 
@@ -58,16 +57,20 @@ class ChangeProductionQty(models.TransientModel):
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
         for wizard in self:
             production = wizard.mo_id
-            if wizard.product_qty < production.qty_produced:
+            produced = sum(production.move_finished_ids.filtered(lambda m: m.product_id == production.product_id).mapped('quantity_done'))
+            if wizard.product_qty < produced:
                 format_qty = '%.{precision}f'.format(precision=precision)
                 raise UserError(_(
-                    "You have already processed %(quantity)s. Please input a quantity higher than %(quantity)s ",
-                    quantity=format_qty % production.qty_produced,
+                    "You have already processed %(quantity)s. Please input a quantity higher than %(minimum)s ",
+                    quantity=format_qty % produced,
+                    minimum=format_qty % produced
                 ))
             old_production_qty = production.product_qty
             new_production_qty = wizard.product_qty
+            done_moves = production.move_finished_ids.filtered(lambda x: x.state == 'done' and x.product_id == production.product_id)
+            qty_produced = production.product_id.uom_id._compute_quantity(sum(done_moves.mapped('product_qty')), production.product_uom_id)
 
-            factor = (new_production_qty - production.qty_produced) / (old_production_qty - production.qty_produced)
+            factor = (new_production_qty - qty_produced) / (old_production_qty - qty_produced)
             update_info = production._update_raw_moves(factor)
             documents = {}
             for move, old_qty, new_qty in update_info:
@@ -80,7 +83,7 @@ class ChangeProductionQty(models.TransientModel):
                         else:
                             documents[key] = [value]
             production._log_manufacture_exception(documents)
-            self._update_finished_moves(production, new_production_qty - production.qty_produced, old_production_qty - production.qty_produced)
+            self._update_finished_moves(production, new_production_qty - qty_produced, old_production_qty - qty_produced)
             production.write({'product_qty': new_production_qty})
 
             for wo in production.workorder_ids:

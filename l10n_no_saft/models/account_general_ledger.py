@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import io
+import base64
+import re
 
-from odoo import api, models, _
+from odoo import api, models, tools, _
 
 
 class GeneralLedgerCustomHandler(models.AbstractModel):
@@ -20,7 +23,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
     @api.model
     def _l10n_no_prepare_saft_report_values(self, report, options):
-        template_vals = self._saft_prepare_report_values(report, options)
+        template_vals = report._saft_prepare_report_values(options)
 
         template_vals.update({
             'xmlns': 'urn:StandardAuditFile-Taxation-Financial:NO',
@@ -33,14 +36,16 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
     def l10n_no_export_saft_to_xml(self, options):
         report = self.env['account.report'].browse(options['report_id'])
         template_vals = self._l10n_no_prepare_saft_report_values(report, options)
-        file_data = self._saft_generate_file_data_with_error_check(
-            report, options, template_vals, 'l10n_no_saft.saft_template_inherit_l10n_no_saft'
-        )
-        self.env['ir.attachment'].l10n_no_saft_validate_xml_from_attachment(file_data['file_content'])
-        return file_data
+        content = self.env['ir.qweb']._render('l10n_no_saft.saft_template_inherit_l10n_no_saft', template_vals)
 
-    def _saft_get_account_type(self, account):
-        # OVERRIDE account_saft/models/account_general_ledger
-        if self.env.company.account_fiscal_country_id.code != 'NO':
-            return super()._saft_get_account_type(account)
-        return "GL"
+        self.env['ir.attachment'].l10n_no_saft_validate_xml_from_attachment(content, 'xsd_no_saft.xsd')
+
+        xsd_attachment = self.env['ir.attachment'].search([('name', '=', 'xsd_cached_Norwegian_SAF-T_Financial_Schema_v_1_10_xsd')])
+        if xsd_attachment:
+            with io.BytesIO(base64.b64decode(xsd_attachment.with_context(bin_size=False).datas)) as xsd:
+                tools.xml_utils._check_with_xsd(content, xsd)
+        return {
+            'file_name': report.get_default_report_filename('xml'),
+            'file_content': "\n".join(re.split(r'\n\s*\n', content)).encode(),
+            'file_type': 'xml',
+        }

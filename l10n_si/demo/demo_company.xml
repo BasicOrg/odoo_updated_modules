@@ -17,12 +17,6 @@
         <field name="partner_id" ref="partner_demo_company_si"/>
     </record>
 
-    <record id="demo_bank_si" model="res.partner.bank">
-        <field name="acc_number">SI44835337197422325</field>
-        <field name="partner_id" ref="partner_demo_company_si"/>
-        <field name="company_id" ref="demo_company_si"/>
-    </record>
-
     <function model="res.company" name="_onchange_country_id">
         <value eval="[ref('demo_company_si')]"/>
     </function>
@@ -33,8 +27,7 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>si</value>
+        <value eval="[ref('l10n_si.gd_chart')]"/>
         <value model="res.company" eval="obj().env.ref('l10n_si.demo_company_si')"/>
     </function>
 </odoo>

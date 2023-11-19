@@ -8,14 +8,12 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//page[@id='outbound_payment_settings']//group[@name='outgoing_payment']" position="inside">
-                    <group string="NACHA configuration" invisible="',nacha,'.lower() not in (selected_payment_method_codes or '').lower() or type != 'bank'">
+                    <group string="NACHA configuration" attrs="{'invisible': ['|', '!', ('selected_payment_method_codes', 'ilike', ',nacha,'), ('type', '!=', 'bank')]}">
                         <field name="nacha_immediate_destination"/>
                         <field name="nacha_destination"/>
                         <field name="nacha_immediate_origin"/>
                         <field name="nacha_company_identification"/>
                         <field name="nacha_origination_dfi_identification"/>
-                        <field name="nacha_entry_class_code"/>
-                        <field name="nacha_is_balanced"/>
                     </group>
                 </xpath>
             </field>

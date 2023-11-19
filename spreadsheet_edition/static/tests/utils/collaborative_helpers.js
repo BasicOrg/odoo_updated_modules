@@ -1,29 +1,31 @@
 /** @odoo-module */
 
-import { Model } from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { makeTestEnv } from "@web/../tests/helpers/mock_env";
-import { MockSpreadsheetCollaborativeChannel } from "./mock_spreadsheet_collaborative_channel";
+import MockSpreadsheetCollaborativeChannel from "./mock_spreadsheet_collaborative_channel";
 import { ormService } from "@web/core/orm_service";
 import { uiService } from "@web/core/ui/ui_service";
 import { registry } from "@web/core/registry";
 import { makeFakeLocalizationService } from "@web/../tests/helpers/mock_services";
 import { DataSources } from "@spreadsheet/data_sources/data_sources";
 import { setupDataSourceEvaluation } from "@spreadsheet/../tests/utils/model";
+import { spreadsheetCollaborativeService } from "@spreadsheet_edition/bundle/o_spreadsheet/collaborative/spreadsheet_collaborative_service";
 
+const { Model } = spreadsheet;
 const serviceRegistry = registry.category("services");
 
 export function makeFakeSpreadsheetService() {
     return {
-        dependencies: [],
+        ...spreadsheetCollaborativeService,
         start() {
-            return {
-                makeCollaborativeChannel() {
-                    return new MockSpreadsheetCollaborativeChannel();
-                },
-            };
+            const fakeSpreadsheetService = spreadsheetCollaborativeService.start(...arguments);
+            fakeSpreadsheetService.getCollaborativeChannel = () =>
+                new MockSpreadsheetCollaborativeChannel();
+            return fakeSpreadsheetService;
         },
     };
 }
+
 
 export function joinSession(spreadsheetChannel, client) {
     spreadsheetChannel.broadcast({
@@ -59,26 +61,20 @@ export async function setupCollaborativeEnv(serverData) {
     const network = new MockSpreadsheetCollaborativeChannel();
     const model = new Model();
     const alice = new Model(model.exportData(), {
-        custom: {
-            env,
-            dataSources: new DataSources(env),
-        },
+        dataSources: new DataSources(env.services.orm),
+        evalContext: { env },
         transportService: network,
         client: { id: "alice", name: "Alice" },
     });
     const bob = new Model(model.exportData(), {
-        custom: {
-            dataSources: new DataSources(env),
-            env,
-        },
+        dataSources: new DataSources(env.services.orm),
+        evalContext: { env },
         transportService: network,
         client: { id: "bob", name: "Bob" },
     });
     const charlie = new Model(model.exportData(), {
-        custom: {
-            dataSources: new DataSources(env),
-            env,
-        },
+        dataSources: new DataSources(env.services.orm),
+        evalContext: { env },
         transportService: network,
         client: { id: "charlie", name: "Charlie" },
     });

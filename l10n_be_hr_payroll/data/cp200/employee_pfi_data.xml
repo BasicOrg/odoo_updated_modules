@@ -37,7 +37,7 @@ if contract.mobile and contract.internet:
         <field name="condition_select">python</field>
         <field name="condition_python">result = bool(contract.has_laptop)</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = payslip._rule_parameter('cp200_bik_laptop')</field>
+        <field name="amount_python_compute">result = payslip.rule_parameter('cp200_bik_laptop')</field>
         <field name="struct_id" ref="hr_payroll_structure_cp200_pfi"/>
     </record>
 
@@ -61,7 +61,7 @@ if contract.mobile and contract.internet:
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="amount_python_compute">
-result = categories['BASIC']
+result = categories.BASIC
 if contract.internet:
     result += result_rules['ATN.INT']['total']
 if contract.mobile:

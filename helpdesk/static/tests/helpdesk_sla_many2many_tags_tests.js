@@ -61,9 +61,9 @@ QUnit.module("helpdesk", { }, function () {
                 resId: 1,
                 serverData,
             });
-            assert.containsOnce(target, ".o_field_tags .badge:first-of-type > i:first-child.fa-times-circle", "failed status triggers the injection of a fa-times-circle icon");
-            assert.containsOnce(target, ".o_field_tags .badge:nth-of-type(2) > i:first-child.fa-check-circle", "reached status triggers the injection of a fa-check-circle icon");
-            assert.containsNone(target, ".o_field_tags .badge:nth-of-type(3) > i:first-child", "a status other than 'failed' and 'reached' does not trigger the injection of an icon");
+            assert.containsOnce(target, ".o_field_tags .badge:first-of-type i:first-child.fa-times-circle", "failed status triggers the injection of a fa-times-circle icon");
+            assert.containsOnce(target, ".o_field_tags .badge:nth-of-type(2) i:first-child.fa-check-circle", "reached status triggers the injection of a fa-check-circle icon");
+            assert.containsNone(target, ".o_field_tags .badge:nth-of-type(3) i:first-child", "a status other than 'failed' and 'reached' does not trigger the injection of an icon");
         });
         QUnit.test("o_field_many2many_tags_avatar class is set", async (assert) => {
             await makeView({

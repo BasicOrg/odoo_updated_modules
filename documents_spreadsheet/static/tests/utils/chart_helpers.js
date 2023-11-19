@@ -15,9 +15,8 @@ import {
     getSpreadsheetActionEnv,
     getSpreadsheetActionModel,
     prepareWebClientForSpreadsheet,
-} from "@spreadsheet_edition/../tests/utils/webclient_helpers";
+} from "./webclient_helpers";
 import { waitForDataSourcesLoaded } from "@spreadsheet/../tests/utils/model";
-import { onMounted } from "@odoo/owl";
 
 /** @typedef {import("@spreadsheet/o_spreadsheet/o_spreadsheet").Model} Model */
 
@@ -30,7 +29,6 @@ import { onMounted } from "@odoo/owl";
  * @param {object} [params.serverData] Data to be injected in the mock server
  * @param {function} [params.mockRPC] Mock rpc function
  * @param {any[]} [params.domain] Domain of the graph
- * @param {object} [params.additionalContext] additional context for the action
  * @returns {Promise<object>} Webclient
  */
 export async function spawnGraphViewForSpreadsheet(params = {}) {
@@ -38,21 +36,18 @@ export async function spawnGraphViewForSpreadsheet(params = {}) {
     const webClient = await createWebClient({
         serverData: params.serverData || getBasicServerData(),
         mockRPC: params.mockRPC,
+        legacyParams: {
+            withLegacyMockServer: true,
+        },
     });
 
-    await doAction(
-        webClient,
-        {
-            name: "graph view",
-            res_model: params.model || "partner",
-            type: "ir.actions.act_window",
-            views: [[false, "graph"]],
-            domain: params.domain,
-        },
-        {
-            additionalContext: params.additionalContext || {},
-        }
-    );
+    await doAction(webClient, {
+        name: "graph view",
+        res_model: params.model || "partner",
+        type: "ir.actions.act_window",
+        views: [[false, "graph"]],
+        domain: params.domain,
+    });
     return webClient;
 }
 
@@ -63,9 +58,6 @@ export async function spawnGraphViewForSpreadsheet(params = {}) {
  * @property {number} [documentId] ID of an existing document
  * @property {function} [actions] Actions to execute on the graph view
  *                                before inserting in spreadsheet
- * @property {function} [mockRPC] Mock rpc function
- * @property {object} [serverData] Data to be injected in the mock server
- * @property {object} [additionalContext] additional context for the action
  */
 
 /**
@@ -79,9 +71,9 @@ export async function createSpreadsheetFromGraphView(params = {}) {
     const def = makeDeferred();
     patchWithCleanup(SpreadsheetAction.prototype, {
         setup() {
-            super.setup();
+            this._super();
             spreadsheetAction = this;
-            onMounted(() => {
+            owl.onMounted(() => {
                 def.resolve();
             });
         },
@@ -91,7 +83,6 @@ export async function createSpreadsheetFromGraphView(params = {}) {
         serverData: params.serverData,
         mockRPC: params.mockRPC,
         domain: params.domain,
-        additionalContext: params.additionalContext || {},
     });
     const target = getFixture();
     if (params.actions) {

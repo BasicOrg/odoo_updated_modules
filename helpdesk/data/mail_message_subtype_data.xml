@@ -25,25 +25,49 @@
         <field name="internal" eval="True"/>
         <field name="description">Stage Changed</field>
     </record>
-    <record id="mt_ticket_refund_status" model="mail.message.subtype">
-        <field name="name">Refund Status</field>
+    <record id="mt_ticket_refund_posted" model="mail.message.subtype">
+        <field name="name">Refund Posted</field>
         <field name="sequence">11</field>
         <field name="res_model">helpdesk.ticket</field>
         <field name="default" eval="False"/>
         <field name="internal" eval="True"/>
         <field name="description"></field>
     </record>
-    <record id="mt_ticket_return_status" model="mail.message.subtype">
-        <field name="name">Return Status</field>
+    <record id="mt_ticket_refund_cancel" model="mail.message.subtype">
+        <field name="name">Refund Canceled</field>
+        <field name="sequence">12</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="description"></field>
+    </record>
+    <record id="mt_ticket_return_done" model="mail.message.subtype">
+        <field name="name">Return Done</field>
         <field name="sequence">13</field>
         <field name="res_model">helpdesk.ticket</field>
         <field name="default" eval="False"/>
         <field name="internal" eval="True"/>
         <field name="description"></field>
     </record>
-    <record id="mt_ticket_repair_status" model="mail.message.subtype">
-        <field name="name">Repair Status</field>
+    <record id="mt_ticket_return_cancel" model="mail.message.subtype">
+        <field name="name">Return Canceled</field>
+        <field name="sequence">14</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="description"></field>
+    </record>
+    <record id="mt_ticket_repair_done" model="mail.message.subtype">
+        <field name="name">Repair Done</field>
         <field name="sequence">15</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="description"></field>
+    </record>
+    <record id="mt_ticket_repair_cancel" model="mail.message.subtype">
+        <field name="name">Repair Canceled</field>
+        <field name="sequence">16</field>
         <field name="res_model">helpdesk.ticket</field>
         <field name="default" eval="False"/>
         <field name="internal" eval="True"/>
@@ -66,6 +90,75 @@
         <field name="default" eval="True"/>
         <field name="internal" eval="True"/>
         <field name="parent_id" ref="mt_ticket_rated"/>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_stage" model="mail.message.subtype">
+        <field name="name">Ticket Stage Changed</field>
+        <field name="sequence">10</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_stage"/>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_refund_posted" model="mail.message.subtype">
+        <field name="name">Refund Posted</field>
+        <field name="sequence">11</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_refund_posted"/>
+        <field name="description">Refund Posted</field>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_refund_cancel" model="mail.message.subtype">
+        <field name="name">Refund Canceled</field>
+        <field name="sequence">12</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_refund_cancel"/>
+        <field name="description">Refund Canceled</field>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_return_done" model="mail.message.subtype">
+        <field name="name">Return Done</field>
+        <field name="sequence">13</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_return_done"/>
+        <field name="description">Return Done</field>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_return_cancel" model="mail.message.subtype">
+        <field name="name">Return Canceled</field>
+        <field name="sequence">14</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_return_cancel"/>
+        <field name="description">Return Canceled</field>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_repair_done" model="mail.message.subtype">
+        <field name="name">Repair Done</field>
+        <field name="sequence">15</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_repair_done"/>
+        <field name="description">Repair Done</field>
+        <field name="relation_field">team_id</field>
+    </record>
+    <record id="mt_team_ticket_repair_cancel" model="mail.message.subtype">
+        <field name="name">Repair Canceled</field>
+        <field name="sequence">16</field>
+        <field name="res_model">helpdesk.team</field>
+        <field name="default" eval="False"/>
+        <field name="internal" eval="True"/>
+        <field name="parent_id" ref="mt_ticket_repair_cancel"/>
+        <field name="description">Repair Canceled</field>
         <field name="relation_field">team_id</field>
     </record>
 </data></odoo>

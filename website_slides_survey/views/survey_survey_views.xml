@@ -40,7 +40,7 @@
                 <button name="action_survey_view_slide_channels"
                     type="object"
                     class="oe_stat_button"
-                    invisible="slide_channel_count == 0"
+                    attrs="{'invisible': [('slide_channel_count', '=', 0)]}"
                     icon="fa-graduation-cap"
                     groups="website_slides.group_website_slides_officer">
                     <field string="Courses" name="slide_channel_count" widget="statinfo"/>
@@ -58,7 +58,7 @@
                 <field name="slide_channel_count"/>
             </xpath>
             <xpath expr="//div[@name='o_survey_kanban_card_section_success']" position="after">
-                <div class="col-lg-1 col-sm-4 col-6 py-0 my-2" groups="website_slides.group_website_slides_officer">
+                <div class="col-lg-1 col-sm-4 col-6 py-0 my-2">
                     <a t-if="record.slide_channel_count.raw_value"
                        type="object"
                        name="action_survey_view_slide_channels"

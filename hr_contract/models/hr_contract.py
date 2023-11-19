@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import threading
-
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
@@ -10,10 +8,6 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 from odoo.osv import expression
-
-import logging
-_logger = logging.getLogger(__name__)
-
 
 class Contract(models.Model):
     _name = 'hr.contract'
@@ -23,7 +17,7 @@ class Contract(models.Model):
 
     name = fields.Char('Contract Reference', required=True)
     active = fields.Boolean(default=True)
-    structure_type_id = fields.Many2one('hr.payroll.structure.type', string="Salary Structure Type", compute="_compute_structure_type_id", readonly=False, store=True)
+    structure_type_id = fields.Many2one('hr.payroll.structure.type', string="Salary Structure Type")
     employee_id = fields.Many2one('hr.employee', string='Employee', tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     department_id = fields.Many2one('hr.department', compute='_compute_employee_contract', store=True, readonly=False,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", string="Department")
@@ -38,7 +32,7 @@ class Contract(models.Model):
         'resource.calendar', 'Working Schedule', compute='_compute_employee_contract', store=True, readonly=False,
         default=lambda self: self.env.company.resource_calendar_id.id, copy=False, index=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    wage = fields.Monetary('Wage', required=True, tracking=True, help="Employee's monthly gross wage.", group_operator="avg")
+    wage = fields.Monetary('Wage', required=True, tracking=True, help="Employee's monthly gross wage.")
     contract_wage = fields.Monetary('Contract Wage', compute='_compute_contract_wage')
     notes = fields.Html('Notes')
     state = fields.Selection([
@@ -47,13 +41,12 @@ class Contract(models.Model):
         ('close', 'Expired'),
         ('cancel', 'Cancelled')
     ], string='Status', group_expand='_expand_states', copy=False,
-        tracking=True, help='Status of the contract', default='draft')
+       tracking=True, help='Status of the contract', default='draft')
     company_id = fields.Many2one('res.company', compute='_compute_employee_contract', store=True, readonly=False,
         default=lambda self: self.env.company, required=True)
     company_country_id = fields.Many2one('res.country', string="Company country", related='company_id.country_id', readonly=True)
     country_code = fields.Char(related='company_country_id.code', depends=['company_country_id'], readonly=True)
     contract_type_id = fields.Many2one('hr.contract.type', "Contract Type")
-    contracts_count = fields.Integer(related='employee_id.contracts_count')
 
     """
         kanban_state:
@@ -69,13 +62,14 @@ class Contract(models.Model):
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
     permit_no = fields.Char('Work Permit No', related="employee_id.permit_no", readonly=False)
     visa_no = fields.Char('Visa No', related="employee_id.visa_no", readonly=False)
+    visa_expire = fields.Date('Visa Expire Date', related="employee_id.visa_expire", readonly=False)
 
     def _get_hr_responsible_domain(self):
         return "[('share', '=', False), ('company_ids', 'in', company_id), ('groups_id', 'in', %s)]" % self.env.ref('hr.group_hr_user').id
 
     hr_responsible_id = fields.Many2one('res.users', 'HR Responsible', tracking=True,
         help='Person responsible for validating the employee\'s contracts.', domain=_get_hr_responsible_domain)
-    calendar_mismatch = fields.Boolean(compute='_compute_calendar_mismatch', compute_sudo=True)
+    calendar_mismatch = fields.Boolean(compute='_compute_calendar_mismatch')
     first_contract_date = fields.Date(related='employee_id.first_contract_date')
 
     @api.depends('employee_id.resource_calendar_id', 'resource_calendar_id')
@@ -94,19 +88,23 @@ class Contract(models.Model):
             contract.resource_calendar_id = contract.employee_id.resource_calendar_id
             contract.company_id = contract.employee_id.company_id
 
-    @api.depends('company_id')
-    def _compute_structure_type_id(self):
-        structure_type_id = self.env['hr.payroll.structure.type'].search([('country_id', '=', self.company_id.country_id.id)], limit=1)
-        if not structure_type_id:
-            structure_type_id = self.env['hr.payroll.structure.type'].search([('country_id', '=', False)], limit=1)
-        for contract in self:
-            contract.structure_type_id = structure_type_id
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        if self.company_id:
+            structure_types = self.env['hr.payroll.structure.type'].search([
+                '|',
+                ('country_id', '=', self.company_id.country_id.id),
+                ('country_id', '=', False)])
+            if structure_types:
+                self.structure_type_id = structure_types[0]
+            elif self.structure_type_id not in structure_types:
+                self.structure_type_id = False
 
     @api.onchange('structure_type_id')
     def _onchange_structure_type_id(self):
         default_calendar = self.structure_type_id.default_resource_calendar_id
         if default_calendar and default_calendar.company_id == self.company_id:
-            self.resource_calendar_id = default_calendar
+            self.resource_calendar_id = self.structure_type_id.default_resource_calendar_id
 
     @api.constrains('employee_id', 'state', 'kanban_state', 'date_start', 'date_end')
     def _check_current_contract(self):
@@ -150,68 +148,37 @@ class Contract(models.Model):
 
     @api.model
     def update_state(self):
-        from_cron = 'from_cron' in self.env.context
-        companies = self.env['res.company'].search([])
-        contracts = self.env['hr.contract']
-        work_permit_contracts = self.env['hr.contract']
-        for company in companies:
-            contracts += self.search([
-                ('state', '=', 'open'), ('kanban_state', '!=', 'blocked'), ('company_id', '=', company.id),
-                '&',
-                ('date_end', '<=', fields.date.today() + relativedelta(days=company.contract_expiration_notice_period)),
-                ('date_end', '>=', fields.date.today() + relativedelta(days=1)),
-            ])
-
-            work_permit_contracts += self.search([
-                ('state', '=', 'open'), ('kanban_state', '!=', 'blocked'), ('company_id', '=', company.id),
-                '&',
-                ('employee_id.work_permit_expiration_date', '<=', fields.date.today() + relativedelta(days=company.work_permit_expiration_notice_period)),
-                ('employee_id.work_permit_expiration_date', '>=', fields.date.today() + relativedelta(days=1)),
-            ])
+        contracts = self.search([
+            ('state', '=', 'open'), ('kanban_state', '!=', 'blocked'),
+            '|',
+            '&',
+            ('date_end', '<=', fields.Date.to_string(date.today() + relativedelta(days=7))),
+            ('date_end', '>=', fields.Date.to_string(date.today() + relativedelta(days=1))),
+            '&',
+            ('visa_expire', '<=', fields.Date.to_string(date.today() + relativedelta(days=60))),
+            ('visa_expire', '>=', fields.Date.to_string(date.today() + relativedelta(days=1))),
+        ])
 
         for contract in contracts:
             contract.with_context(mail_activity_quick_update=True).activity_schedule(
                 'mail.mail_activity_data_todo', contract.date_end,
                 _("The contract of %s is about to expire.", contract.employee_id.name),
                 user_id=contract.hr_responsible_id.id or self.env.uid)
-            contract.message_post(
-                body=_(
-                    "According to the contract's end date, this contract has been put in red on the %s. Please advise and correct.",
-                    fields.Date.today()
-                )
-            )
 
-        for contract in work_permit_contracts:
-            contract.with_context(mail_activity_quick_update=True).activity_schedule(
-                'mail.mail_activity_data_todo', contract.date_end,
-                _("The work permit of %s is about to expire.", contract.employee_id.name),
-                user_id=contract.hr_responsible_id.id or self.env.uid)
-            contract.message_post(
-                body=_(
-                    "According to Employee's Working Permit Expiration Date, this contract has been put in red on the %s. Please advise and correct.",
-                    fields.Date.today()
-                )
-            )
+        contracts.write({'kanban_state': 'blocked'})
 
-        if contracts:
-            contracts._safe_write_for_cron({'kanban_state': 'blocked'}, from_cron)
-        if work_permit_contracts:
-            work_permit_contracts._safe_write_for_cron({'kanban_state': 'blocked'}, from_cron)
-
-        contracts_to_close = self.search([
+        self.search([
             ('state', '=', 'open'),
             '|',
-            ('date_end', '<=', fields.Date.to_string(date.today())),
-            ('employee_id.work_permit_expiration_date', '<=', fields.Date.to_string(date.today())),
-        ])
+            ('date_end', '<=', fields.Date.to_string(date.today() + relativedelta(days=1))),
+            ('visa_expire', '<=', fields.Date.to_string(date.today() + relativedelta(days=1))),
+        ]).write({
+            'state': 'close'
+        })
 
-        if contracts_to_close:
-            contracts_to_close._safe_write_for_cron({'state': 'close'}, from_cron)
-
-        contracts_to_open = self.search([('state', '=', 'draft'), ('kanban_state', '=', 'done'), ('date_start', '<=', fields.Date.to_string(date.today())),])
-
-        if contracts_to_open:
-            contracts_to_open._safe_write_for_cron({'state': 'open'}, from_cron)
+        self.search([('state', '=', 'draft'), ('kanban_state', '=', 'done'), ('date_start', '<=', fields.Date.to_string(date.today())),]).write({
+            'state': 'open'
+        })
 
         contract_ids = self.search([('date_end', '=', False), ('state', '=', 'close'), ('employee_id', '!=', False)])
         # Ensure all closed contract followed by a new contract have a end date.
@@ -219,35 +186,20 @@ class Contract(models.Model):
         for contract in contract_ids:
             next_contract = self.search([
                 ('employee_id', '=', contract.employee_id.id),
-                ('state', 'not in', ['cancel', 'draft']),
+                ('state', 'not in', ['cancel', 'new']),
                 ('date_start', '>', contract.date_start)
             ], order="date_start asc", limit=1)
             if next_contract:
-                contract._safe_write_for_cron({'date_end': next_contract.date_start - relativedelta(days=1)}, from_cron)
+                contract.date_end = next_contract.date_start - relativedelta(days=1)
                 continue
             next_contract = self.search([
                 ('employee_id', '=', contract.employee_id.id),
                 ('date_start', '>', contract.date_start)
             ], order="date_start asc", limit=1)
             if next_contract:
-                contract._safe_write_for_cron({'date_end': next_contract.date_start - relativedelta(days=1)}, from_cron)
+                contract.date_end = next_contract.date_start - relativedelta(days=1)
 
         return True
-
-    def _safe_write_for_cron(self, vals, from_cron=False):
-        if from_cron:
-            auto_commit = not getattr(threading.current_thread(), 'testing', False)
-            for contract in self:
-                try:
-                    with self.env.cr.savepoint():
-                        contract.write(vals)
-                except ValidationError as e:
-                    _logger.warning(e)
-                else:
-                    if auto_commit:
-                        self.env.cr.commit()
-        else:
-            self.write(vals)
 
     def _assign_open_contract(self):
         for contract in self:
@@ -265,7 +217,6 @@ class Contract(models.Model):
         return self[self._get_contract_wage_field()]
 
     def _get_contract_wage_field(self):
-        self.ensure_one()
         return 'wage'
 
     def write(self, vals):
@@ -276,7 +227,7 @@ class Contract(models.Model):
             self._assign_open_contract()
         today = fields.Date.today()
         for contract in self:
-            if contract == contract.sudo().employee_id.contract_id \
+            if contract == contract.employee_id.contract_id \
                 and old_state[contract.id] == 'open' \
                 and new_state[contract.id] != 'open':
                 running_contract = self.env['hr.contract'].search([
@@ -296,11 +247,7 @@ class Contract(models.Model):
 
         calendar = vals.get('resource_calendar_id')
         if calendar:
-            self.filtered(
-                lambda c: c.state == 'open' or (c.state == 'draft' and c.kanban_state == 'done')
-            ).mapped('employee_id').filtered(
-                lambda e: e.resource_calendar_id
-            ).write({'resource_calendar_id': calendar})
+            self.filtered(lambda c: c.state == 'open' or (c.state == 'draft' and c.kanban_state == 'done')).mapped('employee_id').write({'resource_calendar_id': calendar})
 
         if 'state' in vals and 'kanban_state' not in vals:
             self.write({'kanban_state': 'normal'})
@@ -325,11 +272,6 @@ class Contract(models.Model):
             return self.env.ref('hr_contract.mt_contract_close')
         return super(Contract, self)._track_subtype(init_values)
 
-    def _is_struct_from_country(self, country_code):
-        self.ensure_one()
-        self_sudo = self.sudo()
-        return self_sudo.structure_type_id and self_sudo.structure_type_id.country_id.code == country_code
-
     def action_open_contract_form(self):
         self.ensure_one()
         action = self.env['ir.actions.actions']._for_xml_id('hr_contract.action_hr_contract')
@@ -339,18 +281,4 @@ class Contract(models.Model):
             'views': [(self.env.ref('hr_contract.hr_contract_view_form').id, 'form')],
             'res_id': self.id,
         })
-        return action
-
-    def action_open_contract_history(self):
-        self.ensure_one()
-        action = self.env["ir.actions.actions"]._for_xml_id('hr_contract.hr_contract_history_view_form_action')
-        action['res_id'] = self.employee_id.id
-        return action
-
-    def action_open_contract_list(self):
-        self.ensure_one()
-        action = self.env["ir.actions.actions"]._for_xml_id('hr_contract.action_hr_contract')
-        action.update({'domain': [('employee_id', '=', self.employee_id.id)],
-                      'views':  [[False, 'list'], [False, 'kanban'], [False, 'activity'], [False, 'form']],
-                       'context': {'default_employee_id': self.employee_id.id}})
         return action

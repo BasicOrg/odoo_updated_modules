@@ -21,8 +21,9 @@ discount to a customer.
         ],
     'installable': True,
     'assets': {
-        'point_of_sale._assets_pos': [
-            'pos_discount/static/src/**/*',
+        'point_of_sale.assets': [
+            'pos_discount/static/src/js/**/*',
+            'pos_discount/static/src/xml/**/*',
         ],
     },
     'license': 'LGPL-3',

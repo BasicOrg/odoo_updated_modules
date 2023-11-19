@@ -1,10 +1,9 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Argentina - Accounting',
-    'website': 'https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations/argentina.html',
-    'icon': '/account/static/description/l10n.png',
-    'countries': ['ar'],
-    'version': '3.5',
+    'icon': '/base/static/img/country_flags/ar.png',
+    'version': "3.5",
     'description': """
 Functional
 ----------
@@ -77,7 +76,13 @@ Master Data:
         'security/ir.model.access.csv',
         'data/l10n_latam_identification_type_data.xml',
         'data/l10n_ar_afip_responsibility_type_data.xml',
+        'data/account_chart_template_data.xml',
+        'data/account.group.template.csv',
+        'data/account.account.template.csv',
         'data/account_chart_template_data2.xml',
+        'data/account_tax_group_data.xml',
+        'data/account_tax_template_data.xml',
+        'data/account_fiscal_template.xml',
         'data/uom_uom_data.xml',
         'data/l10n_latam.document.type.csv',
         'data/l10n_latam.document.type.xml',
@@ -98,12 +103,16 @@ Master Data:
         'views/report_invoice.xml',
         'views/res_config_settings_view.xml',
         'report/invoice_report_view.xml',
+        'data/account_chart_template_configure_data.xml',
     ],
     'demo': [
+        # we create demo data on different companies (not main_company) to
+        # allow different setups and also to allow multi-localization demo data
         'demo/exento_demo.xml',
         'demo/mono_demo.xml',
         'demo/respinsc_demo.xml',
         'demo/res_partner_demo.xml',
+        'demo/account_tax_demo.xml',
         'demo/product_product_demo.xml',
         'demo/account_customer_invoice_demo.xml',
         'demo/account_customer_refund_demo.xml',
@@ -111,5 +120,10 @@ Master Data:
         'demo/account_supplier_refund_demo.xml',
     ],
     'installable': True,
+    'assets': {
+        'web.assets_backend': [
+            'l10n_ar/static/src/**/*',
+        ],
+    },
     'license': 'LGPL-3',
 }

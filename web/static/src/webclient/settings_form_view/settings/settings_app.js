@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, useState, useEffect, useRef } from "@odoo/owl";
+const { Component, useState, useEffect, useRef } = owl;
 
 export class SettingsApp extends Component {
     setup() {
@@ -27,10 +27,3 @@ export class SettingsApp extends Component {
     }
 }
 SettingsApp.template = "web.SettingsApp";
-SettingsApp.props = {
-    string: String,
-    imgurl: String,
-    key: String,
-    selectedTab: { type: String, optional: 1 },
-    slots: Object,
-};

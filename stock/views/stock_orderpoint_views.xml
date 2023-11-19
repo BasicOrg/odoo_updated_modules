@@ -17,14 +17,14 @@
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title"><t t-esc="record.name.value"/></strong>
                                 </div>
-                                <span class="badge rounded-pill"><strong>Min qty:</strong><t t-esc="record.product_min_qty.value"/></span>
+                                <span class="badge rounded-pill"><strong>Min qty :</strong><t t-esc="record.product_min_qty.value"/></span>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <span><t t-esc="record.product_id.value"/></span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <span class="badge rounded-pill"><strong>Max qty:</strong><t t-esc="record.product_max_qty.value"/></span>
+                                    <span class="badge rounded-pill"><strong>Max qty :</strong><t t-esc="record.product_max_qty.value"/></span>
                                 </div>
                             </div>
                         </div>
@@ -39,21 +39,19 @@
         <field name="model">stock.warehouse.orderpoint</field>
         <field name="arch" type="xml">
             <tree string="Reordering Rules" editable="bottom" js_class="stock_orderpoint_list" sample="1" multi_edit="1" export_xlsx="0">
-                <field name="active" column_invisible="True"/>
-                <field name="company_id" column_invisible="True"/>
-                <field name="product_category_id" column_invisible="True"/>
-                <field name="product_tmpl_id" column_invisible="True"/>
-                <field name="unwanted_replenish" column_invisible="True"/>
-                <field name="product_id" readonly="product_id" force_save="1" context="{'default_detailed_type': 'product'}"/>
+                <field name="active" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="product_category_id" invisible="1"/>
+                <field name="product_tmpl_id" invisible="1"/>
+                <field name="product_id" attrs="{'readonly': [('product_id', '!=', False)]}" force_save="1"/>
                 <field name="location_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
                 <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_warehouses" optional="hide"/>
                 <field name="qty_on_hand" force_save="1"/>
                 <field name="qty_forecast" force_save="1"/>
-                <button name="action_product_forecast_report" type="object" icon="fa-area-chart" title="Forecast Report" invisible="not id or unwanted_replenish"/>
-                <button name="action_product_forecast_report" type="object" icon="fa-warning text-warning" title="Due to receipts scheduled in the future, you might end up with excessive stock . Check the Forecasted Report  before reordering" invisible="not id or not unwanted_replenish"/>
+                <button name="action_product_forecast_report" type="object" icon="fa-area-chart" title="Forecast Report" attrs="{'invisible': [('id', '=', False)]}"/>
                 <field name="visibility_days" optional="hidden"/>
-                <field name="route_id" options="{'no_create': True, 'no_open': True}" optional="hidden"/>
-                <button name="action_stock_replenishment_info" type="object" icon="fa-info-circle" title="Replenishment Information" invisible="not id"/>
+                <field name="route_id" options="{'no_create': True, 'no_open': True}"/>
+                <button name="action_stock_replenishment_info" type="object" icon="fa-info-circle" title="Replenishment Information" attrs="{'invisible': [('id', '=', False)]}"/>
                 <field name="trigger" optional="hide"/>
                 <field name="group_id" optional="hide" groups="stock.group_adv_location"/>
                 <field name="product_min_qty" optional="show"/>
@@ -63,11 +61,11 @@
                 <field name="product_uom_name" string="UoM" groups="uom.group_uom"/>
                 <field name="company_id" optional="hide" readonly="1" groups="base.group_multi_company"/>
                 <button name="action_replenish" string="Order Once" type="object" class="o_replenish_buttons" icon="fa-truck"
-                    invisible="qty_to_order &lt;= 0.0"/>
-                <button name="action_replenish_auto" string="Automate" type="object" class="o_replenish_buttons" icon="fa-refresh"
-                    invisible="qty_to_order &lt;= 0.0 or trigger == 'auto'"/>
+                    attrs="{'invisible': [('qty_to_order', '&lt;=', 0.0)]}"/>
+                <button name="action_replenish_auto" string="Automate Orders" type="object" class="o_replenish_buttons" icon="fa-refresh"
+                    attrs="{'invisible': ['|', ('qty_to_order', '&lt;=', 0.0), ('trigger', '=', 'auto')]}"/>
                 <button name="%(action_orderpoint_snooze)d" string="Snooze" type="action" class="text-warning" icon="fa-bell-slash"
-                    invisible="trigger != 'manual'" context="{'default_orderpoint_ids': [id]}"/>
+                    attrs="{'invisible': [('trigger', '!=', 'manual')]}" context="{'default_orderpoint_ids': [id]}"/>
             </tree>
         </field>
     </record>
@@ -77,13 +75,13 @@
         <field name="model">stock.warehouse.orderpoint</field>
         <field name="arch" type="xml">
             <search string="Replenishment Report Search">
+                <field name="name" string="Reordering Rule"/>
                 <field name="product_id"/>
                 <field name="trigger"/>
                 <field name="product_category_id"/>
                 <field name="group_id" groups="stock.group_adv_location"/>
                 <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
                 <field name="location_id" groups="stock.group_stock_multi_locations"/>
-                <field name="name" string="Reordering Rule"/>
                 <filter string="Trigger Manual" name="filter_creation_trigger" domain="[('trigger', '=', 'manual')]"/>
                 <separator/>
                 <filter string="To Reorder" name="filter_to_reorder" domain="[('qty_to_order', '&gt;', 0.0)]"/>
@@ -109,8 +107,8 @@
         <field name="model">stock.warehouse.orderpoint</field>
         <field name="arch" type="xml">
             <search string="Reordering Rules Search">
-                <field name="product_id"/>
                 <field name="name" string="Reordering Rule"/>
+                <field name="product_id"/>
                 <field name="trigger"/>
                 <field name="group_id" groups="stock.group_adv_location"/>
                 <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
@@ -134,7 +132,7 @@
                     <a style="cursor: pointer" class="alert-link o_form_uri" type="action" name="%(action_procurement_compute)d">Run the scheduler</a> manually to trigger the reordering rules right now.
                 </div>
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
@@ -150,7 +148,7 @@
                             <div class="o_row">
                                 <field name="product_min_qty"/>
                                 <field name="product_uom_name"/>
-                                <button name="stock.action_stock_replenishment_info" string="Forecast Description" type="action" icon="fa-area-chart" invisible="not id"/>
+                                <button name="stock.action_stock_replenishment_info" string="Forecast Description" type="action" icon="fa-area-chart" attrs="{'invisible': [('id', '=', False)]}"/>
                             </div>
                             <label for="product_max_qty"/>
                             <div class="o_row">
@@ -179,6 +177,7 @@
     <record id="action_orderpoint_replenish" model="ir.actions.act_window">
         <field name="name">Replenishment</field>
         <field name="res_model">stock.warehouse.orderpoint</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_warehouse_orderpoint_tree_editable"/>
         <field name="search_view_id" ref="stock_reorder_report_search"/>
@@ -196,6 +195,7 @@
     <record id="action_orderpoint" model="ir.actions.act_window">
         <field name="name">Reordering Rules</field>
         <field name="res_model">stock.warehouse.orderpoint</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="view_id" ref="view_warehouse_orderpoint_tree_editable"/>
         <field name="search_view_id" ref="warehouse_orderpoint_search"/>
@@ -227,7 +227,7 @@
     <menuitem
         id="menu_reordering_rules_replenish"
         action="action_replenishment"
-        name="Replenishment" parent="menu_stock_procurement" sequence="5"
+        name="Replenishment" parent="menu_stock_warehouse_mgmt" sequence="5"
         groups="stock.group_stock_manager"/>
     <menuitem
         id="menu_reordering_rules_config"

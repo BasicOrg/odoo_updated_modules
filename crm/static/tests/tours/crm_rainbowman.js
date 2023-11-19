@@ -1,13 +1,12 @@
 /** @odoo-module **/
 
-    import { registry } from "@web/core/registry";
-    import { stepUtils } from '@web_tour/tour_service/tour_utils';
+    import tour from 'web_tour.tour';
 
-    registry.category("web_tour.tours").add('crm_rainbowman', {
+    tour.register('crm_rainbowman', {
         test: true,
         url: "/web",
-        steps: () => [
-        stepUtils.showAppsMenuItem(),
+    }, [
+        tour.stepUtils.showAppsMenuItem(),
         {
             trigger: ".o_app[data-menu-xmlid='crm.crm_menu_root']",
             content: "open crm app",
@@ -33,14 +32,6 @@
             trigger: ".o_reward_rainbow",
             extra_trigger: ".o_reward_rainbow",
             run: function () {} // check rainbowman is properly displayed
-        }, {
-            // This step and the following simulates the fact that after drag and drop,
-            // from the previous steps, a click event is triggered on the window element,
-            // which closes the currently shown .o_kanban_quick_create.
-            trigger: ".o_kanban_renderer",
-        }, {
-            trigger: ".o_kanban_renderer:not(:has(.o_kanban_quick_create))",
-            run() {},
         }, {
             trigger: ".o-kanban-button-new",
             content: "create second lead",
@@ -70,7 +61,7 @@
             trigger: ".o_statusbar_status button[data-value='4']",
             content: "move lead to won stage",
         },
-        ...stepUtils.saveForm(),
+        ...tour.stepUtils.saveForm(),
         {
             trigger: ".o_statusbar_status button[data-value='1']",
             extra_trigger: ".o_reward_rainbow",
@@ -79,11 +70,10 @@
             trigger: "button[name=action_set_won_rainbowman]",
             content: "click button mark won",
         },
-        ...stepUtils.saveForm(),
+        ...tour.stepUtils.saveForm(),
         {
             trigger: ".o_menu_brand",
             extra_trigger: ".o_reward_rainbow",
             content: "last rainbowman appears",
-            isCheck: true,
         }
-    ]});
+    ]);

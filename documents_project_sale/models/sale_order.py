@@ -18,7 +18,7 @@ class SaleOrder(models.Model):
                     sols_per_project[sol.project_id] |= sol
 
             for project, sols in sols_per_project.items():
-                if not project.use_documents or project.documents_folder_id:
+                if project.documents_folder_id:
                     continue
                 template_folders = sols.product_template_id.template_folder_id
 

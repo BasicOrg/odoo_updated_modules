@@ -1,20 +1,12 @@
 /** @odoo-module **/
 
-import { formatMonetary } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
+import { formatFloat, formatMonetary } from "@web/views/fields/formatters";
 import { parseFloat } from "@web/views/fields/parsers";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 import { registry } from "@web/core/registry";
-import { getCurrency } from "@web/core/currency";
-import {
-    Component,
-    onPatched,
-    onWillUpdateProps,
-    onWillRender,
-    toRaw,
-    useRef,
-    useState,
-} from "@odoo/owl";
+import { session } from "@web/session";
+
+const { Component, onPatched, onWillUpdateProps, useRef, useState } = owl;
 
 /**
  A line of some TaxTotalsComponent, giving the values of a tax group.
@@ -26,7 +18,7 @@ class TaxGroupComponent extends Component {
         onPatched(() => {
             if (this.state.value === "edit") {
                 const { taxGroup, currency } = this.props;
-                const newVal = formatFloat(taxGroup.tax_group_amount, { digits: (currency && currency.digits) });
+                const newVal = formatFloat(taxGroup.tax_group_amount, { digits: currency.digits });
                 this.inputTax.el.value = newVal;
                 this.inputTax.el.focus(); // Focus the input
             }
@@ -76,7 +68,7 @@ class TaxGroupComponent extends Component {
         let newValue;
         try {
             newValue = parseFloat(this.inputTax.el.value); // Get the new value
-        } catch {
+        } catch (_err) {
             this.inputTax.el.value = oldValue;
             this.setState("edit");
             return;
@@ -87,7 +79,7 @@ class TaxGroupComponent extends Component {
             return;
         }
         this.props.taxGroup.tax_group_amount = newValue;
-
+        this.props.taxGroup.formatted_tax_group_amount = this.props.taxGroup.formatted_tax_group_amount.replace(oldValue.toString(), newValue.toString());
         this.props.onChangeTaxGroup({
             oldValue,
             newValue: newValue,
@@ -97,7 +89,7 @@ class TaxGroupComponent extends Component {
 }
 
 TaxGroupComponent.props = {
-    currency: { optional: true },
+    currency: {},
     taxGroup: { optional: true },
     onChangeTaxGroup: { optional: true },
     isReadonly: Boolean,
@@ -114,22 +106,24 @@ TaxGroupComponent.template = "account.TaxGroupComponent";
  **/
 export class TaxTotalsComponent extends Component {
     setup() {
-        this.totals = {};
-        this.formatData(this.props);
-        onWillRender(() => this.formatData(this.props));
-    }
-
-    get readonly() {
-        return this.props.readonly;
+        super.setup();
+        this.totals = this.props.value;
+        this.readonly = this.props.readonly;
+        onWillUpdateProps((nextProps) => {
+            // We only reformat tax groups if there are changed
+            this.totals = nextProps.value;
+            this.readonly = nextProps.readonly;
+            this._computeTotalsFormat();
+        });
     }
 
     get currencyId() {
         const recordCurrency = this.props.record.data.currency_id;
-        return recordCurrency && recordCurrency[0];
+        return recordCurrency ? recordCurrency[0] : session.company_currency_id;
     }
 
     get currency() {
-        return getCurrency(this.currencyId);
+        return session.currencies[this.currencyId];
     }
 
     invalidate() {
@@ -138,48 +132,52 @@ export class TaxTotalsComponent extends Component {
 
     /**
      * This method is the main function of the tax group widget.
-     * It is called by the TaxGroupComponent and receives the newer tax value.
+     * It is called by the TaxGroupComponent and receives the
+     * newer tax value.
      *
-     * It is responsible for triggering an event to notify the ORM of a change.
+     * It is responsible for calculating taxes based on tax groups and triggering
+     * an event to notify the ORM of a change.
      */
-    _onChangeTaxValueByTaxGroup({ oldValue, newValue }) {
+    _onChangeTaxValueByTaxGroup({ oldValue, newValue, taxGroupId }) {
         if (oldValue === newValue) return;
-        this.props.record.update({ [this.props.name]: this.totals });
-        this.totals.display_rounding = false;
+        this.totals.amount_total = this.totals.amount_untaxed + newValue;
+        this.props.update(this.totals);
     }
 
-    formatData(props) {
-        let totals = JSON.parse(JSON.stringify(toRaw(props.record.data[this.props.name])));
-        const currencyFmtOpts = { currencyId: props.record.data.currency_id && props.record.data.currency_id[0] };
+    _format(amount) {
+        return formatMonetary(amount, { currencyId: this.currencyId });
+    }
 
-        let amount_untaxed = totals.amount_untaxed;
+    _computeTotalsFormat() {
+        if (!this.totals) {
+            return;
+        }
+        let amount_untaxed = this.totals.amount_untaxed;
         let amount_tax = 0;
         let subtotals = [];
-        for (let subtotal_title of totals.subtotals_order) {
+        for (let subtotal_title of this.totals.subtotals_order) {
             let amount_total = amount_untaxed + amount_tax;
             subtotals.push({
                 'name': subtotal_title,
                 'amount': amount_total,
-                'formatted_amount': formatMonetary(amount_total, currencyFmtOpts),
+                'formatted_amount': this._format(amount_total),
             });
-            let group = totals.groups_by_subtotal[subtotal_title];
+            let group = this.totals.groups_by_subtotal[subtotal_title];
             for (let i in group) {
                 amount_tax = amount_tax + group[i].tax_group_amount;
             }
         }
-        totals.subtotals = subtotals;
-        let rounding_amount = totals.display_rounding && totals.rounding_amount || 0;
-        let amount_total = amount_untaxed + amount_tax + rounding_amount;
-        totals.amount_total = amount_total;
-        totals.formatted_amount_total = formatMonetary(amount_total, currencyFmtOpts);
-        for (let group_name of Object.keys(totals.groups_by_subtotal)) {
-            let group = totals.groups_by_subtotal[group_name];
-            for (let key in group) {
-                group[key].formatted_tax_group_amount = formatMonetary(group[key].tax_group_amount, currencyFmtOpts);
-                group[key].formatted_tax_group_base_amount = formatMonetary(group[key].tax_group_base_amount, currencyFmtOpts);
+        this.totals.subtotals = subtotals;
+        let amount_total = amount_untaxed + amount_tax;
+        this.totals.amount_total = amount_total;
+        this.totals.formatted_amount_total = this._format(amount_total);
+        for (let group_name of Object.keys(this.totals.groups_by_subtotal)) {
+            let group = this.totals.groups_by_subtotal[group_name];
+            for (let i in group) {
+                group[i].formatted_tax_group_amount = this._format(group[i].tax_group_amount);
+                group[i].formatted_tax_group_base_amount = this._format(group[i].tax_group_base_amount);
             }
         }
-        this.totals = totals;
     }
 }
 TaxTotalsComponent.template = "account.TaxTotalsField";
@@ -188,8 +186,4 @@ TaxTotalsComponent.props = {
     ...standardFieldProps,
 };
 
-export const taxTotalsComponent = {
-    component: TaxTotalsComponent,
-};
-
-registry.category("fields").add("account-tax-totals-field", taxTotalsComponent);
+registry.category("fields").add("account-tax-totals-field", TaxTotalsComponent);

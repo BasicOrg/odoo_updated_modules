@@ -19,15 +19,12 @@ import {
     rightPos,
     moveNodes,
     nodeSize,
-    paragraphRelatedElements,
     prepareUpdate,
     setSelection,
     isMediaElement,
-    isSelfClosingElement,
+    isVisibleEmpty,
     isNotEditableNode,
     createDOMPathGenerator,
-    closestElement,
-    closestBlock,
 } from '../utils/utils.js';
 
 Text.prototype.oDeleteBackward = function (offset, alreadyMoved = false) {
@@ -62,7 +59,7 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
             leftNode.remove();
             return;
         }
-        if (!isBlock(leftNode) || isSelfClosingElement(leftNode)) {
+        if (!isBlock(leftNode) || isVisibleEmpty(leftNode)) {
             /**
              * Backspace just after an inline node, convert to backspace at the
              * end of that inline node.
@@ -93,24 +90,9 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
         if (isUnbreakable(this) && (REGEX_BOOTSTRAP_COLUMN.test(this.className) || !isEmptyBlock(this))) {
             throw UNBREAKABLE_ROLLBACK_CODE;
         }
-        const parentEl = this.parentElement;
-        // Handle editable sub-nodes
-        if (
-            parentEl &&
-            parentEl.getAttribute("contenteditable") === "true" &&
-            parentEl.oid !== "root" &&
-            parentEl.parentElement &&
-            !parentEl.parentElement.isContentEditable &&
-            paragraphRelatedElements.includes(this.tagName) &&
-            !this.previousElementSibling
-        ) {
-            // The first child element of a contenteditable="true" zone which
-            // itself is contained in a contenteditable="false" zone can not be
-            // removed if it is paragraph-like.
-            throw UNREMOVABLE_ROLLBACK_CODE;
-        }
-        const closestLi = closestElement(this, 'li');
-        if ((closestLi && !closestLi.previousElementSibling) || !isBlock(this) || isSelfClosingElement(this)) {
+        const parentEl = this.parentNode;
+
+        if (!isBlock(this) || isVisibleEmpty(this)) {
             /**
              * Backspace at the beginning of an inline node, nothing has to be
              * done: propagate the backspace. If the node was empty, we remove
@@ -123,7 +105,7 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
             const parentOffset = childNodeIndex(this);
 
             if (!nodeSize(this) || contentIsZWS) {
-                const visible = isVisible(this);
+                const visible = isVisible(this) && !contentIsZWS;
                 const restore = prepareUpdate(...boundariesOut(this));
                 this.remove();
                 restore();
@@ -142,35 +124,10 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
             return;
         }
 
-        /** If we are at the beninning of a block node,
-         *  And the previous node is empty, remove it.
-         *
-         *   E.g. (previousEl == empty)
-         *        <p><br></p><h1>[]def</h1> + BACKSPACE
-         *   <=>  <h1>[]def</h1>
-         *
-         *   E.g. (previousEl != empty)
-         *        <h3>abc</h3><h1>[]def</h1> + BACKSPACE
-         *   <=>  <h3>abc[]def</h3>
-        */
-        const previousElementSiblingClosestBlock = closestBlock(this.previousElementSibling);
-        if (
-            previousElementSiblingClosestBlock &&
-            (isEmptyBlock(previousElementSiblingClosestBlock) ||
-                previousElementSiblingClosestBlock.textContent === '\u200B') &&
-            paragraphRelatedElements.includes(this.nodeName)
-        ) {
-            previousElementSiblingClosestBlock.remove();
-            setSelection(this, 0);
-            return;
-        }
-
         /**
-         * Backspace at the beginning of a block node. If it doesn't have a left
-         * block and it is one of the special block formatting tags below then
-         * convert the block into a P and return immediately. Otherwise, we have
-         * to move the inline content at its beginning outside of the element
-         * and propagate to the left block.
+         * Backspace at the beginning of a block node, we have to move the
+         * inline content at its beginning outside of the element and propagate
+         * to the left block if any.
          *
          * E.g. (prev == block)
          *      <p>abc</p><div>[]def<p>ghi</p></div> + BACKSPACE
@@ -180,19 +137,7 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
          *      abc<div>[]def<p>ghi</p></div> + BACKSPACE
          * <=>  abc[]def<div><p>ghi</p></div>
          */
-        if (
-            !this.previousElementSibling &&
-            ['BLOCKQUOTE', 'H1', 'H2', 'H3', 'PRE'].includes(this.nodeName) &&
-            !closestLi
-        ) {
-            const p = document.createElement('p');
-            p.replaceChildren(...this.childNodes);
-            this.replaceWith(p);
-            setSelection(p, offset);
-            return;
-        } else {
-            moveDest = leftPos(this);
-        }
+        moveDest = leftPos(this);
     }
 
     const domPathGenerator = createDOMPathGenerator(DIRECTIONS.LEFT, {
@@ -258,14 +203,13 @@ HTMLElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false, 
 };
 
 HTMLLIElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false) {
-    // If the deleteBackward is performed at the begening of a LI element,
-    // we take the current LI out of the list.
-    if (offset === 0) {
-        this.oToggleList(offset);
+    if (offset > 0 || this.previousElementSibling) {
+        // If backspace inside li content or if the li is not the first one,
+        // it behaves just like in a normal element.
+        HTMLElement.prototype.oDeleteBackward.call(this, offset, alreadyMoved);
         return;
     }
-    // Otherwise, call the HTMLElement deleteBackward method.
-    HTMLElement.prototype.oDeleteBackward.call(this, offset, alreadyMoved);
+    this.oShiftTab(offset);
 };
 
 HTMLBRElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false) {
@@ -274,12 +218,6 @@ HTMLBRElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false
     if (rightState & CTYPES.BLOCK_INSIDE) {
         this.parentElement.oDeleteBackward(parentOffset, alreadyMoved);
     } else {
-        HTMLElement.prototype.oDeleteBackward.call(this, offset, alreadyMoved);
-    }
-};
-
-HTMLTableCellElement.prototype.oDeleteBackward = function (offset, alreadyMoved = false) {
-    if (offset) {
         HTMLElement.prototype.oDeleteBackward.call(this, offset, alreadyMoved);
     }
 };

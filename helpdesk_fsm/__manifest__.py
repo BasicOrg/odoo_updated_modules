@@ -4,15 +4,14 @@
     'name': "Helpdesk FSM",
     'summary': "Allow generating fsm tasks from ticket",
     'description': """
-Convert helpdesk tickets to field service tasks.
+        Convert helpdesk tickets to field service tasks.
     """,
     'category': 'Services/Helpdesk',
     'depends': ['project_helpdesk', 'industry_fsm'],
     'data': [
         'security/ir.model.access.csv',
         'data/mail_message_subtype_data.xml',
-        'views/helpdesk_ticket_views.xml',
-        'views/helpdesk_team_views.xml',
+        'views/helpdesk_views.xml',
         'views/project_sharing_views.xml',
         'wizard/create_task_views.xml',
     ],

@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { _t } from "@web/core/l10n/translation";
 import { OdooChart } from "./odoo_chart";
 
@@ -38,8 +38,7 @@ chartRegistry.add("odoo_bar", {
 function createOdooChartRuntime(chart, getters) {
     const background = chart.background || "#FFFFFF";
     const { datasets, labels } = chart.dataSource.getData();
-    const locale = getters.getLocale();
-    const chartJsConfig = getBarConfiguration(chart, labels, locale);
+    const chartJsConfig = getBarConfiguration(chart, labels);
     const colors = new ChartColors();
     for (const { label, data } of datasets) {
         const color = colors.next();
@@ -55,9 +54,9 @@ function createOdooChartRuntime(chart, getters) {
     return { background, chartJsConfig };
 }
 
-function getBarConfiguration(chart, labels, locale) {
+function getBarConfiguration(chart, labels) {
     const fontColor = chartFontColor(chart.background);
-    const config = getDefaultChartJsRuntime(chart, labels, fontColor, { locale });
+    const config = getDefaultChartJsRuntime(chart, labels, fontColor);
     config.type = chart.type.replace("odoo_", "");
     const legend = {
         ...config.options.legend,
@@ -65,34 +64,37 @@ function getBarConfiguration(chart, labels, locale) {
         labels: { fontColor },
     };
     legend.position = chart.legendPosition;
-    config.options.plugins = config.options.plugins || {};
-    config.options.plugins.legend = legend;
+    config.options.legend = legend;
     config.options.layout = {
         padding: { left: 20, right: 20, top: chart.title ? 10 : 25, bottom: 10 },
     };
     config.options.scales = {
-        x: {
-            ticks: {
-                // x axis configuration
-                maxRotation: 60,
-                minRotation: 15,
-                padding: 5,
-                labelOffset: 2,
-                color: fontColor,
+        xAxes: [
+            {
+                ticks: {
+                    // x axis configuration
+                    maxRotation: 60,
+                    minRotation: 15,
+                    padding: 5,
+                    labelOffset: 2,
+                    fontColor,
+                },
             },
-        },
-        y: {
-            position: chart.verticalAxisPosition,
-            ticks: {
-                color: fontColor,
-                // y axis configuration
+        ],
+        yAxes: [
+            {
+                position: chart.verticalAxisPosition,
+                ticks: {
+                    fontColor,
+                    // y axis configuration
+                    beginAtZero: true, // the origin of the y axis is always zero
+                },
             },
-            beginAtZero: true, // the origin of the y axis is always zero
-        },
+        ],
     };
     if (chart.stacked) {
-        config.options.scales.x.stacked = true;
-        config.options.scales.y.stacked = true;
+        config.options.scales.xAxes[0].stacked = true;
+        config.options.scales.yAxes[0].stacked = true;
     }
     return config;
 }

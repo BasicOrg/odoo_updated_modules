@@ -14,6 +14,8 @@ const TimeOffCalendarView = {
     Controller: TimeOffCalendarController,
     Renderer: TimeOffCalendarRenderer,
     Model: TimeOffCalendarModel,
+
+    buttonTemplate: "hr_holidays.CalendarController.controlButtons",
 }
 
 registry.category('views').add('time_off_calendar', TimeOffCalendarView);

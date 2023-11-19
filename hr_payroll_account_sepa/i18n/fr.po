@@ -3,17 +3,17 @@
 # 	* hr_payroll_account_sepa
 # 
 # Translators:
-# Jolien De Paepe, 2023
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.3+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-04-19 14:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -57,10 +57,16 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: hr_payroll_account_sepa
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export_date
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_date
+msgid "Creation date of the payment file."
+msgstr "Date de création du fichier de paiement."
+
+#. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__display_name
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Nom affiché"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model,name:hr_payroll_account_sepa.model_hr_employee
@@ -68,18 +74,10 @@ msgid "Employee"
 msgstr "Employé"
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Invalid Bank Accounts"
-msgstr "Employés avec un compte bancaire invalide"
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
-#, python-format
-msgid "Employees with untrusted Bank Account numbers"
-msgstr "Employés avec des numéros de compte bancaire non fiables"
+msgstr "Employé(s) avec un compte bancaire invalide"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export
@@ -89,7 +87,7 @@ msgstr "Exporter le fichier lié à cette fiche de paie"
 #. module: hr_payroll_account_sepa
 #: model_terms:ir.ui.view,arch_db:hr_payroll_account_sepa.hr_payslip_view_form
 msgid "Exported File"
-msgstr "Fichier exporté"
+msgstr "Fichier Exporté"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export
@@ -105,7 +103,7 @@ msgstr "Nom du fichier SEPA .xml exporté"
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__sepa_export_filename
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_filename
 msgid "File Name"
-msgstr "Nom de fichier"
+msgstr "Nom de Fichier"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__file_name
@@ -126,7 +124,7 @@ msgstr "L'assistant SEPA pour l'exécution des fiches de paie des RH"
 #. module: hr_payroll_account_sepa
 #: model:ir.model,name:hr_payroll_account_sepa.model_hr_payslip_sepa_wizard
 msgid "HR Payslip SEPA Wizard"
-msgstr "Assistant SEPA fiche de paie RH"
+msgstr "Fiche de paie RH Assistant SEPA"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__id
@@ -135,7 +133,6 @@ msgid "ID"
 msgstr "ID"
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
 #: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
 #, python-format
@@ -143,20 +140,26 @@ msgid ""
 "Invalid bank account for the following employees:\n"
 "%s"
 msgstr ""
-"Compte bancaire invalide pour les employés suivants :\n"
+"Compte bancaire non valide pour les employés suivants :\n"
 "%s"
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard____last_update
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__write_uid
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__write_date
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
+msgstr "Dernière mise à jour le"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export_filename
@@ -166,7 +169,7 @@ msgstr "Nom du fichier d'exportation généré pour cette fiche de paie"
 #. module: hr_payroll_account_sepa
 #: model:ir.model,name:hr_payroll_account_sepa.model_hr_payslip
 msgid "Pay Slip"
-msgstr "Fiche de paie"
+msgstr "Feuille de paie"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model,name:hr_payroll_account_sepa.model_hr_payslip_run
@@ -186,80 +189,29 @@ msgid "Select a bank journal."
 msgstr "Sélectionner un journal de banque."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Some employees (%s) don't have a bank account."
 msgstr "Certains employés (%s) n'ont pas de compte bancaire."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
-msgid "Some employees (%s) don't have a valid name on the work contact."
-msgstr ""
-"Certains employés (%s) n'ont pas de nom valide sur le contrat de travail."
+msgid "Some employees (%s) don't have a private address."
+msgstr "Certains employés (%s) n'ont pas d'adresse privée."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
-msgid "Some employees (%s) don't have a work contact."
-msgstr "Certains employés (%s) n'ont pas de contrat de travail."
+msgid "Some employees (%s) don't have a valid name on the private address."
+msgstr "Certains employés (%s) n'ont pas de nom valide sur l'adresse privée."
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_employee.py:0
-#, python-format
-msgid ""
-"The following employees have invalid bank accounts and could not be trusted:\n"
-"%s"
-msgstr ""
-"Les employés suivants ont des comptes bancaires invalides et ne sont pas fiables :\n"
-"%s"
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "The journal '%s' requires a proper IBAN account to pay via SEPA. Please "
 "configure it first."
 msgstr ""
-"Le journal '%s' doit avoir un compte IBAN correct pour payer via SEPA. "
+"Le journal \"%s\" doit avoir un compte IBAN correct pour payer via SEPA. "
 "Veuillez d'abord le configurer."
-
-#. module: hr_payroll_account_sepa
-#: model:ir.actions.server,name:hr_payroll_account_sepa.trust_employee_bank
-msgid "Trust Bank Account"
-msgstr "Compte bancaire fiable"
-
-#. module: hr_payroll_account_sepa
-#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__sepa_uetr
-msgid "UETR"
-msgstr "UETR"
-
-#. module: hr_payroll_account_sepa
-#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_uetr
-msgid "Unique end-to-end transaction reference"
-msgstr "Référence unique de suivi de bout en bout"
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
-#: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
-#, python-format
-msgid ""
-"Untrusted bank account for the following employees:\n"
-"%s"
-msgstr ""
-"Compte bancaire non fiable pour les employés suivants : \n"
-"%s"
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_employee.py:0
-#, python-format
-msgid "You do not have the right to trust or un-trust a bank account."
-msgstr ""
-"Vous n'avez pas le droit de faire confiance ou non à un compte bancaire."

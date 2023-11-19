@@ -1,26 +1,26 @@
-/** @odoo-module **/
+odoo.define("website.tour.snippet_version", function (require) {
+"use strict";
 
-import wTourUtils from "@website/js/tours/tour_utils";
+const wTourUtils = require('website.tour_utils');
 
 wTourUtils.registerWebsitePreviewTour("snippet_version", {
     edition: true,
     url: "/",
     test: true,
-}, () => [
-    wTourUtils.dragNDrop({
-        id: 's_test_snip',
-        name: 'Test snip',
-    }),
-    wTourUtils.dragNDrop({
-        id: 's_text_image',
-        name: 'Text - Image',
-    }),
-    {
+}, [{
+    content: "Drop s_test_snip snippet",
+    trigger: '#oe_snippets .oe_snippet:has(.s_test_snip) .oe_snippet_thumbnail',
+    run: "drag_and_drop iframe #wrap",
+}, {
+    content: "Drop s_text_image snippet",
+    trigger: '#oe_snippets .oe_snippet:has(.s_text_image) .oe_snippet_thumbnail:not(.o_we_already_dragging)',
+    run: "drag_and_drop iframe #wrap",
+}, {
     content: "Test t-snippet and t-snippet-call: snippets have data-snippet set",
-    trigger: '#oe_snippets .o_panel_body > .oe_snippet',
+    trigger: '#oe_snippets .o_panel_body > .oe_snippet.ui-draggable',
     run: function () {
         // Tests done here as all these are not visible on the page
-        const draggableSnippets = document.querySelectorAll('#oe_snippets .o_panel_body > .oe_snippet.o_draggable > :nth-child(2)');
+        const draggableSnippets = document.querySelectorAll('#oe_snippets .o_panel_body > .oe_snippet.ui-draggable > :nth-child(2)');
         if (![...draggableSnippets].every(el => el.dataset.snippet)) {
             console.error("error Some t-snippet are missing their template name");
         }
@@ -33,7 +33,7 @@ wTourUtils.registerWebsitePreviewTour("snippet_version", {
     },
 },
     ...wTourUtils.clickOnSave(),
-    ...wTourUtils.clickOnEditAndWaitEditMode(),
+    wTourUtils.clickOnEdit(),
 {
     content: "Modify the version of snippets",
     trigger: '#oe_snippets .o_panel_body > .oe_snippet',
@@ -57,5 +57,5 @@ wTourUtils.registerWebsitePreviewTour("snippet_version", {
     content: "s_share is outdated",
     extra_trigger: 'we-customizeblock-options:contains(Share) .snippet-option-VersionControl > we-alert',
     trigger: 'iframe body',
-    isCheck: true,
 }]);
+});

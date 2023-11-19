@@ -2,16 +2,19 @@
 
 import {
     click,
-    editInput,
     getFixture,
     nextTick,
     patchWithCleanup,
     triggerHotkey,
-    makeDeferred,
 } from "@web/../tests/helpers/utils";
-import { makeViewInDialog, setupViewRegistries } from "@web/../tests/views/helpers";
+import { makeView } from "@web/../tests/views/helpers";
 import { createWebClient } from "@web/../tests/webclient/helpers";
+import { dialogService } from "@web/core/dialog/dialog_service";
+import { registry } from "@web/core/registry";
 import { FormViewDialog } from "@web/views/view_dialogs/form_view_dialog";
+import { setupControlPanelServiceRegistry } from "@web/../tests/search/helpers";
+
+const serviceRegistry = registry.category("services");
 
 QUnit.module("ViewDialogs", (hooks) => {
     let serverData;
@@ -66,7 +69,8 @@ QUnit.module("ViewDialogs", (hooks) => {
             },
         };
         target = getFixture();
-        setupViewRegistries();
+        setupControlPanelServiceRegistry();
+        serviceRegistry.add("dialog", dialogService);
     });
 
     QUnit.module("FormViewDialog");
@@ -107,11 +111,11 @@ QUnit.module("ViewDialogs", (hooks) => {
             "partner,false,form": `
                 <form>
                     <field name="bar"/>
-                    <footer invisible="not bar">
+                    <footer attrs="{'invisible': [('bar','=',False)]}">
                         <button>Hello</button>
                         <button>World</button>
                     </footer>
-                    <footer invisible="bar">
+                    <footer attrs="{'invisible': [('bar','!=',False)]}">
                         <button>Foo</button>
                     </footer>
                 </form>`,
@@ -204,16 +208,15 @@ QUnit.module("ViewDialogs", (hooks) => {
                         </tree>`,
         };
 
-        await makeViewInDialog({
+        await makeView({
             type: "form",
             resModel: "partner",
             resId: 1,
             serverData,
-            arch: `
-                <form>
+            arch: `<form>
                     <field name="name"/>
-                    <field name="instrument" context="{'tree_view_ref': 'some_tree_view'}"/>
-                </form>`,
+                    <field name="instrument" context="{'tree_view_ref': 'some_tree_view'}" open_target="new"/>
+                   </form>`,
             mockRPC: function (route, args) {
                 if (args.method === "get_formview_id") {
                     return Promise.resolve(false);
@@ -234,6 +237,7 @@ QUnit.module("ViewDialogs", (hooks) => {
                     assert.deepEqual(
                         args.kwargs.context,
                         {
+                            base_model_name: "instrument",
                             lang: "en",
                             tree_view_ref: "some_other_tree_view",
                             tz: "taht",
@@ -275,10 +279,10 @@ QUnit.module("ViewDialogs", (hooks) => {
 
         assert.containsOnce(target, ".o_dialog .o_form_view");
         assert.containsN(target, ".o_dialog .o_form_view button", 2);
-        assert.verifySteps(["/web/webclient/load_menus", "get_views", "web_read"]);
+        assert.verifySteps(["/web/webclient/load_menus", "get_views", "read"]);
         await click(target.querySelector(".o_dialog .o_form_view .btn1"));
         assert.containsOnce(target, ".o_dialog .o_form_view");
-        assert.verifySteps(["method1", "web_read"]); // should re-read the record
+        assert.verifySteps(["method1", "read"]); // should re-read the record
         await click(target.querySelector(".o_dialog .o_form_view .btn2"));
         assert.containsNone(target, ".o_dialog .o_form_view");
         assert.verifySteps(["method2"]); // should not read as we closed
@@ -298,7 +302,7 @@ QUnit.module("ViewDialogs", (hooks) => {
             };
             let reject = true;
             function mockRPC(route, args) {
-                if (args.method === "web_save" && reject) {
+                if (args.method === "create" && reject) {
                     return Promise.reject();
                 }
             }
@@ -339,82 +343,6 @@ QUnit.module("ViewDialogs", (hooks) => {
         assert.containsOnce(target, ".o_dialog .modal-footer .o_form_button_remove");
         await click(target.querySelector(".o_dialog .modal-footer .o_form_button_remove"));
         assert.verifySteps(["remove"]);
-        assert.containsNone(target, ".o_dialog .o_form_view");
-    });
-
-    QUnit.test("Buttons are set as disabled on click", async function (assert) {
-        serverData.views = {
-            "partner,false,form": `
-                    <form string="Partner">
-                        <sheet>
-                            <group>
-                                <field name="name"/>
-                            </group>
-                        </sheet>
-                    </form>
-                `,
-        };
-        const def = makeDeferred();
-        async function mockRPC(route, args) {
-            if (args.method === "web_save") {
-                await def;
-            }
-        }
-        const webClient = await createWebClient({ serverData, mockRPC });
-        webClient.env.services.dialog.add(FormViewDialog, {
-            resModel: "partner",
-            resId: 1,
-        });
-
-        await nextTick();
-        await editInput(
-            target.querySelector(".o_dialog .o_content .o_field_char .o_input"),
-            "",
-            "test"
-        );
-
-        await click(target.querySelector(".o_dialog .modal-footer .o_form_button_save"));
-        assert.strictEqual(
-            target
-                .querySelector(".o_dialog .modal-footer .o_form_button_save")
-                .getAttribute("disabled"),
-            "1"
-        );
-
-        def.resolve();
-        await nextTick();
-        assert.containsNone(target, ".o_dialog .o_form_view");
-    });
-
-    QUnit.test("FormViewDialog with discard button", async function (assert) {
-        serverData.views = {
-            "partner,false,form": `<form><field name="foo"/></form>`,
-        };
-
-        const webClient = await createWebClient({ serverData });
-        webClient.env.services.dialog.add(FormViewDialog, {
-            resModel: "partner",
-            resId: 1,
-            onRecordDiscarded: () => assert.step("discard"),
-        });
-        await nextTick();
-
-        assert.containsOnce(target, ".o_dialog .o_form_view");
-        assert.containsOnce(target, ".o_dialog .modal-footer .o_form_button_cancel");
-        await click(target.querySelector(".o_dialog .modal-footer .o_form_button_cancel"));
-        assert.verifySteps(["discard"]);
-        assert.containsNone(target, ".o_dialog .o_form_view");
-
-        webClient.env.services.dialog.add(FormViewDialog, {
-            resModel: "partner",
-            resId: 1,
-            onRecordDiscarded: () => assert.step("discard"),
-        });
-        await nextTick();
-
-        assert.containsOnce(target, ".o_dialog .o_form_view");
-        await click(target.querySelector(".o_dialog .btn-close"));
-        assert.verifySteps(["discard"]);
         assert.containsNone(target, ".o_dialog .o_form_view");
     });
 });

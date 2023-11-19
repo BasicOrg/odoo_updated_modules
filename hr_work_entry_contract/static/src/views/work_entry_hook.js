@@ -3,7 +3,7 @@
 import { serializeDate } from "@web/core/l10n/dates";
 import { useService } from "@web/core/utils/hooks";
 
-export function useWorkEntry({ getEmployeeIds, getRange, onClose}) {
+export function useWorkEntry({ getEmployeeIds, getRange }) {
     const orm = useService("orm");
     const action = useService("action");
 
@@ -15,7 +15,7 @@ export function useWorkEntry({ getEmployeeIds, getRange, onClose}) {
                     default_employee_ids: getEmployeeIds(),
                     date_start: serializeDate(start),
                     date_end: serializeDate(end),
-                }, onClose: onClose
+                }
             });
         },
         generateWorkEntries: () => {

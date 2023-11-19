@@ -8,12 +8,12 @@ This module allows you to sell rental products with optional products in your eC
 appropriate views and selling choices.
     """,
     'depends': ['website_sale_renting', 'website_sale_product_configurator'],
-    'data': [
+    'data': {
         'views/templates.xml',
-    ],
-    'demo':[
+    },
+    'demo': {
         'data/demo.xml',
-    ],
+    },
     'assets': {
         'web.assets_frontend': [
             'website_sale_renting_product_configurator/static/src/js/**.js',

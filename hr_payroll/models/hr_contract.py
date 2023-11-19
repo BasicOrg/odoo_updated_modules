@@ -4,6 +4,7 @@
 from datetime import date, datetime
 from collections import defaultdict
 from odoo import _, api, fields, models
+from odoo.tools import date_utils
 from odoo.osv import expression
 
 import pytz
@@ -12,27 +13,14 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
     _description = 'Employee Contract'
 
-    schedule_pay = fields.Selection([
-        ('annually', 'Annually'),
-        ('semi-annually', 'Semi-annually'),
-        ('quarterly', 'Quarterly'),
-        ('bi-monthly', 'Bi-monthly'),
-        ('monthly', 'Monthly'),
-        ('semi-monthly', 'Semi-monthly'),
-        ('bi-weekly', 'Bi-weekly'),
-        ('weekly', 'Weekly'),
-        ('daily', 'Daily')],
-        compute='_compute_schedule_pay', store=True, readonly=False)
+    schedule_pay = fields.Selection(related='structure_type_id.default_struct_id.schedule_pay', depends=())
     resource_calendar_id = fields.Many2one(required=True, default=lambda self: self.env.company.resource_calendar_id,
         help="Employee's working schedule.")
     hours_per_week = fields.Float(related='resource_calendar_id.hours_per_week')
     full_time_required_hours = fields.Float(related='resource_calendar_id.full_time_required_hours')
     is_fulltime = fields.Boolean(related='resource_calendar_id.is_fulltime')
-    wage_type = fields.Selection([
-        ('monthly', 'Fixed Wage'),
-        ('hourly', 'Hourly Wage')
-    ], compute='_compute_wage_type', store=True, readonly=False)
-    hourly_wage = fields.Monetary('Hourly Wage', tracking=True, help="Employee's hourly gross wage.")
+    wage_type = fields.Selection(related='structure_type_id.wage_type')
+    hourly_wage = fields.Monetary('Hourly Wage', default=0, required=True, tracking=True, help="Employee's hourly gross wage.")
     payslips_count = fields.Integer("# Payslips", compute='_compute_payslips_count', groups="hr_payroll.group_hr_payroll_user")
     calendar_changed = fields.Boolean(help="Whether the previous or next contract has a different schedule or not")
 
@@ -47,17 +35,6 @@ class HrContract(models.Model):
         'hr.work.entry.type', string='Part Time Work Entry Type',
         domain=[('is_leave', '=', True)],
         help="The work entry type used when generating work entries to fit full time working schedule.")
-    salary_attachments_count = fields.Integer(related='employee_id.salary_attachment_count')
-
-    @api.depends('structure_type_id')
-    def _compute_schedule_pay(self):
-        for contract in self:
-            contract.schedule_pay = contract.structure_type_id.default_schedule_pay
-
-    @api.depends('structure_type_id')
-    def _compute_wage_type(self):
-        for contract in self:
-            contract.wage_type = contract.structure_type_id.wage_type
 
     @api.depends('time_credit', 'resource_calendar_id.hours_per_week', 'standard_calendar_id.hours_per_week')
     def _compute_work_time_rate(self):
@@ -74,28 +51,13 @@ class HrContract(models.Model):
                 contract.work_time_rate = hours_per_week / (hours_per_week_ref or hours_per_week)
 
     def _compute_payslips_count(self):
-        count_data = self.env['hr.payslip']._read_group(
+        count_data = self.env['hr.payslip'].read_group(
             [('contract_id', 'in', self.ids)],
             ['contract_id'],
-            ['__count'])
-        mapped_counts = {contract.id: count for contract, count in count_data}
+            ['contract_id'])
+        mapped_counts = {cd['contract_id'][0]: cd['contract_id_count'] for cd in count_data}
         for contract in self:
             contract.payslips_count = mapped_counts.get(contract.id, 0)
-
-    def _get_salary_costs_factor(self):
-        self.ensure_one()
-        factors = {
-            "annually": 1,
-            "semi-annually": 2,
-            "quarterly": 4,
-            "bi-monthly": 6,
-            "monthly": 12,
-            "semi-monthly": 24,
-            "bi-weekly": 26,
-            "weekly": 52,
-            "daily": 52 * (self.resource_calendar_id._get_days_per_week() if self.resource_calendar_id else 5),
-        }
-        return factors.get(self.schedule_pay, super()._get_salary_costs_factor())
 
     def _is_same_occupation(self, contract):
         self.ensure_one()
@@ -208,34 +170,38 @@ class HrContract(models.Model):
             calendar = contract.resource_calendar_id
             standard_calendar = contract.standard_calendar_id
 
+            # YTI TODO master: The domain is hacky, but we can't modify the method signature
+            # Add an argument compute_leaves=True on the method
             standard_attendances = standard_calendar._work_intervals_batch(
                 pytz.utc.localize(date_start) if not date_start.tzinfo else date_start,
                 pytz.utc.localize(date_stop) if not date_stop.tzinfo else date_stop,
                 resources=resource,
-                compute_leaves=False)[resource.id]
+                domain=[('resource_id', '=', -1)])[resource.id]
 
+            # YTI TODO master: The domain is hacky, but we can't modify the method signature
+            # Add an argument compute_leaves=True on the method
             attendances = calendar._work_intervals_batch(
                 pytz.utc.localize(date_start) if not date_start.tzinfo else date_start,
                 pytz.utc.localize(date_stop) if not date_stop.tzinfo else date_stop,
                 resources=resource,
-                compute_leaves=False)[resource.id]
+                domain=[('resource_id', '=', -1)]
+            )[resource.id]
 
             credit_time_intervals = standard_attendances - attendances
 
             for interval in credit_time_intervals:
                 work_entry_type_id = contract.time_credit_type_id
-                new_vals = {
+                contract_vals += [{
                     'name': "%s: %s" % (work_entry_type_id.name, employee.name),
                     'date_start': interval[0].astimezone(pytz.utc).replace(tzinfo=None),
                     'date_stop': interval[1].astimezone(pytz.utc).replace(tzinfo=None),
                     'work_entry_type_id': work_entry_type_id.id,
+                    'is_credit_time': True,
                     'employee_id': employee.id,
                     'contract_id': contract.id,
                     'company_id': contract.company_id.id,
                     'state': 'draft',
-                    'is_credit_time': True,
-                }
-                contract_vals.append(new_vals)
+                }]
         return contract_vals
 
     def _get_work_time_rate(self):
@@ -293,35 +259,6 @@ class HrContract(models.Model):
         """
         return
 
-    def get_work_hours(self, date_from, date_to, domain=None):
-        # Get work hours between 2 dates (datetime.date)
-        # To correctly englobe the period, the start and end periods are converted
-        # using the calendar timezone.
-        assert not isinstance(date_from, datetime)
-        assert not isinstance(date_to, datetime)
-
-        date_from = datetime.combine(fields.Datetime.to_datetime(date_from), datetime.min.time())
-        date_to = datetime.combine(fields.Datetime.to_datetime(date_to), datetime.max.time())
-        work_data = defaultdict(int)
-
-        contracts_by_company_tz = defaultdict(lambda: self.env['hr.contract'])
-        for contract in self:
-            contracts_by_company_tz[(
-                contract.company_id,
-                (contract.resource_calendar_id or contract.employee_id.resource_calendar_id).tz
-            )] += contract
-        utc = pytz.timezone('UTC')
-
-        for (company, contract_tz), contracts in contracts_by_company_tz.items():
-            tz = pytz.timezone(contract_tz) if contract_tz else pytz.utc
-            date_from_tz = tz.localize(date_from).astimezone(utc).replace(tzinfo=None)
-            date_to_tz = tz.localize(date_to).astimezone(utc).replace(tzinfo=None)
-            work_data_tz = contracts.with_company(company).sudo()._get_work_hours(
-                date_from_tz, date_to_tz, domain=domain)
-            for work_entry_type_id, hours in work_data_tz.items():
-                work_data[work_entry_type_id] += hours
-        return work_data
-
     def _get_work_hours(self, date_from, date_to, domain=None):
         """
         Returns the amount (expressed in hours) of work
@@ -331,17 +268,18 @@ class HrContract(models.Model):
         :param date_to: The end date
         :returns: a dictionary {work_entry_id: hours_1, work_entry_2: hours_2}
         """
-        assert isinstance(date_from, datetime)
-        assert isinstance(date_to, datetime)
+
+        date_from = datetime.combine(date_from, datetime.min.time())
+        date_to = datetime.combine(date_to, datetime.max.time())
+        work_data = defaultdict(int)
 
         # First, found work entry that didn't exceed interval.
         work_entries = self.env['hr.work.entry']._read_group(
             self._get_work_hours_domain(date_from, date_to, domain=domain, inside=True),
-            ['work_entry_type_id'],
-            ['duration:sum']
+            ['hours:sum(duration)'],
+            ['work_entry_type_id']
         )
-        work_data = defaultdict(int)
-        work_data.update({work_entry_type.id: duration_sum for work_entry_type, duration_sum in work_entries})
+        work_data.update({data['work_entry_type_id'][0] if data['work_entry_type_id'] else False: data['hours'] for data in work_entries})
         self._preprocess_work_hours_data(work_data, date_from, date_to)
 
         # Second, find work entry that exceeds interval and compute right duration.
@@ -363,17 +301,17 @@ class HrContract(models.Model):
                 work_data[work_entry.work_entry_type_id.id] += work_entry._get_work_duration(date_start, date_stop)  # Number of hours
         return work_data
 
-    def _get_default_work_entry_type_id(self):
-        return self.structure_type_id.default_work_entry_type_id.id or super()._get_default_work_entry_type_id()
+    def _get_default_work_entry_type(self):
+        return self.structure_type_id.default_work_entry_type_id or super(HrContract, self)._get_default_work_entry_type()
 
     def _get_fields_that_recompute_payslip(self):
         # Returns the fields that should recompute the payslip
         return [self._get_contract_wage]
 
-    def _get_nearly_expired_contracts(self, outdated_days, company_id=False):
+    def _get_nearly_expired_contracts(self, outdated_days):
         today = fields.Date.today()
         nearly_expired_contracts = self.search([
-            ('company_id', '=', company_id or self.env.company.id),
+            ('company_id', '=', self.env.company.id),
             ('state', '=', 'open'),
             ('date_end', '>=', today),
             ('date_end', '<', outdated_days)])
@@ -381,13 +319,13 @@ class HrContract(models.Model):
         # Check if no new contracts starting after the end of the expiring one
         nearly_expired_contracts_without_new_contracts = self.env['hr.contract']
         new_contracts_grouped_by_employee = {
-            employee.id
-            for [employee] in self._read_group([
-                ('company_id', '=', company_id or self.env.company.id),
+            c['employee_id'][0]: c['employee_id_count']
+            for c in self._read_group([
+                ('company_id', '=', self.env.company.id),
                 ('state', '=', 'draft'),
                 ('date_start', '>=', outdated_days),
                 ('employee_id', 'in', nearly_expired_contracts.employee_id.ids)
-            ], groupby=['employee_id'])
+            ], groupby=['employee_id'], fields=['employee_id'])
         }
 
         for expired_contract in nearly_expired_contracts:
@@ -447,12 +385,5 @@ class HrContract(models.Model):
             'res_model': 'hr.salary.attachment',
             'view_mode': 'form',
             'target': 'new',
-            'context': {'default_employee_ids': self.employee_id.ids}
+            'context': {'default_employee_id': self.employee_id.id}
         }
-
-    def action_open_salary_attachments(self):
-        self.ensure_one()
-        action = self.env["ir.actions.actions"]._for_xml_id("hr_payroll.hr_salary_attachment_action")
-        action.update({'domain': [('employee_ids', 'in', self.employee_id.ids)],
-                       'context': {'default_employee_ids': self.employee_id.ids}})
-        return action

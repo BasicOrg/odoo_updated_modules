@@ -37,15 +37,16 @@ QUnit.module("Search", (hooks) => {
             searchMenuTypes: [],
         });
 
-        assert.containsOnce(target, ".o_control_panel_breadcrumbs");
-        assert.containsOnce(target, ".o_control_panel_actions");
-        assert.strictEqual(target.querySelector(".o_control_panel_actions").innerHTML, "");
-        assert.containsOnce(target, ".o_control_panel_navigation");
-        assert.strictEqual(target.querySelector(".o_control_panel_navigation").innerHTML, "");
+        assert.containsOnce(target, ".o_cp_top");
+        assert.containsOnce(target, ".o_cp_top_left");
+        assert.strictEqual(target.querySelector(".o_cp_top_right").innerHTML, "");
+        assert.containsOnce(target, ".o_cp_bottom");
+        assert.containsOnce(target, ".o_cp_bottom_left");
+        assert.containsOnce(target, ".o_cp_bottom_right");
 
         assert.containsNone(target, ".o_cp_switch_buttons");
 
-        assert.containsOnce(target, ".o_breadcrumb");
+        assert.containsOnce(target, ".breadcrumb");
     });
 
     QUnit.test("breadcrumbs", async (assert) => {
@@ -62,9 +63,8 @@ QUnit.module("Search", (hooks) => {
             searchMenuTypes: [],
         });
 
-        const breadcrumbsSelector = ".o_breadcrumb li.breadcrumb-item, .o_breadcrumb .active";
-        assert.containsN(target, breadcrumbsSelector, 2);
-        const breadcrumbItems = target.querySelectorAll(breadcrumbsSelector);
+        assert.containsN(target, ".breadcrumb li.breadcrumb-item", 2);
+        const breadcrumbItems = target.querySelectorAll("li.breadcrumb-item");
         assert.strictEqual(breadcrumbItems[0].innerText, "Previous");
         assert.hasClass(breadcrumbItems[1], "active");
         assert.strictEqual(breadcrumbItems[1].innerText, "Current");
@@ -91,18 +91,14 @@ QUnit.module("Search", (hooks) => {
             searchMenuTypes: [],
         });
 
-        assert.containsOnce(
-            target,
-            ".o_control_panel_navigation .d-xl-inline-flex.o_cp_switch_buttons"
-        );
+        assert.containsOnce(target, ".o_cp_switch_buttons");
         assert.containsN(target, ".o_switch_view", 2);
         const views = target.querySelectorAll(".o_switch_view");
 
         assert.strictEqual(views[0].getAttribute("data-tooltip"), "List");
         assert.hasClass(views[0], "active");
-        assert.containsOnce(views[0], ".oi-view-list");
         assert.strictEqual(views[1].getAttribute("data-tooltip"), "Kanban");
-        assert.containsOnce(views[1], ".oi-view-kanban");
+        assert.hasClass(views[1], "oi-view-kanban");
 
         controlPanel.env.services.action.switchView = (viewType) => {
             assert.step(viewType);

@@ -33,7 +33,6 @@
     'installable': True,
     'assets': {
         'web.assets_backend': [
-            'social/static/src/js/fields/*',
             'social/static/src/js/add_stream_modal.js',
             'social/static/src/js/images_carousel_dialog.js',
             'social/static/src/js/post_kanban_view.js',
@@ -52,6 +51,7 @@
             'social/static/src/js/stream_post_kanban_view.js',
             'social/static/src/js/tours/social.js',
             'social/static/src/scss/social.scss',
+            'social/static/src/models/**/*',
             'social/static/src/xml/**/*',
         ],
     },

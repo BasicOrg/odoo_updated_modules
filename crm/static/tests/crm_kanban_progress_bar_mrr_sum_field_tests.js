@@ -7,11 +7,9 @@ import {
     click,
     dragAndDrop,
     getFixture,
-    makeDeferred,
-    nextTick,
     patchWithCleanup,
 } from '@web/../tests/helpers/utils';
-import { AnimatedNumber } from "@web/views/view_components/animated_number";
+import { KanbanAnimatedNumber } from "@web/views/kanban/kanban_animated_number";
 
 const serviceRegistry = registry.category("services");
 
@@ -20,7 +18,7 @@ let serverData;
 
 QUnit.module('Crm Kanban Progressbar', {
     beforeEach: function () {
-        patchWithCleanup(AnimatedNumber, { enableAnimations: false });
+        patchWithCleanup(KanbanAnimatedNumber, { enableAnimations: false });
         serverData = {
             models: {
                 'res.users': {
@@ -35,12 +33,11 @@ QUnit.module('Crm Kanban Progressbar', {
                 'crm.stage': {
                     fields: {
                         display_name: { string: 'Name', type: 'char' },
-                        is_won: { string: 'Is won', type: 'boolean' },
                     },
                     records: [
                         { id: 1, name: 'New' },
                         { id: 2, name: 'Qualified' },
-                        { id: 3, name: 'Won', is_won: true },
+                        { id: 3, name: 'Won' },
                     ],
                 },
                 'crm.lead': {
@@ -84,10 +81,10 @@ QUnit.module('Crm Kanban Progressbar', {
             groupBy: ['stage_id'],
             arch: `
                 <kanban js_class="crm_kanban">
-                    <field name="stage_id"/>
-                    <field name="expected_revenue"/>
-                    <field name="recurring_revenue_monthly"/>
-                    <field name="activity_state"/>
+                    '<field name="stage_id"/>' +
+                    '<field name="expected_revenue"/>' +
+                    '<field name="recurring_revenue_monthly"/>' +
+                    '<field name="activity_state"/>' +
                     <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="expected_revenue" recurring_revenue_sum_field="recurring_revenue_monthly"/>
                     <templates>
                         <t t-name="kanban-box">
@@ -113,10 +110,10 @@ QUnit.module('Crm Kanban Progressbar', {
             groupBy: ['stage_id'],
             arch: `
                 <kanban js_class="crm_kanban">
-                    <field name="stage_id"/>
-                    <field name="expected_revenue"/>
-                    <field name="recurring_revenue_monthly"/>
-                    <field name="activity_state"/>
+                    '<field name="stage_id"/>' +
+                    '<field name="expected_revenue"/>' +
+                    '<field name="recurring_revenue_monthly"/>' +
+                    '<field name="activity_state"/>' +
                     <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="expected_revenue" recurring_revenue_sum_field="recurring_revenue_monthly"/>
                     <templates>
                         <t t-name="kanban-box">
@@ -127,7 +124,7 @@ QUnit.module('Crm Kanban Progressbar', {
                 </kanban>`,
         });
 
-        const reccurringRevenueValues = [...target.querySelectorAll('.o_animated_number:nth-child(3)')].map((elem) => elem.textContent);
+        const reccurringRevenueValues = [...target.querySelectorAll('.o_kanban_counter_side:nth-child(3)')].map((elem) => elem.textContent);
 
         // When no values are given in column it should return 0 and counts value if given.
         assert.deepEqual(reccurringRevenueValues, ["+20", "+0", "+45"],
@@ -144,10 +141,10 @@ QUnit.module('Crm Kanban Progressbar', {
             groupBy: ['bar'],
             arch: `
                 <kanban js_class="crm_kanban">
-                    <field name="stage_id"/>
-                    <field name="expected_revenue"/>
-                    <field name="recurring_revenue_monthly"/>
-                    <field name="activity_state"/>
+                    '<field name="stage_id"/>' +
+                    '<field name="expected_revenue"/>' +
+                    '<field name="recurring_revenue_monthly"/>' +
+                    '<field name="activity_state"/>' +
                     <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="expected_revenue" recurring_revenue_sum_field="recurring_revenue_monthly"/>
                     <templates>
                         <t t-name="kanban-box">
@@ -160,7 +157,7 @@ QUnit.module('Crm Kanban Progressbar', {
         });
 
         //MRR before state change
-        let reccurringRevenueNoValues = [...target.querySelectorAll('.o_animated_number:nth-child(3)')].map((elem) => elem.textContent);
+        let reccurringRevenueNoValues = [...target.querySelectorAll('.o_kanban_counter_side:nth-child(3)')].map((elem) => elem.textContent);
         assert.deepEqual(reccurringRevenueNoValues, ['+30','+35'],
             "counter should display the sum of recurring_revenue_monthly values");
 
@@ -172,7 +169,7 @@ QUnit.module('Crm Kanban Progressbar', {
         );
 
         //check MRR after drag&drop
-        reccurringRevenueNoValues = [...target.querySelectorAll('.o_animated_number:nth-child(3)')].map((elem) => elem.textContent);
+        reccurringRevenueNoValues = [...target.querySelectorAll('.o_kanban_counter_side:nth-child(3)')].map((elem) => elem.textContent);
         assert.deepEqual(reccurringRevenueNoValues, ['+25', '+40'],
         "counter should display the sum of recurring_revenue_monthly correctly after drag and drop");
 
@@ -180,81 +177,8 @@ QUnit.module('Crm Kanban Progressbar', {
         await click(target.querySelector('.o_kanban_group:nth-child(2) .progress-bar[aria-valuenow="2"]'), null);
 
         //check MRR after applying filter
-        reccurringRevenueNoValues = [...target.querySelectorAll('.o_animated_number:nth-child(3)')].map((elem) => elem.textContent);
+        reccurringRevenueNoValues = [...target.querySelectorAll('.o_kanban_counter_side:nth-child(3)')].map((elem) => elem.textContent);
         assert.deepEqual(reccurringRevenueNoValues, ['+25','+25'],
             "counter should display the sum of recurring_revenue_monthly only of overdue filter in 1st column");
-    });
-
-    QUnit.test("Quickly drag&drop records when grouped by stage_id", async function (assert) {
-
-        const def = makeDeferred();
-        await makeView({
-            type: "kanban",
-            serverData,
-            resModel: 'crm.lead',
-            groupBy: ['stage_id'],
-            arch: `
-                <kanban js_class="crm_kanban">
-                    <field name="stage_id"/>
-                    <field name="expected_revenue"/>
-                    <field name="recurring_revenue_monthly"/>
-                    <field name="activity_state"/>
-                    <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="expected_revenue" recurring_revenue_sum_field="recurring_revenue_monthly"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div><field name="name"/></div>
-                            <div><field name="expected_revenue"/></div>
-                            <div><field name="recurring_revenue_monthly"/></div>
-                        </t>
-                    </templates>
-                </kanban>`,
-            async mockRPC(route, args) {
-                if (args.method === "web_save") {
-                    await def;
-                }
-            }
-        });
-
-        assert.containsN(target, ".o_kanban_group", 3);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[0], ".o_kanban_record", 2);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[1], ".o_kanban_record", 2);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[2], ".o_kanban_record", 2);
-
-        // drag the first record of the first column on top of the second column
-        await dragAndDrop(
-            target.querySelectorAll('.o_kanban_group')[0].querySelector('.o_kanban_record'),
-            target.querySelectorAll('.o_kanban_group')[1].querySelector('.o_kanban_record'),
-            { position: 'top' }
-        );
-
-        assert.containsOnce(target.querySelectorAll(".o_kanban_group")[0], ".o_kanban_record");
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[1], ".o_kanban_record", 3);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[2], ".o_kanban_record", 2);
-
-        // drag that same record to the third column -> should have no effect as save still pending
-        // (but mostly, should not crash)
-        await dragAndDrop(
-            target.querySelectorAll('.o_kanban_group')[1].querySelector('.o_kanban_record'),
-            target.querySelectorAll('.o_kanban_group')[2].querySelector('.o_kanban_record'),
-            { position: 'top' }
-        );
-
-        assert.containsOnce(target.querySelectorAll(".o_kanban_group")[0], ".o_kanban_record");
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[1], ".o_kanban_record", 3);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[2], ".o_kanban_record", 2);
-
-        def.resolve();
-        await nextTick();
-
-        // drag that same record to the third column
-        await dragAndDrop(
-            target.querySelectorAll('.o_kanban_group')[1].querySelector('.o_kanban_record'),
-            target.querySelectorAll('.o_kanban_group')[2].querySelector('.o_kanban_record'),
-            { position: 'top' }
-        );
-
-        assert.containsOnce(target.querySelectorAll(".o_kanban_group")[0], ".o_kanban_record");
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[1], ".o_kanban_record", 2);
-        assert.containsN(target.querySelectorAll(".o_kanban_group")[2], ".o_kanban_record", 3);
     });
 });

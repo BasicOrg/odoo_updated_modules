@@ -4,9 +4,9 @@ import BarcodePickingBatchModel from '@stock_barcode_picking_batch/models/barcod
 import MainComponent from '@stock_barcode/components/main';
 import OptionLine from '@stock_barcode_picking_batch/components/option_line';
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from 'web.utils';
 
-patch(MainComponent.prototype, {
+patch(MainComponent.prototype, 'stock_barcode_picking_batch', {
     //--------------------------------------------------------------------------
     // Public
     //--------------------------------------------------------------------------
@@ -16,33 +16,32 @@ patch(MainComponent.prototype, {
         this.env.model.confirmSelection();
     },
 
+    get displayHeaderInfoAsColumn() {
+        return this._super() || this.isConfiguring || !this.env.model.canBeProcessed;
+    },
+
     async exit(ev) {
-        if (this.state.view === 'barcodeLines' && this.env.model.canBeProcessed &&
-            this.env.model.needPickings && !this.env.model.needPickingType && this.env.model.pickingTypes) {
+        if (this.displayBarcodeLines && this.env.model.needPickings && !this.env.model.needPickingType && this.env.model.pickingTypes) {
             this.env.model.record.picking_type_id = false;
             return this.env.model.trigger('update');
         }
-        return await super.exit(...arguments);
+        return await this._super(...arguments);
     },
 
     get isConfiguring() {
         return this.env.model.needPickingType || this.env.model.needPickings;
     },
 
-    get displayActionButtons() {
-        return super.displayActionButtons && !this.isConfiguring;
-    },
-
     //--------------------------------------------------------------------------
     // Private
     //--------------------------------------------------------------------------
 
-    _getModel() {
-        const { resId, resModel, rpc, notification, orm, action } = this;
-        if (this.resModel === 'stock.picking.batch') {
-            return new BarcodePickingBatchModel(resModel, resId, { rpc, notification, orm, action });
+    _getModel: function (params) {
+        const { rpc, notification, orm } = this;
+        if (params.model === 'stock.picking.batch') {
+            return new BarcodePickingBatchModel(params, { rpc, notification, orm });
         }
-        return super._getModel(...arguments);
+        return this._super(...arguments);
     },
 });
 

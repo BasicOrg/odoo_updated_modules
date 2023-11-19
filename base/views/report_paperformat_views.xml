@@ -20,8 +20,8 @@
                     <group>
                         <field name="name" />
                         <field name="format" />
-                        <field name="page_height" invisible="format != 'custom'" />
-                        <field name="page_width" invisible="format != 'custom'" />
+                        <field name="page_height" attrs="{'invisible': [('format','!=','custom')]}" />
+                        <field name="page_width" attrs="{'invisible': [('format','!=','custom')]}" />
                         <field name="orientation" />
                         <field name="margin_top" />
                         <field name="margin_bottom" />
@@ -29,7 +29,6 @@
                         <field name="margin_right" />
                         <field name="header_line" />
                         <field name="header_spacing" />
-                        <field name="disable_shrinking" />
                         <field name="dpi" />
                         <field name="report_ids" widget="many2many_tags" options="{'not_delete': True}"/>
                     </group>

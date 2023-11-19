@@ -14,8 +14,8 @@ class Partner(models.Model):
     def _compute_sdd_count(self):
         sdd_data = self.env['sdd.mandate']._read_group(
             domain=[('partner_id', 'in', self.ids)],
-            groupby=['partner_id'],
-            aggregates=['__count'])
-        mapped_data = {partner.id: count for partner, count in sdd_data}
+            fields=['partner_id'],
+            groupby=['partner_id'])
+        mapped_data = dict([(m['partner_id'][0], m['partner_id_count']) for m in sdd_data])
         for partner in self:
             partner.sdd_count = mapped_data.get(partner.id, 0)

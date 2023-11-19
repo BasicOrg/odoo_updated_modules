@@ -1,38 +1,39 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
 
-import { EventBus, Component, useState, xml } from "@odoo/owl";
+const { Component, useState, xml } = owl;
 
 export class BlockUI extends Component {
     setup() {
         this.messagesByDuration = [
-            { time: 20, l1: _t("Loading...") },
-            { time: 40, l1: _t("Still loading...") },
+            { time: 20, l1: this.env._t("Loading...") },
+            { time: 40, l1: this.env._t("Still loading...") },
             {
                 time: 60,
-                l1: _t("Still loading..."),
-                l2: _t("Please be patient."),
+                l1: this.env._t("Still loading..."),
+                l2: this.env._t("Please be patient."),
             },
             {
                 time: 180,
-                l1: _t("Don't leave yet,"),
-                l2: _t("it's still loading..."),
+                l1: this.env._t("Don't leave yet,"),
+                l2: this.env._t("it's still loading..."),
             },
             {
                 time: 120,
-                l1: _t("You may not believe it,"),
-                l2: _t("but the application is actually loading..."),
+                l1: this.env._t("You may not believe it,"),
+                l2: this.env._t("but the application is actually loading..."),
             },
             {
                 time: 3180,
-                l1: _t("Take a minute to get a coffee,"),
-                l2: _t("because it's loading..."),
+                l1: this.env._t("Take a minute to get a coffee,"),
+                l2: this.env._t("because it's loading..."),
             },
             {
                 time: null,
-                l1: _t("Maybe you should consider reloading the application by pressing F5..."),
+                l1: this.env._t(
+                    "Maybe you should consider reloading the application by pressing F5..."
+                ),
             },
         ];
         this.state = useState({
@@ -56,13 +57,9 @@ export class BlockUI extends Component {
         }
     }
 
-    block(ev) {
+    block() {
         this.state.blockUI = true;
-        if (ev.detail?.message) {
-            this.state.line1 = ev.detail.message;
-        } else {
-            this.replaceMessage(0);
-        }
+        this.replaceMessage(0);
     }
 
     unblock() {
@@ -72,12 +69,9 @@ export class BlockUI extends Component {
         this.state.line2 = "";
     }
 }
-BlockUI.props = {
-    bus: EventBus,
-};
 
 BlockUI.template = xml`
-    <div t-att-class="state.blockUI ? 'o_blockUI fixed-top d-flex justify-content-center align-items-center flex-column vh-100' : ''">
+    <div t-att-class="state.blockUI ? 'o_blockUI fixed-top d-flex justify-content-center align-items-center flex-column vh-100 bg-black-50' : ''">
       <t t-if="state.blockUI">
         <div class="o_spinner mb-4">
             <img src="/web/static/img/spin.svg" alt="Loading..."/>

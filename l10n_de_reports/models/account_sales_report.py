@@ -25,7 +25,7 @@ class GermanECSalesReportCustomHandler(models.AbstractModel):
 
         ec_operation_category['goods'] = tuple(self.env.ref('l10n_de.tax_report_de_tag_41_tag')._get_matching_tags().ids)
         ec_operation_category['triangular'] = tuple(self.env.ref('l10n_de.tax_report_de_tag_42_tag')._get_matching_tags().ids)
-        ec_operation_category['services'] = tuple(self.env.ref('l10n_de.tax_report_de_tag_60_tag')._get_matching_tags().ids)
+        ec_operation_category['services'] = tuple(self.env.ref('l10n_de.tax_report_de_tag_68_tag')._get_matching_tags().ids)
 
         # Change the names of the taxes to specific ones that are dependant to the tax type
         ec_operation_category['operation_category'] = {
@@ -75,7 +75,7 @@ class GermanECSalesReportCustomHandler(models.AbstractModel):
             buf.seek(0)
             res = buf.read()
         return {
-            'file_name': report.get_default_report_filename(options, 'ZIP'),
+            'file_name': report.get_default_report_filename('ZIP'),
             'file_content': res,
             'file_type': 'zip'
         }

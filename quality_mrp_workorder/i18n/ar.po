@@ -3,16 +3,17 @@
 # 	* quality_mrp_workorder
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,18 +22,18 @@ msgstr ""
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Lot/Serial Number: </strong>"
-msgstr "<strong>رقم المجموعة/الرقم التسلسلي: </strong> "
+msgid "<strong>Lot/Serial Number : </strong>"
+msgstr "<strong>رقم الدفعة/الرقم التسلسلي : </strong>"
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.worksheet_page
-msgid "<strong>Work Order: </strong>"
+msgid "<strong>Work Order : </strong>"
 msgstr "<strong>أمر العمل: </strong> "
 
 #. module: quality_mrp_workorder
 #: model:ir.model.fields,field_description:quality_mrp_workorder.field_mrp_production__check_ids
 msgid "Checks"
-msgstr "الفحوصات "
+msgstr "الشيكات "
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_inherit_mrp_workorder
@@ -40,16 +41,9 @@ msgid "Component Lot/Serial"
 msgstr "رقم دفعة المكوِّن/الرقم التسلسلي "
 
 #. module: quality_mrp_workorder
-#. odoo-javascript
-#: code:addons/quality_mrp_workorder/static/src/components/menuPopup.xml:0
-#, python-format
-msgid "Create a Quality Alert"
-msgstr ""
-
-#. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_alert_view_form_inherit_mrp
 msgid "Discard"
-msgstr "إهمال "
+msgstr "تجاهل"
 
 #. module: quality_mrp_workorder
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.mrp_production_workorder_tree_editable_view_inherit_quality
@@ -62,7 +56,6 @@ msgid "Fail"
 msgstr "فشل"
 
 #. module: quality_mrp_workorder
-#. odoo-python
 #: code:addons/quality_mrp_workorder/models/quality.py:0
 #, python-format
 msgid "Failure"
@@ -112,7 +105,14 @@ msgstr "متغير المنتج "
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_mrp_production
 msgid "Production Order"
-msgstr "أمر الإنتاج"
+msgstr "أمر الانتاج"
+
+#. module: quality_mrp_workorder
+#. openerp-web
+#: code:addons/quality_mrp_workorder/static/src/components/menuPopup.xml:0
+#, python-format
+msgid "Quality Alert"
+msgstr "تنبيه الجودة"
 
 #. module: quality_mrp_workorder
 #: model:ir.model,name:quality_mrp_workorder.model_quality_check
@@ -120,18 +120,14 @@ msgid "Quality Check"
 msgstr "فحص الجودة"
 
 #. module: quality_mrp_workorder
-#. odoo-python
 #: code:addons/quality_mrp_workorder/models/quality.py:0
 #, python-format
 msgid "Quality Check Failed"
 msgstr "فشل فحص الجودة"
 
 #. module: quality_mrp_workorder
-#. odoo-javascript
-#: code:addons/quality_mrp_workorder/static/src/mrp_display/mrp_display_record.xml:0
 #: model:ir.actions.act_window,name:quality_mrp_workorder.quality_check_action_wo
 #: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_search_inherit_mrp_workorder
-#, python-format
 msgid "Quality Checks"
 msgstr "فحوصات الجودة"
 
@@ -151,12 +147,6 @@ msgid "Save"
 msgstr "حفظ"
 
 #. module: quality_mrp_workorder
-#: model:ir.model.fields,field_description:quality_mrp_workorder.field_quality_check__operation_id
-msgid "Step"
-msgstr "خطوة"
-
-#. module: quality_mrp_workorder
-#. odoo-python
 #: code:addons/quality_mrp_workorder/models/quality.py:0
 #, python-format
 msgid "Success"
@@ -173,7 +163,11 @@ msgid "Work Order"
 msgstr "أمر العمل"
 
 #. module: quality_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_form_inherit_mrp_workorder
-#: model_terms:ir.ui.view,arch_db:quality_mrp_workorder.quality_check_view_tree_inherit_mrp_workorder
-msgid "Work Order Operation"
-msgstr "عملية أمر العمل"
+#: code:addons/quality_mrp_workorder/models/mrp_workorder.py:0
+#, python-format
+msgid ""
+"You first need to complete the Quality Check using the Tablet View before "
+"marking the Operation as Done."
+msgstr ""
+"تحتاج أولاً إلى إكمال فحص الجودة باستخدام عرض الجهاز اللوحي قبل تعيين "
+"العملية كمنتهية. "

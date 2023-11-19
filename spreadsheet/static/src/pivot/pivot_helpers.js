@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { _t } from "web.core";
+import { FORMATS } from "../helpers/constants";
 import { getOdooFunctions } from "../helpers/odoo_functions_helpers";
 
 export const pivotFormulaRegex = /^=.*PIVOT/;
@@ -8,6 +9,19 @@ export const pivotFormulaRegex = /^=.*PIVOT/;
 //--------------------------------------------------------------------------
 // Public
 //--------------------------------------------------------------------------
+
+/**
+ * Format a data
+ *
+ * @param {string} interval aggregate interval i.e. month, week, quarter, ...
+ * @param {string} value
+ */
+export function formatDate(interval, value) {
+    const output = FORMATS[interval].display;
+    const input = FORMATS[interval].out;
+    const date = moment(value, input);
+    return date.isValid() ? date.format(output) : _t("None");
+}
 
 /**
  * Parse a spreadsheet formula and detect the number of PIVOT functions that are
@@ -18,12 +32,9 @@ export const pivotFormulaRegex = /^=.*PIVOT/;
  * @returns {number}
  */
 export function getNumberOfPivotFormulas(formula) {
-    return getOdooFunctions(formula, [
-        "ODOO.PIVOT",
-        "ODOO.PIVOT.HEADER",
-        "ODOO.PIVOT.POSITION",
-        "ODOO.PIVOT.TABLE",
-    ]).length;
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.PIVOT", "ODOO.PIVOT.HEADER", "ODOO.PIVOT.POSITION"].includes(functionName)
+    ).filter((fn) => fn.isMatched).length;
 }
 
 /**
@@ -34,12 +45,9 @@ export function getNumberOfPivotFormulas(formula) {
  * @returns {import("../helpers/odoo_functions_helpers").OdooFunctionDescription|undefined}
  */
 export function getFirstPivotFunction(formula) {
-    return getOdooFunctions(formula, [
-        "ODOO.PIVOT",
-        "ODOO.PIVOT.HEADER",
-        "ODOO.PIVOT.POSITION",
-        "ODOO.PIVOT.TABLE",
-    ])[0];
+    return getOdooFunctions(formula, (functionName) =>
+        ["ODOO.PIVOT", "ODOO.PIVOT.HEADER", "ODOO.PIVOT.POSITION"].includes(functionName)
+    ).find((fn) => fn.isMatched);
 }
 
 /**

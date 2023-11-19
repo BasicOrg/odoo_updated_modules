@@ -3,7 +3,8 @@
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 class OpenStudioWidget extends Component {
     setup() {
@@ -31,7 +32,4 @@ OpenStudioWidget.props = {
     ...standardWidgetProps,
 };
 
-export const openStudioWidget = {
-    component: OpenStudioWidget,
-};
-registry.category("view_widgets").add("open_studio_button", openStudioWidget);
+registry.category("view_widgets").add("open_studio_button", OpenStudioWidget);

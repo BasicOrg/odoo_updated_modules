@@ -37,38 +37,38 @@ class TestViewNormalization(TransactionCase):
                         <field name="type" invisible="1"/>
                         <field name="company_type" widget="radio" class="oe_edit_only" on_change="on_change_company_type(company_type)" options="{'horizontal': true}"/>
                         <h1>
-                            <field name="name" default_focus="1" placeholder="Name" required="type == 'contact'"/>
+                            <field name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact')]}"/>
                         </h1>
                         <div class="o_row">
-                            <field name="parent_id" placeholder="Company" domain="[('is_company', '=', True)]" context="{'default_is_company': True}" invisible="is_company and not parent_id" on_change="onchange_parent_id(parent_id)"/>
+                            <field name="parent_id" placeholder="Company" domain="[('is_company', '=', True)]" context="{'default_is_company': True}" attrs="{'invisible': [('is_company','=', True),('parent_id', '=', False)]}" on_change="onchange_parent_id(parent_id)"/>
                         </div>
                     </div>
 
                     <group>
                         <group>
-                            <field name="type" invisible="not parent_id" groups="base.group_no_one"/>
+                            <field name="type" attrs="{'invisible': [('parent_id','=', False)]}" groups="base.group_no_one"/>
                             <label for="street" string="Address"/>
                             <div class="o_address_format">
                                 <div class="oe_edit_only">
-                                    <button name="open_parent" type="object" string="(edit)" class="oe_link" invisible="not parent_id or type != 'contact'"/>
+                                    <button name="open_parent" type="object" string="(edit)" class="oe_link" attrs="{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'contact')]}"/>
                                 </div>
 
-                                <field name="street" placeholder="Street..." class="o_address_street" readonly="type == 'contact' and parent_id"/>
-                                <field name="street2" placeholder="Street 2..." class="o_address_street" readonly="type == 'contact' and parent_id"/>
-                                <field name="city" placeholder="City" class="o_address_city" readonly="type == 'contact' and parent_id"/>
-                                <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)" readonly="type == 'contact' and parent_id" context="{'country_id': country_id, 'zip': zip}"/>
-                                <field name="zip" placeholder="ZIP" class="o_address_zip" readonly="type == 'contact' and parent_id"/>
-                                <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" readonly="type == 'contact' and parent_id"/>
+                                <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'zip': zip}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                             </div>
                             <field name="website" widget="url" placeholder="e.g. www.odoo.com"/>
                         </group>
                         <group>
-                            <field name="function" placeholder="e.g. Sales Director" invisible="is_company"/>
+                            <field name="function" placeholder="e.g. Sales Director" attrs="{'invisible': [('is_company','=', True)]}"/>
                             <field name="phone" widget="phone"/>
                             <field name="mobile" widget="phone"/>
                             <field name="user_ids" invisible="1"/>
-                            <field name="email" widget="email" required="user_ids"/>
-                            <field name="title" options="{&quot;no_open&quot;: True}" invisible="is_company"/>
+                            <field name="email" widget="email" attrs="{'required': [('user_ids','!=', [])]}"/>
+                            <field name="title" options="{&quot;no_open&quot;: True}" attrs="{'invisible': [('is_company', '=', True)]}"/>
                             <field name="lang"/>
                             <field name="category_id" widget="many2many_tags" placeholder="Tags..."/>
                         </group>
@@ -79,7 +79,7 @@ class TestViewNormalization(TransactionCase):
 
                     <notebook colspan="4">
                         <page string="Contacts &amp; Addresses" autofocus="autofocus">
-                            <field name="child_ids" mode="kanban" context="{'default_parent_id': id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}">
+                            <field name="child_ids" mode="kanban" context="{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}">
                                 <kanban>
                                     <field name="color"/>
                                     <field name="name"/>
@@ -679,7 +679,7 @@ class TestViewNormalization(TransactionCase):
                 <xpath expr="//form[1]/sheet[1]/group[1]/group[2]/field[@name='email']" position="move"/>
               </xpath>
               <xpath expr="//form[1]/sheet[1]/group[1]/group[2]/field[@name='email']" position="attributes">
-                <attribute name="required"></attribute>
+                <attribute name="attrs"></attribute>
                 <attribute name="widget"></attribute>
               </xpath>
             </data>
@@ -1275,11 +1275,11 @@ class TestViewNormalization(TransactionCase):
         self.view = self.base_view.create({
             'arch_base':
             '''
-              <form>
+              <data>
                 <!-- hello -->
                 <div />
                 <!-- world -->
-              </form>
+              </data>
             ''',
             'model': 'res.partner',
             'type': 'form'})
@@ -1296,7 +1296,7 @@ class TestViewNormalization(TransactionCase):
             ''',
             '''
               <data>
-                <xpath expr="//form[1]/div[1]" position="before">
+                <xpath expr="//data[1]/div[1]" position="before">
                   <!-- , -->
                   <div name="studio_div_302a40"/>
                 </xpath>
@@ -1308,9 +1308,9 @@ class TestViewNormalization(TransactionCase):
         self.view = self.base_view.create({
             'arch_base':
             '''
-              <form>
+              <data>
                 <group name="o2m_field"/>
-              </form>
+              </data>
             ''',
             'model': 'res.partner',
             'type': 'form'})

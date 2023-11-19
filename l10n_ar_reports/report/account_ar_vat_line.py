@@ -3,16 +3,15 @@ from odoo import api, fields, models, tools
 
 
 class AccountArVatLine(models.Model):
-    """ Base model for new Argentine VAT reports. The idea is that these lines have all the necessary data and which any
-    changes in odoo, this ones will be taken for this cube and then no changes will be needed in the reports that use
-    this lines. A line is created for each accounting entry that is affected by VAT tax.
+    """ Base model for new Argentine VAT reports. The idea is that this lines have all the necessary data and which any
+    changes in odoo, this ones will be taken for this cube and then no changes will be nedeed in the reports that use
+    this lines. A line is created for each accountring entry that is affected by VAT tax.
 
-    Basically which it does is covert the accounting entries into columns depending on the information of the taxes and
+    Basically which it does is covert the accounting entries into columns depending of the information of the taxes and
     add some other fields """
 
     _name = "account.ar.vat.line"
     _description = "VAT line for Analysis in Argentinean Localization"
-    _rec_name = 'move_name'
     _auto = False
     _order = 'invoice_date asc, move_name asc, id asc'
 
@@ -68,7 +67,7 @@ class AccountArVatLine(models.Model):
         cr = self._cr
         tools.drop_view_if_exists(cr, self._table)
         # we use tax_ids for base amount instead of tax_base_amount for two reasons:
-        # * zero taxes do not create any aml line, so we can't get base for them with tax_base_amount
+        # * zero taxes do not create any aml line so we can't get base for them with tax_base_amount
         # * we use same method as in odoo tax report to avoid any possible discrepancy with the computed tax_base_amount
         query, params = self._ar_vat_line_build_query()
         sql = f"""CREATE or REPLACE VIEW account_ar_vat_line as ({query})"""
@@ -146,7 +145,7 @@ class AccountArVatLine(models.Model):
                     AND (nt.type_tax_use in %s OR bt.type_tax_use in %s)
                     {where_clause}
                 GROUP BY
-                    account_move.id, art.name, rp.id, lit.id,  COALESCE(nt.type_tax_use, bt.type_tax_use)
+                    account_move.id, art.name, rp.id, lit.id, tax_type
                 ORDER BY
                     account_move.date, account_move.name"""
         return query, [column_group_key, tax_types, tax_types, *where_params]

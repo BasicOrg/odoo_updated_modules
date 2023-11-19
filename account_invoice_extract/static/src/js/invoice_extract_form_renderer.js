@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { templates } from "@web/core/assets";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
@@ -9,7 +8,7 @@ import { FormViewDialog } from "@web/views/view_dialogs/form_view_dialog";
 import { AccountMoveFormRenderer } from '@account/components/account_move_form/account_move_form';
 import { BoxLayer } from '@account_invoice_extract/js/box_layer';
 
-import { App, onWillUnmount, reactive, useExternalListener, useState } from "@odoo/owl";
+const { App, onWillUnmount, useExternalListener, useState } = owl;
 
 /**
  * This is the renderer of the subview that adds OCR features on the attachment
@@ -23,8 +22,6 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
     setup() {
         super.setup();
 
-        /** @type {import("@mail/core/common/store_service").Store} */
-        this.store = useState(useService("mail.store"));
         this.dialog = useService("dialog");
         this.orm = useService("orm");
 
@@ -70,8 +67,8 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
     }
 
     fetchBoxData() {
-        this.dataMoveId = this.props.record.resId;
-        return this.orm.call('account.move', 'get_boxes', [this.props.record.resId]);
+        this.dataMoveId = this.props.record.data.id;
+        return this.orm.call('account.move', 'get_boxes', [this.props.record.data.id]);
     }
 
     /**
@@ -85,7 +82,7 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
             templates,
             props,
             translatableAttributes: ["data-tooltip"],
-            translateFn: _t,
+            translateFn: this.env._t,
         });
     }
 
@@ -121,13 +118,21 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
             const pageLayers = pdfDocument.querySelectorAll('.page');
             for (const pageLayer of pageLayers) {
                 const pageNum = pageLayer.dataset['pageNumber'] - 1;
-                const boxLayerApp = this.createBoxLayerApp({
-                    boxes: this.state.visibleBoxes[pageNum] || [],
-                    mode: 'pdf',
-                    pageLayer: pageLayer,
-                });
-                proms.push(boxLayerApp.mount(pageLayer));
-                this.boxLayerApps.push(boxLayerApp);
+                let existingBoxLayer = false;
+                for (const boxLayerApp of this.boxLayerApps) {
+                    if (boxLayerApp.props.pageLayer === pageLayer) {
+                        existingBoxLayer = true;
+                    }
+                }
+                if (!existingBoxLayer) {
+                    const boxLayerApp = this.createBoxLayerApp({
+                        boxes: this.state.visibleBoxes[pageNum] || [],
+                        mode: 'pdf',
+                        pageLayer: pageLayer,
+                    });
+                    proms.push(boxLayerApp.mount(pageLayer));
+                    this.boxLayerApps.push(boxLayerApp);
+                }
             }
         }
         return Promise.all(proms);
@@ -138,7 +143,7 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
      * It also determines which boxes should be visible according to the current active field.
      */
     renderInvoiceExtract(attachment) {
-        const thread = this.store.Thread.insert({
+        const thread = this.env.services.messaging.modelManager.messaging.models['Thread'].insert({
             id: this.props.record.resId,
             model: this.props.record.resModel,
         });
@@ -151,15 +156,15 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
             preview_attachment_id === this.props.record.data.extract_attachment_id[0]
         ) {
             if (this.activeField !== undefined) {
-                if (this.dataMoveId !== this.props.record.resId) {
+                if (this.dataMoveId !== this.props.record.data.id) {
                     for (const boxesForPage of Object.values(this.boxes)) {
                         boxesForPage.length = 0;
                     }
                 }
-                const dataToFetch = this.boxes.length === 0 || (this.dataMoveId !== this.props.record.resId);
+                const dataToFetch = this.boxes.length === 0 || (this.dataMoveId !== this.props.record.data.id);
                 const prom = dataToFetch ? this.fetchBoxData() : new Promise(resolve => resolve([]));
                 prom.then((boxes) => {
-                    boxes.map(b => reactive(b)).forEach((box) => {
+                    boxes.map(b => owl.reactive(b)).forEach((box) => {
                         if (box.page in this.boxes) {
                             this.boxes[box.page].push(box);
                         }
@@ -178,12 +183,9 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
                             this.state.visibleBoxes[page] = [];
                         }
 
-                        const visibleBoxesForPage = boxesForPage.filter((box) => {
-                            return (
-                                box.feature === this.activeField ||
-                                (box.feature === "VAT_Number" && this.activeField === "supplier")
-                            );
-                        });
+                        const visibleBoxesForPage = _.filter(boxesForPage, (box) => {
+                            return box.feature === this.activeField || (box.feature === 'VAT_Number' && this.activeField === 'supplier');
+                        })
                         this.state.visibleBoxes[page].push(...visibleBoxesForPage);
                     }
                     this.renderBoxLayers(attachment)
@@ -201,6 +203,12 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
         if (iframe) {
             const iframeDoc = iframe.contentDocument;
             if (iframeDoc) {
+                iframeDoc.addEventListener('pagerendered', () => {
+                    // To get pagerendered trigger_up from pdf.js, we needed to change pdf.js default option and set
+                    // eventBusDispatchToDOM to True
+                    this.destroyBoxLayers();
+                    this.renderBoxLayers(iframe);
+                });
                 this.renderInvoiceExtract(iframe);
                 return;
             }
@@ -219,7 +227,6 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
         });
         this.activeField = undefined;
         this.activeFieldEl = undefined;
-        this.destroyBoxLayers();
     }
 
     destroyBoxLayers() {
@@ -235,9 +242,9 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
             {
                 resModel: 'res.partner',
                 context: context,
-                title: _t("Create"),
+                title: this.env._t("Create"),
                 onRecordSaved: (record) => {
-                    this.props.record.update({ partner_id: [record.resId] });
+                    this.props.record.update({ partner_id: [record.data.id] });
                 },
             }
         );
@@ -253,28 +260,20 @@ export class InvoiceExtractFormRenderer extends AccountMoveFormRenderer {
                 changes = { invoice_date: registry.category("parsers").get("date")(newFieldValue.split(' ')[0]) };
                 break;
             case 'supplier':
-                if (Number.isFinite(newFieldValue) && newFieldValue !== 0) {
+                if (_.isNumber(newFieldValue) && newFieldValue !== 0) {
                     changes = { partner_id: [newFieldValue] };
                 }
                 else {
-                    const context = {'default_name': boxText};
-                    if (this.selectedBoxes['VAT_Number']) {
-                        context['default_vat'] = this.selectedBoxes['VAT_Number'].text;
-                    }
-                    this.openCreatePartnerDialog(context);
+                    this.openCreatePartnerDialog({default_name: boxText});
                     return;
                 }
                 break;
             case 'VAT_Number':
-                if (Number.isFinite(newFieldValue) && newFieldValue !== 0) {
+                if (_.isNumber(newFieldValue) && newFieldValue !== 0) {
                     changes = { partner_id: [newFieldValue] };
                 }
                 else {
-                    const context = {'default_vat': boxText};
-                    if (this.selectedBoxes['supplier']) {
-                        context['default_name'] = this.selectedBoxes['supplier'].text;
-                    }
-                    this.openCreatePartnerDialog(context);
+                    this.openCreatePartnerDialog({default_vat: boxText});
                     return;
                 }
                 break;

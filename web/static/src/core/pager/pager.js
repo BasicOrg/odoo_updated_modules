@@ -3,7 +3,7 @@
 import { useAutofocus } from "../utils/hooks";
 import { clamp } from "../utils/numbers";
 
-import { Component, useExternalListener, useState } from "@odoo/owl";
+const { Component, useExternalListener, useState } = owl;
 
 /**
  * Pager
@@ -51,12 +51,10 @@ export class Pager extends Component {
         return parts.join("-");
     }
     /**
-     * Note: returns false if we received the props "updateTotal", as in this case we don't know
-     * the real total so we can't assert that there's a single page.
      * @returns {boolean} true if there is only one page
      */
     get isSinglePage() {
-        return !this.props.updateTotal && this.minimum === 1 && this.maximum === this.props.total;
+        return this.minimum === 1 && this.maximum === this.props.total;
     }
     /**
      * @param {-1 | 1} direction
@@ -64,16 +62,11 @@ export class Pager extends Component {
     async navigate(direction) {
         let minimum = this.props.offset + this.props.limit * direction;
         let total = this.props.total;
-        if (this.props.updateTotal && minimum < 0) {
-            // we must know the real total to be able to loop by doing "previous"
+        if (this.props.updateTotal && minimum + this.props.limit > total) {
             total = await this.props.updateTotal();
         }
         if (minimum >= total) {
-            if (!this.props.updateTotal) {
-                // only loop forward if we know the real total, otherwise let the minimum
-                // go out of range
-                minimum = 0;
-            }
+            minimum = 0;
         } else if (minimum < 0 && this.props.limit === 1) {
             minimum = total - 1;
         } else if (minimum < 0 && this.props.limit > 1) {
@@ -89,13 +82,13 @@ export class Pager extends Component {
         let [minimum, maximum] = value.trim().split(/\s*[-\s,;]\s*/);
         minimum = parseInt(minimum, 10);
         maximum = maximum ? parseInt(maximum, 10) : minimum;
-        if (this.props.updateTotal) {
-            // we don't know the real total, so we can't clamp
-            return { minimum: minimum - 1, maximum };
+        let total = this.props.total;
+        if (this.props.updateTotal && maximum > total) {
+            total = await this.props.updateTotal();
         }
         return {
-            minimum: clamp(minimum, 1, this.props.total) - 1,
-            maximum: clamp(maximum, 1, this.props.total),
+            minimum: clamp(minimum, 1, total) - 1,
+            maximum: clamp(maximum, 1, total),
         };
     }
     /**
@@ -118,14 +111,6 @@ export class Pager extends Component {
         await this.props.onUpdate({ offset, limit }, hasNavigated);
         this.state.isDisabled = false;
         this.state.isEditing = false;
-    }
-
-    async updateTotal() {
-        if (!this.state.isDisabled) {
-            this.state.isDisabled = true;
-            await this.props.updateTotal();
-            this.state.isDisabled = false;
-        }
     }
 
     /**

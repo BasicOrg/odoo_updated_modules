@@ -1,10 +1,9 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { Model } from "@web/model/model";
+import { Model } from "@web/views/model";
 import { session } from "@web/session";
 import { browser } from "@web/core/browser/browser";
-import { formatDateTime, parseDate, parseDateTime } from "@web/core/l10n/dates";
+import { parseDate, parseDateTime } from "@web/core/l10n/dates";
 import { KeepLast } from "@web/core/utils/concurrency";
 
 const DATE_GROUP_FORMATS = {
@@ -95,7 +94,7 @@ export class MapModel extends Model {
                 if (metaData.resModel === "res.partner" && metaData.resPartnerField === "id") {
                     recordPartnerId = record.id;
                 } else {
-                    recordPartnerId = record[metaData.resPartnerField].id;
+                    recordPartnerId = record[metaData.resPartnerField][0];
                 }
 
                 if (recordPartnerId == partner.id) {
@@ -165,24 +164,6 @@ export class MapModel extends Model {
             return this.keepLast.add(Promise.resolve(data));
         }
         const results = await this.keepLast.add(this._fetchRecordData(metaData, data));
-
-        const datetimeFields = metaData.fieldNames.filter(
-            (name) => metaData.fields[name].type == "datetime"
-        );
-        for (const record of results.records) {
-            // convert date fields from UTC to local timezone
-            for (const field of datetimeFields) {
-                if (record[field]) {
-                    const dateUTC = luxon.DateTime.fromFormat(
-                        record[field],
-                        "yyyy-MM-dd HH:mm:ss",
-                        { zone: "UTC" }
-                    );
-                    record[field] = formatDateTime(dateUTC, { format: "yyyy-MM-dd HH:mm:ss" });
-                }
-            }
-        }
-
         data.records = results.records;
         data.count = results.length;
         if (data.isGrouped) {
@@ -214,16 +195,9 @@ export class MapModel extends Model {
      * @returns {Promise}
      */
     _fetchRecordData(metaData, data) {
-        const fieldNames = data.groupByKey
+        const fields = data.groupByKey
             ? metaData.fieldNames.concat(data.groupByKey.split(":")[0])
             : metaData.fieldNames;
-        const specification = {};
-        for (const fieldName of fieldNames) {
-            specification[fieldName] = {};
-            if (["many2one", "one2many", "many2many"].includes(metaData.fields[fieldName].type)) {
-                specification[fieldName].fields = { display_name: {} };
-            }
-        }
         const orderBy = [];
         if (metaData.defaultOrder) {
             orderBy.push(metaData.defaultOrder.name);
@@ -231,8 +205,7 @@ export class MapModel extends Model {
                 orderBy.push("ASC");
             }
         }
-        return this.orm.webSearchRead(metaData.resModel, metaData.domain, {
-            specification,
+        return this.orm.webSearchRead(metaData.resModel, metaData.domain, fields, {
             limit: metaData.limit,
             offset: metaData.offset,
             order: orderBy.join(" "),
@@ -267,7 +240,7 @@ export class MapModel extends Model {
      */
     _fetchCoordinatesFromAddressOSM(metaData, data, record) {
         const address = encodeURIComponent(record.contact_address_complete.replace("/", " "));
-        const encodedUrl = `https://nominatim.openstreetmap.org/search?q=${address}&format=jsonv2`;
+        const encodedUrl = `https://nominatim.openstreetmap.org/search/${address}?format=jsonv2`;
         return this.http.get(encodedUrl);
     }
 
@@ -313,7 +286,7 @@ export class MapModel extends Model {
     _fillPartnerIds(metaData, data) {
         for (const record of data.records) {
             if (record[metaData.resPartnerField]) {
-                data.partnerIds.push(record[metaData.resPartnerField].id);
+                data.partnerIds.push(record[metaData.resPartnerField][0]);
             }
         }
     }
@@ -326,19 +299,15 @@ export class MapModel extends Model {
      */
     _getErrorMessage(message) {
         const ERROR_MESSAGES = {
-            "Too many coordinates; maximum number of coordinates is 25": _t(
+            "Too many coordinates; maximum number of coordinates is 25": this.env._t(
                 "Too many routing points (maximum 25)"
             ),
-            "Route exceeds maximum distance limitation": _t(
+            "Route exceeds maximum distance limitation": this.env._t(
                 "Some routing points are too far apart"
             ),
-            "Too Many Requests": _t("Too many requests, try again in a few minutes"),
+            "Too Many Requests": this.env._t("Too many requests, try again in a few minutes"),
         };
         return ERROR_MESSAGES[message];
-    }
-
-    _getEmptyGroupLabel(fieldName) {
-        return _t("None");
     }
 
     /**
@@ -347,46 +316,59 @@ export class MapModel extends Model {
      */
     async _getRecordGroups(metaData, data) {
         const [fieldName, subGroup] = data.groupByKey.split(":");
-        const fieldType = metaData.fields[fieldName].type;
         const groups = {};
-        function addToGroup(id, name, record) {
-            if (!groups[id]) {
+        const idToFetch = {};
+        const fieldType = metaData.fields[fieldName].type;
+        for (const record of data.records) {
+            const value = record[fieldName];
+            let id, name;
+            if (["date", "datetime"].includes(fieldType) && value) {
+                const date = fieldType === "date" ? parseDate(value) : parseDateTime(value);
+                id = name = date.toFormat(DATE_GROUP_FORMATS[subGroup]);
+            } else if (fieldType === "boolean") {
+                id = name = value ? this.env._t("Yes") : this.env._t("No");
+            } else {
+                id = Array.isArray(value) ? value[0] : value;
+                name = Array.isArray(value) ? value[1] : value;
+            }
+
+            if (id === false && name === false) {
+                id = name = this.env._t("None");
+            }
+
+            if (["many2many", "one2many"].includes(fieldType) && value.length) {
+                for (const m2mId of value) {
+                    idToFetch[m2mId] = undefined;
+                }
+            } else if (!groups[id]) {
                 groups[id] = {
                     name,
                     records: [],
                 };
             }
-            groups[id].records.push(record);
+            if (!["many2many", "one2many"].includes(fieldType) || !value.length) {
+                groups[id].records.push(record);
+            }
         }
-        for (const record of data.records) {
-            const value = record[fieldName];
-            let id, name;
-            if (["one2many", "many2many"].includes(fieldType)) {
-                if (value.length) {
-                    for (const r of value) {
-                        addToGroup(r.id, r.display_name, record);
+        if (["many2many", "one2many"].includes(fieldType)) {
+            const m2mList = await this.orm.nameGet(
+                metaData.fields[fieldName].relation,
+                Object.keys(idToFetch).map(Number)
+            );
+            for (const [m2mId, m2mName] of m2mList) {
+                idToFetch[m2mId] = m2mName;
+            }
+
+            for (const record of data.records) {
+                for (const m2mId of record[fieldName]) {
+                    if (!groups[m2mId]) {
+                        groups[m2mId] = {
+                            name: idToFetch[m2mId],
+                            records: [],
+                        };
                     }
-                } else {
-                    id = name = this._getEmptyGroupLabel(fieldName);
-                    addToGroup(id, name, record);
+                    groups[m2mId].records.push(record);
                 }
-            } else {
-                if (["date", "datetime"].includes(fieldType) && value) {
-                    const date = fieldType === "date" ? parseDate(value) : parseDateTime(value);
-                    id = name = date.toFormat(DATE_GROUP_FORMATS[subGroup]);
-                } else if (fieldType === "boolean") {
-                    id = name = value ? _t("Yes") : _t("No");
-                } else if (fieldType === "many2one" && value) {
-                    id = value.id;
-                    name = value.display_name;
-                } else {
-                    id = value;
-                    name = value;
-                }
-                if (!id && !name) {
-                    id = name = this._getEmptyGroupLabel(fieldName);
-                }
-                addToGroup(id, name, record);
             }
         }
         return groups;
@@ -412,12 +394,10 @@ export class MapModel extends Model {
                     this._fetchCoordinatesFromAddressMB(metaData, data, partner).then(
                         (coordinates) => {
                             if (coordinates.features.length) {
-                                partner.partner_longitude = parseFloat(
-                                    coordinates.features[0].geometry.coordinates[0]
-                                );
-                                partner.partner_latitude = parseFloat(
-                                    coordinates.features[0].geometry.coordinates[1]
-                                );
+                                partner.partner_longitude =
+                                    coordinates.features[0].geometry.coordinates[0];
+                                partner.partner_latitude =
+                                    coordinates.features[0].geometry.coordinates[1];
                                 data.partnerToCache.push(partner);
                             }
                         }
@@ -455,22 +435,22 @@ export class MapModel extends Model {
         switch (err.status) {
             case 401:
                 this.notification.add(
-                    _t(
+                    this.env._t(
                         "The view has switched to another provider but functionalities will be limited"
                     ),
                     {
-                        title: _t("Token invalid"),
+                        title: this.env._t("Token invalid"),
                         type: "danger",
                     }
                 );
                 break;
             case 403:
                 this.notification.add(
-                    _t(
+                    this.env._t(
                         "The view has switched to another provider but functionalities will be limited"
                     ),
                     {
-                        title: _t("Unauthorized connection"),
+                        title: this.env._t("Unauthorized connection"),
                         type: "danger",
                     }
                 );
@@ -481,11 +461,11 @@ export class MapModel extends Model {
                 break;
             case 500:
                 this.notification.add(
-                    _t(
+                    this.env._t(
                         "The view has switched to another provider but functionalities will be limited"
                     ),
                     {
-                        title: _t("MapBox servers unreachable"),
+                        title: this.env._t("MapBox servers unreachable"),
                         type: "danger",
                     }
                 );
@@ -572,8 +552,8 @@ export class MapModel extends Model {
                     }
                     if (coordinates.length) {
                         for (const partner of partners) {
-                            partner.partner_longitude = parseFloat(coordinates[0].lon);
-                            partner.partner_latitude = parseFloat(coordinates[0].lat);
+                            partner.partner_longitude = coordinates[0].lon;
+                            partner.partner_latitude = coordinates[0].lat;
                             data.partnerToCache.push(partner);
                         }
                     }
@@ -582,14 +562,14 @@ export class MapModel extends Model {
                     }
                     data.fetchingCoordinates = i < partnersList.length - 1;
                     this._notifyFetchedCoordinate(metaData, data);
-                } catch {
+                } catch (_e) {
                     for (const partner of data.partners) {
                         partner.fetchingCoordinate = false;
                     }
                     data.fetchingCoordinates = false;
                     this.shouldFetchCoordinates = false;
                     this.notification.add(
-                        _t("OpenStreetMap's request limit exceeded, try again later."),
+                        this.env._t("OpenStreetMap's request limit exceeded, try again later."),
                         { type: "danger" }
                     );
                     this.notify();

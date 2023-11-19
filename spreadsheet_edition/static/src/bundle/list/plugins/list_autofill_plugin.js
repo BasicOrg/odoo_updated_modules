@@ -1,11 +1,12 @@
 /** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
-import { astToFormula, UIPlugin } from "@odoo/o-spreadsheet";
-import { sprintf } from "@web/core/utils/strings";
+import { _t } from "web.core";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { getFirstListFunction, getNumberOfListFormulas } from "@spreadsheet/list/list_helpers";
 
-export class ListAutofillPlugin extends UIPlugin {
+const { astToFormula } = spreadsheet;
+
+export default class ListAutofillPlugin extends spreadsheet.UIPlugin {
     // ---------------------------------------------------------------------
     // Getters
     // ---------------------------------------------------------------------
@@ -26,11 +27,8 @@ export class ListAutofillPlugin extends UIPlugin {
         const { functionName, args } = getFirstListFunction(formula);
         const evaluatedArgs = args
             .map(astToFormula)
-            .map((arg) => this.getters.evaluateFormula(this.getters.getActiveSheetId(), arg));
+            .map((arg) => this.getters.evaluateFormula(arg));
         const listId = evaluatedArgs[0];
-        if (!this.getters.isExistingList(listId)) {
-            return formula;
-        }
         const columns = this.getters.getListDefinition(listId).columns;
         if (functionName === "ODOO.LIST") {
             const position = parseInt(evaluatedArgs[1], 10);
@@ -88,14 +86,10 @@ export class ListAutofillPlugin extends UIPlugin {
         const { functionName, args } = getFirstListFunction(formula);
         const evaluatedArgs = args
             .map(astToFormula)
-            .map((arg) => this.getters.evaluateFormula(this.getters.getActiveSheetId(), arg));
-        const listId = evaluatedArgs[0];
-        if (!this.getters.isExistingList(listId)) {
-            return sprintf(_t("Missing list #%s"), listId);
-        }
+            .map((arg) => this.getters.evaluateFormula(arg));
         if (isColumn || functionName === "ODOO.LIST.HEADER") {
             const fieldName = functionName === "ODOO.LIST" ? evaluatedArgs[2] : evaluatedArgs[1];
-            return this.getters.getListDataSource(listId).getListHeaderValue(fieldName);
+            return this.getters.getListDataSource(evaluatedArgs[0]).getListHeaderValue(fieldName);
         }
         return _t("Record #") + evaluatedArgs[1];
     }

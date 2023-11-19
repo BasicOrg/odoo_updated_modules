@@ -30,9 +30,5 @@
         "web.qunit_suite_tests": [
             "spreadsheet_dashboard_documents/static/tests/**/*.js",
         ],
-        'web.assets_tests': [
-            'spreadsheet_dashboard_documents/static/tests/tours/*',
-        ],
-
     },
 }

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
-    <record id="base.user_demo" model="res.users">
-        <field name="groups_id" eval="[(3, ref('sign.group_sign_manager'))]"/>
-    </record>
 
     <record id="attachment_sign_1" model="ir.attachment">
         <field name="name">Employment Contract.pdf</field>
@@ -440,6 +437,10 @@
     <record id="base.user_admin" model="res.users">
         <field name="sign_signature" type="base64" file="sign/static/demo/signature.png"/>
     </record>
+    <record id="base.user_demo" model="res.users">
+        <field name="groups_id" eval="[(4, ref('sign.group_sign_user'))]"/>
+    </record>
+
     <record model="sign.request" id="sign_request_01">
         <field name="template_id" ref="template_sign_4"/>
         <field name="reference">Your Real Estate Listing Agreement</field>

@@ -9,9 +9,9 @@ from lxml import etree
 
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
+from odoo.modules.module import get_resource_path
 from odoo.exceptions import UserError
 from odoo.tools import format_date
-from odoo.tools.misc import file_path
 
 
 class L10nBe273S(models.Model):
@@ -62,10 +62,11 @@ class L10nBe273S(models.Model):
     ], default='normal', compute='_compute_validation_state', store=True)
     error_message = fields.Char('Error Message', compute='_compute_validation_state', store=True)
 
-    @api.depends('period')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = format_date(self.env, record.period, date_format="MMMM y", lang_code=self.env.user.lang)
+    def name_get(self):
+        return [(
+            record.id,
+            format_date(self.env, record.period, date_format="MMMM y", lang_code=self.env.user.lang)
+        ) for record in self]
 
     @api.depends('year', 'month')
     def _compute_period(self):
@@ -84,7 +85,11 @@ class L10nBe273S(models.Model):
 
     @api.depends('xml_file')
     def _compute_validation_state(self):
-        xsd_schema_file_path = file_path('l10n_be_hr_payroll/data/withholdingTaxDeclarationOriginal_202012.xsd')
+        xsd_schema_file_path = get_resource_path(
+            'l10n_be_hr_payroll',
+            'data',
+            'withholdingTaxDeclarationOriginal_202012.xsd',
+        )
         xsd_root = etree.parse(xsd_schema_file_path)
         schema = etree.XMLSchema(xsd_root)
 
@@ -109,11 +114,12 @@ class L10nBe273S(models.Model):
             ('company_id', '=', self.company_id.id),
             ('date_from', '>=', date_from),
             ('date_to', '<=', date_to)])
-        employees = payslips.filtered(lambda p: p.contract_id.ip).employee_id.filtered(lambda e: not e._is_niss_valid())
+        employees = payslips.mapped('employee_id').filtered(lambda e: not e._is_niss_valid())
         if employees:
             raise UserError(_('Invalid NISS number for those employees:\n %s', '\n'.join(employees.mapped('name'))))
 
         # The first threshold is at 16320 € of gross IP, so we only consider the rate at 7.5 %.
+        # YTI TODO: Handle different thresholds in master
         line_values = payslips._get_line_values(['IP', 'IP.DED'], compute_sum=True)
 
         gross_amount = line_values['IP']['sum']['total']
@@ -153,10 +159,10 @@ class L10nBe273S(models.Model):
                     'identification': {
                         'nature': "Citizen",
                         'name': employee.name,
-                        'street': employee.private_street,
-                        'city': employee.private_city,
-                        'zip': employee.private_zip,
-                        'country': employee.private_country_id.code,
+                        'street': employee.address_home_id.street,
+                        'city': employee.address_home_id.city,
+                        'zip': employee.address_home_id.zip,
+                        'country': employee.address_home_id.country_id.code,
                         'nationality': employee.country_id.code,
                         'identification': employee.niss.replace('-', '').replace('.', ''),
                     },

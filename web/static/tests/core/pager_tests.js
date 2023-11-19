@@ -14,7 +14,7 @@ import {
 import { registry } from "@web/core/registry";
 import { uiService } from "@web/core/ui/ui_service";
 
-import { Component, useState, xml } from "@odoo/owl";
+const { Component, useState, xml } = owl;
 
 const serviceRegistry = registry.category("services");
 
@@ -183,6 +183,8 @@ QUnit.module("Components", ({ beforeEach }) => {
     });
 
     QUnit.test("pager disabling", async function (assert) {
+        assert.expect(9);
+
         const reloadPromise = makeDeferred();
 
         const pager = await makePager({
@@ -201,9 +203,9 @@ QUnit.module("Components", ({ beforeEach }) => {
         });
         const pagerButtons = target.querySelectorAll("button");
 
-        // Click and check button is disabled
+        // Click twice
         await click(target.querySelector(`.o_pager button.o_pager_next`));
-        assert.ok(target.querySelector(`.o_pager button.o_pager_next`).disabled);
+        await click(target.querySelector(`.o_pager button.o_pager_next`));
         // Try to edit the pager value
         await click(target, ".o_pager_value");
 
@@ -282,21 +284,18 @@ QUnit.module("Components", ({ beforeEach }) => {
     });
 
     QUnit.test("updateTotal props: click next", async function (assert) {
-        let tempTotal = 10;
-        const realTotal = 18;
         const pager = await makePager({
             offset: 0,
             limit: 5,
-            total: tempTotal,
+            total: 10,
             onUpdate(data) {
-                tempTotal = Math.min(realTotal, Math.max(tempTotal, data.offset + data.limit));
-                const nextProps = { ...data, total: tempTotal };
-                if (tempTotal === realTotal) {
-                    nextProps.updateTotal = undefined;
-                }
-                pager.updateProps(nextProps);
+                pager.updateProps(Object.assign({}, data));
             },
-            async updateTotal() {},
+            async updateTotal() {
+                const total = 25;
+                pager.updateProps({ total, updateTotal: undefined });
+                return total;
+            },
         });
 
         assert.strictEqual(target.querySelector(".o_pager_value").innerText, "1-5");
@@ -310,31 +309,23 @@ QUnit.module("Components", ({ beforeEach }) => {
 
         await click(target, ".o_pager_next");
         assert.strictEqual(target.querySelector(".o_pager_value").innerText, "11-15");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "15+");
-        assert.hasClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
-
-        await click(target, ".o_pager_next");
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "16-18");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "18");
+        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "25");
         assert.doesNotHaveClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
     });
 
     QUnit.test("updateTotal props: edit input", async function (assert) {
-        let tempTotal = 10;
-        const realTotal = 18;
         const pager = await makePager({
             offset: 0,
             limit: 5,
-            total: tempTotal,
+            total: 10,
             onUpdate(data) {
-                tempTotal = Math.min(realTotal, Math.max(tempTotal, data.offset + data.limit));
-                const nextProps = { ...data, total: tempTotal };
-                if (tempTotal === realTotal) {
-                    nextProps.updateTotal = undefined;
-                }
-                pager.updateProps(nextProps);
+                pager.updateProps(Object.assign({}, data));
             },
-            async updateTotal() {},
+            async updateTotal() {
+                const total = 25;
+                pager.updateProps({ total, updateTotal: undefined });
+                return total;
+            },
         });
 
         assert.strictEqual(target.querySelector(".o_pager_value").innerText, "1-5");
@@ -354,56 +345,8 @@ QUnit.module("Components", ({ beforeEach }) => {
         input = target.querySelector(".o_pager_counter input.o_pager_value");
         input.value = "3-20";
         await triggerEvents(input, null, ["change", "blur"]);
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "3-18");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "18");
-        assert.doesNotHaveClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
-    });
-
-    QUnit.test("updateTotal props: can use next even if single page", async function (assert) {
-        const pager = await makePager({
-            offset: 0,
-            limit: 5,
-            total: 5,
-            onUpdate(data) {
-                pager.updateProps({ ...data, total: 10 });
-            },
-            async updateTotal() {},
-        });
-
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "1-5");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "5+");
-        assert.hasClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
-
-        await click(target, ".o_pager_next");
-
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "6-10");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "10+");
-        assert.hasClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
-    });
-
-    QUnit.test("updateTotal props: click previous", async function (assert) {
-        const pager = await makePager({
-            offset: 0,
-            limit: 5,
-            total: 10,
-            onUpdate(data) {
-                pager.updateProps(data);
-            },
-            async updateTotal() {
-                const total = 23;
-                pager.updateProps({ total, updateTotal: undefined });
-                return total;
-            },
-        });
-
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "1-5");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "10+");
-        assert.hasClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
-
-        await click(target, ".o_pager_previous");
-
-        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "21-23");
-        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "23");
+        assert.strictEqual(target.querySelector(".o_pager_value").innerText, "3-20");
+        assert.strictEqual(target.querySelector(".o_pager_limit").innerText, "25");
         assert.doesNotHaveClass(target.querySelector(".o_pager_limit"), "o_pager_limit_fetch");
     });
 });

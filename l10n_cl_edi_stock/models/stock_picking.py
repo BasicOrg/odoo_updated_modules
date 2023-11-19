@@ -42,9 +42,8 @@ class Picking(models.Model):
 
     # Technical field making it possible to have a draft status for entering
     # the starting number for the guia in this company
-    l10n_cl_draft_status = fields.Boolean(copy=False)
-    # delivery guide is not mandatory for return case
-    l10n_cl_is_return = fields.Boolean(compute="_compute_l10n_cl_is_return")
+    l10n_cl_draft_status = fields.Boolean()
+
     # Common fields that will go into l10n_cl.edi.util in master (check copy=False as this flag was not in edi util):
     l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string='Document Type',
                                                   readonly=True, copy=False)
@@ -78,7 +77,8 @@ class Picking(models.Model):
             - Sent: The DTE has been sent to the partner.""")
     l10n_cl_sii_send_file = fields.Many2one('ir.attachment', string='SII Send file', copy=False)
     l10n_cl_dte_file = fields.Many2one('ir.attachment', string='DTE file', copy=False)
-    l10n_cl_sii_send_ident = fields.Text(string='SII Send Identification(Track ID)', copy=False, tracking=True)
+    l10n_cl_sii_send_ident = fields.Text(string='SII Send Identification(Track ID)', readonly=True,
+                                         states={'draft': [('readonly', False)]}, copy=False, tracking=True)
 
     _sql_constraints = [
         ('unique_document_number_in_company', 'UNIQUE(l10n_latam_document_number, company_id)',
@@ -122,7 +122,6 @@ class Picking(models.Model):
         if not self.l10n_latam_document_number:
             self.l10n_latam_document_number = self._get_next_document_number()
         self.l10n_cl_dte_status = 'not_sent'
-        msg_demo = _('DTE has been created in DEMO mode.') if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO' else _('DTE has been created.')
         self._l10n_cl_create_dte()
         dte_signed, file_name = self._l10n_cl_get_dte_envelope()
         attachment = self.env['ir.attachment'].create({
@@ -133,19 +132,8 @@ class Picking(models.Model):
             'type': 'binary',
         })
         self.l10n_cl_sii_send_file = attachment.id
-        self.message_post(body=msg_demo, attachment_ids=attachment.ids)
+        self.message_post(body=_('DTE has been created'), attachment_ids=attachment.ids)
         return self.print_delivery_guide_pdf()
-
-    def _compute_l10n_cl_is_return(self):
-        for picking in self:
-            if picking.country_code == 'CL':
-                picking.l10n_cl_is_return = any(m.origin_returned_move_id for m in picking.move_ids_without_package)
-            else:
-                picking.l10n_cl_is_return = False
-
-    def _get_effective_date(self):
-        self.ensure_one()
-        return fields.Date.context_today(self, self.date_done if self.date_done else self.scheduled_date)
 
     def print_delivery_guide_pdf(self):
         return self.env.ref('l10n_cl_edi_stock.action_delivery_guide_report_pdf').report_action(self)
@@ -231,7 +219,7 @@ class Picking(models.Model):
             'time_stamp': self._get_cl_current_strftime(),
             'caf': self.l10n_latam_document_type_id.sudo()._get_caf_file(self.company_id.id,
                                                                   int(self.l10n_latam_document_number)),
-            'fe_value': self._get_cl_current_datetime().date(),
+            'fe_value': self.scheduled_date.date(),
             'rr_value': '55555555-5' if self.partner_id._l10n_cl_is_foreign() else self._l10n_cl_format_vat(
                 self.partner_id.vat),
             'rsr_value': self._format_length(self.partner_id.name, 40),
@@ -265,7 +253,7 @@ class Picking(models.Model):
             guide_price = "product"
         max_vat_perc = 0.0
         move_retentions = self.env['account.tax']
-        for move in self.move_ids.filtered(lambda x: x.quantity > 0):
+        for move in self.move_ids.filtered(lambda x: x.quantity_done > 0):
             if guide_price == "product" or not move.sale_line_id:
                 taxes = move.product_id.taxes_id.filtered(lambda t: t.company_id == self.company_id)
                 price = move.product_id.lst_price
@@ -285,19 +273,14 @@ class Picking(models.Model):
             totals['total_amount'] += tax_res['total_included']
 
             no_vat_taxes = True
-            cid = move.company_id.id
-            tax_group_ila = self.env.ref(f'account.{cid}_tax_group_ila', raise_if_not_found=False)
-            tax_group_retenciones = self.env.ref(f'account.{cid}_tax_group_retenciones', raise_if_not_found=False)
             for tax_val in tax_res['taxes']:
                 tax = self.env['account.tax'].browse(tax_val['id'])
                 if tax.l10n_cl_sii_code == TAX19_SII_CODE:
                     no_vat_taxes = False
                     totals['vat_amount'] += tax_val['amount']
                     max_vat_perc = max(max_vat_perc, tax.amount)
-                elif tax.tax_group_id.id in [
-                    tax_group_ila and tax_group_ila.id,
-                    tax_group_retenciones and tax_group_retenciones.id
-                ]:
+                elif tax.tax_group_id.id in [self.env.ref('l10n_cl.tax_group_ila').id, self.env.ref(
+                        'l10n_cl.tax_group_retenciones').id]:
                     retentions.setdefault((tax.l10n_cl_sii_code, tax.amount), 0.0)
                     retentions[(tax.l10n_cl_sii_code, tax.amount)] += tax_val['amount']
                     move_retentions |= tax
@@ -497,7 +480,7 @@ class Picking(models.Model):
         })
         self.with_context(no_new_invoice=True).message_post(
             body=_('Partner DTE has been generated'),
-            attachment_ids=[dte_partner_attachment.id])
+            attachments_ids=[dte_partner_attachment.id])
         return dte_partner_attachment
 
     # DTE sending
@@ -529,11 +512,6 @@ class Picking(models.Model):
         if self.l10n_cl_dte_status != "not_sent":
             return None
         digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
-        if self.company_id.l10n_cl_dte_service_provider == 'SIIDEMO':
-            self.message_post(body=_('This DTE has been generated in DEMO Mode. It is considered as accepted and '
-                                     'it won\'t be sent to SII.'))
-            self.l10n_cl_dte_status = 'accepted'
-            return None
         response = self._send_xml_to_sii(
             self.company_id.l10n_cl_dte_service_provider,
             self.company_id.website,
@@ -550,7 +528,7 @@ class Picking(models.Model):
         sii_response_status = response_parsed.findtext('STATUS')
         if sii_response_status == '5':
             digital_signature.last_token = False
-            _logger.warning('The response status is %s. Clearing the token.',
+            _logger.error('The response status is %s. Clearing the token.',
                           self._l10n_cl_get_sii_reception_status_message(sii_response_status))
             if retry_send:
                 _logger.info('Retrying send DTE to SII')
@@ -561,8 +539,8 @@ class Picking(models.Model):
             # a new send
         else:
             self.l10n_cl_dte_status = 'ask_for_status' if sii_response_status == '0' else 'rejected'
-        self.message_post(body=_('DTE has been sent to SII with response: %s.',
-                               self._l10n_cl_get_sii_reception_status_message(sii_response_status)))
+        self.message_post(body=html_escape(_('DTE has been sent to SII with response: %s.',
+                               self._l10n_cl_get_sii_reception_status_message(sii_response_status))))
 
     def _l10n_cl_verify_dte_status(self, send_dte_to_partner=True):
         digital_signature = self.company_id._get_digital_signature(user_id=self.env.user.id)
@@ -599,7 +577,7 @@ class Picking(models.Model):
 
         self.message_post(
             body=_('Asking for DTE status with response:') +
-                 Markup('<br /><li><b>ESTADO</b>: %s</li><li><b>GLOSA</b>: %s</li><li><b>NUM_ATENCION</b>: %s</li>') % (
-                     response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/ESTADO'),
-                     response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/GLOSA'),
-                     response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/NUM_ATENCION')))
+                 '<br /><li><b>ESTADO</b>: %s</li><li><b>GLOSA</b>: %s</li><li><b>NUM_ATENCION</b>: %s</li>' % (
+                     html_escape(response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/ESTADO')),
+                     html_escape(response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/GLOSA')),
+                     html_escape(response_parsed.findtext('{http://www.sii.cl/XMLSchema}RESP_HDR/NUM_ATENCION'))))

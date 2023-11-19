@@ -3,16 +3,17 @@
 # 	* account_consolidation
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-23 08:22+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -33,7 +34,7 @@ msgstr "# 그룹"
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__journal_ids_count
 msgid "# Journals"
-msgstr "# 전표"
+msgstr "# 분개장"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_chart__period_ids_count
@@ -51,14 +52,17 @@ msgid "% Ownership"
 msgstr "% 소유권"
 
 #. module: account_consolidation
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_consolidation.cell_template_consolidation_report
+msgid "%<br/>"
+msgstr ""
+
+#. module: account_consolidation
 #: code:addons/account_consolidation/report/builder/abstract.py:0
 #, python-format
 msgid "%s (%s Currency Conversion Method)"
 msgstr "%s (%s 통화 변환 방법)"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_period.py:0
 #, python-format
 msgid "%s Consolidated Accounting"
@@ -81,50 +85,73 @@ msgid "(Re)compute"
 msgstr "(재)계산"
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #, python-format
 msgid ") and the consolidated company ("
-msgstr ") 및 통합된 회사 ("
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #, python-format
 msgid ") have different currencies and the company is consolidated at"
-msgstr ") 에서 다른 통화를 사용하며 회사가 다음에 통합되었습니다"
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #, python-format
 msgid ") have different currencies."
-msgstr ") 에서 다른 통화를 사용하고 있습니다."
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/header.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_consolidation.cell_template_consolidation_report
 msgid "/ End Rate: 1"
-msgstr "/ 마감 비율: 1"
+msgstr ""
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.line_template_consolidation_report
+msgid ""
+"<i class=\"fa fa-caret-down\" role=\"img\" aria-label=\"Unfolded\" "
+"title=\"Unfolded\"/>"
+msgstr ""
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.line_template_consolidation_report
+msgid "<i class=\"fa fa-caret-right\" role=\"img\" aria-label=\"Folded\" title=\"Folded\"/>"
+msgstr ""
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
+msgid ""
+"<i class=\"fa fa-ellipsis-v\" aria-label=\"Selection\" role=\"img\" "
+"title=\"Selection\"/>"
+msgstr ""
+"<i class=\"fa fa-ellipsis-v\" aria-label=\"Selection\" role=\"img\" "
+"title=\"Selection\"/>"
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.search_template_consolidation_report_period_comparisons
+msgid ""
+"<span class=\"fa fa-bar-chart\"/>\n"
+"                Comparison"
+msgstr ""
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.search_template_consolidation_report_journals
+msgid ""
+"<span class=\"fa fa-book\"/>\n"
+"                Journals:"
+msgstr ""
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_company_period_form
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_form
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_composition_form
 msgid "<span class=\"o_form_label oe_inline\">%</span>"
-msgstr "<span class=\"o_form_label oe_inline\">%</span>"
-
-#. module: account_consolidation
-#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
-msgid "<span class=\"o_stat_text\">Consolidated Balance</span>"
-msgstr "<span class=\"o_stat_text\">연결 잔액</span>"
-
-#. module: account_consolidation
-#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
-msgid "<span class=\"o_stat_text\">Edit</span>"
-msgstr "<span class=\"o_stat_text\">편집</span>"
+msgstr ""
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
@@ -141,16 +168,15 @@ msgstr "<span role=\"separator\">보기</span>"
 msgid ""
 "A consolidation account with the same code already exists in this "
 "consolidation."
-msgstr "동일한 코드를 사용하는 연결 계정이 본 연결에 이미 존재합니다."
+msgstr "이 연결에는 동일한 코드를 가진 연결 계정이 이미 존재한다."
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #, python-format
 msgid ""
 "A journal entry should only be linked to a company period OR to a analysis "
-"period of another consolidation!"
-msgstr "전표입력 내용은 회사 회계 기간 또는 다른 연결 기관의 분석 기간에만 연결되어야 합니다!"
+"period of another consolidation !"
+msgstr "분개장 기입 항목은 회사 기간 또는 다른 연결의 분석 기간에만 연결해야 합니다!"
 
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_account_account
@@ -163,11 +189,6 @@ msgstr "계정"
 #: model:ir.model.fields,field_description:account_consolidation.field_res_company__account_consolidation_currency_is_different
 msgid "Account Consolidation Currency Is Different"
 msgstr "계정 통합 통화가 다릅니다"
-
-#. module: account_consolidation
-#: model:onboarding.onboarding,name:account_consolidation.onboarding_onboarding_account_consolidation_dashboard
-msgid "Account Consolidation Dashboard Onboarding"
-msgstr "계정 통합 현황판 온보딩"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_group_tree
@@ -190,21 +211,18 @@ msgid "Account Mapping"
 msgstr "계정 매핑"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_coa.py:0
 #, python-format
 msgid "Account Mapping: %(chart)s"
-msgstr "계정 매핑: %(chart)s"
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/res_company.py:0
 #, python-format
 msgid "Account Mapping: %(company)s"
-msgstr "계정 매핑: %(company)s"
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_period.py:0
 #, python-format
 msgid "Account Mapping: %s (for %s)"
@@ -219,6 +237,11 @@ msgstr "계정 이름"
 #: model_terms:ir.ui.view,arch_db:account_consolidation.account_mapping_search
 msgid "Account with Entries"
 msgstr "항목이 있는 계정"
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_report
+msgid "Accounting Report"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__account_ids
@@ -242,12 +265,12 @@ msgstr "조치 필요"
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_search
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/views/trial_balance_grid/trial_balance_grid_controller.js:0
-#: code:addons/account_consolidation/static/src/views/trial_balance_grid/trial_balance_grid_controller.xml:0
+#. openerp-web
+#: code:addons/account_consolidation/static/src/js/trial_balance_grid/controller.js:0
+#: code:addons/account_consolidation/static/src/js/trial_balance_grid/controller.js:0
 #, python-format
 msgid "Add a column"
 msgstr "열 추가"
@@ -263,6 +286,11 @@ msgid "Advanced Consolidation"
 msgstr "고급 통합"
 
 #. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.search_template_consolidation_report_journals
+msgid "All"
+msgstr "전체"
+
+#. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.account_mapping_search
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_account_search_mapping
 msgid "Already Mapped"
@@ -274,13 +302,12 @@ msgid "Amount"
 msgstr "금액"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_coa.py:0
 #, python-format
 msgid ""
 "An account group can only have accounts or other groups children but not "
-"both!"
-msgstr "계정 그룹에는 계정이나 다른 그룹 하위 요소만 있을 수 있으며 둘 다 포함될 수는 없습니다!"
+"both !"
+msgstr "계정 그룹은 계정이나 다른 그룹의 하위 요소만 가질 수 있지만 둘 다 가질 수는 없습니다!"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal__period_id
@@ -301,14 +328,14 @@ msgid "Analysis Periods"
 msgstr "분석 기간"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,title:account_consolidation.onboarding_onboarding_step_create_consolidation_period
+#: model_terms:ir.ui.view,arch_db:account_consolidation.create_period_step
 msgid "Analysis period"
 msgstr "분석 기간"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,done_text:account_consolidation.onboarding_onboarding_step_create_consolidation_period
-msgid "Analysis period created!"
-msgstr "분석 기간 생성 완료!"
+#: model_terms:ir.ui.view,arch_db:account_consolidation.create_period_step
+msgid "Analysis period created !"
+msgstr "분석 기간 생성됨!"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_form_onboarding
@@ -320,6 +347,11 @@ msgstr "적용"
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__message_attachment_count
 msgid "Attachment Count"
 msgstr "첨부 파일 수"
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.line_template_consolidation_report
+msgid "Audit"
+msgstr "감사"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_search
@@ -344,11 +376,9 @@ msgid "Average Rate"
 msgstr "평균 비율"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/header.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_consolidation.cell_template_consolidation_report
 msgid "Avg Rate: 1"
-msgstr "평균 비율: 1"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal__balance
@@ -369,19 +399,19 @@ msgid "Chart"
 msgstr "차트"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,title:account_consolidation.onboarding_onboarding_step_setup_ccoa
+#: model_terms:ir.ui.view,arch_db:account_consolidation.chart_of_account_step
 msgid "Chart of Accounts"
-msgstr "계정과목표"
+msgstr "계정 차트"
+
+#. module: account_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.chart_of_account_step
+msgid "Chart of account set !"
+msgstr "계정과목 일람표 세트!"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
 msgid "Chart of accounts"
-msgstr "계정과목표"
-
-#. module: account_consolidation
-#: model:onboarding.onboarding.step,done_text:account_consolidation.onboarding_onboarding_step_setup_ccoa
-msgid "Chart of accounts set!"
-msgstr "계정과목표 설정 완료"
+msgstr "계정 차트"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_tree
@@ -405,6 +435,7 @@ msgstr "기간 마감"
 
 #. module: account_consolidation
 #: model:ir.model.fields.selection,name:account_consolidation.selection__consolidation_period__state__closed
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_dashboard_onboarding_state__closed
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_search
 msgid "Closed"
 msgstr "마감됨"
@@ -477,13 +508,6 @@ msgid "Company Unmapped Accounts Counts"
 msgstr "회사의 매핑되지 않은 계정 수"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/filters/filters.xml:0
-#, python-format
-msgid "Comparison:"
-msgstr "비교:"
-
-#. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period_composition__composed_period_id
 msgid "Composed Analysis Period"
 msgstr "구성된 분석 기간"
@@ -496,14 +520,12 @@ msgstr "구성된 통합 통화"
 #. module: account_consolidation
 #: model:ir.ui.menu,name:account_consolidation.menu_consolidation_configuration
 msgid "Configuration"
-msgstr "설정"
+msgstr "구성"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/header.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_consolidation.cell_template_consolidation_report
 msgid "Conso Rate:"
-msgstr "연결 비율:"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal_line__account_id
@@ -519,9 +541,10 @@ msgstr "통합 계정"
 #. module: account_consolidation
 #: model:account.report,name:account_consolidation.consolidated_balance_report
 #: model:ir.actions.client,name:account_consolidation.trial_balance_report_action
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
 msgid "Consolidated Balance"
-msgstr "연결 잔액"
+msgstr "통합된 대차대조표"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_form
@@ -534,9 +557,11 @@ msgid "Consolidated In"
 msgstr "다음에서 통합됨"
 
 #. module: account_consolidation
-#: model_terms:ir.ui.view,arch_db:account_consolidation.view_trial_balance_report_grid
+#. openerp-web
+#: code:addons/account_consolidation/static/src/js/trial_balance_grid/controller.js:0
+#, python-format
 msgid "Consolidated balance"
-msgstr "연결 잔액"
+msgstr "통합된 대차대조표"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__used_in_ids
@@ -621,12 +646,12 @@ msgstr "통합 항목"
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_consolidation_journal
 msgid "Consolidation Journal"
-msgstr "연결분개"
+msgstr "통합 분개장"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_account_move_line__consolidation_journal_line_ids
 msgid "Consolidation Journal Line"
-msgstr "연결분개 내역"
+msgstr "통합 분개장 명세"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_company_period__consolidation_method
@@ -681,7 +706,7 @@ msgstr "통합 항목"
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_consolidation_journal_line
 msgid "Consolidation journal line"
-msgstr "연결분개 내역"
+msgstr "통합 분개장 명세"
 
 #. module: account_consolidation
 #: model:res.groups,name:account_consolidation.group_consolidation_user
@@ -689,7 +714,7 @@ msgid "Consolidation user"
 msgstr "통합 사용자"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,button_text:account_consolidation.onboarding_onboarding_step_create_consolidation_period
+#: model_terms:ir.ui.view,arch_db:account_consolidation.create_period_step
 msgid "Create"
 msgstr "작성"
 
@@ -699,9 +724,9 @@ msgid "Create First Period"
 msgstr "첫 번째 기간 만들기"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,description:account_consolidation.onboarding_onboarding_step_create_consolidation_period
-msgid "Create your first analysis period & set the currency rates."
-msgstr "첫 번째 분석 기간 생성 및 환율 설정"
+#: model_terms:ir.ui.view,arch_db:account_consolidation.create_period_step
+msgid "Create your first analysis period &amp; set the currency rates."
+msgstr "첫 번째 분석 기간 만들기 &amp; 환율 설정하기"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__create_uid
@@ -777,18 +802,18 @@ msgstr "현황판 영역"
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_line_tree
 msgid "Date"
-msgstr "날짜"
+msgstr "일자"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,button_text:account_consolidation.onboarding_onboarding_step_setup_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_step
 msgid "Define"
 msgstr "정의하기"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,description:account_consolidation.onboarding_onboarding_step_setup_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_step
 msgid ""
-"Define the companies that should be consolidated & the target currency."
-msgstr "연결할 회사 및 대상 통화 정의"
+"Define the companies that should be consolidated &amp; the target currency"
+msgstr "통합해야 하는 회사 &amp; 대상 통화를 정의하기"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal_line__note
@@ -814,24 +839,31 @@ msgid "Display Name"
 msgstr "표시명"
 
 #. module: account_consolidation
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_create_period_state__done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_dashboard_onboarding_state__done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_ccoa_state__done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_consolidation_state__done
+msgid "Done"
+msgstr "완료"
+
+#. module: account_consolidation
 #: model:ir.model.fields.selection,name:account_consolidation.selection__consolidation_period__state__draft
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_search
 msgid "Draft"
-msgstr "미결"
+msgstr "임시"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/trial_balance.py:0
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
 #, python-format
 msgid "Edit"
-msgstr "편집"
+msgstr "편집하기"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #, python-format
 msgid "Edit %s"
-msgstr "편집 %s"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_company_period__currency_rate_end
@@ -861,7 +893,7 @@ msgstr "자기 자본"
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_company_period__exclude_journal_ids
 msgid "Exclude Journals"
-msgstr "전표 제외"
+msgstr "제외된 분개장"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__filtered_used_in_ids
@@ -876,7 +908,7 @@ msgstr "팔로워"
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "팔로워 (협력사)"
+msgstr "팔로워 (파트너)"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__full_name
@@ -913,13 +945,6 @@ msgid "Has Message"
 msgstr "메시지가 있습니다"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/filters/filter_extra_options.xml:0
-#, python-format
-msgid "Hierarchy and Subtotals"
-msgstr "계층 및 소계"
-
-#. module: account_consolidation
 #: model:ir.model.fields.selection,name:account_consolidation.selection__consolidation_account__currency_mode__hist
 msgid "Historical Rate"
 msgstr "과거 비율"
@@ -930,11 +955,10 @@ msgid "Historical Rates"
 msgstr "과거 비율"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/res_company.py:0
 #, python-format
 msgid "Historical Rates: %(company)s"
-msgstr "과거 비율: %(company)s"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,help:account_consolidation.field_consolidation_company_period__currency_rate_avg
@@ -982,7 +1006,7 @@ msgstr "과거에"
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_chart__invert_sign
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_group__invert_sign
 msgid "Invert Balance Sign"
-msgstr "반대 잔액 기호"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__message_is_follower
@@ -994,23 +1018,23 @@ msgstr "팔로워임"
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_form
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_line_form
 msgid "Journal"
-msgstr "전표"
+msgstr "분개장"
 
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_account_move_line
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_line_form
 msgid "Journal Item"
-msgstr "전표 항목"
+msgstr "분개 항목"
 
 #. module: account_consolidation
 #: model:ir.actions.act_window,name:account_consolidation.view_account_move_line_filter
 msgid "Journal Items"
-msgstr "전표 항목"
+msgstr "분개 항목"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_group__line_ids
 msgid "Journal lines"
-msgstr "전표 내역"
+msgstr "분개장 명세"
 
 #. module: account_consolidation
 #: model:ir.actions.act_window,name:account_consolidation.consolidation_journal_action
@@ -1019,14 +1043,28 @@ msgstr "전표 내역"
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
 msgid "Journals"
-msgstr "전표"
+msgstr "분개장"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/filters/filters.xml:0
-#, python-format
-msgid "Journals:"
-msgstr "전표:"
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_create_period_state__just_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_dashboard_onboarding_state__just_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_ccoa_state__just_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_consolidation_state__just_done
+msgid "Just done"
+msgstr "즉시 완료"
+
+#. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_chart____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_company_period____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_group____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_journal_line____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period_composition____last_update
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_rate____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_account__write_uid
@@ -1055,9 +1093,14 @@ msgid "Last Updated on"
 msgstr "최근 갱신 일자"
 
 #. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "주요 첨부 파일"
+
+#. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_search
 msgid "Manually Created"
-msgstr "직접 작성"
+msgstr "수동으로 생성함"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_form
@@ -1118,6 +1161,14 @@ msgid "Not consolidated"
 msgstr "통합 안됨"
 
 #. module: account_consolidation
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_create_period_state__not_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_dashboard_onboarding_state__not_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_ccoa_state__not_done
+#: model:ir.model.fields.selection,name:account_consolidation.selection__res_company__consolidation_setup_consolidation_state__not_done
+msgid "Not done"
+msgstr "미완료"
+
+#. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__message_needaction_counter
 msgid "Number of Actions"
 msgstr "작업 수"
@@ -1129,46 +1180,13 @@ msgstr "오류 횟수"
 
 #. module: account_consolidation
 #: model:ir.model.fields,help:account_consolidation.field_consolidation_period__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "조치가 필요한 메시지 수"
 
 #. module: account_consolidation
 #: model:ir.model.fields,help:account_consolidation.field_consolidation_period__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "전송 오류가 발생한 메시지 수입니다."
-
-#. module: account_consolidation
-#: model:ir.model,name:account_consolidation.model_onboarding_onboarding
-msgid "Onboarding"
-msgstr "신입사원 연수 프로그램"
-
-#. module: account_consolidation
-#: model:onboarding.onboarding.step,step_image_alt:account_consolidation.onboarding_onboarding_step_create_consolidation_period
-msgid "Onboarding Analysis period"
-msgstr "분석 기간 온보딩"
-
-#. module: account_consolidation
-#: model:onboarding.onboarding.step,step_image_alt:account_consolidation.onboarding_onboarding_step_setup_ccoa
-msgid "Onboarding Chart of Accounts"
-msgstr "계정과목표 온보딩"
-
-#. module: account_consolidation
-#: model:ir.model,name:account_consolidation.model_onboarding_onboarding_step
-msgid "Onboarding Step"
-msgstr "온보딩 단계"
-
-#. module: account_consolidation
-#: model:onboarding.onboarding.step,step_image_alt:account_consolidation.onboarding_onboarding_step_setup_consolidation
-msgid "Onboarding The Scope of Consolidation"
-msgstr "통합의 범위 온보딩"
-
-#. module: account_consolidation
-#. odoo-python
-#: code:addons/account_consolidation/models/consolidation_journal.py:0
-#, python-format
-msgid ""
-"Only one entry by account should be created for a generated journal entry!"
-msgstr "생성된 전표에 대해 계정별로 하나의 항목만 생성해야 합니다!"
+msgstr "전송 오류 메시지 수"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_search
@@ -1197,7 +1215,6 @@ msgid "Originating Currency"
 msgstr "원본 통화"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #, python-format
@@ -1257,11 +1274,6 @@ msgid "Rate Ranges"
 msgstr "비율 범위"
 
 #. module: account_consolidation
-#: model:ir.model.fields,field_description:account_consolidation.field_consolidation_period__rating_ids
-msgid "Ratings"
-msgstr "평가"
-
-#. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_kanban
 msgid "Reopen period"
 msgstr "재시작한 기간"
@@ -1269,7 +1281,7 @@ msgstr "재시작한 기간"
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_period_form
 msgid "Reset To Draft"
-msgstr "미결로 초기화"
+msgstr "초안으로 재설정"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_form
@@ -1282,8 +1294,8 @@ msgid "SMS Delivery error"
 msgstr "SMS 전송 에러"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,done_text:account_consolidation.onboarding_onboarding_step_setup_consolidation
-msgid "Scope of Consolidation defined!"
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_step
+msgid "Scope of Consolidation defined !"
 msgstr "통합 범위 정의!"
 
 #. module: account_consolidation
@@ -1298,12 +1310,12 @@ msgid "Settings"
 msgstr "설정"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,button_text:account_consolidation.onboarding_onboarding_step_setup_ccoa
+#: model_terms:ir.ui.view,arch_db:account_consolidation.chart_of_account_step
 msgid "Setup"
 msgstr "설정"
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,description:account_consolidation.onboarding_onboarding_step_setup_ccoa
+#: model_terms:ir.ui.view,arch_db:account_consolidation.chart_of_account_step
 msgid ""
 "Setup your consolidated accounts and their currency conversion method.\n"
 "                Then map them with the companies accounts."
@@ -1325,9 +1337,7 @@ msgid "Show On Dashboard"
 msgstr "현황판에 표시"
 
 #. module: account_consolidation
-#. odoo-javascript
-#: code:addons/account_consolidation/static/src/components/consolidation_report/filters/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_consolidation.search_template_consolidation_report_extra_options
 msgid "Show Zero Balance Accounts"
 msgstr "잔액 제로 계정 표시"
 
@@ -1356,6 +1366,26 @@ msgid "State"
 msgstr "시/도"
 
 #. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_res_company__consolidation_dashboard_onboarding_state
+msgid "State Of The Account Consolidation Dashboard Onboarding Panel"
+msgstr "계정 통합 현황판 온보딩 패널 상태"
+
+#. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_res_company__consolidation_setup_ccoa_state
+msgid "State Of The Onboarding Consolidated Chart Of Account Step"
+msgstr "온보딩 통합 계정과목 일람표 단계의 상태"
+
+#. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_res_company__consolidation_setup_consolidation_state
+msgid "State Of The Onboarding Consolidation Step"
+msgstr "온보딩 통합 단계의 상태"
+
+#. module: account_consolidation
+#: model:ir.model.fields,field_description:account_consolidation.field_res_company__consolidation_create_period_state
+msgid "State Of The Onboarding Create Period Step"
+msgstr "온보딩 생성 기간 단계의 상태"
+
+#. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_chart_form
 msgid "Sub-consolidated Chart"
 msgstr "하위 통합 일람표"
@@ -1382,19 +1412,19 @@ msgid "Subgroups"
 msgstr "하위 그룹"
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #, python-format
 msgid "Take into account that the consolidation ("
-msgstr "다음과 같이 통합된 것을 고려하십시오 ("
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/move_line_list/move_line_list.xml:0
 #, python-format
 msgid "Take into account that this company is consolidated at"
-msgstr "이 회사가 다음에 통합되어 있는 점을 고려하시기 바랍니다"
+msgstr ""
 
 #. module: account_consolidation
 #: model:ir.model.fields,field_description:account_consolidation.field_consolidation_chart__currency_id
@@ -1406,15 +1436,14 @@ msgid "Target Currency"
 msgstr "대상 통화"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_period.py:0
 #, python-format
 msgid ""
 "The Composed Analysis Period must be different from the Analysis Period"
-msgstr "구성 분석 기간은 다음의 분석 기간과 달라야 합니다."
+msgstr ""
 
 #. module: account_consolidation
-#: model:onboarding.onboarding.step,title:account_consolidation.onboarding_onboarding_step_setup_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_step
 msgid "The Scope of Consolidation"
 msgstr "통합의 범위"
 
@@ -1429,10 +1458,9 @@ msgstr "통합에 사용된 비율 (기본적으로 이 비율은 모든 합계�
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_form
 msgid "This journal has been automatically generated on"
-msgstr "이 전표는 자동으로 생성되었습니다"
+msgstr "이 분개장은 자동으로 생성되었습니다"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/builder/abstract.py:0
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_form
@@ -1440,10 +1468,10 @@ msgstr "이 전표는 자동으로 생성되었습니다"
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_tree
 #, python-format
 msgid "Total"
-msgstr "총계"
+msgstr "합계"
 
 #. module: account_consolidation
-#. odoo-python
+#: code:addons/account_consolidation/report/trial_balance.py:0
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_journal_line_search
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_trial_balance_report_graph
@@ -1455,10 +1483,9 @@ msgstr "시산표"
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_consolidation_trial_balance_report_handler
 msgid "Trial Balance Custom Handler"
-msgstr "시산표 사용자정의 처리기"
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_period.py:0
 #, python-format
 msgid "Trial Balance: %s"
@@ -1508,17 +1535,15 @@ msgid "Website communication history"
 msgstr "웹사이트 대화 이력"
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #, python-format
 msgid ""
 "When setting a period on a consolidation journal, the selected consolidation"
 " chart for the journal cannot be different from the one of the chosen "
 "period."
-msgstr "연결분개에서 기간을 설정할 때 선택한 전표가 통합계정과목표에서 선택한 기간과 다르게 선택될 수 없습니다."
+msgstr "통합 분개장에서 기간을 설정할 때 선택한 분개장에 대해 통합 일람표가 선택한 기간과 다를 수 없습니다."
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #: code:addons/account_consolidation/report/trial_balance.py:0
 #, python-format
@@ -1533,46 +1558,42 @@ msgid ""
 msgstr "전체 체계의 일부로 다른 하위 연결을 기반으로 복잡한 연결을 정의 할 수 있습니다."
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #, python-format
 msgid "You can't delete an auto-generated journal entry."
-msgstr "자동 생성된 전표입력 내용은 삭제할 수 없습니다."
+msgstr "자동 생성된 분개장 기입 항목은 삭제할 수 없습니다."
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #, python-format
 msgid "You can't edit an auto-generated journal entry."
-msgstr "자동 생성된 전표입력 내용은 편집할 수 없습니다."
+msgstr "자동 생성된 분개장 기입 항목은 편집할 수 없습니다."
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/models/consolidation_journal.py:0
 #, python-format
-msgid "You cannot add journals to a closed period!"
-msgstr "마감된 기간에는 전표를 추가할 수 없습니다!"
+msgid "You cannot add journals to a closed period !"
+msgstr "마감된 기간에는 분개장을 추가할 수 없습니다!"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_group_form
 msgid "e.g. Profit and Loss"
-msgstr "예: 손익계산서"
+msgstr ""
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.consolidation_account_form
 msgid "e.g. Revenue"
-msgstr "예: 수익"
+msgstr ""
 
 #. module: account_consolidation
-#. odoo-python
 #: code:addons/account_consolidation/report/builder/comparison.py:0
 #, python-format
 msgid "n/a"
 msgstr "n/a"
 
 #. module: account_consolidation
-#. odoo-javascript
+#. openerp-web
 #: code:addons/account_consolidation/static/src/components/dashboard_widget/dashboard_widget.xml:0
 #, python-format
 msgid "unmapped accounts"

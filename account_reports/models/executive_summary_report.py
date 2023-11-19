@@ -7,7 +7,7 @@ from odoo.exceptions import UserError
 class ExecutiveSummaryReport(models.Model):
     _inherit = 'account.report'
 
-    def _report_custom_engine_executive_summary_ndays(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
+    def _report_custom_engine_executive_summary_ndays(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None):
         if current_groupby or next_groupby:
             raise UserError("NDays expressions of executive summary report don't support the 'group by' feature.")
 

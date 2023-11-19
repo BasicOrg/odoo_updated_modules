@@ -3,10 +3,13 @@
 import { KanbanRecord } from "@web/views/kanban/kanban_record";
 import { DocumentsKanbanCompiler } from "./documents_kanban_compiler";
 import { FileUploadProgressBar } from "@web/core/file_upload/file_upload_progress_bar";
+import { KANBAN_BOX_ATTRIBUTE } from "@web/views/kanban/kanban_arch_parser";
+import { onNewPdfThumbnail } from "../helper/documents_pdf_thumbnail_service";
 import { useBus, useService } from "@web/core/utils/hooks";
-import { xml } from "@odoo/owl";
 
 const CANCEL_GLOBAL_CLICK = ["a", ".dropdown", ".oe_kanban_action"].join(",");
+
+const { xml } = owl;
 
 export class DocumentsKanbanRecord extends KanbanRecord {
     setup() {
@@ -23,6 +26,12 @@ export class DocumentsKanbanRecord extends KanbanRecord {
         // Pdf Thumbnail
         this.pdfService = useService("documents_pdf_thumbnail");
         this.pdfService.enqueueRecords([this.props.record]);
+
+        onNewPdfThumbnail(async ({ detail }) => {
+            if (detail.record.resId === this.props.record.resId) {
+                this.render(true);
+            }
+        });
     }
 
     /**
@@ -43,9 +52,7 @@ export class DocumentsKanbanRecord extends KanbanRecord {
      * Get the current file upload for this record if there is any
      */
     getFileUpload() {
-        return Object.values(this.documentUploads).find(
-            (upload) => upload.data.get("document_id") == this.props.record.resId
-        );
+        return Object.values(this.documentUploads).find(upload => upload.data.get("document_id") == this.props.record.resId);
     }
 
     /**
@@ -99,5 +106,5 @@ DocumentsKanbanRecord.template = xml`
         t-on-click.synthetic="onGlobalClick"
         t-on-keydown.synthetic="onKeydown"
         t-ref="root">
-        <t t-call="{{ templates[this.constructor.KANBAN_BOX_ATTRIBUTE] }}" t-call-context="this.renderingContext"/>
+        <t t-call="{{ templates['${KANBAN_BOX_ATTRIBUTE}'] }}"/>
     </div>`;

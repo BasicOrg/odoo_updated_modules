@@ -5,7 +5,7 @@ import ast
 from dateutil.relativedelta import relativedelta
 from psycopg2 import sql
 
-from odoo import models, api, fields, _
+from odoo import models, api, fields
 from odoo.tools import split_every
 
 # When cleaning_mode = automatic, _clean_records calls action_validate.
@@ -68,8 +68,8 @@ class DataCleaningModel(models.Model):
         count_data = self.env['data_cleaning.record']._read_group(
             [('cleaning_model_id', 'in', self.ids)],
             ['cleaning_model_id'],
-            ['__count'])
-        counts = {cleaning_model.id: count for cleaning_model, count in count_data}
+            ['cleaning_model_id'])
+        counts = {cd['cleaning_model_id'][0]: cd['cleaning_model_id_count'] for cd in count_data}
         for cm_model in self:
             cm_model.records_to_clean_count = counts[cm_model.id] if cm_model.id in counts else 0
 
@@ -96,7 +96,7 @@ class DataCleaningModel(models.Model):
         result = []
         for record in records:
             record_country = self.env['data_cleaning.record']._get_country_id(record)
-            formatted = self.env[self.res_model_name]._phone_format(number=record[field], country=record_country, force_format='INTERNATIONAL')
+            formatted = self.env['data_cleaning.record']._phone_format(record[field], record_country)
             if (record.id, rule_ids[0]) not in existing_rows and formatted and record[field] != formatted:
                 result.append({
                     'res_id': record['id'],
@@ -110,7 +110,6 @@ class DataCleaningModel(models.Model):
     def _clean_records(self, batch_commits=False):
         self.env.flush_all()
 
-        lang = self.env.user.lang
         records_to_clean = []
         for cleaning_model in self:
             records_to_create = []
@@ -125,23 +124,8 @@ class DataCleaningModel(models.Model):
                     values = cleaner(actions, field)
                     records_to_create += values
                 else:
-                    active_model = self.env[cleaning_model.res_model_name]
-                    active_name = active_model._active_name
+                    active_name = self.env[cleaning_model.res_model_name]._active_name
                     active_cond = sql.SQL("AND {}").format(sql.Identifier(active_name)) if active_name else sql.SQL('')
-
-                    field_name = sql.Identifier(field)
-                    cleaned_field_expr = sql.SQL(action.format(field))
-
-                    if active_model._fields[field].translate:
-                        field_name = sql.SQL("COALESCE({field}->>{lang}, {field}->>'en_US')").format(
-                            field=sql.Identifier(field),
-                            lang=sql.Literal(lang)
-                        )
-                        action = action.format("COALESCE({field}->>{lang}, {field}->>'en_US')")
-                        cleaned_field_expr = sql.SQL(action).format(
-                            field=sql.Identifier(field),
-                            lang=sql.Literal(lang)
-                        )
 
                     query = sql.SQL("""
                         SELECT
@@ -159,12 +143,12 @@ class DataCleaningModel(models.Model):
                             {active_cond}
                     """).format(
                         table=sql.Identifier(self.env[cleaning_model.res_model_name]._table),
-                        field_name=field_name,
+                        field_name=sql.Identifier(field),
                         operator=sql.SQL(operator),
                         # can be complex sql expression & multiple actions get
                         # combined through string formatting, so doesn't seem
                         # to be a smarter solution than whitelisting the entire thing
-                        cleaned_field_expr=cleaned_field_expr,
+                        cleaned_field_expr=sql.SQL(action.format(field)),
                         cleaning_record_table=sql.Identifier(self.env['data_cleaning.record']._table),
                         active_cond=active_cond
                     )
@@ -220,21 +204,15 @@ class DataCleaningModel(models.Model):
         if records_count:
             partner_ids = self.notify_user_ids.partner_id.ids
             menu_id = self.env.ref('data_recycle.menu_data_cleaning_root').id
-            self.env['mail.thread'].message_notify(
+            self.env['mail.thread'].with_context(mail_notify_author=True).message_notify(
                 body=self.env['ir.qweb']._render(
                     'data_cleaning.notification',
-                    dict(
-                        records_count=records_count,
-                        res_model_label=self.res_model_id.name,
-                        cleaning_model_id=self.id,
-                        menu_id=menu_id
-                    )
+                    dict(records_count=records_count,
+                         res_model_label=self.res_model_id.name,
+                         cleaning_model_id=self.id,
+                         menu_id=menu_id)
                 ),
-                model=self._name,
-                notify_author=True,
                 partner_ids=partner_ids,
-                res_id=self.id,
-                subject=_('Data to Clean'),
             )
 
     ############
@@ -243,7 +221,7 @@ class DataCleaningModel(models.Model):
     def write(self, vals):
         if 'active' in vals and not vals['active']:
             self.env['data_cleaning.record'].search([('cleaning_model_id', 'in', self.ids)]).unlink()
-        return super().write(vals)
+        super(DataCleaningModel, self).write(vals)
 
     ##########
     # Actions

@@ -1,13 +1,11 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
+# -*- coding: utf-8 -*-
 from collections import defaultdict
 from datetime import timedelta
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.http import request
 from odoo.osv import expression
-from odoo.tools import float_is_zero
+from odoo.http import request
 
 
 class SaleOrder(models.Model):
@@ -75,15 +73,12 @@ class SaleOrder(models.Model):
         claimed_reward_count = 0
         claimable_rewards = self._get_claimable_rewards()
         for coupon, rewards in claimable_rewards.items():
-            if (
-                len(coupon.program_id.reward_ids) != 1
-                or coupon.program_id.is_nominative
-                or (rewards.reward_type == 'product' and rewards.multi_product)
-                or rewards in self.disabled_auto_rewards
-                or rewards in self.order_line.reward_id
-            ):
+            if len(coupon.program_id.reward_ids) != 1 or\
+                coupon.program_id.is_nominative or\
+                (rewards.reward_type == 'product' and rewards.multi_product) or\
+                rewards in self.disabled_auto_rewards or\
+                rewards in self.order_line.reward_id:
                 continue
-
             try:
                 res = self._apply_program_reward(rewards, coupon)
                 if 'error' not in res:
@@ -123,13 +118,13 @@ class SaleOrder(models.Model):
             for lines in grouped_order_lines.values():
                 if lines.reward_id.reward_type != 'discount':
                     continue
+                if self.env.user.has_group('sale.group_show_price_subtotal'):
+                    price_unit = sum(lines.mapped('price_subtotal'))
+                else:
+                    price_unit = sum(lines.mapped('price_total'))
                 new_lines += self.env['sale.order.line'].new({
                     'product_id': lines[0].product_id.id,
-                    'tax_id': False,
-                    'price_unit': sum(lines.mapped('price_unit')),
-                    'price_subtotal': sum(lines.mapped('price_subtotal')),
-                    'price_total': sum(lines.mapped('price_total')),
-                    'discount': 0.0,
+                    'price_unit': price_unit,
                     'name': lines[0].name_short if lines.reward_id.reward_type != 'product' else lines[0].name,
                     'product_uom_qty': 1,
                     'product_uom': lines[0].product_uom.id,
@@ -191,32 +186,3 @@ class SaleOrder(models.Model):
         so_to_reset.applied_coupon_ids = False
         for so in so_to_reset:
             so._update_programs_and_rewards()
-
-    def _get_claimable_and_showable_rewards(self):
-        self.ensure_one()
-        res = self._get_claimable_rewards()
-        loyality_cards = self.env['loyalty.card'].search([
-            ('partner_id', '=', self.partner_id.id),
-            ('program_id.website_id', 'in', [False, self.website_id.id]),
-            ('program_id.company_id', 'in', [False, self.company_id.id]),
-            '|',
-                ('program_id.trigger', '=', 'with_code'),
-                '&', ('program_id.trigger', '=', 'auto'), ('program_id.applies_on', '=', 'future'),
-        ])
-        total_is_zero = float_is_zero(self.amount_total, precision_digits=2)
-        global_discount_reward = self._get_applied_global_discount()
-        for coupon in loyality_cards:
-            points = self._get_real_points_for_coupon(coupon)
-            for reward in coupon.program_id.reward_ids:
-                if reward.is_global_discount and global_discount_reward and global_discount_reward.discount >= reward.discount:
-                    continue
-                if reward.reward_type == 'discount' and total_is_zero:
-                    continue
-                if coupon.expiration_date and coupon.expiration_date < fields.Date.today():
-                    continue
-                if points >= reward.required_points:
-                    if coupon in res:
-                        res[coupon] |= reward
-                    else:
-                        res[coupon] = reward
-        return res

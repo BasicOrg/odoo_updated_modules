@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.DebugMenu">
+    <t t-name="web.DebugMenu" owl="1">
         <Dropdown class="'o_debug_manager'"
           beforeOpen="getElements"
           position="'bottom-end'"
           togglerClass="`o-dropdown--narrow ${env.inDialog?'btn btn-link':''}`"
-          autoOpen="false"
         >
             <t t-set-slot="toggler">
-                <i class="fa fa-bug" role="img" aria-label="Open developer tools"/>
+                <i class="fa fa-bug"/>
             </t>
             <t t-foreach="elements" t-as="element" t-key="element_index">
                 <DropdownItem

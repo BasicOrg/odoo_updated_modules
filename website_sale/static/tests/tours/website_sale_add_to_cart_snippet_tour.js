@@ -1,11 +1,11 @@
 /** @odoo-module **/
 
-import wsTourUtils from '@website_sale/js/tours/tour_utils';
-import wTourUtils from '@website/js/tours/tour_utils';
+import wsTourUtils from 'website_sale.tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 function editAddToCartSnippet() {
     return [
-        ...wTourUtils.clickOnEditAndWaitEditMode(),
+        wTourUtils.clickOnEdit(),
         wTourUtils.clickOnSnippet({id: 's_add_to_cart'})
     ]
 }
@@ -15,7 +15,7 @@ wTourUtils.registerWebsitePreviewTour('add_to_cart_snippet_tour', {
         edition: true,
         test: true,
     },
-    () => [
+    [
         wTourUtils.dragNDrop({name: 'Add to Cart Button'}),
 
         // Basic product with no variants
@@ -32,12 +32,11 @@ wTourUtils.registerWebsitePreviewTour('add_to_cart_snippet_tour', {
         wTourUtils.clickOnElement('continue shopping', 'iframe span:contains(Continue Shopping)'),
 
         // Product with 2 variants with a variant selected
-        // ...editAddToCartSnippet(),
-        // ...wTourUtils.selectElementInWeSelectWidget('product_template_picker_opt', 'Conference Chair', true),
-        // ...wTourUtils.selectElementInWeSelectWidget('product_variant_picker_opt', 'Conference Chair (Aluminium)'),
-        // ...wTourUtils.clickOnSave(),
-        // wTourUtils.clickOnElement('add to cart button', 'iframe .s_add_to_cart_btn'),
-        // TODO edm: re-enable this part when this isn't an indeterminist error anymore
+        ...editAddToCartSnippet(),
+        ...wTourUtils.selectElementInWeSelectWidget('product_template_picker_opt', 'Conference Chair', true),
+        ...wTourUtils.selectElementInWeSelectWidget('product_variant_picker_opt', 'Conference Chair (Aluminium)'),
+        ...wTourUtils.clickOnSave(),
+        wTourUtils.clickOnElement('add to cart button', 'iframe .s_add_to_cart_btn'),
 
         // Basic product with no variants and action=buy now
         ...editAddToCartSnippet(),
@@ -45,16 +44,11 @@ wTourUtils.registerWebsitePreviewTour('add_to_cart_snippet_tour', {
         ...wTourUtils.selectElementInWeSelectWidget('action_picker_opt', 'Buy Now'),
         ...wTourUtils.clickOnSave(),
         wTourUtils.clickOnElement('add to cart button', 'iframe .s_add_to_cart_btn'),
-        {
-            content: "Wait for the redirection to the payment page",
-            trigger: 'body',
-            isCheck: true,  // wait for the page to load, as the next check was sometimes too fast
-        },
-        wTourUtils.assertPathName('/shop/payment', 'iframe a[href="/shop/cart"]'),
+        wTourUtils.assertPathName('/shop/payment', 'button[name=o_payment_submit_button]'),
 
-        wsTourUtils.goToCart({quantity: 3, backend: true}),
-        wsTourUtils.assertCartContains({productName: 'Acoustic Bloc Screens', backend: true}),
-        wsTourUtils.assertCartContains({productName: 'Conference Chair (Steel)', backend: true}),
-        // wsTourUtils.assertCartContains({productName: 'Conference Chair (Aluminium)', backend: true}),
+        wsTourUtils.goToCart({quantity: 4, backend: false}),
+        wsTourUtils.assertCartContains({productName: 'Acoustic Bloc Screens'}),
+        wsTourUtils.assertCartContains({productName: 'Conference Chair (Steel)'}),
+        wsTourUtils.assertCartContains({productName: 'Conference Chair (Aluminium)'}),
     ],
 );

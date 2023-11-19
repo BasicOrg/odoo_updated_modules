@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* phone_validation
-#
+# 
 # Translators:
 # eriiikgt, 2022
 # Carles Antoli <carlesantoli@hotmail.com>, 2022
@@ -12,24 +12,23 @@
 # Martin Trigaux, 2022
 # Jonatan Gk, 2022
 # marcescu, 2022
-# Ivan Espinola, 2022
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-17 08:01+0000\n"
+"POT-Creation-Date: 2022-09-20 09:03+0000\n"
 "PO-Revision-Date: 2022-09-22 05:53+0000\n"
-"Last-Translator: Ivan Espinola, 2022\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Last-Translator: marcescu, 2022\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: phone_validation
-#. odoo-python
+#: code:addons/phone_validation/models/phone_blacklist.py:0
 #: code:addons/phone_validation/models/phone_blacklist.py:0
 #, python-format
 msgid " Please correct the number and try again."
@@ -94,11 +93,12 @@ msgid "Blacklisted phone numbers won't receive SMS Mailings anymore."
 msgstr "Els números de telèfon a la llista negra ja no rebran missatges SMS."
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/res_users.py:0
 #, python-format
-msgid "Blocked by deletion of portal account %(portal_user_name)s by %(user_name)s (#%(user_id)s)"
-msgstr "Bloquejat per la supressió del compte del portal %(portal_user_name)s per %(user_name)s (#%(user_id)s)"
+msgid ""
+"Blocked by deletion of portal account %(portal_user_name)s by %(user_name)s "
+"(#%(user_id)s)"
+msgstr ""
 
 #. module: phone_validation
 #: model_terms:ir.ui.view,arch_db:phone_validation.phone_blacklist_remove_view_form
@@ -135,8 +135,12 @@ msgstr "Nom a mostrar"
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__phone_sanitized
-msgid "Field used to store sanitized phone number. Helps speeding up searches and comparisons."
-msgstr "Camp utilitzat per emmagatzemar el número de telèfon sanejat. Ajuda a accelerar les cerques i comparacions."
+msgid ""
+"Field used to store sanitized phone number. Helps speeding up searches and "
+"comparisons."
+msgstr ""
+"Camp utilitzat per emmagatzemar el número de telèfon sanejat. Ajuda a "
+"accelerar les cerques i comparacions."
 
 #. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_mail_thread_phone__message_follower_ids
@@ -166,7 +170,8 @@ msgstr "ID"
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__message_needaction
 #: model:ir.model.fields,help:phone_validation.field_phone_blacklist__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Si està marcat, hi ha nous missatges que requereixen la vostra atenció."
+msgstr ""
+"Si està marcat, hi ha nous missatges que requereixen la vostra atenció."
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__message_has_error
@@ -176,11 +181,14 @@ msgstr "Si està marcat, alguns missatges tenen un error d'entrega."
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__phone_sanitized_blacklisted
-msgid "If the sanitized phone number is on the blacklist, the contact won't receive mass mailing sms anymore, from any list"
-msgstr "Si el número de telèfon sanejat està en la llista negra, el contacte no rebrà més sms de correu massiu, de cap llista"
+msgid ""
+"If the sanitized phone number is on the blacklist, the contact won't receive"
+" mass mailing sms anymore, from any list"
+msgstr ""
+"Si el número de telèfon sanejat està en la llista negra, el contacte no "
+"rebrà més sms de correu massiu, de cap llista"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Impossible number %s: probably invalid number of digits."
@@ -188,23 +196,34 @@ msgstr "Número impossible %s: Probablement el nombre de dígits no és vàlid."
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__mobile_blacklisted
-msgid "Indicates if a blacklisted sanitized phone number is a mobile number. Helps distinguish which number is blacklisted             when there is both a mobile and phone field in a model."
-msgstr "Indica si un número de telèfon a la llista negra és un número de mòbil. Ajuda a distingir quin número està a la llista negra             quan hi ha un camp mòbil i un telèfon en un model."
+msgid ""
+"Indicates if a blacklisted sanitized phone number is a mobile number. Helps "
+"distinguish which number is blacklisted             when there is both a "
+"mobile and phone field in a model."
+msgstr ""
+"Indica si un número de telèfon a la llista negra és un número de mòbil. "
+"Ajuda a distingir quin número està a la llista negra             quan hi ha "
+"un camp mòbil i un telèfon en un model."
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__phone_blacklisted
-msgid "Indicates if a blacklisted sanitized phone number is a phone number. Helps distinguish which number is blacklisted             when there is both a mobile and phone field in a model."
-msgstr "Indica si un número de telèfon a la llista negra és un número de telèfon. Ajuda a distingir quin número està a la llista negra            quan hi ha un camp mòbil i un telèfon en un model."
+msgid ""
+"Indicates if a blacklisted sanitized phone number is a phone number. Helps "
+"distinguish which number is blacklisted             when there is both a "
+"mobile and phone field in a model."
+msgstr ""
+"Indica si un número de telèfon a la llista negra és un número de telèfon. "
+"Ajuda a distingir quin número està a la llista negra            quan hi ha "
+"un camp mòbil i un telèfon en un model."
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Invalid number %s: probably incorrect prefix."
 msgstr "Número no vàlid %s: Probablement el prefix és incorrecte."
 
 #. module: phone_validation
-#. odoo-python
+#: code:addons/phone_validation/models/mail_thread_phone.py:0
 #: code:addons/phone_validation/models/mail_thread_phone.py:0
 #, python-format
 msgid "Invalid primary phone field on model %s"
@@ -215,6 +234,12 @@ msgstr "Camp de telèfon primari no vàlid en el model %s"
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_is_follower
 msgid "Is Follower"
 msgstr "És seguidor"
+
+#. module: phone_validation
+#: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist____last_update
+#: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist_remove____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
 
 #. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__write_uid
@@ -245,13 +270,6 @@ msgstr "Error d'entrega del missatge"
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_ids
 msgid "Messages"
 msgstr "Missatges"
-
-#. module: phone_validation
-#. odoo-python
-#: code:addons/phone_validation/models/mail_thread_phone.py:0
-#, python-format
-msgid "Missing definition of phone fields."
-msgstr "Falta la definició dels camps de telèfon."
 
 #. module: phone_validation
 #: model:ir.model.constraint,message:phone_validation.constraint_phone_blacklist_unique_number
@@ -323,11 +341,13 @@ msgid "Phone/Mobile"
 msgstr "Telèfon/Mòbil"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/mail_thread_phone.py:0
 #, python-format
-msgid "Please enter at least 3 characters when searching a Phone/Mobile number."
-msgstr "Si us plau, introdueixi almenys 3 caràcters quan busqui un número de telèfon/mòbil."
+msgid ""
+"Please enter at least 3 characters when searching a Phone/Mobile number."
+msgstr ""
+"Si us plau, introdueixi almenys 3 caràcters quan busqui un número de "
+"telèfon/mòbil."
 
 #. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist_remove__reason
@@ -346,7 +366,6 @@ msgid "Sanitized Number"
 msgstr "Número Sanitat"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Unable to parse %(phone)s: %(error)s"
@@ -358,11 +377,10 @@ msgid "Unblacklist"
 msgstr "Llista negra"
 
 #. module: phone_validation
-#. odoo-python
-#: code:addons/phone_validation/wizard/phone_blacklist_remove.py:0
+#: code:addons/phone_validation/models/phone_blacklist.py:0
 #, python-format
-msgid "Unblock Reason: %(reason)s"
-msgstr ""
+msgid "Unblacklisting Reason: %s"
+msgstr "Motiu sense llista negra: %s"
 
 #. module: phone_validation
 #: model:ir.model,name:phone_validation.model_res_users

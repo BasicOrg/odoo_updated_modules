@@ -1,7 +1,7 @@
 /** @odoo-module */
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 const { Menu } = spreadsheet;
 
 export class FilterComponent extends Component {
@@ -18,4 +18,4 @@ FilterComponent.template = "spreadsheet_edition.FilterComponent";
 
 FilterComponent.components = { Menu };
 
-FilterComponent.props = {};
+

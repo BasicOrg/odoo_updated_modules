@@ -1,7 +1,10 @@
-/** @odoo-module **/
+odoo.define('website_crm.form', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import FormEditorRegistry from "@website/js/form_editor_registry";
+var core = require('web.core');
+var FormEditorRegistry = require('website.form_editor_registry');
+
+var _t = core._t;
 
 FormEditorRegistry.add('create_lead', {
     formFields: [{
@@ -9,34 +12,34 @@ FormEditorRegistry.add('create_lead', {
         required: true,
         name: 'contact_name',
         fillWith: 'name',
-        string: _t('Your Name'),
+        string: 'Your Name',
     }, {
         type: 'tel',
         name: 'phone',
         fillWith: 'phone',
-        string: _t('Phone Number'),
+        string: 'Phone Number',
     }, {
         type: 'email',
         required: true,
         fillWith: 'email',
         name: 'email_from',
-        string: _t('Your Email'),
+        string: 'Your Email',
     }, {
         type: 'char',
         required: true,
         fillWith: 'commercial_company_name',
         name: 'partner_name',
-        string: _t('Your Company'),
+        string: 'Your Company',
     }, {
         type: 'char',
         modelRequired: true,
         name: 'name',
-        string: _t('Subject'),
+        string: 'Subject',
     }, {
         type: 'text',
         required: true,
         name: 'description',
-        string: _t('Your Question'),
+        string: 'Your Question',
     }],
     fields: [{
         name: 'team_id',
@@ -49,8 +52,9 @@ FormEditorRegistry.add('create_lead', {
         name: 'user_id',
         type: 'many2one',
         relation: 'res.users',
-        domain: [['share', '=', false]],
         string: _t('Salesperson'),
         title: _t('Assign leads/opportunities to a salesperson.'),
     }],
+});
+
 });

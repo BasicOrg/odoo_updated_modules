@@ -24,23 +24,80 @@ except ImportError:
     # `sassc` executable in the path.
     libsass = None
 
-from rjsmin import jsmin as rjsmin
-
 from odoo import release, SUPERUSER_ID, _
 from odoo.http import request
+from odoo.modules.module import get_resource_path
 from odoo.tools import (func, misc, transpile_javascript,
     is_odoo_module, SourceMapGenerator, profiler,
     apply_inheritance_specs)
-from odoo.tools.constants import SCRIPT_EXTENSIONS, STYLE_EXTENSIONS
-from odoo.tools.misc import file_open, file_path
+from odoo.tools.misc import file_open, html_escape as escape
 from odoo.tools.pycompat import to_text
 
 _logger = logging.getLogger(__name__)
 
-ANY_UNIQUE = '_' * 7
 EXTENSIONS = (".js", ".css", ".scss", ".sass", ".less", ".xml")
 
+
 class CompileError(RuntimeError): pass
+def rjsmin(script):
+    """ Minify js with a clever regex.
+    Taken from http://opensource.perlig.de/rjsmin (version 1.1.0)
+    Apache License, Version 2.0 """
+    def subber(match):
+        """ Substitution callback """
+        groups = match.groups()
+        return (
+            groups[0] or
+            groups[1] or
+            (groups[3] and (groups[2] + '\n')) or
+            groups[2] or
+            (groups[5] and "%s%s%s" % (
+                groups[4] and '\n' or '',
+                groups[5],
+                groups[6] and '\n' or '',
+            )) or
+            (groups[7] and '\n') or
+            (groups[8] and ' ') or
+            (groups[9] and ' ') or
+            (groups[10] and ' ') or
+            ''
+        )
+
+    result = re.sub(
+        r'([^\047"\140/\000-\040]+)|((?:(?:\047[^\047\\\r\n]*(?:\\(?:[^'
+        r'\r\n]|\r?\n|\r)[^\047\\\r\n]*)*\047)|(?:"[^"\\\r\n]*(?:\\(?:[^'
+        r'\r\n]|\r?\n|\r)[^"\\\r\n]*)*")|(?:\140[^\140\\]*(?:\\(?:[^\r\n'
+        r']|\r?\n|\r)[^\140\\]*)*\140))[^\047"\140/\000-\040]*)|(?<=[(,='
+        r':\[!&|?{};\r\n+*-])(?:[\000-\011\013\014\016-\040]|(?:/\*[^*]*'
+        r'\*+(?:[^/*][^*]*\*+)*/))*(?:(?:(?://[^\r\n]*)?[\r\n])(?:[\000-'
+        r'\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*)*('
+        r'(?:/(?![\r\n/*])[^/\\\[\r\n]*(?:(?:\\[^\r\n]|(?:\[[^\\\]\r\n]*'
+        r'(?:\\[^\r\n][^\\\]\r\n]*)*\]))[^/\\\[\r\n]*)*/))((?:[\000-\011'
+        r'\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*(?:(?:('
+        r'?://[^\r\n]*)?[\r\n])(?:[\000-\011\013\014\016-\040]|(?:/\*[^*'
+        r']*\*+(?:[^/*][^*]*\*+)*/))*)+(?=[^\000-\040&)+,.:;=?\]|}-]))?|'
+        r'(?<=[\000-#%-,./:-@\[-^\140{-~-]return)(?:[\000-\011\013\014\0'
+        r'16-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*(?:((?:(?://[^\r'
+        r'\n]*)?[\r\n]))(?:[\000-\011\013\014\016-\040]|(?:/\*[^*]*\*+(?'
+        r':[^/*][^*]*\*+)*/))*)*((?:/(?![\r\n/*])[^/\\\[\r\n]*(?:(?:\\[^'
+        r'\r\n]|(?:\[[^\\\]\r\n]*(?:\\[^\r\n][^\\\]\r\n]*)*\]))[^/\\\[\r'
+        r'\n]*)*/))((?:[\000-\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/'
+        r'*][^*]*\*+)*/))*(?:(?:(?://[^\r\n]*)?[\r\n])(?:[\000-\011\013'
+        r'\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*)+(?=[^\000'
+        r'-\040&)+,.:;=?\]|}-]))?|(?<=[^\000-!#%&(*,./:-@\[\\^{|~])(?:['
+        r'\000-\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/)'
+        r')*(?:((?:(?://[^\r\n]*)?[\r\n]))(?:[\000-\011\013\014\016-\040'
+        r']|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*)+(?=[^\000-\040"#%-\047'
+        r')*,./:-@\\-^\140|-~])|(?<=[^\000-#%-,./:-@\[-^\140{-~-])((?:['
+        r'\000-\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/)'
+        r'))+(?=[^\000-#%-,./:-@\[-^\140{-~-])|(?<=\+)((?:[\000-\011\013'
+        r'\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/)))+(?=\+)|(?<'
+        r'=-)((?:[\000-\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]'
+        r'*\*+)*/)))+(?=-)|(?:[\000-\011\013\014\016-\040]|(?:/\*[^*]*\*'
+        r'+(?:[^/*][^*]*\*+)*/))+|(?:(?:(?://[^\r\n]*)?[\r\n])(?:[\000-'
+        r'\011\013\014\016-\040]|(?:/\*[^*]*\*+(?:[^/*][^*]*\*+)*/))*)+', subber, '\n%s\n' % script
+    ).strip()
+    return result
 
 class AssetError(Exception):
     pass
@@ -55,9 +112,9 @@ class AssetsBundle(object):
     rx_preprocess_imports = re.compile("""(@import\s?['"]([^'"]+)['"](;?))""")
     rx_css_split = re.compile("\/\*\! ([a-f0-9-]+) \*\/")
 
-    TRACKED_BUNDLES = ['web.assets_web']
+    TRACKED_BUNDLES = ['web.assets_common', 'web.assets_backend']
 
-    def __init__(self, name, files, external_assets=(), env=None, css=True, js=True, debug_assets=False, rtl=False, assets_params=None):
+    def __init__(self, name, files, env=None, css=True, js=True):
         """
         :param name: bundle name
         :param files: files to be added to the bundle
@@ -71,89 +128,117 @@ class AssetsBundle(object):
         self.stylesheets = []
         self.css_errors = []
         self.files = files
-        self.rtl = rtl
-        self.assets_params = assets_params or {}
-        self.has_css = css
-        self.has_js = js
-        self._checksum_cache = {}
-        self.is_debug_assets = debug_assets
-        self.external_assets = [
-            url
-            for url in external_assets
-            if (css and url.rpartition('.')[2] in STYLE_EXTENSIONS) or (js and url.rpartition('.')[2] in SCRIPT_EXTENSIONS)
-        ]
+        self.user_direction = self.env['res.lang']._lang_get(
+            self.env.context.get('lang') or self.env.user.lang
+        ).direction
 
         # asset-wide html "media" attribute
         for f in files:
-            extension = f['url'].rpartition('.')[2]
-            params = {
-                'url': f['url'],
-                'filename': f['filename'],
-                'inline': f['content'],
-                'last_modified': None if self.is_debug_assets else f.get('last_modified'),
-            }
             if css:
-                css_params = {
-                    'rtl': self.rtl,
-                }
-                if extension == 'sass':
-                    self.stylesheets.append(SassStylesheetAsset(self, **params, **css_params))
-                elif extension == 'scss':
-                    self.stylesheets.append(ScssStylesheetAsset(self, **params, **css_params))
-                elif extension == 'less':
-                    self.stylesheets.append(LessStylesheetAsset(self, **params, **css_params))
-                elif extension == 'css':
-                    self.stylesheets.append(StylesheetAsset(self, **params, **css_params))
+                if f['atype'] == 'text/sass':
+                    self.stylesheets.append(SassStylesheetAsset(self, url=f['url'], filename=f['filename'], inline=f['content'], media=f['media'], direction=self.user_direction))
+                elif f['atype'] == 'text/scss':
+                    self.stylesheets.append(ScssStylesheetAsset(self, url=f['url'], filename=f['filename'], inline=f['content'], media=f['media'], direction=self.user_direction))
+                elif f['atype'] == 'text/less':
+                    self.stylesheets.append(LessStylesheetAsset(self, url=f['url'], filename=f['filename'], inline=f['content'], media=f['media'], direction=self.user_direction))
+                elif f['atype'] == 'text/css':
+                    self.stylesheets.append(StylesheetAsset(self, url=f['url'], filename=f['filename'], inline=f['content'], media=f['media'], direction=self.user_direction))
             if js:
-                if extension == 'js':
-                    self.javascripts.append(JavascriptAsset(self, **params))
-                elif extension == 'xml':
-                    self.templates.append(XMLAsset(self, **params))
+                if f['atype'] == 'text/javascript':
+                    self.javascripts.append(JavascriptAsset(self, url=f['url'], filename=f['filename'], inline=f['content']))
+                elif f['atype'] == 'text/xml':
+                    self.templates.append(XMLAsset(self, url=f['url'], filename=f['filename'], inline=f['content']))
 
-    def get_links(self):
+    def to_node(self, css=True, js=True, debug=False, async_load=False, defer_load=False, lazy_load=False):
         """
-        :returns a list of tuple. a tuple can be (url, None) or (None, inlineContent)
+        :returns [(tagName, attributes, content)] if the tag is auto close
         """
         response = []
+        is_debug_assets = debug and 'assets' in debug
+        if css and self.stylesheets:
+            css_attachments = self.css(is_minified=not is_debug_assets) or []
+            for attachment in css_attachments:
+                if is_debug_assets:
+                    href = self.get_debug_asset_url(extra='rtl/' if self.user_direction == 'rtl' else '',
+                                                    name=css_attachments.name,
+                                                    extension='')
+                else:
+                    href = attachment.url
+                attr = dict([
+                    ["type", "text/css"],
+                    ["rel", "stylesheet"],
+                    ["href", href],
+                    ['data-asset-bundle', self.name],
+                    ['data-asset-version', self.version],
+                ])
+                response.append(("link", attr, None))
+            if self.css_errors:
+                msg = '\n'.join(self.css_errors)
+                response.append(JavascriptAsset(self, inline=self.dialog_message(msg)).to_node())
+                response.append(StylesheetAsset(self, url="/web/static/lib/bootstrap/dist/css/bootstrap.css").to_node())
 
-        if self.has_css and self.stylesheets:
-            response.append(self.get_link('css'))
+        if js and self.javascripts:
+            js_attachment = self.js(is_minified=not is_debug_assets)
+            src = self.get_debug_asset_url(name=js_attachment.name, extension='') if is_debug_assets else js_attachment[0].url
+            attr = dict([
+                ["async", "async" if async_load else None],
+                ["defer", "defer" if defer_load or lazy_load else None],
+                ["type", "text/javascript"],
+                ["data-src" if lazy_load else "src", src],
+                ['data-asset-bundle', self.name],
+                ['data-asset-version', self.version],
+            ])
+            response.append(("script", attr, None))
 
-        if self.has_js and self.javascripts:
-            response.append(self.get_link('js'))
+        return response
 
-        return self.external_assets + response
+    @func.lazy_property
+    def last_modified_combined(self):
+        """Returns last modified date of linked files"""
+        # WebAsset are recreate here when a better solution would be to use self.stylesheets and self.javascripts
+        # We currently have no garanty that they are present since it will depends on js and css parameters
+        # last_modified is actually only usefull for the checksum and checksum should be extension specific since
+        # they are differents bundles. This will be a future work.
 
-    def get_link(self, asset_type):
-        unique = self.get_version(asset_type) if not self.is_debug_assets else 'debug'
-        extension = asset_type if self.is_debug_assets else f'min.{asset_type}'
-        return self.get_asset_url(unique=unique, extension=extension)
+        # changing the logic from max date to combined date to fix bundle invalidation issues.
+        assets = [WebAsset(self, url=f['url'], filename=f['filename'], inline=f['content'])
+            for f in self.files
+            if f['atype'] in ['text/sass', "text/scss", "text/less", "text/css", "text/javascript", "text/xml"]]
+        return ','.join(str(asset.last_modified) for asset in assets)
 
-    def get_version(self, asset_type):
-        return self.get_checksum(asset_type)[0:7]
+    @func.lazy_property
+    def version(self):
+        return self.checksum[0:7]
 
-    def get_checksum(self, asset_type):
+    @func.lazy_property
+    def checksum(self):
         """
         Not really a full checksum.
         We compute a SHA512/256 on the rendered bundle + combined linked files last_modified date
         """
-        if asset_type not in self._checksum_cache:
-            if asset_type == 'css':
-                assets = self.stylesheets
-            elif asset_type == 'js':
-                assets = self.javascripts + self.templates
-            else:
-                raise ValueError(f'Asset type {asset_type} not known')
+        check = u"%s%s" % (json.dumps(self.files, sort_keys=True), self.last_modified_combined)
+        return hashlib.sha512(check.encode('utf-8')).hexdigest()[:64]
 
-            unique_descriptor = ','.join(asset.unique_descriptor for asset in assets)
+    def _get_asset_template_url(self):
+        return "/web/assets/{id}-{unique}/{extra}{name}{sep}{extension}"
 
-            self._checksum_cache[asset_type] = hashlib.sha512(unique_descriptor.encode()).hexdigest()[:64]
-        return self._checksum_cache[asset_type]
+    def _get_asset_url_values(self, id, unique, extra, name, sep, extension):  # extra can contain direction or/and website
+        return {
+            'id': id,
+            'unique': unique,
+            'extra': extra,
+            'name': name,
+            'sep': sep,
+            'extension': extension,
+        }
 
-    def get_asset_url(self, unique='%', extension='%', ignore_params=False):
-        direction = '.rtl' if self.is_css(extension) and self.rtl else ''
-        bundle_name = f"{self.name}{direction}.{extension}"
-        return self.env['ir.asset']._get_asset_bundle_url(bundle_name, unique, self.assets_params, ignore_params)
+    def get_asset_url(self, id='%', unique='%', extra='', name='%', sep="%", extension='%'):
+        return self._get_asset_template_url().format(
+            **self._get_asset_url_values(id=id, unique=unique, extra=extra, name=name, sep=sep, extension=extension)
+        )
+
+    def get_debug_asset_url(self, extra='', name='%', extension='%'):
+        return f"/web/assets/debug/{extra}{name}{extension}"
 
     def _unlink_attachments(self, attachments):
         """ Unlinks attachments without actually calling unlink, so that the ORM cache is not cleared.
@@ -163,16 +248,11 @@ class AssetsBundle(object):
         Such a view would be website.layout when main_object is an ir.ui.view.
         """
         to_delete = set(attach.store_fname for attach in attachments if attach.store_fname)
-        self.env.cr.execute(f"""DELETE FROM {attachments._table} WHERE id IN (
-            SELECT id FROM {attachments._table} WHERE id in %s FOR NO KEY UPDATE SKIP LOCKED
-        )""", [tuple(attachments.ids)])
-        for fpath in to_delete:
-            attachments._file_delete(fpath)
+        self.env.cr.execute(f"DELETE FROM {attachments._table} WHERE id IN %s", [tuple(attachments.ids)])
+        for file_path in to_delete:
+            attachments._file_delete(file_path)
 
-    def is_css(self, extension):
-        return extension in ['css', 'min.css', 'css.map']
-
-    def _clean_attachments(self, extension, keep_url):
+    def clean_attachments(self, extension):
         """ Takes care of deleting any outdated ir.attachment records associated to a bundle before
         saving a fresh one.
 
@@ -183,22 +263,24 @@ class AssetsBundle(object):
         must exclude the current bundle.
         """
         ira = self.env['ir.attachment']
-        to_clean_pattern = self.get_asset_url(
-            unique=ANY_UNIQUE,
-            extension=extension,
+        url = self.get_asset_url(
+            extra='%s' % ('rtl/' if extension in ['css', 'min.css'] and self.user_direction == 'rtl' else ''),
+            name=self.name,
+            sep='',
+            extension='.%s' % extension
         )
-        domain = [
-            ('url', '=like', to_clean_pattern),
-            ('url', '!=', keep_url),
-            ('public', '=', True),
-        ]
 
+        domain = [
+            ('url', '=like', url),
+            '!', ('url', '=like', self.get_asset_url(unique=self.version))
+        ]
         attachments = ira.sudo().search(domain)
         # avoid to invalidate cache if it's already empty (mainly useful for test)
 
         if attachments:
             self._unlink_attachments(attachments)
-            # clear_cache was removed
+            # force bundle invalidation on other workers
+            self.env['ir.qweb'].clear_caches()
 
         return True
 
@@ -211,60 +293,31 @@ class AssetsBundle(object):
         by file name and only return the one with the max id for each group.
 
         :param extension: file extension (js, min.js, css)
-        :param ignore_version: if ignore_version, the url contains a version => web/assets/%/name.extension
+        :param ignore_version: if ignore_version, the url contains a version => web/assets/%-%/name.extension
                                 (the second '%' corresponds to the version),
-                               else: the url contains a version equal to that of the self.get_version(type)
-                                => web/assets/self.get_version(type)/name.extension.
+                               else: the url contains a version equal to that of the self.version
+                                => web/assets/%-self.version/name.extension.
         """
-        unique = ANY_UNIQUE if ignore_version else self.get_version('css' if self.is_css(extension) else 'js')
+        unique = "%" if ignore_version else self.version
+
         url_pattern = self.get_asset_url(
             unique=unique,
-            extension=extension,
+            extra='%s' % ('rtl/' if extension in ['css', 'min.css'] and self.user_direction == 'rtl' else ''),
+            name=self.name,
+            sep='',
+            extension='.%s' % extension
         )
-        query = """
+        self.env.cr.execute("""
              SELECT max(id)
                FROM ir_attachment
               WHERE create_uid = %s
                 AND url like %s
-                AND res_model = 'ir.ui.view'
-                AND res_id = 0
-                AND public = true
            GROUP BY name
            ORDER BY name
-        """
-        self.env.cr.execute(query, [SUPERUSER_ID, url_pattern])
+         """, [SUPERUSER_ID, url_pattern])
 
-        attachment_id = [r[0] for r in self.env.cr.fetchall()]
-        if not attachment_id and not ignore_version:
-            fallback_url_pattern = self.get_asset_url(
-                unique=unique,
-                extension=extension,
-            )
-
-            self.env.cr.execute(query, [SUPERUSER_ID, fallback_url_pattern])
-            similar_attachment_ids = [r[0] for r in self.env.cr.fetchall()]
-            if similar_attachment_ids:
-                similar = self.env['ir.attachment'].sudo().browse(similar_attachment_ids)
-                _logger.info('Found a similar attachment for %s, copying from %s', url_pattern, similar.url)
-                url = self.get_asset_url(
-                    unique=unique,
-                    extension=extension,
-                    ignore_params=True,
-                )
-                values = {
-                    'name': similar.name,
-                    'mimetype': similar.mimetype,
-                    'res_model': 'ir.ui.view',
-                    'res_id': False,
-                    'type': 'binary',
-                    'public': True,
-                    'raw': similar.raw,
-                    'url': url,
-                }
-                attachment = self.env['ir.attachment'].with_user(SUPERUSER_ID).create(values)
-                attachment_id = attachment.id
-
-        return self.env['ir.attachment'].sudo().browse(attachment_id)
+        attachment_ids = [r[0] for r in self.env.cr.fetchall()]
+        return self.env['ir.attachment'].sudo().browse(attachment_ids)
 
     def save_attachment(self, extension, content):
         """Record the given bundle in an ir.attachment and delete
@@ -289,11 +342,6 @@ class AssetsBundle(object):
             'application/json' if extension in ['js.map', 'css.map'] else
             'application/javascript'
         )
-        unique = self.get_version('css' if self.is_css(extension) else 'js')
-        url = self.get_asset_url(
-            unique=unique,
-            extension=extension,
-        )
         values = {
             'name': fname,
             'mimetype': mimetype,
@@ -302,11 +350,25 @@ class AssetsBundle(object):
             'type': 'binary',
             'public': True,
             'raw': content.encode('utf8'),
-            'url': url,
         }
         attachment = ira.with_user(SUPERUSER_ID).create(values)
+        url = self.get_asset_url(
+            id=attachment.id,
+            unique=self.version,
+            extra='%s' % ('rtl/' if extension in ['css', 'min.css'] and self.user_direction == 'rtl' else ''),
+            name=fname,
+            sep='',  # included in fname
+            extension=''
+        )
+        values = {
+            'url': url,
+        }
+        attachment.write(values)
 
-        self._clean_attachments(extension, url)
+        if self.env.context.get('commit_assetsbundle') is True:
+            self.env.cr.commit()
+
+        self.clean_attachments(extension)
 
         # For end-user assets (common and backend), send a message on the bus
         # to invite the user to refresh their browser
@@ -314,12 +376,11 @@ class AssetsBundle(object):
             self.env['bus.bus']._sendone('broadcast', 'bundle_changed', {
                 'server_version': release.version # Needs to be dynamically imported
             })
-            _logger.debug('Asset Changed: bundle: %s -- version: %s', self.name, unique)
+            _logger.debug('Asset Changed: bundle: %s -- version: %s', self.name, self.version)
 
         return attachment
 
-    def js(self):
-        is_minified = not self.is_debug_assets
+    def js(self, is_minified=True):
         extension = 'min.js' if is_minified else 'js'
         js_attachment = self.get_attachments(extension)
 
@@ -337,10 +398,11 @@ class AssetsBundle(object):
                     *  Templates                               *
                     *******************************************/
 
-                    odoo.define('{self.name}.bundle.xml', ['@web/core/registry'], function(require){{
+                    odoo.define('{self.name}.bundle.xml', function(require){{
                         'use strict';
-                        const {{ registry }} = require('@web/core/registry');
-                        registry.category(`xml_templates`).add(`{self.name}`, `{templates}`);
+                        const {{ loadXML }} = require('@web/core/assets');
+                        const templates = `{templates}`;
+                        return loadXML(templates);
                     }});""")
 
             if is_minified:
@@ -362,7 +424,7 @@ class AssetsBundle(object):
                         or self.save_attachment('js.map', '')
         generator = SourceMapGenerator(
             source_root="/".join(
-                [".." for i in range(0, len(self.get_asset_url().split("/")) - 2)]
+                [".." for i in range(0, len(self.get_debug_asset_url(name=self.name).split("/")) - 2)]
                 ) + "/",
         )
         content_bundle_list = []
@@ -454,7 +516,7 @@ class AssetsBundle(object):
                         else:
                             raise ValueError(_("Module %r not loaded or inexistent (try to inherit %r), or templates of addon being loaded %r are misordered (template %r)", parent_addon, parent_name, addon, template_name))
                     if parent_name not in template_dict[parent_addon]:
-                        raise ValueError(_("Cannot create %r because the template to inherit %r is not found.", '%s.%s' % (addon, template_name), '%s.%s' % (parent_addon, parent_name)))
+                        raise ValueError(_("Cannot create %r because the template to inherit %r is not found.") % (f'{addon}.{template_name}', f'{parent_addon}.{parent_name}'))
 
                     # After several performance tests, we found out that deepcopy is the most efficient
                     # solution in this case (compared with copy, xpath with '.' and stringifying).
@@ -526,51 +588,28 @@ class AssetsBundle(object):
         # Returns the string by removing the <root> tag.
         return etree.tostring(root, encoding='unicode')[6:-7]
 
-    def css(self):
-        is_minified = not self.is_debug_assets
+    def css(self, is_minified=True):
         extension = 'min.css' if is_minified else 'css'
         attachments = self.get_attachments(extension)
-        if attachments:
-            return attachments
+        if not attachments:
+            # get css content
+            css = self.preprocess_css()
+            if self.css_errors:
+                return self.get_attachments(extension, ignore_version=True)
 
-        css = self.preprocess_css()
-        if self.css_errors:
-            error_message = '\n'.join(self.css_errors).replace('"', r'\\"').replace('\n', r'\A').replace('*', r'\*')
-            previous_attachment = self.get_attachments(extension, ignore_version=True)
-            previous_css = previous_attachment.raw.decode() if previous_attachment else ''
-            css_error_message_header = '\n\n/* ## CSS error message ##*/'
-            previous_css = previous_css.split(css_error_message_header)[0]
-            css = css_error_message_header.join([
-                previous_css, """
-body::before {
-  font-weight: bold;
-  content: "A css error occured, using an old style to render this page";
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 100000000000;
-  background-color: #C00;
-  color: #DDD;
-}
+            matches = []
+            css = re.sub(self.rx_css_import, lambda matchobj: matches.append(matchobj.group(0)) and '', css)
 
-css_error_message {
-  content: "%s";
-}
-""" % error_message
-            ])
-            return self.save_attachment(extension, css)
+            if is_minified:
+                # move up all @import rules to the top
+                matches.append(css)
+                css = u'\n'.join(matches)
 
-        matches = []
-        css = re.sub(self.rx_css_import, lambda matchobj: matches.append(matchobj.group(0)) and '', css)
-
-        if is_minified:
-            # move up all @import rules to the top
-            matches.append(css)
-            css = u'\n'.join(matches)
-
-            return self.save_attachment(extension, css)
-        else:
-            return self.css_with_sourcemap(u'\n'.join(matches))
+                self.save_attachment(extension, css)
+                attachments = self.get_attachments(extension)
+            else:
+                return self.css_with_sourcemap(u'\n'.join(matches))
+        return attachments
 
     def css_with_sourcemap(self, content_import_rules):
         """Create the ir.attachment representing the not-minified content of the bundleCSS
@@ -581,7 +620,8 @@ css_error_message {
         """
         sourcemap_attachment = self.get_attachments('css.map') \
                                 or self.save_attachment('css.map', '')
-        debug_asset_url = self.get_asset_url(unique='debug')
+        debug_asset_url = self.get_debug_asset_url(name=self.name,
+                                                   extra='rtl/' if self.user_direction == 'rtl' else '')
         generator = SourceMapGenerator(
             source_root="/".join(
                 [".." for i in range(0, len(debug_asset_url.split("/")) - 2)]
@@ -611,6 +651,111 @@ css_error_message {
 
         return css_attachment
 
+    def dialog_message(self, message):
+        """
+        Returns a JS script which shows a warning to the user on page load.
+        TODO: should be refactored to be a base js file whose code is extended
+              by related apps (web/website).
+        """
+        return """
+            (function (message) {
+                'use strict';
+
+                if (window.__assetsBundleErrorSeen) {
+                    return;
+                }
+                window.__assetsBundleErrorSeen = true;
+
+                if (document.readyState !== 'loading') {
+                    onDOMContentLoaded();
+                } else {
+                    window.addEventListener('DOMContentLoaded', () => onDOMContentLoaded());
+                }
+
+                async function onDOMContentLoaded() {
+                    var odoo = window.top.odoo;
+                    if (!odoo || !odoo.define) {
+                        useAlert();
+                        return;
+                    }
+
+                    // Wait for potential JS loading
+                    await new Promise(resolve => {
+                        const noLazyTimeout = setTimeout(() => resolve(), 10); // 10 since need to wait for promise resolutions of odoo.define
+                        odoo.define('AssetsBundle.PotentialLazyLoading', function (require) {
+                            'use strict';
+
+                            const lazyloader = require('web.public.lazyloader');
+
+                            clearTimeout(noLazyTimeout);
+                            lazyloader.allScriptsLoaded.then(() => resolve());
+                        });
+                    });
+
+                    var alertTimeout = setTimeout(useAlert, 10); // 10 since need to wait for promise resolutions of odoo.define
+                    odoo.define('AssetsBundle.ErrorMessage', function (require) {
+                        'use strict';
+
+                        require('web.dom_ready');
+                        var core = require('web.core');
+                        var Dialog = require('web.Dialog');
+
+                        var _t = core._t;
+
+                        clearTimeout(alertTimeout);
+                        new Dialog(null, {
+                            title: _t("Style error"),
+                            $content: $('<div/>')
+                                .append($('<p/>', {text: _t("The style compilation failed, see the error below. Your recent actions may be the cause, please try reverting the changes you made.")}))
+                                .append($('<pre/>', {html: message})),
+                        }).open();
+                    });
+                }
+
+                function useAlert() {
+                    window.alert(message);
+                }
+            })("%s");
+        """ % message.replace('"', '\\"').replace('\n', '&NewLine;')
+
+    def _get_assets_domain_for_already_processed_css(self, assets):
+        """ Method to compute the attachments' domain to search the already process assets (css).
+        This method was created to be overridden.
+        """
+        return [('url', 'in', list(assets.keys()))]
+
+    def is_css_preprocessed(self):
+        preprocessed = True
+        old_attachments = self.env['ir.attachment'].sudo()
+        asset_types = [SassStylesheetAsset, ScssStylesheetAsset, LessStylesheetAsset]
+        if self.user_direction == 'rtl':
+            asset_types.append(StylesheetAsset)
+
+        for atype in asset_types:
+            outdated = False
+            assets = dict((asset.html_url, asset) for asset in self.stylesheets if isinstance(asset, atype))
+            if assets:
+                assets_domain = self._get_assets_domain_for_already_processed_css(assets)
+                attachments = self.env['ir.attachment'].sudo().search(assets_domain)
+                old_attachments += attachments
+                for attachment in attachments:
+                    asset = assets[attachment.url]
+                    if asset.last_modified > attachment['__last_update']:
+                        outdated = True
+                        break
+                    if asset._content is None:
+                        asset._content = (attachment.raw or b'').decode('utf8')
+                        if not asset._content and attachment.file_size > 0:
+                            asset._content = None # file missing, force recompile
+
+                if any(asset._content is None for asset in assets.values()):
+                    outdated = True
+
+                if outdated:
+                    preprocessed = False
+
+        return preprocessed, old_attachments
+
     def preprocess_css(self, debug=False, old_attachments=None):
         """
             Checks if the bundle contains any sass/less content, then compiles it to css.
@@ -627,7 +772,7 @@ css_error_message {
                     compiled += self.compile_css(assets[0].compile, source)
 
             # We want to run rtlcss on normal css, so merge it in compiled
-            if self.rtl:
+            if self.user_direction == 'rtl':
                 stylesheet_assets = [asset for asset in self.stylesheets if not isinstance(asset, (SassStylesheetAsset, ScssStylesheetAsset, LessStylesheetAsset))]
                 compiled += '\n'.join([asset.get_source() for asset in stylesheet_assets])
                 compiled = self.run_rtlcss(compiled)
@@ -696,8 +841,8 @@ css_error_message {
                 rtlcss = misc.find_in_path('rtlcss.cmd')
             except IOError:
                 rtlcss = 'rtlcss'
+        cmd = [rtlcss, '-']
 
-        cmd = [rtlcss, '-c', file_path("base/data/rtlcss.json"), '-']
 
         try:
             rtlcss = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -749,17 +894,18 @@ css_error_message {
 
 
 class WebAsset(object):
+    html_url_format = '%s'
     _content = None
     _filename = None
     _ir_attach = None
     _id = None
 
-    def __init__(self, bundle, inline=None, url=None, filename=None, last_modified=None):
+    def __init__(self, bundle, inline=None, url=None, filename=None):
         self.bundle = bundle
         self.inline = inline
         self._filename = filename
         self.url = url
-        self._last_modified = last_modified
+        self.html_url_args = url
         if not inline and not url:
             raise Exception("An asset should either be inlined or url linked, defined in bundle '%s'" % bundle.name)
 
@@ -769,15 +915,19 @@ class WebAsset(object):
         return self._id
 
     @func.lazy_property
-    def unique_descriptor(self):
-        return f'{self.url or self.inline},{self.last_modified}'
-
-    @func.lazy_property
     def name(self):
         return '<inline asset>' if self.inline else self.url
 
+    @property
+    def html_url(self):
+        return self.html_url_format % self.html_url_args
+
     def stat(self):
         if not (self.inline or self._filename or self._ir_attach):
+            path = (segment for segment in self.url.split('/') if segment)
+            self._filename = get_resource_path(*path)
+            if self._filename:
+                return
             try:
                 # Test url against ir.attachments
                 self._ir_attach = self.bundle.env['ir.attachment'].sudo()._get_serve_attachment(self.url)
@@ -785,20 +935,20 @@ class WebAsset(object):
             except ValueError:
                 raise AssetNotFound("Could not find %s" % self.name)
 
-    @property
+    def to_node(self):
+        raise NotImplementedError()
+
+    @func.lazy_property
     def last_modified(self):
-        if self._last_modified is None:
-            try:
-                self.stat()
-            except Exception:  # most likely nor a file or an attachment, skip it
-                pass
-            if self._filename and self.bundle.is_debug_assets:  # usually _last_modified should be set exept in debug=assets
-                self._last_modified = os.path.getmtime(self._filename)
+        try:
+            self.stat()
+            if self._filename:
+                return datetime.fromtimestamp(os.path.getmtime(self._filename))
             elif self._ir_attach:
-                self._last_modified = self._ir_attach.write_date.timestamp()
-            if not self._last_modified:
-                self._last_modified = -1
-        return self._last_modified
+                return self._ir_attach['__last_update']
+        except Exception:
+            pass
+        return datetime(1970, 1, 1)
 
     @property
     def content(self):
@@ -833,20 +983,10 @@ class WebAsset(object):
 
 class JavascriptAsset(WebAsset):
 
-    def __init__(self, bundle, **kwargs):
-        super().__init__(bundle, **kwargs)
-        self._is_transpiled = None
+    def __init__(self, bundle, inline=None, url=None, filename=None):
+        super().__init__(bundle, inline, url, filename)
+        self.is_transpiled = is_odoo_module(super().content)
         self._converted_content = None
-
-    @property
-    def bundle_version(self):
-        return self.bundle.get_version('js')
-
-    @property
-    def is_transpiled(self):
-        if self._is_transpiled is None:
-            self._is_transpiled = bool(is_odoo_module(super().content))
-        return self._is_transpiled
 
     @property
     def content(self):
@@ -866,6 +1006,21 @@ class JavascriptAsset(WebAsset):
         except AssetError as e:
             return u"console.error(%s);" % json.dumps(to_text(e))
 
+    def to_node(self):
+        if self.url:
+            return ("script", dict([
+                ["type", "text/javascript"],
+                ["src", self.html_url],
+                ['data-asset-bundle', self.bundle.name],
+                ['data-asset-version', self.bundle.version],
+            ]), None)
+        else:
+            return ("script", dict([
+                ["type", "text/javascript"],
+                ["charset", "utf-8"],
+                ['data-asset-bundle', self.bundle.name],
+                ['data-asset-version', self.bundle.version],
+            ]), self.with_header())
 
     def with_header(self, content=None, minimal=True):
         if minimal:
@@ -896,20 +1051,24 @@ class XMLAsset(WebAsset):
         try:
             content = super()._fetch_content()
         except AssetError as e:
-            return u"console.error(%s);" % json.dumps(to_text(e))
+            return f'<error data-asset-bundle={self.bundle.name!r} data-asset-version={self.bundle.version!r}>{json.dumps(to_text(e))}</error>'
 
-        parser = etree.XMLParser(ns_clean=True, remove_comments=True, resolve_entities=False)
-        try:
-            root = etree.fromstring(content.encode('utf-8'), parser=parser)
-        except etree.XMLSyntaxError as e:
-            return f'<t t-name="parsing_error{self.url.replace("/","_")}"><parsererror>Invalid XML template: {self.url} \n {e.msg} </parsererror></t>'
+        parser = etree.XMLParser(ns_clean=True, recover=True, remove_comments=True)
+        root = etree.parse(io.BytesIO(content.encode('utf-8')), parser=parser).getroot()
         if root.tag in ('templates', 'template'):
             return ''.join(etree.tostring(el, encoding='unicode') for el in root)
         return etree.tostring(root, encoding='unicode')
 
-    @property
-    def bundle_version(self):
-        return self.bundle.get_version('js')
+    def to_node(self):
+        attributes = {
+            'async': 'async',
+            'defer': 'defer',
+            'type': 'text/xml',
+            'data-src': self.html_url,
+            'data-asset-bundle': self.bundle.name,
+            'data-asset-version': self.bundle.version,
+        }
+        return ("script", attributes, None)
 
     def with_header(self, content=None):
         if content is None:
@@ -942,18 +1101,21 @@ class StylesheetAsset(WebAsset):
     rx_sourceMap = re.compile(r'(/\*# sourceMappingURL=.*)', re.U)
     rx_charset = re.compile(r'(@charset "[^"]+";)', re.U)
 
-    def __init__(self, *args, rtl=False, **kw):
-        self.rtl = rtl
+    def __init__(self, *args, **kw):
+        self.media = kw.pop('media', None)
+        self.direction = kw.pop('direction', None)
         super().__init__(*args, **kw)
+        if self.direction == 'rtl' and self.url:
+            self.html_url_args = self.url.rsplit('.', 1)
+            self.html_url_format = '%%s/%s/%s.%%s' % ('rtl', self.bundle.name)
+            self.html_url_args = tuple(self.html_url_args)
 
     @property
-    def bundle_version(self):
-        return self.bundle.get_version('css')
-
-    @func.lazy_property
-    def unique_descriptor(self):
-        direction = (self.rtl and 'rtl') or 'ltr'
-        return f'{self.url or self.inline},{self.last_modified},{direction}'
+    def content(self):
+        content = super().content
+        if self.media:
+            content = '@media %s { %s }' % (self.media, content)
+        return content
 
     def _fetch_content(self):
         try:
@@ -995,9 +1157,34 @@ class StylesheetAsset(WebAsset):
         content = re.sub(r' *([{}]) *', r'\1', content)
         return self.with_header(content)
 
+    def to_node(self):
+        if self.url:
+            attr = dict([
+                ["type", "text/css"],
+                ["rel", "stylesheet"],
+                ["href", self.html_url],
+                ["media", escape(to_text(self.media)) if self.media else None],
+                ['data-asset-bundle', self.bundle.name],
+                ['data-asset-version', self.bundle.version],
+            ])
+            return ("link", attr, None)
+        else:
+            attr = dict([
+                ["type", "text/css"],
+                ["media", escape(to_text(self.media)) if self.media else None],
+                ['data-asset-bundle', self.bundle.name],
+                ['data-asset-version', self.bundle.version],
+            ])
+            return ("style", attr, self.with_header())
+
 
 class PreprocessedCSS(StylesheetAsset):
     rx_import = None
+
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.html_url_args = tuple(self.url.rsplit('/', 1))
+        self.html_url_format = '%%s/%s%s/%%s.css' % ('rtl/' if self.direction == 'rtl' else '', self.bundle.name)
 
     def get_command(self):
         raise NotImplementedError
@@ -1057,7 +1244,7 @@ class SassStylesheetAsset(PreprocessedCSS):
 class ScssStylesheetAsset(PreprocessedCSS):
     @property
     def bootstrap_path(self):
-        return file_path('web/static/lib/bootstrap/scss')
+        return get_resource_path('web', 'static', 'lib', 'bootstrap', 'scss')
 
     precision = 8
     output_style = 'expanded'

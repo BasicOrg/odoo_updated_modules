@@ -1,54 +1,74 @@
 /** @odoo-module **/
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { x2ManyCommands } from "@web/core/orm_service";
+import { download } from "@web/core/network/download";
+import { useService } from "@web/core/utils/hooks";
 
-import { SpreadsheetComponent } from "@spreadsheet_edition/bundle/actions/spreadsheet_component";
+import SpreadsheetComponent from "@spreadsheet_edition/bundle/actions/spreadsheet_component";
 import { SpreadsheetName } from "@spreadsheet_edition/bundle/actions/control_panel/spreadsheet_name";
 
-import { Model } from "@odoo/o-spreadsheet";
 import { UNTITLED_SPREADSHEET_NAME } from "@spreadsheet/helpers/constants";
-import { convertFromSpreadsheetTemplate } from "@documents_spreadsheet/bundle/helpers";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+import { getDataFromTemplate } from "@documents_spreadsheet/bundle/helpers";
 import { AbstractSpreadsheetAction } from "@spreadsheet_edition/bundle/actions/abstract_spreadsheet_action";
 import { DocumentsSpreadsheetControlPanel } from "../components/control_panel/spreadsheet_control_panel";
-import { _t } from "@web/core/l10n/translation";
 
-import { useState, useSubEnv } from "@odoo/owl";
+const { Component, useState } = owl;
+const { createEmptyWorkbookData } = spreadsheet.helpers;
 
 export class SpreadsheetAction extends AbstractSpreadsheetAction {
-    resModel = "documents.document";
     setup() {
         super.setup();
-        this.notificationMessage = _t("New spreadsheet created in Documents");
+        this.orm = useService("orm");
+        this.actionService = useService("action");
+        this.notificationMessage = this.env._t("New spreadsheet created in Documents");
+
         this.state = useState({
+            numberOfConnectedUsers: 1,
+            isSynced: true,
             isFavorited: false,
             spreadsheetName: UNTITLED_SPREADSHEET_NAME,
         });
 
-        useSubEnv({
-            newSpreadsheet: this.createNewSpreadsheet.bind(this),
-            makeCopy: this.makeCopy.bind(this),
-            saveAsTemplate: this.saveAsTemplate.bind(this),
-        });
+        this.spreadsheetCollaborative = useService("spreadsheet_collaborative");
+    }
+
+    exposeSpreadsheet(spreadsheet) {
+        this.spreadsheet = spreadsheet;
+    }
+
+    async onWillStart() {
+        await super.onWillStart();
+        this.transportService = this.spreadsheetCollaborative.getCollaborativeChannel(
+            Component.env,
+            "documents.document",
+            this.resId
+        );
+    }
+
+    /**
+     * @override
+     * @returns {Promise<number>}
+     */
+    async _createSpreadsheetRecord() {
+        const data = this.params.createFromTemplateId
+            ? await getDataFromTemplate(this.env, this.orm, this.params.createFromTemplateId)
+            : createEmptyWorkbookData(`${this.env._t("Sheet")}1`);
+        return this.orm.create("documents.document", [
+            {
+                name: this.params.createFromTemplateName || UNTITLED_SPREADSHEET_NAME,
+                mimetype: "application/o-spreadsheet",
+                handler: "spreadsheet",
+                raw: JSON.stringify(data),
+                folder_id: this.params.createInFolderId,
+            },
+        ]);
     }
 
     async _fetchData() {
-        const record = await super._fetchData();
-        if (this.params.convert_from_template) {
-            const convertedData = await convertFromSpreadsheetTemplate(
-                this.env,
-                record.data,
-                record.revisions
-            );
-            // reset the spreadsheet data to the data converted from the template
-            await this.orm.write("documents.document", [this.resId], {
-                spreadsheet_data: JSON.stringify(convertedData),
-            });
-            return {
-                ...record,
-                data: convertedData,
-                revisions: [],
-            };
-        }
+        const record = await this.orm.call("documents.document", "join_spreadsheet_session", [
+            this.resId,
+        ]);
         return record;
     }
 
@@ -56,8 +76,26 @@ export class SpreadsheetAction extends AbstractSpreadsheetAction {
      * @override
      */
     _initializeWith(record) {
-        super._initializeWith(record);
         this.state.isFavorited = record.is_favorited;
+        this.spreadsheetData = JSON.parse(record.raw);
+        this.stateUpdateMessages = record.revisions;
+        this.snapshotRequested = record.snapshot_requested;
+        this.state.spreadsheetName = record.name;
+        this.isReadonly = record.isReadonly;
+    }
+
+    /**
+     * @private
+     * @param {Object}
+     */
+    async _onDownload({ name, files }) {
+        await download({
+            url: "/spreadsheet/xlsx",
+            data: {
+                zip_name: `${name}.xlsx`,
+                files: JSON.stringify(files),
+            },
+        });
     }
 
     /**
@@ -70,19 +108,58 @@ export class SpreadsheetAction extends AbstractSpreadsheetAction {
     }
 
     /**
-     * Create a new sheet and display it
+     * Updates the control panel with the sync status of spreadsheet
+     *
+     * @param {Object}
      */
-    async createNewSpreadsheet() {
-        const action = await this.orm.call("documents.document", "action_open_new_spreadsheet");
-        this._notifyCreation();
-        this.actionService.doAction(action, { clear_breadcrumbs: true });
+    _onSpreadsheetSyncStatus({ synced, numberOfConnectedUsers }) {
+        this.state.isSynced = synced;
+        this.state.numberOfConnectedUsers = numberOfConnectedUsers;
     }
 
-    onSpreadsheetLeftUpdateVals({ data, thumbnail }) {
-        return {
-            ...super.onSpreadsheetLeftUpdateVals({ data, thumbnail }),
-            is_multipage: data.sheets?.length > 1 || false,
+    /**
+     * Reload the spreadsheet if an unexpected revision id is triggered.
+     */
+    _onUnexpectedRevisionId() {
+        this.actionService.doAction("reload_context");
+    }
+
+    /**
+     * Create a copy of the given spreadsheet and display it
+     */
+    async _onMakeCopy({ data, thumbnail }) {
+        const defaultValues = {
+            mimetype: "application/o-spreadsheet",
+            raw: JSON.stringify(data),
+            spreadsheet_snapshot: false,
+            thumbnail,
         };
+        const id = await this.orm.call("documents.document", "copy", [this.resId], {
+            default: defaultValues,
+        });
+        this._openSpreadsheet(id);
+    }
+
+    /**
+     * Create a new sheet and display it
+     */
+    async _onNewSpreadsheet() {
+        const data = {
+            name: UNTITLED_SPREADSHEET_NAME,
+            mimetype: "application/o-spreadsheet",
+            raw: JSON.stringify(createEmptyWorkbookData(`${_t("Sheet")}1`)),
+            handler: "spreadsheet",
+        };
+        const id = await this.orm.create("documents.document", [data]);
+        this._openSpreadsheet(id);
+    }
+
+    async _onSpreadsheetSaved({ data, thumbnail }) {
+        await this.orm.write("documents.document", [this.resId], {
+            thumbnail,
+            raw: JSON.stringify(data),
+            mimetype: "application/o-spreadsheet",
+        });
     }
 
     /**
@@ -91,58 +168,10 @@ export class SpreadsheetAction extends AbstractSpreadsheetAction {
      * @returns {Promise}
      */
     async _onSpreadSheetNameChanged(detail) {
-        await super._onSpreadSheetNameChanged(detail);
         const { name } = detail;
-        return this.orm.write("documents.document", [this.resId], {
-            name,
-        });
-    }
-
-    /**
-     * @private
-     * @returns {Promise}
-     */
-    async saveAsTemplate() {
-        const model = new Model(this.model.exportData(), {
-            custom: {
-                env: this.env,
-                dataSources: this.model.config.custom.dataSources,
-            },
-        });
-        await model.config.custom.dataSources.waitForAllLoaded();
-        const proms = [];
-        for (const pivotId of model.getters.getPivotIds()) {
-            proms.push(model.getters.getPivotDataSource(pivotId).prepareForTemplateGeneration());
-        }
-        await Promise.all(proms);
-        model.dispatch("CONVERT_PIVOT_TO_TEMPLATE");
-        const data = model.exportData();
-        const name = this.state.spreadsheetName;
-
-        this.actionService.doAction("documents_spreadsheet.save_spreadsheet_template_action", {
-            additionalContext: {
-                default_template_name: _t("%s - Template", name),
-                default_spreadsheet_data: JSON.stringify(data),
-                default_thumbnail: this.getThumbnail(),
-            },
-        });
-    }
-
-    async shareSpreadsheet(data, excelExport) {
-        const vals = {
-            document_ids: [x2ManyCommands.set([this.resId])],
-            folder_id: this.record.folder_id,
-            type: "ids",
-            spreadsheet_shares: [
-                {
-                    document_id: this.resId,
-                    spreadsheet_data: JSON.stringify(data),
-                    excel_files: excelExport.files,
-                },
-            ],
-        };
-        const url = await this.orm.call("documents.share", "action_get_share_url", [vals]);
-        return url;
+        this.state.spreadsheetName = name;
+        this.env.config.setDisplayName(this.state.spreadsheetName);
+        return await this.orm.write("documents.document", [this.resId], { name });
     }
 }
 

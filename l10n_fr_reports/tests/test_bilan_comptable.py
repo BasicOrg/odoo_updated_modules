@@ -10,7 +10,7 @@ from odoo import fields, Command
 class TestBilanComptable(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='fr'):
+    def setUpClass(cls, chart_template_ref='l10n_fr.l10n_fr_pcg_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
     def _get_line(self, lines, line_id):
@@ -18,6 +18,9 @@ class TestBilanComptable(TestAccountReportsCommon):
             line for line in lines
             if line['id'].endswith(line_id)
         ]
+
+    def _build_generic_id_from_financial_line(self, financial_rep_ln_xmlid):
+        return f'-account.report.line-{self.env.ref(financial_rep_ln_xmlid).id}'
 
     def test_bilan_comptable_bank_actif_passif(self):
         """
@@ -30,7 +33,7 @@ class TestBilanComptable(TestAccountReportsCommon):
 
         bank_journal = self.company_data['default_journal_bank']
         bank_account = bank_journal.default_account_id
-        bank_account.code = '512005'
+        bank_account.code = '512004'
 
         # Create a move to bring the bank_journal to a positive value.
         move_2019_1 = self.env['account.move'].create({
@@ -56,15 +59,14 @@ class TestBilanComptable(TestAccountReportsCommon):
         move_2019_1.line_ids.flush_recordset()
 
         # Check that it appears in the "Actif" section of the report.
-        line_id = self._get_basic_line_dict_id_from_report_line_ref('l10n_fr_reports.account_financial_report_line_03_01_3_2_fr_bilan_actif')
+        line_id = self._build_generic_id_from_financial_line('l10n_fr_reports.account_financial_report_line_03_01_3_2_fr_bilan_actif')
         self.assertLinesValues(
             self._get_line(report._get_lines(options), line_id),
             #   Name                        Balance
             [   0,                          3],
             [
-                ('Availability',          100.0),
+                ('Disponibilités',          100.0),
             ],
-            options,
         )
 
         # Create a second move to bring the bank_journal to a negative value.
@@ -81,13 +83,12 @@ class TestBilanComptable(TestAccountReportsCommon):
         move_2019_2.line_ids.flush_recordset()
 
         # Check to make sure that it now appears in the "Passif" section of the report.
-        line_id = self._get_basic_line_dict_id_from_report_line_ref('l10n_fr_reports.account_financial_report_line_05_0_3_fr_bilan_passif')
+        line_id = self._build_generic_id_from_financial_line('l10n_fr_reports.account_financial_report_line_05_0_3_fr_bilan_passif')
         self.assertLinesValues(
             self._get_line(report._get_lines(options), line_id),
             #   Name                                                            Balance
             [   0,                                                              3],
             [
-                ('Borrowings and debts with credit institutions',      200.0),
+                ('Emprunts et dettes auprès des établissements de crédit',      200.0),
             ],
-            options,
         )

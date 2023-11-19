@@ -3,16 +3,16 @@
 # 	* account_debit_note
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-04-19 13:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -25,9 +25,14 @@ msgid "<span class=\"o_stat_text\">Debit Notes</span>"
 msgstr "<span class=\"o_stat_text\">إشعارات مدينة</span>"
 
 #. module: account_debit_note
+#: model_terms:ir.ui.view,arch_db:account_debit_note.view_move_form_debit
+msgid "Add Debit Note"
+msgstr "إضافة إشعار مدين "
+
+#. module: account_debit_note
 #: model:ir.model,name:account_debit_note.model_account_debit_note
 msgid "Add Debit Note wizard"
-msgstr "إضافة مُعالج إشعار مدين "
+msgstr "إضافة مُعالج إشعار المدين "
 
 #. module: account_debit_note
 #: model_terms:ir.ui.view,arch_db:account_debit_note.view_account_debit_note
@@ -61,18 +66,12 @@ msgid "Created on"
 msgstr "أنشئ في"
 
 #. module: account_debit_note
-#: model:ir.actions.server,name:account_debit_note.action_move_debit_note
-msgid "Debit Note"
-msgstr "إشعار مدين "
-
-#. module: account_debit_note
 #: model:ir.model.fields,field_description:account_debit_note.field_account_debit_note__date
 #: model_terms:ir.ui.view,arch_db:account_debit_note.view_account_debit_note
 msgid "Debit Note Date"
 msgstr "تاريخ إشعار المدين "
 
 #. module: account_debit_note
-#. odoo-python
 #: code:addons/account_debit_note/models/account_move.py:0
 #: code:addons/account_debit_note/wizard/account_debit_note.py:0
 #: model:ir.model.fields,field_description:account_debit_note.field_account_bank_statement_line__debit_note_ids
@@ -96,7 +95,7 @@ msgstr "المُعرف"
 #: model:ir.model.fields,help:account_debit_note.field_account_debit_note__journal_id
 msgid "If empty, uses the journal of the journal entry to be debited."
 msgstr ""
-"إذا كان فارغاً، يقوم باستخدام دفتر اليومية الخاص بقيد اليومية ليتم خصمها. "
+"إذا كان فارغاً، يقوم باستخدام اليومية الخاصة بقيد اليومية ليتم خصمها. "
 
 #. module: account_debit_note
 #: model:ir.model.fields,help:account_debit_note.field_account_debit_note__copy_lines
@@ -116,6 +115,11 @@ msgstr "قيد اليومية"
 #: model:ir.model.fields,field_description:account_debit_note.field_account_debit_note__journal_type
 msgid "Journal Type"
 msgstr "نوع اليومية "
+
+#. module: account_debit_note
+#: model:ir.model.fields,field_description:account_debit_note.field_account_debit_note____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: account_debit_note
 #: model:ir.model.fields,field_description:account_debit_note.field_account_debit_note__write_uid
@@ -173,11 +177,10 @@ msgid "The debit notes created for this invoice"
 msgstr "الإشعارات المدينة التي تم إنشاؤها لهذه الفاتورة "
 
 #. module: account_debit_note
-#. odoo-python
 #: code:addons/account_debit_note/wizard/account_debit_note.py:0
 #, python-format
 msgid "This debit note was created from: %s"
-msgstr "تم إنشاء إشعار الخصم هذا من: %s "
+msgstr ""
 
 #. module: account_debit_note
 #: model:ir.model.fields,field_description:account_debit_note.field_account_debit_note__journal_id
@@ -185,28 +188,7 @@ msgid "Use Specific Journal"
 msgstr "استخدام دفتر يومية محدد"
 
 #. module: account_debit_note
-#. odoo-python
-#: code:addons/account_debit_note/wizard/account_debit_note.py:0
-#, python-format
-msgid ""
-"You can make a debit note only for a Customer Invoice, a Customer Credit "
-"Note, a Vendor Bill or a Vendor Credit Note."
-msgstr ""
-"يمكنك إنشاء إشعار مدين فقط لفاتورة العميل، أو لإشعار العميل الدائن، أو "
-"لفاتورة مورّد، أو إشعار المورّد الدائن. "
-
-#. module: account_debit_note
-#. odoo-python
 #: code:addons/account_debit_note/wizard/account_debit_note.py:0
 #, python-format
 msgid "You can only debit posted moves."
 msgstr "يمكنك فقط خصم الحركات المُرحّلة. "
-
-#. module: account_debit_note
-#. odoo-python
-#: code:addons/account_debit_note/wizard/account_debit_note.py:0
-#, python-format
-msgid ""
-"You can't make a debit note for an invoice that is already linked to a debit"
-" note."
-msgstr "لا يمكنك إنشاء إشعار مدين لفاتورة قد تم ربطها بإشعار مدين بالفعل. "

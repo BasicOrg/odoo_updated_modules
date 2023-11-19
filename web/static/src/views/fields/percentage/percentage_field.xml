@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.PercentageField">
+    <t t-name="web.PercentageField" owl="1">
         <t t-if="props.readonly">
             <span t-esc="formattedValue"/>
         </t>
@@ -12,7 +12,7 @@
                     t-attf-class="o_input"
                     t-att-placeholder="props.placeholder"
                     type="text"
-                    inputmode="decimal"
+                    inputmode="numeric"
                 />
                 <span>%</span>
             </div>

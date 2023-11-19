@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import PopupWidget from '@website/snippets/s_popup/000';
+import PopupWidget from 'website.s_popup';
 
 PopupWidget.include({
 
@@ -16,17 +16,8 @@ PopupWidget.include({
     _canShowPopup() {
         if (
             this.$el.is('.o_newsletter_popup') &&
-            this.$el.find('input.js_subscribe_value, input.js_subscribe_email').prop('disabled') // js_subscribe_email is kept by compatibility (it was the old name of js_subscribe_value)
+            this.$el.find('input.js_subscribe_value').prop('disabled')
         ) {
-            return false;
-        }
-        return this._super(...arguments);
-    },
-    /**
-     * @override
-     */
-    _canBtnPrimaryClosePopup(primaryBtnEl) {
-        if (primaryBtnEl.classList.contains('js_subscribe_btn')) {
             return false;
         }
         return this._super(...arguments);

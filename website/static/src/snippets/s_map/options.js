@@ -1,23 +1,17 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import options from '@web_editor/js/editor/snippets.options';
-import {generateGMapIframe, generateGMapLink} from '@website/js/utils';
+import {_t} from 'web.core';
+import options from 'web_editor.snippets.options';
+import {generateGMapIframe, generateGMapLink} from 'website.utils';
 
 options.registry.Map = options.Class.extend({
     /**
      * @override
      */
     onBuilt() {
-        // The iframe is added here to the snippet when it is dropped onto the
-        // page. However, in the case where a custom snippet saved by the user
-        // is dropped, the iframe already exists and doesn't need to be added
-        // again.
-        if (!this.$target[0].querySelector('.s_map_embedded')) {
-            const iframeEl = generateGMapIframe();
-            this.$target[0].querySelector('.s_map_color_filter').before(iframeEl);
-            this._updateSource();
-        }
+        const iframeEl = generateGMapIframe();
+        this.$target[0].querySelector('.s_map_color_filter').before(iframeEl);
+        this._updateSource();
     },
 
     //--------------------------------------------------------------------------

@@ -6,6 +6,10 @@ from odoo import api, fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    payment_provider_onboarding_state = fields.Selection(
+        string="State of the onboarding payment provider step",
+        selection=[('not_done', "Not done"), ('just_done', "Just done"), ('done', "Done")],
+        default='not_done')
     payment_onboarding_payment_method = fields.Selection(
         string="Selected onboarding payment method",
         selection=[
@@ -27,20 +31,26 @@ class ResCompany(models.Model):
         """
         self.env.company.get_chart_of_accounts_or_fail()
 
-        self._install_modules(['payment_stripe'])
+        self._install_modules(['payment_paypal', 'payment_stripe', 'account_payment'])
 
         # Create a new env including the freshly installed module(s)
         new_env = api.Environment(self.env.cr, self.env.uid, self.env.context)
 
+        default_journal = new_env['account.journal'].search(
+            [('type', '=', 'bank'), ('company_id', '=', new_env.company.id)], limit=1
+        )
+
         # Configure Stripe
-        stripe_provider = new_env['payment.provider'].search([
-            *self.env['payment.provider']._check_company_domain(self.env.company),
-            ('code', '=', 'stripe')
-        ], limit=1)
-        if not stripe_provider:
-            base_provider = self.env.ref('payment.payment_provider_stripe')
-            # Use sudo to access payment provider record that can be in different company.
-            stripe_provider = base_provider.sudo().copy(default={'company_id': self.env.company.id})
+        stripe_provider = new_env.ref('payment.payment_provider_stripe')
+        stripe_provider.journal_id = stripe_provider.journal_id or default_journal
+        if stripe_provider.state == 'disabled':  # The onboarding step has never been run
+            # Configure PayPal
+            paypal_provider = new_env.ref('payment.payment_provider_paypal')
+            if not paypal_provider.paypal_email_account:
+                paypal_provider.paypal_email_account = new_env.user.email or new_env.company.email
+            if paypal_provider.state == 'disabled' and paypal_provider.paypal_email_account:
+                paypal_provider.state = 'enabled'
+            paypal_provider.journal_id = paypal_provider.journal_id or default_journal
 
         return stripe_provider.action_stripe_connect_account(menu_id=menu_id)
 
@@ -48,3 +58,15 @@ class ResCompany(models.Model):
         modules_sudo = self.env['ir.module.module'].sudo().search([('name', 'in', module_names)])
         STATES = ['installed', 'to install', 'to upgrade']
         modules_sudo.filtered(lambda m: m.state not in STATES).button_immediate_install()
+
+    def _mark_payment_onboarding_step_as_done(self):
+        """ Mark the payment onboarding step as done.
+
+        :return: None
+        """
+        self.set_onboarding_step_done('payment_provider_onboarding_state')
+
+    def get_account_invoice_onboarding_steps_states_names(self):
+        """ Override of account. """
+        steps = super().get_account_invoice_onboarding_steps_states_names()
+        return steps + ['payment_provider_onboarding_state']

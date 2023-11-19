@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<template id="wysiwyg_iframe_editor_assets" name="Editor assets for wysiwyg iframe content" groups="base.group_user">
+    <t t-call-assets="web.assets_common" t-css="false" />
+    <t t-call-assets="web_editor.assets_wysiwyg" t-css="false" />
+</template>
+
+<template id="assets_edit_html_field" name="Wysiwyg Editor Assets for html field (style-inline)" groups="base.group_user,base.group_portal">
+    <t t-call-assets="web.assets_common" t-js="false"/>
+    <t t-call-assets="web_editor.assets_wysiwyg" t-js="false"/>
+</template>
+
 <!--
     The web_editor.colorpicker template regroups section of colorpicker menu for website customization
     (text foreground/background but also snippet background color option).
@@ -17,7 +27,7 @@
     If a color is no longer used you need to add the d-none class to it and not remove it from this file !!
     Else you will no longer be able to use them.
 -->
-<template id="web_editor.colorpicker" name="Color-Picker" groups="base.group_user,base.group_portal">
+<template id="web_editor.colorpicker" name="Color-Picker" groups="base.group_user">
     <colorpicker>
         <div class="o_colorpicker_section" data-name="theme">
             <button data-color="o-color-1"/>
@@ -177,7 +187,7 @@
             <script src="/web_editor/static/src/js/editor/odoo-editor/test/lib/mocha.js"></script>
             <script src="/web_editor/static/src/js/editor/odoo-editor/test/lib/chai.js"></script>
             <script>mocha.setup('bdd').fullTrace()</script>
-            <t t-call-assets="web_editor.mocha_tests"/>
+            <script src="/web_editor/static/src/js/editor/odoo-editor/test/editor-test.js" type="module"></script>
         </t>
         <div id="mocha"></div>
         <div id="editor-test-container"></div>

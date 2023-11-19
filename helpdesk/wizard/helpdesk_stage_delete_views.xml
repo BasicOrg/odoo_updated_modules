@@ -7,18 +7,18 @@
             <form string="Delete Stage">
                 <field name="ticket_count" invisible="1"/>
                 <field name="stages_active" invisible="1"/>
-                <div invisible="ticket_count &gt; 0">
-                    <p>Are you sure you want to delete these stages?</p>
+                <div attrs="{'invisible': [('ticket_count', '>', 0)]}">
+                    <p>Are you sure you want to delete those stages ?</p>
                 </div>
-                <div invisible="not stages_active or ticket_count == 0">
+                <div attrs="{'invisible': ['|', ('stages_active', '=', False), ('ticket_count', '=', 0)]}">
                     <p>You cannot delete stages containing tickets. You can either archive them or first delete all of their tickets.</p>
                 </div>
-                <div invisible="stages_active or ticket_count == 0">
+                <div attrs="{'invisible': ['|', ('stages_active', '=', True), ('ticket_count', '=', 0)]}">
                     <p>You cannot delete stages containing tickets. You should first delete all of their tickets.</p>
                 </div>
                 <footer>
-                    <button string="Archive Stages" type="object" name="action_archive" class="btn btn-primary" invisible="not stages_active or ticket_count == 0" />
-                    <button string="Delete" type="object" name="action_unlink" class="btn btn-primary" invisible="ticket_count &gt; 0" />
+                    <button string="Archive Stages" type="object" name="action_archive" class="btn btn-primary" attrs="{'invisible': ['|', ('stages_active', '=', False), ('ticket_count', '=', 0)]}" />
+                    <button string="Delete" type="object" name="action_unlink" class="btn btn-primary" attrs="{'invisible': [('ticket_count', '>', 0)]}" />
                     <button string="Discard" special="cancel" />
                 </footer>
             </form>

@@ -3,17 +3,24 @@
 # 	* account_reports
 # 
 # Translators:
-# Rasareeyar Lappiam, 2023
-# Wil Odoo, 2023
+# Phinitnan Chanasabaeng <crackerizer@gmail.com>, 2022
+# surapas haemaprasertsuk <surapas@gmail.com>, 2022
+# Pornvibool Tippayawat <pornvibool.t@gmail.com>, 2022
+# Potsawat Manuthamathorn <firmpotsawat@hotmail.com>, 2022
+# Odoo Thaidev <odoothaidev@gmail.com>, 2022
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Chatcha Mee, 2022
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-23 08:23+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,174 +28,364 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid " and %s others"
-msgstr "และอีก %s รายการ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid " and one other"
-msgstr "และอีกอันหนึ่ง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "\" account balance is affected by"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "%s is not a numeric value"
-msgstr "%s ไม่ใช่ค่าตัวเลข"
+msgid ""
+"%s for Transactions(+) imported from your online bank account (dated today) "
+"that are not yet reconciled in Odoo (Waiting the final reconciliation "
+"allowing finding the right account)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "%s selected"
-msgstr "เลือก %s แล้ว"
+msgid ""
+"%s for Transactions(-) imported from your online bank account (dated today) "
+"that are not yet reconciled in Odoo (Waiting the final reconciliation "
+"allowing finding the right account)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_cell_template_unexplained_difference
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_general_ledger_report
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "&amp;nbsp;"
+msgstr "&amp;nbsp;"
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "'Open General Ledger' caret option is only available form report lines "
 "targetting accounts."
 msgstr ""
-"ตัวเลือกคาเร็ต 'เปิดบัญชีแยกประเภททั่วไป' "
-"ใช้ได้เฉพาะบรรทัดรายงานแบบฟอร์มที่กำหนดเป้าหมายบัญชีเท่านั้น"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid ""
-"'View Bank Statement' caret option is only available for report lines "
-"targeting bank statements."
-msgstr ""
-"ตัวเลือกคาเร็ต 'ดูรายการเดินบัญชีธนาคาร' "
-"ใช้ได้เฉพาะกับรายการรายงานที่กำหนดเป้าหมายรายการเดินบัญชีจากธนาคารเท่านั้น"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "'external' engine does not support groupby, limit nor offset."
-msgstr "กลไก 'ภายนอก' ไม่รองรับการจัดกลุ่มตาม จำกัด หรือออฟเซ็ต"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "(%s lines)"
-msgstr "(%s บรรทัด)"
+msgid "(+) Outstanding Receipts"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "(1 line)"
-msgstr "(1 บรรทัด)"
+msgid "(-) Outstanding Payments"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "(No Group)"
-msgstr "(ไม่มีกลุ่ม)"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template_journal_audit_report
+msgid ", Grouped by month"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template_journal_audit_report
+msgid ", Sorted by date"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template_journal_audit_report
+msgid ", Sorted by number"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_move_form_vat_return
 msgid "-> Check your tax report"
-msgstr "-> ตรวจสอบรายงานภาษีของคุณ"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_move_form_vat_return
 msgid "-> Refresh"
-msgstr "-> รีเฟรช"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period1
 #: model:account.report.column,name:account_reports.aged_receivable_report_period1
 msgid "1-30"
-msgstr "1-30"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period2
 #: model:account.report.column,name:account_reports.aged_receivable_report_period2
 msgid "31-60"
-msgstr "31-60"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period3
 #: model:account.report.column,name:account_reports.aged_receivable_report_period3
 msgid "61-90"
-msgstr "61-90"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period4
 #: model:account.report.column,name:account_reports.aged_receivable_report_period4
 msgid "91-120"
-msgstr "91-120"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_file_download_error_wizard_form
-msgid ""
-"<i>Errors marked with <i class=\"fa fa-warning\"/> are critical and prevent "
-"the file generation.</i>"
 msgstr ""
-"<i>ข้อผิดพลาดที่ทำเครื่องหมายไว้ <i class=\"fa fa-warning\"/> "
-"ถือเป็นสิ่งสำคัญและขัดขวางการสร้างไฟล์</i>"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.partner_view_buttons
-msgid "<span class=\"o_stat_text\">Partner Ledger</span>"
-msgstr "<span class=\"o_stat_text\">บัญชีแยกประเภทพาร์ทเนอร์</span>"
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "<br/>Companies:"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_file_download_error_wizard_form
-msgid "<span>One or more error(s) occurred during file generation:</span>"
-msgstr "<span>เกิดข้อผิดพลาดอย่างน้อยหนึ่งรายการระหว่างการสร้างไฟล์:</span>"
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template
+msgid ""
+"<i class=\"fa fa-caret-right invisible\" role=\"img\" aria-"
+"label=\"Unfolded\" title=\"Unfolded\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+msgid "<span class=\"fa fa-bar-chart\"/> Comparison:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_variants
+msgid ""
+"<span class=\"fa fa-book\"/>\n"
+"                Report:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_fiscal_position_choser
+msgid ""
+"<span class=\"fa fa-book\"/>\n"
+"            Fiscal Position:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_journals
+msgid ""
+"<span class=\"fa fa-book\"/>\n"
+"            Journals:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "<span class=\"fa fa-calendar\" title=\"Dates\" role=\"img\" aria-label=\"Dates\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+msgid ""
+"<span class=\"fa fa-circle color-green trust-partner\" role=\"img\" aria-"
+"label=\"Balance is good\" title=\"Balance is good\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+msgid ""
+"<span class=\"fa fa-circle color-green trust-partner\" role=\"img\" aria-"
+"label=\"Partner ledger is good\" title=\"Partner ledger is good\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+msgid ""
+"<span class=\"fa fa-circle color-red trust-partner\" role=\"img\" aria-"
+"label=\"Balance is bad\" title=\"Balance is bad\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+msgid ""
+"<span class=\"fa fa-circle color-red trust-partner\" role=\"img\" aria-"
+"label=\"Partner ledger is bad\" title=\"Partner ledger is bad\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+msgid ""
+"<span class=\"fa fa-circle color-transparent trust-partner\" role=\"img\" "
+"aria-label=\"Balance is normal\" title=\"Balance is normal\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+msgid ""
+"<span class=\"fa fa-circle color-transparent trust-partner\" role=\"img\" "
+"aria-label=\"Partner ledger is normal\" title=\"Partner ledger is normal\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.ec_sales_with_tax_filter_search_template
+msgid ""
+"<span class=\"fa fa-filter\"/>\n"
+"                    Codes:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_groupby_fields
+msgid ""
+"<span class=\"fa fa-filter\"/>\n"
+"            Group By:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_horizontal_groups
+msgid ""
+"<span class=\"fa fa-filter\"/>\n"
+"            Horizontal Group:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+msgid "<span class=\"fa fa-filter\"/> Options:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_analytic
+msgid "<span class=\"fa fa-folder-open\"/> Analytic"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_partner
+msgid "<span class=\"fa fa-folder-open\"/> Partners"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_tax_unit
+msgid ""
+"<span class=\"fa fa-home\"/>\n"
+"            Tax Unit:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" "
+"title=\"ค่าที่ตั้งไว้นี้เป็นค่าเฉพาะบริษัท\" "
+"groups=\"base.group_multi_company\"/>"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_search_template
+msgid "<span class=\"fa fa-line-chart\"/> Exchange Rates"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_account_type
+msgid ""
+"<span class=\"fa fa-user\"/>\n"
+"            Account:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.footnotes_template
+msgid ""
+"<span class=\"o_account_reports_footnote_icons\"><i class=\"fa fa-fw fa-"
+"trash-o\" role=\"img\" aria-label=\"Delete\" title=\"Delete\"/></span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">Tax Return Periodicity</span>\n"
+"                        <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.main_template_with_filter_input_accounts
+msgid ""
+"<span class=\"searchIcon\"><i class=\"fa fa-search\" role=\"img\" aria-"
+"label=\"Search\" title=\"Search\"/></span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.sales_report_main_template
+msgid ""
+"<span>Intrastat taxes are applied on unexpected journal entries "
+"(international or between non intrastat countries).</span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.template_tax_report
+msgid ""
+"<span>Please note that the report may include some rounding differences "
+"towards the bookings.</span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.sales_report_main_template
+msgid "<span>Some partners are missing a VAT number.</span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.template_tax_report
+msgid ""
+"<span>This company is part of a tax unit. You're currently not viewing the "
+"whole unit; to change that, tick the \"aggregate\" option of \"tax unit\" "
+"menu.</span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_main_template
+msgid "<span>This report only displays the data of the active company.</span>"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
+msgid "=&gt; Audit"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
+msgid "=&gt; Journal Items"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.constraint,message:account_reports.constraint_account_report_horizontal_group_name_uniq
 msgid "A horizontal group with the same name already exists."
-msgstr "มีกลุ่มแนวนอนที่ใช้ชื่อเดียวกันนี้อยู่แล้ว"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/widgets/account_report_x2many/account_report_x2many.js:0
-#, python-format
-msgid "A line with a 'Group By' value cannot have children."
 msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_tax.py:0
 #, python-format
 msgid ""
 "A tax unit can only be created between companies sharing the same main "
 "currency."
 msgstr ""
-"หน่วยภาษีสามารถสร้างได้ระหว่างบริษัทที่ใช้สกุลเงินหลักเดียวกันเท่านั้น"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_tax.py:0
-#, python-format
-msgid ""
-"A tax unit must contain a minimum of two companies. You might want to delete"
-" the unit."
-msgstr "หน่วยภาษีต้องมีอย่างน้อย 2 บริษัท คุณอาจต้องการลบหน่วยออก"
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_total_assets0
 msgid "ASSETS"
-msgstr "สินทรัพย์"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_journal_report.py:0
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #: model:account.report.column,name:account_reports.aged_payable_report_account_name
 #: model:account.report.column,name:account_reports.aged_receivable_report_account_name
@@ -205,64 +402,45 @@ msgid "Account Chart Template"
 msgstr "เทมเพลตแผนภูมิบัญชี"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Account Code"
-msgstr "รหัสบัญชี"
-
-#. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_display_representative_field
 msgid "Account Display Representative Field"
-msgstr "ข้อมูลตัวแทนการแสดงบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report_custom_handler
 msgid "Account Report Custom Handler"
-msgstr "ตัวจัดการรายงานบัญชีแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report_footnote
 msgid "Account Report Footnote"
-msgstr "คำอธิบายเพิ่มเติมของรายงานบัญชี"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_tax_report_handler
-msgid "Account Report Handler for Tax Reports"
-msgstr "ตัวจัดการรายงานบัญชีสำหรับรายงานภาษี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_partner__account_represented_company_ids
 #: model:ir.model.fields,field_description:account_reports.field_res_users__account_represented_company_ids
 msgid "Account Represented Company"
-msgstr "บริษัทตัวแทนบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_revaluation_journal_id
 msgid "Account Revaluation Journal"
-msgstr "สมุดรายวันการประเมินค่าบัญชีใหม่"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_account_type.xml:0
-#, python-format
-msgid "Account:"
-msgstr "บัญชี:"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_representative_id
 msgid "Accounting Firm"
-msgstr "สำนักงานบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report
 msgid "Accounting Report"
-msgstr "รายงานการบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report_line
 msgid "Accounting Report Line"
-msgstr "บรรทัดรายงานบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.actions.act_window,name:account_reports.action_account_report_tree
@@ -272,29 +450,21 @@ msgid "Accounting Reports"
 msgstr "รายงานทางบัญชี"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_analytic.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_analytic_groupby.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Accounts"
 msgstr "บัญชี"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
-msgid "Accounts Coverage Report"
-msgstr "รายงานความครอบคลุมของบัญชี"
-
-#. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_to_adjust_adjustment
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_to_adjust_balance_currency
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_to_adjust_balance_current
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_to_adjust_balance_operation
 #: model:account.report.line,name:account_reports.multicurrency_revaluation_to_adjust
 msgid "Accounts To Adjust"
-msgstr "บัญชีที่ต้องปรับ"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Accounts coverage"
-msgstr "ครอบคลุมบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_mail_activity_type__category
@@ -320,17 +490,17 @@ msgid "Activity Type"
 msgstr "ประเภทกิจกรรม"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/widgets/account_report_x2many/account_report_x2many.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
-msgid "Add a line"
-msgstr "เพิ่มไลน์"
+msgid "Add a note"
+msgstr "เพิ่มโน้ต"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__totals_below_sections
 #: model:ir.model.fields,field_description:account_reports.field_res_config_settings__totals_below_sections
 msgid "Add totals below sections"
-msgstr "เพิ่มผลรวมด้านล่างในส่วน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.multicurrency_revaluation_report_adjustment
@@ -338,25 +508,22 @@ msgid "Adjustment"
 msgstr "การปรับ"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_multicurrency_revaluation_report.py:0
 #, python-format
 msgid "Adjustment Entry"
 msgstr "บันทึกปรับปรุง"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Advance Payments received from customers"
-msgstr "เงินรับล่วงหน้าจากลูกค้าแล้ว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Advance payments made to suppliers"
-msgstr "เงินจ่ายล่วงหน้าให้กับซัพพลายเออร์"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
@@ -366,155 +533,144 @@ msgstr "ระดับสูง"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_aged_partner_balance_report_handler
 msgid "Aged Partner Balance Custom Handler"
-msgstr "ตัวจัดการยอดคงเหลือของอายุบัญชีพาร์ทเนอร์แบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.aged_payable_report
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_account_name
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_amount_currency
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_currency
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_due_date
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_expected_date
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period0
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period1
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period2
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period3
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period4
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_period5
+#: model:account.report.expression,report_line_name:account_reports.aged_payable_line_total
 #: model:account.report.line,name:account_reports.aged_payable_line
 #: model:ir.actions.client,name:account_reports.action_account_report_ap
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_aged_payable
 msgid "Aged Payable"
-msgstr "อายุบัญชีเจ้าหนี้"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_aged_payable_report_handler
-msgid "Aged Payable Custom Handler"
-msgstr "ตัวจัดการอายุบัญชีเจ้าหนี้แบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
 msgid "Aged Payables"
-msgstr "อายุบัญชีเจ้าหนี้"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.aged_receivable_report
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_account_name
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_amount_currency
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_currency
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_due_date
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_expected_date
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period0
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period1
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period2
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period3
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period4
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_period5
+#: model:account.report.expression,report_line_name:account_reports.aged_receivable_line_total
 #: model:account.report.line,name:account_reports.aged_receivable_line
 #: model:ir.actions.client,name:account_reports.action_account_report_ar
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_aged_receivable
 msgid "Aged Receivable"
-msgstr "อายุบัญชีลูกหนี้"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_aged_receivable_report_handler
-msgid "Aged Receivable Custom Handler"
-msgstr "ตัวจัดการอายุบัญชีลูกหนี้แบบกำหนดเอง"
+msgstr "Aged Receivable"
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
 msgid "Aged Receivables"
-msgstr "อายุบัญชีลูกหนี้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_fiscal_position.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_fiscal_position_choser
 msgid "All"
 msgstr "ทั้งหมด"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "All Journals"
-msgstr "สมุดรายวันทั้งหมด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
-msgid "All Payable"
-msgstr "เจ้าหนี้ทั้งหมด"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
-msgid "All Receivable"
-msgstr "ลูกหนี้ทั้งหมด"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
-msgid "All Report Variants"
-msgstr "รูปแบบรายงานทั้งหมด"
+msgid "All Payable"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_report.py:0
+#, python-format
+msgid "All Receivable"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_report.py:0
+#, python-format
+msgid "All receivable/payable"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.account_financial_report_ec_sales_amount
+#: model:account.report.column,name:account_reports.bank_reconciliation_report_amount
 msgid "Amount"
 msgstr "จำนวน"
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_amount_currency
 #: model:account.report.column,name:account_reports.aged_receivable_report_amount_currency
+#: model:account.report.column,name:account_reports.bank_reconciliation_report_amount_currency
 #: model:account.report.column,name:account_reports.partner_ledger_report_amount_currency
 msgid "Amount Currency"
 msgstr "สกุลเงินของยอดเงิน"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "Amount In Currency"
-msgstr "ยอดเงินในสกุลเงิน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "Amount in currency: %s"
-msgstr "ยอดเงินในสกุลเงิน: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_analytic.xml:0
-#, python-format
-msgid "Analytic Filter"
-msgstr "ตัวกรองการวิเคราะห์"
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Analytic Accounts:"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_analytic_groupby.xml:0
-#: model:ir.model.fields,field_description:account_reports.field_account_report__filter_analytic_groupby
-#, python-format
-msgid "Analytic Group By"
-msgstr "กลุ่มวิเคราะห์โดย"
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Analytic Plans:"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/footnote/dialog/footnote_dialog.js:0
-#: code:addons/account_reports/static/src/components/account_report/line_name/line_name.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template
 #, python-format
 msgid "Annotate"
-msgstr "คำอธิบายประกอบ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/filters/filter_exchange_rate.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_search_template
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "Apply"
 msgstr "นำไปใช้"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
-msgid "As of"
-msgstr "ณ วันที่"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "As of %s"
-msgstr "ณ วันที่ %s"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period0
@@ -523,39 +679,38 @@ msgid "At Date"
 msgstr "ในวันที่"
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
+#: model_terms:ir.ui.view,arch_db:account_reports.cell_template
 #, python-format
 msgid "Audit"
-msgstr "ตรวจสอบบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.ui.menu,name:account_reports.account_reports_audit_reports_menu
 msgid "Audit Reports"
-msgstr "รายงานการตรวจสอบบัญชี"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_avgcre0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_avgcre0_ndays
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_avgcre0
 msgid "Average creditors days"
-msgstr "จำนวนวันของเจ้าหนี้โดยเฉลี่ย"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_avdebt0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_avdebt0_ndays
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_avdebt0
 msgid "Average debtors days"
-msgstr "จำนวนวันลูกหนี้โดยเฉลี่ย"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "B: %s"
-msgstr "B: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #: model:account.report.column,name:account_reports.balance_sheet_balance
 #: model:account.report.column,name:account_reports.cash_flow_report_balance
@@ -563,7 +718,6 @@ msgstr "B: %s"
 #: model:account.report.column,name:account_reports.general_ledger_report_balance
 #: model:account.report.column,name:account_reports.partner_ledger_report_balance
 #: model:account.report.column,name:account_reports.profit_and_loss_column
-#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
 #, python-format
 msgid "Balance"
 msgstr "ยอดคงเหลือ"
@@ -579,65 +733,90 @@ msgstr "งบดุล"
 #. module: account_reports
 #: model:account.report.column,name:account_reports.multicurrency_revaluation_report_balance_current
 msgid "Balance at Current Rate"
-msgstr "ยอดคงเหลือในอัตราปัจจุบัน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.multicurrency_revaluation_report_balance_operation
 msgid "Balance at Operation Rate"
-msgstr "ยอดคงเหลือในอัตราการดำเนินงาน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.multicurrency_revaluation_report_balance_currency
 msgid "Balance in Foreign Currency"
-msgstr "ยอดคงเหลือในสกุลเงินต่างประเทศ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
+msgid "Balance in GL"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid "Balance of %s"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Balance tax advance payment account"
-msgstr "ยอดคงเหลือบัญชีการชำระภาษีล่วงหน้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Balance tax current account (payable)"
-msgstr "ยอดคงเหลือภาษีบัญชีกระแสรายวัน (เจ้าหนี้)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Balance tax current account (receivable)"
-msgstr "ยอดคงเหลือภาษีบัญชีกระแสรายวัน (ลูกหนี้)"
+msgstr ""
+
+#. module: account_reports
+#: model:ir.actions.client,name:account_reports.action_account_report_bank_reconciliation
+msgid "Bank Reconciliation"
+msgstr "Bank Reconciliation Move Presets"
+
+#. module: account_reports
+#: model:account.report,name:account_reports.bank_reconciliation_report
+msgid "Bank Reconciliation Report"
+msgstr ""
+
+#. module: account_reports
+#: model:ir.model,name:account_reports.model_account_bank_reconciliation_report_handler
+msgid "Bank Reconciliation Report Custom Handler"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_bank_view0
 msgid "Bank and Cash Accounts"
-msgstr "บัญชีธนาคารและเงินสด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
+#: model:ir.model,name:account_reports.model_bank_rec_widget
+msgid "Bank reconciliation widget for a single statement line"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_general_ledger.py:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 #, python-format
 msgid "Base Amount"
 msgstr "จำนวนฐาน"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
+#: code:addons/account_reports/models/account_report.py:0
 #, python-format
-msgid "Before"
-msgstr "ก่อนหน้า"
+msgid ""
+"Can't open partner reconciliation for line id %s ; model should res.partner."
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/footnote/dialog/footnote_dialog.xml:0
-#: code:addons/account_reports/static/src/components/aged_partner_balance/dialog/expected_date_dialog.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_multicurrency_revaluation_wizard
 #: model_terms:ir.ui.view,arch_db:account_reports.view_report_export_wizard
 #, python-format
@@ -645,46 +824,41 @@ msgid "Cancel"
 msgstr "ยกเลิก"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Cannot audit tax from another model than account.tax."
-msgstr "ไม่สามารถตรวจสอบภาษีจากรุ่นอื่นที่ไม่ใช่ account.tax ได้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Cannot generate carryover values for all fiscal positions at once!"
-msgstr "ไม่สามารถสร้างมูลค่ายกยอดสำหรับสถานะทางการเงินทั้งหมดในครั้งเดียวได้!"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "Carryover"
-msgstr "ยกยอด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Carryover adjustment for tax unit"
-msgstr "การปรับยกยอดสำหรับหน่วยภาษี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Carryover can only be generated for a single column group."
-msgstr "สามารถสร้างการยกยอดสำหรับกลุ่มคอลัมน์เดียวได้เท่านั้น"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Carryover from %s to %s"
-msgstr "ยกยอดจาก %s ถึง %s"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_cash0
@@ -694,146 +868,113 @@ msgstr "เงินสด"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_cash_flow_report_handler
 msgid "Cash Flow Report Custom Handler"
-msgstr "ตัวจัดการรายงานกระแสเงินสดแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.cash_flow_report
 #: model:ir.actions.client,name:account_reports.action_account_report_cs
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_cash_flow
 msgid "Cash Flow Statement"
-msgstr "งบกระแสเงินสด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash and cash equivalents, beginning of period"
-msgstr "เงินสดและรายการเทียบเท่าเงินสดต้นงวด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash and cash equivalents, closing balance"
-msgstr "เงินสดและรายการเทียบเท่าเงินสด ยอดปิดบัญชี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash flows from financing activities"
-msgstr "กระแสเงินสดจากกิจกรรมระดมทุน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash flows from investing & extraordinary activities"
-msgstr "กระแสเงินสดจากการลงทุนและกิจกรรมพิเศษ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash flows from operating activities"
-msgstr "กระแสเงินสดจากกิจกรรมดำเนินงาน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash flows from unclassified activities"
-msgstr "กระแสเงินสดจากกิจกรรมที่ไม่จัดประเภท"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash in"
-msgstr "เงินสดเข้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash out"
-msgstr "เงินสดออก"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash paid for operating activities"
-msgstr "เงินสดชำระสำหรับกิจกรรมดำเนินงาน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_cash_received0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_cash_received0
 msgid "Cash received"
-msgstr "รับเงินสดแล้ว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Cash received from operating activities"
-msgstr "เงินสดรับจากกิจกรรมดำเนินงาน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_cash_spent0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_cash_spent0
 msgid "Cash spent"
-msgstr "เงินสดที่ใช้ไป"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_cash_surplus0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_cash_surplus0
 msgid "Cash surplus"
-msgstr "เงินสดส่วนเกิน"
+msgstr ""
 
 #. module: account_reports
-#: model:ir.model,name:account_reports.model_account_change_lock_date
-msgid "Change Lock Date"
-msgstr "เปลี่ยนวันที่ล็อค"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.js:0
-#, python-format
-msgid "Change expected date"
-msgstr "เปลี่ยนวันที่คาดการณ์"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
 msgid "Change expected payment date"
-msgstr "เปลี่ยนวันที่คาดว่าจะชำระเงิน"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_file_download_error_wizard_form
-msgid "Close"
-msgstr "ปิด"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Closing Entry"
-msgstr "ปิดรายการ"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_closing_bank_balance0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_closing_bank_balance0
 msgid "Closing bank balance"
-msgstr "ปิดยอดธนาคาร"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/filters/filter_code.xml:0
-#, python-format
-msgid "Codes:"
-msgstr "โค้ด:"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
@@ -849,44 +990,37 @@ msgstr "การติดต่อสื่อสาร"
 #: model:ir.model,name:account_reports.model_res_company
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__company_ids
 msgid "Companies"
-msgstr "บริษัท"
+msgstr "หลายบริษัท"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__company_id
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__company_id
 msgid "Company"
-msgstr "บริษัท"
+msgstr "บริษัทเดียว"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_tax.py:0
 #, python-format
 msgid ""
 "Company %s already belongs to a tax unit in %s. A company can at most be "
 "part of one tax unit per country."
 msgstr ""
-"บริษัท %s อยู่ในหน่วยภาษีใน %s แล้ว "
-"บริษัทสามารถเป็นส่วนหนึ่งของหน่วยภาษีได้มากที่สุดหนึ่งหน่วยต่อประเทศ"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_tax_unit.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Company Currency:"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_tax_unit
 msgid "Company Only"
-msgstr "บริษัทเท่านั้น"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Company Settings"
-msgstr "การตั้งค่าบริษัท"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#, python-format
-msgid "Comparison"
-msgstr "การเปรียบเทียบ"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_res_config_settings
@@ -894,16 +1028,15 @@ msgid "Config Settings"
 msgstr "ตั้งค่าการกำหนดค่า"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Configure your TAX accounts - %s"
-msgstr "กำหนดค่าบัญชีภาษีของคุณ - %s"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 msgid "Configure your tax accounts"
-msgstr "กำหนดค่าบัญชีภาษีของคุณ"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_res_partner
@@ -911,33 +1044,35 @@ msgid "Contact"
 msgstr "ติดต่อ"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_cost_sales0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_direct_costs0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_cost_sales0
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_direct_costs0
 msgid "Cost of Revenue"
 msgstr "ต้นทุนสินค้า"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Could not expand term %s while evaluating formula %s"
-msgstr "ไม่สามารถขยายระยะเวลา %s ระหว่างการประเมินสูตร %s ได้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_report.py:0
+#, python-format
+msgid "Could not find template %s, used as %s of %s."
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Could not parse account_code formula from token '%s'"
-msgstr "ไม่สามารถแยกวิเคราะห์สูตร account_code จากโทเค็น '%s' ได้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__country_id
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_search
-#, python-format
 msgid "Country"
 msgstr "ประเทศ"
 
@@ -949,19 +1084,19 @@ msgstr "รหัสประเทศ"
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_multicurrency_revaluation_wizard
 msgid "Create Entry"
-msgstr "สร้างรายการ"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.actions.server,name:account_reports.action_create_report_menu
 msgid "Create Menu Item"
-msgstr "สร้างรายการเมนู"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__create_uid
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__create_uid
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__create_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__create_uid
@@ -970,10 +1105,10 @@ msgstr "สร้างโดย"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__create_date
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__create_date
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__create_date
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__create_date
@@ -981,7 +1116,7 @@ msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_journal_report.py:0
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #: model:account.report.column,name:account_reports.general_ledger_report_credit
 #: model:account.report.column,name:account_reports.journal_report_debit
@@ -994,27 +1129,16 @@ msgstr "เครดิต"
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_currency
 #: model:account.report.column,name:account_reports.aged_receivable_report_currency
+#: model:account.report.column,name:account_reports.bank_reconciliation_report_currency
 #: model:account.report.column,name:account_reports.general_ledger_report_amount_currency
 msgid "Currency"
 msgstr "สกุลเงิน"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_multicurrency_revaluation_report.py:0
 #, python-format
 msgid "Currency Rates (%s)"
-msgstr "อัตราสกุลเงิน (%s)"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-msgid "Currency:"
-msgstr "สกุลเงิน:"
-
-#. module: account_reports
-#: model:account.report.column,name:account_reports.deferred_expense_current
-#: model:account.report.column,name:account_reports.deferred_revenue_current
-msgid "Current"
-msgstr "ปัจจุบัน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_current_assets0
@@ -1023,17 +1147,21 @@ msgid "Current Assets"
 msgstr "สินทรัพย์หมุนเวียน"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_current_liabilities0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_current_liabilities1_balance
 #: model:account.report.line,name:account_reports.account_financial_report_current_liabilities0
 #: model:account.report.line,name:account_reports.account_financial_report_current_liabilities1
 msgid "Current Liabilities"
 msgstr "หนี้สินหมุนเวียน"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_current_year_earnings_line_2_balance
 #: model:account.report.line,name:account_reports.account_financial_current_year_earnings_line_2
 msgid "Current Year Allocated Earnings"
-msgstr "รายได้ที่จัดสรรในปีปัจจุบัน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_current_year_earnings_line_1_balance
 #: model:account.report.line,name:account_reports.account_financial_current_year_earnings_line_1
 msgid "Current Year Earnings"
 msgstr "กำไรสะสม"
@@ -1041,40 +1169,59 @@ msgstr "กำไรสะสม"
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_current_year_earnings0
 msgid "Current Year Unallocated Earnings"
-msgstr "กำไรที่ไม่ได้ปันส่วนในปีปัจจุบัน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_ca_to_l0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_ca_to_l0
 msgid "Current assets to liabilities"
-msgstr "สินทรัพย์หมุนเวียนต่อหนี้สิน"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "Custom"
+msgstr "กำหนดเอง"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report__custom_handler_model_id
 msgid "Custom Handler Model"
-msgstr "โมเดลตัวจัดการแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report__custom_handler_model_name
 msgid "Custom Handler Model Name"
-msgstr "ชื่อโมเดลตัวจัดการแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
+#: model:account.report.column,name:account_reports.bank_reconciliation_report_date
+#: model:account.report.column,name:account_reports.general_ledger_report_date
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__date
-#, python-format
 msgid "Date"
 msgstr "วันที่"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
-msgid "Date cannot be empty"
-msgstr "วันที่ไม่สามารถเว้นว่างได้"
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "Date :"
+msgstr "วันที่ :"
 
 #. module: account_reports
-#. odoo-python
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#, python-format
+msgid "Date cannot be empty"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "Date:"
+msgstr "วันที่:"
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_journal_report.py:0
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #: model:account.report.column,name:account_reports.general_ledger_report_debit
 #: model:account.report.column,name:account_reports.journal_report_amount_currency
@@ -1085,59 +1232,6 @@ msgid "Debit"
 msgstr "เดบิต"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/deferred_reports/warnings.xml:0
-#, python-format
-msgid "Deferrals have already been generated."
-msgstr "รายการรอการตัดบัญชีได้ถูกสร้างขึ้นแล้ว"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Deferred Entries"
-msgstr "รายการที่รอการตัดบัญชี"
-
-#. module: account_reports
-#: model:ir.actions.client,name:account_reports.action_account_report_deferred_expense
-#: model:ir.ui.menu,name:account_reports.menu_action_account_report_deferred_expense
-msgid "Deferred Expense"
-msgstr "ค่าใช้จ่ายที่รอตัดบัญชี"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_deferred_expense_report_handler
-msgid "Deferred Expense Custom Handler"
-msgstr "ตัวจัดการค่าใช้จ่ายรอตัดบัญชีแบบกำหนดเอง"
-
-#. module: account_reports
-#: model:account.report,name:account_reports.deferred_expense_report
-msgid "Deferred Expense Report"
-msgstr "รายงานค่าใช้จ่ายรอตัดบัญชี"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_deferred_report_handler
-msgid "Deferred Expense Report Custom Handler"
-msgstr "ตัวจัดการรายงานค่าใช้จ่ายรอตัดบัญชีแบบกำหนดเอง"
-
-#. module: account_reports
-#: model:ir.actions.client,name:account_reports.action_account_report_deferred_revenue
-#: model:ir.ui.menu,name:account_reports.menu_action_account_report_deferred_revenue
-msgid "Deferred Revenue"
-msgstr "รายได้ที่รอตัดบัญชี"
-
-#. module: account_reports
-#: model:ir.model,name:account_reports.model_account_deferred_revenue_report_handler
-msgid "Deferred Revenue Custom Handler"
-msgstr "ตัวจัดการรายได้รอตัดบัญชีแบบกำหนดเอง"
-
-#. module: account_reports
-#: model:account.report,name:account_reports.deferred_revenue_report
-msgid "Deferred Revenue Report"
-msgstr "รายงานรายได้รอตัดบัญชี"
-
-#. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_expression_form
 msgid "Definition"
 msgstr "คำนิยาม"
@@ -1145,24 +1239,25 @@ msgstr "คำนิยาม"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_tax_periodicity
 msgid "Delay units"
-msgstr "หน่วยล่าช้า"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_depreciation0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_depreciation0
 msgid "Depreciation"
 msgstr "ค่าเสื่อมสภาพ"
 
 #. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_line__display_custom_groupby_warning
-msgid "Display Custom Groupby Warning"
-msgstr "แสดงคำเตือน Groupby แบบกำหนดเอง"
+#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view_account_manager
+msgid "Difference"
+msgstr "ส่วนต่าง"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__display_name
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__display_name
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__display_name
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__display_name
@@ -1172,7 +1267,7 @@ msgstr "แสดงชื่อ"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__doc_name
 msgid "Documents Name"
-msgstr "ชื่อเอกสาร"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__domain
@@ -1180,23 +1275,18 @@ msgid "Domain"
 msgstr "โดเมน"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_fiscal_position.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_fiscal_position_choser
 msgid "Domestic"
 msgstr "ภายในประเทศ"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_file_download_error_wizard_form
-msgid "Download Anyway"
-msgstr "ยังเลือกที่จะดาวน์โหลด"
-
-#. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 msgid "Download the Data Inalterability Check Report"
-msgstr "ดาวน์โหลดรายงานการตรวจสอบข้อมูลที่ไม่สามารถเปลี่ยนแปลงได้"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.column,name:account_reports.aged_payable_report_due_date
+#: model:account.report.column,name:account_reports.aged_receivable_report_due_date
 #: model:account.report.column,name:account_reports.partner_ledger_report_date_maturity
 msgid "Due Date"
 msgstr "วันครบกำหนด"
@@ -1205,145 +1295,97 @@ msgstr "วันครบกำหนด"
 #: model:ir.actions.client,name:account_reports.action_account_report_sales
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_sales
 msgid "EC Sales List"
-msgstr "รายการขาย EC"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_ec_sales_report_handler
 msgid "EC Sales Report Custom Handler"
-msgstr "ตัวจัดการรายงานการขาย EC แบบกำหนดเอง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_sales_report.py:0
-#, python-format
-msgid "EC tax on non EC countries"
-msgstr "ภาษี EC สำหรับประเทศที่ไม่ใช่ EC"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_sales_report.py:0
-#, python-format
-msgid "EC tax on same country"
-msgstr "ภาษี EC ในประเทศเดียวกัน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_equity0
 msgid "EQUITY"
-msgstr "ส่วนของเจ้าของ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Editing a manual report line is not allowed in multivat setup when "
 "displaying data from all fiscal positions."
 msgstr ""
-"ไม่อนุญาตให้แก้ไขบรรทัดรายงานด้วยตนเองในการตั้งค่า multivat "
-"เมื่อแสดงข้อมูลจากตำแหน่งทางการเงินทั้งหมด"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Editing a manual report line is not allowed when multiple companies are "
 "selected."
-msgstr "ไม่อนุญาตให้แก้ไขบรรทัดรายงานด้วยตนเอง เมื่อมีการเลือกบริษัทหลายแห่ง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Enable Sections"
-msgstr "เปิดใช้งานส่วนต่างๆ"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_variant.xml:0
-#, python-format
-msgid "Enable more ..."
-msgstr "เปิดใช้งานเพิ่มเติม ..."
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_trial_balance_report.py:0
 #, python-format
 msgid "End Balance"
-msgstr "ยอดคงเหลือปลายทาง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "End Date :"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "End of Last Financial Year"
-msgstr "สิ้นปีงบประมาณล่าสุด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "End of Last Month"
-msgstr "ปลายเดือนที่แล้ว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "End of Last Quarter"
-msgstr "สิ้นสุดไตรมาสที่แล้ว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
-msgid "Ending Balance:"
-msgstr "ยอดคงเหลือสิ้นงวด:"
+msgid "Ending Balance :"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
-#, python-format
-msgid "Engine"
-msgstr "เครื่องยนต์"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_sales_report.py:0
-#, python-format
-msgid "Entries with partners with no VAT"
-msgstr "รายการร่วมกับพาร์ทเนอร์โดยไม่มีภาษีมูลค่าเพิ่ม"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Error message"
-msgstr "ข้อความผิดพลาด"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/filters/filter_exchange_rate.xml:0
-#, python-format
-msgid "Exchange Rates"
-msgstr "อัตราแลกเปลี่ยน"
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "Exclude"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_account__exclude_provision_currency_ids
 msgid "Exclude Provision Currency"
-msgstr "ไม่รวมสกุลเงินสำรอง"
+msgstr ""
 
 #. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "Exclude from adjustment/provisions entries"
+msgstr ""
+
+#. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_excluded_adjustment
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_excluded_balance_currency
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_excluded_balance_current
+#: model:account.report.expression,report_line_name:account_reports.multicurrency_revaluation_excluded_balance_operation
 #: model:account.report.line,name:account_reports.multicurrency_revaluation_excluded
 msgid "Excluded Accounts"
-msgstr "บัญชีที่ยกเว้น"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.executive_summary
 #: model:ir.actions.client,name:account_reports.action_account_report_exec_summary
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_exec_summary
 msgid "Executive Summary"
-msgstr "ข้อมูลสรุป"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_expected_date
@@ -1353,25 +1395,31 @@ msgid "Expected Date"
 msgstr "วันที่คาดหวัง"
 
 #. module: account_reports
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
+#, python-format
+msgid "Expected Payment Date"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/res_partner.py:0
+#, python-format
+msgid "Expected pay date has been changed from %s to %s"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/res_partner.py:0
+#, python-format
+msgid "Expected pay date has been changed from %s to %s for invoice %s"
+msgstr ""
+
+#. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_move_line__expected_pay_date
 msgid ""
 "Expected payment date as manually set through the customer statement(e.g: if"
 " you had the customer on the phone and want to remember the date he promised"
 " he would pay)"
 msgstr ""
-"วันชำระเงินที่คาดการณ์ไว้ตามที่กำหนดด้วยตนเองผ่านใบแจ้งยอดของลูกค้า (เช่น "
-"หากคุณมีลูกค้าทางโทรศัพท์และต้องการจำวันที่ที่เขาสัญญาว่าจะชำระเงิน)"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_aged_partner_balance.py:0
-#, python-format
-msgid ""
-"Expected payment date for journal item %r has been changed from %s to %s on "
-"journal entry %r"
-msgstr ""
-"วันที่ชำระเงินที่คาดไว้สำหรับรายการสมุดรายวัน %r มีการเปลี่ยนแปลงจาก %s เป็น"
-" %s ในรายการสมุดรายวัน %r"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__expense_provision_account_id
@@ -1381,16 +1429,18 @@ msgstr "บัญชีค่าใช้จ่าย"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_revaluation_expense_provision_account_id
 msgid "Expense Provision Account"
-msgstr "บัญชีสำรองค่าใช้จ่าย"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "Expense Provision for %s"
-msgstr "สำรองค่าใช้จ่ายสำหรับ %s"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_expenses0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_expense0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_less_expenses0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_expenses0
 #: model:account.report.line,name:account_reports.account_financial_report_expense0
 #: model:account.report.line,name:account_reports.account_financial_report_less_expenses0
@@ -1398,7 +1448,6 @@ msgid "Expenses"
 msgstr "รายจ่าย"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: model_terms:ir.ui.view,arch_db:account_reports.view_report_export_wizard
 #, python-format
@@ -1408,22 +1457,22 @@ msgstr "ส่งออก"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_reports_export_wizard_format
 msgid "Export format for accounting's reports"
-msgstr "รูปแบบการส่งออกสำหรับรายงานทางบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__export_format_ids
 msgid "Export to"
-msgstr "ส่งออกไปที่"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_reports_export_wizard
 msgid "Export wizard for accounting's reports"
-msgstr "โปรแกรมส่งออกสำหรับรายงานทางบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_expression_form
 msgid "Expression"
-msgstr "ตัวสั่งงาน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__field_name
@@ -1431,53 +1480,36 @@ msgid "Field"
 msgstr "ฟิลด์"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Field %s does not exist on account.move.line."
-msgstr "ไม่มีข้อมูล %s บน account.move.line."
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Field %s of account.move.line is not stored, and hence cannot be used in a "
 "groupby expression"
 msgstr ""
-"ข้อมูล %s ของ account.move.line จะไม่ถูกจัดเก็บ "
-"ดังนั้นจึงไม่สามารถใช้ในตัวสั่งงาน groupby ได้"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Field 'Custom Handler Model' can only reference records inheriting from "
 "[%s]."
 msgstr ""
-"ช่อง 'โมเดลตัวจัดการที่กำหนดเอง' "
-"สามารถอ้างอิงได้เฉพาะบันทึกที่สืบทอดมาเท่านั้น [%s]"
 
 #. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__file_content
-msgid "File Content"
-msgstr "เนื้อหาไฟล์"
+#: model:ir.model.fields,field_description:account_reports.field_account_report__filter_analytic_groupby
+msgid "Filter Analytic Groupby"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_file_download_error_wizard_form
-msgid "File Download Errors"
-msgstr "ข้อผิดพลาดในการดาวน์โหลดไฟล์"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__file_generation_errors
-msgid "File Generation Errors"
-msgstr "ข้อผิดพลาดในการสร้างไฟล์"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__file_name
-msgid "File Name"
-msgstr "ชื่อไฟล์"
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Filter:"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
@@ -1485,86 +1517,52 @@ msgid "Filters"
 msgstr "ตัวกรอง"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/aml_ir_filters.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-#, python-format
-msgid "Filters:"
-msgstr "ตัวกรอง:"
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template
+msgid "Folded"
+msgstr "พับ"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_fiscal_position.xml:0
-#, python-format
-msgid "Fiscal Position:"
-msgstr "สถานะทางการเงิน:"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__fpos_synced
-msgid "Fiscal Positions Synchronised"
-msgstr "สถานะทางการเงินซิงโครไนซ์แล้ว"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_tax_unit_form
-msgid ""
-"Fiscal Positions should apply to all companies of the tax unit. You may want"
-" to"
-msgstr "สถานะทางการเงินควรใช้กับทุกบริษัทในหน่วยภาษี คุณอาจต้องการ"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report__footnotes_ids
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__footnotes_ids
 msgid "Footnotes"
-msgstr "คำอธิบายเพิ่มเติม"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: model:ir.model.fields,field_description:account_reports.field_account_report__footnotes_template
+msgid "Footnotes Template"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "Foreign currencies adjustment entry as of %s"
-msgstr "รายการปรับสกุลเงินต่างประเทศ ณ วันที่ %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
-#, python-format
-msgid "Formula"
-msgstr "สูตร"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
-msgid "From"
-msgstr "จาก"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "From %s\n"
 "to  %s"
 msgstr ""
-"จาก %s\n"
-"ถึง  %s"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "From:"
+msgstr "จาก:"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__fun_param
 msgid "Function Parameter"
-msgstr "ฟังก์ชันพารามิเตอร์"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__fun_to_call
 msgid "Function to Call"
-msgstr "ฟังก์ชั่นการโทร"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_trial_balance_report.py:0
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/line_name.xml:0
 #: model:account.report,name:account_reports.general_ledger_report
 #: model:ir.actions.client,name:account_reports.action_account_report_general_ledger
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_general_ledger
@@ -1575,17 +1573,9 @@ msgstr "บัญชีแยกประเภททั่วไป"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_general_ledger_report_handler
 msgid "General Ledger Custom Handler"
-msgstr "ตัวจัดการบัญชีแยกประเภททั่วไปแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Generate entry"
-msgstr "สร้างรายการ"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/report_export_wizard.py:0
 #, python-format
 msgid "Generated Documents"
@@ -1594,72 +1584,61 @@ msgstr "เอกสารที่สร้างขึ้น"
 #. module: account_reports
 #: model:account.report,name:account_reports.generic_ec_sales_report
 msgid "Generic EC Sales List"
-msgstr "รายการขาย EC ทั่วไป"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_generic_tax_report_handler
 msgid "Generic Tax Report Custom Handler"
-msgstr "ตัวจัดการรายงานภาษีทั่วไปแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_generic_tax_report_handler_account_tax
 msgid "Generic Tax Report Custom Handler (Account -> Tax)"
-msgstr "ตัวจัดการรายงานภาษีทั่วไปแบบกำหนดเอง (บัญชี -> ภาษี)"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_generic_tax_report_handler_tax_account
 msgid "Generic Tax Report Custom Handler (Tax -> Account)"
-msgstr "ตัวจัดการรายงานภาษีทั่วไปแบบกำหนดเอง (ภาษี -> บัญชี)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_journal_report.py:0
-#, python-format
-msgid "Go to report configuration"
-msgstr "ไปที่การกำหนดค่ารายงาน"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_sales_report.py:0
 #, python-format
 msgid "Goods"
-msgstr "สินค้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 msgid "Grid"
 msgstr "ตาราง"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_gross_profit0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_gross_profit0
 msgid "Gross Profit"
-msgstr "กำไรขั้นต้น"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_gross_profit0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_gross_profit0
 msgid "Gross profit"
-msgstr "กำไรขั้นต้น"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_gpmargin0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_gpmargin0
 msgid "Gross profit margin (gross profit / operating income)"
-msgstr "อัตรากำไรขั้นต้น (กำไรขั้นต้น / รายได้จากการดำเนินงาน)"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_line_form
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_search
 msgid "Group By"
 msgstr "กลุ่มโดย"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
 msgid "Group By Months"
-msgstr "จัดกลุ่มตามเดือน"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_horizontal_group_form
@@ -1667,76 +1646,63 @@ msgid "Group Name"
 msgstr "ชื่อกลุ่ม"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-msgid "Group by:"
-msgstr "จัดกลุ่มโดย:"
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Group by months"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Grouped Deferral Entry of %s"
-msgstr "รายการรอตัดบัญชีแบบกลุ่มของ %s"
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Groupby:"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
-msgid "Hide lines at 0"
-msgstr "ซ่อนบรรทัดที่ 0"
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Grouped by month"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+msgid "Hierarchy"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
 msgid "Hierarchy and Subtotals"
-msgstr "ลำดับชั้นและผลรวมย่อย"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__horizontal_group_id
 msgid "Horizontal Group"
-msgstr "กลุ่มแนวนอน"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_horizontal_groups.xml:0
-#, python-format
-msgid "Horizontal Group:"
-msgstr "กลุ่มแนวนอน:"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.actions.act_window,name:account_reports.action_account_report_horizontal_groups
 #: model:ir.model.fields,field_description:account_reports.field_account_report__horizontal_group_ids
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_horizontal_groups
 msgid "Horizontal Groups"
-msgstr "กลุ่มแนวนอน:"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report_horizontal_group
 msgid "Horizontal group for reports"
-msgstr "กลุ่มแนวนอนสำหรับรายงาน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_report_horizontal_group_rule
 msgid "Horizontal group rule for reports"
-msgstr "กฎกลุ่มแนวนอนสำหรับรายงาน"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-msgid "Horizontal:"
-msgstr "แนวนอน:"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 msgid "How often tax returns have to be made"
-msgstr "ต้องยื่นแบบแสดงรายการภาษีบ่อยแค่ไหน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__id
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__id
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__id
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__id
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__id
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__id
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__id
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__id
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__id
@@ -1744,48 +1710,59 @@ msgid "ID"
 msgstr "ไอดี"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 msgid "Impact On Grid"
-msgstr "ผลกระทบต่อกริด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
-#, python-format
-msgid "Impacted Tax Grids"
-msgstr "ตารางภาษีที่ได้รับผลกระทบ"
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
+msgid ""
+"Impacted Tax Grids\n"
+"                                        &amp;nbsp;"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_search
-msgid "Inactive"
-msgstr "ปิดใช้งาน"
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "Include"
+msgstr "รวมถึง"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
-msgid "Include Analytic Simulations"
-msgstr "รวมการจำลองเชิงวิเคราะห์"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
-msgid "Include Draft Entries"
-msgstr "รวมรายการฉบับร่าง"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
 msgid "Include Payments"
-msgstr "รวมการชำระเงิน"
+msgstr ""
 
 #. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Include Unposted Entries"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "Include in adjustment/provisions entries"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Include unposted entries"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid "Including Unreconciled Bank Statement Payments"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid "Including Unreconciled Bank Statement Receipts"
+msgstr ""
+
+#. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_income0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_totalincome0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_income0
 #: model:account.report.line,name:account_reports.account_financial_report_totalincome0
 msgid "Income"
@@ -1799,37 +1776,36 @@ msgstr "บัญชีรายได้"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_revaluation_income_provision_account_id
 msgid "Income Provision Account"
-msgstr "บัญชีสำรองรายได้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "Income Provision for %s"
-msgstr "สำรองรายได้สำหรับ%s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid "Inconsistent Statements"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Inconsistent data: more than one external value at the same date for a "
 "'most_recent' external line."
 msgstr ""
-"ข้อมูลไม่สอดคล้องกัน: มากกว่าหนึ่งค่าภายนอกในวันเดียวกันสำหรับบรรทัดภายนอก "
-"'most_recent'"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Inconsistent report_id in options dictionary. Options says %s; report is %s."
 msgstr ""
-"report_id ไม่สอดคล้องกันในพจนานุกรมตัวเลือก ตัวเลือกแสดงว่า %s; รายงานคือ %s"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_trial_balance_report.py:0
 #, python-format
@@ -1837,87 +1813,24 @@ msgid "Initial Balance"
 msgstr "ยอดเริ่มต้น"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/footnote/dialog/footnote_dialog.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "Insert foot note here"
-msgstr "ใส่คำอธิบายเพิ่มเติมที่นี่"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "Intra-community taxes are applied on"
-msgstr "มีการเรียกเก็บภาษีภายในคอมมูนิตี้บน"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/wizard/account_report_file_download_error_wizard.py:0
-#, python-format
-msgid "Invalid Partners"
-msgstr "พาร์ทเนอร์ไม่ถูกต้อง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/wizard/account_report_file_download_error_wizard.py:0
-#, python-format
-msgid "Invalid Products"
-msgstr "สินค้าไม่ถูกต้อง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/wizard/account_report_file_download_error_wizard.py:0
-#, python-format
-msgid "Invalid Taxes"
-msgstr "ภาษีไม่ถูกต้อง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Invalid domain formula in expression %r of line %r: %s"
-msgstr "สูตรโดเมนไม่ถูกต้องในตัวสั่งงาน %r ของบรรทัด %r: %s"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Invalid method %r"
-msgstr "วิธีการไม่ถูกต้อง %r"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Invalid subformula in expression %r of line %r: %s"
-msgstr "สูตรย่อยไม่ถูกต้องในตัวสั่งงาน %r ของบรรทัด %r: %s"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Invalid token '%s' in account_codes formula '%s'"
-msgstr "โทเค็นไม่ถูกต้อง '%s' ในสูตร account_codes '%s'"
-
-#. module: account_reports
-#: model:account.report.column,name:account_reports.aged_payable_report_invoice_date
-#: model:account.report.column,name:account_reports.aged_receivable_report_invoice_date
-#: model:account.report.column,name:account_reports.general_ledger_report_date
-#: model:account.report.column,name:account_reports.journal_report_date
-#: model:account.report.column,name:account_reports.partner_ledger_report_invoicing_date
-msgid "Invoice Date"
-msgstr "วันที่ใบแจ้งหนี้"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report__is_account_coverage_report_available
-msgid "Is Account Coverage Report Available"
-msgstr "มีรายงานความครอบคลุมบัญชีหรือไม่"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.partner_ledger_report_journal_code
+msgid "JRNL"
+msgstr "JRNL"
+
+#. module: account_reports
 #: model:ir.model,name:account_reports.model_account_journal
 #: model:ir.model.fields,field_description:account_reports.field_account_financial_year_op__account_tax_periodicity_journal_id
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__journal_id
@@ -1926,15 +1839,14 @@ msgstr "มีรายงานความครอบคลุมบัญช
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 #: model_terms:ir.ui.view,arch_db:account_reports.setup_financial_year_opening_form
 msgid "Journal"
-msgstr "สมุดรายวัน"
+msgstr "สมุดบันทึก"
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_move
 msgid "Journal Entry"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึกประจำวัน"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Journal Groups"
@@ -1943,24 +1855,17 @@ msgstr "กลุ่มสมุดรายวัน"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_move_line
 msgid "Journal Item"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึก"
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_trial_balance_report.py:0
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.xml:0
-#: code:addons/account_reports/static/src/components/general_ledger/line_name.xml:0
-#: code:addons/account_reports/static/src/components/journal_report/line_name.xml:0
-#: code:addons/account_reports/static/src/components/partner_ledger/line_name.xml:0
 #, python-format
 msgid "Journal Items"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึก"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
@@ -1972,85 +1877,77 @@ msgstr "รายการสมุดรายวันสําหรับก
 #: model:ir.actions.client,name:account_reports.action_account_report_ja
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_ja
 msgid "Journal Report"
-msgstr "รายงานสมุดรายวัน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_journal_report_handler
 msgid "Journal Report Custom Handler"
-msgstr "ตัวจัดการรายงานสมุดรายวันแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_generic_tax_report.py:0
-#, python-format
-msgid "Journal items with archived tax tags"
-msgstr "รายการสมุดรายวันพร้อมแท็กภาษีที่เก็บถาวร"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_journal.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
 msgid "Journals:"
 msgstr "สมุดรายวัน:"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_liabilities_view0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_liabilities_view0
 msgid "LIABILITIES"
-msgstr "หนี้สิน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_liabilities_and_equity_view0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_liabilities_and_equity_view0
 msgid "LIABILITIES + EQUITY"
-msgstr "หนี้สิน + ส่วนของเจ้าของ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
+#: code:addons/account_reports/models/account_journal_report.py:0
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
+#: model:account.report.column,name:account_reports.bank_reconciliation_report_label
 #: model:account.report.column,name:account_reports.journal_report_partner_name
 #, python-format
 msgid "Label"
 msgstr "ป้าย"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "Last Financial Year"
-msgstr "ปีงบประมาณล่าสุด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_report_footnote____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format____last_update
+#: model:ir.model.fields,field_description:account_reports.field_account_tax_unit____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "Last Month"
 msgstr "เดือนที่แล้ว"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "Last Quarter"
 msgstr "ไตรมาสที่แล้ว"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
-msgid "Last Statement"
-msgstr "ใบแจ้งยอดที่แล้ว"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
-msgid "Last Statement balance + Transactions since statement"
-msgstr "ยอดคงเหลือในใบแจ้งยอดล่าสุด + ธุรกรรมตั้งแต่ใบแจ้งยอด"
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_cell_template_link_last_statement
+msgid "Last Statement:"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__write_uid
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__write_uid
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__write_uid
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__write_uid
@@ -2059,10 +1956,10 @@ msgstr "อัปเดตครั้งล่าสุดโดย"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__write_date
-#: model:ir.model.fields,field_description:account_reports.field_account_report_file_download_error_wizard__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__write_date
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__write_date
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__write_date
@@ -2070,36 +1967,28 @@ msgid "Last Updated on"
 msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Later"
-msgstr "ภายหลัง"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
-msgid "Latest Statement"
-msgstr "ใบแจ้งยอดล่าสุด"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__line_id
+#: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__line
 msgid "Line"
-msgstr "บรรทัด"
+msgstr "ไลน์"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
+#: model:ir.model.fields,field_description:account_reports.field_account_report__line_template
+msgid "Line Template"
+msgstr ""
+
+#. module: account_reports
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "Line without formula"
-msgstr "บรรทัดที่ไม่มีสูตร"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
 msgid "Lines"
-msgstr "บรรทัด"
+msgstr "ไลน์"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Load more..."
@@ -2108,65 +1997,68 @@ msgstr "โหลดเพิ่ม..."
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__main_company_id
 msgid "Main Company"
-msgstr "บริษัทหลัก"
+msgstr ""
+
+#. module: account_reports
+#: model:ir.model.fields,field_description:account_reports.field_account_report__main_table_header_template
+msgid "Main Table Header Template"
+msgstr ""
+
+#. module: account_reports
+#: model:ir.model.fields,field_description:account_reports.field_account_report__main_template
+msgid "Main Template"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_tax_unit__main_company_id
 msgid ""
 "Main company of this unit; the one actually reporting and paying the taxes."
-msgstr "บริษัทหลักของหน่วยนี้ ผู้ที่รายงานและเสียภาษีจริง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_multicurrency_revaluation_report.py:0
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_multicurrency_revaluation_wizard
 #, python-format
 msgid "Make Adjustment Entry"
-msgstr "ทำรายการปรับ"
+msgstr ""
 
 #. module: account_reports
-#: model:ir.model,name:account_reports.model_account_report_file_download_error_wizard
-msgid "Manage the file generation errors from report exports."
-msgstr "จัดการกับข้อผิดพลาดในการสร้างไฟล์จากการส่งออกรายงาน"
+#: model:ir.model,name:account_reports.model_account_report_manager
+msgid "Manage Summary and Footnotes of Reports"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
+#: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__manager_id
+msgid "Manager"
+msgstr "ผู้จัดการ"
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Manual value"
-msgstr "ค่าที่กำหนดเอง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Manual values"
-msgstr "ค่าที่กำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.partner_ledger_report_matching_number
-msgid "Matching"
-msgstr "การจับคู่"
+msgid "Matching Number"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_tax_unit__company_ids
 msgid "Members of this unit"
-msgstr "สมาชิกของหน่วยนี้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Method '%s' must start with the '%s' prefix."
-msgstr "วิธีการ '%s' ต้องเริ่มต้นด้วยคำนำหน้า '%s'"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/wizard/account_report_file_download_error_wizard.py:0
-#, python-format
-msgid "Missing Company Data"
-msgstr "ข้อมูลบริษัทที่หายไป"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group_rule__res_model_name
@@ -2176,46 +2068,36 @@ msgstr "โมเดล"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_multicurrency_revaluation_report_handler
 msgid "Multicurrency Revaluation Report Custom Handler"
-msgstr "ตัวจัดการรายงานการประเมินค่าหลายสกุลเงินแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_multicurrency_revaluation_wizard
 msgid "Multicurrency Revaluation Wizard"
-msgstr "โปรแกรมการประเมินค่าหลายสกุลเงิน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/res_company.py:0
 #, python-format
 msgid ""
 "Multiple draft tax closing entries exist for fiscal position %s after %s. There should be at most one. \n"
 " %s"
 msgstr ""
-"มีรายการปิดบัญชีภาษีแบบร่างหลายรายการสำหรับสถานะทางการเงิน %s หลังจาก %s ซึ่งควรมีมากที่สุดหนึ่งรายการ \n"
-" %s"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/res_company.py:0
 #, python-format
 msgid ""
 "Multiple draft tax closing entries exist for your domestic region after %s. There should be at most one. \n"
 " %s"
 msgstr ""
-"มีรายการปิดภาษีฉบับร่างหลายรายการสำหรับภูมิภาคในประเทศของคุณหลังจาก %s ซึ่งควรมีมากที่สุดหนึ่งรายการ \n"
-" %s"
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
 #: code:addons/account_reports/models/account_general_ledger.py:0
 #: code:addons/account_reports/models/account_journal_report.py:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__name
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__name
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__name
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
-#: model_terms:ir.ui.view,arch_db:account_reports.view_tax_unit_form
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 #, python-format
 msgid "Name"
 msgstr "ชื่อ"
@@ -2223,170 +2105,126 @@ msgstr "ชื่อ"
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_reports_export_wizard__doc_name
 msgid "Name to give to the generated documents."
-msgstr "ชื่อที่จะมอบให้กับเอกสารที่สร้างขึ้น"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_profit0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_net_profit0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_profit0
 #: model:account.report.line,name:account_reports.account_financial_report_net_profit0
 msgid "Net Profit"
-msgstr "กำไรสุทธิ"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_net_assets0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_net_assets0_na_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_net_assets0
 msgid "Net assets"
-msgstr "สินทรัพย์สุทธิ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_cash_flow_report.py:0
 #, python-format
 msgid "Net increase in cash and cash equivalents"
-msgstr "เงินสดและรายการเทียบเท่าเงินสดเพิ่มขึ้นสุทธิ"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_npmargin0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_npmargin0
 msgid "Net profit margin (net profit / income)"
-msgstr "อัตรากำไรสุทธิ (กำไรสุทธิ / รายได้)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/edit_popover.xml:0
-#, python-format
-msgid "No"
-msgstr "ไม่"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
 msgid "No Comparison"
 msgstr "ไม่มีการเปรียบเทียบ"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "No VAT number associated with your company. Please define one."
-msgstr "ไม่มีหมายเลข VAT ที่เกี่ยวข้องกับบริษัทของคุณ โปรดกำหนดหนึ่งรายการ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "No adjustment needed"
-msgstr "ไม่จำเป็นต้องปรับ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/account_report.xml:0
-#, python-format
-msgid "No data to display !"
-msgstr "ไม่มีข้อมูลที่จะแสดง !"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/chart_template.py:0
-#, python-format
-msgid "No default miscellaneous journal could be found for the active company"
-msgstr "ไม่พบสมุดรายวันเบ็ดเตล็ดเริ่มต้นสำหรับบริษัทที่ใช้งานอยู่"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "No entry to generate."
-msgstr "ไม่มีรายการที่จะสร้าง"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "No provision needed was found."
-msgstr "ไม่พบข้อกำหนดที่จำเป็น"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
+#: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Non Trade Partners"
-msgstr "พาร์ทเนอร์ที่ไม่ใช่การค้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Non Trade Payable"
-msgstr "ไม่ใช่เจ้าหนี้การค้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Non Trade Receivable"
-msgstr "ไม่ใช่ลูกหนี้การค้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_horizontal_groups.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_horizontal_groups
 msgid "None"
 msgstr "ไม่มี"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#, python-format
-msgid "Number of periods cannot be smaller than 1"
-msgstr "จำนวนงวดต้องไม่น้อยกว่า 1"
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+msgid "Number of periods :"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_off_sheet
 msgid "OFF BALANCE SHEET ACCOUNTS"
-msgstr "ปิดบัญชีงบดุล"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Odoo Warning"
-msgstr "คำแจ้งเตือนจาก Odoo"
+msgstr "คำเตือน Odoo"
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.aged_payable_report_period5
 #: model:account.report.column,name:account_reports.aged_receivable_report_period5
 msgid "Older"
-msgstr "เก่ากว่า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/report_export_wizard.py:0
 #, python-format
 msgid "One of the formats chosen can not be exported in the DMS"
-msgstr "รูปแบบใดรูปแบบหนึ่งที่เลือกไม่สามารถส่งออกใน DMS ได้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_move.py:0
 #, python-format
 msgid "Only Billing Administrators are allowed to change lock dates!"
 msgstr ""
-"เฉพาะผู้ดูแลระบบการเรียกเก็บเงินเท่านั้นที่ได้รับอนุญาตให้เปลี่ยนวันที่ล็อค!"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
 msgid "Only Show Unreconciled Entries"
-msgstr "แสดงรายการที่ยังไม่ได้กระทบยอดเท่านั้น"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.xml:0
-#: code:addons/account_reports/static/src/components/partner_ledger/line_name.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
 msgid "Open"
 msgstr "เปิด"
 
@@ -2396,9 +2234,10 @@ msgid "Opening Balance of Financial Year"
 msgstr "ยอดตั้งต้นสำหรับรอบบัญชีปีนี้"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_income0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_income0
 msgid "Operating Income"
-msgstr "รายได้จากการดำเนินงาน"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_expression_form
@@ -2407,21 +2246,19 @@ msgid "Options"
 msgstr "ตัวเลือก"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_filters
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filter_extra_options_template
-#, python-format
-msgid "Options:"
-msgstr "ตัวเลือก:"
-
-#. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_other_income0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_other_income0
 msgid "Other Income"
-msgstr "รายได้อื่นๆ"
+msgstr "รายได้อื่น ๆ"
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
+#, python-format
+msgid "Outstanding Payments/Receipts"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
@@ -2431,7 +2268,7 @@ msgstr "PDF"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard__report_id
 msgid "Parent Report Id"
-msgstr "รหัสรายงานหลัก"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_reports_export_wizard_format__export_wizard_id
@@ -2444,82 +2281,61 @@ msgid "Partner"
 msgstr "พาร์ทเนอร์"
 
 #. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
+msgid "Partner Categories:"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/res_partner.py:0
 #: model:account.report,name:account_reports.partner_ledger_report
 #: model:ir.actions.client,name:account_reports.action_account_report_partner_ledger
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_partner_ledger
 #: model_terms:ir.ui.view,arch_db:account_reports.partner_view_buttons
+#, python-format
 msgid "Partner Ledger"
 msgstr "สมุดบัญชีแยกประเภทคู่ค้า"
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_partner_ledger_report_handler
 msgid "Partner Ledger Custom Handler"
-msgstr "ตัวจัดการบัญชีแยกประเภทพาร์ทเนอร์แบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.ui.menu,name:account_reports.account_reports_partners_reports_menu
 msgid "Partner Reports"
-msgstr "รายงานพาร์ทเนอร์"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.xml:0
-#: code:addons/account_reports/static/src/components/partner_ledger/line_name.xml:0
-#, python-format
-msgid "Partner is bad"
-msgstr "พาร์ทเนอร์ที่ไม่ดี"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/aged_partner_balance/line_name/line_name.xml:0
-#: code:addons/account_reports/static/src/components/partner_ledger/line_name.xml:0
-#, python-format
-msgid "Partner is good"
-msgstr "พาร์ทเนอร์ที่ดี"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_partner.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_partner.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Partners"
 msgstr "พาร์ทเนอร์"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
-msgid "Partners Categories:"
-msgstr "หมวดหมู่พาร์ทเนอร์:"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_filters
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template
 msgid "Partners:"
-msgstr "พาร์ทเนอร์:"
+msgstr "คู่ค้า:"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_aged_partner_balance.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Payable"
 msgstr "เจ้าหนี้"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Payable tax amount"
-msgstr "จำนวนภาษีที่ต้องชำระ"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_current_liabilities_payable_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_creditors0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_current_liabilities_payable
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_creditors0
 msgid "Payables"
 msgstr "เจ้าหนี้"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
-msgid "Payments"
-msgstr "การชำระเงิน"
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_performance0
@@ -2539,50 +2355,36 @@ msgstr "เป็นระยะ"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_financial_year_op__account_tax_periodicity
 msgid "Periodicity in month"
-msgstr "ช่วงเวลาในเดือน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_analytic_groupby.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Plans"
 msgstr "แผน"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Please set the deferred accounts in the accounting settings."
-msgstr "โปรดตั้งค่าบัญชีที่ถูกเลื่อนออกไปในการตั้งค่าการบัญชี"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Please set the deferred journal in the accounting settings."
-msgstr "โปรดตั้งค่าสมุดรายวันที่รอการตัดบัญชีในการตั้งค่าระบบบัญชี"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Please specify the accounts necessary for the Tax Closing Entry."
-msgstr "โปรดระบุบัญชีที่จำเป็นสำหรับรายการปิดบัญชีภาษี"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_fixed_assets_view0
 msgid "Plus Fixed Assets"
-msgstr "บวกกับสินทรัพย์ถาวร"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_non_current_assets_view0
 msgid "Plus Non-current Assets"
-msgstr "บวกกับสินทรัพย์ไม่หมุนเวียน"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_non_current_liabilities0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_non_current_liabilities0
 msgid "Plus Non-current Liabilities"
-msgstr "บวกกับหนี้สินไม่หมุนเวียน"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_position0
@@ -2590,11 +2392,26 @@ msgid "Position"
 msgstr "ตำแหน่ง"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/edit_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "Post"
-msgstr "ผ่านรายการ"
+msgstr "โพสต์"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+msgid "Posted Entries Only"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template_journal_audit_report
+msgid "Posted Entries only"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.filter_info_template_journal_audit_report
+msgid "Posted and Draft Entries"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_report_prepayements0
@@ -2604,19 +2421,20 @@ msgstr "ชำระเงินล่วงหน้า"
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__preview_data
 msgid "Preview Data"
-msgstr "ดูตัวอย่างข้อมูล"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
 msgid "Previous Period"
 msgstr "ช่วงก่อนหน้า"
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_previous_year_earnings0_allocated_earnings
+#: model:account.report.expression,report_line_name:account_reports.account_financial_previous_year_earnings0_balance
+#: model:account.report.expression,report_line_name:account_reports.account_financial_previous_year_earnings0_balance_domain
 #: model:account.report.line,name:account_reports.account_financial_previous_year_earnings0
 msgid "Previous Years Unallocated Earnings"
-msgstr "รายได้ที่ไม่ได้ปันส่วนในปีก่อนหน้า"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_multicurrency_revaluation_wizard
@@ -2624,7 +2442,6 @@ msgid ""
 "Proceed with caution as there might be an existing adjustment for this "
 "period ("
 msgstr ""
-"โปรดดำเนินการด้วยความระมัดระวัง เนื่องจากอาจมีการปรับเปลี่ยนในช่วงนี้ ("
 
 #. module: account_reports
 #: model:account.report,name:account_reports.profit_and_loss
@@ -2641,42 +2458,48 @@ msgstr "การทำกำไร"
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_move_form_vat_return
 msgid "Proposition of tax closing journal entry."
-msgstr "ข้อเสนอรายการสมุดรายวันการปิดบัญชีภาษี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "Provision for %(for_cur)s (1 %(comp_cur)s = %(rate)s %(for_cur)s)"
-msgstr "ข้อกำหนดสำหรับ %(for_cur)s (1 %(comp_cur)s = %(rate)s %(for_cur)s)"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/line_name.xml:0
-#, python-format
-msgid "Rates"
-msgstr "อัตรา"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_aged_partner_balance.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Receivable"
 msgstr "ลูกหนี้"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Receivable tax amount"
-msgstr "จำนวนภาษีที่จะได้รับ"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_debtors0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_debtors0
 #: model:account.report.line,name:account_reports.account_financial_report_receivable0
 msgid "Receivables"
 msgstr "ลูกหนี้"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+msgid "Reconcile"
+msgstr "กระทบยอด"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.account_reports_journal_dashboard_kanban_view
+msgid "Reconciliation Report"
+msgstr ""
+
+#. module: account_reports
+#: model:account.report.column,name:account_reports.partner_ledger_report_ref
+msgid "Ref"
+msgstr "อ้างอิง"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_financial_year_op__account_tax_periodicity_reminder_day
@@ -2687,7 +2510,7 @@ msgid "Reminder"
 msgstr "แจ้งเตือน"
 
 #. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__report_id
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__report_id
 #: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
 msgid "Report"
 msgstr "รายงาน"
@@ -2698,18 +2521,9 @@ msgid "Report Line"
 msgstr "บรรทัดของรายงาน"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Report lines mentioning the account code"
-msgstr "บรรทัดรายงานระบุรหัสบัญชี"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_variant.xml:0
-#, python-format
-msgid "Report:"
-msgstr "รายงาน:"
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__report_name
+msgid "Report Name"
+msgstr "ชื่อรายงาน"
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
@@ -2722,34 +2536,22 @@ msgid "Reports"
 msgstr "รายงาน"
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_line_form
-msgid "Reset to Standard"
-msgstr "รีเซ็ตเป็นมาตรฐาน"
-
-#. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_retained_earnings0
 msgid "Retained Earnings"
-msgstr "กำไรสะสม"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_return_investment0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_return_investment0
 msgid "Return on investments (net profit / assets)"
-msgstr "ผลตอบแทนจากการลงทุน (กำไรสุทธิ / สินทรัพย์)"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__reversal_date
 msgid "Reversal Date"
-msgstr "วันที่กลับรายการ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "Reversal of Grouped Deferral Entry of %s"
-msgstr "การกลับรายการการรายการที่รอตัดบัญชีแบบกลุ่มของ %s"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/wizard/multicurrency_revaluation.py:0
 #, python-format
 msgid "Reversal of: %s"
@@ -2758,7 +2560,7 @@ msgstr "การกลับรายการของ:%s"
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_account_report_search
 msgid "Root Report"
-msgstr "รายงานหลัก"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_horizontal_group__rule_ids
@@ -2766,78 +2568,108 @@ msgid "Rules"
 msgstr "กฏ"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
 msgid "Same Period Last Year"
 msgstr "ช่วงเวลาเดียวกันปีที่แล้ว"
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
+#. openerp-web
 #: code:addons/account_reports/models/account_report.py:0
-#: code:addons/account_reports/static/src/components/account_report/footnote/dialog/footnote_dialog.xml:0
-#: code:addons/account_reports/static/src/components/aged_partner_balance/dialog/expected_date_dialog.xml:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Save"
 msgstr "บันทึก"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/search_bar/search_bar.xml:0
-#: code:addons/account_reports/static/src/components/account_report/search_bar/search_bar.xml:0
-#: code:addons/account_reports/static/src/components/account_report/search_bar/search_bar.xml:0
+#: model:ir.model.fields,field_description:account_reports.field_account_report__search_template
+msgid "Search Template"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.main_template_with_filter_input_accounts
+msgid "Search account"
+msgstr ""
+
+#. module: account_reports
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
+#, python-format
+msgid "Search line"
+msgstr ""
+
+#. module: account_reports
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "Search..."
 msgstr "ค้นหา..."
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
-msgid "Sections"
-msgstr "ส่วน"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_sales_report.py:0
 #, python-format
 msgid "Services"
 msgstr "บริการ"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/wizard/account_report_file_download_error_wizard.py:0
-#, python-format
-msgid "Settings"
-msgstr "การตั้งค่า"
+#: model_terms:ir.ui.view,arch_db:account_reports.view_account_coa
+msgid "Setup"
+msgstr ""
 
 #. module: account_reports
+#: model:account.report.expression,report_line_name:account_reports.account_financial_report_executivesummary_st_cash_forecast0_balance
 #: model:account.report.line,name:account_reports.account_financial_report_executivesummary_st_cash_forecast0
 msgid "Short term cash forecast"
-msgstr "ประมาณการเงินสดระยะสั้น"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_multicurrency_revaluation_wizard__show_warning_move_id
 msgid "Show Warning Move"
-msgstr "แสดงคำเตือนการเคลื่อนย้าย"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Show payment lines"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.view_move_form_vat_return
 msgid "Some controls failed."
-msgstr "การควบคุมบางส่วนล้มเหลว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
 msgid "Sort By Date"
-msgstr "เรียงตามวันที่"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Sort by date"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Sorted by date"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Sorted by number"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_res_company__account_representative_id
 msgid ""
 "Specify an Accounting Firm that will act as a representative when exporting "
 "reports."
-msgstr "ระบุสำนักงานบัญชีที่จะทำหน้าที่เป็นตัวแทนในการส่งออกรายงาน"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_comparison
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "Start Date :"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_tax_periodicity_reminder_day
@@ -2845,70 +2677,54 @@ msgid "Start from"
 msgstr "เริ่มต้นจาก"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
-msgid "Starting Balance:"
-msgstr "ยอดคงเหลือเริ่มต้น:"
+msgid "Starting Balance :"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
-#, python-format
-msgid "Subformula"
-msgstr "สูตรย่อย"
+#: model:ir.model.fields,field_description:account_reports.field_account_report_manager__summary
+msgid "Summary"
+msgstr "สรุป"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "T: %s"
-msgstr "T: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_partner.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/js/account_reports.js:0
 #, python-format
 msgid "Tags"
 msgstr "แท็ก"
 
 #. module: account_reports
-#. odoo-javascript
-#. odoo-python
 #: code:addons/account_reports/models/account_general_ledger.py:0
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 #, python-format
 msgid "Tax Amount"
 msgstr "ยอดภาษี"
-
-#. module: account_reports
-#: model:ir.model.fields,field_description:account_reports.field_account_bank_statement_line__tax_closing_alert
-#: model:ir.model.fields,field_description:account_reports.field_account_move__tax_closing_alert
-#: model:ir.model.fields,field_description:account_reports.field_account_payment__tax_closing_alert
-msgid "Tax Closing Alert"
-msgstr "การแจ้งเตือนการปิดภาษี"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_bank_statement_line__tax_closing_end_date
 #: model:ir.model.fields,field_description:account_reports.field_account_move__tax_closing_end_date
 #: model:ir.model.fields,field_description:account_reports.field_account_payment__tax_closing_end_date
 msgid "Tax Closing End Date"
-msgstr "วันสิ้นสุดการปิดบัญชีภาษี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_general_ledger.py:0
 #, python-format
 msgid "Tax Declaration"
 msgstr "การแจ้งภาษี"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "Tax Grids"
-msgstr "ตารางภาษี"
+msgstr "Tax Grids"
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_tax_unit__vat
@@ -2916,18 +2732,16 @@ msgid "Tax ID"
 msgstr "เลขประจำตัวผู้เสียภาษี"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Tax Paid Adjustment"
-msgstr "การปรับภาษีที่ชำระ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
 msgid "Tax Received Adjustment"
-msgstr "การปรับภาษีที่ได้รับ"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.actions.client,name:account_reports.action_account_report_gt
@@ -2943,86 +2757,62 @@ msgstr "รายงานภาษี"
 #: model:ir.model.fields,field_description:account_reports.field_account_move__tax_report_control_error
 #: model:ir.model.fields,field_description:account_reports.field_account_payment__tax_report_control_error
 msgid "Tax Report Control Error"
-msgstr "ข้อผิดพลาดในการควบคุมรายงานภาษี"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.setup_financial_year_opening_form
 msgid "Tax Return"
-msgstr "การคืนภาษี"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
-msgid "Tax Return Periodicity"
-msgstr "ระยะเวลาการคืนภาษี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_tax_unit
 #: model_terms:ir.ui.view,arch_db:account_reports.view_tax_unit_form
 msgid "Tax Unit"
-msgstr "หน่วยภาษี"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_tax_unit.xml:0
-#, python-format
-msgid "Tax Unit:"
-msgstr "หน่วยภาษี:"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.actions.act_window,name:account_reports.action_view_tax_units
 #: model:ir.model.fields,field_description:account_reports.field_res_company__account_tax_unit_ids
 #: model:ir.ui.menu,name:account_reports.menu_view_tax_units
 msgid "Tax Units"
-msgstr "หน่วยภาษี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__mail_activity_type__category__tax_report
 msgid "Tax report"
-msgstr "รายงานภาษี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/res_company.py:0
 #: code:addons/account_reports/models/res_company.py:0
 #: code:addons/account_reports/models/res_company.py:0
 #, python-format
 msgid "Tax return for %s%s"
-msgstr "การคืนภาษีสำหรับ %s%s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/res_company.py:0
 #, python-format
 msgid "Tax return from %s to %s%s"
-msgstr "การคืนภาษีจาก %s ถึง %s%s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
 msgid "Taxes"
 msgstr "ภาษี"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/journal_report/line/line.xml:0
-#: model_terms:ir.ui.view,arch_db:account_reports.journal_report_pdf_export_main_table_body
-#, python-format
-msgid "Taxes Applied"
-msgstr "ภาษี"
-
-#. module: account_reports
-#: model:ir.model.fields,help:account_reports.field_account_tax_unit__fpos_synced
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_journal_audit_report
 msgid ""
-"Technical field indicating whether Fiscal Positions exist for all companies "
-"in the unit"
+"Taxes Applied\n"
+"                            &amp;nbsp;"
 msgstr ""
-"ฟิลด์ทางเทคนิคที่ระบุว่าสถานะทางการเงินมีอยู่สำหรับทุกบริษัทในหน่วยหรือไม่"
 
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_ir_actions_account_report_download
 msgid "Technical model for accounting report downloads"
-msgstr "โมเดลทางเทคนิคสำหรับการดาวน์โหลดรายงานทางบัญชี"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,field_description:account_reports.field_account_report_footnote__text
@@ -3030,220 +2820,85 @@ msgid "Text"
 msgstr "ข้อความ"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/ellipsis/ellipsis.js:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "Text copied"
-msgstr "คัดลอกข้อความแล้ว"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_journal_report.py:0
-#, python-format
-msgid ""
-"The 'load more limit' setting of this report is too low to display all the "
-"lines of the entry you're trying to show."
+msgid "The Book balance in Odoo dated today"
 msgstr ""
-"การตั้งค่า 'ขีดจำกัดการโหลดเพิ่มเติม' "
-"ของรายงานนี้ต่ำเกินไปที่จะแสดงรายการทั้งหมดที่คุณพยายามแสดง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "The Accounts Coverage Report is not available for this report."
-msgstr "รายงานความครอบคลุมของบัญชีไม่พร้อมใช้งานสำหรับรายงานนี้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_tax.py:0
-#, python-format
-msgid ""
-"The country detected for this VAT number does not match the one set on this "
-"Tax Unit."
-msgstr ""
-"ประเทศที่ตรวจพบสำหรับหมายเลข VAT นี้ไม่ตรงกับประเทศที่ตั้งไว้ในหน่วยภาษีนี้"
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_tax_unit__country_id
 msgid ""
 "The country in which this tax unit is used to group your companies' tax "
 "reports declaration."
-msgstr "ประเทศที่ใช้หน่วยภาษีนี้ เพื่อจัดกลุ่มการรายงานภาษีของบริษัทของคุณ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/deferred_reports/warnings.xml:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #, python-format
-msgid "The entry that will be generated will take them into account."
-msgstr "รายการที่จะถูกสร้างขึ้นจะนำมาพิจารณาด้วย"
+msgid ""
+"The current balance in the General Ledger %s doesn't match the balance of "
+"your last bank statement %s leading to an unexplained difference of %s."
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_tax_unit__vat
 msgid "The identifier to be used when submitting a report for this unit."
-msgstr "ตัวระบุที่จะใช้เมื่อส่งรายงานสำหรับหน่วยนี้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_tax.py:0
 #, python-format
 msgid "The main company of a tax unit has to be part of it."
-msgstr "บริษัทหลักของหน่วยภาษีจะต้องเป็นส่วนหนึ่งของหน่วยภาษี"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_journal_report.py:0
-#, python-format
-msgid ""
-"The selected report line does not target a Journal Entry or a Journal Item."
 msgstr ""
-"บรรทัดรายงานที่เลือกไม่ได้กำหนดเป้าหมายรายการสมุดรายวันหรือไอเท็มสมุดรายวัน"
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_res_company__account_tax_unit_ids
 msgid "The tax units this company belongs to."
-msgstr "หน่วยภาษีที่บริษัทนี้เป็นเจ้าของ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/warnings.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.main_template
 msgid "There are"
 msgstr "มี"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/account_report.xml:0
-#, python-format
-msgid "There is no data to display for the given filters."
-msgstr "ไม่มีข้อมูลที่จะแสดงสำหรับตัวกรองที่กำหนด"
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "There are some"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "This Financial Year"
-msgstr "ปีงบประมาณนี้"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "This Month"
 msgstr "เดือนนี้"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "This Quarter"
 msgstr "ไตรมาสนี้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid ""
-"This account exists in the Chart of Accounts but is not mentioned in any "
-"line of the report"
-msgstr "บัญชีนี้มีอยู่ในผังบัญชีแต่ไม่ได้กล่าวถึงในบรรทัดใดของรายงาน"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid ""
-"This account is reported in a line of the report but does not exist in the "
-"Chart of Accounts"
-msgstr "บัญชีนี้ได้รับการรายงานในบรรทัดของรายงาน แต่ไม่มีอยู่ในผังบัญชี"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "This account is reported in multiple lines of the report"
-msgstr "บัญชีนี้มีการรายงานในหลายบรรทัดของรายงาน"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "This account is reported multiple times on the same line of the report"
-msgstr "บัญชีนี้ถูกรายงานหลายครั้งในบรรทัดเดียวกันของรายงาน"
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 msgid ""
 "This allows you to choose the position of totals in your financial reports."
-msgstr "ซึ่งจะทำให้คุณสามารถเลือกตำแหน่งของผลรวมในรายงานทางการเงินของคุณได้"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/warnings.xml:0
-#, python-format
-msgid ""
-"This company is part of a tax unit. You're currently not viewing the whole "
-"unit."
-msgstr "บริษัทนี้เป็นส่วนหนึ่งของหน่วยภาษี ขณะนี้คุณไม่ได้ดูหน่วยทั้งหมด"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/widgets/account_report_x2many/account_report_x2many.js:0
-#, python-format
-msgid ""
-"This line and all its children will be deleted. Are you sure you want to "
-"proceed?"
 msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_line_form
-msgid "This line uses a custom user-defined 'Group By' value."
-msgstr "บรรทัดนี้ใช้ค่า 'จัดกลุ่มโดย' ที่ผู้ใช้กำหนดเอง"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
-msgid "This option hides lines with a value of 0"
-msgstr "ตัวเลือกนี้จะซ่อนบรรทัดที่มีค่า 0"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.account_report_form
-msgid ""
-"This report is linked to a custom handler.\n"
-"                        You can customize it manually, but make sure your changes don't clash with what the handler does."
-msgstr ""
-"รายงานนี้เชื่อมโยงกับตัวจัดการที่กำหนดเอง\n"
-"                        คุณสามารถปรับแต่งได้ด้วยตนเอง แต่ต้องแน่ใจว่าการเปลี่ยนแปลงของคุณไม่ขัดแย้งกับสิ่งที่ตัวจัดการทำ"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/warnings.xml:0
+#: code:addons/account_reports/models/account_generic_tax_report.py:0
 #, python-format
-msgid "This report only displays the data of the active company."
-msgstr "รายงานนี้แสดงเฉพาะข้อมูลของบริษัทที่ใช้งานอยู่เท่านั้น"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_move_form_vat_return
-msgid ""
-"This tax closing entry is posted, but the tax lock date is earlier than the "
-"covered period's last day. You might need to reset it to draft and refresh "
-"its content, in case other entries using taxes have been posted in the "
-"meantime."
+msgid "This period is already closed for company %s"
 msgstr ""
-"รายการปิดบัญชีภาษีนี้ถูกลงรายการบัญชีแล้ว "
-"แต่วันที่ล็อคภาษีอยู่ก่อนหน้าวันสุดท้ายของรอบระยะเวลาที่ครอบคลุม "
-"คุณอาจต้องรีเซ็ตเป็นแบบร่างและรีเฟรชเนื้อหา "
-"ในกรณีที่มีการลงรายการรายการอื่นๆ ที่ใช้ภาษีในระหว่างนี้"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
 msgid "Today"
 msgstr "วันนี้"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
 #: code:addons/account_reports/models/account_general_ledger.py:0
 #: code:addons/account_reports/models/account_partner_ledger.py:0
 #: code:addons/account_reports/models/account_sales_report.py:0
@@ -3254,18 +2909,42 @@ msgid "Total"
 msgstr "รวม"
 
 #. module: account_reports
-#. odoo-python
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Total %s"
 msgstr "รวม %s"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filters.js:0
+#: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Trade Partners"
-msgstr "พาร์ทเนอร์คู่ค้า"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid ""
+"Transactions that were entered into Odoo, but not yet reconciled (Payments "
+"triggered by invoices/bills or manually)"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid ""
+"Transactions(+) that were entered into Odoo, but not yet reconciled "
+"(Payments triggered by invoices/refunds or manually)"
+msgstr ""
+
+#. module: account_reports
+#: code:addons/account_reports/models/account_bank_reconciliation_report.py:0
+#, python-format
+msgid ""
+"Transactions(-) that were entered into Odoo, but not yet reconciled "
+"(Payments triggered by bills/credit notes or manually)"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.trial_balance_report
@@ -3277,51 +2956,43 @@ msgstr "งบทดลอง"
 #. module: account_reports
 #: model:ir.model,name:account_reports.model_account_trial_balance_report_handler
 msgid "Trial Balance Custom Handler"
-msgstr "ตัวจัดการงบทดลองแบบกำหนดเอง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_sales_report.py:0
 #, python-format
 msgid "Triangular"
-msgstr "สามเหลี่ยม"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
-"Trying to dispatch an action on a report not compatible with the provided "
-"options."
+"Trying to build account hierarchy from a model different from "
+"account.account: %s"
 msgstr ""
-"กำลังพยายามส่งการดำเนินการกับรายงานที่ไม่เข้ากันกับตัวเลือกที่ให้ไว้อยู่"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid ""
 "Trying to expand a group for a line which was not generated by a report "
 "line: %s"
-msgstr "กำลังพยายามขยายกลุ่มสำหรับบรรทัดที่ไม่ได้สร้างโดยบรรทัดรายงาน: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Trying to expand a line without an expansion function."
-msgstr "กำลังพยายามขยายบรรทัดโดยไม่มีฟังก์ชันการขยาย"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Trying to expand groupby results on lines without a groupby value."
-msgstr "กำลังพยายามขยายผลลัพธ์ groupby บนบรรทัด โดยไม่มีค่า groupby"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_journal_report.py:0
 #: code:addons/account_reports/models/account_journal_report.py:0
 #, python-format
@@ -3329,22 +3000,30 @@ msgid ""
 "Trying to use the journal line expand function on a line that is not linked "
 "to a journal."
 msgstr ""
-"กำลังพยายามใช้ฟังก์ชันขยายบรรทัดสมุดรายวันในบรรทัดที่ไม่ได้เชื่อมโยงกับสมุดรายวัน"
 
 #. module: account_reports
 #: model:account.report.line,name:account_reports.account_financial_unaffected_earnings0
 msgid "Unallocated Earnings"
-msgstr "รายได้ที่ไม่ได้ปันส่วน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_extra_options.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
+msgid "Unfold"
+msgstr "กางออก"
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options_journal_audit_report
 msgid "Unfold All"
-msgstr "ขยายทั้งหมด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template
+msgid "Unfolded"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
@@ -3353,378 +3032,269 @@ msgid "Unknown"
 msgstr "ไม่ทราบ"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_partner_ledger.py:0
 #: code:addons/account_reports/models/account_sales_report.py:0
 #, python-format
 msgid "Unknown Partner"
-msgstr "ไม่ทราบพาร์ทเนอร์"
+msgstr "ไม่ทราบ"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Unknown bound criterium: %s"
-msgstr "ไม่ทราบเกณฑ์ที่ผูกมัด: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "Unknown date scope: %s"
-msgstr "ไม่ทราบขอบเขตวันที่: %s"
+msgstr ""
 
 #. module: account_reports
 #: model:account.report,name:account_reports.multicurrency_revaluation_report
 #: model:ir.actions.client,name:account_reports.action_account_report_multicurrency_revaluation
 #: model:ir.ui.menu,name:account_reports.menu_action_account_report_multicurrency_revaluation
 msgid "Unrealized Currency Gains/Losses"
-msgstr "กำไร/ขาดทุนจากสกุลเงินที่ไม่เกิดขึ้น"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+msgid "Unreconciled"
+msgstr "ยังไม่ได้ไม่กระทบยอด"
 
 #. module: account_reports
 #: model:account.report.column,name:account_reports.account_financial_report_ec_sales_vat
 msgid "VAT Number"
-msgstr "หมายเลขภาษี"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.company_information
-msgid "VAT:"
-msgstr "ภาษี:"
+#: model_terms:ir.ui.view,arch_db:account_reports.view_company_form
+msgid "VAT Units"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line/popover/debug_popover.xml:0
-#, python-format
-msgid "Value"
-msgstr "ค่า"
-
-#. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_move.py:0
 #, python-format
 msgid "Vat closing from %s to %s"
-msgstr "การปิดภาษีมูลค่าเพิ่มจาก %s เป็น %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "View Bank Statement"
-msgstr "ดูรายการเดินบัญชีธนาคาร"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "View Carryover Lines"
-msgstr "ดูบรรทัดยกยอด"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "View Journal Entry"
-msgstr "ดูรายการสมุดรายวัน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_sales_report.py:0
 #, python-format
 msgid "View Partner"
-msgstr "ดูพาร์ทเนอร์"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "View Payment"
-msgstr "ดูการชำระเงิน"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 msgid ""
 "When ticked, totals and subtotals appear below the sections of the report"
-msgstr "เมื่อทำเครื่องหมาย ผลรวมและผลรวมย่อยจะแสดงด้านล่างส่วนของรายงาน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_res_company__totals_below_sections
 #: model:ir.model.fields,help:account_reports.field_res_config_settings__totals_below_sections
 msgid ""
 "When ticked, totals and subtotals appear below the sections of the report."
-msgstr "เมื่อทำเครื่องหมาย ผลรวมและผลรวมย่อยจะแสดงด้านล่างส่วนของรายงาน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields,help:account_reports.field_account_account__exclude_provision_currency_ids
 msgid ""
 "Whether or not we have to make provisions for the selected foreign "
 "currencies."
-msgstr "เราจะต้องสำรองสกุลเงินต่างประเทศที่เลือกไว้หรือไม่"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_extra_options
+msgid "With Draft Entries"
+msgstr ""
+
+#. module: account_reports
 #: code:addons/account_reports/models/account_general_ledger.py:0
 #, python-format
 msgid "Wrong ID for general ledger line to expand: %s"
-msgstr "ID ไม่ถูกต้องสำหรับรายการบัญชีแยกประเภททั่วไปที่จะขยาย: %s"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_partner_ledger.py:0
 #, python-format
 msgid "Wrong ID for partner ledger line to expand: %s"
-msgstr "รหัสไม่ถูกต้องสำหรับรายการบัญชีแยกประเภทพาร์ทเนอร์ที่จะขยาย: %s"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_report.py:0
-#, python-format
-msgid "Wrong format for if_other_expr_above/if_other_expr_below formula: %s"
 msgstr ""
-"รูปแบบไม่ถูกต้องสำหรับสูตร if_other_expr_above/if_other_expr_below: %s"
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "XLSX"
-msgstr "XLSX"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/edit_popover.xml:0
-#, python-format
-msgid "Yes"
-msgstr "ใช่"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/warnings.xml:0
-#, python-format
-msgid "You are using custom exchange rates."
-msgstr "คุณกำลังใช้อัตราแลกเปลี่ยนที่กำหนดเอง"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_move.py:0
-#, python-format
-msgid "You can't open a tax report from a move without a VAT closing date."
-msgstr "คุณไม่สามารถเปิดรายงานภาษีจากการย้ายโดยไม่มีวันปิดบัญชี VAT ได้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_move_line.py:0
-#, python-format
-msgid "You cannot add taxes on a tax closing move line."
-msgstr "คุณไม่สามารถเพิ่มภาษีในรายการที่ย้ายการปิดบัญชีภาษีได้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid ""
-"You cannot generate entries for a period that does not end at the end of the"
-" month."
-msgstr "คุณไม่สามารถสร้างรายการในช่วงเวลาที่ไม่สิ้นสุดเมื่อสิ้นเดือนได้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_deferred_reports.py:0
-#, python-format
-msgid "You cannot generate entries for a period that is locked."
-msgstr "คุณไม่สามารถสร้างรายการในช่วงเวลาที่ถูกล็อคได้"
-
-#. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_move.py:0
-#, python-format
-msgid ""
-"You cannot reset this closing entry to draft, as it would delete carryover "
-"values impacting the tax report of a locked period. To do this, you first "
-"need to modify you tax return lock date."
 msgstr ""
-"คุณไม่สามารถรีเซ็ตรายการปิดบัญชีนี้เป็นแบบร่างได้ "
-"เนื่องจากจะถูกลบค่ายกยอดที่ส่งผลกระทบต่อรายงานภาษีของรอบระยะเวลาที่ถูกล็อคไว้"
-" ในการดำเนินการนี้ คุณต้องแก้ไขวันที่ล็อกการคืนภาษีก่อน"
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_multicurrency_revaluation_report.py:0
-#, python-format
-msgid "You need to activate more than one currency to access this report."
-msgstr "คุณต้องเปิดใช้งานมากกว่าหนึ่งสกุลเงินเพื่อเข้าถึงรายงานนี้"
-
-#. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.pdf_export_main
-msgid "[Draft]"
-msgstr "[ฉบับร่าง]"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "addressed to"
-msgstr "จ่าหน้าถึง"
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_main_template
+msgid "You are using custom exchange rates."
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__year
 msgid "annually"
-msgstr "ประจำปี"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_aged_partner_balance.py:0
-#: code:addons/account_reports/models/account_aged_partner_balance.py:0
+#: code:addons/account_reports/models/res_partner.py:0
+#: code:addons/account_reports/models/res_partner.py:0
 #, python-format
 msgid "any"
-msgstr "ใดๆ"
+msgstr ""
 
 #. module: account_reports
 #: model_terms:ir.ui.view,arch_db:account_reports.res_config_settings_view_form
 #: model_terms:ir.ui.view,arch_db:account_reports.setup_financial_year_opening_form
 msgid "days after period"
-msgstr "วันหลังจากงวด"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__2_months
 msgid "every 2 months"
-msgstr "ทุก 2 เดือน"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__4_months
 msgid "every 4 months"
-msgstr "ทุก 4 เดือน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "having a starting balance different than the previous ending balance"
+msgstr ""
+
+#. module: account_reports
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "in the next period."
-msgstr "ในงวดต่อไป"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "invoices"
-msgstr "การแจ้งหนี้"
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "journal items"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__monthly
 msgid "monthly"
-msgstr "รายเดือน"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
 #: code:addons/account_reports/models/account_report.py:0
 #, python-format
 msgid "n/a"
 msgstr "ไม่มีข้อมูล"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "partners"
-msgstr "พาร์ทเนอร์"
+#: model:ir.model.fields,help:account_reports.field_account_report_manager__report_name
+msgid "name of the model of the report"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/warnings.xml:0
-#, python-format
-msgid "prior or included in this period."
-msgstr "ก่อนหน้าหรือรวมอยู่ในช่วงนี้"
+#: model_terms:ir.ui.view,arch_db:account_reports.main_template
+msgid "prior or included in this period"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__trimester
 msgid "quarterly"
-msgstr "รายไตรมาส"
+msgstr ""
 
 #. module: account_reports
 #: model:ir.model.fields.selection,name:account_reports.selection__res_company__account_tax_periodicity__semester
 msgid "semi-annually"
-msgstr "ทุกครึ่งปี"
+msgstr ""
 
 #. module: account_reports
-#: model_terms:ir.ui.view,arch_db:account_reports.view_tax_unit_form
-msgid "synchronize fiscal positions"
-msgstr "ซิงโครไนซ์สถานะทางการเงิน"
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "statements"
+msgstr ""
 
 #. module: account_reports
-#. odoo-python
-#: code:addons/account_reports/models/account_tax.py:0
-#, python-format
-msgid "tax unit [%s]"
-msgstr "หน่วยภาษี [%s]"
+#: model_terms:ir.ui.view,arch_db:account_reports.search_template_date_filter
+msgid "to:"
+msgstr "ถึง:"
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "that are not established abroad."
-msgstr "ที่ไม่ได้จัดตั้งขึ้นในต่างประเทศ"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_comparison.xml:0
-#: code:addons/account_reports/static/src/components/account_report/filters/filter_date.xml:0
-#, python-format
-msgid "to"
-msgstr "ถึง"
-
-#. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/warnings.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.main_template
 msgid "unposted Journal Entries"
-msgstr "รายการสมุดรายวันที่ไม่ได้ผ่านรายการ"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "were carried over to this line from previous period."
-msgstr "ได้ถูกยกมาสู่บรรทัดนี้จากงวดที่แล้ว"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "who are not established in any of the EC countries."
-msgstr "ที่ไม่ได้จัดตั้งขึ้นในประเทศ EC ใด"
+#: model_terms:ir.ui.view,arch_db:account_reports.bank_reconciliation_report_main_template
+msgid "which doesn't result from a bank statement nor payments."
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "will be carried over to"
-msgstr "จะถูกยกยอดไปยัง"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/account_report/line_cell/popover/carryover_popover.xml:0
+#. openerp-web
+#: code:addons/account_reports/static/src/xml/account_report_template.xml:0
 #, python-format
 msgid "will be carried over to this line in the next period."
-msgstr "จะถูกโอนไปยังบรรทัดนี้ในงวดหน้า"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/sales_report/warnings.xml:0
-#, python-format
-msgid "without a valid intra-community VAT number."
-msgstr "โดยไม่มีหมายเลข VAT ภายในคอมมูนิตี้ที่ถูกต้อง"
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "⇒ General Ledger"
+msgstr ""
 
 #. module: account_reports
-#. odoo-javascript
-#: code:addons/account_reports/static/src/components/multicurrency_revaluation_report/warnings.xml:0
-#, python-format
+#: model_terms:ir.ui.view,arch_db:account_reports.aged_report_line_template
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_general_ledger_report
+#: model_terms:ir.ui.view,arch_db:account_reports.line_template_partner_ledger_report
+msgid "⇒ Journal Items"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_line_template
+msgid "⇒ Rates"
+msgstr ""
+
+#. module: account_reports
+#: model_terms:ir.ui.view,arch_db:account_reports.multicurrency_report_main_template
 msgid "⇒ Reset to Odoo’s Rate"
-msgstr "⇒ รีเซ็ตเป็นอัตราของ Odoo"
+msgstr ""

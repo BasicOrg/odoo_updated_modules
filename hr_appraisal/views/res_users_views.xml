@@ -9,9 +9,10 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_open_last_appraisal"
-                    class="oe_stat_button" invisible="not last_appraisal_id"
+                    class="oe_stat_button" attrs="{'invisible': [('last_appraisal_id', '=', False)]}"
                     icon="fa-sitemap"
-                    type="object">
+                    type="object"
+                    >
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">
                             <field name="last_appraisal_date" readonly="1"/>

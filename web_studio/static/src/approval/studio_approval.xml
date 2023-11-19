@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-<t t-name="StudioApproval">
-    <div class="o_web_studio_approval d-inline ms-2" t-on-click.stop="toggleApprovalInfo" t-ref="root">
+<t t-name="StudioApproval" owl="1">
+    <div class="o_web_studio_approval" t-on-click.stop="toggleApprovalInfo" t-ref="root">
         <!-- no rules list: first fetch not done, display spinner -->
         <t t-if="state.rules === null">
             <i class="fa fa-circle-o-notch fa-spin"/>

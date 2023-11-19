@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import json
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -48,15 +47,18 @@ class ConsolidationPeriod(models.Model):
         Compute the dashboard sections
         :return:
         """
+        Section = self.env['consolidation.group']
         for record in self:
             domain = [('period_id', '=', record.id), ('group_id.show_on_dashboard', '=', True)]
-            grouped_res = self.env['consolidation.journal.line']._read_group(domain, ['group_id'], ['amount:sum'])
+            rfields = ['group_id.id', 'total:sum(amount)']
+            group_by = ['group_id']
+            grouped_res = self.env['consolidation.journal.line']._read_group(domain, rfields, group_by)
 
             results = [
-                {"name": group.name, "value": record._format_value(amount_sum)}
-                for group, amount_sum in grouped_res
+                '{"name": "%s", "value": "%s"}' % (Section.browse(value['group_id'][0]).name, record._format_value(value['total']))
+                for value in grouped_res
             ]
-            record.dashboard_sections = json.dumps(results)
+            record.dashboard_sections = '[%s]' % ','.join(results)
 
     @api.depends('journal_ids')
     def _compute_journal_ids_count(self):
@@ -100,14 +102,14 @@ class ConsolidationPeriod(models.Model):
                 ('consolidation_account_chart_filtered_ids', '=', False),
                 ('used', '=', True)
             ]
-            values = Account.with_context(context)._read_group(domain, ['company_id'], ['__count'])
+            values = Account.with_context(context).read_group(domain, ['amount:count(id)', 'company_id.id'],
+                                                              ['company_id'])
 
             results = [
-                {"company_id": company.id, "name": company.name, "value": count}
-                for company, count in values
-            ]
+                '{"company_id": %s,"name": "%s", "value": "%s"}' % (val['company_id'][0], Company.browse(val['company_id'][0]).name, val['amount'])
+                for val in values]
 
-            record.company_unmapped_accounts_counts = json.dumps(results)
+            record.company_unmapped_accounts_counts = '[%s]' % ','.join(results)
 
     @api.onchange('date_analysis_end')
     def generate_guessed_company_periods(self):
@@ -167,13 +169,10 @@ class ConsolidationPeriod(models.Model):
             # Since he has the rights to be here, we can go sudo from here
             record = record.sudo()
             # unlink everything (only the ones auto-generated)
-            journals_to_unlink = record.journal_ids.search([
+            record.journal_ids.search([
                 ('auto_generated', '=', True),
                 ('period_id', '=', record.id)
-            ])
-
-            journals_to_unlink.line_ids.with_context(allow_unlink=True).unlink()
-            journals_to_unlink.unlink()
+            ]).unlink()
 
             # (re)generate
             # 1 journal = 1 company
@@ -201,7 +200,7 @@ class ConsolidationPeriod(models.Model):
                 'search_default_not_mapped': True,
                 'search_default_used': True,
             },
-            'display_name': _('Account Mapping: %s (for %s)', company.name, self.chart_id.name)
+            'display_name': _('Account Mapping: %s (for %s)') % (company.name, self.chart_id.name)
         })
         return action
 
@@ -251,10 +250,10 @@ class ConsolidationPeriod(models.Model):
         return action
 
     def action_save_onboarding_create_step(self):
-        """Validate the onboarding step of creating the first analysis period."""
-        self.env['onboarding.onboarding.step'].action_validate_step(
-            'account_consolidation.onboarding_onboarding_step_create_consolidation_period'
-        )
+        """
+        Save the "done" state of onboarding step of create first analysis period
+        """
+        self.env.user.company_id.sudo().set_onboarding_step_done('consolidation_create_period_state')
 
     # PROTECTEDS
 
@@ -365,7 +364,7 @@ class ConsolidationPeriod(models.Model):
         """
         self.ensure_one()
         for company_period in self.company_period_ids:
-            company_period._generate_journal()
+            company_period.generate_journal()
 
     def _generate_consolidations_journals(self):
         """
@@ -374,7 +373,7 @@ class ConsolidationPeriod(models.Model):
         """
         self.ensure_one()
         for consolidation_composition in self.using_composition_ids:
-            consolidation_composition._generate_journal()
+            consolidation_composition.generate_journal()
 
     def _format_value(self, value, currency=False):
         """
@@ -421,12 +420,13 @@ class ConsolidationPeriodComposition(models.Model):
             if comp.composed_period_id == comp.using_period_id:
                 raise ValidationError(_("The Composed Analysis Period must be different from the Analysis Period"))
 
-    @api.depends('composed_period_id')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         for record in self:
-            record.display_name = record.composed_period_id.display_name
+            result.append((record.id, record.composed_period_id.display_name))
+        return result
 
-    def _generate_journal(self):
+    def generate_journal(self):
         """
         (Re)generate the journal representing this analysis period composition. Also (re)generate subsequent non-locked
         period journals.
@@ -437,11 +437,10 @@ class ConsolidationPeriodComposition(models.Model):
             ('composition_id', '=', self.id),
             ('period_id', '=', self.using_period_id.id)
         ])
-        journals.line_ids.with_context(allow_unlink=True).unlink()
         journals.unlink()
         # update composed analysis period journals (recursive)
         self.composed_period_id.action_generate_journals()
-        journal_lines_values = self._get_journal_lines_values()
+        journal_lines_values = self.get_journal_lines_values()
         self.env['consolidation.journal'].create({
             'name': self.composed_period_id.chart_name,
             'auto_generated': True,
@@ -451,7 +450,7 @@ class ConsolidationPeriodComposition(models.Model):
             'line_ids': [(0, 0, value) for value in journal_lines_values]
         })
 
-    def _get_journal_lines_values(self):
+    def get_journal_lines_values(self):
         """
         Get all the journal line values in order to create them.
         :return: a list of dict containing values for journal lines creation
@@ -483,8 +482,8 @@ class ConsolidationPeriodComposition(models.Model):
             ('account_id.used_in_ids', '=', consolidation_account.id),
             ('period_id', '=', self.composed_period_id.id)
         ]
-        amounts = self.env['consolidation.journal.line'].sudo()._read_group(domain, [], ['amount:sum'])
-        amount = amounts[0][0]
+        amounts = self.env['consolidation.journal.line'].sudo()._read_group(domain, ['amount:sum(amount)'], [])
+        amount = amounts[0]['amount'] or 0.0
         return (self.rate_consolidation / 100.0) * (amount * self.currency_rate)
 
     # COMPUTEDS
@@ -564,35 +563,18 @@ class ConsolidationCompanyPeriod(models.Model):
             record.currencies_are_different = record.currency_chart_id != record.currency_company_id
 
     # ORM OVERRIDES
-    @api.depends('company_name', 'date_company_begin', 'date_company_end', 'period_id')
-    def _compute_display_name(self):
-        """
-        Set the display name of the company period. It's based on the dates and the analysis period dates to avoid too
-        much information to be uselessly shown.
-        """
+    def name_get(self):
+        result = []
         for record in self:
-            generic_name = record.company_name if record.company_name else '?'
-            date_begin = record.date_company_begin if record.date_company_begin else '?'
-            date_end = record.date_company_end if record.date_company_end else '?'
-            ap = record.period_id
-            date_analysis_begin = ap.date_analysis_begin if ap.date_analysis_begin else '?'
-            date_analysis_end = ap.date_analysis_end if ap.date_analysis_end else '?'
+            result.append((record.id, record._get_display_name()))
+        return result
 
-            if date_analysis_begin == date_begin and date_analysis_end == date_end:
-                record.display_name = generic_name
-            elif date_begin.month == date_end.month and date_begin.year == date_end.year:
-                record.display_name = '%s (%s)' % (generic_name, date_begin.strftime('%b %Y'))
-            elif date_begin.year == date_end.year:
-                record.display_name = '%s (%s-%s)' % (generic_name, date_begin.strftime('%b'), date_end.strftime('%b %Y'))
-            else:
-                record.display_name = '%s (%s-%s)' % (generic_name, date_begin.strftime('%b %Y'), date_end.strftime('%b %Y'))
-
-    def _generate_journal(self):
+    def generate_journal(self):
         """
         Generate the journal representing this company_period.
         """
         self.ensure_one()
-        journal_lines_values = self._get_journal_lines_values()
+        journal_lines_values = self.get_journal_lines_values()
         self.env['consolidation.journal'].create({
             'name': _("%s Consolidated Accounting", self.company_name),
             'auto_generated': True,
@@ -602,7 +584,7 @@ class ConsolidationCompanyPeriod(models.Model):
             'chart_id': self.chart_id.id,
         })
 
-    def _get_journal_lines_values(self):
+    def get_journal_lines_values(self):
         """
         Get all the journal line values in order to create them.
         :return: a list of dict containing values for journal lines creation
@@ -638,8 +620,8 @@ class ConsolidationCompanyPeriod(models.Model):
         """
         self.ensure_one()
         domain = self._get_move_lines_domain(consolidation_account)
-        res = self.env['account.move.line']._read_group(domain, [], ['balance:sum', 'id:array_agg'])
-        return res[0]
+        res = self.env['account.move.line']._read_group(domain, ['balance:sum', 'id:array_agg'], [])
+        return res[0]['balance'] or 0.0, res[0]['id'] or []
 
     def _apply_rates(self, amount, consolidation_account):
         """
@@ -707,7 +689,7 @@ class ConsolidationCompanyPeriod(models.Model):
         """
         self.ensure_one()
         return [
-            ('parent_state', '=', 'posted'),
+            ('move_id.state', '=', 'posted'),
             ('company_id', '=', self.company_id.id),
             ('journal_id', 'not in', self.mapped('exclude_journal_ids.id')),
             ('account_id.consolidation_account_ids', '=', consolidation_account.id),
@@ -745,3 +727,27 @@ class ConsolidationCompanyPeriod(models.Model):
         """
         self.ensure_one()
         return (self.rate_consolidation / 100.0) * amount
+
+    def _get_display_name(self):
+        """
+        Get the display name of the company period. It's based on the dates and the analysis period dates to avoid too
+        much information to be uselessly shown.
+        :return: The computed display name
+        :rtype: str
+        """
+        self.ensure_one()
+        generic_name = self.company_name if self.company_name else '?'
+        date_begin = self.date_company_begin if self.date_company_begin else '?'
+        date_end = self.date_company_end if self.date_company_end else '?'
+        ap = self.period_id
+        date_analysis_begin = ap.date_analysis_begin if ap.date_analysis_begin else '?'
+        date_analysis_end = ap.date_analysis_end if ap.date_analysis_end else '?'
+
+        if date_analysis_begin == date_begin and date_analysis_end == date_end:
+            return generic_name
+        if date_begin.month == date_end.month and date_begin.year == date_end.year:
+            return '%s (%s)' % (generic_name, date_begin.strftime('%b %Y'))
+        elif date_begin.year == date_end.year:
+            return '%s (%s-%s)' % (generic_name, date_begin.strftime('%b'), date_end.strftime('%b %Y'))
+        else:
+            return '%s (%s-%s)' % (generic_name, date_begin.strftime('%b %Y'), date_end.strftime('%b %Y'))

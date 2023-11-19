@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.tests import common
+from odoo.tests import common, Form
 
 from odoo.tools import html2plaintext
 
@@ -57,7 +57,9 @@ class TestSaleMrpInvoices(common.TransactionCase):
         })
         so.action_confirm()
 
-        so.picking_ids.button_validate()
+        action = so.picking_ids.button_validate()
+        wizard = Form(self.env[action['res_model']].with_context(action['context'])).save()
+        wizard.process()
 
         invoice = so._create_invoices()
         invoice.action_post()

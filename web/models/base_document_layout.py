@@ -5,8 +5,7 @@ from markupsafe import Markup
 from odoo import api, fields, models, tools
 
 from odoo.addons.base.models.ir_qweb_fields import nl2br
-from odoo.tools import html2plaintext, is_html_empty
-from odoo.tools.misc import file_path
+from odoo.modules import get_resource_path
 
 try:
     import sass as libsass
@@ -63,7 +62,6 @@ class BaseDocumentLayout(models.TransientModel):
     report_header = fields.Html(related='company_id.report_header', readonly=False)
     report_footer = fields.Html(related='company_id.report_footer', readonly=False, default=_default_report_footer)
     company_details = fields.Html(related='company_id.company_details', readonly=False, default=_default_company_details)
-    is_company_details_empty = fields.Boolean(compute='_compute_empty_company_details')
 
     # The paper format changes won't be reflected in the preview.
     paperformat_id = fields.Many2one(related='company_id.paperformat_id', readonly=False)
@@ -133,11 +131,7 @@ class BaseDocumentLayout(models.TransientModel):
                     wizard_with_logo = wizard
                 preview_css = markupsafe.Markup(self._get_css_for_preview(styles, wizard_with_logo.id))
                 ir_ui_view = wizard_with_logo.env['ir.ui.view']
-                wizard.preview = ir_ui_view._render_template('web.report_invoice_wizard_preview', {
-                    'company': wizard_with_logo,
-                    'preview_css': preview_css,
-                    'is_html_empty': is_html_empty,
-                })
+                wizard.preview = ir_ui_view._render_template('web.report_invoice_wizard_preview', {'company': wizard_with_logo, 'preview_css': preview_css})
             else:
                 wizard.preview = False
 
@@ -250,6 +244,14 @@ class BaseDocumentLayout(models.TransientModel):
 
         return tools.rgb_to_hex(primary), tools.rgb_to_hex(secondary)
 
+    @api.model
+    def action_open_base_document_layout(self, action_ref=None):
+        if not action_ref:
+            action_ref = 'web.action_base_document_layout_configurator'
+        res = self.env["ir.actions.actions"]._for_xml_id(action_ref)
+        self.env[res["res_model"]].check_access_rights('write')
+        return res
+
     def document_layout_save(self):
         # meant to be overridden
         return self.env.context.get('report_action') or {'type': 'ir.actions.act_window_close'}
@@ -289,7 +291,7 @@ class BaseDocumentLayout(models.TransientModel):
 
         precision = 8
         output_style = 'expanded'
-        bootstrap_path = file_path('web/static/lib/bootstrap/scss')
+        bootstrap_path = get_resource_path('web', 'static', 'lib', 'bootstrap', 'scss')
 
         try:
             return libsass.compile(
@@ -302,10 +304,3 @@ class BaseDocumentLayout(models.TransientModel):
             )
         except libsass.CompileError as e:
             raise libsass.CompileError(e.args[0])
-
-    @api.depends('company_details')
-    def _compute_empty_company_details(self):
-        # In recent change when an html field is empty a <p> balise remains with a <br> in it,
-        # but when company details is empty we want to put the info of the company
-        for record in self:
-            record.is_company_details_empty = not html2plaintext(record.company_details or '')

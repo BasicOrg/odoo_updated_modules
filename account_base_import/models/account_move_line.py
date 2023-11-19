@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, models, _
-from odoo.exceptions import UserError
+from odoo import api, models
 
 class AccountMoveLine(models.Model):
     _inherit = ["account.move.line"]
@@ -26,10 +25,6 @@ class AccountMoveLine(models.Model):
             account_move_data = []
             processed_move_ids = set() # avoid creating several moves with the same name
             journal_data = set()
-            required_fields = ("journal_id", "move_id", "date")
-            if not all(field in fields for field in required_fields):
-                missing_fields = ", ".join(field for field in required_fields if field not in fields)
-                raise UserError(_("The import file is missing the following required columns: %s", missing_fields))
             journal_index = fields.index("journal_id")
             move_index = fields.index("move_id")
             date_index = fields.index("date")
@@ -48,14 +43,14 @@ class AccountMoveLine(models.Model):
             # but we need to pass ids to prevent creation if they already exist
             journal_codes_ids = {}
             journal_codes = self.env["account.journal"].search_read(
-                domain=self.env['account.journal']._check_company_domain(self.env.company),
+                domain=[("company_id", "=", self.env.company.id)],
                 fields=["code"]
             )
             for journal in journal_codes:
                 journal_codes_ids[journal["code"]] = journal["id"]
 
-            journal_ids = self.env["account.journal"]._load_records([{"values": {"name": journal_name, "id": journal_codes_ids.get(journal_name[:5], False)}} for journal_name in journal_data])
-            _sequence_override(journal_ids, r"^(?P<prefix1>.*?)(?P<seq>\d{0,9})(?P<suffix>\D*?)$")
+            journal_ids = self.env["account.journal"]._load_records([{"values": {"name": journal_name, "id": journal_codes_ids.get(journal_name, False)}} for journal_name in journal_data])
+            _sequence_override(journal_ids, r"^(?P<prefix1>.*?)(?P<seq>\d*)(?P<suffix>\D*?)$")
             self.env["account.move"].load(["journal_id", "name", "date"], account_move_data)
 
             # override back to the default after all moves are created

@@ -58,11 +58,9 @@ function _mockGetCohortData(route, args) {
             value = records.length;
         } else {
             if (records.length) {
-                value = records.records
-                    .map((r) => r[kwargs.measure])
-                    .reduce(function (a, b) {
-                        return a + b;
-                    });
+                value = _.pluck(records.records, kwargs.measure).reduce(function (a, b) {
+                    return a + b;
+                });
             }
         }
         totalValue += value;
@@ -92,7 +90,7 @@ function _mockGetCohortData(route, args) {
             }
 
             const compareDate = colStartDate.toFormat(displayFormats[kwargs.interval]);
-            let colRecords = records.records.filter((record) => {
+            let colRecords = _.filter(records.records, function (record) {
                 return (
                     record[kwargs.date_stop] &&
                     parseDate(record[kwargs.date_stop], { format: "yyyy-MM-dd" }).toFormat(
@@ -105,16 +103,14 @@ function _mockGetCohortData(route, args) {
                 colValue = colRecords.length;
             } else {
                 if (colRecords.length) {
-                    colValue = colRecords
-                        .map((x) => x[kwargs.measure])
-                        .reduce(function (a, b) {
-                            return a + b;
-                        });
+                    colValue = _.pluck(colRecords, kwargs.measure).reduce(function (a, b) {
+                        return a + b;
+                    });
                 }
             }
 
             if (kwargs.timeline === "backward" && column === 0) {
-                colRecords = records.records.filter((record) => {
+                colRecords = _.filter(records.records, function (record) {
                     return (
                         record[kwargs.date_stop] &&
                         parseDate(record[kwargs.date_stop], { format: "yyyy-MM-dd" }) >=
@@ -125,11 +121,12 @@ function _mockGetCohortData(route, args) {
                     initialValue = colRecords.length;
                 } else {
                     if (colRecords.length) {
-                        initialValue = colRecords
-                            .map((x) => x[kwargs.measure])
-                            .reduce((a, b) => {
-                                return a + b;
-                            });
+                        initialValue = _.pluck(colRecords, kwargs.measure).reduce(function (
+                            a,
+                            b
+                        ) {
+                            return a + b;
+                        });
                     }
                 }
                 initialChurnValue = value - initialValue;

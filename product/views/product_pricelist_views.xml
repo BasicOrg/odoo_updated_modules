@@ -20,7 +20,7 @@
             <tree string="Products Price List" sample="1">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="discount_policy"/>
+                <field name="discount_policy" groups="product.group_discount_per_so_line"/>
                 <field name="currency_id" groups="base.group_multi_currency"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </tree>
@@ -45,7 +45,7 @@
                                     <i class="fa fa-money" role="img" aria-label="Currency" title="Currency"></i> <field name="currency_id"/>
                                 </strong>
                             </div>
-                            <field name="discount_policy"/>
+                            <field name="discount_policy" groups="product.group_discount_per_so_line"/>
                         </div>
                     </t>
                 </templates>
@@ -59,7 +59,7 @@
         <field name="arch" type="xml">
             <form string="Products Price List">
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="e.g. USD Retailers"/></h1>
                     </div>
@@ -81,29 +81,29 @@
                                     options="{'no_create':1}"/>
                                     <field name="min_quantity"/>
                                     <field name="fixed_price" string="Price"/>
-                                    <field name="currency_id" column_invisible="True"/>
-                                    <field name="pricelist_id" column_invisible="True"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="pricelist_id" invisible="1"/>
                                     <!-- Pricelist ID is here only for related fields to be correctly computed -->
                                     <field name="date_start"/>
                                     <field name="date_end"/>
-                                    <field name="base" column_invisible="True"/>
-                                    <field name="applied_on" column_invisible="True"/>
-                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="base" invisible="1"/>
+                                    <field name="applied_on" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
                                 </tree>
                                 <!-- When in advanced pricelist mode : pricelist rules
                                     Should open in a form view and not be editable inline anymore.
                                 -->
                                 <tree groups="product.group_sale_pricelist" string="Pricelist Rules">
-                                    <field name="product_tmpl_id" column_invisible="True"/>
+                                    <field name="product_tmpl_id" invisible="1"/>
                                     <field name="name" string="Applicable On"/>
                                     <field name="min_quantity"/>
                                     <field name="price" string="Price"/>
                                     <field name="date_start"/>
                                     <field name="date_end"/>
-                                    <field name="base" column_invisible="True"/>
-                                    <field name="price_discount" column_invisible="True"/>
-                                    <field name="applied_on" column_invisible="True"/>
-                                    <field name="compute_price" column_invisible="True"/>
+                                    <field name="base" invisible="1"/>
+                                    <field name="price_discount" invisible="1"/>
+                                    <field name="applied_on" invisible="1"/>
+                                    <field name="compute_price" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -112,24 +112,20 @@
                                 <group name="pricelist_availability" string="Availability">
                                     <field name="country_group_ids" widget="many2many_tags"/>
                                 </group>
-                                <group name="pricelist_discounts" string="Discounts">
+                                <group name="pricelist_discounts" groups="product.group_discount_per_so_line" string="Discounts">
                                     <field name="discount_policy" widget="radio"/>
                                 </group>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="activity_ids"/>
-                    <field name="message_follower_ids"/>
-                    <field name="message_ids"/>
-                </div>
             </form>
         </field>
     </record>
 
     <record id="product_pricelist_action2" model="ir.actions.act_window">
         <field name="name">Pricelists</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.pricelist</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="search_view_id" ref="product_pricelist_view_search" />
@@ -148,6 +144,7 @@
 
     <record id="product_pricelist_item_action" model="ir.actions.act_window">
         <field name="name">Price Rules</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.pricelist.item</field>
         <field name="view_mode">tree,form</field>
     </record>

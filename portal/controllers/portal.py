@@ -148,10 +148,6 @@ class CustomerPortal(Controller):
         partner_sudo = request.env.user.partner_id
         if partner_sudo.user_id and not partner_sudo.user_id._is_public():
             sales_user_sudo = partner_sudo.user_id
-        else:
-            fallback_sales_user = partner_sudo.commercial_partner_id.user_id
-            if fallback_sales_user and not fallback_sales_user._is_public():
-                sales_user_sudo = fallback_sales_user
 
         return {
             'sales_user': sales_user_sudo,
@@ -260,7 +256,7 @@ class CustomerPortal(Controller):
                 msg = _('The old password you provided is incorrect, your password was not changed.')
             return {'errors': {'password': {'old': msg}}}
         except UserError as e:
-            return {'errors': {'password': str(e)}}
+            return {'errors': {'password': e.name}}
 
         # update session token so the user does not get logged out (cache cleared by passwd change)
         new_token = request.env.user._compute_session_token(request.session.sid)
@@ -332,7 +328,7 @@ class CustomerPortal(Controller):
         # Avoid using sudo or creating access_token when not necessary: internal
         # users can create attachments, as opposed to public and portal users.
         if not request.env.user._is_internal():
-            IrAttachment = IrAttachment.sudo()
+            IrAttachment = IrAttachment.sudo().with_context(binary_field_real_user=IrAttachment.env.user)
             access_token = IrAttachment._generate_access_token()
 
         # At this point the related message does not exist yet, so we assign
@@ -489,18 +485,14 @@ class CustomerPortal(Controller):
 
         method_name = '_render_qweb_%s' % (report_type)
         report = getattr(ReportAction, method_name)(report_ref, list(model.ids), data={'report_type': report_type})[0]
-        headers = self._get_http_headers(model, report_type, report, download)
-        return request.make_response(report, headers=list(headers.items()))
-
-    def _get_http_headers(self, model, report_type, report, download):
-        headers = {
-            'Content-Type': 'application/pdf' if report_type == 'pdf' else 'text/html',
-            'Content-Length': len(report),
-        }
+        reporthttpheaders = [
+            ('Content-Type', 'application/pdf' if report_type == 'pdf' else 'text/html'),
+            ('Content-Length', len(report)),
+        ]
         if report_type == 'pdf' and download:
             filename = "%s.pdf" % (re.sub('\W+', '-', model._get_report_base_filename()))
-            headers['Content-Disposition'] = content_disposition(filename)
-        return headers
+            reporthttpheaders.append(('Content-Disposition', content_disposition(filename)))
+        return request.make_response(report, headers=reporthttpheaders)
 
 def get_error(e, path=''):
     """ Recursively dereferences `path` (a period-separated sequence of dict

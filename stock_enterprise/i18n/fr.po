@@ -3,16 +3,16 @@
 # 	* stock_enterprise
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -27,12 +27,12 @@ msgstr "Disponible"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
 msgid "Average Cycle Time (Days)"
-msgstr "Temps de cycle moyen (jours)"
+msgstr "Temps de Cycle Moyen (Jours)"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
 msgid "Average Delay (Days)"
-msgstr "Délai moyen (jours)"
+msgstr "Délai Moyen (Jours)"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__cancel
@@ -57,12 +57,12 @@ msgstr "Clients"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
 msgid "Cycle Time"
-msgstr "Durée de cycle"
+msgstr "Durée de Cycle"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__cycle_time
 msgid "Cycle Time (Days)"
-msgstr "Durée de cycle (jours)"
+msgstr "Durée de Cycle (Jours)"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
@@ -77,12 +77,40 @@ msgstr "Délai"
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__delay
 msgid "Delay (Days)"
-msgstr "Délai (jours)"
+msgstr "Délai (Jours)"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+"Retard de livraison d'une commande (en jour). Calculé par comparaison de la "
+"date prévue de livraison de la commande et sa date effective."
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+"Retard pour recevoir une commande (en jours). Calculé par comparaison de la "
+"date prévue de réception de la commande et sa date effective. "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr "Temps de Cycle de Livraisons"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr "Retard de Livraisons"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Nom Affiché"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__done
@@ -92,22 +120,22 @@ msgstr "Fait"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Deliveries"
-msgstr "Livraisons terminées"
+msgstr "Livraisons Terminées"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Receipts"
-msgstr "Réceptions terminées"
+msgstr "Réceptions Terminées"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Transfers"
-msgstr "Transferts terminés"
+msgstr "Transferts Terminés"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__scheduled_date
 msgid "Expected Date"
-msgstr "Date prévue"
+msgstr "Date Prévue"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__id
@@ -122,12 +150,17 @@ msgstr "Interne"
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_late
 msgid "Is Late"
-msgstr "En retard"
+msgstr "En Retard"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_backorder
 msgid "Is a Backorder"
-msgstr "Est un reliquat"
+msgstr "Est un Reliquat"
+
+#. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
@@ -135,19 +168,19 @@ msgid "New"
 msgstr "Nouveau"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
+#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_dashboard_action
 msgid "No data yet!"
-msgstr "Pas encore de données !"
+msgstr "Pas de données"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__operation_type
 msgid "Operation Type"
-msgstr "Type d'opération"
+msgstr "Type de Transfert"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__partially_available
 msgid "Partially Available"
-msgstr "Partiellement disponible"
+msgstr "Partiellement Disponible"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__partner_id
@@ -157,32 +190,42 @@ msgstr "Partenaire"
 #. module: stock_enterprise
 #: model:ir.ui.menu,name:stock_enterprise.stock_dashboard_menuitem
 msgid "Performance"
-msgstr "Performances"
+msgstr "Performance"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_name
 msgid "Picking Name"
-msgstr "Nom du transfert"
+msgstr "Nom du Transfert"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__product_id
 msgid "Product"
-msgstr "Produit"
+msgstr "Article"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__categ_id
 msgid "Product Category"
-msgstr "Catégorie de produits"
+msgstr "Catégorie d'Article"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__product_qty
 msgid "Product Quantity"
-msgstr "Quantité de produits"
+msgstr "Quantité d'Articles"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_enterprise_move_tree_view
 msgid "Quantity"
 msgstr "Quantité"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr "Temps de Cycle de Réceptions"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr "Retard des Réceptions"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
@@ -198,7 +241,7 @@ msgstr "Rapport"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_map_view
 msgid "Scheduled Date"
-msgstr "Date planifiée"
+msgstr "Date prévue"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__state
@@ -208,22 +251,41 @@ msgstr "Statut"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
 msgid "Stock Overview"
-msgstr "Aperçu du stock"
+msgstr "Aperçu du Stock"
 
 #. module: stock_enterprise
 #: model:ir.model,name:stock_enterprise.model_stock_report
 msgid "Stock Report"
-msgstr "Rapport de stock"
+msgstr "Rapport de Stock"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+"Temps nécéssaire pour livrer une commande (en jours). Calculé par "
+"comparaison de la date de création du bon de livraison et sa date "
+"d'exécution."
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
+"Temps nécéssaire pour recevoir une commande (en jours). Calculé par "
+"comparaison de la date de création du reçu et sa date d'exécution."
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
 msgid "Transfer Date"
-msgstr "Date de transfert"
+msgstr "Date de Transfert"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_id
 msgid "Transfer Reference"
-msgstr "Référence de transfert"
+msgstr "Référence de Transfert"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_type_code
@@ -243,9 +305,14 @@ msgstr "En attente d'un autre mouvement"
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__confirmed
 msgid "Waiting Availability"
-msgstr "En attente de disponibilité"
+msgstr "En Attente de Disponibilité"
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
 msgid "Warehouse Analysis"
-msgstr "Analyse d'entrepôt"
+msgstr "Analyse d'Entrepôt"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "jours"

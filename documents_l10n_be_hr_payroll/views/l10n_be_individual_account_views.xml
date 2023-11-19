@@ -8,22 +8,20 @@
             <xpath expr="//p[@name='save_warning']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <div name="button_box" position="inside">
-                <button name="action_see_documents" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not documents_enabled or documents_count == 0">
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_value"><field name="documents_count"/></span>
-                        <span class="o_stat_text">Documents</span>
-                    </div>
-                </button>
-            </div>
             <p name="save_warning" position="after">
                 <field name="documents_enabled" invisible="1"/>
                 <div>
-                    <div invisible="documents_enabled">
-                        <p><strong>Warning: </strong>In order to post the individual account sheets in the employee portal, you have to Enable "Human Resources" in the <a name="%(documents.configuration_action)d" type="action" class="oe_link">"Documents" app settings</a>.</p>
+                    <div attrs="{'invisible': [('documents_enabled', '=', True)]}">
+                        <p><strong>Warning: </strong>In order to post the 281.10 sheets in the employee portal, you have to Enable "Human Resources" in the <a name="%(documents.configuration_action)d" type="action" class="oe_link">"Documents" app settings</a>.</p>
                     </div>
                 </div>
             </p>
+            <button name="action_generate_pdf" position="after">
+                <button name="action_post_in_documents" string="Post in Documents" type="object" confirm="This will add all the sheets in the employee portal. Are you sure you want to proceed ?" attrs="{'invisible': [('documents_enabled', '=', False)]}"/>
+            </button>
+            <field name="pdf_to_generate" position="after">
+                <field name="pdf_to_post" groups="base.group_no_one"/>
+            </field>
         </field>
     </record>
 

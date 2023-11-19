@@ -1,178 +1,135 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* payment_ogone
+# 	* payment_ingenico
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2019
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2019
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~12.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2019-08-26 08:16+0000\n"
+"PO-Revision-Date: 2019-08-26 09:12+0000\n"
+"Last-Translator: 敬雲 林 <chingyun@yuanchih-consult.com>, 2019\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_userid
+#. module: payment_ingenico
+#: code:addons/payment_ingenico/models/payment.py:0
+#, python-format
+msgid "; multiple order found"
+msgstr "; 找到多個訂單"
+
+#. module: payment_ingenico
+#: code:addons/payment_ingenico/models/payment.py:0
+#, python-format
+msgid "; no order found"
+msgstr "; 沒有訂單"
+
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_userid
 msgid "API User ID"
 msgstr "API 使用者 ID"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_password
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_password
 msgid "API User Password"
 msgstr "API 使用者密碼"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__code
-msgid "Code"
-msgstr "程式碼"
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_alias_usage
+msgid "Alias Usage"
+msgstr "別名使用"
 
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_provider.py:0
+#. module: payment_ingenico
+#: model_terms:ir.ui.view,arch_db:payment_ingenico.ogone_s2s_form
+msgid "CVC"
+msgstr "信用卡認證編號"
+
+#. module: payment_ingenico
+#: model_terms:ir.ui.view,arch_db:payment_ingenico.ogone_s2s_form
+msgid "Card number"
+msgstr "卡號"
+
+#. module: payment_ingenico
+#: model_terms:ir.ui.view,arch_db:payment_ingenico.ogone_s2s_form
+msgid "Cardholder name"
+msgstr "持卡人姓名"
+
+#. module: payment_ingenico
+#: model_terms:ir.ui.view,arch_db:payment_ingenico.ogone_s2s_form
+msgid "Expires (MM / YY)"
+msgstr "到期日 (MM / YY)"
+
+#. module: payment_ingenico
+#: model:ir.model.fields,help:payment_ingenico.field_payment_acquirer__ogone_alias_usage
+msgid ""
+"If you want to use Ogone Aliases, this default Alias Usage will be presented"
+" to the customer as the reason you want to keep his payment data"
+msgstr "如果您想要使用 Ogone 別名，則這個預設的別名使用將顯示給客戶，作為您想要保留此支付數據的原因。"
+
+#. module: payment_ingenico
+#: model:ir.model.fields.selection,name:payment_ingenico.selection__payment_acquirer__provider__ogone
+msgid "Ingenico"
+msgstr "Ingenico "
+
+#. module: payment_ingenico
+#: code:addons/payment_ingenico/models/payment.py:0
 #, python-format
-msgid "Could not establish the connection to the API."
-msgstr "無法建立與 API 的連線。"
+msgid "Ogone: invalid shasign, received %s, computed %s, for data %s"
+msgstr "Ogone: 錯誤 shasign，收到 %s, 計算 %s, 為%s數據"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_hash_function
-msgid "Hash function"
-msgstr ""
-
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_transaction.py:0
+#. module: payment_ingenico
+#: code:addons/payment_ingenico/models/payment.py:0
 #, python-format
-msgid "No transaction found matching reference %s."
-msgstr "沒有找到匹配參考 %s 的交易。"
+msgid "Ogone: received data for reference %s"
+msgstr "Ogone: 供參照的接收數據 %s"
 
-#. module: payment_ogone
-#: model:ir.model.fields.selection,name:payment_ogone.selection__payment_provider__code__ogone
-#: model:payment.provider,name:payment_ogone.payment_provider_ogone
-msgid "Ogone"
-msgstr "Ogone"
+#. module: payment_ingenico
+#: code:addons/payment_ingenico/models/payment.py:0
+#, python-format
+msgid ""
+"Ogone: received data with missing reference (%s) or pay_id (%s) or shasign "
+"(%s)"
+msgstr "Ogone：已接收缺少參考 (%s)、pay_id (%s) 或 shasign (%s) 的數據"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_pspid
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_pspid
 msgid "PSPID"
 msgstr "PSPID"
 
-#. module: payment_ogone
-#: model:ir.model,name:payment_ogone.model_payment_provider
-msgid "Payment Provider"
-msgstr "支付提供商"
+#. module: payment_ingenico
+#: model:ir.model,name:payment_ingenico.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr "付款收單方"
 
-#. module: payment_ogone
-#: model:ir.model,name:payment_ogone.model_payment_transaction
+#. module: payment_ingenico
+#: model:ir.model,name:payment_ingenico.model_payment_token
+msgid "Payment Token"
+msgstr "付款指示物"
+
+#. module: payment_ingenico
+#: model:ir.model,name:payment_ingenico.model_payment_transaction
 msgid "Payment Transaction"
 msgstr "付款交易"
 
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_transaction.py:0
-#, python-format
-msgid "Received data with invalid payment status: %s"
-msgstr "收到的付款狀態無效的資料：%s"
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__provider
+msgid "Provider"
+msgstr "服務商"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_shakey_in
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_shakey_in
 msgid "SHA Key IN"
 msgstr "SHA Key IN"
 
-#. module: payment_ogone
-#: model:ir.model.fields,field_description:payment_ogone.field_payment_provider__ogone_shakey_out
+#. module: payment_ingenico
+#: model:ir.model.fields,field_description:payment_ingenico.field_payment_acquirer__ogone_shakey_out
 msgid "SHA Key OUT"
 msgstr "SHA Key OUT"
-
-#. module: payment_ogone
-#: model:ir.model.fields.selection,name:payment_ogone.selection__payment_provider__ogone_hash_function__sha1
-msgid "SHA1"
-msgstr ""
-
-#. module: payment_ogone
-#: model:ir.model.fields.selection,name:payment_ogone.selection__payment_provider__ogone_hash_function__sha256
-msgid "SHA256"
-msgstr ""
-
-#. module: payment_ogone
-#: model:ir.model.fields.selection,name:payment_ogone.selection__payment_provider__ogone_hash_function__sha512
-msgid "SHA512"
-msgstr ""
-
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_transaction.py:0
-#, python-format
-msgid "Storing your payment details is necessary for future use."
-msgstr ""
-
-#. module: payment_ogone
-#: model:ir.model.fields,help:payment_ogone.field_payment_provider__ogone_userid
-msgid "The ID solely used to identify the API user with Ogone"
-msgstr ""
-
-#. module: payment_ogone
-#: model:ir.model.fields,help:payment_ogone.field_payment_provider__ogone_pspid
-msgid "The ID solely used to identify the account with Ogone"
-msgstr ""
-
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_provider.py:0
-#, python-format
-msgid "The communication with the API failed."
-msgstr "與 API 通訊失敗。"
-
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_transaction.py:0
-#, python-format
-msgid "The payment has been declined: %s"
-msgstr ""
-
-#. module: payment_ogone
-#: model:ir.model.fields,help:payment_ogone.field_payment_provider__code
-msgid "The technical code of this payment provider."
-msgstr "此付款服務商的技術代碼。"
-
-#. module: payment_ogone
-#. odoo-python
-#: code:addons/payment_ogone/models/payment_transaction.py:0
-#, python-format
-msgid "The transaction is not linked to a token."
-msgstr "交易未有連結至代碼。"
-
-#. module: payment_ogone
-#: model_terms:ir.ui.view,arch_db:payment_ogone.payment_provider_form
-msgid ""
-"This provider is deprecated.\n"
-"                    Consider disabling it and moving to <strong>Stripe</strong>."
-msgstr ""
-
-#. module: payment_ogone
-#: model_terms:payment.provider,auth_msg:payment_ogone.payment_provider_ogone
-msgid "Your payment has been authorized."
-msgstr "您的付款已獲授權。"
-
-#. module: payment_ogone
-#: model_terms:payment.provider,cancel_msg:payment_ogone.payment_provider_ogone
-msgid "Your payment has been cancelled."
-msgstr "您的付款已被取消。"
-
-#. module: payment_ogone
-#: model_terms:payment.provider,pending_msg:payment_ogone.payment_provider_ogone
-msgid ""
-"Your payment has been successfully processed but is waiting for approval."
-msgstr "您的付款已成功處理，但正在等待批准。"
-
-#. module: payment_ogone
-#: model_terms:payment.provider,done_msg:payment_ogone.payment_provider_ogone
-msgid "Your payment has been successfully processed."
-msgstr ""

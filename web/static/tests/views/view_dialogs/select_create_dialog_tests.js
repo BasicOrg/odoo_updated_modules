@@ -19,7 +19,8 @@ import {
     editFavoriteName,
     removeFacet,
     saveFavorite,
-    toggleSearchBarMenu,
+    toggleFavoriteMenu,
+    toggleFilterMenu,
     toggleMenuItem,
     toggleSaveFavorite,
 } from "@web/../tests/search/helpers";
@@ -124,6 +125,8 @@ QUnit.module("ViewDialogs", (hooks) => {
                             fields: ["display_name", "foo", "bar"],
                             groupby: ["bar"],
                             orderby: "",
+                            expand: false,
+                            expand_orderby: null,
                             lazy: true,
                             limit: 80,
                             offset: 0,
@@ -148,7 +151,7 @@ QUnit.module("ViewDialogs", (hooks) => {
                                     ["display_name", "ilike", "piou"],
                                     ["foo", "ilike", "piou"],
                                 ],
-                                specification: { display_name: {}, foo: {} },
+                                fields: ["display_name", "foo"],
                                 limit: 80,
                                 offset: 0,
                                 order: "",
@@ -167,7 +170,7 @@ QUnit.module("ViewDialogs", (hooks) => {
                                     uid: 7,
                                 }, // not part of the test, may change
                                 domain: [["display_name", "like", "a"]],
-                                specification: { display_name: {}, foo: {} },
+                                fields: ["display_name", "foo"],
                                 limit: 80,
                                 offset: 0,
                                 order: "",
@@ -224,6 +227,7 @@ QUnit.module("ViewDialogs", (hooks) => {
         const webClient = await createWebClient({ serverData, mockRPC });
         webClient.env.services.dialog.add(SelectCreateDialog, {
             noCreate: true,
+            readonly: true, //Not used
             resModel: "partner",
             domain: [["id", "=", session.user_context.uid]],
         });
@@ -305,13 +309,13 @@ QUnit.module("ViewDialogs", (hooks) => {
                 if (route === "/web/dataset/call_kw/instrument/get_formview_id") {
                     return Promise.resolve(false);
                 }
-                if (route === "/web/dataset/call_kw/instrument/web_save") {
+                if (route === "/web/dataset/call_kw/instrument/create") {
                     assert.deepEqual(
-                        args.args[1],
-                        { badassery: [[4, 1]], name: "ABC" },
+                        args.args,
+                        [{ badassery: [[6, false, [1]]], name: "ABC" }],
                         "The method create should have been called with the right arguments"
                     );
-                    return [{ id: 90 }];
+                    return Promise.resolve(false);
                 }
             },
         });
@@ -338,7 +342,7 @@ QUnit.module("ViewDialogs", (hooks) => {
     });
 
     QUnit.test("SelectCreateDialog: save current search", async function (assert) {
-        assert.expect(5);
+        assert.expect(4);
 
         serverData.views = {
             "partner,false,list": `
@@ -355,7 +359,7 @@ QUnit.module("ViewDialogs", (hooks) => {
 
         patchWithCleanup(listView.Controller.prototype, {
             setup() {
-                super.setup(...arguments);
+                this._super(...arguments);
                 useSetupAction({
                     getContext: () => ({ shouldBeInFilterContext: true }),
                 });
@@ -381,9 +385,6 @@ QUnit.module("ViewDialogs", (hooks) => {
                 );
                 return 7; // fake serverSideId
             }
-            if (args.method === "get_views") {
-                assert.equal(args.kwargs.options.load_filters, true, "Missing load_filters option");
-            }
         };
         patchWithCleanup(browser, { setTimeout: (fn) => fn() });
         const webClient = await createWebClient({ serverData, mockRPC });
@@ -397,12 +398,13 @@ QUnit.module("ViewDialogs", (hooks) => {
         assert.containsN(target, ".o_data_row", 3, "should contain 3 records");
 
         // filter on bar
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "Bar");
 
         assert.containsN(target, ".o_data_row", 2, "should contain 2 records");
 
         // save filter
+        await toggleFavoriteMenu(target);
         await toggleSaveFavorite(target);
         await editFavoriteName(target, "some name");
         await saveFavorite(target);

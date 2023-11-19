@@ -58,7 +58,8 @@ class TestFifoReturns(ValuationReconciliationTestCommon):
 
         # Process the reception of purchase order 1
         picking = purchase_order_1.picking_ids[0]
-        picking.button_validate()
+        res = picking.button_validate()
+        Form(self.env[res['res_model']].with_context(res['context'])).save().process()
 
         # Check the standard price of the product (fifo icecream)
         self.assertAlmostEqual(product_fiforet_icecream.standard_price, 50)
@@ -66,7 +67,8 @@ class TestFifoReturns(ValuationReconciliationTestCommon):
         # Confirm the second purchase order
         purchase_order_2.button_confirm()
         picking = purchase_order_2.picking_ids[0]
-        picking.button_validate()
+        res = picking.button_validate()
+        Form(self.env[res['res_model']].with_context(res['context'])).save().process()
 
         # Return the goods of purchase order 2
         picking = purchase_order_2.picking_ids[0]
@@ -79,8 +81,7 @@ class TestFifoReturns(ValuationReconciliationTestCommon):
         # Important to pass through confirmation and assignation
         return_picking = self.env['stock.picking'].browse(return_picking_id)
         return_picking.action_confirm()
-        return_picking.move_ids[0].quantity = return_picking.move_ids[0].product_uom_qty
-        return_picking.move_ids[0].picked = True
+        return_picking.move_ids[0].quantity_done = return_picking.move_ids[0].product_uom_qty
         return_picking._action_done()
 
         #  After the return only 10 of the second purchase order should still be in stock as it applies fifo on the return too

@@ -29,7 +29,8 @@ class TestReInvoice(TestCommonSaleTimesheet):
 
         # create AA, SO and invoices
         cls.analytic_plan = cls.env['account.analytic.plan'].create({
-            'name': 'Timesheet Plan',
+            'name': 'Plan',
+            'company_id': cls.company_data['company'].id,
         })
 
         cls.analytic_account = cls.env['account.analytic.account'].create({
@@ -331,6 +332,7 @@ class TestReInvoice(TestCommonSaleTimesheet):
             "active_model": 'sale.order',
             "active_ids": [sale_order.id],
             "active_id": sale_order.id,
+            'open_invoices': True,
         }
         # Invoice the 1
         wizard = self.env['sale.advance.payment.inv'].with_context(context).create({
@@ -349,9 +351,10 @@ class TestReInvoice(TestCommonSaleTimesheet):
         }
         refund_invoice_wiz = self.env['account.move.reversal'].with_context(wiz_context).create({
             'reason': 'please reverse :c',
+            'refund_method': 'refund',
             'date': today,
         })
-        refund_invoice = self.env['account.move'].browse(refund_invoice_wiz.refund_moves()['res_id'])
+        refund_invoice = self.env['account.move'].browse(refund_invoice_wiz.reverse_moves()['res_id'])
         refund_invoice.action_post()
         # reversing with action_reverse and then action_post does not reset the invoice_status to 'to invoice' in tests
 

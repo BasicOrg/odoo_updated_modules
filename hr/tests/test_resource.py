@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from datetime import datetime
-from pytz import utc
+from pytz import timezone, utc
 
-from odoo.addons.resource.models.utils import Intervals
+from odoo.addons.resource.models.resource import Intervals, sum_intervals
 
 from .common import TestHrCommon
 

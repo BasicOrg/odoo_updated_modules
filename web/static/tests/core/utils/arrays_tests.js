@@ -2,14 +2,11 @@
 
 import {
     cartesian,
-    ensureArray,
     groupBy,
     intersection,
     shallowEqual,
     sortBy,
     unique,
-    zip,
-    zipWith,
 } from "@web/core/utils/arrays";
 
 QUnit.module("utils", () => {
@@ -239,18 +236,6 @@ QUnit.module("utils", () => {
         assert.deepEqual(cartesian([1], [2], [3], [4]), [[1, 2, 3, 4]]);
     });
 
-    QUnit.test("ensure array", async (assert) => {
-        const arrayRef = [];
-        assert.notEqual(ensureArray(arrayRef), arrayRef, "Should be a different array");
-        assert.deepEqual(ensureArray([]), []);
-        assert.deepEqual(ensureArray(), [undefined]);
-        assert.deepEqual(ensureArray(null), [null]);
-        assert.deepEqual(ensureArray({ a: 1 }), [{ a: 1 }]);
-        assert.deepEqual(ensureArray("foo"), ["foo"]);
-        assert.deepEqual(ensureArray([1, 2, "3"]), [1, 2, "3"]);
-        assert.deepEqual(ensureArray(new Set([1, 2, 3])), [1, 2, 3]);
-    });
-
     QUnit.test("unique array", function (assert) {
         assert.deepEqual(unique([1, 2, 3, 2, 4, 3, 1, 4]), [1, 2, 3, 4]);
         assert.deepEqual(unique("a d c a b c d b".split(" ")), "a d c b".split(" "));
@@ -280,21 +265,5 @@ QUnit.module("utils", () => {
         const fn = () => {};
         assert.ok(shallowEqual([fn], [fn]));
         assert.notOk(shallowEqual([() => {}], [() => {}]));
-    });
-
-    QUnit.test("zip", function (assert) {
-        assert.deepEqual(zip([1, 2], []), []);
-        assert.deepEqual(zip([1, 2], ["a"]), [[1, "a"]]);
-        assert.deepEqual(zip([1, 2], ["a", "b"]), [
-            [1, "a"],
-            [2, "b"],
-        ]);
-    });
-
-    QUnit.test("zipWith", function (assert) {
-        assert.deepEqual(
-            zipWith([{ a: 1 }, { b: 2 }], ["a", "b"], (o, k) => o[k]),
-            [1, 2]
-        );
     });
 });

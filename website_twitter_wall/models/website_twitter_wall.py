@@ -24,7 +24,7 @@ class WebsiteTwitterWall(models.Model):
 
 
     name = fields.Char(required=True, translate=True)
-    description = fields.Html(translate=True, sanitize_attributes=False)
+    description = fields.Html(translate=True)
     is_live = fields.Boolean(help="Is live mode on/off", default=True)
     active = fields.Boolean(default=True)
     search_pattern = fields.Char('Search string',
@@ -46,7 +46,7 @@ class WebsiteTwitterWall(models.Model):
                 wall.website_url = "%s/twitter_wall/view/%s" % (wall.get_base_url(), slug(wall))
 
     def toggle_live_mode(self):
-        self.env.registry.clear_cache()  # not sure this is really useful
+        self.env['website.twitter.wall'].clear_caches()
         self.is_live = not self.is_live
 
     def fetch_tweets(self):

@@ -26,7 +26,7 @@ class KnowledgeUnsplash(main.Web_Unsplash):
             raise werkzeug.exceptions.Forbidden()
 
         # Fetch a random image
-        access_key = self._get_access_key()
+        access_key = request.env['ir.config_parameter'].sudo().get_param('unsplash.access_key')
         app_id = self.get_unsplash_app_id()
         # Return errors so that client knows it needs to open the CoverSelector
         # Associated values could be used in the future to adapt client behaviour wr to the error

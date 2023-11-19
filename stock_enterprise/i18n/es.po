@@ -3,16 +3,16 @@
 # 	* stock_enterprise
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -80,6 +80,34 @@ msgid "Delay (Days)"
 msgstr "Retraso (Días)"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+"Retraso en la entrega de una orden (en días). Calculado mediante la "
+"comparación de la fecha prevista de la entrega contra la fecha efectiva"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+"Retraso en la recepción de una orden (en días). Calculado mediante la "
+"comparación de la fecha prevista de la recepción contra la fecha efectiva"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr "Tiempo de ciclo de entregas"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr "Retrasos en las entregas"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
 msgid "Display Name"
 msgstr "Nombre mostrado"
@@ -130,12 +158,17 @@ msgid "Is a Backorder"
 msgstr "Es una Entrega Parcial"
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
 msgid "New"
 msgstr "Nuevo"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
+#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_dashboard_action
 msgid "No data yet!"
 msgstr "No hay información aún"
 
@@ -185,6 +218,16 @@ msgid "Quantity"
 msgstr "Cantidad"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr "Tiempo de ciclo de recepciones"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr "Retraso de recepciones"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_map_view
 msgid "Reference"
@@ -216,9 +259,29 @@ msgid "Stock Report"
 msgstr "Informe de Existencias"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+"Tiempo necesario para completar la entrega de una orden (en días). Calculado"
+" mediante la comparación de la fecha de creación de la entrega y la fecha "
+"efectiva de entrega"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
+"Tiempo necesario para completar la recepción de una orden (en días). "
+"Calculado mediante la comparación de la fecha de creación de la recepción y "
+"la fecha efectiva de recepción."
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
 msgid "Transfer Date"
-msgstr "Fecha de transferencia"
+msgstr "Fecha de Transferencia"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_id
@@ -246,6 +309,11 @@ msgid "Waiting Availability"
 msgstr "Esperando disponibilidad"
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
 msgid "Warehouse Analysis"
 msgstr "Análisis de Almacén"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "días"

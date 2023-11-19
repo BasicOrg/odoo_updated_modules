@@ -5,6 +5,10 @@ import { SpreadsheetSelectorDialog } from "@spreadsheet_edition/assets/component
 import { SpreadsheetSelectorPanel } from "@spreadsheet_edition/assets/components/spreadsheet_selector_dialog/spreadsheet_selector_panel";
 
 class DashboardSelectorPanel extends SpreadsheetSelectorPanel {
+    constructor() {
+        super(...arguments);
+        this.actionTag = "action_edit_dashboard";
+    }
 
     /**
      * Fetch spreadsheets according to the search domain and the pager
@@ -34,21 +38,8 @@ class DashboardSelectorPanel extends SpreadsheetSelectorPanel {
     async _fetchPagerTotal() {
         return this.orm.searchCount("spreadsheet.dashboard", []);
     }
-
-    /**
-     * @override
-     */
-    _getOpenSpreadsheetAction() {
-        return {
-            type: "ir.actions.client",
-            tag: "action_edit_dashboard",
-            params: {
-                spreadsheet_id: this.state.selectedSpreadsheetId,
-            }
-        }
-    }
 }
 
-patch(SpreadsheetSelectorDialog, {
+patch(SpreadsheetSelectorDialog, "spreadsheet_dashboard_edition.DashboardSelectorPanel", {
     components: { ...SpreadsheetSelectorDialog.components, DashboardSelectorPanel },
 });

@@ -12,11 +12,11 @@ class TestSwissQRCode(AccountTestInvoicingCommon):
     """
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='ch'):
+    def setUpClass(cls, chart_template_ref='l10n_ch.l10nch_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].qr_code = True
-        cls.company_data['company'].country_id = cls.env.ref('base.ch')
+        cls.company_data['company'].country_id = None
 
         cls.swiss_iban = cls.env['res.partner.bank'].create({
             'acc_number': 'CH15 3881 5158 3845 3843 7',
@@ -58,9 +58,6 @@ class TestSwissQRCode(AccountTestInvoicingCommon):
         """
         self.ch_qr_invoice.qr_code_method = 'ch_qr'
 
-        # flush manually  to have the right env to get possible values of `qr_code_method`
-        self.env.flush_all()
-
         # First check with a regular IBAN
         with self.assertRaises(UserError, msg="It shouldn't be possible to generate a Swiss QR-code for partners without a complete Swiss address."):
             self.ch_qr_invoice._generate_qr_code()
@@ -79,10 +76,6 @@ class TestSwissQRCode(AccountTestInvoicingCommon):
 
         # Assigning a QR reference should fix it
         self.ch_qr_invoice.payment_reference = '210000000003139471430009017'
-
-        # even if the invoice is not issued from Switzerland we want to generate the code
-        self.ch_qr_invoice.company_id.partner_id.country_id = self.env.ref('base.fr')
-        self.ch_qr_invoice._generate_qr_code()
 
     def test_ch_qr_code_detection(self):
         """ Checks Swiss QR-code auto-detection when no specific QR-method

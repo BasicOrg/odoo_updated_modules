@@ -3,29 +3,24 @@
 # 	* account_accountant_batch_payment
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Malika Berardi, 2022
+# laje_odoo, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-23 08:23+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#. module: account_accountant_batch_payment
-#. odoo-javascript
-#: code:addons/account_accountant_batch_payment/static/src/components/bank_reconciliation/bank_rec_form.xml:0
-#, python-format
-msgid "'Batch Payments'"
-msgstr "'Paiements par lot'"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
@@ -34,15 +29,15 @@ msgid ""
 "                        <span>Do you want to cancel payments to retry them later or keep the batch open with unprocess payments, if you expect them later.</span>"
 msgstr ""
 "<br/>\n"
-"                        <span>Voulez-vous annuler les paiements pour les relancer plus tard ou garder le lot ouvert avec des paiements non traités, si vous les attendez plus tard ?</span>"
+"                        <span>Voulez-vous annuler des paiements pour les réessayer plus tard ou garder le lot ouvert avec des paiements non traités, si vous les attendez plus tard ?</span>"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model,name:account_accountant_batch_payment.model_bank_rec_widget
 msgid "Bank reconciliation widget for a single statement line"
-msgstr "L'assistant du rapprochement bancaire pour une seule ligne du relevé"
+msgstr ""
+"L'assistant de la réconciliation bancaire pour une seule ligne de l'extrait"
 
 #. module: account_accountant_batch_payment
-#. odoo-python
 #: code:addons/account_accountant_batch_payment/models/account_batch_payment.py:0
 #: code:addons/account_accountant_batch_payment/models/bank_rec_widget.py:0
 #: model:ir.model,name:account_accountant_batch_payment.model_account_batch_payment
@@ -50,12 +45,27 @@ msgstr "L'assistant du rapprochement bancaire pour une seule ligne du relevé"
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_search_bank_rec_widget
 #, python-format
 msgid "Batch Payment"
-msgstr "Paiement par lot"
+msgstr "Lot de paiement(s)"
+
+#. module: account_accountant_batch_payment
+#: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_bank_rec_widget_form_inherit_batch_payment
+msgid "Batch Payments"
+msgstr "Lots de paiements"
+
+#. module: account_accountant_batch_payment
+#: model:ir.model.fields,field_description:account_accountant_batch_payment.field_bank_rec_widget__batch_payments_widget
+msgid "Batch Payments Widget"
+msgstr "Widget des lots de paiements"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
 msgid "Cancel"
 msgstr "Annuler"
+
+#. module: account_accountant_batch_payment
+#: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__cancel_action_todo
+msgid "Cancel Action Todo"
+msgstr "Effacer l'action à faire"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
@@ -80,7 +90,7 @@ msgstr "Date"
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__display_name
 msgid "Display Name"
-msgstr "Nom d'affichage"
+msgstr "Afficher le nom"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
@@ -95,37 +105,47 @@ msgstr "ID"
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__in_reconcile_payment_ids
 msgid "In Reconcile Payment"
-msgstr "Dans réconcilier paiement"
+msgstr "Dans Réconcilier Paiement"
+
+#. module: account_accountant_batch_payment
+#: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__write_uid
 msgid "Last Updated by"
-msgstr "Mis à jour par"
+msgstr "Dernière mise à jour par"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__write_date
 msgid "Last Updated on"
-msgstr "Mis à jour le"
+msgstr "Dernière mise à jour le"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model,name:account_accountant_batch_payment.model_bank_rec_widget_line
-msgid "Line of the bank reconciliation widget"
-msgstr "Ligne du widget de rapprochement bancaire"
+msgid "Line of the lines_widget"
+msgstr "Ligne de lines_widget"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model,name:account_accountant_batch_payment.model_account_batch_payment_rejection
 msgid "Manage the payment rejection from batch payments"
-msgstr "Gérer le rejet de paiement à partir des paiements par lot"
+msgstr "Gérer le rejet de paiement à partir de lots de paiements"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__nb_batch_payment_ids
 msgid "Nb Batch Payment"
-msgstr "Nombre de paiements par lot"
+msgstr "Nbr de lot(s) de paiement(s)"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__nb_rejected_payment_ids
 msgid "Nb Rejected Payment"
-msgstr "Nombre de paiements rejetés"
+msgstr "Nbr de paiement(s) rejeté(s)"
+
+#. module: account_accountant_batch_payment
+#: model:ir.model.fields,field_description:account_accountant_batch_payment.field_account_batch_payment_rejection__next_action_todo
+msgid "Next Action Todo"
+msgstr "Prochaine action à faire "
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_list_bank_rec_widget
@@ -147,7 +167,7 @@ msgstr "Payé"
 msgid ""
 "Preset to create journal entries during a invoices and payments matching"
 msgstr ""
-"Préconfigurer pour créer une pièce pendant la correspondance entre des "
+"Préconfigurer pour créer une écriture pendant la correspondance entre des "
 "factures et des paiements"
 
 #. module: account_accountant_batch_payment
@@ -163,12 +183,12 @@ msgstr "Paiement rejeté"
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_bank_rec_widget__selected_batch_payment_ids
 msgid "Selected Batch Payment"
-msgstr "Paiement par lot sélectionné"
+msgstr "Lot de paiement(s) sélectionné"
 
 #. module: account_accountant_batch_payment
 #: model:ir.model.fields,field_description:account_accountant_batch_payment.field_bank_rec_widget_line__source_batch_payment_id
 msgid "Source Batch Payment"
-msgstr "Paiement par lot d'origine"
+msgstr "Origine du lot de paiement(s)"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_list_bank_rec_widget
@@ -183,14 +203,14 @@ msgstr "Vue"
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
 msgid "batches have been removed."
-msgstr "lots ont été retirés."
+msgstr "Les lots ont été retirés."
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
 msgid "payments from"
-msgstr "paiements de"
+msgstr "Paiements de"
 
 #. module: account_accountant_batch_payment
 #: model_terms:ir.ui.view,arch_db:account_accountant_batch_payment.view_account_batch_payment_rejection_form
 msgid "payments from the batch have been removed."
-msgstr "paiements du lot ont été retirés."
+msgstr "Les paiements du lot ont été retirés."

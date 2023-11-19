@@ -61,11 +61,10 @@ class TestLivechatCommon(tests.TransactionCase):
         self.message_info_url = base_url + "/mail/init_messaging"
 
         # override the get_available_users to return only Michel as available
-        def _compute_available_operator_ids(channel_self):
-            for record in channel_self:
-                record.available_operator_ids = self.operator
-
-        self.patch(type(self.env['im_livechat.channel']), '_compute_available_operator_ids', _compute_available_operator_ids)
+        operators = self.operator
+        def get_available_users(self):
+            return operators
+        self.patch(type(self.env['im_livechat.channel']), '_get_available_users', get_available_users)
 
         # override the _get_visitor_from_request to return self.visitor
         self.target_visitor = self.visitor
@@ -74,7 +73,7 @@ class TestLivechatCommon(tests.TransactionCase):
         self.patch(type(self.env['website.visitor']), '_get_visitor_from_request', get_visitor_from_request)
 
     def _send_message(self, channel, email_from, body, author_id=False):
-        # As bus is unavailable in test mode, we cannot call /im_livechat/chat_post route to post a message.
+        # As bus is unavailable in test mode, we cannot call /mail/chat_post route to post a message.
         # Instead, we post directly the message on the given channel.
         channel.with_context(mail_create_nosubscribe=True) \
             .message_post(author_id=author_id, email_from=email_from, body=body,
@@ -92,4 +91,10 @@ class TestLivechatCommon(tests.TransactionCase):
         res_model_id = self.env['ir.model'].sudo().search([('model', '=', channel._name)], limit=1).id
         rating = self.env['rating.rating'].search([('res_id', '=', channel.id), ('res_model_id', '=', res_model_id)])
         self.assertEqual(rating.rating, rating_value, "The rating is not correct.")
+
+        message = "Rating: %s" % rating_to_emoji[rating_value]
+        if reason:
+            message += " \n%s" % reason
+
+        self._send_message(channel, visitor.display_name, message, author_id=False)
         self.assertEqual(len(channel.message_ids), channel_messages_count + 1)

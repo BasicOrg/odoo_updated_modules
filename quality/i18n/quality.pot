@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 22:20+0000\n"
+"POT-Creation-Date: 2022-09-23 08:22+0000\n"
+"PO-Revision-Date: 2022-09-23 08:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -76,11 +76,6 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: quality
-#: model_terms:ir.ui.view,arch_db:quality.quality_check_view_activity
-msgid "Activity view"
-msgstr ""
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__additional_note
 msgid "Additional Note"
 msgstr ""
@@ -116,33 +111,13 @@ msgid "Alias Contact Security"
 msgstr ""
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain_id
-msgid "Alias Domain"
-msgstr ""
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
-msgid "Alias Domain Name"
-msgstr ""
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_full_name
-msgid "Alias Email"
-msgstr ""
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_name
 msgid "Alias Name"
 msgstr ""
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_status
-msgid "Alias Status"
-msgstr ""
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_status
-msgid "Alias status assessed on the last message received."
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
+msgid "Alias domain"
 msgstr ""
 
 #. module: quality
@@ -180,7 +155,7 @@ msgid "Check Count"
 msgstr ""
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Close"
@@ -308,11 +283,6 @@ msgstr ""
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Done"
-msgstr ""
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_email
-msgid "Email Alias"
 msgstr ""
 
 #. module: quality
@@ -452,6 +422,18 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_stage____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_check____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point_test_type____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_reason____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_tag____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__write_uid
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__write_uid
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__write_uid
@@ -481,8 +463,8 @@ msgid "Late Activities"
 msgstr ""
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_incoming_local
-msgid "Local-part based incoming detection"
+#: model:ir.model.fields,help:quality.field_quality_alert__email_cc
+msgid "List of cc from incoming emails."
 msgstr ""
 
 #. module: quality
@@ -498,6 +480,14 @@ msgstr ""
 #. module: quality
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__1
 msgid "Low"
+msgstr ""
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_main_attachment_id
+msgid "Main Attachment"
 msgstr ""
 
 #. module: quality
@@ -537,7 +527,7 @@ msgid "Name"
 msgstr ""
 
 #. module: quality
-#. odoo-python
+#: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
@@ -576,7 +566,6 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: quality
-#. odoo-python
 #: code:addons/quality/models/quality.py:0
 #, python-format
 msgid ""
@@ -622,7 +611,7 @@ msgstr ""
 #: model:ir.model.fields,help:quality.field_quality_alert_team__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr ""
 
 #. module: quality
@@ -655,6 +644,11 @@ msgstr ""
 #. module: quality
 #: model:quality.reason,name:quality.reason_other
 msgid "Others"
+msgstr ""
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_user_id
+msgid "Owner"
 msgstr ""
 
 #. module: quality
@@ -796,14 +790,6 @@ msgid "Quality Team"
 msgstr ""
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_check__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_point__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_force_thread_id
 msgid "Record Thread ID"
 msgstr ""
@@ -896,7 +882,7 @@ msgid "Tags"
 msgstr ""
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Take a Picture"
@@ -940,6 +926,15 @@ msgstr ""
 msgid ""
 "The name of the email alias, e.g. 'jobs' if you want to catch emails for "
 "<jobs@example.odoo.com>"
+msgstr ""
+
+#. module: quality
+#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_user_id
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
 msgstr ""
 
 #. module: quality
@@ -1001,7 +996,7 @@ msgid "Very High"
 msgstr ""
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Viewer"

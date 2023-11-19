@@ -1,17 +1,24 @@
-/* @odoo-module */
+/** @odoo-module **/
 
-import { startServer } from "@bus/../tests/helpers/mock_python_environment";
-import { addModelNamesToFetch } from "@bus/../tests/helpers/model_definitions_helpers";
-
-import { start } from "@mail/../tests/helpers/test_utils";
+import testUtils from 'web.test_utils';
+import { registry } from "@web/core/registry";
+import {
+    click,
+    getFixture,
+    nextTick,
+} from '@web/../tests/helpers/utils';
+import { setupViewRegistries } from "@web/../tests/views/helpers";
+import {
+    start,
+    startServer,
+} from '@mail/../tests/helpers/test_utils';
 
 import { fileUploadService } from "@web/core/file_upload/file_upload_service";
-import { registry } from "@web/core/registry";
-import { getFixture, nextTick } from "@web/../tests/helpers/utils";
-import { click, contains, createFile, inputFiles } from "@web/../tests/utils";
-import { setupViewRegistries } from "@web/../tests/views/helpers";
 
-addModelNamesToFetch(["mrp.document"]);
+import { addModelNamesToFetch } from '@bus/../tests/helpers/model_definitions_helpers';
+addModelNamesToFetch([
+    'mrp.document',
+]);
 
 const serviceRegistry = registry.category("services");
 
@@ -42,7 +49,7 @@ QUnit.module('MrpDocumentsKanbanView', {
             name: 'test.png',
         })
         pyEnv['mrp.document'].create([
-            {name: 'test1', priority: 2, ir_attachment_id: irAttachment, mimetype: "image/png"},
+            {name: 'test1', priority: 2, ir_attachment_id: irAttachment},
             {name: 'test2', priority: 1},
             {name: 'test3', priority: 3},
         ]);
@@ -84,6 +91,24 @@ QUnit.module('MrpDocumentsKanbanView', {
     });
 
     QUnit.test('mrp: upload multiple files', async function (assert) {
+        assert.expect(4);
+
+        const file1 = await testUtils.file.createFile({
+            name: 'text1.txt',
+            content: 'hello, world',
+            contentType: 'text/plain',
+        });
+        const file2 = await testUtils.file.createFile({
+            name: 'text2.txt',
+            content: 'hello, world',
+            contentType: 'text/plain',
+        });
+        const file3 = await testUtils.file.createFile({
+            name: 'text3.txt',
+            content: 'hello, world',
+            contentType: 'text/plain',
+        });
+
         const mockedXHRs = [];
         this.patchDocumentXHR(mockedXHRs, data => assert.step('xhrSend'));
 
@@ -103,30 +128,31 @@ QUnit.module('MrpDocumentsKanbanView', {
             views: [[false, 'kanban']],
         });
 
-        await inputFiles(".o_control_panel_collapsed_create .o_input_file", [
-            await createFile({
-                name: "text1.txt",
-                content: "hello, world",
-                contentType: "text/plain",
-            }),
-        ]);
-        assert.verifySteps(["xhrSend"]);
-        await inputFiles(".o_control_panel_collapsed_create .o_input_file", [
-            await createFile({
-                name: "text2.txt",
-                content: "hello, world",
-                contentType: "text/plain",
-            }),
-            await createFile({
-                name: "text3.txt",
-                content: "hello, world",
-                contentType: "text/plain",
-            }),
-        ]);
-        assert.verifySteps(["xhrSend"]);
+        const fileInput = target.querySelector(".o_input_file");
+
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file1);
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        assert.verifySteps(['xhrSend']);
+
+        dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file2);
+        dataTransfer.items.add(file3);
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        assert.verifySteps(['xhrSend']);
     });
 
     QUnit.test('mrp: upload progress bars', async function (assert) {
+        assert.expect(4);
+
+        const file1 = await testUtils.file.createFile({
+            name: 'text1.txt',
+            content: 'hello, world',
+            contentType: 'text/plain',
+        });
+
         const mockedXHRs = [];
         this.patchDocumentXHR(mockedXHRs, data => assert.step('xhrSend'));
 
@@ -146,14 +172,13 @@ QUnit.module('MrpDocumentsKanbanView', {
             views: [[false, 'kanban']],
         });
 
-        await inputFiles(".o_control_panel_collapsed_create .o_input_file", [
-            await createFile({
-                name: "text1.txt",
-                content: "hello, world",
-                contentType: "text/plain",
-            }),
-        ]);
-        assert.verifySteps(["xhrSend"]);
+        const fileInput = target.querySelector(".o_input_file");
+
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file1);
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        assert.verifySteps(['xhrSend']);
 
         const progressEvent = new Event('progress', { bubbles: true });
         progressEvent.loaded = 250000000;
@@ -166,7 +191,7 @@ QUnit.module('MrpDocumentsKanbanView', {
             "Uploading... (50%)",
             "the current upload progress should be at 50%"
         );
-
+            
         progressEvent.loaded = 350000000;
         mockedXHRs[0].upload.dispatchEvent(progressEvent);
         await nextTick();
@@ -178,34 +203,42 @@ QUnit.module('MrpDocumentsKanbanView', {
     });
 
     QUnit.test("mrp: click on image opens attachment viewer", async function (assert) {
+        assert.expect(4);
+
         const views = {
-            "mrp.document,false,kanban": `
-                <kanban js_class="mrp_documents_kanban" create="false">
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="o_kanban_image" t-if="record.ir_attachment_id.raw_value">
-                                <div class="o_kanban_previewer">
-                                    <field name="ir_attachment_id" invisible="1"/>
-                                    <img t-attf-src="/web/image/#{record.ir_attachment_id.raw_value}" width="100" height="100" alt="Document" class="o_attachment_image"/>
-                                </div>
-                            </div>
-                            <div>
-                                <field name="name"/>
-                                <field name="mimetype"/>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>`
+            'mrp.document,false,kanban':
+                `<kanban js_class="mrp_documents_kanban" create="false"><templates><t t-name="kanban-box">
+                    <div class="o_kanban_image" t-if="record.ir_attachment_id.raw_value">
+                        <div class="o_kanban_previewer">
+                            <field name="ir_attachment_id" invisible="1"/>
+                            <img t-attf-src="/web/image/#{record.ir_attachment_id.raw_value}" width="100" height="100" alt="Document" class="o_attachment_image"/>
+                        </div>
+                    </div>
+                    <div>
+                        <field name="name"/>
+                    </div>
+                </t></templates></kanban>`
         };
-        const { openView } = await start({ serverData: { views } });
-        openView({
-            res_model: "mrp.document",
-            views: [[false, "kanban"]],
+        const { openView } = await start({
+            serverData: { views },
         });
-        await click(".o_kanban_previewer");
-        await contains(".o-FileViewer");
-        await click(".o-FileViewer-headerButton .fa-times");
-        await contains(".o-FileViewer", { count: 0 });
+        await openView({
+            res_model: 'mrp.document',
+            views: [[false, 'kanban']],
+        });
+
+        assert.containsOnce(target, ".o_kanban_previewer");
+        await click(target.querySelector(".o_kanban_previewer"));
+        await nextTick();
+
+        assert.containsOnce(target, '.o_AttachmentViewer',
+            "should have a document preview");
+        assert.containsOnce(target, '.o_AttachmentViewer_headerItemButtonClose',
+            "should have a close button");
+
+        await click(target, '.o_AttachmentViewer_headerItemButtonClose');
+        assert.containsNone(target, '.o_AttachmentViewer',
+            "should not have a document preview");
     });
 });
 

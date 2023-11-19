@@ -598,6 +598,7 @@
                     "tag": "chart",
                     "data": {
                         "title": "",
+                        "id": "d84bdd18-3c66-4153-ae2e-7f4ec1672cfb",
                         "background": "#FFFFFF",
                         "legendPosition": "right",
                         "metaData": {
@@ -661,7 +662,7 @@
                 },
                 "B2": {
                     "style": 7,
-                    "content": "=FORMAT.LARGE.NUMBER(ODOO.PIVOT(1,\"value\"))"
+                    "content": "=ODOO.PIVOT(1,\"value\")"
                 }
             },
             "conditionalFormats": [],
@@ -717,17 +718,6 @@
         }
     },
     "revisionId": "b36049b5-b8cf-4375-9c14-6c99017ea26c",
-    "settings": {
-        "locale": {
-            "name": "English (US)",
-            "code": "en_US",
-            "thousandsSeparator": ",",
-            "decimalSeparator": ".",
-            "dateFormat": "mm/dd/yyyy",
-            "timeFormat": "hh:mm:ss",
-            "formulaArgSeparator": ","
-        }
-    },
     "chartOdooMenusReferences": {
         "d84bdd18-3c66-4153-ae2e-7f4ec1672cfb": "stock.menu_stock_root",
         "09d4da42-d66e-47b4-bc71-c6cfab7be7b9": "stock_account.menu_valuation"
@@ -739,13 +729,7 @@
         "1": {
             "colGroupBys": [],
             "context": {},
-            "domain": [
-                [
-                    "product_id.type",
-                    "=",
-                    "product"
-                ]
-            ],
+            "domain": [],
             "id": "1",
             "measures": [
                 {
@@ -890,10 +874,6 @@
             "rangeType": "year",
             "defaultsToCurrentPeriod": false,
             "pivotFields": {
-                "1": {
-                    "field": "stock_move_id.location_dest_id",
-                    "type": "many2one"
-                },
                 "2": {
                     "field": "location_id",
                     "type": "many2one"
@@ -960,10 +940,6 @@
             "rangeType": "year",
             "defaultsToCurrentPeriod": false,
             "pivotFields": {
-                "1": {
-                    "field": "stock_move_id.lot_ids",
-                    "type": "many2many"
-                },
                 "2": {
                     "field": "lot_id",
                     "type": "many2one"

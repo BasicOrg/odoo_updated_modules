@@ -1,12 +1,10 @@
-/** @odoo-module **/
+odoo.define('website.s_dynamic_snippet', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { uniqueId } from "@web/core/utils/functions";
-import { renderToString } from "@web/core/utils/render";
-import { listenSizeChange, utils as uiUtils } from "@web/core/ui/ui_service";
-
-import { markup } from "@odoo/owl";
-
+const core = require('web.core');
+const config = require('web.config');
+const publicWidget = require('web.public.widget');
+const {Markup} = require('web.utils');
 const DEFAULT_NUMBER_OF_ELEMENTS = 4;
 const DEFAULT_NUMBER_OF_ELEMENTS_SM = 1;
 
@@ -32,11 +30,9 @@ const DynamicSnippet = publicWidget.Widget.extend({
          */
         this.data = [];
         this.renderedContent = '';
-        this.isDesplayedAsMobile = uiUtils.isSmall();
-        this.unique_id = uniqueId("s_dynamic_snippet_");
+        this.isDesplayedAsMobile = config.device.isMobile;
+        this.uniqueId = _.uniqueId('s_dynamic_snippet_');
         this.template_key = 'website.s_dynamic_snippet.grid';
-
-        this.rpc = this.bindService("rpc");
     },
     /**
      *
@@ -119,17 +115,17 @@ const DynamicSnippet = publicWidget.Widget.extend({
     async _fetchData() {
         if (this._isConfigComplete()) {
             const nodeData = this.el.dataset;
-            const filterFragments = await this.rpc(
-                '/website/snippet/filters',
-                Object.assign({
+            const filterFragments = await this._rpc({
+                'route': '/website/snippet/filters',
+                'params': Object.assign({
                     'filter_id': parseInt(nodeData.filterId),
                     'template_key': nodeData.templateKey,
                     'limit': parseInt(nodeData.numberOfRecords),
                     'search_domain': this._getSearchDomain(),
                     'with_sample': this.editableMode,
-                }, this._getRpcParameters())
-            );
-            this.data = filterFragments.map(markup);
+                }, this._getRpcParameters()),
+            });
+            this.data = filterFragments.map(Markup);
         } else {
             this.data = [];
         }
@@ -140,7 +136,7 @@ const DynamicSnippet = publicWidget.Widget.extend({
      * @private
      */
     _prepareContent: function () {
-        this.renderedContent = renderToString(
+        this.renderedContent = core.qweb.render(
             this.template_key,
             this._getQWebRenderOptions()
         );
@@ -151,10 +147,10 @@ const DynamicSnippet = publicWidget.Widget.extend({
      * @private
      */
      _getQWebRenderOptions: function () {
-        const dataset = this.el.dataset;
+        const dataset = this.$target[0].dataset;
         const numberOfRecords = parseInt(dataset.numberOfRecords);
         let numberOfElements;
-        if (uiUtils.isSmall()) {
+        if (config.device.isMobile) {
             numberOfElements = parseInt(dataset.numberOfElementsSmallDevices) || DEFAULT_NUMBER_OF_ELEMENTS_SM;
         } else {
             numberOfElements = parseInt(dataset.numberOfElements) || DEFAULT_NUMBER_OF_ELEMENTS;
@@ -163,7 +159,7 @@ const DynamicSnippet = publicWidget.Widget.extend({
         return {
             chunkSize: chunkSize,
             data: this.data,
-            unique_id: this.unique_id,
+            uniqueId: this.uniqueId,
             extraClasses: dataset.extraClasses || '',
         };
     },
@@ -173,18 +169,14 @@ const DynamicSnippet = publicWidget.Widget.extend({
      */
     _render: function () {
         if (this.data.length > 0 || this.editableMode) {
-            this.$el.removeClass('o_dynamic_empty');
+            this.$el.removeClass('d-none');
             this._prepareContent();
         } else {
-            this.$el.addClass('o_dynamic_empty');
+            this.$el.addClass('d-none');
             this.renderedContent = '';
         }
         this._renderContent();
-        this.trigger_up('widgets_start_request', {
-            $target: this.$el.children(),
-            options: {parent: this},
-            editableMode: this.editableMode,
-        });
+        this.trigger_up('widgets_start_request', {$target: this.$el.children(), options: {parent: this}});
     },
     /**
      * @private
@@ -210,10 +202,9 @@ const DynamicSnippet = publicWidget.Widget.extend({
      */
     _setupSizeChangedManagement: function (enable) {
         if (enable === true) {
-            this.removeSizeListener = listenSizeChange(this._onSizeChanged.bind(this));
+            config.device.bus.on('size_changed', this, this._onSizeChanged);
         } else {
-            this.removeSizeListener();
-            delete this.removeSizeListener;
+            config.device.bus.off('size_changed', this, this._onSizeChanged);
         }
     },
     /**
@@ -222,7 +213,7 @@ const DynamicSnippet = publicWidget.Widget.extend({
      * @private
      */
     _toggleVisibility: function (visible) {
-        this.$el.toggleClass('o_dynamic_empty', !visible);
+        this.$el.toggleClass('d-none', !visible);
     },
 
     //------------------------------------- -------------------------------------
@@ -240,10 +231,11 @@ const DynamicSnippet = publicWidget.Widget.extend({
      * Called when the size has reached a new bootstrap breakpoint.
      *
      * @private
+     * @param {number} size as Integer @see web.config.device.SIZES
      */
-    _onSizeChanged: function () {
-        if (this.isDesplayedAsMobile !== uiUtils.isSmall()) {
-            this.isDesplayedAsMobile = uiUtils.isSmall();
+    _onSizeChanged: function (size) {
+        if (this.isDesplayedAsMobile !== config.device.isMobile) {
+            this.isDesplayedAsMobile = config.device.isMobile;
             this._render();
         }
     },
@@ -251,4 +243,6 @@ const DynamicSnippet = publicWidget.Widget.extend({
 
 publicWidget.registry.dynamic_snippet = DynamicSnippet;
 
-export default DynamicSnippet;
+return DynamicSnippet;
+
+});

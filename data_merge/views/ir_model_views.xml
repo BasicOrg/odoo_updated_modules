@@ -10,9 +10,9 @@
                 <field name="is_merge_enabled" invisible="1"/>
                 <button string="Enable Merge" name="action_merge_contextual_enable"
                         type="object" class="btn btn-primary"
-                        invisible="hide_merge_action or is_merge_enabled"/>
+                        attrs="{'invisible': ['|', ('hide_merge_action', '=', True), ('is_merge_enabled', '=', True)]}"/>
                 <button string="Disable Merge" name="action_merge_contextual_disable" type="object"
-                        invisible="hide_merge_action or not is_merge_enabled"/>
+                        attrs="{'invisible': ['|', ('hide_merge_action', '=', True), ('is_merge_enabled', '=', False)]}"/>
             </xpath>
         </field>
     </record>

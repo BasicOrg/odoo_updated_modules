@@ -1,16 +1,11 @@
 /** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { initCallbackRegistry } from "@spreadsheet/o_spreadsheet/init_callbacks";
-import {
-    buildIrMenuIdLink,
-    buildViewLink,
-    buildIrMenuXmlLink,
-} from "@spreadsheet/ir_ui_menu/odoo_menu_link_cell";
-import { IrMenuSelectorDialog } from "@spreadsheet_edition/bundle/ir_menu_selector/ir_menu_selector";
+import { _lt } from "@web/core/l10n/translation";
+import spreadsheet, { initCallbackRegistry } from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+import { buildIrMenuIdLink, buildViewLink, buildIrMenuXmlLink } from "@spreadsheet/ir_ui_menu/odoo_menu_link_cell"
+import { IrMenuSelectorDialog } from "@spreadsheet_edition/assets/components/ir_menu_selector/ir_menu_selector";
 
-const { markdownLink } = spreadsheet.links;
+const { markdownLink } = spreadsheet.helpers;
 const { linkMenuRegistry } = spreadsheet.registries;
 
 /**
@@ -19,7 +14,7 @@ const { linkMenuRegistry } = spreadsheet.registries;
  * @param {import("@spreadsheet/ir_ui_menu/odoo_menu_link_cell").ViewLinkDescription} actionToLink
  * @returns Function to call
  */
-function insertLink(actionToLink) {
+ function insertLink(actionToLink) {
     return (model) => {
         if (!this.isEmptySpreadsheet) {
             const sheetId = model.uuidGenerator.uuidv4();
@@ -43,9 +38,9 @@ function insertLink(actionToLink) {
 initCallbackRegistry.add("insertLink", insertLink);
 
 linkMenuRegistry.add("odooMenu", {
-    name: _t("Link an Odoo menu"),
+    name: _lt("Link an Odoo menu"),
     sequence: 20,
-    execute: async (env) => {
+    action: async (env) => {
         return new Promise((resolve) => {
             const closeDialog = env.services.dialog.add(IrMenuSelectorDialog, {
                 onMenuSelected: (menuId) => {
@@ -53,8 +48,13 @@ linkMenuRegistry.add("odooMenu", {
                     const menu = env.services.menu.getMenu(menuId);
                     const xmlId = menu && menu.xmlid;
                     const url = xmlId ? buildIrMenuXmlLink(xmlId) : buildIrMenuIdLink(menuId);
-                    const label = menu.name;
-                    resolve(markdownLink(label, url));
+                    const name = menu.name;
+                    const link = { url, label: name };
+                    resolve({
+                        link,
+                        isUrlEditable: false,
+                        urlRepresentation: name,
+                    });
                 },
             });
         });

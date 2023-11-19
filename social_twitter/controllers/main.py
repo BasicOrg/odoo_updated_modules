@@ -3,18 +3,15 @@
 
 import base64
 import json
-
-import logging
 import requests
 
 from odoo import http, _
-from odoo.addons.social.controllers.main import SocialController, SocialValidationException
+from odoo.addons.social.controllers.main import SocialController
+from odoo.addons.social.controllers.main import SocialValidationException
 from odoo.exceptions import UserError
 from odoo.http import request
 from werkzeug.exceptions import Forbidden, NotFound
 from werkzeug.urls import url_encode, url_join
-
-_logger = logging.getLogger(__name__)
 
 
 class SocialTwitterController(SocialController):
@@ -43,8 +40,6 @@ class SocialTwitterController(SocialController):
             try:
                 self._twitter_create_accounts(oauth_token, oauth_verifier, media)
             except SocialValidationException as e:
-                return request.render('social.social_http_error_view', {'error_message': e.get_message(), 'documentation_data': e.get_documentation_data()})
-            except UserError as e:
                 return request.render('social.social_http_error_view',
                                       {'error_message': str(e)})
 
@@ -64,15 +59,19 @@ class SocialTwitterController(SocialController):
     @http.route('/social_twitter/<int:stream_id>/comment', type='http', methods=['POST'])
     def social_twitter_comment(self, stream_id=None, stream_post_id=None, comment_id=None,
                                message=None, answering_to=None, **kwargs):
-        """Create a Tweet in response of an other.
+        """Send a Tweet as an answer of an other Tweet.
 
         When answering to a Tweet, its author will be automatically mention in the answer
         so our Tweet will be correctly displayed as an answer on Tweeter.
 
         All other mention will be removed to avoid spam abuse.
 
-        The Twitter API does not return the created tweet, so we manually build
-        the response to save one API call.
+        :param stream_id: Id of the original <social.stream>
+        :param stream_post_id: Id of the original <social.stream.post>
+        :param comment_id: We if reply to a "comment" (aka tweet), this is the Tweeter id
+        :param message: Text message to send
+        :param answering_to: If we reply to a "comment", this is the screen name of the
+            "comment" author (it will be automatically mention in the answer)
         """
         stream = request.env['social.stream'].browse(stream_id)
         if not stream.exists() or stream.media_id.media_type != 'twitter':
@@ -88,12 +87,7 @@ class SocialTwitterController(SocialController):
         if f'@{answering_to.lower()}' not in message.lower():
             message = f"@{answering_to} {message}"
 
-        files = request.httprequest.files.getlist('attachment')
-        attachment = files and files[0]
-        try:
-            return json.dumps(stream_post._twitter_comment_add(stream, comment_id, message, attachment))
-        except Exception as e:
-            return json.dumps({'error': str(e)})
+        return json.dumps(stream_post._twitter_comment_add(stream, comment_id, message))
 
     @http.route('/social_twitter/delete_tweet', type='json')
     def social_twitter_delete_tweet(self, stream_post_id, comment_id):
@@ -126,7 +120,7 @@ class SocialTwitterController(SocialController):
             ('stream_id', '=', stream_id)
         ], limit=1)
         if not tweet:
-            raise UserError(_('This Tweet has been deleted.'))
+            raise NotFound()
         try:
             return tweet._twitter_do_retweet()
         except UserError as error:
@@ -147,7 +141,7 @@ class SocialTwitterController(SocialController):
             ('stream_id', '=', stream_id)
         ], limit=1)
         if not tweet.exists():
-            raise UserError(_('This Tweet has been deleted.'))
+            return NotFound()
         try:
             return tweet._twitter_undo_retweet()
         except UserError as error:
@@ -169,9 +163,10 @@ class SocialTwitterController(SocialController):
             ('stream_id', '=', stream_id)
         ], limit=1)
         if not tweet:
-            return json.dumps({'error': _('This Tweet has been deleted.')})
+            return NotFound()
         files = request.httprequest.files.getlist('attachment')
-        attachment = files and files[0]
+        # Extract all attachments from the request:
+        attachment = files[0] if files and files[0] else None
         try:
             return json.dumps(tweet._twitter_tweet_quote(message, attachment))
         except UserError as error:
@@ -197,11 +192,7 @@ class SocialTwitterController(SocialController):
         )
 
         if response.status_code != 200:
-            message = _('Twitter did not provide a valid access token or it may have expired.')
-            documentation_link = 'https://help.twitter.com/en/forms/account-access'
-            documentation_link_label = _('Read More about Twitter Accounts')
-            documentation_link_icon_class = 'fa fa-twitter'
-            raise SocialValidationException(message, documentation_link, documentation_link_label, documentation_link_icon_class)
+            raise SocialValidationException(_('Twitter did not provide a valid access token or it may have expired.'))
 
         response_values = {
             response_value.split('=')[0]: response_value.split('=')[1]
@@ -230,6 +221,7 @@ class SocialTwitterController(SocialController):
                 media,
                 response_values['oauth_token'],
                 response_values['oauth_token_secret'],
+                response_values['screen_name']
             )
 
             request.env['social.account'].create({
@@ -239,26 +231,27 @@ class SocialTwitterController(SocialController):
                 'social_account_handle': response_values['screen_name'],
                 'twitter_oauth_token': response_values['oauth_token'],
                 'twitter_oauth_token_secret': response_values['oauth_token_secret'],
-                'image': base64.b64encode(requests.get(twitter_account_information['profile_image_url'], timeout=10).content)
+                'image': base64.b64encode(requests.get(twitter_account_information['profile_image_url_https'], timeout=10).content)
             })
 
-    def _twitter_get_account_information(self, media, oauth_token, oauth_token_secret):
-        """Get the information about the Twitter account."""
-        twitter_account_info_url = url_join(
-            request.env['social.media']._TWITTER_ENDPOINT,
-            '/2/users/me')
+    def _twitter_get_account_information(self, media, oauth_token, oauth_token_secret, screen_name):
+        twitter_account_info_url = url_join(request.env['social.media']._TWITTER_ENDPOINT, "/1.1/users/show.json")
 
-        params = {'user.fields': 'profile_image_url'}
         headers = media._get_twitter_oauth_header(
             twitter_account_info_url,
             headers={
                 'oauth_token': oauth_token,
                 'oauth_token_secret': oauth_token_secret,
             },
-            params=params,
-            method='GET',
+            params={'screen_name': screen_name},
+            method='GET'
         )
-        response = requests.get(twitter_account_info_url, headers=headers, params=params, timeout=5)
-        if not response.ok:
-            raise SocialValidationException(_('Authentication failed. Please enter valid credentials.'))
-        return response.json()['data']
+
+        response = requests.get(twitter_account_info_url,
+            params={
+                'screen_name': screen_name
+            },
+            headers=headers,
+            timeout=5
+        )
+        return response.json()

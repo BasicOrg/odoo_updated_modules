@@ -23,7 +23,7 @@ class TestCaseDocumentsBridgeHR(TransactionCase):
         employee = self.env['hr.employee'].create({
             'name': 'User Employee',
             'user_id': documents_user.id,
-            'work_contact_id': partner.id,
+            'address_home_id': partner.id,
         })
         contract = self.env['hr.contract'].create({
             'name': "Contract",
@@ -41,4 +41,4 @@ class TestCaseDocumentsBridgeHR(TransactionCase):
         document = self.env['documents.document'].search([('attachment_id', '=', attachment.id)])
         self.assertTrue(document.exists(), "There should be a new document created from the attachment")
         self.assertEqual(document.owner_id, documents_user, "The owner_id should be the document user")
-        self.assertEqual(document.partner_id, employee.work_contact_id, "The partner_id should be the employee's work contact")
+        self.assertEqual(document.partner_id, employee.address_home_id, "The partner_id should be the employee's address")

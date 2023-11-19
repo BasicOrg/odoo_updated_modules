@@ -15,10 +15,6 @@ class TimerService {
         return (this.hours * 60 + this.minutes) * 60 + this.seconds;
     }
 
-    get floatValue() {
-        return this.toSeconds / 3600;
-    }
-
     get timerFormatted() {
         const hours = `${this.hours}`.padStart(2, "0");
         const minutes = `${this.minutes}`.padStart(2, "0");
@@ -50,7 +46,7 @@ class TimerService {
     }
 
     setTimer(timeElapsed, timerStart, serverTime) {
-        this.resetTimer();
+        this.clearTimer();
         this.addFloatTime(timeElapsed);
         this.timeElapsed = this.toSeconds;
         if (timerStart && serverTime) {
@@ -80,10 +76,6 @@ class TimerService {
         return Interval.fromDateTimes(startDate, endDate);
     }
 
-    getCurrentTime() {
-        return DateTime.now().plus({ seconds: this.offset });
-    }
-
     async getServerTime() {
         const serverTime = deserializeDateTime(
             await this.orm.call("timer.timer", "get_server_time")
@@ -103,20 +95,16 @@ class TimerService {
     }
 
     updateTimer(timerStart) {
-        const currentTime = this.getCurrentTime();
+        const currentTime = DateTime.now().plus({ seconds: this.offset });
         const timeElapsed = this.getInterval(timerStart, currentTime);
         const { seconds } = timeElapsed.toDuration(["seconds", "milliseconds"]).toObject();
         this.addSeconds(seconds - this.toSeconds + this.timeElapsed);
     }
 
-    resetTimer() {
+    clearTimer() {
         this.hours = 0;
         this.minutes = 0;
         this.seconds = 0;
-    }
-
-    clearTimer() {
-        this.resetTimer();
         delete this.offset;
     }
 }

@@ -156,13 +156,13 @@
                                         <span><t t-esc="scrap.product_qty"/> <t t-esc="scrap.product_id.uom_id.name"/></span>
                                     </td>
                                     <td class="text-end">
-                                        <span t-esc="sum(scrap.stock_valuation_layer_ids.mapped('value')) / scrap.product_qty" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                        <span t-esc="scrap.stock_valuation_layer_ids.unit_cost" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
                                     <td class="text-end">
-                                        <span t-esc="sum(scrap.stock_valuation_layer_ids.mapped('value'))"  t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                        <span t-esc="scrap.stock_valuation_layer_ids.value" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
 
-                                    <t t-set="tot_scrap_cost" t-value="tot_scrap_cost + sum(scrap.stock_valuation_layer_ids.mapped('value'))"/>
+                                    <t t-set="tot_scrap_cost" t-value="tot_scrap_cost + scrap.stock_valuation_layer_ids.value"/>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end">

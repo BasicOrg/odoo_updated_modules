@@ -3,17 +3,18 @@
 # 	* sale_purchase
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
+# Cécile Collart <cco@odoo.com>, 2022
+# Jolien De Paepe, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: French (https://app.transifex.com/odoo/teams/41243/fr/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Jolien De Paepe, 2022\n"
+"Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -38,45 +39,45 @@ msgstr "<span class=\"fa fa-lg fa-building-o fa-fw\" title=\"Service à acheter\
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.sale_order_inherited_form_purchase
 msgid "<span class=\"o_stat_text\">Purchase</span>"
-msgstr "<span class=\"o_stat_text\">Achats</span>"
+msgstr "<span class=\"o_stat_text\">Achat</span>"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.purchase_order_inherited_form_sale
 msgid "<span class=\"o_stat_text\">Sale</span>"
-msgstr "<span class=\"o_stat_text\">Ventes</span>"
+msgstr "<span class=\"o_stat_text\">Vente</span>"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.sale_order_cancel_view_form
 msgid ""
 "<span id=\"display_invoice_alert\" position=\"after\">\n"
-"                <span id=\"display_purchase_orders_alert\" invisible=\"not display_purchase_orders_alert\">\n"
+"                <span id=\"display_purchase_orders_alert\" attrs=\"{'invisible': [('display_purchase_orders_alert', '=', False)]}\">\n"
 "                    There are active purchase orders linked to this sale order that are not cancelled automatically! <br/>\n"
 "                </span>\n"
 "            </span>"
 msgstr ""
 "<span id=\"display_invoice_alert\" position=\"after\">\n"
-"                <span id=\"display_purchase_orders_alert\" invisible=\"not display_purchase_orders_alert\">\n"
-"                    Il y a des bons de commande actifs liés à cette commande client qui ne sont pas annulés automatiquement ! <br/>\n"
+"                <span id=\"display_purchase_orders_alert\" attrs=\"{'invisible': [('display_purchase_orders_alert', '=', False)]}\">\n"
+"                    Il y a des bons de commande actifs associés à cette commande qui ne sont pas annulés automatiquement ! <br/>\n"
 "                </span>\n"
 "            </span>"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_sale_on_purchase_cancellation
 msgid "Exception(s) occurred on the purchase order(s):"
-msgstr "Des exceptions sont survenues sur le(s) bon(s) de commande :"
+msgstr "Des exceptions sont survenues sur le(s) bon(s) de commande:"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_cancellation
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_quantity_decreased
 msgid "Exception(s) occurred on the sale order(s):"
-msgstr "Des exceptions sont survenues sur le(s) bon(s) de commande :"
+msgstr "Des exceptions sont survenues sur le(s) bon(s) de commande:"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_cancellation
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_quantity_decreased
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_sale_on_purchase_cancellation
 msgid "Exception(s):"
-msgstr "Exception(s) :"
+msgstr "Exception(s):"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_sale_order_line__purchase_line_ids
@@ -91,9 +92,9 @@ msgid ""
 "automatically created to buy the product. Tip: don't forget to set a vendor "
 "on the product."
 msgstr ""
-"Si coché, à chaque fois que vous vendez ce produit via un devis, une demande"
-" de prix est automatiquement créée pour acheter ce produit. Astuce : "
-"n'oubliez pas d'indiquer un fournisseur sur le produit."
+"Si coché, à chaque fois que vous vendez cet article via un devis, une "
+"demande de prix est automatiquement créée pour acheter cet article. Conseil:"
+" n'oubliez pas d'indiquer un fournisseur sur l'article."
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_quantity_decreased
@@ -103,32 +104,30 @@ msgstr "Des actions manuelles pourraient être requises. "
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_sale_order__purchase_order_count
 msgid "Number of Purchase Order Generated"
-msgstr "Nombre de bons de commande générés"
+msgstr "Nb. de Commandes Fournisseur Générées"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_purchase_order__sale_order_count
 msgid "Number of Source Sale"
-msgstr "Nombre de ventes à la source"
+msgstr "Nombre de Vente d'Origine"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_sale_order_line__purchase_line_count
 msgid "Number of generated purchase items"
-msgstr "Nombre d'articles d'achat générés"
+msgstr "Nombre d'objets d'achat générés"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/sale_order_line.py:0
 #, python-format
 msgid "Ordered quantity decreased!"
-msgstr "Quantité commandée diminuée !"
+msgstr "Quantité commandée diminuée!"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_purchase_order_line__sale_line_id
 msgid "Origin Sale Item"
-msgstr "Article de vente d'origine"
+msgstr "Objet de vente d'origine"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/product_template.py:0
 #, python-format
 msgid ""
@@ -141,37 +140,35 @@ msgstr ""
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_product_template
 msgid "Product"
-msgstr "Produit"
+msgstr "Article"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/product_template.py:0
 #, python-format
 msgid "Product that is not a service can not create RFQ."
 msgstr ""
-"Un produit qui n'est pas un service ne peut pas créer de demande de prix."
+"Un article qui n'est pas un service ne peut pas créer de demande de devis."
 
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_purchase_order
 msgid "Purchase Order"
-msgstr "Bon de commande fournisseur"
+msgstr "Commande fournisseur"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_sale_order_cancel__display_purchase_orders_alert
 msgid "Purchase Order Alert"
-msgstr "Alerte de bon de commande"
+msgstr "Alerte de commande fournisseur"
 
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_purchase_order_line
 msgid "Purchase Order Line"
-msgstr "Ligne de bon de commande"
+msgstr "Ligne de commande d'achat"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/sale_order.py:0
 #, python-format
 msgid "Purchase Order generated from %s"
-msgstr "Bon de commande généré de %s"
+msgstr "Commande fournisseur généré de %s"
 
 #. module: sale_purchase
 #: model:ir.model.fields,help:sale_purchase.field_sale_order_line__purchase_line_ids
@@ -179,8 +176,8 @@ msgid ""
 "Purchase line generated by this Sales item on order confirmation, or when "
 "the quantity was increased."
 msgstr ""
-"Ligne d'achat générée par cet article de vente lors de la confirmation de la"
-" commande, ou quand la quantité a été augmentée."
+"Ligne d'achat générée par la confirmation de l'ordre de vente pour cet "
+"article, ou quand la quantité a été augmentée."
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.product_template_form_view_inherit
@@ -190,7 +187,7 @@ msgstr "Réapprovisionnement"
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_purchase_order_line__sale_order_id
 msgid "Sale Order"
-msgstr "Commande client"
+msgstr "Bon de commande"
 
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_sale_order
@@ -200,39 +197,36 @@ msgstr "Bon de commande"
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_sale_order_cancel
 msgid "Sales Order Cancel"
-msgstr "Annulation de la commande"
+msgstr "Annulation Commande"
 
 #. module: sale_purchase
 #: model:ir.model,name:sale_purchase.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "Ligne de commande"
+msgstr "Ligne de bons de commande"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/purchase_order.py:0
 #, python-format
 msgid "Sources Sale Orders %s"
-msgstr "Commande client d'origine %s"
+msgstr "Bons de commande d'origine %s"
 
 #. module: sale_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_product_product__service_to_purchase
 #: model:ir.model.fields,field_description:sale_purchase.field_product_template__service_to_purchase
 msgid "Subcontract Service"
-msgstr "Service sous-traité"
+msgstr "Service Sous-Traité"
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/sale_order_line.py:0
 #, python-format
 msgid ""
 "There is no vendor associated to the product %s. Please define a vendor for "
 "this product."
 msgstr ""
-"Aucun fournisseur n'est associé au produit %s. Veuillez définir un "
-"fournisseur pour ce produit."
+"Aucun fournisseur n'est associé au produit %s. Définissez un fournisseur "
+"pour ce produit."
 
 #. module: sale_purchase
-#. odoo-python
 #: code:addons/sale_purchase/models/sale_order_line.py:0
 #, python-format
 msgid ""
@@ -246,7 +240,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_cancellation
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_sale_on_purchase_cancellation
 msgid "cancelled"
-msgstr "annulé(s)"
+msgstr "annulé"
 
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_cancellation
@@ -258,4 +252,4 @@ msgstr "de"
 #. module: sale_purchase
 #: model_terms:ir.ui.view,arch_db:sale_purchase.exception_purchase_on_sale_quantity_decreased
 msgid "ordered instead of"
-msgstr "commandés au lieu de"
+msgstr "Commandé à la place de"

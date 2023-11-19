@@ -68,10 +68,8 @@ GET_ORDER_ITEMS_MOCK = {
                 'ItemPrice': {'CurrencyCode': 'USD', 'Amount': '100.00'},
                 'ShippingTax': {'CurrencyCode': 'USD', 'Amount': '2.50'},
                 'ShippingPrice': {'CurrencyCode': 'USD', 'Amount': '12.50'},
-                'ShippingDiscountTax': {'CurrencyCode': 'USD', 'Amount': '0.50'},
-                'ShippingDiscount': {'CurrencyCode': 'USD', 'Amount': '2.50'},
-                'PromotionDiscountTax': {'CurrencyCode': 'USD', 'Amount': '1.00'},
-                'PromotionDiscount': {'CurrencyCode': 'USD', 'Amount': '5.00'},
+                'PromotionDiscountTax': {'CurrencyCode': 'USD', 'Amount': '0.00'},
+                'PromotionDiscount': {'CurrencyCode': 'USD', 'Amount': '0.00'},
                 'SellerSKU': 'TEST',
                 'Title': 'Run Test, Run!',
                 'IsGift': 'true',
@@ -86,7 +84,6 @@ GET_ORDER_ITEMS_MOCK = {
 }
 
 OPERATIONS_RESPONSES_MAP = {
-    'getOrder': {'payload': ORDER_MOCK},
     'getOrders': GET_ORDERS_RESPONSE_MOCK,
     'getOrderItems': GET_ORDER_ITEMS_MOCK,
     'createFeedDocument': {'feedDocumentId': '123123', 'url': 'my_amazing_feed_url.test'},
@@ -111,18 +108,8 @@ class TestAmazonCommon(TransactionCase):
             'company_id': self.env.company.id,
         })
 
-        # Create an offer linked to the product
-        product = self.env['product.product'].create(
-            {'name': "This is a storable product", 'type': 'product'}
-        )
-        self.offer = self.env['amazon.offer'].create({
-            'account_id': self.account.id,
-            'marketplace_id': marketplace.id,
-            'product_id': product.id,
-            'sku': 'TESTING_SKU',
-        })
-
         # Create a delivery carrier
+        product = self.env['product.product'].create({'name': "This is a product"})
         self.carrier = self.env['delivery.carrier'].create(
             {'name': "My Truck", 'product_id': product.id}  # delivery_type == 'fixed'
         )

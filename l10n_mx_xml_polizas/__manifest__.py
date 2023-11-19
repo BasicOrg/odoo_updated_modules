@@ -3,8 +3,9 @@
 
 {
     "name": "Odoo Mexican XML Polizas Export",
-    'countries': ['mx'],
-    "summary": "XML Export of the Journal Entries for the Mexican Tax Authorities for a compulsory audit.",
+    "summary": """
+        XML Export of the Journal Entries for the Mexican Tax Authorities for a compulsory audit.
+    """,
     "version": "0.1",
     "author": "Odoo",
     "category": "Accounting/Localizations/Reporting",

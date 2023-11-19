@@ -2,11 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo.addons.test_marketing_automation.tests.common import TestMACommon
-from dateutil.relativedelta import relativedelta
-
 from odoo.tests import tagged, users
 from odoo.tools import mute_logger
-from odoo.fields import Datetime
 
 
 @tagged('marketing_automation')
@@ -63,46 +60,6 @@ class MarketingCampaignTest(TestMACommon):
         # check relationships
         self.assertEqual(activity2.parent_id, activity)
         self.assertEqual(activity2_dup.parent_id, activity_dup)
-
-    @users('user_markauto')
-    @mute_logger('odoo.addons.base.ir.ir_model', 'odoo.models')
-    def test_internals_participants_compute(self):
-        """Check that the participant count compute method works."""
-        empty_campaign = self.env['marketing.campaign'].create({
-            'name': 'My First Campaign',
-            'model_id': self.env['ir.model']._get('marketing.test.sms').id,
-        })
-        self.assertEqual(empty_campaign.total_participant_count, 0)
-
-        campaign1 = self.env['marketing.campaign'].create({
-            'name': 'Campaign 1',
-            'model_id': self.env['ir.model']._get('marketing.test.sms').id,
-        })
-        campaign2 = self.env['marketing.campaign'].create({
-            'name': 'Campaign 2',
-            'model_id': self.env['ir.model']._get('marketing.test.sms').id,
-        })
-        self.env['marketing.participant'].create([
-            {'campaign_id': campaign1.id, 'state': 'running', 'is_test': True},
-            {'campaign_id': campaign1.id, 'state': 'running', 'is_test': True},
-            {'campaign_id': campaign1.id, 'state': 'running', 'is_test': False},
-            {'campaign_id': campaign1.id, 'state': 'running', 'is_test': False},
-            {'campaign_id': campaign1.id, 'state': 'completed', 'is_test': True},
-            {'campaign_id': campaign1.id, 'state': 'completed', 'is_test': False},
-            {'campaign_id': campaign2.id, 'state': 'running', 'is_test': True},
-            {'campaign_id': campaign2.id, 'state': 'completed', 'is_test': True},
-            {'campaign_id': campaign2.id, 'state': 'completed', 'is_test': False},
-            {'campaign_id': campaign2.id, 'state': 'completed', 'is_test': False},
-        ])
-        self.assertEqual(campaign1.running_participant_count, 2)
-        self.assertEqual(campaign1.completed_participant_count, 1)
-        self.assertEqual(campaign1.total_participant_count, 3)
-        self.assertEqual(campaign1.test_participant_count, 3)
-
-        self.assertEqual(campaign2.running_participant_count, 0)
-        self.assertEqual(campaign2.completed_participant_count, 2)
-        self.assertEqual(campaign2.total_participant_count, 2)
-        self.assertEqual(campaign2.test_participant_count, 2)
 
     @users('user_markauto')
     @mute_logger('odoo.addons.base.ir.ir_model', 'odoo.models')
@@ -174,62 +131,3 @@ class MarketingCampaignTest(TestMACommon):
 
         self.assertEqual(campaign.running_participant_count, 4)
         self.assertEqual(campaign.participant_ids.mapped('res_id'), (test_records[0:3] | test_records[-1]).ids)
-
-    @users('user_markauto')
-    @mute_logger('odoo.addons.base.ir.ir_model', 'odoo.models')
-    def test_archive_ma_campaign(self):
-        """
-        Ensures that campaigns are stopped when archived.
-        """
-        campaign = self.env['marketing.campaign'].create({
-            'name': 'Test Campaign',
-            'model_id': self.env['ir.model']._get('marketing.test.sms').id,
-            'domain': '%s' % [('id', 'in', self.test_records[0].ids)],
-        })
-
-        mailing = self._create_mailing()
-        self._create_activity(campaign, mailing=mailing, interval_number=0)
-
-        campaign.action_start_campaign()
-        self.assertEqual(campaign.state, 'running')
-
-        campaign.active = False
-        self.assertEqual(campaign.state, 'stopped')
-
-    @mute_logger('odoo.addons.base.ir.ir_model', 'odoo.models')
-    def test_update_child_in_running_campaign(self):
-        marketing_campaign = self.env['marketing.campaign'].create({
-            'name': 'My First Campaign',
-            'model_id': self.env['ir.model']._get('marketing.test.sms').id,
-            'domain': '%s' % [('id', 'in', self.test_records.ids)],
-        })
-        mailing = self._create_mailing()
-        mailing2 = self._create_mailing()
-        parent_activity = self._create_activity(
-            marketing_campaign,
-            mailing=mailing,
-            name="parent activity",
-        )
-        child_activity = self._create_activity(
-            marketing_campaign,
-            mailing=mailing2,
-            name="child activity",
-            parent_id=parent_activity.id,
-            trigger_type="mail_open",
-        )
-
-        marketing_campaign.action_start_campaign()
-        marketing_campaign.sync_participants()
-        [trace.action_execute() for trace in parent_activity.trace_ids]
-
-        child_activity.update({
-            'interval_type': 'days',
-            'interval_number': 5,
-        })
-        trace_offset = relativedelta(**{'days': 5})
-
-        expected_schedule_date = Datetime.from_string(child_activity.trace_ids.parent_id.mailing_trace_ids.mapped('write_date')[0]) + trace_offset
-        marketing_campaign.action_update_participants()
-
-        trace_schedule_date = child_activity.trace_ids.mapped('schedule_date')[0]
-        self.assertEqual(trace_schedule_date, expected_schedule_date)

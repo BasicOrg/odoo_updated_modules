@@ -2,7 +2,7 @@
 
 import { registry } from "@web/core/registry";
 
-import mobile from "@web_mobile/js/services/core";
+import mobile from "web_mobile.core";
 import { shortcutItem, switchAccountItem } from "./user_menu_items";
 
 const serviceRegistry = registry.category("services");

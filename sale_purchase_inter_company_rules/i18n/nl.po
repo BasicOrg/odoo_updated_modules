@@ -3,17 +3,16 @@
 # 	* sale_purchase_inter_company_rules
 # 
 # Translators:
-# Wil Odoo, 2023
-# Jolien De Paepe, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Jolien De Paepe, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2021-12-07 10:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -28,7 +27,7 @@ msgstr "Automatisch gegenereerd inkooporder"
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_sale_order__auto_generated
 msgid "Auto Generated Sales Order"
-msgstr "Automatisch gegenereerd inkooporder"
+msgstr "Genereer automatisch verkooporder"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__auto_validation
@@ -37,7 +36,6 @@ msgid "Automatic Validation"
 msgstr "Automatische validatie"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -56,7 +54,6 @@ msgid "Config Settings"
 msgstr "Configuratie instellingen"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
@@ -68,65 +65,54 @@ msgstr ""
 "Instellingen/Gebruikers/Bedrijven"
 
 #. module: sale_purchase_inter_company_rules
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_company__copy_lots_delivery
-#: model:ir.model.fields,field_description:sale_purchase_inter_company_rules.field_res_config_settings__copy_lots_delivery
-msgid "Copy Lots on Delivery Validation"
-msgstr "Kopieer lots bij levering validatie"
-
-#. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_company__warehouse_id
 #: model:ir.model.fields,help:sale_purchase_inter_company_rules.field_res_config_settings__warehouse_id
 msgid ""
 "Default value to set on Purchase(Sales) Orders that will be created based on"
 " Sale(Purchase) Orders made to this company"
 msgstr ""
-"Standaardwaarde om in te stellen op inkooporders (verkooporders) die worden "
-"aangemaakt op basis van de verkooporders (inkooporders) gemaakt naar dit "
-"bedrijf"
+"Standaardwaarde om in te stellen op inkooporders(verkoop) die worden "
+"aangemaakt op basis van de verkooporders(inkoop) gemaakt naar dit bedrijf"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s using warehouse %(warehouse)s"
-" when a company confirms a %(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                using "
+"warehouse %(warehouse)s when a company confirms a %(event_type)s for "
+"%(company)s."
 msgstr ""
 "Genereer een %(validation)s %(generated_object)s voor het magazijn "
-"%(warehouse)s wanneer een bedrijf een%(event_type)s bevestigt voor "
-"%(company)s."
+"%(warehouse)s wanneer een bedrijf een %(event_type)s voor %(company)s "
+"bevestigt."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid ""
-"Generate a %(validation)s %(generated_object)s when a company confirms a "
-"%(event_type)s for %(company)s."
+"Generate a %(validation)s %(generated_object)s                when a company"
+" confirms a %(event_type)s for %(company)s."
 msgstr ""
 "Genereer een %(validation)s %(generated_object)s wanneer een bedrijf een "
-"%(event_type)s bevestigt voor %(company)s."
+"%(event_type)s bevestigd voor %(company)s."
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
 "Inter company user of company %(name)s doesn't have enough access rights"
 msgstr ""
-"Intercompany-gebruiker van bedrijf %(name)s heeft niet voldoende "
+"Intercompany-gebruiker van bedrijf %(name)s heeft niet genoeg "
 "toegangsrechten"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
 msgid "Inter company user of company %s doesn't have enough access rights"
 msgstr ""
-"Inter-bedrijf gebruiker of bedrijf %s heeft niet voldoende toegangsrechten"
+"Inter-bedrijf gebruiker of bedrijf %s heeft niet genoeg toegangsrechten"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid "Provide at least one user for inter company relation for %(name)s"
@@ -135,11 +121,10 @@ msgstr ""
 "%(name)s"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/sale_order.py:0
 #, python-format
-msgid "Provide one user for intercompany relation for %(name)s "
-msgstr "Voorzie een gebruiker voor een inter-bedrijf relatie voor %(name)s"
+msgid "Provide one user for intercompany relation for % "
+msgstr "Voorzie een gebruiker voor inter-bedrijf relatie voor %"
 
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model,name:sale_purchase_inter_company_rules.model_purchase_order
@@ -191,12 +176,7 @@ msgstr "Synchroniseer verkooporders"
 #. module: sale_purchase_inter_company_rules
 #: model:ir.model.fields.selection,name:sale_purchase_inter_company_rules.selection__res_company__rule_type__sale_purchase
 msgid "Synchronize Sales and Purchase Order"
-msgstr "Synchroniseer verkoop en inkooporder"
-
-#. module: sale_purchase_inter_company_rules
-#: model:ir.model,name:sale_purchase_inter_company_rules.model_stock_picking
-msgid "Transfer"
-msgstr "Verplaatsing"
+msgstr "Synchroniseer verkoop & inkooporder"
 
 #. module: sale_purchase_inter_company_rules
 #: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company_rules.res_config_settings_view_form
@@ -214,7 +194,6 @@ msgid "Warehouse For Purchase Orders"
 msgstr "Magazijn voor inkooporders"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -229,14 +208,12 @@ msgstr ""
 "(Verkoopordervaluta: %(so_currency)s, Prijslijst: %(pricelist)s, Relatie: %(partner)s (ID: %(id)s))"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "draft"
 msgstr "concept"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -244,14 +221,12 @@ msgid "purchase order"
 msgstr "inkooporder"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "purchase/sales order"
 msgstr "inkoop/verkooporder"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
@@ -259,14 +234,12 @@ msgid "sales order"
 msgstr "verkooporder"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "sales/purchase order"
 msgstr "verkoop/inkooporder"
 
 #. module: sale_purchase_inter_company_rules
-#. odoo-python
 #: code:addons/sale_purchase_inter_company_rules/models/res_company.py:0
 #, python-format
 msgid "validated"

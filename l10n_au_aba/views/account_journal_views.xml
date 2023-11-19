@@ -8,8 +8,8 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='bank_account']/group" position="inside">
-                    <group string='ABA' invisible="type != 'bank'">
-                        <field name="aba_bsb" readonly="not bank_account_id"/>
+                    <group string='ABA'>
+                        <field name="aba_bsb" attrs="{'readonly': [('bank_account_id', '=', False)]}"/>
                         <field name='aba_fic'/>
                         <field name='aba_user_spec'/>
                         <field name='aba_user_number'/>

@@ -2,14 +2,14 @@
 
 import LazyBarcodeCache from '@stock_barcode/lazy_barcode_cache';
 
-import { patch } from "@web/core/utils/patch";
+import {patch} from 'web.utils';
 
-patch(LazyBarcodeCache.prototype, {
+patch(LazyBarcodeCache.prototype, 'stock_barcode_picking_batch', {
     /**
      * @override
      */
      _constructor() {
-        super._constructor(...arguments);
+        this._super(...arguments);
         this.barcodeFieldByModel['stock.picking.batch'] = 'name';
     },
 });

@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { nextTick, getFixture } from "@web/../tests/helpers/utils";
 import { createSpreadsheet } from "../spreadsheet_test_utils";
 import {
@@ -8,12 +8,7 @@ import {
     getBasicPivotArch,
     getBasicServerData,
 } from "@spreadsheet/../tests/utils/data";
-import {
-    getCell,
-    getCellFormula,
-    getCellValue,
-    getEvaluatedCell,
-} from "@spreadsheet/../tests/utils/getters";
+import { getCell, getCellFormula, getCellValue } from "@spreadsheet/../tests/utils/getters";
 import {
     addGlobalFilter,
     selectCell,
@@ -25,15 +20,15 @@ import {
     createSpreadsheetWithPivot,
     insertPivotInSpreadsheet,
 } from "@spreadsheet/../tests/utils/pivot";
-import { session } from "@web/session";
 
 const { toCartesian, toZone } = spreadsheet.helpers;
 const { cellMenuRegistry, topbarMenuRegistry } = spreadsheet.registries;
+const { getMenuChildren } = spreadsheet.helpers;
 import { doMenuAction } from "@spreadsheet/../tests/utils/ui";
 
 let target;
 
-const reinsertPivotPath = ["data", "insert_pivot", "reinsert_pivot", "reinsert_pivot_1"];
+const reinsertPivotPath = ["data", "reinsert_pivot", "reinsert_pivot_1"];
 
 QUnit.module(
     "documents_spreadsheet > Pivot Menu Items",
@@ -50,29 +45,6 @@ QUnit.module(
             assert.equal(
                 getCellFormula(model, "E10"),
                 `=ODOO.PIVOT(1,"probability","bar","false","foo",1)`,
-                "It should contain a pivot formula"
-            );
-        });
-
-        QUnit.test("Reinsert a pivot with a contextual search domain", async function (assert) {
-            const serverData = getBasicServerData();
-            const uid = session.user_context.uid;
-            serverData.models.partner.records = [{ id: 1, probability: 0.5, foo: uid }];
-            serverData.views["partner,false,search"] = /* xml */ `
-                <search>
-                    <filter string="Filter" name="filter" domain="[('foo', '=', uid)]"/>
-                </search>
-            `;
-            const { model, env } = await createSpreadsheetFromPivotView({
-                serverData,
-                additionalContext: { search_default_filter: 1 },
-            });
-
-            selectCell(model, "D8");
-            await doMenuAction(topbarMenuRegistry, reinsertPivotPath, env);
-            assert.equal(
-                getCellFormula(model, "E10"),
-                `=ODOO.PIVOT(1,"probability","bar","false","foo",${uid})`,
                 "It should contain a pivot formula"
             );
         });
@@ -173,7 +145,7 @@ QUnit.module(
                 const serverData = getBasicServerData();
                 serverData.models["documents.document"].records.push({
                     id: 45,
-                    spreadsheet_data: JSON.stringify(spreadsheetData),
+                    raw: JSON.stringify(spreadsheetData),
                     name: "Spreadsheet",
                     handler: "spreadsheet",
                 });
@@ -207,22 +179,20 @@ QUnit.module(
                         <field name="probability" type="measure"/>
                     </pivot>`,
             });
-            await addGlobalFilter(
-                model,
-                {
+            await addGlobalFilter(model, {
+                filter: {
                     id: "42",
                     type: "relation",
                     label: "Filter",
                 },
-                {
-                    pivot: {
-                        1: {
-                            chain: "product_id",
-                            type: "many2one",
-                        },
+            },{
+                pivot: {
+                    1: {
+                        chain: "product_id",
+                        type: "many2one",
                     },
-                }
-            );
+                },
+            });
             await nextTick();
             await setGlobalFilterValue(model, {
                 id: "42",
@@ -239,6 +209,7 @@ QUnit.module(
 
         QUnit.test("undo pivot reinsert", async function (assert) {
             const { model, env } = await createSpreadsheetWithPivot();
+            const sheetId = model.getters.getActiveSheetId();
             selectCell(model, "D8");
             await doMenuAction(topbarMenuRegistry, reinsertPivotPath, env);
             assert.equal(
@@ -247,7 +218,10 @@ QUnit.module(
                 "It should contain a pivot formula"
             );
             model.dispatch("REQUEST_UNDO");
-            assert.notOk(getCell(model, "E10"), "It should have removed the re-inserted pivot");
+            assert.notOk(
+                model.getters.getCell(sheetId, 4, 9),
+                "It should have removed the re-inserted pivot"
+            );
         });
 
         QUnit.test("reinsert pivot with anchor on merge but not top left", async function (assert) {
@@ -261,11 +235,10 @@ QUnit.module(
             model.dispatch("ADD_MERGE", {
                 sheetId,
                 target: [{ top: 0, bottom: 1, left: 0, right: 0 }],
-                force: true,
             });
             selectCell(model, "A2"); // A1 and A2 are merged; select A2
             const { col, row } = toCartesian("A2");
-            assert.ok(model.getters.isInMerge({ sheetId, col, row }));
+            assert.ok(model.getters.isInMerge(sheetId, col, row));
             await doMenuAction(topbarMenuRegistry, reinsertPivotPath, env);
             assert.equal(
                 getCellFormula(model, "B2"),
@@ -299,20 +272,15 @@ QUnit.module(
                     "The 'Pivots' menu should be in the dom"
                 );
 
-                const root = topbarMenuRegistry.getMenuItems().find((item) => item.id === "data");
-                const children = root.children(env);
-                assert.ok(children.find((c) => c.name(env) === "(#1) Partners by Foo"));
-                assert.ok(children.find((c) => c.name(env) === "(#2) Partner Pivot"));
-                // bottom children
-                assert.ok(children.find((c) => c.name(env) === "Refresh all data"));
-                assert.ok(children.find((c) => c.name(env) === "Insert pivot"));
-                assert.ok(children.find((c) => c.name(env) === "Re-insert list"));
-
-                const insertPivotChildren = children
-                    .find((c) => c.name(env) === "Insert pivot")
-                    .children(env);
-                assert.ok(insertPivotChildren.find((c) => c.name(env) === "Re-insert pivot"));
-                assert.ok(insertPivotChildren.find((c) => c.name(env) === "Insert pivot cell"));
+                const root = topbarMenuRegistry.getAll().find((item) => item.id === "data");
+                const children = getMenuChildren(root, env);
+                assert.ok(children.find((c) => c.name === "(#1) Partners by Foo"));
+                assert.ok(children.find((c) => c.name === "(#2) Partner Pivot"));
+                // // bottom children
+                assert.ok(children.find((c) => c.name === "Refresh all data"));
+                assert.ok(children.find((c) => c.name === "Re-insert pivot"));
+                assert.ok(children.find((c) => c.name === "Insert pivot cell"));
+                assert.ok(children.find((c) => c.name === "Re-insert list"));
             }
         );
 
@@ -344,7 +312,7 @@ QUnit.module(
                     ...webClient.env,
                     model,
                     services: {
-                        ...model.config.custom.env.services,
+                        ...model.config.evalContext.env.services,
                         action: {
                             doAction: (params) => {
                                 assert.step(params.res_model);
@@ -363,7 +331,7 @@ QUnit.module(
                 const root = cellMenuRegistry
                     .getAll()
                     .find((item) => item.id === "pivot_see_records");
-                await root.execute(env);
+                await root.action(env);
                 assert.verifySteps(["partner", `[["foo","=",2],["bar","=",false]]`]);
             }
         );
@@ -402,7 +370,7 @@ QUnit.module(
                     "B4",
                     getCellFormula(model, "B4").replace(`ODOO.PIVOT(1`, `ODOO.PIVOT("5)`)
                 ); //Invalid id
-                assert.ok(getEvaluatedCell(model, "B4").error.message);
+                assert.ok(getCell(model, "B4").evaluated.error.message);
                 assert.notOk(root.isVisible(env));
             }
         );

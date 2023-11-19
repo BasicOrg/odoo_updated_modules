@@ -24,14 +24,6 @@ models which only purpose is to run tests.""",
     ],
     'installable': True,
     'assets': {
-        'test_website.test_bundle': [
-            'http://test.external.link/javascript1.js',
-            '/web/static/src/libs/fontawesome/css/font-awesome.css',
-            'http://test.external.link/style1.css',
-            '/web/static/src/module_loader.js',
-            'http://test.external.link/javascript2.js',
-            'http://test.external.link/style2.css',
-        ],
         'web.assets_frontend': [
             'test_website/static/src/js/test_error.js',
         ],

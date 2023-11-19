@@ -3,16 +3,19 @@
 # 	* sale_timesheet
 # 
 # Translators:
-# Wil Odoo, 2023
+# Noma Yuki, 2022
+# Norimichi Sugimoto <norimichi.sugimoto@tls-ltd.co.jp>, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-10-04 09:25+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,28 +23,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/sale_order.py:0
-#, python-format
-msgid ""
-"\n"
-"                <p class=\"o_view_nocontent_smiling_face\">\n"
-"                    No activities found. Let's start a new one!\n"
-"                </p><p>\n"
-"                    Track your working hours by projects every day and invoice this time to your customers.\n"
-"                </p>\n"
-"            "
-msgstr ""
-"\n"
-"                <p class=\"o_view_nocontent_smiling_face\">\n"
-"                    活動が見つかりません。作成しましょう！\n"
-"                </p><p>\n"
-"                    毎日のプロジェクトごとに作業時間を記録し、その作業時間を顧客に請求できます。\n"
-"                </p>\n"
-"            "
-
-#. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/account_move.py:0
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
@@ -56,62 +37,46 @@ msgid ""
 "                </p>\n"
 "            "
 msgstr ""
-"\n"
-"                <p class=\"o_view_nocontent_smiling_face\">\n"
-"                    タイムシートを記録する\n"
-"                </p><p>\n"
-"                    毎日、プロジェクトごとに労働時間を登録し、追跡することができます。\n"
-"プロジェクトに費やした時間はすべてコストとなり、必要に応じて顧客に\n"
-"　　　　　再請求できます。\n"
-"                </p>\n"
-"            "
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice___candidate_orders
 msgid " Candidate Orders"
-msgstr "候補者オーダ"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_project__billable_percentage
 msgid ""
 "% of timesheets that are billable compared to the total number of timesheets"
 " linked to the AA of the project, rounded to the unit."
-msgstr "プロジェクトの AA にリンクされたタイムシートの総数に対する、請求可能なタイムシートの％(単位未満四捨五入)。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "%(amount)s %(label)s will be added to the new Sales Order."
-msgstr "%(amount)s %(label)sは販売オーダに追加されます。 "
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid ", for a revenue of"
-msgstr "、以下の収益用:"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid ", leading to a"
-msgstr "、以下へつながる:"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_sale_page
-msgid "- Timesheet product"
-msgstr "- タイムシートプロダクト"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_form
-msgid ""
-"<i class=\"fa fa-lightbulb-o\"/>\n"
-"                        Define the rate at which an employee's time is billed based on their expertise, skills, or experience.\n"
-"                        To bill the same service at a different rate, create separate sales order items."
 msgstr ""
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_line_form_inherit
-msgid "<span class=\"o_stat_text\">Invoice</span>"
-msgstr "<span class=\"o_stat_text\">請求書</span>"
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.sale_advance_payment_inv_timesheet_view_form
+msgid ""
+"<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"Arrow icon\" "
+"title=\"Arrow\"/>"
+msgstr "<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"Arrow icon\" title=\"矢印\"/>"
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Time Billing</span>"
+msgstr "<span class=\"o_form_label\">時間請求</span>"
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.account_invoice_view_form_inherit_sale_timesheet
@@ -120,29 +85,24 @@ msgid "<span class=\"o_stat_text\">Recorded</span>"
 msgstr "<span class=\"o_stat_text\">記録済</span>"
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_line_form_inherit
-msgid "<span class=\"o_stat_text\">Sales Order</span>"
-msgstr "<span class=\"o_stat_text\">販売オーダ</span>"
-
-#. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
-msgid "<strong>Amount Due:</strong>"
+msgid "<strong>Invoiced:</strong>"
 msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
-msgid "<strong>Invoiced:</strong>"
-msgstr "<strong>請求済:</strong>"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
 msgid "<strong>Invoices:</strong>"
-msgstr "<strong>請求書:</strong>"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
 msgid "<strong>Sales Order:</strong>"
-msgstr "<strong>販売オーダ:</strong>"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
+msgid "<strong>To invoice:</strong>"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
@@ -151,23 +111,30 @@ msgstr "<u>収益性</u>"
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
-msgid "<u>Sales</u>"
-msgstr "<u>販売</u>"
+msgid "<u>Sold</u>"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid "About us"
+msgstr "会社概要"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_sale_order_line__qty_delivered_method
 msgid ""
-"According to product configuration, the delivered quantity can be automatically computed by mechanism:\n"
+"According to product configuration, the delivered quantity can be automatically computed by mechanism :\n"
 "  - Manual: the quantity is set manually on the line\n"
 "  - Analytic From expenses: the quantity is the quantity sum from posted expenses\n"
 "  - Timesheet: the quantity is the sum of hours recorded on tasks linked to this sale line\n"
 "  - Stock Moves: the quantity comes from confirmed pickings\n"
 msgstr ""
-"プロダクト構成に応じて、配送数量はメカニズムによって自動的に計算されます：\n"
-"  - 手動：数量を明細上で手動で設定します\n"
-"  - 費用からの分析： 数量は計上された費用からの合計数量です\n"
-"  - タイムシート：数量は、この売上明細にリンクされたタスクに記録された時間の合計です\n"
-"  - 在庫移動： 数量は確定したピッキングに由来します\n"
+"製品構成に応じて、出荷数量はメカニズムによって自動的に計算できます。\n"
+"-手動:数量はライン上で手動で設定されます\n"
+"-分析から費用:数量は転記された費用からの数量合計です\n"
+"-タイムシート:数量は時間の合計ですこの販売ラインにリンクされたタスクに記録された\n"
+"-在庫移動:数量は確認済みのピッキングから取得されます"
 
 #. module: sale_timesheet
 #: model:account.analytic.account,name:sale_timesheet.account_analytic_account_project_support
@@ -183,7 +150,7 @@ msgstr "割り当てられた時間"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice__amount_to_invoice
 msgid "Amount to invoice"
-msgstr "請求金額"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.constraint,message:sale_timesheet.constraint_project_create_sale_order_line_unique_employee_per_wizard
@@ -191,7 +158,7 @@ msgstr "請求金額"
 msgid ""
 "An employee cannot be selected more than once in the mapping. Please remove "
 "duplicate(s) and try again."
-msgstr "マッピングで従業員を複数回選択することはできません。重複を削除してから、もう一度やり直して下さい。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_account_analytic_line
@@ -204,21 +171,23 @@ msgid "Analytic lines"
 msgstr "分析行"
 
 #. module: sale_timesheet
-#. odoo-python
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"As a leading professional services firm,\n"
+"                                we know that success is all about the\n"
+"                                commitment we put on strong services."
+msgstr ""
+
+#. module: sale_timesheet
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "At least one line should be filled."
-msgstr "少なくとも1明細は入力して下さい。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/product.py:0
-#, python-format
-msgid "Based on Timesheets"
-msgstr "タイムシートに基づく"
-
-#. module: sale_timesheet
-#: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__allow_billable
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_task__allow_billable
 msgid "Billable"
 msgstr "請求可能"
 
@@ -230,22 +199,25 @@ msgstr "請求対象時間"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_project__billable_percentage
 msgid "Billable Percentage"
-msgstr "請求可能パーセンテージ"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__timesheet_invoice_type
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__timesheet_invoice_type
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 msgid "Billable Type"
 msgstr "請求可能タイプ"
 
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__billable_manual
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__billable_manual
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Billed Manually"
-msgstr "手動による請求"
+msgstr ""
 
 #. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Billed at a Fixed Price"
 msgstr "固定金額による請求"
@@ -259,13 +231,15 @@ msgstr "固定金額による請求"
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__billable_milestones
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__billable_milestones
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Billed on Milestones"
-msgstr "マイルストンによる請求"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__billable_time
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__billable_time
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Billed on Timesheets"
 msgstr "タイムシートによる請求"
@@ -273,13 +247,33 @@ msgstr "タイムシートによる請求"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
 msgid "Billing"
-msgstr "請求"
+msgstr "請求担当"
 
 #. module: sale_timesheet
-#: model:ir.model.fields,field_description:sale_timesheet.field_project_project__billing_type
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Billing Type"
-msgstr "請求タイプ"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:project.task,legend_blocked:sale_timesheet.agr_task_1
+#: model:project.task,legend_blocked:sale_timesheet.project_agr_task_1
+#: model:project.task,legend_blocked:sale_timesheet.project_agr_task_2
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_2
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_4
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_5
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_6
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_7
+#: model:project.task,legend_blocked:sale_timesheet.project_task_internal
+msgid "Blocked"
+msgstr "ブロック済"
+
+#. module: sale_timesheet
+#: model:project.task,legend_done:sale_timesheet.project_agr_task_3
+#: model:project.task,legend_done:sale_timesheet.project_agr_task_4
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_1
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_3
+msgid "Buzz or set as done"
+msgstr "ブザーまたは完了として設定"
 
 #. module: sale_timesheet
 #: model:ir.ui.menu,name:sale_timesheet.menu_timesheet_billing_analysis
@@ -287,9 +281,15 @@ msgid "By Billing Type"
 msgstr "請求タイプ別"
 
 #. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_create_invoice_view_form
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_create_sale_order_view_form
+msgid "Cancel"
+msgstr "取消"
+
+#. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice__sale_order_id
 msgid "Choose the Sales Order to invoice"
-msgstr "販売オーダを選択して請求"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__commercial_partner_id
@@ -299,7 +299,7 @@ msgstr "取引先"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__commercial_partner_id
 msgid "Commercial Partner"
-msgstr "商業取引先"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__company_id
@@ -315,7 +315,7 @@ msgstr "コンフィグ設定"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
 msgid "Configure your services"
-msgstr "サービス製品を設定する"
+msgstr "サービスプロダクトを設定する"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__cost
@@ -325,7 +325,7 @@ msgstr "原価"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__cost_currency_id
 msgid "Cost Currency"
-msgstr "コスト通貨"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.actions.act_window,name:sale_timesheet.project_project_action_multi_create_invoice
@@ -336,21 +336,22 @@ msgstr "請求書作成"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_create_invoice
 msgid "Create Invoice from project"
-msgstr "プロジェクトから請求書を作成"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_create_sale_order_line
 msgid "Create SO Line from project"
-msgstr "プロジェクトから販売オーダ明細を作成"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_create_sale_order
 msgid "Create SO from project"
-msgstr "プロジェクトから販売オーダを作成"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
+#. openerp-web
 #: code:addons/sale_timesheet/models/project.py:0
+#: code:addons/sale_timesheet/static/src/xml/sale_project_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_create_sale_order_view_form
 #, python-format
 msgid "Create Sales Order"
@@ -398,9 +399,10 @@ msgid "Customer"
 msgstr "顧客"
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.product_service_order_timesheet
 #: model:product.template,name:sale_timesheet.product_service_order_timesheet_product_template
 msgid "Customer Care (Prepaid Hours)"
-msgstr "顧客ケア(事前支払済時間)"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_kanban_inherit_sale_timesheet
@@ -410,28 +412,27 @@ msgstr "顧客評価"
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_sale_order__partner_id
 msgid "Customer of the sales order"
-msgstr "販売オーダの顧客"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
 msgid "Days Ordered,"
-msgstr "オーダ済日数"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
 msgid "Days Remaining)"
-msgstr "残日数)"
+msgstr ""
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
-msgid "Delivered"
-msgstr "配送済"
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_form
+msgid "Default Service"
+msgstr "デフォルトサービス"
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_create_invoice_view_form
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_create_sale_order_view_form
-msgid "Discard"
-msgstr "破棄"
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_project__display_create_order
+msgid "Display Create Order"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice__display_name
@@ -444,10 +445,14 @@ msgstr "表示名"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_task_inherit
 msgid "Draft Invoice"
-msgstr "請求書の下書き"
+msgstr "ドラフト請求書"
 
 #. module: sale_timesheet
-#: model:ir.model,name:sale_timesheet.model_hr_employee
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
+msgid "Effective"
+msgstr "有効"
+
+#. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order_line__employee_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__employee_id
 msgid "Employee"
@@ -456,12 +461,12 @@ msgstr "従業員"
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__project_project__pricing_type__employee_rate
 msgid "Employee rate"
-msgstr "従業員レート"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_sale_order_line__employee_id
 msgid "Employee that has timesheets on the project."
-msgstr "プロジェクトにタイムシートのある従業員"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_advance_payment_inv__date_end_invoice_timesheet
@@ -469,34 +474,58 @@ msgid "End Date"
 msgstr "終了日"
 
 #. module: sale_timesheet
-#: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__existing_employee_ids
-msgid "Existing Employee"
-msgstr "存在する従業員"
-
-#. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.product_template_view_search_sale_timesheet
 msgid "Fixed price services"
-msgstr "定額サービス"
+msgstr ""
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.product_service_deliver_manual
 #: model:product.template,name:sale_timesheet.product_service_deliver_manual_product_template
 msgid "Furniture Delivery (Manual)"
-msgstr "家具配送(手動)"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"Great quotation templates will significantly\n"
+"                                <strong>boost your success rate</strong>. The\n"
+"                                first section is usually about your company,\n"
+"                                your references, your methodology or\n"
+"                                guarantees, your team, SLA, terms and conditions, etc."
+msgstr ""
+"偉大な見積テンプレートは、\n"
+"                               <strong>成功率を大幅に向上させる</strong>でしょう。\n"
+"                                最初のセクションは通常、あなたの会社、参考資料、\n"
+"                                方法論や保証、チーム、SLA、利用規約などです。"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order_line__has_displayed_warning_upsell
 msgid "Has Displayed Warning Upsell"
-msgstr "アップセルの警告を表示"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__has_multi_sol
 msgid "Has Multi Sol"
-msgstr "複数の販売オーダ明細あり"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__display_cost
 msgid "Hourly Cost"
-msgstr "時間コスト"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:product.product,uom_name:sale_timesheet.product_service_deliver_timesheet_1
+#: model:product.product,uom_name:sale_timesheet.product_service_deliver_timesheet_2
+#: model:product.product,uom_name:sale_timesheet.product_service_order_timesheet
+#: model:product.product,uom_name:sale_timesheet.time_product
+#: model:product.template,uom_name:sale_timesheet.product_service_deliver_timesheet_1_product_template
+#: model:product.template,uom_name:sale_timesheet.product_service_deliver_timesheet_2_product_template
+#: model:product.template,uom_name:sale_timesheet.product_service_order_timesheet_product_template
+#: model:product.template,uom_name:sale_timesheet.time_product_product_template
+msgid "Hours"
+msgstr "時間"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice__id
@@ -507,17 +536,44 @@ msgid "ID"
 msgstr "ID"
 
 #. module: sale_timesheet
-#: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__info_invoice
-msgid "Info Invoice"
-msgstr "情報請求書"
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"If you edit a quotation from the 'Preview' of a quotation, you will\n"
+"                        update that quotation only. If you edit the quotation\n"
+"                        template (from the Configuration menu), all future quotations will\n"
+"                        use this modified template."
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
+#: model:project.task,legend_normal:sale_timesheet.agr_task_1
+#: model:project.task,legend_normal:sale_timesheet.project_agr_task_1
+#: model:project.task,legend_normal:sale_timesheet.project_agr_task_2
+#: model:project.task,legend_normal:sale_timesheet.project_agr_task_3
+#: model:project.task,legend_normal:sale_timesheet.project_agr_task_4
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_1
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_2
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_3
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_4
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_5
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_6
+#: model:project.task,legend_normal:sale_timesheet.project_dpc_task_7
+#: model:project.task,legend_normal:sale_timesheet.project_task_internal
+msgid "In Progress"
+msgstr "進行中"
+
+#. module: sale_timesheet
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__info_invoice
+msgid "Info Invoice"
+msgstr ""
+
+#. module: sale_timesheet
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #: code:addons/sale_timesheet/controllers/portal.py:0
-#: code:addons/sale_timesheet/models/account.py:0
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__timesheet_invoice_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__timesheet_invoice_id
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.report_timesheet_account_move
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 #, python-format
@@ -527,57 +583,52 @@ msgstr "請求書"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_res_config_settings__invoice_policy
 msgid "Invoice Policy"
-msgstr "請求ポリシー"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/product.py:0
 #, python-format
 msgid ""
 "Invoice based on timesheets (delivered quantity) on projects or tasks you'll"
 " create later on."
-msgstr "後で作成するプロジェクトやタスクのタイムシート(納品数量)に基づいて請求書を発行します。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/product.py:0
 #, python-format
 msgid ""
 "Invoice based on timesheets (delivered quantity), and create a project for "
 "the order with a task for each sales order line to track the time spent."
-msgstr "タイムシート(納品数量)に基づいて請求書を発行し、販売オーダ明細ごとにタスクのあるオーダのプロジェクトを作成し、費やした時間を追跡します。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/product.py:0
 #, python-format
 msgid ""
 "Invoice based on timesheets (delivered quantity), and create a task in an "
 "existing project to track the time spent."
-msgstr "タイムシート(納品数量)に基づいて請求書を発行し、既存のプロジェクトにタスクを作成して費やした時間を追跡します。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/product.py:0
 #, python-format
 msgid ""
 "Invoice based on timesheets (delivered quantity), and create an empty "
 "project for the order to track the time spent."
-msgstr "タイムシート(納品数量)に基づいて請求書を発行し、費やした時間を追跡するために、オーダに対して空のプロジェクトを作成します。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_account_analytic_line__timesheet_invoice_id
 #: model:ir.model.fields,help:sale_timesheet.field_timesheets_analysis_report__timesheet_invoice_id
 msgid "Invoice created from the timesheet"
-msgstr "タイムシートから作成された請求書"
+msgstr ""
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
-msgid "Invoiced"
-msgstr "請求済"
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_form_simplified_inherit
+msgid "Invoice your time and material to customers"
+msgstr "顧客にタイムアンドマテリアル方式で請求する"
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #, python-format
 msgid "Invoices"
@@ -591,22 +642,22 @@ msgstr "請求"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_advance_payment_inv__invoicing_timesheet_enabled
 msgid "Invoicing Timesheet Enabled"
-msgstr "タイムシート請求が有効化されました"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__is_cost_changed
 msgid "Is Cost Manually Changed"
-msgstr "原価が手動で変更されましたか？"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__is_project_map_empty
 msgid "Is Project map empty"
-msgstr "プロジェクトマップは空ですか？"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__is_so_line_edited
 msgid "Is Sales Order Item Manually Edited"
-msgstr "販売オーダアイテムが手動で編集されましたか？"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_account_move
@@ -616,17 +667,27 @@ msgstr "仕訳"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_account_move_line
 msgid "Journal Item"
-msgstr "仕訳項目"
+msgstr "仕訳明細"
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.product_service_deliver_timesheet_2
 #: model:product.template,name:sale_timesheet.product_service_deliver_timesheet_2_product_template
 msgid "Junior Architect (Invoice on Timesheets)"
 msgstr "ジュニア開発者（タイムシート請求）"
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.product_service_deliver_milestones
 #: model:product.template,name:sale_timesheet.product_service_deliver_milestones_product_template
 msgid "Kitchen Assembly (Milestones)"
-msgstr "キッチン組み立て（マイルストン）"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice____last_update
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order____last_update
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order_line____last_update
+#: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_invoice__write_uid
@@ -647,7 +708,7 @@ msgstr "最終更新日"
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__line_ids
 msgid "Lines"
-msgstr "行"
+msgstr "明細"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_product_product__service_type
@@ -667,17 +728,6 @@ msgid "Margin"
 msgstr "粗利益"
 
 #. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/project.py:0
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__other_costs
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__other_revenues
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__other_costs
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__other_revenues
-#, python-format
-msgid "Materials"
-msgstr "マテリアル"
-
-#. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order_line__qty_delivered_method
 msgid "Method to update delivered qty"
 msgstr "納品数量を更新する方法"
@@ -685,7 +735,15 @@ msgstr "納品数量を更新する方法"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.product_template_view_search_sale_timesheet
 msgid "Milestone services"
-msgstr "マイルストーンサービス"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:project.task,legend_blocked:sale_timesheet.project_agr_task_3
+#: model:project.task,legend_blocked:sale_timesheet.project_agr_task_4
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_1
+#: model:project.task,legend_blocked:sale_timesheet.project_dpc_task_3
+msgid "Need functional or technical help"
+msgstr "機能または技術的なヘルプが必要"
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
@@ -695,17 +753,22 @@ msgstr "請求外"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
 msgid "No Sales Order"
-msgstr "販売オーダなし"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
+msgid "No Sales Order Item"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.actions.act_window,help:sale_timesheet.action_timesheet_from_invoice
 msgid "No activities found"
-msgstr "活動が見つかりません"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.actions.act_window,help:sale_timesheet.timesheet_action_from_sales_order_item
 msgid "No activities found. Let's start a new one!"
-msgstr "活動が見つかりません。新しく始めましょう！"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.actions.act_window,help:sale_timesheet.timesheet_action_billing_report
@@ -719,40 +782,30 @@ msgid "Non Billable Tasks"
 msgstr "請求不可タスク"
 
 #. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 msgid "Non-Billable"
-msgstr "請求不可"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_line_form_inherit
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_line_tree_inherit
-msgid "Non-billable"
-msgstr "請求不可"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__non_billable_time
 msgid "Non-billable Hours"
-msgstr "請求不可時間"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
-msgid "Not Billed"
-msgstr "未請求"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_timesheets_analysis_report__timesheet_revenues
 msgid "Number of hours spent multiplied by the unit price per hour/day."
-msgstr "利用時間数に1時間/日あたりの単価を乗じたもの。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_timesheets_analysis_report__billable_time
 msgid "Number of hours/days linked to a SOL."
-msgstr "販売オーダ明細にリンクした時間/日数"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_timesheets_analysis_report__non_billable_time
 msgid "Number of hours/days not linked to a SOL."
-msgstr "販売オーダ明細にリンクした時間/日数"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_bank_statement_line__timesheet_count
@@ -771,10 +824,8 @@ msgid ""
 "yet invoiced (and validated, if applicable) will be invoiced without "
 "distinction."
 msgstr ""
-"この期間からまだ請求されていない(該当する場合は検証済の)タイムシートのみが請求されます。期間が指定されていない場合、まだ請求書が発行されていない(該当する場合は検証済の)全てのタイムシートが区別なく請求されます。"
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Operation not supported"
@@ -788,7 +839,40 @@ msgstr "オーダ参照"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
 msgid "Ordered,"
-msgstr "オーダ済、"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__other_costs
+#: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__other_costs
+msgid "Other Costs"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__other_revenues
+#: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__other_revenues
+msgid "Other Revenues"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid "Our Offer"
+msgstr "私たちのオファー"
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid "Our Quality"
+msgstr "私たちの品質"
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid "Our Service"
+msgstr "私たちのサービス"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_product_product__service_upsell_threshold
@@ -796,7 +880,14 @@ msgstr "オーダ済、"
 msgid ""
 "Percentage of time delivered compared to the prepaid amount that must be "
 "reached for the upselling opportunity activity to be triggered."
-msgstr "アップセリング案件の活動がトリガされるために到達しなければならない前払金額と比較した配信時間のパーセンテージ。"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid "Price"
+msgstr "価格"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_project__pricing_type
@@ -807,7 +898,7 @@ msgstr "価格設定"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_product_template
 msgid "Product"
-msgstr "製品"
+msgstr "プロダクト"
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_product_product
@@ -819,7 +910,17 @@ msgstr "プロダクトバリアント"
 msgid ""
 "Product of the sales order item. Must be a service invoiced based on "
 "timesheets on tasks."
-msgstr "販売オーダのプロダクト。タスクのタイムシートに基づいて請求されるサービスである必要があります。"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"Product quality is the foundation we\n"
+"                                stand on; we build it with a relentless\n"
+"                                focus on fabric, performance and craftsmanship."
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_project
@@ -835,7 +936,7 @@ msgstr "プロジェクト"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_sale_line_employee_map
 msgid "Project Sales line, employee mapping"
-msgstr "プロジェクト販売明細、従業員マッピング"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_product_product__project_template_id
@@ -846,29 +947,41 @@ msgstr "プロジェクトテンプレート"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_update
 msgid "Project Update"
-msgstr "プロジェクト更新"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_sale_order__project_id
 msgid "Project for which we are creating a sales order"
-msgstr "販売オーダを作成中のプロジェクト"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__project_project__pricing_type__fixed_rate
 msgid "Project rate"
-msgstr "プロジェクトレート"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_invoice__project_id
 msgid "Project to make billable"
-msgstr "請求可能にするプロジェクト"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #, python-format
 msgid "Quotation"
 msgstr "見積"
+
+#. module: sale_timesheet
+#: model:project.task,legend_done:sale_timesheet.agr_task_1
+#: model:project.task,legend_done:sale_timesheet.project_agr_task_1
+#: model:project.task,legend_done:sale_timesheet.project_agr_task_2
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_2
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_4
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_5
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_6
+#: model:project.task,legend_done:sale_timesheet.project_dpc_task_7
+#: model:project.task,legend_done:sale_timesheet.project_task_internal
+msgid "Ready"
+msgstr "準備完了"
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
@@ -879,27 +992,36 @@ msgstr "残り"
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_sharing_inherit_project_task_view_form
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_task_view_form_inherit_sale_timesheet
 msgid "Remaining Days on SO"
-msgstr "販売オーダ上の残日数"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_timesheet_table_inherit
+msgid "Remaining Days on SO:"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__remaining_hours_available
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order_line__remaining_hours_available
 msgid "Remaining Hours Available"
-msgstr "利用可能な残時間"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__remaining_hours_so
-#: model:ir.model.fields,field_description:sale_timesheet.field_report_project_task_user__remaining_hours_so
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order_line__remaining_hours
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_sharing_inherit_project_task_view_form
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_task_view_form_inherit_sale_timesheet
 msgid "Remaining Hours on SO"
-msgstr "販売注文の残存時間"
+msgstr "販売オーダの残存時間"
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_timesheet_table_inherit
+msgid "Remaining Hours on SO:"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
 msgid "Remaining)"
-msgstr "残っている)"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.actions.act_window,help:sale_timesheet.timesheet_action_billing_report
@@ -908,26 +1030,14 @@ msgid ""
 msgstr "請求タイプ別にタイムシートをレビューし、タイムシートが請求可能であることを確認してください。"
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_sale_page
-msgid "S0001"
-msgstr "S0001"
-
-#. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/account.py:0
-#, python-format
-msgid "Sale Order"
-msgstr "販売オーダ"
-
-#. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__so_analytic_account_id
 msgid "Sale Order Analytic Account"
-msgstr "販売オーダ分析アカウント"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_project__sale_line_employee_ids
 msgid "Sale line/Employee map"
-msgstr "販売明細/従業員マップ"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_sale_advance_payment_inv
@@ -935,12 +1045,10 @@ msgid "Sales Advance Payment Invoice"
 msgstr "受注前払請求書"
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #: model:ir.model,name:sale_timesheet.model_sale_order
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order__sale_order_id
-#: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__sale_order_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__sale_order_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__order_id
 #: model:project.project,name:sale_timesheet.so_template_project
@@ -951,24 +1059,18 @@ msgid "Sales Order"
 msgstr "販売オーダ"
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_analytic_line__so_line
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_sale_line_employee_map__sale_line_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__so_line
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_timesheet_table_inherit
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.report_timesheet_sale_order
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_view_search
 #, python-format
 msgid "Sales Order Item"
 msgstr "販売オーダ項目"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
-msgid "Sales Order Items"
-msgstr "販売オーダ明細"
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_sale_order_line
@@ -978,7 +1080,7 @@ msgstr "販売オーダ明細"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_kanban_inherit_sale_timesheet_so_button
 msgid "Sales Orders"
-msgstr "販売オーダ"
+msgstr "オーダ数量"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_project__sale_line_employee_ids
@@ -987,53 +1089,50 @@ msgid ""
 "If you would like to bill the same service at a different rate, you need to create two separate sales order items as each sales order item can only have a single unit price at a time.\n"
 "You can also define the hourly company cost of your employees for their timesheets on this project specifically. It will bypass the timesheet cost set on the employee."
 msgstr ""
-"該当する従業員のタイムシートでデフォルトで選択される販売オーダ項目。これは、プロジェクトとタスクで定義された販売オーダ項目をバイパスし、必要に応じて各タイムシートエントリで変更することができます。言い換えると、例えば、従業員の専門知識、スキル、経験などに基づいて、従業員の時間を請求するレートを定義します。\n"
-"同じサービスを異なるレートで請求したい場合、各販売オーダ項目は一度に単一の単価しか持つことができないため、2つの別々の販売オーダ項目を作成する必要があります。\n"
-"また、このプロジェクトでは、従業員のタイムシートの会社原価を時間単位で定義することができます。これは、従業員に設定されたタイムシート原価をバイパスします。"
-
-#. module: sale_timesheet
-#: model:ir.model.fields,help:sale_timesheet.field_account_analytic_line__so_line
-msgid ""
-"Sales order item to which the time spent will be added in order to be "
-"invoiced to your customer. Remove the sales order item for the timesheet "
-"entry to be non-billable."
-msgstr "顧客に請求するために、使用した時間を追加する販売オーダ項目。タイムシートエントリーを請求不可にするには、販売オーダ項目を削除して下さい。"
-
-#. module: sale_timesheet
-#: model:ir.model.fields,help:sale_timesheet.field_project_sale_line_employee_map__sale_order_id
-msgid "Sales order to which the project is linked."
-msgstr "プロジェクトがリンクされている販売オーダ"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_task__sale_order_id
 msgid "Sales order to which the task is linked."
-msgstr "タスクがリンクされている販売オーダ。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #, python-format
 msgid "Search in Invoice"
-msgstr "請求書内検索"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #, python-format
 msgid "Search in Sales Order"
-msgstr "販売オーダ内検索"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/controllers/portal.py:0
 #, python-format
 msgid "Search in Sales Order Item"
-msgstr "販売オーダ項目内を検索"
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields,help:sale_timesheet.field_product_product__project_id
+#: model:ir.model.fields,help:sale_timesheet.field_product_template__project_id
+msgid ""
+"Select a billable project on which tasks can be created. This setting must "
+"be set for each company."
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields,help:sale_timesheet.field_product_product__project_template_id
+#: model:ir.model.fields,help:sale_timesheet.field_product_template__project_template_id
+msgid ""
+"Select a billable project to be the skeleton of the new created project when"
+" selling the current product. Its stages and tasks will be duplicated."
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_sale_order__project_id
 msgid "Select a non billable project on which tasks can be created."
-msgstr "タスクを作成できる請求不可プロジェクトを選択します。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
@@ -1041,12 +1140,14 @@ msgid "Sell services and invoice time spent"
 msgstr "サービスを販売し、消費時間で請求書発行"
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.product_service_deliver_timesheet_1
 #: model:product.template,name:sale_timesheet.product_service_deliver_timesheet_1_product_template
 msgid "Senior Architect (Invoice on Timesheets)"
 msgstr "シニア開発者（タイムシート請求）"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order_line__product_id
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid "Service"
 msgstr "サービス"
 
@@ -1054,18 +1155,19 @@ msgstr "サービス"
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__service_revenues
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__service_revenues
 msgid "Service Revenues"
-msgstr "サービス収益"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_product_product__service_upsell_threshold_ratio
 #: model:ir.model.fields,field_description:sale_timesheet.field_product_template__service_upsell_threshold_ratio
 msgid "Service Upsell Threshold Ratio"
-msgstr "サービスアップセルのしきい値比率"
+msgstr ""
 
 #. module: sale_timesheet
+#: model:product.product,name:sale_timesheet.time_product
 #: model:product.template,name:sale_timesheet.time_product_product_template
-msgid "Service on Timesheets"
-msgstr "タイムシート上のサービス"
+msgid "Service on Timesheet"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_project__timesheet_product_id
@@ -1075,7 +1177,6 @@ msgid ""
 "task. It can be modified on each task individually by selecting a specific "
 "sales order item."
 msgstr ""
-"タスクにかかった時間を請求する際にデフォルトで使用されるサービス。特定の販売オーダ項目を選択することで、各タスクを個別に変更することができます。"
 
 #. module: sale_timesheet
 #: model:ir.actions.act_window,name:sale_timesheet.product_template_action_default_services
@@ -1084,14 +1185,9 @@ msgid "Services"
 msgstr "サービス"
 
 #. module: sale_timesheet
-#: model:ir.model.fields,field_description:sale_timesheet.field_sale_order__show_hours_recorded_button
-msgid "Show Hours Recorded Button"
-msgstr "記録時間ボタンを表示"
-
-#. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid "Sold"
-msgstr "販売数"
+msgstr "販売額"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_advance_payment_inv__date_start_invoice_timesheet
@@ -1106,12 +1202,12 @@ msgstr "タスク"
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_project_task_recurrence
 msgid "Task Recurrence"
-msgstr "タスクの繰り返し"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__project_project__pricing_type__task_rate
 msgid "Task rate"
-msgstr "タスクレート"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:project.project,label_tasks:sale_timesheet.so_template_project
@@ -1119,12 +1215,6 @@ msgid "Tasks"
 msgstr "タスク"
 
 #. module: sale_timesheet
-#: model:ir.model,name:sale_timesheet.model_report_project_task_user
-msgid "Tasks Analysis"
-msgstr "タスク分析"
-
-#. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/product.py:0
 #: code:addons/sale_timesheet/models/product.py:0
 #: code:addons/sale_timesheet/models/product.py:0
@@ -1133,53 +1223,46 @@ msgstr "タスク分析"
 msgid ""
 "The %s product is required by the Timesheets app and cannot be archived nor "
 "deleted."
-msgstr "プロダクト %sはタイムシートアプリで必須であり、アーカイブや削除はできません。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid ""
 "The Sales Order cannot be created because you did not enter some employees that entered timesheets on this project. Please list all the relevant employees before creating the Sales Order.\n"
 "Missing employee(s): %s"
 msgstr ""
-"このプロジェクトでタイムシートを入力した従業員を入力していないため、販売オーダを作成できません。販売オーダを作成する前に、該当する従業員を全てリストアップして下さい。\n"
-"不明な従業員: %s"
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid "The cost of the project is now at"
-msgstr "プロジェクト原価は今、以下:"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "The project has already a sale order."
-msgstr "プロジェクトにはすでに販売オーダがあります。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "The project is already linked to a sales order item."
-msgstr "プロジェクトは既に販売オーダ項目にリンクしています。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid ""
 "The sales order cannot be created because some timesheets of this project "
 "are already linked to another sales order."
-msgstr "プロジェクトのいくつかのタイムシートが既に別の販売オーダにリンクされているため、販売オーダを作成できません。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_invoice.py:0
 #, python-format
 msgid "The selected Sales Order should contain something to invoice."
-msgstr "選択された販売オーダには請求書を発行するものが含まれていなければなりません。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_project__pricing_type
@@ -1193,30 +1276,46 @@ msgid ""
 "senior consultants would deliver the same service (= consultancy), but at a "
 "different rate because of their level of seniority."
 msgstr ""
-"タスクレートは、異なる顧客に異なるレートで異なるサービスを請求したい場合に最適です。固定レートは、サービスを提供した従業員に関係なく、1時間または1日あたりの固定レートで請求する場合に最適です。従業員レートは、従業員が同じサービスを異なる料金で提供する場合に適しています。例えば、ジュニアコンサルタントとシニアコンサルタントは、同じサービス(＝コンサルタント業務)を提供しますが、年功レベルの違いにより、異なる料金で提供します。"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_sale_line_employee_map__cost
 msgid ""
 "This cost overrides the employee's default employee hourly wage in "
 "employee's HR Settings"
-msgstr "この原価は、従業員の人事設定にある従業員のデフォルト時給を上書きします。"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"This is a <strong>sample quotation template</strong>. You should\n"
+"                                customize it to fit your own needs from the <i>Sales</i>\n"
+"                                application, using the menu: Configuration /\n"
+"                                Quotation Templates."
+msgstr ""
+
+#. module: sale_timesheet
+#: model:ir.model.fields,help:sale_timesheet.field_account_bank_statement_line__timesheet_encode_uom_id
+#: model:ir.model.fields,help:sale_timesheet.field_account_move__timesheet_encode_uom_id
+#: model:ir.model.fields,help:sale_timesheet.field_account_payment__timesheet_encode_uom_id
+#: model:ir.model.fields,help:sale_timesheet.field_sale_order__timesheet_encode_uom_id
+msgid ""
+"This will set the unit of measure used to encode timesheet. This will simply provide tools\n"
+"        and widgets to help the encoding. All reporting will still be expressed in hours (default value)."
+msgstr ""
+"ここでタイムシート入力の単位を指定します。入力を補佐するツールやウィジェットでこの単位が使われます。ここでの指定にかかわらず、レポートでの表示は時間(デフォルト値)単位となります。"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_product_product__service_upsell_threshold
 #: model:ir.model.fields,field_description:sale_timesheet.field_product_template__service_upsell_threshold
 msgid "Threshold"
-msgstr "しきい値"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
-msgid "Time Billing"
-msgstr "時間請求"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.product_template_view_search_sale_timesheet
 msgid "Time-based services"
-msgstr "時間制のサービス"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.actions.act_window,name:sale_timesheet.timesheet_action_from_plan
@@ -1245,19 +1344,14 @@ msgstr "タイムシート入力単位"
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_project__timesheet_product_id
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_task__timesheet_product_id
 msgid "Timesheet Product"
-msgstr "タイムシートプロダクト"
-
-#. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.hr_timesheet_report_search_sale_timesheet
-msgid "Timesheet Report"
-msgstr "タイムシートレポート"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_timesheets_analysis_report__timesheet_revenues
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__account_analytic_line__timesheet_invoice_type__timesheet_revenues
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__timesheets_analysis_report__timesheet_invoice_type__timesheet_revenues
 msgid "Timesheet Revenues"
-msgstr "タイムシート収益"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_bank_statement_line__timesheet_total_duration
@@ -1265,7 +1359,7 @@ msgstr "タイムシート収益"
 #: model:ir.model.fields,field_description:sale_timesheet.field_account_payment__timesheet_total_duration
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order__timesheet_total_duration
 msgid "Timesheet Total Duration"
-msgstr "タイムシートの合計時間"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_sale_order__timesheet_count
@@ -1273,7 +1367,11 @@ msgid "Timesheet activities"
 msgstr "タイムシートアクティビティ"
 
 #. module: sale_timesheet
-#. odoo-python
+#: model:ir.model.fields,field_description:sale_timesheet.field_sale_order__timesheet_ids
+msgid "Timesheet activities associated to this sale"
+msgstr "この販売に関連付けられたタイムシートアクティビティ"
+
+#. module: sale_timesheet
 #: code:addons/sale_timesheet/models/account_move.py:0
 #: model:ir.actions.act_window,name:sale_timesheet.action_timesheet_from_invoice
 #: model:ir.actions.act_window,name:sale_timesheet.timesheet_action_from_sales_order
@@ -1292,49 +1390,49 @@ msgid "Timesheets"
 msgstr "タイムシート"
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets (Billed Manually)"
-msgstr "タイムシート（手動による請求）"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets (Billed on Milestones)"
-msgstr "タイムシート(マイルストーンで請求済)"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets (Billed on Timesheets)"
-msgstr "タイムシート (タイムシートで請求)"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets (Fixed Price)"
-msgstr "タイムシート (定額)"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets (Non Billable)"
-msgstr "タイムシート (請求不可)"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheets_analysis_report_pivot_invoice_type
 msgid "Timesheets Analysis"
-msgstr "タイムシート分析"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model,name:sale_timesheet.model_timesheets_analysis_report
 msgid "Timesheets Analysis Report"
-msgstr "タイムシート分析レポート"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.sale_advance_payment_inv_timesheet_view_form
+msgid "Timesheets Period"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.actions.act_window,name:sale_timesheet.timesheet_action_billing_report
@@ -1344,10 +1442,9 @@ msgstr "請求タイプ別タイムシート"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.timesheet_sale_page
 msgid "Timesheets for the"
-msgstr "以下用のタイムシート"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Timesheets of %s"
@@ -1356,19 +1453,12 @@ msgstr "%s のタイムシート"
 #. module: sale_timesheet
 #: model:ir.model.fields.selection,name:sale_timesheet.selection__product_template__service_type__timesheet
 msgid "Timesheets on project (one fare per SO/Project)"
-msgstr "プロジェクトのタイムシート(販売オーダ/プロジェクトごとに1価格)"
-
-#. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/project.py:0
-#, python-format
-msgid "Timesheets revenues"
-msgstr "タイムシート収益"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_timesheets_analysis_report__margin
 msgid "Timesheets revenues minus the costs"
-msgstr "タイムシート収益から原価を引く"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.res_config_settings_view_form
@@ -1378,19 +1468,19 @@ msgstr "時間を請求するときに考慮されるタイムシート"
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_res_config_settings__invoice_policy
 msgid "Timesheets taken when invoicing time spent"
-msgstr "使用時間を請求する際に採用されたタイムシート"
+msgstr ""
 
 #. module: sale_timesheet
-#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_project_view_form
-msgid "Timesheets without a sales order item are"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
+msgid "Total"
+msgstr "合計"
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_invoice__amount_to_invoice
 msgid ""
 "Total amount to invoice on the sales order, including all items (services, "
 "storables, expenses, ...)"
-msgstr "全ての項目(サービス、保管可能品、経費、...)を含む、販売オーダで請求する合計金額"
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_account_bank_statement_line__timesheet_total_duration
@@ -1400,7 +1490,7 @@ msgstr "全ての項目(サービス、保管可能品、経費、...)を含む�
 msgid ""
 "Total recorded duration, expressed in the encoding UoM, and rounded to the "
 "unit"
-msgstr "記録された総持続時間をエンコーディング単位で表し、単位に丸めます。"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_my_timesheets_inherit
@@ -1430,20 +1520,27 @@ msgstr "単価"
 #. module: sale_timesheet
 #: model:ir.model.fields,help:sale_timesheet.field_project_create_sale_order_line__price_unit
 msgid "Unit price of the sales order item."
-msgstr "販売オーダ項目の単価"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
+#: model:product.product,uom_name:sale_timesheet.product_service_deliver_manual
+#: model:product.product,uom_name:sale_timesheet.product_service_deliver_milestones
+#: model:product.template,uom_name:sale_timesheet.product_service_deliver_manual_product_template
+#: model:product.template,uom_name:sale_timesheet.product_service_deliver_milestones_product_template
+msgid "Units"
+msgstr "個"
+
+#. module: sale_timesheet
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid "Value does not exist in the pricing type"
-msgstr "価格設定タイプに値が存在しません"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.portal_invoice_page_inherit
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.sale_order_portal_content_inherit
 msgid "View Timesheets"
-msgstr "タイムシートを表示"
+msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.view_product_timesheet_form
@@ -1453,7 +1550,17 @@ msgstr "作業量が超過した場合、販売担当者に追加請求するよ
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_project__warning_employee_rate
 msgid "Warning Employee Rate"
-msgstr "警告従業員レート"
+msgstr ""
+
+#. module: sale_timesheet
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"We always ensure that our products are\n"
+"                                set at a fair price so that you will be\n"
+"                                happy to buy them."
+msgstr ""
 
 #. module: sale_timesheet
 #: model:ir.model.fields,field_description:sale_timesheet.field_project_create_sale_order_line__wizard_id
@@ -1461,66 +1568,71 @@ msgid "Wizard"
 msgstr "ウィザード"
 
 #. module: sale_timesheet
-#. odoo-python
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_1
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_2
+#: model_terms:sale.order,website_description:sale_timesheet.sale_order_3
+msgid ""
+"You can <strong>set a description per product</strong>. Odoo will\n"
+"                        automatically create a quotation using the descriptions\n"
+"                        of all products in the proposal. The table of content\n"
+"                        on the left is generated automatically using the styles you\n"
+"                        used in your description (heading 1, heading 2, ...)"
+msgstr ""
+"<strong>商品ごとの説明を設定</strong>できます。Odooは、\n"
+"                        プロポーザル内のすべての製品の説明を使用して自動的に\n"
+"                        見積を作成します。 左側のコンテンツの表は、説明で\n"
+"                        使用したスタイルを使用して自動的に生成されます\n"
+"                        (見出し1、見出し2、...)"
+
+#. module: sale_timesheet
 #: code:addons/sale_timesheet/wizard/project_create_invoice.py:0
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "You can only apply this action from a project."
-msgstr "プロジェクトからこのアクションを適用することしかできません。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid ""
 "You cannot link a billable project to a sales order item that comes from an "
 "expense or a vendor bill."
-msgstr "請求可能なプロジェクトを、経費や仕入先請求に由来する販売オーダ項目にリンクすることはできません。"
+msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/models/project.py:0
 #, python-format
 msgid ""
 "You cannot link a billable project to a sales order item that is not a "
 "service."
-msgstr "請求可能なプロジェクトを、サービスではない販売オーダ項目にリンクすることはできません。"
-
-#. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/account.py:0
-#, python-format
-msgid "You cannot modify timesheets that are already invoiced."
-msgstr "すでに請求済のタイムシートを修正することはできません。"
-
-#. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/account.py:0
-#, python-format
-msgid "You cannot remove a timesheet that has already been invoiced."
-msgstr "既に請求済のタイムシートを削除することはできません。"
-
-#. module: sale_timesheet
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__project_project__billing_type__manually
-msgid "billed manually"
 msgstr ""
 
 #. module: sale_timesheet
-#. odoo-python
+#: code:addons/sale_timesheet/models/account.py:0
+#, python-format
+msgid "You cannot modify timesheets that are already invoiced."
+msgstr ""
+
+#. module: sale_timesheet
+#: code:addons/sale_timesheet/models/account.py:0
+#, python-format
+msgid "You cannot remove a timesheet that has already been invoiced."
+msgstr ""
+
+#. module: sale_timesheet
+#: code:addons/sale_timesheet/models/sale_order.py:0
+#, python-format
+msgid "day"
+msgstr "日"
+
+#. module: sale_timesheet
+#: code:addons/sale_timesheet/models/sale_order.py:0
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "days"
 msgstr "日"
 
 #. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/sale_order.py:0
-#, python-format
-msgid "days remaining"
-msgstr "残日数"
-
-#. module: sale_timesheet
-#. odoo-python
 #: code:addons/sale_timesheet/wizard/project_create_sale_order.py:0
 #, python-format
 msgid "hours"
@@ -1529,21 +1641,9 @@ msgstr "時間"
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.project_update_default_description
 msgid "margin ("
-msgstr "マージン("
-
-#. module: sale_timesheet
-#: model:ir.model.fields.selection,name:sale_timesheet.selection__project_project__billing_type__not_billable
-msgid "not billable"
 msgstr ""
 
 #. module: sale_timesheet
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.view_product_timesheet_form
 msgid "of hours sold."
-msgstr "(販売済時間のうち)"
-
-#. module: sale_timesheet
-#. odoo-python
-#: code:addons/sale_timesheet/models/sale_order.py:0
-#, python-format
-msgid "remaining"
-msgstr "残"
+msgstr ""

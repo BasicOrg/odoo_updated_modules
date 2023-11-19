@@ -2,31 +2,20 @@
 <odoo>
 
     <template id="portal_my_home_productions" name="Productions" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-            <t t-set="portal_vendor_category_enable" t-value="True"/>
-        </xpath>
-        <div id="portal_vendor_category" position="inside">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/mrp_subcontracting/static/src/img/manufacturing.svg'"/>
-                <t t-set="title">Manufacturing Orders</t>
-                <t t-set="text">Follow manufacturing orders you have to fulfill</t>
+                <t t-set="title">Productions</t>
                 <t t-set="url" t-value="'/my/productions'"/>
                 <t t-set="placeholder_count" t-value="'production_count'"/>
             </t>
-        </div>
+        </xpath>
     </template>
 
     <template id="portal_my_home_menu_production" name="Portal layout : production menu entries" inherit_id="portal.portal_breadcrumbs" priority="25">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <t t-if="title">
-                <li t-attf-class="breadcrumb-item #{'active' if breadcrumbs_url else ''}">
-                    <a t-if="breadcrumbs_url" t-attf-href="/my/productions{{ keep_query() }}">Productions</a>
-                    <t t-else="" t-esc="title"></t>
-                </li>
-                <li t-attf-class="breadcrumb-item">
-                    <a t-if="breadcrumbs_url"><t t-esc="title"/></a>
-                </li>
-            </t>
+            <li t-if="page_name == 'production' or production" t-attf-class="breadcrumb-item #{'active' if not pickings else ''}">
+                <t>Productions</t>
+            </li>
         </xpath>
     </template>
 
@@ -39,7 +28,7 @@
             </t>
 
             <t t-if="not pickings">
-                <p class="alert alert-warning">There are currently no productions for your account.</p>
+                <p>There are currently no productions for your account.</p>
             </t>
 
             <t t-if="pickings" t-call="portal.portal_table">
@@ -67,27 +56,13 @@
 
     <template id="subcontracting_portal" name="Subcontracting View in Portal">
         <t t-call="portal.frontend_layout">
-            <div class="o_portal container mt-3">
-                <div class="row align-items-center bg-white g-0 border rounded">
-                    <div class="col-10">
-                        <t t-call="mrp_subcontracting.portal_my_home_menu_production">
-                            <t t-set="title" t-value="picking.name"/>
-                            <t t-set="breadcrumbs_url">/my/productions</t>
-                        </t>
-                    </div>
-                </div>
-            </div>
-            <div class="o_portal container mt-3 o_subcontracting_portal">
-                <div class="row align-items-center bg-white g-0 border rounded o_subcontracting_portal">
-                    <t t-set="no_footer" t-value="true"/>
-                    <t t-call="mrp_subcontracting.subcontracting"/>
-                </div>
-            </div>
+            <t t-set="no_footer" t-value="true"/>
+            <t t-call="mrp_subcontracting.subcontracting"/>
         </t>
     </template>
 
     <template id="subcontracting" name="Subcontracting Portal View">
-        <iframe width="100%" height="100%" frameborder="0" t-attf-src="/my/productions/{{ picking.id }}/subcontracting_portal"/>
+        <iframe width="100%" height="100%" frameborder="0" t-attf-src="/my/productions/{{ picking_id }}/subcontracting_portal"/>
     </template>
 
     <template id="subcontracting_portal_embed" name="Subcontracting Portal">
@@ -97,7 +72,10 @@
                     odoo.__session_info__ = <t t-out="json.dumps(session_info)"/>;
                 </script>
                 <base target="_parent"/>
-                <t t-call-assets="mrp_subcontracting.webclient"/>
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_backend" t-js="false"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="mrp_subcontracting.webclient" t-css="false"/>
                 <t t-call="web.conditional_assets_tests"/>
             </t>
             <t t-set="head" t-value="head_subcontracting_portal + (head or '')"/>

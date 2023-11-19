@@ -30,7 +30,7 @@ class SocialPostFacebook(models.Model):
 
         formatted_images = []
         for image in self.image_ids:
-            facebook_photo_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, '%s/photos' % facebook_account_id)
+            facebook_photo_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, '/v10.0/%s/photos' % facebook_account_id)
 
             post_result = requests.request('POST', facebook_photo_endpoint_url,
                 params={

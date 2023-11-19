@@ -9,7 +9,7 @@ class IVAReportCustomHandler(models.AbstractModel):
     _inherit = 'l10n_co.report.handler'
     _description = 'IVA Report Custom Handler'
 
-    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
+    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals):
         domain = self._get_domain(report, options)
         query_results = self._get_query_results(report, options, domain)
         return super()._get_partner_values(report, options, query_results, '_report_expand_unfoldable_line_iva')

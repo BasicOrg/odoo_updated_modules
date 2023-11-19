@@ -3128,7 +3128,7 @@
   	},
 
 
-  	finish: async function finish() {
+  	finish: function finish() {
   		config.current = this;
 
   		// Release the test callback to ensure that anything referenced has been
@@ -3148,13 +3148,7 @@
   			this.pushFailure("Expected at least one assertion, but none were run - call " + "expect(0) to accept zero assertions.", this.stack);
   		}
 
-  		// Odoo customization
-  		// wait for the task queue to be fully consummed, s.t. if there has been rejected promises
-  		// during the test, the unhandledrejection handlers have been called before the cleanups
-  		// have been executed, for the errors to be properly preventDefaulted if necessary (see
-  		// qunit.js, Error management section).
-  		await new Promise((r) => setTimeout(r, 0));
-  		emit("OdooAfterTestHook", this);
+        emit("OdooAfterTestHook", this); // Odoo customization
 
   		var i,
   		    module = this.module,
@@ -4909,11 +4903,9 @@
   		var i,
   		    checked,
   		    html = "";
-		const names = new Set();
+
   		for (i = 0; i < config.modules.length; i++) {
-			const name = config.modules[i].name;
-  			if (name !== "" && !names.has(name)) {
-				names.add(name);
+  			if (config.modules[i].name !== "") {
   				checked = config.moduleId.indexOf(config.modules[i].moduleId) > -1;
   				html += "<li><label class='clickable" + (checked ? " checked" : "") + "'><input type='checkbox' " + "value='" + config.modules[i].moduleId + "'" + (checked ? " checked='checked'" : "") + " />" + escapeText(config.modules[i].name) + "</label></li>";
   			}

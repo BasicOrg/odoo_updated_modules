@@ -9,6 +9,7 @@ from odoo import api, fields, models
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    # YTI TODO master: Add a warning in the payroll Dashboard for "Employees without a defined tax classification"
     l10n_lu_tax_classification = fields.Selection(
         [('1', '1'),
          ('1a', '1a'),

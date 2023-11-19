@@ -7,6 +7,8 @@ from odoo import fields, models
 class DepartureReason(models.Model):
     _inherit = "hr.departure.reason"
 
+    reason_code = fields.Integer()
+
     def _get_default_departure_reasons(self):
         return {
             **super()._get_default_departure_reasons(),

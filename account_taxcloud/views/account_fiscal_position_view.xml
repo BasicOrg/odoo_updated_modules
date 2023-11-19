@@ -9,16 +9,16 @@
             <xpath expr="//sheet" position="before">
                 <field name="is_taxcloud_configured" invisible="1"/>
                 <div class="alert alert-info text-center" role="alert"
-                    invisible="is_taxcloud_configured or not is_taxcloud">
+                    attrs="{'invisible': ['|', ('is_taxcloud_configured', '=', True), ('is_taxcloud', '=', False)]}">
                     Please enter your Taxcloud credentials to compute tax rates automatically.
                     <a class="alert-link" href="/web#action=account.action_account_config" role="button">Go to Settings.</a>
-                    <div invisible="auto_apply">
+                    <div attrs="{'invisible': [('auto_apply', '=', True)]}">
                         Enable <b>Detect Automatically</b> to automatically use TaxCloud when selling to American customers.
                     </div>
                 </div>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <field name="is_taxcloud" invisible="'US' not in fiscal_country_codes"/>
+                <field name="is_taxcloud"/>
             </xpath>
         </field>
     </record>

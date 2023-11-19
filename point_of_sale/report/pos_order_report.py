@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models, tools
+from odoo import api, fields, models, tools
 
 
 class PosOrderReport(models.Model):
@@ -9,7 +9,6 @@ class PosOrderReport(models.Model):
     _description = "Point of Sale Orders Report"
     _auto = False
     _order = 'date desc'
-    _rec_name = 'order_id'
 
     date = fields.Datetime(string='Order Date', readonly=True)
     order_id = fields.Many2one('pos.order', string='Order', readonly=True)
@@ -19,7 +18,7 @@ class PosOrderReport(models.Model):
     state = fields.Selection(
         [('draft', 'New'), ('paid', 'Paid'), ('done', 'Posted'),
          ('invoiced', 'Invoiced'), ('cancel', 'Cancelled')],
-        string='Status', readonly=True)
+        string='Status')
     user_id = fields.Many2one('res.users', string='User', readonly=True)
     price_total = fields.Float(string='Total Price', readonly=True)
     price_sub_total = fields.Float(string='Subtotal w/o discount', readonly=True)
@@ -28,11 +27,12 @@ class PosOrderReport(models.Model):
     company_id = fields.Many2one('res.company', string='Company', readonly=True)
     nbr_lines = fields.Integer(string='Sale Line Count', readonly=True)
     product_qty = fields.Integer(string='Product Quantity', readonly=True)
-    journal_id = fields.Many2one('account.journal', string='Journal', readonly=True)
-    delay_validation = fields.Integer(string='Delay Validation', readonly=True)
+    journal_id = fields.Many2one('account.journal', string='Journal')
+    delay_validation = fields.Integer(string='Delay Validation')
     product_categ_id = fields.Many2one('product.category', string='Product Category', readonly=True)
     invoiced = fields.Boolean(readonly=True)
     config_id = fields.Many2one('pos.config', string='Point of Sale', readonly=True)
+    pos_categ_id = fields.Many2one('pos.category', string='PoS Category', readonly=True)
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', readonly=True)
     session_id = fields.Many2one('pos.session', string='Session', readonly=True)
     margin = fields.Float(string='Margin', readonly=True)
@@ -62,10 +62,11 @@ class PosOrderReport(models.Model):
                 pt.categ_id AS product_categ_id,
                 p.product_tmpl_id,
                 ps.config_id,
+                pt.pos_categ_id,
                 s.pricelist_id,
                 s.session_id,
                 s.account_move IS NOT NULL AS invoiced,
-                SUM(l.price_subtotal - COALESCE(l.total_cost,0) / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS margin
+                SUM(l.price_subtotal - l.total_cost / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS margin
         """
 
     def _from(self):
@@ -87,7 +88,7 @@ class PosOrderReport(models.Model):
                 s.user_id, s.company_id, s.sale_journal,
                 s.pricelist_id, s.account_move, s.create_date, s.session_id,
                 l.product_id,
-                pt.categ_id,
+                pt.categ_id, pt.pos_categ_id,
                 p.product_tmpl_id,
                 ps.config_id
         """

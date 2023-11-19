@@ -1,79 +1,67 @@
-/** @odoo-module */
+odoo.define('point_of_sale.tour.ProductConfigurator', function (require) {
+    'use strict';
 
-import * as ProductScreen from "@point_of_sale/../tests/tours/helpers/ProductScreenTourMethods";
-import * as Chrome from "@point_of_sale/../tests/tours/helpers/ChromeTourMethods";
-import * as ProductConfigurator from "@point_of_sale/../tests/tours/helpers/ProductConfiguratorTourMethods";
-import { registry } from "@web/core/registry";
+    const { ProductScreen } = require('point_of_sale.tour.ProductScreenTourMethods');
+    const { ProductConfigurator } = require('point_of_sale.tour.ProductConfiguratorTourMethods');
+    const { getSteps, startSteps } = require('point_of_sale.tour.utils');
+    var Tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add("ProductConfiguratorTour", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            ProductScreen.confirmOpeningPopup(),
-            // Go by default to home category
-            ProductScreen.clickHomeCategory(),
+    // signal to start generating steps
+    // when finished, steps can be taken from getSteps
+    startSteps();
 
-            // Click on Configurable Chair product
-            ProductScreen.clickDisplayedProduct("Configurable Chair"),
-            ProductConfigurator.isShown(),
+    ProductScreen.do.confirmOpeningPopup();
+    // Go by default to home category
+    ProductScreen.do.clickHomeCategory();
 
-            // Cancel configuration, not product should be in order
-            ProductConfigurator.cancelAttributes(),
-            ProductScreen.orderIsEmpty(),
+    // Click on Configurable Chair product
+    ProductScreen.do.clickDisplayedProduct('Configurable Chair');
+    ProductConfigurator.check.isShown();
 
-            // Click on Configurable Chair product
-            ProductScreen.clickDisplayedProduct("Configurable Chair"),
-            ProductConfigurator.isShown(),
+    // Cancel configuration, not product should be in order
+    ProductConfigurator.do.cancelAttributes();
+    ProductScreen.check.orderIsEmpty();
 
-            // Pick Color
-            ProductConfigurator.pickColor("Red"),
+    // Click on Configurable Chair product
+    ProductScreen.do.clickDisplayedProduct('Configurable Chair');
+    ProductConfigurator.check.isShown();
 
-            // Pick Radio
-            ProductConfigurator.pickSelect("Metal"),
+    // Pick Color
+    ProductConfigurator.do.pickColor('Red');
 
-            // Pick Select
-            ProductConfigurator.pickRadio("Other"),
+    // Pick Radio
+    ProductConfigurator.do.pickSelect('Metal');
 
-            // Fill in custom attribute
-            ProductConfigurator.fillCustomAttribute("Custom Fabric"),
+    // Pick Select
+    ProductConfigurator.do.pickRadio('Other');
 
-            // Confirm configuration
-            ProductConfigurator.confirmAttributes(),
+    // Fill in custom attribute
+    ProductConfigurator.do.fillCustomAttribute('Custom Fabric');
 
-            // Check that the product has been added to the order with correct attributes and price
-            ProductScreen.selectedOrderlineHas(
-                "Configurable Chair (Red, Metal, Other: Custom Fabric)",
-                "1.0",
-                "11.0"
-            ),
+    // Confirm configuration
+    ProductConfigurator.do.confirmAttributes();
 
-            // Orderlines with the same attributes should be merged
-            ProductScreen.clickHomeCategory(),
-            ProductScreen.clickDisplayedProduct("Configurable Chair"),
-            ProductConfigurator.pickColor("Red"),
-            ProductConfigurator.pickSelect("Metal"),
-            ProductConfigurator.pickRadio("Other"),
-            ProductConfigurator.fillCustomAttribute("Custom Fabric"),
-            ProductConfigurator.confirmAttributes(),
-            ProductScreen.selectedOrderlineHas(
-                "Configurable Chair (Red, Metal, Other: Custom Fabric)",
-                "2.0",
-                "22.0"
-            ),
+    // Check that the product has been added to the order with correct attributes and price
+    ProductScreen.check.selectedOrderlineHas('Configurable Chair (Red, Metal, Other: Custom Fabric)', '1.0', '11.0');
 
-            // Orderlines with different attributes shouldn't be merged
-            ProductScreen.clickHomeCategory(),
-            ProductScreen.clickDisplayedProduct("Configurable Chair"),
-            ProductConfigurator.pickColor("Blue"),
-            ProductConfigurator.pickSelect("Metal"),
-            ProductConfigurator.pickRadio("Leather"),
-            ProductConfigurator.confirmAttributes(),
-            ProductScreen.selectedOrderlineHas(
-                "Configurable Chair (Blue, Metal, Leather)",
-                "1.0",
-                "10.0"
-            ),
-            Chrome.endTour(),
-        ].flat(),
+    // Orderlines with the same attributes should be merged
+    ProductScreen.do.clickHomeCategory();
+    ProductScreen.do.clickDisplayedProduct('Configurable Chair');
+    ProductConfigurator.do.pickColor('Red');
+    ProductConfigurator.do.pickSelect('Metal');
+    ProductConfigurator.do.pickRadio('Other');
+    ProductConfigurator.do.fillCustomAttribute('Custom Fabric');
+    ProductConfigurator.do.confirmAttributes();
+    ProductScreen.check.selectedOrderlineHas('Configurable Chair (Red, Metal, Other: Custom Fabric)', '2.0', '22.0');
+
+    // Orderlines with different attributes shouldn't be merged
+    ProductScreen.do.clickHomeCategory();
+    ProductScreen.do.clickDisplayedProduct('Configurable Chair');
+    ProductConfigurator.do.pickColor('Blue');
+    ProductConfigurator.do.pickSelect('Metal');
+    ProductConfigurator.do.pickRadio('Leather');
+    ProductConfigurator.do.confirmAttributes();
+    ProductScreen.check.selectedOrderlineHas('Configurable Chair (Blue, Metal, Leather)', '1.0', '10.0');
+
+    Tour.register('ProductConfiguratorTour', { test: true, url: '/pos/ui' }, getSteps());
 });

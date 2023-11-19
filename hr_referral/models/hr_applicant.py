@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import json
-from markupsafe import Markup, escape
 from werkzeug.urls import url_encode
 
 from odoo import api, fields, models, _
@@ -25,34 +24,6 @@ class Applicant(models.Model):
     max_points = fields.Integer(related="job_id.max_points")
     friend_id = fields.Many2one('hr.referral.friend', copy=False)
     last_valuable_stage_id = fields.Many2one('hr.recruitment.stage', "Last Valuable Stage")
-    is_accessible_to_current_user = fields.Boolean(
-        compute='_compute_is_accessible_to_current_user',
-        search='_search_is_accessible_to_current_user')
-
-    def _search_is_accessible_to_current_user(self, operator, value):
-        if not isinstance(value, bool) or operator not in ['=', '!=']:
-            raise NotImplementedError(_("Unsupported search on field is_accessible_to_current_user: %s operator & %s value. Only = and != operator and boolean values are supported.", operator, value))
-        if self.env.user.has_group('hr_recruitment.group_hr_recruitment_user'):
-            return []
-        applications = self.env['hr.applicant'].search([
-            '|',
-                ('job_id', 'any', [('interviewer_ids', 'in', self.env.user.id)]),
-                ('interviewer_ids', 'in', self.env.user.id),
-        ])
-        domain_operator = 'in' if value ^ (operator == '!=') else 'not in'
-        return [('id', domain_operator, applications.ids)]
-
-    @api.depends_context('uid')
-    def _compute_is_accessible_to_current_user(self):
-        if self.env.user.has_group('hr_recruitment.group_hr_recruitment_user'):
-            self.is_accessible_to_current_user = True
-        else:
-            for applicant in self:
-                interviewers = applicant.interviewer_ids
-                corresponding_job_interviewers = applicant.job_id.interviewer_ids
-                applicant.is_accessible_to_current_user = self.env.user in interviewers or self.env.user in corresponding_job_interviewers
-                if not applicant.is_accessible_to_current_user:
-                    raise AccessError(_("You are not allowed to access this application record because you're not one of the interviewers of this application. If you think that's an error, please contact your administrator."))
 
     @api.depends('source_id')
     def _compute_ref_user_id(self):
@@ -68,8 +39,8 @@ class Applicant(models.Model):
 
     def _check_referral_fields_access(self, fields):
         referral_fields = {'name', 'partner_name', 'job_id', 'referral_points_ids', 'earned_points', 'max_points', 'active', 'response_id',
-                           'shared_item_infos', 'referral_state', 'user_id', 'friend_id', 'write_date', 'ref_user_id', 'id'}
-        if not (self.env.is_admin() or self.user_has_groups('hr_recruitment.group_hr_recruitment_interviewer')):
+                           'shared_item_infos', 'referral_state', 'user_id', 'friend_id', '__last_update', 'ref_user_id', 'id'}
+        if not (self.env.is_admin() or self.user_has_groups('hr_recruitment.group_hr_recruitment_interviewer') or self.user_has_groups('hr_recruitment.group_hr_recruitment_user')):
             if set(fields or []) - referral_fields:
                 raise AccessError(_('You are not allowed to access applicant records.'))
 
@@ -83,15 +54,15 @@ class Applicant(models.Model):
         return super().read(fields, load)
 
     @api.model
-    def _read_group_check_field_access_rights(self, field_names):
-        super()._read_group_check_field_access_rights(field_names)
-        self._check_referral_fields_access(field_names)
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        self._check_referral_fields_access(fields)
+        return super().read_group(domain, fields, groupby, offset, limit, orderby, lazy)
 
     @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
-        fields = {term[0] for term in domain if isinstance(term, (tuple, list))}
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+        fields = {term[0] for term in args if isinstance(term, (tuple, list))}
         self._check_referral_fields_access(fields)
-        return super()._search(domain, offset, limit, order, access_rights_uid)
+        return super()._search(args, offset, limit, order, count, access_rights_uid)
 
     def mapped(self, func):
         if func and isinstance(func, str):
@@ -146,25 +117,19 @@ class Applicant(models.Model):
         return applicants
 
     def archive_applicant(self):
-        for applicant in self:
-            if applicant.ref_user_id:
-                applicant._send_notification(_("Sorry, your referral %s has been refused in the recruitment process.", applicant.name))
         self.write({'referral_state': 'closed'})
         return super(Applicant, self).archive_applicant()
 
     def _send_notification(self, body):
         if self.partner_name:
-            subject = _('Referral: %s (%s)', self.partner_name, self.name)
+            subject = _('Referral: %s (%s)') % (self.partner_name, self.name)
         else:
-            subject = _('Referral: %s', self.name)
+            subject = _('Referral: %s') % (self.name)
         url = url_encode({'action': 'hr_referral.action_hr_applicant_employee_referral', 'active_model': self._name})
         action_url = '/web#' + url
-        body = Markup("<a class='o_document_link' href=%s>%s</a><br>%s") % (action_url, subject, body)
+        body = ("<a class='o_document_link' href=%s>%s</a><br>%s") % (action_url, subject, body)
         odoobot = self.env.ref('base.partner_root')
-        # Do *not* notify on `self` as it will lead to unintended behavior.
-        # See opw-3285752
         self.env['mail.thread'].sudo().message_notify(
-            model=self._name,
             subject=subject,
             body=body,
             author_id=odoobot.id,
@@ -189,17 +154,17 @@ class Applicant(models.Model):
 
         # Decrease stage sequence
         if new_state.sequence < old_state_sequence:
-            stages_to_remove = self.env['hr.referral.points']._read_group(
+            stages_to_remove = self.env['hr.referral.points'].read_group(
                 [
                     ('applicant_id', '=', self.id),
                     ('stage_id.sequence', '<=', old_state_sequence),
                     ('stage_id.sequence', '>', new_state.sequence)
-                ], ['stage_id'], ['points:sum'])
-            for stage, point_sum in stages_to_remove:
+                ], ['points'], ['stage_id'])
+            for stage in stages_to_remove:
                 point_stage.append({
                     'applicant_id': self.id,
-                    'stage_id': stage.id,
-                    'points': - point_sum,
+                    'stage_id': stage['stage_id'][0],
+                    'points': - stage['points'],
                     'ref_user_id': self.ref_user_id.id,
                     'company_id': self.company_id.id
                 })
@@ -225,17 +190,10 @@ class Applicant(models.Model):
                     'company_id': self.company_id.id
                 })
             available_points += gained_points
-            additional_message = ''
-            if gained_points > 0:
-                additional_message = escape(_(
-                    " You've gained {gained} points with this progress.{new_line}"
-                    "It makes you a new total of {total} points. Visit {link1}this link{link2} to pick a gift!")).format(
-                    gained=gained_points,
-                    new_line=Markup('<br/>'),
-                    total=available_points,
-                    link1=Markup('<a href="/web#action=hr_referral.action_hr_referral_reward&active_model=hr.referral.reward">'),
-                    link2=Markup('</a>'),
-                )
+            url = '/web#%s' % url_encode({'action': 'hr_referral.action_hr_referral_reward', 'active_model': 'hr.referral.reward'})
+            additional_message = (gained_points > 0 and _(" You've gained %(gained)s points with this progress.<br/>"
+                "It makes you a new total of %(total)s points. Visit <a href=\"%(url)s\">this link</a> to pick a gift!",
+                gained=gained_points, total=available_points, url=url)) or ''
             if self.stage_id.hired_stage:
                 self.referral_state = 'hired'
                 self._send_notification(_('Your referrer is hired!') + additional_message)
@@ -294,7 +252,7 @@ class Applicant(models.Model):
             result['onboarding'] = self._get_onboarding_steps()
             return result
 
-        applicant = self.sudo().search([('ref_user_id', '=', user_id.id), ('company_id', 'in', self.env.companies.ids)])
+        applicant = self.sudo().search([('ref_user_id', '=', user_id.id)])
         applicants_hired = applicant.filtered(lambda r: r.referral_state == 'hired')
         applicant_name = {applicant_hired.friend_id.id: applicant_hired.partner_name or applicant_hired.name for applicant_hired in applicants_hired}
         applicant_without_friend = applicants_hired.filtered(lambda r: not r.friend_id)
@@ -336,6 +294,7 @@ class Applicant(models.Model):
             step_level = next_level['points'] - current_level['points']
             result['level_percentage'] = round((min(result['point_received'], next_level['points']) - current_level['points']) * 100 / step_level)
 
+        applicant = self.sudo().search([('ref_user_id', '=', user_id.id)])
         result['referral'] = {
             'all': len(applicant),
             'hired': len(applicant.filtered(lambda r: r.referral_state == 'hired')),
@@ -348,15 +307,13 @@ class Applicant(models.Model):
             '|', ('date_from', '<=', today), ('date_from', '=', False),
             '|', ('date_to', '>', today), ('date_to', '=', False)])
 
-        result['message'] = []
-        for message in messages:
-            msg = {'id': message.id,
-                   'text': message.name}
-            if message.onclick == 'url':
-                msg['url'] = message.url
-            elif message.onclick == 'all_jobs':
-                msg['url'] = '/web#%s' % url_encode({'action': 'hr_referral.action_hr_job_employee_referral'})
-            result['message'].append(msg)
+        action_name = 'hr_referral.action_hr_job_employee_referral'
+        result['message'] = [{
+            'id': message.id,
+            'text': message.name,
+            'action': action_name if message.onclick == 'all_jobs' else False,
+            'url': message.url if message.onclick == 'url' else False
+        } for message in messages]
 
         return result
 

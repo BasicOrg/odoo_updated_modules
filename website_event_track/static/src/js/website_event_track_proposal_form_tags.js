@@ -1,15 +1,13 @@
-/** @odoo-module **/
+odoo.define('website_event_track.website_event_track_proposal_form_tags', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from "@web/legacy/js/public/public_widget";
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+
+var _t = core._t;
 
 publicWidget.registry.websiteEventTrackProposalFormTags = publicWidget.Widget.extend({
     selector: '.o_website_event_track_proposal_form_tags',
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
 
     start: function () {
         var self = this;
@@ -27,9 +25,12 @@ publicWidget.registry.websiteEventTrackProposalFormTags = publicWidget.Widget.ex
         var self = this;
         this.$('.o_wetrack_select2_tags').select2(this._select2Wrapper(_t('Select categories'),
             function () {
-                return self.rpc("/event/track_tag/search_read", {
-                    fields: ['name', 'category_id'],
-                    domain: [],
+                return self._rpc({
+                    route: "/event/track_tag/search_read",
+                    params: {
+                        fields: ['name', 'category_id'],
+                        domain: [],
+                    }
                 });
             })
         );
@@ -64,7 +65,7 @@ publicWidget.registry.websiteEventTrackProposalFormTags = publicWidget.Widget.ex
             fill_data: function (query, data) {
                 var that = this,
                     tags = {results: []};
-                data.forEach((obj) => {
+                _.each(data, function (obj) {
                     // select tags matching either category or tag name
                     if (that.matcher(query.term, obj[nameKey]) || that.matcher(query.term, obj.category_id[1])) {
                         if (obj.category_id[1]) {
@@ -94,4 +95,6 @@ publicWidget.registry.websiteEventTrackProposalFormTags = publicWidget.Widget.ex
     },
 });
 
-export default publicWidget.registry.websiteEventTrackProposalFormTags;
+return publicWidget.registry.websiteEventTrackProposalFormTags;
+
+});

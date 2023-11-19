@@ -3,16 +3,17 @@
 # 	* event_booth
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Erwin van der Ploeg <erwin@odooexperts.nl>, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,6 +24,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
 msgid "<b>Renter Email</b>:"
 msgstr "<b>E-mail huurder</b>:"
+
+#. module: event_booth
+#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
+msgid "<b>Renter Mobile</b>:"
+msgstr "<b>Mobiel huurder</b>:"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
@@ -38,6 +44,17 @@ msgstr "<b>Telefoon huurrder</b>:"
 #: model_terms:ir.ui.view,arch_db:event_booth.event_event_view_form
 msgid "<span class=\"o_stat_text\">Booths</span>"
 msgstr "<span class=\"o_stat_text\">Stands</span>"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
+msgid "<span class=\"text-white\">4m²</span>"
+msgstr "<span class=\"text-white\">4m²</span>"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
+msgid "<span class=\"text-white\">8m²</span>"
+msgstr "<span class=\"text-white\">8m²</span>"
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
@@ -65,7 +82,7 @@ msgstr "<span>100 woorden beschrijving op website</span>"
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
 msgid "<span>2 Branded Booth</span>"
-msgstr "<span>2 standen met merk</span>"
+msgstr "<span>2 Branded Booth</span>"
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
@@ -85,19 +102,8 @@ msgstr "<span>46\" scherm</span>"
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
-msgid "<span>4m²</span>"
-msgstr ""
-
-#. module: event_booth
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
 msgid "<span>50 words description on website</span>"
 msgstr "<span>50 woorden beschrijving op website</span>"
-
-#. module: event_booth
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
-msgid "<span>8m²</span>"
-msgstr ""
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
@@ -109,7 +115,7 @@ msgstr "<span>Logo &amp; link op website</span>"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_needaction
 msgid "Action Needed"
-msgstr "Actie gevraagd"
+msgstr "Actie nodig"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__active
@@ -124,17 +130,17 @@ msgstr "Activiteiten"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Activiteit uitzondering decoratie"
+msgstr "Activiteit Uitzondering Decoratie"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_state
 msgid "Activity State"
-msgstr "Activiteitsfase"
+msgstr "Activiteitsstatus"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Activiteitensoort icoon"
+msgstr "Pictogram Activiteitstype"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_category_view_form
@@ -261,14 +267,14 @@ msgstr "Maak een type stand"
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__create_uid
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__create_date
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__create_date
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__description
@@ -281,7 +287,7 @@ msgstr "Omschrijving"
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__display_name
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: event_booth
 #: model:ir.model,name:event_booth.model_event_event
@@ -326,20 +332,20 @@ msgstr "Evenementsjabloon"
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_type_booth_view_form_from_type
 msgid "Event Type Booth"
-msgstr "Evenement type stand"
+msgstr "Evenementtype stand"
 
 #. module: event_booth
 #: model:ir.actions.act_window,name:event_booth.event_type_booth_action
 #: model_terms:ir.ui.view,arch_db:event_booth.event_type_booth_view_search
 #: model_terms:ir.ui.view,arch_db:event_booth.event_type_booth_view_tree_from_type
 msgid "Event Type Booths"
-msgstr "Evenement type stands"
+msgstr "Evenementtype stands"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_graph
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_pivot
 msgid "Event booth"
-msgstr "Evenementstand"
+msgstr ""
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_follower_ids
@@ -349,27 +355,27 @@ msgstr "Volgers"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Volgers (Relaties)"
+msgstr "Volgers (Partners)"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Font awesome icoon bijv. fa-tasks"
+msgstr "Lettertype geweldig pictogram b.v. fa-taken"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_20_event_7
 msgid "Gold Booth 1"
-msgstr "Gold stand 1"
+msgstr "Gouden stand 1"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_21_event_7
 msgid "Gold Booth 2"
-msgstr "Gold stand 2"
+msgstr "Gouden kraam 2"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_22_event_7
 msgid "Gold Booth 3"
-msgstr "Gold stand 3"
+msgstr "Gouden stand 3"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_search
@@ -397,18 +403,18 @@ msgstr "Icoon"
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Icoon om uitzondering op activiteit aan te geven."
+msgstr "Pictogram om een uitzonderingsactiviteit aan te geven."
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Indien aangevinkt vragen nieuwe berichten je aandacht."
+msgstr "Indien aangevinkt, vragen nieuwe berichten uw aandacht."
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_has_error
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Indien aangevinkt hebben sommige berichten een leveringsfout."
+msgstr "Indien aangevinkt, hebben sommige berichten een bezorgfout."
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__image_1920
@@ -443,7 +449,14 @@ msgstr "Is beschikbaar"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_is_follower
 msgid "Is Follower"
-msgstr "Is een volger"
+msgstr "Is volger"
+
+#. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth____last_update
+#: model:ir.model.fields,field_description:event_booth.field_event_booth_category____last_update
+#: model:ir.model.fields,field_description:event_booth.field_event_type_booth____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__write_uid
@@ -457,12 +470,17 @@ msgstr "Laatst bijgewerkt door"
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__write_date
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
+
+#. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Hoofdbijlage"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_has_error
 msgid "Message Delivery error"
-msgstr "Bericht afleverfout"
+msgstr "Fout bij bezorging van bericht"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_ids
@@ -472,7 +490,7 @@ msgstr "Berichten"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "Mijn activiteit deadline"
+msgstr "Mijn activiteitsdeadline"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__name
@@ -487,22 +505,22 @@ msgstr "Naam"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Volgende activiteitenafspraak"
+msgstr "Volgende activiteitenkalender Evenement"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Volgende activiteit deadline"
+msgstr "Deadline volgende activiteit"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_summary
 msgid "Next Activity Summary"
-msgstr "Volgende activiteit overzicht"
+msgstr "Samenvatting van volgende activiteit"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__activity_type_id
 msgid "Next Activity Type"
-msgstr "Volgende activiteit type"
+msgstr "Volgende activiteitstype"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_needaction_counter
@@ -516,13 +534,13 @@ msgstr "Aantal fouten"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "Aantal berichten die actie vereisen"
+msgid "Number of messages which requires an action"
+msgstr "Aantal berichten waarvoor een actie vereist is"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Aantal berichten met leveringsfout"
+msgstr "Aantal berichten met bezorgfout"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_10_event_7
@@ -540,16 +558,9 @@ msgid "OpenWood Demonstrator 3"
 msgstr "OpenWood Demonstrator 3"
 
 #. module: event_booth
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_from_event
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_quick_create
-#: model_terms:ir.ui.view,arch_db:event_booth.event_type_booth_view_form_from_type
-msgid "Pick a Booth Category..."
-msgstr "Kies een stand categorie..."
-
-#. module: event_booth
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_from_event
-msgid "Pick a Renter..."
-msgstr "Kies een huurder..."
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
+msgid "Premium"
+msgstr "Premium"
 
 #. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_premium
@@ -563,22 +574,15 @@ msgstr "Premium stand A4"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_2_event_2
-#: model:event.booth,name:event_booth.event_booth_2_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_2
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_2
 msgid "Premium Showbooth 1"
 msgstr "Premium Showstand 1"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_3_event_2
-#: model:event.booth,name:event_booth.event_booth_3_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_3
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_3
 msgid "Premium Showbooth 2"
 msgstr "Premium Showstand 2"
-
-#. module: event_booth
-#: model:ir.model.fields,field_description:event_booth.field_event_booth__rating_ids
-msgid "Ratings"
-msgstr "Beoordelingen"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__partner_id
@@ -590,6 +594,11 @@ msgstr "Huurder"
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_search
 msgid "Renter Email"
 msgstr "E-mail huurder"
+
+#. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth__contact_mobile
+msgid "Renter Mobile"
+msgstr "Huurder mobiel"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__contact_name
@@ -610,7 +619,7 @@ msgstr "Verantwoordelijke gebruiker"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "SMS fout bij versturen"
+msgstr "Sms-bezorgingsfout"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__sequence
@@ -619,17 +628,20 @@ msgstr "Reeks"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_0_event_2
-#: model:event.booth,name:event_booth.event_booth_0_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_0
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_0
 msgid "Showbooth 1"
 msgstr "Showstand 1"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_1_event_2
-#: model:event.booth,name:event_booth.event_booth_1_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_1
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_1
 msgid "Showbooth 2"
 msgstr "Showstand 2"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
+msgid "Standard"
+msgstr "Standaard"
 
 #. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_standard
@@ -649,9 +661,9 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"Status gebaseerd op activiteiten\n"
-"Te laat: Datum is al gepasseerd\n"
-"Vandaag: Activiteit datum is vandaag\n"
+"Status op basis van activiteiten\n"
+"Achterstallig: vervaldatum is al verstreken\n"
+"Vandaag: Activiteitsdatum is vandaag\n"
 "Gepland: Toekomstige activiteiten."
 
 #. module: event_booth
@@ -671,6 +683,11 @@ msgid "Unavailable"
 msgstr "Niet beschikbaar"
 
 #. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
+msgid "VIP"
+msgstr "VIP"
+
+#. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_vip
 msgid "VIP Booth"
 msgstr "VIP-stand"
@@ -683,17 +700,17 @@ msgstr "VIP-stand A5"
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__website_message_ids
 msgid "Website Messages"
-msgstr "Websiteberichten"
+msgstr "Website-berichten"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__website_message_ids
 msgid "Website communication history"
-msgstr "Website communicatie geschiedenis"
+msgstr "Geschiedenis van websitecommunicatie"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_category_view_form
 msgid "e.g. \"Those stands will be place near the entrance and...\""
-msgstr "Bijvoorbeeld: \"Die stands komen bij de ingang en...\""
+msgstr ""
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_from_event

@@ -9,7 +9,8 @@ from odoo import api, fields, models
 class Track(models.Model):
     _inherit = 'event.track'
 
-    youtube_video_url = fields.Char('YouTube Video Link')
+    youtube_video_url = fields.Char('YouTube Video Link',
+        help="Configure this URL so that event attendees can see your Track in video!")
     youtube_video_id = fields.Char('YouTube video ID', compute='_compute_youtube_video_id',
         help="Extracted from the video URL and used to infer various links (embed/thumbnail/...)")
     is_youtube_replay = fields.Boolean('Is YouTube Replay',
@@ -20,7 +21,7 @@ class Track(models.Model):
     def _compute_youtube_video_id(self):
         for track in self:
             if track.youtube_video_url:
-                regex = r'^.*(youtu.be\/|v\/|u\/\w\/|embed\/|live\/|watch\?v=|&v=)([^#&?]*).*'
+                regex = r'^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*'
                 match = re.match(regex, track.youtube_video_url)
                 if match and len(match.groups()) == 2 and len(match.group(2)) == 11:
                     track.youtube_video_id = match.group(2)

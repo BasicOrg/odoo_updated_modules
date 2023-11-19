@@ -91,19 +91,19 @@ QUnit.module(
             );
             assert.containsN(
                 target,
-                '.o_field_widget[name="partner_ids"] .o_tag',
+                '.o_field_widget[name="partner_ids"] .badge',
                 2,
                 "there should be 2 tags"
             );
-            const badges = target.querySelectorAll('.o_field_widget[name="partner_ids"] .o_tag');
+            const badges = target.querySelectorAll('.o_field_widget[name="partner_ids"] .badge');
             assert.strictEqual(
                 badges[0].textContent.trim(),
                 "Jesus",
                 "the tag should be correctly named"
             );
             assert.hasClass(
-                badges[0].querySelector(".attendee_tag_status"),
-                "o_attendee_status_accepted",
+                badges[0].querySelector("img"),
+                "o_attendee_border_accepted",
                 "Jesus should attend the meeting"
             );
             assert.strictEqual(
@@ -112,8 +112,8 @@ QUnit.module(
                 "the tag should be correctly named"
             );
             assert.hasClass(
-                badges[1].querySelector(".attendee_tag_status"),
-                "o_attendee_status_tentative",
+                badges[1].querySelector("img"),
+                "o_attendee_border_tentative",
                 "Mohamet should still confirm his attendance to the meeting"
             );
             assert.containsOnce(badges[0], "img", "should have img tag");

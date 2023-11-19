@@ -52,7 +52,6 @@ class Mailing(models.Model):
     ab_testing_sms_winner_selection = fields.Selection(
         related="campaign_id.ab_testing_sms_winner_selection",
         default="clicks_ratio", readonly=False, copy=True)
-    ab_testing_mailings_sms_count = fields.Integer(related="campaign_id.ab_testing_mailings_sms_count")
 
     @api.depends('mailing_type')
     def _compute_medium_id(self):
@@ -71,18 +70,23 @@ class Mailing(models.Model):
 
     @api.depends('mailing_trace_ids.failure_type')
     def _compute_sms_has_iap_failure(self):
-        self.sms_has_insufficient_credit = self.sms_has_unregistered_account = False
-        traces = self.env['mailing.trace'].sudo()._read_group([
-                    ('mass_mailing_id', 'in', self.ids),
-                    ('trace_type', '=', 'sms'),
-                    ('failure_type', 'in', ['sms_acc', 'sms_credit'])
-        ], ['mass_mailing_id', 'failure_type'])
+        failures = ['sms_acc', 'sms_credit'] 
+        if not self.ids:
+            self.sms_has_insufficient_credit = self.sms_has_unregistered_account = False
+        else:
+            traces = self.env['mailing.trace'].sudo().read_group([
+                        ('mass_mailing_id', 'in', self.ids),
+                        ('trace_type', '=', 'sms'),
+                        ('failure_type', 'in', failures)
+            ], ['mass_mailing_id', 'failure_type'], ['mass_mailing_id', 'failure_type'], lazy=False)
 
-        for mass_mailing, failure_type in traces:
-            if failure_type == 'sms_credit':
-                mass_mailing.sms_has_insufficient_credit = True
-            elif failure_type == 'sms_acc':
-                mass_mailing.sms_has_unregistered_account = True
+            trace_dict = dict.fromkeys(self.ids, {key: False for key in failures})
+            for t in traces:
+                trace_dict[t['mass_mailing_id'][0]][t['failure_type']] = bool(t['__count'])
+
+            for mail in self:
+                mail.sms_has_insufficient_credit = trace_dict[mail.id]['sms_credit']
+                mail.sms_has_unregistered_account = trace_dict[mail.id]['sms_acc']
 
     # --------------------------------------------------
     # ORM OVERRIDES
@@ -118,9 +122,9 @@ class Mailing(models.Model):
 
     def action_test(self):
         if self.mailing_type == 'sms':
-            ctx = dict(self.env.context, default_mailing_id=self.id, dialog_size='medium')
+            ctx = dict(self.env.context, default_mailing_id=self.id)
             return {
-                'name': _('Test Mailing'),
+                'name': _('Test SMS marketing'),
                 'type': 'ir.actions.act_window',
                 'view_mode': 'form',
                 'res_model': 'mailing.sms.test',
@@ -171,12 +175,18 @@ class Mailing(models.Model):
         partner_fields = []
         if issubclass(type(target), self.pool['mail.thread.phone']):
             phone_fields = ['phone_sanitized']
-        else:
+        elif issubclass(type(target), self.pool['mail.thread']):
             phone_fields = [
-                fname for fname in target._phone_get_number_fields()
+                fname for fname in target._sms_get_number_fields()
                 if fname in target._fields and target._fields[fname].store
             ]
-            partner_fields = target._mail_get_partner_fields()
+            partner_fields = target._sms_get_partner_fields()
+        else:
+            phone_fields = []
+            if 'mobile' in target._fields and target._fields['mobile'].store:
+                phone_fields.append('mobile')
+            if 'phone' in target._fields and target._fields['phone'].store:
+                phone_fields.append('phone')
         partner_field = next(
             (fname for fname in partner_fields if target._fields[fname].store and target._fields[fname].type == 'many2one'),
             False
@@ -247,6 +257,12 @@ class Mailing(models.Model):
             if res_ids:
                 composer = self.env['sms.composer'].with_context(active_id=False).create(mailing._send_sms_get_composer_values(res_ids))
                 composer._action_send_sms()
+
+            mailing.write({
+                'state': 'done',
+                'sent_date': fields.Datetime.now(),
+                'kpi_mail_required': not mailing.sent_date,
+                })
         return True
 
     # ------------------------------------------------------
@@ -326,7 +342,6 @@ class Mailing(models.Model):
         values = super()._get_ab_testing_description_values()
         if self.mailing_type == 'sms':
             values.update({
-                'ab_testing_count': self.ab_testing_mailings_sms_count,
                 'ab_testing_winner_selection': self.ab_testing_sms_winner_selection,
             })
         return values

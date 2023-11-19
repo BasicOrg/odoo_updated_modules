@@ -8,7 +8,7 @@ import uuid
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 from odoo.tools import float_is_zero
 
 _logger = logging.getLogger(__name__)
@@ -52,7 +52,6 @@ class SurveyUserInput(models.Model):
     scoring_percentage = fields.Float("Score (%)", compute="_compute_scoring_values", store=True, compute_sudo=True)  # stored for perf reasons
     scoring_total = fields.Float("Total Score", compute="_compute_scoring_values", store=True, compute_sudo=True)  # stored for perf reasons
     scoring_success = fields.Boolean('Quizz Passed', compute='_compute_scoring_success', store=True, compute_sudo=True)  # stored for perf reasons
-    survey_first_submitted = fields.Boolean(string='Survey First Submitted')
     # live sessions
     is_session_answer = fields.Boolean('Is in a Session', help="Is that user input part of a survey session or not.")
     question_time_limit_reached = fields.Boolean("Question Time Limit Reached", compute='_compute_question_time_limit_reached')
@@ -235,16 +234,14 @@ class SurveyUserInput(models.Model):
         - The survey is a certification
         - It has a certification_mail_template_id set
         - The user succeeded the test
-        3. Notify survey subtype subscribers of the newly completed input
         Will also run challenge Cron to give the certification badge if any."""
         self.write({
             'end_datetime': fields.Datetime.now(),
             'state': 'done',
         })
 
-        Challenge_sudo = self.env['gamification.challenge'].sudo()
+        Challenge = self.env['gamification.challenge'].sudo()
         badge_ids = []
-        self._notify_new_participation_subscribers()
         for user_input in self:
             if user_input.survey_id.certification and user_input.scoring_success:
                 if user_input.survey_id.certification_mail_template_id and not user_input.test_entry:
@@ -256,9 +253,9 @@ class SurveyUserInput(models.Model):
             user_input.predefined_question_ids -= user_input._get_inactive_conditional_questions()
 
         if badge_ids:
-            challenges = Challenge_sudo.search([('reward_id', 'in', badge_ids)])
+            challenges = Challenge.search([('reward_id', 'in', badge_ids)])
             if challenges:
-                Challenge_sudo._cron_update(ids=challenges.ids, commit=False)
+                Challenge._cron_update(ids=challenges.ids, commit=False)
 
     def get_start_url(self):
         self.ensure_one()
@@ -272,19 +269,16 @@ class SurveyUserInput(models.Model):
     # CREATE / UPDATE LINES FROM SURVEY FRONTEND INPUT
     # ------------------------------------------------------------
 
-    def _save_lines(self, question, answer, comment=None, overwrite_existing=True):
-        """ Save answers to questions, depending on question type.
+    def save_lines(self, question, answer, comment=None):
+        """ Save answers to questions, depending on question type
 
-        :param bool overwrite_existing: if an answer already exists for question and user_input_id
-        it will be overwritten (or deleted for 'choice' questions) in order to maintain data consistency.
-        :raises UserError: if line exists and overwrite_existing is False
+            If an answer already exists for question and user_input_id, it will be
+            overwritten (or deleted for 'choice' questions) (in order to maintain data consistency).
         """
         old_answers = self.env['survey.user_input.line'].search([
             ('user_input_id', '=', self.id),
             ('question_id', '=', question.id)
         ])
-        if old_answers and not overwrite_existing:
-            raise UserError(_("This answer cannot be overwritten."))
 
         if question.question_type in ['char_box', 'text_box', 'numerical_box', 'date', 'datetime']:
             self._save_line_simple_answer(question, old_answers, answer)
@@ -436,19 +430,14 @@ class SurveyUserInput(models.Model):
         scored_questions = self.mapped('predefined_question_ids').filtered(lambda question: question.is_scored_question)
 
         for question in scored_questions:
-            if question.question_type == 'simple_choice':
-                question_incorrect_scored_answers = question.suggested_answer_ids.filtered(lambda answer: not answer.is_correct and answer.answer_score > 0)
-
             if question.question_type in ['simple_choice', 'multiple_choice']:
                 question_correct_suggested_answers = question.suggested_answer_ids.filtered(lambda answer: answer.is_correct)
 
             question_section = question.page_id.title or _('Uncategorized')
             for user_input in self:
                 user_input_lines = user_input.user_input_line_ids.filtered(lambda line: line.question_id == question)
-                if question.question_type == 'simple_choice':
-                    answer_result_key = self._simple_choice_question_answer_result(user_input_lines, question_correct_suggested_answers, question_incorrect_scored_answers)
-                elif question.question_type == 'multiple_choice':
-                    answer_result_key = self._multiple_choice_question_answer_result(user_input_lines, question_correct_suggested_answers)
+                if question.question_type in ['simple_choice', 'multiple_choice']:
+                    answer_result_key = self._choice_question_answer_result(user_input_lines, question_correct_suggested_answers)
                 else:
                     answer_result_key = self._simple_question_answer_result(user_input_lines)
 
@@ -485,7 +474,7 @@ class SurveyUserInput(models.Model):
 
         return res
 
-    def _multiple_choice_question_answer_result(self, user_input_lines, question_correct_suggested_answers):
+    def _choice_question_answer_result(self, user_input_lines, question_correct_suggested_answers):
         correct_user_input_lines = user_input_lines.filtered(lambda line: line.answer_is_correct and not line.skipped).mapped('suggested_answer_id')
         incorrect_user_input_lines = user_input_lines.filtered(lambda line: not line.answer_is_correct and not line.skipped)
         if question_correct_suggested_answers and correct_user_input_lines == question_correct_suggested_answers:
@@ -493,18 +482,6 @@ class SurveyUserInput(models.Model):
         elif correct_user_input_lines and correct_user_input_lines < question_correct_suggested_answers:
             return 'partial'
         elif not correct_user_input_lines and incorrect_user_input_lines:
-            return 'incorrect'
-        else:
-            return 'skipped'
-
-    def _simple_choice_question_answer_result(self, user_input_lines, question_correct_suggested_answers, question_incorrect_scored_answers):
-        user_input_line = user_input_lines[0]
-        user_answer = user_input_line.suggested_answer_id if not user_input_line.skipped else self.env['survey.question.answer']
-        if user_answer in question_correct_suggested_answers:
-            return 'correct'
-        elif user_answer in question_incorrect_scored_answers:
-            return 'partial'
-        elif user_answer:
             return 'incorrect'
         else:
             return 'skipped'
@@ -542,21 +519,20 @@ class SurveyUserInput(models.Model):
                    that is the next in sequence and that is either not triggered by another question's answer, or that
                    is triggered by an already selected answer.
          To do all this, we need to return:
-            - triggering_answers_by_question: dict -> for a given question, the answers that triggers it
-                Used mainly to ease template rendering
-            - triggered_questions_by_answer: dict -> for a given answer, list of questions triggered by this answer;
-                Used mainly for dynamic show/hide behaviour at client side
             - list of all selected answers: [answer_id1, answer_id2, ...] (for survey reloading, otherwise, this list is
               updated at client side)
+            - triggered_questions_by_answer: dict -> for a given answer, list of questions triggered by this answer;
+                Used mainly for dynamic show/hide behaviour at client side
+            - triggering_answer_by_question: dict -> for a given question, the answer that triggers it
+                Used mainly to ease template rendering
         """
-        triggering_answers_by_question = {}
-        triggered_questions_by_answer = {}
+        triggering_answer_by_question, triggered_questions_by_answer = {}, {}
         # Ignore conditional configuration if randomised questions selection
         if self.survey_id.questions_selection != 'random':
-            triggering_answers_by_question, triggered_questions_by_answer = self.survey_id._get_conditional_maps()
+            triggering_answer_by_question, triggered_questions_by_answer = self.survey_id._get_conditional_maps()
         selected_answers = self._get_selected_suggested_answers()
 
-        return triggering_answers_by_question, triggered_questions_by_answer, selected_answers
+        return triggering_answer_by_question, triggered_questions_by_answer, selected_answers
 
     def _get_selected_suggested_answers(self):
         """
@@ -592,13 +568,14 @@ class SurveyUserInput(models.Model):
         answers_to_delete.unlink()
 
     def _get_inactive_conditional_questions(self):
-        triggering_answers_by_question, _, selected_answers = self._get_conditional_values()
+        triggering_answer_by_question, triggered_questions_by_answer, selected_answers = self._get_conditional_values()
 
         # get questions that should not be answered
         inactive_questions = self.env['survey.question']
-        for question, triggering_answers in triggering_answers_by_question.items():
-            if triggering_answers and not triggering_answers & selected_answers:
-                inactive_questions |= question
+        for answer in triggered_questions_by_answer.keys():
+            if answer not in selected_answers:
+                for question in triggered_questions_by_answer[answer]:
+                    inactive_questions |= question
         return inactive_questions
 
     def _get_print_questions(self):
@@ -613,55 +590,6 @@ class SurveyUserInput(models.Model):
         else:
             inactive_questions = self._get_inactive_conditional_questions()
         return survey.question_ids - inactive_questions
-
-    def _get_next_skipped_page_or_question(self):
-        """Get next skipped question or page in case the option 'can_go_back' is set on the survey
-        It loops to the first skipped question or page if 'last_displayed_page_id' is the last
-        skipped question or page."""
-        self.ensure_one()
-        skipped_mandatory_answer_ids = self.user_input_line_ids.filtered(
-            lambda answer: answer.skipped and answer.question_id.constr_mandatory)
-
-        if not skipped_mandatory_answer_ids:
-            return self.env['survey.question']
-
-        page_or_question_key = 'page_id' if self.survey_id.questions_layout == 'page_per_section' else 'question_id'
-        page_or_question_ids = skipped_mandatory_answer_ids.mapped(page_or_question_key).sorted()
-
-        if self.last_displayed_page_id not in page_or_question_ids\
-            or self.last_displayed_page_id == page_or_question_ids[-1]:
-            return page_or_question_ids[0]
-
-        current_page_index = page_or_question_ids.ids.index(self.last_displayed_page_id.id)
-        return page_or_question_ids[current_page_index + 1]
-
-    def _get_skipped_questions(self):
-        self.ensure_one()
-
-        return self.user_input_line_ids.filtered(
-            lambda answer: answer.skipped and answer.question_id.constr_mandatory).question_id
-
-    def _is_last_skipped_page_or_question(self, page_or_question):
-        """In case of a submitted survey tells if the question or page is the last
-        skipped page or question.
-
-        This is used to :
-
-        - Display a Submit button if the actual question is the last skipped question.
-        - Avoid displaying a Submit button on the last survey question if there are
-          still skipped questions before.
-        - Avoid displaying the next page if submitting the latest skipped question.
-
-        :param page_or_question: page if survey's layout is page_per_section, question if page_per_question.
-        """
-        if self.survey_id.questions_layout == 'one_page':
-            return True
-        skipped = self._get_skipped_questions()
-        if not skipped:
-            return True
-        if self.survey_id.questions_layout == 'page_per_section':
-            skipped = skipped.page_id
-        return skipped == page_or_question
 
     # ------------------------------------------------------------
     # MESSAGING
@@ -678,27 +606,6 @@ class SurveyUserInput(models.Model):
                 )
         return recipients
 
-    def _notify_new_participation_subscribers(self):
-        subtype_id = self.env.ref('survey.mt_survey_survey_user_input_completed', raise_if_not_found=False)
-        if not self.ids or not subtype_id:
-            return
-        author_id = self.env.ref('base.partner_root').id if self.env.user.is_public else self.env.user.partner_id.id
-        # Only post if there are any followers
-        recipients_data = self.env['mail.followers']._get_recipient_data(self.survey_id, 'notification', subtype_id.id)
-        followed_survey_ids = [survey_id for survey_id, followers in recipients_data.items() if followers]
-        for user_input in self.filtered(lambda user_input_: user_input_.survey_id.id in followed_survey_ids):
-            survey_title = user_input.survey_id.title
-            if user_input.partner_id:
-                body = _(
-                    '%(participant) just participated in "%(survey_title)s".',
-                    participant=user_input.partner_id.display_name,
-                    survey_title=survey_title,
-                )
-            else:
-                body = _('Someone just participated in "%(survey_title)s".', survey_title=survey_title)
-
-            user_input.message_post(author_id=author_id, body=body, subtype_xmlid='survey.mt_survey_user_input_completed')
-
 
 class SurveyUserInputLine(models.Model):
     _name = 'survey.user_input.line'
@@ -707,7 +614,7 @@ class SurveyUserInputLine(models.Model):
     _order = 'question_sequence, id'
 
     # survey data
-    user_input_id = fields.Many2one('survey.user_input', string='User Input', ondelete='cascade', required=True, index=True)
+    user_input_id = fields.Many2one('survey.user_input', string='User Input', ondelete='cascade', required=True)
     survey_id = fields.Many2one(related='user_input_id.survey_id', string='Survey', store=True, readonly=False)
     question_id = fields.Many2one('survey.question', string='Question', ondelete='cascade', required=True)
     page_id = fields.Many2one(related='question_id.page_id', string="Section", readonly=False)
@@ -732,11 +639,7 @@ class SurveyUserInputLine(models.Model):
     answer_score = fields.Float('Score')
     answer_is_correct = fields.Boolean('Correct')
 
-    @api.depends(
-        'answer_type', 'value_text_box', 'value_numerical_box',
-        'value_char_box', 'value_date', 'value_datetime',
-        'suggested_answer_id.value', 'matrix_row_id.value',
-    )
+    @api.depends('answer_type')
     def _compute_display_name(self):
         for line in self:
             if line.answer_type == 'char_box':
@@ -751,7 +654,9 @@ class SurveyUserInputLine(models.Model):
                 line.display_name = fields.Datetime.to_string(line.value_datetime)
             elif line.answer_type == 'suggestion':
                 if line.matrix_row_id:
-                    line.display_name = f'{line.suggested_answer_id.value}: {line.matrix_row_id.value}'
+                    line.display_name = '%s: %s' % (
+                        line.suggested_answer_id.value,
+                        line.matrix_row_id.value)
                 else:
                     line.display_name = line.suggested_answer_id.value
 
@@ -800,27 +705,6 @@ class SurveyUserInputLine(models.Model):
                 vals_copy.update(score_vals)
             res = super(SurveyUserInputLine, line).write(vals_copy) and res
         return res
-
-    def _get_answer_matching_domain(self):
-        self.ensure_one()
-        if self.answer_type in ('char_box', 'text_box', 'numerical_box', 'date', 'datetime'):
-            value_field = {
-                'char_box': 'value_char_box',
-                'text_box': 'value_text_box',
-                'numerical_box': 'value_numerical_box',
-                'date': 'value_date',
-                'datetime': 'value_datetime',
-            }
-            operators = {
-                'char_box': 'ilike',
-                'text_box': 'ilike',
-                'numerical_box': '=',
-                'date': '=',
-                'datetime': '=',
-            }
-            return ['&', ('question_id', '=', self.question_id.id), (value_field[self.answer_type], operators[self.answer_type], self._get_answer_value())]
-        elif self.answer_type == 'suggestion':
-            return self.suggested_answer_id._get_answer_matching_domain(self.matrix_row_id.id if self.matrix_row_id else False)
 
     @api.model
     def _get_answer_score_values(self, vals, compute_speed_score=True):
@@ -898,18 +782,3 @@ class SurveyUserInputLine(models.Model):
             'answer_is_correct': answer_is_correct,
             'answer_score': answer_score
         }
-
-    def _get_answer_value(self):
-        self.ensure_one()
-        if self.answer_type == 'char_box':
-            return self.value_char_box
-        elif self.answer_type == 'text_box':
-            return self.value_text_box
-        elif self.answer_type == 'numerical_box':
-            return self.value_numerical_box
-        elif self.answer_type == 'date':
-            return self.value_date
-        elif self.answer_type == 'datetime':
-            return self.value_datetime
-        elif self.answer_type == 'suggestion':
-            return self.suggested_answer_id.value

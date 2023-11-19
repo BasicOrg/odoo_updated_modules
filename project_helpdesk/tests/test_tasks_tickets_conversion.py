@@ -39,7 +39,7 @@ class TestTasksTicketsConversion(TestProjectCommon, HelpdeskCommon):
 
         self.assertFalse(self.task_1.active, "Selected task should get archived")
         self.assertEqual(len(ticket), 1, "A ticket should have been created")
-        self.assertEqual(ticket.team_id, self.test_team, "Created ticket should be in the selected team")
+        self.assertEqual(ticket.team_id, self.test_team, "Created ticket should be in the the selected team")
         self.assertEqual(ticket.stage_id, self.stage_progress, "Created ticket should be in the selected stage")
         self.assertEqual(view['view_mode'], 'form', "Wizard should redirect to a form view")
         self.assertEqual(view['res_model'], 'helpdesk.ticket', "Wizard should redirect to a helpdesk.ticket view")

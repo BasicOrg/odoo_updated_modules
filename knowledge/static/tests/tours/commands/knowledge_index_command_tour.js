@@ -1,14 +1,13 @@
 /** @odoo-module */
 
-import { registry } from "@web/core/registry";
-import { endKnowledgeTour, openCommandBar } from '../knowledge_tour_utils.js';
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
+import { openCommandBar } from '../knowledge_tour_utils.js';
 
 
-registry.category("web_tour.tours").add('knowledge_index_command_tour', {
+tour.register('knowledge_index_command_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     // open the Knowledge App
     trigger: '.o_app[data-menu-xmlid="knowledge.knowledge_menu_root"]',
 }, { // open the command bar
@@ -24,8 +23,4 @@ registry.category("web_tour.tours").add('knowledge_index_command_tour', {
 }, { // click on the refresh button
     trigger: '.o_knowledge_behavior_type_articles_structure button[title="Update"]',
     run: 'click',
-}, { // click on the switch mode button
-    trigger: '.o_knowledge_behavior_type_articles_structure button[title="Switch Mode"]',
-    run: 'click',
-}, ...endKnowledgeTour()
-]});
+}]);

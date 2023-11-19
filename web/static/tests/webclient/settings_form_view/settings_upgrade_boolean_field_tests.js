@@ -24,9 +24,7 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
             type: "form",
             arch: `
                 <form js_class="base_settings">
-                    <app string="CRM" name="crm">
-                        <field name="bar" widget="upgrade_boolean"/>
-                    </app>
+                    <field name="bar" widget="upgrade_boolean"/>
                 </form>`,
             serverData,
             resModel: "res.config.settings",
@@ -46,11 +44,10 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
             type: "form",
             arch: `
                 <form js_class="base_settings">
-                    <app string="CRM" name="crm">
-                        <setting string="Coucou">
-                            <field name="bar" widget="upgrade_boolean"/>
-                        </setting>
-                    </app>
+                    <div class="o_field">
+                        <field name="bar" widget="upgrade_boolean"/>
+                    </div>
+                    <div class="o_label"><label for="bar"/><div>Coucou</div></div>
                 </form>`,
             serverData,
             resModel: "res.config.settings",
@@ -63,12 +60,12 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
         );
         assert.containsOnce(
             target,
-            ".o_form_label .badge",
+            ".o_label .badge",
             "the upgrade badge should be inside the label section"
         );
         assert.strictEqual(
-            target.querySelector(".o_form_label").textContent,
-            "CoucouEnterprise",
+            target.querySelector(".o_label").textContent,
+            "BarEnterpriseCoucou",
             "the upgrade label should be inside the label section"
         );
     });
@@ -81,9 +78,7 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
                 type: "form",
                 arch: `
                 <form js_class="base_settings">
-                    <app string="CRM" name="crm">
-                        <field name="bar" widget="upgrade_boolean"/>
-                    </app>
+                    <field name="bar" widget="upgrade_boolean"/>
                 </form>`,
                 serverData,
                 resModel: "res.config.settings",
@@ -107,11 +102,10 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
                 type: "form",
                 arch: `
                 <form js_class="base_settings">
-                    <app string="CRM" name="crm">
-                        <setting string="Coucou">
-                            <field name="bar" widget="upgrade_boolean"/>
-                        </setting>
-                    </app>
+                    <div class="o_field">
+                        <field name="bar" widget="upgrade_boolean"/>
+                    </div>
+                    <div class="o_label"><label for="bar"/><div>Coucou</div></div>
                 </form>`,
                 serverData,
                 resModel: "res.config.settings",
@@ -124,12 +118,12 @@ QUnit.module("SettingsUpgradeBoolean", (hooks) => {
             );
             assert.containsNone(
                 target,
-                ".o_form_label .badge",
+                ".o_label .badge",
                 "the upgrade badge shouldn't be inside the label section"
             );
             assert.strictEqual(
-                target.querySelector(".o_form_label").textContent,
-                "Coucou",
+                target.querySelector(".o_label").textContent,
+                "BarCoucou",
                 "the label shouldn't contains the upgrade label"
             );
         }

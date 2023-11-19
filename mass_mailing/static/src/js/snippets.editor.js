@@ -1,23 +1,24 @@
-/** @odoo-module **/
+odoo.define('mass_mailing.snippets.editor', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import snippetsEditor from "@web_editor/js/editor/snippets.editor";
+const {_lt} = require('web.core');
+const snippetsEditor = require('web_editor.snippet.editor');
 
-export const MassMailingSnippetsMenu = snippetsEditor.SnippetsMenu.extend({
-    events: Object.assign({}, snippetsEditor.SnippetsMenu.prototype.events, {
+const MassMailingSnippetsMenu = snippetsEditor.SnippetsMenu.extend({
+    events: _.extend({}, snippetsEditor.SnippetsMenu.prototype.events, {
         'click .o_we_customize_design_btn': '_onDesignTabClick',
     }),
-    custom_events: Object.assign({}, snippetsEditor.SnippetsMenu.prototype.custom_events, {
+    custom_events: _.extend({}, snippetsEditor.SnippetsMenu.prototype.custom_events, {
         drop_zone_over: '_onDropZoneOver',
         drop_zone_out: '_onDropZoneOut',
         drop_zone_start: '_onDropZoneStart',
         drop_zone_stop: '_onDropZoneStop',
     }),
-    tabs: Object.assign({}, snippetsEditor.SnippetsMenu.prototype.tabs, {
+    tabs: _.extend({}, snippetsEditor.SnippetsMenu.prototype.tabs, {
         DESIGN: 'design',
     }),
     optionsTabStructure: [
-        ['design-options', _t("Design Options")],
+        ['design-options', _lt("Design Options")],
     ],
 
     //--------------------------------------------------------------------------
@@ -32,26 +33,11 @@ export const MassMailingSnippetsMenu = snippetsEditor.SnippetsMenu.extend({
             this.$editable = this.options.wysiwyg.getEditable();
         });
     },
-    /**
-     * @override
-     */
-    callPostSnippetDrop: async function ($target) {
-        $target.find('img[loading=lazy]').removeAttr('loading');
-        return this._super(...arguments);
-    },
 
     //--------------------------------------------------------------------------
     // Private
     //--------------------------------------------------------------------------
 
-    /**
-     * @override
-     */
-    _computeSnippetTemplates: function (html) {
-        const $html = $(`<div>${html}</div>`);
-        $html.find('img').attr('loading', 'lazy');
-        return this._super($html.html().trim());
-    },
     /**
      * @override
      */
@@ -177,3 +163,6 @@ export const MassMailingSnippetsMenu = snippetsEditor.SnippetsMenu.extend({
     },
 });
 
+return MassMailingSnippetsMenu;
+
+});

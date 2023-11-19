@@ -3,31 +3,24 @@
 
 from werkzeug import urls
 
-from odoo import _, api, fields, models
-from odoo.tools import format_amount
+from odoo import api, models
 
 
 class PaymentLinkWizard(models.TransientModel):
     _inherit = 'payment.link.wizard'
     _description = 'Generate Sales Payment Link'
 
-    amount_paid = fields.Monetary(string="Already Paid", readonly=True)
-    confirmation_message = fields.Char(compute='_compute_confirmation_message')
+    def _get_payment_provider_available(self, res_model, res_id, **kwargs):
+        """ Select and return the providers matching the criteria.
 
-    @api.depends('amount')
-    def _compute_confirmation_message(self):
-        self.confirmation_message = False
-        for wizard in self.filtered(lambda w: w.res_model == 'sale.order'):
-            sale_order = wizard.env['sale.order'].sudo().browse(wizard.res_id)
-            if sale_order.state in ('draft', 'sent') and sale_order.require_payment:
-                remaining_amount = sale_order._get_prepayment_required_amount() - sale_order.amount_paid
-                if wizard.currency_id.compare_amounts(wizard.amount, remaining_amount) >= 0:
-                    wizard.confirmation_message = _("This payment will confirm the quotation.")
-                else:
-                    wizard.confirmation_message = _(
-                        "Customer needs to pay at least %(amount)s to confirm the order.",
-                        amount=format_amount(wizard.env, remaining_amount, wizard.currency_id),
-                    )
+        :param str res_model: active model
+        :param int res_id: id of 'active_model' record
+        :return: The compatible providers
+        :rtype: recordset of `payment.provider`
+        """
+        if res_model == 'sale.order':
+            kwargs['sale_order_id'] = res_id
+        return super()._get_payment_provider_available(**kwargs)
 
     def _get_additional_link_values(self):
         """ Override of `payment` to add `sale_order_id` to the payment link values.

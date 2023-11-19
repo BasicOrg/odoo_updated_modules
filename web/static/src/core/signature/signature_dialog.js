@@ -1,14 +1,13 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { Dialog } from "@web/core/dialog/dialog";
 import { NameAndSignature } from "./name_and_signature";
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 
 export class SignatureDialog extends Component {
     setup() {
-        this.title = _t("Adopt Your Signature");
+        this.title = this.env._t("Adopt Your Signature");
         this.signature = useState({
             name: this.props.defaultName,
             isSignatureEmpty: true,

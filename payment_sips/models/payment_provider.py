@@ -3,9 +3,9 @@
 
 from hashlib import sha256
 
-from odoo import fields, models
+from odoo import api, fields, models
 
-from odoo.addons.payment_sips import const
+from .const import SUPPORTED_CURRENCIES
 
 
 class PaymentProvider(models.Model):
@@ -29,14 +29,16 @@ class PaymentProvider(models.Model):
     sips_version = fields.Char(
         string="Interface Version", required_if_provider='sips', default="HP_2.31")
 
-    def _get_supported_currencies(self):
-        """ Override of `payment` to return the supported currencies. """
-        supported_currencies = super()._get_supported_currencies()
-        if self.code == 'sips':
-            supported_currencies = supported_currencies.filtered(
-                lambda c: c.name in const.SUPPORTED_CURRENCIES.keys()
-            )
-        return supported_currencies
+    @api.model
+    def _get_compatible_providers(self, *args, currency_id=None, **kwargs):
+        """ Override of payment to unlist Sips providers when the currency is not supported. """
+        providers = super()._get_compatible_providers(*args, currency_id=currency_id, **kwargs)
+
+        currency = self.env['res.currency'].browse(currency_id).exists()
+        if currency and currency.name not in SUPPORTED_CURRENCIES:
+            providers = providers.filtered(lambda p: p.code != 'sips')
+
+        return providers
 
     def _sips_generate_shasign(self, data):
         """ Generate the shasign for incoming or outgoing communications.
@@ -52,12 +54,3 @@ class PaymentProvider(models.Model):
         key = self.sips_secret
         shasign = sha256((data + key).encode('utf-8'))
         return shasign.hexdigest()
-
-    # === BUSINESS METHODS ===#
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'sips':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHODS_CODES

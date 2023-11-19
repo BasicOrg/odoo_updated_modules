@@ -74,7 +74,7 @@ class HrPayrollGenerateCommissionPayslips(models.TransientModel):
 
     def generate_warrant_payslips(self):
         batch = self.env["hr.payslip.run"].create({
-            'name': 'Commissions: %s - %s' % (self.date_start, self.date_end),
+            'name': 'Commissions : %s - %s' % (self.date_start, self.date_end),
             'state': 'draft',
             'date_start': self.date_start,
             'date_end': self.date_end,

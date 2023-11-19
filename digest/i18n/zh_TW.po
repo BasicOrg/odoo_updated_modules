@@ -3,17 +3,16 @@
 # 	* digest
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,8 +21,8 @@ msgstr ""
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
-msgid "<i class=\"oi oi-arrow-right\"/> Check our Documentation"
-msgstr "<i class=\"oi oi-arrow-right\"/> 查看使用說明"
+msgid "<i class=\"fa fa-arrow-right\"/> Check our Documentation"
+msgstr ""
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_mail_main
@@ -59,7 +58,7 @@ msgstr "添加新使用者作為具有關鍵指標的定期電子信件的接收
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_tip__group_id
 msgid "Authorized Group"
-msgstr "獲授權群組"
+msgstr "經授權的組"
 
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__available_fields
@@ -67,7 +66,6 @@ msgid "Available Fields"
 msgstr "可用欄位"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Choose the metrics you care about"
@@ -89,7 +87,6 @@ msgid "Configure Digest Emails"
 msgstr "配置摘要信件"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Connect"
@@ -104,7 +101,7 @@ msgstr "已連接使用者"
 #: model:ir.model.fields,field_description:digest.field_digest_digest__create_uid
 #: model:ir.model.fields,field_description:digest.field_digest_tip__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__create_date
@@ -115,7 +112,7 @@ msgstr "建立於"
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__currency_id
 msgid "Currency"
-msgstr "貨幣"
+msgstr "幣別"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
@@ -152,6 +149,8 @@ msgstr "摘要信件"
 #. module: digest
 #: model:ir.actions.act_window,name:digest.digest_digest_action
 #: model:ir.actions.server,name:digest.ir_cron_digest_scheduler_action_ir_actions_server
+#: model:ir.cron,cron_name:digest.ir_cron_digest_scheduler_action
+#: model:ir.cron,name:digest.ir_cron_digest_scheduler_action
 #: model:ir.model.fields,field_description:digest.field_res_config_settings__digest_emails
 #: model:ir.ui.menu,name:digest.digest_menu
 msgid "Digest Emails"
@@ -172,7 +171,7 @@ msgstr "摘要提示"
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
 msgid "Digest Title"
-msgstr "摘錄標題"
+msgstr ""
 
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__display_name
@@ -181,14 +180,19 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: digest
+#: model_terms:ir.ui.view,arch_db:digest.res_config_settings_view_form
+msgid "Documentation"
+msgstr "系統使用說明"
+
+#. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
 msgid "Email Address"
-msgstr "電子郵件地址"
+msgstr "Email地址"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
 msgid "General"
-msgstr "一般"
+msgstr "通用"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_search
@@ -206,10 +210,9 @@ msgstr "對文件有疑問? 點擊負責帳號的圖片開始進行對話. 如�
 #: model:ir.model.fields,field_description:digest.field_digest_digest__id
 #: model:ir.model.fields,field_description:digest.field_digest_tip__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/controllers/portal.py:0
 #, python-format
 msgid "Invalid periodicity set on digest"
@@ -252,25 +255,28 @@ msgid "Kpi Res Users Connected Value"
 msgstr "Kpi Res 使用者連接值"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Last 24 hours"
 msgstr "過去24小時"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Last 30 Days"
 msgstr "過去30天"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Last 7 Days"
 msgstr "過去7天"
+
+#. module: digest
+#: model:ir.model.fields,field_description:digest.field_digest_digest____last_update
+#: model:ir.model.fields,field_description:digest.field_digest_tip____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__write_uid
@@ -287,7 +293,7 @@ msgstr "最後更新於"
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__kpi_mail_message_total
 msgid "Messages Sent"
-msgstr "已傳送訊息"
+msgstr ""
 
 #. module: digest
 #: model:ir.model.fields.selection,name:digest.selection__digest_digest__periodicity__monthly
@@ -310,7 +316,7 @@ msgstr "新使用者將自動添加為以下摘要信件的收件人。"
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__next_run_date
 msgid "Next Mailing Date"
-msgstr "下次郵寄日期"
+msgstr ""
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_section_mobile
@@ -321,7 +327,7 @@ msgstr "Odoo 行動端"
 #: model:ir.model.fields,field_description:digest.field_digest_digest__periodicity
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_search
 msgid "Periodicity"
-msgstr "周期"
+msgstr "週期"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_mail_main
@@ -329,11 +335,10 @@ msgid "Powered by"
 msgstr "官方技術支援"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
-msgid "Prefer a broader overview?"
-msgstr "想要更廣泛的概覽？"
+msgid "Prefer a broader overview ?"
+msgstr "提供一個更廣泛的概述?"
 
 #. module: digest
 #: model_terms:digest.tip,tip_description:digest.digest_tip_digest_0
@@ -345,14 +350,14 @@ msgstr "在任何螢幕中按 ALT 以突出顯示螢幕中每個按鈕的快速�
 #. module: digest
 #: model:ir.model.fields.selection,name:digest.selection__digest_digest__periodicity__quarterly
 msgid "Quarterly"
-msgstr "每季"
+msgstr "每季度"
 
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_digest__user_ids
 #: model:ir.model.fields,field_description:digest.field_digest_tip__user_ids
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
 msgid "Recipients"
-msgstr "接收者"
+msgstr "收件人"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_section_mobile
@@ -372,7 +377,7 @@ msgstr "發送者"
 #. module: digest
 #: model:ir.model.fields,field_description:digest.field_digest_tip__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "序號"
 
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.res_config_settings_view_form
@@ -385,7 +390,6 @@ msgid "Status"
 msgstr "狀態"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Switch to weekly Digests"
@@ -449,7 +453,7 @@ msgstr "提示： 運用捷徑加速您的工作流程"
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_tree
 msgid "Title"
-msgstr "稱謂"
+msgstr "標題"
 
 #. module: digest
 #: model_terms:digest.tip,tip_description:digest.digest_tip_digest_3
@@ -476,23 +480,21 @@ msgstr "已經收到此提示的使用者"
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.digest_digest_view_form
 msgid "Want to add your own KPIs?<br/>"
-msgstr "想加入您自己的KPI嗎？<br/>"
+msgstr ""
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "Want to customize this email?"
 msgstr "想要客製化這封電子郵件？"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid ""
 "We have noticed you did not connect these last few days. We have "
 "automatically switched your preference to %(new_perioridicy_str)s Digests."
-msgstr "我們注意到您最近幾天沒有連接。我們已自動將您的偏好切換到 %(new_perioridicy_str)s 摘要。"
+msgstr ""
 
 #. module: digest
 #: model:ir.model.fields.selection,name:digest.selection__digest_digest__periodicity__weekly
@@ -519,7 +521,7 @@ msgstr ""
 #. module: digest
 #: model_terms:ir.ui.view,arch_db:digest.portal_digest_unsubscribed
 msgid "You have been successfully unsubscribed from:<br/>"
-msgstr "您已成功退訂:<br/>"
+msgstr ""
 
 #. module: digest
 #: model:digest.digest,name:digest.digest_digest_default
@@ -532,22 +534,19 @@ msgid "e.g. Your Weekly Digest"
 msgstr "例如你的每周摘要報告"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "monthly"
 msgstr "monthly"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "quarterly"
 msgstr "quarterly"
 
 #. module: digest
-#. odoo-python
 #: code:addons/digest/models/digest.py:0
 #, python-format
 msgid "weekly"
-msgstr "每週"
+msgstr ""

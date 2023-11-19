@@ -5,10 +5,10 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_team_view_form"/>
         <field name="model">helpdesk.team</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='use_website_helpdesk_knowledge']" position="after">
-                <div class="mt16" invisible="not use_website_helpdesk_knowledge">
+            <xpath expr="//div[@id='use_website_helpdesk_knowledge']" position="replace">
+                <div class="mt16" attrs="{'invisible': [('use_website_helpdesk_knowledge', '=', False)]}">
                     <label for="website_article_id"/>
-                    <field name="website_article_id" domain="[('is_published', '=', True), ('parent_id', '=', False)]" options="{'no_create': True}"/>
+                    <field name="website_article_id" domain="[('is_published', '=', True), ('parent_id', '=', False)]" options="{'no_create': True, 'no_open': True}"/>
                 </div>
             </xpath>
         </field>

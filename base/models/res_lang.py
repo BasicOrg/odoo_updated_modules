@@ -60,9 +60,9 @@ class Lang(models.Model):
     flag_image_url = fields.Char(compute=_compute_field_flag_image_url)
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)', 'The name of the language must be unique!'),
-        ('code_uniq', 'unique(code)', 'The code of the language must be unique!'),
-        ('url_code_uniq', 'unique(url_code)', 'The URL code of the language must be unique!'),
+        ('name_uniq', 'unique(name)', 'The name of the language must be unique !'),
+        ('code_uniq', 'unique(code)', 'The code of the language must be unique !'),
+        ('url_code_uniq', 'unique(url_code)', 'The URL code of the language must be unique !'),
     ]
 
     @api.constrains('active')
@@ -81,23 +81,6 @@ class Lang(models.Model):
                                             'Please refer to the list of allowed directives, '
                                             'displayed when you edit a language.'))
 
-    @api.onchange('time_format', 'date_format')
-    def _onchange_format(self):
-        warning = {
-            'warning': {
-                'title': _("Using 24-hour clock format with AM/PM can cause issues."),
-                'message': _("Changing to 12-hour clock format instead."),
-                'type': 'notification'
-            }
-        }
-        for lang in self:
-            if lang.date_format and "%H" in lang.date_format and "%p" in lang.date_format:
-                lang.date_format = lang.date_format.replace("%H", "%I")
-                return warning
-            if lang.time_format and "%H" in lang.time_format and "%p" in lang.time_format:
-                lang.time_format = lang.time_format.replace("%H", "%I")
-                return warning
-
     @api.constrains('grouping')
     def _check_grouping(self):
         warning = _('The Separator Format should be like [,n] where 0 < n :starting from Unit digit. '
@@ -115,6 +98,12 @@ class Lang(models.Model):
         # check that there is at least one active language
         if not self.search_count([]):
             _logger.error("No language is active.")
+
+    # TODO remove me after v14
+    def load_lang(self, lang, lang_name=None):
+        _logger.warning("Call to deprecated method load_lang, use _create_lang or _activate_lang instead")
+        language = self._activate_lang(lang) or self._create_lang(lang, lang_name)
+        return language.id
 
     def _activate_lang(self, code):
         """ Activate languages
@@ -139,7 +128,7 @@ class Lang(models.Model):
             except locale.Error:
                 continue
         if fail:
-            lc = locale.getlocale()[0]
+            lc = locale.getdefaultlocale()[0]
             msg = 'Unable to get information for locale %s. Information from the default locale (%s) have been used.'
             _logger.warning(msg, lang, lc)
 
@@ -199,7 +188,7 @@ class Lang(models.Model):
         lang_code = (tools.config.get('load_language') or 'en_US').split(',')[0]
         lang = self._activate_lang(lang_code) or self._create_lang(lang_code)
         IrDefault = self.env['ir.default']
-        default_value = IrDefault._get('res.partner', 'lang')
+        default_value = IrDefault.get('res.partner', 'lang')
         if default_value is None:
             IrDefault.set('res.partner', 'lang', lang_code)
             # set language of main company, created directly by db bootstrap SQL
@@ -281,7 +270,7 @@ class Lang(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        self.env.registry.clear_cache()
+        self.clear_caches()
         for vals in vals_list:
             if not vals.get('url_code'):
                 vals['url_code'] = vals.get('iso_code') or vals['code']
@@ -301,7 +290,7 @@ class Lang(models.Model):
 
         res = super(Lang, self).write(vals)
         self.env.flush_all()
-        self.env.registry.clear_cache()
+        self.clear_caches()
         return res
 
     @api.ondelete(at_uninstall=True)
@@ -316,7 +305,7 @@ class Lang(models.Model):
                 raise UserError(_("You cannot delete the language which is Active!\nPlease de-activate the language first."))
 
     def unlink(self):
-        self.env.registry.clear_cache()
+        self.clear_caches()
         return super(Lang, self).unlink()
 
     def format(self, percent, value, grouping=False, monetary=False):

@@ -29,8 +29,7 @@ class ResPartner(models.Model):
         if partners_with_new_commercial:
             linked_tokens_sudo = self.env['payment.token'].sudo().search([
                 ('partner_id', 'in', partners_with_new_commercial.ids),
-                ('provider_id.code', '=', 'custom'),
-                ('provider_id.custom_mode', '=', 'sepa_direct_debit'),
+                ('provider_id.code', '=', 'sepa_direct_debit')
             ])
             linked_tokens_sudo.active = False
 

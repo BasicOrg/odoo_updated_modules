@@ -3,7 +3,7 @@
 
     <!-- Root Menus -->
 
-    <menuitem id="menu_hr_payroll_root" name="Payroll" sequence="190" web_icon="hr_payroll,static/description/icon.png" groups="hr_contract.group_hr_contract_employee_manager"/>
+    <menuitem id="menu_hr_payroll_root" name="Payroll" sequence="190" web_icon="hr_payroll,static/description/icon.svg" groups="hr_contract.group_hr_contract_manager"/>
 
      <menuitem
         id="menu_hr_payroll_work_entries_root"
@@ -26,6 +26,14 @@
         action="hr_work_entry.hr_work_entry_action"
         parent="menu_hr_payroll_work_entries_root"
         sequence="25"/>
+
+    <menuitem
+        id="menu_work_entry_conflicts"
+        name="Conflicts"
+        action="hr_work_entry.hr_work_entry_action_conflict"
+        parent="menu_hr_payroll_work_entries_root"
+        sequence="50"/>
+
 
     <!-- Work entries Configuration -->
     <menuitem

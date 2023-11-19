@@ -10,7 +10,7 @@ from freezegun import freeze_time
 class GermanTaxReportTest(AccountSalesReportCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='de_skr03'):
+    def setUpClass(cls, chart_template_ref='l10n_de_skr03.l10n_de_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
     @classmethod
@@ -19,8 +19,6 @@ class GermanTaxReportTest(AccountSalesReportCommon):
         res['company'].update({
             'country_id': cls.env.ref('base.de').id,
             'vat': 'DE123456788',
-            'l10n_de_stnr': '151/815/08156',
-            'state_id': cls.env.ref('base.state_de_th')
         })
         res['company'].partner_id.update({
             'email': 'jsmith@mail.com',
@@ -30,8 +28,8 @@ class GermanTaxReportTest(AccountSalesReportCommon):
 
     @freeze_time('2019-12-31')
     def test_generate_xml(self):
-        first_tax = self.env['account.tax'].search([('name', '=', '19%'), ('company_id', '=', self.company_data['company'].id)], limit=1)
-        second_tax = self.env['account.tax'].search([('name', '=', '19% EU'), ('company_id', '=', self.company_data['company'].id)], limit=1)
+        first_tax = self.env['account.tax'].search([('name', '=', '19% Umsatzsteuer'), ('company_id', '=', self.company_data['company'].id)], limit=1)
+        second_tax = self.env['account.tax'].search([('name', '=', 'Innergem. Erwerb 19%USt/19%VSt'), ('company_id', '=', self.company_data['company'].id)], limit=1)
 
         # Create and post a move with two move lines to get some data in the report
         move = self.env['account.move'].create({
@@ -57,11 +55,10 @@ class GermanTaxReportTest(AccountSalesReportCommon):
         move.action_post()
 
         report = self.env.ref('l10n_de.tax_report')
-        options = report.get_options()
+        options = report._get_options()
 
         expected_xml = """
-        <Anmeldungssteuern art="UStVA" version="2023">
-            <Erstellungsdatum>20191231</Erstellungsdatum>
+        <Anmeldungssteuern art="UStVA" version="201801">
             <DatenLieferant>
                 <Name>company_1_data</Name>
                 <Strasse />
@@ -70,23 +67,17 @@ class GermanTaxReportTest(AccountSalesReportCommon):
                 <Telefon>+32475123456</Telefon>
                 <Email>jsmith@mail.com</Email>
             </DatenLieferant>
+            <Erstellungsdatum>20191231</Erstellungsdatum>
             <Steuerfall>
-                <Unternehmer>
-                    <Bezeichnung>company_1_data</Bezeichnung>
-                    <Str />
-                    <Ort />
-                    <PLZ />
-                    <Telefon>+32475123456</Telefon>
-                    <Email>jsmith@mail.com</Email>
-                </Unternehmer>
                 <Umsatzsteuervoranmeldung>
                     <Jahr>2019</Jahr>
                     <Zeitraum>11</Zeitraum>
-                    <Steuernummer>4151081508156</Steuernummer>
-                    <Kz81>150</Kz81>
-                    <Kz89>75</Kz89>
-                    <Kz61>14,25</Kz61>
-                    <Kz83>0,00</Kz83>
+                    <Steuernummer />
+                    <Kz09>0.00</Kz09>
+                    <Kz81>28</Kz81>
+                    <Kz89>14</Kz89>
+                    <Kz61>-14</Kz61>
+                    <Kz83>0.00</Kz83>
                 </Umsatzsteuervoranmeldung>
             </Steuerfall>
         </Anmeldungssteuern>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_l10n_fr_bilan" model="account.report">
-        <field name="name">Balance sheet</field>
+        <field name="name">Bilan comptable</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
         <field name="filter_unfold_all" eval="True"/>
         <field name="filter_date_range" eval="False"/>
@@ -11,7 +11,7 @@
         <field name="filter_multi_company">selector</field>
         <field name="column_ids">
             <record id="account_financial_report_l10n_fr_bilan_column00" model="account.report.column">
-                <field name="name">Gross</field>
+                <field name="name">Brut</field>
                 <field name="expression_label">brut</field>
             </record>
             <record id="account_financial_report_l10n_fr_bilan_column01" model="account.report.column">
@@ -25,9 +25,8 @@
         </field>
         <field name="line_ids">
             <record id="account_financial_report_line_fr_bilan_actif_passif_total" model="account.report.line">
-                <field name="name">ACTIVE - PASSIVE</field>
+                <field name="name">ACTIF - PASSIF</field>
                 <field name="code">ACTIF_PASSIF_TOTAL</field>
-                <field name="hierarchy_level">0</field>
                 <field name="expression_ids">
                     <record id="account_financial_report_line_fr_bilan_actif_passif_total_column3" model="account.report.expression">
                         <field name="label">net</field>
@@ -37,7 +36,7 @@
                 </field>
                 <field name="children_ids">
                     <record id="account_financial_report_fr_bilan_actif_total" model="account.report.line">
-                        <field name="name">TOTAL ACTIVE (I + II + III + IV + V)</field>
+                        <field name="name">TOTAL ACTIF (I + II + III + IV + V)</field>
                         <field name="code">ACTIF_TOT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_fr_bilan_actif_total_column3" model="account.report.expression">
@@ -49,7 +48,7 @@
                         <field name="children_ids">
                             <!-- Capital souscrit -->
                             <record id="account_financial_report_line_01_0_fr_bilan_actif" model="account.report.line">
-                                <field name="name">Subscribed capital - uncalled</field>
+                                <field name="name">Capital souscrit - non appelé</field>
                                 <field name="code">CAPITAL_NON_APPELE</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -63,7 +62,7 @@
                             </record>
                             <!-- ACTIF IMMO -->
                             <record id="account_financial_report_line_02_0_fr_bilan_actif" model="account.report.line">
-                                <field name="name">Fixed assets</field>
+                                <field name="name">Actif immobilisé</field>
                                 <field name="code">ACTIF_IMMOBILISE</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_02_0_fr_bilan_actif_column3" model="account.report.expression">
@@ -75,7 +74,7 @@
                                 <field name="children_ids">
                                     <!-- Immo incor -->
                                     <record id="account_financial_report_line_02_1_0_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Intangible assets</field>
+                                        <field name="name">Immobilisations incorporelles</field>
                                         <field name="code">IMMOBILIS_INCORPO</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_02_1_0_fr_bilan_actif_column3" model="account.report.expression">
@@ -86,7 +85,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_02_1_0_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Establishment costs</field>
+                                                <field name="name">Frais d'établissement</field>
                                                 <field name="code">FRAIS_ETABLISS</field>
                                                 <field name="expression_ids">
                                                     <record id="account_financial_report_line_02_1_0_1_fr_bilan_actif_column1" model="account.report.expression">
@@ -107,7 +106,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Research and development costs</field>
+                                                <field name="name">Frais de recherche et de développement</field>
                                                 <field name="code">FRAIS_DEVELOPEMENT</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -130,7 +129,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_3_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Concessions, patents, licences, trademarks, rights and similar assets</field>
+                                                <field name="name">Concessions, brevets, licences, marques, droits et valeurs similaires</field>
                                                 <field name="code">CONCESSION_SIMILAIRES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -153,7 +152,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_4_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Commercial fund</field>
+                                                <field name="name">Fonds commercial</field>
                                                 <field name="code">FONDS_COMMERCIAL</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -176,7 +175,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_5_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Others</field>
+                                                <field name="name">Autres</field>
                                                 <field name="code">AUTRES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -199,7 +198,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_6_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Intangible assets in progress</field>
+                                                <field name="name">Immobilisations incorporelles en cours</field>
                                                 <field name="code">IMMOBILIS_COURS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -222,7 +221,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_1_0_7_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Advance payments</field>
+                                                <field name="name">Avances et acomptes</field>
                                                 <field name="code">AVANCES_ACOMPTES_CORPORE</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -248,7 +247,7 @@
                                     </record>
                                     <!-- Immo cor -->
                                     <record id="account_financial_report_line_02_2_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Property, plant and equipment</field>
+                                        <field name="name">Immobilisations corporelles</field>
                                         <field name="code">IMMOBILIS_COPORELLES</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_02_2_0_0_fr_bilan_actif_column3" model="account.report.expression">
@@ -259,7 +258,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_02_2_0_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Land</field>
+                                                <field name="name">Terrains</field>
                                                 <field name="code">TERRAINS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -282,7 +281,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_2_0_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Buildings</field>
+                                                <field name="name">Constructions</field>
                                                 <field name="code">CONSTRUCTIONS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -305,7 +304,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_2_0_3_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Technical installations, equipment and tools</field>
+                                                <field name="name">Installations techniques,matériel et outillage</field>
                                                 <field name="code">INSTALLATION_OUTILLAGE</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -328,7 +327,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_2_0_4_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Others</field>
+                                                <field name="name">Autres</field>
                                                 <field name="code">AUTRES_CORPORE</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -351,7 +350,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_2_0_5_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Property, plant and equipment in progress</field>
+                                                <field name="name">Immobilisations corporelles en cours</field>
                                                 <field name="code">IMMOBILLIS_COURS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -374,7 +373,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_2_0_6_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Advance payments</field>
+                                                <field name="name">Avances et acomptes</field>
                                                 <field name="code">AVANCES_ACOMPTES_CORP</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -400,7 +399,7 @@
                                     </record>
                                     <!-- Immo finan -->
                                     <record id="account_financial_report_line_02_3_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Financial assets</field>
+                                        <field name="name">Immobilisations financières</field>
                                         <field name="code">IMMOBILIS_FINANCIERES</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_02_3_fr_bilan_actif_column3" model="account.report.expression">
@@ -411,7 +410,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_02_3_0_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Shareholdings</field>
+                                                <field name="name">Participations</field>
                                                 <field name="code">PARTICIPATIONS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -434,7 +433,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_3_0_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Receivables from participating interests</field>
+                                                <field name="name">Créances rattachées à des participations</field>
                                                 <field name="code">CREANCES_PARTICIPATIONS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -457,7 +456,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_3_0_3_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Fixed assets of the portfolio activity</field>
+                                                <field name="name">Titres immobilisés de l'activité de portefeuille</field>
                                                 <field name="code">TITRES_PORTEFEUILLE</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -480,7 +479,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_3_0_4_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Other fixed assets</field>
+                                                <field name="name">Autres titres immobilisés</field>
                                                 <field name="code">AUTRES_IMMOBILISES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -503,7 +502,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_3_0_5_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Loans</field>
+                                                <field name="name">Prêts</field>
                                                 <field name="code">PRETS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -526,7 +525,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_02_3_0_6_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Other</field>
+                                                <field name="name">Autres</field>
                                                 <field name="code">AUTRES_FINANCIAL</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -554,7 +553,7 @@
                             </record>
                             <!-- ACTIF CIRCULANT -->
                             <record id="account_financial_report_line_03_0_fr_bilan_actif" model="account.report.line">
-                                <field name="name">Current assets</field>
+                                <field name="name">Actif circulant</field>
                                 <field name="code">ACTIF_CIRCULANT</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_03_0_fr_bilan_actif_column3" model="account.report.expression">
@@ -566,7 +565,7 @@
                                 <field name="children_ids">
                                     <!-- Stock  -->
                                     <record id="account_financial_report_line_03_01_1_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Stock in progress</field>
+                                        <field name="name">Stock en cours</field>
                                         <field name="code">STOCK_COURS</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_03_01_1_fr_bilan_actif_column3" model="account.report.expression">
@@ -577,7 +576,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_03_3_1_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Raw materials and other supplies</field>
+                                                <field name="name">Matières premières et autres approvisionnements</field>
                                                 <field name="code">MATIERES_APPROVI</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -600,7 +599,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Work in progress [goods and services]</field>
+                                                <field name="name">En-cours de production [biens et services]</field>
                                                 <field name="code">EN_COURS_PRODUCTION</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -623,7 +622,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_3_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Intermediate and finished products</field>
+                                                <field name="name">Produits intermédiaires et finis</field>
                                                 <field name="code">PRODUITS_FINIS</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -646,7 +645,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_4_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Stocks from fixed assets</field>
+                                                <field name="name">Stocks provenant d'immobilisations</field>
                                                 <field name="code">STOCK_IMMO</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -659,7 +658,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_5_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Goods</field>
+                                                <field name="name">Marchandises</field>
                                                 <field name="code">MARCHANDISES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -682,7 +681,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_6_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Stocks in transit</field>
+                                                <field name="name">Stocks en voie d'acheminement</field>
                                                 <field name="code">STOCK_ACHEM</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -695,7 +694,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_3_1_7_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Advances and deposits paid on orders</field>
+                                                <field name="name">Avances et acomptes versés sur commandes</field>
                                                 <field name="code">ADVANCES_COMMANDES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -711,7 +710,7 @@
                                     </record>
                                     <!-- Creance -->
                                     <record id="account_financial_report_line_03_01_2_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Claims</field>
+                                        <field name="name">Créances</field>
                                         <field name="code">CREANCES</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_03_01_2_fr_bilan_actif_column3" model="account.report.expression">
@@ -722,7 +721,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_03_01_2_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Trade receivables and related accounts</field>
+                                                <field name="name">Clients et comptes rattachés</field>
                                                 <field name="code">CREANCES_RATTACHES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -745,7 +744,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_01_2_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Other receivables</field>
+                                                <field name="name">Autres créances</field>
                                                 <field name="code">AUTRES_CREANCES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -768,7 +767,7 @@
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_01_2_3_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Subscribed capital - called, not paid</field>
+                                                <field name="name">Capital souscrit - appelé , non versé</field>
                                                 <field name="code">CAPITAL_NON_VERSE</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -784,7 +783,7 @@
                                     </record>
                                     <!-- Divers -->
                                     <record id="account_financial_report_line_03_01_3_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Various</field>
+                                        <field name="name">Divers</field>
                                         <field name="code">DIVERS</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_03_01_3_fr_bilan_actif_column3" model="account.report.expression">
@@ -795,7 +794,7 @@
                                         </field>
                                         <field name="children_ids">
                                             <record id="account_financial_report_line_03_01_3_1_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Marketable securities</field>
+                                                <field name="name">Valeurs mobilières de placement</field>
                                                 <field name="code">VALEURS_PLACEMENT</field>
                                                 <field name="expression_ids">
                                                     <record id="account_financial_report_line_03_01_3_1_fr_bilan_actif_column3" model="account.report.expression">
@@ -806,7 +805,7 @@
                                                 </field>
                                                 <field name="children_ids">
                                                     <record id="account_financial_report_line_03_5_1_fr_bilan_actif" model="account.report.line">
-                                                        <field name="name">Own shares</field>
+                                                        <field name="name">Actions propres</field>
                                                         <field name="code">ACTIONS_PROPRES</field>
                                                         <field name="groupby">account_id</field>
                                                         <field name="foldable" eval="True"/>
@@ -829,7 +828,7 @@
                                                         </field>
                                                     </record>
                                                     <record id="account_financial_report_line_03_5_2_fr_bilan_actif" model="account.report.line">
-                                                        <field name="name">Other titles</field>
+                                                        <field name="name">Autres titres</field>
                                                         <field name="code">AUTRES_TITRES</field>
                                                         <field name="groupby">account_id</field>
                                                         <field name="foldable" eval="True"/>
@@ -852,7 +851,7 @@
                                                         </field>
                                                     </record>
                                                     <record id="account_financial_report_line_03_5_3_fr_bilan_actif" model="account.report.line">
-                                                        <field name="name">Treasury instruments</field>
+                                                        <field name="name">Instruments de trésorerie</field>
                                                         <field name="code">INSTRMENTS_TRESORERIE</field>
                                                         <field name="groupby">account_id</field>
                                                         <field name="foldable" eval="True"/>
@@ -860,14 +859,14 @@
                                                             <record id="account_financial_report_line_03_5_3_fr_bilan_actif_column3" model="account.report.expression">
                                                                 <field name="label">net</field>
                                                                 <field name="engine">account_codes</field>
-                                                                <field name="formula">52</field>
+                                                                <field name="formula">52D</field>
                                                             </record>
                                                         </field>
                                                     </record>
                                                 </field>
                                             </record>
                                             <record id="account_financial_report_line_03_01_3_2_fr_bilan_actif" model="account.report.line">
-                                                <field name="name">Availability</field>
+                                                <field name="name">Disponibilités</field>
                                                 <field name="code">DISPONIBILITES</field>
                                                 <field name="groupby">account_id</field>
                                                 <field name="foldable" eval="True"/>
@@ -885,7 +884,7 @@
                             </record>
                             <!-- Compte de régulartisation -->
                             <record id="account_financial_report_line_04_0_fr_bilan_actif" model="account.report.line">
-                                <field name="name">Adjustment account</field>
+                                <field name="name">Compte de regularisation</field>
                                 <field name="code">REGULARISATION</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_04_0_fr_bilan_actif_column3" model="account.report.expression">
@@ -896,7 +895,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_04_01_1_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Prepaid expenses</field>
+                                        <field name="name">Charges constatés d'avance</field>
                                         <field name="code">CHARGES_DAVANCE</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -909,7 +908,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_04_01_2_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Deferred charges (III)</field>
+                                        <field name="name">Charges à répartir sur plusieurs exercices (III)</field>
                                         <field name="code">CHARGES_EXERCICES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -922,7 +921,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_04_01_3_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Loan repayment premiums (IV)</field>
+                                        <field name="name">Primes de remboursement des emprunts (IV)</field>
                                         <field name="code">PRIMES_EMPRUNTS</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -935,7 +934,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_04_01_4_fr_bilan_actif" model="account.report.line">
-                                        <field name="name">Translation adjustment assets (V)</field>
+                                        <field name="name">Écarts de conversion actif (V)</field>
                                         <field name="code">ECARTS_ACTIF</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -952,7 +951,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_fr_bilan_passif_total" model="account.report.line">
-                        <field name="name">TOTAL PASSIVE (I + II + III + IV + V)</field>
+                        <field name="name">TOTAL PASSIF (I + II + III + IV + V)</field>
                         <field name="code">PASSIF_TOT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_fr_bilan_passif_total_column3" model="account.report.expression">
@@ -964,7 +963,7 @@
                         <field name="children_ids">
                             <!-- Capitaux propre-->
                             <record id="account_financial_report_line_01_0_fr_bilan_passif" model="account.report.line">
-                                <field name="name">Equity</field>
+                                <field name="name">Capitaux Propres</field>
                                 <field name="code">CAPITAUX_PROPRES</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_01_0_fr_bilan_passif_column3" model="account.report.expression">
@@ -975,7 +974,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_01_0_1_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Share or individual capital</field>
+                                        <field name="name">Capital social ou individuel</field>
                                         <field name="code">CAPITAL</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -988,7 +987,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_01_0_2_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Trust funds</field>
+                                        <field name="name">Fonds fiduciaires</field>
                                         <field name="code">FONDS_FIDUCIAIRES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1001,7 +1000,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_01_0_3_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Share premium, merger premium, contribution premium</field>
+                                        <field name="name">Primes d'émission, de fusion, d'apport</field>
                                         <field name="code">PRIMES_DAPPORT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1014,7 +1013,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_01_0_4_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Revaluation differences</field>
+                                        <field name="name">Écarts de réévaluation</field>
                                         <field name="code">ECARTS_REEVALUTION</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1027,7 +1026,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_01_0_5_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Equity difference</field>
+                                        <field name="name">Écart d'équivalence</field>
                                         <field name="code">ECART_EQUIVALENCE</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1043,7 +1042,7 @@
                             </record>
                             <!-- Reserve -->
                             <record id="account_financial_report_line_02_0_fr_bilan_passif" model="account.report.line">
-                                <field name="name">Reserves</field>
+                                <field name="name">Réserves</field>
                                 <field name="code">RESERVES</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_02_0_fr_bilan_passif_column3" model="account.report.expression">
@@ -1054,7 +1053,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_02_0_1_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Legal reserve</field>
+                                        <field name="name">Réserve légale</field>
                                         <field name="code">RESERVE_LEGALE</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1067,7 +1066,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_2_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Regulated reserves</field>
+                                        <field name="name">Réserves réglementées</field>
                                         <field name="code">RESERVE_INDISPONIBLE</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1080,7 +1079,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_3_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Statutory or contractual reservations</field>
+                                        <field name="name">Réserves statutaires ou contractuelles</field>
                                         <field name="code">RESERVE_CONTRACT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1093,7 +1092,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_4_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Regulated reserves</field>
+                                        <field name="name">Réserves réglementées</field>
                                         <field name="code">RESERVE_REGLEMENT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1106,7 +1105,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_5_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Other reserves</field>
+                                        <field name="name">Autres réserves</field>
                                         <field name="code">AUTRES_RESERVES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1119,31 +1118,25 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_6_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Retained earnings</field>
+                                        <field name="name">Report à nouveau</field>
                                         <field name="code">REPORT_NOUVEAU</field>
                                         <field name="expression_ids">
-                                            <record id="account_financial_report_line_02_0_6_fr_bilan_passif_past_pnl" model="account.report.expression">
-                                                <field name="label">past_pnl</field>
-                                                <field name="engine">aggregation</field>
-                                                <field name="subformula">cross_report</field>
-                                                <field name="formula">total_all.balance</field>
-                                                <field name="date_scope">to_beginning_of_fiscalyear</field>
+                                            <record id="account_financial_report_line_02_0_6_fr_bilan_passif_balance_account_codes" model="account.report.expression">
+                                                <field name="label">net_account_codes</field>
+                                                <field name="engine">account_codes</field>
+                                                <field name="formula">-11 - 12 - 7 - 6</field>
+                                                <field name="date_scope">from_beginning</field>
                                             </record>
-                                            <record id="account_financial_report_line_02_0_6_fr_bilan_passif_accounts" model="account.report.expression">
-                                                <field name="label">accounts</field>
-                                                <field name="engine">domain</field>
-                                                <field name="formula">['|', '|', ('account_id.code','=like','11%'), ('account_id.code','=like','12%'), ('account_id.account_type','=','equity_unaffected')]</field>
-                                                <field name="subformula">-sum</field>
-                                            </record>
-                                            <record id="account_financial_report_line_02_0_6_fr_bilan_passif_net" model="account.report.expression">
+                                            <record id="account_financial_report_line_02_0_6_fr_bilan_passif_balance" model="account.report.expression">
                                                 <field name="label">net</field>
                                                 <field name="engine">aggregation</field>
-                                                <field name="formula">REPORT_NOUVEAU.past_pnl + REPORT_NOUVEAU.accounts</field>
+                                                <field name="formula">REPORT_NOUVEAU.net_account_codes - RESULT_LEXERCICE.net</field>
+                                                <field name="date_scope">from_beginning</field>
                                             </record>
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_7_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Result for the year</field>
+                                        <field name="name">Résultat de l'exercice</field>
                                         <field name="code">RESULT_LEXERCICE</field>
                                         <field name="expression_ids">
                                             <record id="account_financial_report_line_02_0_7_fr_bilan_passif_net" model="account.report.expression">
@@ -1156,7 +1149,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_8_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Investment grants</field>
+                                        <field name="name">Subventions d'investissement</field>
                                         <field name="code">SUBVENTIONS_INVEST</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1169,7 +1162,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_02_0_9_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Regulated provisions</field>
+                                        <field name="name">Provisions réglementées</field>
                                         <field name="code">PROVISIONS_REGLEMENT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1185,7 +1178,7 @@
                             </record>
                             <!-- Autres fonds propres -->
                             <record id="account_financial_report_line_03_0_fr_bilan_passif" model="account.report.line">
-                                <field name="name">Other own funds</field>
+                                <field name="name">Autres fonds propres</field>
                                 <field name="code">AUTRES_FONDS_PROPRES</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_03_0_fr_bilan_passif_column3" model="account.report.expression">
@@ -1196,7 +1189,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_03_0_1_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Amount of equity issues</field>
+                                        <field name="name">Montant des émissions de titres participatifs</field>
                                         <field name="code">MONTANT_EMISSIONS</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1209,7 +1202,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_03_0_2_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Conditional advances</field>
+                                        <field name="name">Avances conditionnées</field>
                                         <field name="code">AVANCES_CONDITIONNEES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1222,7 +1215,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_03_0_3_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Liaison accounts</field>
+                                        <field name="name">Comptes de liaison</field>
                                         <field name="code">COMPTES_LIAISONS</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1249,7 +1242,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_04_0_1_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Provisions for risks</field>
+                                        <field name="name">Provisions pour risques</field>
                                         <field name="code">PROVISIONS_RISQUES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1262,7 +1255,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_04_0_2_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Provisions for charges</field>
+                                        <field name="name">Provisions pour charges</field>
                                         <field name="code">PROVISIONS_CHARGES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1278,7 +1271,7 @@
                             </record>
                             <!-- Dettes -->
                             <record id="account_financial_report_line_05_0_fr_bilan_passif" model="account.report.line">
-                                <field name="name">Debts</field>
+                                <field name="name">Dettes</field>
                                 <field name="code">DETTES</field>
                                 <field name="expression_ids">
                                     <record id="account_financial_report_line_05_0_fr_bilan_passif_column3" model="account.report.expression">
@@ -1289,7 +1282,7 @@
                                 </field>
                                 <field name="children_ids">
                                     <record id="account_financial_report_line_05_0_1_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Convertible bonds</field>
+                                        <field name="name">Emprunts obligataires convertibles</field>
                                         <field name="code">EMPRUNTS_CONVERT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1302,7 +1295,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_2_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Other bonds</field>
+                                        <field name="name">Autres emprunts obligataires</field>
                                         <field name="code">AUTRES_OBLIGATAIRES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1315,7 +1308,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_3_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Borrowings and debts with credit institutions</field>
+                                        <field name="name">Emprunts et dettes auprès des établissements de crédit</field>
                                         <field name="code">EMPRUNTS_CREDIT</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1328,7 +1321,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_4_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Borrowings and other financial liabilities</field>
+                                        <field name="name">Emprunts et dettes financières diverses</field>
                                         <field name="code">EMPRUNTS_DIVERSES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1336,12 +1329,12 @@
                                             <record id="account_financial_report_line_05_0_4_fr_bilan_passif_column3" model="account.report.expression">
                                                 <field name="label">net</field>
                                                 <field name="engine">account_codes</field>
-                                                <field name="formula">-166 - 165 - 168\(16881,16883,16884) - 17 - 426 - 45\(457,4562)C</field>
+                                                <field name="formula">-166 - 165 - 168\(16881,16883,16884) - 17 - 426 - 45\(457,45621)C</field>
                                             </record>
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_5_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Advances and deposits received on orders in progress</field>
+                                        <field name="name">Avances et acomptes reçus sur commandes en cours</field>
                                         <field name="code">AVANCES_COURS</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1354,7 +1347,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_6_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Trade payables and related accounts</field>
+                                        <field name="name">Dettes fournisseurs et comptes rattachés</field>
                                         <field name="code">DETTES_RATTACHES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1367,7 +1360,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_7_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Tax and social security liabilities</field>
+                                        <field name="name">Dettes fiscales et sociales</field>
                                         <field name="code">DETTES_SOCIALES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1375,12 +1368,12 @@
                                             <record id="account_financial_report_line_05_0_7_fr_bilan_passif_column3" model="account.report.expression">
                                                 <field name="label">net</field>
                                                 <field name="engine">account_codes</field>
-                                                <field name="formula">-4455 - 44587 - 421 - 457 - 442 - 424 - 43\(438) - 422 - 427 - 447 - 446 - 4452 - 44584 - 443C - 4453C - 4457C - 449C - 428\(4287)C - 448C - 444C - 4458\(44584,44587)C - 438C</field>
+                                                <field name="formula">-4455 - 44587 - 421 - 457 - 442 - 424 - 43\(438) - 422 - 427 - 447 - 446 - 4452 - 44584 - 443C - 4457C - 449C - 428\(4287)C - 448C - 444C - 4458\(44584,44587)C - 438C</field>
                                             </record>
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_8_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Debts on fixed assets and related accounts</field>
+                                        <field name="name">Dettes sur immobilisations et comptes rattachés</field>
                                         <field name="code">DETTES_SUR_RATTACHES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1393,7 +1386,7 @@
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_0_9_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Other debts</field>
+                                        <field name="name">Autres dettes</field>
                                         <field name="code">AUTRES_DETTES</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1401,12 +1394,12 @@
                                             <record id="account_financial_report_line_05_0_9_fr_bilan_passif_column3" model="account.report.expression">
                                                 <field name="label">net</field>
                                                 <field name="engine">account_codes</field>
-                                                <field name="formula">-4198 - 509 - 4196 - 4197 - 4686 - 464 - 468\(4686)C - 470C - 478C - 467C</field>
+                                                <field name="formula">-4198 - 509 - 4196 - 4197 - 4686 - 464 - 468C - 470C - 478C - 467C</field>
                                             </record>
                                         </field>
                                     </record>
                                     <record id="account_financial_report_line_05_1_0_fr_bilan_passif" model="account.report.line">
-                                        <field name="name">Deferred income</field>
+                                        <field name="name">Produits constatés d'avance</field>
                                         <field name="code">PRODUITS_DAVANCE</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
@@ -1422,7 +1415,7 @@
                             </record>
                             <!-- ECARTS_PASSIF -->
                             <record id="account_financial_report_line_06_0_fr_bilan_passif" model="account.report.line">
-                                <field name="name">Unrealized foreign exchange gains and losses (V)</field>
+                                <field name="name">Écarts de conversion passif (V)</field>
                                 <field name="code">ECARTS_PASSIF</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
@@ -1439,13 +1432,12 @@
                 </field>
             </record>
             <record id="account_financial_report_fr_off_sheet" model="account.report.line">
-                <field name="name">Off-balance sheet accounts</field>
+                <field name="name">COMPTES HORS BILAN</field>
                 <field name="code">FR_OS</field>
                 <field name="groupby">account_id</field>
                 <field name="hide_if_zero" eval="1"/>
                 <field name="foldable" eval="True"/>
                 <field name="domain_formula">-sum([('account_id.account_type', '=', 'off_balance')])</field>
-                <field name="hierarchy_level">0</field>
             </record>
         </field>
     </record>

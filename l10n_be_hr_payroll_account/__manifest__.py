@@ -3,7 +3,7 @@
 
 {
     'name': 'Belgium - Payroll with Accounting',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'category': 'Human Resources',
     'depends': ['l10n_be_hr_payroll', 'hr_payroll_account', 'l10n_be'],
     'description': """
@@ -17,5 +17,6 @@ Accounting Data for Belgian Payroll Rules.
         'views/l10n_be_274_XX_views.xml',
         'data/l10n_be_hr_payroll_account_data.xml',
     ],
+    'post_init_hook': '_post_install_hook_configure_journals',
     'license': 'OEEL-1',
 }

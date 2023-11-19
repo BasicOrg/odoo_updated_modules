@@ -1,36 +1,20 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { CANCEL_GLOBAL_CLICK, StreamPostKanbanRecord } from '@social/js/stream_post_kanban_record';
 import { StreamPostCommentsYoutube } from './stream_post_comments';
 
-import { patch } from "@web/core/utils/patch";
-import { useEffect } from "@odoo/owl";
+import { patch } from '@web/core/utils/patch';
 
-patch(StreamPostKanbanRecord.prototype, {
+patch(StreamPostKanbanRecord.prototype, 'social_youtube.StreamPostKanbanRecord', {
 
-    setup() {
-        super.setup(...arguments);
-        useEffect((commentEl) => {
-            if (commentEl) {
-                const onYoutubeCommentsClick = this._onYoutubeCommentsClick.bind(this);
-                commentEl.addEventListener('click', onYoutubeCommentsClick);
-                return () => {
-                    commentEl.removeEventListener('click', onYoutubeCommentsClick);
-                };
-            }
-        }, () => [this.rootRef.el.querySelector('.o_social_youtube_comments')]);
-    },
-
-    _onYoutubeCommentsClick(ev) {
-        ev.stopPropagation();
+    _onYoutubeCommentsClick() {
         const postId = this.record.id.raw_value;
         this.rpc('/social_youtube/get_comments', {
             stream_post_id: postId,
             comments_count: this.commentsCount,
         }).then((result) => {
             this.dialog.add(StreamPostCommentsYoutube, {
-                title: _t('YouTube Comments'),
+                title: this.env._t('YouTube Comments'),
                 accountId: this.record.account_id.raw_value,
                 originalPost: this.record,
                 postId: postId,

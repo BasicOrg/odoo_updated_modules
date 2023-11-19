@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
-import { onWillStart } from "@odoo/owl";
-import { useService } from "@web/core/utils/hooks";
 import { CalendarCommonPopover } from "@web/views/calendar/calendar_common/calendar_common_popover";
-import { formatFloatTime } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
+import { useService } from "@web/core/utils/hooks";
+import { formatFloat, formatFloatTime } from "@web/views/fields/formatters";
+
+const { onWillStart } = owl;
 
 export class PlanningCalendarCommonPopover extends CalendarCommonPopover {
     setup() {

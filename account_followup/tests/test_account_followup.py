@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from unittest.mock import patch
-
 from freezegun import freeze_time
 
 from odoo import Command, fields
 from odoo.tests import tagged
-from odoo.tests.common import Form
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
 
@@ -15,35 +12,30 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
         super().setUpClass(chart_template_ref=chart_template_ref)
+
         cls.env['account_followup.followup.line'].search([]).unlink()
 
-    def create_followup(self, delay):
-        return self.env['account_followup.followup.line'].create({
-            'name': f'followup {delay}',
-            'delay': delay,
+        cls.first_followup_line = cls.env['account_followup.followup.line'].create({
+            'name': 'first_followup_line',
+            'delay': -10,
             'send_email': False,
-            'company_id': self.company_data['company'].id
+            'company_id': cls.company_data['company'].id
         })
-
-    def create_invoice(self, date):
-        invoice = self.env['account.move'].create({
-            'move_type': 'out_invoice',
-            'invoice_date': date,
-            'partner_id': self.partner_a.id,
-            'invoice_line_ids': [Command.create({
-                'quantity': 1,
-                'price_unit': 500,
-                'tax_ids': [],
-            })]
+        cls.second_followup_line = cls.env['account_followup.followup.line'].create({
+            'name': 'second_followup_line',
+            'delay': 10,
+            'send_email': False,
+            'company_id': cls.company_data['company'].id
         })
-        invoice.action_post()
-        return invoice
+        cls.third_followup_line = cls.env['account_followup.followup.line'].create({
+            'name': 'third_followup_line',
+            'delay': 15,
+            'send_email': False,
+            'company_id': cls.company_data['company'].id
+        })
 
     def assertPartnerFollowup(self, partner, status, line):
         partner.invalidate_recordset(['followup_status', 'followup_line_id'])
-        # Since we are querying multiple times with data changes in the same transaction (for the purpose of tests),
-        # we need to invalidated the cache in database
-        self.env.cr.execute("DROP TABLE IF EXISTS followup_data_cache")
         res = partner._query_followup_data()
         self.assertEqual(res.get(partner.id, {}).get('followup_status'), status)
         self.assertEqual(res.get(partner.id, {}).get('followup_line_id'), line.id if line else None)
@@ -54,8 +46,6 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
         """
         Test that the responsible is correctly set
         """
-        self.first_followup_line = self.create_followup(delay=-10)
-
         user1 = self.env['res.users'].create({
             'name': 'A User',
             'login': 'a_user',
@@ -99,15 +89,21 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
         self.assertEqual(self.partner_a._get_followup_responsible(), self.partner_a.user_id)
 
     def test_followup_line_and_status(self):
-        self.first_followup_line = self.create_followup(delay=-10)
-        self.second_followup_line = self.create_followup(delay=10)
-        self.third_followup_line = self.create_followup(delay=15)
-
-        self.create_invoice('2022-01-02')
+        invoice_1 = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'invoice_date': '2022-01-02',
+            'partner_id': self.partner_a.id,
+            'invoice_line_ids': [Command.create({
+                'quantity': 1,
+                'price_unit': 500,
+                'tax_ids': [],
+            })]
+        })
+        invoice_1.action_post()
 
         with freeze_time('2021-12-20'):
             # Today < due date + delay first followup level (negative delay -> reminder before due date)
-            self.assertPartnerFollowup(self.partner_a, 'no_action_needed', self.first_followup_line)
+            self.assertPartnerFollowup(self.partner_a, 'no_action_needed', None)
 
         with freeze_time('2021-12-24'):
             # Today = due date + delay first followup level
@@ -122,7 +118,7 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
             # Today > due date + delay second followup level but first followup level not processed yet
             self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', self.first_followup_line)
 
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
+            self.partner_a._execute_followup_partner()
             # Due date exceeded but first followup level processed
             # followup_next_action_date set in 20 days (delay 2nd level - delay 1st level = 10 - (-10) = 20)
             self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', self.second_followup_line)
@@ -133,143 +129,14 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
             self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', self.second_followup_line)
 
             # Exclude every unreconciled invoice lines
-            self.partner_a.unreconciled_aml_ids.blocked = True
+            for aml in self.partner_a.unreconciled_aml_ids:
+                aml.blocked = True
             # Every unreconciled invoice lines are blocked, the result from the query will be None
             self.assertPartnerFollowup(self.partner_a, None, None)
 
-            # It resets if we unblock
-            self.partner_a.unreconciled_aml_ids.blocked = False
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', self.second_followup_line)
-
-            self.env['account.payment.register'].create({
-                'line_ids': self.partner_a.unreconciled_aml_ids,
-            })._create_payments()
-            self.assertPartnerFollowup(self.partner_a, None, None)
-
-    def test_followup_multiple_invoices(self):
-        followup_10 = self.create_followup(delay=10)
-        followup_15 = self.create_followup(delay=15)
-        followup_30 = self.create_followup(delay=30)
-
-        self.create_invoice('2022-01-01')
-        self.create_invoice('2022-01-02')
-
-        # 9 days are not passed yet for the first followup level, current delay is 10-0=10
-        with freeze_time('2022-01-10'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-
-        # 10 days passed, current delay is 10-0=10, need to take action
-        with freeze_time('2022-01-11'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_10)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 4 days ago, current delay is 15-10=5, nothing needed
-        with freeze_time('2022-01-15'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 5 days ago, current delay is 15-10=5, need to take action
-        with freeze_time('2022-01-16'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_15)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-        # action taken 14 days ago, current delay is 30-15=15, nothing needed
-        with freeze_time('2022-01-30'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-        # action taken 15 days ago, current delay is 30-15=15, need to take action
-        with freeze_time('2022-01-31'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_30)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-        # action taken 13 days ago, current delay is 15 (same on repeat), nothing needed
-        with freeze_time('2022-02-14'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-        # action taken 14 days ago, current delay is 15 (same on repeat), need to take action
-        with freeze_time('2022-02-15'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_30)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-    def test_followup_multiple_invoices_with_first_payment(self):
-        # Test the behavior of multiple invoices when the first one is paid
-        followup_10 = self.create_followup(delay=10)
-        followup_15 = self.create_followup(delay=15)
-        followup_30 = self.create_followup(delay=30)
-
-        invoice_01 = self.create_invoice('2022-01-01')
-        self.create_invoice('2022-01-02')
-
-        # 9 days are not passed yet for the first followup level, current delay is 10-0=10
-        with freeze_time('2022-01-10'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-
-        # 10 days passed, current delay is 10-0=10, need to take action
-        with freeze_time('2022-01-11'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_10)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-            self.env['account.payment.register'].create({
-                'line_ids': invoice_01.line_ids.filtered(lambda l: l.display_type == 'payment_term'),
-            })._create_payments()
-
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 4 days ago, current delay is 15-10=5, nothing needed
-        with freeze_time('2022-01-15'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 5 days ago, current delay is 15-10=5, need to take action
-        with freeze_time('2022-01-16'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_15)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
-    def test_followup_multiple_invoices_with_last_payment(self):
-        # Test the behavior of multiple invoices when the last one is paid
-        # Should behave exactly like test_followup_multiple_invoices_with_first_payment
-        # because the followup is done at the same time.
-        followup_10 = self.create_followup(delay=10)
-        followup_15 = self.create_followup(delay=15)
-        followup_30 = self.create_followup(delay=30)
-
-        self.create_invoice('2022-01-01')
-        invoice_02 = self.create_invoice('2022-01-02')
-
-        # 9 days are not passed yet for the first followup level, current delay is 10-0=10
-        with freeze_time('2022-01-10'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-
-        # 10 days passed, current delay is 10-0=10, need to take action
-        with freeze_time('2022-01-11'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_10)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-            self.env['account.payment.register'].create({
-                'line_ids': invoice_02.line_ids.filtered(lambda l: l.display_type == 'payment_term'),
-            })._create_payments()
-
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 4 days ago, current delay is 15-10=5, nothing needed
-        with freeze_time('2022-01-15'):
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_15)
-
-        # action taken 5 days ago, current delay is 15-10=5, need to take action
-        with freeze_time('2022-01-16'):
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_15)
-            self.partner_a._execute_followup_partner(options={'snailmail': False})
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_30)
-
     def test_followup_contacts(self):
         followup_contacts = self.partner_a._get_all_followup_contacts()
-        billing_contact = self.env['res.partner'].browse(self.partner_a.address_get(['invoice'])['invoice'])
-        self.assertEqual(billing_contact, followup_contacts)
+        self.assertEqual(self.env['res.partner'], followup_contacts)
 
         followup_partner_1 = self.env['res.partner'].create({
             'name': 'followup partner 1',
@@ -284,58 +151,3 @@ class TestAccountFollowupReports(AccountTestInvoicingCommon):
         expected_partners = followup_partner_1 + followup_partner_2
         followup_contacts = self.partner_a._get_all_followup_contacts()
         self.assertEqual(expected_partners, followup_contacts)
-
-    def test_followup_cron(self):
-        cron = self.env.ref('account_followup.ir_cron_auto_post_draft_entry')
-        followup_10 = self.create_followup(delay=10)
-        followup_10.auto_execute = True
-
-        self.create_invoice('2022-01-01')
-
-        # Check that no followup is automatically done if there is no action needed
-        with freeze_time('2022-01-10'), patch.object(type(self.env['res.partner']), '_send_followup') as patched:
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-            cron.method_direct_trigger()
-            patched.assert_not_called()
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-
-        # Check that the action is taken one and only one time when there is an action needed
-        with freeze_time('2022-01-11'), patch.object(type(self.env['res.partner']), '_send_followup') as patched:
-            self.assertPartnerFollowup(self.partner_a, 'in_need_of_action', followup_10)
-            cron.method_direct_trigger()
-            patched.assert_called_once()
-            self.assertPartnerFollowup(self.partner_a, 'with_overdue_invoices', followup_10)
-
-    def test_onchange_residual_amount(self):
-        '''
-        Test residual onchange on account move lines: the residual amount is
-        computed using an sql query. This test makes sure the computation also
-        works properly during onchange (on records having a NewId).
-        '''
-        invoice = self.create_invoice('2016-01-01')
-        self.create_invoice('2016-01-02')
-
-        self.env['account.payment.register'].with_context(active_ids=invoice.ids, active_model='account.move').create({
-            'payment_date': invoice.date,
-            'amount': 100,
-        })._create_payments()
-
-        self.assertRecordValues(self.partner_a, [{'total_due': 900.0}])
-        self.assertRecordValues(self.partner_a.unreconciled_aml_ids.sorted(), [
-            {'amount_residual_currency': 500.0},
-            {'amount_residual_currency': 400.0},
-        ])
-
-        with Form(self.partner_a, view='account_followup.customer_statements_form_view') as form:
-            # The Form() does not mock the default_order defined on the view.
-            # We need to define which line is the first with the date
-            for index, _orm_command in enumerate(form._values['unreconciled_aml_ids']):
-                with form.unreconciled_aml_ids.edit(index) as aml_form:
-                    if aml_form.invoice_date == '2016-01-01':
-                        aml_form.blocked = True
-
-        self.assertRecordValues(self.partner_a, [{'total_due': 500.0}])
-        self.assertRecordValues(self.partner_a.unreconciled_aml_ids.sorted(), [
-            {'amount_residual_currency': 500.0},
-            {'amount_residual_currency': 400.0},
-        ])

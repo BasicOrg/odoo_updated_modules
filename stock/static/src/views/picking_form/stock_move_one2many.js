@@ -2,66 +2,32 @@
 
 import { registry } from "@web/core/registry";
 import { ListRenderer } from "@web/views/list/list_renderer";
-import { X2ManyField, x2ManyField } from "@web/views/fields/x2many/x2many_field";
-import { useEffect } from "@odoo/owl";
+import { X2ManyField } from "@web/views/fields/x2many/x2many_field";
+import { ViewButton } from "@web/views/view_button/view_button";
 
-export class MovesListRenderer extends ListRenderer {
-    static recordRowTemplate = "stock.MovesListRenderer.RecordRow";
-
-    setup() {
-        super.setup();
-        useEffect(
-            () => {
-                this.keepColumnWidths = false;
-            },
-            () => [this.state.columns]
-        );
+class MoveViewButton extends ViewButton {
+    async onClick(ev) {
+        if (this.props.clickParams.name != "action_show_details") {
+            super.onClick(ev);
+        } else {
+            await this.props.record.saveAndOpenDetails();
+        }
     }
 
-    processAllColumn(allColumns, list) {
-        let cols = super.processAllColumn(...arguments);
-        if (list.resModel === "stock.move") {
-            cols.push({
-                type: 'opendetailsop',
-                id: `column_detailOp_${cols.length}`,
-                column_invisible: 'parent.state=="draft"',
-            });
+    get disabled() {
+        if (this.props.clickParams.name == "action_show_details") {
+            return false;
         }
-        return cols;
+        return super.disabled;
     }
 }
 
-MovesListRenderer.props = [ ...ListRenderer.props, 'stockMoveOpen?']
+MoveViewButton.props = [...ViewButton.props];
+export class MovesListRenderer extends ListRenderer {}
 
-export class StockMoveX2ManyField extends X2ManyField {
-    setup() {
-        super.setup();
-        this.canOpenRecord = true;
-    }
+MovesListRenderer.components = { ...ListRenderer.components, ViewButton: MoveViewButton };
 
-    get isMany2Many() {
-        return false;
-    }
-
-
-
-    async openRecord(record) {
-        if (this.canOpenRecord) {
-            const dirty = await record.isDirty();
-            if (dirty && 'quantity' in record._changes) {
-                await record.model.root.save({ reload: true });
-            }
-        }
-        return super.openRecord(record);
-    }
-}
-
+export class StockMoveX2ManyField extends X2ManyField {}
 StockMoveX2ManyField.components = { ...X2ManyField.components, ListRenderer: MovesListRenderer };
 
-export const stockMoveX2ManyField = {
-    ...x2ManyField,
-    component: StockMoveX2ManyField,
-    additionalClasses: [...x2ManyField.additionalClasses || [], "o_field_one2many"],
-};
-
-registry.category("fields").add("stock_move_one2many", stockMoveX2ManyField);
+registry.category("fields").add("stock_move_one2many", StockMoveX2ManyField);

@@ -9,17 +9,12 @@ class IrActionsReport(models.Model):
     _name = 'ir.actions.report'
     _inherit = ['studio.mixin', 'ir.actions.report']
 
-    def _read_paper_format_measures(self, paperformat_fields=None):
-        if paperformat_fields is None:
-            paperformat_fields = ["margin_top", "margin_left", "margin_right", "print_page_height", "print_page_width", "header_spacing", "dpi", "disable_shrinking"]
-        self.ensure_one()
-        return self.get_paperformat().read(paperformat_fields)[0]
-
     @api.model
     def _render_qweb_html(self, report_ref, docids, data=None):
-        if self._context.get("studio"):
-            data = data or dict()
-            data["studio"] = True
+        report = self._get_report(report_ref)
+        if data and data.get('full_branding'):
+            self = self.with_context(full_branding=True)
+        if data and data.get('studio') and report.report_type == 'qweb-pdf':
             data['report_type'] = 'pdf'
         return super(IrActionsReport, self)._render_qweb_html(report_ref, docids, data)
 
@@ -40,14 +35,6 @@ class IrActionsReport(models.Model):
             'report_file': new_view.key,  # TODO: are we sure about this?
         })
 
-    def _get_rendering_context(self, report, docids, data):
-        ctx = super()._get_rendering_context(report, docids, data)
-        if self.env.context.get("studio") and not ctx.get("docs"):
-            # TODO or not ?: user inputed values in data ?
-            doc = self.env[report.model].new({})
-            ctx["docs"] = doc
-        return ctx
-
     @api.model
     def _get_rendering_context_model(self, report):
         # If the report is a copy of another report, and this report is using a custom model to render its html,
@@ -66,15 +53,14 @@ class IrActionsReport(models.Model):
 
     def associated_view(self):
         action_data = super(IrActionsReport, self).associated_view()
-        if action_data is not False:
-            domain = expression.normalize_domain(action_data['domain'])
+        domain = expression.normalize_domain(action_data['domain'])
 
-            view_name = self.report_name.split('.')[1].split('_copy_')[0]
+        view_name = self.report_name.split('.')[1].split('_copy_')[0]
 
-            domain = expression.OR([
-                domain,
-                ['&', ('name', 'ilike', view_name), ('type', '=', 'qweb')]
-            ])
+        domain = expression.OR([
+            domain,
+            ['&', ('name', 'ilike', view_name), ('type', '=', 'qweb')]
+        ])
 
-            action_data['domain'] = domain
+        action_data['domain'] = domain
         return action_data

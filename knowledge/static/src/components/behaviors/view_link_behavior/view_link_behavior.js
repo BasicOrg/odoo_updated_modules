@@ -3,7 +3,8 @@
 import { AbstractBehavior } from "@knowledge/components/behaviors/abstract_behavior/abstract_behavior";
 import { makeContext } from "@web/core/context";
 import { useService } from "@web/core/utils/hooks";
-import { useEffect } from "@odoo/owl";
+
+const { useEffect } = owl;
 
 
 /**
@@ -11,16 +12,6 @@ import { useEffect } from "@odoo/owl";
  * usable in Odoo)
  */
 export class ViewLinkBehavior extends AbstractBehavior {
-    static props = {
-        ...AbstractBehavior.props,
-        action_xml_id: { type: String, optional: true },
-        act_window: { type: Object, optional: true },
-        context: { type: Object },
-        name: { type: String },
-        view_type: { type: String }
-    };
-    static template = "knowledge.ViewLinkBehavior";
-
     setup () {
         super.setup();
         this.actionService = useService('action');
@@ -39,16 +30,12 @@ export class ViewLinkBehavior extends AbstractBehavior {
         });
     }
 
-    //--------------------------------------------------------------------------
-    // HANDLERS
-    //--------------------------------------------------------------------------
-
     /**
      * @param {Event} event
      */
     async openViewLink (event) {
         const action = await this.actionService.loadAction(
-            this.props.act_window || this.props.action_xml_id,
+            this.props.act_window,
             makeContext([this.props.context])
         );
         if (action.type !== "ir.actions.act_window") {
@@ -57,15 +44,18 @@ export class ViewLinkBehavior extends AbstractBehavior {
         action.globalState = {
             searchModel: this.props.context.knowledge_search_model_state
         };
-        const props = {};
-        if (action.context.orderBy) {
-            try {
-                props.orderBy = JSON.parse(action.context.orderBy);
-            } catch {};
-        }
         this.actionService.doAction(action, {
-            viewType: this.props.view_type,
-            props
+            viewType: this.props.view_type
         });
     }
 }
+
+ViewLinkBehavior.template = "knowledge.ViewLinkBehavior";
+ViewLinkBehavior.components = {};
+ViewLinkBehavior.props = {
+    ...AbstractBehavior.props,
+    act_window: { type: Object },
+    context: { type: Object },
+    name: { type: String },
+    view_type: { type: String }
+};

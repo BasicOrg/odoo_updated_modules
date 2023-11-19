@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
 import { routeToUrl } from "@web/core/browser/router_service";
 import { registry } from "@web/core/registry";
@@ -8,7 +7,7 @@ import { registry } from "@web/core/registry";
 function activateAssetsDebugging({ env }) {
     return {
         type: "item",
-        description: _t("Activate Assets Debugging"),
+        description: env._t("Activate Assets Debugging"),
         callback: () => {
             browser.location.search = "?debug=assets";
         },
@@ -19,7 +18,7 @@ function activateAssetsDebugging({ env }) {
 function activateTestsAssetsDebugging({ env }) {
     return {
         type: "item",
-        description: _t("Activate Tests Assets Debugging"),
+        description: env._t("Activate Tests Assets Debugging"),
         callback: () => {
             browser.location.search = "?debug=assets,tests";
         },
@@ -30,7 +29,7 @@ function activateTestsAssetsDebugging({ env }) {
 export function regenerateAssets({ env }) {
     return {
         type: "item",
-        description: _t("Regenerate Assets Bundles"),
+        description: env._t("Regenerate Assets Bundles"),
         callback: async () => {
             const domain = [
                 "&",
@@ -51,7 +50,7 @@ function becomeSuperuser({ env }) {
     const becomeSuperuserURL = browser.location.origin + "/web/become";
     return {
         type: "item",
-        description: _t("Become Superuser"),
+        description: env._t("Become Superuser"),
         hide: !env.services.user.isAdmin,
         href: becomeSuperuserURL,
         callback: () => {
@@ -64,7 +63,7 @@ function becomeSuperuser({ env }) {
 function leaveDebugMode({ env }) {
     return {
         type: "item",
-        description: _t("Leave the Developer Tools"),
+        description: env._t("Leave the Developer Tools"),
         callback: () => {
             const route = env.services.router.current;
             route.search.debug = "";

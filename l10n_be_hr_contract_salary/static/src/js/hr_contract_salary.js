@@ -1,9 +1,10 @@
-/** @odoo-module **/
+odoo.define('l10n_be_hr_contract_salary', function (require) {
+"use strict";
 
-import hrContractSalary from "@hr_contract_salary/js/hr_contract_salary";
+const hrContractSalary = require('hr_contract_salary');
 
 hrContractSalary.include({
-    events: Object.assign({}, hrContractSalary.prototype.events, {
+    events: _.extend({}, hrContractSalary.prototype.events, {
         "change input[name='has_hospital_insurance_radio']": "onchangeHospital",
         "change input[name='fold_company_car_total_depreciated_cost']": "onchangeCompanyCar",
         "change input[name='fold_private_car_reimbursed_amount']": "onchangePrivateCar",
@@ -11,7 +12,7 @@ hrContractSalary.include({
         "change input[name='children']": "onchangeChildren",
     }),
 
-    getBenefits() {
+    getAdvantages() {
         var res = this._super.apply(this, arguments);
         res.contract.l10n_be_canteen_cost = parseFloat($("input[name='l10n_be_canteen_cost']").val() || "0.0");
         return res
@@ -24,20 +25,27 @@ hrContractSalary.include({
 
     onchangeCompanyCar: function(event) {
         var private_car_input = $("input[name='fold_private_car_reimbursed_amount']")
-        if (event.target.checked && private_car_input.length && private_car_input[0].checked) {
+        if (event.target.checked && private_car_input[0].checked) {
             private_car_input.click()
         }
     },
 
     onchangePrivateCar: function(event) {
         var company_car_input = $("input[name='fold_company_car_total_depreciated_cost']")
-        if (event.target.checked && company_car_input.length && company_car_input[0].checked) {
+        if (event.target.checked && company_car_input[0].checked) {
             company_car_input.click()
         }
     },
 
-    onchangeFoldedResetInteger(benefitField) {
-        if (benefitField === 'private_car_reimbursed_amount_manual' || benefitField === 'l10n_be_bicyle_cost_manual') {
+    onchange_mobility: function() {
+        this._super.apply(this, arguments);
+        var fuel_card_div = $("div[name='fuel_card']");
+        // Don't hide the fuel card if no car is chosen
+        fuel_card_div.removeClass("hidden");
+    },
+
+    onchangeFoldedResetInteger(advantageField) {
+        if (advantageField === 'private_car_reimbursed_amount_manual' || advantageField === 'l10n_be_bicyle_cost_manual') {
             return false;
         } else {
             return this._super.apply(this, arguments);
@@ -48,6 +56,7 @@ hrContractSalary.include({
         const res = await this._super(...arguments);
         this.onchangeChildren();
         this.onchangeHospital();
+        // YTI TODO: There is probably a way to remove this crap
         $("input[name='insured_relative_children']").parent().addClass('d-none');
         $("input[name='insured_relative_adults']").parent().addClass('d-none');
         $("input[name='insured_relative_spouse']").parent().addClass('d-none');
@@ -65,6 +74,7 @@ hrContractSalary.include({
             text: 'Additional Information'
         }));
         this.onchangeAmbulatory();
+        // YTI TODO: There is probably a way to remove this crap
         $("input[name='l10n_be_ambulatory_insured_children']").parent().addClass('d-none');
         $("input[name='l10n_be_ambulatory_insured_adults']").parent().addClass('d-none');
         $("input[name='l10n_be_ambulatory_insured_spouse']").parent().addClass('d-none');
@@ -142,4 +152,6 @@ hrContractSalary.include({
             disabledChildren.parent().removeClass('d-none');
         }
     },
+});
+
 });

@@ -45,7 +45,8 @@ class OgoneTest(OgoneCommon, PaymentHttpCommon):
     @freeze_time('2011-11-02 12:00:21')  # Freeze time for consistent singularization behavior
     def test_reference_is_computed_based_on_document_name(self):
         """ Test computation of reference prefixes based on the provided invoice. """
-        self._skip_if_account_payment_is_not_installed()
+        if not self.env['ir.module.module']._get('account').state == 'installed':
+            self.skipTest('account module not installed')
 
         invoice = self.env['account.move'].create({})
         reference = self.env['payment.transaction']._compute_reference(
@@ -64,7 +65,6 @@ class OgoneTest(OgoneCommon, PaymentHttpCommon):
             'CURRENCY': self.currency.name,
             'LANGUAGE': self.partner.lang,
             'EMAIL': self.partner.email,
-            'CN': self.partner.name,
             'OWNERZIP': self.partner.zip,
             'OWNERADDRESS': payment_utils.format_partner_address(
                 self.partner.street, self.partner.street2
@@ -80,7 +80,6 @@ class OgoneTest(OgoneCommon, PaymentHttpCommon):
             'CANCELURL': return_url,
             'ALIAS': None,
             'ALIASUSAGE': None,
-            'PM': self.payment_method_code,
         }
         expected_values['SHASIGN'] = self.ogone._ogone_generate_signature(
             expected_values, incoming=False

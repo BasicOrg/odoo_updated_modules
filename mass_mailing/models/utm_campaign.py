@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from odoo.tools.float_utils import float_round
 
 
 class UtmCampaign(models.Model):
@@ -24,12 +22,11 @@ class UtmCampaign(models.Model):
 
     # A/B Testing
     ab_testing_mailings_count = fields.Integer("A/B Test Mailings #", compute="_compute_mailing_mail_count")
-    ab_testing_completed = fields.Boolean("A/B Testing Campaign Finished", compute="_compute_ab_testing_completed",
-                                          copy=False, readonly=True, store=True)
-    ab_testing_winner_mailing_id = fields.Many2one("mailing.mailing", "A/B Campaign Winner Mailing", copy=False)
+    ab_testing_completed = fields.Boolean("A/B Testing Campaign Finished", copy=False)
     ab_testing_schedule_datetime = fields.Datetime('Send Final On',
         default=lambda self: fields.Datetime.now() + relativedelta(days=1),
         help="Date that will be used to know when to determine and send the winner mailing")
+    ab_testing_total_pc = fields.Integer("Total A/B test percentage", compute="_compute_ab_testing_total_pc", store=True)
     ab_testing_winner_selection = fields.Selection([
         ('manual', 'Manual'),
         ('opened_ratio', 'Highest Open Rate'),
@@ -38,32 +35,45 @@ class UtmCampaign(models.Model):
         help="Selection to determine the winner mailing that will be sent.")
 
     # stat fields
-    received_ratio = fields.Float(compute="_compute_statistics", string='Received Ratio')
-    opened_ratio = fields.Float(compute="_compute_statistics", string='Opened Ratio')
-    replied_ratio = fields.Float(compute="_compute_statistics", string='Replied Ratio')
-    bounced_ratio = fields.Float(compute="_compute_statistics", string='Bounced Ratio')
+    received_ratio = fields.Integer(compute="_compute_statistics", string='Received Ratio')
+    opened_ratio = fields.Integer(compute="_compute_statistics", string='Opened Ratio')
+    replied_ratio = fields.Integer(compute="_compute_statistics", string='Replied Ratio')
+    bounced_ratio = fields.Integer(compute="_compute_statistics", string='Bounced Ratio')
 
-    @api.depends('ab_testing_winner_mailing_id')
-    def _compute_ab_testing_completed(self):
+    @api.depends('mailing_mail_ids')
+    def _compute_ab_testing_total_pc(self):
         for campaign in self:
-            campaign.ab_testing_completed = bool(self.ab_testing_winner_mailing_id)
+            campaign.ab_testing_total_pc = sum([
+                mailing.ab_testing_pc for mailing in campaign.mailing_mail_ids.filtered('ab_testing_enabled')
+            ])
 
     @api.depends('mailing_mail_ids')
     def _compute_mailing_mail_count(self):
-        mailing_data = self.env['mailing.mailing']._read_group(
-            [('campaign_id', 'in', self.ids), ('mailing_type', '=', 'mail')],
-            ['campaign_id', 'ab_testing_enabled'],
-            ['__count'],
-        )
-        ab_testing_mapped_data = defaultdict(list)
-        mapped_data = defaultdict(list)
-        for campaign, ab_testing_enabled, count in mailing_data:
-            if ab_testing_enabled:
-                ab_testing_mapped_data[campaign.id].append(count)
-            mapped_data[campaign.id].append(count)
+        if self.ids:
+            mailing_data = self.env['mailing.mailing']._read_group(
+                [('campaign_id', 'in', self.ids), ('mailing_type', '=', 'mail')],
+                ['campaign_id', 'ab_testing_enabled'],
+                ['campaign_id', 'ab_testing_enabled'],
+                lazy=False,
+            )
+            ab_testing_mapped_data = {}
+            mapped_data = {}
+            for data in mailing_data:
+                if data['ab_testing_enabled']:
+                    ab_testing_mapped_data.setdefault(data['campaign_id'][0], []).append(data['__count'])
+                mapped_data.setdefault(data['campaign_id'][0], []).append(data['__count'])
+        else:
+            mapped_data = dict()
+            ab_testing_mapped_data = dict()
         for campaign in self:
-            campaign.mailing_mail_count = sum(mapped_data[campaign._origin.id or campaign.id])
-            campaign.ab_testing_mailings_count = sum(ab_testing_mapped_data[campaign._origin.id or campaign.id])
+            campaign.mailing_mail_count = sum(mapped_data.get(campaign._origin.id or campaign.id, []))
+            campaign.ab_testing_mailings_count = sum(ab_testing_mapped_data.get(campaign._origin.id or campaign.id, []))
+
+    @api.constrains('ab_testing_total_pc', 'ab_testing_completed')
+    def _check_ab_testing_total_pc(self):
+        for campaign in self:
+            if not campaign.ab_testing_completed and campaign.ab_testing_total_pc >= 100:
+                raise ValidationError(_("The total percentage for an A/B testing campaign should be less than 100%"))
 
     def _compute_statistics(self):
         """ Compute statistics of the mass mailing campaign """
@@ -111,10 +121,10 @@ class UtmCampaign(models.Model):
                 total = (stats['expected'] - stats['cancel']) or 1
                 delivered = stats['sent'] - stats['bounce']
                 vals = {
-                    'received_ratio': float_round(100.0 * delivered / total, precision_digits=2),
-                    'opened_ratio': float_round(100.0 * stats['open'] / total, precision_digits=2),
-                    'replied_ratio': float_round(100.0 * stats['reply'] / total, precision_digits=2),
-                    'bounced_ratio': float_round(100.0 * stats['bounce'] / total, precision_digits=2)
+                    'received_ratio': 100.0 * delivered / total,
+                    'opened_ratio': 100.0 * stats['open'] / total,
+                    'replied_ratio': 100.0 * stats['reply'] / total,
+                    'bounced_ratio': 100.0 * stats['bounce'] / total
                 }
 
             campaign.update(vals)

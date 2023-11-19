@@ -18,8 +18,3 @@ class ModelB(models.Model):
     _description = "Model B"
 
     name = fields.Char(required=True)
-    value = fields.Integer()
-
-    _sql_constraints = [
-        ('qty_positive', 'check (value > 0)', 'The value must be positive'),
-    ]

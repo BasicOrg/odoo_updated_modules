@@ -28,7 +28,3 @@ class DataMergeRule(models.Model):
         if self.env.context.get('install_mode') or self.env.registry.has_unaccent:
             modes.append(('accent', _("Case/Accent Insensitive Match")))
         return modes
-
-    def _update_default_rules(self):
-        if self.env.registry.has_unaccent:
-            self.match_mode = 'accent'

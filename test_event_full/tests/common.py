@@ -15,6 +15,7 @@ class TestEventFullCommon(EventCrmCase, TestSalesCommon, MockVisitor):
     @classmethod
     def setUpClass(cls):
         super(TestEventFullCommon, cls).setUpClass()
+        cls._init_mail_gateway()
 
         # Context data: dates
         # ------------------------------------------------------------
@@ -119,8 +120,9 @@ class TestEventFullCommon(EventCrmCase, TestSalesCommon, MockVisitor):
         # ------------------------------------------------------------
         test_registration_report = cls.env.ref('test_event_full.event_registration_report_test')
         subscription_template = cls.env.ref('event.event_subscription')
-        subscription_template.write({'report_template_ids': [(6, 0, test_registration_report.ids)]})
+        subscription_template.write({'report_template': test_registration_report.id})
         cls.test_event_type = cls.env['event.type'].create({
+            'auto_confirm': True,
             'default_timezone': 'Europe/Paris',
             'event_type_booth_ids': [
                 (0, 0, {'booth_category_id': cls.event_booth_categories[0].id,
@@ -228,6 +230,7 @@ class TestEventFullCommon(EventCrmCase, TestSalesCommon, MockVisitor):
 
         cls.test_event = cls.env['event.event'].create({
             'name': 'Test Event',
+            'auto_confirm': True,
             'date_begin': datetime.now() + timedelta(days=1),
             'date_end': datetime.now() + timedelta(days=5),
             'date_tz': 'Europe/Brussels',
@@ -248,37 +251,39 @@ class TestEventFullCommon(EventCrmCase, TestSalesCommon, MockVisitor):
         ], limit=1)
 
         cls.customer_data = [
-            {'email': f'customer.email.{idx:02d}@test.example.com',
-             'name': f'My Customer {idx:02d}',
+            {'email': 'customer.email.%02d@test.example.com' % x,
+             'name': 'My Customer %02d' % x,
+             'mobile': '04569999%02d' % x,
              'partner_id': False,
-             'phone': f'04560000{idx:02d}',
-            } for idx in range(0, 10)
+             'phone': '04560000%02d' % x,
+            } for x in range(0, 10)
         ]
         cls.website_customer_data = [
-            {'email': f'website.email.{idx:02d}@test.example.com',
-             'name': f'My Customer {idx:02d}',
+            {'email': 'website.email.%02d@test.example.com' % x,
+             'name': 'My Customer %02d' % x,
+             'mobile': '04569999%02d' % x,
              'partner_id': cls.env.ref('base.public_partner').id,
-             'phone': f'04560000{idx:02d}',
+             'phone': '04560000%02d' % x,
              'registration_answer_ids': [
                 (0, 0, {
                     'question_id': cls.test_event.question_ids[0].id,
-                    'value_answer_id': cls.test_event.question_ids[0].answer_ids[(idx % 2)].id,
+                    'value_answer_id': cls.test_event.question_ids[0].answer_ids[(x % 2)].id,
                 }), (0, 0, {
                     'question_id': cls.test_event.question_ids[1].id,
-                    'value_answer_id': cls.test_event.question_ids[1].answer_ids[(idx % 2)].id,
+                    'value_answer_id': cls.test_event.question_ids[1].answer_ids[(x % 2)].id,
                 }), (0, 0, {
                     'question_id': cls.test_event.question_ids[2].id,
-                    'value_text_box': f'CustomerAnswer{idx}',
+                    'value_text_box': 'CustomerAnswer%s' % x,
                 })
              ],
-            } for idx in range(0, 10)
+            } for x in range(0, 10)
         ]
         cls.partners = cls.env['res.partner'].create([
-            {'email': f'partner.email.{idx:02d}@test.example.com',
-             'name': f'PartnerCustomer {idx:02d}',
-             'mobile': f'04569999{idx:02d}',
-             'phone': f'04560000{idx:02d}',
-            } for idx in range(0, 10)
+            {'email': 'partner.email.%02d@test.example.com' % x,
+             'name': 'PartnerCustomer',
+             'mobile': '04569999%02d' % x,
+             'phone': '04560000%02d' % x,
+            } for x in range(0, 10)
         ])
 
     def assertLeadConvertion(self, rule, registrations, partner=None, **expected):
@@ -331,12 +336,13 @@ class TestWEventCommon(HttpCaseWithUserDemo, HttpCaseWithUserPortal, MockVisitor
             'color': 8,
         })
         self.env['event.event'].search(
-            [('name', 'like', 'Online Reveal')]
+            [('name', 'like', '%Online Reveal%')]
         ).write(
             {'name': 'Do not click on me'}
         )
         self.event = self.env['event.event'].create({
             'name': 'Online Reveal TestEvent',
+            'auto_confirm': True,
             'stage_id': self.env.ref('event.event_stage_booked').id,
             'address_id': False,
             'user_id': self.user_demo.id,
@@ -427,7 +433,7 @@ class TestWEventCommon(HttpCaseWithUserDemo, HttpCaseWithUserPortal, MockVisitor
             'partner_id': self.event_speaker.id,
         })
         self.track_2 = self.env['event.track'].create({
-            'name': 'Our Last Day Together!',
+            'name': 'Our Last Day Together !',
             'event_id': self.event.id,
             'stage_id': self.env.ref('website_event_track.event_track_stage3').id,
             'date': self.reference_now + timedelta(days=1),

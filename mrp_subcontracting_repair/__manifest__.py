@@ -6,7 +6,7 @@
     'version': '1.0',
     'category': 'Manufacturing/Repair',
     'description': """
-Bridge module between MRP subcontracting and Repair
+        Bridge module between MRP subcontracting and Repair
     """,
     'depends': [
         'mrp_subcontracting', 'repair'
@@ -17,5 +17,5 @@ Bridge module between MRP subcontracting and Repair
     ],
     'installable': True,
     'auto_install': True,
-    'license': 'LGPL-3',
+    'license': 'OEEL-1',
 }

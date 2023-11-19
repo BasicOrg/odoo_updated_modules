@@ -9,7 +9,7 @@ business objects.
 from lxml import etree
 from operator import itemgetter
 
-from odoo.tests import TransactionCase, Form
+from odoo.tests.common import TransactionCase, Form
 from odoo import Command
 
 
@@ -35,16 +35,11 @@ class TestBasic(TransactionCase):
         self.assertEqual(f.f3, 4)
         self.assertEqual(f.f4, 2)
 
-        # f.record cannot be accessed yet
-        with self.assertRaises(AssertionError):
-            f.record
-
         r = f.save()
         self.assertEqual(
             (r.f1, r.f2, r.f3, r.f4),
             ('4', 8, 4, 2),
         )
-        self.assertEqual(f.record, r)
 
     def test_required(self):
         f = Form(self.env['test_testing_utilities.a'])
@@ -166,63 +161,56 @@ class TestM2O(TransactionCase):
 class TestM2M(TransactionCase):
     def test_add(self):
         Sub = self.env['test_testing_utilities.sub2']
+        f = Form(self.env['test_testing_utilities.e'])
+
         r1 = Sub.create({'name': "Item"})
         r2 = Sub.create({'name': "Item2"})
 
-        with Form(self.env['test_testing_utilities.e']) as f:
-            f.m2m.add(r1)
-            f.m2m.add(r2)
+        f.m2m.add(r1)
+        f.m2m.add(r2)
+
+        r = f.save()
 
         self.assertEqual(
-            f.record.m2m,
+            r.m2m,
             r1 | r2
         )
 
     def test_remove_by_index(self):
         Sub = self.env['test_testing_utilities.sub2']
+        f = Form(self.env['test_testing_utilities.e'])
+
         r1 = Sub.create({'name': "Item"})
         r2 = Sub.create({'name': "Item2"})
 
-        with Form(self.env['test_testing_utilities.e']) as f:
-            f.m2m.add(r1)
-            f.m2m.add(r2)
-            f.m2m.remove(index=0)
+        f.m2m.add(r1)
+        f.m2m.add(r2)
+        f.m2m.remove(index=0)
+
+        r = f.save()
 
         self.assertEqual(
-            f.record.m2m,
+            r.m2m,
             r2
         )
 
     def test_remove_by_id(self):
         Sub = self.env['test_testing_utilities.sub2']
+        f = Form(self.env['test_testing_utilities.e'])
+
         r1 = Sub.create({'name': "Item"})
         r2 = Sub.create({'name': "Item2"})
 
-        with Form(self.env['test_testing_utilities.e']) as f:
-            f.m2m.add(r1)
-            f.m2m.add(r2)
-            f.m2m.remove(id=r1.id)
+        f.m2m.add(r1)
+        f.m2m.add(r2)
+        f.m2m.remove(id=r1.id)
+
+        r = f.save()
 
         self.assertEqual(
-            f.record.m2m,
+            r.m2m,
             r2
         )
-
-    def test_set(self):
-        Sub = self.env['test_testing_utilities.sub2']
-        r1 = Sub.create({'name': "Item"})
-        r2 = Sub.create({'name': "Item2"})
-        r3 = Sub.create({'name': "Item3"})
-
-        with Form(self.env['test_testing_utilities.e']) as f:
-            f.m2m.set(r1 + r2)
-
-        self.assertEqual(f.record.m2m, r1 + r2)
-
-        with f:
-            f.m2m = r3
-
-        self.assertEqual(f.record.m2m, r3)
 
     def test_on_m2m_change(self):
         Sub = self.env['test_testing_utilities.sub2']
@@ -296,13 +284,14 @@ class TestO2M(TransactionCase):
         """ Tests that the o2m proxy allows adding, removing and editing o2m
         records
         """
-        with Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_parent') as f:
-            f.subs.new().save()
-            f.subs.new().save()
-            f.subs.new().save()
-            f.subs.remove(index=0)
+        f = Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_parent')
 
-        r = f.record
+        f.subs.new().save()
+        f.subs.new().save()
+        f.subs.new().save()
+        f.subs.remove(index=0)
+
+        r = f.save()
 
         self.assertEqual(
             [get(s) for s in r.subs],
@@ -369,11 +358,12 @@ class TestO2M(TransactionCase):
         """ Tests the o2m proxy when the list and form views are provided
         inline rather than fetched separately
         """
-        with Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_parent_inline') as f:
-            with f.subs.new() as s:
-                s.value = 42
+        f = Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_parent_inline')
 
-        r = f.record
+        with f.subs.new() as s:
+            s.value = 42
+
+        r = f.save()
 
         self.assertEqual(
             [get(s) for s in r.subs],
@@ -381,22 +371,16 @@ class TestO2M(TransactionCase):
             "should not have set v (and thus not name)"
         )
 
-    def test_o2m_parent_context(self):
-        """ Test the o2m form with a context on the field that uses 'parent'. """
-        view = 'test_testing_utilities.o2m_parent_context'
-        with Form(self.env['test_testing_utilities.parent'], view=view) as f:
-            with f.subs.new() as s:
-                s.value = 42
-
     def test_o2m_default(self):
         """ Tests that default_get can return defaults for the o2m
         """
-        with Form(self.env['test_testing_utilities.default']) as f:
-            with f.subs.edit(index=0) as s:
-                self.assertEqual(s.v, 5)
-                self.assertEqual(s.value, 2)
+        f = Form(self.env['test_testing_utilities.default'])
 
-        r = f.record
+        with f.subs.edit(index=0) as s:
+            self.assertEqual(s.v, 5)
+            self.assertEqual(s.value, 2)
+
+        r = f.save()
 
         self.assertEqual(
             [get(s) for s in r.subs],
@@ -406,16 +390,11 @@ class TestO2M(TransactionCase):
     def test_o2m_inner_default(self):
         """ Tests that creating an o2m record will get defaults for it
         """
-        with Form(self.env['test_testing_utilities.default']) as f:
-            with f.subs.new() as s:
-                self.assertEqual(s.value, 2)
-                self.assertEqual(s.v, 2, "should have onchanged value to v")
+        f = Form(self.env['test_testing_utilities.default'])
 
-    def test_o2m_default_discarded(self):
-        """ Tests what happens when the default value is discarded. """
-        model = self.env['test_testing_utilities.default']
-        with Form(model.with_context(default_value=42)) as f:
-            self.assertFalse(len(f.subs))
+        with f.subs.new() as s:
+            self.assertEqual(s.value, 2)
+            self.assertEqual(s.v, 2, "should have onchanged value to v")
 
     def test_o2m_onchange_parent(self):
         """ Tests that changing o2m content triggers onchange in the parent
@@ -475,11 +454,11 @@ class TestO2M(TransactionCase):
         """ Tests that readonly is applied to the field of the o2m = not sent
         as part of the create / write values
         """
-        with Form(self.env['o2m_readonly_subfield_parent']) as f:
-            with f.line_ids.new() as new_line:
-                new_line.name = "ok"
-                self.assertEqual(new_line.f, 2)
-        r = f.record
+        f = Form(self.env['o2m_readonly_subfield_parent'])
+        with f.line_ids.new() as new_line:
+            new_line.name = "ok"
+            self.assertEqual(new_line.f, 2)
+        r = f.save()
         self.assertEqual(
             (r.line_ids.name, r.line_ids.f),
             ('ok', 2)
@@ -497,23 +476,23 @@ class TestO2M(TransactionCase):
 
     def test_o2m_remove(self):
         def commands():
-            return [c[0] for c in f._values['line_ids'].to_commands()]
+            return [c[0] for c in f._values['line_ids']]
+        f = Form(self.env['test_testing_utilities.onchange_count'])
 
-        with Form(self.env['test_testing_utilities.onchange_count']) as f:
-            self.assertEqual(f.count, 0)
-            self.assertEqual(len(f.line_ids), 0)
+        self.assertEqual(f.count, 0)
+        self.assertEqual(len(f.line_ids), 0)
 
-            f.count = 5
-            self.assertEqual(f.count, 5)
-            self.assertEqual(len(f.line_ids), 5)
+        f.count = 5
+        self.assertEqual(f.count, 5)
+        self.assertEqual(len(f.line_ids), 5)
 
-            f.count = 2
-            self.assertEqual(f.count, 2)
-            self.assertEqual(len(f.line_ids), 2)
+        f.count = 2
+        self.assertEqual(f.count, 2)
+        self.assertEqual(len(f.line_ids), 2)
 
-            f.count = 4
+        f.count = 4
 
-        r = f.record
+        r = f.save()
 
         previous = r.line_ids
         self.assertEqual(len(previous), 4)
@@ -525,64 +504,34 @@ class TestO2M(TransactionCase):
 
         with Form(r) as f:
             f.line_ids.remove(0)
-            self.assertEqual(commands(), [2])
+            self.assertEqual(commands(), [2, 1])
             f.count = 1
-            self.assertEqual(commands(), [0, 2, 2], "should contain 1 creation and 2 deletions")
+            self.assertEqual(commands(), [0, 2, 2], "should contain 1 '0' command and 2 deletions")
         self.assertEqual(len(r.line_ids), 1)
 
     def test_o2m_self_recursive(self):
         Form(self.env['test_testing_utilities.recursive'], view='test_testing_utilities.o2m_recursive_relation_view')
 
-    def test_o2m_readonly(self):
-        Model = self.env['test_testing_utilities.parent']
-        with Form(Model, view='test_testing_utilities.o2m_modifier') as form:
-            with form.subs.new() as line:
-                line.value = 5
-                # this makes 'value' readonly
-                line.v = 42
-                with self.assertRaises(AssertionError):
-                    line.value = 7
-
-    def test_o2m_readonly_parent(self):
-        Model = self.env['test_testing_utilities.parent']
-        with Form(Model, view='test_testing_utilities.o2m_modifier_parent') as form:
-            with form.subs.new() as line:
-                line.value = 5
-            # this makes 'value' readonly on lines
-            form.value = 42
-            with form.subs.new() as line:
-                with self.assertRaises(AssertionError):
-                    line.value = 7
-
-    def test_o2m_external_readonly_parent(self):
-        Model = self.env['test_testing_utilities.ref']
-        with Form(Model, view='test_testing_utilities.o2m_modifier_ref') as form:
-            with form.subs.new() as line:
-                line.a = 1
-                line.b = 2
-                # readonly from context
-                # with self.assertRaises(AssertionError): # this part must raise but the context attributes on x2m field is not used. To fix.
-                #     line.c = 3
-                # will hide 'subs' field
-                form.value = 666
-                with self.assertRaisesRegex(AssertionError, 'invisible'):
-                    line.a = 4
-                # this makes 'has_parent' readonly on lines
-                form.value = 42
-                line.a = 5
-                with self.assertRaisesRegex(AssertionError, 'readonly'):
-                    line.b = 6
+    def test_o2m_attrs(self):
+        Model = self.env['test_testing_utilities.parent'].with_context(
+            default_subs=[{
+                'value': 5,
+            }, {
+                'value': 7,
+            }]
+        )
+        f = Form(Model, view='test_testing_utilities.o2m_modifier')
+        f.save()
 
     def test_o2m_widget(self):
         create = self.env['test_testing_utilities.sub'].create
         a, b, c = create({'v': 1}), create({'v': 2}), create({'v': 3})
 
-        with Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_widget_m2m') as f:
-            f.subs.add(a)
-            f.subs.add(b)
-            f.subs.add(c)
-
-        r = f.record
+        f = Form(self.env['test_testing_utilities.parent'], view='test_testing_utilities.o2m_widget_m2m')
+        f.subs.add(a)
+        f.subs.add(b)
+        f.subs.add(c)
+        r = f.save()
 
         self.assertEqual(
             r.subs,
@@ -596,14 +545,14 @@ class TestO2M(TransactionCase):
         """
         # create record: line created before v is updated should reflect it,
         # line created after should not
-        with Form(self.env['o2m_changes_children']) as f:
-            with f.line_ids.new() as line:
-                line.v = 1
-                line.vv = 5
-            f.v = 5
-            with f.line_ids.new() as line:
-                ...
-        r = f.record
+        f = Form(self.env['o2m_changes_children'])
+        with f.line_ids.new() as line:
+            line.v = 1
+            line.vv = 5
+        f.v = 5
+        with f.line_ids.new() as line:
+            ...
+        r = f.save()
         self.assertEqual(r.v, 5)
         self.assertEqual(r.mapped('line_ids.vv'), [5, 0])
         self.assertEqual(r.line_ids[0].v, 5, "onchange should have updated the existing lines")
@@ -669,7 +618,7 @@ class TestNestedO2M(TransactionCase):
         })
         form = Form(obj)
         form.qty_producing = 1
-        form._perform_onchange('move_raw_ids')
+        form._perform_onchange(['move_raw_ids'])
         form.save()
 
     def test_empty_update(self):

@@ -3,10 +3,8 @@
 import base64
 
 from odoo.addons.base.tests.common import HttpCaseWithUserDemo, HttpCaseWithUserPortal
-from odoo.fields import Command
+from odoo.modules.module import get_module_resource
 from odoo.tests import tagged
-from odoo.tools.misc import file_open
-
 
 @tagged('post_install', '-at_install')
 class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
@@ -58,7 +56,7 @@ class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
 
         # Update the pricelist currency regarding env.company_id currency_id in case company has changed currency with COA installation.
         website = self.env['website'].get_current_website()
-        pricelist = website.pricelist_id
+        pricelist = website.get_current_pricelist()
         pricelist.write({'currency_id': self.env.company.currency_id.id})
 
     def test_01_admin_shop_customize_tour(self):
@@ -126,7 +124,8 @@ class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
         })
         self.product_product_4_product_template.attribute_line_ids[0].write({'value_ids': [(4, product_attribute_value_7.id)]})
 
-        img_content = base64.b64encode(file_open('product/static/img/product_product_11-image.png', "rb").read())
+        img_path = get_module_resource('product', 'static', 'img', 'product_product_11-image.png')
+        img_content = base64.b64encode(open(img_path, "rb").read())
         self.product_product_11_product_template = self.env['product.template'].create({
             'name': 'Conference Chair (TEST)',
             'website_sequence': 9999, # laule
@@ -147,18 +146,22 @@ class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
             'list_price': 12.0,
         })
 
-        self.env['product.pricelist'].create({
-            'name': 'Base Pricelist',
-            'discount_policy': 'without_discount',
-            'item_ids': [Command.create({
-                'base': 'list_price',
-                'applied_on': '1_product',
-                'product_tmpl_id': product_template.id,
-                'price_discount': 20,
-                'min_quantity': 2,
-                'compute_price': 'formula',
-            })],
-        })
+        # fix runbot, sometimes one pricelist is chosen, sometimes the other...
+        pricelists = self.env['website'].get_current_website().get_current_pricelist() | self.env.ref('product.list0')
+
+        for pricelist in pricelists:
+            if not pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product_template and i.price_discount == 20):
+                self.env['product.pricelist.item'].create({
+                    'base': 'list_price',
+                    'applied_on': '1_product',
+                    'pricelist_id': pricelist.id,
+                    'product_tmpl_id': product_template.id,
+                    'price_discount': 20,
+                    'min_quantity': 2,
+                    'compute_price': 'formula',
+                })
+
+            pricelist.discount_policy = 'without_discount'
 
         self.start_tour("/", 'shop_custom_attribute_value', login="admin")
 
@@ -315,10 +318,6 @@ class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
         self.start_tour(self.env['website'].get_client_action_url('/shop?search=Test Product'), 'shop_list_view_b2c', login="admin")
 
     def test_07_editor_shop(self):
-        self.env['product.pricelist'].create([
-            {'name': 'Base Pricelist', 'selectable': True},
-            {'name': 'Other Pricelist', 'selectable': True}
-        ])
         self.start_tour("/", 'shop_editor', login="admin")
 
     def test_08_portal_tour_archived_variant_multiple_attributes(self):
@@ -402,103 +401,3 @@ class TestUi(HttpCaseWithUserDemo, HttpCaseWithUserPortal):
         product_template.product_variant_ids[-1].active = False
 
         self.start_tour("/", 'tour_shop_archived_variant_multi', login="portal")
-
-    def test_09_pills_variant(self):
-        """The goal of this test is to make sure that you can click anywhere on a pill
-        and still trigger a variant change. The radio input be visually hidden.
-
-        Using "portal" to have various users in the tests.
-        """
-
-        attribute_1 = self.env['product.attribute'].create([
-            {
-                'name': 'Size',
-                'create_variant': 'always',
-                'display_type': 'pills',
-            },
-        ])
-
-        attribute_values = self.env['product.attribute.value'].create([
-            {
-                'name': 'Large',
-                'attribute_id': attribute_1.id,
-                'sequence': 1,
-            },
-            {
-                'name': 'Small',
-                'attribute_id': attribute_1.id,
-                'sequence': 2,
-            },
-        ])
-
-        product_template = self.env['product.template'].create({
-            'name': 'Test Product 2',
-            'is_published': True,
-        })
-
-        self.env['product.template.attribute.line'].create([
-            {
-                'attribute_id': attribute_1.id,
-                'product_tmpl_id': product_template.id,
-                'value_ids': [(6, 0, attribute_values.ids)],
-            },
-        ])
-
-        self.start_tour("/", 'test_09_pills_variant', login="portal")
-
-    def test_10_multi_checkbox_attribute(self):
-        product_template = self.env['product.template'].create({
-            'name': 'Product Multi',
-            'is_published': True,
-            'list_price': 750,
-        })
-        attribute = self.env['product.attribute'].create([
-            {
-                'name': 'Options',
-                'create_variant': 'no_variant',
-                'display_type': 'multi',
-            },
-        ])
-        attribute_values = self.env['product.attribute.value'].create([
-            {
-                'name': 'Option 1',
-                'attribute_id': attribute.id,
-                'default_extra_price': 1,
-                'sequence': 1,
-            },
-            {
-                'name': 'Option 2',
-                'attribute_id': attribute.id,
-                'sequence': 2,
-            },
-            {
-                'name': 'Option 3',
-                'attribute_id': attribute.id,
-                'default_extra_price': 3,
-                'sequence': 3,
-            },
-            {
-                'name': 'Option 4',
-                'attribute_id': attribute.id,
-                'sequence': 4,
-            },
-        ])
-        self.env['product.template.attribute.line'].create([{
-            'attribute_id': attribute.id,
-            'product_tmpl_id': product_template.id,
-            'value_ids': [(6, 0, attribute_values.ids)],
-        }])
-        # set an extra price for free attribute values on the product (nothing is free)
-        self.env['product.template.attribute.value'].search(
-            [('product_tmpl_id', '=', product_template.id), ('price_extra', '=', 0)]
-        ).price_extra = 2
-        # set an exclusion between option 1 and option 3
-        self.env['product.template.attribute.value'].search(
-            [('product_tmpl_id', '=', product_template.id), ('price_extra', '=', 1)]
-        ).exclude_for = [(0, 0, {
-                'product_tmpl_id': product_template.id,
-                'value_ids': [(6, 0, [self.env['product.template.attribute.value'].search(
-                    [('product_tmpl_id', '=', product_template.id), ('price_extra', '=', 3)]).id])]
-        })]
-
-        self.start_tour("/", 'tour_shop_multi_checkbox', login="portal")

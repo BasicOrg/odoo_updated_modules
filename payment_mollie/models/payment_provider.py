@@ -1,15 +1,14 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-import pprint
 
 import requests
 from werkzeug import urls
 
-from odoo import _, fields, models, service
+from odoo import _, api, fields, models, service
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_mollie import const
+from odoo.addons.payment_mollie.const import SUPPORTED_CURRENCIES
 
 _logger = logging.getLogger(__name__)
 
@@ -28,14 +27,16 @@ class PaymentProvider(models.Model):
 
     #=== BUSINESS METHODS ===#
 
-    def _get_supported_currencies(self):
-        """ Override of `payment` to return the supported currencies. """
-        supported_currencies = super()._get_supported_currencies()
-        if self.code == 'mollie':
-            supported_currencies = supported_currencies.filtered(
-                lambda c: c.name in const.SUPPORTED_CURRENCIES
-            )
-        return supported_currencies
+    @api.model
+    def _get_compatible_providers(self, *args, currency_id=None, **kwargs):
+        """ Override of payment to unlist Mollie providers for unsupported currencies. """
+        providers = super()._get_compatible_providers(*args, currency_id=currency_id, **kwargs)
+
+        currency = self.env['res.currency'].browse(currency_id).exists()
+        if currency and currency.name not in SUPPORTED_CURRENCIES:
+            providers = providers.filtered(lambda p: p.code != 'mollie')
+
+        return providers
 
     def _mollie_make_request(self, endpoint, data=None, method='POST'):
         """ Make a request at mollie endpoint.
@@ -65,27 +66,8 @@ class PaymentProvider(models.Model):
 
         try:
             response = requests.request(method, url, json=data, headers=headers, timeout=60)
-            try:
-                response.raise_for_status()
-            except requests.exceptions.HTTPError:
-                _logger.exception(
-                    "Invalid API request at %s with data:\n%s", url, pprint.pformat(data)
-                )
-                raise ValidationError(
-                    "Mollie: " + _(
-                        "The communication with the API failed. Mollie gave us the following "
-                        "information: %s", response.json().get('detail', '')
-                    ))
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            _logger.exception("Unable to reach endpoint at %s", url)
-            raise ValidationError(
-                "Mollie: " + _("Could not establish the connection to the API.")
-            )
+            response.raise_for_status()
+        except requests.exceptions.RequestException:
+            _logger.exception("unable to communicate with Mollie: %s", url)
+            raise ValidationError("Mollie: " + _("Could not establish the connection to the API."))
         return response.json()
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'mollie':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHODS_CODES

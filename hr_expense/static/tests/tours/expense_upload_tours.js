@@ -1,12 +1,12 @@
-/** @odoo-module **/
-    
-    import { registry } from "@web/core/registry";
-    import { stepUtils } from "@web_tour/tour_service/tour_utils";
+odoo.define('hr_expense.tests.tours', function (require) {
+    "use strict";
 
-    registry.category("web_tour.tours").add('hr_expense_test_tour', {
+    var tour = require('web_tour.tour');
+
+    tour.register('hr_expense_test_tour', {
         test: true,
         url: "/web",
-        steps: () => [stepUtils.showAppsMenuItem(),
+    }, [tour.stepUtils.showAppsMenuItem(),
         {
             content: "Go to Expense",
             trigger: '.o_app[data-menu-xmlid="hr_expense.menu_hr_expense_root"]',
@@ -75,4 +75,5 @@
                 }
             }
         },
-    ]});
+    ]);
+});

@@ -20,11 +20,9 @@ class TestApprovalsCommon(TransactionCase):
             'login': 'yesman',
             'name': 'Carl Allen',
         })
-        cls.payment_terms = cls.env.ref("account.account_payment_term_end_following_month")
         # Create partners to use as seller.
         cls.partner_seller_1 = cls.env['res.partner'].create({
-            'name': 'Uncle Bill\'s Electronic Store',
-            'property_supplier_payment_term_id' : cls.payment_terms.id,
+            'name': 'Uncle Bill\'s Electronic Store'
         })
         cls.partner_seller_2 = cls.env['res.partner'].create({
             'name': 'Jawa Good Deals'
@@ -82,7 +80,7 @@ class TestApprovalsCommon(TransactionCase):
         """
         if not category:
             category = self.purchase_category
-        create_request_form = Form(self.env['approval.request'].with_user(approver).with_context(
+        create_request_form = Form(self.env['approval.request'].with_context(
             default_name=self.purchase_category.name,
             default_category_id=category.id,
         ))

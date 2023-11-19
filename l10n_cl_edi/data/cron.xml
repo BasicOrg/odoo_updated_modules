@@ -24,5 +24,20 @@
             <field name="code">model.cron_run_sii_workflow()</field>
             <field name="active" eval="True"/>
         </record>
+
+        <record id="ir_cron_load_sii_xsd_files" model="ir.cron">
+            <field name="name">0. Cron Job - Load XSD Files (Chilean SII)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="base.model_ir_attachment" />
+            <!-- Highest priority at time of module install. -->
+            <field name="priority" eval="0"/>
+            <field name="state">code</field>
+            <field name="code">model._l10n_cl_edi_load_xsd_files(force_reload=True)</field>
+            <!-- Setting `nextcall` date relatively old to make sure this cron runs right after module installation finishes. -->
+            <field name="nextcall" eval="(DateTime.now() + relativedelta(years=-1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
     </data>
 </odoo>

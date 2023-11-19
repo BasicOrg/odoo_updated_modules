@@ -3,16 +3,18 @@
 # 	* hr_referral
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Linkup <link-up@naver.com>, 2022
+# JH CHOI <hwangtog@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,20 +22,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid ""
-" You've gained {gained} points with this progress.{new_line}It makes you a "
-"new total of {total} points. Visit {link1}this link{link2} to pick a gift!"
+" You've gained %(gained)s points with this progress.<br/>It makes you a new "
+"total of %(total)s points. Visit <a href=\"%(url)s\">this link</a> to pick a"
+" gift!"
 msgstr ""
-"현재까지 {gained}점을 획득하셨습니다. {new_line} 해당 점수로 인하여 총 점수는 {total}점이 되었습니다. "
-"{link1} 여기 {link2}를 눌러 보상을 선택해 보세요."
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_recruitment_report__referral_hired
 msgid "# Hired by Referral"
-msgstr "# 추천을 통한 채용"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
@@ -43,22 +43,22 @@ msgstr "<b>담당 : </b>"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
 msgid "<i class=\"fa fa-check me-2\" title=\"Hired\"/>"
-msgstr "<i class=\"fa fa-check me-2\" title=\"채용됨\"/>"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
 msgid "<i class=\"fa fa-square-o\" title=\"Open\"/>"
-msgstr "<i class=\"fa fa-square-o\" title=\"열기\"/>"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
 msgid "<i class=\"text-danger fa fa-times\" title=\"Closed\"/>"
-msgstr "<i class=\"text-danger fa fa-times\" title=\"닫음\"/>"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_applicant_employee_referral_kanban
 msgid "<i class=\"text-success fa fa-check\" title=\"Done\"/>"
-msgstr "<i class=\"text-success fa fa-check\" title=\"완료\"/>"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_level_form
@@ -83,8 +83,6 @@ msgid ""
 "<span title=\"Buy\"><i class=\"fa fa-shopping-basket me-3\" role=\"img\" "
 "aria-label=\"Buy\"/>Buy</span>"
 msgstr ""
-"<span title=\"구입\"><i class=\"fa fa-shopping-basket me-3\" role=\"img\" "
-"aria-label=\"구입\"/>Buy</span>"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -94,9 +92,11 @@ msgstr "<span title=\"More info\">추가 정보</span>"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid ""
-"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link\" role=\"img\" "
-"aria-label=\"My Link to Share\"/></span>"
+"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link text-"
+"secondary\" role=\"img\" aria-label=\"My Link to Share\"/></span>"
 msgstr ""
+"<span title=\"My Link to Share\"><i class=\"fa fa-lg fa-link text-"
+"secondary\" role=\"img\" aria-label=\"My Link to Share\"/></span>"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
@@ -104,13 +104,12 @@ msgid "<span title=\"Send by Mail\">Refer Friend</span>"
 msgstr "<span title=\"Send by Mail\">친구 추천</span>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid ""
 "A new alert has been added to the Referrals app! Check your <a "
 "href=%(url)s>dashboard</a> now!"
-msgstr "인재추천 앱에 새로운 알림이 있습니다! 지금 <a href=%(url)s>현황판</a>을 확인해보세요!"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_needaction
@@ -121,7 +120,7 @@ msgstr "조치 필요"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__active
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__active
 msgid "Active"
-msgstr "활성화"
+msgstr "활성"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_ids
@@ -160,13 +159,6 @@ msgid "Alerts"
 msgstr "경고"
 
 #. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_alert_configuration
-msgid ""
-"Alerts will be displayed on the first screen to give information or "
-"redirects the employees"
-msgstr "첫 화면에 정보를 제공하는 알림을 표시하거나 직원에게 리디렉션합니다."
-
-#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_recruitment_stage__points
 msgid ""
 "Amount of points that the referent will receive when the applicant will "
@@ -181,16 +173,25 @@ msgid "Applicant"
 msgstr "지원자"
 
 #. module: hr_referral
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred"
+msgstr "지원자 추천됨"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Hired"
+msgstr "추천된 지원자 고용함"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Applicant Referred Refused"
+msgstr "추천된 지원자 거부함"
+
+#. module: hr_referral
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Applicant must have a company."
 msgstr "지원자는 회사가 있어야 합니다."
-
-#. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_name
-msgid "Applicant's Name"
-msgstr "지원자 이름"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_alert_view_search
@@ -209,7 +210,6 @@ msgid "Avatar"
 msgstr "아바타"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__awarded_employees
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_backend_kanban
@@ -255,14 +255,14 @@ msgid "Channel"
 msgstr "채널"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Choose an avatar for your new friend!"
 msgstr "새로운 친구를 위한 아바타를 선택하십시오!"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Click to level up!"
@@ -282,21 +282,19 @@ msgstr "회사"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__company_id
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__company_id
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__company_id
-#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
 msgid "Company"
 msgstr "회사"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_res_config_settings
 msgid "Config Settings"
-msgstr "환경 설정"
+msgstr "설정 구성"
 
 #. module: hr_referral
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_configuration
 msgid "Configuration"
-msgstr "설정"
+msgstr "구성"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__cost
@@ -336,7 +334,7 @@ msgid "Created on"
 msgstr "작성일자"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
 #: code:addons/hr_referral/static/src/views/dashboard.js:0
@@ -354,7 +352,7 @@ msgstr "현황판 이미지"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
 msgid "Date"
-msgstr "날짜"
+msgstr "일자"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__date_from
@@ -382,7 +380,6 @@ msgstr "부서"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__description
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_form
 msgid "Description"
 msgstr "설명"
 
@@ -392,7 +389,6 @@ msgid "Direct Clicks"
 msgstr "직접 클릭"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/report/hr_referral_report.py:0
 #, python-format
 msgid "Direct Referral"
@@ -401,7 +397,7 @@ msgstr "직접 추천"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__dismissed_user_ids
 msgid "Dismissed User"
-msgstr "종료된 사용자"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__display_name
@@ -418,7 +414,6 @@ msgid "Display Name"
 msgstr "표시명"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid "Do not have access"
@@ -429,11 +424,12 @@ msgstr "접근 권한이 없습니다"
 msgid ""
 "Do you want to confirm this reward? After confirmation an HR will contact "
 "you."
-msgstr "보상을 확인하시겠습니까? 확인 후 인사 담당자가 연락을 드리겠습니다."
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__earned_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__earned_points
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
 msgid "Earned Points"
 msgstr "적립 점수"
 
@@ -443,16 +439,11 @@ msgid "Email"
 msgstr "이메일"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Email a friend"
-msgstr "추천 인재에게 이메일 보내기"
-
-#. module: hr_referral
-#: model:ir.model.fields,help:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Email subject for applications sent via email"
-msgstr "이메일로 전송된 지원서의 이메일 제목입니다."
+msgstr "친구에게 이메일 보내기"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
@@ -462,17 +453,17 @@ msgstr "임직원"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__employee_referral_hired
 msgid "Employee Referral Hired"
-msgstr "인재 추천 채용"
+msgstr "직원 추천 채용함"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__employee_referral_refused
 msgid "Employee Referral Refused"
-msgstr "인재 추천 거절"
+msgstr "직원 추천 거부함"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_report
 msgid "Employee Referral Report"
-msgstr "인재 추천 보고서"
+msgstr "직원 추천 보고서"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_form
@@ -483,7 +474,6 @@ msgstr "임직원 관리"
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_search
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Employees Analysis"
 msgstr "직원 분석"
@@ -491,7 +481,7 @@ msgstr "직원 분석"
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.employee_referral_report_action
 msgid "Employees Referral Analysis"
-msgstr "인재 추천 분석"
+msgstr "직원 추천 분석"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_alert__url
@@ -519,17 +509,12 @@ msgstr "팔로워"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "팔로워 (협력사)"
+msgstr "팔로워 (파트너)"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "멋진 아이콘 폰트 예: fa-tasks"
-
-#. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid "Force Onboarding"
-msgstr "온보딩 진행"
+msgstr "멋진 아이콘 폰트 예 : fa-tasks"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__friend_id
@@ -558,23 +543,23 @@ msgid "Front"
 msgstr "전면"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team"
-msgstr "팀원을 새로 구성해보세요"
+msgstr "팀을 모으십시오"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Gather your team!"
-msgstr "팀원을 새로 구성해보세요"
+msgstr "팀을 모으십시오!"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__gift_manager_id
 msgid "Gift Responsible"
-msgstr "보상 관련 담당자"
+msgstr "책임있는 선물"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_points_filter
@@ -605,36 +590,34 @@ msgstr "메시지가 있습니다"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_recruitment_report__has_referrer
 msgid "Has Referrer"
-msgstr "추천인 있음"
+msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
 "Hello,<br><br>There are some amazing job offers in my company! Have a look, "
 "they  can be interesting for you<br><a href=\"%s\">See Job Offers</a>"
 msgstr ""
-"안녕하세요, <br><br>저희 회사에 좋은 조건에 채용 중인 포지션이 있어 연락 드립니다. 아래 링크를 통해 내용 확인 후 지원해주시기"
-" 바랍니다. <br><a href=\"%s\">채용 정보 확인</a>"
+"안녕하세요, <br><br>저희 회사에 좋은 근무 제안이 있습니다! 다음을 참조하시면 이곳의 사람들이 흥미로운 것을 보여줄 겁니다. "
+"<br><a href=\"%s\">구인을 참조하십시오.</a>"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_send_mail.py:0
 #, python-format
 msgid ""
 "Hello,<br><br>There is an amazing job offer for %s in my company! It will be"
 " a fit for you<br><a href=\"%s\">See Job Offer</a>"
 msgstr ""
-"안녕하세요, <br><br>저희 회사에 좋은 조건에 채용 중인 %s 포지션이 있어 연락 드립니다. 아래 링크를 통해 내용 확인 후 "
-"지원해주시기 바랍니다 <br><a href=\"%s\">채용 정보 확인</a>"
+"안녕하세요, <br><br>저희 회사에 %s에 대한 놀라운 근무 제안이 있습니다! 그것은 당신에게 적합할 것입니다. <br><a "
+"href=\"%s\">채용 정보를 참조하십시오.</a>"
 
 #. module: hr_referral
 #: model:ir.model.fields.selection,name:hr_referral.selection__hr_applicant__referral_state__hired
 #: model:ir.model.fields.selection,name:hr_referral.selection__hr_referral_report__referral_state__hired
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_filter
 msgid "Hired"
-msgstr "채용 완료"
+msgstr "채용함"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__hr_referral_level_id
@@ -645,6 +628,11 @@ msgstr "인사 추천 등급"
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__hr_referral_onboarding_page
 msgid "Hr Referral Onboarding Page"
 msgstr "인사 추천 진행 페이지"
+
+#. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
+msgid "Hr Referral Reward"
+msgstr "인사 추천 보상"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__id
@@ -720,16 +708,30 @@ msgid "Job Positions"
 msgstr "직무 영역"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Job Referral Program"
-msgstr "인재 추천 프로그램"
+msgstr "직무 추천 프로그램"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__job_open_date
 msgid "Job Start Recruitment Date"
 msgstr "직무 모집 시작일"
+
+#. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_level____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_link_to_share____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward____last_update
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_send_mail____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__write_date
@@ -765,17 +767,17 @@ msgstr "최근 갱신 일자"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__last_valuable_stage_id
 msgid "Last Valuable Stage"
-msgstr "마지막 중요한 단계"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_reward_configuration
 msgid "Let's create Super Rewards to thank your employees."
-msgstr "직원들에게 감사한 마음을 전할 수 있도록 적절한 보상을 만들어 보세요."
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_referral_reward
 msgid "Let's create super Rewards to thank<br>your employees."
-msgstr "직원들에게 감사한 마음을 전할 수 있도록 <br>적절한 보상을 만들어보세요."
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_applicant_employee_referral
@@ -783,7 +785,7 @@ msgid "Let's share a job position."
 msgstr "직무 영역을 공유합시다."
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Level"
@@ -827,6 +829,11 @@ msgid "Linkedin Clicks"
 msgstr "링크드인 클릭"
 
 #. module: hr_referral
+#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "주요 첨부 파일"
+
+#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__max_points
 #: model:ir.model.fields,field_description:hr_referral.field_hr_job__max_points
 msgid "Max Points"
@@ -835,7 +842,7 @@ msgstr "최고 점수"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__medium_id
 msgid "Medium"
-msgstr "매체"
+msgstr "중간"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__message_has_error
@@ -858,21 +865,19 @@ msgid "My Referral"
 msgstr "나의 추천"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/wizard/hr_referral_alert_mail_wizard.py:0
 #, python-format
 msgid "New Alert In Referrals App"
-msgstr "인재추천 앱의 새로운 알림"
+msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid "New gift awarded for %s"
 msgstr "%s에 대한 새로운 선물 수여"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Next"
@@ -881,7 +886,7 @@ msgstr "다음"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "다음 활동 캘린더 행사"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__activity_date_deadline
@@ -899,14 +904,9 @@ msgid "Next Activity Type"
 msgstr "다음 활동 유형"
 
 #. module: hr_referral
-#: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "No data to display"
-msgstr "표시할 데이터가 없습니다"
-
-#. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_job_employee_referral
 msgid "No job positions are available to share."
-msgstr "현재 공유할 수 있는 채용 정보가 없습니다."
+msgstr "공유할 수 있는 직무 영역이 없습니다."
 
 #. module: hr_referral
 #: model:ir.model.fields.selection,name:hr_referral.selection__hr_referral_alert__onclick__no
@@ -932,18 +932,18 @@ msgstr "오류 횟수"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "조치가 필요한 메시지 수"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "전송 오류가 발생한 메시지 수입니다."
+msgstr "전송 오류 메시지 수"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert__onclick
 msgid "On Click"
-msgstr "클릭 시"
+msgstr "클릭할 때"
 
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_onboarding_configuration
@@ -952,7 +952,7 @@ msgid "Onboarding"
 msgstr "신입사원 연수 프로그램"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Ongoing"
@@ -966,7 +966,7 @@ msgstr "열기"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_kanban
 msgid "Point icon"
-msgstr "포인트 아이콘"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_points
@@ -985,7 +985,12 @@ msgstr "포인트"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__points_not_hired
 msgid "Points Given For Not Hired"
-msgstr "미채용 시 지급되는 포인트"
+msgstr "채용 안함에 대해 점수 지정"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Points Given For Refused"
+msgstr "채용 거부에 대해 점수 지정"
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__points_missing
@@ -993,16 +998,9 @@ msgid "Points Missing"
 msgstr "누락된 점수"
 
 #. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points Received"
-msgstr "포인트 획득"
-
-#. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid "Points icon"
-msgstr "포인트 아이콘"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_points
@@ -1015,13 +1013,6 @@ msgid "Points to buy this"
 msgstr "구매 점수"
 
 #. module: hr_referral
-#. odoo-javascript
-#: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#, python-format
-msgid "Points to spend"
-msgstr "사용할 포인트"
-
-#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_friend__position
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid "Position"
@@ -1030,7 +1021,7 @@ msgstr "영역"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_job_employee_referral_kanban
 msgid "Positions"
-msgstr "위치"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_reward_kanban
@@ -1040,12 +1031,7 @@ msgstr "품목"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__name
 msgid "Product Name"
-msgstr "품목명"
-
-#. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_reward__rating_ids
-msgid "Ratings"
-msgstr "평가"
+msgstr "품목 명"
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.action_hr_applicant_employee_referral
@@ -1055,7 +1041,7 @@ msgstr "점수를 받을 준비가 되셨습니까?"
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_recruitment_report
 msgid "Recruitment Analysis Report"
-msgstr "채용 분석 보고서"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_recruitment_stage
@@ -1063,26 +1049,25 @@ msgid "Recruitment Stages"
 msgstr "채용 단계"
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_report_view_tree
 msgid "Referer"
-msgstr "추천인"
+msgstr ""
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_points_filter
 msgid "Referral"
-msgstr "인재 추천"
+msgstr "추천"
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_alert_mail_wizard
 msgid "Referral Alert Mail Wizard"
-msgstr "추천 알림 메일 마법사"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_res_company__hr_referral_background
 #: model:ir.model.fields,field_description:hr_referral.field_res_config_settings__hr_referral_background
 msgid "Referral Background"
-msgstr "추천 배경"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_link_to_share
@@ -1100,9 +1085,14 @@ msgid "Referral Points"
 msgstr "추천 점수"
 
 #. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referral Rate"
+msgstr ""
+
+#. module: hr_referral
 #: model:res.groups,name:hr_referral.group_hr_referral_reward_responsible_user
 msgid "Referral Reward Responsible User"
-msgstr "추천 보상 책임 사용자"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model,name:hr_referral.model_hr_referral_send_mail
@@ -1113,30 +1103,28 @@ msgstr "추천 메일 보내기"
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__referral_state
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_report__referral_state
 msgid "Referral State"
-msgstr "추천 현황"
+msgstr "추천 상태"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s"
 msgstr "추천 : %s"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Referral: %s (%s)"
 msgstr "추천 : %s (%s)"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.ui.menu,name:hr_referral.menu_hr_referral_root
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
 #, python-format
 msgid "Referrals"
-msgstr "인재 추천"
+msgstr "추천"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_applicant_view_search_bis_inherit_referral
@@ -1146,7 +1134,17 @@ msgstr "추천인"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_applicant__ref_user_id
 msgid "Referred By User"
-msgstr "추천인"
+msgstr "사용자가 추천함"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referred Hired People"
+msgstr ""
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid "Referrer People"
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.ui.menu,name:hr_referral.menu_report_employee_referral_all
@@ -1164,7 +1162,7 @@ msgid "Responsible User"
 msgstr "담당 사용자"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Restart Onboarding"
@@ -1173,12 +1171,11 @@ msgstr "신입사원 연수 프로그램 재시작"
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.res_config_settings_view__form
 msgid "Restore Default"
-msgstr "기본값으로 복원"
+msgstr ""
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__hr_referral_reward_id
 #, python-format
 msgid "Reward"
 msgstr "보상"
@@ -1189,7 +1186,7 @@ msgid "Reward for Referrals"
 msgstr "추천에 대한 포상"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward
 #: model:ir.actions.act_window,name:hr_referral.action_hr_referral_reward_configuration
@@ -1221,12 +1218,12 @@ msgstr "보내기"
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.hr_referral_send_mail_action
 msgid "Send Job Offer by Mail"
-msgstr "메일로 채용 정보 보내기"
+msgstr "메일로 모집 부문 보내기"
 
 #. module: hr_referral
 #: model_terms:ir.ui.view,arch_db:hr_referral.hr_referral_send_mail_view_form
 msgid "Send Job by Mail"
-msgstr "메일로 채용 정보 보내기"
+msgstr "메일로 채용 공고 보내기"
 
 #. module: hr_referral
 #: model:ir.actions.act_window,name:hr_referral.hr_referral_alert_mail_wizard_action
@@ -1253,7 +1250,7 @@ msgid "Settings"
 msgstr "설정"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Share"
@@ -1282,33 +1279,26 @@ msgstr "공유된 항목 정보"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_recruitment_stage__use_in_referral
 msgid "Show in Referrals"
-msgstr "추천에 표시"
+msgstr ""
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip"
 msgstr "건너뛰기"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Skip and Start"
 msgstr "건너뛰기 및 시작하기"
 
 #. module: hr_referral
-#. odoo-python
-#: code:addons/hr_referral/models/hr_applicant.py:0
-#, python-format
-msgid "Sorry, your referral %s has been refused in the recruitment process."
-msgstr "죄송합니다, 추천해 주신 %s님이 채용 절차에서 불합격되셨습니다."
-
-#. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_res_users__utm_source_id
 msgid "Source"
-msgstr "지원 경로"
+msgstr "원본"
 
 #. module: hr_referral
 #: model:ir.model.fields.selection,name:hr_referral.selection__hr_referral_alert__onclick__url
@@ -1321,7 +1311,7 @@ msgid "Stage"
 msgstr "단계"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
@@ -1330,11 +1320,16 @@ msgid "Start"
 msgstr "시작"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Start Now"
 msgstr "지금 시작하기"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "State"
+msgstr "시/도"
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__activity_state
@@ -1344,10 +1339,10 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"활동 기준 상태\n"
-"기한 초과: 기한이 이미 지났습니다.\n"
-"오늘: 활동 날짜가 오늘입니다.\n"
-"예정: 향후 계획된 활동입니다."
+"활동에 기조한 상태입니다\n"
+"기한초과: 이미 기한이 지났습니다\n"
+"오늘: 활동 날짜가 오늘입니다\n"
+"계획: 향후 활동입니다."
 
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_alert_mail_wizard__subject
@@ -1356,12 +1351,7 @@ msgid "Subject"
 msgstr "제목"
 
 #. module: hr_referral
-#: model:ir.model.fields,field_description:hr_referral.field_hr_referral_points__applicant_subject
-msgid "Subject / Application"
-msgstr "제목 / 지원자"
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Successful"
@@ -1370,7 +1360,14 @@ msgstr "성공"
 #. module: hr_referral
 #: model:ir.model.fields,field_description:hr_referral.field_hr_referral_onboarding__text
 msgid "Text"
-msgstr "내용"
+msgstr "문자"
+
+#. module: hr_referral
+#: model_terms:ir.ui.view,arch_db:hr_referral.hr_recruitment_report_view_dashboard_inherit
+msgid ""
+"The % is based on the total of applicant that have been referred by someone "
+"else divided by the total of applicant."
+msgstr ""
 
 #. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_friend__image
@@ -1406,30 +1403,21 @@ msgid ""
 "This option is used in app 'Referrals'. If checked, the stage is displayed "
 "in 'Referrals Dashboard' and points are given to the employee."
 msgstr ""
-"'인재 추천' 앱에서 사용되는 옵션입니다. 해당 옵션을 선택 시, '추천 현황판'에 각 단계가 표시되고 해당 직원은 포인트를 획득하게 "
-"됩니다."
 
 #. module: hr_referral
 #: model_terms:ir.actions.act_window,help:hr_referral.employee_referral_report_action
-msgid "This reports allow you to follow the referrals and their evolution."
-msgstr "이 보고서를 통해 인재 추천과 역량 개발을 추적할 수 있습니다."
+msgid "This report performs analysis on your employee referral."
+msgstr "이 보고서는 직원 추천에 대한 분석을 수행합니다."
 
 #. module: hr_referral
-#: model_terms:ir.ui.view,arch_db:hr_referral.view_hr_referral_onboarding_tree
-msgid ""
-"This will make the onboarding visible to all employees who have already seen"
-" it. Do you want to continue?"
-msgstr "이렇게 하면 이미 연수 프로그램을 완료한 모든 직원이 볼 수 있습니다. 계속하시겠습니까?"
-
-#. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "To Spend"
-msgstr "사용"
+msgstr ""
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "Total"
@@ -1480,24 +1468,28 @@ msgid "User"
 msgstr "사용자"
 
 #. module: hr_referral
+#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
+msgid "User : Referral only"
+msgstr ""
+
+#. module: hr_referral
 #: model:ir.model.fields,help:hr_referral.field_hr_referral_reward__gift_manager_id
 msgid "User responsible of this gift."
-msgstr "이 보상에 대한 책임과 권한이 있는 사용자입니다."
+msgstr "이 선물에 대한 책임은 사용자에게 있습니다."
 
 #. module: hr_referral
-#: model:res.groups,name:hr_referral.group_hr_recruitment_referral_user
-msgid "User: Referral only"
-msgstr "사용자 : 추천 전용"
+#: model_terms:ir.ui.view,arch_db:hr_referral.employee_referral_report_view_dashboard
+msgid "Users Referrer"
+msgstr "사용자 추천인"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "View Jobs"
 msgstr "채용 공고"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_job.py:0
 #, python-format
 msgid "Visit Webpage"
@@ -1519,36 +1511,28 @@ msgid "Welcome Onboarding in Referral App"
 msgstr "추천 앱의 신입사원 연수 프로그램에 오신 걸 환영합니다"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "You are not allowed to access applicant records."
-msgstr "지원자 기록에 접근할 수 있는 권한이 없습니다."
+msgstr ""
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_campaign.py:0
 #, python-format
 msgid ""
 "You cannot delete these UTM Campaigns as they are linked to the following jobs in Referral:\n"
 "%(job_names)s"
 msgstr ""
-"UTM 캠페인은 추천에서 다음의 작업과 연결되어 있으므로 삭제할 수 없습니다:\n"
-"%(job_names)s"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/utm_source.py:0
 #, python-format
 msgid ""
 "You cannot delete these UTM Sources as they are linked to the following users in Referral:\n"
 "%(employee_names)s"
 msgstr ""
-"UTM 캠페인은 추천에서 다음의 사용자와 연결되어 있으므로 삭제할 수 없습니다:\n"
-"%(employee_names)s"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_referral_reward.py:0
 #, python-format
 msgid ""
@@ -1567,14 +1551,12 @@ msgid "You need another"
 msgstr "귀하는 다른 게 필요합니다"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer got a step further!"
 msgstr "추천자가 한 단계 더 나아갔습니다!"
 
 #. module: hr_referral
-#. odoo-python
 #: code:addons/hr_referral/models/hr_applicant.py:0
 #, python-format
 msgid "Your referrer is hired!"
@@ -1586,7 +1568,7 @@ msgid "click(s)"
 msgstr "클릭"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "has been hired!"
@@ -1598,14 +1580,14 @@ msgid "https://www.google.com"
 msgstr "https://www.google.com"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "reward"
 msgstr "포상"
 
 #. module: hr_referral
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_referral/static/src/views/dashboard.xml:0
 #, python-format
 msgid "share"

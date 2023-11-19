@@ -33,8 +33,8 @@
                     https://www.facebook.com/help/instagram/1631821640426723
                 </a>
             </div>
-            <div t-if="image_url" class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
-                <img t-att-src="image_url" alt="Post Image" />
+            <div t-if="image" class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
+                <img t-attf-src="data:image/png;base64, #{image}" alt="Post Image" />
             </div>
             <div t-if="message" class="pt-2 o_social_instagram_font_size">
                 <span class="fw-bold pe-1">My_instagram_page</span>

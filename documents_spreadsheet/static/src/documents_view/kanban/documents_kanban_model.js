@@ -5,7 +5,7 @@ import { DocumentsKanbanRecord } from "@documents/views/kanban/documents_kanban_
 
 import { XLSX_MIME_TYPE } from "@documents_spreadsheet/helpers";
 
-patch(DocumentsKanbanRecord.prototype, {
+patch(DocumentsKanbanRecord.prototype, "documents_spreadsheet_documents_kanban_record", {
     /**
      * @override
      */
@@ -13,7 +13,7 @@ patch(DocumentsKanbanRecord.prototype, {
         return (
             this.data.handler === "spreadsheet" ||
             this.data.mimetype === XLSX_MIME_TYPE ||
-            super.isViewable(...arguments)
+            this._super(...arguments)
         );
     },
 });

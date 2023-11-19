@@ -19,14 +19,7 @@ class ProductPricelist(models.Model):
         domain = [('company_id', '=', company_id)]
         return self.env['website'].search(domain, limit=1)
 
-    website_id = fields.Many2one(
-        comodel_name='website',
-        string="Website",
-        ondelete='restrict',
-        default=_default_website,
-        domain="[('company_id', '=?', company_id)]",
-        tracking=20,
-    )
+    website_id = fields.Many2one('website', string="Website", ondelete='restrict', default=_default_website, domain="[('company_id', '=?', company_id)]")
     code = fields.Char(string='E-commerce Promotional Code', groups="base.group_user")
     selectable = fields.Boolean(help="Allow the end user to choose this price list")
 
@@ -41,18 +34,20 @@ class ProductPricelist(models.Model):
                 # It be set when we actually create the pricelist
                 self = self.with_context(default_company_id=vals['company_id'])
         pricelists = super().create(vals_list)
-        if pricelists:
-            self.env.registry.clear_cache()
+        pricelists and pricelists.clear_caches()
         return pricelists
 
     def write(self, data):
         res = super(ProductPricelist, self).write(data)
-        self and self.env.registry.clear_cache()
+        if data.keys() & {'code', 'active', 'website_id', 'selectable', 'company_id'}:
+            self._check_website_pricelist()
+        self and self.clear_caches()
         return res
 
     def unlink(self):
         res = super(ProductPricelist, self).unlink()
-        self and self.env.registry.clear_cache()
+        self._check_website_pricelist()
+        self and self.clear_caches()
         return res
 
     def _get_partner_pricelist_multi_search_domain_hook(self, company_id):
@@ -69,6 +64,12 @@ class ProductPricelist(models.Model):
             res = res.filtered(lambda pl: pl._is_available_on_website(website))
         return res
 
+    def _check_website_pricelist(self):
+        for website in self.env['website'].search([]):
+            # sudo() to be able to read pricelists/website from another company
+            if not website.sudo().pricelist_ids:
+                raise UserError(_("With this action, '%s' website would not have any pricelist available.") % (website.name))
+
     def _is_available_on_website(self, website):
         """ To be able to be used on a website, a pricelist should either:
         - Have its `website_id` set to current website (specific pricelist).
@@ -84,7 +85,7 @@ class ProductPricelist(models.Model):
         self.ensure_one()
         if self.company_id and self.company_id != website.company_id:
             return False
-        return self.active and self.website_id.id == website.id or (not self.website_id and (self.selectable or self.sudo().code))
+        return self.website_id.id == website.id or (not self.website_id and (self.selectable or self.sudo().code))
 
     def _is_available_in_country(self, country_code):
         self.ensure_one()

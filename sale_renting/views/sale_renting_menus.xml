@@ -4,7 +4,7 @@
     <menuitem
         id="rental_menu_root"
         name="Rental"
-        web_icon="sale_renting,static/description/icon.png"
+        web_icon="sale_renting,static/description/icon.svg"
         groups="sales_team.group_sale_salesman"
         sequence="45">
 
@@ -67,8 +67,9 @@
 
             <menuitem id="menu_sale_renting_periods"
                 name="Rental periods"
-                action="sale_temporal_recurrence_action"
-                sequence="20"/>
+                action="sale_temporal.sale_temporal_recurrence_action"
+                groups="sales_team.group_sale_manager"
+                sequence="20" />
 
         </menuitem>
     </menuitem>

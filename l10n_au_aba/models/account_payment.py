@@ -34,8 +34,8 @@ class AccountPayment(models.Model):
                     raise ValidationError(_("Journal '%s' requires a proper ABA account. Please configure it first.", rec.journal_id.name))
 
                 if not rec.journal_id.aba_user_spec or not rec.journal_id.aba_fic or not rec.journal_id.aba_user_number:
-                    raise ValidationError(_("Please fill in the ABA data of account %s (journal %s) before using it to generate ABA payments.",
-                        bank_acc.acc_number, rec.journal_id.name))
+                    raise ValidationError(_("Please fill in the ABA data of account %s (journal %s) before using it to generate ABA payments.")
+                        % (bank_acc.acc_number, rec.journal_id.name))
 
     @api.constrains('payment_method_line_id', 'partner_bank_id')
     def _check_partner_bank_account(self):

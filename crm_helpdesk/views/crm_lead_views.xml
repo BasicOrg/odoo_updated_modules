@@ -10,7 +10,7 @@
             <xpath expr="/form/header/button[last()]" position="after">
                 <button class="oe_stat_button" type="action" name="%(crm_lead_convert2ticket_action)d"
                         string="Convert to Ticket"
-                        invisible="not active or type == 'opportunity'"/>
+                        attrs="{'invisible': ['|', ('active', '=', False), ('type', '=', 'opportunity')]}"/>
             </xpath>
         </field>
     </record>

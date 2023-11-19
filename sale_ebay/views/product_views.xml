@@ -8,41 +8,41 @@
       <field name="arch" type="xml">
         <data>
         <xpath expr="//header" position="inside">
-              <button name="push_product_ebay" type="object" string="List Item on eBay" invisible="not ebay_use or ebay_listing_status in ['Active', 'Out Of Stock', 'Error']"/>
-              <button name="relist_product_ebay" type="object" string="Relist Item" invisible="not ebay_use or ebay_listing_status not in ['Ended', 'Completed', 'Out Of Stock']"/>
-              <button name="revise_product_ebay" type="object" string="Revise Item" invisible="not ebay_use or not ebay_url or ebay_listing_status not in ['Active', 'Out Of Stock', 'Error']"/>
-              <button name="end_listing_product_ebay" type="object" string="End Item's Listing" invisible="not ebay_use or not ebay_url or ebay_listing_status not in ['Active', 'Error'] or ebay_listing_status == 'Out Of Stock'"/>
-              <button name="%(action_ebay_link_listing)d" type='action' string='Link With Existing eBay Listing' invisible="not ebay_use or ebay_listing_status != 'Unlisted'"/>
+              <button name="push_product_ebay" type="object" string="List Item on eBay" attrs="{'invisible': ['|', ('ebay_use', '=', False), ('ebay_listing_status', 'in', ['Active', 'Out Of Stock', 'Error'])]}"/>
+              <button name="relist_product_ebay" type="object" string="Relist Item" attrs="{'invisible': ['|', ('ebay_use', '=', False), ('ebay_listing_status','not in', ['Ended', 'Completed', 'Out Of Stock'])]}"/>
+              <button name="revise_product_ebay" type="object" string="Revise Item" attrs="{'invisible': ['|', ('ebay_use', '=', False), '|',('ebay_url','=', False),('ebay_listing_status','not in', ['Active', 'Out Of Stock', 'Error'])]}"/>
+              <button name="end_listing_product_ebay" type="object" string="End Item's Listing" attrs="{'invisible': ['|', ('ebay_use', '=', False), '|',('ebay_url','=', False),'|',('ebay_listing_status','not in',['Active', 'Error']),('ebay_listing_status','=','Out Of Stock')]}"/>
+              <button name="%(action_ebay_link_listing)d" type='action' string='Link With Existing eBay Listing' attrs="{'invisible': ['|',('ebay_use', '=', False),('ebay_listing_status','!=', 'Unlisted')]}"/>
         </xpath>
         <xpath expr="//notebook[last()]" position="inside">
           <page string="eBay" name="ebay_sale">
             <group>
               <field name="ebay_use" string="Sell on eBay"/>
-              <field name="ebay_url" readonly="True" invisible="not ebay_url" widget="url"/>
-              <field name="ebay_listing_status" invisible="not ebay_use"/>
-              <field name="ebay_quantity_sold" invisible="product_variant_count &gt; 1 or ebay_listing_status == 'Unlisted'"/>
-              <field name="ebay_start_date" invisible="ebay_listing_status == 'Unlisted'"/>
+              <field name="ebay_url" readonly="True" attrs="{'invisible': [('ebay_url','=', False)]}" widget="url"/>
+              <field name="ebay_listing_status" attrs="{'invisible':[('ebay_use','=',False)]}"/>
+              <field name="ebay_quantity_sold" attrs="{'invisible': ['|',('product_variant_count', '>', 1),('ebay_listing_status','=', 'Unlisted')]}"/>
+              <field name="ebay_start_date" attrs="{'invisible': [('ebay_listing_status','=', 'Unlisted')]}"/>
             </group>
 
-            <group colspan="2" invisible="not ebay_use">
+            <group colspan="2" attrs="{'invisible':[('ebay_use','=',False)]}">
               <group>
                 <field name="ebay_title"/>
                 <field name="ebay_subtitle"/>
                 <field name="ebay_item_condition_id" options="{'no_create': True, 'no_open': True}"/>
                 <field name="ebay_category_id" options="{'no_create': True, 'no_open': True}"/>
-                <field name="ebay_category_2_id" invisible="not ebay_category_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="ebay_category_2_id" attrs="{'invisible': [('ebay_category_id', '=', False)]}" options="{'no_create': True, 'no_open': True}"/>
                 <field name="ebay_store_category_id" options="{'no_create': True, 'no_open': True}"/>
-                <field name="ebay_store_category_2_id" invisible="not ebay_store_category_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="ebay_store_category_2_id" attrs="{'invisible': [('ebay_store_category_id', '=', False)]}" options="{'no_create': True, 'no_open': True}"/>
               </group>
               <group>
                 <field name="ebay_listing_type"/>
-                <field name="ebay_price" invisible="ebay_listing_type == 'FixedPriceItem'" widget="monetary"/>
-                <field name="ebay_buy_it_now_price" invisible="ebay_listing_type == 'FixedPriceItem'" widget="monetary"/>
-                <field name="ebay_fixed_price" string="Fixed Price" invisible="ebay_listing_type == 'Chinese' or product_variant_count &gt; 1" widget="monetary"/>
-                <field name="ebay_sync_stock" invisible="ebay_listing_type == 'Chinese'"/>
-                <field name="ebay_quantity" invisible="ebay_sync_stock or product_variant_count &gt; 1 or ebay_listing_type == 'Chinese'"/>
+                <field name="ebay_price" attrs="{'invisible': [('ebay_listing_type','=', 'FixedPriceItem')]}" widget="monetary"/>
+                <field name="ebay_buy_it_now_price" attrs="{'invisible': [('ebay_listing_type','=', 'FixedPriceItem')]}" widget="monetary"/>
+                <field name="ebay_fixed_price" string="Fixed Price" attrs="{'invisible': ['|',('ebay_listing_type','=', 'Chinese'),('product_variant_count', '>', 1)]}" widget="monetary"/>
+                <field name="ebay_sync_stock" attrs="{'invisible': [('ebay_listing_type','=', 'Chinese')]}"/>
+                <field name="ebay_quantity" attrs="{'invisible': ['|',('ebay_sync_stock','=',True),'|',('product_variant_count','>',1),('ebay_listing_type','=', 'Chinese')]}"/>
                 <field name="ebay_listing_duration"/>
-                <field name="ebay_best_offer" invisible="product_variant_count &gt; 1 and ebay_listing_type == 'FixedPriceItem'"/>
+                <field name="ebay_best_offer" attrs="{'invisible': [('product_variant_count','>',1),('ebay_listing_type','=', 'FixedPriceItem')]}"/>
                 <field name="ebay_private_listing"/>
 
               </group>
@@ -52,25 +52,25 @@
                 <field name="ebay_seller_shipping_policy_id" options="{'no_create': True, 'no_open': True}"/>
               </group>
             </group>
-            <div groups="product.group_product_variant" invisible="not ebay_use">
+            <div groups="product.group_product_variant" attrs="{'invisible':[('ebay_use','=',False)]}">
               <label for="product_variant_ids"
-                invisible="ebay_listing_type == 'Chinese' or product_variant_count == 1"/>
+                attrs="{'invisible': ['|',('ebay_listing_type','=', 'Chinese'),('product_variant_count', '=', 1)]}"
+                />
               <field name="product_variant_ids" widget="one2many"
-                invisible="ebay_listing_type == 'Chinese' or product_variant_count == 1"
-                required="False">
+                attrs="{'required': False,'invisible': ['|',('ebay_listing_type','=', 'Chinese'),('product_variant_count', '=', 1)]}">
                 <tree string="Variants" editable="bottom" create="false" delete="false">
-                  <field name="currency_id" column_invisible="True"/>
+                  <field name="currency_id" invisible="1"/>
                   <field name="product_template_attribute_value_ids" widget="many2many_tags" readonly="1"/>
                   <field name="ebay_use"/>
                   <field name="ebay_fixed_price" string="Fixed Price" widget="monetary"/>
                   <field name="ebay_quantity"/>
-                  <field name="uom_id" column_invisible="True"/>
+                  <field name="uom_id" invisible="1"/>
                   <field name="virtual_available"/>
                   <field name="ebay_quantity_sold"/>
                 </tree>
               </field>
             </div>
-            <group invisible="not ebay_use" string="eBay Description">
+            <group attrs="{'invisible':[('ebay_use','=',False)]}" string="eBay Description">
                 <group>
                 <field name="ebay_template_id"
                   domain="[('model','=','product.template')]"

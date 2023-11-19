@@ -28,7 +28,8 @@ class WebsiteEventMeetController(EventCommunityController):
     # MAIN PAGE
     # ------------------------------------------------------------
 
-    @http.route()
+    @http.route(["/event/<model('event.event'):event>/community"], type="http",
+                auth="public", website=True, sitemap=True)
     def community(self, event, page=1, lang=None, **kwargs):
         """Display the meeting rooms of the event on the frontend side.
 

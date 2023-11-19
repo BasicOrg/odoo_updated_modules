@@ -52,13 +52,3 @@ class ArticleFavorite(models.Model):
         if ('article_id' in vals or 'user_id' in vals) and not self.env.is_admin():
             raise exceptions.AccessError(_("Can not update the article or user of a favorite."))
         return super().write(vals)
-
-    def resequence_favorites(self, article_ids):
-        # Some article may not be accessible by the user anymore. Therefore,
-        # to prevent an access error, one will only resequence the favorites
-        # related to the articles accessible by the user
-        sequence = 0
-        # Keep the same order as in article_ids
-        for article_id in article_ids:
-            self.search([('article_id', '=', article_id), ('user_id', '=', self.env.uid)]).write({"sequence": sequence})
-            sequence += 1

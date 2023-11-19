@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from freezegun import freeze_time
 
 from odoo import Command
@@ -52,8 +52,8 @@ class TestHelpdeskHolidays(HelpdeskCommon, TestHrHolidaysCommon):
         leave = self.env['hr.leave'].create({
             'employee_id': self.employee_hruser.id,
             'holiday_status_id': self.leave_type.id,
-            'request_date_from': date.today(),
-            'request_date_to': date.today() + timedelta(days=6),
+            'date_from': datetime.now().strftime('%Y-%m-%d 00:00:00'),
+            'date_to': (datetime.now() + timedelta(days=6)).strftime('%Y-%m-%d 23:59:59'),
         })
         leave.action_approve()
 
@@ -79,8 +79,8 @@ class TestHelpdeskHolidays(HelpdeskCommon, TestHrHolidaysCommon):
         leave = self.env['hr.leave'].create({
             'employee_id': self.employee_hrmanager.id,
             'holiday_status_id': self.leave_type.id,
-            'request_date_from': date.today(),
-            'request_date_to': date.today() + timedelta(days=6),
+            'date_from': datetime.now().strftime('%Y-%m-%d 00:00:00'),
+            'date_to': (datetime.now() + timedelta(days=6)).strftime('%Y-%m-%d 23:59:59'),
         })
         leave.action_approve()
 
@@ -105,13 +105,11 @@ class TestHelpdeskHolidays(HelpdeskCommon, TestHrHolidaysCommon):
             'name': 'Half Week',
             'hours_per_day': 8.0,
             'attendance_ids': [
-                (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
-                (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
-                (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Friday Lunch', 'dayofweek': '4', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Friday Afternoon', 'dayofweek': '4', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'})
+                Command.create({'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
+                Command.create({'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                Command.create({'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
+                Command.create({'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                Command.create({'name': 'Friday Afternoon', 'dayofweek': '4', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'})
             ]
         })
 

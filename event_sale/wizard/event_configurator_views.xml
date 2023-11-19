@@ -19,15 +19,18 @@
                     <field
                         name="event_ticket_id"
                         domain="[('event_id', '=', event_id), ('product_id', '=', product_id)]"
-                        invisible="not event_id"
-                        required="event_id"
+                        attrs="{
+                            'invisible': [('event_id', '=', False)],
+                            'required': [('event_id', '!=', False)],
+                        }"
                         context="{'name_with_seats_availability': True}"
-                        options="{'no_open': True, 'no_create': True}"/>
+                        options="{'no_open': True, 'no_create': True}"
+                    />
                     <field name="product_id" invisible="1"/>
                 </group>
                 <footer>
-                    <button string="Ok" class="btn-primary o_event_sale_js_event_configurator_ok" special="save" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Ok" class="btn-primary o_event_sale_js_event_configurator_ok" special="save" data-hotkey="v"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

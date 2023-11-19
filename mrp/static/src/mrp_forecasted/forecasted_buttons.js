@@ -1,15 +1,15 @@
 /** @odoo-module **/
 import { ForecastedButtons } from "@stock/stock_forecasted/forecasted_buttons";
-import { patch } from "@web/core/utils/patch";
-import { onWillStart } from "@odoo/owl";
+import { patch } from '@web/core/utils/patch';
 
-patch(ForecastedButtons.prototype, {
+const { onWillStart } = owl;
+
+patch(ForecastedButtons.prototype, 'mrp.ForecastedButtons',{
     setup() {
-        super.setup();
+        this._super.apply();
         onWillStart(async () =>{
-            const fields = this.resModel === "product.template" ? ['bom_ids'] : ['bom_ids', 'variant_bom_ids'];
-            const res = (await this.orm.call(this.resModel, 'read', [this.productId], { fields }))[0];
-            this.bomId = res.variant_bom_ids ? res.variant_bom_ids[0] || res.bom_ids[0] : res.bom_ids[0];
+            const res = await this.orm.call(this.resModel, 'read', [this.productId], {fields: ['bom_ids']});
+            this.bomId = res[0].bom_ids && res[0].bom_ids[0];
         });
     },
 
@@ -17,8 +17,6 @@ patch(ForecastedButtons.prototype, {
         return this.actionService.doAction("mrp.action_report_mrp_bom", {
             additionalContext: {
                 active_id: this.bomId,
-                active_product_id: this.productId,
-                activate_availabilities : true,
             },
         });
     }

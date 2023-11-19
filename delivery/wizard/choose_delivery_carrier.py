@@ -1,15 +1,13 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, api, fields, models
+from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 
 
 class ChooseDeliveryCarrier(models.TransientModel):
     _name = 'choose.delivery.carrier'
     _description = 'Delivery Carrier Selection Wizard'
-
-    def _get_default_weight_uom(self):
-        return self.env['product.template']._get_weight_uom_name_from_ir_config_parameter()
 
     order_id = fields.Many2one('sale.order', required=True, ondelete="cascade")
     partner_id = fields.Many2one('res.partner', related='order_id.partner_id', required=True)
@@ -26,10 +24,8 @@ class ChooseDeliveryCarrier(models.TransientModel):
     available_carrier_ids = fields.Many2many("delivery.carrier", compute='_compute_available_carrier', string="Available Carriers")
     invoicing_message = fields.Text(compute='_compute_invoicing_message')
     delivery_message = fields.Text(readonly=True)
-    total_weight = fields.Float(string='Total Order Weight', related='order_id.shipping_weight', readonly=False)
-    weight_uom_name = fields.Char(readonly=True, default=_get_default_weight_uom)
 
-    @api.onchange('carrier_id', 'total_weight')
+    @api.onchange('carrier_id')
     def _onchange_carrier_id(self):
         self.delivery_message = False
         if self.delivery_type in ('fixed', 'base_on_rule'):
@@ -47,8 +43,8 @@ class ChooseDeliveryCarrier(models.TransientModel):
             vals = self._get_shipment_rate()
             if vals.get('error_message'):
                 warning = {
-                    'title': _("%(carrier)s Error", carrier=self.carrier_id.name),
-                    'message': vals['error_message'],
+                    'title': '%s Error' % self.carrier_id.name,
+                    'message': vals.get('error_message'),
                     'type': 'notification',
                 }
                 return {'warning': warning}
@@ -56,16 +52,19 @@ class ChooseDeliveryCarrier(models.TransientModel):
     @api.depends('carrier_id')
     def _compute_invoicing_message(self):
         self.ensure_one()
-        self.invoicing_message = ""
+        if self.carrier_id.invoice_policy == 'real':
+            self.invoicing_message = _('The shipping price will be set once the delivery is done.')
+        else:
+            self.invoicing_message = ""
 
     @api.depends('partner_id')
     def _compute_available_carrier(self):
         for rec in self:
-            carriers = self.env['delivery.carrier'].search(self.env['delivery.carrier']._check_company_domain(rec.order_id.company_id))
+            carriers = self.env['delivery.carrier'].search(['|', ('company_id', '=', False), ('company_id', '=', rec.order_id.company_id.id)])
             rec.available_carrier_ids = carriers.available_carriers(rec.order_id.partner_shipping_id) if rec.partner_id else carriers
 
     def _get_shipment_rate(self):
-        vals = self.carrier_id.with_context(order_weight=self.total_weight).rate_shipment(self.order_id)
+        vals = self.carrier_id.rate_shipment(self.order_id)
         if vals.get('success'):
             self.delivery_message = vals.get('warning_message', False)
             self.delivery_price = vals['price']

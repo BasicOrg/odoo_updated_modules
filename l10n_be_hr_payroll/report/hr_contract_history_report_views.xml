@@ -8,28 +8,28 @@
             <field name="resource_calendar_id" position="after">
                 <field name="is_under_contract" invisible="1"/>
                 <field name="has_valid_schedule_change_contract" invisible="1"/>
-                <field name="time_credit" invisible="True"/>
-                <field string="Reference Working Time" name="standard_calendar_id" invisible="not time_credit"/>
+                <field name="time_credit" attrs="{'invisible': True}"/>
+                <field string="Reference Working Time" name="standard_calendar_id" attrs="{'invisible': [('time_credit', '!=', True)]}"/>
             </field>
             <field name="resource_calendar_id" position="attributes">
-                <attribute name="invisible">time_credit</attribute>
+                <attribute name="attrs">{'invisible': [('time_credit', '=', True)]}</attribute>
             </field>
             <xpath expr="//header/button[@name='hr_contract_view_form_new_action']" position="after">
                 <button name="action_work_schedule_change_wizard" string="Working Schedule Change"  type="object" groups="hr_contract.group_hr_contract_manager"
-                    context="{'from_history': True}" invisible="country_code != 'BE' or not has_valid_schedule_change_contract"/>
+                    context="{'from_history': True}" attrs="{'invisible': ['|', ('country_code', '!=', 'BE'), ('has_valid_schedule_change_contract', '=', False)]}"/>
             </xpath>
             <xpath expr="//sheet" position="before">
-                <div role="alert" class="alert alert-danger text-center" invisible="not l10n_be_is_below_scale">
+                <div role="alert" class="alert alert-danger text-center" attrs="{'invisible': [('l10n_be_is_below_scale', '=', False)]}">
                     <field name="l10n_be_is_below_scale_warning"/>
                     <field name="l10n_be_is_below_scale" invisible="1"/>
                 </div>
             </xpath>
             <field name="date_hired" position="after">
-                <field name="fiscal_voluntarism" invisible="country_code != 'BE' or wage_type == 'hourly'"/>
+                <field name="fiscal_voluntarism" attrs="{'invisible': [('wage_type', '=', 'hourly')]}"/>
                 <label for="fiscal_voluntary_rate"
-                       invisible="wage_type == 'hourly' or not fiscal_voluntarism"/>
-                <div class="o_row" invisible="wage_type == 'hourly' or not fiscal_voluntarism">
-                    <field name="fiscal_voluntary_rate" class="o_hr_narrow_field" nolabel="1"/>
+                       attrs="{'invisible': ['|', ('wage_type', '=', 'hourly'), ('fiscal_voluntarism', '=', False)]}"/>
+                <div class="o_row" attrs="{'invisible': ['|', ('wage_type', '=', 'hourly'), ('fiscal_voluntarism', '=', False)]}">
+                    <field name="fiscal_voluntary_rate" nolabel="1"/>
                     <span>%</span>
                 </div>
             </field>

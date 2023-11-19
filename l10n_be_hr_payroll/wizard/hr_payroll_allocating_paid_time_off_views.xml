@@ -21,7 +21,7 @@
                 </group>
                 <footer>
                     <button name="generate_allocation" string="Generate Time Off Allocations" type="object" class="oe_highlight" data-hotkey="q"/>
-                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>
@@ -39,11 +39,11 @@
         <field name="model">hr.payroll.alloc.employee</field>
         <field name="arch" type="xml">
             <tree string="Employee" editable="bottom" create="false" delete="true">
-                <field name="employee_id"/>
-                <field name="paid_time_off" string="For The Period"/>
-                <field name="contract_next_year_id" column_invisible="True" />
-                <field name="resource_calendar_id"/>
-                <field name="paid_time_off_to_allocate" string="To Allocate"/>
+                <field name="employee_id" width="2"/>
+                <field name="paid_time_off" string="For The Period" width="1"/>
+                <field name="contract_next_year_id" invisible="1" />
+                <field name="resource_calendar_id" width="2"/>
+                <field name="paid_time_off_to_allocate" string="To Allocate" width="1"/>
             </tree>
         </field>
     </record>

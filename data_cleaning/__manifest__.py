@@ -22,6 +22,7 @@
     ],
     'auto_install': ['data_recycle'],
     'installable': True,
+    'application': False,
     'assets': {
         'web.assets_backend': [
             'data_cleaning/static/src/views/*.js',

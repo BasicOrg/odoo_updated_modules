@@ -3,16 +3,17 @@
 # 	* event_booth
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,6 +24,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
 msgid "<b>Renter Email</b>:"
 msgstr "<b>อีเมลผู้เช่า</b>:"
+
+#. module: event_booth
+#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
+msgid "<b>Renter Mobile</b>:"
+msgstr "<b>มือถือผู้เช่า</b>:"
 
 #. module: event_booth
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_booked_template
@@ -38,6 +44,17 @@ msgstr "<b>โทรศพท์ผู้เช่า</b>:"
 #: model_terms:ir.ui.view,arch_db:event_booth.event_event_view_form
 msgid "<span class=\"o_stat_text\">Booths</span>"
 msgstr "<span class=\"o_stat_text\">บูธ</span>"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
+msgid "<span class=\"text-white\">4m²</span>"
+msgstr "<span class=\"text-white\">4m²</span>"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
+msgid "<span class=\"text-white\">8m²</span>"
+msgstr "<span class=\"text-white\">8m²</span>"
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
@@ -85,19 +102,8 @@ msgstr "<span>46\" หน้าจอแสดงผล</span>"
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
-msgid "<span>4m²</span>"
-msgstr ""
-
-#. module: event_booth
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
 msgid "<span>50 words description on website</span>"
 msgstr "<span>คำอธิบาย 50 คำบนเว็บไซต์</span>"
-
-#. module: event_booth
-#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
-msgid "<span>8m²</span>"
-msgstr ""
 
 #. module: event_booth
 #: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
@@ -445,6 +451,13 @@ msgid "Is Follower"
 msgstr "เป็นผู้ติดตาม"
 
 #. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth____last_update
+#: model:ir.model.fields,field_description:event_booth.field_event_booth_category____last_update
+#: model:ir.model.fields,field_description:event_booth.field_event_type_booth____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__write_uid
 #: model:ir.model.fields,field_description:event_booth.field_event_booth_category__write_uid
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__write_uid
@@ -457,6 +470,11 @@ msgstr "อัปเดตครั้งล่าสุดโดย"
 #: model:ir.model.fields,field_description:event_booth.field_event_type_booth__write_date
 msgid "Last Updated on"
 msgstr "อัปเดตครั้งล่าสุดเมื่อ"
+
+#. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "เอกสารหลักที่แนบมา"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__message_has_error
@@ -515,8 +533,8 @@ msgstr "จํานวนข้อผิดพลาด"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+msgid "Number of messages which requires an action"
+msgstr "จํานวนข้อความที่ต้องดําเนินการ"
 
 #. module: event_booth
 #: model:ir.model.fields,help:event_booth.field_event_booth__message_has_error_counter
@@ -539,16 +557,9 @@ msgid "OpenWood Demonstrator 3"
 msgstr "ผู้สาธิต OpenWood 3"
 
 #. module: event_booth
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_from_event
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_quick_create
-#: model_terms:ir.ui.view,arch_db:event_booth.event_type_booth_view_form_from_type
-msgid "Pick a Booth Category..."
-msgstr ""
-
-#. module: event_booth
-#: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_form_from_event
-msgid "Pick a Renter..."
-msgstr ""
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_premium
+msgid "Premium"
+msgstr "พรีเมี่ยม"
 
 #. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_premium
@@ -562,22 +573,15 @@ msgstr "บูธพรีเมี่ยม A4"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_2_event_2
-#: model:event.booth,name:event_booth.event_booth_2_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_2
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_2
 msgid "Premium Showbooth 1"
 msgstr "บูธพรีเมี่ยมโชว์ 1"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_3_event_2
-#: model:event.booth,name:event_booth.event_booth_3_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_3
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_3
 msgid "Premium Showbooth 2"
 msgstr "บูธพรีเมี่ยมโชว์ 2"
-
-#. module: event_booth
-#: model:ir.model.fields,field_description:event_booth.field_event_booth__rating_ids
-msgid "Ratings"
-msgstr "การให้คะแนน"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__partner_id
@@ -589,6 +593,11 @@ msgstr "ผู้เช่า"
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_search
 msgid "Renter Email"
 msgstr "อีเมลผู้เช่า"
+
+#. module: event_booth
+#: model:ir.model.fields,field_description:event_booth.field_event_booth__contact_mobile
+msgid "Renter Mobile"
+msgstr "มือถือผู้เช่า"
 
 #. module: event_booth
 #: model:ir.model.fields,field_description:event_booth.field_event_booth__contact_name
@@ -618,17 +627,20 @@ msgstr "ลำดับ"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_0_event_2
-#: model:event.booth,name:event_booth.event_booth_0_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_0
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_0
 msgid "Showbooth 1"
 msgstr "บูธโชว์ 1"
 
 #. module: event_booth
 #: model:event.booth,name:event_booth.event_booth_1_event_2
-#: model:event.booth,name:event_booth.event_booth_1_event_3
-#: model:event.type.booth,name:event_booth.event_type_booth_demo_exhibition_1
+#: model:event.type.booth,name:event_booth.event_type_booth_demo_conference_1
 msgid "Showbooth 2"
 msgstr "บูธโชว์ 2"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_standard
+msgid "Standard"
+msgstr "มาตรฐาน"
 
 #. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_standard
@@ -668,6 +680,11 @@ msgstr "ประเภทกิจกรรมข้อยกเว้นบน
 #: model_terms:ir.ui.view,arch_db:event_booth.event_booth_view_search
 msgid "Unavailable"
 msgstr "ไม่พร้อม"
+
+#. module: event_booth
+#: model_terms:event.booth.category,description:event_booth.event_booth_category_vip
+msgid "VIP"
+msgstr "VIP"
 
 #. module: event_booth
 #: model:event.booth.category,name:event_booth.event_booth_category_vip

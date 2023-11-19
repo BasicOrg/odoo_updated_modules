@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Component } from "@odoo/owl";
+const { Component } = owl;
 
 export class ChatterAttachmentsViewer extends Component {}
 

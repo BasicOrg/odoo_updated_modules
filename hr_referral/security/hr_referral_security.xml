@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="group_hr_recruitment_referral_user" model="res.groups">
-        <field name="name">User: Referral only</field>
+        <field name="name">User : Referral only</field>
         <field name="category_id" ref="base.module_category_human_resources_recruitment"/>
         <field name="users" eval="[(4, ref('base.group_user'))]"/>
     </record>
@@ -13,7 +13,7 @@
         <field name="implied_ids" eval="[(4, ref('hr_referral.group_hr_recruitment_referral_user'))]"/>
     </record>
 
-    <record id="hr_recruitment.group_hr_recruitment_interviewer" model="res.groups">
+    <record id="hr_recruitment.group_hr_recruitment_user" model="res.groups">
         <field name="implied_ids" eval="[(4, ref('hr_referral.group_hr_recruitment_referral_user'))]"/>
     </record>
 
@@ -51,12 +51,6 @@
         <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recruitment_manager'))]"/>
     </record>
 
-    <record id="hr_referral_points_comp_rule" model="ir.rule">
-        <field name="name">Referral Points multi-company</field>
-        <field name="model_id" ref="model_hr_referral_points"/>
-        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
-    </record>
-
     <record id="hr_applicant_referral_user_rule" model="ir.rule">
         <field name="name">User Referral Applicants</field>
         <field name="model_id" ref="model_hr_applicant"/>
@@ -86,12 +80,6 @@
     <record model="ir.rule" id="hr_hr_referral_onboarding_comp_rule">
         <field name="name">Referral Onboarding multi-company</field>
         <field name="model_id" ref="model_hr_referral_onboarding"/>
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-    </record>
-
-    <record model="ir.rule" id="report_hr_referral_report_comp_rule">
-        <field name="name">Employee Referral Report multi-company</field>
-        <field name="model_id" ref="model_hr_referral_report"/>
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     </data>

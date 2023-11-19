@@ -1,17 +1,14 @@
-/** @odoo-module **/
+odoo.define('website_event_meet.website_event_create_room_button', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { renderToElement } from "@web/core/utils/render";
+const publicWidget = require('web.public.widget');
+const core = require('web.core');
+const QWeb = core.qweb;
 
 publicWidget.registry.websiteEventCreateMeetingRoom = publicWidget.Widget.extend({
     selector: '.o_wevent_create_room_button',
     events: {
         'click': '_onClickCreate',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
     },
 
     //--------------------------------------------------------------------------
@@ -20,9 +17,11 @@ publicWidget.registry.websiteEventCreateMeetingRoom = publicWidget.Widget.extend
 
     _onClickCreate: async function () {
         if (!this.$createModal) {
-            const langs = await this.rpc("/event/active_langs");
+            const langs = await this._rpc({
+                route: "/event/active_langs",
+            });
 
-            this.$createModal = $(renderToElement(
+            this.$createModal = $(QWeb.render(
                 'event_meet_create_room_modal',
                 {
                     csrf_token: odoo.csrf_token,
@@ -54,4 +53,6 @@ publicWidget.registry.websiteEventCreateMeetingRoom = publicWidget.Widget.extend
     },
 });
 
-export default publicWidget.registry.websiteEventMeetingRoom;
+return publicWidget.registry.websiteEventMeetingRoom;
+
+});

@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Surveys',
-    'version': '3.6',
+    'version': '3.5',
     'category': 'Marketing/Surveys',
     'description': """
 Create beautiful surveys and visualize answers
@@ -23,9 +23,8 @@ sent mails with personal token for the invitation of the survey.
         'web_tour',
         'gamification'],
     'data': [
-        'report/survey_templates.xml',
-        'report/survey_reports.xml',
-        'data/mail_message_subtype_data.xml',
+        'views/survey_report_templates.xml',
+        'views/survey_reports.xml',
         'data/mail_template_data.xml',
         'security/survey_security.xml',
         'security/ir.model.access.csv',
@@ -61,7 +60,7 @@ sent mails with personal token for the invitation of the survey.
     'sequence': 220,
     'assets': {
         'survey.survey_assets': [
-            ('include', "web.chartjs_lib"),
+            'web/static/lib/Chart/Chart.js',
             'survey/static/src/js/survey_image_zoomer.js',
             '/survey/static/src/xml/survey_image_zoomer_templates.xml',
             'survey/static/src/js/survey_quick_access.js',
@@ -80,6 +79,7 @@ sent mails with personal token for the invitation of the survey.
             'survey/static/src/xml/survey_breadcrumb_templates.xml',
         ],
         'survey.survey_user_input_session_assets': [
+            'survey/static/src/js/libs/chartjs-plugin-datalabels.min.js',
             'survey/static/src/js/survey_session_colors.js',
             'survey/static/src/js/survey_session_chart.js',
             'survey/static/src/js/survey_session_text_answers.js',
@@ -92,14 +92,14 @@ sent mails with personal token for the invitation of the survey.
         ],
         'web.assets_backend': [
             'survey/static/src/question_page/*',
-            'survey/static/src/views/**/*.js',
-            'survey/static/src/views/**/*.xml',
+            'survey/static/src/js/fields_section_one2many.js',
+            'survey/static/src/js/fields_form_page_description.js',
+            'survey/static/src/views/*.js',
             'survey/static/src/scss/survey_survey_views.scss',
             'survey/static/src/scss/survey_question_views.scss',
             'survey/static/src/scss/survey_templates_results.scss',
-            'survey/static/src/js/tours/survey_tour.js',
         ],
-        "web.assets_web_dark": [
+        "web.dark_mode_assets_backend": [
             'survey/static/src/scss/*.dark.scss',
         ],
         'web.assets_tests': [
@@ -107,6 +107,9 @@ sent mails with personal token for the invitation of the survey.
         ],
         'web.qunit_suite_tests': [
             'survey/static/tests/components/*.js',
+        ],
+        'web.assets_common': [
+            'survey/static/src/js/tours/survey_tour.js',
         ],
         'web.assets_frontend': [
             'survey/static/src/js/tours/survey_tour.js',

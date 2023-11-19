@@ -1,7 +1,3 @@
-.o_sign_template_header_wrapper .o_input {
-    --o-input-background-color: #{$o-webclient-background-color};
-}
-
 .o_sign_document_body {
     display: flex;
     flex-flow: column nowrap;
@@ -30,8 +26,6 @@
         flex-wrap: nowrap;
         overflow: auto;
         min-height: 100%;
-        color: $o-action;
-
         .o_sign_signer_status_info {
             margin:auto;
         }
@@ -47,13 +41,13 @@
     }
     .o_sign_signer {
         &_waiting {
-            color: o-text-color('info');
+            color: #0123BC;
         }
         &_refused {
-            color: o-text-color('danger');
+            color: red;
         }
         &_completed {
-            color: o-text-color('success');
+            color: green;
         }
     }
 }
@@ -100,9 +94,13 @@
     width: 100%;
     padding: 10px;
 
-    @include font-size(1.25em);
+    font-size: 1.25em;
     text-align: center;
 
+    .o_validate_button {
+        color: white !important;
+        background-color: $o-enterprise-primary-color !important;
+    }
 }
 
 .modal:is(.o_sign_thank_you_dialog, .o_sign_next_dialog) {
@@ -136,11 +134,6 @@
         color: $o-main-text-color;
         .o_thankyou_message {
             margin-top: 14px;
-            &.alert {
-                border-radius: 0;
-                margin-left: -1rem !important;
-                margin-right: -1rem !important;
-            }
         }
         .o_thankyou_link {
             margin-top: 25px;
@@ -169,42 +162,43 @@
 .modal {
     .o_sign_frame {
         height: 0;
-        position: absolute;
     }
     .o_sign_frame.active {
         visibility: visible;
-        top: 30%;
-        left: 5%;
+        position: absolute;
+        top: 26%;
+        left: 6%;
         height: 65%;
-        width: 20%;
+        width: 120px;
         border: 3px solid #017e84;
         border-right: none;
         border-radius: 22px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
-        opacity: 0.6;
+        padding: 0;
+        margin: 0;
         :before {
             content: attr(sign_label);
-            font-size: 120%;
+            font-size: 16px;
             color: #017E84;
             font-family: "Inter",Sans;
-            left: 110%;
+            left: 125px;
             width: 250px;
             display: inline-block;
             position: absolute;
-            top: calc( -2% - 10px);
+            top: -11px;
             font-weight: 600;
         }
         :after {
             content: attr(hash);
-            font-size: 120%;
+            font-size: 16px;
             color: #017E84;
             font-family: $o-font-family-monospace;
             width: 250px;
             display: inline-block;
             position: absolute;
-            left: 110%;
-            bottom: calc( -2% - 10px);
+            left: 125px;
+            bottom: -11px;
         }
     }
 }
@@ -243,19 +237,34 @@
 
     .o_sign_item_bottom_sheet {
         display: none;
+        width: 100%;
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        background-color: $o-enterprise-color;
         opacity: 0;
+        transition: opacity 500ms;
 
         &.show {
             opacity: 1;
-            box-shadow: 0 0 5px 0 rgba(0,0,0,0.25);
+            box-shadow: 0 0 5px 0 rgba(0,0,0,0.75);
         }
 
         .o_sign_next_button {
+            margin-top: 5px;
             text-transform: uppercase;
+            color: white !important;
+            background-color: $o-enterprise-primary-color !important;
+        }
+
+        .o_sign_item_bottom_sheet_field {
+            display: block;
+            width: 100%;
         }
 
         .o_sign_label {
             width: 100%;
+            color: white;
             text-transform: uppercase;
         }
     }

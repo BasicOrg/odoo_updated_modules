@@ -16,11 +16,5 @@
         'views/account_disallowed_expenses_report_views.xml',
     ],
     'installable': True,
-    'auto_install': True,
     'license': 'OEEL-1',
-    'assets': {
-        'web.assets_backend': [
-            'account_disallowed_expenses/static/src/components/**/*',
-        ],
-    },
 }

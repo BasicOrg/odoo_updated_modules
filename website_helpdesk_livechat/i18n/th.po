@@ -3,16 +3,17 @@
 # 	* website_helpdesk_livechat
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,20 +21,25 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
-msgid ""
-"\n"
-"                    Create a new helpdesk ticket by typing <b>/ticket <i>ticket title</i></b><br>\n"
-"                    "
-msgstr ""
+msgid " This channel is private. People must be invited to join it."
+msgstr "ช่องทางนี้เป็นช่องส่วนตัว ผู้คนจะต้องได้รับเชิญให้เข้าร่วม"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/chatbot_script_step.py:0
 #, python-format
 msgid "%(name)s's Ticket"
+msgstr ""
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid ""
+"<br><br>\n"
+"                    You can create a new ticket by typing <b>/helpdesk <i>ticket title</i></b>.<br>\n"
+"                    You can search tickets by typing <b>/helpdesk_search <i>keyword</i></b> or <b><i>ticket number</i></b><br>\n"
+"                    "
 msgstr ""
 
 #. module: website_helpdesk_livechat
@@ -47,28 +53,24 @@ msgid "Anything else to add?"
 msgstr ""
 
 #. module: website_helpdesk_livechat
+#: model:ir.actions.act_window,name:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
 #: model:ir.ui.menu,name:website_helpdesk_livechat.helpdesk_team_canned_response_menu
 msgid "Canned Responses"
 msgstr "การตอบกลับสำเร็จรูป"
 
 #. module: website_helpdesk_livechat
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.im_livechat_canned_response_view_search
+msgid "Canned Responses Search"
+msgstr ""
+
+#. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_chatbot_script
 msgid "Chatbot Script"
-msgstr "สคริปต์แชทบอท"
+msgstr ""
 
 #. module: website_helpdesk_livechat
 #: model:ir.model,name:website_helpdesk_livechat.model_chatbot_script_step
 msgid "Chatbot Script Step"
-msgstr "ขั้นตอนสคริปต์แชทบอท"
-
-#. module: website_helpdesk_livechat
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
-msgid "Configure Canned Responses"
-msgstr ""
-
-#. module: website_helpdesk_livechat
-#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
-msgid "Configure Live Chat Channel"
 msgstr ""
 
 #. module: website_helpdesk_livechat
@@ -77,21 +79,20 @@ msgid "Create Ticket"
 msgstr "สร้างทิกเก็ต"
 
 #. module: website_helpdesk_livechat
-#. odoo-javascript
-#: code:addons/website_helpdesk_livechat/static/src/messaging_service_patch.js:0
+#. openerp-web
+#: code:addons/website_helpdesk_livechat/static/src/models/messaging_initializer.js:0
 #, python-format
-msgid "Create a new helpdesk ticket (/ticket ticket title)"
-msgstr ""
+msgid "Create a new helpdesk ticket"
+msgstr "สร้างทิกเก็ตช่วยเหลือใหม่"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
 msgid "Created a new ticket: %s"
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#: model:ir.model,name:website_helpdesk_livechat.model_discuss_channel
+#: model:ir.model,name:website_helpdesk_livechat.model_mail_channel
 msgid "Discussion Channel"
 msgstr "ช่องการสนทนา"
 
@@ -147,16 +148,9 @@ msgid "Just a last thing, can we please have your email address?"
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#: model:ir.model.fields,field_description:website_helpdesk_livechat.field_helpdesk_team__use_website_helpdesk_livechat
-msgid "Live Chat"
-msgstr "ไลฟ์แชท"
-
-#. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "Make sure you are using the right format:"
-msgstr ""
+#: model:ir.model.fields,field_description:website_helpdesk_livechat.field_helpdesk_team__feature_livechat_channel_id
+msgid "Live Chat Channel"
+msgstr "ช่องทางไลฟ์แชท"
 
 #. module: website_helpdesk_livechat
 #: model:chatbot.script.answer,name:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref_answer_no
@@ -164,19 +158,17 @@ msgid "No"
 msgstr "ไม่"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "No tickets found for %s."
+#: model_terms:ir.actions.act_window,help:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
+msgid "No canned reponses found. Let's create one!"
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
 msgid ""
 "No tickets found for <b>%s</b>. <br> Make sure you are using the right "
-"format:<br> <b>/search_tickets <i>keyword</i></b>"
+"format:<br> <b>/helpdesk_search <i>keyword</i></b> or <b>/helpdesk_search "
+"<i>ticket number</i></b>"
 msgstr ""
 
 #. module: website_helpdesk_livechat
@@ -197,22 +189,13 @@ msgid "Please write below your customer reference."
 msgstr ""
 
 #. module: website_helpdesk_livechat
-#. odoo-javascript
-#: code:addons/website_helpdesk_livechat/static/src/messaging_service_patch.js:0
+#. openerp-web
+#: code:addons/website_helpdesk_livechat/static/src/models/messaging_initializer.js:0
 #, python-format
-msgid "Search helpdesk tickets (/search_tickets keyword)"
-msgstr ""
+msgid "Search for a helpdesk ticket"
+msgstr "ค้นหาทิกเก็ตระบบดูแลช่วยเหลือ"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid ""
-"Search helpdesk tickets by typing <b>/search_tickets <i>keyword</i></b>"
-msgstr ""
-
-#. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
@@ -235,13 +218,6 @@ msgid "Tickets"
 msgstr "ทิกเก็ต"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
-#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
-#, python-format
-msgid "Tickets search results for %s: "
-msgstr ""
-
-#. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_customer_ref
 msgid ""
 "To start with, do you have a customer reference?\n"
@@ -254,8 +230,27 @@ msgid "User"
 msgstr "ผู้ใช้"
 
 #. module: website_helpdesk_livechat
+#: model_terms:ir.ui.view,arch_db:website_helpdesk_livechat.helpdesk_team_view_form_inherit_website_helpdesk_livechat
+msgid "View Channels"
+msgstr "ดูช่อง"
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid "We found some matched ticket(s) related to the search query: %s"
+msgstr "เราพบทิกเก็ตที่ตรงกันบางส่วนที่เกี่ยวข้องกับคำค้นหา: %s"
+
+#. module: website_helpdesk_livechat
 #: model:chatbot.script.step,message:website_helpdesk_livechat.chatbot_script_helpdesk_step_administrative_issue
 msgid "We're all set. Now, what is your issue?"
+msgstr ""
+
+#. module: website_helpdesk_livechat
+#: model_terms:ir.actions.act_window,help:website_helpdesk_livechat.helpdesk_im_livechat_canned_response_action
+msgid ""
+"With canned responses, you can type <i>:shortcuts</i> to insert prewritten "
+"responses into your messages. These shortcuts are replaced directly in your "
+"messages so that you can still make changes before sending them."
 msgstr ""
 
 #. module: website_helpdesk_livechat
@@ -264,8 +259,21 @@ msgid "Yes"
 msgstr "ใช่"
 
 #. module: website_helpdesk_livechat
-#. odoo-python
 #: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
 #, python-format
-msgid "keyword"
+msgid "You are in a private conversation with <b>%(mentions)s</b>."
+msgstr "คุณอยู่ในการสนทนาส่วนตัวกับ <b>%(mentions)s</b>"
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid "You are in channel <b>#%s</b>."
+msgstr "คุณอยู่ในช่อง <b>#%s</b>."
+
+#. module: website_helpdesk_livechat
+#: code:addons/website_helpdesk_livechat/models/helpdesk.py:0
+#, python-format
+msgid ""
+"You can search tickets by typing <b>/helpdesk_search <i>keyword</i></b> or "
+"<i><b>ticket number</b></i><br>"
 msgstr ""

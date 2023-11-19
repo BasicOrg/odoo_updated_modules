@@ -1,4 +1,4 @@
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class AvataxExemption(models.Model):
@@ -12,7 +12,8 @@ class AvataxExemption(models.Model):
     valid_country_ids = fields.Many2many('res.country')
     company_id = fields.Many2one('res.company', required=True)
 
-    @api.depends('code')
-    def _compute_display_name(self):
+    def name_get(self):
+        res = []
         for record in self:
-            record.display_name = f'[{record.code}] {record.name}'
+            res.append((record.id, '[%s] %s' % (record.code, record.name)))
+        return res

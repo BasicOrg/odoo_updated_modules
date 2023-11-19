@@ -7,8 +7,11 @@ from odoo.tests import tagged
 class TestUBLNL(TestUBLCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref="nl"):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls,
+                   chart_template_ref="l10n_nl.l10nnl_chart_template",
+                   edi_format_ref="account_edi_ubl_cii.edi_nlcius_1",
+                   ):
+        super().setUpClass(chart_template_ref=chart_template_ref, edi_format_ref=edi_format_ref)
 
         cls.partner_1 = cls.env['res.partner'].create({
             'name': "partner_1",
@@ -20,9 +23,7 @@ class TestUBLNL(TestUBLCommon):
             'email': 'info@outlook.nl',
             'country_id': cls.env.ref('base.nl').id,
             'bank_ids': [(0, 0, {'acc_number': 'NL000099998B57'})],
-            'peppol_eas': '0106',
-            'peppol_endpoint': '77777677',
-            'ref': 'ref_partner_1',
+            'l10n_nl_kvk': '77777677',
         })
 
         cls.partner_2 = cls.env['res.partner'].create({
@@ -33,9 +34,7 @@ class TestUBLNL(TestUBLCommon):
             'vat': 'NL41452B11',
             'country_id': cls.env.ref('base.nl').id,
             'bank_ids': [(0, 0, {'acc_number': 'NL93999574162167'})],
-            'peppol_eas': '0106',
-            'peppol_endpoint': '1234567',
-            'ref': 'ref_partner_2',
+            'l10n_nl_kvk': '1234567',
         })
 
         cls.tax_19 = cls.env['account.tax'].create({
@@ -116,8 +115,8 @@ class TestUBLNL(TestUBLCommon):
             ],
         )
         attachment = self._assert_invoice_attachment(
-            invoice.ubl_cii_xml_id,
-            xpaths=f'''
+            invoice,
+            xpaths='''
                 <xpath expr="./*[local-name()='ID']" position="replace">
                     <ID>___ignore___</ID>
                 </xpath>
@@ -133,12 +132,8 @@ class TestUBLNL(TestUBLCommon):
                 <xpath expr=".//*[local-name()='PaymentMeans']/*[local-name()='PaymentID']" position="replace">
                     <PaymentID>___ignore___</PaymentID>
                 </xpath>
-                <xpath expr=".//*[local-name()='AdditionalDocumentReference']/*[local-name()='Attachment']/*[local-name()='EmbeddedDocumentBinaryObject']" position="attributes">
-                    <attribute name="mimeCode">application/pdf</attribute>
-                    <attribute name="filename">{invoice.invoice_pdf_report_id.name}</attribute>
-                </xpath>
             ''',
-            expected_file_path='from_odoo/nlcius_out_invoice.xml',
+            expected_file='from_odoo/nlcius_out_invoice.xml',
         )
         self.assertEqual(attachment.name[-10:], "nlcius.xml")
         self._assert_imported_invoice_from_etree(invoice, attachment)
@@ -174,8 +169,8 @@ class TestUBLNL(TestUBLCommon):
             ],
         )
         attachment = self._assert_invoice_attachment(
-            refund.ubl_cii_xml_id,
-            xpaths=f'''
+            refund,
+            xpaths='''
                 <xpath expr="./*[local-name()='ID']" position="replace">
                     <ID>___ignore___</ID>
                 </xpath>
@@ -191,12 +186,8 @@ class TestUBLNL(TestUBLCommon):
                 <xpath expr=".//*[local-name()='PaymentMeans']/*[local-name()='PaymentID']" position="replace">
                     <PaymentID>___ignore___</PaymentID>
                 </xpath>
-                <xpath expr=".//*[local-name()='AdditionalDocumentReference']/*[local-name()='Attachment']/*[local-name()='EmbeddedDocumentBinaryObject']" position="attributes">
-                    <attribute name="mimeCode">application/pdf</attribute>
-                    <attribute name="filename">{refund.invoice_pdf_report_id.name}</attribute>
-                </xpath>
             ''',
-            expected_file_path='from_odoo/nlcius_out_refund.xml',
+            expected_file='from_odoo/nlcius_out_refund.xml',
         )
         self.assertEqual(attachment.name[-10:], "nlcius.xml")
         self._assert_imported_invoice_from_etree(refund, attachment)

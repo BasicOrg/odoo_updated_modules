@@ -2,7 +2,7 @@
 
 import { browser } from "@web/core/browser/browser";
 import { CalendarYearRenderer } from "@web/views/calendar/calendar_year/calendar_year_renderer";
-import { getFixture, patchTimeZone, patchWithCleanup } from "../../helpers/utils";
+import { getFixture, patchWithCleanup } from "../../helpers/utils";
 import { clickDate, mountComponent, selectDateRange, makeEnv, makeFakeModel } from "./helpers";
 
 let target;
@@ -34,18 +34,18 @@ QUnit.module("CalendarView - YearRenderer", ({ beforeEach }) => {
         // check "title format"
         assert.strictEqual(monthHeaders.length, 12);
         const monthTitles = [
-            "January 2021",
-            "February 2021",
-            "March 2021",
-            "April 2021",
+            "Jan 2021",
+            "Feb 2021",
+            "Mar 2021",
+            "Apr 2021",
             "May 2021",
-            "June 2021",
-            "July 2021",
-            "August 2021",
-            "September 2021",
-            "October 2021",
-            "November 2021",
-            "December 2021",
+            "Jun 2021",
+            "Jul 2021",
+            "Aug 2021",
+            "Sep 2021",
+            "Oct 2021",
+            "Nov 2021",
+            "Dec 2021",
         ];
         for (let i = 0; i < 12; i++) {
             assert.strictEqual(monthHeaders[i].textContent, monthTitles[i]);
@@ -136,25 +136,4 @@ QUnit.module("CalendarView - YearRenderer", ({ beforeEach }) => {
 
         await selectDateRange(target, "2021-07-02", "2021-07-05");
     });
-
-    QUnit.test(
-        "display correct column header for days, independent of the timezone",
-        async (assert) => {
-            // Regression test: when the system tz is somewhere in a negative GMT (in our example Alaska)
-            // the day headers of a months were incorrectly set. (S S M T W T F) instead of (S M T W T F S)
-            // if the first day of the week is Sunday.
-            patchTimeZone(-540); // UTC-9 = Alaska
-
-            await start({});
-
-            const dayHeaders = target
-                .querySelector(".fc-month-container")
-                .querySelectorAll(".fc-day-header");
-
-            assert.deepEqual(
-                [...dayHeaders].map((el) => el.textContent),
-                ["S", "M", "T", "W", "T", "F", "S"]
-            );
-        }
-    );
 });

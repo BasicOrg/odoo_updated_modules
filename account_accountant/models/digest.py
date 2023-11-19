@@ -14,19 +14,14 @@ class Digest(models.Model):
     def _compute_kpi_account_total_bank_cash_value(self):
         if not self.env.user.has_group('account.group_account_user'):
             raise AccessError(_("Do not have access, skip this data for user's digest email"))
-
-        start, end, companies = self._get_kpi_compute_parameters()
-        data = self.env['account.move']._read_group([
-            ('date', '>=', start),
-            ('date', '<', end),
-            ('journal_id.type', 'in', ('cash', 'bank')),
-            ('company_id', 'in', companies.ids),
-        ], ['company_id'], ['amount_total:sum'])
-        data = dict(data)
-
         for record in self:
-            company = record.company_id or self.env.company
-            record.kpi_account_bank_cash_value = data.get(company)
+            start, end, company = record._get_kpi_compute_parameters()
+            account_moves = self.env['account.move']._read_group([
+                ('date', '>=', start),
+                ('date', '<', end),
+                ('journal_id.type', 'in', ['cash', 'bank']),
+                ('company_id', '=', company.id)], ['journal_id', 'amount_total'], ['journal_id'])
+            record.kpi_account_bank_cash_value = sum([account_move['amount_total'] for account_move in account_moves])
 
     def _compute_kpis_actions(self, company, user):
         res = super(Digest, self)._compute_kpis_actions(company, user)

@@ -21,25 +21,31 @@ class WebsiteVisitor(models.Model):
         search="_search_event_registered_ids",
         groups="event.group_event_registration_desk")
 
-    @api.depends('partner_id', 'event_registration_ids.name')
-    def _compute_display_name(self):
+    @api.depends('partner_id, event_registration_ids.name')
+    def name_get(self):
         """ If there is an event registration for an anonymous visitor, use that
         registered attendee name as visitor name. """
-        super()._compute_display_name()
+        res_dict = dict(super().name_get())
         # sudo is needed for `event_registration_ids`
         for visitor in self.sudo().filtered(lambda v: not v.partner_id and v.event_registration_ids):
-            visitor.display_name = visitor.event_registration_ids[-1].name
+            res_dict[visitor.id] = visitor.event_registration_ids[-1].name
+        return list(res_dict.items())
 
     @api.depends('event_registration_ids')
     def _compute_event_registration_count(self):
-        read_group_res = self.env['event.registration']._read_group(
-            [('visitor_id', 'in', self.ids)],
-            ['visitor_id'], ['__count'])
-        visitor_mapping = {visitor.id: count for visitor, count in read_group_res}
+        if self.ids:
+            read_group_res = self.env['event.registration']._read_group(
+                [('visitor_id', 'in', self.ids)],
+                ['visitor_id'], ['visitor_id'])
+            visitor_mapping = dict(
+                (item['visitor_id'][0], item['visitor_id_count'])
+                for item in read_group_res)
+        else:
+            visitor_mapping = dict()
         for visitor in self:
-            visitor.event_registration_count = visitor_mapping.get(visitor.id, 0)
+            visitor.event_registration_count = visitor_mapping.get(visitor.id) or 0
 
-    @api.depends('event_registration_ids.email', 'event_registration_ids.phone')
+    @api.depends('event_registration_ids.email', 'event_registration_ids.mobile', 'event_registration_ids.phone')
     def _compute_email_phone(self):
         super(WebsiteVisitor, self)._compute_email_phone()
 
@@ -48,7 +54,7 @@ class WebsiteVisitor(models.Model):
             if not visitor.email:
                 visitor.email = next((reg.email for reg in linked_registrations if reg.email), False)
             if not visitor.mobile:
-                visitor.mobile = next((reg.phone for reg in linked_registrations if reg.phone), False)
+                visitor.mobile = next((reg.mobile or reg.phone for reg in linked_registrations if reg.mobile or reg.phone), False)
 
     @api.depends('event_registration_ids')
     def _compute_event_registered_ids(self):

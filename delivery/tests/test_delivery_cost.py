@@ -1,4 +1,4 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
 
 from odoo.tests import common, Form
 from odoo.tools import float_compare
@@ -16,7 +16,8 @@ class TestDeliveryCost(common.TransactionCase):
         self.Product = self.env['product.product']
 
         self.partner_18 = self.env['res.partner'].create({'name': 'My Test Customer'})
-        self.product_4 = self.env['product.product'].create({'name': 'A product to deliver', 'weight': 1.0})
+        self.pricelist = self.env.ref('product.list0')
+        self.product_4 = self.env['product.product'].create({'name': 'A product to deliver'})
         self.product_uom_unit = self.env.ref('uom.product_uom_unit')
         self.product_delivery_normal = self.env['product.product'].create({
             'name': 'Normal Delivery Charges',
@@ -37,7 +38,7 @@ class TestDeliveryCost(common.TransactionCase):
         })
         self.product_uom_hour = self.env.ref('uom.product_uom_hour')
         self.account_tag_operating = self.env.ref('account.account_tag_operating')
-        self.product_2 = self.env['product.product'].create({'name': 'Zizizaproduct', 'weight': 1.0})
+        self.product_2 = self.env['product.product'].create({'name': 'Zizizaproduct'})
         self.product_category = self.env.ref('product.product_category_all')
         self.free_delivery = self.env.ref('delivery.free_delivery_carrier')
         # as the tests hereunder assume all the prices in USD, we must ensure
@@ -47,6 +48,7 @@ class TestDeliveryCost(common.TransactionCase):
         self.env.cr.execute(
             "UPDATE res_company SET currency_id = %s WHERE id = %s",
             [self.env.ref('base.USD').id, self.env.company.id])
+        self.pricelist.currency_id = self.env.ref('base.USD').id
         self.env.user.groups_id |= self.env.ref('uom.group_uom')
 
     def test_00_delivery_cost(self):
@@ -57,6 +59,7 @@ class TestDeliveryCost(common.TransactionCase):
             'partner_id': self.partner_18.id,
             'partner_invoice_id': self.partner_18.id,
             'partner_shipping_id': self.partner_18.id,
+            'pricelist_id': self.pricelist.id,
             'order_line': [(0, 0, {
                 'name': 'PC Assamble + 2GB RAM',
                 'product_id': self.product_4.id,
@@ -115,6 +118,7 @@ class TestDeliveryCost(common.TransactionCase):
             'partner_id': self.partner_4.id,
             'partner_invoice_id': self.partner_address_13.id,
             'partner_shipping_id': self.partner_address_13.id,
+            'pricelist_id': self.pricelist.id,
             'order_line': [(0, 0, {
                 'name': 'Service on demand',
                 'product_id': self.product_consultant.id,
@@ -125,7 +129,7 @@ class TestDeliveryCost(common.TransactionCase):
                 'name': 'On Site Assistance',
                 'product_id': self.product_2.id,
                 'product_uom_qty': 30,
-                'product_uom': self.product_uom_unit.id,
+                'product_uom': self.product_uom_hour.id,
                 'price_unit': 38.25,
             })],
         })
@@ -268,10 +272,9 @@ class TestDeliveryCost(common.TransactionCase):
         self.normal_delivery.product_id.taxes_id = tax_price_include
 
         # Create sales order
-        # Required to see `pricelist_id` in the view
-        self.env.user.groups_id += self.env.ref('product.group_product_pricelist')
         order_form = Form(self.env['sale.order'].with_context(tracking_disable=True))
         order_form.partner_id = self.partner_18
+        order_form.pricelist_id = self.pricelist
         order_form.fiscal_position_id = fiscal_position
 
         # Try adding delivery product as a normal product
@@ -296,26 +299,3 @@ class TestDeliveryCost(common.TransactionCase):
         ])
 
         self.assertRecordValues(line, [{'price_subtotal': 9.09, 'price_total': 10.45}])
-
-    def test_estimated_weight(self):
-        """
-        Test that negative qty SO lines are not included in the estimated weight calculation
-        of delivery carriers (since it's used when calculating their rates).
-        """
-        sale_order = self.SaleOrder.create({
-            'partner_id': self.partner_18.id,
-            'name': 'SO - neg qty',
-            'order_line': [
-                (0, 0, {
-                    'product_id': self.product_4.id,
-                    'product_uom_qty': 1,
-                    'product_uom': self.product_uom_unit.id,
-                }),
-                (0, 0, {
-                    'product_id': self.product_2.id,
-                    'product_uom_qty': -1,
-                    'product_uom': self.product_uom_unit.id,
-                })],
-        })
-        shipping_weight = sale_order._get_estimated_weight()
-        self.assertEqual(shipping_weight, self.product_4.weight, "Only positive quantity products' weights should be included in estimated weight")

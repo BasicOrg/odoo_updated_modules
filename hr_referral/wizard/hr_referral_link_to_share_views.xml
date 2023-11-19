@@ -6,11 +6,15 @@
           <field name="arch" type="xml">
             <form string="Link to Share">
                 This link contains a tracker so that people clicking on it will account to a referral for you, even if they apply on a position after a few days.
-                <field name="job_id" invisible="1"/>
-                <field name="channel" invisible="1"/>
-                <field name="url" widget="CopyClipboardChar" nolabel="1" class="my-3 w-50"/>
+                <group>
+                    <group colspan="4">
+                        <field name="job_id" invisible="1"/>
+                        <field name="channel" invisible="1"/>
+                        <field name="url" widget="CopyClipboardChar" nolabel="1"/>
+                    </group>
+                </group>
                 <footer>
-                    <button string="Close" class="oe_highlight" special="cancel" data-hotkey="x"/>
+                    <button string="Close" class="oe_highlight" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
           </field>

@@ -19,32 +19,27 @@ class HrContractSalaryResumeCategory(models.Model):
 class HrContractSalaryResume(models.Model):
     _name = 'hr.contract.salary.resume'
     _description = 'Salary Package Resume'
-    _order = 'sequence'
 
     def _get_available_fields(self):
         return [(field, description['string']) for field, description in self.env['hr.contract'].fields_get().items()]
 
+    # YTI TODO master:
+    # Add sequence field
+    # Add display condition field
     name = fields.Char()
-    sequence = fields.Integer(default=100)
     value_type = fields.Selection([
         ('fixed', 'Fixed Value'),
         ('contract', 'Contract Value'),
-        ('sum', 'Sum of Benefits Values'),
-        ('monthly_total', 'Monthly Total')], required=True, default='fixed',
-        help='Pick how the value of the information is computed:\n'
-             'Fixed value: Set a determined value static for all links\n'
-             'Contract value: Get the value from a field on the contract record\n'
-             'Payslip value: Get the value from a field on the payslip record\n'
-             'Sum of Benefits value: You can pick in all benefits and compute a sum of them\n'
-             'Monthly Total: The information will be a total of all the informations in the category Monthly Benefits')
-    benefit_ids = fields.Many2many('hr.contract.salary.benefit')
+        ('monthly_total', 'Monthly Total'),
+        ('sum', 'Sum of Advantages Values')], required=True, default='fixed')
+    advantage_ids = fields.Many2many('hr.contract.salary.advantage')
     code = fields.Selection(_get_available_fields)
     fixed_value = fields.Float()
-    category_id = fields.Many2one('hr.contract.salary.resume.category', required=True, help='Pick a category to display this information')
+    category_id = fields.Many2one('hr.contract.salary.resume.category', required=True)
     structure_type_id = fields.Many2one('hr.payroll.structure.type', string="Salary Structure Type")
-    impacts_monthly_total = fields.Boolean(help="If checked, the value of this information will be computed in all information set as Monthly Total")
+    impacts_monthly_total = fields.Boolean()
     uom = fields.Selection([
         ('days', 'Days'),
         ('percent', 'Percent'),
-        ('currency', 'Currency')], string="Unit of Measure", default='currency')
+        ('currency', 'Currency')], string="Advantage Unit of Measure", default='currency')
     active = fields.Boolean('Active', default=True)

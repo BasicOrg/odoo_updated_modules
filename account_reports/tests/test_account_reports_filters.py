@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=C0326
-import odoo.tests
-
 from odoo.tests import tagged
-from odoo import Command, fields
-from .common import TestAccountReportsCommon
+from odoo import fields
+from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.tools import date_utils
 from odoo.tools.misc import formatLang, format_date
 
@@ -14,18 +11,18 @@ from freezegun import freeze_time
 
 
 @tagged('post_install', '-at_install')
-class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
+class TestAccountReportsFilters(AccountTestInvoicingCommon):
 
     def _assert_filter_date(self, report, previous_options, expected_date_values):
         """ Initializes and checks the 'date' option computed for the provided report and previous_options
         """
-        options = report.get_options(previous_options)
+        options = report._get_options(previous_options)
         self.assertDictEqual(options['date'], expected_date_values)
 
     def _assert_filter_comparison(self, report, previous_options, expected_period_values):
         """ Initializes and checks the 'comparison' option computed for the provided report and previous_options
         """
-        options = report.get_options(previous_options)
+        options = report._get_options(previous_options)
 
         self.assertEqual(len(options['comparison']['periods']), len(expected_period_values))
 
@@ -1113,213 +1110,4 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     'date_to': '2019-05-31',
                 },
             ],
-        )
-
-    ####################################################
-    # User Defined Filters on Journal Items
-    ####################################################
-
-    @freeze_time('2023-09-01')
-    def test_filter_aml_ir_filters(self):
-        # Test user-defined filter set on journal items used as report options
-
-        filter_record = self.env['ir.filters'].create({
-            'model_id': 'account.move.line',
-            'user_id': self.uid,
-            'name': 'To Check',
-            'domain': '[("move_id.to_check", "=", True)]',
-        })
-
-        report = self.env['account.report'].create({
-            'name': 'Test ir filters',
-            'filter_aml_ir_filters': True,
-            'root_report_id': self.env.ref("account_reports.profit_and_loss").id,
-            'column_ids': [
-                Command.create({
-                    'name': 'Balance',
-                    'expression_label': 'balance',
-                }),
-            ],
-            'line_ids': [
-                Command.create({
-                    'name': 'Line 1',
-                    'expression_ids': [
-                        Command.create({
-                            'label': 'balance',
-                            'engine': 'domain',
-                            'formula': '[("account_id.account_type", "=", "income")]',
-                            'subformula': '-sum',
-                        }),
-                    ],
-                }),
-            ],
-        })
-
-        moves = (
-                self.init_invoice("out_invoice", self.partner_a, "2023-09-01", amounts=[1000])
-                + self.init_invoice("out_invoice", self.partner_a, "2023-09-01", amounts=[1000])
-        )
-        moves[0].to_check = True
-        moves.action_post()
-
-        options = self._generate_options(report, '2023-01-01', '2023-12-31')
-
-        for opt in options['aml_ir_filters']:
-            if opt['id'] == filter_record.id:
-                opt['selected'] = True
-                break
-
-        # Ensure that only the move with the 'to_check' attribute is included in the report
-        self.assertLinesValues(
-            report._get_lines(options),
-            #      Name   Balance
-            [       0,      1],
-            [
-                ('Line 1', 1000)
-            ],
-            options
-        )
-
-    def test_hide_line_at_0_tour(self):
-        report = self.env.ref('account_reports.balance_sheet')
-        report.filter_hide_0_lines = 'optional'
-        self.env['account.move'].create([{
-            'move_type': 'out_invoice',
-            'partner_id': self.partner_a.id,
-            'date': '2020-0%s-15' % i,
-            'invoice_date': '2020-0%s-15' % i,
-            'invoice_line_ids': [(0, 0, {
-                'product_id': self.product_a.id,
-                'price_unit': 1000.0,
-                'tax_ids': [(6, 0, self.tax_sale_a.ids)],
-            })],
-        } for i in range(1, 4)]).action_post()
-
-        self.start_tour("/web", 'account_reports_hide_0_lines', login=self.env.user.login)
-
-    def test_filter_multi_company(self):
-        def _check_company_filter(allowed_companies, expected_companies, message=None, match_active=True):
-            options = self.single_date_report.with_context(allowed_company_ids=allowed_companies.ids).get_options()
-            computed_company_ids = self.env['account.report'].get_report_company_ids(options)
-            if match_active:
-                # Active company should match
-                self.assertEqual(computed_company_ids[0], expected_companies[0].id, message)
-            # Selected companies should match, whatever their order
-            self.assertEqual(set(computed_company_ids), set(expected_companies.ids), message)
-
-        main_company = self.company_data['company']
-        main_company.vat = '123'
-        branch_1 = self.env['res.company'].create({'name': "Branch 1", 'parent_id': main_company.id, 'vat': '123'})
-        branch_1_1 = self.env['res.company'].create({'name': "Branch 1 sub-branch 1", 'parent_id': branch_1.id})
-        branch_1_2 = self.env['res.company'].create({'name': "Branch 1 sub-branch 2", 'parent_id': branch_1.id, 'vat': '123'})
-        branch_2 = self.env['res.company'].create({'name': "Branch 2", 'parent_id': main_company.id})
-        branch_2_1 = self.env['res.company'].create({'name': "Branch 2 sub-branch 1", 'parent_id': branch_2.id})
-        other_company = self.env['res.company'].create({'name': "Other company"})
-
-        # Test 'disabled' filter, as well as 'tax_units' when no tax unit is defined and VAT is shared (they should behave in the same way)
-        for company_filter in ('disabled', 'tax_units'):
-            self.single_date_report.filter_multi_company = company_filter
-
-            _check_company_filter(
-                main_company + branch_1 + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-                main_company + branch_1 + branch_1_1 + branch_1_2 + branch_2 + branch_2_1,
-                "The main company and all of its sub-branches should be selected",
-            )
-            _check_company_filter(
-                branch_1 + main_company + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-                branch_1 + branch_1_1 + branch_1_2,
-                "When the active company is a branch of another active company, it should only be selected with its sub-branches.",
-            )
-            _check_company_filter(
-                main_company + branch_1 + branch_1_2 + branch_2_1 + other_company,
-                main_company + branch_1 + branch_1_2 + branch_2_1,
-                "Choosing a subset of branches in the company selector should keep that selection in the report.",
-            )
-
-        # Test 'selector' filter
-        self.single_date_report.filter_multi_company = 'selector'
-
-        _check_company_filter(
-            branch_1,
-            branch_1,
-        )
-        _check_company_filter(
-            main_company + branch_1 + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-            main_company + branch_1 + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-        )
-        _check_company_filter(
-            branch_1 + main_company + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-            branch_1 + main_company + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-        )
-        _check_company_filter(
-            main_company + branch_1_1 + branch_1_2 + branch_2 + other_company,
-            main_company + branch_1_1 + branch_1_2 + branch_2 + other_company,
-        )
-
-        # Test 'tax_units' filter, with no tax unit, and non-shared VAT numbers
-        self.single_date_report.filter_multi_company = 'tax_units'
-        branch_1_1.vat = '456'
-        branch_2.vat = '789'
-
-        _check_company_filter(
-            main_company + branch_1_1 + branch_1_2 + branch_2 + branch_2_1 + other_company,
-            main_company + branch_1_2,
-            "Only the current company and its sub-branches sharing its vat number should be selected.",
-        )
-
-        _check_company_filter(
-            branch_2 + main_company + branch_1_1 + branch_1_2  + branch_2_1 + other_company,
-            branch_2 + branch_2_1,
-            "Only the current company and its sub-branches sharing its vat number should be selected.",
-        )
-
-        # Test 'tax_units' filter, with an existing tax unit object
-        self.single_date_report.availability_condition = 'country'
-        self.single_date_report.country_id = self.env.ref('base.be')
-
-        tax_unit = self.env['account.tax.unit'].create({
-            'name': "Test Tax Unit",
-            'country_id': self.single_date_report.country_id.id,
-            'vat': 'BE0477472701',
-            'company_ids': (main_company + branch_1_1 + branch_1_2 + branch_2 + other_company).ids,
-            'main_company_id': main_company.id,
-        })
-
-        _check_company_filter(
-            other_company + main_company + branch_1_1 + branch_1_2 + branch_2,
-            other_company + main_company + branch_1_1 + branch_1_2 + branch_2,
-            "Opening the report with a company selector matching the content of the tax unit should select this tax unit, keeping the companies.",
-            match_active=False,
-        )
-
-        _check_company_filter(
-            tax_unit.company_ids + branch_2_1,
-            main_company + branch_1_2,
-            "Opening the report with a company selector matching more than the content of the tax unit should not select the tax unit, "
-            "but take the accessible branches with the same VAT number as the active company.",
-        )
-
-        _check_company_filter(
-            main_company + branch_1_1 + branch_1_2 + branch_2,
-            main_company + branch_1_2,
-            "Opening the report with a company selector matching less than the content of the tax unit should select the active sub-branches "
-            "with the same VAT as the active company.",
-        )
-
-        # Test 'tax_units' filter, with no tax unit, and no VAT number on branches (only one on main company)
-        branch_1.vat = None
-        branch_1_1.vat = None
-        branch_1_2.vat = None
-        branch_2.vat = None
-
-        _check_company_filter(
-            branch_2 + branch_2_1,
-            branch_2 + branch_2_1,
-            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",
-        )
-
-        _check_company_filter(
-            branch_2_1 + branch_2,
-            branch_2_1 + branch_2,
-            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",
         )

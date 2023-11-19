@@ -70,10 +70,10 @@ class TestAPI(SavepointCaseWithUserDemo):
 
     @mute_logger('odoo.models')
     def test_04_query_count(self):
-        """ Test the search_count method. """
+        """ Test the search method with count=True. """
         self.cr.execute("SELECT COUNT(*) FROM res_partner WHERE active")
         count1 = self.cr.fetchone()[0]
-        count2 = self.env['res.partner'].search_count([])
+        count2 = self.env['res.partner'].search([], count=True)
         self.assertIsInstance(count1, int)
         self.assertIsInstance(count2, int)
         self.assertEqual(count1, count2)
@@ -660,34 +660,6 @@ class TestAPI(SavepointCaseWithUserDemo):
         # sort by inverse name, with a field name
         by_name_ids = [p.id for p in sorted(ps, key=lambda p: p.name, reverse=True)]
         self.assertEqual(ps.sorted('name', reverse=True).ids, by_name_ids)
-
-    def test_group_on(self):
-        p0, p1, p2 = self.env['res.partner'].create([
-            {'name': "bob", 'function': "guest"},
-            {'name': "james", 'function': "host"},
-            {'name': "rhod", 'function': "guest"}
-        ])
-        pn = self.env['res.partner'].new({'name': 'alex', 'function': "host"})
-
-        with self.subTest("Should work with mixes of db and new records"):
-            self.assertEqual(
-                (p0 | p1 | p2 | pn).grouped('function'),
-                {'guest': p0 | p2, 'host': p1 | pn}
-            )
-            self.assertEqual(
-                (p0 | p1 | p2 | pn).grouped(lambda r: len(r.name)),
-                {3: p0, 4: p2 | pn, 5: p1},
-            )
-
-        with self.subTest("Should allow cross-group prefetching"):
-            byfn = (p0 | p1 | p2).grouped('function')
-            self.env.invalidate_all(flush=False)
-            self.assertFalse(self.env.cache._data, "ensure the cache is empty")
-            self.assertEqual(byfn['guest'].mapped('name'), ['bob', 'rhod'])
-            # name should have been prefetched by previous statement (on guest
-            # group), so should be nothing here
-            with self.assertQueries([]):
-                _ = byfn['host'].name
 
 
 class TestExternalAPI(SavepointCaseWithUserDemo):

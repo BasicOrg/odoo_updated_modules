@@ -66,6 +66,10 @@ class TestAvataxCommon(TransactionCase):
                     'summary': create_transaction_details,
                 }
 
+        if kwargs.get('commit_transaction') is None:
+            def commit_transaction(self, companyCode, transactionCode, model, include=None):
+                return {}
+
         if kwargs.get('uncommit_transaction') is None:
             def uncommit_transaction(self, companyCode, transactionCode, include=None):
                 return {}
@@ -120,6 +124,7 @@ class TestAccountAvataxCommon(TestAvataxCommon, AccountTestInvoicingCommon):
             'list_price': 15.00,
             'standard_price': 15.00,
             'supplier_taxes_id': None,
+            'invoice_policy': 'order',
             'avatax_category_id': cls.env.ref('account_avatax.DC010000').id,
         })
         cls.product_user = cls.env["product.product"].create({
@@ -162,7 +167,7 @@ class TestAccountAvataxCommon(TestAvataxCommon, AccountTestInvoicingCommon):
         # to make sure we use the tax values that Avatax returns and not the tax values
         # Odoo computes (these values would be wrong if a user manually changes it for example).
         cls.example_tax = cls.env["account.tax"].create({
-            'name': 'CA STATE TAX [06] (6.0000 %)',
+            'name': 'CA STATE TAX [06] (6.0 %)',
             'company_id': cls.env.user.company_id.id,
             'amount': 1,
             'amount_type': 'percent',
@@ -228,6 +233,7 @@ class TestAccountAvataxCommon(TestAvataxCommon, AccountTestInvoicingCommon):
             'move_type': 'out_invoice',
             'partner_id': cls.partner.id,
             'fiscal_position_id': cls.fp_avatax.id,
+            'invoice_date': '2021-01-01',
             'invoice_line_ids': [
                 (0, 0, {
                     'product_id': cls.product_user.id,

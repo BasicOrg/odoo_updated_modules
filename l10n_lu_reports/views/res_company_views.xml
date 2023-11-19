@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="matr_number" invisible="%(base.lu)d not in account_enabled_tax_country_ids" required="'matr_number' in context.get('required_fields', [])"/>
-                <field name="ecdf_prefix" invisible="%(base.lu)d not in account_enabled_tax_country_ids"/>
+                <field name="matr_number" attrs="{'invisible': [('account_enabled_tax_country_ids', 'not in', %(base.lu)d)]}" required="'matr_number' in context.get('required_fields', [])"/>
+                <field name="ecdf_prefix" attrs="{'invisible': [('account_enabled_tax_country_ids', 'not in', %(base.lu)d)]}"/>
             </xpath>
         </field>
     </record>

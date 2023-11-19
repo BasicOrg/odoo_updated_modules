@@ -12,7 +12,6 @@ from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_repr
 from odoo.tools.xml_utils import create_xml_node, create_xml_node_chain
 from odoo.tools.misc import remove_accents
-from odoo.addons.account_batch_payment.models.sepa_mapping import _replace_characters_SEPA
 
 from lxml import etree
 
@@ -66,7 +65,7 @@ class AccountPayment(models.Model):
             communication = communication[1:]
         if communication.endswith('/'):
             communication = communication[:-1]
-        communication = _replace_characters_SEPA(communication)
+        communication = re.sub('[^-A-Za-z0-9/?:().,\'+ ]', '', remove_accents(communication))
         return communication
 
     def generate_xml(self, company_id, required_collection_date, askBatchBooking):
@@ -74,10 +73,7 @@ class AccountPayment(models.Model):
         associating them to the given company, with the specified
         collection date.
         """
-        version = self.journal_id.debit_sepa_pain_version
-        if not version:
-            raise UserError(_("Select a SEPA Direct Debit version before generating the XML."))
-        document = etree.Element("Document", nsmap={None: f'urn:iso:std:iso:20022:tech:xsd:{version}', 'xsi': "http://www.w3.org/2001/XMLSchema-instance"})
+        document = etree.Element("Document",nsmap={None:'urn:iso:std:iso:20022:tech:xsd:pain.008.001.02', 'xsi': "http://www.w3.org/2001/XMLSchema-instance"})
         CstmrDrctDbtInitn = etree.SubElement(document, 'CstmrDrctDbtInitn')
 
         self._sdd_xml_gen_header(company_id, CstmrDrctDbtInitn)
@@ -115,51 +111,11 @@ class AccountPayment(models.Model):
         create_xml_node(InitgPty, 'Nm', self.split_node(company_id.name, 70)[0])
         create_xml_node_chain(InitgPty, ['Id','OrgId','Othr','Id'], company_id.sdd_creditor_identifier)
 
-    def _sdd_xml_gen_address(self, root_node, partner, sdd_version):
-        # Starting from November 2025, structured addresses will become the norm,
-        # and unstructured addresses will not be allowed anymore.
-
-        contact_address = partner._display_address(without_company=True)
-        if contact_address:
-            PstlAdr = create_xml_node(root_node, 'PstlAdr')
-            if sdd_version == 'pain.008.001.02':
-                if partner.country_id and partner.country_id.code:
-                    create_xml_node(PstlAdr, 'Ctry', partner.country_id.code)
-                n_line = 0
-                contact_address = contact_address.replace('\n', ' ').strip()
-                while contact_address and n_line < 2:
-                    left_split, right_split = self.split_node(contact_address, 70)
-                    create_xml_node(PstlAdr, 'AdrLine', left_split)
-                    contact_address = right_split
-                    n_line = n_line + 1
-            elif sdd_version == 'pain.008.001.08':
-                if partner.street:
-                    street_name = partner.street if not partner.street2 else f'{partner.street}, {partner.street2}'
-                    create_xml_node(PstlAdr, 'StrtNm', self.split_node(street_name, 70)[0]) # Number and box in street
-                if partner.zip:
-                    create_xml_node(PstlAdr, 'PstCd', partner.zip)
-                if partner.city:
-                    create_xml_node(PstlAdr, 'TwnNm', partner.city)
-                else:
-                    raise UserError(_('The debtor and creditor city name is a compulsary information when generating the SDD XML.'))
-                if partner.state_id and partner.state_id.name:
-                    create_xml_node(PstlAdr, 'CtrySubDvsn', partner.state_id.name)
-                if partner.country_id and partner.country_id.code:
-                    create_xml_node(PstlAdr, 'Ctry', partner.country_id.code)
-                else:
-                    raise UserError(_('The debtor and creditor country is a compulsary information when generating the SDD XML.'))
-            else:
-                raise UserError(_('A SEPA direct debit version should be selected to generate the addresses in the export file.'))
-
     def _sdd_xml_gen_payment_group(self, company_id, required_collection_date, askBatchBooking, payment_info_counter, journal, CstmrDrctDbtInitn):
         """ Generates a group of payments in the same PmtInfo node, provided
         that they share the same journal."""
-        sdd_version = self.journal_id.debit_sepa_pain_version
-        if not sdd_version:
-            raise UserError(_('A SEPA direct debit version should be selected to generate the export file.'))
-
         PmtInf = create_xml_node(CstmrDrctDbtInitn, 'PmtInf')
-        create_xml_node(PmtInf, 'PmtInfId', CstmrDrctDbtInitn.find('GrpHdr/MsgId').text + '/' + str(payment_info_counter))
+        create_xml_node(PmtInf, 'PmtInfId', str(payment_info_counter))
         create_xml_node(PmtInf, 'PmtMtd', 'DD')
         create_xml_node(PmtInf, 'BtchBookg',askBatchBooking and 'true' or 'false')
         create_xml_node(PmtInf, 'NbOfTxs', str(len(self)))
@@ -175,16 +131,10 @@ class AccountPayment(models.Model):
         #This value is only used for informatory purpose.
 
         create_xml_node(PmtInf, 'ReqdColltnDt', fields.Date.from_string(required_collection_date).strftime("%Y-%m-%d"))
-        Cdtr = create_xml_node_chain(PmtInf, ['Cdtr', 'Nm'], self.split_node(company_id.name, 70)[0])[0]  # SEPA regulation gives a maximum size of 70 characters for this field
-
-        if sdd_version == 'pain.008.001.08':
-            self._sdd_xml_gen_address(Cdtr, company_id.partner_id, sdd_version)
-
+        create_xml_node_chain(PmtInf, ['Cdtr','Nm'], self.split_node(company_id.name, 70)[0])  # SEPA regulation gives a maximum size of 70 characters for this field
         create_xml_node_chain(PmtInf, ['CdtrAcct','Id','IBAN'], journal.bank_account_id.sanitized_acc_number)
-
         if journal.bank_id and journal.bank_id.bic:
-            bic_tag = 'BIC' if sdd_version == 'pain.008.001.02' else 'BICFI'
-            create_xml_node_chain(PmtInf, ['CdtrAgt', 'FinInstnId', bic_tag], journal.bank_id.bic.replace(' ', '').upper())
+            create_xml_node_chain(PmtInf, ['CdtrAgt', 'FinInstnId', 'BIC'], journal.bank_id.bic.replace(' ', '').upper())
         else:
             create_xml_node_chain(PmtInf, ['CdtrAgt', 'FinInstnId', 'Othr', 'Id'], "NOTPROVIDED")
 
@@ -203,7 +153,7 @@ class AccountPayment(models.Model):
         if self.company_id != company_id:
             raise UserError(_("Trying to generate a Direct Debit XML file containing payments from another company than that file's creditor."))
 
-        if self.payment_method_line_id.code not in self.payment_method_id._get_sdd_payment_method_code():
+        if self.payment_method_line_id.code != 'sdd':
             raise UserError(_("Trying to generate a Direct Debit XML for payments coming from another payment method than SEPA Direct Debit."))
 
         if not self.sdd_mandate_id:
@@ -212,10 +162,6 @@ class AccountPayment(models.Model):
         if self.sdd_mandate_id.state == 'revoked':
             raise UserError(_("The SEPA Direct Debit mandate associated to the payment has been revoked and cannot be used anymore."))
 
-        sdd_version = self.journal_id.debit_sepa_pain_version
-        if not sdd_version:
-            raise UserError(_('A SEPA direct debit version should be selected to generate the export file.'))
-
         DrctDbtTxInf = create_xml_node_chain(PmtInf, ['DrctDbtTxInf','PmtId','EndToEndId'], end2end_name)[0]
 
         InstdAmt = create_xml_node(DrctDbtTxInf, 'InstdAmt', float_repr(self.amount, precision_digits=2))
@@ -223,17 +169,24 @@ class AccountPayment(models.Model):
 
         MndtRltdInf = create_xml_node_chain(DrctDbtTxInf, ['DrctDbtTx','MndtRltdInf','MndtId'], self.sdd_mandate_id.name)[-2]
         create_xml_node(MndtRltdInf, 'DtOfSgntr', fields.Date.to_string(self.sdd_mandate_id.start_date))
-
         if self.sdd_mandate_id.partner_bank_id.bank_id.bic:
-            bic_tag = 'BIC' if sdd_version == 'pain.008.001.02' else 'BICFI'
-            create_xml_node_chain(DrctDbtTxInf, ['DbtrAgt', 'FinInstnId', bic_tag], self.sdd_mandate_id.partner_bank_id.bank_id.bic.replace(' ', '').upper())
+            create_xml_node_chain(DrctDbtTxInf, ['DbtrAgt', 'FinInstnId', 'BIC'], self.sdd_mandate_id.partner_bank_id.bank_id.bic.replace(' ', '').upper())
         else:
             create_xml_node_chain(DrctDbtTxInf, ['DbtrAgt', 'FinInstnId', 'Othr', 'Id'], 'NOTPROVIDED')
 
         debtor_name = self.sdd_mandate_id.partner_bank_id.acc_holder_name or partner.name or partner.parent_id.name
         Dbtr = create_xml_node_chain(DrctDbtTxInf, ['Dbtr', 'Nm'], self.split_node(debtor_name, 70)[0])[0]
 
-        self._sdd_xml_gen_address(Dbtr, partner, sdd_version)
+        if partner.contact_address:
+            PstlAdr = create_xml_node(Dbtr, 'PstlAdr')
+            if partner.country_id and partner.country_id.code:
+                create_xml_node(PstlAdr, 'Ctry', partner.country_id.code)
+            n_line = 0
+            contact_address = partner.contact_address.replace('\n', ' ').strip()
+            while contact_address and n_line < 2:
+                create_xml_node(PstlAdr, 'AdrLine', self.split_node(contact_address, 70)[0])
+                contact_address = self.split_node(contact_address, 70)[1]
+                n_line = n_line + 1
 
         if self.sdd_mandate_id.debtor_id_code:
             chain_keys = ['Id', 'PrvtId', 'Othr', 'Id']

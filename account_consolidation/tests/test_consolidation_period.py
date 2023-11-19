@@ -290,7 +290,7 @@ class TestConsolidationPeriodComposition(AccountConsolidationTestCase):
         # Child conso's
         ap = self._create_analysis_period(chart=self.chart)
 
-        usd_chart = self.env['consolidation.chart'].create({'name': 'USD chart', 'currency_id': self.env.ref('base.USD').id})
+        usd_chart = self.env['consolidation.chart'].create({'name': 'USD chart', 'currency_id': 2})
         usd_ap = self._create_analysis_period(chart=usd_chart)
         # Children accounts
         children_accounts = [
@@ -305,7 +305,7 @@ class TestConsolidationPeriodComposition(AccountConsolidationTestCase):
         other_account = self._create_consolidation_account('Child account 2', chart=self.chart, section=None)
 
         # Parent/Super conso
-        super_chart = self.env['consolidation.chart'].create({'name': 'Super chart', 'currency_id': self.env.ref('base.EUR').id})
+        super_chart = self.env['consolidation.chart'].create({'name': 'Super chart', 'currency_id': 1})
         super_ap = self._create_analysis_period(chart=super_chart)
 
         # Super account (in super conso)
@@ -373,7 +373,7 @@ class TestConsolidationPeriodComposition(AccountConsolidationTestCase):
         return_value=False)
     def test_generate_journal(self, patched_ap_action_generate_journals):
         AccountJournal = self.env['consolidation.journal']
-        self.compo._generate_journal()
+        self.compo.generate_journal()
         # Checking that the journal generation of this composition triggers the generations of
         # the composed analysis period
         patched_ap_action_generate_journals.assert_called_once()
@@ -385,11 +385,11 @@ class TestConsolidationPeriodComposition(AccountConsolidationTestCase):
         self.assertEqual(last_journal.period_id, self.compo.using_period_id)
         self.assertEqual(len(last_journal.line_ids), 1)
         amount_of_journals = AccountJournal.search_count([])
-        self.compo._generate_journal()
+        self.compo.generate_journal()
         self.assertEqual(amount_of_journals, AccountJournal.search_count([]), 'Old journal has been deleted')
 
     def test__get_journal_lines_values(self):
-        jl_values = self.compo._get_journal_lines_values()
+        jl_values = self.compo.get_journal_lines_values()
         self.assertEqual(len(jl_values), 1)
         jl_value = jl_values[0]
         self.assertEqual(jl_value['account_id'], self.super_account.id)
@@ -427,7 +427,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
         ap = self._create_analysis_period(start_date='2019-01-01', end_date='2019-01-31')
         cp = self._create_company_period(period=ap, start_date='2019-01-01', end_date='2019-01-31')
         expected_str = cp.company_name
-        self.assertEqual(expected_str, cp.display_name)
+        self.assertEqual(expected_str, cp._get_display_name())
 
         # SAME MONTH & YEAR
         cp.write({
@@ -435,7 +435,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
             'date_company_end': datetime.strptime('2019-02-28', '%Y-%m-%d')
         })
         expected_str = cp.company_name + ' (' + cp.date_company_begin.strftime('%b %Y') + ')'
-        self.assertEqual(expected_str, cp.display_name)
+        self.assertEqual(expected_str, cp._get_display_name())
 
         # SAME MONTH BUT DIFFERENT YEAR
         cp.write({
@@ -444,7 +444,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
         })
         expected_str = cp.company_name + ' (' + '-'.join((cp.date_company_begin.strftime('%b %Y'),  # Jan 2019-Jan 2020
                                                           cp.date_company_end.strftime('%b %Y'))) + ')'
-        self.assertEqual(expected_str, cp.display_name)
+        self.assertEqual(expected_str, cp._get_display_name())
 
         # SAME YEAR BUT DIFFERENT YEAR
         cp.write({
@@ -453,7 +453,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
         })
         expected_str = cp.company_name + ' (' + '-'.join((cp.date_company_begin.strftime('%b'),  # # Jan-Dec 2019
                                                           cp.date_company_end.strftime('%b %Y'))) + ')'
-        self.assertEqual(expected_str, cp.display_name)
+        self.assertEqual(expected_str, cp._get_display_name())
 
         # DIFFERENT YEAR AND MONTH
         cp.write({
@@ -462,7 +462,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
         })
         expected_str = cp.company_name + ' (' + '-'.join((cp.date_company_begin.strftime('%b %Y'),  # Jan 2019-Jun 2020
                                                           cp.date_company_end.strftime('%b %Y'))) + ')'
-        self.assertEqual(expected_str, cp.display_name)
+        self.assertEqual(expected_str, cp._get_display_name())
 
     @patch(
         'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationCompanyPeriod._get_total_balance_and_audit_lines',
@@ -478,7 +478,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
 
         ap = self._create_analysis_period()
         cp = self._create_company_period(period=ap, rate_consolidation=10, company=self.default_company)
-        cp._generate_journal()
+        cp.generate_journal()
         journals = Journal.search([('company_period_id', '=', cp.id)])
         self.assertEqual(1, len(journals), "Company period should only have one Journal")
         journal = journals[0]
@@ -520,7 +520,7 @@ class TestConsolidationCompanyPeriod(AccountConsolidationTestCase):
             'move_line_ids': [(6, 0, patch_get_total_balance.return_value[1])]}
         ]
         for cp in cps:
-            result = cp._get_journal_lines_values()
+            result = cp.get_journal_lines_values()
             self.assertListEqual(expected, result)
 
     def test__apply_historical_rates(self):

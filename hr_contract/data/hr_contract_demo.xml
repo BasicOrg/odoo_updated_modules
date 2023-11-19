@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="structure_type_employee_cp200_pfi" model="hr.payroll.structure.type">
-        <field name="default_resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
-    </record>
 
-    <record id="structure_type_employee_cp200" model="hr.payroll.structure.type">
-        <field name="default_resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
+    <record id="base.user_demo" model="res.users">
+        <field name="groups_id" eval="[(4, ref('hr_contract.group_hr_contract_manager'))]"/>
     </record>
-
-    <data noupdate="1">
-        <record id="base.user_demo" model="res.users">
-            <field name="groups_id" eval="[
-                (3, ref('hr_contract.group_hr_contract_manager')),
-                (3, ref('hr_contract.group_hr_contract_employee_manager'))]"/>
-        </record>
-    </data>
 
     <record id="hr_contract_admin" model="hr.contract">
         <field name="name">Mitchell Admin Contract</field>
@@ -26,10 +15,9 @@
         <field name="department_id" model="hr.department"
             eval="obj().env.ref('hr.employee_admin').department_id.id"/>
         <field eval="7540.0" name="wage"/>
-        <field name="state">close</field>
+        <field name="state">draft</field>
         <field name="kanban_state">normal</field>
         <field name="resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_admin_new" model="hr.contract">
@@ -42,7 +30,6 @@
         <field eval="5500.0" name="wage"/>
         <field name="state">open</field>
         <field name="resource_calendar_id" ref="resource.resource_calendar_std"/>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_al" model="hr.contract">
@@ -56,7 +43,6 @@
         <field eval="4000.0" name="wage"/>
         <field name="state">open</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_mit" model="hr.contract">
@@ -70,7 +56,6 @@
         <field eval="4500.0" name="wage"/>
         <field name="state">open</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_stw" model="hr.contract">
@@ -85,12 +70,11 @@
         <field eval="4500.0" name="wage"/>
         <field name="state">open</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_qdp" model="hr.contract">
         <field name="name">Demo Contract</field>
-        <field name="date_start" eval="(DateTime.today() + relativedelta(years=-1, month=9))"/>
+        <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
         <field name="employee_id" ref="hr.employee_qdp"/>
         <field name="job_id" model="hr.job"
             eval="obj().env.ref('hr.employee_qdp').job_id.id"/>
@@ -99,7 +83,6 @@
         <field eval="3750.0" name="wage"/>
         <field name="state">draft</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr.employee_qdp" model="hr.employee">
@@ -117,7 +100,6 @@
         <field eval="4600.0" name="wage"/>
         <field name="state">open</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_niv" model="hr.contract">
@@ -132,7 +114,6 @@
         <field eval="4000.0" name="wage"/>
         <field name="state">draft</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_jth" model="hr.contract">
@@ -147,7 +128,6 @@
         <field eval="4200.0" name="wage"/>
         <field name="state">draft</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_chs" model="hr.contract">
@@ -161,7 +141,6 @@
         <field eval="3750.0" name="wage"/>
         <field name="state">cancel</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_jve" model="hr.contract">
@@ -175,7 +154,6 @@
         <field eval="3950.0" name="wage"/>
         <field name="state">cancel</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_fme" model="hr.contract">
@@ -190,7 +168,6 @@
         <field eval="3650.0" name="wage"/>
         <field name="state">open</field>
         <field name="kanban_state">blocked</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_fpi_previous" model="hr.contract">
@@ -205,7 +182,6 @@
         <field eval="3700.0" name="wage"/>
         <field name="state">close</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_fpi" model="hr.contract">
@@ -220,7 +196,6 @@
         <field eval="3750.0" name="wage"/>
         <field name="state">close</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
     <record id="hr_contract_vad" model="hr.contract">
@@ -235,7 +210,6 @@
         <field eval="3750.0" name="wage"/>
         <field name="state">close</field>
         <field name="kanban_state">normal</field>
-        <field name="hr_responsible_id" ref="base.user_admin"/>
     </record>
 
 </odoo>

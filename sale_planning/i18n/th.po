@@ -3,17 +3,17 @@
 # 	* sale_planning
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:43+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,30 +21,27 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: sale_planning
+#: model_terms:ir.ui.view,arch_db:sale_planning.product_template_form_view_invoice_policy_inherit_sale_planning
+msgid ""
+"<span attrs=\"{'invisible': [('planning_enabled', '=', False)]}\" class=\"oe_inline me-2\">\n"
+"                        as\n"
+"                    </span>"
+msgstr ""
+
+#. module: sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.view_order_form_inherit_sale_planning
 msgid "<span class=\"o_stat_text\">Planned</span>"
 msgstr "<span class=\"o_stat_text\">วางแผน</span>"
 
 #. module: sale_planning
-#: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_form_inherit_sale_planning
-msgid "<span class=\"o_stat_text\">Sales Order</span>"
-msgstr "<span class=\"o_stat_text\">คำสั่งขาย</span>"
+#: model_terms:ir.ui.view,arch_db:sale_planning.view_order_form_inherit_sale_planning
+msgid "<span class=\"o_stat_text\">To plan</span>"
+msgstr "<span class=\"o_stat_text\">วางแผน</span>"
 
 #. module: sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.view_order_form_inherit_sale_planning
-msgid "<span class=\"o_stat_text\">To Plan</span>"
-msgstr "<span class=\"o_stat_text\">ในการวางแผน</span>"
-
-#. module: sale_planning
-#: model_terms:ir.ui.view,arch_db:sale_planning.product_template_form_view_invoice_policy_inherit_sale_planning
-msgid ""
-"<span invisible=\"not planning_enabled\" class=\"oe_inline me-2\">\n"
-"                        as\n"
-"                    </span>"
-msgstr ""
-"<span invisible=\"not planning_enabled\" class=\"oe_inline me-2\">\n"
-"                        เช่น\n"
-"                    </span>"
+msgid "<span>Hours</span>"
+msgstr "<span>ชั่วโมง</span>"
 
 #. module: sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_gantt_inherit_sale_planning
@@ -52,20 +49,15 @@ msgid "<strong>Sales Order Item  — </strong>"
 msgstr "<strong>รายการคำสั่งขาย — </strong>"
 
 #. module: sale_planning
-#. odoo-javascript
-#: code:addons/sale_planning/static/src/views/planning_hooks.js:0
-#, python-format
-msgid ""
-"All open shifts and sales orders have already been assigned, or there are no"
-" resources available to take them at this time."
-msgstr ""
-"กะงานที่เปิดอยู่และใบสั่งขายทั้งหมดได้ถูกกำหนดไว้แล้ว "
-"หรือไม่มีทรัพยากรที่พร้อมใช้งานในขณะนี้"
-
-#. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_slot__allocated_hours
 msgid "Allocated Time"
-msgstr "เวลาที่ถูกจัดสรร"
+msgstr ""
+
+#. module: sale_planning
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
+msgid "Billable"
+msgstr "สามารถเรียกเก็บเงินได้"
 
 #. module: sale_planning
 #: model:ir.ui.menu,name:sale_planning.sale_planning_menu_schedule_by_sale_order
@@ -73,11 +65,7 @@ msgid "By Sales Order"
 msgstr "โดยคำสั่งขาย"
 
 #. module: sale_planning
-#: model:ir.model.fields,field_description:sale_planning.field_planning_slot__partner_id
-msgid "Customer"
-msgstr "ลูกค้า"
-
-#. module: sale_planning
+#: model:product.product,name:sale_planning.developer_product
 #: model:product.template,name:sale_planning.developer_product_product_template
 msgid "Developer (Plan services)"
 msgstr "นักพัฒนา (แผนบริการ)"
@@ -90,14 +78,18 @@ msgstr "วันที่สิ้นสุด"
 #. module: sale_planning
 #: model:planning.role,name:sale_planning.planning_role_tester
 msgid "Functional Tester"
-msgstr "เครื่องทดสอบฟังก์ชั่น"
+msgstr ""
 
 #. module: sale_planning
-#: model_terms:ir.ui.view,arch_db:sale_planning.view_order_form_inherit_sale_planning
+#: model:product.product,uom_name:sale_planning.developer_product
+#: model:product.product,uom_name:sale_planning.technical_maintainance_product
+#: model:product.template,uom_name:sale_planning.developer_product_product_template
+#: model:product.template,uom_name:sale_planning.technical_maintainance_product_product_template
 msgid "Hours"
 msgstr "ชั่วโมง"
 
 #. module: sale_planning
+#: model:product.product,name:sale_planning.technical_maintainance_product
 #: model:product.template,name:sale_planning.technical_maintainance_product_product_template
 msgid "IT Technical Maintenance (Plan services)"
 msgstr "การบำรุงรักษาด้านเทคนิคไอที (บริการวางแผน)"
@@ -113,22 +105,27 @@ msgstr "ผู้เชี่ยวชาญด้านไอที"
 #: model:ir.model.fields,help:sale_planning.field_product_template__planning_enabled
 msgid ""
 "If enabled, a shift will automatically be generated for the selected role "
-"when confirming the Sales Order. Only employees with this role will "
-"automatically be assigned shifts for Sales Orders containing this service."
+"when confirming the Sales Order."
 msgstr ""
 "หากเปิดใช้งาน "
-"กะงานจะถูกสร้างขึ้นโดยอัตโนมัติสำหรับหน้าที่ที่เลือกเมื่อยืนยันใบสั่งขาย "
-"เฉพาะพนักงานที่มีหน้าที่นี้เท่านั้นที่จะได้รับมอบหมายกะงานสำหรับใบสั่งขายที่มีบริการนี้โดยอัตโนมัติ"
+"กะจะถูกสร้างขึ้นโดยอัตโนมัติสำหรับบทบาทที่เลือกเมื่อยืนยันคำสั่งขาย"
 
 #. module: sale_planning
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
 msgid "My Sales Orders"
-msgstr "คำสั่งขายของฉัน"
+msgstr ""
 
 #. module: sale_planning
 #: model_terms:ir.actions.act_window,help:sale_planning.sale_planning_action_schedule_by_sale_order
 msgid "No shifts found. Let's create one!"
-msgstr "ไม่พบกะงาน มาสร้างกันเถอะ!"
+msgstr "ไม่พบกะ มาสร้างกันเถอะ!"
+
+#. module: sale_planning
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
+msgid "Non Billable"
+msgstr "ไม่สามารถเรียกเก็บเงินได้"
 
 #. module: sale_planning
 #: model:ir.model.constraint,message:sale_planning.constraint_planning_slot_check_datetimes_set_or_plannable_slot
@@ -139,9 +136,25 @@ msgstr ""
 "เฉพาะสล็อตที่เชื่อมโยงกับคำสั่งขายที่มีการวางแผนบริการได้เท่านั้นที่สามารถยกเลิกการวางกำหนดเวลาได้"
 
 #. module: sale_planning
+#: model:ir.actions.act_window,name:sale_planning.planning_action_orders_planned
+msgid "Orders Planned"
+msgstr ""
+
+#. module: sale_planning
+#: model_terms:product.product,description:sale_planning.developer_product
 #: model_terms:product.template,description:sale_planning.developer_product_product_template
 msgid "Our developer will help you to add new features to your Software."
 msgstr "นักพัฒนาของเราจะช่วยคุณเพิ่มฟีเจอร์ใหม่ให้กับซอฟต์แวร์ของคุณ"
+
+#. module: sale_planning
+#. openerp-web
+#: code:addons/sale_planning/static/src/views/sale_planning_calendar/sale_planning_calendar_controller.xml:0
+#: code:addons/sale_planning/static/src/views/sale_planning_calendar/sale_planning_calendar_controller.xml:0
+#: code:addons/sale_planning/static/src/xml/planning_gantt.xml:0
+#: code:addons/sale_planning/static/src/xml/planning_gantt.xml:0
+#, python-format
+msgid "Plan Orders"
+msgstr "แผนคำสั่ง"
 
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_slot__sale_line_plannable
@@ -151,12 +164,6 @@ msgid "Plan Services"
 msgstr "แผนบริการ"
 
 #. module: sale_planning
-#: model_terms:ir.ui.view,arch_db:sale_planning.product_template_form_view_invoice_policy_inherit_sale_planning
-msgid "Plan shifts for your orders for employees who have this role."
-msgstr "วางแผนกะสำหรับคำสั่งซื้อของคุณสำหรับพนักงานที่มีหน้าที่นี้"
-
-#. module: sale_planning
-#. odoo-python
 #: code:addons/sale_planning/models/product.py:0
 #, python-format
 msgid ""
@@ -167,7 +174,6 @@ msgstr ""
 "%s"
 
 #. module: sale_planning
-#. odoo-python
 #: code:addons/sale_planning/models/product.py:0
 #, python-format
 msgid "Plannable services should use an UoM within the %s category."
@@ -176,7 +182,7 @@ msgstr "บริการที่วางแผนได้ควรใช้
 #. module: sale_planning
 #: model:ir.model,name:sale_planning.model_planning_analysis_report
 msgid "Planning Analysis Report"
-msgstr "รายงานการวิเคราะห์การวางแผน"
+msgstr ""
 
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_sale_order__planning_first_sale_line_id
@@ -205,7 +211,7 @@ msgstr "วางแผนวันที่เริ่มต้น"
 #: model:ir.model.fields,field_description:sale_planning.field_product_product__planning_role_id
 #: model:ir.model.fields,field_description:sale_planning.field_product_template__planning_role_id
 msgid "Planning Role"
-msgstr "การวางแผนหน้าที่"
+msgstr "บทบาทการวางแผน"
 
 #. module: sale_planning
 #: model:ir.model,name:sale_planning.model_planning_slot
@@ -225,12 +231,14 @@ msgstr "สินค้า"
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_analysis_report__role_product_ids
 msgid "Role Product"
-msgstr "สินค้าหน้าที่"
+msgstr ""
 
 #. module: sale_planning
 #: model:ir.model,name:sale_planning.model_sale_order
 #: model:ir.model.fields,field_description:sale_planning.field_planning_analysis_report__sale_order_id
 #: model:ir.model.fields,field_description:sale_planning.field_planning_slot__sale_order_id
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_form_inherit_sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
 msgid "Sales Order"
 msgstr "คำสั่งขาย"
@@ -238,8 +246,8 @@ msgstr "คำสั่งขาย"
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_analysis_report__sale_line_id
 #: model:ir.model.fields,field_description:sale_planning.field_planning_slot__sale_line_id
-#: model_terms:ir.ui.view,arch_db:sale_planning.open_slots_list_template
 #: model_terms:ir.ui.view,arch_db:sale_planning.period_report_template
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.resource_sale_planning
 msgid "Sales Order Item"
@@ -248,18 +256,7 @@ msgstr "รายการคำสั่งขาย"
 #. module: sale_planning
 #: model:ir.model,name:sale_planning.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "รายการคำสั่งขาย"
-
-#. module: sale_planning
-#: model:ir.model.fields,help:sale_planning.field_planning_slot__sale_line_id
-msgid ""
-"Sales order item for which this shift will be performed. When sales orders "
-"are automatically planned, the remaining hours of the sales order item, as "
-"well as the role defined on the service, are taken into account."
-msgstr ""
-"รายการในใบสั่งขายที่จะดำเนินการกะงานนี้ "
-"เมื่อมีการวางแผนใบสั่งขายโดยอัตโนมัติ ชั่วโมงที่เหลือของรายการในใบสั่งขาย "
-"รวมถึงหน้าที่ที่ถูกกำหนดไว้ในบริการจะถูกนำมาพิจารณาด้วย"
+msgstr "ไลน์คำสั่งขาย"
 
 #. module: sale_planning
 #: model:ir.actions.act_window,name:sale_planning.sale_planning_action_schedule_by_sale_order
@@ -271,7 +268,13 @@ msgstr "กำหนดเวลาโดยคำสั่งขาย"
 msgid ""
 "Schedule your human and material resources across roles, projects and sales "
 "orders."
-msgstr "กำหนดเวลาทรัพยากรบุคคลและวัสดุของคุณตามหน้าที่ โปรเจกต์ และใบสั่งขาย"
+msgstr ""
+
+#. module: sale_planning
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_analysis_report_view_search
+#: model_terms:ir.ui.view,arch_db:sale_planning.planning_slot_view_search_inherit_sale_planning
+msgid "Service"
+msgstr "บริการ"
 
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_role__product_ids
@@ -280,11 +283,10 @@ msgid "Services"
 msgstr "บริการ"
 
 #. module: sale_planning
-#. odoo-python
 #: code:addons/sale_planning/controllers/main.py:0
 #, python-format
 msgid "Shift"
-msgstr "กะงาน"
+msgstr "กะ"
 
 #. module: sale_planning
 #: model:ir.model.fields,field_description:sale_planning.field_planning_slot__start_datetime
@@ -292,30 +294,38 @@ msgid "Start Date"
 msgstr "วันที่เริ่ม"
 
 #. module: sale_planning
+#: model_terms:product.product,description:sale_planning.technical_maintainance_product
 #: model_terms:product.template,description:sale_planning.technical_maintainance_product_product_template
 msgid "Take a rest. We'll do our best."
 msgstr "พักก่อน เราจะพยายามอย่างเต็มที่"
 
 #. module: sale_planning
-#. odoo-javascript
-#: code:addons/sale_planning/static/src/views/planning_hooks.js:0
+#. openerp-web
+#: code:addons/sale_planning/static/src/js/backend/sale_planning_mixin.js:0
+#: code:addons/sale_planning/static/src/views/hooks.js:0
 #, python-format
-msgid "The open shifts and sales orders have been successfully assigned."
-msgstr "กะงานที่เปิดและใบสั่งขายได้รับมอบหมายเรียบร้อยแล้ว"
+msgid "The sales orders have successfully been assigned."
+msgstr "มอบหมายคำสั่งขายเรียบร้อยแล้ว"
 
 #. module: sale_planning
-#. odoo-python
+#. openerp-web
+#: code:addons/sale_planning/static/src/js/backend/sale_planning_mixin.js:0
+#: code:addons/sale_planning/static/src/views/hooks.js:0
+#, python-format
+msgid "There are no sales orders to assign or no employees are available."
+msgstr "ไม่มีคำสั่งขายที่จะมอบหมายหรือไม่มีพนักงานอยู่"
+
+#. module: sale_planning
 #: code:addons/sale_planning/models/planning_slot.py:0
 #, python-format
 msgid ""
 "This Sale Order Item doesn't have a target value of planned hours. Planned "
 "hours :"
 msgstr ""
-"รายการสั่งขายนี้ไม่มีค่าเป้าหมายของชั่วโมงที่วางแผนไว้ ชั่วโมงที่วางแผนไว้:"
 
 #. module: sale_planning
-#. odoo-javascript
-#: code:addons/sale_planning/static/src/views/sale_planning_gantt/sale_planning_gantt_renderer.js:0
+#. openerp-web
+#: code:addons/sale_planning/static/src/js/backend/planning_gantt_controller.js:0
 #, python-format
 msgid ""
 "This resource is not available for this shift during the selected period."
@@ -327,29 +337,29 @@ msgid "Unschedule"
 msgstr "ยังไม่กำหนดเวลา"
 
 #. module: sale_planning
-#. odoo-python
 #: code:addons/sale_planning/models/sale_order.py:0
 #, python-format
 msgid "View Planning"
-msgstr "ดูการวางแผน"
+msgstr ""
+
+#. module: sale_planning
+#. openerp-web
+#: code:addons/sale_planning/static/src/views/hooks.js:0
+#, python-format
+msgid "View Shifts"
+msgstr ""
 
 #. module: sale_planning
 #: model:planning.role,name:sale_planning.planning_role_planner
 msgid "Work Planner"
-msgstr "ผู้วางแผนการทำงาน"
-
-#. module: sale_planning
-#: model_terms:ir.ui.view,arch_db:sale_planning.planning_role_view_tree_inherit_sale_planning
-msgid "e.g. Cleaning Services"
-msgstr "เช่น บริการทำความสะอาด"
+msgstr ""
 
 #. module: sale_planning
 #: model_terms:ir.ui.view,arch_db:sale_planning.product_template_form_view_invoice_policy_inherit_sale_planning
 msgid "e.g. Consultant"
-msgstr "เช่น ที่ปรึกษา"
+msgstr ""
 
 #. module: sale_planning
-#. odoo-python
 #: code:addons/sale_planning/models/sale_order_line.py:0
 #, python-format
 msgid "remaining"

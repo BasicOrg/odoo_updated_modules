@@ -11,10 +11,18 @@
                 <attribute name="invisible">0</attribute>
             </div>
 
-            <xpath expr="//block[@id='argentina_localization']" position="inside">
-                <setting company_dependent="1" help="Used when generating the VAT Book Voucher TXT files." invisible="country_code != 'AR'">
-                    <field name="l10n_ar_computable_tax_credit" class="o_light_label" widget="radio"/>
-                </setting>
+            <xpath expr="//div[@id='argentina_localization']" position="inside">
+                <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible':[('country_code', '!=', 'AR')]}">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <label for="l10n_ar_computable_tax_credit"/>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                        <div class="text-muted">Used when generating the VAT Book Voucher TXT files.</div>
+                        <div class="content-group">
+                            <field name="l10n_ar_computable_tax_credit" class="o_light_label" widget="radio"/>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>

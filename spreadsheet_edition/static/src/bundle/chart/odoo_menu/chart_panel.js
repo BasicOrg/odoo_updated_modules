@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
 import { patch } from "@web/core/utils/patch";
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { IrMenuSelector } from "@spreadsheet_edition/bundle/ir_menu_selector/ir_menu_selector";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
+import { IrMenuSelector } from "@spreadsheet_edition/assets/components/ir_menu_selector/ir_menu_selector";
 
 const { LineBarPieConfigPanel, ScorecardChartConfigPanel, GaugeChartConfigPanel } =
     spreadsheet.components;
@@ -11,8 +11,8 @@ const { LineBarPieConfigPanel, ScorecardChartConfigPanel, GaugeChartConfigPanel 
  * Patch the chart configuration panel to add an input to
  * link the chart to an Odoo menu.
  */
-function patchChartPanelWithMenu(PanelComponent) {
-    patch(PanelComponent.prototype, {
+function patchChartPanelWithMenu(PanelComponent, patchName) {
+    patch(PanelComponent.prototype, patchName, {
         get odooMenuId() {
             const menu = this.env.model.getters.getChartOdooMenu(this.props.figureId);
             return menu ? menu.id : undefined;
@@ -40,6 +40,9 @@ function patchChartPanelWithMenu(PanelComponent) {
         IrMenuSelector,
     };
 }
-patchChartPanelWithMenu(LineBarPieConfigPanel);
-patchChartPanelWithMenu(GaugeChartConfigPanel);
-patchChartPanelWithMenu(ScorecardChartConfigPanel);
+patchChartPanelWithMenu(LineBarPieConfigPanel, "document_spreadsheet.LineBarPieConfigPanel");
+patchChartPanelWithMenu(GaugeChartConfigPanel, "document_spreadsheet.GaugeChartConfigPanel");
+patchChartPanelWithMenu(
+    ScorecardChartConfigPanel,
+    "document_spreadsheet.ScorecardChartConfigPanel"
+);

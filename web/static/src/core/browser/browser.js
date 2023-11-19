@@ -15,21 +15,13 @@ try {
     // Safari crashes in Private Browsing
     localStorage.setItem("__localStorage__", "true");
     localStorage.removeItem("__localStorage__");
-} catch {
+} catch (_e) {
     localStorage = makeRAMLocalStorage();
     sessionStorage = makeRAMLocalStorage();
 }
 
 export const browser = {
     addEventListener: window.addEventListener.bind(window),
-    AnalyserNode: window.AnalyserNode,
-    Audio: window.Audio,
-    AudioBufferSourceNode: window.AudioBufferSourceNode,
-    AudioContext: window.AudioContext,
-    AudioWorkletNode: window.AudioWorkletNode,
-    BeforeInstallPromptEvent: window.BeforeInstallPromptEvent?.bind(window),
-    GainNode: window.GainNode,
-    MediaStreamAudioSourceNode: window.MediaStreamAudioSourceNode,
     removeEventListener: window.removeEventListener.bind(window),
     setTimeout: window.setTimeout.bind(window),
     clearTimeout: window.clearTimeout.bind(window),
@@ -40,7 +32,6 @@ export const browser = {
     cancelAnimationFrame: window.cancelAnimationFrame.bind(window),
     console: window.console,
     history: window.history,
-    matchMedia: window.matchMedia.bind(window),
     navigator,
     Notification: window.Notification,
     open: window.open.bind(window),
@@ -53,7 +44,6 @@ export const browser = {
     innerHeight: window.innerHeight,
     innerWidth: window.innerWidth,
     ontouchstart: window.ontouchstart,
-    BroadcastChannel: window.BroadcastChannel,
 };
 
 Object.defineProperty(browser, "location", {
@@ -86,9 +76,8 @@ export function makeRAMLocalStorage() {
     let store = {};
     return {
         setItem(key, value) {
-            const newValue = String(value);
-            store[key] = newValue;
-            window.dispatchEvent(new StorageEvent("storage", { key, newValue }));
+            store[key] = value;
+            window.dispatchEvent(new StorageEvent("storage", { key, newValue: value }));
         },
         getItem(key) {
             return store[key];

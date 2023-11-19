@@ -1,14 +1,13 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { CommandResult } from "../../o_spreadsheet/cancelled_reason";
+import spreadsheet from "../../o_spreadsheet/o_spreadsheet_extended";
+import CommandResult from "../../o_spreadsheet/cancelled_reason";
 import { getMaxObjectId } from "../../helpers/helpers";
+import ListDataSource from "../list_data_source";
 import { TOP_LEVEL_STYLE } from "../../helpers/constants";
 import { _t } from "@web/core/l10n/translation";
 import { globalFiltersFieldMatchers } from "@spreadsheet/global_filters/plugins/global_filters_core_plugin";
 import { sprintf } from "@web/core/utils/strings";
-import { checkFilterFieldMatching } from "@spreadsheet/global_filters/helpers";
-import { Domain } from "@web/core/domain";
 
 /**
  * @typedef {Object} ListDefinition
@@ -26,25 +25,28 @@ import { Domain } from "@web/core/domain";
  * @property {ListDefinition} definition
  * @property {Object} fieldMatching
  *
- * @typedef {import("@spreadsheet/global_filters/plugins/global_filters_core_plugin").FieldMatching} FieldMatching
+ * @typedef {import("@spreadsheet/global_filters/plugins/global_filters_ui_plugin").FieldMatching} FieldMatching
  */
 
 const { CorePlugin } = spreadsheet;
 
-export class ListCorePlugin extends CorePlugin {
-    constructor(config) {
-        super(config);
+export default class ListCorePlugin extends CorePlugin {
+    constructor(getters, history, range, dispatch, config, uuidGenerator) {
+        super(getters, history, range, dispatch, config, uuidGenerator);
+        this.dataSources = config.dataSources;
 
         this.nextId = 1;
         /** @type {Object.<string, List>} */
         this.lists = {};
 
         globalFiltersFieldMatchers["list"] = {
-            getIds: () => this.getters.getListIds(),
+            geIds: () => this.getters.getListIds(),
             getDisplayName: (listId) => this.getters.getListName(listId),
             getTag: (listId) => sprintf(_t("List #%s"), listId),
             getFieldMatching: (listId, filterId) => this.getListFieldMatching(listId, filterId),
+            waitForReady: () => this.getListsWaitForReady(),
             getModel: (listId) => this.getListDefinition(listId).model,
+            getFields: (listId) => this.getListDataSource(listId).getFields(),
         };
     }
 
@@ -66,11 +68,6 @@ export class ListCorePlugin extends CorePlugin {
                     return CommandResult.EmptyName;
                 }
                 break;
-            case "ADD_GLOBAL_FILTER":
-            case "EDIT_GLOBAL_FILTER":
-                if (cmd.list) {
-                    return checkFilterFieldMatching(cmd.list);
-                }
         }
         return CommandResult.Success;
     }
@@ -83,11 +80,20 @@ export class ListCorePlugin extends CorePlugin {
     handle(cmd) {
         switch (cmd.type) {
             case "INSERT_ODOO_LIST": {
-                const { sheetId, col, row, id, definition, linesNumber, columns } = cmd;
+                const {
+                    sheetId,
+                    col,
+                    row,
+                    id,
+                    definition,
+                    dataSourceId,
+                    linesNumber,
+                    columns,
+                } = cmd;
                 const anchor = [col, row];
-                this._addList(id, definition);
+                this._addList(id, definition, dataSourceId, linesNumber);
                 this._insertList(sheetId, anchor, id, linesNumber, columns);
-                this.history.update("nextId", parseInt(id, 10) + 1);
+                this.nextId = parseInt(id, 10) + 1;
                 break;
             }
             case "RE_INSERT_ODOO_LIST": {
@@ -115,6 +121,19 @@ export class ListCorePlugin extends CorePlugin {
                     "domain",
                     cmd.domain
                 );
+                const list = this.lists[cmd.listId];
+                this.dataSources.add(list.dataSourceId, ListDataSource, list.definition);
+                break;
+            }
+            case "UNDO":
+            case "REDO": {
+                const domainEditionCommands = cmd.commands.filter(
+                    (cmd) => cmd.type === "UPDATE_ODOO_LIST_DOMAIN"
+                );
+                for (const cmd of domainEditionCommands) {
+                    const list = this.lists[cmd.listId];
+                    this.dataSources.add(list.dataSourceId, ListDataSource, list.definition);
+                }
                 break;
             }
             case "ADD_GLOBAL_FILTER":
@@ -132,6 +151,15 @@ export class ListCorePlugin extends CorePlugin {
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
+
+    /**
+     * @param {string} id
+     * @returns {import("@spreadsheet/list/list_data_source").default|undefined}
+     */
+    getListDataSource(id) {
+        const dataSourceId = this.lists[id].dataSourceId;
+        return this.dataSources.get(dataSourceId);
+    }
 
     /**
      * @param {string} id
@@ -155,6 +183,16 @@ export class ListCorePlugin extends CorePlugin {
      */
     getListFieldMatch(id) {
         return this.lists[id].fieldMatching;
+    }
+
+    /**
+     * @param {string} id
+     * @returns {Promise<import("@spreadsheet/list/list_data_source").default>}
+     */
+    async getAsyncListDataSource(id) {
+        const dataSourceId = this.lists[id].dataSourceId;
+        await this.dataSources.load(dataSourceId);
+        return this.getListDataSource(id);
     }
 
     /**
@@ -183,17 +221,13 @@ export class ListCorePlugin extends CorePlugin {
         const def = this.lists[id].definition;
         return {
             columns: [...def.metaData.columns],
-            domain: def.searchParams.domain,
+            domain: [...def.searchParams.domain],
             model: def.metaData.resModel,
             context: { ...def.searchParams.context },
             orderBy: [...def.searchParams.orderBy],
             id,
             name: def.name,
         };
-    }
-
-    getListModelDefinition(id) {
-        return this.lists[id].definition;
     }
 
     /**
@@ -212,6 +246,14 @@ export class ListCorePlugin extends CorePlugin {
     // ---------------------------------------------------------------------
 
     /**
+     *
+     * @return {Promise[]}
+     */
+    getListsWaitForReady() {
+        return this.getListIds().map((ListId) => this.getListDataSource(ListId).loadMetadata());
+    }
+
+    /**
      * Get the current FieldMatching on a list
      *
      * @param {string} listId
@@ -224,8 +266,9 @@ export class ListCorePlugin extends CorePlugin {
     /**
      * Sets the current FieldMatching on a list
      *
+     * @param {string} listId
      * @param {string} filterId
-     * @param {Record<string,FieldMatching>} listFieldMatches
+     * @param {FieldMatching} fieldMatching
      */
     _setListFieldMatching(filterId, listFieldMatches) {
         const lists = { ...this.lists };
@@ -242,18 +285,21 @@ export class ListCorePlugin extends CorePlugin {
         }
     }
 
-    _addList(id, definition, fieldMatching = undefined) {
+    _addList(id, definition, dataSourceId, limit, fieldMatching = {}) {
         const lists = { ...this.lists };
-        if (!fieldMatching) {
-            const model = definition.metaData.resModel;
-            fieldMatching = this.getters.getFieldMatchingForModel(model);
-        }
         lists[id] = {
             id,
             definition,
+            dataSourceId,
             fieldMatching,
         };
 
+        if (!this.dataSources.contains(dataSourceId)) {
+            this.dataSources.add(dataSourceId, ListDataSource, {
+                ...definition,
+                limit,
+            });
+        }
         this.history.update("lists", lists);
     }
 
@@ -294,21 +340,6 @@ export class ListCorePlugin extends CorePlugin {
                 },
             ],
         });
-        this.dispatch("SET_ZONE_BORDERS", {
-            sheetId,
-            target: [
-                {
-                    top: anchor[1],
-                    bottom: anchor[1],
-                    left: anchor[0],
-                    right: anchor[0] + columns.length - 1,
-                },
-            ],
-            border: {
-                position: "external",
-                color: "#2D7E84",
-            },
-        });
     }
 
     _insertValues(sheetId, anchor, id, columns, linesNumber) {
@@ -327,21 +358,6 @@ export class ListCorePlugin extends CorePlugin {
             }
             row++;
         }
-        this.dispatch("SET_ZONE_BORDERS", {
-            sheetId,
-            target: [
-                {
-                    top: anchor[1],
-                    bottom: anchor[1] + linesNumber,
-                    left: anchor[0],
-                    right: anchor[0] + columns.length - 1,
-                },
-            ],
-            border: {
-                position: "external",
-                color: "#2D7E84",
-            },
-        });
     }
 
     /**
@@ -402,7 +418,7 @@ export class ListCorePlugin extends CorePlugin {
                     },
                     name: list.name,
                 };
-                this._addList(id, definition, list.fieldMatching);
+                this._addList(id, definition, this.uuidGenerator.uuidv4(), 0, list.fieldMatching);
             }
         }
         this.nextId = data.listNextId || getMaxObjectId(this.lists) + 1;
@@ -416,7 +432,6 @@ export class ListCorePlugin extends CorePlugin {
         data.lists = {};
         for (const id in this.lists) {
             data.lists[id] = JSON.parse(JSON.stringify(this.getListDefinition(id)));
-            data.lists[id].domain = new Domain(data.lists[id].domain).toJson();
             data.lists[id].fieldMatching = this.lists[id].fieldMatching;
         }
         data.listNextId = this.nextId;
@@ -424,9 +439,10 @@ export class ListCorePlugin extends CorePlugin {
 }
 
 ListCorePlugin.getters = [
+    "getListDataSource",
     "getListDisplayName",
+    "getAsyncListDataSource",
     "getListDefinition",
-    "getListModelDefinition",
     "getListIds",
     "getListName",
     "getNextListId",

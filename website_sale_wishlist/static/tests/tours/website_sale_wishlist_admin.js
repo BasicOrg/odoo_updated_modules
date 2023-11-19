@@ -1,12 +1,13 @@
-/** @odoo-module **/
+odoo.define('website_sale_wishlist_admin.tour', function (require) {
+'use strict';
 
-import wTourUtils from "@website/js/tours/tour_utils";
+const wTourUtils = require("website.tour_utils");
 
 wTourUtils.registerWebsitePreviewTour('shop_wishlist_admin', {
     url: '/shop?search=Rock',
     test: true,
 },
-    () => [
+    [
         {
             content: "Go to Rock shop page",
             trigger: 'iframe a:contains("Rock"):first',
@@ -16,9 +17,10 @@ wTourUtils.registerWebsitePreviewTour('shop_wishlist_admin', {
             trigger: 'iframe body:not(:has(.js_product_change))',
             extra_trigger: 'iframe #product_details',
         },
-        ...wTourUtils.clickOnEditAndWaitEditMode(),
+        wTourUtils.clickOnEdit(),
         {
             content: "open customize tab",
+            extra_trigger: '#oe_snippets.o_loaded',
             trigger: '.o_we_customize_snippet_btn',
         },
         {
@@ -80,3 +82,5 @@ wTourUtils.registerWebsitePreviewTour('shop_wishlist_admin', {
         },
     ]
 );
+
+});

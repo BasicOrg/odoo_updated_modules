@@ -226,11 +226,7 @@ QUnit.module("Fields", (hooks) => {
         await editInput(cell, "input", "brolo");
 
         // save
-        await click(
-            target.querySelector(
-                ".o_control_panel_main_buttons .d-none.d-xl-inline-flex .o_list_button_save"
-            )
-        );
+        await click(target.querySelector(".o_list_button_save"));
         cell = target.querySelector("tbody td:not(.o_list_record_selector)");
         assert.doesNotHaveClass(
             cell.parentElement,
@@ -276,7 +272,7 @@ QUnit.module("Fields", (hooks) => {
                 <form>
                     <sheet>
                         <group>
-                            <field name="foo" widget="url" readonly="True" />
+                            <field name="foo" widget="url" attrs="{'readonly': True}" />
                             <field name="foo2" />
                         </group>
                     </sheet>

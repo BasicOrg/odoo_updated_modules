@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import _, models
+from odoo.addons.phone_validation.tools import phone_validation
 
 
 class Users(models.Model):
@@ -12,10 +13,13 @@ class Users(models.Model):
         numbers_to_blacklist = {}  # numbers to blacklist and the related user
         if post.get('request_blacklist'):
             for user in self:
-                for fname in self._phone_get_number_fields():
-                    number = user._phone_format(fname=fname)
-                    if number:
-                        numbers_to_blacklist[number] = user
+                sanitized = phone_validation.phone_sanitize_numbers_w_record([user.phone, user.mobile], user)
+                user_phone = sanitized[user.phone]['sanitized']
+                user_mobile = sanitized[user.mobile]['sanitized']
+                if user_phone:
+                    numbers_to_blacklist[user_phone] = user
+                if user_mobile:
+                    numbers_to_blacklist[user_mobile] = user
 
         super(Users, self)._deactivate_portal_user(**post)
 

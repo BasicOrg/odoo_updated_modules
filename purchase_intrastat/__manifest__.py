@@ -5,7 +5,7 @@
     'name' : 'Purchase Intrastat',
     'category': 'Accounting/Accounting',
     'description': """
-Bridge module between purchase and intrastat.
+        Bridge module between purchase and intrastat.
     """,
     'depends': ['purchase', 'account_intrastat'],
     'auto_install': True,

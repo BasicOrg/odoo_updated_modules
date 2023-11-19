@@ -3,16 +3,16 @@
 # 	* hr_payroll_account_sepa
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.3+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-04-19 14:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -47,13 +47,19 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__create_uid
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__create_date
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__create_date
 msgid "Created on"
 msgstr "建立於"
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_export_date
+#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_date
+msgid "Creation date of the payment file."
+msgstr ""
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__display_name
@@ -67,17 +73,9 @@ msgid "Employee"
 msgstr "員工"
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Employees With Invalid Bank Accounts"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
-#, python-format
-msgid "Employees with untrusted Bank Account numbers"
 msgstr ""
 
 #. module: hr_payroll_account_sepa
@@ -104,7 +102,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__sepa_export_filename
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run__sepa_export_filename
 msgid "File Name"
-msgstr "檔案名稱"
+msgstr "文件名稱"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__file_name
@@ -131,10 +129,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__id
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
 #: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
 #, python-format
@@ -142,6 +139,12 @@ msgid ""
 "Invalid bank account for the following employees:\n"
 "%s"
 msgstr ""
+
+#. module: hr_payroll_account_sepa
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard____last_update
+#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_sepa_wizard____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: hr_payroll_account_sepa
 #: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip_run_sepa_wizard__write_uid
@@ -183,72 +186,27 @@ msgid "Select a bank journal."
 msgstr ""
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid "Some employees (%s) don't have a bank account."
 msgstr ""
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
-msgid "Some employees (%s) don't have a valid name on the work contact."
+msgid "Some employees (%s) don't have a private address."
 msgstr ""
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
-msgid "Some employees (%s) don't have a work contact."
+msgid "Some employees (%s) don't have a valid name on the private address."
 msgstr ""
 
 #. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_employee.py:0
-#, python-format
-msgid ""
-"The following employees have invalid bank accounts and could not be trusted:\n"
-"%s"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
 #: code:addons/hr_payroll_account_sepa/models/hr_payslip.py:0
 #, python-format
 msgid ""
 "The journal '%s' requires a proper IBAN account to pay via SEPA. Please "
 "configure it first."
 msgstr "日記帳 '%s' 需要一個正確的IBAN 帳號來通過SEPA付費。請先設定它。"
-
-#. module: hr_payroll_account_sepa
-#: model:ir.actions.server,name:hr_payroll_account_sepa.trust_employee_bank
-msgid "Trust Bank Account"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#: model:ir.model.fields,field_description:hr_payroll_account_sepa.field_hr_payslip__sepa_uetr
-msgid "UETR"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#: model:ir.model.fields,help:hr_payroll_account_sepa.field_hr_payslip__sepa_uetr
-msgid "Unique end-to-end transaction reference"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
-#: code:addons/hr_payroll_account_sepa/wizard/hr_payroll_account_sepa_wizard.py:0
-#, python-format
-msgid ""
-"Untrusted bank account for the following employees:\n"
-"%s"
-msgstr ""
-
-#. module: hr_payroll_account_sepa
-#. odoo-python
-#: code:addons/hr_payroll_account_sepa/models/hr_employee.py:0
-#, python-format
-msgid "You do not have the right to trust or un-trust a bank account."
-msgstr "你沒有權限信任或取消信任銀行賬戶。"

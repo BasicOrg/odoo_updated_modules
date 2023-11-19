@@ -1,4 +1,4 @@
-.o_hr_employee_kanban .o_kanban_renderer {
+.o_hr_employee_kanban {
     .o_kanban_card_appraisal {
         height: 12.75rem;
     }
@@ -8,7 +8,7 @@
             margin-right: 4px;
             padding: 0.5rem 0.5rem;
             &.active {
-                background-color: $o-enterprise-action-color;
+                background-color: $o-enterprise-primary-color;
                 color: white;
             }
         }
@@ -20,7 +20,7 @@
                 overflow-wrap: break-word;
                 word-wrap: break-word;
                 display: flex;
-                font-size: 16px;
+                font-size: 15px;
             }
             .o_kanban_record_top_left {
                 flex: 1 1 auto;
@@ -34,15 +34,34 @@
             margin-right: 8px;
         }
     }
+    .ribbon {
+        &::before, &::after {
+            display: none;
+        }
+
+        span {
+            padding: 5px;
+            font-size: small;
+            z-index: unset;
+        }
+    }
+    .ribbon-top-right {
+        margin-top: -9px;
+
+        span {
+            left: 12px;
+            right: 30px;
+            height: 25px;
+            top: 18px;
+        }
+    }
 }
 
 .o_appraisal_form {
     .o_form_sheet {
         padding-bottom: 0 !important;
     }
-    .o_form_sheet_bg{
-        max-width: 100% !important;
-    }
+
     div.o_field_boolean_toggle_confirm, div.o_field_boolean_toggle {
         display: inline-flex;
     }
@@ -134,6 +153,14 @@
 .o_goal_list {
     .o_badge_cell{
         text-align: center;
+    }
+}
+
+.o_appraisal_goal_form {
+    .o_selection_badge.active {
+        background: $o-brand-odoo !important;
+        color: $o-white !important;
+        border-color: $o-brand-odoo !important;
     }
 }
 

@@ -24,13 +24,12 @@ class IoTController(http.Controller):
         fobj = io.BytesIO()
         with zipfile.ZipFile(fobj, 'w', zipfile.ZIP_DEFLATED) as zf:
             for module in module_ids.mapped('name') + ['hw_drivers']:
-                module_path = get_module_path(module)
-                if module_path:
-                    iot_handlers = pathlib.Path(module_path) / 'iot_handlers'
-                    for handler in iot_handlers.glob('*/*'):
-                        if handler.is_file() and not handler.name.startswith(('.', '_')):
-                            # In order to remove the absolute path
-                            zf.write(handler, handler.relative_to(iot_handlers))
+                iot_handlers = pathlib.Path(get_module_path(module)) / 'iot_handlers'
+
+                for handler in iot_handlers.glob('*/*'):
+                    if handler.is_file() and not handler.name.startswith(('.', '_')):
+                        # In order to remove the absolute path
+                        zf.write(handler, handler.relative_to(iot_handlers))
 
         return fobj.getvalue()
 
@@ -49,15 +48,6 @@ class IoTController(http.Controller):
             for device in iot_devices:
                 urls[device.identifier] = device.display_url
         return json.dumps(urls)
-
-    @http.route('/iot/printer/status', type='json', auth='public')
-    def listen_iot_printer_status(self, print_id, device_identifier):
-        if isinstance(device_identifier, str) and isinstance(print_id, str) and request.env["iot.device"].sudo().search([("identifier", "=", device_identifier)]):
-            iot_channel = request.env['iot.channel'].sudo().get_iot_channel()
-            request.env['bus.bus']._sendone(iot_channel, 'print_confirmation', {
-                'print_id': print_id,
-                'device_identifier': device_identifier
-            })
 
     @http.route('/iot/setup', type='json', auth='public')
     def update_box(self, **kwargs):
@@ -132,5 +122,3 @@ class IoTController(http.Controller):
             # Mark the received devices as connected, disconnect the others.
             connected_iot_devices.write({'connected': True})
             (previously_connected_iot_devices - connected_iot_devices).write({'connected': False})
-            iot_channel = request.env['iot.channel'].sudo().get_iot_channel()
-            return iot_channel

@@ -6,8 +6,8 @@ import { formView } from "@web/views/form/form_view";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { ViewButton } from "@web/views/view_button/view_button";
-import { useSubEnv, useEnv } from "@odoo/owl";
 
+const { useSubEnv, useEnv } = owl;
 /*
 * Common code for theme installation/update handler.
 * It overrides the onClickViewButton function that's present in the env.
@@ -72,7 +72,6 @@ class ThemePreviewFormController extends FormController {
     }
 }
 ThemePreviewFormController.components = { ...FormController.components, ViewButton };
-ThemePreviewFormController.template = 'website.ThemePreviewFormController';
 
 class ThemePreviewFormControlPanel extends ControlPanel {
     /**
@@ -93,6 +92,13 @@ ThemePreviewFormControlPanel.template = 'website.ThemePreviewForm.ControlPanel';
 
 const ThemePreviewFormView = {
     ...formView,
+    display: {
+        controlPanel: {
+            'top-right': false,
+            'bottom-right': true,
+        }
+    },
+    buttonTemplate: 'website.ThemePreview.Buttons',
     Controller: ThemePreviewFormController,
     ControlPanel: ThemePreviewFormControlPanel,
 };

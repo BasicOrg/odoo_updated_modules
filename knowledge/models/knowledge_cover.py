@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError
-
+from odoo import api, fields, models
 
 class Cover(models.Model):
     _name = "knowledge.cover"
@@ -29,8 +27,6 @@ class Cover(models.Model):
         records, because when uploading a new cover, the attachment is uploaded
         with res_id=0, then the cover is created using the uploaded attachment.
         """
-        if any(len(vals) == 1 and 'name' in vals for vals in vals_list):
-            raise UserError(_('You cannot create a new Knowledge Cover from here.'))
         covers = super().create(vals_list)
 
         for cover in covers.filtered(lambda cover: not cover.attachment_id.res_id):

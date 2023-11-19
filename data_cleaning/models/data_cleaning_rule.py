@@ -32,7 +32,7 @@ ACTIONS_PYTHON = {
     'case_first': lambda record, value: value.title(),
     'case_upper': lambda record, value: value.upper(),
     'case_lower': lambda record, value: value.lower(),
-    'phone': lambda record, value: record._phone_format(number=value, country=record.country_id, force_format="INTERNATIONAL"),
+    'phone': lambda record, value: record._phone_format(value, record.country_id),
     'html': lambda record, value: html2plaintext(value),
 }
 
@@ -80,7 +80,7 @@ class DataCleaningRule(models.Model):
     def _compute_action(self):
         for rule in self:
             action = rule.action
-            action_display = dict(ACTIONS).get(action, '')
+            action_display = dict(ACTIONS).get(action)
             if action == 'trim':
                 action = '%s_%s' % (action, rule.action_trim)
                 action_display = '%s (%s)' % (action_display, dict(ACTIONS_TRIM).get(rule.action_trim))

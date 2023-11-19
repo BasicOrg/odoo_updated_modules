@@ -1,13 +1,13 @@
-/** @odoo-module **/
-    
-    import { registry } from "@web/core/registry";
-    import { stepUtils } from "@web_tour/tour_service/tour_utils";
+odoo.define('crm.crm_email_and_phone_propagation', function (require) {
+    'use strict';
 
-    registry.category("web_tour.tours").add('crm_email_and_phone_propagation_edit_save', {
+    const tour = require('web_tour.tour');
+
+    tour.register('crm_email_and_phone_propagation_edit_save', {
         test: true,
         url: '/web',
-        steps: () => [
-        stepUtils.showAppsMenuItem(),
+    }, [
+        tour.stepUtils.showAppsMenuItem(),
         {
             trigger: '.o_app[data-menu-xmlid="crm.crm_menu_root"]',
             content: 'open crm app',
@@ -21,13 +21,13 @@
             content: 'Save the lead',
             run: 'click',
         },
-    ]});
+    ]);
 
-    registry.category("web_tour.tours").add('crm_email_and_phone_propagation_remove_email_and_phone', {
+    tour.register('crm_email_and_phone_propagation_remove_email_and_phone', {
         test: true,
         url: '/web',
-        steps: () => [
-        stepUtils.showAppsMenuItem(),
+    }, [
+        tour.stepUtils.showAppsMenuItem(),
         {
             trigger: '.o_app[data-menu-xmlid="crm.crm_menu_root"]',
             content: 'open crm app',
@@ -45,12 +45,12 @@
             },
         }, {
             trigger: '.o_back_button',
-            // wait the warning message to be visible
+            // wait the the warning message to be visible
             extra_trigger: '.o_form_sheet_bg .fa-exclamation-triangle:not(.o_invisible_modifier)',
             content: 'Save the lead and exit to kanban',
             run: 'click',
         },{
             trigger: '.o_kanban_renderer',
-            isCheck: true,
         }
-    ]});
+    ]);
+});

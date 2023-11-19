@@ -1,8 +1,10 @@
 /** @odoo-module **/
 
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { _t } from "@web/core/l10n/translation";
-import { renderToElement } from "@web/core/utils/render";
+import publicWidget from 'web.public.widget';
+import core from 'web.core';
+
+var QWeb = core.qweb;
+var _t = core._t;
 
 /**
  * This Widget is responsible of displaying the question inputs when adding a new question or when updating an
@@ -33,7 +35,6 @@ var QuestionFormWidget = publicWidget.Widget.extend({
         this.sequence = options.sequence;
         this.slideId = options.slideId;
         this._super.apply(this, arguments);
-        this.rpc = this.bindService("rpc");
     },
 
     /**
@@ -88,7 +89,7 @@ var QuestionFormWidget = publicWidget.Widget.extend({
      * @private
      */
     _addAnswerLine: function (ev) {
-        $(ev.currentTarget).closest('.o_wslides_js_quiz_answer').after(renderToElement('slide.quiz.answer.line'));
+        $(ev.currentTarget).closest('.o_wslides_js_quiz_answer').after(QWeb.render('slide.quiz.answer.line'));
     },
 
     /**
@@ -151,7 +152,10 @@ var QuestionFormWidget = publicWidget.Widget.extend({
 
         if (this._isValidForm($form)) {
             var values = this._serializeForm($form);
-            var renderedQuestion = await this.rpc('/slides/slide/quiz/question_add_or_update', values);
+            var renderedQuestion = await this._rpc({
+                route: '/slides/slide/quiz/question_add_or_update',
+                params: values
+            });
 
             if (typeof renderedQuestion === 'object' && renderedQuestion.error) {
                 this.$('.o_wslides_js_quiz_validation_error')

@@ -3,16 +3,16 @@
 # 	* website_twitter
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:57+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -34,8 +34,15 @@ msgstr ""
 #. module: website_twitter
 #: model_terms:ir.ui.view,arch_db:website_twitter.res_config_settings_view_form
 msgid ""
-"<i class=\"oi oi-arrow-right\"/>\n"
-"                            Show me how to obtain the Twitter API key and Twitter API secret"
+"<i class=\"fa fa-arrow-right\"/>\n"
+"                                Show me how to obtain the Twitter API key and Twitter API secret"
+msgstr ""
+"<i class=\"fa fa-arrow-right\"/>\n"
+"                                Muéstrame cómo obtener la llave y el código para el API de Twitter"
+
+#. module: website_twitter
+#: model_terms:ir.ui.view,arch_db:website_twitter.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Twitter Roller</span>"
 msgstr ""
 
 #. module: website_twitter
@@ -71,7 +78,6 @@ msgid "API secret"
 msgstr "Secreto de la API"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -123,7 +129,6 @@ msgid "Get favorites from this screen name"
 msgstr "Obtener favoritos desde este nombre"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid "HTTP Error: Something is misconfigured"
@@ -140,13 +145,17 @@ msgid "ID"
 msgstr "ID"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid "Internet connection refused: We failed to reach a twitter server."
 msgstr ""
 "Conexión a Internet rechazada: no pudimos conectarnos con un servidor de "
 "Twitter."
+
+#. module: website_twitter
+#: model:ir.model.fields,field_description:website_twitter.field_website_twitter_tweet____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
 
 #. module: website_twitter
 #: model:ir.model.fields,field_description:website_twitter.field_website_twitter_tweet__write_uid
@@ -176,7 +185,6 @@ msgid ""
 msgstr ""
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/controllers/main.py:0
 #, python-format
 msgid ""
@@ -187,7 +195,6 @@ msgstr ""
 " en la configuración del sitio web (no tiene por qué ser el suyo)"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/controllers/main.py:0
 #, python-format
 msgid "Please set the Twitter API Key and Secret in the Website Settings."
@@ -196,14 +203,13 @@ msgstr ""
 "configuración del sitio web."
 
 #. module: website_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_twitter/static/src/js/website.twitter.editor.js:0
 #, python-format
 msgid "Reload"
 msgstr "Recargar"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -228,7 +234,6 @@ msgstr ""
 "No tiene porqué ser la misma que la de la clave de API."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -238,7 +243,6 @@ msgstr ""
 "solicitudes. Vuelva a intentarlo más tarde."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -250,7 +254,6 @@ msgstr ""
 "tarde."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -261,7 +264,6 @@ msgstr ""
 "acceso. Compruebe su clave secreta de la API de Twitter."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -272,7 +274,6 @@ msgstr ""
 " sin autenticación se consideran válidas y producirán esta respuesta."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid "There was no new data to return."
@@ -327,7 +328,7 @@ msgstr ""
 "https://apps.twitter.com/"
 
 #. module: website_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_twitter/static/src/xml/website.twitter.xml:0
 #, python-format
 msgid "Twitter Configuration"
@@ -339,17 +340,6 @@ msgid "Twitter Portal"
 msgstr ""
 
 #. module: website_twitter
-#: model_terms:ir.ui.view,arch_db:website_twitter.res_config_settings_view_form
-msgid "Twitter Roller"
-msgstr ""
-
-#. module: website_twitter
-#: model_terms:ir.ui.view,arch_db:website_twitter.website_twitter_snippet
-msgid "Twitter Scroller"
-msgstr "Panel de Twitter"
-
-#. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -360,14 +350,12 @@ msgstr ""
 "Twitter y su contraseña!"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid "Twitter is down or being upgraded."
 msgstr "Twitter está fuera de servicio o siendo actualizado."
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/models/res_config_settings.py:0
 #, python-format
 msgid ""
@@ -388,7 +376,6 @@ msgid "Twitter tutorial"
 msgstr "Tutorial de Twitter"
 
 #. module: website_twitter
-#. odoo-python
 #: code:addons/website_twitter/controllers/main.py:0
 #, python-format
 msgid ""
@@ -399,7 +386,7 @@ msgstr ""
 "agregue más o escoja un nombre diferente."
 
 #. module: website_twitter
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_twitter/static/src/xml/website.twitter.xml:0
 #, python-format
 msgid "Twitter's user"
@@ -407,6 +394,8 @@ msgstr "Usuario de Twitter"
 
 #. module: website_twitter
 #: model:ir.actions.server,name:website_twitter.ir_cron_twitter_actions_ir_actions_server
+#: model:ir.cron,cron_name:website_twitter.ir_cron_twitter_actions
+#: model:ir.cron,name:website_twitter.ir_cron_twitter_actions
 msgid "Twitter: Fetch new favorites"
 msgstr "Twitter: Buscar nuevos favoritos"
 

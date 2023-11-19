@@ -16,13 +16,13 @@
                 <group>
                     <group>
                         <field name="consult_type" widget="radio"/>
-                        <field name="number" readonly="consult_type == 'last'" force_save="1"/>
+                        <field name="number" attrs="{'readonly': [('consult_type', '=', 'last')]}" force_save="1"/>
                     </group>
                 </group>
                 <footer>
-                    <button string="Get Invoice Detail" name="button_confirm" type="object" class="oe_highlight" data-hotkey="q"/>
+                    <button string="Get Invoice Detail" name="button_confirm" type="object" class="oe_highlight" />
                     or
-                    <button string="Cancel" class="oe_link" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" class="oe_link" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>
@@ -30,6 +30,7 @@
 
     <record id="action_l10n_ar_afip_ws_consult" model="ir.actions.act_window">
         <field name="name">Consult invoice in AFIP</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">l10n_ar_afip.ws.consult</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

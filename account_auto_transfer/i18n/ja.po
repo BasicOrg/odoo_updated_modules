@@ -3,16 +3,18 @@
 # 	* account_auto_transfer
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
+# Noma Yuki, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Noma Yuki, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,27 +24,24 @@ msgstr ""
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "<span> to </span>"
-msgstr "<span> から以下へ： </span>"
-
-#. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_chart_template
-msgid "Account Chart Template"
-msgstr "勘定科目表テンプレート"
+msgstr "<span> to </span>"
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_transfer_model
 msgid "Account Transfer Model"
-msgstr "勘定科目移動モデル"
+msgstr "口座振替モデル"
 
 #. module: account_auto_transfer
 #: model:ir.model,name:account_auto_transfer.model_account_transfer_model_line
 msgid "Account Transfer Model Line"
-msgstr "勘定科目移動モデル明細"
+msgstr "口座振替モデル行"
 
 #. module: account_auto_transfer
 #: model:ir.actions.server,name:account_auto_transfer.ir_cron_auto_transfer_ir_actions_server
-msgid "Account automatic transfers: Perform transfers"
-msgstr "口座自動振替： 振替の実行"
+#: model:ir.cron,cron_name:account_auto_transfer.ir_cron_auto_transfer
+#: model:ir.cron,name:account_auto_transfer.ir_cron_auto_transfer
+msgid "Account automatic transfers : Perform transfers"
+msgstr "アカウントの自動転送：転送を実行する"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -54,14 +53,14 @@ msgstr "有効化"
 msgid ""
 "Adds a condition to only transfer the sum of the lines from the origin "
 "accounts that match these analytic accounts to the destination account"
-msgstr "これらの分析勘定と一致する元の勘定から、宛先勘定に明細合計のみを移動する条件を追加します"
+msgstr "これらの分析勘定に一致する元の勘定から宛先勘定に行の合計のみを転送する条件を追加します"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model_line__partner_ids
 msgid ""
 "Adds a condition to only transfer the sum of the lines from the origin "
 "accounts that match these partners to the destination account"
-msgstr "これらの取引先と一致する元の勘定から、宛先勘定に明細合計のみを移動する条件を追加します"
+msgstr "これらのパートナーに一致する元のアカウントから宛先のアカウントに行の合計のみを転送する条件を追加します"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__analytic_account_ids
@@ -71,79 +70,70 @@ msgstr "分析フィルター"
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Automated Transfer"
-msgstr "自動移動"
+msgstr "自動転送"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (%s%% from account %s)"
 msgstr "自動転送 (%s%% は右記アカウントより %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (-%s%%)"
 msgstr "自動転送 (-%s%%)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "Automatic Transfer (entries with analytic account(s): %s and partner(s): %s)"
-msgstr "自動移動 (分析用勘定: %s 及び取引先: %s)"
+msgstr "自動転送 (分析口座(群)のエントリ: %s とパートナー(群): %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with analytic account(s): %s)"
-msgstr "自動移動 (分析用勘定: %s)"
+msgstr "自動転送(分析口座(群)のエントリ: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (entries with partner(s): %s)"
-msgstr "自動移動 (取引先の仕訳: %s)"
+msgstr "自動転送(パートナー(群)のエントリ: %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "Automatic Transfer (from account %s with analytic account(s): %s and "
 "partner(s): %s)"
-msgstr "自動移動 (分析用勘定を持つ%sの勘定科目: %s 及び取引先: %s)"
+msgstr "自動転送(分析口座(群)を持つ%s のアカウント: %s およびパートナー(群): %s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with analytic account(s): %s)"
-msgstr "自動移動 (分析用勘定を持つ%sの勘定科目:%s)"
+msgstr "自動転送(分析口座(群)を持つアカウント%s:%s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (from account %s with partner(s): %s)"
-msgstr "自動移動 (取引先を持つ勘定科目%s :%s)"
+msgstr "自動転送(パートナー(群)を持つアカウント%s:%s)"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "Automatic Transfer (to account %s)"
-msgstr "自動移動 (勘定科目%s向け)"
+msgstr "自動転送(アカウント%s向け)"
 
 #. module: account_auto_transfer
 #: model:ir.actions.act_window,name:account_auto_transfer.transfer_model_action
 #: model:ir.ui.menu,name:account_auto_transfer.menu_auto_transfer
 msgid "Automatic Transfers"
-msgstr "自動移動"
+msgstr "自動転送"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__company_id
@@ -153,12 +143,12 @@ msgstr "会社"
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model__company_id
 msgid "Company related to this journal"
-msgstr "この仕訳と関係する会社"
+msgstr "この仕訳帳と関係する会社"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Compute Transfer"
-msgstr "移動を設定"
+msgstr "機械転送"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__create_uid
@@ -180,17 +170,17 @@ msgstr "説明"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__account_id
 msgid "Destination Account"
-msgstr "移動先の勘定科目"
+msgstr "宛先の勘定"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__line_ids
 msgid "Destination Accounts"
-msgstr "移動先の勘定科目"
+msgstr "目的の口座"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__journal_id
 msgid "Destination Journal"
-msgstr "移動先の仕訳"
+msgstr "相手先仕訳帳"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -200,7 +190,7 @@ msgstr "無効にする"
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__state__disabled
 msgid "Disabled"
-msgstr "無効にします"
+msgstr "無効"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__display_name
@@ -216,25 +206,18 @@ msgstr "頻度"
 #. module: account_auto_transfer
 #: model:ir.actions.act_window,name:account_auto_transfer.generated_transfers_action
 msgid "Generated Entries"
-msgstr "生成された記帳"
+msgstr "生成された入力"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__move_ids
 msgid "Generated Moves"
-msgstr "生成された移動"
+msgstr "生成された挙動"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__id
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__id
 msgid "ID"
 msgstr "ID"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "IFRS Automatic Transfers"
-msgstr "IFRS自動送金"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -247,9 +230,10 @@ msgid "Journal Entry"
 msgstr "仕訳"
 
 #. module: account_auto_transfer
-#: model:ir.model,name:account_auto_transfer.model_account_move_line
-msgid "Journal Item"
-msgstr "仕訳項目"
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model____last_update
+#: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__write_uid
@@ -269,16 +253,9 @@ msgid "Monthly"
 msgstr "月次"
 
 #. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Monthly IFRS rent expense transfer"
-msgstr "月額IFRS賃貸料振替"
-
-#. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__move_ids_count
 msgid "Move Ids Count"
-msgstr "移動ID数"
+msgstr "計上されたIDを移動"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -298,13 +275,13 @@ msgstr "名称"
 #. module: account_auto_transfer
 #: model:ir.model.constraint,message:account_auto_transfer.constraint_account_transfer_model_line_unique_account_by_transfer_model
 msgid "Only one account occurrence by transfer model"
-msgstr "移動モデルにおいての勘定科目は一つだけ"
+msgstr "転送モデルにおいてアカウントは1つのみ"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__account_ids
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Origin Accounts"
-msgstr "基の勘定科目"
+msgstr "基のアカウント"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_bank_statement_line__transfer_model_id
@@ -316,7 +293,7 @@ msgstr "発信元のモデル"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__partner_ids
 msgid "Partner Filter"
-msgstr "取引先フィルター"
+msgstr "パートナーフィルター"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__percent
@@ -326,19 +303,19 @@ msgstr "パーセント"
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Percent (%)"
-msgstr "パーセント (%)"
+msgstr "確率 (%)"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__percent_is_readonly
 msgid "Percent Is Readonly"
-msgstr "パーセントは読取専用です"
+msgstr "パーセントは読み取り専用です"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,help:account_auto_transfer.field_account_transfer_model_line__percent
 msgid ""
 "Percentage of the sum of lines from the origin accounts will be transferred "
 "to the destination account"
-msgstr "元の勘定科目明細の合計の一定パーセントが移動先の勘定科目に移動されます"
+msgstr "元のアカウントからの行の合計のパーセンテージが宛先のアカウントに転送されます"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
@@ -348,17 +325,17 @@ msgstr "期間"
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__frequency__quarter
 msgid "Quarterly"
-msgstr "四半期毎に"
+msgstr "四半期ごと"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__state__in_progress
 msgid "Running"
-msgstr "実行中"
+msgstr "契約実行中"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__sequence
 msgid "Sequence"
-msgstr "シーケンス"
+msgstr "付番"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__date_start
@@ -368,7 +345,7 @@ msgstr "開始日"
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__state
 msgid "State"
-msgstr "都道府県・州"
+msgstr "都道府県/州"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__date_stop
@@ -376,49 +353,45 @@ msgid "Stop Date"
 msgstr "停止日"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The analytic filter %s is duplicated"
-msgstr "分析フィルタ%sが重複しています"
+msgstr "分析フィルター%sが重複しています"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid ""
 "The partner filter %s in combination with the analytic filter %s is "
 "duplicated"
-msgstr "取引先フィルタ%sと分析フィルタ%sの組み合わせは重複しています"
+msgstr "パートナーフィルター%sと分析フィルター%sの組み合わせは重複しています"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
 msgid "The partner filter %s is duplicated"
-msgstr "取引先フィルタ%sは重複しています"
+msgstr "パートナーフィルター%sは重複しています"
 
 #. module: account_auto_transfer
-#. odoo-python
 #: code:addons/account_auto_transfer/models/transfer_model.py:0
 #, python-format
-msgid "The total percentage (%s) should be less or equal to 100!"
-msgstr "合計パーセンテージ (%s) は100または100以下である必要があります。"
+msgid "The total percentage (%s) should be less or equal to 100 !"
+msgstr "パーセント合計(%s)は100以下である必要があります!"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model__total_percent
 msgid "Total Percent"
-msgstr "パーセント合計"
+msgstr "比率合計"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields,field_description:account_auto_transfer.field_account_transfer_model_line__transfer_model_id
 msgid "Transfer Model"
-msgstr "移動モデル"
+msgstr "転送モデル"
 
 #. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "Transfers"
-msgstr "移動"
+msgstr "運送"
 
 #. module: account_auto_transfer
 #: model:ir.model.fields.selection,name:account_auto_transfer.selection__account_transfer_model__frequency__year
@@ -426,20 +399,6 @@ msgid "Yearly"
 msgstr "年次"
 
 #. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/demo/account_demo.py:0
-#, python-format
-msgid "Yearly liabilites auto transfers"
-msgstr "月額債務自動振替"
-
-#. module: account_auto_transfer
-#. odoo-python
-#: code:addons/account_auto_transfer/models/account_move_line.py:0
-#, python-format
-msgid "You cannot set Tax on Automatic Transfer's entries."
-msgstr "自動送金仕訳に税を設定することはできません。"
-
-#. module: account_auto_transfer
 #: model_terms:ir.ui.view,arch_db:account_auto_transfer.view_transfer_model_form
 msgid "e.g. Monthly Expense Transfer"
-msgstr "例: 月次経費移動"
+msgstr ""

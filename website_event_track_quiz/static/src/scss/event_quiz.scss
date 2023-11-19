@@ -18,6 +18,21 @@ $o-wslides-fs-side-width: 300px;
 }
 
 .o_quiz_main {
+    background-color: $o-wslides-color-bg;
+
+    .o_wslides_home_nav {
+        top: -40px;
+
+        @include media-breakpoint-up(lg) {
+            font-size: 1rem;
+
+            .o_wslides_nav_navbar_right {
+                padding-left: $spacer;
+                margin-left: auto;
+                border-left: 1px solid $border-color;
+            }
+        }
+    }
 
     .o_quiz_js_quiz {
         i.o_quiz_js_quiz_icon {
@@ -31,7 +46,7 @@ $o-wslides-fs-side-width: 300px;
 
     .o_quiz_js_quiz_question {
         .list-group-item  {
-            @include font-size(1rem);
+            font-size: 1rem;
 
             input:checked + i.fa-circle {
                 color: $primary !important;

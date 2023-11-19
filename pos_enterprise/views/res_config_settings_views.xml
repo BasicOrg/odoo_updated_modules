@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('pos_iot_config')]" position="replace">
-                <div class="content-group pos_iot_config" invisible="not pos_is_posbox">
+                <div class="content-group pos_iot_config" attrs="{'invisible': [('pos_is_posbox', '=', False)]}">
                     <field name="pos_iface_print_via_proxy" invisible="1"/>
                     <div class="mt16" id="btn_use_iot">
                         <div class="text-warning mt16 mb4">

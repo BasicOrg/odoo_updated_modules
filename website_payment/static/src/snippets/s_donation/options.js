@@ -1,8 +1,7 @@
 /** @odoo-module **/
 
-import { renderToElement } from "@web/core/utils/render";
-import options from '@web_editor/js/editor/snippets.options';
-import { _t } from "@web/core/l10n/translation";
+import {_t, qweb} from 'web.core';
+import options from 'web_editor.snippets.options';
 
 options.registry.Donation = options.Class.extend({
     /**
@@ -98,7 +97,7 @@ options.registry.Donation = options.Class.extend({
         const valueList = JSON.parse(value);
         const donationAmounts = [];
         delete this.$target[0].dataset.donationAmounts;
-        valueList.forEach((value) => {
+        _.each(valueList, value => {
             donationAmounts.push(value.display_name);
         });
         this.$target[0].dataset.donationAmounts = JSON.stringify(donationAmounts);
@@ -234,7 +233,7 @@ options.registry.Donation = options.Class.extend({
         if (this.$target[0].dataset.descriptions) {
             const $descriptions = this.$target.find('#s_donation_description_inputs > input');
             const $tableEl = this.$el.find('we-list table');
-            $tableEl.find("tr").toArray().forEach((trEl, i) => {
+            _.each($tableEl.find('tr'), (trEl, i) => {
                 const $inputAmount = $(trEl).find('td').first();
                 $inputAmount.addClass('w-25');
                 const tdEl = document.createElement('td');
@@ -257,7 +256,7 @@ options.registry.Donation = options.Class.extend({
         const descriptionInputs = this.$target.find('#s_donation_description_inputs');
         descriptionInputs.empty();
         const descriptions = this.$el.find('we-list input[type=text]');
-        descriptions.toArray().forEach((description) => {
+        _.each(descriptions, description => {
             const inputEl = document.createElement('input');
             inputEl.type = 'hidden';
             inputEl.classList.add('o_translatable_input_hidden', 'd-block', 'mb-1', 'w-100');
@@ -281,7 +280,7 @@ options.registry.Donation = options.Class.extend({
         }
         if (rebuild) {
             if (layout === "slider" && !$slider.length) {
-                const sliderTemplate = $(renderToElement('website_payment.donation.slider', {
+                const sliderTemplate = $(qweb.render('website_payment.donation.slider', {
                     minimum_amount: this.$target[0].dataset.minimumAmount,
                     maximum_amount: this.$target[0].dataset.maximumAmount,
                     slider_step: this.$target[0].dataset.sliderStep,
@@ -304,7 +303,7 @@ options.registry.Donation = options.Class.extend({
                     });
                 }
             }
-            const $prefilledButtons = $(renderToElement(`website_payment.donation.prefilledButtons${showDescriptions ? 'Descriptions' : ''}`, {
+            const $prefilledButtons = $(qweb.render(`website_payment.donation.prefilledButtons${showDescriptions ? 'Descriptions' : ''}`, {
                 prefilled_buttons: donationAmounts,
                 custom_input: layout === "freeAmount",
                 minimum_amount: this.$target[0].dataset.minimumAmount,

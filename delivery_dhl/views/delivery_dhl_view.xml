@@ -8,31 +8,31 @@
     <field name="arch" type="xml">
         <xpath expr="//page[@name='destination']" position='before'>
             <page string="DHL Configuration" name="dhl_configuration"
-                 invisible="delivery_type != 'dhl'">
+                 attrs="{'invisible': [('delivery_type', '!=', 'dhl')]}">
                 <group>
                     <group>
-                        <field name="dhl_SiteID" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_password" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_account_number" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_region_code" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_product_code" required="delivery_type == 'dhl'"/>
+                        <field name="dhl_SiteID" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_password" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_account_number" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_region_code" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_product_code" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
                     </group>
                     <group>
-                        <field name="dhl_default_package_type_id" required="delivery_type == 'dhl'" domain="[('package_carrier_type', '=', 'dhl')]"/>
-                        <field name="dhl_package_weight_unit" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_package_dimension_unit" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_label_image_format" string="Label Format" required="delivery_type == 'dhl'"/>
-                        <field name="dhl_label_template" required="delivery_type == 'dhl'"/>
+                        <field name="dhl_default_package_type_id" attrs="{'required': [('delivery_type', '=', 'dhl')]}" domain="[('package_carrier_type', '=', 'dhl')]"/>
+                        <field name="dhl_package_weight_unit" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_package_dimension_unit" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_label_image_format" string="Label Format" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
+                        <field name="dhl_label_template" attrs="{'required': [('delivery_type', '=', 'dhl')]}"/>
                     </group>
                     <group string="Options">
                         <field name="can_generate_return" invisible="1"/>
-                        <field name="return_label_on_delivery" invisible="not can_generate_return"/>
-                        <field name="get_return_label_from_portal" invisible="not return_label_on_delivery"/>
+                        <field name="return_label_on_delivery" attrs="{'invisible': [('can_generate_return', '=', False)]}"/>
+                        <field name="get_return_label_from_portal" attrs="{'invisible': [('return_label_on_delivery', '=', False)]}"/>
                         <field name="dhl_dutiable"/>
-                        <field name="dhl_duty_payment" string='Duties paid by' invisible="not dhl_dutiable" required="delivery_type == 'dhl'"/>
+                        <field name="dhl_duty_payment" string='Duties paid by' attrs="{'required': [('delivery_type', '=', 'dhl')], 'invisible': [('dhl_dutiable', '=', False)]}"/>
                     </group>
                     <group string="Custom Data" name="dhl_customs" groups="base.group_no_one">
-                        <field name="dhl_custom_data_request" colspan="2" nolabel="1" placeholder="'rate': {}, 'ship': {}, 'return': {}"/>
+                        <field name="dhl_custom_data_request" nolabel="1" placeholder="'rate': {}, 'ship': {}, 'return': {}"/>
                     </group>
                 </group>
             </page>

@@ -6,9 +6,10 @@
         <field name="model">calendar.event</field>
         <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='categ_ids']" position="after">
-                <field name="appointment_resource_ids" widget="many2many_tags" invisible="not appointment_resource_ids" options="{'icon': 'fa fa-cubes'}"/>
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="banner_route">/onboarding/appointment</attribute>
             </xpath>
         </field>
     </record>
+
 </odoo>

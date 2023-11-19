@@ -7,5 +7,3 @@ from . import consolidation_coa
 from . import consolidation_period
 from . import consolidation_journal
 from . import consolidation_rate
-from . import onboarding_onboarding
-from . import onboarding_onboarding_step

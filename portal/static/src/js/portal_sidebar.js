@@ -1,10 +1,12 @@
-/** @odoo-module **/
+odoo.define('portal.PortalSidebar', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { deserializeDateTime } from "@web/core/l10n/dates";
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+var time = require('web.time');
+var session = require('web.session');
 
-const { DateTime } = luxon;
+var _t = core._t;
 
 var PortalSidebar = publicWidget.Widget.extend({
     /**
@@ -26,23 +28,25 @@ var PortalSidebar = publicWidget.Widget.extend({
      * @private
      */
     _setDelayLabel: function () {
-        var $sidebarTimeago = this.$el.find('.o_portal_sidebar_timeago').toArray();
-        $sidebarTimeago.forEach((el) => {
-            var dateTime = deserializeDateTime($(el).attr('datetime')),
-                today = DateTime.now().startOf('day'),
-                diff = dateTime.diff(today).as("days"),
+        var $sidebarTimeago = this.$el.find('.o_portal_sidebar_timeago');
+        _.each($sidebarTimeago, function (el) {
+            var dateTime = moment(time.auto_str_to_date($(el).attr('datetime'))),
+                today = moment().startOf('day'),
+                diff = dateTime.diff(today, 'days', true),
                 displayStr;
 
+            session.is_bound.then(function (){
                 if (diff === 0) {
                     displayStr = _t('Due today');
                 } else if (diff > 0) {
                     // Workaround: force uniqueness of these two translations. We use %1d because the string
                     // with %d is already used in mail and mail's translations are not sent to the frontend.
-                    displayStr = _t('Due in %s days', Math.abs(diff).toFixed(1));
+                    displayStr = _.str.sprintf(_t('Due in %1d days'), Math.abs(diff));
                 } else {
-                    displayStr = _t('%s days overdue', Math.abs(diff).toFixed(1));
+                    displayStr = _.str.sprintf(_t('%1d days overdue'), Math.abs(diff));
                 }
                 $(el).text(displayStr);
+            });
         });
     },
     /**
@@ -50,6 +54,12 @@ var PortalSidebar = publicWidget.Widget.extend({
      * @param {string} href
      */
     _printIframeContent: function (href) {
+        // due to this issue : https://bugzilla.mozilla.org/show_bug.cgi?id=911444
+        // open a new window with pdf for print in Firefox (in other system: http://printjs.crabbly.com)
+        if ($.browser.mozilla) {
+            window.open(href, '_blank');
+            return;
+        }
         if (!this.printContent) {
             this.printContent = $('<iframe id="print_iframe_content" src="' + href + '" style="display:none"></iframe>');
             this.$el.append(this.printContent);
@@ -61,4 +71,5 @@ var PortalSidebar = publicWidget.Widget.extend({
         }
     },
 });
-export default PortalSidebar;
+return PortalSidebar;
+});

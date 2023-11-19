@@ -80,11 +80,9 @@ class DemoSocialStreamPost(models.Model):
 
     # TWITTER
 
-    def _twitter_comment_add(self, stream, comment_id, message, attachment):
+    def _twitter_comment_add(self, stream, comment_id, message):
         """ Returns a fake comment containing the passed 'message' """
-        comment = self._get_new_comment_demo(message)
-        comment['in_reply_to_tweet_id'] = comment_id
-        return comment
+        return self._get_new_comment_demo(message)
 
     def _twitter_comment_fetch(self, page=1):
         return {

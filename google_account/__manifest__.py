@@ -9,5 +9,6 @@ The module adds google user in res user.
 ========================================
 """,
     'depends': ['base_setup'],
+    'data': [],
     'license': 'LGPL-3',
 }

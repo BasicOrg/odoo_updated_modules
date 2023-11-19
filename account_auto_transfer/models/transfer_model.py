@@ -21,10 +21,7 @@ class TransferModel(models.Model):
         return company.compute_fiscalyear_dates(date.today())['date_from'] if company else None
 
     def _get_default_journal(self):
-        return self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(self.env.company),
-            ('type', '=', 'general'),
-        ], limit=1)
+        return self.env['account.journal'].search([('company_id', '=', self.env.company.id), ('type', '=', 'general')], limit=1)
 
     name = fields.Char(required=True)
     journal_id = fields.Many2one('account.journal', required=True, string="Destination Journal", default=_get_default_journal)
@@ -33,7 +30,7 @@ class TransferModel(models.Model):
     date_stop = fields.Date(string="Stop Date", required=False)
     frequency = fields.Selection([('month', 'Monthly'), ('quarter', 'Quarterly'), ('year', 'Yearly')],
                                  required=True, default='month')
-    account_ids = fields.Many2many('account.account', 'account_model_rel', string="Origin Accounts", domain="[('account_type', '!=', 'off_balance')]")
+    account_ids = fields.Many2many('account.account', 'account_model_rel', string="Origin Accounts", domain="[('is_off_balance', '=', False)]")
     line_ids = fields.One2many('account.transfer.model.line', 'transfer_model_id', string="Destination Accounts")
     move_ids = fields.One2many('account.move', 'transfer_model_id', string="Generated Moves")
     move_ids_count = fields.Integer(compute="_compute_move_ids_count")
@@ -61,7 +58,7 @@ class TransferModel(models.Model):
         """ Check that the total percent is not bigger than 100.0 """
         for record in self:
             if not (0 < record.total_percent <= 100.0):
-                raise ValidationError(_('The total percentage (%s) should be less or equal to 100!', record.total_percent))
+                raise ValidationError(_('The total percentage (%s) should be less or equal to 100 !', record.total_percent))
 
     @api.constrains('line_ids')
     def _check_line_ids_filters(self):
@@ -154,7 +151,7 @@ class TransferModel(models.Model):
             ('account_id', 'in', self.account_ids.ids),
             ('date', '>=', start_date),
             ('date', '<=', end_date),
-            ('parent_state', '=', 'posted')
+            ('move_id.state', '=', 'posted')
         ]
 
     # PROTECTEDS
@@ -169,16 +166,16 @@ class TransferModel(models.Model):
         """
         self.ensure_one()
         current_move = self._get_move_for_period(end_date)
+        if current_move is None:
+            current_move = self.env['account.move'].create({
+                'ref': '%s: %s --> %s' % (self.name, str(start_date), str(end_date)),
+                'date': end_date,
+                'journal_id': self.journal_id.id,
+                'transfer_model_id': self.id,
+            })
+
         line_values = self._get_auto_transfer_move_line_values(start_date, end_date)
         if line_values:
-            if current_move is None:
-                current_move = self.env['account.move'].create({
-                    'ref': '%s: %s --> %s' % (self.name, str(start_date), str(end_date)),
-                    'date': end_date,
-                    'journal_id': self.journal_id.id,
-                    'transfer_model_id': self.id,
-                })
-
             line_ids_values = [(0, 0, value) for value in line_values]
             # unlink all old line ids
             current_move.line_ids.unlink()
@@ -208,7 +205,7 @@ class TransferModel(models.Model):
         # Get last generated move date if any (to know when to start)
         last_move_domain = [('transfer_model_id', '=', self.id), ('state', '=', 'posted'), ('company_id', '=', self.company_id.id)]
         move_ids = self.env['account.move'].search(last_move_domain, order='date desc', limit=1)
-        return (move_ids[0].date + relativedelta(days=1)) if move_ids else self.date_start
+        return move_ids[0].date if move_ids else self.date_start
 
     def _get_next_move_date(self, date):
         """ Compute the following date of automated transfer move, based on a date and the frequency """
@@ -256,11 +253,8 @@ class TransferModel(models.Model):
         domain = self._get_move_lines_base_domain(start_date, end_date)
         domain = expression.AND([domain, [('partner_id', 'not in', self.line_ids.partner_ids.ids), ]])
         query = self.env['account.move.line']._search(domain)
-        if self.line_ids.analytic_account_ids.ids:
-            query.add_where(
-                '(NOT analytic_distribution ?| array[%s] OR analytic_distribution IS NULL)',
-                [[str(account_id) for account_id in self.line_ids.analytic_account_ids.ids]],
-            )
+        query.order = None
+        self.line_ids.analytic_account_ids.ids and query.add_where('(NOT analytic_distribution ?| array[%s] OR analytic_distribution IS NULL)', [[str(account_id) for account_id in self.line_ids.analytic_account_ids.ids]])
         query_string, query_param = query.select('SUM(balance) AS balance', 'account_id')
         query_string = f"{query_string} GROUP BY account_id"
         self._cr.execute(query_string, query_param)
@@ -337,7 +331,7 @@ class TransferModelLine(models.Model):
 
     transfer_model_id = fields.Many2one('account.transfer.model', string="Transfer Model", required=True)
     account_id = fields.Many2one('account.account', string="Destination Account", required=True,
-                                 domain="[('account_type', '!=', 'off_balance')]")
+                                 domain="[('is_off_balance', '=', False)]")
     percent = fields.Float(string="Percent", required=True, default=100, help="Percentage of the sum of lines from the origin accounts will be transferred to the destination account")
     analytic_account_ids = fields.Many2many('account.analytic.account', string='Analytic Filter', help="Adds a condition to only transfer the sum of the lines from the origin accounts that match these analytic accounts to the destination account")
     partner_ids = fields.Many2many('res.partner', string='Partner Filter', help="Adds a condition to only transfer the sum of the lines from the origin accounts that match these partners to the destination account")
@@ -376,10 +370,8 @@ class TransferModelLine(models.Model):
 
             query = self.env['account.move.line']._search(domain)
             if transfer_model_line.analytic_account_ids:
-                query.add_where(
-                    'account_move_line.analytic_distribution ?| array[%s]',
-                    [[str(account_id) for account_id in transfer_model_line.analytic_account_ids.ids]],
-                )
+                query.add_where('account_move_line.analytic_distribution ?| array[%s]', [[str(account_id) for account_id in transfer_model_line.analytic_account_ids.ids]])
+            query.order = None
             query_string, query_param = query.select('array_agg("account_move_line".id) AS ids', 'SUM(balance) AS balance', 'account_id')
             query_string = f"{query_string} GROUP BY account_id"
             self._cr.execute(query_string, query_param)
@@ -450,11 +442,11 @@ class TransferModelLine(models.Model):
         anal_accounts = self.analytic_account_ids and ', '.join(self.analytic_account_ids.mapped('name'))
         partners = self.partner_ids and ', '.join(self.partner_ids.mapped('name'))
         if anal_accounts and partners:
-            name = _("Automatic Transfer (entries with analytic account(s): %s and partner(s): %s)", anal_accounts, partners)
+            name = _("Automatic Transfer (entries with analytic account(s): %s and partner(s): %s)") % (anal_accounts, partners)
         elif anal_accounts:
-            name = _("Automatic Transfer (entries with analytic account(s): %s)", anal_accounts)
+            name = _("Automatic Transfer (entries with analytic account(s): %s)") % (anal_accounts,)
         elif partners:
-            name = _("Automatic Transfer (entries with partner(s): %s)", partners)
+            name = _("Automatic Transfer (entries with partner(s): %s)") % (partners,)
         else:
             name = _("Automatic Transfer (to account %s)", self.account_id.code)
         return {
@@ -481,13 +473,13 @@ class TransferModelLine(models.Model):
         anal_accounts = self.analytic_account_ids and ', '.join(self.analytic_account_ids.mapped('name'))
         partners = self.partner_ids and ', '.join(self.partner_ids.mapped('name'))
         if anal_accounts and partners:
-            name = _("Automatic Transfer (from account %s with analytic account(s): %s and partner(s): %s)", origin_account.code, anal_accounts, partners)
+            name = _("Automatic Transfer (from account %s with analytic account(s): %s and partner(s): %s)") % (origin_account.code, anal_accounts, partners)
         elif anal_accounts:
-            name = _("Automatic Transfer (from account %s with analytic account(s): %s)", origin_account.code, anal_accounts)
+            name = _("Automatic Transfer (from account %s with analytic account(s): %s)") % (origin_account.code, anal_accounts)
         elif partners:
-            name = _("Automatic Transfer (from account %s with partner(s): %s)", origin_account.code, partners)
+            name = _("Automatic Transfer (from account %s with partner(s): %s)") % (origin_account.code, partners,)
         else:
-            name = _("Automatic Transfer (%s%% from account %s)", self.percent, origin_account.code)
+            name = _("Automatic Transfer (%s%% from account %s)") % (self.percent, origin_account.code)
         return {
             'name': name,
             'account_id': self.account_id.id,

@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 from lxml import etree
 
 from odoo.fields import Date
+from odoo.modules.module import get_module_resource
 from odoo.addons.hr_payroll_account.tests.test_hr_payroll_account import TestHrPayrollAccountCommon
 from odoo.tests import common, tagged
-from odoo.tools.misc import file_path
 
 
 @tagged('post_install', '-at_install')
@@ -28,7 +28,7 @@ class TestPayrollSEPACreditTransfer(TestHrPayrollAccountCommon):
 
         cls.res_partner_bank = cls.env['res.partner.bank'].create({
             'acc_number': 'BE32707171912447',
-            'partner_id': cls.work_contact.id,
+            'partner_id': cls.private_address.id,
             'acc_type': 'bank',
             'bank_id': cls.bank.id,
         })
@@ -50,8 +50,8 @@ class TestPayrollSEPACreditTransfer(TestHrPayrollAccountCommon):
         })
 
         # Get a pain.001.001.03 schema validator
-        schema_file_path = file_path('account_sepa/schemas/pain.001.001.03.xsd')
-        cls.xmlschema = etree.XMLSchema(etree.parse(schema_file_path))
+        schema_file_path = get_module_resource('account_sepa', 'schemas', 'pain.001.001.03.xsd')
+        cls.xmlschema = etree.XMLSchema(etree.parse(open(schema_file_path)))
 
     def test_00_hr_payroll_account_sepa(self):
         """ Checking the process of payslip when you create a SEPA payment. """

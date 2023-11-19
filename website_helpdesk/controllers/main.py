@@ -13,10 +13,7 @@ from odoo.addons.website.controllers import form
 class WebsiteHelpdesk(http.Controller):
 
     def get_helpdesk_team_data(self, team, search=None):
-        return {
-            'team': team,
-            'main_object': team,
-        }
+        return {'team': team}
 
     @http.route(['/helpdesk', '/helpdesk/<model("helpdesk.team"):team>'], type='http', auth="public", website=True, sitemap=True)
     def website_helpdesk_teams(self, team=None, **kwargs):
@@ -37,13 +34,12 @@ class WebsiteHelpdesk(http.Controller):
 
         result = self.get_helpdesk_team_data(team or teams[0], search=search)
         result['multiple_teams'] = len(teams) > 1
+        if not request.env.user._is_public():
+            result['partner'] = request.env.user.partner_id
         return request.render("website_helpdesk.team", result)
 
     def _get_knowledge_base_values(self, team):
-        return {
-            'team': team,
-            'main_object': team,
-        }
+        return {'team': team}
 
     @http.route(['/helpdesk/<model("helpdesk.team"):team>/knowledgebase'], type='http', auth="public", website=True, sitemap=True)
     def website_helpdesk_knowledge_base(self, team, **kwargs):
@@ -127,10 +123,7 @@ class WebsiteForm(form.WebsiteForm):
     def _handle_website_form(self, model_name, **kwargs):
         email = request.params.get('partner_email')
         if email:
-            if request.env.user.email == email:
-                partner = request.env.user.partner_id
-            else:
-                partner = request.env['res.partner'].sudo().search([('email', '=', email)], limit=1)
+            partner = request.env['res.partner'].sudo().search([('email', '=', email)], limit=1)
             if not partner:
                 partner = request.env['res.partner'].sudo().create({
                     'email': email,

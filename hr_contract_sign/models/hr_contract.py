@@ -12,15 +12,6 @@ class HrContract(models.Model):
     sign_request_ids = fields.Many2many('sign.request', string='Requested Signatures')
     sign_request_count = fields.Integer(compute='_compute_sign_request_count')
 
-    def write(self, vals):
-        res = super().write(vals)
-        if vals.get('state') == 'cancel':
-            open_request_ids = self.sign_request_ids.filtered_domain([('state', '=', 'sent')])
-            open_request_ids.cancel()
-            for sign_request in open_request_ids:
-                sign_request.message_post(body=_("This sign request has been canceled due to the cancellation of the related contract."))
-        return res
-
     @api.depends('sign_request_ids')
     def _compute_sign_request_count(self):
         for contract in self:
@@ -44,13 +35,3 @@ class HrContract(models.Model):
             'res_model': 'sign.request',
             'domain': [('id', 'in', self.sign_request_ids.ids)]
         }
-
-    def action_signature_request_wizard(self):
-        self.ensure_one()
-        action = self.env['ir.actions.actions']._for_xml_id('hr_contract_sign.sign_contract_wizard_action')
-        action['context'] = {
-            'active_id': self.id,
-            'active_model': 'hr.contract',
-        }
-
-        return action

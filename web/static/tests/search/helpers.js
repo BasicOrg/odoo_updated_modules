@@ -1,6 +1,5 @@
 /** @odoo-module **/
 
-import { Component, xml } from "@odoo/owl";
 import { makeTestEnv } from "@web/../tests/helpers/mock_env";
 import {
     click,
@@ -10,38 +9,26 @@ import {
     mouseEnter,
     triggerEvent,
 } from "@web/../tests/helpers/utils";
-import { commandService } from "@web/core/commands/command_service";
-import { dialogService } from "@web/core/dialog/dialog_service";
-import { fieldService } from "@web/core/field_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { notificationService } from "@web/core/notifications/notification_service";
 import { ormService } from "@web/core/orm_service";
-import { popoverService } from "@web/core/popover/popover_service";
 import { registry } from "@web/core/registry";
-import { CustomFavoriteItem } from "@web/search/custom_favorite_item/custom_favorite_item";
+import { CustomFavoriteItem } from "@web/search/favorite_menu/custom_favorite_item";
 import { WithSearch } from "@web/search/with_search/with_search";
 import { getDefaultConfig } from "@web/views/view";
 import { viewService } from "@web/views/view_service";
 import { actionService } from "@web/webclient/actions/action_service";
-import { MainComponentsContainer } from "@web/core/main_components_container";
-import { nameService } from "@web/core/name_service";
-import { datetimePickerService } from "@web/core/datetime/datetimepicker_service";
 
+const { Component, xml } = owl;
 const serviceRegistry = registry.category("services");
 const favoriteMenuRegistry = registry.category("favoriteMenu");
 
 export function setupControlPanelServiceRegistry() {
     serviceRegistry.add("action", actionService);
-    serviceRegistry.add("dialog", dialogService);
-    serviceRegistry.add("field", fieldService);
     serviceRegistry.add("hotkey", hotkeyService);
-    serviceRegistry.add("name", nameService);
     serviceRegistry.add("notification", notificationService);
     serviceRegistry.add("orm", ormService);
-    serviceRegistry.add("popover", popoverService);
     serviceRegistry.add("view", viewService);
-    serviceRegistry.add("command", commandService);
-    serviceRegistry.add("datetime_picker", datetimePickerService);
 }
 
 export function setupControlPanelFavoriteMenuRegistry() {
@@ -72,28 +59,24 @@ export async function makeWithSearch(params) {
     class Parent extends Component {
         setup() {
             this.withSearchProps = props;
+            this.componentProps = componentProps;
         }
-
-        getProps(search) {
-            const props = Object.assign({}, componentProps, {
-                context: search.context,
-                domain: search.domain,
-                groupBy: search.groupBy,
-                orderBy: search.orderBy,
-                comparison: search.comparison,
-                display: Object.assign({}, search.display, componentProps.display),
-            });
-            return filterPropsForComponent(params.Component, props);
+        getDisplay(display) {
+            return Object.assign({}, display, componentProps.display);
         }
     }
-
     Parent.template = xml`
         <WithSearch t-props="withSearchProps" t-slot-scope="search">
-            <Component t-props="getProps(search)"/>
-        </WithSearch>
-        <MainComponentsContainer />
-    `;
-    Parent.components = { Component: params.Component, WithSearch, MainComponentsContainer };
+            <Component
+                t-props="componentProps"
+                context="search.context"
+                domain="search.domain"
+                groupBy="search.groupBy"
+                orderBy="search.orderBy"
+                comparison="search.comparison"
+                display="getDisplay(search.display)"/>
+        </WithSearch>`;
+    Parent.components = { Component: params.Component, WithSearch };
 
     const env = await makeTestEnv({ serverData, mockRPC });
     const searchEnv = Object.assign(Object.create(env), { config });
@@ -105,40 +88,6 @@ export async function makeWithSearch(params) {
     return component;
 }
 
-/** This function is aim to be used only in the tests.
- * It will filter the props that are needed by the Component.
- * This is to avoid errors of props validation. This occurs for example, on ControlPanel tests.
- * In production, View use WithSearch for the Controllers, and the Layout send only the props that
- * need to the ControlPanel.
- *
- * @param {Component} Component
- * @param {Object} props
- * @returns {Object} filtered props
- */
-function filterPropsForComponent(Component, props) {
-    // This if, can be removed once all the Components have the props defined
-    if (Component.props) {
-        let componentKeys = null;
-        if (Component.props instanceof Array) {
-            componentKeys = Component.props.map((x) => x.replace("?", ""));
-        } else {
-            componentKeys = Object.keys(Component.props);
-        }
-        if (componentKeys.includes("*")) {
-            return props;
-        } else {
-            return Object.keys(props)
-                .filter((k) => componentKeys.includes(k))
-                .reduce((o, k) => {
-                    o[k] = props[k];
-                    return o;
-                }, {});
-        }
-    } else {
-        return props;
-    }
-}
-
 function getUniqueChild(node) {
     return Object.values(node.children)[0];
 }
@@ -147,7 +96,7 @@ function getNode(target) {
     return target instanceof Component ? target.el : target;
 }
 
-export function findItem(target, selector, finder = 0) {
+function findItem(target, selector, finder = 0) {
     const el = getNode(target);
     const elems = [...el.querySelectorAll(selector)];
     if (Number.isInteger(finder)) {
@@ -198,36 +147,90 @@ export function getMenuItemTexts(target) {
     return [...el.querySelectorAll(`.dropdown-menu .o_menu_item`)].map((e) => e.innerText.trim());
 }
 
-export function getVisibleButtons(el) {
-    return [
-        ...$(el).find(
-            [
-                "div.o_control_panel_breadcrumbs button:visible", // button in the breadcrumbs
-                "div.o_control_panel_actions button:visible", // buttons for list selection
-            ].join(",")
-        ),
-    ];
+export function getButtons(el) {
+    return [...el.querySelector(`div.o_cp_bottom div.o_cp_buttons`).children];
 }
 
 /** Filter menu */
 
-export async function openAddCustomFilterDialog(el) {
-    await click(findItem(el, `.o_filter_menu .o_menu_item.o_add_custom_filter`));
+export async function toggleFilterMenu(el) {
+    await click(findItem(el, `.o_filter_menu button.dropdown-toggle`));
+}
+
+export async function toggleAddCustomFilter(el) {
+    await mouseEnter(findItem(el, `.o_add_custom_filter_menu .dropdown-toggle`));
+}
+
+export async function editConditionField(el, index, fieldName) {
+    const condition = findItem(el, `.o_filter_condition`, index);
+    const select = findItem(condition, "select", 0);
+    select.value = fieldName;
+    await triggerEvent(select, null, "change");
+}
+
+export async function editConditionOperator(el, index, operator) {
+    const condition = findItem(el, `.o_filter_condition`, index);
+    const select = findItem(condition, "select", 1);
+    select.value = operator;
+    await triggerEvent(select, null, "change");
+}
+
+export async function editConditionValue(el, index, value, valueIndex = 0) {
+    const condition = findItem(el, `.o_filter_condition`, index);
+    const target = findItem(
+        condition,
+        ".o_generator_menu_value input,.o_generator_menu_value select",
+        valueIndex
+    );
+    target.value = value;
+    await triggerEvent(target, null, "change");
+}
+
+export async function applyFilter(el) {
+    await click(findItem(el, `.o_add_custom_filter_menu .dropdown-menu button.o_apply_filter`));
+}
+
+export async function addCondition(el) {
+    await click(findItem(el, `.o_add_custom_filter_menu .dropdown-menu button.o_add_condition`));
+}
+
+export async function removeCondition(el, index) {
+    const condition = findItem(el, `.o_filter_condition`, index);
+    await click(findItem(condition, ".o_generator_menu_delete"));
 }
 
 /** Group by menu */
 
+export async function toggleGroupByMenu(el) {
+    await click(findItem(el, `.o_group_by_menu .dropdown-toggle`));
+}
+
+export async function toggleAddCustomGroup(el) {
+    await mouseEnter(findItem(el, `.o_add_custom_group_menu .dropdown-toggle`));
+}
+
 export async function selectGroup(el, fieldName) {
-    el.querySelector(".o_add_custom_group_menu").value = fieldName;
-    await triggerEvent(el, ".o_add_custom_group_menu", "change");
+    const select = findItem(el, `.o_add_custom_group_menu .dropdown-menu select`);
+    select.value = fieldName;
+    await triggerEvent(select, null, "change");
+}
+
+export async function applyGroup(el) {
+    await click(findItem(el, `.o_add_custom_group_menu .dropdown-menu .btn`));
 }
 
 export async function groupByMenu(el, fieldName) {
-    await toggleSearchBarMenu(el);
+    await toggleGroupByMenu(el);
+    await toggleAddCustomGroup(el);
     await selectGroup(el, fieldName);
+    await applyGroup(el);
 }
 
 /** Favorite menu */
+
+export async function toggleFavoriteMenu(el) {
+    await click(findItem(el, `.o_favorite_menu .dropdown-toggle`));
+}
 
 export async function deleteFavorite(el, favoriteFinder) {
     const favorite = findItem(el, `.o_favorite_menu .o_menu_item`, favoriteFinder);
@@ -235,20 +238,26 @@ export async function deleteFavorite(el, favoriteFinder) {
 }
 
 export async function toggleSaveFavorite(el) {
-    await click(findItem(el, `.o_favorite_menu .o_add_favorite`));
+    await mouseEnter(findItem(el, `.o_favorite_menu .o_add_favorite .dropdown-toggle`));
 }
 
 export async function editFavoriteName(el, name) {
     const input = findItem(
         el,
-        `.o_favorite_menu .o_add_favorite + .o_accordion_values input[type="text"]`
+        `.o_favorite_menu .o_add_favorite .dropdown-menu input[type="text"]`
     );
     input.value = name;
     await triggerEvent(input, null, "input");
 }
 
 export async function saveFavorite(el) {
-    await click(findItem(el, `.o_favorite_menu .o_add_favorite + .o_accordion_values button`));
+    await click(findItem(el, `.o_favorite_menu .o_add_favorite .dropdown-menu button`));
+}
+
+/** Comparison menu */
+
+export async function toggleComparisonMenu(el) {
+    await click(findItem(el, `.o_comparison_menu button.dropdown-toggle`));
 }
 
 /** Search bar */
@@ -262,7 +271,7 @@ export function getFacetTexts(target) {
 
 export async function removeFacet(el, facetFinder = 0) {
     const facet = findItem(el, `div.o_searchview_facet`, facetFinder);
-    await click(facet.querySelector(".o_facet_remove"));
+    await click(facet.querySelector("i.o_facet_remove"));
 }
 
 export async function editSearch(el, value) {
@@ -315,11 +324,7 @@ export async function editPager(el, value) {
  * @param {string} [menuFinder="Action"]
  * @returns {Promise}
  */
-export async function toggleActionMenu(el) {
-    await click(el.querySelector(".o_cp_action_menus .dropdown-toggle"));
-}
-
-/** SearchBarMenu */
-export async function toggleSearchBarMenu(el) {
-    await click(findItem(el, `.o_searchview_dropdown_toggler`));
+export async function toggleActionMenu(el, menuFinder = "Action") {
+    const dropdown = findItem(el, `.o_cp_action_menus button`, menuFinder);
+    await click(dropdown);
 }

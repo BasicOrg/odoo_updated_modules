@@ -9,6 +9,5 @@ class SriPayment(models.Model):
     _name = "l10n_ec.sri.payment"
     _description = "SRI Payment Method"
 
-    name = fields.Char("Name", translate=True)
+    name = fields.Char("Name")
     code = fields.Char("Code")
-    active = fields.Boolean("Active", default=True)

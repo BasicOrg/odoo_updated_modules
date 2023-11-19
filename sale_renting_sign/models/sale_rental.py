@@ -14,12 +14,15 @@ class RentalOrder(models.Model):
     )
 
     def _compute_sign_request_count(self):
-        sign_data = self.env["sign.request"]._read_group(
+        sign_data = self.env["sign.request"].read_group(
             domain=[("sale_order_id", "in", self.ids)],
-            groupby=['sale_order_id'],
-            aggregates=['__count'],
+            fields=["sale_order_id"],
+            groupby=["sale_order_id"],
         )
-        mapped_data = {sale_order.id: count for sale_order, count in sign_data}
+
+        mapped_data = dict(
+            [(m["sale_order_id"][0], m["sale_order_id_count"]) for m in sign_data]
+        )
         for order in self:
             order.sign_request_count = mapped_data.get(order.id, 0)
 

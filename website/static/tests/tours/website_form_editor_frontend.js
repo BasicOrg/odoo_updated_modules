@@ -1,10 +1,10 @@
 /** @odoo-module **/
-import { jsonrpc } from "@web/core/network/rpc_service";
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
+import rpc from 'web.rpc';
 
-registry.category("web_tour.tours").add("website_form_editor_tour_submit", {
+tour.register("website_form_editor_tour_submit", {
     test: true,
-    steps: () => [
+},[
     {
         content:  "Try to send the form with some required fields not filled in",
         extra_trigger:  "form[data-model_name='mail.mail']" +
@@ -28,8 +28,7 @@ registry.category("web_tour.tours").add("website_form_editor_tour_submit", {
                         ":has(.s_website_form_field.s_website_form_required:has(label:contains('State')):has(select[name='State'][required]:has(option[value='France'])))" +
                         ":has(.s_website_form_field:has(label:contains('State')):has(select[name='State'][required]:has(option[value='Canada'])))" +
                         ":has(.s_website_form_field:has(label:contains('Invoice Scan')))" +
-                        ":has(.s_website_form_field:has(input[name='email_to'][value='test@test.test']))" + 
-                        ":has(.s_website_form_field:has(input[name='website_form_signature']))",
+                        ":has(.s_website_form_field:has(input[name='email_to'][value='test@test.test']))",
         trigger:  ".s_website_form_send"
     },
     {
@@ -88,13 +87,8 @@ registry.category("web_tour.tours").add("website_form_editor_tour_submit", {
         trigger:  "input[name=Products][value='Wiko Stairway']"
     },
     {
-        content:  "Open datetime picker",
-        trigger:  ".s_website_form_datetime input",
-        run:      "click",
-    },
-    {
         content:  "Complete Date field",
-        trigger:  ".o_date_picker .o_today",
+        trigger:  ".s_website_form_datetime [data-toggle='datetimepicker']",
     },
     {
         content:  "Check another product",
@@ -144,59 +138,50 @@ registry.category("web_tour.tours").add("website_form_editor_tour_submit", {
         trigger: "input[name='email_cc']",
     },
     {
-        content: "Select state option",
-        trigger: "select[name='State']",
-        run: 'text 44 - UK',
-    },
-    {
         content:  "Send the form",
         trigger:  ".s_website_form_send"
     },
     {
         content:  "Check form is submitted without errors",
-        trigger:  "#wrap:has(h1:contains('Thank You!'))",
-        isCheck: true,
+        trigger:  "#wrap:has(h1:contains('Thank You!'))"
     }
-]});
+]);
 
-registry.category("web_tour.tours").add("website_form_editor_tour_results", {
+tour.register("website_form_editor_tour_results", {
     test: true,
-    steps: () => [
+}, [
     {
         content: "Check mail.mail records have been created",
         trigger: "body",
         run: function () {
-            var mailDef = jsonrpc(`/web/dataset/call_kw/mail.mail/search_count`, {
-                model: "mail.mail",
-                method: "search_count",
-                args: [[
-                    ['email_to', '=', 'test@test.test'],
-                    ['body_html', 'like', 'A useless message'],
-                    ['body_html', 'like', 'Service : Development Service'],
-                    ['body_html', 'like', 'State : 44 - UK'],
-                    ['body_html', 'like', 'Products : Xperia,Wiko Stairway']
-                ]],
-                kwargs: {},
-            });
+            var mailDef = rpc.query({
+                    model: 'mail.mail',
+                    method: 'search_count',
+                    args: [[
+                        ['email_to', '=', 'test@test.test'],
+                        ['body_html', 'like', 'A useless message'],
+                        ['body_html', 'like', 'Service : Development Service'],
+                        ['body_html', 'like', 'State : Belgium'],
+                        ['body_html', 'like', 'Products : Xperia,Wiko Stairway']
+                    ]],
+                });
             var success = function(model, count) {
                 if (count > 0) {
                     $('body').append('<div id="website_form_editor_success_test_tour_'+model+'"></div>');
                 }
             };
-            mailDef.then(success.bind(this, 'mail_mail'));
+            mailDef.then(_.bind(success, this, 'mail_mail'));
         }
     },
     {
         content:  "Check mail.mail records have been created",
-        trigger:  "#website_form_editor_success_test_tour_mail_mail",
-        allowInvisible: true,
-        isCheck: true,
+        trigger:  "#website_form_editor_success_test_tour_mail_mail"
     }
-]});
-registry.category("web_tour.tours").add('website_form_contactus_submit', {
+]);
+tour.register('website_form_contactus_submit', {
     test: true,
     url: '/contactus',
-    steps: () => [
+}, [
     // As the demo portal user, only two inputs needs to be filled to send
     // the email
     {
@@ -214,6 +199,5 @@ registry.category("web_tour.tours").add('website_form_contactus_submit', {
     {
         content: 'Check form is submitted without errors',
         trigger: '#wrap:has(h1:contains("Thank You!"))',
-        isCheck: true,
     },
-]});
+]);

@@ -1,8 +1,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
+from datetime import timedelta
 
-from odoo import _, models
+from odoo import _, fields, models
 
 
 class SaleOrderLine(models.Model):
@@ -24,7 +25,6 @@ class SaleOrderLine(models.Model):
             desired_qty=desired_qty, new_qty=new_qty,
             rental_period=self._get_rental_order_line_description()
         )
-        return self.shop_warning
 
     def _get_rented_quantities(self, mandatory_dates):
         """ Get rented quantities dict and ordered dict keys for the given period
@@ -38,8 +38,10 @@ class SaleOrderLine(models.Model):
             raise ValueError("Expected singleton or no record: %s" % self.product_id)
         rented_quantities = defaultdict(float)
         for so_line in self:
-            rented_quantities[so_line.reservation_begin] += so_line.product_uom_qty
-            rented_quantities[so_line.return_date] -= so_line.product_uom_qty
+            qty_to_deliver = so_line.product_uom_qty - so_line.qty_delivered
+            qty_to_return = so_line.product_uom_qty - so_line.qty_returned
+            rented_quantities[so_line.reservation_begin] += qty_to_deliver
+            rented_quantities[so_line.return_date] -= qty_to_return
 
         # Key dates means either the dates of the keys, either the fact that those dates are key
         # dates, where there is a quantity modification.
@@ -49,6 +51,13 @@ class SaleOrderLine(models.Model):
 
     def _get_max_available_qty(self):
         if self.is_rental:
-            cart_qty, free_qty = self.order_id._get_cart_and_free_qty(self.product_id, line=self)
+            cart_qty, free_qty = self.order_id._get_cart_and_free_qty(line=self)
             return free_qty - cart_qty
         return super()._get_max_available_qty()
+
+    def _is_invalid_renting_dates(self, company, start_date=None, end_date=None):
+        """ Check the pickup and return dates are invalid
+        """
+        preparation_delta = timedelta(hours=self.product_id.preparation_time)
+        return super()._is_invalid_renting_dates(company, start_date=start_date, end_date=end_date)\
+            or ((self.start_date or start_date) - preparation_delta) < fields.Datetime.now()

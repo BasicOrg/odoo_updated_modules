@@ -77,11 +77,10 @@ class UtmSourceMixin(models.AbstractModel):
         if values.get('name'):
             values['name'] = self.env['utm.mixin']._get_unique_names(self._name, [values['name']])[0]
 
-        return super().write(values)
+        super().write(values)
 
     def copy(self, default=None):
         """Increment the counter when duplicating the source."""
         default = default or {}
-        default_name = default.get('name')
-        default['name'] = self.env['utm.mixin']._get_unique_names(self._name, [default_name or self.name])[0]
+        default['name'] = self.env['utm.mixin']._get_unique_names(self._name, [self.name])[0]
         return super().copy(default)

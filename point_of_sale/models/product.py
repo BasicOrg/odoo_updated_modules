@@ -12,38 +12,22 @@ class ProductTemplate(models.Model):
 
     available_in_pos = fields.Boolean(string='Available in POS', help='Check if you want this product to appear in the Point of Sale.', default=False)
     to_weight = fields.Boolean(string='To Weigh With Scale', help="Check if the product should be weighted using the hardware scale integration.")
-    pos_categ_ids = fields.Many2many(
+    pos_categ_id = fields.Many2one(
         'pos.category', string='Point of Sale Category',
         help="Category used in the Point of Sale.")
-    combo_ids = fields.Many2many('pos.combo', string='Combinations')
-    detailed_type = fields.Selection(selection_add=[
-        ('combo', 'Combo')
-    ], ondelete={'combo': 'set consu'})
-    type = fields.Selection(selection_add=[
-        ('combo', 'Combo')
-    ], ondelete={'combo': 'set consu'})
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_open_session(self):
         product_ctx = dict(self.env.context or {}, active_test=False)
         if self.with_context(product_ctx).search_count([('id', 'in', self.ids), ('available_in_pos', '=', True)]):
             if self.env['pos.session'].sudo().search_count([('state', '!=', 'closed')]):
-                raise UserError(_("To delete a product, make sure all point of sale sessions are closed.\n\n"
-                    "Deleting a product available in a session would be like attempting to snatch a"
-                    "hamburger from a customer’s hand mid-bite; chaos will ensue as ketchup and mayo go flying everywhere!"))
+                raise UserError(_('You cannot delete a product saleable in point of sale while a session is still opened.'))
 
     @api.onchange('sale_ok')
     def _onchange_sale_ok(self):
         if not self.sale_ok:
             self.available_in_pos = False
 
-    @api.constrains('available_in_pos')
-    def _check_combo_inclusions(self):
-        for product in self:
-            if not product.available_in_pos:
-                combo_name = self.env['pos.combo.line'].search([('product_id', 'in', product.product_variant_ids.ids)], limit=1).combo_id.name
-                if combo_name:
-                    raise UserError(_('You must first remove this product from the %s combo', combo_name))
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
@@ -53,9 +37,7 @@ class ProductProduct(models.Model):
         product_ctx = dict(self.env.context or {}, active_test=False)
         if self.env['pos.session'].sudo().search_count([('state', '!=', 'closed')]):
             if self.with_context(product_ctx).search_count([('id', 'in', self.ids), ('product_tmpl_id.available_in_pos', '=', True)]):
-                raise UserError(_("To delete a product, make sure all point of sale sessions are closed.\n\n"
-                    "Deleting a product available in a session would be like attempting to snatch a"
-                    "hamburger from a customer’s hand mid-bite; chaos will ensue as ketchup and mayo go flying everywhere!"))
+                raise UserError(_('You cannot delete a product saleable in point of sale while a session is still opened.'))
 
     def get_product_info_pos(self, price, quantity, pos_config_id):
         self.ensure_one()
@@ -63,20 +45,13 @@ class ProductProduct(models.Model):
 
         # Tax related
         taxes = self.taxes_id.compute_all(price, config.currency_id, quantity, self)
-        grouped_taxes = {}
-        for tax in taxes['taxes']:
-            if tax['id'] in grouped_taxes:
-                grouped_taxes[tax['id']]['amount'] += tax['amount']/quantity if quantity else 0
-            else:
-                grouped_taxes[tax['id']] = {
-                    'name': tax['name'],
-                    'amount': tax['amount']/quantity if quantity else 0
-                }
-
         all_prices = {
             'price_without_tax': taxes['total_excluded']/quantity if quantity else 0,
             'price_with_tax': taxes['total_included']/quantity if quantity else 0,
-            'tax_details': list(grouped_taxes.values()),
+            'tax_details': [{
+                    'name': tax['name'],
+                    'amount': tax['amount']/quantity if quantity else 0
+                } for tax in taxes['taxes']],
         }
 
         # Pricelists
@@ -84,7 +59,7 @@ class ProductProduct(models.Model):
             pricelists = config.available_pricelist_ids
         else:
             pricelists = config.pricelist_id
-        price_per_pricelist_id = pricelists._price_get(self, quantity) if pricelists else False
+        price_per_pricelist_id = pricelists._price_get(self, quantity)
         pricelist_list = [{'name': pl.name, 'price': price_per_pricelist_id[pl.id]} for pl in pricelists]
 
         # Warehouses
@@ -121,10 +96,6 @@ class ProductProduct(models.Model):
             'variants': variant_list
         }
 
-class ProductAttributeCustomValue(models.Model):
-    _inherit = "product.attribute.custom.value"
-
-    pos_order_line_id = fields.Many2one('pos.order.line', string="PoS Order Line", ondelete='cascade')
 
 class UomCateg(models.Model):
     _inherit = 'uom.category'

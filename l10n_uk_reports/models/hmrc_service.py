@@ -23,7 +23,7 @@ SANDBOX_API_URL = 'https://test-api.service.hmrc.gov.uk'
 PRODUCTION_API_URL = 'https://api.service.hmrc.gov.uk'
 if DEBUG:
     HMRC_CLIENT_ID = 'dTdANDSeX4fiw63DicmUaAVQDSMa'
-    PROXY_SERVER = 'https://l10n-uk-hmrc.test.odoo.com'
+    PROXY_SERVER = 'https://www.l10n-uk-hmrc.test.odoo.com'
 else:
     HMRC_CLIENT_ID = 'GqJgi8Hal1hsEwbG6rY6i9Ag1qUa'
     PROXY_SERVER = 'https://l10n-uk-hmrc.api.odoo.com'
@@ -94,7 +94,7 @@ class HmrcService(models.AbstractModel):
         return False
 
     @api.model
-    def _get_fraud_prevention_info(self, client_data=None):
+    def _get_fraud_prevention_info(self):
         """
         https://developer.service.hmrc.gov.uk/api-documentation/docs/fraud-prevention
         """
@@ -129,30 +129,15 @@ class HmrcService(models.AbstractModel):
             if remote_needed: #no need when on a private network
                 gov_dict['Gov-Client-Public-IP'] = urls.url_quote(remote_address)
                 gov_dict['Gov-Client-Public-Port'] = urls.url_quote(str(environ.get('REMOTE_PORT')))
-            if 'totp_enabled' in self.env.user._fields and self.env.user.totp_enabled:
-                # We can not percent encode the separator, so we have to split the string as such to percent encode each key and value
-                gov_dict['Gov-Client-Multi-Factor'] = "{}={type}&{}={time}&{}={unique}".format(
-                    urls.url_quote('type'),
-                    urls.url_quote('timestamp'),
-                    urls.url_quote('unique-reference'),
-                    type=urls.url_quote('TOTP'),
-                    time=urls.url_quote(datetime.utcnow().isoformat(timespec='milliseconds')+'Z', unsafe=':'),  # We need to specify to percent encode ':'
-                    unique=urls.url_quote(self.env.user._l10n_uk_hmrc_unique_reference()))
             gov_dict['Gov-Client-Timezone'] = utc_offset
-            gov_dict['Gov-Client-Browser-JS-User-Agent'] = (environ.get('HTTP_USER_AGENT'))
-            gov_dict['Gov-Vendor-Version'] = '&'.join([urls.url_quote("Odoo") + "=" + urls.url_quote(gov_vendor_version)]*2) # We can not percent encode the separator and we need to do it for the key and the value. Client and Server sides are the same
-            gov_dict['Gov-Client-User-IDs'] = urls.url_quote("Odoo") + "=" + urls.url_quote(self.env.user.name)  # We can not percent encode the separator, same as Gov-Vendor-Version
+            gov_dict['Gov-Client-Browser-JS-User-Agent'] = urls.url_quote(environ.get('HTTP_USER_AGENT'))
+            gov_dict['Gov-Vendor-Version'] = "Odoo=" + urls.url_quote(gov_vendor_version)
+            gov_dict['Gov-Client-User-IDs'] = "os=" + urls.url_quote(self.env.user.name)
             gov_dict['Gov-Client-Browser-Do-Not-Track'] = 'true' if headers.get('DNT') == '1' else 'false'
-            gov_dict['Gov-Client-Screens'] = f"width={client_data['screen_width']}&height={client_data['screen_height']}&scaling-factor={client_data['screen_scaling_factor']}&colour-depth={client_data['screen_color_depth']}" if client_data else ''
-            gov_dict['Gov-Client-Window-Size'] = f"width={client_data['window_width']}&height={client_data['window_height']}" if client_data else ''
-            gov_dict['Gov-Client-Public-Ip-Timestamp'] = datetime.utcnow().isoformat(timespec='milliseconds')+'Z'
-            gov_dict['Gov-Vendor-Product-Name'] = urls.url_quote("Odoo")
-            gov_dict['Gov-Client-Device-Id'] = client_data['hmrc_gov_client_device_id'] if client_data else ''
-            gov_dict['Gov-Vendor-Forwarded'] = f"by={server_public_ip}&for={remote_address}"
             if public_ip_needed: # No need when on a private network
                 gov_dict['Gov-Vendor-Public-IP'] = server_public_ip
             if hashed_license:
-                gov_dict['Gov-Vendor-License-IDs'] = urls.url_quote("Odoo") + "=" + urls.url_quote(hashed_license)
+                gov_dict['Gov-Vendor-License-IDs'] = "Odoo=" + hashed_license
         except Exception:
             _logger.warning("Could not construct fraud prevention headers", exc_info=True)
         return gov_dict

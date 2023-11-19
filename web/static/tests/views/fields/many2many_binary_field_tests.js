@@ -51,7 +51,7 @@ QUnit.module("Fields", (hooks) => {
     QUnit.module("Many2ManyBinaryField");
 
     QUnit.test("widget many2many_binary", async function (assert) {
-        assert.expect(21);
+        assert.expect(24);
 
         const fakeHTTPService = {
             start() {
@@ -95,33 +95,8 @@ QUnit.module("Fields", (hooks) => {
                 if (args.method !== "get_views") {
                     assert.step(route);
                 }
-                if (args.method === "web_read" && args.model === "turtle") {
-                    assert.deepEqual(args.kwargs.specification, {
-                        display_name: {},
-                        picture_ids: {
-                            fields: {
-                                mimetype: {},
-                                name: {},
-                            },
-                        },
-                    });
-                }
-                if (args.method === "web_save" && args.model === "turtle") {
-                    assert.deepEqual(args.kwargs.specification, {
-                        display_name: {},
-                        picture_ids: {
-                            fields: {
-                                mimetype: {},
-                                name: {},
-                            },
-                        },
-                    });
-                }
-                if (args.method === "web_read" && args.model === "ir.attachment") {
-                    assert.deepEqual(args.kwargs.specification, {
-                        mimetype: {},
-                        name: {},
-                    });
+                if (route === "/web/dataset/call_kw/ir.attachment/read") {
+                    assert.deepEqual(args.args[1], ["name", "mimetype"]);
                 }
             },
         });
@@ -163,7 +138,10 @@ QUnit.module("Fields", (hooks) => {
             "image/*",
             'there should be an attribute "accept" on the input'
         );
-        assert.verifySteps(["/web/dataset/call_kw/turtle/web_read"]);
+        assert.verifySteps([
+            "/web/dataset/call_kw/turtle/read",
+            "/web/dataset/call_kw/ir.attachment/read",
+        ]);
 
         // Set and trigger the change of a file for the input
         const fileInput = target.querySelector('input[type="file"]');
@@ -203,8 +181,10 @@ QUnit.module("Fields", (hooks) => {
             "there should be only one attachment left"
         );
         assert.verifySteps([
-            "/web/dataset/call_kw/ir.attachment/web_read",
-            "/web/dataset/call_kw/turtle/web_save",
+            "/web/dataset/call_kw/ir.attachment/read",
+            "/web/dataset/call_kw/turtle/write",
+            "/web/dataset/call_kw/turtle/read",
+            "/web/dataset/call_kw/ir.attachment/read",
         ]);
     });
 

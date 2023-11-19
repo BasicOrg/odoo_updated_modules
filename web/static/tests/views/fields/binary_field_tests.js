@@ -1,7 +1,6 @@
 /** @odoo-module **/
 
 import { registerCleanup } from "@web/../tests/helpers/cleanup";
-import { makeServerError } from "@web/../tests/helpers/mock_server";
 import { makeMockXHR } from "@web/../tests/helpers/mock_services";
 import {
     click,
@@ -13,15 +12,9 @@ import {
 } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { browser } from "@web/core/browser/browser";
-import { errorService } from "@web/core/errors/error_service";
-import { registry } from "@web/core/registry";
-import { MAX_FILENAME_SIZE_BYTES } from "@web/views/fields/binary/binary_field";
-import { toBase64Length } from "@web/core/utils/binary";
 
 const BINARY_FILE =
     "R0lGODlhDAAMAKIFAF5LAP/zxAAAANyuAP/gaP///wAAAAAAACH5BAEAAAUALAAAAAAMAAwAAAMlWLPcGjDKFYi9lxKBOaGcF35DhWHamZUW0K4mAbiwWtuf0uxFAgA7";
-
-const serviceRegistry = registry.category("services");
 
 let serverData;
 let target;
@@ -98,7 +91,13 @@ QUnit.module("Fields", (hooks) => {
         }
         const MockXHR = makeMockXHR("", send);
 
-        patchWithCleanup(browser, { XMLHttpRequest: MockXHR });
+        patchWithCleanup(
+            browser,
+            {
+                XMLHttpRequest: MockXHR,
+            },
+            { pure: true }
+        );
 
         await makeView({
             serverData,
@@ -145,7 +144,7 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("BinaryField is correctly rendered", async function (assert) {
-        assert.expect(12);
+        assert.expect(9);
 
         async function send(data) {
             assert.ok(data instanceof FormData);
@@ -165,7 +164,13 @@ QUnit.module("Fields", (hooks) => {
         }
         const MockXHR = makeMockXHR("", send);
 
-        patchWithCleanup(browser, { XMLHttpRequest: MockXHR });
+        patchWithCleanup(
+            browser,
+            {
+                XMLHttpRequest: MockXHR,
+            },
+            { pure: true }
+        );
 
         await makeView({
             serverData,
@@ -200,22 +205,6 @@ QUnit.module("Fields", (hooks) => {
             "the filename field should have the file name as value"
         );
 
-        // Testing the download button in the field
-        // We must avoid the browser to download the file effectively
-        const prom = makeDeferred();
-        const downloadOnClick = (ev) => {
-            const target = ev.target;
-            if (target.tagName === "A" && "download" in target.attributes) {
-                ev.preventDefault();
-                document.removeEventListener("click", downloadOnClick);
-                prom.resolve();
-            }
-        };
-        document.addEventListener("click", downloadOnClick);
-        registerCleanup(() => document.removeEventListener("click", downloadOnClick));
-        await click(target.querySelector(".fa-download"));
-        await prom;
-
         await click(target.querySelector(".o_field_binary .o_clear_file_button"));
 
         assert.isNotVisible(
@@ -246,36 +235,6 @@ QUnit.module("Fields", (hooks) => {
         );
     });
 
-    QUnit.test("BinaryField is correctly rendered (isDirty)", async function (assert) {
-        assert.expect(2);
-
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                <form>
-                    <field name="document" filename="foo"/>
-                    <field name="foo"/>
-                </form>`,
-            resId: 1,
-        });
-        // Simulate a file upload
-        const file = new File(["test"], "fake_file.txt", { type: "text/plain" });
-        await editInput(target, ".o_field_binary .o_input_file", file);
-        assert.containsNone(
-            target,
-            '.o_field_widget[name="document"] .fa-download',
-            "the binary field should not be rendered as a downloadable since the record is dirty"
-        );
-        await clickSave(target);
-        assert.containsOnce(
-            target,
-            '.o_field_widget[name="document"] .fa-download',
-            "the binary field should render as a downloadable link since the record is not dirty"
-        );
-    });
-
     QUnit.test("file name field is not defined", async (assert) => {
         await makeView({
             serverData,
@@ -297,36 +256,6 @@ QUnit.module("Fields", (hooks) => {
             target,
             ".o_field_binary .o_form_uri fa-download",
             "download icon should be visible"
-        );
-    });
-
-    QUnit.test("icons are displayed exactly once", async (assert) => {
-        assert.expect(3);
-        patchWithCleanup(odoo, { debug: true });
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: /* xml */ `
-                <form>
-                    <field name="document" filename="foo"/>
-                </form>`,
-            resId: 1,
-        });
-        assert.containsOnce(
-            target,
-            ".o_field_binary .o_select_file_button",
-            "only one select file icon should be visible"
-        );
-        assert.containsOnce(
-            target,
-            ".o_field_binary .o_download_file_button",
-            "only one download file icon should be visible"
-        );
-        assert.containsOnce(
-            target,
-            ".o_field_binary .o_clear_file_button",
-            "only one clear file icon should be visible"
         );
     });
 
@@ -402,7 +331,13 @@ QUnit.module("Fields", (hooks) => {
             }
             const MockXHR = makeMockXHR("", download);
 
-            patchWithCleanup(browser, { XMLHttpRequest: MockXHR });
+            patchWithCleanup(
+                browser,
+                {
+                    XMLHttpRequest: MockXHR,
+                },
+                { pure: true }
+            );
 
             serverData.models.partner.onchanges = {
                 product_id: function (obj) {
@@ -424,10 +359,7 @@ QUnit.module("Fields", (hooks) => {
                 resId: 1,
             });
 
-            await click(
-                target,
-                ".o_control_panel_main_buttons .d-none.d-xl-inline-flex .o_form_button_create"
-            );
+            await click(target, ".o_form_button_create");
             await click(target, ".o_field_many2one[name='product_id'] input");
             await click(
                 target.querySelector(".o_field_many2one[name='product_id'] .dropdown-item")
@@ -448,7 +380,7 @@ QUnit.module("Fields", (hooks) => {
         }
     );
 
-    QUnit.test("BinaryField in list view (formatter)", async function (assert) {
+    QUnit.test("Binary field in list view", async function (assert) {
         serverData.models.partner.records[0].document = BINARY_FILE;
 
         await makeView({
@@ -457,7 +389,7 @@ QUnit.module("Fields", (hooks) => {
             serverData,
             arch: `
                     <tree>
-                        <field name="document"/>
+                        <field name="document" filename="yooo"/>
                     </tree>`,
             resId: 1,
         });
@@ -466,136 +398,5 @@ QUnit.module("Fields", (hooks) => {
             target.querySelector(".o_data_row .o_data_cell").textContent,
             "93.43 Bytes"
         );
-    });
-
-    QUnit.test("BinaryField in list view with filename", async function (assert) {
-        serverData.models.partner.records[0].document = BINARY_FILE;
-
-        await makeView({
-            type: "list",
-            resModel: "partner",
-            serverData,
-            arch: `
-                    <tree>
-                        <field name="document" filename="foo" widget="binary"/>
-                        <field name="foo"/>
-                    </tree>`,
-            resId: 1,
-        });
-
-        assert.strictEqual(
-            target.querySelector(".o_data_row .o_data_cell").textContent,
-            "coucou.txt"
-        );
-    });
-
-    QUnit.test("BinaryField for new record has no download button", async function (assert) {
-        serverData.models.partner.fields.document.default = BINARY_FILE;
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                <form>
-                    <field name="document" filename="foo"/>
-                </form>
-            `,
-        });
-        assert.containsNone(target, "button.fa-download");
-    });
-
-    QUnit.test("Binary filename doesn't exceed 255 bytes", async function (assert) {
-        const LARGE_BINARY_FILE = BINARY_FILE.repeat(5);
-        assert.ok(
-            (LARGE_BINARY_FILE.length / 4) * 3 > MAX_FILENAME_SIZE_BYTES,
-            "The initial binary file should be larger than max bytes that can represent the filename"
-        );
-        serverData.models.partner.fields.document.default = LARGE_BINARY_FILE;
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                <form>
-                    <field name="document"/>
-                </form>
-            `,
-        });
-        assert.strictEqual(
-            target.querySelector(".o_field_binary input[type=text]").value.length,
-            toBase64Length(MAX_FILENAME_SIZE_BYTES),
-            "The filename shouldn't exceed the maximum size in bytes in base64"
-        );
-    });
-
-    QUnit.test("BinaryField filename is updated when using the pager", async function (assert) {
-        serverData.models.partner.records.push(
-            {
-                id: 1,
-                document: "abc",
-                foo: "abc.txt",
-            },
-            {
-                id: 2,
-                document: "def",
-                foo: "def.txt",
-            }
-        );
-        await makeView({
-            serverData,
-            type: "form",
-            resModel: "partner",
-            arch: `
-                <form>
-                    <field name="document" filename="foo"/>
-                    <field name="foo"/>
-                </form>
-            `,
-            resIds: [1, 2],
-            resId: 1,
-        });
-
-        assert.strictEqual(
-            target.querySelector(".o_field_binary input[type=text]").value,
-            "abc.txt",
-            'displayed value should be "abc.txt"'
-        );
-
-        await click(target.querySelector(".o_pager_next"));
-
-        assert.strictEqual(
-            target.querySelector(".o_field_binary input[type=text]").value,
-            "def.txt",
-            'displayed value should be changed to "def.txt"'
-        );
-    });
-
-    QUnit.test("isUploading state should be set to false after upload", async function (assert) {
-        serviceRegistry.add("error", errorService);
-
-        serverData.models.partner.onchanges = {
-            document: function (obj) {
-                if (obj.document) {
-                    throw makeServerError({ type: "ValidationError" });
-                }
-            },
-        };
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <form>
-                    <field name="document"/>
-                </form>`,
-        });
-        const file = new File(["test"], "fake_file.txt", { type: "text/plain" });
-        await editInput(target, ".o_field_binary .o_input_file", file);
-        assert.equal(
-            target.querySelector(".o_select_file_button").innerText,
-            "Upload your file",
-            "displayed value should be upload your file"
-        );
-        assert.containsOnce(target, ".o_error_dialog");
     });
 });

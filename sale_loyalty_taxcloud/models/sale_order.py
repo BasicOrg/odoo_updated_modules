@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from textwrap import shorten
 
 from .taxcloud_request import TaxCloudRequest
 from odoo import _, api, models
@@ -40,9 +39,10 @@ class SaleOrder(models.Model):
         taxcloud_coupon_orders = taxcloud_orders.filtered('order_line.reward_id')
         partial_taxcloud_coupon_orders = taxcloud_coupon_orders.filtered(not_totally_invoiceable)
         if partial_taxcloud_coupon_orders:
-            bad_orders = shorten(str(partial_taxcloud_coupon_orders.mapped('display_name'))[1:-1], 80, placeholder='...')
+            bad_orders = str(partial_taxcloud_coupon_orders.mapped('display_name'))[1:-1]
+            bad_orders = bad_orders if len(bad_orders) < 80 else bad_orders[:80] + ', ...'
             raise UserError(_('Any order that has discounts and uses TaxCloud must be invoiced '
                               'all at once to prevent faulty tax computation with Taxcloud.\n'
-                              'The following orders must be completely invoiced:\n%s', bad_orders))
+                              'The following orders must be completely invoiced:\n%s') % bad_orders)
 
         return super()._create_invoices(grouped=grouped, final=final, date=date)

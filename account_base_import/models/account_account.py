@@ -19,7 +19,7 @@ class AccountAccount(models.Model):
             fields.append(".id")
             code_index = fields.index("code")
             account_codes = self.search_read(
-                domain=self._check_company_domain(self.env.company),
+                domain=[("company_id", "=", self.env.company.id)],
                 fields=["code"]
             )
             for account in account_codes:

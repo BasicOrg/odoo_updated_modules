@@ -8,7 +8,7 @@
             <xpath expr="//div[hasclass('o_address_format')]" position="after">
                 <field name="l10n_pe_edi_address_type_code"
                        placeholder="Address Type Code"
-                       invisible="country_code != 'PE'"/>
+                       attrs="{'invisible': [('country_code', '!=', 'PE')]}"/>
             </xpath>
         </field>
     </record>

@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import { session } from "@web/session";
-import { accountMethodsForMobile } from "@web_mobile/js/core/mixins";
-import mobile from '@web_mobile/js/services/core';
+/*const EmployeeProfileFormView = require('@hr/js/language')[Symbol.for("default")];*/
+import session from 'web.session';
+import mobile from 'web_mobile.core';
 import { patchWithCleanup, clickSave, getFixture } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 
@@ -44,14 +44,14 @@ QUnit.module("hr_mobile", (hooks) => {
         });
 
         patchWithCleanup(session, {
+            url(path) {
+                if (path === '/web/image') {
+                    return `data:image/png;base64,${MY_IMAGE}`;
+                }
+                return this._super(...arguments);
+            },
             username: "demo",
             name: "Marc Demo",
-        });
-
-        patchWithCleanup(accountMethodsForMobile, {
-            async fetchAvatar() {
-                return `data:image/png;base64,${MY_IMAGE}`;
-            },
         });
 
         await makeView({

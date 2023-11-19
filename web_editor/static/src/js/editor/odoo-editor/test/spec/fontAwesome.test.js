@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import { BasicEditor, insertText, testEditor, deleteForward, deleteBackward } from '../utils.js';
 
 describe('FontAwesome', () => {
@@ -261,16 +259,16 @@ describe('FontAwesome', () => {
                 });
                 it('should not delete a fontawesome after multiple deleteForward with spaces inside a <span>', async () => {
                     await testEditor(BasicEditor, {
-                        contentBefore: '<div><span class="a">ab[]c </span><i class="fa fa-star"></i> def</div>',
+                        contentBefore: '<div><span>ab[]c </span><i class="fa fa-star"></i> def</div>',
                         contentBeforeEdit:
-                            '<div><span class="a">ab[]c </span><i class="fa fa-star" contenteditable="false">\u200b</i> def</div>',
+                            '<div><span>ab[]c </span><i class="fa fa-star" contenteditable="false">\u200b</i> def</div>',
                         stepFunction: async editor => {
                             await deleteForward(editor);
                             await deleteForward(editor);
                         },
                         contentAfterEdit:
-                            '<div><span class="a">ab[]</span><i class="fa fa-star" contenteditable="false">\u200b</i> def</div>',
-                        contentAfter: '<div><span class="a">ab[]</span><i class="fa fa-star"></i> def</div>',
+                            '<div><span>ab[]</span><i class="fa fa-star" contenteditable="false">\u200b</i> def</div>',
+                        contentAfter: '<div><span>ab[]</span><i class="fa fa-star"></i> def</div>',
                     });
                 });
             });
@@ -308,22 +306,22 @@ describe('FontAwesome', () => {
                 });
                 it('should delete a fontawesome before a span', async () => {
                     await testEditor(BasicEditor, {
-                        contentBefore: '<p>ab<i class="fa fa-pastafarianism"></i><span class="a">[]cd</span></p>',
+                        contentBefore: '<p>ab<i class="fa fa-pastafarianism"></i><span>[]cd</span></p>',
                         contentBeforeEdit:
-                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span class="a">[]cd</span></p>',
+                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span>[]cd</span></p>',
                         stepFunction: deleteBackward,
-                        contentAfter: '<p>ab<span class="a">[]cd</span></p>',
+                        contentAfter: '<p>ab<span>[]cd</span></p>',
                     });
                 });
                 it('should not delete a fontawesome before a span', async () => {
                     await testEditor(BasicEditor, {
-                        contentBefore: '<p>ab<i class="fa fa-pastafarianism"></i><span class="a">c[]d</span></p>',
+                        contentBefore: '<p>ab<i class="fa fa-pastafarianism"></i><span>c[]d</span></p>',
                         contentBeforeEdit:
-                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span class="a">c[]d</span></p>',
+                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span>c[]d</span></p>',
                         stepFunction: deleteBackward,
                         contentAfterEdit:
-                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span class="a">[]d</span></p>',
-                        contentAfter: '<p>ab<i class="fa fa-pastafarianism"></i><span class="a">[]d</span></p>',
+                            '<p>ab<i class="fa fa-pastafarianism" contenteditable="false">\u200b</i><span>[]d</span></p>',
+                        contentAfter: '<p>ab<i class="fa fa-pastafarianism"></i><span>[]d</span></p>',
                     });
                 });
                 it('should not delete a fontawesome', async () => {

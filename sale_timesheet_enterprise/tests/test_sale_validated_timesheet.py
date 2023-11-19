@@ -57,7 +57,7 @@ class TestSaleValidatedTimesheet(TestCommonSaleTimesheet):
         self.assertEqual(len(self.sale_order.project_ids), 1, "One project should have been created on SO confirmation")
         self.assertEqual(self.sale_order.analytic_account_id, project_1.analytic_account_id, "The created project should be linked to the analytic account of the SO")
 
-        yesterday = date.today() - relativedelta(days=1)
+        today = date.today()
         week_before = date.today() + relativedelta(weeks=-1)
         # log timesheet on task of delivered So line
         delivered_timesheet1 = self.env['account.analytic.line'].create({
@@ -74,7 +74,7 @@ class TestSaleValidatedTimesheet(TestCommonSaleTimesheet):
             'task_id': delivered_task.id,
             'unit_amount': 4,
             'employee_id': self.employee_user.id,
-            'date': yesterday,
+            'date': today,
         })
         # log timesheet on task of ordered so line
         ordered_timesheet1 = self.env['account.analytic.line'].create({
@@ -91,7 +91,7 @@ class TestSaleValidatedTimesheet(TestCommonSaleTimesheet):
             'task_id': ordered_task.id,
             'unit_amount': 2,
             'employee_id': self.employee_user.id,
-            'date': yesterday,
+            'date': today,
         })
 
         # check not any timesheet should be validated

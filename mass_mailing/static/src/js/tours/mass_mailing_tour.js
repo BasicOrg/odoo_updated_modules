@@ -1,18 +1,16 @@
-/** @odoo-module **/
+odoo.define('mass_mailing.mass_mailing_tour', function (require) {
+    "use strict";
 
-    import { registry } from "@web/core/registry";
-    import { stepUtils } from "@web_tour/tour_service/tour_utils";
-    import { _t } from "@web/core/l10n/translation";
+    const {_t} = require('web.core');
+    const {Markup} = require('web.utils');
+    var tour = require('web_tour.tour');
+    var now = moment();
 
-    import { markup } from "@odoo/owl";
-
-    const { DateTime } = luxon;
-
-    registry.category("web_tour.tours").add('mass_mailing_tour', {
+    tour.register('mass_mailing_tour', {
         url: '/web',
         rainbowManMessage: _t('Congratulations, I love your first mailing. :)'),
         sequence: 200,
-        steps: () => [stepUtils.showAppsMenuItem(), {
+    }, [tour.stepUtils.showAppsMenuItem(), {
         trigger: '.o_app[data-menu-xmlid="mass_mailing.mass_mailing_menu_root"]',
         content: _t("Let's try the Email Marketing app."),
         width: 225,
@@ -25,13 +23,13 @@
     }, {
         trigger: '.o_list_button_add',
         extra_trigger: '.o_mass_mailing_mailing_tree',
-        content: markup(_t("Start by creating your first <b>Mailing</b>.")),
+        content: Markup(_t("Start by creating your first <b>Mailing</b>.")),
         position: 'bottom',
     }, {
         trigger: 'input[name="subject"]',
-        content: markup(_t('Pick the <b>email subject</b>.')),
+        content: Markup(_t('Pick the <b>email subject</b>.')),
         position: 'bottom',
-        run: 'text ' + DateTime.now().toFormat("LLLL") + " Newsletter",
+        run: 'text ' + now.format("MMMM") + " Newsletter",
     }, {
         trigger: 'div[name="contact_list_ids"] > .o_input_dropdown > input[type="text"]',
         run: 'click',
@@ -42,13 +40,13 @@
         auto: true,
     }, {
         trigger: 'div[name="body_arch"] iframe #newsletter',
-        content: markup(_t('Choose this <b>theme</b>.')),
+        content: Markup(_t('Choose this <b>theme</b>.')),
         position: 'left',
         edition: 'enterprise',
         run: 'click',
     }, {
         trigger: 'div[name="body_arch"] iframe #default',
-        content: markup(_t('Choose this <b>theme</b>.')),
+        content: Markup(_t('Choose this <b>theme</b>.')),
         position: 'right',
         edition: 'community',
         run: 'click',
@@ -88,8 +86,9 @@
         run: "click",
     }, {
         trigger: '.o_back_button',
-        content: markup(_t("By using the <b>Breadcrumb</b>, you can navigate back to the overview.")),
+        content: Markup(_t("By using the <b>Breadcrumb</b>, you can navigate back to the overview.")),
         position: 'bottom',
         run: 'click',
     }]
+    );
 });

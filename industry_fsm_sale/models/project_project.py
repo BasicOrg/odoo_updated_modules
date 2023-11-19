@@ -3,7 +3,6 @@
 
 from odoo import api, fields, models
 from odoo.osv import expression
-from odoo.tools import SQL
 
 
 class Project(models.Model):
@@ -20,7 +19,7 @@ class Project(models.Model):
     _sql_constraints = [
         ('material_imply_billable', "CHECK((allow_material = 't' AND allow_billable = 't') OR (allow_material = 'f'))", 'The material can be allowed only when the task can be billed.'),
         ('fsm_imply_task_rate', "CHECK((is_fsm = 't' AND sale_line_id IS NULL) OR (is_fsm = 'f'))", 'An FSM project must be billed at task rate or employee rate.'),
-        ('timesheet_product_required_if_billable_and_time', """
+        ('timesheet_product_required_if_billable_and_timesheets_and_fsm_projects', """
             CHECK(
                 (allow_billable = 't' AND allow_timesheets = 't' AND is_fsm = 't' AND timesheet_product_id IS NOT NULL)
                 OR (allow_billable IS NOT TRUE)
@@ -31,9 +30,6 @@ class Project(models.Model):
                 OR (is_fsm IS NULL)
             )""", 'The timesheet product is required when the fsm project can be billed and timesheets are allowed.'),
     ]
-
-    def _get_hide_partner(self):
-        return super()._get_hide_partner() and not self.is_fsm
 
     @api.model
     def default_get(self, fields_list):
@@ -119,25 +115,21 @@ class Project(models.Model):
         fsm_projects.update({'sale_line_id': False})
         super(Project, self - fsm_projects)._compute_sale_line_id()
 
+    @api.depends('partner_id', 'pricing_type', 'is_fsm')
+    def _compute_display_create_order(self):
+        fsm_projects = self.filtered('is_fsm')
+        fsm_projects.update({'display_create_order': False})
+        super(Project, self - fsm_projects)._compute_display_create_order()
+
     @api.depends('sale_line_employee_ids.sale_line_id', 'sale_line_id')
     def _compute_partner_id(self):
         basic_projects = self.filtered(lambda project: not project.is_fsm)
         super(Project, basic_projects)._compute_partner_id()
 
-    @api.depends('is_fsm')
-    def _compute_display_sales_stat_buttons(self):
-        fsm_projects = self.filtered('is_fsm')
-        fsm_projects.display_sales_stat_buttons = False
-        super(Project, self - fsm_projects)._compute_display_sales_stat_buttons()
-
     def _get_profitability_sale_order_items_domain(self, domain=None):
         quotation_projects = self.filtered('allow_quotations')
         if quotation_projects:
-            include_additional_sale_orders = [
-                ('order_id', 'in', quotation_projects._get_additional_quotations([
-                    ('state', '=', 'sale'),
-                ]).ids)
-            ]
+            include_additional_sale_orders = [('order_id', 'in', quotation_projects._get_additional_quotations([('state', 'in', ['sale', 'done'])]).ids)]
             domain = include_additional_sale_orders \
                 if domain is None \
                 else expression.OR([domain, include_additional_sale_orders])
@@ -149,14 +141,12 @@ class Project(models.Model):
         SaleOrder = self.env['sale.order']
         query = SaleOrder._where_calc(expression.AND([domain, [('task_id', '!=', False)]]))
         SaleOrder._apply_ir_rules(query, 'read')
-        task_alias = query.make_alias(SaleOrder._table, 'task_id')
-        query.add_join("JOIN", task_alias, 'project_task', SQL(
-            "%s = %s AND %s IN %s",
-            SQL.identifier(SaleOrder._table, 'task_id'),
-            SQL.identifier(task_alias, 'id'),
-            SQL.identifier(task_alias, 'project_id'),
-            tuple(self.ids),
-        ))
+        query.join(
+            SaleOrder._table, 'task_id',
+            'project_task', 'id',
+            'task_id',
+            '{rhs}."project_id" in (%s)', (','.join(map(str, self.ids)),),
+        )
         return query
 
     def _get_additional_quotations(self, domain=None):

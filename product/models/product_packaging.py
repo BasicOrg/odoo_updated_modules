@@ -17,7 +17,7 @@ class ProductPackaging(models.Model):
 
     name = fields.Char('Product Packaging', required=True)
     sequence = fields.Integer('Sequence', default=1, help="The first in the sequence is the default one.")
-    product_id = fields.Many2one('product.product', string='Product', check_company=True, required=True, ondelete="cascade")
+    product_id = fields.Many2one('product.product', string='Product', check_company=True)
     qty = fields.Float('Contained Quantity', default=1, digits='Product Unit of Measure', help="Quantity of products contained in the packaging.")
     barcode = fields.Char('Barcode', copy=False, help="Barcode used for packaging identification. Scan this packaging barcode from a transfer in the Barcode app to move all the contained units")
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', readonly=True)
@@ -64,17 +64,3 @@ class ProductPackaging(models.Model):
             if new_qty == product_qty:
                 return packaging
         return self.env['product.packaging']
-
-    def _compute_qty(self, qty, qty_uom=False):
-        """Returns the qty of this packaging that qty converts to.
-        A float is returned because there are edge cases where some users use
-        "part" of a packaging
-
-        :param qty: float of product quantity (given in product UoM if no qty_uom provided)
-        :param qty_uom: Optional uom of quantity
-        :returns: float of packaging qty
-        """
-        self.ensure_one()
-        if qty_uom:
-            qty = qty_uom._compute_quantity(qty, self.product_uom_id)
-        return float_round(qty / self.qty, precision_rounding=self.product_uom_id.rounding)

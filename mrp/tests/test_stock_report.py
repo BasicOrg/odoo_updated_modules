@@ -76,10 +76,10 @@ class TestMrpStockReports(TestReportsCommon):
         self.assertEqual(len(lines), 2, "Must have two line.")
         line_1 = lines[0]
         line_2 = lines[1]
-        self.assertEqual(line_1['document_in']['id'], mo_1.id)
+        self.assertEqual(line_1['document_in'].id, mo_1.id)
         self.assertEqual(line_1['quantity'], 4)
-        self.assertEqual(line_1['document_out']['id'], mo_2.id)
-        self.assertEqual(line_2['document_in']['id'], mo_1.id)
+        self.assertEqual(line_1['document_out'].id, mo_2.id)
+        self.assertEqual(line_2['document_in'].id, mo_1.id)
         self.assertEqual(line_2['quantity'], 6)
         self.assertEqual(line_2['document_out'], False)
         self.assertEqual(draft_picking_qty['in'], 0)
@@ -123,7 +123,7 @@ class TestMrpStockReports(TestReportsCommon):
         pick = mo_1.move_raw_ids.move_orig_ids.picking_id
         pick_form = Form(pick)
         with pick_form.move_line_ids_without_package.edit(0) as move_line:
-            move_line.quantity = 20
+            move_line.qty_done = 20
         pick = pick_form.save()
         pick.button_validate()
         # Produces 3 products then creates a backorder for the remaining product.
@@ -139,7 +139,7 @@ class TestMrpStockReports(TestReportsCommon):
         # Checks the forecast report.
         report_values, docs, lines = self.get_report_forecast(product_template_ids=product_apple_pie.product_tmpl_id.ids)
         self.assertEqual(len(lines), 1, "Must have only one line about the backorder")
-        self.assertEqual(lines[0]['document_in']['id'], mo_2.id)
+        self.assertEqual(lines[0]['document_in'].id, mo_2.id)
         self.assertEqual(lines[0]['quantity'], 1)
         self.assertEqual(lines[0]['document_out'], False)
 
@@ -180,7 +180,7 @@ class TestMrpStockReports(TestReportsCommon):
             context = mo.action_product_forecast_report()['context']
             _, _, lines = self.get_report_forecast(product_template_ids=product_banana.product_tmpl_id.ids, context=context)
             for line in lines:
-                if line['document_in']['id'] == mo.id:
+                if line['document_in'] == mo:
                     self.assertTrue(line['is_matched'], "The corresponding MO line should be matched in the forecast report.")
                 else:
                     self.assertFalse(line['is_matched'], "A line of the forecast report not linked to the MO shoud not be matched.")
@@ -236,7 +236,7 @@ class TestMrpStockReports(TestReportsCommon):
         picking = picking_form.save()
         picking.action_confirm()
 
-        picking.move_ids.write({'quantity': 1, 'picked': True})
+        picking.move_ids.quantity_done = 1
         move = picking.move_ids.filtered(lambda m: m.name == "Super Kit" and m.product_id == compo03)
         move.move_line_ids.result_package_id = self.env['stock.quant.package'].create({'name': 'Package0001'})
         picking.button_validate()
@@ -246,7 +246,7 @@ class TestMrpStockReports(TestReportsCommon):
         keys = [
             "Package0001", "Compo 03",
             "Products with no package assigned", "Compo 01", "Compo 02",
-            "Super Kit", "Compo 01",
+            "Super Kit", "Compo 01", "Compo 02",
             "Sub Kit", "Compo 02", "Compo 03",
         ]
         for line in html_report:
@@ -254,6 +254,4 @@ class TestMrpStockReports(TestReportsCommon):
                 break
             if keys[0] in line:
                 keys = keys[1:]
-
-
         self.assertFalse(keys, "All keys should be in the report with the defined order")

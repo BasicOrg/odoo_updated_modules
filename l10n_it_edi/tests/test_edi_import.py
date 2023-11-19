@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import uuid
-from unittest.mock import patch
+import datetime
+import logging
+from freezegun import freeze_time
+from lxml import etree
 
-from odoo import fields, sql_db, tools
+from odoo import tools
 from odoo.tests import tagged
-from odoo.addons.l10n_it_edi.tests.common import TestItEdi
+from odoo.addons.l10n_it_edi.tests.common import TestItEdi, patch_proxy_user
+from odoo.addons.l10n_it_edi.tools.remove_signature import remove_signature
 
+_logger = logging.getLogger(__name__)
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
 class TestItEdiImport(TestItEdi):
@@ -37,105 +41,96 @@ class TestItEdiImport(TestItEdi):
           </FatturaElettronicaBody>
         </p:FatturaElettronica>"""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass(chart_template_ref='l10n_it.l10n_it_chart_template_generic',
+                           edi_format_ref='l10n_it_edi.edi_fatturaPA')
+
+        # Build test data.
+        # invoice_filename1 is used for vendor bill receipts tests
+        # invoice_filename2 is used for vendor bill tests
+        cls.invoice_filename1 = 'IT01234567890_FPR01.xml'
+        cls.invoice_filename2 = 'IT01234567890_FPR02.xml'
+        cls.signed_invoice_filename = 'IT01234567890_FPR01.xml.p7m'
+        cls.invoice_content = cls._get_test_file_content(cls.invoice_filename1)
+        cls.signed_invoice_content = cls._get_test_file_content(cls.signed_invoice_filename)
+        cls.invoice = cls.env['account.move'].create({
+            'move_type': 'in_invoice',
+            'ref': '01234567890'
+        })
+        cls.attachment = cls.env['ir.attachment'].create({
+            'name': cls.invoice_filename1,
+            'raw': cls.invoice_content,
+            'res_id': cls.invoice.id,
+            'res_model': 'account.move',
+        })
+        cls.edi_document = cls.env['account.edi.document'].create({
+            'edi_format_id': cls.edi_format.id,
+            'move_id': cls.invoice.id,
+            'attachment_id': cls.attachment.id,
+            'state': 'sent'
+        })
+
+        cls.test_invoice_xmls = {k: cls._get_test_file_content(v) for k, v in [
+            ('normal_1', 'IT01234567890_FPR01.xml'),
+            ('signed', 'IT01234567890_FPR01.xml.p7m'),
+        ]}
+
+    @classmethod
+    def _get_test_file_content(cls, filename):
+        """ Get the content of a test file inside this module """
+        path = 'l10n_it_edi/tests/expected_xmls/' + filename
+        with tools.file_open(path, mode='rb') as test_file:
+            return test_file.read()
+
     # -----------------------------
+    #
     # Vendor bills
+    #
     # -----------------------------
 
     def test_receive_vendor_bill(self):
-        """ Test a sample e-invoice file from
-        https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.2/IT01234567890_FPR01.xml
-        """
-        self._assert_import_invoice('IT01234567890_FPR01.xml', [{
-            'invoice_date': fields.Date.from_string('2014-12-18'),
-            'amount_untaxed': 5.0,
-            'amount_tax': 1.1,
-            'invoice_line_ids': [{
-                'quantity': 5.0,
-                'price_unit': 1.0,
-            }],
-        }])
+        """ Test a sample e-invoice file from https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.2/IT01234567890_FPR01.xml """
+        content = etree.fromstring(self.invoice_content)
+        invoices = self.edi_format._create_invoice_from_xml_tree(self.invoice_filename2, content)
+        self.assertTrue(bool(invoices))
 
     def test_receive_signed_vendor_bill(self):
-        """ Test a signed (P7M) sample e-invoice file from
-        https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.2/IT01234567890_FPR01.xml
-        """
-        self._assert_import_invoice('IT01234567890_FPR01.xml.p7m', [{
-            'name': 'BILL/2014/12/0001',
-            'ref': '01234567890',
-            'invoice_date': fields.Date.from_string('2014-12-18'),
-            'amount_untaxed': 5.0,
-            'amount_tax': 1.1,
-            'invoice_line_ids': [{
-                'quantity': 5.0,
-                'price_unit': 1.0,
-            }],
-        }])
+        """ Test a signed (P7M) sample e-invoice file from https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.2/IT01234567890_FPR01.xml """
+        with freeze_time('2020-04-06'):
+            content = etree.fromstring(remove_signature(self.signed_invoice_content))
+            invoices = self.edi_format._create_invoice_from_xml_tree(self.signed_invoice_filename, content)
 
+            self.assertRecordValues(invoices, [{
+                'company_id': self.company.id,
+                'name': 'BILL/2014/12/0001',
+                'invoice_date': datetime.date(2014, 12, 18),
+                'ref': '01234567890',
+            }])
+
+    @patch_proxy_user
     def test_receive_same_vendor_bill_twice(self):
         """ Test that the second time we are receiving an SdiCoop invoice, the second is discarded """
 
-        # Our test content is not encrypted
-        ProxyUser = self.env['account_edi_proxy_client.user']
-        proxy_user = ProxyUser.create({
-            'company_id': self.company.id,
-            'proxy_type': 'l10n_it_edi',
-            'id_client': str(uuid.uuid4()),
-            'edi_identification': ProxyUser._get_proxy_identification(self.company, 'l10n_it_edi'),
-            'private_key': str(uuid.uuid4()),
-        })
+        # The make_request function is called twice when running the _cron_receive_fattura_pa
+        # first to the /in/RicezioneInvoice endpoint (to find new incoming invoices)
+        # second to the /api/l10n_it_edi/1/ack to acknowledge the invoices have been recieved
+        content = self.fake_test_content.encode()
+        fake_responses = [
+            # Response of the format id_transaction: fattura dict
+            {'9999999999': {'filename': self.invoice_filename2, 'key': '123', 'file': content}},
+            # The response from the _make_request for the ack can be None
+            None,
+        ] * 2 # Since the cron is run twice, and we want the fake results both times
+        self.proxy_user._make_request.side_effect = fake_responses
+        # When calling the decrypt function, the file we're accessing is already decrypted, just return the file
+        self.proxy_user._decrypt_data.side_effect = lambda file, _key: file
+        # In order for the cron function to progress to the point that it imports, we cannot be in demo mode
+        self.proxy_user._get_demo_state.return_value = 'unit_test'
 
-        filename = 'IT01234567890_FPR02.xml'
-
-        def mock_commit(self):
-            pass
-
-        with (patch.object(proxy_user.__class__, '_decrypt_data', return_value=self.fake_test_content),
-              patch.object(sql_db.Cursor, "commit", mock_commit),
-              tools.mute_logger("odoo.addons.l10n_it_edi.models.account_move")):
-            for dummy in range(2):
-                self.env['account.move']._l10n_it_edi_process_downloads({
-                    '999999999': {
-                        'filename': filename,
-                        'file': self.fake_test_content,
-                        'key': str(uuid.uuid4()),
-                    }},
-                    proxy_user,
-                )
-
+        self.edi_format.with_context({'test_skip_commit': True})._cron_receive_fattura_pa()
         # There should be one attachement with this filename
-        attachments = self.env['ir.attachment'].search([
-            ('name', '=', 'IT01234567890_FPR02.xml'),
-            ('res_model', '=', 'account.move'),
-            ('res_field', '=', 'l10n_it_edi_attachment_file'),
-        ])
-        self.assertEqual(len(attachments), 1)
-        invoices = self.env['account.move'].search([('payment_reference', '=', 'TWICE_TEST')])
-        self.assertEqual(len(invoices), 1)
-
-    def test_receive_bill_with_global_discount(self):
-        applied_xml = """
-            <xpath expr="//FatturaElettronicaBody/DatiGenerali/DatiGeneraliDocumento" position="inside">
-                <ScontoMaggiorazione>
-                    <Tipo>SC</Tipo>
-                    <Importo>2</Importo>
-                </ScontoMaggiorazione>
-            </xpath>
-        """
-
-        self._assert_import_invoice('IT01234567890_FPR01.xml', [{
-            'invoice_date': fields.Date.from_string('2014-12-18'),
-            'amount_untaxed': 3.0,
-            'amount_tax': 1.1,
-            'invoice_line_ids': [
-                {
-                    'quantity': 5.0,
-                    'name': 'DESCRIZIONE DELLA FORNITURA',
-                    'price_unit': 1.0,
-                },
-                {
-                    'quantity': 1.0,
-                    'name': 'SCONTO',
-                    'price_unit': -2,
-                }
-            ],
-        }], applied_xml)
+        attachment = self.env['ir.attachment'].search([('name', '=', self.invoice_filename2)])
+        self.assertEqual(len(attachment), 1)
+        invoice = self.env['account.move'].search([('payment_reference', '=', 'TWICE_TEST')])
+        self.assertEqual(len(invoice), 1)

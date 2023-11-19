@@ -15,14 +15,10 @@ class HrContract(models.Model):
         return self.employee_id.user_id
 
     def _get_document_partner(self):
-        return self.employee_id.work_contact_id
+        return self.employee_id.address_home_id
 
     def _get_document_folder(self):
         return self.company_id.documents_hr_folder
 
     def _check_create_documents(self):
         return self.company_id.documents_hr_settings and super()._check_create_documents()
-
-    def _get_sign_request_folder(self):
-        self.ensure_one()
-        return self.company_id.documents_hr_folder

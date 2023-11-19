@@ -2,13 +2,8 @@
 
 import { useService } from '@web/core/utils/hooks';
 import { KanbanRenderer } from '@web/views/kanban/kanban_renderer';
-import { HelpdeskTicketKanbanHeader } from './helpdesk_ticket_kanban_header';
 
 export class HelpdeskTicketRenderer extends KanbanRenderer {
-    static components = {
-        ...KanbanRenderer.components,
-        KanbanHeader: HelpdeskTicketKanbanHeader,
-    };
     setup() {
         super.setup();
         this.action = useService('action');
@@ -26,9 +21,5 @@ export class HelpdeskTicketRenderer extends KanbanRenderer {
             return;
         }
         super.deleteGroup(group);
-    }
-
-    canCreateGroup() {
-        return super.canCreateGroup() && this.props.list.context.active_model === "helpdesk.team";
     }
 }

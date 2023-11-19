@@ -6,7 +6,7 @@
         <field name="model">purchase.bill.union</field>
         <field name="arch" type="xml">
             <search string="Search Reference Document">
-                <field name="name" string="Reference" filter_domain="['|', ('name','ilike',self), ('reference','=like',self+'%')]"/>
+                <field name="name" string="Reference" filter_domain="['|', ('name','ilike',self), ('reference','=like',str(self)+'%')]"/>
                 <field name="amount"/>
                 <separator/>
                 <field name="partner_id" operator="child_of"/>
@@ -27,7 +27,7 @@
                 <field name="partner_id"/>
                 <field name="date"/>
                 <field name="amount"/>
-                <field name="currency_id" column_invisible="True"/>
+                <field name="currency_id" invisible="1"/>
                 <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
             </tree>
         </field>

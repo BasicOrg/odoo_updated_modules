@@ -3,16 +3,17 @@
 # 	* documents_project
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Braulio D. López Vázquez <bdl@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-27 15:41+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Braulio D. López Vázquez <bdl@odoo.com>, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: documents_project
-#. odoo-python
 #: code:addons/documents_project/models/project_project.py:0
 #, python-format
 msgid "%(project_name)s's Documents"
@@ -62,7 +62,6 @@ msgstr "Crear"
 
 #. module: documents_project
 #: model:documents.workflow.rule,name:documents_project.documents_project_rule
-#: model:documents.workflow.rule,name:documents_project.documents_project_rule_task
 msgid "Create a Task"
 msgstr "Crear una tarea"
 
@@ -78,26 +77,22 @@ msgstr "Obsoletizar"
 
 #. module: documents_project
 #: model:documents.tag,name:documents_project.documents_project_status_deprecated
-msgid "Deprecated"
-msgstr "Obsoleto"
+msgid "Deprectated"
+msgstr ""
 
 #. module: documents_project
 #: model:ir.model,name:documents_project.model_documents_document
 #: model:ir.model.fields,field_description:documents_project.field_ir_attachment__document_ids
-#: model:ir.model.fields,field_description:documents_project.field_mrp_document__document_ids
-#: model:ir.model.fields,field_description:documents_project.field_product_document__document_ids
 msgid "Document"
 msgstr "Documento"
 
 #. module: documents_project
-#. odoo-python
 #: code:addons/documents_project/models/project_project.py:0
 #: model:ir.actions.act_window,name:documents_project.action_view_documents_project_task
 #: model:ir.model.fields,field_description:documents_project.field_project_project__use_documents
 #: model:ir.model.fields,field_description:documents_project.field_project_task__document_ids
 #: model_terms:ir.ui.view,arch_db:documents_project.portal_my_task
 #: model_terms:ir.ui.view,arch_db:documents_project.portal_tasks_list
-#: model_terms:ir.ui.view,arch_db:documents_project.project_sharing_project_task_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:documents_project.project_view_kanban_inherit_documents
 #: model_terms:ir.ui.view,arch_db:documents_project.view_task_form2_document_inherit
 #, python-format
@@ -120,23 +115,9 @@ msgid "Draft"
 msgstr "Borrador"
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_document.py:0
-#, python-format
-msgid "Invalid project search"
-msgstr ""
-
-#. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_document.py:0
-#, python-format
-msgid "Invalid task search"
-msgstr ""
-
-#. module: documents_project
 #: model:ir.model.fields,field_description:documents_project.field_documents_document__is_shared
 msgid "Is Shared"
-msgstr "Es compartido"
+msgstr ""
 
 #. module: documents_project
 #: model:documents.workflow.rule,name:documents_project.documents_project_rule_mark_as_draft
@@ -144,15 +125,13 @@ msgid "Mark As Draft"
 msgstr "Marcar como borrador"
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_folder.py:0
+#: code:addons/documents_project/models/folder.py:0
 #, python-format
 msgid "Merged Workspace"
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_workflow_rule.py:0
+#: code:addons/documents_project/models/workflow.py:0
 #, python-format
 msgid "New task from Documents"
 msgstr ""
@@ -169,9 +148,7 @@ msgstr ""
 
 #. module: documents_project
 #: model:ir.model,name:documents_project.model_project_project
-#: model:ir.model.fields,field_description:documents_project.field_documents_document__project_id
 #: model:ir.model.fields,field_description:documents_project.field_documents_folder__project_ids
-#: model_terms:ir.ui.view,arch_db:documents_project.document_view_search_inherit
 msgid "Project"
 msgstr "Proyecto"
 
@@ -188,7 +165,6 @@ msgstr "Documentos compartidos"
 
 #. module: documents_project
 #: model:ir.model.fields,field_description:documents_project.field_project_project__shared_document_count
-#: model:ir.model.fields,field_description:documents_project.field_project_task__shared_document_count
 msgid "Shared Documents Count"
 msgstr ""
 
@@ -199,36 +175,18 @@ msgstr "Estado"
 
 #. module: documents_project
 #: model:ir.model,name:documents_project.model_project_task
-#: model:ir.model.fields,field_description:documents_project.field_documents_document__task_id
 #: model:ir.model.fields.selection,name:documents_project.selection__documents_workflow_rule__create_model__project_task
-#: model_terms:ir.ui.view,arch_db:documents_project.document_view_search_inherit
 msgid "Task"
 msgstr "Tarea"
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_workflow_rule.py:0
+#: code:addons/documents_project/models/workflow.py:0
 #, python-format
-msgid "Task created from document %s"
+msgid "Task created from document"
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_workflow_rule.py:0
-#, python-format
-msgid "Task created from documents"
-msgstr ""
-
-#. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/project_task.py:0
-#, python-format
-msgid "Task's Documents"
-msgstr ""
-
-#. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_folder.py:0
+#: code:addons/documents_project/models/folder.py:0
 #, python-format
 msgid ""
 "The \"%s\" workspace is required by the Project application and cannot be "
@@ -236,7 +194,6 @@ msgid ""
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
 #: code:addons/documents_project/models/project_project.py:0
 #, python-format
 msgid ""
@@ -245,8 +202,7 @@ msgid ""
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_folder.py:0
+#: code:addons/documents_project/models/folder.py:0
 #, python-format
 msgid ""
 "This workspace should remain in the same company as the \"%s\" project to "
@@ -255,8 +211,7 @@ msgid ""
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_folder.py:0
+#: code:addons/documents_project/models/folder.py:0
 #, python-format
 msgid ""
 "This workspace should remain in the same company as the following projects to which it is linked:\n"
@@ -308,7 +263,6 @@ msgid ""
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
 #: code:addons/documents_project/models/project_project.py:0
 #, python-format
 msgid ""
@@ -319,20 +273,12 @@ msgid ""
 msgstr ""
 
 #. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_folder.py:0
+#: code:addons/documents_project/models/folder.py:0
 #, python-format
-msgid "You cannot set a company on the %s workspace."
+msgid "You cannot set a company on the Projects workspace."
 msgstr ""
 
 #. module: documents_project
 #: model_terms:ir.ui.view,arch_db:documents_project.share_page
 msgid "documents shared"
-msgstr ""
-
-#. module: documents_project
-#. odoo-python
-#: code:addons/documents_project/models/documents_workflow_rule.py:0
-#, python-format
-msgid "new %s from %s"
 msgstr ""

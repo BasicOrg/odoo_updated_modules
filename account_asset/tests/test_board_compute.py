@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 
 from freezegun import freeze_time
 from odoo.tests.common import tagged
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
-from odoo import fields
 
 
 @freeze_time('2022-07-01')
@@ -12,42 +12,35 @@ from odoo import fields
 class TestAccountAssetNew(AccountTestInvoicingCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref)
-        cls.car = cls.create_asset(value=60000, periodicity="yearly", periods=5, method="linear", salvage_value=0)
+    def setUpClass(cls):
+        super().setUpClass()
 
-    @classmethod
-    def create_asset(cls, value, periodicity, periods, degressive_factor=None, import_depreciation=0, **kwargs):
-        if degressive_factor is not None:
-            kwargs["method_progress_factor"] = degressive_factor
-        return cls.env['account.asset'].create({
-            'name': 'nice asset',
+        cls.car = cls.env['account.asset'].create({
             'account_asset_id': cls.company_data['default_account_assets'].id,
             'account_depreciation_id': cls.company_data['default_account_assets'].copy().id,
             'account_depreciation_expense_id': cls.company_data['default_account_expense'].id,
             'journal_id': cls.company_data['default_journal_misc'].id,
-            'acquisition_date': "2020-02-01",
+            'asset_type': 'purchase',
+            'name': 'Ranger Rover',
+            'acquisition_date': '2020-02-01',
             'prorata_computation_type': 'none',
-            'original_value': value,
+            'original_value': 60000,
             'salvage_value': 0,
-            'method_number': periods,
-            'method_period': '12' if periodicity == "yearly" else '1',
-            'method': "linear",
-            'already_depreciated_amount_import': import_depreciation,
-            **kwargs,
+            'method_number': 5,
+            'method_period': '12',
+            'method': 'linear',
         })
 
-    @classmethod
-    def _get_depreciation_move_values(cls, date, depreciation_value, remaining_value, depreciated_value, state):
+    def _get_depreciation_move_values(self, date, depreciation_value, remaining_value, depreciated_value, state):
         return {
-            'date': fields.Date.from_string(date),
+            'date': datetime.datetime.strptime(date, '%Y-%m-%d').date(),
             'depreciation_value': depreciation_value,
             'asset_remaining_value': remaining_value,
             'asset_depreciated_value': depreciated_value,
             'state': state,
         }
 
-    def test_linear_5_years_no_prorata_asset(self):
+    def test_linear_purchase_5_years_no_prorata_asset(self):
         self.car.validate()
 
         self.assertEqual(self.car.state, 'open')
@@ -60,7 +53,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_linear_5_years_no_prorata_with_imported_amount_asset(self):
+    def test_linear_purchase_5_years_no_prorata_with_imported_amount_asset(self):
         self.car.write({'already_depreciated_amount_import': 1000})
         self.car.validate()
 
@@ -74,7 +67,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_linear_5_years_no_prorata_with_salvage_value_asset(self):
+    def test_linear_purchase_5_years_no_prorata_with_salvage_value_asset(self):
         self.car.write({'salvage_value': 1000})
         self.car.validate()
 
@@ -89,7 +82,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=11800, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_linear_5_years_constant_periods_asset(self):
+    def test_linear_purchase_5_years_constant_periods_asset(self):
         self.car.write({
             'prorata_computation_type': 'constant_periods',
             'prorata_date': '2020-07-01',
@@ -107,7 +100,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2025-12-31', depreciation_value=6000, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_linear_5_years_daily_computation_asset(self):
+    def test_linear_purchase_5_years_daily_computation_asset(self):
         self.car.write({
             'prorata_computation_type': 'daily_computation',
             'prorata_date': '2020-07-01',
@@ -125,7 +118,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2025-12-31', depreciation_value=5947.43, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_degressive_5_years_no_prorata_asset(self):
+    def test_degressive_purchase_5_years_no_prorata_asset(self):
         self.car.write({
             'method': 'degressive',
             'method_progress_factor': 0.3,
@@ -142,7 +135,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=14406, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_degressive_5_years_no_prorata_with_imported_amount_asset(self):
+    def test_degressive_purchase_5_years_no_prorata_with_imported_amount_asset(self):
         self.car.write({
             'method': 'degressive',
             'method_progress_factor': 0.3,
@@ -160,7 +153,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=14406, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_degressive_5_years_no_prorata_with_salvage_value_asset(self):
+    def test_degressive_purchase_5_years_no_prorata_with_salvage_value_asset(self):
         self.car.write({
             'method': 'degressive',
             'method_progress_factor': 0.3,
@@ -179,188 +172,61 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=14165.9, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_degressive_then_linear_5_years_no_prorata_asset(self):
-        asset = self.create_asset(value=60000, periodicity="yearly", periods=5, method="degressive_then_linear", degressive_factor=0.3)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertEqual(asset.book_value, 29400)
-        self.assertRecordValues(asset.depreciation_move_ids, [
+    def test_degressive_then_linear_purchase_5_years_no_prorata_asset(self):
+        self.car.write({
+            'method': 'degressive_then_linear',
+            'method_progress_factor': 0.3,
+        })
+        self.car.validate()
+
+        self.assertEqual(self.car.state, 'open')
+        self.assertEqual(self.car.book_value, 29400)
+        self.assertRecordValues(self.car.depreciation_move_ids, [
             self._get_depreciation_move_values(date='2020-12-31', depreciation_value=18000, remaining_value=42000, depreciated_value=18000, state='posted'),
             self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12600, remaining_value=29400, depreciated_value=30600, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=17400, depreciated_value=42600, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=5400, depreciated_value=54600, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=5400, remaining_value=0, depreciated_value=60000, state='draft'),
+            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=9800, remaining_value=19600, depreciated_value=40400, state='draft'),
+            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=9800, remaining_value=9800, depreciated_value=50200, state='draft'),
+            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=9800, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_degressive_then_linear_5_years_no_prorata_negative_asset(self):
-        asset = self.create_asset(value=-60000, periodicity="yearly", periods=5, method="degressive_then_linear", degressive_factor=0.3)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertEqual(asset.book_value, -29400)
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=-18000, remaining_value=-42000, depreciated_value=-18000, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=-12600, remaining_value=-29400, depreciated_value=-30600, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=-12000, remaining_value=-17400, depreciated_value=-42600, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=-12000, remaining_value=-5400, depreciated_value=-54600, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=-5400, remaining_value=0, depreciated_value=-60000, state='draft'),
-        ])
+    def test_degressive_than_linear_purchase_5_years_no_prorata_with_imported_amount_asset(self):
+        self.car.write({
+            'method': 'degressive_then_linear',
+            'method_progress_factor': 0.3,
+            'already_depreciated_amount_import': 1000,
+        })
+        self.car.validate()
 
-    def test_degressive_than_linear_5_years_no_prorata_with_imported_amount_asset(self):
-        asset = self.create_asset(value=60000, periodicity="yearly", periods=5, method="degressive_then_linear", degressive_factor=0.3, import_depreciation=1000)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertEqual(asset.book_value, 29400)
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=18000-1000, remaining_value=42000, depreciated_value=17000, state='posted'),
+        self.assertEqual(self.car.state, 'open')
+        self.assertEqual(self.car.book_value, 29400)
+        self.assertRecordValues(self.car.depreciation_move_ids, [
+            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=17000, remaining_value=42000, depreciated_value=17000, state='posted'),
             self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12600, remaining_value=29400, depreciated_value=29600, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=17400, depreciated_value=41600, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=5400, depreciated_value=53600, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=5400, remaining_value=0, depreciated_value=59000, state='draft'),
+            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=9800, remaining_value=19600, depreciated_value=39400, state='draft'),
+            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=9800, remaining_value=9800, depreciated_value=49200, state='draft'),
+            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=9800, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_degressive_than_linear_5_years_no_prorata_with_imported_amount_negative_asset(self):
-        asset = self.create_asset(value=-60000, periodicity="yearly", periods=5, method="degressive_then_linear", degressive_factor=0.3, import_depreciation=-1000)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertEqual(asset.book_value, -29400)
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=-18000+1000, remaining_value=-42000, depreciated_value=-17000, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=-12600, remaining_value=-29400, depreciated_value=-29600, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=-12000, remaining_value=-17400, depreciated_value=-41600, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=-12000, remaining_value=-5400, depreciated_value=-53600, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=-5400, remaining_value=0, depreciated_value=-59000, state='draft'),
-        ])
+    def test_degressive_than_linear_purchase_5_years_no_prorata_with_salvage_value_asset(self):
+        self.car.write({
+            'method': 'degressive_then_linear',
+            'method_progress_factor': 0.3,
+            'salvage_value': 1000,
+        })
+        self.car.validate()
 
-    def test_degressive_than_linear_5_years_no_prorata_with_salvage_value_asset(self):
-        asset = self.create_asset(value=60000, periodicity="yearly", periods=5, salvage_value=1000, method="degressive_then_linear", degressive_factor=0.3)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertEqual(asset.value_residual, 28910)
-        self.assertEqual(asset.book_value, 28910 + 1000)
-        self.assertRecordValues(asset.depreciation_move_ids, [
+        self.assertEqual(self.car.state, 'open')
+        self.assertEqual(self.car.book_value, 29910)
+        self.assertEqual(self.car.value_residual, 28910)
+        self.assertRecordValues(self.car.depreciation_move_ids, [
             self._get_depreciation_move_values(date='2020-12-31', depreciation_value=17700, remaining_value=41300, depreciated_value=17700, state='posted'),
             self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12390, remaining_value=28910, depreciated_value=30090, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=11800, remaining_value=17110, depreciated_value=41890, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=11800, remaining_value=5310, depreciated_value=53690, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=5310, remaining_value=0, depreciated_value=59000, state='draft'),
+            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=9636.67, remaining_value=19273.33, depreciated_value=39726.67, state='draft'),
+            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=9636.67, remaining_value=9636.66, depreciated_value=49363.34, state='draft'),
+            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=9636.66, remaining_value=0, depreciated_value=59000, state='draft'),
         ])
 
-    def test_degressive_then_linear_36_month_constant_period_asset(self):
-        asset = self.create_asset(value=10000, periodicity="monthly", periods=36, method="degressive_then_linear", degressive_factor=0.4)
-        asset.validate()
-        self.assertEqual(asset.state, 'open')
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-01-31', depreciation_value=333.33, remaining_value=9666.67, depreciated_value=333.3300, state='posted'),
-            self._get_depreciation_move_values(date='2020-02-29', depreciation_value=333.33, remaining_value=9333.34, depreciated_value=666.660, state='posted'),
-            self._get_depreciation_move_values(date='2020-03-31', depreciation_value=333.33, remaining_value=9000.01, depreciated_value=999.990, state='posted'),
-            self._get_depreciation_move_values(date='2020-04-30', depreciation_value=333.33, remaining_value=8666.68, depreciated_value=1333.320, state='posted'),
-            self._get_depreciation_move_values(date='2020-05-31', depreciation_value=333.33, remaining_value=8333.35, depreciated_value=1666.650, state='posted'),
-            self._get_depreciation_move_values(date='2020-06-30', depreciation_value=333.33, remaining_value=8000.02, depreciated_value=1999.980, state='posted'),
-            self._get_depreciation_move_values(date='2020-07-31', depreciation_value=333.33, remaining_value=7666.69, depreciated_value=2333.310, state='posted'),
-            self._get_depreciation_move_values(date='2020-08-31', depreciation_value=333.33, remaining_value=7333.36, depreciated_value=2666.640, state='posted'),
-            self._get_depreciation_move_values(date='2020-09-30', depreciation_value=333.33, remaining_value=7000.03, depreciated_value=2999.970, state='posted'),
-            self._get_depreciation_move_values(date='2020-10-31', depreciation_value=333.33, remaining_value=6666.70, depreciated_value=3333.300, state='posted'),
-            self._get_depreciation_move_values(date='2020-11-30', depreciation_value=333.33, remaining_value=6333.37, depreciated_value=3666.630, state='posted'),
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=333.33, remaining_value=6000.04, depreciated_value=3999.960, state='posted'),
-
-            self._get_depreciation_move_values(date='2021-01-31', depreciation_value=277.78, remaining_value=5722.26, depreciated_value=4277.740, state='posted'),
-            self._get_depreciation_move_values(date='2021-02-28', depreciation_value=277.78, remaining_value=5444.48, depreciated_value=4555.520, state='posted'),
-            self._get_depreciation_move_values(date='2021-03-31', depreciation_value=277.78, remaining_value=5166.70, depreciated_value=4833.300, state='posted'),
-            self._get_depreciation_move_values(date='2021-04-30', depreciation_value=277.78, remaining_value=4888.92, depreciated_value=5111.080, state='posted'),
-            self._get_depreciation_move_values(date='2021-05-31', depreciation_value=277.78, remaining_value=4611.14, depreciated_value=5388.860, state='posted'),
-            self._get_depreciation_move_values(date='2021-06-30', depreciation_value=277.78, remaining_value=4333.36, depreciated_value=5666.640, state='posted'),
-            self._get_depreciation_move_values(date='2021-07-31', depreciation_value=277.78, remaining_value=4055.58, depreciated_value=5944.420, state='posted'),
-            self._get_depreciation_move_values(date='2021-08-31', depreciation_value=277.78, remaining_value=3777.80, depreciated_value=6222.200, state='posted'),
-            self._get_depreciation_move_values(date='2021-09-30', depreciation_value=277.78, remaining_value=3500.02, depreciated_value=6499.980, state='posted'),
-            self._get_depreciation_move_values(date='2021-10-31', depreciation_value=277.78, remaining_value=3222.24, depreciated_value=6777.760, state='posted'),
-            self._get_depreciation_move_values(date='2021-11-30', depreciation_value=277.78, remaining_value=2944.46, depreciated_value=7055.540, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=277.78, remaining_value=2666.68, depreciated_value=7333.320, state='posted'),
-
-            self._get_depreciation_move_values(date='2022-01-31', depreciation_value=277.78, remaining_value=2388.90, depreciated_value=7611.100, state='posted'),
-            self._get_depreciation_move_values(date='2022-02-28', depreciation_value=277.78, remaining_value=2111.12, depreciated_value=7888.880, state='posted'),
-            self._get_depreciation_move_values(date='2022-03-31', depreciation_value=277.78, remaining_value=1833.34, depreciated_value=8166.660, state='posted'),
-            self._get_depreciation_move_values(date='2022-04-30', depreciation_value=277.78, remaining_value=1555.56, depreciated_value=8444.440, state='posted'),
-            self._get_depreciation_move_values(date='2022-05-31', depreciation_value=277.78, remaining_value=1277.78, depreciated_value=8722.220, state='posted'),
-            self._get_depreciation_move_values(date='2022-06-30', depreciation_value=277.78, remaining_value=1000.00, depreciated_value=9000.000, state='posted'),
-            self._get_depreciation_move_values(date='2022-07-31', depreciation_value=277.78, remaining_value=722.22, depreciated_value=9277.780, state='draft'),
-            self._get_depreciation_move_values(date='2022-08-31', depreciation_value=277.78, remaining_value=444.44, depreciated_value=9555.560, state='draft'),
-            self._get_depreciation_move_values(date='2022-09-30', depreciation_value=277.78, remaining_value=166.66, depreciated_value=9833.340, state='draft'),
-            self._get_depreciation_move_values(date='2022-10-31', depreciation_value=166.66, remaining_value=0.00, depreciated_value=10000.000, state='draft'),
-        ])
-
-
-    @freeze_time('2022-06-15')
-    def test_asset_degressive_then_linear_prorata_start_middle_of_year(self):
-        """ Check the computation of an asset with degressive-linear method,
-            start at middle of the year
-        """
-        asset = self.create_asset(
-            value=10000,
-            periodicity="yearly",
-            periods=5,
-            method="degressive_then_linear",
-            degressive_factor=0.3,
-            acquisition_date="2021-07-01",
-            prorata_computation_type="constant_periods",
-        )
-        asset.validate()
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=1500.00, remaining_value=8500.00, depreciated_value=1500.0000, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=2550.00, remaining_value=5950.00, depreciated_value=4050.000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=2000.00, remaining_value=3950.00, depreciated_value=6050.000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=2000.00, remaining_value=1950.00, depreciated_value=8050.000, state='draft'),
-            self._get_depreciation_move_values(date='2025-12-31', depreciation_value=1950.00, remaining_value=0.00, depreciated_value=10000.000, state='draft'),
-        ])
-
-    def test_asset_degressive_then_linear_prorata_start_middle_of_year_monthly(self):
-        """ Check the computation of an asset with degressive-linear method,
-            start at middle of the year, monthly depreciations
-        """
-        asset = self.create_asset(
-            value=10000,
-            periodicity="monthly",
-            periods=36,
-            method="degressive_then_linear",
-            degressive_factor=0.6,
-            acquisition_date="2021-07-01",
-            prorata_computation_type="constant_periods",
-        )
-        asset.validate()
-        self.assertRecordValues(asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2021-07-31', depreciation_value=500.00, remaining_value=9500.00, depreciated_value=500.00, state='posted'),
-            self._get_depreciation_move_values(date='2021-08-31', depreciation_value=500.00, remaining_value=9000.00, depreciated_value=1000.00, state='posted'),
-            self._get_depreciation_move_values(date='2021-09-30', depreciation_value=500.00, remaining_value=8500.00, depreciated_value=1500.00, state='posted'),
-            self._get_depreciation_move_values(date='2021-10-31', depreciation_value=500.00, remaining_value=8000.00, depreciated_value=2000.00, state='posted'),
-            self._get_depreciation_move_values(date='2021-11-30', depreciation_value=500.00, remaining_value=7500.00, depreciated_value=2500.00, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=500.00, remaining_value=7000.00, depreciated_value=3000.00, state='posted'),
-
-            self._get_depreciation_move_values(date='2022-01-31', depreciation_value=350.00, remaining_value=6650.00, depreciated_value=3350.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-02-28', depreciation_value=350.00, remaining_value=6300.00, depreciated_value=3700.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-03-31', depreciation_value=350.00, remaining_value=5950.00, depreciated_value=4050.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-04-30', depreciation_value=350.00, remaining_value=5600.00, depreciated_value=4400.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-05-31', depreciation_value=350.00, remaining_value=5250.00, depreciated_value=4750.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-06-30', depreciation_value=350.00, remaining_value=4900.00, depreciated_value=5100.00, state='posted'),
-            self._get_depreciation_move_values(date='2022-07-31', depreciation_value=350.00, remaining_value=4550.00, depreciated_value=5450.00, state='draft'),
-            self._get_depreciation_move_values(date='2022-08-31', depreciation_value=350.00, remaining_value=4200.00, depreciated_value=5800.00, state='draft'),
-            self._get_depreciation_move_values(date='2022-09-30', depreciation_value=350.00, remaining_value=3850.00, depreciated_value=6150.00, state='draft'),
-            self._get_depreciation_move_values(date='2022-10-31', depreciation_value=350.00, remaining_value=3500.00, depreciated_value=6500.00, state='draft'),
-            self._get_depreciation_move_values(date='2022-11-30', depreciation_value=350.00, remaining_value=3150.00, depreciated_value=6850.00, state='draft'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=350.00, remaining_value=2800.00, depreciated_value=7200.00, state='draft'),
-
-            self._get_depreciation_move_values(date='2023-01-31', depreciation_value=277.78, remaining_value=2522.22, depreciated_value=7477.78, state='draft'),
-            self._get_depreciation_move_values(date='2023-02-28', depreciation_value=277.78, remaining_value=2244.44, depreciated_value=7755.56, state='draft'),
-            self._get_depreciation_move_values(date='2023-03-31', depreciation_value=277.78, remaining_value=1966.66, depreciated_value=8033.34, state='draft'),
-            self._get_depreciation_move_values(date='2023-04-30', depreciation_value=277.78, remaining_value=1688.88, depreciated_value=8311.12, state='draft'),
-            self._get_depreciation_move_values(date='2023-05-31', depreciation_value=277.78, remaining_value=1411.10, depreciated_value=8588.90, state='draft'),
-            self._get_depreciation_move_values(date='2023-06-30', depreciation_value=277.78, remaining_value=1133.32, depreciated_value=8866.68, state='draft'),
-            self._get_depreciation_move_values(date='2023-07-31', depreciation_value=277.78, remaining_value=855.54, depreciated_value=9144.46, state='draft'),
-            self._get_depreciation_move_values(date='2023-08-31', depreciation_value=277.78, remaining_value=577.76, depreciated_value=9422.24, state='draft'),
-            self._get_depreciation_move_values(date='2023-09-30', depreciation_value=277.78, remaining_value=299.98, depreciated_value=9700.02, state='draft'),
-            self._get_depreciation_move_values(date='2023-10-31', depreciation_value=277.78, remaining_value=22.20, depreciated_value=9977.80, state='draft'),
-            self._get_depreciation_move_values(date='2023-11-30', depreciation_value=22.20, remaining_value=0.00, depreciated_value=10000.00, state='draft'),
-        ])
-
-    def test_linear_60_months_no_prorata_asset(self):
+    def test_linear_purchase_60_months_no_prorata_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -436,7 +302,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=1000, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_linear_60_months_no_prorata_with_imported_amount_asset(self):
+    def test_linear_purchase_60_months_no_prorata_with_imported_amount_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -512,7 +378,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=1000.0, remaining_value=0.0, depreciated_value=58500.0, state='draft'),
         ])
 
-    def test_linear_60_months_no_prorata_with_salvage_value_asset(self):
+    def test_linear_purchase_60_months_no_prorata_with_salvage_value_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -591,7 +457,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=966.67, remaining_value=0.0, depreciated_value=58000.0, state='draft'),
         ])
 
-    def test_linear_60_months_constant_periods_asset(self):
+    def test_linear_purchase_60_months_constant_periods_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -670,7 +536,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2025-06-30', depreciation_value=1000, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_linear_60_months_daily_computation_asset(self):
+    def test_linear_purchase_60_months_daily_computation_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -750,7 +616,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2025-06-30', depreciation_value=985.76, remaining_value=0.0, depreciated_value=60000.0, state='draft'),
         ])
 
-    def test_degressive_60_months_no_prorata_asset(self):
+    def test_degressive_purchase_60_months_no_prorata_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -828,7 +694,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=10444.35, remaining_value=0, depreciated_value=60000, state='draft'),
         ])
 
-    def test_degressive_60_months_no_prorata_with_imported_amount_asset(self):
+    def test_degressive_purchase_60_months_no_prorata_with_imported_amount_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -906,7 +772,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=10444.35, remaining_value=0, depreciated_value=58000, state='draft'),
         ])
 
-    def test_degressive_60_months_no_prorata_with_salvage_value_asset(self):
+    def test_degressive_purchase_60_months_no_prorata_with_salvage_value_asset(self):
         self.car.write({
             'method_number': 60,
             'method_period': '1',
@@ -986,131 +852,7 @@ class TestAccountAssetNew(AccountTestInvoicingCommon):
             self._get_depreciation_move_values(date='2024-12-31', depreciation_value=10096.15, remaining_value=0, depreciated_value=58000, state='draft'),
         ])
 
-    def test_compute_board_in_mass(self):
-        book = self.create_asset(value=35, periodicity="monthly", periods=2, method="linear", salvage_value=0)
-        shelf = self.create_asset(value=250, periodicity="monthly", periods=8, method="linear", salvage_value=0)
-        screw = self.create_asset(value=1, periodicity="monthly", periods=1, method="linear", salvage_value=0)
-
-        (book + screw).validate()
-        (book + shelf + screw).compute_depreciation_board()
-
-        self.assertRecordValues(book.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-01-31', depreciation_value=17.5, remaining_value=17.5, depreciated_value=17.5, state='posted'),
-            self._get_depreciation_move_values(date='2020-02-29', depreciation_value=17.5, remaining_value=0, depreciated_value=35, state='posted'),
-        ])
-
-        self.assertRecordValues(shelf.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-01-31', depreciation_value=31.25, remaining_value=218.75, depreciated_value=31.25, state='draft'),
-            self._get_depreciation_move_values(date='2020-02-29', depreciation_value=31.25, remaining_value=187.5, depreciated_value=62.5, state='draft'),
-            self._get_depreciation_move_values(date='2020-03-31', depreciation_value=31.25, remaining_value=156.25, depreciated_value=93.75, state='draft'),
-            self._get_depreciation_move_values(date='2020-04-30', depreciation_value=31.25, remaining_value=125, depreciated_value=125, state='draft'),
-            self._get_depreciation_move_values(date='2020-05-31', depreciation_value=31.25, remaining_value=93.75, depreciated_value=156.25, state='draft'),
-            self._get_depreciation_move_values(date='2020-06-30', depreciation_value=31.25, remaining_value=62.5, depreciated_value=187.5, state='draft'),
-            self._get_depreciation_move_values(date='2020-07-31', depreciation_value=31.25, remaining_value=31.25, depreciated_value=218.75, state='draft'),
-            self._get_depreciation_move_values(date='2020-08-31', depreciation_value=31.25, remaining_value=0, depreciated_value=250, state='draft'),
-        ])
-
-        self.assertRecordValues(screw.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-01-31', depreciation_value=1, remaining_value=0, depreciated_value=1, state='posted'),
-        ])
-    def test_copy_prorata_date(self):
-        """ Verifies that prorata date and acquisition date are copied when duplicate an asset
-            For this test, the prorata computation type is set to None.
-            The idea is of this test is to verify that we do copy prorata date.
-        """
-        old_car_asset = self.create_asset(
-            value=60000,
-            periodicity='yearly',
-            periods=5,
-            method='linear',
-            salvage_value=0,
-
-        )
-        old_car_asset.validate()
-
-        self.assertEqual(old_car_asset.state, 'open')
-        self.assertEqual(old_car_asset.book_value, 36000)
-        self.assertEqual(old_car_asset.acquisition_date, fields.Date.from_string('2020-02-01'))
-        self.assertEqual(old_car_asset.prorata_date, fields.Date.from_string('2020-01-01'))
-        self.assertRecordValues(old_car_asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
-
-        new_car_asset = old_car_asset.copy()
-        new_car_asset.original_value = 60000
-        new_car_asset.validate()
-
-        self.assertEqual(new_car_asset.state, 'open')
-        self.assertEqual(new_car_asset.book_value, 36000)
-        self.assertEqual(new_car_asset.acquisition_date, fields.Date.from_string('2020-02-01'))
-        self.assertEqual(new_car_asset.prorata_date, fields.Date.from_string('2020-01-01'))
-        self.assertRecordValues(new_car_asset.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
-
-    def test_change_computation_method_before_lock_date(self):
-        """Test that we can change the computation method when there are draft moves before the lock date.
-        """
-        self.car.company_id.fiscalyear_lock_date = '2022-06-30'
-        self.car.compute_depreciation_board()
-
-        self.assertEqual(self.car.state, 'draft')
-        self.assertEqual(self.car.book_value, 60000)
-        self.assertRecordValues(self.car.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='draft'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='draft'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
-
-        # Change the computation type
-        self.car.prorata_computation_type = 'constant_periods'
-        self.car.prorata_date = '2021-01-01'
-        self.car.compute_depreciation_board()
-
-        self.assertEqual(self.car.state, 'draft')
-        self.assertEqual(self.car.book_value, 60000)
-        self.assertRecordValues(self.car.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='draft'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2025-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
-
-    def test_post_moves_after_lock_date(self):
-        """Test that we can change the computation method when there are draft moves before the lock date.
-        """
-        self.car.company_id.fiscalyear_lock_date = '2021-06-30'
-        self.car.compute_depreciation_board()
-
-        self.assertEqual(self.car.state, 'draft')
-        self.assertEqual(self.car.book_value, 60000)
-        self.assertRecordValues(self.car.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2020-12-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='draft'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='draft'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
-
-        self.car.validate()
-
-        self.assertEqual(self.car.state, 'open')
-        self.assertEqual(self.car.book_value, 36000)
-        self.assertRecordValues(self.car.depreciation_move_ids, [
-            self._get_depreciation_move_values(date='2021-07-31', depreciation_value=12000, remaining_value=48000, depreciated_value=12000, state='posted'),
-            self._get_depreciation_move_values(date='2021-12-31', depreciation_value=12000, remaining_value=36000, depreciated_value=24000, state='posted'),
-            self._get_depreciation_move_values(date='2022-12-31', depreciation_value=12000, remaining_value=24000, depreciated_value=36000, state='draft'),
-            self._get_depreciation_move_values(date='2023-12-31', depreciation_value=12000, remaining_value=12000, depreciated_value=48000, state='draft'),
-            self._get_depreciation_move_values(date='2024-12-31', depreciation_value=12000, remaining_value=0, depreciated_value=60000, state='draft'),
-        ])
+    # TODO add more tests for:
+    # 1. Test creation of asset from bill/refund
+    # 2. Test Wizard action (Sell/dispose/modify/pause/resume)
+    # 3.

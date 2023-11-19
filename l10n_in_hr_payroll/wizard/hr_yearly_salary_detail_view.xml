@@ -7,8 +7,8 @@
             <form string="Pay Head Employee Breakup">
                 <span class="o_form_label">This wizard will print report which display a pay head employee breakup for a specified dates.</span>
                 <footer>
-                    <button name="print_report" string="Print" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x" />
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                 </footer>
                 <group>
                     <field name="date_from"/>
@@ -22,6 +22,7 @@
 
         <record id="action_yearly_salary_detail" model="ir.actions.act_window">
             <field name="name">Yearly Salary by Employee</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">yearly.salary.detail</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

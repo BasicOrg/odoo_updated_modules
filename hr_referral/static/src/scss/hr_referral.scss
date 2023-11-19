@@ -57,6 +57,7 @@ $font-family-sans-serif;
         background: transparent;
         border-color: #FFFFFF;
         color: #FFFFFF;
+        text-transform: uppercase;
         &:hover{
             background: $o-gray-100;
             color: $black;
@@ -96,7 +97,6 @@ $font-family-sans-serif;
     position: relative;
     font-family: "Montserrat", #{$font-family-sans-serif};
     color: #FFFFFF;
-    overflow: auto visible;
 }
 
 .o_hr_referral {
@@ -248,16 +248,28 @@ $font-family-sans-serif;
             height: 60%;
             color: var(--hrReferral__user-color);
             border-radius: 2px;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
     .user_total, .user_points {
         width: 25%;
         text-align: center;
+        line-height: 2.5rem;
+        font-size: 1.2rem;
         font-weight: bold;
-        & img {
+        &:after {
+            content: 'Points';
+            font-size: 0;
+            display: inline-block;
             width: 20px;
             height: 20px;
+            margin: 0 auto;
         }
+    }
+    .user_points:after{
+        background: url('/hr_referral/static/src/img/points.svg') center/cover no-repeat;
+    }
+    .user_total:after {
+        background: url('/hr_referral/static/src/img/total.svg') center/cover no-repeat;
     }
 
     .user_level:before {
@@ -403,7 +415,7 @@ $font-family-sans-serif;
     }
     .message {
         background: rgba(255, 255, 255, 0.5);
-        color: #5A5A5A;
+        color: $gray-900;
         border-radius: 2px;
         padding: 5px;
         text-align: center;

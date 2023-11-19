@@ -35,7 +35,7 @@
             'code': 'BRUT',
             'sequence': 1000,
             'category_id': ref('hr_payroll.GROSS'),
-            'amount_python_compute': &quot;result = categories['BASE'] + categories['ALW'] - categories['DED']&quot;,
+            'amount_python_compute': 'result = categories.BASE + categories.INDM - categories.DED',
             }"/>
     </function>
 
@@ -119,7 +119,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.75</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -134,7 +134,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">13.10</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -147,7 +147,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">6.65</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],SECU)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,SECU)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -162,7 +162,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">8.3</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],SECU)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,SECU)</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -175,7 +175,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.1</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -190,7 +190,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">1.6</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -203,7 +203,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -218,7 +218,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">5.4</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -231,7 +231,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">2.40</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],TB)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,TB)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -246,7 +246,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">4</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],TB)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,TB)</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -259,7 +259,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],TB)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,TB)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -274,7 +274,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.3</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],TB)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,TB)</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -287,7 +287,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">3</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,T1)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -302,7 +302,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">4.5</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,T1)</field>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -313,10 +313,10 @@
         <field name="code">C14</field>
         <field name="sequence">2110</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['BRUT'] > T1</field>
+        <field name="condition_python">result = categories.BRUT > T1</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">8</field>
-        <field name="amount_percentage_base">min(categories['BRUT']-T1,T2-T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT-T1,T2-T1)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -329,10 +329,10 @@
         <field name="appears_on_payslip" eval="False"/>
         <field name="sequence">2115</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['BRUT'] > T1</field>
+        <field name="condition_python">result = categories.BRUT > T1</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">12</field>
-        <field name="amount_percentage_base">min(categories['BRUT']-T1,T2-T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT-T1,T2-T1)</field>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -345,7 +345,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.8</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,T1)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -360,7 +360,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">1.2</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,T1)</field>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -371,10 +371,10 @@
         <field name="code">C15</field>
         <field name="sequence">2130</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['BRUT'] > T1</field>
+        <field name="condition_python">result = categories.BRUT > T1</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.9</field>
-        <field name="amount_percentage_base">min(categories['BRUT']-T1,T2-T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT-T1,T2-T1)</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -387,10 +387,10 @@
         <field name="appears_on_payslip" eval="False"/>
         <field name="sequence">2135</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['BRUT'] > T1</field>
+        <field name="condition_python">result = categories.BRUT > T1</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">1.3</field>
-        <field name="amount_percentage_base">min(categories['BRUT']-T1,T2-T1)</field>
+        <field name="amount_percentage_base">min(categories.BRUT-T1,T2-T1)</field>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -403,7 +403,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_retraite_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -417,7 +417,7 @@
         <field name="sequence">2225</field>
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -428,9 +428,9 @@
         <field name="code">C40</field>
         <field name="sequence">2238</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['PREV'] != 0</field>
+        <field name="condition_python">result = categories.PREV != 0</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['PREV']</field>
+        <field name="amount_percentage_base">categories.PREV</field>
         <field name="partner_id" ref="hr_prevoyance_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -442,10 +442,10 @@
         <field name="appears_on_payslip" eval="False"/>
         <field name="sequence">2239</field>
         <field name="condition_select">python</field>
-        <field name="condition_python">result = categories['PREV'] != 0</field>
+        <field name="condition_python">result = categories.PREV != 0</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">8</field>
-        <field name="amount_percentage_base">categories['PREV']</field>
+        <field name="amount_percentage_base">categories.PREV</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -459,7 +459,7 @@
         <field name="condition_range">contract.employee_id.company_id.nombre_employes</field>
         <field name="condition_range_max">19</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],SECU)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,SECU)</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -475,7 +475,7 @@
         <field name="condition_range_max">19</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.1</field>
-        <field name="amount_percentage_base">min(categories['BRUT'],SECU)</field>
+        <field name="amount_percentage_base">min(categories.BRUT,SECU)</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -489,7 +489,7 @@
         <field name="condition_range">contract.employee_id.company_id.nombre_employes</field>
         <field name="condition_range_min">20</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -505,7 +505,7 @@
         <field name="condition_range_min">20</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.5</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -561,7 +561,7 @@
         <field name="condition_range_min">20</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.45</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -573,7 +573,7 @@
         <field name="sequence">2280</field>
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -587,7 +587,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.5</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -599,7 +599,7 @@
         <field name="sequence">2290</field>
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -613,7 +613,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.18</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -627,7 +627,7 @@
         <field name="condition_range">contract.employee_id.company_id.nombre_employes</field>
         <field name="condition_range_max">9</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -643,7 +643,7 @@
         <field name="condition_range_max">9</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.55</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -658,7 +658,7 @@
         <field name="condition_range_min">10</field>
         <field name="condition_range_max">19</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -675,7 +675,7 @@
         <field name="condition_range_max">19</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">1.05</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -689,7 +689,7 @@
         <field name="condition_range">contract.employee_id.company_id.nombre_employes</field>
         <field name="condition_range_min">20</field>
         <field name="amount_select">percentage</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -705,7 +705,7 @@
         <field name="condition_range_min">20</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">1.60</field>
-        <field name="amount_percentage_base">categories['BRUT']</field>
+        <field name="amount_percentage_base">categories.BRUT</field>
         <field name="partner_id" ref="hr_cci_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
@@ -718,7 +718,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">5.1</field>
-        <field name="amount_percentage_base">(categories['BRUT'] + categories['PREV'])*0.9825</field>
+        <field name="amount_percentage_base">(categories.BRUT + categories.PREV)*0.9825</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -732,7 +732,7 @@
         <field name="appears_on_payslip" eval="True"/>
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = categories['SALC']</field>
+        <field name="amount_python_compute">result = categories.SALC</field>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
 
@@ -744,7 +744,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">0.5</field>
-        <field name="amount_percentage_base">(categories['BRUT'] + categories['PREV'])*0.9825</field>
+        <field name="amount_percentage_base">(categories.BRUT + categories.PREV)*0.9825</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -758,7 +758,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">percentage</field>
         <field name="amount_percentage">2.4</field>
-        <field name="amount_percentage_base">(categories['BRUT'] + categories['PREV'])*0.9825</field>
+        <field name="amount_percentage_base">(categories.BRUT + categories.PREV)*0.9825</field>
         <field name="appears_on_payslip" eval="True"/>
         <field name="partner_id" ref="hr_urssaf_register"/>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
@@ -772,7 +772,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="appears_on_payslip" eval="True"/>
-        <field name="amount_python_compute">result = categories['RETENUES']</field>
+        <field name="amount_python_compute">result = categories.RETENUES</field>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
 
@@ -784,7 +784,7 @@
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
         <field name="appears_on_payslip" eval="False"/>
-        <field name="amount_python_compute">result = BRUT - categories['SALC']</field>
+        <field name="amount_python_compute">result = BRUT - categories.SALC</field>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
 
@@ -796,7 +796,7 @@
             'name': 'Net',
             'sequence': 100000,
             'category_id': ref('hr_payroll.NET'),
-            'amount_python_compute': &quot;result = BRUT - categories['RETENUES']&quot;,
+            'amount_python_compute': 'result = BRUT - categories.RETENUES',
             'appears_on_employee_cost_dashboard': True,
             }"/>
     </function>
@@ -809,7 +809,7 @@
         <field name="appears_on_payslip" eval="False"/>
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = categories['COMP']</field>
+        <field name="amount_python_compute">result = categories.COMP</field>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
 
@@ -821,7 +821,7 @@
         <field name="appears_on_payslip" eval="False"/>
         <field name="condition_select">none</field>
         <field name="amount_select">code</field>
-        <field name="amount_python_compute">result = categories['BRUT'] + categories['COMP']</field>
+        <field name="amount_python_compute">result = categories.BRUT + categories.COMP</field>
         <field name="struct_id" ref="hr_payroll_salary_structure_employe_non_cadre"/>
     </record>
 

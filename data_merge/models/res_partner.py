@@ -27,5 +27,6 @@ class Partner(models.Model):
 
     def _elect_method(self, records):
         return records.sorted(
-            key=lambda p: (not p.active, (p.create_date or datetime.datetime(1970, 1, 1))),
-        )[:1]
+            key=lambda p: (p.active, (p.create_date or datetime.datetime(1970, 1, 1))),
+            reverse=True,
+        )[-1]

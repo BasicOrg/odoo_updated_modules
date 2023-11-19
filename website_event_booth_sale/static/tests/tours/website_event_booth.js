@@ -1,13 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import wsTourUtils from '@website_sale/js/tours/tour_utils';
+import tour from 'web_tour.tour';
 
-
-registry.category("web_tour.tours").add('website_event_booth_tour', {
+tour.register('website_event_booth_tour', {
     test: true,
     url: '/event',
-    steps: () => [
+}, [
 {
     content: 'Open "Test Event Booths" event',
     trigger: 'h5.card-title span:contains("Test Event Booths")',
@@ -33,16 +31,24 @@ registry.category("web_tour.tours").add('website_event_booth_tour', {
 }, {
     content: 'Submit your informations',
     trigger: 'button[type="submit"]',
+}, {
+    content: 'Check if the price is correct',
+    trigger: 'tr#order_total_untaxed .oe_currency_value:containsExact(200.00)',
+    run: function () {},
+}, {
+    content: 'Check if the tax is correct',
+    trigger: 'tr#order_total_taxes .oe_currency_value:containsExact(20.00)',
+    run: function () {},
+}, {
+    content: 'Click confirm to continue',
+    trigger: 'a[role="button"] span:contains("Confirm")',
+}, {
+    content: 'Check if the price is correct',
+    trigger: 'tr#order_total_untaxed .oe_currency_value:containsExact(200.00)',
+    run: function () {},
+}, {
+    content: 'Check if the total price is correct',
+    trigger: 'tr#order_total .oe_currency_value:containsExact(220.00)',
+    run: function () {},
 },
-...wsTourUtils.assertCartAmounts({
-    taxes: '20.00',
-    untaxed: '200.00',
-    total: '220.00',
-}),
-wsTourUtils.goToCheckout(),
-...wsTourUtils.assertCartAmounts({
-    taxes: '20.00',
-    untaxed: '200.00',
-    total: '220.00',
-}),
-]});
+]);

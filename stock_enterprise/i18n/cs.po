@@ -1,44 +1,32 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* stock_enterprise
-#
+# 
 # Translators:
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
-# Michal Veselý <michal@veselyberanek.net>, 2022
-# Ladislav Tomm <tomm@helemik.cz>, 2022
-# Jan Horzinka <jan.horzinka@centrum.cz>, 2022
-# karolína schusterová <karolina.schusterova@vdp.sk>, 2022
-# Jiří Podhorecký, 2022
-# Martin Trigaux, 2022
-#
+# Martin Trigaux, 2019
+# Ladislav Tomm <tomm@helemik.cz>, 2019
+# Jan Horzinka <jan.horzinka@centrum.cz>, 2019
+# Michal Veselý <michal@veselyberanek.net>, 2019
+# trendspotter <j.podhorecky@volny.cz>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
-"PO-Revision-Date: 2022-09-22 05:49+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
-"Language: cs\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:38+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>, 2019\n"
+"Language-Team: Czech (https://www.transifex.com/odoo/teams/41243/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__assigned
 msgid "Available"
 msgstr "Dostupný"
-
-#. module: stock_enterprise
-#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
-msgid "Average Cycle Time (Days)"
-msgstr ""
-
-#. module: stock_enterprise
-#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_pivot_view
-msgid "Average Delay (Days)"
-msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__cancel
@@ -86,6 +74,30 @@ msgid "Delay (Days)"
 msgstr ""
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr ""
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
 msgid "Display Name"
 msgstr "Zobrazované jméno"
@@ -98,7 +110,7 @@ msgstr "Hotovo"
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
 msgid "Done Deliveries"
-msgstr "Hotové dodávky"
+msgstr ""
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_search_view
@@ -126,9 +138,14 @@ msgid "Internal"
 msgstr "Vnitřní"
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__inventory_id
+msgid "Inventory Adjustment"
+msgstr "Úprava inventáře"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_late
 msgid "Is Late"
-msgstr "Má zpoždění"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__is_backorder
@@ -136,19 +153,24 @@ msgid "Is a Backorder"
 msgstr "Je zpětná objednávka"
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "Naposled změněno"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
+msgid "Month"
+msgstr "Měsíc"
+
+#. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
 msgid "New"
 msgstr "Nové"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
-msgid "No data yet!"
-msgstr "Zatím žádná data!"
-
-#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__operation_type
 msgid "Operation Type"
-msgstr "Typ operace"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__partially_available
@@ -159,11 +181,6 @@ msgstr "Částečně dostupné"
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__partner_id
 msgid "Partner"
 msgstr "Partner"
-
-#. module: stock_enterprise
-#: model:ir.ui.menu,name:stock_enterprise.stock_dashboard_menuitem
-msgid "Performance"
-msgstr "Výkon"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_name
@@ -187,8 +204,19 @@ msgstr "Množství výrobku"
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_enterprise_move_tree_view
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
 msgid "Quantity"
 msgstr "Množství"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
@@ -217,14 +245,33 @@ msgid "Stock Overview"
 msgstr ""
 
 #. module: stock_enterprise
+#: model:ir.model,name:stock_enterprise.model_report_stock_quantity
+msgid "Stock Quantity Report"
+msgstr ""
+
+#. module: stock_enterprise
 #: model:ir.model,name:stock_enterprise.model_stock_report
 msgid "Stock Report"
 msgstr "Skladová zpráva"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
 msgid "Transfer Date"
-msgstr "Datum převodu"
+msgstr ""
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__picking_id
@@ -252,6 +299,17 @@ msgid "Waiting Availability"
 msgstr "Čeká se na dostupnost"
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
+#: model:ir.ui.menu,name:stock_enterprise.stock_dashboard_menuitem
 msgid "Warehouse Analysis"
 msgstr ""
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_view_grid
+msgid "Week"
+msgstr "Týden"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "dnů"

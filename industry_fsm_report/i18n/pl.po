@@ -3,18 +3,28 @@
 # 	* industry_fsm_report
 # 
 # Translators:
-# Maksym <ms@myodoo.pl>, 2023
-# Tadeusz Karpiński <tadeuszkarpinski@gmail.com>, 2023
-# Wil Odoo, 2023
+# Dariusz Żbikowski <darek@krokus.com.pl>, 2019
+# Grzegorz Grzelak <grzegorz.grzelak@openglobe.pl>, 2019
+# Judyta Kaźmierczak <judyta.kazmierczak@openglobe.pl>, 2019
+# Tomasz Leppich <t.leppich@gmail.com>, 2019
+# Zdzisław Krajewski <zdzichucb@gmail.com>, 2019
+# Piotr Szlązak <szlazakpiotr@gmail.com>, 2019
+# Marcin Młynarczyk <mlynarczyk@gmail.com>, 2019
+# Andrzej Donczew <a.donczew@hadron.eu.com>, 2019
+# Piotr Cierkosz <piotr.w.cierkosz@gmail.com>, 2019
+# Paweł Wodyński <pw@myodoo.pl>, 2019
+# Krystian Harkot <kharkot@trilab.pl>, 2019
+# Tadeusz Karpiński <tadeuszkarpinski@gmail.com>, 2019
+# Martin Trigaux, 2019
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Polish (https://app.transifex.com/odoo/teams/41243/pl/)\n"
+"POT-Creation-Date: 2019-10-01 12:16+0000\n"
+"PO-Revision-Date: 2019-08-26 09:36+0000\n"
+"Last-Translator: Martin Trigaux, 2019\n"
+"Language-Team: Polish (https://www.transifex.com/odoo/teams/41243/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,100 +32,100 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. module: industry_fsm_report
+#: model:mail.template,subject:industry_fsm_report.mail_template_data_send_report
+msgid "${object.name} Report"
+msgstr ""
+
+#. module: industry_fsm_report
+#: code:addons/industry_fsm_report/models/project_worksheet_template.py:0
+#, python-format
+msgid "%s (copy)"
+msgstr "%s (kopia)"
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "&amp;times;"
+msgstr "&amp;times;"
+
+#. module: industry_fsm_report
 #: model:ir.actions.report,print_report_name:industry_fsm_report.task_custom_report
-msgid ""
-"'Field Service Report - %s - %s' % (object.name, object.partner_id.name)"
-msgstr ""
-"'Raport serwisu terenowego - %s - %s ' % (object.name, "
-"object.partner_id.name)"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "10 days"
+msgid "'Worksheet %s - %s' % (object.name, object.partner_id.name)"
 msgstr ""
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "10:00"
-msgstr "10:00"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "2023-01-01"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<i class=\"fa fa-check mr-1\"/>Sign"
 msgstr ""
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "5 days"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<i class=\"fa fa-check mr-2\"/>Sign"
 msgstr ""
 
 #. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "<b>Review and sign</b> the <b>task report</b> with your customer."
-msgstr "<b>Przejrzyj i podpisz</b> <b>raport z zadania</b> z klientem."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<i class=\"fa fa-download\"/> Download"
+msgstr "<i class=\"fa fa-download\"/>Pobierz"
 
 #. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "<b>Send your task report</b> to your customer."
-msgstr "<b>Wyślij raport z zadania</b> do klienta."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<i class=\"fa fa-print\"/> Print"
+msgstr "<i class=\"fa fa-print\"/> Drukuj"
 
 #. module: industry_fsm_report
-#: model:mail.template,body_html:industry_fsm_report.mail_template_data_task_report
+#: model:mail.template,body_html:industry_fsm_report.mail_template_data_send_report
 msgid ""
 "<p>\n"
-"                Dear <t t-out=\"object.partner_id.name or 'Customer'\">Customer</t>,<br><br>\n"
-"                Please find attached the field service report for our onsite operation. <br><br>\n"
-"                Feel free to contact us if you have any questions.<br><br>\n"
-"                Best regards,<br><br>\n"
-"            </p>\n"
-"        "
+"                    Dear ${object.partner_id.name or 'Customer'},<br/><br/>\n"
+"                    Please find attached the worksheet of our onsite operation. <br/><br/>\n"
+"                    Feel free to contact us if you have any questions.<br/><br/>\n"
+"                    Best regards,<br/><br/>\n"
+"                </p>\n"
+"            "
 msgstr ""
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_project_kanban_inherit_industry_fsm_report
-msgid ""
-"<span class=\"fa fa-pencil me-1\" aria-label=\"Worksheet Template\" "
-"title=\"Worksheet Template\"/>"
-msgstr ""
-"<span class=\"fa fa-pencil me-1\" aria-label=\"Worksheet Template\" "
-"title=\"Worksheet Template\"/>"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_worksheet_template_kanban
-msgid "<span class=\"o_label ms-2\">Worksheets</span>"
-msgstr "<span class=\"o_label ms-2\">Karty pracy</span>"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
-msgid "<span class=\"o_stat_text\">Worksheet</span>"
-msgstr "<span class=\"o_stat_text\">Arkusz roboczy</span>"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
-msgid ""
-"<span class=\"o_stat_text\">Worksheet</span>\n"
-"                            <span class=\"o_stat_text\">Complete</span>"
-msgstr ""
-"<span class=\"o_stat_text\">Arkusz roboczy</span>\n"
-"<span class=\"o_stat_text\">Kompletny</span>"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid ""
-"<span style=\"                             font-size: 10px;                             color: #fff;                             text-transform: uppercase;                             text-align: center;                             font-weight: bold; line-height: 20px;                             transform: rotate(45deg);                             width: 100px; height: auto; display: block;                             background: green;                             position: absolute;                             top: 19px; right: -21px; left: auto;                             padding: 0;\">\n"
-"                            Signed\n"
-"                        </span>"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_form
+msgid "<span class=\"o_stat_text\"> Worksheets</span>"
 msgstr ""
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "<strong class=\"me-2\">Total</strong>"
-msgstr "<strong class=\"me-2\">Łącznie</strong>"
+msgid ""
+"<span style=\"                                 font-size: 10px;                                 color: #fff;                                 text-transform: uppercase;                                 text-align: center;                                 font-weight: bold; line-height: 20px;                                 transform: rotate(45deg);                                 width: 100px; display: block;                                 background: green;                                 position: absolute;                                 top: 19px; right: -21px;\">\n"
+"                                Signed\n"
+"                            </span>"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<span>Accepted on the behalf of:</span>"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<span>By signing this proposal, I agree to the following terms:</span>"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "<span>Disc.%</span>"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr "<strong class=\"mr16\">Podsuma</strong>"
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "<strong class=\"text-muted\">Contact person</strong>"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "<strong>Contact: </strong>"
+msgstr ""
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
@@ -123,88 +133,97 @@ msgid "<strong>Customer: </strong>"
 msgstr "<strong>Klient: </strong>"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_gantt_fsm_worksheet
-msgid "<strong>Template — </strong>"
-msgstr "<strong>Szablon — </strong>"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "<strong>Subtotal</strong>"
+msgstr "<strong>Suma częściowa</strong>"
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid ""
+"<strong>Thank You!</strong><br/>\n"
+"                        Your Worksheet Report is now signed."
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__action_id
+msgid "Action"
+msgstr "Akcja"
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__active
+msgid "Active"
+msgstr "Aktywne"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "<strong>Worker: </strong>"
-msgstr "<strong>Pracownik:</strong>"
+msgid "Amount"
+msgstr "Kwota"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_3
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.x_project_task_worksheet_template_3_ir_ui_view_1
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.x_project_task_worksheet_template_4_ir_ui_view_1
-msgid "Add details about your intervention..."
-msgstr "Dodaj szczegóły dotyczące interwencji..."
+#: code:addons/industry_fsm_report/models/project_worksheet_template.py:0
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_form
+#, python-format
+msgid "Analysis"
+msgstr "Analiza"
 
 #. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.model_project_task_burndown_chart_report
-msgid "Burndown Chart"
-msgstr "Wykres spalania"
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_search
+msgid "Archived"
+msgstr "Archiwalne"
 
 #. module: industry_fsm_report
 #: model:ir.ui.menu,name:industry_fsm_report.project_task_menu_planning_by_project_fsm
-msgid "By Worksheet Template"
-msgstr "Przez szablon karty pracy"
+msgid "By Worksheet"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,help:industry_fsm_report.field_project_project__worksheet_template_id
+msgid ""
+"Choose a default worksheet template for this project (you can change it "
+"individually on each task)."
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "Close"
+msgstr "Zamknij"
 
 #. module: industry_fsm_report
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_color
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__color
 msgid "Color"
 msgstr "Kolor"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_3
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.industry_fsm_report._custom_x_project_worksheet_template_1_1569932110
 msgid "Comments"
 msgstr "Komentarz"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_project_form_inherit_industry_fsm_report
-msgid "Create reports to be signed off by your customers"
-msgstr "Tworzenie raportów do podpisu przez klientów"
-
-#. module: industry_fsm_report
-#: model:ir.model.fields,help:industry_fsm_report.field_project_task__worksheet_template_id
-msgid ""
-"Create templates for each type of intervention you have and customize their "
-"content with your own custom fields."
+msgid "Create and fill report on tasks"
 msgstr ""
-"Twórz szablony dla każdego rodzaju interwencji, które masz i dostosuj ich "
-"zawartość za pomocą własnych pól niestandardowych."
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.x_project_task_worksheet_template_3_ir_ui_view_3
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.x_project_task_worksheet_template_4_ir_ui_view_3
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__create_uid
+msgid "Created by"
+msgstr "Utworzona przez"
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__create_date
 msgid "Created on"
 msgstr "Data utworzenia"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
-msgid "Customer Preview"
-msgstr "Podgląd użytkownika"
-
-#. module: industry_fsm_report
-#: model_terms:ir.actions.act_window,help:industry_fsm_report.fsm_worksheets_action_settings
-msgid "Customize worksheet templates for each type of intervention.<br>"
-msgstr "Dostosowanie szablonów kart pracy dla każdego rodzaju interwencji."
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
 msgid "Date"
 msgstr "Data"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Days Spent"
-msgstr "Dni spędzone"
-
-#. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.x_project_task_worksheet_template_3_ir_model_1
+#: model:ir.model,name:industry_fsm_report.model_x_custom_worksheet_x_project_worksheet_template_1
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_project__worksheet_template_id
 msgid "Default Worksheet"
-msgstr "Domyślna karta pracy"
+msgstr ""
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
@@ -212,170 +231,95 @@ msgid "Description"
 msgstr "Opis"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid "Description of the Intervention"
-msgstr "Opis interwencji"
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__display_name
+#: model:ir.model.fields,field_description:industry_fsm_report.field_report_industry_fsm_report_worksheet_custom__display_name
+msgid "Display Name"
+msgstr "Nazwa wyświetlana"
 
 #. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.x_project_task_worksheet_template_4_ir_model_1
-msgid "Device Installation and Maintenance"
-msgstr "Instalacja i konserwacja urządzenia"
-
-#. module: industry_fsm_report
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__display_send_report_primary
-msgid "Display Send Report Primary"
-msgstr "Wyświetlanie Wyślij raport główny"
-
-#. module: industry_fsm_report
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__display_send_report_secondary
-msgid "Display Send Report Secondary"
-msgstr "Wyświetlanie Wyślij raport drugorzędny"
-
-#. module: industry_fsm_report
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__display_sign_report_primary
-msgid "Display Sign Report Primary"
-msgstr "Wyświetl podpisz raport główny"
-
-#. module: industry_fsm_report
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__display_sign_report_secondary
-msgid "Display Sign Report Secondary"
-msgstr "Wyświetl podpisz raport drugorzędny"
-
-#. module: industry_fsm_report
-#: model:mail.template,description:industry_fsm_report.mail_template_data_task_report
-msgid "Email sent when clicking on \"send report\" in a task"
-msgstr ""
-"Wiadomość e-mail wysyłana po kliknięciu przycisku \"wyślij raport\" w "
-"zadaniu"
-
-#. module: industry_fsm_report
-#: model:ir.actions.report,name:industry_fsm_report.task_custom_report
-msgid "Field Service Report"
-msgstr "Raport z serwisu terenowego"
-
-#. module: industry_fsm_report
-#: model:mail.template,subject:industry_fsm_report.mail_template_data_task_report
-msgid "Field Service Report - {{ object.name }}"
-msgstr "Raport serwisu terenowego - {{ object.name }}"
-
-#. module: industry_fsm_report
-#: model:mail.template,name:industry_fsm_report.mail_template_data_task_report
-msgid "Field Service: Field Service Report"
-msgstr "Serwis terenowy: Raport z serwisu terenowego"
-
-#. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Fill in your <b>worksheet</b> with the details of your intervention."
-msgstr "Wypełnij <b>arkusz roboczy</b> szczegółami interwencji."
-
-#. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Go back to your Field Service <b>task</b>."
-msgstr "Wróć do <b>zadania</b> serwisu terenowego."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "Download"
+msgstr "Pobierz"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Hours Spent"
-msgstr "Przepracowane godziny"
+msgid "Employee"
+msgstr "Pracownik"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid ""
-"I hereby certify that this device meets the requirements of an acceptable "
-"device at the time of testing."
+#: model:ir.model.fields,help:industry_fsm_report.field_project_project__allow_worksheets
+#: model:ir.model.fields,help:industry_fsm_report.field_project_task__allow_worksheets
+msgid "Enables customizable worksheets on tasks."
 msgstr ""
-"Niniejszym potwierdzam, że urządzenie spełniało minimalne wymagania w czasie"
-" testów."
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid "Intervention Type"
-msgstr "Typ interwencji"
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__id
+#: model:ir.model.fields,field_description:industry_fsm_report.field_report_industry_fsm_report_worksheet_custom__id
+msgid "ID"
+msgstr "ID"
 
 #. module: industry_fsm_report
-#. odoo-python
 #: code:addons/industry_fsm_report/controllers/portal.py:0
 #, python-format
 msgid "Invalid Task."
-msgstr "Niewłaściwe zadanie."
+msgstr ""
 
 #. module: industry_fsm_report
-#. odoo-python
 #: code:addons/industry_fsm_report/controllers/portal.py:0
 #, python-format
 msgid "Invalid signature data."
-msgstr "Niewłaściwe dane podpisu."
-
-#. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Invite your customer to <b>validate and sign your task report</b>."
-msgstr "Poproś klienta o <b>zatwierdzenie i podpisanie raportu z zadania</b>."
+msgstr ""
 
 #. module: industry_fsm_report
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__fsm_is_sent
 msgid "Is Worksheet sent"
-msgstr "Karta pracy wysłana"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Jane Worker"
 msgstr ""
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Jane smith"
-msgstr ""
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template____last_update
+#: model:ir.model.fields,field_description:industry_fsm_report.field_report_industry_fsm_report_worksheet_custom____last_update
+msgid "Last Modified on"
+msgstr "Data ostatniej modyfikacji"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Manage SME"
-msgstr ""
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__write_uid
+msgid "Last Updated by"
+msgstr "Ostatnio aktualizowane przez"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid "Manufacturer"
-msgstr "Producent"
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__write_date
+msgid "Last Updated on"
+msgstr "Data ostatniej aktualizacji"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Marc Demo"
-msgstr ""
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__model_id
 msgid "Model"
 msgstr "Model"
 
 #. module: industry_fsm_report
-#: model_terms:ir.actions.act_window,help:industry_fsm_report.project_task_action_fsm_planning_groupby_worksheet
-msgid "No tasks found. Let's create one!"
-msgstr "Brak zadań. Utwórz jakieś."
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__name
+msgid "Name"
+msgstr "Nazwa"
 
 #. module: industry_fsm_report
-#: model_terms:ir.actions.act_window,help:industry_fsm_report.fsm_worksheets_action_settings
-msgid "No worksheet templates found. Let's create one!"
-msgstr "Nie znaleziono żadnych szablonów kart pracy. Stwórzmy jeden!"
-
-#. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid ""
-"Open your <b>worksheet</b> in order to fill it in with the details of your "
-"intervention."
+#: model:ir.model.fields,help:industry_fsm_report.field_project_task__worksheet_signed_by
+msgid "Name of the person that signed the task."
 msgstr ""
-"Otwórz <b>arkusz roboczy</b>, aby wypełnić go szczegółami interwencji."
 
 #. module: industry_fsm_report
 #: model:ir.actions.act_window,name:industry_fsm_report.project_task_action_fsm_planning_groupby_worksheet
-msgid "Planning by Worksheet Template"
-msgstr "Planowanie przez szablon karty pracy"
+msgid "Planning by Worksheet"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "Print"
+msgstr "Drukuj"
+
+#. module: industry_fsm_report
+#: model:ir.model,name:industry_fsm_report.model_product_template
+msgid "Product Template"
+msgstr "Szablon produktu"
 
 #. module: industry_fsm_report
 #: model:ir.model,name:industry_fsm_report.model_project_project
@@ -383,58 +327,73 @@ msgid "Project"
 msgstr "Projekt"
 
 #. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Save time by automatically generating a <b>signature</b>."
-msgstr "Oszczędność czasu dzięki automatycznemu generowaniu <b>podpisu</b>."
+#: model:ir.model,name:industry_fsm_report.model_project_worksheet_template
+msgid "Project Worksheet Template"
+msgstr ""
 
 #. module: industry_fsm_report
-#: model_terms:ir.actions.act_window,help:industry_fsm_report.project_task_action_fsm_planning_groupby_worksheet
-msgid "Schedule your tasks and assign them to your workers."
-msgstr "Zaplanuj zadania i przydziel je swoim pracownikom."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_search
+msgid "Project Worksheet Template Search"
+msgstr ""
 
 #. module: industry_fsm_report
-#: model:ir.actions.server,name:industry_fsm_report.action_fsm_task_send_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "Quantity"
+msgstr "Ilość"
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__report_view_id
+msgid "Report View"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.model,name:industry_fsm_report.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Pozycja zamówienia sprzedaży"
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
 msgid "Send Report"
 msgstr "Wyślij raport"
 
 #. module: industry_fsm_report
-#. odoo-python
-#: code:addons/industry_fsm_report/models/project_task.py:0
-#, python-format
-msgid "Send report"
-msgstr "Wyślij raport"
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__sequence
+msgid "Sequence"
+msgstr "Numeracja"
 
 #. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid "Serial Number"
-msgstr "Numer Seryjny"
-
-#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
 msgid "Sign Report"
-msgstr "Zapisz raport"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "Sign Task"
+msgstr ""
 
 #. module: industry_fsm_report
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_signature
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_task
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
 msgid "Signature"
 msgstr "Podpis"
 
 #. module: industry_fsm_report
-#. odoo-python
 #: code:addons/industry_fsm_report/controllers/portal.py:0
 #, python-format
 msgid "Signature is missing."
 msgstr "Brakuje podpisu"
 
 #. module: industry_fsm_report
+#: model:ir.model.fields,help:industry_fsm_report.field_project_task__worksheet_signature
+msgid "Signature received through the portal."
+msgstr ""
+
+#. module: industry_fsm_report
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_signed_by
 msgid "Signed By"
-msgstr "Podpisano przez"
+msgstr ""
 
 #. module: industry_fsm_report
 #: model:ir.model,name:industry_fsm_report.model_project_task
@@ -442,40 +401,48 @@ msgid "Task"
 msgstr "Zadanie"
 
 #. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.model_project_task_recurrence
-msgid "Task Recurrence"
-msgstr "Powtarzalność zadań"
-
-#. module: industry_fsm_report
 #: model:ir.model,name:industry_fsm_report.model_report_industry_fsm_report_worksheet_custom
 msgid "Task Worksheet Custom Report"
-msgstr "Niestandardowy raport karty pracy zadania"
+msgstr ""
 
 #. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.model_report_project_task_user
-msgid "Tasks Analysis"
-msgstr "Analiza zadań"
-
-#. module: industry_fsm_report
-#. odoo-python
 #: code:addons/industry_fsm_report/controllers/portal.py:0
 #, python-format
-msgid "The worksheet has been signed"
-msgstr "Ta karta pracy została podpisana"
+msgid "Task signed by %s"
+msgstr ""
 
 #. module: industry_fsm_report
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "Task:"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_list
+msgid "Template name"
+msgstr ""
+
+#. module: industry_fsm_report
+#: code:addons/industry_fsm_report/models/project_worksheet_template.py:0
+#, python-format
+msgid ""
+"The template to print this worksheet template should be a QWeb template."
+msgstr ""
+
+#. module: industry_fsm_report
 #: code:addons/industry_fsm_report/controllers/portal.py:0
 #, python-format
 msgid "The worksheet is not in a state requiring customer signature."
-msgstr "Ta karta pracy nie wymaga podpisu klienta."
+msgstr ""
 
 #. module: industry_fsm_report
-#. odoo-python
-#: code:addons/industry_fsm_report/models/project_task.py:0
-#, python-format
-msgid "There are no reports to send."
-msgstr "Nie ma żadnych raportów do wysłania."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "Time &amp; Material"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "Time Spent"
+msgstr "Spędzony czas"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
@@ -483,70 +450,101 @@ msgid "Timesheets"
 msgstr "Karty pracy"
 
 #. module: industry_fsm_report
-#. odoo-python
-#: code:addons/industry_fsm_report/models/project_task.py:0
+#: code:addons/industry_fsm_report/models/project.py:0
+#: code:addons/industry_fsm_report/models/project.py:0
 #, python-format
-msgid "To send the report, you need to select a worksheet template"
+msgid "To send the report, you need to select a worksheet template."
 msgstr ""
 
 #. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Use the breadcrumbs to return to your <b>task</b>."
-msgstr "Użyj okruszków, aby powrócić do swojego <b>zadania</b>."
-
-#. module: industry_fsm_report
-#. odoo-javascript
-#: code:addons/industry_fsm_report/static/src/js/tours/industry_fsm_report_tour.js:0
-#, python-format
-msgid "Validate the <b>signature</b>."
-msgstr "Weryfikacja <b>podpisu</b>."
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "Total Price"
+msgstr "Suma"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
-msgid "Worker"
-msgstr "Pracownik"
-
-#. module: industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.report_custom_x_project_task_worksheet_template_4
-msgid "Worker Signature"
-msgstr "Podpis pracownika"
+msgid "Unit Price"
+msgstr "Cena jednostkowa"
 
 #. module: industry_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_task
+msgid "View Worksheet"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
 msgid "Worksheet"
 msgstr "Tabela pracy"
 
 #. module: industry_fsm_report
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_count
-msgid "Worksheet Count"
-msgstr "Liczba kart pracy"
+#: model:mail.template,report_name:industry_fsm_report.mail_template_data_send_report
+msgid ""
+"Worksheet ${object.name}${(' - ' + object.partner_id.name) if "
+"object.partner_id else ''}.pdf"
+msgstr ""
 
 #. module: industry_fsm_report
-#: model:ir.model,name:industry_fsm_report.model_worksheet_template
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_form_inherit
+msgid "Worksheet Completed"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_count
+#: model:ir.model.fields,field_description:industry_fsm_report.field_project_worksheet_template__worksheet_count
+msgid "Worksheet Count"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "Worksheet Report"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.actions.report,name:industry_fsm_report.task_custom_report
+msgid "Worksheet Report (PDF)"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.model.fields,field_description:industry_fsm_report.field_product_product__worksheet_template_id
+#: model:ir.model.fields,field_description:industry_fsm_report.field_product_template__worksheet_template_id
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__worksheet_template_id
-#: model:ir.model.fields,field_description:industry_fsm_report.field_project_task_burndown_chart_report__worksheet_template_id
-#: model:ir.model.fields,field_description:industry_fsm_report.field_report_project_task_user__worksheet_template_id
-#: model:ir.model.fields,field_description:industry_fsm_report.field_report_project_task_user_fsm__worksheet_template_id
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_project_form_inherit_industry_fsm_report
-#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_map_view_inherit_fsm_report
 #: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_search_fsm_report
 msgid "Worksheet Template"
-msgstr "Szablon karty pracy"
+msgstr ""
 
 #. module: industry_fsm_report
 #: model:ir.actions.act_window,name:industry_fsm_report.action_fsm_worksheets
-#: model:ir.actions.act_window,name:industry_fsm_report.fsm_worksheets_action_settings
 #: model:ir.ui.menu,name:industry_fsm_report.fsm_settings_worksheets
 msgid "Worksheet Templates"
-msgstr "Szablony tabeli pracy"
+msgstr ""
 
 #. module: industry_fsm_report
-#: model:ir.actions.act_window,name:industry_fsm_report.x_project_task_worksheet_template_3_ir_actions_act_window_1
-#: model:ir.actions.act_window,name:industry_fsm_report.x_project_task_worksheet_template_4_ir_actions_act_window_1
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_task_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.view_task_form2_inherit
+msgid "Worksheet from this task"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.actions.act_window,name:industry_fsm_report.template_action_Default_Worksheet
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_project__allow_worksheets
 #: model:ir.model.fields,field_description:industry_fsm_report.field_project_task__allow_worksheets
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.project_worksheet_template_view_list
 msgid "Worksheets"
-msgstr "Karty pracy"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model:ir.actions.act_window,name:industry_fsm_report.fsm_worksheets_action_settings
+msgid "Worksheets Templates"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.portal_my_worksheet
+msgid "contact avatar"
+msgstr ""
+
+#. module: industry_fsm_report
+#: model_terms:ir.ui.view,arch_db:industry_fsm_report.worksheet_custom_page
+msgid "hour(s)"
+msgstr "godzin"

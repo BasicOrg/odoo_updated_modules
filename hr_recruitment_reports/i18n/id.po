@@ -3,17 +3,16 @@
 # 	* hr_recruitment_reports
 # 
 # Translators:
-# Wil Odoo, 2023
-# Abe Manyo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Abe Manyo, 2023\n"
-"Language-Team: Indonesian (https://app.transifex.com/odoo/teams/41243/id/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Indonesian (https://www.transifex.com/odoo/teams/41243/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,17 +22,17 @@ msgstr ""
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__count
 msgid "# Applicant"
-msgstr "# Pelamar"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__hired
 msgid "# Hired"
-msgstr "# Direkrut"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__hiring_ratio
 msgid "# Hired Ratio"
-msgstr "# Rasio Direkrut"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__meetings_amount
@@ -41,9 +40,15 @@ msgid "# Meetings"
 msgstr "# Pertemuan"
 
 #. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "# Payslips"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__refused
 msgid "# Refused"
-msgstr "# Ditolak"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_inherit_kanban_view
@@ -61,7 +66,12 @@ msgstr "Pelamar"
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Applicant Name"
-msgstr "Nama Pelamar"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Applicant that have been enrolled into the company."
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__company_id
@@ -74,12 +84,12 @@ msgstr "Perusahaan"
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__create_uid
 msgid "Creator"
-msgstr "Pembuat"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_stage_report__days_in_stage
 msgid "Days In Stage"
-msgstr "Hari Dalam Tahap"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__display_name
@@ -94,6 +104,11 @@ msgid "End Date"
 msgstr "Tanggal Berakhir"
 
 #. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+msgid "From creation till hire"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Group By"
@@ -103,14 +118,24 @@ msgstr "Dikelompokkan berdasarkan"
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_report__state__is_hired
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_stage_report__state__is_hired
 msgid "Hired"
-msgstr "Diterima"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Hired People"
+msgstr ""
+
+#. module: hr_recruitment_reports
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Hiring ratio"
-msgstr "Rasio perekrutan"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Hiring ratio (%)"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__id
@@ -134,44 +159,48 @@ msgstr "Pekerjaan"
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Job Position"
-msgstr "Jabatan Kerja"
+msgstr "Posisi Kerja"
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Last 365 Days Applicant"
-msgstr "Pelamar 365 Hari Terakhir"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report____last_update
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_stage_report____last_update
+msgid "Last Modified on"
+msgstr "Terakhir diubah pada"
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__medium_id
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 msgid "Medium"
 msgstr "Media"
 
 #. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_job_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
-msgid "No data to display"
-msgstr "Tidak data yang bisa ditampilkan"
+#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__process_duration
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Process Duration"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__process_duration
-msgid "Process Duration"
-msgstr "Durasi Pemrosesan"
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Process Duration in Days"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__user_id
 msgid "Recruiter"
-msgstr "Recruiter"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_pivot
@@ -182,17 +211,23 @@ msgstr "Analisis Perekrutan"
 #. module: hr_recruitment_reports
 #: model:ir.model,name:hr_recruitment_reports.model_hr_recruitment_report
 msgid "Recruitment Analysis Report"
-msgstr "Laporan Analisis Rekrutmen"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "Recruitment Rate"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model,name:hr_recruitment_reports.model_hr_recruitment_stage_report
 msgid "Recruitment Stage Analysis"
-msgstr "Analisis Tahap Rekrutmen"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__refuse_reason_id
 msgid "Refuse Reason"
-msgstr "Alasan Penolakan"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields.selection,name:hr_recruitment_reports.selection__hr_recruitment_report__state__refused
@@ -203,6 +238,7 @@ msgstr "Ditolak"
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__source_id
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_inherit_kanban_view
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_search
 msgid "Source"
 msgstr "Sumber"
@@ -210,12 +246,11 @@ msgstr "Sumber"
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_source_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_source_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_source_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_source_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_team_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_report_view_source_pivot
 msgid "Source Analysis"
-msgstr "Sumber Analisi"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.model.fields,field_description:hr_recruitment_reports.field_hr_recruitment_report__stage_id
@@ -240,84 +275,87 @@ msgstr "Status"
 
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_report_team_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_report_team_menu
 msgid "Team Performance"
-msgstr "Performa Tim"
-
-#. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_job_action
-msgid "This report performs analysis on your recruitment."
-msgstr "Laporan ini melakukan analisis pada rekrutmen Anda."
-
-#. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
-msgid ""
-"This reports allow you to check the more time-consuming stages of your pipes"
-" and optimize your recruitment flow."
 msgstr ""
-"Laporan ini memungkinkan Anda untuk memeriksa tahap yang lebih memakan waktu"
-" dari pipeline Anda dan mengoptimalkan alur rekrutmen Anda."
 
 #. module: hr_recruitment_reports
-#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
 msgid ""
-"This reports allow you to compare the recruiters and their performance."
+"The % is based on the total of applicant that have been hired divided by the"
+" total of applicant."
 msgstr ""
-"Laporan ini memungkinkan Anda untuk membandingkan rekrutmen dan performa "
-"Anda."
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid ""
+"The process duration is based on the time between the applicant creation and"
+" the stage \"hired\" or \"refused\"."
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_action
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_source_job_action
-msgid ""
-"This reports allow you to compare various measures grouped by your sources "
-"of applicants."
+msgid "This report performs analysis on your recruitment source."
 msgstr ""
-"Laporan ini memungkinkan Anda untuk membandingkan ukuran yang dikelompokkan "
-"oleh sumber pelamar Anda."
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_action
-msgid ""
-"This reports allow you to follow the evolution of the number of applicants "
-"and hired employees over time."
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_job_action
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_action
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_stage_report_job_action
+msgid "This report performs analysis on your recruitment."
 msgstr ""
-"Laporan ini memungkinkan Anda untuk mengikuti perubahan jumlah pelamar dan "
-"karyawan yang direkrut."
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.actions.act_window,help:hr_recruitment_reports.recruitment_report_team_action
+msgid "This report performs analysis on your teams' performance."
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_inherit_kanban_view
 msgid "Time By Stages"
-msgstr "Waktu Berdasarkan Tahap"
+msgstr ""
 
 #. module: hr_recruitment_reports
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_stage_report_action
 #: model:ir.actions.act_window,name:hr_recruitment_reports.recruitment_stage_report_job_action
-#: model:ir.ui.menu,name:hr_recruitment_reports.hr_applicant_stage_report_menu
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_graph
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_pivot
 #: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.recruitment_stage_report_view_search
 msgid "Time In Stage Analysis"
-msgstr "Waktu Di Analisis Tahap"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Total Hired"
-msgstr "Total Direkrut"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
 #, python-format
 msgid "Total Meetings"
-msgstr "Total Meeting"
+msgstr ""
 
 #. module: hr_recruitment_reports
-#. odoo-python
 #: code:addons/hr_recruitment_reports/report/hr_recruitment_report.py:0
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
 #, python-format
 msgid "Total applicants"
-msgstr "Total pelamar"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Total hired"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_team_view_dashboard
+msgid "Total meetings"
+msgstr ""
+
+#. module: hr_recruitment_reports
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_source_view_dashboard
+#: model_terms:ir.ui.view,arch_db:hr_recruitment_reports.hr_recruitment_report_view_dashboard
+msgid "weeks"
+msgstr ""

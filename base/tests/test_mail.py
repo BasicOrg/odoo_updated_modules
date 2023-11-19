@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
 
+from unittest.mock import patch
+import email.policy
+import email.message
 import re
+import threading
 
 from odoo.addons.base.models.ir_mail_server import extract_rfc2822_addresses
-from odoo.addons.base.models.ir_qweb_fields import nl2br_enclose
-from odoo.tests import tagged
-from odoo.tests.common import BaseCase
+from odoo.tests.common import BaseCase, TransactionCase
 from odoo.tools import (
     is_html_empty, html_to_inner_content, html_sanitize, append_content_to_html, plaintext2html,
-    email_domain_normalize, email_normalize, email_re,
-    email_split, email_split_and_format, email_split_tuples,
-    single_email_re,
+    email_split, email_domain_normalize,
     misc, formataddr,
     prepend_html_content,
 )
@@ -21,27 +20,8 @@ from odoo.tools import (
 from . import test_mail_examples
 
 
-@tagged('mail_sanitize')
 class TestSanitizer(BaseCase):
     """ Test the html sanitizer that filters html to remove unwanted attributes """
-
-    def test_abrupt_close(self):
-        payload = """<!--> <script> alert(1) </script> -->"""
-        html_result = html_sanitize(payload)
-        self.assertNotIn('alert(1)', html_result)
-
-        payload = """<!---> <script> alert(1) </script> -->"""
-        html_result = html_sanitize(payload)
-        self.assertNotIn('alert(1)', html_result)
-
-    def test_abrut_malformed(self):
-        payload = """<!--!> <script> alert(1) </script> -->"""
-        html_result = html_sanitize(payload)
-        self.assertNotIn('alert(1)', html_result)
-
-        payload = """<!---!> <script> alert(1) </script> -->"""
-        html_result = html_sanitize(payload)
-        self.assertNotIn('alert(1)', html_result)
 
     def test_basic_sanitizer(self):
         cases = [
@@ -53,20 +33,6 @@ class TestSanitizer(BaseCase):
         for content, expected in cases:
             html = html_sanitize(content)
             self.assertEqual(html, expected, 'html_sanitize is broken')
-
-    def test_comment_malformed(self):
-        html = '''<!-- malformed-close --!> <img src='x' onerror='alert(1)'></img> --> comment <!-- normal comment --> --> out of context balise --!>'''
-        html_result = html_sanitize(html)
-        self.assertNotIn('alert(1)', html_result)
-
-    def test_comment_multiline(self):
-        payload = """
-            <div> <!--
-                multi line comment
-                --!> </div> <script> alert(1) </script> -->
-        """
-        html_result = html_sanitize(payload)
-        self.assertNotIn('alert(1)', html_result)
 
     def test_evil_malicious_code(self):
         # taken from https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Tests
@@ -326,7 +292,6 @@ class TestSanitizer(BaseCase):
     #         self.assertNotIn(ext, new_html)
 
 
-@tagged('mail_sanitize')
 class TestHtmlTools(BaseCase):
     """ Test some of our generic utility functions about html """
 
@@ -346,7 +311,7 @@ class TestHtmlTools(BaseCase):
             ('<div><p>First <br/>Second <br/>Third Paragraph</p><p>--<br/>Signature paragraph with a <a href="./link">link</a></p></div>',
              'First Second Third Paragraph -- Signature paragraph with a link'),
             ('<p>Now =&gt; processing&nbsp;entities&#8203;and extra whitespace too.  </p>',
-             'Now =&gt; processing&nbsp;entities\u200band extra whitespace too.'),
+             'Now =&gt; processing\xa0entities\u200band extra whitespace too.'),
             ('<div>Look what happens with <p>unmatched tags</div>', 'Look what happens with unmatched tags'),
             ('<div>Look what happens with <p unclosed tags</div> Are we good?', 'Look what happens with Are we good?')
         ]
@@ -390,30 +355,6 @@ class TestHtmlTools(BaseCase):
         ]
         for content in valid_html_samples:
             self.assertFalse(is_html_empty(content))
-
-    def test_nl2br_enclose(self):
-        """ Test formatting of nl2br when using Markup: consider new <br> tags
-        as trusted without validating the whole input content. """
-        source_all = [
-            'coucou',
-            '<p>coucou</p>',
-            'coucou\ncoucou',
-            'coucou\n\ncoucou',
-            '<p>coucou\ncoucou\n\nzbouip</p>\n',
-        ]
-        expected_all = [
-            Markup('<div>coucou</div>'),
-            Markup('<div>&lt;p&gt;coucou&lt;/p&gt;</div>'),
-            Markup('<div>coucou<br>\ncoucou</div>'),
-            Markup('<div>coucou<br>\n<br>\ncoucou</div>'),
-            Markup('<div>&lt;p&gt;coucou<br>\ncoucou<br>\n<br>\nzbouip&lt;/p&gt;<br>\n</div>'),
-        ]
-        for source, expected in zip(source_all, expected_all):
-            with self.subTest(source=source, expected=expected):
-                self.assertEqual(
-                    nl2br_enclose(source, "div"),
-                    expected,
-                )
 
     def test_prepend_html_content(self):
         body = """
@@ -467,282 +408,31 @@ class TestHtmlTools(BaseCase):
         self.assertEqual(result, "<html><body><div>test</div><div>test</div></body></html>")
 
 
-@tagged('mail_tools')
 class TestEmailTools(BaseCase):
     """ Test some of our generic utility functions for emails """
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestEmailTools, cls).setUpClass()
-
-        cls.sources = [
-            # single email
-            'alfred.astaire@test.example.com',
-            ' alfred.astaire@test.example.com ',
-            'Fredo The Great <alfred.astaire@test.example.com>',
-            '"Fredo The Great" <alfred.astaire@test.example.com>',
-            'Fredo "The Great" <alfred.astaire@test.example.com>',
-            # multiple emails
-            'alfred.astaire@test.example.com, evelyne.gargouillis@test.example.com',
-            'Fredo The Great <alfred.astaire@test.example.com>, Evelyne The Goat <evelyne.gargouillis@test.example.com>',
-            '"Fredo The Great" <alfred.astaire@test.example.com>, evelyne.gargouillis@test.example.com',
-            '"Fredo The Great" <alfred.astaire@test.example.com>, <evelyne.gargouillis@test.example.com>',
-            # text containing email
-            'Hello alfred.astaire@test.example.com how are you ?',
-            '<p>Hello alfred.astaire@test.example.com</p>',
-            # text containing emails
-            'Hello "Fredo" <alfred.astaire@test.example.com>, evelyne.gargouillis@test.example.com',
-            'Hello "Fredo" <alfred.astaire@test.example.com> and evelyne.gargouillis@test.example.com',
-            # falsy
-            '<p>Hello Fredo</p>',
-            'j\'adore écrire des @gmail.com ou "@gmail.com" a bit randomly',
-            '',
-        ]
-
-    def test_email_domain_normalize(self):
-        cases = [
-            ("Test.Com", "test.com", "Should have normalized domain"),
-            ("email@test.com", False, "Domain is not valid, should return False"),
-            (False, False, "Domain is not valid, should retunr False"),
-        ]
-        for source, expected, msg in cases:
-            self.assertEqual(email_domain_normalize(source), expected, msg)
-
-    def test_email_normalize(self):
-        """ Test 'email_normalize'. Note that it is built on 'email_split' so
-        some use cases are already managed in 'test_email_split(_and_format)'
-        hence having more specific test cases here about normalization itself. """
-        format_name = 'My Super Prénom'
-        format_name_ascii = '=?utf-8?b?TXkgU3VwZXIgUHLDqW5vbQ==?='
-        sources = [
-            '"Super Déboulonneur" <deboulonneur@example.com>',  # formatted
-            'Déboulonneur deboulonneur@example.com',  # wrong formatting
-            'deboulonneur@example.com Déboulonneur',  # wrong formatting (happens, alas)
-            '"Super Déboulonneur" <DEBOULONNEUR@example.com>, "Super Déboulonneur 2" <deboulonneur2@EXAMPLE.com>',  # multi + case
-            ' Déboulonneur deboulonneur@example.com déboulonneur deboulonneur2@example.com',  # wrong formatting + wrong multi
-            '"Déboulonneur 😊" <deboulonneur.😊@example.com>',  # unicode in name and email left-part
-            '"Déboulonneur" <déboulonneur@examplé.com>',  # utf-8
-            '"Déboulonneur" <DéBoulonneur@Examplé.com>',  # utf-8
-        ]
-        expected_list = [
-            'deboulonneur@example.com',
-            'deboulonneur@example.com',
-            'deboulonneur@example.comdéboulonneur',
-            False,
-            False,  # need fix over 'getadresses'
-            'deboulonneur.😊@example.com',
-            'déboulonneur@examplé.com',
-            'DéBoulonneur@examplé.com',
-        ]
-        expected_fmt_utf8_list = [
-            f'"{format_name}" <deboulonneur@example.com>',
-            f'"{format_name}" <deboulonneur@example.com>',
-            f'"{format_name}" <deboulonneur@example.comdéboulonneur>',
-            f'"{format_name}" <@>',
-            f'"{format_name}" <@>',
-            f'"{format_name}" <deboulonneur.😊@example.com>',
-            f'"{format_name}" <déboulonneur@examplé.com>',
-            f'"{format_name}" <DéBoulonneur@examplé.com>',
-        ]
-        expected_fmt_ascii_list = [
-            f'{format_name_ascii} <deboulonneur@example.com>',
-            f'{format_name_ascii} <deboulonneur@example.com>',
-            f'{format_name_ascii} <deboulonneur@example.xn--comdboulonneur-ekb>',
-            f'{format_name_ascii} <@>',
-            f'{format_name_ascii} <@>',
-            f'{format_name_ascii} <deboulonneur.😊@example.com>',
-            f'{format_name_ascii} <déboulonneur@xn--exampl-gva.com>',
-            f'{format_name_ascii} <DéBoulonneur@xn--exampl-gva.com>',
-        ]
-        for source, expected, expected_utf8_fmt, expected_ascii_fmt in zip(sources, expected_list, expected_fmt_utf8_list, expected_fmt_ascii_list):
-            with self.subTest(source=source):
-                self.assertEqual(email_normalize(source, strict=True), expected)
-                # standard usage of formataddr
-                self.assertEqual(formataddr((format_name, (expected or '')), charset='utf-8'), expected_utf8_fmt)
-                # check using INDA at format time, using ascii charset as done when
-                # sending emails (see extract_rfc2822_addresses)
-                self.assertEqual(formataddr((format_name, (expected or '')), charset='ascii'), expected_ascii_fmt)
-
-    def test_email_re(self):
-        """ Test 'email_re', finding emails in a given text """
-        expected = [
-            # single email
-            ['alfred.astaire@test.example.com'],
-            ['alfred.astaire@test.example.com'],
-            ['alfred.astaire@test.example.com'],
-            ['alfred.astaire@test.example.com'],
-            ['alfred.astaire@test.example.com'],
-            # multiple emails
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            # text containing email
-            ['alfred.astaire@test.example.com'],
-            ['alfred.astaire@test.example.com'],
-            # text containing emails
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            ['alfred.astaire@test.example.com', 'evelyne.gargouillis@test.example.com'],
-            # falsy
-            [], [], [],
-        ]
-
-        for src, exp in zip(self.sources, expected):
-            res = email_re.findall(src)
-            self.assertEqual(
-                res, exp,
-                'Seems email_re is broken with %s (expected %r, received %r)' % (src, exp, res)
-            )
-
     def test_email_split(self):
-        """ Test 'email_split' """
         cases = [
             ("John <12345@gmail.com>", ['12345@gmail.com']),  # regular form
             ("d@x; 1@2", ['d@x', '1@2']),  # semi-colon + extra space
             ("'(ss)' <123@gmail.com>, 'foo' <foo@bar>", ['123@gmail.com', 'foo@bar']),  # comma + single-quoting
             ('"john@gmail.com"<johnny@gmail.com>', ['johnny@gmail.com']),  # double-quoting
             ('"<jg>" <johnny@gmail.com>', ['johnny@gmail.com']),  # double-quoting with brackets
-            ('@gmail.com', ['@gmail.com']),  # no left-part
-            # '@domain' corner cases -- all those return a '@gmail.com' (or equivalent)
-            # email address when going through 'getaddresses'
-            # - multi @
-            ('fr@ncois.th@notgmail.com', ['fr@ncois.th']),
-            ('f@r@nc.gz,ois@notgmail.com', ['r@nc.gz', 'ois@notgmail.com']),  # still failing, but differently from 'getaddresses' alone
-            ('@notgmail.com esteban_gnole@coldmail.com@notgmail.com', ['esteban_gnole@coldmail.com']),
-            # - multi emails (with invalid)
-            (
-                'Ivan@dezotos.com Cc iv.an@notgmail.com',
-                ['Ivan@dezotos.com', 'iv.an@notgmail.com']
-            ),
-            (
-                'ivan-dredi@coldmail.com ivan.dredi@notgmail.com',
-                ['ivan-dredi@coldmail.com', 'ivan.dredi@notgmail.com']
-            ),
-            (
-                '@notgmail.com ivan@coincoin.com.ar jeanine@coincoin.com.ar',
-                ['ivan@coincoin.com.ar', 'jeanine@coincoin.com.ar']
-            ),
-            (
-                '@notgmail.com whoareyou@youhou.com.   ivan.dezotos@notgmail.com',
-                ['whoareyou@youhou.com', 'ivan.dezotos@notgmail.com']
-            ),
-            (
-                'francois@nc.gz CC: ois@notgmail.com ivan@dezotos.com',
-                ['francois@nc.gz', 'ois@notgmail.com', 'ivan@dezotos.com']
-            ),
-            (
-                'francois@nc.gz CC: ois@notgmail.com,ivan@dezotos.com',
-                ['francois@nc.gzCC', 'ois@notgmail.com', 'ivan@dezotos.com']
-            ),
-            # - separated with '/''
-            (
-                'ivan.plein@dezotos.com / ivan.plu@notgmail.com',
-                ['ivan.plein@dezotos.com', 'ivan.plu@notgmail.com']
-            ),
-            (
-                '@notgmail.com ivan.parfois@notgmail.com/ ivan.souvent@notgmail.com',
-                ['ivan.parfois@notgmail.com', 'ivan.souvent@notgmail.com']
-            ),
-            # - separated with '-''
-            ('ivan@dezotos.com - ivan.dezotos@notgmail.com', ['ivan@dezotos.com', 'ivan.dezotos@notgmail.com']),
-            (
-                'car.pool@notgmail.com - co (TAMBO) Registration car.warsh@notgmail.com',
-                ['car.pool@notgmail.com', 'car.warsh@notgmail.com']
-            ),
         ]
-        for source, expected in cases:
-            with self.subTest(source=source):
-                self.assertEqual(email_split(source), expected)
-
-    def test_email_split_and_format(self):
-        """ Test 'email_split_and_format', notably in case of multi encapsulation
-        or multi emails. """
-        sources = [
-            'deboulonneur@example.com',
-            '"Super Déboulonneur" <deboulonneur@example.com>',  # formatted
-            # wrong formatting
-            'Déboulonneur <deboulonneur@example.com',  # with a final typo
-            'Déboulonneur deboulonneur@example.com',  # wrong formatting
-            'deboulonneur@example.com Déboulonneur',  # wrong formatting (happens, alas)
-            # multi
-            'Déboulonneur, deboulonneur@example.com',  # multi-like with errors
-            'deboulonneur@example.com, deboulonneur2@example.com',  # multi
-            ' Déboulonneur deboulonneur@example.com déboulonneur deboulonneur2@example.com',  # wrong formatting + wrong multi
-            # format / misc
-            '"Déboulonneur" <"Déboulonneur Encapsulated" <deboulonneur@example.com>>',  # double formatting
-            '"Super Déboulonneur" <deboulonneur@example.com>, "Super Déboulonneur 2" <deboulonneur2@example.com>',
-            '"Super Déboulonneur" <deboulonneur@example.com>, wrong, ',
-            '"Déboulonneur 😊" <deboulonneur@example.com>',  # unicode in name
-            '"Déboulonneur 😊" <deboulonneur.😊@example.com>',  # unicode in name and email left-part
-            '"Déboulonneur" <déboulonneur@examplé.com>',  # utf-8
-        ]
-        expected_list = [
-            ['deboulonneur@example.com'],
-            ['"Super Déboulonneur" <deboulonneur@example.com>'],
-            # wrong formatting
-            ['"Déboulonneur" <deboulonneur@example.com>'],
-            ['"Déboulonneur" <deboulonneur@example.com>'],  # extra part correctly considered as a name
-            ['deboulonneur@example.comDéboulonneur'],  # concatenated, not sure why
-            # multi
-            ['deboulonneur@example.com'],
-            ['deboulonneur@example.com', 'deboulonneur2@example.com'],
-            ['deboulonneur@example.com', 'deboulonneur2@example.com'],  # need fix over 'getadresses'
-            # format / misc
-            ['deboulonneur@example.com'],
-            ['"Super Déboulonneur" <deboulonneur@example.com>', '"Super Déboulonneur 2" <deboulonneur2@example.com>'],
-            ['"Super Déboulonneur" <deboulonneur@example.com>'],
-            ['"Déboulonneur 😊" <deboulonneur@example.com>'],
-            ['"Déboulonneur 😊" <deboulonneur.😊@example.com>'],
-            ['"Déboulonneur" <déboulonneur@examplé.com>'],
-        ]
-        for source, expected in zip(sources, expected_list):
-            with self.subTest(source=source):
-                self.assertEqual(email_split_and_format(source), expected)
-
-    def test_email_split_tuples(self):
-        """ Test 'email_split_and_format' that returns (name, email) pairs
-        found in text input """
-        expected = [
-            # single email
-            [('', 'alfred.astaire@test.example.com')],
-            [('', 'alfred.astaire@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com')],
-            # multiple emails
-            [('', 'alfred.astaire@test.example.com'), ('', 'evelyne.gargouillis@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com'), ('Evelyne The Goat', 'evelyne.gargouillis@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com'), ('', 'evelyne.gargouillis@test.example.com')],
-            [('Fredo The Great', 'alfred.astaire@test.example.com'), ('', 'evelyne.gargouillis@test.example.com')],
-            # text containing email -> fallback on parsing to extract text from email
-            [('Hello', 'alfred.astaire@test.example.comhowareyou?')],
-            [('Hello', 'alfred.astaire@test.example.com')],
-            [('Hello Fredo', 'alfred.astaire@test.example.com'), ('', 'evelyne.gargouillis@test.example.com')],
-            [('Hello Fredo', 'alfred.astaire@test.example.com'), ('and', 'evelyne.gargouillis@test.example.com')],
-            # falsy -> probably not designed for that
-            [],
-            [('j\'adore écrire', "des@gmail.comou"), ('', '@gmail.com')], [],
-        ]
-
-        for src, exp in zip(self.sources, expected):
-            res = email_split_tuples(src)
-            self.assertEqual(
-                res, exp,
-                'Seems email_split_tuples is broken with %s (expected %r, received %r)' % (src, exp, res)
-            )
+        for text, expected in cases:
+            self.assertEqual(email_split(text), expected, 'email_split is broken')
 
     def test_email_formataddr(self):
-        """ Test custom 'formataddr', notably with IDNA support """
-        email_base = 'joe@example.com'
+        email = 'joe@example.com'
         email_idna = 'joe@examplé.com'
         cases = [
             # (name, address),          charsets            expected
-            (('', email_base),          ['ascii', 'utf-8'], 'joe@example.com'),
-            (('joe', email_base),       ['ascii', 'utf-8'], '"joe" <joe@example.com>'),
-            (('joe doe', email_base),   ['ascii', 'utf-8'], '"joe doe" <joe@example.com>'),
-            (('joe"doe', email_base),   ['ascii', 'utf-8'], '"joe\\"doe" <joe@example.com>'),
-            (('joé', email_base),       ['ascii'],          '=?utf-8?b?am/DqQ==?= <joe@example.com>'),
-            (('joé', email_base),       ['utf-8'],          '"joé" <joe@example.com>'),
+            (('', email),               ['ascii', 'utf-8'], 'joe@example.com'),
+            (('joe', email),            ['ascii', 'utf-8'], '"joe" <joe@example.com>'),
+            (('joe doe', email),        ['ascii', 'utf-8'], '"joe doe" <joe@example.com>'),
+            (('joe"doe', email),        ['ascii', 'utf-8'], '"joe\\"doe" <joe@example.com>'),
+            (('joé', email),            ['ascii'],          '=?utf-8?b?am/DqQ==?= <joe@example.com>'),
+            (('joé', email),            ['utf-8'],          '"joé" <joe@example.com>'),
             (('', email_idna),          ['ascii'],          'joe@xn--exampl-gva.com'),
             (('', email_idna),          ['utf-8'],          'joe@examplé.com'),
             (('joé', email_idna),       ['ascii'],          '=?utf-8?b?am/DqQ==?= <joe@xn--exampl-gva.com>'),
@@ -756,43 +446,86 @@ class TestEmailTools(BaseCase):
                     self.assertEqual(formataddr(pair, charset), expected)
 
     def test_extract_rfc2822_addresses(self):
-        cases = [
+        tests = [
             ('"Admin" <admin@example.com>', ['admin@example.com']),
             ('"Admin" <admin@example.com>, Demo <demo@test.com>', ['admin@example.com', 'demo@test.com']),
             ('admin@example.com', ['admin@example.com']),
             ('"Admin" <admin@example.com>, Demo <malformed email>', ['admin@example.com']),
             ('admin@éxample.com', ['admin@xn--xample-9ua.com']),
-            # formatted input containing email
-            ('"admin@éxample.com" <admin@éxample.com>', ['admin@xn--xample-9ua.com', 'admin@xn--xample-9ua.com']),
-            ('"Robert Le Grand" <robert@notgmail.com>', ['robert@notgmail.com']),
-            ('"robert@notgmail.com" <robert@notgmail.com>', ['robert@notgmail.com', 'robert@notgmail.com']),
-            # accents
-            ('DéBoulonneur@examplé.com', ['DéBoulonneur@xn--exampl-gva.com']),
+            ('"admin@éxample.com" <admin@éxample.com>', ['admin@xn--xample-9ua.com']),
         ]
 
-        for source, expected in cases:
-            with self.subTest(source=source):
-                self.assertEqual(extract_rfc2822_addresses(source), expected)
+        for (rfc2822_email, expected) in tests:
+            self.assertEqual(extract_rfc2822_addresses(rfc2822_email), expected)
 
-    def test_single_email_re(self):
-        """ Test 'single_email_re', matching text input containing only one email """
-        expected = [
-            # single email
-            ['alfred.astaire@test.example.com'],
-            [], [], [], [], # formatting issue for single email re
-            # multiple emails -> couic
-            [], [], [], [],
-            # text containing email -> couic
-            [], [],
-            # text containing emails -> couic
-            [], [],
-            # falsy
-            [], [], [],
-        ]
+    def test_email_domain_normalize(self):
+        self.assertEqual(email_domain_normalize("Test.Com"), "test.com", "Should have normalized the domain")
+        self.assertEqual(email_domain_normalize("email@test.com"), False, "The domain is not valid, should return False")
+        self.assertEqual(email_domain_normalize(False), False, "The domain is not valid, should return False")
 
-        for src, exp in zip(self.sources, expected):
-            res = single_email_re.findall(src)
-            self.assertEqual(
-                res, exp,
-                'Seems single_email_re is broken with %s (expected %r, received %r)' % (src, exp, res)
-            )
+
+class EmailConfigCase(TransactionCase):
+    @patch.dict("odoo.tools.config.options", {"email_from": "settings@example.com"})
+    def test_default_email_from(self, *args):
+        """Email from setting is respected."""
+        # ICP setting is more important
+        ICP = self.env["ir.config_parameter"].sudo()
+        ICP.set_param("mail.catchall.domain", "example.org")
+        ICP.set_param("mail.default.from", "icp")
+        message = self.env["ir.mail_server"].build_email(
+            False, "recipient@example.com", "Subject",
+            "The body of an email",
+        )
+        self.assertEqual(message["From"], "icp@example.org")
+        # Without ICP, the config file/CLI setting is used
+        ICP.set_param("mail.default.from", False)
+        message = self.env["ir.mail_server"].build_email(
+            False, "recipient@example.com", "Subject",
+            "The body of an email",
+        )
+        self.assertEqual(message["From"], "settings@example.com")
+
+
+class TestEmailMessage(TransactionCase):
+    def test_as_string(self):
+        """Ensure all email sent are bpo-34424 and bpo-35805 free"""
+
+        message_truth = (
+            r'From: .+? <joe@example\.com>\r\n'
+            r'To: .+? <joe@example\.com>\r\n'
+            r'Message-Id: <[0-9a-z.-]+@[0-9a-z.-]+>\r\n'
+            r'References: (<[0-9a-z.-]+@[0-9a-z.-]+>\s*)+\r\n'
+            r'\r\n'
+        )
+
+        class FakeSMTP:
+            """SMTP stub"""
+            def __init__(this):
+                this.email_sent = False
+                this.from_filter = 'example.com'
+
+            # Python 3 before 3.7.4
+            def sendmail(this, smtp_from, smtp_to_list, message_str,
+                         mail_options=(), rcpt_options=()):
+                this.email_sent = True
+                self.assertRegex(message_str, message_truth)
+
+            # Python 3.7.4+
+            def send_message(this, message, smtp_from, smtp_to_list,
+                             mail_options=(), rcpt_options=()):
+                message_str = message.as_string()
+                this.email_sent = True
+                self.assertRegex(message_str, message_truth)
+
+        msg = email.message.EmailMessage(policy=email.policy.SMTP)
+        msg['From'] = '"Joé Doe" <joe@example.com>'
+        msg['To'] = '"Joé Doe" <joe@example.com>'
+
+        # Message-Id & References fields longer than 77 chars (bpo-35805)
+        msg['Message-Id'] = '<929227342217024.1596730490.324691772460938-example-30661-some.reference@test-123.example.com>'
+        msg['References'] = '<345227342212345.1596730777.324691772483620-example-30453-other.reference@test-123.example.com>'
+
+        smtp = FakeSMTP()
+        self.patch(threading.current_thread(), 'testing', False)
+        self.env['ir.mail_server'].send_email(msg, smtp_session=smtp)
+        self.assertTrue(smtp.email_sent)

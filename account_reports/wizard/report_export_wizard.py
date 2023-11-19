@@ -59,12 +59,8 @@ class ReportExportWizard(models.TransientModel):
         report_options = self.env.context['account_report_generation_options']
         for format in self.export_format_ids:
             # format.fun_to_call is a button function, so it has to be public
-            fun_name = format.fun_to_call
-            check_method_name(fun_name)
-            if self.report_id.custom_handler_model_id and hasattr(self.env[self.report_id.custom_handler_model_name], fun_name):
-                report_function = getattr(self.env[self.report_id.custom_handler_model_name], fun_name)
-            else:
-                report_function = getattr(self.report_id, fun_name)
+            check_method_name(format.fun_to_call)
+            report_function = getattr(self.report_id, format.fun_to_call)
             report_function_params = [format.fun_param] if format.fun_param else []
             report_action = report_function(report_options, *report_function_params)
 
@@ -80,7 +76,7 @@ class ReportExportWizardOption(models.TransientModel):
     name = fields.Char(string="Name", required=True)
     fun_to_call = fields.Char(string="Function to Call", required=True)
     fun_param = fields.Char(string="Function Parameter")
-    export_wizard_id = fields.Many2one(string="Parent Wizard", comodel_name='account_reports.export.wizard', required=True, ondelete='cascade')
+    export_wizard_id = fields.Many2one(string="Parent Wizard", comodel_name='account_reports.export.wizard', required=True)
 
     def apply_export(self, report_action):
         self.ensure_one()

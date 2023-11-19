@@ -31,7 +31,7 @@ class Project(models.Model):
             ]).unlink()
         return result
 
-    def get_allocated_hours_field(self):
+    def get_planned_hours_field(self):
         return 'allocated_hours'
 
     def get_worked_hours_fields(self):

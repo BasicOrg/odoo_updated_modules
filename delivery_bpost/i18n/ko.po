@@ -3,16 +3,16 @@
 # 	* delivery_bpost
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2021-07-12 07:56+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -35,7 +35,6 @@ msgid "Allow deliveries on Saturday (extra charges apply)"
 msgstr "토요일 배송 허용(추가 요금 적용)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -62,6 +61,7 @@ msgstr "Bpost 국내 배송 유형"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_domestic
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_domestic
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
 msgid "Bpost Domestic bpack 24h Pro"
 msgstr "Bpost 국내 bpack 24시간 프로"
@@ -84,7 +84,7 @@ msgstr "Bpost 재고 꼬리표 유형"
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
 msgid "Bpost Package Type"
-msgstr "Bpost 패키지 유형"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_parcel_return_instructions
@@ -98,6 +98,7 @@ msgstr "Bpost 선적 유형"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_inter
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_world
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_world_product_template
 msgid "Bpost World Express Pro"
 msgstr "Bpost 월드 익스프레스 프로"
@@ -145,7 +146,7 @@ msgstr "국제"
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
 msgid "Label Format"
-msgstr "라벨 양식"
+msgstr ""
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
@@ -173,7 +174,6 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Packages over 30 Kg are not accepted by bpost."
@@ -185,7 +185,6 @@ msgid "Passphrase"
 msgstr "암호"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
@@ -197,18 +196,17 @@ msgid "Provider"
 msgstr "공급업체"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return labels created into bpost"
-msgstr "bpost로 반송 라벨 생성함"
+msgid ""
+"Return labels created into bpost <br/> <b>Tracking Numbers: </b><br/>%s"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return shipment created into bpost"
-msgstr "bpost로 생성된 반품 배송"
+msgid "Return shipment created into bpost <br/> <b>Tracking Number : </b>%s"
+msgstr "bpost로 작성된 반송 <br/><b>조회 번호 :</b> %s"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_parcel_return_instructions__rta
@@ -226,38 +224,34 @@ msgid "SAMPLE"
 msgstr "샘플"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "Shipment #%s has been cancelled"
-msgstr "#%s 배송이 취소되었습니다"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment created into bpost"
-msgstr "bpost로 생성된 반품 배송"
+msgid "Shipment created into bpost <br/> <b>Tracking Links</b> <br/>%s"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_delivery_carrier
 msgid "Shipping Methods"
-msgstr "배송 방법"
+msgstr "선적 방법"
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_stock_package_type
 msgid "Stock package type"
-msgstr "재고 포장 유형"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "The BPost shipping service is unresponsive, please retry later."
 msgstr "BPost 선적 서비스가 응답하지 않습니다. 나중에 다시 시도하십시오."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -268,27 +262,22 @@ msgstr ""
 "%s)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The estimated shipping price cannot be computed because all your products "
 "are service."
-msgstr "모든 품목이 서비스이므로 예상 배송료를 계산할 수 없습니다."
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
 "The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
 " %s"
 msgstr ""
-"다음 품목의 중량 정보가 누락되어 예상 배송 비용을 계산할 수 없습니다.\n"
-"%s"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -299,35 +288,20 @@ msgstr ""
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Links"
-msgstr "배송 조회 링크"
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_domestic
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_world
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_world_product_template
+msgid "Units"
+msgstr "단위"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr "배송 조회 번호:"
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Numbers:"
-msgstr "배송 조회 번호:"
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "You cannot compute a passphrase for non-bpost carriers."
 msgstr "bpost가 아닌 운송업체의 암호는 계산할 수 없습니다."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Your company/warehouse address must be in Belgium to ship with bpost"
@@ -377,10 +351,9 @@ msgstr "Bpost 환경 설정"
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_package_type_id
 msgid "bpost Default Package Type"
-msgstr "bpost 기본 패키지 유형"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -389,7 +362,6 @@ msgid ""
 msgstr "BPost 국내는 벨기에 내에서만 배송됩니다. 배송 방법을 국제 우편으로 변경해 주세요."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -401,10 +373,9 @@ msgstr "bpost International은 벨기에 밖에서만 배송됩니다. 배송 �
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_sale
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_stock
 msgid "bpost Shipping Methods"
-msgstr "Bpost 배송 방법"
+msgstr "Bpost 선적 정책"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "bpost did not return prices for this destination country."

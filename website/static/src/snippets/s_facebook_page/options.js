@@ -1,14 +1,9 @@
-/** @odoo-module **/
+odoo.define('website.s_facebook_page_options', function (require) {
+'use strict';
 
-import { pick } from "@web/core/utils/objects";
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 options.registry.facebookPage = options.Class.extend({
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
-    },
-
     /**
      * Initializes the required facebook page data to create the iframe.
      *
@@ -19,18 +14,21 @@ options.registry.facebookPage = options.Class.extend({
 
         var defaults = {
             href: '',
-            id: '',
             height: 215,
             width: 350,
             tabs: '',
             small_header: true,
             hide_cover: true,
         };
-        this.fbData = Object.assign({}, defaults, pick(this.$target[0].dataset, Object.keys(defaults)), defaults);
+        this.fbData = _.defaults(_.pick(this.$target[0].dataset, _.keys(defaults)), defaults);
+
         if (!this.fbData.href) {
             // Fetches the default url for facebook page from website config
             var self = this;
-            defs.push(this.orm.searchRead("website", [], ["social_facebook"], {
+            defs.push(this._rpc({
+                model: 'website',
+                method: 'search_read',
+                args: [[], ['social_facebook']],
                 limit: 1,
             }).then(function (res) {
                 if (res) {
@@ -40,12 +38,6 @@ options.registry.facebookPage = options.Class.extend({
         }
 
         return Promise.all(defs).then(() => this._markFbElement()).then(() => this._refreshPublicWidgets());
-    },
-    /**
-     * @override
-     */
-    onBuilt() {
-        this.$target[0].querySelector('.o_facebook_page_preview')?.remove();
     },
 
     //--------------------------------------------------------------------------
@@ -112,9 +104,9 @@ options.registry.facebookPage = options.Class.extend({
             } else {
                 this.fbData.height = 150;
             }
-            for (const [key, value] of Object.entries(this.fbData)) {
+            _.each(this.fbData, (value, key) => {
                 this.$target[0].dataset[key] = value;
-            }
+            });
         });
     },
     /**
@@ -144,34 +136,20 @@ options.registry.facebookPage = options.Class.extend({
      */
     _checkURL: function () {
         const defaultURL = 'https://www.facebook.com/Odoo';
-        // Patterns matched by the regex (all relate to existing pages,
-        // in spite of the URLs containing "profile.php" or "people"):
-        // - https://www.facebook.com/<pagewithaname>
-        // - http://www.facebook.com/<page.with.a.name>
-        // - www.facebook.com/<fbid>
-        // - facebook.com/profile.php?id=<fbid>
-        // - www.facebook.com/<name>-<fbid>  - NB: the name doesn't matter
-        // - www.fb.com/people/<name>/<fbid>  - same
-        // - m.facebook.com/p/<name>-<fbid>  - same
-        // The regex is kept as a huge one-liner for performance as it is
-        // compiled once on script load. The only way to split it on several
-        // lines is with the RegExp constructor, which is compiled on runtime.
-        const match = this.fbData.href.match(/^(https?:\/\/)?((www\.)?(fb|facebook)|(m\.)?facebook)\.com\/(((profile\.php\?id=|people\/[^/?#]+\/|(p\/)?[^/?#]+-)(?<id>[0-9]{15,16}))|(?<nameid>[\w.]+))($|[/?# ])/);
+        const match = this.fbData.href.match(/^(?:https?:\/\/)?(?:www\.)?(?:fb|facebook)\.com\/(?:([\w.]+)|[^/?#]+-([0-9]{15,16}))(?:$|[/?# ])/);
         if (match) {
             // Check if the page exists on Facebook or not
-            const pageId = match.groups.nameid || match.groups.id;
-            return fetch(`https://graph.facebook.com/${pageId}/picture`)
-            .then((res) => {
-                if (res.ok) {
-                    this.fbData.id = pageId;
-                } else {
-                    this.fbData.id = "";
+            return new Promise((resolve, reject) => $.ajax({
+                url: 'https://graph.facebook.com/' + (match[2] || match[1]) + '/picture',
+                success: () => resolve(),
+                error: () => {
                     this.fbData.href = defaultURL;
-                }
-            });
+                    resolve();
+                },
+            }));
         }
-        this.fbData.id = "";
         this.fbData.href = defaultURL;
         return Promise.resolve();
     },
+});
 });

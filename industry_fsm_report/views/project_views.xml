@@ -29,7 +29,7 @@
                 <attribute name="color">worksheet_color</attribute>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <field name="worksheet_template_id" invisible="not worksheet_template_id" filters="1" color="color"/>
+                <field name="worksheet_template_id" attrs="{'invisible': [('worksheet_template_id', '=', False)]}" filters="1" color="color"/>
             </xpath>
         </field>
     </record>
@@ -87,8 +87,18 @@
         <field name="inherit_id" ref="industry_fsm.quick_create_task_form_fsm"/>
         <field name="arch" type="xml">
             <field name="user_ids" position="before">
-                <field name="allow_worksheets" invisible="1"/>
-                <field name="worksheet_template_id" invisible="not allow_worksheets" options="{'no_open': True, 'no_create': True}" context="{'default_res_model': 'project.task'}"/>
+                <field name="worksheet_template_id" attrs="{'invisible':[('allow_worksheets', '=', False)]}" options="{'no_open': True}" context="{'default_res_model': 'project.task'}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="project_task_view_list_fsm_inherit" model="ir.ui.view">
+        <field name="name">project.task.tree.fsm.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="industry_fsm.project_task_view_list_fsm"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="worksheet_template_id" optional="show"/>
             </field>
         </field>
     </record>
@@ -111,14 +121,22 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="industry_fsm.project_view_form_inherit"/>
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='group_field_service']/div" position="inside">
-                <setting class="col-lg-12" help="Create reports to be signed off by your customers" id="industry_fsm">
-                    <field name="allow_worksheets"/>
-                    <div class="mt-3 d-flex flex-wrap" invisible="not allow_worksheets">
-                        <label for="worksheet_template_id" class="fw-bold" string="Worksheet Template"/>
-                        <field name="worksheet_template_id" class="oe_inline ps-2" context="{'default_res_model': 'project.task'}" options="{'no_create': True}"/>
+            <xpath expr="//div[@id='industry_fsm']" position="replace">
+                <div class="o_setting_box mt-4" id="industry_fsm">
+                    <div class="o_setting_left_pane">
+                        <field name="allow_worksheets"/>
                     </div>
-                </setting>
+                    <div class="o_setting_right_pane">
+                        <label for="allow_worksheets"/>
+                        <div class="text-muted" id="allow_billable_setting">
+                            Create reports to be signed off by your customers
+                        </div>
+                        <div class="mt-3 d-flex" attrs="{'invisible': [('allow_worksheets', '=', False)]}">
+                            <label for="worksheet_template_id" string="Worksheet Template"/>
+                            <field name="worksheet_template_id" class="oe_inline" context="{'default_res_model': 'project.task'}"/>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>
@@ -139,17 +157,54 @@
         </field>
     </record>
 
+    <record id="project_project_view_tree" model="ir.ui.view">
+        <field name="name">project.project.tree2.fsm.report</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="worksheet_template_id" string="Worksheet Template" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_view_tree_primary" model="ir.ui.view">
+        <field name="name">project.view.tree.primary</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="industry_fsm.project_view_tree_primary"/>
+        <field name="arch" type="xml">
+            <field name="worksheet_template_id" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_project_project_filter_inherit_industry_fsm_report" model="ir.ui.view">
+        <field name="name">view.project.project.filter.inherit.industry.fsm.report</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="industry_fsm.view_project_project_filter_inherit_industry_fsm"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="worksheet_template_id"/>
+            </field>
+            <filter name="Manager" position="after">
+                <filter string="Worksheet Template" name="groupby_worksheet_template" context="{'group_by':'worksheet_template_id'}"/>
+            </filter>
+        </field>
+    </record>
+
     <record id="project_task_view_search_fsm_report" model="ir.ui.view">
         <field name="name">project.task.search.fsm</field>
         <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.view_task_search_form_project_fsm_base"/>
+        <field name="inherit_id" ref="industry_fsm.project_task_view_search_fsm"/>
         <field name="arch" type="xml">
-            <field name="project_id" position="after">
-                <field name="worksheet_template_id"/>
-            </field>
-            <filter name="milestone" position="before">
+            <xpath expr="//group/filter[@name='groupby_project']" position="after">
                 <filter string="Worksheet Template" name="groupby_worksheet_template" context="{'group_by':'worksheet_template_id'}"/>
-            </filter>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="worksheet_template_id"/>
+            </xpath>
         </field>
     </record>
 
@@ -159,64 +214,20 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="industry_fsm.view_task_form2_inherit"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_fsm_validate']" position="before">
-                <field name="fsm_is_sent" invisible="1"/>
-                <field name="worksheet_signature" invisible="1"/>
-                <field name="display_sign_report_primary" invisible="1"/>
-                <field name="display_sign_report_secondary" invisible="1"/>
-                <field name="display_send_report_primary" invisible="1"/>
-                <field name="display_send_report_secondary" invisible="1"/>
-                <button name="action_preview_worksheet" type="object" string="Sign Report" class="btn-primary"
-                        invisible="not display_sign_report_primary" data-hotkey="y"/>
-                <button name="action_send_report" type="object" string="Send Report" class="btn-primary"
-                        invisible="not display_send_report_primary" data-hotkey="g"/>
-            </xpath>
-            <xpath expr="//button[@name='action_fsm_validate']" position="after">
-                <button name="action_preview_worksheet" type="object" string="Sign Report" class="btn-secondary"
-                    invisible="not display_sign_report_secondary" data-hotkey="y"/>
-                <button name="action_send_report" type="object" string="Send Report" class="btn-secondary"
-                    invisible="not display_send_report_secondary" data-hotkey="g"/>
-            </xpath>
-            <xpath expr="//button[@name='action_view_timesheets']" position="after">
-                <button
-                    string="Customer Preview"
-                    class="oe_stat_button"
-                    name="action_preview_worksheet"
-                    icon="fa-globe" type="object"
-                    groups="project.group_project_user"
-                    invisible="not worksheet_signature or not allow_worksheets">
-                </button>
-            </xpath>
-            <xpath expr="//field[@widget='project']" position="after">
+            <field name="display_project_id" position="after">
                 <field name="allow_worksheets" invisible="1"/>
-                <field name="worksheet_template_id" options="{'no_open': True, 'no_create': True}" context="{'form_view_ref': 'industry_fsm_report.worksheet_template_view_form_no_design_button', 'default_res_model': 'project.task'}" invisible="not allow_worksheets"/>
-            </xpath>
+                <field name="worksheet_template_id" options="{'no_open': True}" context="{'form_view_ref': 'industry_fsm_report.worksheet_template_view_form_no_design_button', 'default_res_model': 'project.task'}" attrs="{'invisible': [('allow_worksheets', '=', False)]}"/>
+            </field>
             <xpath expr="//button[@name='action_recurring_tasks']" position="before">
                 <field name="worksheet_count" invisible="1"/>
-                <button
-                    class="oe_stat_button oe_worksheet"
-                    name="action_fsm_worksheet"
-                    icon="fa-pencil" type="object"
-                    groups="project.group_project_user"
-                    invisible="(not is_fsm and not partner_id) or not allow_worksheets or not worksheet_template_id or worksheet_count"
-                >
-                    <div class="o_stat_info">
-                        <span class="o_stat_text">Worksheet</span>
-                    </div>
-                </button>
-                <button
-                    class="oe_stat_button oe_worksheet_completed text-success"
-                    name="action_fsm_worksheet"
-                    icon="fa-check" type="object"
-                    groups="project.group_project_user"
-                    invisible="not partner_id or not allow_worksheets or not worksheet_template_id or not worksheet_count">
-                        <div class="o_stat_info">
-                            <span class="o_stat_text">Worksheet</span>
-                            <span class="o_stat_text">Complete</span>
-                        </div>
-                </button>
             </xpath>
-            <xpath expr="//field[@name='child_ids']/tree/field[@name='project_id']" position="after">
+            <xpath expr="//button[hasclass('oe_worksheet')]" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', '&amp;', ('is_fsm', '=', False), ('partner_id', '=', False), '|', '|', '|', ('allow_worksheets', '=', False),  ('worksheet_template_id', '=', False), ('worksheet_count', '!=', 0), ('comment', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//button[hasclass('oe_worksheet_completed')]" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', '|', '|', ('partner_id', '=', False), ('allow_worksheets', '=', False), ('worksheet_template_id', '=', False), '&amp;', ('worksheet_count', '=', 0), ('comment', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/tree/field[@name='display_project_id']" position="after">
                 <field name="worksheet_template_id" optional="hide"/>
             </xpath>
             <xpath expr="//field[@name='depend_on_ids']/tree/field[@name='project_id']" position="after">
@@ -228,12 +239,26 @@
     <record id="project_task_map_view_inherit_fsm_report" model="ir.ui.view">
         <field name="name">project.task.view.fsm.report.map</field>
         <field name="model">project.task</field>
-        <field name="inherit_id" ref="industry_fsm.project_task_map_view_fsm"/>
+        <field name="inherit_id" ref="project_enterprise.project_task_map_view"/>
+        <field name="mode">primary</field>
         <field name="arch" type="xml">
             <field name="partner_phone" position="after">
                 <field name="worksheet_template_id" string="Worksheet Template"/>
             </field>
         </field>
+    </record>
+
+    <record id="industry_fsm.project_task_action_fsm_view_map" model="ir.actions.act_window.view">
+        <field name="view_id" ref="project_task_map_view_inherit_fsm_report"/>
+    </record>
+    <record id="industry_fsm.project_task_action_fsm_map_view_map" model="ir.actions.act_window.view">
+        <field name="view_id" ref="project_task_map_view_inherit_fsm_report"/>
+    </record>
+    <record id="industry_fsm.project_task_action_planning_groupby_user_fsm_view_map" model="ir.actions.act_window.view">
+        <field name="view_id" ref="project_task_map_view_inherit_fsm_report"/>
+    </record>
+    <record id="industry_fsm.project_task_action_planning_groupby_project_fsm_view_map" model="ir.actions.act_window.view">
+        <field name="view_id" ref="project_task_map_view_inherit_fsm_report"/>
     </record>
 
     <record id="action_fsm_task_send_report" model="ir.actions.server">
@@ -258,9 +283,6 @@
                 <field name="color"/>
                 <field name="sequence" widget="handle"/>
                 <templates>
-                    <t t-name="kanban-menu">
-                        <ul class="oe_kanban_colorpicker" data-field="color"/>
-                    </t>
                     <t t-name="kanban-box">
                         <div t-attf-class="{{kanban_color(record.color.raw_value)}} oe_kanban_content oe_kanban_global_click">
                             <div class="o_kanban_record_top">
@@ -268,11 +290,19 @@
                                     <strong class="o_kanban_record_title"><field name="name"/></strong>
                                 </div>
                             </div>
+                            <div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+                                <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <a name="action_view_worksheets" type="object">
                                         <span class="o_value"><t t-esc="record.worksheet_count.raw_value"/></span>
-                                        <span class="o_label ms-2">Worksheets</span>
+                                        <span class="o_label">Worksheets</span>
                                     </a>
                                 </div>
                             </div>
@@ -311,7 +341,7 @@
             'default_allow_worksheets': True,
             }
         </field>
-        <field name="search_view_id" ref="project.view_project_project_filter"/>
+        <field name="search_view_id" ref="industry_fsm_report.view_project_project_filter_inherit_industry_fsm_report"/>
     </record>
 
     <!-- action planning by worksheet -->
@@ -337,6 +367,9 @@
             <xpath expr="//field[@name='project_id']" position="replace">
                 <field name="worksheet_template_id" type="row"/>
             </xpath>
+            <xpath expr="//field[@name='stage_id']" position="replace">
+                <field name="user_ids" type="row"/>
+            </xpath>
         </field>
     </record>
 
@@ -357,8 +390,8 @@
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,tree,calendar,map,pivot,graph,activity</field>
         <field name="search_view_id" ref="industry_fsm.project_task_view_search_fsm"/>
-        <field name="domain">[('is_fsm', '=', True), ('project_id', '!=', False), ('display_in_project', '=', True)]</field>
-        <field name="context" eval="{'fsm_mode': 1, 'task_nameget_with_hours': 1, 'default_scale': 'week', 'default_user_ids': False}"/>
+        <field name="domain">[('is_fsm', '=', True), ('display_project_id', '!=', False)]</field>
+        <field name="context" eval="{'fsm_mode': 1, 'task_nameget_with_hours': 1, 'default_scale': 'week'}"/>
         <field name="help" type="html">
             <p class='o_view_nocontent_smiling_face'>
                 No tasks found. Let's create one!
@@ -427,21 +460,10 @@
     <record model="ir.ui.view" id="view_task_tree2_inherited">
         <field name="name">project.task.tree.inherited</field>
         <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.project_task_view_tree_base"/>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
         <field name="arch" type="xml">
             <field name="project_id" position="after">
                 <field name="worksheet_template_id" optional="hide" context="{'default_res_model': 'project.task'}"/>
-            </field>
-        </field>
-    </record>
-
-    <record id="project_task_view_list_fsm_inherit" model="ir.ui.view">
-        <field name="name">project.task.tree.fsm.inherit</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="industry_fsm.project_task_view_list_fsm"/>
-        <field name="arch" type="xml">
-            <field name="worksheet_template_id" position="attributes">
-                <attribute name="optional">show</attribute>
             </field>
         </field>
     </record>

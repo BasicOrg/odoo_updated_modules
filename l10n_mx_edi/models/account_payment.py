@@ -1,26 +1,16 @@
 # -*- coding: utf-8 -*-
-from odoo import models
+from odoo import models, fields
 
 
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
-    def _get_payment_receipt_report_values(self):
-        # EXTENDS 'account'
-        values = super()._get_payment_receipt_report_values()
+    l10n_mx_edi_force_generate_cfdi = fields.Boolean(string='Generate CFDI')
 
-        cfdi_infos = self.move_id._l10n_mx_edi_get_extra_payment_report_values()
-        if cfdi_infos:
-            values.update({
-                'display_invoices': False,
-                'display_payment_method': False,
-                'cfdi': cfdi_infos,
-            })
+    def l10n_mx_edi_update_sat_status(self):
+        return self.move_id.l10n_mx_edi_update_sat_status()
 
-        return values
-
-    def l10n_mx_edi_cfdi_payment_force_try_send(self):
-        self.move_id.l10n_mx_edi_cfdi_payment_force_try_send()
-
-    def l10n_mx_edi_cfdi_try_sat(self):
-        self.move_id.l10n_mx_edi_cfdi_try_sat()
+    def action_l10n_mx_edi_force_generate_cfdi(self):
+        if not self.edi_document_ids:
+            self.l10n_mx_edi_force_generate_cfdi = True
+            self.move_id._update_payments_edi_documents()

@@ -1,12 +1,10 @@
 /** @odoo-module **/
 
-import { makeServerError } from "@web/../tests/helpers/mock_server";
 import { AutoComplete } from "@web/core/autocomplete/autocomplete";
 import { browser } from "@web/core/browser/browser";
+import { Many2ManyTagsField } from "@web/views/fields/many2many_tags/many2many_tags_field";
 import {
-    addRow,
     click,
-    clickDiscard,
     clickDropdown,
     clickOpenedDropdownItem,
     clickSave,
@@ -38,6 +36,7 @@ QUnit.module("Fields", (hooks) => {
                             string: "one2many turtle field",
                             type: "one2many",
                             relation: "turtle",
+                            relation_field: "turtle_trululu",
                         },
                         timmy: { string: "pokemon", type: "many2many", relation: "partner_type" },
                     },
@@ -104,22 +103,18 @@ QUnit.module("Fields", (hooks) => {
         };
 
         setupViewRegistries();
-        patchWithCleanup(browser, {
-            setTimeout: (fn) => Promise.resolve().then(fn),
-        });
     });
 
     QUnit.module("Many2ManyTagsField");
 
     QUnit.test("Many2ManyTagsField with and without color", async function (assert) {
-        assert.expect(14);
+        assert.expect(12);
 
         serverData.models.partner.fields.partner_ids = {
             string: "Partner",
             type: "many2many",
             relation: "partner",
         };
-        serverData.models.partner.fields.color = { string: "Color index", type: "integer" };
 
         await makeView({
             type: "form",
@@ -130,19 +125,17 @@ QUnit.module("Fields", (hooks) => {
                     <field name="partner_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="timmy" widget="many2many_tags"/>
                 </form>`,
-            mockRPC: (route, { args, method, model, kwargs }) => {
-                if (method === "web_read" && model === "partner_type") {
-                    assert.deepEqual(args, [[12]]);
+            mockRPC: (route, { args, method, model }) => {
+                if (method === "read" && model === "partner_type") {
                     assert.deepEqual(
-                        kwargs.specification,
-                        { display_name: {} },
+                        args,
+                        [[12], ["display_name"]],
                         "should not read any color field"
                     );
-                } else if (method === "web_read" && model === "partner") {
-                    assert.deepEqual(args, [[1]]);
+                } else if (method === "read" && model === "partner") {
                     assert.deepEqual(
-                        kwargs.specification,
-                        { display_name: {}, color: {} },
+                        args,
+                        [[1], ["display_name", "color"]],
                         "should read color field"
                     );
                 }
@@ -165,8 +158,8 @@ QUnit.module("Fields", (hooks) => {
         const autocomplete = target.querySelector("[name='timmy'] .o-autocomplete.dropdown");
         assert.strictEqual(
             autocomplete.querySelectorAll("li").length,
-            4,
-            "autocomplete dropdown should have 4 entries (2 values + 'Search More...' + 'Search and Edit...')"
+            3,
+            "autocomplete dropdown should have 3 entries (2 values + 'Search and Edit...')"
         );
         await clickOpenedDropdownItem(target, "timmy", "gold");
         assert.containsOnce(target, "[name=timmy] .o_tag");
@@ -184,7 +177,7 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField with color: rendering and edition", async function (assert) {
-        assert.expect(24);
+        assert.expect(26);
 
         serverData.models.partner.records[0].timmy = [12, 14];
         serverData.models.partner_type.records.push({ id: 13, display_name: "red", color: 8 });
@@ -197,22 +190,22 @@ QUnit.module("Fields", (hooks) => {
                     <field name="timmy" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True }"/>
                 </form>`,
             resId: 1,
-            mockRPC: (route, { args, method, model, kwargs }) => {
-                if (route === "/web/dataset/call_kw/partner/web_save") {
+            mockRPC: (route, { args, method, model }) => {
+                if (route === "/web/dataset/call_kw/partner/write") {
                     var commands = args[1].timmy;
-                    assert.strictEqual(commands.length, 2, "should have generated two commands");
-                    assert.strictEqual(commands.map((cmd) => cmd[0]).join("-"), "4-3");
-                    assert.deepEqual(
-                        commands.map((cmd) => cmd[1]),
-                        [13, 14],
-                        "Should add 13, remove 14"
+                    assert.strictEqual(commands.length, 1, "should have generated one command");
+                    assert.strictEqual(
+                        commands[0][0],
+                        6,
+                        "generated command should be REPLACE WITH"
                     );
+                    assert.deepEqual(commands[0][2], [12, 13], "new value should be [12, 13]");
                 }
-                if ((method === "web_read" || method === "web_save") && model === "partner_type") {
+                if (method === "read" && model === "partner_type") {
                     assert.deepEqual(
-                        kwargs.specification,
-                        { display_name: {}, color: {} },
-                        "should read color field"
+                        args[1],
+                        ["display_name", "color"],
+                        "should read the color field"
                     );
                 }
             },
@@ -247,8 +240,8 @@ QUnit.module("Fields", (hooks) => {
 
         assert.strictEqual(
             autocompleteDropdown.querySelectorAll("li").length,
-            3,
-            "autocomplete dropdown should have 3 entry"
+            2,
+            "autocomplete dropdown should have 2 entry"
         );
 
         assert.strictEqual(
@@ -441,8 +434,8 @@ QUnit.module("Fields", (hooks) => {
 
         assert.strictEqual(
             autocompleteDropdown.querySelectorAll("li").length,
-            3,
-            "autocomplete dropdown should have 3 entries"
+            2,
+            "autocomplete dropdown should have 2 entry"
         );
 
         assert.strictEqual(
@@ -463,116 +456,6 @@ QUnit.module("Fields", (hooks) => {
             getNodesTextContent(target.querySelectorAll(".badge")),
             ["gold", "silver"],
             "should contain newly added tag 'silver'"
-        );
-    });
-
-    QUnit.test("use binary field as the domain", async (assert) => {
-        serverData.models.partner.fields.domain = { string: "Domain", type: "binary" };
-        serverData.models.partner.records[0].domain = [["id", "<", 50]];
-        serverData.models.partner.records[0].timmy = [12];
-        serverData.models.partner_type.records.push({ id: 99, display_name: "red", color: 8 });
-
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <form>
-                    <field name="timmy" widget="many2many_tags" domain="domain"/>
-                    <field name="domain" invisible="1"/>
-                </form>`,
-            resId: 1,
-        });
-
-        assert.containsOnce(target, ".o_field_many2many_tags .badge", "should contain 1 tag");
-        assert.deepEqual(
-            getNodesTextContent(target.querySelectorAll(".badge")),
-            ["gold"],
-            "should have fetched and rendered gold partner tag"
-        );
-
-        await clickDropdown(target, "timmy");
-
-        const autocompleteDropdown = target.querySelector(".o-autocomplete--dropdown-menu");
-
-        assert.strictEqual(
-            autocompleteDropdown.querySelectorAll("li").length,
-            3,
-            "autocomplete dropdown should have 3 entries"
-        );
-        assert.deepEqual(
-            getNodesTextContent(autocompleteDropdown.querySelectorAll("li")),
-            ["silver", "Search More...", "Start typing..."],
-            "should contain newly added tag 'silver'"
-        );
-        assert.strictEqual(
-            autocompleteDropdown.querySelector("li a").textContent,
-            "silver",
-            "autocomplete dropdown should contain 'silver'"
-        );
-
-        await clickOpenedDropdownItem(target, "timmy", "silver");
-
-        assert.strictEqual(
-            target.querySelectorAll(".o_field_many2many_tags .badge").length,
-            2,
-            "should contain 2 tags"
-        );
-        assert.deepEqual(
-            getNodesTextContent(target.querySelectorAll(".badge")),
-            ["gold", "silver"],
-            "should contain newly added tag 'silver'"
-        );
-    });
-
-    QUnit.test("Domain: allow python code domain in fieldInfo", async function (assert) {
-        assert.expect(4);
-        serverData.models.partner.fields.timmy.domain =
-            "foo and [('color', '>', 3)] or [('color', '<', 3)]";
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <form>
-                    <field name="foo"/>
-                    <field name="timmy" widget="many2many_tags"></field>
-                </form>`,
-            resId: 1,
-        });
-
-        // foo set => only silver (id=5) selectable
-        await clickDropdown(target, "timmy");
-        let autocompleteDropdown = target.querySelector(".o-autocomplete--dropdown-menu");
-        assert.containsN(
-            autocompleteDropdown,
-            "li",
-            3,
-            "autocomplete should contain 'silver'm 'Search More...' and 'Start typing...' options"
-        );
-        assert.strictEqual(
-            autocompleteDropdown.querySelector("li a").textContent,
-            "silver",
-            "autocomplete dropdown should contain 'silver'"
-        );
-        await clickOpenedDropdownItem(target, "timmy", "Start typing...");
-
-        // set foo = "" => only gold (id=2) selectable
-        const textInput = target.querySelector("[name=foo] input");
-        textInput.focus();
-        await editInput(textInput, null, "");
-        await clickDropdown(target, "timmy");
-        autocompleteDropdown = target.querySelector(".o-autocomplete--dropdown-menu");
-        assert.containsN(
-            autocompleteDropdown,
-            "li",
-            3,
-            "autocomplete should contain 'gold'm 'Search More...' and 'Start typing...' options"
-        );
-        assert.strictEqual(
-            autocompleteDropdown.querySelector("li a").textContent,
-            "gold",
-            "autocomplete dropdown should contain 'gold'"
         );
     });
 
@@ -585,11 +468,15 @@ QUnit.module("Fields", (hooks) => {
             serverData,
             arch: '<form><field name="timmy" widget="many2many_tags"/></form>',
             mockRPC: (route, { args }) => {
-                if (route === "/web/dataset/call_kw/partner/web_save") {
-                    const commands = args[1].timmy;
+                if (route === "/web/dataset/call_kw/partner/create") {
+                    var commands = args[0].timmy;
                     assert.strictEqual(commands.length, 1, "should have generated one command");
-                    assert.strictEqual(commands[0][0], 4, "generated command should be LINK TO");
-                    assert.strictEqual(commands[0][1], 12, "new value should be 12");
+                    assert.strictEqual(
+                        commands[0][0],
+                        6,
+                        "generated command should be REPLACE WITH"
+                    );
+                    assert.ok(_.isEqual(commands[0][2], [12]), "new value should be [12]");
                 }
             },
         });
@@ -603,8 +490,8 @@ QUnit.module("Fields", (hooks) => {
         const autocomplete = target.querySelector("[name='timmy'] .o-autocomplete.dropdown");
         assert.strictEqual(
             autocomplete.querySelectorAll("li").length,
-            4,
-            "autocomplete dropdown should have 4 entries (2 values + 'Search More...' + 'Search and Edit...')"
+            3,
+            "autocomplete dropdown should have 3 entries (2 values + 'Search and Edit...')"
         );
         await clickOpenedDropdownItem(target, "timmy", "gold");
 
@@ -632,7 +519,7 @@ QUnit.module("Fields", (hooks) => {
                     <field name="timmy" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 </form>`,
             mockRPC: (route, { args, method }) => {
-                if (method === "web_save") {
+                if (method === "write") {
                     assert.step(JSON.stringify(args[1]));
                 }
             },
@@ -718,7 +605,7 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField in editable list", async function (assert) {
-        assert.expect(5);
+        assert.expect(7);
 
         serverData.models.partner.records[0].timmy = [12];
 
@@ -732,7 +619,7 @@ QUnit.module("Fields", (hooks) => {
                     <field name="timmy" widget="many2many_tags"/>
                 </tree>`,
             mockRPC: (route, { kwargs, method, model }) => {
-                if (method === "web_read" && model === "partner_type") {
+                if (method === "read" && model === "partner_type") {
                     assert.strictEqual(
                         kwargs.context.take,
                         "five",
@@ -788,10 +675,43 @@ QUnit.module("Fields", (hooks) => {
         );
     });
 
+    QUnit.test(
+        "Many2ManyTagsField loads records according to limit defined on widget prototype",
+        async function (assert) {
+            patchWithCleanup(Many2ManyTagsField, {
+                limit: 30,
+            });
+
+            serverData.models.partner.fields.partner_ids = {
+                string: "Partner",
+                type: "many2many",
+                relation: "partner",
+            };
+            serverData.models.partner.records[0].partner_ids = [];
+            for (var i = 15; i < 50; i++) {
+                serverData.models.partner.records.push({ id: i, display_name: "walter" + i });
+                serverData.models.partner.records[0].partner_ids.push(i);
+            }
+            await makeView({
+                type: "form",
+                resModel: "partner",
+                serverData,
+                arch: '<form><field name="partner_ids" widget="many2many_tags"/></form>',
+                resId: 1,
+            });
+
+            assert.strictEqual(
+                target.querySelectorAll('.o_field_widget[name="partner_ids"] .badge').length,
+                30,
+                "should have rendered 30 tags even though 35 records linked"
+            );
+        }
+    );
+
     QUnit.test("Many2ManyTagsField keeps focus when being edited", async function (assert) {
         serverData.models.partner.records[0].timmy = [12];
         serverData.models.partner.onchanges.foo = function (obj) {
-            obj.timmy = [[3, 12]];
+            obj.timmy = [[5]]; // DELETE command
         };
 
         await makeView({
@@ -985,10 +905,12 @@ QUnit.module("Fields", (hooks) => {
             null,
             "new"
         );
-        await clickOpenedDropdownItem(target, "timmy", `Create "new"`);
+        await selectDropdownItem(target, "timmy", `Create "new"`);
+
         assert.containsOnce(target, ".o_field_many2many_tags .badge");
 
         await clickSave(target);
+
         assert.strictEqual(
             target.querySelector(".o_field_many2many_tags").textContent.trim(),
             "new"
@@ -1035,55 +957,6 @@ QUnit.module("Fields", (hooks) => {
             "the second element in the list has been selected"
         );
     });
-
-    QUnit.test(
-        "input and remove text without selecting any tag or option",
-        async function (assert) {
-            serverData.models.partner_type.records.push({ id: 13, display_name: "red", color: 8 });
-
-            await makeView({
-                type: "form",
-                resModel: "partner",
-                serverData,
-                arch: '<form><field name="timmy" widget="many2many_tags"/></form>',
-            });
-
-            assert.containsNone(target, ".o_field_many2many_tags .badge");
-            const input = target.querySelector(".o_field_many2many_tags input");
-
-            // enter some text
-            await triggerEvent(input, null, "focus");
-            await click(input);
-            await editInput(input, null, "go");
-            // ensure no selection
-            for (const item of [
-                ...target.querySelectorAll(
-                    ".o-autocomplete--dropdown-menu .o-autocomplete--dropdown-item"
-                ),
-            ]) {
-                triggerEvent(item, null, "mouseleave");
-            }
-            await triggerEvent(input, null, "blur");
-            // ensure we're not adding any value
-            assert.containsNone(document.body, ".modal");
-            assert.containsNone(target, ".o_field_many2many_tags .badge");
-
-            // remove the added text to test behaviour with falsy value
-            await triggerEvent(input, null, "focus");
-            await click(input);
-            await editInput(input, null, "");
-            for (const item of [
-                ...target.querySelectorAll(
-                    ".o-autocomplete--dropdown-menu .o-autocomplete--dropdown-item"
-                ),
-            ]) {
-                triggerEvent(item, null, "mouseleave");
-            }
-            await triggerEvent(input, null, "blur");
-            assert.containsNone(document.body, ".modal");
-            assert.containsNone(target, ".o_field_many2many_tags .badge");
-        }
-    );
 
     QUnit.test("Many2ManyTagsField in one2many with display_name", async function (assert) {
         serverData.models.turtle.records[0].partner_ids = [2];
@@ -1142,21 +1015,15 @@ QUnit.module("Fields", (hooks) => {
             arch: '<form><field name="timmy" widget="many2many_tags"/></form>',
             resId: 1,
             mockRPC(route, args) {
-                if (args.method === "web_read" && args.model === "partner") {
-                    assert.step(`${args.method} ${args.model}`);
-                    assert.strictEqual(args.kwargs.specification.timmy.context.hello, "world");
-                }
-
-                if (args.method === "web_read" && args.model === "partner_type") {
-                    assert.step(`${args.method} ${args.model}`);
-                    assert.strictEqual(args.kwargs.context.hello, "world");
+                if (args.method === "read" && args.model === "partner_type") {
+                    assert.step(args.kwargs.context.hello);
                 }
             },
         });
 
-        assert.verifySteps(["web_read partner"]);
+        assert.verifySteps(["world"]);
         await selectDropdownItem(target, "timmy", "silver");
-        assert.verifySteps(["web_read partner_type"]);
+        assert.verifySteps(["world"]);
     });
 
     QUnit.test("Many2ManyTagsField: select multiple records", async function (assert) {
@@ -1561,10 +1428,10 @@ QUnit.module("Fields", (hooks) => {
             arch: '<form><field name="timmy" widget="many2many_tags"/></form>',
             mockRPC(route, args) {
                 if (args.method === "name_create") {
-                    throw makeServerError({ type: "ValidationError" });
+                    return Promise.reject();
                 }
-                if (args.method === "web_save") {
-                    assert.deepEqual(args.args[1], {
+                if (args.method === "create") {
+                    assert.deepEqual(args.args[0], {
                         color: 8,
                         name: "new partner",
                     });
@@ -1577,7 +1444,7 @@ QUnit.module("Fields", (hooks) => {
         // try to quick create a record
         await triggerEvent(target, ".o_field_many2many_tags input", "focus");
         await editInput(target, ".o_field_many2many_tags input", "new partner");
-        await clickOpenedDropdownItem(target, "timmy", `Create "new partner"`);
+        await selectDropdownItem(target, "timmy", `Create "new partner"`);
 
         // as the quick create failed, a dialog should be open to 'slow create' the record
         assert.containsOnce(target, ".modal .o_form_view");
@@ -1630,7 +1497,6 @@ QUnit.module("Fields", (hooks) => {
             arch: `
                 <tree editable="bottom">
                     <field name="timmy" widget="many2many_tags"/>
-                    <field name="name"/>
                 </tree>`,
         });
 
@@ -1698,7 +1564,8 @@ QUnit.module("Fields", (hooks) => {
             type: "form",
             resModel: "partner",
             serverData,
-            arch: '<form><field name="timmy" widget="many2many_tags" placeholder="Placeholder"/></form>',
+            arch:
+                '<form><field name="timmy" widget="many2many_tags" placeholder="Placeholder"/></form>',
         });
 
         assert.strictEqual(
@@ -1715,6 +1582,9 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField supports 'create' props to be a Boolean", async (assert) => {
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
         await makeView({
             type: "form",
             resModel: "partner",
@@ -1726,7 +1596,7 @@ QUnit.module("Fields", (hooks) => {
         assert.strictEqual(
             target.querySelector(".o_field_many2many_tags .o-autocomplete--dropdown-menu")
                 .textContent,
-            "goldsilverSearch More..."
+            "goldsilver"
         );
     });
 
@@ -1751,56 +1621,13 @@ QUnit.module("Fields", (hooks) => {
         assert.containsOnce(target, "[name='timmy'].o_field_invalid");
     });
 
-    QUnit.test("set a required many2many_tags and save directly", async function (assert) {
-        let def;
-        const form = await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: '<form><field name="timmy" widget="many2many_tags" required="1"/></form>',
-            async mockRPC(route, args) {
-                assert.step(args.method);
-                if (args.method === "web_read") {
-                    await def;
-                }
-            },
-        });
-        patchWithCleanup(form.env.services.notification, {
-            add: () => assert.step("notification"),
-        });
-
-        assert.verifySteps(["get_views", "onchange"]);
-
-        assert.containsNone(target, ".o_tag");
-
-        def = makeDeferred();
-        await clickDropdown(target, "timmy");
-        await clickOpenedDropdownItem(target, "timmy", "gold");
-        assert.containsOnce(target, ".o_tag");
-        assert.strictEqual(
-            target.querySelector(".o_tag").textContent,
-            "",
-            "The tag is displayed, but the web read is not finished yet"
-        );
-
-        assert.verifySteps(["name_search", "web_read"]);
-
-        await clickSave(target);
-        assert.doesNotHaveClass(target, "[name='timmy']", "o_field_invalid");
-
-        assert.verifySteps([]);
-
-        def.resolve();
-        await nextTick();
-        assert.strictEqual(target.querySelector(".o_tag").textContent, "gold");
-
-        assert.verifySteps(["web_save"]);
-    });
-
     QUnit.test("Many2ManyTagsField with option 'no_quick_create' set to true", async (assert) => {
         serverData.views = {
             "partner_type,false,form": `<form><field name="name"/><field name="color"/></form>`,
         };
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
         await makeView({
             type: "form",
             resModel: "partner",
@@ -1829,35 +1656,10 @@ QUnit.module("Fields", (hooks) => {
         assert.strictEqual(target.querySelector(".o_tag").innerText, "new tag");
     });
 
-    QUnit.test(
-        "Many2ManyTagsField keep the linked records after discard of the quick create dialog",
-        async (assert) => {
-            serverData.views = {
-                "partner_type,false,form": `<form><field name="name"/><field name="color"/></form>`,
-            };
-            await makeView({
-                type: "form",
-                resModel: "partner",
-                serverData,
-                arch: `
-                <form>
-                    <field name="timmy" widget="many2many_tags" options="{'no_quick_create': 1}"/>
-                </form>`,
-            });
-
-            assert.containsNone(target, ".o_tag");
-            await editInput(target, ".o_field_many2many_tags .o-autocomplete--input", "new tag");
-            await clickOpenedDropdownItem(target, "timmy", "Create and edit...");
-            await click(target.querySelector(".modal .o_form_button_save"));
-            assert.containsOnce(target, ".o_tag");
-            await editInput(target, ".o_field_many2many_tags .o-autocomplete--input", "tago");
-            await clickOpenedDropdownItem(target, "timmy", "Create and edit...");
-            await clickDiscard(target.querySelector(".modal"));
-            assert.containsOnce(target, ".o_tag");
-        }
-    );
-
     QUnit.test("Many2ManyTagsField with option 'no_create' set to true", async (assert) => {
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
         await makeView({
             type: "form",
             resModel: "partner",
@@ -1871,6 +1673,9 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField with attribute 'can_create' set to false", async (assert) => {
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
         await makeView({
             type: "form",
             resModel: "partner",
@@ -1883,6 +1688,10 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField with arch context in form view", async (assert) => {
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
+
         await makeView({
             type: "form",
             resModel: "partner",
@@ -1890,7 +1699,7 @@ QUnit.module("Fields", (hooks) => {
             arch: `<form><field name="timmy" widget="many2many_tags" context="{ 'append_coucou': True }"/></form>`,
             async mockRPC(route, args, performRPC) {
                 const result = await performRPC(route, args);
-                if (args.method === "web_read") {
+                if (args.method === "read") {
                     if (args.kwargs.context.append_coucou) {
                         assert.step("read with context given");
                         result[0].display_name += " coucou";
@@ -1915,6 +1724,10 @@ QUnit.module("Fields", (hooks) => {
     });
 
     QUnit.test("Many2ManyTagsField with arch context in list view", async (assert) => {
+        patchWithCleanup(browser, {
+            setTimeout: (fn) => Promise.resolve().then(fn),
+        });
+
         await makeView({
             type: "list",
             resModel: "partner",
@@ -1922,7 +1735,7 @@ QUnit.module("Fields", (hooks) => {
             arch: `<list editable="top"><field name="timmy" widget="many2many_tags" context="{ 'append_coucou': True }"/></list>`,
             async mockRPC(route, args, performRPC) {
                 const result = await performRPC(route, args);
-                if (args.method === "web_read") {
+                if (args.method === "read") {
                     if (args.kwargs.context.append_coucou) {
                         assert.step("read with context given");
                         result[0].display_name += " coucou";
@@ -1945,54 +1758,5 @@ QUnit.module("Fields", (hooks) => {
 
         assert.verifySteps(["name search with context given", "read with context given"]);
         assert.strictEqual(target.querySelector(".o_field_tags").innerText, "gold coucou");
-    });
-
-    QUnit.test("Many2ManyTagsField doesn't use virtualId for 'name_search'", async (assert) => {
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            resId: 1,
-            arch: `<form>
-                <field name="turtles" widget="many2many_tags"/>
-                <field name="turtles">
-                    <tree>
-                        <field name="display_name"/>
-                    </tree>
-                    <form>
-                        <field name="display_name"/>
-                    </form>
-                </field>
-            </form>`,
-            async mockRPC(route, { method, kwargs }) {
-                if (method === "name_search") {
-                    assert.step("name_search");
-                    // no virtualId in domain
-                    assert.deepEqual(kwargs.args, ["!", ["id", "in", [2]]]);
-                }
-            },
-        });
-
-        await addRow(target);
-        assert.containsOnce(target, ".modal");
-
-        await editInput(target, ".modal [name='display_name'] input", "yop");
-        await click(target.querySelector(".modal .o_form_button_save"));
-        assert.containsNone(target, ".modal");
-        assert.deepEqual(
-            [...target.querySelectorAll("[name='turtles'] .o_tag_badge_text")].map(
-                (el) => el.textContent
-            ),
-            ["donatello", "yop"]
-        );
-        assert.deepEqual(
-            [...target.querySelectorAll("[name='turtles'] .o_data_row")].map(
-                (el) => el.textContent
-            ),
-            ["donatello", "yop"]
-        );
-
-        await click(target.querySelector("[name='turtles'] input"));
-        assert.verifySteps(["name_search"]);
     });
 });

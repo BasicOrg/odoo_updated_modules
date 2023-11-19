@@ -3,16 +3,17 @@
 # 	* stock_enterprise
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -37,7 +38,7 @@ msgstr "متوسط التأخير (بالأيام) "
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__cancel
 msgid "Cancelled"
-msgstr "تم الإلغاء "
+msgstr "ملغي"
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__company_id
@@ -67,7 +68,7 @@ msgstr "وقت الدورة (بالأيام) "
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
 msgid "Days"
-msgstr "الأيام"
+msgstr "أيام "
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_form_view
@@ -78,6 +79,34 @@ msgstr "التأخير "
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__delay
 msgid "Delay (Days)"
 msgstr "التأخير (بالأيام) "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+"التأخير في توصيل طلب (بالأيام). يتم احتسابه عن طريق المقارنة بين التاريخ "
+"المجدول لأمر التوصيل وتاريخه الفعلي. "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+"التأخير في استلام طلب (بالأيام). يتم احتسابه عن طريق المقارنة بين التاريخ "
+"المجدول للاستلام وتاريخه الفعلي. "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr "وقت دورة التوصيل "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr "تأخير التوصيل "
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
@@ -130,12 +159,17 @@ msgid "Is a Backorder"
 msgstr "طلب متأخر "
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
 msgid "New"
 msgstr "جديد"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
+#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_dashboard_action
 msgid "No data yet!"
 msgstr "لا توجد أي بيانات بعد! "
 
@@ -185,10 +219,20 @@ msgid "Quantity"
 msgstr "الكمية"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr "وقت دورة الإيصالات "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr "تأخير الإيصالات "
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_map_view
 msgid "Reference"
-msgstr "الرقم المرجعي "
+msgstr "المرجع "
 
 #. module: stock_enterprise
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_cohort_view
@@ -216,6 +260,24 @@ msgid "Stock Report"
 msgstr "تقرير المخزون"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+"الوقت المطلوب لتوصيل طلب (بالأيام). يتم احتسابه عن طريق المقارنة بين تاريخ "
+"إنشاء أمر التوصيل وتاريخ انتهائه. "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
+"الوقت المطلوب لتوصيل طلب (بالأيام). يتم احتسابه عن طريق المقارنة بين تاريخ "
+"إنشاء الإيصال وتاريخ انتهائه. "
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
 msgid "Transfer Date"
 msgstr "تاريخ التحويل "
@@ -233,7 +295,7 @@ msgstr "النوع"
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__picking_type_code__incoming
 msgid "Vendors"
-msgstr "الموردين"
+msgstr "الموردون"
 
 #. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__waiting
@@ -246,6 +308,11 @@ msgid "Waiting Availability"
 msgstr "بانتظار التوافر "
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
 msgid "Warehouse Analysis"
 msgstr "تحليل المستودع "
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "يوم"

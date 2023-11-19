@@ -2,18 +2,20 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Electronic invoicing for Colombia with Carvajal',
-    'countries': ['co'],
+    'icon': '/l10n_co/static/description/icon.png',
     'version': '0.1',
     'category': 'Accounting/Localizations/EDI',
     'summary': 'Colombian Localization for EDI documents',
     'author': 'Odoo Sa',
     'depends': ['account_edi', 'l10n_co', 'product_unspsc', 'base_address_extended'],
-    'auto_install': ['l10n_co'],
+    'auto_install': ['l10n_co', 'account_edi'],
     'data': [
         'security/ir.model.access.csv',
         'data/account_edi_data.xml',
+        'data/account.tax.group.csv',
         'data/l10n_co_edi.type_code.csv',
         'data/l10n_co_edi.tax.type.csv',
+        'data/account.tax.template.csv',
         'data/l10n_co_edi.payment.option.csv',
         'data/res_partner_data.xml',
         'data/res.city.csv',

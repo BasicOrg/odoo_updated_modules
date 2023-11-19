@@ -19,7 +19,7 @@ class AccountPayment(models.Model):
         for payment in self.filtered(lambda p: p.state != 'posted'):
             # unlink the payment from the batch payment ids, hovewer _compute_amount
             # is not triggered by the ORM when setting batch_payment_id to None
-            payment.batch_payment_id.update({'payment_ids': [Command.unlink(payment.id)]})
+            payment.batch_payment_id.write({'payment_ids': [Command.unlink(payment.id)]})
 
     @api.depends('amount', 'payment_type')
     def _compute_amount_signed(self):

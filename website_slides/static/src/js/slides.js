@@ -1,8 +1,7 @@
 /** @odoo-module **/
 
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { deserializeDateTime } from "@web/core/l10n/dates";
-const { DateTime } = luxon;
+import publicWidget from 'web.public.widget';
+import time from 'web.time';
 
 publicWidget.registry.websiteSlides = publicWidget.Widget.extend({
     selector: '#wrapwrap',
@@ -14,16 +13,16 @@ publicWidget.registry.websiteSlides = publicWidget.Widget.extend({
     start: function (parent) {
         var defs = [this._super.apply(this, arguments)];
 
-        $("timeago.timeago").toArray().forEach((el) => {
+        _.each($("timeago.timeago"), function (el) {
             var datetime = $(el).attr('datetime');
-            var datetimeObj = deserializeDateTime(datetime);
+            var datetimeObj = time.str_to_datetime(datetime);
             // if presentation 7 days, 24 hours, 60 min, 60 second, 1000 millis old(one week)
             // then return fix formate string else timeago
             var displayStr = '';
             if (datetimeObj && new Date().getTime() - datetimeObj.getTime() > 7 * 24 * 60 * 60 * 1000) {
-                displayStr = DateTime.fromJSDate(datetimeObj).toFormat('DD');
+                displayStr = moment(datetimeObj).format('ll');
             } else {
-                displayStr = DateTime.fromJSDate(datetimeObj).toRelative();
+                displayStr = moment(datetimeObj).fromNow();
             }
             $(el).text(displayStr);
         });

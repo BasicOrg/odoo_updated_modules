@@ -3,17 +3,18 @@
 # 	* quality
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Mustafa J. Kadhem <safi2266@gmail.com>, 2022
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-23 08:22+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -46,12 +47,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_needaction
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_needaction
 msgid "Action Needed"
-msgstr "إجراء مطلوب"
+msgstr "يتطلب اتخاذ إجراء "
 
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_2
 msgid "Action Proposed"
-msgstr "الإجراء المقترح "
+msgstr "الإجراء المعروض"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__active
@@ -81,11 +82,6 @@ msgstr "حالة النشاط"
 #: model:ir.model.fields,field_description:quality.field_quality_check__activity_type_icon
 msgid "Activity Type Icon"
 msgstr "أيقونة نوع النشاط"
-
-#. module: quality
-#: model_terms:ir.ui.view,arch_db:quality.quality_check_view_activity
-msgid "Activity view"
-msgstr "نافذة عرض النشاط "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__additional_note
@@ -123,34 +119,14 @@ msgid "Alias Contact Security"
 msgstr "أمان ألقاب جهات الاتصال "
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain_id
-msgid "Alias Domain"
-msgstr "نطاق اللقب "
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
-msgid "Alias Domain Name"
-msgstr "اسم نطاق اللقب "
-
-#. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_full_name
-msgid "Alias Email"
-msgstr "لقب البريد الإلكتروني "
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_name
 msgid "Alias Name"
 msgstr "اسم اللقب"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_status
-msgid "Alias Status"
-msgstr "حالة اللقب "
-
-#. module: quality
-#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_status
-msgid "Alias status assessed on the last message received."
-msgstr "حالة اللقب مقيّمة في آخر رسالة مستلمة. "
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_domain
+msgid "Alias domain"
+msgstr "نطاق اللقب"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_model_id
@@ -179,7 +155,7 @@ msgstr "السبب"
 #: model:ir.model.fields,field_description:quality.field_quality_alert__check_id
 #: model:ir.model.fields,field_description:quality.field_quality_point__check_ids
 msgid "Check"
-msgstr "فحص "
+msgstr "الشيك"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_point__check_count
@@ -187,11 +163,11 @@ msgid "Check Count"
 msgstr "عدد الفحوصات"
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Close"
-msgstr "إغلاق"
+msgstr "إغلاق "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__color
@@ -201,7 +177,7 @@ msgstr "اللون"
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_tag__color
 msgid "Color Index"
-msgstr "مؤشر اللون "
+msgstr "معرف اللون"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__company_id
@@ -214,7 +190,7 @@ msgstr "الشركة "
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_1
 msgid "Confirmed"
-msgstr "تم التأكيد "
+msgstr "مؤكد"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__control_date
@@ -318,11 +294,6 @@ msgid "Done"
 msgstr "منتهي "
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_email
-msgid "Email Alias"
-msgstr "لقب البريد الإلكتروني"
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__email_cc
 msgid "Email cc"
 msgstr "نسخة البريد الإلكتروني "
@@ -343,7 +314,7 @@ msgstr "مطوي "
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_follower_ids
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_follower_ids
 msgid "Followers"
-msgstr "المتابعين"
+msgstr "المتابعين "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_partner_ids
@@ -357,7 +328,7 @@ msgstr "المتابعين (الشركاء) "
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_type_icon
 #: model:ir.model.fields,help:quality.field_quality_check__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "أيقونة من Font awesome مثال: fa-tasks "
+msgstr "أيقونة Font awesome مثال fa-tasks "
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -367,7 +338,7 @@ msgstr "الأنشطة المستقبلية"
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Group By"
-msgstr "تجميع حسب"
+msgstr "التجميع حسب "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__has_message
@@ -413,7 +384,7 @@ msgstr "الأيقونة"
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_exception_icon
 #: model:ir.model.fields,help:quality.field_quality_check__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+msgstr "الأيقونة للإشارة إلى استثناء النشاط"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_needaction
@@ -421,7 +392,7 @@ msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+msgstr "إذا كان محددًا، فهناك رسائل جديدة تحتاج لرؤيتها."
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_has_error
@@ -463,6 +434,18 @@ msgid "Is Follower"
 msgstr "متابع"
 
 #. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_stage____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_check____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_point_test_type____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_reason____last_update
+#: model:ir.model.fields,field_description:quality.field_quality_tag____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__write_uid
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__write_uid
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__write_uid
@@ -492,14 +475,14 @@ msgid "Late Activities"
 msgstr "الأنشطة المتأخرة"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_incoming_local
-msgid "Local-part based incoming detection"
-msgstr "الكشف عن الوارد على أساس الجزء المحلي"
+#: model:ir.model.fields,help:quality.field_quality_alert__email_cc
+msgid "List of cc from incoming emails."
+msgstr "قائمة cc من رسائل البريد الإلكتروني الواردة."
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__lot_id
 msgid "Lot"
-msgstr "المجموعة "
+msgstr "الدفعة "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_check__lot_id
@@ -510,6 +493,14 @@ msgstr "رقم الدفعة/الرقم التسلسلي "
 #: model:ir.model.fields.selection,name:quality.selection__quality_alert__priority__1
 msgid "Low"
 msgstr "منخفض"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_check__message_main_attachment_id
+#: model:ir.model.fields,field_description:quality.field_quality_point__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "المرفق الرئيسي"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__message_has_error
@@ -531,7 +522,7 @@ msgstr "الرسائل"
 #: model:ir.model.fields,field_description:quality.field_quality_alert__my_activity_date_deadline
 #: model:ir.model.fields,field_description:quality.field_quality_check__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "الموعد النهائي لنشاطاتي "
+msgstr "نهاية الوقت المعين للنشاط"
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
@@ -548,7 +539,7 @@ msgid "Name"
 msgstr "الاسم"
 
 #. module: quality
-#. odoo-python
+#: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
 #: code:addons/quality/models/quality.py:0
@@ -587,7 +578,6 @@ msgid "Next Activity Type"
 msgstr "نوع النشاط التالي"
 
 #. module: quality
-#. odoo-python
 #: code:addons/quality/models/quality.py:0
 #, python-format
 msgid ""
@@ -607,7 +597,7 @@ msgstr "عادي"
 #: model:ir.model.fields,field_description:quality.field_quality_point__note
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
 msgid "Note"
-msgstr "الملاحظات"
+msgstr "ملاحظة "
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_point_view_form
@@ -628,15 +618,15 @@ msgstr "عدد الإجراءات"
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_has_error_counter
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_has_error_counter
 msgid "Number of errors"
-msgstr "عدد الأخطاء "
+msgstr "عدد الاخطاء"
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_alert_team__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_check__message_needaction_counter
 #: model:ir.model.fields,help:quality.field_quality_point__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+msgid "Number of messages which requires an action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء "
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_alert__message_has_error_counter
@@ -671,7 +661,12 @@ msgstr ""
 #. module: quality
 #: model:quality.reason,name:quality.reason_other
 msgid "Others"
-msgstr "غير ذلك"
+msgstr "آخرون"
+
+#. module: quality
+#: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_user_id
+msgid "Owner"
+msgstr "المالك"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_parent_model_id
@@ -819,14 +814,6 @@ msgid "Quality Team"
 msgstr "فريق الجودة"
 
 #. module: quality
-#: model:ir.model.fields,field_description:quality.field_quality_alert__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_alert_team__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_check__rating_ids
-#: model:ir.model.fields,field_description:quality.field_quality_point__rating_ids
-msgid "Ratings"
-msgstr "التقييمات "
-
-#. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__alias_force_thread_id
 msgid "Record Thread ID"
 msgstr "معرف مناقشة السجل"
@@ -835,7 +822,7 @@ msgstr "معرف مناقشة السجل"
 #: model:ir.model.fields,field_description:quality.field_quality_check__name
 #: model:ir.model.fields,field_description:quality.field_quality_point__name
 msgid "Reference"
-msgstr "الرقم المرجعي "
+msgstr "المرجع "
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert__user_id
@@ -868,20 +855,19 @@ msgstr "السبب الأساسي لحدوث فشل بالجودة"
 #: model:ir.model.fields,field_description:quality.field_quality_check__message_has_sms_error
 #: model:ir.model.fields,field_description:quality.field_quality_point__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+msgstr "خطأ في تسليم الرسائل القصيرة"
 
 #. module: quality
 #: model:ir.model.fields,field_description:quality.field_quality_alert_stage__sequence
 #: model:ir.model.fields,field_description:quality.field_quality_alert_team__sequence
 #: model:ir.model.fields,field_description:quality.field_quality_point__sequence
 msgid "Sequence"
-msgstr "تسلسل "
+msgstr "التسلسل "
 
 #. module: quality
 #: model_terms:ir.ui.view,arch_db:quality.quality_alert_view_search
 msgid "Show all records which has next action date is before today"
-msgstr ""
-"عرض كافة السجلات التي يسبق تاريخ الإجراء التالي فيها تاريخ اليوم الجاري "
+msgstr "عرض كافة السجلات المُعين لها تاريخ إجراء تالي يسبق تاريخ اليوم الجاري"
 
 #. module: quality
 #: model:quality.alert.stage,name:quality.quality_alert_stage_3
@@ -908,7 +894,7 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"الأنشطة المعتمدة على الحالة\n"
+"الحالة على أساس الأنشطة\n"
 "المتأخرة: تاريخ الاستحقاق مر\n"
 "اليوم: تاريخ النشاط هو اليوم\n"
 "المخطط: الأنشطة المستقبلية."
@@ -924,7 +910,7 @@ msgid "Tags"
 msgstr "علامات التصنيف "
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Take a Picture"
@@ -975,6 +961,19 @@ msgstr ""
 "المرسلة لـ<jobs@example.odoo.com> "
 
 #. module: quality
+#: model:ir.model.fields,help:quality.field_quality_alert_team__alias_user_id
+msgid ""
+"The owner of records created upon receiving emails on this alias. If this "
+"field is not set the system will attempt to find the right owner based on "
+"the sender (From) address, or will use the Administrator account if no "
+"system user is found for that address."
+msgstr ""
+"مالك السجلات المنشأة عند استلام رسائل بريد إلكتروني على هذا اللقب. إذا لم "
+"يتم تعيين قيمة لهذا الحقل، سيحاول النظام معرفة المالك الصحيح حسب عنوان "
+"البريد الإلكتروني للمرسل، أو سيستخدم حساب المدير إذا لم يجد حساباً مرتبطاً "
+"بعنوان البريد الإلكتروني. "
+
+#. module: quality
 #: model:res.groups,comment:quality.group_quality_manager
 msgid "The quality manager manages the quality process"
 msgstr "مدير الجودة يدير عملية الجودة"
@@ -1010,7 +1009,7 @@ msgstr "النوع"
 #: model:ir.model.fields,help:quality.field_quality_alert__activity_exception_decoration
 #: model:ir.model.fields,help:quality.field_quality_check__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "نوع النشاط المستثنى في السجل. "
+msgstr "نوع النشاط الاستثنائي المسجل."
 
 #. module: quality
 #: model:ir.model.fields,help:quality.field_quality_tag__color
@@ -1033,7 +1032,7 @@ msgid "Very High"
 msgstr "عالٍ جداً "
 
 #. module: quality
-#. odoo-javascript
+#. openerp-web
 #: code:addons/quality/static/src/tablet_image_field/tablet_image_field.xml:0
 #, python-format
 msgid "Viewer"

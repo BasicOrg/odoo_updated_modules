@@ -78,8 +78,7 @@ class TaxCloudRequest(taxcloud_request.TaxCloudRequest):
         if reward.reward_type == 'product':
             lines = lines.filtered(lambda l: l.product_id == reward.reward_product_id and not l.is_reward_line)
         elif reward.discount_applicability == 'specific':
-            domain = reward._get_discount_product_domain()
-            lines = lines.filtered(lambda l: l.product_id.filtered_domain(domain))
+            lines = lines.filtered(lambda l: l.product_id in reward.all_discount_product_ids)
         elif reward.discount_applicability == 'cheapest':
             lines = self._get_cheapest_line(lines)
         return lines

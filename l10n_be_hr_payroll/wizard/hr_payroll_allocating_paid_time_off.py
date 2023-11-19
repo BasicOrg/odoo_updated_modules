@@ -190,7 +190,6 @@ class HrPayrollAllocPaidLeave(models.TransientModel):
                     'name': _('Paid Time Off Allocation'),
                     'holiday_status_id': self.holiday_status_id.id,
                     'employee_id': alloc.employee_id.id,
-                    'employee_ids': [alloc.employee_id.id],
                     'number_of_days': number_of_days,
                     'max_leaves_allocated': max_leaves_allocated,
                     'date_from': '%d-01-01' % (int(self.year) + 1),

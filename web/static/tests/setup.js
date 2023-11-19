@@ -1,21 +1,73 @@
 /** @odoo-module **/
 
+import core, { _t } from "web.core";
+import session from "web.session";
 import { assets, templates } from "@web/core/assets";
 import { browser, makeRAMLocalStorage } from "@web/core/browser/browser";
-import { patchTimeZone, patchWithCleanup } from "@web/../tests/helpers/utils";
+import { nextTick, patchTimeZone, patchWithCleanup } from "@web/../tests/helpers/utils";
 import { memoize } from "@web/core/utils/functions";
+import { legacyProm } from "web.test_legacy";
 import { registerCleanup } from "./helpers/cleanup";
-import { prepareRegistriesWithCleanup } from "./helpers/mock_env";
+import { utils } from "./helpers/mock_env";
 import { session as sessionInfo } from "@web/session";
+import { prepareLegacyRegistriesWithCleanup } from "./helpers/legacy_env_utils";
 import { config as transitionConfig } from "@web/core/transition";
 import { loadLanguages } from "@web/core/l10n/translation";
 
 transitionConfig.disabled = true;
 
 import { patch } from "@web/core/utils/patch";
-import { App, EventBus, whenReady } from "@odoo/owl";
-import { currencies } from "@web/core/currency";
-import { cookie } from "@web/core/browser/cookie";
+const { App, whenReady } = owl;
+
+const { prepareRegistriesWithCleanup } = utils;
+
+patch(App.prototype, "TestOwlApp", {
+    destroy() {
+        if (!this.destroyed) {
+            this._super(...arguments);
+            this.destroyed = true;
+        }
+    },
+    addTemplate(name) {
+        registerCleanup(() => {
+            delete this.constructor.sharedTemplates[name];
+        });
+        return this._super(...arguments);
+    },
+});
+
+function stringifyObjectValues(obj, properties) {
+    let res = "";
+    for (const dotted of properties) {
+        const keys = dotted.split(".");
+        let val = obj;
+        for (const k of keys) {
+            val = val[k];
+        }
+        res += JSON.stringify(val);
+    }
+    return res;
+}
+
+function checkGlobalObjectsIntegrity() {
+    const objects = [
+        [session, ["user_context", "currencies"]],
+        [_t, ["database.multi_lang", "database.parameters"]],
+    ];
+    const initials = objects.map((obj) => stringifyObjectValues(obj[0], obj[1]));
+
+    registerCleanup((infos) => {
+        const finals = objects.map((obj) => stringifyObjectValues(obj[0], obj[1]));
+        for (const index in initials) {
+            if (initials[index] !== finals[index]) {
+                const [, /* global */ keys] = objects[index];
+                throw new Error(
+                    `The keys "${keys}" of some global objects (usually session or _t) may have been polluted by the test "${infos.testName}" in module "${infos.moduleName}". Initial: ${initials[index]}. Final: ${finals[index]}.`
+                );
+            }
+        }
+    });
+}
 
 function forceLocaleAndTimezoneWithCleanup() {
     const originalLocale = luxon.Settings.defaultLocale;
@@ -60,39 +112,6 @@ function makeMockLocation(hasListeners = () => true) {
     });
 }
 
-function patchOwlApp() {
-    patchWithCleanup(App.prototype, {
-        destroy() {
-            if (!this.destroyed) {
-                super.destroy(...arguments);
-                this.destroyed = true;
-            }
-        },
-    });
-}
-
-function patchCookie() {
-    const cookieJar = {};
-
-    patchWithCleanup(cookie, {
-        get _cookieMonster() {
-            return Object.entries(cookieJar)
-                .filter(([, value]) => value !== "kill")
-                .map((cookie) => cookie.join("="))
-                .join("; ");
-        },
-        set _cookieMonster(value) {
-            const cookies = value.split("; ");
-            for (const cookie of cookies) {
-                const [key, value] = cookie.split(/=(.*)/);
-                if (!["path", "max-age"].includes(key)) {
-                    cookieJar[key] = value;
-                }
-            }
-        },
-    });
-}
-
 function patchBrowserWithCleanup() {
     const originalAddEventListener = browser.addEventListener;
     const originalRemoveEventListener = browser.removeEventListener;
@@ -105,82 +124,73 @@ function patchBrowserWithCleanup() {
     let nextAnimationFrameHandle = 1;
     const animationFrameHandles = new Set();
     const mockLocation = makeMockLocation(() => hasHashChangeListeners);
-    patchWithCleanup(browser, {
-        // patch addEventListner to automatically remove listeners bound (via
-        // browser.addEventListener) during a test (e.g. during the deployment of a service)
-        addEventListener(evName) {
-            if (evName === "hashchange") {
-                hasHashChangeListeners = true;
-            }
-            originalAddEventListener(...arguments);
-            registerCleanup(() => {
-                originalRemoveEventListener(...arguments);
-            });
-        },
-        // patch setTimeout to automatically remove timeouts bound (via
-        // browser.setTimeout) during a test (e.g. during the deployment of a service)
-        setTimeout() {
-            const timeout = originalSetTimeout(...arguments);
-            registerCleanup(() => {
-                originalClearTimeout(timeout);
-            });
-            return timeout;
-        },
-        // patch setInterval to automatically remove callbacks registered (via
-        // browser.setInterval) during a test (e.g. during the deployment of a service)
-        setInterval() {
-            const interval = originalSetInterval(...arguments);
-            registerCleanup(() => {
-                originalClearInterval(interval);
-            });
-            return interval;
-        },
-        // patch BeforeInstallPromptEvent to prevent the installPrompt service to return an uncontrolled
-        // canPromptToInstall value depending the browser settings (we ensure the value is always falsy)
-        BeforeInstallPromptEvent: undefined,
-        navigator: {
-            mediaDevices: browser.navigator.mediaDevices,
-            permissions: browser.navigator.permissions,
-            userAgent: browser.navigator.userAgent.replace(/\([^)]*\)/, "(X11; Linux x86_64)"),
-            sendBeacon: () => {},
-        },
-        // in tests, we never want to interact with the real url or reload the page
-        location: mockLocation,
-        history: {
-            pushState(state, title, url) {
-                mockLocation.assign(url);
-            },
-            replaceState(state, title, url) {
-                mockLocation.assign(url);
-            },
-        },
-        // in tests, we never want to interact with the real local/session storages.
-        localStorage: makeRAMLocalStorage(),
-        sessionStorage: makeRAMLocalStorage(),
-        // Don't want original animation frames in tests
-        requestAnimationFrame: (fn) => {
-            const handle = nextAnimationFrameHandle++;
-            animationFrameHandles.add(handle);
-
-            Promise.resolve().then(() => {
-                if (animationFrameHandles.has(handle)) {
-                    fn(16);
+    patchWithCleanup(
+        browser,
+        {
+            // patch addEventListner to automatically remove listeners bound (via
+            // browser.addEventListener) during a test (e.g. during the deployment of a service)
+            addEventListener(evName) {
+                if (evName === "hashchange") {
+                    hasHashChangeListeners = true;
                 }
-            });
+                originalAddEventListener(...arguments);
+                registerCleanup(() => {
+                    originalRemoveEventListener(...arguments);
+                });
+            },
+            // patch setTimeout to automatically remove timeouts bound (via
+            // browser.setTimeout) during a test (e.g. during the deployment of a service)
+            setTimeout() {
+                const timeout = originalSetTimeout(...arguments);
+                registerCleanup(() => {
+                    originalClearTimeout(timeout);
+                });
+                return timeout;
+            },
+            // patch setInterval to automatically remove callbacks registered (via
+            // browser.setInterval) during a test (e.g. during the deployment of a service)
+            setInterval() {
+                const interval = originalSetInterval(...arguments);
+                registerCleanup(() => {
+                    originalClearInterval(interval);
+                });
+                return interval;
+            },
+            navigator: {
+                userAgent: browser.navigator.userAgent.replace(/\([^)]*\)/, "(X11; Linux x86_64)"),
+            },
+            // in tests, we never want to interact with the real url or reload the page
+            location: mockLocation,
+            history: {
+                pushState(state, title, url) {
+                    mockLocation.assign(url);
+                },
+                replaceState(state, title, url) {
+                    mockLocation.assign(url);
+                },
+            },
+            // in tests, we never want to interact with the real local/session storages.
+            localStorage: makeRAMLocalStorage(),
+            sessionStorage: makeRAMLocalStorage(),
+            // Don't want original animation frames in tests
+            requestAnimationFrame: (fn) => {
+                const handle = nextAnimationFrameHandle++;
+                animationFrameHandles.add(handle);
 
-            return handle;
+                Promise.resolve().then(() => {
+                    if (animationFrameHandles.has(handle)) {
+                        fn(16);
+                    }
+                });
+
+                return handle;
+            },
+            cancelAnimationFrame: (handle) => {
+                animationFrameHandles.delete(handle);
+            },
         },
-        cancelAnimationFrame: (handle) => {
-            animationFrameHandles.delete(handle);
-        },
-        // BroadcastChannels need to be closed to be garbage collected
-        BroadcastChannel: class SelfClosingBroadcastChannel extends BroadcastChannel {
-            constructor() {
-                super(...arguments);
-                registerCleanup(() => this.close());
-            }
-        },
-    });
+        { pure: true }
+    );
 }
 
 function patchBodyAddEventListener() {
@@ -197,6 +207,21 @@ function patchBodyAddEventListener() {
     };
     registerCleanup(() => {
         document.body.addEventListener = originalBodyAddEventListener;
+    });
+}
+
+function patchLegacyCoreBus() {
+    // patch core.bus.on to automatically remove listners bound on the legacy bus
+    // during a test (e.g. during the deployment of a service)
+    const originalOn = core.bus.on.bind(core.bus);
+    const originalOff = core.bus.off.bind(core.bus);
+    patchWithCleanup(core.bus, {
+        on() {
+            originalOn(...arguments);
+            registerCleanup(() => {
+                originalOff(...arguments);
+            });
+        },
     });
 }
 
@@ -218,6 +243,10 @@ function patchSessionInfo() {
             load_menus: "161803",
             translations: "314159",
         },
+        currencies: {
+            1: { name: "USD", digits: [69, 2], position: "before", symbol: "$" },
+            2: { name: "EUR", digits: [69, 2], position: "after", symbol: "€" },
+        },
         user_context: {
             lang: "en",
             uid: 7,
@@ -238,11 +267,7 @@ function patchSessionInfo() {
         },
         db: "test",
         server_version: "1.0",
-        server_version_info: [1, 0, 0, "final", 0, ""],
-    });
-    patchWithCleanup(currencies, {
-        1: { name: "USD", digits: [69, 2], position: "before", symbol: "$" },
-        2: { name: "EUR", digits: [69, 2], position: "after", symbol: "€" },
+        server_version_info: ["1.0"],
     });
 }
 
@@ -271,103 +296,75 @@ function removeUnwantedAttrsFromTemplates(attrs) {
     }
 }
 
-function patchAssets() {
-    const { getBundle, loadJS, loadCSS } = assets;
-    patch(assets, {
-        getBundle: memoize(async function (xmlID) {
-            console.log(
-                "%c[assets] fetch libs from xmlID: " + xmlID,
-                "color: #66e; font-weight: bold;"
-            );
-            return getBundle(xmlID);
-        }),
-        loadJS: memoize(async function (ressource) {
-            if (ressource.match(/\/static(\/\S+\/|\/)libs?/)) {
-                console.log(
-                    "%c[assets] fetch (mock) JS ressource: " + ressource,
-                    "color: #66e; font-weight: bold;"
-                );
-                return Promise.resolve();
-            }
-            console.log(
-                "%c[assets] fetch JS ressource: " + ressource,
-                "color: #66e; font-weight: bold;"
-            );
-            return loadJS(ressource);
-        }),
-        loadCSS: memoize(async function (ressource) {
-            if (ressource.match(/\/static(\/\S+\/|\/)libs?/)) {
-                console.log(
-                    "%c[assets] fetch (mock) CSS ressource: " + ressource,
-                    "color: #66e; font-weight: bold;"
-                );
-                return Promise.resolve();
-            }
-            console.log(
-                "%c[assets] fetch CSS ressource: " + ressource,
-                "color: #66e; font-weight: bold;"
-            );
-            return loadCSS(ressource);
-        }),
-    });
-}
+// alt attribute causes issues with scroll tests. Indeed, alt is
+// displayed between the time we scroll programatically and the time
+// we assert for the scroll position. The src attribute is removed
+// as well to make sure images won't trigger a GET request on the
+// server.
 
-function patchEventBus() {
-    patchWithCleanup(EventBus.prototype, {
-        addEventListener() {
-            super.addEventListener(...arguments);
-            registerCleanup(() => this.removeEventListener(...arguments));
-        },
-    });
-}
+// Clean up templates that have already been added.
+removeUnwantedAttrsFromTemplates(["alt", "src"]);
+
+const { loadXML, getBundle, loadJS, loadCSS } = assets;
+patch(assets, "TestAssetsLoadXML", {
+    loadXML: function (templates) {
+        console.log("%c[assets] fetch XML ressource", "color: #66e; font-weight: bold;");
+        // Clean up new templates that might be added later.
+        loadXML(templates);
+        removeUnwantedAttrsFromTemplates(["alt", "src"]);
+    },
+    getBundle: memoize(async function (xmlID) {
+        console.log(
+            "%c[assets] fetch libs from xmlID: " + xmlID,
+            "color: #66e; font-weight: bold;"
+        );
+        return getBundle(xmlID);
+    }),
+    loadJS: memoize(async function (ressource) {
+        if (ressource.match(/\/static(\/\S+\/|\/)libs?/)) {
+            console.log(
+                "%c[assets] fetch (mock) JS ressource: " + ressource,
+                "color: #66e; font-weight: bold;"
+            );
+            return nextTick();
+        }
+        console.log(
+            "%c[assets] fetch JS ressource: " + ressource,
+            "color: #66e; font-weight: bold;"
+        );
+        return loadJS(ressource);
+    }),
+    loadCSS: memoize(async function (ressource) {
+        if (ressource.match(/\/static(\/\S+\/|\/)libs?/)) {
+            console.log(
+                "%c[assets] fetch (mock) CSS ressource: " + ressource,
+                "color: #66e; font-weight: bold;"
+            );
+            return nextTick();
+        }
+        console.log(
+            "%c[assets] fetch CSS ressource: " + ressource,
+            "color: #66e; font-weight: bold;"
+        );
+        return loadCSS(ressource);
+    }),
+});
 
 export async function setupTests() {
-    // uncomment to debug memory leaks in qunit suite
-    // if (window.gc) {
-    //     let memoryBeforeModule;
-    //     QUnit.moduleStart(({ tests }) => {
-    //         if (tests.length) {
-    //             window.gc();
-    //             memoryBeforeModule = window.performance.memory.usedJSHeapSize;
-    //         }
-    //     });
-    //     QUnit.moduleDone(({ name }) => {
-    //         if (memoryBeforeModule) {
-    //             window.gc();
-    //             const afterGc = window.performance.memory.usedJSHeapSize;
-    //             console.log(
-    //                 `MEMINFO - After suite "${name}" - after gc: ${afterGc} delta: ${
-    //                     afterGc - memoryBeforeModule
-    //                 }`
-    //             );
-    //             memoryBeforeModule = null;
-    //         }
-    //     });
-    // }
-
     QUnit.testStart(() => {
+        checkGlobalObjectsIntegrity();
         prepareRegistriesWithCleanup();
+        prepareLegacyRegistriesWithCleanup();
         forceLocaleAndTimezoneWithCleanup();
         cleanLoadedLanguages();
         patchBrowserWithCleanup();
-        patchCookie();
         patchBodyAddEventListener();
-        patchEventBus();
+        patchLegacyCoreBus();
         patchOdoo();
         patchSessionInfo();
-        patchOwlApp();
     });
 
-    await whenReady();
-
-    // alt attribute causes issues with scroll tests. Indeed, alt is
-    // displayed between the time we scroll programatically and the time
-    // we assert for the scroll position. The src attribute is removed
-    // as well to make sure images won't trigger a GET request on the
-    // server.
-    // Clean up templates that have already been added.
-    removeUnwantedAttrsFromTemplates(["alt", "src"]);
-    patchAssets();
+    await Promise.all([whenReady(), legacyProm]);
 
     // make sure images do not trigger a GET on the server
     new MutationObserver((mutations) => {

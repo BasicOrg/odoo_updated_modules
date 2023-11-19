@@ -9,7 +9,6 @@ import re
 import logging
 import base64
 import json
-from markupsafe import Markup
 
 
 _logger = logging.getLogger(__name__)
@@ -22,7 +21,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ar_afip_auth_mode = fields.Selection([('CAE', 'CAE'), ('CAI', 'CAI'), ('CAEA', 'CAEA')],
-        string='AFIP Authorization Mode', copy=False,
+        string='AFIP Authorization Mode', copy=False, readonly=True, states={'draft': [('readonly', False)]},
         help="This is the type of AFIP Authorization, depending on the way that the invoice is created"
         " the mode will change:\n\n"
         " * CAE (Electronic Authorization Code): Means that is an electronic invoice. If you validate a customer invoice"
@@ -34,17 +33,17 @@ class AccountMove(models.Model):
         " are generated using a pre ganerated code by AFIP for companies that have a massive invoicing by month so they"
         " can pre process all the invoices of the fortnight in one operation with one unique CAEA. Select this option"
         " only when verifying in AFIP a vendor bill that have CAEA (invoices with CAEA will not have CAE)")
-    l10n_ar_afip_auth_code = fields.Char('Authorization Code', copy=False, size=24, help="Argentina: authorization code given by AFIP after electronic invoice is created and valid.")
-    l10n_ar_afip_auth_code_due = fields.Date('Authorization Due date', copy=False,
-        help="Argentina: The Due Date of the Invoice given by AFIP.")
+    l10n_ar_afip_auth_code = fields.Char('Authorization Code', copy=False, readonly=True, size=24, states={'draft': [('readonly', False)]})
+    l10n_ar_afip_auth_code_due = fields.Date(' Authorization Due date', copy=False, readonly=True, states={'draft': [('readonly', False)]},
+        help="The Due Date of the Invoice given by AFIP")
     l10n_ar_afip_qr_code = fields.Char(compute='_compute_l10n_ar_afip_qr_code', string='AFIP QR Code',
         help='This QR code is mandatory by the AFIP in the electronic invoices when this ones are printed.')
 
     # electronic invoice fields
-    l10n_ar_afip_xml_request = fields.Text(string='XML Request', copy=False, readonly=True, groups="base.group_system")
-    l10n_ar_afip_xml_response = fields.Text(string='XML Response', copy=False, readonly=True, groups="base.group_system")
-    l10n_ar_afip_result = fields.Selection([('A', 'Accepted in AFIP'), ('O', 'Accepted in AFIP with Observations')], 'Result',
-        copy=False, help="Argentina: Result of the electronic invoice request to the AFIP web service.", tracking=True)
+    l10n_ar_afip_xml_request = fields.Text(string='AFIP XML Request', copy=False, readonly=True, groups="base.group_system")
+    l10n_ar_afip_xml_response = fields.Text(string='AFIP XML Response', copy=False, readonly=True, groups="base.group_system")
+    l10n_ar_afip_result = fields.Selection([('A', 'Accepted in AFIP'), ('O', 'Accepted in AFIP with Observations')], 'Result', readonly=True,
+        copy=False, states={'draft': [('readonly', False)]}, help="AFIP request result", tracking=True)
     l10n_ar_afip_ws = fields.Selection(related="journal_id.l10n_ar_afip_ws")
 
     # fields used to check invoice is valid on AFIP
@@ -55,13 +54,13 @@ class AccountMove(models.Model):
         string='AFIP Verification result', copy=False, readonly=True)
 
     # FCE related fields
-    l10n_ar_afip_fce_is_cancellation = fields.Boolean(string='FCE: Is Cancellation?',
-        copy=False, help='Argentina: When informing a MiPyMEs (FCE) debit/credit notes in AFIP it is required to send information about whether the'
+    l10n_ar_afip_fce_is_cancellation = fields.Boolean(string='FCE: Is Cancellation?', readonly=True, states={'draft': [('readonly', False)]},
+        copy=False, help='When informing a MiPyMEs (FCE) debit/credit notes in AFIP it is require to sent information about if the'
         ' original document has been explicitly rejected by the buyer. More information here'
         ' http://www.afip.gob.ar/facturadecreditoelectronica/preguntasFrecuentes/emisor-factura.asp')
     l10n_ar_fce_transmission_type = fields.Selection(
         [('SCA', 'SCA - TRANSFERENCIA AL SISTEMA DE CIRCULACION ABIERTA'), ('ADC', 'ADC - AGENTE DE DEPOSITO COLECTIVO')],
-        string='FCE: Transmission Option', compute="_compute_l10n_ar_fce_transmission_type", store=True, readonly=False,
+        string='FCE: Transmission Option', compute="_compute_l10n_ar_fce_transmission_type", store=True, states={'draft': [('readonly', False)]},
         help="This field only need to be set when you are reporting a MiPyME FCE documents. Default value can be set in the Accouting Settings")
 
     # Compute methods
@@ -70,10 +69,9 @@ class AccountMove(models.Model):
     def _compute_l10n_ar_fce_transmission_type(self):
         """ Automatically set the default value on the l10n_ar_fce_transmission_type field if the invoice is a mipyme
         one with the default value set in the company """
-        mipyme_fce_docs = self.filtered(lambda x: x.country_code == 'AR' and x._is_mipyme_fce())
-        for rec in mipyme_fce_docs.filtered(lambda x: not x.l10n_ar_fce_transmission_type):
-            if rec.company_id.l10n_ar_fce_transmission_type:
-                rec.l10n_ar_fce_transmission_type = rec.company_id.l10n_ar_fce_transmission_type
+        mipyme_fce_docs = self.filtered(lambda x: x._is_mipyme_fce() or x._is_mipyme_fce_refund())
+        for rec in mipyme_fce_docs:
+            rec.l10n_ar_fce_transmission_type = rec.company_id.l10n_ar_fce_transmission_type
         remaining = self - mipyme_fce_docs
         remaining.l10n_ar_fce_transmission_type = False
 
@@ -138,14 +136,14 @@ class AccountMove(models.Model):
         error occurs after CAE requested, the invoice has been already validated on AFIP """
         ar_invoices = self.filtered(lambda x: x.is_invoice() and x.company_id.account_fiscal_country_id.code == "AR")
         sale_ar_invoices = ar_invoices.filtered(lambda x: x.move_type in ['out_invoice', 'out_refund'])
+        sale_ar_edi_invoices = sale_ar_invoices.filtered(lambda x: x.journal_id.l10n_ar_afip_ws)
 
         # Verify only Vendor bills (only when verification is configured as 'required')
         (ar_invoices - sale_ar_invoices)._l10n_ar_check_afip_auth_verify_required()
 
         # Send invoices to AFIP and get the return info
-        ar_edi_invoices = ar_invoices.filtered(lambda x: x.journal_id.l10n_ar_afip_ws)
         validated = error_invoice = self.env['account.move']
-        for inv in ar_edi_invoices:
+        for inv in sale_ar_edi_invoices:
 
             # If we are on testing environment and we don't have certificates we validate only locally.
             # This is useful when duplicating the production database for training purpose or others
@@ -170,11 +168,11 @@ class AccountMove(models.Model):
 
         if error_invoice:
             if error_invoice.exists():
-                msg = _('We couldn\'t validate the document "%s" (Draft Invoice *%s) in AFIP',
+                msg = _('We couldn\'t validate the invoice "%s" (Draft Invoice *%s) in AFIP') % (
                     error_invoice.partner_id.name, error_invoice.id)
             else:
                 msg = _('We couldn\'t validate the invoice in AFIP.')
-            msg += _('This is what we get:\n%s\n\nPlease make the required corrections and try again', return_info)
+            msg += _('This is what we get:\n%s\n\nPlease make the required corrections and try again') % (return_info)
 
             # if we've already validate any invoice, we've commit and we want to inform which invoices were validated
             # which one were not and the detail of the error we get. This ins neccesary because is not usual to have a
@@ -182,11 +180,11 @@ class AccountMove(models.Model):
             if validated:
                 unprocess = self - validated - error_invoice
                 msg = _(
-                    """Some documents where validated in AFIP but as we have an error with one document the batch validation was stopped
+                    """Some invoices where validated in AFIP but as we have an error with one invoice the batch validation was stopped
 
-* These documents were validated:
+* These invoices were validated:
 %(validate_invoices)s
-* These documents weren\'t validated:
+* These invoices weren\'t validated:
 %(invalide_invoices)s
 """,
                     validate_invoices="\n   * ".join(validated.mapped('name')),
@@ -196,7 +194,7 @@ class AccountMove(models.Model):
                 )
             raise UserError(msg)
 
-        return validated + super(AccountMove, self - ar_edi_invoices)._post(soft=soft)
+        return validated + super(AccountMove, self - sale_ar_edi_invoices)._post(soft=soft)
 
     def l10n_ar_verify_on_afip(self):
         """ This method let us to connect to AFIP using WSCDC webservice to verify if a vendor bill is valid on AFIP """
@@ -362,7 +360,7 @@ class AccountMove(models.Model):
             values.update(l10n_ar_afip_xml_request=xml_request, l10n_ar_afip_xml_response=xml_response)
             inv.sudo().write(values)
             if return_info:
-                inv.message_post(body=Markup('<p><b>%s%s</b></p>') % (_('AFIP Messages'), plaintext2html(return_info, 'em')))
+                inv.message_post(body='<p><b>' + _('AFIP Messages') + '</b></p>' + (plaintext2html(return_info, 'em')))
 
     # Helpers
 
@@ -394,17 +392,9 @@ class AccountMove(models.Model):
 
         still_missing = verification_missing.filtered(lambda x: x.l10n_ar_afip_verification_result not in ['A', 'O'])
         if still_missing:
-            if len(still_missing) > 1:
-                raise UserError(_(
-                    'We can not post these vendor bills in Odoo because the '
-                    'AFIP verification fail: %s\nPlease verify in AFIP '
-                    'manually and review the bill chatter for more information',
-                    '\n * '.join(still_missing.mapped('display_name'))))
-            raise UserError(_(
-                'We can not post this vendor bill in Odoo because the AFIP '
-                'verification fail: %s\nPlease verify in AFIP manually and '
-                'review the bill chatter for more information',
-                still_missing.display_name))
+            text = 'these vendor bills' if len(still_missing) > 1 else 'this vendor bill'
+            raise UserError(_('We can not post %s in Odoo because the AFIP verification fail: %s\nPlease verify in AFIP manually'
+                              ' and review the bill chatter for more information') % (text, '\n * '.join(still_missing.mapped('display_name'))))
 
     def _is_mipyme_fce(self):
         """ True of False if the invoice is a mipyme document """
@@ -454,7 +444,7 @@ class AccountMove(models.Model):
                         'Alic': 0,
                         'Desc': tribute.tax_line_id.tax_group_id.name,
                         'BaseImp': float_repr(base_imp, precision_digits=2),
-                        'Importe': float_repr(abs(tribute.amount_currency), precision_digits=2)})
+                        'Importe': float_repr(tribute.price_subtotal, precision_digits=2)})
         return res if res else None
 
     def _get_related_invoice_data(self):
@@ -589,6 +579,7 @@ class AccountMove(models.Model):
 
     # Prepare Request Data for webservices
 
+    @api.model
     def wsfe_get_cae_request(self, client=None):
         self.ensure_one()
         partner_id_code = self._get_partner_code_id(self.commercial_partner_id)
@@ -644,6 +635,7 @@ class AccountMove(models.Model):
                    'Compradores': None}}]}
         return res
 
+    @api.model
     def wsfex_get_cae_request(self, last_id, client):
         if not self.commercial_partner_id.country_id:
             raise UserError(_('For WS "%s" country is required on partner', self.journal_id.l10n_ar_afip_ws))
@@ -708,6 +700,7 @@ class AccountMove(models.Model):
             res.update({'Fecha_pago': payment_date})
         return res
 
+    @api.model
     def wsbfe_get_cae_request(self, last_id, client=None):
         partner_id_code = self._get_partner_code_id(self.commercial_partner_id)
         amounts = self._l10n_ar_get_amounts()
@@ -757,10 +750,10 @@ class AccountMove(models.Model):
             else self.journal_id._l10n_ar_get_afip_last_invoice_number(self.l10n_latam_document_type_id)
         return "%s %05d-%08d" % (self.l10n_latam_document_type_id.doc_code_prefix, self.journal_id.l10n_ar_afip_pos_number, last_number)
 
-    def _get_last_sequence(self, relaxed=False, with_prefix=None):
+    def _get_last_sequence(self, relaxed=False, with_prefix=None, lock=True):
         """ For argentina electronic invoice, if there is not sequence already then consult the last number from AFIP
         @return: string with the sequence, something like 'FA-A 00001-00000011' """
-        res = super()._get_last_sequence(relaxed=relaxed, with_prefix=with_prefix)
+        res = super()._get_last_sequence(relaxed=relaxed, with_prefix=with_prefix, lock=lock)
         if not res and self._is_argentina_electronic_invoice() and self.l10n_latam_document_type_id:
             res = self._get_last_sequence_from_afip()
         return res

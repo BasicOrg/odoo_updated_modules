@@ -5,35 +5,15 @@ import { clickAllDaySlot } from "@web/../tests/views/calendar/helpers";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { registry } from "@web/core/registry";
 import { userService } from "@web/core/user_service";
-import testUtils from '@web/../tests/legacy/helpers/test_utils';
+import testUtils from 'web.test_utils';
 
-const { DateTime } = luxon;
 const serviceRegistry = registry.category("services");
-const mockRegistry = registry.category("mock_server");
 
 let target;
 let serverData;
 const uid = 1;
-let appointmentMock;
 
 QUnit.module('appointment.appointment_link', {
-    before: function () {
-        appointmentMock = mockRegistry.get("/appointment/appointment_type/get_staff_user_appointment_types");
-        mockRegistry.add("/appointment/appointment_type/get_staff_user_appointment_types", function (route, args) {
-            if (route === "/appointment/appointment_type/get_staff_user_appointment_types") {
-                const domain = [
-                    ['staff_user_ids', 'in', [1]],
-                    ['category', '!=', 'custom'],
-                    ['website_published', '=', true],
-                ];
-                const appointment_types_info = this.mockSearchRead('appointment.type', [domain, ['category', 'name']], {});
-
-                return Promise.resolve({
-                    appointment_types_info: appointment_types_info
-                });
-            }
-        }, { force: true });
-    },
     beforeEach: function () {
         serverData = {
             models: {
@@ -79,8 +59,8 @@ QUnit.module('appointment.appointment_link', {
                         user_id: uid,
                         partner_id: uid,
                         name: 'Event 1',
-                        start: DateTime.now().plus({years:1}).toFormat("yyyy'-01-12 10:00:00'"),
-                        stop: DateTime.now().plus({years:1}).toFormat("yyyy'-01-12 11:00:00'"),
+                        start: moment().add(1, 'years').format('YYYY-01-12 10:00:00'),
+                        stop: moment().add(1, 'years').format('YYYY-01-12 11:00:00'),
                         allday: false,
                         partner_ids: [1],
                     }, {
@@ -88,8 +68,8 @@ QUnit.module('appointment.appointment_link', {
                         user_id: uid,
                         partner_id: uid,
                         name: 'Event 2',
-                        start: DateTime.now().plus({years:1}).toFormat("yyyy'-01-05 10:00:00'"),
-                        stop: DateTime.now().plus({years:1}).toFormat("yyyy'-01-05 11:00:00'"),
+                        start: moment().add(1, 'years').format('YYYY-01-05 10:00:00'),
+                        stop: moment().add(1, 'years').format('YYYY-01-05 11:00:00'),
                         allday: false,
                         partner_ids: [1],
                     }, {
@@ -97,8 +77,8 @@ QUnit.module('appointment.appointment_link', {
                         user_id: 214,
                         partner_id: 214,
                         name: 'Event 3',
-                        start: DateTime.now().plus({years:1}).toFormat("yyyy'-01-05 10:00:00'"),
-                        stop: DateTime.now().plus({years:1}).toFormat("yyyy'-01-05 11:00:00'"),
+                        start: moment().add(1, 'years').format('YYYY-01-05 10:00:00'),
+                        stop: moment().add(1, 'years').format('YYYY-01-05 11:00:00'),
                         allday: false,
                         partner_ids: [214],
                     }
@@ -116,7 +96,7 @@ QUnit.module('appointment.appointment_link', {
                         slot_ids: {type: 'one2many', relation: 'appointment.slot'},
                         category: {
                             type: 'selection',
-                            selection: [['recurring', 'Recurring'], ['custom', 'Custom']]
+                            selection: [['website', 'Website'], ['custom', 'Custom']]
                         },
                     },
                     records: [{
@@ -125,14 +105,14 @@ QUnit.module('appointment.appointment_link', {
                         website_url: '/appointment/1',
                         website_published: true,
                         staff_user_ids: [214],
-                        category: 'recurring',
+                        category: 'website',
                     }, {
                         id: 2,
                         name: 'Test Appointment',
                         website_url: '/appointment/2',
                         website_published: true,
                         staff_user_ids: [uid],
-                        category: 'recurring',
+                        category: 'website',
                     }],
                 },
                 'appointment.slot': {
@@ -172,7 +152,7 @@ QUnit.module('appointment.appointment_link', {
             },
             views: {},
         };
-        patchDate(DateTime.now().plus({years:1}).year, 0, 5, 0, 0, 0);
+        patchDate(moment().add(1, 'years').year(), 0, 5, 0, 0, 0);
         target = getFixture();
         setupViewRegistries();
         serviceRegistry.add(
@@ -190,9 +170,6 @@ QUnit.module('appointment.appointment_link', {
             { force: true }
         );
     },
-    after: function () {
-        mockRegistry.add("/appointment/appointment_type/get_staff_user_appointment_types", appointmentMock, { force: true });
-    }
 }, function () {
 
 QUnit.test('verify appointment links button are displayed', async function (assert) {
@@ -202,7 +179,7 @@ QUnit.test('verify appointment links button are displayed', async function (asse
         type: "calendar",
         resModel: 'calendar.event',
         serverData,
-        arch:
+        arch: 
         `<calendar class="o_calendar_test"
                     js_class="attendee_calendar"
                     all_day="allday"
@@ -216,17 +193,13 @@ QUnit.test('verify appointment links button are displayed', async function (asse
         mockRPC: async function (route, args) {
             if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
 
     assert.containsOnce(target, 'button:contains("Share Availabilities")');
 
-    await click(target, '.dropdownAppointmentLink');
+    await click(target, '#dropdownAppointmentLink');
 
     assert.containsOnce(target, 'button:contains("Test Appointment")');
 
@@ -266,10 +239,6 @@ QUnit.test('create/search anytime appointment type', async function (assert) {
                 assert.step(route);
             } else if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
         session: {
@@ -279,7 +248,7 @@ QUnit.test('create/search anytime appointment type', async function (assert) {
 
     assert.strictEqual(2, serverData.models['appointment.type'].records.length)
 
-    await click(target.querySelector('.dropdownAppointmentLink'));
+    await click(target.querySelector('#dropdownAppointmentLink'));
 
     await click(target.querySelector('.o_appointment_search_create_anytime_appointment'));
     await nextTick();
@@ -289,7 +258,7 @@ QUnit.test('create/search anytime appointment type', async function (assert) {
         "Create a new appointment type")
 
     await click(target.querySelector('.o_appointment_discard_slots'));
-    await click(target.querySelector('.dropdownAppointmentLink'));
+    await click(target.querySelector('#dropdownAppointmentLink'));
 
     await click(target.querySelector('.o_appointment_search_create_anytime_appointment'));
     await nextTick();
@@ -318,10 +287,6 @@ QUnit.test('discard slot in calendar', async function (assert) {
         mockRPC: async function (route, args) {
             if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
@@ -334,14 +299,12 @@ QUnit.test('discard slot in calendar', async function (assert) {
         "The calendar is now in a mode to create custom appointment time slots");
     assert.containsN(target, '.fc-event', 2);
     assert.containsNone(target, '.o_calendar_slot');
-
-    // Same behavior as previous next button
-    await click(target.querySelector('.o_datetime_picker .o_date_item_cell:nth-of-type(13)'));
-    await nextTick();
+    
+    await click(target.querySelector('.o_calendar_button_next'));
     assert.containsOnce(target, '.fc-event', 'There is one calendar event');
     assert.containsNone(target, '.o_calendar_slot', 'There is no slot yet');
 
-    await clickAllDaySlot(target, DateTime.now().toFormat("yyyy'-01-12'"));
+    await clickAllDaySlot(target, moment().format('YYYY-01-12'));
     await nextTick();
     assert.containsN(target, '.fc-event', 2, 'There is 2 events in the calendar');
     assert.containsOnce(target, '.o_calendar_slot', 'One of them is a slot');
@@ -351,8 +314,7 @@ QUnit.test('discard slot in calendar', async function (assert) {
     assert.containsOnce(target, '.fc-event', 'The calendar event is still here');
     assert.containsNone(target, '.o_calendar_slot', 'The slot has been discarded');
 
-    await click(target.querySelector('.o_calendar_button_today'));
-    await nextTick();
+    await click(target.querySelector('.o_calendar_button_prev'));
     assert.containsN(target, '.fc-event', 2);
     assert.containsNone(target, '.o_calendar_slot');
 });
@@ -364,7 +326,7 @@ QUnit.test("cannot move real event in slots-creation mode", async function (asse
         type: "calendar",
         resModel: 'calendar.event',
         serverData,
-        arch:
+        arch: 
         `<calendar class="o_calendar_test"
                     js_class="attendee_calendar"
                     all_day="allday"
@@ -379,10 +341,6 @@ QUnit.test("cannot move real event in slots-creation mode", async function (asse
                 assert.step('write event');
             } else if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
@@ -419,7 +377,7 @@ QUnit.test("create slots for custom appointment type", async function (assert) {
         type: "calendar",
         resModel: 'calendar.event',
         serverData,
-        arch:
+        arch: 
         `<calendar class="o_calendar_test"
                     js_class="attendee_calendar"
                     all_day="allday"
@@ -433,10 +391,6 @@ QUnit.test("create slots for custom appointment type", async function (assert) {
                 assert.step(route);
             } else if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
@@ -448,13 +402,12 @@ QUnit.test("create slots for custom appointment type", async function (assert) {
         "The calendar is now in a mode to create custom appointment time slots");
     assert.containsN(target, '.fc-event', 2);
     assert.containsNone(target, '.o_calendar_slot');
-
-    // Same behavior as previous next button
-    await click(target.querySelector('.o_datetime_picker .o_date_item_cell:nth-of-type(13)'));
+    
+    await click(target.querySelector('.o_calendar_button_next'));
     assert.containsOnce(target, '.fc-event', 'There is one calendar event');
     assert.containsNone(target, '.o_calendar_slot', 'There is no slot yet');
 
-    await clickAllDaySlot(target, DateTime.now().toFormat("yyyy'-01-12'"));
+    await clickAllDaySlot(target, moment().format('YYYY-01-12'));
     await nextTick();
     assert.containsN(target, '.fc-event', 2, 'There is 2 events in the calendar');
     assert.containsOnce(target, '.o_calendar_slot', 'One of them is a slot');
@@ -473,7 +426,7 @@ QUnit.test('filter works in slots-creation mode', async function (assert) {
         type: "calendar",
         resModel: 'calendar.event',
         serverData,
-        arch:
+        arch: 
         `<calendar class="o_calendar_test"
                     js_class="attendee_calendar"
                     all_day="allday"
@@ -487,10 +440,6 @@ QUnit.test('filter works in slots-creation mode', async function (assert) {
         mockRPC: function (route, args) {
             if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
@@ -506,12 +455,11 @@ QUnit.test('filter works in slots-creation mode', async function (assert) {
     assert.strictEqual(calendar.env.calendarState.mode, 'slots-creation',
         "The calendar is now in a mode to create custom appointment time slots");
 
-    // Same behavior as previous next button
-    await click(target.querySelector('.o_datetime_picker .o_date_item_cell:nth-of-type(13)'));
+    await click(target.querySelector('.o_calendar_button_next'));
     assert.containsOnce(target, '.fc-event');
     assert.containsNone(target, '.o_calendar_slot');
 
-    await clickAllDaySlot(target, DateTime.now().toFormat("yyyy'-01-12'"));
+    await clickAllDaySlot(target, moment().format('YYYY-01-12'));
     await nextTick();
     assert.containsN(target, '.fc-event', 2, 'There is 2 events in the calendar');
     assert.containsOnce(target, '.o_calendar_slot', 'One of them is a slot');
@@ -545,7 +493,7 @@ QUnit.test('click & copy appointment type url', async function (assert) {
         type: "calendar",
         resModel: 'calendar.event',
         serverData,
-        arch:
+        arch: 
         `<calendar class="o_calendar_test"
                     js_class="attendee_calendar"
                     all_day="allday"
@@ -560,15 +508,11 @@ QUnit.test('click & copy appointment type url', async function (assert) {
                 assert.step(route)
             } else if (route === '/web/dataset/call_kw/res.partner/get_attendee_detail') {
                 return Promise.resolve([]);
-            } else if (route === '/web/dataset/call_kw/res.users/has_group') {
-                return Promise.resolve(true);
-            } else if (route === '/calendar/check_credentials') {
-                return Promise.resolve({});
             }
         },
     });
 
-    await click(target.querySelector('.dropdownAppointmentLink'));
+    await click(target.querySelector('#dropdownAppointmentLink'));
     await click(target.querySelector('.o_appointment_appointment_link_clipboard'));
 
     assert.verifySteps(['/appointment/appointment_type/get_book_url']);

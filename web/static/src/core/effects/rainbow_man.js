@@ -2,7 +2,7 @@
 
 import { browser } from "@web/core/browser/browser";
 
-import { Component, useEffect, useExternalListener, useState } from "@odoo/owl";
+const { Component, useEffect, useExternalListener, useState } = owl;
 
 /**
  * @typedef Common
@@ -17,20 +17,21 @@ import { Component, useEffect, useExternalListener, useState } from "@odoo/owl";
  * @property {string} message Message to be displayed on rainbowman card
  *
  * @typedef Custom
- * @property {typeof import("@odoo/owl").Component} Component
+ * @property {Component} Component
  * @property {any} [props]
  *
  * @typedef {Common & (Simple | Custom)} RainbowManProps
  */
 
 /**
- * The RainbowMan Component is meant to display a 'fun/rewarding' message.  For
- * example, when the user marked a large deal as won, or when he cleared its inbox.
+ * The RainbowMan widget is the widget displayed by default as a 'fun/rewarding'
+ * effect in some cases.  For example, when the user marked a large deal as won,
+ * or when he cleared its inbox.
  *
- * This component is mostly a picture and a message with a rainbow animation around.
+ * This widget is mostly a picture and a message with a rainbow animation around
  * If you want to display a RainbowMan, you probably do not want to do it by
  * importing this file.  The usual way to do that would be to use the effect
- * service.
+ * service (by triggering the 'show_effect' event)
  */
 export class RainbowMan extends Component {
     setup() {
@@ -62,12 +63,4 @@ export class RainbowMan extends Component {
     }
 }
 RainbowMan.template = "web.RainbowMan";
-RainbowMan.props = {
-    fadeout: String,
-    close: Function,
-    message: String,
-    imgUrl: String,
-    Component: { type: Function, optional: true },
-    props: { type: Object, optional: true },
-};
 RainbowMan.rainbowFadeouts = { slow: 4500, medium: 3500, fast: 2000, no: false };

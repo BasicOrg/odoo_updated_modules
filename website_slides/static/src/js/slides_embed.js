@@ -1,5 +1,4 @@
 /* global PDFSlidesViewer */
-
 /**
  * This is a minimal version of the PDFViewer widget.
  * It is NOT use in the website_slides module, but it is called when embedding
@@ -7,14 +6,6 @@
  * (see website_slides.slide_embed_assets bundle, in website_slides_embed.xml)
  */
 $(function () {
-
-    function debounce(func, timeout = 300){
-        let timer;
-        return (...args) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => { func.apply(this, args); }, timeout);
-        };
-    }
 
     if ($('#PDFViewer') && $('#PDFViewerCanvas')) { // check if presentation only
         var MIN_ZOOM=1, MAX_ZOOM=10, ZOOM_INCREMENT=.5;
@@ -28,7 +19,7 @@ $(function () {
             this.defaultpage = parseInt($viewer.find('#PDFSlideViewer').data('defaultpage'));
             this.canvas = $viewer.find('canvas')[0];
 
-            this.pdf_viewer = new PDFSlidesViewer(this.slide_url, this.canvas);
+            this.pdf_viewer = new PDFSlidesViewer(this.slide_url, this.canvas, true);
             this.pdf_viewer.loadDocument().then(function () {
                 self.on_loaded_file();
             });
@@ -88,19 +79,12 @@ $(function () {
                 });
             },
             previous: function () {
-                const slideSuggestOverlay = this.$("#slide_suggest");
-                if (!slideSuggestOverlay.hasClass('d-none')) {
-                    // Hide suggested slide overlay before changing page nb.
-                    slideSuggestOverlay.addClass('d-none');
-                    this.$('#next, #last').removeClass('disabled');
-                    return;
-                }
                 var self = this;
                 this.pdf_viewer.previousPage().then(function (pageNum) {
                     if (pageNum) {
                         self.on_rendered_page(pageNum);
                     }
-                    slideSuggestOverlay.addClass('d-none');
+                    self.$("#slide_suggest").addClass('d-none');
                 });
             },
             first: function () {
@@ -193,16 +177,16 @@ $(function () {
                 return false;
             }
         });
-        $(window).on("resize", debounce(() => {
+        $(window).on('resize', _.debounce(function() {
             embeddedViewer.on_resize();
         }, 500));
 
         // switching slide with keyboard
         $(document).keydown(function (ev) {
-            if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
+            if (ev.keyCode === 37 || ev.keyCode === 38) {
                 embeddedViewer.previous();
             }
-            if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
+            if (ev.keyCode === 39 || ev.keyCode === 40) {
                 embeddedViewer.next();
             }
         });

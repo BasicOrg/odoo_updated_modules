@@ -1,57 +1,67 @@
-/** @odoo-module */
+odoo.define('pos_hr.tour.PosHrTourMethods', function (require) {
+    'use strict';
 
-import * as SelectionPopup from "@point_of_sale/../tests/tours/helpers/SelectionPopupTourMethods";
-import * as NumberPopup from "@point_of_sale/../tests/tours/helpers/NumberPopupTourMethods";
+    const { createTourMethods } = require('point_of_sale.tour.utils');
+    const { SelectionPopup } = require('point_of_sale.tour.SelectionPopupTourMethods');
+    const { NumberPopup } = require('point_of_sale.tour.NumberPopupTourMethods');
 
-export function clickLoginButton() {
-    return [
-        {
-            content: "click login button",
-            trigger: ".login-overlay .login-button.select-cashier",
-        },
-    ];
-}
-export function clickLockButton() {
-    return [
-        {
-            content: "click lock button",
-            trigger: ".lock-button",
-        },
-    ];
-}
-export function clickCashierName() {
-    return [
-        {
-            content: "click cashier name",
-            trigger: ".oe_status .username",
-        },
-    ];
-}
-export function loginScreenIsShown() {
-    return [
-        {
-            content: "login screen is shown",
-            trigger: ".login-overlay .screen-login .login-body",
-            run: () => {},
-        },
-    ];
-}
-export function cashierNameIs(name) {
-    return [
-        {
-            content: `logged cashier is '${name}'`,
-            trigger: `.pos .oe_status .username:contains("${name}")`,
-            run: () => {},
-        },
-    ];
-}
-export function login(name, pin) {
-    const res = clickLoginButton();
-    res.push(...SelectionPopup.clickItem(name));
-    if (pin) {
-        res.push(...NumberPopup.pressNumpad(pin.split("").join(" ")));
-        res.push(...NumberPopup.inputShownIs("••••"));
-        res.push(...NumberPopup.clickConfirm());
+    class Do {
+        clickLoginButton() {
+            return [
+                {
+                    content: 'click login button',
+                    trigger: '.login-overlay .login-button.select-cashier',
+                },
+            ];
+        }
+        clickLockButton() {
+            return [
+                {
+                    content: 'click lock button',
+                    trigger: '.header-button .lock-button',
+                },
+            ];
+        }
+        clickCashierName() {
+            return [
+                {
+                    content: 'click cashier name',
+                    trigger: '.oe_status .username',
+                }
+            ]
+        }
     }
-    return res;
-}
+    class Check {
+        loginScreenIsShown() {
+            return [
+                {
+                    content: 'login screen is shown',
+                    trigger: '.login-overlay .screen-login .login-body',
+                    run: () => {},
+                },
+            ];
+        }
+        cashierNameIs(name) {
+            return [
+                {
+                    content: `logged cashier is '${name}'`,
+                    trigger: `.pos .oe_status .username:contains("${name}")`,
+                    run: () => {},
+                },
+            ];
+        }
+    }
+    class Execute {
+        login(name, pin) {
+            const res = this._do.clickLoginButton();
+            res.push(...SelectionPopup._do.clickItem(name));
+            if (pin) {
+                res.push(...NumberPopup._do.pressNumpad(pin.split('').join(' ')));
+                res.push(...NumberPopup._do.clickConfirm());
+            }
+            return res;
+        }
+    }
+
+    return createTourMethods('PosHr', Do, Check, Execute);
+});

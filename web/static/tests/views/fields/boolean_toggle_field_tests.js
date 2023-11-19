@@ -237,44 +237,4 @@ QUnit.module("Fields", (hooks) => {
             );
         }
     );
-
-    QUnit.test("BooleanToggleField - auto save record when field toggled", async function (assert) {
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <form>
-                    <field name="bar" widget="boolean_toggle" />
-                </form>`,
-            resId: 1,
-            mockRPC(_route, { method }) {
-                if (method === "web_save") {
-                    assert.step("web_save");
-                }
-            },
-        });
-        await click(target, ".o_field_widget[name='bar'] input");
-        assert.verifySteps(["web_save"]);
-    });
-
-    QUnit.test("BooleanToggleField - autosave option set to false", async function (assert) {
-        await makeView({
-            type: "form",
-            resModel: "partner",
-            serverData,
-            arch: `
-                <form>
-                    <field name="bar" widget="boolean_toggle" options="{'autosave': false}"/>
-                </form>`,
-            resId: 1,
-            mockRPC(_route, { method }) {
-                if (method === "web_save") {
-                    assert.step("web_save");
-                }
-            },
-        });
-        await click(target, ".o_field_widget[name='bar'] input");
-        assert.verifySteps([]);
-    });
 });

@@ -95,8 +95,8 @@ class DataRecycleModel(models.Model):
         count_data = self.env['data_recycle.record']._read_group(
             [('recycle_model_id', 'in', self.ids)],
             ['recycle_model_id'],
-            ['__count'])
-        counts = {recycle_model.id: count for recycle_model, count in count_data}
+            ['recycle_model_id'])
+        counts = {cd['recycle_model_id'][0]: cd['recycle_model_id_count'] for cd in count_data}
         for model in self:
             model.records_to_recycle_count = counts[model.id] if model.id in counts else 0
 
@@ -172,30 +172,25 @@ class DataRecycleModel(models.Model):
             ('recycle_model_id', '=', self.id),
             ('create_date', '>=', last_date)
         ])
-        partner_ids = self.notify_user_ids.partner_id.ids if records_count else []
-        if partner_ids:
+
+        if records_count:
+            partner_ids = self.notify_user_ids.partner_id.ids
             menu_id = self.env.ref('data_recycle.menu_data_cleaning_root').id
-            self.env['mail.thread'].message_notify(
-                body=self.env['ir.qweb']._render(
-                    'data_recycle.notification',
-                    {
-                        'records_count': records_count,
-                        'res_model_label': self.res_model_id.name,
-                        'recycle_model_id': self.id,
-                        'menu_id': menu_id
-                    }
-                ),
-                model=self._name,
-                notify_author=True,
-                partner_ids=partner_ids,
-                res_id=self.id,
-                subject=_('Data to Recycle'),
-            )
+            kwargs = {
+                'body': self.env['ir.qweb']._render('data_recycle.notification', {
+                    'records_count': records_count,
+                    'res_model_label': self.res_model_id.name,
+                    'recycle_model_id': self.id,
+                    'menu_id': menu_id
+                }),
+                'partner_ids': partner_ids,
+            }
+            self.env['mail.thread'].with_context(mail_notify_author=True).message_notify(**kwargs)
 
     def write(self, vals):
         if 'active' in vals and not vals['active']:
             self.env['data_recycle.record'].search([('recycle_model_id', 'in', self.ids)]).unlink()
-        return super().write(vals)
+        super().write(vals)
 
     def open_records(self):
         self.ensure_one()

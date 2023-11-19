@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, Command
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.tests import tagged, Form
 import time
-
 
 @tagged('post_install', '-at_install')
 class TestTransferWizard(AccountTestInvoicingCommon):
@@ -197,8 +195,9 @@ class TestTransferWizard(AccountTestInvoicingCommon):
         active_move_lines = (self.move_1 + self.move_2).mapped('line_ids').filtered(lambda x: x.account_id.account_type in ('asset_receivable', 'liability_payable'))
 
         # We use a form to pass the context properly to the depends_context move_line_ids field
-        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids, 'default_action': 'change_account'}
+        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids}
         with Form(self.env['account.automatic.entry.wizard'].with_context(context)) as wizard_form:
+            wizard_form.action = 'change_account'
             wizard_form.destination_account_id = self.receivable_account
             wizard_form.journal_id = self.journal
         wizard = wizard_form.save()
@@ -222,8 +221,9 @@ class TestTransferWizard(AccountTestInvoicingCommon):
         active_move_lines = (self.move_1 + self.move_2).mapped('line_ids').filtered(lambda x: x.name in ('test1_3', 'test1_4', 'test1_5', 'test2_3', 'test2_4', 'test2_5', 'test2_6', 'test2_8'))
 
         # We use a form to pass the context properly to the depends_context move_line_ids field
-        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids, 'default_action': 'change_account'}
+        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids}
         with Form(self.env['account.automatic.entry.wizard'].with_context(context)) as wizard_form:
+            wizard_form.action = 'change_account'
             wizard_form.destination_account_id = self.accounts[4]
             wizard_form.journal_id = self.journal
         wizard = wizard_form.save()
@@ -252,8 +252,9 @@ class TestTransferWizard(AccountTestInvoicingCommon):
         active_move_lines = self.move_1.mapped('line_ids').filtered(lambda x: x.name in ('test1_6', 'test1_9'))
 
         # We use a form to pass the context properly to the depends_context move_line_ids field
-        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids, 'default_action': 'change_account'}
+        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids}
         with Form(self.env['account.automatic.entry.wizard'].with_context(context)) as wizard_form:
+            wizard_form.action = 'change_account'
             wizard_form.destination_account_id = self.test_currency_account
             wizard_form.journal_id = self.journal
         wizard = wizard_form.save()
@@ -274,8 +275,9 @@ class TestTransferWizard(AccountTestInvoicingCommon):
         active_move_lines = self.move_2.mapped('line_ids').filtered(lambda x: x.name in ('test2_9', 'test2_6', 'test2_8'))
 
         # We use a form to pass the context properly to the depends_context move_line_ids field
-        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids, 'default_action': 'change_account'}
+        context = {'active_model': 'account.move.line', 'active_ids': active_move_lines.ids}
         with Form(self.env['account.automatic.entry.wizard'].with_context(context)) as wizard_form:
+            wizard_form.action = 'change_account'
             wizard_form.destination_account_id = self.receivable_account
             wizard_form.journal_id = self.journal
         wizard = wizard_form.save()
@@ -287,58 +289,3 @@ class TestTransferWizard(AccountTestInvoicingCommon):
         self.assertEqual(len(destination_lines), 2, "Two lines should have been created on destination account: one for each currency (the lines with same partner and currency should have been aggregated)")
         self.assertAlmostEqual(destination_lines.filtered(lambda x: x.currency_id == self.test_currency_1).amount_currency, -10, self.test_currency_1.decimal_places)
         self.assertAlmostEqual(destination_lines.filtered(lambda x: x.currency_id == self.test_currency_2).amount_currency, -756, self.test_currency_2.decimal_places)
-
-    def test_period_change_lock_date(self):
-        """ Test that the period change wizard correctly handles the lock date: if the original entry is dated
-        before the lock date, the adjustment entry is created on the first end of month after the lock date.
-        """
-        # Set up accrual accounts
-        self.company_data['company'].expense_accrual_account_id = self.env['account.account'].create({
-            'name': 'Expense Accrual Account',
-            'code': '113226',
-            'account_type': 'asset_prepayments',
-            'reconcile': True,
-        })
-        self.company_data['company'].revenue_accrual_account_id = self.env['account.account'].create({
-            'name': 'Revenue Accrual Account',
-            'code': '226113',
-            'account_type': 'liability_current',
-            'reconcile': True,
-        })
-
-        # Create a move before the lock date
-        move = self.env['account.move'].create({
-            'journal_id': self.company_data['default_journal_sale'].id,
-            'date': '2019-01-01',
-            'line_ids': [
-                Command.create({'account_id': self.accounts[0].id, 'debit': 1000, }),
-                Command.create({'account_id': self.accounts[0].id, 'credit': 1000, }),
-            ]
-        })
-        move.action_post()
-
-        # Set the lock date
-        move.company_id.write({'period_lock_date': '2019-02-28', 'fiscalyear_lock_date': '2019-02-28'})
-
-        # Open the transfer wizard at a date after the lock date
-        wizard = self.env['account.automatic.entry.wizard'] \
-            .with_context(active_model='account.move.line', active_ids=move.line_ids[0].ids) \
-            .create({
-                'action': 'change_period',
-                'date': '2019-05-01',
-                'journal_id': self.company_data['default_journal_misc'].id,
-            })
-
-        # Check that the 'The date is being set prior to the user lock date' message appears.
-        self.assertRecordValues(wizard, [{
-            'lock_date_message': 'The date is being set prior to the user lock date 02/28/2019. '
-                                 'The Journal Entry will be accounted on 03/31/2019 upon posting.'
-        }])
-
-        # Create the adjustment move.
-        wizard_res = wizard.do_action()
-
-        # Check that the adjustment move was created on the first end of month after the lock date.
-        created_moves = self.env['account.move'].browse(wizard_res['domain'][0][2])
-        adjustment_move = created_moves[1]  # There are 2 created moves; the adjustment move is the second one.
-        self.assertRecordValues(adjustment_move, [{'date': fields.Date.to_date('2019-03-31')}])

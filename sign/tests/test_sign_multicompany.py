@@ -23,6 +23,7 @@ class TestSignMulticompany(SignRequestCommon, MockEmail):
             sign_request = self.env['sign.request'].with_company(self.company_2).create({
                 'template_id': self.template_1_role.id,
                 'reference': self.template_1_role.display_name,
+                'refusal_allowed': True,
                 'request_item_ids': [Command.create({
                     'partner_id': self.partner_1.id,
                     'role_id': self.env.ref('sign.sign_item_role_customer').id,
@@ -40,6 +41,7 @@ class TestSignMulticompany(SignRequestCommon, MockEmail):
             sign_request = self.env['sign.request'].with_company(self.company_2).create({
                 'template_id': self.template_1_role.id,
                 'reference': self.template_1_role.display_name,
+                'refusal_allowed': True,
                 'request_item_ids': [Command.create({
                     'partner_id': self.partner_1.id,
                     'role_id': self.env.ref('sign.sign_item_role_customer').id,

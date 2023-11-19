@@ -4,15 +4,14 @@
 from collections import defaultdict
 
 from datetime import datetime
-import pytz
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.osv import expression
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    attendance_count = fields.Integer(compute='_compute_attendance_count')
+    attendance_count = fields.Integer(compute='_compute_attendance_count', groups="hr_attendance.group_hr_attendance_user")
 
     @api.depends('date_from', 'date_to', 'contract_id')
     def _compute_attendance_count(self):
@@ -32,25 +31,20 @@ class HrPayslip(models.Model):
                     ('check_out', '>=', slip.date_from),
                 ]
             ])
-        read_group = self.env['hr.attendance']._read_group(domain, groupby=['employee_id', 'check_in:day'], aggregates=['__count'])
-        for employee, check_in, count in read_group:
-            check_in_day = check_in.date()
-            slips = slip_by_employee[employee.id]
+        read_group = self.env['hr.attendance']._read_group(domain, fields=['id'], groupby=['employee_id', 'check_in:day'], lazy=False)
+        for result in read_group:
+            slips = slip_by_employee[result['employee_id'][0]]
+            date = datetime.strptime(result['check_in:day'], '%d %b %Y').date()
             for slip in slips:
-                if slip.date_from <= check_in_day <= slip.date_to:
-                    slip.attendance_count += count
+                if slip.date_from <= date and date <= slip.date_to:
+                    slip.attendance_count += result['__count']
 
     def action_open_attendances(self):
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Attendances"),
-            "res_model": "hr.attendance",
-            "views": [[False, "tree"]],
-            "context": {
-                "create": 0
-            },
-            "domain": [('employee_id', '=', self.employee_id.id),
-                       ('check_in', '<=', self.date_to),
-                       ('check_out', '>=', self.date_from)]
+        action = self.env['ir.actions.actions']._for_xml_id('hr_attendance.hr_attendance_action_employee')
+        action['context'] = {
+            'create': False,
+            'search_default_employee_id': self.employee_id.id,
         }
+        action['domain'] = [('check_in', '<=', self.date_to), ('check_out', '>=', self.date_from)]
+        return action

@@ -10,9 +10,7 @@ from odoo.tools import float_round, float_repr
 
 class LunchController(http.Controller):
     @http.route('/lunch/infos', type='json', auth='user')
-    def infos(self, user_id=None, context=None):
-        if context:
-            request.update_context(**context)
+    def infos(self, user_id=None):
         self._check_user_impersonification(user_id)
         user = request.env['res.users'].browse(user_id) if user_id else request.env.user
 
@@ -30,22 +28,15 @@ class LunchController(http.Controller):
                       'raw_state': line.state,
                       'state': translated_states[line.state],
                       'note': line.note} for line in lines.sorted('date')]
-            total = float_round(sum(line['price'] for line in lines), 2)
-            paid_subtotal = float_round(sum(line['price'] for line in lines if line['raw_state'] != 'new'), 2)
-            unpaid_subtotal = total - paid_subtotal
             infos.update({
-                'total': float_repr(total, 2),
-                'paid_subtotal': float_repr(paid_subtotal, 2),
-                'unpaid_subtotal': float_repr(unpaid_subtotal, 2),
+                'total': float_repr(float_round(sum(line['price'] for line in lines), 2), 2),
                 'raw_state': self._get_state(lines),
                 'lines': lines,
             })
         return infos
 
     @http.route('/lunch/trash', type='json', auth='user')
-    def trash(self, user_id=None, context=None):
-        if context:
-            request.update_context(**context)
+    def trash(self, user_id=None):
         self._check_user_impersonification(user_id)
         user = request.env['res.users'].browse(user_id) if user_id else request.env.user
 
@@ -55,9 +46,7 @@ class LunchController(http.Controller):
         lines.unlink()
 
     @http.route('/lunch/pay', type='json', auth='user')
-    def pay(self, user_id=None, context=None):
-        if context:
-            request.update_context(**context)
+    def pay(self, user_id=None):
         self._check_user_impersonification(user_id)
         user = request.env['res.users'].browse(user_id) if user_id else request.env.user
 
@@ -75,9 +64,7 @@ class LunchController(http.Controller):
         return {'message': request.env['ir.qweb']._render('lunch.lunch_payment_dialog', {})}
 
     @http.route('/lunch/user_location_set', type='json', auth='user')
-    def set_user_location(self, location_id=None, user_id=None, context=None):
-        if context:
-            request.update_context(**context)
+    def set_user_location(self, location_id=None, user_id=None):
         self._check_user_impersonification(user_id)
         user = request.env['res.users'].browse(user_id) if user_id else request.env.user
 
@@ -85,9 +72,7 @@ class LunchController(http.Controller):
         return True
 
     @http.route('/lunch/user_location_get', type='json', auth='user')
-    def get_user_location(self, user_id=None, context=None):
-        if context:
-            request.update_context(**context)
+    def get_user_location(self, user_id=None):
         self._check_user_impersonification(user_id)
         user = request.env['res.users'].browse(user_id) if user_id else request.env.user
 

@@ -7,10 +7,19 @@
         padding: 0;
     }
 
+    // Ensure width for size coherency
+    &:not(.btn-link) {
+        min-width: 100px;
+    }
+
     i {
-        &.fa-bell,&.fa-bell-o {
-            color: $o-gray-600;
-            -webkit-text-stroke-color: $o-gray-600;
+        &.fa-bell {
+            color: gold;
+            -webkit-text-stroke-width: 0.5px;
+            -webkit-text-stroke-color: black;
+        }
+        &.fa-bell-o {
+            color: black;
         }
     }
 }
@@ -36,7 +45,7 @@
             &.active {
                 td.active {
                     padding: 0em 0.5em;
-                    font-size: 0.81em;
+                    font-size: smaller;
                     border-top: 1px solid lighten($o-wevent-bg-color-base-contrast, 50%);
                 }
             }
@@ -90,7 +99,7 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                font-size: 0.55em;
+                font-size: xx-small;
                 padding: 0.2em 0.5em;
                 border-radius: 1em;
                 line-height: 10px;
@@ -125,6 +134,7 @@
                     width: 100%;
                     position: absolute;
                     top: 0;
+                    border-top: 1px solid lighten($o-wevent-bg-color-base-contrast, 50%);
                 }
                 &::after {
                     content: "";
@@ -155,6 +165,9 @@
  */
 .o_wevent_event {
     .o_we_track_day_header {
+        & > div > span.h1 {
+            font-size: xx-large;
+        }
         a.collapsed {
             transform: rotate(-90deg);
         }

@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { BUILTINS, EvaluationError, execOnIterable } from "./py_builtin";
+import { BUILTINS } from "./py_builtin";
 import {
     NotSupportedError,
     PyDate,
@@ -19,6 +19,8 @@ import { parseArgs } from "./py_parser";
 /**
  * @typedef { import("./py_parser").AST } AST
  */
+
+export class EvaluationError extends Error {}
 
 // -----------------------------------------------------------------------------
 // Constants and helpers
@@ -134,9 +136,6 @@ function isIn(left, right) {
     if (typeof right === "string" && typeof left === "string") {
         return right.includes(left);
     }
-    if (typeof right === "object") {
-        return left in right;
-    }
     return false;
 }
 
@@ -176,9 +175,6 @@ function applyBinaryOp(ast, context) {
                 } else {
                     throw NotSupportedError();
                 }
-            }
-            if (left instanceof Array && right instanceof Array) {
-                return [...left, ...right];
             }
 
             return left + right;
@@ -262,80 +258,6 @@ const DICT = {
     },
 };
 
-const STRING = {
-    lower(str) {
-        return () => str.toLowerCase();
-    },
-    upper(str) {
-        return () => str.toUpperCase();
-    },
-};
-
-function applyFunc(key, func, set, ...args) {
-    // we always receive at least one argument: kwargs (return fnValue(...args, kwargs); in FunctionCall case)
-    if (args.length === 1) {
-        return new Set(set);
-    }
-    if (args.length > 2) {
-        throw new EvaluationError(
-            `${key}: py_js supports at most 1 argument, got (${args.length - 1})`
-        );
-    }
-    return execOnIterable(args[0], func);
-}
-
-const SET = {
-    intersection(set) {
-        return (...args) => {
-            return applyFunc(
-                "intersection",
-                (iterable) => {
-                    const intersection = new Set();
-                    for (const i of iterable) {
-                        if (set.has(i)) {
-                            intersection.add(i);
-                        }
-                    }
-                    return intersection;
-                },
-                set,
-                ...args
-            );
-        };
-    },
-    difference(set) {
-        return (...args) => {
-            return applyFunc(
-                "difference",
-                (iterable) => {
-                    iterable = new Set(iterable);
-                    const difference = new Set();
-                    for (const e of set) {
-                        if (!iterable.has(e)) {
-                            difference.add(e);
-                        }
-                    }
-                    return difference;
-                },
-                set,
-                ...args
-            );
-        };
-    },
-    union(set) {
-        return (...args) => {
-            return applyFunc(
-                "union",
-                (iterable) => {
-                    return new Set([...set, ...iterable]);
-                },
-                set,
-                ...args
-            );
-        };
-    },
-};
-
 // -----------------------------------------------------------------------------
 // Evaluate function
 // -----------------------------------------------------------------------------
@@ -349,16 +271,14 @@ export function evaluate(ast, context = {}) {
     const dicts = new Set();
     let pyContext;
     const evalContext = Object.create(context);
-    if (!evalContext.context) {
-        Object.defineProperty(evalContext, "context", {
-            get() {
-                if (!pyContext) {
-                    pyContext = toPyDict(context);
-                }
-                return pyContext;
-            },
-        });
-    }
+    Object.defineProperty(evalContext, "context", {
+        get() {
+            if (!pyContext) {
+                pyContext = toPyDict(context);
+            }
+            return pyContext;
+        },
+    });
 
     /**
      * @param {AST} ast
@@ -438,15 +358,6 @@ export function evaluate(ast, context = {}) {
                 if (dicts.has(left) || Object.isPrototypeOf.call(PY_DICT, left)) {
                     // this is a dictionary => need to apply dict methods
                     return DICT[ast.key](left);
-                }
-                if (typeof left === "string") {
-                    return STRING[ast.key](left);
-                }
-                if (left instanceof Set) {
-                    return SET[ast.key](left);
-                }
-                if (ast.key == "get" && typeof left === "object") {
-                    return DICT[ast.key](toPyDict(left));
                 }
                 const result = left[ast.key];
                 if (typeof result === "function" && !isConstructor(result)) {

@@ -1,45 +1,41 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* hr_appraisal
-#
+# 
 # Translators:
 # Jorunn D. Newth, 2022
 # Mads Søndergaard, 2022
 # Marius Stedjan <marius@stedjan.com>, 2022
 # Martin Trigaux, 2022
 # Lars Aam <lars.aam@vikenfiber.no>, 2022
-# Henning Fyllingsnes, 2023
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
+"POT-Creation-Date: 2022-10-04 09:41+0000\n"
 "PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Henning Fyllingsnes, 2023\n"
-"Language-Team: Norwegian Bokmål (https://app.transifex.com/odoo/teams/41243/nb/)\n"
-"Language: nb\n"
+"Last-Translator: Lars Aam <lars.aam@vikenfiber.no>, 2022\n"
+"Language-Team: Norwegian Bokmål (https://www.transifex.com/odoo/teams/41243/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "%(user)s decided, as %(role)s, to publish the employee's feedback"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "%s Goals"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "1 Meeting"
@@ -57,7 +53,6 @@ msgstr "25%"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_res_config_settings__module_hr_appraisal_survey
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid "360 Feedback"
 msgstr ""
 
@@ -77,9 +72,9 @@ msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
 "                        An appraisal of <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t> has been confirmed.\n"
-"                        <br><br>\n"
+"                        <br/><br/>\n"
 "                        Please schedule an appraisal date together.\n"
-"                        <br><br>\n"
+"                        <br/><br/>\n"
 "                        <t t-if=\"ctx.get('recipient_users')\">\n"
 "                            <p style=\"margin: 16px 0px 16px 0px; text-align: center;\">\n"
 "                                <a t-att-href=\"ctx.get('url')\" style=\"background-color:#875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;\">\n"
@@ -98,7 +93,7 @@ msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
 "                        Dear <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t>,\n"
-"                        <br>\n"
+"                        <br/>\n"
 "                        <t t-out=\"ctx.get('author_name', '')\">Addison Olson</t> (<t t-out=\"ctx.get('author_mail', '')\">addison.olson28@example.com</t>) wishes an appraisal.\n"
 "                        <t t-if=\"ctx.get('user_body')\">\n"
 "                            <div style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; background-color: #F1F1F1;\">\n"
@@ -123,9 +118,9 @@ msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "                    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
 "                        Dear <t t-out=\"ctx.get('employee_to_name', 'employee')\">employee</t>,\n"
-"                        <br>\n"
+"                        <br/>\n"
 "                        An appraisal has been requested by <t t-out=\"ctx.get('author_name', '')\">Addison Olson</t>\n"
-"                        <br>\n"
+"                        <br/>\n"
 "                        (<t t-out=\"ctx.get('author_mail', '')\">addison.olson28@example.com</t>).\n"
 "                        <t t-if=\"ctx.get('user_body')\">\n"
 "                            <div style=\"margin: 16px 0px 16px 0px; padding: 8px 16px 8px 16px; background-color: #F1F1F1;\">\n"
@@ -139,162 +134,13 @@ msgid ""
 "                                </a>\n"
 "                            </p>\n"
 "                        </t>\n"
-"                        <br>\n"
+"                        <br/>\n"
 "                    </p>\n"
 "                </div>\n"
 "            "
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>\n"
-"                Describe something that made you proud, a piece of work positive for\n"
-"                the company.\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>\n"
-"                Did you face new difficulties? Did you confront yourself to new\n"
-"                obstacles?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>\n"
-"                Every job has strong points, what are, in your opinion, the tasks that\n"
-"                you enjoy the most/the least?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<em>\n"
-"                From a manager point of view, how could you help the employee to\n"
-"                overcome their weaknesses?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>\n"
-"                How can the company help you with your need and objectives in order\n"
-"                for you to reach your goals and look for the best collaboration.\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<em>\n"
-"                How do you see the employee in the future, do your vision follow the\n"
-"                employee's desire?\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<em>\n"
-"                Some achievements comforting you in their strengths to face job's\n"
-"                issues.\n"
-"            </em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Autonomy</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Culture/Behavior:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-1\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Do you need rapid answer to the current situation?</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "<em>Give an example of long-term objective (&gt; 6 months)</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "<em>Give an example of short-term objective (&lt; 6 months)</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Internal Communication:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-2\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Job's content:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-3\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Pro-activity</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Remuneration:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-5\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Stress Resistance</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Teamwork</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "<em>Time Management</em>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<em>Work organization:</em>\n"
-"                <span class=\"o_stars o_five_stars\" id=\"checkId-4\">\n"
-"                    <i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/><i class=\"fa fa-star-o\" contenteditable=\"false\"/>\n"
-"                </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_employee_base.py:0
 #, python-format
 msgid ""
@@ -303,6 +149,43 @@ msgid ""
 "                        </p><p>\n"
 "                            Plan appraisals with your colleagues, collect and discuss feedback.\n"
 "                        </p>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "<span class=\"bg-info\">Ready</span>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "<span class=\"bg-secondary\">Canceled</span>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_kanban
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "<span class=\"bg-success\">Done</span>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid ""
+"<span class=\"o_form_label\">360 Feedback</span>\n"
+"                                <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid ""
+"<span class=\"o_form_label\">Appraisals Plans</span>\n"
+"                                <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid ""
+"<span class=\"o_form_label\">Feedback Templates</span>\n"
+"                                <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 
 #. module: hr_appraisal
@@ -325,81 +208,17 @@ msgid "<span class=\"o_stat_text\">Goals</span>"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-info\">Ready</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-secondary\">Canceled</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_kanban
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
-msgid "<span class=\"text-bg-success\">Done</span>"
-msgstr ""
-
-#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 msgid ""
 "<span class=\"text-end\" attrs=\"{'invisible': ['|', ('manager_feedback_published', '=', True), ('can_see_manager_publish', '=', False)]}\">Not Visible to Employee</span>\n"
-"                                                <span class=\"text-end\" attrs=\"{'invisible': ['|', ('manager_feedback_published', '=', False), ('can_see_manager_publish', '=', False)]}\">Visible to Employee</span>"
+"                                            <span class=\"text-end\" attrs=\"{'invisible': ['|', ('manager_feedback_published', '=', False), ('can_see_manager_publish', '=', False)]}\">Visible to Employee</span>"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 msgid ""
 "<span class=\"text-end\" attrs=\"{'invisible': [('employee_feedback_published', '=', True)]}\">Not Visible to Manager</span>\n"
-"                                                <span class=\"text-end\" attrs=\"{'invisible': [('employee_feedback_published', '=', False)]}\">Visible to Manager</span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Evaluation\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Feedback\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                Improvements\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My feelings\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My future\n"
-"            </span>"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"<span style=\"font-weight: bolder;\">\n"
-"                My work\n"
-"            </span>"
+"                                            <span class=\"text-end\" attrs=\"{'invisible': [('employee_feedback_published', '=', False)]}\">Visible to Manager</span>"
 msgstr ""
 
 #. module: hr_appraisal
@@ -459,6 +278,11 @@ msgid "Administrator"
 msgstr "Administrator"
 
 #. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+msgid "Application Settings"
+msgstr ""
+
+#. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action
 #: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree2
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__appraisal_ids
@@ -473,7 +297,6 @@ msgstr ""
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.action_appraisal_report_all
 #: model:ir.ui.menu,name:hr_appraisal.menu_appraisal_analysis_report
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_report_view_form
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_report_view_tree
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_graph
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_pivot
@@ -514,7 +337,6 @@ msgid "Appraisal Employee Feedback Template"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Appraisal Form to Fill"
@@ -532,7 +354,6 @@ msgid "Appraisal Manager Feedback Template"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Appraisal Officer"
@@ -544,7 +365,7 @@ msgid "Appraisal Plan Posted"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Appraisal Request"
@@ -572,14 +393,19 @@ msgid "Appraisal Templates"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Appraisal of %s"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#, python-format
+msgid "Appraisal reopened"
+msgstr ""
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/res_company.py:0
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
 msgid "Appraisal to Confirm and Send"
@@ -592,6 +418,8 @@ msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.actions.server,name:hr_appraisal.ir_cron_scheduler_appraisal_ir_actions_server
+#: model:ir.cron,cron_name:hr_appraisal.ir_cron_scheduler_appraisal
+#: model:ir.cron,name:hr_appraisal.ir_cron_scheduler_appraisal
 msgid "Appraisal: Run employee appraisal"
 msgstr ""
 
@@ -604,11 +432,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
 msgid "Appraisals"
 msgstr "Ansattvurderinger"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "Appraisals Plans"
-msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_department__appraisals_to_process_count
@@ -627,7 +450,6 @@ msgid "Ask to fill a survey to other employees"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Assessment"
@@ -676,11 +498,6 @@ msgid "Basic Employee"
 msgstr ""
 
 #. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__body_has_template_value
-msgid "Body content is the same as tmeplate"
-msgstr ""
-
-#. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_calendar_event
 msgid "Calendar Event"
 msgstr "Kalenderhendelse"
@@ -721,6 +538,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:hr_appraisal.selection__hr_appraisal_report__state__cancel
 msgid "Cancelled"
 msgstr "Kansellert"
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid "Chat"
+msgstr "Chat"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report__color
@@ -834,7 +656,9 @@ msgstr "Dato"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__date_close
-msgid "Date of the appraisal, automatically updated when the appraisal is Done or Cancelled."
+msgid ""
+"Date of the appraisal, automatically updated when the appraisal is Done or "
+"Cancelled."
 msgstr ""
 
 #. module: hr_appraisal
@@ -850,7 +674,6 @@ msgid "Deadline:"
 msgstr "Frist:"
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal_goal.py:0
 #, python-format
 msgid "Deadline: %s"
@@ -897,6 +720,11 @@ msgstr "Visningsnavn"
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
 msgid "Done"
 msgstr "Fullført"
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_kanban
+msgid "Dropdown menu"
+msgstr "Nedtrekksmeny"
 
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_hr_employee
@@ -949,6 +777,11 @@ msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Employee's"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
 msgid "Employee's Feedback"
 msgstr ""
 
@@ -960,7 +793,6 @@ msgid "Evaluation Scale"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
 msgid "Exceeds expectations"
@@ -977,7 +809,6 @@ msgid "Feedback Templates"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Fill appraisal for %s"
@@ -1017,16 +848,14 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Font Awesome-ikon, for eksempel fa-tasks"
 
 #. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__email_from
+msgid "From"
+msgstr "Fra"
+
+#. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_search
 msgid "Future Activities"
 msgstr "Fremtidige aktiviteter"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"Give one positive achievement that convinced you of the employee's\n"
-"            value."
-msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_goal_view_form
@@ -1072,21 +901,6 @@ msgid "Has Message"
 msgstr "Har melding"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "How could the employee improve?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "How do I feel about my own..."
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "How do I feel about the company..."
-msgstr ""
-
-#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note__id
@@ -1115,7 +929,9 @@ msgstr "Hvis haket av, vil nye meldinger kreve din oppmerksomhet."
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_has_error
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__message_has_sms_error
 #: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_has_error
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Hvis haket av, har enkelte meldinger leveringsfeil."
 
@@ -1188,11 +1004,19 @@ msgid "Last Appraisal Date"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Last Meeting"
 msgstr ""
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_note____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_report____last_update
+#: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal____last_update
+msgid "Last Modified on"
+msgstr "Sist endret"
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__write_uid
@@ -1222,19 +1046,17 @@ msgid "Late Activities"
 msgstr "Forsinkede aktiviteter"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid ""
-"Long term (&gt; 6 months) career discussion, where does the employee\n"
-"            wants to go, how to help them reach this path?"
-msgstr ""
-
-#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_request_appraisal__template_id
 msgid "Mail Template"
 msgstr "E-postmal"
 
 #. module: hr_appraisal
-#. odoo-python
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_main_attachment_id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Hovedvedlegg"
+
+#. module: hr_appraisal
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__manager_ids
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__manager_id
@@ -1292,7 +1114,6 @@ msgid "Meetings"
 msgstr "Møter"
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
 msgid "Meets expectations"
@@ -1314,7 +1135,7 @@ msgstr "Meldinger"
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__my_activity_date_deadline
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "MIn aktivitets tidsfrist"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action_my
@@ -1335,7 +1156,6 @@ msgid "Name"
 msgstr "Navn"
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
 msgid "Needs improvement"
@@ -1345,7 +1165,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_calendar_event_id
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Neste kalender aktivitet"
+msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__activity_date_deadline
@@ -1372,21 +1192,18 @@ msgid "Next Appraisal Date"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Next Meeting"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "No Meeting"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Note"
@@ -1418,7 +1235,7 @@ msgstr "Antall meldinger med leveringsfeil"
 
 #. module: hr_appraisal
 #: model:res.groups,name:hr_appraisal.group_hr_appraisal_user
-msgid "Officer: Access all appraisals"
+msgid "Officer : Access all appraisals"
 msgstr ""
 
 #. module: hr_appraisal
@@ -1427,7 +1244,6 @@ msgid "Ongoing Appraisal Count"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal_goal.py:0
 #, python-format
 msgid "Operation not supported"
@@ -1435,7 +1251,11 @@ msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_request_appraisal__lang
-msgid "Optional translation language (ISO code) to select when sending out an email. If not set, the english version will be used. This should usually be a placeholder expression that provides the appropriate language, e.g. {{ object.partner_id.lang }}."
+msgid ""
+"Optional translation language (ISO code) to select when sending out an "
+"email. If not set, the english version will be used. This should usually be "
+"a placeholder expression that provides the appropriate language, e.g. {{ "
+"object.partner_id.lang }}."
 msgstr ""
 
 #. module: hr_appraisal
@@ -1457,7 +1277,6 @@ msgid "Plan appraisals with your colleagues, collect and discuss feedback."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Previous Appraisals"
@@ -1482,12 +1301,6 @@ msgstr "Fremdrift"
 #. module: hr_appraisal
 #: model:ir.model,name:hr_appraisal.model_hr_employee_public
 msgid "Public Employee"
-msgstr ""
-
-#. module: hr_appraisal
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__rating_ids
-#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__rating_ids
-msgid "Ratings"
 msgstr ""
 
 #. module: hr_appraisal
@@ -1547,6 +1360,12 @@ msgid "Responsible User"
 msgstr "Ansvarlig bruker"
 
 #. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__message_has_sms_error
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Leveringsfeil"
+
+#. module: hr_appraisal
 #: model_terms:ir.actions.act_window,help:hr_appraisal.open_view_hr_appraisal_tree
 msgid "Schedule an appraisal"
 msgstr ""
@@ -1573,12 +1392,14 @@ msgstr "Send med e-post"
 
 #. module: hr_appraisal
 #: model:mail.template,description:hr_appraisal.mail_template_appraisal_confirm
-msgid "Sent automatically to both employee and manager when appraisal is confirmed"
+msgid ""
+"Sent automatically to both employee and manager when appraisal is confirmed"
 msgstr ""
 
 #. module: hr_appraisal
 #: model:mail.template,description:hr_appraisal.mail_template_appraisal_request_from_employee
-msgid "Sent manually to the employee by the manager who wants to do an appraisal"
+msgid ""
+"Sent manually to the employee by the manager who wants to do an appraisal"
 msgstr ""
 
 #. module: hr_appraisal
@@ -1596,11 +1417,6 @@ msgstr "Sekvens"
 #: model:ir.ui.menu,name:hr_appraisal.hr_appraisal_menu_configuration
 msgid "Settings"
 msgstr "Innstillinger"
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_manager_feedback
-msgid "Short term (6-months) actions / decisions / objectives"
-msgstr ""
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__show_employee_feedback_full
@@ -1639,7 +1455,6 @@ msgstr ""
 "Planlagt: Fremtidige aktiviteter."
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
 msgid "Strongly Exceed Expectations"
@@ -1656,21 +1471,20 @@ msgid "Subject..."
 msgstr "Emne..."
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Such grouping is not allowed."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
-msgid "Thanks to your Appraisal Plan, without any new manual Appraisal, the new Appraisal will be automatically created on %s."
+msgid ""
+"Thanks to your Appraisal Plan, without any new manual Appraisal, the new "
+"Appraisal will be automatically created on %s."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "The appraisal's status has been set to Done by %s"
@@ -1691,7 +1505,9 @@ msgstr ""
 #. module: hr_appraisal
 #: model:ir.model.fields,help:hr_appraisal.field_hr_employee__next_appraisal_date
 #: model:ir.model.fields,help:hr_appraisal.field_res_users__next_appraisal_date
-msgid "The date of the next appraisal is computed by the appraisal plan's dates (first appraisal + periodicity)."
+msgid ""
+"The date of the next appraisal is computed by the appraisal plan's dates "
+"(first appraisal + periodicity)."
 msgstr ""
 
 #. module: hr_appraisal
@@ -1700,28 +1516,29 @@ msgid "The duration time must be bigger or equal to 1 month."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
-msgid "The employee %s arrived %s months ago. An appraisal for %s is created. You can assess %s & determinate the date for '1to1' meeting before %s."
+msgid ""
+"The employee %s arrived %s months ago. An appraisal for %s is created. You "
+"can assess %s & determinate the date for '1to1' meeting before %s."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "The employee feedback cannot be changed by managers."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-javascript
+#. openerp-web
 #: code:addons/hr_appraisal/static/src/fields/boolean_confirm.js:0
 #, python-format
-msgid "The employee's feedback will be published without their consent. Do you really want to publish it? This action will be logged in the chatter."
+msgid ""
+"The employee's feedback will be published without their consent. Do you "
+"really want to publish it? This action will be logged in the chatter."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "The manager feedback cannot be changed by an employee."
@@ -1760,13 +1577,19 @@ msgid "Type of the exception activity on record."
 msgstr "Type unntaks-aktivitet på posten."
 
 #. module: hr_appraisal
+#: code:addons/hr_appraisal/wizard/request_appraisal.py:0
+#, python-format
+msgid "Unable to post message, please configure the sender's email address."
+msgstr ""
+
+#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__uncomplete_goals_count
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee__uncomplete_goals_count
 msgid "Uncomplete Goals Count"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
+#: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "Unpublished"
@@ -1789,67 +1612,47 @@ msgid "Waiting Feedback from Employee/Managers"
 msgstr ""
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "What are my best achievement(s) since my last appraisal?"
-msgstr ""
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal__website_message_ids
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_goal__website_message_ids
+msgid "Website Messages"
+msgstr "Meldinger fra nettsted"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"What are my short and long-term goals with the company, and for my\n"
-"            carreer?"
-msgstr ""
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal__website_message_ids
+#: model:ir.model.fields,help:hr_appraisal.field_hr_appraisal_goal__website_message_ids
+msgid "Website communication history"
+msgstr " Kommunikasjonshistorikk for nettsted"
 
 #. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid ""
-"What has been the most challenging aspect of my work this past year and\n"
-"            why?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "What would I need to improve my work?"
-msgstr ""
-
-#. module: hr_appraisal
-#: model_terms:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_employee_feedback
-msgid "Which parts of my job do I most / least enjoy?"
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
-msgid "You arrived %s months ago. Your appraisal is created you can assess yourself here. Your manager will determinate the date for your '1to1' meeting."
+msgid ""
+"You arrived %s months ago. Your appraisal is created you can assess yourself"
+" here. Your manager will determinate the date for your '1to1' meeting."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/hr_appraisal.py:0
 #, python-format
 msgid "You cannot delete appraisal which is not in draft or canceled state"
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/hr_appraisal.py:0
+#: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
-msgid "Your Appraisal has been completed"
+msgid ""
+"Your employee's last appraisal was %s months ago. An appraisal for %s is "
+"created. You can assess %s & determinate the date for '1to1' meeting before "
+"%s."
 msgstr ""
 
 #. module: hr_appraisal
-#. odoo-python
 #: code:addons/hr_appraisal/models/res_company.py:0
 #, python-format
-msgid "Your employee's last appraisal was %s months ago. An appraisal for %s is created. You can assess %s & determinate the date for '1to1' meeting before %s."
-msgstr ""
-
-#. module: hr_appraisal
-#. odoo-python
-#: code:addons/hr_appraisal/models/res_company.py:0
-#, python-format
-msgid "Your last appraisal was %s months ago. Your appraisal is created you can assess yourself here. Your manager will determinate the date for your '1to1' meeting."
+msgid ""
+"Your last appraisal was %s months ago. Your appraisal is created you can "
+"assess yourself here. Your manager will determinate the date for your '1to1'"
+" meeting."
 msgstr ""
 
 #. module: hr_appraisal
@@ -1864,12 +1667,12 @@ msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "months after recruitment, then after"
+msgid "months after recruitment,"
 msgstr ""
 
 #. module: hr_appraisal
 #: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
-msgid "months, then every"
+msgid "months,"
 msgstr ""
 
 #. module: hr_appraisal
@@ -1893,8 +1696,19 @@ msgid "text-danger"
 msgstr ""
 
 #. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "then after"
+msgstr ""
+
+#. module: hr_appraisal
+#: model_terms:ir.ui.view,arch_db:hr_appraisal.res_config_settings_view_employee_form
+msgid "then every"
+msgstr ""
+
+#. module: hr_appraisal
 #: model:mail.template,subject:hr_appraisal.mail_template_appraisal_request_from_employee
-msgid "{{ hasattr(object, 'name') and object.name or '' }} requests an Appraisal"
+msgid ""
+"{{ hasattr(object, 'name') and object.name or '' }} requests an Appraisal"
 msgstr ""
 
 #. module: hr_appraisal

@@ -14,7 +14,7 @@ appointment_type = {
         7: .15,
         8: .1
     },
-    "assign_method": {"time_auto_assign": 0.8, "resource_time": 0.2},
+    "assign_method": {"random": 0.8, "chosen": 0.2},
     "max_schedule_days": {
         15: .7,
         30: .15,

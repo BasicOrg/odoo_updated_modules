@@ -7,8 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='use_payment_terminal']" position="after">
                 <field name="six_terminal_ip"
-                    invisible="use_payment_terminal != 'six'"
-                    required="use_payment_terminal == 'six'"/>
+                    attrs="{'invisible': [('use_payment_terminal', '!=', 'six')], 'required': [('use_payment_terminal', '=', 'six')]}"/>
             </xpath>
         </field>
     </record>

@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website_event_track.website_event_track', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.websiteEventTrack = publicWidget.Widget.extend({
     selector: '.o_wevent_event',
@@ -46,4 +47,5 @@ publicWidget.registry.websiteEventTrack = publicWidget.Widget.extend({
             $tracks.removeClass('invisible')
         }
     },
+});
 });

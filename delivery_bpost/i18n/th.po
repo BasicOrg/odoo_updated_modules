@@ -3,16 +3,17 @@
 # 	* delivery_bpost
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2021-07-12 07:56+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -35,7 +36,6 @@ msgid "Allow deliveries on Saturday (extra charges apply)"
 msgstr "อนุญาตให้จัดส่งในวันเสาร์ (มีค่าบริการเพิ่มเติม)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -62,6 +62,7 @@ msgstr "ประเภทการจัดส่งภายใน Bpost"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_domestic
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_domestic
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
 msgid "Bpost Domestic bpack 24h Pro"
 msgstr "จัดส่งภายในประเทศ 24ช.ม Bpost bpack Pro"
@@ -98,6 +99,7 @@ msgstr "ประเภทการจัดส่ง Bpost"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_inter
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_world
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_world_product_template
 msgid "Bpost World Express Pro"
 msgstr "Bpost World Express Pro"
@@ -173,7 +175,6 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Packages over 30 Kg are not accepted by bpost."
@@ -185,7 +186,6 @@ msgid "Passphrase"
 msgstr "ข้อความรหัส"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
@@ -197,18 +197,17 @@ msgid "Provider"
 msgstr "ผู้ให้บริการ"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return labels created into bpost"
-msgstr ""
+msgid ""
+"Return labels created into bpost <br/> <b>Tracking Numbers: </b><br/>%s"
+msgstr "การส่งคืนฉลากถูกสร้างภายใน bpost <br/> <b>เลขที่ติดตาม: </b><br/>%s"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return shipment created into bpost"
-msgstr ""
+msgid "Return shipment created into bpost <br/> <b>Tracking Number : </b>%s"
+msgstr "การจัดส่งคืนถูกสร้างภายใน bpost <br/> <b>เลขที่ติดตาม : </b>%s"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_parcel_return_instructions__rta
@@ -226,18 +225,16 @@ msgid "SAMPLE"
 msgstr "ตัวอย่าง"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "Shipment #%s has been cancelled"
 msgstr "การจัดส่ง #%s ถูกยกเลิก"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment created into bpost"
-msgstr ""
+msgid "Shipment created into bpost <br/> <b>Tracking Links</b> <br/>%s"
+msgstr "การจัดส่งถูกสร้างภายใน bpost <br/> <b>ลิงก์ติดตาม</b> <br/>%s"
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_delivery_carrier
@@ -250,14 +247,12 @@ msgid "Stock package type"
 msgstr "ประเภทของสต๊อกบรรจุภัณฑ์"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "The BPost shipping service is unresponsive, please retry later."
 msgstr "บริการจัดส่งของ BPost ไม่ตอบสนอง โปรดลองอีกครั้งในภายหลัง"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -268,7 +263,6 @@ msgstr ""
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -278,7 +272,6 @@ msgstr ""
 "ไม่สามารถคำนวณราคาจัดส่งโดยประมาณได้เนื่องจากสินค้าทั้งหมดของคุณเป็นบริการ"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -289,7 +282,6 @@ msgstr ""
 " %s"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -300,35 +292,20 @@ msgstr ""
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Links"
-msgstr ""
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_domestic
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_world
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_world_product_template
+msgid "Units"
+msgstr "หน่วย"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Numbers:"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "You cannot compute a passphrase for non-bpost carriers."
 msgstr "คุณไม่สามารถคำนวณข้อความรหัสผ่านสำหรับผู้ให้บริการที่ไม่ใช่ bpost"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Your company/warehouse address must be in Belgium to ship with bpost"
@@ -381,7 +358,6 @@ msgid "bpost Default Package Type"
 msgstr "bpost ประเภทบรรจุภัณฑ์เริ่มต้น"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -392,7 +368,6 @@ msgstr ""
 "กรุณาเปลี่ยนวิธีการจัดส่งเป็น bpost ภายนอกประเทศ"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -409,7 +384,6 @@ msgid "bpost Shipping Methods"
 msgstr "วิธีการการจัดส่ง bpost "
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "bpost did not return prices for this destination country."

@@ -5,6 +5,7 @@
     'summary': 'Environment, Nature, Ecology, Sustainable Development, Non Profit, NGO, Travels',
     'sequence': 140,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
@@ -27,7 +28,6 @@
         'views/snippets/s_text_image.xml',
         'views/snippets/s_three_columns.xml',
         'views/snippets/s_title.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/treehouse_cover.jpg',
@@ -41,13 +41,8 @@
         'website.s_three_columns_default_image_2': '/theme_treehouse/static/src/img/content/three_columns_02.jpg',
         'website.s_three_columns_default_image_3': '/theme_treehouse/static/src/img/content/three_columns_03.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_text_image', 's_title', 's_three_columns', 's_call_to_action'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-treehouse.odoo.com',

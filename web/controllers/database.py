@@ -6,13 +6,18 @@ import os
 import re
 import tempfile
 
+import werkzeug
+import werkzeug.exceptions
+import werkzeug.utils
+import werkzeug.wrappers
+import werkzeug.wsgi
 from lxml import html
 
 import odoo
 import odoo.modules.registry
 from odoo import http
-from odoo.http import content_disposition, dispatch_rpc, request, Response
-from odoo.service import db
+from odoo.http import content_disposition, request
+from odoo.service import db, dispatch_rpc
 from odoo.tools.misc import file_open, str2bool
 from odoo.tools.translate import _
 
@@ -75,7 +80,7 @@ class Database(http.Controller):
             dispatch_rpc('db', 'change_admin_password', ["admin", master_pwd])
         try:
             if not re.match(DBNAME_PATTERN, name):
-                raise Exception(_('Houston, we have a database naming issue! Make sure you only use letters, numbers, underscores, hyphens, or dots in the database name, and you\'ll be golden.'))
+                raise Exception(_('Invalid database name. Only alphanumerical characters, underscore, hyphen and dot are allowed.'))
             # country code could be = "False" which is actually True in python
             country_code = post.get('country_code') or False
             dispatch_rpc('db', 'create_database', [master_pwd, name, bool(post.get('demo')), lang, password, post['login'], country_code, post['phone']])
@@ -88,14 +93,14 @@ class Database(http.Controller):
         return self._render_template(error=error)
 
     @http.route('/web/database/duplicate', type='http', auth="none", methods=['POST'], csrf=False)
-    def duplicate(self, master_pwd, name, new_name, neutralize_database=False):
+    def duplicate(self, master_pwd, name, new_name):
         insecure = odoo.tools.config.verify_admin_password('admin')
         if insecure and master_pwd:
             dispatch_rpc('db', 'change_admin_password', ["admin", master_pwd])
         try:
             if not re.match(DBNAME_PATTERN, new_name):
-                raise Exception(_('Houston, we have a database naming issue! Make sure you only use letters, numbers, underscores, hyphens, or dots in the database name, and you\'ll be golden.'))
-            dispatch_rpc('db', 'duplicate_database', [master_pwd, name, new_name, neutralize_database])
+                raise Exception(_('Invalid database name. Only alphanumerical characters, underscore, hyphen and dot are allowed.'))
+            dispatch_rpc('db', 'duplicate_database', [master_pwd, name, new_name])
             if request.db == name:
                 request.env.cr.close()  # duplicating a database leads to an unusable cursor
             return request.redirect('/web/database/manager')
@@ -111,6 +116,8 @@ class Database(http.Controller):
             dispatch_rpc('db', 'change_admin_password', ["admin", master_pwd])
         try:
             dispatch_rpc('db', 'drop', [master_pwd, name])
+            if request.db == name:
+                request.env.cr._closed = True  # the underlying connection was closed
             if request.session.db == name:
                 request.session.logout()
             return request.redirect('/web/database/manager')
@@ -133,7 +140,7 @@ class Database(http.Controller):
                 ('Content-Disposition', content_disposition(filename)),
             ]
             dump_stream = odoo.service.db.dump_db(name, None, backup_format)
-            response = Response(dump_stream, headers=headers, direct_passthrough=True)
+            response = werkzeug.wrappers.Response(dump_stream, headers=headers, direct_passthrough=True)
             return response
         except Exception as e:
             _logger.exception('Database.backup')
@@ -141,7 +148,7 @@ class Database(http.Controller):
             return self._render_template(error=error)
 
     @http.route('/web/database/restore', type='http', auth="none", methods=['POST'], csrf=False)
-    def restore(self, master_pwd, backup_file, name, copy=False, neutralize_database=False):
+    def restore(self, master_pwd, backup_file, name, copy=False):
         insecure = odoo.tools.config.verify_admin_password('admin')
         if insecure and master_pwd:
             dispatch_rpc('db', 'change_admin_password', ["admin", master_pwd])
@@ -150,7 +157,7 @@ class Database(http.Controller):
             db.check_super(master_pwd)
             with tempfile.NamedTemporaryFile(delete=False) as data_file:
                 backup_file.save(data_file)
-            db.restore_db(name, data_file.name, str2bool(copy), neutralize_database)
+            db.restore_db(name, data_file.name, str2bool(copy))
             return request.redirect('/web/database/manager')
         except Exception as e:
             error = "Database restore error: %s" % (str(e) or repr(e))

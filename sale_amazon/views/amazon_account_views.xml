@@ -20,35 +20,20 @@
         <field name="model">amazon.account</field>
         <field name="arch" type="xml">
             <form string="Amazon Account">
-                <header invisible="not id">
-                    <button name="action_recover_order"
-                            string="Recover Order"
-                            type="object"
-                            class="btn-secondary"
-                            groups="base.group_no_one"/>
+                <header attrs="{'invisible': [('id', '=', False)]}">
                     <button name="action_sync_orders"
                             string="Sync Orders"
                             type="object"
                             class="btn-secondary"
                             groups="base.group_no_one"/>
                     <button name="action_sync_pickings"
-                            string="Sync Deliveries"
-                            type="object"
-                            class="btn-secondary"
-                            groups="base.group_no_one"/>
-                    <button name="action_sync_inventory"
-                            string="Sync FBM Inventory"
-                            type="object"
-                            class="btn-secondary"
-                            groups="base.group_no_one"/>
-                    <button name="action_sync_feeds_status"
-                            string="Sync Feeds Status"
+                            string="Sync Pickings"
                             type="object"
                             class="btn-secondary"
                             groups="base.group_no_one"/>
                 </header>
                 <sheet>
-                    <field name="company_id" invisible="1" force_save="1"/>
+                    <field name="company_id" invisible="1"/>
                     <field name="available_marketplace_ids" invisible="1"/>
                     <field name="is_follow_up_displayed" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
@@ -56,25 +41,16 @@
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-amazon"
-                                invisible="not id">
+                                attrs="{'invisible': [('id', '=', False)]}">
                             <field name="offer_count" widget="statinfo" string="Offers"/>
                         </button>
                         <button name="action_view_orders"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-dollar"
-                                invisible="not id">
+                                attrs="{'invisible': [('id', '=', False)]}">
                             <field name="order_count" widget="statinfo" string="Orders"/>
                         </button>
-                    </div>
-                    <field name="refresh_token" invisible="1"/>
-                    <div class="badge rounded-pill text-bg-warning fs-6 float-end"
-                         invisible="not id or refresh_token">
-                        Unlinked Account
-                    </div>
-                    <div class="badge rounded-pill text-bg-success fs-6 float-end"
-                         invisible="not refresh_token">
-                        Linked Account
                     </div>
                     <div class="oe_title" id="title">
                         <label for="name" string="Account Name"/>
@@ -84,16 +60,17 @@
                     </div>
                     <notebook>
                         <page string="Credentials" name="credentials">
+                            <field name="refresh_token" invisible="1"/>
                             <p class="text-muted"
-                               invisible="refresh_token">
+                               attrs="{'invisible': [('refresh_token', '!=', False)]}">
                                 Link your Amazon account with Odoo to start synchronizing your
                                 Amazon orders.
                             </p>
                             <p class="text-muted"
-                               invisible="not refresh_token">
+                               attrs="{'invisible': [('refresh_token', '=', False)]}">
                                 Your Amazon account is linked with Odoo.
                             </p>
-                            <group invisible="id">
+                            <group attrs="{'invisible': [('id', '!=', False)]}">
                                 <group>
                                     <label for="base_marketplace_id"/>
                                     <div>
@@ -102,7 +79,7 @@
                                         <div class="text-muted">
                                             <br/>
                                             <p>Select the marketplace on which your seller account
-                                                was initially created.</p>
+                                                was originally created.</p>
                                             <p>After validation of the credentials, the marketplaces
                                                 to which this account has access will be
                                                 synchronized and automatically made available.</p>
@@ -113,31 +90,32 @@
                             <group>
                                 <group>
                                     <field name="base_marketplace_id"
+                                           readonly="True"
                                            force_save="True"
                                            groups="base.group_no_one"
-                                           readonly="True"
-                                           invisible="not id"
+                                           attrs="{'invisible': [('id', '=', False)]}"
                                            options="{'no_open': True, 'no_create': True}"/>
                                 </group>
                             </group>
-                            <div invisible="not id">
+                            <div attrs="{'invisible': [('id', '=', False)]}">
                             <button string="Link with Amazon"
                                 type="object"
                                 name="action_redirect_to_oauth_url"
                                 class="btn-primary"
-                                invisible="refresh_token"/>
+                                attrs="{'invisible': [('refresh_token', '!=', False)]}"/>
                             <button string="Unlink account"
                                 type="object"
                                 name="action_reset_refresh_token"
                                 class="btn-secondary ps-0"
                                 groups="base.group_no_one"
-                                invisible="not refresh_token"
+                                attrs="{'invisible': [('refresh_token', '=', False)]}"
                                 confirm="This action will disconnect your account with Amazon and
                                          cannot be undone. Are you sure you want to proceed?"/>
                             </div>
                         </page>
                         <page string="Marketplaces"
-                              name="marketplaces" invisible="not id or not refresh_token">
+                              name="marketplaces" attrs="{'invisible': [
+                              '|', ('id', '=', False), ('refresh_token', '=', False)]}">
                             <group>
                                 <label for="active_marketplace_ids"/>
                                 <div>
@@ -157,27 +135,24 @@
                         </page>
                         <page string="Order Follow-up"
                               name="follow_up"
-                              invisible="not is_follow_up_displayed">
+                              attrs="{'invisible': [('is_follow_up_displayed', '=', False)]}">
                             <group>
                                 <group>
                                     <field name="user_id"
-                                           invisible="not id"
-                                           required="id"/>
+                                           attrs="{'required': [('id', '!=', False)],
+                                           'invisible': [('id', '=', False)]}"/>
                                     <field name="team_id"
-                                           invisible="not id"
-                                           required="id"/>
+                                           attrs="{'required': [('id', '!=', False)],
+                                           'invisible': [('id', '=', False)]}"/>
                                     <field name="company_id"
                                            groups="base.group_multi_company"
-                                           force_save="1"
                                            options="{'no_create_edit': True, 'no_open': True}"/>
                                     <field name="location_id"
                                            groups="stock.group_stock_multi_locations"
-                                           invisible="not id"
-                                           required="id"/>
+                                           attrs="{'required': [('id', '!=', False)],
+                                           'invisible': [('id', '=', False)]}"/>
                                     <field name="active"
-                                           invisible="not id"/>
-                                    <field name="synchronize_inventory"
-                                           invisible="not id"/>
+                                           attrs="{'invisible': [('id', '=', False)]}"/>
                                     <field name="last_orders_sync" groups="base.group_no_one"/>
                                 </group>
                             </group>

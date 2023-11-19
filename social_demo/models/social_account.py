@@ -32,12 +32,17 @@ class DemoSocialAccount(models.Model):
         """ Overridden to bypass third-party API calls. """
         return
 
-    def twitter_get_user_by_username(self, query):
-        """ Returns some fake suggestion """
-        partner = self.env.ref('social_demo.res_partner_2', raise_if_not_found=False)
-        return {
-            'name': partner.name,
-            'profile_image_url': f'/web/image/res.partner/{partner.id}/avatar_128',
-            'username': partner.name.replace(' ', '').lower(),
-            'description': "https://example.com",
-        }
+    def twitter_search_users(self, query):
+        """ Returns some fake suggestions """
+        res_partners = [
+            self.env.ref('social_demo.res_partner_2', raise_if_not_found=False),
+            self.env.ref('social_demo.res_partner_3', raise_if_not_found=False),
+            self.env.ref('social_demo.res_partner_4', raise_if_not_found=False)
+        ]
+        return [{
+            'name': res_partner.name,
+            'profile_image_url_https': '/web/image/res.partner/%s/avatar_128' % res_partner.id,
+            'screen_name': res_partner.name.replace(' ', '').lower(),
+            'description': res_partner.website
+
+        } for res_partner in res_partners if res_partner]

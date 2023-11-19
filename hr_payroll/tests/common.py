@@ -105,7 +105,7 @@ class TestPayslipBase(TransactionCase):
             'sequence': 16,
             'amount_select': 'fix',
             'amount_fix': 10,
-            'quantity': "'WORK100' in worked_days and worked_days['WORK100'].number_of_days",
+            'quantity': 'worked_days.WORK100 and worked_days.WORK100.number_of_days',
             'code': 'MA',
             'category_id': cls.env.ref('hr_payroll.ALW').id,
             'struct_id': cls.developer_pay_structure.id,
@@ -115,8 +115,8 @@ class TestPayslipBase(TransactionCase):
             'name': 'Sum of Allowance category',
             'sequence': 99,
             'amount_select': 'code',
-            'amount_python_compute': "result = payslip._sum_category('ALW', payslip.date_from, to_date=payslip.date_to)",
-            'quantity': "'WORK100' in worked_days and worked_days['WORK100'].number_of_days",
+            'amount_python_compute': "result = payslip.sum_category('ALW', payslip.date_from, to_date=payslip.date_to)",
+            'quantity': 'worked_days.WORK100 and worked_days.WORK100.number_of_days',
             'code': 'SUMALW',
             'category_id': cls.env.ref('hr_payroll.ALW').id,
             'struct_id': cls.developer_pay_structure.id,
@@ -167,22 +167,18 @@ class TestPayslipContractBase(TestPayslipBase):
             'name': '35h calendar',
             'attendance_ids': [
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Evening', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Tuesday Evening', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Wednesday Evening', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 16, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Thursday Evening', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 16, 'day_period': 'afternoon'}),
                 (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Friday Lunch', 'dayofweek': '4', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Friday Evening', 'dayofweek': '4', 'hour_from': 13, 'hour_to': 16, 'day_period': 'afternoon'})
             ]
         })
+        cls.calendar_35h._onchange_hours_per_day() # update hours/day
 
         cls.calendar_2_weeks = cls.env['resource.calendar'].create({
             'name': 'Week 1: 30 Hours - Week 2: 16 Hours',
@@ -198,6 +194,7 @@ class TestPayslipContractBase(TestPayslipBase):
                 (0, 0, {'name': 'Odd week', 'dayofweek': '0', 'sequence': '25', 'hour_from': 0, 'day_period': 'morning', 'week_type': '1', 'hour_to': 0, 'display_type': 'line_section'}),
             ]
         })
+        cls.calendar_2_weeks._onchange_hours_per_day() # update hours/day
 
         cls.richard_emp.resource_calendar_id = cls.calendar_richard
         cls.jules_emp.resource_calendar_id = cls.calendar_2_weeks
@@ -208,30 +205,27 @@ class TestPayslipContractBase(TestPayslipBase):
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 11.5, 'day_period': 'morning'}),
                 (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 11.5, 'day_period': 'morning'}),
                 (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 11.5, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 9, 'hour_to': 12.5, 'day_period': 'morning', 'duration_days': 3.5/5.5}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12.5, 'hour_to': 13.5, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Thursday Evening', 'dayofweek': '3', 'hour_from': 13.5, 'hour_to': 15.5, 'day_period': 'afternoon', 'duration_days': 2/5.5}),
+                (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 9, 'hour_to': 12.5, 'day_period': 'morning'}),
+                (0, 0, {'name': 'Thursday Evening', 'dayofweek': '3', 'hour_from': 13.5, 'hour_to': 15.5, 'day_period': 'afternoon'}),
             ]
         })
+        cls.calendar_16h._onchange_hours_per_day() # update hours/day
 
         cls.calendar_38h_friday_light = cls.env['resource.calendar'].create({
             'name': '38 calendar Friday light',
             'attendance_ids': [
-                (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning', 'duration_days': 4/8.5}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Monday Evening', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon', 'duration_days': 4.5/8.5}),
-                (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning', 'duration_days': 4/8.5}),
-                (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Tuesday Evening', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon', 'duration_days': 4.5/8.5}),
-                (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning', 'duration_days': 4/8.5}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Wednesday Evening', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon', 'duration_days': 4.5/8.5}),
-                (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning', 'duration_days': 4/8.5}),
-                (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Thursday Evening', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon', 'duration_days': 4.5/8.5}),
-                (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning', 'duration_days': 1}),
+                (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                (0, 0, {'name': 'Monday Evening', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon'}),
+                (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                (0, 0, {'name': 'Tuesday Evening', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon'}),
+                (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                (0, 0, {'name': 'Wednesday Evening', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon'}),
+                (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                (0, 0, {'name': 'Thursday Evening', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 17.5, 'day_period': 'afternoon'}),
+                (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
             ]
         })
+        cls.calendar_38h_friday_light._onchange_hours_per_day() # update hours/day
 
         # This contract ends at the 15th of the month
         cls.contract_cdd = cls.env['hr.contract'].create({ # Fixed term contract

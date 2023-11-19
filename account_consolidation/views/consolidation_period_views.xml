@@ -25,62 +25,56 @@
                         <button name="action_generate_journals" type="object"
                                 string="(Re)Compute" class="oe_highlight"
                                 groups="account_consolidation.group_consolidation_user"
-                                invisible="state == 'closed' or not id"/>
+                                attrs="{'invisible': ['|', ('state', '=', 'closed'), ('id', '=', False)]}"/>
                         <button name="action_close" type="object"
                                 string="Close"
                                 groups="account_consolidation.group_consolidation_user"
-                                invisible="state == 'closed' or not id"/>
+                                attrs="{'invisible': ['|', ('state', '=', 'closed'), ('id', '=', False)]}"/>
                         <button name="action_draft" type="object"
                                 string="Reset To Draft"
                                 groups="account_consolidation.group_consolidation_user"
-                                invisible="state == 'draft' or not id"/>
+                                attrs="{'invisible': ['|', ('state', '=', 'draft'), ('id', '=', False)]}"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button" type="action" name="%(trial_balance_report_action)d"
-                                    context="{'default_period_id': id}"
-                                    icon="fa-table" invisible="not id">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_text">Consolidated Balance</span>
-                                    </div>
-                            </button>
+                                    context="{'default_period_id': active_id}"
+                                    icon="fa-table" attrs="{'invisible': [('id', '=', False)]}"
+                                    string="Consolidated Balance"/>
                             <button class="oe_stat_button" type="object" name="action_open_trial_balance_grid"
-                                    icon="fa-edit" invisible="not id">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_text">Edit</span>
-                                    </div>
+                                    icon="fa-edit" attrs="{'invisible': [('id', '=', False)]}">
+                                Edit
                             </button>
                             <button class="oe_stat_button" type="action" name="%(consolidation_account_action)d" icon="fa-bars"
-                                    invisible="not id"
+                                    attrs="{'invisible': [('id', '=', False)]}"
                                     context="{'search_default_chart_id':chart_id, 'default_chart_id': chart_id}">
                                 <field string="Accounts" name="chart_account_ids_count" widget="statinfo"/>
                             </button>
                             <button class="oe_stat_button" type="action" name="%(consolidation_journal_action)d" icon="fa-bars"
-                                    invisible="not id"
+                                    attrs="{'invisible': [('id', '=', False)]}"
                                     context="{'search_default_period_id':id, 'default_period_id': id}">
                                 <field string="Journals" name="journal_ids_count" widget="statinfo"/>
                             </button>
                         </div>
                         <group>
                             <group>
-                                <field name="chart_id" invisible="context.get('default_chart_id', False)" readonly="state == 'closed'" options="{'no_quick_create': True}"/>
+                                <field name="chart_id" attrs="{'readonly': [('state','=','closed')]}" invisible="context.get('default_chart_id', False)"/>
                                 <field name="chart_currency_id" readonly="1"/>
                             </group>
                             <group>
-                                <field name="date_analysis_begin" readonly="state == 'closed'"/>
-                                <field name="date_analysis_end"
-                                       required="1"
-                                       readonly="state == 'closed'"/>
+                                <field name="date_analysis_begin" attrs="{'readonly': [('state','=','closed')]}"/>
+                                <field name="date_analysis_end" required="1"
+                                       attrs="{'readonly': [('state','=','closed')]}"/>
                             </group>
                         </group>
 
-                        <notebook invisible="not date_analysis_end">
+                        <notebook attrs="{'invisible': [('date_analysis_end', '=', False)]}">
                             <!-- COMPANY PERIODS -->
                             <page string="Company Periods" name="company_periods">
                                 <field name="company_period_ids" widget="one2many" nolabel="1"
                                        context="{'default_date_company_begin': date_analysis_begin, 'default_date_company_end': date_analysis_end}"
-                                       readonly="state == 'closed'">
+                                       attrs="{'readonly': [('state','=','closed')]}">
                                     <tree editable="bottom">
                                         <field name="company_id"/>
                                         <field name="currency_company_id" string="Currency"/>
@@ -103,7 +97,7 @@
                                         <field name="composed_period_id" string="Period"/>
                                         <field name="composed_chart_currency_id" string="Currency"/>
                                         <field name="rate_consolidation" string="Consolidation Rate (%)"/>
-                                        <field name="using_chart_currency_id" column_invisible="True"/>
+                                        <field name="using_chart_currency_id" invisible="1"/>
                                         <field name="currency_rate"/>
                                     </tree>
                                 </field>
@@ -129,7 +123,7 @@
                     <footer position="replace">
                         <button name="action_save_onboarding_create_step" class="btn btn-primary" type="object"
                                 string="Apply" data-hotkey="q"/>
-                        <button special="cancel" data-hotkey="x" string="Cancel"/>
+                        <button special="cancel" data-hotkey="z" string="Cancel"/>
                     </footer>
                 </form>
             </field>
@@ -140,16 +134,11 @@
             <field name="model">consolidation.period</field>
             <field name="priority">1</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard o_account_kanban"
-                        banner_route="/onboarding/account_consolidation_dashboard">
+                <kanban class="oe_background_grey o_kanban_dashboard o_account_kanban"
+                        banner_route="/account_consolidation/dashboard_onboarding">
                     <field name="color"/>
                     <field name="chart_id"/> <!-- Needed to allow chart color update -->
                     <templates>
-                        <t t-name="kanban-menu">
-                            <div class="container">
-                                <t t-call="analysis_period_menu"/>
-                            </div>
-                        </t>
                         <t t-name="kanban-box">
                             <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
                                 <div class="oe_kanban_content o_kanban_consolidation_content" style="height:100%">
@@ -158,6 +147,9 @@
                                         <div class="row">
                                             <t t-call="analysis_period_body"/>
                                         </div>
+                                    </div>
+                                    <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                        <t t-call="analysis_period_menu"/>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +160,7 @@
                                 <div class="o_kanban_card_header_title">
                                     <div class="float-end me-3">
                                         <field name="state" widget="label_selection"
-                                               invisible="state != 'closed'"
+                                               attrs="{'invisible': [('state', '!=', 'closed')]}"
                                                options="{'classes': {'draft': 'default', 'closed': 'danger'}}"/>
                                     </div>
                                     <div class="o_primary">
@@ -180,13 +172,19 @@
                                         <field name="display_dates"/>
                                     </div>
                                 </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" aria-label="Selection" role="img"
+                                           title="Selection"/>
+                                    </a>
+                                </div>
                             </div>
                         </t>
 
                         <t t-name="analysis_period_body">
                             <div class="col-5 o_kanban_primary_left ps-3 pe-0">
                                 <button name="%(trial_balance_report_action)d" type="action" role="button"
-                                        class="btn btn-primary" context="{'default_period_id': id}">
+                                        class="btn btn-primary" context="{'default_period_id': active_id}">
                                     Consolidated Balance
                                 </button>
                             </div>
@@ -204,9 +202,9 @@
                         <t t-name="analysis_period_menu">
                             <div class="row">
                                 <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
-                                    <h5 class="o_kanban_card_manage_title">
+                                    <div class="o_kanban_card_manage_title">
                                         <span role="separator">Actions</span>
-                                    </h5>
+                                    </div>
                                     <div>
                                         <a t-if="!widget.auto_generated and record.state.raw_value == 'draft'"
                                            name="action_generate_journals" role="menuitem" type="object"
@@ -223,12 +221,12 @@
                                     </div>
                                 </div>
                                 <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
-                                    <h5 class="o_kanban_card_manage_title">
+                                    <div class="o_kanban_card_manage_title">
                                         <span role="separator">View</span>
-                                    </h5>
+                                    </div>
                                     <div>
                                         <a name="%(consolidation_journal_action)d" role="menuitem"
-                                           context="{'search_default_period_id': id, 'default_period_id': id}"
+                                           context="{'search_default_period_id': active_id, 'default_period_id': active_id}"
                                            type="action">Journals
                                         </a>
                                     </div>
@@ -329,7 +327,7 @@
                     <sheet>
                         <group>
                             <field name="company_id"/>
-                            <field name="period_id"/>
+                            <field name="period_id" invisible="context.get('from_analysis_period', False)" required="not context.get('from_analysis_period', True)"/>
                         </group>
                         <notebook>
                             <page string="Settings" name="settings">
@@ -346,26 +344,26 @@
 
 
                                         <label for="currency_rate_avg" string="Average Rate"
-                                               invisible="not currencies_are_different"/>
-                                        <div invisible="not currencies_are_different">
+                                               attrs="{'invisible': [('currencies_are_different', '=', False)]}"/>
+                                        <div attrs="{'invisible': [('currencies_are_different', '=', False)]}">
                                             1
                                             <field name="currency_chart_id" class="oe_inline"/>
                                             =
                                             <!-- EDITABLE FIELD IS HERE -->
                                             <field name="currency_rate_avg" class="oe_inline"
-                                                   required="currencies_are_different"/>
+                                                   attrs="{'required':[('currencies_are_different', '=', True)]}"/>
                                             &amp;nbsp;
                                             <field name="currency_company_id" class="oe_inline"/>
                                         </div>
                                         <label for="currency_rate_end" string="End Rate"
-                                               invisible="not currencies_are_different"/>
-                                        <div invisible="not currencies_are_different">
+                                               attrs="{'invisible': [('currencies_are_different', '=', False)]}"/>
+                                        <div attrs="{'invisible': [('currencies_are_different', '=', False)]}">
                                             1
                                             <field name="currency_chart_id" class="oe_inline"/>
                                             =
                                             <!-- EDITABLE FIELD IS HERE -->
                                             <field name="currency_rate_end" class="oe_inline"
-                                                   required="currencies_are_different"/>
+                                                   attrs="{'required':[('currencies_are_different', '=', True)]}"/>
                                             &amp;nbsp;
                                             <field name="currency_company_id" class="oe_inline"/>
                                         </div>
@@ -377,7 +375,7 @@
                                 </group>
                                 <group>
                                     <field name="exclude_journal_ids" domain="[('company_id', '=', company_id)]"
-                                           readonly="not company_id" widget="many2many_tags"/>
+                                           attrs="{'readonly': [('company_id','=', False)]}" widget="many2many_tags"/>
                                 </group>
                             </page>
                             <page string="Additional Information" name="additional_info">
@@ -440,7 +438,7 @@
                             <div>
                                 <field name="composed_period_id"
                                        domain="[('id', '!=', context.get('from_analysis_id'))]"/>
-                                <span invisible="not composed_chart_currency_id">
+                                <span attrs="{'invisible': [('composed_chart_currency_id', '=', False)]}">
                                     (<field name="composed_chart_currency_id" string="Currency"/>)
                                 </span>
                             </div>
@@ -455,14 +453,14 @@
                             </div>
 
                             <label for="currency_rate" string="Currency Rate"
-                                   invisible="not currencies_are_different"/>
-                            <div invisible="not currencies_are_different">
+                                   attrs="{'invisible': [('currencies_are_different', '=', False)]}"/>
+                            <div attrs="{'invisible': [('currencies_are_different', '=', False)]}">
                                 1
                                 <field name="using_chart_currency_id" class="oe_inline"/>
                                 =
                                 <!-- EDITABLE FIELD IS HERE -->
                                 <field name="currency_rate" class="oe_inline"
-                                       required="currencies_are_different"/>
+                                       attrs="{'required':[('currencies_are_different', '=', True)]}"/>
                                 &amp;nbsp;
                                 <field name="composed_chart_currency_id" class="oe_inline"/>
                             </div>

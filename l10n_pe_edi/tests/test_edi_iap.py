@@ -2,8 +2,6 @@
 from odoo.tests import tagged
 from .common import TestPeEdiCommon
 
-import threading
-from unittest.mock import patch
 from datetime import timedelta
 from time import sleep
 
@@ -11,7 +9,7 @@ from time import sleep
 class TestEdiIAP(TestPeEdiCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='pe', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
+    def setUpClass(cls, chart_template_ref='l10n_pe.pe_chart_template', edi_format_ref='l10n_pe_edi.edi_pe_ubl_2_1'):
         super().setUpClass(chart_template_ref=chart_template_ref, edi_format_ref=edi_format_ref)
 
         cls.company_data['company'].l10n_pe_edi_provider = 'iap'
@@ -23,9 +21,7 @@ class TestEdiIAP(TestPeEdiCommon):
 
         # Send
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        # Calls to IAP are disabled during testing, we need to remove the testing flag to let it perform the calls
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'sent'}])
 
@@ -34,8 +30,7 @@ class TestEdiIAP(TestPeEdiCommon):
         move.button_cancel_posted_moves()
         self.assertFalse(move.l10n_pe_edi_cancel_cdr_number)
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertTrue(move.l10n_pe_edi_cancel_cdr_number)
         self.assertRecordValues(move, [{'edi_state': 'to_cancel'}])
 
@@ -45,8 +40,7 @@ class TestEdiIAP(TestPeEdiCommon):
 
         # Cancel step 2
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'cancelled'}])
 
@@ -58,8 +52,7 @@ class TestEdiIAP(TestPeEdiCommon):
         # Send
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
         doc_reversed_entry = move.reversed_entry_id.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            (move.reversed_entry_id + move).action_process_edi_web_services(with_commit=False)
+        (move.reversed_entry_id + move).action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertTrue(doc_reversed_entry)
         self.assertRecordValues(doc_reversed_entry, [{'error': False}])
@@ -70,8 +63,7 @@ class TestEdiIAP(TestPeEdiCommon):
         move.button_cancel_posted_moves()
         self.assertFalse(move.l10n_pe_edi_cancel_cdr_number)
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertTrue(move.l10n_pe_edi_cancel_cdr_number)
         self.assertRecordValues(move, [{'edi_state': 'to_cancel'}])
 
@@ -81,8 +73,7 @@ class TestEdiIAP(TestPeEdiCommon):
 
         # Cancel step 2
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'cancelled'}])
 
@@ -94,8 +85,7 @@ class TestEdiIAP(TestPeEdiCommon):
         # Send
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
         doc_debit_origin = move.debit_origin_id.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            (move.debit_origin_id + move).action_process_edi_web_services(with_commit=False)
+        (move.debit_origin_id + move).action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(doc_debit_origin, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'sent'}])
@@ -105,8 +95,7 @@ class TestEdiIAP(TestPeEdiCommon):
         move.button_cancel_posted_moves()
         self.assertFalse(move.l10n_pe_edi_cancel_cdr_number)
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertTrue(move.l10n_pe_edi_cancel_cdr_number)
         self.assertRecordValues(move, [{'edi_state': 'to_cancel'}])
 
@@ -116,8 +105,7 @@ class TestEdiIAP(TestPeEdiCommon):
 
         # Cancel step 2
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'cancelled'}])
 
@@ -132,15 +120,14 @@ class TestEdiIAP(TestPeEdiCommon):
         move.action_post()
 
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertRecordValues(doc, [{'error': False}])
         self.assertRecordValues(move, [{'edi_state': 'sent'}])
 
         # Slightly tweak the cancellation request template so that SUNAT's response will contain an error in the CDR's ResponseCode.
-        cancel_request_template = self.env.ref('l10n_pe_edi.ubl_pe_21_voided_documents')
+        cancel_request_template = self.env.ref('l10n_pe_edi.pe_ubl_2_1_void_documents')
         arch = cancel_request_template.arch
-        arch_new = arch.replace('<cbc:ReferenceDate t-out="reference_date"/>', '<cbc:ReferenceDate>{}</cbc:ReferenceDate>'.format(today))
+        arch_new = arch.replace('<cbc:ReferenceDate t-esc="reference_date"/>', '<cbc:ReferenceDate>{}</cbc:ReferenceDate>'.format(today))
         cancel_request_template.write({'arch': arch_new})
 
         # Cancel step 1
@@ -148,8 +135,7 @@ class TestEdiIAP(TestPeEdiCommon):
         move.button_cancel_posted_moves()
         self.assertFalse(move.l10n_pe_edi_cancel_cdr_number)
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         self.assertTrue(move.l10n_pe_edi_cancel_cdr_number)
         self.assertRecordValues(move, [{'edi_state': 'to_cancel'}])
 
@@ -159,8 +145,7 @@ class TestEdiIAP(TestPeEdiCommon):
 
         # Cancel step 2
         doc = move.edi_document_ids.filtered(lambda d: d.state in ('to_send', 'to_cancel'))
-        with patch.object(threading.current_thread(), 'testing', False):
-            move.action_process_edi_web_services(with_commit=False)
+        move.action_process_edi_web_services(with_commit=False)
         expected_error = "<p>We got an error response from the OSE. <br><br><b>Original message:</b><br>2375|Fecha de emision del comprobante no coincide con la fecha de emision consignada en la comunicación"
         self.assertTrue(doc.error.startswith(expected_error), 'Error response: %s' % doc.error)
         self.assertRecordValues(move, [{'edi_state': 'to_cancel'}])

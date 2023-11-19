@@ -9,7 +9,7 @@ from odoo.addons.stock_barcode.controllers.stock_barcode import StockBarcodeCont
 class StockBarcodePickingBatchController(StockBarcodeController):
 
     @http.route()
-    def main_menu(self, barcode):
+    def main_menu(self, barcode, **kw):
         ret_open_batch_picking = self.try_open_batch_picking(barcode)
         if ret_open_batch_picking:
             return ret_open_batch_picking

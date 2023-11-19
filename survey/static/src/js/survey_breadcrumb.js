@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('survey.breadcrumb', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.SurveyBreadcrumbWidget = publicWidget.Widget.extend({
     template: "survey.survey_breadcrumb_template",
@@ -43,4 +44,6 @@ publicWidget.registry.SurveyBreadcrumbWidget = publicWidget.Widget.extend({
     },
 });
 
-export default publicWidget.registry.SurveyBreadcrumbWidget;
+return publicWidget.registry.SurveyBreadcrumbWidget;
+
+});

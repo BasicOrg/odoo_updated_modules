@@ -1,23 +1,28 @@
 /** @odoo-module */
 
-import { Model } from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import { DataSources } from "@spreadsheet/data_sources/data_sources";
 import { migrate } from "@spreadsheet/o_spreadsheet/migration";
+import { base64ToJson } from "@spreadsheet_edition/bundle/helpers";
+
+const Model = spreadsheet.Model;
 
 /**
- * Convert PIVOT functions from relative to absolute.
+ * Takes a template id as input, will convert the formulas
+ * from relative to absolute in a way that they can be used to create a sheet.
  *
- * @param {import("@web/env").OdooEnv} env
- * @param {object} data
- * @returns {Promise<object>} spreadsheetData
+ * @param {Function} rpc
+ * @param {number} templateId
+ * @returns {Promise<Object>} spreadsheetData
  */
-export async function convertFromSpreadsheetTemplate(env, data, revisions) {
-    const model = new Model(
-        migrate(data),
-        { custom: { dataSources: new DataSources(env) } },
-        revisions
-    );
-    await model.config.custom.dataSources.waitForAllLoaded();
+export async function getDataFromTemplate(env, orm, templateId) {
+    let [{ data }] = await orm.read("spreadsheet.template", [templateId], ["data"]);
+    data = base64ToJson(data);
+
+    const model = new Model(migrate(data), {
+        dataSources: new DataSources(orm),
+    });
+    await model.config.dataSources.waitForAllLoaded();
     const proms = [];
     for (const pivotId of model.getters.getPivotIds()) {
         proms.push(model.getters.getPivotDataSource(pivotId).prepareForTemplateGeneration());

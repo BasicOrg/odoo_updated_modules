@@ -1,11 +1,11 @@
 /** @odoo-module **/
 
-import { formatMonetary } from "@web/views/fields/formatters";
-import { formatFloat } from "@web/core/utils/numbers";
+import { formatMonetary, formatFloat } from "@web/views/fields/formatters";
 import { useService } from "@web/core/utils/hooks";
 import { BomOverviewLine } from "../bom_overview_line/mrp_bom_overview_line";
 import { BomOverviewComponentsBlock } from "../bom_overview_components_block/mrp_bom_overview_components_block";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class BomOverviewTable extends Component {
     setup() {
@@ -33,10 +33,6 @@ export class BomOverviewTable extends Component {
 
     get data() {
         return this.props.data;
-    }
-
-    get precision() {
-        return this.props.precision;
     }
 
     get showAvailabilities() {
@@ -70,6 +66,7 @@ BomOverviewTable.components = {
     BomOverviewComponentsBlock,
 };
 BomOverviewTable.props = {
+    bus: Object,
     showOptions: {
         type: Object,
         shape: {
@@ -84,6 +81,4 @@ BomOverviewTable.props = {
     uomName: { type: String, optional: true },
     currentWarehouseId: { type: Number, optional: true },
     data: Object,
-    precision: Number,
-    changeFolded: Function,
 };

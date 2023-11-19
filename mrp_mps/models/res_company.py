@@ -65,7 +65,7 @@ class Company(models.Model):
             if self.manufacturing_period == 'month':
                 dates_as_str.append(format_date(self.env, date_start, date_format='MMM yyyy'))
             elif self.manufacturing_period == 'week':
-                dates_as_str.append(_('Week %(week_num)s (%(start_date)s-%(end_date)s/%(month)s)',
+                dates_as_str.append(_('Week {week_num} ({start_date}-{end_date}/{month})').format(
                     week_num=format_date(self.env, date_start, date_format='w'),
                     start_date=format_date(self.env, date_start, date_format='d'),
                     end_date=format_date(self.env, date_stop, date_format='d'),

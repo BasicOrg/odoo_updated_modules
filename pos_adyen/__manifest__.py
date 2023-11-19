@@ -13,7 +13,7 @@
     'depends': ['point_of_sale'],
     'installable': True,
     'assets': {
-        'point_of_sale._assets_pos': [
+        'point_of_sale.assets': [
             'pos_adyen/static/**/*',
         ],
     },

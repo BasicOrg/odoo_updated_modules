@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='property_delivery_carrier_id']" position="after">
                 <field name="bill_my_account" invisible="1"/>
-                <field name="property_ups_carrier_account" invisible="not bill_my_account"/>
+                <field name="property_ups_carrier_account" attrs="{'invisible' : [('bill_my_account', '=', False)]}"/>
             </xpath>
         </field>
     </record>

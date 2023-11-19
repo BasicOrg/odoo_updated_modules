@@ -36,9 +36,8 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         cls.armande_user_calendar = cls.env['resource.calendar'].create({
             'name': 'Wednesday calendar',
             'attendance_ids': [
-                (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
-                (0, 0, {'name': 'Wednesday Evening', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
+                Command.create({'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
+                Command.create({'name': 'Wednesday Evening', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 17, 'day_period': 'afternoon'}),
             ],
             'tz': 'UTC',
         })
@@ -56,10 +55,10 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         })
 
         self.task_4.depend_on_ids = [Command.clear()]
-        new_task_3_begin_date = self.task_1_date_deadline - timedelta(hours=2)  # 2021 06 24 10:00
+        new_task_3_begin_date = self.task_1_planned_date_end - timedelta(hours=2)  # 2021 06 24 10:00
         self.task_3.write({
             'planned_date_begin': new_task_3_begin_date,
-            'date_deadline': new_task_3_begin_date + (self.task_3_date_deadline - self.task_3_planned_date_begin),
+            'planned_date_end': new_task_3_begin_date + (self.task_3_planned_date_end - self.task_3_planned_date_begin),
         })
         self.gantt_reschedule_backward(self.task_1, self.task_3)
         failed_message = "The auto shift date feature should take the employee's calendar into account."
@@ -68,7 +67,7 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         new_task_3_begin_date = self.task_1.planned_date_begin - relativedelta(days=2)  # 2021 06 21 11:00
         self.task_3.write({
             'planned_date_begin': new_task_3_begin_date,
-            'date_deadline': new_task_3_begin_date + (self.task_3_date_deadline - self.task_3_planned_date_begin),
+            'planned_date_end': new_task_3_begin_date + (self.task_3_planned_date_end - self.task_3_planned_date_begin),
         })
         self.gantt_reschedule_backward(self.task_1, self.task_3)
         failed_message = "The auto shift date feature should take the employee's calendar when no contract cover the period."
@@ -82,7 +81,7 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         new_task_3_begin_date = self.task_1.planned_date_begin - relativedelta(days=2)  # 2021 06 14 14:00
         self.task_3.write({
             'planned_date_begin': new_task_3_begin_date,
-            'date_deadline': new_task_3_begin_date + (self.task_3_date_deadline - self.task_3_planned_date_begin),
+            'planned_date_end': new_task_3_begin_date + (self.task_3_planned_date_end - self.task_3_planned_date_begin),
         })
         self.gantt_reschedule_backward(self.task_1, self.task_3)
         failed_message = "The auto shift date feature should take the company's calendar when no contract cover the period and no calendar is set on the employee."
@@ -95,7 +94,7 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         new_task_1_begin_date = self.contract_2.date_start + relativedelta(days=1, hour=14)  # 2021 06 27 14:00
         self.task_1.write({
             'planned_date_begin': new_task_1_begin_date,
-            'date_deadline': new_task_1_begin_date + (self.task_1_date_deadline - self.task_1_planned_date_begin),
+            'planned_date_end': new_task_1_begin_date + (self.task_1_planned_date_end - self.task_1_planned_date_begin),
         })
         self.gantt_reschedule_forward(self.task_1, self.task_3)
         self.assertEqual(self.task_3.planned_date_begin,
@@ -116,10 +115,10 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         })
 
         self.task_4.depend_on_ids = [Command.clear()]
-        new_task_3_begin_date = self.task_1_date_deadline - timedelta(hours=2)  # 2021 06 24 10:00
+        new_task_3_begin_date = self.task_1_planned_date_end - timedelta(hours=2)  # 2021 06 24 10:00
         self.task_3.write({
             'planned_date_begin': new_task_3_begin_date,
-            'date_deadline': new_task_3_begin_date + (self.task_3_date_deadline - self.task_3_planned_date_begin),
+            'planned_date_end': new_task_3_begin_date + (self.task_3_planned_date_end - self.task_3_planned_date_begin),
         })
         self.gantt_reschedule_backward(self.task_1, self.task_3)
         failed_message = "The auto shift date feature should take the employee's calendar into account."
@@ -128,7 +127,7 @@ class TestGanttRescheduleOnTasks(AutoShiftDatesHRCommon):
         new_task_3_begin_date = self.task_1.planned_date_begin - relativedelta(days=2)  # 2021 06 21 11:00
         self.task_3.write({
             'planned_date_begin': new_task_3_begin_date,
-            'date_deadline': new_task_3_begin_date + (self.task_3_date_deadline - self.task_3_planned_date_begin),
+            'planned_date_end': new_task_3_begin_date + (self.task_3_planned_date_end - self.task_3_planned_date_begin),
         })
         self.gantt_reschedule_backward(self.task_1, self.task_3)
         failed_message = "The auto shift date feature should take the company's calendar when no contract covers the period."

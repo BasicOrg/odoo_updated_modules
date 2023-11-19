@@ -7,8 +7,6 @@
         <field name="default_code">AFIP_DESPACHO</field>
         <field name="sale_ok" eval="False"/>
         <field name="uom_id" ref="uom.product_uom_unit"/>
-        <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
-        <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
     </record>
 
     <record id="product_product_tasa_estadistica" model="product.product">
@@ -17,8 +15,6 @@
         <field name="default_code">AFIP_TASA_EST</field>
         <field name="sale_ok" eval="False"/>
         <field name="uom_id" ref="uom.product_uom_unit"/>
-        <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
-        <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
     </record>
 
     <record id="product_product_arancel" model="product.product">
@@ -27,7 +23,6 @@
         <field name="default_code">AFIP_ARANCEL</field>
         <field name="sale_ok" eval="False"/>
         <field name="uom_id" ref="uom.product_uom_unit"/>
-        <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
         <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
     </record>
 
@@ -37,7 +32,6 @@
         <field name="default_code">AFIP_SERV_GUARDA</field>
         <field name="sale_ok" eval="False"/>
         <field name="uom_id" ref="uom.product_uom_unit"/>
-        <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
         <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', '=', 'VAT Untaxed')]"/>
     </record>
 
@@ -98,6 +92,7 @@
     <!-- VAT 10,5% -->
 
     <record id="product.product_product_25" model="product.product">
+        <field name="name">Laptop E5023 (IVA 10,5)</field>
         <!-- agregamos percecipn aplicada y sufrida tambien -->
         <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', 'in', ['VAT 10.5%', 'Percepción IIBB', 'Percepción Ganancias', 'Percepción IVA'])]"/>
         <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', 'in', ['VAT 10.5%', 'Percepción IIBB', 'Percepción Ganancias', 'Percepción IVA'])]"/>
@@ -105,6 +100,7 @@
     </record>
 
     <record id="product.product_product_27" model="product.product">
+        <field name="name">Laptop Customized (VAT 10,5)</field>
         <field name="taxes_id" search="[('type_tax_use', '=', 'sale'), ('tax_group_id', '=', 'VAT 10.5%')]"/>
         <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'), ('tax_group_id', '=', 'VAT 10.5%')]"/>
         <field name="standard_price">4500.0</field>

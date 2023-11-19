@@ -6,7 +6,7 @@ import { uiService } from "@web/core/ui/ui_service";
 import { makeTestEnv } from "../helpers/mock_env";
 import { click, getFixture, mount } from "../helpers/utils";
 
-import { Component, xml } from "@odoo/owl";
+const { Component, xml } = owl;
 const serviceRegistry = registry.category("services");
 
 let target;
@@ -48,8 +48,8 @@ QUnit.module("Components", () => {
         const secondBtn = target.querySelectorAll(".o_colorlist button")[1];
         assert.strictEqual(
             secondBtn.attributes.title.value,
-            "Raspberry",
-            "second button color is Raspberry"
+            "Fuchsia",
+            "second button color is Fuchsia"
         );
         assert.hasClass(
             secondBtn,

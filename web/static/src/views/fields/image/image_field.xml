@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web.ImageField">
+    <t t-name="web.ImageField" owl="1">
         <div class="d-inline-block position-relative opacity-trigger-hover">
             <div t-attf-class="position-absolute d-flex justify-content-between w-100 bottom-0 opacity-0 opacity-100-hover {{isMobile ? 'o_mobile_controls' : ''}}" aria-atomic="true" t-att-style="sizeStyle">
                 <t t-if="!props.readonly">
                     <FileUploader
                         acceptedFileExtensions="props.acceptedFileExtensions"
-                        t-key="props.record.resId"
                         onUploaded.bind="onFileUploaded"
+                        type="'image'"
                     >
                         <t t-set-slot="toggler">
                             <button
@@ -19,7 +19,7 @@
                             </button>
                         </t>
                         <button
-                            t-if="props.record.data[props.name] and state.isValid"
+                            t-if="props.value and state.isValid"
                             class="o_clear_file_button btn btn-light border-0 rounded-circle m-1 p-1"
                             data-tooltip="Clear"
                             aria-label="Clear"
@@ -30,10 +30,9 @@
                 </t>
             </div>
             <img
-                loading="lazy"
-                class="img img-fluid"
+                class="img img-fluid w-100"
                 alt="Binary file"
-                t-att-src="this.getUrl(props.previewImage or props.name)"
+                t-att-src="getUrl(props.previewImage or props.name)"
                 t-att-name="props.name"
                 t-att-height="props.height"
                 t-att-width="props.width"
@@ -46,7 +45,7 @@
         </div>
     </t>
 
-    <t t-name="web.ImageZoomTooltip">
+    <t t-name="web.ImageZoomTooltip" owl="1">
         <div class="o_image_zoom">
             <img t-att-src="url" />
         </div>

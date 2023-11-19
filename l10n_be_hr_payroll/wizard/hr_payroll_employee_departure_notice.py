@@ -171,8 +171,8 @@ class HrPayslipEmployeeDepartureNotice(models.TransientModel):
             'date_from': self.start_notice_period,
             'date_to': self.start_notice_period,
             'contract_id': last_contract.id,
-            'struct_id': struct_id.id,
         })
+        termination_payslip.struct_id = struct_id.id
         termination_payslip.worked_days_line_ids = [(5, 0, 0)]
 
         contract = termination_payslip.contract_id

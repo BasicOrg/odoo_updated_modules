@@ -3,16 +3,19 @@
 # 	* pos_mercury
 # 
 # Translators:
-# Wil Odoo, 2023
+# Pornvibool Tippayawat <pornvibool.t@gmail.com>, 2022
+# Khwunchai Jaengsawang <khwunchai.j@ku.th>, 2022
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-23 08:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:54+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,8 +24,8 @@ msgstr ""
 
 #. module: pos_mercury
 #: model_terms:ir.ui.view,arch_db:pos_mercury.res_config_settings_view_form_inherit_pos_mercury
-msgid "<i class=\"oi oi-fw oi-arrow-right\"/>Buy a card reader"
-msgstr "<i class=\"oi oi-fw oi-arrow-right\"/>ซื้อเครื่องอ่านบัตร"
+msgid "<i class=\"fa fa-fw fa-arrow-right\"/>Buy a card reader"
+msgstr "<i class=\"fa fa-fw fa-arrow-right\"/>ซื้อเครื่องอ่านบัตร"
 
 #. module: pos_mercury
 #: model_terms:ir.ui.view,arch_db:pos_mercury.view_pos_mercury_configuration_form
@@ -40,15 +43,15 @@ msgstr ""
 "                               การกำหนดค่าคุณควรเชื่อมโยงกับวิธีการชำระเงินการขายหน้าร้าน"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/screens/receipt_screen/receipt/order_receipt.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/OrderReceipt.xml:0
 #, python-format
 msgid "ABOVE AMOUNT PURSUANT"
 msgstr "สูงกว่าจำนวนตามที่"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/screens/receipt_screen/receipt/order_receipt.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/OrderReceipt.xml:0
 #, python-format
 msgid "APPROVAL CODE:"
 msgstr "รหัสการอนุมัติ:"
@@ -59,8 +62,8 @@ msgid "Barcode Rule"
 msgstr "กฎของบาร์โค้ด"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/screens/receipt_screen/receipt/order_receipt.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/OrderReceipt.xml:0
 #, python-format
 msgid "CARDHOLDER WILL PAY CARD ISSUER"
 msgstr "ผู้ถือบัตรจะเป็นผู้จ่ายบัตร"
@@ -98,8 +101,8 @@ msgid "Configure your card reader"
 msgstr "กำหนดค่าเครื่องอ่านบัตร"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Could not read card"
 msgstr "ไม่สามารถอ่านบัตร"
@@ -122,8 +125,8 @@ msgid "Credit Card"
 msgstr "บัตรเครดิต"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid ""
 "Credit card refunds are not supported. Instead select your credit card "
@@ -152,15 +155,15 @@ msgstr ""
 "                                ที่บัตร"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/product_screen/product_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/ProductScreen.js:0
 #, python-format
 msgid "Go to payment screen to use cards"
 msgstr "ไปที่หน้าจอการชำระเงินเพื่อใช้บัตร"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Handling transaction..."
 msgstr "กำลังจัดการธุรกรรม..."
@@ -189,6 +192,12 @@ msgstr ""
 #: model:ir.model.fields,help:pos_mercury.field_pos_payment__mercury_invoice_no
 msgid "Invoice number from Vantiv Pay"
 msgstr "หมายเลขใบแจ้งหนี้จาก Vantiv Pay"
+
+#. module: pos_mercury
+#: model:ir.model.fields,field_description:pos_mercury.field_pos_mercury_configuration____last_update
+#: model:ir.model.fields,field_description:pos_mercury.field_pos_mercury_mercury_transaction____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: pos_mercury
 #: model:ir.model.fields,field_description:pos_mercury.field_pos_mercury_configuration__write_uid
@@ -223,58 +232,56 @@ msgid "Name of this Vantiv configuration"
 msgstr "ชื่อของการกำหนดค่า Vantiv นี้"
 
 #. module: pos_mercury
-#. odoo-python
 #: code:addons/pos_mercury/models/pos_mercury_transaction.py:0
 #, python-format
 msgid "No Vantiv configuration associated with the payment method."
 msgstr "ไม่มีการกำหนดค่า Vantiv ที่เกี่ยวข้องกับวิธีการชำระเงิน"
 
 #. module: pos_mercury
-#. odoo-python
 #: code:addons/pos_mercury/models/pos_mercury_transaction.py:0
 #, python-format
 msgid "No opened point of sale session for user %s found."
 msgstr "ไม่พบเซสชั่นการขายหน้าร้านที่เปิดอยู่สำหรับผู้ใช้%s "
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "No response from Vantiv (Vantiv down?)"
 msgstr "ไม่มีการตอบสนองจาก Vantiv (Vantiv ตก?)"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "No response from server (connected to network?)"
 msgstr "ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ (เชื่อมต่อเครือข่าย?)"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Odoo error while processing transaction."
 msgstr "ข้อผิดพลาด Odoo ขณะประมวลผลธุรกรรม"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/payment_transaction_popup/payment_transaction_popup.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentTransactionPopup.js:0
 #, python-format
 msgid "Ok"
-msgstr "ตกลง"
+msgstr "โอเค"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/payment_transaction_popup/payment_transaction_popup.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentTransactionPopup.js:0
 #, python-format
 msgid "Online Payment"
 msgstr "ชำระเงินออนไลน์"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Partially approved"
 msgstr "ได้รับการอนุมัติบางส่วน"
@@ -286,8 +293,8 @@ msgid ""
 msgstr "รหัสผ่านของร้านค้าเพื่อยืนยันตัวตนบนเซิร์ฟเวอร์ผู้ให้บริการชำระเงิน"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Pay with: "
 msgstr "จ่ายด้วย: "
@@ -303,8 +310,8 @@ msgid "Payment reference number from Vantiv Pay"
 msgstr "หมายเลขอ้างอิงการชำระเงินจาก Vantiv Pay"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Please setup your Vantiv merchant account."
 msgstr "โปรดตั้งค่าบัญชีผู้ค้า Vantiv ของคุณ"
@@ -340,36 +347,36 @@ msgid "Point of Sale Vantiv Transaction"
 msgstr "ธุรกรรมการขายหน้าร้านของ Vantiv"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Refunds not supported"
 msgstr "ไม่รองรับการคืนเงิน"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Reversal failed, sending VoidSale..."
 msgstr "การส่งกลับรายการล้มเหลว กำลังส่ง VoidSale..."
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Reversal succeeded"
 msgstr "การส่งกลับสำเร็จ"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Sending reversal..."
 msgstr "กำลังส่งกลับรายการ..."
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/screens/receipt_screen/receipt/order_receipt.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/OrderReceipt.xml:0
 #, python-format
 msgid "TO CARDHOLDER AGREEMENT"
 msgstr "ข้อตกลงผู้ถือบัตร"
@@ -395,8 +402,8 @@ msgid "The last 4 numbers of the card used to pay"
 msgstr "เลขบัตร 4 ตัวท้ายเพื่อใช้ชำระ"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid ""
 "This can be caused by a badly executed swipe or by not having your keyboard "
@@ -406,8 +413,8 @@ msgstr ""
 "QWERTY (ไม่ใช่ US International)"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "Transaction approved"
 msgstr "อนุมัติธุรกรรม"
@@ -462,15 +469,15 @@ msgid "Vantiv reference number"
 msgstr "หมายเลขอ้างอิง Vantiv"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen/payment_screen.js:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/js/PaymentScreen.js:0
 #, python-format
 msgid "VoidSale succeeded"
 msgstr "VoidSale สำเร็จ"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/overrides/components/payment_screen_payment_lines/payment_screen_payment_lines.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/PaymentScreenPaymentLines.xml:0
 #, python-format
 msgid "WAITING FOR SWIPE"
 msgstr "กำลังรอรูด"
@@ -485,8 +492,8 @@ msgstr ""
 "                               โดยตรงกับอุปกรณ์การขายหน้าร้าน หรือสามารถเชื่อมต่อกับกล่องไอโอที"
 
 #. module: pos_mercury
-#. odoo-javascript
-#: code:addons/pos_mercury/static/src/app/screens/receipt_screen/receipt/order_receipt.xml:0
+#. openerp-web
+#: code:addons/pos_mercury/static/src/xml/OrderReceipt.xml:0
 #, python-format
 msgid "X______________________________"
 msgstr "X______________________________"

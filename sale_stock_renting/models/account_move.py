@@ -65,7 +65,7 @@ class AccountMove(models.Model):
         # Prepare and return lot_values
         qties_per_lot = defaultdict(lambda: 0)
         for ml in outgoing_sml:
-            qties_per_lot[ml.lot_id] += ml.product_uom_id._compute_quantity(ml.quantity, ml.product_id.uom_id)
+            qties_per_lot[ml.lot_id] += ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id)
 
         # VFE NOTE: The quantity may be wrong in some advanced cases:
         # When modifying pickedup or returned lots manually (e.g. not through the rental wizard),

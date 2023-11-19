@@ -8,7 +8,7 @@ from freezegun import freeze_time
 @tagged('post_install_l10n', "post_install", "-at_install")
 class Test1099(AccountTestInvoicingCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
+    def setUpClass(cls, chart_template_ref="l10n_generic_coa.configurable_chart_template"):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.env.company.write({
@@ -49,24 +49,11 @@ class Test1099(AccountTestInvoicingCommon):
             limit=1
         )
 
-        company_2_id = cls.company_data_2["company"].id
-        cls.liquidity_account_comp2 = cls.env["account.account"].search(
-            [
-                ("company_id", "=", company_2_id),
-                ("account_type", "=", "asset_cash"),
-            ],
-            limit=1
-        )
-        cls.expense_account_comp2 = cls.env["account.account"].search(
-            [
-                ("company_id", "=", company_2_id),
-                ("account_type", "=", "expense")
-            ],
-            limit=1
-        )
-
     @freeze_time("2021-02-10")
     def test1099Wizard(self):
+        wizard = self.env["l10n_us_1099.wizard"].create({})
+        wizard.lines_to_export = self.env["account.move.line"]
+
         move_vals = {
             "date": "2020-06-06",  # wizard includes last year by default
             "line_ids": [
@@ -89,28 +76,6 @@ class Test1099(AccountTestInvoicingCommon):
         move = self.env["account.move"].create(move_vals)
         move.action_post()
 
-        # these should not be included when the user is in company 1
-        move_vals_company_2 = {
-            "date": "2020-06-06",  # wizard includes last year by default
-            "line_ids": [
-                (0, 0, {
-                    "name": "debit",
-                    "partner_id": self.vendor_1099.id,
-                    "account_id": self.expense_account_comp2.id,
-                    "debit": 200.0,
-                    "credit": 0.0,
-                }),
-                (0, 0, {
-                    "name": "credit",
-                    "partner_id": self.vendor_1099.id,
-                    "account_id": self.liquidity_account_comp2.id,
-                    "debit": 0.0,
-                    "credit": 200.0,
-                }),
-            ],
-        }
-        self.env["account.move"].with_company(self.company_data_2["company"]).create(move_vals_company_2).action_post()
-
         move_vals["line_ids"][0][2]["partner_id"] = self.vendor_1099.id
         move_vals["line_ids"][1][2]["partner_id"] = self.vendor_1099.id
         move = self.env["account.move"].create(move_vals)
@@ -123,10 +88,7 @@ class Test1099(AccountTestInvoicingCommon):
         move.action_post()
         expected_lines |= move.line_ids.filtered("credit")
 
-        # switch to company 1
-        self.env.user.company_ids = self.env.company
-
-        wizard = self.env["l10n_us_1099.wizard"].create({})
+        wizard._compute_lines_to_export()
         self.assertEqual(wizard.lines_to_export, expected_lines, "Wizard should contain the credit part of the 1099 vendor entry.")
 
         wizard.action_generate()

@@ -1,12 +1,15 @@
 /** @odoo-module **/
 
 import { makeEnv, startServices } from "./env";
+import { legacySetupProm } from "./legacy/legacy_setup";
+import { mapLegacyEnvToWowlEnv } from "./legacy/utils";
 import { localization } from "@web/core/l10n/localization";
 import { session } from "@web/session";
-import { templates } from "@web/core/assets";
+import { renderToString } from "./core/utils/render";
+import { setLoadXmlDefaultApp, templates } from "@web/core/assets";
 import { hasTouch } from "@web/core/browser/feature_detection";
-import { _t } from "@web/core/l10n/translation";
-import { App, Component, whenReady } from "@odoo/owl";
+
+const { App, whenReady } = owl;
 
 /**
  * Function to start a webclient.
@@ -26,22 +29,22 @@ export async function startWebClient(Webclient) {
     odoo.isReady = false;
 
     // setup environment
-    await whenReady();
     const env = makeEnv();
     await startServices(env);
 
-    Component.env = env;
-
     // start web client
+    await whenReady();
+    const legacyEnv = await legacySetupProm;
+    mapLegacyEnvToWowlEnv(legacyEnv, env);
     const app = new App(Webclient, {
-        name: "Odoo Web Client",
         env,
         templates,
         dev: env.debug,
-        warnIfNoStaticProps: true,
         translatableAttributes: ["data-tooltip"],
-        translateFn: _t,
+        translateFn: env._t,
     });
+    renderToString.app = app;
+    setLoadXmlDefaultApp(app);
     const root = await app.mount(document.body);
     const classList = document.body.classList;
     if (localization.direction === "rtl") {
@@ -59,4 +62,15 @@ export async function startWebClient(Webclient) {
     // delete odoo.debug; // FIXME: some legacy code rely on this
     odoo.__WOWL_DEBUG__ = { root };
     odoo.isReady = true;
+
+    // Update Favicons
+    const favicon = `/web/image/res.company/${env.services.company.currentCompany.id}/favicon`;
+    const icons = document.querySelectorAll("link[rel*='icon']");
+    const msIcon = document.querySelector("meta[name='msapplication-TileImage']");
+    for (const icon of icons) {
+        icon.href = favicon;
+    }
+    if (msIcon) {
+        msIcon.content = favicon;
+    }
 }

@@ -1,28 +1,27 @@
 /** @odoo-module **/
 
-import { SaleOrderLineProductField } from '@sale/js/sale_product_field';
-import { x2ManyCommands } from "@web/core/orm_service";
 import { patch } from "@web/core/utils/patch";
+import { SaleOrderLineProductField } from '@sale/js/sale_product_field';
 
 
-patch(SaleOrderLineProductField.prototype, {
+patch(SaleOrderLineProductField.prototype, 'event_booth_sale', {
 
     async _onProductUpdate() {
-        super._onProductUpdate(...arguments);
+        this._super(...arguments);
         if (this.props.record.data.product_type === 'event_booth') {
             this._openEventBoothConfigurator(false);
         }
     },
 
     _editLineConfiguration() {
-        super._editLineConfiguration(...arguments);
+        this._super(...arguments);
         if (this.props.record.data.product_type === 'event_booth') {
             this._openEventBoothConfigurator(true);
         }
     },
 
     get isConfigurableLine() {
-        return super.isConfigurableLine || this.props.record.data.product_type === 'event_booth';
+        return this._super(...arguments) || Boolean(this.props.record.data.event_booth_category_id);
     },
 
     async _openEventBoothConfigurator(edit) {
@@ -40,7 +39,7 @@ patch(SaleOrderLineProductField.prototype, {
             if (recordData.event_booth_pending_ids) {
                 actionContext.default_event_booth_ids = recordData.event_booth_pending_ids.records.map(
                     record => {
-                        return [4, record.resId];
+                        return [4, record.data.id];
                     }
                 );
             }
@@ -59,12 +58,11 @@ patch(SaleOrderLineProductField.prototype, {
                             });
                         }
                     } else {
-                        const { event_id, event_booth_category_id, event_booth_pending_ids } =
-                            closeInfo.eventBoothConfiguration;
+                        const eventBoothConfiguration = closeInfo.eventBoothConfiguration;
                         this.props.record.update({
-                            event_id,
-                            event_booth_category_id,
-                            event_booth_pending_ids: [x2ManyCommands.set(event_booth_pending_ids)],
+                            event_id: eventBoothConfiguration.event_id,
+                            event_booth_category_id: eventBoothConfiguration.event_booth_category_id,
+                            event_booth_pending_ids: eventBoothConfiguration.event_booth_pending_ids,
                         });
                     }
                 }

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 from odoo.addons.sale_timesheet_enterprise.models.sale import DEFAULT_INVOICED_TIMESHEET
 
@@ -9,22 +9,6 @@ from odoo.addons.sale_timesheet_enterprise.models.sale import DEFAULT_INVOICED_T
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    group_timesheet_leaderboard_show_rates = fields.Boolean(
-        string="Billing Rate Target",
-        implied_group="sale_timesheet_enterprise.group_timesheet_leaderboard_show_rates",
-        help="Display the Billing Rate on My Timesheets view",
-    )
-    billing_rate_target = fields.Integer(
-        string="Target",
-        related="company_id.billing_rate_target",
-        readonly=False,
-        help="Billing rate target for the employees",
-    )
-    group_use_timesheet_leaderboard = fields.Boolean(
-        string="Billing Rate Leaderboard",
-        implied_group="sale_timesheet_enterprise.group_use_timesheet_leaderboard",
-        help="Show the leaderboard on My Timesheets view",
-    )
     invoiced_timesheet = fields.Selection([
         ('all', "All recorded timesheets"),
         ('approved', "Validated timesheets only"),
@@ -50,7 +34,7 @@ class ResConfigSettings(models.TransientModel):
             # recompute the qty_delivered in sale.order.line for sale.order
             # where his state is set to 'sale'.
             sale_order_lines = self.env['sale.order.line'].sudo().search([
-                ('state', '=', 'sale'),
+                ('state', 'in', ['sale', 'done']),
                 ('invoice_status', 'in', ['no', 'to invoice']),
                 ('product_id.type', '=', 'service'),
                 ('product_id.service_type', '=', 'timesheet'),
@@ -61,8 +45,3 @@ class ResConfigSettings(models.TransientModel):
                 sale_order_lines._compute_qty_to_invoice()
                 sale_order_lines._compute_invoice_status()
         return super().set_values()
-
-    @api.onchange('group_timesheet_leaderboard_show_rates')
-    def _onchange_group_timesheet_leaderboard_show_rates(self):
-        if not self.group_timesheet_leaderboard_show_rates:
-            self.group_use_timesheet_leaderboard = False

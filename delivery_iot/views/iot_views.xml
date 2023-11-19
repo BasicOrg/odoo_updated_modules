@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="iot.iot_device_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='reports']" position="before">
-                <page string="Linked Operation Types" name="picking_types" invisible="type != 'scale'">
+                <page string="Linked Operation Types" name="picking_types" attrs="{'invisible': [('type', '!=', 'scale')]}">
                     <field name="picking_type_ids"/>
                 </page>
             </xpath>

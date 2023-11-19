@@ -3,17 +3,16 @@
 # 	* delivery_iot
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,25 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: delivery_iot
-#: model:ir.actions.report,print_report_name:delivery_iot.action_report_shipping_docs
-#: model:ir.actions.report,print_report_name:delivery_iot.action_report_shipping_labels
-msgid "'Empty Report - Used for assigning IoT printer'"
-msgstr "空报告 - 用于分配物联网打印机"
-
-#. module: delivery_iot
-#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__auto_print_carrier_labels
-msgid "Auto Print Carrier Labels"
-msgstr "自动打印货运标签"
-
-#. module: delivery_iot
-#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__auto_print_export_documents
-msgid "Auto Print Export Documents"
-msgstr "自动打印导出文件"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Carrier Labels"
-msgstr "载体标签"
+#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__iot_printer_id
+msgid "Automatically print the shipping labels using this printer."
+msgstr "使用此打印机自动打印发货标签。"
 
 #. module: delivery_iot
 #: model:ir.model.fields,help:delivery_iot.field_choose_delivery_package__available_scale_ids
@@ -48,11 +31,6 @@ msgid ""
 "Choose the scales you want to use for this operation type. Those scales can "
 "be used to weigh the packages created."
 msgstr "选择要用于此操作类型的刻度。这些秤可用于称量创建的包裹。"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Connect Scale"
-msgstr "连接称"
 
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_choose_delivery_package
@@ -65,16 +43,6 @@ msgid "Domain Address"
 msgstr "域地址"
 
 #. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Export Documents"
-msgstr "导出文件"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "How to connect scales?"
-msgstr "如何连接天平？"
-
-#. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_iot_device
 msgid "IOT Device"
 msgstr "IOT 设备"
@@ -85,33 +53,9 @@ msgid "Identifier"
 msgstr "标识"
 
 #. module: delivery_iot
-#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__auto_print_carrier_labels
-msgid ""
-"If this checkbox is ticked, Odoo will automatically print the carrier labels"
-" of the picking when they are created. Note this requires a printer to be "
-"assigned to this report."
-msgstr "如果勾选该复选框，Odoo 将在创建拣选时自动打印拣选的载体标签。请注意，这需要为该报告分配一台打印机。"
-
-#. module: delivery_iot
-#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__auto_print_export_documents
-msgid ""
-"If this checkbox is ticked, Odoo will automatically print the export "
-"documents of the picking when they are created. Availability of export "
-"documents depends on the carrier and the destination. Note this requires a "
-"printer to be assigned to this report. "
-msgstr ""
-"如果勾选该复选框，Odoo 将在创建拣选的出口单据时自动打印这些单据。导出文件的可用性取决于承运商和目的地。请注意，这需要为该报告分配一台打印机。"
-
-#. module: delivery_iot
 #: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid ""
-"If you connect your scales through the IoT App, the\n"
-"                            weight of the package will be set automatically when\n"
-"                            you do a \"Put in Pack\" operation."
-msgstr ""
-"如果您通过 IoT 应用程序连接您的电子秤\n"
-"                            当您执行 \"放入包装 \"操作时\n"
-"                            放入包装 \"操作。"
+msgid "IoT"
+msgstr "物联网"
 
 #. module: delivery_iot
 #: model_terms:ir.ui.view,arch_db:delivery_iot.iot_device_view_form_inherit
@@ -121,7 +65,7 @@ msgstr "链接的操作类型"
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__manual_measurement
 msgid "Manual Measurement"
-msgstr "手动称重"
+msgstr "人工测量"
 
 #. module: delivery_iot
 #: model:ir.model.fields,help:delivery_iot.field_choose_delivery_package__manual_measurement
@@ -139,8 +83,8 @@ msgid "Picking Type"
 msgstr "拣货类型"
 
 #. module: delivery_iot
-#. odoo-javascript
-#: code:addons/delivery_iot/static/src/field_many2one_iot_scale.xml:0
+#. openerp-web
+#: code:addons/delivery_iot/static/src/xml/iot_widgets_templates.xml:0
 #, python-format
 msgid "Read weight"
 msgstr "读取重量"
@@ -153,21 +97,15 @@ msgstr "比例"
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__available_scale_ids
 #: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__iot_scale_ids
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
 msgid "Scales"
 msgstr "秤"
 
 #. module: delivery_iot
-#: model:ir.actions.report,name:delivery_iot.action_report_shipping_docs
-msgid "Shipping Documents"
-msgstr "运输文件"
-
-#. module: delivery_iot
-#: model:ir.actions.report,name:delivery_iot.action_report_shipping_labels
-msgid "Shipping Labels"
-msgstr "运输标签"
+#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__iot_printer_id
+msgid "Shipping Labels Printer"
+msgstr "运输标签打印机"
 
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_stock_picking
 msgid "Transfer"
-msgstr "运输"
+msgstr "调拨"

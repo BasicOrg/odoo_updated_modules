@@ -74,7 +74,7 @@ class TestReconciliationWidget(ValuationReconciliationTestCommon):
         })
 
         wizard = self.env['bank.rec.widget'].with_context(default_st_line_id=statement.line_ids.id).new({})
-        amls = self.env['account.move.line'].search(wizard._prepare_embedded_views_data()['amls']['domain'])
+        amls = self.env['account.move.line'].search(wizard.amls_widget['domain'])
         stock_accounts = (
             avco_1.property_stock_account_input_categ_id + avco_2.property_stock_account_input_categ_id
             + avco_1.property_stock_account_output_categ_id + avco_2.property_stock_account_output_categ_id

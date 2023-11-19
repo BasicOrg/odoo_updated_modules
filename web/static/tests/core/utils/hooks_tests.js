@@ -1,22 +1,20 @@
 /** @odoo-module **/
 
 import { uiService } from "@web/core/ui/ui_service";
-import {
-    useAutofocus,
-    useBus,
-    useChildRef,
-    useForwardRefToParent,
-    useService,
-    useSpellCheck,
-} from "@web/core/utils/hooks";
+import { useAutofocus, useBus, useChildRef, useForwardRefToParent, useListener, useService } from "@web/core/utils/hooks";
 import { registry } from "@web/core/registry";
 import { makeTestEnv } from "@web/../tests/helpers/mock_env";
-import { destroy, getFixture, makeDeferred, mount, nextTick } from "@web/../tests/helpers/utils";
+import {
+    click,
+    destroy,
+    getFixture,
+    makeDeferred,
+    mount,
+    nextTick,
+} from "@web/../tests/helpers/utils";
+import { LegacyComponent } from "@web/legacy/legacy_component";
 
-import { Component, onMounted, useState, xml } from "@odoo/owl";
-import { dialogService } from "@web/core/dialog/dialog_service";
-import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
-import { CommandPalette } from "@web/core/commands/command_palette";
+const { Component, onMounted, useState, xml } = owl;
 const serviceRegistry = registry.category("services");
 
 QUnit.module("utils", () => {
@@ -147,77 +145,6 @@ QUnit.module("utils", () => {
             await mount(MyComponent, target, { env });
         });
 
-        QUnit.test(
-            "useAutofocus works when isSmall and you provide mobile param",
-            async function (assert) {
-                class MyComponent extends Component {
-                    setup() {
-                        this.inputRef = useAutofocus({ mobile: true });
-                    }
-                }
-                MyComponent.template = xml`
-                <span>
-                    <input type="text" t-ref="autofocus" />
-                </span>
-            `;
-
-                const fakeUIService = {
-                    start(env) {
-                        const ui = {};
-                        Object.defineProperty(env, "isSmall", {
-                            get() {
-                                return true;
-                            },
-                        });
-
-                        return ui;
-                    },
-                };
-
-                registry.category("services").add("ui", fakeUIService);
-
-                const env = await makeTestEnv();
-                const target = getFixture();
-                const comp = await mount(MyComponent, target, { env });
-                assert.strictEqual(document.activeElement, comp.inputRef.el);
-            }
-        );
-        QUnit.test(
-            "useAutofocus does not focus when isSmall and you don't provide mobile param",
-            async function (assert) {
-                class MyComponent extends Component {
-                    setup() {
-                        this.inputRef = useAutofocus();
-                    }
-                }
-                MyComponent.template = xml`
-                <span>
-                    <input type="text" t-ref="autofocus" />
-                </span>
-            `;
-
-                const fakeUIService = {
-                    start(env) {
-                        const ui = {};
-                        Object.defineProperty(env, "isSmall", {
-                            get() {
-                                return true;
-                            },
-                        });
-
-                        return ui;
-                    },
-                };
-
-                registry.category("services").add("ui", fakeUIService);
-
-                const env = await makeTestEnv();
-                const target = getFixture();
-                const comp = await mount(MyComponent, target, { env });
-                assert.notEqual(document.activeElement, comp.inputRef.el);
-            }
-        );
-
         QUnit.test("supports different ref names", async (assert) => {
             class MyComponent extends Component {
                 setup() {
@@ -276,45 +203,6 @@ QUnit.module("utils", () => {
             assert.strictEqual(comp.inputRef.el.selectionEnd, 10);
         });
 
-        QUnit.test("useAutofocus: autofocus outside of active element doesn't work (CommandPalette)", async function (assert) {
-            class MyComponent extends Component {
-                setup() {
-                    this.inputRef = useAutofocus();
-                }
-                get OverlayContainer() {
-                    return registry.category("main_components").get("OverlayContainer");
-                }
-            }
-            MyComponent.template = xml`
-                <div>
-                    <input type="text" t-ref="autofocus" />
-                    <div class="o_dialog_container"/>
-                    <t t-component="OverlayContainer.Component" t-props="OverlayContainer.props" />
-                </div>
-            `;
-
-            registry.category("services").add("ui", uiService);
-            registry.category("services").add("dialog", dialogService);
-            registry.category("services").add("hotkey", hotkeyService);
-
-            const config = { providers: [] };
-            const env = await makeTestEnv();
-            const target = getFixture();
-            const comp = await mount(MyComponent, target , { env });
-            await nextTick();
-
-            assert.strictEqual(document.activeElement, comp.inputRef.el);
-
-            env.services.dialog.add(CommandPalette, { config });
-            await nextTick();
-            assert.containsOnce(target, ".o_command_palette");
-            assert.notStrictEqual(document.activeElement, comp.inputRef.el);
-
-            comp.render();
-            await nextTick();
-            assert.notStrictEqual(document.activeElement, comp.inputRef.el);
-        });
-
         QUnit.module("useBus");
 
         QUnit.test("useBus hook: simple usecase", async function (assert) {
@@ -339,6 +227,85 @@ QUnit.module("utils", () => {
             env.bus.trigger("test-event");
             await nextTick();
             assert.verifySteps([]);
+        });
+
+        QUnit.module("useListener");
+
+        QUnit.test("useListener: simple usecase", async function (assert) {
+            class MyComponent extends LegacyComponent {
+                setup() {
+                    useListener("click", () => assert.step("click"));
+                }
+            }
+            MyComponent.template = xml`<button class="root">Click Me</button>`;
+
+            const env = await makeTestEnv();
+            const target = getFixture();
+            await mount(MyComponent, target, { env });
+
+            await click(target.querySelector(".root"));
+            assert.verifySteps(["click"]);
+        });
+
+        QUnit.test("useListener: event delegation", async function (assert) {
+            class MyComponent extends LegacyComponent {
+                setup() {
+                    this.flag = true;
+                    useListener("click", "button", () => assert.step("click"));
+                }
+            }
+            MyComponent.template = xml`
+                <div class="root">
+                    <button t-if="flag">Click Here</button>
+                    <button t-else="">
+                        <span>or Here</span>
+                    </button>
+                </div>`;
+
+            const env = await makeTestEnv();
+            const target = getFixture();
+            const comp = await mount(MyComponent, target, { env });
+
+            await click(target.querySelector(".root"));
+            assert.verifySteps([]);
+            await click(target.querySelector("button"));
+            assert.verifySteps(["click"]);
+
+            comp.flag = false;
+            comp.render();
+            await nextTick();
+            await click(target.querySelector("button span"));
+            assert.verifySteps(["click"]);
+        });
+
+        QUnit.test("useListener: event delegation with capture option", async function (assert) {
+            class MyComponent extends LegacyComponent {
+                setup() {
+                    this.flag = false;
+                    useListener("click", "button", () => assert.step("click"), { capture: true });
+                }
+            }
+            MyComponent.template = xml`
+                <div class="root">
+                    <button t-if="flag">Click Here</button>
+                    <button t-else="">
+                        <span>or Here</span>
+                    </button>
+                </div>`;
+
+            const env = await makeTestEnv();
+            const target = getFixture();
+            const comp = await mount(MyComponent, target, { env });
+
+            await click(target.querySelector(".root"));
+            assert.verifySteps([]);
+            await click(target.querySelector("button"));
+            assert.verifySteps(["click"]);
+
+            comp.flag = false;
+            await comp.render();
+            await click(target.querySelector("button span"));
+            assert.verifySteps(["click"]);
         });
 
         QUnit.module("useService");
@@ -456,259 +423,6 @@ QUnit.module("utils", () => {
             assert.rejects(comp.functionService.call("boundThis"), "Component is destroyed");
             assert.strictEqual(nbCalls, 8);
         });
-
-        QUnit.test("useService: async service with protected methods", async function (assert) {
-            let nbCalls = 0;
-            let def = makeDeferred();
-            class MyComponent extends Component {
-                setup() {
-                    this.objectService = useService("object_service");
-                    this.functionService = useService("function_service");
-                }
-            }
-            MyComponent.template = xml`<div/>`;
-
-            serviceRegistry.add("object_service", {
-                name: "object_service",
-                async: ["asyncMethod"],
-                start() {
-                    return {
-                        async asyncMethod() {
-                            nbCalls++;
-                            await def;
-                            return this;
-                        },
-                    };
-                },
-            });
-
-            serviceRegistry.add("function_service", {
-                name: "function_service",
-                async: true,
-                start() {
-                    return async function asyncFunc() {
-                        nbCalls++;
-                        await def;
-                        return this;
-                    };
-                },
-            });
-
-            const env = await makeTestEnv();
-            const target = getFixture();
-
-            const comp = await mount(MyComponent, target, { env });
-            // Functions and methods have the correct this
-            def.resolve();
-            assert.deepEqual(await comp.objectService.asyncMethod(), comp.objectService);
-            assert.deepEqual(await comp.objectService.asyncMethod.call("boundThis"), "boundThis");
-            assert.deepEqual(await comp.functionService(), comp);
-            assert.deepEqual(await comp.functionService.call("boundThis"), "boundThis");
-            assert.strictEqual(nbCalls, 4);
-            // Functions that were called before the component is destroyed but resolved after never resolve
-            let nbResolvedProms = 0;
-            def = makeDeferred();
-            comp.objectService.asyncMethod().then(() => nbResolvedProms++);
-            comp.objectService.asyncMethod.call("boundThis").then(() => nbResolvedProms++);
-            comp.functionService().then(() => nbResolvedProms++);
-            comp.functionService.call("boundThis").then(() => nbResolvedProms++);
-            assert.strictEqual(nbCalls, 8);
-            comp.__owl__.app.destroy();
-            def.resolve();
-            await nextTick();
-            assert.strictEqual(
-                nbResolvedProms,
-                0,
-                "The promises returned by the calls should never resolve"
-            );
-            // Calling the functions after the destruction rejects the promise
-            assert.rejects(comp.objectService.asyncMethod(), "Component is destroyed");
-            assert.rejects(
-                comp.objectService.asyncMethod.call("boundThis"),
-                "Component is destroyed"
-            );
-            assert.rejects(comp.functionService(), "Component is destroyed");
-            assert.rejects(comp.functionService.call("boundThis"), "Component is destroyed");
-            assert.strictEqual(nbCalls, 8);
-        });
-
-        QUnit.module("useSpellCheck");
-
-        QUnit.test("useSpellCheck: ref is on the textarea", async function (assert) {
-            class MyComponent extends Component {
-                setup() {
-                    useSpellCheck();
-                }
-            }
-            MyComponent.template = xml`<div><textarea t-ref="spellcheck" class="textArea"/></div>`;
-
-            const env = await makeTestEnv();
-            const target = getFixture();
-            await mount(MyComponent, target, { env });
-            const textArea = target.querySelector(".textArea");
-            assert.strictEqual(textArea.spellcheck, true, "by default, spellcheck is enabled");
-            textArea.focus();
-            textArea.blur();
-            assert.strictEqual(
-                textArea.spellcheck,
-                false,
-                "spellcheck is disabled once the element has lost its focus"
-            );
-            textArea.focus();
-            assert.strictEqual(
-                textArea.spellcheck,
-                true,
-                "spellcheck is re-enabled once the element is focused"
-            );
-        });
-
-        QUnit.test("useSpellCheck: use a different refName", async function (assert) {
-            class MyComponent extends Component {
-                setup() {
-                    useSpellCheck({ refName: "myreference" });
-                }
-            }
-            MyComponent.template = xml`<div><textarea t-ref="myreference" class="textArea"/></div>`;
-
-            const env = await makeTestEnv();
-            const target = getFixture();
-            await mount(MyComponent, target, { env });
-            const textArea = target.querySelector(".textArea");
-            assert.strictEqual(textArea.spellcheck, true, "by default, spellcheck is enabled");
-            textArea.focus();
-            textArea.blur();
-            assert.strictEqual(
-                textArea.spellcheck,
-                false,
-                "spellcheck is disabled once the element has lost its focus"
-            );
-            textArea.focus();
-            assert.strictEqual(
-                textArea.spellcheck,
-                true,
-                "spellcheck is re-enabled once the element is focused"
-            );
-        });
-
-        QUnit.test(
-            "useSpellCheck: ref is on the root element and two editable elements",
-            async function (assert) {
-                class MyComponent extends Component {
-                    setup() {
-                        useSpellCheck();
-                    }
-                }
-                MyComponent.template = xml`
-                <div t-ref="spellcheck">
-                    <textarea class="textArea"/>
-                    <div contenteditable="true" class="editableDiv"/>
-                </div>`;
-
-                const env = await makeTestEnv();
-                const target = getFixture();
-                await mount(MyComponent, target, { env });
-                const textArea = target.querySelector(".textArea");
-                const editableDiv = target.querySelector(".editableDiv");
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    true,
-                    "by default, spellcheck is enabled on the textarea"
-                );
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    true,
-                    "by default, spellcheck is enabled on the editable div"
-                );
-                textArea.focus();
-                textArea.blur();
-                editableDiv.focus();
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    false,
-                    "spellcheck is disabled once the element has lost its focus"
-                );
-                editableDiv.blur();
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    false,
-                    "spellcheck is disabled once the element has lost its focus"
-                );
-                textArea.focus();
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    true,
-                    "spellcheck is re-enabled once the element is focused"
-                );
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    false,
-                    "spellcheck is still disabled as it is not focused"
-                );
-                editableDiv.focus();
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    true,
-                    "spellcheck is re-enabled once the element is focused"
-                );
-            }
-        );
-
-        QUnit.test(
-            "useSpellCheck: ref is on the root element and one element has disabled the spellcheck",
-            async function (assert) {
-                class MyComponent extends Component {
-                    setup() {
-                        useSpellCheck();
-                    }
-                }
-                MyComponent.template = xml`
-                <div t-ref="spellcheck">
-                    <textarea class="textArea"/>
-                    <div contenteditable="true" spellcheck="false" class="editableDiv"/>
-                </div>`;
-
-                const env = await makeTestEnv();
-                const target = getFixture();
-                await mount(MyComponent, target, { env });
-                const textArea = target.querySelector(".textArea");
-                const editableDiv = target.querySelector(".editableDiv");
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    true,
-                    "by default, spellcheck is enabled on the textarea"
-                );
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    false,
-                    "by default, spellcheck is disabled on the editable div"
-                );
-                textArea.focus();
-                textArea.blur();
-                editableDiv.focus();
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    false,
-                    "spellcheck is disabled once the element has lost its focus"
-                );
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    false,
-                    "spellcheck has not been enabled since it was disabled on purpose"
-                );
-                editableDiv.blur();
-                assert.strictEqual(
-                    editableDiv.spellcheck,
-                    false,
-                    "spellcheck stays disabled once the element has lost its focus"
-                );
-                textArea.focus();
-                assert.strictEqual(
-                    textArea.spellcheck,
-                    true,
-                    "spellcheck is re-enabled once the element is focused"
-                );
-            }
-        );
 
         QUnit.module("useChildRef / useForwardRefToParent");
 

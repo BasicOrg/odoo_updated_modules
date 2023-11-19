@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="benefit_extra_time_off" model="hr.contract.salary.benefit">
+    <record id="advantage_extra_time_off" model="hr.contract.salary.advantage">
         <field name="name">Extra Time Off</field>
         <field name="res_field_id" model="ir.model.fields" eval="obj().search([('model', '=', 'hr.contract'), ('name', '=', 'holidays')])"/>
         <field name="sequence">35</field>
-        <field name="benefit_type_id" ref="hr_contract_salary.l10n_be_monthly_benefit"/>
+        <field name="advantage_type_id" ref="hr_contract_salary.l10n_be_monthly_benefit"/>
         <field name="structure_type_id" ref="hr_contract.structure_type_employee"/>
         <field name="icon">fa fa-suitcase</field>
         <field name="display_type">slider</field>
@@ -26,19 +26,14 @@
         <field name="sign_item_ids" eval="[(6, 0, [])]"/>
     </record>
 
-    <record id="ir_attachment_cdi_developer_contract" model="ir.attachment">
-        <field name="res_model">sign.template</field>
-        <field name="res_id" ref="sign_template_cdi_developer"/>
-    </record>
-
     <record id="sign_item_cdi_developer_01" model="sign.item">
         <field name="type_id" ref="sign.sign_item_type_text"/>
         <field name="name">employee_id.name</field>
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">1</field>
-        <field name="posX">0.257</field>
-        <field name="posY">0.160</field>
+        <field name="posX">0.273</field>
+        <field name="posY">0.158</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.150</field>
         <field name="height">0.015</field>
@@ -50,8 +45,8 @@
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">1</field>
-        <field name="posX">0.693</field>
-        <field name="posY">0.160</field>
+        <field name="posX">0.707</field>
+        <field name="posY">0.158</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.150</field>
         <field name="height">0.015</field>
@@ -59,7 +54,7 @@
 
     <record id="sign_item_cdi_developer_03" model="sign.item">
         <field name="type_id" ref="sign.sign_item_type_text"/>
-        <field name="name">employee_id.private_city</field>
+        <field name="name">employee_id.address_home_id.city</field>
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">1</field>
@@ -72,7 +67,7 @@
 
     <record id="sign_item_cdi_developer_04" model="sign.item">
         <field name="type_id" ref="sign.sign_item_type_text"/>
-        <field name="name">employee_id.private_country_id.name</field>
+        <field name="name">employee_id.address_home_id.country_id.name</field>
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">1</field>
@@ -85,27 +80,14 @@
 
     <record id="sign_item_cdi_developer_05" model="sign.item">
         <field name="type_id" ref="sign.sign_item_type_text"/>
-        <field name="name">employee_id.private_street</field>
+        <field name="name">employee_id.address_home_id.street</field>
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">1</field>
-        <field name="posX">0.189</field>
-        <field name="posY">0.185</field>
+        <field name="posX">0.195</field>
+        <field name="posY">0.184</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.270</field>
-        <field name="height">0.015</field>
-    </record>
-
-    <record id="sign_item_cdi_developer_06" model="sign.item">
-        <field name="type_id" ref="sign.sign_item_type_date"/>
-        <field name="name"></field>
-        <field name="required" eval="True"/>
-        <field name="responsible_id" ref="hr_contract_sign.sign_item_role_job_responsible"/>
-        <field name="page">2</field>
-        <field name="posX">0.649</field>
-        <field name="posY">0.613</field>
-        <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
-        <field name="width">0.150</field>
         <field name="height">0.015</field>
     </record>
 
@@ -115,8 +97,8 @@
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="hr_contract_sign.sign_item_role_job_responsible"/>
         <field name="page">2</field>
-        <field name="posX">0.287</field>
-        <field name="posY">0.579</field>
+        <field name="posX">0.333</field>
+        <field name="posY">0.575</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.200</field>
         <field name="height">0.050</field>
@@ -128,8 +110,8 @@
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">2</field>
-        <field name="posX">0.285</field>
-        <field name="posY">0.661</field>
+        <field name="posX">0.333</field>
+        <field name="posY">0.665</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.200</field>
         <field name="height">0.050</field>
@@ -141,8 +123,8 @@
         <field name="required" eval="True"/>
         <field name="responsible_id" ref="sign.sign_item_role_employee"/>
         <field name="page">2</field>
-        <field name="posX">0.649</field>
-        <field name="posY">0.695</field>
+        <field name="posX">0.665</field>
+        <field name="posY">0.694</field>
         <field name="template_id" ref="hr_contract_salary.sign_template_cdi_developer"/>
         <field name="width">0.150</field>
         <field name="height">0.015</field>

@@ -9,16 +9,15 @@ class hr_department(models.Model):
 
     appraisals_to_process_count = fields.Integer(compute='_compute_appraisals_to_process', string='Appraisals to Process')
     employee_feedback_template = fields.Html(
-        compute='_compute_appraisal_feedbacks', store=True, readonly=False, translate=True)
+        compute='_compute_appraisal_feedbacks', store=True, readonly=False)
     manager_feedback_template = fields.Html(
-        compute='_compute_appraisal_feedbacks', store=True, readonly=False, translate=True)
+        compute='_compute_appraisal_feedbacks', store=True, readonly=False)
     custom_appraisal_templates = fields.Boolean(string="Custom Appraisal Templates", default=False)
-    appraisal_properties_definition = fields.PropertiesDefinition('Appraisal Properties')
 
     def _compute_appraisals_to_process(self):
-        appraisals = self.env['hr.appraisal']._read_group(
-            [('department_id', 'in', self.ids), ('state', 'in', ['new', 'pending'])], ['department_id'], ['__count'])
-        result = {department.id: count for department, count in appraisals}
+        appraisals = self.env['hr.appraisal'].read_group(
+            [('department_id', 'in', self.ids), ('state', 'in', ['new', 'pending'])], ['department_id'], ['department_id'])
+        result = dict((data['department_id'][0], data['department_id_count']) for data in appraisals)
         for department in self:
             department.appraisals_to_process_count = result.get(department.id, 0)
 

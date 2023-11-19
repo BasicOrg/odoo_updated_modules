@@ -7,7 +7,6 @@ from odoo import fields, models, api
 class SpreadsheetContributor(models.Model):
     _name = "spreadsheet.contributor"
     _description = "Spreadsheet Contributor"
-    _rec_name = 'user_id'
 
     document_id = fields.Many2one("documents.document")
     user_id = fields.Many2one("res.users")

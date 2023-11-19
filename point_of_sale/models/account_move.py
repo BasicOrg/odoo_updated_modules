@@ -9,7 +9,6 @@ class AccountMove(models.Model):
 
     pos_order_ids = fields.One2many('pos.order', 'account_move')
     pos_payment_ids = fields.One2many('pos.payment', 'account_move_id')
-    pos_refunded_invoice_ids = fields.Many2many('account.move', 'refunded_invoices', 'refund_account_move', 'original_account_move')
 
     def _stock_account_get_last_step_stock_moves(self):
         stock_moves = super(AccountMove, self)._stock_account_get_last_step_stock_moves()
@@ -44,6 +43,13 @@ class AccountMove(models.Model):
 
         return lot_values
 
+    def _get_reconciled_vals(self, partial, amount, counterpart_line):
+        """Add pos_payment_name field in the reconciled vals to be able to show the payment method in the invoice."""
+        result = super()._get_reconciled_vals(partial, amount, counterpart_line)
+        if counterpart_line.move_id.sudo().pos_payment_ids:
+            pos_payment = counterpart_line.move_id.sudo().pos_payment_ids
+            result['pos_payment_name'] = pos_payment.payment_method_id.name
+        return result
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
@@ -53,7 +59,7 @@ class AccountMoveLine(models.Model):
         if not self.product_id:
             return self.price_unit
         price_unit = super(AccountMoveLine, self)._stock_account_get_anglo_saxon_price_unit()
-        sudo_order = self.move_id.sudo().pos_order_ids
-        if sudo_order:
-            price_unit = sudo_order._get_pos_anglo_saxon_price_unit(self.product_id, self.move_id.partner_id.id, self.quantity)
+        order = self.move_id.pos_order_ids
+        if order:
+            price_unit = order._get_pos_anglo_saxon_price_unit(self.product_id, self.move_id.partner_id.id, self.quantity)
         return price_unit

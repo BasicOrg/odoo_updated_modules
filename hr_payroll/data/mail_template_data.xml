@@ -6,7 +6,7 @@
         <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
         <field name="subject">{{ object.employee_id.name }}, a new payslip is available for you</field>
         <field name="email_from">{{ user.email_formatted }}</field>
-        <field name="partner_to">{{ object.employee_id.work_contact_id.id }}</field>
+        <field name="partner_to">{{ object.employee_id.address_home_id.id }}</field>
         <field name="description">Sent to employee to notify them about their new payslip</field>
         <field name="body_html" type="html">
 <table border="0" cellpadding="0" cellspacing="0" style="width:100%; margin:0px auto;"><tbody>
@@ -18,7 +18,7 @@
     </td></tr>
 </tbody></table>
             </field>
-            <field name="lang">{{ object.employee_id.lang }}</field>
+            <field name="lang">{{ object.employee_id.address_home_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
       </record>
 

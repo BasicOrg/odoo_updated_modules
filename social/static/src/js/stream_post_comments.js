@@ -1,16 +1,18 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { ImagesCarouselDialog } from './images_carousel_dialog';
 import { SocialPostFormatterMixin } from './social_post_formatter_mixin';
 import { StreamPostCommentsReply } from './stream_post_comments_reply';
 import { StreamPostCommentList } from './stream_post_comment_list';
 
 import { Dialog } from '@web/core/dialog/dialog';
+import { formatDateTime } from '@web/core/l10n/dates';
+import { patch } from '@web/core/utils/patch';
 import { useService } from '@web/core/utils/hooks';
-import { Component, markup, useSubEnv, useState } from "@odoo/owl";
 
-export class StreamPostComments extends SocialPostFormatterMixin(Component) {
+const { Component, markup, useSubEnv, useState } = owl;
+
+export class StreamPostComments extends Component {
 
     setup() {
         super.setup();
@@ -38,7 +40,7 @@ export class StreamPostComments extends SocialPostFormatterMixin(Component) {
 
     _onClickMoreImages(index, images) {
         this.dialog.add(ImagesCarouselDialog, {
-            title: _t("Post Images"),
+            title: this.env._t("Post Images"),
             activeIndex: index,
             images: images
         })
@@ -64,6 +66,10 @@ export class StreamPostComments extends SocialPostFormatterMixin(Component) {
         return markup(this._formatPost(message));
     }
 
+    _formatDateTime(date) {
+        return formatDateTime(moment(date));
+    }
+
     get bodyClass() {
         return 'o_social_comments_modal o_social_comments_modal_' + this.originalPost.media_type.raw_value + ' pt-0 px-0 bg-100';
     }
@@ -84,10 +90,9 @@ export class StreamPostComments extends SocialPostFormatterMixin(Component) {
         return StreamPostCommentsReply;
     }
 
-    get isAuthor() {
-        return this.originalPost.is_author && this.originalPost.is_author.raw_value;
-    }
 }
+
+patch(StreamPostComments.prototype, 'social_post_formatter_mixin', SocialPostFormatterMixin);
 
 StreamPostComments.template = 'social.StreamPostComments';
 StreamPostComments.components = { Dialog };

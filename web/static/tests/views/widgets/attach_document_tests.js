@@ -1,15 +1,8 @@
 /** @odoo-module **/
 
-import {
-    click,
-    editInput,
-    getFixture,
-    nextTick,
-    patchWithCleanup,
-} from "@web/../tests/helpers/utils";
+import { click, editInput, getFixture, triggerEvent } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
 import { registry } from "@web/core/registry";
-import { AttachDocumentWidget } from "@web/views/widgets/attach_document/attach_document";
 
 const serviceRegistry = registry.category("services");
 
@@ -42,14 +35,6 @@ QUnit.module("Widgets", (hooks) => {
     QUnit.module("AttachDocument");
 
     QUnit.test("attach document widget calls action with attachment ids", async function (assert) {
-        let fileInput;
-        patchWithCleanup(AttachDocumentWidget.prototype, {
-            setup() {
-                super.setup();
-                fileInput = this.fileInput;
-            },
-        });
-
         serviceRegistry.add("http", {
             start: () => ({
                 post: (route, params) => {
@@ -68,18 +53,16 @@ QUnit.module("Widgets", (hooks) => {
             serverData,
             resId: 1,
             mockRPC(route, args) {
-                assert.step(args.method);
                 if (args.method === "my_action") {
+                    assert.step("my_action");
                     assert.deepEqual(args.model, "partner");
                     assert.deepEqual(args.args, [1]);
                     assert.deepEqual(args.kwargs.attachment_ids, [5, 2]);
                     return true;
                 }
-                if (args.method === "web_save") {
+                if (args.method === "write") {
+                    assert.step("write");
                     assert.deepEqual(args.args[1], { display_name: "yop" });
-                }
-                if (args.method === "web_read") {
-                    assert.deepEqual(args.args[0], [1]);
                 }
             },
             arch: `
@@ -88,70 +71,16 @@ QUnit.module("Widgets", (hooks) => {
                     <field name="display_name" required="1"/>
                 </form>`,
         });
-        assert.verifySteps(["get_views", "web_read"]);
 
         await editInput(target, "[name='display_name'] input", "yop");
         await click(target, ".o_attach_document");
-        fileInput.dispatchEvent(new Event("change"));
-        await nextTick();
-        assert.verifySteps(["web_save", "post", "my_action", "web_read"]);
+        await triggerEvent(
+            target,
+            ".o_file_input input",
+            "change",
+            {},
+            { skipVisibilityCheck: true }
+        );
+        assert.verifySteps(["write", "post", "my_action"]);
     });
-
-    QUnit.test(
-        "attach document widget calls action with attachment ids on a new record",
-        async function (assert) {
-            let fileInput;
-            patchWithCleanup(AttachDocumentWidget.prototype, {
-                setup() {
-                    super.setup();
-                    fileInput = this.fileInput;
-                },
-            });
-
-            serviceRegistry.add("http", {
-                start: () => ({
-                    post: (route, params) => {
-                        assert.step("post");
-                        assert.strictEqual(route, "/web/binary/upload_attachment");
-                        assert.strictEqual(params.model, "partner");
-                        assert.strictEqual(params.id, 2);
-                        return '[{ "id": 5 }, { "id": 2 }]';
-                    },
-                }),
-            });
-
-            await makeView({
-                type: "form",
-                resModel: "partner",
-                serverData,
-                mockRPC(route, args) {
-                    assert.step(args.method);
-                    if (args.method === "my_action") {
-                        assert.deepEqual(args.model, "partner");
-                        assert.deepEqual(args.args, [2]);
-                        assert.deepEqual(args.kwargs.attachment_ids, [5, 2]);
-                        return true;
-                    }
-                    if (args.method === "web_save") {
-                        assert.deepEqual(args.args[1], { display_name: "yop" });
-                    }
-                    if (args.method === "web_read") {
-                        assert.deepEqual(args.args[0], [2]);
-                    }
-                },
-                arch: `
-                <form>
-                    <widget name="attach_document" action="my_action" string="Attach document"/>
-                    <field name="display_name" required="1"/>
-                </form>`,
-            });
-            assert.verifySteps(["get_views", "onchange"]);
-
-            await editInput(target, "[name='display_name'] input", "yop");
-            await click(target, ".o_attach_document");
-            fileInput.dispatchEvent(new Event("change"));
-            await nextTick();
-            assert.verifySteps(["web_save", "post", "my_action", "web_read"]);
-        }
-    );
 });

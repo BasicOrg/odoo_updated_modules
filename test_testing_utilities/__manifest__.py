@@ -7,7 +7,7 @@
 This here module is useful to validate that they're doing what they're 
 supposed to do
     """,
-    'depends': ['base', 'web'],
+    'depends': ['base'],
     'data': [
         'ir.model.access.csv',
         'menu.xml',

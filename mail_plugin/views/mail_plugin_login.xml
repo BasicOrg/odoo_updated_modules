@@ -3,7 +3,7 @@
     <template id="mail_plugin.app_auth" name="Accept app">
         <t t-call="web.login_layout">
             <t t-set="disable_database_manager" t-value="1"/>
-            <form role="form" method="post" action="/mail_plugin/auth/confirm">
+            <form class="oe_login_form" role="form" method="post" action="/mail_plugin/auth/confirm">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input type="hidden" name="redirect" t-att-value="redirect"/>
                 <input type="hidden" name="scope" t-att-value="scope"/>
@@ -17,11 +17,6 @@
                     <button type="submit" name="do" class="btn btn-link btn-sm">Deny</button>
                 </p>
             </form>
-        </t>
-    </template>
-    <template id="mail_plugin.app_error" name="Accept app">
-        <t t-call="web.login_layout">
-            <div class="alert alert-danger" role="alert" t-out="error"/>
         </t>
     </template>
 </odoo>

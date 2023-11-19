@@ -21,14 +21,6 @@ class TestUtm(TestUTMCommon):
         self.assertNotIn(source_4, source_1 | source_2)
         self.assertEqual(source_4.name, 'Source 3')
 
-    def test_find_or_create_with_archived_record(self):
-        archived_campaign = self.env['utm.campaign'].create([{
-            'active': False,
-            'name': 'Archived Campaign',
-        }])
-        campaign = self.env['utm.mixin']._find_or_create_record('utm.campaign', 'Archived Campaign')
-        self.assertEqual(archived_campaign, campaign, "An archived record must be found instead of re-created.")
-
     def test_name_generation(self):
         """Test that the name is always unique.
 
@@ -69,7 +61,3 @@ class TestUtm(TestUTMCommon):
 
             utm_8 = utm_7.copy()
             self.assertEqual(utm_8.name, 'UTM d [2]', msg='Must add a counter as suffix to ensure uniqueness')
-
-        # Test name uniqueness when creating a campaign using a title (quick creation)
-        utm_9 = self.env['utm.campaign'].create({'title': 'UTM dup'})
-        self.assertEqual(utm_9.name, 'UTM dup [6]', msg='Even if the record has been created using a title, the name must be unique')

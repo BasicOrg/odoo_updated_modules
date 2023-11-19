@@ -10,8 +10,8 @@ Accounting Import
     """,
     'depends': ['account_accountant', 'base_import'],
     'data': [
-        'views/account_import_views.xml',
         'views/account_account_views.xml',
+        'views/account_import_views.xml',
         'views/account_move_views.xml',
         'views/res_partner_views.xml',
         'wizard/setup_wizards_views.xml',
@@ -22,8 +22,11 @@ Accounting Import
     'license': 'OEEL-1',
     'assets': {
         'web.assets_backend': [
-            'account_base_import/static/src/js/**/*',
+            'account_base_import/static/src/js/account_import_buttons.js',
+            'account_base_import/static/src/js/account_import_guide.js',
+            'account_base_import/static/src/js/account_setup_import.js',
             'account_base_import/static/src/xml/**/*',
+            'account_base_import/static/src/scss/**/*',
         ],
     }
 }

@@ -1,5 +1,5 @@
 /** @odoo-module **/
 
-import { addModelNamesToFetch } from "@bus/../tests/helpers/model_definitions_helpers";
+import { addModelNamesToFetch } from '@bus/../tests/helpers/model_definitions_helpers';
 
-addModelNamesToFetch(["account.move", "res.currency"]);
+addModelNamesToFetch(['account.move', 'res.currency']);

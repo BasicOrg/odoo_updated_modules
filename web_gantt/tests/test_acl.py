@@ -32,7 +32,7 @@ class TestACL(TransactionCaseWithUserDemo):
             .with_user(self.user_demo)\
             .get_view(False, 'gantt')
         view_arch = etree.fromstring(company_view['arch'])
-        self.assertEqual(view_arch.get('delete'), 'False')
+        self.assertEqual(view_arch.get('delete'), 'false')
 
         # the manager user can unlink
         company_view = self.env['res.company']\

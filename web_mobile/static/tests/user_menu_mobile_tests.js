@@ -10,7 +10,9 @@ import { click as _click, getFixture, mount, patchWithCleanup } from "@web/../te
 import { menuService } from "@web/webclient/menus/menu_service";
 import { actionService } from "@web/webclient/actions/action_service";
 
-import mobile from "@web_mobile/js/services/core";
+import mobile from "web_mobile.core";
+import { viewService } from "@web/views/view_service";
+import { ormService } from "@web/core/orm_service";
 
 const serviceRegistry = registry.category("services");
 const userMenuRegistry = registry.category("user_menuitems");
@@ -31,7 +33,9 @@ const click = (el, selector, skipVisibility) => {
 QUnit.module("UserMenu", {
     async beforeEach() {
         serviceRegistry.add("hotkey", hotkeyService);
-        serviceRegistry.add("action", actionService);
+        serviceRegistry.add("action", actionService)
+            .add("view", viewService) // #action-serv-leg-compat-js-class
+            .add("orm", ormService); // #action-serv-leg-compat-js-class
         serviceRegistry.add("menu", menuService);
         target = getFixture();
     },

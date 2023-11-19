@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='tax_ids']" position="after">
                 <field name="disallowed_expenses_category_id" string="Disallowed Expenses"
-                invisible="internal_group != 'expense' and internal_group != 'income'"/>
+                attrs="{'invisible': [('internal_group', '!=', 'expense'), ('internal_group', '!=', 'income')]}"/>
             </xpath>
         </field>
     </record>

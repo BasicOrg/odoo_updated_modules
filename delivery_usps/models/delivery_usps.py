@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-import math
-from markupsafe import Markup
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 from .usps_request import USPSRequest
 
+import math
 
 
 class ProviderUSPS(models.Model):
@@ -160,8 +158,8 @@ class ProviderUSPS(models.Model):
 
             carrier_tracking_ref = booking['tracking_number']
 
-            logmessage = Markup(_("Shipment created into USPS <br/> <b>Tracking Number: </b>%s")) % carrier_tracking_ref
-            usps_labels = [('%s-%s.%s' % (self._get_delivery_label_prefix(), carrier_tracking_ref, self.usps_label_file_type), booking['label'])]
+            logmessage = (_("Shipment created into USPS <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
+            usps_labels = [('LabelUSPS-%s.%s' % (carrier_tracking_ref, self.usps_label_file_type), booking['label'])]
             if picking.sale_id:
                 for pick in picking.sale_id.picking_ids:
                     pick.message_post(body=logmessage, attachments=usps_labels)
@@ -188,8 +186,7 @@ class ProviderUSPS(models.Model):
             raise UserError(booking['error_message'])
 
         carrier_tracking_ref = booking['tracking_number']
-        logmessage = _("Shipment created into USPS") + Markup("<br/> <b>") + \
-                     _("Tracking Number:") + Markup("</b> ") + carrier_tracking_ref
+        logmessage = (_("Shipment created into USPS <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
         picking.message_post(body=logmessage, attachments=[('%s-%s-%s.%s' % (self.get_return_label_prefix(), carrier_tracking_ref, 1, self.usps_label_file_type), booking['label'])])
 
 

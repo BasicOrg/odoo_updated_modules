@@ -5,8 +5,11 @@ from . import report
 from . import wizard
 from . import controllers
 
+from odoo import SUPERUSER_ID, api
 
-def uninstall_hook(env):
+
+def uninstall_hook(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     warehouses = env["stock.warehouse"].search([])
     subcontracting_routes = warehouses.mapped("subcontracting_route_id")
     warehouses.write({"subcontracting_route_id": False})

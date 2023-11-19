@@ -6,10 +6,10 @@
         <field name="arch" type="xml">
             <form string="DMFA">
                 <header>
-                    <button name="generate_dmfa_xml_report" string="Generate XML report" type="object" class="oe_highlight"  invisible="declaration_type == 'web' or dmfa_xml"/>
-                    <button name="generate_dmfa_xml_report" string="Re-Generate XML report" type="object" invisible="declaration_type == 'web' or not dmfa_xml"/>
-                    <button name="generate_dmfa_pdf_report" string="Generate PDF report" type="object" class="oe_highlight"  invisible="declaration_type == 'batch' or dmfa_pdf"/>
-                    <button name="generate_dmfa_pdf_report" string="Re-Generate PDF report" type="object" invisible="declaration_type == 'batch' or not dmfa_pdf"/>
+                    <button name="generate_dmfa_xml_report" string="Generate XML report" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('declaration_type', '=', 'web'), ('dmfa_xml','!=',False)]}"/>
+                    <button name="generate_dmfa_xml_report" string="Re-Generate XML report" type="object" attrs="{'invisible': ['|', ('declaration_type', '=', 'web'), ('dmfa_xml','=',False)]}"/>
+                    <button name="generate_dmfa_pdf_report" string="Generate PDF report" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('declaration_type', '=', 'batch'), ('dmfa_pdf','!=',False)]}"/>
+                    <button name="generate_dmfa_pdf_report" string="Re-Generate PDF report" type="object" attrs="{'invisible': ['|', ('declaration_type', '=', 'batch'), ('dmfa_pdf','=',False)]}"/>
                 </header>
                 <sheet>
                     <group>
@@ -18,22 +18,22 @@
                             <field name="year"/>
                             <field name="quarter"/>
                             <field name="declaration_type"/>
-                            <field name="file_type" invisible="declaration_type == 'web'"/>
+                            <field name="file_type" attrs="{'invisible': [('declaration_type', '=', 'web')]}"/>
                             <field name="dmfa_xml_filename" invisible="1"/>
-                            <field name="dmfa_xml" filename="dmfa_xml_filename" readonly="1" invisible="declaration_type == 'web'"/>
+                            <field name="dmfa_xml" readonly="1" filename="dmfa_xml_filename" attrs="{'invisible': [('declaration_type', '=', 'web')]}"/>
                             <field name="dmfa_signature_filename" invisible="1"/>
-                            <field name="dmfa_signature" filename="dmfa_signature_filename" readonly="1" invisible="declaration_type == 'web'"/>
+                            <field name="dmfa_signature" readonly="1" filename="dmfa_signature_filename" attrs="{'invisible': [('declaration_type', '=', 'web')]}"/>
                             <field name="dmfa_go_filename" invisible="1"/>
-                            <field name="dmfa_go" filename="dmfa_go_filename" readonly="1" invisible="declaration_type == 'web'"/>
+                            <field name="dmfa_go" readonly="1" filename="dmfa_go_filename" attrs="{'invisible': [('declaration_type', '=', 'web')]}"/>
                             <field name="dmfa_pdf_filename" invisible="1"/>
-                            <field name="dmfa_pdf" filename="dmfa_pdf_filename" readonly="1" invisible="declaration_type == 'batch'"/>
+                            <field name="dmfa_pdf" readonly="1" filename="dmfa_pdf_filename" attrs="{'invisible': [('declaration_type', '=', 'batch')]}"/>
                         </group>
                         <group>
-                            <field name="validation_state" widget="state_selection" invisible="declaration_type == 'web'"/>
-                            <field name="error_message" invisible="declaration_type == 'web' or validation_state != 'invalid'"/>
+                            <field name="validation_state" widget="state_selection" attrs="{'invisible': [('declaration_type', '=', 'web')]}"/>
+                            <field name="error_message" attrs="{'invisible': ['|', ('declaration_type', '=', 'web'), ('validation_state', '!=', 'invalid')]}"/>
                         </group>
-                        <p class="text-muted" invisible="declaration_type == 'web'">Please note that the declaration by batch is rather complex and requires some technical knowledge (using some concepts like ssh keys, SFTP servers, and electronical signatures). You may want to take a look at the <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/batch/home.htm" target="_blank">the official documentation</a> and at the <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/batch/outline.htm" target="_blank">process overview</a> for more informations</p>
-                        <p class="text-muted" invisible="declaration_type == 'batch'">The printed pdf contains all the data to encode into the 'DmfA declaration web interface' that you can find <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/index.htm" target="_blank">here</a>.</p>
+                        <p class="text-muted" attrs="{'invisible': [('declaration_type', '=', 'web')]}">Please note that the declaration by batch is rather complex and requires some technical knowledge (using some concepts like ssh keys, SFTP servers, and electronical signatures). You may want to take a look at the <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/batch/home.htm" target="_blank">the official documentation</a> and at the <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/batch/outline.htm" target="_blank">process overview</a> for more informations</p>
+                        <p class="text-muted" attrs="{'invisible': [('declaration_type', '=', 'batch')]}">The printed pdf contains all the data to encode into the 'DmfA declaration web interface' that you can find <a href="https://www.socialsecurity.be/site_fr/employer/applics/dmfa/index.htm" target="_blank">here</a>.</p>
                     </group>
                 </sheet>
             </form>
@@ -81,7 +81,7 @@
         </field>
     </record>
 
-    <record id="l10n_be_dmfa_view_tree" model="ir.ui.view">
+     <record id="l10n_be_dmfa_view_tree" model="ir.ui.view">
         <field name="name">l10n_be.dmfa</field>
         <field name="model">l10n_be.dmfa</field>
         <field name="arch" type="xml">

@@ -9,7 +9,9 @@
     'data': [
         "data/dashboards.xml",
     ],
+    'demo': [],
     'installable': True,
     'auto_install': ['hr_timesheet'],
     'license': 'LGPL-3',
+    'assets': {}
 }

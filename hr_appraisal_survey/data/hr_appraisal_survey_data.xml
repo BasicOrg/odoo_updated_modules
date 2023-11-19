@@ -1,13 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+    <record model="survey.survey" id="appraisal_feedback_template">
+        <field name="title">Employee Appraisal Form</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="access_mode">token</field>
+        <field name="is_appraisal" eval="True"/>
+        <field name="is_attempts_limited" eval="True"/>
+        <field name="users_can_go_back" eval="True" />
+        <field name="description" type="html">
+            <p>This survey allows you to give a feedback about your collaboration with an employee. Filling it helps us improving the appraisal process.</p>
+        </field>
+    </record>
+    <!-- Page 1 -->
+    <record model="survey.question" id="appraisal_1">
+        <field name="title"></field>
+        <field name="survey_id" ref="appraisal_feedback_template"/>
+        <field name="is_page" eval="True"/>
+        <field name="question_type" eval="False"/>
+        <field name="sequence">1</field>
+        <field name="description" type="html">
+            <h2>Overall Purpose Of Employee Appraisal</h2>
+            <ul>
+                <li>To initiate a clear and open communication of performance expectations</li>
+                <li>To assist employees in their professional growth, through the identification of strengths and opportunities for development</li>
+            </ul>
+
+            <h2>At the outset of the appraisal time period</h2>
+            <ul>
+                <li>It is the joint responsibility of the employee and the supervisor (appraiser) to establish a feasible work plan for the coming year, including major employee responsibilities and corresponding benchmarks against which results will be evaluated.</li>
+                <li>Critical or key elements of performance and professional development needs (if any), should also be noted at this time</li>
+            </ul>
+
+            <h2>At the conclusion of the appraisal time period</h2>
+            <ul>
+                <li>The employee will be responsible for completing a draft of the Appraisal Form as a tool for self-appraisal and a starting point for the supervisor’s evaluation. The employee can add examples of achievements for each criterion. Once the form had been filled, the employee send it to their supervisor.</li>
+                <li>It is the primary responsibility of the supervisor to gather the necessary input from the appropriate sources of feedback (internal and/or external customers, peers).</li>
+                <li>The supervisor synthesizes and integrates all input into the completed appraisal. The motivation of the evaluation is explained in the ad hoc fields.</li>
+                <li>The employee may choose to offer comments or explanation regarding the completed review.</li>
+            </ul>
+        </field>
+    </record>
+    <record model="survey.question" id="appraisal_1_1">
+        <field name="survey_id" ref="appraisal_feedback_template" />
+        <field name="sequence">2</field>
+        <field name="title">Name</field>
+        <field name="question_type">text_box</field>
+        <field name="constr_mandatory" eval="True" />
+    </record>
+    <record model="survey.question" id="appraisal_1_2">
+        <field name="survey_id" ref="appraisal_feedback_template" />
+        <field name="sequence">3</field>
+        <field name="title">Position Title</field>
+        <field name="question_type">text_box</field>
+        <field name="constr_mandatory" eval="True" />
+    </record>
+    <record model="survey.question" id="appraisal_1_3">
+        <field name="survey_id" ref="appraisal_feedback_template" />
+        <field name="sequence">4</field>
+        <field name="title">Appraisal for Period</field>
+        <field name="question_type">text_box</field>
+        <field name="constr_mandatory" eval="True" />
+    </record>
+    <record model="survey.question" id="appraisal_1_4">
+        <field name="survey_id" ref="appraisal_feedback_template" />
+        <field name="sequence">5</field>
+        <field name="title">Date of review</field>
+        <field name="question_type">date</field>
+        <field name="constr_mandatory" eval="True" />
+    </record>
+    <record model="survey.question" id="appraisal_1_5">
+        <field name="survey_id" ref="appraisal_feedback_template" />
+        <field name="sequence">6</field>
+        <field name="title">Appraiser</field>
+        <field name="question_type">text_box</field>
+        <field name="constr_mandatory" eval="True" />
+    </record>
 
     <!-- 360 Feedback -->
     <record model="survey.survey" id="appraisal_360_feedback_template">
-        <field name="survey_type">appraisal</field>
         <field name="title">360 Feedback</field>
         <field name="user_id" ref="base.user_admin"/>
         <field name="access_mode">token</field>
+        <field name="is_appraisal" eval="True"/>
         <field name="is_attempts_limited" eval="True"/>
         <field name="users_can_go_back" eval="True" />
         <field name="description" type="html">
@@ -171,84 +246,6 @@
         <field name="sequence">10</field>
         <field name="title">Do you have any comment to tell me and help me improve?</field>
         <field name="question_type">text_box</field>
-    </record>
-
-    <!-- appraisal form -->
-
-    <record model="survey.survey" id="appraisal_feedback_template">
-        <field name="survey_type">appraisal</field>
-        <field name="title">Employee Appraisal Form</field>
-        <field name="user_id" ref="base.user_admin"/>
-        <field name="access_mode">token</field>
-        <field name="is_attempts_limited" eval="True"/>
-        <field name="users_can_go_back" eval="True" />
-        <field name="description" type="html">
-            <p>This survey allows you to give a feedback about your collaboration with an employee. Filling it helps us improving the appraisal process.</p>
-        </field>
-    </record>
-    <!-- Page 1 -->
-    <record model="survey.question" id="appraisal_1">
-        <field name="title"></field>
-        <field name="survey_id" ref="appraisal_feedback_template"/>
-        <field name="is_page" eval="True"/>
-        <field name="question_type" eval="False"/>
-        <field name="sequence">1</field>
-        <field name="description" type="html">
-            <h2>Overall Purpose Of Employee Appraisal</h2>
-            <ul>
-                <li>To initiate a clear and open communication of performance expectations</li>
-                <li>To assist employees in their professional growth, through the identification of strengths and opportunities for development</li>
-            </ul>
-
-            <h2>At the outset of the appraisal time period</h2>
-            <ul>
-                <li>It is the joint responsibility of the employee and the supervisor (appraiser) to establish a feasible work plan for the coming year, including major employee responsibilities and corresponding benchmarks against which results will be evaluated.</li>
-                <li>Critical or key elements of performance and professional development needs (if any), should also be noted at this time</li>
-            </ul>
-
-            <h2>At the conclusion of the appraisal time period</h2>
-            <ul>
-                <li>The employee will be responsible for completing a draft of the Appraisal Form as a tool for self-appraisal and a starting point for the supervisor’s evaluation. The employee can add examples of achievements for each criterion. Once the form had been filled, the employee send it to their supervisor.</li>
-                <li>It is the primary responsibility of the supervisor to gather the necessary input from the appropriate sources of feedback (internal and/or external customers, peers).</li>
-                <li>The supervisor synthesizes and integrates all input into the completed appraisal. The motivation of the evaluation is explained in the ad hoc fields.</li>
-                <li>The employee may choose to offer comments or explanation regarding the completed review.</li>
-            </ul>
-        </field>
-    </record>
-    <record model="survey.question" id="appraisal_1_1">
-        <field name="survey_id" ref="appraisal_feedback_template" />
-        <field name="sequence">2</field>
-        <field name="title">Name</field>
-        <field name="question_type">text_box</field>
-        <field name="constr_mandatory" eval="True" />
-    </record>
-    <record model="survey.question" id="appraisal_1_2">
-        <field name="survey_id" ref="appraisal_feedback_template" />
-        <field name="sequence">3</field>
-        <field name="title">Position Title</field>
-        <field name="question_type">text_box</field>
-        <field name="constr_mandatory" eval="True" />
-    </record>
-    <record model="survey.question" id="appraisal_1_3">
-        <field name="survey_id" ref="appraisal_feedback_template" />
-        <field name="sequence">4</field>
-        <field name="title">Appraisal for Period</field>
-        <field name="question_type">text_box</field>
-        <field name="constr_mandatory" eval="True" />
-    </record>
-    <record model="survey.question" id="appraisal_1_4">
-        <field name="survey_id" ref="appraisal_feedback_template" />
-        <field name="sequence">5</field>
-        <field name="title">Date of review</field>
-        <field name="question_type">date</field>
-        <field name="constr_mandatory" eval="True" />
-    </record>
-    <record model="survey.question" id="appraisal_1_5">
-        <field name="survey_id" ref="appraisal_feedback_template" />
-        <field name="sequence">6</field>
-        <field name="title">Appraiser</field>
-        <field name="question_type">text_box</field>
-        <field name="constr_mandatory" eval="True" />
     </record>
     </data>
 </odoo>

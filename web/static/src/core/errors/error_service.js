@@ -1,10 +1,9 @@
 /** @odoo-module **/
 
 import { browser } from "../browser/browser";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "../l10n/translation";
 import { registry } from "../registry";
 import { completeUncaughtError, getErrorTechnicalName } from "./error_utils";
-import { isIOS, isBrowserSafari } from "@web/core/browser/feature_detection";
 
 /**
  * Uncaught Errors have 4 properties:
@@ -23,77 +22,70 @@ export class UncaughtError extends Error {
 }
 
 export class UncaughtClientError extends UncaughtError {
-    constructor(message = _t("Uncaught Javascript Error")) {
+    constructor(message = _lt("Uncaught Javascript Error")) {
         super(message);
     }
 }
 
 export class UncaughtPromiseError extends UncaughtError {
-    constructor(message = _t("Uncaught Promise")) {
+    constructor(message = _lt("Uncaught Promise")) {
         super(message);
         this.unhandledRejectionEvent = null;
     }
 }
 
 export class UncaughtCorsError extends UncaughtError {
-    constructor(message = _t("Uncaught CORS Error")) {
+    constructor(message = _lt("Uncaught CORS Error")) {
         super(message);
     }
 }
 
 export const errorService = {
     start(env) {
-        function handleError(uncaughtError, retry = true) {
-            let originalError = uncaughtError;
-            while (originalError instanceof Error && "cause" in originalError) {
-                originalError = originalError.cause;
+        function handleError(error, originalError, retry = true) {
+            const services = env.services;
+            if (!services.dialog || !services.notification || !services.rpc) {
+                // here, the environment is not ready to provide feedback to the user.
+                // We simply wait 1 sec and try again, just in case the application can
+                // recover.
+                if (retry) {
+                    browser.setTimeout(() => {
+                        handleError(error, originalError, false);
+                    }, 1000);
+                }
+                return;
             }
-            for (const [name, handler] of registry.category("error_handlers").getEntries()) {
-                try {
-                    if (handler(env, uncaughtError, originalError)) {
-                        break;
-                    }
-                } catch (e) {
-                    console.error(
-                        `A crash occured in error handler ${name} while handling ${uncaughtError}:`,
-                        e
-                    );
-                    return;
+            for (const handler of registry.category("error_handlers").getAll()) {
+                if (handler(env, error, originalError)) {
+                    break;
                 }
             }
             if (
-                uncaughtError.event &&
-                !uncaughtError.event.defaultPrevented &&
-                uncaughtError.traceback
+                originalError instanceof Error &&
+                originalError.errorEvent &&
+                !originalError.errorEvent.defaultPrevented
             ) {
                 // Log the full traceback instead of letting the browser log the incomplete one
-                uncaughtError.event.preventDefault();
-                console.error(uncaughtError.traceback);
+                originalError.errorEvent.preventDefault();
+                console.error(error.traceback);
             }
         }
 
         browser.addEventListener("error", async (ev) => {
-            const { colno, error, filename, lineno, message } = ev;
+            const { colno, error: originalError, filename, lineno, message } = ev;
             const errorsToIgnore = [
                 // Ignore some unnecessary "ResizeObserver loop limit exceeded" error in Firefox.
                 "ResizeObserver loop completed with undelivered notifications.",
                 // ignore Chrome video internal error: https://crbug.com/809574
                 "ResizeObserver loop limit exceeded",
             ];
-            if (!error && errorsToIgnore.includes(message)) {
+            if (!originalError && errorsToIgnore.includes(message)) {
                 return;
             }
             let uncaughtError;
             if (!filename && !lineno && !colno) {
-                if ((isIOS() || isBrowserSafari()) && odoo.debug !== "assets") {
-                    // In Safari 16.4+ (as of Jun 14th 2023), an error occurs
-                    // when going back and forward through the browser when the
-                    // cache is enabled. A feedback has been reported but in the
-                    // meantime, hide any script error in these versions.
-                    return;
-                }
                 uncaughtError = new UncaughtCorsError();
-                uncaughtError.traceback = _t(
+                uncaughtError.traceback = env._t(
                     `Unknown CORS error\n\n` +
                         `An unknown CORS error occured.\n` +
                         `The error probably originates from a JavaScript file served from a different origin.\n` +
@@ -101,29 +93,25 @@ export const errorService = {
                 );
             } else {
                 uncaughtError = new UncaughtClientError();
-                uncaughtError.event = ev;
-                if (error instanceof Error) {
-                    error.errorEvent = ev;
+                if (originalError instanceof Error) {
+                    originalError.errorEvent = ev;
                     const annotated = env.debug && env.debug.includes("assets");
-                    await completeUncaughtError(uncaughtError, error, annotated);
+                    await completeUncaughtError(uncaughtError, originalError, annotated);
                 }
             }
-            uncaughtError.cause = error;
-            handleError(uncaughtError);
+            handleError(uncaughtError, originalError);
         });
 
         browser.addEventListener("unhandledrejection", async (ev) => {
-            const error = ev.reason;
+            const originalError = ev.reason;
             const uncaughtError = new UncaughtPromiseError();
             uncaughtError.unhandledRejectionEvent = ev;
-            uncaughtError.event = ev;
-            if (error instanceof Error) {
-                error.errorEvent = ev;
+            if (originalError instanceof Error) {
+                originalError.errorEvent = ev;
                 const annotated = env.debug && env.debug.includes("assets");
-                await completeUncaughtError(uncaughtError, error, annotated);
+                await completeUncaughtError(uncaughtError, originalError, annotated);
             }
-            uncaughtError.cause = error;
-            handleError(uncaughtError);
+            handleError(uncaughtError, originalError);
         });
     },
 };

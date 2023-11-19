@@ -57,8 +57,8 @@ class TestIndustryFsmSaleProjectProfitability(TestProjectProfitabilityCommon):
                 'costs': {'data': [], 'total': {'to_bill': 0.0, 'billed': 0.0}},
                 'revenues': {
                     'data': [{
-                        'id': 'materials',
-                        'sequence': sequence_per_invoice_type['materials'],
+                        'id': 'other_revenues',
+                        'sequence': sequence_per_invoice_type['other_revenues'],
                         'to_invoice': self.additional_quotation.order_line.untaxed_amount_to_invoice,
                         'invoiced': 0.0,
                     }],

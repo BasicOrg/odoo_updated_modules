@@ -9,5 +9,7 @@ class Onboarding(models.Model):
 
     # Appointment Onboarding
     @api.model
-    def action_close_panel_appointment(self):
-        self.action_close_panel('appointment.onboarding_onboarding_appointment')
+    def action_close_appointment_onboarding(self):
+        onboarding = self.env.ref('appointment.appointment_onboarding_panel', raise_if_not_found=False)
+        if onboarding:
+            onboarding.action_close()

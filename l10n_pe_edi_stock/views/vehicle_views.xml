@@ -13,18 +13,13 @@
         <field name="name">vehicle.form</field>
         <field name="model">l10n_pe_edi.vehicle</field>
         <field name="arch" type="xml">
-            <form string="Vehicle (PE)">
+            <form string="vehicle Form">
                 <sheet>
                     <group>
                         <field name="company_id" invisible="1"/>
                         <field name="name"/>
                         <field name="license_plate"/>
-                        <field name="is_m1l"/>
-                        <field name="authorization_issuing_entity"
-                            invisible="is_m1l"/>
-                        <field name="authorization_issuing_entity_number"
-                            invisible="is_m1l or not authorization_issuing_entity"/>
-                        <field name="operator_id" invisible="is_m1l"/>
+                        <field name="operator_id"/>
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                 </sheet>
@@ -48,7 +43,7 @@
         <field name="name">vehicle.tree</field>
         <field name="model">l10n_pe_edi.vehicle</field>
         <field name="arch" type="xml">
-            <tree string="Vehicles (PE)">
+            <tree string="vehicle Tree">
                 <field name="name"/>
                 <field name="license_plate"/>
                 <field name="operator_id"/>
@@ -59,6 +54,7 @@
 
     <record id="l10n_pe_edi_vehicle_actions" model="ir.actions.act_window">
         <field name="name">Vehicles (PE)</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">l10n_pe_edi.vehicle</field>
         <field name="view_id" ref="vehicle_tree_view"/>
         <field name="search_view_id" ref="vehicle_search_view"/>
@@ -66,8 +62,8 @@
           <p class="o_view_nocontent_smiling_face">
             Add a new vehicle for PE delivery guide
           </p><p>
-            For delivery guides that use private transport, you must indicate the vehicle licence.
-            In addition, you can define a default operator of the vehicle.
+            For delivery guides that use private transport, you need to supply information
+            about the vehicle licence and allow to define the default operator for each delivery.
           </p>
         </field>
     </record>

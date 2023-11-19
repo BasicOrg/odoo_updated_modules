@@ -8,6 +8,7 @@
             <field name="mode">primary</field>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='move_type']" position="after">
+                    <group>
                         <group>
                             <field name="suitable_sale_order_ids" invisible="1"/>
                             <field name="suitable_move_ids" invisible="1"/>
@@ -15,16 +16,18 @@
                             <field name="helpdesk_sale_order_id" options="{'no_create': True}"/>
                             <field name="move_ids" string="Invoices to Refund" options="{'create': False}" widget="many2many_tags" domain="[('id', 'in', suitable_move_ids)]"/>
                         </group>
+                    </group>
                 </xpath>
             </field>
         </record>
 
         <record id="helpdesk_ticket_action_refund" model="ir.actions.act_window">
             <field name="name">Refund</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.move.reversal</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'dialog_size': 'medium'}</field>
+            <field name="context">{}</field>
         </record>
 
         <record id="helpdesk_ticket_action_refund_form" model="ir.actions.act_window.view">

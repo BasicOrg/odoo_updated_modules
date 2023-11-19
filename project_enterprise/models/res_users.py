@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 from odoo import models
-from odoo.addons.resource.models.utils import Intervals
+from odoo.addons.resource.models.resource import Intervals
 
 class User(models.Model):
     _inherit = 'res.users'

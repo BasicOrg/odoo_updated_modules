@@ -11,6 +11,7 @@ class HrPayslipLine(models.Model):
     _order = 'contract_id, sequence, code'
 
     name = fields.Char(required=True)
+    note = fields.Text(string='Description')
     sequence = fields.Integer(required=True, index=True, default=5,
                               help='Use to arrange calculation sequence')
     code = fields.Char(required=True,
@@ -52,19 +53,3 @@ class HrPayslipLine(models.Model):
                 if not values['contract_id']:
                     raise UserError(_('You must set a contract to create a payslip line.'))
         return super(HrPayslipLine, self).create(vals_list)
-
-    def get_payslip_styling_dict(self):
-        return {
-            'NET': {
-                'line_style': 'color:#875A7B;',
-                'line_class': 'o_total o_border_bottom fw-bold',
-            },
-            'GROSS': {
-                'line_style': 'color:#00A09D;',
-                'line_class': 'o_subtotal o_border_bottom',
-            },
-            'BASIC': {
-                'line_style': 'color:#00A09D;',
-                'line_class': 'o_subtotal o_border_bottom',
-            },
-        }

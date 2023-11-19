@@ -36,6 +36,7 @@ class TestCommonForecast(TransactionCase):
             'name': 'Opera',
             'color': 2,
             'privacy_visibility': 'employees',
+            'allow_forecast': True,
         })
         cls.task_opera_place_new_chairs = Task.create({
             'name': 'Add the new chairs in room 9',
@@ -45,6 +46,7 @@ class TestCommonForecast(TransactionCase):
             'name': 'Horizon',
             'color': 1,
             'privacy_visibility': 'employees',
+            'allow_forecast': True,
         })
         cls.task_horizon_dawn = Task.create({
             'name': 'Dawn',

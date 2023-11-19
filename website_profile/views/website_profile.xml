@@ -25,7 +25,6 @@
                                     <i class="fa fa-search border-1"></i>
                                 </button>
                                 <input type="text" class="form-control border-0 rounded-0 bg-transparent text-white ms-auto" name="search" placeholder="Search users"/>
-                                <input type="hidden" name="group_by" t-att-value="group_by"/>
                             </div>
                         </form>
                     </div>
@@ -48,7 +47,7 @@
                                 <div class="dropdown-menu dropdown-menu-end w-100" style="right: 10px;">
                                     <form class="px-3" t-attf-action="/profile/users" role="search" method="get">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="search" placeholder="Search users"/>
+                                            <input type="text" class="form-control" name="search" placeholder="Search courses"/>
                                             <button class="btn btn-primary" type="submit" aria-label="Search" title="Search">
                                                 <i class="fa fa-search"/>
                                             </button>
@@ -89,7 +88,7 @@
                 <div class="col-3">
                     <div class="card o_card_people">
                         <div class="card-body">
-                            <img class="o_wforum_avatar_img w-100 mb-3" t-att-src="website.image_url(user, 'avatar_128')"/>
+                            <img class="o_forum_avatar_img w-100 mb-3" t-att-src="website.image_url(user, 'avatar_128')"/>
                             <div class="text-center">
                                 <a href="#" class="o_forum_profile_pic_edit btn btn-primary" aria-label="Edit">
                                     <i class="fa fa-pencil fa-1g float-sm-none float-md-start" title="Edit"></i>
@@ -99,7 +98,7 @@
                                 </a>
                             </div>
                             <div class="my-3 mb-0 pt-2 border-top">
-                                <label class="text-primary" for="user_website_published" t-if="user.id == uid"><span class="fw-bold">Public Profile</span></label>
+                                <label class="text-primary" for="user_website_published" t-if="user.id == uid"><span class="fw-bold">Public profile</span></label>
                                 <div class=" mb-0 float-end" t-if="user.id == uid">
                                     <input type="checkbox" class="mt8" name="website_published" id="user_website_published" value="True" t-if="not user.website_published"/>
                                     <input type="checkbox" class="mt8" name="website_published" id="user_website_published" value="True" checked="checked" t-if="user.website_published"/>
@@ -156,7 +155,7 @@
                                 <div class="mb-3 col-12">
                                     <label class="mb-1 text-primary" for="description"><span class="fw-bold">Biography</span></label>
                                     <textarea name="description" id="description" style="min-height: 120px"
-                                        class="form-control o_wysiwyg_loader" placeholder="Write a few words about yourself..."><t t-out="user.partner_id.website_description"/></textarea>
+                                        class="form-control o_wysiwyg_loader"><t t-esc="user.partner_id.website_description"/></textarea>
                                 </div>
                                 <div class="col">
                                     <button type="submit" class="btn btn-primary o_wprofile_submit_btn">Update</button>
@@ -235,7 +234,7 @@
 
                 <!-- ========== SIDEBAR ========== -->
                 <div class="col-12 col-md-4 col-lg-3 mt-3 mt-md-0">
-                    <div class="o_wprofile_sidebar px-3 py-2 py-md-3 mb-3 mb-md-5">
+                    <div class="o_wprofile_sidebar bg-white px-3 py-2 py-md-3 mb-3 mb-md-5">
                         <div class="o_wprofile_sidebar_top d-flex justify-content-between">
                             <div t-if="user.rank_id" class="d-flex align-items-center">
                                 <small class="fw-bold me-2">Current rank:</small>
@@ -257,9 +256,10 @@
                                         <th><small class="fw-bold">Joined</small></th>
                                         <td><span t-field="user.create_date" t-options='{"format": "d MMM Y"}'/></td>
                                     </tr>
-                                    <tr t-if="user.badge_ids">
+                                    <tr>
                                         <th><small class="fw-bold">Badges</small></th>
-                                        <td t-esc="len(user.badge_ids.filtered(lambda b: b.badge_id.website_published))"/>
+                                        <td t-if="user.badge_ids" t-esc="len(user.badge_ids.filtered(lambda b: b.badge_id.website_published))"/>
+                                        <td t-else="">0</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -268,7 +268,7 @@
                 </div>
 
                 <!-- ========== PROFILE CONTENT ========== -->
-                <div class="col-12 col-md-8 col-lg-9 position-relative">
+                <div class="col-12 col-md-8 col-lg-9">
                     <ul class="nav nav-tabs o_wprofile_nav_tabs flex-nowrap" role="tablist" id="profile_extra_info_tablist">
                         <li class="nav-item">
                             <a role="tab" aria-controls="about" href="#profile_tab_content_about" t-attf-class="nav-link #{'active' if not active_tab or active_tab == 'about' else ''}" data-bs-toggle="tab">About</a>
@@ -276,7 +276,7 @@
                     </ul>
                     <div class="tab-content py-4 o_wprofile_tabs_content mb-4" id="profile_extra_info_tabcontent">
                         <div role="tabpanel" t-attf-class="tab-pane #{ 'show active' if not active_tab or active_tab == 'about' else '' }" id="profile_tab_content_about">
-                            <div class="o_wprofile_email_validation_container">
+                            <div class="o_wprofile_email_validation_container mb16 mt16">
                                 <t t-call="website_profile.email_validation_banner">
                                     <t t-set="redirect_url" t-value="'/profile/user/%s' % user.id"/>
                                     <t t-set="additional_validation_email_message"/>
@@ -286,47 +286,15 @@
                                 <h5 class="border-bottom pb-1">Badges</h5>
                                 <t t-call="website_profile.user_badges"></t>
                             </div>
-                            <div t-if="user.partner_id.website_description" class="o_wprofile_editor_form mb32">
-                                <t t-if="request.env.user == user and user.karma != 0 or request.env.user._is_admin()">
-                                    <a href="#" class="o_forum_profile_bio_edit btn btn-link float-end">
-                                        <i class="fa fa-pencil me-1"/>Edit    
-                                    </a>
-                                    <a href="#" class="o_forum_profile_bio_cancel_edit btn btn-link float-end d-none">
-                                        <i class="fa fa-close me-1"/>Cancel    
-                                    </a>
-                                </t>
+                            <div t-if="user.partner_id.website_description" class="mb32">
                                 <h5 class="border-bottom pb-1">Biography</h5>
-                                <span class="o_forum_profile_bio text-break" t-field="user.partner_id.website_description"/>
-                                <t t-call="website_profile.user_biography_editor"/>
+                                <span t-field="user.partner_id.website_description"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </template>
-
-    <template id="user_biography_editor" name="Edit User Biography">
-        <form t-attf-action="/profile/user/save" method="post" role="form" class="o_forum_profile_bio_form js_website_submit_form row d-none">
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-            <input name="user_id" t-att-value="user.id" type="hidden"/>
-            <input name="name" t-att-value="user.name" type="hidden"/>
-            <input name="website" t-att-value="user.partner_id.website" type="hidden"/>
-            <input name="email" t-att-value="user.partner_id.email" type="hidden"/>
-            <input name="city" t-att-value="user.partner_id.city" type="hidden"/>
-            <input name="country" t-att-value="user.partner_id.country_id.id" type="hidden"/>
-            <div class="row">
-                <div class="mb-1 col-12">
-                    <textarea name="description" id="description" style="min-height: 120px"
-                        class="form-control o_wysiwyg_loader" placeholder="Write a few words about yourself...">
-                        <t t-out="user.partner_id.website_description"/>
-                    </textarea>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary o_wprofile_submit_btn">Update</button>
-                </div>
-            </div>
-        </form>
     </template>
 
     <template id="profile_next_rank_card" name="Profile Next Rank Card">
@@ -347,11 +315,8 @@
                 <t t-else="">
                     <t t-set="user_points" t-value="0"/>
                 </t>
-                <g data-bs-toggle="tooltip" data-bs-delay="0"
-                    t-attf-title="{{ '%s/%s xp' % (user.karma, next_rank_id.karma_min) if next_rank_id else ''}}">
-                    <path class="o_pc_circle_bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path class="o_pc_circle" t-attf-stroke-dasharray="#{user_points}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="url(#gradient)" mask="url(#mask)"/>
-                </g>
+                <path class="o_pc_circle_bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="o_pc_circle" t-attf-stroke-dasharray="#{user_points}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="url(#gradient)" mask="url(#mask)"/>
                 <mask id="mask">
                     <polygon points="0,0 17.2,0 17.2,10 18,10 18,0 36,0 36,36 0,36" fill="white"/>
                 </mask>
@@ -360,22 +325,26 @@
                     <stop offset="100%" stop-color="var(--o-pc-color-stop-2)"/>
                 </linearGradient>
             </svg>
-            <div class="o_pc_overlay d-flex flex-column align-items-center justify-content-center p-4">
-                <t t-set="rank_id" t-value="next_rank_id if next_rank_id else user.rank_id"/>
-                <div t-field="rank_id.image_1920"
-                    t-attf-style="max-width: {{img_max_width or '50%'}};"
-                    t-options="{'widget': 'image', 'preview_image': 'image_128'}"/>
-                <h4 class="text-center" t-field="rank_id.name"/>
-                <small class="w-50 text-center">
-                    <t t-set="karma_value" t-value="next_rank_id.karma_min - user.karma if next_rank_id else user.karma"/>
-                    <t t-if="next_rank_id">
-                        Get
-                        <span class="fw-bold text-primary" t-out="karma_value" t-options="{'widget': 'integer', 'format_decimalized_number': True, 'precision_digits': 2}"/> xp
-                        to level up!
-                    </t>
-                    <t t-else="">
-                        <span class="fw-bold text-primary" t-out="karma_value" t-options="{'widget': 'integer', 'format_decimalized_number': True, 'precision_digits': 2}"/> xp
-                    </t>
+            <div class="o_pc_overlay d-flex flex-column align-items-center justify-content-center">
+                <img class="img-fluid"
+                    t-att-src="website.image_url(next_rank_id if next_rank_id else user.rank_id, 'image_128')"
+                    t-att-alt="(next_rank_id.name if next_rank_id else user.rank_id.name) + ' badge'"
+                    t-att-style="'max-width: ' + (img_max_width if img_max_width else '50%;')"/>
+                <h4 class=" mb-0">
+                    <span t-if="next_rank_id" t-field="next_rank_id.name"/>
+                    <span t-else="" t-field="user.rank_id.name"/>
+                </h4>
+                <small>
+                    <span class="fw-bold text-primary"
+                        t-field="user.karma"
+                        t-options="{'format_decimalized_number': True, 'precision_digits': 2}"/> /
+                    <span t-if="next_rank_id" class="fw-bold"
+                        t-field="next_rank_id.karma_min"
+                        t-options="{'format_decimalized_number': True, 'precision_digits': 2}"/>
+                    <span t-else="" class="fw-bold"
+                        t-field="user.rank_id.karma_min"
+                        t-options="{'format_decimalized_number': True, 'precision_digits': 2}"/>
+                     xp
                 </small>
             </div>
         </div>
@@ -389,11 +358,14 @@
                         <div class="card">
                             <div class="card-body p-2 pe-3">
                                 <div class="d-flex align-items-center">
-                                    <div t-if="badge.badge_id.image_1920 and badge.badge_id.level" t-field="badge.badge_id.image_1920"
-                                        t-options="{'widget': 'image', 'preview_image': 'image_128', 'class': 'o_object_fit_cover me-0', 'style': 'height: 38px; width: 38px'}"/>
-                                    <img t-else=""
+                                    <img t-if="not badge.badge_id.image_1920 and badge.badge_id.level"
                                         width="38" height="38"
                                         t-attf-src="/website_profile/static/src/img/badge_#{badge.badge_id.level}.svg"
+                                        class="o_object_fit_cover me-0"
+                                        t-att-alt="badge.badge_id.name"/>
+                                    <img t-else=""
+                                        width="38" height="38"
+                                        t-att-src="website.image_url(badge.badge_id, 'image_128')"
                                         class="o_object_fit_cover me-0"
                                         t-att-alt="badge.badge_id.name"/>
                                     <div class="flex-grow-1 col-md-10 p-0">
@@ -406,21 +378,14 @@
                 </t>
             </t>
         </div>
-         <div class="mb-3" t-elif="request.env.user == user">
-            Badges are your collection of achievements. Wear them proudly! <br />
-            <a t-if="not user.badge_ids and badge_category" t-attf-href="/profile/ranks_badges?badge_category=#{badge_category}&amp;url_origin=#{request.httprequest.path}&amp;name_origin=#{user.name}"
-            class="btn-link"><i class="fa fa-arrow-right"/> Get Badges</a>
-            <a t-else="" t-attf-href="/profile/ranks_badges?url_origin=#{request.httprequest.path}&amp;name_origin=#{user.name}"
-            class="btn-link"><i class="fa fa-arrow-right"/> Get Badges</a>
-        </div>
-        <div t-else="" class="mb-3 d-inline-block">
+        <div class="mb-3 d-inline-block" t-if="not user.badge_ids">
             <p class="text-muted">No badges yet!</p>
         </div>
-        <div t-if="request.env.user.id != user.id" class="text-end d-inline-block pull-right">
+        <div class="text-end d-inline-block pull-right">
             <a t-if="not user.badge_ids and badge_category" t-attf-href="/profile/ranks_badges?badge_category=#{badge_category}&amp;url_origin=#{request.httprequest.path}&amp;name_origin=#{user.name}"
-            class="btn-link btn-sm"><i class="oi oi-arrow-right"/> All Badges</a>
+            class="btn btn-link btn-sm"><i class="fa fa-arrow-right"/> All Badges</a>
             <a t-else="" t-attf-href="/profile/ranks_badges?url_origin=#{request.httprequest.path}&amp;name_origin=#{user.name}"
-            class="btn-link btn-sm"><i class="oi oi-arrow-right me-1"/>All Badges</a>
+            class="btn btn-link btn-sm"><i class="fa fa-arrow-right me-1"/>All Badges</a>
         </div>
     </template>
 
@@ -452,8 +417,7 @@
                                 <t t-foreach="ranks" t-as="rank">
                                     <li t-attf-class="list-group-item">
                                         <div class="d-flex align-items-center">
-                                            <div t-field="rank.image_1920"
-                                                t-options="{'widget': 'image', 'preview_image': 'image_128', 'class': 'me-2 o_image_40_cover'}"/>
+                                            <img t-att-src="website.image_url(rank, 'image_128')" class="me-2 o_image_40_cover" alt="Rank badge"/>
                                             <div class="flex-grow-1">
                                                 <h5 class="mt-0 mb-0" t-field="rank.name"/>
                                                 <span class="badge text-bg-success"><span t-field="rank.karma_min"/></span> point<span t-if="rank.karma_min">s</span>
@@ -500,20 +464,19 @@
     <template id="badge_header">
         <img t-if="not badge.image_1920 and badge.level" t-attf-src="/website_profile/static/src/img/badge_#{badge.level}.svg"
                 class="my-1 me-1 wprofile_badge_img" t-att-alt="badge.name"/>
-        <div t-else="" t-field="badge.image_1920"
-            t-options="{'widget': 'image', 'preview_image': 'image_1024', 'class': 'my-1 me-1 wprofile_badge_img'}"/>
+        <img t-else="" t-att-src="website.image_url(badge, 'image_1024')" class="my-1 me-1 wprofile_badge_img" t-att-alt="badge.name"/>
         <a t-if="badge_url" t-att-href="badge_url">
             <h6 t-field="badge.name" class="d-inline my-0"/>
         </a>
         <h6 t-else="" t-field="badge.name" class="d-inline my-0"/>
     </template>
 
-    <!--Access Denied - Profile Page-->
-    <template id="profile_access_denied" name="Access Denied - Profile Page">
+    <!--Private profile-->
+    <template id="private_profile" name="Private Profile Page">
         <t t-call="website.layout">
             <div class="container mb32 mt48">
-                <h1 class="mt32" t-out="denial_reason"/>
-                <div id="profile_access_denied_return_link_container">
+                <h1 class="mt32">This profile is private!</h1>
+                <div id="private_profile_return_link_container">
                     <p><a t-attf-href="/">Return to the website.</a></p>
                 </div>
             </div>
@@ -546,7 +509,7 @@
             <div class="container">
                 <h1 class="py-4 text-white d-inline-block">All Users</h1>
                 <div class="py-4 float-end">
-                    <strong class="mb-3 text-white me-2">Rank by:</strong>
+                    <strong class="mb-3 text-white me-2">Rank by :</strong>
                     <div class="mb-3 btn-group">
                         <a t-attf-class="btn btn-secondary #{ 'active' if group_by == 'week' else ''}"
                             t-att-href="'/profile/users?' + keep_query('search', group_by='week')">This week</a>
@@ -607,9 +570,7 @@
                 <span class="badge text-bg-danger fw-normal px-2" t-if="not user['website_published']">Unpublished</span>
                 <strong class="text-muted" t-esc="user['rank']"/>
                 <div class="h3 my-2" t-if="user['karma_gain']">
-                    <span t-attf-class="badge rounded-pill px-3 py-2 #{ 'text-bg-success' if user['karma_gain'] > 0 else 'text-bg-warning'}">
-                        <t t-if="user['karma_gain'] > 0">+ </t><t t-esc="user['karma_gain']"/> XP
-                    </span>
+                    <span class="badge rounded-pill text-bg-success px-3 py-2" >+ <t t-esc="user['karma_gain']"/> XP</span>
                 </div>
             </div>
             <div class="row mx-0 o_wprofile_top3_card_footer text-nowrap">
@@ -632,9 +593,7 @@
         </td>
         <td class="align-middle text-nowrap">
             <t t-if="user['karma_gain']">
-                <span t-attf-class="badge rounded-pill d-inline #{ 'text-bg-success' if user['karma_gain'] > 0 else 'text-bg-warning'}">
-                    <t t-if="user['karma_gain'] > 0">+ </t><t t-esc="user['karma_gain']"/> XP
-                </span>
+                <span class="badge rounded-pill text-bg-success d-inline">+ <t t-esc="user['karma_gain']"/> XP</span>
                 <span class="text-muted ps-2 pe-3">
                     <t t-if="group_by == 'week'">this week</t>
                     <t t-elif="group_by == 'month'">this month</t>
@@ -684,18 +643,18 @@
             Your account does not have an email set up. Please set it up on <a class="alert-link" t-att-href="my_account_redirect">your account settings</a>.
         </div>
         <div t-elif="not validation_email_sent and not is_public_user and user.karma == 0" t-att-class="send_alert_classes" role="alert">
-            <button type="button" class="btn-close validation_email_close" data-bs-dismiss="alert" aria-label="Close"/>
+            <button type="button" class="close validation_email_close" data-bs-dismiss="alert" aria-label="Close">×</button>
             Your Account has not yet been verified.<br/>
             Click <a class="send_validation_email alert-link" href="#" t-att-data-redirect_url="redirect_url"><u>here</u></a> to receive a verification email<t t-esc="additional_validation_email_message"/>!
         </div>
         <div t-elif="validation_email_sent and not validation_email_done" t-att-class="done_alert_classes">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            Verification Email sent to <t t-out="user.email"/>!<br/>
+            Verification Email sent to <i t-esc="user.email"></i>!<br/>
             Did not receive it? <a class="alert-link" t-att-href="my_account_redirect"><u>Correct your email address</u></a> 
             or <a class="send_validation_email alert-link" href="#" t-att-data-redirect_url="redirect_url"><u>Send Again</u></a>.
         </div>
         <div t-if="validation_email_done" t-att-class="done_alert_classes" role="status">
-            <button type="button" class="btn-close validated_email_close" data-bs-dismiss="alert" aria-label="Close"/>
+            <button type="button" class="close validated_email_close" data-bs-dismiss="alert" aria-label="Close">×</button>
             <span id="email_validated_message">Congratulations! Your email has just been validated.</span>
             <span t-esc="additional_validated_email_message"/>
         </div>

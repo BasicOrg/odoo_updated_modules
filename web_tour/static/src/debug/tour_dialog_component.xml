@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 
-<t t-name="web_tour.ToursDialog">
-    <Dialog title="title">
+<t t-name="web_tour.ToursDialog" owl="1">
+    <Dialog title="this.constructor.title">
         <t t-call="web_tour.ToursDialog.Table">
             <t t-set="caption">Onboarding tours</t>
             <t t-set="tours" t-value="onboardingTours"/>
@@ -11,13 +11,10 @@
             <t t-set="caption">Testing tours</t>
             <t t-set="tours" t-value="testingTours"/>
         </t>
-        <t t-set-slot="footer">
-            <button class="btn btn-primary o-default-button" t-on-click="() => props.close()">Close</button>
-        </t>
     </Dialog>
 </t>
 
-<t t-name="web_tour.ToursDialog.Table">
+<t t-name="web_tour.ToursDialog.Table" owl="1">
     <div class="table-responsive">
         <table class="table table-sm table-striped">
             <caption style="caption-side: top; font-size: 14px">

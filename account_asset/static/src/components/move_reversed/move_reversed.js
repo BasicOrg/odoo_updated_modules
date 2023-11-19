@@ -1,14 +1,11 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class MoveReversed extends Component {}
 MoveReversed.template = "account_asset.moveReversed";
+MoveReversed.noLabel = true;
 
-export const moveReversed = {
-    component: MoveReversed,
-    noLabel: true,
-};
-
-registry.category("fields").add("deprec_lines_reversed", moveReversed);
+registry.category("fields").add("deprec_lines_reversed", MoveReversed);

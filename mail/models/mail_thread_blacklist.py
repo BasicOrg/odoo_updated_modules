@@ -31,7 +31,8 @@ class MailBlackListMixin(models.AbstractModel):
     _primary_email = 'email'
 
     email_normalized = fields.Char(
-        string='Normalized Email', compute="_compute_email_normalized", compute_sudo=True, store=True,
+        string='Normalized Email', compute="_compute_email_normalized", compute_sudo=True,
+        store=True, invisible=True,
         help="This field is used to search on email address as the primary email field can contain more than strictly an email address.")
     # Note : is_blacklisted sould only be used for display. As the compute is not depending on the blacklist,
     # once read, it won't be re-computed again if the blacklist is modified in the same request.
@@ -46,7 +47,7 @@ class MailBlackListMixin(models.AbstractModel):
     def _compute_email_normalized(self):
         self._assert_primary_email()
         for record in self:
-            record.email_normalized = tools.email_normalize(record[self._primary_email], strict=False)
+            record.email_normalized = tools.email_normalize(record[self._primary_email])
 
     @api.model
     def _search_is_blacklisted(self, operator, value):
@@ -75,11 +76,11 @@ class MailBlackListMixin(models.AbstractModel):
                     ON m.email_normalized = bl.email AND bl.active
                     WHERE bl.id IS NULL
             """
-        self._cr.execute((query + " FETCH FIRST ROW ONLY") % self._table)
+        self._cr.execute(query % self._table)
         res = self._cr.fetchall()
         if not res:
             return [(0, '=', 1)]
-        return [('id', 'inselect', (query % self._table, []))]
+        return [('id', 'in', [r[0] for r in res])]
 
     @api.depends('email_normalized')
     def _compute_is_blacklisted(self):

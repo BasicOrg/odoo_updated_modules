@@ -3,17 +3,16 @@
 # 	* approvals
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,22 +22,22 @@ msgstr ""
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "<span class=\"fa fa-warning\" title=\"Invalid minimum approvals\"/>"
-msgstr "<span class=\"fa fa-warning\" title=\"最低批准數目無效\"/>"
+msgstr "<span class=\"fa fa-warning\" title=\"Invalid minimum approvals\"/>"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "<span>From: </span>"
-msgstr "<span>由： </span>"
+msgstr "<span>From: </span>"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "<span>to: </span>"
-msgstr "<span>至： </span>"
+msgstr "<span>to: </span>"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_needaction
 msgid "Action Needed"
-msgstr "需要採取行動"
+msgstr "需採取行動"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__active
@@ -74,7 +73,7 @@ msgstr "活動類型圖示"
 #: model:ir.model.fields,help:approvals.field_approval_category__has_product
 #: model:ir.model.fields,help:approvals.field_approval_request__has_product
 msgid "Additional products that should be specified on the request."
-msgstr "應在請求中指定的其他產品。"
+msgstr "Additional products that should be specified on the request."
 
 #. module: approvals
 #: model:res.groups,name:approvals.group_approval_manager
@@ -85,7 +84,7 @@ msgstr "管理員"
 #: model:ir.actions.act_window,name:approvals.approval_request_action_all
 #: model:ir.ui.menu,name:approvals.approvals_approval_menu_all
 msgid "All Approvals"
-msgstr "所有審批"
+msgstr "All Approvals"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_category__approval_type
@@ -93,26 +92,27 @@ msgstr "所有審批"
 msgid ""
 "Allows you to define which documents you would like to create once the "
 "request has been approved"
-msgstr "允許您定義請求獲得批准後要創建的文檔"
+msgstr ""
+"Allows you to define which documents you would like to create once the "
+"request has been approved"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__amount
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Amount"
-msgstr "金額"
+msgstr "總額"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_category__has_reference
 #: model:ir.model.fields,help:approvals.field_approval_request__has_reference
 msgid "An additional reference that should be specified on the request."
-msgstr "應在申請中指定的一個附加參考。"
+msgstr "An additional reference that should be specified on the request."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "An user may not be in the approver list multiple times."
-msgstr "一個用戶不得多次出現在審批人名單中。"
+msgstr "An user may not be in the approver list multiple times."
 
 #. module: approvals
 #: model:mail.activity.type,name:approvals.mail_activity_data_approval
@@ -122,7 +122,7 @@ msgstr "核准方式"
 #. module: approvals
 #: model:ir.model,name:approvals.model_approval_category
 msgid "Approval Category"
-msgstr "審批類別"
+msgstr "Approval Category"
 
 #. module: approvals
 #: model:ir.model,name:approvals.model_approval_request
@@ -133,7 +133,7 @@ msgstr "申請批准"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__name
 msgid "Approval Subject"
-msgstr "審批主題"
+msgstr "Approval Subject"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approval_type
@@ -141,12 +141,12 @@ msgstr "審批主題"
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approval_type
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Approval Type"
-msgstr "批核類型"
+msgstr "Approval Type"
 
 #. module: approvals
 #: model:ir.model,name:approvals.model_approval_category_approver
 msgid "Approval Type Approver"
-msgstr "批核類型批核者"
+msgstr "Approval Type Approver"
 
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_root
@@ -157,63 +157,64 @@ msgstr "審批"
 #: model:ir.actions.act_window,name:approvals.approval_category_action
 #: model:ir.ui.menu,name:approvals.approvals_category_menu_config
 msgid "Approvals Types"
-msgstr "批核類型"
+msgstr "Approvals Types"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_kanban
 msgid "Approvals Types Image"
-msgstr "批核類型圖片"
+msgstr "Approvals Types Image"
 
 #. module: approvals
 #: model:ir.actions.act_window,name:approvals.approval_request_action_to_review
 #: model:ir.ui.menu,name:approvals.approvals_approval_menu_to_review
 msgid "Approvals to Review"
-msgstr "待複核的審批"
+msgstr "Approvals to Review"
 
 #. module: approvals
 #: model:ir.actions.act_window,name:approvals.approval_request_action_to_review_category
 msgid "Approvals to review"
-msgstr "待複核的審批"
+msgstr "Approvals to review"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
 msgid "Approve"
-msgstr "審批"
+msgstr "批准"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__approved
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__request_status__approved
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__approved
 msgid "Approved"
-msgstr "已審批"
+msgstr "已批准"
 
 #. module: approvals
 #: model:ir.model,name:approvals.model_approval_approver
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Approver"
-msgstr "審批人"
+msgstr "Approver"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
 "Approver Sequence can only be activated with at least 1 minimum approver."
-msgstr "審批者序列最少必須有 1 個審批者，才可啟動。"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__user_ids
 msgid "Approver Users"
-msgstr "審批人用戶"
+msgstr "Approver Users"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Approver(s)"
-msgstr "審批人"
+msgstr "Approver(s)"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approver_ids
@@ -226,23 +227,18 @@ msgstr "流程審批管理人"
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approver_sequence
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approver_sequence
 msgid "Approvers Sequence?"
-msgstr "審批人序列？"
+msgstr ""
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_search
 msgid "Archived"
-msgstr "已封存"
+msgstr "已歸檔"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Attach Document"
 msgstr "附加文件"
-
-#. module: approvals
-#: model:ir.model,name:approvals.model_ir_attachment
-msgid "Attachment"
-msgstr "附件"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_attachment_count
@@ -253,37 +249,32 @@ msgstr "附件數"
 #: model:ir.model.fields,field_description:approvals.field_approval_category__automated_sequence
 #: model:ir.model.fields,field_description:approvals.field_approval_request__automated_sequence
 msgid "Automated Sequence?"
-msgstr "自動化序列？"
+msgstr "Automated Sequence?"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Back To Draft"
-msgstr "設為草稿"
+msgstr "Back To Draft"
 
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_borrow_items
 msgid "Borrow Items"
-msgstr "借用項目"
+msgstr "Borrow Items"
 
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_business_trip
 msgid "Business Trip"
-msgstr "商務旅行"
+msgstr "Business Trip"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__change_request_owner
 msgid "Can Change Request Owner"
-msgstr "可更改請求擁有人"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit
 msgid "Can Edit"
-msgstr "可編輯"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit_user_id
-msgid "Can Edit User"
-msgstr "可編輯用戶"
+msgstr "能編輯"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__cancel
@@ -296,7 +287,7 @@ msgstr "取消"
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_car_rental_application
 msgid "Car Rental Application"
-msgstr "租車應用程式"
+msgstr "Car Rental Application"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__product_uom_category_id
@@ -307,12 +298,12 @@ msgstr "類別"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__category_approver
 msgid "Category Approver"
-msgstr "類別審批人"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__sequence_code
 msgid "Code"
-msgstr "程式碼"
+msgstr "代號"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__company_id
@@ -337,14 +328,14 @@ msgstr "聯絡人"
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_contract_approval
 msgid "Contract Approval"
-msgstr "合約審批"
+msgstr "Contract Approval"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_product_line__product_uom_category_id
 msgid ""
 "Conversion between Units of Measure can only occur if they belong to the "
 "same category. The conversion will be made based on the ratios."
-msgstr "量度單位必須屬於相同類別，才可進行換算。單位換算會按照比例計算。"
+msgstr "計量單位轉換只能在同一個類型之間進行。轉換根據比例"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__create_uid
@@ -353,7 +344,7 @@ msgstr "量度單位必須屬於相同類別，才可進行換算。單位換算
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__create_uid
 #: model:ir.model.fields,field_description:approvals.field_approval_request__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__create_date
@@ -379,17 +370,25 @@ msgstr "日期"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__date_confirmed
 msgid "Date Confirmed"
-msgstr "確認日期"
+msgstr "Date Confirmed"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__date_end
 msgid "Date end"
-msgstr "結束日期"
+msgstr "Date end"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__date_start
 msgid "Date start"
-msgstr "開始日期"
+msgstr "Date start"
+
+#. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Deadline"
+msgstr "截止日期"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
@@ -426,29 +425,34 @@ msgid "Documents"
 msgstr "文件"
 
 #. module: approvals
+#: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
+msgid "Dropdown menu"
+msgstr "下拉選項"
+
+#. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "E.g: Expenses Paris business trip"
-msgstr "例：巴黎商務旅行費用"
+msgstr "E.g: Expenses Paris business trip"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 msgid "Edit Request"
-msgstr "編輯請求"
+msgstr "Edit Request"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__manager_approval
 msgid "Employee's Manager"
-msgstr "員工經理"
+msgstr "Employee's Manager"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__existing_request_user_ids
 msgid "Existing Request User"
-msgstr "現有請求用戶"
+msgstr "Existing Request User"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__existing_user_ids
 msgid "Existing User"
-msgstr "現有用戶"
+msgstr "Existing User"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
@@ -473,36 +477,36 @@ msgstr "Font awesome 圖示，例如，fa-task"
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_general_approval
 msgid "General Approval"
-msgstr "一般審批"
+msgstr "General Approval"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_access_to_request
 msgid "Has Access To Request"
-msgstr "有提交請求權限"
+msgstr "Has Access To Request"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_amount
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_amount
 msgid "Has Amount"
-msgstr "有金額"
+msgstr "Has Amount"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_partner
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_partner
 msgid "Has Contact"
-msgstr "有聯絡人"
+msgstr "Has Contact"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_date
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_date
 msgid "Has Date"
-msgstr "有日期"
+msgstr "Has Date"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_location
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_location
 msgid "Has Location"
-msgstr "有位置"
+msgstr "Has Location"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_message
@@ -513,31 +517,31 @@ msgstr "有訊息"
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_payment_method
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_payment_method
 msgid "Has Payment"
-msgstr "包含付款方式"
+msgstr "Has Payment"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_period
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_period
 msgid "Has Period"
-msgstr "有期間"
+msgstr "Has Period"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_product
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_product
 msgid "Has Product"
-msgstr "有產品"
+msgstr "Has Product"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_quantity
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_quantity
 msgid "Has Quantity"
-msgstr "有數量"
+msgstr "Has Quantity"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__has_reference
 #: model:ir.model.fields,field_description:approvals.field_approval_request__has_reference
 msgid "Has Reference"
-msgstr "有參考"
+msgstr "Has Reference"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_category__manager_approval
@@ -549,11 +553,11 @@ msgid ""
 "        Is Required Approver: the employee's manager will be required to approve the request.\n"
 "    "
 msgstr ""
-"員工的經理如何與這種類型的批准進行互動。\n"
+"How the employee's manager interacts with this type of approval.\n"
 "\n"
-"        空：不做任何事情\n"
-"        是批核者：僱員的經理將在批准者列表中。\n"
-"        是必須的批核者：僱員的經理將被要求批准該請求。\n"
+"        Empty: do nothing\n"
+"        Is Approver: the employee's manager will be in the approver list\n"
+"        Is Required Approver: the employee's manager will be required to approve the request.\n"
 "    "
 
 #. module: approvals
@@ -563,7 +567,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__id
 #: model:ir.model.fields,field_description:approvals.field_approval_request__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_exception_icon
@@ -592,37 +596,37 @@ msgstr "勾選代表有訊息發生傳送錯誤。"
 msgid ""
 "If checked, the Approval Requests will have an automated generated name "
 "based on the given code."
-msgstr "如果選擇，批准請求將具有基於給定代碼的自動生成的名稱。"
+msgstr ""
+"If checked, the Approval Requests will have an automated generated name "
+"based on the given code."
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_category__approver_sequence
 #: model:ir.model.fields,help:approvals.field_approval_request__approver_sequence
 msgid ""
 "If checked, the approvers have to approve in sequence (one after the other)."
-" If Employee's Manager is selected as approver, they will be the first in "
-"line."
-msgstr "如果勾選此項，則批准人須依照順序批准（一個接着一個批准）。如果員工的經理被選為批准人，該經理將首先出現在序列內。"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__image
 #: model:ir.model.fields,field_description:approvals.field_approval_request__category_image
 msgid "Image"
-msgstr "圖片"
+msgstr "圖像"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__invalid_minimum
 msgid "Invalid Minimum"
-msgstr "無效的最小值"
+msgstr "Invalid Minimum"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__invalid_minimum_warning
 msgid "Invalid Minimum Warning"
-msgstr "無效最小值警告"
+msgstr "Invalid Minimum Warning"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_category__manager_approval__approver
 msgid "Is Approver"
-msgstr "審批人"
+msgstr "Is Approver"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_is_follower
@@ -632,12 +636,21 @@ msgstr "是關注人"
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_category__manager_approval__required
 msgid "Is Required Approver"
-msgstr "是必需的審批人"
+msgstr "Is Required Approver"
 
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_job_referral_award
 msgid "Job Referral Award"
-msgstr "工作推薦獎勵"
+msgstr "Job Referral Award"
+
+#. module: approvals
+#: model:ir.model.fields,field_description:approvals.field_approval_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_product_line____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_request____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__write_uid
@@ -661,13 +674,21 @@ msgstr "最後更新於"
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_all
 msgid "Let's go to the"
-msgstr "讓我們前往"
+msgstr "Let's go to the"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__location
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Location"
 msgstr "地點"
+
+#. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Log"
+msgstr "日誌"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_main_attachment_id
@@ -677,7 +698,7 @@ msgstr "主要附件"
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_manager
 msgid "Manager"
-msgstr "經理"
+msgstr "管理員"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_has_error
@@ -693,15 +714,15 @@ msgstr "訊息"
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approval_minimum
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approval_minimum
 msgid "Minimum Approval"
-msgstr "最小審批"
+msgstr "Minimum Approval"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
 "Minimum Approval must be equal or superior to the sum of required Approvers."
-msgstr "最低限度的批准必須等於或高於所需批准者的總和。"
+msgstr ""
+"Minimum Approval must be equal or superior to the sum of required Approvers."
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__my_activity_date_deadline
@@ -711,17 +732,17 @@ msgstr "我的活動截止時間"
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_approval_menu
 msgid "My Approvals"
-msgstr "我的審批"
+msgstr "My Approvals"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_search_view_search
 msgid "My Approvals to Review"
-msgstr "我的待複核審批"
+msgstr "My Approvals to Review"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_search_view_search
 msgid "My Request"
-msgstr "我的申請"
+msgstr "My Request"
 
 #. module: approvals
 #: model:ir.actions.act_window,name:approvals.approval_request_action
@@ -735,7 +756,6 @@ msgid "Name"
 msgstr "名稱"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__new
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__new
@@ -772,18 +792,18 @@ msgstr "下一活動類型"
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_all
 msgid "No Approvals"
-msgstr "沒有審批"
+msgstr "No Approvals"
 
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action
 msgid "No Approvals Requests"
-msgstr "沒有批准請求"
+msgstr "No Approvals Requests"
 
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_to_review
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_to_review_category
 msgid "No new approvals to review"
-msgstr "沒有待複核審批"
+msgstr "No new approvals to review"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_category__has_amount__no
@@ -815,8 +835,8 @@ msgstr "錯誤數量"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "需要採取行動的訊息數目"
+msgid "Number of messages which requires an action"
+msgstr "需要處理的消息數量"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_has_error_counter
@@ -826,12 +846,12 @@ msgstr "有發送錯誤的郵件數量"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__request_to_validate_count
 msgid "Number of requests to validate"
-msgstr "要驗證的申請數量"
+msgstr "Number of requests to validate"
 
 #. module: approvals
 #: model:res.groups,name:approvals.group_approval_user
-msgid "Officer: Approve all requests"
-msgstr "主管：批准所有請求"
+msgid "Officer : Approve all requests"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_category__has_amount__optional
@@ -860,13 +880,13 @@ msgstr "付款"
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_payment_application
 msgid "Payment Application"
-msgstr "申請付款"
+msgstr "Payment Application"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Period"
-msgstr "期間"
+msgstr "會計期間"
 
 #. module: approvals
 #: model:approval.category,name:approvals.approval_category_data_procurement
@@ -895,7 +915,6 @@ msgstr "產品變體"
 #: model:ir.ui.menu,name:approvals.approvals_menu_product_template
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree
-#: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree_independent
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Products"
 msgstr "產品"
@@ -906,11 +925,6 @@ msgstr "產品"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Quantity"
 msgstr "數量"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_request__rating_ids
-msgid "Ratings"
-msgstr "點評"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__reference
@@ -924,8 +938,10 @@ msgid "Reference Sequence"
 msgstr "編碼序列"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
@@ -937,7 +953,7 @@ msgstr "退回"
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__request_status__refused
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__refused
 msgid "Refused"
-msgstr "已退回"
+msgstr "駁回"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__request_id
@@ -948,17 +964,17 @@ msgstr "請求"
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.res_users_view_form
 msgid "Request Approval"
-msgstr "請求批准"
+msgstr "Request Approval"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__request_owner_id
 msgid "Request Owner"
-msgstr "請求擁有人"
+msgstr "Request Owner"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__request_status
 msgid "Request Status"
-msgstr "請求狀態"
+msgstr "Request Status"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__required
@@ -987,7 +1003,6 @@ msgid "SMS Delivery error"
 msgstr "簡訊發送錯誤"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__sequence
@@ -995,14 +1010,7 @@ msgstr "簡訊發送錯誤"
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__sequence
 #, python-format
 msgid "Sequence"
-msgstr "序列號"
-
-#. module: approvals
-#: model:ir.model.fields,help:approvals.field_approval_approver__can_edit_user_id
-msgid ""
-"Simple users should not be able to remove themselves as approvers because "
-"they will lose access to the record if they misclick."
-msgstr "簡單用戶不應該能夠刪除自己作為審核者的身份，因為如果他們錯誤點擊，他們將失去對記錄的存取權。"
+msgstr "序號"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__status
@@ -1035,43 +1043,47 @@ msgstr "發送"
 #. module: approvals
 #: model:res.groups,comment:approvals.group_approval_user
 msgid "The user will be able to access all requests and approve/refuse them."
-msgstr "用戶可存取所有申請，並批准/拒絕這些申請。"
+msgstr ""
 
 #. module: approvals
 #: model:res.groups,comment:approvals.group_approval_manager
 msgid "The user will have access to the approvals configuration."
-msgstr "此用戶將會有權限配置審批。"
+msgstr "The user will have access to the approvals configuration."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. There is no manager "
 "linked to your employee profile."
-msgstr "這個請求需要得到你的經理批准。但你的員工檔案未有連結至經理。"
+msgstr ""
+"This request needs to be approved by your manager. There is no manager "
+"linked to your employee profile."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. There is no user linked "
 "to your manager."
-msgstr "這個請求需要得到你的經理批准。但你的員工檔案未有連結至經理。"
+msgstr ""
+"This request needs to be approved by your manager. There is no user linked "
+"to your manager."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. Your manager is not in "
 "the approvers list."
-msgstr "這個請求需要得到你的經理批准。但你的經理不在審批人名單上。"
+msgstr ""
+"This request needs to be approved by your manager. Your manager is not in "
+"the approvers list."
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__pending
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__pending
 #, python-format
@@ -1081,7 +1093,7 @@ msgstr "待批准"
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_kanban
 msgid "To Review:"
-msgstr "待複核："
+msgstr "To Review:"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__request_status__new
@@ -1096,18 +1108,22 @@ msgstr "記錄的異常活動的類型。"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__product_uom_id
 msgid "Unit of Measure"
-msgstr "量度單位"
+msgstr "單位"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__user_id
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__user_id
+#, python-format
 msgid "User"
 msgstr "使用者"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__user_status
 msgid "User Status"
-msgstr "用戶狀態"
+msgstr "User Status"
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__waiting
@@ -1118,7 +1134,7 @@ msgstr "正在等待"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__website_message_ids
 msgid "Website Messages"
-msgstr "網站資訊"
+msgstr "網站信息"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__website_message_ids
@@ -1129,71 +1145,50 @@ msgstr "網站溝通記錄"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 msgid "Withdraw"
-msgstr "撤回"
+msgstr "Withdraw"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You cannot approve before the previous approver."
-msgstr "不可在前一個審批人之前審批。"
+msgstr ""
 
 #. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/approval_request.py:0
-#, python-format
-msgid ""
-"You cannot assign the same approver multiple times on the same request."
-msgstr "不可在同一請求中多次分配相同的審批者。"
-
-#. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/ir_attachment.py:0
-#, python-format
-msgid ""
-"You cannot unlink an attachment which is linked to a validated, refused or "
-"cancelled approval request."
-msgstr "若附件是連結至已驗證、已拒絕或已取消的批核請求，便不可取消。"
-
-#. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to add at least %s approvers to confirm your request."
-msgstr "你必須加入至少 %s 個審批人去確認你的申請。"
+msgstr "You have to add at least %s approvers to confirm your request."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to attach at lease one document."
-msgstr "你最少須夾附一個文件。"
+msgstr "You have to attach at lease one document."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "Your minimum approval exceeds the total of default approvers."
-msgstr "你的最低批准數超過了預設審批人的總數。"
+msgstr "Your minimum approval exceeds the total of default approvers."
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "e.g. Brussels"
-msgstr "例：布魯塞爾"
+msgstr "e.g. Brussels"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "e.g. Procurement"
-msgstr "例：採購"
+msgstr "e.g. Procurement"
 
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_all
 msgid "menu"
-msgstr "選單"
+msgstr "menu"
 
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_all
 msgid "new request"
-msgstr "新請求"
+msgstr "new request"

@@ -7,11 +7,11 @@
         <field name="arch" type="xml">
             <tree delete="0" create="0">
                 <field name="date"/>
-                <field name="state" column_invisible="True"/>
+                <field name="state" invisible="1"/>
                 <field name="reference"/>
-                <field name="product_id" readonly="state == 'done'"/>
+                <field name="product_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-                <field name="product_uom_qty" string="Quantity" readonly="state == 'done'"/>
+                <field name="product_uom_qty" string="Quantity"/>
                 <field name="product_uom" groups="uom.group_uom"/>
             </tree>
         </field>

@@ -5,20 +5,14 @@
         <field name="model">slide.question</field>
         <field name="arch" type="xml">
             <form string="Quiz">
-                <div invisible="answers_validation_error == ''">
-                    <div class="alert alert-info my-1 mx-2" role="alert" aria-label="Validation error">
-                        <i class="fa fa-info-circle" aria-hidden="true"/>
-                        <field name="answers_validation_error" class="ms-2" readonly="1"/>
-                    </div>
-                </div>
                 <sheet>
                     <label for="question" string="Question Name"/>
                     <h1>
-                        <field name="question" default_focus="1" placeholder="e.g. What powers a computer?"/>
+                        <field name="question" default_focus="1" placeholder="e.g. What powers a computer ?"/>
                     </h1>
                     <field name="answer_ids">
                         <tree editable="bottom" create="true" delete="true">
-                            <field name="display_name" column_invisible="True"/>
+                            <field name="display_name" invisible="1"/>
                             <field name="text_value"/>
                             <field name="is_correct"/>
                             <field name="comment"/>
@@ -70,6 +64,7 @@
 
     <record id="slide_question_action_report" model="ir.actions.act_window">
         <field name="name">Quizzes</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">slide.question</field>
         <field name="view_mode">tree,graph,pivot,form</field>
         <field name="view_id" ref="slide_question_view_tree_report"/>

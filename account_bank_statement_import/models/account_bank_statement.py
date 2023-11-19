@@ -13,5 +13,5 @@ class AccountBankStatementLine(models.Model):
     unique_import_id = fields.Char(string='Import ID', readonly=True, copy=False)
 
     _sql_constraints = [
-        ('unique_import_id', 'unique (unique_import_id)', 'A bank account transactions can be imported only once!')
+        ('unique_import_id', 'unique (unique_import_id)', 'A bank account transactions can be imported only once !')
     ]

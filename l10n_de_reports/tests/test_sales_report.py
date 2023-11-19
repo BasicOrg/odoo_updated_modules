@@ -13,7 +13,7 @@ class GermanySalesReportTest(AccountSalesReportCommon):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass('de_skr03')
+        super().setUpClass('l10n_de_skr03.l10n_de_chart_template')
 
     @classmethod
     def setup_company_data(cls, company_name, chart_template=None, **kwargs):
@@ -27,15 +27,15 @@ class GermanySalesReportTest(AccountSalesReportCommon):
     @freeze_time('2019-12-31')
     def test_ec_sales_report(self):
         l_tax = self.env['account.tax'].search([
-            ('name', '=', '0% EU D'),
+            ('name', '=', 'Steuerfreie innergem. Lieferung (§4 Abs. 1b UStG)'),
             ('company_id', '=', self.company_data['company'].id)
         ])[0]
         t_tax = self.env['account.tax'].search([
-            ('name', '=', '0% TT F'),
+            ('name', '=', '0% Umsatzsteuer Dreiecksgeschäft erster Abnehmer'),
             ('company_id', '=', self.company_data['company'].id)
         ])[0]
         s_tax = self.env['account.tax'].search([
-            ('name', '=', '0% MOB'),
+            ('name', '=', '0% Umsatzsteuer Lieferung von Mobilfunkgeräten u.a. (§13b)'),
             ('company_id', '=', self.company_data['company'].id)
         ])[0]
         self._create_invoices([
@@ -47,7 +47,7 @@ class GermanySalesReportTest(AccountSalesReportCommon):
             (self.partner_b, s_tax, 700),
         ])
         report = self.env.ref('l10n_de_reports.german_ec_sales_report')
-        options = report.get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
+        options = report._get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
@@ -62,6 +62,5 @@ class GermanySalesReportTest(AccountSalesReportCommon):
                 (self.partner_b.name,  self.partner_b.vat[:2],  self.partner_b.vat[2:],  'S',  f'700.00{NON_BREAKING_SPACE}€'),
                 ('Total',              '',                      '',                      '',   f'3,000.00{NON_BREAKING_SPACE}€'),
             ],
-            options,
         )
         self.assertTrue(self.env['account.general.ledger.report.handler'].l10n_de_datev_export_to_zip(options).get('file_content'), 'Error creating CSV')

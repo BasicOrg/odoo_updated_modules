@@ -1,17 +1,18 @@
-/** @odoo-module **/
+odoo.define('sale_renting.tour', function (require) {
+"use strict";
 
-import { _t } from "@web/core/l10n/translation";
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+var core = require('web.core');
+const {Markup} = require('web.utils');
+var tour = require('web_tour.tour');
 
-import { markup } from "@odoo/owl";
+var _t = core._t;
 
-registry.category("web_tour.tours").add('rental_tour', {
+tour.register('rental_tour', {
     url: "/web",
     sequence: 240,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale_renting.rental_menu_root"]',
-    content: markup(_t("Want to <b>rent products</b>? \n Let's discover Odoo Rental App.")),
+    content: Markup(_t("Want to <b>rent products</b>? \n Let's discover Odoo Rental App.")),
     position: 'bottom',
     edition: 'enterprise'
 }, {
@@ -20,11 +21,11 @@ registry.category("web_tour.tours").add('rental_tour', {
     position: 'bottom',
 }, {
     trigger: '.o-kanban-button-new',
-    extra_trigger: '.o_breadcrumb .active:contains(Products)',
+    extra_trigger: '.breadcrumb-item:contains(Products)',
     content: _t("Click here to set up your first rental product."),
     position: 'bottom',
 }, {
-    trigger: ".o_field_widget[name='name'] textarea",
+    trigger: ".o_field_widget[name='name'] input",
     content: _t("Enter the product name."),
     position: 'bottom',
 }, {
@@ -32,7 +33,7 @@ registry.category("web_tour.tours").add('rental_tour', {
     content: _t("Save the product."),
     position: 'bottom',
 }, {
-    trigger: ".nav-item a.nav-link:contains(Rental prices)",
+    trigger: ".nav-item a.nav-link:contains(Price)",
     content: _t("The rental configuration is available here."),
     position: 'top',
 }, {
@@ -70,18 +71,22 @@ registry.category("web_tour.tours").add('rental_tour', {
     trigger: ".ui-menu-item a:contains('Test')",
     auto: true,
 }, {
-    trigger: ".o_field_widget[name=product_id] input, .o_field_widget[name=product_template_id] input",
-    content: _t("Select the rental dates and check the price."),
+    trigger: "button[special=save]",
+    extra_trigger: ".o_form_nosheet",
+    content: _t("Enter the requested dates and check the price.\n Then, click here to add the product."),
     position: 'bottom',
 }, {
-    trigger: 'td.o_data_cell:contains("Test (Rental)")',
-    isCheck: true,
+    trigger: '.o_form_button_save',
+    extra_trigger: '.o_sale_order',
+    content: _t("Save the quotation."),
+    position: 'bottom',
 }, {
     trigger: 'button[name=action_confirm]',
+    extra_trigger: '.o_form_button_create', // wait for the new order to be saved
     content: _t("Confirm the order when the customer agrees with the terms."),
     position: 'bottom',
 }, {
-    trigger: 'button[name=action_open_pickup]',
+    trigger: 'button[name=open_pickup]',
     extra_trigger: '.o_sale_order',
     content: _t("Click here to register the pickup."),
     position: 'bottom',
@@ -90,7 +95,7 @@ registry.category("web_tour.tours").add('rental_tour', {
     content: _t("Validate the operation after checking the picked-up quantities."),
     position: 'bottom',
 }, {
-    trigger: "button[name='action_open_return']",
+    trigger: "button[name='open_return']",
     extra_trigger: '.o_sale_order',
     content: _t("Once the rental is done, you can register the return."),
     position: 'bottom',
@@ -99,7 +104,9 @@ registry.category("web_tour.tours").add('rental_tour', {
     content: _t("Confirm the returned quantities and hit Validate."),
     position: 'bottom',
 }, {
-    trigger: '.text-bg-default:contains("Returned")',
-    content: _t("You're done with your fist rental. Congratulations!"),
+    trigger: '.text-bg-success:contains("Returned")',
+    content: _t("You're done with your fist rental. Congratulations !"),
     run() {},
-}]});
+}]);
+
+});

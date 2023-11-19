@@ -109,18 +109,14 @@ $line-height-truncate: 1.25em;
 }
 
 .o_wslides_body {
-    > #wrapwrap > main {
-        // Change default "body" background in case of website_slides pages.
-        // Note: this only affects the "main" element as we don't want (semi-)
-        // transparent header/footer to be impacted and we also only want the
-        // "box" of boxed layouts to be impacted (not the color behind the box).
-        background-color: $o-wslides-color-bg;
-    }
+    background-color: $o-wslides-color-bg;
 
     .o_wslides_home_nav {
         top: -40px;
 
         @include media-breakpoint-up(lg) {
+            font-size: 1rem;
+
             .o_wslides_nav_navbar_right {
                 padding-left: $spacer;
                 margin-left: auto;
@@ -165,7 +161,7 @@ $line-height-truncate: 1.25em;
 
     .o_wslides_js_lesson_quiz_question {
         .list-group-item  {
-            @include font-size(1rem);
+            font-size: 1rem;
 
             input:checked + i.fa-circle {
                 color: $primary !important;
@@ -229,15 +225,15 @@ $line-height-truncate: 1.25em;
 }
 
 .o_wslides_channel_completion_completed {
-    @include font-size(1rem);
+    font-size: 1rem;
 }
 
 // New home page
 // **************************************************
 .o_wslides_home_main {
     .o_wslides_home_aside_loggedin {
-        background: none;
         @include media-breakpoint-up(lg) {
+            background: none;
             border: none;
         }
     }
@@ -419,27 +415,6 @@ $line-height-truncate: 1.25em;
         @include media-breakpoint-only(xs) {
             margin: 0 ($grid-gutter-width * -0.5);
         }
-
-        .o_wslides_lesson_nav {
-            .navbar {
-                @if ( not has-enough-contrast($body-bg, $dark) ) {
-                    .nav-link, .navbar-brand{
-                        color: $navbar-dark-color;
-                    }
-                    .navbar-toggler-icon {
-                        background-image: $navbar-dark-toggler-icon-bg;
-                    }
-                }
-                @else {
-                    .nav-link, .navbar-brand{
-                        color: $navbar-light-color;
-                    }
-                    .navbar-toggler-icon {
-                        background-image: $navbar-light-toggler-icon-bg;
-                    }
-                }
-            }
-        }
     }
 
     // Slides list reordering widget
@@ -525,7 +500,6 @@ $line-height-truncate: 1.25em;
             background-position: center;
             padding-bottom: 35%;
         }
-
     }
     .o_wslides_lesson_card {
         .o_wslides_background_image img {
@@ -533,7 +507,6 @@ $line-height-truncate: 1.25em;
             width: 100%;
             object-fit: cover;
         }
-
     }
 }
 
@@ -559,13 +532,6 @@ $line-height-truncate: 1.25em;
             }
         }
 
-        .o_wslides_lesson_aside_list_links i {
-            padding-right: 10px;
-            &.fa-flag {
-                padding-right: 6px;
-            }
-        }
-
         .o_wslides_lesson_aside_list {
             .o_wslides_lesson_aside_list_link {
                 @include o-hover-text-color($gray-600, $headings-color );
@@ -582,7 +548,7 @@ $line-height-truncate: 1.25em;
                 line-height: unset;
             }
             .o_wslides_button_complete {
-                margin-left: 3px;
+                margin-left: 5px;
             }
             button.o_wslides_button_complete i {
                 color: $gray-600;
@@ -617,32 +583,10 @@ $line-height-truncate: 1.25em;
     }
 }
 
-.hidden-progressbar-completed-tag {
-    visibility: hidden;
-    @include media-breakpoint-down(sm) {
-        display: none !important;
-    }
-}
-
-.o_wslides_fs_sidebar_section {
-    a[aria-expanded="true"] i.fa-caret-left{
-        display: none;
-    }
-    a[aria-expanded="false"] i.fa-caret-down{
-        display: none;
-    }
-}
-
-li.o_wslides_fs_sidebar_list_item:not(.active) {
-    ul.small {
-        display:none;
-    }
-}
-
-li.o_wslides_fs_sidebar_list_item.active {
-    a.o_wslides_fs_slide_link {
-        font-weight: 300;
-    }
+// Enforce the height of the lesson header, so the DOM element size do not change
+// when the completion progressbar become visible / hidden
+.o_wslides_lesson_header_container {
+    height: 80px;
 }
 
 // Modals
@@ -706,7 +650,7 @@ li.o_wslides_fs_sidebar_list_item.active {
         background-color: #875A7B;
         padding:5px 15px;
         font-weight:bold;
-        @include font-size(13px);
+        font-size:13px;
     }
 
     .tooltip > .arrow {

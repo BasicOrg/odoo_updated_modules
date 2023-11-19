@@ -1,36 +1,18 @@
 /** @odoo-module **/
 
-import { WebsiteSale } from '@website_sale/js/website_sale';
+import { WebsiteSale } from 'website_sale.website_sale';
 import { RentingMixin } from '@website_sale_renting/js/renting_mixin';
-import wSaleUtils from "@website_sale/js/website_sale_utils";
 import '@website_sale_renting/js/variant_mixin';
-import {
-    deserializeDateTime,
-    serializeDateTime,
-    formatDate,
-    formatDateTime,
-} from "@web/core/l10n/dates";
 
 WebsiteSale.include(RentingMixin);
 WebsiteSale.include({
     events: Object.assign(WebsiteSale.prototype.events, {
         'renting_constraints_changed': '_onRentingConstraintsChanged',
         'toggle_disable': '_onToggleDisable',
-        'change .js_main_product .o_website_sale_daterange_picker': 'onChangeVariant',
-        'daterangepicker_apply': '_onDatePickerApply',
-        'click .clear-daterange': '_onDatePickerClear',
+        'change .js_main_product .o_website_sale_daterange_picker input.daterange-input': 'onChangeVariant',
+        'apply.daterangepicker': '_onDatePickerApply',
     }),
 
-    async _check_new_dates_on_cart(){
-        const { start_date, end_date, values } = await this.rpc(
-            '/shop/cart/update_renting',
-            this._getSerializedRentingDates()
-        );
-        wSaleUtils.updateCartNavBar(values);
-        const format = this._isDurationWithHours() ? formatDateTime : formatDate;
-        document.querySelector("input[name=renting_start_date]").value = format(deserializeDateTime(start_date));
-        document.querySelector("input[name=renting_end_date]").value = format(deserializeDateTime(end_date));
-    },
 
     /**
      * Assign the renting dates to the rootProduct for rental products.
@@ -39,7 +21,7 @@ WebsiteSale.include({
      */
     _updateRootProduct($form, productId) {
         this._super(...arguments);
-        Object.assign(this.rootProduct, this._getSerializedRentingDates());
+        Object.assign(this.rootProduct, this._getRentingDates());
     },
 
     // ------------------------------------------
@@ -107,7 +89,7 @@ WebsiteSale.include({
             return false;
         }
         const message = this._getInvalidMessage(
-            rentingDates.start_date, rentingDates.end_date,
+            moment(rentingDates.start_date), moment(rentingDates.end_date),
             this._getProductId($parent.closest('form'))
         );
         if (message) {
@@ -151,32 +133,18 @@ WebsiteSale.include({
         return result;
     },
 
-    _onDatePickerApply: function (ev, { start_date, end_date }) {
-        if (document.querySelector(".oe_cart")) {
-            this._check_new_dates_on_cart();
-        } else if (document.querySelector(".o_website_sale_shop_daterange_picker")) {
-            this._addDatesToQuery(start_date, end_date);
+    _onDatePickerApply: function (ev) {
+        const datepickerEl = ev.target.closest('.o_website_sale_shop_daterange_picker');
+        if (datepickerEl) {
+            const rawInput = datepickerEl.querySelector('.daterange-input').value;
+            // get current URL parameters
+            const searchParams = new URLSearchParams(window.location.search);
+            const [startDate, endDate] = rawInput.split(' - ');
+            if (startDate && endDate) {
+                searchParams.set('start_date', `${new Date(startDate).toISOString()}`);
+                searchParams.set('end_date', `${new Date(endDate).toISOString()}`);
+            }
+            window.location = `/shop?${searchParams.toString()}`;
         }
-    },
-    /**
-     * Redirect to the shop page with the appropriate dates as search params.
-     */
-    _addDatesToQuery(start_date, end_date) {
-        // get current URL parameters
-        const searchParams = new URLSearchParams(window.location.search);
-        if (start_date && end_date) {
-            searchParams.set("start_date", serializeDateTime(start_date));
-            searchParams.set("end_date", serializeDateTime(end_date));
-        }
-        window.location = `/shop?${searchParams}`;
-        this.isRedirecting = true;
-    },
-
-    _onDatePickerClear: function (ev) {
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.delete('start_date');
-        searchParams.delete('end_date');
-        const searchString = searchParams.toString();
-        window.location = `${window.location.pathname}` + searchString.length ? `?${searchParams.toString()}` : ``;
     },
 });

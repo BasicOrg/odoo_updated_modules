@@ -7,7 +7,7 @@
     'category': 'Hidden',
     'version': '1.0',
     'description': """
-This bridge module is auto-installed when the modules stock_barcode and mrp_subcontracting are installed.
+        This bridge module is auto-installed when the modules stock_barcode and mrp_subcontracting are installed.
     """,
     'depends': ['stock_barcode', 'mrp_subcontracting'],
     'installable': True,

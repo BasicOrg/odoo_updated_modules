@@ -17,31 +17,26 @@ _logger = logging.getLogger(__name__)
 
 class TestAssetsGenerateTimeCommon(odoo.tests.TransactionCase):
 
-    def generate_bundles(self, unlink=True):
-        if unlink:
-            self.env['ir.attachment'].search([('url', '=like', '/web/assets/%')]).unlink()  # delete existing attachement
+    def generate_bundles(self):
+        self.env['ir.attachment'].search([('url', '=like', '/web/assets/%')]).unlink() # delete existing attachement
         installed_module_names = self.env['ir.module.module'].search([('state', '=', 'installed')]).mapped('name')
         bundles = {
             key
             for module in installed_module_names
-            for key in get_manifest(module).get('assets', [])
+            for key in get_manifest(module)['assets']
         }
 
-        for bundle_name in bundles:
+        for bundle in bundles:
             with mute_logger('odoo.addons.base.models.assetsbundle'):
                 for assets_type in 'css', 'js':
                     try:
                         start_t = time.time()
                         css = assets_type == 'css'
                         js = assets_type == 'js'
-                        bundle = self.env['ir.qweb']._get_asset_bundle(bundle_name, css=css, js=js)
-                        if assets_type == 'css' and bundle.stylesheets:
-                            bundle.css()
-                        if assets_type == 'js' and bundle.javascripts:
-                            bundle.js()
-                        yield (f'{bundle_name}.{assets_type}', time.time() - start_t)
+                        self.env['ir.qweb']._generate_asset_nodes(bundle, css=css, js=js)
+                        yield (f'{bundle}.{assets_type}', time.time() - start_t)
                     except ValueError:
-                        _logger.info('Error detected while generating bundle %r %s', bundle_name, assets_type)
+                        _logger.info('Error detected while generating bundle %r %s', bundle, assets_type)
 
 
 @odoo.tests.tagged('post_install', '-at_install', 'assets_bundle')
@@ -52,33 +47,9 @@ class TestLogsAssetsGenerateTime(TestAssetsGenerateTimeCommon):
         The purpose of this test is to monitor the time of assets bundle generation.
         This is not meant to test the generation failure, hence the try/except and the mute logger.
         """
-        for bundle, duration in list(self.generate_bundles()):
+        for bundle, duration in self.generate_bundles():
             _logger.info('Bundle %r generated in %.2fs', bundle, duration)
 
-    def test_logs_assets_check_time(self):
-        """
-        The purpose of this test is to monitor the time of assets bundle generation.
-        This is not meant to test the generation failure, hence the try/except and the mute logger.
-        """
-        start = time.time()
-        for bundle, duration in self.generate_bundles(False):
-            _logger.info('Bundle %r checked in %.2fs', bundle, duration)
-        duration = time.time() - start
-        _logger.info('All bundle checked in %.2fs', duration)
-
-
-@odoo.tests.tagged('post_install', '-at_install', '-standard', 'test_assets')
-class TestPregenerateTime(HttpCase):
-
-    def test_logs_pregenerate_time(self):
-        self.env['ir.qweb']._pregenerate_assets_bundles()
-        start = time.time()
-        self.env.registry.clear_cache()
-        self.env.cache.invalidate()
-        with self.profile(collectors=['sql', odoo.tools.profiler.PeriodicCollector(interval=0.01)], disable_gc=True):
-            self.env['ir.qweb']._pregenerate_assets_bundles()
-        duration = time.time() - start
-        _logger.info('All bundle checked in %.2fs', duration)
 
 @odoo.tests.tagged('post_install', '-at_install', '-standard', 'assets_bundle')
 class TestAssetsGenerateTime(TestAssetsGenerateTimeCommon):
@@ -102,7 +73,6 @@ class TestAssetsGenerateTime(TestAssetsGenerateTimeCommon):
 class TestLoad(HttpCase):
     def test_assets_already_exists(self):
         self.authenticate('admin', 'admin')
-        # TODO xdo adapt this test. url open won't generate attachment anymore even if not pregenerated
         _save_attachment = odoo.addons.base.models.assetsbundle.AssetsBundle.save_attachment
 
         def save_attachment(bundle, extension, content):

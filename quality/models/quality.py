@@ -29,7 +29,8 @@ class QualityPoint(models.Model):
 
     def _get_default_team_id(self):
         company_id = self.company_id.id or self.env.context.get('default_company_id', self.env.company.id)
-        return self.team_id._get_quality_team(self.env['quality.alert.team']._check_company_domain(company_id))
+        domain = ['|', ('company_id', '=', company_id), ('company_id', '=', False)]
+        return self.team_id._get_quality_team(domain)
 
     def _get_default_test_type_id(self):
         domain = self._get_type_default_domain()
@@ -45,8 +46,7 @@ class QualityPoint(models.Model):
         default=_get_default_team_id, required=True)
     product_ids = fields.Many2many(
         'product.product', string='Products',
-        check_company=True,
-        domain="[('type', 'in', ('product', 'consu'))]",
+        domain="[('type', 'in', ('product', 'consu')), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="Quality Point will apply to every selected Products.")
     product_category_ids = fields.Many2many(
         'product.category', string='Product Categories',
@@ -68,8 +68,8 @@ class QualityPoint(models.Model):
     reason = fields.Html('Cause')
 
     def _compute_check_count(self):
-        check_data = self.env['quality.check']._read_group([('point_id', 'in', self.ids)], ['point_id'], ['__count'])
-        result = {point.id: count for point, count in check_data}
+        check_data = self.env['quality.check'].read_group([('point_id', 'in', self.ids)], ['point_id'], ['point_id'])
+        result = dict((data['point_id'][0], data['point_id_count']) for data in check_data)
         for point in self:
             point.check_count = result.get(point.id, 0)
 
@@ -84,6 +84,66 @@ class QualityPoint(models.Model):
         # TDE FIXME: make true multi
         self.ensure_one()
         return True
+
+    def _get_checks_values(self, products, company_id, existing_checks=False):
+        quality_points_list = []
+        point_values = []
+        if not existing_checks:
+            existing_checks = []
+        for check in existing_checks:
+            point_key = (check.point_id.id, check.team_id.id, check.product_id.id)
+            quality_points_list.append(point_key)
+
+        for point in self:
+            if not point.check_execute_now():
+                continue
+            point_products = point.product_ids
+
+            if point.product_category_ids:
+                point_product_from_categories = self.env['product.product'].search([('categ_id', 'child_of', point.product_category_ids.ids), ('id', 'in', products.ids)])
+                point_products |= point_product_from_categories
+
+            if not point.product_ids and not point.product_category_ids:
+                point_products |= products
+
+            for product in point_products:
+                if product not in products:
+                    continue
+                point_key = (point.id, point.team_id.id, product.id)
+                if point_key in quality_points_list:
+                    continue
+                point_values.append({
+                    'point_id': point.id,
+                    'measure_on': point.measure_on,
+                    'team_id': point.team_id.id,
+                    'product_id': product.id,
+                })
+                quality_points_list.append(point_key)
+
+        return point_values
+
+    @api.model
+    def _get_domain(self, product_ids, picking_type_id, measure_on='product'):
+        """ Helper that returns a domain for quality.point based on the products and picking type
+        pass as arguments. It will search for quality point having:
+        - No product_ids and no product_category_id
+        - At least one variant from product_ids
+        - At least one category that is a parent of the product_ids categories
+
+        :param product_ids: the products that could require a quality check
+        :type product: :class:`~odoo.addons.product.models.product.ProductProduct`
+        :param picking_type_id: the products that could require a quality check
+        :type product: :class:`~odoo.addons.stock.models.stock_picking.PickingType`
+        :return: the domain for quality point with given picking_type_id for all the product_ids
+        :rtype: list
+        """
+        domain = [('picking_type_ids', 'in', picking_type_id.ids)]
+        domain_in_products_or_categs = ['|', ('product_ids', 'in', product_ids.ids), ('product_category_ids', 'parent_of', product_ids.categ_id.ids)]
+        domain_no_products_and_categs = [('product_ids', '=', False), ('product_category_ids', '=', False)]
+        domain += OR([domain_in_products_or_categs, domain_no_products_and_categs])
+        domain += [('measure_on', '=', measure_on)]
+
+        return domain
 
     def _get_type_default_domain(self):
         return []
@@ -104,14 +164,14 @@ class QualityAlertTeam(models.Model):
     color = fields.Integer('Color', default=1)
 
     def _compute_check_count(self):
-        check_data = self.env['quality.check']._read_group([('team_id', 'in', self.ids), ('quality_state', '=', 'none')], ['team_id'], ['__count'])
-        check_result = {team.id: count for team, count in check_data}
+        check_data = self.env['quality.check'].read_group([('team_id', 'in', self.ids), ('quality_state', '=', 'none')], ['team_id'], ['team_id'])
+        check_result = dict((data['team_id'][0], data['team_id_count']) for data in check_data)
         for team in self:
             team.check_count = check_result.get(team.id, 0)
 
     def _compute_alert_count(self):
-        alert_data = self.env['quality.alert']._read_group([('team_id', 'in', self.ids), ('stage_id.done', '=', False)], ['team_id'], ['__count'])
-        alert_result = {team.id: count for team, count in alert_data}
+        alert_data = self.env['quality.alert'].read_group([('team_id', 'in', self.ids), ('stage_id.done', '=', False)], ['team_id'], ['team_id'])
+        alert_result = dict((data['team_id'][0], data['team_id_count']) for data in alert_data)
         for team in self:
             team.alert_count = alert_result.get(team.id, 0)
 
@@ -180,14 +240,13 @@ class QualityCheck(models.Model):
     control_date = fields.Datetime('Control Date', tracking=True)
     product_id = fields.Many2one(
         'product.product', 'Product', check_company=True,
-        domain="[('type', 'in', ['consu', 'product'])]")
+        domain="[('type', 'in', ['consu', 'product']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     picking_id = fields.Many2one('stock.picking', 'Picking', check_company=True)
     partner_id = fields.Many2one(
         related='picking_id.partner_id', string='Partner')
     lot_id = fields.Many2one(
         'stock.lot', 'Lot/Serial',
-        check_company=True,
-        domain="[('product_id', '=', product_id)]")
+        domain="[('product_id', '=', product_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     user_id = fields.Many2one('res.users', 'Responsible', tracking=True)
     team_id = fields.Many2one(
         'quality.alert.team', 'Team', required=True, check_company=True)
@@ -206,8 +265,8 @@ class QualityCheck(models.Model):
         'Additional Note', help="Additional remarks concerning this check.")
 
     def _compute_alert_count(self):
-        alert_data = self.env['quality.alert']._read_group([('check_id', 'in', self.ids)], ['check_id'], ['__count'])
-        alert_result = {check.id: count for check, count in alert_data}
+        alert_data = self.env['quality.alert'].read_group([('check_id', 'in', self.ids)], ['check_id'], ['check_id'])
+        alert_result = dict((data['check_id'][0], data['check_id_count']) for data in alert_data)
         for check in self:
             check.alert_count = alert_result.get(check.id, 0)
 
@@ -236,15 +295,6 @@ class QualityCheck(models.Model):
             if 'point_id' in vals and not vals.get('note'):
                 vals['note'] = self.env['quality.point'].browse(vals['point_id']).note
         return super().create(vals_list)
-
-    def write(self, vals):
-        res = super().write(vals)
-        if 'quality_state' in vals and not vals.get('user_id') or not vals.get('control_date'):
-            if vals.get('quality_state') == 'pass':
-                self.do_pass()
-            elif vals.get('quality_state') == 'fail':
-                self.do_fail()
-        return res
 
     def do_fail(self):
         self.write({
@@ -305,13 +355,13 @@ class QualityAlert(models.Model):
     check_id = fields.Many2one('quality.check', 'Check', check_company=True)
     product_tmpl_id = fields.Many2one(
         'product.template', 'Product', check_company=True,
-        domain="[('type', 'in', ['consu', 'product'])]")
+        domain="[('type', 'in', ['consu', 'product']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     product_id = fields.Many2one(
         'product.product', 'Product Variant',
         domain="[('product_tmpl_id', '=', product_tmpl_id)]")
     lot_id = fields.Many2one(
         'stock.lot', 'Lot', check_company=True,
-        domain="['|', ('product_id', '=', product_id), ('product_id.product_tmpl_id', '=', product_tmpl_id)]")
+        domain="['|', ('product_id', '=', product_id), ('product_id.product_tmpl_id', '=', product_tmpl_id), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'Low'),
@@ -328,7 +378,7 @@ class QualityAlert(models.Model):
 
     def write(self, vals):
         res = super(QualityAlert, self).write(vals)
-        if 'stage_id' in vals and self.stage_id.done:
+        if self.stage_id.done and 'stage_id' in vals:
             self.write({'date_close': fields.Datetime.now()})
         return res
 

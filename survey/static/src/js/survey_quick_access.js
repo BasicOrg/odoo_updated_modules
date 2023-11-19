@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('survey.quick.access', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
     selector: '.o_survey_quick_access',
@@ -14,12 +15,6 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
     // Widget
     //--------------------------------------------------------------------------
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-        this.orm = this.bindService("orm");
-    },
-    
     /**
     * @override
     */
@@ -29,7 +24,7 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
             // Init event listener
             if (!self.readonly) {
                 $(document).on('keypress', self._onKeyPress.bind(self));
-            }
+            }       
         });
     },
 
@@ -41,11 +36,11 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
     // -------------------------------------------------------------------------
 
     _onLaunchSessionClick: async function () {
-        const sessionResult = await this.orm.call(
-            "survey.survey",
-            "action_start_session",
-            [[this.$(".o_survey_launch_session").data("surveyId")]]
-        );
+        const sessionResult = await this._rpc({
+            'model': 'survey.survey',
+            'method': 'action_start_session',
+            'args': [[this.$('.o_survey_launch_session').data('surveyId')]],
+        });
         window.location = sessionResult.url;
     },
 
@@ -56,7 +51,7 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
     },
 
     _onKeyPress: function (event) {
-        if (event.key === "Enter") {
+        if (event.keyCode === 13) {  // Enter
             event.preventDefault();
             this._submitCode();
         }
@@ -75,7 +70,9 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
             self.$('.o_survey_session_error_invalid_code').removeClass('d-none');
             return;
         }
-        this.rpc(`/survey/check_session_code/${sessionCodeInputVal}`).then(function (response) {
+        this._rpc({
+            route: `/survey/check_session_code/${sessionCodeInputVal}`,
+        }).then(function (response) {
             if (response.survey_url) {
                 window.location = response.survey_url;
             } else {
@@ -94,4 +91,6 @@ publicWidget.registry.SurveyQuickAccessWidget = publicWidget.Widget.extend({
     },
 });
 
-export default publicWidget.registry.SurveyQuickAccessWidget;
+return publicWidget.registry.SurveyQuickAccessWidget;
+
+});

@@ -56,21 +56,3 @@ class TestEasypostRequest(EasypostTestCommon):
 
         self.assertEqual(shipment["order[shipments][0][parcel][weight]"], 80)
         self.assertFalse('order[shipments][1][parcel][weight]' in shipment, 'Should have only 1 shipment')
-
-@tagged('standard', '-external')
-class TestMockedEasypostRequest(TestEasypostRequest):
-    def setUp(self):
-        with self.patch_easypost_requests():
-            super().setUp()
-
-    def test_prepare_order_shipments(self):
-        with self.patch_easypost_requests():
-            super().test_prepare_order_shipments()
-
-    def test_prepare_order_shipments_multiple(self):
-        with self.patch_easypost_requests():
-            super().test_prepare_order_shipments_multiple()
-
-    def test_prepare_order_shipments_no_max_weight(self):
-        with self.patch_easypost_requests():
-            super().test_prepare_order_shipments_no_max_weight()

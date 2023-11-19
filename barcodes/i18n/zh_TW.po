@@ -3,17 +3,16 @@
 # 	* barcodes
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,11 +20,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: barcodes
-#. odoo-python
 #: code:addons/barcodes/models/barcode_rule.py:0
 #, python-format
-msgid " '*' is not a valid Regex Barcode Pattern. Did you mean '.*'?"
-msgstr "「*」不是有效的 regex 正規表達式條碼模式。你是想用「.*」嗎？"
+msgid " '*' is not a valid Regex Barcode Pattern. Did you mean '.*' ?"
+msgstr " '*' 不是一個有效的正則條碼模式。您的意思是'.*' ?"
 
 #. module: barcodes
 #: model_terms:ir.ui.view,arch_db:barcodes.view_barcode_nomenclature_form
@@ -78,16 +76,9 @@ msgid "Any"
 msgstr "任何"
 
 #. module: barcodes
-#. odoo-javascript
-#: code:addons/barcodes/static/src/components/barcode_scanner.xml:0
-#, python-format
-msgid "Barcode"
-msgstr "條碼"
-
-#. module: barcodes
 #: model:ir.model,name:barcodes.model_barcodes_barcode_events_mixin
 msgid "Barcode Event Mixin"
-msgstr "條碼事件混入"
+msgstr "條碼事件混合"
 
 #. module: barcodes
 #: model:ir.model,name:barcodes.model_barcode_nomenclature
@@ -120,11 +111,11 @@ msgid "Barcode Scanned"
 msgstr "掃瞄到條碼"
 
 #. module: barcodes
-#. odoo-javascript
+#. openerp-web
 #: code:addons/barcodes/static/src/barcode_handlers.js:0
 #, python-format
 msgid "Barcode: "
-msgstr "條碼: "
+msgstr ""
 
 #. module: barcodes
 #: model:ir.model,name:barcodes.model_res_company
@@ -135,7 +126,7 @@ msgstr "公司"
 #: model:ir.model.fields,field_description:barcodes.field_barcode_nomenclature__create_uid
 #: model:ir.model.fields,field_description:barcodes.field_barcode_rule__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: barcodes
 #: model:ir.model.fields,field_description:barcodes.field_barcode_nomenclature__create_date
@@ -178,7 +169,13 @@ msgstr "HTTP 路由"
 #: model:ir.model.fields,field_description:barcodes.field_barcode_nomenclature__id
 #: model:ir.model.fields,field_description:barcodes.field_barcode_rule__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
+
+#. module: barcodes
+#: model:ir.model.fields,field_description:barcodes.field_barcode_nomenclature____last_update
+#: model:ir.model.fields,field_description:barcodes.field_barcode_rule____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: barcodes
 #: model:ir.model.fields,field_description:barcodes.field_barcode_nomenclature__write_uid
@@ -207,24 +204,17 @@ msgstr "命名規則"
 msgid ""
 "Patterns can also define how numerical values, such as weight or price, can be\n"
 "                                encoded into the barcode. They are indicated by <code>{NNN}</code> where the N's\n"
-"                                define where the number's digits are encoded. Floats are also supported with the\n"
-"                                decimals indicated with D's, such as <code>{NNNDD}</code>. In these cases,\n"
-"                                the barcode field on the associated records <i>must</i> show these digits as\n"
+"                                define where the number's digits are encoded. Floats are also supported with the \n"
+"                                decimals indicated with D's, such as <code>{NNNDD}</code>. In these cases, \n"
+"                                the barcode field on the associated records <i>must</i> show these digits as \n"
 "                                zeroes."
 msgstr ""
-"模式還可以定義如何將重量或價格等數值\n"
-"                                編碼到條形碼中。它們用<code>{NNN}</code> 表示，其中 N\n"
-"                                代表數字的編碼位置。也支持浮點數，\n"
-"                                用 D 表示小數，如<code>{NNNDD}</code>。 在這種情況下，\n"
-"                                相關記錄上的條形碼字段<i>必須</i> 將這些數字顯示為\n"
-"                                零。"
-
-#. module: barcodes
-#. odoo-javascript
-#: code:addons/barcodes/static/src/components/barcode_scanner.js:0
-#, python-format
-msgid "Please, Scan again!"
-msgstr "請再次掃描！"
+"模式也可以定義為如何將數值，例如重量或者價格也可以\n"
+"被編碼到條碼。它們以<code> {NNN}</code>表示，在這裡Ｎ's\n"
+"用來定義號碼哪兒編碼為數字。浮點數也支援而\n"
+"小數用Ｄ's表示，例如<code></code>{NNNDD}。在這些案例中，\n"
+"在相關記錄的條碼欄位<i>必填</i>顯示這些數字為\n"
+"０。"
 
 #. module: barcodes
 #: model:ir.model.fields,field_description:barcodes.field_barcode_rule__name
@@ -239,19 +229,12 @@ msgstr "規則"
 #. module: barcodes
 #: model:ir.model.fields,field_description:barcodes.field_barcode_rule__sequence
 msgid "Sequence"
-msgstr "序列號"
+msgstr "條碼"
 
 #. module: barcodes
 #: model_terms:ir.ui.view,arch_db:barcodes.view_barcode_nomenclature_form
 msgid "Tables"
 msgstr "表格"
-
-#. module: barcodes
-#. odoo-javascript
-#: code:addons/barcodes/static/src/components/barcode_scanner.xml:0
-#, python-format
-msgid "Tap to scan"
-msgstr "點擊即可掃描"
 
 #. module: barcodes
 #: model:ir.model.fields,help:barcodes.field_barcode_rule__pattern
@@ -269,7 +252,6 @@ msgid "The matched pattern will alias to this barcode"
 msgstr "匹配模式將別名加到該條碼"
 
 #. module: barcodes
-#. odoo-python
 #: code:addons/barcodes/models/barcode_rule.py:0
 #, python-format
 msgid ""
@@ -278,7 +260,6 @@ msgid ""
 msgstr "條碼模式 %(pattern)s 中存在語法錯誤：a rule can only contain one pair of braces."
 
 #. module: barcodes
-#. odoo-python
 #: code:addons/barcodes/models/barcode_rule.py:0
 #, python-format
 msgid ""
@@ -287,7 +268,6 @@ msgid ""
 msgstr "條碼模式 %(pattern)s 中存在語法錯誤：braces can only contain N's followed by D's."
 
 #. module: barcodes
-#. odoo-python
 #: code:addons/barcodes/models/barcode_rule.py:0
 #, python-format
 msgid ""
@@ -335,11 +315,11 @@ msgid "Unit Product"
 msgstr "單位產品"
 
 #. module: barcodes
-#. odoo-javascript
+#. openerp-web
 #: code:addons/barcodes/static/src/barcode_handlers.js:0
 #, python-format
 msgid "Unknown barcode command"
-msgstr "未知條碼指令"
+msgstr ""
 
 #. module: barcodes
 #: model:ir.model.fields,help:barcodes.field_barcode_rule__sequence

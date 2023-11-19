@@ -38,7 +38,6 @@ class Users(models.Model):
                 'body': body,
                 'icon': "👋",
                 'internal_permission': 'none',
-                'is_article_visible_by_everyone': False,
                 'favorite_ids': [(0, 0, {
                     'sequence': 0,
                     'user_id': user.id,

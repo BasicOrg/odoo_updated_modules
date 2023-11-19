@@ -1,14 +1,13 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
-import configuratorTourUtils from "@test_sale_product_configurators/js/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('sale_product_configurator_pricelist_tour', {
+tour.register('sale_product_configurator_pricelist_tour', {
     url: '/web',
     test: true,
-    steps: () => [
-stepUtils.showAppsMenuItem(),
+},
+[
+tour.stepUtils.showAppsMenuItem(),
 {
     content: "navigate to the sale app",
     trigger: '.o_app[data-menu-xmlid="sale.sale_menu_root"]',
@@ -25,12 +24,12 @@ stepUtils.showAppsMenuItem(),
     trigger: 'ul.ui-autocomplete > li > a:contains(Azure)',
 }, {
     content: "search the pricelist",
-    trigger: 'input[id="pricelist_id_0"]',
+    trigger: 'input[id="pricelist_id"]',
     // Wait for onchange to come back
     extra_trigger: "[name=partner_id]:contains(Fremont)",
 }, {
     content: "search the pricelist",
-    trigger: 'input[id="pricelist_id_0"]',
+    trigger: 'input[id="pricelist_id"]',
     run: 'text Custo'
 }, {
     content: "select the pricelist",
@@ -45,29 +44,38 @@ stepUtils.showAppsMenuItem(),
     trigger: 'ul.ui-autocomplete a:contains("Customizable Desk (TEST)")',
 }, {
     content: "check price is correct (USD)",
-    trigger: 'main.modal-body>table:nth-child(1)>tbody>tr:nth-child(1)>td:nth-child(4) h5:contains("750.00")',
-    isCheck: true,
+    trigger: 'span.oe_currency_value:contains("750.00")',
+    run: function () {} // check price
 }, {
     content: "add one more",
-    trigger: 'main.modal-body>table:nth-child(1)>tbody>tr:nth-child(1)>td:nth-child(3)>div>button:has(i.fa-plus)',
+    trigger: 'button.js_add_cart_json:has(i.fa-plus)',
 }, {
     content: "check price for 2",
-    trigger: 'main.modal-body>table:nth-child(1)>tbody>tr:nth-child(1)>td:nth-child(4) h5:contains("600.00")',
-    isCheck: true,
-},
-    configuratorTourUtils.addOptionalProduct("Conference Chair"),
-    configuratorTourUtils.increaseProductQuantity("Conference Chair"),
-    configuratorTourUtils.addOptionalProduct("Chair floor protection"),
-    configuratorTourUtils.increaseProductQuantity("Chair floor protection"),
-    configuratorTourUtils.assertPriceTotal("1,257.00"),
-{
+    trigger: 'span.oe_currency_value:contains("600.00")',
+    run: function () {} // check price (pricelist has discount for 2)
+}, {
+    content: "check we are on the add modal",
+    trigger: '.td-product_name:contains("Customizable Desk (TEST) (Steel, White)")',
+    extra_trigger: '.oe_advanced_configurator_modal',
+}, {
+    content: "add conference chair",
+    trigger: '.js_product:has(strong:contains(Conference Chair)) .js_add',
+    extra_trigger: '.oe_advanced_configurator_modal .js_product:has(strong:contains(Conference Chair))',
+}, {
+    content: "add chair floor protection",
+    trigger: '.js_product:has(strong:contains(Chair floor protection)) .js_add',
+    extra_trigger: '.oe_advanced_configurator_modal .js_product:has(strong:contains(Chair floor protection))',
+}, {
+    content: "verify configurator final price", // tax excluded
+    trigger: '.o_total_row .oe_currency_value:contains("1,257.00")',
+}, {
     content: "add to SO",
-    trigger: 'button:contains(Confirm)',
+    trigger: 'button span:contains(Confirm)',
 }, {
     content: "verify SO final price excluded",
     trigger: 'span[name="Untaxed Amount"]:contains("1,257.00")',
 }, {
     content: "verify SO final price included",
     trigger: 'span[name="amount_total"]:contains("1,437.00")',
-}, ...stepUtils.saveForm()
-]});
+}, ...tour.stepUtils.discardForm()
+]);

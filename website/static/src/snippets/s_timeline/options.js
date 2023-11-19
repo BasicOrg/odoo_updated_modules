@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website.s_timeline_options', function (require) {
+'use strict';
 
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 options.registry.Timeline = options.Class.extend({
     displayOverlayOptions: true,
@@ -29,4 +30,5 @@ options.registry.Timeline = options.Class.extend({
         const $timelineRow = this.$target.closest('.s_timeline_row');
         $timelineRow.toggleClass('flex-row-reverse flex-row');
     },
+});
 });

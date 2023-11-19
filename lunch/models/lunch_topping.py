@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 from odoo.tools import formatLang
 
@@ -17,10 +17,10 @@ class LunchTopping(models.Model):
     supplier_id = fields.Many2one('lunch.supplier', ondelete='cascade')
     topping_category = fields.Integer('Topping Category', required=True, default=1)
 
-    @api.depends('price')
-    @api.depends_context('company')
-    def _compute_display_name(self):
+    def name_get(self):
         currency_id = self.env.company.currency_id
+        res = dict(super(LunchTopping, self).name_get())
         for topping in self:
             price = formatLang(self.env, topping.price, currency_obj=currency_id)
-            topping.display_name = f'{topping.name} {price}'
+            res[topping.id] = '%s %s' % (topping.name, price)
+        return list(res.items())

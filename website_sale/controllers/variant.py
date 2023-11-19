@@ -1,45 +1,33 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo import http
+from odoo.http import request
 
-import json
-
-from odoo.http import request, route, Controller
+from odoo.addons.sale.controllers.variant import VariantController
 
 
-class WebsiteSaleVariantController(Controller):
+class WebsiteSaleVariantController(VariantController):
+    @http.route(['/sale/get_combination_info_website'], type='json', auth="public", methods=['POST'], website=True)
+    def get_combination_info_website(self, product_template_id, product_id, combination, add_qty, **kw):
+        """Special route to use website logic in get_combination_info override.
+        This route is called in JS by appending _website to the base route.
+        """
+        kw.pop('pricelist_id')
+        combination = self.get_combination_info(product_template_id, product_id, combination, add_qty, request.website.get_current_pricelist(), **kw)
 
-    @route('/website_sale/get_combination_info', type='json', auth='public', methods=['POST'], website=True)
-    def get_combination_info_website(
-        self, product_template_id, product_id, combination, add_qty, parent_combination=None,
-        **kwargs
-    ):
-        product_template = request.env['product.template'].browse(
-            product_template_id and int(product_template_id))
-
-        combination_info = product_template._get_combination_info(
-            combination=request.env['product.template.attribute.value'].browse(combination),
-            product_id=product_id and int(product_id),
-            add_qty=add_qty and float(add_qty) or 1.0,
-            parent_combination=request.env['product.template.attribute.value'].browse(parent_combination),
-        )
-
-        # Pop data only computed to ease server-side computations.
-        for key in ('product_taxes', 'taxes', 'currency', 'date'):
-            combination_info.pop(key)
+        if request.website.google_analytics_key:
+            combination['product_tracking_info'] = request.env['product.template'].get_google_analytics_data(combination)
 
         if request.website.product_page_image_width != 'none' and not request.env.context.get('website_sale_no_images', False):
-            combination_info['carousel'] = request.env['ir.ui.view']._render_template(
-                'website_sale.shop_product_images',
-                values={
-                    'product': product_template,
-                    'product_variant': request.env['product.product'].browse(combination_info['product_id']),
-                    'website': request.env['website'].get_current_website(),
-                },
-            )
-        return combination_info
+            carousel_view = request.env['ir.ui.view']._render_template('website_sale.shop_product_images', values={
+                'product': request.env['product.template'].browse(combination['product_template_id']),
+                'product_variant': request.env['product.product'].browse(combination['product_id']),
+                'website': request.env['website'].get_current_website(),
+            })
+            combination['carousel'] = carousel_view
+        return combination
 
-    @route('/sale/create_product_variant', type='json', auth='public', methods=['POST'])
+    @http.route(auth="public")
     def create_product_variant(self, product_template_id, product_template_attribute_value_ids, **kwargs):
-        """Old product configurator logic, only used by frontend configurator, will be deprecated soon"""
-        return request.env['product.template'].browse(
-            int(product_template_id)
-        ).create_product_variant(json.loads(product_template_attribute_value_ids))
+        """Override because on the website the public user must access it."""
+        return super(WebsiteSaleVariantController, self).create_product_variant(product_template_id, product_template_attribute_value_ids, **kwargs)

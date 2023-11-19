@@ -19,11 +19,8 @@ class TestSpreadsheetBus(SpreadsheetTestCommon, MailCase):
         ]
         return self.env["bus.bus"]._poll(channels, last)
 
-    def poll_spreadsheet(self, spreadsheet_id, share_id=None, access_token=None):
-        if share_id and access_token:
-            external_channel = f"spreadsheet_collaborative_session:documents.document:{spreadsheet_id}:{share_id}:{access_token}"
-        else:
-            external_channel = f"spreadsheet_collaborative_session:documents.document:{spreadsheet_id}"
+    def poll_spreadsheet(self, spreadsheet_id):
+        external_channel = f"spreadsheet_collaborative_session:documents.document:{spreadsheet_id}"
         notifs = self.poll(external_channel)
         return [
             m["message"]["payload"]
@@ -76,10 +73,10 @@ class TestSpreadsheetBus(SpreadsheetTestCommon, MailCase):
 
     def test_snapshot(self):
         spreadsheet = self.create_spreadsheet()
-        current_revision_id = spreadsheet.server_revision_id
+        current_revision_id = self.get_revision(spreadsheet)
         self.snapshot(
             spreadsheet,
-            current_revision_id, "snapshot-revision-id", {"sheets": [], "revisionId": "snapshot-revision-id"},
+            current_revision_id, "snapshot-revision-id", {"sheets": []},
         )
         self.assertEqual(
             self.poll_spreadsheet(spreadsheet.id),
@@ -113,33 +110,4 @@ class TestSpreadsheetBus(SpreadsheetTestCommon, MailCase):
                 self.poll_spreadsheet(spreadsheet.id),
                 [commands],
                 "He should be able to poll the spreadsheet"
-            )
-
-    def test_read_shared_spreadsheet(self):
-        spreadsheet = self.create_spreadsheet()
-        share = self.share_spreadsheet(spreadsheet)
-        new_test_user(self.env, login="raoul", groups="base.group_public")
-        revision = self.new_revision_data(spreadsheet)
-        spreadsheet.dispatch_spreadsheet_message(revision)
-
-        # without token
-        with self.with_user("raoul"):
-            self.assertEqual(
-                self.poll_spreadsheet(spreadsheet.id),
-                [],
-                "He should not have received the revision"
-            )
-        # with wrong token
-        with self.with_user("raoul"):
-            self.assertEqual(
-                self.poll_spreadsheet(spreadsheet.id, share.id, "wrong-token"),
-                [],
-                "He should not have received the revision"
-            )
-        # with token
-        with self.with_user("raoul"):
-            self.assertEqual(
-                self.poll_spreadsheet(spreadsheet.id, share.id, share.access_token),
-                [revision],
-                "He should have received the revision"
             )

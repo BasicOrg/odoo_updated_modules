@@ -29,7 +29,7 @@ class ResConfigSettings(models.TransientModel):
         ('sand', 'Sandbox'),
     ], string='eBay Environment', default='sand', required=True, config_parameter='ebay_domain')
     ebay_currency = fields.Many2one("res.currency", string='ebay Currency',
-                                    domain=[('ebay_available', '=', True)],
+                                    domain=[('ebay_available', '=', True)], required=True,
                                     default=lambda self: self.env['res.currency'].search([('ebay_available', '=', True)], limit=1).id,
                                     config_parameter='ebay_currency')
     ebay_country = fields.Many2one("res.country", domain=[('ebay_available', '=', True)],
@@ -140,11 +140,11 @@ class ResConfigSettings(models.TransientModel):
 
     @api.model
     def sync_policies(self, context=None):
-        self.env['ebay.policy']._sync_policies()
+        self.env['ebay.policy'].sync_policies()
 
     @api.model
     def sync_ebay_details(self, context=None):
-        response = self.env['product.template']._ebay_execute(
+        response = self.env['product.template'].ebay_execute(
             'GeteBayDetails',
             {'DetailName': ['CountryDetails', 'SiteDetails', 'CurrencyDetails']}
         )

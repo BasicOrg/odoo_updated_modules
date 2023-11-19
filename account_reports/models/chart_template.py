@@ -1,31 +1,21 @@
 # coding: utf-8
-from odoo import fields, models, _
-from odoo.exceptions import ValidationError
+from odoo import models, fields
 
 
-class AccountChartTemplate(models.AbstractModel):
+class AccountChartTemplate(models.Model):
     _inherit = 'account.chart.template'
 
-    def _post_load_data(self, template_code, company, template_data):
-        super()._post_load_data(template_code, company, template_data)
+    def _load(self, company):
+        res = super(AccountChartTemplate, self)._load(company)
 
-        company = company or self.env.company
-        default_misc_journal = self.env['account.journal'].search([
-            *self.env['account.journal']._check_company_domain(company),
-            ('type', '=', 'general'),
-            ('show_on_dashboard', '=', True)
-        ], limit=1)
-        if not default_misc_journal:
-            default_misc_journal = self.env['account.journal'].search([
-                *self.env['account.journal']._check_company_domain(company),
-                ('type', '=', 'general')
-            ], limit=1)
-        if not default_misc_journal:
-            raise ValidationError(_("No default miscellaneous journal could be found for the active company"))
+        # by default, anglo-saxon companies should have totals
+        # displayed below sections in their reports
+        company.totals_below_sections = company.anglo_saxon_accounting
 
-        company.update({
-            'totals_below_sections': company.anglo_saxon_accounting,
-            'account_tax_periodicity_journal_id': default_misc_journal,
-            'account_tax_periodicity_reminder_day': 7,
-        })
-        company._get_and_update_tax_closing_moves(fields.Date.today(), include_domestic=True)
+        #set a default misc journal for the tax closure
+        company.account_tax_periodicity_journal_id = company._get_default_misc_journal()
+
+        company.account_tax_periodicity_reminder_day = 7
+        # create the recurring entry
+        company.with_company(company)._get_and_update_tax_closing_moves(fields.Date.today(), include_domestic=True)
+        return res

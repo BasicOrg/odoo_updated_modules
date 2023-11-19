@@ -5,12 +5,30 @@ import { notificationService } from "@web/core/notifications/notification_servic
 import { ormService } from "@web/core/orm_service";
 import { popoverService } from "@web/core/popover/popover_service";
 import { registry } from "@web/core/registry";
+import { legacyServiceProvider } from "@web/legacy/legacy_service_provider";
+import {
+    makeLegacyNotificationService,
+    mapLegacyEnvToWowlEnv,
+    makeLegacySessionService,
+} from "@web/legacy/utils";
+import { makeLegacyActionManagerService } from "@web/legacy/backend_utils";
+import { generateLegacyLoadViewsResult } from "@web/legacy/legacy_load_views";
 import { viewService } from "@web/views/view_service";
 import { actionService } from "@web/webclient/actions/action_service";
 import { effectService } from "@web/core/effects/effect_service";
 import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
 import { menuService } from "@web/webclient/menus/menu_service";
 import { WebClient } from "@web/webclient/webclient";
+// This import is needed because of it's sideeffects, for exemple :
+// web.test_utils easyload xml templates at line : 124:130.
+// Also it set the autocomplete delay time for the field Many2One at 0 for the tests at line : 132:137
+import "web.test_legacy";
+import AbstractService from "web.AbstractService";
+import ActionMenus from "web.ActionMenus";
+import basicFields from "web.basic_fields";
+import Registry from "web.Registry";
+import core from "web.core";
+import makeTestEnvironment from "web.test_env";
 import { registerCleanup } from "../helpers/cleanup";
 import { makeTestEnv } from "../helpers/mock_env";
 import {
@@ -19,19 +37,26 @@ import {
     makeFakeLocalizationService,
     makeFakeRouterService,
     makeFakeHTTPService,
-    makeFakeBarcodeService,
     makeFakeUserService,
 } from "../helpers/mock_services";
-import { getFixture, mount, nextTick } from "../helpers/utils";
+import {
+    getFixture,
+    legacyExtraNextTick,
+    mount,
+    nextTick,
+    patchWithCleanup,
+} from "../helpers/utils";
+import session from "web.session";
+import LegacyMockServer from "web.MockServer";
+import Widget from "web.Widget";
 import { uiService } from "@web/core/ui/ui_service";
+import { ClientActionAdapter, ViewAdapter } from "@web/legacy/action_adapters";
 import { commandService } from "@web/core/commands/command_service";
-import { CustomFavoriteItem } from "@web/search/custom_favorite_item/custom_favorite_item";
-import { overlayService } from "@web/core/overlay/overlay_service";
+import { ConnectionAbortedError } from "@web/core/network/rpc_service";
+import { CustomFavoriteItem } from "@web/search/favorite_menu/custom_favorite_item";
+import { standaloneAdapter } from "web.OwlCompatibility";
 
-import { Component, xml } from "@odoo/owl";
-import { fieldService } from "@web/core/field_service";
-import { nameService } from "@web/core/name_service";
-import { datetimePickerService } from "@web/core/datetime/datetimepicker_service";
+const { Component, onMounted, xml } = owl;
 
 const actionRegistry = registry.category("actions");
 const serviceRegistry = registry.category("services");
@@ -58,19 +83,16 @@ export function setupWebClientRegistries() {
     }
     const services = {
         action: () => actionService,
-        barcode: () => makeFakeBarcodeService(),
         command: () => commandService,
         dialog: () => dialogService,
         effect: () => effectService,
-        field: () => fieldService,
         hotkey: () => hotkeyService,
         http: () => makeFakeHTTPService(),
+        legacy_service_provider: () => legacyServiceProvider,
         localization: () => makeFakeLocalizationService(),
         menu: () => menuService,
-        name: () => nameService,
         notification: () => notificationService,
         orm: () => ormService,
-        overlay: () => overlayService,
         popover: () => popoverService,
         router: () => makeFakeRouterService(),
         title: () => fakeTitleService,
@@ -78,12 +100,143 @@ export function setupWebClientRegistries() {
         user: () => makeFakeUserService(),
         view: () => viewService,
         company: () => fakeCompanyService,
-        datetime_picker: () => datetimePickerService,
     };
     for (const serviceName in services) {
         if (!serviceRegistry.contains(serviceName)) {
             serviceRegistry.add(serviceName, services[serviceName]());
         }
+    }
+}
+
+/**
+ * Remove this as soon as we drop the legacy support
+ */
+export async function addLegacyMockEnvironment(env, legacyParams = {}) {
+    // setup a legacy env
+    const dataManager = Object.assign(
+        {
+            load_action: (actionID, context) => {
+                return env.services.rpc("/web/action/load", {
+                    action_id: actionID,
+                    additional_context: context,
+                });
+            },
+            load_views: async (params, options) => {
+                let result = await env.services.rpc(`/web/dataset/call_kw/${params.model}`, {
+                    args: [],
+                    kwargs: {
+                        context: params.context,
+                        options: options,
+                        views: params.views_descr,
+                    },
+                    method: "get_views",
+                    model: params.model,
+                });
+                const { models, views: _views } = result;
+                result = generateLegacyLoadViewsResult(params.model, _views, models);
+                const views = result.fields_views;
+                for (const [, viewType] of params.views_descr) {
+                    const fvg = views[viewType];
+                    fvg.viewFields = fvg.fields;
+                    fvg.fields = result.fields;
+                }
+                if (params.favoriteFilters && "search" in views) {
+                    views.search.favoriteFilters = params.favoriteFilters;
+                }
+                return views;
+            },
+            load_filters: (params) => {
+                if (QUnit.config.debug) {
+                    console.log("[mock] load_filters", params);
+                }
+                return Promise.resolve([]);
+            },
+        },
+        legacyParams.dataManager
+    );
+
+    // clear the ActionMenus registry to prevent external code from doing unknown rpcs
+    const actionMenusRegistry = ActionMenus.registry;
+    ActionMenus.registry = new Registry();
+    registerCleanup(() => (ActionMenus.registry = actionMenusRegistry));
+
+    let localSession;
+    if (legacyParams && legacyParams.getTZOffset) {
+        patchWithCleanup(session, {
+            getTZOffset: legacyParams.getTZOffset,
+        });
+        localSession = { getTZOffset: legacyParams.getTZOffset };
+    }
+
+    const baseEnv = { dataManager, bus: core.bus, session: localSession };
+    const legacyEnv = makeTestEnvironment(Object.assign(baseEnv, legacyParams.env));
+
+    if (legacyParams.serviceRegistry) {
+        const legacyServiceMap = core.serviceRegistry.map;
+        core.serviceRegistry.map = legacyParams.serviceRegistry.map;
+        // notification isn't a deployed service, but it is added by `makeTestEnvironment`.
+        // Here, we want full control on the deployed services, so we simply remove it.
+        delete legacyEnv.services.notification;
+        AbstractService.prototype.deployServices(legacyEnv);
+        registerCleanup(() => {
+            core.serviceRegistry.map = legacyServiceMap;
+        });
+    }
+
+    Component.env = legacyEnv;
+    mapLegacyEnvToWowlEnv(legacyEnv, env);
+    function patchLegacySession() {
+        const userContext = Object.getOwnPropertyDescriptor(session, "user_context");
+        registerCleanup(() => {
+            Object.defineProperty(session, "user_context", userContext);
+        });
+    }
+    patchLegacySession();
+    serviceRegistry.add("legacy_session", makeLegacySessionService(legacyEnv, session));
+    // deploy the legacyActionManagerService (in Wowl env)
+    const legacyActionManagerService = makeLegacyActionManagerService(legacyEnv);
+    serviceRegistry.add("legacy_action_manager", legacyActionManagerService);
+    serviceRegistry.add("legacy_notification", makeLegacyNotificationService(legacyEnv));
+    // deploy wowl services into the legacy env.
+    const wowlToLegacyServiceMappers = registry.category("wowlToLegacyServiceMappers").getEntries();
+    for (const [legacyServiceName, wowlToLegacyServiceMapper] of wowlToLegacyServiceMappers) {
+        serviceRegistry.add(legacyServiceName, wowlToLegacyServiceMapper(legacyEnv));
+    }
+    // patch DebouncedField delay
+    const debouncedField = basicFields.DebouncedField;
+    const initialDebouncedVal = debouncedField.prototype.DEBOUNCE;
+    debouncedField.prototype.DEBOUNCE = 0;
+    registerCleanup(() => (debouncedField.prototype.DEBOUNCE = initialDebouncedVal));
+
+    if (legacyParams.withLegacyMockServer) {
+        const adapter = standaloneAdapter({ Component });
+        adapter.env = legacyEnv;
+        const W = Widget.extend({ do_push_state() {} });
+        const widget = new W(adapter);
+        const legacyMockServer = new LegacyMockServer(legacyParams.models, { widget });
+        const originalRPC = env.services.rpc;
+        const rpc = async (...args) => {
+            try {
+                return await originalRPC(...args);
+            } catch (e) {
+                if (e.message.includes("Unimplemented")) {
+                    return legacyMockServer._performRpc(...args);
+                } else {
+                    throw e;
+                }
+            }
+        };
+        env.services.rpc = function () {
+            let rejectFn;
+            const rpcProm = new Promise((resolve, reject) => {
+                rejectFn = reject;
+                rpc(...arguments)
+                    .then(resolve)
+                    .catch(reject);
+            });
+            rpcProm.abort = () => rejectFn(new ConnectionAbortedError("XmlHttpRequestError abort"));
+            return rpcProm;
+        };
     }
 }
 
@@ -98,31 +251,77 @@ export function setupWebClientRegistries() {
 export async function createWebClient(params) {
     setupWebClientRegistries();
 
+    // With the compatibility layer, the action manager keeps legacy alive if they
+    // are still acessible from the breacrumbs. They are manually destroyed as soon
+    // as they are no longer referenced in the stack. This works fine in production,
+    // because the webclient is never destroyed. However, at the end of each test,
+    // we destroy the webclient and expect every legacy that has been instantiated
+    // to be destroyed. We thus need to manually destroy them here.
+    const controllers = [];
+    patchWithCleanup(ClientActionAdapter.prototype, {
+        setup() {
+            this._super();
+            onMounted(() => {
+                controllers.push(this.widget);
+            });
+        },
+    });
+    patchWithCleanup(ViewAdapter.prototype, {
+        setup() {
+            this._super();
+            onMounted(() => {
+                controllers.push(this.widget);
+            });
+        },
+    });
+
+    const legacyParams = params.legacyParams;
     params.serverData = params.serverData || {};
+    const models = params.serverData.models;
+    if (legacyParams && legacyParams.withLegacyMockServer && models) {
+        legacyParams.models = Object.assign({}, models);
+        // In lagacy, data may not be sole models, but can contain some other variables
+        // So we filter them out for our WOWL mockServer
+        Object.entries(legacyParams.models).forEach(([k, v]) => {
+            if (!(v instanceof Object) || !("fields" in v)) {
+                delete models[k];
+            }
+        });
+    }
+
     const mockRPC = params.mockRPC || undefined;
     const env = await makeTestEnv({
         serverData: params.serverData,
         mockRPC,
     });
+    await addLegacyMockEnvironment(env, legacyParams);
 
     const WebClientClass = params.WebClientClass || WebClient;
     const target = params && params.target ? params.target : getFixture();
     const wc = await mount(WebClientClass, target, { env });
-    odoo.__WOWL_DEBUG__ = { root: wc };
     target.classList.add("o_web_client"); // necessary for the stylesheet
     registerCleanup(() => {
         target.classList.remove("o_web_client");
+        for (const controller of controllers) {
+            if (!controller.isDestroyed()) {
+                controller.destroy();
+            }
+        }
     });
     // Wait for visual changes caused by a potential loadState
     await nextTick();
     return wc;
 }
 
-export function doAction(env, ...args) {
+export async function doAction(env, ...args) {
     if (env instanceof Component) {
         env = env.env;
     }
-    return env.services.action.doAction(...args);
+    try {
+        await env.services.action.doAction(...args);
+    } finally {
+        await legacyExtraNextTick();
+    }
 }
 
 export async function loadState(env, state) {
@@ -133,10 +332,10 @@ export async function loadState(env, state) {
     // wait the asynchronous hashchange
     // (the event hashchange must be triggered in a nonBlocking stack)
     await nextTick();
-    // wait for BlankComponent
-    await nextTick();
     // wait for the regular rendering
     await nextTick();
+    // wait for the legacy rendering below owl layer
+    await legacyExtraNextTick();
 }
 
 export function getActionManagerServerData() {
@@ -174,7 +373,6 @@ export function getActionManagerServerData() {
             xml_id: "action_3",
             name: "Partners",
             res_model: "partner",
-            mobile_view_mode: "kanban",
             type: "ir.actions.act_window",
             views: [
                 [false, "list"],
@@ -277,15 +475,6 @@ export function getActionManagerServerData() {
             views: [[3, "form"]],
         },
         {
-            id: 26,
-            xml_id: "action_26",
-            name: "Partner",
-            res_model: "partner",
-            target: "new",
-            type: "ir.actions.act_window",
-            views: [[false, "list"]],
-        },
-        {
             id: 1001,
             tag: "__test__client__action__",
             target: "main",
@@ -343,8 +532,8 @@ export function getActionManagerServerData() {
         "partner,666,form": `<form>
       <header></header>
       <sheet>
-      <div class="oe_button_box" name="button_box">
-      <button class="oe_stat_button" type="action" name="1" icon="fa-star" context="{'default_partner': id}">
+      <div class="oe_button_box" name="button_box" modifiers="{}">
+      <button class="oe_stat_button" type="action" name="1" icon="fa-star" context="{'default_partner': active_id}">
       <field string="Partners" name="o2m" widget="statinfo"/>
       </button>
       </div>

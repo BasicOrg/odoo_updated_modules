@@ -3,16 +3,16 @@
 # 	* approvals
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -57,7 +57,7 @@ msgstr "Actividad"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Decoración de Actividad  de Excepción"
+msgstr "Emblema de actividad de excepción"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_state
@@ -109,7 +109,6 @@ msgid "An additional reference that should be specified on the request."
 msgstr "Una referencia adicional que debe especificarse en la solicitud."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "An user may not be in the approver list multiple times."
@@ -177,8 +176,10 @@ msgid "Approvals to review"
 msgstr "Aprobaciones por revisar"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
@@ -199,14 +200,11 @@ msgid "Approver"
 msgstr "Autorizador"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
 "Approver Sequence can only be activated with at least 1 minimum approver."
 msgstr ""
-"Solo se puede activar la secuencia de aprobador cuando hay al menos un "
-"aprobador."
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__user_ids
@@ -223,13 +221,13 @@ msgstr "Autorizador(es)"
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approver_ids
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Approvers"
-msgstr "Aprobadores"
+msgstr "Autorizadores"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__approver_sequence
 #: model:ir.model.fields,field_description:approvals.field_approval_request__approver_sequence
 msgid "Approvers Sequence?"
-msgstr "Secuencia de aprobador"
+msgstr ""
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
@@ -241,11 +239,6 @@ msgstr "Archivado"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Attach Document"
 msgstr "Adjuntar documento"
-
-#. module: approvals
-#: model:ir.model,name:approvals.model_ir_attachment
-msgid "Attachment"
-msgstr "Adjunto"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_attachment_count
@@ -276,17 +269,12 @@ msgstr "Viaje de negocios"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__change_request_owner
 msgid "Can Change Request Owner"
-msgstr "Puede cambiar el propietario de la solicitud"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit
 msgid "Can Edit"
 msgstr "Puede editar"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_approver__can_edit_user_id
-msgid "Can Edit User"
-msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__cancel
@@ -310,7 +298,7 @@ msgstr "Categoría"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__category_approver
 msgid "Category Approver"
-msgstr "Aprobador de categoría"
+msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__sequence_code
@@ -324,7 +312,7 @@ msgstr "Código"
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__company_id
 #: model:ir.model.fields,field_description:approvals.field_approval_request__company_id
 msgid "Company"
-msgstr "Compañía"
+msgstr "Empresa"
 
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_config
@@ -398,9 +386,17 @@ msgid "Date start"
 msgstr "Fecha inicial"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Deadline"
+msgstr "Fecha límite"
+
+#. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 msgid "Delete"
-msgstr "Suprimir"
+msgstr "Eliminar"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__description
@@ -432,6 +428,11 @@ msgid "Documents"
 msgstr "Documentos"
 
 #. module: approvals
+#: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
+msgid "Dropdown menu"
+msgstr "Menú desplegable"
+
+#. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "E.g: Expenses Paris business trip"
 msgstr "P.ej. Gastos de viaje de negocios a Paris"
@@ -444,7 +445,7 @@ msgstr "Editar solicitud"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_category__manager_approval
 msgid "Employee's Manager"
-msgstr "Responsable del empleado"
+msgstr "Administración de empleados"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__existing_request_user_ids
@@ -555,11 +556,11 @@ msgid ""
 "        Is Required Approver: the employee's manager will be required to approve the request.\n"
 "    "
 msgstr ""
-"Cómo interactúa el responsable del empleado con este tipo de aprobación.\n"
+"Cómo interactúa el gerente del empleado con este tipo de aprobación.\n"
 "\n"
 "Vacío: no haga nada\n"
-"Es aprobador: el responsable del empleado estará en la lista de aprobadores\n"
-"Es aprobador necesario: se necesitará que el responsable del empleado apruebe la solicitud.\n"
+"Es aprobador: el gerente del empleado estará en la lista de aprobadores\n"
+"Es aprobador necesario: se necesitará que el gerente del empleado apruebe la solicitud.\n"
 "    "
 
 #. module: approvals
@@ -574,23 +575,24 @@ msgstr "ID"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_exception_icon
 msgid "Icon"
-msgstr "Icono"
+msgstr "Ícono"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Icono para indicar una actividad de excepción."
+msgstr "Ícono que indica si es una actividad de excepción."
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Si está marcado hay nuevos mensajes que requieren su atención."
+msgstr ""
+"Si se encuentra seleccionado hay nuevos mensajes que requieren tu atención."
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_has_error
 #: model:ir.model.fields,help:approvals.field_approval_request__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Si se encuentra marcado, algunos mensajes tienen error de envío."
+msgstr "Si se encuentra seleccionado, algunos mensajes tienen error de envío."
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_category__automated_sequence
@@ -607,8 +609,6 @@ msgstr ""
 #: model:ir.model.fields,help:approvals.field_approval_request__approver_sequence
 msgid ""
 "If checked, the approvers have to approve in sequence (one after the other)."
-" If Employee's Manager is selected as approver, they will be the first in "
-"line."
 msgstr ""
 
 #. module: approvals
@@ -648,6 +648,15 @@ msgid "Job Referral Award"
 msgstr "Reconocimiento por promocionar el puesto"
 
 #. module: approvals
+#: model:ir.model.fields,field_description:approvals.field_approval_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_category_approver____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_product_line____last_update
+#: model:ir.model.fields,field_description:approvals.field_approval_request____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__write_uid
 #: model:ir.model.fields,field_description:approvals.field_approval_category__write_uid
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__write_uid
@@ -678,19 +687,27 @@ msgid "Location"
 msgstr "Ubicación"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#, python-format
+msgid "Log"
+msgstr "Registro"
+
+#. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_main_attachment_id
 msgid "Main Attachment"
-msgstr "Adjuntos principales"
+msgstr "Archivo adjunto principal"
 
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_manager
 msgid "Manager"
-msgstr "Responsable"
+msgstr "Gerente"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_has_error
 msgid "Message Delivery error"
-msgstr "Error de Envío de Mensaje"
+msgstr "Error al enviar el mensaje"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_ids
@@ -704,7 +721,6 @@ msgid "Minimum Approval"
 msgstr "Aprobación mínima"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid ""
@@ -745,7 +761,6 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__new
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__new
@@ -767,7 +782,7 @@ msgstr "Siguiente evento en el calendario de actividades."
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Siguiente plazo de actividad"
+msgstr "Siguiente fecha límite de actividad"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_summary
@@ -777,7 +792,7 @@ msgstr "Resumen de la siguiente actividad"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__activity_type_id
 msgid "Next Activity Type"
-msgstr "Siguiente tipo de actividad"
+msgstr "Tipo de la actividad siguiente"
 
 #. module: approvals
 #: model_terms:ir.actions.act_window,help:approvals.approval_request_action_all
@@ -821,11 +836,11 @@ msgstr "Número de archivos adjuntos"
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__message_has_error_counter
 msgid "Number of errors"
-msgstr "Numero de errores"
+msgstr "Número de errores"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Número de mensajes que requieren una acción"
 
 #. module: approvals
@@ -840,7 +855,7 @@ msgstr "Número de solicitudes por validar"
 
 #. module: approvals
 #: model:res.groups,name:approvals.group_approval_user
-msgid "Officer: Approve all requests"
+msgid "Officer : Approve all requests"
 msgstr ""
 
 #. module: approvals
@@ -897,7 +912,7 @@ msgstr "Línea del producto"
 #. module: approvals
 #: model:ir.ui.menu,name:approvals.approvals_menu_product_variant
 msgid "Product Variants"
-msgstr "Variantes de producto"
+msgstr "Variantes del producto"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_product_line__product_id
@@ -905,7 +920,6 @@ msgstr "Variantes de producto"
 #: model:ir.ui.menu,name:approvals.approvals_menu_product_template
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree
-#: model_terms:ir.ui.view,arch_db:approvals.approval_product_line_view_tree_independent
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 msgid "Products"
 msgstr "Productos"
@@ -916,11 +930,6 @@ msgstr "Productos"
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_form
 msgid "Quantity"
 msgstr "Cantidad"
-
-#. module: approvals
-#: model:ir.model.fields,field_description:approvals.field_approval_request__rating_ids
-msgid "Ratings"
-msgstr "Valoraciones"
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_request__reference
@@ -934,8 +943,10 @@ msgid "Reference Sequence"
 msgstr "Secuencia de la referencia"
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_kanban
 #, python-format
@@ -997,7 +1008,6 @@ msgid "SMS Delivery error"
 msgstr "Error de entrega del SMS"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #: code:addons/approvals/models/approval_category.py:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__sequence
@@ -1006,13 +1016,6 @@ msgstr "Error de entrega del SMS"
 #, python-format
 msgid "Sequence"
 msgstr "Secuencia"
-
-#. module: approvals
-#: model:ir.model.fields,help:approvals.field_approval_approver__can_edit_user_id
-msgid ""
-"Simple users should not be able to remove themselves as approvers because "
-"they will lose access to the record if they misclick."
-msgstr ""
 
 #. module: approvals
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__status
@@ -1028,9 +1031,9 @@ msgid ""
 "Planned: Future activities."
 msgstr ""
 "Estado basado en actividades\n"
-"Vencida: la fecha tope ya ha pasado\n"
-"Hoy: La fecha tope es hoy\n"
-"Planificada: futuras actividades."
+"Vencida: la fecha límite ya pasó\n"
+"Hoy: La fecha límite es hoy\n"
+"Planificada: actividades futuras."
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_request_view_form
@@ -1046,7 +1049,6 @@ msgstr "Enviado"
 #: model:res.groups,comment:approvals.group_approval_user
 msgid "The user will be able to access all requests and approve/refuse them."
 msgstr ""
-"El usuario podrá acceder a todas las solicitudes y aprobarlas/rechazarlas."
 
 #. module: approvals
 #: model:res.groups,comment:approvals.group_approval_manager
@@ -1054,46 +1056,44 @@ msgid "The user will have access to the approvals configuration."
 msgstr "El usuario tendrá acceso a la configuración de aprobaciones."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. There is no manager "
 "linked to your employee profile."
 msgstr ""
-"Esta solicitud la debe aprobar su responsable. No hay ningún responsable "
-"vinculado a su perfil de empleado."
+"Esta solicitud la debe aprobar su gerente. No hay ningún gerente vinculado a"
+" su perfil de empleado."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. There is no user linked "
 "to your manager."
 msgstr ""
-"Esta solicitud la debe aprobar su responsable. No hay ningún usuario "
-"vinculado a su responsable."
+"Esta solicitud la debe aprobar su gerente. No hay ningún usuario vinculado a"
+" su gerente."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid ""
 "This request needs to be approved by your manager. Your manager is not in "
 "the approvers list."
 msgstr ""
-"Esta solicitud la debe aprobar su responsable. Su responsable no se "
-"encuentra en la lista de aprobadores."
+"Esta solicitud la debe aprobar su gerente. Su gerente no se encuentra en la "
+"lista de aprobadores."
 
 #. module: approvals
-#. odoo-javascript
-#: code:addons/approvals/static/src/web/activity/approval.xml:0
+#. openerp-web
+#: code:addons/approvals/static/src/components/approval/approval.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields.selection,name:approvals.selection__approval_approver__status__pending
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__user_status__pending
 #, python-format
 msgid "To Approve"
-msgstr "Para aprobar"
+msgstr "Por aprobar"
 
 #. module: approvals
 #: model_terms:ir.ui.view,arch_db:approvals.approval_category_view_kanban
@@ -1103,7 +1103,7 @@ msgstr "A revisar:"
 #. module: approvals
 #: model:ir.model.fields.selection,name:approvals.selection__approval_request__request_status__new
 msgid "To Submit"
-msgstr "Por enviar"
+msgstr "A enviar"
 
 #. module: approvals
 #: model:ir.model.fields,help:approvals.field_approval_request__activity_exception_decoration
@@ -1116,8 +1116,12 @@ msgid "Unit of Measure"
 msgstr "Unidad de medida"
 
 #. module: approvals
+#. openerp-web
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
+#: code:addons/approvals/static/src/xml/web_kanban_activity.xml:0
 #: model:ir.model.fields,field_description:approvals.field_approval_approver__user_id
 #: model:ir.model.fields,field_description:approvals.field_approval_category_approver__user_id
+#, python-format
 msgid "User"
 msgstr "Usuario"
 
@@ -1149,31 +1153,12 @@ msgid "Withdraw"
 msgstr "Anular"
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You cannot approve before the previous approver."
-msgstr "No puede aprobarla antes del aprobador anterior."
-
-#. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/approval_request.py:0
-#, python-format
-msgid ""
-"You cannot assign the same approver multiple times on the same request."
 msgstr ""
 
 #. module: approvals
-#. odoo-python
-#: code:addons/approvals/models/ir_attachment.py:0
-#, python-format
-msgid ""
-"You cannot unlink an attachment which is linked to a validated, refused or "
-"cancelled approval request."
-msgstr ""
-
-#. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to add at least %s approvers to confirm your request."
@@ -1182,14 +1167,12 @@ msgstr ""
 "solicitud."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_request.py:0
 #, python-format
 msgid "You have to attach at lease one document."
 msgstr "Debes adjuntar al menos un documento."
 
 #. module: approvals
-#. odoo-python
 #: code:addons/approvals/models/approval_category.py:0
 #, python-format
 msgid "Your minimum approval exceeds the total of default approvers."

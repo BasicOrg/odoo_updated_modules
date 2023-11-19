@@ -28,12 +28,9 @@ class SocialPostTemplate(models.Model):
             post.display_push_notifications_preview = post.message \
                 and ('push_notifications' in post.account_ids.media_id.mapped('media_type'))
 
-    @api.depends('message', 'push_notification_title', 'push_notification_image', 'display_push_notifications_preview')
+    @api.depends('message', 'push_notification_title', 'push_notification_image')
     def _compute_push_notifications_preview(self):
         for post in self:
-            if not post.display_push_notifications_preview:
-                post.push_notifications_preview = False
-                continue
             icon = False
             icon_url = False
             if post.push_notification_image:
@@ -43,6 +40,7 @@ class SocialPostTemplate(models.Model):
                 except binascii_error:
                     if post.id or (post._origin and post._origin.id):
                         icon_url = '/web/image/social.post/%s/push_notification_image' % (post.id if post.id else post._origin.id)
+
             post.push_notifications_preview = self.env['ir.qweb']._render('social_push_notifications.push_notifications_preview', {
                 'title': post.push_notification_title or _('New Message'),
                 'icon': icon,

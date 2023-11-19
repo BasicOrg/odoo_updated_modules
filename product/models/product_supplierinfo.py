@@ -18,6 +18,14 @@ class SupplierInfo(models.Model):
                 product_id = self.env[model].browse(active_id).exists()
         return product_id
 
+    def _domain_product_id(self):
+        domain = "product_tmpl_id and [('product_tmpl_id', '=', product_tmpl_id)] or []"
+        if self.env.context.get('base_model_name') == 'product.template':
+            domain = "[('product_tmpl_id', '=', parent.id)]"
+        elif self.env.context.get('base_model_name') == 'product.product':
+            domain = "[('product_tmpl_id', '=', parent.product_tmpl_id)]"
+        return domain
+
     partner_id = fields.Many2one(
         'res.partner', 'Vendor',
         ondelete='cascade', required=True,
@@ -39,7 +47,6 @@ class SupplierInfo(models.Model):
     price = fields.Float(
         'Price', default=0.0, digits='Product Price',
         required=True, help="The price to purchase a product")
-    price_discounted = fields.Float('Discounted Price', compute='_compute_price_discounted')
     company_id = fields.Many2one(
         'res.company', 'Company',
         default=lambda self: self.env.company.id, index=1)
@@ -51,10 +58,7 @@ class SupplierInfo(models.Model):
     date_end = fields.Date('End Date', help="End date for this vendor price")
     product_id = fields.Many2one(
         'product.product', 'Product Variant', check_company=True,
-        domain="[('product_tmpl_id', '=', parent.id)] if context.get('base_model_name') == 'product.template' else"
-            " [('product_tmpl_id', '=', parent.product_tmpl_id)] if context.get('base_model_name') == 'product.product' else"
-            " [('product_tmpl_id', '=', product_tmpl_id)] if product_tmpl_id else []",
-        default=_default_product_id,
+        domain=_domain_product_id, default=_default_product_id,
         help="If not set, the vendor price will apply to all variants of this product.")
     product_tmpl_id = fields.Many2one(
         'product.template', 'Product Template', check_company=True,
@@ -63,15 +67,6 @@ class SupplierInfo(models.Model):
     delay = fields.Integer(
         'Delivery Lead Time', default=1, required=True,
         help="Lead time in days between the confirmation of the purchase order and the receipt of the products in your warehouse. Used by the scheduler for automatic computation of the purchase order planning.")
-    discount = fields.Float(
-        string="Discount (%)",
-        digits='Discount',
-        readonly=False)
-
-    @api.depends('discount', 'price')
-    def _compute_price_discounted(self):
-        for rec in self:
-            rec.price_discounted = rec.price * (1 - rec.discount / 100)
 
     @api.onchange('product_tmpl_id')
     def _onchange_product_tmpl_id(self):

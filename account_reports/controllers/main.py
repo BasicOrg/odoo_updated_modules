@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-import werkzeug
-from werkzeug.exceptions import InternalServerError
 
-from odoo.addons.account_reports.models.account_report import AccountReportFileDownloadException
 from odoo import http
 from odoo.models import check_method_name
 from odoo.http import content_disposition, request
-from odoo.tools.misc import html_escape
+from odoo.tools import html_escape
 
 import json
 
@@ -19,7 +16,7 @@ class AccountReportController(http.Controller):
         uid = request.uid
         options = json.loads(options)
 
-        allowed_company_ids = request.env['account.report'].get_report_company_ids(options)
+        allowed_company_ids = [company_data['id'] for company_data in options.get('multi_company', [])]
         if not allowed_company_ids:
             company_str = request.httprequest.cookies.get('cids', str(request.env.user.company_id.id))
             allowed_company_ids = [int(str_id) for str_id in company_str.split(',')]
@@ -46,25 +43,14 @@ class AccountReportController(http.Controller):
                 response.direct_passthrough = True
 
             return response
-        except AccountReportFileDownloadException as e:
-            if e.content:
-                e.content['file_content'] = e.content['file_content'].decode()
-            data = {
-                'name': type(e).__name__,
-                'arguments': [e.errors, e.content],
+        except Exception as e:
+            se = http.serialize_exception(e)
+            error = {
+                'code': 200,
+                'message': 'Odoo Server Error',
+                'data': se
             }
-            raise InternalServerError(response=self._generate_response(data)) from e
-        except Exception as e:  # noqa: BLE001
-            data = http.serialize_exception(e)
-            raise InternalServerError(response=self._generate_response(data)) from e
-
-    def _generate_response(self, data):
-        error = {
-            'code': 200,
-            'message': 'Odoo Server Error',
-            'data': data,
-        }
-        return request.make_response(html_escape(json.dumps(error)))
+            return request.make_response(html_escape(json.dumps(error)))
 
     def _get_response_headers(self, file_type, file_name, file_content):
         headers = [

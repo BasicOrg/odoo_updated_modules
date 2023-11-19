@@ -1,12 +1,10 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
 import { useService } from '@web/core/utils/hooks';
-import weUtils from '@web_editor/js/common/utils';
+import { getCSSVariableValue, DEFAULT_PALETTE } from 'web_editor.utils';
 import { Attachment, FileSelector, IMAGE_MIMETYPES, IMAGE_EXTENSIONS } from './file_selector';
-import { KeepLast } from "@web/core/utils/concurrency";
 
-import { useRef, useState, useEffect } from "@odoo/owl";
+const { useRef, useState, useEffect } = owl;
 
 export class AutoResizeImage extends Attachment {
     setup() {
@@ -26,17 +24,8 @@ export class AutoResizeImage extends Attachment {
     }
 
     async onImageLoaded() {
-        if (!this.image.el) {
-            // Do not fail if already removed.
-            return;
-        }
         if (this.props.onLoaded) {
             await this.props.onLoaded(this.image.el);
-            if (!this.image.el) {
-                // If replaced by colored version, aspect ratio will be
-                // computed on it instead.
-                return;
-            }
         }
         const aspectRatio = this.image.el.offsetWidth / this.image.el.offsetHeight;
         const width = aspectRatio * this.props.minRowHeight;
@@ -52,21 +41,19 @@ export class ImageSelector extends FileSelector {
         super.setup();
 
         this.rpc = useService('rpc');
-        this.keepLastLibraryMedia = new KeepLast();
 
         this.state.libraryMedia = [];
         this.state.libraryResults = null;
         this.state.isFetchingLibrary = false;
         this.state.searchService = 'all';
         this.state.showOptimized = false;
-        this.NUMBER_OF_MEDIA_TO_DISPLAY = 10;
 
-        this.uploadText = _t("Upload an image");
+        this.uploadText = this.env._t("Upload an image");
         this.urlPlaceholder = "https://www.odoo.com/logo.png";
-        this.addText = _t("Add URL");
-        this.searchPlaceholder = _t("Search an image");
-        this.urlWarningTitle = _t("Uploaded image's format is not supported. Try with: " + IMAGE_EXTENSIONS.join(', '));
-        this.allLoadedText = _t("All images have been loaded");
+        this.addText = this.env._t("Add URL");
+        this.searchPlaceholder = this.env._t("Search an image");
+        this.urlWarningTitle = this.env._t("Uploaded image's format is not supported. Try with: " + IMAGE_EXTENSIONS.join(', '));
+        this.allLoadedText = this.env._t("All images have been loaded");
         this.showOptimizedOption = this.env.debug;
         this.MIN_ROW_HEIGHT = 128;
 
@@ -74,8 +61,9 @@ export class ImageSelector extends FileSelector {
     }
 
     get canLoadMore() {
-        // The user can load more library media only when the filter is set.
-        if (this.state.searchService === 'media-library') {
+        if (this.state.searchService === 'all') {
+            return super.canLoadMore || (this.state.libraryResults && this.state.libraryMedia.length < this.state.libraryResults);
+        } else if (this.state.searchService === 'media-library') {
             return this.state.libraryResults && this.state.libraryMedia.length < this.state.libraryResults;
         }
         return super.canLoadMore;
@@ -98,10 +86,6 @@ export class ImageSelector extends FileSelector {
         return this.props.selectedMedia[this.props.id].filter(media => media.mediaType === 'libraryMedia').map(({ id }) => id);
     }
 
-    get allAttachments() {
-        return [...super.allAttachments, ...this.state.libraryMedia];
-    }
-
     get attachmentsDomain() {
         const domain = super.attachmentsDomain;
         domain.push(['mimetype', 'in', IMAGE_MIMETYPES]);
@@ -110,31 +94,6 @@ export class ImageSelector extends FileSelector {
         }
         domain.push('!', ['name', '=like', '%.crop']);
         domain.push('|', ['type', '=', 'binary'], '!', ['url', '=like', '/%/static/%']);
-
-        // Optimized images (meaning they are related to an `original_id`) can
-        // only be shown in debug mode as the toggler to make those images
-        // appear is hidden when not in debug mode.
-        // There is thus no point to fetch those optimized images outside debug
-        // mode. Worst, it leads to bugs: it might fetch only optimized images
-        // when clicking on "load more" which will look like it's bugged as no
-        // images will appear on screen (they all will be hidden).
-        if (!this.env.debug) {
-            const subDomain = [false];
-
-            // Particular exception: if the edited image is an optimized
-            // image, we need to fetch it too so it's displayed as the
-            // selected image when opening the media dialog.
-            // We might get a few more optimized image than necessary if the
-            // original image has multiple optimized images but it's not a
-            // big deal.
-            const originalId = this.props.media && this.props.media.dataset.originalId;
-            if (originalId) {
-                subDomain.push(originalId);
-            }
-
-            domain.push(['original_id', 'in', subDomain]);
-        }
-
         return domain;
     }
 
@@ -160,7 +119,7 @@ export class ImageSelector extends FileSelector {
         // Color-substitution for dynamic SVG attachment
         const primaryColors = {};
         for (let color = 1; color <= 5; color++) {
-            primaryColors[color] = weUtils.getCSSVariableValue('o-color-' + color);
+            primaryColors[color] = getCSSVariableValue('o-color-' + color);
         }
         return attachments.map(attachment => {
             if (attachment.image_src.startsWith('/')) {
@@ -204,9 +163,7 @@ export class ImageSelector extends FileSelector {
                 }
             );
             this.state.isFetchingLibrary = false;
-            const media = (response.media || []).slice(0, this.NUMBER_OF_MEDIA_TO_DISPLAY);
-            media.forEach(record => record.mediaType = 'libraryMedia');
-            return { media, results: response.results };
+            return { media: response.media || [], results: response.results };
         } catch {
             // Either API endpoint doesn't exist or is misconfigured.
             console.error(`Couldn't reach API endpoint.`);
@@ -217,16 +174,11 @@ export class ImageSelector extends FileSelector {
 
     async loadMore(...args) {
         await super.loadMore(...args);
-        if (!this.props.useMediaLibrary
-            // The user can load more library media only when the filter is set.
-            || this.state.searchService !== 'media-library'
-        ) {
+        if (!this.props.useMediaLibrary) {
             return;
         }
-        return this.keepLastLibraryMedia.add(this.fetchLibraryMedia(this.state.libraryMedia.length)).then(({ media }) => {
-            // This is never reached if another search or loadMore occurred.
-            this.state.libraryMedia.push(...media);
-        });
+        const { media } = await this.fetchLibraryMedia(this.state.libraryMedia.length);
+        this.state.libraryMedia.push(...media);
     }
 
     async search(...args) {
@@ -237,13 +189,9 @@ export class ImageSelector extends FileSelector {
         if (!this.state.needle) {
             this.state.searchService = 'all';
         }
-        this.state.libraryMedia = [];
-        this.state.libraryResults = 0;
-        return this.keepLastLibraryMedia.add(this.fetchLibraryMedia(0)).then(({ media, results }) => {
-            // This is never reached if a new search occurred.
-            this.state.libraryMedia = media;
-            this.state.libraryResults = results;
-        });
+        const { media, results } = await this.fetchLibraryMedia(0);
+        this.state.libraryMedia = media;
+        this.state.libraryResults = results;
     }
 
     async onClickAttachment(attachment) {
@@ -283,7 +231,7 @@ export class ImageSelector extends FileSelector {
                 colorCustomizedURL.searchParams.forEach((value, key) => {
                     const match = key.match(/^c([1-5])$/);
                     if (match) {
-                        colorCustomizedURL.searchParams.set(key, weUtils.getCSSVariableValue(`o-color-${match[1]}`));
+                        colorCustomizedURL.searchParams.set(key, getCSSVariableValue(`o-color-${match[1]}`));
                     }
                 });
                 attachment.image_src = colorCustomizedURL.pathname + colorCustomizedURL.search;
@@ -302,24 +250,12 @@ export class ImageSelector extends FileSelector {
                         [attachment.id],
                     );
                 }
-                src += `?access_token=${encodeURIComponent(accessToken)}`;
+                src += `?access_token=${accessToken}`;
             }
             imageEl.src = src;
             imageEl.alt = attachment.description || '';
             return imageEl;
         }));
-    }
-
-    async onImageLoaded(imgEl, attachment) {
-        this.debouncedScrollUpdate();
-        if (attachment.mediaType === 'libraryMedia' && !imgEl.src.startsWith('blob')) {
-            // This call applies the theme's color palette to the
-            // loaded illustration. Upon replacement of the image,
-            // `onImageLoad` is called again, but the replacement image
-            // has an URL that starts with 'blob'. The condition above
-            // uses this to avoid an infinite loop.
-            await this.onLibraryImageLoaded(imgEl, attachment);
-        }
     }
 
     /**
@@ -335,26 +271,20 @@ export class ImageSelector extends FileSelector {
         try {
             const response = await fetch(mediaUrl);
             if (response.headers.get('content-type') === 'image/svg+xml') {
-                let svg = await response.text();
+                const svg = await response.text();
                 const dynamicColors = {};
-                const combinedColorsRegex = new RegExp(Object.values(weUtils.DEFAULT_PALETTE).join('|'), 'gi');
-                svg = svg.replace(combinedColorsRegex, match => {
-                    const colorId = Object.keys(weUtils.DEFAULT_PALETTE).find(key => weUtils.DEFAULT_PALETTE[key] === match.toUpperCase());
+                const combinedColorsRegex = new RegExp(Object.values(DEFAULT_PALETTE).join('|'), 'gi');
+                svg.replace(combinedColorsRegex, match => {
+                    const colorId = Object.keys(DEFAULT_PALETTE).find(key => DEFAULT_PALETTE[key] === match.toUpperCase());
                     const colorKey = 'c' + colorId
-                    dynamicColors[colorKey] = weUtils.getCSSVariableValue('o-color-' + colorId);
-                    return dynamicColors[colorKey];
+                    dynamicColors[colorKey] = getCSSVariableValue('o-color-' + colorId);
                 });
-                const fileName = mediaUrl.split('/').pop();
-                const file = new File([svg], fileName, {
-                    type: "image/svg+xml",
-                });
-                imgEl.src = URL.createObjectURL(file);
                 if (Object.keys(dynamicColors).length) {
                     media.isDynamicSVG = true;
                     media.dynamicColors = dynamicColors;
                 }
             }
-        } catch {
+        } catch (_e) {
             console.error('CORS is misconfigured on the API server, image will be treated as non-dynamic.');
         }
     }

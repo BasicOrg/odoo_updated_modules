@@ -7,7 +7,7 @@ from io import BytesIO
 
 import babel
 import babel.dates
-from markupsafe import Markup, escape
+from markupsafe import Markup as M, escape
 from PIL import Image
 from lxml import etree, html
 
@@ -26,15 +26,7 @@ def nl2br(string):
     :param str string:
     :rtype: unicode
     """
-    return pycompat.to_text(string).replace('\n', Markup('<br>\n'))
-
-
-def nl2br_enclose(string, enclosure_tag='div'):
-    """ Like nl2br, but returns enclosed Markup allowing to better manipulate
-    trusted and untrusted content. New lines added by use are trusted, other
-    content is escaped. """
-    converted = nl2br(escape(string))
-    return Markup(f'<{enclosure_tag}>{converted}</{enclosure_tag}>')
+    return pycompat.to_text(string).replace('\n', M('<br>\n'))
 
 #--------------------------------------------------------------------
 # QWeb Fields converters
@@ -372,7 +364,7 @@ class HTMLConverter(models.AbstractModel):
                 attrib = irQweb._post_processing_att(element.tag, attrib)
                 element.attrib.clear()
                 element.attrib.update(attrib)
-        return Markup(etree.tostring(body, encoding='unicode', method='html')[6:-7])
+        return M(etree.tostring(body, encoding='unicode', method='html')[6:-7])
 
 
 class ImageConverter(models.AbstractModel):
@@ -398,7 +390,7 @@ class ImageConverter(models.AbstractModel):
         except: # image.verify() throws "suitable exceptions", I have no idea what they are
             raise ValueError("Invalid image content")
 
-        return Markup('<img src="data:%s;base64,%s">' % (Image.MIME[image.format], value.decode('ascii')))
+        return M('<img src="data:%s;base64,%s">' % (Image.MIME[image.format], value.decode('ascii')))
 
 class ImageUrlConverter(models.AbstractModel):
     """ ``image_url`` widget rendering, inserts an image tag in the
@@ -410,7 +402,7 @@ class ImageUrlConverter(models.AbstractModel):
 
     @api.model
     def value_to_html(self, value, options):
-        return Markup('<img src="%s">' % (value))
+        return M('<img src="%s">' % (value))
 
 class MonetaryConverter(models.AbstractModel):
     """ ``monetary`` converter, has a mandatory option
@@ -453,7 +445,7 @@ class MonetaryConverter(models.AbstractModel):
         # lang.format will not set one by default. currency.round will not
         # provide one either. So we need to generate a precision value
         # (integer > 0) from the currency's rounding (a float generally < 1.0).
-        fmt = "%.{0}f".format(options.get('decimal_places', display_currency.decimal_places))
+        fmt = "%.{0}f".format(display_currency.decimal_places)
 
         if options.get('from_currency'):
             date = options.get('date') or fields.Date.today()
@@ -478,9 +470,9 @@ class MonetaryConverter(models.AbstractModel):
             sep = lang.decimal_point
             integer_part, decimal_part = formatted_amount.split(sep)
             integer_part += sep
-            return Markup('{pre}<span class="oe_currency_value">{0}</span><span class="oe_currency_value" style="font-size:0.5em">{1}</span>{post}').format(integer_part, decimal_part, pre=pre, post=post)
+            return M('{pre}<span class="oe_currency_value">{0}</span><span class="oe_currency_value" style="font-size:0.5em">{1}</span>{post}').format(integer_part, decimal_part, pre=pre, post=post)
 
-        return Markup('{pre}<span class="oe_currency_value">{0}</span>{post}').format(formatted_amount, pre=pre, post=post)
+        return M('{pre}<span class="oe_currency_value">{0}</span>{post}').format(formatted_amount, pre=pre, post=post)
 
     @api.model
     def record_to_html(self, record, field_name, options):
@@ -719,9 +711,9 @@ class BarcodeConverter(models.AbstractModel):
             if k.startswith('img_') and k[4:] in safe_attrs:
                 img_element.set(k[4:], v)
         if not img_element.get('alt'):
-            img_element.set('alt', _('Barcode %s', value))
+            img_element.set('alt', _('Barcode %s') % value)
         img_element.set('src', 'data:image/png;base64,%s' % base64.b64encode(barcode).decode())
-        return Markup(html.tostring(img_element, encoding='unicode'))
+        return M(html.tostring(img_element, encoding='unicode'))
 
 
 class Contact(models.AbstractModel):
@@ -758,12 +750,6 @@ class Contact(models.AbstractModel):
     @api.model
     def value_to_html(self, value, options):
         if not value:
-            if options.get('null_text'):
-                val = {
-                    'options': options,
-                }
-                template_options = options.get('template_options', {})
-                return self.env['ir.qweb']._render('base.no_contact', val, **template_options)
             return ''
 
         opf = options.get('fields') or ["name", "address", "phone", "mobile", "email"]
@@ -774,18 +760,19 @@ class Contact(models.AbstractModel):
             # escaped joiners will auto-escape joined params
             opsep = escape(', ')
         else:
-            opsep = Markup('<br/>')
+            opsep = M('<br/>')
 
         value = value.sudo().with_context(show_address=True)
+        name_get = value.name_get()[0][1]
         # Avoid having something like:
-        # display_name = 'Foo\n  \n' -> This is a res.partner with a name and no address
+        # name_get = 'Foo\n  \n' -> This is a res.partner with a name and no address
         # That would return markup('<br/>') as address. But there is no address set.
-        if any(elem.strip() for elem in value.display_name.split("\n")[1:]):
-            address = opsep.join(value.display_name.split("\n")[1:]).strip()
+        if any(elem.strip() for elem in name_get.split("\n")[1:]):
+            address = opsep.join(name_get.split("\n")[1:]).strip()
         else:
             address = ''
         val = {
-            'name': value.display_name.split("\n")[0],
+            'name': name_get.split("\n")[0],
             'address': address,
             'phone': value.phone,
             'mobile': value.mobile,

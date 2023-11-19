@@ -1,28 +1,23 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { GraphRenderer } from "@web/views/graph/graph_renderer";
+import { GraphController } from "@web/views/graph/graph_controller";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
 import { SpreadsheetSelectorDialog } from "@spreadsheet_edition/assets/components/spreadsheet_selector_dialog/spreadsheet_selector_dialog";
-import { omit } from "@web/core/utils/objects";
+import { removeContextUserInfo } from "@spreadsheet_edition/assets/helpers";
 
-import { onWillStart } from "@odoo/owl";
+const { onWillStart } = owl;
 
-export const patchGraphSpreadsheet = () => ({
+export const patchGraphSpreadsheet = {
     setup() {
-        super.setup(...arguments);
+        this._super.apply(this, arguments);
         this.userService = useService("user");
         this.notification = useService("notification");
         this.actionService = useService("action");
         this.router = useService("router");
         this.menu = useService("menu");
         onWillStart(async () => {
-            const insertionGroups = registry.category("spreadsheet_view_insertion_groups").getAll();
-            const userGroups = await Promise.all(
-                insertionGroups.map((group) => this.userService.hasGroup(group))
-            );
-            this.canInsertChart = userGroups.some((group) => group);
+            this.canInsertChart = await this.userService.hasGroup("base.group_system");
         });
     },
 
@@ -39,13 +34,7 @@ export const patchGraphSpreadsheet = () => ({
                 metaData: this.model.metaData,
                 searchParams: {
                     ...this.model.searchParams,
-                    domain: this.env.searchModel.domainString,
-                    context: omit(
-                        this.model.searchParams.context,
-                        ...Object.keys(this.userService.context),
-                        "graph_measure",
-                        "graph_order"
-                    ),
+                    context: removeContextUserInfo(this.model.searchParams.context),
                 },
                 menuXMLId,
             },
@@ -57,7 +46,7 @@ export const patchGraphSpreadsheet = () => ({
         };
         this.env.services.dialog.add(SpreadsheetSelectorDialog, params);
     },
-});
+};
 
 /**
  * This patch is a little trick, which require a little explanation:
@@ -71,4 +60,4 @@ export const patchGraphSpreadsheet = () => ({
  * defined in another module, we disable this patch in a file that is only
  * loaded in test assets (disable_patch.js), and re-active it in our tests.
  */
-export const unpatchGraphSpreadsheet = patch(GraphRenderer.prototype, patchGraphSpreadsheet());
+patch(GraphController.prototype, "graph_spreadsheet", patchGraphSpreadsheet);

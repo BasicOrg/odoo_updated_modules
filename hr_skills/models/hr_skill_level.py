@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class SkillLevel(models.Model):
@@ -18,24 +19,34 @@ class SkillLevel(models.Model):
         ('check_level_progress', 'CHECK(level_progress BETWEEN 0 AND 100)', "Progress should be a number between 0 and 100."),
     ]
 
-    @api.depends('level_progress')
-    @api.depends_context('from_skill_level_dropdown')
-    def _compute_display_name(self):
+    def name_get(self):
         if not self._context.get('from_skill_level_dropdown'):
-            return super()._compute_display_name()
-        for record in self:
-            record.display_name = f"{record.name} ({record.level_progress}%)"
+            return super().name_get()
+        return [(record.id, f"{record.name} ({record.level_progress}%)") for record in self]
 
-    @api.model_create_multi
     def create(self, vals_list):
-        skill_levels = super().create(vals_list)
-        for level in skill_levels:
-            if level.default_level:
-                level.skill_type_id.skill_level_ids.filtered(lambda r: r.id != level.id).default_level = False
-        return skill_levels
+        levels = super().create(vals_list)
+        levels.skill_type_id._set_default_level()
+        return levels
 
-    def write(self, vals):
-        res = super().write(vals)
-        if vals.get('default_level'):
-            self.skill_type_id.skill_level_ids.filtered(lambda r: r.id != self.id).default_level = False
+    def write(self, values):
+        levels = super().write(values)
+        self.skill_type_id._set_default_level()
+        return levels
+
+    def unlink(self):
+        skill_types = self.skill_type_id
+        res = super().unlink()
+        skill_types._set_default_level()
         return res
+
+    @api.constrains('default_level', 'skill_type_id')
+    def _constrains_default_level(self):
+        for skill_type in set(self.mapped('skill_type_id')):
+            if len(skill_type.skill_level_ids.filtered('default_level')) > 1:
+                raise ValidationError(_('Only one default level is allowed per skill type.'))
+
+    def action_set_default(self):
+        self.ensure_one()
+        self.skill_type_id.skill_level_ids.with_context(no_skill_level_check=True).default_level = False
+        self.default_level = True

@@ -1,23 +1,23 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* account_sepa_direct_debit
-#
+# 
 # Translators:
-# Martin Trigaux, 2022
-# Alina Lisnenko <alina.lisnenko@erp.co.ua>, 2022
-#
+# Martin Trigaux, 2019
+# Alina Lisnenko <alinasemeniuk1@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: Alina Lisnenko <alina.lisnenko@erp.co.ua>, 2022\n"
-"Language-Team: Ukrainian (https://app.transifex.com/odoo/teams/41243/uk/)\n"
-"Language: uk\n"
+"POT-Creation-Date: 2019-09-09 11:58+0000\n"
+"PO-Revision-Date: 2019-08-26 09:34+0000\n"
+"Last-Translator: Alina Lisnenko <alinasemeniuk1@gmail.com>, 2019\n"
+"Language-Team: Ukrainian (https://www.transifex.com/odoo/teams/41243/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: uk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
 #. module: account_sepa_direct_debit
@@ -29,6 +29,33 @@ msgstr "(якщо застосовно)"
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "(optional)"
 msgstr "(необов'язково)"
+
+#. module: account_sepa_direct_debit
+#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
+msgid ""
+". As part of your rights, you are entitled to a refund from your bank under "
+"the terms and conditions of your agreement with your bank. Your rights are "
+"explained in a statement that you can obtain from your bank. A refund must "
+"be claimed within 8 weeks starting from the date on which your account was "
+"debited."
+msgstr ""
+". Як частина ваших прав, ви маєте право на відшкодування з вашого банку на "
+"умовах, укладених угоди з вашим банком. Ваші права пояснюються у виписці, "
+"яку ви можете отримати у своєму банку. Потрібно вимагати повернення коштів "
+"протягом 8 тижнів, починаючи з дня списання з вашого рахунку."
+
+#. module: account_sepa_direct_debit
+#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
+msgid ""
+"<span class=\"alert alert-info\" attrs=\"{'invisible': ['|', '|', "
+"('sdd_mandate_usable', '!=', True), ('payment_type', '!=', 'inbound'), "
+"('state', '!=', 'draft')]}\" role=\"status\">Direct Debit collecting method "
+"available</span>"
+msgstr ""
+"<span class=\"alert alert-info\" attrs=\"{'invisible': ['|', '|', "
+"('sdd_mandate_usable', '!=', True), ('payment_type', '!=', 'inbound'), "
+"('state', '!=', 'draft')]}\" role=\"status\">Доступний метод збору прямого "
+"дебету</span>"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -52,8 +79,12 @@ msgstr "<strong>Ідентифікатор кредитора:</strong>"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "<strong>Date and place of signature:</strong> ......................................"
-msgstr "<strong>Дата та місце підписання: </strong> ......................................"
+msgid ""
+"<strong>Date and place of signature:</strong> "
+"......................................"
+msgstr ""
+"<strong>Дата та місце підписання: </strong> "
+"......................................"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -72,8 +103,12 @@ msgstr "<strong>Ідентифікатор мандату:</strong>"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "<strong>Name of the reference party:</strong> ......................................"
-msgstr "<strong>Назва часткового референсу:</strong> ......................................"
+msgid ""
+"<strong>Name of the reference party:</strong> "
+"......................................"
+msgstr ""
+"<strong>Назва частини референсу:</strong> "
+"......................................"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -101,11 +136,11 @@ msgid "<strong>Zip: </strong>"
 msgstr "<strong>Індекс: </strong>"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid "A debtor account is required to validate a SEPA Direct Debit mandate."
-msgstr "Рахунок боржника необхідний для підтвердження мандату SEPA Direct Debit."
+msgstr ""
+"Рахунок боржника необхідний для підтвердження мандату SEPA Direct Debit."
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
@@ -148,32 +183,9 @@ msgid "Activity State"
 msgstr "Стан дії"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_type_icon
-msgid "Activity Type Icon"
-msgstr "Іконка типу дії"
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
-#, python-format
-msgid "All the payments in the batch must have the same SDD scheme."
-msgstr "Усі групові платежі повинні мати одну схему SDD."
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "As part of your rights, you are entitled to a refund from your bank under the terms and conditions of your agreement with your bank. Your rights are explained in a statement that you can obtain from your bank. A refund must be claimed within 8 weeks starting from the date on which your account was debited."
-msgstr ""
-
-#. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_attachment_count
 msgid "Attachment Count"
-msgstr "Підрахунок прикріплення"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__account_batch_payment__sdd_scheme__b2b
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__sdd_scheme__b2b
-msgid "B2B"
-msgstr "B2B"
+msgstr "Підрахунок прикріплень"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_res_partner_bank
@@ -181,25 +193,19 @@ msgid "Bank Accounts"
 msgstr "Банківські рахунки"
 
 #. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_batch_payment_form_inherit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_batch_booking
 msgid "Batch Booking"
 msgstr "Групове бронювання"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_batch_payment
 msgid "Batch Payment"
-msgstr "Груповий платіж"
+msgstr "Пакетний платіж"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "By signing this mandate form, you authorise (A)"
 msgstr "Підписавши цю форму мандату, ви дозволяєте (A)"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__account_batch_payment__sdd_scheme__core
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__sdd_scheme__core
-msgid "CORE"
-msgstr "ЯДРО"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
@@ -215,12 +221,7 @@ msgstr "Закрити"
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__state__closed
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_mandate_search_view
 msgid "Closed"
-msgstr "Закрито"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
-msgid "Collections"
-msgstr "Колекції"
+msgstr "Завершено"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_res_company
@@ -255,12 +256,7 @@ msgstr "Чи може бути використаний мандат SDD?"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
 msgid "Create a new direct debit customer mandate"
-msgstr "Створіть новий мандат замовника прямого дебету"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
-msgid "Create it."
-msgstr "Створіть його."
+msgstr "Створіть новий мандат клієнта прямого дебету"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__create_uid
@@ -270,7 +266,7 @@ msgstr "Створив"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__create_date
 msgid "Created on"
-msgstr "Створено"
+msgstr "Створено на"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -309,13 +305,17 @@ msgstr "Дата, з якої можна використовувати манд
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__end_date
-msgid "Date until which the mandate can be used. It will automatically be closed after this date."
-msgstr "Дата, до якої мандат може бути використаний. Після закінчення цієї дати вона автоматично буде закрита."
+msgid ""
+"Date until which the mandate can be used. It will automatically be closed "
+"after this date."
+msgstr ""
+"Дата, до якої мандат може бути використаний. Після закінчення цієї дати вона"
+" автоматично буде закрита."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_batch_payment__sdd_required_collection_date
 msgid "Date when the company expects to receive the payments of this batch."
-msgstr "Дата, коли компанія очікує отримати групові платежі."
+msgstr "Дата, коли компанія очікує отримати платежі за цей пакет."
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -379,9 +379,19 @@ msgid "Every mandate belonging to this partner."
 msgstr "Кожен мандат, що належить цьому партнерові."
 
 #. module: account_sepa_direct_debit
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__original_doc_filename
+msgid "File name of original_doc."
+msgstr "Назва файлу original_doc."
+
+#. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_follower_ids
 msgid "Followers"
 msgstr "Підписники"
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Підписники (Канали)"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_partner_ids
@@ -389,24 +399,9 @@ msgid "Followers (Partners)"
 msgstr "Підписники (Партнери)"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Іконка з чудовим шрифтом, напр. fa-tasks"
-
-#. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__debtor_id_code
 msgid "Free reference identifying the debtor in your company."
 msgstr "Безкоштовна довідка з ідентифікацією боржника у вашій компанії."
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
-msgid "Good news! A valid Sepa Mandate is available."
-msgstr "Хороші новини! Дійсний мандат Sepa доступний."
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__has_message
-msgid "Has Message"
-msgstr "Є повідомлення"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__partner_bank_id
@@ -440,6 +435,7 @@ msgstr "Ідентифікатор"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_needaction
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Якщо позначено, то нові повідомлення будуть потребувати вашої уваги."
 
@@ -450,14 +446,13 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Якщо позначено, деякі повідомлення мають помилку доставки."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "Invalid creditor identifier. Make sure you made no typo."
-msgstr "Недійсний ідентифікатор кредитора. Переконайтеся, що ви не зробили помилки."
+msgstr ""
+"Недійсний ідентифікатор кредитора. Переконайтеся, що ви не зробили помилки."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "Invalid creditor identifier. Wrong format."
@@ -473,11 +468,6 @@ msgstr "Рахунок-фактура сплачена через прямий �
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Invoices Paid"
 msgstr "Рахунки сплачено"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_invoice_filter
-msgid "Invoices matching a valid SEPA Direct Debit Mandate"
-msgstr "Мандат співставлення рахунків дійсного прямого дебету SEPA"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__paid_invoice_ids
@@ -502,18 +492,21 @@ msgstr "Журнал"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_move
-msgid "Journal Entry"
-msgstr "Запис у журналі"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model,name:account_sepa_direct_debit.model_account_move_line
-msgid "Journal Item"
-msgstr "Запис у журналі"
+msgid "Journal Entries"
+msgstr "Записи в журналі"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__payment_journal_id
-msgid "Journal to use to receive SEPA Direct Debit payments from this mandate."
-msgstr "Журнал, який використовуватиметься для отримання платежів прямого дебету SEPA за цим мандатом."
+msgid ""
+"Journal to use to receive SEPA Direct Debit payments from this mandate."
+msgstr ""
+"Журнал, який використовуватиметься для отримання платежів прямого дебету "
+"SEPA за цим мандатом."
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate____last_update
+msgid "Last Modified on"
+msgstr "Останні зміни на"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__write_uid
@@ -537,13 +530,16 @@ msgstr "Мандат від"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.constraint,message:account_sepa_direct_debit.constraint_sdd_mandate_name_unique
-msgid "Mandate identifier must be unique! Please choose another one."
+msgid "Mandate identifier must be unique ! Please choose another one."
 msgstr ""
+"Ідентифікатор мандату повинен бути унікальним! Будь ласка, виберіть інший."
 
 #. module: account_sepa_direct_debit
 #: model:ir.actions.server,name:account_sepa_direct_debit.sdd_mandate_state_cron_ir_actions_server
+#: model:ir.cron,cron_name:account_sepa_direct_debit.sdd_mandate_state_cron
+#: model:ir.cron,name:account_sepa_direct_debit.sdd_mandate_state_cron
 msgid "Mandate state updater"
-msgstr "Оновлений стан державного мандату"
+msgstr "Оновлений стан мандату"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_has_error
@@ -554,16 +550,6 @@ msgstr "Помилка доставлення повідомлення"
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_ids
 msgid "Messages"
 msgstr "Повідомлення"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr "Дедлайн моєї дії"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Наступна подія календаря дій"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_date_deadline
@@ -592,8 +578,16 @@ msgstr "Кількість дій"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__payments_to_collect_nber
-msgid "Number of Direct Debit payments to be collected for this mandate, that is, the number of payments that have been generated and posted thanks to this mandate and still needs their XML file to be generated and sent to the bank to debit the customer's account."
-msgstr "Кількість прямих дебетових платежів, що збиратимуться за цим мандатом, тобто кількість отриманих та опублікованих платежів завдяки цьому мандату, і все ще потрібно, щоб їх файл XML був створений та відправлений в банк для дебетування облікового запису клієнта."
+msgid ""
+"Number of Direct Debit payments to be collected for this mandate, that is, "
+"the number of payments that have been generated and posted thanks to this "
+"mandate and still needs their XML file to be generated and sent to the bank "
+"to debit the customer's account."
+msgstr ""
+"Кількість прямих дебетових платежів, що збиратимуться за цим мандатом, тобто"
+" кількість отриманих та опублікованих платежів завдяки цьому мандату, і все "
+"ще потрібно, щоб їх файл XML був створений та відправлений в банк для "
+"дебетування облікового запису клієнта."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_has_error_counter
@@ -602,8 +596,8 @@ msgstr "Кількість помилок"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__paid_invoices_nber
-msgid "Number of invoices paid with this mandate."
-msgstr "Кількість рахунків-фактур, сплачених за цим дорученням."
+msgid "Number of invoices paid with thid mandate."
+msgstr "Кількість рахунків-фактур, сплачених за цим мандатом."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_needaction_counter
@@ -613,29 +607,36 @@ msgstr "Кількість повідомлень, які потебують д�
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Кількість повідомлень з помилковою дставкою"
+msgstr "Кількість повідомлень з помилковою доставкою"
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Кількість непрочитаних повідомлень"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
 msgid ""
 "Once an invoice is made\n"
-"                    in Odoo for a customer having a mandate active on the invoice date,\n"
+"                    in Odoo for a customer having an mandate active on the invoice date,\n"
 "                    its validation will trigger its automatic payment, and you will\n"
 "                    then only have to generate a SEPA Direct Debit (SDD) XML file containing this operation\n"
 "                    and send it to your bank to effectively get paid."
 msgstr ""
-"Після створення рахунку\n"
-"                    в Odoo у якого є активний мандат на дату рахунка,\n"
-"                    його перевірка запустить його автоматичний платіж, і тоді вам потрібно буде лише створити\n"
-" XML-файл SEPA Direct Debit (SDD), який містить цю операцію, і надіслати його до свого банку, щоб \n"
-"ефективно отримати платіж."
+"Після того, як буде зроблено рахунок-фактуру\n"
+"                     в Odoo для клієнта, який має мандат, активний на дату рахунка-фактури,\n"
+"                     його перевірка буде ініціювати його автоматичний платіж, і ви будете\n"
+"                     лише створювати XML-файл прямого дебету SEPA (SDD), що містить цю операцію\n"
+"                     і відправите його у ваш банк, щоб ефективно отримувати оплату."
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_id
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_move__sdd_mandate_id
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_payment__sdd_mandate_id
-msgid "Once this invoice has been paid with Direct Debit, contains the mandate that allowed the payment."
-msgstr "Після того, як цей рахунок буде сплачений за допомогою прямого дебету, який містить мандат, що дозволив здійснити платіж."
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_move__sdd_paying_mandate_id
+msgid ""
+"Once this invoice has been paid with Direct Debit, contains the mandate that"
+" allowed the payment."
+msgstr ""
+"Після того, як цей рахунок буде сплачений за допомогою прямого дебету, який "
+"містить мандат, що дозволив здійснити платіж."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__one_off
@@ -643,23 +644,23 @@ msgid "One-off Mandate"
 msgstr "Одноразовий мандат"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "Only IBAN account numbers can receive SEPA Direct Debit payments. Please select a journal associated to one."
-msgstr "Тільки номери рахунків IBAN можуть отримувати платежі SEPA Direct Debit. Будь ласка, виберіть журнал, пов'язаний з ним."
+msgid ""
+"Only IBAN account numbers can receive SEPA Direct Debit payments. Please "
+"select a journal associated to one."
+msgstr ""
+"Тільки номери рахунків IBAN можуть отримувати платежі SEPA Direct Debit. "
+"Будь ласка, виберіть журнал, пов'язаний з ним."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "Only mandates in draft state can be deleted from database when cancelled."
-msgstr "Тільки мандати в проектному стані можуть бути видалені з бази даних при скасуванні."
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
-msgid "Oops! No valid SEPA mandate for this customer."
-msgstr "От халепа! Немає мандату SEPA для цього клієнта."
+msgid ""
+"Only mandates in draft state can be deleted from database when cancelled."
+msgstr ""
+"Тільки мандати в проектному стані можуть бути видалені з бази даних при "
+"скасуванні."
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_res_partner_view
@@ -667,13 +668,30 @@ msgid "Open this partner's mandates"
 msgstr "Відкрити ці батьківські мандати"
 
 #. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_with_mandates_tree
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__original_doc
+msgid "Original Document"
+msgstr "Оригінальний документ"
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__original_doc_filename
+msgid "Original Document File Name"
+msgstr "Назва файлу оригінального документу"
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__original_doc
+msgid ""
+"Original document into which the customer authorises the use of Direct Debit"
+" for his invoices."
+msgstr ""
+"Тільки мандати в проектному стані можуть бути видалені з бази даних при "
+"скасуванні."
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_mandate_id
 msgid "Originating SEPA mandate"
 msgstr "Оригінальний мандат SEPA"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid "Paid Invoices"
@@ -688,11 +706,6 @@ msgstr "Номер оплачених рахунків-фактур"
 #: model:mail.message.subtype,name:account_sepa_direct_debit.sdd_mt_invoice_paid_with_mandate
 msgid "Paid via direct debit"
 msgstr "Оплачено через прямий дебет"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model,name:account_sepa_direct_debit.model_account_payment_method
-msgid "Payment Methods"
-msgstr "Способи оплати"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_payment
@@ -711,11 +724,11 @@ msgid "Payments generated thanks to this mandate."
 msgstr "Платежі, отримані завдяки цьому мандату."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
+#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 #, python-format
 msgid "Payments to Collect"
-msgstr "Платежі для отримання"
+msgstr "Платежі для збирання"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_report_invoice_document
@@ -732,19 +745,16 @@ msgid "Print"
 msgstr "Друк"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_batch_payment__sdd_batch_booking
 msgid "Request batch booking from the bank for the related bank statements."
-msgstr "Надсилайте запит на групове бронювання з банку для об'єднання банківських виписок."
+msgstr ""
+"Надсилайте запит на групове бронювання з банку для об'єднання банківських "
+"виписок."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_required_collection_date
 msgid "Required collection date"
-msgstr "Обов'язкова дата отримання"
+msgstr "Обов'язкова дата збирання"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_user_id
@@ -767,34 +777,14 @@ msgid "Revoked SDD Mandate"
 msgstr "Скасований мандат SDD"
 
 #. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_payment_search
-msgid "SDD B2B"
-msgstr "SDD B2B"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_batch_booking
-msgid "SDD Batch Booking"
-msgstr "Групове резервування SDD"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_payment_search
-msgid "SDD CORE"
-msgstr "SDD CORE"
-
-#. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_sdd_mandate
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_invoice_filter
 msgid "SDD Mandate"
 msgstr "Мандат SDD"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_scheme
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_scheme
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_move__sdd_mandate_scheme
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_mandate_scheme
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__sdd_scheme
-msgid "SDD Scheme"
-msgstr "Схема SDD"
+#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_view_account_payment_search
+msgid "SDD Payments to Collect"
+msgstr "Платежі SDD для отримання"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_partner__sdd_count
@@ -808,18 +798,6 @@ msgid "SDD creditor identifier"
 msgstr "Ідентифікатор кредитора SDD "
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
-#, python-format
-msgid "SDD scheme is set on the customer mandate."
-msgstr "Схема SDD втсановлена на манадаті клієнта."
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "SEPA Business-to-Business Direct Debit Mandate"
-msgstr ""
-
-#. module: account_sepa_direct_debit
 #: model:account.payment.method,name:account_sepa_direct_debit.payment_method_sdd
 msgid "SEPA Direct Debit"
 msgstr "Прямий дебет SEPA "
@@ -831,15 +809,19 @@ msgstr "Мандат прямого дебету SEPA "
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_res_company__sdd_creditor_identifier
-msgid "SEPA Direct Debit creditor identifier of the company, given by the bank."
+msgid ""
+"SEPA Direct Debit creditor identifier of the company, given by the bank."
 msgstr "Ідентифікатор кредитора прямого дебету SEPA компанії, наданий банком."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "SEPA Direct Debit scheme only accepts IBAN account numbers. Please select an IBAN-compliant debtor account for this mandate."
-msgstr "Схема прямого дебету SEPA приймає тільки номери рахунків IBAN. Будь ласка, виберіть рахунок дебітора, сумісного з IBAN, для цього мандату."
+msgid ""
+"SEPA Direct Debit scheme only accepts IBAN account numbers. Please select an"
+" IBAN-compliant debtor account for this mandate."
+msgstr ""
+"Схема прямого дебету SEPA приймає тільки номери рахунків IBAN. Будь ласка, "
+"виберіть рахунок дебітора, сумісного з IBAN, для цього мандату."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_has_sms_error
@@ -847,32 +829,20 @@ msgid "SMS Delivery error"
 msgstr "Помилка доставки SMS"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_bank_statement_line__sdd_has_usable_mandate
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_move__sdd_has_usable_mandate
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_has_usable_mandate
-msgid "Sdd Has Usable Mandate"
-msgstr "Sdd має користувацький мандат"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_id
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_move__sdd_mandate_id
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_mandate_id
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_partner__sdd_mandate_ids
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_users__sdd_mandate_ids
 msgid "Sdd Mandate"
 msgstr "Мандат Sdd"
 
 #. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_move__sdd_paying_mandate_id
+msgid "Sdd Paying Mandate"
+msgstr "Оплата мандату Sdd "
+
+#. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "Signature"
 msgstr "Підпис"
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
-#, python-format
-msgid "Some draft payments could not be posted because of the lack of any active mandate."
-msgstr "Деякі проекти виплат не можуть бути опубліковані через відсутність активного мандату."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__start_date
@@ -898,52 +868,62 @@ msgstr ""
 "Заплановано: майбутні дії."
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__suitable_journal_ids
-msgid "Suitable Journal"
-msgstr "Відповідний журнал"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_scheme
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_batch_payment__sdd_scheme
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_move__sdd_mandate_scheme
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_payment__sdd_mandate_scheme
-#: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__sdd_scheme
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_payment__sdd_mandate_usable
 msgid ""
-"The B2B scheme is an optional scheme,\n"
-"offered exclusively to business payers.\n"
-"Some banks/businesses might not accept B2B SDD."
+"Technical field used to inform the end user there is a SDD mandate that "
+"could be used to register that payment"
 msgstr ""
-"Схема B2B - це опціональна схема,\n"
-"що пропонується виключно платникам бізнесу.\n"
-"Деякі банки/бізнеси можуть не приймати B2B SDD."
+"Технічне поле, яке використовується для інформування кінцевого користувача, "
+"є мандатом SDD, який може використовуватися для реєстрації цього платежу"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
+#: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "The SEPA Direct Debit mandate associated to the payment has been revoked and cannot be used anymore."
-msgstr "Мандат прямого дебету SEPA Direct Debit пов’язаний із платежем, був скасований і більше не може бути використаний."
+msgid ""
+"The bank your payment account is related to must have a BIC number. Please "
+"define one."
+msgstr ""
+"Банк, з яким пов'язаний ваш платіжний рахунок, повинен мати номер BIC. Будь "
+"ласка, визначте його."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "The creditor identifier exceeds the maximum length of 35 characters."
 msgstr "Ідентифікатор кредитора перевищує максимальну довжину у 35 символів."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "The debtor identifier you specified exceeds the limitation of 35 characters imposed by SEPA regulation"
-msgstr "Ідентифікатор боржника, який ви вказали, перевищує обмеження в розмірі 35 символів, що накладаються регулюванням SEPA"
+msgid ""
+"The debtor identifier you specified exceeds the limitation of 35 characters "
+"imposed by SEPA regulation"
+msgstr ""
+"Ідентифікатор боржника, який ви вказали, перевищує обмеження в розмірі 35 "
+"символів, що накладаються регулюванням SEPA"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "The end date of the mandate must be posterior or equal to its start date."
-msgstr "Дата закінчення мандату повинна бути наступною або рівною даті її початку."
+msgid ""
+"The destination bank account must be related to a bank with a valid BIC."
+msgstr ""
+"Банківський рахунок призначення повинен бути пов’язаний з банком з дійсним "
+"BIC."
+
+#. module: account_sepa_direct_debit
+#: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
+#, python-format
+msgid ""
+"The end date of the mandate must be posterior or equal to its start date."
+msgstr ""
+"Дата закінчення мандату повинна бути наступною або рівною даті її початку."
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,help:account_sepa_direct_debit.field_account_payment__sdd_mandate_id
+msgid "The mandate used to generate this payment, if any."
+msgstr ""
+"Мандат, який використовується для отримання цього платежу, якщо такі є."
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -955,13 +935,6 @@ msgstr ""
 "Мандат буде використовуватися лише для оплати рахунків\n"
 " у визначений часовий діапазон. Якщо дата закінчення\n"
 " не вказана, вам доведеться зв’язатися з нами, щоб припинити її використання."
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid "The payment must be linked to a SEPA Direct Debit mandate in order to generate a Direct Debit XML."
-msgstr "Платіж має бути пов'язаний з мандатом прямого дебету SEPA, щоб створити XML-файл прямого дебету."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__state
@@ -982,6 +955,16 @@ msgid "The unique identifier of this mandate."
 msgstr "Унікальний ідентифікатор цього мандату."
 
 #. module: account_sepa_direct_debit
+#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
+#, python-format
+msgid ""
+"This invoice cannot be paid via SEPA Direct Debit, as there is no valid "
+"mandate available for its customer at its creation date."
+msgstr ""
+"Цей рахунок-фактуру неможливо виплатити через прямий дебет SEPA, оскільки "
+"для його клієнта не існує дійсного мандату на його дату створення."
+
+#. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_report_invoice_document
 msgid ""
 "This invoice will be paid using direct debit and is only\n"
@@ -991,55 +974,69 @@ msgstr ""
 "                         надісланий в інформаційних цілях."
 
 #. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "This mandate is only intended for business-to-business transactions. You are not entitled to a refund from your bank after your account has been debited, but you are entitled to request your bank not to debit your account up until the day on which the payment is due."
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
-#, python-format
-msgid "To solve that, you should create a mandate for each of the involved customers, valid at the moment of the payment date."
-msgstr "Для вирішення цієї проблеми слід створити мандат для кожного із залучених клієнтів, дійсне на момент дати платежу."
-
-#. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__one_off
-msgid "True if and only if this mandate can be used for only one transaction. It will automatically go from 'active' to 'closed' after its first use in payment if this option is set.\n"
-msgstr "Правильно, тільки якщо цей мандат може бути використаний лише для однієї транзакції. Якщо цей параметр встановлений, він автоматично переходить з \"активного\" в \"закритий\" після його першого використання в оплаті.\n"
+msgid ""
+"True if and only if this mandate can be used for only one transaction. It "
+"will automatically go from 'active' to 'closed' after its first use in "
+"payment if this option is set.\n"
+msgstr ""
+"Правильно, тільки якщо цей мандат може бути використаний лише для однієї "
+"транзакції. Якщо цей параметр встановлений, він автоматично переходить з "
+"\"активного\" в \"закритий\" після його першого використання в оплаті.\n"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
-msgid "Trying to generate a Direct Debit XML file containing payments from another company than that file's creditor."
-msgstr "Спроба створити XML-файл прямого дебетування, що містить платежі з іншої компанії, ніж кредитор даного файлу."
+msgid ""
+"Trying to generate a Direct Debit XML file containing payments from another "
+"company than that file's creditor."
+msgstr ""
+"Спроба створити XML-файл прямого дебетування, що містить платежі з іншої "
+"компанії, а не кредитор даного файлу."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
-msgid "Trying to generate a Direct Debit XML for payments coming from another payment method than SEPA Direct Debit."
-msgstr "Спроба генерувати XML-файл прямого дебетування для платежів, отриманих з іншого способу оплати, ніж прямий дебет SEPA."
+msgid ""
+"Trying to generate a Direct Debit XML for payments coming from another "
+"payment method than SEPA Direct Debit."
+msgstr ""
+"Спроба генерувати XML-файл прямого дебетування для платежів, отриманих з "
+"іншого способу оплати, ніж прямий дебет SEPA."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
-msgid "Trying to register a payment on a mandate belonging to a different partner."
+msgid ""
+"Trying to register a payment on a mandate belonging to a different partner."
 msgstr "Спроба зареєструвати платіж за мандатом, що належить іншому партнеру."
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "Тип дії виключення на записі."
+msgstr "Тип виключення дії на записі."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_invoice.py:0
+#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
-msgid "Unable to post payment %(payment)r due to no usable mandate being available at date %(date)s for partner %(partner)r. Please create one before encoding a SEPA Direct Debit payment."
-msgstr "Не можливо опублікувати платіж %(payment)r через відсутність дійсного мандату на сьогодні %(date)s для партнера %(partner)r. Створіть його перед кодуванням платежу прямого дебету SEPA."
+msgid ""
+"Unable to post payment '%s' due to no usable mandate being available at date"
+" %s for partner '%s'. Please create one before encoding a SEPA Direct Debit "
+"payment."
+msgstr ""
+"Не вдається опублікувати платіж '%s' через відсутність доступного мандату на"
+" дату %s для партнера '%s'. Будь ласка, створіть його перед кодуванням "
+"платежу прямого дебету SEPA."
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_unread
+msgid "Unread Messages"
+msgstr "Непрочитані повідомлення"
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Кількість непрочитаних повідомлень"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
@@ -1062,27 +1059,61 @@ msgid "Website communication history"
 msgstr "Історія бесіди на сайті"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_partner_bank.py:0
 #, python-format
-msgid "You cannot delete a bank account linked to an active SEPA Direct Debit mandate."
-msgstr "Ви не можете видалити банківський рахунок, пов'язаний з активним прямим дебетом SEPA."
+msgid ""
+"You cannot delete a bank account linked to an active SEPA Direct Debit "
+"mandate."
+msgstr ""
+"Ви не можете видалити банківський рахунок, пов'язаний з активним прямим "
+"дебетом SEPA."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
+#: code:addons/account_sepa_direct_debit/models/account_invoice.py:0
 #, python-format
-msgid "You cannot generate a SEPA Direct Debit file with a required collection date in the past."
-msgstr "Ви не можете створити файл прямого дебетування SEPA з необхідною датою отримання раніше."
+msgid ""
+"You cannot do direct debit on a customer to pay a refund to him, or on a "
+"supplier to pay an invoice from him."
+msgstr ""
+"Ви не можете здійснювати пряме дебетування клієнта, щоб сплатити йому "
+"повернення коштів, або на постачальника, щоб оплатити його рахунок."
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
-msgid "Your company must have a creditor identifier in order to issue SEPA Direct Debit payments requests. It can be defined in accounting module's settings."
-msgstr "Ваша компанія повинна мати ідентифікатор кредитора, щоби видати запити на оплату прямого дебетування SEPA. Він може бути визначений в налаштуваннях модуля бухобліку."
+msgid ""
+"You cannot generate a SEPA Direct Debit file with a required collection date"
+" in the past."
+msgstr ""
+"Ви не можете створити файл прямого дебетування SEPA з необхідною датою збору"
+" раніше."
+
+#. module: account_sepa_direct_debit
+#: code:addons/account_sepa_direct_debit/models/account_invoice.py:0
+#, python-format
+msgid ""
+"You cannot pay an invoice with a mandate that does not cover the moment when"
+" it was issued."
+msgstr ""
+"Ви не можете оплачувати рахунок-фактуру з мандатом, який не охоплює момент, "
+"коли він був виданий."
+
+#. module: account_sepa_direct_debit
+#: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
+#, python-format
+msgid ""
+"Your company must have a creditor identifier in order to issue SEPA Direct "
+"Debit payments requests. It can be defined in accounting module's settings."
+msgstr ""
+"Ваша компанія повинна мати ідентифікатор кредитора, щоби видати запити на "
+"оплату прямого дебетування SEPA. Він може бути визначений в налаштуваннях "
+"модуля бухобліку."
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "to send instructions to your bank to debit your account and (B) your bank to debit your account in accordance with the instructions from"
-msgstr "надсилати до банку вказівки щодо списання рахунку та (B) банку для дебетування вашого рахунку відповідно до інструкцій від"
+msgid ""
+"to send instructions to your bank to debit your account and (B) your bank to"
+" debit your account in accordance with the instructions from"
+msgstr ""
+"надсилати до банку вказівки щодо списання рахунку та (B) банку для "
+"дебетування вашого рахунку відповідно до інструкцій від"

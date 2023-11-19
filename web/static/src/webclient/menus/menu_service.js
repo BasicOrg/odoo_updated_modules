@@ -53,18 +53,16 @@ function makeMenus(env, menusData, fetchLoadMenus) {
             if (!menu.actionID) {
                 return;
             }
-            await env.services.action.doAction(menu.actionID, {
-                clearBreadcrumbs: true,
-                onActionReady: () => {
-                    this.setCurrentMenu(menu);
-                },
-            });
+            await env.services.action.doAction(menu.actionID, { clearBreadcrumbs: true });
+            this.setCurrentMenu(menu);
         },
         setCurrentMenu(menu) {
             menu = typeof menu === "number" ? this.getMenu(menu) : menu;
             if (menu && menu.appID !== currentAppId) {
                 currentAppId = menu.appID;
                 env.bus.trigger("MENUS:APP-CHANGED");
+                // FIXME: lock API: maybe do something like
+                // pushState({menu_id: ...}, { lock: true}); ?
                 env.services.router.pushState({ menu_id: menu.id }, { lock: true });
             }
         },

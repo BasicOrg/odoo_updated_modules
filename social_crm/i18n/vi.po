@@ -3,16 +3,16 @@
 # 	* social_crm
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,19 +22,21 @@ msgstr ""
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_view_form
 msgid ""
-"<span class=\"o_stat_text\" invisible=\"not use_leads\">Leads</span>\n"
-"                        <span class=\"o_stat_text\" invisible=\"use_leads\">Opportunities</span>"
+"<span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', False)]}\">Leads</span>\n"
+"                        <span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', True)]}\">Opportunities</span>"
 msgstr ""
+"<span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', False)]}\">Tiềm năng</span>\n"
+"                        <span class=\"o_stat_text\" attrs=\"{'invisible': [('use_leads', '=', True)]}\">Cơ hội</span>"
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_description
 msgid "<span>at</span>"
-msgstr "<span>tại</span>"
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_description
 msgid "<span>posted on</span>"
-msgstr "<span>đã đăng lên</span>"
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
@@ -44,31 +46,31 @@ msgstr "Hủy"
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__conversion_source
 msgid "Conversion Source"
-msgstr "Nguồn chuyển đổi"
+msgstr ""
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
 msgid "Convert"
-msgstr "Chuyển đổi"
+msgstr "Chuyển"
 
 #. module: social_crm
 #: model:ir.actions.act_window,name:social_crm.social_post_to_lead_action
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_to_lead_view_form
 msgid "Convert Post to Lead"
-msgstr "Chuyển đổi Bài đăng thành Lead"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model,name:social_crm.model_social_post_to_lead
 msgid "Convert Social Post to Lead"
-msgstr "Chuyển đổi Bài đăng mạng xã hội thành Lead"
+msgstr ""
 
 #. module: social_crm
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_crm/static/src/xml/social_crm_button.xml:0
 #: code:addons/social_crm/static/src/xml/social_crm_button.xml:0
 #, python-format
 msgid "Create Lead"
-msgstr "Tạo lead"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__action__create
@@ -99,17 +101,17 @@ msgstr "Tên hiển thị"
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__action__nothing
 msgid "Do not link to a customer"
-msgstr "Không liên kết với một khách hàng"
+msgstr "Không liên kết tới một khách hàng"
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__conversion_source__comment
 msgid "From a comment"
-msgstr "Từ một bình luận"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__conversion_source__stream_post
 msgid "From a stream post"
-msgstr "Từ một bài phát trực tiếp"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__id
@@ -117,9 +119,14 @@ msgid "ID"
 msgstr "ID"
 
 #. module: social_crm
+#: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
+
+#. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__write_date
@@ -129,17 +136,17 @@ msgstr "Cập nhật lần cuối vào"
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post__leads_opportunities_count
 msgid "Leads / Opportunities count"
-msgstr "Số lead/cơ hội"
+msgstr "Số Tiềm năng/Cơ hội"
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_view_kanban
 msgid "Leads:"
-msgstr "Lead"
+msgstr "Tiềm năng:"
 
 #. module: social_crm
 #: model:ir.model.fields.selection,name:social_crm.selection__social_post_to_lead__action__exist
 msgid "Link to an existing customer"
-msgstr "Liên kết với một khách hàng hiện có"
+msgstr "Liên kết tới một khách hàng đã tồn tại"
 
 #. module: social_crm
 #: model_terms:ir.ui.view,arch_db:social_crm.social_post_view_kanban
@@ -149,22 +156,22 @@ msgstr "Cơ hội:"
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__author_name
 msgid "Post Author Name"
-msgstr "Tên tác giả bài đăng"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_content
 msgid "Post Content"
-msgstr "Nội dung bài đăng"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_datetime
 msgid "Post Datetime"
-msgstr "Thời gian bài đăng"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__post_link
 msgid "Post Link"
-msgstr "Liên kết bài đăng"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__action
@@ -172,50 +179,48 @@ msgid "Related Customer"
 msgstr "Khách hàng liên quan"
 
 #. module: social_crm
-#. odoo-python
 #: code:addons/social_crm/wizard/social_post_to_lead.py:0
 #, python-format
 msgid "Request from %s"
-msgstr "Yêu cầu từ %s"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__social_account_id
 msgid "Social Account"
-msgstr "Tài khoản mạng xã hội"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model,name:social_crm.model_social_post
 msgid "Social Post"
-msgstr "Bài đăng mạng xã hội"
+msgstr "Đăng lên mạng xã hội"
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__social_stream_post_id
 msgid "Social Stream Post"
-msgstr "Bài phát trực tiếp trên mạng xã hội"
+msgstr ""
 
 #. module: social_crm
-#. odoo-python
 #: code:addons/social_crm/wizard/social_post_to_lead.py:0
 #, python-format
 msgid "The lead has been created successfully."
-msgstr "Lead đã được tạo thành công."
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post__use_leads
 msgid "Use Leads"
-msgstr "Dùng lead"
+msgstr "Dùng tiềm năng"
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_campaign_id
 msgid "Utm Campaign"
-msgstr "Chiến dịch UTM"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_medium_id
 msgid "Utm Medium"
-msgstr "Phương tiện UTM"
+msgstr ""
 
 #. module: social_crm
 #: model:ir.model.fields,field_description:social_crm.field_social_post_to_lead__utm_source_id
 msgid "Utm Source"
-msgstr "Nguồn UTM"
+msgstr ""

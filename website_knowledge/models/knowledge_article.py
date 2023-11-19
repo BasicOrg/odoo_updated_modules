@@ -14,12 +14,6 @@ class Article(models.Model):
         for record in self:
             record.website_url = record.article_url
 
-    def _get_read_domain(self):
-        return expression.OR([
-            super()._get_read_domain(),
-            [('website_published', '=', True)]
-        ])
-
     def get_backend_menu_id(self):
         return self.env.ref('knowledge.knowledge_menu_root').id
 
@@ -31,13 +25,13 @@ class Article(models.Model):
         mapping = {
             'name': {'name': 'name', 'type': 'text', 'match': True},
             'website_url': {'name': 'website_url', 'type': 'text', 'truncate': False},
-            'body': {'name': 'body', 'type': 'text', 'html': True, 'match': True},
+            'body': {'name': 'content', 'type': 'text', 'html': True, 'match': True},
         }
         return {
             'model': 'knowledge.article',
             'base_domain': [domain],
             'search_fields': ['name', 'body'],
-            'fetch_fields': ['id', 'name', 'body', 'website_url'],
+            'fetch_fields': ['id', 'name', 'body'],
             'mapping': mapping,
             'icon': 'fa-comment-o',
             'order': order,

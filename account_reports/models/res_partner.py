@@ -10,13 +10,29 @@ class ResPartner(models.Model):
 
     account_represented_company_ids = fields.One2many('res.company', 'account_representative_id')
 
+    def change_expected_date(self, options=False):
+        if not options or 'expected_pay_date' not in options or 'move_line_id' not in options:
+            return True
+        for record in self:
+            aml = self.env['account.move.line'].search([('id', '=', int(options['move_line_id']))], limit=1)
+            old_date = aml.expected_pay_date
+            aml.write({'expected_pay_date': options['expected_pay_date']})
+            partner_msg = _('Expected pay date has been changed from %s to %s for invoice %s') % (old_date or _('any'), aml.expected_pay_date, aml.move_id.name)
+            record.message_post(body=partner_msg)
+            move_msg = _('Expected pay date has been changed from %s to %s') % (old_date or _('any'), aml.expected_pay_date)
+            aml.move_id.message_post(body=move_msg)
+        return True
+
     def open_partner_ledger(self):
-        action = self.env["ir.actions.actions"]._for_xml_id("account.action_account_moves_all_tree")
-        action['context'] = {
-            'search_default_partner_id': self.id,
-            'default_partner_id': self.id,
-            'search_default_posted': 1,
-            'search_default_trade_payable': 1,
-            'search_default_trade_receivable': 1,
+        return {
+            'type': 'ir.actions.client',
+            'name': _('Partner Ledger'),
+            'tag': 'account_report',
+            'params': {
+                'options': {'partner_ids': [self.id]},
+                'ignore_session': 'both',
+            },
+            'context': {
+                'report_id': self.env.ref('account_reports.partner_ledger_report').id
+            }
         }
-        return action

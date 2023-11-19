@@ -49,7 +49,7 @@ class AccountJournal(models.Model):
         journal_currency = self.currency_id or self.company_id.currency_id
         for statement in root[0].findall('ns:Stmt', ns):
             statement_vals = {}
-            statement_vals['name'] = (statement.xpath('ns:LglSeqNb/text()', namespaces=ns) or statement.xpath('ns:Id/text()', namespaces=ns))[0]
+            statement_vals['name'] = statement.xpath('ns:Id/text()', namespaces=ns)[0]
             statement_date = CAMT._get_statement_date(statement, namespaces=ns)
 
             # Transaction Entries 0..n

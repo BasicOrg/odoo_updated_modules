@@ -6,7 +6,6 @@ import logging
 from odoo import api, fields, models, _
 from odoo.addons.iap.tools import iap_tools
 from odoo.exceptions import UserError
-from odoo.tools import is_html_empty
 
 _logger = logging.getLogger(__name__)
 
@@ -92,18 +91,21 @@ class CRMLeadMiningRequest(models.Model):
             company_credits = CREDIT_PER_COMPANY * record.lead_number
             contact_credits = CREDIT_PER_CONTACT * record.contact_number
             total_contact_credits = contact_credits * record.lead_number
-            record.lead_contacts_credits = _("Up to %d additional credits will be consumed to identify %d contacts per company.", contact_credits*company_credits, record.contact_number)
-            record.lead_credits = _('%d credits will be consumed to find %d companies.', company_credits, record.lead_number)
-            record.lead_total_credits = _("This makes a total of %d credits for this request.", total_contact_credits + company_credits)
+            record.lead_contacts_credits = _("Up to %d additional credits will be consumed to identify %d contacts per company.") % (contact_credits*company_credits, record.contact_number)
+            record.lead_credits = _('%d credits will be consumed to find %d companies.') % (company_credits, record.lead_number)
+            record.lead_total_credits = _("This makes a total of %d credits for this request.") % (total_contact_credits + company_credits)
 
     @api.depends('lead_ids.lead_mining_request_id')
     def _compute_lead_count(self):
-        leads_data = self.env['crm.lead']._read_group(
-            [('lead_mining_request_id', 'in', self.ids)],
-            ['lead_mining_request_id'], ['__count'])
-        mapped_data = {
-            lead_mining_request.id: count
-            for lead_mining_request, count in leads_data}
+        if self.ids:
+            leads_data = self.env['crm.lead']._read_group(
+                [('lead_mining_request_id', 'in', self.ids)],
+                ['lead_mining_request_id'], ['lead_mining_request_id'])
+        else:
+            leads_data = []
+        mapped_data = dict(
+            (m['lead_mining_request_id'][0], m['lead_mining_request_id_count'])
+            for m in leads_data)
         for request in self:
             request.lead_count = mapped_data.get(request.id, 0)
 
@@ -183,30 +185,21 @@ class CRMLeadMiningRequest(models.Model):
             self.company_size_max = self.company_size_min
 
     @api.model
-    def get_empty_list_help(self, help_message):
-        if not is_html_empty(help_message):
-            return help_message
-
+    def get_empty_list_help(self, help_string):
         help_title = _('Create a Lead Mining Request')
         sub_title = _('Generate new leads based on their country, industry, size, etc.')
-        return super().get_empty_list_help(
-            f'<p class="o_view_nocontent_smiling_face">{help_title}</p><p class="oe_view_nocontent_alias">{sub_title}</p>'
-        )
+        return '<p class="o_view_nocontent_smiling_face">%s</p><p class="oe_view_nocontent_alias">%s</p>' % (help_title, sub_title)
 
     def _prepare_iap_payload(self):
         """
         This will prepare the data to send to the server
         """
         self.ensure_one()
-        payload = {
-            'lead_number': self.lead_number,
-            'search_type': self.search_type,
-            'countries': [{
-                'code': country.code,
-                'states': self.state_ids.filtered(lambda state: state in country.state_ids).mapped('code'),
-            } for country in self.country_ids],
-        }
-
+        payload = {'lead_number': self.lead_number,
+                   'search_type': self.search_type,
+                   'countries': self.country_ids.mapped('code')}
+        if self.state_ids:
+            payload['states'] = self.state_ids.mapped('code')
         if self.filter_on_size:
             payload.update({'company_size_min': self.company_size_min,
                             'company_size_max': self.company_size_max})
@@ -259,7 +252,7 @@ class CRMLeadMiningRequest(models.Model):
             raise UserError(_("Your request could not be executed: %s", e))
 
     def _iap_contact_mining(self, params, timeout=300):
-        endpoint = self.env['ir.config_parameter'].sudo().get_param('reveal.endpoint', DEFAULT_ENDPOINT) + '/iap/clearbit/2/lead_mining_request'
+        endpoint = self.env['ir.config_parameter'].sudo().get_param('reveal.endpoint', DEFAULT_ENDPOINT) + '/iap/clearbit/1/lead_mining_request'
         return iap_tools.iap_jsonrpc(endpoint, params=params, timeout=timeout)
 
     def _create_leads_from_response(self, result):
@@ -279,11 +272,7 @@ class CRMLeadMiningRequest(models.Model):
         leads = self.env['crm.lead'].create(lead_vals_list)
         for lead in leads:
             if messages_to_post.get(lead.reveal_id):
-                lead.message_post_with_source(
-                    'iap_mail.enrich_company',
-                    render_values=messages_to_post[lead.reveal_id],
-                    subtype_xmlid='mail.mt_note',
-                )
+                lead.message_post_with_view('iap_mail.enrich_company', values=messages_to_post[lead.reveal_id], subtype_id=self.env.ref('mail.mt_note').id)
 
     # Methods responsible for format response data into valid odoo lead data
     @api.model
@@ -324,7 +313,7 @@ class CRMLeadMiningRequest(models.Model):
                 'target': 'new',
                 'type': 'ir.actions.act_window',
                 'res_id': self.id,
-                'context': dict(self.env.context, edit=True)
+                'context': dict(self.env.context, edit=True, form_view_initial_mode='edit')
             }
         else:
             # will reload the form view and show the error message on top

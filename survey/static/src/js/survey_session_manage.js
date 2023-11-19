@@ -1,22 +1,13 @@
-/** @odoo-module **/
+odoo.define('survey.session_manage', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import SurveyPreloadImageMixin from "@survey/js/survey_preload_image_mixin";
-import SurveySessionChart from "@survey/js/survey_session_chart";
-import SurveySessionTextAnswers from "@survey/js/survey_session_text_answers";
-import SurveySessionLeaderBoard from "@survey/js/survey_session_leaderboard";
-import { _t } from "@web/core/l10n/translation";
-import { browser } from "@web/core/browser/browser";
-
-const nextPageTooltips = {
-    closingWords: _t('End of Survey'),
-    leaderboard: _t('Show Leaderboard'),
-    leaderboardFinal: _t('Show Final Leaderboard'),
-    nextQuestion: _t('Next'),
-    results: _t('Show Correct Answer(s)'),
-    startScreen: _t('Start'),
-    userInputs: _t('Show Results'),
-};
+var publicWidget = require('web.public.widget');
+var SurveyPreloadImageMixin = require('survey.preload_image_mixin');
+var SurveySessionChart = require('survey.session_chart');
+var SurveySessionTextAnswers = require('survey.session_text_answers');
+var SurveySessionLeaderBoard = require('survey.session_leaderboard');
+var core = require('web.core');
+var _t = core._t;
 
 publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPreloadImageMixin, {
     selector: '.o_survey_session_manage',
@@ -25,12 +16,6 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
         'click .o_survey_session_navigation_next, .o_survey_session_start': '_onNext',
         'click .o_survey_session_navigation_previous': '_onBack',
         'click .o_survey_session_close': '_onEndSessionClick',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-        this.orm = this.bindService("orm");
     },
 
     /**
@@ -51,7 +36,6 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
             }
             // general survey props
             self.surveyId = self.$el.data('surveyId');
-            self.surveyHasConditionalQuestions = self.$el.data('surveyHasConditionalQuestions');
             self.surveyAccessToken = self.$el.data('surveyAccessToken');
             self.isStartScreen = self.$el.data('isStartScreen');
             self.isFirstQuestion = self.$el.data('isFirstQuestion');
@@ -94,39 +78,60 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
 
     /**
      * Copies the survey URL link to the clipboard.
-     * We avoid having to print the URL in a standard text input.
+     * We use 'ClipboardJS' to avoid having to print the URL in a standard text input
      *
      * @param {MouseEvent} ev
      */
-    _onCopySessionLink: async function (ev) {
+    _onCopySessionLink: function (ev) {
+        var self = this;
         ev.preventDefault();
 
         var $clipboardBtn = this.$('.o_survey_session_copy');
-        $clipboardBtn.tooltip('dispose');
 
         $clipboardBtn.popover({
             placement: 'right',
             container: 'body',
             offset: '0, 3',
             content: function () {
-                return _t("Copied!");
+                return _t("Copied !");
             }
         });
 
-        await browser.navigator.clipboard.writeText(this.$('.o_survey_session_copy_url').val());
-        $clipboardBtn.popover('show');
-        setTimeout(() => $clipboardBtn.popover('dispose'), 800);
+        var clipboard = new ClipboardJS('.o_survey_session_copy', {
+            text: function () {
+                return self.$('.o_survey_session_copy_url').val();
+            },
+            container: this.el
+        });
+
+        clipboard.on('success', function () {
+            clipboard.destroy();
+            $clipboardBtn.popover('show');
+            _.delay(function () {
+                $clipboardBtn.popover('hide');
+            }, 800);
+        });
+
+        clipboard.on('error', function (e) {
+            clipboard.destroy();
+        });
     },
 
     /**
      * Listeners for keyboard arrow / spacebar keys.
      *
+     * - 39 = arrow-right
+     * - 32 = spacebar
+     * - 37 = arrow-left
+     *
      * @param {KeyboardEvent} ev
      */
     _onKeyDown: function (ev) {
-        if (ev.key === "ArrowRight" || ev.key === " ") {
+        var keyCode = ev.keyCode;
+
+        if (keyCode === 39 || keyCode === 32) {
             this._onNext(ev);
-        } else if (ev.key === "ArrowLeft") {
+        } else if (keyCode === 37) {
             this._onBack(ev);
         }
     },
@@ -173,11 +178,6 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
         }
 
         this.currentScreen = screenToDisplay;
-        // To avoid a flicker, we do not update the tooltip when going to the next question,
-        // as it will be done in "_setupCurrentScreen"
-        if (!['question', 'nextQuestion'].includes(screenToDisplay)) {
-            this._updateNextScreenTooltip();
-        }
     },
 
     /**
@@ -213,11 +213,6 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
         }
 
         this.currentScreen = screenToDisplay;
-        // To avoid a flicker, we do not update the tooltip when going to the next question,
-        // as it will be done in "_setupCurrentScreen"
-        if (!['question', 'nextQuestion'].includes(screenToDisplay)) {
-            this._updateNextScreenTooltip();
-        }
     },
 
     /**
@@ -230,13 +225,16 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
         var self = this;
         ev.preventDefault();
 
-        this.orm.call(
-            "survey.survey",
-            "action_end_session",
-            [[this.surveyId]]
-        ).then(function () {
+        this._rpc({
+            model: 'survey.survey',
+            method: 'action_end_session',
+            args: [[this.surveyId]],
+        }).then(function () {
             if ($(ev.currentTarget).data('showResults')) {
-                document.location = `/survey/results/${encodeURIComponent(self.surveyId)}`;
+                document.location = _.str.sprintf(
+                    '/survey/results/%s',
+                    self.surveyId
+                );
             } else {
                 window.history.back();
             }
@@ -341,12 +339,12 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
             delete this.resultsRefreshInterval;
         }
 
-        var nextQuestionPromise = this.rpc(
-            `/survey/session/next_question/${self.surveyAccessToken}`,
-            {
+        var nextQuestionPromise = this._rpc({
+            route: _.str.sprintf('/survey/session/next_question/%s', self.surveyAccessToken),
+            params: {
                 'go_back': goBack,
             }
-        ).then(function (result) {
+        }).then(function (result) {
             self.nextQuestion = result;
             if (self.refreshBackground && result.background_image_url) {
                 return self._preloadBackground(result.background_image_url);
@@ -454,9 +452,9 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
     _refreshResults: function () {
         var self = this;
 
-        return this.rpc(
-            `/survey/session/results/${self.surveyAccessToken}`
-        ).then(function (questionResults) {
+        return this._rpc({
+            route: _.str.sprintf('/survey/session/results/%s', self.surveyAccessToken)
+        }).then(function (questionResults) {
             if (questionResults) {
                 self.attendeesCount = questionResults.attendees_count;
 
@@ -494,10 +492,11 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
     _refreshAttendeesCount: function () {
         var self = this;
 
-        return self.orm.read(
-            "survey.survey",
-            [[self.surveyId], ['session_answer_count']]
-        ).then(function (result) {
+        return self._rpc({
+            model: 'survey.survey',
+            method: 'read',
+            args: [[self.surveyId], ['session_answer_count']],
+        }).then(function (result) {
             if (result && result.length === 1){
                 self.$('.o_survey_session_attendees_count').text(
                     result[0].session_answer_count
@@ -624,7 +623,6 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
         this.$('.o_survey_session_navigation_previous').toggleClass('d-none', !!this.isFirstQuestion);
 
         this._setShowInputs(this.currentScreen === 'userInputs');
-        this._updateNextScreenTooltip();
     },
 
     /**
@@ -658,31 +656,9 @@ publicWidget.registry.SurveySessionManage = publicWidget.Widget.extend(SurveyPre
             this.resultsChart.setShowAnswers(showAnswers);
             this.resultsChart.updateChart();
         }
-    },
-    /**
-     * @private
-     * Updates the tooltip for current page (on right arrow icon for 'Next' content).
-     * this method will be called on Clicking of Next and Previous Arrow to show the
-     * tooltip for the Next Content.
-     */
-    _updateNextScreenTooltip() {
-        let tooltip;
-        if (this.currentScreen === 'startScreen') {
-            tooltip = nextPageTooltips['startScreen'];
-        } else if (this.isLastQuestion && !this.surveyHasConditionalQuestions && !this.isScoredQuestion && !this.sessionShowLeaderboard) {
-            tooltip = nextPageTooltips['closingWords'];
-        } else {
-            const nextScreen = this._getNextScreen();
-            if (nextScreen === 'nextQuestion' || this.surveyHasConditionalQuestions) {
-                tooltip = nextPageTooltips['nextQuestion'];
-            }
-            tooltip = nextPageTooltips[nextScreen];
-        }
-        const sessionNavigationNextEl = this.el.querySelector('.o_survey_session_navigation_next_label');
-        if (sessionNavigationNextEl && tooltip) {
-            sessionNavigationNextEl.textContent = tooltip;
-        }
     }
 });
 
-export default publicWidget.registry.SurveySessionManage;
+return publicWidget.registry.SurveySessionManage;
+
+});

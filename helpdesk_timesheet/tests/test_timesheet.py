@@ -97,21 +97,3 @@ class TestTimesheet(TestHelpdeskTimesheetCommon):
                 [None, 'Days Spent']
             ),
         ])
-
-    def test_compute_project_id(self):
-        """ Test compute project_id works as expected when helpdesk_ticket_id changes on a timesheet """
-        helpdesk_ticket = self.env['helpdesk.ticket'].create({
-            'name': 'Test Ticket',
-            'team_id': self.helpdesk_team.id,
-            'partner_id': self.partner.id,
-        })
-        timesheet = self.env['account.analytic.line'].create({
-            'name': '/',
-            'project_id': self.project_customer.id,
-            'task_id': self.task1.id,
-            'employee_id': self.empl_employee.id,
-        })
-
-        timesheet.helpdesk_ticket_id = helpdesk_ticket
-        self.assertFalse(timesheet.task_id, "The task should be unset since a helpdesk ticket has been set on the timesheet")
-        self.assertEqual(timesheet.project_id, self.project, "The project set on the timesheet should now the project on the helpdesk team of the ticket linked.")

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from odoo.tests import common
 from odoo.addons.hr.tests.common import TestHrCommon
-from odoo.tools.misc import file_open
+from odoo.modules.module import get_module_resource
 
 
 class TestRecruitmentProcess(TestHrCommon):
@@ -35,7 +36,7 @@ class TestRecruitmentProcess(TestHrCommon):
 
         # An applicant is interested in the job position. So he sends a resume by email.
         # In Order to test process of Recruitment so giving HR officer's rights
-        with file_open('hr_recruitment/tests/resume.eml', 'rb') as request_file:
+        with open(get_module_resource('hr_recruitment', 'tests', 'resume.eml'), 'rb') as request_file:
             request_message = request_file.read()
         self.env['mail.thread'].with_user(self.res_users_hr_recruitment_officer).message_process(
             'hr.applicant', request_message, custom_values={"job_id": self.job_developer.id})
@@ -48,8 +49,8 @@ class TestRecruitmentProcess(TestHrCommon):
             ('res_model', '=', self.env['hr.applicant']._name),
             ('res_id', '=', applicant.id)])
         self.assertEqual(applicant.name, 'Application for the post of Jr.application Programmer.', 'Applicant name does not match.')
-        self.assertEqual(applicant.stage_id, self.env.ref('hr_recruitment.stage_job0'),
-            "Stage should be 'New' and is '%s'." % (applicant.stage_id.name))
+        self.assertEqual(applicant.stage_id, self.env.ref('hr_recruitment.stage_job1'),
+            "Stage should be 'Initial qualification' and is '%s'." % (applicant.stage_id.name))
         self.assertTrue(resume_ids, 'Resume is not attached.')
         # I assign the Job position to the applicant
         applicant.write({'job_id': self.job_developer.id})

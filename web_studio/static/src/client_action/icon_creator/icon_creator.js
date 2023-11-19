@@ -1,9 +1,10 @@
 /** @odoo-module **/
 import { COLORS, BG_COLORS, ICONS } from "@web_studio/utils";
 import { FileInput } from "@web/core/file_input/file_input";
+import CustomFileInput from "web.CustomFileInput";
 import { useService } from "@web/core/utils/hooks";
 
-import { Component, onWillUpdateProps, useRef, useState } from "@odoo/owl";
+const { Component, onWillUpdateProps, useRef, useState } = owl;
 
 const DEFAULT_ICON = {
     backgroundColor: BG_COLORS[5],
@@ -16,7 +17,7 @@ const DEFAULT_ICON = {
  *
  * Component which purpose is to design an app icon. It can be an uploaded image
  * which will be displayed as is, or an icon customized with the help of presets
- * of colors and icon symbols (@see web_studio/static/src/utils for the full list of colors
+ * of colors and icon symbols (@see web_studio.utils for the full list of colors
  * and icon classes).
  * @extends Component
  */
@@ -41,16 +42,32 @@ export class IconCreator extends Component {
 
         this.iconRef = useRef("app-icon");
 
-        this.orm = useService("orm");
-        this.rpc = useService("rpc");
-        const user = useService("user");
-
+        // FIXME: for now, the IconCreator can be spawned in a pure wowl environment (by clicking
+        // on the 'edit' icon of an existing app) and in the legacy environment (through the app
+        // creator)
         this.FileInput = FileInput;
         this.fileInputProps = {
             acceptedFileExtensions: "image/png",
             resModel: "res.users",
-            resId: user.userId,
         };
+        try {
+            const user = useService("user");
+            this.orm = useService("orm");
+            this.fileInputProps.resId = user.userId;
+        } catch (e) {
+            if (e.message === "Service user is not available") {
+                // we are in a legacy environment, so use the legacy CustomFileInput as
+                // the new one requires the new http service
+                this.FileInput = CustomFileInput;
+                this.fileInputProps = {
+                    accepted_file_extensions: "image/png",
+                    action: "/web/binary/upload_attachment",
+                    id: this.env.session.uid,
+                    model: "res.users",
+                };
+            }
+        }
+        this.rpc = useService("rpc");
 
         this.state = useState({ iconClass: this.props.iconClass });
         this.show = useState({
@@ -111,7 +128,16 @@ export class IconCreator extends Component {
             // Happens when cancelling upload
             return;
         }
-        const res = await this.orm.read("ir.attachment", [file.id], ["datas"]);
+        let res;
+        if (this.orm) {
+            res = await this.orm.read("ir.attachment", [file.id], ["datas"]);
+        } else {
+            res = await this.rpc({
+                model: "ir.attachment",
+                method: "read",
+                args: [[file.id], ["datas"]],
+            });
+        }
 
         this.props.onIconChange({
             type: "base64",

@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <group name="sale" position="inside">
                 <field name="avatax_unique_code"/>
-                <field name="avalara_partner_code" invisible="parent_id or not is_company"/>
-                <field name="avalara_exemption_id" invisible="parent_id or not is_company"/>
+                <field name="avalara_partner_code" attrs="{'invisible': ['|', ('parent_id', '!=', False), ('is_company', '=', False)]}"/>
+                <field name="avalara_exemption_id" attrs="{'invisible': ['|', ('parent_id', '!=', False), ('is_company', '=', False)]}"/>
             </group>
             <xpath expr="//div[@name='partner_address_country']" position="inside">
                 <field name="avalara_show_address_validation" invisible="1"/>
@@ -17,7 +17,8 @@
                         type="object"
                         name="action_open_validation_wizard"
                         string="Validate"
-                        invisible="not avalara_show_address_validation"/>
+                        attrs="{'invisible': [('avalara_show_address_validation', '=', False)]}"
+                />
             </xpath>
         </field>
     </record>

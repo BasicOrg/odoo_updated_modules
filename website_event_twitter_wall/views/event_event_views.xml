@@ -9,7 +9,7 @@
             <xpath expr="//field[@name='event_type_id']" position="before">
                 <field name="social_menu" invisible="1"/>
                 <field name="twitter_wall_id" 
-                    required="social_menu"
+                    attrs="{'required': [('social_menu', '=', True)]}"
                     options="{'no_quick_create': True}"/>
             </xpath>
             <xpath expr="//label[@for='menu_register_cta']" position="before">

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models, _
+from odoo import api, models, _
 from odoo.osv.expression import AND
 
 
@@ -17,8 +17,6 @@ class QualityPoint(models.Model):
 class QualityCheck(models.Model):
     _inherit = "quality.check"
 
-    operation_id = fields.Many2one(related="point_id.operation_id")
-
     def do_pass(self):
         self.ensure_one()
         super().do_pass()
@@ -29,14 +27,14 @@ class QualityCheck(models.Model):
 
     def do_measure(self):
         self.ensure_one()
-        res = super().do_measure()
-        return self._next() if self.workorder_id else res
+        super().do_measure()
+        return self.workorder_id._change_quality_check(position='next')
 
 
     def _next(self, continue_production=False):
         self.ensure_one()
         result = super()._next(continue_production=continue_production)
-        if self.quality_state == 'fail' and (self.warning_message or self.failure_message):
+        if self.quality_state == 'fail':
             return {
                 'name': _('Quality Check Failed'),
                 'type': 'ir.actions.act_window',
@@ -64,13 +62,3 @@ class QualityCheck(models.Model):
     def _check_to_unlink(self):
         self.ensure_one()
         return super()._check_to_unlink() and not self.workorder_id
-
-    def action_pass_and_next(self):
-        self.ensure_one()
-        super().do_pass()
-        return self._next()
-
-    def action_fail_and_next(self):
-        self.ensure_one()
-        super().do_fail()
-        return self._next()

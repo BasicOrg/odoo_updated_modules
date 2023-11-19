@@ -3,17 +3,16 @@
 # 	* bus
 # 
 # Translators:
-# Wil Odoo, 2023
-# Thi Huong Nguyen, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Thi Huong Nguyen, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,7 +22,7 @@ msgstr ""
 #. module: bus
 #: model:ir.model.fields.selection,name:bus.selection__bus_presence__status__away
 msgid "Away"
-msgstr "Vắng mặt"
+msgstr "Away"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_bus__channel
@@ -33,12 +32,12 @@ msgstr "Kênh"
 #. module: bus
 #: model:ir.model,name:bus.model_bus_bus
 msgid "Communication Bus"
-msgstr "Bus thông tin trao đổi"
+msgstr "Communication Bus"
 
 #. module: bus
 #: model:ir.model,name:bus.model_res_partner
 msgid "Contact"
-msgstr "Liên hệ"
+msgstr "Danh bạ"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_bus__create_uid
@@ -57,6 +56,11 @@ msgid "Display Name"
 msgstr "Tên hiển thị"
 
 #. module: bus
+#: model:ir.model,name:bus.model_ir_http
+msgid "HTTP Routing"
+msgstr "HTTP Routing"
+
+#. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_bus__id
 #: model:ir.model.fields,field_description:bus.field_bus_presence__id
 msgid "ID"
@@ -67,22 +71,28 @@ msgstr "ID"
 #: model:ir.model.fields,field_description:bus.field_res_partner__im_status
 #: model:ir.model.fields,field_description:bus.field_res_users__im_status
 msgid "IM Status"
-msgstr "Trạng thái IM"
+msgstr "Tình trạng IM"
+
+#. module: bus
+#: model:ir.model.fields,field_description:bus.field_bus_bus____last_update
+#: model:ir.model.fields,field_description:bus.field_bus_presence____last_update
+msgid "Last Modified on"
+msgstr "Sửa lần cuối vào"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_presence__last_poll
 msgid "Last Poll"
-msgstr "Lần thăm dò cuối cùng"
+msgstr "Last Poll"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_presence__last_presence
 msgid "Last Presence"
-msgstr "Hiện diện lần cuối"
+msgstr "Xuất hiện lần cuối"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_bus__write_uid
 msgid "Last Updated by"
-msgstr "Cập nhật lần cuối bởi"
+msgstr "Last Updated by"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_bus__write_date
@@ -102,27 +112,27 @@ msgstr "Mô hình"
 #. module: bus
 #: model:ir.model.fields.selection,name:bus.selection__bus_presence__status__offline
 msgid "Offline"
-msgstr "Offline"
+msgstr "Ngoại tuyến"
 
 #. module: bus
 #: model:ir.model.fields.selection,name:bus.selection__bus_presence__status__online
 msgid "Online"
-msgstr "Online"
+msgstr "Trực tuyến"
 
 #. module: bus
-#. odoo-javascript
+#. openerp-web
 #: code:addons/bus/static/src/services/assets_watchdog_service.js:0
 #: code:addons/bus/static/src/services/assets_watchdog_service.js:0
 #, python-format
 msgid "Refresh"
-msgstr "Làm mới"
+msgstr "Refresh"
 
 #. module: bus
-#. odoo-javascript
+#. openerp-web
 #: code:addons/bus/static/src/services/assets_watchdog_service.js:0
 #, python-format
 msgid "The page appears to be out of date."
-msgstr "Trang này có vẻ đã quá cũ."
+msgstr "The page appears to be out of date."
 
 #. module: bus
 #: model:ir.model,name:bus.model_res_users
@@ -132,7 +142,7 @@ msgstr "Người dùng"
 #. module: bus
 #: model:ir.model,name:bus.model_bus_presence
 msgid "User Presence"
-msgstr "Sự hiện diện của người dùng"
+msgstr "Người dùng hiện diện"
 
 #. module: bus
 #: model:ir.model.fields,field_description:bus.field_bus_presence__user_id
@@ -140,19 +150,13 @@ msgid "Users"
 msgstr "Người dùng"
 
 #. module: bus
-#. odoo-python
-#: code:addons/bus/controllers/home.py:0
+#. openerp-web
+#: code:addons/bus/static/src/services/bus_service.js:0
 #, python-format
-msgid ""
-"Your password is the default (admin)! If this system is exposed to untrusted"
-" users it is important to change it immediately for security reasons. I will"
-" keep nagging you about it!"
+msgid "Websocket connection lost. Trying to reconnect..."
 msgstr ""
-"Mật khẩu của bạn đang là mặc định (admin)! Nếu có người dùng không đáng tin "
-"cậy sử dụng hệ thống này, thì việc quan trọng là đổi mật khẩu ngay lập tức "
-"để bảo mật thông tin. Chúng tôi sẽ tiếp tục nhắc bạn về việc này!"
 
 #. module: bus
 #: model:ir.model,name:bus.model_ir_websocket
 msgid "websocket message handling"
-msgstr "xử lý thông báo websocket"
+msgstr ""

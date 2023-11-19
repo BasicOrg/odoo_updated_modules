@@ -7,23 +7,13 @@ from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.payment import utils as payment_utils
 
+_logger = logging.getLogger(__name__)
+
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
-    mandate_id = fields.Many2one(comodel_name='sdd.mandate')
-
     #=== BUSINESS METHODS ===#
-
-    def _get_specific_processing_values(self, processing_values):
-        """ Override of `payment` to return SEPA-specific processing values. """
-        res = super()._get_specific_processing_values(processing_values)
-        if self.provider_id.custom_mode != 'sepa_direct_debit' or self.operation == 'online_token':
-            return res
-
-        return {
-            'access_token': payment_utils.generate_access_token(self.reference),
-        }
 
     def _send_payment_request(self):
         """ Override of payment to create the related `account.payment` and notify the customer.
@@ -35,7 +25,7 @@ class PaymentTransaction(models.Model):
         :raise: UserError if the transaction is not linked to a valid mandate
         """
         super()._send_payment_request()
-        if self.provider_id.custom_mode != 'sepa_direct_debit':
+        if self.provider_code != 'sepa_direct_debit':
             return
 
         if not self.token_id:
@@ -44,11 +34,9 @@ class PaymentTransaction(models.Model):
         mandate = self.token_id.sdd_mandate_id
         if not mandate:
             raise UserError("SEPA: " + _("The token is not linked to a mandate."))
-
-        if (
-            mandate.state != 'active'
-            or (mandate.end_date and mandate.end_date > fields.Datetime.now())
-        ):
+        if not mandate.verified \
+                or mandate.state != 'active' \
+                or (mandate.end_date and mandate.end_date > fields.Datetime.now()):
             raise UserError("SEPA: " + _("The mandate is invalid."))
 
         # There is no provider to send a payment request to, but we handle empty notification data
@@ -69,11 +57,7 @@ class PaymentTransaction(models.Model):
             return tx
 
         reference = notification_data.get('reference')
-        tx = self.search([
-            ('reference', '=', reference),
-            ('provider_code', '=', 'custom'),
-            ('provider_id.custom_mode', '=', 'sepa_direct_debit'),
-        ])
+        tx = self.search([('reference', '=', reference), ('provider_code', '=', 'sepa_direct_debit')])
         if not tx:
             raise ValidationError(
                 "SEPA: " + _("No transaction found matching reference %s.", reference)
@@ -90,28 +74,12 @@ class PaymentTransaction(models.Model):
         :raise ValidationError: If inconsistent data were received.
         """
         super()._process_notification_data(notification_data)
-        if self.provider_id.custom_mode != 'sepa_direct_debit':
+        if self.provider_code != 'sepa_direct_debit':
             return
 
+        self._set_done()  # SEPA transactions are confirmed as soon as the mandate is valid.
         if self.operation in ('online_token', 'offline'):
-            self._set_done()  # SEPA transactions are confirmed as soon as the mandate is valid.
             self._sdd_notify_debit(self.token_id)
-
-    def _set_done(self, *args, **kwargs):
-        confirmed_txs = super()._set_done(*args, **kwargs)
-        sepa_txs = confirmed_txs.filtered(
-            lambda t: t.provider_code == 'custom'
-                and t.provider_id.custom_mode == 'sepa_direct_debit'
-                and t.mandate_id
-        )
-        if not sepa_txs:
-            return confirmed_txs
-
-        for tx in sepa_txs:
-            tx.provider_id._sdd_create_token_for_mandate(tx.partner_id, tx.mandate_id)
-            tx.mandate_id._confirm()
-
-        return confirmed_txs
 
     def _sdd_notify_debit(self, token):
         """ Notify the customer that a debit has been made from his account.
@@ -149,14 +117,10 @@ class PaymentTransaction(models.Model):
         :return: The created payment.
         :rtype: recordset of `account.payment`
         """
-        if self.provider_id.custom_mode != 'sepa_direct_debit':
+        if self.provider_code != 'sepa_direct_debit':
             return super()._create_payment(**extra_create_values)
 
-        if self.operation in ('online_token', 'offline'):
-            mandate = self.token_id.sdd_mandate_id
-        else:
-            mandate = self.mandate_id
-
+        mandate = self.token_id.sdd_mandate_id
         payment_method_line = mandate.payment_journal_id.inbound_payment_method_line_ids.filtered(
             lambda l: l.code == 'sepa_direct_debit'
         )

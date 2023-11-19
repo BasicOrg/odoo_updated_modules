@@ -6,19 +6,15 @@
         <field name="priority" eval="70"/>
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form" position="inside">
-                <app data-string="Documents" string="Documents" name="documents" groups="documents.group_documents_manager" notApp="1">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block o_documents_block"
+                     data-string="Documents"
+                     string="Documents"
+                     data-key="documents"
+                     groups="documents.group_documents_manager"
+                     invisible="1">
                     <h2>Files Centralization</h2>
-                    <block>
-                        <setting id="deletion_delay" string="Deletion delay (days)" help="Set deletion delay for documents in the Trash">
-                            <div class="content-group">
-                                <div class="row mt16">
-                                    <field class="w-50" name="deletion_delay"/>
-                                </div>
-                            </div>
-                        </setting>
-                    </block>
-                </app>
+                </div>
             </xpath>
         </field>
     </record>
@@ -33,6 +29,7 @@
 
     <record id="configuration_action" model="ir.actions.act_window">
         <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>

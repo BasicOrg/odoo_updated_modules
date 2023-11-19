@@ -87,7 +87,7 @@ class TaxCloudRequest(object):
 
     def _process_lines(self, lines):
         cart_items = []
-        for index, line in enumerate(lines.filtered(lambda l: l.display_type not in ('line_note', 'line_section'))):
+        for index, line in enumerate(lines.filtered(lambda l: not l.display_type)):
             qty = line._get_qty()
             if line._get_taxcloud_price() >= 0.0 and qty >= 0.0:
                 product_id = line.product_id.id

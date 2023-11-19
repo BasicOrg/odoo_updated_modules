@@ -3,16 +3,16 @@
 # 	* account_check_printing
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,11 +20,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_journal.py:0
 #, python-format
-msgid ": Check Number Sequence"
-msgstr "：支票號碼序列"
+msgid " : Check Number Sequence"
+msgstr " : 支票編號序列"
 
 #. module: account_check_printing
 #: model:ir.model.fields,help:account_check_printing.field_res_company__account_check_printing_margin_left
@@ -87,7 +86,6 @@ msgid "Check Top Margin"
 msgstr "支票上邊距"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid "Check numbers can only consist of digits"
@@ -115,7 +113,6 @@ msgid "Checks numbering sequence."
 msgstr "支票編號序列."
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_journal.py:0
 #: model_terms:ir.ui.view,arch_db:account_check_printing.view_payment_check_printing_search
 #, python-format
@@ -135,17 +132,17 @@ msgstr "公司"
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_res_config_settings
 msgid "Config Settings"
-msgstr "配置設定"
+msgstr "設定配置"
 
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_res_partner
 msgid "Contact"
-msgstr "聯絡人"
+msgstr "聯繫人"
 
 #. module: account_check_printing
 #: model:ir.model.fields,field_description:account_check_printing.field_print_prenumbered_checks__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "建立者"
 
 #. module: account_check_printing
 #: model:ir.model.fields,field_description:account_check_printing.field_print_prenumbered_checks__create_date
@@ -158,20 +155,18 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid "Go to the configuration panel"
-msgstr "至配置面板"
+msgstr "至設定面板"
 
 #. module: account_check_printing
 #: model:ir.model.fields,field_description:account_check_printing.field_print_prenumbered_checks__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid ""
@@ -182,12 +177,17 @@ msgstr "為了一次列印多張支票，它們必須為相同的銀行帳戶."
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_account_journal
 msgid "Journal"
-msgstr "日記賬"
+msgstr "日記帳"
 
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_account_move
 msgid "Journal Entry"
-msgstr "日記賬記項"
+msgstr "日記帳分錄"
+
+#. module: account_check_printing
+#: model:ir.model.fields,field_description:account_check_printing.field_print_prenumbered_checks____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: account_check_printing
 #: model:ir.model.fields,field_description:account_check_printing.field_print_prenumbered_checks__write_uid
@@ -215,12 +215,6 @@ msgid ""
 "SEPA Credit Transfer: Pay in the SEPA zone by submitting a SEPA Credit Transfer file to your bank. Module account_sepa is necessary.\n"
 "SEPA Direct Debit: Get paid in the SEPA zone thanks to a mandate your partner will have granted to you. Module account_sepa is necessary.\n"
 msgstr ""
-"手動: 通過 Odoo 之外的任何方式支付或收款.\n"
-"支付提供商: 每個支付提供商都有自己的支付方式. 借助合作夥伴在線購買或訂閱時保存的支付密鑰，請求在卡上/向卡進行交易.\n"
-"支票: 通過支票支付賬單並從 Odoo 列印.\n"
-"批量存款: 一次收集多張客戶支票，產生批量存款並將其提交給您的銀行. 模組 account_batch_payment 是必需的.\n"
-"SEPA Credit Transfer: 通過向您的銀行提交 SEPA Credit Transfer 文件在 SEPA 區進行支付. 模組 account_sepa 是必需的.\n"
-"SEPA 直接借記: 由於您的合作夥伴授予您的授權，在 SEPA 區獲得付款。 模組 account_sepa 是必需的.\n"
 
 #. module: account_check_printing
 #: model:ir.model.fields,field_description:account_check_printing.field_res_company__account_check_printing_multi_stub
@@ -235,7 +229,6 @@ msgid "Next Check Number"
 msgstr "下一個支票號碼"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_journal.py:0
 #: code:addons/account_check_printing/wizard/print_prenumbered_checks.py:0
 #, python-format
@@ -257,7 +250,7 @@ msgstr "付款方法"
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_account_payment_method
 msgid "Payment Methods"
-msgstr "付款方式"
+msgstr "付款方法"
 
 #. module: account_check_printing
 #: model:ir.model,name:account_check_printing.model_account_payment
@@ -265,7 +258,6 @@ msgid "Payments"
 msgstr "付款"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid ""
@@ -318,7 +310,6 @@ msgid "Print Date Label"
 msgstr "列印日期標籤"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #: model:ir.model,name:account_check_printing.model_print_prenumbered_checks
 #: model_terms:ir.ui.view,arch_db:account_check_printing.print_pre_numbered_checks_view
@@ -349,7 +340,7 @@ msgstr ""
 #. module: account_check_printing
 #: model_terms:ir.ui.view,arch_db:account_check_printing.view_account_payment_form_inherited
 msgid "Sent"
-msgstr "發送"
+msgstr "已發送"
 
 #. module: account_check_printing
 #: model:ir.model.fields,help:account_check_printing.field_account_journal__check_next_number
@@ -357,12 +348,6 @@ msgid "Sequence number of the next printed check."
 msgstr "下個列印支票的序列編號."
 
 #. module: account_check_printing
-#: model:ir.model.fields,field_description:account_check_printing.field_account_payment__show_check_number
-msgid "Show Check Number"
-msgstr "顯示支票號碼"
-
-#. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid ""
@@ -371,7 +356,6 @@ msgid ""
 msgstr "檢查格式出現問題，請在會計設定中選擇另一個格式，然後重試."
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid ""
@@ -382,7 +366,6 @@ msgstr ""
 "%s"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -433,7 +416,6 @@ msgid "Void Check"
 msgstr "作廢支票"
 
 #. module: account_check_printing
-#. odoo-python
 #: code:addons/account_check_printing/models/account_payment.py:0
 #, python-format
 msgid ""

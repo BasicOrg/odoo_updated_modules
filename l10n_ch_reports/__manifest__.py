@@ -3,11 +3,11 @@
 
 {
     'name': 'Switzerland - Accounting Reports',
-    'countries': ['ch'],
+    'icon': '/l10n_ch/static/description/icon.png',
     'version': '1.1',
     'category': 'Accounting/Localizations/Reporting',
     'description': """
-Accounting reports for Switzerland
+        Accounting reports for Switzerland
     """,
     'depends': [
         'l10n_ch', 'account_reports'

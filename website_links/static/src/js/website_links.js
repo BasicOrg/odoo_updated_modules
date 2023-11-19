@@ -1,8 +1,10 @@
-/** @odoo-module **/
+odoo.define('website_links.website_links', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { browser } from "@web/core/browser/browser";
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+
+var _t = core._t;
 
 var SelectBox = publicWidget.Widget.extend({
     events: {
@@ -19,8 +21,6 @@ var SelectBox = publicWidget.Widget.extend({
         this._super.apply(this, arguments);
         this.obj = obj;
         this.placeholder = placeholder;
-
-        this.orm = this.bindService("orm");
     },
     /**
      * @override
@@ -28,8 +28,14 @@ var SelectBox = publicWidget.Widget.extend({
     willStart: function () {
         var self = this;
         var defs = [this._super.apply(this, arguments)];
-        defs.push(this.orm.searchRead(this.obj, [], ["id", "name"]).then(function (result) {
-            self.objects = result.map((val) => {
+        defs.push(this._rpc({
+            model: this.obj,
+            method: 'search_read',
+            kwargs: {
+                fields: ['id', 'name'],
+            },
+        }).then(function (result) {
+            self.objects = _.map(result, function (val) {
                 return {id: val.id, text: val.name};
             });
         }));
@@ -47,7 +53,7 @@ var SelectBox = publicWidget.Widget.extend({
                 if (self._objectExists(term)) {
                     return null;
                 }
-                return { id: term, text: `Create '${term}'` };
+                return {id: term, text: _.str.sprintf("Create '%s'", term)};
             },
             createSearchChoicePosition: 'bottom',
             multiple: false,
@@ -65,7 +71,9 @@ var SelectBox = publicWidget.Widget.extend({
      * @param {String} query
      */
     _objectExists: function (query) {
-        return this.objects.find(val => val.text.toLowerCase() === query.toLowerCase()) !== undefined;
+        return _.find(this.objects, function (val) {
+            return val.text.toLowerCase() === query.toLowerCase();
+        }) !== undefined;
     },
     /**
      * @private
@@ -79,7 +87,11 @@ var SelectBox = publicWidget.Widget.extend({
         if (this.obj === "utm.campaign"){
             args.is_auto_campaign = true;
         }
-        return this.orm.create(this.obj, [args]).then(function (record) {
+        return this._rpc({
+            model: this.obj,
+            method: 'create',
+            args: [args],
+        }).then(function (record) {
             self.$el.attr('value', record);
             self.objects.push({'id': record, 'text': name});
         });
@@ -94,7 +106,7 @@ var SelectBox = publicWidget.Widget.extend({
      * @param {Object} ev
      */
     _onChange: function (ev) {
-        if (!ev.added || typeof ev.added.id !== "string") {
+        if (!ev.added || !_.isString(ev.added.id)) {
             return;
         }
         this._createObject(ev.added.id);
@@ -120,7 +132,13 @@ var RecentLinkBox = publicWidget.Widget.extend({
         this._super.apply(this, arguments);
         this.link_obj = obj;
         this.animating_copy = false;
-        this.rpc = this.bindService("rpc");
+    },
+    /**
+     * @override
+     */
+    start: function () {
+        new ClipboardJS(this.$('.btn_shorten_url_clipboard').get(0));
+        return this._super.apply(this, arguments);
     },
 
     //--------------------------------------------------------------------------
@@ -130,9 +148,7 @@ var RecentLinkBox = publicWidget.Widget.extend({
     /**
      * @private
      */
-    _toggleCopyButton: async function () {
-        await browser.navigator.clipboard.writeText(this.link_obj.short_url);
-
+    _toggleCopyButton: function () {
         if (this.animating_copy) {
             return;
         }
@@ -225,9 +241,12 @@ var RecentLinkBox = publicWidget.Widget.extend({
         if (initCode === newCode) {
             showNewCode(newCode);
         } else {
-            this.rpc('/website_links/add_code', {
-                init_code: initCode,
-                new_code: newCode,
+            this._rpc({
+                route: '/website_links/add_code',
+                params: {
+                    init_code: initCode,
+                    new_code: newCode,
+                },
             }).then(function (result) {
                 showNewCode(result[0].code);
             }, function () {
@@ -268,10 +287,6 @@ var RecentLinkBox = publicWidget.Widget.extend({
 });
 
 var RecentLinks = publicWidget.Widget.extend({
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
 
     //--------------------------------------------------------------------------
     // Private
@@ -282,11 +297,14 @@ var RecentLinks = publicWidget.Widget.extend({
      */
     getRecentLinks: function (filter) {
         var self = this;
-        return this.rpc('/website_links/recent_links', {
-            filter: filter,
-            limit: 20,
+        return this._rpc({
+            route: '/website_links/recent_links',
+            params: {
+                filter: filter,
+                limit: 20,
+            },
         }).then(function (result) {
-            result.reverse().forEach((link) => {
+            _.each(result.reverse(), function (link) {
                 self._addLink(link);
             });
             self._updateNotification();
@@ -312,9 +330,7 @@ var RecentLinks = publicWidget.Widget.extend({
      * @private
      */
     removeLinks: function () {
-        this.getChildren().forEach((child) => {
-            child.destroy();
-        });
+        _.invoke(this.getChildren(), 'destroy');
     },
     /**
      * @private
@@ -341,31 +357,29 @@ publicWidget.registry.websiteLinks = publicWidget.Widget.extend({
         'submit #o_website_links_link_tracker_form': '_onFormSubmit',
     },
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
-
     /**
      * @override
      */
-    start: async function () {
+    start: function () {
         var defs = [this._super.apply(this, arguments)];
 
         // UTMS selects widgets
-        const campaignSelect = new SelectBox(this, "utm.campaign", _t("e.g. June Sale, Paris Roadshow, ..."));
+        var campaignSelect = new SelectBox(this, 'utm.campaign', _t("e.g. Promotion of June, Winter Newsletter, .."));
         defs.push(campaignSelect.attachTo($('#campaign-select')));
 
-        const mediumSelect = new SelectBox(this, "utm.medium", _t("e.g. InMails, Ads, Social, ..."));
+        var mediumSelect = new SelectBox(this, 'utm.medium', _t("e.g. Newsletter, Social Network, .."));
         defs.push(mediumSelect.attachTo($('#channel-select')));
 
-        const sourceSelect = new SelectBox(this, "utm.source", _t("e.g. LinkedIn, Facebook, Leads, ..."));
+        var sourceSelect = new SelectBox(this, 'utm.source', _t("e.g. Search Engine, Website page, .."));
         defs.push(sourceSelect.attachTo($('#source-select')));
 
         // Recent Links Widgets
         this.recentLinks = new RecentLinks(this);
         defs.push(this.recentLinks.appendTo($('#o_website_links_recent_links')));
         this.recentLinks.getRecentLinks('newest');
+
+        // Clipboard Library
+        new ClipboardJS($('#btn_shorten_url').get(0));
 
         this.url_copy_animating = false;
 
@@ -413,7 +427,7 @@ publicWidget.registry.websiteLinks = publicWidget.Widget.extend({
      * @param {Event} ev
      */
     _onUrlKeyUp: function (ev) {
-        if (!$('#btn_shorten_url').hasClass('btn-copy') || ev.key === "Enter") {
+        if (!$('#btn_shorten_url').hasClass('btn-copy') || ev.which === 13) {
             return;
         }
 
@@ -424,10 +438,7 @@ publicWidget.registry.websiteLinks = publicWidget.Widget.extend({
     /**
      * @private
      */
-    _onShortenUrlButtonClick: async function (ev) {
-        const textValue = ev.target.dataset["clipboard-text"];
-        await browser.navigator.clipboard.writeText(textValue);
-
+    _onShortenUrlButtonClick: function () {
         if (!$('#btn_shorten_url').hasClass('btn-copy') || this.url_copy_animating) {
             return;
         }
@@ -485,7 +496,10 @@ publicWidget.registry.websiteLinks = publicWidget.Widget.extend({
 
         $('#btn_shorten_url').text(_t("Generating link..."));
 
-        this.rpc('/website_links/new', params).then(function (result) {
+        this._rpc({
+            route: '/website_links/new',
+            params: params,
+        }).then(function (result) {
             if ('error' in result) {
                 // Handle errors
                 if (result.error === 'empty_url') {
@@ -519,8 +533,9 @@ publicWidget.registry.websiteLinks = publicWidget.Widget.extend({
     },
 });
 
-export default {
+return {
     SelectBox: SelectBox,
     RecentLinkBox: RecentLinkBox,
     RecentLinks: RecentLinks,
 };
+});

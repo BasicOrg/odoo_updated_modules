@@ -10,9 +10,9 @@
                         <div class="row">
                             <div class="col-12">
                                 <a type="object" name="action_sepa_ct_to_send">
-                                    <t t-out="dashboard.num_sepa_ct_to_send"/>
-                                    <t t-if="dashboard.num_sepa_ct_to_send == 1"> Payment to send via SEPA</t>
-                                    <t t-else=""> Payments to send via SEPA</t>
+                                    <t t-esc="dashboard.num_sepa_ct_to_send"/>
+                                    <t t-if="dashboard.num_sepa_ct_to_send == 1">Payment to send via SEPA</t>
+                                    <t t-if="dashboard.num_sepa_ct_to_send != 1">Payments to send via SEPA</t>
                                 </a>
                             </div>
                         </div>

@@ -12,29 +12,29 @@
                     <field name="show_allocation" invisible="1"/>
                     <button name="action_view_reception_report" string="Allocation" type="object"
                         class="btn btn-primary o_reception_report" icon="fa-list"
-                        invisible="not show_allocation"
+                        attrs="{'invisible': [('show_allocation', '=', False)]}"
                         groups="stock.group_reception_report"/>
-                    <field name="user_id" readonly="state not in ['draft', 'in_progress']"/>
-                    <field name="picking_type_id" readonly="1" invisible="not picking_type_id"/>
+                    <field name="user_id"/>
+                    <field name="picking_type_id" readonly="1" attrs="{'invisible': [('picking_type_id', '=', False)]}"/>
                     <field name="state" readonly="1"/>
                     <field name="company_id" readonly="1" groups="base.group_multi_company"/>
-                    <field name="picking_ids" widget="many2many" invisible="not picking_ids" readonly="state not in ['draft', 'in_progress']">
+                    <field name="picking_ids" widget="many2many" attrs="{'invisible': [('picking_ids', '=', False)]}">
                         <tree decoration-danger="state != 'assigned'">
                             <button name="action_unbatch"
                                 title="Unbatch Transfer" string="Unbatch Transfer"
                                 icon="fa-chain-broken" type="object"
-                                invisible="state == 'assigned'"/>
+                                attrs="{'invisible': [('state', '=', 'assigned')]}"/>
                             <field name="name"/>
-                            <field name="scheduled_date" readonly="state in ['cancel', 'done']"/>
-                            <field name="location_id" readonly="state == 'done'"/>
+                            <field name="scheduled_date"/>
+                            <field name="location_id"/>
                             <field name="state"/>
                         </tree>
                     </field>
-                    <field name="move_ids" readonly="1" invisible="not move_ids">
+                    <field name="move_ids" readonly="1" attrs="{'invisible': [('move_ids', '=', False)]}">
                         <tree>
-                            <field name="product_id" readonly="state == 'done'"/>
+                            <field name="product_id"/>
                             <field name="description_picking" string="Description"/>
-                            <field name="product_uom_qty" readonly="state == 'done'"/>
+                            <field name="product_uom_qty"/>
                             <field name="state"/>
                         </tree>
                     </field>
@@ -53,7 +53,7 @@
         <field name="arch" type="xml">
             <kanban import="0" js_class="stock_barcode_list_kanban" sample="1"
                 action="action_client_action" type="object"
-                class="o_kanban_dashboard o_emphasize_colors">
+                class="oe_background_grey o_kanban_dashboard o_emphasize_colors o_stock_barcode_kanban">
                 <field name="move_line_ids"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -74,11 +74,11 @@
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
-                                    <field name="picking_type_id" readonly="state != 'draft'"/>
+                                    <field name="picking_type_id"/>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <field name="scheduled_date" widget="date" readonly="state in ['cancel', 'done']"/>
-                                    <field name="user_id" widget="many2one_avatar_user" readonly="state not in ['draft', 'in_progress']"/>
+                                    <field name="scheduled_date" widget="date"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
                                 </div>
                             </div>
                         </div>

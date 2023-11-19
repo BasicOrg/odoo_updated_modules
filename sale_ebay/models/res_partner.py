@@ -101,7 +101,7 @@ class ResPartner(models.Model):
                     "\n\n"
                     "However, personal information might remain in linked documents, "
                     "please review them according to laws that apply.",
-                    partner.name, partner.id),
+                ) % (partner.name, partner.id),
                 user_id=admin_user.id,
             )
 

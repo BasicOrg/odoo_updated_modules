@@ -21,7 +21,6 @@ class StockLandedCost(models.Model):
     _name = 'stock.landed.cost'
     _description = 'Stock Landed Cost'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'date desc, id desc'
 
     def _default_account_journal_id(self):
         """Take the journal configured in the company, else fallback on the stock journal."""
@@ -37,21 +36,22 @@ class StockLandedCost(models.Model):
         copy=False, readonly=True, tracking=True)
     date = fields.Date(
         'Date', default=fields.Date.context_today,
-        copy=False, required=True, tracking=True)
+        copy=False, required=True, states={'done': [('readonly', True)]}, tracking=True)
     target_model = fields.Selection(
         [('picking', 'Transfers')], string="Apply On",
         required=True, default='picking',
-        copy=False)
+        copy=False, states={'done': [('readonly', True)]})
     picking_ids = fields.Many2many(
         'stock.picking', string='Transfers',
-        copy=False)
+        copy=False, states={'done': [('readonly', True)]})
     cost_lines = fields.One2many(
         'stock.landed.cost.lines', 'cost_id', 'Cost Lines',
-        copy=True)
+        copy=True, states={'done': [('readonly', True)]})
     valuation_adjustment_lines = fields.One2many(
-        'stock.valuation.adjustment.lines', 'cost_id', 'Valuation Adjustments',)
+        'stock.valuation.adjustment.lines', 'cost_id', 'Valuation Adjustments',
+        states={'done': [('readonly', True)]})
     description = fields.Text(
-        'Item Description')
+        'Item Description', states={'done': [('readonly', True)]})
     amount_total = fields.Monetary(
         'Total', compute='_compute_total_amount',
         store=True, tracking=True)
@@ -65,7 +65,7 @@ class StockLandedCost(models.Model):
         copy=False, readonly=True)
     account_journal_id = fields.Many2one(
         'account.journal', 'Account Journal',
-        required=True, default=lambda self: self._default_account_journal_id())
+        required=True, states={'done': [('readonly', True)]}, default=lambda self: self._default_account_journal_id())
     company_id = fields.Many2one('res.company', string="Company",
         related='account_journal_id.company_id')
     stock_valuation_layer_ids = fields.One2many('stock.valuation.layer', 'stock_landed_cost_id')
@@ -130,7 +130,7 @@ class StockLandedCost(models.Model):
                 linked_layer = line.move_id.stock_valuation_layer_ids[:1]
 
                 # Prorate the value at what's still in stock
-                cost_to_add = (remaining_qty / line.move_id.quantity) * line.additional_landed_cost
+                cost_to_add = (remaining_qty / line.move_id.product_qty) * line.additional_landed_cost
                 if not cost.company_id.currency_id.is_zero(cost_to_add):
                     valuation_layer = self.env['stock.valuation.layer'].create({
                         'value': cost_to_add,
@@ -146,9 +146,9 @@ class StockLandedCost(models.Model):
                     })
                     linked_layer.remaining_value += cost_to_add
                     valuation_layer_ids.append(valuation_layer.id)
-                # Update the AVCO/FIFO
+                # Update the AVCO
                 product = line.move_id.product_id
-                if product.cost_method in ['average', 'fifo']:
+                if product.cost_method == 'average':
                     cost_to_add_byproduct[product] += cost_to_add
                 # Products with manual inventory valuation are ignored because they do not need to create journal entries.
                 if product.valuation != "real_time":
@@ -157,9 +157,9 @@ class StockLandedCost(models.Model):
                 # in stock.
                 qty_out = 0
                 if line.move_id._is_in():
-                    qty_out = line.move_id.quantity - remaining_qty
+                    qty_out = line.move_id.product_qty - remaining_qty
                 elif line.move_id._is_out():
-                    qty_out = line.move_id.quantity
+                    qty_out = line.move_id.product_qty
                 move_vals['line_ids'] += line._create_accounting_entries(move, qty_out)
 
             # batch standard price computation avoid recompute quantity_svl at each iteration
@@ -177,17 +177,15 @@ class StockLandedCost(models.Model):
             cost.write(cost_vals)
             if cost.account_move_id:
                 move._post()
-            cost.reconcile_landed_cost()
-        return True
 
-    def reconcile_landed_cost(self):
-        for cost in self:
             if cost.vendor_bill_id and cost.vendor_bill_id.state == 'posted' and cost.company_id.anglo_saxon_accounting:
                 all_amls = cost.vendor_bill_id.line_ids | cost.account_move_id.line_ids
                 for product in cost.cost_lines.product_id:
                     accounts = product.product_tmpl_id.get_product_accounts()
                     input_account = accounts['stock_input']
                     all_amls.filtered(lambda aml: aml.account_id == input_account and not aml.reconciled).reconcile()
+
+        return True
 
     def get_valuation_lines(self):
         self.ensure_one()
@@ -324,11 +322,11 @@ class StockLandedCostLine(models.Model):
         SPLIT_METHOD,
         string='Split Method',
         required=True,
-        help="Equal: Cost will be equally divided.\n"
-             "By Quantity: Cost will be divided according to product's quantity.\n"
-             "By Current cost: Cost will be divided according to product's current cost.\n"
-             "By Weight: Cost will be divided depending on its weight.\n"
-             "By Volume: Cost will be divided depending on its volume.")
+        help="Equal : Cost will be equally divided.\n"
+             "By Quantity : Cost will be divided according to product's quantity.\n"
+             "By Current cost : Cost will be divided according to product's current cost.\n"
+             "By Weight : Cost will be divided depending on its weight.\n"
+             "By Volume : Cost will be divided depending on its volume.")
     account_id = fields.Many2one('account.account', 'Account', domain=[('deprecated', '=', False)])
     currency_id = fields.Many2one('res.currency', related='cost_id.currency_id')
 
@@ -396,7 +394,7 @@ class AdjustmentLines(models.Model):
         credit_account_id = self.cost_line_id.account_id.id or cost_product.categ_id.property_stock_account_input_categ_id.id
 
         if not credit_account_id:
-            raise UserError(_('Please configure Stock Expense Account for product: %s.', cost_product.name))
+            raise UserError(_('Please configure Stock Expense Account for product: %s.') % (cost_product.name))
 
         return self._create_account_move_line(move, credit_account_id, debit_account_id, qty_out, already_out_account_id)
 

@@ -63,7 +63,8 @@ class CompanyLDAP(models.Model):
         :rtype: list of dictionaries
         """
 
-        res = self.sudo().search_read([('ldap_server', '!=', False)], [
+        ldaps = self.sudo().search([('ldap_server', '!=', False)], order='sequence')
+        res = ldaps.read([
             'id',
             'company',
             'ldap_server',
@@ -75,7 +76,7 @@ class CompanyLDAP(models.Model):
             'user',
             'create_user',
             'ldap_tls'
-        ], order='sequence')
+        ])
         return res
 
     def _connect(self, conf):

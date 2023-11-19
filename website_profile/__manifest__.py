@@ -15,7 +15,6 @@
         'data/mail_template_data.xml',
         'views/gamification_badge_views.xml',
         'views/website_profile.xml',
-        'views/website_views.xml',
         'security/ir.model.access.csv',
     ],
     'assets': {

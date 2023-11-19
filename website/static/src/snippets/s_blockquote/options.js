@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('website.s_blockquote_options', function (require) {
+'use strict';
 
-import options from "@web_editor/js/editor/snippets.options";
+const options = require('web_editor.snippets.options');
 
 options.registry.Blockquote = options.Class.extend({
 
@@ -40,4 +41,5 @@ options.registry.Blockquote = options.Class.extend({
         this.$target.find('.s_blockquote_icon').toggleClass('d-none', widgetValue === 'minimalist');
         this.$target.find('footer').toggleClass('d-none', widgetValue === 'minimalist');
     },
+});
 });

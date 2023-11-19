@@ -4,12 +4,13 @@ import traceback
 import xmlrpc.client
 from datetime import date, datetime
 
-from collections import defaultdict
 from markupsafe import Markup
+from werkzeug.wrappers import Response
 
 import odoo
-from odoo.http import Controller, route, dispatch_rpc, request, Response
+from odoo.http import Controller, request, route
 from odoo.fields import Date, Datetime, Command
+from odoo.service import dispatch_rpc
 from odoo.tools import lazy, ustr
 from odoo.tools.misc import frozendict
 
@@ -110,7 +111,6 @@ class OdooMarshaller(xmlrpc.client.Marshaller):
     dispatch[date] = dump_date
     dispatch[lazy] = dump_lazy
     dispatch[Command] = dispatch[int]
-    dispatch[defaultdict] = dispatch[dict]
     dispatch[Markup] = lambda self, value, write: self.dispatch[str](self, str(value), write)
 
 

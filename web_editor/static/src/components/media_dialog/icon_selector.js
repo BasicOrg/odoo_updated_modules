@@ -1,10 +1,9 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { _t } from "@web/core/l10n/translation";
-import fonts from '@web_editor/js/wysiwyg/fonts';
+import fonts from 'wysiwyg.fonts';
 import { SearchMedia } from './search_media';
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 
 export class IconSelector extends Component {
     setup() {
@@ -13,7 +12,7 @@ export class IconSelector extends Component {
             needle: '',
         });
 
-        this.searchPlaceholder = _t("Search a pictogram");
+        this.searchPlaceholder = this.env._t("Search a pictogram");
     }
 
     get selectedMediaIds() {
@@ -36,11 +35,6 @@ export class IconSelector extends Component {
         this.props.selectMedia({
             ...icon,
             fontBase: font.base,
-            // To check if the icon has changed, we only need to compare
-            // an alias of the icon with the class from the old media (some
-            // icons can have multiple classes e.g. "fa-gears" ~ "fa-cogs")
-            initialIconChanged: this.props.media
-                && !icon.names.some(name => this.props.media.classList.contains(name)),
         });
         await this.props.save();
     }

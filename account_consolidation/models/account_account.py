@@ -53,7 +53,8 @@ class Account(models.Model):
             if chart_id:
                 domain = expression.AND([domain, [('consolidation_account_ids.chart_id', '=', chart_id)]])
             if operator == '=':
-                domain = [('id', 'not in', self._search(domain))]
+                result = self.search_read(domain, ['id'])
+                domain = [('id', 'not in', [r['id'] for r in result])]
             return domain
         else:
             return [('consolidation_account_ids', operator, operand)]

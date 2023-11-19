@@ -14,8 +14,3 @@ class Http(models.AbstractModel):
             'user_context': request.env.context
         })
         return frontend_session_info
-
-    @classmethod
-    def _get_translation_frontend_modules_name(cls):
-        mods = super(Http, cls)._get_translation_frontend_modules_name()
-        return mods + ['sign']

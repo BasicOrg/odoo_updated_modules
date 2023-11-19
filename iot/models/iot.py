@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import secrets
-
 from odoo import api, fields, models
 
 
@@ -64,7 +62,7 @@ class IotDevice(models.Model):
         ('hdmi', 'Hdmi'),
         ], readonly=True, string="Connection",
         help="Type of connection.")
-    report_ids = fields.Many2many('ir.actions.report', string='Reports')
+    report_ids = fields.One2many('ir.actions.report', 'device_id', string='Reports')
     iot_ip = fields.Char(related="iot_id.ip")
     company_id = fields.Many2one('res.company', 'Company', related="iot_id.company_id")
     connected = fields.Boolean(string='Status', help='If device is connected to the IoT Box', readonly=True)
@@ -74,10 +72,8 @@ class IotDevice(models.Model):
     is_scanner = fields.Boolean(string='Is Scanner', compute="_compute_is_scanner", inverse="_set_scanner",
         help="Manually switch the device type between keyboard and scanner")
 
-    @api.depends('iot_id')
-    def _compute_display_name(self):
-        for i in self:
-            i.display_name = f"[{i.iot_id.name}] {i.name}"
+    def name_get(self):
+        return [(i.id, "[" + i.iot_id.name +"] " + i.name) for i in self]
 
     @api.depends('type')
     def _compute_is_scanner(self):
@@ -100,22 +96,3 @@ class KeyboardLayout(models.Model):
     name = fields.Char('Name')
     layout = fields.Char('Layout')
     variant = fields.Char('Variant')
-
-class IotChannel(models.Model):
-    _name = "iot.channel"
-    _description = "The Websocket Iot Channel"
-
-    name = fields.Char('Name', default=lambda self: f'iot_channel-{secrets.token_hex(16)}')
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company) #One2one
-
-    def get_iot_channel(self):
-        if self.env.is_system():
-            iot_channel = self.env['iot.channel'].search([('company_id', "=", self.env.company.id)], limit=1)
-            if not iot_channel.ids:
-                iot_channel = self.env['iot.channel'].sudo().create({})
-            return iot_channel.name
-        return False
-
-    _sql_constraints = [
-        ('unique_name', 'unique(name)', 'The channel name must be unique'),
-    ]

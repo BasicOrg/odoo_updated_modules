@@ -3,7 +3,7 @@
 import { LoadableDataSource } from "./data_source";
 import { MetadataRepository } from "./metadata_repository";
 
-import { EventBus } from "@odoo/owl";
+const { EventBus } = owl;
 
 /** *
  * @typedef {object} DataSourceServices
@@ -15,13 +15,10 @@ import { EventBus } from "@odoo/owl";
  */
 
 export class DataSources extends EventBus {
-    /**
-     * @param {import("@web/env").OdooEnv} env
-     */
-    constructor(env) {
+    constructor(orm) {
         super();
-        this._orm = env.services.orm.silent;
-        this._metadataRepository = new MetadataRepository(env);
+        this._orm = orm;
+        this._metadataRepository = new MetadataRepository(orm);
         this._metadataRepository.addEventListener("labels-fetched", () => this.notify());
         /** @type {Object.<string, any>} */
         this._dataSources = {};

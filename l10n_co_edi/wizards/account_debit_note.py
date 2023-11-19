@@ -24,9 +24,9 @@ class AccountDebitNote(models.TransientModel):
         return [[5]]
 
     def _get_repartition_line(self, line):
-        if line.tax_repartition_line_id.document_type == 'refund':
+        if line.tax_repartition_line_id.refund_tax_id:
             # for credit notes (refund) as originating document, we need to get the opposite repartition line
-            return line.tax_repartition_line_id.tax_id.invoice_repartition_line_ids.filtered(
+            return line.tax_repartition_line_id.refund_tax_id.invoice_repartition_line_ids.filtered(
                 lambda x: x.repartition_type == line.tax_repartition_line_id.repartition_type)
         # otherwise, the repartition line is the same as the originating doc (invoice for example)
         return line.tax_repartition_line_id
@@ -36,8 +36,8 @@ class AccountDebitNote(models.TransientModel):
         if move.company_id.country_id.code != "CO" or not self.copy_lines:
             return default_values
 
-        default_values['line_ids'] = [[5, 0, 0]]
-        for line in move.line_ids.filtered(lambda x: x.display_type == 'product'):
+        default_values['line_ids'] = [[5, 0]]
+        for line in move.line_ids.filtered(lambda x: not x.display_type):
             default_values['line_ids'].append([0, 0, {
                 'product_id': line.product_id.id,
                 'account_id': line.account_id.id,

@@ -2,7 +2,9 @@
 {
     'name': "pos_account_reports",
 
-    'summary': "Bridge module between point_of_sale and account_reports, for tax reporting.",
+    'summary': """
+        Bridge module between point_of_sale and account_reports,
+        for tax reporting.""",
 
     'category': 'Sales/Point of Sale',
     'version': '0.1',

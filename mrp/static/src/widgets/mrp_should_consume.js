@@ -1,9 +1,8 @@
 /** @odoo-module **/
 
-import { FloatField, floatField } from "@web/views/fields/float/float_field";
+import { FloatField } from "@web/views/fields/float/float_field";
 import { registry } from "@web/core/registry";
-import { formatFloat } from "@web/core/utils/numbers";
-import { useRef, onPatched, onMounted, useState } from "@odoo/owl";
+import { formatFloat } from "@web/views/fields/formatters";
 
 /**
  * This widget is used to display alongside the total quantity to consume of a production order,
@@ -13,12 +12,16 @@ import { useRef, onPatched, onMounted, useState } from "@odoo/owl";
  * The widget will be '3.000 / 5.000'.
  */
 
+const { useRef, onPatched, onMounted } = owl;
 export class MrpShouldConsumeOwl extends FloatField {
     setup() {
         super.setup();
-        this.fields = this.props.record.fields;
-        this.record = useState(this.props.record);
-        this.displayShouldConsume = !["done", "draft", "cancel"].includes(this.record.data.state);
+        const { data, fields } = this.props.record;
+        this.shouldConsumeQty = formatFloat(data.should_consume_qty, {
+            ...fields.should_consume_qty,
+            ...this.nodeOptions,
+        });
+        this.displayShouldConsume = !["done", "draft", "cancel"].includes(data.state);
         this.inputSpanRef = useRef("numpadDecimal");
         onMounted(this._renderPrefix);
         onPatched(this._renderPrefix);
@@ -34,21 +37,9 @@ export class MrpShouldConsumeOwl extends FloatField {
             );
         }
     }
-
-    get shouldConsumeQty() {
-        return formatFloat(this.record.data.should_consume_qty, {
-            ...this.fields.should_consume_qty,
-            ...this.nodeOptions,
-        });
-    }
 }
 
 MrpShouldConsumeOwl.template = "mrp.ShouldConsume";
+MrpShouldConsumeOwl.displayName = "MRP Should Consume";
 
-export const mrpShouldConsumeOwl = {
-    ...floatField,
-    component: MrpShouldConsumeOwl,
-    displayName: "MRP Should Consume",
-};
-
-registry.category("fields").add("mrp_should_consume", mrpShouldConsumeOwl);
+registry.category("fields").add("mrp_should_consume", MrpShouldConsumeOwl);

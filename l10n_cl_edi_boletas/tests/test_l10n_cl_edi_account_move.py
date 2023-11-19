@@ -14,8 +14,7 @@ class TestL10nClDTE(TestL10nClEdiCommon):
         get_cl_current_strftime.return_value = '2019-10-24T20:00:00'
 
         self.tax_19 = self.env['account.tax'].search([
-            ('name', '=', '19%'),
-            ('type_tax_use', '=', 'sale'),
+            ('name', '=', 'IVA 19% Venta'),
             ('company_id', '=', self.company_data['company'].id)])
         invoice = self.env['account.move'].with_context(default_move_type='out_invoice').create({
             'partner_id': self.partner_anonimo.id,

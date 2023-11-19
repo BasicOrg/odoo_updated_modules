@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="index_topbar" inherit_id="website_event.index_topbar">
-        <xpath expr="//div[hasclass('o_wevent_index_topbar_filters')]" position="inside">
-            <t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)" />
-            <t t-set="hasPricelistDropdown" t-value="website_sale_pricelists and len(website_sale_pricelists)&gt;1"/>
-            <t t-call="website_sale.pricelist_list">
-                <t t-set="_classes" t-valuef="d-none d-lg-inline me-2 my-1"/>
-            </t>
-        </xpath>
-    </template>
-
     <!-- If the sale order line concerns an event, we want the "product" link to point to the event itself and not to the product on the ecommerce -->
     <template id="cart_line_product_link_inherit_website_event_sale" inherit_id="website_sale.cart_line_product_link" name="Event Shopping Cart Line Product Link">
         <xpath expr="//a" position="attributes">
@@ -34,8 +24,15 @@
     </template>
 
     <!-- If the sale order line concerns an event, we want to show an additional line with the event name -->
-    <template id="cart_summary_inherit_website_event_sale" inherit_id="website_sale.checkout_layout" name="Event Cart right column">
-        <xpath expr="//td[@name='website_sale_cart_summary_product_name']/h6" position="after">
+    <template id="cart_popover_inherit_website_event_sale" inherit_id="website_sale.cart_popover" name="Event Cart Popover">
+        <xpath expr="//t[@t-call='website_sale.cart_line_product_link']" position="after">
+            <t t-if="line.event_id" t-call="website_sale.cart_line_description_following_lines"/>
+        </xpath>
+    </template>
+
+    <!-- If the sale order line concerns an event, we want to show an additional line with the event name -->
+    <template id="cart_summary_inherit_website_event_sale" inherit_id="website_sale.cart_summary" name="Event Cart right column">
+        <xpath expr="//td[hasclass('td-product_name')]/div/strong" position="after">
             <t t-if="line.event_id" t-call="website_sale.cart_line_description_following_lines"/>
         </xpath>
     </template>
@@ -61,7 +58,7 @@
                                             <span t-field="event.with_context(tz=event.date_tz).date_begin" t-options="{'format': 'LLL'}" class="o_wevent_event_month" />
                                             <span t-field="event.with_context(tz=event.date_tz).date_begin" t-options="{'format': 'dd'}" class="o_wevent_event_day oe_hide_on_date_edit" />
                                         </div>
-                                        <small t-if="event.is_participating" class="o_wevent_participating text-bg-success">
+                                        <small class="o_wevent_participating text-bg-success">
                                             <i class="fa fa-check me-2" />
                                             Registered
                                         </small>
@@ -73,12 +70,7 @@
                                 </div>
                                 <div class="col-lg-8 p-4">
                                     <h3 t-esc="event.name" />
-                                    <t t-set="attendee_ids" t-value="attendee_ids_per_event.get(event, [])"/>
-                                    <a t-if="order.state == 'sale' and attendee_ids" class="btn btn-primary text-white mb-2 me-2" target="_blank"
-                                       t-attf-href="/event/{{ event.id }}/my_tickets?registration_ids={{ attendee_ids }}&amp;tickets_hash={{ event._get_tickets_access_hash(attendee_ids) }}">
-                                        Download Tickets <i class="ms-1 fa fa-download"/>
-                                    </a>
-                                    <a class="mb-2" t-attf-href="/event/#{ slug(event) }">Go to Event</a>
+                                    <a class="btn btn-primary mb-2" t-attf-href="/event/#{ slug(event) }">Go to Event</a>
                                 </div>
                             </div>
                         </div>

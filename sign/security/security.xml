@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <record id="show_sign_order" model="res.groups">
+            <field name="name">Enable Signing Order</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
         <record id="manage_template_access" model="res.groups">
             <field name="name">Manage template access</field>
             <field name="category_id" ref="base.module_category_hidden"/>
@@ -67,17 +72,6 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <record id="ir_rule_sign_item_group_sign_manager_readonly" model="ir.rule">
-            <field name="name">sign.item: group_sign_manager: Readonly access to template items</field>
-            <field name="model_id" ref="sign.model_sign_item"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('sign.group_sign_manager'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
         <record id="ir_rule_sign_item_group_sign_user_readonly" model="ir.rule">
             <field name="name">sign.item: group_sign_user: Read template items</field>
             <field name="model_id" ref="sign.model_sign_item"/>
@@ -98,6 +92,17 @@
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="ir_rule_sign_item_option_group_sign_user" model="ir.rule">
+            <field name="name">sign.item.option: group_sign_user: Create and read sign item options</field>
+            <field name="model_id" ref="sign.model_sign_item_option"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('sign.group_sign_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
         </record>
 
         <record id="ir_rule_sign_request_group_sign_manager" model="ir.rule">
@@ -208,6 +213,28 @@
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ir_rule_sign_role_default_readonly" model="ir.rule">
+            <field name="name">sign.role: group_sign_user: Read-only default roles</field>
+            <field name="model_id" ref="sign.model_sign_item_role"/>
+            <field name="domain_force">[('default', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('sign.group_sign_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ir_rule_sign_role_not_default" model="ir.rule">
+            <field name="name">sign.role: group_sign_user: Full permission to non default roles</field>
+            <field name="model_id" ref="sign.model_sign_item_role"/>
+            <field name="domain_force">[('default', '=', False)]</field>
+            <field name="groups" eval="[(4, ref('sign.group_sign_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
 
     </data>

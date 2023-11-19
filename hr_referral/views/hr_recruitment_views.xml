@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='fold']" position="after">
-                <field name="points" invisible="not use_in_referral"/>
+                <field name="points" attrs="{'invisible': [('use_in_referral', '=', False)]}"/>
                 <field name="use_in_referral"/>
             </xpath>
         </field>
@@ -19,7 +19,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='job_ids']" position="after">
                 <field name="use_in_referral"/>
-                <field name="points" invisible="not use_in_referral"/>
+                <field name="points" attrs="{'invisible': [('use_in_referral', '=', False)]}"/>
             </xpath>
         </field>
     </record>

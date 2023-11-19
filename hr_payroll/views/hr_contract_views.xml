@@ -14,54 +14,40 @@
             </field>
             <xpath expr="//label[@for='wage']" position="before">
                 <field name="wage_type"/>
-                <field name="schedule_pay"/>
-                <label for="hourly_wage" invisible="wage_type != 'hourly'"/>
-                <div class="o_row mw-50" name="hourly_wage" invisible="wage_type != 'hourly'">
+                <label for="hourly_wage" attrs="{'invisible': [('wage_type', '!=', 'hourly')]}"/>
+                <div class="o_row" name="hourly_wage" attrs="{'invisible': [('wage_type', '!=', 'hourly')]}">
                     <field name="hourly_wage" nolabel="1"/>
                     <span>/ hour</span>
                 </div>
             </xpath>
-            <xpath expr="//div[@name='wage_period_label']" position="attributes">
-                <attribute name="invisible">schedule_pay != 'monthly'</attribute>
-            </xpath>
-            <xpath expr="//div[@name='wage_period_label']" position="after">
-                <div class="mb-3" invisible="schedule_pay != 'annually'">/ year</div>
-                <div class="mb-3" invisible="schedule_pay != 'semi-annually'">/ half-year</div>
-                <div class="mb-3" invisible="schedule_pay != 'quarterly'">/ quarter</div>
-                <div class="mb-3" invisible="schedule_pay != 'bi-monthly'">/ two months</div>
-                <div class="mb-3" invisible="schedule_pay != 'semi-monthly'">/ half-month</div>
-                <div class="mb-3" invisible="schedule_pay != 'bi-weekly'">/ two weeks</div>
-                <div class="mb-3" invisible="schedule_pay != 'weekly'">/ week</div>
-                <div class="mb-3" invisible="schedule_pay != 'daily'">/ day</div>
-            </xpath>
             <xpath expr="//label[@for='wage']" position="attributes">
-                <attribute name="invisible">wage_type == 'hourly'</attribute>
+                <attribute name="attrs">{'invisible': [('wage_type', '=', 'hourly')]}</attribute>
             </xpath>
             <xpath expr="//div[@name='wage']" position="attributes">
-                <attribute name="invisible">wage_type == 'hourly'</attribute>
+                <attribute name="attrs">{'invisible': [('wage_type', '=', 'hourly')]}</attribute>
             </xpath>
             <div name="button_box" position="inside">
                 <button class="oe_stat_button" name="action_open_payslips"
                         type="object" icon="fa-dollar" groups="hr_payroll.group_hr_payroll_user"
-                        invisible="payslips_count == 0 or state == 'draft'">
+                        attrs="{'invisible': ['|', ('payslips_count', '=', 0), ('state', '=', 'draft')]}">
                     <field name="payslips_count" string="Payslips" widget="statinfo"/>
                 </button>
-                <button class="oe_stat_button" string="Salary Attachments" name="action_open_salary_attachments"
-                        groups="hr_payroll.group_hr_payroll_user"
-                        type="object" icon="fa-book" invisible="salary_attachments_count == 0">
-                    <field name="salary_attachments_count" string="Salary Attachments" widget="statinfo"/>
-                </button>
             </div>
-            <group name="contract_details_2" position="inside">
-                <separator string="Part time"/>
-                    <label for="time_credit"/>
-                    <div class="o_row">
-                        <field name="time_credit" class="oe_inline"/>
-                        <field name="work_time_rate" invisible="not time_credit" widget="percentage"/>
-                    </div>
-                    <field name="standard_calendar_id" invisible="not time_credit" help="The Standard Calendar is the calendar used by the people working at a 100% rate. It's used here to compute your part-time percentage."/>
-                    <field name="time_credit_type_id" invisible="not time_credit" required="time_credit"/>
-            </group>
+            <page name="information" position="after">
+                <page string="Part Time" name="part_time">
+                    <group>
+                        <group>
+                            <label for="time_credit"/>
+                            <div class="o_row">
+                                <field name="time_credit" class="oe_inline"/>
+                                <field name="work_time_rate" attrs="{'invisible': [('time_credit', '=', False)]}" widget="percentage"/>
+                            </div>
+                            <field name="standard_calendar_id" attrs="{'invisible': [('time_credit', '=', False)]}" help="The Standard Calendar is the calendar used by the people working at a 100% rate. It's used here to compute your part-time percentage."/>
+                            <field name="time_credit_type_id" attrs="{'invisible': [('time_credit', '=', False)], 'required': [('time_credit', '=', True)]}"/>
+                        </group>
+                    </group>
+                </page>
+            </page>
         </field>
     </record>
 
@@ -70,12 +56,9 @@
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_search"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='end_date']" position="after">
+            <xpath expr="//filter[@name='not_running']" position="after">
                 <separator/>
-                <filter string="Part Time" name="part_time" domain="[('time_credit', '=', True)]"/>
-            </xpath>
-            <xpath expr="//field[@name='employee_id']" position="after">
-                <field name="employee_id" string="Employee Code" filter_domain="[('employee_id.registration_number','ilike', self)]"/>
+                <filter string="Change of Occupation" name="calendar_change" domain="[('calendar_changed', '=', True)]"/>
             </xpath>
         </field>
     </record>
@@ -89,13 +72,13 @@
                 <field name="wage_type"/>
                 <field name="currency_id"/>
             </field>
-            <div name="div_date_id" position="after">
+            <div name="div_job_id" position="after">
                 <div class="text-muted o_kanban_record_subtitle o_hr_contract_job_id" name="div_job_id">
                     <t t-if="record.wage_type.raw_value == 'monthly'">
-                        Wage : <field name="contract_wage"/> / Month
+                        <field name="contract_wage"/> / Month
                     </t>
                     <t t-if="record.wage_type.raw_value == 'hourly'">
-                        Wage : <field name="hourly_wage"/> / Hour
+                        <field name="hourly_wage"/> / Hour
                     </t>
                 </div>
             </div>
@@ -106,22 +89,11 @@
         <field name="name">hr.contract.view.tree</field>
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_tree"/>
-        <field name="mode">primary</field>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="inside">
-                <header>
-                   <button name="%(hr_payroll.action_hr_payroll_index)d" type="action" string="Index Contracts" groups="hr_contract.group_hr_contract_manager" display="always"/>
-                </header>
-            </xpath>
-            <xpath expr="//field[@name='structure_type_id']" position="after">
-                <field name="payslips_count" optional="hidden"/>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="js_class">hr_contract_tree</attribute>
             </xpath>
         </field>
-    </record>
-
-    <record id="hr_contract.action_hr_contract" model="ir.actions.act_window">
-        <field name="view_ids" eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'tree', 'sequence': 2, 'view_id': ref('hr_payroll.hr_contract_view_tree')})]"/>
     </record>
 
     <record id="action_hr_contract_repository" model="ir.actions.act_window">
@@ -131,8 +103,6 @@
         <field name="domain">[('employee_id', '!=', False)]</field>
         <field name="context">{'search_default_running': 1, 'search_default_to_renew': 1}</field>
         <field name="search_view_id" ref="hr_contract.hr_contract_view_search"/>
-        <field name="view_ids" eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'tree', 'sequence': 2, 'view_id': ref('hr_payroll.hr_contract_view_tree')})]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             Create a new contract

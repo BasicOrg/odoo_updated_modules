@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo.addons.sms.tests.common import SMSCommon
-from odoo.addons.test_mail_sms.tests.common import TestSMSRecipients
+from odoo.addons.test_mail_sms.tests.common import TestSMSCommon, TestSMSRecipients
 
 
-class TestSMSComposerComment(SMSCommon, TestSMSRecipients):
+class TestSMSComposerComment(TestSMSCommon, TestSMSRecipients):
     """ TODO LIST
 
      * add test for default_res_model / default_res_id and stuff like that;
@@ -43,11 +42,12 @@ class TestSMSComposerComment(SMSCommon, TestSMSRecipients):
                 'numbers': ','.join(self.random_numbers),
             })
 
-            with self.mockSMSGateway(sms_allow_unlink=True):
+            with self.mockSMSGateway():
                 composer._action_send_sms()
 
-        for number in self.random_numbers_san:
-            self.assertSMS(self.env['res.partner'], number, 'pending', content=self._test_body, fields_values={'to_delete': True})
+        # use sms.api directly, does not create sms.sms
+        self.assertNoSMS()
+        self.assertSMSIapSent(self.random_numbers_san, self._test_body)
 
     def test_composer_comment_default(self):
         with self.with_user('employee'):
@@ -120,66 +120,6 @@ class TestSMSComposerComment(SMSCommon, TestSMSRecipients):
 
         self.assertSMSNotification([{'partner': self.test_record.customer_id, 'number': self.test_record.mobile_nbr}], 'Dear %s this is an SMS.' % self.test_record.display_name, messages)
 
-    def test_composer_comment_invalid_field(self):
-        """ Test the Send Message in SMS Composer when a Model does not contain a number field name """
-        test_record = self.env['mail.test.sms.partner'].create({
-            'name': 'Test',
-            'customer_id': self.partner_1.id,
-        })
-        sms_composer = self.env['sms.composer'].create({
-            'body': self._test_body,
-            'number_field_name': 'phone_nbr',
-            'recipient_single_number_itf': self.random_numbers_san[0],
-            'res_id': test_record.id,
-            'res_model': 'mail.test.sms.partner'
-        })
-
-        self.assertNotIn(','.join(test_record._fields), 'phone_nbr')
-        with self.mockSMSGateway():
-            sms_composer._action_send_sms()
-        self.assertSMSNotification([{'number': self.random_numbers_san[0]}], self._test_body)
-
-    def test_composer_comment_nofield(self):
-        """ Test the Send Message in SMS Composer when a Model does not contain any phone number related field """
-        test_record = self.env['mail.test.sms.partner'].create({'name': 'Test'})
-        sms_composer = self.env['sms.composer'].create({
-            'body': self._test_body,
-            'recipient_single_number_itf': self.random_numbers_san[0],
-            'res_id': test_record.id,
-            'res_model': 'mail.test.sms.partner'
-        })
-        with self.mockSMSGateway():
-            sms_composer._action_send_sms()
-        self.assertSMSNotification([{'number': self.random_numbers_san[0]}], self._test_body)
-
-    def test_composer_default_recipient(self):
-        """ Test default description of SMS composer must be partner name"""
-        self.test_record.write({
-            'phone_nbr': '0123456789',
-        })
-        with self.with_user('employee'):
-            composer = self.env['sms.composer'].with_context(
-                    default_res_model='mail.test.sms', default_res_id=self.test_record.id,
-                ).create({
-                    'body': self._test_body,
-                    'number_field_name': 'phone_nbr',
-                })
-
-        self.assertEqual(composer.recipient_single_description, self.test_record.customer_id.display_name)
-
-    def test_composer_nofield_w_customer(self):
-        """ Test SMS composer without number field, the number on partner must be used instead"""
-        with self.with_user('employee'):
-            composer = self.env['sms.composer'].with_context(
-                    default_res_model='mail.test.sms', default_res_id=self.test_record.id,
-                ).create({
-                    'body': self._test_body,
-                })
-
-        self.assertTrue(composer.recipient_single_valid)
-        self.assertEqual(composer.recipient_single_number, self.test_numbers[1])
-        self.assertEqual(composer.recipient_single_number_itf, self.test_numbers[1])
-
     def test_composer_internals(self):
         with self.with_user('employee'):
             composer = self.env['sms.composer'].with_context(
@@ -224,7 +164,7 @@ class TestSMSComposerComment(SMSCommon, TestSMSRecipients):
             'phone_nbr': False,
             'mobile_nbr': False,
         })
-        default_field_name = self.env['mail.test.sms']._phone_get_number_fields()[0]
+        default_field_name = self.env['mail.test.sms']._sms_get_number_fields()[0]
 
         with self.with_user('employee'):
             composer = self.env['sms.composer'].with_context(
@@ -258,31 +198,15 @@ class TestSMSComposerComment(SMSCommon, TestSMSRecipients):
                 'numbers': ','.join(self.random_numbers),
             })
 
-            with self.mockSMSGateway(sms_allow_unlink=True):
+            with self.mockSMSGateway():
                 composer._action_send_sms()
 
-        for number in self.random_numbers_san:
-            self.assertSMS(self.env['res.partner'], number, 'pending', content=self._test_body, fields_values={'to_delete': True})
-
-    def test_composer_sending_with_no_number_field(self):
-        test_record = self.env['mail.test.sms.partner'].create({'name': 'Test'})
-        sms_composer = self.env['sms.composer'].create({
-            'body': self._test_body,
-            'composition_mode': 'comment',
-            'mass_force_send': False,
-            'mass_keep_log': True,
-            'number_field_name': False,
-            'numbers': False,
-            'recipient_single_number_itf': self.random_numbers_san[0],
-            'res_id': test_record.id,
-            'res_model': 'mail.test.sms.partner'
-        })
-        with self.mockSMSGateway():
-            sms_composer._action_send_sms()
-        self.assertSMSNotification([{'number': self.random_numbers_san[0]}], self._test_body)
+        # use sms.api directly, does not create sms.sms
+        self.assertNoSMS()
+        self.assertSMSIapSent(self.random_numbers_san, self._test_body)
 
 
-class TestSMSComposerBatch(SMSCommon):
+class TestSMSComposerBatch(TestSMSCommon):
     @classmethod
     def setUpClass(cls):
         super(TestSMSComposerBatch, cls).setUpClass()
@@ -332,7 +256,7 @@ class TestSMSComposerBatch(SMSCommon):
             )
 
 
-class TestSMSComposerMass(SMSCommon):
+class TestSMSComposerMass(TestSMSCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -584,7 +508,7 @@ class TestSMSComposerMass(SMSCommon):
             with self.mockSMSGateway():
                 messages = composer._action_send_sms()
 
-        number = self.partners[2]._phone_format()
+        number = self.partners[2].phone_get_sanitized_number()
         self.assertSMSNotification(
             [{'partner': test_record_2.customer_id, 'number': number}],
             "Hello %s ceci est en français." % test_record_2.display_name, messages

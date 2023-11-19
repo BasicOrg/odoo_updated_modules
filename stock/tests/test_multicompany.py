@@ -129,7 +129,7 @@ class TestMultiCompany(TransactionCase):
         last_move_id = self.env['stock.move'].search([('is_inventory', '=', True)])[-1]
         self.assertEqual(inventory_quant.company_id, self.company_a)
         self.assertEqual(last_move_id.company_id, self.company_a)
-        self.assertEqual(last_move_id.quantity, 10)
+        self.assertEqual(last_move_id.quantity_done, 10)
         self.assertEqual(last_move_id.location_id.company_id, self.company_a)
 
     def test_inventory_2(self):
@@ -196,7 +196,6 @@ class TestMultiCompany(TransactionCase):
             'picking_type_id': self.warehouse_a.in_type_id.id,
             'location_id': self.env.ref('stock.stock_location_suppliers').id,
             'location_dest_id': self.stock_location_a.id,
-            'state': 'draft',
         })
         self.assertEqual(picking.company_id, self.company_a)
         move1 = self.env['stock.move'].create({
@@ -212,10 +211,9 @@ class TestMultiCompany(TransactionCase):
         })
         picking.with_user(self.user_b).action_confirm()
         self.assertEqual(picking.state, 'assigned')
-        move1.with_user(self.user_b).move_line_ids[0].quantity = 1
+        move1.with_user(self.user_b).move_line_ids[0].qty_done = 1
         move1.with_user(self.user_b).move_line_ids[0].lot_name = 'receipt_serial'
         self.assertEqual(move1.move_line_ids[0].company_id, self.company_a)
-        picking.with_user(self.user_b).move_ids.picked = True
         picking.with_user(self.user_b).button_validate()
         self.assertEqual(picking.state, 'done')
         created_serial = self.env['stock.lot'].search([
@@ -466,8 +464,7 @@ class TestMultiCompany(TransactionCase):
         move_from_supplier._action_confirm()
         move_line_1 = move_from_supplier.move_line_ids[0]
         move_line_1.lot_name = 'lot 1'
-        move_line_1.quantity = 1.0
-        move_from_supplier.picked = True
+        move_line_1.qty_done = 1.0
         move_from_supplier._action_done()
         lot_1 = move_line_1.lot_id
 
@@ -486,8 +483,7 @@ class TestMultiCompany(TransactionCase):
         move_to_transit._action_assign()
         move_line_2 = move_to_transit.move_line_ids[0]
         self.assertTrue(move_line_2.lot_id, move_line_1.lot_id)
-        move_line_2.quantity = 1.0
-        move_to_transit.picked = True
+        move_line_2.qty_done = 1.0
         move_to_transit._action_done()
 
         move_push = self.env['stock.move'].search([('location_id', '=', intercom_location.id),
@@ -505,8 +501,7 @@ class TestMultiCompany(TransactionCase):
 
         move_line_3 = move_push.move_line_ids[0]
         move_line_3.lot_name = 'lot 2'
-        move_line_3.quantity = 1.0
-        picking_receipt.move_ids.picked = True
+        move_line_3.qty_done = 1.0
         picking_receipt.button_validate()
         lot_2 = move_line_3.lot_id
         self.assertEqual(lot_1.company_id, self.company_a)
@@ -550,8 +545,7 @@ class TestMultiCompany(TransactionCase):
         move_sup_to_whb._action_confirm()
         move_line_1 = move_sup_to_whb.move_line_ids[0]
         move_line_1.lot_name = 'lot b'
-        move_line_1.quantity = 1.0
-        move_sup_to_whb.picked = True
+        move_line_1.qty_done = 1.0
         move_sup_to_whb._action_done()
         lot_b = move_line_1.lot_id
 
@@ -561,7 +555,6 @@ class TestMultiCompany(TransactionCase):
             'picking_type_id': self.warehouse_a.out_type_id.id,
             'location_id': self.stock_location_a.id,
             'location_dest_id': customer_location.id,
-            'state': 'draft',
         })
         move_wha_to_cus = self.env['stock.move'].create({
             'name': "WH_A to Customer",
@@ -596,21 +589,26 @@ class TestMultiCompany(TransactionCase):
         self.assertEqual(move_transit_to_wha.state, "assigned")
         self.assertEqual(move_whb_to_transit.state, "assigned")
 
-        move_whb_to_transit.picking_id.button_validate()
+        res_dict = move_whb_to_transit.picking_id.button_validate()
+        self.assertEqual(res_dict.get('res_model'), 'stock.immediate.transfer')
+        wizard = Form(self.env[res_dict['res_model']].with_context(res_dict['context'])).save()
+        wizard.process()
         self.assertEqual(self.env['stock.quant']._get_available_quantity(product_lot, intercom_location, lot_b), 1.0)
         with self.assertRaises(UserError):
             move_transit_to_wha.picking_id.button_validate()
 
         move_line_2 = move_transit_to_wha.move_line_ids[0]
         move_line_2.lot_name = 'lot a'
-        move_line_2.quantity = 1.0
-        move_transit_to_wha.picked = True
+        move_line_2.qty_done = 1.0
         move_transit_to_wha._action_done()
         lot_a = move_line_2.lot_id
 
         move_wha_to_cus._action_assign()
         self.assertEqual(move_wha_to_cus.state, "assigned")
-        move_wha_to_cus.picking_id.button_validate()
+        res_dict = move_wha_to_cus.picking_id.button_validate()
+        self.assertEqual(res_dict.get('res_model'), 'stock.immediate.transfer')
+        wizard = Form(self.env[res_dict['res_model']].with_context(res_dict['context'])).save()
+        wizard.process()
         self.assertEqual(self.env['stock.quant']._get_available_quantity(product_lot, customer_location, lot_a), 1.0)
 
         self.assertEqual(lot_a.company_id, self.company_a)

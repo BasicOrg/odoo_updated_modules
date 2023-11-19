@@ -6,7 +6,7 @@
     'version': '1.0',
     'summary': "Monitor purchase in project",
     'category': 'Services/Project',
-    'depends': ['purchase', 'project_account'],
+    'depends': ['purchase', 'project'],
     'demo': [
         'data/project_purchase_demo.xml',
     ],

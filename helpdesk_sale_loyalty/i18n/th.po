@@ -3,16 +3,17 @@
 # 	* helpdesk_sale_loyalty
 # 
 # Translators:
-# Wil Odoo, 2023
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,16 +21,15 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__company_id
-msgid "Company"
-msgstr "บริษัท"
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
+msgid "Cancel"
+msgstr "ยกเลิก"
 
 #. module: helpdesk_sale_loyalty
-#. odoo-python
-#: code:addons/helpdesk_sale_loyalty/wizard/helpdesk_sale_coupon_generate.py:0
-#, python-format
-msgid "Compose Email"
-msgstr "เขียนอีเมล"
+#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__company_id
+msgid "Company"
+msgstr "บริษัทเดียว"
 
 #. module: helpdesk_sale_loyalty
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_ticket_view_form_inherit_helpdesk_sale_coupon
@@ -42,19 +42,17 @@ msgid "Coupon Program"
 msgstr "โปรแกรมคูปอง"
 
 #. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__points_granted
-msgid "Coupon Value"
-msgstr "มูลค่าคูปอง"
-
-#. module: helpdesk_sale_loyalty
-#. odoo-python
 #: code:addons/helpdesk_sale_loyalty/wizard/helpdesk_sale_coupon_generate.py:0
 #, python-format
 msgid "Coupon created"
-msgstr "สร้างคูปองแล้ว"
+msgstr ""
 
 #. module: helpdesk_sale_loyalty
-#. odoo-python
+#: model:loyalty.card,point_name:helpdesk_sale_loyalty.coupon_demo_1
+msgid "Coupon points"
+msgstr ""
+
+#. module: helpdesk_sale_loyalty
 #: code:addons/helpdesk_sale_loyalty/models/helpdesk_ticket.py:0
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_ticket_view_form_inherit_helpdesk_sale_coupon
 #, python-format
@@ -64,7 +62,7 @@ msgstr "คูปอง"
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_ticket__coupons_count
 msgid "Coupons count"
-msgstr "จำนวนคูปอง"
+msgstr ""
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__create_uid
@@ -77,15 +75,14 @@ msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: helpdesk_sale_loyalty
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
-msgid "Discard"
-msgstr "ละทิ้ง"
-
-#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__display_name
 msgid "Display Name"
 msgstr "แสดงชื่อ"
+
+#. module: helpdesk_sale_loyalty
+#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
+msgid "Generate"
+msgstr "สร้าง"
 
 #. module: helpdesk_sale_loyalty
 #: model:ir.model,name:helpdesk_sale_loyalty.model_helpdesk_sale_coupon_generate
@@ -114,6 +111,11 @@ msgid "ID"
 msgstr "ไอดี"
 
 #. module: helpdesk_sale_loyalty
+#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
+
+#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__write_uid
 msgid "Last Updated by"
 msgstr "อัปเดตครั้งล่าสุดโดย"
@@ -124,26 +126,11 @@ msgid "Last Updated on"
 msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 
 #. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__points_name
-msgid "Portal Point Name"
-msgstr "ชื่อจุดพอร์ทัล"
-
-#. module: helpdesk_sale_loyalty
 #: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.loyalty_card_view_form_helpdesk_sale_loyalty
 msgid "Send"
 msgstr "ส่ง"
 
 #. module: helpdesk_sale_loyalty
-#: model_terms:ir.ui.view,arch_db:helpdesk_sale_loyalty.helpdesk_sale_coupon_generate_view_form
-msgid "Send by Email"
-msgstr "ส่งโดยอีเมล"
-
-#. module: helpdesk_sale_loyalty
 #: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__ticket_id
 msgid "Ticket"
 msgstr "ทิกเก็ต"
-
-#. module: helpdesk_sale_loyalty
-#: model:ir.model.fields,field_description:helpdesk_sale_loyalty.field_helpdesk_sale_coupon_generate__valid_until
-msgid "Valid Until"
-msgstr "ใช้ได้จนถึง"

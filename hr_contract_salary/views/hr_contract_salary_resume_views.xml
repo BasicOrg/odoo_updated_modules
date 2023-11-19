@@ -16,6 +16,7 @@
     <record id="hr_contract_salary_resume_action" model="ir.actions.act_window">
         <field name="name">Resume</field>
         <field name="res_model">hr.contract.salary.resume</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="hr_contract_salary_resume_view_search"/>
     </record>
@@ -24,8 +25,7 @@
         <field name="name">hr.contract.salary.resume.view.tree</field>
         <field name="model">hr.contract.salary.resume</field>
         <field name="arch" type="xml">
-            <tree string="Salary Package Personal Info" expand='1'>
-                <field name="sequence" widget="handle"/>
+            <tree string="Salary Package Personal Info">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="value_type"/>
@@ -47,15 +47,15 @@
                     <group>
                         <group>
                             <field name="category_id"/>
+                            <field name="structure_type_id"/>
                             <field name="impacts_monthly_total"/>
-                            <field name="uom" required="1"/>
+                            <field name="uom"/>
                         </group>
                         <group>
-                            <field name="structure_type_id"/>
                         	<field name="value_type"/>
-                            <field name="benefit_ids" invisible="value_type != 'sum'" widget="many2many_tags"/>
-                            <field name="code" invisible="value_type not in ['payslip', 'contract']" required="value_type in ['payslip', 'contract']"/>
-                            <field name="fixed_value" invisible="value_type != 'fixed'"/>
+                            <field name="advantage_ids" attrs="{'invisible': [('value_type', '!=', 'sum')]}" widget="many2many_tags"/>
+                            <field name="code" attrs="{'invisible': [('value_type', 'not in', ['payslip', 'contract'])], 'required': [('value_type', 'in', ['payslip', 'contract'])]}"/>
+                            <field name="fixed_value" attrs="{'invisible': [('value_type', '!=', 'fixed')]}"/>
                         </group>
                     </group>
                 </sheet>

@@ -1,26 +1,24 @@
-/** @odoo-module **/
+odoo.define('web_unsplash.beacon', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.UnsplashBeacon = publicWidget.Widget.extend({
     // /!\ To adapt the day the beacon makes sense for backend customizations
     selector: '#wrapwrap',
 
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
-    },
-
     /**
      * @override
      */
     start: function () {
-        var unsplashImages = Array.from(this.$('img[src*="/unsplash/"]')).map((img) => {
+        var unsplashImages = _.map(this.$('img[src*="/unsplash/"]'), function (img) {
             // get image id from URL (`http://www.domain.com:1234/unsplash/xYdf5feoI/lion.jpg` -> `xYdf5feoI`)
             return img.src.split('/unsplash/')[1].split('/')[0];
         });
         if (unsplashImages.length) {
-            this.rpc('/web_unsplash/get_app_id').then(function (appID) {
+            this._rpc({
+                route: '/web_unsplash/get_app_id',
+            }).then(function (appID) {
                 if (!appID) {
                     return;
                 }
@@ -32,4 +30,5 @@ publicWidget.registry.UnsplashBeacon = publicWidget.Widget.extend({
         }
         return this._super.apply(this, arguments);
     },
+});
 });

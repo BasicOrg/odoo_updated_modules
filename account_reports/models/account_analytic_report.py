@@ -1,24 +1,21 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from psycopg2 import sql
-
 from odoo import models, fields, api, osv
 from odoo.addons.web.controllers.utils import clean_action
-from odoo.tools import SQL
+from psycopg2 import sql
 
 
 class AccountReport(models.AbstractModel):
     _inherit = 'account.report'
 
     filter_analytic_groupby = fields.Boolean(
-        string="Analytic Group By",
+        string="Filter Analytic Groupby",
         compute=lambda x: x._compute_report_option_filter('filter_analytic_groupby'), readonly=False, store=True, depends=['root_report_id'],
     )
 
     def _get_options_initializers_forced_sequence_map(self):
-        """ Force the sequence for the init_options so columns headers are already generated but not the columns
-            So, between _init_options_column_headers and _init_options_columns"""
+        """ Force the sequence for the init_options so columns groups are already generated """
         sequence_map = super(AccountReport, self)._get_options_initializers_forced_sequence_map()
-        sequence_map[self._init_options_analytic_groupby] = 995
+        sequence_map[self._init_options_analytic_groupby] = 1050
         return sequence_map
 
     def _init_options_analytic_groupby(self, options, previous_options=None):
@@ -28,13 +25,13 @@ class AccountReport(models.AbstractModel):
         if not enable_analytic_accounts:
             return
 
-        options['display_analytic_groupby'] = True
-        options['display_analytic_plan_groupby'] = True
+        options['analytic_groupby'] = True
+        options['analytic_plan_groupby'] = True
 
         options['include_analytic_without_aml'] = (previous_options or {}).get('include_analytic_without_aml', False)
         previous_analytic_accounts = (previous_options or {}).get('analytic_accounts_groupby', [])
         analytic_account_ids = [int(x) for x in previous_analytic_accounts]
-        selected_analytic_accounts = self.env['account.analytic.account'].with_context(active_test=False).search(
+        selected_analytic_accounts = self.env['account.analytic.account'].search(
             [('id', 'in', analytic_account_ids)])
         options['analytic_accounts_groupby'] = selected_analytic_accounts.ids
         options['selected_analytic_account_groupby_names'] = selected_analytic_accounts.mapped('name')
@@ -59,7 +56,7 @@ class AccountReport(models.AbstractModel):
         plans = self.env['account.analytic.plan'].browse(options.get('analytic_plans_groupby'))
         for plan in plans:
             account_list = []
-            accounts = self.env['account.analytic.account'].search([('plan_id', 'child_of', plan.id)])
+            accounts = self.env['account.analytic.account'].search([('root_plan_id', '=', plan.id)])
             for account in accounts:
                 account_list.append(account.id)
             analytic_headers.append({
@@ -81,11 +78,13 @@ class AccountReport(models.AbstractModel):
             })
         if analytic_headers:
             analytic_headers.append({'name': ''})
-            # We add the analytic layer to the column_headers before creating the columns
+            default_group_vals = {'horizontal_groupby_element': {}, 'forced_options': {}}
             options['column_headers'] = [
                 *options['column_headers'],
                 analytic_headers,
             ]
+            initial_column_group_vals = self._generate_columns_group_vals_recursively(options['column_headers'], default_group_vals)
+            options['columns'], options['column_groups'] = self._build_columns_from_column_group_vals(options, initial_column_group_vals)
 
     @api.model
     def _prepare_lines_for_analytic_groupby(self):
@@ -108,7 +107,7 @@ class AccountReport(models.AbstractModel):
 
         line_fields = self.env['account.move.line'].fields_get()
         self.env.cr.execute("SELECT column_name FROM information_schema.columns WHERE table_name='account_move_line'")
-        stored_fields = set(f[0] for f in self.env.cr.fetchall() if f[0] in line_fields)
+        stored_fields = set(f[0] for f in self.env.cr.fetchall())
         changed_equivalence_dict = {
             "id": sql.Identifier("id"),
             "balance": sql.SQL("-amount"),
@@ -130,15 +129,9 @@ class AccountReport(models.AbstractModel):
                     asname=sql.SQL(fname),
                 ))
             elif fname == 'analytic_distribution':
-                project_plan, other_plans = self.env['account.analytic.plan']._get_all_plans()
-                analytic_cols = ", ".join(n._column_name() for n in (project_plan+other_plans))
-                selected_fields.append(sql.SQL(f'to_jsonb(UNNEST(ARRAY[{analytic_cols}])) AS "account_move_line.analytic_distribution"'))
+                selected_fields.append(sql.SQL('to_jsonb(account_id) AS "account_move_line.analytic_distribution"'))
             else:
-                if line_fields[fname].get("translate"):
-                    typecast = sql.SQL('jsonb')
-                elif line_fields[fname].get("type") == "monetary":
-                    typecast = sql.SQL('numeric')
-                elif line_fields[fname].get("type") == "many2one":
+                if line_fields[fname].get("type") in ("many2one", "one2many", "many2many", "monetary"):
                     typecast = sql.SQL('integer')
                 elif line_fields[fname].get("type") == "datetime":
                     typecast = sql.SQL('date')
@@ -177,7 +170,7 @@ class AccountReport(models.AbstractModel):
 
         # We add the domain filter for analytic_distribution here, as the search is not available
         tables, where_clause, where_params = super(AccountReport, context_self)._query_get(options, date_scope, domain)
-        if options.get('analytic_accounts') and not any(x in options.get('analytic_accounts_list', []) for x in options['analytic_accounts']):
+        if options.get('analytic_accounts'):
             analytic_account_ids = [[str(account_id) for account_id in options['analytic_accounts']]]
             where_params.append(analytic_account_ids)
             where_clause = f'{where_clause} AND "account_move_line".analytic_distribution ?| array[%s]'
@@ -265,5 +258,5 @@ class AccountMoveLine(models.Model):
         query = super()._where_calc(domain, active_test)
         if self.env.context.get('account_report_analytic_groupby'):
             self.env['account.report']._prepare_lines_for_analytic_groupby()
-            query._tables['account_move_line'] = SQL.identifier('analytic_temp_account_move_line')
+            query._tables['account_move_line'] = 'analytic_temp_account_move_line'
         return query

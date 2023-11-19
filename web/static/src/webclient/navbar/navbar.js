@@ -7,24 +7,10 @@ import { registry } from "@web/core/registry";
 import { debounce } from "@web/core/utils/timing";
 import { ErrorHandler } from "@web/core/utils/components";
 
-import {
-    Component,
-    onWillDestroy,
-    useExternalListener,
-    useEffect,
-    useRef,
-    onWillUnmount,
-} from "@odoo/owl";
+const { Component, onWillDestroy, onWillUnmount, useExternalListener, useEffect, useRef } = owl;
 const systrayRegistry = registry.category("systray");
 
 const getBoundingClientRect = Element.prototype.getBoundingClientRect;
-
-class NavBarDropdownItem extends DropdownItem {}
-NavBarDropdownItem.template = "web.NavBar.DropdownItem";
-NavBarDropdownItem.props = {
-    ...DropdownItem.props,
-    style: { type: String, optional: true },
-};
 
 export class MenuDropdown extends Dropdown {
     setup() {
@@ -61,12 +47,12 @@ export class NavBar extends Component {
             this.render();
         };
 
-        systrayRegistry.addEventListener("UPDATE", renderAndAdapt);
-        this.env.bus.addEventListener("MENUS:APP-CHANGED", renderAndAdapt);
+        systrayRegistry.on("UPDATE", this, renderAndAdapt);
+        this.env.bus.on("MENUS:APP-CHANGED", this, renderAndAdapt);
 
         onWillUnmount(() => {
-            systrayRegistry.removeEventListener("UPDATE", renderAndAdapt);
-            this.env.bus.removeEventListener("MENUS:APP-CHANGED", renderAndAdapt);
+            systrayRegistry.off("UPDATE", this);
+            this.env.bus.off("MENUS:APP-CHANGED", this);
         });
 
         // We don't want to adapt every time we are patched
@@ -215,5 +201,4 @@ export class NavBar extends Component {
     }
 }
 NavBar.template = "web.NavBar";
-NavBar.components = { Dropdown, DropdownItem: NavBarDropdownItem, MenuDropdown, ErrorHandler };
-NavBar.props = {};
+NavBar.components = { Dropdown, DropdownItem, MenuDropdown, ErrorHandler };

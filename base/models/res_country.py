@@ -38,7 +38,6 @@ class Country(models.Model):
         string='Country Name', required=True, translate=True)
     code = fields.Char(
         string='Country Code', size=2,
-        required=True,
         help='The ISO country code in two chars. \nYou can use this field for quick search.')
     address_format = fields.Text(string="Layout in Reports",
         help="Display format to use for addresses belonging to this country.\n\n"
@@ -77,23 +76,23 @@ class Country(models.Model):
 
     _sql_constraints = [
         ('name_uniq', 'unique (name)',
-            'The name of the country must be unique!'),
+            'The name of the country must be unique !'),
         ('code_uniq', 'unique (code)',
-            'The code of the country must be unique!')
+            'The code of the country must be unique !')
     ]
 
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
-        if domain is None:
-            domain = []
+    def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
+        if args is None:
+            args = []
 
         ids = []
         if len(name) == 2:
-            ids = list(self._search([('code', 'ilike', name)] + domain, limit=limit, order=order))
+            ids = list(self._search([('code', 'ilike', name)] + args, limit=limit))
 
         search_domain = [('name', operator, name)]
         if ids:
             search_domain.append(('id', 'not in', ids))
-        ids += list(self._search(search_domain + domain, limit=limit, order=order))
+        ids += list(self._search(search_domain + args, limit=limit))
 
         return ids
 
@@ -115,11 +114,11 @@ class Country(models.Model):
         res = super().write(vals)
         if ('code' in vals or 'phone_code' in vals):
             # Intentionally simplified by not clearing the cache in create and unlink.
-            self.env.registry.clear_cache()
+            self.clear_caches()
         if 'address_view_id' in vals:
             # Changing the address view of the company must invalidate the view cached for res.partner
             # because of _view_get_address
-            self.env.registry.clear_cache('templates')
+            self.env['res.partner'].clear_caches()
         return res
 
     def get_address_fields(self):
@@ -165,35 +164,32 @@ class CountryState(models.Model):
     code = fields.Char(string='State Code', help='The state code.', required=True)
 
     _sql_constraints = [
-        ('name_code_uniq', 'unique(country_id, code)', 'The code of the state must be unique by country!')
+        ('name_code_uniq', 'unique(country_id, code)', 'The code of the state must be unique by country !')
     ]
 
     @api.model
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
-        domain = domain or []
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
         if self.env.context.get('country_id'):
-            domain = expression.AND([domain, [('country_id', '=', self.env.context.get('country_id'))]])
+            args = expression.AND([args, [('country_id', '=', self.env.context.get('country_id'))]])
 
         if operator == 'ilike' and not (name or '').strip():
-            domain1 = []
-            domain2 = []
+            first_domain = []
+            domain = []
         else:
-            domain1 = [('code', '=ilike', name)]
-            domain2 = [('name', operator, name)]
+            first_domain = [('code', '=ilike', name)]
+            domain = [('name', operator, name)]
 
-        first_state_ids = []
-        if domain1:
-            first_state_ids = list(self._search(
-                expression.AND([domain1, domain]), limit=limit, order=order,
-            ))
-        return first_state_ids + [
+        first_state_ids = self._search(expression.AND([first_domain, args]), limit=limit, access_rights_uid=name_get_uid) if first_domain else []
+        return list(first_state_ids) + [
             state_id
-            for state_id in self._search(expression.AND([domain2, domain]),
-                                         limit=limit, order=order)
+            for state_id in self._search(expression.AND([domain, args]),
+                                         limit=limit, access_rights_uid=name_get_uid)
             if state_id not in first_state_ids
         ]
 
-    @api.depends('country_id')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         for record in self:
-            record.display_name = f"{record.name} ({record.country_id.code})"
+            result.append((record.id, "{} ({})".format(record.name, record.country_id.code)))
+        return result

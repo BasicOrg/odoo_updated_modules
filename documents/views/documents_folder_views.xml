@@ -6,10 +6,8 @@
         <field name="arch" type="xml">
         <search>
             <field name="name"/>
-            <field name="active"/>
             <field name="parent_folder_id"/>
             <filter string="Parent Workspace" name="by_parent" domain="[]" context="{'group_by': 'parent_folder_id'}"/>
-            <filter string="Archived Workspace" name="archived_workspace_filter" domain="[('active', '=', False)]"/>
          </search>
         </field>
     </record>
@@ -18,10 +16,9 @@
         <field name="name">Workspace tree</field>
         <field name="model">documents.folder</field>
         <field name="arch" type="xml">
-            <tree string="Workspaces" js_class="folder_list">
+            <tree>
                 <field name="sequence" widget="handle"/>
                 <field name="display_name" string="Workspace"/>
-                <field name="active" string="Active" invisible="1"/>
                 <field name="facet_ids"  widget="many2many_tags" string="Tag Categories"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="group_ids" widget="many2many_tags"/>
@@ -34,8 +31,7 @@
         <field name="name">Workspace form</field>
         <field name="model">documents.folder</field>
         <field name="arch" type="xml">
-            <form js_class="folder_form">
-                <field name="active" string="Active" invisible="1"/>
+            <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_see_actions" type="object" class="oe_stat_button" icon="fa-gears">
@@ -44,7 +40,7 @@
                                 <span class="o_stat_text">Actions</span>
                             </div>
                         </button>
-                        <button name="action_see_documents" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="document_count == 0">
+                        <button name="action_see_documents" type="object" class="oe_stat_button" icon="fa-file-text-o" attrs="{'invisible' : [('document_count', '=', 0)]}">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><field name="document_count"/></span>
                                 <span class="o_stat_text">Documents</span>
@@ -88,11 +84,11 @@
                                 <group string="Write Access">
                                     <field name="group_ids" widget="many2many_tags"/>
                                     <field name="user_specific_write" string="Own Documents Only"
-                                        invisible="not user_specific or not group_ids"/>
+                                        attrs="{'invisible': ['|', ('user_specific', '=', False), ('group_ids', '=', [])]}"/>
                                 </group>
                                 <group string="Read Access">
                                     <field name="read_group_ids" widget="many2many_tags"/>
-                                    <field name="user_specific" invisible="not read_group_ids"/>
+                                    <field name="user_specific" attrs="{'invisible':[('read_group_ids', '=', [])]}"/>
                                 </group>
                             </group>
                         </page>
@@ -101,28 +97,9 @@
                         </page>
                     </notebook>
                 </sheet>
-                <footer class="justify-content-between">
-                    <div class="btn-group">
-                        <button class="btn btn-primary me-2 rounded w-auto" special="save" data-hotkey="q">Save</button>
-                        <button class="btn btn-secondary rounded w-auto" special="cancel" data-hotkey="x">Discard</button>
-                    </div>
-                    <button class="btn btn-outline-danger text-uppercase rounded w-auto" type="object" name="action_delete_folder" data-hotkey="d">Delete</button>
-                </footer>
-            </form>
-        </field>
-    </record>
-
-    <record id="folder_deletion_form" model="ir.ui.view">
-        <field name="name">Folder Deletion</field>
-        <field name="model">documents.folder</field>
-        <field name="arch" type="xml">
-            <form>
-                <div>
-                    Files will be sent to trash and deleted forever after <field name="deletion_delay"/> days.
-                </div>
                 <footer>
-                    <button string="Move to trash" class="btn-primary" type="object" name="action_archive" data-hotkey="d"/>
-                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z" />
+                    <button class="btn btn-primary" special="save" data-hotkey="s">Save</button>
+                    <button class="btn btn-secondary" special="cancel" data-hotkey="j">Discard</button>
                 </footer>
             </form>
         </field>
@@ -134,6 +111,6 @@
             <field name="view_mode">tree,form</field>
           <field name="view_ids" eval="[(5, 0, 0),
               (0, 0, {'view_mode': 'tree', 'view_id': ref('documents.folder_view_tree')}),
-              (0, 0, {'view_mode': 'form', 'view_id': ref('documents.folder_view_form')})]"/>
+              (0, 0, {'view_mode': 'form', 'view_id': False})]"/>
       </record>
 </odoo>

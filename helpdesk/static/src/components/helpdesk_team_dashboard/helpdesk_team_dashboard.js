@@ -1,11 +1,11 @@
 /** @odoo-module **/
 
 import { session } from '@web/session';
-import { formatFloatTime } from '@web/views/fields/formatters';
-import { formatFloat } from "@web/core/utils/numbers";
+import { formatFloat, formatFloatTime } from '@web/views/fields/formatters';
 import { useService } from "@web/core/utils/hooks";
 import { HelpdeskTeamTarget } from "../helpdesk_team_target/helpdesk_team_target";
-import { Component, useState, onWillStart } from "@odoo/owl";
+
+const { Component, useState, onWillStart } = owl;
 
 export class HelpdeskTeamDashboard extends Component {
     setup() {
@@ -23,7 +23,7 @@ export class HelpdeskTeamDashboard extends Component {
     }
 
     get demoClass() {
-        return this.showDemo ? 'o_demo o_disabled o_cursor_default' : '';
+        return this.showDemo ? 'o_demo o_debounce_disabled o_cursor_default' : '';
     }
 
     async onWillStart() {

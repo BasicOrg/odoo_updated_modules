@@ -3,8 +3,8 @@
 import logging
 import uuid
 
-from datetime import datetime, time, timedelta
-from odoo import fields, models, _, api
+from datetime import datetime, time
+from odoo import fields, models, _, api, Command
 
 _logger = logging.getLogger(__name__)
 
@@ -15,28 +15,32 @@ class Employee(models.Model):
     def _default_employee_token(self):
         return str(uuid.uuid4())
 
-    default_planning_role_id = fields.Many2one(related='resource_id.default_role_id', readonly=False, groups='hr.group_hr_user',
+    default_planning_role_id = fields.Many2one('planning.role', string="Default Planning Role",
+        compute='_compute_default_planning_role_id', groups='hr.group_hr_user', store=True, readonly=False,
         help="Role that will be selected by default when creating a shift for this employee.\n"
              "This role will also have precedence over the other roles of the employee when planning orders.")
     planning_role_ids = fields.Many2many(related='resource_id.role_ids', readonly=False, groups='hr.group_hr_user',
-        help="Roles that the employee can fill in. When creating a shift for this employee, only the shift templates for these roles will be displayed.\n"
+         help="Roles that the employee can fill in. When creating a shift for this employee, only the shift templates for these roles will be displayed.\n"
              "Similarly, only the open shifts available for these roles will be sent to the employee when the schedule is published.\n"
              "Additionally, the employee will only be assigned orders for these roles (with the default planning role having precedence over the other ones).\n"
              "Leave empty for the employee to be assigned shifts regardless of the role.")
     employee_token = fields.Char('Security Token', default=_default_employee_token, groups='hr.group_hr_user',
                                  copy=False, readonly=True)
+    flexible_hours = fields.Boolean(related='resource_id.flexible_hours', readonly=False)
 
     _sql_constraints = [
         ('employee_token_unique', 'unique(employee_token)', 'Error: each employee token must be unique')
     ]
 
-    @api.depends('job_title')
-    @api.depends_context('show_job_title')
-    def _compute_display_name(self):
+    def name_get(self):
         if not self.env.context.get('show_job_title'):
-            return super()._compute_display_name()
-        for employee in self:
-            employee.display_name = f"{employee.name} ({employee.job_title})" if employee.job_title else employee.name
+            return super().name_get()
+        return [(employee.id, employee._get_employee_name_with_job_title()) for employee in self]
+
+    def _get_employee_name_with_job_title(self):
+        if self.job_title:
+            return "%s (%s)" % (self.name, self.job_title)
+        return self.name
 
     def _init_column(self, column_name):
         # to avoid generating a single default employee_token when installing the module,
@@ -45,14 +49,9 @@ class Employee(models.Model):
             _logger.debug("Table '%s': setting default value of new column %s to unique values for each row", self._table, column_name)
             self.env.cr.execute("SELECT id FROM %s WHERE employee_token IS NULL" % self._table)
             acc_ids = self.env.cr.dictfetchall()
-            values_args = [(acc_id['id'], self._default_employee_token()) for acc_id in acc_ids]
-            query = """
-                UPDATE {table}
-                SET employee_token = vals.token
-                FROM (VALUES %s) AS vals(id, token)
-                WHERE {table}.id = vals.id
-            """.format(table=self._table)
-            self.env.cr.execute_values(query, values_args)
+            query_list = [{'id': acc_id['id'], 'employee_token': self._default_employee_token()} for acc_id in acc_ids]
+            query = 'UPDATE ' + self._table + ' SET employee_token = %(employee_token)s WHERE id = %(id)s;'
+            self.env.cr._obj.executemany(query, query_list)
         else:
             super(Employee, self)._init_column(column_name)
 
@@ -76,39 +75,73 @@ class Employee(models.Model):
 
     @api.onchange('default_planning_role_id')
     def _onchange_default_planning_role_id(self):
-        self.planning_role_ids |= self.default_planning_role_id
+        # Although not recommended the onchange is necessary here as the field is a related and the bellow logic
+        # is only needed when editing in order to improve UX.
+        for employee in self:
+            employee.planning_role_ids |= employee.default_planning_role_id
 
-    @api.onchange('planning_role_ids')
-    def _onchange_planning_role_ids(self):
-        if self.default_planning_role_id.id not in self.planning_role_ids.ids:
-            self.default_planning_role_id = self.planning_role_ids[:1]
+    @api.depends('planning_role_ids')
+    def _compute_default_planning_role_id(self):
+        for employee in self:
+            if employee.planning_role_ids and employee.default_planning_role_id.id not in employee.planning_role_ids.ids:
+                # _origin is required to have it work during onchange calls.
+                employee.default_planning_role_id = employee.planning_role_ids._origin[0]
+            elif not employee.planning_role_ids:
+                employee.default_planning_role_id = False
+
+    def write(self, vals):
+        # The following lines had to be written as `planning_role_ids` is a related field that has to depend on
+        # `default_planning_role_id`. In order to do so an onchange has been added in order to improve the user
+        # experience, but unfortunately does not trigger computation on write. That's why we need to handle it
+        # here too.
+        default_planning_role_id = vals.get('default_planning_role_id', False)
+        default_planning_role = self.env['planning.role'].browse(default_planning_role_id)\
+            if isinstance(default_planning_role_id, int) else default_planning_role_id
+        if default_planning_role:
+            if 'planning_role_ids' in vals and vals['planning_role_ids']:
+                # `planning_role_ids` is either a list of commands, a list of ids, or a recordset
+                if isinstance(vals['planning_role_ids'], list):
+                    if len(vals['planning_role_ids'][0]) == 3:
+                        vals['planning_role_ids'].append(Command.link(default_planning_role.id))
+                    else:
+                        vals['planning_role_ids'].append(default_planning_role.id)
+                else:
+                    vals['planning_role_ids'] |= default_planning_role
+            else:
+                vals['planning_role_ids'] = [Command.link(default_planning_role.id)]
+        return super().write(vals)
 
     def action_archive(self):
         res = super().action_archive()
-        departure_date = datetime.combine(fields.Date.context_today(self) + timedelta(days=1), time.min)
+        departure_date = datetime.combine(fields.Date.today(), time.max)
         planning_slots = self.env['planning.slot'].sudo().search([
             ('resource_id', 'in', self.resource_id.ids),
             ('end_datetime', '>=', departure_date),
         ])
-        planning_slots._manage_archived_resources(departure_date)
+        self._manage_archived_employee_shifts(planning_slots, departure_date)
         return res
+
+    def _manage_archived_employee_shifts(self, planning_slots, departure_date):
+        shift_vals_list = []
+        shift_ids_to_remove_resource = []
+        for slot in planning_slots:
+            if (slot.start_datetime < departure_date) and (slot.end_datetime > departure_date):
+                shift_vals_list.append({
+                    'start_datetime': departure_date,
+                    'end_datetime': slot.end_datetime,
+                    'role_id': slot.role_id.id,
+                    'company_id': slot.company_id.id,
+                })
+                slot.write({'end_datetime': departure_date})
+            elif slot.start_datetime >= departure_date:
+                shift_ids_to_remove_resource.append(slot.id)
+        if shift_vals_list:
+            self.env['planning.slot'].sudo().create(shift_vals_list)
+        if shift_ids_to_remove_resource:
+            self.env['planning.slot'].sudo().browse(shift_ids_to_remove_resource).write({'resource_id': False})
 
 class HrEmployeeBase(models.AbstractModel):
     _inherit = "hr.employee.base"
-
-    has_slots = fields.Boolean(compute='_compute_has_slots')
-
-    def _compute_has_slots(self):
-        self.env.cr.execute("""
-        SELECT id, EXISTS(SELECT 1 FROM planning_slot WHERE employee_id = e.id limit 1)
-          FROM hr_employee e
-         WHERE id in %s
-        """, (tuple(self.ids), ))
-
-        result = {eid[0]: eid[1] for eid in self.env.cr.fetchall()}
-
-        for employee in self:
-            employee.has_slots = result.get(employee.id, False)
 
     def action_view_planning(self):
         action = self.env["ir.actions.actions"]._for_xml_id("planning.planning_action_schedule_by_resource")

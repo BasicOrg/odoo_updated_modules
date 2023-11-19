@@ -3,17 +3,16 @@
 # 	* delivery_iot
 # 
 # Translators:
-# Wil Odoo, 2023
-# Abe Manyo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~14.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Abe Manyo, 2023\n"
-"Language-Team: Indonesian (https://app.transifex.com/odoo/teams/41243/id/)\n"
+"POT-Creation-Date: 2021-07-12 07:57+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Indonesian (https://www.transifex.com/odoo/teams/41243/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,25 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: delivery_iot
-#: model:ir.actions.report,print_report_name:delivery_iot.action_report_shipping_docs
-#: model:ir.actions.report,print_report_name:delivery_iot.action_report_shipping_labels
-msgid "'Empty Report - Used for assigning IoT printer'"
-msgstr "'Laporan Kosong - Digunakan untuk menetapkan printer IoT'"
-
-#. module: delivery_iot
-#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__auto_print_carrier_labels
-msgid "Auto Print Carrier Labels"
-msgstr "Cetak Otomatis Label Carrier"
-
-#. module: delivery_iot
-#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__auto_print_export_documents
-msgid "Auto Print Export Documents"
-msgstr "Cetak Otomatis Dokumen Ekspor"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Carrier Labels"
-msgstr "Label Carrier"
+#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__iot_printer_id
+msgid "Automatically print the shipping labels using this printer."
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,help:delivery_iot.field_choose_delivery_package__available_scale_ids
@@ -48,38 +31,21 @@ msgid ""
 "Choose the scales you want to use for this operation type. Those scales can "
 "be used to weigh the packages created."
 msgstr ""
-"Pilih timbangan yang Anda ingin gunakan untuk tipe operasi ini. Timbangan "
-"tersebut dapat digunakan untuk menimbang paket yang dibuat."
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Connect Scale"
-msgstr "Connect Scale"
 
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_choose_delivery_package
 msgid "Delivery Package Selection Wizard"
-msgstr "Wizard Pengiriman Paket Pengiriman"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__iot_ip
 msgid "Domain Address"
-msgstr "Alamat Domain"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "Export Documents"
-msgstr "Ekspor Dokumen"
-
-#. module: delivery_iot
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid "How to connect scales?"
-msgstr "Bagaimana cara menghubungkan scale?"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_iot_device
 msgid "IOT Device"
-msgstr "Perangkat IOT"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__iot_device_identifier
@@ -87,54 +53,24 @@ msgid "Identifier"
 msgstr "Identifier"
 
 #. module: delivery_iot
-#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__auto_print_carrier_labels
-msgid ""
-"If this checkbox is ticked, Odoo will automatically print the carrier labels"
-" of the picking when they are created. Note this requires a printer to be "
-"assigned to this report."
-msgstr ""
-"Bila kotak dicentang, Odoo akan secara otomatis mencetak label carrier dari "
-"picking saat dibuat. Ingat bahwa ini membutuhkan printer yang ditugaskan ke "
-"laporan ini."
-
-#. module: delivery_iot
-#: model:ir.model.fields,help:delivery_iot.field_stock_picking_type__auto_print_export_documents
-msgid ""
-"If this checkbox is ticked, Odoo will automatically print the export "
-"documents of the picking when they are created. Availability of export "
-"documents depends on the carrier and the destination. Note this requires a "
-"printer to be assigned to this report. "
-msgstr ""
-"Bila kotak dicentang, Odoo akan secara otomatis mencetak dokumen ekspor dari"
-" picking saat dibuat. Ketersediaan dokumen ekspor tergantung pada carrier "
-"dan tujuan. Ingat bahwa ini membutuhkan printer yang ditugaskan ke laporan "
-"ini."
-
-#. module: delivery_iot
 #: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
-msgid ""
-"If you connect your scales through the IoT App, the\n"
-"                            weight of the package will be set automatically when\n"
-"                            you do a \"Put in Pack\" operation."
+msgid "IoT"
 msgstr ""
-"Bila Anda menghubungkan timbangan Anda melalui App IoT,\n"
-"                            bobot paket akan ditetapkan secara otomatis saat\n"
-"                            Anda melalukan operasi \"Masukkan ke Paket\"."
 
 #. module: delivery_iot
 #: model_terms:ir.ui.view,arch_db:delivery_iot.iot_device_view_form_inherit
 msgid "Linked Operation Types"
-msgstr "Tipe Operasi Terhubung"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__manual_measurement
 msgid "Manual Measurement"
-msgstr "Pengukuran Manual"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,help:delivery_iot.field_choose_delivery_package__manual_measurement
 msgid "Manually read the measurement from the device"
-msgstr "Secara manual baca pengukuran dari perangkat"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_iot_device__picking_type_ids
@@ -144,14 +80,14 @@ msgstr "Tipe Operasi"
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_stock_picking_type
 msgid "Picking Type"
-msgstr "Tipe Picking"
+msgstr "Type Pengambilan"
 
 #. module: delivery_iot
-#. odoo-javascript
-#: code:addons/delivery_iot/static/src/field_many2one_iot_scale.xml:0
+#. openerp-web
+#: code:addons/delivery_iot/static/src/xml/iot_widgets_templates.xml:0
 #, python-format
 msgid "Read weight"
-msgstr "Baca bobot"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__iot_device_id
@@ -161,19 +97,13 @@ msgstr "Timbangan"
 #. module: delivery_iot
 #: model:ir.model.fields,field_description:delivery_iot.field_choose_delivery_package__available_scale_ids
 #: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__iot_scale_ids
-#: model_terms:ir.ui.view,arch_db:delivery_iot.view_picking_type_form_inherit
 msgid "Scales"
-msgstr "Timbangan"
+msgstr ""
 
 #. module: delivery_iot
-#: model:ir.actions.report,name:delivery_iot.action_report_shipping_docs
-msgid "Shipping Documents"
-msgstr "Dokumen Pengiriman"
-
-#. module: delivery_iot
-#: model:ir.actions.report,name:delivery_iot.action_report_shipping_labels
-msgid "Shipping Labels"
-msgstr "Label Pengiriman"
+#: model:ir.model.fields,field_description:delivery_iot.field_stock_picking_type__iot_printer_id
+msgid "Shipping Labels Printer"
+msgstr ""
 
 #. module: delivery_iot
 #: model:ir.model,name:delivery_iot.model_stock_picking

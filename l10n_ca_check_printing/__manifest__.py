@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Canadian Checks Layout',
-    'countries': ['ca'],
+    'icon': '/l10n_ca/static/description/icon.png',
     'version': '1.0',
     'author': 'Odoo SA, OERP Canada',
     'category': 'Accounting/Localizations/Check',
@@ -14,7 +14,7 @@ As per Canadian Payment Association (https://www.payments.ca/sites/default/files
 
 Supported formats
 -----------------
-- Check on top: Quicken / QuickBooks standard
+- Check on top : Quicken / QuickBooks standard
 - Check on middle: Peachtree standard
 - Check on bottom: ADP standard
     """,

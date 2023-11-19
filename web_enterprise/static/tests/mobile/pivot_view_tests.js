@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { dialogService } from "@web/core/dialog/dialog_service";
 import { registry } from "@web/core/registry";
 import {
     makeFakeLocalizationService,
@@ -153,6 +154,7 @@ QUnit.module("Views", (hooks) => {
         };
         setupControlPanelFavoriteMenuRegistry();
         setupControlPanelServiceRegistry();
+        serviceRegistry.add("dialog", dialogService);
         serviceRegistry.add("localization", makeFakeLocalizationService());
         serviceRegistry.add("user", makeFakeUserService());
         patchWithCleanup(browser, { setTimeout: (fn) => fn() });

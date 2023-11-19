@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import datetime
+import random
 
 import pytz
 from odoo import models
@@ -19,7 +20,6 @@ class AppointmentSlot(models.Model):
 
     def _populate_factories(self):
         def compute_hours_and_duration(iterator, *args):
-            random = populate.Random('hoursduration')
             appointment_type_duration_max_half_day = max(
                 data.appointment_type["appointment_duration_half_day"].keys())
 
@@ -55,7 +55,6 @@ class AppointmentSlot(models.Model):
             # Yield one or two slots with specified start and end datetime attributes for
             # `category="custom"` appointment types with the required "unique" slot_type, or a
             # single "recurring" slot_type slot
-            random = populate.Random('slottypes')
             for values in iterator:
                 app_type = self.env["appointment.type"].browse(values["appointment_type_id"])
 
@@ -73,11 +72,11 @@ class AppointmentSlot(models.Model):
                         .utcoffset())
 
                     new_values = {
-                        "slot_type": "unique",
-                        "start_datetime": start_datetime,
-                        "end_datetime": start_datetime + datetime.timedelta(
-                            hours=app_type["appointment_duration"]),
-                        "allday": False
+                       "slot_type": "unique",
+                       "start_datetime": start_datetime,
+                       "end_datetime": start_datetime + datetime.timedelta(
+                           hours=app_type["appointment_duration"]),
+                       "allday": False
                     }
                     yield {**values, **new_values}
                     # Sometimes two per day, with a "taken" slot in-between
@@ -90,7 +89,7 @@ class AppointmentSlot(models.Model):
 
         appointment_type_ids = self.env['appointment.type'].browse(
             self.env.registry.populated_models['appointment.type']).filtered_domain([
-                ('category', 'in', ['punctual', 'recurring', 'custom'])]).ids
+                '|', ('category', '=', 'website'), ('category', '=', 'custom')]).ids
 
         # We need values for 5-6 days for each appointment_type_id.
         # We populate 7 days then later randomly drop one or more
@@ -104,7 +103,6 @@ class AppointmentSlot(models.Model):
         ]
 
         def _compute_slot_times(iterator, *args):
-            random = populate.Random('slottimes')
             for slot in slots:
                 for new_values in slot:
                     if new_values["__complete"]:

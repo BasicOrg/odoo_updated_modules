@@ -146,7 +146,7 @@ class TestWarehouseMrp(common.TestMrpCommon):
         # Scrap Product Wood with lot.
         scrap_id = self.env['stock.scrap'].with_context(active_model='mrp.production', active_id=production_3.id).create({'product_id': self.product_2.id, 'scrap_qty': 1.0, 'product_uom_id': self.product_2.uom_id.id, 'location_id': location_id, 'lot_id': lot_product_2.id, 'production_id': production_3.id})
         scrap_id.do_scrap()
-        scrap_move = scrap_id.move_ids[0]
+        scrap_move = scrap_id.move_id
 
         self.assertTrue(scrap_move.raw_material_production_id)
         self.assertTrue(scrap_move.scrapped)
@@ -296,7 +296,7 @@ class TestKitPicking(common.TestMrpCommon):
         }
 
     def test_kit_immediate_transfer(self):
-        """ Make sure a kit is split in the corrects quantity by components in case of an
+        """ Make sure a kit is split in the corrects quantity_done by components in case of an
         immediate transfer.
         """
         picking = self.env['stock.picking'].create({
@@ -304,12 +304,12 @@ class TestKitPicking(common.TestMrpCommon):
             'location_dest_id': self.warehouse_1.wh_input_stock_loc_id.id,
             'partner_id': self.test_partner.id,
             'picking_type_id': self.env.ref('stock.picking_type_in').id,
+            'immediate_transfer': True
         })
-        self.env['stock.move'].create({
+        move_receipt_1 = self.env['stock.move'].create({
             'name': self.kit_parent.name,
             'product_id': self.kit_parent.id,
-            'quantity': 3,
-            'picked': True,
+            'quantity_done': 3,
             'product_uom': self.kit_parent.uom_id.id,
             'picking_id': picking.id,
             'picking_type_id': self.env.ref('stock.picking_type_in').id,
@@ -320,9 +320,8 @@ class TestKitPicking(common.TestMrpCommon):
 
         # We check that the picking has the correct quantities after its move were splitted.
         self.assertEqual(len(picking.move_ids), 7)
-        for move in picking.move_ids:
-            self.assertEqual(move.quantity, self.expected_quantities[move.product_id])
-            self.assertEqual(move.state, 'done')
+        for move_line in picking.move_ids:
+            self.assertEqual(move_line.quantity_done, self.expected_quantities[move_line.product_id])
 
     def test_kit_planned_transfer(self):
         """ Make sure a kit is split in the corrects product_qty by components in case of a
@@ -333,6 +332,7 @@ class TestKitPicking(common.TestMrpCommon):
             'location_dest_id': self.warehouse_1.wh_input_stock_loc_id.id,
             'partner_id': self.test_partner.id,
             'picking_type_id': self.env.ref('stock.picking_type_in').id,
+            'immediate_transfer': False,
         })
         move_receipt_1 = self.env['stock.move'].create({
             'name': self.kit_parent.name,
@@ -350,47 +350,3 @@ class TestKitPicking(common.TestMrpCommon):
         self.assertEqual(len(picking.move_ids), 7)
         for move_line in picking.move_ids:
             self.assertEqual(move_line.product_qty, self.expected_quantities[move_line.product_id])
-
-    def test_add_sml_with_kit_to_confirmed_picking(self):
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
-        customer_location = self.env.ref('stock.stock_location_customers')
-        stock_location = warehouse.lot_stock_id
-        in_type = warehouse.in_type_id
-
-        self.bom_4.type = 'phantom'
-        kit = self.bom_4.product_id
-        compo = self.bom_4.bom_line_ids.product_id
-        product = self.env['product.product'].create({'name': 'Super Product', 'type': 'product'})
-
-        receipt = self.env['stock.picking'].create({
-            'picking_type_id': in_type.id,
-            'location_id': customer_location.id,
-            'location_dest_id': stock_location.id,
-            'move_ids': [(0, 0, {
-                'name': product.name,
-                'product_id': product.id,
-                'product_uom_qty': 1,
-                'product_uom': product.uom_id.id,
-                'location_id': customer_location.id,
-                'location_dest_id': stock_location.id,
-            })]
-        })
-        receipt.action_confirm()
-
-        receipt.move_line_ids.quantity = 1
-        receipt.move_line_ids = [(0, 0, {
-            'product_id': kit.id,
-            'quantity': 1,
-            'product_uom_id': kit.uom_id.id,
-            'location_id': customer_location.id,
-            'location_dest_id': stock_location.id,
-        })]
-        receipt.move_ids.picked = True
-
-        receipt.button_validate()
-
-        self.assertEqual(receipt.state, 'done')
-        self.assertRecordValues(receipt.move_ids, [
-            {'product_id': product.id, 'quantity': 1, 'state': 'done'},
-            {'product_id': compo.id, 'quantity': 1, 'state': 'done'},
-        ])

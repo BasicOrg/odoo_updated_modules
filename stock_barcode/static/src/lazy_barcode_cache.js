@@ -99,26 +99,11 @@ export default class LazyBarcodeCache {
                 if (onlyInCache) {
                     return null;
                 }
-                await this._getMissingRecord(barcode, model, filters);
-                return await this.getRecordByBarcode(barcode, model, true, filters);
+                await this._getMissingRecord(barcode, model);
+                return await this.getRecordByBarcode(barcode, model, true);
             }
-            const ids = this.dbBarcodeCache[model][barcode];
-            for (const id of ids) {
-                const record = this.getRecord(model, id);
-                let pass = true;
-                if (filters[model]) {
-                    const fields = Object.keys(filters[model]);
-                    for (const field of fields) {
-                        if (record[field] != filters[model][field]) {
-                            pass = false;
-                            break;
-                        }
-                    }
-                }
-                if (pass) {
-                    return record;
-                }
-            }
+            const id = this.dbBarcodeCache[model][barcode][0];
+            return this.getRecord(model, id);
         } else {
             const result = new Map();
             // Returns object {model: record} of possible record.
@@ -163,7 +148,7 @@ export default class LazyBarcodeCache {
         return this.barcodeFieldByModel[model];
     }
 
-    async _getMissingRecord(barcode, model, filters = {}) {
+    async _getMissingRecord(barcode, model, filters) {
         const missCache = this.missingBarcode;
         const params = { barcode, model_name: model };
         // Check if we already try to fetch this missing record.
@@ -171,20 +156,22 @@ export default class LazyBarcodeCache {
             return false;
         }
         // Creates and passes a domain if some filters are provided.
-        const domainsByModel = {};
-        for (const filter of Object.entries(filters)) {
-            const modelName = filter[0];
-            const filtersByField = filter[1];
-            domainsByModel[modelName] = [];
-            for (const filterByField of Object.entries(filtersByField)) {
-                domainsByModel[modelName].push([filterByField[0], '=', filterByField[1]]);
+        if (filters) {
+            const domainsByModel = {};
+            for (const filter of Object.entries(filters)) {
+                const modelName = filter[0];
+                const filtersByField = filter[1];
+                domainsByModel[modelName] = [];
+                for (const filterByField of Object.entries(filtersByField)) {
+                    domainsByModel[modelName].push([filterByField[0], '=', filterByField[1]]);
+                }
             }
+            params.domains_by_model = domainsByModel;
         }
-        params.domains_by_model = domainsByModel;
         const result = await this.rpc('/stock_barcode/get_specific_barcode_data', params);
         this.setCache(result);
         // Set the missing cache if no filters (the barcode's result can vary if there is filter)
-        if (!Object.keys(filters).length) {
+        if (!filters) {
             const keyCache = (model && `${barcode}_${model}`) || barcode;
             missCache.add(keyCache);
         }

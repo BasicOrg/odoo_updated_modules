@@ -1,2 +1,1 @@
-from . import documents
-from . import share
+from . import main

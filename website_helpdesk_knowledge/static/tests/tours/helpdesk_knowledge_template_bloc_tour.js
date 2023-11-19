@@ -1,13 +1,12 @@
 /** @odoo-module */
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
 
-registry.category("web_tour.tours").add('helpdesk_pick_template_as_message_from_knowledge', {
+tour.register('helpdesk_pick_template_as_message_from_knowledge', {
     url: '/web#action=helpdesk.helpdesk_ticket_action_main_tree',
     test: true,
-    steps: () => [{ // click on the first record of the list
+}, [{ // click on the first record of the list
     trigger: 'tr.o_data_row:first-child .o_data_cell[name="name"]',
     run: 'click',
 }, { // open an article
@@ -23,15 +22,17 @@ registry.category("web_tour.tours").add('helpdesk_pick_template_as_message_from_
     run: 'click',
 }, { // check that the content of the template block has been added to the mail composer
     trigger: '.o_mail_composer_form .o_field_html p:contains("Hello world")',
-}, { // cancel the message, no need to send it and trigger a backend `write` (see discuss tests for that)
-    trigger: 'footer button:contains(Discard)',
+}, { // click on the "send" button of the mail composer
+    trigger: '.o_mail_send',
     run: 'click'
-}]});
+}, { // check that the chatter contains the content of the template block
+    trigger: '.oe_chatter .o_Message_content p:contains("Hello world")',
+}]);
 
-registry.category("web_tour.tours").add('helpdesk_pick_template_as_description_from_knowledge', {
+tour.register('helpdesk_pick_template_as_description_from_knowledge', {
     url: '/web#action=helpdesk.helpdesk_ticket_action_main_tree',
     test: true,
-    steps: () => [{ // click on the first record of the list
+}, [{ // click on the first record of the list
     trigger: 'tr.o_data_row:first-child .o_data_cell[name="name"]',
     run: 'click',
 }, { // open an article
@@ -46,6 +47,5 @@ registry.category("web_tour.tours").add('helpdesk_pick_template_as_description_f
     trigger: '.o_knowledge_behavior_type_template .o_knowledge_toolbar_button_text:contains("Use as Description")',
     run: 'click',
 }, { // check that the description contains content of the template block
-    trigger: '.o_form_sheet .o_field_html .odoo-editor-editable p:contains("Hello world")',
-}, ...stepUtils.discardForm(),
-]});
+    trigger: '.o_form_sheet .o_field_html p:contains("Hello world")',
+}]);

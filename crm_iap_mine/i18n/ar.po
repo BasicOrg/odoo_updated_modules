@@ -3,17 +3,18 @@
 # 	* crm_iap_mine
 # 
 # Translators:
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Martin Trigaux, 2022
+# Malaz Abuidris <msea@odoo.com>, 2022
+# MOHAMMAD IBRAHIM <m.moamir@outlook.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-09-23 08:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: MOHAMMAD IBRAHIM <m.moamir@outlook.com>, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +22,6 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "%d credits will be consumed to find %d companies."
@@ -37,19 +37,30 @@ msgstr "<b>جهات الاتصال</b>"
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p>Dear,</p>\n"
-"    <p>There are no more credits on your IAP Lead Generation account.<br>\n"
-"    You can charge your IAP Lead Generation account in the settings of the CRM app.<br></p>\n"
+"    <p>There are no more credits on your IAP Lead Generation account.<br/>\n"
+"    You can charge your IAP Lead Generation account in the settings of the CRM app.<br/></p>\n"
 "    <p>Best regards,</p>\n"
 "    <p>Odoo S.A.</p>\n"
 "</div>"
 msgstr ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
-"    <p>عزيزنا،</p>\n"
-"    <p>ليس لديك أي رصيد في حساب إنشاء العملاء المهتمين باستخدام IAP.<br>\n"
-"    بإمكانك شحن حساب إنشاء العملاء المهتمين باستخدام IAP الخاص بك في إعدادات تطبيق إدارة علاقات العملاء.<br></p>\n"
+"    <p>عزيزي،</p>\n"
+"    <p>ليس لديك أي رصيد في حساب إنشاء العملاء المهتمين باستخدام الوكيل المدرك للهوية (IAP).<br/>\n"
+"    بإمكانك شحن حساب إنشاء العملاء المهتمين باستخدام الوكيل المدرك للهوية الخاص بك في إعدادات تطبيق إدارة علاقات العملاء.<br/></p>\n"
 "    <p>مع أطيب التحيات،</p>\n"
-"    <p>Odoo S.A.</p>\n"
+"    <p>أودو إس إيه.</p>\n"
 "</div>"
+
+#. module: crm_iap_mine
+#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
+msgid ""
+"<span attrs=\"{'invisible': [('error_type', '!=', 'no_result')]}\">Your "
+"request did not return any result (no credits were used). Try removing some "
+"filters.</span>"
+msgstr ""
+"<span attrs=\"{'invisible': [('error_type', '!=', 'no_result')]}\">لم تحصل "
+"على أي نتائج من طلبك (لم يتم استهلاك أي رصيد). جرب إزالة بعض عناصر "
+"التصفية.</span>"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -65,15 +76,6 @@ msgstr "<span class=\"o_stat_text\">العملاء المهتمين</span> "
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
 msgid "<span class=\"o_stat_text\">Opportunities</span>"
 msgstr "<span class=\"o_stat_text\">الفرص</span>"
-
-#. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid ""
-"<span invisible=\"error_type != 'no_result'\">Your request did not return "
-"any result (no credits were used). Try removing some filters.</span>"
-msgstr ""
-"<span invisible=\"error_type != 'no_result'\">لم تحصل على أي نتائج من طلبك "
-"(لم يتم استهلاك أي رصيد). جرب إزالة بعض عناصر التصفية.</span> "
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_238
@@ -114,7 +116,7 @@ msgstr "طلب استقطاب العملاء المهتمين في إدارة ع
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_162
@@ -125,7 +127,7 @@ msgstr "سلع رأسمالية "
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_industry__color
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_role__color
 msgid "Color Index"
-msgstr "مؤشر اللون "
+msgstr "معرف اللون"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_163
@@ -133,14 +135,9 @@ msgid "Commercial & Professional Services"
 msgstr "الخدمات التجارية والمهنية "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_2
-msgid "Communications"
-msgstr "معلومات التواصل "
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__search_type__companies
 msgid "Companies"
-msgstr "الشركات"
+msgstr "الشركات "
 
 #. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__search_type__people
@@ -156,11 +153,6 @@ msgstr "الحجم الأقصى للشركة "
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_167
 msgid "Construction Materials"
 msgstr "مواد البناء "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_3
-msgid "Consulting"
-msgstr "استشارة"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_30_155
@@ -188,7 +180,6 @@ msgid "Countries"
 msgstr "الدول"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Create a Lead Mining Request"
@@ -211,11 +202,6 @@ msgstr "أنشئ بواسطة"
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_seniority__create_date
 msgid "Created on"
 msgstr "أنشئ في"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_4
-msgid "Customer Service"
-msgstr "خدمة العملاء "
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -254,11 +240,6 @@ msgid "Draft"
 msgstr "مسودة"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_5
-msgid "Education"
-msgstr "التعليم"
-
-#. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.enrich_company
 msgid "Email"
 msgstr "البريد الإلكتروني"
@@ -267,11 +248,6 @@ msgstr "البريد الإلكتروني"
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_138_156
 msgid "Energy & Utilities "
 msgstr "الطاقة والمرافق "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_6
-msgid "Engineering"
-msgstr "الهندسة "
 
 #. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__state__error
@@ -295,19 +271,9 @@ msgid "Filter on Size"
 msgstr "التصفية حسب الحجم "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_7
-msgid "Finance"
-msgstr "المالية"
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_153_154
 msgid "Food, Beverage & Tobacco"
 msgstr "الطعام والشراب والتبغ "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_8
-msgid "Founder"
-msgstr "المؤسس "
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
@@ -315,19 +281,15 @@ msgid "From"
 msgstr "من"
 
 #. module: crm_iap_mine
-#. odoo-python
+#. openerp-web
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_case_kanban_view_leads
+#: code:addons/crm_iap_mine/static/src/views/generate_leads_views.xml:0
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_lead_view_tree_lead
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_lead_view_tree_opportunity
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.view_crm_lead_kanban
 #, python-format
 msgid "Generate Leads"
 msgstr "إنشاء العملاء المهتمين "
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Generate new leads based on their country, industry, size, etc."
@@ -342,7 +304,7 @@ msgstr "العميل المهتم / الفرصة المُستقطَبة "
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_search
 msgid "Group By"
-msgstr "تجميع حسب"
+msgstr "التجميع حسب "
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_160
@@ -350,24 +312,9 @@ msgid "Health Care Equipment & Services"
 msgstr "المعدات الصحية وخدماتها"
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_9
-msgid "Health Professional"
-msgstr "اختصاصي صحي "
-
-#. module: crm_iap_mine
 #: model:ir.model,name:crm_iap_mine.model_crm_iap_lead_helpers
 msgid "Helper methods for crm_iap_mine modules"
 msgstr "وسائل المساعدة لتطبيقات crm_iap_mine "
-
-#. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid "How many leads would you like?"
-msgstr "كم عميلاً مهتماً تريد؟ "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_10
-msgid "Human Resources"
-msgstr "الموارد البشرية"
 
 #. module: crm_iap_mine
 #: model:mail.template,name:crm_iap_mine.lead_generation_no_credits
@@ -405,14 +352,18 @@ msgid "Industry name already exists!"
 msgstr "اسم المجال موجود بالفعل! "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_11
-msgid "Information Technology"
-msgstr "تقنية المعلومات "
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__error_type__credits
 msgid "Insufficient Credits"
 msgstr "ليس لديك الرصيد الكافي "
+
+#. module: crm_iap_mine
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_helpers____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_industry____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_role____last_update
+#: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_seniority____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_helpers__write_uid
@@ -476,22 +427,12 @@ msgid "Leads"
 msgstr "العملاء المهتمين "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_12
-msgid "Legal"
-msgstr "قانوني "
-
-#. module: crm_iap_mine
-#. odoo-javascript
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid ""
-"Looking for more opportunities?<br>Try the <b>Lead Generation</b> tool."
+"Looking for more opportunities ?<br>Try the <b>Lead Generation</b> tool."
 msgstr "تبحث عن المزيد من الفرص؟<br>جرب أداة <b>إنشاء العملاء المهتمين</b>. "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_13
-msgid "Marketing"
-msgstr "التسويق"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_148
@@ -515,14 +456,6 @@ msgid "Name already exists!"
 msgstr "الاسم موجود بالفعل! "
 
 #. module: crm_iap_mine
-#. odoo-python
-#: code:addons/crm_iap_mine/models/crm_lead.py:0
-#, python-format
-msgid "Need help reaching your target?"
-msgstr "هل أنت بحاجة إلى المساعدة للوصول إلى هدفك؟ "
-
-#. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
@@ -537,7 +470,7 @@ msgid "No Result"
 msgstr "لا توجد نتائج "
 
 #. module: crm_iap_mine
-#. odoo-javascript
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid "Now, just let the magic happen!"
@@ -560,18 +493,12 @@ msgid "Number of Leads"
 msgstr "عدد العملاء المهتمين "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_14
-msgid "Operations"
-msgstr "العمليات"
-
-#. module: crm_iap_mine
 #: model:ir.model.fields.selection,name:crm_iap_mine.selection__crm_iap_lead_mining_request__lead_type__opportunity
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_search
 msgid "Opportunities"
 msgstr "الفرص"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Opportunity created by Odoo Lead Generation"
@@ -581,11 +508,6 @@ msgstr "تم إنشاء الفرصة عن طريق استقطاب أودو لل�
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__role_ids
 msgid "Other Roles"
 msgstr "الأدوار الأخرى "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_15
-msgid "Owner"
-msgstr "المالك"
 
 #. module: crm_iap_mine
 #: model:ir.model,name:crm_iap_mine.model_crm_iap_lead_role
@@ -608,50 +530,19 @@ msgid "Phone"
 msgstr "رقم الهاتف"
 
 #. module: crm_iap_mine
-#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
-msgid "Pick States..."
-msgstr "اختر الحالات... "
-
-#. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__preferred_role_id
 msgid "Preferred Role"
 msgstr "الدور الذي تفضله "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_16
-msgid "President"
-msgstr "الرئيس "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_17
-msgid "Product"
-msgstr "المنتج"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_18
-msgid "Public Relations"
-msgstr "العلاقات العامة "
-
-#. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_114
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_19
 msgid "Real Estate"
 msgstr "العقارات "
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_20
-msgid "Recruiting"
-msgstr "التوظيف "
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__name
 msgid "Request Number"
 msgstr "رقم الطلب"
-
-#. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_21
-msgid "Research"
-msgstr "البحث"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.industry,name:crm_iap_mine.crm_iap_mine_industry_152
@@ -686,11 +577,6 @@ msgid "Role name already exists!"
 msgstr "اسم الدور مستخدم بالفعل! "
 
 #. module: crm_iap_mine
-#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_22
-msgid "Sale"
-msgstr "بيع "
-
-#. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__team_id
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_search
 msgid "Sales Team"
@@ -711,7 +597,7 @@ msgstr "الأقدمية "
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_industry__sequence
 msgid "Sequence"
-msgstr "تسلسل "
+msgstr "التسلسل "
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__company_size_min
@@ -726,7 +612,7 @@ msgstr "البرنامج و الخدمات "
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__state_ids
 msgid "States"
-msgstr "الحالات "
+msgstr "الولايات "
 
 #. module: crm_iap_mine
 #: model:ir.model.fields,field_description:crm_iap_mine.field_crm_iap_lead_mining_request__state
@@ -759,7 +645,6 @@ msgid "Telecommunication Services"
 msgstr "خدمات الاتصالات"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "This makes a total of %d credits for this request."
@@ -777,7 +662,6 @@ msgid "Type"
 msgstr "النوع"
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid ""
@@ -786,7 +670,12 @@ msgid ""
 msgstr "سوف يتم استهلاك رصيد إضافي يصل إلى %d لتعريف %d جهة اتصال لكل شركة. "
 
 #. module: crm_iap_mine
-#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
+msgid "What do you need ?"
+msgstr "ما الذي تحتاج إليه؟ "
+
+#. module: crm_iap_mine
+#. openerp-web
 #: code:addons/crm_iap_mine/static/src/js/tours/crm_iap_lead.js:0
 #, python-format
 msgid "Which Industry do you want to target?"
@@ -798,11 +687,25 @@ msgid "You do not have enough credits to submit this request."
 msgstr "ليس لديك الرصيد الكافي لإرسال هذا الطلب. "
 
 #. module: crm_iap_mine
-#. odoo-python
 #: code:addons/crm_iap_mine/models/crm_iap_lead_mining_request.py:0
 #, python-format
 msgid "Your request could not be executed: %s"
 msgstr "تعذر تنفيذ طلبك: %s "
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_2
+msgid "communications"
+msgstr "التواصل"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_3
+msgid "consulting"
+msgstr "الاستشارات "
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_4
+msgid "customer_service"
+msgstr "خدمة العملاء "
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_1
@@ -810,9 +713,19 @@ msgid "director"
 msgstr "المسؤول "
 
 #. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_5
+msgid "education"
+msgstr "التعليم"
+
+#. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form
 msgid "employees"
 msgstr "الموظفين"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_6
+msgid "engineering"
+msgstr "الهندسة"
 
 #. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_2
@@ -820,9 +733,89 @@ msgid "executive"
 msgstr "تنفيذي"
 
 #. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_7
+msgid "finance"
+msgstr "المالية"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_8
+msgid "founder"
+msgstr "المؤسس"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_9
+msgid "health_professional"
+msgstr "ممارس صحي"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_10
+msgid "human_resources"
+msgstr "الموارد البشرية"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_11
+msgid "information_technology"
+msgstr "تقنية المعلومات"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_12
+msgid "legal"
+msgstr "قانوني"
+
+#. module: crm_iap_mine
 #: model:crm.iap.lead.seniority,name:crm_iap_mine.crm_iap_mine_seniority_3
 msgid "manager"
 msgstr "مدير"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_13
+msgid "marketing"
+msgstr "التسويق"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_14
+msgid "operations"
+msgstr "العمليات"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_15
+msgid "owner"
+msgstr "المالِك"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_16
+msgid "president"
+msgstr "الرئيس "
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_17
+msgid "product"
+msgstr "المنتج"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_18
+msgid "public_relations"
+msgstr "العلاقات العامة"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_19
+msgid "real_estate"
+msgstr "عقارات"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_20
+msgid "recruiting"
+msgstr "توظيف"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_21
+msgid "research"
+msgstr "بحث"
+
+#. module: crm_iap_mine
+#: model:crm.iap.lead.role,name:crm_iap_mine.crm_iap_mine_role_22
+msgid "sale"
+msgstr "بيع"
 
 #. module: crm_iap_mine
 #: model_terms:ir.ui.view,arch_db:crm_iap_mine.crm_iap_lead_mining_request_view_form

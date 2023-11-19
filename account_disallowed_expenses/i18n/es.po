@@ -3,21 +3,28 @@
 # 	* account_disallowed_expenses
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: es\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#. module: account_disallowed_expenses
+#: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.disallowed_expenses_main_template
+msgid ""
+"<span>There are multiple disallowed expenses rates in this period</span>"
+msgstr ""
+"<span>Existe más de una tarifa de gasto rechazado en el periodo</span>"
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_account
@@ -119,9 +126,11 @@ msgid "Disallowed Expenses Report"
 msgstr "Informe de gastos rechazadas"
 
 #. module: account_disallowed_expenses
-#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code
-msgid "Disallowed expenses category code should be unique."
+#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code_in_country
+msgid "Disallowed expenses category code should be unique in each company."
 msgstr ""
+"El código de la categoría de gastos rechazados debes ser único en cada "
+"compañía."
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__display_name
@@ -130,24 +139,16 @@ msgid "Display Name"
 msgstr "Nombre mostrado"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "General Ledger"
-msgstr "Libro mayor"
-
-#. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__id
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__id
 msgid "ID"
 msgstr "ID"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Journal Items"
-msgstr "Apuntes contables"
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category____last_update
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__write_uid
@@ -167,7 +168,6 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: account_disallowed_expenses
-#. odoo-python
 #: code:addons/account_disallowed_expenses/models/account_disallowed_expenses.py:0
 #, python-format
 msgid "No Rate"
@@ -204,20 +204,6 @@ msgstr "Cambia un activo a falso para ocultar la categoría sin eliminarla."
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__date_from
 msgid "Start Date"
 msgstr "Fecha de inicio"
-
-#. module: account_disallowed_expenses
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "There are multiple disallowed expenses rates in this period"
-msgstr ""
-
-#. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Total"
-msgstr "Total"
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_total_amount

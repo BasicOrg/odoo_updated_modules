@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-  <t t-name="web.CommandPalette">
+  <t t-name="web.CommandPalette" owl="1">
     <Dialog header="false" footer="false" size="'md'" contentClass="'o_command_palette mt-5'">
       <div t-ref="root">
         <div class="o_command_palette_search input-group mb-2 px-4 py-3 border-bottom">
@@ -16,7 +16,6 @@
           <div t-if="!state.commands.length" class="o_command_palette_listbox_empty px-4 py-3 fst-italic" t-out="state.emptyMessage"/>
           <t t-if="!isFuzzySearch" t-foreach="commandsByCategory" t-as="category" t-key="category.keyId">
             <div class="o_command_category px-0">
-              <span t-if="category.name" class="text-truncate text-uppercase fw-bold fs-6 px-3" t-out="category.name"/>
               <t t-foreach="category.commands" t-as="command" t-key="command.keyId">
                 <t t-set="commandIndex" t-value="state.commands.indexOf(command)"/>
                 <div t-attf-id="o_command_{{commandIndex}}" class="o_command"
@@ -35,7 +34,7 @@
                         </span>
                       </t>
                       <t t-set-slot="focusMessage">
-                          <small t-if="!isMobileOS and command.href and state.selectedCommand === command" class="o_command_focus text-muted"><kbd><t t-if="isMacOS">CMD</t><t t-else="">CTRL</t></kbd>+<kbd>⏎</kbd><span class="ms-1">new tab</span></small>
+                          <small t-if="!isMobileOS and command.href and state.selectedCommand === command" class="o_command_focus text-muted"><kbd>⏎</kbd> to open, <kbd><t t-if="isMacOS">CMD</t><t t-else="">CTRL</t></kbd>+<kbd>⏎</kbd> to open in new tab</small>
                       </t>
                     </t>
                   </a>
@@ -47,7 +46,7 @@
           </t>
         </div>
 
-        <div t-if="state.FooterComponent" class="o_command_palette_footer mt-2 px-4 py-2 border-top rounded-bottom bg-100 text-muted">
+        <div t-if="state.FooterComponent" class="o_command_palette_footer mt-2 px-4 py-2 border-top bg-100 text-muted">
           <t t-component="state.FooterComponent" switchNamespace="(namespace) => this.debounceSearch(namespace.concat(this.state.searchValue))"/>
         </div>
       </div>

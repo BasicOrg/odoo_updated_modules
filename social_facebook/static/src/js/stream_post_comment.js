@@ -14,7 +14,7 @@ export class StreamPostCommentFacebook extends StreamPostComment {
     get authorLink() {
         if (this.comment.from.id) {
             return sprintf('/social_facebook/redirect_to_profile/%s/%s?name=%s',
-                encodeURIComponent(this.props.mediaSpecificProps.accountId), encodeURIComponent(this.comment.from.id), encodeURIComponent(this.comment.from.name));
+                this.props.mediaSpecificProps.accountId, this.comment.from.id, encodeURI(this.comment.from.name));
         } else {
             return "#";
         }

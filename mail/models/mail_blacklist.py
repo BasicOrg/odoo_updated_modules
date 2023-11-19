@@ -13,8 +13,8 @@ class MailBlackList(models.Model):
     _rec_name = 'email'
 
     email = fields.Char(string='Email Address', required=True, index='trigram', help='This field is case insensitive.',
-                        tracking=1)
-    active = fields.Boolean(default=True, tracking=2)
+                        tracking=True)
+    active = fields.Boolean(default=True, tracking=True)
 
     _sql_constraints = [
         ('unique_email', 'unique (email)', 'Email address already exists!')
@@ -36,14 +36,11 @@ class MailBlackList(models.Model):
             new_values.append(new_value)
 
         """ To avoid crash during import due to unique email, return the existing records if any """
-        to_create = []
-        bl_entries = {}
-        if new_values:
-            sql = '''SELECT email, id FROM mail_blacklist WHERE email = ANY(%s)'''
-            emails = [v['email'] for v in new_values]
-            self._cr.execute(sql, (emails,))
-            bl_entries = dict(self._cr.fetchall())
-            to_create = [v for v in new_values if v['email'] not in bl_entries]
+        sql = '''SELECT email, id FROM mail_blacklist WHERE email = ANY(%s)'''
+        emails = [v['email'] for v in new_values]
+        self._cr.execute(sql, (emails,))
+        bl_entries = dict(self._cr.fetchall())
+        to_create = [v for v in new_values if v['email'] not in bl_entries]
 
         # TODO DBE Fixme : reorder ids according to incoming ids.
         results = super(MailBlackList, self).create(to_create)
@@ -54,49 +51,47 @@ class MailBlackList(models.Model):
             values['email'] = tools.email_normalize(values['email'])
         return super(MailBlackList, self).write(values)
 
-    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         """ Override _search in order to grep search on email field and make it
         lower-case and sanitized """
-        def normalize(arg):
-            if isinstance(arg, (list, tuple)) and arg[0] == 'email' and isinstance(arg[2], str):
-                normalized = tools.email_normalize(arg[2])
-                if normalized:
-                    return (arg[0], arg[1], normalized)
-            return arg
+        if args:
+            new_args = []
+            for arg in args:
+                if isinstance(arg, (list, tuple)) and arg[0] == 'email' and isinstance(arg[2], str):
+                    normalized = tools.email_normalize(arg[2])
+                    if normalized:
+                        new_args.append([arg[0], arg[1], normalized])
+                    else:
+                        new_args.append(arg)
+                else:
+                    new_args.append(arg)
+        else:
+            new_args = args
+        return super(MailBlackList, self)._search(new_args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
-        domain = [normalize(item) for item in domain]
-        return super()._search(domain, offset, limit, order, access_rights_uid)
-
-    def _add(self, email, message=None):
+    def _add(self, email):
         normalized = tools.email_normalize(email)
         record = self.env["mail.blacklist"].with_context(active_test=False).search([('email', '=', normalized)])
         if len(record) > 0:
-            if message:
-                record._track_set_log_message(message)
             record.action_unarchive()
         else:
             record = self.create({'email': email})
-            if message:
-                record.with_context(mail_create_nosubscribe=True).message_post(
-                    body=message,
-                    subtype_xmlid='mail.mt_note',
-                )
         return record
 
-    def _remove(self, email, message=None):
+    def action_remove_with_reason(self, email, reason=None):
+        record = self._remove(email)
+        if reason:
+            record.message_post(body=_("Unblacklisting Reason: %s", reason))
+        
+        return record
+
+    def _remove(self, email):
         normalized = tools.email_normalize(email)
         record = self.env["mail.blacklist"].with_context(active_test=False).search([('email', '=', normalized)])
         if len(record) > 0:
-            if message:
-                record._track_set_log_message(message)
             record.action_archive()
         else:
             record = record.create({'email': email, 'active': False})
-            if message:
-                record.with_context(mail_create_nosubscribe=True).message_post(
-                    body=message,
-                    subtype_xmlid='mail.mt_note',
-                )
         return record
 
     def mail_action_blacklist_remove(self):

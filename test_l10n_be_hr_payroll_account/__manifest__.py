@@ -3,7 +3,7 @@
 
 {
     'name': 'Test Belgian Payroll',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'category': 'Human Resources',
     'summary': 'Test Belgian Payroll',
     'depends': [
@@ -11,7 +11,6 @@
         'l10n_be_hr_contract_salary',
         'l10n_be_hr_payroll_account',
         'l10n_be',
-        'l10n_be_hr_payroll_sd_worx',
         'account_accountant',
         'hr_payroll_account_sepa',
         'documents_hr_payroll',
@@ -20,6 +19,7 @@
         'hr_skills',
     ],
     'demo': ['data/test_l10n_be_hr_payroll_account_demo.xml'],
+    'auto_install': True,
     'post_init_hook': '_generate_payslips',
     'assets': {
         'web.assets_tests': [

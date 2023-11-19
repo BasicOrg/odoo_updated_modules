@@ -19,12 +19,12 @@
                         <field name="contract_is_student" invisible="1"/>
                         <field name="contract_wage_type" invisible="1"/>
                         <field name="contract_country_code" invisible="1"/>
-                        <field name="contract_planned_hours" invisible="contract_wage_type != 'hourly' or contract_country_code != 'BE' or not contract_is_student"/>
+                        <field name="contract_planned_hours" attrs="{'invisible': ['|', '|', ('contract_wage_type', '!=', 'hourly'), ('contract_country_code', '!=', 'BE'), ('contract_is_student', '=', False)]}"/>
                     </group>
                 </group>
                 <footer>
                     <button name="submit_declaration" string="Submit Declaration" type="object" class="oe_highlight" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

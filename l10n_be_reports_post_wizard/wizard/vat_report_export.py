@@ -10,7 +10,6 @@ class AccountFinancialReportXMLReportExport(models.TransientModel):
     def action_resume_post(self):
         """This action resumes the Post of an account move which was interrupted by this wizard"""
         options = {
-            'closing_entry': True,
             'ask_restitution': self.ask_restitution,
             'ask_payment': self.ask_payment,
             'client_nihil': self.client_nihil,

@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-import platform
 try:
     import pylint
 except ImportError:
@@ -10,6 +9,7 @@ except ImportError:
 import subprocess
 import os
 from os.path import join
+import sys
 
 from odoo.tests.common import TransactionCase
 from odoo import tools
@@ -43,7 +43,7 @@ class TestPyLint(TransactionCase):
         'csv',
         'urllib',
         'cgi',
-    ] + list(tools.constants.SUPPORTED_DEBUGGER)
+    ] + list(tools.SUPPORTED_DEBUGGER)
 
     def _skip_test(self, reason):
         _logger.warning(reason)
@@ -53,7 +53,7 @@ class TestPyLint(TransactionCase):
         if pylint is None:
             self._skip_test('please install pylint')
         required_pylint_version = tools.parse_version('1.6.4')
-        if self._python_version >= (3, 6):
+        if sys.version_info >= (3, 6):
             required_pylint_version = tools.parse_version('1.7.0')
         if tools.parse_version(getattr(pylint, '__version__', '0.0.1')) < required_pylint_version:
             self._skip_test('please upgrade pylint to >= %s' % required_pylint_version)
@@ -77,16 +77,6 @@ class TestPyLint(TransactionCase):
 
         pypath = HERE + os.pathsep + os.environ.get('PYTHONPATH', '')
         env = dict(os.environ, PYTHONPATH=pypath)
-
-        if os.name == 'posix' and platform.system() != 'Darwin':
-            # Pylint started failing at ~2.4g from time to time.
-            # Removing the memory limit will solve this issue for a while (runbot limit is arroung 5g)
-            def preexec():
-                import resource
-                resource.setrlimit(resource.RLIMIT_AS, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
-        else:
-            preexec = None
-
         try:
             pylint_bin = tools.which('pylint')
             process = subprocess.Popen(
@@ -94,7 +84,6 @@ class TestPyLint(TransactionCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 env=env,
-                preexec_fn=preexec,
             )
         except (OSError, IOError):
             self._skip_test('pylint executable not found in the path')

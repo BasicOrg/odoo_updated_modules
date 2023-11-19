@@ -24,9 +24,9 @@ class SaleOrder(models.Model):
 
     def _inverse_ups_carrier_account(self):
         for order in self:
-            order.partner_shipping_id.sudo().with_company(order.company_id).property_ups_carrier_account = order.partner_ups_carrier_account
+            order.partner_shipping_id.with_company(order.company_id).property_ups_carrier_account = order.partner_ups_carrier_account
 
     def _action_confirm(self):
-        if any(order.carrier_id.ups_bill_my_account and not order.partner_ups_carrier_account for order in self):
+        if self.carrier_id.ups_bill_my_account and not self.partner_ups_carrier_account:
             raise UserError(_('You must enter an UPS account number.'))
-        return super(SaleOrder, self)._action_confirm()
+        super(SaleOrder, self)._action_confirm()

@@ -17,14 +17,10 @@ class SaleOrder(models.Model):
     # Technical field to determine whether to hide taxes in views or not
     is_taxcloud = fields.Boolean(related='fiscal_position_id.is_taxcloud')
 
-    def action_quotation_send(self):
-        self.validate_taxes_on_sales_order()
-        return super().action_quotation_send()
-
-    def action_quotation_sent(self):
-        for order in self:
+    def action_confirm(self):
+        for order in self.filtered('fiscal_position_id.is_taxcloud'):
             order.validate_taxes_on_sales_order()
-        return super().action_quotation_sent()
+        return super(SaleOrder, self).action_confirm()
 
     @api.model
     def _get_TaxCloudRequest(self, api_id, api_key):
@@ -72,10 +68,10 @@ class SaleOrder(models.Model):
                 if len(line.tax_id) != 1 or float_compare(line.tax_id.amount, tax_rate, precision_digits=3):
                     tax_rate = float_round(tax_rate, precision_digits=3)
                     tax = self.env['account.tax'].with_context(active_test=False).sudo().search([
-                        *self.env['account.tax']._check_company_domain(company),
                         ('amount', '=', tax_rate),
                         ('amount_type', '=', 'percent'),
                         ('type_tax_use', '=', 'sale'),
+                        ('company_id', '=', company.id),
                     ], limit=1)
                     if tax:
                         # Only set if not already set, otherwise it triggers a

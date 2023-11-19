@@ -41,9 +41,12 @@ class StockReport(models.Model):
     categ_id = fields.Many2one('product.category', 'Product Category', readonly=True)
 
     @api.depends('reference', 'product_id.name')
-    def _compute_display_name(self):
+    def name_get(self):
+        res = []
         for report in self:
-            report.display_name = f'{report.reference} - {report.product_id.display_name}'
+            name = '%s - %s' % (report.reference, report.product_id.display_name)
+            res.append((report.id, name))
+        return res
 
     def _select(self):
         select_str = """

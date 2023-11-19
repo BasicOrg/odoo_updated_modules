@@ -6,26 +6,24 @@
         <field name="arch" type="xml">
             <form string="SMS">
                 <header>
-                    <field name="to_delete" invisible="1"/>
-                    <button name="send" string="Send Now" type="object" invisible="state != 'outgoing' or to_delete" class="oe_highlight"/>
-                    <button name="action_set_outgoing" string="Retry" type="object" invisible="state not in ('error', 'canceled')"/>
-                    <button name="action_set_canceled" string="Cancel" type="object" invisible="state not in ('error', 'outgoing')"/>
-                    <field name="state" widget="statusbar" statusbar_visible="outgoing,sent,error,canceled"/>
+                    <button name="send" string="Send Now" type="object" states='outgoing' class="oe_highlight"/>
+                    <button name="action_set_outgoing" string="Retry" type="object" states='error,canceled'/>
+                    <button name="action_set_canceled" string="Cancel" type="object" states='error,outgoing'/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="partner_id" string="Contact"/>
-                            <field name="mail_message_id" readonly="1" invisible="not mail_message_id"/>
+                            <field name="mail_message_id" readonly="1" attrs="{'invisible': [('mail_message_id', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="number" required="1"/>
-                            <field name="failure_type" readonly="1" invisible="not failure_type"/>
+                            <field name="failure_type" readonly="1" attrs="{'invisible': [('failure_type', '=', False)]}"/>
                         </group>
                     </group>
                     <group>
-                        <field name="body" widget="sms_widget" string="Message" required="1"
-                            readonly="state in ('process', 'sent')"/>
+                        <field name="body" widget="sms_widget" string="Message" required="1"/>
                     </group>
                 </sheet>
             </form>
@@ -41,9 +39,9 @@
                 <field name="partner_id"/>
                 <field name="failure_type"/>
                 <field name="state" widget="badge" decoration-info="state == 'outgoing'" decoration-muted="state == 'canceled'" decoration-success="state == 'sent'" decoration-danger="state == 'error'"/>
-                <button name="send" string="Send Now" type="object" icon="fa-paper-plane" invisible="state != 'outgoing'"/>
-                <button name="action_set_outgoing" string="Retry" type="object" icon="fa-repeat" invisible="state not in ('error', 'canceled')"/>
-                <button name="action_set_canceled" string="Cancel" type="object" icon="fa-times-circle" invisible="state not in ('error', 'outgoing')"/>
+                <button name="send" string="Send Now" type="object" icon="fa-paper-plane" states="outgoing"/>
+                <button name="action_set_outgoing" string="Retry" type="object" icon="fa-repeat" states="error,canceled"/>
+                <button name="action_set_canceled" string="Cancel" type="object" icon="fa-times-circle" states="error,outgoing"/>
             </tree>
         </field>
     </record>
@@ -63,7 +61,6 @@
         <field name="name">SMS</field>
         <field name="res_model">sms.sms</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('to_delete', '!=', True)]</field>
     </record>
 
     <menuitem id="sms_sms_menu"

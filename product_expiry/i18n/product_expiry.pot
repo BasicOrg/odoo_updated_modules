@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 21:55+0000\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-20 09:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,8 @@ msgstr ""
 #. module: product_expiry
 #: model_terms:ir.ui.view,arch_db:product_expiry.view_move_form_expiry
 msgid ""
-"<span class=\"badge text-bg-danger\" invisible=\"not "
-"product_expiry_alert\">Expiration Alert</span>"
-msgstr ""
-
-#. module: product_expiry
-#: model_terms:ir.ui.view,arch_db:product_expiry.view_production_lot_view_kanban
-msgid ""
-"<span title=\"Alert\" class=\"fa fa-exclamation-triangle text-danger ms-2\" "
-"invisible=\"product_qty &lt;= 0 or not product_expiry_alert or not "
-"expiration_date\"/>"
+"<span class=\"badge text-bg-danger\" attrs=\"{'invisible': "
+"[('product_expiry_alert', '=', False)]}\">Expiration Alert</span>"
 msgstr ""
 
 #. module: product_expiry
@@ -53,11 +45,6 @@ msgid "Alert Date Reached"
 msgstr ""
 
 #. module: product_expiry
-#: model_terms:ir.ui.view,arch_db:product_expiry.report_lot_label_expiry
-msgid "B.b."
-msgstr ""
-
-#. module: product_expiry
 #: model:ir.model.fields,field_description:product_expiry.field_product_product__use_time
 #: model:ir.model.fields,field_description:product_expiry.field_product_template__use_time
 msgid "Best Before Date"
@@ -66,6 +53,11 @@ msgstr ""
 #. module: product_expiry
 #: model:ir.model.fields,field_description:product_expiry.field_stock_lot__use_date
 msgid "Best before Date"
+msgstr ""
+
+#. module: product_expiry
+#: model_terms:ir.ui.view,arch_db:product_expiry.report_lot_label_expiry
+msgid "Best before:"
 msgstr ""
 
 #. module: product_expiry
@@ -84,7 +76,6 @@ msgid "Confirm Expiry"
 msgstr ""
 
 #. module: product_expiry
-#. odoo-python
 #: code:addons/product_expiry/models/stock_picking.py:0
 #: model_terms:ir.ui.view,arch_db:product_expiry.confirm_expiry_view
 #, python-format
@@ -135,11 +126,6 @@ msgid "Display Name"
 msgstr ""
 
 #. module: product_expiry
-#: model_terms:ir.ui.view,arch_db:product_expiry.report_lot_label_expiry
-msgid "Exp."
-msgstr ""
-
-#. module: product_expiry
 #: model_terms:ir.ui.view,arch_db:product_expiry.quant_search_view_inherit_product_expiry
 #: model_terms:ir.ui.view,arch_db:product_expiry.search_product_lot_filter_inherit_product_expiry
 msgid "Expiration Alerts"
@@ -150,7 +136,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:product_expiry.field_product_template__expiration_time
 #: model:ir.model.fields,field_description:product_expiry.field_stock_lot__expiration_date
 #: model:ir.model.fields,field_description:product_expiry.field_stock_move_line__expiration_date
-#: model:ir.model.fields,field_description:product_expiry.field_stock_quant__expiration_date
 #: model_terms:ir.ui.view,arch_db:product_expiry.stock_report_delivery_document_inherit_product_expiry
 #: model_terms:ir.ui.view,arch_db:product_expiry.view_product_form_expiry
 msgid "Expiration Date"
@@ -159,11 +144,6 @@ msgstr ""
 #. module: product_expiry
 #: model_terms:ir.ui.view,arch_db:product_expiry.res_config_settings_view_form_stock
 msgid "Expiration dates will appear on the delivery slip"
-msgstr ""
-
-#. module: product_expiry
-#: model_terms:ir.ui.view,arch_db:product_expiry.view_production_lot_view_kanban
-msgid "Expiration:"
 msgstr ""
 
 #. module: product_expiry
@@ -177,11 +157,6 @@ msgid "Expiry has been reminded"
 msgstr ""
 
 #. module: product_expiry
-#: model:product.removal,name:product_expiry.removal_fefo
-msgid "First Expiry First Out (FEFO)"
-msgstr ""
-
-#. module: product_expiry
 #: model:ir.model.fields,field_description:product_expiry.field_expiry_picking_confirmation__id
 msgid "ID"
 msgstr ""
@@ -189,6 +164,11 @@ msgstr ""
 #. module: product_expiry
 #: model:res.groups,name:product_expiry.group_expiry_date_on_delivery_slip
 msgid "Include expiration dates on delivery slip"
+msgstr ""
+
+#. module: product_expiry
+#: model:ir.model.fields,field_description:product_expiry.field_expiry_picking_confirmation____last_update
+msgid "Last Modified on"
 msgstr ""
 
 #. module: product_expiry
@@ -296,11 +276,6 @@ msgid "Removal Date"
 msgstr ""
 
 #. module: product_expiry
-#: model_terms:ir.ui.view,arch_db:product_expiry.view_production_lot_view_kanban
-msgid "Removal:"
-msgstr ""
-
-#. module: product_expiry
 #: model:ir.model.fields,field_description:product_expiry.field_expiry_picking_confirmation__show_lots
 msgid "Show Lots"
 msgstr ""
@@ -317,7 +292,6 @@ msgid "The Expiration Date has been reached."
 msgstr ""
 
 #. module: product_expiry
-#. odoo-python
 #: code:addons/product_expiry/models/production_lot.py:0
 #, python-format
 msgid "The alert date has been reached for this lot/serial number"
@@ -326,7 +300,6 @@ msgstr ""
 #. module: product_expiry
 #: model:ir.model.fields,help:product_expiry.field_stock_lot__expiration_date
 #: model:ir.model.fields,help:product_expiry.field_stock_move_line__expiration_date
-#: model:ir.model.fields,help:product_expiry.field_stock_quant__expiration_date
 msgid ""
 "This is the date on which the goods with this Serial Number may become "
 "dangerous and must not be consumed."
@@ -375,6 +348,11 @@ msgid "Use Expiration Date"
 msgstr ""
 
 #. module: product_expiry
+#: model_terms:ir.ui.view,arch_db:product_expiry.report_lot_label_expiry
+msgid "Use by:"
+msgstr ""
+
+#. module: product_expiry
 #: model:ir.model.fields,help:product_expiry.field_product_product__use_expiration_date
 #: model:ir.model.fields,help:product_expiry.field_product_template__use_expiration_date
 #: model:ir.model.fields,help:product_expiry.field_stock_lot__use_expiration_date
@@ -388,21 +366,19 @@ msgid ""
 msgstr ""
 
 #. module: product_expiry
-#. odoo-python
 #: code:addons/product_expiry/wizard/confirm_expiry.py:0
 #, python-format
 msgid ""
 "You are going to deliver some product expired lots.\n"
-"Do you confirm you want to proceed?"
+"Do you confirm you want to proceed ?"
 msgstr ""
 
 #. module: product_expiry
-#. odoo-python
 #: code:addons/product_expiry/wizard/confirm_expiry.py:0
 #, python-format
 msgid ""
 "You are going to deliver the product %(product_name)s, %(lot_name)s which is expired.\n"
-"Do you confirm you want to proceed?"
+"Do you confirm you want to proceed ?"
 msgstr ""
 
 #. module: product_expiry
@@ -487,9 +463,4 @@ msgstr ""
 msgid ""
 "^FS\n"
 "^FO100,250^BY3"
-msgstr ""
-
-#. module: product_expiry
-#: model:product.removal,method:product_expiry.removal_fefo
-msgid "fefo"
 msgstr ""

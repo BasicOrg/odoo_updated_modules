@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="l10n_hu_balance_sheet" model="account.report">
         <field name="name">Balance sheet</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
@@ -19,7 +19,6 @@
                 <field name="name">Assets</field>
                 <field name="code">hu_assets</field>
                 <field name="aggregation_formula">hu_assets_a.balance + hu_assets_b.balance + hu_assets_c.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="l10n_hu_balance_sheet_A" model="account.report.line">
                         <field name="name">A. Fixed assets</field>
@@ -384,7 +383,6 @@
                 <field name="name">Liabilities</field>
                 <field name="code">hu_liabilities</field>
                 <field name="aggregation_formula">hu_liabilities_d.balance + hu_liabilities_e.balance + hu_liabilities_f.balance + hu_liabilities_g.balance</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="l10n_hu_balance_sheet_D" model="account.report.line">
                         <field name="name">D. Equity</field>

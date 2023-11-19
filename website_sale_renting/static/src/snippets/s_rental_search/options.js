@@ -1,18 +1,12 @@
 /** @odoo-module **/
 
-import options from '@web_editor/js/editor/snippets.options';
-import { _t } from "@web/core/l10n/translation";
+import options from 'web_editor.snippets.options';
+import { _t } from 'web.core';
 
 options.registry.RentalSearchOptions = options.Class.extend({
-    events: Object.assign({}, options.Class.prototype.events || {}, {
+    events: _.extend({}, options.Class.prototype.events || {}, {
         'click .reset-product-attribute-picker': '_onClickResetProductAttributePicker',
     }),
-
-    init() {
-        this._super(...arguments);
-        this.orm = this.bindService("orm");
-    },
-
     /**
      * @override
      */
@@ -120,11 +114,13 @@ options.registry.RentalSearchOptions = options.Class.extend({
      * @private
      */
     async _populateProductAttributeSelect(widgetValue) {
-        const response = await this.orm.searchRead(
-            "product.attribute.value",
-            [["attribute_id", "=", parseInt(widgetValue)]],
-            []
-        );
+        const response = await this._rpc({
+            model: 'product.attribute.value',
+            method: 'search_read',
+            domain: [
+                ["attribute_id", "=", parseInt(widgetValue)],
+            ],
+        });
         const productAttributeSelectEl = this.$target[0].querySelector('.s_rental_search_select');
         productAttributeSelectEl.replaceChildren();
         productAttributeSelectEl.appendChild(this._addOptionToSelect({id: '', name: _t("All")}));

@@ -4,86 +4,11 @@
 <template id="s_website_form" name="Form">
     <section class="s_website_form pt16 pb16" data-vcss="001" data-snippet="s_website_form">
         <div class="container">
-            <form action="/website/form/" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-pre-fill="true" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you">
+            <form action="/website/form/" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-pre-fill="true">
                 <div class="s_website_form_rows row s_col_no_bgcolor">
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_dnone">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
-                                <span class="s_website_form_label_content"></span>
-                            </label>
-                            <div class="col-sm">
-                                <input type="hidden" class="form-control s_website_form_input" name="email_to" value="info@yourcompany.example.com"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="obij2aulqyau">
-                                <span class="s_website_form_label_content">Your Name</span>
-                                <span class="s_website_form_mark"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="name" required="1" data-fill-with="name" id="obij2aulqyau"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="tel">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="ozp7022vqhe">
-                                <span class="s_website_form_label_content">Phone Number</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="tel" name="phone" data-fill-with="phone" id="ozp7022vqhe"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_model_required" data-type="email">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oub62hlfgjwf">
-                                <span class="s_website_form_label_content">Your Email</span>
-                                <span class="s_website_form_mark"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="email" name="email_from" required="" data-fill-with="email" id="oub62hlfgjwf"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="o291di1too2s">
-                                <span class="s_website_form_label_content">Your Company</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="company" data-fill-with="commercial_company_name" id="o291di1too2s"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_model_required" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oqsf4m51acj">
-                                <span class="s_website_form_label_content">Subject</span>
-                                <span class="s_website_form_mark"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="subject" required="" id="oqsf4m51acj"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required" data-type="text">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oyeqnysxh10b">
-                                <span class="s_website_form_label_content">Your Question</span>
-                                <span class="s_website_form_mark"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <textarea class="form-control s_website_form_input" name="description" required="1" id="oyeqnysxh10b" rows="3">
-                                </textarea>
-                            </div>
-                        </div>
-                    </div>
                     <div class="mb-0 py-2 col-12 s_website_form_submit" data-name="Submit Button">
                         <div style="width: 200px;" class="s_website_form_label"/>
-                        <a href="#" role="button" class="btn btn-primary s_website_form_send">Submit</a>
+                        <a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">Submit</a>
                         <span id="s_website_form_result"></span>
                     </div>
                 </div>
@@ -142,15 +67,8 @@
         </div>
 
         <!-- Field -->
-        <div data-js="WebsiteFormFieldRequired" data-selector=".s_website_form .s_website_form_model_required">
-            <!-- Disable the delete option of model required fields and show
-            alert and tooltip on delete buttons -->
-            <we-alert class="mt-2"></we-alert>
-        </div>
-
         <div data-js='WebsiteFieldEditor' data-selector=".s_website_form_field"
-             data-exclude=".s_website_form_dnone" data-drop-near=".s_website_form_field"
-             data-drop-lock-within="form">
+             data-exclude=".s_website_form_dnone" data-drop-near=".s_website_form_field">
             <we-select data-name="type_opt" string="Type" data-no-preview="true">
                 <we-title>Custom field</we-title>
                 <we-button data-custom-field="char">Text</we-button>
@@ -219,22 +137,6 @@
                            data-apply-to=".s_website_form_date input"/>
             <we-checkbox string="Required" data-name="required_opt" data-no-preview="true"
                 data-toggle-required="s_website_form_required"/>
-
-            <we-input data-name="max_files_number_opt"
-                string="Max # of files"
-                title="The maximum number of files that can be uploaded."
-                data-attribute-name="maxFilesNumber"
-                data-select-data-attribute="1"
-                data-apply-to="input[type='file']"
-                data-step="1"/>
-
-            <we-input string="Max file size"
-                title="The maximum size (in MB) an uploaded file can have."
-                data-attribute-name="maxFileSize"
-                data-select-data-attribute="1MB"
-                data-apply-to="input[type='file']"
-                data-unit="MB"/>
-
             <we-select string="Visibility" data-no-preview="true">
                 <we-button data-set-visibility="visible" data-select-class="">Always Visible</we-button>
                 <we-button data-set-visibility="hidden" data-select-class="s_website_form_field_hidden">Hidden</we-button>
@@ -247,8 +149,6 @@
                 <we-select data-name="hidden_condition_no_text_opt" data-attribute-name="visibilityComparator" data-no-preview="true">
                     <we-button data-select-data-attribute="selected">Is equal to</we-button>
                     <we-button data-select-data-attribute="!selected">Is not equal to</we-button>
-                    <we-button data-select-data-attribute="contains">Contains</we-button>
-                    <we-button data-select-data-attribute="!contains">Doesn't contain</we-button>
                 </we-select>
                 <we-select data-name="hidden_condition_text_opt" data-attribute-name="visibilityComparator" data-no-preview="true">
                     <!-- str comparator possibilities -->
@@ -310,6 +210,9 @@
 
         <!-- Remove the duplicate option of model fields -->
         <div data-js="WebsiteFormFieldModel" data-selector=".s_website_form .s_website_form_field:not(.s_website_form_custom)"/>
+
+        <!-- Remove the delete option of model required fields -->
+        <div data-js="WebsiteFormFieldRequired" data-selector=".s_website_form .s_website_form_model_required"/>
 
         <!-- Remove the delete and duplicate option of the submit button -->
         <div data-js="WebsiteFormSubmitRequired" data-selector=".s_website_form .s_website_form_submit"/>

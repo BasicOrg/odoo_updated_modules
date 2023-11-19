@@ -5,7 +5,7 @@
     'name': "Account Winbooks Import",
     'summary': """Import Data From Winbooks""",
     'description': """
-Import Data From Winbooks
+        Import Data From Winbooks
     """,
     'category': 'Accounting/Accounting',
     'depends': ['account_accountant', 'base_vat', 'account_base_import'],

@@ -9,8 +9,8 @@
 
     <xpath expr="//td[@name='company-car-model']" position="inside">
         <t t-if="o.contract_id.car_id and not o._is_outside_contract_dates()">
-           <span t-field="o.contract_id.sudo().car_id.model_id">Neno</span>
-           <span t-field="o.contract_id.sudo().car_id.license_plate">YMM-XXX</span>
+           <span t-field="o.contract_id.sudo().car_id.model_id"/>
+           <span t-field="o.contract_id.sudo().car_id.license_plate"/>
         </t>
     </xpath>
 </template>

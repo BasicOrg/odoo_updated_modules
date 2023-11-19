@@ -37,7 +37,7 @@ class TestHelpdeskSaleCoupon(common.HelpdeskCommon):
         }))
         coupon_form.program = program
         sale_coupon = coupon_form.save()
-        sale_coupon.action_coupon_generate_send()
+        sale_coupon.generate_coupon()
 
         coupon = self.env['loyalty.card'].search([
             ('partner_id', '=', self.partner.id),

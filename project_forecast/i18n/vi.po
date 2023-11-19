@@ -3,21 +3,27 @@
 # 	* project_forecast
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-10-04 09:43+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: project_forecast
+#: code:addons/project_forecast/models/project.py:0
+#, python-format
+msgid "%s's Planning"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.ui.menu,name:project_forecast.planning_menu_schedule_by_project
@@ -30,6 +36,7 @@ msgid "Let's start your planning by adding a new shift."
 msgstr "Hãy bắt đầu lập kế hoạch của bạn bằng cách thêm một ca mới."
 
 #. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_template_inherit_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 msgid "My Projects"
@@ -40,10 +47,19 @@ msgstr "Dự án của tôi"
 #: model_terms:ir.actions.act_window,help:project_forecast.project_forecast_action_from_project
 #: model_terms:ir.actions.act_window,help:project_forecast.project_forecast_action_schedule_by_employee
 msgid "No shifts found. Let's create one!"
-msgstr "Không tìm thấy ca làm nào. Hãy tạo một ca!"
+msgstr "Không tìm thấy ca trực. Hãy tạo một ca!"
 
 #. module: project_forecast
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_form_inherit_project_forecast
+msgid "Plan your resources for this project"
+msgstr ""
+
+#. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_project_view_form_simplified_inherit_forecast
+msgid "Plan your resources on project tasks"
+msgstr "Lên kế hoạch tài nguyên của bạn với các công việc trong dự án"
+
+#. module: project_forecast
 #: code:addons/project_forecast/models/project.py:0
 #, python-format
 msgid "Planned"
@@ -51,26 +67,29 @@ msgstr "Đã lên kế hoạch"
 
 #. module: project_forecast
 #: model:ir.actions.act_window,name:project_forecast.project_forecast_action_from_project
+#: model:ir.model.fields,field_description:project_forecast.field_planning_slot__allow_forecast
+#: model:ir.model.fields,field_description:project_forecast.field_project_project__allow_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_kanban_inherit_project_forecast
 msgid "Planning"
-msgstr "Lập kế hoạch"
+msgstr "Kế hoạch"
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_planning_analysis_report
 msgid "Planning Analysis Report"
-msgstr "Báo cáo phân tích kế hoạch"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_planning_slot
 msgid "Planning Shift"
-msgstr "Lập kế hoạch ca làm"
+msgstr "Ca dự kiến"
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_project_project
 #: model:ir.model.fields,field_description:project_forecast.field_planning_analysis_report__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot_template__project_id
-#: model_terms:ir.ui.view,arch_db:project_forecast.open_slots_list_template
 #: model_terms:ir.ui.view,arch_db:project_forecast.period_report_template
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.resource_planning_project_forecast
 msgid "Project"
@@ -93,15 +112,12 @@ msgid ""
 "Schedule your human and material resources across roles, projects and sales "
 "orders."
 msgstr ""
-"Lên lịch cho nguồn nhân lực và vật lực của bạn theo vai trò, dự án và đơn "
-"bán hàng."
 
 #. module: project_forecast
-#. odoo-python
 #: code:addons/project_forecast/controllers/main.py:0
 #, python-format
 msgid "Shift"
-msgstr "Ca làm"
+msgstr "Ca làm việc"
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_planning_slot_template

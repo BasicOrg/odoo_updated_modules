@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('o_workorder_lot')]" position="inside">
                 <field name="is_expired" invisible="1"/>
-                <div class="o_expired_alert" invisible="not is_expired">
+                <div class="o_expired_alert" attrs="{'invisible': [('is_expired', '=', False)]}">
                     <span class="fa fa-exclamation-triangle"/> This lot is expired.
                 </div>
             </xpath>

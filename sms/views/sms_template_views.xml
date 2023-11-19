@@ -10,7 +10,7 @@
                     <button string="Reset Template"
                             name="%(sms_template_reset_action)d" type="action"
                             groups="base.group_system"
-                            invisible="not template_fs"/>
+                            attrs="{'invisible': [('template_fs', '=', False)]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -18,7 +18,7 @@
                         <button name="action_create_sidebar_action" type="object"
                                 groups="base.group_no_one"
                                 class="oe_stat_button"
-                                invisible="sidebar_action_id" icon="fa-plus"
+                                attrs="{'invisible':[('sidebar_action_id','!=',False)]}" icon="fa-plus"
                                 help="Add a contextual action on the related model to open a sms composer with this template">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_text">Add</span>
@@ -28,18 +28,14 @@
                         <button name="action_unlink_sidebar_action" type="object"
                                 groups="base.group_no_one"
                                 class="oe_stat_button" icon="fa-minus"
-                                invisible="not sidebar_action_id"
+                                attrs="{'invisible':[('sidebar_action_id','=',False)]}"
                                 help="Remove the contextual action of the related model" widget="statinfo">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_text">Remove</span>
                                 <span class="o_stat_text">Context Action</span>
                             </div>
                         </button>
-                        <button class="oe_stat_button" name="%(sms_template_preview_action)d" icon="fa-search-plus" type="action" target="new">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_text">Preview</span>
-                            </div>
-                        </button>
+                        <button class="oe_stat_button" name="%(sms_template_preview_action)d" icon="fa-search-plus" string="Preview" type="action" target="new"/>
                     </div>
                     <div class="oe_title">
                         <label for="name" string="SMS Template"/>
@@ -53,7 +49,7 @@
                     <notebook>
                         <page string="Content" name="content">
                             <group>
-                                <field name="body" widget="sms_widget" nolabel="1" colspan="2"/>
+                                <field name="body" widget="sms_widget" nolabel="1"/>
                             </group>
                         </page>
                     </notebook>

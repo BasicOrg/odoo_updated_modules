@@ -1,33 +1,64 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from datetime import timedelta, date
 from pytz import timezone, UTC
 
-from odoo import _, api, fields, models
-from odoo.fields import Command
+from odoo import api, fields, models, _
 from odoo.tools import format_datetime, format_time
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    # Stored because a product could have been rent_ok when added to the SO but then updated
-    is_rental = fields.Boolean(compute='_compute_is_rental', store=True, precompute=True)
+    is_rental = fields.Boolean(default=False)
 
     qty_returned = fields.Float("Returned", default=0.0, copy=False)
-    start_date = fields.Datetime(related='order_id.rental_start_date')
-    return_date = fields.Datetime(related='order_id.rental_return_date')
+    start_date = fields.Datetime(string='Start Date')
+    return_date = fields.Datetime(string="Return")
     reservation_begin = fields.Datetime(
         string="Pickup date - padding time", compute='_compute_reservation_begin', store=True)
 
-    is_product_rentable = fields.Boolean(related='product_id.rent_ok', depends=['product_id'])
+    is_late = fields.Boolean(
+        string="Is overdue", compute='_compute_is_late',
+        help="The products haven't been returned in time")
 
-    @api.depends('order_id.rental_start_date')
+    is_product_rentable = fields.Boolean(related='product_id.rent_ok', depends=['product_id'])
+    temporal_type = fields.Selection(selection_add=[('rental', 'Rental')])
+
+    @api.depends('product_template_id', 'is_rental')
+    def _compute_temporal_type(self):
+        super()._compute_temporal_type()
+        for line in self:
+            # We only rely on the is_rental stored boolean because after migration, product could be migrated
+            # with rent_ok = False It will ensure that rental line are still considered rental even if the product change
+            # To compare with subscription where temporal type depends on recurrency and recurring_invoice
+            if line.is_rental:
+                line.temporal_type = 'rental'
+
+    @api.depends('return_date')
+    def _compute_is_late(self):
+        now = fields.Datetime.now()
+        for line in self:
+            # By default, an order line is considered late only if it has one hour of delay
+            line.is_late = line.return_date and line.return_date + timedelta(hours=self.company_id.min_extra_hour) < now
+
+    @api.depends('start_date')
     def _compute_reservation_begin(self):
-        lines = self.filtered('is_rental')
+        lines = self.filtered(lambda line: line.is_rental)
         for line in lines:
-            line.reservation_begin = line.order_id.rental_start_date
+            line.reservation_begin = line.start_date
         (self - lines).reservation_begin = None
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        """Clean rental related data if new product cannot be rented."""
+        if (not self.is_product_rentable) and self.is_rental:
+            self.update({
+                'is_rental': False,
+                'start_date': False,
+                'return_date': False,
+            })
 
     @api.onchange('qty_delivered')
     def _onchange_qty_delivered(self):
@@ -35,14 +66,7 @@ class SaleOrderLine(models.Model):
         if self.qty_delivered > self.product_uom_qty:
             self.product_uom_qty = self.qty_delivered
 
-    @api.depends('is_rental')
-    def _compute_qty_delivered_method(self):
-        """Allow modification of delivered qty without depending on stock moves."""
-        rental_lines = self.filtered('is_rental')
-        super(SaleOrderLine, self - rental_lines)._compute_qty_delivered_method()
-        rental_lines.qty_delivered_method = 'manual'
-
-    @api.depends('order_id.rental_start_date', 'order_id.rental_return_date', 'is_rental')
+    @api.depends('start_date', 'return_date', 'is_rental')
     def _compute_name(self):
         """Override to add the compute dependency.
 
@@ -50,71 +74,53 @@ class SaleOrderLine(models.Model):
         """
         super()._compute_name()
 
-    @api.depends('product_id')
-    def _compute_is_rental(self):
-        for line in self:
-            line.is_rental = line.is_product_rentable and line.env.context.get('in_rental_app')
-
-    @api.depends('is_rental')
-    def _compute_product_updatable(self):
-        rental_lines = self.filtered('is_rental')
-        super(SaleOrderLine, self - rental_lines)._compute_product_updatable()
-        rental_lines.product_updatable = True
-
-    def _compute_pricelist_item_id(self):
-        """Discard pricelist item computation for rental lines.
-
-        This will disable the standard discount computation because no pricelist rule was found.
-        """
-        rental_lines = self.filtered('is_rental')
-        super(SaleOrderLine, self - rental_lines)._compute_pricelist_item_id()
-        rental_lines.pricelist_item_id = False
+    @api.onchange('is_rental')
+    def _onchange_is_rental(self):
+        if self.is_rental and not self.order_id.is_rental_order:
+            self.order_id.is_rental_order = True
 
     _sql_constraints = [
         ('rental_stock_coherence',
             "CHECK(NOT is_rental OR qty_returned <= qty_delivered)",
             "You cannot return more than what has been picked up."),
+        ('rental_period_coherence',
+            "CHECK(NOT is_rental OR start_date < return_date)",
+            "Please choose a return date that is after the pickup date."),
     ]
 
     def _get_sale_order_line_multiline_description_sale(self):
         """Add Rental information to the SaleOrderLine name."""
         res = super()._get_sale_order_line_multiline_description_sale()
         if self.is_rental:
-            self.order_id._rental_set_dates()
             res += self._get_rental_order_line_description()
         return res
 
     def _get_rental_order_line_description(self):
         tz = self._get_tz()
-        start_date = self.order_id.rental_start_date
-        return_date = self.order_id.rental_return_date
-        env = self.with_context(use_babel=True).env
-        if start_date and return_date\
-           and start_date.replace(tzinfo=UTC).astimezone(timezone(tz)).date()\
-               == return_date.replace(tzinfo=UTC).astimezone(timezone(tz)).date():
+        if self.start_date and self.return_date\
+           and self.start_date.replace(tzinfo=UTC).astimezone(timezone(tz)).date()\
+               == self.return_date.replace(tzinfo=UTC).astimezone(timezone(tz)).date():
             # If return day is the same as pickup day, don't display return_date Y/M/D in description.
-            return_date_part = format_time(env, return_date, tz=tz, time_format=False)
+            return_date_part = format_time(self.with_context(use_babel=True).env, self.return_date, tz=tz, time_format=False)
         else:
-            return_date_part = format_datetime(env, return_date, tz=tz, dt_format=False)
-        start_date_part = format_datetime(env, start_date, tz=tz, dt_format=False)
-        return _(
-            "\n%(from_date)s to %(to_date)s", from_date=start_date_part, to_date=return_date_part
+            return_date_part = format_datetime(self.with_context(use_babel=True).env, self.return_date, tz=tz, dt_format=False)
+
+        return "\n%s %s %s" % (
+            format_datetime(self.with_context(use_babel=True).env, self.start_date, tz=tz, dt_format=False),
+            _("to"),
+            return_date_part,
         )
 
-    def _use_template_name(self):
-        """ Avoid the template line description in order to add the rental period on the SOL. """
-        if self.is_rental:
-            return False
-        return super()._use_template_name()
-
-    def _generate_delay_line(self, qty_returned):
+    def _generate_delay_line(self, qty):
         """Generate a sale order line representing the delay cost due to the late return.
 
-        :param float qty_returned: returned quantity
+        :param float qty:
+        :param timedelta duration:
         """
         self.ensure_one()
+        if qty <= 0 or not self.is_late:
+            return
 
-        self = self.with_company(self.company_id)
         duration = fields.Datetime.now() - self.return_date
 
         delay_price = self.product_id._compute_delay_price(duration)
@@ -141,20 +147,26 @@ class SaleOrderLine(models.Model):
         if not delay_product.active:
             return
 
-        delay_price = self._convert_to_sol_currency(delay_price, self.product_id.currency_id)
+        delay_price = self.product_id.currency_id._convert(
+            from_amount=delay_price,
+            to_currency=self.currency_id,
+            company=self.company_id,
+            date=date.today(),
+        )
 
-        order_line_vals = self._prepare_delay_line_vals(delay_product, delay_price * qty_returned)
+        vals = self._prepare_delay_line_vals(delay_product, delay_price, qty)
 
         self.order_id.write({
-            'order_line': [Command.create(order_line_vals)],
+            'order_line': [(0, 0, vals)]
         })
 
-    def _prepare_delay_line_vals(self, delay_product, delay_price):
+    def _prepare_delay_line_vals(self, delay_product, delay_price, qty):
         """Prepare values of delay line.
 
-        :param product.product delay_product: Product used for the delay_line
-        :param float delay_price: Price of the delay line
-
+        :param float delay_price:
+        :param float quantity:
+        :param delay_product: Product used for the delay_line
+        :type delay_product: product.product
         :return: sale.order.line creation values
         :rtype dict:
         """
@@ -162,49 +174,47 @@ class SaleOrderLine(models.Model):
         return {
             'name': delay_line_description,
             'product_id': delay_product.id,
-            'product_uom_qty': 1,
-            'qty_delivered': 1,
+            'product_uom_qty': qty,
+            'product_uom': self.product_id.uom_id.id,
+            'qty_delivered': qty,
             'price_unit': delay_price,
         }
 
     def _get_delay_line_description(self):
         # Shouldn't tz be taken from self.order_id.user_id.tz ?
         tz = self._get_tz()
-        env = self.with_context(use_babel=True).env
-        expected_date = format_datetime(env, self.return_date, tz=tz, dt_format=False)
-        now = format_datetime(env, fields.Datetime.now(), tz=tz, dt_format=False)
-        return "%s\n%s\n%s" % (
+        return "%s\n%s: %s\n%s: %s" % (
             self.product_id.name,
-            _("Expected: %(date)s", date=expected_date),
-            _("Returned: %(date)s", date=now),
+            _("Expected"),
+            format_datetime(self.with_context(use_babel=True).env, self.return_date, tz=tz, dt_format=False),
+            _("Returned"),
+            format_datetime(self.with_context(use_babel=True).env, fields.Datetime.now(), tz=tz, dt_format=False)
         )
+
+    #=== ONCHANGE METHODS ===#
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        """Clean product related data if new product is not temporal."""
+        if not self.temporal_type:
+            values = self._get_clean_up_values()
+            self.update(values)
+
+    def _get_clean_up_values(self):
+        """Helper to allow reset lines values."""
+        return {'return_date': False}
 
     def _get_tz(self):
         return self.env.context.get('tz') or self.env.user.tz or 'UTC'
 
-    def _get_pricelist_price(self):
-        """ Custom price computation for rental lines.
-
-        The displayed price will only be the price given by the product.pricing rules matching the
-        given line information (product, period, pricelist, ...).
-        """
-        self.ensure_one()
-        if self.is_rental:
-            self.order_id._rental_set_dates()
-            return self.order_id.pricelist_id._get_product_price(
-                self.product_id.with_context(**self._get_product_price_context()),
-                self.product_uom_qty or 1.0,
-                currency=self.currency_id,
-                uom=self.product_uom,
-                date=self.order_id.date_order or fields.Date.today(),
-                start_date=self.start_date,
-                end_date=self.return_date,
-            )
-        return super()._get_pricelist_price()
-
     # === PRICE COMPUTING HOOKS === #
 
-    def _lines_without_price_recomputation(self):
-        """ Override to filter out rental lines and allow the recomputation for these SOL. """
-        res = super()._lines_without_price_recomputation()
-        return res.filtered(lambda l: not l.is_rental)
+    def _get_price_computing_kwargs(self):
+        """ Override to add the pricing duration or the start and end date of temporal line """
+        price_computing_kwargs = super()._get_price_computing_kwargs()
+        if self.temporal_type != 'rental':
+            return price_computing_kwargs
+        if self.start_date and self.return_date:
+            price_computing_kwargs['start_date'] = self.start_date
+            price_computing_kwargs['end_date'] = self.return_date
+        return price_computing_kwargs

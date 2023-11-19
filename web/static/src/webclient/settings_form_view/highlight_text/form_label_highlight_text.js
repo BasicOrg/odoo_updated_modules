@@ -8,12 +8,18 @@ export class FormLabelHighlightText extends FormLabel {
         const isEnterprise = odoo.info && odoo.info.isEnterprise;
         if (
             this.props.fieldInfo &&
-            this.props.fieldInfo.field &&
-            this.props.fieldInfo.field.isUpgradeField &&
+            this.props.fieldInfo.FieldComponent &&
+            this.props.fieldInfo.FieldComponent.isUpgradeField &&
             !isEnterprise
         ) {
             this.upgradeEnterprise = true;
         }
+    }
+    get className() {
+        if (this.props.className) {
+            return this.props.className;
+        }
+        return super.className;
     }
 }
 

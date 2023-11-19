@@ -43,19 +43,12 @@ class SocialStreamPostFacebook(models.Model):
         for post in facebook_posts:
             post.post_link = 'https://www.facebook.com/%s' % post.facebook_post_id
 
-    def _compute_is_author(self):
-        facebook_posts = self._filter_by_media_types(['facebook'])
-        super(SocialStreamPostFacebook, (self - facebook_posts))._compute_is_author()
-
-        for post in facebook_posts:
-            post.is_author = post.facebook_author_id == post.account_id.facebook_account_id
-
     # ========================================================
     # COMMENTS / LIKES
     # ========================================================
 
     def _facebook_comment_delete(self, comment_id):
-        requests.delete(url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, comment_id),
+        requests.delete(url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s" % comment_id),
             data={'access_token': self.stream_id.account_id.facebook_access_token},
             timeout=5
         )
@@ -65,7 +58,7 @@ class SocialStreamPostFacebook(models.Model):
     def _facebook_comment_fetch(self, next_records_token=False, count=20):
         self.ensure_one()
 
-        comments_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/comments" % self.facebook_post_id)
+        comments_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/comments" % (self.facebook_post_id))
         params = {
             'fields': self.FACEBOOK_COMMENT_FIELDS,
             'access_token': self.stream_id.account_id.facebook_access_token,
@@ -80,7 +73,7 @@ class SocialStreamPostFacebook(models.Model):
         result_json = result.json()
 
         if not result.ok:
-            _logger.warning("An error occurred while fetching the comment: %s", result.text)
+            _logger.error("An error occurred while fetching the comment: %s" % result.text)
 
             error_message = _('An error occurred.')
 
@@ -146,7 +139,7 @@ class SocialStreamPostFacebook(models.Model):
 
     def _facebook_like(self, object_id, like):
         params = {'access_token': self.stream_id.account_id.facebook_access_token}
-        comments_like_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT_VERSIONED, "%s/likes" % (object_id))
+        comments_like_endpoint_url = url_join(self.env['social.media']._FACEBOOK_ENDPOINT, "/v10.0/%s/likes" % (object_id))
         if like:
             requests.post(comments_like_endpoint_url, data=params, timeout=5)
         else:

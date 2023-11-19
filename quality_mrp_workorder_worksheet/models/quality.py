@@ -10,12 +10,9 @@ class QualityCheck(models.Model):
 
     def action_worksheet_check(self):
         self.ensure_one()
-        action = super().action_worksheet_check()
-        if self.workorder_id and not self.env.context.get('from_worksheet'):
-            return self._next()
-        return action
+        self.super().action_worksheet_check()
+        return self._next()
 
     def action_fill_sheet(self):
         self.ensure_one()
-        # we need to access the worksheet through the wizard to do the checks
-        return self.action_open_quality_check_wizard()
+        return self.action_quality_worksheet()

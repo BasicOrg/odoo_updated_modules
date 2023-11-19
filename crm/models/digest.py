@@ -16,19 +16,26 @@ class Digest(models.Model):
     def _compute_kpi_crm_lead_created_value(self):
         if not self.env.user.has_group('sales_team.group_sale_salesman'):
             raise AccessError(_("Do not have access, skip this data for user's digest email"))
-
-        self._calculate_company_based_kpi('crm.lead', 'kpi_crm_lead_created_value')
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            record.kpi_crm_lead_created_value = self.env['crm.lead'].search_count([
+                ('create_date', '>=', start),
+                ('create_date', '<', end),
+                ('company_id', '=', company.id)
+            ])
 
     def _compute_kpi_crm_opportunities_won_value(self):
         if not self.env.user.has_group('sales_team.group_sale_salesman'):
             raise AccessError(_("Do not have access, skip this data for user's digest email"))
-
-        self._calculate_company_based_kpi(
-            'crm.lead',
-            'kpi_crm_opportunities_won_value',
-            date_field='date_closed',
-            additional_domain=[('type', '=', 'opportunity'), ('probability', '=', '100')],
-        )
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            record.kpi_crm_opportunities_won_value = self.env['crm.lead'].search_count([
+                ('type', '=', 'opportunity'),
+                ('probability', '=', '100'),
+                ('date_closed', '>=', start),
+                ('date_closed', '<', end),
+                ('company_id', '=', company.id)
+            ])
 
     def _compute_kpis_actions(self, company, user):
         res = super(Digest, self)._compute_kpis_actions(company, user)

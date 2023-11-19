@@ -4,33 +4,34 @@ import { Dialog } from "@web/core/dialog/dialog";
 import { SearchBar } from "@web/search/search_bar/search_bar";
 import { Pager } from "@web/core/pager/pager";
 
-import { KeepLast } from "@web/core/utils/concurrency";
+import { DropPrevious } from "web.concurrency";
 import { SearchModel } from "@web/search/search_model";
 import { useBus, useService } from "@web/core/utils/hooks";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
 import { getDefaultConfig } from "@web/views/view";
-import { _t } from "@web/core/l10n/translation";
+import { _t } from "web.core";
 
-import { Component, useState, useSubEnv, useChildSubEnv, onWillStart } from "@odoo/owl";
+const { Component, useState, useSubEnv, useChildSubEnv, onWillStart } = owl;
 
 export class TemplateDialog extends Component {
     setup() {
         this.orm = useService("orm");
+        this.rpc = useService("rpc");
         this.viewService = useService("view");
         this.notificationService = useService("notification");
         this.actionService = useService("action");
-        this.companyService = useService("company");
 
         this.data = this.env.dialogData;
         useHotkey("escape", () => this.data.close());
 
-        this.dialogTitle = _t("Create a Spreadsheet or select a Template");
+        this.dialogTitle = this.env._t("New Spreadsheet");
         this.limit = 9;
         this.state = useState({
             isOpen: true,
             templates: [],
             templatesCount: 0,
             selectedTemplateId: null,
+            offset: 1,
             offset: 0,
             isCreating: false,
         });
@@ -48,15 +49,9 @@ export class TemplateDialog extends Component {
             searchModel: this.model,
         });
         useBus(this.model, "update", () => this._fetchTemplates());
-        this.keepLast = new KeepLast();
+        this.dp = new DropPrevious();
 
         onWillStart(async () => {
-            const defaultFolder = await this.orm.searchRead(
-                "res.company",
-                [["id", "=", this.companyService.currentCompany.id]],
-                ["documents_spreadsheet_folder_id"]
-            );
-            this.documentsSpreadsheetFolderId = defaultFolder[0].documents_spreadsheet_folder_id[0];
             const views = await this.viewService.loadViews({
                 resModel: "spreadsheet.template",
                 context: this.props.context,
@@ -84,14 +79,15 @@ export class TemplateDialog extends Component {
      */
     async _fetchTemplates(offset = 0) {
         const { domain, context } = this.model;
-        const { records, length } = await this.keepLast.add(
-            this.orm.webSearchRead("spreadsheet.template", domain, {
-                specification: { name: {} },
+        const { records, length } = await this.dp.add(
+            this.rpc("/web/dataset/search_read", {
+                model: "spreadsheet.template",
+                fields: ["name"],
                 domain,
                 context,
                 offset,
                 limit: this.limit,
-                order: "sequence, id",
+                sort: "sequence, id",
             })
         );
         this.state.templates = records;
@@ -106,39 +102,27 @@ export class TemplateDialog extends Component {
      * @returns {Promise<void>}
      */
     async _createSpreadsheet() {
-        if (!this._hasSelection()) {
-            return;
-        }
+        if (!this._hasSelection()) return;
         this.state.isCreating = true;
+        const templateId = this.state.selectedTemplateId;
 
         this.notificationService.add(_t("New sheet saved in Documents"), {
             type: "info",
             sticky: false,
         });
 
-        this.actionService.doAction(await this._getOpenSpreadsheetAction(), {
-            additionalContext: this.props.context,
+        const template = this.state.templates.find((template) => template.id === templateId);
+        this.actionService.doAction({
+            type: "ir.actions.client",
+            tag: "action_open_spreadsheet",
+            params: {
+                alwaysCreate: true,
+                createInFolderId: this.props.folderId,
+                createFromTemplateId: templateId,
+                createFromTemplateName: template && template.name,
+            },
         });
         this.data.close();
-    }
-
-    async _getOpenSpreadsheetAction() {
-        const context = this.props.context;
-        const templateId = this.state.selectedTemplateId;
-        if (templateId) {
-            return this.orm.call(
-                "spreadsheet.template",
-                "action_create_spreadsheet",
-                [templateId, { folder_id: this.props.folderId || this.documentsSpreadsheetFolderId }],
-                { context }
-            );
-        }
-        return this.orm.call(
-            "documents.document",
-            "action_open_new_spreadsheet",
-            [{ folder_id: this.props.folderId || this.documentsSpreadsheetFolderId }],
-            { context }
-        );
     }
 
     /**
@@ -196,9 +180,3 @@ export class TemplateDialog extends Component {
 }
 TemplateDialog.components = { Dialog, SearchBar, Pager };
 TemplateDialog.template = "documents_spreadsheet.TemplateDialog";
-TemplateDialog.props = {
-    context: Object,
-    folderId: { type: Number, optional: true },
-    close: Function, // prop added by the Dialog service
-    folders: Array,
-};

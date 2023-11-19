@@ -1,10 +1,9 @@
 /** @odoo-module **/
 
 import { _t } from "@web/core/l10n/translation";
-import { localization } from "@web/core/l10n/localization";
-import { escapeRegExp } from "@web/core/utils/strings";
 import { useAutofocus, useService } from '@web/core/utils/hooks';
-import { Component, useRef, useState } from "@odoo/owl";
+
+const { Component, useRef, useState } = owl;
 
 export class HelpdeskTeamTarget extends Component {
     setup() {
@@ -40,9 +39,7 @@ export class HelpdeskTeamTarget extends Component {
      * @private
      */
     async _onValueChange() {
-        let inputValue = this.inputRef.el.value;
-        // a number can have the thousand separator multiple times. ex: 1,000,000.00
-        inputValue = inputValue.replaceAll(new RegExp(escapeRegExp(localization.thousandsSep || ""), "g") || ",", "");
+        const inputValue = this.inputRef.el.value;
         const targetValue = parseInt(inputValue);
         if (Number.isNaN(targetValue)) {
             this.notification.add(_t("Please enter a number."), { type: 'danger' });

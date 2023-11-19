@@ -1,7 +1,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo import SUPERUSER_ID, api
 
-def post_init_hook(env):
-    for company in env['res.company'].search([('chart_template', '=', 'pe')]):
-        ChartTemplate = env['account.chart.template'].with_company(company)
-        tax_group_data = ChartTemplate._get_pe_edi_account_tax_group()
-        ChartTemplate._load_data({'account.tax.group': tax_group_data})
+def post_init_hook(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    pe_companies = env['res.company'].search([('partner_id.country_id.code', '=', 'PE')])
+    pe_taxes = env['account.tax'].search([('company_id', 'in', pe_companies.ids), ('type_tax_use', '=', 'sale')])
+    pe_taxes._compute_l10n_pe_edi_affectation_reason()

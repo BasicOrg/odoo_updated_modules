@@ -3,7 +3,6 @@
 
 from odoo import api, fields, models, Command
 
-
 class FollowupManualReminder(models.TransientModel):
     _name = 'account_followup.manual_reminder'
     _inherit = 'mail.composer.mixin'
@@ -26,7 +25,7 @@ class FollowupManualReminder(models.TransientModel):
         defaults.update(
             partner_id=partner.id,
             email_recipient_ids=[Command.set((partner._get_all_followup_contacts() or partner).ids)],
-            attachment_ids=[Command.set(partner._get_included_unreconciled_aml_ids().move_id.message_main_attachment_id.ids)],
+            attachment_ids=[Command.set(partner.unpaid_invoice_ids.message_main_attachment_id.ids)],
         )
         return defaults
 
@@ -34,17 +33,20 @@ class FollowupManualReminder(models.TransientModel):
 
     # email fields
     email = fields.Boolean()
+    body_html = fields.Html(compute='_compute_body_html', render_engine='qweb', sanitize_style=True)
+    template_id = fields.Many2one(domain=[('model', '=', 'res.partner')])  # OVERRIDES mail.composer.mixin
+    email_add_signature = fields.Boolean(default=True)
     email_recipient_ids = fields.Many2many(string="Extra Recipients", comodel_name='res.partner',
                                            relation='rel_followup_manual_reminder_res_partner')  # override
 
     # sms fields
     sms = fields.Boolean()
     sms_body = fields.Char(compute='_compute_sms_body', readonly=False, store=True)
-    sms_template_id = fields.Many2one(comodel_name='sms.template', domain=[('model', '=', 'res.partner')])
+    sms_template_id = fields.Many2one(comodel_name='sms.template')
 
     # print fields
     print = fields.Boolean(default=True)
-    join_invoices = fields.Boolean(string="Attach Invoices")
+    join_invoices = fields.Boolean()
 
     # attachments fields
     attachment_ids = fields.Many2many(comodel_name='ir.attachment')
@@ -57,27 +59,26 @@ class FollowupManualReminder(models.TransientModel):
     def _compute_subject(self):
         for wizard in self:
             options = {
-                'partner_id': wizard.partner_id.id,
-                'mail_template': wizard.template_id,
+                'partner_id': self.partner_id.id,
+                'mail_template': self.template_id,
             }
             wizard.subject = self.env['account.followup.report']._get_email_subject(options)
 
     @api.depends('template_id')
-    def _compute_body(self):
-        # OVERRIDES mail.composer.mixin
+    def _compute_body_html(self):
         for wizard in self:
             options = {
-                'partner_id': wizard.partner_id.id,
-                'mail_template': wizard.template_id,
+                'partner_id': self.partner_id.id,
+                'mail_template': self.template_id,
             }
-            wizard.body = self.env['account.followup.report']._get_main_body(options)
+            wizard.body_html = self.env['account.followup.report']._get_main_body(options)
 
     @api.depends('sms_template_id')
     def _compute_sms_body(self):
         for wizard in self:
             options = {
-                'partner_id': wizard.partner_id.id,
-                'sms_template': wizard.sms_template_id,
+                'partner_id': self.partner_id.id,
+                'sms_template': self.sms_template_id,
             }
             wizard.sms_body = self.env['account.followup.report']._get_sms_body(options)
 
@@ -89,7 +90,7 @@ class FollowupManualReminder(models.TransientModel):
             'email': self.email,
             'email_subject': self.subject,
             'email_recipient_ids': self.email_recipient_ids,
-            'body': self.body,
+            'body': self.body_html,
             'attachment_ids': self.attachment_ids.ids,
             'sms': self.sms,
             'sms_body': self.sms_body,

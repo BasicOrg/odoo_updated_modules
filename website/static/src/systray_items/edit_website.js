@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from '@web/core/utils/hooks';
-import { Component, useState, useEffect } from "@odoo/owl";
+
+const { Component, useState, useEffect } = owl;
 
 class EditWebsiteSystray extends Component {
     setup() {
@@ -33,9 +33,9 @@ class EditWebsiteSystray extends Component {
 
     get label() {
         if (this.translatable) {
-            return _t("or edit master");
+            return this.env._t("or edit master");
         }
-        return _t("Edit");
+        return this.env._t("Edit");
     }
 
     startEdit() {
@@ -47,8 +47,7 @@ class EditWebsiteSystray extends Component {
             const languagePrefix = `${pathname}/`.indexOf('/', 1);
             const defaultLanguagePathname = pathname.substring(languagePrefix);
             this.websiteService.goToWebsite({
-                path: defaultLanguagePathname + search + hash,
-                lang: 'default',
+                path: `/website/lang/default?r=${encodeURIComponent(defaultLanguagePathname + search + hash)}`,
                 edition: true
             });
         } else {

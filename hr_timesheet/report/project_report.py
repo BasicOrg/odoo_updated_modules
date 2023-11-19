@@ -7,33 +7,30 @@ from odoo import fields, models, api
 class ReportProjectTaskUser(models.Model):
     _inherit = "report.project.task.user"
 
-    allocated_hours = fields.Float('Allocated Time', readonly=True)
-    effective_hours = fields.Float('Hours Spent', readonly=True)
+    hours_planned = fields.Float('Planned Hours', readonly=True)
+    hours_effective = fields.Float('Effective Hours', readonly=True)
     remaining_hours = fields.Float('Remaining Hours', readonly=True)
-    remaining_hours_percentage = fields.Float('Remaining Hours Percentage', readonly=True)
     progress = fields.Float('Progress', group_operator='avg', readonly=True)
     overtime = fields.Float(readonly=True)
-    total_hours_spent = fields.Float("Total Hours", help="Time spent on this task, including its sub-tasks.")
 
     def _select(self):
-        return super()._select() +  """,
-                CASE WHEN COALESCE(t.allocated_hours, 0) = 0 THEN 0.0 ELSE LEAST((t.effective_hours * 100) / t.allocated_hours, 100) END as progress,
-                t.effective_hours,
-                t.allocated_hours - t.effective_hours - t.subtask_effective_hours as remaining_hours,
-                CASE WHEN t.allocated_hours > 0 THEN t.remaining_hours / t.allocated_hours ELSE 0 END as remaining_hours_percentage,
-                t.allocated_hours,
-                t.overtime,
-                t.total_hours_spent
+        select_to_append = """,
+                (t.effective_hours * 100) / NULLIF(t.planned_hours, 0) as progress,
+                t.effective_hours as hours_effective,
+                t.planned_hours - t.effective_hours - t.subtask_effective_hours as remaining_hours,
+                NULLIF(t.planned_hours, 0) as hours_planned,
+                t.overtime as overtime
         """
+        return super(ReportProjectTaskUser, self)._select() + select_to_append
 
     def _group_by(self):
-        return super()._group_by() + """,
+        group_by_append = """,
                 t.effective_hours,
                 t.subtask_effective_hours,
-                t.allocated_hours,
-                t.overtime,
-                t.total_hours_spent
+                t.planned_hours,
+                t.overtime
         """
+        return super(ReportProjectTaskUser, self)._group_by() + group_by_append
 
     @api.model
     def _get_view_cache_key(self, view_id=None, view_type='form', **options):

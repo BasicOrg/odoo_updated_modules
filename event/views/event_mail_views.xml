@@ -12,13 +12,14 @@
                         <group>
                             <field name="event_id"/>
                             <field name="notification_type"/>
-                            <field name="template_ref" options="{'hide_model': True, 'no_quick_create': True}" context="{'filter_template_on_event': True, 'default_model': 'event.registration'}"/>
+                            <field name="template_model_id" invisible="1"/>
+                            <field name="template_ref" options="{'model_field': 'template_model_id', 'no_quick_create': True}" context="{'filter_template_on_event': True, 'default_model': 'event.registration'}"/>
                             <field name="mail_state"/>
                         </group>
                         <group>
                             <label for="interval_nbr"/>
                             <div class="o_row">
-                                <field name="interval_nbr" invisible="interval_unit == 'now'" readonly="interval_unit == 'now'"/>
+                                <field name="interval_nbr" attrs="{'invisible': [('interval_unit', '=', 'now')], 'readonly': [('interval_unit', '=', 'now')]}"/>
                                 <field name="interval_unit"/>
                             </div>
                             <field name="interval_type"/>
@@ -48,7 +49,8 @@
             <tree string="Event Mail Schedulers">
                 <field name="event_id"/>
                 <field name="notification_type"/>
-                <field name="template_ref" options="{'hide_model': True, 'no_quick_create': True}" context="{'filter_template_on_event': True, 'default_model': 'event.registration'}"/>
+                <field name="template_model_id" invisible="1"/>
+                <field name="template_ref" options="{'model_field': 'template_model_id', 'no_quick_create': True}" context="{'filter_template_on_event': True, 'default_model': 'event.registration'}"/>
                 <field name="scheduled_date"/>
                 <field name="mail_count_done"/>
                 <field name="mail_state" widget="event_icon_selection" string=" " nolabel="1"

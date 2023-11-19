@@ -7,18 +7,17 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='other_info']" position="inside">
-                    <group invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <group attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}">
                         <group string="External Trade">
-                            <field name="l10n_mx_edi_external_trade" invisible="1"/>
-                            <field name="l10n_mx_edi_external_trade_type" invisible="country_code != 'MX'"/>
-                            <field name="l10n_mx_edi_cer_source" invisible="l10n_mx_edi_external_trade_type not in ['02', '03']"/>
+                            <field name="l10n_mx_edi_external_trade" attrs="{'invisible': [('country_code', '!=', 'MX')]}"/>
+                            <field name="l10n_mx_edi_cer_source" attrs="{'invisible': [('l10n_mx_edi_external_trade', '=', False)]}"/>
                         </group>
                     </group>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
-                    <field name="l10n_mx_edi_qty_umt" column_invisible="parent.l10n_mx_edi_external_trade_type not in ['02', '03']"/>
-                    <field name="l10n_mx_edi_umt_aduana_id" column_invisible="parent.l10n_mx_edi_external_trade_type not in ['02', '03']"/>
-                    <field name="l10n_mx_edi_customs_number" column_invisible="parent.move_type not in ('out_invoice', 'out_refund')"/>
+                    <field name="l10n_mx_edi_qty_umt" attrs="{'column_invisible': [('parent.l10n_mx_edi_external_trade', '=', False)]}"/>
+                    <field name="l10n_mx_edi_umt_aduana_id" attrs="{'column_invisible': [('parent.l10n_mx_edi_external_trade', '=', False)]}"/>
+                    <field name="l10n_mx_edi_customs_number" attrs="{'column_invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund'))]}"/>
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree" position="inside">
                     <field name="l10n_mx_edi_qty_umt" invisible="1"/>

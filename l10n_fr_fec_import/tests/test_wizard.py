@@ -23,21 +23,15 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
 
     test_content = """
         JournalCode\tJournalLib\tEcritureNum\tEcritureDate\tCompteNum\tCompteLib\tCompAuxNum\tCompAuxLib\tPieceRef\tPieceDate\tEcritureLib\tDebit\tCredit\tEcritureLet\tDateLet\tValidDate\tMontantdevise\tIdevise
-        ACH\tACHATS\tACH000001\t20180808\t62270000\tLegal costs and litigation\t\t\t1\t20180808\tADVANCE PAYMENT COMPANY FORMALITIES\t500,00\t0,00\t\t\t20190725\t\t
-        ACH\tACHATS\tACH000001\t20180808\t44566000\tVat on other goods and services\t\t\t1\t20180808\tADVANCE PAYMENT COMPANY FORMALITIES\t100,00\t0,00\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000001\t20180808\t45500000\tAssociate's current account\t\t\t1\t20180808\tADVANCE PAYMENT COMPANY FORMALITIES\t0,00\t600,00\t\t\t20190725\t\t
-        ACH\tACHATS\tACH000002\t20180808\t61320000\tPartner rentals 01\t\t\t2\t20180808\tDOMICILIATION\t300,00\t0,00\t\t\t20190725\t\t
-        ACH\tACHATS\tACH000002\t20180808\t44566000\tVat on other goods and services\t\t\t2\t20180808\tDOMICILIATION\t60,00\t0,00\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000002\t20180808\t45500000\tAssociate's current account\t\t\t2\t20180808\tDOMICILIATION\t0,00\t360,00\t\t\t20190725\t\t
-        ACH\tACHATS\tACH000003\t20180910\t61320000\tPartner rentals 01\t\t\t3\t20180910\tPARTNER 01\t41,50\t0,00\t\t\t20190725\t\t
-        ACH\tACHATS\tACH000003\t20180910\t44566000\tVat on other goods and services\t\t\t3\t20180910\tPARTNER 01\t8,30\t0,00\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000003\t20180910\t40100000\tSuppliers\tPARTNER01\tPARTNER 01\t3\t20180910\tPARTNER 01\t0,00\t49,80\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000004\t20180910\t512001\tVat on other goods and services\t\t\t3\t20180910\tPARTNER 01\t49,80\t0,00\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000004\t20180910\t40100000\tSuppliers\tPARTNER01\tPARTNER 01\t3\t20180910\tPARTNER 01\t0,00\t49,80\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000005\t20180910\t5120010\tVat on other goods and services\t\t\t3\t20180910\tPARTNER 01\t49,80\t0,00\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000005\t20180910\t40100000\tSuppliers\tPARTNER01\tPARTNER 01\t3\t20180910\tPARTNER 01\t0,00\t49,80\tAA\t\t20190725\t\t
-        ACH\tACHATS\tACH000006\t20180910\t61320000\tPRIMES D'ASSURANCES\t\t\t3\t20180910\tASSURANCE\t200,50\t0,00\t\t\t20190725\t\tEUR
-        ACH\tACHATS\tACH000006\t20180910\t44566000\tASSURANCE\t\t\t3\t20180910\tASSURANCE\t0,00\t200,50\t\t\t20190725\t\tEUR
+        ACH\tACHATS\tACH000001\t20180808\t62270000\tFRAIS D'ACTES ET CONTENTIEUX\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t500,00\t0,00\t\t\t20190725\t\t
+        ACH\tACHATS\tACH000001\t20180808\t44566000\tTVA SUR AUTRES BIEN ET SERVICE\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t100,00\t0,00\tAA\t\t20190725\t\t
+        ACH\tACHATS\tACH000001\t20180808\t45500000\tCPT COURANTS DE L ASSOCIE\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t0,00\t600,00\t\t\t20190725\t\t
+        ACH\tACHATS\tACH000002\t20180808\t61320000\tLOCATIONS PARTNER 01\t\t\t2\t20180808\tDOMICILIATION\t300,00\t0,00\t\t\t20190725\t\t
+        ACH\tACHATS\tACH000002\t20180808\t44566000\tTVA SUR AUTRES BIEN ET SERVICE\t\t\t2\t20180808\tDOMICILIATION\t60,00\t0,00\tAA\t\t20190725\t\t
+        ACH\tACHATS\tACH000002\t20180808\t45500000\tCPT COURANTS DE L ASSOCIE\t\t\t2\t20180808\tDOMICILIATION\t0,00\t360,00\t\t\t20190725\t\t
+        ACH\tACHATS\tACH000003\t20180910\t61320000\tLOCATIONS PARTNER 01\t\t\t3\t20180910\tPARTNER 01\t41,50\t0,00\t\t\t20190725\t\t
+        ACH\tACHATS\tACH000003\t20180910\t44566000\tTVA SUR AUTRES BIEN ET SERVICE\t\t\t3\t20180910\tPARTNER 01\t8,30\t0,00\tAA\t\t20190725\t\t
+        ACH\tACHATS\tACH000003\t20180910\t40100000\tFOURNISSEURS DIVERS\tPARTNER01\tPARTNER 01\t3\t20180910\tPARTNER 01\t0,00\t49,80\tAA\t\t20190725\t\t
     """
 
     # ----------------------------------------
@@ -45,7 +39,7 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
     # ----------------------------------------
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='fr'):
+    def setUpClass(cls, chart_template_ref='l10n_fr.l10n_fr_pcg_chart_template'):
         """ Setup all the prerequisite entities for the CSV import tests to run """
 
         super().setUpClass(chart_template_ref=chart_template_ref)
@@ -163,15 +157,15 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
         accounts = self.env['account.account'].search(domain, order='code')
 
         expected_values = [{
-            'name': 'Suppliers - Purchase of goods and services',
+            'name': 'FOURNISSEURS DIVERS',
             'account_type': 'liability_payable',
             'reconcile': True
         }, {
-            'name': 'Deductible VAT on other goods and services',
+            'name': 'TVA déductible sur autres biens et services',
             'account_type': 'asset_current',
             'reconcile': False,
         }, {
-            'name': 'Legal and litigation fees',
+            'name': 'Frais d\'actes et de contentieux',
             'account_type': 'expense',
             'reconcile': False,
         }, ]
@@ -239,22 +233,20 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
 
         self.wizard._import_files(['account.account', 'account.journal', 'res.partner', 'account.move'])
 
-        move_names = ('ACH000001', 'ACH000002', 'ACH000003', 'ACH000006')
+        move_names = ('ACH000001', 'ACH000002', 'ACH000003')
         domain = [('company_id', '=', self.company.id), ('move_name', 'in', move_names)]
         move_lines = self.env['account.move.line'].search(domain, order='move_name, id')
         columns = ['name', 'credit', 'debit', 'fec_matching_number']
         lines = [
-            ('ADVANCE PAYMENT COMPANY FORMALITIES', 0.00, 500.00, False),
-            ('ADVANCE PAYMENT COMPANY FORMALITIES', 0.00, 100.00, 'AA'),
-            ('ADVANCE PAYMENT COMPANY FORMALITIES', 600.00, 0.00, False),
+            ('ACOMPTE FORMALITES ENTREPRISE', 0.00, 500.00, False),
+            ('ACOMPTE FORMALITES ENTREPRISE', 0.00, 100.00, 'AA'),
+            ('ACOMPTE FORMALITES ENTREPRISE', 600.00, 0.00, False),
             ('DOMICILIATION', 0.00, 300.00, False),
             ('DOMICILIATION', 0.00, 60.00, 'AA'),
             ('DOMICILIATION', 360.00, 0.00, False),
             ('PARTNER 01', 0.00, 41.50, False),
             ('PARTNER 01', 0.00, 8.30, 'AA'),
             ('PARTNER 01', 49.80, 0.00, 'AA'),
-            ('ASSURANCE', 0.00, 200.50, False),
-            ('ASSURANCE', 200.50, 0.00, False),
         ]
         expected_values = [dict(zip(columns, line)) for line in lines]
         self.assertRecordValues(move_lines, expected_values)
@@ -279,12 +271,12 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
         # Verify Reconciliation
         domain = [('company_id', '=', self.company.id), ('reconciled', '=', True)]
         move_lines = self.env['account.move.line'].search(domain)
-        self.assertEqual(256, len(move_lines))
+        self.assertEqual(100, len(move_lines))
 
         # Verify Full Reconciliation
         domain = [('company_id', '=', self.company.id), ('full_reconcile_id', '!=', False)]
         move_lines = self.env['account.move.line'].search(domain)
-        self.assertEqual(256, len(move_lines))
+        self.assertEqual(100, len(move_lines))
 
         # Verify Journal types
         domain = [('company_id', '=', self.company.id), ('name', '=', 'FEC-BQ 552')]
@@ -339,18 +331,12 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
         self.assertEqual(
             move_lines.mapped(lambda line: (line.move_name, line.name)),
             [
-                ('ACH/20180808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
-                ('ACH/20180808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
-                ('ACH/20180808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
+                ('ACH/20180808', 'ACOMPTE FORMALITES ENTREPRISE'),
+                ('ACH/20180808', 'ACOMPTE FORMALITES ENTREPRISE'),
+                ('ACH/20180808', 'ACOMPTE FORMALITES ENTREPRISE'),
                 ('ACH/20180808', 'DOMICILIATION'),
                 ('ACH/20180808', 'DOMICILIATION'),
                 ('ACH/20180808', 'DOMICILIATION'),
-                ('ACH/20180910', 'ASSURANCE'),
-                ('ACH/20180910', 'ASSURANCE'),
-                ('ACH/20180910', 'PARTNER 01'),
-                ('ACH/20180910', 'PARTNER 01'),
-                ('ACH/20180910', 'PARTNER 01'),
-                ('ACH/20180910', 'PARTNER 01'),
                 ('ACH/20180910', 'PARTNER 01'),
                 ('ACH/20180910', 'PARTNER 01'),
                 ('ACH/20180910', 'PARTNER 01'),
@@ -367,18 +353,12 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
         self.assertEqual(
             move_lines.mapped(lambda line: (line.move_name, line.name)),
             [
-                ('ACH/201808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
-                ('ACH/201808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
-                ('ACH/201808', 'ADVANCE PAYMENT COMPANY FORMALITIES'),
+                ('ACH/201808', 'ACOMPTE FORMALITES ENTREPRISE'),
+                ('ACH/201808', 'ACOMPTE FORMALITES ENTREPRISE'),
+                ('ACH/201808', 'ACOMPTE FORMALITES ENTREPRISE'),
                 ('ACH/201808', 'DOMICILIATION'),
                 ('ACH/201808', 'DOMICILIATION'),
                 ('ACH/201808', 'DOMICILIATION'),
-                ('ACH/201809', 'ASSURANCE'),
-                ('ACH/201809', 'ASSURANCE'),
-                ('ACH/201809', 'PARTNER 01'),
-                ('ACH/201809', 'PARTNER 01'),
-                ('ACH/201809', 'PARTNER 01'),
-                ('ACH/201809', 'PARTNER 01'),
                 ('ACH/201809', 'PARTNER 01'),
                 ('ACH/201809', 'PARTNER 01'),
                 ('ACH/201809', 'PARTNER 01'),
@@ -390,27 +370,3 @@ class AccountTestFecImport(AccountTestInvoicingCommon):
         self._attach_file_to_wizard(self.test_content_imbalanced_none, self.wizard)
         with self.assertRaises(UserError):
             self.wizard._import_files(['account.account', 'account.journal', 'res.partner', 'account.move'])
-
-    def test_positive_montant_devise(self):
-        """
-        Test that it doesn't fail even when the MontantDevise is not signed, i.e. MontantDevise is positive even
-        when the line is credited, or the opposite case: MontantDevise is negative while the line is
-        debited.
-        """
-        test_content = """
-            JournalCode\tJournalLib\tEcritureNum\tEcritureDate\tCompteNum\tCompteLib\tCompAuxNum\tCompAuxLib\tPieceRef\tPieceDate\tEcritureLib\tDebit\tCredit\tEcritureLet\tDateLet\tValidDate\tMontantdevise\tIdevise
-            ACH\tACHATS\tTEST_MONTANT_DEVISE\t20180808\t62270000\tFRAIS D'ACTES ET CONTENTIEUX\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t100,00\t0,00\t\t\t20190725\t100,00\tEUR
-            ACH\tACHATS\tTEST_MONTANT_DEVISE\t20180808\t44566000\tTVA SUR AUTRES BIEN ET SERVICE\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t0,00\t100,00\t\t\t20190725\t100,00\tEUR
-            ACH\tACHATS\tTEST_MONTANT_DEVISE2\t20180808\t62270000\tFRAIS D'ACTES ET CONTENTIEUX\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t0,00\t100,00\t\t\t20190725\t-100,00\tEUR
-            ACH\tACHATS\tTEST_MONTANT_DEVISE2\t20180808\t44566000\tTVA SUR AUTRES BIEN ET SERVICE\t\t\t1\t20180808\tACOMPTE FORMALITES ENTREPRISE\t100,00\t0,00\t\t\t20190725\t-100,00\tEUR
-        """
-        self._attach_file_to_wizard(test_content, self.wizard)
-        self.wizard._import_files()
-
-    def test_fec_import_multicompany(self):
-        self.wizard._import_files(['account.account', 'account.journal', 'res.partner'])
-
-        fr_company2 = self.setup_company_data("Company FR 2", chart_template=self.company.chart_template)['company']
-        wizard2 = self.env['account.fec.import.wizard'].with_company(fr_company2).create({'company_id': fr_company2.id})
-        self._attach_file_to_wizard(self.test_content, wizard2)
-        wizard2._import_files()

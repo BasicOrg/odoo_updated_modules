@@ -8,17 +8,16 @@
         <field name="arch" type="xml">
             <form string="Participant" create="false">
                 <header>
-                    <button name="action_set_completed" type="object" invisible="state != 'running'" class="btn-secondary" string="Stop"/>
+                    <button name="action_set_completed" type="object" states="running" class="btn-secondary" string="Stop"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Test" bg_color="text-bg-danger" invisible="not is_test"/>
+                    <widget name="web_ribbon" title="Test" bg_color="bg-danger" attrs="{'invisible': [('is_test', '=', False)]}"/>
                     <div class="oe_title">
                         <span class="o_form_label">Record</span>
                         <field name="is_test" invisible="1"/>
                         <h1>
-                            <field name="resource_ref" required="1" class="o_field_highlight"
-                                placeholder="Pick a record..." options="{'hide_model': True}"/>
+                            <field name="resource_ref" required="1" options="{'hide_model': True}"/>
                         </h1>
                     </div>
                     <group>
@@ -31,9 +30,9 @@
                             <field name="res_id" readonly="1" groups="base.group_no_one" string="Resource ID"/>
                         </group>
                     </group>
-                    <div class="o_ma_hierarchy border-top oveflow-auto">
-                        <div class="o_ma_hierarchy_title" invisible="not trace_ids">Workflow</div>
-                        <div class="o_ma_hierarchy_readonly" invisible="trace_ids">
+                    <div class="o_ma_hierarchy">
+                        <div class="o_ma_hierarchy_title" attrs="{'invisible': [('trace_ids', '=', [])]}">Workflow</div>
+                        <div class="o_ma_hierarchy_readonly" attrs="{'invisible': [('trace_ids', '!=', [])]}">
                             <h3>No activity</h3>
                             <p>
                                 It will be generated automatically once you save this record.
@@ -41,7 +40,6 @@
                         </div>
                         <field name="trace_ids" widget="hierarchy_kanban" readonly="1" nolabel="1" class="o_ma_hierarchy_container o_ma_workitem_hierarchy">
                             <kanban default_order="schedule_date">
-                                <field name="id"/>
                                 <field name="state"/>
                                 <field name="activity_type"/>
                                 <field name="state_msg"/>
@@ -51,36 +49,36 @@
                                 <field name="mailing_trace_status"/>
                                 <field name="links_click_datetime"/>
                                 <templates>
-                                    <div t-name="kanban-box">
-                                        <div class="o_ma_body position-relative" t-att-data-record-id="record.id.raw_value">
+                                    <div t-name="kanban-box" t-if="!record.parent_id.raw_value || props.displayChildren">
+                                        <div class="o_ma_body">
                                             <div class="o_ma_timeline text-center">
                                                 <t t-if="record.schedule_date.value">
                                                     <field name="schedule_date" />
                                                 </t>
                                                 <t t-else="">
                                                     <t t-if="record.trigger_type.raw_value == 'mail_bounce'">
-                                                        <span class="text-primary">
+                                                        <span class="text-odoo">
                                                             <i t-attf-class="fa fa-exclamation-circle" /> Not bounced yet
                                                         </span>
                                                     </t>
                                                     <t t-if="record.trigger_type.raw_value == 'mail_open'">
-                                                        <span class="text-primary">
+                                                        <span class="text-odoo">
                                                             <i t-attf-class="fa fa-envelope-open-o" /> Not opened yet
                                                         </span>
                                                     </t>
                                                     <t t-if="record.trigger_type.raw_value == 'mail_reply'">
-                                                        <span class="text-primary">
+                                                        <span class="text-odoo">
                                                             <i t-attf-class="fa fa-reply" /> Not replied yet
                                                         </span>
                                                     </t>
                                                     <t t-if="record.trigger_type.raw_value == 'mail_click'">
-                                                        <span class="text-primary">
+                                                        <span class="text-odoo">
                                                             <i t-attf-class="fa fa-hand-pointer-o" /> Not clicked yet
                                                         </span>
                                                     </t>
                                                 </t>
                                             </div>
-                                            <div class="o_ma_card card">
+                                            <div class="o_ma_card">
                                                 <div class="row">
                                                     <div class="col-1">
                                                         <t t-set="icons" t-value="{'rejected': 'ban', 'processed': 'check', 'canceled': 'times', 'error': 'exclamation-triangle', 'scheduled': 'clock-o'}" />
@@ -106,7 +104,7 @@
                                                     </div>
                                                     <div t-if="record.activity_type.raw_value == 'email' and record.state.raw_value == 'processed'" class="col-12">
                                                         <div class="o_ma_actions text-uppercase text-center">
-                                                            <span t-att-class="['open', 'reply'].includes(record.mailing_trace_status.raw_value) ? 'active' : None"><i class="fa fa-check-circle" /> Opened</span>
+                                                            <span t-att-class="record.mailing_trace_status.raw_value in ['open', 'reply'] ? 'active' : None"><i class="fa fa-check-circle" /> Opened</span>
                                                             <span t-att-class="record.links_click_datetime.raw_value ? 'active' : None"><i class="fa fa-check-circle" /> Clicked</span>
                                                             <span t-att-class="record.mailing_trace_status.raw_value == 'reply' ? 'active' : None"><i class="fa fa-check-circle" /> Replied</span>
                                                             <span t-att-class="record.mailing_trace_status.raw_value == 'bounce' ? 'active' : None"><i class="fa fa-check-circle" /> Bounced</span>
@@ -121,6 +119,22 @@
                                                         <i class="fa fa-times" />
                                                     </button>
                                                 </div>
+                                            </div>
+                                            <t t-set="children" t-value="props.record.data.children"/>
+                                            <div class="o_hierarchy_children" t-if="children and children.length !== 0">
+                                                <t t-foreach="children" t-as="record" t-key="record.data.id">
+                                                    <HierarchyKanbanRecord
+                                                        displayChildren="true"
+                                                        archInfo="props.archInfo"
+                                                        canResequence="props.canResequence"
+                                                        forceGlobalClick="props.forceGlobalClick"
+                                                        list="props.list"
+                                                        openRecord="props.openRecord"
+                                                        is_readonly="props.readonly"
+                                                        record="record"
+                                                        templates="props.templates"
+                                                    />
+                                                </t>
                                             </div>
                                         </div>
                                     </div>
@@ -139,10 +153,10 @@
         <field name="arch" type="xml">
             <tree string="Participant" create="false">
                 <field name="resource_ref" string="Participant Name" readonly="True"/>
-                <field name="campaign_id" readonly="True" optional="hide"/>
                 <field name="model_id" string="Target Model"/>
-                <field name="state" readonly="True" widget="badge" decoration-info="state == 'running'" decoration-success="state == 'completed'" decoration-danger="state == 'unlinked'"/>
-                <field name="is_test" column_invisible="True"/>
+                <field name="state" readonly="True"/>
+                <field name="campaign_id" readonly="True"/>
+                <field name="is_test" invisible="1"/>
             </tree>
         </field>
     </record>

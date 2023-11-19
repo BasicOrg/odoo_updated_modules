@@ -27,7 +27,7 @@ class TestSaleTimesheetEnterpriseMultiCompany(TestCommonSaleTimesheet):
         cls.task = Task.with_context(default_project_id=cls.project_billable_tasks.id).create({
             'name': 'first task',
             'partner_id': cls.partner_a.id,
-            'allocated_hours': 10,
+            'planned_hours': 10,
         })
         cls.env['account.analytic.line'].create({
             'name': 'Test Timesheet',

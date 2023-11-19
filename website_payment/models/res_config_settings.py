@@ -16,6 +16,8 @@ class ResConfigSettings(models.TransientModel):
         compute='_compute_providers_state')
     first_provider_label = fields.Char(
         compute='_compute_providers_state')
+    module_payment_paypal = fields.Boolean(
+        string='Paypal - Express Checkout')
     is_stripe_supported_country = fields.Boolean(
         related='company_id.country_id.is_stripe_supported_country')
 
@@ -36,7 +38,7 @@ class ResConfigSettings(models.TransientModel):
         stripe = self.env.ref('payment.payment_provider_stripe', raise_if_not_found=False)
         for config in self:
             providers = config._get_activated_providers()
-            first_provider = stripe if stripe and stripe in providers else providers[0] if providers else providers
+            first_provider = stripe if stripe in providers else providers[0] if providers else providers
             config.first_provider_label = _('Configure %s', first_provider.name)
             if len(providers) == 1 and providers == paypal:
                 config.providers_state = 'paypal_only'
@@ -49,14 +51,14 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         if not self.is_stripe_supported_country:
             return False
-        return self.env['ir.actions.actions']._for_xml_id('website_payment.action_activate_stripe')
+        stripe = self.env.ref('payment.payment_provider_stripe')
+        stripe.button_immediate_install()
+        # This will make sure that a new request is made between the installation and the call to `action_stripe_connect_account`.
+        return self.env['ir.actions.actions']._for_xml_id('website_payment.action_stripe_connect_account')
 
     def action_configure_first_provider(self):
         self.ensure_one()
-        stripe = self.env['payment.provider'].search([
-            *self.env['payment.provider']._check_company_domain(self.env.company),
-            ('code', '=', 'stripe')
-        ], limit=1)
+        stripe = self.env.ref('payment.payment_provider_stripe')
         providers = self._get_activated_providers()
         return {
             'name': self.first_provider_label,

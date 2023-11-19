@@ -141,7 +141,7 @@
                                         </div>
                                         <div class="col-4" style="padding-top: 1%; padding-bottom: 1%;">
                                             <p class="text-end">
-                                                <t t-if="form.paid_amount == 0">NIL</t>
+                                                <t t-if="form.paid_amount == 0">NÉANT</t>
                                                 <t t-elif="form.paid_amount == form.total_remuneration">0.00</t>
                                                 <t t-else=""><span t-out="form.paid_amount" t-options="{'widget': 'float', 'precision': 2}"/></t>
                                             </p>

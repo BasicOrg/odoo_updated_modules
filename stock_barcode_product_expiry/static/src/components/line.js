@@ -1,10 +1,9 @@
 /** @odoo-module **/
 
 import LineComponent from '@stock_barcode/components/line';
-import { patch } from "@web/core/utils/patch";
-import { parseDateTime } from "@web/core/l10n/dates";
+import { patch } from 'web.utils';
 
-patch(LineComponent.prototype, {
+patch(LineComponent.prototype, 'stock_barcode_product_expiry', {
     get isUseExpirationDate() {
         return this.line.product_id.use_expiration_date;
     },
@@ -14,7 +13,7 @@ patch(LineComponent.prototype, {
         if (!dateTimeStrUTC) {
             return '';
         }
-        const dateTimeLocal = parseDateTime(dateTimeStrUTC).toJSDate();
-        return dateTimeLocal.toLocaleDateString();
+        const dateTimeStrLocal = moment.utc(dateTimeStrUTC).local().format('YYYY-MM-DD');
+        return new Date(dateTimeStrLocal).toLocaleDateString();
     },
 });

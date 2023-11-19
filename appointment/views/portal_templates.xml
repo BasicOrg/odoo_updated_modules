@@ -14,18 +14,13 @@
     </template>
 
     <template id="portal_my_home_appointment" name="Show Appointments" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-            <t t-set="portal_client_category_enable" t-value="True"/>
-        </xpath>
-        <div id="portal_client_category" position="inside">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/appointment/static/src/img/calendar.svg'"/>
-                <t t-set="text">Follow, reschedule or cancel your appointments</t>
                 <t t-set="title">Appointments</t>
                 <t t-set="url" t-value="'/my/appointments'"/>
                 <t t-set="placeholder_count" t-value="'appointment_count'"/>
             </t>
-        </div>
+        </xpath>
     </template>
 
     <template id="portal_my_appointments" name="My Appointments">
@@ -36,7 +31,7 @@
                 <t t-set="title">Appointments</t>
             </t>
             <t t-if="not appointments">
-                <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning mt8" role="alert">
                     <p class="mb-0">There is no appointment linked to your account.</p>
                 </div>
             </t>
@@ -67,10 +62,7 @@
                             <tr>
                                 <td>
                                     <a t-attf-href="/calendar/view/#{appointment.access_token}?partner_id=#{request.env.user.partner_id.id}">
-                                        <t t-out="appointment.appointment_type_id.name"/> 
-                                        <t t-if="appointment.appointment_type_id.schedule_based_on == 'users'">
-                                            with <t t-out="appointment.user_id.name"/>
-                                        </t>
+                                        <t t-out="appointment.appointment_type_id.name"/> with <t t-out="appointment.user_id.name"/>
                                     </a>
                                 </td>
                                 <td class="text-end"><span t-field="appointment.start"/></td>

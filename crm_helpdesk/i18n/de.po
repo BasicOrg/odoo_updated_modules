@@ -3,21 +3,27 @@
 # 	* crm_helpdesk
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
+"POT-Creation-Date: 2022-09-20 09:47+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: German (https://www.transifex.com/odoo/teams/41243/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: crm_helpdesk
+#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
+#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #. module: crm_helpdesk
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
@@ -50,7 +56,7 @@ msgstr "Ticket erstellen"
 #. module: crm_helpdesk
 #: model:ir.model.fields.selection,name:crm_helpdesk.selection__helpdesk_ticket_to_lead__action__create
 msgid "Create a new customer"
-msgstr "Neuen Kunden erstellen"
+msgstr "Neuen Kunden anlegen"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__create_uid
@@ -72,12 +78,6 @@ msgid "Customer"
 msgstr "Kunde"
 
 #. module: crm_helpdesk
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Discard"
-msgstr "Verwerfen"
-
-#. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__display_name
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__display_name
 msgid "Display Name"
@@ -91,7 +91,7 @@ msgstr "Nicht mit einem Kunden verknüpfen"
 #. module: crm_helpdesk
 #: model:ir.model,name:crm_helpdesk.model_helpdesk_ticket
 msgid "Helpdesk Ticket"
-msgstr "Kundendienstticket"
+msgstr "Kundendienst-Ticket"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__id
@@ -100,10 +100,16 @@ msgid "ID"
 msgstr "ID"
 
 #. module: crm_helpdesk
+#: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket____last_update
+#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__write_uid
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__write_uid
 msgid "Last Updated by"
-msgstr "Zuletzt aktualisiert von"
+msgstr "Zuletzt aktualisiert durch"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__write_date
@@ -114,10 +120,9 @@ msgstr "Zuletzt aktualisiert am"
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__lead_id
 msgid "Lead"
-msgstr "Lead"
+msgstr "Interessent"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
 #, python-format
 msgid "Lead Converted"
@@ -126,19 +131,18 @@ msgstr "Lead umgewandelt"
 #. module: crm_helpdesk
 #: model:ir.model,name:crm_helpdesk.model_crm_lead_convert2ticket
 msgid "Lead convert to Ticket"
-msgstr "Lead-Umwandlung in Ticket"
+msgstr "Interessenten-Konvertierung in Ticket"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "Lead created"
-msgstr "Lead erstellt"
+msgstr "Interessent angelegt"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields.selection,name:crm_helpdesk.selection__helpdesk_ticket_to_lead__action__exist
 msgid "Link to an existing customer"
-msgstr "Mit bestehendem Kunden verknüpfen"
+msgstr "Verknüpfe mit Bestandskunde"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__action
@@ -154,7 +158,7 @@ msgstr "Verkaufsteam"
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__user_id
 msgid "Salesperson"
-msgstr "Vertriebsmitarbeiter"
+msgstr "Verkäufer"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__team_id
@@ -162,18 +166,16 @@ msgid "Team"
 msgstr "Team"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "The archived ticket can not converted as lead."
-msgstr "Das archivierte Ticket kann nicht in ein Lead umgewandelt werden."
+msgstr ""
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "This lead has been created from ticket: %s"
-msgstr "Dieses Lead wurde von einem Ticket erstellt: %s"
+msgstr ""
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__ticket_id
@@ -181,7 +183,6 @@ msgid "Ticket"
 msgstr "Ticket"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
 #, python-format
 msgid "Ticket Converted"
@@ -193,7 +194,6 @@ msgid "Ticket Type"
 msgstr "Tickettyp"
 
 #. module: crm_helpdesk
-#. odoo-python
 #: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
 #, python-format
 msgid "Ticket created"

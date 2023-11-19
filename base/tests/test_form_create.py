@@ -64,12 +64,10 @@ class TestFormCreate(TransactionCase):
     def test_create_res_country(self):
         country_form = Form(self.env['res.country'])
         country_form.name = 'a country'
-        country_form.code = 'ZX'
         country_form.save()
 
     def test_create_res_lang(self):
         lang_form = Form(self.env['res.lang'])
-        # lang_form.url_code = 'LANG'  # invisible field, tested in http_routing
         lang_form.name = 'a lang name'
         lang_form.code = 'a lang code'
         lang_form.save()

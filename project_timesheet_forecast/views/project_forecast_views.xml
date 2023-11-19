@@ -17,28 +17,39 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <!-- Clickable -->
                 <button type="object" name="action_open_timesheets" icon="fa-clock-o"
-                    invisible="not can_open_timesheets or not project_id or not allow_timesheets or not employee_id">
+                    attrs="{'invisible': ['|', '|', '|', ('can_open_timesheets', '=', False), ('project_id', '=', False), ('allow_timesheets', '=', False), ('employee_id', '=', False)]}">
                     <div class="o_stat_info">
                         <span class="o_stat_value">
                             <field name="effective_hours" widget="timesheet_uom"/>
-                            <span invisible="encode_uom_in_days"> Hours</span>
-                            <span invisible="not encode_uom_in_days"> Days</span>
+                            <span attrs="{'invisible': [('encode_uom_in_days', '=', True)]}"> Hours</span>
+                            <span attrs="{'invisible': [('encode_uom_in_days', '=', False)]}"> Days</span>
                         </span>
                         <span class="o_stat_text">Recorded</span>
                     </div>
                 </button>
                 <!-- Non Clickable -->
                 <button icon="fa-clock-o" disabled="1" class="pe-none"
-                    invisible="can_open_timesheets or not project_id or not allow_timesheets or not employee_id">
+                    attrs="{'invisible': ['|', '|', '|', ('can_open_timesheets', '=', True), ('project_id', '=', False), ('allow_timesheets', '=', False), ('employee_id', '=', False)]}">
                     <div class="o_stat_info">
                         <span class="o_stat_value">
                             <field name="effective_hours" widget="timesheet_uom"/>
-                            <span invisible="encode_uom_in_days"> Hours</span>
-                            <span invisible="not encode_uom_in_days"> Days</span>
+                            <span attrs="{'invisible': [('encode_uom_in_days', '=', True)]}"> Hours</span>
+                            <span attrs="{'invisible': [('encode_uom_in_days', '=', False)]}"> Days</span>
                         </span>
                         <span class="o_stat_text">Recorded</span>
                     </div>
                 </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_forecast_view_search_inherit_project_timesheet_forecast" model="ir.ui.view">
+        <field name="name">planning.slot.search.inherit.timesheet</field>
+        <field name="model">planning.slot</field>
+        <field name="inherit_id" ref="project_forecast.planning_slot_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='conflict_shifts']" position="after">
+                <filter name="no_timesheets" string="No Timesheets" domain="[('effective_hours', '=', 0), ('end_datetime', '&lt;=', datetime.datetime.now())]" groups="hr_timesheet.group_hr_timesheet_user"/>
             </xpath>
         </field>
     </record>
@@ -48,8 +59,8 @@
         <field name="model">planning.slot</field>
         <field name="inherit_id" ref="project_forecast.planning_slot_view_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='allocated_percentage']" position="after">
-                <field name="effective_hours" sum="Effective Hours" widget="float_time" optional="hide" invisible="effective_hours == 0"/>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="effective_hours" widget="float_time" optional="hide" attrs="{'invisible': [('effective_hours', '=', 0)]}"/>
             </xpath>
         </field>
     </record>
@@ -84,6 +95,7 @@
         <field name="model">planning.slot</field>
         <field name="arch" type="xml">
             <gantt position="attributes">
+                <attribute name="js_class">forecast_timesheet</attribute>
                 <attribute name="progress_bar">resource_id,project_id</attribute>
                 <attribute name="progress">percentage_hours</attribute>
             </gantt>
@@ -101,20 +113,7 @@
         <field name="arch" type="xml">
             <field name="allocated_hours" position="after">
                 <field name="effective_hours" type="measure" widget="float_time"/>
-                <field name="percentage_hours" widget="timesheet_uom"/>
             </field>
-        </field>
-    </record>
-
-    <record id="planning_view_pivot_view_inherit_timesheet" model="ir.ui.view">
-        <field name="name">planning.action.schedule.project.view.pivot.inherit.update</field>
-        <field name="model">planning.slot</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="project_forecast.planning_action_schedule_by_project_pivot_inherit"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='percentage_hours']" position="attributes">
-                <attribute name="type">measure</attribute>
-            </xpath>
         </field>
     </record>
 
@@ -179,6 +178,18 @@
             <field name="view_id" ref="planning.planning_action_schedule_by_role_view_graph_inherit"/>
             <field name="act_window_id" ref="project_timesheet_action_schedule_by_role"/>
         </record>
+
+    <record id="planning_slot_generate_timesheet_action" model="ir.actions.server">
+        <field name="name">Generate Timesheets</field>
+        <field name="model_id" ref="model_planning_slot"/>
+        <field name="binding_model_id" ref="model_planning_slot"/>
+        <field name="groups_id" eval="[(4, ref('planning.group_planning_manager'))]"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records._action_generate_timesheet()</field>
+    </record>
 
     <menuitem
             id="planning.planning_menu_schedule_by_role"

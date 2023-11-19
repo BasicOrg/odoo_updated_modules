@@ -10,23 +10,13 @@ class HelpdeskSLAReport(models.Model):
     department_id = fields.Many2one('hr.department', string='Department', readonly=True)
     manager_id = fields.Many2one('hr.employee', string='Manager', readonly=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True)
-    analytic_account_id = fields.Many2one('account.analytic.account', readonly=True)
 
     def _select(self):
         select_str = super()._select()
         select_str += """, DEP.id as department_id,
                          EMP.parent_id as manager_id,
-                         EMP.id as employee_id,
-                         T.analytic_account_id as analytic_account_id"""
+                         EMP.id as employee_id"""
         return select_str
-
-    def _group_by(self):
-        return super()._group_by() + """ ,
-            DEP.id,
-            EMP.parent_id,
-            EMP.id,
-            T.analytic_account_id
-        """
 
     def _from(self):
         from_str = super()._from()

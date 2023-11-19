@@ -1,8 +1,49 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from '@web/legacy/js/public/public_widget';
-import { CategoryAddDialog } from "@website_slides/js/public/components/category_add_dialog/category_add_dialog";
+import publicWidget from 'web.public.widget';
+import Dialog from 'web.Dialog';
+import { _t } from 'web.core';
+
+var CategoryAddDialog = Dialog.extend({
+    template: 'slides.category.add',
+
+    /**
+     * @override
+     */
+    init: function (parent, options) {
+        options = _.defaults(options || {}, {
+            title: _t('Add a section'),
+            size: 'medium',
+            buttons: [{
+                text: _t('Save'),
+                classes: 'btn-primary',
+                click: this._onClickFormSubmit.bind(this)
+            }, {
+                text: _t('Back'),
+                close: true
+            }]
+        });
+
+        this.channelId = options.channelId;
+        this._super(parent, options);
+    },
+
+    //--------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------
+
+    _formValidate: function ($form) {
+        $form.addClass('was-validated');
+        return $form[0].checkValidity();
+    },
+
+    _onClickFormSubmit: function (ev) {
+        var $form = this.$('#slide_category_add_form');
+        if (this._formValidate($form)) {
+            $form.submit();
+        }
+    },
+});
 
 publicWidget.registry.websiteSlidesCategoryAdd = publicWidget.Widget.extend({
     selector: '.o_wslides_js_slide_section_add',
@@ -15,21 +56,7 @@ publicWidget.registry.websiteSlidesCategoryAdd = publicWidget.Widget.extend({
     //--------------------------------------------------------------------------
 
     _openDialog: function (channelId) {
-        this.call("dialog", "add", CategoryAddDialog, {
-            title: _t("Add a section"),
-            confirmLabel: _t("Save"),
-            confirm: ({ formEl }) => {
-                if (!formEl.checkValidity()) {
-                    return false;
-                }
-                formEl.classList.add("was-validated");
-                formEl.submit();
-                return true;
-            },
-            cancelLabel: _t("Back"),
-            cancel: () => {},
-            channelId,
-        });
+        new CategoryAddDialog(this, {channelId: channelId}).open();
     },
 
     //--------------------------------------------------------------------------
@@ -47,5 +74,6 @@ publicWidget.registry.websiteSlidesCategoryAdd = publicWidget.Widget.extend({
 });
 
 export default {
+    categoryAddDialog: CategoryAddDialog,
     websiteSlidesCategoryAdd: publicWidget.registry.websiteSlidesCategoryAdd
 };

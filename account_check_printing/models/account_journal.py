@@ -67,21 +67,24 @@ class AccountJournal(models.Model):
         """ Create a check sequence for the journal """
         for journal in self:
             journal.check_sequence_id = self.env['ir.sequence'].sudo().create({
-                'name': journal.name + _(": Check Number Sequence"),
+                'name': journal.name + _(" : Check Number Sequence"),
                 'implementation': 'no_gap',
                 'padding': 5,
                 'number_increment': 1,
                 'company_id': journal.company_id.id,
             })
 
-    def _get_journal_dashboard_data_batched(self):
-        dashboard_data = super()._get_journal_dashboard_data_batched()
-        self._fill_dashboard_data_count(dashboard_data, 'account.payment', 'num_checks_to_print', [
+    def get_journal_dashboard_datas(self):
+        domain_checks_to_print = [
+            ('journal_id', '=', self.id),
             ('payment_method_line_id.code', '=', 'check_printing'),
             ('state', '=', 'posted'),
             ('is_move_sent','=', False),
-        ])
-        return dashboard_data
+        ]
+        return dict(
+            super(AccountJournal, self).get_journal_dashboard_datas(),
+            num_checks_to_print=self.env['account.payment'].search_count(domain_checks_to_print),
+        )
 
     def action_checks_to_print(self):
         payment_method_line = self.outbound_payment_method_line_ids.filtered(lambda l: l.code == 'check_printing')
@@ -99,10 +102,3 @@ class AccountJournal(models.Model):
                 default_payment_method_line_id=payment_method_line.id,
             ),
         }
-
-    @api.model
-    def _get_reusable_payment_methods(self):
-        """ We are able to have multiple times Checks payment method in a journal """
-        res = super()._get_reusable_payment_methods()
-        res.add("check_printing")
-        return res

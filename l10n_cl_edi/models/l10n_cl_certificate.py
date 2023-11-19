@@ -50,7 +50,7 @@ class Certificate(models.Model):
         """ Return the signature_key_file (b64 encoded) and the certificate decrypted """
         self.ensure_one()
         try:
-            p12 = crypto.load_pkcs12(base64.b64decode(self.signature_key_file), self.signature_pass_phrase.encode())
+            p12 = crypto.load_pkcs12(base64.b64decode(self.signature_key_file), self.signature_pass_phrase)
         except Exception as error:
             raise UserError(error)
         certificate = p12.get_certificate()
@@ -77,7 +77,7 @@ class Certificate(models.Model):
             try:
                 certificate = record._get_data()
             except Exception as e:
-                raise UserError(_('The certificate signature_key_file is invalid: %s.', e)) from e
+                raise UserError(_('The certificate signature_key_file is invalid: %s.') % e)
             record.subject_serial_number = certificate[1].get_subject().serialNumber
 
     @api.depends('signature_key_file', 'signature_pass_phrase')
@@ -97,13 +97,13 @@ class Certificate(models.Model):
                 cert_expiration = chilean_tz.localize(
                     datetime.strptime(certificate[1].get_notAfter().decode('utf-8'), date_format))
             except Exception as e:
-                raise UserError(_('The certificate signature_key_file is invalid: %s.', e)) from e
+                raise UserError(_('The certificate signature_key_file is invalid: %s.') % e)
             # Assign extracted values from the certificate
             record.cert_expiration = cert_expiration.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             record.certificate = certificate[0]
             record.private_key = certificate[2]
             if chilean_current_dt > cert_expiration:
-                raise UserError(_('The certificate is expired since %s', record.cert_expiration))
+                raise UserError(_('The certificate is expired since %s') % record.cert_expiration)
 
     def _int_to_bytes(self, value, byteorder='big'):
         return value.to_bytes((value.bit_length() + 7) // 8, byteorder=byteorder)

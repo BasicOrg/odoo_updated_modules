@@ -19,6 +19,7 @@ class ResCompany(models.Model):
         ('commercial', 'Employers with industrial or commercial purposes'),
         ('non_commercial', 'Employers without industrial or commercial purposes'),
     ], default='commercial')
+    sdworx_code = fields.Char("SDWorx code", groups="hr.group_hr_user")
     onss_expeditor_number = fields.Char(
         string="ONSS Expeditor Number", groups="base.group_system",
         help="ONSS Expeditor Number provided when registering service on the technical user")
@@ -38,6 +39,11 @@ class ResCompany(models.Model):
         return len(self.env['hr.contract'].search([
             ('state', '=', 'open'),
             ('company_id', '=', self.id)]).employee_id)
+
+    @api.constrains('sdworx_code')
+    def _check_sdworx_code(self):
+        if self.sdworx_code and len(self.sdworx_code) != 7:
+            raise ValidationError(_('The code should have 7 characters!'))
 
     @api.constrains('l10n_be_company_number')
     def _check_l10n_be_company_number(self):
@@ -59,19 +65,14 @@ class ResCompany(models.Model):
                 'full_time_required_hours': 38.0,
                 'attendance_ids': [
                     (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                    (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                     (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                     (0, 0, {'name': 'Tuesday Morning', 'dayofweek': '1', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                    (0, 0, {'name': 'Tuesday Lunch', 'dayofweek': '1', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                     (0, 0, {'name': 'Tuesday Afternoon', 'dayofweek': '1', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                     (0, 0, {'name': 'Wednesday Morning', 'dayofweek': '2', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                    (0, 0, {'name': 'Wednesday Lunch', 'dayofweek': '2', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                     (0, 0, {'name': 'Wednesday Afternoon', 'dayofweek': '2', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                     (0, 0, {'name': 'Thursday Morning', 'dayofweek': '3', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                    (0, 0, {'name': 'Thursday Lunch', 'dayofweek': '3', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                     (0, 0, {'name': 'Thursday Afternoon', 'dayofweek': '3', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
                     (0, 0, {'name': 'Friday Morning', 'dayofweek': '4', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                    (0, 0, {'name': 'Friday Lunch', 'dayofweek': '4', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                     (0, 0, {'name': 'Friday Afternoon', 'dayofweek': '4', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'})
                 ],
             })

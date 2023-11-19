@@ -1,35 +1,51 @@
 /** @odoo-module */
 
 import { busService } from "@bus/services/bus_service";
-import { busParametersService } from "@bus/bus_parameters_service";
 import { multiTabService } from "@bus/multi_tab_service";
 
 import { makeFakeUserService } from "@web/../tests/helpers/mock_services";
 import {
     click,
     getFixture,
+    legacyExtraNextTick,
+    makeDeferred,
     nextTick,
     patchWithCleanup,
     triggerEvent,
 } from "@web/../tests/helpers/utils";
-import { toggleSearchBarMenu, toggleMenu, toggleMenuItem } from "@web/../tests/search/helpers";
+import {
+    toggleFavoriteMenu,
+    toggleFilterMenu,
+    toggleGroupByMenu,
+    toggleMenu,
+    toggleMenuItem,
+} from "@web/../tests/search/helpers";
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
 import { getBasicData } from "@spreadsheet/../tests/utils/data";
 import { registry } from "@web/core/registry";
-import { InsertViewSpreadsheet } from "@spreadsheet_edition/assets/insert_action_link_menu/insert_action_link_menu";
+import * as LegacyFavoriteMenu from "web.FavoriteMenu";
+import { InsertViewSpreadsheet } from "@spreadsheet_edition/assets/insert_action_link_menu/insert_action_link_menu_owl";
+import { InsertViewSpreadsheet as LegacyInsertViewSpreadsheet } from "@spreadsheet_edition/assets/insert_action_link_menu/insert_action_link_menu_legacy";
 import { spreadsheetLinkMenuCellService } from "@spreadsheet/ir_ui_menu/index";
 
 import { loadJS } from "@web/core/assets";
 import { makeFakeSpreadsheetService } from "@spreadsheet_edition/../tests/utils/collaborative_helpers";
 
+const { Component } = owl;
 const serviceRegistry = registry.category("services");
 const favoriteMenuRegistry = registry.category("favoriteMenu");
+const legacyFavoriteMenuRegistry = LegacyFavoriteMenu.registry;
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 const { Grid } = spreadsheet.components;
 
 let serverData;
 async function openView(viewType, options = {}) {
+    legacyFavoriteMenuRegistry.add(
+        "insert-action-link-in-spreadsheet",
+        LegacyInsertViewSpreadsheet,
+        1
+    );
     favoriteMenuRegistry.add(
         "insert-action-link-in-spreadsheet",
         {
@@ -46,6 +62,8 @@ async function openView(viewType, options = {}) {
         serverData,
         mockRPC: options.mockRPC,
     });
+    const legacyEnv = Component.env;
+    legacyEnv.services.spreadsheet = webClient.env.services.spreadsheet;
     await doAction(webClient, 1, { viewType, additionalContext: options.additionalContext });
     return webClient;
 }
@@ -54,20 +72,18 @@ async function insertInSpreadsheetAndClickLink(target) {
     await loadJS("/web/static/lib/Chart/Chart.js");
     patchWithCleanup(Grid.prototype, {
         setup() {
-            super.setup();
+            this._super();
             this.hoveredCell = { col: 0, row: 0 };
         },
     });
-    // Open search bar menu if it is not already
-    if (!target.querySelector(".o_search_bar_menu")) {
-        await toggleSearchBarMenu(target);
-    }
+    await click(target, ".o_favorite_menu button");
     await click(target, ".o_insert_action_spreadsheet_menu");
     await click(document, ".modal-footer button.btn-primary");
     await nextTick();
     await nextTick();
     await click(target, ".o-link-tool a");
     await nextTick();
+    await legacyExtraNextTick();
 }
 
 function getCurrentViewType(webClient) {
@@ -132,7 +148,6 @@ QUnit.module(
                 },
             };
             registry.category("services").add("multi_tab", multiTabService);
-            registry.category("services").add("bus.parameters", busParametersService);
             registry.category("services").add("bus_service", busService);
         },
     },
@@ -150,11 +165,12 @@ QUnit.module(
             });
 
             // add a domain
-            await toggleSearchBarMenu(target);
-            await toggleMenuItem(target.querySelector(".o_filter_menu"), 0);
+            await toggleFilterMenu(target);
+            await toggleMenuItem(target, 0);
 
             // group by name
-            await toggleMenuItem(target.querySelector(".o_group_by_menu"), 0);
+            await toggleGroupByMenu(target);
+            await toggleMenuItem(target, 0);
 
             await insertInSpreadsheetAndClickLink(target);
             assert.strictEqual(getCurrentViewType(webClient), "list");
@@ -180,7 +196,7 @@ QUnit.module(
                 },
             });
             await loadJS("/web/static/lib/Chart/Chart.js");
-            await toggleSearchBarMenu(target);
+            await toggleFavoriteMenu(target);
             await click(target, ".o_insert_action_spreadsheet_menu");
             await triggerEvent(target, ".o-sp-dialog-item div[data-id='1']", "focus");
             await click(target, ".modal-footer button.btn-primary");
@@ -189,23 +205,26 @@ QUnit.module(
         });
 
         QUnit.test("insert action in new spreadsheet", async function (assert) {
+            const def = makeDeferred();
             await openView("list", {
                 mockRPC: async function (route, args) {
-                    if (args.method === "action_open_new_spreadsheet") {
+                    if (args.method === "create") {
+                        await def;
                         assert.step("spreadsheet-created");
                     }
                 },
             });
             await loadJS("/web/static/lib/Chart/Chart.js");
             assert.containsNone(target, ".o_spreadsheet_action");
-            await toggleSearchBarMenu(target);
+            await toggleFavoriteMenu(target);
             await click(target, ".o_insert_action_spreadsheet_menu");
             await click(target, ".modal-footer button.btn-primary");
+            def.resolve();
             await nextTick();
             assert.verifySteps(["spreadsheet-created"]);
             assert.containsOnce(target, ".o_spreadsheet_action");
             assert.strictEqual(
-                target.querySelector(".o_breadcrumb .o_spreadsheet_name input").value,
+                target.querySelector(".breadcrumb .o_spreadsheet_name input").value,
                 "Untitled spreadsheet"
             );
         });
@@ -259,7 +278,7 @@ QUnit.module(
             const webClient = await openView("pivot");
 
             // group by name
-            await toggleSearchBarMenu(target);
+            await toggleGroupByMenu(target);
             await toggleMenuItem(target, "name");
 
             // add count measure
@@ -291,14 +310,6 @@ QUnit.module(
             const webClient = await openView("map");
             await insertInSpreadsheetAndClickLink(target);
             assert.strictEqual(getCurrentViewType(webClient), "map");
-        });
-
-        QUnit.test("action with domain being the empty string", async function (assert) {
-            assert.expect(1);
-            serverData.actions["1"].domain = "";
-            const webClient = await openView("list");
-            await insertInSpreadsheetAndClickLink(target);
-            assert.strictEqual(getCurrentViewType(webClient), "list");
         });
     }
 );

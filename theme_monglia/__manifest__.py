@@ -5,12 +5,12 @@
     'summary': 'Event, Restaurants, Bars, Pubs, Cafes, Catering, Food, Drinks, Concerts, Shows, Musics, Dance, Party',
     'sequence': 260,
     'version': '2.0.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
         'views/images_content.xml',
         'views/customizations.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/monglia_description.png',
@@ -32,14 +32,9 @@
         'website.library_image_14': '/theme_monglia/static/src/img/snippets/library_image_14.jpg',
         'website.library_image_16': '/theme_monglia/static/src/img/snippets/library_image_16.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_title', 's_text_block', 's_three_columns', 's_images_wall',
                      's_title', 's_media_list', 's_text_image'],
-    },
-    'new_page_templates': {
-        'about': {
-            'personal': ['s_text_cover', 's_image_text', 's_text_block_h2', 's_numbers', 's_features', 's_call_to_action'],
-        },
     },
     'license': 'LGPL-3',
     'live_test_url': 'https://theme-monglia.odoo.com',

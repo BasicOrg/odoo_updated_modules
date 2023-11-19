@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="account_financial_report_f29" model="account.report">
-        <field name="name">Proposal F29</field>
+        <field name="name">Propuesta F29</field>
         <field name="root_report_id" ref="account.generic_tax_report"/>
         <field name="country_id" ref="base.cl"/>
         <field name="filter_multi_company">selector</field>
@@ -13,11 +13,10 @@
         </field>
         <field name="line_ids">
             <record id="account_financial_report_f29_line_01" model="account.report.line">
-                <field name="name">Taxable Sales Base</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Base Imponible Ventas</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0101" model="account.report.line">
-                        <field name="name">Net Sales Taxed VAT</field>
+                        <field name="name">Ventas Netas Gravadas IVA</field>
                         <field name="code">CL_VNGI</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0101_balance" model="account.report.expression">
@@ -30,7 +29,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0102" model="account.report.line">
-                        <field name="name">Exempt Sales</field>
+                        <field name="name">Ventas Exentas</field>
                         <field name="code">CL_VEX</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0102_balance" model="account.report.expression">
@@ -43,7 +42,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0103" model="account.report.line">
-                        <field name="name">Proposed Ratio Factor (%)</field>
+                        <field name="name">Factor de Proporción Propuesto (%)</field>
                         <field name="code">CL_FPP_RATE</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0103_balance" model="account.report.expression">
@@ -57,7 +56,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0104" model="account.report.line">
-                        <field name="name">Total Sales</field>
+                        <field name="name">Total Ventas</field>
                         <field name="code">CL_TOTVEN</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0104_balance" model="account.report.expression">
@@ -72,11 +71,10 @@
                 </field>
             </record>
             <record id="account_financial_report_f29_line_02" model="account.report.line">
-                <field name="name">Taxes Paid on Sale</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Impuestos Originados por la Venta</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0201" model="account.report.line">
-                        <field name="name">VAT Tax Debit</field>
+                        <field name="name">IVA Debito Fiscal</field>
                         <field name="code">CL_IVADF</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0201_balance" model="account.report.expression">
@@ -89,11 +87,10 @@
                 </field>
             </record>
             <record id="account_financial_report_f29_line_03" model="account.report.line">
-                <field name="name">Tax Base Purchases</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Base Imponible Compras</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0301" model="account.report.line">
-                        <field name="name">Net Taxable Purchases Recoverable VAT</field>
+                        <field name="name">Compras Netas Gravadas IVA Recuperable</field>
                         <field name="code">CL_COMPNGIR</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0301_balance" model="account.report.expression">
@@ -106,7 +103,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0302" model="account.report.line">
-                        <field name="name">Net Purchases Taxed VAT Common Use</field>
+                        <field name="name">Compra Netas Gravadas IVA Uso Comun</field>
                         <field name="code">CL_COMPNGIUC</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0302_balance" model="account.report.expression">
@@ -120,7 +117,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0303" model="account.report.line">
-                        <field name="name">Purchases Non-recoverable VAT</field>
+                        <field name="name">Compras Iva No Recuperable</field>
                         <field name="code">CL_COMPINR</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0303_balance" model="account.report.expression">
@@ -133,7 +130,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0304" model="account.report.line">
-                        <field name="name">Supermarket Shopping</field>
+                        <field name="name">Compras Supermercado</field>
                         <field name="code">CL_COMPS</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0304_balance" model="account.report.expression">
@@ -146,7 +143,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0305" model="account.report.line">
-                        <field name="name">Purchases of fixed assets</field>
+                        <field name="name">Compras de Activo Fijo</field>
                         <field name="code">CL_COMPAF</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0305_balance" model="account.report.expression">
@@ -159,7 +156,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0306" model="account.report.line">
-                        <field name="name">Purchases Not Taxed With VAT</field>
+                        <field name="name">Compras No Gravadas Con Iva</field>
                         <field name="code">CL_COMPNGI</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0306_balance" model="account.report.expression">
@@ -172,7 +169,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0307" model="account.report.line">
-                        <field name="name">Total Net Purchases</field>
+                        <field name="name">Total Neto Compras</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0307_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -186,11 +183,10 @@
                 </field>
             </record>
             <record id="account_financial_report_f29_line_04" model="account.report.line">
-                <field name="name">Taxes Paid on Purchase</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Impuestos Pagados en la Compra</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0401" model="account.report.line">
-                        <field name="name">VAT Paid Purchases Recoverable</field>
+                        <field name="name">IVA Pagado Compras Recuperables</field>
                         <field name="code">CL_IPCOMPR</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0401_balance" model="account.report.expression">
@@ -201,7 +197,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0402" model="account.report.line">
-                        <field name="name">VAT Common Use</field>
+                        <field name="name">IVA Uso Comun</field>
                         <field name="code">CL_IUC</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0402_balance" model="account.report.expression">
@@ -212,7 +208,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0403" model="account.report.line">
-                        <field name="name">VAT Shopping Supermarket</field>
+                        <field name="name">IVA Compras Supermercado</field>
                         <field name="code">CL_ICOMPS</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0403_balance" model="account.report.expression">
@@ -223,7 +219,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0404" model="account.report.line">
-                        <field name="name">VAT Purchases of Fixed Assets Destined for Exempt Sales</field>
+                        <field name="name">IVA Compras Activo Fijo Destinados a Ventas Exentas</field>
                         <field name="code">CL_IPCOMPAFDVE</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0404_balance" model="account.report.expression">
@@ -234,7 +230,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0405" model="account.report.line">
-                        <field name="name">VAT Purchases Fixed Assets Common Use</field>
+                        <field name="name">IVA Compras Activo Fijo Uso Comun</field>
                         <field name="code">CL_IPCOMPAFVUC</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0405_balance" model="account.report.expression">
@@ -245,7 +241,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0406" model="account.report.line">
-                        <field name="name">VAT Purchases of Non-recoverable Fixed Assets</field>
+                        <field name="name">IVA Compras Activo Fijo No Recuperables</field>
                         <field name="code">CL_IPCOMPAFVNR</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0406_balance" model="account.report.expression">
@@ -258,11 +254,10 @@
                 </field>
             </record>
             <record id="account_financial_report_f29_line_05" model="account.report.line">
-                <field name="name">VAT Base Tax Credit Affected by FP</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Base IVA Credito Fiscal Afectada por FP</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0501" model="account.report.line">
-                        <field name="name">Recoverable VAT</field>
+                        <field name="name">IVA Recuperable</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0501_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -274,7 +269,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0502" model="account.report.line">
-                        <field name="name">VAT Common Use</field>
+                        <field name="name">IVA Uso Comun</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0502_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -287,7 +282,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0504" model="account.report.line">
-                        <field name="name">VAT Purchases Supermarket Common Use</field>
+                        <field name="name">IVA Compras Supermercado Uso Comun</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0504_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -300,7 +295,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0505" model="account.report.line">
-                        <field name="name">VAT Purchases Fixed Assets Earmarked Sales Exempt Sales</field>
+                        <field name="name">IVA Compras Activo Fijo Destinados Ventas Exentas</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0505_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -313,7 +308,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0506" model="account.report.line">
-                        <field name="name">VAT Purchases Fixed Assets Sales Common Use</field>
+                        <field name="name">IVA Compras Activo Fijo Ventas Uso Comun</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0506_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -326,7 +321,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0507" model="account.report.line">
-                        <field name="name">VAT Purchases Fixed Assets Non Recoverable Sales</field>
+                        <field name="name">IVA Compras Activo Fijo Ventas No Recuperables</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0507_balance" model="account.report.expression">
                                 <field name="label">balance</field>
@@ -341,11 +336,10 @@
                 </field>
             </record>
             <record id="account_financial_report_f29_line_06" model="account.report.line">
-                <field name="name">Totals</field>
-                <field name="hierarchy_level">0</field>
+                <field name="name">Totales</field>
                 <field name="children_ids">
                     <record id="account_financial_report_f29_line_0601" model="account.report.line">
-                        <field name="name">VAT Tax Credit</field>
+                        <field name="name">IVA Credito Fiscal</field>
                         <field name="code">CL_IVACF</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0601_balance" model="account.report.expression">
@@ -358,7 +352,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0602" model="account.report.line">
-                        <field name="name">VAT Payable (Negative: Balance in Favor of the Company)</field>
+                        <field name="name">IVA a Pagar (Negativo: Saldo a Favor de la Compañía)</field>
                         <field name="code">CL_IVAP</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0602_balance" model="account.report.expression">
@@ -371,7 +365,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0603" model="account.report.line">
-                        <field name="name">Remaining CF</field>
+                        <field name="name">Remanente de CF</field>
                         <field name="code">CL_RCF</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0603_balance" model="account.report.expression">
@@ -384,7 +378,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0604" model="account.report.line">
-                        <field name="name">Workers' Tax</field>
+                        <field name="name">Impuesto a los Trabajadores</field>
                         <field name="code">CL_IMPT</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0604_balance" model="account.report.expression">
@@ -397,7 +391,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0605" model="account.report.line">
-                        <field name="name">Withholding Fees</field>
+                        <field name="name">Retencion Honorarios</field>
                         <field name="code">CL_RETH</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0605_balance" model="account.report.expression">
@@ -408,7 +402,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0606" model="account.report.line">
-                        <field name="name">PPM rate (%)</field>
+                        <field name="name">Tasa de PPM (%)</field>
                         <field name="code">CL_PPM_RATE</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0606_balance" model="account.report.expression">
@@ -435,7 +429,7 @@
                         </field>
                     </record>
                     <record id="account_financial_report_f29_line_0608" model="account.report.line">
-                        <field name="name">Total Taxes for the Period (Negative: Balance in Favor of the Company)</field>
+                        <field name="name">Total de Impuesto Periodo (Negativo: Saldo a Favor de la Compañía)</field>
                         <field name="expression_ids">
                             <record id="account_financial_report_f29_line_0608_balance" model="account.report.expression">
                                 <field name="label">balance</field>

@@ -14,7 +14,6 @@ class TestTranslationImportModel1(models.Model):
     xml = fields.Text('XML', translate=xml_translate)
 
     def get_code_translation(self):
-        _('slot')  # a code translation for both python and js(static/src/xml/js_template.xml)
         return _('Code, English')
 
     def get_code_lazy_translation(self):
@@ -25,11 +24,3 @@ class TestTranslationImportModel1(models.Model):
 
     def get_code_named_placeholder_translation(self, *args, **kwargs):
         return _('Code, %(num)s, %(symbol)s, English', *args, **kwargs)
-
-
-class TestTranslationImportModel2(models.Model):
-    _inherits = {'test.translation.import.model1': 'model1_id'}
-    _name = 'test.translation.import.model2'
-    _description = 'Translation Test 2'
-
-    model1_id = fields.Many2one('test.translation.import.model1', required=True, ondelete='cascade')

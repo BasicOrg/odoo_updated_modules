@@ -22,7 +22,7 @@ class HrSalaryRule(models.Model):
         help="It is used in computation for percentage and fixed amount. "
              "E.g. a rule for Meal Voucher having fixed amount of "
              u"1€ per worked day can have its quantity defined in expression "
-             "like worked_days['WORK100'].number_of_days.")
+             "like worked_days.WORK100.number_of_days.")
     category_id = fields.Many2one('hr.salary.rule.category', string='Category', required=True)
     active = fields.Boolean(default=True,
         help="If the active field is set to false, it will allow you to hide the salary rule without removing it.")
@@ -44,17 +44,17 @@ class HrSalaryRule(models.Model):
         default='''
 # Available variables:
 #----------------------
-# payslip: hr.payslip object
+# payslip: object containing the payslips
 # employee: hr.employee object
 # contract: hr.contract object
-# rules: dict containing the rules code (previously computed)
-# categories: dict containing the computed salary rule categories (sum of amount of all rules belonging to that category).
-# worked_days: dict containing the computed worked days
-# inputs: dict containing the computed inputs.
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days
+# inputs: object containing the computed inputs.
 
 # Note: returned value have to be set in the variable 'result'
 
-result = rules['NET'] > categories['NET'] * 0.10''',
+result = rules.NET > categories.NET * 0.10''',
         help='Applied this rule for calculation if condition is true. You can specify condition like basic > 1000.')
     condition_range_min = fields.Float(string='Minimum Range', help="The minimum amount, applied for this rule.")
     condition_range_max = fields.Float(string='Maximum Range', help="The maximum amount, applied for this rule.")
@@ -68,35 +68,35 @@ result = rules['NET'] > categories['NET'] * 0.10''',
         help='For example, enter 50.0 to apply a percentage of 50%')
     amount_python_compute = fields.Text(string='Python Code',
         default='''
-# Available variables:
-#----------------------
-# payslip: hr.payslip object
-# employee: hr.employee object
-# contract: hr.contract object
-# rules: dict containing the rules code (previously computed)
-# categories: dict containing the computed salary rule categories (sum of amount of all rules belonging to that category).
-# worked_days: dict containing the computed worked days
-# inputs: dict containing the computed inputs.
+                    # Available variables:
+                    #----------------------
+                    # payslip: object containing the payslips
+                    # employee: hr.employee object
+                    # contract: hr.contract object
+                    # rules: object containing the rules code (previously computed)
+                    # categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+                    # worked_days: object containing the computed worked days.
+                    # inputs: object containing the computed inputs.
 
-# Note: returned value have to be set in the variable 'result'
+                    # Note: returned value have to be set in the variable 'result'
 
-result = contract.wage * 0.10''')
+                    result = contract.wage * 0.10''')
     amount_percentage_base = fields.Char(string='Percentage based on', help='result will be affected to a variable')
     partner_id = fields.Many2one('res.partner', string='Partner',
         help="Eventual third party involved in the salary payment of the employees.")
-    note = fields.Html(string='Description', translate=True)
+    note = fields.Html(string='Description')
 
     def _raise_error(self, localdict, error_type, e):
-        raise UserError(_("""%s
+        raise UserError(_("""%s:
 - Employee: %s
 - Contract: %s
 - Payslip: %s
 - Salary rule: %s (%s)
-- Error: %s""",
+- Error: %s""") % (
             error_type,
             localdict['employee'].name,
             localdict['contract'].name,
-            localdict['payslip'].name,
+            localdict['payslip'].dict.name,
             self.name,
             self.code,
             e))
@@ -109,7 +109,6 @@ result = contract.wage * 0.10''')
         :rtype: (float, float, float)
         """
         self.ensure_one()
-        localdict['localdict'] = localdict
         if self.amount_select == 'fix':
             try:
                 return self.amount_fix or 0.0, float(safe_eval(self.quantity, localdict)), 100.0
@@ -131,7 +130,6 @@ result = contract.wage * 0.10''')
 
     def _satisfy_condition(self, localdict):
         self.ensure_one()
-        localdict['localdict'] = localdict
         if self.condition_select == 'none':
             return True
         if self.condition_select == 'range':
@@ -151,20 +149,20 @@ result = contract.wage * 0.10''')
         self.ensure_one()
         return 'x_l10n_%s_%s' % (
             self.struct_id.country_id.code.lower() if self.struct_id.country_id.code else 'xx',
-            self.code.lower().replace('.', '_').replace('-', '_').replace(' ', '_'),
+            self.code.lower().replace('.', '_'),
         )
 
     def _generate_payroll_report_fields(self):
         fields_vals_list = []
         for rule in self:
             field_name = rule._get_report_field_name()
-            model = self.env.ref('hr_payroll.model_hr_payroll_report').sudo().read(['id', 'name'])[0]
+            model = self.env.ref('hr_payroll.model_hr_payroll_report')
             if rule.appears_on_payroll_report and field_name not in self.env['hr.payroll.report']:
                 fields_vals_list.append({
                     'name': field_name,
-                    'model': model['name'],
-                    'model_id': model['id'],
-                    'field_description': '%s: %s' % (rule.struct_id.country_id.code or 'XX', rule.name),
+                    'model': model.name,
+                    'model_id': model.id,
+                    'field_description': rule.name,
                     'ttype': 'float',
                 })
         if fields_vals_list:
@@ -180,13 +178,13 @@ result = contract.wage * 0.10''')
         # Avoid to unlink a field if another rule request it (example: ONSSEMPLOYER)
         field_names = [field_name for field_name in field_names if field_name not in all_remaining_field_names]
         model = self.env.ref('hr_payroll.model_hr_payroll_report')
-        fields_to_unlink = self.env['ir.model.fields'].sudo().search([
+        fields_to_unlink = self.env['ir.model.fields'].search([
             ('name', 'in', field_names),
             ('model_id', '=', model.id),
             ('ttype', '=', 'float'),
         ])
         if fields_to_unlink:
-            fields_to_unlink.unlink()
+            fields_to_unlink.sudo().unlink()
             self.env['hr.payroll.report'].init()
 
     @api.model_create_multi

@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
         <field name="arch" type="xml">
             <page name="extra" position="inside">
-                <group string="Fiskaly information" invisible="not l10n_de_fiskaly_transaction_uuid">
+                <group string="Fiskaly information" attrs="{'invisible': [('l10n_de_fiskaly_transaction_uuid','=',False)]}">
                     <field name="l10n_de_fiskaly_transaction_uuid"/>
                     <field name="l10n_de_fiskaly_transaction_number"/>
                     <field name="l10n_de_fiskaly_time_start"/>

@@ -9,7 +9,7 @@ class SurveyUserInput(models.Model):
     _inherit = 'survey.user_input'
 
     def _mark_done(self):
-        """ Will add certification to employee's resume if
+        """ Will add certification to employee's resumé if
         - The survey is a certification
         - The user is linked to an employee
         - The user succeeded the test """
@@ -32,3 +32,10 @@ class SurveyUserInput(models.Model):
                 'display_type': 'certification',
                 'survey_id': survey.id
             })
+
+
+class ResumeLine(models.Model):
+    _inherit = 'hr.resume.line'
+
+    display_type = fields.Selection(selection_add=[('certification', 'Certification')])
+    survey_id = fields.Many2one('survey.survey', string='Certification', readonly=True)

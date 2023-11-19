@@ -8,9 +8,10 @@
 
     .o_notebook_headers {
         margin: 0 var(--notebook-margin-x, 0);
-        overflow-x: auto;
 
         @include media-breakpoint-down(md) {
+            overflow-x: auto;
+
             &::-webkit-scrollbar {
                 display: none;
             }
@@ -25,13 +26,6 @@
     .nav-item {
         white-space: nowrap;
         margin: 0 -1px 0 0;
-
-        &.disabled {
-            .nav-link {
-                cursor: not-allowed;
-                opacity: .3;
-            }
-        }
     }
 
     .nav-link {
@@ -55,10 +49,6 @@
     }
 
     &.vertical {
-        .o_notebook_headers {
-            overflow-x: visible;
-        }
-
         .nav {
             width: max-content;
             border-bottom-color: transparent; // removing the width has weird side effect due to the negative margin
@@ -69,6 +59,10 @@
 
             &:first-child .nav-link {
                 border-top-width: 0;
+            }
+
+            &:last-child .nav-link {
+                border-bottom-width: 0;
             }
         }
 
@@ -82,15 +76,6 @@
                     border-right-color: $o-view-background-color;
                 }
             }
-        }
-    }
-
-    @include media-breakpoint-down(lg) {
-        .o_notebook_content .oe-toolbar {
-            @include o-position-sticky($top: 0px);
-            margin-left: var(--notebook-margin-x, $o-horizontal-padding);
-            margin-right: var(--notebook-margin-x, $o-horizontal-padding);
-            width: auto;
         }
     }
 }

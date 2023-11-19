@@ -12,17 +12,15 @@ Validate stock moves for Field Service
     'depends': ['industry_fsm_sale', 'sale_stock'],
     'data': [
         'security/ir.model.access.csv',
+        'views/product_product_views.xml',
         'wizard/fsm_stock_tracking_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
-            'industry_fsm_stock/static/src/**/*',
+            'industry_fsm_stock/static/src/fsm_product_quantity/*.xml',
         ],
         'web.qunit_suite_tests': [
             'industry_fsm_stock/static/tests/**/*',
-        ],
-        'web.assets_tests': [
-            'industry_fsm_stock/static/tests/tours/**/*',
         ],
     },
     'auto_install': True,

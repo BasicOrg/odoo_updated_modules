@@ -6,7 +6,7 @@
         <field name="model">social.post</field>
         <field name="inherit_id" ref="social.social_post_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[hasclass('o_social_post_engagement_stat_btn')]" position="before">
+            <xpath expr="//button[@name='engagement']" position="before">
                 <button class="oe_stat_button" name="action_redirect_to_quotations"  type="object"
                     icon="fa-pencil-square-o" groups="sales_team.group_sale_salesman">
                     <field name="sale_quotation_count" string="Quotations" widget="statinfo"/>
@@ -31,11 +31,13 @@
                 <attribute name="class" add="justify-content-between" separator=" "/>
             </xpath>
             <xpath expr="//div[@id='post-stats']" position="inside">
-                <div class="d-flex justify-content-between py-1 border-top" groups="sales_team.group_sale_salesman">
-                    <small class="pe-1">Quotations:</small> <small class="fw-bold"><t t-esc="record.sale_quotation_count.raw_value"/></small>
+                <div class="px-2 text-center" groups="sales_team.group_sale_salesman">
+                    <small>Quotations:</small>
+                    <small class="fw-bold"><t t-esc="record.sale_quotation_count.raw_value"/></small>
                 </div>
-                <div class="d-flex justify-content-between py-1 border-top" groups="sales_team.group_sale_salesman">
-                    <small class="pe-1">Revenues:</small> <small class="fw-bold"><t t-esc="record.sale_invoiced_amount.raw_value"/></small>
+                <div class="px-2 text-center" groups="sales_team.group_sale_salesman">
+                    <small>Revenues:</small>
+                    <small class="fw-bold"><t t-esc="record.sale_invoiced_amount.raw_value"/></small>
                 </div>
             </xpath>
         </field>

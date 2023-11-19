@@ -11,12 +11,11 @@ class BelgiumSalesReportTest(AccountSalesReportCommon):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass('be_comp')
+        super().setUpClass('l10n_be.l10nbe_chart_template')
         cls.partner_b.update({
             'country_id': cls.env.ref('base.de').id,
             "vat": "DE123456788",
         })
-        cls.report = cls.env.ref('l10n_be_reports.belgian_ec_sales_report')
 
     @classmethod
     def setup_company_data(cls, company_name, chart_template=None, **kwargs):
@@ -44,9 +43,9 @@ class BelgiumSalesReportTest(AccountSalesReportCommon):
             (self.partner_a, s_tax, 700),
             (self.partner_b, s_tax, 700),
         ])
-
-        options = self.report.get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
-        lines = self.report._get_lines(options)
+        report = self.env.ref('l10n_be_reports.belgian_ec_sales_report')
+        options = report._get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
+        lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
             # pylint: disable=C0326
@@ -60,7 +59,6 @@ class BelgiumSalesReportTest(AccountSalesReportCommon):
                 (self.partner_b.name,  self.partner_b.vat[:2],  self.partner_b.vat[2:],  'S (44)',   f'700.00{NON_BREAKING_SPACE}€'),
                 ('Total',              '',                      '',                      '',         f'3,000.00{NON_BREAKING_SPACE}€'),
             ],
-            options,
         )
 
         expected_xml = '''
@@ -109,31 +107,6 @@ class BelgiumSalesReportTest(AccountSalesReportCommon):
             </ns2:IntraConsignment>
                 '''
         self.assertXmlTreeEqual(
-            self.get_xml_tree_from_string(self.env[self.report.custom_handler_model_name].export_to_xml_sales_report(options)['file_content']),
+            self.get_xml_tree_from_string(self.env[report.custom_handler_model_name].export_to_xml_sales_report(options)['file_content']),
             self.get_xml_tree_from_string(expected_xml)
-        )
-
-    @freeze_time('2019-12-31')
-    def test_be_ec_sales_report_refund(self):
-        l_tax = self.env['account.tax'].search([('name', '=', '0% EU M'), ('company_id', '=', self.env.company.id)], limit=1)
-        t_tax = self.env['account.tax'].search([('name', '=', '0% EU T'), ('company_id', '=', self.env.company.id)], limit=1)
-        s_tax = self.env['account.tax'].search([('name', '=', '0% EU S'), ('company_id', '=', self.env.company.id)], limit=1)
-
-        self._create_invoices([(self.partner_a, l_tax, 100), (self.partner_a, t_tax, 90), (self.partner_a, s_tax, 80)])
-        self._create_invoices([(self.partner_a, l_tax, 42), (self.partner_a, t_tax, 42), (self.partner_a, s_tax, 42)], is_refund=True)
-
-        options = self.report.get_options({'date': {'mode': 'range', 'filter': 'this_month'}})
-        lines = self.report._get_lines(options)
-        self.assertLinesValues(
-            lines,
-            # pylint: disable=C0326
-            #   Partner                country code,            VAT Number,              Tax         Amount
-            [   0,                     1,                       2,                       3,          4],
-            [
-                (self.partner_a.name,  self.partner_a.vat[:2],  self.partner_a.vat[2:],  'L (46L)',  58.0),
-                (self.partner_a.name,  self.partner_a.vat[:2],  self.partner_a.vat[2:],  'T (46T)',  48.0),
-                (self.partner_a.name,  self.partner_a.vat[:2],  self.partner_a.vat[2:],  'S (44)',   38.0),
-                ('Total',              '',                      '',                      '',        144.0),
-            ],
-            options,
         )

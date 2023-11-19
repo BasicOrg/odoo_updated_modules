@@ -3,21 +3,27 @@
 # 	* account_disallowed_expenses
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: account_disallowed_expenses
+#: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.disallowed_expenses_main_template
+msgid ""
+"<span>There are multiple disallowed expenses rates in this period</span>"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_account
@@ -33,7 +39,7 @@ msgstr "啟用"
 #. module: account_disallowed_expenses
 #: model_terms:ir.actions.act_window,help:account_disallowed_expenses.action_account_disallowed_expenses_category_list
 msgid "Add a Disallowed Expenses Category"
-msgstr "新增不允許費用類別"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__category_id
@@ -49,7 +55,7 @@ msgstr "類別名稱"
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__code
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "Code"
-msgstr "程式碼"
+msgstr "代號"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__company_id
@@ -61,7 +67,7 @@ msgstr "公司"
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__create_uid
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "創立者"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__create_date
@@ -72,17 +78,17 @@ msgstr "建立於"
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__current_rate
 msgid "Current Rate"
-msgstr "目前匯率"
+msgstr "目前比率"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__rate
 msgid "Disallowed %"
-msgstr "不允許 %"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_disallowed_amount
 msgid "Disallowed Amount"
-msgstr "不允許金額"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.ui.menu,name:account_disallowed_expenses.menu_action_account_report_de
@@ -94,33 +100,33 @@ msgstr "不允許的費用"
 #: model:ir.actions.act_window,name:account_disallowed_expenses.action_account_disallowed_expenses_category_list
 #: model:ir.ui.menu,name:account_disallowed_expenses.menu_action_account_disallowed_expenses_category_list
 msgid "Disallowed Expenses Categories"
-msgstr "已拒絕費用分類"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_category
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_account__disallowed_expenses_category_id
 msgid "Disallowed Expenses Category"
-msgstr "不允許費用類別"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_report_handler
 msgid "Disallowed Expenses Custom Handler"
-msgstr "不允許費用自訂處理程式"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model,name:account_disallowed_expenses.model_account_disallowed_expenses_rate
 msgid "Disallowed Expenses Rate"
-msgstr "不允許費用比率"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report,name:account_disallowed_expenses.disallowed_expenses_report
 #: model:ir.actions.client,name:account_disallowed_expenses.action_account_report_de
 msgid "Disallowed Expenses Report"
-msgstr "不允許費用報告"
+msgstr ""
 
 #. module: account_disallowed_expenses
-#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code
-msgid "Disallowed expenses category code should be unique."
+#: model:ir.model.constraint,message:account_disallowed_expenses.constraint_account_disallowed_expenses_category_unique_code_in_country
+msgid "Disallowed expenses category code should be unique in each company."
 msgstr ""
 
 #. module: account_disallowed_expenses
@@ -130,24 +136,16 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "General Ledger"
-msgstr "總分類帳"
-
-#. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__id
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__id
 msgid "ID"
-msgstr "識別號"
+msgstr "ID"
 
 #. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Journal Items"
-msgstr "日記賬項目"
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category____last_update
+#: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_category__write_uid
@@ -167,11 +165,10 @@ msgid "Name"
 msgstr "名稱"
 
 #. module: account_disallowed_expenses
-#. odoo-python
 #: code:addons/account_disallowed_expenses/models/account_disallowed_expenses.py:0
 #, python-format
 msgid "No Rate"
-msgstr "無匯率"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_rate
@@ -182,23 +179,23 @@ msgstr "比率"
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "Rates"
-msgstr "匯率設定"
+msgstr "比率"
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Related Account(s)"
-msgstr "相關賬戶"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_tree
 msgid "Set Rates"
-msgstr "設定匯率"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,help:account_disallowed_expenses.field_account_disallowed_expenses_category__active
 msgid "Set active to false to hide the category without removing it."
-msgstr "將 active 設為假 (false) 可隱藏類別而不作刪除。"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model:ir.model.fields,field_description:account_disallowed_expenses.field_account_disallowed_expenses_rate__date_from
@@ -206,30 +203,16 @@ msgid "Start Date"
 msgstr "開始日期"
 
 #. module: account_disallowed_expenses
-#. odoo-javascript
-#: code:addons/account_disallowed_expenses/static/src/components/disallowed_expenses_report/warnings.xml:0
-#, python-format
-msgid "There are multiple disallowed expenses rates in this period"
-msgstr "此期間有多個不允許費用比率"
-
-#. module: account_disallowed_expenses
-#. odoo-python
-#: code:addons/account_disallowed_expenses/report/account_disallowed_expenses_report.py:0
-#, python-format
-msgid "Total"
-msgstr "總計"
-
-#. module: account_disallowed_expenses
 #: model:account.report.column,name:account_disallowed_expenses.disallowed_expenses_report_total_amount
 msgid "Total Amount"
-msgstr "總計金額"
+msgstr "金額總計"
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. 1201"
-msgstr "例：1201"
+msgstr ""
 
 #. module: account_disallowed_expenses
 #: model_terms:ir.ui.view,arch_db:account_disallowed_expenses.view_account_disallowed_expenses_category_form
 msgid "e.g. Non-Deductible Tax"
-msgstr "例：不可抵扣稅款"
+msgstr ""

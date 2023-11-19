@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import Dialog from '@web/legacy/js/core/dialog';
-import { _t } from "@web/core/l10n/translation";
+import Dialog from 'web.Dialog';
+import { _t } from 'web.core';
 
 /**
  * This modal is used when the user finishes the quiz.
@@ -19,7 +19,7 @@ var SlideQuizFinishModal = Dialog.extend({
         this.quiz = options.quiz;
         this.hasNext = options.hasNext;
         this.userId = options.userId;
-        options = Object.assign(options || {}, {
+        options = _.defaults(options || {}, {
             size: 'medium',
             dialogClass: 'd-flex p-0',
             technical: false,
@@ -100,17 +100,17 @@ var SlideQuizFinishModal = Dialog.extend({
         if (this.quiz.rankProgress.level_up) {
             this.$('.o_wslides_quiz_modal_title').text(_t('Level up!'));
             $progressBar.css('width', '100%');
-            setTimeout(() => {
+            _.delay(function () {
                 self.$('.o_wslides_quiz_modal_rank_lower_bound')
                     .text(self.quiz.rankProgress.new_rank.lower_bound);
                 self.$('.o_wslides_quiz_modal_rank_upper_bound')
                     .text(self.quiz.rankProgress.new_rank.upper_bound || "");
 
-                // we need to use delay to force DOM re-rendering between 0 and new percentage
-                setTimeout(() => {
+                // we need to use _.delay to force DOM re-rendering between 0 and new percentage
+                _.delay(function () {
                     $progressBar.addClass('no-transition').width('0%');
                 }, 1);
-                setTimeout(() => {
+                _.delay(function () {
                     $progressBar
                         .removeClass('no-transition')
                         .width(self.quiz.rankProgress.new_rank.progress + '%');
@@ -128,15 +128,15 @@ var SlideQuizFinishModal = Dialog.extend({
      */
     _animateText: function () {
         var self = this;
-        setTimeout(function () {
+       _.delay(function () {
             self.$('h4.o_wslides_quiz_modal_xp_gained').addClass('show in');
             self.$('.o_wslides_quiz_modal_dismiss').removeClass('d-none');
         }, 800);
 
         if (this.quiz.rankProgress.level_up) {
-            setTimeout(function () {
+            _.delay(function () {
                 self.$('.o_wslides_quiz_modal_rank_motivational').addClass('fade');
-                setTimeout(function () {
+                _.delay(function () {
                     self.$('.o_wslides_quiz_modal_rank_motivational').html(
                         self.quiz.rankProgress.last_rank ?
                             self.quiz.rankProgress.description :

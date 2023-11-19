@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -188,10 +186,10 @@ class RentalProcessingLine(models.TransientModel):
             diff, old_qty, new_qty = line._get_diff()
             if diff:  # i.e. diff>0
 
-                msg += Markup("<li> %s") % (order_line.product_id.display_name)
+                msg += "<li> %s" % (order_line.product_id.display_name)
 
                 if old_qty > 0:
-                    msg += Markup(": %s -> <b> %s </b> %s ") % (old_qty, new_qty, order_line.product_uom.name)
+                    msg += ": %s -> <b> %s </b> %s " % (old_qty, new_qty, order_line.product_uom.name)
                 elif new_qty != 1 or order_line.product_uom_qty > 1.0:
                     msg += ": %s %s " % (new_qty, order_line.product_uom.name)
                 # If qty = 1, product has been picked up, no need to specify quantity
@@ -202,5 +200,5 @@ class RentalProcessingLine(models.TransientModel):
                 elif line.status == 'return' and line.returned_lot_ids:
                     msg += ": " + ', '.join(line.returned_lot_ids.mapped('name'))
 
-                msg += Markup("<br/>")
+                msg += "<br/>"
         return msg

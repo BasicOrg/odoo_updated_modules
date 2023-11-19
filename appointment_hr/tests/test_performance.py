@@ -39,9 +39,6 @@ class AppointmenHrPerformanceCase(AppointmentHrCommon, AppointmentPerformanceCas
              'tz': 'Europe/Brussels',
             } for idx in range(20)
         ])
-        cls.resources = cls.env['appointment.resource'].create([
-            {'name': 'Resource %s' % idx} for idx in range(20)
-        ])
 
         # User resources and employees
         cls.staff_users_resources = cls.env['resource.resource'].create([
@@ -88,13 +85,12 @@ class AppointmenHrPerformanceCase(AppointmentHrCommon, AppointmentPerformanceCas
         cls.test_apt_type = cls.env['appointment.type'].create({
             'appointment_tz': 'Europe/Brussels',
             'appointment_duration': 1,
-            'assign_method': 'time_auto_assign',
-            'category': 'recurring',
+            'assign_method': 'random',
+            'category': 'website',
             'max_schedule_days': 60,
             'min_cancellation_hours': 1,
             'min_schedule_hours': 1,
             'name': 'Test Appointment Type',
-            'schedule_based_on': 'users',
             'slot_ids': [
                 (0, 0, {'end_hour': hour + 1,
                         'start_hour': hour,
@@ -145,7 +141,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=43):  # apt_hr 40
+             self.assertQueryCount(staff_user_bxls=46):  # apt_hr 40
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -164,6 +160,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 4186 - 4186 - 4186 - 1
         # Method count after optimization: 1 - 0 - 0 - 1
 
+        global_slots_startdate = date(2022, 1, 30)  # starts on a Sunday, first week containing Feb day
         global_slots_enddate = date(2022, 6, 4)  # last day of last week of May
         self.assertSlots(
             res,
@@ -181,7 +178,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
              },
             ],
             {'enddate': global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -208,7 +205,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=43):  # apt_hr 40
+             self.assertQueryCount(staff_user_bxls=46):  # apt_hr 40
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -227,14 +224,16 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 506 - 506 - 506 - 1
         # Method count after optimization: 1 - 0 - 0 - 1
 
+        global_slots_startdate = self.reference_now_monthweekstart
+        global_slots_enddate = date(2022, 3, 5)  # last day of last week of Feb
         self.assertSlots(
             res,
             [{'name_formated': 'February 2022',
               'weeks_count': 5,  # 30/01 -> 27/02 (05/03)
              },
             ],
-            {'enddate': self.global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+            {'enddate': global_slots_enddate,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -244,7 +243,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         apt_type_custom_bxls = self.env['appointment.type'].sudo().create({
             'appointment_tz': 'Europe/Brussels',
             'appointment_duration': 1,
-            'assign_method': 'time_auto_assign',
+            'assign_method': 'random',
             'category': 'custom',
             'location_id': self.test_appointment_location.id,
             'name': 'Bxls Appt Type',
@@ -269,7 +268,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=22):
+             self.assertQueryCount(staff_user_bxls=26):  # apt 27 ?
             t0 = time.time()
             res = apt_type_custom_bxls._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -288,6 +287,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 480 - 480 - 480 - 1
         # Method count after optimization: 1 - 0 - 0 - 0
 
+        global_slots_startdate = self.reference_now_monthweekstart
         global_slots_enddate = date(2022, 4, 2)  # last day of last week of May
         self.assertSlots(
             res,
@@ -299,7 +299,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
              }
             ],
             {'enddate': global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -309,9 +309,9 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         apt_type_custom_bxls = self.env['appointment.type'].sudo().create({
             'appointment_tz': 'Europe/Brussels',
             'appointment_duration': 1,
-            'assign_method': 'time_auto_assign',
+            'assign_method': 'random',
             'category': 'custom',
-            'location_id': self.test_appointment_location.id,
+            'location_id':  self.test_appointment_location.id,
             'name': 'Bxls Appt Type',
             'min_cancellation_hours': 1,
             'min_schedule_hours': 1,
@@ -334,7 +334,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=22):
+             self.assertQueryCount(staff_user_bxls=26):  # apt 27 ?
             t0 = time.time()
             res = apt_type_custom_bxls._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -353,6 +353,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 480 - 480 - 480 - 1
         # Method count after optimization: 1 - 0 - 0 - 0
 
+        global_slots_startdate = self.reference_now_monthweekstart
         global_slots_enddate = date(2022, 4, 2)  # last day of last week of May
         self.assertSlots(
             res,
@@ -364,7 +365,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
              }
             ],
             {'enddate': global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -372,13 +373,13 @@ class AppointmentTest(AppointmenHrPerformanceCase):
     def test_get_appointment_slots_website(self):
         """ Website type: multi users (choose first available), without working
         hours. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
         self.test_apt_type.write({'work_hours_activated': False})
         apt_type = self.test_apt_type.with_user(self.env.user)
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=45):
+             self.assertQueryCount(staff_user_bxls=53):  # apt_hr 52
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -397,6 +398,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 402 - 402 - 402 - 20
         # Method count after optimization: 1 - 0 - 0 - 0
 
+        global_slots_startdate = self.reference_now_monthweekstart
         global_slots_enddate = date(2022, 4, 30)  # last day of last week of April
         self.assertSlots(
             res,
@@ -414,7 +416,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
              'slots_duration': 1,
              'slots_hours': range(8, 16, 1),
              'slots_startdt': self.reference_monday,
-             'startdate': self.reference_now_monthweekstart,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -422,12 +424,12 @@ class AppointmentTest(AppointmenHrPerformanceCase):
     def test_get_appointment_slots_website_whours(self):
         """ Website type: multi users (choose first available), with working hours
         involved. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
         apt_type = self.test_apt_type.with_user(self.env.user)
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=59):  # apt_hr 61
+             self.assertQueryCount(staff_user_bxls=67):  # apt_hr 61
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -446,6 +448,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 1261 - 1261 - 1261 - 20
         # Method count after optimization: 1 - 0 - 0 - 1
 
+        global_slots_startdate = self.reference_now_monthweekstart
         global_slots_enddate = date(2022, 4, 30)  # last day of last week of April
         self.assertSlots(
             res,
@@ -463,7 +466,7 @@ class AppointmentTest(AppointmenHrPerformanceCase):
              'slots_duration': 1,
              'slots_hours': range(8, 16, 1),
              'slots_startdt': self.reference_monday,
-             'startdate': self.reference_now_monthweekstart,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -471,14 +474,14 @@ class AppointmentTest(AppointmenHrPerformanceCase):
     def test_get_appointment_slots_website_whours_short(self):
         """ Website type: multi users (choose first available), with working hours
         involved. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
         self.test_apt_type.write({'max_schedule_days': 10})
         self.env.flush_all()
         apt_type = self.test_apt_type.with_user(self.env.user)
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=59):  # apt_hr 61
+             self.assertQueryCount(staff_user_bxls=67):  # apt_hr 61
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -497,14 +500,16 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 237 - 237 - 237 - 20
         # Method count after optimization: 1 - 0 - 0 - 1
 
+        global_slots_startdate = self.reference_now_monthweekstart
+        global_slots_enddate = date(2022, 3, 5)  # last day of last week of Feb
         self.assertSlots(
             res,
             [{'name_formated': 'February 2022',
               'weeks_count': 5,  # 30/01 -> 27/02 (05/03)
              }
             ],
-            {'enddate': self.global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+            {'enddate': global_slots_enddate,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -513,14 +518,14 @@ class AppointmentTest(AppointmenHrPerformanceCase):
     def test_get_appointment_slots_website_whours_short_warmup(self):
         """ Website type: multi users (choose first available), with working hours
         involved. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
         self.test_apt_type.write({'max_schedule_days': 10})
         self.env.flush_all()
         apt_type = self.test_apt_type.with_user(self.env.user)
 
         # with self.profile(collectors=['sql']) as profile:
         with self.mockAppointmentCalls(), \
-             self.assertQueryCount(staff_user_bxls=30):
+             self.assertQueryCount(staff_user_bxls=31):
             t0 = time.time()
             res = apt_type._get_appointment_slots('Europe/Brussels', reference_date=self.reference_now)
             t1 = time.time()
@@ -539,14 +544,16 @@ class AppointmentTest(AppointmenHrPerformanceCase):
         # Method count before optimization: 237 - 237 - 237 - 20
         # Method count after optimization: 1 - 0 - 0 - 1
 
+        global_slots_startdate = self.reference_now_monthweekstart
+        global_slots_enddate = date(2022, 3, 5)  # last day of last week of Feb
         self.assertSlots(
             res,
             [{'name_formated': 'February 2022',
               'weeks_count': 5,  # 30/01 -> 27/02 (05/03)
              }
             ],
-            {'enddate': self.global_slots_enddate,
-             'startdate': self.reference_now_monthweekstart,
+            {'enddate': global_slots_enddate,
+             'startdate': global_slots_startdate,
             }
         )
 
@@ -557,7 +564,7 @@ class OnlineAppointmentPerformance(AppointmentUIPerformanceCase, AppointmenHrPer
     @warmup
     def test_appointment_type_page_anytime(self):
         """ Any time type: mono user, involved any time check. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
 
         self.test_apt_type.write({
             'category': 'anytime',
@@ -590,7 +597,7 @@ class OnlineAppointmentPerformance(AppointmentUIPerformanceCase, AppointmenHrPer
     def test_appointment_type_page_website_whours_user(self):
         """ Website type: multi users (choose first available), with working hours
         involved. """
-        random.seed(1871)  # fix shuffle in _slots_fill_users_availability
+        random.seed(1871)  # fix shuffle in _slots_available
 
         t0 = time.time()
         with freeze_time(self.reference_now):

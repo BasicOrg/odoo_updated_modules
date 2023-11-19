@@ -4,7 +4,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
-MODELS_MAPPED = {'employee': 'hr.employee', 'bank_account': 'res.partner.bank'}
+MODELS_MAPPED = {'employee': 'hr.employee', 'address': 'res.partner', 'bank_account': 'res.partner.bank'}
 
 
 class HrContractSalaryPersonalInfo(models.Model):
@@ -20,8 +20,8 @@ class HrContractSalaryPersonalInfo(models.Model):
         help="Name of the field related to this personal info.")
     field = fields.Char(related='res_field_id.name', readonly=True)
     structure_type_id = fields.Many2one('hr.payroll.structure.type', string="Salary Structure Type")
-    placeholder = fields.Char(translate=True)
-    helper = fields.Char(translate=True)
+    placeholder = fields.Char()
+    helper = fields.Char()
     display_type = fields.Selection([
         ('text', 'Text'),
         ('radio', 'Radio'),
@@ -41,10 +41,11 @@ class HrContractSalaryPersonalInfo(models.Model):
     value_ids = fields.One2many('hr.contract.salary.personal.info.value', 'personal_info_id')
     applies_on = fields.Selection([
         ('employee', 'Employee'),
+        ('address', 'Private Home Address'),
         ('bank_account', 'Bank Account')
     ], default='employee')
     res_model = fields.Char(compute='_compute_res_model')
-    impacts_net_salary = fields.Boolean(help=" If checked, any change on this information will trigger a new computation of the gross-->net salary.")
+    impacts_net_salary = fields.Boolean()
     dropdown_selection = fields.Selection([
         ('specific', 'Specific Values'),
         ('country', 'Countries'),
@@ -53,10 +54,6 @@ class HrContractSalaryPersonalInfo(models.Model):
     ], string="Selection Nature")
     parent_id = fields.Many2one('hr.contract.salary.personal.info')
     child_ids = fields.One2many('hr.contract.salary.personal.info', 'parent_id')
-
-    @api.onchange('applies_on')
-    def _onchange_applies_on(self):
-        self.res_field_id = False
 
     @api.constrains('res_field_id', 'applies_on')
     def _check_res_field_model(self):
@@ -81,6 +78,8 @@ class HrContractSalaryPersonalInfo(models.Model):
                 return False
             if info.applies_on == 'employee':
                 info_value = contract.employee_id[info.field]
+            elif info.applies_on == 'address':
+                info_value = contract.employee_id.address_home_id[info.field]
             else:
                 info_value = contract.employee_id.bank_account_id[info.field]
             if info.value_ids:

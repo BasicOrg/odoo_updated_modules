@@ -26,13 +26,9 @@
                 <form string="Message" duplicate="0">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_open_document"
+                            <button name="action_open_document" string="Open Document"
                                 type="object" class="oe_link" icon="fa-file-text-o"
-                                invisible="not model or res_id == 0">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">Open Document</span>
-                                </div>
-                            </button>
+                                attrs="{'invisible': ['|', ('model', '=', False), ('res_id', '=', 0)]}"/>
                         </div>
                         <group>
                             <group>
@@ -144,15 +140,24 @@
                     <field name="create_date"/>
                     <field name="name"/>
                     <templates>
-                        <t t-name="kanban-menu">
-                            <a t-attf-href="/web/content/ir.attachment/#{record.id.raw_value}/datas?download=true" download="" class="dropdown-item">Download</a>
-                            <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
-                        </t>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_area oe_kanban_global_click o_kanban_attachment">
+                                <div class="row">
+                                    <div class="offset-10">
+                                        <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                            <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a t-attf-href="/web/content/ir.attachment/#{record.id.raw_value}/datas?download=true" download="" class="dropdown-item">Download</a>
+                                                <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="o_kanban_image">
                                     <div class="o_kanban_image_wrapper">
-                                        <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png|webp)').test(record.mimetype.value)"/>
+                                        <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png)').test(record.mimetype.value)"/>
                                         <div t-if="record.type.raw_value == 'url'" class="o_url_image fa fa-link fa-3x text-muted" aria-label="Image is a link"/>
                                         <img t-elif="webimage" t-attf-src="/web/image/#{record.id.raw_value}" width="100" height="100" alt="Document" class="o_attachment_image"/>
                                         <div t-else="!webimage" class="o_image o_image_thumbnail" t-att-data-mimetype="record.mimetype.value"/>

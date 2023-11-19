@@ -1,27 +1,17 @@
 /** @odoo-module **/
 
-import { Component, useState, xml } from "@odoo/owl";
-import { browser } from "@web/core/browser/browser";
-import { fieldService } from "@web/core/field_service";
-import { hotkeyService } from "@web/core/hotkeys/hotkey_service";
-import { MainComponentsContainer } from "@web/core/main_components_container";
 import { ModelFieldSelector } from "@web/core/model_field_selector/model_field_selector";
+import { MainComponentsContainer } from "@web/core/main_components_container";
 import { ormService } from "@web/core/orm_service";
 import { popoverService } from "@web/core/popover/popover_service";
 import { registry } from "@web/core/registry";
 import { uiService } from "@web/core/ui/ui_service";
+import { viewService } from "@web/views/view_service";
 import { makeTestEnv } from "../helpers/mock_env";
+import { click, getFixture, triggerEvent, mount, editInput } from "../helpers/utils";
 import { makeFakeLocalizationService } from "../helpers/mock_services";
-import {
-    click,
-    editInput,
-    getFixture,
-    getNodesTextContent,
-    mount,
-    nextTick,
-    patchWithCleanup,
-    triggerEvent,
-} from "../helpers/utils";
+
+const { Component, xml } = owl;
 
 let target;
 let serverData;
@@ -30,60 +20,6 @@ async function mountComponent(Component, params = {}) {
     const env = await makeTestEnv({ serverData, mockRPC: params.mockRPC });
     await mount(MainComponentsContainer, target, { env });
     return mount(Component, target, { env, props: params.props || {} });
-}
-
-export async function openModelFieldSelectorPopover(target, index = 0) {
-    const el = target.querySelectorAll(".o_model_field_selector")[index];
-    await click(el);
-}
-
-function getDisplayedFieldNames(target) {
-    return getNodesTextContent(
-        target.querySelectorAll(".o_model_field_selector_popover_item_name")
-    );
-}
-
-export function getModelFieldSelectorValues(target) {
-    return getNodesTextContent(target.querySelectorAll("span.o_model_field_selector_chain_part"));
-}
-
-function getTitle(target) {
-    return target.querySelector(
-        ".o_model_field_selector_popover .o_model_field_selector_popover_title"
-    ).innerText;
-}
-
-async function clickPrev(target) {
-    await click(target, ".o_model_field_selector_popover_prev_page");
-}
-
-async function followRelation(target, index = 0) {
-    await click(target.querySelectorAll(".o_model_field_selector_popover_item_relation")[index]);
-}
-
-function getFocusedFieldName(target) {
-    return target.querySelector(".o_model_field_selector_popover_item.active").innerText;
-}
-
-function addProperties() {
-    serverData.models.partner.fields.properties = {
-        string: "Properties",
-        type: "properties",
-        definition_record: "product_id",
-        definition_record_field: "definitions",
-        searchable: true,
-    };
-    serverData.models.product.fields.definitions = {
-        string: "Definitions",
-        type: "properties_definition",
-    };
-    serverData.models.product.records[0].definitions = [
-        { name: "xphone_prop_1", string: "P1", type: "boolean" },
-        { name: "xphone_prop_2", string: "P2", type: "char" },
-    ];
-    serverData.models.product.records[1].definitions = [
-        { name: "xpad_prop_1", string: "P1", type: "date" },
-    ];
 }
 
 QUnit.module("Components", (hooks) => {
@@ -124,8 +60,7 @@ QUnit.module("Components", (hooks) => {
         registry.category("services").add("orm", ormService);
         registry.category("services").add("localization", makeFakeLocalizationService());
         registry.category("services").add("ui", uiService);
-        registry.category("services").add("field", fieldService);
-        registry.category("services").add("hotkey", hotkeyService);
+        registry.category("services").add("view", viewService);
 
         target = getFixture();
     });
@@ -134,17 +69,17 @@ QUnit.module("Components", (hooks) => {
 
     QUnit.test("creating a field chain from scratch", async (assert) => {
         function getValueFromDOM(el) {
-            return [...el.querySelectorAll(".o_model_field_selector_chain_part")]
+            return [...el.querySelectorAll(".o_field_selector_chain_part")]
                 .map((part) => part.textContent.trim())
                 .join(" -> ");
         }
+
         class Parent extends Component {
             setup() {
-                this.path = "";
+                this.fieldName = "";
             }
-            onUpdate(path) {
-                assert.step(`update: ${path}`);
-                this.path = path;
+            onUpdate(value) {
+                this.fieldName = value;
                 this.render();
             }
         }
@@ -153,195 +88,305 @@ QUnit.module("Components", (hooks) => {
             <ModelFieldSelector
                 readonly="false"
                 resModel="'partner'"
-                path="path"
+                fieldName="fieldName"
                 isDebugMode="false"
-                update="(path) => this.onUpdate(path)"
+                update="(value) => this.onUpdate(value)"
             />
         `;
 
+        // Create the field selector and its mock environment
         const fieldSelector = await mountComponent(Parent);
 
-        await openModelFieldSelectorPopover(target);
+        // Focusing the field selector input should open a field selector popover
+        await click(target, ".o_field_selector");
         assert.strictEqual(
             target.querySelector("input.o_input[placeholder='Search...']"),
-            document.activeElement
+            document.activeElement,
+            "the field selector input should be focused"
         );
-        assert.containsOnce(target, ".o_model_field_selector_popover");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be visible"
+        );
 
         // The field selector popover should contain the list of "partner"
         // fields. "Bar" should be among them.
         assert.strictEqual(
-            target.querySelector(".o_model_field_selector_popover_item_name").textContent,
-            "Bar"
+            target.querySelector(".o_field_selector_popover .o_field_selector_item").textContent,
+            "Bar",
+            "field selector popover should contain the 'Bar' field"
         );
 
         // Clicking the "Bar" field should close the popover and set the field
         // chain to "bar" as it is a basic field
-        await click(target.querySelector(".o_model_field_selector_popover_item_name"));
-        assert.containsNone(target, ".o_model_field_selector_popover");
-        assert.strictEqual(getValueFromDOM(target), "Bar");
-        assert.strictEqual(fieldSelector.path, "bar");
-        assert.verifySteps(["update: bar"]);
+        await click(target.querySelector(".o_field_selector_popover .o_field_selector_item"));
+        assert.containsNone(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be closed now"
+        );
+        assert.strictEqual(
+            getValueFromDOM(target),
+            "Bar",
+            "field selector value should be displayed with a 'Bar' tag"
+        );
+        assert.strictEqual(
+            fieldSelector.fieldName,
+            "bar",
+            "the selected field should be correctly set"
+        );
 
-        await openModelFieldSelectorPopover(target);
-        assert.containsOnce(target, ".o_model_field_selector_popover");
+        // Focusing the input again should open the same popover
+        await click(target, ".o_field_selector");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be visible"
+        );
+
         // The field selector popover should contain the list of "partner"
         // fields. "Product" should be among them.
         assert.containsOnce(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_relation_icon",
+            ".o_field_selector_popover .o_field_selector_relation_icon",
             "field selector popover should contain the 'Product' field"
         );
 
         // Clicking on the "Product" field should update the popover to show
         // the product fields (so only "Product Name" should be there)
         await click(
-            target.querySelector(
-                ".o_model_field_selector_popover .o_model_field_selector_popover_relation_icon"
-            )
+            target.querySelector(".o_field_selector_popover .o_field_selector_relation_icon")
         );
-        assert.containsOnce(target, ".o_model_field_selector_popover_item_name");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover .o_field_selector_item",
+            "there should be only one field proposition for 'product' model"
+        );
         assert.strictEqual(
-            target.querySelector(".o_model_field_selector_popover_item_name").textContent,
+            target.querySelector(".o_field_selector_popover .o_field_selector_item").textContent,
             "Product Name",
             "the name of the only suggestion should be 'Product Name'"
         );
 
-        await click(target.querySelector(".o_model_field_selector_popover_item_name"));
-        assert.containsNone(target, ".o_model_field_selector_popover");
-        assert.strictEqual(getValueFromDOM(target), "Product -> Product Name");
-        assert.verifySteps(["update: product_id.name"]);
+        // Clicking on "Product Name" should close the popover and set the chain
+        // to "product_id.name"
+        await click(target.querySelector(".o_field_selector_popover .o_field_selector_item"));
+        assert.containsNone(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be closed now"
+        );
+        assert.strictEqual(
+            getValueFromDOM(target),
+            "Product -> Product Name",
+            "field selector value should be displayed with two tags: 'Product' and 'Product Name'"
+        );
 
         // Remove the current selection and recreate it again
-        await openModelFieldSelectorPopover(target);
-        await click(target, ".o_model_field_selector_popover_prev_page");
-        await click(target, ".o_model_field_selector_popover_close");
-        assert.verifySteps(["update: product_id"]);
+        await click(target, ".o_field_selector");
+        await click(target, ".o_field_selector_prev_page");
+        await click(target, ".o_field_selector_prev_page");
+        await click(target, ".o_field_selector_close");
 
-        await openModelFieldSelectorPopover(target);
+        await click(target, ".o_field_selector");
         assert.containsOnce(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_relation_icon"
+            ".o_field_selector_popover .o_field_selector_relation_icon",
+            "field selector popover should contain the 'Product' field"
         );
 
         await click(
-            target.querySelector(
-                ".o_model_field_selector_popover .o_model_field_selector_popover_relation_icon"
-            )
+            target.querySelector(".o_field_selector_popover .o_field_selector_relation_icon")
         );
-        await click(target.querySelector(".o_model_field_selector_popover_item_name"));
-        assert.containsNone(target, ".o_model_field_selector_popover");
-        assert.strictEqual(getValueFromDOM(target), "Product -> Product Name");
-        assert.verifySteps(["update: product_id.name"]);
+        await click(target.querySelector(".o_field_selector_popover .o_field_selector_item"));
+        assert.containsNone(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be closed now"
+        );
+        assert.strictEqual(
+            getValueFromDOM(target),
+            "Product -> Product Name",
+            "field selector value should be displayed with two tags: 'Product' and 'Product Name'"
+        );
     });
 
     QUnit.test("default field chain should set the page data correctly", async (assert) => {
+        assert.expect(3);
+
+        // Create the field selector and its mock environment
+        // passing 'product_id' as a prefilled field-chain
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
-                path: "product_id",
+                fieldName: "product_id",
                 resModel: "partner",
                 isDebugMode: false,
             },
         });
-        await openModelFieldSelectorPopover(target);
-        assert.containsOnce(target, ".o_model_field_selector_popover");
-        assert.deepEqual(getDisplayedFieldNames(target), ["Bar", "Foo", "Product"]);
-        assert.hasClass(
-            target.querySelectorAll(".o_model_field_selector_popover_item:nth-child(3)"),
-            "active"
+
+        // Focusing the field selector input should open a field selector popover
+        await click(target, ".o_field_selector");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover",
+            "field selector popover should be visible"
+        );
+
+        // The field selector popover should contain the list of "product"
+        // fields. "Product Name" should be among them.
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover .o_field_selector_item",
+            "there should be only one field proposition for 'product' model"
+        );
+        assert.strictEqual(
+            target.querySelector(".o_field_selector_popover .o_field_selector_item").textContent,
+            "Product Name",
+            "the name of the only suggestion should be 'Product Name'"
         );
     });
 
     QUnit.test("use the filter option", async (assert) => {
+        assert.expect(2);
+
+        // Create the field selector and its mock environment
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
-                path: "",
+                fieldName: "",
                 resModel: "partner",
-                filter: (field) => field.type === "many2one" && field.searchable,
+                filter: (field) => field.type === "many2one",
             },
         });
-        await openModelFieldSelectorPopover(target);
-        assert.deepEqual(getDisplayedFieldNames(target), ["Product"]);
+
+        await click(target, ".o_field_selector");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover .o_field_selector_item",
+            "there should only be one element"
+        );
+        assert.strictEqual(
+            target.querySelector(".o_field_selector_popover .o_field_selector_page").textContent,
+            "Product",
+            "the available field should be the many2one"
+        );
     });
 
     QUnit.test("default `showSearchInput` option", async (assert) => {
-        patchWithCleanup(browser, { setTimeout: (fn) => fn() });
+        assert.expect(6);
 
+        // Create the field selector and its mock environment
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
-                path: "",
+                fieldName: "",
                 resModel: "partner",
             },
         });
-        await openModelFieldSelectorPopover(target);
+
+        await click(target, ".o_field_selector");
         assert.containsOnce(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_search"
+            ".o_field_selector_popover .o_field_selector_search",
+            "there should be a search input"
         );
-        assert.deepEqual(getDisplayedFieldNames(target), ["Bar", "Foo", "Product"]);
 
-        // search 'xx'
-        await editInput(
+        // without search
+        assert.containsN(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_search input",
-            "xx"
+            ".o_field_selector_popover .o_field_selector_item",
+            3,
+            "there should be three available fields"
         );
-        assert.deepEqual(getDisplayedFieldNames(target), []);
+        assert.strictEqual(
+            target.querySelector(".o_field_selector_popover .o_field_selector_page").textContent,
+            "BarFooProduct",
+            "the available field should be correct"
+        );
 
-        // search 'Pro'
-        await editInput(
-            target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_search input",
-            "Pro"
+        const input = target.querySelector(
+            ".o_field_selector_popover .o_field_selector_search input"
         );
-        assert.deepEqual(getDisplayedFieldNames(target), ["Product"]);
+        input.value = "xx";
+        await triggerEvent(input, null, "input");
+        assert.containsNone(
+            target,
+            ".o_field_selector_popover .o_field_selector_item",
+            "there shouldn't be any element"
+        );
+
+        input.value = "Pro";
+        await triggerEvent(input, null, "input");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_popover .o_field_selector_item",
+            "there should only be one element"
+        );
+        assert.strictEqual(
+            target.querySelector(".o_field_selector_popover .o_field_selector_page").textContent,
+            "Product",
+            "the available field should be the Product"
+        );
     });
 
     QUnit.test("false `showSearchInput` option", async (assert) => {
+        assert.expect(1);
+
+        // Create the field selector and its mock environment
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
                 showSearchInput: false,
-                path: "",
+                fieldName: "",
                 resModel: "partner",
             },
         });
-        await openModelFieldSelectorPopover(target);
+
+        await click(target, ".o_field_selector");
         assert.containsNone(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_search"
+            ".o_field_selector_popover .o_field_selector_search",
+            "there should be no search input"
         );
     });
 
     QUnit.test("create a field chain with value 1 i.e. TRUE_LEAF", async (assert) => {
+        assert.expect(1);
+
+        //create the field selector with domain value ["1"]
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
                 showSearchInput: false,
-                path: 1,
+                fieldName: "1",
                 resModel: "partner",
             },
         });
+
         assert.strictEqual(
-            target.querySelector(".o_model_field_selector_chain_part").textContent.trim(),
-            "1"
+            target.querySelector(".o_field_selector_chain_part").textContent.trim(),
+            "1",
+            "field name value should be 1."
         );
     });
 
     QUnit.test("create a field chain with value 0 i.e. FALSE_LEAF", async (assert) => {
+        assert.expect(1);
+
+        //create the field selector with domain value ["0"]
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
                 showSearchInput: false,
-                path: 0,
+                fieldName: "0",
                 resModel: "partner",
             },
         });
+
         assert.strictEqual(
-            target.querySelector(".o_model_field_selector_chain_part").textContent.trim(),
+            target.querySelector(".o_field_selector_chain_part").textContent.trim(),
             "0",
             "field name value should be 0."
         );
@@ -356,17 +401,18 @@ QUnit.module("Components", (hooks) => {
         };
 
         await mountComponent(ModelFieldSelector, {
-            mockRPC(_, { method }) {
+            mockRPC(route, { method }) {
                 if (method === "fields_get") {
                     assert.step("fields_get");
                 }
             },
             props: {
                 readonly: false,
-                path: "partner_id.partner_id.partner_id.foo",
+                fieldName: "partner_id.partner_id.partner_id.foo",
                 resModel: "partner",
             },
         });
+
         assert.verifySteps(["fields_get"]);
     });
 
@@ -380,10 +426,10 @@ QUnit.module("Components", (hooks) => {
 
         class Parent extends Component {
             setup() {
-                this.path = "partner_id.foo";
+                this.fieldName = "partner_id.foo";
             }
-            onUpdate(path) {
-                this.path = path;
+            onUpdate(value) {
+                this.fieldName = value;
                 this.render();
             }
         }
@@ -392,83 +438,65 @@ QUnit.module("Components", (hooks) => {
             <ModelFieldSelector
                 readonly="false"
                 resModel="'partner'"
-                path="path"
-                update="(path) => this.onUpdate(path)"
+                fieldName="fieldName"
+                update="(value) => this.onUpdate(value)"
             />
         `;
 
         await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Partner", "Foo"]);
-        assert.containsNone(target, ".o_model_field_selector i.o_model_field_selector_warning");
 
-        await openModelFieldSelectorPopover(target);
-        await click(target, ".o_model_field_selector_popover_prev_page");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Partner"]);
-        assert.containsNone(target, ".o_model_field_selector i.o_model_field_selector_warning");
-
-        await click(
-            target,
-            ".o_model_field_selector_popover_item:nth-child(1) .o_model_field_selector_popover_item_name"
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            ["Partner", "Foo"]
         );
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Bar"]);
-        assert.containsNone(target, ".o_model_field_selector_popover");
-    });
+        assert.containsNone(target, ".o_field_selector i.o_field_selector_warning");
 
-    QUnit.test("select a relational field does not follow relation", async (assert) => {
-        await mountComponent(ModelFieldSelector, {
-            props: {
-                readonly: false,
-                path: "",
-                resModel: "partner",
-                update(path) {
-                    assert.step(path);
-                },
-            },
-        });
-        await openModelFieldSelectorPopover(target);
-        assert.containsOnce(
-            target,
-            ".o_model_field_selector_popover_item:last-child .o_model_field_selector_popover_relation_icon"
+        await click(target, ".o_field_selector");
+        await click(target, ".o_field_selector_prev_page");
+
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            ["Partner"]
+        );
+        assert.containsNone(target, ".o_field_selector i.o_field_selector_warning");
+
+        await click(target, ".o_field_selector_prev_page");
+
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            [""]
+        );
+        assert.containsOnce(target, ".o_field_selector i.o_field_selector_warning");
+
+        await click(target, ".o_field_selector_popover .o_field_selector_item:nth-child(1)");
+
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            ["Bar"]
         );
 
-        await click(
-            target,
-            ".o_model_field_selector_popover_item:last-child .o_model_field_selector_popover_item_name"
-        );
-        assert.verifySteps(["product_id"]);
-        assert.containsNone(target, ".o_popover");
-
-        await openModelFieldSelectorPopover(target);
-        assert.deepEqual(getDisplayedFieldNames(target), ["Bar", "Foo", "Product"]);
-        assert.containsOnce(target, ".o_model_field_selector_popover_relation_icon");
-
-        await click(target, ".o_model_field_selector_popover_relation_icon");
-        assert.deepEqual(getDisplayedFieldNames(target), ["Product Name"]);
-        assert.containsOnce(target, ".o_popover");
-
-        await click(target, ".o_model_field_selector_popover_item_name");
-        assert.verifySteps(["product_id.name"]);
-        assert.containsNone(target, ".o_popover");
+        assert.containsNone(target, ".o_field_selector_popover");
     });
 
     QUnit.test("can follow relations", async (assert) => {
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
-                path: "",
+                fieldName: "",
                 resModel: "partner",
                 followRelations: true, // default
-                update(path) {
-                    assert.strictEqual(path, "product_id");
+                update(value) {
+                    assert.strictEqual(value, "product_id");
                 },
             },
         });
-        await openModelFieldSelectorPopover(target);
-        assert.deepEqual(getDisplayedFieldNames(target), ["Bar", "Foo", "Product"]);
-        assert.containsOnce(target, ".o_model_field_selector_popover_relation_icon");
 
-        await click(target, ".o_model_field_selector_popover_relation_icon");
-        assert.deepEqual(getDisplayedFieldNames(target), ["Product Name"]);
+        await click(target, ".o_field_selector");
+        assert.containsOnce(
+            target,
+            ".o_field_selector_item:last-child .o_field_selector_relation_icon"
+        );
+        await click(target, ".o_field_selector_item:last-child .o_field_selector_relation_icon");
         assert.containsOnce(target, ".o_popover");
     });
 
@@ -476,24 +504,19 @@ QUnit.module("Components", (hooks) => {
         await mountComponent(ModelFieldSelector, {
             props: {
                 readonly: false,
-                path: "",
+                fieldName: "",
                 resModel: "partner",
                 followRelations: false,
-                update(path) {
-                    assert.strictEqual(path, "product_id");
+                update(value) {
+                    assert.strictEqual(value, "product_id");
                 },
             },
         });
-        await openModelFieldSelectorPopover(target);
-        assert.deepEqual(getDisplayedFieldNames(target), ["Bar", "Foo", "Product"]);
-        assert.containsNone(target, ".o_model_field_selector_popover_relation_icon");
 
-        await click(
-            target,
-            ".o_model_field_selector_popover_item:nth-child(3) .o_model_field_selector_popover_item_name"
-        );
+        await click(target, ".o_field_selector");
+        assert.containsNone(target, ".o_field_selector_relation_icon");
+        await click(target, ".o_field_selector_item:last-child");
         assert.containsNone(target, ".o_popover");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Product"]);
     });
 
     QUnit.test("Edit path in popover debug input", async (assert) => {
@@ -506,10 +529,10 @@ QUnit.module("Components", (hooks) => {
 
         class Parent extends Component {
             setup() {
-                this.path = "foo";
+                this.fieldName = "foo";
             }
-            onUpdate(path) {
-                this.path = path;
+            onUpdate(value) {
+                this.fieldName = value;
                 this.render();
             }
         }
@@ -518,487 +541,30 @@ QUnit.module("Components", (hooks) => {
                     <ModelFieldSelector
                         readonly="false"
                         resModel="'partner'"
-                        path="path"
+                        fieldName="fieldName"
                         isDebugMode="true"
-                        update="(pathInfo) => this.onUpdate(pathInfo)"
+                        update="(value) => this.onUpdate(value)"
                     />
                 `;
 
         await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo"]);
 
-        await openModelFieldSelectorPopover(target);
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            ["Foo"]
+        );
+
+        await click(target, ".o_field_selector");
+
         await editInput(
             target,
-            ".o_model_field_selector_popover .o_model_field_selector_debug",
+            ".o_field_selector_popover .o_field_selector_debug",
             "partner_id.bar"
         );
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Partner", "Bar"]);
-    });
 
-    QUnit.test("title on first four pages", async (assert) => {
-        serverData.models.turtle = {
-            fields: {
-                mother_id: {
-                    string: "Mother",
-                    type: "many2one",
-                    relation: "turtle",
-                    searchable: true,
-                },
-            },
-        };
-
-        await mountComponent(ModelFieldSelector, {
-            props: {
-                readonly: false,
-                path: "mother_id",
-                resModel: "turtle",
-            },
-        });
-        await openModelFieldSelectorPopover(target);
-        assert.strictEqual(getTitle(target), "");
-
-        await followRelation(target);
-        assert.strictEqual(getTitle(target), "Mother");
-
-        await followRelation(target);
-        assert.strictEqual(getTitle(target), "... > Mother");
-
-        await followRelation(target);
-        assert.strictEqual(getTitle(target), "... > Mother");
-    });
-
-    QUnit.test("start on complex path and click prev", async (assert) => {
-        serverData.models.turtle = {
-            fields: {
-                mother_id: {
-                    string: "Mother",
-                    type: "many2one",
-                    relation: "turtle",
-                    searchable: true,
-                },
-                father_id: {
-                    string: "Father",
-                    type: "many2one",
-                    relation: "turtle",
-                    searchable: true,
-                },
-            },
-        };
-
-        await mountComponent(ModelFieldSelector, {
-            props: {
-                readonly: false,
-                path: "mother_id.father_id.mother_id",
-                resModel: "turtle",
-            },
-        });
-
-        await openModelFieldSelectorPopover(target);
-        // viewing third page
-        // mother is selected on that page
-        assert.strictEqual(getTitle(target), "... > Father");
-        assert.strictEqual(getFocusedFieldName(target), "Mother");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Mother", "Father", "Mother"]);
-
-        // select Father on third page and go to next page
-        // no selection on fourth page --> first item is focused
-        await followRelation(target);
-        assert.strictEqual(getTitle(target), "... > Father");
-        assert.strictEqual(getFocusedFieldName(target), "Father");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Mother", "Father", "Father"]);
-
-        // go back to third page. Nothing has changed
-        await clickPrev(target);
-        assert.strictEqual(getTitle(target), "... > Father");
-        assert.strictEqual(getFocusedFieldName(target), "Father");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Mother", "Father", "Father"]);
-
-        // go back to second page. Nothing has changed.
-        await clickPrev(target);
-        assert.strictEqual(getTitle(target), "Mother");
-        assert.strictEqual(getFocusedFieldName(target), "Father");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Mother", "Father"]);
-
-        // go back to first page. Nothing has changed.
-        await clickPrev(target);
-        assert.strictEqual(getTitle(target), "");
-        assert.strictEqual(getFocusedFieldName(target), "Mother");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Mother"]);
-        assert.containsNone(target, ".o_model_field_selector_popover_prev_page");
-    });
-
-    QUnit.test("support of invalid paths (allowEmpty=false)", async (assert) => {
-        class Parent extends Component {
-            setup() {
-                this.state = useState({ path: `` });
-            }
-        }
-        Parent.components = { ModelFieldSelector };
-        Parent.template = xml`<ModelFieldSelector resModel="'partner'" readonly="false" path="state.path" />`;
-
-        const parent = await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = undefined;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = false;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = {};
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `a`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["a"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `foo.a`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo", "a"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `a.foo`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["a", "foo"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-    });
-
-    QUnit.test("support of invalid paths (allowEmpty=true)", async (assert) => {
-        class Parent extends Component {
-            setup() {
-                this.state = useState({ path: `` });
-            }
-        }
-        Parent.components = { ModelFieldSelector };
-        Parent.template = xml`<ModelFieldSelector resModel="'partner'" readonly="false" path="state.path" allowEmpty="true" />`;
-
-        const parent = await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), []);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-
-        parent.state.path = undefined;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), []);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-
-        parent.state.path = false;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), []);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-
-        parent.state.path = {};
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `a`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["a"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `foo.a`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo", "a"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        parent.state.path = `a.foo`;
-        await nextTick();
-        assert.deepEqual(getModelFieldSelectorValues(target), ["a", "foo"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-    });
-
-    QUnit.test("debug input", async (assert) => {
-        assert.expect(10);
-        let num = 1;
-        class Parent extends Component {
-            setup() {
-                this.state = useState({ path: `` });
-            }
-            update(path, fieldInfo) {
-                if (num === 1) {
-                    assert.strictEqual(path, "a");
-                    assert.deepEqual(fieldInfo, {
-                        fieldDef: null,
-                        resModel: "partner",
-                    });
-                    num++;
-                } else {
-                    assert.strictEqual(path, "foo");
-                    assert.deepEqual(fieldInfo, {
-                        fieldDef: {
-                            name: "foo",
-                            searchable: true,
-                            string: "Foo",
-                            type: "char",
-                        },
-                        resModel: "partner",
-                    });
-                }
-            }
-        }
-        Parent.components = { ModelFieldSelector };
-        Parent.template = xml`<ModelFieldSelector resModel="'partner'" readonly="false" isDebugMode="true" path="state.path" update.bind="update"/>`;
-
-        await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["-"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        await openModelFieldSelectorPopover(target);
-        await editInput(target, ".o_model_field_selector_debug", "a");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["a"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-
-        await click(target, ".o_model_field_selector_popover_close");
-
-        await openModelFieldSelectorPopover(target);
-        const debugInput = target.querySelector(".o_model_field_selector_debug");
-        debugInput.focus();
-        debugInput.value = "foo";
-        await triggerEvent(debugInput, null, "keydown", { key: "Enter" });
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo"]);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-
-        await click(target, ".o_model_field_selector_popover_close");
-    });
-
-    QUnit.test("focus on search input", async (assert) => {
-        class Parent extends Component {
-            setup() {
-                this.state = useState({ path: `foo` });
-            }
-            update() { }
-        }
-        Parent.components = { ModelFieldSelector };
-        Parent.template = xml`<ModelFieldSelector resModel="'partner'" readonly="false" path="state.path" update.bind="update"/>`;
-
-        await mountComponent(Parent);
-        await openModelFieldSelectorPopover(target);
-        assert.strictEqual(
-            document.activeElement,
-            target.querySelector(".o_model_field_selector_popover_search .o_input")
+        assert.deepEqual(
+            [...target.querySelectorAll(".o_field_selector_value span")].map((el) => el.innerText),
+            ["Partner", "Bar"]
         );
-
-        await followRelation(target);
-        assert.strictEqual(
-            document.activeElement,
-            target.querySelector(".o_model_field_selector_popover_search .o_input")
-        );
-    });
-
-    QUnit.test("support properties", async (assert) => {
-        addProperties();
-
-        class Parent extends Component {
-            static components = { ModelFieldSelector };
-            static template = xml`
-                <ModelFieldSelector
-                    readonly="false"
-                    resModel="'partner'"
-                    path="path"
-                    isDebugMode="true"
-                    update="(path, fieldInfo) => this.onUpdate(path)"
-                />
-            `;
-            setup() {
-                this.path = "foo";
-            }
-            onUpdate(path) {
-                this.path = path;
-                assert.step(path);
-                this.render();
-            }
-        }
-
-        await mountComponent(Parent);
-        await openModelFieldSelectorPopover(target);
-        assert.strictEqual(getTitle(target), "");
-        assert.containsOnce(target, ".o_model_field_selector_popover_item[data-name='properties']");
-        assert.containsOnce(
-            target,
-            ".o_model_field_selector_popover_item[data-name='properties'] .o_model_field_selector_popover_relation_icon"
-        );
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo"]);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-
-        await click(
-            target,
-            ".o_model_field_selector_popover_item[data-name='properties'] .o_model_field_selector_popover_relation_icon",
-            "click on the relation icon should open the properties page"
-        );
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Properties"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-        assert.verifySteps([]);
-
-        await clickPrev(target);
-        assert.strictEqual(getTitle(target), "");
-        await click(
-            target,
-            ".o_model_field_selector_popover_item[data-name='properties'] .o_model_field_selector_popover_item_name",
-            "click on the name should open the properties page"
-        );
-        assert.strictEqual(getTitle(target), "Properties");
-        assert.strictEqual(
-            target.querySelector(".o_model_field_selector_value").textContent,
-            "Properties"
-        );
-        assert.containsN(target, ".o_model_field_selector_popover_item", 3);
-        assert.containsOnce(
-            target,
-            ".o_model_field_selector_popover_item[data-name='xphone_prop_1']"
-        );
-        assert.containsOnce(
-            target,
-            ".o_model_field_selector_popover_item[data-name='xphone_prop_2']"
-        );
-        assert.containsOnce(
-            target,
-            ".o_model_field_selector_popover_item[data-name='xpad_prop_1']"
-        );
-        assert.deepEqual(getDisplayedFieldNames(target), [
-            "P1 (xphone)xphone_prop_1 (boolean)",
-            "P1 (xpad)xpad_prop_1 (date)",
-            "P2 (xphone)xphone_prop_2 (char)",
-        ]);
-
-        await click(
-            target,
-            ".o_model_field_selector_popover_item[data-name='xphone_prop_2'] .o_model_field_selector_popover_item_name"
-        );
-        assert.verifySteps(["properties.xphone_prop_2"]);
-        assert.strictEqual(
-            target.querySelector(".o_model_field_selector_value").textContent,
-            "PropertiesP2"
-        );
-        assert.containsNone(target, ".o_model_field_selector_warning");
-    });
-
-    QUnit.test("search on field string and name in debug mode", async (assert) => {
-        patchWithCleanup(browser, { setTimeout: (fn) => fn() }); // for debouncedSearchFields
-        serverData.models.partner.fields.ucit = {
-            type: "char",
-            string: "Some string",
-            searchable: true,
-        };
-        class Parent extends Component {
-            static components = { ModelFieldSelector };
-            static template = xml`
-                <ModelFieldSelector
-                    readonly="false"
-                    resModel="'partner'"
-                    path="'foo'"
-                    isDebugMode="true"
-                />
-            `;
-        }
-        await mountComponent(Parent);
-        await openModelFieldSelectorPopover(target);
-        await editInput(
-            target,
-            ".o_model_field_selector_popover .o_model_field_selector_popover_search input",
-            "uct"
-        );
-        assert.deepEqual(getDisplayedFieldNames(target), [
-            "Productproduct_id (many2one)",
-            "Some stringucit (char)",
-        ]);
-    });
-
-    QUnit.test("clear button (allowEmpty=true)", async (assert) => {
-        class Parent extends Component {
-            static components = { ModelFieldSelector };
-            static template = xml`
-                <ModelFieldSelector
-                    readonly="false"
-                    resModel="'partner'"
-                    path="path"
-                    allowEmpty="true"
-                    isDebugMode="true"
-                    update="(path, fieldInfo) => this.onUpdate(path)"
-                />
-            `;
-            setup() {
-                this.path = "baaarrr";
-            }
-            onUpdate(path) {
-                this.path = path;
-                assert.step(`path is ${JSON.stringify(path)}`);
-                this.render();
-            }
-        }
-
-        await mountComponent(Parent);
-
-        assert.deepEqual(getModelFieldSelectorValues(target), ["baaarrr"]);
-        assert.containsOnce(target, ".o_model_field_selector_warning");
-        assert.containsOnce(target, ".o_model_field_selector .fa.fa-times");
-
-        // clear when popover is not open
-        await click(target, ".o_model_field_selector .fa.fa-times");
-        assert.deepEqual(getModelFieldSelectorValues(target), []);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-        assert.containsNone(target, ".o_model_field_selector .fa.fa-times");
-        assert.verifySteps([`path is ""`]);
-
-        await openModelFieldSelectorPopover(target);
-        await click(target.querySelector(".o_model_field_selector_popover_item_name"));
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Bar"]);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-        assert.containsOnce(target, ".o_model_field_selector .fa.fa-times");
-        assert.verifySteps([`path is "bar"`]);
-
-        // clear when popover is open
-        await openModelFieldSelectorPopover(target);
-        await click(target, ".o_model_field_selector .fa.fa-times");
-        assert.deepEqual(getModelFieldSelectorValues(target), []);
-        assert.containsNone(target, ".o_model_field_selector_warning");
-        assert.containsNone(target, ".o_model_field_selector .fa.fa-times");
-        assert.verifySteps([`path is ""`]);
-    });
-
-    QUnit.test("Modify path in popover debug input and click away", async (assert) => {
-        class Parent extends Component {
-            setup() {
-                this.path = "foo";
-            }
-            onUpdate(path) {
-                this.path = path;
-                assert.step(path);
-                this.render();
-            }
-        }
-        Parent.components = { ModelFieldSelector };
-        Parent.template = xml`
-                    <ModelFieldSelector
-                        readonly="false"
-                        resModel="'partner'"
-                        path="path"
-                        isDebugMode="true"
-                        update="(pathInfo) => this.onUpdate(pathInfo)"
-                    />
-                `;
-
-        await mountComponent(Parent);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo"]);
-
-        await openModelFieldSelectorPopover(target);
-        const input = target.querySelector(
-            ".o_model_field_selector_popover .o_model_field_selector_debug"
-        );
-        input.value = "foooooo";
-        await triggerEvent(input, null, "input");
-        assert.deepEqual(getModelFieldSelectorValues(target), ["Foo"]);
-
-        await click(target);
-        assert.deepEqual(getModelFieldSelectorValues(target), ["foooooo"]);
-        assert.verifySteps(["foooooo"]);
     });
 });

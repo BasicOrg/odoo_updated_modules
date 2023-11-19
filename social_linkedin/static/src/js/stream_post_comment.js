@@ -28,14 +28,14 @@ export class StreamPostCommentLinkedin extends StreamPostComment {
 
     get link() {
         let activityUrn = this.comment.id.split('(')[1].split(',')[0];
-        return sprintf('https://www.linkedin.com/feed/update/%s?commentUrn=%s', encodeURIComponent(activityUrn), encodeURIComponent(this.comment.id));
+        return sprintf('https://www.linkedin.com/feed/update/%s?commentUrn=%s', activityUrn, this.comment.id);
     }
 
     get authorLink() {
         if (this.comment.from.isOrganization) {
-            return `https://www.linkedin.com/company/${encodeURIComponent(this.comment.from.vanityName)}`;
+            return `https://www.linkedin.com/company/${this.comment.from.vanityName}`;
         }
-        return `https://www.linkedin.com/in/${encodeURIComponent(this.comment.from.vanityName)}`;
+        return `https://www.linkedin.com/in/${this.comment.from.vanityName}`;
     }
 
     get isAuthor() {
@@ -58,13 +58,4 @@ export class StreamPostCommentLinkedin extends StreamPostComment {
         return false;
     }
 
-    /**
-     * Linkedin stores the created time in milliseconds (number)
-     *
-     * @returns {DateTime}
-     */
-    get commentCreatedTime() {
-        const createdTime = super.commentCreatedTime;
-        return !createdTime.invalid ? createdTime : luxon.DateTime.fromMillis(this.comment.created_time);
-    }
 }

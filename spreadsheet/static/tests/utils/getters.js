@@ -1,17 +1,19 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
-import { range } from "@web/core/utils/numbers";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
-const { toCartesian, toZone } = spreadsheet.helpers;
+const { toCartesian } = spreadsheet.helpers;
 
 /**
  * Get the value of the given cell
  */
 export function getCellValue(model, xc, sheetId = model.getters.getActiveSheetId()) {
     const { col, row } = toCartesian(xc);
-    const cell = model.getters.getEvaluatedCell({ sheetId, col, row });
-    return cell.value;
+    const cell = model.getters.getCell(sheetId, col, row);
+    if (!cell) {
+        return undefined;
+    }
+    return cell.evaluated.value;
 }
 
 /**
@@ -19,38 +21,7 @@ export function getCellValue(model, xc, sheetId = model.getters.getActiveSheetId
  */
 export function getCell(model, xc, sheetId = model.getters.getActiveSheetId()) {
     const { col, row } = toCartesian(xc);
-    return model.getters.getCell({ sheetId, col, row });
-}
-
-export function getEvaluatedCell(model, xc, sheetId = model.getters.getActiveSheetId()) {
-    const { col, row } = toCartesian(xc);
-    return model.getters.getEvaluatedCell({ sheetId, col, row });
-}
-
-export function getEvaluatedGrid(model, zoneXc, sheetId = model.getters.getActiveSheetId()) {
-    const { top, bottom, left, right } = toZone(zoneXc);
-    const grid = [];
-    for (const row of range(top, bottom + 1)) {
-        grid.push([]);
-        for (const col of range(left, right + 1)) {
-            const cell = model.getters.getEvaluatedCell({ sheetId, col, row });
-            grid[row][col] = cell.value;
-        }
-    }
-    return grid;
-}
-
-export function getEvaluatedFormatGrid(model, zoneXc, sheetId = model.getters.getActiveSheetId()) {
-    const { top, bottom, left, right } = toZone(zoneXc);
-    const grid = [];
-    for (const row of range(top, bottom + 1)) {
-        grid.push([]);
-        for (const col of range(left, right + 1)) {
-            const cell = model.getters.getEvaluatedCell({ sheetId, col, row });
-            grid[row][col] = cell.format;
-        }
-    }
-    return grid;
+    return model.getters.getCell(sheetId, col, row);
 }
 
 /**
@@ -65,15 +36,15 @@ export function getCells(model, sheetId = model.getters.getActiveSheetId()) {
  */
 export function getCellFormula(model, xc, sheetId = model.getters.getActiveSheetId()) {
     const cell = getCell(model, xc, sheetId);
-    return cell && cell.isFormula ? model.getters.getFormulaCellContent(sheetId, cell) : "";
+    return cell && cell.isFormula() ? model.getters.getFormulaCellContent(sheetId, cell) : "";
 }
 
 /**
  * Get the content of the given xc
  */
 export function getCellContent(model, xc, sheetId = model.getters.getActiveSheetId()) {
-    const { col, row } = toCartesian(xc);
-    return model.getters.getCellText({ sheetId, col, row }, true);
+    const cell = getCell(model, xc, sheetId);
+    return cell ? model.getters.getCellText(cell, sheetId, true) : "";
 }
 
 /**
@@ -81,17 +52,4 @@ export function getCellContent(model, xc, sheetId = model.getters.getActiveSheet
  */
 export function getMerges(model, sheetId = model.getters.getActiveSheetId()) {
     return model.exportData().sheets.find((sheet) => sheet.id === sheetId).merges;
-}
-
-/**
- * Get the borders at the given XC
- */
-export function getBorders(model, xc, sheetId = model.getters.getActiveSheetId()) {
-    const { col, row } = toCartesian(xc);
-    const borders = model.getters.getCellBorder({ sheetId, col, row });
-    if (!borders) {
-        return null;
-    }
-    Object.keys(borders).forEach((key) => borders[key] === undefined && delete borders[key]);
-    return borders;
 }

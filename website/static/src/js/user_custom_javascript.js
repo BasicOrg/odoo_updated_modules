@@ -1,4 +1,3 @@
-/* @odoo-module */
 //
 // This file is meant to regroup your javascript code. You can either copy/past
 // any code that should be executed on each page loading or write your own
@@ -7,18 +6,19 @@
 // world !' message in a popup:
 //
 /*
-import { ConfirmationDialog } from '@web/core/confirmation_dialog/confirmation_dialog';
-import publicWidget from '@web/legacy/js/public/public_widget';
+odoo.define('website.user_custom_code', function (require) {
+'use strict';
+
+var Dialog = require('web.Dialog');
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.HelloWorldPopup = publicWidget.Widget.extend({
     selector: '#wrapwrap',
 
-    init() {
-        this.dialog = this.bindService("dialog");
-    },
-    start() {
-        this.dialog.add(ConfirmationDialog, { body: 'Hello World' });
+    start: function () {
+        Dialog.alert(this, "Hello, world!");
         return this._super.apply(this, arguments);
     },
+})
 });
 */

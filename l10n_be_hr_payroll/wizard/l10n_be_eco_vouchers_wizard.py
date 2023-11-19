@@ -21,33 +21,18 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
             raise UserError(_('You must be logged in a Belgian company to use this feature'))
         return super().default_get(field_list)
 
-    # From the start of June onwards, the eco-vouchers up until May have already been paid.
-
-    reference_year = fields.Selection(
-        selection='_get_years', string='Reference Year', required=True,
-        default=lambda x: str(fields.Date.today().year + 1 if fields.Date.today().month > 5 else fields.Date.today().year))
-    reference_period = fields.Html(compute='_compute_reference_period')
-    date_start = fields.Date(compute='_compute_reference_period')
-    date_end = fields.Date(compute='_compute_reference_period')
-
+    reference_year = fields.Integer(default=lambda self: fields.Date.today().year)
+    reference_period = fields.Char(compute='_compute_reference_period')
     line_ids = fields.One2many(
         'l10n.be.eco.vouchers.line.wizard', 'wizard_id',
         compute='_compute_line_ids', store=True, readonly=False)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(related='company_id.currency_id')
 
-    def _get_years(self):
-        today = fields.Date.today()
-        current_reference_year = today.year + 1 if today.month > 5 else today.year
-        return [(str(i), i) for i in range(current_reference_year, current_reference_year - 5, -1)]
-
     @api.depends('reference_year')
     def _compute_reference_period(self):
         for wizard in self:
-            reference_year = int(wizard.reference_year)
-            wizard.date_start = date(reference_year - 1, 6, 1)
-            wizard.date_end = date(reference_year, 5, 31)
-            wizard.reference_period = _('The reference period is from the <b>1st of June %s</b> to the <b>31st of May %s</b>', reference_year - 1, reference_year)
+            wizard.reference_period = _('The reference period is from the 1st of June %s to the 31th of May %s', wizard.reference_year -1, wizard.reference_year)
 
     @api.depends('reference_year')
     def _compute_line_ids(self):
@@ -77,8 +62,11 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
             'l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary'
         ).unpaid_work_entry_type_ids.filtered(lambda wet: wet.code not in ['LEAVE210', 'LEAVE230', 'LEAVE250'])
 
+
         for wizard in self:
-            all_contracts = self.env['hr.employee']._get_all_contracts(wizard.date_start, wizard.date_end, ['open', 'close'])
+            date_from = date(wizard.reference_year - 1, 6, 1)
+            date_to = date(wizard.reference_year, 5, 31)
+            all_contracts = self.env['hr.employee']._get_all_contracts(date_from, date_to, ['open', 'close'])
             # Coming from out batch, restrict to out employees
             batch_specific = 'employee_ids' in self.env.context
             if batch_specific:
@@ -87,8 +75,8 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
             all_payslips = self.env['hr.payslip'].search([
                 ('employee_id', 'in', all_employees.ids),
                 ('company_id', '=', wizard.company_id.id),
-                ('date_from', '>=', wizard.date_start + relativedelta(months=1)),
-                ('date_to', '<=', wizard.date_end),
+                ('date_from', '>=', date_from + relativedelta(months=1)),
+                ('date_to', '<=', date_to),
                 ('state', 'in', ['done', 'paid', 'verify'] if batch_specific else ['done', 'paid'])
             ])
             # Remove out employees who already got their eco-vouchers during the year
@@ -101,7 +89,7 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
                 all_payslips = all_payslips.filtered(lambda p: p.employee_id not in already_paid_employees)
 
             employee_contracts = defaultdict(lambda: self.env['hr.contract'])
-            for contract in all_contracts.filtered(lambda c: c.active and c.company_id == wizard.company_id and c.eco_checks):
+            for contract in all_contracts.filtered(lambda c: c.active and c.company_id == wizard.company_id):
                 employee_contracts[contract.employee_id] |= contract
 
             result = [(5, 0, 0)]
@@ -113,10 +101,10 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
                 total_amount = 0
                 for contracts, occupation_from, occupation_to in occupations:
                     contract = contracts[0]
-                    occupation_from = max(wizard.date_start, occupation_from)
+                    occupation_from = max(date_from, occupation_from)
                     if occupation_from.day < 7:
                         occupation_from = occupation_from + relativedelta(day=1)
-                    occupation_to = min(wizard.date_end, occupation_to if occupation_to else wizard.date_end)
+                    occupation_to = min(date_to, occupation_to if occupation_to else date_to)
                     # So that 1/1/2020 to 28/02/2020 -> 2 months
                     occupation_to = occupation_to + relativedelta(days=1)
                     # Retrieve non assimilated absences
@@ -160,33 +148,15 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
     def generate_payslips(self):
         self.ensure_one()
         eco_voucher_type = self.env.ref('l10n_be_hr_payroll.cp200_employee_eco_vouchers')
+        monthly_pay = self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary')
         payslips = self.env['hr.payslip']
-        batch = self.env['hr.payslip.run'].browse(self.env.context.get('batch_id', False))
-        payslip_structure_type = self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_departure_n_holidays') if batch else \
-                                 self.env.ref('l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary')
-
-        # If the eco-vouchers are calculated for a batch we only consider the payslips in that batch.
-        # Otherwise we consider all open payslips.
-        if not batch:
-            open_payslips = self.env['hr.payslip'].search([
-                ('employee_id', 'in', self.line_ids.employee_id.ids),
-                ('struct_id', '=', payslip_structure_type.id),
-                ('state', '=', 'verify'),
-            ])
-        else:
-            open_payslips = batch.slip_ids.filtered_domain([
-                ('employee_id', 'in', self.line_ids.employee_id.ids),
-                ('struct_id', '=', payslip_structure_type.id),
-                ('state', 'in', ['draft', 'verify']),
-            ])
-
         for line in self.line_ids:
-            payslip = open_payslips.filtered_domain([
-                ('employee_id', '=', line.employee_id.id)
-            ])
-
+            payslip = self.env['hr.payslip'].search([
+                ('employee_id', '=', line.employee_id.id),
+                ('state', '=', 'verify'),
+                ('struct_id', '=', monthly_pay.id),
+            ], limit=1)
             if payslip:
-                payslip = payslip[0]
                 payslips |= payslip
                 voucher_line = payslip.input_line_ids.filtered(lambda line: line.code == "ECOVOUCHERS")
                 if voucher_line:
@@ -201,26 +171,18 @@ class L10nBeEcoVouchersWizard(models.TransientModel):
                     'name': _('Eco-Vouchers'),
                     'employee_id': line.employee_id.id,
                     'contract_id': line.employee_id.contract_id.id,
-                    'struct_id': payslip_structure_type.id,
+                    'struct_id': monthly_pay.id,
                     'worked_days_line_ids': [(5, 0, 0)],
                     'input_line_ids': [(0, 0, {
                         'input_type_id': eco_voucher_type.id,
                         'amount': line.amount,
                     })],
-                    'payslip_run_id': batch.id,
+                    'payslip_run_id': self.env.context.get('batch_id', False),
                 })
-                if not payslip.contract_id:
-                    history = self.env['hr.contract.history'].search([('employee_id', '=', payslip.employee_id.id)], limit=1)
-                    contracts = history.contract_ids.filtered(lambda c: c.active and c.state in ['open', 'close'])[0]
-                    payslip.contract_id = contracts[0] if contracts else False
                 payslips |= payslip
                 payslip.with_context(no_paid_amount=True).compute_sheet()
         action = self.env["ir.actions.actions"]._for_xml_id("hr_payroll.action_view_hr_payslip_month_form")
-        action.update({'context': {
-            "search_default_payslip_run_id": batch.id,
-            "search_default_group_by_batch": 1,
-            "search_default_eco_vouchers": 1,
-        }})
+        action.update({'domain': [('id', 'in', payslips.ids)]})
         return action
 
 class L10nBeEcoVouchersLineWizard(models.TransientModel):

@@ -11,7 +11,7 @@
                         <strong><field name="location_id" readonly="True"/></strong>.
                     </span>
                 </div>
-                <div invisible="not quant_ids">
+                <div attrs="{'invisible': [('quant_ids', '=', [])]}">
                     <br/>
                     <strong>Current Inventory: </strong>
                     <field name="quant_ids" style="margin-top:10px;">
@@ -25,7 +25,7 @@
                 <div name="description">
                 </div>
                 <footer>
-                    <button name="cancel_button" string="Discard" class="btn-primary" special="cancel" data-hotkey="x"/>
+                    <button name="cancel_button" string="Discard" class="btn-primary" special="cancel" data-hotkey="z"/>
                     <button string="Confirm" name="action_done" type="object" class="btn-secondary" data-hotkey="q"/>
                 </footer>
             </form>

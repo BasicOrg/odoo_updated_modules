@@ -1,19 +1,20 @@
 /* @odoo-module */
 
+import { Dropdown } from "@web/core/dropdown/dropdown";
+import { DropdownItem } from "@web/core/dropdown/dropdown_item";
+import { download } from "@web/core/network/download";
 import { useService } from "@web/core/utils/hooks";
 import { Layout } from "@web/search/layout";
-import { useModelWithSampleData } from "@web/model/model";
+import { useModel } from "@web/views/model";
 import { standardViewProps } from "@web/views/standard_view_props";
 import { useSetupView } from "@web/views/view_hook";
-import { SearchBar } from "@web/search/search_bar/search_bar";
-import { CogMenu } from "@web/search/cog_menu/cog_menu";
 
-import { Component, toRaw, useRef } from "@odoo/owl";
+const { Component, useRef } = owl;
 
 export class CohortController extends Component {
     setup() {
         this.actionService = useService("action");
-        this.model = useModelWithSampleData(this.props.Model, toRaw(this.props.modelParams));
+        this.model = useModel(this.props.Model, owl.toRaw(this.props.modelParams));
 
         useSetupView({
             rootRef: useRef("root"),
@@ -33,7 +34,7 @@ export class CohortController extends Component {
      * @param {Object} row
      */
     onRowClicked(row) {
-        if (row.value === undefined || this.model.metaData.disableLinking) {
+        if (row.value === undefined) {
             return;
         }
 
@@ -58,10 +59,65 @@ export class CohortController extends Component {
             domain: domain,
         });
     }
+
+    /**
+     * Export cohort data in Excel file
+     */
+    async downloadExcel() {
+        const {
+            title,
+            resModel,
+            interval,
+            measure,
+            measures,
+            dateStartString,
+            dateStopString,
+            timeline,
+        } = this.model.metaData;
+        const { domains } = this.model.searchParams;
+        const data = {
+            title: title,
+            model: resModel,
+            interval_string: this.model.intervals[interval].toString(), // intervals are lazy-translated
+            measure_string: measures[measure].string,
+            date_start_string: dateStartString,
+            date_stop_string: dateStopString,
+            timeline: timeline,
+            rangeDescription: domains[0].description,
+            report: this.model.data[0],
+            comparisonRangeDescription: domains[1] && domains[1].description,
+            comparisonReport: this.model.data[1],
+        };
+        this.env.services.ui.block();
+        try {
+            // FIXME: [SAD/JPP] some data seems to be missing from the export in master. (check the python)
+            await download({
+                url: "/web/cohort/export",
+                data: { data: JSON.stringify(data) },
+            });
+        } finally {
+            this.env.services.ui.unblock();
+        }
+    }
+
+    /**
+     * @param {Object} payload
+     */
+    onDropDownSelected(payload) {
+        this.model.updateMetaData(payload);
+    }
+
+    /**
+     * @param {Object} param0
+     * @param {string} param0.measure
+     */
+    onMeasureSelected({ measure }) {
+        this.model.updateMetaData({ measure });
+    }
 }
 
 CohortController.template = "web_cohort.CohortView";
-CohortController.components = { Layout, SearchBar, CogMenu };
+CohortController.components = { Dropdown, DropdownItem, Layout };
 CohortController.props = {
     ...standardViewProps,
     Model: Function,

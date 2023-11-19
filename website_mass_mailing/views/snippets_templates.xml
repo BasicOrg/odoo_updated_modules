@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<template id="iframe_css_assets_edit" name="CSS assets for wysiwyg iframe content for popup" groups="base.group_user">
+    <t t-call-assets="web.assets_frontend" t-js="false"/>
+    <t t-call-assets="web_editor.assets_wysiwyg" t-js="false"/>
+    <t t-call-assets="website.assets_editor" t-js="false"/>
+</template>
+
 <template id="remove_external_snippets" inherit_id="website.external_snippets">
     <xpath expr="//t[@id='newsletter_snippet']" position="replace"/>
     <xpath expr="//t[@id='newsletter_popup_snippet']" position="replace"/>
@@ -7,20 +13,16 @@
 
 <template id="snippets" inherit_id="website.snippets">
     <xpath expr="//t[@id='mass_mailing_newsletter_block_hook']" position="replace">
-        <t t-snippet="website_mass_mailing.s_newsletter_block" string="Newsletter Block" t-thumbnail="/website_mass_mailing/static/src/img/snippets_thumbs/s_newsletter_block.svg" t-forbid-sanitize="form"/>
+        <t t-snippet="website_mass_mailing.s_newsletter_block" t-thumbnail="/website_mass_mailing/static/src/img/snippets_thumbs/s_newsletter_block.svg" t-forbid-sanitize="form"/>
     </xpath>
     <xpath expr="//t[@id='mass_mailing_newsletter_popup_hook']" position="replace">
-        <t t-snippet="website_mass_mailing.s_newsletter_subscribe_popup" string="Newsletter Popup" t-thumbnail="/website/static/src/img/snippets_thumbs/newsletter_subscribe_popup.svg" t-forbid-sanitize="form"/>
+        <t t-snippet="website_mass_mailing.s_newsletter_subscribe_popup" t-thumbnail="/website/static/src/img/snippets_thumbs/newsletter_subscribe_popup.svg" t-forbid-sanitize="form"/>
     </xpath>
     <xpath expr="//t[@id='mass_mailing_newsletter_hook']" position="replace">
-        <t t-snippet="website_mass_mailing.s_newsletter_subscribe_form" string="Newsletter" t-thumbnail="/website/static/src/img/snippets_thumbs/s_newsletter_subscribe_form.svg" t-forbid-sanitize="form"/>
+        <t t-snippet="website_mass_mailing.s_newsletter_subscribe_form" t-thumbnail="/website/static/src/img/snippets_thumbs/s_newsletter_subscribe_form.svg" t-forbid-sanitize="form"/>
     </xpath>
 </template>
 
-<!--
-Users upgraded from a version lower than 16.0 may have those blocks in their
-database, without the s_newsletter_list class. See fixNewsletterListClass.
--->
 <template id="s_newsletter_subscribe_form" name="Newsletter">
     <div class="s_newsletter_subscribe_form s_newsletter_list js_subscribe" data-vxml="001" data-list-id="0" data-name="Newsletter Form">
         <div class="input-group">
@@ -31,11 +33,7 @@ database, without the s_newsletter_list class. See fixNewsletterListClass.
     </div>
 </template>
 
-<!--
-Users upgraded from a version lower than 16.0 may have those blocks in their
-database, without the s_newsletter_list class. See fixNewsletterListClass.
--->
-<template id="s_newsletter_block" name="Newsletter Block">
+<template id="s_newsletter_block" name="Newsletter block">
     <section class="s_newsletter_block s_newsletter_list pt32 pb32" data-list-id="0">
         <div class="container">
             <t t-call="website_mass_mailing.s_newsletter_block_default_template"/>
@@ -95,7 +93,7 @@ database, without the s_newsletter_list class. See fixNewsletterListClass.
                                                 <input type="checkbox" class="s_website_form_input form-check-input" name="list_ids"
                                                     t-attf-id="mailing_list_#{record.id}" t-att-value="record.id" required="1"/>
                                                 <label class="form-check-label s_website_form_check_label" t-attf-for="mailing_list_#{record.id}">
-                                                    <t t-esc="record.name"/>
+                                                    <t t-esc="record.display_name"/>
                                                 </label>
                                             </div>
                                         </div>
@@ -123,7 +121,7 @@ database, without the s_newsletter_list class. See fixNewsletterListClass.
                     </div>
                     <div class="mb-0 py-2 col-12 s_website_form_submit" data-name="Submit Button">
                         <div style="width: 250px;" class="s_website_form_label"/>
-                        <a href="#" role="button" class="btn btn-primary s_website_form_send">Subscribe</a>
+                        <a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">Subscribe</a>
                         <span id="s_website_form_result"></span>
                     </div>
                 </div>
@@ -133,7 +131,7 @@ database, without the s_newsletter_list class. See fixNewsletterListClass.
                     <section class="s_text_block pt64 pb64 o_colored_level o_cc o_cc2" data-snippet="s_text_block">
                         <div class="container">
                             <h2 class="text-center"><span class="fa fa-check-circle"></span>
-                                Thank you for subscribing!
+                                Thank you for subscribing !
                             </h2>
                             <p class="text-center">
                                 You will now be informed about the latest news.<br/>
@@ -151,14 +149,14 @@ database, without the s_newsletter_list class. See fixNewsletterListClass.
         <div class="modal fade s_popup_middle o_newsletter_modal"
              style="background-color: var(--black-50) !important;"
              data-show-after="5000" data-display="afterDelay" data-consents-duration="7"
-             data-bs-focus="false" data-bs-backdrop="false" tabindex="-1" role="dialog">
+             data-focus="false" data-bs-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog d-flex">
                 <div class="modal-content oe_structure">
                     <div class="s_popup_close js_close_popup o_we_no_overlay o_not_editable" aria-label="Close">&#215;</div>
                     <section class="s_text_block oe_img_bg o_bg_img_center pt88 pb64" data-snippet="s_text_block" data-name="Text"
                              style="background-image: url('/web/image/website.s_cover_default_image'); background-position: 0 100%;">
                         <div class="container s_allow_columns">
-                            <h2 style="text-align: center;">Always <b>First</b>.</h2>
+                            <h1 style="text-align: center;">Always <b>First</b>.</h1>
                             <p style="text-align: center;">Be the first to find out all the latest news,<br/> products, and trends.</p>
                         </div>
                     </section>

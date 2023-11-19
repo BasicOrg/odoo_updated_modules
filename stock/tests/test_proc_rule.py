@@ -5,7 +5,6 @@ from datetime import date, datetime, timedelta
 
 from odoo.tests.common import Form, TransactionCase
 from odoo.tools import mute_logger
-from odoo.exceptions import UserError
 
 
 class TestProcRule(TransactionCase):
@@ -20,40 +19,6 @@ class TestProcRule(TransactionCase):
             'type': 'consu',
         })
         cls.partner = cls.env['res.partner'].create({'name': 'Partner'})
-
-    def test_endless_loop_rules_from_location(self):
-        """ Creates and configure a rule the way, when trying to get rules from
-        location, it goes in a state where the found rule tries to trigger another
-        rule but finds nothing else than itself and so get stuck in a recursion error."""
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
-        reception_route = warehouse.reception_route_id
-        self.product.type = 'product'
-
-        # Creates a delivery for this product, that way, this product will be to resupply.
-        picking_form = Form(self.env['stock.picking'])
-        picking_form.picking_type_id = warehouse.out_type_id
-        with picking_form.move_ids_without_package.new() as move_line:
-            move_line.product_id = self.product
-            move_line.product_uom_qty = 10
-        delivery = picking_form.save()
-        delivery.action_confirm()
-        self.product._compute_quantities()  # Computes `outgoing_qty` to have the orderpoint.
-
-        # Then, creates a rule and adds it into the route's rules.
-        reception_route.rule_ids.action_archive()
-        self.env['stock.rule'].create({
-            'name': 'Looping Rule',
-            'route_id': reception_route.id,
-            'location_dest_id': warehouse.lot_stock_id.id,
-            'location_src_id': warehouse.lot_stock_id.id,
-            'action': 'pull_push',
-            'procure_method': 'make_to_order',
-            'picking_type_id': warehouse.int_type_id.id,
-        })
-
-        # Tries to open the Replenishment view -> It should raise an UserError.
-        with self.assertRaises(UserError):
-            self.env['stock.warehouse.orderpoint'].action_open_orderpoints()
 
     def test_proc_rule(self):
         # Create a product route containing a stock rule that will
@@ -91,7 +56,6 @@ class TestProcRule(TransactionCase):
                 'location_id': self.ref('stock.stock_location_output'),
                 'location_dest_id': self.ref('stock.stock_location_customers'),
             })],
-            'state': 'draft',
         }
         pick_output = self.env['stock.picking'].create(vals)
         pick_output.move_ids._onchange_product_id()
@@ -135,8 +99,7 @@ class TestProcRule(TransactionCase):
             'move_dest_ids': [(4, move_dest.id)],
             'location_id': self.ref('stock.stock_location_stock'),
             'location_dest_id': self.ref('stock.stock_location_output'),
-            'quantity': 10,
-            'picked': True
+            'quantity_done': 10,
         })
         new_deadline = move_orig.date_deadline - timedelta(days=6)
         move_orig.date_deadline = new_deadline
@@ -498,23 +461,6 @@ class TestProcRule(TransactionCase):
         self.assertEqual(orderpoint.warehouse_id, warehouse_b)
         self.assertEqual(orderpoint.location_id, location)
         orderpoint.unlink()
-
-    def test_replenishment_order_to_max(self):
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.id)], limit=1)
-        self.product.detailed_type = 'product'
-        self.env['stock.quant']._update_available_quantity(self.product, warehouse.lot_stock_id, 10)
-        orderpoint = self.env['stock.warehouse.orderpoint'].create({
-            'name': 'ProductB RR',
-            'product_id': self.product.id,
-            'product_min_qty': 5,
-            'product_max_qty': 200,
-        })
-        self.assertEqual(orderpoint.qty_forecast, 10.0)
-        # above minimum qty => nothing to order
-        orderpoint.action_replenish()
-        self.assertEqual(orderpoint.qty_forecast, 10.0)
-        orderpoint.action_replenish(force_to_max=True)
-        self.assertEqual(orderpoint.qty_forecast, 200.0)
 
 
 class TestProcRuleLoad(TransactionCase):

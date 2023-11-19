@@ -16,7 +16,10 @@ class TestSaleProjectCommon(TestSaleCommon):
         cls.uom_hour = cls.env.ref('uom.product_uom_hour')
         cls.account_sale = cls.company_data['default_account_revenue']
 
-        cls.analytic_plan, _other_plans = cls.env['account.analytic.plan']._get_all_plans()
+        cls.analytic_plan = cls.env['account.analytic.plan'].create({
+            'name': 'Plan Test',
+            'company_id': cls.company_data['company'].id,
+        })
         cls.analytic_account_sale = cls.env['account.analytic.account'].create({
             'name': 'Project for selling timesheet - AA',
             'code': 'AA-2030',
@@ -115,44 +118,7 @@ class TestSaleProjectCommon(TestSaleCommon):
             'taxes_id': False,
             'property_account_income_id': cls.account_sale.id,
         })
-        price_vals = {
-            'standard_price': 11,
-            'list_price': 13,
-        }
-        service_vals = {
-            'type': 'service',
-            'service_tracking': 'no',
-            'project_id': False,
-        }
-        (
-            cls.product_service_ordered_prepaid,
-            cls.product_service_delivered_milestone,
-            cls.product_service_delivered_manual,
-            cls.product_consumable,
-        ) = cls.env['product.product'].create([{
-            'name': "Service prepaid",
-            **price_vals,
-            **service_vals,
-            'invoice_policy': 'order',
-            'service_type': 'manual',
-        }, {
-            'name': "Service milestone",
-            **price_vals,
-            **service_vals,
-            'invoice_policy': 'delivery',
-            'service_type': 'milestones',
-        }, {
-            'name': "Service manual",
-            **price_vals,
-            **service_vals,
-            'invoice_policy': 'delivery',
-            'service_type': 'manual',
-        }, {
-            'name': "Consumable",
-            **price_vals,
-            'type': 'consu',
-            'invoice_policy': 'order',
-        }])
+
         # -- devliered_milestones (delivered, milestones)
         product_milestone_vals = {
             'type': 'service',

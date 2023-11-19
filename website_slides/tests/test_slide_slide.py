@@ -9,42 +9,6 @@ from odoo.tools import mute_logger
 
 
 class TestSlideInternals(slides_common.SlidesCase):
-    def test_compute_category_completion_time(self):
-        """
-            Check that we properly calculate the completion time of a course without error, after deleting a slide.
-        """
-        self.category2 = self.env['slide.slide'].with_user(self.user_officer).create({
-            'name': 'Cooking Tips For Dieting',
-            'channel_id': self.channel.id,
-            'is_category': True,
-            'is_published': True,
-            'sequence': 5,
-        })
-        self.slide_4 = self.env['slide.slide'].with_user(self.user_officer).create({
-            'name': 'Vegan Diet',
-            'channel_id': self.channel.id,
-            'slide_category': 'document',
-            'is_published': True,
-            'completion_time': 5.0,
-            'sequence': 6,
-        })
-        self.slide_5 = self.env['slide.slide'].with_user(self.user_officer).create({
-            'name': 'Normal Diet',
-            'channel_id': self.channel.id,
-            'slide_category': 'document',
-            'is_published': True,
-            'completion_time': 1.5,
-            'sequence': 7,
-        })
-
-        before_unlink = self.category2.completion_time
-        self.assertEqual(before_unlink, self.slide_4.completion_time + self.slide_5.completion_time)
-
-        self.channel.slide_ids[6].sudo().unlink()
-        self.category2._compute_category_completion_time()
-
-        after_unlink = self.category2.completion_time
-        self.assertEqual(after_unlink, self.slide_4.completion_time)
 
     @mute_logger('odoo.sql_db')
     @users('user_manager')
@@ -57,29 +21,6 @@ class TestSlideInternals(slides_common.SlidesCase):
                 'partner_id': self.user_manager.partner_id.id,
                 'vote': 2,
             })
-
-    @users('user_manager')
-    def test_slide_user_has_completed_category(self):
-        # As an uncategorized slide doesn't have a category, the method should always return False
-        uncategorized_slide = self.channel.slide_ids.filtered(lambda s: not s.is_category and not s.category_id)
-        self.assertEqual(len(uncategorized_slide), 1)
-        self.assertFalse(uncategorized_slide.user_has_completed)
-        self.assertFalse(uncategorized_slide.user_has_completed_category)
-        uncategorized_slide.user_has_completed = True
-        self.assertFalse(uncategorized_slide.user_has_completed_category)
-
-        category_slides = self.category.slide_ids
-        self.assertEqual(len(category_slides), 2)
-        # No slide completed in the category
-        self.assertFalse(any(category_slides.mapped('user_has_completed')))
-        self.assertFalse(category_slides[0].user_has_completed_category)
-        # One slide completed in the category
-        category_slides[0].user_has_completed = True
-        self.assertFalse(category_slides[0].user_has_completed_category)
-        # All slides completed in the category
-        for slide in category_slides:
-            slide.user_has_completed = True
-        self.assertTrue(category_slides[0].user_has_completed_category)
 
 class TestVideoFromURL(slides_common.SlidesCase):
     def test_video_youtube(self):

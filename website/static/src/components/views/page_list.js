@@ -1,13 +1,12 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import {PageControllerMixin, PageRendererMixin} from "./page_views_mixin";
 import {registry} from '@web/core/registry';
 import {listView} from '@web/views/list/list_view';
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
 import {useService} from "@web/core/utils/hooks";
+import {sprintf} from "@web/core/utils/strings";
 import {DeletePageDialog} from '@website/components/dialog/page_properties';
-import {CheckboxItem} from "@web/core/dropdown/checkbox_item";
 
 
 export class PageListController extends PageControllerMixin(listView.Controller) {
@@ -17,9 +16,6 @@ export class PageListController extends PageControllerMixin(listView.Controller)
     setup() {
         super.setup();
         this.orm = useService('orm');
-        if (this.props.resModel === "website.page") {
-            this.archiveEnabled = false;
-        }
     }
 
     /**
@@ -34,29 +30,28 @@ export class PageListController extends PageControllerMixin(listView.Controller)
      *
      * @override
      */
-    getStaticActionMenuItems() {
-        const menuItems = super.getStaticActionMenuItems();
-        if (this.props.fields.hasOwnProperty('is_published')) {
-            menuItems.publish = {
-                sequence: 15,
-                icon: "fa fa-globe",
-                description: _t("Publish"),
-                callback: async () => {
-                    this.dialogService.add(ConfirmationDialog, {
-                        title: _t("Publish Website Content"),
-                        body: _t("%s record(s) selected, are you sure you want to publish them all?", this.model.root.selection.length),
-                        confirm: () => this.togglePublished(true),
-                    });
-                },
-            };
-            menuItems.unpublish = {
-                sequence: 16,
-                icon: "fa fa-chain-broken",
-                description: _t("Unpublish"),
-                callback: async () => this.togglePublished(false),
-            };
+    getActionMenuItems() {
+        const actionMenuItems = super.getActionMenuItems();
+        // 'Archive' / 'Unarchive' options are disabled only on 'website.page' list view.
+        if (this.props.resModel === 'website.page') {
+            actionMenuItems.other = actionMenuItems.other
+                .filter(item => !['archive', 'unarchive'].includes(item.key));
         }
-        return menuItems;
+        actionMenuItems.other.splice(-1, 0, {
+            description: this.env._t("Publish"),
+            callback: async () => {
+                this.dialogService.add(ConfirmationDialog, {
+                    title: this.env._t("Publish Website Content"),
+                    body: sprintf(this.env._t("%s record(s) selected, are you sure you want to publish them all?"), this.model.root.selection.length),
+                    confirm: () => this.togglePublished(true),
+                });
+            }
+        },
+        {
+            description: this.env._t("Unpublish"),
+            callback: async () => this.togglePublished(false),
+        });
+        return actionMenuItems;
     }
 
     onDeleteSelectedRecords() {
@@ -76,10 +71,6 @@ export class PageListController extends PageControllerMixin(listView.Controller)
     }
 }
 PageListController.template = `website.PageListView`;
-PageListController.components = {
-    ...listView.Controller.components,
-    CheckboxItem,
-};
 
 export class PageListRenderer extends PageRendererMixin(listView.Renderer) {}
 PageListRenderer.props = [

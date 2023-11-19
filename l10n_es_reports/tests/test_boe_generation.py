@@ -14,7 +14,7 @@ class TestBOEGeneration(TestAccountReportsCommon):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super(TestBOEGeneration, cls).setUpClass(chart_template_ref='es_pymes')
+        super(TestBOEGeneration, cls).setUpClass(chart_template_ref='l10n_es.account_chart_template_pymes')
 
         cls.spanish_partner = cls.env['res.partner'].create({
             'name': "Bernardo Ganador",
@@ -26,19 +26,8 @@ class TestBOEGeneration(TestAccountReportsCommon):
             'vat': "ESA12345674",
         })
 
-        base_tags = (
-            cls.env.ref('l10n_es.mod_111_casilla_02_balance')
-            + cls.env.ref('l10n_es.mod_115_casilla_02_balance')
-            + cls.env.ref('l10n_es.mod_303_casilla_01_balance')
-        )._get_matching_tags('+')
-        base_refund_tags = cls.env.ref('l10n_es.mod_111_casilla_02_balance')._get_matching_tags('-') + cls.env.ref('l10n_es.mod_115_casilla_02_balance')._get_matching_tags('-') + cls.env.ref('l10n_es.mod_303_casilla_14_aeat_mod_303_14_sale_balance')._get_matching_tags('+')
-        tax_tags = cls.env.ref('l10n_es.mod_111_casilla_03_balance')._get_matching_tags('-') + cls.env.ref('l10n_es.mod_115_casilla_03_balance')._get_matching_tags('-') + cls.env.ref('l10n_es.mod_303_casilla_03_balance')._get_matching_tags('+')
-        tax_refund_tags = (
-            cls.env.ref('l10n_es.mod_111_casilla_03_balance')
-            + cls.env.ref('l10n_es.mod_115_casilla_03_balance')
-            + cls.env.ref('l10n_es.mod_303_casilla_15_balance')
-        )._get_matching_tags('+')
-
+        base_tags = cls.env.ref('l10n_es.mod_111_02') + cls.env.ref('l10n_es.mod_115_02') + cls.env.ref('l10n_es.mod_303_01')
+        tax_tags = cls.env.ref('l10n_es.mod_111_03') + cls.env.ref('l10n_es.mod_115_03') + cls.env.ref('l10n_es.mod_303_03')
         cls.spanish_test_tax = cls.env['account.tax'].create({
             'name': "Test ES BOE tax",
             'amount_type': 'percent',
@@ -57,33 +46,30 @@ class TestBOEGeneration(TestAccountReportsCommon):
             'refund_repartition_line_ids': [
                 (0, 0, {
                     'repartition_type': 'base',
-                    'tag_ids': base_refund_tags.ids,
+                    'tag_ids': base_tags.ids,
                 }),
 
                 (0, 0, {
                     'repartition_type': 'tax',
-                    'tag_ids': tax_refund_tags.ids,
+                    'tag_ids': tax_tags.ids,
                 })
             ],
         })
 
         cls.env.company.vat = "ESA12345674"
 
-    def _check_boe_export(self, report, options, modelo_number, additional_context=None):
-        wizard_model = self.env[report.custom_handler_model_name]
-        if additional_context:
-            wizard_model = wizard_model.with_context(**additional_context)
-        wizard_action = wizard_model.open_boe_wizard(options, modelo_number)
+    def _check_boe_export(self, report, options, modelo_number):
+        wizard_action = self.env[report.custom_handler_model_name].open_boe_wizard(options, modelo_number)
         self.assertEqual(f'l10n_es_reports.aeat.boe.mod{modelo_number}.export.wizard', wizard_action['res_model'], "Wrong BOE export wizard returned")
-        wizard = self.env[wizard_action['res_model']].with_context(wizard_action['context']).create({})
-        options['l10n_es_reports_boe_wizard_id'] = wizard.id
+        options['l10n_es_reports_boe_wizard_id'] = wizard_action['res_id']
         self.assertTrue(self.env[report.custom_handler_model_name].export_boe(options), "Empty BOE")
 
     def _check_boe_111_to_303(self, modelo_number):
         self.init_invoice('out_invoice', partner=self.spanish_partner, amounts=[10000], invoice_date=fields.Date.today(), taxes=self.spanish_test_tax, post=True)
-        report = self.env.ref('l10n_es.mod_%s' % modelo_number)
-        report.filter_multi_company = 'disabled'
+        report = self.env.ref('l10n_es_reports.mod_%s' % modelo_number)
         options = self._generate_options(report, fields.Date.from_string('2020-12-01'), fields.Date.from_string('2020-12-31'))
+        if 'multi_company' in options:
+            del options['multi_company']
         self._check_boe_export(report, options, modelo_number)
 
     @freeze_time('2020-12-22')
@@ -104,8 +90,9 @@ class TestBOEGeneration(TestAccountReportsCommon):
         invoice.l10n_es_reports_mod347_invoice_type = 'regular'
         invoice._post()
         report = self.env.ref('l10n_es_reports.mod_347')
-        report.filter_multi_company = 'disabled'
         options = self._generate_options(report, fields.Date.from_string('2020-01-01'), fields.Date.from_string('2020-12-31'))
+        if 'multi_company' in options:
+            del options['multi_company']
         self._check_boe_export(report, options, 347)
 
     @freeze_time('2020-12-22')
@@ -118,21 +105,7 @@ class TestBOEGeneration(TestAccountReportsCommon):
         invoice.l10n_es_reports_mod349_invoice_type = 'E'
         invoice._post()
         report = self.env.ref('l10n_es_reports.mod_349')
-        report.filter_multi_company = 'disabled'
         options = self._generate_options(report, fields.Date.from_string('2020-12-01'), fields.Date.from_string('2020-12-31'))
+        if 'multi_company' in options:
+            del options['multi_company']
         self._check_boe_export(report, options, 349)
-
-    @freeze_time('2020-12-22')
-    def test_boe_mod_390(self):
-        report = self.env.ref('l10n_es.mod_390')
-        options = self._generate_options(report, '2020-01-01', '2020-12-31')
-        self._check_boe_export(report, options, 390, additional_context={
-            'default_physical_person_name': "Bernard Gagnant",
-            'default_principal_activity': "Selling",
-            'default_principal_iae_epigrafe': "EAAA",
-            'default_principal_code_activity': "AAA",
-            'default_judicial_person_name': "Bebert",
-            'default_judicial_person_nif': "123",
-            'default_judicial_person_procuration_date': '2020-01-01',
-            'default_judicial_person_notary': "Maître Gagnant",
-        })

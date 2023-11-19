@@ -10,8 +10,8 @@
 Repair Products from helpdesk tickets
     """,
     'data': [
+        'views/helpdesk_views.xml',
         'views/repair_views.xml',
-        'views/helpdesk_ticket_views.xml',
     ],
     'demo': ['data/helpdesk_repair_demo.xml'],
     'license': 'OEEL-1',

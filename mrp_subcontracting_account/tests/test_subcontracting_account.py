@@ -1,28 +1,20 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import Command, fields
+from odoo import Command
 from odoo.tests.common import Form
 from odoo.tools.float_utils import float_round, float_compare
 
 from odoo.addons.mrp_subcontracting.tests.common import TestMrpSubcontractingCommon
-from odoo.addons.mrp_account.tests.test_bom_price import TestBomPriceCommon
-
+from odoo.addons.mrp_account.tests.test_bom_price import TestBomPrice
 
 class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
     def test_subcontracting_account_flow_1(self):
-        # pylint: disable=bad-whitespace
         self.stock_location = self.env.ref('stock.stock_location_stock')
         self.customer_location = self.env.ref('stock.stock_location_customers')
         self.supplier_location = self.env.ref('stock.stock_location_suppliers')
         self.uom_unit = self.env.ref('uom.product_uom_unit')
-        product_category_all = self.env.ref('product.product_category_all')
-        product_category_all.property_cost_method = 'fifo'
-        product_category_all.property_valuation = 'real_time'
-        stock_in_acc_id = product_category_all.property_stock_account_input_categ_id.id
-        stock_out_acc_id = product_category_all.property_stock_account_output_categ_id.id
-        stock_valu_acc_id = product_category_all.property_stock_valuation_account_id.id
-        stock_cop_acc_id = product_category_all.property_stock_account_production_cost_id.id
+        self.env.ref('product.product_category_all').property_cost_method = 'fifo'
 
         # IN 10@10 comp1 10@20 comp2
         move1 = self.env['stock.move'].create({
@@ -36,8 +28,7 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         })
         move1._action_confirm()
         move1._action_assign()
-        move1.move_line_ids.quantity = 10.0
-        move1.picked = True
+        move1.move_line_ids.qty_done = 10.0
         move1._action_done()
         move2 = self.env['stock.move'].create({
             'name': 'IN 10 units @ 20.00 per unit',
@@ -50,11 +41,8 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         })
         move2._action_confirm()
         move2._action_assign()
-        move2.move_line_ids.quantity = 10.0
-        move2.picked = True
+        move2.move_line_ids.qty_done = 10.0
         move2._action_done()
-
-        all_amls_ids = self.env['account.move.line'].search([]).ids
 
         picking_form = Form(self.env['stock.picking'])
         picking_form.picking_type_id = self.env.ref('stock.picking_type_in')
@@ -68,8 +56,7 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         picking_receipt.action_confirm()
         # Suppose the additional cost changes:
         picking_receipt.move_ids.price_unit = 30.0
-        picking_receipt.move_ids.quantity = 1.0
-        picking_receipt.move_ids.picked = True
+        picking_receipt.move_ids.quantity_done = 1.0
         picking_receipt._action_done()
 
         mo = picking_receipt._get_subcontract_production()
@@ -83,21 +70,6 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         self.assertEqual(picking_receipt.move_ids.stock_valuation_layer_ids.value, 0)
         self.assertEqual(picking_receipt.move_ids.product_id.value_svl, 60)
 
-        amls = self.env['account.move.line'].search([('id', 'not in', all_amls_ids)])
-        all_amls_ids += amls.ids
-        self.assertRecordValues(amls, [
-            # Receipt from subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.finished.id,    'debit': 60.0, 'credit': 0.0},
-            {'account_id': stock_in_acc_id,     'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp2.id,       'debit': 0.0,   'credit': 20.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp2.id,       'debit': 20.0,  'credit': 0.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp1.id,       'debit': 0.0,   'credit': 10.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp1.id,       'debit': 10.0,  'credit': 0.0},
-        ])
-
         # Do the same without any additionnal cost
         picking_form = Form(self.env['stock.picking'])
         picking_form.picking_type_id = self.env.ref('stock.picking_type_in')
@@ -109,8 +81,7 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         picking_receipt.move_ids.price_unit = 0
 
         picking_receipt.action_confirm()
-        picking_receipt.move_ids.quantity = 1.0
-        picking_receipt.move_ids.picked = True
+        picking_receipt.move_ids.quantity_done = 1.0
         picking_receipt._action_done()
 
         mo = picking_receipt._get_subcontract_production()
@@ -118,107 +89,6 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         # is the sum of the components' costs: 10 + 20 = 30
         self.assertEqual(mo.move_finished_ids.stock_valuation_layer_ids.value, 30)
         self.assertEqual(picking_receipt.move_ids.product_id.value_svl, 90)
-
-        amls = self.env['account.move.line'].search([('id', 'not in', all_amls_ids)])
-        self.assertRecordValues(amls, [
-            # Receipt from subcontractor
-            {'account_id': stock_cop_acc_id,     'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            {'account_id': stock_valu_acc_id,   'product_id': self.finished.id,    'debit': 30.0,  'credit': 0.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp2.id,       'debit': 0.0,   'credit': 20.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp2.id,       'debit': 20.0,  'credit': 0.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp1.id,       'debit': 0.0,   'credit': 10.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp1.id,       'debit': 10.0,  'credit': 0.0},
-        ])
-
-    def test_subcontracting_account_flow_2(self):
-        """Test when set Cost of Production account on production location, subcontracting
-        won't use it.
-        """
-        # pylint: disable=bad-whitespace
-        self.stock_location = self.env.ref('stock.stock_location_stock')
-        self.customer_location = self.env.ref('stock.stock_location_customers')
-        self.supplier_location = self.env.ref('stock.stock_location_suppliers')
-        self.uom_unit = self.env.ref('uom.product_uom_unit')
-        product_category_all = self.env.ref('product.product_category_all')
-        product_category_all.property_cost_method = 'fifo'
-        product_category_all.property_valuation = 'real_time'
-        stock_in_acc_id = product_category_all.property_stock_account_input_categ_id.id
-        stock_valu_acc_id = product_category_all.property_stock_valuation_account_id.id
-        stock_cop_acc_id = product_category_all.property_stock_account_production_cost_id.id
-
-        # set Cost of Production account on production location
-        cop_account = self.env['account.account'].create({
-            'name': 'Cost of Production',
-            'code': 'CoP',
-            "account_type": 'expense',
-            'reconcile': False,
-        })
-        self.comp1.property_stock_production.write({
-            'valuation_out_account_id': cop_account.id,
-            'valuation_in_account_id': cop_account.id,
-        })
-
-        # IN 10@10 comp1 10@20 comp2
-        move1 = self.env['stock.move'].create({
-            'name': 'IN 10 units @ 10.00 per unit',
-            'location_id': self.supplier_location.id,
-            'location_dest_id': self.env.company.subcontracting_location_id.id,
-            'product_id': self.comp1.id,
-            'product_uom': self.uom_unit.id,
-            'product_uom_qty': 10.0,
-            'price_unit': 10.0,
-        })
-        move1._action_confirm()
-        move1._action_assign()
-        move1.move_line_ids.quantity = 10.0
-        move1.picked = True
-        move1._action_done()
-        move2 = self.env['stock.move'].create({
-            'name': 'IN 10 units @ 20.00 per unit',
-            'location_id': self.supplier_location.id,
-            'location_dest_id': self.env.company.subcontracting_location_id.id,
-            'product_id': self.comp2.id,
-            'product_uom': self.uom_unit.id,
-            'product_uom_qty': 10.0,
-            'price_unit': 20.0,
-        })
-        move2._action_confirm()
-        move2._action_assign()
-        move2.move_line_ids.quantity = 10.0
-        move2.picked = True
-        move2._action_done()
-
-        all_amls_ids = self.env['account.move.line'].search([]).ids
-
-        picking_form = Form(self.env['stock.picking'])
-        picking_form.picking_type_id = self.env.ref('stock.picking_type_in')
-        picking_form.partner_id = self.subcontractor_partner1
-        with picking_form.move_ids_without_package.new() as move:
-            move.product_id = self.finished
-            move.product_uom_qty = 1
-        picking_receipt = picking_form.save()
-        picking_receipt.move_ids.price_unit = 30.0
-        picking_receipt.action_confirm()
-        picking_receipt.move_ids.quantity = 1.0
-        picking_receipt.move_ids.picked = True
-        picking_receipt._action_done()
-
-        amls = self.env['account.move.line'].search([('id', 'not in', all_amls_ids)])
-        all_amls_ids += amls.ids
-        self.assertRecordValues(amls, [
-            # Receipt from subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.finished.id,    'debit': 60.0,  'credit': 0.0},
-            {'account_id': stock_in_acc_id,     'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp2.id,       'debit': 0.0,   'credit': 20.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp2.id,       'debit': 20.0,  'credit': 0.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp1.id,       'debit': 0.0,   'credit': 10.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp1.id,       'debit': 10.0,  'credit': 0.0},
-        ])
 
     def test_subcontracting_account_backorder(self):
         """ This test uses tracked (serial and lot) component and tracked (serial) finished product
@@ -238,12 +108,11 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
         picking_form.partner_id = self.subcontractor_partner1
         with picking_form.move_ids_without_package.new() as move:
             move.product_id = self.finished
-            move.quantity = todo_nb
+            move.product_uom_qty = todo_nb
         picking_receipt = picking_form.save()
         # Mimic the extra cost on the po line
         picking_receipt.move_ids.price_unit = 50
         picking_receipt.action_confirm()
-        picking_receipt.do_unreserve()
 
         # We should be able to call the 'record_components' button
         self.assertTrue(picking_receipt.display_action_record_components)
@@ -282,7 +151,7 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
             mo.subcontracting_record_component()
 
         # We should not be able to call the 'record_components' button
-        picking_receipt.move_ids.picked = True
+
         picking_receipt.button_validate()
 
         f_layers = self.finished.stock_valuation_layer_ids
@@ -342,61 +211,8 @@ class TestAccountSubcontractingFlows(TestMrpSubcontractingCommon):
             {'quantity': 2, 'value': 2 * (10 + 20 + 50)},
         ])
 
-    def test_subcontract_cost_different_when_standard_price(self):
-        """Test when subcontracting with standard price when
-            Final product cost != Components cost + Subcontracting cost
-        When posting the account entries for receiving final product, the
-        subcontracting cost will be adjusted based on the difference of the cost.
-        """
-        # pylint: disable=bad-whitespace
-        self.stock_location = self.env.ref('stock.stock_location_stock')
-        self.customer_location = self.env.ref('stock.stock_location_customers')
-        self.supplier_location = self.env.ref('stock.stock_location_suppliers')
-        self.uom_unit = self.env.ref('uom.product_uom_unit')
-        product_category_all = self.env.ref('product.product_category_all')
-        product_category_all.property_cost_method = 'standard'
-        product_category_all.property_valuation = 'real_time'
-        stock_in_acc_id = product_category_all.property_stock_account_input_categ_id.id
-        stock_valu_acc_id = product_category_all.property_stock_valuation_account_id.id
-        stock_cop_acc_id = product_category_all.property_stock_account_production_cost_id.id
 
-        self.comp1.standard_price = 10
-        self.comp2.standard_price = 20
-        self.finished.standard_price = 40
-
-        all_amls_ids = self.env['account.move.line'].search([]).ids
-
-        picking_form = Form(self.env['stock.picking'])
-        picking_form.picking_type_id = self.env.ref('stock.picking_type_in')
-        picking_form.partner_id = self.subcontractor_partner1
-        with picking_form.move_ids_without_package.new() as move:
-            move.product_id = self.finished
-            move.product_uom_qty = 1
-        picking_receipt = picking_form.save()
-        # subcontracting cost is 15
-        picking_receipt.move_ids.price_unit = 15.0
-        picking_receipt.action_confirm()
-
-        picking_receipt.move_ids.quantity = 1.0
-        picking_receipt.move_ids.picked = True
-        picking_receipt._action_done()
-
-        amls = self.env['account.move.line'].search([('id', 'not in', all_amls_ids)])
-        self.assertRecordValues(amls, [
-            # Receipt from subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.finished.id,    'debit': 40.0,  'credit': 0.0},
-            {'account_id': stock_in_acc_id,     'product_id': self.finished.id,    'debit': 0.0,   'credit': 10.0},   # adjust according to the difference
-            {'account_id': stock_cop_acc_id,    'product_id': self.finished.id,    'debit': 0.0,   'credit': 30.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp2.id,       'debit': 0.0,   'credit': 20.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp2.id,       'debit': 20.0,  'credit': 0.0},
-            # Delivery com2 to subcontractor
-            {'account_id': stock_valu_acc_id,   'product_id': self.comp1.id,       'debit': 0.0,   'credit': 10.0},
-            {'account_id': stock_cop_acc_id,    'product_id': self.comp1.id,       'debit': 10.0,  'credit': 0.0},
-        ])
-
-
-class TestBomPriceSubcontracting(TestBomPriceCommon):
+class TestBomPriceSubcontracting(TestBomPrice):
 
     def test_01_compute_price_subcontracting_cost(self):
         """Test calculation of bom cost with subcontracting."""
@@ -450,48 +266,3 @@ class TestBomPriceSubcontracting(TestBomPriceCommon):
         self.Product.browse([self.dining_table.id, self.table_head.id]).action_bom_cost()
         self.assertEqual(float_compare(self.table_head.standard_price, 478.75, precision_digits=2), 0, "After computing price from BoM price should be 878.75")
         self.assertEqual(float_compare(self.dining_table.standard_price, 878.75, precision_digits=2), 0, "After computing price from BoM price should be 878.75")
-
-    def test_02_compute_price_subcontracting_cost(self):
-        """Test calculation of bom cost with subcontracting and supplier in different currency."""
-        currency_a = self.env['res.currency'].create({
-            'name': 'ZEN',
-            'symbol': 'Z',
-            'rounding': 0.01,
-            'currency_unit_label': 'Zenny',
-            'rate_ids': [(0, 0, {
-                'name': fields.Date.today(),
-                'company_rate': 0.5,
-            })],
-        })
-
-        partner = self.env['res.partner'].create({
-            'name': 'supplier',
-        })
-        product = self.env['product.product'].create({
-            'name': 'product',
-            'type': 'product',
-            'standard_price': 100,
-            'company_id': self.env.company.id,
-        })
-        supplier = self.env['product.supplierinfo'].create([{
-                'partner_id': partner.id,
-                'product_tmpl_id': product.product_tmpl_id.id,
-                'price': 120.0,
-                'currency_id': currency_a.id,
-        }])
-        self.env['mrp.bom'].create({
-            'product_tmpl_id': product.product_tmpl_id.id,
-            'product_qty': 1,
-            'type': 'subcontract',
-            'subcontractor_ids': [Command.link(partner.id)],
-            'bom_line_ids': [
-                (0, 0, {'product_id': self.table_head.id, 'product_qty': 1}),
-            ],
-        })
-        self.table_head.standard_price = 100
-        self.assertEqual(supplier.is_subcontractor, True)
-        self.assertEqual(product.standard_price, 100, "Initial price of the Product should be 100")
-        product.button_bom_cost()
-        # 120 Zen = 240 USD (120 * 2)
-        # price = 240 + 100 (1 unit of component "table_head") = 340
-        self.assertEqual(product.standard_price, 340, "After computing price from BoM price should be 340")

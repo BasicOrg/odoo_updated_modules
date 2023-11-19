@@ -9,7 +9,6 @@ class FollowupLine(models.Model):
     _name = 'account_followup.followup.line'
     _description = 'Follow-up Criteria'
     _order = 'delay asc'
-    _check_company_auto = True
 
     name = fields.Char('Description', required=True, translate=True)
     delay = fields.Integer('Due Days', required=True,
@@ -17,11 +16,11 @@ class FollowupLine(models.Model):
                                 "Can be negative if you want to send the reminder before the invoice due date.")
     company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.company)
 
-    mail_template_id = fields.Many2one(comodel_name='mail.template', domain="[('model', '=', 'res.partner')]")
+    mail_template_id = fields.Many2one(comodel_name='mail.template')
     send_email = fields.Boolean('Send Email', default=True)
-    join_invoices = fields.Boolean(string="Attach Invoices", default=True)
+    join_invoices = fields.Boolean(string="Join Invoices", default=True)
 
-    sms_template_id = fields.Many2one(comodel_name='sms.template', domain="[('model', '=', 'res.partner')]")
+    sms_template_id = fields.Many2one(comodel_name='sms.template')
     send_sms = fields.Boolean('Send SMS Message')
 
     create_activity = fields.Boolean(string='Schedule Activity')
@@ -35,7 +34,7 @@ class FollowupLine(models.Model):
                                                               "- Salesperson: Sales Person defined on the invoice\n"
                                                               "- Account Manager: Sales Person defined on the customer")
 
-    auto_execute = fields.Boolean(string="Automatic", default=False)
+    auto_execute = fields.Boolean(string="Automatic", default=True)
 
     _sql_constraints = [
         ('days_uniq', 'unique(company_id, delay)', 'Days of the follow-up lines must be different per company'),
@@ -58,30 +57,14 @@ class FollowupLine(models.Model):
             self.create_activity = False
 
     def _get_next_date(self):
-        """ Computes the next date used to set a next_followup_action_date for a partner
-
-        The next date will be typically set in (next level delay - current level delay) days
-        There are 3 exceptions to this:
-        - no next level -> next date set in (current level delay - previous level delay) days
-        - no next level AND only 1 level -> next date set in (current level delay) days
-        - no level at all -> next date not set (handled by partner, this method won't be called)
-        """
         self.ensure_one()
         next_followup = self._get_next_followup()
         if next_followup:
             delay = next_followup.delay - self.delay
         else:
-            previous_followup = self._get_previous_followup()
-            if previous_followup:
-                delay = self.delay - previous_followup.delay
-            else:
-                delay = self.delay
-        return fields.Date.context_today(self) + timedelta(days=delay)
+            delay = 14
+        return fields.Date.today() + timedelta(days=delay)
 
     def _get_next_followup(self):
         self.ensure_one()
         return self.env['account_followup.followup.line'].search([('delay', '>', self.delay), ('company_id', '=', self.env.company.id)], order="delay asc", limit=1)
-
-    def _get_previous_followup(self):
-        self.ensure_one()
-        return self.env['account_followup.followup.line'].search([('delay', '<', self.delay), ('company_id', '=', self.env.company.id)], order="delay desc", limit=1)

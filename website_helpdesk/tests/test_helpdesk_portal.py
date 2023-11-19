@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import re
-
 from odoo import http
-from odoo.exceptions import ValidationError
 from odoo.tests.common import HttpCase, tagged
 
 
@@ -46,40 +43,3 @@ class HelpDeskPortal(HttpCase):
         response = self.url_open('/website/form/helpdesk.ticket', data=ticket_data, files=files)
         ticket = self.env['helpdesk.ticket'].browse(response.json().get('id'))
         self.assertTrue(ticket.exists())
-        ticket_submitted_response = self.url_open('/your-ticket-has-been-submitted')
-        self.assertEqual(ticket_submitted_response.status_code, 200)
-        ticket_submitted_response_ticket_id = (
-            re.search(
-                rb'Your Ticket Number is #<span>(?P<ticket_id>.*?)</span>',
-                ticket_submitted_response.content)
-            .group('ticket_id')
-        ).decode()
-        self.assertIn(
-            ticket_submitted_response_ticket_id,
-            (ticket.ticket_ref, str(ticket.id)),
-            "Ticket ID on the submitted page does not match with the ticket created"
-        )
-
-    def test_portal_ticket_submission_multiple(self):
-        REPEAT = 3
-        for i in range(REPEAT):
-            try:
-                self.test_portal_ticket_submission()
-            except AssertionError:
-                raise AssertionError("Fail on the iteration %s/%s" % (i+1, REPEAT))
-
-    def test_portal_configure_team(self):
-        """ Configure the team while the visibility is internal and public"""
-        self.team_with_sla.use_website_helpdesk_form = False
-
-        with self.assertRaises(ValidationError):
-            self.team_with_sla.write({
-                'privacy_visibility': 'internal',
-                'use_website_helpdesk_form': True
-            })
-
-        self.team_with_sla.write({
-            'privacy_visibility': 'portal',
-            'use_website_helpdesk_form': True
-        })
-        self.assertTrue(self.team_with_sla)

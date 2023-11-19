@@ -53,13 +53,13 @@ class StockPicking(models.Model):
         if self.env.context.get('skip_check'):
             return res
         for backorder in res:
-            backorder.backorder_id.check_ids.filtered(lambda qc: qc.quality_state == 'none').sudo().unlink()
+            backorder.backorder_id.check_ids.filtered(lambda qc: qc.quality_state == 'none').unlink()
             backorder.move_ids._create_quality_checks()
         return res
 
     def _action_done(self):
         # Do the check before transferring
-        product_to_check = self.mapped('move_line_ids').filtered(lambda x: x.picked).mapped('product_id')
+        product_to_check = self.mapped('move_line_ids').filtered(lambda x: x.qty_done != 0).mapped('product_id')
         if self.mapped('check_ids').filtered(lambda x: x.quality_state == 'none' and x.product_id in product_to_check):
             raise UserError(_('You still need to do the quality checks!'))
         return super(StockPicking, self)._action_done()
@@ -75,7 +75,7 @@ class StockPicking(models.Model):
     def _check_for_quality_checks(self):
         quality_pickings = self.env['stock.picking']
         for picking in self:
-            product_to_check = picking.mapped('move_line_ids').filtered(lambda ml: ml.picked).mapped('product_id')
+            product_to_check = picking.mapped('move_line_ids').filtered(lambda ml: ml.qty_done != 0).mapped('product_id')
             if picking.mapped('check_ids').filtered(lambda qc: qc.quality_state == 'none' and qc.product_id in product_to_check):
                 quality_pickings |= picking
         return quality_pickings

@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Salary Structure" editable="bottom" decoration-info="total == 0">
                 <field name="category_id"/>
-                <field name="employee_id" column_invisible="True"/>
+                <field name="employee_id" invisible="1"/>
                 <field name="sequence"/>
                 <field name="name"/>
                 <field name="code"/>
@@ -16,8 +16,8 @@
                 <field name="rate"/>
                 <field name="amount"/>
                 <field name="total"/>
-                <field name="amount_select" column_invisible="True"/>
-                <field name="partner_id" column_invisible="True"/>
+                <field name="amount_select" invisible="1"/>
+                <field name="partner_id" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -27,8 +27,8 @@
         <field name="model">hr.payslip.line</field>
         <field name="arch" type="xml">
             <tree string="Salary Structure" edit="0" create="0" decoration-info="total == 0">
-                <field name="employee_id" column_invisible="True"/>
-                <field name="amount_select" column_invisible="True"/>
+                <field name="employee_id" invisible="1"/>
+                <field name="amount_select" invisible="1"/>
                 <field name="code"/>
                 <field name="partner_id"/>
                 <field name="slip_id"/>
@@ -48,15 +48,16 @@
                         <field name="name" string="Line Name"/>
                         <field name="code"/>
                         <field name="slip_id"/>
-                        <field name="employee_id" widget="many2one_avatar_user"/>
+                        <field name="employee_id"/>
                     </group>
                     <group string="Calculations">
                         <field name="category_id"/>
                         <field name="amount_select"/>
-                        <field name="amount_fix"  readonly="amount_select != 'fix'"/>
-                        <field name="amount_percentage"  readonly="amount_select != 'percentage'"/>
+                        <field name="amount_fix"  attrs="{'readonly':[('amount_select','!=','fix')]}"/>
+                        <field name="amount_percentage"  attrs="{'readonly':[('amount_select','!=','percentage')]}"/>
                         <field name="sequence"/>
                     </group>
+                    <field name="note"/>
                 </group>
             </form>
         </field>

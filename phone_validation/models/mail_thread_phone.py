@@ -4,16 +4,16 @@
 import re
 
 from odoo import api, fields, models, _
+from odoo.addons.phone_validation.tools import phone_validation
 from odoo.exceptions import AccessError, UserError
-from odoo.osv import expression
 
 
 class PhoneMixin(models.AbstractModel):
     """ Purpose of this mixin is to offer two services
 
-      * compute a sanitized phone number based on _phone_get_number_fields.
+      * compute a sanitized phone number based on ´´_sms_get_number_fields´´.
         It takes first sanitized value, trying each field returned by the
-        method (see ``BaseModel._phone_get_number_fields()´´ for more details
+        method (see ``MailThread._sms_get_number_fields()´´ for more details
         about the usage of this method);
       * compute blacklist state of records. It is based on phone.blacklist
         model and give an easy-to-use field and API to manipulate blacklisted
@@ -28,7 +28,6 @@ class PhoneMixin(models.AbstractModel):
     _name = 'mail.thread.phone'
     _description = 'Phone Blacklist Mixin'
     _inherit = ['mail.thread']
-    _phone_search_min_length = 3
 
     phone_sanitized = fields.Char(
         string='Sanitized Number', compute="_compute_phone_sanitized", compute_sudo=True, store=True,
@@ -48,73 +47,47 @@ class PhoneMixin(models.AbstractModel):
     phone_mobile_search = fields.Char("Phone/Mobile", store=False, search='_search_phone_mobile_search')
 
     def _search_phone_mobile_search(self, operator, value):
-        value = value.strip() if isinstance(value, str) else value
-        phone_fields = [
-            fname for fname in self._phone_get_number_fields()
-            if fname in self._fields and self._fields[fname].store
-        ]
-        if not phone_fields:
-            raise UserError(_('Missing definition of phone fields.'))
-
-        # search if phone/mobile is set or not
-        if (value is True or not value) and operator in ('=', '!='):
-            if value:
-                # inverse the operator
-                operator = '=' if operator == '!=' else '!='
-            op = expression.AND if operator == '=' else expression.OR
-            return op([[(phone_field, operator, False)] for phone_field in phone_fields])
-
-        if self._phone_search_min_length and len(value) < self._phone_search_min_length:
+        value = value.strip()
+        if len(value) < 3:
             raise UserError(_('Please enter at least 3 characters when searching a Phone/Mobile number.'))
 
         pattern = r'[\s\\./\(\)\-]'
-        sql_operator = {'=like': 'LIKE', '=ilike': 'ILIKE'}.get(operator, operator)
-
         if value.startswith('+') or value.startswith('00'):
-            if operator in expression.NEGATIVE_TERM_OPERATORS:
-                # searching on +32485112233 should also finds 0032485112233 (and vice versa)
-                # we therefore remove it from input value and search for both of them in db
-                where_str = ' AND '.join(
-                    f"""model.{phone_field} IS NULL OR (
-                            REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s OR
-                            REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s
-                    )"""
-                    for phone_field in phone_fields
-                )
-            else:
-                # searching on +32485112233 should also finds 0032485112233 (and vice versa)
-                # we therefore remove it from input value and search for both of them in db
-                where_str = ' OR '.join(
-                    f"""model.{phone_field} IS NOT NULL AND (
-                            REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s OR
-                            REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s
-                    )"""
-                    for phone_field in phone_fields
-                )
-            query = f"SELECT model.id FROM {self._table} model WHERE {where_str};"
-
-            term = re.sub(pattern, '', value[1 if value.startswith('+') else 2:])
-            if operator not in ('=', '!='):  # for like operators
-                term = f'{term}%'
-            self._cr.execute(
-                query, (pattern, '00' + term, pattern, '+' + term) * len(phone_fields)
-            )
+            # searching on +32485112233 should also finds 0032485112233 (and vice versa)
+            # we therefore remove it from input value and search for both of them in db
+            query = f"""
+                SELECT model.id
+                FROM {self._table} model
+                WHERE
+                    model.phone IS NOT NULL AND (
+                        REGEXP_REPLACE(model.phone, %s, '', 'g') ILIKE %s OR
+                        REGEXP_REPLACE(model.phone, %s, '', 'g') ILIKE %s
+                    ) OR
+                    model.mobile IS NOT NULL AND (
+                        REGEXP_REPLACE(model.mobile, %s, '', 'g') ILIKE %s OR
+                        REGEXP_REPLACE(model.mobile, %s, '', 'g') ILIKE %s
+                    );
+            """
+            term = re.sub(pattern, '', value[1 if value.startswith('+') else 2:]) + '%'
+            self._cr.execute(query, (
+                pattern, '00' + term,
+                pattern, '+' + term,
+                pattern, '00' + term,
+                pattern, '+' + term
+            ))
         else:
-            if operator in expression.NEGATIVE_TERM_OPERATORS:
-                where_str = ' AND '.join(
-                    f"(model.{phone_field} IS NULL OR REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s)"
-                    for phone_field in phone_fields
-                )
-            else:
-                where_str = ' OR '.join(
-                    f"(model.{phone_field} IS NOT NULL AND REGEXP_REPLACE(model.{phone_field}, %s, '', 'g') {sql_operator} %s)"
-                    for phone_field in phone_fields
-                )
-            query = f"SELECT model.id FROM {self._table} model WHERE {where_str};"
-            term = re.sub(pattern, '', value)
-            if operator not in ('=', '!='):  # for like operators
-                term = f'%{term}%'
-            self._cr.execute(query, (pattern, term) * len(phone_fields))
+            query = f"""
+                SELECT model.id
+                FROM {self._table} model
+                WHERE
+                    REGEXP_REPLACE(model.phone, %s, '', 'g') ILIKE %s OR
+                    REGEXP_REPLACE(model.mobile, %s, '', 'g') ILIKE %s;
+            """
+            term = '%' + re.sub(pattern, '', value) + '%'
+            self._cr.execute(query, (
+                pattern, term,
+                pattern, term
+            ))
         res = self._cr.fetchall()
         if not res:
             return [(0, '=', 1)]
@@ -126,7 +99,7 @@ class PhoneMixin(models.AbstractModel):
         number_fields = self._phone_get_number_fields()
         for record in self:
             for fname in number_fields:
-                sanitized = record._phone_format(fname=fname)
+                sanitized = record.phone_get_sanitized_number(number_fname=fname)
                 if sanitized:
                     break
             record.phone_sanitized = sanitized
@@ -147,9 +120,9 @@ class PhoneMixin(models.AbstractModel):
             # may not be calculated as blacklisted even though it is if both field values exist in a model.
             for number_field in number_fields:
                 if 'mobile' in number_field:
-                    mobile_blacklisted = record.phone_sanitized_blacklisted and record._phone_format(fname=number_field) == record.phone_sanitized
+                    mobile_blacklisted = record.phone_sanitized_blacklisted and record.phone_get_sanitized_number(number_fname=number_field) == record.phone_sanitized
                 else:
-                    phone_blacklisted = record.phone_sanitized_blacklisted and record._phone_format(fname=number_field) == record.phone_sanitized
+                    phone_blacklisted = record.phone_sanitized_blacklisted and record.phone_get_sanitized_number(number_fname=number_field) == record.phone_sanitized
             record.mobile_blacklisted = mobile_blacklisted
             record.phone_blacklisted = phone_blacklisted
 
@@ -194,6 +167,30 @@ class PhoneMixin(models.AbstractModel):
         """ Tool method to get all triggers for sanitize """
         res = [self._phone_get_country_field()] if self._phone_get_country_field() else []
         return res + self._phone_get_number_fields()
+
+    def _phone_get_number_fields(self):
+        """ This method returns the fields to use to find the number to use to
+        send an SMS on a record. """
+        return []
+
+    def _phone_get_country_field(self):
+        if 'country_id' in self:
+            return 'country_id'
+        return False
+
+    def phone_get_sanitized_numbers(self, number_fname='mobile', force_format='E164'):
+        res = dict.fromkeys(self.ids, False)
+        country_fname = self._phone_get_country_field()
+        for record in self:
+            number = record[number_fname]
+            res[record.id] = phone_validation.phone_sanitize_numbers_w_record([number], record, record_country_fname=country_fname, force_format=force_format)[number]['sanitized']
+        return res
+
+    def phone_get_sanitized_number(self, number_fname='mobile', force_format='E164'):
+        self.ensure_one()
+        country_fname = self._phone_get_country_field()
+        number = self[number_fname]
+        return phone_validation.phone_sanitize_numbers_w_record([number], self, record_country_fname=country_fname, force_format=force_format)[number]['sanitized']
 
     def _phone_set_blacklisted(self):
         return self.env['phone.blacklist'].sudo()._add([r.phone_sanitized for r in self])

@@ -1,985 +1,1344 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import {
-    click,
-    dragAndDrop,
-    drag,
-    getFixture,
-    patchDate,
-    patchWithCleanup,
-    triggerEvent,
-} from "@web/../tests/helpers/utils";
-import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
-import { COLORS } from "@web_gantt/gantt_connector";
-import { GanttRenderer } from "@web_gantt/gantt_renderer";
-import { CLASSES, SELECTORS, getPill, getPillWrapper } from "./helpers";
-
-/** @typedef {import("@web_gantt/gantt_renderer").ConnectorProps} ConnectorProps */
-/** @typedef {import("@web_gantt/gantt_renderer").PillId} PillId */
+import testUtils, { createView } from "web.test_utils";
+import { Domain } from "@web/core/domain";
+import { registerCleanup } from "@web/../tests/helpers/cleanup";
+import GanttView from "@web_gantt/js/gantt_view";
+import GanttRenderer from "@web_gantt/js/gantt_renderer";
+import GanttController from "@web_gantt/js/gantt_controller";
 
 /**
- * @typedef {`[${ResId},${ResId},${ResId},${ResId}]`} ConnectorTaskIds
- * In the following order: [masterTaskId, masterTaskUserId, taskId, taskUserId]
- */
-
-/** @typedef {number | false} ResId */
-
-/**
- * @param {Element} connector
- * @param {"remove" | "reschedule-forward" | "reschedule-backward"} button
- */
-async function clickConnectorButton(connector, button) {
-    await triggerEvent(connector, null, "pointermove");
-    switch (button) {
-        case "remove": {
-            return click(connector, SELECTORS.connectorRemoveButton);
-        }
-        case "reschedule-backward": {
-            return click(connector, `${SELECTORS.connectorRescheduleButton}:first-of-type`);
-        }
-        case "reschedule-forward": {
-            return click(connector, `${SELECTORS.connectorRescheduleButton}:last-of-type`);
-        }
-    }
-}
-
-/**
- * @param {number | "new"} id
- */
-export function getConnector(id) {
-    if (!/^__connector__/.test(id)) {
-        id = `__connector__${id}`;
-    }
-    return getFixture().querySelector([
-        `${SELECTORS.cellContainer} ${SELECTORS.connector}[data-connector-id='${id}']`,
-    ]);
-}
-
-export function getConnectorMap(renderer) {
+ * As the rendering of the connectors is made after the gantt rendering is injected in the dom and as the connectors
+ * are an owl component that needs to be mounted (async), we have no control on when they will actually be generated.
+ * For that reason we had to create the testPromise and extend both TaskGanttConnectorRenderer and TaskGanttConnectorView.
+* */
+let testPromise = testUtils.makeTestPromise();
+const TestGanttRenderer = GanttRenderer.extend({
     /**
-     * @param {PillId} pillId
-     */
-    const getIdAndUserIdFromPill = (pillId) => {
-        /** @type {[ResId, ResId]} */
-        const result = [renderer.pills[pillId]?.record.id || false, false];
-        if (result[0]) {
-            const pills = renderer.mappingRecordToPillsByRow[result[0]]?.pills;
-            if (pills) {
-                const pillEntry = Object.entries(pills).find((e) => e[1].id === pillId);
-                if (pillEntry) {
-                    const [firstGroup] = JSON.parse(pillEntry[0]);
-                    if (firstGroup.user_ids?.length) {
-                        result[1] = firstGroup.user_ids[0] || false;
-                    }
-                }
-            }
-        }
-        return result;
-    };
-
-    /** @type {Map<ConnectorTaskIds, ConnectorProps>} */
-    const connectorMap = new Map();
-    for (const connector of Object.values(renderer.connectors)) {
-        const { sourcePillId, targetPillId } = renderer.mappingConnectorToPills[connector.id];
-        if (!sourcePillId || !targetPillId) {
-            continue;
-        }
-        const key = JSON.stringify([
-            ...getIdAndUserIdFromPill(sourcePillId),
-            ...getIdAndUserIdFromPill(targetPillId),
-        ]);
-        connectorMap.set(key, connector);
+     * @override
+    */
+    async updateConnectorContainerComponent() {
+        await this._super(...arguments);
+        return testPromise.resolve();
     }
-    return connectorMap;
-}
+});
+const TestGanttView = GanttView.extend({
+    config: Object.assign({}, GanttView.prototype.config, {
+        Renderer: TestGanttRenderer,
+    })
+});
 
+const actualDate = new Date(2021, 9, 10, 8, 0, 0);
+const initialDate = new Date(actualDate.getTime() - actualDate.getTimezoneOffset() * 60 * 1000);
 const ganttViewParams = {
-    type: "gantt",
-    resModel: "project.task",
-    arch: /* xml */ `
-        <gantt
-            date_start="planned_date_begin"
-            date_stop="date_deadline"
-            default_scale="month"
-            dependency_field="depend_on_ids"
-        />
-    `,
+    arch: `<gantt date_start="planned_date_begin" date_stop="planned_date_end" default_scale="month" dependency_field="depend_on_ids"/>`,
+    domain: Domain.FALSE,
+    model: 'project.task',
+    viewOptions: {initialDate},
 };
 
-/** @type {GanttRenderer} */
-let renderer;
-/** @type {HTMLElement} */
-let target;
+/**
+ * Returns the connector dict associated with the provided gantt
+ *
+ * @param gantt
+ * @return {Object} a dict of:
+ *      - Keys:
+ *          masterTaskId|masterTaskUserId|taskId|taskUserId
+ *      - Values:
+ *          connector
+ */
+function getConnectorsDict(gantt) {
+    const connectorsDict = { };
+    for (const connector of Object.values(gantt.renderer._connectors)) {
+        const connector_data = connector.data;
+        const masterUserId = JSON.parse(connector_data.masterRowId)[0].user_ids[0] || 0;
+        const slaveUserId = JSON.parse(connector_data.slaveRowId)[0].user_ids[0] || 0;
+        const testKey = `${connector_data.masterId}|${masterUserId}|${connector_data.slaveId}|${slaveUserId}`;
+        connectorsDict[testKey] = connector;
+    }
+    return connectorsDict;
+}
 
-QUnit.module("Views > GanttView", (hooks) => {
-    hooks.beforeEach(async () => {
-        patchDate(2021, 9, 10, 8, 0, 0);
-        patchWithCleanup(GanttRenderer.prototype, {
-            setup() {
-                super.setup(...arguments);
-                renderer = this;
+const CSS = {
+    SELECTOR: {
+        CONNECTOR: 'svg.o_connector',
+        CONNECTOR_CONTAINER: '.o_connector_container',
+        CONNECTOR_CREATOR_BULLET: '.o_connector_creator_bullet',
+        CONNECTOR_CREATOR_WRAPPER: '.o_connector_creator_wrapper',
+        CONNECTOR_STROKE: '.o_connector_stroke',
+        CONNECTOR_STROKE_BUTTON: '.o_connector_stroke_button',
+        CONNECTOR_STROKE_BUTTONS: '.o_connector_stroke_buttons',
+        CONNECTOR_STROKE_RESCHEDULE_BUTTON: '.o_connector_stroke_reschedule_button',
+        CONNECTOR_STROKE_REMOVE_BUTTON: '.o_connector_stroke_remove_button',
+        INVISIBLE: '.invisible',
+        PILL: '.o_gantt_pill',
+    },
+    CLASS: {
+        CONNECTOR_HOVERED: 'o_connector_hovered',
+        PILL_HIGHLIGHT: 'highlight',
+    },
+};
+
+QUnit.module('LegacyViews > GanttView (legacy) > Gantt Dependency', {
+    async beforeEach() {
+        this.initialPopoverDefaultAnimation = Popover.Default.animation;
+        Popover.Default.animation = false;
+
+        testPromise = testUtils.makeTestPromise();
+        ganttViewParams.data = {
+            'project.task': {
+                fields: {
+                    id: { string: 'ID', type: 'integer' },
+                    name: { string: 'Name', type: 'char' },
+                    planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                    planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                    project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                    user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                    allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                    depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                    display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+                },
+                records: [
+                    {
+                        id: 1,
+                        name: 'Task 1',
+                        planned_date_begin: '2021-10-11 18:30:00',
+                        planned_date_end: '2021-10-11 19:29:59',
+                        project_id: 1,
+                        user_ids: [1],
+                        depend_on_ids: [],
+                    },
+                    {
+                        id: 2,
+                        name: 'Task 2',
+                        planned_date_begin: '2021-10-12 11:30:00',
+                        planned_date_end: '2021-10-12 12:29:59',
+                        project_id: 1,
+                        user_ids: [1],
+                        depend_on_ids: [1],
+                    },
+                ],
             },
-        });
-
-        setupViewRegistries();
-
-        target = getFixture();
-        ganttViewParams.serverData = {
-            models: {
-                "project.task": {
-                    fields: {
-                        id: { string: "ID", type: "integer" },
-                        name: { string: "Name", type: "char" },
-                        planned_date_begin: { string: "Start Date", type: "datetime" },
-                        date_deadline: { string: "Stop Date", type: "datetime" },
-                        user_ids: { string: "Assignees", type: "many2many", relation: "res.users" },
-                        allow_task_dependencies: {
-                            string: "Allow Task Dependencies",
-                            type: "boolean",
-                            default: true,
-                        },
-                        depend_on_ids: {
-                            string: "Depends on",
-                            type: "one2many",
-                            relation: "project.task",
-                        },
-                        display_warning_dependency_in_gantt: {
-                            string: "Display warning dependency in Gantt",
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                    records: [
-                        {
-                            id: 1,
-                            name: "Task 1",
-                            planned_date_begin: "2021-10-11 18:30:00",
-                            date_deadline: "2021-10-11 19:29:59",
-                            user_ids: [1],
-                            depend_on_ids: [],
-                        },
-                        {
-                            id: 2,
-                            name: "Task 2",
-                            planned_date_begin: "2021-10-12 11:30:00",
-                            date_deadline: "2021-10-12 12:29:59",
-                            user_ids: [1, 3],
-                            depend_on_ids: [1],
-                        },
-                        {
-                            id: 3,
-                            name: "Task 3",
-                            planned_date_begin: "2021-10-13 06:30:00",
-                            date_deadline: "2021-10-13 07:29:59",
-                            user_ids: [],
-                            depend_on_ids: [2],
-                        },
-                        {
-                            id: 4,
-                            name: "Task 4",
-                            planned_date_begin: "2021-10-14 22:30:00",
-                            date_deadline: "2021-10-14 23:29:59",
-                            user_ids: [2, 3],
-                            depend_on_ids: [2],
-                        },
-                        {
-                            id: 5,
-                            name: "Task 5",
-                            planned_date_begin: "2021-10-15 01:53:10",
-                            date_deadline: "2021-10-15 02:34:34",
-                            user_ids: [],
-                            depend_on_ids: [],
-                        },
-                        {
-                            id: 6,
-                            name: "Task 6",
-                            planned_date_begin: "2021-10-16 23:00:00",
-                            date_deadline: "2021-10-16 23:21:01",
-                            user_ids: [1, 3],
-                            depend_on_ids: [4, 5],
-                        },
-                        {
-                            id: 7,
-                            name: "Task 7",
-                            planned_date_begin: "2021-10-17 10:30:12",
-                            date_deadline: "2021-10-17 11:29:59",
-                            user_ids: [1, 2, 3],
-                            depend_on_ids: [6],
-                        },
-                        {
-                            id: 8,
-                            name: "Task 8",
-                            planned_date_begin: "2021-10-18 06:30:12",
-                            date_deadline: "2021-10-18 07:29:59",
-                            user_ids: [1, 3],
-                            depend_on_ids: [7],
-                        },
-                        {
-                            id: 9,
-                            name: "Task 9",
-                            planned_date_begin: "2021-10-19 06:30:12",
-                            date_deadline: "2021-10-19 07:29:59",
-                            user_ids: [2],
-                            depend_on_ids: [8],
-                        },
-                        {
-                            id: 10,
-                            name: "Task 10",
-                            planned_date_begin: "2021-10-19 06:30:12",
-                            date_deadline: "2021-10-19 07:29:59",
-                            user_ids: [2],
-                            depend_on_ids: [],
-                        },
-                        {
-                            id: 11,
-                            name: "Task 11",
-                            planned_date_begin: "2021-10-18 06:30:12",
-                            date_deadline: "2021-10-18 07:29:59",
-                            user_ids: [2],
-                            depend_on_ids: [10],
-                        },
-                        {
-                            id: 12,
-                            name: "Task 12",
-                            planned_date_begin: "2021-10-18 06:30:12",
-                            date_deadline: "2021-10-19 07:29:59",
-                            user_ids: [2],
-                            depend_on_ids: [],
-                        },
-                        {
-                            id: 13,
-                            name: "Task 13",
-                            planned_date_begin: "2021-10-18 07:29:59",
-                            date_deadline: "2021-10-20 07:29:59",
-                            user_ids: [2],
-                            depend_on_ids: [12],
-                        },
-                    ],
+            'project.project': {
+                fields: {
+                    id: {string: 'ID', type: 'integer'},
+                    name: {string: 'Name', type: 'char'},
                 },
-                "res.users": {
-                    fields: {
-                        id: { string: "ID", type: "integer" },
-                        name: { string: "Name", type: "char" },
-                    },
-                    records: [
-                        { id: 1, name: "User 1" },
-                        { id: 2, name: "User 2" },
-                        { id: 3, name: "User 3" },
-                        { id: 4, name: "User 4" },
-                    ],
+                records: [
+                    {id: 1, name: 'Project 1'},
+                ],
+            },
+            'res.users': {
+                fields: {
+                    id: {string: 'ID', type: 'integer'},
+                    name: {string: 'Name', type: 'char'},
                 },
+                records: [
+                    {id: 1, name: 'User 1'},
+                ],
             },
         };
+        ganttViewParams.mockRPCHook = function (route, args) {
+            return null;
+        };
+        ganttViewParams.mockRPC = function (route, args) {
+            const prom = ganttViewParams.mockRPCHook(route, args);
+            if (prom !== null) {
+                return prom;
+            } else {
+                return this._super.apply(this, arguments);
+            }
+        };
+        ganttViewParams.View = TestGanttView;
+    },
+    async afterEach() {
+        Popover.Default.animation = this.initialPopoverDefaultAnimation;
+    },
+});
 
-        ganttViewParams.groupBy = ["user_ids"];
-    });
+QUnit.test('Connectors are correctly computed and rendered.', async function (assert) {
+    /**
+     * This test checks that:
+     *     - That the connector is part of the props and both its props color is the expected one (=> 2 * testKeys.length tests).
+     *     - There is no other connector than the one expected.
+     *     - All connectors are rendered.
+     */
 
-    QUnit.module("Dependencies");
+    /**
+     * Dict used to run all tests in one loop.
+     *
+     * - Keys:
+     *      masterTaskId|masterTaskUserId|taskId|taskUserId
+     * - Values:
+     *      n 'normal', w 'warning or e 'error'
+     *
+     * =>  Check that there is a connector between masterTaskId from group masterTaskUserId and taskId from group taskUserId with normal|error color.
+     */
+    const tests = {
+        '1|1|2|1': 'n',
+        '1|1|2|3': 'n',
+        '2|1|3|0': 'n',
+        '2|3|3|0': 'n',
+        '2|1|4|2': 'n',
+        '2|3|4|3': 'n',
+        '4|2|6|1': 'n',
+        '4|3|6|3': 'n',
+        '5|0|6|1': 'n',
+        '5|0|6|3': 'n',
+        '6|1|7|1': 'n',
+        '6|1|7|2': 'n',
+        '6|3|7|2': 'n',
+        '6|3|7|3': 'n',
+        '7|1|8|1': 'n',
+        '7|2|8|1': 'n',
+        '7|2|8|3': 'n',
+        '7|3|8|3': 'n',
+        '8|1|9|2': 'n',
+        '8|3|9|2': 'n',
+        '10|2|11|2': 'e',
+        '12|2|13|2': 'w',
+    };
 
-    QUnit.test("Connectors are correctly computed and rendered.", async (assert) => {
-        assert.expect(46);
+    assert.expect(3 * Object.keys(tests).length + 2);
 
-        /**
-         * @type {Map<ConnectorTaskIds, keyof typeof COLORS>}
-         * =>  Check that there is a connector between masterTaskId from group masterTaskUserId and taskId from group taskUserId with normal|error color.
-         */
-        const testMap = new Map([
-            ["[1,1,2,1]", "default"],
-            ["[1,1,2,3]", "default"],
-            ["[2,1,3,false]", "default"],
-            ["[2,3,3,false]", "default"],
-            ["[2,1,4,2]", "default"],
-            ["[2,3,4,3]", "default"],
-            ["[4,2,6,1]", "default"],
-            ["[4,3,6,3]", "default"],
-            ["[5,false,6,1]", "default"],
-            ["[5,false,6,3]", "default"],
-            ["[6,1,7,1]", "default"],
-            ["[6,1,7,2]", "default"],
-            ["[6,3,7,2]", "default"],
-            ["[6,3,7,3]", "default"],
-            ["[7,1,8,1]", "default"],
-            ["[7,2,8,1]", "default"],
-            ["[7,2,8,3]", "default"],
-            ["[7,3,8,3]", "default"],
-            ["[8,1,9,2]", "default"],
-            ["[8,3,9,2]", "default"],
-            ["[10,2,11,2]", "error"],
-            ["[12,2,13,2]", "warning"],
-        ]);
-
-        await makeView(ganttViewParams);
-
-        const connectorMap = getConnectorMap(renderer);
-
-        for (const [testKey, colorCode] of testMap.entries()) {
-            const [masterTaskId, masterTaskUserId, taskId, taskUserId] = JSON.parse(testKey);
-
-            assert.ok(
-                connectorMap.has(testKey),
-                `There should be a connector between task ${masterTaskId} from group user ${masterTaskUserId} and task ${taskId} from group user ${taskUserId}.`
-            );
-
-            const connector = connectorMap.get(testKey);
-            const connectorStroke = getConnector(connector.id).querySelector(
-                SELECTORS.connectorStroke
-            );
-            assert.hasAttrValue(connectorStroke, "stroke", COLORS[colorCode].color);
-        }
-
-        assert.strictEqual(testMap.size, connectorMap.size);
-        assert.strictEqual(target.querySelectorAll(SELECTORS.connector).length, testMap.size);
-    });
-
-    QUnit.test("Connectors are correctly rendered.", async (assert) => {
-        patchWithCleanup(GanttRenderer.prototype, {
-            shouldRenderRecordConnectors(record) {
-                return record.id !== 1;
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
             },
-        });
-
-        ganttViewParams.serverData.models["project.task"].records = [
-            {
-                id: 1,
-                name: "Task 1",
-                planned_date_begin: "2021-10-11 18:30:00",
-                date_deadline: "2021-10-11 19:29:59",
-                user_ids: [1],
-                depend_on_ids: [],
-            },
-            {
-                id: 2,
-                name: "Task 2",
-                planned_date_begin: "2021-10-12 11:30:00",
-                date_deadline: "2021-10-12 12:29:59",
-                user_ids: [1],
-                depend_on_ids: [1],
-            },
-            {
-                id: 3,
-                name: "Task 3",
-                planned_date_begin: "2021-10-13 06:30:00",
-                date_deadline: "2021-10-13 07:29:59",
-                user_ids: [],
-                depend_on_ids: [1, 2],
-            },
-        ];
-
-        await makeView(ganttViewParams);
-        const connectorMap = getConnectorMap(renderer);
-        assert.deepEqual(
-            [...connectorMap.keys()],
-            ["[2,1,3,false]"],
-            "The only rendered connector should be the one from task_id 2 to task_id 3"
-        );
-    });
-
-    QUnit.test(
-        "Connectors are correctly computed and rendered when consolidation is active.",
-        async (assert) => {
-            ganttViewParams.serverData.models["project.task"].records = [
+            records: [
                 {
                     id: 1,
-                    name: "Task 1",
-                    planned_date_begin: "2021-10-11 18:30:00",
-                    date_deadline: "2021-10-11 19:29:59",
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
                     user_ids: [1],
                     depend_on_ids: [],
                 },
                 {
                     id: 2,
-                    name: "Task 2",
-                    planned_date_begin: "2021-10-12 11:30:00",
-                    date_deadline: "2021-10-12 12:29:59",
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
                     user_ids: [1, 3],
                     depend_on_ids: [1],
                 },
                 {
                     id: 3,
-                    name: "Task 3",
-                    planned_date_begin: "2021-10-13 06:30:00",
-                    date_deadline: "2021-10-13 07:29:59",
+                    name: 'Task 3',
+                    planned_date_begin: '2021-10-13 06:30:00',
+                    planned_date_end: '2021-10-13 07:29:59',
+                    project_id: 1,
                     user_ids: [],
                     depend_on_ids: [2],
                 },
                 {
                     id: 4,
-                    name: "Task 4",
-                    planned_date_begin: "2021-10-14 22:30:00",
-                    date_deadline: "2021-10-14 23:29:59",
+                    name: 'Task 4',
+                    planned_date_begin: '2021-10-14 22:30:00',
+                    planned_date_end: '2021-10-14 23:29:59',
+                    project_id: 1,
                     user_ids: [2, 3],
                     depend_on_ids: [2],
                 },
                 {
                     id: 5,
-                    name: "Task 5",
-                    planned_date_begin: "2021-10-15 01:53:10",
-                    date_deadline: "2021-10-15 02:34:34",
+                    name: 'Task 5',
+                    planned_date_begin: '2021-10-15 01:53:10',
+                    planned_date_end: '2021-10-15 02:34:34',
+                    project_id: 1,
                     user_ids: [],
                     depend_on_ids: [],
                 },
                 {
                     id: 6,
-                    name: "Task 6",
-                    planned_date_begin: "2021-10-16 23:00:00",
-                    date_deadline: "2021-10-16 23:21:01",
+                    name: 'Task 6',
+                    planned_date_begin: '2021-10-16 23:00:00',
+                    planned_date_end: '2021-10-16 23:21:01',
+                    project_id: 1,
                     user_ids: [1, 3],
                     depend_on_ids: [4, 5],
                 },
                 {
                     id: 7,
-                    name: "Task 7",
-                    planned_date_begin: "2021-10-17 10:30:12",
-                    date_deadline: "2021-10-17 11:29:59",
+                    name: 'Task 7',
+                    planned_date_begin: '2021-10-17 10:30:12',
+                    planned_date_end: '2021-10-17 11:29:59',
+                    project_id: 1,
                     user_ids: [1, 2, 3],
                     depend_on_ids: [6],
                 },
                 {
                     id: 8,
-                    name: "Task 8",
-                    planned_date_begin: "2021-10-18 06:30:12",
-                    date_deadline: "2021-10-18 07:29:59",
+                    name: 'Task 8',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-18 07:29:59',
+                    project_id: 1,
                     user_ids: [1, 3],
                     depend_on_ids: [7],
                 },
                 {
                     id: 9,
-                    name: "Task 9",
-                    planned_date_begin: "2021-10-19 06:30:12",
-                    date_deadline: "2021-10-19 07:29:59",
+                    name: 'Task 9',
+                    planned_date_begin: '2021-10-19 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [8],
                 },
                 {
                     id: 10,
-                    name: "Task 10",
-                    planned_date_begin: "2021-10-19 06:30:12",
-                    date_deadline: "2021-10-19 07:29:59",
+                    name: 'Task 10',
+                    planned_date_begin: '2021-10-19 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [],
                 },
                 {
                     id: 11,
-                    name: "Task 11",
-                    planned_date_begin: "2021-10-18 06:30:12",
-                    date_deadline: "2021-10-18 07:29:59",
+                    name: 'Task 11',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-18 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [10],
                 },
                 {
                     id: 12,
-                    name: "Task 12",
-                    planned_date_begin: "2021-10-18 06:30:12",
-                    date_deadline: "2021-10-19 07:29:59",
+                    name: 'Task 12',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [],
                 },
                 {
                     id: 13,
-                    name: "Task 13",
-                    planned_date_begin: "2021-10-18 07:29:59",
-                    date_deadline: "2021-10-20 07:29:59",
+                    name: 'Task 13',
+                    planned_date_begin: '2021-10-18 07:29:59',
+                    planned_date_end: '2021-10-20 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [12],
                 },
-            ];
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+                { id: 2, name: 'User 2' },
+                { id: 3, name: 'User 3' },
+                { id: 4, name: 'User 4' },
+            ],
+        },
+    };
 
-            await makeView({
-                ...ganttViewParams,
-                arch: /* xml */ `
-                    <gantt
-                        date_start="planned_date_begin"
-                        date_stop="date_deadline"
-                        default_scale="month"
-                        dependency_field="depend_on_ids"
-                        consolidation_max="{'user_ids': 100 }"
-                    />
-                `,
-            });
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids'] });
+    registerCleanup(gantt.destroy);
+    await testPromise;
 
-            // groups have been created of r
-            assert.strictEqual(
-                target.querySelectorAll(".o_gantt_row_header.o_gantt_group.o_group_open").length,
-                4
-            );
+    const connectorsDict = getConnectorsDict(gantt);
 
-            function getConnectorCounts() {
-                return target.querySelectorAll(SELECTORS.connector).length;
+    const connectorContainer = gantt.el.querySelector(CSS.SELECTOR.CONNECTOR_CONTAINER);
+    const connectorsDictCopy = { ...connectorsDict };
+    for (const [test_key, colorCode] of Object.entries(tests)) {
+        const [masterTaskId, masterTaskUserId, taskId, taskUserId] = test_key.split('|');
+        assert.ok(test_key in connectorsDict, `Connector between task ${masterTaskId} from group user ${masterTaskUserId} and task ${taskId} from group user ${taskUserId} should be present.`);
+
+        let color;
+        let connectorPropsColorMatch;
+        let colorMessage;
+        if (colorCode === 'n') {
+            color = gantt.renderer._connectorsStrokeColors.stroke;
+            connectorPropsColorMatch = !connectorsDict[test_key].style
+                || !connectorsDict[test_key].style.stroke
+                || !connectorsDict[test_key].style.stroke.color
+                || connectorsDict[test_key].style.stroke.color === color;
+            colorMessage = 'Connector props style should be the default one';
+        } else {
+            switch (colorCode) {
+                case 'w':
+                    color = gantt.renderer._connectorsStrokeWarningColors.stroke;
+                    colorMessage = 'Connector props style should be the warning one';
+                    break;
+                case 'e':
+                    color = gantt.renderer._connectorsStrokeErrorColors.stroke;
+                    colorMessage = 'Connector props style should be the error one';
+                    break;
             }
-            function getGroupRow(index) {
-                return target.querySelectorAll(".o_gantt_row_header.o_gantt_group")[index];
-            }
-
-            assert.strictEqual(getConnectorCounts(), 22);
-
-            await click(getGroupRow(1));
-            assert.doesNotHaveClass(getGroupRow(1), "o_group_open");
-            assert.strictEqual(getConnectorCounts(), 13);
-
-            await click(getGroupRow(1));
-            assert.strictEqual(getConnectorCounts(), 22);
-
-            await click(getGroupRow(1));
-            assert.strictEqual(getConnectorCounts(), 13);
-
-            await click(getGroupRow(2));
-            assert.strictEqual(getConnectorCounts(), 6);
-
-            await click(getGroupRow(0));
-            assert.strictEqual(getConnectorCounts(), 4);
-
-            await click(getGroupRow(3));
-            assert.strictEqual(getConnectorCounts(), 0);
+            connectorPropsColorMatch = connectorsDict[test_key].style.stroke.color === color;
         }
-    );
+        const connector_stroke = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="${connectorsDict[test_key].id}"] ${CSS.SELECTOR.CONNECTOR_STROKE}`);
+        assert.equal(connector_stroke.getAttribute('stroke'), color);
+        assert.ok(connectorPropsColorMatch, colorMessage);
+        delete connectorsDictCopy[test_key];
+    }
 
-    QUnit.test(
-        "Connector hovered state is triggered and color is set accordingly.",
-        async (assert) => {
-            await makeView(ganttViewParams);
+    assert.notOk(Object.keys(connectorsDictCopy).length, 'There should not be more connectors than expected.');
+    assert.equal(gantt.el.querySelectorAll(CSS.SELECTOR.CONNECTOR).length, Object.keys(tests).length, 'All connectors should be rendered.');
+});
 
-            assert.doesNotHaveClass(getConnector(1), CLASSES.highlightedConnector);
-            assert.hasAttrValue(
-                getConnector(1).querySelector(SELECTORS.connectorStroke),
-                "stroke",
-                COLORS.default.color
-            );
+QUnit.test('Connectors are rendered according to _shouldRenderRecordConnectors.', async function (assert) {
+    /**
+     * This test checks that _shouldRenderRecordConnectors effectively allows to prevent connectors to be rendered
+     * for records the function would return false for.
+     */
 
-            await triggerEvent(getConnector(1), null, "pointermove");
+    assert.expect(1);
 
-            assert.hasClass(getConnector(1), CLASSES.highlightedConnector);
-            assert.hasAttrValue(
-                getConnector(1).querySelector(SELECTORS.connectorStroke),
-                "stroke",
-                COLORS.default.highlightedColor
-            );
-        }
-    );
-
-    QUnit.test("Buttons are displayed when hovering a connector.", async (assert) => {
-        await makeView(ganttViewParams);
-
-        assert.containsNone(
-            getConnector(1),
-            SELECTORS.connectorStrokeButton,
-            "Connectors that are not hovered don't display buttons."
-        );
-
-        await triggerEvent(getConnector(1), null, "pointermove");
-
-        assert.containsN(
-            getConnector(1),
-            SELECTORS.connectorStrokeButton,
-            3,
-            "Connectors that are hovered display buttons."
-        );
+    testUtils.mock.patch(TestGanttRenderer, {
+        _shouldRenderRecordConnectors(record) {
+            return record.id !== 1;
+        },
     });
 
-    QUnit.test(
-        "Buttons are displayed when hovering a connector after a pill has been hovered.",
-        async (assert) => {
-            await makeView(ganttViewParams);
-
-            assert.containsNone(
-                getConnector(1),
-                SELECTORS.connectorStrokeButton,
-                "Connectors that are not hovered don't display buttons."
-            );
-
-            const task1Pill = getPill("Task 1");
-
-            await triggerEvent(task1Pill, null, "pointermove");
-
-            const firstConnector = getConnector(1); // (start at task1Pill)
-            assert.containsNone(
-                firstConnector,
-                SELECTORS.connectorStrokeButton,
-                "Connectors that are not hovered don't display buttons."
-            );
-            assert.hasClass(firstConnector, CLASSES.highlightedConnector);
-
-            await triggerEvent(firstConnector, null, "pointermove");
-
-            assert.hasClass(firstConnector, CLASSES.highlightedConnector);
-            assert.containsN(
-                getConnector(1),
-                SELECTORS.connectorStrokeButton,
-                3,
-                "Connectors that are hovered display buttons."
-            );
-        }
-    );
-
-    QUnit.test("Connector buttons: remove a dependency", async (assert) => {
-        await makeView({
-            ...ganttViewParams,
-            async mockRPC(_route, { method, model, args }) {
-                if (
-                    model === "project.task" &&
-                    ["web_gantt_reschedule", "write"].includes(method)
-                ) {
-                    assert.step(JSON.stringify([method, args]));
-                    return true;
-                }
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
             },
-        });
-
-        await clickConnectorButton(getConnector(1), "remove");
-
-        assert.verifySteps([`["write",[[2],{"depend_on_ids":[[3,1,false]]}]]`]);
-    });
-
-    QUnit.test("Connector buttons: reschedule task backward date.", async (assert) => {
-        await makeView({
-            ...ganttViewParams,
-            async mockRPC(_route, { method, model, args }) {
-                if (
-                    model === "project.task" &&
-                    ["web_gantt_reschedule", "write"].includes(method)
-                ) {
-                    assert.step(JSON.stringify([method, args]));
-                    return true;
-                }
-            },
-        });
-
-        await clickConnectorButton(getConnector(1), "reschedule-backward");
-
-        assert.verifySteps([
-            `["web_gantt_reschedule",["backward",1,2,"depend_on_ids",null,"planned_date_begin","date_deadline"]]`,
-        ]);
-    });
-
-    QUnit.test("Connector buttons: reschedule task forward date.", async (assert) => {
-        await makeView({
-            ...ganttViewParams,
-            async mockRPC(_route, { method, model, args }) {
-                if (
-                    model === "project.task" &&
-                    ["web_gantt_reschedule", "write"].includes(method)
-                ) {
-                    assert.step(JSON.stringify([method, args]));
-                    return true;
-                }
-            },
-        });
-
-        await clickConnectorButton(getConnector(1), "reschedule-forward");
-
-        assert.verifySteps([
-            `["web_gantt_reschedule",["forward",1,2,"depend_on_ids",null,"planned_date_begin","date_deadline"]]`,
-        ]);
-    });
-
-    QUnit.test(
-        "Connector buttons: reschedule task start backward, different data.",
-        async (assert) => {
-            await makeView({
-                ...ganttViewParams,
-                async mockRPC(_route, { method, model, args }) {
-                    if (
-                        model === "project.task" &&
-                        ["web_gantt_reschedule", "write"].includes(method)
-                    ) {
-                        assert.step(JSON.stringify([method, args]));
-                        return true;
-                    }
-                },
-            });
-
-            await clickConnectorButton(getConnector(1), "reschedule-backward");
-
-            assert.verifySteps([
-                `["web_gantt_reschedule",["backward",1,2,"depend_on_ids",null,"planned_date_begin","date_deadline"]]`,
-            ]);
-        }
-    );
-
-    QUnit.test("Connector buttons: reschedule task forward, different data.", async (assert) => {
-        await makeView({
-            ...ganttViewParams,
-            async mockRPC(_route, { method, model, args }) {
-                if (
-                    model === "project.task" &&
-                    ["web_gantt_reschedule", "write"].includes(method)
-                ) {
-                    assert.step(JSON.stringify([method, args]));
-                    return true;
-                }
-            },
-        });
-
-        await clickConnectorButton(getConnector(1), "reschedule-forward");
-
-        assert.verifySteps([
-            `["web_gantt_reschedule",["forward",1,2,"depend_on_ids",null,"planned_date_begin","date_deadline"]]`,
-        ]);
-    });
-
-    QUnit.test(
-        "Hovering a task pill should highlight related tasks and dependencies",
-        async (assert) => {
-            assert.expect(31);
-
-            /** @type {Map<ConnectorTaskIds, boolean>} */
-            const testMap = new Map([
-                ["[1,1,2,1]", true],
-                ["[1,1,2,3]", true],
-                ["[2,1,3,false]", true],
-                ["[2,3,3,false]", true],
-                ["[2,1,4,2]", true],
-                ["[2,3,4,3]", true],
-                ["[10,2,11,2]", false],
-            ]);
-
-            ganttViewParams.serverData.models["project.task"].records = [
+            records: [
                 {
                     id: 1,
-                    name: "Task 1",
-                    planned_date_begin: "2021-10-10 18:30:00",
-                    date_deadline: "2021-10-11 19:29:59",
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
                     user_ids: [1],
                     depend_on_ids: [],
                 },
                 {
                     id: 2,
-                    name: "Task 2",
-                    planned_date_begin: "2021-10-12 11:30:00",
-                    date_deadline: "2021-10-12 12:29:59",
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [1],
+                },
+                {
+                    id: 3,
+                    name: 'Task 3',
+                    planned_date_begin: '2021-10-13 06:30:00',
+                    planned_date_end: '2021-10-13 07:29:59',
+                    project_id: 1,
+                    user_ids: [],
+                    depend_on_ids: [1,2],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+                { id: 2, name: 'User 2' },
+                { id: 3, name: 'User 3' },
+                { id: 4, name: 'User 4' },
+            ],
+        },
+    };
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids'] });
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    const connectorsDict = getConnectorsDict(gantt);
+    assert.deepEqual(Object.keys(connectorsDict), ['2|1|3|0'], 'The only rendered connector should be the one from task_id 2 to task_id 3');
+
+    testUtils.mock.unpatch(TestGanttRenderer);
+});
+
+QUnit.test('Connectors are correctly computed and rendered when collapse_first_level is active.', async function (assert) {
+    /**
+     * This test checks that the connectors are correctly drew when collapse_first_level is active.
+     */
+
+    assert.expect(9);
+
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
                     user_ids: [1, 3],
                     depend_on_ids: [1],
                 },
                 {
                     id: 3,
-                    name: "Task 3",
-                    planned_date_begin: "2021-10-13 06:30:00",
-                    date_deadline: "2021-10-13 07:29:59",
+                    name: 'Task 3',
+                    planned_date_begin: '2021-10-13 06:30:00',
+                    planned_date_end: '2021-10-13 07:29:59',
+                    project_id: 1,
                     user_ids: [],
                     depend_on_ids: [2],
                 },
                 {
                     id: 4,
-                    name: "Task 4",
-                    planned_date_begin: "2021-10-14 22:30:00",
-                    date_deadline: "2021-10-14 23:29:59",
+                    name: 'Task 4',
+                    planned_date_begin: '2021-10-14 22:30:00',
+                    planned_date_end: '2021-10-14 23:29:59',
+                    project_id: 1,
+                    user_ids: [2, 3],
+                    depend_on_ids: [2],
+                },
+                {
+                    id: 5,
+                    name: 'Task 5',
+                    planned_date_begin: '2021-10-15 01:53:10',
+                    planned_date_end: '2021-10-15 02:34:34',
+                    project_id: 1,
+                    user_ids: [],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 6,
+                    name: 'Task 6',
+                    planned_date_begin: '2021-10-16 23:00:00',
+                    planned_date_end: '2021-10-16 23:21:01',
+                    project_id: 1,
+                    user_ids: [1, 3],
+                    depend_on_ids: [4, 5],
+                },
+                {
+                    id: 7,
+                    name: 'Task 7',
+                    planned_date_begin: '2021-10-17 10:30:12',
+                    planned_date_end: '2021-10-17 11:29:59',
+                    project_id: 1,
+                    user_ids: [1, 2, 3],
+                    depend_on_ids: [6],
+                },
+                {
+                    id: 8,
+                    name: 'Task 8',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-18 07:29:59',
+                    project_id: 1,
+                    user_ids: [1, 3],
+                    depend_on_ids: [7],
+                },
+                {
+                    id: 9,
+                    name: 'Task 9',
+                    planned_date_begin: '2021-10-19 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
+                    user_ids: [2],
+                    depend_on_ids: [8],
+                },
+                {
+                    id: 10,
+                    name: 'Task 10',
+                    planned_date_begin: '2021-10-19 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
+                    user_ids: [2],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 11,
+                    name: 'Task 11',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-18 07:29:59',
+                    project_id: 1,
+                    user_ids: [2],
+                    depend_on_ids: [10],
+                },
+                {
+                    id: 12,
+                    name: 'Task 12',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
+                    user_ids: [2],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 13,
+                    name: 'Task 13',
+                    planned_date_begin: '2021-10-18 07:29:59',
+                    planned_date_end: '2021-10-20 07:29:59',
+                    project_id: 1,
+                    user_ids: [2],
+                    depend_on_ids: [12],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+                { id: 2, name: 'User 2' },
+                { id: 3, name: 'User 3' },
+                { id: 4, name: 'User 4' },
+            ],
+        },
+    };
+
+    const ganttViewParamsWithCollapse = {
+        ...ganttViewParams,
+        ...{ arch: ganttViewParams.arch.replace('/>', ' collapse_first_level="1"/>') }
+    };
+    const gantt = await createView({ ...ganttViewParamsWithCollapse, groupBy: ['user_ids'] });
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    assert.equal(gantt.el.querySelectorAll('.o_gantt_row_group.open').length, 4, '`collapse_first_level` is activated.');
+
+    function getConnectorCounts() {
+        return gantt.el.querySelectorAll('.o_connector').length;
+    }
+
+    let connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 22, 'All connectors are drawn.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group.open[data-row-id^="[{\\"user_ids\\":[1,\\"User 1\\"]}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.ok(gantt.el.querySelector('.o_gantt_row_group:not(.open)[data-row-id^="[{\\"user_ids\\":[1,\\"User 1\\"]}]"]'), 'Group has been closed.');
+    assert.equal(connectorsCount, 13, 'Only connectors between open groups are drawn.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group:not(.open)[data-row-id^="[{\\"user_ids\\":[1,\\"User 1\\"]}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 22, 'All connectors are drawn after having reopen the only closed group.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group.open[data-row-id^="[{\\"user_ids\\":[1,\\"User 1\\"]}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 13, 'Only connectors between open groups are drawn.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group.open[data-row-id^="[{\\"user_ids\\":[2,\\"User 2\\"]}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 6, 'Only connectors between open groups are drawn.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group.open[data-row-id^="[{\\"user_ids\\":false}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 4, 'Only connectors between open groups are drawn.');
+
+    testPromise = testUtils.makeTestPromise();
+    gantt.el.querySelector('.o_gantt_row_group.open[data-row-id^="[{\\"user_ids\\":[3,\\"User 3\\"]}]"]').click();
+    await testPromise;
+    connectorsCount = getConnectorCounts();
+    assert.equal(connectorsCount, 0, 'Only connectors between open groups are drawn.');
+});
+
+QUnit.test('Connector hovered state is triggered and color is set accordingly.', async function (assert) {
+    /**
+     * This test checks that:
+     *     - The o_connector_hovered class is triggered according to the hover of the connector.
+     *     - The color of the connector is set according to the provided styles.
+     */
+
+    assert.expect(4);
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    const connectorContainer = gantt.el.querySelector(CSS.SELECTOR.CONNECTOR_CONTAINER);
+    let connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+    let connector_stroke = connector.querySelector(CSS.SELECTOR.CONNECTOR_STROKE);
+
+    assert.notOk(connector.classList.contains(CSS.CLASS.CONNECTOR_HOVERED), "Connectors that are not hovered don't contain the o_connector_hovered class.");
+    assert.equal(connector_stroke.getAttribute('stroke'), gantt.renderer._connectorsStrokeColors.stroke);
+    await testUtils.dom.triggerMouseEvent(connector, "mouseover");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+    connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+    connector_stroke = connector.querySelector(CSS.SELECTOR.CONNECTOR_STROKE);
+    assert.ok(connector.classList.contains(CSS.CLASS.CONNECTOR_HOVERED), 'Hovered connectors contain the o_connector_hovered class');
+    assert.equal(connector_stroke.getAttribute('stroke'), gantt.renderer._connectorsStrokeColors.hoveredStroke);
+});
+
+QUnit.test('Buttons are displayed when hovering a connector.', async function (assert) {
+
+    assert.expect(2);
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    const connectorContainer = gantt.el.querySelector(CSS.SELECTOR.CONNECTOR_CONTAINER);
+    const connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+
+    assert.ok(connector.querySelector(CSS.SELECTOR.CONNECTOR_STROKE_BUTTON) === null, "Connectors that are not hovered don't display buttons.");
+    await testUtils.dom.triggerMouseEvent(connector, "mouseover");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+    assert.ok(connector.querySelector(CSS.SELECTOR.CONNECTOR_STROKE_BUTTON) !== null, "Connectors that are hovered display buttons.");
+});
+
+QUnit.test('Connector container is re-rendered.', async function (assert) {
+
+    assert.expect(1);
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    testPromise = testUtils.makeTestPromise();
+    document.querySelector('button.o_gantt_button_next').click();
+    await testPromise;
+
+    assert.strictEqual(
+        document.querySelectorAll(`${CSS.SELECTOR.CONNECTOR_CONTAINER}`).length,
+        1,
+        "there should be a connector container."
+    );
+});
+
+/**
+ * We need to prevent the reload that is triggered after the rpc call to web_gantt_reschedule as it was
+ * causing race conditions.
+ */
+const TestConnectorButtonRPCGanttController = GanttController.extend({
+    reload() { },
+});
+
+// Connector's buttons RPC calls have been tested one by one as they trigger a reload of the view which
+// was systematically causing the following test to fail.
+async function testConnectorButtonRPC(assert, createButtonSelector, expectedStep) {
+    assert.expect(2);
+
+    ganttViewParams.mockRPCHook = (route, args) => {
+        if (args.model === 'project.task') {
+            if (args.method === 'web_gantt_reschedule' || args.method === 'write') {
+                const [rpc_arg1, rpc_arg2, rpc_arg3 = null] = args.args;
+                assert.step(`${args.method}|${rpc_arg1}|${JSON.stringify(rpc_arg2)}${rpc_arg3 ? `|${rpc_arg3}` : ''}`);
+                return Promise.resolve(true);
+            }
+        }
+        return null;
+    };
+
+    ganttViewParams.View = ganttViewParams.View.extend({
+        config: Object.assign({}, ganttViewParams.View.prototype.config, {
+            Controller: TestConnectorButtonRPCGanttController,
+        })
+    });
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    const connectorContainer = gantt.el.querySelector(CSS.SELECTOR.CONNECTOR_CONTAINER);
+    const connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+
+    await testUtils.dom.triggerMouseEvent(connector, "mouseover");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+
+    await testUtils.dom.click(connector.querySelector(createButtonSelector));
+    assert.verifySteps([expectedStep]);
+}
+
+QUnit.test('Correct RPC is called on connector buttons click.', async function (assert) {
+    await testConnectorButtonRPC(
+        assert,
+        `${CSS.SELECTOR.CONNECTOR_STROKE_REMOVE_BUTTON}`,
+        'write|2|{"depend_on_ids":[[3,1,false]]}'
+    );
+});
+
+QUnit.test('Correct RPC is called on connector buttons click.', async function (assert) {
+    await testConnectorButtonRPC(
+        assert,
+        `${CSS.SELECTOR.CONNECTOR_STROKE_RESCHEDULE_BUTTON}:first-of-type`,
+        'web_gantt_reschedule|backward|1|2'
+    );
+});
+
+QUnit.test('Correct RPC is called on connector buttons click.', async function (assert) {
+    await testConnectorButtonRPC(
+        assert,
+        `${CSS.SELECTOR.CONNECTOR_STROKE_RESCHEDULE_BUTTON}:last-of-type`,
+        'web_gantt_reschedule|forward|1|2'
+    );
+});
+
+QUnit.test('Correct RPC is called on connector buttons click.', async function (assert) {
+
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },{
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [1],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+            ],
+        },
+    };
+
+    await testConnectorButtonRPC(
+        assert,
+        `${CSS.SELECTOR.CONNECTOR_STROKE_RESCHEDULE_BUTTON}:first-of-type`,
+        'web_gantt_reschedule|backward|1|2'
+    );
+});
+
+QUnit.test('Correct RPC is called on connector buttons click.', async function (assert) {
+
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },{
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [1],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+            ],
+        },
+    };
+
+    await testConnectorButtonRPC(
+        assert,
+        `${CSS.SELECTOR.CONNECTOR_STROKE_RESCHEDULE_BUTTON}:last-of-type`,
+        'web_gantt_reschedule|forward|1|2'
+    );
+});
+
+QUnit.test('Hovering a task pill, all the pills of the same task, and their related connectors are highlighted.', async function (assert) {
+    /**
+     * This test checks that:
+     *     - When hovering a pill:
+     *          _ The pill gets highlighted.
+     *          - The connectorCreators get visible on that pill.
+     *          - All the pills (in case of m2m grouping) representing the same task are highlighted but their connectorCreators are invisible.
+     *          - All the connected connectors are highlighted.
+     *          - The connectors that are not connected to the pill are not highlighted.
+     *          - The connectors buttons are not visible on the highlighted connectors (note: the buttons should only become visible when the connector is hovered).
+     */
+
+    /**
+     * Dict used to run all tests in one loop.
+     *
+     * - Keys:
+     *      masterTaskId|masterTaskUserId|taskId|taskUserId
+     * - Values:
+     *      y 'expected to be hovered', n 'not expected to be hovered'
+     *
+     */
+    const tests = {
+        '1|1|2|1': 'y',
+        '1|1|2|3': 'y',
+        '2|1|3|0': 'y',
+        '2|3|3|0': 'y',
+        '2|1|4|2': 'y',
+        '2|3|4|3': 'y',
+        '10|2|11|2': 'n',
+    };
+
+    assert.expect(3 * Object.keys(tests).length + 8);
+
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-10 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
+                    user_ids: [1, 3],
+                    depend_on_ids: [1],
+                },
+                {
+                    id: 3,
+                    name: 'Task 3',
+                    planned_date_begin: '2021-10-13 06:30:00',
+                    planned_date_end: '2021-10-13 07:29:59',
+                    project_id: 1,
+                    user_ids: [],
+                    depend_on_ids: [2],
+                },
+                {
+                    id: 4,
+                    name: 'Task 4',
+                    planned_date_begin: '2021-10-14 22:30:00',
+                    planned_date_end: '2021-10-14 23:29:59',
+                    project_id: 1,
                     user_ids: [2, 3],
                     depend_on_ids: [2],
                 },
                 {
                     id: 10,
-                    name: "Task 10",
-                    planned_date_begin: "2021-10-19 06:30:12",
-                    date_deadline: "2021-10-19 07:29:59",
+                    name: 'Task 10',
+                    planned_date_begin: '2021-10-19 06:30:12',
+                    planned_date_end: '2021-10-19 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [],
                     display_warning_dependency_in_gantt: false,
                 },
                 {
                     id: 11,
-                    name: "Task 11",
-                    planned_date_begin: "2021-10-18 06:30:12",
-                    date_deadline: "2021-10-18 07:29:59",
+                    name: 'Task 11',
+                    planned_date_begin: '2021-10-18 06:30:12',
+                    planned_date_end: '2021-10-18 07:29:59',
+                    project_id: 1,
                     user_ids: [2],
                     depend_on_ids: [10],
                 },
-            ];
-
-            await makeView(ganttViewParams);
-
-            const connectorMap = getConnectorMap(renderer);
-            const pills = [];
-            for (const wrapper of target.querySelectorAll(SELECTORS.pillWrapper)) {
-                const pillId = wrapper.dataset.pillId;
-                pills.push({
-                    el: wrapper.querySelector(SELECTORS.pill),
-                    recordId: renderer.pills[pillId].record.id,
-                });
-            }
-
-            const task2Pills = pills.filter((p) => p.recordId === 2);
-
-            assert.strictEqual(task2Pills.length, 2);
-            assert.containsNone(target, CLASSES.highlightedPill);
-
-            // Check that all connectors are not in hover state.
-            for (const testKey of testMap.keys()) {
-                assert.doesNotHaveClass(
-                    getConnector(connectorMap.get(testKey).id),
-                    CLASSES.highlightedConnector
-                );
-            }
-
-            await triggerEvent(getPill("Task 2", { nth: 1 }), null, "pointermove");
-
-            // Both pills should be highlighted
-            assert.hasClass(getPillWrapper("Task 2", { nth: 1 }), CLASSES.highlightedPill);
-            assert.hasClass(getPillWrapper("Task 2", { nth: 2 }), CLASSES.highlightedPill);
-
-            // The rest of the pills should not be highlighted nor display connector creators
-            for (const { el, recordId } of pills) {
-                if (recordId !== 2) {
-                    assert.doesNotHaveClass(el, CLASSES.highlightedPill);
-                }
-            }
-
-            // Check that all connectors are in the expected hover state.
-            for (const [testKey, shouldBeHighlighted] of testMap.entries()) {
-                const connector = getConnector(connectorMap.get(testKey).id);
-                if (shouldBeHighlighted) {
-                    assert.hasClass(connector, CLASSES.highlightedConnector);
-                } else {
-                    assert.doesNotHaveClass(connector, CLASSES.highlightedConnector);
-                }
-                assert.containsNone(connector, SELECTORS.connectorStrokeButton);
-            }
-        }
-    );
-
-    QUnit.test(
-        "Hovering a connector should cause the connected pills to get highlighted.",
-        async (assert) => {
-            assert.expect(4);
-
-            await makeView(ganttViewParams);
-
-            assert.containsNone(target, SELECTORS.highlightedConnector);
-            assert.containsNone(target, SELECTORS.highlightedPill);
-
-            await triggerEvent(getConnector(1), null, "pointermove");
-
-            assert.containsOnce(target, SELECTORS.highlightedConnector);
-            assert.containsN(target, SELECTORS.highlightedPill, 2);
-        }
-    );
-
-    QUnit.test("Connectors are displayed behind pills, except on hover.", async (assert) => {
-        assert.expect(2);
-
-        const getZIndex = (el) => Number(getComputedStyle(el).zIndex) || 0;
-
-        await makeView(ganttViewParams);
-
-        assert.ok(getZIndex(getPillWrapper("Task 2")) > getZIndex(getConnector(1)));
-
-        await triggerEvent(getConnector(1), null, "pointermove");
-
-        assert.ok(getZIndex(getPillWrapper("Task 2")) < getZIndex(getConnector(1)));
-    });
-
-    QUnit.test("Create a connector from the gantt view.", async (assert) => {
-        assert.expect(2);
-
-        await makeView({
-            ...ganttViewParams,
-            async mockRPC(_route, { method, model, args }) {
-                if (model === "project.task" && method === "write") {
-                    assert.step(JSON.stringify([method, args]));
-                }
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
             },
-        });
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+                { id: 2, name: 'User 2' },
+                { id: 3, name: 'User 3' },
+            ],
+        },
+    };
 
-        // Explicitly shows the connector creator wrapper since its "display: none"
-        // disappears on native CSS hover, which cannot be programatically emulated.
-        const rightWrapper = target.querySelector(SELECTORS.connectorCreatorWrapper);
-        rightWrapper.classList.add("d-block");
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
 
-        await dragAndDrop(
-            rightWrapper.querySelector(SELECTORS.connectorCreatorBullet),
-            getPill("Task 2")
-        );
+    const connectorsDict = getConnectorsDict(gantt);
 
-        assert.verifySteps([`["write",[[2],{"depend_on_ids":[[4,3,false]]}]]`]);
-    });
+    const connectorContainer = gantt.el.querySelector(CSS.SELECTOR.CONNECTOR_CONTAINER);
+    const taskPills = gantt.el.querySelectorAll(`${CSS.SELECTOR.PILL}[data-id="2"]`);
+    for (const taskPill of taskPills) {
+        // The pills are not highlighted.
+        assert.notOk(taskPill.classList.contains(CSS.CLASS.PILL_HIGHLIGHT), 'Pills should not be highlighted by default.');
+        // Check that connector creators (little pills antennas) are not displayed.
+        assert.ok(taskPill.parentElement.querySelectorAll(`${CSS.SELECTOR.CONNECTOR_CREATOR_WRAPPER}${CSS.SELECTOR.INVISIBLE}`).length === 2, 'Connector creators should be hidden by default.');
+    }
+    // Check that all connectors are not in hover state.
+    for (const test_key in tests) {
+        const connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="${connectorsDict[test_key].id}"]`);
+        assert.notOk(connector.classList.contains(CSS.CLASS.CONNECTOR_HOVERED), 'Connectors should not be in hovered state by default');
+    }
 
-    QUnit.test("Connectors should be rendered if connected pill is not visible", async (assert) => {
-        // Generate a lot of users so that the connectors are far beyond the visible
-        // viewport, hence generating fake extra pills to render the connectors.
-        for (let i = 0; i < 100; i++) {
-            const id = 100 + i;
-            ganttViewParams.serverData.models["res.users"].records.push({
-                id,
-                name: `User ${id}`,
-            });
-            ganttViewParams.serverData.models["project.task"].records.push({
-                id,
-                name: `Task ${id}`,
-                planned_date_begin: "2021-10-11 18:30:00",
-                date_deadline: "2021-10-11 19:29:59",
-                user_ids: [id],
-                depend_on_ids: [],
-            });
+    // Using jQuery trigger function as triggerEvent() for mouseenter does not bubble up and the event is not
+    // triggered in the renderer.
+    await $(taskPills[0]).trigger("mouseenter");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+    for (const taskPill of taskPills) {
+        // The pills are highlighted.
+        assert.ok(taskPill.classList.contains(CSS.CLASS.PILL_HIGHLIGHT), 'Pills should be highlighted when hovered (or when pill of the same id is hovered (m2m grouping)).');
+        // Check that connector creators (little pills antennas) are displayed (and only displayed) on the hovered pills.
+        const querySelector = `${CSS.SELECTOR.CONNECTOR_CREATOR_WRAPPER}${taskPill != taskPills[0] ? CSS.SELECTOR.INVISIBLE : `:not(${CSS.SELECTOR.INVISIBLE})`}`;
+        assert.ok(taskPill.parentElement.querySelectorAll(querySelector).length === 2, 'Connector creators should be displayed on the hovered pills and not on the others.');
+    }
+    // Check that all connectors are in the expected hover state.
+    for (const [test_key, hoverEffectExpected] of Object.entries(tests)) {
+        const connector = connectorContainer.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="${connectorsDict[test_key].id}"]`);
+        if (hoverEffectExpected === 'y') {
+            assert.ok(connector.classList.contains(CSS.CLASS.CONNECTOR_HOVERED), 'Connectors that are connected to an highlighted pill should be in a hover state.');
+        } else {
+            assert.notOk(connector.classList.contains(CSS.CLASS.CONNECTOR_HOVERED), 'Connectors that are not connected to an highlighted pill should not be in a hover state.');
         }
-        ganttViewParams.serverData.models["project.task"].records[12].user_ids = [199];
+        assert.ok(connector.querySelector(CSS.SELECTOR.CONNECTOR_STROKE_BUTTON) === null, "Connectors that are not hovered don't display buttons, even if they are highlighted.");
+    }
 
-        await makeView(ganttViewParams);
+});
 
-        assert.containsN(target, SELECTORS.connector, 13);
-    });
+QUnit.test('Hovering a connector should cause the connected pills to get highlighted.', async function (assert) {
+    assert.expect(3);
 
-    QUnit.test("No display of resize handles when creating a connector", async (assert) => {
-        assert.expect(1);
-        await makeView(ganttViewParams);
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
 
-        // Explicitly shows the connector creator wrapper since its "display: none"
-        // disappears on native CSS hover, which cannot be programatically emulated.
-        const rightWrapper = target.querySelector(SELECTORS.connectorCreatorWrapper);
-        rightWrapper.classList.add("d-block");
+    const connector = gantt.el.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+    let taskPills = gantt.el.querySelectorAll(`${CSS.SELECTOR.PILL}:not(.${CSS.CLASS.PILL_HIGHLIGHT})`);
+    assert.equal(taskPills.length, 2, 'Pills should not be highlighted by default.');
 
-        // Creating a connector and hover another pill while dragging it
-        const { moveTo } = await drag(
-            rightWrapper.querySelector(SELECTORS.connectorCreatorBullet),
-        );
-        await moveTo(getPill("Task 2"));
-        assert.containsNone(target, SELECTORS.resizeHandle);
-    });
+    await testUtils.dom.triggerMouseEvent(connector, "mouseover");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
 
-    QUnit.test("Renderer in connect mode when creating a connector", async (assert) => {
-        await makeView(ganttViewParams);
+    taskPills = gantt.el.querySelectorAll(`${CSS.SELECTOR.PILL}.${CSS.CLASS.PILL_HIGHLIGHT}`);
+    assert.equal(taskPills.length, 2, 'Pills should be highlighted when linked connector is hovered.');
+    // Check that connector creators (little pills antennas) are displayed (and only displayed) on the hovered pills.
+    const querySelector = `${CSS.SELECTOR.CONNECTOR_CREATOR_WRAPPER}:not(${CSS.SELECTOR.INVISIBLE})`;
+    assert.ok(gantt.el.querySelectorAll(querySelector).length === 0, 'Connector creators should not be displayed if the pill is not hovered.');
 
-        // Explicitly shows the connector creator wrapper since its "display: none"
-        // disappears on native CSS hover, which cannot be programatically emulated.
-        const rightWrapper = target.querySelector(SELECTORS.connectorCreatorWrapper);
-        rightWrapper.classList.add("d-block");
+});
 
-        // Creating a connector and hover another pill while dragging it
-        const { moveTo } = await drag(rightWrapper.querySelector(SELECTORS.connectorCreatorBullet));
-        await moveTo(getPill("Task 2"));
-        assert.hasClass(target.querySelector(SELECTORS.renderer), "o_connect");
-    });
+QUnit.test('Connectors are displayed behind pills, except on hover.', async function (assert) {
+    assert.expect(2);
 
-    QUnit.test("Connector creators of initial pill are highlighted when creating a connector", async (assert) => {
-        await makeView(ganttViewParams);
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-01 18:30:00',
+                    planned_date_end: '2021-10-02 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-04 11:30:00',
+                    planned_date_end: '2021-10-05 12:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 3,
+                    name: 'Task 3',
+                    planned_date_begin: '2021-10-15 06:30:00',
+                    planned_date_end: '2021-10-15 07:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [1],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'Project 1' },
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+            },
+            records: [
+                { id: 1, name: 'User 1' },
+            ],
+        },
+    };
 
-        // Explicitly shows the connector creator wrapper since its "display: none"
-        // disappears on native CSS hover, which cannot be programatically emulated.
-        const sourceWrapper = target.querySelector(SELECTORS.pillWrapper)
-        const rightWrapper = sourceWrapper.querySelector(SELECTORS.connectorCreatorWrapper);
-        rightWrapper.classList.add("d-block");
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
 
-        // Creating a connector and hover another pill while dragging it
-        const { moveTo } = await drag(rightWrapper.querySelector(SELECTORS.connectorCreatorBullet));
-        await moveTo(getPill("Task 2"));
-        assert.hasClass(sourceWrapper, CLASSES.lockedConnectorCreator);
-    });
+    // For this tests, we need the elements to be visible in the viewport.
+    const viewElements = [...document.getElementById('qunit-fixture').children];
+    viewElements.forEach(el => document.body.prepend(el));
 
-    QUnit.test("Connector creators of hovered pill are highlighted when creating a connector", async (assert) => {
-        await makeView(ganttViewParams);
+    // As connectors have been generated based on the pills positions, we need to preserve the
+    // previous width of the gantt view.
+    const client = document.querySelector('.o_web_client');
+    client.style.width = '1000px';
 
-        // Explicitly shows the connector creator wrapper since its "display: none"
-        // disappears on native CSS hover, which cannot be programatically emulated.
-        const rightWrapper = target.querySelector(SELECTORS.connectorCreatorWrapper);
-        rightWrapper.classList.add("d-block");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
 
-        // Creating a connector and hover another pill while dragging it
-        const { moveTo } = await drag(rightWrapper.querySelector(SELECTORS.connectorCreatorBullet));
+    const taskPill = gantt.el.querySelector(`${CSS.SELECTOR.PILL}[data-id="2"]`);
 
-        const destinationWrapper = getPillWrapper("Task 2");
-        const destinationPill = destinationWrapper.querySelector(SELECTORS.pill);        
-        await moveTo(destinationPill);
+    const taskPillLocation = taskPill.getBoundingClientRect();
+    const testLocationLeft = taskPillLocation.left + taskPill.offsetWidth/2;
+    const testLocationTop = taskPillLocation.top + taskPill.offsetHeight/2;
+    let test = document.elementFromPoint(testLocationLeft, testLocationTop);
+    assert.deepEqual(test, taskPill, "taskPill position");
 
-        // moveTo only triggers a pointerenter event on destination pill,
-        // a pointermove event is still needed to highlight it
-        await triggerEvent(destinationPill, null, "pointermove");
-        assert.hasClass(destinationWrapper, CLASSES.highlightedConnectorCreator);
-    });
+    const connector = gantt.el.querySelector(`${CSS.SELECTOR.CONNECTOR}[data-id="1"]`);
+    await testUtils.dom.triggerMouseEvent(connector, "mouseover");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+    test = document.elementFromPoint(taskPillLocation.left, testLocationTop);
+    assert.deepEqual(test.closest(CSS.SELECTOR.CONNECTOR), connector, "connector position");
+
+});
+
+QUnit.test('Create a connector from the gantt view.', async function (assert) {
+
+    assert.expect(2);
+
+    ganttViewParams.data = {
+        'project.task': {
+            fields: {
+                id: { string: 'ID', type: 'integer' },
+                name: { string: 'Name', type: 'char' },
+                planned_date_begin: { string: 'Start Date', type: 'datetime' },
+                planned_date_end: { string: 'Stop Date', type: 'datetime' },
+                project_id: { string: 'Project', type: 'many2one', relation: 'project.project' },
+                user_ids: { string: 'Assignees', type: 'many2many', relation: 'res.users' },
+                allow_task_dependencies: { string: 'Allow Task Dependencies', type: "boolean", default: true },
+                depend_on_ids: { string: 'Depends on', type: 'one2many', relation: 'project.task' },
+                display_warning_dependency_in_gantt: { string: 'Display warning dependency in Gantt', type: "boolean", default: true },
+            },
+            records: [
+                {
+                    id: 1,
+                    name: 'Task 1',
+                    planned_date_begin: '2021-10-11 18:30:00',
+                    planned_date_end: '2021-10-11 19:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+                {
+                    id: 2,
+                    name: 'Task 2',
+                    planned_date_begin: '2021-10-12 11:30:00',
+                    planned_date_end: '2021-10-12 12:29:59',
+                    project_id: 1,
+                    user_ids: [1],
+                    depend_on_ids: [],
+                },
+            ],
+        },
+        'project.project': {
+            fields: {
+                id: {string: 'ID', type: 'integer'},
+                name: {string: 'Name', type: 'char'},
+            },
+            records: [
+                {id: 1, name: 'Project 1'},
+            ],
+        },
+        'res.users': {
+            fields: {
+                id: {string: 'ID', type: 'integer'},
+                name: {string: 'Name', type: 'char'},
+            },
+            records: [
+                {id: 1, name: 'User 1'},
+            ],
+        },
+    };
+
+    ganttViewParams.mockRPCHook = (route, args) => {
+        if (args.model === 'project.task' && args.method === 'write') {
+            const [rpc_arg1, rpc_arg2] = args.args;
+            assert.step(`${args.method}|${rpc_arg1}|${JSON.stringify(rpc_arg2)}`);
+            return Promise.resolve(true);
+        }
+        return null;
+    };
+
+    const gantt = await createView({ ...ganttViewParams, groupBy: ['user_ids']});
+    registerCleanup(gantt.destroy);
+    await testPromise;
+
+    let taskPill = gantt.el.querySelector(`${CSS.SELECTOR.PILL}[data-id="1"]`);
+    await $(taskPill).trigger("mouseenter");
+    await testUtils.nextTick();
+    await testUtils.returnAfterNextAnimationFrame();
+
+    const connectorCreator = taskPill.parentElement.querySelector(`${CSS.SELECTOR.CONNECTOR_CREATOR_WRAPPER}:not(${CSS.SELECTOR.INVISIBLE}) ${CSS.SELECTOR.CONNECTOR_CREATOR_BULLET}`);
+    await testUtils.dom.triggerEvents(connectorCreator, "mousedown", { bubbles: true });
+
+    taskPill = gantt.el.querySelectorAll(`${CSS.SELECTOR.PILL}[data-id="2"]`);
+    await testUtils.dom.triggerEvents(taskPill, "mouseup", { bubbles: true });
+    assert.verifySteps(['write|2|{"depend_on_ids":[[4,1,false]]}'], 'Connector ui creation from task 1 to task 2 should result in an rpc call on project.task write.');
+
 });

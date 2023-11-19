@@ -3,21 +3,27 @@
 # 	* project_forecast
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-10-04 09:43+0000\n"
+"PO-Revision-Date: 2022-09-22 05:48+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: project_forecast
+#: code:addons/project_forecast/models/project.py:0
+#, python-format
+msgid "%s's Planning"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.ui.menu,name:project_forecast.planning_menu_schedule_by_project
@@ -30,6 +36,7 @@ msgid "Let's start your planning by adding a new shift."
 msgstr "讓我們通過添加新排班開始您的計劃。"
 
 #. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_template_inherit_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 msgid "My Projects"
@@ -40,10 +47,19 @@ msgstr "我的專案"
 #: model_terms:ir.actions.act_window,help:project_forecast.project_forecast_action_from_project
 #: model_terms:ir.actions.act_window,help:project_forecast.project_forecast_action_schedule_by_employee
 msgid "No shifts found. Let's create one!"
-msgstr "找不到班次。讓我們創建一個吧！"
+msgstr ""
 
 #. module: project_forecast
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_form_inherit_project_forecast
+msgid "Plan your resources for this project"
+msgstr ""
+
+#. module: project_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_project_view_form_simplified_inherit_forecast
+msgid "Plan your resources on project tasks"
+msgstr "計劃項目任務的資源"
+
+#. module: project_forecast
 #: code:addons/project_forecast/models/project.py:0
 #, python-format
 msgid "Planned"
@@ -51,13 +67,16 @@ msgstr "已安排"
 
 #. module: project_forecast
 #: model:ir.actions.act_window,name:project_forecast.project_forecast_action_from_project
+#: model:ir.model.fields,field_description:project_forecast.field_planning_slot__allow_forecast
+#: model:ir.model.fields,field_description:project_forecast.field_project_project__allow_forecast
+#: model_terms:ir.ui.view,arch_db:project_forecast.project_view_kanban_inherit_project_forecast
 msgid "Planning"
 msgstr "計劃"
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_planning_analysis_report
 msgid "Planning Analysis Report"
-msgstr "計劃分析報表"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.model,name:project_forecast.model_planning_slot
@@ -69,8 +88,8 @@ msgstr "計劃排班"
 #: model:ir.model.fields,field_description:project_forecast.field_planning_analysis_report__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot__project_id
 #: model:ir.model.fields,field_description:project_forecast.field_planning_slot_template__project_id
-#: model_terms:ir.ui.view,arch_db:project_forecast.open_slots_list_template
 #: model_terms:ir.ui.view,arch_db:project_forecast.period_report_template
+#: model_terms:ir.ui.view,arch_db:project_forecast.planning_analysis_report_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.planning_slot_view_search
 #: model_terms:ir.ui.view,arch_db:project_forecast.resource_planning_project_forecast
 msgid "Project"
@@ -84,7 +103,7 @@ msgstr "按專案進度"
 #. module: project_forecast
 #: model:ir.actions.act_window,name:project_forecast.project_forecast_action_schedule_by_employee
 msgid "Schedule by Resource"
-msgstr "按資源安排"
+msgstr ""
 
 #. module: project_forecast
 #: model_terms:ir.actions.act_window,help:project_forecast.planning_action_schedule_by_project
@@ -92,10 +111,9 @@ msgstr "按資源安排"
 msgid ""
 "Schedule your human and material resources across roles, projects and sales "
 "orders."
-msgstr "為不同職能、專案項目及銷售訂單，安排人力及物力資源。"
+msgstr ""
 
 #. module: project_forecast
-#. odoo-python
 #: code:addons/project_forecast/controllers/main.py:0
 #, python-format
 msgid "Shift"
@@ -109,7 +127,7 @@ msgstr "排班範本"
 #. module: project_forecast
 #: model:planning.role,name:project_forecast.planning_role_tester
 msgid "Tester"
-msgstr "測試人員"
+msgstr ""
 
 #. module: project_forecast
 #: model:ir.model.fields,field_description:project_forecast.field_project_project__total_forecast_time

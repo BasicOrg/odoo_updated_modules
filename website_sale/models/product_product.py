@@ -13,7 +13,6 @@ class Product(models.Model):
     product_variant_image_ids = fields.One2many('product.image', 'product_variant_id', string="Extra Variant Images")
 
     website_url = fields.Char('Website URL', compute='_compute_product_website_url', help='The full URL to access the document through the website.')
-    ribbon_id = fields.Many2one(string="Variant Ribbon", comodel_name='product.ribbon')
 
     base_unit_count = fields.Float('Base Unit Count', required=True, default=1, help="Display base unit price on your eCommerce pages. Set to 0 to hide it for this product.")
     base_unit_id = fields.Many2one('website.base.unit', string='Custom Unit of Measure', help="Define a custom unit to display in the price per unit of measure field.")
@@ -88,15 +87,6 @@ class Product(models.Model):
         # the template extra images here
         return variant_images + self.product_tmpl_id._get_images()[1:]
 
-    def _get_combination_info_variant(self, **kwargs):
-        """Return the variant info based on its combination.
-        See `_get_combination_info` for more information.
-        """
-        self.ensure_one()
-        return self.product_tmpl_id._get_combination_info(
-            combination=self.product_template_attribute_value_ids,
-            product_id=self.id,
-            **kwargs)
 
     def _website_show_quick_add(self):
         website = self.env['website'].get_current_website()
@@ -109,9 +99,7 @@ class Product(models.Model):
     def _get_contextual_price_tax_selection(self):
         self.ensure_one()
         price = self._get_contextual_price()
-        website = self.env['website'].get_current_website()
-        line_tax_type = website.show_line_subtotals_tax_selection
-        company_taxes = self.taxes_id.filtered(lambda tax: tax.company_id == self.env.company)
-        if line_tax_type == "tax_included" and company_taxes:
-            price = company_taxes.compute_all(price, product=self, partner=self.env['res.partner'])['total_included']
+        line_tax_type = self.env['ir.config_parameter'].sudo().get_param('account.show_line_subtotals_tax_selection')
+        if line_tax_type == "tax_included" and self.taxes_id:
+            price = self.taxes_id.compute_all(price, product=self, partner=self.env['res.partner'])['total_included']
         return price

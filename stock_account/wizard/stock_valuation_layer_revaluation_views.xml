@@ -27,17 +27,17 @@
                         <field name="property_valuation" invisible="1"/>
                         <group>
                             <field name="reason"/>
-                            <field name="account_journal_id" invisible="property_valuation != 'real_time'" required="property_valuation == 'real_time'"/>
+                            <field name="account_journal_id" attrs="{'invisible':[('property_valuation', '!=', 'real_time')], 'required': [('property_valuation', '=', 'real_time')]}"/>
                         </group>
                         <group>
-                            <field name="account_id" invisible="property_valuation != 'real_time'" required="property_valuation == 'real_time'"/>
-                            <field name="date" invisible="property_valuation != 'real_time'"/>
+                            <field name="account_id" attrs="{'invisible':[('property_valuation', '!=', 'real_time')], 'required': [('property_valuation', '=', 'real_time')]}"/>
+                            <field name="date" attrs="{'invisible':[('property_valuation', '!=', 'real_time')]}"/>
                         </group>
                     </group>
                 </sheet>
                 <footer>
                     <button name="action_validate_revaluation" string="Revalue" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                 </footer>
             </form>
         </field>

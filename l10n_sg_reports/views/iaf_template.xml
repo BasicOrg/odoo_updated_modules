@@ -3,14 +3,14 @@
     <data>
         <template id="iras_audit_file_company_infos">
             <CompanyInfo>
-                <CompanyName><t t-out="Company['CompanyName']"/></CompanyName>
-                <CompanyUEN><t t-out="Company['CompanyUEN']"/></CompanyUEN>
-                <GSTNo><t t-out="Company['GSTNo']"/></GSTNo>
-                <PeriodStart><t t-out="Company['PeriodStart']"/></PeriodStart>
-                <PeriodEnd><t t-out="Company['PeriodEnd']"/></PeriodEnd>
-                <IAFCreationDate><t t-out="Company['IAFCreationDate']"/></IAFCreationDate>
-                <ProductVersion><t t-out="Company['ProductVersion']"/></ProductVersion>
-                <IAFVersion><t t-out="Company['IAFVersion']"/></IAFVersion>
+                <CompanyName><t t-esc="Company['CompanyName']"/></CompanyName>
+                <CompanyUEN><t t-esc="Company['CompanyUEN']"/></CompanyUEN>
+                <GSTNo><t t-esc="Company['GSTNo']"/></GSTNo>
+                <PeriodStart><t t-esc="Company['PeriodStart']"/></PeriodStart>
+                <PeriodEnd><t t-esc="Company['PeriodEnd']"/></PeriodEnd>
+                <IAFCreationDate><t t-esc="Company['IAFCreationDate']"/></IAFCreationDate>
+                <ProductVersion><t t-esc="Company['ProductVersion']"/></ProductVersion>
+                <IAFVersion><t t-esc="Company['IAFVersion']"/></IAFVersion>
             </CompanyInfo>
         </template>
 
@@ -21,21 +21,21 @@
                 t-att-TransactionCountTotal="Purchases['TransactionCountTotal']">
                 <t t-foreach="Purchases['lines']" t-as="line">
                     <PurchaseLines>
-                        <SupplierName><t t-out="line['SupplierName']"/></SupplierName>
-                        <SupplierUEN><t t-out="line['SupplierUEN']"/></SupplierUEN>
-                        <InvoiceDate><t t-out="line['InvoiceDate']"/></InvoiceDate>
-                        <InvoiceNo><t t-out="line['InvoiceNo']"/></InvoiceNo>
+                        <SupplierName><t t-esc="line['SupplierName']"/></SupplierName>
+                        <SupplierUEN><t t-esc="line['SupplierUEN']"/></SupplierUEN>
+                        <InvoiceDate><t t-esc="line['InvoiceDate']"/></InvoiceDate>
+                        <InvoiceNo><t t-esc="line['InvoiceNo']"/></InvoiceNo>
                         <t t-if="line['PermitNo']">
-                            <PermitNo><t t-out="line['PermitNo']"/></PermitNo>
+                            <PermitNo><t t-esc="line['PermitNo']"/></PermitNo>
                         </t>
-                        <LineNo><t t-out="line['LineNo']"/></LineNo>
-                        <ProductDescription><t t-out="line['ProductDescription']"/></ProductDescription>
-                        <PurchaseValueSGD><t t-out="line['PurchaseValueSGD']"/></PurchaseValueSGD>
-                        <GSTValueSGD><t t-out="line['GSTValueSGD']"/></GSTValueSGD>
-                        <TaxCode><t t-out="line['TaxCode']"/></TaxCode>
-                        <FCYCode><t t-out="line['FCYCode']"/></FCYCode>
-                        <PurchaseFCY><t t-out="line['PurchaseFCY']"/></PurchaseFCY>
-                        <GSTFCY><t t-out="line['GSTFCY']"/></GSTFCY>
+                        <LineNo><t t-esc="line['LineNo']"/></LineNo>
+                        <ProductDescription><t t-esc="line['ProductDescription']"/></ProductDescription>
+                        <PurchaseValueSGD><t t-esc="line['PurchaseValueSGD']"/></PurchaseValueSGD>
+                        <GSTValueSGD><t t-esc="line['GSTValueSGD']"/></GSTValueSGD>
+                        <TaxCode><t t-esc="line['TaxCode']"/></TaxCode>
+                        <FCYCode><t t-esc="line['FCYCode']"/></FCYCode>
+                        <PurchaseFCY><t t-esc="line['PurchaseFCY']"/></PurchaseFCY>
+                        <GSTFCY><t t-esc="line['GSTFCY']"/></GSTFCY>
                     </PurchaseLines>
                 </t>
             </Purchase>
@@ -48,21 +48,21 @@
                 t-att-TransactionCountTotal="Sales['TransactionCountTotal']">
                 <t t-foreach="Sales['lines']" t-as="line">
                     <SupplyLines>
-                        <CustomerName><t t-out="line['CustomerName']"/></CustomerName>
-                        <CustomerUEN><t t-out="line['CustomerUEN']"/></CustomerUEN>
-                        <InvoiceDate><t t-out="line['InvoiceDate']"/></InvoiceDate>
-                        <InvoiceNo><t t-out="line['InvoiceNo']"/></InvoiceNo>
-                        <LineNo><t t-out="line['LineNo']"/></LineNo>
-                        <ProductDescription><t t-out="line['ProductDescription']"/></ProductDescription>
-                        <SupplyValueSGD><t t-out="line['SupplyValueSGD']"/></SupplyValueSGD>
-                        <GSTValueSGD><t t-out="line['GSTValueSGD']"/></GSTValueSGD>
-                        <TaxCode><t t-out="line['TaxCode']"/></TaxCode>
+                        <CustomerName><t t-esc="line['CustomerName']"/></CustomerName>
+                        <CustomerUEN><t t-esc="line['CustomerUEN']"/></CustomerUEN>
+                        <InvoiceDate><t t-esc="line['InvoiceDate']"/></InvoiceDate>
+                        <InvoiceNo><t t-esc="line['InvoiceNo']"/></InvoiceNo>
+                        <LineNo><t t-esc="line['LineNo']"/></LineNo>
+                        <ProductDescription><t t-esc="line['ProductDescription']"/></ProductDescription>
+                        <SupplyValueSGD><t t-esc="line['SupplyValueSGD']"/></SupplyValueSGD>
+                        <GSTValueSGD><t t-esc="line['GSTValueSGD']"/></GSTValueSGD>
+                        <TaxCode><t t-esc="line['TaxCode']"/></TaxCode>
                         <t t-if="line['Country']">
-                            <Country><t t-out="line['Country']"/></Country>
+                            <Country><t t-esc="line['Country']"/></Country>
                         </t>
-                        <FCYCode><t t-out="line['FCYCode']"/></FCYCode>
-                        <SupplyFCY><t t-out="line['SupplyFCY']"/></SupplyFCY>
-                        <GSTFCY><t t-out="line['GSTFCY']"/></GSTFCY>
+                        <FCYCode><t t-esc="line['FCYCode']"/></FCYCode>
+                        <SupplyFCY><t t-esc="line['SupplyFCY']"/></SupplyFCY>
+                        <GSTFCY><t t-esc="line['GSTFCY']"/></GSTFCY>
                     </SupplyLines>
                 </t>
             </Supply>
@@ -76,25 +76,25 @@
                 t-att-GLTCurrency="GlData['GLTCurrency']">
                 <t t-foreach="GlData['lines']" t-as="line">
                     <GLDataLines>
-                        <TransactionDate><t t-out="line['TransactionDate']"/></TransactionDate>
-                        <AccountID><t t-out="line['AccountID']"/></AccountID>
-                        <AccountName><t t-out="line['AccountName']"/></AccountName>
-                        <TransactionDescription><t t-out="line['TransactionDescription']"/></TransactionDescription>
+                        <TransactionDate><t t-esc="line['TransactionDate']"/></TransactionDate>
+                        <AccountID><t t-esc="line['AccountID']"/></AccountID>
+                        <AccountName><t t-esc="line['AccountName']"/></AccountName>
+                        <TransactionDescription><t t-esc="line['TransactionDescription']"/></TransactionDescription>
                         <t t-if="line['Name']">
-                            <Name><t t-out="line['Name']"/></Name>
+                            <Name><t t-esc="line['Name']"/></Name>
                         </t>
                         <t t-if="line['TransactionID']">
-                            <TransactionID><t t-out="line['TransactionID']"/></TransactionID>
+                            <TransactionID><t t-esc="line['TransactionID']"/></TransactionID>
                         </t>
                         <t t-if="line['SourceDocumentID']">
-                            <SourceDocumentID><t t-out="line['SourceDocumentID']"/></SourceDocumentID>
+                            <SourceDocumentID><t t-esc="line['SourceDocumentID']"/></SourceDocumentID>
                         </t>
                         <t t-if="line['SourceType']">
-                            <SourceType><t t-out="line['SourceType']"/></SourceType>
+                            <SourceType><t t-esc="line['SourceType']"/></SourceType>
                         </t>
-                        <Debit><t t-out="line['Debit']"/></Debit>
-                        <Credit><t t-out="line['Credit']"/></Credit>
-                        <Balance><t t-out="line['Balance']"/></Balance>
+                        <Debit><t t-esc="line['Debit']"/></Debit>
+                        <Credit><t t-esc="line['Credit']"/></Credit>
+                        <Balance><t t-esc="line['Balance']"/></Balance>
                     </GLDataLines>
                 </t>
             </GLData>

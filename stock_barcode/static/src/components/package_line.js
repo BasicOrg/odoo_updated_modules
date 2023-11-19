@@ -1,10 +1,14 @@
 /** @odoo-module **/
 
+import { bus } from 'web.core';
 import LineComponent from './line';
 
 export default class PackageLineComponent extends LineComponent {
-    get isComplete() {
-        return this.qtyDone == this.qtyDemand;
+    get componentClasses() {
+        return [
+            this.qtyDone == 1 ? 'o_line_completed' : 'o_line_not_completed',
+            this.isSelected ? 'o_selected o_highlight' : ''
+        ].join(' ');
     }
 
     get isSelected() {
@@ -24,11 +28,14 @@ export default class PackageLineComponent extends LineComponent {
         return doneQuantity >= 0 ? 1 : 0;
     }
 
+    openPackage() {
+        bus.trigger('open-package', this.line.package_id.id);
+    }
+
     select(ev) {
         ev.stopPropagation();
         this.env.model.selectPackageLine(this.line);
         this.env.model.trigger('update');
     }
 }
-PackageLineComponent.props = ["displayUOM", "line", "openPackage"];
 PackageLineComponent.template = 'stock_barcode.PackageLineComponent';

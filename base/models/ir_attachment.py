@@ -1,7 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import base64
-import binascii
 import contextlib
 import hashlib
 import io
@@ -9,7 +8,6 @@ import itertools
 import logging
 import mimetypes
 import os
-import psycopg2
 import re
 import uuid
 
@@ -112,7 +110,7 @@ class IrAttachment(models.Model):
             os.makedirs(dirname)
         # prevent sha-1 collision
         if os.path.isfile(full_path) and not self._same_content(bin_data, full_path):
-            raise UserError(_("The attachment collides with an existing file."))
+            raise UserError("The attachment is colliding with an existing file.")
         return fname, full_path
 
     @api.model
@@ -175,11 +173,7 @@ class IrAttachment(models.Model):
         # but only attempt to grab the lock for a little bit, otherwise it'd
         # start blocking other transactions. (will be retried later anyway)
         cr.execute("SET LOCAL lock_timeout TO '10s'")
-        try:
-            cr.execute("LOCK ir_attachment IN SHARE MODE")
-        except psycopg2.errors.LockNotAvailable:
-            cr.rollback()
-            return False
+        cr.execute("LOCK ir_attachment IN SHARE MODE")
 
         self._gc_file_store_unsafe()
 
@@ -322,7 +316,7 @@ class IrAttachment(models.Model):
         supported_subtype = ICP('base.image_autoresize_extensions', 'png,jpeg,bmp,tiff').split(',')
 
         mimetype = values['mimetype'] = self._compute_mimetype(values)
-        _type, _, _subtype = mimetype.partition('/')
+        _type, _subtype = mimetype.split('/')
         is_image_resizable = _type == 'image' and _subtype in supported_subtype
         if is_image_resizable and (values.get('datas') or values.get('raw')):
             is_raw = values.get('raw')
@@ -358,9 +352,12 @@ class IrAttachment(models.Model):
         xml_like = 'ht' in mimetype or ( # hta, html, xhtml, etc.
                 'xml' in mimetype and    # other xml (svg, text/xml, etc)
                 not 'openxmlformats' in mimetype)  # exception for Office formats
+        user = self.env.context.get('binary_field_real_user', self.env.user)
+        if not isinstance(user, self.pool['res.users']):
+            raise UserError(_("binary_field_real_user should be a res.users record."))
         force_text = xml_like and (
             self.env.context.get('attachments_mime_plainxml') or
-            not self.env['ir.ui.view'].sudo(False).check_access_rights('write', False))
+            not self.env['ir.ui.view'].with_user(user).check_access_rights('write', False))
         if force_text:
             values['mimetype'] = 'text/plain'
         if not self.env.context.get('image_no_postprocess'):
@@ -415,7 +412,7 @@ class IrAttachment(models.Model):
     db_datas = fields.Binary('Database Data', attachment=False)
     store_fname = fields.Char('Stored Filename', index=True, unaccent=False)
     file_size = fields.Integer('File Size', readonly=True)
-    checksum = fields.Char("Checksum/SHA1", size=40, readonly=True)
+    checksum = fields.Char("Checksum/SHA1", size=40, index=True, readonly=True)
     mimetype = fields.Char('Mime Type', readonly=True)
     index_content = fields.Text('Indexed Content', readonly=True, prefetch=False)
 
@@ -437,7 +434,7 @@ class IrAttachment(models.Model):
             if attachment.type == 'binary' and attachment.url:
                 has_group = self.env.user.has_group
                 if not any(has_group(g) for g in attachment.get_serving_groups()):
-                    raise ValidationError(_("Sorry, you are not allowed to write on this document"))
+                    raise ValidationError("Sorry, you are not allowed to write on this document")
 
     @api.model
     def check(self, mode, values=None):
@@ -456,14 +453,8 @@ class IrAttachment(models.Model):
             for res_model, res_id, create_uid, public, res_field in self._cr.fetchall():
                 if public and mode == 'read':
                     continue
-                if not self.env.is_system():
-                    if not res_id and create_uid != self.env.uid:
-                        raise AccessError(_("Sorry, you are not allowed to access this document."))
-                    if res_field:
-                        field = self.env[res_model]._fields[res_field]
-                        if field.groups:
-                            if not self.env.user.user_has_groups(field.groups):
-                                raise AccessError(_("Sorry, you are not allowed to access this document."))
+                if not self.env.is_system() and (res_field or (not res_id and create_uid != self.env.uid)):
+                    raise AccessError(_("Sorry, you are not allowed to access this document."))
                 if not (res_model and res_id):
                     continue
                 model_ids[res_model].add(res_id)
@@ -511,65 +502,86 @@ class IrAttachment(models.Model):
                 continue
         return ret_attachments
 
+    def _read_group_allowed_fields(self):
+        return ['type', 'company_id', 'res_id', 'create_date', 'create_uid', 'name', 'mimetype', 'id', 'url', 'res_field', 'res_model']
+
     @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """Override read_group to add res_field=False in domain if not present."""
+        if not fields:
+            raise AccessError(_("Sorry, you must provide fields to read on attachments"))
+        groupby = [groupby] if isinstance(groupby, str) else groupby
+        if any('(' in field for field in fields + groupby):
+            raise AccessError(_("Sorry, the syntax 'name:agg(field)' is not available for attachments"))
+        if not any(item[0] in ('id', 'res_field') for item in domain):
+            domain.insert(0, ('res_field', '=', False))
+        allowed_fields = self._read_group_allowed_fields()
+        fields_set = set(field.split(':')[0] for field in fields + groupby)
+        if not self.env.is_system() and (not fields or fields_set.difference(allowed_fields)):
+            raise AccessError(_("Sorry, you are not allowed to access these fields on attachments."))
+        return super().read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         # add res_field=False in domain if not present; the arg[0] trick below
         # works for domain items and '&'/'|'/'!' operators too
-        disable_binary_fields_attachments = False
-        if not any(arg[0] in ('id', 'res_field') for arg in domain):
-            disable_binary_fields_attachments = True
-            domain = [('res_field', '=', False)] + domain
+        discard_binary_fields_attachments = False
+        if not any(arg[0] in ('id', 'res_field') for arg in args):
+            discard_binary_fields_attachments = True
+            args.insert(0, ('res_field', '=', False))
+
+        ids = super(IrAttachment, self)._search(args, offset=offset, limit=limit, order=order,
+                                                count=False, access_rights_uid=access_rights_uid)
 
         if self.env.is_superuser():
             # rules do not apply for the superuser
-            return super()._search(domain, offset, limit, order, access_rights_uid)
+            return len(ids) if count else ids
+
+        if not ids:
+            return 0 if count else []
+
+        # Work with a set, as list.remove() is prohibitive for large lists of documents
+        # (takes 20+ seconds on a db with 100k docs during search_count()!)
+        orig_ids = ids
+        ids = set(ids)
 
         # For attachments, the permissions of the document they are attached to
         # apply, so we must remove attachments for which the user cannot access
-        # the linked document. For the sake of performance, fetch the fields to
-        # determine those permissions within the same SQL query.
-        self.flush_model(['res_model', 'res_id', 'res_field', 'public', 'create_uid'])
-        query = super()._search(domain, offset, limit, order, access_rights_uid)
-        query_str, params = query.select(
-            f'"{self._table}"."id"',
-            f'"{self._table}"."res_model"',
-            f'"{self._table}"."res_id"',
-            f'"{self._table}"."res_field"',
-            f'"{self._table}"."public"',
-            f'"{self._table}"."create_uid"',
-        )
-        self.env.cr.execute(query_str, params)
-        rows = self.env.cr.fetchall()
-
-        # determine permissions based on linked records
-        all_ids = []
-        allowed_ids = set()
+        # the linked document.
+        # Use pure SQL rather than read() as it is about 50% faster for large dbs (100k+ docs),
+        # and the permissions are checked in super() and below anyway.
         model_attachments = defaultdict(lambda: defaultdict(set))   # {res_model: {res_id: set(ids)}}
-        for id_, res_model, res_id, res_field, public, create_uid in rows:
-            all_ids.append(id_)
-            if public:
-                allowed_ids.add(id_)
+        binary_fields_attachments = set()
+        self._cr.execute("""SELECT id, res_model, res_id, public, res_field FROM ir_attachment WHERE id IN %s""", [tuple(ids)])
+        for row in self._cr.dictfetchall():
+            if not row['res_model'] or row['public']:
                 continue
-            if not res_id and (self.env.is_system() or create_uid == self.env.uid):
-                allowed_ids.add(id_)
-                continue
-            if not (res_field and disable_binary_fields_attachments) and res_model and res_id:
-                model_attachments[res_model][res_id].add(id_)
+            # model_attachments = {res_model: {res_id: set(ids)}}
+            model_attachments[row['res_model']][row['res_id']].add(row['id'])
+            # Should not retrieve binary fields attachments if not explicitly required
+            if discard_binary_fields_attachments and row['res_field']:
+                binary_fields_attachments.add(row['id'])
 
-        # check permissions on records model by model
+        if binary_fields_attachments:
+            ids.difference_update(binary_fields_attachments)
+
+        # To avoid multiple queries for each attachment found, checks are
+        # performed in batch as much as possible.
         for res_model, targets in model_attachments.items():
             if res_model not in self.env:
-                allowed_ids.update(id_ for ids in targets.values() for id_ in ids)
                 continue
             if not self.env[res_model].check_access_rights('read', False):
+                # remove all corresponding attachment ids
+                ids.difference_update(itertools.chain(*targets.values()))
                 continue
             # filter ids according to what access rules permit
-            ResModel = self.env[res_model].with_context(active_test=False)
-            for res_id in ResModel.search([('id', 'in', list(targets))])._ids:
-                allowed_ids.update(targets[res_id])
+            target_ids = list(targets)
+            allowed = self.env[res_model].with_context(active_test=False).search([('id', 'in', target_ids)])
+            for res_id in set(target_ids).difference(allowed.ids):
+                ids.difference_update(targets[res_id])
 
-        # filter out all_ids by keeping allowed_ids only
-        result = [id_ for id_ in all_ids if id_ in allowed_ids]
+        # sort result according to the original sort ordering
+        result = [id for id in orig_ids if id in ids]
 
         # If the original search reached the limit, it is important the
         # filtered record set does so too. When a JS view receive a
@@ -577,14 +589,17 @@ class IrAttachment(models.Model):
         # reached the last page. To avoid an infinite recursion due to the
         # permission checks the sub-call need to be aware of the number of
         # expected records to retrieve
-        if len(all_ids) == limit and len(result) < self._context.get('need', limit):
+        if len(orig_ids) == limit and len(result) < self._context.get('need', limit):
             need = self._context.get('need', limit) - len(result)
-            more_ids = self.with_context(need=need)._search(
-                domain, offset + len(all_ids), limit, order, access_rights_uid,
-            )
-            result.extend(list(more_ids)[:limit - len(result)])
+            result.extend(self.with_context(need=need)._search(args, offset=offset + len(orig_ids),
+                                       limit=limit, order=order, count=count,
+                                       access_rights_uid=access_rights_uid)[:limit - len(result)])
 
-        return self.browse(result)._as_query(order)
+        return len(result) if count else list(result)
+
+    def _read(self, fields):
+        self.check('read')
+        return super(IrAttachment, self)._read(fields)
 
     def write(self, vals):
         self.check('write', values=vals)
@@ -666,31 +681,6 @@ class IrAttachment(models.Model):
             attachment.write({'access_token': access_token})
             tokens.append(access_token)
         return tokens
-
-    @api.model
-    def create_unique(self, values_list):
-        ids = []
-        for values in values_list:
-            # Create only if record does not already exist for checksum and size.
-            try:
-                bin_data = base64.b64decode(values.get('datas', '')) or False
-            except binascii.Error:
-                raise UserError(_("Attachment is not encoded in base64."))
-            checksum = self._compute_checksum(bin_data)
-            existing_domain = [
-                ['id', '!=', False],  # No implicit condition on res_field.
-                ['checksum', '=', checksum],
-                ['file_size', '=', len(bin_data)],
-                ['mimetype', '=', values['mimetype']],
-            ]
-            existing = self.sudo().search(existing_domain)
-            if existing:
-                for attachment in existing:
-                    ids.append(attachment.id)
-            else:
-                attachment = self.create(values)
-                ids.append(attachment.id)
-        return ids
 
     def _generate_access_token(self):
         return str(uuid.uuid4())

@@ -4,11 +4,8 @@
 from datetime import datetime
 from freezegun import freeze_time
 
-from odoo import fields
-from odoo.addons.base.tests.test_format_address_mixin import FormatAddressCase
 from odoo.addons.crm.models.crm_lead import PARTNER_FIELDS_TO_SYNC, PARTNER_ADDRESS_FIELDS_TO_SYNC
 from odoo.addons.crm.tests.common import TestCrmCommon, INCOMING_EMAIL
-from odoo.addons.mail.tests.mail_tracking_duration_mixin_case import MailTrackingDurationMixinCase
 from odoo.addons.phone_validation.tools.phone_validation import phone_format
 from odoo.exceptions import UserError
 from odoo.tests.common import Form, tagged, users
@@ -248,19 +245,17 @@ class TestCRMLead(TestCrmCommon):
 
     @users('user_sales_manager')
     def test_crm_lead_currency_sync(self):
-        lead_company = self.env['res.company'].sudo().create({
-            'name': 'EUR company',
-            'currency_id': self.env.ref('base.EUR').id,
-        })
-        lead = self.env['crm.lead'].with_company(lead_company).create({
+        lead = self.env['crm.lead'].create({
             'name': 'Lead 1',
-            'company_id': lead_company.id
+            'company_id': self.company_main.id
         })
         self.assertEqual(lead.company_currency, self.env.ref('base.EUR'))
 
-        lead_company.currency_id = self.env.ref('base.CHF')
-        lead.update({'company_id': False})
+        self.company_main.currency_id = self.env.ref('base.CHF')
+        lead.with_company(self.company_main).update({'company_id': False})
         self.assertEqual(lead.company_currency, self.env.ref('base.CHF'))
+        #set back original currency
+        self.company_main.currency_id = self.env.ref('base.EUR')
 
     @users('user_sales_manager')
     def test_crm_lead_date_closed(self):
@@ -303,36 +298,6 @@ class TestCRMLead(TestCrmCommon):
         # Mark the lead as lost
         lead.action_set_lost()
         self.assertEqual(lead.date_closed, datetime.now(), "Closed date is updated after marking lead as lost")
-
-    @users('user_sales_manager')
-    def test_crm_lead_meeting_display_fields(self):
-        lead = self.env['crm.lead'].create({'name': 'Lead With Meetings'})
-        meeting_1, meeting_2, meeting_3 = self.env['calendar.event'].create([{
-            'name': 'Meeting 1 of Lead',
-            'opportunity_id': lead.id,
-            'start': '2022-07-12 08:00:00',
-            'stop': '2022-07-12 10:00:00',
-        }, {
-            'name': 'Meeting 2 of Lead',
-            'opportunity_id': lead.id,
-            'start': '2022-07-14 08:00:00',
-            'stop': '2022-07-14 10:00:00',
-        }, {
-            'name': 'Meeting 3 of Lead',
-            'opportunity_id': lead.id,
-            'start': '2022-07-15 08:00:00',
-            'stop': '2022-07-15 10:00:00',
-        }])
-
-        with freeze_time('2022-07-13 11:00:00'):
-            self.assertEqual(lead.meeting_display_date, fields.Date.from_string('2022-07-14'))
-            self.assertEqual(lead.meeting_display_label, 'Next Meeting')
-            (meeting_2 | meeting_3).unlink()
-            self.assertEqual(lead.meeting_display_date, fields.Date.from_string('2022-07-12'))
-            self.assertEqual(lead.meeting_display_label, 'Last Meeting')
-            meeting_1.unlink()
-            self.assertFalse(lead.meeting_display_date)
-            self.assertEqual(lead.meeting_display_label, 'No Meeting')
 
     @users('user_sales_manager')
     def test_crm_lead_partner_sync(self):
@@ -379,9 +344,9 @@ class TestCRMLead(TestCrmCommon):
 
             # reset partner phone to a local number and prepare formatted / sanitized values
             partner_phone, partner_mobile = self.test_phone_data[2], self.test_phone_data[1]
-            partner_phone_formatted = phone_format(partner_phone, 'US', '1', force_format='INTERNATIONAL')
+            partner_phone_formatted = phone_format(partner_phone, 'US', '1')
             partner_phone_sanitized = phone_format(partner_phone, 'US', '1', force_format='E164')
-            partner_mobile_formatted = phone_format(partner_mobile, 'US', '1', force_format='INTERNATIONAL')
+            partner_mobile_formatted = phone_format(partner_mobile, 'US', '1')
             partner_mobile_sanitized = phone_format(partner_mobile, 'US', '1', force_format='E164')
             partner_email, partner_email_normalized = self.test_email_data[2], self.test_email_data_normalized[2]
             self.assertEqual(partner_phone_formatted, '+1 202-555-0888')
@@ -438,7 +403,7 @@ class TestCRMLead(TestCrmCommon):
             lead_form.email_from = new_email
             self.assertTrue(lead_form.partner_email_update)
             new_phone = '+1 202 555 7799'
-            new_phone_formatted = phone_format(new_phone, 'US', '1', force_format="INTERNATIONAL")
+            new_phone_formatted = phone_format(new_phone, 'US', '1')
             lead_form.phone = new_phone
             self.assertEqual(lead_form.phone, new_phone_formatted)
             self.assertTrue(lead_form.partner_email_update)
@@ -451,7 +416,7 @@ class TestCRMLead(TestCrmCommon):
 
             # LEAD/PARTNER SYNC: mobile does not update partner
             new_mobile = '+1 202 555 6543'
-            new_mobile_formatted = phone_format(new_mobile, 'US', '1', force_format="INTERNATIONAL")
+            new_mobile_formatted = phone_format(new_mobile, 'US', '1')
             lead_form.mobile = new_mobile
             lead_form.save()
             self.assertEqual(lead.mobile, new_mobile_formatted)
@@ -592,7 +557,7 @@ class TestCRMLead(TestCrmCommon):
                 'stop': '2022-07-13 10:00:00',
             }
         ])
-        self.assertEqual(len(lead.calendar_event_ids), 1)
+        self.assertEqual(lead.calendar_event_count, 1)
         self.assertEqual(meetings.opportunity_id, lead)
         self.assertEqual(meetings.mapped('res_id'), [lead.id, lead.id])
         self.assertEqual(meetings.mapped('res_model'), ['crm.lead', 'crm.lead'])
@@ -659,7 +624,7 @@ class TestCRMLead(TestCrmCommon):
         new_lead = self.format_and_process(
             INCOMING_EMAIL,
             'unknown.sender@test.example.com',
-            self.sales_team_1.alias_email,
+            '%s@%s' % (self.sales_team_1.alias_name, self.alias_domain),
             subject='Delivery cost inquiry',
             target_model='crm.lead',
         )
@@ -668,13 +633,49 @@ class TestCRMLead(TestCrmCommon):
         self.assertEqual(new_lead.name, 'Delivery cost inquiry')
 
         message = new_lead.with_user(self.user_sales_manager).message_post(
-            body='Here is my offer!',
+            body='Here is my offer !',
             subtype_xmlid='mail.mt_comment')
         self.assertEqual(message.author_id, self.user_sales_manager.partner_id)
 
         new_lead._handle_partner_assignment(create_missing=True)
         self.assertEqual(new_lead.partner_id.email, 'unknown.sender@test.example.com')
         self.assertEqual(new_lead.partner_id.team_id, self.sales_team_1)
+
+    @users('user_sales_manager')
+    def test_message_get_suggested_recipients(self):
+        """This test checks that creating a contact from a lead with an inactive language will ignore the language
+            while creating a contact from a lead with an active language will take it into account """
+        ResLang = self.env['res.lang'].sudo().with_context(active_test=False)
+
+        # Create a lead with an inactive language -> should ignore the preset language
+        lang_fr = ResLang.search([('code', '=', 'fr_FR')])
+        if not lang_fr:
+            lang_fr = ResLang._create_lang('fr_FR')
+        # set French language as inactive then try to call "_message_get_suggested_recipients"
+        # -> lang code should be ignored
+        lang_fr.active = False
+        lead1 = self.env['crm.lead'].create({
+            'name': 'TestLead',
+            'email_from': self.test_email,
+            'lang_id': lang_fr.id,
+        })
+        data = lead1._message_get_suggested_recipients()[lead1.id]
+        self.assertEqual(data, [(False, self.test_email, None, 'Customer Email')])
+
+        # Create a lead with an active language -> should keep the preset language for recipients
+        lang_en = ResLang.search([('code', '=', 'en_US')])
+        if not lang_en:
+            lang_en = ResLang._create_lang('en_US')
+        # set American English language as active then try to call "_message_get_suggested_recipients"
+        # -> lang code should be kept
+        lang_en.active = True
+        lead2 = self.env['crm.lead'].create({
+            'name': 'TestLead',
+            'email_from': self.test_email,
+            'lang_id': lang_en.id,
+        })
+        data = lead2._message_get_suggested_recipients()[lead2.id]
+        self.assertEqual(data, [(False, self.test_email, "en_US", 'Customer Email')])
 
     @users('user_sales_manager')
     def test_phone_mobile_search(self):
@@ -733,14 +734,10 @@ class TestCRMLead(TestCrmCommon):
             lead_3,
             'Should behave like a text field'
         )
-        self.assertFalse(
-            self.env['crm.lead'].search([('phone_mobile_search', 'like', 'Hello')]),
-            'Should behave like a text field (case sensitive)'
-        )
         self.assertEqual(
-            self.env['crm.lead'].search([('phone_mobile_search', 'ilike', 'Hello')]),
+            self.env['crm.lead'].search([('phone_mobile_search', 'like', 'Hello')]),
             lead_3,
-            'Should behave like a text field (case insensitive)'
+            'Should behave like a text field'
         )
         self.assertEqual(
             self.env['crm.lead'].search([('phone_mobile_search', 'like', 'hello123')]),
@@ -808,27 +805,3 @@ class TestCRMLead(TestCrmCommon):
         self.assertEqual(lead.phone, self.test_phone_data[1])
         self.assertEqual(lead.mobile, self.test_phone_data[2])
         self.assertFalse(lead.phone_sanitized)
-
-
-@tagged('lead_internals')
-class TestLeadFormTools(FormatAddressCase):
-
-    def test_address_view(self):
-        self.assertAddressView('crm.lead')
-
-
-@tagged('lead_internals')
-class TestCrmLeadMailTrackingDuration(MailTrackingDurationMixinCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass('crm.lead')
-
-    def test_crm_lead_mail_tracking_duration(self):
-        self._test_record_duration_tracking()
-
-    def test_crm_lead_mail_tracking_duration_batch(self):
-        self._test_record_duration_tracking_batch()
-
-    def test_crm_lead_queries_batch_mail_tracking_duration(self):
-        self._test_queries_batch_duration_tracking()

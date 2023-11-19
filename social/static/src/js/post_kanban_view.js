@@ -1,43 +1,42 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import { KanbanRecord } from "@web/views/kanban/kanban_record";
 import { KanbanRenderer } from "@web/views/kanban/kanban_renderer";
 import { kanbanView } from "@web/views/kanban/kanban_view";
 import { registry } from "@web/core/registry";
-import { useService } from '@web/core/utils/hooks';
 
 import { ImagesCarouselDialog } from './images_carousel_dialog';
-import { useEffect, useRef } from "@odoo/owl";
+import { SocialPostFormatterMixin } from "./social_post_formatter_mixin";
 
-export class PostKanbanRenderer extends KanbanRenderer {
-    setup() {
-        super.setup();
+const { markup } = owl;
 
-        this.dialog = useService('dialog');
-        const rootRef = useRef("root");
-        useEffect((images) => {
-            const onClickMoreImages = this.onClickMoreImages.bind(this);
-            images.forEach((image) => image.addEventListener('click', onClickMoreImages));
-            return () => {
-                images.forEach((image) => image.removeEventListener('click', onClickMoreImages));
-            };
-        }, () => [rootRef.el.querySelectorAll('.o_social_stream_post_image_more')]);
+export class PostKanbanRecord extends KanbanRecord {
+    formatPost (message) {
+        return markup(SocialPostFormatterMixin._formatPost(message));
     }
 
     /**
      * Shows a bootstrap carousel starting at the clicked image's index
      *
-     * @param {PointerEvent} ev - event of the clicked image
+     * @param {integer} index - index of the default image to be displayed
+     * @param {array} images - array of all the images to display
      */
-    onClickMoreImages(ev) {
-        ev.stopPropagation();
+     onClickMoreImages(index, images) {
         this.dialog.add(ImagesCarouselDialog, {
-            title: _t("Post Images"),
-            activeIndex: parseInt(ev.currentTarget.dataset.index),
-            images: ev.currentTarget.dataset.imageUrls.split(',')
+            title: this.env._t("Post Images"),
+            activeIndex: index,
+            images: images
         })
     }
 }
+
+export class PostKanbanRenderer extends KanbanRenderer {}
+
+PostKanbanRenderer.components = {
+    ...KanbanRenderer.components,
+    KanbanRecord: PostKanbanRecord,
+};
+
 
 export const PostKanbanView = {
     ...kanbanView,

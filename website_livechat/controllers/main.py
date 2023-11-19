@@ -21,7 +21,7 @@ class WebsiteLivechat(LivechatController):
     def channel_rating(self, channel, **kw):
         # get the last 100 ratings and the repartition per grade
         domain = [
-            ('res_model', '=', 'discuss.channel'), ('res_id', 'in', channel.sudo().channel_ids.ids),
+            ('res_model', '=', 'mail.channel'), ('res_id', 'in', channel.sudo().channel_ids.ids),
             ('consumed', '=', True), ('rating', '>=', 1),
         ]
         ratings = request.env['rating.rating'].sudo().search(domain, order='create_date desc', limit=100)
@@ -41,9 +41,8 @@ class WebsiteLivechat(LivechatController):
 
         for rating in ratings:
             partner_id = rating.rated_partner_id.id
-            if partner_id:
-                ratings_per_partner[partner_id][rating_texts[rating.rating]] += 1
-                total_ratings_per_partner[partner_id] += 1
+            ratings_per_partner[partner_id][rating_texts[rating.rating]] += 1
+            total_ratings_per_partner[partner_id] += 1
 
         for partner_id, rating in ratings_per_partner.items():
             for k, v in ratings_per_partner[partner_id].items():
@@ -60,17 +59,13 @@ class WebsiteLivechat(LivechatController):
         }
         return request.render("website_livechat.channel_page", values)
 
-    def _get_guest_name(self):
-        visitor_sudo = request.env["website.visitor"]._get_visitor_from_request()
-        return _('Visitor #%d', visitor_sudo.id) if visitor_sudo else super()._get_guest_name()
-
-    @http.route()
-    def get_session(self, channel_id, anonymous_name, previous_operator_id=None, chatbot_script_id=None, persisted=True, **kwargs):
+    @http.route('/im_livechat/get_session', type="json", auth='public', cors="*")
+    def get_session(self, channel_id, anonymous_name, previous_operator_id=None, chatbot_script_id=None, **kwargs):
         """ Override to use visitor name instead of 'Visitor' whenever a visitor start a livechat session. """
         visitor_sudo = request.env['website.visitor']._get_visitor_from_request()
         if visitor_sudo:
-            anonymous_name = _('Visitor #%s', visitor_sudo.id)
-        return super(WebsiteLivechat, self).get_session(channel_id, anonymous_name, previous_operator_id=previous_operator_id, chatbot_script_id=chatbot_script_id, persisted=persisted, **kwargs)
+            anonymous_name = visitor_sudo.with_context(lang=visitor_sudo.lang_id.code).display_name
+        return super(WebsiteLivechat, self).get_session(channel_id, anonymous_name, previous_operator_id=previous_operator_id, chatbot_script_id=chatbot_script_id, **kwargs)
 
     def _livechat_templates_get(self):
         return super(WebsiteLivechat, self)._livechat_templates_get() + [

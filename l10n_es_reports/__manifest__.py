@@ -11,13 +11,13 @@
 
 {
     'name': 'Spain - Accounting (PGCE 2008) Reports',
-    'countries': ['es'],
+    'icon': '/l10n_es/static/description/icon.png',
     'version': '4.1',
     'author': 'Spanish Localization Team',
     'website': 'https://launchpad.net/openerp-spain',
     'category': 'Accounting/Localizations/Reporting',
     'description': """
-Accounting reports for Spain
+        Accounting reports for Spain
     """,
     'depends': [
         'l10n_es', 'account_reports',
@@ -25,12 +25,10 @@ Accounting reports for Spain
     'data': [
         'security/ir.model.access.csv',
         'views/account_invoice_views.xml',
-        'views/res_company_views.xml',
         'data/pymes_profit_and_loss_report_data.xml',
         'data/pymes_balance_sheet_report_data.xml',
         'data/full_balance_sheet_report_data.xml',
         'data/assoc_balance_sheet_report_data.xml',
-        'data/account_libros_registro_de_iva_export.xml',
         'data/account_report_ec_sales_list_report.xml',
         'data/account_tags.xml',
         'data/mod111.xml',
@@ -38,9 +36,9 @@ Accounting reports for Spain
         'data/mod303.xml',
         'data/mod347.xml',
         'data/mod349.xml',
-        'data/mod390.xml',
         'wizard/aeat_boe_export_wizards.xml',
     ],
+    'post_init_hook': '_setup_mod_sequences',
     'installable': True,
     'auto_install': ['l10n_es', 'account_reports'],
     'license': 'OEEL-1',

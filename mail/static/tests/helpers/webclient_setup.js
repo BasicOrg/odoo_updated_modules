@@ -1,169 +1,109 @@
-/* @odoo-module */
+/** @odoo-module **/
 
-import { DiscussClientAction } from "@mail/core/web/discuss_client_action";
+import { busService } from '@bus/services/bus_service';
+import { imStatusService } from '@bus/im_status_service';
+import { multiTabService } from '@bus/multi_tab_service';
+import { makeMultiTabToLegacyEnv } from '@bus/services/legacy/make_multi_tab_to_legacy_env';
+import { makeBusServiceToLegacyEnv } from '@bus/services/legacy/make_bus_service_to_legacy_env';
+import { makeFakePresenceService } from '@bus/../tests/helpers/mock_services';
 
-import { fileUploadService } from "@web/core/file_upload/file_upload_service";
-import { registry } from "@web/core/registry";
-import { patch } from "@web/core/utils/patch";
-import { session } from "@web/session";
-import { makeMockXHR, mocks } from "@web/../tests/helpers/mock_services";
+import { ChatWindowManagerContainer } from '@mail/components/chat_window_manager_container/chat_window_manager_container';
+import { DialogManagerContainer } from '@mail/components/dialog_manager_container/dialog_manager_container';
+import { DiscussContainer } from '@mail/components/discuss_container/discuss_container';
+import { PopoverManagerContainer } from '@mail/components/popover_manager_container/popover_manager_container';
+import { messagingService } from '@mail/services/messaging_service';
+import { systrayService } from '@mail/services/systray_service';
+import { makeMessagingToLegacyEnv } from '@mail/utils/make_messaging_to_legacy_env';
+
+import { registry } from '@web/core/registry';
 import { patchWithCleanup } from "@web/../tests/helpers/utils";
 import { createWebClient } from "@web/../tests/webclient/helpers";
 
 const ROUTES_TO_IGNORE = [
-    "/web/webclient/load_menus",
-    "/web/dataset/call_kw/res.users/load_views",
-    "/web/dataset/call_kw/res.users/systray_get_activities",
-    "/hr_attendance/attendance_user_data",
+    '/web/webclient/load_menus',
+    '/web/dataset/call_kw/res.users/load_views',
+    '/web/dataset/call_kw/res.users/systray_get_activities'
 ];
-const WEBCLIENT_PARAMETER_NAMES = new Set(["mockRPC", "serverData", "target", "webClientClass"]);
+const WEBCLIENT_PARAMETER_NAMES = new Set(['legacyParams', 'mockRPC', 'serverData', 'target', 'webClientClass']);
 const SERVICES_PARAMETER_NAMES = new Set([
-    "legacyServices",
-    "loadingBaseDelayDuration",
-    "messagingBus",
-    "services",
+    'legacyServices', 'loadingBaseDelayDuration', 'messagingBeforeCreationDeferred',
+    'messagingBus', 'services',
 ]);
 
 /**
- * @param {import("@web/core/registry").Registry} source
- * @param {import("@web/core/registry").Registry} target
+ * Add required components to the main component registry.
  */
-export function copyRegistry(source, target) {
-    for (const [name, service] of source.getEntries()) {
-        target.add(name, service);
-    }
+ function setupMainComponentRegistry() {
+    const mainComponentRegistry = registry.category('main_components');
+    mainComponentRegistry.add('ChatWindowManagerContainer', { Component: ChatWindowManagerContainer });
+    mainComponentRegistry.add('DialogManagerContainer', { Component: DialogManagerContainer });
+    registry.category('actions').add('mail.action_discuss', DiscussContainer);
+    mainComponentRegistry.add('PopoverManagerContainer', { Component: PopoverManagerContainer });
 }
-
-// Copy registries before they are cleared by the test setup in
-// order to restore them during `getWebClientReady`.
-const mailServicesRegistry = registry.category("mail.services");
-const webServicesRegistry = registry.category("services");
-
-const mailMainComponentsRegistry = registry.category("mail.main_components");
-const webMainComponentsRegistry = registry.category("main_components");
-
-const mailSystrayRegistry = registry.category("mail.systray");
-const webSystrayRegistry = registry.category("systray");
-
-QUnit.begin(() => {
-    copyRegistry(webServicesRegistry, mailServicesRegistry);
-    copyRegistry(webMainComponentsRegistry, mailMainComponentsRegistry);
-    copyRegistry(webSystrayRegistry, mailSystrayRegistry);
-});
 
 /**
- * @returns function that returns an `XMLHttpRequest`-like object whose response
- * is computed by the given mock server.
+ * Setup both legacy and new service registries.
+ *
+ * @param {Object} param0
+ * @param {Object} [param0.services]
+ * @param {number} [param0.loadingBaseDelayDuration=0]
+ * @param {Promise} [param0.messagingBeforeCreationDeferred=Promise.resolve()]
+ *   Deferred that let tests block messaging creation and simulate resolution.
+ *   Useful for testing components behavior when messaging is not yet created.
+ * @param {EventBus} [param0.messagingBus]
+ * @returns {LegacyRegistry} The registry containing all the legacy services that will be passed
+ * to the webClient as a legacy parameter.
  */
-function getCreateXHR() {
-    const mockedXHR = makeMockXHR();
-    return function () {
-        const xhr = mockedXHR();
-        let response = "";
-        let route = "";
-        const self = this;
-        xhr.status = 200;
-        patch(xhr, {
-            open(method, dest) {
-                route = dest;
-                return super.open(method, dest);
-            },
-            async send(data) {
-                await new Promise(setTimeout);
-                response = JSON.stringify(
-                    await self.env.services.rpc(route, { body: data, method: "POST" })
-                );
-                return super.send(data);
-            },
-            upload: new EventTarget(),
-            abort() {
-                if (this._errorListener) {
-                    this._errorListener();
-                }
-            },
-            get response() {
-                return response;
-            },
-        });
-        return xhr;
-    };
-}
+function setupMessagingServiceRegistries({
+    loadingBaseDelayDuration = 0,
+    messagingBeforeCreationDeferred = Promise.resolve(),
+    messagingBus,
+    services,
+ }) {
+    const serviceRegistry = registry.category('services');
 
-export const setupManager = {
-    /**
-     * Add required components to the main component registry.
-     */
-    setupMainComponentRegistry() {
-        for (const [name, component] of mailMainComponentsRegistry.getEntries()) {
-            webMainComponentsRegistry.add(name, component);
+    patchWithCleanup(messagingService, {
+        async _startModelManager(modelManager, messagingValues) {
+            modelManager.isDebug = true;
+            const _super = this._super.bind(this);
+            await messagingBeforeCreationDeferred;
+            return _super(modelManager, messagingValues);
+        },
+    });
+
+    const messagingValues = {
+        start() {
+            return {
+                isInQUnitTest: true,
+                disableAnimation: true,
+                loadingBaseDelayDuration,
+                messagingBus,
+                userNotificationManager: { canPlayAudio: false },
+            };
         }
-        if (!registry.category("actions").contains("mail.action_discuss")) {
-            registry.category("actions").add("mail.action_discuss", DiscussClientAction);
-        }
-    },
-    /**
-     * Add required components to the systray registry.
-     */
-    setupSystrayRegistry() {
-        for (const [name, component] of mailSystrayRegistry.getEntries()) {
-            if (!webSystrayRegistry.contains(name)) {
-                webSystrayRegistry.add(name, component);
-            }
-        }
-    },
-    /**
-     * Setup both legacy and new service registries.
-     *
-     * @param {Object} param0
-     * @param {Object} [param0.services]
-     * @param {number} [param0.loadingBaseDelayDuration=0]
-     * @param {EventBus} [param0.messagingBus]
-     * @param {Function} [param0.mockRPC]
-     * @returns {LegacyRegistry} The registry containing all the legacy services that will be passed
-     * to the webClient as a legacy parameter.
-     */
-    setupServiceRegistries({ loadingBaseDelayDuration = 0, messagingBus, services = {} } = {}) {
-        const OriginalAudio = window.Audio;
-        patchWithCleanup(window, {
-            Audio: function () {
-                const audio = new OriginalAudio();
-                audio.preload = "none";
-                audio.play = () => {};
-                return audio;
-            },
-        });
-        patchWithCleanup(session, { show_effect: true });
-        services["messagingValues"] = services["messagingValues"] ?? {
-            start() {
-                return {
-                    isInQUnitTest: true,
-                    disableAnimation: true,
-                    loadingBaseDelayDuration,
-                    messagingBus,
-                    userNotificationManager: { canPlayAudio: false },
-                };
-            },
-        };
-        if (!webServicesRegistry.contains("file_upload")) {
-            webServicesRegistry.add("file_upload", {
-                ...fileUploadService,
-                start(env, ...args) {
-                    this.env = env;
-                    return fileUploadService.start.call(this, env, ...args);
-                },
-                createXhr: getCreateXHR(),
-            });
-        }
-        for (const [name, service] of Object.entries(services)) {
-            webServicesRegistry.add(name, service);
-        }
-        for (const [name, service] of mailServicesRegistry.getEntries()) {
-            if (!mocks[name] && !name.includes("legacy_") && !webServicesRegistry.contains(name)) {
-                webServicesRegistry.add(name, service);
-            }
-        }
-    },
-};
+    };
+
+    services = {
+        bus_service: busService,
+        im_status: imStatusService,
+        messaging: messagingService,
+        messagingValues,
+        presence: makeFakePresenceService({
+            isOdooFocused: () => true,
+        }),
+        systrayService,
+        multi_tab: multiTabService,
+        ...services,
+    };
+
+    Object.entries(services).forEach(([serviceName, service]) => {
+        serviceRegistry.add(serviceName, service);
+    });
+
+    registry.category('wowlToLegacyServiceMappers').add('bus_service_to_legacy_env', makeBusServiceToLegacyEnv);
+    registry.category('wowlToLegacyServiceMappers').add('multi_tab_to_legacy_env', makeMultiTabToLegacyEnv);
+    registry.category('wowlToLegacyServiceMappers').add('messaging_service_to_legacy_env', makeMessagingToLegacyEnv);
+}
 
 /**
  * Creates a properly configured instance of WebClient, with the messaging service and all it's
@@ -173,11 +113,12 @@ export const setupManager = {
  * @param {Object} [param0.serverData]
  * @param {Object} [param0.services]
  * @param {Object} [param0.loadingBaseDelayDuration]
+ * @param {Object} [param0.messagingBeforeCreationDeferred]
  * @param {EventBus} [param0.messagingBus] The event bus to be used by messaging.
  * @returns {WebClient}
  */
-async function getWebClientReady(param0) {
-    setupManager.setupMainComponentRegistry();
+ async function getWebClientReady(param0) {
+    setupMainComponentRegistry();
 
     const servicesParameters = {};
     const param0Entries = Object.entries(param0);
@@ -186,8 +127,7 @@ async function getWebClientReady(param0) {
             servicesParameters[parameterName] = value;
         }
     }
-    setupManager.setupServiceRegistries(servicesParameters);
-    setupManager.setupSystrayRegistry();
+    setupMessagingServiceRegistries(servicesParameters);
 
     const webClientParameters = {};
     for (const [parameterName, value] of param0Entries) {
@@ -198,4 +138,7 @@ async function getWebClientReady(param0) {
     return createWebClient(webClientParameters);
 }
 
-export { getWebClientReady, ROUTES_TO_IGNORE };
+export {
+    getWebClientReady,
+    ROUTES_TO_IGNORE,
+};

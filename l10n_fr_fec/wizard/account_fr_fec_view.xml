@@ -5,11 +5,11 @@
     <field name="model">account.fr.fec</field>
     <field name="arch" type="xml">
         <form string="FEC File Generation">
-            <div class="alert alert-info" role="alert" invisible="test_file">
+            <div class="alert alert-info" role="alert" attrs="{'invisible': [('test_file', '=', True)]}">
                 When you download a FEC file, the lock date is set to the end date.
                 If you want to test the FEC file generation, please tick the test file checkbox.
             </div>
-            <div class="alert alert-info" role="alert" invisible="not test_file">
+            <div class="alert alert-info" role="alert" attrs="{'invisible': [('test_file', '=', False)]}">
                 You are in test mode. The FEC file generation will not set the lock date.
             </div>
             <notebook>
@@ -18,18 +18,17 @@
                         <field name="date_from"/>
                         <field name="date_to"/>
                         <field name="test_file"/>
-                        <field name="export_type" invisible="not test_file"/>
-                        <field name="excluded_journal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="export_type" attrs="{'invisible': [('test_file', '=', False)]}"/>
                     </group>
                 </page>
                 <page string="Technical Info" name="technical_info">
                     <group>
-                        <div colspan="2">
+                        <div>
                         The encoding of this text file is UTF-8. The structure of file is CSV separated by pipe '|'.
                         </div>
                     </group>
                     <group>
-                        <table style="width:80%" colspan="2">
+                        <table style="width:80%">
                             <tr>
                                 <th>Technical Name</th>
                                 <th>Column</th>
@@ -41,7 +40,8 @@
                             </tr>
                             <tr>
                                 <td>JournalLib</td>
-                                <td># 1</td>
+                                <td>
+                                    # 1</td>
                             </tr>
                             <tr>
                                 <td>EcritureNum</td>
@@ -49,7 +49,8 @@
                             </tr>
                             <tr>
                                 <td>EcritureDate</td>
-                                <td># 3</td>
+                                <td>
+                                    # 3</td>
                             </tr>
                             <tr>
                                 <td>CompteNum</td>
@@ -114,8 +115,8 @@
             </notebook>
             <footer>
                 <button string="Generate" name="generate_fec" type="object"
-                    class="oe_highlight" data-hotkey="q"/>
-                <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="x"/>
+                    class="oe_highlight"/>
+                <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z"/>
             </footer>
         </form>
     </field>

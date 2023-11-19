@@ -15,4 +15,3 @@ class TestWebGanttPill(models.Model):
                                                  column1='master', column2='slave')
     date_start = fields.Datetime("Start Datetime")
     date_stop = fields.Datetime("Stop Datetime")
-    parent_id = fields.Many2one("test.web.gantt.pill")

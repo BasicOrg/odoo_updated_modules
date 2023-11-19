@@ -10,7 +10,7 @@ class Project(models.Model):
 
     display_planning_timesheet_analysis = fields.Boolean(compute='_compute_display_planning_timesheet_analysis', help='Should we display the planning and timesheet analysis button?')
 
-    @api.depends('allow_timesheets')
+    @api.depends('allow_timesheets', 'allow_forecast')
     @api.depends_context('uid')
     def _compute_display_planning_timesheet_analysis(self):
         is_user_authorized = self.env.user.has_group('planning.group_planning_manager') and self.env.user.has_group('hr_timesheet.group_hr_timesheet_approver')
@@ -18,7 +18,7 @@ class Project(models.Model):
             self.display_planning_timesheet_analysis = False
         else:
             for project in self:
-                project.display_planning_timesheet_analysis = project.allow_timesheets
+                project.display_planning_timesheet_analysis = project.allow_timesheets and project.allow_forecast
 
     # -------------------------------------------
     # Actions

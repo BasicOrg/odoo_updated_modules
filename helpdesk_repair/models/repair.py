@@ -18,11 +18,10 @@ class Repair(models.Model):
             tracked_repairs = self.filtered(
                 lambda r: r.ticket_id.use_product_repairs and r.state in ('done', 'cancel') and previous_states[r] != r.state)
             for repair in tracked_repairs:
-                subtype = self.env.ref('helpdesk.mt_ticket_repair_status', raise_if_not_found=False)
+                subtype = self.env.ref('helpdesk.mt_ticket_repair_' + repair.state, raise_if_not_found=False)
                 if not subtype:
                     continue
-                state_desc = dict(self._fields['state']._description_selection(self.env))[repair.state].lower()
-                body = repair._get_html_link() + f" {_('Repair')} {state_desc}"
+                body = f"{repair._get_html_link()} {subtype.name}"
                 repair.ticket_id.sudo().message_post(subtype_id=subtype.id, body=body)
         return res
 
@@ -30,26 +29,23 @@ class Repair(models.Model):
     def create(self, vals_list):
         orders = super().create(vals_list)
         message = _('Repair Created')
-        subtype_id = self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note')
+        subtype_id = self.env.ref('mail.mt_note').id
         for order in orders.filtered('ticket_id'):
-            order.message_post_with_source(
-                'helpdesk.ticket_creation',
-                render_values={'self': order, 'ticket': order.ticket_id},
-                subtype_id=subtype_id
-            )
-            order.ticket_id.message_post_with_source(
+            order.message_post_with_view('helpdesk.ticket_creation', values={'self': order, 'ticket': order.ticket_id}, subtype_id=subtype_id)
+            order.ticket_id.message_post_with_view(
                 'helpdesk.ticket_conversion_link',
-                render_values={'created_record': order, 'message': message},
+                values={'created_record': order, 'message': message},
                 subtype_id=subtype_id,
+                author_id=self.env.user.partner_id.id
             )
         return orders
 
-    def _action_repair_confirm(self):
-        """repair.action_repair_confirm() apply changes on move_ids which,
+    def action_repair_done(self):
+        """repair.action_repair_done() calls stock_move.create() which,
         if default_lot_id is still in the context, will give all stock_move_lines.lot_id this value.
         We want to avoid that, as the components of the repair do not have the same lot_id, if any,
         so it leads to an exception.
         """
         context = dict(self.env.context)
         context.pop('default_lot_id', None)
-        return super(Repair, self.with_context(context))._action_repair_confirm()
+        return super(Repair, self.with_context(context)).action_repair_done()

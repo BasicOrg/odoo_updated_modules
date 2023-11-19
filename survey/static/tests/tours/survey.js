@@ -1,11 +1,12 @@
-/** @odoo-module **/
+odoo.define('survey.tour_test_survey', function (require) {
+'use strict';
 
-import { registry } from "@web/core/registry";
+var tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add('test_survey', {
+tour.register('test_survey', {
     test: true,
     url: '/survey/start/b137640d-14d4-4748-9ef6-344caaaaaae',
-    steps: () => [
+}, [
     // Page-1
     {
         content: 'Click on Start',
@@ -63,6 +64,7 @@ registry.category("web_tour.tours").add('test_survey', {
     {
         content: 'Thank you',
         trigger: 'h1:contains("Thank you!")',
-        isCheck: true,
     }
-]});
+]);
+
+});

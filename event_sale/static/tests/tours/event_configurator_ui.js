@@ -1,12 +1,12 @@
-/** @odoo-module **/
+odoo.define('event.event_configurator_tour', function (require) {
+"use strict";
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+var tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add('event_configurator_tour', {
+tour.register('event_configurator_tour', {
     url: "/web",
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale.sale_menu_root"]',
     edition: 'community'
 }, {
@@ -71,5 +71,7 @@ registry.category("web_tour.tours").add('event_configurator_tour', {
 }, {
     trigger: "td[name='name'][data-tooltip*='Standard']",
     run: function () {} // check
-}, ...stepUtils.saveForm()
-]});
+}, ...tour.stepUtils.saveForm()
+]);
+
+});

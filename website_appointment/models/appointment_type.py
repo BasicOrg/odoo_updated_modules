@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models
-from odoo.addons.website_appointment.controllers.appointment import WebsiteAppointment
+from odoo.addons.appointment.controllers.appointment import AppointmentController
 
 
 class AppointmentType(models.Model):
@@ -10,7 +10,7 @@ class AppointmentType(models.Model):
     _inherit = [
         'appointment.type',
         'website.seo.metadata',
-        'website.published.multi.mixin',
+        'website.published.mixin',
         'website.cover_properties.mixin',
         'website.searchable.mixin',
     ]
@@ -37,9 +37,6 @@ class AppointmentType(models.Model):
 
     @api.depends('category')
     def _compute_is_published(self):
-        if self._context.get('default_is_published'):
-            self.is_published = True
-            return
         for appointment_type in self:
             if appointment_type.category in ['custom', 'anytime']:
                 appointment_type.is_published = True
@@ -77,19 +74,10 @@ class AppointmentType(models.Model):
     @api.model
     def _search_get_detail(self, website, order, options):
         invite_token = options.get('invite_token')
-        allowed_appointment_type_ids = WebsiteAppointment._fetch_and_check_private_appointment_types(
+        allowed_appointment_type_ids = AppointmentController._fetch_available_appointments(
             options.get('filter_appointment_type_ids'),
             options.get('filter_staff_user_ids'),
-            options.get('filter_resource_ids'),
-            invite_token,
-            domain=WebsiteAppointment._appointments_base_domain(
-                filter_appointment_type_ids=options.get('filter_appointment_type_ids'),
-                search=options.get('search'),
-                invite_token=invite_token,
-                additional_domain=WebsiteAppointment._appointment_website_domain(self)
-            )
-        ).ids
-
+            invite_token).ids
         domain = [[('id', 'in', allowed_appointment_type_ids)]]
 
         search_fields = ['name']
@@ -111,12 +99,3 @@ class AppointmentType(models.Model):
             'requires_sudo': bool(invite_token),
             'search_fields': search_fields,
         }
-
-    def action_share_invite(self):
-        action = super().action_share_invite()
-        if self.env.user.user_has_groups('website.group_multi_website'):
-            website_id = self.website_id
-        else:
-            website_id = self.env['website']
-        action['context'].update({'default_website_id': website_id.id})
-        return action

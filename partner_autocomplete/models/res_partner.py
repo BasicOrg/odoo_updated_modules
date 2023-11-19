@@ -4,7 +4,6 @@
 import base64
 import json
 import logging
-import re
 import requests
 
 from odoo import api, fields, models, tools, _
@@ -12,14 +11,7 @@ from odoo import api, fields, models, tools, _
 _logger = logging.getLogger(__name__)
 
 PARTNER_AC_TIMEOUT = 5
-SUPPORTED_VAT_PREFIXES = {
-    'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI',
-    'FR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL',
-    'PT', 'RO', 'SE', 'SI', 'SK', 'XI', 'EU'}
-VAT_COUNTRY_MAPPING = {
-    'EL': 'GR',  # Greece
-    'XI': 'GB',  # United Kingdom (Northern Ireland)
-}
+
 
 class ResPartner(models.Model):
     _name = 'res.partner'
@@ -48,6 +40,8 @@ class ResPartner(models.Model):
                 state = self.env['res.country.state'].search([
                     ('country_id', '=', country.id), ('name', '=ilike', state_name)
                 ], limit=1)
+        else:
+            _logger.info('Country code not found: %s', country_code)
 
         if country:
             iap_data['country_id'] = {'id': country.id, 'display_name': country.display_name}
@@ -139,38 +133,21 @@ class ResPartner(models.Model):
             return []
 
     @api.model
-    def _is_company_in_europe(self, partner_country_code, vat_country_code):
-        return partner_country_code == VAT_COUNTRY_MAPPING.get(vat_country_code, vat_country_code)
+    def _is_company_in_europe(self, country_code):
+        country = self.env['res.country'].search([('code', '=ilike', country_code)])
+        if country:
+            country_id = country.id
+            europe = self.env.ref('base.europe')
+            if not europe:
+                europe = self.env["res.country.group"].search([('name', '=', 'Europe')], limit=1)
+            if not europe or country_id not in europe.country_ids.ids:
+                return False
+        return True
 
     def _is_vat_syncable(self, vat):
-        if not vat:
-            return False
         vat_country_code = vat[:2]
         partner_country_code = self.country_id.code if self.country_id else ''
-
-        # Check if the VAT prefix is supported and corresponds to the partner's country or no country is set
-        is_vat_supported = (
-            vat_country_code in SUPPORTED_VAT_PREFIXES
-            and (self._is_company_in_europe(partner_country_code, vat_country_code) or not partner_country_code))
-
-        is_gst_supported = (
-            self.check_gst_in(vat)
-            and partner_country_code == self.env.ref('base.in').code or not partner_country_code)
-
-        return is_vat_supported or is_gst_supported
-
-    def check_gst_in(self, vat):
-        # reference from https://www.gstzen.in/a/format-of-a-gst-number-gstin.html
-        if vat and len(vat) == 15:
-            all_gstin_re = [
-                r'\d{2}[a-zA-Z]{5}\d{4}[a-zA-Z][1-9A-Za-z][Zz1-9A-Ja-j][0-9a-zA-Z]',  # Normal, Composite, Casual GSTIN
-                r'\d{4}[A-Z]{3}\d{5}[UO]N[A-Z0-9]',  # UN/ON Body GSTIN
-                r'\d{4}[a-zA-Z]{3}\d{5}NR[0-9a-zA-Z]',  # NRI GSTIN
-                r'\d{2}[a-zA-Z]{4}[a-zA-Z0-9]\d{4}[a-zA-Z][1-9A-Za-z][DK][0-9a-zA-Z]',  # TDS GSTIN
-                r'\d{2}[a-zA-Z]{5}\d{4}[a-zA-Z][1-9A-Za-z]C[0-9a-zA-Z]'  # TCS GSTIN
-            ]
-            return any(re.match(rx, vat) for rx in all_gstin_re)
-        return False
+        return self._is_company_in_europe(vat_country_code) and (partner_country_code == vat_country_code or not partner_country_code)
 
     def _is_synchable(self):
         already_synched = self.env['res.partner.autocomplete.sync'].search([('partner_id', '=', self.id), ('synched', '=', True)])
@@ -189,10 +166,10 @@ class ResPartner(models.Model):
             if partners.additional_info:
                 template_values = json.loads(partners.additional_info)
                 template_values['flavor_text'] = _("Partner created by Odoo Partner Autocomplete Service")
-                partners.message_post_with_source(
+                partners.message_post_with_view(
                     'iap_mail.enrich_company',
-                    render_values=template_values,
-                    subtype_xmlid='mail.mt_note',
+                    values=template_values,
+                    subtype_id=self.env.ref('mail.mt_note').id,
                 )
                 partners.write({'additional_info': False})
 
@@ -204,16 +181,3 @@ class ResPartner(models.Model):
             self._update_autocomplete_data(values.get('vat', False))
 
         return res
-
-    @api.model
-    def _get_view(self, view_id=None, view_type='form', **options):
-        arch, view = super()._get_view(view_id, view_type, **options)
-
-        if view_type == 'form':
-            for node in arch.xpath(
-                "//field[@name='name']"
-                "|//field[@name='vat']"
-            ):
-                node.attrib['widget'] = 'field_partner_autocomplete'
-
-        return arch, view

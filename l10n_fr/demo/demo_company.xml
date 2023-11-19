@@ -6,7 +6,6 @@
         <field name="street">Rue Abbé Huet</field>
         <field name="city">Rennes</field>
         <field name="country_id" ref="base.fr"/>
-        <field name="siret">96851575905808</field>
         
         <field name="zip">35043</field>
         <field name="phone">+33 6 12 34 56 78</field>
@@ -19,12 +18,6 @@
         <field name="partner_id" ref="partner_demo_company_fr"/>
     </record>
 
-    <record id="demo_bank_fr" model="res.partner.bank">
-        <field name="acc_number">FR5730003000507963949549B56</field>
-        <field name="partner_id" ref="partner_demo_company_fr"/>
-        <field name="company_id" ref="demo_company_fr"/>
-    </record>
-
     <function model="res.company" name="_onchange_country_id">
         <value eval="[ref('demo_company_fr')]"/>
     </function>
@@ -35,8 +28,7 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value>fr</value>
+        <value eval="[ref('l10n_fr.l10n_fr_pcg_chart_template')]"/>
         <value model="res.company" eval="obj().env.ref('l10n_fr.demo_company_fr')"/>
     </function>
 </odoo>

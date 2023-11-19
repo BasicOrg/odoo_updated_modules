@@ -9,6 +9,7 @@ import subprocess
 import time
 
 from odoo import http, tools
+from odoo.modules.module import get_resource_path
 
 from odoo.addons.hw_drivers.event_manager import event_manager
 from odoo.addons.hw_drivers.main import iot_devices, manager
@@ -29,15 +30,6 @@ class DriverController(http.Controller):
         if iot_device:
             iot_device.data['owner'] = session_id
             data = json.loads(data)
-
-            # Skip the request if it was already executed (duplicated action calls)
-            iot_idempotent_id = data.get("iot_idempotent_id")
-            if iot_idempotent_id:
-                idempotent_session = iot_device._check_idempotency(iot_idempotent_id, session_id)
-                if idempotent_session:
-                    _logger.info("Ignored request from %s as iot_idempotent_id %s already received from session %s",
-                                 session_id, iot_idempotent_id, idempotent_session)
-                    return False
             iot_device.action(data)
             return True
         return False
@@ -48,7 +40,7 @@ class DriverController(http.Controller):
         This route is called when we want to check if certificate is up-to-date
         Used in cron.daily
         """
-        helpers.get_certificate_status()
+        helpers.check_certificate()
 
     @http.route('/hw_drivers/event', type='json', auth='none', cors='*', csrf=False, save_session=False)
     def event(self, listener):
@@ -73,12 +65,42 @@ class DriverController(http.Controller):
             req['result']['session_id'] = req['session_id']
             return req['result']
 
+    @http.route('/hw_drivers/box/connect', type='http', auth='none', cors='*', csrf=False, save_session=False)
+    def connect_box(self, token):
+        """
+        This route is called when we want that a IoT Box will be connected to a Odoo DB
+        token is a base 64 encoded string and have 2 argument separate by |
+        1 - url of odoo DB
+        2 - token. This token will be compared to the token of Odoo. He have 1 hour lifetime
+        """
+        server = helpers.get_odoo_server_url()
+        image = get_resource_path('hw_drivers', 'static/img', 'False.jpg')
+        if not server:
+            credential = b64decode(token).decode('utf-8').split('|')
+            url = credential[0]
+            token = credential[1]
+            if len(credential) > 2:
+                # IoT Box send token with db_uuid and enterprise_code only since V13
+                db_uuid = credential[2]
+                enterprise_code = credential[3]
+                helpers.add_credential(db_uuid, enterprise_code)
+            try:
+                subprocess.check_call([get_resource_path('point_of_sale', 'tools/posbox/configuration/connect_to_server.sh'), url, '', token, 'noreboot'])
+                manager.send_alldevices()
+                image = get_resource_path('hw_drivers', 'static/img', 'True.jpg')
+                helpers.odoo_restart(3)
+            except subprocess.CalledProcessError as e:
+                _logger.error('A error encountered : %s ' % e.output)
+        if os.path.isfile(image):
+            with open(image, 'rb') as f:
+                return f.read()
+
     @http.route('/hw_drivers/download_logs', type='http', auth='none', cors='*', csrf=False, save_session=False)
     def download_logs(self):
         """
         Downloads the log file
         """
         if tools.config['logfile']:
-            return http.Stream.from_path(tools.config['logfile']).get_response(
-                mimetype='text/plain', as_attachment=True
-            )
+            res = http.send_file(tools.config['logfile'], mimetype="text/plain", as_attachment=True)
+            res.headers['Cache-Control'] = 'no-cache'
+            return res

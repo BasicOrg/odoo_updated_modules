@@ -10,4 +10,5 @@ class ProductTemplate(models.Model):
     sla_id = fields.Many2one(
         "helpdesk.sla", string="SLA Policy",
         company_dependent=True,
+        domain="[('company_id', '=', current_company_id)]",
         help="SLA Policy that will automatically apply to the tickets linked to a sales order item containing this service.")

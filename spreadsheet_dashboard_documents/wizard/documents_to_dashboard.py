@@ -42,7 +42,7 @@ class DocumentsToDashboardWizard(models.TransientModel):
                 "name": self.name,
                 "dashboard_group_id": self.dashboard_group_id.id,
                 "group_ids": self.group_ids.ids,
-                "spreadsheet_data": self.document_id.spreadsheet_data,
+                "data": self.document_id.datas,
             }
         )
         return {

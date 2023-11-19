@@ -14,17 +14,15 @@
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="initial-scale=1"/>
                 <title><t t-esc="title or 'Odoo Report'"/></title>
-                <t t-call-assets="web.report_assets_common"/>
-                <!-- Temporary code: only used to maintain CSS for legacy HTML reports (full width...) -->
-                <!-- Should be removed once the reports are fully converted. -->
+                <t t-call-assets="web.report_assets_common" t-js="false"/>
+                <!--The following is kind of a hack-->
+                <!--in an iframe, we don't want the session to perform qweb_templates rpc-->
                 <script type="text/javascript">
-                    document.addEventListener('DOMContentLoaded', () => {
-                        if (window.self !== window.top) {
-                            document.body.classList.add("o_in_iframe", "container-fluid");
-                            document.body.classList.remove("container");
-                        }
-                    });
+                    window.odoo = {};
+                    window.odoo.__session_info__ = {is_report: true};
                 </script>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.report_assets_common" t-css="false"/>
             </head>
             <body t-att-class="'container' if not full_width else 'container-fluid'">
                 <div id="wrapwrap">
@@ -49,6 +47,7 @@
                 <meta name="viewport" content="initial-scale=1"/>
                 <title><t t-esc="title or 'Odoo Report'"/></title>
                 <t t-call-assets="web.report_assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
                 <style>
                     <t t-out="preview_css"/>
 
@@ -60,13 +59,23 @@
                     **/
 
                     /** The footers are not at the bottom of the page, so we push them down. **/
-                    .o_background_footer, .o_standard_footer, .o_boxed_footer, .o_clean_footer {
-                        position: absolute;
-                        bottom: 0;
-                        left:50px;
-                        right:50px;
+                    .o_background_footer  {
+                        margin-top: 295px !important;
                         font-size: 0.8rem
                     }
+                    .o_standard_footer {
+                        margin-top: 200px !important;
+                        font-size: 0.8rem
+                    }
+                    .o_boxed_footer {
+                         margin-top: 270px !important;
+                         font-size: 0.8rem
+                    }
+                    .o_clean_footer {
+                         margin-top: 175px !important;
+                         font-size: 0.8rem
+                    }
+
                     /** Avoid image overflowing and creating a scrollbar **/
                     .o_background_header {
                         min-width: initial !important;
@@ -110,37 +119,43 @@
     <template id="report_invoice_wizard_preview">
         <t t-call="web.html_preview_container">
            <t t-call="web.external_layout">
-                   <t t-set="address">
-                       <address class="mb-0" itemscope="itemscope"
-                                itemtype="http://schema.org/Organization">
-                           <div>
-                               <span itemprop="name">Deco Addict</span>
+                   <div class="pt-5">
+                       <div class="address row">
+                           <div name="address" class="col-5" style="margin-left: auto">
+                               <address>
+                                   <address class="mb-0" itemscope="itemscope"
+                                            itemtype="http://schema.org/Organization">
+                                       <div>
+                                           <span itemprop="name">Deco Addict</span>
+                                       </div>
+                                       <div itemprop="address" itemscope="itemscope"
+                                            itemtype="http://schema.org/PostalAddress">
+                                           <div class="d-flex align-items-baseline">
+                                               <span class="w-100 o_force_ltr" itemprop="streetAddress">77 Santa Barbara
+                                                   Rd<br/>Pleasant Hill CA 94523<br/>United States</span>
+                                           </div>
+                                       </div>
+                                   </address>
+                               </address>
                            </div>
-                           <div itemprop="address" itemscope="itemscope"
-                                itemtype="http://schema.org/PostalAddress">
-                               <div class="d-flex align-items-baseline">
-                                   <span class="w-100 o_force_ltr" itemprop="streetAddress">77 Santa Barbara
-                                       Rd<br/>Pleasant Hill CA 94523<br/>United States</span>
-                               </div>
-                           </div>
-                       </address>
-                   </t>
-                   <div class="page mt-5">
+                       </div>
+                   </div>
+                   <div class="page">
                        <h2>
                            <span>Invoice</span>
-                           <span>INV/2023/00003</span>
+                           <span>INV/2020/07/0003</span>
                        </h2>
-                       <div id="informations" class="row mt-4 mb-4">
-                           <div class="col-auto col-3 mw-100 mb-2" name="invoice_date">
+                       <div id="informations" class="row mt32 mb32">
+                           <div class="col-auto mw-100 mb-2" name="invoice_date">
                                <strong>Invoice Date:</strong>
                                <p class="m-0">07/08/2020</p>
                            </div>
-                           <div class="col-auto col-3 mw-100 mb-2" name="due_date">
+                           <div class="col-auto mw-100 mb-2" name="due_date">
                                <strong>Due Date:</strong>
                                <p class="m-0">08/07/2020</p>
                            </div>
                        </div>
-                       <table class="table table-sm o_main_table table-borderless" name="invoice_line_table">
+                       <table class="table table-sm o_main_table" name="invoice_line_table">
                            <thead>
                                <tr>
                                    <th name="th_description" class="text-start"><span>Description</span></th>
@@ -157,13 +172,13 @@
                                    <td name="account_invoice_line_name"><span>[FURN_8999] Three-Seat Sofa<br/>
                                        Three Seater Sofa with Lounger in Steel Grey Colour</span></td>
                                    <td class="text-end">
-                                       <span>5.00</span>
+                                       <span>5.000</span>
                                    </td>
                                    <td class="text-end d-md-table-cell">
                                        <span class="text-nowrap">1,500.00</span>
                                    </td>
                                    <td class="text-start d-md-table-cell">
-                                       <span id="line_tax_ids">Tax 15%</span>
+                                       <span id="line_tax_ids">15.00%</span>
                                    </td>
                                    <td class="text-end o_price_total">
                                        <span class="text-nowrap">$ <span class="oe_currency_value">7,500.00</span></span>
@@ -173,13 +188,13 @@
                                    <td name="account_invoice_line_name"><span>[FURN_8220] Four Person Desk<br/>
                                        Four person modern office workstation</span></td>
                                    <td class="text-end">
-                                       <span>5.00</span>
+                                       <span>5.000</span>
                                    </td>
                                    <td class="text-end d-md-table-cell">
                                        <span class="text-nowrap">2,350.00</span>
                                    </td>
                                    <td class="text-start d-md-table-cell">
-                                       <span id="line_tax_ids">Tax 15%</span>
+                                       <span id="line_tax_ids">15.00%</span>
                                    </td>
                                    <td class="text-end o_price_total">
                                        <span class="text-nowrap">$ <span class="oe_currency_value">11,750.00</span></span>
@@ -189,10 +204,10 @@
                        </table>
                        <div class="clearfix">
                            <div id="total" class="row">
-                               <div class="col-6 ms-auto">
-                                   <table class="table table-sm table-borderless" style="page-break-inside: avoid; position:relative;">
+                               <div class="col-7 ms-auto">
+                                   <table class="table table-sm" style="page-break-inside: avoid; position:relative;">
                                        <tbody><tr class="border-black o_subtotal" style="">
-                                           <td><strong>Untaxed Amount</strong></td>
+                                           <td><strong>Subtotal</strong></td>
                                            <td class="text-end">
                                                <span>$ <span class="oe_currency_value">19,250.00</span></span>
                                            </td>
@@ -214,9 +229,9 @@
                                </div>
                            </div>
                        </div>
-                       <p class="mt-4">
+                       <p>
                            Please use the following communication for your payment : <b><span>
-                           INV/2023/00003</span></b>
+                           INV/2020/07/0003</span></b>
                        </p>
                        <p name="payment_term">
                            <span>Payment terms: 30 Days</span>
@@ -277,66 +292,36 @@
 
     <template id="address_layout">
         <t t-set="colclass" t-value="('col-sm-5' if report_type == 'html' else 'col-5') + ' ms-auto'"/>
-        <div t-if="address" class="address row " title="This block is not always present depending on the printed document.">
-            <t t-if="information_block">
-                <t t-set="colclass" t-value="'col-5 offset-1'"/>
-                <div name="information_block" class="col-6">
-                    <t t-out="information_block or None">
-                        <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
-                            <strong>Information block</strong>
-                            <div>Usually contains a source address or a complementary address.</div>
-                        </div>
-                    </t>
-                </div>
-            </t>
-
-            <div name="address" t-att-class="colclass">
-                <t t-esc="address or None">
-                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
-                        <strong>Address block</strong>
-                        <div>Usually contains the address of the document's recipient.</div>
+        <t t-if="address">
+            <div class="address row">
+                <t t-if="information_block">
+                    <t t-set="colclass" t-value="'col-5 offset-1'"/>
+                    <div name="information_block" class="col-6">
+                        <t t-out="information_block"/>
                     </div>
                 </t>
+                <div name="address" t-att-class="colclass">
+                    <t t-esc="address"/>
+                </div>
             </div>
-        </div>
-        <div class="oe_structure" t-else=""></div>
+        </t>
     </template>
 
     <template id="external_layout_striped">
         <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
             <div class="o_background_header">
             <div class="float-end">
-                <div class="mt0 text-end h3" t-if="company.report_header" t-field="company.report_header">Company tagline</div>
+                <div class="mt0 text-end h3" t-field="company.report_header"/>
             </div>
             <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>
             <div class="float-start company_address">
-                <ul class="list-unstyled" name='company_address_list'>
-                    <li t-if="company.is_company_details_empty"><span t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'>
-                        <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                            <strong>Company address block</strong>
-                            <div>Contains the company address.</div>
-                        </div>
-                    </span></li>
-                    <li t-else="">
-                        <span t-field="company.company_details">
-                            <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                <strong>Company details block</strong>
-                                <div>Contains the company details.</div>
-                            </div>
-                        </span>
-                    </li>
-                    <li t-if="not forced_vat"/>
-                    <li t-else="">
-                        <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
-                        <span t-esc="forced_vat">US12345671</span>
-                    </li>
-                </ul>
+                <span t-if="company.company_details" t-field="company.company_details"></span>
             </div>
             <div class="clearfix mb8"/>
             </div>
         </div>
 
-        <div t-attf-class="o_company_#{company.id}_layout article o_report_layout_striped {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="o_company_#{company.id}_layout article o_report_layout_striped {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' }});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-call="web.address_layout"/>
             <t t-out="0"/>
         </div>
@@ -352,9 +337,6 @@
                     of
                     <span class="topage"/>
                 </div>
-                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
-                    <span t-out="o.name">(document name)</span>
-                </div>
             </div>
         </div>
     </template>
@@ -367,36 +349,16 @@
                     <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
                 </div>
                 <div class="col-6 text-end mb4">
-                    <div class="mt0 h4" t-if="company.report_header" t-field="company.report_header">Company tagline</div>
+                    <div class="mt0 h4" t-field="company.report_header"/>
                     <div name="company_address" class="float-end mb4">
-                        <ul class="list-unstyled" name="company_address_list">
-                            <li t-if="company.is_company_details_empty"><span t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'>
-                                <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                    <strong>Company address block</strong>
-                                    <div>Contains the company address.</div>
-                                </div>
-                            </span></li>
-                            <li t-else="">
-                                <span t-field="company.company_details">
-                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                        <strong>Company details block</strong>
-                                        <div>Contains the company details.</div>
-                                    </div>
-                                </span>
-                            </li>
-                            <li t-if="not forced_vat"/>
-                            <li t-else="">
-                                <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
-                                <span t-esc="forced_vat">US12345671</span>
-                            </li>
-                        </ul>
+                        <span t-if="company.company_details" t-field="company.company_details"></span>
                     </div>
                 </div>
             </div>
             </div>
         </div>
 
-        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' }});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
             <div class="pt-5">
                 <!-- This div ensures that the address is not cropped by the header. -->
                 <t t-call="web.address_layout"/>
@@ -406,12 +368,9 @@
 
         <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
             <div class="text-center">
-                <div t-field="company.report_footer">Company Report Footer</div>
+                <div t-field="company.report_footer"/>
                 <div t-if="report_type == 'pdf'">
                     Page: <span class="page"/> / <span class="topage"/>
-                </div>
-                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
-                    <span t-out="o.name">(document name)</span>
                 </div>
             </div>
         </div>
@@ -420,34 +379,24 @@
     <template id="external_layout_bold">
         <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
             <div class="o_clean_header">
-                <div class="row">
-                    <div class="col-6">
-                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-                    </div>
-                    <div class="col-5 offset-1" name="company_address">
-                        <ul class="list-unstyled" name='company_address_list'>
-                            <li t-if="company.is_company_details_empty"><span t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'>
-                                <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                    <strong>Company address block</strong>
-                                    <div>Contains the company address.</div>
-                                </div>
-                            </span></li>
-                            <li t-else="">
-                                <span t-field="company.company_details">
-                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                        <strong>Company details block</strong>
-                                        <div>Contains the company details.</div>
-                                    </div>
-                                </span>
-                            </li>
-                            <li t-if="not forced_vat"/>
-                            <li t-else="">
-                                <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
-                                <span t-esc="forced_vat">US12345671</span>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="row">
+                <div class="col-6">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
                 </div>
+                <div class="col-5 offset-1" name="company_address">
+                    <ul class="list-unstyled">
+                        <strong><li t-if="company.name"><span t-field="company.name"/></li></strong>
+                        <li t-if="forced_vat or company.vat">
+                            <t t-esc="company.country_id.vat_label or 'Tax ID'"/>:
+                            <span t-if="forced_vat" t-esc="forced_vat"/>
+                            <span t-else="" t-field="company.vat"/>
+                        </li>
+                        <li t-if="company.phone">Tel: <span class="o_force_ltr" t-field="company.phone"/></li>
+                        <li t-if="company.email"><span t-field="company.email"/></li>
+                        <li t-if="company.website"><span t-field="company.website"/></li>
+                    </ul>
+                </div>
+            </div>
             </div>
         </div>
 
@@ -462,11 +411,10 @@
                     <span t-field="company.report_footer"/>
                 </div>
                 <div class="col-4">
-                    <span t-if="company.is_company_details_empty" t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
-                    <span t-else="" t-field="company.company_details"/>
+                    <span t-if="company.company_details" t-field="company.company_details"/>
                 </div>
                 <div class="col-3">
-                    <div class="mt0 mb0 h5" t-if="company.report_header" t-field="company.report_header">Company tagline</div>
+                    <div class="mt0 mb0 h5" t-field="company.report_header"/>
                 </div>
                 <div class="col-1">
                     <ul t-if="report_type == 'pdf'" class="list-inline pagenumber float-end text-center">
@@ -483,7 +431,7 @@
                 <div class="col-3 mb4">
                     <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;" alt="Logo"/>
                 </div>
-                <div class="col-9 text-end" style="margin-top:22px;" t-if="company.report_header" t-field="company.report_header" name="moto">Company tagline</div>
+                <div class="col-9 text-end" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
             </div>
             <div t-if="company.logo or company.report_header" class="row zero_min_height">
                 <div class="col-12">
@@ -492,27 +440,9 @@
             </div>
             <div class="row">
                 <div class="col-6" name="company_address">
-                    <ul class="list-unstyled" name="company_address_list">
-                        <li t-if="company.is_company_details_empty"><span t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'>
-                            <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                <strong>Company address block</strong>
-                                <div>Contains the company address.</div>
-                            </div>
-                        </span></li>
-                        <li t-else="">
-                            <span t-field="company.company_details">
-                                <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
-                                    <strong>Company details block</strong>
-                                    <div>Contains the company details.</div>
-                                </div>
-                            </span>
-                        </li>
-                        <li t-if="not forced_vat"/>
-                        <li t-else="">
-                            <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
-                            <span t-esc="forced_vat">US12345671</span>
-                        </li>
-                    </ul>
+                    <span t-if="company.company_details" t-field="company.company_details"></span>
+                    <span t-else="" t-field="company.partner_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
                 </div>
             </div>
         </div>
@@ -533,9 +463,6 @@
 
                 <div t-if="report_type == 'pdf'" class="text-muted">
                     Page: <span class="page"/> / <span class="topage"/>
-                </div>
-                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
-                    <span t-out="o.name">(document name)</span>
                 </div>
             </div>
         </div>
@@ -646,7 +573,6 @@
 
     <template id="styles_company_report">
         <t t-foreach="company_ids" t-as="company" t-translation="off">
-            <t t-set="forced_vat" t-value="False"/>
             <t t-set="font" t-value="company.font or 'Lato'" />
             <t t-set="primary" t-value="company.primary_color or 'black'" />
             <t t-set="secondary" t-value="company.secondary_color or 'black'" />
@@ -666,7 +592,7 @@
                     }
                 }
                 .row > div > table,
-                div#total table, .totals_taxes_company_currency table {
+                div#total table {
                     &amp;:first-child,
                     &amp;:last-child,
                     &amp;.o_subtotal,
@@ -680,9 +606,6 @@
             <t t-elif="layout == 'web.external_layout_boxed'">
                 &amp;.o_report_layout_boxed {
                     #total strong {
-                        color: <t t-esc='primary'/>;
-                    }
-                    .totals_taxes_company_currency strong{
                         color: <t t-esc='primary'/>;
                     }
                     #informations strong {
@@ -709,7 +632,7 @@
                     }
                 }
                 .row > div > table,
-                div#total table, .totals_taxes_company_currency table {
+                div#total table {
                     tr {
                         &amp;.o_total td {
                             background-color: rgba(<t t-esc='primary'/>, 0.9);
@@ -748,7 +671,7 @@
                             }
                         }
                     }
-                    #total, .totals_taxes_company_currency {
+                    #total {
                         strong {
                             color: <t t-esc='secondary'/>;
                         }
@@ -764,9 +687,6 @@
                         color: <t t-esc='secondary'/>;
                     }
                     #total strong{
-                        color: <t t-esc='primary'/>;
-                    }
-                    .totals_taxes_company_currency strong{
                         color: <t t-esc='primary'/>;
                     }
                     table {

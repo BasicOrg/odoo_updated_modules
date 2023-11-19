@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import date, datetime, timedelta
+from datetime import date
 from odoo.tests import common, Form
-from odoo import Command
-from odoo.tools.date_utils import start_of
 
 
 class TestMpsMps(common.TransactionCase):
@@ -456,65 +454,6 @@ class TestMpsMps(common.TransactionCase):
         self.assertEqual(drawer_forecast_1['indirect_demand_qty'], 11)
         self.assertEqual(screw_forecast_1['indirect_demand_qty'], 148)
 
-    def test_indirect_demand_kit(self):
-        """ On changing demand of a product whose BOM contains kit with a
-        component, ensure that the replenish quantity on a production schedule
-        impacts the indirect demand of kit's component.
-        """
-        cabinet = self.env['product.product'].create({
-            'name': 'Cabinet',
-            'type': 'product',
-        })
-        wood_kit = self.env['product.product'].create({
-            'name': 'Wood Kit',
-            'type': 'product',
-        })
-        wood = self.env['product.product'].create({
-            'name': 'Wood',
-            'type': 'product',
-        })
-
-        self.env['mrp.bom'].create({
-            'product_tmpl_id': cabinet.product_tmpl_id.id,
-            'product_qty': 1,
-            'bom_line_ids': [
-                Command.create({'product_id': wood_kit.id, 'product_qty': 1}),
-            ],
-        })
-
-        self.env['mrp.bom'].create({
-            'product_tmpl_id': wood_kit.product_tmpl_id.id,
-            'product_qty': 1,
-            'bom_line_ids': [
-                Command.create({'product_id': wood.id, 'product_qty': 2}),
-            ],
-        })
-
-        mps_cabinet = self.env['mrp.production.schedule'].create({
-            'product_id': cabinet.id,
-            'warehouse_id': self.warehouse.id,
-        })
-
-        mps_wood = self.env['mrp.production.schedule'].create({
-            'product_id': wood.id,
-            'warehouse_id': self.warehouse.id,
-        })
-
-        self.mps |= mps_cabinet | mps_wood
-
-        mps_dates = self.env.company._get_date_range()
-
-        self.env['mrp.product.forecast'].create({
-            'production_schedule_id': mps_cabinet.id,
-            'date': mps_dates[0][0],
-            'forecast_qty': 2
-        })
-
-        # 4 wood from cabinet
-        mps_wood = mps_wood.get_production_schedule_view_state()[0]
-        wood_forecast_1 = mps_wood['forecast_ids'][0]
-        self.assertEqual(wood_forecast_1['indirect_demand_qty'], 4)
-
     def test_impacted_schedule(self):
         impacted_schedules = self.mps_screw.get_impacted_schedule()
         self.assertEqual(sorted(impacted_schedules), sorted((self.mps - self.mps_screw).ids))
@@ -576,98 +515,3 @@ class TestMpsMps(common.TransactionCase):
         state = mps.get_production_schedule_view_state()[0]
         for index, forecast in enumerate(state['forecast_ids']):
             self.assertEqual(forecast['incoming_qty'], 1 if index == interval_index else 0, 'Incoming qty is incorrect for index %s' % index)
-
-    def test_outgoing_sm_and_lead_time_out_of_date_range(self):
-        """
-        Set a lead time on delivery rule. Then generate an outgoing SM based on
-        that rule with:
-        - its date in dates range of MPS
-        - its date + rule's lead time outside the dates range of MPS
-        As a result, for the product mps, each outgoing quantity should be zero
-        """
-        self.env.company.manufacturing_period = 'day'
-        self.env.company.manufacturing_period_to_display = 10
-
-        customer_location = self.env.ref('stock.stock_location_customers')
-        stock_location = self.warehouse.lot_stock_id
-
-        delivery_rule = self.env['stock.rule'].search([
-            ('warehouse_id', '=', self.warehouse.id),
-            ('location_src_id', '=', stock_location.id),
-            ('location_dest_id', '=', customer_location.id),
-            ('action', '=', 'pull')
-        ], limit=1)
-        delivery_rule.delay = 15
-
-        product = self.env['product.product'].create({'name': 'SuperProduct', 'type': 'product'})
-        procurement = self.env["procurement.group"].Procurement(
-            product, 1, product.uom_id,
-            customer_location,
-            product.name,
-            "/",
-            self.env.company,
-            {
-                "warehouse_id": self.warehouse,
-                "date_planned": date.today() + timedelta(days=16),
-            }
-        )
-        self.env["procurement.group"].run([procurement])
-
-        tomorrow = start_of(datetime.now() + timedelta(days=1), 'day')
-        move = self.env['stock.move'].search([('product_id', '=', product.id)], limit=1)
-        self.assertEqual(move.date, tomorrow)
-
-        mps = self.env['mrp.production.schedule'].create({
-            'product_id': product.id,
-            'warehouse_id': self.warehouse.id,
-        })
-        state = mps.get_production_schedule_view_state()[0]
-        self.assertTrue(all(forecast['outgoing_qty'] == 0 for forecast in state['forecast_ids']))
-
-    def test_incoming_sm_and_lead_time_out_of_date_range(self):
-        """
-        Set a lead time on sam rule. Then generate an outgoing SM based on that
-        rule with:
-        - its date in dates range of MPS
-        - its date + rule's lead time outside the dates range of MPS
-        As a result, for the product mps, each incoming quantity should be zero
-        """
-        self.env.company.manufacturing_period = 'day'
-        self.env.company.manufacturing_period_to_display = 10
-
-        warehouse = self.warehouse
-        warehouse.manufacture_steps = 'pbm_sam'
-        post_production_location = warehouse.sam_loc_id
-        stock_location = self.warehouse.lot_stock_id
-
-        pull_sam = self.env['stock.rule'].search([
-            ('warehouse_id', '=', self.warehouse.id),
-            ('location_src_id', '=', post_production_location.id),
-            ('location_dest_id', '=', stock_location.id),
-            ('action', '=', 'pull')
-        ], limit=1)
-        pull_sam.delay = 15
-
-        template = self.bom_wardrobe.product_tmpl_id
-        template.route_ids = [(6, 0, pull_sam.route_id.ids)]
-        product = template.product_variant_id
-
-        procurement = self.env["procurement.group"].Procurement(
-            product, 1, product.uom_id,
-            stock_location,
-            product.name,
-            "/",
-            self.env.company,
-            {
-                "warehouse_id": self.warehouse,
-                "date_planned": date.today() + timedelta(days=16),
-            }
-        )
-        self.env["procurement.group"].run([procurement])
-
-        tomorrow = start_of(datetime.now() + timedelta(days=1), 'day')
-        move = self.env['stock.move'].search([('product_id', '=', product.id)], limit=1)
-        self.assertEqual(move.date, tomorrow)
-
-        state = self.mps_wardrobe.get_production_schedule_view_state()[0]
-        self.assertTrue(all(forecast['incoming_qty'] == 0 for forecast in state['forecast_ids']))

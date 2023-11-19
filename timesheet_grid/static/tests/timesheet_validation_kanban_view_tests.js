@@ -1,26 +1,41 @@
-/* @odoo-module */
+/** @odoo-module */
 
-import { click, contains } from "@web/../tests/utils";
+import { registry } from "@web/core/registry";
+
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
+import { click, getFixture } from "@web/../tests/helpers/utils";
+import { makeFakeNotificationService } from "@web/../tests/helpers/mock_services";
+
 
 QUnit.module("timesheet_grid", (hooks) => {
-    hooks.beforeEach(async function () {
+    let target;
+    hooks.beforeEach(async function (assert) {
+        target = getFixture();
         setupViewRegistries();
     });
 
     QUnit.module("timesheet_validation_kanban_view");
 
-    QUnit.test("Should trigger notification on validation", async function (assert) {
+    QUnit.test("", async function(assert) {
+        const notificationMock = (message, options) => {
+            assert.step("notification_triggered");
+            return () => {};
+        };
+        registry.category("services").add("notification", makeFakeNotificationService(notificationMock), {
+            force: true,
+        });
         await makeView({
             type: "kanban",
             resModel: "account.analytic.line",
             serverData: {
                 models: {
-                    "account.analytic.line": {
+                    'account.analytic.line': {
                         fields: {
                             unit_amount: { string: "Unit Amount", type: "integer" },
                         },
-                        records: [{ id: 1, unit_amount: 1 }],
+                        records: [
+                            { id: 1, unit_amount: 1 },
+                        ],
                     },
                 },
                 views: {
@@ -40,15 +55,24 @@ QUnit.module("timesheet_grid", (hooks) => {
                     assert.step("action_validate_timesheet");
                     return Promise.resolve({
                         params: {
-                            type: "danger",
+                            type: "dummy type",
                             title: "dummy title",
                         },
                     });
                 }
             },
         });
-        await click(".o_control_panel_collapsed_create button", { text: "Validate" });
-        await contains(".o_notification.border-danger", { text: "dummy title" });
-        assert.verifySteps(["action_validate_timesheet"]);
+        assert.containsOnce(target, 'div.o_cp_bottom_left div.o_cp_buttons[role="toolbar"]:contains("Validate")', "Validate button is added to the control panel of the kanban view");
+        const cp_buttons = target.querySelectorAll('div.o_cp_bottom_left div.o_cp_buttons[role="toolbar"] button');
+        let validateButton;
+        for (const button of cp_buttons) {
+            if (button.innerText.toLowerCase().includes("validate")) {
+                validateButton = button;
+                break;
+            }
+        }
+        await click(validateButton);
+        assert.verifySteps(["action_validate_timesheet", "notification_triggered"]);
     });
+
 });

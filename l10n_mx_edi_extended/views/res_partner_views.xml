@@ -15,58 +15,57 @@
                         <field name="street" placeholder="Street..." class="o_address_street oe_read_only"/>
                         <div class="oe_edit_only o_row">
                             <field name="street_name" placeholder="Street" style="flex: 3 1 auto"
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                             <span> </span>
                             <field name="street_number" placeholder="House #" style="flex: 1 1 auto"
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                             <span> - </span>
                             <field name="street_number2" placeholder="Door #" style="flex: 1 1 auto"
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                         </div>
                         <field name="street2" placeholder="Street 2..." class="o_address_street"
-                               readonly="type == 'contact' and parent_id"/>
+                               attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                         <div class="o_address_street">
                             <field name="l10n_mx_edi_colony" placeholder="Colony..." style="flex: 2 1 auto"
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                             <span> </span>
                             <field name="l10n_mx_edi_colony_code" placeholder="Colony Code..." style="flex: 2 1 auto"
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                         </div>
                         <div class="o_address_street">
                             <field name="l10n_mx_edi_locality_id"
                                    placeholder="Locality..."
                                    domain="[('state_id','=', state_id)]"
                                    options='{"no_create": True}'
-                                   readonly="type == 'contact' and parent_id"/>
+                                   attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                             <field name="l10n_mx_edi_locality"
-                                   invisible="l10n_mx_edi_locality_id or l10n_mx_edi_locality in ['', False]"
-                                   readonly="type == 'contact' and parent_id"
+                                   attrs="{'invisible': ['|', ('l10n_mx_edi_locality_id', '!=', False), ('l10n_mx_edi_locality', 'in', ['', False ])],
+                                           'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"
                                    placeholder="Locality..."/>
                         </div>
                         <field name="city_id"
                                placeholder="City"
                                class="o_address_city"
                                domain="[('country_id', '=', country_id)]"
-                               invisible="not country_enforce_cities"
-                               readonly="type == 'contact' and parent_id"
+                               attrs="{'invisible': [('country_enforce_cities', '=', False)], 'readonly': [('type', '=', 'contact'), ('parent_id', '!=', False)]}"
                                context="{'default_country_id': country_id, 'default_state_id': state_id, 'default_zipcode': zip}"/>
                         <field name="city"
                                placeholder="City"
                                class="o_address_city"
-                               invisible="country_enforce_cities and (city_id or city in ['', False])"
-                               readonly="type == 'contact' and parent_id"/>
+                               attrs="{'invisible': [('country_enforce_cities', '=', True), '|', ('city_id', '!=', False), ('city', 'in', ['',False])],
+                                       'readonly': [('type', '=', 'contact'), ('parent_id', '!=', False)]}"/>
                         <field name="state_id"
                                class="o_address_state"
                                placeholder="State"
                                options="{'no_open': True, 'no_quick_create': True}"
-                               readonly="type == 'contact' and parent_id"
+                               attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"
                                context="{'default_country_id': country_id}"/>
                         <field name="zip" placeholder="ZIP" class="o_address_zip"
-                               readonly="type == 'contact' and parent_id"/>
+                               attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                         <field name="country_id"
                                placeholder="Country"
                                class="o_address_country"
-                               readonly="type == 'contact' and parent_id"
+                               attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"
                                options='{"no_open": True, "no_create": True}'/>
                     </div>
                 </form>
@@ -76,13 +75,13 @@
         <record id="l10n_mx_edi_inh_res_partner_form" model="ir.ui.view">
             <field name="name">res.partner.form.inherit.l10n_mx_edi</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <group name="fiscal_information" position="inside">
-                    <field name="l10n_mx_edi_external_trade" invisible="'MX' not in fiscal_country_codes"/>
+                <group name="sale" position="inside">
+                    <field name="l10n_mx_edi_external_trade"/>
                 </group>
                 <xpath expr="//field[@name='vat']" position="after">
-                    <field name="l10n_mx_edi_curp" invisible="'MX' not in fiscal_country_codes"/>
+                    <field name="l10n_mx_edi_curp"/>
                 </xpath>
             </field>
         </record>

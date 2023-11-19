@@ -305,7 +305,7 @@ class TestPoSBasicConfig(TestPoSCommon):
                     'invoice': {
                         'line_ids': [
                             {'account_id': self.sales_account.id, 'partner_id': self.customer.id, 'debit': 0, 'credit': 0, 'reconciled': False},
-                            {'account_id': self.c1_receivable.id, 'partner_id': self.customer.id, 'debit': 0, 'credit': 0, 'reconciled': True},
+                            {'account_id': self.c1_receivable.id, 'partner_id': self.customer.id, 'debit': 0, 'credit': 0, 'reconciled': False},
                         ]
                     },
                     'payments': [
@@ -845,17 +845,7 @@ class TestPoSBasicConfig(TestPoSCommon):
             self.assertEqual(session.cash_register_balance_start, pos_data['amount_paid'])
 
         pos01_config = self.config
-        self.cash_journal = self.env['account.journal'].create(
-            {'name': 'CASH journal', 'type': 'cash', 'code': 'CSH00'})
-        self.cash_payment_method = self.env['pos.payment.method'].create({
-            'name': 'Cash Test',
-            'journal_id': self.cash_journal.id,
-            'receivable_account_id': pos01_config.payment_method_ids.filtered(lambda s: s.is_cash_count)[
-                1].receivable_account_id.id
-        })
-        pos02_config = pos01_config.copy({
-            'payment_method_ids': self.cash_payment_method
-        })
+        pos02_config = pos01_config.copy()
         pos01_data = {'config': pos01_config, 'p_qty': 1, 'amount_paid': 0}
         pos02_data = {'config': pos02_config, 'p_qty': 3, 'amount_paid': 0}
 
@@ -888,6 +878,8 @@ class TestPoSBasicConfig(TestPoSCommon):
             'company_id': company2.id,
         })
 
+        # activate limited partners loading
+        self.config.limited_partners_loading = True
         self.open_new_session()
 
         # calling load_pos_data should not raise an error

@@ -9,6 +9,7 @@
     'installable': True,
     'application': True,
     'depends': [
+        'note',
         'hr_work_entry_contract_enterprise',
         'mail',
         'web_editor',
@@ -29,12 +30,8 @@
         'views/hr_payslip_run_views.xml',
         'views/hr_payslip_input_type_views.xml',
         'views/hr_salary_attachment_views.xml',
-        'views/hr_salary_attachment_type_views.xml',
         'views/hr_employee_views.xml',
-        'views/res_users_views.xml',
-        'views/hr_payroll_employee_declaration_views.xml',
         'data/hr_payroll_sequence.xml',
-        'data/hr_salary_attachment_type_data.xml',
         'views/hr_payroll_report.xml',
         'data/hr_payroll_data.xml',
         'data/mail_activity_type_data.xml',
@@ -58,7 +55,10 @@
     'demo': ['data/hr_payroll_demo.xml'],
     'assets': {
         'web.assets_backend': [
-            'hr_payroll/static/src/**/*',
+            'hr_payroll/static/src/**/*.js',
+            'hr_payroll/static/src/**/*.scss',
+            'hr_payroll/static/src/xml/**/*',
+            'hr_payroll/static/src/**/*.xml',
         ],
         'web.assets_tests': [
             'hr_payroll/static/tests/**/*.js',

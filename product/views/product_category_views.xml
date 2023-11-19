@@ -12,7 +12,7 @@
                             name="%(product_template_action_all)d"
                             icon="fa-th-list"
                             type="action"
-                            context="{'search_default_categ_id': id, 'default_categ_id': id, 'group_expand': True}">
+                            context="{'search_default_categ_id': active_id, 'default_categ_id': active_id, 'group_expand': True}">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><field name="product_count"/></span>
                                 <span class="o_stat_text"> Products</span>
@@ -55,6 +55,7 @@
 
     <record id="product_category_action_form" model="ir.actions.act_window">
         <field name="name">Product Categories</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.category</field>
         <field name="search_view_id" ref="product_category_search_view"/>
         <field name="view_id" ref="product_category_list_view"/>

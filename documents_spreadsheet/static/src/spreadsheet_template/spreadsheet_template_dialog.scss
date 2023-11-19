@@ -9,11 +9,6 @@ $margin-right: 15px;
         width: 50%;
         margin-left: auto;
         margin-right: $margin-right;
-        border-right: 1px solid $border-color !important;
-
-        &:focus-within {
-            border-right-color: $input-focus-border-color !important;
-        }
     }
 
     .o-pager {
@@ -28,18 +23,11 @@ $margin-right: 15px;
     .o-templates-container {
         display: flex;
         flex-flow: row wrap;
-        overflow-y: auto;
-        overflow-x: hidden;
-        max-height: 60vh;
 
         .o-template {
-            flex: 1 1 0;
-            min-width: 150px;
+            flex: 0 1 150px;
             margin: $margin-right;
-
-            &.o-template-ghost-item{
-                margin: 0px $margin-right;
-            }
+            max-width: 17%;
 
             .o-template-item-name {
                 margin-top: 0.25rem;
@@ -49,9 +37,8 @@ $margin-right: 15px;
                 user-select: none;
             }
 
-            .o-template-image {
-                max-height: 150px;
-                overflow: hidden;
+            img {
+                height: 150px;
                 border: 1px solid #ced4da;
                 width: 100%;
 
@@ -68,11 +55,6 @@ $margin-right: 15px;
                     cursor: pointer;
                     border-color: $o-brand-primary;
                     box-shadow: 0 0 0 2px $o-brand-primary;
-                }
-
-                img{
-                    width: 100%;
-                    aspect-ratio: 1/1;
                 }
             }
 

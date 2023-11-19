@@ -1,13 +1,12 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('payroll_dashboard_ui_tour', {
+tour.register('payroll_dashboard_ui_tour', {
     test: true,
     url: '/web',
-    steps: () => [
-    stepUtils.showAppsMenuItem(),
+}, [
+    tour.stepUtils.showAppsMenuItem(),
     {
         content: "Open payroll app",
         trigger: '.o_app[data-menu-xmlid="hr_work_entry_contract_enterprise.menu_hr_payroll_root"]',
@@ -21,22 +20,36 @@ registry.category("web_tour.tours").add('payroll_dashboard_ui_tour', {
         trigger: 'tr.o_data_row td[name="name"]',
     },
     {
-        content: "Open new contract form",
-        trigger: 'button[name="action_open_contract"]',
+        content: "Open contract history",
+        trigger: 'button[name="action_open_contract_history"]',
+    },
+    {
+        content: "Create new contract",
+        trigger: 'button[name="hr_contract_view_form_new_action"]',
     },
     {
         content: "Input contract name",
-        trigger: '.modal-content .o_field_char[name="name"] input',
-        id: "input_contract_name",
+        trigger: '.o_field_char[name="name"] input',
         run: 'text Laurie\'s Contract',
+    },
+    {
+        content: "Set HR Responsible",
+        trigger: 'div.o_field_widget.o_field_many2one[name="hr_responsible_id"] div input',
+        run: 'text Laurie',
+    },
+    {
+        content: "Select HR Reponsible",
+        id: "set_hr_responsible",
+        trigger: 'div[name=hr_responsible_id] input',
+        run: 'text Laurie',
+    },
+    {
+        content: "Select HR Reponsible (2)",
+        trigger: 'div[name=hr_responsible_id] .dropdown-item:contains(Laurie)',
     },
     {
         content: "Save contract",
         trigger: 'button.o_form_button_save',
-    },
-    {
-        content: "Go on the contract",
-        trigger: 'button[name="action_open_contract"]',
     },
     {
         content: "Set contract as running",
@@ -44,7 +57,7 @@ registry.category("web_tour.tours").add('payroll_dashboard_ui_tour', {
     },
     {
         content: "Go back to dashboard",
-        trigger: 'a[data-menu-xmlid="hr_payroll.menu_hr_payroll_dashboard_root"]',
+        trigger: 'li.breadcrumb-item:first',
     },
     {
         content: "Check that the no contract error is gone",
@@ -76,4 +89,4 @@ registry.category("web_tour.tours").add('payroll_dashboard_ui_tour', {
         trigger: ".note-editable.odoo-editor-editable",
         run: "text Todo List"
     }
-]});
+]);

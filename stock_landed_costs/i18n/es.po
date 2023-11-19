@@ -3,16 +3,16 @@
 # 	* stock_landed_costs
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:55+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +20,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
@@ -33,11 +32,6 @@ msgstr " ya fuera"
 #: model_terms:ir.ui.view,arch_db:stock_landed_costs.stock_landed_cost_view_kanban
 msgid "<i class=\"fa fa-clock-o\" title=\"Date\" role=\"img\" aria-label=\"Date\"/>"
 msgstr "<i class=\"fa fa-clock-o\" title=\"Date\" role=\"img\" aria-label=\"Date\"/>"
-
-#. module: stock_landed_costs
-#: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
-msgid "<span class=\"o_stat_text\">Valuation</span>"
-msgstr ""
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_account_move_line__product_type
@@ -181,7 +175,6 @@ msgid "Cost Lines"
 msgstr "Líneas de coste"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
@@ -280,12 +273,17 @@ msgstr "Igual"
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost_lines__split_method
 msgid ""
-"Equal: Cost will be equally divided.\n"
-"By Quantity: Cost will be divided according to product's quantity.\n"
-"By Current cost: Cost will be divided according to product's current cost.\n"
-"By Weight: Cost will be divided depending on its weight.\n"
-"By Volume: Cost will be divided depending on its volume."
+"Equal : Cost will be equally divided.\n"
+"By Quantity : Cost will be divided according to product's quantity.\n"
+"By Current cost : Cost will be divided according to product's current cost.\n"
+"By Weight : Cost will be divided depending on its weight.\n"
+"By Volume : Cost will be divided depending on its volume."
 msgstr ""
+"Igual: El coste será dividido por igual.\n"
+"Por cantidad: El coste se dividirá según la cantidad del producto..\n"
+"Por coste actual: El coste se dividirá según el coste actual del producto.\n"
+"Por peso: El coste se dividirá dependiendo de su peso.\n"
+"Por volumen: El coste se dividirá dependiendo de su volumen."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_follower_ids
@@ -352,8 +350,6 @@ msgid ""
 "Indicates whether the product is a landed cost: when receiving a vendor "
 "bill, you can allocate this cost on preceding receipts."
 msgstr ""
-"Indica si el producto es un costo en destino: al recibir una factura de "
-"proveedor, puede asignar este costo en recibos precedentes."
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_is_follower
@@ -427,11 +423,11 @@ msgid "Landed cost validated"
 msgstr "Coste en destino validado"
 
 #. module: stock_landed_costs
-#: model_terms:ir.actions.act_window,help:stock_landed_costs.action_stock_landed_cost
-msgid ""
-"Landed costs allow you to include additional costs (shipment, insurance, "
-"customs duties, etc) into the cost of the product."
-msgstr ""
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost____last_update
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost_lines____last_update
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_valuation_adjustment_lines____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__write_uid
@@ -458,6 +454,11 @@ msgid "Lc Journal"
 msgstr "Diario de Costes de Envío"
 
 #. module: stock_landed_costs
+#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjuntos principales"
+
+#. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__message_has_error
 msgid "Message Delivery error"
 msgstr "Error de Envío de Mensaje"
@@ -479,7 +480,6 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
@@ -524,7 +524,7 @@ msgstr "Numero de errores"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,help:stock_landed_costs.field_stock_landed_cost__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "Número de mensajes que requieren una acción"
 
 #. module: stock_landed_costs
@@ -533,7 +533,6 @@ msgid "Number of messages with delivery error"
 msgstr "Número de mensajes con error de envío"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Only draft landed costs can be validated"
@@ -550,7 +549,6 @@ msgid "Picking"
 msgstr "Albarán"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Please configure Stock Expense Account for product: %s."
@@ -558,7 +556,6 @@ msgstr ""
 "Configure por favor la cuenta de gastos de stock para el producto: %s."
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid "Please define %s on which those additional costs should apply."
@@ -590,11 +587,6 @@ msgstr "Línea de pedido de compra"
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_valuation_adjustment_lines__quantity
 msgid "Quantity"
 msgstr "Cantidad"
-
-#. module: stock_landed_costs
-#: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__rating_ids
-msgid "Ratings"
-msgstr "Valoraciones"
 
 #. module: stock_landed_costs
 #: model:ir.model.fields,field_description:stock_landed_costs.field_stock_landed_cost__activity_user_id
@@ -689,7 +681,6 @@ msgid "Validate"
 msgstr "Validar"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
@@ -698,6 +689,11 @@ msgid ""
 msgstr ""
 "Los costes en destino validados no pueden ser cancelados, pero usted puede "
 "crear un coste en destino negativo para revertirlo"
+
+#. module: stock_landed_costs
+#: model_terms:ir.ui.view,arch_db:stock_landed_costs.view_stock_landed_cost_form
+msgid "Valuation"
+msgstr "Valoración"
 
 #. module: stock_landed_costs
 #: model:ir.model,name:stock_landed_costs.model_stock_valuation_adjustment_lines
@@ -736,7 +732,6 @@ msgid "Weight"
 msgstr "Peso"
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/stock_landed_cost.py:0
 #, python-format
 msgid ""
@@ -747,7 +742,6 @@ msgstr ""
 " solo se pueden aplicar en productos con PEPS o método de costo promedio."
 
 #. module: stock_landed_costs
-#. odoo-python
 #: code:addons/stock_landed_costs/models/product.py:0
 #, python-format
 msgid ""

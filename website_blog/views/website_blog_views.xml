@@ -9,7 +9,7 @@
                     <field name="name"/>
                     <field name="blog_post_count"/>
                     <field name="website_id" groups="website.group_multi_website"/>
-                    <field name="active" column_invisible="True"/>
+                    <field name="active" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +19,7 @@
             <field name="arch" type="xml">
                 <form string="Blog">
                     <sheet>
-                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <field name="active" invisible="1"/>
                             <field name="name"/>
@@ -119,7 +119,7 @@
             <field name="view_id" ref="blog_tag_category_tree"/>
         </record>
 
-        <menuitem name="Blog"
+        <menuitem name="Blogs"
             id="menu_website_blog_root_global"
             sequence="100"
             parent="website.menu_website_global_configuration"

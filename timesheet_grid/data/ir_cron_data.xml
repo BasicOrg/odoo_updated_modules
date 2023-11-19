@@ -14,11 +14,11 @@
         <field name="active" eval="True"/>
     </record>
 
-    <record id="timesheet_reminder" model="ir.cron" forcecreate="True">
-        <field name="name">Timesheet: Approvers Email Reminder</field>
+    <record id="timesheet_reminder_manager" model="ir.cron" forcecreate="True">
+        <field name="name">Timesheet: Managers Email Reminder</field>
         <field name="model_id" ref="base.model_res_company"/>
         <field name="state">code</field>
-        <field name="code">model._cron_timesheet_reminder()</field>
+        <field name="code">model._cron_timesheet_reminder_manager()</field>
         <field name="user_id" ref="base.user_root"/>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>

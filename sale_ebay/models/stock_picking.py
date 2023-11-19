@@ -9,7 +9,7 @@ class StockPicking(models.Model):
 
     def _action_done(self):
         result = super()._action_done()
-        self.filtered(lambda p: p.location_dest_id.usage == 'customer')._ebay_update_carrier(transfered=True)
+        self._ebay_update_carrier(transfered=True)
         return result
 
     def _ebay_update_carrier(self, transfered=False):
@@ -28,4 +28,4 @@ class StockPicking(models.Model):
                             'ShippingCarrierUsed': re.sub('[^A-Za-z0-9- ]', '', picking.carrier_id.name),
                         },
                     }
-                self.env['product.template']._ebay_execute("CompleteSale", call_data)
+                self.env['product.template'].ebay_execute("CompleteSale", call_data)

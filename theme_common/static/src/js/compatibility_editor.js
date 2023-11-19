@@ -1,6 +1,7 @@
-/** @odoo-module **/
+odoo.define('theme_common.compatibility_editor', function (require) {
+'use strict';
 
-import sOptions from "@web_editor/js/editor/snippets.options";
+var sOptions = require('web_editor.snippets.options');
 
 sOptions.registry.BackgroundImage.include({
     /**
@@ -14,4 +15,5 @@ sOptions.registry.BackgroundImage.include({
             this.$target.removeClass(customClass[1]);
         }
     },
+});
 });

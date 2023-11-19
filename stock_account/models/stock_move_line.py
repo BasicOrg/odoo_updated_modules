@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, models
-from odoo.tools import float_compare, float_is_zero
+from odoo.tools import float_is_zero
 
 
 class StockMoveLine(models.Model):
@@ -21,7 +21,7 @@ class StockMoveLine(models.Model):
             if move_line.state != 'done':
                 continue
             rounding = move.product_id.uom_id.rounding
-            diff = move.product_uom._compute_quantity(move_line.quantity, move.product_id.uom_id)
+            diff = move_line.qty_done
             if float_is_zero(diff, precision_rounding=rounding):
                 continue
             self._create_correction_svl(move, diff)
@@ -32,19 +32,17 @@ class StockMoveLine(models.Model):
 
     def write(self, vals):
         analytic_move_to_recompute = set()
-        if 'quantity' in vals or 'move_id' in vals:
+        if 'qty_done' in vals or 'move_id' in vals:
             for move_line in self:
-                move_id = vals.get('move_id', move_line.move_id.id)
+                move_id = vals.get('move_id') if vals.get('move_id') else move_line.move_id.id
                 analytic_move_to_recompute.add(move_id)
-        if 'quantity' in vals:
+        if 'qty_done' in vals:
             for move_line in self:
                 if move_line.state != 'done':
                     continue
                 move = move_line.move_id
-                if float_compare(vals['quantity'], move_line.quantity, precision_rounding=move.product_uom.rounding) == 0:
-                    continue
                 rounding = move.product_id.uom_id.rounding
-                diff = move.product_uom._compute_quantity(vals['quantity'] - move_line.quantity, move.product_id.uom_id, rounding_method='HALF-UP')
+                diff = vals['qty_done'] - move_line.qty_done
                 if float_is_zero(diff, precision_rounding=rounding):
                     continue
                 self._create_correction_svl(move, diff)

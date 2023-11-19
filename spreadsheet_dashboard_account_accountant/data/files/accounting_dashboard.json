@@ -767,14 +767,7 @@
                             "orderBy": []
                         },
                         "type": "odoo_line",
-                        "verticalAxisPosition": "left",
-                        "fieldMatching": {
-                            "7785b753-917c-4640-a937-4b6226222ca8": {
-                                "chain": "invoice_date",
-                                "type": "date",
-                                "offset": 0
-                            }
-                        }
+                        "verticalAxisPosition": "left"
                     }
                 },
                 {
@@ -848,7 +841,6 @@
                     }
                 }
             ],
-            "filterTables": [],
             "areGridLinesVisible": true,
             "isVisible": true
         },
@@ -856,7 +848,7 @@
             "id": "08b80fa9-158a-44a6-ad6c-c29245a6e31a",
             "name": "Data",
             "colNumber": 31,
-            "rowNumber": 149,
+            "rowNumber": 150,
             "rows": {
                 "40": {
                     "size": 23
@@ -867,7 +859,7 @@
                     "size": 239
                 },
                 "1": {
-                    "size": 214
+                    "size": 213.8740234375
                 },
                 "2": {
                     "size": 234
@@ -879,7 +871,7 @@
                     "size": 234
                 },
                 "5": {
-                    "size": 515
+                    "size": 515.3046875
                 },
                 "6": {
                     "size": 101
@@ -1076,10 +1068,11 @@
                     "content": "DEP"
                 },
                 "A54": {
+                    "style": 6,
                     "content": "EQ"
                 },
                 "A55": {
-                    "content": "UNALLOCATED_EARNINGS"
+                    "content": "UNAFFECTED_EARNINGS"
                 },
                 "A56": {
                     "content": "CURR_YEAR_EARNINGS"
@@ -1094,6 +1087,9 @@
                     "content": "PREV_YEAR_EARNINGS"
                 },
                 "A60": {
+                    "content": "ALLOCATED_EARNINGS"
+                },
+                "A61": {
                     "content": "RETAINED_EARNINGS"
                 },
                 "B1": {
@@ -1120,6 +1116,7 @@
                     "content": "=D31"
                 },
                 "B7": {
+                    "style": 7,
                     "content": "=C35"
                 },
                 "B9": {
@@ -1169,13 +1166,15 @@
                 },
                 "B23": {
                     "style": 6,
-                    "content": "DEB/OPINC*365"
+                    "content": "DEB/OPINC*364"
                 },
                 "B24": {
-                    "content": "CRE/(COS+EXP)*365"
+                    "style": 6,
+                    "content": "-CRE/OPINC*364"
                 },
                 "B25": {
-                    "content": "DEB-CRE"
+                    "style": 6,
+                    "content": "DEB+CRE"
                 },
                 "B26": {
                     "style": 6,
@@ -1190,7 +1189,7 @@
                 },
                 "B29": {
                     "style": 6,
-                    "content": "COS"
+                    "content": "COS\")"
                 },
                 "B30": {
                     "style": 6,
@@ -1198,7 +1197,7 @@
                 },
                 "B31": {
                     "style": 6,
-                    "content": "EXP"
+                    "content": "EXP\")"
                 },
                 "B32": {
                     "style": 6,
@@ -1212,6 +1211,7 @@
                     "content": "DEB"
                 },
                 "B35": {
+                    "style": 6,
                     "content": "CRE"
                 },
                 "B36": {
@@ -1274,13 +1274,20 @@
                     "style": 2
                 },
                 "B54": {
-                    "content": "UNALLOCATED EARNINGS + RETAINED EARNINGS"
+                    "style": 6,
+                    "content": "UNAFFECTED_EARNINGS + RETAINED_EARNINGS"
                 },
                 "B55": {
                     "content": "CURR_YEAR_EARNINGS + PREV_YEAR_EARNINGS"
                 },
                 "B56": {
                     "content": "CURR_YEAR_EARNINGS_PNL + CURR_YEAR_EARNINGS_ALLOC"
+                },
+                "B57": {
+                    "content": "NEP"
+                },
+                "B59": {
+                    "content": "-sum + ALLOCATED_EARNINGS - CURR_YEAR_EARNINGS"
                 },
                 "C1": {
                     "style": 2
@@ -1317,10 +1324,10 @@
                     "style": 2
                 },
                 "C11": {
-                    "content": "=ODOO.DEBIT($F11,C$9)-ODOO.DEBIT($F11,C$9-1)"
+                    "content": "=ODOO.DEBIT($F11,C$9)-D11"
                 },
                 "C12": {
-                    "content": "=-ODOO.CREDIT($F12,C$9)+ODOO.CREDIT($F12,C$9-1)"
+                    "content": "=-ODOO.CREDIT($F12,C$9)-D12"
                 },
                 "C13": {
                     "content": "=C11+C12"
@@ -1344,6 +1351,7 @@
                     "content": "=iferror(C32/C40,0)"
                 },
                 "C19": {
+                    "format": 4,
                     "content": "=C41-C49"
                 },
                 "C20": {
@@ -1360,18 +1368,19 @@
                     "style": 2
                 },
                 "C23": {
-                    "format": 4,
-                    "content": "=iferror(C34/C38*365,0)"
+                    "format": 5,
+                    "content": "=iferror(C34/C38*364,0)"
                 },
                 "C24": {
-                    "format": 4,
-                    "content": "=iferror(C35/(C29+C31)*365,0)"
+                    "format": 5,
+                    "content": "=iferror(-C35/C38*364,0)"
                 },
                 "C25": {
-                    "content": "=C34-C35"
+                    "format": 5,
+                    "content": "=C34+C35"
                 },
                 "C26": {
-                    "format": 4,
+                    "format": 5,
                     "content": "=iferror(C41/C49,0)"
                 },
                 "C27": {
@@ -1381,13 +1390,13 @@
                     "content": "=C38+C39"
                 },
                 "C29": {
-                    "content": "=ODOO.BALANCE($F29,C$9)"
+                    "content": "=ODOO.BALANCE($F29,C$9)-D29"
                 },
                 "C30": {
                     "content": "=C38-C29"
                 },
                 "C31": {
-                    "content": "=ODOO.BALANCE($F31,C$9)"
+                    "content": "=ODOO.BALANCE($F31,C$9)-D31"
                 },
                 "C32": {
                     "content": "=C38+C39-C29-C31-C53"
@@ -1470,7 +1479,8 @@
                     "content": "=ODOO.BALANCE($F53,C$9)"
                 },
                 "C54": {
-                    "content": "=C55+C60"
+                    "style": 6,
+                    "content": "=C55+C61"
                 },
                 "C55": {
                     "content": "=C56+C59"
@@ -1479,16 +1489,19 @@
                     "content": "=C57+C58"
                 },
                 "C57": {
-                    "content": "=-ODOO.BALANCE($F57,C$9)"
+                    "content": "=C32"
                 },
                 "C58": {
-                    "content": "=-ODOO.BALANCE($F58,C$9)+ODOO.BALANCE($F58,C$9-1)"
+                    "content": "=-ODOO.BALANCE($F58,C$9)"
                 },
                 "C59": {
-                    "content": "=D55"
+                    "content": "=-ODOO.BALANCE($F59,C$9)+C60-C56"
                 },
                 "C60": {
                     "content": "=-ODOO.BALANCE($F60,C$9)"
+                },
+                "C61": {
+                    "content": "=-ODOO.BALANCE($F61,C$9)"
                 },
                 "D9": {
                     "style": 9,
@@ -1498,10 +1511,10 @@
                     "style": 2
                 },
                 "D11": {
-                    "content": "=ODOO.DEBIT($F11,D$9)-ODOO.DEBIT($F11,D$9-1)"
+                    "content": "=ODOO.DEBIT($F11,D$9)-E11"
                 },
                 "D12": {
-                    "content": "=-ODOO.CREDIT($F12,D$9)+ODOO.CREDIT($F12,D$9-1)"
+                    "content": "=-ODOO.CREDIT($F12,D$9)-E12"
                 },
                 "D13": {
                     "content": "=D11+D12"
@@ -1525,6 +1538,7 @@
                     "content": "=iferror(D32/D40,0)"
                 },
                 "D19": {
+                    "format": 4,
                     "content": "=D41-D49"
                 },
                 "D20": {
@@ -1541,18 +1555,19 @@
                     "style": 2
                 },
                 "D23": {
-                    "format": 4,
-                    "content": "=iferror(D34/D38*365,0)"
+                    "format": 5,
+                    "content": "=iferror(D34/D38*364,0)"
                 },
                 "D24": {
-                    "format": 4,
-                    "content": "=iferror(D35/(D29+D31)*365,0)"
+                    "format": 5,
+                    "content": "=iferror(-D35/D38*364,0)"
                 },
                 "D25": {
-                    "content": "=D34-D35"
+                    "format": 5,
+                    "content": "=D34+D35"
                 },
                 "D26": {
-                    "format": 4,
+                    "format": 5,
                     "content": "=iferror(D41/D49,0)"
                 },
                 "D27": {
@@ -1562,13 +1577,13 @@
                     "content": "=D38+D39"
                 },
                 "D29": {
-                    "content": "=ODOO.BALANCE($F29,D$9)"
+                    "content": "=ODOO.BALANCE($F29,D$9)-E29"
                 },
                 "D30": {
                     "content": "=D38-D29"
                 },
                 "D31": {
-                    "content": "=ODOO.BALANCE($F31,D$9)"
+                    "content": "=ODOO.BALANCE($F31,D$9)-E31"
                 },
                 "D32": {
                     "content": "=D38+D39-D29-D31-D53"
@@ -1653,7 +1668,8 @@
                     "content": "=ODOO.BALANCE($F53,D$9)"
                 },
                 "D54": {
-                    "content": "=D55+D60"
+                    "style": 6,
+                    "content": "=D55+D61"
                 },
                 "D55": {
                     "content": "=D56+D59"
@@ -1662,16 +1678,19 @@
                     "content": "=D57+D58"
                 },
                 "D57": {
-                    "content": "=-ODOO.BALANCE($F57,D$9)"
+                    "content": "=D32"
                 },
                 "D58": {
-                    "content": "=-ODOO.BALANCE($F58,D$9)+ODOO.BALANCE($F58,D$9-1)"
+                    "content": "=-ODOO.BALANCE($F58,D$9)"
                 },
                 "D59": {
-                    "content": "=E55"
+                    "content": "=-ODOO.BALANCE($F59,D$9)+D60-D56"
                 },
                 "D60": {
                     "content": "=-ODOO.BALANCE($F60,D$9)"
+                },
+                "D61": {
+                    "content": "=-ODOO.BALANCE($F61,D$9)"
                 },
                 "E9": {
                     "style": 9,
@@ -1681,10 +1700,10 @@
                     "style": 2
                 },
                 "E11": {
-                    "content": "=ODOO.DEBIT($F11,E$9)-ODOO.DEBIT($F11,E$9-1)"
+                    "content": "=ODOO.DEBIT($F11,E$9)"
                 },
                 "E12": {
-                    "content": "=-ODOO.CREDIT($F12,E$9)+ODOO.CREDIT($F12,E$9-1)"
+                    "content": "=-ODOO.CREDIT($F12,E$9)"
                 },
                 "E13": {
                     "content": "=E11+E12"
@@ -1708,6 +1727,7 @@
                     "content": "=iferror(E32/E40,0)"
                 },
                 "E19": {
+                    "format": 4,
                     "content": "=E41-E49"
                 },
                 "E20": {
@@ -1724,18 +1744,15 @@
                     "style": 2
                 },
                 "E23": {
-                    "format": 4,
-                    "content": "=iferror(E34/E38*365,0)"
+                    "content": "=iferror(E34/E38*364,0)"
                 },
                 "E24": {
-                    "format": 4,
-                    "content": "=iferror(E35/(E29+E31)*365,0)"
+                    "content": "=iferror(-E35/E38*364,0)"
                 },
                 "E25": {
-                    "content": "=E34-E35"
+                    "content": "=E34+E35"
                 },
                 "E26": {
-                    "format": 4,
                     "content": "=iferror(E41/E49,0)"
                 },
                 "E27": {
@@ -1836,7 +1853,8 @@
                     "content": "=ODOO.BALANCE($F53,E$9)"
                 },
                 "E54": {
-                    "content": "=E55+E60"
+                    "style": 6,
+                    "content": "=E55+E61"
                 },
                 "E55": {
                     "content": "=E56+E59"
@@ -1845,16 +1863,19 @@
                     "content": "=E57+E58"
                 },
                 "E57": {
-                    "content": "=-ODOO.BALANCE($F57,E$9)"
+                    "content": "=E32"
                 },
                 "E58": {
-                    "content": "=-ODOO.BALANCE($F58,E$9)+ODOO.BALANCE($F58,E$9-1)"
+                    "content": "=-ODOO.BALANCE($F58,E$9)"
                 },
                 "E59": {
-                    "content": "=-ODOO.BALANCE($F58,E$9-1)-ODOO.BALANCE($F59,E9, -1)-ODOO.BALANCE($F59,E9, -2)-ODOO.BALANCE($F59,E9, -3)-ODOO.BALANCE($F59,E9, -4)-ODOO.BALANCE($F59,E9, -5)"
+                    "content": "=-ODOO.BALANCE($F59,E$9)+E60-E56"
                 },
                 "E60": {
                     "content": "=-ODOO.BALANCE($F60,E$9)"
+                },
+                "E61": {
+                    "content": "=-ODOO.BALANCE($F61,E$9)"
                 },
                 "F9": {
                     "style": 5,
@@ -1915,6 +1936,7 @@
                     "style": 10
                 },
                 "F29": {
+                    "style": 10,
                     "content": "=ODOO.ACCOUNT.GROUP(\"expense_direct_cost\")"
                 },
                 "F30": {
@@ -1939,7 +1961,8 @@
                     "content": "=ODOO.ACCOUNT.GROUP(\"liability_payable\")"
                 },
                 "F36": {
-                    "style": 10
+                    "style": 10,
+                    "content": "x"
                 },
                 "F37": {
                     "style": 2
@@ -1947,9 +1970,6 @@
                 "F38": {
                     "style": 10,
                     "content": "=ODOO.ACCOUNT.GROUP(\"income\")"
-                },
-                "F39": {
-                    "content": "=ODOO.ACCOUNT.GROUP(\"income_other\")"
                 },
                 "F40": {
                     "style": 10
@@ -2000,18 +2020,22 @@
                     "content": "=ODOO.ACCOUNT.GROUP(\"liability_non_current\")"
                 },
                 "F53": {
-                    "content": "=ODOO.ACCOUNT.GROUP(\"expense_depreciation\")"
+                    "content": "X"
                 },
-                "F57": {
-                    "content": "=CONCATENATE(ODOO.ACCOUNT.GROUP(\"income\"),\",\",ODOO.ACCOUNT.GROUP(\"income_other\"),\",\",ODOO.ACCOUNT.GROUP(\"expense_direct_cost\"),\",\",ODOO.ACCOUNT.GROUP(\"expense\"),\",\",ODOO.ACCOUNT.GROUP(\"expense_depreciation\"))"
+                "F54": {
+                    "style": 10,
+                    "content": "=ODOO.ACCOUNT.GROUP(\"equity\")"
                 },
                 "F58": {
                     "content": "=ODOO.ACCOUNT.GROUP(\"equity_unaffected\")"
                 },
                 "F59": {
-                    "content": "=CONCATENATE(ODOO.ACCOUNT.GROUP(\"income\"),\",\",ODOO.ACCOUNT.GROUP(\"income_other\"),\",\",ODOO.ACCOUNT.GROUP(\"expense_direct_cost\"),\",\",ODOO.ACCOUNT.GROUP(\"expense\"),\",\",ODOO.ACCOUNT.GROUP(\"expense_depreciation\"))"
+                    "content": "=CONCATENATE(ODOO.ACCOUNT.GROUP(\"income\"),\", \",ODOO.ACCOUNT.GROUP(\"income_other\"),\", \",ODOO.ACCOUNT.GROUP(\"expense_direct_cost\"),\", \",ODOO.ACCOUNT.GROUP(\"expense\"),\", \",ODOO.ACCOUNT.GROUP(\"expense_depreciation\"))"
                 },
                 "F60": {
+                    "content": "=ODOO.ACCOUNT.GROUP(\"equity_unaffected\")"
+                },
+                "F61": {
                     "content": "=ODOO.ACCOUNT.GROUP(\"equity\")"
                 },
                 "G16": {
@@ -2980,7 +3004,6 @@
             },
             "conditionalFormats": [],
             "figures": [],
-            "filterTables": [],
             "areGridLinesVisible": true,
             "isVisible": true
         }
@@ -3030,17 +3053,19 @@
             "align": "left"
         },
         "12": {
-            "wrapping": "wrap"
+            "align": "center"
         },
         "13": {
-            "align": "center"
+            "align": "center",
+            "bold": false
         }
     },
     "formats": {
         "1": "0.0",
         "2": "0%",
         "3": "0.0%",
-        "4": "0.00"
+        "4": "0",
+        "5": "0.00"
     },
     "borders": {
         "1": {
@@ -3057,7 +3082,19 @@
         }
     },
     "revisionId": "START_REVISION",
-    "odooVersion": 5,
+    "chartOdooMenusReferences": {
+        "cb548cd5-6798-46c9-ade5-3b497efbfc4a": "account_accountant.menu_accounting",
+        "151b0f60-aa89-457e-9456-9807ab779be6": "account_accountant.menu_accounting",
+        "86aac7b2-f3a5-46e1-a097-916aa4b8f8d0": "account_reports.menu_action_account_report_exec_summary",
+        "3586cbc4-6ca3-46af-951f-94d4773f94dc": "account_reports.menu_action_account_report_exec_summary",
+        "57f18f9a-55b7-4b84-b927-480c4c56c026": "account_reports.menu_action_account_report_exec_summary",
+        "8f1fb053-5700-4bb3-b93d-55ceb2083d31": "account_reports.menu_action_account_report_exec_summary"
+    },
+    "odooVersion": 4,
+    "lists": {},
+    "listNextId": 1,
+    "pivots": {},
+    "pivotNextId": 1,
     "globalFilters": [
         {
             "id": "7785b753-917c-4640-a937-4b6226222ca8",
@@ -3065,30 +3102,16 @@
             "label": "Year",
             "defaultValue": {},
             "rangeType": "year",
-            "defaultsToCurrentPeriod": true
+            "defaultsToCurrentPeriod": true,
+            "pivotFields": {},
+            "listFields": {},
+            "graphFields": {
+                "151b0f60-aa89-457e-9456-9807ab779be6": {
+                    "field": "invoice_date",
+                    "type": "date",
+                    "offset": 0
+                }
+            }
         }
-    ],
-    "pivots": {},
-    "pivotNextId": 1,
-    "lists": {},
-    "listNextId": 1,
-    "chartOdooMenusReferences": {
-        "cb548cd5-6798-46c9-ade5-3b497efbfc4a": "account_accountant.menu_accounting",
-        "151b0f60-aa89-457e-9456-9807ab779be6": "account_accountant.menu_accounting",
-        "86aac7b2-f3a5-46e1-a097-916aa4b8f8d0": "account_reports.menu_action_account_report_profit_and_loss",
-        "3586cbc4-6ca3-46af-951f-94d4773f94dc": "account_reports.menu_action_account_report_aged_receivable",
-        "57f18f9a-55b7-4b84-b927-480c4c56c026": "account_reports.menu_action_account_report_profit_and_loss",
-        "8f1fb053-5700-4bb3-b93d-55ceb2083d31": "account_reports.menu_action_account_report_aged_payable"
-    },
-    "settings": {
-        "locale": {
-            "name": "English (US)",
-            "code": "en_US",
-            "thousandsSeparator": ",",
-            "decimalSeparator": ".",
-            "dateFormat": "mm/dd/yyyy",
-            "timeFormat": "hh:mm:ss",
-            "formulaArgSeparator": ","
-        }
-    }
+    ]
 }

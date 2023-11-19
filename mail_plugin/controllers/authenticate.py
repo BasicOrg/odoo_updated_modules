@@ -9,9 +9,8 @@ import logging
 import odoo
 import werkzeug
 
-from odoo import _, http
+from odoo import http
 from odoo.http import request
-from werkzeug.exceptions import NotFound
 
 _logger = logging.getLogger(__name__)
 
@@ -27,8 +26,6 @@ class Authenticate(http.Controller):
          old route name "/mail_client_extension/auth is deprecated as of saas-14.3,it is not needed for newer
          versions of the mail plugin but necessary for supporting older versions
          """
-        if not request.env.user._is_internal():
-            return request.render('mail_plugin.app_error', {'error': _('Access Error: Only Internal Users can link their inboxes to this database.')})
         return request.render('mail_plugin.app_auth', values)
 
     @http.route(['/mail_client_extension/auth/confirm', '/mail_plugin/auth/confirm'], type='http', auth="user", methods=['POST'])
@@ -95,8 +92,6 @@ class Authenticate(http.Controller):
     # Using UTC explicitly in case of a distributed system where the generation and the signature verification do not
     # necessarily happen on the same server
     def _generate_auth_code(self, scope, name):
-        if not request.env.user._is_internal():
-            raise NotFound()
         auth_dict = {
             'scope': scope,
             'name': name,

@@ -36,7 +36,6 @@ $o-fonts-similar: (
     'Luminari': 'Eagle Lake',
     'Fecske': 'Marcellus',
     'Din Alternate': 'Roboto',
-    'Muli': 'Mulish',
 );
 
 @function o-map-font-aliases($values) {
@@ -145,10 +144,7 @@ $-actual-user-color-palette: map-merge($-palette-default, $o-user-color-palette)
     // a color combination and the other value types for the color name/value
     // are handled by another variable.
     'menu': 'menu-custom',
-    'header-sales_one': 'header-sales_one-custom',
-    'header-sales_two': 'header-sales_two-custom',
-    'header-sales_three': 'header-sales_three-custom',
-    'header-sales_four': 'header-sales_four-custom',
+    'header-boxed': 'header-boxed-custom',
     'footer': 'footer-custom',
     'copyright': 'copyright-custom'
 ) {
@@ -236,9 +232,6 @@ $o-theme-font-configs: map-merge($o-base-theme-font-configs, $o-theme-font-confi
 
 // Add locally hosted google fonts
 @each $font-name, $font-attach-id in (o-website-value('google-local-fonts') or ()) {
-    // If a font exists both remotely and locally, we remove the remote font to
-    // prioritize the local font.
-    $o-theme-font-configs: map-remove($o-theme-font-configs, $font-name);
     $o-theme-font-configs: map-merge($o-theme-font-configs, (
         $font-name: (
             'family': (quote($font-name), sans-serif),
@@ -272,14 +265,5 @@ $o-theme-font: o-get-font-info('base') !default;
 // one in $o-base-theme-font-configs. This ensures a misconfiguration also does.
 $o-theme-font: $o-theme-font or o-add-unicode-support-font($o-system-fonts);
 $o-theme-headings-font: o-get-font-info('headings') or $o-theme-font !default;
-$o-theme-h2-font: o-get-font-info('h2') or $o-theme-headings-font !default;
-$o-theme-h3-font: o-get-font-info('h3') or $o-theme-headings-font !default;
-$o-theme-h4-font: o-get-font-info('h4') or $o-theme-headings-font !default;
-$o-theme-h5-font: o-get-font-info('h5') or $o-theme-headings-font !default;
-$o-theme-h6-font: o-get-font-info('h6') or $o-theme-headings-font !default;
-$o-theme-display-1-font: o-get-font-info('display-1') or $o-theme-headings-font !default;
-$o-theme-display-2-font: o-get-font-info('display-2') or $o-theme-headings-font !default;
-$o-theme-display-3-font: o-get-font-info('display-3') or $o-theme-headings-font !default;
-$o-theme-display-4-font: o-get-font-info('display-4') or $o-theme-headings-font !default;
 $o-theme-navbar-font: o-get-font-info('navbar') or $o-theme-font !default;
 $o-theme-buttons-font: o-get-font-info('buttons') or $o-theme-font !default;

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import base64
-import logging
 import requests
 
 from odoo import _, api, models, fields
@@ -10,14 +8,11 @@ from odoo.exceptions import UserError
 from odoo.http import request
 from werkzeug.urls import url_join
 
-_logger = logging.getLogger(__name__)
-
 
 class SocialStreamPostTwitter(models.Model):
     _inherit = 'social.stream.post'
 
     twitter_tweet_id = fields.Char('Twitter Tweet ID', index=True)
-    twitter_conversation_id = fields.Char('Twitter Conversation ID')
     twitter_author_id = fields.Char('Twitter Author ID')
     twitter_screen_name = fields.Char('Twitter Screen Name')
     twitter_profile_image_url = fields.Char('Twitter Profile Image URL')
@@ -84,136 +79,157 @@ class SocialStreamPostTwitter(models.Model):
                 current.twitter_author_id == account.twitter_user_id for current in potential_retweets
             )
 
-    def _compute_is_author(self):
-        twitter_posts = self._filter_by_media_types(['twitter'])
-        super(SocialStreamPostTwitter, (self - twitter_posts))._compute_is_author()
-
-        for post in twitter_posts:
-            post.is_author = post.twitter_author_id == post.account_id.twitter_user_id
-
     # ========================================================
     # COMMENTS / LIKES
     # ========================================================
 
-    def _twitter_comment_add(self, stream, comment_id, message, attachment):
+    def _twitter_comment_add(self, stream, comment_id, message):
         self.ensure_one()
         tweet_id = comment_id or self.twitter_tweet_id
-        tweet = self._twitter_post_tweet(stream, message, attachment, reply={'in_reply_to_tweet_id': tweet_id})
-        tweet['in_reply_to_tweet_id'] = tweet_id
-        return tweet
+        params = {
+            'status': message,
+            'in_reply_to_status_id': tweet_id,
+            'tweet_mode': 'extended',
+        }
+
+        attachment = None
+        files = request.httprequest.files.getlist('attachment')
+        if files and files[0]:
+            attachment = files[0]
+
+        if attachment:
+            images_attachments_ids = stream.account_id._format_bytes_to_images_twitter(attachment)
+            if images_attachments_ids:
+                params['media_ids'] = ','.join(images_attachments_ids)
+
+        post_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/statuses/update.json")
+        headers = stream.account_id._get_twitter_oauth_header(
+            post_endpoint_url,
+            params=params
+        )
+        result = requests.post(
+            post_endpoint_url,
+            data=params,
+            headers=headers,
+            timeout=5
+        )
+
+        if result.ok:
+            return self.env['social.media']._format_tweet(result.json())
+
+        # Parse the code error returned by the Twitter API.
+        errors = result.json().get('errors')
+        if errors and errors[0].get('code'):
+            ERROR_MESSAGES = {
+                170: _("The tweet is empty. Add a message and try posting again."),
+                187: _("Looks like this Tweet is a duplicate. Edit its content and try posting again."),
+            }
+            message = errors[0].get('message') or _("Code %i", errors[0].get('code'))
+            return {
+                'error': ERROR_MESSAGES.get(
+                    errors[0]['code'],
+                    _("An error occurred (%s)", message))
+            }
+
+        return {'error': _('Unknown error')}
 
     def _twitter_comment_fetch(self, page=1):
-        """Find the tweets in the same thread, but after the current one.
+        """ As of today (07/2019) Twitter does not provide an endpoint to get the 'answers' to a tweet.
+        This is why we have to use a quite dirty workaround to try and recover that information.
 
-        All tweets have a `conversation_id` field, which correspond to the first tweet
-        in the same thread. "comments" do not really exist in Twitter, so we take all
-        the tweet in the same thread (same `conversation_id`), after the current one.
+        Basically, what we do if fetch all tweets that are:
+            - directed to our user ('to': twitter_screen_name)
+            - are after out tweet_id ('since_id': twitter_tweet_id)
 
-        https://developer.twitter.com/en/docs/twitter-api/tweets/search/integrate/build-a-query
-        """
+        We accumulate up to 1000 tweets matching that rule, 100 at a time (API limit).
+
+        Then, it gets even more complicated, because the first result batch does not include tweets
+        made by our use (twitter_screen_name) as replies to their own root tweet.
+        That's why we have to do a second request to get the tweets FROM out user, after the root tweet.
+        We also accumulate up to 1000 tweets.
+
+        The two results are merged together (up to 2000 tweets).
+
+        Then we filter these tweets to search for those that are replies to our root tweet
+        ('in_reply_to_status_id_str') == self.twitter_tweet_id.
+        And we also keep tweets that are replies to replies to our root tweet (stay with me here).
+
+        Needless to say this has to be modified as soon as Twitter provides some way to recover replies
+        to a tweet. """
+
         self.ensure_one()
 
-        if not self.twitter_conversation_id:
-            raise UserError(_('This tweet is outdated, please refresh the stream and try again.'))
-
-        endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, '/2/tweets/search/recent')
-        query_params = {
-            'query': f'conversation_id:{self.twitter_conversation_id}',
+        search_query = {
+            'to': self.twitter_screen_name,
             'since_id': self.twitter_tweet_id,
-            'max_results': 100,
-            'tweet.fields': 'conversation_id,created_at,public_metrics,referenced_tweets',
-            'expansions': 'author_id,attachments.media_keys',
-            'user.fields': 'id,name,username,profile_image_url',
-            'media.fields': 'type,url,preview_image_url',
         }
 
-        headers = self.stream_id.account_id._get_twitter_oauth_header(
-            endpoint_url,
-            params=query_params,
-            method='GET',
-        )
-        result = requests.get(
-            endpoint_url,
-            params=query_params,
-            headers=headers,
-            timeout=10,
-        )
-        if not result.ok:
-            if result.json().get('errors', [{}])[0].get('parameters', {}).get('since_id'):
-                raise UserError(_("Replies from Tweets older than 7 days must be accessed on Twitter.com"))
-            raise UserError(_("Failed to fetch the tweets in the same thread: '%s' using the account %s.", result.text, self.stream_id.account_id.name))
-
-        users = {
-            user['id']: {
-                **user,
-                'profile_image_url': user.get('profile_image_url'),
-            }
-            for user in result.json().get('includes', {}).get('users', [])
+        tweets_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, "/1.1/search/tweets.json")
+        query_params = {
+            'tweet_mode': 'extended',
+            'result_type': 'recent',
+            'count': 100,
+            'include_entities': True,
         }
+        answer_results = self._accumulate_tweets(tweets_endpoint_url, query_params, search_query)
 
-        medias = {
-            media['media_key']: media
-            for media in result.json().get('includes', {}).get('media', [])
+        search_query = {
+            'since_id': self.twitter_tweet_id,
+            'from': self.twitter_screen_name
         }
+        self_tweets = self._accumulate_tweets(tweets_endpoint_url, query_params, search_query)
+        self_tweets = [tweet for tweet in self_tweets if tweet.get('id_str') not in [answer_tweet.get('id_str') for answer_tweet in answer_results]]
+
+        all_tweets = list(answer_results) + list(self_tweets)
+        sorted_tweets = sorted(all_tweets, key=lambda tweet: tweet.get('created_at'))
+
+        filtered_tweets = []
+        for tweet in sorted_tweets:
+            if tweet.get('in_reply_to_status_id_str') == self.twitter_tweet_id:
+                filtered_tweets.append(self.env['social.media']._format_tweet(tweet))
+            else:
+                for i in range(len(filtered_tweets)):
+                    tested_against = [filtered_tweets[i].get('id')]
+                    if filtered_tweets[i].get('comments'):
+                        tested_against += [answer_tweet['id'] for answer_tweet in filtered_tweets[i]['comments']['data']]
+                    if tweet.get('in_reply_to_status_id_str') in tested_against:
+                        filtered_tweets[i]['comments'] = filtered_tweets[i].get('comments', {'data': []})
+                        filtered_tweets[i]['comments']['data'] += [self.env['social.media']._format_tweet(tweet)]
+
+        filtered_tweets = self._add_comments_favorites(filtered_tweets)
 
         return {
-            'comments': [
-                self.env['social.media']._format_tweet({
-                    **tweet,
-                    'author': users.get(tweet.get('author_id'), {}),
-                    'medias': [
-                        medias.get(media)
-                        for media in tweet.get('attachments', {}).get('media_keys', [])
-                    ],
-                })
-                for tweet in result.json().get('data', [])
-            ]
+            'comments': list(reversed(filtered_tweets))
         }
 
     def _twitter_tweet_delete(self, tweet_id):
         self.ensure_one()
-        delete_endpoint = url_join(
-            self.env['social.media']._TWITTER_ENDPOINT,
-            '/2/tweets/%s' % tweet_id)
+        delete_endpoint = url_join(self.env['social.media']._TWITTER_ENDPOINT, ('/1.1/statuses/destroy/%s.json' % tweet_id))
         headers = self.stream_id.account_id._get_twitter_oauth_header(
-            delete_endpoint,
-            method='DELETE',
+            delete_endpoint
         )
-        response = requests.delete(
+        requests.post(
             delete_endpoint,
             headers=headers,
             timeout=5
         )
-        if not response.ok:
-            raise UserError(_('Failed to delete the Tweet\n%s.', response.text))
 
         return True
 
     def _twitter_tweet_like(self, stream, tweet_id, like):
-        if like:
-            endpoint = url_join(
-                request.env['social.media']._TWITTER_ENDPOINT,
-                '/2/users/%s/likes' % stream.account_id.twitter_user_id)
-            headers = stream.account_id._get_twitter_oauth_header(endpoint)
-            result = requests.post(
-                endpoint,
-                json={'tweet_id': tweet_id},
-                headers=headers,
-                timeout=5,
-            )
-        else:
-            endpoint = url_join(
-                request.env['social.media']._TWITTER_ENDPOINT,
-                '/2/users/%s/likes/%s' % (stream.account_id.twitter_user_id, tweet_id))
-            headers = stream.account_id._get_twitter_oauth_header(endpoint, method='DELETE')
-            result = requests.delete(endpoint, headers=headers, timeout=10)
-
-        if not result.ok:
-            raise UserError(_('Can not like / unlike the tweet\n%s.', result.text))
-
-        post = request.env['social.stream.post'].search([('twitter_tweet_id', '=', tweet_id)])
-        if post:
-            post.twitter_user_likes = like
+        favorites_endpoint = url_join(self.env['social.media']._TWITTER_ENDPOINT, (
+            '/1.1/favorites/create.json' if like else '/1.1/favorites/destroy.json'
+        ))
+        headers = stream.account_id._get_twitter_oauth_header(
+            favorites_endpoint,
+            params={'id': tweet_id}
+        )
+        requests.post(
+            favorites_endpoint,
+            data={'id': tweet_id},
+            headers=headers,
+            timeout=5
+        )
 
         return True
 
@@ -222,11 +238,13 @@ class SocialStreamPostTwitter(models.Model):
         if not self.twitter_can_retweet:
             raise UserError(_('A retweet already exists'))
 
-        account = self.stream_id.account_id
-        retweet_endpoint = url_join(self.env['social.media']._TWITTER_ENDPOINT, '/2/users/%s/retweets' % account.twitter_user_id)
+        retweet_endpoint = url_join(self.env['social.media']._TWITTER_ENDPOINT, (
+            '1.1/statuses/retweet/%s.json' % self.twitter_tweet_id
+        ))
 
+        account = self.stream_id.account_id
         headers = account._get_twitter_oauth_header(retweet_endpoint)
-        result = requests.post(retweet_endpoint, headers=headers, json={'tweet_id': self.twitter_tweet_id}, timeout=5)
+        result = requests.post(retweet_endpoint, headers=headers, timeout=5)
 
         if result.ok: # 200-series HTTP code
             return True
@@ -234,55 +252,145 @@ class SocialStreamPostTwitter(models.Model):
             account.write({'is_media_disconnected': True})
             raise UserError(_('You are not authenticated'))
 
-        error = result.json().get('detail')
-        if error:
-            raise UserError(error)
+        errors = result.json().get('errors')
+        if errors and errors[0].get('code'):
+            raise UserError(errors[0].get('message') or _('Code %i', errors[0].get('code')))
+
         raise UserError(_('Unknown error'))
 
     def _twitter_undo_retweet(self):
         """ Deletes the retweet of the given stream post from Twitter """
-        tweet_id = self.twitter_retweeted_tweet_id_str or self.twitter_tweet_id
-        account = self.stream_id.account_id
-        unretweet_endpoint = url_join(
-            self.env['social.media']._TWITTER_ENDPOINT,
-            '/2/users/%s/retweets/%s' % (account.twitter_user_id, tweet_id),
-        )
+        unretweet_endpoint = url_join(self.env['social.media']._TWITTER_ENDPOINT, (
+            '1.1/statuses/unretweet/%s.json' % (self.twitter_tweet_id)
+        ))
 
-        headers = account._get_twitter_oauth_header(unretweet_endpoint, method='DELETE')
-        result = requests.delete(unretweet_endpoint, headers=headers, timeout=5)
+        account = self.stream_id.account_id
+        headers = account._get_twitter_oauth_header(unretweet_endpoint)
+        result = requests.post(unretweet_endpoint, headers=headers, timeout=5)
 
         if result.status_code == 401:
             account.write({'is_media_disconnected': True})
             raise UserError(_('You are not authenticated'))
 
-        if not result.ok or result.json().get('data', {}).get('retweeted') is not False:
-            error = result.json().get('detail')
-            if error:
-                raise UserError(error)
-            raise UserError(_('Unknown error'))
+        errors = result.json().get('errors')
+        if errors and errors[0].get('code'):
+            if errors[0].get('code') != 144:
+                # Error code 144: 'No status found with that ID'
+                # If the error code is 144, it means that the tweet has probably been deleted from Twitter.
+                # In that case, we do not catch the error and we simply remove the tweet (see below).
+                raise UserError(errors[0].get('message') or _('Code %i', errors[0].get('code')))
 
         retweets = self.search([
             ('twitter_author_id', '=', self.stream_id.account_id.twitter_user_id),
-            ('twitter_retweeted_tweet_id_str', '=', tweet_id),
+            ('twitter_retweeted_tweet_id_str', '=', self.twitter_retweeted_tweet_id_str or self.twitter_tweet_id),
         ])
         retweets.unlink()
         return True
 
-    def _twitter_tweet_quote(self, message, attachment):
+    def _twitter_tweet_quote(self, message, attachment=None):
         """
         :param werkzeug.datastructures.FileStorage attachment:
         Creates a new quotes for the current stream post on Twitter.
         If the stream post does not have any message, a retweet will be created instead of a quote.
         """
-        self.ensure_one()
-        if not message and not attachment:
+        if not message:
             return self._twitter_do_retweet()
-        self._twitter_post_tweet(self.stream_id, message, attachment, quote_tweet_id=self.twitter_tweet_id)
-        return True
+
+        params = {
+            'status': message,
+            'attachment_url': 'https://twitter.com/%s/status/%s' % (
+                self.twitter_author_id,
+                self.twitter_tweet_id
+            )
+        }
+
+        account = self.stream_id.account_id
+        if attachment:
+            images_attachments_ids = account._format_bytes_to_images_twitter(attachment)
+            if images_attachments_ids:
+                params['media_ids'] = ','.join(images_attachments_ids)
+
+        quote_endpoint_url = url_join(self.env['social.media']._TWITTER_ENDPOINT, '/1.1/statuses/update.json')
+        headers = account._get_twitter_oauth_header(quote_endpoint_url, params=params)
+        result = requests.post(quote_endpoint_url, data=params, headers=headers, timeout=5)
+
+        if result.ok: # 200-series HTTP code
+            return True
+        elif result.status_code == 401:
+            account.write({'is_media_disconnected': True})
+            raise UserError(_('You are not authenticated'))
+
+        raise UserError(_('Unknown error'))
 
     # ========================================================
     # UTILITY / MISC
     # ========================================================
+
+    def _add_comments_favorites(self, filtered_tweets):
+        all_tweets_ids = []
+        for tweet in filtered_tweets:
+            all_tweets_ids.append(tweet.get('id'))
+            if 'comments' in tweet:
+                all_tweets_ids += [answer_tweet['id'] for answer_tweet in tweet['comments']['data']]
+
+        favorites_by_id = self.stream_id._lookup_tweets(all_tweets_ids)
+
+        for i in range(len(filtered_tweets)):
+            looked_up_tweet = favorites_by_id.get(filtered_tweets[i]['id'], {'favorited': False})
+            filtered_tweets[i]['user_likes'] = looked_up_tweet['favorited']
+
+            if 'comments' in filtered_tweets[i]:
+                for j in range(len(filtered_tweets[i]['comments']['data'])):
+                    looked_up_tweet = favorites_by_id.get(filtered_tweets[i]['comments']['data'][j]['id'], {'favorited': False})
+                    filtered_tweets[i]['comments']['data'][j]['user_likes'] = looked_up_tweet['favorited']
+
+        return filtered_tweets
+
+    def _accumulate_tweets(self, endpoint_url, query_params, search_query, query_count=1, force_max_id=None):
+        self.ensure_one()
+
+        copied_search_query = dict(search_query)
+        if force_max_id:
+            copied_search_query['max_id'] = force_max_id
+
+        if 'max_id' in copied_search_query and int(copied_search_query['max_id']) < int(copied_search_query['since_id']):
+            del copied_search_query['max_id']
+
+        twitter_query_string = ''
+        for key, value in copied_search_query.items():
+            twitter_query_string += '%s:%s ' % (key, value)
+
+        query_params['q'] = twitter_query_string
+
+        headers = self.stream_id.account_id._get_twitter_oauth_header(
+            endpoint_url,
+            params=query_params,
+            method='GET'
+        )
+        result = requests.get(
+            endpoint_url,
+            params=query_params,
+            headers=headers,
+            timeout=5
+        )
+        tweets = result.json().get('statuses')
+        if query_count >= 10:
+            return tweets
+        elif not tweets:
+            return []
+        elif len(tweets) < 100:
+            return tweets
+        else:
+            max_id = int(tweets[-1].get('id_str')) - 1
+            if max_id < int(search_query['since_id']):
+                return tweets
+            return tweets + self._accumulate_tweets(
+                endpoint_url,
+                query_params,
+                search_query,
+                query_count=(query_count + 1),
+                force_max_id=str(max_id)
+            )
 
     def _fetch_matching_post(self):
         self.ensure_one()
@@ -291,58 +399,5 @@ class SocialStreamPostTwitter(models.Model):
             return self.env['social.live.post'].search(
                 [('twitter_tweet_id', '=', self.twitter_tweet_id)], limit=1
             ).post_id
-        return super()._fetch_matching_post()
-
-    def _twitter_post_tweet(self, stream, message, attachment, **additionnal_params):
-        data = {
-            'text': message,
-            **additionnal_params,
-        }
-
-        images_attachments_ids = None
-        if attachment:
-            bytes_data = attachment.read()
-            images_attachments_ids = stream.account_id._format_images_twitter([{
-                'bytes': bytes_data,
-                'file_size': len(bytes_data),
-                'mimetype': attachment.content_type,
-            }])
-            if images_attachments_ids:
-                data['media'] = {'media_ids': images_attachments_ids}
-
-        post_endpoint_url = url_join(request.env['social.media']._TWITTER_ENDPOINT, '/2/tweets')
-        headers = stream.account_id._get_twitter_oauth_header(post_endpoint_url)
-        result = requests.post(
-            post_endpoint_url,
-            json=data,
-            headers=headers,
-            timeout=5
-        )
-
-        if not result.ok:
-            stream.account_id.write({'is_media_disconnected': True})
-            error = result.json().get('detail') or result.text
-            raise UserError(_('Failed to post comment: %s with the account %s.', error, stream.account_id.name))
-
-        tweet = result.json()['data']
-
-        # we can not use fields expansion when creating a tweet,
-        # so we fill manually the missing values to not recall the API
-        tweet.update({
-            'author_id': self.account_id.twitter_user_id,
-            'author': {
-                'id': self.account_id.twitter_user_id,
-                'name': self.account_id.name,
-                'username': self.account_id.social_account_handle,
-                'profile_image_url': '/web/image/social.account/%s/image' % stream.account_id.id,
-            },
-            **additionnal_params,
-        })
-        if images_attachments_ids:
-            # the image didn't create an attachment, and it will require an extra
-            # API call to get the URL, so we just base 64 encode the image data
-            b64_image = base64.b64encode(bytes_data).decode()
-            link = "data:%s;base64,%s" % (attachment.content_type, b64_image)
-            tweet['medias'] = [{'url': link, 'type': 'photo'}]
-
-        return request.env['social.media']._format_tweet(tweet)
+        else:
+            return super(SocialStreamPostTwitter, self)._fetch_matching_post()

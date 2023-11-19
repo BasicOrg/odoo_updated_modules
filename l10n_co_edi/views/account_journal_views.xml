@@ -8,10 +8,10 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <field name="refund_sequence" position="after">
-                    <field name="l10n_co_edi_debit_note" invisible="country_code != 'CO' or type not in ('sale', 'purchase')"/>
+                    <field name="l10n_co_edi_debit_note" attrs="{'invisible': ['|', ('country_code', '!=', 'CO'), ('type', 'not in', ('sale', 'purchase'))]}"/>
                 </field>
                 <xpath expr="//page[@name='advanced_settings']/group" position="inside">
-                    <group string="Resolución DIAN" invisible="country_code != 'CO' or type not in ('sale', 'purchase')">
+                    <group string="Resolución DIAN" attrs="{'invisible': ['|', ('country_code', '!=', 'CO'), ('type', 'not in', ('sale', 'purchase'))]}">
                         <field name="l10n_co_edi_dian_authorization_number"/>
                         <field name="l10n_co_edi_dian_authorization_date"/>
                         <field name="l10n_co_edi_dian_authorization_end_date"/>

@@ -7,7 +7,8 @@ import { PayrollDashboardActionBox } from '@hr_payroll/components/dashboard/acti
 import { PayrollDashboardPayslipBatch } from '@hr_payroll/components/dashboard/payslip_batch/payslip_batch';
 import { PayrollDashboardTodo } from '@hr_payroll/components/dashboard/todo_list/todo_list';
 import { PayrollDashboardStats } from '@hr_payroll/components/dashboard/payroll_stats/payroll_stats';
-import { Component, onWillStart } from "@odoo/owl";
+
+const { Component, onWillStart } = owl;
 
 class PayrollDashboardComponent extends Component {
     setup() {
@@ -21,7 +22,7 @@ class PayrollDashboardComponent extends Component {
      * Updates the note in database and reload notes data right after.
      */
     async updateNoteMemo(id, memo) {
-        await this.orm.write('hr.payroll.note', [id], { memo });
+        await this.orm.write('note.note', [id], { memo });
         this.reloadNotes();
     }
 

@@ -1,47 +1,56 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* documents_account
-#
+# 
 # Translators:
-# Audrius Palenskis <audrius.palenskis@gmail.com>, 2022
-# Eimantas <eimantas@focusate.eu>, 2022
-# Ramunė ViaLaurea <ramune.vialaurea@gmail.com>, 2022
-# Arunas V. <arunas@devoro.com>, 2022
-# Linas Versada <linaskrisiukenas@gmail.com>, 2022
-# UAB "Draugiški sprendimai" <transifex@draugiskisprendimai.lt>, 2022
-# Jonas Zinkevicius <jozi@odoo.com>, 2022
-# Martin Trigaux, 2022
-#
+# Martin Trigaux, 2019
+# UAB "Draugiški sprendimai" <transifex@draugiskisprendimai.lt>, 2019
+# Silvija Butko <silvija.butko@gmail.com>, 2019
+# Audrius Palenskis <audrius.palenskis@gmail.com>, 2019
+# Eimantas <eimantas@focusate.eu>, 2019
+# Linas Versada <linaskrisiukenas@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
-"Language-Team: Lithuanian (https://app.transifex.com/odoo/teams/41243/lt/)\n"
-"Language: lt\n"
+"POT-Creation-Date: 2019-09-30 09:47+0000\n"
+"PO-Revision-Date: 2019-08-26 09:35+0000\n"
+"Last-Translator: Linas Versada <linaskrisiukenas@gmail.com>, 2019\n"
+"Language-Team: Lithuanian (https://www.transifex.com/odoo/teams/41243/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: lt\n"
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "<b>Deselect this page</b> as we plan to process all bills first."
-msgstr "<b>Atšaukite šio puslapio pasirinkimą</b>, kadangi pirmiausia planuojame apdoroti visas sąskaitas."
+#: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" "
+"groups=\"base.group_multi_company\" role=\"img\"/>"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_documents_workflow_rule
-msgid "A set of condition and actions which will be available to all attachments matching the conditions"
-msgstr "Sąlygų ir veiksmų, kurie bus prieinami visiems sąlygas atitinkantiems priedams, rinkinys"
+msgid ""
+"A set of condition and actions which will be available to all attachments "
+"matching the conditions"
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.constraint,message:documents_account.constraint_documents_account_folder_setting_journal_unique
 msgid "A setting already exists for this journal"
 msgstr ""
+
+#. module: documents_account
+#: model:ir.model,name:documents_account.model_account_reconciliation_widget
+msgid "Account Reconciliation widget"
+msgstr "Sąskaitos sudengimo valdiklis"
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_config_settings__documents_account_settings
@@ -54,52 +63,14 @@ msgid "Accounting Workspace"
 msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "As this PDF contains multiple documents, let's split and process in bulk."
-msgstr "Kadangi šiame PDF dokumente yra keli dokumentai, suskirstykime ir apdorokime juos masiškai."
-
-#. module: documents_account
-#: model:ir.model,name:documents_account.model_ir_attachment
-msgid "Attachment"
-msgstr "Prisegtukas"
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_bank_statement
-msgid "Bank Statement"
-msgstr ""
+#: model:ir.model.fields,field_description:documents_account.field_account_reconcile_model__activity_type_id
+msgid "Activity type"
+msgstr "Veiklos tipas"
 
 #. module: documents_account
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Centralize accounting files and documents"
-msgstr "Centralizuoti apskaitos failus ir dokumentus"
-
-#. module: documents_account
-#: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
-msgid "Check them"
 msgstr ""
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Click on a card to <b>select the document</b>."
-msgstr "Paspauskite ant kortelės, tam kas <b>pasirinkti dokumentą</b>."
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Click on a thumbnail to <b>preview the document</b>."
-msgstr "Paspauskite ant dokumento paveikslėlio, tam kad <b>peržiūrėtumėte dokumentą</b>."
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Click on the <b>page separator</b>: we don't want to split these two pages as they belong to the same document."
-msgstr "Paspauskite ant <b>puslapio skirtuko</b>: mes nenorime padalyti šių dviejų puslapių, nes jie priklauso tam pačiam dokumentui."
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_res_company
@@ -123,7 +94,7 @@ msgstr "Sukurti"
 
 #. module: documents_account
 #: model:documents.workflow.rule,name:documents_account.credit_note_rule
-msgid "Create Customer Credit Note"
+msgid "Create Credit Note"
 msgstr ""
 
 #. module: documents_account
@@ -132,18 +103,8 @@ msgid "Create Customer Invoice"
 msgstr ""
 
 #. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.misc_entry_rule
-msgid "Create Miscellaneous Operations"
-msgstr ""
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule_financial
+#: model:documents.workflow.rule,name:documents_account.vendor_bill_rule
 msgid "Create Vendor Bill"
-msgstr ""
-
-#. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.vendor_refund_rule
-msgid "Create Vendor Refund"
 msgstr ""
 
 #. module: documents_account
@@ -167,11 +128,6 @@ msgid "Customer invoice"
 msgstr ""
 
 #. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__display_journal_id
-msgid "Display Journal"
-msgstr ""
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__display_name
 msgid "Display Name"
 msgstr "Rodomas pavadinimas"
@@ -179,11 +135,6 @@ msgstr "Rodomas pavadinimas"
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_company__documents_account_settings
 msgid "Documents Account Settings"
-msgstr ""
-
-#. module: documents_account
-#: model:ir.model,name:documents_account.model_account_reports_export_wizard_format
-msgid "Export format for accounting's reports"
 msgstr ""
 
 #. module: documents_account
@@ -199,7 +150,7 @@ msgstr ""
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_account_reports_export_wizard__folder_id
 msgid "Folder"
-msgstr "Aplankalas"
+msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields,help:documents_account.field_account_reports_export_wizard__folder_id
@@ -207,10 +158,14 @@ msgid "Folder where to save the generated file"
 msgstr ""
 
 #. module: documents_account
-#. odoo-python
-#: code:addons/documents_account/wizard/account_reports_export_wizard.py:0
+#: code:addons/documents_account/wizard/report_export_wizard.py:0
 #, python-format
 msgid "Generated Documents"
+msgstr ""
+
+#. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__has_business_option
+msgid "Has Business Option"
 msgstr ""
 
 #. module: documents_account
@@ -219,19 +174,18 @@ msgid "ID"
 msgstr "ID"
 
 #. module: documents_account
-#: model:documents.workflow.rule,name:documents_account.bank_statement_rule
-msgid "Import Bank Statement"
-msgstr ""
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__journal_id
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__journal_id
 msgid "Journal"
 msgstr "Žurnalas"
 
 #. module: documents_account
 #: model:ir.model,name:documents_account.model_account_move
-msgid "Journal Entry"
+msgid "Journal Entries"
+msgstr "Žurnalo įrašai"
+
+#. module: documents_account
+#: model:ir.model,name:documents_account.model_account_move_line
+msgid "Journal Item"
 msgstr "Žurnalo įrašas"
 
 #. module: documents_account
@@ -250,6 +204,11 @@ msgid "Journals to synchronize"
 msgstr ""
 
 #. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting____last_update
+msgid "Last Modified on"
+msgstr "Paskutinį kartą keista"
+
+#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__write_uid
 msgid "Last Updated by"
 msgstr "Paskutinį kartą atnaujino"
@@ -260,60 +219,27 @@ msgid "Last Updated on"
 msgstr "Paskutinį kartą atnaujinta"
 
 #. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
+#: model:ir.model,name:documents_account.model_account_reconcile_model
+msgid ""
+"Preset to create journal entries during a invoices and payments matching"
+msgstr ""
+"Išankstiniai nustatymai sukurti žurnalo įrašams atliekant sąskaitų ir "
+"mokėjimų sudengimą"
+
+#. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_account_move_line__reconciliation_invoice_id
+msgid "Reconciliation Invoice"
+msgstr ""
+
+#. module: documents_account
+#: model:ir.model.fields,field_description:documents_account.field_account_move__document_request_line_id
+msgid "Reconciliation Journal Entry Line"
+msgstr ""
+
+#. module: documents_account
+#: code:addons/documents_account/models/account_move.py:0
 #, python-format
-msgid "Let's process documents in your Inbox.<br/><i>Tip: Use Tags to filter documents and structure your process.</i>"
-msgstr ""
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Let's process these bills: turn them into vendor bills."
-msgstr ""
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Let's process this document, coming from our scanner."
-msgstr ""
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Let's tag this mail as legal<br/> <i>Tips: actions can be tailored to your process, according to the workspace.</i>"
-msgstr ""
-
-#. module: documents_account
-#: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_entry
-msgid "Miscellaneous Operations"
-msgstr ""
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__move_type
-msgid "Move Type"
-msgstr ""
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_account_bank_statement_line__suspense_statement_line_id
-#: model:ir.model.fields,field_description:documents_account.field_account_move__suspense_statement_line_id
-#: model:ir.model.fields,field_description:documents_account.field_account_payment__suspense_statement_line_id
-msgid "Request document from a bank statement line"
-msgstr ""
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Send this letter to the legal department, by assigning the right tags."
-msgstr ""
-
-#. module: documents_account
-#: model:ir.model.fields,field_description:documents_account.field_documents_workflow_rule__suitable_journal_ids
-msgid "Suitable Journal"
+msgid "Request Document for %s"
 msgstr ""
 
 #. module: documents_account
@@ -328,11 +254,6 @@ msgid "Tax Statement"
 msgstr ""
 
 #. module: documents_account
-#: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
-msgid "This invoice has been initiated by a bank transaction."
-msgstr ""
-
-#. module: documents_account
 #: model:ir.model.fields.selection,name:documents_account.selection__documents_workflow_rule__create_model__account_move_in_refund
 msgid "Vendor Credit Note"
 msgstr "Tiekėjo kreditinė sąskaita"
@@ -343,31 +264,12 @@ msgid "Vendor bill"
 msgstr ""
 
 #. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Want to become a <b>paperless company</b>? Let's discover Odoo Documents."
-msgstr ""
-
-#. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_documents_account_folder_setting__folder_id
 #: model_terms:ir.ui.view,arch_db:documents_account.res_config_settings_view_form
 msgid "Workspace"
-msgstr "Darbo erdvė"
-
-#. module: documents_account
-#. odoo-javascript
-#: code:addons/documents_account/static/src/js/tour.js:0
-#, python-format
-msgid "Wow... 6 documents processed in a few seconds, You're good.<br/>The tour is complete. Try uploading your own documents now."
 msgstr ""
 
 #. module: documents_account
 #: model:ir.model.fields,field_description:documents_account.field_res_config_settings__account_folder
 msgid "account default folder"
 msgstr ""
-
-#. module: documents_account
-#: model_terms:ir.ui.view,arch_db:documents_account.view_account_move_form_inherit_documents_account
-msgid "to mark this invoice as paid."
-msgstr "žymėti faktūrą kaip apmokėtą."

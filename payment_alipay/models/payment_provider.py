@@ -5,8 +5,6 @@ from hashlib import md5
 
 from odoo import api, fields, models
 
-from odoo.addons.payment_alipay import const
-
 _logger = logging.getLogger(__name__)
 
 
@@ -30,12 +28,20 @@ class PaymentProvider(models.Model):
     alipay_seller_email = fields.Char(
         string="Alipay Seller Email", help="The public Alipay partner email")
 
+    #=== COMPUTE METHODS ===#
+
+    def _compute_feature_support_fields(self):
+        """ Override of `payment` to enable additional features. """
+        super()._compute_feature_support_fields()
+        self.filtered(lambda p: p.code == 'alipay').update({
+            'support_fees': True,
+        })
+
     # === BUSINESS METHODS ===#
 
     @api.model
     def _get_compatible_providers(self, *args, currency_id=None, **kwargs):
-        """ Override of payment to unlist Alipay providers when the currency is not CNY in case of
-        express checkout. """
+        """ Override of payment to unlist Alipay providers for unsupported currencies. """
         providers = super()._get_compatible_providers(*args, currency_id=currency_id, **kwargs)
 
         currency = self.env['res.currency'].browse(currency_id).exists()
@@ -62,10 +68,3 @@ class PaymentProvider(models.Model):
             return 'https://mapi.alipay.com/gateway.do'
         else:  # test environment
             return 'https://openapi.alipaydev.com/gateway.do'
-
-    def _get_default_payment_method_codes(self):
-        """ Override of `payment` to return the default payment method codes. """
-        default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'alipay':
-            return default_codes
-        return const.DEFAULT_PAYMENT_METHODS_CODES

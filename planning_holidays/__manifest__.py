@@ -13,7 +13,6 @@ Planning integration with time off
 """,
     'data': [
         'views/planning_slot_views.xml',
-        'report/planning_report_views.xml',
     ],
     'auto_install': True,
     'license': 'OEEL-1',

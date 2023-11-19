@@ -87,7 +87,6 @@
             <field eval="'%(street)s\n%(street2)s\n%(city)s %(state_code)s %(zip)s\n%(country_name)s'" name="address_format" />
             <field name="currency_id" ref="AUD" />
             <field eval="61" name="phone_code" />
-            <field name="vat_label">ABN</field>
         </record>
         <record id="aw" model="res.country">
             <field name="name">Aruba</field>
@@ -246,7 +245,7 @@
             <field eval="'%(street)s\n%(street2)s\n%(city)s %(state_code)s %(zip)s\n%(country_name)s'" name="address_format" />
             <field name="currency_id" ref="CAD" />
             <field eval="1" name="phone_code" />
-            <field name="vat_label">GST/HST number</field>
+            <field name="vat_label">HST</field>
         </record>
         <record id="cc" model="res.country">
             <field name="name">Cocos (Keeling) Islands</field>
@@ -296,7 +295,6 @@
             <field name="code">cl</field>
             <field name="currency_id" ref="CLP" />
             <field eval="56" name="phone_code" />
-            <field name="vat_label">RUT</field>
         </record>
         <record id="cm" model="res.country">
             <field name="name">Cameroon</field>
@@ -440,7 +438,7 @@
         <record id="es" model="res.country">
             <field name="name">Spain</field>
             <field name="code">es</field>
-            <field eval="'%(street)s\n%(street2)s\n%(zip)s %(city)s (%(state_name)s)\n%(country_name)s'" name="address_format"/>
+            <field eval="'%(street)s\n%(street2)s\n%(zip)s %(city)s\n%(country_name)s'" name="address_format" />
             <field name="currency_id" ref="EUR" />
             <field eval="34" name="phone_code" />
             <field name="vat_label">VAT</field>
@@ -624,7 +622,7 @@
         <record id="hr" model="res.country">
             <field name="name">Croatia</field>
             <field name="code">hr</field>
-            <field name="currency_id" ref="EUR" />
+            <field name="currency_id" ref="HRK" />
             <field eval="'%(street)s\n%(street2)s\n%(zip)s %(city)s \n%(country_name)s'" name="address_format" />
             <field eval="385" name="phone_code" />
             <field name="vat_label">VAT</field>
@@ -1092,7 +1090,6 @@
             <field name="code">nz</field>
             <field name="currency_id" ref="NZD" />
             <field eval="64" name="phone_code" />
-            <field name="vat_label">IRD/GST</field>
         </record>
         <record id="om" model="res.country">
             <field name="name">Oman</field>
@@ -1112,7 +1109,6 @@
             <field name="code">pe</field>
             <field name="currency_id" ref="PEN" />
             <field eval="51" name="phone_code" />
-            <field name="vat_label">RUC</field>
         </record>
         <record id="pf" model="res.country">
             <field name="name">French Polynesia</field>
@@ -1294,7 +1290,7 @@
         <record id="sl" model="res.country">
             <field name="name">Sierra Leone</field>
             <field name="code">sl</field>
-            <field name="currency_id" ref="SLE" />
+            <field name="currency_id" ref="SLL" />
             <field eval="232" name="phone_code" />
         </record>
         <record id="sm" model="res.country">
@@ -1352,7 +1348,7 @@
             <field eval="963" name="phone_code" />
         </record>
         <record id="sz" model="res.country">
-            <field name="name">Eswatini</field>
+            <field name="name">Swaziland</field>
             <field name="code">sz</field>
             <field name="currency_id" ref="SZL" />
             <field eval="268" name="phone_code" />
@@ -1386,7 +1382,6 @@
             <field name="code">th</field>
             <field name="currency_id" ref="THB" />
             <field eval="66" name="phone_code" />
-            <field eval="'%(street)s\n%(street2)s\n%(city)s\n%(state_name)s %(zip)s\n%(country_name)s'" name="address_format" />
         </record>
         <record id="tj" model="res.country">
             <field name="name">Tajikistan</field>
@@ -1488,14 +1483,13 @@
             <field eval="'%(street)s\n%(street2)s\n%(city)s %(state_code)s %(zip)s\n%(country_name)s'" name="address_format" />
             <field name="currency_id" ref="USD" />
             <field eval="1" name="phone_code" />
-            <field name="vat_label"/> <!-- Empty to reset on existing DBs-->
+            <field name="vat_label">EIN</field>
         </record>
         <record id="uy" model="res.country">
             <field name="name">Uruguay</field>
             <field name="code">uy</field>
             <field name="currency_id" ref="UYU" />
             <field eval="598" name="phone_code" />
-            <field name="vat_label">RUT</field>
         </record>
         <record id="uz" model="res.country">
             <field name="name">Uzbekistan</field>
@@ -1597,7 +1591,7 @@
         </record>
 
         <record id="europe" model="res.country.group">
-            <field name="name">European Union</field>
+            <field name="name">Europe</field>
             <field name="country_ids" eval="[Command.set([
                 ref('at'),ref('be'),ref('bg'),ref('hr'),ref('cy'),
                 ref('cz'),ref('dk'),ref('ee'),ref('fi'),ref('fr'),
@@ -1633,16 +1627,6 @@
         <record id="gulf_cooperation_council" model="res.country.group">
             <field name="name">Gulf Cooperation Council (GCC)</field>
             <field name="country_ids" eval="[(6,0, [ref('base.sa'), ref('base.ae'), ref('base.bh'), ref('base.om'), ref('base.qa'), ref('base.kw')])]"/>
-        </record>
-
-        <record id="eurasian_economic_union" model="res.country.group">
-            <field name="name">Eurasian Economic Union</field>
-            <field name="country_ids" eval="[(6, 0, [ref('ru'),ref('by'),ref('am'),ref('kg'),ref('kz')])]"/>
-        </record>
-
-        <record id="ch_and_li" model="res.country.group">
-            <field name="name">Switzerland and Liechtenstein</field>
-            <field name="country_ids" eval="[Command.set([ref('ch'), ref('li')])]"/>
         </record>
     </data>
 </odoo>

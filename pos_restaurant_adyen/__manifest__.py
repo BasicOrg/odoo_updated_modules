@@ -13,7 +13,7 @@
         ],
     'auto_install': True,
     'assets': {
-        'point_of_sale._assets_pos': [
+        'point_of_sale.assets': [
             'pos_restaurant_adyen/static/**/*',
         ],
     },

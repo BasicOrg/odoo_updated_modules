@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 21:56+0000\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-20 09:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,17 +26,21 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
 msgid ""
 "<i class=\"fa fa-exclamation-triangle\"/>\n"
-"                                        <span>Sorry, several booths are now sold out. Please change your choices before validating again.</span>"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "<i class=\"fa fa-map-o me-2\"/>View Plan"
+"                                    <span>Sorry, several booths are now sold out. Please change your choices before validating again.</span>"
 msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "<span class=\"fa fa-gear me-1\"/> Configure Booths"
+msgid ""
+"<i class=\"fa fa-gear me-1\" role=\"img\" aria-label=\"Configure\" "
+"title=\"Configure event booths\"/><em>Configure Booths</em>"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid ""
+"<span class=\"alert alert-info\">This event is finished. It's no longer "
+"possible to book a booth.</span>"
 msgstr ""
 
 #. module: website_event_booth
@@ -46,24 +50,7 @@ msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "<span>Book my Booth(s)</span>"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
 msgid "<span>Book my Booths</span>"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid ""
-"<span>Booth Selection</span><span class=\"fa fa-angle-right d-inline-block "
-"align-middle mx-sm-3 text-muted fs-5\"/>"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid "<span>Confirmed</span>"
 msgstr ""
 
 #. module: website_event_booth
@@ -81,6 +68,16 @@ msgid ""
 msgstr ""
 
 #. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "<strong>Contact Details</strong>"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "Book my Booths"
+msgstr ""
+
+#. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_type_view_form
 msgid "Booth Menu Item"
 msgstr ""
@@ -91,44 +88,27 @@ msgid "Booth Register"
 msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/xml/event_booth_registration_templates.xml:0
 #, python-format
 msgid "Booth Registration completed!"
 msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "Booth registration failed."
 msgstr ""
 
 #. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
+msgid "Booths"
+msgstr ""
+
+#. module: website_event_booth
 #: model:ir.model.fields,field_description:website_event_booth.field_event_type__booth_menu
 msgid "Booths on Website"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Check our"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "Choose your type of booth"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
-msgid "Contact Details"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_order_progress
-msgid ""
-"Contact Details<span class=\"fa fa-angle-right d-inline-block align-middle "
-"mx-sm-3 text-muted fs-5\"/>"
 msgstr ""
 
 #. module: website_event_booth
@@ -152,11 +132,6 @@ msgid "Event Booths Menus"
 msgstr ""
 
 #. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Event Finished"
-msgstr ""
-
-#. module: website_event_booth
 #: model:ir.model,name:website_event_booth.model_event_type
 msgid "Event Template"
 msgstr ""
@@ -167,31 +142,10 @@ msgid "Exhibition Map"
 msgstr ""
 
 #. module: website_event_booth
-#. odoo-python
 #: code:addons/website_event_booth/models/event_event.py:0
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
 #, python-format
 msgid "Get A Booth"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "It's no longer possible to book a booth."
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Link to list of future events"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "List of Future Events"
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
-msgid "Location"
 msgstr ""
 
 #. module: website_event_booth
@@ -201,19 +155,19 @@ msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
+msgid "Mobile"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration_details
 msgid "Phone"
 msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "Please fill out the form correctly."
-msgstr ""
-
-#. module: website_event_booth
-#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "Registration Not Open."
 msgstr ""
 
 #. module: website_event_booth
@@ -222,7 +176,7 @@ msgid "Sorry, all the booths are sold out."
 msgstr ""
 
 #. module: website_event_booth
-#. odoo-javascript
+#. openerp-web
 #: code:addons/website_event_booth/static/src/js/booth_register.js:0
 #, python-format
 msgid "The booth category doesn't exist."
@@ -230,12 +184,27 @@ msgstr ""
 
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
-msgid "This event is not open to exhibitors registration at this time."
+msgid "This event is not open to exhibitors registration,"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_registration
+msgid "View Floor Plan"
 msgstr ""
 
 #. module: website_event_booth
 #: model:ir.model,name:website_event_booth.model_website_event_menu
 msgid "Website Event Menu"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "check our"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "for this event."
 msgstr ""
 
 #. module: website_event_booth
@@ -246,4 +215,9 @@ msgstr ""
 #. module: website_event_booth
 #: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
 msgid "list of future events"
+msgstr ""
+
+#. module: website_event_booth
+#: model_terms:ir.ui.view,arch_db:website_event_booth.event_booth_layout
+msgid "you can"
 msgstr ""

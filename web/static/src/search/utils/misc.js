@@ -7,13 +7,6 @@ export const FACET_ICONS = {
     comparison: "fa fa-adjust",
 };
 
-export const FACET_COLORS = {
-    filter: "primary",
-    groupBy: "action",
-    favorite: "warning",
-    comparison: "danger",
-};
-
 export const GROUPABLE_TYPES = [
     "boolean",
     "char",
@@ -23,5 +16,4 @@ export const GROUPABLE_TYPES = [
     "many2one",
     "many2many",
     "selection",
-    "tags",
 ];

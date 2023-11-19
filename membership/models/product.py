@@ -14,5 +14,14 @@ class Product(models.Model):
         help='Date until which membership remains active.')
 
     _sql_constraints = [
-        ('membership_date_greater', 'check(membership_date_to >= membership_date_from)', 'Error! Ending Date cannot be set before Beginning Date.')
+        ('membership_date_greater', 'check(membership_date_to >= membership_date_from)', 'Error ! Ending Date cannot be set before Beginning Date.')
     ]
+
+    @api.model
+    def get_view(self, view_id=None, view_type='form', **options):
+        if self._context.get('product') == 'membership_product':
+            if view_type == 'form':
+                view_id = self.env.ref('membership.membership_products_form').id
+            else:
+                view_id = self.env.ref('membership.membership_products_tree').id
+        return super().get_view(view_id, view_type, **options)

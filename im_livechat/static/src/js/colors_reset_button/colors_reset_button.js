@@ -1,8 +1,9 @@
-/* @odoo-module */
+/** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import { registry } from '@web/core/registry';
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 export class ColorsResetButton extends Component {
     onColorsResetButtonClick() {
@@ -14,12 +15,9 @@ ColorsResetButton.props = {
     ...standardWidgetProps,
     default_colors: { type: Object },
 };
-
-export const colorsResetButton = {
-    component: ColorsResetButton,
-    extractProps: ({ options }) => ({
-        // Note: `options` should have `default_colors`. It's specified when using the widget.
-        default_colors: options.default_colors,
-    }),
+ColorsResetButton.extractProps = ({ attrs }) => {
+    // Note: `options` should have `default_colors`. It's specified when using the widget.
+    return attrs.options;
 };
-registry.category("view_widgets").add("colors_reset_button", colorsResetButton);
+
+registry.category('view_widgets').add('colors_reset_button', ColorsResetButton);

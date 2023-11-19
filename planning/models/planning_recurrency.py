@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from datetime import timedelta
 
 from odoo import api, fields, models, _
 from odoo.tools import get_timedelta
@@ -32,7 +33,7 @@ class PlanningRecurrency(models.Model):
     @api.constrains('repeat_number', 'repeat_type')
     def _check_repeat_number(self):
         if self.filtered(lambda t: t.repeat_type == 'x_times' and t.repeat_number < 0):
-            raise ValidationError(_('The number of repetitions cannot be negative.'))
+            raise ValidationError('The number of repetitions cannot be negative.')
 
     @api.constrains('company_id', 'slot_ids')
     def _check_multi_company(self):
@@ -40,14 +41,15 @@ class PlanningRecurrency(models.Model):
             if any(recurrency.company_id != planning.company_id for planning in recurrency.slot_ids):
                 raise ValidationError(_('An shift must be in the same company as its recurrency.'))
 
-    @api.depends('repeat_type', 'repeat_interval', 'repeat_until')
-    def _compute_display_name(self):
+    def name_get(self):
+        result = []
         for recurrency in self:
             if recurrency.repeat_type == 'forever':
-                name = _('Forever, every %s week(s)', recurrency.repeat_interval)
+                name = _('Forever, every %s week(s)') % (recurrency.repeat_interval,)
             else:
-                name = _('Every %s week(s) until %s', recurrency.repeat_interval, recurrency.repeat_until)
-            recurrency.display_name = name
+                name = _('Every %s week(s) until %s') % (recurrency.repeat_interval, recurrency.repeat_until)
+            result.append([recurrency.id, name])
+        return result
 
     @api.model
     def _cron_schedule_next(self):
@@ -82,50 +84,27 @@ class PlanningRecurrency(models.Model):
                     recurrence_end_dt = recurrency._get_recurrence_last_datetime()
 
                 # find end of generation period (either the end of recurrence (if this one ends before the cron period), or the given `stop_datetime` (usually the cron period))
-                recurrency_stop_datetime = stop_datetime or PlanningSlot._add_delta_with_dst(
-                    fields.Datetime.now(),
-                    get_timedelta(recurrency.company_id.planning_generation_interval, 'month')
-                )
-                range_limit = min([dt for dt in [recurrence_end_dt, recurrency_stop_datetime] if dt])
-                slot_duration = slot.end_datetime - slot.start_datetime
-
-                def get_all_next_starts():
-                    for i in range(1, 365 * 5): # 5 years if every day
-                        next_start = PlanningSlot._add_delta_with_dst(
-                            slot.start_datetime,
-                            get_timedelta(recurrency.repeat_interval * i, recurrency.repeat_unit)
-                        )
-                        if next_start >= range_limit:
-                            return
-                        yield next_start
+                if not stop_datetime:
+                    stop_datetime = fields.Datetime.now() + get_timedelta(recurrency.company_id.planning_generation_interval, 'month')
+                range_limit = min([dt for dt in [recurrence_end_dt, stop_datetime] if dt])
 
                 # generate recurring slots
-                resource = recurrency.slot_ids.resource_id[-1:]
-                occurring_slots = PlanningSlot.search_read([
-                    ('resource_id', '=', resource.id),
-                    ('company_id', '=', resource.company_id.id),
-                    ('end_datetime', '>=', slot.start_datetime),
-                    ('start_datetime', '<=', range_limit)
-                ], ['start_datetime', 'end_datetime'])
+                recurrency_delta = get_timedelta(recurrency.repeat_interval, recurrency.repeat_unit)
+                next_start = PlanningSlot._add_delta_with_dst(slot.start_datetime, recurrency_delta)
 
                 slot_values_list = []
-                for next_start in get_all_next_starts():
-                    next_end = next_start + slot_duration
+                while next_start < range_limit:
                     slot_values = slot.copy_data({
                         'start_datetime': next_start,
-                        'end_datetime': next_end,
+                        'end_datetime': next_start + (slot.end_datetime - slot.start_datetime),
                         'recurrency_id': recurrency.id,
                         'company_id': recurrency.company_id.id,
                         'repeat': True,
                         'state': 'draft'
                     })[0]
-                    if any(
-                        next_start <= occurring_slot['end_datetime'] and
-                        next_end >= occurring_slot['start_datetime']
-                        for occurring_slot in occurring_slots
-                    ):
-                        slot_values['resource_id'] = False
                     slot_values_list.append(slot_values)
+                    next_start = PlanningSlot._add_delta_with_dst(next_start, recurrency_delta)
+
                 if slot_values_list:
                     PlanningSlot.create(slot_values_list)
                     recurrency.write({'last_generated_end_datetime': slot_values_list[-1]['start_datetime']})
@@ -144,7 +123,4 @@ class PlanningRecurrency(models.Model):
     def _get_recurrence_last_datetime(self):
         self.ensure_one()
         end_datetime = self.env['planning.slot'].search_read([('recurrency_id', '=', self.id)], ['end_datetime'], order='end_datetime', limit=1)
-        timedelta = get_timedelta((self.repeat_number - 1) * self.repeat_interval, self.repeat_unit)
-        if timedelta.days > 999:
-            raise ValidationError(_('Recurring shifts cannot be planned further than 999 days in the future. If you need to schedule beyond this limit, please set the recurrence to repeat forever instead.'))
-        return end_datetime[0]['end_datetime'] + timedelta
+        return end_datetime[0]['end_datetime'] + get_timedelta(self.repeat_number * self.repeat_interval, self.repeat_unit)

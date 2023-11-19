@@ -2,35 +2,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo.addons.crm.tests import common as crm_common
-from odoo.tests.common import Form, users
+from odoo.tests.common import users
 
 
 class TestLead(crm_common.TestCrmCommon):
-
-    @users('user_sales_leads')
-    def test_propagation_lead_user_to_rental_order(self):
-        """ Priority for default salesperson on rental order from a lead should be
-        1) The one on the lead 2) The one on the partner 3) The current user """
-        SaleOrder = self.env['sale.order']
-        lead = self.env['crm.lead'].browse(self.lead_1.ids)
-        partner = self.contact_1
-        lead.partner_id = partner
-
-        lead.user_id = self.user_sales_manager
-        partner.user_id = self.user_sales_salesman
-        rental_order_form = Form(SaleOrder.with_context(lead._get_action_rental_context()))
-        rental_order = rental_order_form.save()
-        self.assertEqual(rental_order.user_id, self.user_sales_manager, 'The salesperson of the lead is set and should be propagated on the rental order.')
-
-        lead.user_id = False
-        rental_order_form = Form(SaleOrder.with_context(lead._get_action_rental_context()))
-        rental_order = rental_order_form.save()
-        self.assertEqual(rental_order.user_id, self.user_sales_salesman, 'The salesperson of contact is set and should be propagated on the rental order.')
-
-        partner.user_id = False
-        rental_order_form = Form(SaleOrder.with_context(lead._get_action_rental_context()))
-        rental_order = rental_order_form.save()
-        self.assertEqual(rental_order.user_id, self.user_sales_leads, 'The salesperson of the current user should be propagated on the rental order.')
 
     @users('user_sales_leads')
     def test_rental_and_sale_fields(self):
@@ -65,8 +40,8 @@ class TestLead(crm_common.TestCrmCommon):
             dict(base_order_vals),
             dict(base_order_vals)
         ])
-        orders.order_line.update({'is_rental': True})
-        orders[0:2].action_confirm()
+        orders[0:2].action_unlock()
+        orders[1].action_confirm()
         self.env.flush_all()
 
         self.assertEqual(lead.rental_quotation_count, 1)

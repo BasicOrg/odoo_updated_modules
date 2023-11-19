@@ -16,11 +16,10 @@
 
     // ====== Top-Bar
     .o_burger_menu_topbar {
-        min-height: $o-navbar-height;
+        min-height: $o-navbar-height-xs;
         background-color: $o-burger-topbar-bg;
         color: $o-burger-topbar-color;
-        line-height: $o-navbar-height;
-        box-shadow: inset 0 -1px 0 $border-color;
+        line-height: $o-navbar-height-xs;
 
         .dropdown-toggle, .o_burger_menu_close {
             padding: 0 $o-horizontal-padding;
@@ -29,12 +28,15 @@
 
     // ====== Menu content container (both App's and User's entries)
     .o_burger_menu_content {
-        &.o_burger_menu_app {
-            background-color: $o-burger-base-bg;
+        &.o_burger_menu_dark {
+            background-color: darken($o-burger-base-bg, 5%);
         }
 
         // Menu entries size and layout
         ul {
+            background-color: rgba(invert($o-burger-base-color), .1);
+            box-shadow: inset 0 -1px 0 rgba($o-burger-base-color, .1);
+
             li > div, li {
                 padding-left: $o-horizontal-padding;
             }
@@ -43,17 +45,13 @@
             li {
                 ul > li {
                     &, > div {
-                        text-indent: .5em;
+                        text-indent: 2em;
                     }
                     ul > li {
                         &, > div {
-                            text-indent: 1em;
+                            text-indent: 3em;
                         }
                     }
-                }
-
-                &:last-child {
-                    margin-bottom: map-get($map: $spacers, $key: 2);
                 }
             }
         }

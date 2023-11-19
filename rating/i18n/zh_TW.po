@@ -3,17 +3,16 @@
 # 	* rating
 # 
 # Translators:
-# Wil Odoo, 2023
-# Tony Ng, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Tony Ng, 2023\n"
-"Language-Team: Chinese (Taiwan) (https://app.transifex.com/odoo/teams/41243/zh_TW/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:54+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,11 +22,6 @@ msgstr ""
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_parent_mixin__rating_count
 msgid "# Ratings"
-msgstr "評分數目"
-
-#. module: rating
-#: model_terms:ir.ui.view,arch_db:rating.rating_external_page_view
-msgid "<i class=\"fa fa-arrow-left me-1\"/> Back to the Homepage"
 msgstr ""
 
 #. module: rating
@@ -46,25 +40,31 @@ msgid "A star"
 msgstr ""
 
 #. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_needaction
-msgid "Action Needed"
-msgstr "需要採取行動"
+#: model:ir.model.fields,help:rating.field_rating_rating__access_token
+msgid "Access token to set the rating of the value"
+msgstr "存取代碼(token)來設定評分的值"
 
 #. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_attachment_count
-msgid "Attachment Count"
-msgstr "附件數"
+#: model:ir.model.fields,help:rating.field_rating_rating__message_id
+msgid ""
+"Associated message when posting a review. Mainly used in website addons."
+msgstr "當發佈評論時的相關資訊，主要用在網站外掛套件中."
+
+#. module: rating
+#: model:ir.model.fields,help:rating.field_rating_rating__partner_id
+msgid "Author of the rating"
+msgstr "評分的作者"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_avg
 #: model:ir.model.fields,field_description:rating.field_rating_parent_mixin__rating_avg
 msgid "Average Rating"
-msgstr "平均評分"
+msgstr ""
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_parent_mixin__rating_avg_percentage
 msgid "Average Rating (%)"
-msgstr "平均評分（%）"
+msgstr ""
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__feedback
@@ -74,7 +74,7 @@ msgstr "評論"
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__create_uid
 msgid "Created by"
-msgstr "建立人員"
+msgstr "建立者"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__partner_id
@@ -83,7 +83,6 @@ msgid "Customer"
 msgstr "客戶"
 
 #. module: rating
-#. odoo-python
 #: code:addons/rating/controllers/main.py:0
 #, python-format
 msgid "Customer rated %r."
@@ -100,14 +99,9 @@ msgid "Display Name"
 msgstr "顯示名稱"
 
 #. module: rating
-#. odoo-python
 #: code:addons/rating/controllers/main.py:0
-#: model:ir.model.fields.selection,name:rating.selection__discuss_channel__rating_avg_text__ko
-#: model:ir.model.fields.selection,name:rating.selection__product_template__rating_avg_text__ko
-#: model:ir.model.fields.selection,name:rating.selection__project_task__rating_avg_text__ko
 #: model:ir.model.fields.selection,name:rating.selection__rating_mixin__rating_avg_text__ko
 #: model:ir.model.fields.selection,name:rating.selection__rating_rating__rating_text__ko
-#: model:ir.model.fields.selection,name:rating.selection__slide_channel__rating_avg_text__ko
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
 #, python-format
 msgid "Dissatisfied"
@@ -131,8 +125,8 @@ msgstr "電子郵件行程"
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_external_page_submit
-msgid "Feel free to share feedback on your experience:"
-msgstr ""
+msgid "Feel free to write a feedback on your experience:"
+msgstr "隨意寫下您的體驗反饋:"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__consumed
@@ -140,14 +134,9 @@ msgid "Filled Rating"
 msgstr "已填寫的評分"
 
 #. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_follower_ids
-msgid "Followers"
-msgstr "關注人"
-
-#. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_partner_ids
-msgid "Followers (Partners)"
-msgstr "關注人（業務夥伴）"
+#: model_terms:ir.ui.view,arch_db:rating.rating_external_page_view
+msgid "Go back to the Homepage"
+msgstr "返回首頁"
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
@@ -160,30 +149,15 @@ msgid "Half a star"
 msgstr "半顆星"
 
 #. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__has_message
-msgid "Has Message"
-msgstr "有訊息"
-
-#. module: rating
 #: model:ir.model.fields,help:rating.field_rating_rating__is_internal
 msgid ""
 "Hide to public / portal users, independently from subtype configuration."
-msgstr "對公共/網站登入會員使用者隱藏，獨立於子類型設定."
+msgstr "對公共/網站登入會員隱藏，獨立於子類型設定."
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__id
 msgid "ID"
-msgstr "識別號"
-
-#. module: rating
-#: model:ir.model.fields,help:rating.field_rating_mixin__message_needaction
-msgid "If checked, new messages require your attention."
-msgstr "勾選代表有新訊息需要您留意。"
-
-#. module: rating
-#: model:ir.model.fields,help:rating.field_rating_mixin__message_has_error
-msgid "If checked, some messages have a delivery error."
-msgstr "勾選代表有訊息發生傳送錯誤。"
+msgstr "ID"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__rating_image
@@ -196,24 +170,11 @@ msgid "Image URL"
 msgstr "圖像網址"
 
 #. module: rating
-#. odoo-python
 #: code:addons/rating/controllers/main.py:0
 #: code:addons/rating/controllers/main.py:0
 #, python-format
 msgid "Incorrect rating: should be 1, 3 or 5 (received %d)"
 msgstr ""
-
-#. module: rating
-#. odoo-python
-#: code:addons/rating/models/mail_thread.py:0
-#, python-format
-msgid "Invalid token or rating."
-msgstr ""
-
-#. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_is_follower
-msgid "Is Follower"
-msgstr "是關注人"
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
@@ -224,6 +185,11 @@ msgstr "最近30天"
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
 msgid "Last 7 days"
 msgstr "最近7天"
+
+#. module: rating
+#: model:ir.model.fields,field_description:rating.field_rating_rating____last_update
+msgid "Last Modified on"
+msgstr "最後修改於"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__write_uid
@@ -239,17 +205,12 @@ msgstr "最後更新於"
 #: model:ir.model,name:rating.model_mail_message
 #: model:ir.model.fields,field_description:rating.field_rating_rating__message_id
 msgid "Message"
-msgstr "消息"
-
-#. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_has_error
-msgid "Message Delivery error"
-msgstr "訊息遞送錯誤"
-
-#. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_ids
-msgid "Messages"
 msgstr "訊息"
+
+#. module: rating
+#: model:ir.model.fields,help:rating.field_rating_rating__res_model_id
+msgid "Model of the followed resource"
+msgstr "訂閱資源的模型"
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
@@ -262,12 +223,8 @@ msgid "Name"
 msgstr "名稱"
 
 #. module: rating
-#: model:ir.model.fields.selection,name:rating.selection__discuss_channel__rating_avg_text__none
-#: model:ir.model.fields.selection,name:rating.selection__product_template__rating_avg_text__none
-#: model:ir.model.fields.selection,name:rating.selection__project_task__rating_avg_text__none
 #: model:ir.model.fields.selection,name:rating.selection__rating_mixin__rating_avg_text__none
 #: model:ir.model.fields.selection,name:rating.selection__rating_rating__rating_text__none
-#: model:ir.model.fields.selection,name:rating.selection__slide_channel__rating_avg_text__none
 msgid "No Rating yet"
 msgstr "尚未評分"
 
@@ -277,38 +234,18 @@ msgid "No rating yet"
 msgstr "尚未評分"
 
 #. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_needaction_counter
-msgid "Number of Actions"
-msgstr "動作數量"
-
-#. module: rating
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__message_has_error_counter
-msgid "Number of errors"
-msgstr "錯誤數量"
-
-#. module: rating
-#: model:ir.model.fields,help:rating.field_rating_mixin__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "需要採取行動的訊息數目"
-
-#. module: rating
-#: model:ir.model.fields,help:rating.field_rating_mixin__message_has_error_counter
-msgid "Number of messages with delivery error"
-msgstr "有發送錯誤的郵件數量"
-
-#. module: rating
-#. odoo-python
 #: code:addons/rating/controllers/main.py:0
-#: model:ir.model.fields.selection,name:rating.selection__discuss_channel__rating_avg_text__ok
-#: model:ir.model.fields.selection,name:rating.selection__product_template__rating_avg_text__ok
-#: model:ir.model.fields.selection,name:rating.selection__project_task__rating_avg_text__ok
 #: model:ir.model.fields.selection,name:rating.selection__rating_mixin__rating_avg_text__ok
 #: model:ir.model.fields.selection,name:rating.selection__rating_rating__rating_text__ok
-#: model:ir.model.fields.selection,name:rating.selection__slide_channel__rating_avg_text__ok
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
 #, python-format
 msgid "Okay"
 msgstr "Okay"
+
+#. module: rating
+#: model:ir.model.fields,help:rating.field_rating_rating__rated_partner_id
+msgid "Owner of the rated resource"
+msgstr "被評估對象的所有者"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__parent_res_id
@@ -343,10 +280,9 @@ msgstr "上級相關單據模型"
 #. module: rating
 #: model:ir.model.fields,help:rating.field_rating_parent_mixin__rating_percentage_satisfaction
 msgid "Percentage of happy ratings"
-msgstr "滿意評分百分比"
+msgstr "滿意度"
 
 #. module: rating
-#. odoo-python
 #: code:addons/rating/models/mail_thread.py:0
 #, python-format
 msgid "Posting a rating should be done using message post API."
@@ -360,6 +296,7 @@ msgstr "評分操作"
 
 #. module: rating
 #: model:ir.model,name:rating.model_rating_rating
+#: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_ids
 #: model:ir.model.fields,field_description:rating.field_rating_rating__rating_text
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_form_text
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
@@ -369,7 +306,7 @@ msgstr "評分"
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_avg_text
 msgid "Rating Avg Text"
-msgstr "平均評分文字"
+msgstr ""
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_last_feedback
@@ -379,7 +316,7 @@ msgstr "最新回饋評分"
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_last_image
 msgid "Rating Last Image"
-msgstr "最新評分圖像"
+msgstr "最新評分圖片"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_last_value
@@ -400,12 +337,12 @@ msgstr "綜合上級評分"
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_percentage_satisfaction
 #: model:ir.model.fields,field_description:rating.field_rating_parent_mixin__rating_percentage_satisfaction
 msgid "Rating Satisfaction"
-msgstr "評級滿意度"
+msgstr "評分滿意度"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_last_text
 msgid "Rating Text"
-msgstr "評分文字"
+msgstr ""
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_mail_mail__rating_value
@@ -431,40 +368,21 @@ msgid "Rating should be between 0 and 5"
 msgstr "評分應在 0 到 5 之間"
 
 #. module: rating
-#. odoo-javascript
-#: code:addons/rating/static/src/notification_item_patch.xml:0
+#: model:ir.model.fields,help:rating.field_rating_rating__rating
+msgid "Rating value: 0=Unhappy, 5=Happy"
+msgstr "評分值: 0=不開心，5=開心"
+
+#. module: rating
+#. openerp-web
+#: code:addons/rating/static/src/components/channel_preview_view/channel_preview_view.xml:0
+#: code:addons/rating/static/src/components/thread_needaction_preview/thread_needaction_preview.xml:0
 #, python-format
 msgid "Rating:"
 msgstr ""
 
 #. module: rating
 #: model:ir.actions.act_window,name:rating.rating_rating_action
-#: model:ir.model.fields,field_description:rating.field_account_analytic_account__rating_ids
-#: model:ir.model.fields,field_description:rating.field_calendar_event__rating_ids
-#: model:ir.model.fields,field_description:rating.field_discuss_channel__rating_ids
-#: model:ir.model.fields,field_description:rating.field_fleet_vehicle__rating_ids
-#: model:ir.model.fields,field_description:rating.field_fleet_vehicle_log_contract__rating_ids
-#: model:ir.model.fields,field_description:rating.field_fleet_vehicle_log_services__rating_ids
-#: model:ir.model.fields,field_description:rating.field_gamification_badge__rating_ids
-#: model:ir.model.fields,field_description:rating.field_gamification_challenge__rating_ids
-#: model:ir.model.fields,field_description:rating.field_lunch_supplier__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_blacklist__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_thread__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_thread_blacklist__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_thread_cc__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_thread_main_attachment__rating_ids
-#: model:ir.model.fields,field_description:rating.field_mail_thread_phone__rating_ids
-#: model:ir.model.fields,field_description:rating.field_maintenance_equipment__rating_ids
-#: model:ir.model.fields,field_description:rating.field_maintenance_equipment_category__rating_ids
-#: model:ir.model.fields,field_description:rating.field_maintenance_request__rating_ids
-#: model:ir.model.fields,field_description:rating.field_phone_blacklist__rating_ids
-#: model:ir.model.fields,field_description:rating.field_product_pricelist__rating_ids
-#: model:ir.model.fields,field_description:rating.field_product_product__rating_ids
-#: model:ir.model.fields,field_description:rating.field_product_template__rating_ids
-#: model:ir.model.fields,field_description:rating.field_rating_mixin__rating_ids
 #: model:ir.model.fields,field_description:rating.field_rating_parent_mixin__rating_ids
-#: model:ir.model.fields,field_description:rating.field_res_partner__rating_ids
-#: model:ir.model.fields,field_description:rating.field_res_users__rating_ids
 #: model:ir.ui.menu,name:rating.rating_rating_menu_technical
 #: model_terms:ir.ui.view,arch_db:rating.mail_message_view_form
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_form
@@ -473,7 +391,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_tree
 msgid "Ratings"
-msgstr "點評"
+msgstr "評分"
+
+#. module: rating
+#: model:ir.model.fields,help:rating.field_rating_mixin__rating_last_feedback
+#: model:ir.model.fields,help:rating.field_rating_rating__feedback
+msgid "Reason of the rating"
+msgstr "評分的理由"
 
 #. module: rating
 #: model:ir.model.fields,field_description:rating.field_rating_rating__res_model_id
@@ -502,14 +426,9 @@ msgid "Resource name"
 msgstr "資源名稱"
 
 #. module: rating
-#. odoo-python
 #: code:addons/rating/controllers/main.py:0
-#: model:ir.model.fields.selection,name:rating.selection__discuss_channel__rating_avg_text__top
-#: model:ir.model.fields.selection,name:rating.selection__product_template__rating_avg_text__top
-#: model:ir.model.fields.selection,name:rating.selection__project_task__rating_avg_text__top
 #: model:ir.model.fields.selection,name:rating.selection__rating_mixin__rating_avg_text__top
 #: model:ir.model.fields.selection,name:rating.selection__rating_rating__rating_text__top
-#: model:ir.model.fields.selection,name:rating.selection__slide_channel__rating_avg_text__top
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_search
 #, python-format
 msgid "Satisfied"
@@ -537,8 +456,8 @@ msgstr "感謝您評價我們的服務!"
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_external_page_view
-msgid "Thank you for your feedback!"
-msgstr "感謝你的回應意見！"
+msgid "Thank you, we appreciate your feedback!"
+msgstr "謝謝，我們感謝您的反饋!"
 
 #. module: rating
 #: model_terms:ir.actions.act_window,help:rating.rating_rating_action
@@ -554,13 +473,6 @@ msgstr "今天"
 #: model:ir.model.fields,field_description:rating.field_rating_rating__is_internal
 msgid "Visible Internally Only"
 msgstr "僅內部可見"
-
-#. module: rating
-#. odoo-python
-#: code:addons/rating/models/mail_thread.py:0
-#, python-format
-msgid "Wrong rating value. A rate should be between 0 and 5 (received %d)."
-msgstr ""
 
 #. module: rating
 #: model_terms:ir.ui.view,arch_db:rating.rating_rating_view_kanban

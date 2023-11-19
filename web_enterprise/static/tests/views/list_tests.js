@@ -2,6 +2,7 @@
 
 import { getFixture, patchWithCleanup, click, nextTick } from "@web/../tests/helpers/utils";
 import { makeView, setupViewRegistries } from "@web/../tests/views/helpers";
+import { patch, unpatch } from "@web/core/utils/patch";
 import { session } from "@web/session";
 import { ListRenderer } from "@web/views/list/list_renderer";
 import { browser } from "@web/core/browser/browser";
@@ -35,9 +36,16 @@ QUnit.module(
                     },
                 },
             };
-            patchWithCleanup(ListRenderer.prototype, patchListRendererDesktop());
+            patch(
+                ListRenderer.prototype,
+                "web_enterprise.ListRendererDesktop",
+                patchListRendererDesktop
+            );
 
             setupViewRegistries();
+        },
+        afterEach() {
+            unpatch(ListRenderer.prototype, "web_enterprise.ListRendererDesktop");
         },
     },
     function () {
@@ -235,38 +243,5 @@ QUnit.module(
                 assert.containsNone(target, ".o_optional_columns_dropdown_toggle");
             }
         );
-
-        QUnit.test("x2many should not be editable", async (assert) => {
-            patchWithCleanup(session, { is_system: true });
-            serverData.models.bar = {
-                fields: {},
-                records: [],
-            };
-            serverData.models.foo.fields.o2m = { type: "one2many", relation: "bar", string: "" };
-            await makeView({
-                serverData,
-                type: "form",
-                resModel: "foo",
-                arch: `
-                <form>
-                    <notebook>
-                        <page>
-                            <field name="o2m">
-                                <tree>
-                                    <field name="display_name"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page><div class="test_empty_page" /></page>
-                    </notebook>
-                </form>`,
-            });
-            assert.containsNone(target, ".o_optional_columns_dropdown_toggle");
-            await click(target.querySelectorAll(".nav-link")[1]);
-            assert.containsNone(target, ".o_field_widget");
-            await click(target.querySelectorAll(".nav-link")[0]);
-            assert.containsOnce(target, ".o_field_widget");
-            assert.containsNone(target, ".o_optional_columns_dropdown_toggle");
-        });
     }
 );

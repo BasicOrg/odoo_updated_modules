@@ -6,11 +6,10 @@ import pytz
 
 from datetime import timedelta
 
-from odoo import _, api, Command, fields, models, tools
+from odoo import _, api, Command, fields, models
 from odoo.addons.base.models.res_partner import _tz_get
-from odoo.exceptions import UserError, ValidationError
-from odoo.osv import expression
 from odoo.tools import format_datetime, is_html_empty
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import formatLang
 from odoo.tools.translate import html_translate
 
@@ -53,7 +52,7 @@ class EventType(models.Model):
 
     name = fields.Char('Event Template', required=True, translate=True)
     note = fields.Html(string='Note')
-    sequence = fields.Integer(default=10)
+    sequence = fields.Integer()
     # tickets
     event_type_ticket_ids = fields.One2many('event.type.ticket', 'event_type_id', string='Tickets')
     tag_ids = fields.Many2many('event.tag', string="Tags")
@@ -63,6 +62,10 @@ class EventType(models.Model):
         'Maximum Registrations', compute='_compute_seats_max',
         readonly=False, store=True,
         help="It will select this default maximum value when you choose this event")
+    auto_confirm = fields.Boolean(
+        'Automatically Confirm Registrations', default=True,
+        help="Events and registrations will automatically be confirmed "
+             "upon creation, easing the flow for simple events.")
     default_timezone = fields.Selection(
         _tz_get, string='Timezone', default=lambda self: self.env.user.tz or 'UTC')
     # communication
@@ -85,7 +88,7 @@ class EventEvent(models.Model):
     _name = 'event.event'
     _description = 'Event'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'date_begin, id'
+    _order = 'date_begin'
 
     @api.model
     def default_get(self, fields_list):
@@ -109,10 +112,6 @@ class EventEvent(models.Model):
     def _default_event_mail_ids(self):
         return self.env['event.type']._default_event_mail_type_ids()
 
-    @api.model
-    def _lang_get(self):
-        return self.env['res.lang'].get_installed()
-
     name = fields.Char(string='Event', translate=True, required=True)
     note = fields.Html(string='Note', store=True, compute="_compute_note", readonly=False)
     description = fields.Html(string='Description', translate=html_translate, sanitize_attributes=False, sanitize_form=False, default=_default_description)
@@ -120,7 +119,6 @@ class EventEvent(models.Model):
     user_id = fields.Many2one(
         'res.users', string='Responsible', tracking=True,
         default=lambda self: self.env.user)
-    use_barcode = fields.Boolean(compute='_compute_use_barcode')
     company_id = fields.Many2one(
         'res.company', string='Company', change_default=True,
         default=lambda self: self.env.company,
@@ -128,7 +126,7 @@ class EventEvent(models.Model):
     organizer_id = fields.Many2one(
         'res.partner', string='Organizer', tracking=True,
         default=lambda self: self.env.company.partner_id,
-        check_company=True)
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     event_type_id = fields.Many2one('event.type', string='Template', ondelete='set null')
     event_mail_ids = fields.One2many(
         'event.mail', 'event_id', string='Mail Schedule', copy=True,
@@ -136,8 +134,6 @@ class EventEvent(models.Model):
     tag_ids = fields.Many2many(
         'event.tag', string="Tags", readonly=False,
         store=True, compute="_compute_tag_ids")
-    # properties
-    registration_properties_definition = fields.PropertiesDefinition('Registration Properties')
     # Kanban fields
     kanban_state = fields.Selection([('normal', 'In Progress'), ('done', 'Done'), ('blocked', 'Blocked')], default='normal', copy=False)
     kanban_state_label = fields.Char(
@@ -162,13 +158,19 @@ class EventEvent(models.Model):
     seats_available = fields.Integer(
         string='Available Seats',
         store=False, readonly=True, compute='_compute_seats')
+    seats_unconfirmed = fields.Integer(
+        string='Unconfirmed Registrations',
+        store=False, readonly=True, compute='_compute_seats')
     seats_used = fields.Integer(
         string='Number of Attendees',
         store=False, readonly=True, compute='_compute_seats')
-    seats_taken = fields.Integer(
-        string='Number of Taken Seats',
+    seats_expected = fields.Integer(
+        string='Number of Expected Attendees',
         store=False, readonly=True, compute='_compute_seats')
     # Registration fields
+    auto_confirm = fields.Boolean(
+        string='Autoconfirmation', compute='_compute_auto_confirm', readonly=False, store=True,
+        help='Autoconfirm Registrations. Registrations will automatically be confirmed upon creation.')
     registration_ids = fields.One2many('event.registration', 'event_id', string='Attendees')
     event_ticket_ids = fields.One2many(
         'event.event.ticket', 'event_id', string='Event Ticket', copy=True,
@@ -189,6 +191,7 @@ class EventEvent(models.Model):
     start_sale_datetime = fields.Datetime(
         'Start sale date', compute='_compute_start_sale_date',
         help='If ticketing is used, contains the earliest starting sale date of tickets.')
+
     # Date fields
     date_tz = fields.Selection(
         _tz_get, string='Timezone', required=True,
@@ -203,9 +206,7 @@ class EventEvent(models.Model):
     # Location and communication
     address_id = fields.Many2one(
         'res.partner', string='Venue', default=lambda self: self.env.company.partner_id.id,
-        check_company=True,
-        tracking=True
-    )
+        tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     address_search = fields.Many2one(
         'res.partner', string='Address', compute='_compute_address_search', search='_search_address_search')
     address_inline = fields.Char(
@@ -213,25 +214,10 @@ class EventEvent(models.Model):
         compute_sudo=True)
     country_id = fields.Many2one(
         'res.country', 'Country', related='address_id.country_id', readonly=False, store=True)
-    lang = fields.Selection(_lang_get, string='Language',
-        help="All the communication emails sent to attendees will be translated in this language.")
     # ticket reports
-    badge_format = fields.Selection(
-        string='Badge Dimension',
-        selection=[
-            ('A4_french_fold', 'A4 foldable'),
-            ('A6', 'A6'),
-            ('four_per_sheet', '4 per sheet')
-        ], default='A6', required=True)
-    badge_image = fields.Image('Badge Background', max_width=1024, max_height=1024)
     ticket_instructions = fields.Html('Ticket Instructions', translate=True,
         compute='_compute_ticket_instructions', store=True, readonly=False,
         help="This information will be printed on your tickets.")
-
-    def _compute_use_barcode(self):
-        use_barcode = self.env['ir.config_parameter'].sudo().get_param('event.use_event_barcode') == 'True'
-        for record in self:
-            record.use_barcode = use_barcode
 
     @api.depends('stage_id', 'kanban_state')
     def _compute_kanban_state_label(self):
@@ -245,12 +231,13 @@ class EventEvent(models.Model):
 
     @api.depends('seats_max', 'registration_ids.state', 'registration_ids.active')
     def _compute_seats(self):
-        """ Determine available, reserved, used and taken seats. """
+        """ Determine reserved, available, reserved but unconfirmed and used seats. """
         # initialize fields to 0
         for event in self:
-            event.seats_reserved = event.seats_used = event.seats_available = 0
+            event.seats_unconfirmed = event.seats_reserved = event.seats_used = event.seats_available = 0
         # aggregate registrations by event and by state
         state_field = {
+            'draft': 'seats_unconfirmed',
             'open': 'seats_reserved',
             'done': 'seats_used',
         }
@@ -259,7 +246,7 @@ class EventEvent(models.Model):
         if self.ids:
             query = """ SELECT event_id, state, count(event_id)
                         FROM event_registration
-                        WHERE event_id IN %s AND state IN ('open', 'done') AND active = true
+                        WHERE event_id IN %s AND state IN ('draft', 'open', 'done') AND active = true
                         GROUP BY event_id, state
                     """
             self.env['event.registration'].flush_model(['event_id', 'state', 'active'])
@@ -274,7 +261,7 @@ class EventEvent(models.Model):
             if event.seats_max > 0:
                 event.seats_available = event.seats_max - (event.seats_reserved + event.seats_used)
 
-            event.seats_taken = event.seats_reserved + event.seats_used
+            event.seats_expected = event.seats_unconfirmed + event.seats_reserved + event.seats_used
 
     @api.depends('date_tz', 'start_sale_datetime')
     def _compute_event_registrations_started(self):
@@ -357,13 +344,14 @@ class EventEvent(models.Model):
         if operator not in ['=', '!=']:
             raise UserError(_('This operator is not supported'))
         if not isinstance(value, bool):
-            raise UserError(_('Value should be True or False (not %s)', value))
+            raise UserError(_('Value should be True or False (not %s)') % value)
         now = fields.Datetime.now()
         if (operator == '=' and value) or (operator == '!=' and not value):
             domain = [('date_begin', '<=', now), ('date_end', '>', now)]
         else:
             domain = ['|', ('date_begin', '>', now), ('date_end', '<=', now)]
-        return domain
+        event_ids = self.env['event.event']._search(domain)
+        return [('id', 'in', event_ids)]
 
     @api.depends('date_begin', 'date_end', 'date_tz')
     def _compute_field_is_one_day(self):
@@ -396,7 +384,8 @@ class EventEvent(models.Model):
             domain = [('date_end', '<=', now)]
         else:
             domain = [('date_end', '>', now)]
-        return domain
+        event_ids = self.env['event.event']._search(domain)
+        return [('id', 'in', event_ids)]
 
     @api.depends('event_type_id')
     def _compute_date_tz(self):
@@ -415,16 +404,17 @@ class EventEvent(models.Model):
         if operator != 'ilike' or not isinstance(value, str):
             raise NotImplementedError(_('Operation not supported.'))
 
-        return expression.OR([
-            [('address_id.name', 'ilike', value)],
-            [('address_id.street', 'ilike', value)],
-            [('address_id.street2', 'ilike', value)],
-            [('address_id.city', 'ilike', value)],
-            [('address_id.zip', 'ilike', value)],
-            [('address_id.state_id', 'ilike', value)],
-            [('address_id.country_id', 'ilike', value)],
+        address_ids = self.env['res.partner']._search([
+            '|', '|', '|', '|', '|',
+            ('street', 'ilike', value),
+            ('street2', 'ilike', value),
+            ('city', 'ilike', value),
+            ('zip', 'ilike', value),
+            ('state_id', 'ilike', value),
+            ('country_id', 'ilike', value),
         ])
 
+        return [('address_id', 'in', address_ids)]
 
     # seats
 
@@ -451,6 +441,15 @@ class EventEvent(models.Model):
                 event.seats_limited = event.event_type_id.has_seats_limitation
             if not event.seats_limited:
                 event.seats_limited = False
+
+    @api.depends('event_type_id')
+    def _compute_auto_confirm(self):
+        """ Update event configuration from its event type. Depends are set only
+        on event_type_id itself, not its sub fields. Purpose is to emulate an
+        onchange: if event type is changed, update event configuration. Changing
+        event type content itself should not trigger this method. """
+        for event in self:
+            event.auto_confirm = event.event_type_id.auto_confirm
 
     @api.depends('event_type_id')
     def _compute_event_mail_ids(self):
@@ -592,12 +591,11 @@ class EventEvent(models.Model):
             self.message_subscribe([vals['organizer_id']])
         return res
 
-    @api.depends('event_registrations_sold_out', 'seats_limited', 'seats_max', 'seats_available')
-    @api.depends_context('name_with_seats_availability')
-    def _compute_display_name(self):
+    def name_get(self):
         """Adds ticket seats availability if requested by context."""
         if not self.env.context.get('name_with_seats_availability'):
-            return super()._compute_display_name()
+            return super().name_get()
+        res = []
         for event in self:
             # event or its tickets are sold out
             if event.event_registrations_sold_out:
@@ -610,12 +608,13 @@ class EventEvent(models.Model):
                 )
             else:
                 name = event.name
-            event.display_name = name
+            res.append((event.id, name))
+        return res
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
         self.ensure_one()
-        default = dict(default or {}, name=_("%s (copy)", self.name))
+        default = dict(default or {}, name=_("%s (copy)") % (self.name))
         return super(EventEvent, self).copy(default)
 
     @api.model
@@ -671,13 +670,6 @@ class EventEvent(models.Model):
 
             result[event.id] = cal.serialize().encode('utf-8')
         return result
-
-    def _get_tickets_access_hash(self, registration_ids):
-        """ Returns the ground truth hash for accessing the tickets in route /event/<int:event_id>/my_tickets.
-        The dl links are always made event-dependant, hence the method linked to the record in self.
-        """
-        self.ensure_one()
-        return tools.hmac(self.env(su=True), 'event-registration-ticket-report-access', (self.id, sorted(registration_ids)))
 
     @api.autovacuum
     def _gc_mark_events_done(self):

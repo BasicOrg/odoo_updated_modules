@@ -51,7 +51,7 @@ class TestLeadConvertToTicket(crm_common.TestCrmCommon):
         # new ticket: data from lead and convert options
         self.assertEqual(ticket.description, lead.description)
         self.assertEqual(ticket.partner_id, partner)
-        self.assertEqual(ticket.partner_email, lead.email_from if lead.email_from else partner.email)
+        self.assertEqual(ticket.email, lead.email_from if lead.email_from else partner.email)
         self.assertIn(partner, ticket.message_partner_ids)
         self.assertEqual(ticket.partner_email, lead.email_from if lead.email_from else partner.email)
         self.assertEqual(ticket.partner_phone, lead.phone if lead.phone else partner.phone or lead.mobile or partner.mobile)
@@ -120,8 +120,8 @@ class TestLeadConvertToTicket(crm_common.TestCrmCommon):
         })
         action = convert.action_lead_to_helpdesk_ticket()
 
-        # salesmen redirected to ticket
-        self.assertEqual(action['res_model'], 'helpdesk.ticket')
+        # salesmen redirected to leads
+        self.assertEqual(action['res_model'], lead._name)
 
         # check created ticket coherency
         ticket = self.env['helpdesk.ticket'].sudo().search([('name', '=', lead.name)])

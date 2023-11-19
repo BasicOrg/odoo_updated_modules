@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { patch } from "@web/core/utils/patch";
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
 const { chartRegistry } = spreadsheet.registries;
 const { ChartPanel } = spreadsheet.components;
@@ -11,7 +11,7 @@ const { ChartPanel } = spreadsheet.components;
  * between odoo charts and spreadsheet charts.
  */
 
-patch(ChartPanel.prototype, {
+patch(ChartPanel.prototype, "spreadsheet.ChartPanel", {
     get chartTypes() {
         const definition = this.getChartDefinition();
         const isOdoo = definition.type.startsWith("odoo_");
@@ -45,7 +45,7 @@ patch(ChartPanel.prototype, {
                 sheetId: this.env.model.getters.getActiveSheetId(),
             });
         } else {
-            super.onTypeChange(type);
+            this._super(type);
         }
     },
 });

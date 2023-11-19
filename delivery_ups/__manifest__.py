@@ -7,7 +7,7 @@
     'sequence': 275,
     'version': '1.0',
     'application': True,
-    'depends': ['stock_delivery', 'mail'],
+    'depends': ['delivery', 'mail'],
     'data': [
         'data/delivery_ups_data.xml',
         'views/delivery_ups_view.xml',

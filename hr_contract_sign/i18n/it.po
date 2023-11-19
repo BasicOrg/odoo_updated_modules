@@ -3,18 +3,16 @@
 # 	* hr_contract_sign
 # 
 # Translators:
-# Wil Odoo, 2023
-# Sergio Zanchetta <primes2h@gmail.com>, 2023
-# Marianna Ciofani, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Marianna Ciofani, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,32 +20,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: hr_contract_sign
-#. odoo-python
-#: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
-#, python-format
-msgid "%(user_name)s requested a new signature on the following documents:"
-msgstr "%(user_name)sha richiesto una nuova firma sui documenti seguenti: "
-
-#. module: hr_contract_sign
-#. odoo-python
 #: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
 #, python-format
 msgid "%s and %s are the signatories."
 msgstr "%s e %s sono firmatari."
 
 #. module: hr_contract_sign
-#. odoo-python
-#: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
-#, python-format
-msgid "%s does not have a private email set."
-msgstr "%s non ha un indirizzo e-mail privato configurato."
-
-#. module: hr_contract_sign
-#. odoo-python
 #: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
 #, python-format
 msgid "%s does not have a work email set."
-msgstr "%s non ha un indirizzo e-mail di lavoro configurato."
+msgstr ""
+
+#. module: hr_contract_sign
+#: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
+#, python-format
+msgid ""
+"%s requested a new signature on the following documents:<br/><ul>%s</ul>%s"
+msgstr ""
+"%s ha richiesto una nuova firma sul documento seguente:<br/><ul>%s</ul>%s"
 
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_contract_sign_view_form
@@ -55,16 +45,6 @@ msgstr "%s non ha un indirizzo e-mail di lavoro configurato."
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.res_users_request_sign_view_form
 msgid "<span class=\"o_stat_text\">Signature Requests</span>"
 msgstr "<span class=\"o_stat_text\">Richieste di firma</span>"
-
-#. module: hr_contract_sign
-#: model:ir.model,name:hr_contract_sign.model_mail_activity_plan_template
-msgid "Activity plan template"
-msgstr "Modello piano attività"
-
-#. module: hr_contract_sign
-#: model:ir.model,name:hr_contract_sign.model_mail_activity_schedule
-msgid "Activity schedule plan Wizard"
-msgstr "Procedura guidata pianificazione attività"
 
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
@@ -79,7 +59,7 @@ msgstr "Allegato"
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__contract_id
 msgid "Contract"
-msgstr "Contratto"
+msgstr "Abbonamento"
 
 #. module: hr_contract_sign
 #: model:ir.model,name:hr_contract_sign.model_hr_contract_history
@@ -99,7 +79,7 @@ msgstr "Creato da"
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__create_date
 msgid "Created on"
-msgstr "Data creazione"
+msgstr "Creato il"
 
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
@@ -117,9 +97,9 @@ msgid "Document Signature"
 msgstr "Firma documento"
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_mail_activity_plan_template__sign_template_id
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_plan_activity_type__sign_template_id
 msgid "Document to sign"
-msgstr "Documento da firmare"
+msgstr ""
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__sign_template_ids
@@ -137,24 +117,6 @@ msgstr ""
 "I documenti con 1 responsabile dovranno essere firmati solo dal dipendente, mentre i documenti con 2 responsabili diversi dovranno essere firmati sia dal dipendente che dal responsabile."
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__mail_to
-msgid "Email"
-msgstr "E-mail"
-
-#. module: hr_contract_sign
-#: model:ir.model.fields,help:hr_contract_sign.field_hr_contract_sign_document_wizard__mail_to
-msgid ""
-"Email used to send the signature request.\n"
-"                - Work takes the email defined in \"work email\"\n"
-"                - Private takes the email defined in Private Information\n"
-"                - If the selected email is not defined, the available one will be used."
-msgstr ""
-"Indirizzo e-mail utilzzato per inviare la richiesta di firma.\n"
-"                - Lavoro definisce l'e-mail nel campo \"e-mail di lavoro\"\n"
-"                - Privato definisce l'e-mail nelle informazioni private\n"
-"                -Se l'indirizzo e-mail selezionato non è definito, verrà utilizzato quello disponbile."
-
-#. module: hr_contract_sign
 #: model:ir.model,name:hr_contract_sign.model_hr_employee
 msgid "Employee"
 msgstr "Dipendente"
@@ -166,13 +128,13 @@ msgstr "Contratto dipendente"
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__employee_role_id
-#: model:ir.model.fields,field_description:hr_contract_sign.field_mail_activity_plan_template__employee_role_id
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_plan_activity_type__employee_role_id
 msgid "Employee Role"
 msgstr "Ruolo dipendente"
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,help:hr_contract_sign.field_hr_contract_sign_document_wizard__employee_role_id
-#: model:ir.model.fields,help:hr_contract_sign.field_mail_activity_plan_template__employee_role_id
+#: model:ir.model.fields,help:hr_contract_sign.field_hr_plan_activity_type__employee_role_id
 msgid ""
 "Employee's role on the templates to sign. The same role must be present in "
 "all the templates"
@@ -193,7 +155,7 @@ msgstr "Responsabile RU"
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__has_both_template
 msgid "Has Both Template"
-msgstr "Ha entrambi i modelli"
+msgstr ""
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__id
@@ -201,9 +163,14 @@ msgid "ID"
 msgstr "ID"
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_mail_activity_plan_template__is_signature_request
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_plan_activity_type__is_signature_request
 msgid "Is Signature Request"
-msgstr "È richiesta la firma"
+msgstr ""
+
+#. module: hr_contract_sign
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__write_uid
@@ -216,14 +183,9 @@ msgid "Last Updated on"
 msgstr "Ultimo aggiornamento il"
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__mail_displayed
-msgid "Mail Displayed"
-msgstr "E-mail visualizzata"
-
-#. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
 msgid "Mail Options"
-msgstr "Opzioni e-mail"
+msgstr ""
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__message
@@ -231,7 +193,6 @@ msgid "Message"
 msgstr "Messaggio"
 
 #. module: hr_contract_sign
-#. odoo-python
 #: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
 #, python-format
 msgid ""
@@ -247,7 +208,6 @@ msgid "No template available"
 msgstr "Nessun contratto disponibile"
 
 #. module: hr_contract_sign
-#. odoo-python
 #: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
 #, python-format
 msgid "Only %s has to sign."
@@ -264,17 +224,23 @@ msgid "Optional Message..."
 msgstr "Messaggio Opzionale ... "
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__possible_template_ids
-msgid "Possible Template"
-msgstr "Modello possibile"
+#: model:ir.model,name:hr_contract_sign.model_hr_plan_wizard
+msgid "Plan Wizard"
+msgstr "Procedura di pianificazione"
 
 #. module: hr_contract_sign
-#: model:ir.model.fields.selection,name:hr_contract_sign.selection__hr_contract_sign_document_wizard__mail_to__private
-msgid "Private"
-msgstr "Privato"
+#: model:ir.model,name:hr_contract_sign.model_hr_plan_activity_type
+msgid "Plan activity type"
+msgstr "Tipo di attività pianificazione"
+
+#. module: hr_contract_sign
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__possible_template_ids
+msgid "Possible Template"
+msgstr ""
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract__sign_request_ids
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_history__sign_request_ids
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_employee__sign_request_ids
 msgid "Requested Signatures"
 msgstr "Firme richieste"
@@ -285,7 +251,7 @@ msgid "Responsible"
 msgstr "Responsabile"
 
 #. module: hr_contract_sign
-#: model:ir.model.fields,field_description:hr_contract_sign.field_mail_activity_plan_template__responsible_count
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_plan_activity_type__responsible_count
 msgid "Responsible Count"
 msgstr "Numero responsabili"
 
@@ -304,11 +270,11 @@ msgstr "N. richieste di firma"
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
 msgid "Sign Request Options"
-msgstr "Opzioni richiesta firma"
+msgstr ""
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__sign_template_responsible_ids
-#: model:ir.model.fields,field_description:hr_contract_sign.field_mail_activity_plan_template__sign_template_responsible_ids
+#: model:ir.model.fields,field_description:hr_contract_sign.field_hr_plan_activity_type__sign_template_responsible_ids
 msgid "Sign Template Responsible"
 msgstr "Responsabile modello di firma"
 
@@ -318,9 +284,9 @@ msgid "Sign document in contract"
 msgstr "Firma il documento nel contratto"
 
 #. module: hr_contract_sign
-#. odoo-python
-#: code:addons/hr_contract_sign/wizard/mail_activity_schedule.py:0
+#: code:addons/hr_contract_sign/wizard/hr_plan_wizard.py:0
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_contract_history_view_form
+#: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_contract_sign_view_form
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_employee_sign_view_form
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
 #, python-format
@@ -328,9 +294,10 @@ msgid "Signature Request"
 msgstr "Richiesta di firma"
 
 #. module: hr_contract_sign
-#: model:ir.actions.server,name:hr_contract_sign.action_signature_request_wizard
-msgid "Signature request"
-msgstr "Richiesta di firma"
+#: code:addons/hr_contract_sign/wizard/hr_contract_sign_document_wizard.py:0
+#, python-format
+msgid "Signature Request - %s"
+msgstr "Richiesta firma - %s"
 
 #. module: hr_contract_sign
 #: model:ir.model.fields,field_description:hr_contract_sign.field_hr_contract_sign_document_wizard__subject
@@ -343,25 +310,9 @@ msgid "Template Warning"
 msgstr "Avviso Template"
 
 #. module: hr_contract_sign
-#. odoo-python
-#: code:addons/hr_contract_sign/models/hr_contract.py:0
-#, python-format
-msgid ""
-"This sign request has been canceled due to the cancellation of the related "
-"contract."
-msgstr ""
-"La richiesta di firma è stata annullata per via della cancellazione del "
-"relativo contratto."
-
-#. module: hr_contract_sign
 #: model:ir.model,name:hr_contract_sign.model_res_users
 msgid "User"
 msgstr "Utente"
-
-#. module: hr_contract_sign
-#: model:ir.model.fields.selection,name:hr_contract_sign.selection__hr_contract_sign_document_wizard__mail_to__work
-msgid "Work"
-msgstr "Lavoro"
 
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.view_hr_contract_sign
@@ -369,7 +320,6 @@ msgid "Write email or search contact..."
 msgstr "Inserisci l'indirizzo mail o cerca tra i contatti..."
 
 #. module: hr_contract_sign
-#. odoo-python
 #: code:addons/hr_contract_sign/models/hr_contract.py:0
 #, python-format
 msgid ""
@@ -381,7 +331,7 @@ msgstr ""
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_contract_history_view_form
 msgid "document"
-msgstr "documento"
+msgstr "documenti"
 
 #. module: hr_contract_sign
 #: model_terms:ir.ui.view,arch_db:hr_contract_sign.hr_contract_history_view_form

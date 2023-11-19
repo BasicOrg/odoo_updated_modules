@@ -19,19 +19,18 @@ model. Furthermore, you can create a new website form or edit an existing one.
     ],
     'data': [
         'views/templates.xml',
-        'views/views.xml',
+        'views/actions.xml',
     ],
     'auto_install': True,
     'license': 'OEEL-1',
     'assets': {
         'web_studio.studio_assets': [
-            'website_studio/static/src/**/*',
-        ],
-        'web.assets_tests': [
-            'website_studio/static/tests/tours/**/*',
+            'website_studio/static/src/js/**/*.js',
+            'website_studio/static/src/scss/**/*.scss',
+            'website_studio/static/src/xml/*.xml',
         ],
         'web.qunit_suite_tests': [
-            'website_studio/static/tests/*.js',
+            'website_studio/static/tests/**/*',
         ],
     }
 }

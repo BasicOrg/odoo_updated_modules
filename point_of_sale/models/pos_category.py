@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-
-from typing import List, Tuple
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
@@ -15,7 +12,7 @@ class PosCategory(models.Model):
     @api.constrains('parent_id')
     def _check_category_recursion(self):
         if not self._check_recursion():
-            raise ValidationError(_('Error! You cannot create recursive categories.'))
+            raise ValidationError(_('Error ! You cannot create recursive categories.'))
 
     name = fields.Char(string='Category Name', required=True, translate=True)
     parent_id = fields.Many2one('pos.category', string='Parent Category', index=True)
@@ -27,15 +24,14 @@ class PosCategory(models.Model):
     # field to determine whether a pos.category has an image or not.
     has_image = fields.Boolean(compute='_compute_has_image')
 
-    def _get_hierarchy(self) -> List[str]:
-        """ Returns a list representing the hierarchy of the categories. """
-        self.ensure_one()
-        return (self.parent_id._get_hierarchy() if self.parent_id else []) + [(self.name or '')]
-
-    @api.depends('parent_id')
-    def _compute_display_name(self):
-        for cat in self:
-            cat.display_name = " / ".join(cat._get_hierarchy())
+    def name_get(self):
+        def get_names(cat):
+            res = []
+            while cat:
+                res.append(cat.name)
+                cat = cat.parent_id
+            return res
+        return [(cat.id, " / ".join(reversed(get_names(cat)))) for cat in self]
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_session_open(self):

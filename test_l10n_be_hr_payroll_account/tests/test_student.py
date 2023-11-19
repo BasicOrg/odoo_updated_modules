@@ -21,7 +21,7 @@ class TestStudent(AccountTestInvoicingCommon):
         self.assertEqual(len(error), 0, '\n' + '\n'.join(error))
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='be_comp'):
+    def setUpClass(cls, chart_template_ref='l10n_be.l10nbe_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
 
         cls.company_data['company'].country_id = cls.env.ref('base.be')
@@ -49,7 +49,7 @@ class TestStudent(AccountTestInvoicingCommon):
             'resource_calendar_id': cls.new_calendar.id,
             'structure_type_id': cls.env.ref('l10n_be_hr_payroll.structure_type_student').id,
             'wage': 0,
-            'hourly_wage': 10.87,
+            'hourly_wage': 10.8714,
             'fuel_card': 0,
             'meal_voucher_amount': 7.45,
             'representation_fees': 0,
@@ -101,12 +101,12 @@ class TestStudent(AccountTestInvoicingCommon):
         self.assertEqual(len(payslip.line_ids), 7)
 
         payslip_results = {
-            'BASIC': 586.98,  # 10.87 * 54 = 586.98
+            'BASIC': 587.06,  # 10.8714 * 54 = 587.0556
             'ONSS': -15.91,
-            'GROSS': 571.07,
+            'GROSS': 571.15,
             'CAR.PRIV': 13.86,
             'MEAL_V_EMP': -6.54,
-            'NET': 578.38,
-            'ONSSEMPLOYER': 31.81,
+            'NET': 578.46,
+            'ONSSEMPLOYER': 31.82,
         }
         self._validate_payslip(payslip, payslip_results)

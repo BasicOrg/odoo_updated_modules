@@ -9,10 +9,6 @@
     </record>
     <record id="close_reason_3" model="sale.order.close.reason">
         <field name="name">Subscription reached its end date</field>
-        <field name="visible_in_portal" eval="False"/>
-    </record>
-    <record id="close_reason_cancel" model="sale.order.close.reason">
-        <field name="name">Cancelled</field>
     </record>
     <record id="close_reason_4" model="sale.order.close.reason">
         <field name="name">I don't use it</field>
@@ -21,45 +17,18 @@
         <field name="name">Other</field>
     </record>
 
+    <record id="close_reason_renew" model="sale.order.close.reason">
+        <field name="name">The subscription was renewed with a new plan.</field>
+    </record>
+
     <data noupdate="1">
-        <!-- Protected close reasons -->
-        <record id="close_reason_renew" model="sale.order.close.reason">
-            <field name="name">The subscription was renewed with a new plan</field>
-            <field name="visible_in_portal" eval="False"/>
-            <field name="is_protected" eval="True"/>
-        </record>
-
-        <record id="close_reason_end_of_contract" model="sale.order.close.reason">
-            <field name="name">End of contract</field>
-            <field name="visible_in_portal" eval="False"/>
-            <field name="is_protected" eval="True"/>
-        </record>
-
-        <record id="close_reason_auto_close_limit_reached" model="sale.order.close.reason">
-            <field name="name">Automatic renewal failed</field>
-            <field name="visible_in_portal" eval="False"/>
-            <field name="is_protected" eval="True"/>
-        </record>
-
-        <record id="close_reason_unpaid_subscription" model="sale.order.close.reason">
-            <field name="name">Unpaid subscription</field>
-            <field name="visible_in_portal" eval="False"/>
-            <field name="is_protected" eval="True"/>
-        </record>
-
-        <record id="close_reason_unknown" model="sale.order.close.reason">
-            <field name="name">Unknown</field>
-            <field name="visible_in_portal" eval="False"/>
-            <field name="is_protected" eval="True"/>
-        </record>
-
         <!-- Subtypes -->
-        <record id="subtype_state_change" model="mail.message.subtype">
-            <field name="name">State Change</field>
+        <record id="subtype_stage_change" model="mail.message.subtype">
+            <field name="name">Stage Change</field>
             <field name="res_model">sale.order</field>
             <field name="default" eval="True"/>
             <field name="internal" eval="True"/>
-            <field name="description">Subscription state has changed</field>
+            <field name="description">Subscription stage has changed</field>
         </record>
 
         <!-- Cron jobs -->
@@ -67,7 +36,7 @@
             <field name="name">Sale Subscription: subscriptions expiration</field>
             <field name="model_id" ref="sale_subscription.model_sale_order"/>
             <field name="state">code</field>
-            <field name="code">model._cron_subscription_expiration()</field>
+            <field name="code">model.cron_subscription_expiration()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
@@ -97,19 +66,23 @@
             <field name="nextcall" eval="(datetime.now() + timedelta(minutes=9)).strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
 
-        <!-- Subscription Plan -->
-        <record id="subscription_plan_month" model="sale.subscription.plan" forcecreate="0">
-            <field name="name">Monthly</field>
-            <field name="billing_period_value">1</field>
-            <field name="billing_period_unit">month</field>
+        <!-- Standard Stages -->
+        <record id="sale_subscription_stage_draft" model="sale.order.stage">
+            <field name="name">Quotation</field>
+            <field name="sequence">10</field>
+            <field name="category">draft</field>
         </record>
-
-        <record id="subscription_plan_year" model="sale.subscription.plan" forcecreate="0">
-            <field name="name">Yearly</field>
-            <field name="billing_period_value">1</field>
-            <field name="billing_period_unit">year</field>
+        <record id="sale_subscription_stage_in_progress" model="sale.order.stage">
+            <field name="name">In Progress</field>
+            <field name="category">progress</field>
+            <field name="sequence">20</field>
         </record>
-
+        <record id="sale_subscription_stage_closed" model="sale.order.stage">
+            <field name="name">Closed</field>
+            <field name="sequence">40</field>
+            <field name="category">closed</field>
+            <field name="fold">True</field>
+        </record>
     </data>
 
 </odoo>

@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 16.0beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 21:55+0000\n"
+"POT-Creation-Date: 2022-10-10 10:23+0000\n"
+"PO-Revision-Date: 2022-10-10 10:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order.py:0
 #, python-format
 msgid ""
@@ -30,61 +29,15 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #, python-format
-msgid "%(name)s's Sales Order Items"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/project.py:0
-#, python-format
-msgid "%(name)s's Sales Orders"
-msgstr ""
-
-#. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.product_template_form_view_invoice_policy_inherit_sale_project
-msgid ""
-"<span class=\"fa fa-lg fa-building-o fa-fw\" title=\"Values set here are "
-"company-specific.\" groups=\"base.group_multi_company\"/>"
-msgstr ""
-
-#. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.view_edit_project_inherit_form
-msgid ""
-"<span class=\"o_stat_text\">\n"
-"                            <span class=\"o_stat_value\">0</span> Sales Order\n"
-"                        </span>\n"
-"                        <span class=\"o_stat_text\">\n"
-"                            Make Billable\n"
-"                        </span>"
-msgstr ""
-
-#. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.view_edit_project_inherit_form
-msgid ""
-"<span class=\"o_stat_text\">\n"
-"                            Sales Orders\n"
-"                        </span>"
-msgstr ""
-
-#. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_form
-#: model_terms:ir.ui.view,arch_db:sale_project.project_sharing_inherit_project_task_view_form
-#: model_terms:ir.ui.view,arch_db:sale_project.view_sale_project_inherit_form
-msgid "<span class=\"o_stat_text\">Sales Order</span>"
-msgstr ""
-
-#. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_form
-msgid "<span>)</span>"
+msgid "%(name)s's Sales Order"
 msgstr ""
 
 #. module: sale_project
 #: model:ir.model.fields,help:sale_project.field_sale_order_line__qty_delivered_method
 msgid ""
-"According to product configuration, the delivered quantity can be automatically computed by mechanism:\n"
+"According to product configuration, the delivered quantity can be automatically computed by mechanism :\n"
 "  - Manual: the quantity is set manually on the line\n"
 "  - Analytic From expenses: the quantity is the quantity sum from posted expenses\n"
 "  - Timesheet: the quantity is the sum of hours recorded on tasks linked to this sale line\n"
@@ -92,31 +45,16 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/product.py:0
+#. openerp-web
+#: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
-msgid "Based on Delivered Quantity (Manual)"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/product.py:0
-#, python-format
-msgid "Based on Milestones"
+msgid "All items have been loaded"
 msgstr ""
 
 #. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_project_milestone__allow_billable
 #: model:ir.model.fields,field_description:sale_project.field_project_project__allow_billable
-#: model:ir.model.fields,field_description:sale_project.field_project_task__allow_billable
 msgid "Billable"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order_line.py:0
-#, python-format
-msgid "Canceled"
 msgstr ""
 
 #. module: sale_project
@@ -125,8 +63,8 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.view_order_form_inherit_sale_project
-msgid "Create Project"
+#: model_terms:ir.ui.view,arch_db:sale_project.view_edit_project_inherit_form
+msgid "Create Invoice"
 msgstr ""
 
 #. module: sale_project
@@ -137,22 +75,19 @@ msgstr ""
 
 #. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_project_milestone__project_partner_id
-#: model:ir.model.fields,field_description:sale_project.field_project_project__partner_id
 msgid "Customer"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/project.py:0
-#, python-format
-msgid "Customer Invoices"
-msgstr ""
-
-#. module: sale_project
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
 msgid "Delivered"
+msgstr ""
+
+#. module: sale_project
+#: model:ir.model.fields,field_description:sale_project.field_project_milestone__sale_line_name
+msgid "Description"
 msgstr ""
 
 #. module: sale_project
@@ -161,27 +96,8 @@ msgid "Display Sales Order"
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_project_project__display_sales_stat_buttons
-msgid "Display Sales Stat Buttons"
-msgstr ""
-
-#. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_sale_order__visible_project
 msgid "Display project"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order_line.py:0
-#, python-format
-msgid "Done"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/project.py:0
-#, python-format
-msgid "Down Payments"
 msgstr ""
 
 #. module: sale_project
@@ -205,26 +121,17 @@ msgid "Has a SO with an invoice status of No"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order_line.py:0
-#, python-format
-msgid "In Progress"
-msgstr ""
-
-#. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_project_project__invoice_count
 msgid "Invoice Count"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid "Invoice ordered quantities as soon as this service is sold."
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -234,7 +141,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -243,7 +149,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -252,7 +157,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -261,7 +165,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -271,7 +174,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -281,7 +183,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -291,14 +192,12 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid "Invoice your milestones when they are reached."
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -307,7 +206,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -316,7 +214,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -325,20 +222,18 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_project_view_form_simplified_inherit
 #: model_terms:ir.ui.view,arch_db:sale_project.view_edit_project_inherit_form
 msgid "Invoice your time and material to customers"
 msgstr ""
 
 #. module: sale_project
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
 msgid "Invoiced"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #: code:addons/sale_project/models/project.py:0
 #, python-format
@@ -356,12 +251,17 @@ msgid "Is Product Milestone"
 msgstr ""
 
 #. module: sale_project
+#: model:ir.model.fields,field_description:sale_project.field_sale_order_line__is_service
+msgid "Is a Service"
+msgstr ""
+
+#. module: sale_project
 #: model:ir.model,name:sale_project.model_account_move_line
 msgid "Journal Item"
 msgstr ""
 
 #. module: sale_project
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
 msgid "Load more"
@@ -377,7 +277,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #, python-format
 msgid "Materials"
@@ -394,7 +293,6 @@ msgid "Milestone Count"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order.py:0
 #: model:ir.model.fields.selection,name:sale_project.selection__sale_order_line__qty_delivered_method__milestones
 #: model_terms:ir.ui.view,arch_db:sale_project.view_order_form_inherit_sale_project
@@ -403,10 +301,9 @@ msgid "Milestones"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order_line.py:0
 #, python-format
-msgid "New Sales Order Item"
+msgid "New"
 msgstr ""
 
 #. module: sale_project
@@ -415,15 +312,14 @@ msgid "No Sales Order"
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_form
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_tree
-#: model_terms:ir.ui.view,arch_db:sale_project.view_sale_project_inherit_form
-msgid "Non-billable"
+#: model_terms:ir.ui.view,arch_db:sale_project.portal_tasks_list_inherit
+msgid "No Sales Order Item"
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.portal_tasks_list_inherit
-msgid "Not Billed"
+#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_form
+#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_tree
+msgid "Non-billable"
 msgstr ""
 
 #. module: sale_project
@@ -445,14 +341,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order.py:0
-#, python-format
-msgid "Operation not supported"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #, python-format
 msgid "Other Services"
@@ -463,13 +351,6 @@ msgstr ""
 msgid ""
 "Percentage of the ordered quantity that will automatically be delivered once"
 " the milestone is reached."
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/product.py:0
-#, python-format
-msgid "Prepaid/Fixed Price"
 msgstr ""
 
 #. module: sale_project
@@ -518,7 +399,6 @@ msgid "Project's sale order"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order.py:0
 #: model:ir.model.fields,field_description:sale_project.field_sale_order__project_ids
 #: model_terms:ir.ui.view,arch_db:sale_project.view_order_form_inherit_sale_project
@@ -532,19 +412,8 @@ msgid "Projects used in this sales order."
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_project_milestone__product_uom_qty
-msgid "Quantity"
-msgstr ""
-
-#. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_project_milestone__quantity_percentage
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_tree
-msgid "Quantity (%)"
-msgstr ""
-
-#. module: sale_project
-#: model:ir.model,name:sale_project.model_sale_order_template_line
-msgid "Quotation Template Line"
+msgid "Quantity"
 msgstr ""
 
 #. module: sale_project
@@ -553,8 +422,9 @@ msgid "Reached Milestones"
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_project_milestone__sale_line_display_name
-msgid "Sale Line Display Name"
+#: model_terms:ir.ui.view,arch_db:sale_project.project_sharing_inherit_project_task_view_search
+#: model_terms:ir.ui.view,arch_db:sale_project.project_task_view_search
+msgid "Sale Order"
 msgstr ""
 
 #. module: sale_project
@@ -563,12 +433,7 @@ msgid "Sale Order Count"
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_project_project__sale_order_line_count
-msgid "Sale Order Line Count"
-msgstr ""
-
-#. module: sale_project
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
 msgid "Sales"
@@ -580,27 +445,32 @@ msgid "Sales & Invoicing"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/controllers/portal.py:0
-#: code:addons/sale_project/models/project.py:0
-#: code:addons/sale_project/models/project_milestone.py:0
 #: model:ir.model,name:sale_project.model_sale_order
 #: model:ir.model.fields,field_description:sale_project.field_project_project__sale_order_id
 #: model:ir.model.fields,field_description:sale_project.field_project_task__sale_order_id
 #: model:ir.model.fields,field_description:sale_project.field_report_project_task_user__sale_order_id
+#: model_terms:ir.ui.view,arch_db:sale_project.project_sharing_inherit_project_task_view_form
+#: model_terms:ir.ui.view,arch_db:sale_project.view_sale_project_inherit_form
 #, python-format
 msgid "Sales Order"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
+#: model_terms:ir.ui.view,arch_db:sale_project.project_sharing_inherit_project_task_view_search
+msgid "Sales Order Id"
+msgstr ""
+
+#. module: sale_project
 #: code:addons/sale_project/controllers/portal.py:0
 #: model:ir.model.fields,field_description:sale_project.field_project_milestone__sale_line_id
 #: model:ir.model.fields,field_description:sale_project.field_project_project__sale_line_id
 #: model:ir.model.fields,field_description:sale_project.field_project_task__sale_line_id
 #: model:ir.model.fields,field_description:sale_project.field_report_project_task_user__sale_line_id
 #: model_terms:ir.ui.view,arch_db:sale_project.project_sharing_inherit_project_task_view_form
+#: model_terms:ir.ui.view,arch_db:sale_project.project_task_view_search
 #: model_terms:ir.ui.view,arch_db:sale_project.view_sale_project_inherit_form
+#: model_terms:ir.ui.view,arch_db:sale_project.view_task_project_user_search_inherited
 #, python-format
 msgid "Sales Order Item"
 msgstr ""
@@ -619,9 +489,7 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#. odoo-javascript
-#: code:addons/sale_project/models/project.py:0
+#. openerp-web
 #: code:addons/sale_project/models/project.py:0
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
@@ -634,7 +502,6 @@ msgid "Sales Order Line"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #, python-format
 msgid "Sales Orders"
@@ -659,27 +526,26 @@ msgid "Sales order to which the task is linked."
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/controllers/portal.py:0
 #, python-format
 msgid "Search in Invoice"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/controllers/portal.py:0
 #, python-format
 msgid "Search in Sales Order"
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,help:sale_project.field_sale_order__project_id
-msgid "Select a non billable project on which tasks can be created."
+#: code:addons/sale_project/controllers/portal.py:0
+#, python-format
+msgid "Search in Sales Order Item"
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_project_view_form_simplified_inherit
-msgid "Select who to bill..."
+#: model:ir.model.fields,help:sale_project.field_sale_order__project_id
+msgid "Select a non billable project on which tasks can be created."
 msgstr ""
 
 #. module: sale_project
@@ -689,22 +555,7 @@ msgid "Service Invoicing Policy"
 msgstr ""
 
 #. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_sale_order__show_create_project_button
-msgid "Show Create Project Button"
-msgstr ""
-
-#. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_sale_order__show_project_button
-msgid "Show Project Button"
-msgstr ""
-
-#. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_sale_order__show_task_button
-msgid "Show Task Button"
-msgstr ""
-
-#. module: sale_project
-#. odoo-javascript
+#. openerp-web
 #: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
 #, python-format
 msgid "Sold"
@@ -717,7 +568,6 @@ msgid "Task"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order_line.py:0
 #, python-format
 msgid "Task Created (%s): %s"
@@ -745,7 +595,6 @@ msgid "Tasks associated to this sale"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -754,7 +603,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -763,7 +611,6 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/product.py:0
 #, python-format
 msgid ""
@@ -772,24 +619,9 @@ msgid ""
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order.py:0
-#, python-format
-msgid "This Sales Order must contain at least one product of type \"Service\"."
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/sale_order_line.py:0
 #, python-format
 msgid "This task has been created from: %s (%s)"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
-#: code:addons/sale_project/models/sale_order_line.py:0
-#, python-format
-msgid "To Do"
 msgstr ""
 
 #. module: sale_project
@@ -804,24 +636,11 @@ msgid "Track Service"
 msgstr ""
 
 #. module: sale_project
-#. odoo-javascript
-#: code:addons/sale_project/static/src/components/project_right_side_panel/project_right_side_panel.xml:0
-#, python-format
-msgid "Track what you sold, delivered, and invoiced."
-msgstr ""
-
-#. module: sale_project
-#: model:ir.model.fields,field_description:sale_project.field_project_milestone__product_uom
-msgid "Unit of Measure"
-msgstr ""
-
-#. module: sale_project
 #: model:ir.model.fields,field_description:sale_project.field_project_project__vendor_bill_count
 msgid "Vendor Bill Count"
 msgstr ""
 
 #. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #: code:addons/sale_project/models/project.py:0
 #, python-format
@@ -829,12 +648,6 @@ msgid "Vendor Bills"
 msgstr ""
 
 #. module: sale_project
-#: model_terms:ir.ui.view,arch_db:sale_project.project_milestone_view_tree
-msgid "View Sales Order"
-msgstr ""
-
-#. module: sale_project
-#. odoo-python
 #: code:addons/sale_project/models/project.py:0
 #, python-format
 msgid ""

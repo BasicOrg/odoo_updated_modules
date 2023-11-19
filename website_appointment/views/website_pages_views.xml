@@ -36,10 +36,11 @@
             <attribute name="type">object</attribute>
             <attribute name="action">open_website_url</attribute>
         </kanban>
-        <xpath expr="//t/a[@name='action_customer_preview']" position="replace">
-            <a role="menuitem" class="dropdown-item" name="action_customer_preview" type="object">
-                <span class="fa fa-globe" title="website"/> <field name="website_url"/>
-            </a>
+        <xpath expr="//button[@name='action_customer_preview']" position="replace">
+            <div class="text-primary fw-bold p-3">
+                <i class="fa fa-globe me-2" title="Website URL"/>
+                <field name="website_url"/>
+            </div>
         </xpath>
     </field>
 </record>

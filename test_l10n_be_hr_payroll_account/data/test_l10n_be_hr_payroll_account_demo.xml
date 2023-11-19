@@ -19,9 +19,8 @@
     </function>
 
     <function model="account.chart.template" name="try_loading">
-        <value eval="[]"/>
-        <value name="template_code" eval="'be_comp'"/>
-        <value name="company" model="res.company" eval="ref('l10n_be_hr_payroll.res_company_be')"/>
+        <value eval="[ref('l10n_be.l10nbe_chart_template')]"/>
+        <value model="res.company" eval="obj().env.ref('l10n_be_hr_payroll.res_company_be')"/>
     </function>
 
     <record id="l10n_be_hr_payroll.res_company_be" model="res.company">
@@ -48,7 +47,6 @@
         <field name="requires_allocation">no</field>
         <field name="work_entry_type_id" ref="l10n_be_hr_payroll.work_entry_type_training"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
-        <field name="icon_id" ref="hr_holidays.icon_26"/>
     </record>
 
     <!-- ++++++++++++++ June ++++++++++++++ -->
@@ -125,10 +123,10 @@
 
     <!-- Work Entries for Laurie -->
 
-    <function model="hr.contract" name="generate_work_entries">
+    <function model="hr.contract" name="_generate_work_entries">
         <value eval="[ref('l10n_be_hr_contract_salary.hr_contract_cdi_laurie_poiret')]"/>
-        <value eval="(DateTime.today() + relativedelta(years=-1, month=1, day=1, days=-1)).date()"/>
-        <value eval="DateTime.today().date()"/>
+        <value eval="(DateTime.today() + relativedelta(years=-1, month=1, day=1, days=-1))"/>
+        <value eval="DateTime.today()"/>
     </function>
 
     <function model="hr.work.entry" name="action_validate">
@@ -702,6 +700,18 @@
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
     </record>
 
+    <record id="res_partner_admin_private_address_be" model="res.partner">
+        <field name="name">Mitchell Admin</field>
+        <field name="street">215 Vine St</field>
+        <field name="city">Scranton</field>
+        <field name="zip">18503</field>
+        <field name="country_id" ref="base.us"/>
+        <field name='state_id' ref="base.state_us_39"/>
+        <field name="phone">+1 555-555-5555</field>
+        <field name="email">admin@yourcompany.example.com</field>
+        <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+    </record>
+
     <record id="employee_admin" model="hr.employee">
         <field name="name" eval="obj(ref('base.partner_admin')).name" model="res.partner"/>
         <field name="user_id" ref="base.user_admin"/>
@@ -709,6 +719,7 @@
         <field name="work_location_id" ref="hr.work_location_1"/>
         <field name="work_phone">(237)-125-2389</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="work_email">aiden.hughes71@example.com</field>
         <field name="category_ids" eval="[(6, 0, [ref('hr.employee_category_4'), ref('hr.employee_category_3')])]"/>
         <field name="job_id" ref="hr_job_1"/>
         <field name="job_title">Chief Executive Officer</field>
@@ -716,13 +727,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_street">215 Vine St</field>
-        <field name="private_city">Scranton</field>
-        <field name="private_zip">18503</field>
-        <field name="private_country_id" ref="base.us"/>
-        <field name="private_state_id" ref="base.state_us_39"/>
-        <field name="private_phone">+1 555-555-5555</field>
-        <field name="private_email">admin@yourcompany.example.com</field>
+        <field name="address_home_id" ref="res_partner_admin_private_address_be"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_admin"/>
         <field name="gender">male</field>
         <field name="certificate">civil_engineer</field>
@@ -731,7 +736,12 @@
 
     <record id="res_partner_employee_al" model="res.partner">
         <field name="name">Marian Weaver</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_al" model="res.partner.bank">
@@ -745,7 +755,6 @@
     <record id="employee_al" model="hr.employee">
         <field name="name">Marian Weaver</field>
         <field name="department_id" ref="hr_department_2"/>
-        <field name="work_contact_id" ref="res_partner_employee_al"/>
         <field name="job_id" ref="hr_job_2"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Chief Technical Officer</field>
@@ -757,10 +766,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_al"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_al"/>
         <field name="gender">female</field>
         <field name="certificate">master</field>
@@ -769,7 +775,12 @@
 
     <record id="res_partner_employee_mit" model="res.partner">
         <field name="name">Bernice Jensen</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_mit" model="res.partner.bank">
@@ -796,11 +807,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_mit"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_mit"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_mit"/>
         <field name="gender">female</field>
         <field name="certificate">master</field>
@@ -809,7 +816,12 @@
 
     <record id="res_partner_employee_niv" model="res.partner">
         <field name="name">Ramona Franklin</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_niv" model="res.partner.bank">
@@ -835,11 +847,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_niv"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_niv"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_niv"/>
         <field name="gender">female</field>
         <field name="certificate">master</field>
@@ -848,7 +856,12 @@
 
     <record id="res_partner_employee_stw" model="res.partner">
         <field name="name">Jack Mccoy</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_stw" model="res.partner.bank">
@@ -874,11 +887,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_stw"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_stw"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_stw"/>
         <field name="gender">male</field>
         <field name="certificate">doctor</field>
@@ -887,7 +896,12 @@
 
     <record id="res_partner_employee_chs" model="res.partner">
         <field name="name">Mario Lambert</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_chs" model="res.partner.bank">
@@ -913,11 +927,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_chs"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_chs"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_chs"/>
         <field name="gender">male</field>
         <field name="certificate">doctor</field>
@@ -926,7 +936,12 @@
 
     <record id="res_partner_employee_qdp" model="res.partner">
         <field name="name">Marc Demo</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_qdp" model="res.partner.bank">
@@ -943,7 +958,6 @@
         <field name="department_id" ref="hr_department_2"/>
         <field name="parent_id" ref="employee_admin"/>
         <field name="job_id" ref="hr_job_4"/>
-        <field name="work_contact_id" ref="res_partner_employee_qdp"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Experienced Developer</field>
         <field name="category_ids" eval="[(6, 0, [ref('hr.employee_category_4')])]"/>
@@ -954,11 +968,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_qdp"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_qdp"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_qdp"/>
         <field name="gender">male</field>
         <field name="certificate">master</field>
@@ -967,7 +977,12 @@
 
     <record id="res_partner_employee_fme" model="res.partner">
         <field name="name">Michael Crawford</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_fme" model="res.partner.bank">
@@ -993,11 +1008,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_fme"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_fme"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_fme"/>
         <field name="gender">male</field>
         <field name="certificate">bachelor</field>
@@ -1006,7 +1017,12 @@
 
     <record id="res_partner_employee_fpi" model="res.partner">
         <field name="name">Rene Chapman</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_fpi" model="res.partner.bank">
@@ -1032,11 +1048,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_fpi"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_fpi"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_fpi"/>
         <field name="gender">female</field>
         <field name="certificate">bachelor</field>
@@ -1045,7 +1057,12 @@
 
     <record id="res_partner_employee_jth" model="res.partner">
         <field name="name">Manuel Shelton</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jth" model="res.partner.bank">
@@ -1071,11 +1088,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jth"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jth"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jth"/>
         <field name="gender">male</field>
         <field name="certificate">bachelor</field>
@@ -1084,7 +1097,12 @@
 
     <record id="res_partner_employee_ngh" model="res.partner">
         <field name="name">Rebecca Morrison</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_ngh" model="res.partner.bank">
@@ -1110,11 +1128,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_ngh"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_ngh"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_ngh"/>
         <field name="gender">female</field>
         <field name="certificate">bachelor</field>
@@ -1123,7 +1137,12 @@
 
     <record id="res_partner_employee_vad" model="res.partner">
         <field name="name">Sarah Meyer</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_vad" model="res.partner.bank">
@@ -1149,11 +1168,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_vad"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_vad"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_vad"/>
         <field name="gender">female</field>
         <field name="certificate">bachelor</field>
@@ -1162,7 +1177,12 @@
 
     <record id="res_partner_employee_han" model="res.partner">
         <field name="name">Eduardo Kelley</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_han" model="res.partner.bank">
@@ -1186,11 +1206,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_han"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_han"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_han"/>
         <field name="gender">male</field>
         <field name="certificate">bachelor</field>
@@ -1199,7 +1215,12 @@
 
     <record id="res_partner_employee_jve" model="res.partner">
         <field name="name">Michael Lambert</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jve" model="res.partner.bank">
@@ -1223,11 +1244,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
-        <field name="work_contact_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jve"/>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jve"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jve"/>
         <field name="gender">male</field>
         <field name="certificate">bachelor</field>
@@ -1236,7 +1253,12 @@
 
     <record id="res_partner_employee_jep" model="res.partner">
         <field name="name">Dwight Snyder</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jep" model="res.partner.bank">
@@ -1254,17 +1276,13 @@
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Consultant</field>
         <field name="work_location_id" ref="hr.work_location_1"/>
-        <field name="work_contact_id" ref="res_partner_employee_jep"/>
         <field name="work_phone">(883)-331-5378</field>
         <field name="work_email">dwight.snyder59@example.com</field>
         <field name="image_1920" type="base64" file="test_l10n_be_hr_payroll_account/static/img/employee_jep-image.jpg"/>
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jep"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jep"/>
         <field name="gender">male</field>
         <field name="certificate">bachelor</field>
@@ -1273,7 +1291,12 @@
 
     <record id="res_partner_employee_jod" model="res.partner">
         <field name="name">Minnie Burns</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jod" model="res.partner.bank">
@@ -1287,7 +1310,6 @@
     <record id="employee_jod" model="hr.employee">
         <field name="name">Minnie Burns</field>
         <field name="department_id" ref="hr_department_4"/>
-        <field name="work_contact_id" ref="res_partner_employee_jod"/>
         <field name="job_id" ref="hr_job_6"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Marketing and Community Manager</field>
@@ -1298,10 +1320,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jod"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jod"/>
         <field name="gender">female</field>
         <field name="certificate">bachelor</field>
@@ -1310,7 +1329,12 @@
 
     <record id="res_partner_employee_jog" model="res.partner">
         <field name="name">Andrew Hunt</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jog" model="res.partner.bank">
@@ -1328,17 +1352,13 @@
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Experienced Developer</field>
         <field name="work_location_id" ref="hr.work_location_1"/>
-        <field name="work_contact_id" ref="res_partner_employee_jog"/>
         <field name="work_phone">(754)-532-3841</field>
         <field name="work_email">andrew.hunt19@example.com</field>
         <field name="image_1920" type="base64" file="test_l10n_be_hr_payroll_account/static/img/employee_jog-image.jpg"/>
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jog"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jog"/>
         <field name="gender">male</field>
         <field name="certificate">master</field>
@@ -1347,7 +1367,12 @@
 
     <record id="res_partner_employee_jgo" model="res.partner">
         <field name="name">Fred Bilson</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_jgo" model="res.partner.bank">
@@ -1365,17 +1390,13 @@
         <field name="job_title">Consultant</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_location_id" ref="hr.work_location_1"/>
-        <field name="work_contact_id" ref="res_partner_employee_jgo"/>
         <field name="work_phone">(944)-518-8232</field>
         <field name="work_email">arnold.horton28@example.com</field>
         <field name="image_1920" type="base64" file="test_l10n_be_hr_payroll_account/static/img/employee_jgo-image.jpg"/>
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_jgo"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_jgo"/>
         <field name="gender">male</field>
         <field name="certificate">master</field>
@@ -1384,7 +1405,12 @@
 
     <record id="res_partner_employee_lur" model="res.partner">
         <field name="name">Jerry Barnes</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_lur" model="res.partner.bank">
@@ -1401,7 +1427,6 @@
         <field name="job_id" ref="hr_job_6"/>
         <field name="job_title">Marketing and Community Manager</field>
         <field name="work_location_id" ref="hr.work_location_1"/>
-        <field name="work_contact_id" ref="res_partner_employee_lur"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_phone">(644)-169-1352</field>
         <field name="work_email">jerry.barnes69@example.com</field>
@@ -1409,10 +1434,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_lur"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_lur"/>
         <field name="gender">male</field>
         <field name="certificate">master</field>
@@ -1421,7 +1443,12 @@
 
     <record id="res_partner_employee_hne" model="res.partner">
         <field name="name">Travis Moreno</field>
+        <field name="country_id" ref="base.be"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
+        <field name="street">Brussels Street</field>
+        <field name="city">Brussels</field>
+        <field name="zip">2928</field>
     </record>
 
     <record id="res_partner_bank_employee_hne" model="res.partner.bank">
@@ -1435,7 +1462,6 @@
     <record id="employee_hne" model="hr.employee">
         <field name="name">Travis Moreno</field>
         <field name="department_id" ref="hr_department_3"/>
-        <field name="work_contact_id" ref="res_partner_employee_hne"/>
         <field name="job_id" ref="hr_job_3"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="job_title">Consultant</field>
@@ -1446,10 +1472,7 @@
         <field name="identification_id">93051822361</field>
         <field name="niss">93051822361</field>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_street">Brussels Street</field>
-        <field name="private_city">Brussels</field>
-        <field name="private_zip">2928</field>
+        <field name="address_home_id" ref="test_l10n_be_hr_payroll_account.res_partner_employee_hne"/>
         <field name="bank_account_id" ref="test_l10n_be_hr_payroll_account.res_partner_bank_employee_hne"/>
         <field name="gender">male</field>
         <field name="certificate">master</field>
@@ -1565,6 +1588,7 @@
     <record id="resource_calendar_4_5_wednesday_off" model="resource.calendar">
         <field name="name">30.4 Hours/Week : Wednesday Off</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="hours_per_day">7.6</field>
         <field name="full_time_required_hours">38</field>
         <field name="attendance_ids"
             eval="[(5, 0, 0),
@@ -1769,7 +1793,7 @@
         <field name="leave_validation_type">both</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
         <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_legal_leave"></field>
     </record>
@@ -1779,7 +1803,7 @@
         <field name="name">Sick Time Off</field>
         <field name="requires_allocation">no</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave_sick"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="support_document">True</field>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_sick_leave"></field>
@@ -1792,8 +1816,9 @@
         <field name="employee_requests">yes</field>
         <field name="leave_validation_type">both</field>
         <field name="request_unit">hour</field>
+        <field name="color_name">lavender</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_compensatory"></field>
     </record>
@@ -1803,10 +1828,11 @@
         <field name="name">Unpaid</field>
         <field name="requires_allocation">no</field>
         <field name="leave_validation_type">both</field>
+        <field name="color_name">brown</field>
         <field name="request_unit">hour</field>
         <field name="unpaid" eval="True"/>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave_unpaid"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_unpaid_leave"></field>
     </record>
@@ -1816,17 +1842,30 @@
         <field name="requires_allocation">yes</field>
         <field name="employee_requests">no</field>
         <field name="allocation_validation_type">officer</field>
+        <field name="color_name">brown</field>
         <field name="leave_validation_type">both</field>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_sick_leave"></field>
-        <field name="icon_id" ref="hr_holidays.icon_11"/>
+    </record>
+
+    <!-- YTI TODO master: move this in data -->
+    <record id="holiday_status_bank_holiday" model="hr.leave.type">
+        <field name="name">Public Holiday</field>
+        <field name="requires_allocation">no</field>
+        <field name="leave_validation_type">both</field>
+        <field name="color_name">black</field>
+        <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+        <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+        <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="work_entry_type_id" ref="l10n_be_hr_payroll.work_entry_type_bank_holiday"/>
     </record>
 
     <record id="holiday_status_phc" model="hr.leave.type">
         <field name="name">Public Holiday Compensation</field>
         <field name="requires_allocation">no</field>
         <field name="leave_validation_type">both</field>
+        <field name="color_name">black</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
         <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
@@ -1837,6 +1876,7 @@
         <field name="name">Small Unemployment (Brief Holiday)</field>
         <field name="requires_allocation">no</field>
         <field name="leave_validation_type">both</field>
+        <field name="color_name">black</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
         <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
@@ -1845,7 +1885,7 @@
 
     <record id="hr_holidays_allocation_cl" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Mitchell Admin</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
@@ -1855,7 +1895,7 @@
 
     <record id="hr_holidays_int_tour" model="hr.leave.allocation">
         <field name="name">International Tour</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_comp"/>
+        <field name="holiday_status_id" ref="holiday_status_comp"/>
         <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
@@ -1865,7 +1905,7 @@
 
     <record id="hr_holidays_vc" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
@@ -1875,7 +1915,7 @@
 
     <record id='hr_holidays_cl_allocation' model="hr.leave.allocation">
         <field name="name">Compensation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_comp"/>
+        <field name="holiday_status_id" ref="holiday_status_comp"/>
         <field name="number_of_days">12</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
@@ -1885,7 +1925,7 @@
 
     <record id="hr_holidays_allocation_cl_al" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Ronnie Hart</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_al"/>
         <field name="employee_ids" eval="[(4, ref('employee_al'))]"/>
@@ -1905,7 +1945,7 @@
 
     <record id="hr_holidays_vc_al" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">12</field>
         <field name="employee_id" ref="employee_al"/>
         <field name="employee_ids" eval="[(4, ref('employee_al'))]"/>
@@ -1915,7 +1955,7 @@
 
     <record id="hr_holidays_allocation_cl_mit" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Anita Oliver</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_mit"/>
         <field name="employee_ids" eval="[(4, ref('employee_mit'))]"/>
@@ -1925,7 +1965,7 @@
 
     <record id="hr_holidays_vc_mit" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_mit"/>
         <field name="employee_ids" eval="[(4, ref('employee_mit'))]"/>
@@ -1935,7 +1975,7 @@
 
     <record id="hr_holidays_allocation_cl_qdp" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Marc Demo</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_qdp"/>
         <field name="employee_ids" eval="[(4, ref('employee_qdp'))]"/>
@@ -1945,7 +1985,7 @@
 
     <record id="hr_holidays_vc_qdp" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_qdp"/>
         <field name="employee_ids" eval="[(4, ref('employee_qdp'))]"/>
@@ -1954,8 +1994,8 @@
     </record>
 
     <record id="hr_holidays_allocation_cl_fpi" model="hr.leave.allocation">
-        <field name="name">Paid Time Off for Rene Chapman</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="name">Paid Time Off for Audrey Peterson</field>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_fpi"/>
         <field name="employee_ids" eval="[(4, ref('employee_fpi'))]"/>
@@ -1965,7 +2005,7 @@
 
     <record id="hr_holidays_vc_fpi" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_fpi"/>
         <field name="employee_ids" eval="[(4, ref('employee_fpi'))]"/>
@@ -1975,7 +2015,7 @@
 
     <record id="hr_holidays_allocation_cl_vad" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Olivia</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_niv"/>
         <field name="employee_ids" eval="[(4, ref('employee_niv'))]"/>
@@ -1985,7 +2025,7 @@
 
     <record id="hr_holidays_vc_vad" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">5</field>
         <field name="employee_id" ref="employee_niv"/>
         <field name="employee_ids" eval="[(4, ref('employee_niv'))]"/>
@@ -1995,7 +2035,7 @@
 
     <record id="hr_holidays_allocation_cl_kim" model="hr.leave.allocation">
         <field name="name">Paid Time Off for Kim</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="employee_jve"/>
         <field name="employee_ids" eval="[(4, ref('employee_jve'))]"/>
@@ -2005,7 +2045,7 @@
 
     <record id="hr_holidays_vc_kim" model="hr.leave.allocation">
         <field name="name">Summer Vacation</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="holiday_status_unpaid"/>
         <field name="number_of_days">5</field>
         <field name="employee_id" ref="employee_jve"/>
         <field name="employee_ids" eval="[(4, ref('employee_jve'))]"/>
@@ -2013,115 +2053,155 @@
         <field name="date_to" eval="time.strftime('%Y-12-31')"/>
     </record>
 
-    <!-- validate leave allocations -->
+    <!-- approve leave allocations -->
+    <function model="hr.leave.allocation" name="action_confirm">
+        <value model="hr.leave.allocation" eval="obj().search([('state', '=', 'draft'), ('holiday_status_id.company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]).ids"/>
+    </function>
+
     <function model="hr.leave.allocation" name="action_validate">
-        <value model="hr.leave.allocation" eval="obj().search([('state', '=', 'confirm'), ('employee_id.company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]).ids"/>
+        <value model="hr.leave.allocation" eval="obj().search([('state', '=', 'confirm'), ('holiday_status_id.company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]).ids"/>
     </function>
 
     <record id="hr_holidays_cl" model="hr.leave">
         <field name="name">Trip with Family</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_comp"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-01')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-03')"/>
+        <field name="holiday_status_id" ref="holiday_status_comp"/>
+        <field eval="time.strftime('%Y-%m-01')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-03')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-01')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-03')" name="request_date_to"/>
+        <field name="number_of_days">3</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
     </record>
 
     <record id="hr_holidays_sl" model="hr.leave">
         <field name="name">Doctor Appointment</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-20')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-22')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="time.strftime('%Y-%m-20')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-22')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-20')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-22')" name="request_date_to"/>
+        <field name="number_of_days">3</field>
         <field name="employee_id" ref="employee_admin"/>
         <field name="employee_ids" eval="[(4, ref('employee_admin'))]"/>
     </record>
 
     <record id="hr_holidays_cl_al" model="hr.leave">
         <field name="name">Trip with Friends</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-04')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-10')"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
+        <field eval="time.strftime('%Y-%m-04')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-10')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-04')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-10')" name="request_date_to"/>
+        <field name="number_of_days">6</field>
         <field name="employee_id" ref="employee_al"/>
         <field name="employee_ids" eval="[(4, ref('employee_al'))]"/>
     </record>
 
     <record id="hr_holidays_sl_al" model="hr.leave">
         <field name="name">Dentist appointment</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-17')"/>
-        <field name="request_date_to" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-19')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-17')" name="date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-19')" name="date_to"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-17')" name="request_date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-19')" name="request_date_to"/>
+        <field name="number_of_days">3</field>
         <field name="employee_id" ref="employee_al"/>
         <field name="employee_ids" eval="[(4, ref('employee_al'))]"/>
     </record>
 
     <record id="hr_holidays_cl_mit" model="hr.leave">
         <field name="name">Trip to Paris</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-18')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-24')"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
+        <field eval="time.strftime('%Y-%m-18')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-24')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-18')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-24')" name="request_date_to"/>
+        <field name="number_of_days">7</field>
         <field name="employee_id" ref="employee_mit"/>
         <field name="employee_ids" eval="[(4, ref('employee_mit'))]"/>
     </record>
 
     <record id="hr_holidays_cl_mit_2" model="hr.leave">
         <field name="name">Trip</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-05')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-07')"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
+        <field eval="time.strftime('%Y-%m-05')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-07')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-05')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-07')" name="request_date_to"/>
+        <field name="number_of_days">3</field>
         <field name="employee_id" ref="employee_mit"/>
         <field name="employee_ids" eval="[(4, ref('employee_mit'))]"/>
     </record>
 
     <record id="hr_holidays_cl_qdp" model="hr.leave">
         <field name="name">Sick day</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-03 01:00:00')"/>
-        <field name="request_date_to" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-05 23:00:00')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-03 01:00:00')" name="date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-05 23:00:00')" name="date_to"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-03 01:00:00')" name="request_date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-05 23:00:00')" name="request_date_to"/>
+        <field name="number_of_days">3</field>
         <field name="employee_id" ref="employee_qdp"/>
         <field name="employee_ids" eval="[(4, ref('employee_qdp'))]"/>
     </record>
 
     <record id="hr_holidays_sl_qdp" model="hr.leave">
         <field name="name">Sick day</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-01 01:00:00')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-03 23:00:00')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="time.strftime('%Y-%m-01 01:00:00')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-03 23:00:00')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-01 01:00:00')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-03 23:00:00')" name="request_date_to"/>
+        <field name="number_of_days">1</field>
         <field name="employee_id" ref="employee_qdp"/>
         <field name="employee_ids" eval="[(4, ref('employee_qdp'))]"/>
     </record>
 
     <record id="hr_holidays_cl_vad" model="hr.leave">
         <field name="name">Trip to London</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-09')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-16')"/>
+        <field name="holiday_status_id" ref="holiday_status_cl"/>
+        <field eval="time.strftime('%Y-%m-09')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-16')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-09')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-16')" name="request_date_to"/>
+        <field name="number_of_days">8</field>
         <field name="employee_id" ref="employee_niv"/>
         <field name="employee_ids" eval="[(4, ref('employee_niv'))]"/>
     </record>
 
     <record id="hr_holidays_sl_vad" model="hr.leave">
         <field name="name">Doctor Appointment</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="time.strftime('%Y-%m-25')"/>
-        <field name="request_date_to" eval="time.strftime('%Y-%m-26')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="time.strftime('%Y-%m-25 01:00:00')" name="date_from"/>
+        <field eval="time.strftime('%Y-%m-26 23:00:00')" name="date_to"/>
+        <field eval="time.strftime('%Y-%m-25 01:00:00')" name="request_date_from"/>
+        <field eval="time.strftime('%Y-%m-26 23:00:00')" name="request_date_to"/>
+        <field name="number_of_days">2</field>
         <field name="employee_id" ref="employee_niv"/>
         <field name="employee_ids" eval="[(4, ref('employee_niv'))]"/>
     </record>
 
     <record id="hr_holidays_sl_kim" model="hr.leave">
         <field name="name">Dentist appointment</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01')"/>
-        <field name="request_date_to" eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01 01:00:00')" name="date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01 23:00:00')" name="date_to"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01 01:00:00')" name="request_date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=1)).strftime('%Y-%m-01 23:00:00')" name="request_date_to"/>
+        <field name="number_of_days">1</field>
         <field name="employee_id" ref="employee_jve"/>
         <field name="employee_ids" eval="[(4, ref('employee_jve'))]"/>
     </record>
 
     <record id="hr_holidays_sl_kim_2" model="hr.leave">
         <field name="name">Second dentist appointment</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_sl"/>
-        <field name="request_date_from" eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03')"/>
-        <field name="request_date_to" eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03')"/>
+        <field name="holiday_status_id" ref="holiday_status_sl"/>
+        <field eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03 01:00:00')" name="date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03 23:00:00')" name="date_to"/>
+        <field eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03 01:00:00')" name="request_date_from"/>
+        <field eval="(datetime.now()+relativedelta(months=4)).strftime('%Y-%m-03 23:00:00')" name="request_date_to"/>
+        <field name="number_of_days">1</field>
         <field name="employee_id" ref="employee_jve"/>
         <field name="employee_ids" eval="[(4, ref('employee_jve'))]"/>
     </record>
@@ -2142,14 +2222,31 @@
     <!-- Data for employee departure -->
     <record id="res_partner_joseph_noluck" model="res.partner">
         <field name="name">Joseph Noluck</field>
+        <field name="street">47 Chemin de la malchance</field>
+        <field name="city">Libramont-Chevigny</field>
+        <field name="zip">6800</field>
+        <field name="country_id" ref="base.be"/>
+        <field name="phone">+003249459832</field>
         <field name="email">joseph.noluck@example.com</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+    </record>
+
+    <record id="res_partner_joseph_noluck_private_address" model="res.partner">
+        <field name="name">Joseph Noluck</field>
+        <field name="street">47 Chemin de la malchance</field>
+        <field name="city">Libramont-Chevigny</field>
+        <field name="zip">6800</field>
+        <field name="country_id" ref="base.be"/>
+        <field name="phone">+003249459832</field>
+        <field name="email">joseph.noluck@example.com</field>
+        <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
     </record>
 
     <record id="res_partner_bank_account_joseph_noluck" model="res.partner.bank">
         <field name="acc_number">BE44666834865266</field>
         <field name="bank_id" ref="base.bank_ing"/>
-        <field name="partner_id" ref="res_partner_joseph_noluck"/>
+        <field name="partner_id" ref="res_partner_joseph_noluck_private_address"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
     </record>
 
@@ -2158,13 +2255,7 @@
         <field name="gender">male</field>
         <field name="marital">single</field>
         <field name="job_title">Software Developer</field>
-        <field name="private_street">47 Chemin de la malchance</field>
-        <field name="work_contact_id" ref="res_partner_joseph_noluck"/>
-        <field name="private_city">Libramont-Chevigny</field>
-        <field name="private_zip">6800</field>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_phone">+003249459832</field>
-        <field name="private_email">joseph.noluck@example.com</field>
+        <field name="address_home_id" ref="res_partner_joseph_noluck_private_address"/>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
         <field name="emergency_contact">Jacqueline Noluck</field>
         <field name="emergency_phone">+0032498765474</field>
@@ -2264,9 +2355,10 @@
         <field name="employee_requests">no</field>
         <field name="allocation_validation_type">officer</field>
         <field name="leave_validation_type">both</field>
+        <field name="color_name">black</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
         <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_legal_leave"></field>
     </record>
@@ -2277,16 +2369,17 @@
         <field name="employee_requests">no</field>
         <field name="allocation_validation_type">officer</field>
         <field name="leave_validation_type">both</field>
+        <field name="color_name">black</field>
         <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
         <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
-        <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="responsible_id" ref="base.user_admin"/>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
         <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_legal_leave"></field>
     </record>
 
     <record id="hr_holidays_allocation_joseph_noluck_2019" model="hr.leave.allocation">
         <field name="name">Paid Time Off Joseph Noluck - 2019</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_paid_time_off_2019"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="hr_employee_joseph_noluck"/>
         <field name="employee_ids" eval="[(4, ref('hr_employee_joseph_noluck'))]"/>
@@ -2297,7 +2390,7 @@
 
     <record id="hr_holidays_allocation_joseph_noluck_2020" model="hr.leave.allocation">
         <field name="name">Paid Time Off Joseph NolucK - 2020</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_paid_time_off_2020"/>
         <field name="number_of_days">20</field>
         <field name="employee_id" ref="hr_employee_joseph_noluck"/>
         <field name="employee_ids" eval="[(4, ref('hr_employee_joseph_noluck'))]"/>
@@ -2305,6 +2398,15 @@
         <field name="date_from" eval="time.strftime('2020-1-1')"/>
         <field name="date_to" eval="time.strftime('2020-12-31')"/>
     </record>
+
+    <function model="hr.leave.allocation" name="action_confirm">
+        <value model="hr.leave.allocation" eval="obj().search([
+            ('state', '=', 'draft'),
+            ('id', 'in', [
+                ref('test_l10n_be_hr_payroll_account.hr_holidays_allocation_joseph_noluck_2019'),
+                ref('test_l10n_be_hr_payroll_account.hr_holidays_allocation_joseph_noluck_2020')])
+        ]).ids"/>
+    </function>
 
     <function model="hr.leave.allocation" name="action_validate">
         <value model="hr.leave.allocation" eval="obj().search([
@@ -2317,7 +2419,7 @@
 
     <record id="hr_holidays_joseph_noluck_unpaid" model="hr.leave">
         <field name="name">Joseph Noluck Unpaid</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_unpaid"/>
+        <field name="holiday_status_id" ref="test_l10n_be_hr_payroll_account.holiday_status_unpaid"/>
         <field name="date_from" eval="time.strftime('2019-03-04 01:00:00')"/>
         <field name="date_to" eval="time.strftime('2019-03-15 23:00:00')"/>
         <field name="request_date_from" eval="time.strftime('2019-03-04 01:00:00')"/>
@@ -2329,7 +2431,7 @@
 
     <record id="hr_holidays_joseph_noluck_legal_2019" model="hr.leave">
         <field name="name">Joseph Noluck Legal Time Off</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_paid_time_off_2019"/>
         <field name="date_from" eval="time.strftime('2019-05-06 01:00:00')"/>
         <field name="date_to" eval="time.strftime('2019-05-31 23:00:00')"/>
         <field name="request_date_from" eval="time.strftime('2019-05-06 01:00:00')"/>
@@ -2341,7 +2443,7 @@
 
     <record id="hr_holidays_joseph_noluck_legal_2020" model="hr.leave">
         <field name="name">Joseph Noluck Legal Time Off</field>
-        <field name="holiday_status_id" ref="hr_holidays.holiday_status_cl"/>
+        <field name="holiday_status_id" ref="holiday_status_paid_time_off_2020"/>
         <field name="date_from" eval="time.strftime('2020-01-13 01:00:00')"/>
         <field name="date_to" eval="time.strftime('2020-01-17 23:00:00')"/>
         <field name="request_date_from" eval="time.strftime('2020-01-13 01:00:00')"/>
@@ -2370,16 +2472,16 @@
         ]).ids"/>
     </function>
 
-    <function model="hr.contract" name="generate_work_entries">
+    <function model="hr.contract" name="_generate_work_entries">
         <value eval="[ref('test_l10n_be_hr_payroll_account.hr_contract_cdi_joseph_noluck_1')]"/>
-        <value eval="DateTime(2019, 1, 1).date()"/>
-        <value eval="DateTime(2019, 12, 31).date()"/>
+        <value eval="time.strftime('2019-01-01')"/>
+        <value eval="time.strftime('2019-12-31')"/>
     </function>
 
-    <function model="hr.contract" name="generate_work_entries">
+    <function model="hr.contract" name="_generate_work_entries">
         <value eval="[ref('test_l10n_be_hr_payroll_account.hr_contract_cdi_joseph_noluck_2')]"/>
-        <value eval="DateTime(2020, 1, 1).date()"/>
-        <value eval="DateTime(2020, 3, 31).date()"/>
+        <value eval="time.strftime('2020-01-01')"/>
+        <value eval="time.strftime('2020-03-31')"/>
     </function>
 
     <record id="hr_payslip_batch_joseph_no_luck" model="hr.payslip.run">
@@ -2746,10 +2848,10 @@
     <record id="resource_calendar_1_5_monday_student" model="resource.calendar">
         <field name="name">Clemence Student Calendar</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="hours_per_day">7.6</field>
         <field name="attendance_ids"
             eval="[(5, 0, 0),
                 (0, 0, {'name': 'Monday Morning', 'dayofweek': '0', 'hour_from': 8, 'hour_to': 12, 'day_period': 'morning'}),
-                (0, 0, {'name': 'Monday Lunch', 'dayofweek': '0', 'hour_from': 12, 'hour_to': 13, 'day_period': 'lunch'}),
                 (0, 0, {'name': 'Monday Afternoon', 'dayofweek': '0', 'hour_from': 13, 'hour_to': 16.6, 'day_period': 'afternoon'}),
             ]"
         />
@@ -2757,7 +2859,14 @@
 
     <record id="res_partner_clemence_student_private_address" model="res.partner">
         <field name="name">Clemence Student</field>
+        <field name="street">20 rue de la Crochette</field>
+        <field name="city">Darville</field>
+        <field name="zip">6987</field>
+        <field name="country_id" ref="base.be"/>
+        <field name="phone">+0032483039453</field>
+        <field name="email">clemence.student@example.com</field>
         <field name="company_id" ref="l10n_be_hr_payroll.res_company_be"/>
+        <field name="type">private</field>
     </record>
 
     <record id="res_partner_bank_account_clemence_student" model="res.partner.bank">
@@ -2772,12 +2881,7 @@
         <field name="gender">female</field>
         <field name="marital">single</field>
         <field name="job_title">Student</field>
-        <field name="private_street">20 rue de la Crochette</field>
-        <field name="private_city">Darville</field>
-        <field name="private_zip">6987</field>
-        <field name="private_country_id" ref="base.be"/>
-        <field name="private_phone">+0032483039453</field>
-        <field name="private_email">clemence.student@example.com</field>
+        <field name="address_home_id" ref="res_partner_clemence_student_private_address"/>
         <field name="address_id" ref="l10n_be_hr_contract_salary.res_partner_laurie_poiret_work_address"/>
         <field name="emergency_contact">Lucien Student</field>
         <field name="emergency_phone">+0032467845368</field>
@@ -2840,7 +2944,7 @@
         <function model="account.journal" name="write">
             <value model="account.journal" eval="obj().search([('name', 'ilike', 'Bank'), ('company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]).ids"></value>
             <value model="res.partner.bank" eval="{
-                'bank_account_id': obj().search([('acc_number', '=', 'BE15001559627230'), ('company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]).id if obj().search([('acc_number', '=', 'BE15001559627230'), ('company_id', '=', obj().env.ref('l10n_be_hr_payroll.res_company_be').id)]) else obj().env['res.partner.bank'].create({
+                'bank_account_id': obj().search([('acc_number', '=', 'BE15001559627230')]).id if obj().search([('acc_number', '=', 'BE15001559627230')]) else obj().env['res.partner.bank'].create({
                 'acc_number': 'BE15001559627230',
                 'bank_id': obj().env.ref('base.bank_bnp').id,
                 'partner_id': obj().env.ref('l10n_be_hr_payroll.res_company_be').partner_id.id,
@@ -2868,12 +2972,12 @@
     </function>
 
     <function model="res.config.settings" name="unlink">
-        <value model="res.config.settings" eval="obj().search([]).ids"/>
+        <value model="res.config.settings" eval="obj().search([('documents_hr_settings', '=', True)]).id"/>
     </function>
 
     <function model="hr.employee" name="generate_work_entries">
         <value model="hr.employee" eval="obj().search([('company_id', '=', ref('l10n_be_hr_payroll.res_company_be'))]).ids"/>
-        <value eval="(DateTime.today() + relativedelta(day=1, months=-1)).date()"/>
-        <value eval="(DateTime.today() + relativedelta(day=31)).date()"/>
+        <value eval="(DateTime.today() + relativedelta(day=1, months=-1))"/> 
+        <value eval="(DateTime.today() + relativedelta(day=31))"/>
     </function>
 </odoo>

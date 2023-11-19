@@ -1,10 +1,10 @@
 /** @odoo-module */
 
+
 import { loadJS } from "@web/core/assets";
 import { registry } from "@web/core/registry";
-import { cookie } from "@web/core/browser/cookie";
-import { Component, onWillStart, onWillUnmount, useEffect, useRef } from "@odoo/owl";
 const fieldRegistry = registry.category("fields");
+const { Component, onWillStart, onWillUnmount, useEffect, useRef } = owl;
 
 /**
  * Inspired from the GraphView
@@ -13,7 +13,6 @@ export class MarketingActivityGraph extends Component {
     setup() {
         this.chart = null;
         this.canvasRef = useRef("canvas");
-        this.isDarkMode = cookie.get("color_scheme");
 
         onWillStart(() => loadJS("/web/static/lib/Chart/Chart.js"));
         useEffect(() => this.renderChart());
@@ -43,11 +42,7 @@ export class MarketingActivityGraph extends Component {
     }
 
     getChartConfig() {
-        const chartData = JSON.parse(this.props.record.data[this.props.name]);
-        if(this.isDarkMode == 'dark'){
-            chartData[0].color = '#6afb81'; // Success
-            chartData[1].color = '#fb6a6a'; // Danger
-        }
+        const chartData = JSON.parse(this.props.value);
 
         const datasets = chartData.map((group) => {
             const borderColor = this.hexToRGBA(group.color, 1);
@@ -68,6 +63,8 @@ export class MarketingActivityGraph extends Component {
             return point.x;
         });
 
+        Chart.defaults.global.elements.line.tension = 0;
+
         return {
             type: 'line',
             data: {
@@ -75,54 +72,48 @@ export class MarketingActivityGraph extends Component {
                 datasets: datasets,
             },
             options: {
-                elements: {
-                    line: {
-                        tension: 0,
-                    },
-                },
                 animation: false,
                 layout: {
                     padding: {left: 25, right: 20, top: 5, bottom: 20}
                 },
-                plugins : {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        bodyColor: "rgba(0,0,0,1)",
-                        titleFont: {
-                            size: 13,
-                        },
-                        titleColor: "rgba(0,0,0,1)",
-                        backgroundColor: 'rgba(255,255,255,0.6)',
-                        borderColor: 'rgba(0,0,0,0.2)',
-                        borderWidth: 2,
-                        callbacks: {
-                            labelColor: (tooltipItem) => {
-                                const dataset = tooltipItem.dataset;
-                                return {
-                                    borderColor: "rgba(255,255,255,0.6)",
-                                    backgroundColor: dataset.backgroundColor,
-                                };
-                            },
-                        },
-                    },
+                legend: {
+                    display: false,
                 },
                 maintainAspectRatio: false,
                 scales: {
-                    y: {
+                    yAxes: [{
                         type: 'linear',
                         display: false,
-                        beginAtZero: true,
-                    },
-                    x: {
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    }],
+                    xAxes: [{
                         ticks: {
                             maxRotation: 0,
                         },
-                    },
+                    }],
                 },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    bodyFontColor: 'rgba(0,0,0,1)',
+                    titleFontSize: 13,
+                    titleFontColor: 'rgba(0,0,0,1)',
+                    backgroundColor: 'rgba(255,255,255,0.6)',
+                    borderColor: 'rgba(0,0,0,0.2)',
+                    borderWidth: 2,
+                    callbacks: {
+                        labelColor: (tooltipItem, chart) => {
+                            const dataset = chart.data.datasets[tooltipItem.datasetIndex];
+                            const tooltipBorderColor = chart.tooltip._model.backgroundColor;
+                            return {
+                                borderColor: tooltipBorderColor,
+                                backgroundColor: dataset.backgroundColor,
+                            };
+                        },
+                    }
+                }
             }
         };
     }
@@ -149,8 +140,4 @@ export class MarketingActivityGraph extends Component {
 
 MarketingActivityGraph.template = "marketing_automation.MarketingActivityGraph";
 
-export const marketingActivityGraph = {
-    component: MarketingActivityGraph,
-};
-
-fieldRegistry.add('marketing_activity_graph', marketingActivityGraph);
+fieldRegistry.add('marketing_activity_graph', MarketingActivityGraph);

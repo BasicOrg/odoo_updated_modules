@@ -18,6 +18,8 @@ Because of the CSV format limitation, we cannot ensure the same transactions are
 Whenever possible, you should use a more appropriate file format like OFX.
 ''',
     'depends': ['account_bank_statement_import', 'base_import'],
+    'data': [
+    ],
     'installable': True,
     'auto_install': True,
     'license': 'OEEL-1',

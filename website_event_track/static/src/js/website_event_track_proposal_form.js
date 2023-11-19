@@ -1,8 +1,11 @@
-/** @odoo-module **/
+odoo.define('website_event_track.website_event_track_proposal_form', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import { _t } from "@web/core/l10n/translation";
-import { renderToElement } from "@web/core/utils/render";
+var core = require('web.core');
+var publicWidget = require('web.public.widget');
+
+var QWeb = core.qweb;
+var _t = core._t;
 
 publicWidget.registry.websiteEventTrackProposalForm = publicWidget.Widget.extend({
     selector: '.o_website_event_track_proposal_form',
@@ -160,7 +163,7 @@ publicWidget.registry.websiteEventTrackProposalForm = publicWidget.Widget.extend
         ev.stopPropagation();
 
         // Prevent further clicking
-        this.$el.find('.o_wetrack_proposal_submit_button')
+        this.$target.find('.o_wetrack_proposal_submit_button')
             .addClass('disabled')
             .attr('disabled', 'disabled');
 
@@ -169,7 +172,7 @@ publicWidget.registry.websiteEventTrackProposalForm = publicWidget.Widget.extend
             const formData = new FormData(this.$el[0]);
 
             const response = await $.ajax({
-                url: `/event/${encodeURIComponent(this.$el.data('eventId'))}/track_proposal/post`,
+                url: `/event/${this.$el.data('eventId')}/track_proposal/post`,
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -181,7 +184,7 @@ publicWidget.registry.websiteEventTrackProposalForm = publicWidget.Widget.extend
                 const offsetTop = ($("#wrapwrap").scrollTop() || 0) + this.$el.offset().top;
                 const floatingMenuHeight = ($('.o_header_standard').height() || 0) +
                     ($('#oe_main_menu_navbar').height() || 0);
-                this.$el.replaceWith($(renderToElement('event_track_proposal_success')));
+                this.$el.replaceWith($(QWeb.render('event_track_proposal_success')));
                 $('#wrapwrap').scrollTop(offsetTop - floatingMenuHeight);
             } else if (jsonResponse.error) {
                 this._updateErrorDisplay([jsonResponse.error]);
@@ -189,10 +192,12 @@ publicWidget.registry.websiteEventTrackProposalForm = publicWidget.Widget.extend
         }
 
         // Restore button
-        this.$el.find('.o_wetrack_proposal_submit_button')
+        this.$target.find('.o_wetrack_proposal_submit_button')
             .removeAttr('disabled')
             .removeClass('disabled');
     },
 });
 
-export default publicWidget.registry.websiteEventTrackProposalForm;
+return publicWidget.registry.websiteEventTrackProposalForm;
+
+});

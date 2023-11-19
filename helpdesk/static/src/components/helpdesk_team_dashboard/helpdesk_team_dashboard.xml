@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="helpdesk.HelpdeskTeamDashboard">
-        <!-- Fake Data for Demo-->
-        <t t-if="showDemo and state.dashboardValues">
-            <div class="ribbon ribbon-top-right">
-                <span class="text-bg-primary">Sample</span>
-            </div>
-        </t>
+    <t t-name="helpdesk.HelpdeskTeamDashboard" owl="1">
         <div t-if="state.dashboardValues" class="o_helpdesk_banner align-items-start flex-column flex-lg-row flex-shrink-0 d-flex py-4 border-bottom bg-view">
             <div class="w-100">
+                <!-- Fake Data for Demo-->
+                <t t-if="showDemo">
+                    <div class="ribbon ribbon-top-right mt-n4">
+                        <span class="o_recruitment_purple h-auto ms-3 p-2 bg-odoo">Sample</span>
+                    </div>
+                </t>
+
                 <table class="o_helpdesk_banner_table table table-sm table-borderless h-100 px-3 mb-0 text-center">
                     <tbody>
                         <tr class="h-100">
@@ -21,10 +22,12 @@
                                    title="My Tickets"
                                    data-hotkey="t"
                                    t-on-click="onActionClicked"
-                                   t-attf-class="btn w-100 h-100 p-2 border-0 text-capitalize fw-normal {{state.dashboardValues.my_all.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{state.dashboardValues.my_all.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
                                 >
-                                    <span class="d-block mb-0 fs-2" t-out="state.dashboardValues.my_all.count"/>
-                                    Tickets
+                                    <div class="p-2">
+                                        <h2 class="mb-0 text-reset" t-out="state.dashboardValues.my_all.count"/>
+                                        Tickets
+                                    </div>
                                 </a>
                             </td>
                             <td t-attf-class="{{demoClass}} p-0">
@@ -32,41 +35,45 @@
                                    title="My Tickets"
                                    context="{'search_default_high_priority': True}"
                                    data-hotkey="p" t-on-click="onActionClicked"
-                                   t-attf-class="position-relative btn w-100 h-100 p-2 border-0 text-capitalize fw-normal {{state.dashboardValues.my_high.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="position-relative btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{state.dashboardValues.my_high.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
                                 >
-                                    <span class="d-block mb-0 fs-2" t-out="state.dashboardValues.my_high.count"/>
-                                    High Priority
-                                    <small
-                                        class="position-absolute top-0 end-0 justify-content-end flex-lg-column flex-xl-row d-none d-sm-flex p-2"
-                                        title="Two stars, with a maximum of three"
-                                        role="img"
-                                        aria-label="Two stars, with a maximum of three"
-                                    >
-                                        <i class="o_star fa fa-star"/>
-                                        <i class="o_star fa fa-star"/>
-                                    </small>
+                                    <div class="p-2">
+                                        <h2 class="mb-0 text-reset" t-out="state.dashboardValues.my_high.count"/>
+                                        High Priority
+                                        <small
+                                            class="position-absolute top-0 end-0 justify-content-end flex-lg-column flex-xl-row d-none d-sm-flex p-2"
+                                            title="Two stars, with a maximum of three"
+                                            role="img"
+                                            aria-label="Two stars, with a maximum of three"
+                                        >
+                                            <i class="o_star fa fa-star"/>
+                                            <i class="o_star fa fa-star"/>
+                                        </small>
+                                    </div>
                                 </a>
                             </td>
                             <td t-attf-class="{{demoClass}} p-0">
                                 <a name="helpdesk.helpdesk_my_ticket_action_no_create"
-                                   t-attf-class="position-relative btn w-100 h-100 p-2 border-0 text-capitalize fw-normal {{state.dashboardValues.my_urgent.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="position-relative btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{state.dashboardValues.my_urgent.count > 0 ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
                                    title="My Tickets"
                                    context="{'search_default_urgent_priority': True}"
                                    t-on-click="onActionClicked"
-                                   data-hotkey="o"
+                                   data-hotkey="u"
                                 >
-                                    <span class="d-block mb-0 fs-2" t-out="state.dashboardValues.my_urgent.count"/>
-                                    Urgent
-                                    <small
-                                        class="position-absolute top-0 end-0 justify-content-end flex-lg-column flex-xl-row d-none d-sm-flex p-2 small"
-                                        title="Three stars, maximum score"
-                                        role="img"
-                                        aria-label="Three stars, maximum score"
-                                    >
-                                        <i class="o_star fa fa-star"/>
-                                        <i class="o_star fa fa-star"/>
-                                        <i class="o_star fa fa-star"/>
-                                    </small>
+                                    <div class="p-2">
+                                        <h2 class="mb-0 text-reset" t-out="state.dashboardValues.my_urgent.count"/>
+                                        Urgent
+                                        <small
+                                            class="position-absolute top-0 end-0 justify-content-end flex-lg-column flex-xl-row d-none d-sm-flex p-2 small"
+                                            title="Three stars, maximum score"
+                                            role="img"
+                                            aria-label="Three stars, maximum score"
+                                        >
+                                            <i class="o_star fa fa-star"/>
+                                            <i class="o_star fa fa-star"/>
+                                            <i class="o_star fa fa-star"/>
+                                        </small>
+                                    </div>
                                 </a>
                             </td>
                         </tr>
@@ -153,7 +160,7 @@
                             </td>
                             <td t-attf-class="{{demoClass}} p-0">
                                 <a name="helpdesk.helpdesk_ticket_action_close_analysis"
-                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{state.dashboardValues.today.count >= state.dashboardValues.helpdesk_target_closed ? 'btn-success': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{state.dashboardValues and state.dashboardValues.helpdesk_target_closed and state.dashboardValues.today.count >= state.dashboardValues.helpdesk_target_closed ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
                                    title="My Tickets"
                                    t-on-click="onActionClicked"
                                    data-hotkey="i"
@@ -164,33 +171,30 @@
                                     </div>
                                 </a>
                             </td>
-                            <t t-set="success_rate_percentage" t-value="`/ %`"/>
                             <td t-if="state.dashboardValues.success_rate_enable" t-attf-class="{{demoClass}} p-0">
-                                <t t-if="state.dashboardValues.today.sla_ticket_count > 0" t-set="success_rate_percentage" t-value="`${formatFloat(state.dashboardValues.today.success)} %`"/>
                                 <a name="helpdesk.helpdesk_ticket_action_success"
                                    title="Percentage of tickets that were closed without failing any SLAs."
-                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{(state.dashboardValues.helpdesk_target_success &lt;= state.dashboardValues.today.success) ? 'btn-success': 'btn-light bg-100' }} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{(state.dashboardValues and state.dashboardValues.helpdesk_target_success and state.dashboardValues.helpdesk_target_success &lt;= state.dashboardValues.today.success) ? 'btn-primary': 'btn-light bg-100' }} {{showDemo ? 'o_cursor_default' : ''}}"
                                    t-on-click="onActionClicked"
                                    data-action-title="My Tickets"
                                    data-hotkey="k"
                                 >
                                     <div class="p-2">
-                                        <h2 class="mb-0 text-reset" t-out="success_rate_percentage"/>
-                                        SLA Success Rate
+                                        <h2 class="mb-0 text-reset" t-out="`${formatFloat(state.dashboardValues.today.success)} %`"/>
+                                        Success Rate
                                     </div>
                                 </a>
                             </td>
                             <td t-if="state.dashboardValues.rating_enable" t-attf-class="{{demoClass}} p-0">
-                                <t t-if="state.dashboardValues.today.rating > 0" t-set="success_rate_percentage" t-value="`${formatFloat(state.dashboardValues.today.rating)} %`"/>
                                 <a name="action_view_rating_today"
-                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{(state.dashboardValues.helpdesk_target_rating &lt;= state.dashboardValues.today.rating) ? 'btn-success': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="btn w-100 h-100 p-0 border-0 text-capitalize fw-normal {{(state.dashboardValues and state.dashboardValues.helpdesk_target_rating and state.dashboardValues.helpdesk_target_rating &lt;= state.dashboardValues.today.rating) ? 'btn-primary': 'btn-light bg-100'}} {{showDemo ? 'o_cursor_default' : ''}}"
                                    title="Today Average Rating"
                                    type="object"
                                    t-on-click="onActionClicked"
                                    data-hotkey="j"
                                 >
                                     <div class="p-2">
-                                        <h2 class="mb-0 text-reset" t-out="success_rate_percentage"/>
+                                        <h2 class="mb-0 text-reset" t-out="`${formatFloat(state.dashboardValues.today.rating)} %`"/>
                                         Average Rating
                                     </div>
                                 </a>
@@ -199,36 +203,34 @@
                         <tr class="h-100">
                             <td class="o_text py-2 text-start align-middle">Avg Last 7 days</td>
                             <td t-attf-class="{{demoClass}} p-0">
-                                <a name="helpdesk.helpdesk_ticket_action_7days_tickets"
+                                <a name="helpdesk.helpdesk_ticket_action_7days_analysis"
                                    data-hotkey="l"
                                    t-on-click="onActionClicked"
-                                   title="Tickets"
-                                   t-attf-class="btn align-items-center d-flex w-100 h-100 p-0 border-0 fw-normal {{state.dashboardValues['7days'].count >= state.dashboardValues.helpdesk_target_closed ? 'btn-success': state.dashboardValues['7days'].count &lt;= 0 ? 'btn-light bg-100' : 'btn-warning'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   title="Tickets Analysis"
+                                   t-attf-class="btn btn-light align-items-center d-flex w-100 h-100 p-0 border-0 bg-100 fw-normal {{showDemo ? 'o_cursor_default' : ''}}"
                                 >
                                     <div class="w-100 p-2" t-out="state.dashboardValues['7days'].count"/>
                                 </a>
                             </td>
                             <td t-if="state.dashboardValues.success_rate_enable" t-attf-class="{{demoClass}} p-0">
-                                <t t-if="state.dashboardValues['7days'].sla_ticket_count > 0" t-set="success_rate_percentage" t-value="`${formatFloat(state.dashboardValues['7days'].success)} %`"/>
-                                <a name="helpdesk.helpdesk_ticket_action_7days_success"
-                                   t-attf-class="btn align-items-center d-flex w-100 h-100 p-0 border-0 fw-normal {{(state.dashboardValues.helpdesk_target_success &lt;= state.dashboardValues['7days'].success) ? 'btn-success': state.dashboardValues['7days'].success &lt;= 0 ? 'btn-light bg-100' :  'btn-warning' }} {{showDemo ? 'o_cursor_default' : ''}}"
+                                <a name="helpdesk.helpdesk_ticket_action_7dayssuccess"
+                                   t-attf-class="btn btn-light align-items-center d-flex w-100 h-100 p-0 border-0 bg-100 fw-normal {{showDemo ? 'o_cursor_default' : ''}}"
                                    title="Percentage of tickets that were closed without failing any SLAs."
                                    t-on-click="onActionClicked"
-                                   data-action-title="Tickets"
+                                   data-action-title="Tickets Analysis"
                                    data-hotkey="n"
                                 >
-                                    <div class="w-100 p-2" t-out="success_rate_percentage"/>
+                                    <div class="w-100 p-2" t-out="`${formatFloat(state.dashboardValues['7days'].success)} %`"/>
                                 </a>
                             </td>
                             <td t-if="state.dashboardValues.rating_enable" t-attf-class="{{demoClass}} p-0">
-                                <t t-if="state.dashboardValues['7days'].rating > 0" t-set="success_rate_percentage" t-value="`${formatFloat(state.dashboardValues['7days'].rating)} %`"/>
                                 <a name="action_view_rating_7days"
-                                   t-attf-class="btn align-items-center d-flex w-100 h-100 p-0 border-0 fw-normal {{(state.dashboardValues.helpdesk_target_rating &lt;= state.dashboardValues['7days'].rating) ? 'btn-success': state.dashboardValues['7days'].rating &lt;= 0 ? 'btn-light bg-100' : 'btn-warning'}} {{showDemo ? 'o_cursor_default' : ''}}"
+                                   t-attf-class="btn btn-light align-items-center d-flex w-100 h-100 p-0 border-0 bg-100 fw-normal {{showDemo ? 'o_cursor_default' : ''}}"
                                    title="Avg 7 Days Customer Satisfaction"
                                    t-on-click="onActionClicked"
                                    data-hotkey="m"
                                 >
-                                    <div class="w-100 p-2" t-out="success_rate_percentage"/>
+                                    <div class="w-100 p-2" t-out="`${formatFloat(state.dashboardValues['7days'].rating)} %`"/>
                                 </a>
                             </td>
                         </tr>

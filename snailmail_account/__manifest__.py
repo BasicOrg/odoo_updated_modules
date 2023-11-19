@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Snail Mail - Account",
+    'name': "snailmail_account",
     'description': """
 Allows users to send invoices by post
 =====================================================
@@ -10,8 +10,14 @@ Allows users to send invoices by post
     'depends': ['account', 'snailmail'],
     'data': [
         'views/res_config_settings_views.xml',
-        'wizard/account_move_send_views.xml',
+        'wizard/account_invoice_send_views.xml',
+        'security/ir.model.access.csv',
     ],
     'auto_install': True,
+    'assets': {
+        'web.assets_backend': [
+            'snailmail_account/static/**/*',
+        ],
+    },
     'license': 'LGPL-3',
 }

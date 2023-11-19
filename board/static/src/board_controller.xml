@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="board.BoardView">
+    <t t-name="board.BoardView" owl="1">
         <div class="o_dashboard d-flex flex-column">
             <t t-if="board.isEmpty">
                 <t t-call="board.NoContent"/>
@@ -12,8 +12,9 @@
         </div>
     </t>
 
-    <t t-name="board.Content">
-        <div t-if="!env.isSmall" class="o-dashboard-header d-flex justify-content-end">
+    <t t-name="board.Content" owl="1">
+        <!-- Note: need to add mobile support that i just removed for now -->
+        <div class="o-dashboard-header d-flex justify-content-end">
             <Dropdown togglerClass="'btn btn-secondary m-2 p-2'">
                 <t t-set-slot="toggler">
                     <img t-attf-src="/board/static/img/layout_{{board.layout}}.png" width="16" height="16" alt=""/>
@@ -31,12 +32,12 @@
             <t t-foreach="board.columns" t-as="column" t-key="column_index">
                 <div t-if="column_index lt board.colNumber" class="o-dashboard-column h-100" t-att-data-idx="column_index">
                     <t t-foreach="column.actions" t-as="action" t-key="action.id">
-                        <div class="o-dashboard-action mx-3 my-1 bg-view border" t-att-data-idx="action_index">
+                        <div class="o-dashboard-action mx-3 my-1" t-att-data-idx="action_index">
                             <h3 t-attf-class="o-dashboard-action-header {{action.title ? '' : 'oe_header_empty'}} p-2 m-2">
                                 <span> <t t-esc="action.title"/> </span>
-                                <span t-if="!env.isSmall" class="btn float-end p-1 text-muted" t-on-click="() => this.closeAction(column, action)"><i class="fa fa-close"/></span>
-                                <span class="btn float-end p-1 text-muted" t-if="!action.isFolded" t-on-click="() => this.toggleAction(action, !env.isSmall)"><i class="fa fa-window-minimize"/></span>
-                                <span class="btn float-end p-1 text-muted" t-if="action.isFolded"  t-on-click="() => this.toggleAction(action, !env.isSmall)"><i class="fa fa-window-maximize"/></span>
+                                <span class="btn float-end p-1 text-muted" t-on-click="() => this.closeAction(column, action)"><i class="fa fa-close"/></span>
+                                <span class="btn float-end p-1 text-muted" t-if="!action.isFolded" t-on-click="() => this.toggleAction(action)"><i class="fa fa-window-minimize"/></span>
+                                <span class="btn float-end p-1 text-muted" t-if="action.isFolded"  t-on-click="() => this.toggleAction(action)"><i class="fa fa-window-maximize"/></span>
                             </h3>
                             <BoardAction t-if="!action.isFolded" action="action" />
                         </div>
@@ -46,7 +47,7 @@
         </div>
     </t>
 
-    <t t-name="board.NoContent">
+    <t t-name="board.NoContent" owl="1">
         <div class="o_view_nocontent">
             <div class="o_nocontent_help">
                 <p class="o_view_nocontent_neutral_face">
@@ -65,7 +66,7 @@
         </div>
     </t>
 
-    <t t-name="board.arch">
+    <t t-name="board.arch" owl="1">
         <form t-att-string="title">
             <board t-att-style="layout">
                 <column t-foreach="columns" t-as="column" t-key="column_index">

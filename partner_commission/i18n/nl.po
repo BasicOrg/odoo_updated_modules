@@ -3,16 +3,17 @@
 # 	* partner_commission
 # 
 # Translators:
-# Wil Odoo, 2023
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:47+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,22 +21,36 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: partner_commission
-#. odoo-python
 #: code:addons/partner_commission/models/account_move.py:0
 #, python-format
 msgid ""
 "\n"
 "%s: from %s to %s"
 msgstr ""
-"\n"
-"%s: van %s tot %s"
 
 #. module: partner_commission
-#. odoo-python
 #: code:addons/partner_commission/models/account_move.py:0
 #, python-format
 msgid " (%d month(s))"
-msgstr " (%d maand(en))"
+msgstr ""
+
+#. module: partner_commission
+#: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">Automatic PO frequency</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"o_form_label\">Automatische inkooporder frequentie</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"De hier ingestelde waarden zijn bedrijfsspecifiek.\" role=\"img\" aria-label=\"De hier ingestelde waarden zijn bedrijfsspecifiek.\" groups=\"base.group_multi_company\"/>"
+
+#. module: partner_commission
+#: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">Minimum PO amount total</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" role=\"img\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"o_form_label\">Minimum inkooporder totaalbedrag</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"De hier ingestelde waarden zijn bedrijfsspecifiek.\" role=\"img\" aria-label=\"De hier ingestelde waarden zijn bedrijfsspecifiek.\" groups=\"base.group_multi_company\"/>"
 
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__active
@@ -53,17 +68,13 @@ msgid "Archived"
 msgstr "Gearchiveerd"
 
 #. module: partner_commission
-#: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
-msgid "Automatic PO frequency"
-msgstr "Frequentie van automatische inkooporders"
-
-#. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__is_capped
 msgid "Capped"
-msgstr "Plafond"
+msgstr "Afgedekt"
 
 #. module: partner_commission
 #: model:ir.model.fields.selection,name:partner_commission.selection__purchase_order__purchase_type__commission
+#: model:product.product,name:partner_commission.product_commission
 #: model:product.template,name:partner_commission.product_commission_product_template
 msgid "Commission"
 msgstr "Commissie"
@@ -79,8 +90,6 @@ msgstr "Commissie automatische inkooporder frequentie"
 #: model:ir.model.fields,field_description:partner_commission.field_res_partner__commission_plan_id
 #: model:ir.model.fields,field_description:partner_commission.field_res_users__commission_plan_id
 #: model:ir.model.fields,field_description:partner_commission.field_sale_order__commission_plan_id
-#: model:ir.model.fields,field_description:partner_commission.field_sale_order_log_report__commission_plan_id
-#: model:ir.model.fields,field_description:partner_commission.field_sale_subscription_report__commission_plan_id
 msgid "Commission Plan"
 msgstr "Commissieplan"
 
@@ -91,23 +100,9 @@ msgid "Commission Plans"
 msgstr "Commissieplannen"
 
 #. module: partner_commission
-#. odoo-python
-#: code:addons/partner_commission/models/account_move.py:0
-#, python-format
-msgid "Commission on %(invoice)s, %(partner)s, %(amount)s"
-msgstr ""
-
-#. module: partner_commission
 #: model:ir.model,name:partner_commission.model_commission_plan
 msgid "Commission plan"
 msgstr "Commissieplan"
-
-#. module: partner_commission
-#. odoo-python
-#: code:addons/partner_commission/models/account_move.py:0
-#, python-format
-msgid "Commission refunded. Invoice: %s. Amount: %s."
-msgstr "Commissie terugbetaald. Factuur: %s. Bedrag: %s."
 
 #. module: partner_commission
 #: model:ir.model,name:partner_commission.model_commission_rule
@@ -138,13 +133,13 @@ msgstr "Contact"
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__create_uid
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__create_date
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
+msgstr "Gemaakt op"
 
 #. module: partner_commission
 #: model:ir.actions.act_window,name:partner_commission.action_view_customer_invoices
@@ -160,12 +155,12 @@ msgstr "Standaard Commissieplan"
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__display_name
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_sale_order__commission_plan_frozen
 msgid "Freeze Plan"
-msgstr "Plan bevriezen"
+msgstr ""
 
 #. module: partner_commission
 #: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
@@ -206,6 +201,12 @@ msgid "Journal Item"
 msgstr "Boekingsregel"
 
 #. module: partner_commission
+#: model:ir.model.fields,field_description:partner_commission.field_commission_plan____last_update
+#: model:ir.model.fields,field_description:partner_commission.field_commission_rule____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__write_uid
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__write_uid
 msgid "Last Updated by"
@@ -215,7 +216,7 @@ msgstr "Laatst bijgewerkt door"
 #: model:ir.model.fields,field_description:partner_commission.field_commission_plan__write_date
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: partner_commission
 #: model:ir.model,name:partner_commission.model_crm_lead
@@ -240,11 +241,6 @@ msgstr ""
 "opgegeven."
 
 #. module: partner_commission
-#: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
-msgid "Minimum PO amount total"
-msgstr "Minimum totaalbedrag van de inkooporder"
-
-#. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_res_company__commission_po_minimum
 #: model:ir.model.fields,field_description:partner_commission.field_res_config_settings__commission_po_minimum
 msgid "Minimum Total Amount for PO commission"
@@ -261,31 +257,26 @@ msgid "Name"
 msgstr "Naam"
 
 #. module: partner_commission
-#. odoo-python
-#: code:addons/partner_commission/models/account_move.py:0
-#, python-format
-msgid "New commission. Invoice: %s. Amount: %s."
-msgstr "Nieuwe commissie. Factuur: %s. Bedrag: %s."
-
-#. module: partner_commission
 #: model:res.groups,name:partner_commission.group_commission_user
 msgid "Own Documents Only"
 msgstr "Alleen eigen documenten"
 
 #. module: partner_commission
 #: model:ir.actions.server,name:partner_commission.cron_confirm_purchase_orders_ir_actions_server
+#: model:ir.cron,cron_name:partner_commission.cron_confirm_purchase_orders
+#: model:ir.cron,name:partner_commission.cron_confirm_purchase_orders
 msgid "Partner Commission: confirm purchase orders"
 msgstr "Partnercommissie: bevestig inkooporders"
 
 #. module: partner_commission
 #: model:ir.model,name:partner_commission.model_res_partner_grade
 msgid "Partner Grade"
-msgstr "Relatie rang"
+msgstr "Rang relatie"
 
 #. module: partner_commission
 #: model_terms:ir.ui.view,arch_db:partner_commission.res_config_settings_view_form
 msgid "Partners Commissions"
-msgstr "Relaties commissies"
+msgstr "Parners commissies"
 
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__pricelist_id
@@ -303,7 +294,6 @@ msgid "Product"
 msgstr "Product"
 
 #. module: partner_commission
-#. odoo-python
 #: code:addons/partner_commission/models/commission_plan.py:0
 #, python-format
 msgid "Product %s does not belong to category %s"
@@ -337,7 +327,7 @@ msgstr "Per kwartaal"
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__rate
 msgid "Rate"
-msgstr "Hoeveel"
+msgstr "Ratio"
 
 #. module: partner_commission
 #: model:ir.model.constraint,message:partner_commission.constraint_commission_rule_check_rate
@@ -349,13 +339,10 @@ msgstr "Het tarief moet tussen 0 en 100 liggen."
 #: model:ir.model.fields,field_description:partner_commission.field_account_move__referrer_id
 #: model:ir.model.fields,field_description:partner_commission.field_account_payment__referrer_id
 #: model:ir.model.fields,field_description:partner_commission.field_sale_order__referrer_id
-#: model:ir.model.fields,field_description:partner_commission.field_sale_order_log_report__referrer_id
 #: model:ir.model.fields,field_description:partner_commission.field_sale_subscription_report__referrer_id
 #: model_terms:ir.ui.view,arch_db:partner_commission.account_move_view_search_inherit_partner_commission
-#: model_terms:ir.ui.view,arch_db:partner_commission.sale_order_log_search
 #: model_terms:ir.ui.view,arch_db:partner_commission.sale_order_subsciption_view_search_inherit_partner_commission
 #: model_terms:ir.ui.view,arch_db:partner_commission.sale_order_view_search_inherit_partner_commission
-#: model_terms:ir.ui.view,arch_db:partner_commission.sale_subscription_report_search
 msgid "Referrer"
 msgstr "Verwijzer"
 
@@ -380,12 +367,7 @@ msgstr "Regels"
 #. module: partner_commission
 #: model:ir.model.fields,field_description:partner_commission.field_commission_rule__template_id
 msgid "Sale Order Template"
-msgstr "Verkoopordersjabloon"
-
-#. module: partner_commission
-#: model:ir.model,name:partner_commission.model_sale_order_log_report
-msgid "Sales Log Analysis Report"
-msgstr "Analyserapport verkooplogboek"
+msgstr ""
 
 #. module: partner_commission
 #: model:ir.model,name:partner_commission.model_sale_order
@@ -414,17 +396,6 @@ msgid "Takes precedence over the Referrer's commission plan."
 msgstr "Heeft voorrang op het commissieplan van de verwijzer."
 
 #. module: partner_commission
-#. odoo-python
-#: code:addons/partner_commission/models/account_move.py:0
-#, python-format
-msgid ""
-"The commission partner order %s must be checked manually (especially refund "
-"lines which can be duplicated)."
-msgstr ""
-"De bestelling partnercommissie %s moet handmatig worden gecontroleerd "
-"(vooral terugbetalingsregels die gedupliceerd kunnen worden)."
-
-#. module: partner_commission
 #: model:ir.model.fields,help:partner_commission.field_res_partner_grade__default_commission_plan_id
 msgid ""
 "The default commission plan used for this grade. Can be overwritten on the "
@@ -441,6 +412,12 @@ msgid ""
 msgstr ""
 "Het vereiste minimumbedrag dat nodig is om inkooporders automatisch te "
 "bevestigen"
+
+#. module: partner_commission
+#: model:product.product,uom_name:partner_commission.product_commission
+#: model:product.template,uom_name:partner_commission.product_commission_product_template
+msgid "Units"
+msgstr "Eenheden"
 
 #. module: partner_commission
 #: model:ir.model.fields.selection,name:partner_commission.selection__res_company__commission_automatic_po_frequency__weekly

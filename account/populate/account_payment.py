@@ -34,7 +34,7 @@ class AccountPayment(models.Model):
             :return (list<int>): the ids of partner the company has access to.
             """
             return self.env['res.partner'].search([
-                *self.env['res.partner']._check_company_domain(company_id),
+                '|', ('company_id', '=', company_id), ('company_id', '=', False),
                 ('id', 'in', self.env.registry.populated_models['res.partner']),
             ]).ids
 
@@ -47,7 +47,7 @@ class AccountPayment(models.Model):
             :return (list<int>): the ids of the bank and cash journals of a company
             """
             return self.env['account.journal'].search([
-                *self.env['account.journal']._check_company_domain(company_id),
+                ('company_id', '=', company_id),
                 ('type', 'in', ('cash', 'bank')),
             ]).ids
 
@@ -61,7 +61,7 @@ class AccountPayment(models.Model):
             :return list<int>: list of ids of payment methods of the selected type
             """
             need_bank_account = self._get_method_codes_needing_bank_account()
-            other_blacklist = ['sdd', 'bacs_dd']
+            other_blacklist = ['sdd']
             return self.env['account.payment.method.line'].search([
                 ('journal_id', '=', journal),
                 ('payment_method_id.payment_type', '=', payment_type),
@@ -105,7 +105,7 @@ class AccountPayment(models.Model):
             return random.choice(search_payment_method_line_ids(values['payment_type'], values['journal_id']))
 
         company_ids = self.env['res.company'].search([
-            ('chart_template', '!=', False),
+            ('chart_template_id', '!=', False),
             ('id', 'in', self.env.registry.populated_models['res.company']),
         ])
         return [

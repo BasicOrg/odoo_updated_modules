@@ -6,7 +6,10 @@ from . import report
 from . import controllers
 
 
-def post_init(env):
+def post_init(cr, registry):
+    from odoo import api, SUPERUSER_ID
+
+    env = api.Environment(cr, SUPERUSER_ID, {})
     env['project.project'].search([('is_fsm', '=', True)]).write({'allow_worksheets': True})
     fsm_project = env.ref("industry_fsm.fsm_project", raise_if_not_found=False)
     fsm_worksheet_template2 = env.ref("industry_fsm_report.fsm_worksheet_template2", raise_if_not_found=False)

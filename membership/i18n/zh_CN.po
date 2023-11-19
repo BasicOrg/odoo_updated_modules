@@ -3,17 +3,17 @@
 # 	* membership
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Martin Trigaux, 2022
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:02+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -161,7 +161,7 @@ msgstr "创建人"
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__create_date
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__membership_state
@@ -186,7 +186,7 @@ msgstr "客户"
 #: model:ir.model.fields,help:membership.field_res_partner__membership_start
 #: model:ir.model.fields,help:membership.field_res_users__membership_start
 msgid "Date from which membership becomes active."
-msgstr "会籍生效日期"
+msgstr "会籍开始生效的日期"
 
 #. module: membership
 #: model:ir.model.fields,help:membership.field_membership_membership_line__date
@@ -205,7 +205,7 @@ msgstr "取消会籍的日期"
 #: model:ir.model.fields,help:membership.field_res_partner__membership_stop
 #: model:ir.model.fields,help:membership.field_res_users__membership_stop
 msgid "Date until which membership remains active."
-msgstr "会籍结束日期。"
+msgstr "会籍到哪一天结束"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__display_name
@@ -237,8 +237,8 @@ msgstr "会籍终止日期"
 
 #. module: membership
 #: model:ir.model.constraint,message:membership.constraint_product_template_membership_date_greater
-msgid "Error! Ending Date cannot be set before Beginning Date."
-msgstr "错误！结束日期不能早于开始日期。"
+msgid "Error ! Ending Date cannot be set before Beginning Date."
+msgstr "错误！失效日期不能早于开始日期"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
@@ -257,13 +257,13 @@ msgstr "免费会员"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date_from
 msgid "From"
-msgstr "来自"
+msgstr "从"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_report_membership_search
 #: model_terms:ir.ui.view,arch_db:membership.view_res_partner_member_filter
 msgid "Group By"
-msgstr "分组方式"
+msgstr "分组"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
@@ -280,12 +280,12 @@ msgstr "ID"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_product_search_form_view
 msgid "Inactive"
-msgstr "未启用的"
+msgstr "未启用"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__account_invoice_id
 msgid "Invoice"
-msgstr "发票"
+msgstr "结算单"
 
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.view_membership_invoice_view
@@ -339,7 +339,7 @@ msgstr ""
 "-非会员：未申请任何会员资格的成员。\n"
 "-已注销会员：已注销会员资格的会员。\n"
 "-过期会员：超出会员资格有效期的会员。\n"
-"-已申请会员资格，发票处于待创建状态的成员。"
+"-已申请会员资格，结算单处于待创建状态的成员"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__date
@@ -354,12 +354,19 @@ msgstr "加入会员"
 #. module: membership
 #: model:ir.model,name:membership.model_account_move
 msgid "Journal Entry"
-msgstr "日记账分录"
+msgstr "会计凭证"
 
 #. module: membership
 #: model:ir.model,name:membership.model_account_move_line
 msgid "Journal Item"
-msgstr "日记账项目"
+msgstr "会计分录"
+
+#. module: membership
+#: model:ir.model.fields,field_description:membership.field_membership_invoice____last_update
+#: model:ir.model.fields,field_description:membership.field_membership_membership_line____last_update
+#: model:ir.model.fields,field_description:membership.field_report_membership____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__write_uid
@@ -371,7 +378,7 @@ msgstr "最后更新人"
 #: model:ir.model.fields,field_description:membership.field_membership_invoice__write_date
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__partner_id
@@ -499,6 +506,8 @@ msgstr "会员产品"
 
 #. module: membership
 #: model:ir.actions.server,name:membership.ir_cron_update_membership_ir_actions_server
+#: model:ir.cron,cron_name:membership.ir_cron_update_membership
+#: model:ir.cron,name:membership.ir_cron_update_membership
 msgid "Membership: update memberships"
 msgstr "会员资格：更新会员资格"
 
@@ -550,17 +559,15 @@ msgstr "付费会员"
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_membership_membership_line__partner
 msgid "Partner"
-msgstr "合作伙伴"
+msgstr "业务伙伴"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner doesn't have an address to make the invoice."
-msgstr "业务伙伴没有发票地址。"
+msgstr "业务伙伴没有结算单地址"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "Partner is a free Member."
@@ -607,7 +614,7 @@ msgstr "销售员"
 #: model:ir.model.fields,help:membership.field_res_partner__free_member
 #: model:ir.model.fields,help:membership.field_res_users__free_member
 msgid "Select if you want to give free membership."
-msgstr "提供免费会员资格。"
+msgstr "提供免费成员资格"
 
 #. module: membership
 #: model:ir.model.fields,field_description:membership.field_report_membership__start_date
@@ -644,7 +651,7 @@ msgstr "数量合计"
 #. module: membership
 #: model_terms:ir.ui.view,arch_db:membership.membership_products_form
 msgid "Taxes"
-msgstr "税项"
+msgstr "税"
 
 #. module: membership
 #: model:ir.model.fields,help:membership.field_res_partner__membership_amount
@@ -685,7 +692,6 @@ msgid "Waiting Member"
 msgstr "等待会员"
 
 #. module: membership
-#. odoo-python
 #: code:addons/membership/models/partner.py:0
 #, python-format
 msgid "You cannot create recursive associated members."

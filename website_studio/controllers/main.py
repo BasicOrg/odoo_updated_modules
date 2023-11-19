@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 import re
 
 from lxml import html
@@ -24,7 +25,7 @@ class WebsiteStudioController(http.Controller):
             if not model.website_form_label:
                 values['website_form_label'] = "Create %s" % model.name
         model.write(values)
-        template = 'website_studio.default_record_page'
+        template = 'website_studio.default_form_page'
         form_name = model.name
         new_page = request.env['website'].new_page(
             name=form_name,
@@ -95,14 +96,3 @@ class WebsiteStudioController(http.Controller):
         # Add the correct model to the website_form snippet
         arch = re.sub(r'data-model_name=""', 'data-model_name="%s"' % res_model.model, arch)
         return arch
-
-    @http.route("/website_studio/get_website_pages", type="json", auth="user")
-    def get_website_pages(self, res_model=None):
-        pages = request.env["website.controller.page"].search_read(
-            [("model", "=", res_model)],
-            ["website_id", "page_name", "page_type", "name_slugified"]
-        )
-        return {
-            "pages": pages,
-            "websites": request.env["website"].search_read([], ["display_name"]),
-        }

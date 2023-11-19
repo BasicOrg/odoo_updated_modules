@@ -6,9 +6,9 @@ import { useService } from "@web/core/utils/hooks";
 
 import "@web_enterprise/views/list/list_renderer_desktop";
 
-export const patchListRendererStudio = () => ({
+export const patchListRendererStudio = {
     setup() {
-        super.setup(...arguments);
+        this._super(...arguments);
         this.studioService = useService("studio");
     },
     /**
@@ -19,10 +19,6 @@ export const patchListRendererStudio = () => ({
     onSelectedAddCustomField() {
         this.studioService.open();
     },
+};
 
-    get isStudioEditable() {
-        return !this.studioService.mode && super.isStudioEditable;
-    },
-});
-
-export const unpatchListRendererStudio = patch(ListRenderer.prototype, patchListRendererStudio());
+patch(ListRenderer.prototype, "web_studio.ListRenderer", patchListRendererStudio);

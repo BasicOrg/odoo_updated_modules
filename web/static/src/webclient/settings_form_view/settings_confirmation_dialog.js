@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { _t } from "@web/core/l10n/translation";
+import { _lt } from "@web/core/l10n/translation";
 
 export class SettingsConfirmationDialog extends ConfirmationDialog {
     _stayHere() {
@@ -12,7 +12,7 @@ export class SettingsConfirmationDialog extends ConfirmationDialog {
     }
 }
 SettingsConfirmationDialog.defaultProps = {
-    title: _t("Unsaved changes"),
+    title: _lt("Unsaved changes"),
 };
 SettingsConfirmationDialog.template = "web.SettingsConfirmationDialog";
 SettingsConfirmationDialog.props = {

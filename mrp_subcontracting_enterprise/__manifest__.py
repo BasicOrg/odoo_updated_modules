@@ -10,4 +10,12 @@
     'depends': ['mrp_subcontracting'],
     'auto_install': True,
     'license': 'OEEL-1',
+    'assets': {
+        'mrp_subcontracting.webclient': [
+            ('remove', 'web_enterprise/static/src/webclient/home_menu/*.js'),
+            ('remove', 'mrp_subcontracting/static/src/subcontracting_portal/main.js'),
+            'mrp_subcontracting_enterprise/static/src/subcontracting_portal/remove_services.js',
+            'mrp_subcontracting_enterprise/static/src/subcontracting_portal/main.js',
+        ],
+    }
 }

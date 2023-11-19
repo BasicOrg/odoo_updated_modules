@@ -3,7 +3,7 @@
 import { registry } from "../registry";
 import { memoize } from "../utils/functions";
 
-import { useEffect, useEnv, useSubEnv } from "@odoo/owl";
+const { useEffect, useEnv, useSubEnv } = owl;
 const debugRegistry = registry.category("debug");
 
 const getAccessRights = memoize(async function getAccessRights(orm) {

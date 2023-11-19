@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="helpdesk.HelpdeskTeamTarget">
+    <t t-name="helpdesk.HelpdeskTeamTarget" owl="1">
         <td t-attf-class="{{props.demoClass}} p-0" t-att-data-hotkey="props.hotkey">
             <input t-if="state.isFocused" t-att-value="state.value"
-                   class="form-control p-0 h-100 text-center rounded" type="text"
+                   class="p-0 h-100 text-center align-middle border-1 rounded" type="text"
                    t-ref="inputRef" t-on-blur="_toggleFocus" t-on-change="_onValueChange"
                    t-on-keydown="_onInputKeydown"
             />

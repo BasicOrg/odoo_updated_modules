@@ -1,3 +1,36 @@
+// = Owl components specific rules
+// -----------------------------------------------------------------------------
+.dropdown-menu {
+  .dropdown-toggle:focus, .dropdown-item:focus {
+    background-color: transparent;
+  }
+  .dropdown-toggle.focus, .dropdown-item.focus {
+    background-color: $dropdown-link-hover-bg;
+  }
+}
+
+.dropdown-item:not(.disabled):not(:disabled) {
+  // Needed 'cause <DropdownItem> generate <span> html tags that for browsers are
+  // normally not clickable.
+  &,label {
+    cursor: pointer;
+  }
+}
+
+button.dropdown-toggle {
+  &.active, &:hover, &:focus, &:active {
+    outline: none;
+    box-shadow: none !important;
+  }
+  &.dropdown-item {
+    &::after, &::before {
+      // Changes the placement of bootstrap dropdown carets for subdropdowns
+      @include o-position-absolute($right: 0, $top: 0);
+      transform: translate(-.6em, .6em) #{"/*rtl:translate(.6em, .6em) scaleX(-1)*/"};
+    }
+  }
+}
+
 // = New Owl Dropdown specific rules
 // -----------------------------------------------------------------------------
 .o-dropdown {
@@ -5,35 +38,6 @@
     // Makes sure the dropdown menus are already in a
     // fixed position before the positioning computations begin.
     position: fixed;
-    margin-top: var(--Dropdown_menu-margin-y, #{map-get($spacers, 1)});
-    margin-bottom: var(--Dropdown_menu-margin-y, #{map-get($spacers, 1)});
-
-    &.o-dropdown--menu-submenu {
-      --Dropdown_menu-margin-y: 0;
-    }
-
-    .dropdown-toggle:focus, .dropdown-item:focus {
-      background-color: transparent;
-      outline: none;
-    }
-    .dropdown-toggle.focus, .dropdown-item.focus {
-      background-color: $dropdown-link-hover-bg;
-    }
-    .dropdown-item:not(.disabled):not(:disabled) {
-      // Needed 'cause <DropdownItem> generate <span> html tags that for
-      // browsers are normally not clickable.
-      &, label {
-        cursor: pointer;
-      }
-    }
-
-    // Correctly align sub dropdowns items with its parent's
-    .o-dropdown > .o-dropdown--menu {
-      // the value comes from bootstrap's ".dropdown-menu" padding and border style
-      --o-dropdown--submenu-margin: calc(-.5rem - 1px);
-      margin-top: var(--o-dropdown--submenu-margin);
-      margin-bottom: var(--o-dropdown--submenu-margin);
-    }
   }
   /*!rtl:begin:ignore*/
   &.dropup > .o-dropdown--menu,
@@ -54,20 +58,6 @@
         &::before, &::after {
             content: normal;
         }
-    }
-  }
-
-  button.dropdown-toggle {
-    &.active, &:hover, &:focus, &:active {
-      outline: none;
-      box-shadow: none !important;
-    }
-    &.dropdown-item:not(.o_menu_item) {
-      &::after, &::before {
-        // Changes the placement of bootstrap dropdown carets for subdropdowns
-        @include o-position-absolute($right: 0, $top: 0);
-        transform: translate(-.6em, .6em) #{"/*rtl:translate(.6em, .6em) scaleX(-1)*/"};
-      }
     }
   }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
 
-<t t-name="web_studio.IconCreator">
+<t t-name="web_studio.IconCreator" owl="1">
     <div class="o_web_studio_icon_creator">
-        <div t-if="props.type === 'base64'" class="o_web_studio_uploaded_image mx-auto"
+        <div t-if="props.type === 'base64'" class="o_web_studio_uploaded_image"
             t-attf-style="background-image: url({{props.webIconData}})"
         />
         <t t-else="">
@@ -76,7 +76,7 @@
             <a t-if="props.type === 'base64'" href="#" t-on-click.prevent.stop="onDesignIconClick">
                 Design your Icon
             </a>
-            <span> or </span>
+            <span class="text-muted"> or </span>
             <t t-component="FileInput" t-props="fileInputProps" onUpload.bind="onFileUploaded">
                 <a href="#">
                     <t t-if="props.type === 'base64'">upload one</t>

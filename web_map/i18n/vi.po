@@ -3,16 +3,16 @@
 # 	* web_map
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Vietnamese (https://app.transifex.com/odoo/teams/41243/vi/)\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Vietnamese (https://www.transifex.com/odoo/teams/41243/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
@@ -32,17 +32,24 @@ msgstr ""
 #. module: web_map
 #: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
 msgid ""
-"<i class=\"oi oi-arrow-right\"/>\n"
-"                                Sign up to MapBox to get a free token"
+"<i class=\"fa fa-arrow-right\"/>\n"
+"                                    Get token"
+msgstr ""
+
+#. module: web_map
+#: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Map Routes</span>"
 msgstr ""
 
 #. module: web_map
 #: model:ir.model,name:web_map.model_ir_actions_act_window_view
 msgid "Action Window View"
-msgstr "Chế độ xem cửa sổ hành động"
+msgstr "Action Window View"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #, python-format
@@ -52,10 +59,12 @@ msgstr "Địa chỉ"
 #. module: web_map
 #: model:ir.model,name:web_map.model_base
 msgid "Base"
-msgstr "Cơ sở"
+msgstr "Cơ bản"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
@@ -65,12 +74,12 @@ msgstr "Đóng"
 #. module: web_map
 #: model:ir.model,name:web_map.model_res_config_settings
 msgid "Config Settings"
-msgstr "Cài đặt cấu hình"
+msgstr "Cấu hình"
 
 #. module: web_map
 #: model:ir.model,name:web_map.model_res_partner
 msgid "Contact"
-msgstr "Liên hệ"
+msgstr "Danh bạ"
 
 #. module: web_map
 #: model:ir.model.fields,field_description:web_map.field_res_partner__contact_address_complete
@@ -81,24 +90,26 @@ msgstr ""
 #. module: web_map
 #: model:ir.model,name:web_map.model_ir_http
 msgid "HTTP Routing"
-msgstr "Định tuyến HTTP"
+msgstr "HTTP Routing"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_view.js:0
 #: code:addons/web_map/static/src/map_view/map_view.js:0
 #, python-format
 msgid "Items"
 msgstr "Dòng"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Locating new addresses..."
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_view.js:0
 #: model:ir.model.fields.selection,name:web_map.selection__ir_actions_act_window_view__view_mode__map
 #: model:ir.model.fields.selection,name:web_map.selection__ir_ui_view__type__map
@@ -107,30 +118,20 @@ msgid "Map"
 msgstr "Bản đồ"
 
 #. module: web_map
-#: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
-msgid "Map Routes"
-msgstr ""
-
-#. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "MapBox servers unreachable"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #, python-format
 msgid "Name"
 msgstr "Tên"
-
-#. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
-#, python-format
-msgid "Navigate to"
-msgstr ""
 
 #. module: web_map
 #: model:ir.model.fields,help:web_map.field_res_config_settings__map_box_token
@@ -138,28 +139,21 @@ msgid "Necessary for some functionalities in the map view"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "No"
 msgstr "Không"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "None"
-msgstr "Không"
+msgstr "Không "
 
 #. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
-#, python-format
-msgid "Open"
-msgstr "Mở"
-
-#. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "OpenStreetMap's request limit exceeded, try again later."
@@ -171,35 +165,38 @@ msgid "Set a MapBox account to activate routes and style"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Set up token"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Some routing points are too far apart"
 msgstr ""
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "The MapBox server is unreachable"
 msgstr ""
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "The token input is not valid"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
@@ -210,25 +207,23 @@ msgid ""
 msgstr ""
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "This referer is not authorized"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
-msgid ""
-"To get routing on your map, you first need to set up your MapBox token. It's"
-" free."
+msgid "To get routing on your map, you first need to setup your Mapbox token."
 msgstr ""
 
 #. module: web_map
 #: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
 msgid "Token"
-msgstr "Token"
+msgstr ""
 
 #. module: web_map
 #: model:ir.model.fields,field_description:web_map.field_res_config_settings__map_box_token
@@ -236,49 +231,56 @@ msgid "Token Map Box"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Token invalid"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Too many requests, try again in a few minutes"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Too many routing points (maximum 25)"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Unauthorized connection"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Undefined"
 msgstr "Không xác định"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Unsuccessful routing request:"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_view.js:0
 #: code:addons/web_map/static/src/map_view/map_controller.js:0
 #, python-format
 msgid "Untitled"
@@ -287,33 +289,47 @@ msgstr "Không có tiêu đề"
 #. module: web_map
 #: model:ir.model,name:web_map.model_ir_ui_view
 msgid "View"
-msgstr "Chế độ xem"
+msgstr "Xem"
 
 #. module: web_map
 #: model:ir.model.fields,field_description:web_map.field_ir_actions_act_window_view__view_mode
 #: model:ir.model.fields,field_description:web_map.field_ir_ui_view__type
-#: model:ir.model.fields,field_description:web_map.field_website_controller_page__type
-#: model:ir.model.fields,field_description:web_map.field_website_page__type
 msgid "View Type"
 msgstr "Dạng hiển thị"
 
 #. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_controller.xml:0
 #, python-format
 msgid "View in Google Maps"
 msgstr ""
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Yes"
 msgstr "Có"
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/models.py:0
 #, python-format
 msgid "You need to set a Contact field on this model to use the Map View"
+msgstr ""
+
+#. module: web_map
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#, python-format
+msgid "navigate to"
+msgstr ""
+
+#. module: web_map
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#, python-format
+msgid "open"
 msgstr ""

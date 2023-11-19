@@ -67,8 +67,5 @@ class MailMessage(models.Model):
                 ticket.answered_customer_message_count += 1
                 ticket.total_response_hours += delta_hours
                 ticket.avg_response_hours = ticket.total_response_hours / ticket.answered_customer_message_count
-            else:
-                # a new message is received, `write_date` should be updated
-                ticket.write({})
 
         return messages

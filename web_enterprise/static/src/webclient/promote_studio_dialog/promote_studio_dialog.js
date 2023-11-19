@@ -3,7 +3,7 @@ import { browser } from "@web/core/browser/browser";
 import { Dialog } from "@web/core/dialog/dialog";
 import { useChildRef, useService } from "@web/core/utils/hooks";
 
-import { Component, useExternalListener } from "@odoo/owl";
+const { Component, useExternalListener } = owl;
 
 export class PromoteStudioDialog extends Component {
     setup() {
@@ -45,6 +45,3 @@ export class PromoteStudioDialog extends Component {
 }
 PromoteStudioDialog.template = "web_enterprise.PromoteStudioDialog";
 PromoteStudioDialog.components = { Dialog };
-
-export class PromoteStudioAutomationDialog extends PromoteStudioDialog {}
-PromoteStudioAutomationDialog.template = "web_enterprise.PromoteStudioAutomationDialog";

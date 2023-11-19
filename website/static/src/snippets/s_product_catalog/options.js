@@ -1,7 +1,11 @@
-/** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import options from "@web_editor/js/editor/snippets.options";
+odoo.define('website.s_product_catalog_options', function (require) {
+'use strict';
+
+const core = require('web.core');
+const options = require('web_editor.snippets.options');
+
+const _t = core._t;
 
 options.registry.ProductCatalog = options.Class.extend({
 
@@ -19,7 +23,7 @@ options.registry.ProductCatalog = options.Class.extend({
         const $name = $dishes.find('.s_product_catalog_dish_name');
         $name.toggleClass('s_product_catalog_dish_dot_leaders', !widgetValue);
         if (widgetValue) {
-            $dishes.toArray().forEach((el) => {
+            _.each($dishes, el => {
                 const $description = $(el).find('.s_product_catalog_dish_description');
                 if ($description.length) {
                     $description.removeClass('d-none');
@@ -33,7 +37,7 @@ options.registry.ProductCatalog = options.Class.extend({
                 }
             });
         } else {
-            $dishes.toArray().forEach((el) => {
+            _.each($dishes, el => {
                 const $description = $(el).find('.s_product_catalog_dish_description');
                 if ($description.hasClass('o_default_snippet_text') || $description.find('.o_default_snippet_text').length) {
                     $description.remove();
@@ -58,4 +62,5 @@ options.registry.ProductCatalog = options.Class.extend({
         }
         return this._super(...arguments);
     },
+});
 });

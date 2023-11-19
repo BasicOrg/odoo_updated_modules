@@ -12,24 +12,12 @@ Generate tasks in Project app from a form published on your website. This module
     'depends': ['website', 'project'],
     'data': [
         'data/website_form_project_data.xml',
-        'views/project_portal_project_task_template.xml',
-        'views/project_portal_project_project_template.xml',
         ],
     'installable': True,
     'auto_install': True,
     'assets': {
-        'website.assets_wysiwyg': [
-            'website_form_project/static/src/js/website_form_project_editor.js',
-        ],
-        'project.webclient': [
-            # In website, there is a patch of the LinkDialog (see
-            # website/static/src/js/editor/editor.js) that require the utils.js.
-            # Thus, when website is installed, this bundle need to have the
-            # utils.js in its assets, otherwise, there will be an unmet
-            # dependency.
-            'website/static/src/js/utils.js',
-            'web/static/src/core/autocomplete/*',
-            'website/static/src/components/autocomplete_with_pages/*',
+        'website.assets_editor': [
+            'website_form_project/static/src/**/*',
         ],
     },
     'license': 'LGPL-3',

@@ -10,23 +10,23 @@ class AccountJournal(models.Model):
 
     def _get_bank_statements_available_import_formats(self):
         rslt = super()._get_bank_statements_available_import_formats()
-        rslt.extend(['CSV', 'XLS', 'XLSX'])
+        rslt.append('CSV')
         return rslt
 
-    def _check_file_format(self, filename):
-        return filename and filename.lower().strip().endswith(('.csv', '.xls', '.xlsx'))
+    def _check_csv(self, filename):
+        return filename and filename.lower().strip().endswith('.csv')
 
     def _import_bank_statement(self, attachments):
         # In case of CSV files, only one file can be imported at a time.
         if len(attachments) > 1:
-            csv = [bool(self._check_file_format(att.name)) for att in attachments]
+            csv = [bool(self._check_csv(att.name)) for att in attachments]
             if True in csv and False in csv:
                 raise UserError(_('Mixing CSV files with other file types is not allowed.'))
             if csv.count(True) > 1:
                 raise UserError(_('Only one CSV file can be selected.'))
             return super()._import_bank_statement(attachments)
 
-        if not self._check_file_format(attachments.name):
+        if not self._check_csv(attachments.name):
             return super()._import_bank_statement(attachments)
         ctx = dict(self.env.context)
         import_wizard = self.env['base_import.import'].create({

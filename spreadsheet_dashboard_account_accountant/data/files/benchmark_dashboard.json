@@ -83,13 +83,13 @@
                     "content": "=_t(\"Net Credit Purchases / Average accounts payable balance for period\")"
                 },
                 "B35": {
-                    "content": "=_t(\"< 45: company gets paid for sales quickly\")"
+                    "content": "=_t(\"> 3: company liquidates debts to suppliers quickly\")"
                 },
                 "B36": {
-                    "content": "=_t(\"> 60: company might not get paid for sales quickly enough\")"
+                    "content": "=_t(\"< 2: company might be slow to pay suppliers\")"
                 },
                 "B37": {
-                    "content": "=_t(\"possible issue in payment terms agreement with clients to get paid faster\")"
+                    "content": "=_t(\"possible issue in providers payments, could lead to loss of suppliers trust\")"
                 },
                 "B38": {
                     "content": "=_t(\"Very dependent on the sector\")"
@@ -157,13 +157,13 @@
                     "content": "=_t(\"Sales on account / Average accounts receivable balance for period\")"
                 },
                 "D35": {
-                    "content": "=_t(\"< 45: company liquidates debts to suppliers quickly\")"
+                    "content": "=_t(\"> 10: company gets paid for sales quickly\")"
                 },
                 "D36": {
-                    "content": "=_t(\"> 70: company might be slow to pay suppliers\")"
+                    "content": "=_t(\"< 6: company might not get paid for sales quickly enough\")"
                 },
                 "D37": {
-                    "content": "=_t(\"possible issue in providers payments, could lead to loss of suppliers trust\")"
+                    "content": "=_t(\"possible issue in payment terms agreement with clients to get paid faster\")"
                 },
                 "D38": {
                     "content": "=_t(\"Very dependent on the sector\")"
@@ -394,22 +394,22 @@
                     "data": {
                         "sectionRule": {
                             "colors": {
-                                "lowerColor": "#6AA84F",
+                                "lowerColor": "#cc0000",
                                 "middleColor": "#f1c232",
-                                "upperColor": "#CC0000"
+                                "upperColor": "#6aa84f"
                             },
                             "rangeMin": "0",
-                            "rangeMax": "90",
+                            "rangeMax": "20",
                             "lowerInflectionPoint": {
                                 "type": "number",
-                                "value": "45"
+                                "value": "2"
                             },
                             "upperInflectionPoint": {
                                 "type": "number",
-                                "value": "60"
+                                "value": "3"
                             }
                         },
-                        "title": "Average debtor days",
+                        "title": "Payable turnover",
                         "type": "gauge",
                         "dataRange": "Data!B10"
                     }
@@ -424,22 +424,22 @@
                     "data": {
                         "sectionRule": {
                             "colors": {
-                                "lowerColor": "#6AA84F",
+                                "lowerColor": "#cc0000",
                                 "middleColor": "#f1c232",
-                                "upperColor": "#CC0000"
+                                "upperColor": "#6aa84f"
                             },
                             "rangeMin": "0",
-                            "rangeMax": "100",
+                            "rangeMax": "20",
                             "lowerInflectionPoint": {
                                 "type": "number",
-                                "value": "45"
+                                "value": "6"
                             },
                             "upperInflectionPoint": {
                                 "type": "number",
-                                "value": "70"
+                                "value": "10"
                             }
                         },
-                        "title": "Average payable days",
+                        "title": "Receivable turnover",
                         "type": "gauge",
                         "dataRange": "Data!B11"
                     }
@@ -475,7 +475,6 @@
                     }
                 }
             ],
-            "filterTables": [],
             "areGridLinesVisible": true,
             "isVisible": true
         },
@@ -483,21 +482,12 @@
             "id": "15fc34c2-8752-4a36-9ecf-84aa216ecf2c",
             "name": "Data",
             "colNumber": 30,
-            "rowNumber": 91,
+            "rowNumber": 93,
             "rows": {
                 "3": {
                     "size": 23
                 },
                 "4": {
-                    "size": 23
-                },
-                "13": {
-                    "size": 23
-                },
-                "14": {
-                    "size": 23
-                },
-                "21": {
                     "size": 23
                 },
                 "22": {
@@ -506,25 +496,25 @@
                 "23": {
                     "size": 23
                 },
-                "33": {
+                "24": {
                     "size": 23
                 }
             },
             "cols": {
                 "0": {
-                    "size": 280
+                    "size": 280.193359375
                 },
                 "1": {
-                    "size": 175
+                    "size": 175.193359375
                 },
                 "2": {
-                    "size": 175
+                    "size": 175.193359375
                 },
                 "3": {
-                    "size": 175
+                    "size": 175.193359375
                 },
                 "4": {
-                    "size": 175
+                    "size": 175.193359375
                 },
                 "5": {
                     "size": 119
@@ -581,7 +571,7 @@
                 },
                 "A16": {
                     "style": 4,
-                    "content": "=_t(\"Gross profit\")"
+                    "content": "=_t(\"Net income\")"
                 },
                 "A17": {
                     "style": 3,
@@ -592,115 +582,123 @@
                     "content": "=_t(\"Total expense\")"
                 },
                 "A19": {
-                    "style": 5,
-                    "content": "=_t(\"Net profit\")"
+                    "style": 4,
+                    "content": "=_t(\"Revenue\")"
                 },
                 "A20": {
                     "style": 3,
-                    "content": "=_t(\"Total Current assets\")"
+                    "content": "=_t(\"EBIT\")"
                 },
                 "A21": {
                     "style": 3,
-                    "content": "=_t(\"Total Current liabilities\")"
+                    "content": "=_t(\"Current assets\")"
                 },
                 "A22": {
                     "style": 3,
-                    "content": "=_t(\"Total assets\")"
+                    "content": "=_t(\"Current liabilities\")"
                 },
                 "A23": {
                     "style": 3,
-                    "content": "=_t(\"Total liabilities\")"
+                    "content": "=_t(\"Total assets\")"
                 },
                 "A24": {
-                    "style": 5,
-                    "content": "=_t(\"Total shareholder's equity\")"
+                    "style": 3,
+                    "content": "=_t(\"Total liabilities\")"
                 },
                 "A25": {
-                    "style": 3,
-                    "content": "=_t(\"Cash flow\")"
+                    "style": 4,
+                    "content": "=_t(\"Total shareholder's equity\")"
                 },
                 "A26": {
                     "style": 3,
-                    "content": "=_t(\"Quick assets\")"
+                    "content": "=_t(\"Cash flow\")"
                 },
                 "A27": {
                     "style": 3,
-                    "content": "=_t(\"Payables\")"
+                    "content": "=_t(\"Quick assets\")"
                 },
                 "A28": {
                     "style": 3,
+                    "content": "=_t(\"Payables\")"
+                },
+                "A29": {
+                    "style": 3,
                     "content": "=_t(\"Receivables\")"
                 },
-                "A30": {
-                    "style": 6,
+                "A31": {
+                    "style": 5,
                     "content": "=_t(\"Account type\")"
                 },
-                "A31": {
-                    "style": 7,
+                "A32": {
+                    "style": 6,
                     "content": "=_t(\"Receivable\")"
                 },
-                "A32": {
-                    "style": 7,
+                "A33": {
+                    "style": 6,
                     "content": "=_t(\"Bank and Cash\")"
                 },
-                "A33": {
-                    "style": 7,
+                "A34": {
+                    "style": 6,
                     "content": "=_t(\"Current Assets\")"
                 },
-                "A34": {
-                    "style": 7,
-                    "content": "=_t(\"Prepayments\")"
-                },
                 "A35": {
-                    "style": 7,
+                    "style": 6,
                     "content": "=_t(\"Non-current Assets\")"
                 },
                 "A36": {
-                    "style": 7,
-                    "content": "=_t(\"Fixed Assets\")"
+                    "style": 6,
+                    "content": "=_t(\"Prepayments\")"
                 },
                 "A37": {
-                    "style": 7,
-                    "content": "=_t(\"Payable\")"
+                    "style": 6,
+                    "content": "=_t(\"Fixed Assets\")"
                 },
                 "A38": {
-                    "style": 7,
-                    "content": "=_t(\"Credit Card\")"
+                    "style": 6,
+                    "content": "=_t(\"Payable\")"
                 },
                 "A39": {
-                    "style": 7,
-                    "content": "=_t(\"Current Liabilities\")"
+                    "style": 6,
+                    "content": "=_t(\"Credit Card\")"
                 },
                 "A40": {
-                    "style": 7,
-                    "content": "=_t(\"Non-current Liabilities\")"
+                    "style": 6,
+                    "content": "=_t(\"Current Liabilities\")"
                 },
                 "A41": {
-                    "style": 7,
-                    "content": "=_t(\"Equity\")"
+                    "style": 6,
+                    "content": "=_t(\"Non-current Liabilities\")"
                 },
                 "A42": {
-                    "style": 8,
-                    "content": "=_t(\"Income\")"
+                    "style": 6,
+                    "content": "=_t(\"Equity\")"
                 },
                 "A43": {
-                    "style": 8,
-                    "content": "=_t(\"Other Income\")"
+                    "style": 6,
+                    "content": "=_t(\"Current Year Earnings\")"
                 },
                 "A44": {
-                    "style": 8,
-                    "content": "=_t(\"Expenses\")"
+                    "style": 7,
+                    "content": "=_t(\"Income\")"
                 },
                 "A45": {
-                    "style": 8,
-                    "content": "=_t(\"Depreciation\")"
+                    "style": 7,
+                    "content": "=_t(\"Other Income\")"
                 },
                 "A46": {
-                    "style": 8,
-                    "content": "=_t(\"Cost of Revenue\")"
+                    "style": 7,
+                    "content": "=_t(\"Expenses\")"
                 },
                 "A47": {
-                    "style": 9,
+                    "style": 7,
+                    "content": "=_t(\"Depreciation\")"
+                },
+                "A48": {
+                    "style": 7,
+                    "content": "=_t(\"Cost of Revenue\")"
+                },
+                "A49": {
+                    "style": 8,
                     "content": "=_t(\"Off-Balance Sheet\")"
                 },
                 "B1": {
@@ -714,181 +712,185 @@
                 },
                 "B3": {
                     "format": 2,
-                    "content": "=IFERROR(B19/B17)"
+                    "content": "=IFERROR(B16/B19)"
                 },
                 "B4": {
                     "format": 2,
-                    "content": "=IFERROR((B14-B18)/B14)"
+                    "content": "=IFERROR(B20/B14)"
                 },
                 "B5": {
                     "format": 3,
-                    "content": "=IFERROR(B23/B24)"
+                    "content": "=IFERROR(B24/B25)"
                 },
                 "B6": {
                     "format": 3,
-                    "content": "=IFERROR(B20/ABS(B21))"
+                    "content": "=IFERROR(B21/B22)"
                 },
                 "B7": {
                     "format": 3,
-                    "content": "=IFERROR(B25/B21)"
+                    "content": "=IFERROR(B26/B22)"
                 },
                 "B8": {
                     "format": 3,
-                    "content": "=FORMAT.LARGE.NUMBER(IFERROR(B20-B21))"
+                    "content": "=FORMAT.LARGE.NUMBER(IFERROR(B21-B22))"
                 },
                 "B9": {
                     "format": 3,
-                    "content": "=IFERROR(B26/ABS(B21))"
+                    "content": "=IFERROR(B27/B22)"
                 },
                 "B10": {
                     "style": 2,
                     "format": 3,
-                    "content": "=IFERROR(B28/ABS(B14)*30)"
+                    "content": "=IFERROR(B28/B18*120,0)"
                 },
                 "B11": {
                     "style": 2,
                     "format": 3,
-                    "content": "=IFERROR(B27/ABS(B18)*30)"
-                },
-                "B12": {
-                    "style": 2,
-                    "format": 3
+                    "content": "=IFERROR(B29/B17*120)"
                 },
                 "B13": {
-                    "style": 10,
+                    "style": 9,
                     "content": "=_t(\"Value\")"
                 },
                 "B14": {
-                    "style": 11,
-                    "content": "=B42"
+                    "style": 3,
+                    "content": "=B44"
                 },
                 "B15": {
-                    "style": 11,
-                    "content": "=B46"
+                    "style": 3,
+                    "content": "=B48"
                 },
                 "B16": {
-                    "style": 5,
+                    "style": 4,
                     "content": "=B14-B15"
                 },
                 "B17": {
                     "style": 3,
-                    "content": "=B42+B43"
+                    "content": "=B44+B45"
                 },
                 "B18": {
                     "style": 3,
-                    "content": "=B44+B45+B46"
+                    "content": "=B46+B47+B48"
                 },
                 "B19": {
-                    "style": 5,
+                    "style": 4,
                     "content": "=B17-B18"
                 },
                 "B20": {
                     "style": 3,
-                    "content": "=B31+B32+B33+B34"
+                    "content": "=B44-B46"
                 },
                 "B21": {
                     "style": 3,
-                    "content": "=B37+B38+B39"
+                    "content": "=B34"
                 },
                 "B22": {
                     "style": 3,
-                    "content": "=B31+B32+B33+B35+B34+B36"
+                    "content": "=B40"
                 },
                 "B23": {
                     "style": 3,
-                    "content": "=B37+B38+B39+B40"
+                    "content": "=B32+B33+B34+B35+B36+B37"
                 },
                 "B24": {
-                    "style": 5,
-                    "content": "=B22-B23"
+                    "style": 3,
+                    "content": "=B38+B39+B40+B41"
                 },
                 "B25": {
-                    "style": 3,
-                    "content": "=B32"
+                    "style": 4,
+                    "content": "=B23-B24"
                 },
                 "B26": {
                     "style": 3,
-                    "content": "=B31+B32+B34"
+                    "content": "=B33"
                 },
                 "B27": {
                     "style": 3,
-                    "content": "=B37"
+                    "content": "=B32+B33+B34"
                 },
                 "B28": {
                     "style": 3,
-                    "content": "=B31"
+                    "content": "=B38"
                 },
-                "B30": {
-                    "style": 12,
-                    "content": "=F1"
+                "B29": {
+                    "style": 3,
+                    "content": "=B32"
                 },
                 "B31": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C31),B$30)"
+                    "style": 10,
+                    "content": "=_t(\"Delta\")"
                 },
                 "B32": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C32),B$30)"
+                    "style": 6,
+                    "content": "=C32-D32"
                 },
                 "B33": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C33),B$30)"
+                    "style": 6,
+                    "content": "=C33-D33"
                 },
                 "B34": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C34),B$30)"
+                    "style": 6,
+                    "content": "=C34-D34"
                 },
                 "B35": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C35),B$30)"
+                    "style": 6,
+                    "content": "=C35-D35"
                 },
                 "B36": {
-                    "style": 7,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C36),B$30)"
+                    "style": 6,
+                    "content": "=C36-D36"
                 },
                 "B37": {
-                    "style": 7,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C37),B$30)"
+                    "style": 6,
+                    "content": "=C37-D37"
                 },
                 "B38": {
-                    "style": 7,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C38),B$30)"
+                    "style": 6,
+                    "content": "=C38-D38"
                 },
                 "B39": {
-                    "style": 7,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C39),B$30)"
+                    "style": 6,
+                    "content": "=C39-D39"
                 },
                 "B40": {
-                    "style": 7,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C40),B$30)"
+                    "style": 6,
+                    "content": "=C40-D40"
                 },
                 "B41": {
-                    "style": 7,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C41),B$30)"
+                    "style": 6,
+                    "content": "=C41-D41"
                 },
                 "B42": {
-                    "style": 8,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP(\"income\"),B$30)"
+                    "style": 6,
+                    "content": "=C42-D42"
                 },
                 "B43": {
-                    "style": 8,
-                    "content": "=-ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C43),B$30)"
+                    "style": 6,
+                    "content": "=C43-D43"
                 },
                 "B44": {
-                    "style": 8,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C44),B$30)"
+                    "style": 7,
+                    "content": "=C44-D44"
                 },
                 "B45": {
-                    "style": 8,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C45),B$30)"
+                    "style": 7,
+                    "content": "=C45-D45"
                 },
                 "B46": {
-                    "style": 8,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C46),B$30)"
+                    "style": 7,
+                    "content": "=C46-D46"
                 },
                 "B47": {
-                    "style": 9,
-                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($C47),B$30)"
+                    "style": 7,
+                    "content": "=C47-D47"
+                },
+                "B48": {
+                    "style": 7,
+                    "content": "=C48-D48"
+                },
+                "B49": {
+                    "style": 8,
+                    "content": "=C49-D49"
                 },
                 "C1": {
                     "style": 1,
@@ -901,7 +903,7 @@
                     "content": "=_t(\"Net income / Revenue\")"
                 },
                 "C4": {
-                    "content": "=_t(\"(Net sales - Total expenses) / Net sales\")"
+                    "content": "=_t(\"EBIT / Net sales\")"
                 },
                 "C5": {
                     "content": "=_t(\"Total liabilities / Total shareholders’ equity\")"
@@ -919,10 +921,10 @@
                     "content": "=_t(\"Quick assets / Current liabilities\")"
                 },
                 "C10": {
-                    "content": "=_t(\"Receivables / Income * 30\")"
+                    "content": "=_t(\"Payables / Expenses * 120\")"
                 },
                 "C11": {
-                    "content": "=_t(\"Payables / Expenses * 30\")"
+                    "content": "=_t(\"Receivables / Income * 120\")"
                 },
                 "C14": {
                     "style": 2,
@@ -950,111 +952,119 @@
                 },
                 "C20": {
                     "style": 2,
-                    "content": "=_t(\"receivable + bank and cash + current assets + prepayments\")"
+                    "content": "=_t(\"expenses - income\")"
                 },
                 "C21": {
                     "style": 2,
-                    "content": "=_t(\"payable + credit card + current liabilities\")"
+                    "content": "=_t(\"current assets\")"
                 },
                 "C22": {
                     "style": 2,
-                    "content": "=_t(\"receivable + bank and cash + current assets + non-current assets + prepayments + fixed assets\")"
+                    "content": "=_t(\"current liabilities\")"
                 },
                 "C23": {
                     "style": 2,
-                    "content": "=_t(\"payable + credit card + current liabilities + non-current liabilities\")"
+                    "content": "=_t(\"receivable + bank and cash + current assets + non-current assets + prepayments + fixed assets\")"
                 },
                 "C24": {
                     "style": 2,
-                    "content": "=_t(\"total assets - total liabilities\")"
+                    "content": "=_t(\"payable + credit card + current liabilities + non-current liabilities\")"
                 },
                 "C25": {
                     "style": 2,
-                    "content": "=_t(\"bank and cash\")"
+                    "content": "=_t(\"total assets - total liabilities\")"
                 },
                 "C26": {
                     "style": 2,
-                    "content": "=_t(\"receivable + bank and cash + prepayments\")"
+                    "content": "=_t(\"bank and cash\")"
                 },
                 "C27": {
                     "style": 2,
-                    "content": "=_t(\"payable\")"
+                    "content": "=_t(\"receivable + bank and cash + current assets\")"
                 },
                 "C28": {
                     "style": 2,
+                    "content": "=_t(\"payable\")"
+                },
+                "C29": {
+                    "style": 2,
                     "content": "=_t(\"receivable\")"
                 },
-                "C30": {
-                    "style": 6,
-                    "content": "=_t(\"Technical name\")"
-                },
                 "C31": {
-                    "style": 7,
-                    "content": "asset_receivable"
+                    "style": 10,
+                    "content": "=F8"
                 },
                 "C32": {
-                    "style": 7,
-                    "content": "asset_cash"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E32),C$31)"
                 },
                 "C33": {
-                    "style": 7,
-                    "content": "asset_current"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E33),C$31)"
                 },
                 "C34": {
-                    "style": 7,
-                    "content": "asset_prepayments"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E34),C$31)"
                 },
                 "C35": {
-                    "style": 7,
-                    "content": "asset_non_current"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E35),C$31)"
                 },
                 "C36": {
-                    "style": 7,
-                    "content": "asset_fixed"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E36),C$31)"
                 },
                 "C37": {
-                    "style": 7,
-                    "content": "liability_payable"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E37),C$31)"
                 },
                 "C38": {
-                    "style": 7,
-                    "content": "liability_credit_card"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E38),C$31)"
                 },
                 "C39": {
-                    "style": 7,
-                    "content": "liability_current"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E39),C$31)"
                 },
                 "C40": {
-                    "style": 7,
-                    "content": "liability_non_current"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E40),C$31)"
                 },
                 "C41": {
-                    "style": 7,
-                    "content": "equity"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E41),C$31)"
                 },
                 "C42": {
-                    "style": 8,
-                    "content": "income"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E42),C$31)"
                 },
                 "C43": {
-                    "style": 8,
-                    "content": "income_other"
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E43),C$31)"
                 },
                 "C44": {
-                    "style": 8,
-                    "content": "expense"
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E44),C$31)"
                 },
                 "C45": {
-                    "style": 8,
-                    "content": "expense_depreciation"
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E45),C$31)"
                 },
                 "C46": {
-                    "style": 8,
-                    "content": "expense_direct_cost"
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E46),C$31)"
                 },
                 "C47": {
-                    "style": 9,
-                    "content": "off_balance"
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E47),C$31)"
+                },
+                "C48": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E48),C$31)"
+                },
+                "C49": {
+                    "style": 8,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E49),C$31)"
                 },
                 "D14": {
                     "style": 2
@@ -1101,8 +1111,87 @@
                 "D28": {
                     "style": 2
                 },
+                "D29": {
+                    "style": 2
+                },
+                "D31": {
+                    "style": 10,
+                    "content": "=F12"
+                },
+                "D32": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E32),D$31)"
+                },
+                "D33": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E33),D$31)"
+                },
+                "D34": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E34),D$31)"
+                },
+                "D35": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E35),D$31)"
+                },
+                "D36": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E36),D$31)"
+                },
+                "D37": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E37),D$31)"
+                },
+                "D38": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E38),D$31)"
+                },
+                "D39": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E39),D$31)"
+                },
+                "D40": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E40),D$31)"
+                },
+                "D41": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E41),D$31)"
+                },
+                "D42": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E42),D$31)"
+                },
+                "D43": {
+                    "style": 6,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E43),D$31)"
+                },
+                "D44": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E44),D$31)"
+                },
+                "D45": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E45),D$31)"
+                },
+                "D46": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E46),D$31)"
+                },
+                "D47": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E47),D$31)"
+                },
+                "D48": {
+                    "style": 7,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E48),D$31)"
+                },
+                "D49": {
+                    "style": 8,
+                    "content": "=ODOO.BALANCE(ODOO.ACCOUNT.GROUP($E49),D$31)"
+                },
                 "E1": {
-                    "style": 13,
+                    "style": 11,
                     "content": "=_t(\"Month-Year\")"
                 },
                 "E2": {
@@ -1130,7 +1219,7 @@
                     "content": "=_t(\"Offset -1 - Year\")"
                 },
                 "E8": {
-                    "style": 13,
+                    "style": 11,
                     "content": "=_t(\"Offset -1 - Month-Year\")"
                 },
                 "E9": {
@@ -1146,69 +1235,144 @@
                     "content": "=_t(\"Offset -4 - Year\")"
                 },
                 "E12": {
-                    "style": 13,
+                    "style": 11,
                     "content": "=_t(\"Offset -4 - Month-Year\")"
                 },
+                "E31": {
+                    "style": 5,
+                    "content": "=_t(\"Technical name\")"
+                },
+                "E32": {
+                    "style": 6,
+                    "content": "asset_receivable"
+                },
+                "E33": {
+                    "style": 6,
+                    "content": "asset_cash"
+                },
+                "E34": {
+                    "style": 6,
+                    "content": "asset_current"
+                },
+                "E35": {
+                    "style": 6,
+                    "content": "asset_non_current"
+                },
+                "E36": {
+                    "style": 6,
+                    "content": "asset_prepayments"
+                },
+                "E37": {
+                    "style": 6,
+                    "content": "asset_fixed"
+                },
+                "E38": {
+                    "style": 6,
+                    "content": "liability_payable"
+                },
+                "E39": {
+                    "style": 6,
+                    "content": "liability_credit_card"
+                },
+                "E40": {
+                    "style": 6,
+                    "content": "liability_current"
+                },
+                "E41": {
+                    "style": 6,
+                    "content": "liability_non_current"
+                },
+                "E42": {
+                    "style": 6,
+                    "content": "equity"
+                },
+                "E43": {
+                    "style": 6,
+                    "content": "equity_unaffected"
+                },
+                "E44": {
+                    "style": 7,
+                    "content": "income"
+                },
+                "E45": {
+                    "style": 7,
+                    "content": "income_other"
+                },
+                "E46": {
+                    "style": 7,
+                    "content": "expense"
+                },
+                "E47": {
+                    "style": 7,
+                    "content": "expense_depreciation"
+                },
+                "E48": {
+                    "style": 7,
+                    "content": "expense_direct_cost"
+                },
+                "E49": {
+                    "style": 8,
+                    "content": "off_balance"
+                },
                 "F1": {
-                    "style": 14,
+                    "style": 12,
                     "content": "=ODOO.FILTER.VALUE(\"Month\")"
                 },
                 "F2": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=LEFT(F1,2)"
                 },
                 "F3": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=RIGHT(F1,4)"
                 },
                 "F4": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=CONCATENATE(F2,\"/01/\",F3)"
                 },
                 "F5": {
-                    "style": 15,
+                    "style": 13,
                     "format": 4,
                     "content": "=EDATE(F4,-1)"
                 },
                 "F6": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=IF(LEN(MONTH(F5))=1,CONCATENATE(\"0\",MONTH(F5)),MONTH(F5))"
                 },
                 "F7": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=YEAR(F5)"
                 },
                 "F8": {
-                    "style": 14,
+                    "style": 12,
                     "format": 4,
                     "content": "=CONCATENATE(F6,\"/\",F7)"
                 },
                 "F9": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=EDATE(F4,-4)"
                 },
                 "F10": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=IF(LEN(MONTH(F9))=1,CONCATENATE(\"0\",MONTH(F9)),MONTH(F9))"
                 },
                 "F11": {
-                    "style": 15,
+                    "style": 13,
                     "content": "=YEAR(F9)"
                 },
                 "F12": {
-                    "style": 14,
+                    "style": 12,
                     "content": "=CONCATENATE(F10,\"/\",F11)"
                 },
-                "H34": {
+                "J36": {
                     "format": 4
                 },
-                "I34": {
+                "K36": {
                     "format": 4
                 }
             },
             "conditionalFormats": [],
             "figures": [],
-            "filterTables": [],
             "areGridLinesVisible": true,
             "isVisible": true
         }
@@ -1225,47 +1389,40 @@
             "fillColor": "#d9ead3"
         },
         "4": {
-            "fillColor": "#B6D7A8"
-        },
-        "5": {
             "fillColor": "#b6d7a8"
         },
-        "6": {
+        "5": {
             "fillColor": "#a4c2f4",
             "bold": true
         },
-        "7": {
+        "6": {
             "fillColor": "#c9daf8"
         },
-        "8": {
+        "7": {
             "fillColor": "#ead1dc"
         },
-        "9": {
+        "8": {
             "fillColor": "#f3f3f3"
         },
-        "10": {
+        "9": {
             "align": "right",
             "bold": true
         },
-        "11": {
-            "fillColor": "#d9ead3",
-            "textColor": "#000000"
-        },
-        "12": {
+        "10": {
             "fillColor": "#a4c2f4",
             "bold": true,
             "align": "right"
         },
-        "13": {
+        "11": {
             "bold": true,
             "fillColor": "#c9daf8"
         },
-        "14": {
+        "12": {
             "bold": false,
             "align": "left",
             "fillColor": "#c9daf8"
         },
-        "15": {
+        "13": {
             "bold": false,
             "align": "left"
         }
@@ -1278,8 +1435,12 @@
     },
     "borders": {},
     "revisionId": "START_REVISION",
-    "uniqueFigureIds": true,
-    "odooVersion": 5,
+    "chartOdooMenusReferences": {},
+    "odooVersion": 3,
+    "pivots": {},
+    "pivotNextId": 1,
+    "lists": {},
+    "listNextId": 1,
     "globalFilters": [
         {
             "id": "069d7cf1-9623-4d6e-8226-ad7c60112662",
@@ -1287,23 +1448,10 @@
             "label": "Month",
             "defaultValue": {},
             "rangeType": "month",
-            "defaultsToCurrentPeriod": true
+            "defaultsToCurrentPeriod": true,
+            "pivotFields": {},
+            "listFields": {},
+            "graphFields": {}
         }
-    ],
-    "pivots": {},
-    "pivotNextId": 1,
-    "lists": {},
-    "listNextId": 1,
-    "settings": {
-        "locale": {
-            "name": "English (US)",
-            "code": "en_US",
-            "thousandsSeparator": ",",
-            "decimalSeparator": ".",
-            "dateFormat": "mm/dd/yyyy",
-            "timeFormat": "hh:mm:ss",
-            "formulaArgSeparator": ","
-        }
-    },
-    "chartOdooMenusReferences": {}
+    ]
 }

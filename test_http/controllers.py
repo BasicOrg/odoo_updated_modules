@@ -1,11 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import json
 import logging
-
 import werkzeug
-from psycopg2.errorcodes import SERIALIZATION_FAILURE
-from psycopg2 import OperationalError
-
 from odoo import http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
@@ -18,14 +14,6 @@ _logger = logging.getLogger(__name__)
 
 CT_JSON = {'Content-Type': 'application/json; charset=utf-8'}
 WSGI_SAFE_KEYS = {'PATH_INFO', 'QUERY_STRING', 'RAW_URI', 'SCRIPT_NAME', 'wsgi.url_scheme'}
-
-
-# Force serialization errors. Patched in some tests.
-should_fail = None
-
-
-class SerializationFailureError(OperationalError):
-    pgcode = SERIALIZATION_FAILURE
 
 
 class TestHttp(http.Controller):
@@ -78,10 +66,6 @@ class TestHttp(http.Controller):
     @http.route('/test_http/echo-http-csrf', type='http', auth='none', methods=['POST'], csrf=True)
     def echo_http_csrf(self, **kwargs):
         return str(kwargs)
-
-    @http.route('/test_http/echo-http-context-lang', type='http', auth='public', methods=['GET'], csrf=False)
-    def echo_http_context_lang(self, **kwargs):
-        return request.env.context.get('lang', '')
 
     @http.route('/test_http/echo-json', type='json', auth='none', methods=['POST'], csrf=False)
     def echo_json(self, **kwargs):
@@ -152,15 +136,7 @@ class TestHttp(http.Controller):
     # =====================================================
     @http.route('/test_http/geoip', type='http', auth='none')
     def geoip(self):
-        return json.dumps({
-            'city': request.geoip.city.name,
-            'country_code': request.geoip.country.iso_code or request.geoip.continent.code,
-            'country_name': request.geoip.country.name or request.geoip.continent.name,
-            'latitude': request.geoip.location.latitude,
-            'longitude': request.geoip.location.longitude,
-            'region': request.geoip.subdivisions[0].iso_code if request.geoip.subdivisions else None,
-            'time_zone': request.geoip.location.time_zone,
-        })
+        return str(request.geoip)
 
     @http.route('/test_http/save_session', type='http', auth='none')
     def touch(self):
@@ -189,16 +165,3 @@ class TestHttp(http.Controller):
                 raise AccessError("Wrong iris code")
             if error == 'UserError':
                 raise UserError("Walter is AFK")
-
-    @http.route("/test_http/upload_file", methods=["POST"], type="http", auth="none", csrf=False)
-    def upload_file_retry(self, ufile):
-        global should_fail  # pylint: disable=W0603
-        if should_fail is None:
-            raise ValueError("should_fail should be set.")
-
-        data = ufile.read()
-        if should_fail:
-            should_fail = False  # Fail once
-            raise SerializationFailureError()
-
-        return data.decode()

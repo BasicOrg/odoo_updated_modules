@@ -31,9 +31,6 @@ class TestQualityCommon(common.TransactionCase):
             'name': 'Saleable Product',
             'categ_id': cls.product_category_base.id
         })
-        cls.failure_location = cls.env['stock.location'].create({
-            'name': 'Fail',
-        })
         cls.product_tmpl_id = cls.product.product_tmpl_id.id
         cls.partner_id = cls.env['res.partner'].create({'name': 'A Test Partner'}).id
         cls.picking_type_id = cls.env.ref('stock.picking_type_in').id

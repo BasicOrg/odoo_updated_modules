@@ -28,6 +28,7 @@
         </record>
 
         <record id="project_support" model="project.project">
+            <field name="date_start" eval="time.strftime('%Y-%m-01 10:00:00')"/>
             <field name="name">After-Sales Services</field>
             <field name="description">Services provided to customers who have purchased products.</field>
             <field name="user_id" eval=""/>
@@ -111,7 +112,7 @@
             <field name="type">service</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="service_type" model="product.product" eval="'milestones' if obj().env.user.has_group('project.group_project_milestone') else 'manual'" />
+            <field name="service_type">milestones</field>
             <field name="service_tracking">task_in_project</field>
             <field name="project_template_id" ref="so_template_project"/>
         </record>
@@ -1087,7 +1088,7 @@
             <field name="name">Furniture Delivery</field>
             <field name="project_id" search="[('sale_order_id', '=', ref('sale_timesheet.sale_order_1'))]"/>
             <field name="stage_id" ref="project.project_stage_1"/>
-            <field name="state">1_done</field>
+            <field name="kanban_state">done</field>
             <field name="sale_line_id" ref="sale_timesheet.sale_line_13"/>
             <field name="sale_order_id" ref="sale_timesheet.sale_order_1"/>
             <field name="partner_id" ref="base.res_partner_2"/>
@@ -1102,7 +1103,7 @@
             <field name="sale_order_id" ref="sale_timesheet.sale_order_2"/>
             <field name="project_id" search="[('sale_order_id', '=', ref('sale_timesheet.sale_order_2'))]"/>
             <field name="stage_id" ref="project.project_stage_1"/>
-            <field name="state">1_done</field>
+            <field name="kanban_state">done</field>
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="user_ids" eval="[Command.link(ref('base.user_admin'))]"/>
         </record>
@@ -1140,8 +1141,7 @@
             <field name="name">Carpet fitting</field>
             <field name="project_id" search="[('sale_order_id', '=', ref('sale_timesheet.sale_order_2'))]"/>
             <field name="stage_id" ref="project.project_stage_0"/>
-            <field name="state">02_changes_requested</field>
-            <field name="create_date" eval="DateTime.now() - relativedelta(days=4)"/>
+            <field name="kanban_state">blocked</field>
             <field name="sale_line_id" ref="sale_timesheet.sale_line_22"/>
             <field name="sale_order_id" ref="sale_timesheet.sale_order_2"/>
             <field name="partner_id" ref="base.res_partner_4"/>
@@ -1174,7 +1174,6 @@
             <field name="stage_id" ref="project.project_stage_2"/>
             <field name="sale_line_id" ref="sale_timesheet.sale_line_22"/>
             <field name="sale_order_id" ref="sale_timesheet.sale_order_2"/>
-            <field name="create_date" eval="DateTime.now() - relativedelta(days=4)"/>
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="user_ids" eval="[Command.link(ref('base.user_demo'))]"/>
         </record>
@@ -1218,7 +1217,7 @@
             <field name="name">Ceiling fan</field>
             <field name="project_id" search="[('sale_order_id', '=', ref('sale_timesheet.sale_order_2'))]"/>
             <field name="stage_id" ref="project.project_stage_0"/>
-            <field name="state">02_changes_requested</field>
+            <field name="kanban_state">blocked</field>
             <field name="sale_line_id" ref="sale_timesheet.sale_line_22"/>
             <field name="sale_order_id" ref="sale_timesheet.sale_order_2"/>
             <field name="partner_id" ref="base.res_partner_4"/>
@@ -1229,7 +1228,7 @@
             <field name="name">Plumbing</field>
             <field name="project_id" search="[('sale_order_id', '=', ref('sale_timesheet.sale_order_2'))]"/>
             <field name="stage_id" ref="project.project_stage_0"/>
-            <field name="state">02_changes_requested</field>
+            <field name="kanban_state">blocked</field>
             <field name="sale_line_id" ref="sale_timesheet.sale_line_22"/>
             <field name="sale_order_id" ref="sale_timesheet.sale_order_2"/>
             <field name="partner_id" ref="base.res_partner_4"/>
@@ -1312,7 +1311,7 @@
             <field name="res_id" ref="project_agr_task_1"/>
         </record>
         <function model="project.task" name="rating_apply"
-            eval="([ref('project_agr_task_1')], 5, 'TS_0', None, 'This is already looking very promising, thanks for the good work!')"/>
+            eval="([ref('project_agr_task_1')], 5, 'TS_0', None, 'This is already looking very promising, thanks for the good work! 😃')"/>
 
         <record id="rating_task_2" model="rating.rating">
             <field name="access_token">TS_1</field>
@@ -2579,16 +2578,5 @@
             <field name="progress" eval="30"/>
             <field name="status">at_risk</field>
         </record>
-
-        <!-- Change task creation notifications date -->
-        <function model="mail.message" name="write">
-           <value model="mail.message"
-                eval="obj().env['mail.message'].search([
-                    ('subtype_id', '=', ref('project.mt_task_new')),
-                    ('res_id', 'in', [ref('sale_timesheet.project_dpc_task_4'), ref('sale_timesheet.project_dpc_task_5')]),
-                ]).ids"
-            />
-            <value eval="{'date': DateTime.now() - relativedelta(days=4)}"/>
-        </function>
     </data>
 </odoo>

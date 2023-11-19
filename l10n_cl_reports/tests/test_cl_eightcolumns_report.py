@@ -8,7 +8,7 @@ from odoo.tests import tagged
 class TestClEightColumnsReport(TestAccountReportsCommon):
 
     @classmethod
-    def setUpClass(cls, chart_template_ref='cl'):
+    def setUpClass(cls, chart_template_ref='l10n_cl.cl_chart_template'):
         super().setUpClass(chart_template_ref=chart_template_ref)
         cls.partner_a.write({
             'country_id': cls.env.ref('base.cl').id,
@@ -41,12 +41,11 @@ class TestClEightColumnsReport(TestAccountReportsCommon):
             #   Account                                 Debit      Credit   Debitor  Creditor    Active  Passive Loss    Gain
             [   0,                                       1,         2,       3,       4,          5,      6,       7,        8],
             [
-                ('110310 Customers',                1190.0,         0,  1190.0,       0,     1190.0,      0,       0,        0),
-                ('210710 VAT Tax Debit',                 0,     190.0,       0,   190.0,          0,  190.0,       0,        0),
-                ('310110 Consulting revenues',           0,    1000.0,       0,  1000.0,          0,      0,       0,   1000.0),
-                ('Subtotal',                        1190.0,    1190.0,  1190.0,  1190.0,     1190.0,   190.0,      0,   1000.0),
-                ('Profit and Loss',                      0,         0,       0,       0,          0,  1000.0,  1000.0,       0),
-                ('Total',                           1190.0,    1190.0,  1190.0,  1190.0,     1190.0,  1190.0,  1000.0,  1000.0),
+                ('110310 Clientes',                 1190.0,        '',  1190.0,      '',     1190.0,     '',      '',       ''),
+                ('210710 IVA Débito Fiscal',            '',     190.0,      '',   190.0,         '',  190.0,      '',       ''),
+                ('310110 Ingresos por Consultoría',     '',    1000.0,      '',  1000.0,         '',     '',      '',   1000.0),
+                ('Subtotal',                        1190.0,    1190.0,  1190.0,  1190.0,     1190.0,  190.0,      '',   1000.0),
+                ('Profit and Loss',                     '',        '',      '',      '',         '', 1000.0,  1000.0,       ''),
+                ('Total',                           1190.0,    1190.0,  1190.0,  1190.0,     1190.0, 1190.0,  1000.0,   1000.0),
             ],
-            options,
         )

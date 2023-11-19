@@ -1,20 +1,37 @@
 /** @odoo-module **/
 
-import OnboardingStepFormController from "@onboarding/views/form/onboarding_step_form_controller";
+import { FormController } from "@web/views/form/form_controller";
+import { useService } from "@web/core/utils/hooks";
 
 
-export default class AppointmentOnboardingAppointmentTypeFormController extends OnboardingStepFormController {
-    /**
-     * @override
-     */
-    get stepName() {
-        return "appointment.appointment_onboarding_create_appointment_type_step";
+export default class AppointmentOnboardingAppointmentTypeFormController extends FormController {
+    setup() {
+        super.setup();
+        this.orm = useService('orm');
     }
     /**
-     * Reload the view below the onboarding panel as records may have been
-     * created/modified.
+     * Overridden to mark the onboarding step as completed and reload the view.
+     *
+     * @override
      */
-    get stepConfig() {
-        return { ...super.stepConfig, reloadAlways: true };
+    async saveButtonClicked()  {
+        await super.saveButtonClicked();
+        const wasFirstValidation = await this.orm.call(
+            'onboarding.onboarding.step',
+            'action_save_appointment_onboarding_create_appointment_type_step',
+        );
+        this.env.dialogData.close();
+        if (wasFirstValidation) {
+            window.location.reload();
+        }
+    }
+    /**
+     * Close modal on discard.
+     *
+     * @override
+     */
+    async discard() {
+        await super.discard();
+        this.env.dialogData.close();
     }
 }

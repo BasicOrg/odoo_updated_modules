@@ -3,7 +3,7 @@
 # Based on the module developped by Richard de Meester, from Willdoo IT
 {
     'name': "ABA Credit Transfer",
-    'countries': ['au'],
+    'icon': '/l10n_au/static/description/icon.png',
     'summary': """Export payments as ABA Credit Transfer files""",
     'description': """
 ABA Credit Transfer
@@ -110,8 +110,9 @@ Use
         'views/account_journal_views.xml',
         'views/account_journal_dashboard_views.xml',
         'views/account_payment_views.xml',
+        'views/res_partner_bank_views.xml',
     ],
     'installable': True,
-    'auto_install': ['l10n_au'],
+    'auto_install': True,
     'license': 'OEEL-1',
 }

@@ -1,29 +1,26 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* delivery_bpost
-#
+# 
 # Translators:
-# Ediz Duman <neps1192@gmail.com>, 2022
-# Murat Kaplan <muratk@projetgrup.com>, 2022
-# Alexander B. <road2monstercat@gmail.com>, 2022
-# Martin Trigaux, 2022
-# Ozlem Cikrikci <ozlemc@eskayazilim.com.tr>, 2022
-# Umur Akın <umura@projetgrup.com>, 2022
-# abc Def <hdogan1974@gmail.com>, 2022
-# Tugay Hatıl <tugayh@projetgrup.com>, 2022
-#
+# Ediz Duman <neps1192@gmail.com>, 2019
+# Martin Trigaux, 2019
+# Murat Kaplan <muratk@projetgrup.com>, 2019
+# Alexander B. <road2monstercat@gmail.com>, 2019
+# Umur Akın <umura@projetgrup.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: Tugay Hatıl <tugayh@projetgrup.com>, 2022\n"
-"Language-Team: Turkish (https://app.transifex.com/odoo/teams/41243/tr/)\n"
-"Language: tr\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:35+0000\n"
+"Last-Translator: Umur Akın <umura@projetgrup.com>, 2019\n"
+"Language-Team: Turkish (https://www.transifex.com/odoo/teams/41243/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: delivery_bpost
@@ -42,7 +39,6 @@ msgid "Allow deliveries on Saturday (extra charges apply)"
 msgstr "Cumartesi günleri teslimata izin verir (ekstra ücret uygulanır)"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -69,9 +65,10 @@ msgstr "Bpost Yurtiçi Teslimat Türü"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_domestic
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_domestic
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
 msgid "Bpost Domestic bpack 24h Pro"
-msgstr "Bpost Domestic bpack 24h Pro"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_international_deliver_type
@@ -89,14 +86,9 @@ msgid "Bpost Label Stock Type"
 msgstr "Bpost Stok Etiket Türü"
 
 #. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Bpost Package Type"
-msgstr "Bpost Paket Türü"
-
-#. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_parcel_return_instructions
 msgid "Bpost Parcel Return Instructions"
-msgstr "Bpost Parsel İade Talimatları"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_shipment_type
@@ -105,12 +97,13 @@ msgstr "Bpost Nakliye Türü"
 
 #. module: delivery_bpost
 #: model:delivery.carrier,name:delivery_bpost.delivery_carrier_bpost_inter
+#: model:product.product,name:delivery_bpost.product_product_delivery_bpost_world
 #: model:product.template,name:delivery_bpost.product_product_delivery_bpost_world_product_template
 msgid "Bpost World Express Pro"
-msgstr "Bpost World Express Pro"
+msgstr ""
 
 #. module: delivery_bpost
-#: model:ir.model.fields,field_description:delivery_bpost.field_stock_package_type__package_carrier_type
+#: model:ir.model.fields,field_description:delivery_bpost.field_product_packaging__package_carrier_type
 msgid "Carrier"
 msgstr "Nakliyeci"
 
@@ -150,24 +143,9 @@ msgid "International"
 msgstr "Uluslararası"
 
 #. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Label Format"
-msgstr "Etiket Biçimi"
-
-#. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Label Type"
-msgstr "Etiket Türü"
-
-#. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_shipment_type__other
 msgid "OTHER"
 msgstr "DİĞER"
-
-#. module: delivery_bpost
-#: model_terms:ir.ui.view,arch_db:delivery_bpost.view_delivery_carrier_form_with_provider_bpost
-msgid "Options"
-msgstr "Seçenekler"
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_label_format__pdf
@@ -180,7 +158,6 @@ msgid "PNG"
 msgstr "PNG"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Packages over 30 Kg are not accepted by bpost."
@@ -192,11 +169,15 @@ msgid "Passphrase"
 msgstr "Parola"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
 msgstr "En az bir adet kargolanacak ürün sağlayın."
+
+#. module: delivery_bpost
+#: model:ir.model,name:delivery_bpost.model_product_packaging
+msgid "Product Packaging"
+msgstr "Ürün Paketleme"
 
 #. module: delivery_bpost
 #: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__delivery_type
@@ -204,17 +185,10 @@ msgid "Provider"
 msgstr "Sağlayıcı"
 
 #. module: delivery_bpost
-#. odoo-python
+#: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Return labels created into bpost"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Return shipment created into bpost"
+msgid "Return shipment created into bpost <br/> <b>Tracking Number : </b>%s"
 msgstr ""
 
 #. module: delivery_bpost
@@ -233,38 +207,29 @@ msgid "SAMPLE"
 msgstr "NUMUNE"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment #%s has been cancelled"
-msgstr "%s # numaralı gönderi iptal edildi"
+msgid "Shipment N° %s has been cancelled"
+msgstr "Sevkiyat N° %s iptal edildi"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
-msgid "Shipment created into bpost"
-msgstr ""
+msgid "Shipment created into bpost <br/> <b>Tracking Number : </b>%s"
+msgstr "Gönderim bpost için oluştu <br/> <b>Takip Numarası: </b>%s"
 
 #. module: delivery_bpost
 #: model:ir.model,name:delivery_bpost.model_delivery_carrier
 msgid "Shipping Methods"
-msgstr "Nakliye Yöntemleri"
+msgstr ""
 
 #. module: delivery_bpost
-#: model:ir.model,name:delivery_bpost.model_stock_package_type
-msgid "Stock package type"
-msgstr "Stok Paket Türü"
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "The BPost shipping service is unresponsive, please retry later."
-msgstr "BPost gönderim hizmeti yanıt vermiyor, lütfen daha sonra tekrar deneyin."
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -275,25 +240,24 @@ msgstr ""
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/bpost_request.py:0
-#, python-format
-msgid "The estimated shipping price cannot be computed because all your products are service."
-msgstr "Tüm ürünleriniz hizmet olduğu için tahmini nakliye fiyatı hesaplanamaz."
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
-"The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
-" %s"
+"The estimated shipping cannot be computed because the weight of your product"
+" is missing."
 msgstr ""
-"Aşağıdaki ürün(ler) için ağırlık eksik olduğundan tahmini nakliye fiyatı hesaplanamıyor:\n"
-"%s"
+"Tahmin edilen teslimat hesaplanamadı, çünkü ürününüzün ağırlığı eksik."
 
 #. module: delivery_bpost
-#. odoo-python
+#: code:addons/delivery_bpost/models/bpost_request.py:0
+#, python-format
+msgid ""
+"The estimated shipping price cannot be computed because all your products "
+"are service/digital."
+msgstr ""
+"Tüm ürünleriniz hizmet/dijital olduğu için, teslimat ücreti hesaplanamadı."
+
+#. module: delivery_bpost
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid ""
@@ -304,73 +268,59 @@ msgstr ""
 " %s)"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Links"
-msgstr ""
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_domestic
+#: model:product.product,uom_name:delivery_bpost.product_product_delivery_bpost_world
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_domestic_product_template
+#: model:product.template,uom_name:delivery_bpost.product_product_delivery_bpost_world_product_template
+msgid "Units"
+msgstr "Birim"
 
 #. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Number:"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
-#: code:addons/delivery_bpost/models/delivery_bpost.py:0
-#, python-format
-msgid "Tracking Numbers:"
-msgstr ""
-
-#. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/delivery_bpost.py:0
 #, python-format
 msgid "You cannot compute a passphrase for non-bpost carriers."
 msgstr "Bpost olmayan taşıyıcılar için bir parola hesaplayamazsınız."
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "Your company/warehouse address must be in Belgium to ship with bpost"
-msgstr "Bpost ile gönderim olması için şirket/depo adresiniz Belçika'da olmalıdır."
+msgstr ""
+"Bpost ile gönderim olması için şirket/depo adresiniz Belçika'da olmalıdır."
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_domestic_deliver_type__bpack_24h_pro
 msgid "bpack 24h Pro"
-msgstr "bpack 24h Pro"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_domestic_deliver_type__bpack_24h_business
 msgid "bpack 24h business"
-msgstr "bpack 24h business"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_domestic_deliver_type__bpack_bus
 msgid "bpack Bus"
-msgstr "bpack Bus"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_international_deliver_type__bpack_europe_business
 msgid "bpack Europe Business"
-msgstr "bpack Europe Business"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_international_deliver_type__bpack_world_business
 msgid "bpack World Business"
-msgstr "bpack World Business"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__bpost_international_deliver_type__bpack_world_express_pro
 msgid "bpack World Express Pro"
-msgstr "bpack World Express Pro"
+msgstr ""
 
 #. module: delivery_bpost
 #: model:ir.model.fields.selection,name:delivery_bpost.selection__delivery_carrier__delivery_type__bpost
-#: model:ir.model.fields.selection,name:delivery_bpost.selection__stock_package_type__package_carrier_type__bpost
+#: model:ir.model.fields.selection,name:delivery_bpost.selection__product_packaging__package_carrier_type__bpost
 msgid "bpost"
 msgstr "bpost"
 
@@ -380,33 +330,34 @@ msgid "bpost Configuration"
 msgstr "bpost Yapılandırması"
 
 #. module: delivery_bpost
-#: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_package_type_id
-msgid "bpost Default Package Type"
-msgstr "bpost Varsayılan Paket Türü"
+#: model:ir.model.fields,field_description:delivery_bpost.field_delivery_carrier__bpost_default_packaging_id
+msgid "bpost Default Packaging Type"
+msgstr "bpost Varsayılan Paketleme Türü"
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
-msgid "bpost Domestic is used only to ship inside Belgium. Please change the delivery method into bpost International."
-msgstr "bpost Yurtiçi yalnızca Belçika içinde sevkiyat yapmak için kullanılır. Lütfen teslimat yöntemini bpost International olarak değiştirin."
+msgid ""
+"bpost Domestic is used only to ship inside Belgium. Please change the "
+"delivery method into bpost International."
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
-msgid "bpost International is used only to ship outside Belgium. Please change the delivery method into bpost Domestic."
-msgstr "bpost International, yalnızca Belçika dışına gönderim yapmak için kullanılır. Lütfen teslimat yöntemini bpost Yurtiçi olarak değiştirin."
+msgid ""
+"bpost International is used only to ship outside Belgium. Please change the "
+"delivery method into bpost Domestic."
+msgstr ""
 
 #. module: delivery_bpost
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_sale
 #: model_terms:ir.ui.view,arch_db:delivery_bpost.res_config_settings_view_form_stock
 msgid "bpost Shipping Methods"
-msgstr "bpost Nakliye Yöntemleri"
+msgstr ""
 
 #. module: delivery_bpost
-#. odoo-python
 #: code:addons/delivery_bpost/models/bpost_request.py:0
 #, python-format
 msgid "bpost did not return prices for this destination country."
-msgstr "bpost, bu hedef ülke için fiyat döndürmedi."
+msgstr ""

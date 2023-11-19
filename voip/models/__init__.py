@@ -6,4 +6,4 @@ from . import res_config_settings
 from . import res_partner
 from . import res_users
 from . import res_users_settings
-from . import voip_call
+from . import voip_phonecall

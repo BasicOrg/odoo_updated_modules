@@ -25,8 +25,8 @@ This module includes contact phone and mobile numbers validation.""",
     'installable': True,
     'auto_install': True,
     'assets': {
-        'website.assets_wysiwyg': [
-            'website_crm/static/src/js/website_crm_editor.js',
+        'website.assets_editor': [
+            'website_crm/static/src/**/*',
         ],
         'web.assets_tests': [
             'website_crm/static/tests/**/*',

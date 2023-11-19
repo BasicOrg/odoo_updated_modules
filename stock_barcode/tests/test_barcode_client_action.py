@@ -7,9 +7,6 @@ from odoo.tests import HttpCase, tagged
 class TestBarcodeClientAction(HttpCase):
     def setUp(self):
         super(TestBarcodeClientAction, self).setUp()
-        # Disables the sound effect so we don't go crazy while running the test tours locally.
-        self.env['ir.config_parameter'].set_param('stock_barcode.mute_sound_notifications', True)
-
         self.uid = self.env.ref('base.user_admin').id
         self.supplier_location = self.env.ref('stock.stock_location_suppliers')
         self.stock_location = self.env.ref('stock.stock_location_stock')

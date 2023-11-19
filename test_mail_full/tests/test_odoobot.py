@@ -3,14 +3,13 @@
 
 from unittest.mock import patch
 
-from odoo.addons.mail.tests.common import MailCommon
-from odoo.addons.test_mail.tests.common import TestRecipients
+from odoo.addons.test_mail.tests.common import TestMailCommon, TestRecipients
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 
 
 @tagged("odoobot")
-class TestOdoobot(MailCommon, TestRecipients):
+class TestOdoobot(TestMailCommon, TestRecipients):
 
     @classmethod
     def setUpClass(cls):
@@ -32,7 +31,7 @@ class TestOdoobot(MailCommon, TestRecipients):
     def test_fetch_listener(self):
         channel = self.user_employee.with_user(self.user_employee)._init_odoobot()
         odoobot = self.env.ref("base.partner_root")
-        odoobot_in_fetch_listeners = self.env['discuss.channel.member'].search([('channel_id', '=', channel.id), ('partner_id', '=', odoobot.id)])
+        odoobot_in_fetch_listeners = self.env['mail.channel.member'].search([('channel_id', '=', channel.id), ('partner_id', '=', odoobot.id)])
         self.assertEqual(len(odoobot_in_fetch_listeners), 1, 'odoobot should appear only once in channel_fetch_listeners')
 
     @mute_logger('odoo.addons.mail.models.mail_mail')

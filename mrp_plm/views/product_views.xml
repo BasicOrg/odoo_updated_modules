@@ -23,7 +23,7 @@
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <button name="action_view_mos" position="before">
-                <button class="oe_stat_button" name="%(mrp_eco_action_product_tmpl)d" type="action" icon="fa-wrench" groups="mrp_plm.group_plm_user" invisible="detailed_type == 'service'">
+                <button class="oe_stat_button" name="%(mrp_eco_action_product_tmpl)d" type="action" icon="fa-wrench" groups="mrp_plm.group_plm_user" attrs="{'invisible': [('detailed_type', '==', 'service')]}">
                     <field string="ECOs" name="eco_count" widget="statinfo"/>
                 </button>
             </button>
@@ -37,8 +37,8 @@
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <field name="default_code" position="replace">
-                    <label for="default_code" invisible="product_variant_count &gt; 1"/>
-                    <div class="o_row" invisible="product_variant_count &gt; 1">
+                    <label for="default_code" attrs="{'invisible': [('product_variant_count', '>', 1)]}"/>
+                    <div class="o_row" attrs="{'invisible': [('product_variant_count', '>', 1)]}">
                         <field name="default_code" nolabel="1" class="oe_inline" style="width: 55% !important;"/>
                         <span style="width: 5% !important; display: inline-block;"/>
                         <label for="version" class="oe_inline fw-bold" style="width: 20% !important; margin: 0;"/>

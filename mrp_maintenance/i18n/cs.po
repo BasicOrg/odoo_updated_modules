@@ -1,44 +1,34 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* mrp_maintenance
-#
+# 
 # Translators:
-# Michal Veselý <michal@veselyberanek.net>, 2022
-# Martin Trigaux, 2022
-# Jiří Podhorecký, 2022
-#
+# Martin Trigaux, 2019
+# Michal Veselý <michal@veselyberanek.net>, 2019
+# trendspotter <j.podhorecky@volny.cz>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:02+0000\n"
-"PO-Revision-Date: 2022-09-22 05:47+0000\n"
-"Last-Translator: Jiří Podhorecký, 2022\n"
-"Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
-"Language: cs\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:37+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>, 2019\n"
+"Language-Team: Czech (https://www.transifex.com/odoo/teams/41243/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_production_view_form_inherit_maintenance
 msgid "<span class=\"o_stat_text\">Maintenance</span>"
-msgstr "<span class=\"o_stat_text\">Údržba</span>"
-
-#. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__company_id
-msgid "Company"
-msgstr "Firma"
+msgstr ""
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__estimated_next_failure
 msgid "Computed as Latest Failure Date + MTBF"
-msgstr ""
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture1
-msgid "Crosscut Saw: 8 ppi."
 msgstr ""
 
 #. module: mrp_maintenance
@@ -47,13 +37,13 @@ msgid "Discard"
 msgstr "Zrušit"
 
 #. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture3
-msgid "Drill Machine"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
+msgid "Equipment"
+msgstr "Zařízení"
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workcenter_view_form_inherit_maintenance
-msgid "Equipment"
+msgid "Equipments"
 msgstr "Zařízení"
 
 #. module: mrp_maintenance
@@ -69,7 +59,7 @@ msgstr ""
 #. module: mrp_maintenance
 #: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_equipment__estimated_next_failure
 msgid "Estimated time before next failure (in days)"
-msgstr "Odhadovaná doba do další poruchy (ve dnech)"
+msgstr ""
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_equipment__expected_mtbf
@@ -81,11 +71,6 @@ msgstr "Očekávaná Střední doba mezi poruchami"
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_equipment_view_form_inherit_mrp
 msgid "Expected Mean Time Between Failure"
 msgstr "Očekávaná Střední doba mezi poruchami"
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment.category,name:mrp_maintenance.equipment_furniture_tools
-msgid "Furniture Tools"
-msgstr ""
 
 #. module: mrp_maintenance
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_equipment_view_form_inherit_mrp
@@ -124,20 +109,21 @@ msgid "Maintenance Equipment"
 msgstr "Vybavení pro údržbu"
 
 #. module: mrp_maintenance
-#. odoo-javascript
-#: code:addons/mrp_maintenance/static/src/components/menuPopup.xml:0
 #: model:ir.model,name:mrp_maintenance.model_maintenance_request
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_production_view_form_inherit_maintenance
-#, python-format
 msgid "Maintenance Request"
 msgstr "Požadavek na údržbu"
 
 #. module: mrp_maintenance
-#. odoo-python
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "Maintenance Requests"
 msgstr "Žádosti o údržbu"
+
+#. module: mrp_maintenance
+#: model_terms:ir.ui.view,arch_db:mrp_maintenance.mrp_workorder_tablet_view_form_inherit_maintenance
+msgid "Maintenance request"
+msgstr ""
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__production_id
@@ -151,8 +137,10 @@ msgstr "Střední doba mezi poruchami"
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__mtbf
-msgid "Mean Time Between Failure, computed based on done corrective maintenances."
-msgstr "Průměrný čas mezi poruchami, vypočítaný na základě provedené opravné údržby."
+msgid ""
+"Mean Time Between Failure, computed based on done corrective maintenances."
+msgstr ""
+"Průměrný čas mezi poruchami, vypočítaný na základě provedené opravné údržby."
 
 #. module: mrp_maintenance
 #: model:ir.model.fields,help:mrp_maintenance.field_maintenance_equipment__mttr
@@ -161,7 +149,7 @@ msgid "Mean Time To Repair"
 msgstr ""
 
 #. module: mrp_maintenance
-#. odoo-python
+#: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "New Maintenance Request"
@@ -178,11 +166,6 @@ msgid "Operation"
 msgstr "Úkon"
 
 #. module: mrp_maintenance
-#: model:ir.model.fields,field_description:mrp_maintenance.field_maintenance_request__production_company_id
-msgid "Production Company"
-msgstr ""
-
-#. module: mrp_maintenance
 #: model:ir.model,name:mrp_maintenance.model_mrp_production
 msgid "Production Order"
 msgstr "Výrobní příkaz"
@@ -196,11 +179,6 @@ msgstr "Požadavek"
 #: model_terms:ir.ui.view,arch_db:mrp_maintenance.maintenance_request_view_form_inherit_mrp
 msgid "Save"
 msgstr "Uložit"
-
-#. module: mrp_maintenance
-#: model:maintenance.equipment,name:mrp_maintenance.equipment_furniture2
-msgid "Scrub Plane"
-msgstr ""
 
 #. module: mrp_maintenance
 #: model:ir.model,name:mrp_maintenance.model_mrp_workcenter
@@ -226,7 +204,6 @@ msgid "days"
 msgstr "dnů"
 
 #. module: mrp_maintenance
-#. odoo-python
 #: code:addons/mrp_maintenance/models/mrp_maintenance.py:0
 #, python-format
 msgid "work centers"

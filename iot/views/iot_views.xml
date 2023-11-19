@@ -4,7 +4,7 @@
     <menuitem
         id="iot_menu_root"
         name="IoT"
-        web_icon="iot,static/description/icon.png"
+        web_icon="iot,static/description/icon.svg"
         groups="base.group_system"
         sequence="265"
     />
@@ -67,10 +67,7 @@
         <field name="name">iot.box.view.kanban</field>
         <field name="model">iot.box</field>
         <field name="arch" type="xml">
-            <kanban create="false">
-                <header>
-                    <button name="%(iot.action_add_iot_box)d" type="action" string="Connect" class="btn-primary o-kanban-button-new"  display="always"/>
-                </header>
+            <kanban create="false" js_class="box_kanban_view">
                 <field name="name"/>
                 <field name="identifier"/>
                 <templates>
@@ -97,10 +94,7 @@
         <field name="name">iot.box.view.list</field>
         <field name="model">iot.box</field>
         <field name="arch" type="xml">
-            <tree create="false">
-                <header>
-                    <button name="%(iot.action_add_iot_box)d" type="action" string="Connect" class="btn-primary o_list_button_save" display="always"/>
-                </header>
+            <tree create="false" js_class="box_list_view">
                 <field name="name"/>
                 <field name="identifier"/>
             </tree>
@@ -112,7 +106,7 @@
         <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                No IoT Box found!
+                No IoT Box found !
             </p><p>
                 Click on the 
                 <a name="%(iot.action_add_iot_box)d" type="action" tabindex="-1">connect</a>
@@ -135,22 +129,22 @@
                     </div>
                     <group name="iot_device_details">
                         <group>
-                            <field name="iot_id" readonly="type != 'printer' or connection != 'network'"/>
+                            <field name="iot_id" attrs="{'readonly': ['|', ('type', '!=', 'printer'), ('connection', '!=', 'network')]}"/>
                             <field name="iot_ip" invisible="True"/>
                             <field name="identifier" readonly="True"/>
                             <field name="type"/>
-                            <field name="is_scanner" invisible="type not in ['keyboard', 'scanner']" widget="boolean_toggle"/>
-                            <field name="manufacturer" invisible="manufacturer == ''"/>
+                            <field name="is_scanner" attrs="{'invisible': [('type', 'not in', ['keyboard', 'scanner'])]}" widget="boolean_toggle"/>
+                            <field name="manufacturer" attrs="{'invisible': [('manufacturer', '=', '')]}"/>
                             <field name="connection"/>
                             <field name="connected"/>
-                            <field name="keyboard_layout" invisible="type not in ['keyboard', 'scanner']"/>
-                            <field name="display_url" invisible="type != 'display'"/>
+                            <field name="keyboard_layout" attrs="{'invisible': [('type', 'not in', ['keyboard', 'scanner'])]}"/>
+                            <field name="display_url" attrs="{'invisible': [('type', '!=', 'display')]}"/>
                             <div class='fw-bold' groups="base.group_no_one">Last Sent Value</div>
                             <widget name="iot_device_value_display" groups="base.group_no_one"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Printer Reports" name="reports" invisible="type != 'printer'">
+                        <page string="Printer Reports" name="reports" attrs="{'invisible': [('type', '!=', 'printer')]}">
                             <field name="report_ids" widget="many2many" context="{'tree_view_ref': 'iot.act_report_xml_view_tree_iot'}"/>
                         </page>
                     </notebook>
@@ -172,8 +166,8 @@
                         <div class="oe_kanban_global_click p-0">
                             <div class="row g-0">
                                 <div class="col-3 p-2 text-center align-self-center">
-                                    <t t-set="types" t-value="{'camera': 'camera', 'printer': 'printer', 'device': 'rulers', 'payment': 'payment-terminal', 'scale': 'scales', 'keyboard': 'keyboard', 'scanner': 'barcode-scanner', 'display': 'desktop', 'fiscal_data_module': 'fdm'}"/>
-                                    <img t-attf-src="iot/static/src/img/#{types[record.type.raw_value]}.svg" t-attf-alt="Device type is #{record.type.raw_value}"/>
+                                    <t t-set="types" t-value="{'camera': 'video-camera', 'printer': 'print', 'device': 'wrench', 'payment': 'credit-card', 'scale': 'balance-scale', 'keyboard': 'keyboard-o', 'scanner': 'barcode', 'display': 'desktop', 'fiscal_data_module': 'archive'}"/>
+                                    <i t-attf-class="fa fa-#{types[record.type.raw_value]} fa-3x" t-attf-title="Device type is #{record.type.raw_value}"></i>
                                 </div>
                                 <div class="col-9 p-2 border-start">
                                     <div class="text-truncate fw-bold" t-att-title="record.name.raw_value"><field name="name"/></div>
@@ -234,12 +228,6 @@
             </p>
         </field>
     </record>
-
-    <record id="action_iot_delete_linked_devices_menu" model="ir.actions.client">
-        <field name="name">Clear Selected Devices</field>
-        <field name="tag">iot_delete_linked_devices_action</field>
-    </record>
-    
     <menuitem
         id="iot_box_menu_action"
         action="iot_box_action"
@@ -250,12 +238,6 @@
         action="iot_device_action"
         parent="iot_menu_root"
         sequence="2"/>
-    <menuitem
-        id="view_iot_selected_printer_local_action"
-        name="Clear Selected Devices"
-        action="action_iot_delete_linked_devices_menu"
-        parent="iot_menu_root"
-        sequence="3"/>
 
     <!-- ir.action.report add the device -->
     <record id="act_report_xml_view_iot" model="ir.ui.view">
@@ -264,7 +246,7 @@
         <field name="inherit_id" ref="base.act_report_xml_view"/>
          <field name="arch" type="xml">
             <field name="report_type" position="after">
-                <field name="device_ids" widget="many2many_tags"/>
+                <field name="device_id"/>
             </field>
          </field>
     </record>

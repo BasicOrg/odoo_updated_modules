@@ -58,6 +58,7 @@ class DemoSocialLivePost(models.Model):
             })
 
     def _post_linkedin(self):
+        self.write({'state': 'posted'})
         linkedin_stream_page = self.env.ref('social_demo.social_stream_linkedin_page', raise_if_not_found=False)
         if linkedin_stream_page:
             # make linkedin_post_id of live_post & linkedin_post_urn of stream_post match

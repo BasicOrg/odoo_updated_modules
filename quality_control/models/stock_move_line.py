@@ -28,15 +28,12 @@ class StockMoveLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
-        if self.env.context.get('no_checks'):
-            # no checks for you
-            return lines
         lines._filter_move_lines_applicable_for_quality_check()._create_check()
         return lines
 
     def write(self, vals):
         if self._create_quality_check_at_write(vals):
-            self.filtered(lambda ml: not ml.picked and not ml.sudo().check_ids)._create_check()
+            self.filtered(lambda ml: not ml.qty_done)._create_check()
         return super().write(vals)
 
     def unlink(self):
@@ -50,7 +47,7 @@ class StockMoveLine(models.Model):
         self.check_ids.filtered(lambda qc: qc._check_to_unlink()).unlink()
 
     def _create_quality_check_at_write(self, vals):
-        return vals.get('quantity')
+        return vals.get('qty_done')
 
     def _create_check(self):
         check_values_list = []
@@ -88,7 +85,7 @@ class StockMoveLine(models.Model):
             self.env['quality.check'].sudo().create(check_values_list)
 
     def _filter_move_lines_applicable_for_quality_check(self):
-        return self.filtered(lambda line: line.quantity != 0)
+        return self.filtered(lambda line: line.qty_done != 0)
 
     def _get_check_values(self, quality_point):
         return {

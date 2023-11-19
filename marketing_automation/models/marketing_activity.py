@@ -56,7 +56,7 @@ class MarketingActivity(models.Model):
     interval_standardized = fields.Integer('Send after (in hours)', compute='_compute_interval_standardized', store=True, readonly=True)
     # validity
     validity_duration = fields.Boolean('Validity Duration',
-        help='Check this to make sure your actions are not executed after a specific amount of time after the scheduled date. (e.g. Time-limited offer, Upcoming event, …)')
+        help='Check this to make sure your actions are not executed after a specific amount of time after the scheduled date. (e.g. : Time-limited offer, Upcoming event, …)')
     validity_duration_number = fields.Integer(string='Valid during', default=0)
     validity_duration_type = fields.Selection([
         ('hours', 'Hours'),
@@ -66,7 +66,7 @@ class MarketingActivity(models.Model):
         default='hours', required=True)
     # target
     domain = fields.Char(
-        string='Applied Filter',
+        string='Applied Filter', default='[]',
         help='Activity will only be performed if record satisfies this domain, obtained from the combination of the activity filter and its inherited filter',
         compute='_compute_inherited_domain', recursive=True, store=True, readonly=True)
     activity_domain = fields.Char(
@@ -111,8 +111,8 @@ class MarketingActivity(models.Model):
             if (activity.parent_id or activity.allowed_parent_ids) and activity.parent_id not in activity.allowed_parent_ids:
                 trigger_string = dict(activity._fields['trigger_type']._description_selection(self.env))[activity.trigger_type]
                 raise ValidationError(
-                    _('You are trying to set the activity "%s" as "%s" while its child "%s" has the trigger type "%s"\nPlease modify one of those activities before saving.',
-                      activity.parent_id.name, activity.parent_id.activity_type, activity.name, trigger_string))
+                    _('You are trying to set the activity "%s" as "%s" while its child "%s" has the trigger type "%s"\nPlease modify one of those activities before saving.')
+                    % (activity.parent_id.name, activity.parent_id.activity_type, activity.name, trigger_string))
 
     @api.depends('activity_type')
     def _compute_mass_mailing_id_mailing_type(self):
@@ -202,8 +202,8 @@ class MarketingActivity(models.Model):
             date_range.reverse()
             default_values = [{'x': date_item.strftime('%d %b'), 'y': 0} for date_item in date_range]
             self.statistics_graph_data = json.dumps([
-                {'points': default_values, 'label': _('Success'), 'color': '#28A745'},
-                {'points': default_values, 'label': _('Rejected'), 'color': '#D23f3A'}])
+                {'points': default_values, 'label': _('Success'), 'color': '#21B799'},
+                {'points': default_values, 'label': _('Rejected'), 'color': '#d9534f'}])
         else:
             activity_data = {activity._origin.id: {} for activity in self}
             for act_id, graph_data in self._get_graph_statistics().items():
@@ -300,8 +300,8 @@ class MarketingActivity(models.Model):
                     'y': stat_map.get((activity._origin.id, i, 'rejected'), 0)
                 })
             graph_data[activity._origin.id] = [
-                {'points': success, 'label': _('Success'), 'color': '#28A745'},
-                {'points': rejected, 'label': _('Rejected'), 'color': '#D23f3A'}
+                {'points': success, 'label': _('Success'), 'color': '#21B799'},
+                {'points': rejected, 'label': _('Rejected'), 'color': '#d9534f'}
             ]
         return graph_data
 
@@ -319,9 +319,10 @@ class MarketingActivity(models.Model):
         if domain:
             trace_domain += domain
         trace_to_activities = {
-            activity: traces
-            for activity, traces in self.env['marketing.trace']._read_group(
-                trace_domain, groupby=['activity_id'], aggregates=['id:recordset']
+            self.env['marketing.activity'].browse(group['activity_id'][0]):
+            self.env['marketing.trace'].browse(group['ids'])
+            for group in self.env['marketing.trace'].read_group(
+                trace_domain, fields=['ids:array_agg(id)', 'activity_id'], groupby=['activity_id']
             )
         }
 
@@ -351,16 +352,15 @@ class MarketingActivity(models.Model):
 
         # Filter traces not fitting the activity filter and whose record has been deleted
         if self.domain:
-            rec_domain = literal_eval(self.domain)
+            rec_domain = expression.AND([literal_eval(self.campaign_id.domain), literal_eval(self.domain)])
         else:
-            rec_domain = literal_eval(self.campaign_id.domain or '[]')
+            rec_domain = literal_eval(self.campaign_id.filter)
         if rec_domain:
-            user_id = self.campaign_id.user_id or self.env.user
-            rec_valid = self.env[self.model_name].with_context(lang=user_id.lang).search(rec_domain)
+            rec_valid = self.env[self.model_name].search(rec_domain)
             rec_ids_domain = set(rec_valid.ids)
 
-            traces_allowed = traces.filtered(lambda trace: trace.res_id in rec_ids_domain)
-            traces_rejected = traces.filtered(lambda trace: trace.res_id not in rec_ids_domain)  # either rejected, either deleted record
+            traces_allowed = traces.filtered(lambda trace: trace.res_id in rec_ids_domain or trace.is_test)
+            traces_rejected = traces.filtered(lambda trace: trace.res_id not in rec_ids_domain and not trace.is_test)  # either rejected, either deleted record
         else:
             traces_allowed = traces
             traces_rejected = self.env['marketing.trace']
@@ -413,15 +413,16 @@ class MarketingActivity(models.Model):
         return True
 
     def _execute_email(self, traces):
+        res_ids = [r for r in set(traces.mapped('res_id'))]
+
+        ctx = dict(clean_context(self._context), default_marketing_activity_id=self.ids[0], active_ids=res_ids)
+        mailing = self.mass_mailing_id.with_context(ctx)
+
         # we only allow to continue if the user has sufficient rights, as a sudo() follows
         if not self.env.is_superuser() and not self.user_has_groups('marketing_automation.group_marketing_automation_user'):
             raise AccessError(_('To use this feature you should be an administrator or belong to the marketing automation group.'))
-
-        res_ids = [r for r in set(traces.mapped('res_id'))]
-        ctx = dict(clean_context(self._context), default_marketing_activity_id=self.ids[0], active_ids=res_ids)
-        mailing = self.mass_mailing_id.sudo().with_context(ctx)
         try:
-            mailing.action_send_mail(res_ids)
+            mailing.sudo().action_send_mail(res_ids)
         except Exception as e:
             _logger.warning('Marketing Automation: activity <%s> encountered mass mailing issue %s', self.id, str(e), exc_info=True)
             traces.write({
@@ -520,7 +521,7 @@ class MarketingActivity(models.Model):
 
         participants = found_traces.participant_id
         action.update({
-            'display_name': _('Participants of %s (%s)', self.name, view_filter),
+            'display_name': _('Participants of %s (%s)') % (self.name, view_filter),
             'domain': [('id', 'in', participants.ids)],
             'context': dict(self._context, create=False)
         })

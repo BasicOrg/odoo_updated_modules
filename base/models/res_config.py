@@ -284,12 +284,12 @@ class ResConfigInstaller(models.TransientModel, ResConfigModuleInstallationMixin
         return dict(defaults, **dict.fromkeys(self.already_installed(), True))
 
     @api.model
-    def fields_get(self, allfields=None, attributes=None):
+    def fields_get(self, fields=None, attributes=None):
         """ If an addon is already installed, set it to readonly as
         res.config.installer doesn't handle uninstallations of already
         installed addons
         """
-        fields = super().fields_get(allfields=allfields, attributes=attributes)
+        fields = super(ResConfigInstaller, self).fields_get(fields, attributes=attributes)
 
         for name in self.already_installed():
             if name not in fields:
@@ -346,7 +346,7 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
             The attribute 'group' may contain several xml ids, separated by commas.
 
         *   For a selection field like 'group_XXX' composed of 2 string values ('0' and '1'),
-            ``execute`` adds/removes 'implied_group' to/from the implied groups of 'group',
+            ``execute`` adds/removes 'implied_group' to/from the implied groups of 'group', 
             depending on the field's value.
             By default 'group' is the group Employee.  Groups are given by their xml id.
             The attribute 'group' may contain several xml ids, separated by commas.
@@ -354,8 +354,8 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
         *   For a boolean field like 'module_XXX', ``execute`` triggers the immediate
             installation of the module named 'XXX' if the field has value ``True``.
 
-        *   For a selection field like 'module_XXX' composed of 2 string values ('0' and '1'),
-            ``execute`` triggers the immediate installation of the module named 'XXX'
+        *   For a selection field like 'module_XXX' composed of 2 string values ('0' and '1'), 
+            ``execute`` triggers the immediate installation of the module named 'XXX' 
             if the field has the value ``'1'``.
 
         *   For a field with no specific prefix BUT an attribute 'config_parameter',
@@ -382,6 +382,24 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
 
     def copy(self, default=None):
         raise UserError(_("Cannot duplicate configuration!"))
+
+    @api.model
+    def _get_view(self, view_id=None, view_type='form', **options):
+        arch, view = super()._get_view(view_id, view_type, **options)
+
+        can_install_modules = self.env['ir.module.module'].check_access_rights(
+                                    'write', raise_exception=False)
+
+        for node in arch.xpath("//field[@name]"):
+            if not node.get('name').startswith("module_"):
+                continue
+            if not can_install_modules:
+                node.set("readonly", "1")
+                modifiers = json.loads(node.get("modifiers"))
+                modifiers['readonly'] = True
+                node.set("modifiers", json.dumps(modifiers))
+
+        return arch, view
 
     def onchange_module(self, field_value, module_name):
         module_sudo = self.env['ir.module.module']._get(module_name[7:])
@@ -466,17 +484,15 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
 
     @api.model
     def default_get(self, fields):
-        res = super().default_get(fields)
-        if not fields:
-            return res
-
         IrDefault = self.env['ir.default']
         IrConfigParameter = self.env['ir.config_parameter'].sudo()
         classified = self._get_classified_fields(fields)
 
+        res = super(ResConfigSettings, self).default_get(fields)
+
         # defaults: take the corresponding default value they set
         for name, model, field in classified['default']:
-            value = IrDefault._get(model, field)
+            value = IrDefault.get(model, field)
             if value is not None:
                 res[name] = value
 
@@ -546,23 +562,28 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
                 IrDefault.set(model, field, value)
 
         # group fields: modify group / implied groups
-        for name, groups, implied_group in sorted(classified['group'], key=lambda k: self[k[0]]):
-            groups = groups.sudo()
-            implied_group = implied_group.sudo()
-            if self[name] == current_settings[name]:
-                continue
-            if int(self[name]):
-                groups._apply_group(implied_group)
-            else:
-                groups._remove_group(implied_group)
+        with self.env.norecompute():
+            for name, groups, implied_group in sorted(classified['group'], key=lambda k: self[k[0]]):
+                groups = groups.sudo()
+                implied_group = implied_group.sudo()
+                if self[name] == current_settings[name]:
+                    continue
+                if int(self[name]):
+                    groups._apply_group(implied_group)
+                else:
+                    groups._remove_group(implied_group)
 
         # config fields: store ir.config_parameters
         IrConfigParameter = self.env['ir.config_parameter'].sudo()
         for name, icp in classified['config']:
             field = self._fields[name]
             value = self[name]
-            current_value = IrConfigParameter.get_param(icp)
-
+            current_value = current_settings[name]
+            if not field.relational and value == current_value:
+                # pre-check before the value is formatted
+                # because the values in current_settings are
+                # in field format, not in str/False parameter format
+                continue
             if field.type == 'char':
                 # storing developer keys as ir.config_parameter may lead to nasty
                 # bugs when users leave spaces around them
@@ -573,7 +594,7 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
                 # value is a (possibly empty) recordset
                 value = value.id
 
-            if current_value == str(value) or current_value == value:
+            if current_value == value:
                 continue
             IrConfigParameter.set_param(icp, value)
 
@@ -639,11 +660,12 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
             return actions.read()[0]
         return {}
 
-    def _compute_display_name(self):
-        """ Override display_name method to return an appropriate configuration wizard
+    def name_get(self):
+        """ Override name_get method to return an appropriate configuration wizard
         name, and not the generated name."""
         action = self.env['ir.actions.act_window'].search([('res_model', '=', self._name)], limit=1)
-        self.display_name = action.name or self._name
+        name = action.name or self._name
+        return [(record.id, name) for record in self]
 
     @api.model
     def get_option_path(self, menu_xml_id):
@@ -761,7 +783,7 @@ class ResConfigSettings(models.TransientModel, ResConfigModuleInstallationMixin)
         template_user_id = literal_eval(self.env['ir.config_parameter'].sudo().get_param('base.template_portal_user_id', 'False'))
         template_user = self.env['res.users'].browse(template_user_id)
         if not template_user.exists():
-            raise UserError(_('Invalid template user. It seems it has been deleted.'))
+            raise ValueError(_('Invalid template user. It seems it has been deleted.'))
         action['res_id'] = template_user_id
         action['views'] = [[self.env.ref('base.view_users_form').id, 'form']]
         return action

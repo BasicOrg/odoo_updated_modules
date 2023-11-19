@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <form string="Social Post">
                 <header>
-                    <button name="action_retry_post" string="Retry" type="object" class="oe_highlight" invisible="state != 'failed'"/>
+                    <button name="action_retry_post" string="Retry" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'failed')]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

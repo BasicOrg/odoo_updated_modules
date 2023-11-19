@@ -2,7 +2,8 @@
 
 import { registry } from '@web/core/registry';
 import { useService } from "@web/core/utils/hooks";
-import { Component } from "@odoo/owl";
+
+const { Component } = owl;
 
 class ConsolidationDashboard extends Component {
     setup() {
@@ -11,7 +12,7 @@ class ConsolidationDashboard extends Component {
     }
 
     get datas() {
-        return JSON.parse(this.props.record.data[this.props.name]);
+        return JSON.parse(this.props.value);
     }
 
 
@@ -22,8 +23,6 @@ class ConsolidationDashboard extends Component {
     }    
 }
 ConsolidationDashboard.template = "account_consolidation.ConsolidatedDashboardTemplate";
+ConsolidationDashboard.supportedTypes = ["char"];
 
-registry.category("fields").add("consolidation_dashboard_field", {
-    component: ConsolidationDashboard,
-    supportedTypes: ["char"],
-});
+registry.category("fields").add("consolidation_dashboard_field", ConsolidationDashboard);

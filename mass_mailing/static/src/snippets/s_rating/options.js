@@ -1,7 +1,9 @@
-/** @odoo-module **/
+odoo.define('mass_mailing.s_rating_options', function (require) {
+'use strict';
 
-import { MediaDialog } from "@web_editor/components/media_dialog/media_dialog";
-import options from "@web_editor/js/editor/snippets.options";
+const { ComponentWrapper } = require('web.OwlCompatibility');
+const { MediaDialogWrapper } = require('@web_editor/components/media_dialog/media_dialog');
+const options = require('web_editor.snippets.options');
 
 options.registry.Rating = options.Class.extend({
     /**
@@ -38,7 +40,7 @@ options.registry.Rating = options.Class.extend({
     customIcon: async function (previewMode, widgetValue, params) {
         const media = document.createElement('i');
         media.className = params.customActiveIcon === 'true' ? this.faClassActiveCustomIcons : this.faClassInactiveCustomIcons;
-        this.call("dialog", "add", MediaDialog, {
+        const dialog = new ComponentWrapper(this, MediaDialogWrapper, {
             noImages: true,
             noDocuments: true,
             noVideos: true,
@@ -57,6 +59,7 @@ options.registry.Rating = options.Class.extend({
                 this.iconType = 'custom';
             }
         });
+        dialog.mount(document.body);
     },
     /**
      * Sets the number of active icons.
@@ -138,4 +141,5 @@ options.registry.Rating = options.Class.extend({
         $activeIcons.removeClass().addClass(faClassActiveIcons);
         $inactiveIcons.removeClass().addClass(faClassInactiveIcons);
     },
+});
 });

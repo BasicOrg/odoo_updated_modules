@@ -14,7 +14,9 @@ class SaleOrder(models.Model):
         orders = super().create(vals)
         for sale_order in orders:
             if sale_order.task_id:
-                message = _("Extra Quotation Created: %s", sale_order._get_html_link())
+                message = _(
+                    "Quotation created: %s",
+                    sale_order._get_html_link())
                 sale_order.task_id.message_post(body=message)
         return orders
 
@@ -23,14 +25,6 @@ class SaleOrder(models.Model):
         if self.env.context.get('fsm_no_message_post'):
             return False
         return super().message_post(**kwargs)
-
-    def action_confirm(self):
-        res = super().action_confirm()
-        for sale_order in self:
-            if sale_order.task_id:
-                message = _("This Sales Order has been created from Task: %s", sale_order.task_id._get_html_link())
-                sale_order.message_post(body=message)
-        return res
 
 
 class SaleOrderLine(models.Model):
@@ -64,13 +58,3 @@ class SaleOrderLine(models.Model):
         if self.product_id.project_template_id.is_fsm:
             values.pop('sale_line_id', False)
         return values
-
-    def _compute_invoice_status(self):
-        sol_from_task_without_amount = self.filtered(lambda sol: sol.task_id and sol.task_id.is_fsm and sol.price_unit == 0)
-        sol_from_task_without_amount.invoice_status = 'no'
-        super(SaleOrderLine, self - sol_from_task_without_amount)._compute_invoice_status()
-
-    def action_add_from_catalog(self):
-        if len(self.task_id) == 1 and self.task_id.allow_material:
-            return self.task_id.action_fsm_view_material()
-        return super().action_add_from_catalog()

@@ -1,33 +1,25 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* delivery_dhl
-#
+# 
 # Translators:
-# Ákos Nagy <akos.nagy@oregional.hu>, 2022
-# Martin Trigaux, 2022
-# Kovács Tibor <kovika@gmail.com>, 2022
-# Tamás Németh <ntomasz81@gmail.com>, 2022
-# krnkris, 2022
-# Szabolcs Rádi, 2023
-#
+# Martin Trigaux, 2019
+# krnkris, 2019
+# Kovács Tibor <kovika@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server saas~12.5+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:46+0000\n"
-"Last-Translator: Szabolcs Rádi, 2023\n"
-"Language-Team: Hungarian (https://app.transifex.com/odoo/teams/41243/hu/)\n"
-"Language: hu\n"
+"POT-Creation-Date: 2019-08-26 08:05+0000\n"
+"PO-Revision-Date: 2019-08-26 09:35+0000\n"
+"Last-Translator: Kovács Tibor <kovika@gmail.com>, 2019\n"
+"Language-Team: Hungarian (https://www.transifex.com/odoo/teams/41243/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#. module: delivery_dhl
-#: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
-msgid "'rate': {}, 'ship': {}, 'return': {}"
-msgstr ""
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__0
@@ -155,7 +147,7 @@ msgid "C - Medical Express"
 msgstr ""
 
 #. module: delivery_dhl
-#: model:ir.model.fields,field_description:delivery_dhl.field_stock_package_type__package_carrier_type
+#: model:ir.model.fields,field_description:delivery_dhl.field_product_packaging__package_carrier_type
 msgid "Carrier"
 msgstr "Fuvarozó"
 
@@ -170,25 +162,15 @@ msgid "Check this if your package is dutiable."
 msgstr "Jelölje be ha a csomagja vámköteles."
 
 #. module: delivery_dhl
-#: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
-msgid "Custom Data"
-msgstr ""
-
-#. module: delivery_dhl
-#: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_custom_data_request
-msgid "Custom data for DHL requests,"
-msgstr ""
-
-#. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__d
 msgid "D - Express Worldwide"
 msgstr "D - Express Worldwide"
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__delivery_type__dhl
-#: model:ir.model.fields.selection,name:delivery_dhl.selection__stock_package_type__package_carrier_type__dhl
+#: model:ir.model.fields.selection,name:delivery_dhl.selection__product_packaging__package_carrier_type__dhl
 msgid "DHL"
-msgstr "DHL"
+msgstr ""
 
 #. module: delivery_dhl
 #: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_account_number
@@ -198,88 +180,65 @@ msgstr "DHL fiók szám"
 #. module: delivery_dhl
 #: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
 msgid "DHL Configuration"
-msgstr "DHL beállítások"
+msgstr "DHL Beállítások"
 
 #. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/delivery_dhl.py:0
-#, python-format
-msgid "DHL Documents"
-msgstr ""
-
-#. module: delivery_dhl
-#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_eu_dom
-#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_eu_dom_product_template
-msgid "DHL EU"
-msgstr ""
-
-#. module: delivery_dhl
-#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_eu_intl
-#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_eu_intl_product_template
-msgid "DHL EU -> International"
-msgstr ""
-
-#. module: delivery_dhl
-#: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_default_package_type_id
-msgid "DHL Package Type"
-msgstr ""
+#: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_default_packaging_id
+msgid "DHL Default Packaging Type"
+msgstr "DHL alapértelmezett csomag típus"
 
 #. module: delivery_dhl
 #: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_password
 msgid "DHL Password"
-msgstr "DHL jelszó"
+msgstr "DHL Jelszó"
 
 #. module: delivery_dhl
 #: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_product_code
 msgid "DHL Product"
-msgstr "DHL termék"
+msgstr ""
 
 #. module: delivery_dhl
 #: model_terms:ir.ui.view,arch_db:delivery_dhl.res_config_settings_view_form_sale
 #: model_terms:ir.ui.view,arch_db:delivery_dhl.res_config_settings_view_form_stock
 msgid "DHL Shipping Methods"
-msgstr "DHL szállítási mód"
+msgstr ""
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid "DHL Site ID is missing, please modify your delivery method settings."
-msgstr "DHL oldalazonosító hiányzik, kérem módosítsa a szállítási mód beállításait."
+msgstr ""
+"DHL oldal ID azonosító hiányzik, kérem módosítsa a szállítási mód "
+"beállításait."
 
 #. module: delivery_dhl
 #: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__dhl_SiteID
 msgid "DHL SiteID"
-msgstr "DHL oldalazonosító"
+msgstr "DHL OldalID"
 
 #. module: delivery_dhl
-#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_us_dom
-#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_us_dom_product_template
-msgid "DHL US"
-msgstr ""
+#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_dom
+#: model:product.product,name:delivery_dhl.product_product_delivery_dhl_usa
+#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_usa_product_template
+msgid "DHL USA"
+msgstr "DHL USA"
 
 #. module: delivery_dhl
-#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_us_intl
-#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_us_intl_product_template
-msgid "DHL US -> International"
-msgstr ""
+#: model:delivery.carrier,name:delivery_dhl.delivery_carrier_dhl_intl
+#: model:product.product,name:delivery_dhl.product_product_delivery_dhl_intl
+#: model:product.template,name:delivery_dhl.product_product_delivery_dhl_intl_product_template
+msgid "DHL USA -> International"
+msgstr "DHL USA -> Nemzetközi"
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
-msgid "DHL account number is missing, please modify your delivery method settings."
-msgstr "DHL fiókszám hiányzik, kérem módosítsa a szállítási mód beállításait."
-
-#. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/dhl_request.py:0
-#, python-format
-msgid "DHL doesn't support products with name greater than 75 characters."
+msgid ""
+"DHL account number is missing, please modify your delivery method settings."
 msgstr ""
+"DHL fiók szám hiányzik, kérem módosítsa a szállítási mód beállításait."
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid "DHL password is missing, please modify your delivery method settings."
@@ -296,11 +255,6 @@ msgid "Dutiable Material"
 msgstr "Vámköteles anyag"
 
 #. module: delivery_dhl
-#: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
-msgid "Duties paid by"
-msgstr ""
-
-#. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__e
 msgid "E - Express 9:00"
 msgstr ""
@@ -313,7 +267,7 @@ msgstr "EPL2"
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_region_code__eu
 msgid "Europe"
-msgstr "Európa"
+msgstr "Europa"
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__f
@@ -331,13 +285,6 @@ msgid "H - Economy Select"
 msgstr ""
 
 #. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/delivery_dhl.py:0
-#, python-format
-msgid "Hint: The destination may not require the dutiable option."
-msgstr ""
-
-#. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__i
 msgid "I - Break Bulk Economy"
 msgstr ""
@@ -345,14 +292,7 @@ msgstr ""
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_package_dimension_unit__i
 msgid "Inches"
-msgstr "hüvelyk"
-
-#. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/delivery_dhl.py:0
-#, python-format
-msgid "Invalid syntax for DHL custom data."
-msgstr ""
+msgstr "Inches"
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__j
@@ -372,11 +312,6 @@ msgstr "Kilogramm"
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__l
 msgid "L - Express 10:30"
-msgstr ""
-
-#. module: delivery_dhl
-#: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
-msgid "Label Format"
 msgstr ""
 
 #. module: delivery_dhl
@@ -405,11 +340,6 @@ msgid "O - DOM Express 10:30"
 msgstr ""
 
 #. module: delivery_dhl
-#: model_terms:ir.ui.view,arch_db:delivery_dhl.view_delivery_carrier_form_with_provider_dhl
-msgid "Options"
-msgstr "Beállítások"
-
-#. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__p
 msgid "P - Express Worldwide"
 msgstr ""
@@ -430,14 +360,6 @@ msgid "Package Weight Unit"
 msgstr "Csomag súly mértékegység"
 
 #. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/dhl_request.py:0
-#, python-format
-msgid "Please define an incoterm in the associated sale order or set a default incoterm for the company in the accounting's settings."
-msgstr ""
-
-#. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid "Please provide at least one item to ship."
@@ -446,7 +368,12 @@ msgstr "Kérem válasszon legalább egy szállítandó tételt."
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_package_weight_unit__l
 msgid "Pounds"
-msgstr "Font"
+msgstr "Pounds"
+
+#. module: delivery_dhl
+#: model:ir.model,name:delivery_dhl.model_product_packaging
+msgid "Product Packaging"
+msgstr "Termék csomagolás"
 
 #. module: delivery_dhl
 #: model:ir.model.fields,field_description:delivery_dhl.field_delivery_carrier__delivery_type
@@ -484,21 +411,16 @@ msgid "Sender"
 msgstr "Küldő"
 
 #. module: delivery_dhl
-#. odoo-python
+#: code:addons/delivery_dhl/models/delivery_dhl.py:0
 #: code:addons/delivery_dhl/models/delivery_dhl.py:0
 #, python-format
-msgid "Shipment created into DHL <br/> <b>Tracking Number: </b>%s"
-msgstr ""
+msgid "Shipment created into DHL <br/> <b>Tracking Number : </b>%s"
+msgstr "Szállítmány létrehozva az DHL-ben <br/> <b>Követési szám : </b>%s"
 
 #. module: delivery_dhl
 #: model:ir.model,name:delivery_dhl.model_delivery_carrier
 msgid "Shipping Methods"
-msgstr "Szállítási módok"
-
-#. module: delivery_dhl
-#: model:ir.model,name:delivery_dhl.model_stock_package_type
-msgid "Stock package type"
-msgstr "Készlet csomagolás típus"
+msgstr ""
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__t
@@ -506,7 +428,6 @@ msgid "T - Express 12:00"
 msgstr "T - Expressz 12:00"
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid ""
@@ -515,7 +436,6 @@ msgid ""
 msgstr ""
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid ""
@@ -527,32 +447,32 @@ msgstr ""
 "%s)"
 
 #. module: delivery_dhl
-#: model:ir.model.fields,help:delivery_dhl.field_delivery_carrier__dhl_custom_data_request
-msgid ""
-"The custom data in DHL is organized like the inside of a json file.\n"
-"        There are 3 possible keys: 'rate', 'ship', 'return', to which you can add your custom data.\n"
-"        More info on https://xmlportal.dhl.com/"
-msgstr ""
-
-#. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/dhl_request.py:0
 #, python-format
 msgid ""
-"The estimated shipping price cannot be computed because the weight is missing for the following product(s): \n"
-" %s"
-msgstr ""
+"The estimated price cannot be computed because the weight of your product is"
+" missing."
+msgstr "A körülbelüli ár nem számítható ki, mert hiányzik a termék súlya."
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/delivery_dhl.py:0
 #, python-format
-msgid "There is no price available for this shipping, you should rather try with the DHL product %s"
+msgid ""
+"There is no price available for this shipping, you should rather try with "
+"the DHL product %s"
 msgstr ""
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__u
 msgid "U - Express Worldwide"
+msgstr ""
+
+#. module: delivery_dhl
+#: model:product.product,uom_name:delivery_dhl.product_product_delivery_dhl_intl
+#: model:product.product,uom_name:delivery_dhl.product_product_delivery_dhl_usa
+#: model:product.template,uom_name:delivery_dhl.product_product_delivery_dhl_intl_product_template
+#: model:product.template,uom_name:delivery_dhl.product_product_delivery_dhl_usa_product_template
+msgid "Units"
 msgstr ""
 
 #. module: delivery_dhl
@@ -576,18 +496,10 @@ msgid "Y - Express 12:00"
 msgstr ""
 
 #. module: delivery_dhl
-#. odoo-python
 #: code:addons/delivery_dhl/models/delivery_dhl.py:0
 #, python-format
 msgid "You can't cancel DHL shipping without pickup date."
 msgstr "Törölheti az  az üres felvételi dátummal rendelkező DHL szállítást."
-
-#. module: delivery_dhl
-#. odoo-python
-#: code:addons/delivery_dhl/models/delivery_dhl.py:0
-#, python-format
-msgid "You cannot delete the commercial invoice sequence."
-msgstr ""
 
 #. module: delivery_dhl
 #: model:ir.model.fields.selection,name:delivery_dhl.selection__delivery_carrier__dhl_product_code__z

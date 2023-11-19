@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from ast import literal_eval
+from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 import json
 import werkzeug.urls
@@ -10,7 +11,6 @@ from pytz import utc, timezone
 
 from odoo import api, fields, models, _
 from odoo.addons.http_routing.models.ir_http import slug
-from odoo.exceptions import ValidationError
 from odoo.osv import expression
 from odoo.tools.misc import get_lang, format_date
 
@@ -35,9 +35,6 @@ class Event(models.Model):
             'resize_class': 'cover_auto'
         })
         return res
-
-    def _default_question_ids(self):
-        return self.env['event.type']._default_question_ids()
 
     # description
     subtitle = fields.Char('Event Subtitle', translate=True)
@@ -66,7 +63,6 @@ class Event(models.Model):
     location_menu_ids = fields.One2many(
         "website.event.menu", "event_id", string="Location Menus",
         domain=[("menu_type", "=", "location_menu")])
-    address_name = fields.Char(related='address_id.name')
     register_menu = fields.Boolean(
         "Register Menu", compute="_compute_website_menu_data",
         readonly=False, store=True)
@@ -92,21 +88,11 @@ class Event(models.Model):
     start_remaining = fields.Integer(
         'Remaining before start', compute='_compute_time_data',
         help="Remaining time before event starts (minutes)")
-    # questions
-    question_ids = fields.One2many(
-        'event.question', 'event_id', 'Questions', copy=True,
-        compute='_compute_question_ids', readonly=False, store=True)
-    general_question_ids = fields.One2many('event.question', 'event_id', 'General Questions',
-                                           domain=[('once_per_order', '=', True)])
-    specific_question_ids = fields.One2many('event.question', 'event_id', 'Specific Questions',
-                                            domain=[('once_per_order', '=', False)])
 
     def _compute_is_participating(self):
         """Heuristic
 
           * public, no visitor: not participating as we have no information;
-          * check only confirmed and attended registrations, a draft registration
-            does not make the attendee participating;
           * public and visitor: check visitor is linked to a registration. As
             visitors are merged on the top parent, current visitor check is
             sufficient even for successive visits;
@@ -116,13 +102,14 @@ class Event(models.Model):
             registration;
         """
         current_visitor = self.env['website.visitor']._get_visitor_from_request(force_create=False)
-        base_domain = [('event_id', 'in', self.ids), ('state', 'in', ['open', 'done'])]
         if self.env.user._is_public() and not current_visitor:
             events = self.env['event.event']
         elif self.env.user._is_public():
-            events = self.env['event.registration'].sudo().search(
-                expression.AND([base_domain, [('visitor_id', '=', current_visitor.id)]])
-            ).event_id
+            events = self.env['event.registration'].sudo().search([
+                ('event_id', 'in', self.ids),
+                ('state', '!=', 'cancel'),
+                ('visitor_id', '=', current_visitor.id),
+            ]).event_id
         else:
             if current_visitor:
                 domain = [
@@ -133,7 +120,10 @@ class Event(models.Model):
             else:
                 domain = [('partner_id', '=', self.env.user.partner_id.id)]
             events = self.env['event.registration'].sudo().search(
-                expression.AND([base_domain, domain])
+                expression.AND([
+                    domain,
+                    ['&', ('event_id', 'in', self.ids), ('state', '!=', 'cancel')]
+                ])
             ).event_id
 
         for event in self:
@@ -199,61 +189,6 @@ class Event(models.Model):
         for event in self:
             if event.id:  # avoid to perform a slug on a not yet saved record in case of an onchange.
                 event.website_url = '/event/%s' % slug(event)
-
-    @api.depends('event_type_id')
-    def _compute_question_ids(self):
-        """ Update event questions from its event type. Depends are set only on
-        event_type_id itself to emulate an onchange. Changing event type content
-        itself should not trigger this method.
-
-        When synchronizing questions:
-
-          * lines that no answer are removed;
-          * type lines are added;
-        """
-        if self._origin.question_ids:
-            # lines to keep: those with already given answers
-            questions_tokeep_ids = self.env['event.registration.answer'].search(
-                [('question_id', 'in', self._origin.question_ids.ids)]
-            ).question_id.ids
-        else:
-            questions_tokeep_ids = []
-        for event in self:
-            if not event.event_type_id and not event.question_ids:
-                event.question_ids = self._default_question_ids()
-                continue
-
-            if questions_tokeep_ids:
-                questions_toremove = event._origin.question_ids.filtered(
-                    lambda question: question.id not in questions_tokeep_ids)
-                command = [(3, question.id) for question in questions_toremove]
-            else:
-                command = [(5, 0)]
-            if event.event_type_id.question_ids:
-                command += [
-                    (0, 0, {
-                        'answer_ids': [(0, 0, {
-                            'name': answer.name,
-                            'sequence': answer.sequence
-                        }) for answer in question.answer_ids],
-                        'is_mandatory_answer': question.is_mandatory_answer,
-                        'once_per_order': question.once_per_order,
-                        'question_type': question.question_type,
-                        'sequence': question.sequence,
-                        'title': question.title,
-                    }) for question in event.event_type_id.question_ids
-                ]
-            event.question_ids = command
-
-    # -------------------------------------------------------------------------
-    # CONSTRAINT METHODS
-    # -------------------------------------------------------------------------
-
-    @api.constrains('website_id')
-    def _check_website_id(self):
-        for event in self:
-            if event.website_id and event.website_id.company_id != event.company_id:
-                raise ValidationError(_("The website must be from the same company as the event."))
 
     # ------------------------------------------------------------
     # CRUD
@@ -388,7 +323,7 @@ class Event(models.Model):
 
         :param fname_bool: field name (e.g. website_track)
         :param fname_o2m: o2m linking towards website.event.menu matching the
-          boolean fields (normally an entry of website.event.menu with type matching
+          boolean fields (normally an entry ot website.event.menu with type matching
           the boolean field name)
         :param method_name: method returning menu entries information: url, sequence, ...
         """
@@ -428,9 +363,9 @@ class Event(models.Model):
             # add_menu=False, ispage=False -> simply create a new ir.ui.view with name
             # and template
             page_result = self.env['website'].sudo().new_page(
-                name=f'{name} {self.name}', template=xml_id,
+                name=name + ' ' + self.name, template=xml_id,
                 add_menu=False, ispage=False)
-            url = f"/event/{slug(self)}/page{page_result['url']}"  # url contains starting "/"
+            url = "/event/" + slug(self) + "/page" + page_result['url']  # url contains starting "/"
             view_id = page_result['view_id']
 
         website_menu = self.env['website.menu'].sudo().create({
@@ -476,7 +411,7 @@ class Event(models.Model):
         params = {
             'action': 'TEMPLATE',
             'text': self.name,
-            'dates': f'{url_date_start}/{url_date_stop}',
+            'dates': url_date_start + '/' + url_date_stop,
             'ctz': self.date_tz,
             'details': self.name,
         }
@@ -484,7 +419,7 @@ class Event(models.Model):
             params.update(location=self.address_inline)
         encoded_params = werkzeug.urls.url_encode(params)
         google_url = GOOGLE_CALENDAR_URL + encoded_params
-        iCal_url = f'/event/{self.id:d}/ics?{encoded_params}'
+        iCal_url = '/event/%d/ics?%s' % (self.id, encoded_params)
         return {'google_url': google_url, 'iCal_url': iCal_url}
 
     def _default_website_meta(self):
@@ -560,8 +495,11 @@ class Event(models.Model):
             # Doing it this way allows to only get events who are tagged "age: 10-12" AND "activity: football".
             # Add another tag "age: 12-15" to the search and it would fetch the ones who are tagged:
             # ("age: 10-12" OR "age: 12-15") AND "activity: football
-            for tags in search_tags.grouped('category_id').values():
-                domain.append([('tag_ids', 'in', tags.ids)])
+            grouped_tags = defaultdict(list)
+            for tag in search_tags:
+                grouped_tags[tag.category_id].append(tag)
+            for group in grouped_tags:
+                domain.append([('tag_ids', 'in', [tag.id for tag in grouped_tags[group]])])
 
         no_country_domain = domain.copy()
         if country:
@@ -581,11 +519,10 @@ class Event(models.Model):
                     current_date = date_details[1]
 
         search_fields = ['name']
-        fetch_fields = ['name', 'website_url', 'address_name']
+        fetch_fields = ['name', 'website_url']
         mapping = {
             'name': {'name': 'name', 'type': 'text', 'match': True},
             'website_url': {'name': 'website_url', 'type': 'text', 'truncate': False},
-            'address_name': {'name': 'address_name', 'type': 'text', 'match': True},
         }
         if with_description:
             search_fields.append('subtitle')
@@ -593,19 +530,10 @@ class Event(models.Model):
             mapping['description'] = {'name': 'subtitle', 'type': 'text', 'match': True}
         if with_date:
             mapping['detail'] = {'name': 'range', 'type': 'html'}
-
-        # Bypassing the access rigths of partner to search the address.
-        def search_in_address(env, search_term):
-            ret = env['event.event'].sudo()._search([
-               ('address_search', 'ilike', search_term),
-            ])
-            return [('id', 'in', ret)]
-
         return {
             'model': 'event.event',
             'base_domain': domain,
             'search_fields': search_fields,
-            'search_extra': search_in_address,
             'fetch_fields': fetch_fields,
             'mapping': mapping,
             'icon': 'fa-ticket',

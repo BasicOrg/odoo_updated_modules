@@ -53,8 +53,8 @@
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description_sale">Small wooden stool</field>
+            <field name="produce_delay">1</field>
             <field name="sale_delay">1</field>
-            <field name="route_ids" eval="[Command.link(ref('mrp.route_warehouse0_manufacture'))]"/>
         </record>
 
         <!-- the product template attribute lines have to be defined before creating the variants -->
@@ -342,7 +342,6 @@
             <field name="product_uom_id" ref="uom.product_uom_unit"/>
             <field name="sequence">3</field>
             <field name="consumption">flexible</field>
-            <field name="produce_delay">1</field>
         </record>
         <record id="mrp_routing_workcenter_stool" model="mrp.routing.workcenter" forcecreate="0">
             <field name="bom_id" ref="mrp_bom_stool"/>
@@ -475,13 +474,13 @@
                 <field name="product_ids" model="product.product" eval="[(4, p) for p in obj().env.ref('mrp_workorder.product_template_stool').product_variant_ids.ids]"/>
                 <field name="picking_type_ids" model="stock.warehouse" eval="[(4, obj().env.ref('stock.warehouse0').manu_type_id.id)]"/>
                 <field name="operation_id" ref="mrp_routing_workcenter_stool"/>
-                <field name="test_type_id" ref="mrp_workorder.test_type_register_production"/>
+                <field name="test_type_id" ref="quality.test_type_instructions"/>
                 <field name="note"><![CDATA[
                 <p>Generate a new Serial Number for the assembled product.</p>
                     ]]>
             </field>
             <field name="title">Generate Serial Number</field>
-            <field name="sequence">5</field>
+            <field name="sequence">40</field>
         </record>
         <record id="quality_point_stool_instruction_7" model="quality.point" forcecreate="0">
             <field name="product_ids" model="product.product" eval="[(4, p) for p in obj().env.ref('mrp_workorder.product_template_stool').product_variant_ids.ids]"/>

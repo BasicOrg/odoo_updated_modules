@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+# Copyright (c) 2008 JAILLET Simon - CrysaLEAD - www.crysalead.fr
+
 {
     'name': 'France - Accounting',
-    'website': 'https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations/france.html',
-    'icon': '/account/static/description/l10n.png',
-    'countries': ['fr'],
-    'version': '2.1',
+    'version': '2.0',
     'category': 'Accounting/Localizations/Account Charts',
     'description': """
 This is the module to manage the accounting chart for France in Odoo.
@@ -29,16 +30,23 @@ configuration of their taxes and fiscal positions manually.
 **Credits:** Sistheo, Zeekom, CrysaLEAD, Akretion and Camptocamp.
 """,
     'depends': [
+        'account',
         'base_iban',
         'base_vat',
-        'account',
     ],
     'data': [
+        'data/l10n_fr_chart_data.xml',
+        'data/account.account.template.csv',
+        'data/account.group.template.csv',
         'data/account_chart_template_data.xml',
-        'data/account_data.xml',
         'views/l10n_fr_view.xml',
+        'data/account_tax_group_data.xml',
         'data/tax_report_data.xml',
+        'data/account_tax_data.xml',
         'data/res_country_data.xml',
+        'data/account_fiscal_position_template_data.xml',
+        'data/account_reconcile_model_template.xml',
+        'data/account_chart_template_configure_data.xml',
     ],
     'demo': [
         'demo/demo_company.xml',

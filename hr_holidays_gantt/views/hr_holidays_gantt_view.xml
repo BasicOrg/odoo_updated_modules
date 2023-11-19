@@ -11,11 +11,11 @@
                        date_start="date_from"
                        date_stop="date_to"
                        string="Days"
-                       color="color"
+                       color="holiday_status_id"
                        default_group_by='employee_id'
                        decoration-warning="state == 'refuse'"
                        decoration-info="state in ['confirm', 'validate1']"
-                       precision="{'week': 'day:half', 'month': 'day:half'}"
+                       precision="{'week': 'day:half', 'month': 'day:full'}"
                        plan="0"
                        total_row="True"
                        display_unavailability="1"
@@ -36,7 +36,7 @@
                     string="Days"
                     default_group_by="employee_id"
                     decoration-warning="state == 'refuse'"
-                    decoration-info="state in ['confirm']"
+                    decoration-info="state in ['confirm', 'validate1']"
                     plan="0"
                 >
                     <field name="state" invisible="1"/>
@@ -63,9 +63,7 @@
                     <field name="state" invisible="1"/>
                 <templates>
                     <div t-name="gantt-popover">
-                        <t t-esc="start_datetime.toFormat('f ')"/>
-                        <i class="fa fa-long-arrow-right" title="Arrow"/>
-                        <t t-esc="stop_datetime.toFormat(' f')"/>
+                        <div><t t-esc="userTimezoneStartDate.format('l LT ')"/><i class="fa fa-long-arrow-right" title="Arrow"/><t t-esc="userTimezoneStopDate.format(' l LT')"/></div>
                     </div>
                 </templates>
                 </gantt>

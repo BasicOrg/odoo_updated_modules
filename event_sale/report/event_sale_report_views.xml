@@ -79,7 +79,7 @@
                 <field name="invoice_partner_id" optional="hide"/>
                 <field name="event_registration_name" optional="hide"/>
                 <field name="sale_order_state" widget="badge"
-                       decoration-success="sale_order_state == 'sale'"
+                       decoration-success="sale_order_state == 'sale' or sale_order_state == 'done'"
                        decoration-info="sale_order_state == 'draft' or sale_order_state == 'sent'"/>
             </tree>
         </field>
@@ -96,9 +96,9 @@
                 <field name="company_id"/>
                 <filter string="Non-free tickets" name="priced_tickets" domain="[('event_ticket_price', '!=', 0)]"/>
                 <separator/>
-                <filter string="Free" name="free" domain="[('sale_status', '=', 'free')]"/>
-                <filter string="Pending payment" name="payment_pending" domain="[('sale_status', '=', 'to_pay')]"/>
-                <filter string="Sold" name="is_sold" domain="[('sale_status', '=', 'sold')]"/>
+                <filter string="Free" name="free" domain="[('payment_status', '=', 'free')]"/>
+                <filter string="Pending payment" name="payment_pending" domain="[('payment_status', '=', 'to_pay')]"/>
+                <filter string="Paid" name="is_paid" domain="[('payment_status', '=', 'paid')]"/>
                 <separator/>
                 <filter string="Registration Date" name="event_registration_create_date" date="event_registration_create_date" default_period="this_year"/>
                 <separator/>

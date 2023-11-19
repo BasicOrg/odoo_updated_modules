@@ -34,39 +34,27 @@
         <field name="model">hr.department</field>
         <field name="inherit_id" ref="hr.view_department_form"/>
         <field name="arch" type="xml">
-            <xpath expr="/form" position="attributes">
-                <attribute name="class">o_appraisal_form</attribute>
-            </xpath>
-
             <xpath expr="//field[@name='parent_id']" position="after">
                 <field name="custom_appraisal_templates"/>
             </xpath>
 
             <xpath expr="//sheet" position="inside">
-                <notebook invisible="not custom_appraisal_templates">
-                    <page string="Appraisal Templates" name="page_appraisal_templates">
-                        <div class="o_appraisal_both_feedback d-flex flex-column flex-md-row flex-wrap align-items-stretch" >
-                            <div class="o_appraisal_feedback col-12 col-md-6">
-                                <div class="row">
-                                    <div class="col-12 o_appraisal_input position-relative">
-                                        <h3 class="ps-0">Employee</h3>
-                                        <div class="h-100">
-                                            <field name="employee_feedback_template" nolabel="1" colspan="2"/>
-                                        </div>
-                                    </div>
+                <notebook attrs="{'invisible': [('custom_appraisal_templates', '=', False)]}">
+                    <page string="Appraisal Templates">
+                        <group>
+                            <group>
+                                <div class="col-12">
+                                    <h3 class="col-6 ps-0">Employee</h3>
+                                    <field name="employee_feedback_template" nolabel="1"/>
                                 </div>
-                            </div>
-                            <div class="o_appraisal_feedback o_appraisal_manager_feedback col-12 col-md-6">
-                                <div class="row">
-                                    <div class="o_appraisal_feedback_title col-12 d-flex justify-content-between">
-                                        <h3 class="ps-0">Manager</h3>
-                                    </div>
-                                    <div class="col-12 o_appraisal_input position-relative">
-                                        <field name="manager_feedback_template" class="o_appraisal_manager_feedback" nolabel="1" colspan="2"/>
-                                    </div>
+                            </group>
+                            <group>
+                                <div class="col-12">
+                                    <h3 class="col-6 ps-0">Manager</h3>
+                                    <field name="manager_feedback_template" nolabel="1"/>
                                 </div>
-                            </div>
-                        </div>
+                            </group>
+                        </group>
                     </page>
                 </notebook>
             </xpath>

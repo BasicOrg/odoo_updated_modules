@@ -3,16 +3,17 @@
 # 	* social_linkedin
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-23 08:24+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -26,13 +27,13 @@ msgstr "<b>领英帖子</b>"
 
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
-msgstr "<i class=\"fa fa-comments me-1\" title=\"Comments\"/>"
+msgid "<i class=\"fa fa-comments\" title=\"Comments\"/>"
+msgstr "<i class=\"fa fa-comments\" title=“评论”/>"
 
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
-msgid "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
-msgstr "<i class=\"fa fa-thumbs-up me-1\" title=\"Likes\"/>"
+msgid "<i class=\"fa fa-thumbs-up\" title=\"Likes\"/>"
+msgstr "<i class=\"fa fa-thumbs-up\" title=“喜欢”/>"
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_live_post__linkedin_post_id
@@ -50,7 +51,7 @@ msgid "App Secret"
 msgstr "App 密钥"
 
 #. module: social_linkedin
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_linkedin/static/src/xml/social_linkedin_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:social_linkedin.social_stream_post_view_kanban
 #, python-format
@@ -76,7 +77,7 @@ msgid "Display LinkedIn Preview"
 msgstr "显示领英预览"
 
 #. module: social_linkedin
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_linkedin/static/src/xml/social_linkedin_templates.xml:0
 #, python-format
 msgid "Likes"
@@ -100,8 +101,8 @@ msgid "LinkedIn Account URN"
 msgstr "领英账户URN"
 
 #. module: social_linkedin
-#. odoo-javascript
-#: code:addons/social_linkedin/static/src/js/stream_post_kanban_record.js:0
+#. openerp-web
+#: code:addons/social_linkedin/static/src/js/stream_post_linkedin_comments.js:0
 #: model:ir.model.fields,field_description:social_linkedin.field_social_stream_post__linkedin_comments_count
 #, python-format
 msgid "LinkedIn Comments"
@@ -144,7 +145,6 @@ msgid "LinkedIn author image URL"
 msgstr "领英作者图像URL"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "LinkedIn did not provide a valid access token."
@@ -158,7 +158,7 @@ msgstr "领英帖子URN"
 #. module: social_linkedin
 #: model_terms:ir.ui.view,arch_db:social_linkedin.res_config_settings_view_form
 msgid "Linkedin Developer Account"
-msgstr "Linkedin 开发者账户"
+msgstr ""
 
 #. module: social_linkedin
 #: model:ir.model.fields,field_description:social_linkedin.field_social_media__media_type
@@ -174,13 +174,6 @@ msgstr "文章图像"
 #: model:social.stream.type,name:social_linkedin.stream_type_linkedin_company_post
 msgid "Posts"
 msgstr "帖子"
-
-#. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_account.py:0
-#, python-format
-msgid "Read More about Business Accounts"
-msgstr "了解有关商业账户的更多信息"
 
 #. module: social_linkedin
 #: model:ir.model,name:social_linkedin.model_social_account
@@ -223,7 +216,6 @@ msgid "The access token is used to perform request to the REST API"
 msgstr "访问令牌用于执行对REST API的请求"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_media.py:0
 #, python-format
 msgid ""
@@ -232,14 +224,18 @@ msgid ""
 msgstr "该服务所请求的网址返回了一个错误。请联系该应用程序的作者。"
 
 #. module: social_linkedin
-#. odoo-python
+#: code:addons/social_linkedin/models/social_account.py:0
+#, python-format
+msgid "There is no page linked to this account"
+msgstr "这个账户没有链接的页面"
+
+#. module: social_linkedin
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "There was a authentication issue during your request."
 msgstr "在您的请求中，有一个认证问题。"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/controllers/main.py:0
 #, python-format
 msgid "Unauthorized. Please contact your administrator."
@@ -263,7 +259,6 @@ msgid "Vanity name, used to generate a link to the author"
 msgstr "名义上的名字，用于生成与作者的链接"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_live_post.py:0
 #, python-format
 msgid ""
@@ -272,7 +267,6 @@ msgid ""
 msgstr "我们无法上传您的图像，请尝试缩小其尺寸并重新发布（错误：上传注册时失败）。"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_live_post.py:0
 #, python-format
 msgid ""
@@ -280,33 +274,20 @@ msgid ""
 msgstr "我们无法上传您的图像，请尝试缩小其尺寸并再次发布。"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_stream.py:0
 #, python-format
 msgid "Wrong stream type for \"%s\""
 msgstr "\"%s\"的流媒体类型错误"
 
 #. module: social_linkedin
-#. odoo-python
 #: code:addons/social_linkedin/models/social_media.py:0
 #, python-format
 msgid "You don't have an active subscription. Please buy one here: %s"
 msgstr "你没有一个有效的订阅。请在这里购买一个:%s"
 
 #. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_account.py:0
+#. openerp-web
+#: code:addons/social_linkedin/static/src/js/stream_post_linkedin_comments.js:0
 #, python-format
-msgid ""
-"You need a Business Account to post on LinkedIn with Odoo Social.\n"
-" Please create one and make sure it is linked to your account"
-msgstr ""
-"您需要一个商业账户才能在LinkedIn上使用Odoo Social进行发布。\n"
-" 请创建一个商业账户，并确保将其链接到您的账户。"
-
-#. module: social_linkedin
-#. odoo-python
-#: code:addons/social_linkedin/models/social_live_post.py:0
-#, python-format
-msgid "unknown"
-msgstr "未知的"
+msgid "comment/reply"
+msgstr "评论/回复"

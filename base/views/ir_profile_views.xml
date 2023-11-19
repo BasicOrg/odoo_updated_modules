@@ -39,11 +39,11 @@
                     <field name="session"/>
                     <field name="entry_count"/>
                     <!-- Do not rely on sql field for the invisible attrs to avoid fetching whole trace from server. -->
-                    <field name="sql_count" invisible="sql_count == 0"/>
+                    <field name="sql_count" attrs="{'invisible': [('sql_count', '=', 0)]}"/>
                     <field name="speedscope_url" widget="url"/>
                 </group>
-                <group invisible="not qweb">
-                    <field name="qweb" widget="profiling_qweb_view" nolabel="1" colspan="2"/>
+                <group attrs="{'invisible': [('qweb', '=', '')]}">
+                    <field name="qweb" widget="profiling_qweb_view" nolabel="1"/>
                 </group>
             </form>
         </field>
@@ -66,8 +66,8 @@
                     <field name="expiration"/>
                 </group>
                 <footer>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
-                    <button string="Enable profiling" type="object" name="submit" class="btn btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    <button string="Enable profiling" type="object" name="submit" class="btn btn-primary"/>
                 </footer>
             </form>
         </field>
@@ -75,6 +75,7 @@
 
     <record id="action_menu_ir_profile" model="ir.actions.act_window">
         <field name="name">Ir profile</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">ir.profile</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_group_session': 1}</field>

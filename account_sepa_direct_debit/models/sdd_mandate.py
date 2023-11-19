@@ -14,11 +14,10 @@ class SDDMandate(models.Model):
     using SEPA Direct Debit.
     """
     _name = 'sdd.mandate'
-    _inherit = ['mail.thread.main.attachment', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'SDD Mandate'
-    _check_company_auto = True
 
-    _sql_constraints = [('name_unique', 'unique(name)', "Mandate identifier must be unique! Please choose another one.")]
+    _sql_constraints = [('name_unique', 'unique(name)', "Mandate identifier must be unique ! Please choose another one.")]
 
     state = fields.Selection([('draft', 'Draft'),('active','Active'), ('revoked','Revoked'), ('closed','Closed')],
                             string="State",
@@ -35,32 +34,14 @@ class SDDMandate(models.Model):
                                     default=False,
                                     help="True if and only if this mandate can be used for only one transaction. It will automatically go from 'active' to 'closed' after its first use in payment if this option is set.\n")
 
-    name = fields.Char(string='Identifier', required=True, help="The unique identifier of this mandate.", default=lambda self: datetime.now().strftime('%f%S%M%H%d%m%Y'), copy=False)
-    debtor_id_code = fields.Char(string='Debtor Identifier', help="Free reference identifying the debtor in your company.")
-    partner_id = fields.Many2one(
-        comodel_name='res.partner',
-        string='Customer',
-        required=True,
-        check_company=True,
-        help="Customer whose payments are to be managed by this mandate.",
-    )
+    name = fields.Char(string='Identifier', required=True, readonly=True, states={'draft':[('readonly',False)]}, help="The unique identifier of this mandate.", default=lambda self: datetime.now().strftime('%f%S%M%H%d%m%Y'), copy=False)
+    debtor_id_code = fields.Char(string='Debtor Identifier', readonly=True, states={'draft':[('readonly',False)]}, help="Free reference identifying the debtor in your company.")
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, readonly=True, states={'draft':[('readonly',False)]}, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", help="Customer whose payments are to be managed by this mandate.")
     company_id = fields.Many2one(comodel_name='res.company', default=lambda self: self.env.company, help="Company for whose invoices the mandate can be used.")
-    partner_bank_id = fields.Many2one(
-        comodel_name='res.partner.bank',
-        string='IBAN',
-        check_company=True,
-        help="Account of the customer to collect payments from.",
-    )
-    start_date = fields.Date(string="Start Date", required=True, help="Date from which the mandate can be used (inclusive).")
-    end_date = fields.Date(string="End Date", help="Date until which the mandate can be used. It will automatically be closed after this date.")
-    payment_journal_id = fields.Many2one(
-        string='Journal',
-        comodel_name='account.journal',
-        required=True,
-        check_company=True,
-        domain="[('id', 'in', suitable_journal_ids)]",
-        help='Journal to use to receive SEPA Direct Debit payments from this mandate.',
-    )
+    partner_bank_id = fields.Many2one(string='IBAN', readonly=True, states={'draft':[('readonly',False)]}, comodel_name='res.partner.bank', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", help="Account of the customer to collect payments from.")
+    start_date = fields.Date(string="Start Date", required=True, readonly=True, states={'draft':[('readonly',False)]}, help="Date from which the mandate can be used (inclusive).")
+    end_date = fields.Date(string="End Date", states={'closed':[('readonly',True)]}, help="Date until which the mandate can be used. It will automatically be closed after this date.")
+    payment_journal_id = fields.Many2one(string='Journal', comodel_name='account.journal', required=True, domain="[('id', 'in', suitable_journal_ids)]", help='Journal to use to receive SEPA Direct Debit payments from this mandate.')
     sdd_scheme = fields.Selection(string="SDD Scheme", selection=[('CORE', 'CORE'), ('B2B', 'B2B')],
         required=True, default='CORE', help='The B2B scheme is an optional scheme,\noffered exclusively to business payers.\n'
         'Some banks/businesses might not accept B2B SDD.',)
@@ -85,10 +66,7 @@ class SDDMandate(models.Model):
     def _compute_suitable_journal_ids(self):
         for m in self:
             company_id = m.company_id.id or self.env.company.id
-            domain = [
-                *self.env['account.journal']._check_company_domain(company_id),
-                ('type', '=', 'bank'),
-            ]
+            domain = [('company_id', '=', company_id), ('type', '=', 'bank')]
             payment_method = self.env.ref('account_sepa_direct_debit.payment_method_sdd')
 
             # Get all journals which have the payment method sdd
@@ -174,9 +152,9 @@ class SDDMandate(models.Model):
             JOIN account_move move ON move.id = payment.move_id
             WHERE move.sdd_mandate_id IS NOT NULL
             AND move.state = 'posted'
-            AND method.code IN %s
+            AND method.code = 'sdd'
             GROUP BY move.sdd_mandate_id
-        ''', [tuple(self.payment_ids.payment_method_id._get_sdd_payment_method_code())])
+        ''')
         query_res = dict((mandate_id, payment_ids) for mandate_id, payment_ids in self._cr.fetchall())
 
         for mandate in self:

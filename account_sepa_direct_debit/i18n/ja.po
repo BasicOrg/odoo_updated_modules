@@ -3,17 +3,16 @@
 # 	* account_sepa_direct_debit
 # 
 # Translators:
-# Wil Odoo, 2023
-# Junko Augias, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Junko Augias, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -32,27 +31,12 @@ msgstr "(オプション)"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "123456789"
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "2023-08-10"
-msgstr "2023-08-10"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "2023-09-10"
-msgstr "2023-09-10"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "380055"
-msgstr "380055"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "3956012345678"
+msgid ""
+". As part of your rights, you are entitled to a refund from your bank under "
+"the terms and conditions of your agreement with your bank. Your rights are "
+"explained in a statement that you can obtain from your bank. A refund must "
+"be claimed within 8 weeks starting from the date on which your account was "
+"debited."
 msgstr ""
 
 #. module: account_sepa_direct_debit
@@ -130,29 +114,10 @@ msgid "<strong>Zip: </strong>"
 msgstr "<strong>郵便番号: </strong>"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid ""
-"A SEPA direct debit version should be selected to generate the addresses in "
-"the export file."
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid ""
-"A SEPA direct debit version should be selected to generate the export file."
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid "A debtor account is required to validate a SEPA Direct Debit mandate."
-msgstr "SEPAダイレクトデビット指示を検証するには借方勘定が必要です。"
+msgstr "SEPAダイレクトデビット指示を検証するには、債務者アカウントが必要です。"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
@@ -160,8 +125,8 @@ msgid ""
 "A mandate represents the authorization you receive from a customer\n"
 "                    to automatically collect money on her account."
 msgstr ""
-"委託は、顧客から受け取った、\n"
-"                    口座から自動的にお金を回収するための承認を表します。"
+"委託は、顧客から受け取る承認を表します\n"
+" 彼女のアカウントで自動的にお金を集めるために。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__partner_bank_id
@@ -177,7 +142,7 @@ msgstr "要アクション"
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__state__active
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_mandate_search_view
 msgid "Active"
-msgstr "有効化"
+msgstr "有効"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_ids
@@ -187,7 +152,7 @@ msgstr "活動"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "例外活動文字装飾"
+msgstr "例外の活動を示す文字装飾"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_state
@@ -200,28 +165,11 @@ msgid "Activity Type Icon"
 msgstr "活動種別アイコン"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid "All the payments in the batch must have the same SDD scheme."
-msgstr "バッチ内のすべての支払いは、同じSDDスキームである必要があります。"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Antwerp"
 msgstr ""
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid ""
-"As part of your rights, you are entitled to a refund from your bank under "
-"the terms and conditions of your agreement with your bank. Your rights are "
-"explained in a statement that you can obtain from your bank. A refund must "
-"be claimed within 8 weeks starting from the date on which your account was "
-"debited."
-msgstr ""
-"お客様の権利の一部として、銀行との契約条件に基づき、銀行から払い戻しを受ける権利があります。お客様の権利は、銀行から入手できる説明書に明記されています。返金は、口座から引き落とされた日から8週間以内に請求する必要があります。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_attachment_count
@@ -242,43 +190,28 @@ msgstr "銀行口座"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_batch_payment_form_inherit
 msgid "Batch Booking"
-msgstr "バッチ記帳"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_batch_payment
 msgid "Batch Payment"
-msgstr "バッチ支払"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Belgium"
-msgstr "ベルギー"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Building C"
-msgstr ""
+msgstr "一括払い"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "By signing this mandate form, you authorise (A)"
-msgstr "この委任状に署名することにより、あなたは（A）を承認します。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__account_batch_payment__sdd_scheme__core
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__sdd_scheme__core
 msgid "CORE"
-msgstr "CORE"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "CREDIT-1234"
 msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "取消"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
@@ -289,12 +222,7 @@ msgstr "閉じる"
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__state__closed
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_mandate_search_view
 msgid "Closed"
-msgstr "クローズ済"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
-msgid "Collections"
-msgstr "回収"
+msgstr "クローズ"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_res_company
@@ -309,7 +237,7 @@ msgstr "会社"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__company_id
 msgid "Company for whose invoices the mandate can be used."
-msgstr "委任状を利用できる請求書発行会社。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_res_config_settings
@@ -324,17 +252,17 @@ msgstr "連絡先"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_mandate_usable
 msgid "Could a SDD mandate be used?"
-msgstr "SDD委任状は利用できますか？"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
 msgid "Create a new direct debit customer mandate"
-msgstr "顧客への新しい口座振替指示を作成しましょう。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
 msgid "Create it."
-msgstr "それを作成する。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__create_uid
@@ -349,17 +277,17 @@ msgstr "作成日"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "Creditor"
-msgstr "債権者"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_config_settings__sdd_creditor_identifier
 msgid "Creditor Identifier"
-msgstr "債権者識別子"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_res_config_settings__sdd_creditor_identifier
 msgid "Creditor identifier of your company within SEPA scheme."
-msgstr "SEPAスキームにおける貴社の債権者識別子。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__partner_id
@@ -369,53 +297,38 @@ msgstr "顧客"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Customer mandate"
-msgstr "顧客委任状"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__partner_id
 msgid "Customer whose payments are to be managed by this mandate."
-msgstr "この委任状により支払いを管理する顧客。"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "DEBT1234"
 msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__start_date
 msgid "Date from which the mandate can be used (inclusive)."
-msgstr "委任状が使用可能となる日付（当日を含む）"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__end_date
 msgid ""
 "Date until which the mandate can be used. It will automatically be closed "
 "after this date."
-msgstr "委任状を使用できる期限。この日を過ぎると自動的に締切られます。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_batch_payment__sdd_required_collection_date
 msgid "Date when the company expects to receive the payments of this batch."
-msgstr "会社がこのバッチ支払を受領する予定日。"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Debtor"
-msgstr "債務者"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__debtor_id_code
-msgid "Debtor Identifier"
-msgstr "債務者識別子"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__account_journal__debit_sepa_pain_version__pain_008_001_02
-msgid "Default (Pain 008.001.02)"
 msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Demo@email.com"
+msgid "Debtor"
+msgstr ""
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__debtor_id_code
+msgid "Debtor Identifier"
 msgstr ""
 
 #. module: account_sepa_direct_debit
@@ -424,23 +337,23 @@ msgstr ""
 #: model:ir.ui.menu,name:account_sepa_direct_debit.account_sepa_direct_debit_customer_mandates_menu
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_res_partner_view
 msgid "Direct Debit Mandates"
-msgstr "口座振替指示"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_journal_dashboard_kanban_view
 msgid "Direct Debit Payment to Collect"
-msgstr "受領する口座振替支払"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__payments_to_collect_nber
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_journal_dashboard_kanban_view
 msgid "Direct Debit Payments to Collect"
-msgstr "受領する口座振替支払"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.actions.act_window,name:account_sepa_direct_debit.action_sdd_payments_to_collect
 msgid "Direct debit payments to collect"
-msgstr "受領する口座振替支払"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__display_name
@@ -451,7 +364,7 @@ msgstr "表示名"
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__state__draft
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_mandate_search_view
 msgid "Draft"
-msgstr "下書き"
+msgstr "ドラフト"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__end_date
@@ -467,7 +380,7 @@ msgstr "終了日"
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_res_partner__sdd_mandate_ids
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_res_users__sdd_mandate_ids
 msgid "Every mandate belonging to this partner."
-msgstr "この取引先に属する全ての委任状"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_follower_ids
@@ -487,12 +400,12 @@ msgstr "Font awesomeのアイコン 例. fa-tasks"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__debtor_id_code
 msgid "Free reference identifying the debtor in your company."
-msgstr "貴社の債務者を特定するための無料照会"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
 msgid "Good news! A valid Sepa Mandate is available."
-msgstr "朗報です！有効なSEPA委任状が利用可能です。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__has_message
@@ -517,12 +430,12 @@ msgstr "アイコン"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "例外活動を示すアイコン"
+msgstr "例外的なアクティビティを示唆するアイコン"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "Identification code"
-msgstr "識別子コード"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__name
@@ -532,53 +445,51 @@ msgstr "保管ロット"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "チェックした場合は、新しいメッセージに注意が必要です。"
+msgstr "チェックされている場合は、新しいメッセージに注意が必要です。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_has_error
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "チェックした場合は、一部のメッセージに配信エラーが発生されました。"
+msgstr "チェックした場合、一部のメッセージで配信エラーが発生しています。"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "Invalid creditor identifier. Make sure you made no typo."
-msgstr "債権者識別子が無効です。タイプミスがないか確認して下さい。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "Invalid creditor identifier. Wrong format."
-msgstr "債権者識別子が無効です。形式が間違っています。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:mail.message.subtype,description:account_sepa_direct_debit.sdd_mt_invoice_paid_with_mandate
 msgid "Invoice paid via direct debit."
-msgstr "口座振替によって支払済の請求書"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__paid_invoice_ids
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Invoices Paid"
-msgstr "支払済請求書"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_invoice_filter
 msgid "Invoices matching a valid SEPA Direct Debit Mandate"
-msgstr "有効な口座振替委任状に一致する請求書"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__paid_invoice_ids
 msgid "Invoices paid using this mandate."
-msgstr "この委任状を使って支払われる請求書"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Invoices paid with this mandate."
-msgstr "この委任状によって支払われる請求書"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_is_follower
@@ -599,13 +510,18 @@ msgstr "仕訳"
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_move_line
 msgid "Journal Item"
-msgstr "仕訳項目"
+msgstr "仕訳明細"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__payment_journal_id
 msgid ""
 "Journal to use to receive SEPA Direct Debit payments from this mandate."
-msgstr "この委任状からSEPA口座振替支払を受領するために使用する仕訳。"
+msgstr ""
+
+#. module: account_sepa_direct_debit
+#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate____last_update
+msgid "Last Modified on"
+msgstr "最終更新日"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__write_uid
@@ -620,27 +536,24 @@ msgstr "最終更新日"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_main_attachment_id
 msgid "Main Attachment"
-msgstr "主要添付"
+msgstr "主な添付"
 
 #. module: account_sepa_direct_debit
 #: model:ir.actions.report,name:account_sepa_direct_debit.sdd_mandate_form_report_main
 msgid "Mandate form"
-msgstr "以下からの委任状："
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.constraint,message:account_sepa_direct_debit.constraint_sdd_mandate_name_unique
-msgid "Mandate identifier must be unique! Please choose another one."
-msgstr "委任状識別子は一意である必要があります！別のものを選択して下さい。"
+msgid "Mandate identifier must be unique ! Please choose another one."
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.actions.server,name:account_sepa_direct_debit.sdd_mandate_state_cron_ir_actions_server
+#: model:ir.cron,cron_name:account_sepa_direct_debit.sdd_mandate_state_cron
+#: model:ir.cron,name:account_sepa_direct_debit.sdd_mandate_state_cron
 msgid "Mandate state updater"
-msgstr "委任状ステータスアップデーター"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Marc Demo"
-msgstr "Marc Demo"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_has_error
@@ -655,12 +568,12 @@ msgstr "メッセージ"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "活動期限"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "次の活動カレンダーイベント"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_date_deadline
@@ -670,7 +583,7 @@ msgstr "次の活動期限"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_summary
 msgid "Next Activity Summary"
-msgstr "次の活動概要"
+msgstr "次の活動サマリ"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_type_id
@@ -680,12 +593,12 @@ msgstr "次の活動タイプ"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.action_sdd_payments_to_collect
 msgid "No direct debit payment to collect"
-msgstr "受領する振替口座支払はありません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_needaction_counter
 msgid "Number of Actions"
-msgstr "アクション数"
+msgstr "アクションの数"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__payments_to_collect_nber
@@ -695,7 +608,6 @@ msgid ""
 "mandate and still needs their XML file to be generated and sent to the bank "
 "to debit the customer's account."
 msgstr ""
-"この委任状のために受領するべき口座振替支払の数、つまり、この委任状のおかげで発生・計上され、これから顧客の口座から引き落とすためにXMLファイルを作成し、銀行に送信する必要がある支払いの数です。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__message_has_error_counter
@@ -705,22 +617,17 @@ msgstr "エラー数"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__paid_invoices_nber
 msgid "Number of invoices paid with this mandate."
-msgstr "この委任状によって支払われる請求書の数"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_needaction_counter
-msgid "Number of messages requiring action"
+msgid "Number of messages which requires an action"
 msgstr "アクションを必要とするメッセージの数"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "配信エラーが発生されたメッセージ数"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Odoo PVT LTD"
-msgstr ""
+msgstr "配信エラーのメッセージ数"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.actions.act_window,help:account_sepa_direct_debit.account_sepa_direct_debit_mandate_tree_act
@@ -731,10 +638,6 @@ msgid ""
 "                    then only have to generate a SEPA Direct Debit (SDD) XML file containing this operation\n"
 "                    and send it to your bank to effectively get paid."
 msgstr ""
-"請求書の日付で有効な委託を持つ顧客に対してOdooで請求書が作成されると、\n"
-"その検証により自動支払いが開始され、\n"
-"この操作を含むSEDA Direct Debit (SDD) XMLファイルを生成して銀行に送信するだけで\n"
-"効果的に支払いを受けることができます。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_id
@@ -743,62 +646,59 @@ msgstr ""
 msgid ""
 "Once this invoice has been paid with Direct Debit, contains the mandate that"
 " allowed the payment."
-msgstr "この請求書が口座振替で支払われると、支払いを許可した委任状が含まれます。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__one_off
 msgid "One-off Mandate"
-msgstr "一回限りの委任状"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "Only IBAN account numbers can receive SEPA Direct Debit payments. Please "
 "select a journal associated to one."
-msgstr "IBAN口座番号のみでSEPA口座振替の支払いを受取ることができます。関連する仕訳を選択して下さい。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "Only mandates in draft state can be deleted from database when cancelled."
-msgstr "ドラフト状態の委任状のみ、キャンセル時にデータベースから削除することができます。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
 msgid "Oops! No valid SEPA mandate for this customer."
-msgstr "！！この顧客に有効なSEPA委任状がありません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sdd_res_partner_view
 msgid "Open this partner's mandates"
-msgstr "この取引先の委任状を開く"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_form
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_account_payment_with_mandates_tree
 msgid "Originating SEPA mandate"
-msgstr "SEPA委任状を作成する"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid "Paid Invoices"
-msgstr "支払済の請求書"
+msgstr "有料の請求書"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__paid_invoices_nber
 msgid "Paid Invoices Number"
-msgstr "支払済請求書数"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:mail.message.subtype,name:account_sepa_direct_debit.sdd_mt_invoice_paid_with_mandate
 msgid "Paid via direct debit"
-msgstr "口座振替で支払済"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_account_payment_method
@@ -814,19 +714,19 @@ msgstr "支払"
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 msgid "Payments generated for this mandate that have not yet been collected."
-msgstr "この委任状のために作成された支払がまだ受領されていません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__payment_ids
 msgid "Payments generated thanks to this mandate."
-msgstr "この委任状によって発生した支払。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
+#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
 #, python-format
 msgid "Payments to Collect"
-msgstr "受領する支払"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_report_invoice_document
@@ -834,8 +734,6 @@ msgid ""
 "Please do not pay it manually, the payment will be asked to your bank to be processed\n"
 "                        automatically."
 msgstr ""
-"支払いはお客様の銀行に依頼され、自動的に処理されるため、手動で\n"
-"　　　　　　　支払わないで下さい。"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
@@ -843,24 +741,19 @@ msgid "Print"
 msgstr "印刷"
 
 #. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__rating_ids
-msgid "Ratings"
-msgstr "評価"
-
-#. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_batch_payment__sdd_batch_booking
 msgid "Request batch booking from the bank for the related bank statements."
-msgstr "銀行からの関連する銀行取引明細書の一括記入を要求します。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_required_collection_date
 msgid "Required collection date"
-msgstr "要求された受領日"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__activity_user_id
 msgid "Responsible User"
-msgstr "担当ユーザ"
+msgstr "担当者"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.account_sepa_direct_debit_mandate_form
@@ -870,38 +763,33 @@ msgstr "取り消す"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__sdd_mandate__state__revoked
 msgid "Revoked"
-msgstr "取消済"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_view_account_payment_search
 msgid "Revoked SDD Mandate"
-msgstr "取消済SDD委任状"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "Rue de la Loi, 16"
 msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_payment_search
 msgid "SDD B2B"
-msgstr "SDD B2B"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_batch_payment__sdd_batch_booking
 msgid "SDD Batch Booking"
-msgstr "SDD Batch記帳"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_payment_search
 msgid "SDD CORE"
-msgstr "SDD CORE"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model,name:account_sepa_direct_debit.model_sdd_mandate
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_invoice_filter
 msgid "SDD Mandate"
-msgstr "SDD委任状"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_scheme
@@ -910,79 +798,47 @@ msgstr "SDD委任状"
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_mandate_scheme
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__sdd_scheme
 msgid "SDD Scheme"
-msgstr "SDDスキーム"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_partner__sdd_count
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_users__sdd_count
 msgid "SDD count"
-msgstr "SDDカウント"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_company__sdd_creditor_identifier
 msgid "SDD creditor identifier"
-msgstr "SDD債権者識別子"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid "SDD scheme is set on the customer mandate."
-msgstr "顧客委任状にSDDスキームが設定されました"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "SEPA Business-to-Business Direct Debit Mandate"
-msgstr "SEPA Business-to-Business口座振替委任状"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:account.payment.method,name:account_sepa_direct_debit.payment_method_sdd
 msgid "SEPA Direct Debit"
-msgstr "SEPA Direct Debit"
+msgstr "SEPA口座振替"
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid "SEPA Direct Debit Mandate"
-msgstr "SEPAダイレクトデビットマンデート"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_journal__debit_sepa_pain_version
-msgid "SEPA Direct Debit Pain Version"
 msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_res_company__sdd_creditor_identifier
 msgid ""
 "SEPA Direct Debit creditor identifier of the company, given by the bank."
-msgstr "会社のSEPA口座振替債権者識別子、銀行から付与されたもの"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "SEPA Direct Debit scheme only accepts IBAN account numbers. Please select an"
 " IBAN-compliant debtor account for this mandate."
-msgstr "SEPA口座振替スキームはIBAN口座番号のみを受け付けています。この委任状にはIBANに準拠した債務者口座を選択して下さい。"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_journal_form
-msgid "SEPA Pain Version"
-msgstr "SEPA Painバージョン"
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.view_account_journal_form
-msgid "SEPA Pain version"
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "SEPA-CUST-001"
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid "SEPA1234"
 msgstr ""
 
 #. module: account_sepa_direct_debit
@@ -995,7 +851,7 @@ msgstr "SMS配信エラー"
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_move__sdd_has_usable_mandate
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_payment__sdd_has_usable_mandate
 msgid "Sdd Has Usable Mandate"
-msgstr "SDDに利用可能な委任状があります"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_id
@@ -1004,13 +860,6 @@ msgstr "SDDに利用可能な委任状があります"
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_partner__sdd_mandate_ids
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_res_users__sdd_mandate_ids
 msgid "Sdd Mandate"
-msgstr "SDD委任状"
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid "Select a SEPA Direct Debit version before generating the XML."
 msgstr ""
 
 #. module: account_sepa_direct_debit
@@ -1019,13 +868,12 @@ msgid "Signature"
 msgstr "署名"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "Some draft payments could not be posted because of the lack of any active "
 "mandate."
-msgstr "有効な委任状がないため、計上できなかった手形支払があります。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__start_date
@@ -1035,7 +883,7 @@ msgstr "開始日"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__state
 msgid "State"
-msgstr "都道府県・州"
+msgstr "都道府県/州"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__activity_state
@@ -1045,15 +893,15 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"活動に基づいての状態\n"
-"延滞: 期限は既に過ぎました\n"
-"当日: 活動日は本日です\n"
-"予定: 将来の活動。"
+"活動に基づく状態\n"
+"延滞：期限は既に過ぎました\n"
+"当日：活動日は本日です\n"
+"予定：将来の活動。"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__suitable_journal_ids
 msgid "Suitable Journal"
-msgstr "適切な仕訳帳"
+msgstr "適しジャーナル"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_account_bank_statement_line__sdd_mandate_scheme
@@ -1066,60 +914,35 @@ msgid ""
 "offered exclusively to business payers.\n"
 "Some banks/businesses might not accept B2B SDD."
 msgstr ""
-"B2Bスキームはオプションスキームで、\n"
-"ビジネスペイヤーのみに提供されます。\n"
-"B2B SDDを受け付けていない銀行/企業もあります。"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
 msgid ""
 "The SEPA Direct Debit mandate associated to the payment has been revoked and"
 " cannot be used anymore."
-msgstr "支払いに関連付けられたSEPA口座振替の委任状は取消され、これ以上使用できません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_company.py:0
 #, python-format
 msgid "The creditor identifier exceeds the maximum length of 35 characters."
-msgstr "債権者識別子が最大35文字を超えています。"
-
-#. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid ""
-"The debtor and creditor city name is a compulsary information when "
-"generating the SDD XML."
 msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
-#: code:addons/account_sepa_direct_debit/models/account_payment.py:0
-#, python-format
-msgid ""
-"The debtor and creditor country is a compulsary information when generating "
-"the SDD XML."
-msgstr ""
-
-#. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "The debtor identifier you specified exceeds the limitation of 35 characters "
 "imposed by SEPA regulation"
-msgstr "指定された債務者識別子が、SEPA規則による35文字の制限を超えています。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "The end date of the mandate must be posterior or equal to its start date."
-msgstr "委任状の終了日は、その開始日以降である必要があります。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
@@ -1128,18 +951,14 @@ msgid ""
 "                specified time range. If no end date is specified,\n"
 "                you will have to contact us to stop its use."
 msgstr ""
-"この委任状は、指定された期間内の請求書の支払いにのみ\n"
-"　　　　使用されます。終了日が指定されていない場合は、\n"
-"使用を停止するために当社にご連絡頂く必要があります。"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
 msgid ""
 "The payment must be linked to a SEPA Direct Debit mandate in order to "
 "generate a Direct Debit XML."
-msgstr "口座振替XMLを作成するには、支払いをSEPA口座振替委任状にリンクする必要があります。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__state
@@ -1149,15 +968,11 @@ msgid ""
 "- 'active' means that this mandate can be used to pay invoices. \n"
 "- 'closed' designates a mandate that has been marked as not to use anymore without invalidating the previous transactions done with it.- 'revoked' means the mandate has been signaled as fraudulent by the customer. It cannot be used anymore, and should not ever have been. You will probably need to refund the related invoices, if any.\n"
 msgstr ""
-"この委任状のステート：\n"
-"- 「ドラフト」は、この委任状を使用する前にまだ確認する必要があることを意味します。\n"
-"- 「有効」は、この委任状が請求書の支払いに使用できることを意味します。\n"
-"- 「締切」は、この委任状を使用して行われた以前の取引を無効にすることなく、これ以上使用しないようにマークされた委任状を意味します。‐「取消」とは、顧客によって委任状が不正であると示されたことを意味します。関連する請求書がある場合は、返金する必要があるでしょう。\n"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__name
 msgid "The unique identifier of this mandate."
-msgstr "この委任状特有の識別子"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_report_invoice_document
@@ -1165,27 +980,14 @@ msgid ""
 "This invoice will be paid using direct debit and is only\n"
 "                        sent for informative purposes."
 msgstr ""
-"この請求書は口座振替で支払われるため、\n"
-"　　　　　　ご参考までにお送りしています。"
 
 #. module: account_sepa_direct_debit
-#: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
-msgid ""
-"This mandate is only intended for business-to-business transactions. You are"
-" not entitled to a refund from your bank after your account has been "
-"debited, but you are entitled to request your bank not to debit your account"
-" up until the day on which the payment is due."
-msgstr ""
-"この委任状は、企業間取引のみを対象としています。口座から引き落とされた後に銀行から払い戻しを受ける権利はありませんが、支払期日まで口座から引き落とさないよう銀行に要求する権利はあります。"
-
-#. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "To solve that, you should create a mandate for each of the involved "
 "customers, valid at the moment of the payment date."
-msgstr "これを解決するには、関係する顧客ごとに、支払日の時点で有効な委任状を作成する必要があります。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__one_off
@@ -1194,54 +996,43 @@ msgid ""
 "will automatically go from 'active' to 'closed' after its first use in "
 "payment if this option is set.\n"
 msgstr ""
-"この委任状が1つの取引にのみ使用できる場合にのみTrue。このオプションが設定されている場合、支払いに初めて使用された後、自動的に「有効」から「締切」になります。\n"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
 msgid ""
 "Trying to generate a Direct Debit XML file containing payments from another "
 "company than that file's creditor."
-msgstr "そのファイルの債権者とは別の会社からの支払いを含む口座振替XMLファイルを生成しようとしています。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #, python-format
 msgid ""
 "Trying to generate a Direct Debit XML for payments coming from another "
 "payment method than SEPA Direct Debit."
-msgstr "SEPA口座振替とは別の支払い方法による支払い用に、口座振替XMLを作成しようとしています。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_payment.py:0
 #: code:addons/account_sepa_direct_debit/models/sdd_mandate.py:0
 #, python-format
 msgid ""
 "Trying to register a payment on a mandate belonging to a different partner."
-msgstr "別のパートナーが所有する委任状に支払いを登録しようとしています。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "記録上の例外活動の種類。"
+msgstr "記録上の例外アクティビティのタイプ。"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_invoice.py:0
 #, python-format
 msgid ""
 "Unable to post payment %(payment)r due to no usable mandate being available "
 "at date %(date)s for partner %(partner)r. Please create one before encoding "
 "a SEPA Direct Debit payment."
-msgstr ""
-"取引先%(partner)rの日付%(date)sで使用可能な委任状がないため、支払%(payment)rを登録できません。SEPA口座振替支払をエンコードする前に作成して下さい。"
-
-#. module: account_sepa_direct_debit
-#: model:ir.model.fields.selection,name:account_sepa_direct_debit.selection__account_journal__debit_sepa_pain_version__pain_008_001_08
-msgid "Updated 2023 (Pain 008.001.08)"
 msgstr ""
 
 #. module: account_sepa_direct_debit
@@ -1257,43 +1048,40 @@ msgstr "有効期間"
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,field_description:account_sepa_direct_debit.field_sdd_mandate__website_message_ids
 msgid "Website Messages"
-msgstr "サイトメッセージ"
+msgstr "ウェブサイトメッセージ"
 
 #. module: account_sepa_direct_debit
 #: model:ir.model.fields,help:account_sepa_direct_debit.field_sdd_mandate__website_message_ids
 msgid "Website communication history"
-msgstr "サイト通信履歴"
+msgstr "ウェブサイトコミュニケーション履歴"
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/res_partner_bank.py:0
 #, python-format
 msgid ""
 "You cannot delete a bank account linked to an active SEPA Direct Debit "
 "mandate."
-msgstr "有効なSEPA口座振替委任状にリンクされている銀行口座は削除できません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "You cannot generate a SEPA Direct Debit file with a required collection date"
 " in the past."
-msgstr "SEPA口座振替ファイルは、過去の回収日を指定して作成することはできません。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
-#. odoo-python
 #: code:addons/account_sepa_direct_debit/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "Your company must have a creditor identifier in order to issue SEPA Direct "
 "Debit payments requests. It can be defined in accounting module's settings."
-msgstr "SEPA Direct Debit要求を発行するには、貴社の債権者識別子が必要です。これは会計モジュールの設定で定義できます。"
+msgstr ""
 
 #. module: account_sepa_direct_debit
 #: model_terms:ir.ui.view,arch_db:account_sepa_direct_debit.sdd_mandate_form
 msgid ""
 "to send instructions to your bank to debit your account and (B) your bank to"
 " debit your account in accordance with the instructions from"
-msgstr "口座から引き落とすための指示を銀行に送ること、および(B)銀行が、以下の指示に従って口座から引き落とすこと。"
+msgstr ""

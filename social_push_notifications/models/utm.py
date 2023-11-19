@@ -28,8 +28,8 @@ class UtmCampaign(models.Model):
     def _compute_social_push_notifications_count(self):
         push_notifications_data = self.env['social.post']._read_group(
             [('utm_campaign_id', 'in', self.ids), ('media_ids.media_type', '=', 'push_notifications')],
-            ['utm_campaign_id'], ['__count'])
-        mapped_data = {utm_campaign.id: count for utm_campaign, count in push_notifications_data}
+            ['utm_campaign_id'], ['utm_campaign_id'])
+        mapped_data = {datum['utm_campaign_id'][0]: datum['utm_campaign_id_count'] for datum in push_notifications_data}
         for campaign in self:
             campaign.social_push_notifications_count = mapped_data.get(campaign.id, 0)
 

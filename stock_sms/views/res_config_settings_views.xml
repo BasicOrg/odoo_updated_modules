@@ -9,15 +9,15 @@
             <xpath expr="//field[@name='module_stock_sms']" position="replace">
                 <field name="stock_move_sms_validation"/>
             </xpath>
-            <xpath expr="//setting[@id='stock_sms']" position="attributes">
-                <attribute name="string">SMS Confirmation</attribute>
+            <xpath expr="//label[@for='module_stock_sms']" position="replace">
+                <label for="stock_move_sms_validation" string="SMS Confirmation"/>
             </xpath>
-            <xpath expr="//setting[@id='stock_sms']" position="inside">
-                <div class="row mt16" invisible="not stock_move_sms_validation">
+            <xpath expr="//div[@id='stock_confirmation_sms']" position="replace">
+                <div class="row mt16" attrs="{'invisible': [('stock_move_sms_validation', '=', False)]}">
                     <label for="stock_sms_confirmation_template_id" string="SMS Template" class="col-lg-4 o_light_label"/>
-                    <field name="stock_sms_confirmation_template_id" class="oe_inline" required="stock_move_sms_validation" context="{'default_model': 'stock.picking'}"/>
+                    <field name="stock_sms_confirmation_template_id" class="oe_inline" attrs="{'required': [('stock_move_sms_validation', '=', True)]}" context="{'default_model': 'stock.picking'}"/>
                 </div>
-                <widget name="iap_buy_more_credits" service_name="sms" invisible="not stock_move_sms_validation"/>
+                <widget name="iap_buy_more_credits" service_name="sms" attrs="{'invisible': [('stock_move_sms_validation', '=', False)]}"/>
             </xpath>
         </field>
     </record>

@@ -10,12 +10,12 @@
                             name="test_smtp_connection" class="btn-primary"/>
                     </header>
                     <sheet>
-                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
-                            invisible="active"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <group>
                                 <field name="name" placeholder="e.g. My Outgoing Server"/>
-                                <field name="from_filter" placeholder="e.g. email@domain.com, domain.com"/>
+                                <field name="from_filter"/>
                             </group>
                             <group>
                                 <field name="sequence"/>
@@ -28,28 +28,25 @@
                             </group>
                             <group>
                                 <div class="text-muted fst-italic" role="alert" colspan="2"
-                                    invisible="not smtp_authentication_info">
+                                    attrs="{'invisible': [('smtp_authentication_info', '=', False)]}">
                                     <field name="smtp_authentication_info"/>
                                 </div>
                             </group>
                         </group>
-                        <notebook colspan="4"
-                            invisible="smtp_authentication == 'cli'">
+                        <notebook colspan="4">
                             <page name="connection" string="Connection">
                                 <group>
                                     <group>
                                         <field name="smtp_encryption" widget="radio"/>
+                                        <field name="smtp_host"/>
+                                        <field name="smtp_port" options="{'format': false}"/>
                                         <field name="smtp_debug" groups="base.group_no_one"/>
-                                        <field name="smtp_host"
-                                            required="smtp_authentication != 'cli'"/>
-                                        <field name="smtp_port" options="{'format': false}"
-                                            required="smtp_authentication != 'cli'"/>
                                     </group>
                                     <group>
-                                        <field name="smtp_user" invisible="smtp_authentication == 'certificate'" force_save="1"/>
-                                        <field name="smtp_pass" invisible="smtp_authentication != 'login'" password="True" force_save="1"/>
-                                        <field name="smtp_ssl_certificate" invisible="smtp_authentication != 'certificate'" force_save="1"/>
-                                        <field name="smtp_ssl_private_key" invisible="smtp_authentication != 'certificate'" force_save="1"/>
+                                        <field name="smtp_user" attrs="{'invisible': [('smtp_authentication', '=', 'certificate')]}" force_save="1"/>
+                                        <field name="smtp_pass" attrs="{'invisible': [('smtp_authentication', '!=', 'login')]}" password="True" force_save="1"/>
+                                        <field name="smtp_ssl_certificate" attrs="{'invisible': [('smtp_authentication', '!=', 'certificate')]}" force_save="1"/>
+                                        <field name="smtp_ssl_private_key" attrs="{'invisible': [('smtp_authentication', '!=', 'certificate')]}" force_save="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -63,7 +60,7 @@
             <field name="model">ir.mail_server</field>
             <field name="arch" type="xml">
                 <tree string="Outgoing Mail Servers">
-                    <field name="sequence" widget="handle"/>
+                    <field name="sequence"/>
                     <field name="name"/>
                     <field name="smtp_host"/>
                     <field name="smtp_user"/>

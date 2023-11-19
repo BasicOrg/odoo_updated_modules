@@ -11,11 +11,11 @@
                     <field name="suitable_picking_ids" invisible="1"/>
                     <field name="suitable_sale_order_ids" invisible="1"/>
                     <field name="ticket_id" invisible="1"/>
-                    <group invisible="not ticket_id">
+                    <group attrs="{'invisible': [('ticket_id', '=', False)]}">
                         <group>
                             <field name="sale_order_id" options="{'no_create': True}"/>
                             <field name="picking_id" options="{'no_create': True}" string="Delivery to Return"
-                                required="ticket_id"/>
+                                attrs="{'required': [('ticket_id', '!=', False)]}"/>
                         </group>
                     </group>
                 </group>

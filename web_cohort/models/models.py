@@ -2,15 +2,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
-import babel.dates
-
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo.osv import expression
-from odoo.tools.misc import get_lang
 
 DISPLAY_FORMATS = {
     'day': '%d %b %Y',
@@ -42,51 +38,48 @@ class Base(models.AbstractModel):
         columns_avg = defaultdict(lambda: dict(percentage=0, count=0))
         total_value = 0
         initial_churn_value = 0
-        if measure != '__count':
-            field = self._fields[measure]
-            if field.type == 'many2one':
-                measure = f'{measure}:count_distinct'
-            else:
-                measure = f'{measure}:{field.group_operator}'
-
-        locale = get_lang(self.env).code
-
-        domain = domain + [(date_start, '!=', False)]  # date not set are no take in account
-        row_groups = self._read_group(
-            domain=domain,
-            groupby=[date_start + ':' + interval],
-            aggregates=[measure],
+        measure_is_many2one = self._fields.get(measure) and self._fields.get(measure).type == 'many2one'
+        field_measure = (
+            [measure + ':count_distinct']
+            if measure_is_many2one
+            else ([measure] if  self._fields.get(measure) else [])
         )
-
-        date_start_field = self._fields[date_start]
-        if date_start_field.type == 'datetime':
-            today = datetime.today()
-            convert_method = fields.Datetime.to_datetime
-        else:
-            today = date.today()
-            convert_method = fields.Date.to_date
-
-        for group_value, value in row_groups:
+        row_groups = self._read_group_raw(
+            domain=domain,
+            fields=[date_start] + field_measure,
+            groupby=date_start + ':' + interval
+        )
+        for group in row_groups:
+            dates = group['%s:%s' % (date_start, interval)]
+            if not dates:
+                continue
+            # Split with space for smoothly format datetime field
+            clean_start_date = dates[0].split('/')[0].split(' ')[0]
+            cohort_start_date = fields.Datetime.from_string(clean_start_date)
+            if measure == '__count':
+                value = float(group[date_start + '_count'])
+            else:
+                value = float(group[measure] or 0.0)
             total_value += value
-            group_domain = expression.AND([
-                domain,
-                ['&', (date_start, '>=', group_value), (date_start, '<', group_value + models.READ_GROUP_TIME_GRANULARITY[interval])]
-            ])
-            sub_group = self._read_group(
-                domain=group_domain,
-                groupby=[date_stop + ':' + interval],
-                aggregates=[measure],
+
+            sub_group = self._read_group_raw(
+                domain=group['__domain'],
+                fields=[date_stop] + field_measure,
+                groupby=date_stop + ':' + interval
             )
-            sub_group_per_period = {
-                convert_method(group_value): aggregate_value
-                for group_value, aggregate_value in sub_group
-            }
+            sub_group_per_period = {}
+            for g in sub_group:
+                d_stop = g["%s:%s" % (date_stop, interval)]
+                if d_stop:
+                    date_group = fields.Datetime.from_string(d_stop[0].split('/')[0])
+                    group_interval = date_group.strftime(DISPLAY_FORMATS[interval])
+                    sub_group_per_period[group_interval] = g
 
             columns = []
             initial_value = value
             col_range = range(-15, 1) if timeline == 'backward' else range(0, 16)
             for col_index, col in enumerate(col_range):
-                col_start_date = group_value
+                col_start_date = cohort_start_date
                 if interval == 'day':
                     col_start_date += relativedelta(days=col)
                     col_end_date = col_start_date + relativedelta(days=1)
@@ -100,7 +93,7 @@ class Base(models.AbstractModel):
                     col_start_date += relativedelta(years=col)
                     col_end_date = col_start_date + relativedelta(years=1)
 
-                if col_start_date > today:
+                if col_start_date > datetime.today():
                     columns_avg[col_index]
                     columns.append({
                         'value': '-',
@@ -109,25 +102,33 @@ class Base(models.AbstractModel):
                     })
                     continue
 
-                col_value = sub_group_per_period.get(col_start_date, 0.0)
+                significative_period = col_start_date.strftime(DISPLAY_FORMATS[interval])
+                col_group = sub_group_per_period.get(significative_period, {})
+                if not col_group:
+                    col_value = 0.0
+                elif measure == '__count':
+                    col_value = col_group[date_stop + '_count']
+                else:
+                    col_value = col_group[measure] or 0.0
 
                 # In backward timeline, if columns are out of given range, we need
                 # to set initial value for calculating correct percentage
                 if timeline == 'backward' and col_index == 0:
                     outside_timeline_domain = expression.AND(
                         [
-                            group_domain,
+                            group['__domain'],
                             ['|',
                                 (date_stop, '=', False),
                                 (date_stop, '>=', fields.Datetime.to_string(col_start_date)),
                             ]
                         ]
                     )
-                    col_group = self._read_group(
+                    col_group = self._read_group_raw(
                         domain=outside_timeline_domain,
-                        aggregates=[measure],
+                        fields=field_measure,
+                        groupby=[]
                     )
-                    initial_value = float(col_group[0][0])
+                    initial_value = float(col_group[0][measure] or 0.0)
                     initial_churn_value = value - initial_value
 
                 previous_col_remaining_value = initial_value if col_index == 0 else columns[-1]['value']
@@ -165,12 +166,9 @@ class Base(models.AbstractModel):
                 })
 
             rows.append({
-                'date': babel.dates.format_date(
-                    group_value, format=models.READ_GROUP_DISPLAY_FORMAT[interval],
-                    locale=locale,
-                ),
+                'date': dates[1],
                 'value': value,
-                'domain': group_domain,
+                'domain': group['__domain'],
                 'columns': columns,
             })
 

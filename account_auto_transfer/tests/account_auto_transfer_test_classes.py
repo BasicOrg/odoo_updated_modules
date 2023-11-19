@@ -20,6 +20,7 @@ class AccountAutoTransferTestCase(AccountTestInvoicingCommon):
         })
         cls.analytic_plan = cls.env['account.analytic.plan'].create({
             'name': 'A',
+            'company_id': False
         })
 
         cls.master_account_index = 0

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo auto_sequence="1">
+<odoo>
     <record id="account_financial_report_l10n_lu_bs_abr" model="account.report">
         <field name="name">Balance Sheet (abridged)</field>
         <field name="root_report_id" ref="account_reports.balance_sheet"/>
@@ -19,7 +19,6 @@
         <field name="line_ids">
             <record id="account_financial_report_l10n_lu_bs_abr_line_1" model="account.report.line">
                 <field name="name">ASSETS</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_lu_bs_abr_line_1_1" model="account.report.line">
                         <field name="name">A. Subscribed capital unpaid</field>
@@ -99,14 +98,14 @@
                                         <field name="code">LU_BSABR_203</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
-                                        <field name="account_codes_formula">4011 + 4012 + 4013 + 4014 + 4019 + 4111 + 4121 + 421 + 44113</field>
+                                        <field name="domain_formula">sum( [ '|', '|', '|', '|', '|', '|', '|', '|', ('account_id.code', '=like', '4011%'), ('account_id.code', '=like', '4012%'), ('account_id.code', '=like', '4013%'), ('account_id.code', '=like', '4014%'), ('account_id.code', '=like', '4019%'), ('account_id.code', '=like', '4111%'), ('account_id.code', '=like', '4121%'), ('account_id.code', '=like', '421%'), ('account_id.code', '=like', '44113%') ])</field>
                                     </record>
                                     <record id="account_financial_report_l10n_lu_bs_abr_line_1_4_2_2" model="account.report.line">
                                         <field name="name">b) becoming due and payable after more than one year</field>
                                         <field name="code">LU_BSABR_205</field>
                                         <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
-                                        <field name="account_codes_formula">4021 + 4029 + 4112 + 4122 + 422 + 44123</field>
+                                        <field name="domain_formula">sum( [ '|', '|', '|', '|', '|', ('account_id.code', '=like', '4021%'), ('account_id.code', '=like', '4029%'), ('account_id.code', '=like', '4112%'), ('account_id.code', '=like', '4122%'), ('account_id.code', '=like', '422%'), ('account_id.code', '=like', '44123%') ])</field>
                                     </record>
                                 </field>
                             </record>
@@ -122,7 +121,7 @@
                                 <field name="code">LU_BSABR_197</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
-                                <field name="account_codes_formula">5130 + 5131 + 516 + 5170 + 5171 + 518</field>
+                                <field name="domain_formula">sum( [ '|', ('account_id.code', '=like', '5130%'), '|', ('account_id.code', '=like', '5131%'), '|', ('account_id.code', '=like', '516%'), '|', ('account_id.code', '=like', '5170%'), '|', ('account_id.code', '=like', '5171%'), ('account_id.code', '=like', '518%') ])</field>
                             </record>
                         </field>
                     </record>
@@ -142,7 +141,6 @@
             </record>
             <record id="account_financial_report_l10n_lu_bs_abr_line_2" model="account.report.line">
                 <field name="name">CAPITAL, RESERVES AND LIABILITIES</field>
-                <field name="hierarchy_level">0</field>
                 <field name="children_ids">
                     <record id="account_financial_report_l10n_lu_bs_abr_line_2_1" model="account.report.line">
                         <field name="name">A. Capital and reserves</field>
@@ -181,22 +179,17 @@
                                 <field name="name">V. Profit or loss brought forward</field>
                                 <field name="code">LU_BSABR_319</field>
                                 <field name="expression_ids">
-                                    <record id="account_financial_report_l10n_lu_bs_abr_line_2_1_5_past_pnl" model="account.report.expression">
-                                        <field name="label">past_pnl</field>
-                                        <field name="engine">aggregation</field>
-                                        <field name="subformula">cross_report</field>
-                                        <field name="formula">LU_PLABR_669.balance</field>
-                                        <field name="date_scope">to_beginning_of_fiscalyear</field>
-                                    </record>
-                                    <record id="account_financial_report_l10n_lu_bs_abr_line_2_1_5_accounts" model="account.report.expression">
-                                        <field name="label">accounts</field>
-                                        <field name="engine">account_codes</field>
-                                        <field name="formula">-14</field>
+                                    <record id="account_financial_report_l10n_lu_bs_abr_line_2_1_5_pre_balance" model="account.report.expression">
+                                        <field name="label">pre_balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula" eval="['|', ('account_id.internal_group', 'in', ['income', 'expense']), ('account_id.code', '=like', '141%')]"/>
+                                        <field name="date_scope">from_beginning</field>
+                                        <field name="subformula">-sum</field>
                                     </record>
                                     <record id="account_financial_report_l10n_lu_bs_abr_line_2_1_5_balance" model="account.report.expression">
                                         <field name="label">balance</field>
                                         <field name="engine">aggregation</field>
-                                        <field name="formula">LU_BSABR_319.past_pnl + LU_BSABR_319.accounts</field>
+                                        <field name="formula">LU_BSABR_319.pre_balance - LU_BSABR_321.balance</field>
                                     </record>
                                 </field>
                             </record>
@@ -207,10 +200,10 @@
                                 <field name="expression_ids">
                                     <record id="account_financial_report_l10n_lu_bs_abr_line_2_1_6_balance" model="account.report.expression">
                                         <field name="label">balance</field>
-                                        <field name="engine">aggregation</field>
-                                        <field name="subformula">cross_report</field>
-                                        <field name="formula">LU_PLABR_669.balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula" eval="['|', ('account_id.internal_group', 'in', ['income', 'expense']), ('account_id.code', '=like', '142%')]"/>
                                         <field name="date_scope">from_fiscalyear</field>
+                                        <field name="subformula">-sum</field>
                                     </record>
                                 </field>
                             </record>
@@ -247,7 +240,7 @@
                                 <field name="code">LU_BSABR_453</field>
                                 <field name="groupby">account_id</field>
                                 <field name="foldable" eval="True"/>
-                                <field name="account_codes_formula">-1911 - 1921 - 1931 - 1941 - 431 - 4411\(44113) - 4421 - 4511 - 4521 - 46 - 471 - 5132 - 5172 - 4015</field>
+                                <field name="domain_formula">-sum( [ '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', ('account_id.code', '=like', '1911%'), ('account_id.code', '=like', '1921%'), ('account_id.code', '=like', '1931%'), ('account_id.code', '=like', '1941%'), ('account_id.code', '=like', '431%'), '&amp;', ('account_id.code', '=like', '4411%'), ('account_id.code', 'not like', '44113%'), ('account_id.code', '=like', '4421%'), ('account_id.code', '=like', '4511%'), ('account_id.code', '=like', '4521%'), ('account_id.code', '=like', '46%'), ('account_id.code', '=like', '471%'), ('account_id.code', '=like', '5132%'), ('account_id.code', '=like', '5172%'), ('account_id.code', '=like', '4015%') ])</field>
                             </record>
                             <record id="account_financial_report_l10n_lu_bs_abr_line_2_3_2" model="account.report.line">
                                 <field name="name">b) becoming due and payable after more than one year</field>

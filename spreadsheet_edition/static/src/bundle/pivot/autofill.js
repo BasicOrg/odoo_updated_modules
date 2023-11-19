@@ -1,18 +1,19 @@
 /** @odoo-module */
 
-import * as spreadsheet from "@odoo/o-spreadsheet";
+import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 
-import { Component } from "@odoo/owl";
-import { containsReferences } from "@spreadsheet/helpers/helpers";
-
+const { Component } = owl;
 const { autofillModifiersRegistry, autofillRulesRegistry } = spreadsheet.registries;
 
+const UP = 0;
+const DOWN = 1;
+const LEFT = 2;
+const RIGHT = 3;
 //--------------------------------------------------------------------------
 // Autofill Component
 //--------------------------------------------------------------------------
 export class AutofillTooltip extends Component {}
 AutofillTooltip.template = "spreadsheet_edition.AutofillTooltip";
-AutofillTooltip.props = { content: Array };
 
 //--------------------------------------------------------------------------
 // Autofill Rules
@@ -20,14 +21,10 @@ AutofillTooltip.props = { content: Array };
 
 autofillRulesRegistry
     .add("autofill_pivot", {
-        condition: (cell) =>
-            cell &&
-            cell.isFormula &&
-            cell.content.match(/=\s*ODOO\.PIVOT/) &&
-            !containsReferences(cell),
+        condition: (cell) => cell && cell.isFormula() && cell.content.match(/=\s*ODOO\.PIVOT/),
         generateRule: (cell, cells) => {
             const increment = cells.filter(
-                (cell) => cell && cell.isFormula && cell.content.match(/=\s*ODOO\.PIVOT/)
+                (cell) => cell && cell.isFormula() && cell.content.match(/=\s*ODOO\.PIVOT/)
             ).length;
             return { type: "PIVOT_UPDATER", increment, current: 0 };
         },
@@ -35,7 +32,7 @@ autofillRulesRegistry
     })
     .add("autofill_pivot_position", {
         condition: (cell) =>
-            cell && cell.isFormula && cell.content.match(/=.*ODOO\.PIVOT.*ODOO\.PIVOT\.POSITION/),
+            cell && cell.isFormula() && cell.content.match(/=.*ODOO\.PIVOT.*ODOO\.PIVOT\.POSITION/),
         generateRule: () => ({ type: "PIVOT_POSITION_UPDATER", current: 0 }),
         sequence: 1,
     });
@@ -51,19 +48,19 @@ autofillModifiersRegistry
             let isColumn;
             let steps;
             switch (direction) {
-                case "up":
+                case UP:
                     isColumn = false;
                     steps = -rule.current;
                     break;
-                case "down":
+                case DOWN:
                     isColumn = false;
                     steps = rule.current;
                     break;
-                case "left":
+                case LEFT:
                     isColumn = true;
                     steps = -rule.current;
                     break;
-                case "right":
+                case RIGHT:
                     isColumn = true;
                     steps = rule.current;
             }
@@ -91,7 +88,7 @@ autofillModifiersRegistry
             return {
                 cellData: {
                     style: undefined,
-                    format: data.cell && data.cell.format,
+                    format: undefined,
                     border: undefined,
                     content,
                 },
@@ -109,14 +106,13 @@ autofillModifiersRegistry
         apply: (rule, data, getters, direction) => {
             const formulaString = data.cell.content;
             const pivotId = formulaString.match(/ODOO\.PIVOT\.POSITION\(\s*"(\w+)"\s*,/)[1];
-            if (!getters.isExistingPivot(pivotId)) {
+            if (!getters.isExistingPivot(pivotId))
                 return { cellData: { ...data.cell, content: formulaString } };
-            }
             const pivotDefinition = getters.getPivotDefinition(pivotId);
-            const fields = ["up", "down"].includes(direction)
+            const fields = [UP, DOWN].includes(direction)
                 ? pivotDefinition.rowGroupBys
                 : pivotDefinition.colGroupBys;
-            const step = ["right", "down"].includes(direction) ? 1 : -1;
+            const step = [RIGHT, DOWN].includes(direction) ? 1 : -1;
 
             const field = fields
                 .reverse()

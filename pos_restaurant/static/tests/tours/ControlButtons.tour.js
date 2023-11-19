@@ -1,66 +1,62 @@
-/** @odoo-module */
+odoo.define('pos_restaurant.tour.ControlButtons', function (require) {
+    'use strict';
 
-import * as TextAreaPopup from "@point_of_sale/../tests/tours/helpers/TextAreaPopupTourMethods";
-import * as NumberPopup from "@point_of_sale/../tests/tours/helpers/NumberPopupTourMethods";
-import * as FloorScreen from "@pos_restaurant/../tests/tours/helpers/FloorScreenTourMethods";
-import * as ProductScreenPos from "@point_of_sale/../tests/tours/helpers/ProductScreenTourMethods";
-import * as ProductScreenResto from "@pos_restaurant/../tests/tours/helpers/ProductScreenTourMethods";
-const ProductScreen = { ...ProductScreenPos, ...ProductScreenResto };
-import * as SplitBillScreen from "@pos_restaurant/../tests/tours/helpers/SplitBillScreenTourMethods";
-import * as BillScreen from "@pos_restaurant/../tests/tours/helpers/BillScreenTourMethods";
-import * as Order from "@point_of_sale/../tests/tours/helpers/generic_components/OrderWidgetMethods";
-import { registry } from "@web/core/registry";
+    const { TextAreaPopup } = require('point_of_sale.tour.TextAreaPopupTourMethods');
+    const { NumberPopup } = require('point_of_sale.tour.NumberPopupTourMethods');
+    const { Chrome } = require('pos_restaurant.tour.ChromeTourMethods');
+    const { FloorScreen } = require('pos_restaurant.tour.FloorScreenTourMethods');
+    const { ProductScreen } = require('pos_restaurant.tour.ProductScreenTourMethods');
+    const { SplitBillScreen } = require('pos_restaurant.tour.SplitBillScreenTourMethods');
+    const { BillScreen } = require('pos_restaurant.tour.BillScreenTourMethods');
+    const { getSteps, startSteps } = require('point_of_sale.tour.utils');
+    var Tour = require('web_tour.tour');
 
-registry.category("web_tour.tours").add("ControlButtonsTour", {
-    test: true,
-    url: "/pos/ui",
-    steps: () =>
-        [
-            // Test TransferOrderButton
-            FloorScreen.clickTable("2"),
-            ProductScreen.addOrderline("Water", "5", "2", "10.0"),
-            ProductScreen.clickTransferButton(),
-            FloorScreen.clickTable("4"),
-            FloorScreen.backToFloor(),
-            FloorScreen.clickTable("2"),
-            ProductScreen.orderIsEmpty(),
-            FloorScreen.backToFloor(),
-            FloorScreen.clickTable("4"),
+    // signal to start generating steps
+    // when finished, steps can be taken from getSteps
+    startSteps();
 
-            // Test SplitBillButton
-            ProductScreen.clickSplitBillButton(),
-            SplitBillScreen.clickBack(),
+    // Test TransferOrderButton
+    FloorScreen.do.clickTable('T2');
+    ProductScreen.exec.addOrderline('Water', '5', '2', '10.0');
+    ProductScreen.do.clickTransferButton();
+    FloorScreen.do.clickTable('T4');
+    ProductScreen.do.clickOrderline('Water', '5', '2');
+    Chrome.do.backToFloor();
+    FloorScreen.do.clickTable('T2');
+    ProductScreen.check.orderIsEmpty();
+    Chrome.do.backToFloor();
+    FloorScreen.do.clickTable('T4');
+    ProductScreen.do.clickOrderline('Water', '5', '2');
 
-            // Test OrderlineNoteButton
-            ProductScreen.clickNoteButton(),
-            TextAreaPopup.isShown(),
-            TextAreaPopup.inputText("test note"),
-            TextAreaPopup.clickConfirm(),
-            Order.hasLine({
-                productName: "Water",
-                quantity: "5",
-                price: "10.0",
-                internalNote: "test note",
-                withClass: ".selected",
-            }),
-            ProductScreen.addOrderline("Water", "8", "1", "8.0"),
+    // Test SplitBillButton
+    ProductScreen.do.clickSplitBillButton();
+    SplitBillScreen.do.clickBack();
 
-            // Test PrintBillButton
-            ProductScreen.clickPrintBillButton(),
-            BillScreen.isShown(),
-            BillScreen.clickOk(),
+    // Test OrderlineNoteButton
+    ProductScreen.do.clickNoteButton();
+    TextAreaPopup.check.isShown();
+    TextAreaPopup.do.inputText('test note');
+    TextAreaPopup.do.clickConfirm();
+    ProductScreen.check.orderlineHasNote('Water', '5', 'test note');
+    ProductScreen.exec.addOrderline('Water', '8', '1', '8.0');
 
-            // Test GuestButton
-            ProductScreen.clickGuestButton(),
-            NumberPopup.enterValue("15"),
-            NumberPopup.inputShownIs("15"),
-            NumberPopup.clickConfirm(),
-            ProductScreen.guestNumberIs("15"),
+    // Test PrintBillButton
+    ProductScreen.do.clickPrintBillButton();
+    BillScreen.check.isShown();
+    BillScreen.do.clickOk();
 
-            ProductScreen.clickGuestButton(),
-            NumberPopup.enterValue("5"),
-            NumberPopup.inputShownIs("5"),
-            NumberPopup.clickConfirm(),
-            ProductScreen.guestNumberIs("5"),
-        ].flat(),
+    // Test GuestButton
+    ProductScreen.do.clickGuestButton();
+    NumberPopup.do.pressNumpad('1 5');
+    NumberPopup.check.inputShownIs('15');
+    NumberPopup.do.clickConfirm();
+    ProductScreen.check.guestNumberIs('15')
+
+    ProductScreen.do.clickGuestButton();
+    NumberPopup.do.pressNumpad('5');
+    NumberPopup.check.inputShownIs('5');
+    NumberPopup.do.clickConfirm();
+    ProductScreen.check.guestNumberIs('5')
+
+    Tour.register('ControlButtonsTour', { test: true, url: '/pos/ui' }, getSteps());
 });

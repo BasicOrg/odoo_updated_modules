@@ -84,7 +84,7 @@ class AccountMove(models.Model):
         # do not modify without syncing the other method
         raise_warning = False
         taxes_to_set = []
-        for index, line in enumerate(self.invoice_line_ids.filtered(lambda l: l.display_type not in ('line_note', 'line_section'))):
+        for index, line in enumerate(self.invoice_line_ids.filtered(lambda l: not l.display_type)):
             if line._get_taxcloud_price() >= 0.0 and line.quantity >= 0.0:
                 price = line.price_unit * (1 - (line.discount or 0.0) / 100.0) * line.quantity
                 if not price:
@@ -95,10 +95,10 @@ class AccountMove(models.Model):
                     raise_warning = True
                     tax_rate = float_round(tax_rate, precision_digits=3)
                     tax = self.env['account.tax'].sudo().with_context(active_test=False).search([
-                        *self.env['account.tax']._check_company_domain(company),
                         ('amount', '=', tax_rate),
                         ('amount_type', '=', 'percent'),
                         ('type_tax_use', '=', 'sale'),
+                        ('company_id', '=', company.id),
                     ], limit=1)
                     if tax:
                         # Only set if not already set, otherwise it triggers a
@@ -107,7 +107,7 @@ class AccountMove(models.Model):
                         if not tax.active:
                             tax.active = True  # Needs to be active to be included in invoice total computation
                     else:
-                        tax = self.env['account.tax'].sudo().with_context(default_company_id=company.root_id.id).create({
+                        tax = self.env['account.tax'].sudo().with_context(default_company_id=company.id).create({
                             'name': 'Tax %.3f %%' % (tax_rate),
                             'amount': tax_rate,
                             'amount_type': 'percent',
@@ -169,7 +169,7 @@ class AccountMove(models.Model):
                     )
                 else:
                     request.set_invoice_items_detail(invoice)
-                    origin_invoice = invoice.reversed_entry_id
+                    origin_invoice = self.reversed_entry_id
                     if origin_invoice:
                         request.client.service.Returned(
                             request.api_login_id,

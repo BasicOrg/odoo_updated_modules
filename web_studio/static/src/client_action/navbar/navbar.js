@@ -1,31 +1,26 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import { onMounted, onWillUnmount } from "@odoo/owl";
-
-import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { EnterpriseNavBar } from "@web_enterprise/webclient/navbar/navbar";
+import { NotEditableActionError } from "../../studio_service";
 import { HomeMenuCustomizer } from "./home_menu_customizer/home_menu_customizer";
-import { useStudioServiceAsReactive, NotEditableActionError } from "@web_studio/studio_service";
+import { EditMenuItem } from "../../legacy/edit_menu_adapter";
+import { NewModelItem } from "@web_studio/legacy/new_model_adapter";
 
-const menuButtonsRegistry = registry.category("studio_navbar_menubuttons");
+const { onMounted } = owl;
+
 export class StudioNavbar extends EnterpriseNavBar {
     setup() {
         super.setup();
-        this.studio = useStudioServiceAsReactive();
+        this.studio = useService("studio");
         this.actionManager = useService("action");
         this.user = useService("user");
         this.dialogManager = useService("dialog");
         this.notification = useService("notification");
         onMounted(() => {
-            this.env.bus.removeEventListener("HOME-MENU:TOGGLED", this._busToggledCallback);
+            this.env.bus.off("HOME-MENU:TOGGLED", this);
             this._updateMenuAppsIcon();
         });
-
-        const onMenuButtonsUpdate = () => this.render();
-        menuButtonsRegistry.addEventListener("UPDATE", onMenuButtonsUpdate);
-        onWillUnmount(() => menuButtonsRegistry.removeEventListener("UPDATE", onMenuButtonsUpdate));
     }
     onMenuToggle() {
         this.studio.toggleHomeMenu();
@@ -40,7 +35,10 @@ export class StudioNavbar extends EnterpriseNavBar {
             } catch (e) {
                 if (e instanceof NotEditableActionError) {
                     const options = { type: "danger" };
-                    this.notification.add(_t("This action is not editable by Studio"), options);
+                    this.notification.add(
+                        this.env._t("This action is not editable by Studio"),
+                        options
+                    );
                     return;
                 }
                 throw e;
@@ -53,9 +51,18 @@ export class StudioNavbar extends EnterpriseNavBar {
     get isInApp() {
         return this.studio.mode === this.studio.MODES.EDITOR;
     }
-    get menuButtons() {
-        return Object.fromEntries(menuButtonsRegistry.getEntries());
+    _onNotesClicked() {
+        // LPE fixme: dbuuid should be injected into session_info python side
+        const action = {
+            type: "ir.actions.act_url",
+            url: `http://pad.odoo.com/p/customization-${this.user.db.uuid}`,
+        };
+        // LPE Fixme: this could be either the local AM or the GlobalAM
+        // we don(t care i-here as we open an url anyway)
+        this.actionManager.doAction(action);
     }
 }
 StudioNavbar.template = "web_studio.StudioNavbar";
 StudioNavbar.components.HomeMenuCustomizer = HomeMenuCustomizer;
+StudioNavbar.components.EditMenuItem = EditMenuItem;
+StudioNavbar.components.NewModelItem = NewModelItem;

@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import logging
 
-from odoo import api, fields, models, _, Command
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from odoo.http import request
 
@@ -42,30 +42,22 @@ class ResUsers(models.Model):
         return super(ResUsers, self)._get_login_domain(login) + website.website_domain()
 
     @api.model
-    def _get_email_domain(self, email):
-        website = self.env['website'].get_current_website()
-        return super()._get_email_domain(email) + website.website_domain()
-
-    @api.model
     def _get_login_order(self):
         return 'website_id, ' + super(ResUsers, self)._get_login_order()
 
     @api.model
     def _signup_create_user(self, values):
         current_website = self.env['website'].get_current_website()
-        # Note that for the moment, portal users can connect to all websites of
-        # all companies as long as the specific_user_account setting is not
-        # activated.
-        values['company_id'] = current_website.company_id.id
-        values['company_ids'] = [Command.link(current_website.company_id.id)]
         if request and current_website.specific_user_account:
+            values['company_id'] = current_website.company_id.id
+            values['company_ids'] = [(4, current_website.company_id.id)]
             values['website_id'] = current_website.id
         new_user = super(ResUsers, self)._signup_create_user(values)
         return new_user
 
     @api.model
     def _get_signup_invitation_scope(self):
-        current_website = self.env['website'].sudo().get_current_website()
+        current_website = self.env['website'].get_current_website()
         return current_website.auth_signup_uninvited or super(ResUsers, self)._get_signup_invitation_scope()
 
     @classmethod
@@ -80,18 +72,19 @@ class ResUsers(models.Model):
             visitor_pre_authenticate_sudo = request.env['website.visitor']._get_visitor_from_request()
         uid = super(ResUsers, cls).authenticate(db, login, password, user_agent_env)
         if uid and visitor_pre_authenticate_sudo:
-            env = api.Environment(request.env.cr, uid, {})
-            user_partner = env.user.partner_id
-            visitor_current_user_sudo = env['website.visitor'].sudo().search([
-                ('partner_id', '=', user_partner.id)
-            ], limit=1)
-            if visitor_current_user_sudo:
-                # A visitor exists for the logged in user, link public
-                # visitor records to it.
-                if visitor_pre_authenticate_sudo != visitor_current_user_sudo:
-                    visitor_pre_authenticate_sudo._merge_visitor(visitor_current_user_sudo)
-                visitor_current_user_sudo._update_visitor_last_visit()
-            else:
-                visitor_pre_authenticate_sudo.access_token = user_partner.id
-                visitor_pre_authenticate_sudo._update_visitor_last_visit()
+            with cls.pool.cursor() as cr:
+                env = api.Environment(cr, uid, {})
+                user_partner = env.user.partner_id
+                visitor_current_user_sudo = env['website.visitor'].sudo().search([
+                    ('partner_id', '=', user_partner.id)
+                ], limit=1)
+                if visitor_current_user_sudo:
+                    # A visitor exists for the logged in user, link public
+                    # visitor records to it.
+                    if visitor_pre_authenticate_sudo != visitor_current_user_sudo:
+                        visitor_pre_authenticate_sudo._merge_visitor(visitor_current_user_sudo)
+                    visitor_current_user_sudo._update_visitor_last_visit()
+                else:
+                    visitor_pre_authenticate_sudo.access_token = user_partner.id
+                    visitor_pre_authenticate_sudo._update_visitor_last_visit()
         return uid

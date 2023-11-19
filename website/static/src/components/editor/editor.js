@@ -1,17 +1,11 @@
-/** @odoo-module **/
-
-import { _t } from "@web/core/l10n/translation";
+/** @odoo-module */
+// Legacy services
+import legacyEnv from 'web.commonEnv';
 import { useService } from '@web/core/utils/hooks';
+import { WysiwygAdapterComponent } from '../wysiwyg_adapter/wysiwyg_adapter';
 import { useActiveElement } from '@web/core/ui/ui_service';
-import {
-    markup,
-    Component,
-    useState,
-    useEffect,
-    onWillStart,
-    onMounted,
-    onWillUnmount,
-} from "@odoo/owl";
+
+const { markup, Component, useState, useChildSubEnv, useEffect, onWillStart, onMounted, onWillUnmount } = owl;
 
 export class WebsiteEditorComponent extends Component {
     /**
@@ -36,10 +30,10 @@ export class WebsiteEditorComponent extends Component {
             this.websiteService.invalidateSnippetCache = false;
         }
 
+        useChildSubEnv(legacyEnv);
+
         onWillStart(async () => {
-            await this.websiteService.loadWysiwyg();
-            const adapterModule = await odoo.loader.modules.get('@website/components/wysiwyg_adapter/wysiwyg_adapter');
-            this.WysiwygAdapterComponent = adapterModule.WysiwygAdapterComponent;
+            this.Wysiwyg = await this.websiteService.loadWysiwyg();
         });
 
         useEffect(isPublicRootReady => {
@@ -87,6 +81,7 @@ export class WebsiteEditorComponent extends Component {
         }
         this.wysiwygOptions.invalidateSnippetCache = false;
         this.websiteService.unblockPreview();
+        this.websiteService.hideLoader();
     }
     /**
      * Prepares the editor for reload. Copies the widget element tree
@@ -112,8 +107,8 @@ export class WebsiteEditorComponent extends Component {
      * @returns {Promise<void>}
      */
     async reload({ snippetOptionSelector, url, invalidateSnippetCache } = {}) {
-        this.notificationService.add(_t("Your modifications were saved to apply this option."), {
-            title: _t("Content saved."),
+        this.notificationService.add(this.env._t("Your modifications were saved to apply this option."), {
+            title: this.env._t("Content saved."),
             type: 'success'
         });
         if (invalidateSnippetCache) {
@@ -150,4 +145,5 @@ export class WebsiteEditorComponent extends Component {
         this.websiteContext.edition = false;
     }
 }
+WebsiteEditorComponent.components = { WysiwygAdapterComponent };
 WebsiteEditorComponent.template = 'website.WebsiteEditorComponent';

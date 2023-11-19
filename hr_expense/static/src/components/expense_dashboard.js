@@ -1,8 +1,9 @@
 /** @odoo-module */
 
 import { useService } from '@web/core/utils/hooks';
-import { getCurrency } from '@web/core/currency';
-import { Component, onWillStart, useState } from "@odoo/owl";
+import session from 'web.session';
+
+const { Component, onWillStart, useState } = owl;
 
 export class ExpenseDashboard extends Component {
 
@@ -22,7 +23,7 @@ export class ExpenseDashboard extends Component {
 
     renderMonetaryField(value, currency_id) {
         value = value.toFixed(2);
-        const currency = getCurrency(currency_id);
+        const currency = session.get_currency(currency_id);
         if (currency) {
             if (currency.position === "after") {
                 value += currency.symbol;

@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 22:21+0000\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-20 09:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgid "All related social media posts"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Allow"
@@ -49,7 +49,7 @@ msgid "Delay"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #, python-format
 msgid "Deny"
@@ -85,7 +85,6 @@ msgid "Enable Web Push Notifications"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -100,7 +99,6 @@ msgid "Firebase Admin Key File"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "Firebase Admin Key File is missing from the configuration."
@@ -165,6 +163,11 @@ msgid "Key File"
 msgstr ""
 
 #. module: social_push_notifications
+#: model:ir.model.fields,field_description:social_push_notifications.field_website_visitor_push_subscription____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: social_push_notifications
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.social_post_view_form
 msgid "Local Time"
 msgstr ""
@@ -175,7 +178,6 @@ msgid "Media Type"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_live_post.py:0
 #: code:addons/social_push_notifications/models/social_post_template.py:0
 #, python-format
@@ -190,7 +192,7 @@ msgid "Notification Request Delay (seconds)"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-javascript
+#. openerp-web
 #: code:addons/social_push_notifications/static/src/xml/social_push_notifications_templates.xml:0
 #: model:ir.model.fields,field_description:social_push_notifications.field_res_config_settings__notification_request_icon
 #: model:ir.model.fields,field_description:social_push_notifications.field_social_account__notification_request_icon
@@ -383,7 +385,6 @@ msgid "Social Post Template"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/website_visitor.py:0
 #, python-format
 msgid "Some selected visitors do not allow push notifications."
@@ -452,7 +453,6 @@ msgid "Visitors"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:social_push_notifications.res_config_settings_view_form
 #, python-format
@@ -477,19 +477,17 @@ msgid "Website Visitor"
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid "You can't delete a Push Notification account."
 msgstr ""
 
 #. module: social_push_notifications
-#. odoo-python
 #: code:addons/social_push_notifications/models/social_account.py:0
 #, python-format
 msgid ""
-"You have to install \"google_auth>=1.18.0\" to be able to send push "
-"notifications."
+"You have to either install \"firebase_admin>=2.17.0\" or "
+"\"google_auth>=1.18.0\" to be able to send push notifications."
 msgstr ""
 
 #. module: social_push_notifications

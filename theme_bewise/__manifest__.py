@@ -5,12 +5,12 @@
     'summary': 'University, Education, Schools, Young, Play, Kids',
     'sequence': 240,
     'version': '2.1.0',
+    'author': 'Odoo S.A.',
     'depends': ['theme_common'],
     'data': [
         'data/ir_asset.xml',
         'views/image_content.xml',
         'views/customizations.xml',
-        'views/new_page_template.xml',
     ],
     'images': [
         'static/description/bewise_description.jpg',
@@ -24,7 +24,7 @@
         'website.s_media_list_default_image_2': '/theme_bewise/static/src/img/content/college_media_2.jpg',
         'website.s_quotes_carousel_demo_image_0': '/theme_bewise/static/src/img/backgrounds/college_bg_4.jpg',
     },
-    'configurator_snippets': {
+    'snippet_lists': {
         'homepage': ['s_cover', 's_call_to_action', 's_text_image', 's_numbers', 's_image_text', 's_quotes_carousel', 's_color_blocks_2'],
     },
     'license': 'LGPL-3',

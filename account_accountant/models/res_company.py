@@ -12,48 +12,6 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     invoicing_switch_threshold = fields.Date(string="Invoicing Switch Threshold", help="Every payment and invoice before this date will receive the 'From Invoicing' status, hiding all the accounting entries related to it. Use this option after installing Accounting if you were using only Invoicing before, before importing all your actual accounting data in to Odoo.")
-    predict_bill_product = fields.Boolean(string="Predict Bill Product")
-
-    # Deferred management
-    deferred_journal_id = fields.Many2one(
-        comodel_name='account.journal',
-        string="Deferred Journal",
-    )
-    deferred_expense_account_id = fields.Many2one(
-        comodel_name='account.account',
-        string="Deferred Expense",
-    )
-    deferred_revenue_account_id = fields.Many2one(
-        comodel_name='account.account',
-        string="Deferred Revenue",
-    )
-    generate_deferred_expense_entries_method = fields.Selection(
-        string="Generate Deferred Expense Entries Method",
-        selection=[
-            ('on_validation', 'On bill validation'),
-            ('manual', 'Manually & Grouped'),
-        ],
-        default='on_validation',
-        required=True,
-    )
-    generate_deferred_revenue_entries_method = fields.Selection(
-        string="Generate Deferred Revenue Entries Method",
-        selection=[
-            ('on_validation', 'On invoice validation'),
-            ('manual', 'Manually & Grouped'),
-        ],
-        default='on_validation',
-        required=True,
-    )
-    deferred_amount_computation_method = fields.Selection(
-        string="Deferred Amount Computation Method",
-        selection=[
-            ('day', 'Based on days'),
-            ('month', 'Equal per month'),
-        ],
-        default='month',
-        required=True,
-    )
 
     def write(self, vals):
         old_threshold_vals = {}
@@ -186,6 +144,7 @@ class ResCompany(models.Model):
     def _get_fiscalyear_lock_statement_lines_redirect_action(self, unreconciled_statement_lines):
         # OVERRIDE account
         return self.env['account.bank.statement.line']._action_open_bank_reconciliation_widget(
+            default_context={'search_default_not_matched': True},
             extra_domain=[('id', 'in', unreconciled_statement_lines.ids)],
             name=_('Unreconciled statements lines'),
         )

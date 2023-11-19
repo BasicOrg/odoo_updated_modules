@@ -19,13 +19,13 @@
                 <header>
                     <button name="mail_action_blacklist_remove" string="Unblacklist"
                         type="object" class="oe_highlight" context="{'default_email': email}"
-                        invisible="not active or not email"/>
+                        attrs="{'invisible': ['|', ('active', '=', False), ('email', '=', False)]}"/>
                     <button name="action_add" string="Blacklist"
                         type="object" class="oe_highlight"
-                        invisible="active or not email"/>
+                        attrs="{'invisible': ['|', ('active', '=', True), ('email', '=', False)]}"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <group>
                         <group>
                             <field name="email"/>

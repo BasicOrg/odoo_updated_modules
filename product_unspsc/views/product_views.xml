@@ -33,37 +33,5 @@
                 </xpath>
             </field>
         </record>
-
-        <record model="ir.ui.view" id="view_product_uom_categ_tree_unspsc">
-            <field name="name">view.uom.categ.unspsc.tree</field>
-            <field name="model">product.unspsc.code</field>
-            <field name="arch" type="xml">
-                <tree string="UNSPSC Category">
-                    <field name="code"/>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="view_product_unspsc_code_form">
-            <field name="name">view.product.unspsc.code.form</field>
-            <field name="model">product.unspsc.code</field>
-            <field name="arch" type="xml">
-                <form string="UNSPSC Category">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="code"/>
-                                <field name="name"/>
-                            </group>
-                            <group>
-                                <field name="applies_to"/>
-                                <field name="active"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
     </data>
 </odoo>

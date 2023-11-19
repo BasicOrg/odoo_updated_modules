@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 22:21+0000\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
+"PO-Revision-Date: 2022-09-20 09:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,11 +16,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: mrp_workorder_plm
-#. odoo-python
-#: code:addons/mrp_workorder_plm/wizard/propose_change.py:0
-#: code:addons/mrp_workorder_plm/wizard/propose_change.py:0
-#, python-format
-msgid "BoM feedback for not found step: %s (%s)"
+#: model:mrp.eco.type,name:mrp_workorder_plm.ecotype_workorder
+msgid "BOM Updates"
+msgstr ""
+
+#. module: mrp_workorder_plm
+#: model:mrp.eco.stage,legend_blocked:mrp_workorder_plm.ecostage_effective
+#: model:mrp.eco.stage,legend_blocked:mrp_workorder_plm.ecostage_new
+#: model:mrp.eco.stage,legend_blocked:mrp_workorder_plm.ecostage_progress
+#: model:mrp.eco.stage,legend_blocked:mrp_workorder_plm.ecostage_validated
+msgid "Blocked"
 msgstr ""
 
 #. module: mrp_workorder_plm
@@ -34,28 +39,27 @@ msgid "Eco Routing changes"
 msgstr ""
 
 #. module: mrp_workorder_plm
+#: model:mrp.eco.stage,name:mrp_workorder_plm.ecostage_effective
+msgid "Effective"
+msgstr ""
+
+#. module: mrp_workorder_plm
 #: model:ir.model,name:mrp_workorder_plm.model_mrp_eco
 msgid "Engineering Change Order (ECO)"
 msgstr ""
 
 #. module: mrp_workorder_plm
-#. odoo-python
-#: code:addons/mrp_workorder_plm/models/mrp_workorder.py:0
-#: code:addons/mrp_workorder_plm/wizard/propose_change.py:0
-#, python-format
-msgid "Instruction Suggestions (%(wo_name)s)"
+#: model:mrp.eco.stage,legend_normal:mrp_workorder_plm.ecostage_effective
+#: model:mrp.eco.stage,legend_normal:mrp_workorder_plm.ecostage_new
+#: model:mrp.eco.stage,legend_normal:mrp_workorder_plm.ecostage_progress
+#: model:mrp.eco.stage,legend_normal:mrp_workorder_plm.ecostage_validated
+#: model:mrp.eco.stage,name:mrp_workorder_plm.ecostage_progress
+msgid "In Progress"
 msgstr ""
 
 #. module: mrp_workorder_plm
-#. odoo-python
-#: code:addons/mrp_workorder_plm/models/mrp_workorder.py:0
-#, python-format
-msgid "New Step Suggestion: %s"
-msgstr ""
-
-#. module: mrp_workorder_plm
-#: model:ir.model,name:mrp_workorder_plm.model_mrp_production
-msgid "Production Order"
+#: model:mrp.eco.stage,name:mrp_workorder_plm.ecostage_new
+msgid "New"
 msgstr ""
 
 #. module: mrp_workorder_plm
@@ -74,6 +78,14 @@ msgid "Quality Point"
 msgstr ""
 
 #. module: mrp_workorder_plm
+#: model:mrp.eco.stage,legend_done:mrp_workorder_plm.ecostage_effective
+#: model:mrp.eco.stage,legend_done:mrp_workorder_plm.ecostage_new
+#: model:mrp.eco.stage,legend_done:mrp_workorder_plm.ecostage_progress
+#: model:mrp.eco.stage,legend_done:mrp_workorder_plm.ecostage_validated
+msgid "Ready"
+msgstr ""
+
+#. module: mrp_workorder_plm
 #: model:ir.model.fields,field_description:mrp_workorder_plm.field_mrp_eco_routing_change__step
 msgid "Step"
 msgstr ""
@@ -81,4 +93,9 @@ msgstr ""
 #. module: mrp_workorder_plm
 #: model:ir.model.fields,field_description:mrp_workorder_plm.field_mrp_eco_routing_change__test_type
 msgid "Step Type"
+msgstr ""
+
+#. module: mrp_workorder_plm
+#: model:mrp.eco.stage,name:mrp_workorder_plm.ecostage_validated
+msgid "Validated"
 msgstr ""

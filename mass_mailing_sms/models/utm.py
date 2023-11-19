@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -24,24 +23,35 @@ class UtmCampaign(models.Model):
         ('manual', 'Manual'),
         ('clicks_ratio', 'Highest Click Rate')], string="SMS Winner Selection", default="clicks_ratio")
 
+    @api.depends('mailing_mail_ids', 'mailing_sms_ids')
+    def _compute_ab_testing_total_pc(self):
+        super()._compute_ab_testing_total_pc()
+        for campaign in self:
+            campaign.ab_testing_total_pc += sum([
+                mailing.ab_testing_pc for mailing in campaign.mailing_sms_ids.filtered('ab_testing_enabled')
+            ])
 
     @api.depends('mailing_sms_ids')
     def _compute_mailing_sms_count(self):
-        mailing_sms_data = self.env['mailing.mailing']._read_group(
-            [('campaign_id', 'in', self.ids), ('mailing_type', '=', 'sms')],
-            ['campaign_id', 'ab_testing_enabled'],
-            ['__count'],
-        )
-        ab_testing_mapped_sms_data = defaultdict(list)
-        mapped_sms_data = defaultdict(list)
-        for campaign, ab_testing_enabled, count in mailing_sms_data:
-            if ab_testing_enabled:
-                ab_testing_mapped_sms_data[campaign.id].append(count)
-            mapped_sms_data[campaign.id].append(count)
-
+        if self.ids:
+            mailing_sms_data = self.env['mailing.mailing'].read_group(
+                [('campaign_id', 'in', self.ids), ('mailing_type', '=', 'sms')],
+                ['campaign_id', 'ab_testing_enabled'],
+                ['campaign_id', 'ab_testing_enabled'],
+                lazy=False,
+            )
+            ab_testing_mapped_sms_data = {}
+            mapped_sms_data = {}
+            for data in mailing_sms_data:
+                if data['ab_testing_enabled']:
+                    ab_testing_mapped_sms_data.setdefault(data['campaign_id'][0], []).append(data['__count'])
+                mapped_sms_data.setdefault(data['campaign_id'][0], []).append(data['__count'])
+        else:
+            mapped_sms_data = dict()
+            ab_testing_mapped_sms_data = dict()
         for campaign in self:
-            campaign.mailing_sms_count = sum(mapped_sms_data[campaign.id])
-            campaign.ab_testing_mailings_sms_count = sum(ab_testing_mapped_sms_data[campaign.id])
+            campaign.mailing_sms_count = sum(mapped_sms_data.get(campaign._origin.id or campaign.id, []))
+            campaign.ab_testing_mailings_sms_count = sum(ab_testing_mapped_sms_data.get(campaign._origin.id or campaign.id, []))
 
     def action_create_mass_sms(self):
         action = self.env["ir.actions.actions"]._for_xml_id("mass_mailing.action_create_mass_mailings_from_campaign")

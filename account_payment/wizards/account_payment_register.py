@@ -36,10 +36,16 @@ class AccountPaymentRegister(models.TransientModel):
     def _compute_suitable_payment_token_ids(self):
         for wizard in self:
             if wizard.can_edit_wizard and wizard.use_electronic_payment_method:
+                related_partner_ids = (
+                        wizard.partner_id
+                        | wizard.partner_id.commercial_partner_id
+                        | wizard.partner_id.commercial_partner_id.child_ids
+                )._origin
+
                 wizard.suitable_payment_token_ids = self.env['payment.token'].sudo().search([
-                    *self.env['payment.token']._check_company_domain(wizard.company_id),
+                    ('company_id', '=', wizard.company_id.id),
                     ('provider_id.capture_manually', '=', False),
-                    ('partner_id', '=', wizard.partner_id.id),
+                    ('partner_id', 'in', related_partner_ids.ids),
                     ('provider_id', '=', wizard.payment_method_line_id.payment_provider_id.id),
                 ])
             else:
@@ -57,14 +63,19 @@ class AccountPaymentRegister(models.TransientModel):
     def _compute_payment_token_id(self):
         codes = [key for key in dict(self.env['payment.provider']._fields['code']._description_selection(self.env))]
         for wizard in self:
+            related_partner_ids = (
+                    wizard.partner_id
+                    | wizard.partner_id.commercial_partner_id
+                    | wizard.partner_id.commercial_partner_id.child_ids
+            )._origin
             if wizard.can_edit_wizard \
                     and wizard.payment_method_line_id.code in codes \
                     and wizard.journal_id \
-                    and wizard.partner_id:
+                    and related_partner_ids:
 
                 wizard.payment_token_id = self.env['payment.token'].sudo().search([
-                    *self.env['payment.token']._check_company_domain(wizard.company_id),
-                    ('partner_id', '=', wizard.partner_id.id),
+                    ('company_id', '=', wizard.company_id.id),
+                    ('partner_id', 'in', related_partner_ids.ids),
                     ('provider_id.capture_manually', '=', False),
                     ('provider_id', '=', wizard.payment_method_line_id.payment_provider_id.id),
                  ], limit=1)

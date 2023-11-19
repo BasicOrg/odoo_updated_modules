@@ -5,13 +5,12 @@
         <field name="model">mrp.production.schedule</field>
         <field name="arch" type="xml">
             <form>
-                <field name="company_id" invisible="1"/>
                 <group>
                     <group>
-                        <field name="product_id" readonly="id"/>
+                        <field name="product_id" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="product_tmpl_id" invisible="1"/>
-                        <field name="bom_id" readonly="id"/>
-                        <field name="warehouse_id" readonly="id" groups="stock.group_stock_multi_warehouses"/>
+                        <field name="bom_id" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="warehouse_id" attrs="{'readonly': [('id', '!=', False)]}" groups="stock.group_stock_multi_warehouses"/>
                     </group>
                     <group>
                         <label for="forecast_target_qty"/>
@@ -32,8 +31,8 @@
                     </group>
                 </group>
                 <footer>
-                    <button special="save" data-hotkey="q" type="object" string="Save" class="btn-primary"/>
-                    <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="x" />
+                    <button special="save" data-hotkey="v" type="object" string="Save" class="btn-primary"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z" />
                 </footer>
             </form>
         </field>
@@ -43,17 +42,11 @@
         <field name="name">mrp.production.schedule.search.view</field>
         <field name="model">mrp.production.schedule</field>
         <field name="arch" type="xml">
-            <search>
-                <field name="product_id"/>
-                <field name="warehouse_id"/>
-                <field name="bom_id"/>
-                <filter string="To Replenish" name="to_replenish"
-                        domain="[('replenish_state', '=', 'to_replenish')]"/>
-                <filter string="Replenishment Too Low" name="under_replenishment"
-                        domain="[('replenish_state', '=', 'under_replenishment')]"/>
-                <filter string="Replenishment Too High" name="excessive_replenishment"
-                        domain="[('replenish_state', '=', 'excessive_replenishment')]"/>
-            </search>
+          <search>
+              <field name="product_id"/>
+              <field name="warehouse_id"/>
+              <field name="bom_id"/>
+          </search>
         </field>
     </record>
 

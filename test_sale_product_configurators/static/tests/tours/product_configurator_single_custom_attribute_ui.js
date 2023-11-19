@@ -1,13 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
-import { stepUtils, TourError } from "@web_tour/tour_service/tour_utils";
-import configuratorTourUtils from "@test_sale_product_configurators/js/tour_utils";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('sale_product_configurator_single_custom_attribute_tour', {
+tour.register('sale_product_configurator_single_custom_attribute_tour', {
     url: '/web',
     test: true,
-    steps: () => [stepUtils.showAppsMenuItem(), {
+}, [tour.stepUtils.showAppsMenuItem(), {
     trigger: '.o_app[data-menu-xmlid="sale.sale_menu_root"]',
 }, {
     trigger: '.o_list_button_add',
@@ -19,28 +17,51 @@ registry.category("web_tour.tours").add('sale_product_configurator_single_custom
     run: 'text Custo',
 }, {
     trigger: 'ul.ui-autocomplete a:contains("Customizable Desk (TEST)")',
-},
-    configuratorTourUtils.setCustomAttribute("Customizable Desk (TEST)", "product attribute", "great single custom value"),
-{
-    trigger: 'button:contains(Confirm)',
+}, {
+    trigger: '.oe_advanced_configurator_modal span:contains("Aluminium")',
+    run: function () {
+        // used to check that the radio is NOT rendered
+        if ($('.oe_advanced_configurator_modal ul[data-attribute_id].d-none input[data-value_name="single product attribute value"]').length === 1) {
+            $('.oe_advanced_configurator_modal').addClass('tour_success');
+        }
+    }
+}, {
+    trigger: '.oe_advanced_configurator_modal.tour_success',
+    run: function () {
+        //check
+    }
+}, {
+    trigger: '.oe_advanced_configurator_modal .variant_custom_value',
+    run: 'text great single custom value'
+}, {
+    trigger: 'button span:contains(Confirm)',
 }, {
     trigger: 'td.o_data_cell:contains("single product attribute value: great single custom value")',
     extra_trigger: 'div[name="order_line"]',
-    isCheck: true,
+    run: function (){} // check custom value
 }, {
     trigger: 'div[name="product_template_id"]',
 }, {
     trigger: '.fa-pencil',
 }, {
-    trigger: 'table.o_sale_product_configurator_table tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Customizable Desk (TEST)")) td>div[name="ptal"]:has(div>label:contains("product attribute")) input[type="text"]',
+    trigger: '.main_product .variant_custom_value',
     run: function () {
         // check custom value initialized
-        if ($('table.o_sale_product_configurator_table tr:has(td>div[name="o_sale_product_configurator_name"] h5:contains("Customizable Desk (TEST)")) td>div[name="ptal"]:has(div>label:contains("product attribute")) input[type="text"]').val() !== "great single custom value") {
-            throw new TourError("The value of custom product attribute should be 'great single custom value'.");
+        if ($('.main_product .variant_custom_value').val() === "great single custom value") {
+            $('.main_product').addClass('tour_success_2');
         }
     }
 }, {
-    trigger: 'button:contains("Cancel")',
-},
-    ...stepUtils.discardForm()
-]});
+    trigger: '.main_product.tour_success_2',
+    run: function () {
+        //check
+    }
+}, {
+    trigger: '.main_product',
+    run: function () {
+        window.location.href = window.location.origin + '/web';
+    }
+}, {
+    trigger: '.o_navbar',
+    run: function() {},  // Check the home page is loaded
+}]);

@@ -12,35 +12,35 @@ class Digest(models.Model):
     kpi_livechat_conversations = fields.Boolean('Conversations handled')
     kpi_livechat_conversations_value = fields.Integer(compute='_compute_kpi_livechat_conversations_value')
     kpi_livechat_response = fields.Boolean('Time to answer (sec)')
-    kpi_livechat_response_value = fields.Float(digits=(16, 2), compute='_compute_kpi_livechat_response_value')
+    kpi_livechat_response_value = fields.Float(compute='_compute_kpi_livechat_response_value')
 
     def _compute_kpi_livechat_rating_value(self):
-        channels = self.env['discuss.channel'].search([('channel_type', '=', 'livechat')])
-        start, end, __ = self._get_kpi_compute_parameters()
-        domain = [
-            ('create_date', '>=', start),
-            ('create_date', '<', end),
-        ]
-        ratings = channels.rating_get_grades(domain)
-        self.kpi_livechat_rating_value = (
-            ratings['great'] * 100 / sum(ratings.values())
-            if sum(ratings.values()) else 0
-        )
+        channels = self.env['mail.channel'].search([('livechat_operator_id', '=', self.env.user.partner_id.id)])
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            domain = [
+                ('create_date', '>=', start), ('create_date', '<', end),
+                ('rated_partner_id', '=', self.env.user.partner_id.id)
+            ]
+            ratings = channels.rating_get_grades(domain)
+            record.kpi_livechat_rating_value = ratings['great'] * 100 / sum(ratings.values()) if sum(ratings.values()) else 0
 
     def _compute_kpi_livechat_conversations_value(self):
-        start, end, __ = self._get_kpi_compute_parameters()
-        self.kpi_livechat_conversations_value = self.env['discuss.channel'].search_count([
-            ('channel_type', '=', 'livechat'),
-            ('create_date', '>=', start), ('create_date', '<', end),
-        ])
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            record.kpi_livechat_conversations_value = self.env['mail.channel'].search_count([
+                ('channel_type', '=', 'livechat'),
+                ('livechat_operator_id', '=', self.env.user.partner_id.id),
+                ('create_date', '>=', start), ('create_date', '<', end)
+            ])
 
     def _compute_kpi_livechat_response_value(self):
-        start, end, __ = self._get_kpi_compute_parameters()
-        response_time = self.env['im_livechat.report.channel'].sudo()._read_group([
-            ('start_date', '>=', start),
-            ('start_date', '<', end),
-        ], [], ['time_to_answer:avg'])
-        self.kpi_livechat_response_value = response_time[0][0]
+        for record in self:
+            start, end, company = record._get_kpi_compute_parameters()
+            response_time = self.env['im_livechat.report.operator'].sudo()._read_group([
+                ('start_date', '>=', start), ('start_date', '<', end),
+                ('partner_id', '=', self.env.user.partner_id.id)], ['partner_id', 'time_to_answer'], ['partner_id'])
+            record.kpi_livechat_response_value = "%.2f" % sum([response['time_to_answer'] for response in response_time]) or 0
 
     def _compute_kpis_actions(self, company, user):
         res = super(Digest, self)._compute_kpis_actions(company, user)

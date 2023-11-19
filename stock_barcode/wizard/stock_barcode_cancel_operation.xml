@@ -6,15 +6,15 @@
         <field name="arch" type="xml">
             <form string="Cancel operation">
                 <field name="picking_id" invisible="1"/>
-                <p>Are you sure you want to cancel this operation?</p>
+                <p>Are you sure you want to cancel this operation ?</p>
                 <footer>
                     <button name="action_cancel_operation" type="object" class="oe_highlight" data-hotkey="q">
                         <span>
                             Cancel
-                            <field name="picking_name" invisible="not picking_id"/>
+                            <field name="picking_name" attrs="{'invisible': [('picking_id', '=', False)]}"/>
                         </span>
                     </button>
-                    <button string="Don't cancel" class="btn-secondary" special="cancel" data-hotkey="x" />
+                    <button string="Don't cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                 </footer>
             </form>
         </field>

@@ -83,13 +83,7 @@ class IrAttachment(models.Model):
         for values in validation_types.values():
             file_url = values['file_url']
             url = f'{main_xsd_download_url}/{file_url}'
-            tools.load_xsd_files_from_url(self.env, url, values['file_name'],
+            tools.load_xsd_files_from_url(self.env, url, values['file_name'], force_reload=force_reload,
                                           xsd_name_prefix='l10n_cl_edi', xsd_names_filter=values['file_name'],
                                           modify_xsd_content=lambda content: etree.tostring(objectify.fromstring(content), encoding='utf-8', pretty_print=True))
         return
-
-    @api.model
-    def action_download_xsd_files(self):
-        # EXTENDS account/models/ir_attachment.py
-        self._l10n_cl_edi_load_xsd_files()
-        super().action_download_xsd_files()

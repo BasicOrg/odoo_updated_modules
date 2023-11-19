@@ -8,10 +8,12 @@
         <field name="inherit_id" ref="product.product_label_layout_form"/>
         <field name="arch" type="xml">
             <xpath expr='//field[@name="custom_quantity"]' position="before">
-                <field name="move_quantity"/>
+                <field name="picking_quantity"/>
             </xpath>
-            <xpath expr="//field[@name='custom_quantity']" position="attributes">
-                <attribute name="invisible">move_quantity == 'move'</attribute>
+            <xpath expr='//field[@name="custom_quantity"]' position="attributes">
+                <attribute name="attrs">
+                    {'invisible': [('picking_quantity', '=', 'picking')]}
+                </attribute>
             </xpath>
         </field>
     </record>

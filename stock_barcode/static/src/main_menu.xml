@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <div t-name="stock_barcode.MainMenu" class="o_stock_barcode_main_menu_container o_home_menu_background">
+    <div t-name="stock_barcode.MainMenu" class="o_stock_barcode_main_menu_container o_home_menu_background" owl="1">
         <div class="o_stock_barcode_main_menu position-relative bg-view">
             <a href="#" class="o_stock_barcode_menu d-block float-start" t-on-click="() => this.home.toggle(true)">
-                <i class="oi oi-chevron-left"/>
+                <i class="fa fa-chevron-left"/>
             </a>
             <h1 class="mb-4">Barcode Scanning</h1>
 
@@ -13,7 +13,7 @@
                 We have created a few demo data with barcodes for you to explore the features. Print the
                 <a href="/stock_barcode/static/img/barcodes_demo.pdf" target="_blank">stock barcodes sheet</a>
                     to check out what this module can do! You can also print the barcode
-                <a class="o_stock_inventory_commands_download" href="stock_barcode/print_inventory_commands?barcode_type=barcode_commands_and_operation_types" target="_blank" aria-label="Download" title="Download">commands and operation types</a>.
+                <a class="o_stock_inventory_commands_download" href="/stock_barcode/print_inventory_commands" target="_blank" aria-label="Download" title="Download">commands for Inventory</a>.
             </div>
 
             <div class="o_stock_barcode_container position-relative d-inline-block mt-4 mb-5">
@@ -47,7 +47,7 @@
                 <div class="col">
                     <button class="button_inventory btn btn-block btn-primary mb-4 w-100"
                             t-on-click="() => this.actionService.doAction('stock_barcode.stock_barcode_inventory_client_action')">
-                        Inventory Adjustments (<t t-out="this.quantCount"/>)
+                        Inventory Adjustments
                     </button>
                 </div>
             </div>

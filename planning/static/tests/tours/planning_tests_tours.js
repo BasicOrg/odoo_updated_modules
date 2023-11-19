@@ -1,24 +1,24 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import tour from 'web_tour.tour';
 
-registry.category("web_tour.tours").add('planning_test_tour', {
+tour.register('planning_test_tour', {
     url: '/web',
     test: true,
-    steps: () => [{
+}, [{
     trigger: '.o_app[data-menu-xmlid="planning.planning_menu_root"]',
     content: "Let's start managing your employees' schedule!",
     position: 'bottom',
 }, {
     trigger: ".o_gantt_button_add",
-    content: "Let's create your first <b>shift</b>.",
+    content: "Let's create your first <b>shift</b> by clicking on Add. <i>Tip: use the (+) shortcut available on each cell of the Gantt view to save time.</i>",
     id: 'project_planning_start',
 }, {
     trigger: ".o_field_widget[name='resource_id'] input",
     content: "Assign this shift to your <b>resource</b>, or leave it open for the moment.",
-    run: 'text Aaron',
+    run: 'text Thibault',
 }, {
-    trigger: ".o-autocomplete--dropdown-item > a:contains('Aaron')",
+    trigger: ".o-autocomplete--dropdown-item > a:contains('Thibault')",
     auto: true,
     in_modal: false,
 }, {
@@ -41,7 +41,7 @@ registry.category("web_tour.tours").add('planning_test_tour', {
         input.dispatchEvent(new Event("change", { bubbles: true, cancelable: false }));
     }
 }, {
-    trigger: "input[data-field=end_datetime]",
+    trigger: ".o_field_widget[name='end_datetime'] input",
     content: "Set end datetime",
     run: function (actions) {
         const input = this.$anchor[0];
@@ -63,16 +63,13 @@ registry.category("web_tour.tours").add('planning_test_tour', {
     trigger: "button[special='save']",
     content: "Save this shift once it is ready.",
 }, {
-    trigger: ".o_gantt_pill :contains('11:59')",
+    trigger: ".o_gantt_pill :contains('11:59 AM')",
     content: "<b>Drag & drop</b> your shift to reschedule it. <i>Tip: hit CTRL (or Cmd) to duplicate it instead.</i> <b>Adjust the size</b> of the shift to modify its period.",
     auto: true,
     run: function () {
         if (this.$anchor.length) {
             const expected = "8:00 AM - 11:59 AM (4h)";
-            // Without the replace below, this step could break since luxon
-            // (via Intl) uses sometimes U+202f instead of a simple space.
-            // Note: U+202f is a narrow non-break space.
-            const actual = this.$anchor[0].textContent.replace(/\u202f/g, " ");
+            const actual = this.$anchor[0].textContent;
             if (!actual.startsWith(expected)) {
                 console.error("Test in gantt view doesn't start as expected. Expected : '" + expected + "', actual : '" + actual + "'");
             }
@@ -87,13 +84,13 @@ registry.category("web_tour.tours").add('planning_test_tour', {
     trigger: "button[name='action_check_emails']",
     content: "<b>Publish & send</b> your planning to make it available to your employees.",
 }, {
-    trigger: ".o_gantt_row_header:contains('Aaron') .o_gantt_progress_bar",
+    trigger: ".o_gantt_progressbar",
     content: "See employee progress bar",
     auto: true,
     run: function () {
-        const $progressbar = this.$anchor;
+        const $progressbar = $(".o_gantt_progressbar:eq(0)");
         if ($progressbar.length) {
-            if ($progressbar[0].querySelector("span").style.width === '') {
+            if ($progressbar[0].style.width === '') {
                 console.error("Progress bar should be displayed");
             }
             if (!$progressbar[0].classList.contains("o_gantt_group_success")) {
@@ -109,98 +106,8 @@ registry.category("web_tour.tours").add('planning_test_tour', {
     run: 'click',
 }, {
     id: "planning_check_format_step",
-    trigger: ".o_gantt_pill span:contains(Developer)",
+    trigger: ".o_gantt_pill p:contains(Developer)",
     content: "Check naming format of resource and role when grouped",
     auto: true,
     run: function () {}
-}, {
-    trigger: ".o_gantt_button_auto_plan",
-    content: "Click on Auto Plan button to assign open shifts to employees",
-    run: 'click',
-}, {
-    id: "planning_check_format_step",
-    trigger: ".o_gantt_pill.opacity-25",
-    content: "Check that the filter is applied",
-    auto: true,
-    run: function () {},
-}]});
-
-registry.category("web_tour.tours").add('planning_shift_switching_backend', {
-    url: '/web',
-    test: true,
-    steps: () => [{
-    trigger: '.o_app[data-menu-xmlid="planning.planning_menu_root"]',
-    content: "Get in the planning app",
-}, {
-    trigger: '.o_gantt_pill :contains("bert")',
-    content: "Click on one of your shifts in the gantt view",
-},
-{
-    trigger: ".popover-footer button",
-    content: "Click on the 'Edit' button in the popover",
-    run: 'click',
-},
-{
-    trigger: 'button[name="action_switch_shift"]',
-    content: "Click on the 'Switch Shift' button on the Gantt Form view modal",
-}, {
-    trigger: 'div.o_view_scale_selector > .scale_button_selection',
-    content: 'Toggle the view scale selector',
-}, {
-    trigger: 'div.o_view_scale_selector > .dropdown-menu',
-    content: 'Click on the dropdown button to change the scale of the gantt view',
-    extra_trigger: 'div.o_view_scale_selector .o_scale_button_day',
-}, {
-    trigger: '.o_gantt_pill :contains("bert")',
-    content: "Click on the unwanted shift in the gantt view again",
-},
-{
-    trigger: ".popover-footer button",
-    content: "Click again on the 'Edit' button in the popover",
-    run: 'click',
-},
-{
-    trigger: '.alert-warning:contains("The employee assigned would like to switch shifts with someone else.")',
-    content: "Check that the warning has been shown",
-}, {
-    trigger: '.btn-close',
-    content: "Click on the close button to hide the shift form modal",
-}, {
-    trigger: '.o_planning_gantt',
-    isCheck: true,
-}]});
-
-registry.category("web_tour.tours").add('planning_assigning_unwanted_shift_backend', {
-    url: '/web',
-    test: true,
-    steps: () => [{
-    trigger: '.o_app[data-menu-xmlid="planning.planning_menu_root"]',
-    content: "Get in the planning app",
-}, {
-    trigger: '.o_gantt_pill :contains("bert")',
-    content: "Click on the unwanted shift of the employee",
-},
-{
-    trigger: ".popover-footer button",
-    content: "Click on the 'Edit' button in the popover",
-    run: 'click',
-},
-{
-    trigger: ".o_field_widget[name='resource_id'] input",
-    content: "Assign this shift to another employee.",
-    run: 'text joseph',
-}, {
-    trigger: ".o-autocomplete--dropdown-item > a:contains('joseph')",
-    auto: true,
-    in_modal: false,
-}, {
-    trigger: "button[special='save']",
-    content: "Save this shift once it is ready.",
-}, {
-    trigger: '.o_gantt_pill :contains("joseph")',
-    content: "Click again on the newly assigned shift",
-}, {
-    trigger: '.o_popover',
-    content: "Check the popover opened",
-    isCheck: true,
-}]});
+}]);

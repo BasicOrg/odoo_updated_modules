@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import timedelta
-import itertools
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
@@ -18,8 +17,7 @@ class AccountBudgetPost(models.Model):
 
     name = fields.Char('Name', required=True)
     account_ids = fields.Many2many('account.account', 'account_budget_rel', 'budget_id', 'account_id', 'Accounts',
-        check_company=True,
-        domain="[('deprecated', '=', False)]")
+        domain="[('deprecated', '=', False), ('company_id', '=', company_id)]")
     company_id = fields.Many2one('res.company', 'Company', required=True,
         default=lambda self: self.env.company)
 
@@ -49,18 +47,19 @@ class CrossoveredBudget(models.Model):
     _description = "Budget"
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char('Budget Name', required=True)
+    name = fields.Char('Budget Name', required=True, states={'done': [('readonly', True)]})
     user_id = fields.Many2one('res.users', 'Responsible', default=lambda self: self.env.user)
-    date_from = fields.Date('Start Date')
-    date_to = fields.Date('End Date')
+    date_from = fields.Date('Start Date', states={'done': [('readonly', True)]})
+    date_to = fields.Date('End Date', states={'done': [('readonly', True)]})
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('cancel', 'Cancelled'),
         ('confirm', 'Confirmed'),
         ('validate', 'Validated'),
-        ('done', 'Done'),
-        ('cancel', 'Cancelled')
-    ], 'Status', default='draft', index=True, required=True, readonly=True, copy=False, tracking=True)
-    crossovered_budget_line = fields.One2many('crossovered.budget.lines', 'crossovered_budget_id', 'Budget Lines', copy=True)
+        ('done', 'Done')
+        ], 'Status', default='draft', index=True, required=True, readonly=True, copy=False, tracking=True)
+    crossovered_budget_line = fields.One2many('crossovered.budget.lines', 'crossovered_budget_id', 'Budget Lines',
+        states={'done': [('readonly', True)]}, copy=True)
     company_id = fields.Many2one('res.company', 'Company', required=True,
         default=lambda self: self.env.company)
 
@@ -110,22 +109,53 @@ class CrossoveredBudgetLines(models.Model):
     crossovered_budget_state = fields.Selection(related='crossovered_budget_id.state', string='Budget State', store=True, readonly=True)
 
     @api.model
-    def _read_group(self, domain, groupby=(), aggregates=(), having=(), offset=0, limit=None, order=None):
-        SPECIAL = {'practical_amount:sum', 'theoritical_amount:sum', 'percentage:sum'}
-        if SPECIAL.isdisjoint(aggregates):
-            return super()._read_group(domain, groupby, aggregates, having, offset, limit, order)
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        # overrides the default read_group in order to compute the computed fields manually for the group
 
-        base_aggregates = [*(agg for agg in aggregates if agg not in SPECIAL), 'id:recordset']
-        base_result = super()._read_group(domain, groupby, base_aggregates, having, offset, limit, order)
+        fields_list = {'practical_amount', 'theoritical_amount', 'percentage'}
 
-        # base_result = [(a1, b1, records), (a2, b2, records), ...]
-        result = []
-        for *other, records in base_result:
-            for index, spec in enumerate(itertools.chain(groupby, aggregates)):
-                if spec in SPECIAL:
-                    field_name = spec.split(':')[0]
-                    other.insert(index, sum(records.mapped(field_name)))
-            result.append(tuple(other))
+        # Not any of the fields_list support aggregate function like :sum
+        def truncate_aggr(field):
+            field_no_aggr = field.split(':', 1)[0]
+            if field_no_aggr in fields_list:
+                return field_no_aggr
+            return field
+        fields = {truncate_aggr(field) for field in fields}
+
+        # Read non fields_list fields
+        result = super(CrossoveredBudgetLines, self).read_group(
+            domain, list(fields - fields_list), groupby, offset=offset,
+            limit=limit, orderby=orderby, lazy=lazy)
+
+        # Populate result with fields_list values
+        if fields & fields_list:
+            for group_line in result:
+
+                # initialise fields to compute to 0 if they are requested
+                if 'practical_amount' in fields:
+                    group_line['practical_amount'] = 0
+                if 'theoritical_amount' in fields:
+                    group_line['theoritical_amount'] = 0
+                if 'percentage' in fields:
+                    group_line['percentage'] = 0
+                    group_line['practical_amount'] = 0
+                    group_line['theoritical_amount'] = 0
+
+                domain = group_line.get('__domain') or domain
+                all_budget_lines_that_compose_group = self.search(domain)
+
+                for budget_line_of_group in all_budget_lines_that_compose_group:
+                    if 'practical_amount' in fields or 'percentage' in fields:
+                        group_line['practical_amount'] += budget_line_of_group.practical_amount
+
+                    if 'theoritical_amount' in fields or 'percentage' in fields:
+                        group_line['theoritical_amount'] += budget_line_of_group.theoritical_amount
+
+                    if 'percentage' in fields:
+                        if group_line['theoritical_amount']:
+                            # use a weighted average
+                            group_line['percentage'] = float(
+                                (group_line['practical_amount'] or 0.0) / group_line['theoritical_amount'])
 
         return result
 
@@ -172,7 +202,7 @@ class CrossoveredBudgetLines(models.Model):
                            line.general_budget_id.account_ids.ids),
                           ('date', '>=', date_from),
                           ('date', '<=', date_to),
-                          ('parent_state', '=', 'posted')
+                          ('move_id.state', '=', 'posted')
                           ]
                 where_query = aml_obj._where_calc(domain)
                 aml_obj._apply_ir_rules(where_query, 'read')

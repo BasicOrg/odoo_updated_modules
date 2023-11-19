@@ -1,26 +1,28 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 {
     'name': 'Kenya - Accounting',
-    'website': 'https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations/kenya.html',
-    'icon': '/account/static/description/l10n.png',
-    'countries': ['ke'],
     'version': '1.0',
     'category': 'Accounting/Localizations/Account Charts',
     'description': """
 This provides a base chart of accounts and taxes template for use in Odoo.
     """,
+    'author': 'Odoo S.A.',
     'depends': [
         'account',
     ],
     'data': [
-        'views/account_tax_views.xml',
-        'views/l10n_ke_item_code_views.xml',
-        'data/l10n_ke.item.code.csv',
-        'data/account_tax_report_data.xml',
-        'security/ir.model.access.csv',
+        'data/account_chart_template_data.xml',
+        'data/account.account.template.csv',
+        'data/l10n_ke_chart_data.xml',
+        'data/account_tax_group_data.xml',
+        'data/account_tax_template_data.xml',
+        'data/account_fiscal_position_template.xml',
+        'data/account_chart_template_configure_data.xml',
     ],
     'demo': [
-        'demo/demo_company.xml',
+        'demo/demo_company.xml'
     ],
     'license': 'LGPL-3',
 }

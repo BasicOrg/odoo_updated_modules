@@ -58,7 +58,7 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="image" widget="image" class="oe_avatar" options='{"preview_image": "image", "size": [80, 80]}'/>
                     <div class="oe_title">
                         <label for="name" string="Approval Type"/>
@@ -70,7 +70,10 @@
                         <field name="description"/>
                         <field name="approval_type" invisible="1"/>
                         <field name="automated_sequence"/>
-                        <field name="sequence_code" invisible="not automated_sequence" required="automated_sequence"/>
+                        <field name="sequence_code" attrs="{
+                            'invisible': [('automated_sequence', '=', False)],
+                            'required': [('automated_sequence', '=', True)],
+                        }"/>
                         <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                     </group>
                     <notebook>
@@ -94,10 +97,10 @@
                                     <field name="manager_approval"/>
                                     <separator colspan="2"/>
                                     <field name="approver_ids"/>
-                                    <field name="approver_sequence" invisible="approval_minimum == 0"/>
+                                    <field name="approver_sequence" attrs="{'invisible': [('approval_minimum', '=', 0)]}"/>
                                     <field name="approval_minimum"/>
                                     <field name="invalid_minimum" invisible="1"/>
-                                    <div class="text-warning" colspan="2" invisible="not invalid_minimum">
+                                    <div class="text-warning" colspan="2" attrs="{'invisible': [('invalid_minimum', '=', False)]}">
                                         <span class="fa fa-warning" title="Invalid minimum approvals"/><field name="invalid_minimum_warning" nolabel="1"/>
                                     </div>
                                 </group>
@@ -132,7 +135,7 @@
                                     <field name="description"/>
                                 </p>
                                 <div class="oe_module_action" t-if="!selection_mode">
-                                    <button type="object" class="btn btn-primary btn-sm" name="create_request" context="{'category_id':id}">New Request</button>
+                                    <button type="object" class="btn btn-primary btn-sm" name="create_request" context="{'category_id':'active_id'}">New Request</button>
                                     <button type="action" class="btn btn-sm btn-secondary float-end" name="%(approvals.approval_request_action_to_review_category)d" groups="approvals.group_approval_user">To Review: <field name="request_to_validate_count"/></button>
                                 </div>
                             </div>

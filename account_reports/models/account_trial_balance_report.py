@@ -11,14 +11,14 @@ class TrialBalanceCustomHandler(models.AbstractModel):
     _inherit = 'account.report.custom.handler'
     _description = 'Trial Balance Custom Handler'
 
-    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
-        def _update_column(line, column_key, new_value, blank_if_zero=False):
-            line['columns'][column_key]['name'] = self.env['account.report'].format_value(options, new_value, figure_type='monetary', blank_if_zero=blank_if_zero)
+    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals):
+        def _update_column(line, column_key, new_value, blank_if_zero=True):
+            line['columns'][column_key]['name'] = self.env['account.report'].format_value(new_value, figure_type='monetary', blank_if_zero=blank_if_zero)
             line['columns'][column_key]['no_format'] = new_value
 
         def _update_balance_columns(line, debit_column_key, credit_column_key, total_diff_values_key):
-            debit_value = line['columns'][debit_column_key]['no_format'] if debit_column_key is not None else False
-            credit_value = line['columns'][credit_column_key]['no_format'] if credit_column_key is not None else False
+            debit_value = line['columns'][debit_column_key]['no_format']
+            credit_value = line['columns'][credit_column_key]['no_format']
 
             if debit_value and credit_value:
                 new_debit_value = 0.0
@@ -34,37 +34,28 @@ class TrialBalanceCustomHandler(models.AbstractModel):
                 _update_column(line, debit_column_key, new_debit_value)
                 _update_column(line, credit_column_key, new_credit_value)
 
-        lines = [line[1] for line in self.env['account.general.ledger.report.handler']._dynamic_lines_generator(report, options, all_column_groups_expression_totals, warnings=warnings)]
+        lines = [line[1] for line in self.env['account.general.ledger.report.handler']._dynamic_lines_generator(report, options, all_column_groups_expression_totals)]
 
         total_diff_values = {
             'initial_balance': 0.0,
             'end_balance': 0.0,
         }
 
-        # We need to find the index of debit and credit columns for initial and end balance in case of extra custom columns
-        init_balance_debit_index = next((index for index, column in enumerate(options['columns']) if column.get('expression_label') == 'debit'), None)
-        init_balance_credit_index = next((index for index, column in enumerate(options['columns']) if column.get('expression_label') == 'credit'), None)
-
-        end_balance_debit_index = -(next((index for index, column in enumerate(reversed(options['columns'])) if column.get('expression_label') == 'debit'), -1) + 1)\
-                                  or None
-        end_balance_credit_index = -(next((index for index, column in enumerate(reversed(options['columns'])) if column.get('expression_label') == 'credit'), -1) + 1)\
-                                   or None
-
         for line in lines[:-1]:
             # Initial balance
             res_model = report._get_model_info_from_id(line['id'])[0]
             if res_model == 'account.account':
-                # Initial balance
-                _update_balance_columns(line, init_balance_debit_index, init_balance_credit_index, 'initial_balance')
+                _update_balance_columns(line, 0, 1, 'initial_balance')
 
                 # End balance
-                _update_balance_columns(line, end_balance_debit_index, end_balance_credit_index, 'end_balance')
+                _update_balance_columns(line, -2, -1, 'end_balance')
 
             line.pop('expand_function', None)
             line.pop('groupby', None)
             line.update({
                 'unfoldable': False,
                 'unfolded': False,
+                'class': 'o_account_searchable_line o_account_coa_column_contrast',
             })
 
             res_model = report._get_model_info_from_id(line['id'])[0]
@@ -74,13 +65,10 @@ class TrialBalanceCustomHandler(models.AbstractModel):
         # Total line
         if lines:
             total_line = lines[-1]
-
-            for index, balance_key in zip(
-                    (init_balance_debit_index, init_balance_credit_index, end_balance_debit_index, end_balance_credit_index),
-                    ('initial_balance', 'initial_balance', 'end_balance', 'end_balance')
-            ):
-                if index is not None:
-                    _update_column(total_line, index, total_line['columns'][index]['no_format'] - total_diff_values[balance_key], blank_if_zero=False)
+            _update_column(total_line, 0, total_line['columns'][0]['no_format'] - total_diff_values['initial_balance'], blank_if_zero=False)
+            _update_column(total_line, 1, total_line['columns'][1]['no_format'] - total_diff_values['initial_balance'], blank_if_zero=False)
+            _update_column(total_line, -2, total_line['columns'][-2]['no_format'] - total_diff_values['end_balance'], blank_if_zero=False)
+            _update_column(total_line, -1, total_line['columns'][-1]['no_format'] - total_diff_values['end_balance'], blank_if_zero=False)
 
         return [(0, line) for line in lines]
 
@@ -122,10 +110,7 @@ class TrialBalanceCustomHandler(models.AbstractModel):
 
         # Initial balance
         initial_balance_options = self.env['account.general.ledger.report.handler']._get_options_initial_balance(options)
-        initial_forced_options = {
-            'date': initial_balance_options['date'],
-            'include_current_year_in_unaff_earnings': initial_balance_options['include_current_year_in_unaff_earnings']
-        }
+        initial_forced_options = {'date': initial_balance_options['date'], 'include_current_year_in_unaff_earnings': True}
         initial_header_element = [{'name': _("Initial Balance"), 'forced_options': initial_forced_options}]
         col_headers_initial = [
             initial_header_element,
@@ -159,15 +144,13 @@ class TrialBalanceCustomHandler(models.AbstractModel):
         options['columns'] = initial_columns + options['columns'] + end_columns
         options['ignore_totals_below_sections'] = True # So that GL does not compute them
 
-        report._init_options_order_column(options, previous_options)
-
-    def _custom_line_postprocessor(self, report, options, lines, warnings=None):
+    def _custom_line_postprocessor(self, report, options, lines):
         # If the hierarchy is enabled, ensure to add the o_account_coa_column_contrast class to the hierarchy lines
         if options.get('hierarchy'):
             for line in lines:
                 model, dummy = report._get_model_info_from_id(line['id'])
                 if model == 'account.group':
                     line_classes = line.get('class', '')
-                    line['class'] = line_classes + ' o_account_coa_column_contrast_hierarchy'
+                    line['class'] = line_classes + ' o_account_coa_column_contrast'
 
         return lines

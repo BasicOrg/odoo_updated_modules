@@ -27,8 +27,3 @@ class ProductTemplate(models.Model):
         for template in self:
             if template.rent_ok and not template.sale_ok:
                 template.show_forecasted_qty_status_button = False
-
-    def action_view_rentals(self):
-        result = super().action_view_rentals()
-        result['context'].update({'sale_stock_renting_show_total_qty': 1})
-        return result

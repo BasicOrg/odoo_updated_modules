@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from markupsafe import Markup
-
 from odoo import api, fields, models, _, Command
 
 
@@ -25,6 +23,8 @@ class HrContractSignDocumentWizard(models.TransientModel):
     def _default_get_template_warning(self):
         return not bool(self._get_sign_template_ids()) and _('No appropriate template could be found, please make sure you configured them properly.')
 
+
+
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
@@ -38,7 +38,7 @@ class HrContractSignDocumentWizard(models.TransientModel):
         if active_model == 'hr.contract':
             defaults['contract_id'] = active_id
         elif active_model == 'hr.employee':
-            defaults['employee_ids'] = [(4, active_id)]
+            defaults['employee_ids'] = self.env['hr.employee'].browse(active_id)
         return defaults
 
     contract_id = fields.Many2one(
@@ -68,14 +68,6 @@ class HrContractSignDocumentWizard(models.TransientModel):
     message = fields.Html("Message")
     cc_partner_ids = fields.Many2many('res.partner', string="Copy to")
     attachment_ids = fields.Many2many('ir.attachment')
-    mail_to = fields.Selection([
-        ('work', 'Work'),
-        ('private', 'Private'),
-    ], string='Email', help="""Email used to send the signature request.
-                - Work takes the email defined in "work email"
-                - Private takes the email defined in Private Information
-                - If the selected email is not defined, the available one will be used.""", default='work')
-    mail_displayed = fields.Char(compute='_compute_mail_displayed')
 
     @api.depends('sign_template_responsible_ids')
     def _compute_employee_role_id(self):
@@ -123,35 +115,26 @@ class HrContractSignDocumentWizard(models.TransientModel):
         for wizard in self:
             wizard.has_both_template = bool(wizard.sign_template_ids.filtered(lambda t: len(t.sign_item_ids.mapped('responsible_id')) == 2))
 
-    @api.depends('employee_ids', 'mail_to')
-    def _compute_mail_displayed(self):
-        for wizard in self:
-            if len(wizard.employee_ids) == 1:
-                wizard.mail_displayed = wizard.employee_ids.private_email if self.mail_to == 'private' else wizard.employee_ids.work_email
-            else:
-                wizard.mail_displayed = False
-
     def validate_signature(self):
         self.ensure_one()
         # Partner by employee
         partner_by_employee = dict()
         for employee in self.employee_ids:
-            email_choice = employee.private_email if self.mail_to == "private" else employee.work_email
-            if email_choice:
-                email_used = email_choice
+            if employee.user_id.partner_id:
+                partner_by_employee[employee] = employee.user_id.partner_id
             else:
-                message_display = _("%s does not have a private email set.", employee.name) if self.mail_to == "private" else _("%s does not have a work email set.", employee.name)
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'message': message_display,
-                        'sticky': False,
-                        'type': 'danger',
+                if not employee.work_email:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'message': _("%s does not have a work email set.", employee.name),
+                            'sticky': False,
+                            'type': 'danger',
+                        }
                     }
-                }
-            partner_by_employee[employee] = self.env['mail.thread']._mail_find_partner_from_emails([email_used], records=self, force_create=True)[0]
-
+                partner_by_employee[employee] = self.env['mail.thread']._mail_find_partner_from_emails(
+                    [employee.work_email], records=self, force_create=True)[0]
 
         sign_request = self.env['sign.request']
         if not self.check_access_rights('create', raise_exception=False):
@@ -183,7 +166,7 @@ class HrContractSignDocumentWizard(models.TransientModel):
                 'partner_id': signer['partner_id'],
                 'role_id': signer['role_id'],
             }) for signer in sign_request_values[2]],
-            'reference': sign_request_values[0].name,
+            'reference': _('Signature Request - %s', sign_request_values[0].name),
             'subject': self.subject,
             'message': self.message,
             'attachment_ids': [(4, attachment.copy().id) for attachment in self.attachment_ids], # Attachments may not be bound to multiple sign requests
@@ -207,16 +190,13 @@ class HrContractSignDocumentWizard(models.TransientModel):
             else:
                 signatories_text = _('Only %s has to sign.', employee.display_name)
             record_to_post = self.contract_id if self.contract_id.employee_id == employee else employee
+            # YTI TODO: Use message_post_with_view
             record_to_post.message_post(
-                body=(
-                    _('%(user_name)s requested a new signature on the following documents:') + Markup('<br/><ul>%(documents)s</ul>%(signatories_text)s')
-                ) % {
-                    'user_name': self.env.user.display_name,
-                    'documents': Markup('\n').join(Markup('<li>%s</li>') % name for name in self.sign_template_ids.mapped('name')),
-                    'signatories_text': signatories_text
-                }
-            )
+                body=_('%s requested a new signature on the following documents:<br/><ul>%s</ul>%s') % (
+                    self.env.user.display_name,
+                    '\n'.join('<li>%s</li>' % name for name in self.sign_template_ids.mapped('name')),
+                    signatories_text))
 
-        if len(sign_requests) == 1 and ((self.env.user.id in self.employee_ids.user_id.ids) or (self.env.user.id == self.responsible_id.id and sign_templates_both_ids)):
+        if len(sign_requests) == 1 and self.env.user.id == self.responsible_id.id:
             return sign_requests.go_to_document()
         return True

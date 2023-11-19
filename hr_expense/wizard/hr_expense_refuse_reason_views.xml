@@ -6,11 +6,12 @@
         <field name="arch" type="xml">
             <form string="Expense refuse reason">
                 <separator string="Reason to refuse Expense"/>
-                <field name="sheet_ids" invisible="1"/>
-                <field name="reason" class="w-100"/>
+                <field name="hr_expense_ids" invisible="1"/>
+                <field name="hr_expense_sheet_id" invisible="1"/>
+                <field name="reason"/>
                 <footer>
-                    <button string='Refuse' name="action_refuse" type="object" class="oe_highlight" data-hotkey="q"/>
-                    <button string="Cancel" class="oe_link" special="cancel" data-hotkey="x"/>
+                    <button string='Refuse' name="expense_refuse_reason" type="object" class="oe_highlight" data-hotkey="q"/>
+                    <button string="Cancel" class="oe_link" special="cancel" data-hotkey="z"/>
                 </footer>
            </form>
         </field>

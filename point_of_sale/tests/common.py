@@ -57,7 +57,6 @@ class TestPointOfSaleCommon(ValuationReconciliationTestCommon):
             'available_in_pos': True,
             'list_price': 1.28,
         })
-        cls.company_data['default_journal_cash'].pos_payment_method_ids.unlink()
         cls.cash_payment_method = cls.env['pos.payment.method'].create({
             'name': 'Cash',
             'receivable_account_id': cls.company_data['default_account_receivable'].id,
@@ -154,7 +153,13 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
 
         # Set basic defaults
         cls.company = cls.company_data['company']
-        cls.pos_sale_journal = cls.env['account.journal'].search([('company_id', '=', cls.company.id), ('code', '=', 'POSS')])
+        cls.pos_sale_journal = cls.env['account.journal'].create({
+            'type': 'general',
+            'name': 'Point of Sale Test',
+            'code': 'POSS',
+            'company_id': cls.company.id,
+            'sequence': 20
+        })
         cls.sales_account = cls.company_data['default_account_revenue']
         cls.invoice_journal = cls.company_data['default_journal_sale']
         cls.receivable_account = cls.company_data['default_account_receivable']
@@ -242,7 +247,6 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
             'available_pricelist_ids': cls.currency_pricelist.ids,
             'pricelist_id': cls.currency_pricelist.id,
         })
-        cls.company_data['default_journal_cash'].pos_payment_method_ids.unlink()
         cls.cash_pm1 = cls.env['pos.payment.method'].create({
             'name': 'Cash',
             'journal_id': cls.company_data['default_journal_cash'].id,
@@ -259,11 +263,6 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
         cls.cash_split_pm1 = cls.cash_pm1.copy(default={
             'name': 'Split (Cash) PM',
             'split_transactions': True,
-            'journal_id': cls.env['account.journal'].create({
-                                'name': "Cash",
-                                'code': "CSH %s" % config.id,
-                                'type': 'cash',
-                            }).id
         })
         cls.bank_split_pm1 = cls.bank_pm1.copy(default={
             'name': 'Split (Bank) PM',
@@ -363,7 +362,7 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
             return cls.env['account.account.tag'].create({
                 'name': name,
                 'applicability': 'taxes',
-                'country_id': cls.env.company.account_fiscal_country_id.id
+                'country_id': cls.env.company.country_id.id
             })
 
         cls.tax_tag_invoice_base = create_tag('Invoice Base tag')
@@ -484,21 +483,9 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
         default_fiscal_position = self.config.default_fiscal_position_id
         fiscal_position = customer.property_account_position_id if customer else default_fiscal_position
 
-        def normalize_order_line_param(param):
-            if isinstance(param, dict):
-                return param
-
-            assert len(param) >= 2
-            return {
-                'product': param[0],
-                'quantity': param[1],
-                'discount': 0.0 if len(param) == 2 else param[2],
-            }
-
-        def create_order_line(product, quantity, **kwargs):
+        def create_order_line(product, quantity, discount=0.0):
             price_unit = self.pricelist._get_product_price(product, quantity)
-            tax_ids = fiscal_position.map_tax(product.taxes_id.filtered_domain(self.env['account.tax']._check_company_domain(self.env.company)))
-            discount = kwargs.get('discount', 0.0)
+            tax_ids = fiscal_position.map_tax(product.taxes_id)
             price_unit_after_discount = price_unit * (1 - discount / 100.0)
             tax_values = (
                 tax_ids.compute_all(price_unit_after_discount, self.currency, quantity)
@@ -509,7 +496,7 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
                 }
             )
             return (0, 0, {
-                **kwargs,
+                'discount': discount,
                 'id': randint(1, 1000000),
                 'pack_lot_ids': [],
                 'price_unit': price_unit,
@@ -531,14 +518,15 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
 
         # 1. generate the order lines
         order_lines = [
-            create_order_line(**normalize_order_line_param(param))
-            for param in pos_order_lines_ui_args
+            create_order_line(product, quantity, discount and discount[0] or 0.0)
+            for product, quantity, *discount
+            in pos_order_lines_ui_args
         ]
 
         # 2. generate the payments
         total_amount_incl = sum(line[2]['price_subtotal_incl'] for line in order_lines)
         if payments is None:
-            default_cash_pm = self.config.payment_method_ids.filtered(lambda pm: pm.is_cash_count and not pm.split_transactions)[:1]
+            default_cash_pm = self.config.payment_method_ids.filtered(lambda pm: pm.is_cash_count)[:1]
             if not default_cash_pm:
                 raise Exception('There should be a cash payment method set in the pos.config.')
             payments = [create_payment(default_cash_pm, total_amount_incl)]
@@ -556,7 +544,7 @@ class TestPoSCommon(ValuationReconciliationTestCommon):
                 'amount_return': 0,
                 'amount_tax': total_amount_incl - total_amount_base,
                 'amount_total': total_amount_incl,
-                'date_order': fields.Datetime.to_string(fields.Datetime.now()),
+                'creation_date': fields.Datetime.to_string(fields.Datetime.now()),
                 'fiscal_position_id': fiscal_position.id,
                 'pricelist_id': self.config.pricelist_id.id,
                 'lines': order_lines,

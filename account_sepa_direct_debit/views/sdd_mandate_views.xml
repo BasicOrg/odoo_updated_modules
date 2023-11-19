@@ -8,11 +8,11 @@
                 <form string="Customer mandate">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active"/>
-                        <button string="Print" type="action" name="%(account_sepa_direct_debit.sdd_mandate_form_report_main)d" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button string="Validate" type="object" name="action_validate_mandate" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button string="Revoke" type="object" name="action_revoke_mandate" class="oe_highlight" invisible="state != 'active'"/>
-                        <button string="Close" type="object" name="action_close_mandate" class="oe_highlight" invisible="state != 'active'"/>
-                        <button string="Cancel" type="object" name="action_cancel_draft_mandate" invisible="state != 'draft'"/>
+                        <button string="Print" type="action" name="%(account_sepa_direct_debit.sdd_mandate_form_report_main)d" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <button string="Validate" type="object" name="action_validate_mandate" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <button string="Revoke" type="object" name="action_revoke_mandate" class="oe_highlight" attrs="{'invisible':[('state','!=','active')]}"/>
+                        <button string="Close" type="object" name="action_close_mandate" class="oe_highlight" attrs="{'invisible':[('state','!=','active')]}"/>
+                        <button string="Cancel" type="object" name="action_cancel_draft_mandate" attrs="{'invisible':[('state','!=','draft')]}"/>
                     </header>
 
                     <sheet>
@@ -29,16 +29,16 @@
 
                         <group>
                             <group>
-                                <field name="partner_id" readonly="state != 'draft'"/>
+                                <field name="partner_id"/>
                                 <field name="suitable_journal_ids" invisible="1"/>
-                                <field name="partner_bank_id" domain="[('partner_id', '=', partner_id)]" context="{'default_partner_id':partner_id, 'sdd_mandate': True}" readonly="state != 'draft'"/>
+                                <field name="partner_bank_id" domain="[('partner_id', '=', partner_id)]" context="{'default_partner_id':partner_id, 'sdd_mandate': True}"/>
                                 <field name="payment_journal_id"/>
                                 <field name="sdd_scheme"/>
                             </group>
                             <group>
-                                <field name="name" readonly="state != 'draft'"/>
-                                <field name="start_date" readonly="state != 'draft'"/>
-                                <field name="end_date" readonly="state == 'closed'"/>
+                                <field name="name"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
                                 <field name="company_id" groups="base.group_multi_company" required="1"/>
                             </group>
                         </group>
@@ -72,10 +72,10 @@
             <field name="model">sdd.mandate</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-muted="state == 'closed'" decoration-danger="state == 'revoked'" default_order="start_date desc">
-                    <field name="partner_id" readonly="state != 'draft'"/>
-                    <field name="name" readonly="state != 'draft'"/>
-                    <field name="start_date" readonly="state != 'draft'"/>
-                    <field name="end_date" readonly="state == 'closed'"/>
+                    <field name="partner_id"/>
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
                     <field name="state"/>
                     <field name="sdd_scheme"/>
                     <field name="company_id" groups="base.group_multi_company"/>

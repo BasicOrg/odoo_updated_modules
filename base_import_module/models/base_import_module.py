@@ -13,8 +13,6 @@ class BaseImportModule(models.TransientModel):
     state = fields.Selection([('init', 'init'), ('done', 'done')], string='Status', readonly=True, default='init')
     import_message = fields.Text()
     force = fields.Boolean(string='Force init', help="Force init mode even if installed. (will update `noupdate='1'` records)")
-    with_demo = fields.Boolean(string='Import demo data of module')
-    modules_dependencies = fields.Text()
 
     def import_module(self):
         self.ensure_one()
@@ -22,11 +20,18 @@ class BaseImportModule(models.TransientModel):
         zip_data = base64.decodebytes(self.module_file)
         fp = BytesIO()
         fp.write(zip_data)
-        res = IrModule._import_zipfile(fp, force=self.force, with_demo=self.with_demo)
+        res = IrModule.import_zipfile(fp, force=self.force)
+        self.write({'state': 'done', 'import_message': res[0]})
+        context = dict(self.env.context, module_name=res[1])
+        # Return wizard otherwise it will close wizard and will not show result message to user.
         return {
-            'type': 'ir.actions.act_url',
-            'target': 'self',
-            'url': '/web',
+            'name': 'Import Module',
+            'view_mode': 'form',
+            'target': 'new',
+            'res_id': self.id,
+            'res_model': 'base.import.module',
+            'type': 'ir.actions.act_window',
+            'context': context,
         }
 
     def action_module_open(self):

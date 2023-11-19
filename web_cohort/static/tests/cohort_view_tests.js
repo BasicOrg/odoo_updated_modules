@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
+import testUtils from "web.test_utils";
+
 import { createWebClient, doAction } from "@web/../tests/webclient/helpers";
 import {
     click,
@@ -12,27 +13,23 @@ import {
     patchDate,
 } from "@web/../tests/helpers/utils";
 import { makeView } from "@web/../tests/views/helpers";
+import { dialogService } from "@web/core/dialog/dialog_service";
+import { registry } from "@web/core/registry";
 import {
-    toggleSearchBarMenu,
+    toggleFilterMenu,
     toggleMenuItem,
+    toggleComparisonMenu,
     toggleMenuItemOption,
     toggleMenu,
     removeFacet,
     setupControlPanelServiceRegistry,
 } from "@web/../tests/search/helpers";
 import { browser } from "@web/core/browser/browser";
-import { makeFakeLocalizationService } from "@web/../tests/helpers/mock_services";
-import { markup } from "@odoo/owl";
 
 const serviceRegistry = registry.category("services");
 
 let serverData;
 let target;
-
-async function changeScale(target, scale) {
-    await click(target.querySelector(".o_view_scale_selector .dropdown-toggle"));
-    await click(target.querySelector(`.o_scale_button_${scale}`));
-}
 
 QUnit.module("Views", (hooks) => {
     hooks.beforeEach(() => {
@@ -43,12 +40,7 @@ QUnit.module("Views", (hooks) => {
                         id: { string: "ID", type: "integer" },
                         start: { string: "Start", type: "date", sortable: true },
                         stop: { string: "Stop", type: "date", sortable: true },
-                        recurring: {
-                            string: "Recurring Price",
-                            type: "integer",
-                            store: true,
-                            group_operator: "sum",
-                        },
+                        recurring: { string: "Recurring Price", type: "integer", store: true },
                     },
                     records: [
                         { id: 1, start: "2017-07-12", stop: "2017-08-11", recurring: 10 },
@@ -116,7 +108,7 @@ QUnit.module("Views", (hooks) => {
             },
         };
         setupControlPanelServiceRegistry();
-        serviceRegistry.add("localization", makeFakeLocalizationService());
+        serviceRegistry.add("dialog", dialogService);
 
         target = getFixture();
     });
@@ -154,12 +146,10 @@ QUnit.module("Views", (hooks) => {
         );
 
         await toggleMenu(target, "Measures");
-        assert.containsOnce(target, ".dropdown-menu:not(.d-none)", "should have list of measures");
-
-        await click(target, ".o_view_scale_selector .scale_button_selection");
+        assert.containsOnce(target, ".dropdown-menu", 1, "should have list of measures");
         assert.containsN(
             target,
-            ".o_view_scale_selector .dropdown-menu span",
+            ".o_cohort_interval_button",
             4,
             "should have buttons of intervals"
         );
@@ -198,7 +188,7 @@ QUnit.module("Views", (hooks) => {
 
         assert.containsNone(target, "div.o_view_nocontent");
 
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "Recurring bigger than 25");
 
         assert.containsOnce(target, "div.o_view_nocontent");
@@ -221,7 +211,7 @@ QUnit.module("Views", (hooks) => {
         );
 
         assert.equal(
-            target.querySelector(".o_view_scale_selector button").textContent,
+            target.querySelector(".o_cohort_interval_button.active").textContent,
             "Day",
             "day should by default for interval"
         );
@@ -245,20 +235,9 @@ QUnit.module("Views", (hooks) => {
             string: "Abc",
             type: "integer",
             store: true,
-            group_operator: "sum",
         };
-        serverData.models.subscription.fields.add = {
-            string: "add",
-            type: "integer",
-            store: true,
-            group_operator: "sum",
-        };
-        serverData.models.subscription.fields.zoo = {
-            string: "Zoo",
-            type: "integer",
-            store: true,
-            group_operator: "sum",
-        };
+        serverData.models.subscription.fields.add = { string: "add", type: "integer", store: true };
+        serverData.models.subscription.fields.zoo = { string: "Zoo", type: "integer", store: true };
 
         await makeView({
             type: "cohort",
@@ -281,22 +260,23 @@ QUnit.module("Views", (hooks) => {
             type: "cohort",
             resModel: "subscription",
             serverData,
-            arch: '<cohort string="Subscription" date_start="start" date_stop="stop" measure="recurring" interval="week" />',
+            arch:
+                '<cohort string="Subscription" date_start="start" date_stop="stop" measure="recurring" interval="week" />',
         });
 
         await toggleMenu(target, "Measures");
+
         assert.equal(
             target.querySelector(".dropdown-menu span.selected").textContent,
             "Recurring Price",
             "should recurring for measure"
         );
-
-        await click(target.querySelector(".o_view_scale_selector .dropdown-toggle"));
         assert.equal(
-            target.querySelector(".o_view_scale_selector .active").textContent,
+            target.querySelector(".o_cohort_interval_button.active").textContent,
             "Week",
             "should week for interval"
         );
+
         assert.equal(
             target.querySelector(".table thead th:nth-child(2)").textContent,
             "Recurring Price",
@@ -308,8 +288,7 @@ QUnit.module("Views", (hooks) => {
             'should contain "Stop - By Week" in title'
         );
 
-        await toggleMenu(target, "Measures");
-        await click(target.querySelector(".dropdown-menu span:not(.selected)"));
+        await testUtils.dom.click(target.querySelector(".dropdown-menu span:not(.selected)"));
         assert.equal(
             target.querySelector(".dropdown-menu span.selected").textContent,
             "Count",
@@ -321,7 +300,12 @@ QUnit.module("Views", (hooks) => {
             'should contain "Count" in header of second column'
         );
 
-        await changeScale(target, "month");
+        await testUtils.dom.click(target.querySelectorAll(".o_cohort_interval_button")[2]);
+        assert.equal(
+            target.querySelector(".o_cohort_interval_button.active").textContent,
+            "Month",
+            "should active month for interval"
+        );
         assert.equal(
             target.querySelector(".table thead th:nth-child(3)").textContent,
             "Stop - By Month",
@@ -481,7 +465,8 @@ QUnit.module("Views", (hooks) => {
             type: "cohort",
             resModel: "lead",
             serverData,
-            arch: '<cohort string="Leads" date_start="start" date_stop="stop" interval="week" mode="churn" />',
+            arch:
+                '<cohort string="Leads" date_start="start" date_stop="stop" interval="week" mode="churn" />',
             mockRPC: function (route, args) {
                 if (args.method === "get_cohort_data") {
                     assert.strictEqual(
@@ -513,7 +498,8 @@ QUnit.module("Views", (hooks) => {
             type: "cohort",
             resModel: "attendee",
             serverData,
-            arch: '<cohort string="Attendees" date_start="event_begin_date" date_stop="registration_date" interval="day" timeline="backward" mode="churn"/>',
+            arch:
+                '<cohort string="Attendees" date_start="event_begin_date" date_stop="registration_date" interval="day" timeline="backward" mode="churn"/>',
             mockRPC: function (route, args) {
                 if (args.method === "get_cohort_data") {
                     assert.strictEqual(
@@ -674,7 +660,7 @@ QUnit.module("Views", (hooks) => {
         assert.containsNone(target, "div.o_view_nocontent");
 
         // with no comparison with no data (filter on 'last_year')
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "Date");
         await toggleMenuItemOption(target, "Date", "2016");
 
@@ -685,6 +671,7 @@ QUnit.module("Views", (hooks) => {
         // with comparison active, data and comparisonData (filter on 'this_month' + 'previous_period')
         await toggleMenuItemOption(target, "Date", "2016");
         await toggleMenuItemOption(target, "Date", "August");
+        await toggleComparisonMenu(target);
         await toggleMenuItem(target, "Date: Previous period");
 
         verifyContents(
@@ -695,6 +682,8 @@ QUnit.module("Views", (hooks) => {
         assert.containsNone(target, "div.o_view_nocontent");
 
         // with comparison active, data, no comparisonData (filter on 'this_year' + 'previous_period')
+        await toggleFilterMenu(target);
+        await toggleMenuItem(target, "Date");
         await toggleMenuItemOption(target, "Date", "August");
 
         verifyContents(
@@ -756,7 +745,7 @@ QUnit.module("Views", (hooks) => {
             resModel: "subscription",
             serverData,
             context: { search_default_small_than_0: true },
-            noContentHelp: markup('<p class="abc">click to add a foo</p>'),
+            noContentHelp: owl.markup('<p class="abc">click to add a foo</p>'),
             config: {
                 views: [[false, "search"]],
             },
@@ -786,7 +775,7 @@ QUnit.module("Views", (hooks) => {
             resModel: "subscription",
             serverData,
             context: { search_default_small_than_0: true },
-            noContentHelp: markup('<p class="abc">click to add a foo</p>'),
+            noContentHelp: owl.markup('<p class="abc">click to add a foo</p>'),
             config: {
                 views: [[false, "search"]],
             },
@@ -820,7 +809,7 @@ QUnit.module("Views", (hooks) => {
             type: "cohort",
             resModel: "subscription",
             serverData,
-            noContentHelp: markup('<p class="abc">click to add a foo</p>'),
+            noContentHelp: owl.markup('<p class="abc">click to add a foo</p>'),
             config: {
                 views: [[false, "search"]],
             },
@@ -831,7 +820,7 @@ QUnit.module("Views", (hooks) => {
         assert.containsNone(target, ".o_view_nocontent .abc");
         assert.containsOnce(target, "table");
 
-        await toggleSearchBarMenu(target);
+        await toggleFilterMenu(target);
         await toggleMenuItem(target, "Small Than 0");
 
         assert.doesNotHaveClass(target, "o_view_sample_data");
@@ -868,7 +857,7 @@ QUnit.module("Views", (hooks) => {
 
             // Set a domain (this reload is delayed)
             def = makeDeferred();
-            await toggleSearchBarMenu(target);
+            await toggleFilterMenu(target);
             await toggleMenuItem(target, "My Filter");
 
             assert.containsN(target, ".o_cohort_row_clickable", 5);
@@ -890,29 +879,4 @@ QUnit.module("Views", (hooks) => {
             );
         }
     );
-
-    QUnit.test('cohort view with attribute disable_linking="1"', async function (assert) {
-        serviceRegistry.add(
-            "action",
-            {
-                start() {
-                    return {
-                        doAction() {
-                            assert.ok(false, "Should not perform a do_action");
-                        },
-                    };
-                },
-            },
-            { force: true }
-        );
-
-        await makeView({
-            type: "cohort",
-            resModel: "subscription",
-            serverData,
-            arch: `<cohort date_start="start" date_stop="stop" disable_linking="1"/>`,
-        });
-        assert.containsOnce(target, ".table", "should have a table");
-        await click(target.querySelector("td.o_cohort_value")); // should not trigger a do_action
-    });
 });

@@ -14,7 +14,7 @@
                     <span class="o_form_label">All selected journal entries will be validated and posted. You won't be able to modify them afterwards.</span>
                     <footer>
                         <button string="Post Journal Entries" name="validate_move" type="object" default_focus="1" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </form>
             </field>
@@ -22,6 +22,7 @@
 
         <record id="action_validate_account_move" model="ir.actions.act_window">
             <field name="name">Post entries</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">validate.account.move</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="validate_account_move_view"/>

@@ -1,9 +1,8 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
-
-from odoo import _, api, fields, models, modules, tools
-from odoo.tools import email_normalize
+from odoo import _, api, exceptions, fields, models, modules, tools
+from odoo.addons.base.models.res_users import is_selection_groups
 
 
 class Users(models.Model):
@@ -12,6 +11,8 @@ class Users(models.Model):
         - make a new user follow itself
         - add a welcome message
         - add suggestion preference
+        - if adding groups to a user, check mail.channels linked to this user
+          group, and the user. This is done by overriding the write method.
     """
     _name = 'res.users'
     _inherit = ['res.users']
@@ -20,10 +21,13 @@ class Users(models.Model):
         ('email', 'Handle by Emails'),
         ('inbox', 'Handle in Odoo')],
         'Notification', required=True, default='email',
-        compute='_compute_notification_type', inverse='_inverse_notification_type', store=True,
+        compute='_compute_notification_type', store=True, readonly=False,
         help="Policy on how to handle Chatter notifications:\n"
              "- Handle by Emails: notifications are sent to your email address\n"
              "- Handle in Odoo: notifications appear in your Odoo Inbox")
+    res_users_settings_ids = fields.One2many('res.users.settings', 'user_id')
+    # Provide a target for relateds that is not a x2Many field.
+    res_users_settings_id = fields.Many2one('res.users.settings', string="Settings", compute='_compute_res_users_settings_id', search='_search_res_users_settings_id')
 
     _sql_constraints = [(
         "notification_type",
@@ -31,33 +35,21 @@ class Users(models.Model):
         "Only internal user can receive notifications in Odoo",
     )]
 
-    @api.depends('share', 'groups_id')
+    @api.depends('share')
     def _compute_notification_type(self):
-        # Because of the `groups_id` in the `api.depends`,
-        # this code will be called for any change of group on a user,
-        # even unrelated to the group_mail_notification_type_inbox or share flag.
-        # e.g. if you add HR > Manager to a user, this method will be called.
-        # It should therefore be written to be as performant as possible, and make the less change/write as possible
-        # when it's not `mail.group_mail_notification_type_inbox` or `share` that are being changed.
-        inbox_group_id = self.env['ir.model.data']._xmlid_to_res_id('mail.group_mail_notification_type_inbox')
-
-        self.filtered_domain([
-            ('groups_id', 'in', inbox_group_id), ('notification_type', '!=', 'inbox')
-        ]).notification_type = 'inbox'
-        self.filtered_domain([
-            ('groups_id', 'not in', inbox_group_id), ('notification_type', '=', 'inbox')
-        ]).notification_type = 'email'
-
-        # Special case: internal users with inbox notifications converted to portal must be converted to email users
-        self.filtered_domain([('share', '=', True), ('notification_type', '=', 'inbox')]).notification_type = 'email'
-
-    def _inverse_notification_type(self):
-        inbox_group = self.env.ref('mail.group_mail_notification_type_inbox')
         for user in self:
-            if user.notification_type == 'inbox':
-                user.groups_id += inbox_group
-            else:
-                user.groups_id -= inbox_group
+            # Only the internal users can receive notifications in Odoo
+            if user.share or not user.notification_type:
+                user.notification_type = 'email'
+
+    @api.depends('res_users_settings_ids')
+    def _compute_res_users_settings_id(self):
+        for user in self:
+            user.res_users_settings_id = user.res_users_settings_ids and user.res_users_settings_ids[0]
+
+    @api.model
+    def _search_res_users_settings_id(self, operator, operand):
+        return [('res_users_settings_ids', operator, operand)]
 
     # ------------------------------------------------------------
     # CRUD
@@ -73,6 +65,11 @@ class Users(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        for values in vals_list:
+            if not values.get('login', False):
+                action = self.env.ref('base.action_res_users')
+                msg = _("You cannot create a new user from here.\n To create new user please go to configuration panel.")
+                raise exceptions.RedirectWarning(msg, action.id, _('Go to the configuration panel'))
 
         users = super(Users, self).create(vals_list)
 
@@ -87,6 +84,9 @@ class Users(models.Model):
                         message_type='notification',
                         subtype_xmlid='mail.mt_note'
                     )
+        # Auto-subscribe to channels unless skip explicitly requested
+        if not self.env.context.get('mail_channel_nosubscribe'):
+            self.env['mail.channel'].search([('group_ids', 'in', users.groups_id.ids)])._subscribe_users_automatically()
         return users
 
     def write(self, vals):
@@ -95,14 +95,6 @@ class Users(models.Model):
             user.id: user.has_group('base.group_portal')
             for user in self
         } if log_portal_access else {}
-
-        previous_email_by_user = {}
-        if vals.get('email'):
-            previous_email_by_user = {
-                user: user.email
-                for user in self.filtered(lambda user: bool(email_normalize(user.email)))
-                if email_normalize(user.email) != email_normalize(vals['email'])
-            }
 
         write_res = super(Users, self).write(vals)
 
@@ -119,98 +111,35 @@ class Users(models.Model):
                         subtype_xmlid='mail.mt_note'
                     )
 
-        if 'login' in vals:
-            self._notify_security_setting_update(
-                _("Security Update: Login Changed"),
-                _("Your account login has been updated"),
-            )
-        if 'password' in vals:
-            self._notify_security_setting_update(
-                _("Security Update: Password Changed"),
-                _("Your account password has been updated"),
-            )
-        if 'email' in vals:
-            # when the email is modified, we want notify the previous address (and not the new one)
-            for user, previous_email in previous_email_by_user.items():
-                self._notify_security_setting_update(
-                    _("Security Update: Email Changed"),
-                    _(
-                        "Your account email has been changed from %(old_email)s to %(new_email)s.",
-                        old_email=previous_email,
-                        new_email=user.email,
-                    ),
-                    mail_values={'email_to': previous_email},
-                    suggest_password_reset=False,
-                )
+        if 'active' in vals and not vals['active']:
+            self._unsubscribe_from_non_public_channels()
+        sel_groups = [vals[k] for k in vals if is_selection_groups(k) and vals[k]]
+        if vals.get('groups_id'):
+            # form: {'group_ids': [(3, 10), (3, 3), (4, 10), (4, 3)]} or {'group_ids': [(6, 0, [ids]}
+            user_group_ids = [command[1] for command in vals['groups_id'] if command[0] == 4]
+            user_group_ids += [id for command in vals['groups_id'] if command[0] == 6 for id in command[2]]
+            self.env['mail.channel'].search([('group_ids', 'in', user_group_ids)])._subscribe_users_automatically()
+        elif sel_groups:
+            self.env['mail.channel'].search([('group_ids', 'in', sel_groups)])._subscribe_users_automatically()
         return write_res
 
-    def action_archive(self):
-        activities_to_delete = self.env['mail.activity'].search([('user_id', 'in', self.ids)])
-        activities_to_delete.unlink()
-        return super(Users, self).action_archive()
+    def unlink(self):
+        self._unsubscribe_from_non_public_channels()
+        return super().unlink()
 
-    def _notify_security_setting_update(self, subject, content, mail_values=None, **kwargs):
-        """ This method is meant to be called whenever a sensitive update is done on the user's account.
-        It will send an email to the concerned user warning him about this change and making some security suggestions.
-
-        :param str subject: The subject of the sent email (e.g: 'Security Update: Password Changed')
-        :param str content: The text to embed within the email template (e.g: 'Your password has been changed')
-        :param kwargs: 'suggest_password_reset' key:
-            Whether or not to suggest the end-user to reset
-            his password in the email sent.
-            Defaults to True. """
-
-        mail_create_values = []
-        for user in self:
-            body_html = self.env['ir.qweb']._render(
-                'mail.account_security_setting_update',
-                user._notify_security_setting_update_prepare_values(content, **kwargs),
-                minimal_qcontext=True,
-            )
-
-            body_html = self.env['mail.render.mixin']._render_encapsulate(
-                'mail.mail_notification_light',
-                body_html,
-                add_context={
-                    # the 'mail_notification_light' expects a mail.message 'message' context, let's give it one
-                    'message': self.env['mail.message'].sudo().new(dict(body=body_html, record_name=user.name)),
-                    'model_description': _('Account'),
-                    'company': user.company_id,
-                },
-            )
-
-            vals = {
-                'auto_delete': True,
-                'body_html': body_html,
-                'author_id': self.env.user.partner_id.id,
-                'email_from': (
-                    user.company_id.partner_id.email_formatted or
-                    self.env.user.email_formatted or
-                    self.env.ref('base.user_root').email_formatted
-                ),
-                'email_to': kwargs.get('force_email') or user.email_formatted,
-                'subject': subject,
-            }
-
-            if mail_values:
-                vals.update(mail_values)
-
-            mail_create_values.append(vals)
-
-        self.env['mail.mail'].sudo().create(mail_create_values)
-
-    def _notify_security_setting_update_prepare_values(self, content, **kwargs):
-        """" Prepare rendering values for the 'mail.account_security_setting_update' qweb template """
-
-        reset_password_enabled = self.env['ir.config_parameter'].sudo().get_param("auth_signup.reset_password", True)
-        return {
-            'company': self.company_id,
-            'password_reset_url': f"{self.get_base_url()}/web/reset_password",
-            'security_update_text': content,
-            'suggest_password_reset': kwargs.get('suggest_password_reset', True) and reset_password_enabled,
-            'user': self,
-            'update_datetime': fields.Datetime.now(),
-        }
+    def _unsubscribe_from_non_public_channels(self):
+        """ This method un-subscribes users from group restricted channels. Main purpose
+            of this method is to prevent sending internal communication to archived / deleted users.
+            We do not un-subscribes users from public channels because in most common cases,
+            public channels are mailing list (e-mail based) and so users should always receive
+            updates from public channels until they manually un-subscribe themselves.
+        """
+        current_cm = self.env['mail.channel.member'].sudo().search([
+            ('partner_id', 'in', self.partner_id.ids),
+        ])
+        current_cm.filtered(
+            lambda cm: (cm.channel_id.channel_type == 'channel' and cm.channel_id.group_public_id)
+        ).unlink()
 
     def _get_portal_access_update_body(self, access_granted):
         body = _('Portal Access Granted') if access_granted else _('Portal Access Revoked')
@@ -231,19 +160,19 @@ class Users(models.Model):
             )
 
         if post.get('request_blacklist'):
-            users_to_blacklist = [(user, user.email) for user in self.filtered(
-                lambda user: tools.email_normalize(user.email))]
+            users_to_blacklist = self.filtered(
+                lambda user: tools.email_normalize(user.email))
         else:
             users_to_blacklist = []
 
         super(Users, self)._deactivate_portal_user(**post)
 
-        for user, user_email in users_to_blacklist:
-            self.env['mail.blacklist']._add(
-                user_email,
-                message=_('Blocked by deletion of portal account %(portal_user_name)s by %(user_name)s (#%(user_id)s)',
-                          user_name=current_user.name, user_id=current_user.id,
-                          portal_user_name=user.name)
+        for user in users_to_blacklist:
+            blacklist = self.env['mail.blacklist']._add(user.email)
+            blacklist._message_log(
+                body=_('Blocked by deletion of portal account %(portal_user_name)s by %(user_name)s (#%(user_id)s)',
+                       user_name=current_user.name, user_id=current_user.id,
+                       portal_user_name=user.name),
             )
 
     # ------------------------------------------------------------
@@ -252,20 +181,19 @@ class Users(models.Model):
 
     def _init_messaging(self):
         self.ensure_one()
-        odoobot = self.env.ref('base.partner_root')
+        partner_root = self.env.ref('base.partner_root')
         values = {
+            'channels': self.partner_id._get_channels_as_member().channel_info(),
             'companyName': self.env.company.name,
             'currentGuest': False,
             'current_partner': self.partner_id.mail_partner_format().get(self.partner_id),
             'current_user_id': self.id,
             'current_user_settings': self.env['res.users.settings']._find_or_create_for_user(self)._res_users_settings_format(),
             'hasLinkPreviewFeature': self.env['mail.link.preview']._is_link_preview_enabled(),
-            'initBusId': self.env['bus.bus'].sudo()._bus_last_id(),
             'internalUserGroupId': self.env.ref('base.group_user').id,
             'menu_id': self.env['ir.model.data']._xmlid_to_res_id('mail.menu_root_discuss'),
-            'mt_comment_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_comment'),
             'needaction_inbox_counter': self.partner_id._get_needaction_count(),
-            'odoobot': odoobot.sudo().mail_partner_format().get(odoobot),
+            'partner_root': partner_root.sudo().mail_partner_format().get(partner_root),
             'shortcodes': self.env['mail.shortcode'].sudo().search_read([], ['source', 'substitution']),
             'starred_counter': self.env['mail.message'].search_count([('starred_partner_ids', 'in', self.partner_id.ids)]),
         }
@@ -273,50 +201,44 @@ class Users(models.Model):
 
     @api.model
     def systray_get_activities(self):
-        search_limit = int(self.env['ir.config_parameter'].sudo().get_param('mail.activity.systray.limit', 1000))
-        activities = self.env["mail.activity"].search(
-            [("user_id", "=", self.env.uid)], order='id desc', limit=search_limit)
-        activities_by_record_by_model_name = defaultdict(lambda: defaultdict(lambda: self.env["mail.activity"]))
-        for activity in activities:
-            record = self.env[activity.res_model].browse(activity.res_id)
-            activities_by_record_by_model_name[activity.res_model][record] += activity
-        activities_by_model_name = defaultdict(lambda: self.env["mail.activity"])
-        for model_name, activities_by_record in activities_by_record_by_model_name.items():
-            if self.env[model_name].check_access_rights('read', raise_exception=False):
-                res_ids = [r.id for r in activities_by_record]
-                allowed_records = self.env[model_name].browse(res_ids)._filter_access_rules('read')
-            else:
-                allowed_records = self.env[model_name]
-            for record, activities in activities_by_record.items():
-                if record not in allowed_records:
-                    activities_by_model_name['mail.activity'] += activities
-                else:
-                    activities_by_model_name[model_name] += activities
-        model_ids = [self.env["ir.model"]._get_id(name) for name in activities_by_model_name]
+        query = """SELECT m.id, count(*), act.res_model as model,
+                        CASE
+                            WHEN %(today)s::date - act.date_deadline::date = 0 Then 'today'
+                            WHEN %(today)s::date - act.date_deadline::date > 0 Then 'overdue'
+                            WHEN %(today)s::date - act.date_deadline::date < 0 Then 'planned'
+                        END AS states
+                    FROM mail_activity AS act
+                    JOIN ir_model AS m ON act.res_model_id = m.id
+                    WHERE user_id = %(user_id)s
+                    GROUP BY m.id, states, act.res_model;
+                    """
+        self.env.cr.execute(query, {
+            'today': fields.Date.context_today(self),
+            'user_id': self.env.uid,
+        })
+        activity_data = self.env.cr.dictfetchall()
+        model_ids = [a['id'] for a in activity_data]
+        model_names = {n[0]: n[1] for n in self.env['ir.model'].sudo().browse(model_ids).name_get()}
+
         user_activities = {}
-        for model_name, activities in activities_by_model_name.items():
-            Model = self.env[model_name]
-            module = Model._original_module
-            icon = module and modules.module.get_module_icon(module)
-            model = self.env["ir.model"]._get(model_name).with_prefetch(model_ids)
-            user_activities[model_name] = {
-                "id": model.id,
-                "name": model.name,
-                "model": model_name,
-                "type": "activity",
-                "icon": icon,
-                "total_count": 0,
-                "today_count": 0,
-                "overdue_count": 0,
-                "planned_count": 0,
-                "view_type": getattr(Model, '_systray_view', 'list'),
-            }
-            if model_name == 'mail.activity':
-                user_activities[model_name]['activity_ids'] = activities.ids
-            for activity in activities:
-                user_activities[model_name]["%s_count" % activity.state] += 1
-                if activity.state in ("today", "overdue"):
-                    user_activities[model_name]["total_count"] += 1
-        if "mail.activity" in user_activities:
-            user_activities["mail.activity"]["name"] = _("Other activities")
+        for activity in activity_data:
+            if not user_activities.get(activity['model']):
+                module = self.env[activity['model']]._original_module
+                icon = module and modules.module.get_module_icon(module)
+                user_activities[activity['model']] = {
+                    'id': activity['id'],
+                    'name': model_names[activity['id']],
+                    'model': activity['model'],
+                    'type': 'activity',
+                    'icon': icon,
+                    'total_count': 0, 'today_count': 0, 'overdue_count': 0, 'planned_count': 0,
+                }
+            user_activities[activity['model']]['%s_count' % activity['states']] += activity['count']
+            if activity['states'] in ('today', 'overdue'):
+                user_activities[activity['model']]['total_count'] += activity['count']
+
+            user_activities[activity['model']]['actions'] = [{
+                'icon': 'fa-clock-o',
+                'name': 'Summary',
+            }]
         return list(user_activities.values())

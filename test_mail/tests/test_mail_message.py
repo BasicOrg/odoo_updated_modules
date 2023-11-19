@@ -1,18 +1,19 @@
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import base64
-from markupsafe import Markup
 from unittest.mock import patch
 
-from odoo.addons.mail.tests.common import mail_new_test_user, MailCommon
+from odoo.addons.mail.tests.common import mail_new_test_user
+from odoo.addons.test_mail.tests.common import TestMailCommon
 from odoo.addons.test_mail.models.test_mail_models import MailTestSimple
 from odoo.exceptions import AccessError, UserError
-from odoo.tests.common import tagged, users
 from odoo.tools import is_html_empty, mute_logger, formataddr
+from odoo.tests import tagged, users
 
 
-@tagged("mail_message", "post_install", "-at_install")
-class TestMessageValues(MailCommon):
+@tagged('mail_message')
+class TestMessageValues(TestMailCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -69,7 +70,7 @@ class TestMessageValues(MailCommon):
         self.assertFalse(message.sudo()._filter_empty(), 'Still having attachments')
 
         # Subtype content
-        note_subtype.sudo().write({'description': 'Very important discussions'})
+        note_subtype.write({'description': 'Very important discussions'})
         record._message_update_content(message, '', [])
         self.assertFalse(message.attachment_ids)
         self.assertEqual(message.notified_partner_ids, self.partner_admin)
@@ -77,7 +78,7 @@ class TestMessageValues(MailCommon):
         self.assertFalse(message.sudo()._filter_empty(), 'Subtype with description')
 
         # Completely void now
-        note_subtype.sudo().write({'description': ''})
+        note_subtype.write({'description': ''})
         self.assertEqual(message.sudo()._filter_empty(), message)
         record._message_update_content(message, '', [])
         self.assertFalse(message.notified_partner_ids)
@@ -97,18 +98,16 @@ class TestMessageValues(MailCommon):
     @mute_logger('odoo.models.unlink')
     def test_mail_message_format(self):
         record1 = self.env['mail.test.simple'].create({'name': 'Test1'})
-        record2 = self.env['mail.test.nothread'].create({'name': 'Test2'})
-        messages = self.env['mail.message'].create([{
-            'model': record._name,
-            'res_id': record.id,
-        } for record in [record1, record2]])
-        for message, record in zip(messages, [record1, record2]):
-            with self.subTest(record=record):
-                formatted = message.message_format()[0]
-                self.assertEqual(formatted['record_name'], record.name)
-                record.write({'name': 'Just Test'})
-                formatted = message.message_format()[0]
-                self.assertEqual(formatted['record_name'], 'Just Test')
+        message = self.env['mail.message'].create([{
+            'model': 'mail.test.simple',
+            'res_id': record1.id,
+        }])
+        res = message.message_format()
+        self.assertEqual(res[0].get('record_name'), 'Test1')
+
+        record1.write({"name": "Test2"})
+        res = message.message_format()
+        self.assertEqual(res[0].get('record_name'), 'Test2')
 
     @mute_logger('odoo.models.unlink')
     def test_mail_message_format_access(self):
@@ -221,8 +220,16 @@ class TestMessageValues(MailCommon):
         self.assertEqual(msg.email_from, formataddr((self.user_employee.name, self.user_employee.email)))
 
         # no alias domain -> author
-        self.env.company.alias_domain_id = False
-        self.assertFalse(self.env.company.catchall_email)
+        self.env['ir.config_parameter'].search([('key', '=', 'mail.catchall.domain')]).unlink()
+
+        msg = self.Message.create({})
+        self.assertIn('-private', msg.message_id.split('@')[0], 'mail_message: message_id for a void message should be a "private" one')
+        self.assertEqual(msg.reply_to, formataddr((self.user_employee.name, self.user_employee.email)))
+        self.assertEqual(msg.email_from, formataddr((self.user_employee.name, self.user_employee.email)))
+
+        # no alias catchall, no alias -> author
+        self.env['ir.config_parameter'].set_param('mail.catchall.domain', self.alias_domain)
+        self.env['ir.config_parameter'].search([('key', '=', 'mail.catchall.alias')]).unlink()
 
         msg = self.Message.create({})
         self.assertIn('-private', msg.message_id.split('@')[0], 'mail_message: message_id for a void message should be a "private" one')
@@ -241,10 +248,8 @@ class TestMessageValues(MailCommon):
         self.assertEqual(msg.reply_to, formataddr((reply_to_name, reply_to_email)))
         self.assertEqual(msg.email_from, formataddr((self.user_employee.name, self.user_employee.email)))
 
-        # no alias domain, no company catchall -> author
-        self.alias_record.alias_domain_id = False
-        self.env.company.alias_domain_id = False
-        self.assertFalse(self.env.company.catchall_email)
+        # no alias domain -> author
+        self.env['ir.config_parameter'].search([('key', '=', 'mail.catchall.domain')]).unlink()
 
         msg = self.Message.create({
             'model': 'mail.test.container',
@@ -254,8 +259,9 @@ class TestMessageValues(MailCommon):
         self.assertEqual(msg.reply_to, formataddr((self.user_employee.name, self.user_employee.email)))
         self.assertEqual(msg.email_from, formataddr((self.user_employee.name, self.user_employee.email)))
 
-        # alias wins over company, hence no catchall is not an issue
-        self.alias_record.alias_domain_id = self.mail_alias_domain
+        # no catchall -> don't care, alias
+        self.env['ir.config_parameter'].set_param('mail.catchall.domain', self.alias_domain)
+        self.env['ir.config_parameter'].search([('key', '=', 'mail.catchall.alias')]).unlink()
 
         msg = self.Message.create({
             'model': 'mail.test.container',
@@ -286,6 +292,7 @@ class TestMessageValues(MailCommon):
         test_record = self.env['mail.test.simple'].create({'name': 'Test', 'email_from': 'ignasse@example.com'})
         alias = self.env['mail.alias'].create({
             'alias_name': 'MegaLias',
+            'alias_user_id': False,
             'alias_model_id': self.env['ir.model']._get('mail.test.simple').id,
             'alias_parent_model_id': self.env['ir.model']._get('mail.test.simple').id,
             'alias_parent_thread_id': test_record.id,
@@ -312,13 +319,9 @@ class TestMessageValues(MailCommon):
         self.assertNotIn('mail.test.container', msg.message_id.split('@')[0])
         self.assertNotIn('-%d-' % self.alias_record.id, msg.message_id.split('@')[0])
 
-    def test_mail_message_values_misc(self):
-        """ Test various values on mail.message, notably default values """
-        msg = self.env['mail.message'].create({'model': self.alias_record._name, 'res_id': self.alias_record.id})
-        self.assertEqual(msg.message_type, 'comment', 'Message should be comments by default')
 
-@tagged("mail_message", "post_install", "-at_install")
-class TestMessageAccess(MailCommon):
+@tagged('mail_message')
+class TestMessageAccess(TestMailCommon):
 
     @classmethod
     def setUpClass(cls):
@@ -328,12 +331,12 @@ class TestMessageAccess(MailCommon):
         cls.user_public = mail_new_test_user(cls.env, login='bert', groups='base.group_public', name='Bert Tartignole')
         cls.user_portal = mail_new_test_user(cls.env, login='chell', groups='base.group_portal', name='Chell Gladys')
 
-        cls.group_restricted_channel = cls.env['discuss.channel'].channel_create(name='Channel for Groups', group_id=cls.env.ref('base.group_user').id)
-        cls.public_channel = cls.env['discuss.channel'].channel_create(name='Public Channel', group_id=None)
-        cls.private_group = cls.env['discuss.channel'].create_group(partners_to=cls.user_employee_1.partner_id.ids, name="Group")
+        cls.group_restricted_channel = cls.env['mail.channel'].browse(cls.env['mail.channel'].channel_create(name='Channel for Groups', group_id=cls.env.ref('base.group_user').id)['id'])
+        cls.public_channel = cls.env['mail.channel'].browse(cls.env['mail.channel'].channel_create(name='Public Channel', group_id=None)['id'])
+        cls.private_group = cls.env['mail.channel'].browse(cls.env['mail.channel'].create_group(partners_to=cls.user_employee_1.partner_id.ids, name="Group")['id'])
         cls.message = cls.env['mail.message'].create({
             'body': 'My Body',
-            'model': 'discuss.channel',
+            'model': 'mail.channel',
             'res_id': cls.private_group.id,
         })
 
@@ -347,18 +350,18 @@ class TestMessageAccess(MailCommon):
             'partner_ids': [(6, 0, [self.user_public.partner_id.id])]})
         msg3 = self.env['mail.message'].create({
             'subject': '_ZTest', 'body': 'A Pigs', 'subtype_id': False,
-            'model': 'discuss.channel', 'res_id': self.group_restricted_channel.id})
+            'model': 'mail.channel', 'res_id': self.group_restricted_channel.id})
         msg4 = self.env['mail.message'].create({
             'subject': '_ZTest', 'body': 'A+P Pigs', 'subtype_id': self.ref('mail.mt_comment'),
-            'model': 'discuss.channel', 'res_id': self.group_restricted_channel.id,
+            'model': 'mail.channel', 'res_id': self.group_restricted_channel.id,
             'partner_ids': [(6, 0, [self.user_public.partner_id.id])]})
         msg5 = self.env['mail.message'].create({
             'subject': '_ZTest', 'body': 'A+E Pigs', 'subtype_id': self.ref('mail.mt_comment'),
-            'model': 'discuss.channel', 'res_id': self.group_restricted_channel.id,
+            'model': 'mail.channel', 'res_id': self.group_restricted_channel.id,
             'partner_ids': [(6, 0, [self.user_employee.partner_id.id])]})
         msg6 = self.env['mail.message'].create({
             'subject': '_ZTest', 'body': 'A Birds', 'subtype_id': self.ref('mail.mt_comment'),
-            'model': 'discuss.channel', 'res_id': self.private_group.id})
+            'model': 'mail.channel', 'res_id': self.private_group.id})
         msg7 = self.env['mail.message'].with_user(self.user_employee).create({
             'subject': '_ZTest', 'body': 'B', 'subtype_id': self.ref('mail.mt_comment')})
         msg8 = self.env['mail.message'].with_user(self.user_employee).create({
@@ -426,7 +429,7 @@ class TestMessageAccess(MailCommon):
         self.message.with_user(self.user_employee).read()
 
     def test_mail_message_access_read_doc(self):
-        self.message.write({'model': 'discuss.channel', 'res_id': self.public_channel.id})
+        self.message.write({'model': 'mail.channel', 'res_id': self.public_channel.id})
         # Test: Employee reads the message, ok because linked to a doc they are allowed to read
         self.message.with_user(self.user_employee).read()
 
@@ -438,34 +441,35 @@ class TestMessageAccess(MailCommon):
     def test_mail_message_access_create_crash_public(self):
         # Public creates a message on Channel for groups -> ko, no enter rights
         with self.assertRaises(AccessError):
-            self.env['mail.message'].with_user(self.user_public).create({'model': 'discuss.channel', 'res_id': self.group_restricted_channel.id, 'body': 'Test'})
+            self.env['mail.message'].with_user(self.user_public).create({'model': 'mail.channel', 'res_id': self.group_restricted_channel.id, 'body': 'Test'})
 
         # Public create a message on Public Channel -> ko, no creation rights
         with self.assertRaises(AccessError):
-            self.env['mail.message'].with_user(self.user_public).create({'model': 'discuss.channel', 'res_id': self.public_channel.id, 'body': 'Test'})
+            self.env['mail.message'].with_user(self.user_public).create({'model': 'mail.channel', 'res_id': self.public_channel.id, 'body': 'Test'})
 
     @mute_logger('odoo.models')
     def test_mail_message_access_create_crash(self):
         # Do: Employee create a private message -> ko, no creation rights
         with self.assertRaises(AccessError):
-            self.env['mail.message'].with_user(self.user_employee).create({'model': 'discuss.channel', 'res_id': self.private_group.id, 'body': 'Test'})
+            self.env['mail.message'].with_user(self.user_employee).create({'model': 'mail.channel', 'res_id': self.private_group.id, 'body': 'Test'})
 
     @mute_logger('odoo.models')
     def test_mail_message_access_create_doc(self):
         Message = self.env['mail.message'].with_user(self.user_employee)
         # Do: Employee creates a message on Public Channel -> ok, write access to the related document
-        Message.create({'model': 'discuss.channel', 'res_id': self.public_channel.id, 'body': 'Test'})
+        Message.create({'model': 'mail.channel', 'res_id': self.public_channel.id, 'body': 'Test'})
         # Do: Employee creates a message on Group -> ko, no write access to the related document
         with self.assertRaises(AccessError):
-            Message.create({'model': 'discuss.channel', 'res_id': self.private_group.id, 'body': 'Test'})
+            Message.create({'model': 'mail.channel', 'res_id': self.private_group.id, 'body': 'Test'})
 
     def test_mail_message_access_create_private(self):
         self.env['mail.message'].with_user(self.user_employee).create({'body': 'Test'})
 
     def test_mail_message_access_create_reply(self):
         # TDE FIXME: should it really work ? not sure - catchall makes crash (aka, post will crash also)
+        self.env['ir.config_parameter'].set_param('mail.catchall.domain', False)
         self.message.write({'partner_ids': [(4, self.user_employee.partner_id.id)]})
-        self.env['mail.message'].with_user(self.user_employee).create({'model': 'discuss.channel', 'res_id': self.private_group.id, 'body': 'Test', 'parent_id': self.message.id})
+        self.env['mail.message'].with_user(self.user_employee).create({'model': 'mail.channel', 'res_id': self.private_group.id, 'body': 'Test', 'parent_id': self.message.id})
 
     def test_mail_message_access_create_wo_parent_access(self):
         """ Purpose is to test posting a message on a record whose first message / parent
@@ -478,7 +482,7 @@ class TestMessageAccess(MailCommon):
         test_record.message_subscribe((partner_1 | self.user_admin.partner_id).ids)
 
         message = test_record.message_post(
-            body=Markup('<p>This is First Message</p>'), subject='Subject',
+            body='<p>This is First Message</p>', subject='Subject',
             message_type='comment', subtype_xmlid='mail.mt_note')
         # portal user have no rights to read the message
         with self.assertRaises(AccessError):

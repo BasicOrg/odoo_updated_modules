@@ -36,7 +36,7 @@ list of filtered posts (by date or tag).
 
         <div id="o_wblog_blog_top">
             <!-- Selectively display droppable-areas for 'all blogs' or single-blog pages -->
-            <t t-if="not tag and not date_begin and not search">
+            <t t-if="not tag and not date_begin">
                 <div id="o_wblog_blog_top_droppable">
                     <t t-if="blog">
                         <t t-set="oe_structure_blog_single_header_description">Edit the '<t t-esc="blog.name"/>' page header.</t>
@@ -64,7 +64,6 @@ list of filtered posts (by date or tag).
 
         <t t-call="website_blog.blogs_nav">
             <t t-set="search" t-value="original_search or search"/>
-            <t t-set="additional_classes" t-value="'mt-3'"/>
         </t>
 
         <section id="o_wblog_index_content" t-att-class="opt_blog_cards_design and 'o_wblog_page_cards_bg'">
@@ -172,6 +171,7 @@ list of filtered posts (by date or tag).
 <!-- (Option) Blog: Sidebar : Show -->
 <template id="opt_blog_sidebar_show" name="Show Sidebar" inherit_id="website_blog.blog_post_short" active="False">
     <xpath expr="//div[@id='o_wblog_posts_loop_container']" position="after">
+        <div t-if="opt_blog_list_view" class="border-end d-none d-lg-block" style="opacity: 0.5"/>
         <div t-attf-class="col-12 col-md-3 d-flex #{opt_blog_list_view and 'col-lg-4' or 'ms-lg-5'}">
             <t t-call="website_blog.sidebar_blog_index"/>
         </div>
@@ -313,7 +313,7 @@ list of filtered posts (by date or tag).
                     </div>
                     <div class="text-muted mb-2">
                         <i class="fa fa-clock-o fa-fw"/>
-                        <span t-field="blog_post.post_date" class="text-muted" t-options="{'format': 'long', 'date_only': 'true'}"/>
+                        <span t-field="blog_post.post_date" class="text-muted" t-options='{"format": "d MMMM, yyyy"}'/>
                         <span>by
                             <t t-call="website_blog.post_author">
                                 <t t-set="additionnal_classes" t-value="'d-inline-flex me-2'"/>
@@ -401,7 +401,7 @@ list of filtered posts (by date or tag).
                                     <div t-field="next_post.subtitle" id="o_wblog_post_subtitle" placeholder="Subtitle" class="lead"/>
                                 </a>
                             </div>
-                            <a t-att-href="'/blog/' + slug(next_post.blog_id) + '/' + slug(next_post)" t-att-title="'Read next' + next_post.name" class="w-25 flex-shrink-0">
+                            <a t-att-href="'/blog/' + slug(next_post.blog_id) + '/' + slug(next_post)" t-att-title="'Read next' + next_post.name" class="w-25">
                                 <t t-call="website.record_cover">
                                     <t t-set="_record" t-value="next_post"/>
                                     <t t-set="additionnal_classes" t-value="'rounded shadow-sm overflow-hidden h-100'"/>

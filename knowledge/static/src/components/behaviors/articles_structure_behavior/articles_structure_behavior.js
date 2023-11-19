@@ -2,19 +2,17 @@
 
 import { AbstractBehavior } from "@knowledge/components/behaviors/abstract_behavior/abstract_behavior";
 import { useService } from "@web/core/utils/hooks";
-import { renderToMarkup } from "@web/core/utils/render";
-import {
+import { qweb as QWeb }  from "web.core";
+
+const {
+    markup,
     useEffect,
     useState,
     onMounted,
-    onWillStart,
-} from "@odoo/owl";
-import {
-    BehaviorToolbar,
-    BehaviorToolbarButton,
-} from "@knowledge/components/behaviors/behavior_toolbar/behavior_toolbar";
-import { useRefWithSingleCollaborativeChild } from "@knowledge/js/knowledge_utils";
+    onPatched,
+    onWillPatch } = owl;
 
+let observerId = 0;
 
 /**
  * It creates a listing of children of this article.
@@ -24,74 +22,26 @@ import { useRefWithSingleCollaborativeChild } from "@knowledge/js/knowledge_util
  * - /outline that lists all children
  */
 export class ArticlesStructureBehavior extends AbstractBehavior {
-    static components = {
-        BehaviorToolbar,
-        BehaviorToolbarButton,
-    };
-    static props = {
-        ...AbstractBehavior.props,
-        content: { type: Object, optional: true },
-    };
-    static template = "knowledge.ArticlesStructureBehavior";
-
     setup () {
         super.setup();
-        this.orm = useService('orm');
+        this.rpc = useService('rpc');
         this.actionService = useService('action');
-        this.childrenSelector = 'o_knowledge_articles_structure_children_only';
-        this.state = useState({
-            // Used for the loading animation on the refresh button
-            refreshing: false,
-            // Specify when the content is ready to be inserted
-            changeContent: false,
-            // Used to change the display value of the "Show All" button
-            showAllChildren: !this.props.content || !this.props.content.includes(this.childrenSelector),
-        });
-        // Used during the loading of a new content (for rpc queries and
-        // rendering)
-        this.showAllChildren = this.state.showAllChildren;
-        // Register changes in Elements of the content, the purpose is to
-        // maintain maximum one OL element as the only child of content.
-        this.articlesStructureContent = useRefWithSingleCollaborativeChild(
-            "articlesStructureContent",
-            (element) => {
-                if (element) {
-                    // The content OL element has the class which tells if it
-                    // contains articles sub-children or not, update the state in
-                    // consequence.
-                    this.state.showAllChildren = !element.classList.contains(this.childrenSelector);
-                } else {
-                    // The default state when the content is empty is to show
-                    // all articles sub-children.
-                    this.state.showAllChildren = true;
-                }
-            }
-        );
+        this.observerId = observerId++;
 
-        onWillStart(async () => {
-            // Populate content with the prop coming from the blueprint if
-            // possible.
-            this.content = this.props.content || await this._renderArticlesStructure();
-        });
-
-        if (!this.props.readonly) {
-            let mounted = false;
-            useEffect(() => {
-                // Nothing to do onMounted
-                if (!mounted) {
-                    mounted = true;
-                    return;
-                }
-                // Update the content when clicking on a button of the toolbar
-                if (this.state.changeContent) {
-                    this._appendArticlesStructureContent();
-                    this.editor.historyStep();
-                    this.state.changeContent = false;
-                }
-            }, () => [this.state.changeContent]);
+        if (this.props.content) {
+            this.state = useState({
+                loading: false,
+                refreshing: false,
+            });
+            this.props.content = markup(this.props.content);
         } else {
-            onMounted(() => {
-                this._appendArticlesStructureContent();
+            this.state = useState({
+                loading: true,
+                refreshing: false,
+            });
+            onMounted(async () => {
+                this.props.content = await this._renderArticlesStructure();
+                this.state.loading = false;
             });
         }
 
@@ -114,37 +64,50 @@ export class ArticlesStructureBehavior extends AbstractBehavior {
                 this.props.anchor.removeEventListener('drop', onDrop);
             };
         });
-    }
 
-    //--------------------------------------------------------------------------
-    // TECHNICAL
-    //--------------------------------------------------------------------------
+        onWillPatch(() => {
+            this.editor.observerUnactive(`knowledge_article_structure_id_${this.observerId}`);
+        });
+        onPatched(() => {
+            this.editor.idSet(this.props.anchor);
+            this.editor.observerActive(`knowledge_article_structure_id_${this.observerId}`);
+        });
+    }
 
     /**
-     * @override
+     * @returns {OdooEditor}
      */
-    extraRender() {
-        super.extraRender();
-        this._appendArticlesStructureContent();
-        // Migration to the new system (the childrenSelector class is
-        // used on the content node instead of the anchor).
-        if (this.props.anchor.classList.contains(this.childrenSelector)) {
-            this.props.anchor.classList.toggle(this.childrenSelector);
-            this.articlesStructureContent.el.querySelectorAll(':scope > ol').forEach((ol) => {
-                ol.classList.toggle(this.childrenSelector);
-            });
-        }
+    get editor () {
+        return this.props.wysiwyg.odooEditor;
     }
 
-    //--------------------------------------------------------------------------
-    // BUSINESS
-    //--------------------------------------------------------------------------
+    /**
+     * @returns {HTMLElement}
+     */
+    async _renderArticlesStructure () {
+        const articleId = this.props.record.data.id;
+        const allArticles = await this._fetchAllArticles(articleId);
+        return markup(QWeb.render('knowledge.articles_structure', {
+            'articles': this._buildArticlesStructure(articleId, allArticles)
+        }));
+    }
 
-    _appendArticlesStructureContent() {
-        const parser = new DOMParser();
-        // this.content always comes from the database, or from a sanitized
-        // collaborative step (DOMPurify).
-        this.articlesStructureContent.el.replaceChildren(...parser.parseFromString(this.content, 'text/html').body.children);
+    /**
+     * @returns {Array[Object]}
+     */
+    async _fetchAllArticles (articleId) {
+        const selector = 'o_knowledge_articles_structure_children_only';
+        const domain = [
+            ['parent_id', this.props.anchor.classList.contains(selector) ? '=' : 'child_of', articleId],
+            ['is_article_item', '=', false]
+        ];
+        const { records } = await this.rpc('/web/dataset/search_read', {
+            model: 'knowledge.article',
+            fields: ['id', 'display_name', 'parent_id'],
+            domain,
+            sort: 'sequence',
+        });
+        return records;
     }
 
     /**
@@ -157,7 +120,7 @@ export class ArticlesStructureBehavior extends AbstractBehavior {
     _buildArticlesStructure (parentId, allArticles) {
         const articles = [];
         for (const article of allArticles) {
-            if (article.parent_id && article.parent_id === parentId) {
+            if (article.parent_id && article.parent_id[0] === parentId) {
                 articles.push({
                     id: article.id,
                     name: article.display_name,
@@ -168,39 +131,7 @@ export class ArticlesStructureBehavior extends AbstractBehavior {
         return articles;
     }
 
-    /**
-     * @returns {Array[Object]}
-     */
-    async _fetchAllArticles (articleId) {
-        const domain = [
-            ['parent_id', !this.showAllChildren ? '=' : 'child_of', articleId],
-            ['is_article_item', '=', false]
-        ];
-        const { records } = await this.orm.webSearchRead('knowledge.article', domain, {
-            specification: {
-                display_name: {},
-                parent_id: {},
-            },
-            order: 'sequence',
-        });
-        return records;
-    }
-
-    /**
-     * @returns {HTMLElement}
-     */
-    async _renderArticlesStructure () {
-        const articleId = this.props.record.resId;
-        const allArticles = await this._fetchAllArticles(articleId);
-        return renderToMarkup('knowledge.ArticlesStructureContent', {
-            'articles': this._buildArticlesStructure(articleId, allArticles),
-            'showAllChildren': this.showAllChildren,
-        });
-    }
-
-    //--------------------------------------------------------------------------
-    // HANDLERS
-    //--------------------------------------------------------------------------
+    // Listeners:
 
     /**
      * Opens the article in the side tree menu.
@@ -221,20 +152,14 @@ export class ArticlesStructureBehavior extends AbstractBehavior {
      */
     async _onRefreshBtnClick (event) {
         event.stopPropagation();
-        // Patch the Behavior to show that it is loading.
         this.state.refreshing = true;
-        this.content = await this._renderArticlesStructure();
-        // Patch the Behavior to show that the loading is finished and the
-        // content is ready
+        this.props.content = await this._renderArticlesStructure();
         this.state.refreshing = false;
-        this.state.changeContent = true;
-    }
-
-    /**
-     * @param {Event} event
-     */
-    async _onSwitchMode (event) {
-        this.showAllChildren = !this.state.showAllChildren;
-        await this._onRefreshBtnClick(event);
     }
 }
+
+ArticlesStructureBehavior.template = "knowledge.ArticlesStructureBehavior";
+ArticlesStructureBehavior.props = {
+    ...AbstractBehavior.props,
+    content: { type: String, optional: true },
+};

@@ -3,7 +3,7 @@
 
 {
     'name': 'Appraisal - Survey',
-    'version': '1.2',
+    'version': '1.1',
     'category': 'Human Resources/Appraisals',
     'sequence': 31,
     'summary': '360 Feedback',
@@ -29,13 +29,7 @@ This module adds an integration with Survey to ask feedbacks to any employee, ba
         'data/hr_appraisal_survey_demo.xml',
     ],
     'installable': True,
-    'assets': {
-        'web.assets_backend': [
-            'hr_appraisal_survey/static/src/scss/survey_survey_views.scss',
-        ]
-    },
     'license': 'OEEL-1',
-    'auto_install': True,
     'post_init_hook': '_setup_survey_template',
     'uninstall_hook': 'uninstall_hook',
 }

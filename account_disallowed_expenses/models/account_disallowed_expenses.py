@@ -14,25 +14,34 @@ class AccountDisallowedExpensesCategory(models.Model):
     active = fields.Boolean(default=True, help="Set active to false to hide the category without removing it.")
     rate_ids = fields.One2many('account.disallowed.expenses.rate', 'category_id', string='Rate')
     company_id = fields.Many2one('res.company')
-    account_ids = fields.One2many('account.account', 'disallowed_expenses_category_id', check_company=True)
+    account_ids = fields.One2many('account.account', 'disallowed_expenses_category_id')
     current_rate = fields.Char(compute='_compute_current_rate', string='Current Rate')
 
     _sql_constraints = [
-        ('unique_code', 'UNIQUE(code)', 'Disallowed expenses category code should be unique.')
+        (
+            'unique_code_in_country', 'UNIQUE(code, company_id)',
+            'Disallowed expenses category code should be unique in each company.')
     ]
 
-    @api.depends('current_rate', 'code')
+    @api.depends('current_rate')
     def _compute_display_name(self):
-        for record in self:
-            rate = record.current_rate or _('No Rate')
-            name = f'{record.code} - {record.name} ({rate})'
-            record.display_name = name
+        return super()._compute_display_name()
 
     @api.depends('rate_ids')
     def _compute_current_rate(self):
         rates = self._get_current_rates()
         for rec in self:
             rec.current_rate = ('%g%%' % rates[rec.id]) if rates.get(rec.id) else None
+
+    def name_get(self):
+        if not self.ids:
+            return []
+        result = []
+        for record in self:
+            rate = record.current_rate or _('No Rate')
+            name = '%s - %s (%s)' % (record.code, record.name, rate)
+            result.append((record.id, name))
+        return result
 
     def _get_current_rates(self):
         sql = """
@@ -47,14 +56,14 @@ class AccountDisallowedExpensesCategory(models.Model):
         return dict(self.env.cr.fetchall())
 
     @api.model
-    def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
-        domain = domain or []
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
+        domain = []
         if name:
-            name_domain = ['|', ('code', '=ilike', name.split(' ')[0] + '%'), ('name', operator, name)]
+            domain = ['|', ('code', '=ilike', name.split(' ')[0] + '%'), ('name', operator, name)]
             if operator in expression.NEGATIVE_TERM_OPERATORS:
-                name_domain = ['&', '!'] + name_domain[1:]
-            domain = expression.AND([name_domain, domain])
-        return self._search(domain, limit=limit, order=order)
+                domain = ['&', '!'] + domain[1:]
+        return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
     def action_read_category(self):
         self.ensure_one()

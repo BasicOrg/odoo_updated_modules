@@ -1,84 +1,123 @@
 /** @odoo-module **/
+/* global ace */
 
-import { _t } from "@web/core/l10n/translation";
+import { loadJS } from "@web/core/assets";
+import { _lt } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { useBus } from "@web/core/utils/hooks";
+import { formatText } from "../formatters";
 import { standardFieldProps } from "../standard_field_props";
+import { getCookie } from "web.utils.cookies";
 
-import { CodeEditor } from "@web/core/code_editor/code_editor";
-import { Component, useState } from "@odoo/owl";
-import { useRecordObserver } from "@web/model/relational_model/utils";
-import { formatText } from "@web/views/fields/formatters";
-import { cookie } from "@web/core/browser/cookie";
+const { Component, onWillStart, onWillUpdateProps, useEffect, useRef } = owl;
+const colorSchemeCookie = getCookie("color_scheme");
 
 export class AceField extends Component {
-    static template = "web.AceField";
-    static props = {
-        ...standardFieldProps,
-        mode: { type: String, optional: true },
-    };
-    static defaultProps = {
-        mode: "qweb",
-    };
-    static components = { CodeEditor };
-
     setup() {
-        this.state = useState({});
-        useRecordObserver((record) => {
-            this.state.initialValue = formatText(record.data[this.props.name]);
+        this.aceEditor = null;
+        this.editorRef = useRef("editor");
+
+        onWillStart(async () => {
+            await loadJS("/web/static/lib/ace/ace.js");
+            const jsLibs = [
+                "/web/static/lib/ace/mode-python.js",
+                "/web/static/lib/ace/mode-xml.js",
+                "/web/static/lib/ace/mode-qweb.js",
+            ];
+            const proms = jsLibs.map((url) => loadJS(url));
+            return Promise.all(proms);
         });
 
-        this.isDirty = false;
+        onWillUpdateProps(this.updateAce);
 
-        const { model } = this.props.record;
-        useBus(model.bus, "WILL_SAVE_URGENTLY", () => this.commitChanges());
-        useBus(model.bus, "NEED_LOCAL_CHANGES", ({ detail }) =>
-            detail.proms.push(this.commitChanges())
+        useEffect(
+            () => {
+                this.setupAce();
+                this.updateAce(this.props);
+                return () => this.destroyAce();
+            },
+            () => [this.editorRef.el]
         );
     }
 
-    get mode() {
-        return this.props.mode === "xml" ? "qweb" : this.props.mode;
-    }
-    get theme() {
-        return cookie.get("color_scheme") === "dark" ? "monokai" : "";
+    get aceSession() {
+        return this.aceEditor.getSession();
     }
 
-    handleChange(editedValue) {
-        if (this.state.initialValue !== editedValue) {
-            this.isDirty = true;
-        } else {
-            this.isDirty = false;
+    setupAce() {
+        this.aceEditor = ace.edit(this.editorRef.el);
+        this.aceEditor.setOptions({
+            maxLines: Infinity,
+            showPrintMargin: false,
+            theme: (colorSchemeCookie && colorSchemeCookie === "dark" ? 'ace/theme/monokai' : ''),
+        });
+        this.aceEditor.$blockScrolling = true;
+
+        this.aceSession.setOptions({
+            useWorker: false,
+            tabSize: 2,
+            useSoftTabs: true,
+        });
+
+        this.aceEditor.on("blur", this.onBlur.bind(this));
+    }
+
+    updateAce({ mode, readonly, value }) {
+        if (!this.aceEditor) {
+            return;
         }
-        this.props.record.model.bus.trigger("FIELD_IS_DIRTY", this.isDirty);
-        this.editedValue = editedValue;
+
+        this.aceSession.setOptions({
+            mode: `ace/mode/${mode === "xml" ? "qweb" : mode}`,
+        });
+
+        this.aceEditor.setOptions({
+            readOnly: readonly,
+            highlightActiveLine: !readonly,
+            highlightGutterLine: !readonly,
+        });
+
+        this.aceEditor.renderer.setOptions({
+            displayIndentGuides: !readonly,
+            showGutter: !readonly,
+        });
+
+        this.aceEditor.renderer.$cursorLayer.element.style.display = readonly ? "none" : "block";
+
+        const formattedValue = formatText(value);
+        if (this.aceSession.getValue() !== formattedValue) {
+            this.aceSession.setValue(formattedValue);
+        }
     }
 
-    async commitChanges() {
-        if (!this.props.readonly && this.isDirty) {
-            if (this.state.initialValue !== this.editedValue) {
-                await this.props.record.update({ [this.props.name]: this.editedValue });
-            }
-            this.isDirty = false;
+    destroyAce() {
+        if (this.aceEditor) {
+            this.aceEditor.destroy();
+        }
+    }
+
+    onBlur() {
+        if (!this.props.readonly) {
+            this.props.update(this.aceSession.getValue());
         }
     }
 }
 
-export const aceField = {
-    component: AceField,
-    displayName: _t("Ace Editor"),
-    supportedOptions: [
-        {
-            label: _t("Mode"),
-            name: "mode",
-            type: "string",
-        },
-    ],
-    supportedTypes: ["text", "html"],
-    extractProps: ({ options }) => ({
-        mode: options.mode,
-    }),
+AceField.template = "web.AceField";
+AceField.props = {
+    ...standardFieldProps,
+    mode: { type: String, optional: true },
+};
+AceField.defaultProps = {
+    mode: "qweb",
 };
 
-registry.category("fields").add("ace", aceField);
-registry.category("fields").add("code", aceField);
+AceField.displayName = _lt("Ace Editor");
+AceField.supportedTypes = ["text"];
+
+AceField.extractProps = ({ attrs }) => {
+    return {
+        mode: attrs.options.mode,
+    };
+};
+
+registry.category("fields").add("ace", AceField);

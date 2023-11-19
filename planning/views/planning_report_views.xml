@@ -29,11 +29,41 @@
     <record id="planning_analysis_report_view_search" model="ir.ui.view">
         <field name="name">planning.slot.report.search</field>
         <field name="model">planning.analysis.report</field>
-        <field name="mode">primary</field>
-        <field name="priority">20</field>
-        <field name="inherit_id" ref="planning_view_search_base"/>
         <field name="arch" type="xml">
-            <search position="attributes"/>
+            <search>
+                <field name="resource_id" groups="planning.group_planning_user"/>
+                <field name="role_id" groups="planning.group_planning_user"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="department_id" groups="planning.group_planning_user"/>
+                <field name="manager_id" groups="planning.group_planning_user"/>
+                <field name="job_title" groups="planning.group_planning_user"/>
+                <field name="name" groups="planning.group_planning_user"/>
+                <filter name="open_shifts" string="Open Shifts" domain="[('resource_id', '=', False)]" />
+                <filter name="my_shifts" string="My Shifts" domain="[('user_id', '=', uid)]" />
+                <filter name="my_team_shifts" string="My Team" domain="[('manager_id.user_id', '=', uid)]" help="Shifts of Your Team Member" groups="planning.group_planning_user"/>
+                <filter name="my_department_shifts" string="My Department" domain="[('employee_id.member_of_department', '=', True)]" help="Shifts of Your Department Member" groups="planning.group_planning_user"/>
+                <separator/>
+                <filter string="My Roles" name="my_role" domain="[('role_id.resource_ids.user_id','=', uid)]" groups="planning.group_planning_user"/>
+                <separator/>
+                <filter string="Human" name="human" domain="[('resource_type','=', 'user')]"/>
+                <filter string="Material" name="material" domain="[('resource_type','=', 'material')]"/>
+                <separator/>
+                <filter name="unpublished_shifts" string="Draft" domain="[('state', '=', 'draft')]" groups="planning.group_planning_manager"/>
+                <filter name="published_shifts" string="Published" domain="[('state', '=', 'published')]" groups="planning.group_planning_manager"/>
+                <separator groups="planning.group_planning_manager"/>
+                <filter name="future" string="Future" domain="[('start_datetime', '&gt;=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]" />
+                <filter name="today" string="Today" domain="[('start_datetime', '&gt;=', context_today().strftime('%Y-%m-%d')), ('end_datetime', '&lt;', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]" />
+                <filter name="past" string="Past" domain="[('end_datetime', '&lt;', context_today().strftime('%Y-%m-%d'))]" />
+                <group string="Group By">
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}" groups="planning.group_planning_user"/>
+                    <filter name="group_by_manager" string="Manager" context="{'group_by': 'manager_id'}" groups="planning.group_planning_user"/>
+                    <filter name="group_by_resource" string="Resource" context="{'group_by': 'resource_id'}" groups="planning.group_planning_user"/>
+                    <filter name="group_by_role" string="Role" context="{'group_by': 'role_id'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="group_by_start_datetime" string="Start Date" context="{'group_by':'start_datetime:day'}"/>
+                    <filter name="group_by_end_datetime" string="End Date" context="{'group_by':'end_datetime:day'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

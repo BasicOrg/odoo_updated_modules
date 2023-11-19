@@ -14,11 +14,10 @@ class AccountFinancialReportXMLReportExport(models.TransientModel):
     client_nihil = fields.Boolean()
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id, required=True)
     calling_export_wizard_id = fields.Many2one(string="Calling Export Wizard", comodel_name="account_reports.export.wizard", help="Optional field containing the report export wizard calling this wizard, if there is one.")
-    comment = fields.Text()
 
     control_value = fields.Boolean(compute='_compute_control_value')
 
-    def _compute_control_value(self): # DEPRECATED ; this computed field will be removed in master
+    def _compute_control_value(self):
         options = self._context.get('l10n_be_reports_generation_options', {})
         for record in self:
             record.control_value = options.get('tax_report_control_error')
@@ -32,7 +31,6 @@ class AccountFinancialReportXMLReportExport(models.TransientModel):
             options['ask_restitution'] = self.ask_restitution
             options['ask_payment'] = self.ask_payment
             options['client_nihil'] = self.client_nihil
-            options['comment'] = self.comment
             return {
                 'type': 'ir_actions_account_report_download',
                 'data': {

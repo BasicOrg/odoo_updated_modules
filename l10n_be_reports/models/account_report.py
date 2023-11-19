@@ -13,22 +13,6 @@ from odoo.exceptions import RedirectWarning, UserError
 def _raw_phonenumber(phonenumber):
     return re.sub("[^+0-9]", "", phonenumber)[:20]
 
-def _split_vat_number_and_country_code(vat_number):
-    """
-    Even with base_vat, the vat number doesn't necessarily starts
-    with the country code
-    We should make sure the vat is set with the country code
-    to avoid submitting a declaration with a wrong vat number
-    """
-    vat_number = vat_number.replace(' ', '').upper()
-    try:
-        int(vat_number[:2])
-        country_code = None
-    except ValueError:
-        country_code = vat_number[:2]
-        vat_number = vat_number[2:]
-
-    return vat_number, country_code
 
 def _get_xml_export_representative_node(report):
     """ The <Representative> node is common to XML exports made for VAT Listing, VAT Intra,
@@ -40,7 +24,7 @@ def _get_xml_export_representative_node(report):
     """
     representative = report.env.company.account_representative_id
     if representative:
-        vat_no, country_from_vat = _split_vat_number_and_country_code(representative.vat or "")
+        vat_no, country_from_vat = report.env[report.custom_handler_model_name]._split_vat_number_and_country_code(representative.vat or "")
         country = report.env['res.country'].search([('code', '=', country_from_vat)], limit=1)
         phone = representative.phone or representative.mobile or ''
         node_values = {
@@ -58,7 +42,7 @@ def _get_xml_export_representative_node(report):
         if missing_fields:
             message = _('Some fields required for the export are missing. Please specify them.')
             action = {
-                'name': _("Company: %s", representative.name),
+                'name': _("Company : %s", representative.name),
                 'type': 'ir.actions.act_window',
                 'view_mode': 'form',
                 'res_model': 'res.partner',
@@ -86,20 +70,13 @@ def _get_xml_export_representative_node(report):
 
 class BelgianTaxReportCustomHandler(models.AbstractModel):
     _name = 'l10n_be.tax.report.handler'
-    _inherit = 'account.tax.report.handler'
+    _inherit = 'account.generic.tax.report.handler'
     _description = 'Belgian Tax Report Custom Handler'
 
-    def _get_custom_display_config(self):
-        return {
-            'pdf_export': {
-                'pdf_export_filters': 'l10n_be_reports.pdf_export_filters',
-            },
-        }
-
-    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals, warnings=None):
+    def _dynamic_lines_generator(self, report, options, all_column_groups_expression_totals):
         # Add the control lines in the report, with a high sequence to ensure they appear at the end.
-        self._dynamic_check_lines(options, all_column_groups_expression_totals, warnings)
-        return []
+        control_lines = self._dynamic_check_lines(options, all_column_groups_expression_totals)
+        return control_lines or []
 
     def _custom_options_initializer(self, report, options, previous_options=None):
         super()._custom_options_initializer(report, options, previous_options=previous_options)
@@ -133,18 +110,17 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
 
     def export_tax_report_to_xml(self, options):
         report = self.env['account.report'].browse(options['report_id'])
-        vat_no, country_from_vat = _split_vat_number_and_country_code(report.get_vat_for_export(options))
+        vat_no, country_from_vat = self._split_vat_number_and_country_code(report.get_vat_for_export(options))
         sender_company = report._get_sender_company_for_export(options)
         default_address = sender_company.partner_id.address_get()
         address = self.env['res.partner'].browse(default_address.get("default")) or sender_company.partner_id
-
         if not address.email:
             raise UserError(_('No email address associated with company %s.', sender_company.name))
-
         if not address.phone:
             raise UserError(_('No phone associated with company %s.', sender_company.name))
 
         # Compute xml
+
         issued_by = vat_no
         dt_from = options['date'].get('date_from')
         dt_to = options['date'].get('date_to')
@@ -156,13 +132,15 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
         date_from = dt_from[0:7] + '-01'
         date_to = dt_to[0:7] + '-' + str(calendar.monthrange(int(dt_to[0:4]), int(ending_month))[1])
 
+        data = {'client_nihil': options.get('client_nihil'), 'ask_restitution': options.get('ask_restitution', False), 'ask_payment': options.get('ask_payment', False)}
+
         complete_vat = (country_from_vat or (address.country_id and address.country_id.code or "")) + vat_no
         file_data = {
             'issued_by': issued_by,
             'vat_no': complete_vat,
             'only_vat': vat_no,
             # Company name can contain only latin characters
-            'company_name': sender_company.name,
+            'cmpny_name': sender_company.name,
             'address': "%s %s" % (address.street or "", address.street2 or ""),
             'post_code': address.zip or "",
             'city': address.city or "",
@@ -173,10 +151,10 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
             'quarter': quarter,
             'month': starting_month,
             'year': str(dt_to[:4]),
-            'client_nihil': options.get('client_nihil', False) and 'YES' or 'NO',
-            'ask_restitution': options.get('ask_restitution', False) and 'YES' or 'NO',
-            'ask_payment': options.get('ask_payment', False) and 'YES' or 'NO',
-            'comment': options.get('comment', ''),
+            'client_nihil': (data['client_nihil'] and 'YES' or 'NO'),
+            'ask_restitution': (data['ask_restitution'] and 'YES' or 'NO'),
+            'ask_payment': (data['ask_payment'] and 'YES' or 'NO'),
+            'comments': report._get_report_manager(options).summary or '',
             'representative_node': _get_xml_export_representative_node(report),
         }
 
@@ -186,7 +164,7 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
     <ns2:VATDeclaration SequenceNumber="1" DeclarantReference="%(send_ref)s">
         <ns2:Declarant>
             <VATNumber xmlns="http://www.minfin.fgov.be/InputCommon">%(only_vat)s</VATNumber>
-            <Name>%(company_name)s</Name>
+            <Name>%(cmpny_name)s</Name>
             <Street>%(address)s</Street>
             <PostCode>%(post_code)s</PostCode>
             <City>%(city)s</City>
@@ -203,7 +181,7 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
         grids_list = []
         currency_id = self.env.company.currency_id
 
-        options = report.get_options({'no_format': True, 'date': {'date_from': date_from, 'date_to': date_to}, 'filter_unfold_all': True})
+        options = report._get_options({'no_format': True, 'date_from': date_from, 'date_to': date_to, 'filter_unfold_all': True})
         lines = report._get_lines(options)
 
         # Create a mapping between report line ids and actual grid names
@@ -216,20 +194,19 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
         lines_grids_map[self.env.ref('l10n_be.tax_report_title_operations_sortie_48').id] = '48'
         lines_grids_map[self.env.ref('l10n_be.tax_report_line_71').id] = '71'
         lines_grids_map[self.env.ref('l10n_be.tax_report_line_72').id] = '72'
-        colname_to_idx = {col['expression_label']: idx for idx, col in enumerate(options.get('columns', []))}
-
+        colname_to_idx = {col['name']: idx for idx, col in enumerate(options.get('columns', []))}
         # Iterate on the report lines, using this mapping
         for line in lines:
             model, line_id = report._parse_line_id(line['id'])[-1][1:]
             if (
                     model == 'account.report.line'
                     and line_id in lines_grids_map
-                    and not currency_id.is_zero(line['columns'][colname_to_idx['balance']]['no_format'])
+                    and not currency_id.is_zero(line['columns'][colname_to_idx['Balance']]['no_format'])
             ):
                 grids_list.append((lines_grids_map[line_id],
-                                   line['columns'][colname_to_idx['balance']]['no_format'],
-                                   line['columns'][colname_to_idx['balance']].get('carryover_bounds', False),
-                                   line['columns'][colname_to_idx['balance']].get('report_line_id', False)))
+                                   line['columns'][colname_to_idx['Balance']]['no_format'],
+                                   line['columns'][colname_to_idx['Balance']].get('carryover_bounds', False),
+                                   line['columns'][colname_to_idx['Balance']].get('report_line_id', False)))
 
         # We are ignoring all grids that have 0 as values, but the belgian government always require a value at
         # least in either the grid 71 or 72. So in the case where both are set to 0, we are adding the grid 71 in the
@@ -254,30 +231,59 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
                 'code': code,
                 'amount': '%.2f' % amount,
             }
-            rslt += Markup("""
-            <ns2:Amount GridNumber="%(code)s">%(amount)s</ns2:Amount>""") % grid_amount_data
+            rslt += Markup("""<ns2:Amount GridNumber="%(code)s">%(amount)s</ns2:Amount>""") % grid_amount_data
 
         rslt += Markup("""
-        </ns2:Data>
-        <ns2:ClientListingNihil>%(client_nihil)s</ns2:ClientListingNihil>
-        <ns2:Ask Restitution="%(ask_restitution)s" Payment="%(ask_payment)s"/>
-        <ns2:Comment>%(comment)s</ns2:Comment>
-    </ns2:VATDeclaration>
-</ns2:VATConsignment>
+                    </ns2:Data>
+                    <ns2:ClientListingNihil>%(client_nihil)s</ns2:ClientListingNihil>
+                    <ns2:Ask Restitution="%(ask_restitution)s" Payment="%(ask_payment)s"/>
+                    <ns2:Comment>%(comments)s</ns2:Comment>
+                </ns2:VATDeclaration>
+            </ns2:VATConsignment>
         """) % file_data
 
         return {
-            'file_name': report.get_default_report_filename(options, 'xml'),
+            'file_name': report.get_default_report_filename('xml'),
             'file_content': rslt.encode(),
             'file_type': 'xml',
         }
 
-    def _dynamic_check_lines(self, options, all_column_groups_expression_totals, warnings):
+    def _split_vat_number_and_country_code(self, vat_number):
+        """
+        Even with base_vat, the vat number doesn't necessarily starts
+        with the country code
+        We should make sure the vat is set with the country code
+        to avoid submitting this declaration with a wrong vat number
+        """
+        vat_number = vat_number.replace(' ', '').upper()
+        try:
+            int(vat_number[:2])
+            country_code = None
+        except ValueError:
+            country_code = vat_number[:2]
+            vat_number = vat_number[2:]
+
+        return vat_number, country_code
+
+    def _dynamic_check_lines(self, options, all_column_groups_expression_totals):
         def _evaluate_check(check_func):
-            return all(
-                check_func(expression_totals)
-                for expression_totals in all_column_groups_expression_totals.values()
-            )
+            columns = []
+            all_check_passed = False
+            for expression_totals in all_column_groups_expression_totals.values():
+                # We know that there is only one column per column group in the Belgian report, so we don't treat other cases here
+                check_result = check_func(expression_totals)
+                all_check_passed &= check_result
+
+                if not check_result:
+                    columns.append({
+                        'name': '',
+                        'style': 'white-space:nowrap;',
+                    })
+
+            if all_check_passed:
+                return None
+
+            return columns
 
         report = self.env['account.report'].browse(options['report_id'])
         expr_map = {
@@ -332,17 +338,31 @@ class BelgianTaxReportCustomHandler(models.AbstractModel):
                 lambda expr_totals: expr_totals[expr_map['c44']]['value'] < sum(expr_totals[expr_map[grid]]['value'] for grid in ('c00', 'c01', 'c02', 'c03', 'c45', 'c46', 'c47', 'c48', 'c49')) * 200 if expr_totals[expr_map['c88']]['value'] > 99.999 else True),
         ]
 
-        failed_controls = [
-            check_name
-            for check_name, check_func in checks
-            if not _evaluate_check(check_func)
-        ]
+        failed_control_lines = []
 
-        if warnings is not None and _evaluate_check(lambda expr_totals: not any(
-            [expr_totals[expr_map[grid]]['value'] for grid in ('c44', 'c46L', 'c46T', 'c48s44', 'c48s46L', 'c48s46T')]
-        )):
-            # remind user to submit EC Sales Report if any ec sales related taxes
-            warnings['l10n_be_reports.tax_report_warning_ec_sales_reminder'] = {}
+        for index, (check_name, check_func) in enumerate(checks):
+            columns = _evaluate_check(check_func)
 
-        if failed_controls and warnings is not None:
-            warnings['l10n_be_reports.tax_report_warning_checks'] = {'failed_controls': failed_controls, 'alert_type': 'danger'}
+            if columns:
+                failed_control_lines.append((1000 + index, {
+                    'id': report._get_generic_line_id(None, None, markup=f"l10n_be_report_check_{index}"),
+                    'name': check_name,
+                    'columns': columns,
+                    'level': 1,
+                    'class': 'font-weight-normal border-bottom',  # Override the default level 1 styling
+                }))
+
+        if failed_control_lines:
+            failed_control_lines.insert(0, (999, {
+                'id': report._get_generic_line_id(None, None, markup="l10n_be_tax_report_check_header"),
+                'name': _("Controls failed"),
+                'columns': [{} for i in range(len(options['columns']))],
+                'level': 0,
+                'page_break': True,
+            }))
+
+            # Modify the options to add a key indicating the check failed. Thanks to this small hack, we can display a banner
+            # in the XML wizard and on the tax closing entry without needing to recompute the whole report; just using the options.
+            options['tax_report_control_error'] = True
+
+        return failed_control_lines

@@ -1,87 +1,64 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
+import Widget from 'web.Widget';
+import {_t} from 'web.core';
+import {DropPrevious} from 'web.concurrency';
 import { ancestors } from '@web_editor/js/common/wysiwyg_utils';
-import { KeepLast } from '@web/core/utils/concurrency';
-import { browser } from "@web/core/browser/browser";
 
-export class LinkPopoverWidget {
-    static createFor(params) {
-        const noLinkPopoverClass = ".o_no_link_popover, .carousel-control-prev, .carousel-control-next, .dropdown-toggle";
-        // Target might already have a popover, eg cart icon in navbar
-        const alreadyPopover = $(params.target).data('bs.popover');
-        if (alreadyPopover || $(params.target).is(noLinkPopoverClass) || !!$(params.target).parents(noLinkPopoverClass).length) {
-            return null;
-        }
-        const popoverWidget = new this(params);
-        params.wysiwyg?.odooEditor.observerUnactive('LinkPopoverWidget');
-        popoverWidget.start();
-        params.wysiwyg?.odooEditor.observerActive('LinkPopoverWidget');
-        return popoverWidget;
-    };
+const LinkPopoverWidget = Widget.extend({
+    template: 'wysiwyg.widgets.link.edit.tooltip',
+    events: {
+        'click .o_we_remove_link': '_onRemoveLinkClick',
+        'click .o_we_edit_link': '_onEditLinkClick',
+    },
 
-    template = `
-        <div class="d-flex">
-            <span class="me-2 o_we_preview_favicon"><i class="fa fa-globe"></i><img class="align-baseline d-none"></img></span>
-            <div class="w-100">
-                <div class="d-flex">
-                    <a href="#" target="_blank" class="o_we_url_link fw-bold flex-grow-1 text-truncate" title="${_t('Open in a new tab')}"></a>
-                    <a href="#" class="mx-1 o_we_copy_link text-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="${_t('Copy Link')}">
-                        <i class="fa fa-clone"></i>
-                    </a>
-                    <a href="#" class="mx-1 o_we_edit_link text-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="${_t('Edit Link')}">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <a href="#" class="ms-1 o_we_remove_link text-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="${_t('Remove Link')}">
-                        <i class="fa fa-chain-broken"></i>
-                    </a>
-                </div>
-                <a href="#" target="_blank" class="o_we_full_url mt-1 text-muted d-none" title="${_t('Open in a new tab')}"></a>
-            </div>
-        </div>
-    `;
-
-    constructor(params) {
-        const template = document.createElement('template');
-        template.innerHTML = this.template;
-        this.el = template.content.firstElementChild;
-        this.$el = $(this.el);
-
-        this.wysiwyg = params.wysiwyg;
-        this.target = params.target;
-        this.notify = params.notify;
-        this.$target = $(params.target);
-        this.container = params.container || this.target.ownerDocument.body;
+    /**
+     * @constructor
+     * @param {Element} target: target Element for which we display a popover
+     * @param {Wysiwyg} [option.wysiwyg]: The wysiwyg editor
+     */
+    init(parent, target, options) {
+        this._super(...arguments);
+        this.options = options;
+        this.target = target;
+        this.$target = $(target);
         this.href = this.$target.attr('href'); // for template
-        this._keepLastPromise = new KeepLast();
-    }
-
+        this._dp = new DropPrevious();
+    },
     /**
      *
      * @override
      */
     start() {
-        this.$urlLink = this.$el.find('.o_we_url_link');
-        this.$previewFaviconImg = this.$el.find('.o_we_preview_favicon img');
-        this.$previewFaviconFa = this.$el.find('.o_we_preview_favicon .fa');
-        this.$copyLink = this.$el.find('.o_we_copy_link');
-        this.$fullUrl = this.$el.find('.o_we_full_url');
+        this.$urlLink = this.$('.o_we_url_link');
+        this.$previewFaviconImg = this.$('.o_we_preview_favicon img');
+        this.$previewFaviconFa = this.$('.o_we_preview_favicon .fa');
+        this.$copyLink = this.$('.o_we_copy_link');
+        this.$fullUrl = this.$('.o_we_full_url');
 
-        this.$urlLink.attr('href', this.href);
-        this.$fullUrl.attr('href', this.href);
-        this.$el.find(`.o_we_edit_link`).on('click', this._onEditLinkClick.bind(this));
-        this.$el.find(`.o_we_remove_link`).on('click', this._onRemoveLinkClick.bind(this));
-
-        this.$copyLink.on("click", this._onCopyLinkClick.bind(this));
+        // Copy onclick handler
+        const clipboard = new ClipboardJS(
+            this.$copyLink[0],
+            {text: () => this.target.href} // Absolute href
+        );
+        clipboard.on('success', () => {
+            this.$copyLink.tooltip('hide');
+            this.displayNotification({
+                type: 'success',
+                message: _t("Link copied to clipboard."),
+            });
+        });
+        const targetWindow = this.target.ownerDocument.defaultView;
+        const popoverContainer = targetWindow.frameElement ? targetWindow.frameElement.parentElement : targetWindow.document.body;
 
         // init tooltips & popovers
-        this.$el.find('[data-bs-toggle="tooltip"]').tooltip({
+        this.$('[data-bs-toggle="tooltip"]').tooltip({
             delay: 0,
             placement: 'bottom',
-            container: this.container,
+            container: popoverContainer,
         });
         const tooltips = [];
-        for (const el of this.$el.find('[data-bs-toggle="tooltip"]').toArray()) {
+        for (const el of this.$('[data-bs-toggle="tooltip"]').toArray()) {
             tooltips.push(Tooltip.getOrCreateInstance(el));
         }
         let popoverShown = true;
@@ -97,22 +74,22 @@ export class LinkPopoverWidget {
             // 5. Close when the user click somewhere on the page (not being the link or the popover content)
             trigger: 'manual',
             boundary: 'viewport',
-            container: this.container,
+            container: popoverContainer,
         })
         .on('show.bs.popover.link_popover', () => {
-            this.wysiwyg.odooEditor.observerUnactive('show.bs.popover');
+            this.options.wysiwyg.odooEditor.observerUnactive('show.bs.popover');
             this._loadAsyncLinkPreview();
             popoverShown = true;
         })
         .on('inserted.bs.popover', () => {
-            this.wysiwyg.odooEditor.observerActive('show.bs.popover');
+            this.options.wysiwyg.odooEditor.observerActive('show.bs.popover');
         })
         .on('hide.bs.popover.link_popover', () => {
-            this.wysiwyg.odooEditor.observerUnactive('hide.bs.popover');
+            this.options.wysiwyg.odooEditor.observerUnactive('hide.bs.popover');
             popoverShown = false;
         })
         .on('hidden.bs.popover.link_popover', () => {
-            this.wysiwyg.odooEditor.observerActive('hide.bs.popover');
+            this.options.wysiwyg.odooEditor.observerActive('hide.bs.popover');
             for (const tooltip of tooltips) {
                 tooltip.hide();
             }
@@ -143,38 +120,20 @@ export class LinkPopoverWidget {
                     !(
                         hierarchy.includes(this.$target[0]) ||
                         (hierarchy.includes(this.$el[0]) &&
-                            !hierarchy.some(x => x.tagName && x.tagName === 'A' && (x === this.$urlLink[0] || x === this.$fullUrl[0])))
+                            !hierarchy.some(x => x.tagName && x.tagName === 'A'))
                     )
                 ) {
-                    // Note: For buttons of the popover, their listeners should
-                    // handle the hide themselves to avoid race conditions.
                     this.popover.hide();
                 }
             }
         }
         $(document).on('mouseup.link_popover', onClickDocument);
-        if (document !== this.wysiwyg.odooEditor.document) {
-            $(this.wysiwyg.odooEditor.document).on('mouseup.link_popover', onClickDocument);
+        if (document !== this.options.wysiwyg.odooEditor.document) {
+            $(this.options.wysiwyg.odooEditor.document).on('mouseup.link_popover', onClickDocument);
         }
 
-        // Update popover's content and position upon changes
-        // on the link's label or href.
-        this._observer = new MutationObserver(records => {
-            if (!popoverShown) {
-                return;
-            }
-            if (records.some(record => record.type === 'attributes')) {
-                this._loadAsyncLinkPreview();
-            }
-            this.$target.popover('update');
-        });
-        this._observer.observe(this.target, {
-            subtree: true,
-            characterData: true,
-            attributes: true,
-            attributeFilter: ['href'],
-        });
-    }
+        return this._super(...arguments);
+    },
     /**
      *
      * @override
@@ -185,17 +144,17 @@ export class LinkPopoverWidget {
         // mode so this should not be a huge problem.
         this.$target.off('.link_popover');
         $(document).off('.link_popover');
-        $(this.wysiwyg.odooEditor.document).off('.link_popover');
+        $(this.options.wysiwyg.odooEditor.document).off('.link_popover');
         this.$target.popover('dispose');
-        this._observer.disconnect();
-    }
+        return this._super(...arguments);
+    },
 
     /**
      *  Hide the popover.
      */
     hide() {
         this.$target.popover('hide');
-    }
+    },
 
     //--------------------------------------------------------------------------
     // Private
@@ -216,11 +175,12 @@ export class LinkPopoverWidget {
         }
         try {
             url = new URL(this.target.href); // relative to absolute
-        } catch {
+        } catch (_e) {
             // Invalid URL, might happen with editor unsuported protocol. eg type
             // `geo:37.786971,-122.399677`, become `http://geo:37.786971,-122.399677`
-            this.notify(_t("This URL is invalid. Preview couldn't be updated."), {
+            this.displayNotification({
                 type: 'danger',
+                message: _t("This URL is invalid. Preview couldn't be updated."),
             });
             return;
         }
@@ -239,11 +199,11 @@ export class LinkPopoverWidget {
             // would need to fetch the page through the server (s2s), involving
             // enduser fetching problematic pages such as illicit content.
             this.$previewFaviconImg.attr({
-                'src': `https://www.google.com/s2/favicons?sz=16&domain=${encodeURIComponent(url)}`
+                'src': `https://www.google.com/s2/favicons?sz=16&domain=${url}`
             }).removeClass('d-none');
             this.$previewFaviconFa.addClass('d-none');
         } else {
-            await this._keepLastPromise.add($.get(this.target.href)).then(content => {
+            await this._dp.add($.get(this.target.href)).then(content => {
                 const parser = new window.DOMParser();
                 const doc = parser.parseFromString(content, "text/html");
 
@@ -261,17 +221,10 @@ export class LinkPopoverWidget {
                     this.$urlLink.text(ogTitle ? ogTitle.getAttribute('content') : title.text.trim());
                 }
                 this.$fullUrl.removeClass('d-none').addClass('o_we_webkit_box');
-            }).catch(error => {
-                // HTML error codes should not prevent to edit the links, so we
-                // only check for proper instances of Error.
-                if (error instanceof Error) {
-                    return Promise.reject(error);
-                }
-            }).finally(() => {
                 this.$target.popover('update');
             });
         }
-    }
+    },
     /**
      * Resets the preview elements visibility. Particularly useful when changing
      * the link url from an internal to an external one and vice versa.
@@ -282,9 +235,9 @@ export class LinkPopoverWidget {
     _resetPreview(url) {
         this.$previewFaviconImg.addClass('d-none');
         this.$previewFaviconFa.removeClass('d-none fa-question-circle-o fa-envelope-o fa-phone').addClass('fa-globe');
-        this.$urlLink.add(this.$fullUrl).text(url || _t('No URL specified')).attr('href', url || null);
-        this.$fullUrl.addClass('d-none').removeClass('o_we_webkit_box');
-    }
+        this.$urlLink.text(url || _t('No URL specified')).attr('href', url || null);
+        this.$fullUrl.text(url).addClass('d-none').removeClass('o_we_webkit_box');
+    },
 
     //--------------------------------------------------------------------------
     // Handlers
@@ -300,13 +253,12 @@ export class LinkPopoverWidget {
      */
     _onEditLinkClick(ev) {
         ev.preventDefault();
-        this.wysiwyg.toggleLinkTools({
+        this.options.wysiwyg.toggleLinkTools({
             forceOpen: true,
             link: this.$target[0],
         });
         ev.stopImmediatePropagation();
-        this.popover.hide();
-    }
+    },
     /**
      * Removes the link/anchor.
      *
@@ -315,23 +267,28 @@ export class LinkPopoverWidget {
      */
     _onRemoveLinkClick(ev) {
         ev.preventDefault();
-        this.wysiwyg.removeLink();
+        this.options.wysiwyg.removeLink();
         ev.stopImmediatePropagation();
-        this.popover.hide();
+    },
+});
+
+LinkPopoverWidget.createFor = async function (parent, targetEl, options) {
+    const noLinkPopoverClass = ".o_no_link_popover, .carousel-control-prev, .carousel-control-next, .dropdown-toggle";
+    // Target might already have a popover, eg cart icon in navbar
+    const alreadyPopover = $(targetEl).data('bs.popover');
+    if (alreadyPopover || $(targetEl).is(noLinkPopoverClass) || !!$(targetEl).parents(noLinkPopoverClass).length) {
+        return null;
     }
-    /**
-     * Copy the link/anchor
-     * 
-     * @private
-     * @param {Event} ev
-     */
-    async _onCopyLinkClick(ev) {
-        ev.preventDefault();
-        await browser.navigator.clipboard.writeText(this.target.href);
-        this.$copyLink.tooltip('hide');
-        this.notify(_t("Link copied to clipboard."), {
-            type: 'success',
-        });
-        this.popover.hide();
+    const popoverWidget = new this(parent, targetEl, options);
+    const wysiwyg = options.wysiwyg;
+    if (wysiwyg) {
+        wysiwyg.odooEditor.observerUnactive('LinkPopoverWidget');
     }
-}
+    await popoverWidget.appendTo(targetEl)
+    if (wysiwyg) {
+        wysiwyg.odooEditor.observerActive('LinkPopoverWidget');
+    }
+    return popoverWidget;
+};
+
+export default LinkPopoverWidget;

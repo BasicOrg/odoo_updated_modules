@@ -6,7 +6,7 @@ from odoo.tests import Form, tagged
 from odoo.addons.partner_commission.tests.setup import TestCommissionsSetup
 
 
-@tagged('commission_sale', 'post_install', '-at_install')
+@tagged('commission_sale')
 class TestSaleOrder(TestCommissionsSetup):
     def test_referrer_commission_plan_changed(self):
         """When the referrer's commission plan changes, its new commission plan should be set on the sale order."""
@@ -41,12 +41,11 @@ class TestSaleOrder(TestCommissionsSetup):
         """Some data should be forwarded from the sale order to the subscription."""
         self.referrer.commission_plan_id = self.gold_plan
 
-        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True),
-                    view=self.env.ref('sale_subscription.sale_subscription_primary_form_view'))
+        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True))
         form.partner_id = self.customer
         form.referrer_id = self.referrer
         # form.commission_plan_frozen = False
-        form.plan_id = self.plan_year
+        form.recurrence_id = self.recurrence_year
 
         with form.order_line.new() as line:
             line.name = self.worker.name
@@ -125,53 +124,3 @@ class TestSaleOrder(TestCommissionsSetup):
 
         inv = invoice_wizard._create_invoices(so)
         self.assertEqual(inv.referrer_id, so.referrer_id)
-
-    def test_commission_plan_apply_sequence(self):
-        """
-            Check that we select the first valid rule following the sequence.
-        """
-        category = self.env['product.category'].create({
-            'name': 'Category',
-        })
-        _, product_test = self.env['product.product'].create([
-            {
-                'name': 'product_other',
-                'categ_id': category.id,
-                'list_price': 100.0,
-            },
-            {
-                'name': 'product_test',
-                'categ_id': category.id,
-                'list_price': 100.0,
-            }
-        ])
-        plan = self.env['commission.plan'].create({
-            'name': 'New Plan',
-            'product_id': self.env.ref('partner_commission.product_commission').id,
-            'commission_rule_ids': [
-                (0, 0, {
-                            'category_id': category.id,
-                            'product_id': None,
-                            'rate': 10,
-                            'sequence': 1,
-                }),
-                (0, 0, {
-                            'category_id': category.id,
-                            'product_id': product_test.id,
-                            'rate': 20,
-                            'sequence': 0, # First rule to apply
-                }),
-            ],
-        })
-        self.referrer.commission_plan_id = plan
-        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True))
-        form.partner_id = self.customer
-        form.referrer_id = self.referrer
-
-        with form.order_line.new() as line:
-            line.name = product_test.name
-            line.product_id = product_test
-            line.product_uom_qty = 1
-        so = form.save()
-
-        self.assertEqual(so.commission, 20)

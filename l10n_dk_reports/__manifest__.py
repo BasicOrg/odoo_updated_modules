@@ -3,7 +3,7 @@
 
 {
     'name': 'Denmark - Accounting Reports',
-    'countries': ['dk'],
+    'icon': '/l10n_dk/static/description/icon.png',
     'version': '1.0',
     'author': 'Odoo House ApS',
     'website': 'https://odoohouse.dk',
@@ -12,22 +12,12 @@
 Accounting reports for Denmark
 =================================
     """,
-    'depends': [
-        'l10n_dk',
-        'account_reports',
-        'account_saft',
-        'documents_account',
-    ],
+    'depends': ['l10n_dk', 'account_reports'],
     'data': [
-        'data/balance_sheet.xml',
-        'data/profit_loss.xml',
+        'data/account_income_statement_html_report_data.xml',
+        'data/account_balance_dk_html_report_data.xml',
         'data/account_report_ec_sales_list_report.xml',
-        'data/saft_report.xml',
-        'data/documents_file_data.xml',
     ],
-    'auto_install': [
-        'l10n_dk',
-        'account_reports',
-    ],
+    'auto_install': ['l10n_dk', 'account_reports'],
     'license': 'OEEL-1',
 }

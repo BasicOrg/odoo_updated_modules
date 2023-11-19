@@ -6,8 +6,8 @@
     <xpath expr="//section" position="attributes">
         <attribute name="class" add="o_cc o_cc5" separator=" "/>
     </xpath>
-    <xpath expr="//h2" position="replace">
-        <h2><font style="background-image: linear-gradient(135deg, var(--o-color-4) 25%, var(--o-color-1) 100%);" class="text-gradient">MAIN LINE UP</font></h2>
+    <xpath expr="//h1" position="replace">
+        <h1> <font style="background-image: linear-gradient(135deg, var(--o-color-4) 25%, var(--o-color-1) 100%);" class="text-gradient">MAIN LINE UP</font></h1>
     </xpath>
 </template>
 
@@ -26,6 +26,9 @@
  <template id="s_banner" inherit_id="website.s_banner" name="Monglia s_banner">
     <xpath expr="//section" position="attributes">
         <attribute name="class" add="o_full_screen_height" separator=" "/>
+    </xpath>
+    <xpath expr="//div[hasclass('jumbotron')]" position="attributes">
+        <attribute name="class" add="o_cc o_cc5" separator=" "/>
     </xpath>
 </template>
 
@@ -93,13 +96,17 @@
  <template id="s_text_image" inherit_id="website.s_text_image" name="Monglia s_text_image">
     <xpath expr="//section" position="attributes">
         <attribute name="class" add="pt56 pb40 o_cc o_cc1" remove="pt32 pb32" separator=" "/>
+        <attribute name="data-oe-shape-data">{"shape":"web_editor/Blocks/04","flip":["y"]}</attribute>
+    </xpath>
+    <xpath expr="//div[hasclass('container')]" position="before">
+        <div class="o_we_shape o_web_editor_Blocks_04 o_we_flip_y o_second_extra_shape_mapping"/>
     </xpath>
     <xpath expr="//div[hasclass('col-lg-6')]" position="attributes">
         <attribute name="class" remove="col-lg-6" add="col-lg-5 offset-lg-1" separator=" "/>
     </xpath>
     <xpath expr="//img" position="attributes">
-        <attribute name="src">/web_editor/image_shape/website.s_text_image_default_image/web_editor/geometric/geo_square_3.svg</attribute>
-        <attribute name="data-shape">web_editor/geometric/geo_square_3</attribute>
+        <attribute name="src">/web_editor/image_shape/website.s_text_image_default_image/web_editor/basic/bsc_square_3.svg</attribute>
+        <attribute name="data-shape">web_editor/basic/bsc_square_3</attribute>
         <attribute name="data-original-mimetype">image/jpeg</attribute>
         <attribute name="data-file-name">s_text_image.svg</attribute>
         <attribute name="data-shape-colors">;;;;</attribute>
@@ -112,16 +119,7 @@
     </xpath>
     <xpath expr="//p[2]" position="replace"/>
     <xpath expr="//a" position="replace">
-        <a href="/contactus" class="btn btn-primary">Learn more</a>
-    </xpath>
-</template>
-
-<template id="configurator_s_text_image" inherit_id="website.configurator_s_text_image" name="Monglia s_text_image">
-    <xpath expr="//section" position="attributes">
-        <attribute name="data-oe-shape-data">{"shape":"web_editor/Blocks/04","flip":["y"]}</attribute>
-    </xpath>
-    <xpath expr="//div[hasclass('container')]" position="before">
-        <div class="o_we_shape o_web_editor_Blocks_04 o_second_extra_shape_mapping" style="background-image: url('/web_editor/shape/web_editor/Blocks/04.svg?c1=o-color-1&amp;c2=o-color-2&amp;c3=o-color-3&amp;c5=o-color-5&amp;flip=y'); background-position: 50% 0%;"/>
+        <a href="/contactus" class="btn btn-primary mb-2">Learn more</a>
     </xpath>
 </template>
 
@@ -141,8 +139,8 @@
     </xpath>
     <xpath expr="//p[2]" position="replace"/>
     <xpath expr="//img" position="attributes">
-        <attribute name="src">/web_editor/image_shape/website.s_image_text_default_image/web_editor/geometric/geo_square_6.svg</attribute>
-        <attribute name="data-shape">web_editor/geometric/geo_square_6</attribute>
+        <attribute name="src">/web_editor/image_shape/website.s_image_text_default_image/web_editor/basic/bsc_square_6.svg</attribute>
+        <attribute name="data-shape">web_editor/basic/bsc_square_6</attribute>
         <attribute name="data-original-mimetype">image/jpeg</attribute>
         <attribute name="data-file-name">s_image_text.svg</attribute>
         <attribute name="data-shape-colors">;;;;</attribute>
@@ -158,7 +156,7 @@
         <p class="lead">This is the first full-length studio release in seven years for the British singer-songwriter.</p>
     </xpath>
     <xpath expr="//a" position="replace">
-        <a href="/contactus" class="btn btn-primary">Discover</a>
+        <a href="/contactus" class="btn btn-primary mb-2">Discover</a>
     </xpath>
 </template>
 
@@ -179,7 +177,7 @@
 <!-- ======== CALL TO ACTION ======== -->
 <template id="s_call_to_action" inherit_id="website.s_call_to_action" name="Monglia s_call_to_action">
     <xpath expr="//section" position="attributes">
-        <attribute name="class" add="o_cc4" remove="o_cc3" separator=" "/>
+        <attribute name="class" add="o_cc o_cc4" separator=" "/>
     </xpath>
     <xpath expr="//h3" position="replace">
         <h3 style="text-align: left;"><b>APPLY FOR OUR V.I.P. CARD</b></h3>
@@ -195,7 +193,11 @@
 <!-- ======== 3-COLUMNS ======== -->
 <template id="s_three_columns" inherit_id="website.s_three_columns">
     <xpath expr="//section" position="attributes">
-        <attribute name="class" add="pb0 o_cc5" remove="pb32 o_cc2" separator=" "/>
+        <attribute name="class" add="pb0 o_cc o_cc5" remove="pb32" separator=" "/>
+        <attribute name="data-oe-shape-data">{"shape":"web_editor/Blocks/04","flip":[]}</attribute>
+    </xpath>
+    <xpath expr="//div[hasclass('container')]" position="before">
+        <div class="o_we_shape o_web_editor_Blocks_04"></div>
     </xpath>
     <xpath expr="//h3" position="replace" mode="inner">
         Wilson Holt
@@ -205,15 +207,6 @@
     </xpath>
     <xpath expr="(//h3)[3]" position="replace" mode="inner">
         Bruce Porter
-    </xpath>
-</template>
-
-<template id="configurator_s_three_columns" inherit_id="website.configurator_s_three_columns">
-    <xpath expr="//section" position="attributes">
-        <attribute name="data-oe-shape-data">{"shape":"web_editor/Blocks/04","flip":[]}</attribute>
-    </xpath>
-    <xpath expr="//div[hasclass('container')]" position="before">
-        <div class="o_we_shape o_web_editor_Blocks_04"></div>
     </xpath>
 </template>
 

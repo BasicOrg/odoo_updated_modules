@@ -13,15 +13,19 @@
                <header>
                     <button name="action_reconcile" type="object" string="Reconcile" groups="account.group_account_user"/>
                 </header>
-                <field name="is_account_reconcile" column_invisible="True"/>
-                <field name="has_deferred_moves" column_invisible="True"/>
             </xpath>
-            <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="deferred_start_date" optional="hide" readonly="has_deferred_moves"/>
-                <field name="deferred_end_date" optional="hide" readonly="has_deferred_moves"/>
+            <xpath expr="//tree" position= "inside">
+                <field name="move_attachment_ids" invisible="1">
+                    <tree>
+                        <field name="mimetype"/> <!--  We want to fetch the data for using it in the js-->
+                    </tree>
+                </field>
             </xpath>
             <xpath expr="//tree/field[@name='matching_number']" position="attributes">
                 <attribute name="widget">matching_link_widget</attribute>
+            </xpath>
+            <xpath expr="//tree" position="inside">
+                <field name="is_account_reconcile" invisible="1"/>
             </xpath>
         </field>
     </record>
@@ -37,54 +41,33 @@
             <xpath expr="//page[@id='other_tab_entry']//field[@name='company_id']" position="after">
                 <field name="inalterable_hash" groups="base.group_no_one"/>
             </xpath>
-            <xpath expr="//tree/field[@name='analytic_distribution']" position="after">
-                <field name="deferred_start_date" optional="hide"/>
-                <field name="deferred_end_date" optional="hide"/>
-            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_open_bank_reconciliation_widget_statement"
-                        class="oe_stat_button"
-                        icon="fa-bars"
-                        type="object"
-                        invisible="not statement_id or state == 'cancel'">
-                        <div class="o_stat_info">
-                            <span class="o_stat_text">Bank Statement</span>
-                        </div>
-                </button>
                 <button name="action_open_bank_reconciliation_widget"
                         class="oe_stat_button"
                         icon="fa-bars"
                         type="object"
-                        invisible="move_type != 'entry' or not id or not statement_line_id or state == 'cancel'">
-                        <div class="o_stat_info">
-                            <span class="o_stat_text">1 Bank Transaction</span>
-                        </div>
-                </button>
-                <field name="deferred_move_ids" invisible="1"/>
-                <field name="deferred_original_move_ids" invisible="1"/>
-                <field name="deferred_entry_type" invisible="1"/>
-                <button name="open_deferred_entries"
-                        class="oe_stat_button"
-                        icon="fa-bars"
-                        type="object"
-                        invisible="not deferred_move_ids"
-                        string="Deferred Entries">
-                </button>
-                <button name="open_deferred_original_entry"
-                        class="oe_stat_button"
-                        icon="fa-bars"
-                        type="object"
-                        invisible="deferred_entry_type == 'revenue' or not deferred_original_move_ids"
-                        string="Related Purchase(s)">
-                </button>
-                <button name="open_deferred_original_entry"
-                        class="oe_stat_button"
-                        icon="fa-bars"
-                        type="object"
-                        invisible="deferred_entry_type == 'expense' or not deferred_original_move_ids"
-                        string="Related Sale(s)">
+                        attrs="{'invisible': ['|', '|', ('move_type', '!=', 'entry'), ('id', '=', False), ('statement_line_id', '=', False)]}"
+                        string="1 Bank Transaction">
                 </button>
             </xpath>
         </field>
     </record>
+
+     <record model="ir.actions.server" id="action_view_account_move_line_reconcile">
+            <field name="name">Reconcile</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="binding_model_id" ref="account.model_account_move_line" />
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4,ref('account.group_account_user'))]"/>
+            <field name="code">
+if records:
+    action = records.action_reconcile()
+            </field>
+     </record>
+
+     <record id="action_manual_reconcile" model="ir.actions.client">
+         <field name="name">Journal Items to Reconcile</field>
+         <field name="res_model">account.move.line</field>
+         <field name="tag">manual_reconciliation_view</field>
+     </record>
 </odoo>

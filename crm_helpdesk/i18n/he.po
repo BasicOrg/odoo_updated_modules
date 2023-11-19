@@ -1,120 +1,90 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* crm_helpdesk
-#
+# * crm_helpdesk
+# 
 # Translators:
-# david danilov, 2022
-# ExcaliberX <excaliberx@gmail.com>, 2022
-# Jonathan Spier, 2022
-# Yihya Hugirat <hugirat@gmail.com>, 2022
-# Martin Trigaux, 2022
-# Lilach Gilliam <lilach.gilliam@gmail.com>, 2022
-# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2022
-# NoaFarkash, 2022
-#
+# Yihya Hugirat <hugirat@gmail.com>, 2019
+# hed shefetr <hed@laylinetech.com>, 2019
+# דודי מלכה <Dudimalka6@gmail.com>, 2019
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
+"Project-Id-Version: Odoo Server saas~12.1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:01+0000\n"
-"PO-Revision-Date: 2022-09-22 05:45+0000\n"
-"Last-Translator: NoaFarkash, 2022\n"
-"Language-Team: Hebrew (https://app.transifex.com/odoo/teams/41243/he/)\n"
-"Language: he\n"
+"POT-Creation-Date: 2018-12-24 11:16+0000\n"
+"PO-Revision-Date: 2019-08-26 09:35+0000\n"
+"Last-Translator: דודי מלכה <Dudimalka6@gmail.com>, 2019\n"
+"Language-Team: Hebrew (https://www.transifex.com/odoo/teams/41243/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: he\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
 #. module: crm_helpdesk
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Convert"
-msgstr "המר"
-
-#. module: crm_helpdesk
-#: model:ir.model,name:crm_helpdesk.model_helpdesk_ticket_to_lead
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Convert Ticket to Lead"
-msgstr "המר לליד"
-
-#. module: crm_helpdesk
-#: model:ir.actions.act_window,name:crm_helpdesk.helpdesk_ticket_to_lead_action
-msgid "Convert to Lead"
-msgstr "המר לליד"
+#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
+msgid "Cancel"
+msgstr "בטל"
 
 #. module: crm_helpdesk
 #: model:ir.actions.act_window,name:crm_helpdesk.crm_lead_convert2ticket_action
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_view_form
 msgid "Convert to Ticket"
-msgstr "המר לקריאת שירות"
+msgstr ""
 
 #. module: crm_helpdesk
 #: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
 msgid "Create Ticket"
-msgstr "צור קריאת שירות"
+msgstr ""
 
 #. module: crm_helpdesk
-#: model:ir.model.fields.selection,name:crm_helpdesk.selection__helpdesk_ticket_to_lead__action__create
+#: selection:crm.lead.convert2ticket,action:0
 msgid "Create a new customer"
 msgstr "צור לקוח חדש"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__create_uid
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__create_uid
 msgid "Created by"
 msgstr "נוצר על-ידי"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__create_date
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__create_date
 msgid "Created on"
 msgstr "נוצר ב-"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__partner_id
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__partner_id
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
 msgid "Customer"
 msgstr "לקוח"
 
 #. module: crm_helpdesk
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.crm_lead_convert2ticket_view_form
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Discard"
-msgstr ""
-
-#. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__display_name
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__display_name
 msgid "Display Name"
-msgstr "שם לתצוגה"
+msgstr "הצג שם"
 
 #. module: crm_helpdesk
-#: model:ir.model.fields.selection,name:crm_helpdesk.selection__helpdesk_ticket_to_lead__action__nothing
+#: selection:crm.lead.convert2ticket,action:0
 msgid "Do not link to a customer"
-msgstr "אל תקשר ללקוח"
-
-#. module: crm_helpdesk
-#: model:ir.model,name:crm_helpdesk.model_helpdesk_ticket
-msgid "Helpdesk Ticket"
-msgstr "קריאת שירות מוקד תמיכה"
+msgstr "לא ליצור קשר עם הלקוח"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__id
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__id
 msgid "ID"
-msgstr "מזהה"
+msgstr "תעודה מזהה"
+
+#. module: crm_helpdesk
+#: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket____last_update
+msgid "Last Modified on"
+msgstr "שינוי אחרון ב"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__write_uid
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__write_uid
 msgid "Last Updated by"
 msgstr "עודכן לאחרונה על-ידי"
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__write_date
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__write_date
 msgid "Last Updated on"
 msgstr "עדכון אחרון ב"
 
@@ -124,44 +94,19 @@ msgid "Lead"
 msgstr "ליד "
 
 #. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
-#, python-format
-msgid "Lead Converted"
-msgstr "ליד הוסב"
-
-#. module: crm_helpdesk
 #: model:ir.model,name:crm_helpdesk.model_crm_lead_convert2ticket
 msgid "Lead convert to Ticket"
-msgstr "המר ליד לקריאת שירות"
+msgstr ""
 
 #. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
-#, python-format
-msgid "Lead created"
-msgstr "נוצר ליד"
-
-#. module: crm_helpdesk
-#: model:ir.model.fields.selection,name:crm_helpdesk.selection__helpdesk_ticket_to_lead__action__exist
+#: selection:crm.lead.convert2ticket,action:0
 msgid "Link to an existing customer"
-msgstr "קשר ללקוח קיים"
+msgstr "קישור ללקוח קיים"
 
 #. module: crm_helpdesk
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__action
+#: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__action
 msgid "Related Customer"
-msgstr "לקוח קשור"
-
-#. module: crm_helpdesk
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__team_id
-#: model_terms:ir.ui.view,arch_db:crm_helpdesk.helpdesk_ticket_to_lead_view_form
-msgid "Sales Team"
-msgstr "צוות מכירות"
-
-#. module: crm_helpdesk
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__user_id
-msgid "Salesperson"
-msgstr "איש מכירות"
+msgstr ""
 
 #. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__team_id
@@ -169,39 +114,12 @@ msgid "Team"
 msgstr "צוות"
 
 #. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
-#, python-format
-msgid "The archived ticket can not converted as lead."
-msgstr "פניית השירות שנמצאת בארכיון לא יכולה להיות מומרת לליד"
-
-#. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
-#, python-format
-msgid "This lead has been created from ticket: %s"
-msgstr "הליד הזה נוצר מפניית השירות: %s"
-
-#. module: crm_helpdesk
-#: model:ir.model.fields,field_description:crm_helpdesk.field_helpdesk_ticket_to_lead__ticket_id
-msgid "Ticket"
-msgstr "קריאת שירות"
-
-#. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/helpdesk_ticket_to_lead.py:0
-#, python-format
-msgid "Ticket Converted"
-msgstr "קריאת שירות הוסבה"
-
-#. module: crm_helpdesk
 #: model:ir.model.fields,field_description:crm_helpdesk.field_crm_lead_convert2ticket__ticket_type_id
 msgid "Ticket Type"
-msgstr "סוג כרטיס"
+msgstr ""
 
 #. module: crm_helpdesk
-#. odoo-python
-#: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:0
+#: code:addons/crm_helpdesk/wizard/crm_lead_convert2ticket.py:53
 #, python-format
 msgid "Ticket created"
-msgstr "קריאת שירות נוצרה"
+msgstr ""

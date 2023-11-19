@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Signature Request">
                 <div role="alert" class="alert alert-warning text-center"
-                    invisible="not template_warning"
+                    attrs="{'invisible': [('template_warning', '=', False)]}"
                     title="No template available">
                     <span class="fa fa-exclamation-triangle"/>
                     <field name="template_warning" nolabel="1" readonly="1"/>
@@ -18,16 +18,17 @@
                 <group class="o_label_nowrap">
                     <field name="sign_template_ids"
                         options="{'no_create': True}"
-                        context="{'kanban_view_ref': 'sign.sign_template_view_kanban_mobile'}"
+                        kanban_view_ref="%(sign.sign_template_view_kanban_mobile)s"
                         widget="many2many_tags"
                         force_save="1"/>
                     <field name="partner_name"/>
                 </group>
-                <group invisible="not sign_template_ids" string="Sign Request Options">
+                <group attrs="{'invisible': [('sign_template_ids', '=', [])]}" string="Sign Request Options">
                     <field name="applicant_role_id" options="{'no_create': True}"/>
                     <field name="responsible_id" options="{'no_create_edit': True}"
-                        invisible="not has_both_template"
-                        required="has_both_template"/>
+                        attrs="{
+                            'invisible': [('has_both_template', '=', False)],
+                            'required': [('has_both_template', '=', True)]}"/>
                 </group>
                 <group class="o_label_nowrap" string="Mail Options">
                     <field name="subject" placeholder="Signature Request"/>
@@ -38,7 +39,7 @@
                 <field name="attachment_ids" widget="many2many_binary" string="Attach a file"/>
                 <footer>
                     <button name="validate_signature" string="Send" type="object" class="oe_highlight" data-hotkey="q"/>
-                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
                 </footer>
             </form>
         </field>

@@ -10,10 +10,6 @@ class TestCommon(TransactionCase):
     def setUp(self):
         super(TestCommon, self).setUp()
 
-        # activate multi language support
-        self.env['res.lang']._activate_lang('fr_FR')
-        self.env.user.write({'lang': 'en_US'})
-
         self.Model = self.env['data_cleaning.model']
         self.Record = self.env['data_cleaning.record']
         self.Rule = self.env['data_cleaning.rule']

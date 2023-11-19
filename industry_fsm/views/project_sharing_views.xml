@@ -5,9 +5,8 @@
         <field name="name">project.sharing.project.task.view.kanban.inherit</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.project_sharing_project_task_view_kanban"/>
-        <field name="priority">700</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='state']" position="after">
+            <xpath expr="//field[@name='child_text']" position="after">
                 <field name="is_fsm"/>
                 <field name="planned_date_begin"/>
                 <field name="fsm_done" />
@@ -15,7 +14,10 @@
             <xpath expr="//t[@t-if='record.partner_id.value']" position="inside">
                 <t t-if="record.is_fsm.raw_value and record.partner_city.value"> • <field name="partner_city" /></t>
             </xpath>
-            <xpath expr="//field[@name='state']" position="attributes">
+            <div name="date_deadline" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('is_fsm', '=', True), ('is_closed', '=', True)]}</attribute>
+            </div>
+            <xpath expr="//field[@name='kanban_state']" position="attributes">
                 <attribute name="invisible">context.get('fsm_mode', False)</attribute>
             </xpath>
         </field>
@@ -29,7 +31,7 @@
             <xpath expr="//field[@name='name']" position="after">
                 <field name="is_fsm" invisible="1"/>
                 <field name="company_id" invisible="1" />
-                <field name="partner_id" invisible="True" required="True" options="{'no_open': True, 'no_create': True, 'no_edit': True}" context="{'res_partner_search_mode': 'customer'}"/>
+                <field name="partner_id" attrs="{'required': [('is_fsm', '=', True)], 'invisible': [('is_fsm', '=', False)]}" options="{'no_open': True, 'no_create': True, 'no_edit': True}" context="{'res_partner_search_mode': 'customer'}"/>
             </xpath>
         </field>
     </record>
@@ -39,32 +41,15 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.project_sharing_project_task_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_id']" position="after">
+            <xpath expr="//field[@name='date_deadline']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('is_closed', '=', True), ('is_fsm', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="after">
                 <field name="is_fsm" invisible="1"/>
             </xpath>
             <field name="partner_id" position="attributes">
-                <attribute name="required">is_fsm</attribute>
+                <attribute name="attrs">{'required': [('is_fsm', '=', True)]}</attribute>
             </field>
-            <xpath expr="//field[@name='child_ids']/tree/field[@name='partner_id']" position="after">
-                <field name="is_fsm" column_invisible="True"/>
-            </xpath>
-            <xpath expr="//field[@name='child_ids']/tree/field[@name='partner_id']" position="attributes">
-                <attribute name="required">is_fsm</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="project_sharing_project_task_view_search_inherit" model="ir.ui.view">
-        <field name="name">project.sharing.task.search.form.inherit</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.project_sharing_project_task_view_search"/>
-        <field name="arch" type="xml">
-            <filter name="date_deadline" position="attributes">
-                <attribute name="invisible">context.get('fsm_mode', False)</attribute>
-            </filter>
-            <filter name="deadline" position="attributes">
-                <attribute name="invisible">context.get('fsm_mode', False)</attribute>
-            </filter>
         </field>
     </record>
 

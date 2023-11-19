@@ -1,11 +1,10 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
+
 {
     'name': 'Czech - Accounting',
-    'icon': '/account/static/description/l10n.png',
-    'countries': ['cz'],
     'version': '1.0',
-    'author': '26HOUSE (http://www.26house.com)',
-    'website': 'https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations.html',
+    'author': '26HOUSE',
+    'website': 'http://www.26house.com',
     'category': 'Accounting/Localizations/Account Charts',
     'description': """
 Czech accounting chart and localization.  With Chart of Accounts with taxes and basic fiscal positions.
@@ -24,14 +23,15 @@ Tento modul definuje:
         'base_vat',
     ],
     'data': [
-        'views/report_invoice.xml',
-        'views/res_partner_views.xml',
-        'views/res_company_views.xml',
-        'views/account_move_views.xml',
-        'views/report_template.xml',
+          'data/l10n_cz_coa_data.xml',
+          'data/account.account.template.csv',
+          'data/account.group.template.csv',
+          'data/l10n_cz_coa_post_data.xml',
+          'data/account_tax_group_data.xml',
+          'data/account_tax_data.xml',
+          'data/account_fiscal_position_data.xml',
+          'data/account_chart_template_data.xml'
     ],
-    'demo': [
-        'data/demo_company.xml',
-    ],
+    'demo': ['data/demo_company.xml'],
     'license': 'LGPL-3',
 }

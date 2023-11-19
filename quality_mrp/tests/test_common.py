@@ -22,7 +22,7 @@ class TestQualityMrpCommon(common.TransactionCase):
         cls.product_tmpl_id = cls.product.product_tmpl_id.id
         cls.picking_type_id = cls.env.ref('stock.warehouse0').manu_type_id.id
 
-        cls.product_product_drawer_drawer = cls.env['product.product'].create({
+        product_product_drawer_drawer = cls.env['product.product'].create({
             'name': 'Drawer Black',
             'tracking': 'lot'
         })
@@ -35,7 +35,7 @@ class TestQualityMrpCommon(common.TransactionCase):
             'product_uom_id': cls.product_uom_id,
             'bom_line_ids': [
                 (0, 0, {
-                    'product_id': cls.product_product_drawer_drawer.id,
+                    'product_id': product_product_drawer_drawer.id,
                     'product_qty': 1,
                     'product_uom_id': cls.product_uom_id,
                     'sequence': 1,
@@ -54,13 +54,12 @@ class TestQualityMrpCommon(common.TransactionCase):
             'product_id': cls.product_id,
             'company_id': cls.env.company.id,
         })
-        cls.lot_product_product_drawer_drawer_0 = cls.env['stock.lot'].create({
-
+        cls.lot_component_1 = cls.env['stock.lot'].create({
             'name': '0000000010001',
-            'product_id': cls.product_product_drawer_drawer.id,
+            'product_id': product_product_drawer_drawer.id,
             'company_id': cls.env.company.id,
         })
-        cls.lot_product_product_drawer_case_0 = cls.env['stock.lot'].create({
+        cls.lot_component_2 = cls.env['stock.lot'].create({
             'name': '0000000020045',
             'product_id': product_product_drawer_case.id,
             'company_id': cls.env.company.id,

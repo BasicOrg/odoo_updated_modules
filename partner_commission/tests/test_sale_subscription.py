@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from dateutil.relativedelta import relativedelta
-
 from odoo.tests.common import Form, tagged
 from odoo.addons.partner_commission.tests.setup import TestCommissionsSetup
 from odoo import fields
@@ -85,7 +83,7 @@ class TestSaleSubscription(TestCommissionsSetup):
         form.partner_id = self.customer
         form.referrer_id = self.referrer
         # form.commission_plan_frozen = False
-        form.plan_id = self.plan_month
+        form.recurrence_id = self.recurrence_month
         with form.order_line.new() as line:
             line.name = self.worker.name
             line.product_id = self.worker
@@ -94,7 +92,7 @@ class TestSaleSubscription(TestCommissionsSetup):
         form.end_date = fields.Date.today()
         so = form.save()
         so.action_confirm()
-        so.next_invoice_date += relativedelta(months=1) # prevent validation error
+
         res = so.prepare_renewal_order()
         res_id = res['res_id']
         renewal_so = self.env['sale.order'].browse(res_id)
@@ -143,10 +141,10 @@ class TestSaleSubscription(TestCommissionsSetup):
         # `is_subscription` is True when there are recurring lines in the sale order.
         form.commission_plan_frozen = True
         form.commission_plan_id = self.env['commission.plan']
+        form.end_date = fields.Date.today()
 
         sub = form.save()
         sub.action_confirm()
-        sub._cron_recurring_create_invoice()
         # renew
         res = sub.prepare_renewal_order()
         res_id = res['res_id']
@@ -195,71 +193,3 @@ class TestSaleSubscription(TestCommissionsSetup):
         self._pay_invoice(inv)
 
         self.assertEqual(inv.commission_po_line_id.price_subtotal, 180, 'Commission is wrong')
-
-    def test_commission_plan_frozen(self):
-        """
-            Check the change of option `commission_plan_frozen`
-            with commission plan and vice versa
-        """
-        self.referrer.commission_plan_id = self.gold_plan
-
-        # [1.] Save subscription with commission plan frozen enabled
-        # --> commission plan can be redefined
-        form = Form(self.env['sale.order'])
-        form.partner_id = self.customer
-        form.referrer_id = self.referrer
-        form.sale_order_template_id = self.template_yearly
-        form.commission_plan_frozen = True
-        form.commission_plan_id = self.silver_plan
-        sub_A = form.save()
-        sub_A.action_confirm()
-        sub_A._cron_recurring_create_invoice()
-        self.assertEqual(sub_A.commission_plan_id, self.silver_plan)
-        self.assertEqual(sub_A.commission_plan_frozen, True)
-
-        # [2.] Save subscription with commission plan frozen disabled
-        # --> commission plan cannot be redefined, it will be the referrer commission plan
-        form = Form(self.env['sale.order'])
-        form.partner_id = self.customer
-        form.referrer_id = self.referrer
-        form.sale_order_template_id = self.template_yearly
-        form.commission_plan_frozen = True
-        form.commission_plan_id = self.silver_plan
-        form.commission_plan_frozen = False
-        sub_B = form.save()
-        sub_B.action_confirm()
-        sub_B._cron_recurring_create_invoice()
-        self.assertEqual(sub_B.commission_plan_id, self.gold_plan)
-        self.assertEqual(sub_B.commission_plan_frozen, False)
-
-        # [3.] Save subscription with commission plan frozen and default commission plan
-        # --> commission plan frozen remains enabled
-        form = Form(self.env['sale.order'])
-        form.partner_id = self.customer
-        form.referrer_id = self.referrer
-        form.sale_order_template_id = self.template_yearly
-        form.commission_plan_frozen = True
-        sub_C = form.save()
-        sub_C.action_confirm()
-        sub_C._cron_recurring_create_invoice()
-        self.assertEqual(sub_C.commission_plan_id, self.gold_plan)
-        self.assertEqual(sub_C.commission_plan_frozen, True)
-
-        # [4.] Renew subscription with commission plan frozen enabled
-        # --> keep the same commission plan
-        sub_A_renew_id = sub_A.prepare_renewal_order()['res_id']
-        sub_A_renew = self.env['sale.order'].browse(sub_A_renew_id)
-        self.assertEqual(sub_A_renew.commission_plan_id, self.silver_plan)
-
-        # [5.] Renew subscription with commission plan frozen disabled
-        # --> use referrer's commission plan
-        sub_A.commission_plan_frozen = False
-        sub_A_renew_id = sub_A.prepare_renewal_order()['res_id']
-        sub_A_renew = self.env['sale.order'].browse(sub_A_renew_id)
-        self.assertEqual(sub_A_renew.commission_plan_id, self.gold_plan)
-
-        # [6.] Renew subscription with commission plan frozen enabled and default commission plan
-        # --> commission plan frozen has to be disabled
-        sub_C_renew_id = sub_C.prepare_renewal_order()['res_id']
-        sub_C_renew = self.env['sale.order'].browse(sub_C_renew_id)
-        self.assertEqual(sub_C_renew.commission_plan_frozen, False)

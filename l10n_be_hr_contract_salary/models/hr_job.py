@@ -10,13 +10,6 @@ class HrJob(models.Model):
     l10n_be_contract_ip = fields.Boolean(string="Intellectual Property", help="If checked, the job position is eligible to Intellectual Property")
     l10n_be_contract_withholding_taxes_exemption = fields.Boolean(string="Withholding Taxes Exemption", help="If checked, the job position will grant a withholding taxes exemption to eligible employees")
 
-    l10n_be_custom_representation_fees = fields.Boolean(string="Customized Representation Fees", help="""If you check this field, you can select various advantages to set the threshold in the representation fees.\n Amount above the representation fee threshold is called "Representation fees without serious standard" and can be prorated according to the employee working rate""")
-    l10n_be_custom_representation_fees_homeworking = fields.Boolean(string="Homeworking")
-    l10n_be_custom_representation_fees_phone = fields.Boolean(string="Phone")
-    l10n_be_custom_representation_fees_internet = fields.Boolean(string="Internet")
-    l10n_be_custom_representation_fees_car_management = fields.Boolean(string="Car Management")
-
-
     @api.model
     def action_hr_job_payroll_configuration(self):
         if self.env.company.country_id.code == 'BE':

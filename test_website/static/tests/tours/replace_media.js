@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
-import { patch } from "@web/core/utils/patch";
+import { patch } from '@web/core/utils/patch';
 import { VideoSelector } from '@web_editor/components/media_dialog/video_selector';
-import wTourUtils from '@website/js/tours/tour_utils';
+import wTourUtils from 'website.tour_utils';
 
 const VIDEO_URL = 'https://www.youtube.com/watch?v=Dpq87YCHmJc';
 
@@ -12,10 +12,10 @@ const VIDEO_URL = 'https://www.youtube.com/watch?v=Dpq87YCHmJc';
 wTourUtils.registerWebsitePreviewTour('test_replace_media', {
     url: '/',
     test: true,
-    edition: true,
-}, () => [
+}, [
+    wTourUtils.clickOnEdit(),
     {
-        trigger: "body",
+        trigger: '.editor_enable.editor_has_snippets',
         run: function () {
             // Patch the VideoDialog so that it does not do external calls
             // during the test (note that we don't unpatch but as the patch
@@ -23,20 +23,22 @@ wTourUtils.registerWebsitePreviewTour('test_replace_media', {
             // specific to an URL only, it is acceptable).
             // TODO if we ever give the possibility to upload its own videos,
             // this won't be necessary anymore.
-            patch(VideoSelector.prototype, {
+            patch(VideoSelector.prototype, "Video selector patch", {
                 async _getVideoURLData(src, options) {
                     if (src === VIDEO_URL || src === 'about:blank') {
                         return {platform: 'youtube', embed_url: 'about:blank'};
                     }
-                    return super._getVideoURLData(...arguments);
+                    return this._super(...arguments);
                 },
             });
         },
     },
-    wTourUtils.dragNDrop({
-        name: 'Picture',
-        id: 's_picture'
-    }),
+    {
+        content: "drop picture snippet",
+        trigger: "#oe_snippets .oe_snippet[name='Picture'] .oe_snippet_thumbnail:not(.o_we_already_dragging)",
+        moveTrigger: "iframe .oe_drop_zone",
+        run: "drag_and_drop iframe #wrap",
+    },
     {
         content: "select image",
         trigger: "iframe .s_picture figure img",
@@ -46,8 +48,6 @@ wTourUtils.registerWebsitePreviewTour('test_replace_media', {
         trigger: "#oe_snippets we-title:contains('Image') .o_we_image_weight:contains('kb')",
         run: function () {}, // check
     },
-    wTourUtils.changeOption("ImageTools", 'we-select[data-name="shape_img_opt"] we-toggler'),
-    wTourUtils.changeOption("ImageTools", "we-button[data-set-img-shape]"),
     {
         content: "replace image",
         trigger: "#oe_snippets we-button[data-replace-media]",
@@ -55,11 +55,6 @@ wTourUtils.registerWebsitePreviewTour('test_replace_media', {
     {
         content: "select svg",
         trigger: ".o_select_media_dialog img[title='sample.svg']",
-    },
-    {
-        content: "ensure the svg doesn't have a shape",
-        trigger: "iframe .s_picture figure img:not([data-shape])",
-        run: function () {}, // check
     },
     {
         content: "ensure image size is not displayed",

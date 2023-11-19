@@ -1,12 +1,15 @@
-/** @odoo-module **/
+odoo.define('portal.chatter', function (require) {
+'use strict';
 
-import { renderToElement } from "@web/core/utils/render";
-import dom from "@web/legacy/js/core/dom";
-import publicWidget from "@web/legacy/js/public/public_widget";
-import portalComposer from "@portal/js/portal_composer";
-import { range } from "@web/core/utils/numbers";
+var core = require('web.core');
+const dom = require('web.dom');
+var publicWidget = require('web.public.widget');
+var time = require('web.time');
+var portalComposer = require('portal.composer');
+const {Markup} = require('web.utils');
 
-import { Component, markup } from "@odoo/owl";
+var qweb = core.qweb;
+var _t = core._t;
 
 /**
  * Widget PortalChatter
@@ -36,8 +39,6 @@ var PortalChatter = publicWidget.Widget.extend({
         this.set('pager', {});
         this.set('domain', this.options['domain']);
         this._currentPage = this.options['pager_start'];
-
-        this.rpc = this.bindService("rpc");
     },
     /**
      * @override
@@ -66,7 +67,7 @@ var PortalChatter = publicWidget.Widget.extend({
         // bind bus event: this (portal.chatter) and 'portal.rating.composer' in portal_rating
         // are separate and sibling widgets, this event is to be triggered from portal.rating.composer,
         // hence bus event is bound to achieve usage of the event in another widget.
-        Component.env.bus.addEventListener('reload_chatter_content', (ev) => this._reloadChatterContent(ev.detail));
+        core.bus.on('reload_chatter_content', this, this._reloadChatterContent);
 
         return Promise.all([this._super.apply(this, arguments), this._reloadComposer()]);
     },
@@ -84,7 +85,10 @@ var PortalChatter = publicWidget.Widget.extend({
      */
     messageFetch: function (domain) {
         var self = this;
-        return this.rpc('/mail/chatter_fetch', self._messageFetchPrepareParams()).then(function (result) {
+        return this._rpc({
+            route: '/mail/chatter_fetch',
+            params: self._messageFetchPrepareParams(),
+        }).then(function (result) {
             self.set('messages', self.preprocessMessages(result['messages']));
             self.set('message_count', result['message_count']);
             return result;
@@ -97,8 +101,10 @@ var PortalChatter = publicWidget.Widget.extend({
      * @returns {Array}
      */
     preprocessMessages(messages) {
-        messages.forEach((m) => {
-            m['body'] = markup(m.body);
+        _.each(messages, function (m) {
+            m['author_avatar_url'] = _.str.sprintf('/web/image/%s/%s/author_avatar/50x50', 'mail.message', m.id);
+            m['published_date_str'] = _.str.sprintf(_t('Published on %s'), moment(time.str_to_datetime(m.date)).format('MMMM Do YYYY, h:mm:ss a'));
+            m['body'] = Markup(m.body);
         });
         return messages;
     },
@@ -131,16 +137,12 @@ var PortalChatter = publicWidget.Widget.extend({
             'two_columns': false,
         }, this.options || {});
 
-        this.options = Object.entries(options).reduce((acc, [key, value]) => {
-            acc[
-                //Camelized to Underscored key
-                key
-                    .split(/\.?(?=[A-Z])/)
-                    .join("_")
-                    .toLowerCase()
-            ] = value;
-            return acc;
-        }, defaultOptions);
+        this.options = Object.entries(options).reduce(
+            (acc, [key, value]) => {
+                acc[_.str.underscored(key)] = value;
+                return acc;
+            },
+            defaultOptions);
     },
 
     /**
@@ -175,9 +177,12 @@ var PortalChatter = publicWidget.Widget.extend({
      */
     _chatterInit: function () {
         var self = this;
-        return this.rpc('/mail/chatter_init', this._messageFetchPrepareParams()).then(function (result) {
+        return this._rpc({
+            route: '/mail/chatter_init',
+            params: this._messageFetchPrepareParams()
+        }).then(function (result) {
             self.result = result;
-            self.options = Object.assign(self.options, self.result['options'] || {});
+            self.options = _.extend(self.options, self.result['options'] || {});
             return result;
         });
     },
@@ -190,7 +195,7 @@ var PortalChatter = publicWidget.Widget.extend({
      */
     _changeCurrentPage: function (page, domain) {
         this._currentPage = page;
-        var d = domain ? domain : Object.assign({}, this.get("domain"));
+        var d = domain ? domain : _.clone(this.get('domain'));
         this.set('domain', d); // trigger fetch message
     },
     _messageFetchPrepareParams: function () {
@@ -241,7 +246,9 @@ var PortalChatter = publicWidget.Widget.extend({
         }
 
         var pages = [];
-        range(pmin, pmax + 1).forEach(index => pages.push(index));
+        _.each(_.range(pmin, pmax + 1), function (index) {
+            pages.push(index);
+        });
 
         return {
             "page_count": pageCount,
@@ -255,13 +262,13 @@ var PortalChatter = publicWidget.Widget.extend({
         };
     },
     _renderMessages: function () {
-        this.$('.o_portal_chatter_messages').empty().append(renderToElement("portal.chatter_messages", {widget: this}));
+        this.$('.o_portal_chatter_messages').html(qweb.render("portal.chatter_messages", {widget: this}));
     },
     _renderMessageCount: function () {
-        this.$('.o_message_counter').replaceWith(renderToElement("portal.chatter_message_count", {widget: this}));
+        this.$('.o_message_counter').replaceWith(qweb.render("portal.chatter_message_count", {widget: this}));
     },
     _renderPager: function () {
-        this.$('.o_portal_chatter_pager').replaceWith(renderToElement("portal.pager", {widget: this}));
+        this.$('.o_portal_chatter_pager').replaceWith(qweb.render("portal.pager", {widget: this}));
     },
 
     //--------------------------------------------------------------------------
@@ -295,9 +302,12 @@ var PortalChatter = publicWidget.Widget.extend({
         ev.preventDefault();
 
         var $elem = $(ev.currentTarget);
-        return this.rpc('/mail/update_is_internal', {
-            message_id: $elem.data('message-id'),
-            is_internal: ! $elem.data('is-internal'),
+        return this._rpc({
+            route: '/mail/update_is_internal',
+            params: {
+                message_id: $elem.data('message-id'),
+                is_internal: ! $elem.data('is-internal'),
+            },
         }).then(function (result) {
             $elem.data('is-internal', result);
             if (result === true) {
@@ -329,4 +339,7 @@ publicWidget.registry.portalChatter = publicWidget.Widget.extend({
     },
 });
 
-export default PortalChatter
+return {
+    PortalChatter: PortalChatter,
+};
+});

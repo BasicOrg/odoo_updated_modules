@@ -5,56 +5,31 @@ import { browser } from "@web/core/browser/browser";
 import { usePopover } from "@web/core/popover/popover_hook";
 import { useService } from "@web/core/utils/hooks";
 
-import {
-    onMounted,
-    onPatched,
-    onWillStart,
-    onWillUnmount,
-    onWillUpdateProps,
-    useComponent,
-    useExternalListener,
-    useRef,
-} from "@odoo/owl";
+const { onMounted, onPatched, onWillStart, onWillUnmount, useComponent, useRef } = owl;
 
 export function useCalendarPopover(component) {
     const owner = useComponent();
-    let popoverClass = "";
-    const popoverOptions = { position: "right", onClose: cleanup };
-    Object.defineProperty(popoverOptions, "popoverClass", { get: () => popoverClass });
-    const popover = usePopover(component, popoverOptions);
+    const popover = usePopover();
     const dialog = useService("dialog");
-    let removeDialog = null;
-    let fcPopover;
-    useExternalListener(
-        window,
-        "mousedown",
-        (ev) => {
-            if (fcPopover) {
-                // do not let fullcalendar popover close when our own popover is open
-                ev.stopPropagation();
-            }
-        },
-        { capture: true }
-    );
-    function cleanup() {
-        fcPopover = null;
-        removeDialog = null;
-    }
+    let remove = null;
     function close() {
-        removeDialog?.();
-        popover.close();
-        cleanup();
+        if (remove) {
+            remove();
+            remove = null;
+        }
     }
     return {
         close,
-        open(target, props, popoverClassToUse) {
-            fcPopover = target.closest(".fc-popover");
+        open(target, props, popoverClass) {
+            close();
             if (owner.env.isSmall) {
-                close();
-                removeDialog = dialog.add(component, props, { onClose: cleanup });
+                remove = dialog.add(component, props, { onClose: () => (remove = null) });
             } else {
-                popoverClass = popoverClassToUse;
-                popover.open(target, props);
+                remove = popover.add(target, component, props, {
+                    popoverClass,
+                    position: "right",
+                    onClose: () => (remove = null),
+                });
             }
         },
     };
@@ -125,14 +100,8 @@ export function useFullCalendar(refName, params) {
             throw new Error(`Cannot instantiate FullCalendar\n${e.message}`);
         }
     });
-
-    let isWeekendVisible = params.isWeekendVisible;
-    onWillUpdateProps((np) => {
-        isWeekendVisible = np.isWeekendVisible;
-    });
     onPatched(() => {
         instance.refetchEvents();
-        instance.setOption("weekends", isWeekendVisible);
     });
     onWillUnmount(() => {
         instance.destroy();

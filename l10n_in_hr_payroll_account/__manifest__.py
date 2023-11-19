@@ -3,19 +3,17 @@
 
 {
     'name': 'India - Payroll with Accounting',
-    'countries': ['in'],
+    'icon': '/l10n_in/static/description/icon.png',
     'category': 'Human Resources',
     'depends': ['l10n_in_hr_payroll', 'hr_payroll_account', 'l10n_in'],
     'description': """
 Accounting Data for Indian Payroll Rules.
 ==========================================
     """,
-    "data": [
-        'data/account_chart_template_data.xml',
-    ],
-    "demo": [
-        'data/l10n_in_hr_payroll_account_demo.xml',
-    ],
+
     'auto_install': True,
+    'data':[
+        'data/l10n_in_hr_payroll_account_data.xml',
+    ],
     'license': 'OEEL-1',
 }

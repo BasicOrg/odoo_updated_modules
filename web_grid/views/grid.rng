@@ -8,7 +8,13 @@
             <ref name="acl"/>
             <attribute name="string"/>
             <optional>
-                <attribute name="editable"/>
+                <attribute name="adjustment">
+                    <choice>
+                        <value>object</value>
+                        <value>action</value>
+                    </choice>
+                </attribute>
+                <attribute name="adjust_name"/>
             </optional>
             <optional>
                 <attribute name="class"/>
@@ -31,25 +37,9 @@
             <optional>
                 <attribute name="barchart_total"/>
             </optional>
-            <optional>
-                <attribute name="action"/>
-                <attribute name="type">
-                    <choice>
-                        <value>object</value>
-                        <value>action</value>
-                    </choice>
-                </attribute>
-            </optional>
-            <optional>
-                <attribute name="form_view_id"/>
-            </optional>
-            <optional>
-                <attribute name="sample"/>
-            </optional>
             <interleave>
                 <oneOrMore><ref name="field"/></oneOrMore>
                 <zeroOrMore><ref name="button"/></zeroOrMore>
-                <zeroOrMore><ref name="xpath"/></zeroOrMore>
                 <optional>
                     <element name="empty">
                         <oneOrMore>
@@ -73,65 +63,6 @@
             </interleave>
         </element>
     </define>
-    <define name="overload">
-        <optional>
-            <!--
-                Alter matched element with content
-            -->
-            <choice>
-                <attribute name="position">
-                    <choice>
-                        <!-- Insert content before first child -->
-                        <value>before</value>
-                        <!-- Insert content after last child -->
-                        <value>after</value>
-                        <!-- Replace all children with content -->
-                        <value>inside</value>
-                        <!-- Replace matched element itself with content -->
-                        <value>replace</value>
-                    </choice>
-                </attribute>
-                <group>
-                    <attribute name="position">
-                        <!-- Edit element attributes -->
-                        <value>attributes</value>
-                    </attribute>
-                    <oneOrMore>
-                        <element name="attribute">
-                            <attribute name="name"><text/></attribute>
-                            <text />
-                        </element>
-                    </oneOrMore>
-                </group>
-            </choice>
-        </optional>
-    </define>
-    <define name="any">
-        <element>
-            <anyName/>
-            <zeroOrMore>
-                <choice>
-                    <attribute>
-                        <anyName/>
-                    </attribute>
-                    <text/>
-                    <ref name="any"/>
-                </choice>
-            </zeroOrMore>
-        </element>
-    </define>
-    <define name="xpath">
-        <element name="xpath">
-            <optional><attribute name="expr"/></optional>
-            <ref name="overload"/>
-            <zeroOrMore>
-                <choice>
-                    <ref name="any"/>
-                    <ref name="button"/>
-                </choice>
-            </zeroOrMore>
-        </element>
-    </define>
     <define name="field">
         <element name="field">
             <attribute name="name"/>
@@ -143,23 +74,17 @@
                             <value>1</value>
                         </attribute>
                     </optional>
-                    <optional>
-                        <attribute name="widget"></attribute>
-                    </optional>
-                    <optional>
-                        <attribute name="invisible"/>
-                    </optional>
                 </group>
+                <!-- TODO: column anchor, range & prev/next? -->
                 <group>
                     <attribute name="type"><value>col</value></attribute>
-                    <optional><attribute name="operator"/></optional>
                     <zeroOrMore>
                         <element name="range">
                             <attribute name="name"/>
                             <attribute name="string"/>
                             <attribute name="span"/>
                             <attribute name="step"/>
-                            <optional><attribute name="default"/></optional>
+                            <optional><attribute name="invisible"/></optional>
                             <optional><attribute name="hotkey"/></optional>
                         </element>
                     </zeroOrMore>
@@ -175,20 +100,9 @@
                     <optional>
                         <attribute name="string"/>
                     </optional>
-                    <optional><attribute name="operator"/></optional>
                 </group>
                 <group>
                     <attribute name="type"><value>readonly</value></attribute>
-                    <optional><attribute name="operator"/></optional>
-                </group>
-                <group>
-                    <ref name="overload"/>
-                    <zeroOrMore>
-                        <choice>
-                            <ref name="field"/>
-                            <ref name="button"/>
-                        </choice>
-                    </zeroOrMore>
                 </group>
             </choice>
             <!-- other garbage -->
@@ -213,7 +127,6 @@
             <optional><attribute name="data-hotkey"/></optional>
             <!-- Python dict literal -->
             <optional><attribute name="context"/></optional>
-            <optional><attribute name="invisible"/></optional>
         </element>
     </define>
     <define name="acl">

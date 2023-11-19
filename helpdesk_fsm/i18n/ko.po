@@ -3,22 +3,28 @@
 # 	* helpdesk_fsm
 # 
 # Translators:
-# Wil Odoo, 2023
-# JH CHOI <hwangtog@gmail.com>, 2023
+# JH CHOI <hwangtog@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 16.0beta+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:21+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: JH CHOI <hwangtog@gmail.com>, 2023\n"
-"Language-Team: Korean (https://app.transifex.com/odoo/teams/41243/ko/)\n"
+"POT-Creation-Date: 2022-10-04 09:42+0000\n"
+"PO-Revision-Date: 2022-09-22 05:46+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Korean (https://www.transifex.com/odoo/teams/41243/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: helpdesk_fsm
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_blocked:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Blocked"
+msgstr "거부됨"
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__company_id
@@ -28,7 +34,12 @@ msgstr "회사"
 #. module: helpdesk_fsm
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_ticket_convert_wizard
 msgid "Convert Helpdesk Tickets to Tasks"
-msgstr "헬프데스크 티켓을 작업으로 전환"
+msgstr ""
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,help:helpdesk_fsm.field_helpdesk_ticket__use_fsm
+msgid "Convert tickets into Field Service tasks"
+msgstr "티켓을 현장 서비스 작업으로 변환"
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
@@ -37,12 +48,12 @@ msgstr "작업 만들기 및 보기"
 
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
+#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 msgid "Create Task"
 msgstr "작업 만들기"
 
 #. module: helpdesk_fsm
-#. odoo-python
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model,name:helpdesk_fsm.model_helpdesk_create_fsm_task
 #, python-format
 msgid "Create a Field Service task"
@@ -66,7 +77,7 @@ msgstr "고객"
 #. module: helpdesk_fsm
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.create_fsm_task_view_form
 msgid "Discard"
-msgstr "취소"
+msgstr "작성 취소"
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__display_name
@@ -76,12 +87,12 @@ msgstr "표시명"
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__display_helpdesk_ticket_button
 msgid "Display Ticket"
-msgstr "상담 표시"
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_team__fsm_project_id
 msgid "FSM Project"
-msgstr "FSM 프로젝트"
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_ticket__use_fsm
@@ -109,6 +120,17 @@ msgid "ID"
 msgstr "ID"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_normal:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "In Progress"
+msgstr "진행 중"
+
+#. module: helpdesk_fsm
+#: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task____last_update
+msgid "Last Modified on"
+msgstr "최근 수정일"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__write_uid
 msgid "Last Updated by"
 msgstr "최근 갱신한 사람"
@@ -121,12 +143,7 @@ msgstr "최근 갱신 일자"
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_project_task__helpdesk_ticket_id
 msgid "Original Ticket"
-msgstr "원본 상담"
-
-#. module: helpdesk_fsm
-#: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
-msgid "Plan Intervention"
-msgstr "계획 개입"
+msgstr ""
 
 #. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__project_id
@@ -140,23 +157,22 @@ msgid "Project in which to create the task"
 msgstr "작업을 생성하는 프로젝트"
 
 #. module: helpdesk_fsm
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_1
+#: model:project.task,legend_done:helpdesk_fsm.helpdesk_fsm_task_2
+msgid "Ready"
+msgstr "준비"
+
+#. module: helpdesk_fsm
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_create_fsm_task__helpdesk_ticket_id
 msgid "Related ticket"
 msgstr "관련된 티켓"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model:ir.model,name:helpdesk_fsm.model_project_task
 #, python-format
 msgid "Task"
 msgstr "작업"
-
-#. module: helpdesk_fsm
-#: model:mail.message.subtype,description:helpdesk_fsm.mt_ticket_task_canceled
-#: model:mail.message.subtype,name:helpdesk_fsm.mt_ticket_task_canceled
-msgid "Task Canceled"
-msgstr "작업 취소됨"
 
 #. module: helpdesk_fsm
 #: model:mail.message.subtype,description:helpdesk_fsm.mt_team_ticket_task_done
@@ -167,16 +183,14 @@ msgid "Task Done"
 msgstr "작업 완료"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Task created"
-msgstr "작업 생성됨"
+msgstr ""
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
-#: code:addons/helpdesk_fsm/models/helpdesk_ticket.py:0
+#: code:addons/helpdesk_fsm/models/helpdesk.py:0
 #: model:ir.model.fields,field_description:helpdesk_fsm.field_helpdesk_ticket__fsm_task_ids
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.helpdesk_ticket_view_form
 #, python-format
@@ -184,7 +198,6 @@ msgid "Tasks"
 msgstr "작업"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/wizard/create_task.py:0
 #, python-format
 msgid "Tasks from Tickets"
@@ -196,7 +209,6 @@ msgid "Tasks generated from this ticket"
 msgstr "이 티켓에서 생성된 작업"
 
 #. module: helpdesk_fsm
-#. odoo-python
 #: code:addons/helpdesk_fsm/controllers/portal.py:0
 #: model_terms:ir.ui.view,arch_db:helpdesk_fsm.project_sharing_inherit_project_task_view_form
 #, python-format

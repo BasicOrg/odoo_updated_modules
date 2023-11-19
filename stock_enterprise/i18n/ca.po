@@ -1,31 +1,31 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* stock_enterprise
-#
+# 
 # Translators:
 # José Cabrera Lozano <jose.cabrera@edukative.es>, 2022
 # Sandra Franch <sandra.franch@upc.edu>, 2022
-# Manel Fernandez Ramirez <manelfera@outlook.com>, 2022
 # jabelchi, 2022
 # Marc Tormo i Bochaca <mtbochaca@gmail.com>, 2022
 # Josep Sànchez <papapep@gmx.com>, 2022
 # Martin Trigaux, 2022
+# Manel Fernandez Ramirez <manelfera@outlook.com>, 2022
 # Quim - eccit <quim@eccit.com>, 2022
 # Jonatan Gk, 2022
 # marcescu, 2022
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 16:03+0000\n"
+"POT-Creation-Date: 2022-09-20 09:49+0000\n"
 "PO-Revision-Date: 2022-09-22 05:49+0000\n"
 "Last-Translator: marcescu, 2022\n"
-"Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
-"Language: ca\n"
+"Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: stock_enterprise
@@ -89,6 +89,34 @@ msgid "Delay (Days)"
 msgstr "Retard (dies)"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to deliver an order (in days). Computed by comparing the scheduled "
+"date of the delivery order and its effective date."
+msgstr ""
+"Retard per lliurar una comanda (en dies). Calculat comparant la data "
+"programada de l'ordre de comanda d'entrega i la seva data efectiva."
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Delay to receive an order (in days). Computed by comparing the scheduled "
+"date of the receipt and its effective date."
+msgstr ""
+"Retard per rebre una comanda (en dies). Calculat comparant la data "
+"programada del rebut i la seva data efectiva."
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Cycle Time"
+msgstr "Temps de cicle de lliurament"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Deliveries Delay"
+msgstr "Retard de lliuraments"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__display_name
 msgid "Display Name"
 msgstr "Nom a mostrar"
@@ -139,12 +167,17 @@ msgid "Is a Backorder"
 msgstr "És una comanda pendent"
 
 #. module: stock_enterprise
+#: model:ir.model.fields,field_description:stock_enterprise.field_stock_report____last_update
+msgid "Last Modified on"
+msgstr "Última modificació el "
+
+#. module: stock_enterprise
 #: model:ir.model.fields.selection,name:stock_enterprise.selection__stock_report__state__draft
 msgid "New"
 msgstr "Nou"
 
 #. module: stock_enterprise
-#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_action_performance
+#: model_terms:ir.actions.act_window,help:stock_enterprise.stock_report_dashboard_action
 msgid "No data yet!"
 msgstr "Encara no hi han dades!"
 
@@ -194,6 +227,16 @@ msgid "Quantity"
 msgstr "Quantitat"
 
 #. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Cycle Time"
+msgstr "Recepcions del cicle de rebuts"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "Receipts Delay"
+msgstr "Retard en els rebuts"
+
+#. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__reference
 #: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_map_view
 msgid "Reference"
@@ -223,6 +266,24 @@ msgstr "Vista general de l'estoc"
 #: model:ir.model,name:stock_enterprise.model_stock_report
 msgid "Stock Report"
 msgstr "Informe d'estoc"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to deliver an order (in days). Computed by comparing the "
+"creation date of the delivery order and its done date."
+msgstr ""
+"Temps necessari per la comanda d'entrega (en dies). Calculat comparant la "
+"data de creació de l'ordre de lliurament i la data de finalització."
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid ""
+"Time needed to receive an order (in days). Computed by comparing the "
+"creation date of the receipt and its done date."
+msgstr ""
+"Temps necessari per rebre una comanda (en dies). Calculat comparant la data "
+"de creació del rebut i la data de finalització."
 
 #. module: stock_enterprise
 #: model:ir.model.fields,field_description:stock_enterprise.field_stock_report__date_done
@@ -255,6 +316,11 @@ msgid "Waiting Availability"
 msgstr "Esperant disponibilitat"
 
 #. module: stock_enterprise
-#: model:ir.actions.act_window,name:stock_enterprise.stock_report_action_performance
+#: model:ir.actions.act_window,name:stock_enterprise.stock_report_dashboard_action
 msgid "Warehouse Analysis"
 msgstr "Anàlisi del magatzem"
+
+#. module: stock_enterprise
+#: model_terms:ir.ui.view,arch_db:stock_enterprise.stock_report_dashboard_view
+msgid "days"
+msgstr "dies"

@@ -788,17 +788,11 @@ class IngenicoDriver(Driver):
             self.data["Ticket"] = False
             if data['messageType'] == 'Transaction':
                 self.cid = data['cid']
-                if data['amount'] < 0:
-                    raise ValueError("The transaction amount value should be positive")
                 self._outgoingMessage( "TransactionRequest", transactionId=data['TransactionID'], amount=data['amount'])
             elif data['messageType'] == 'Cancel':
                 self._outgoingMessage( "CancelRequest", reason=data['reason'])
-        except Exception as e:
-            error_message = "Error while performing transaction request to the Ingenico payment terminal"
-            _logger.exception(error_message)
-            self.data["Error"] = "{}\n{}: {}".format(error_message, type(e).__name__, e)
-            self.data["cid"] = self.cid
-            event_manager.device_changed(self)
+        except Exception:
+            _logger.error(format_exc())
 
     def recv(self, length):
         try:

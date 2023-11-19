@@ -8,8 +8,8 @@
             <xpath expr="//field[@name='description']" position="after">
                 <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"
                     options="{'no_create_edit': True, 'no_open': True}"
-                    column_invisible="parent.has_location == 'no'"
-                    required="parent.has_location == 'required'"/>
+                    attrs="{'column_invisible': [('parent.has_location', '=', 'no')],
+                            'required': [('parent.has_location', '=', 'required')]}"/>
             </xpath>
         </field>
     </record>

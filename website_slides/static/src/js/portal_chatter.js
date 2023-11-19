@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
-import PortalChatter from '@portal/js/portal_chatter';
+import { _t } from 'web.core';
+import { PortalChatter } from 'portal.chatter';
 
 /**
  * PortalChatter
@@ -18,7 +18,7 @@ PortalChatter.include({
     _reloadChatterContent: async function (data) {
         await this._super(...arguments);
         if (this.options.res_model === "slide.channel") {
-            $('#review-tab').text(_t('Reviews (%s)', data.rating_count));
+            $('#review-tab').text(_.str.sprintf(_t('Reviews (%d)'), data.rating_count));
         }
     },
 });

@@ -1,10 +1,28 @@
 /** @odoo-module */
 
+import {Field} from '@web/views/fields/field';
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { usePopover } from "@web/core/popover/popover_hook";
-import { onEmployeeSubRedirect } from './hooks';
-import { Component, onWillStart, onWillRender, useState } from "@odoo/owl";
+
+const { Component, onWillStart, onWillRender, useState } = owl;
+
+function useUniquePopover() {
+    const popover = usePopover();
+    let remove = null;
+    return Object.assign(Object.create(popover), {
+        add(target, component, props, options) {
+            if (remove) {
+                remove();
+            }
+            remove = popover.add(target, component, props, options);
+            return () => {
+                remove();
+                remove = null;
+            };
+        },
+    });
+}
 
 class HrOrgChartPopover extends Component {
     async setup() {
@@ -13,7 +31,25 @@ class HrOrgChartPopover extends Component {
         this.rpc = useService('rpc');
         this.orm = useService('orm');
         this.actionService = useService("action");
-        this._onEmployeeSubRedirect = onEmployeeSubRedirect();
+    }
+
+    /**
+     * Get subordonates of an employee through a rpc call.
+     *
+     * @private
+     * @param {integer} employee_id
+     * @returns {Promise}
+     */
+    async _getSubordinatesData(employee_id, type) {
+        const subData = await this.rpc(
+            '/hr/get_subordinates',
+            {
+                employee_id: employee_id,
+                subordinates_type: type,
+                context: Component.env.session.user_context,
+            }
+        );
+        return subData;
     }
 
     /**
@@ -27,22 +63,50 @@ class HrOrgChartPopover extends Component {
         const action = await this.orm.call('hr.employee', 'get_formview_action', [employeeId]);
         this.actionService.doAction(action); 
     }
+
+    /**
+     * Redirect to the sub employee form view.
+     *
+     * @private
+     * @param {MouseEvent} event
+     * @returns {Promise} action loaded
+     */
+    async _onEmployeeSubRedirect(event) {
+        const employee_id = parseInt(event.currentTarget.dataset.employeeId);
+        const type = event.currentTarget.dataset.type || 'direct';
+        if (!employee_id) {
+            return {};
+        }
+        const subData = await this._getSubordinatesData(employee_id, type);
+        const domain = [['id', 'in', subData]];
+        var action = await this.orm.call('hr.employee', 'get_formview_action', [employee_id]);
+        action = Object.assign(action, {
+            'name': this.env._t('Team'),
+            'view_mode': 'kanban,list,form',
+            'views':  [[false, 'kanban'], [false, 'list'], [false, 'form']],
+            'domain': domain,
+            'context': {
+                'default_parent_id': employee_id,
+            }
+        });
+        delete action['res_id'];
+        this.actionService.doAction(action);
+    }
 }
 HrOrgChartPopover.template = 'hr_org_chart.hr_orgchart_emp_popover';
 
-export class HrOrgChart extends Component {
+export class HrOrgChart extends Field {
     async setup() {
         super.setup();
 
         this.rpc = useService('rpc');
         this.orm = useService('orm');
         this.actionService = useService("action");
-        this.user = useService("user");
-        this.popover = usePopover(HrOrgChartPopover);
+        this.popover = useUniquePopover();
+
+        this.jsonStringify = JSON.stringify;
 
         this.state = useState({'employee_id': null});
-        this.lastParent = null;
-        this._onEmployeeSubRedirect = onEmployeeSubRedirect();
 
         onWillStart(this.handleComponentUpdate.bind(this));
         onWillRender(this.handleComponentUpdate.bind(this));
@@ -54,10 +118,8 @@ export class HrOrgChart extends Component {
     async handleComponentUpdate() {
         this.employee = this.props.record.data;
         // the widget is either dispayed in the context of a hr.employee form or a res.users form
-        this.state.employee_id = this.employee.employee_ids !== undefined ? this.employee.employee_ids.resIds[0] : this.props.record.resId;
-        const manager = this.employee.parent_id || this.employee.employee_parent_id;
-        const forceReload = this.lastRecord !== this.props.record || this.lastParent != manager;
-        this.lastParent = manager;
+        this.state.employee_id = this.employee.employee_ids !== undefined ? this.employee.employee_ids.resIds[0] : this.employee.id;
+        const forceReload = this.lastRecord !== this.props.record;
         this.lastRecord = this.props.record;
         await this.fetchEmployeeData(this.state.employee_id, forceReload);
     }
@@ -72,11 +134,11 @@ export class HrOrgChart extends Component {
             this.view_employee_id = null;
         } else if (employeeId !== this.view_employee_id || force) {
             this.view_employee_id = employeeId;
-            let orgData = await this.rpc(
+            var orgData = await this.rpc(
                 '/hr/get_org_chart',
                 {
                     employee_id: employeeId,
-                    context: this.user.context,
+                    context: Component.env.session.user_context,
                 }
             );
             if (Object.keys(orgData).length === 0) {
@@ -94,7 +156,12 @@ export class HrOrgChart extends Component {
     }
 
     _onOpenPopover(event, employee) {
-        this.popover.open(event.currentTarget, { employee });
+        this.popover.add(
+            event.currentTarget,
+            this.constructor.components.Popover,
+            {employee},
+            {closeOnClickAway: true}
+        );
     }
 
     /**
@@ -115,10 +182,10 @@ export class HrOrgChart extends Component {
     }
 }
 
-HrOrgChart.template = 'hr_org_chart.hr_org_chart';
-
-export const hrOrgChart = {
-    component: HrOrgChart,
+HrOrgChart.components = {
+    Popover: HrOrgChartPopover,
 };
 
-registry.category("fields").add("hr_org_chart", hrOrgChart);
+HrOrgChart.template = 'hr_org_chart.hr_org_chart';
+
+registry.category("fields").add("hr_org_chart", HrOrgChart);

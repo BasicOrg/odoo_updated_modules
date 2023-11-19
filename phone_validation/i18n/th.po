@@ -3,17 +3,17 @@
 # 	* phone_validation
 # 
 # Translators:
-# Wil Odoo, 2023
-# Rasareeyar Lappiam, 2023
+# Martin Trigaux, 2022
+# Wichanon Jamwutthipreecha, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:56+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Rasareeyar Lappiam, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:03+0000\n"
+"PO-Revision-Date: 2022-09-22 05:53+0000\n"
+"Last-Translator: Wichanon Jamwutthipreecha, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,7 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/phone_blacklist.py:0
 #: code:addons/phone_validation/models/phone_blacklist.py:0
 #, python-format
@@ -51,22 +50,10 @@ msgid "Archived"
 msgstr "เก็บถาวรแล้ว"
 
 #. module: phone_validation
-#. odoo-python
-#: code:addons/phone_validation/models/phone_blacklist.py:0
-#, python-format
-msgid "Are you sure you want to unblacklist this Phone Number?"
-msgstr ""
-
-#. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_mail_thread_phone__message_attachment_count
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_attachment_count
 msgid "Attachment Count"
 msgstr "จำนวนสิ่งที่แนบมา"
-
-#. module: phone_validation
-#: model:ir.model,name:phone_validation.model_base
-msgid "Base"
-msgstr "ฐาน"
 
 #. module: phone_validation
 #: model_terms:ir.ui.view,arch_db:phone_validation.phone_blacklist_view_form
@@ -86,7 +73,7 @@ msgstr "โทรศัพท์ที่ถูกขึ้นบัญชีด
 #. module: phone_validation
 #: model:ir.actions.act_window,name:phone_validation.phone_blacklist_action
 msgid "Blacklisted Phone Numbers"
-msgstr "หมายเลขโทรศัพท์ที่อยู่ในบัญชีแบล็คลิสต์"
+msgstr ""
 
 #. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_mail_thread_phone__phone_blacklisted
@@ -99,15 +86,12 @@ msgid "Blacklisted phone numbers won't receive SMS Mailings anymore."
 msgstr ""
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/res_users.py:0
 #, python-format
 msgid ""
 "Blocked by deletion of portal account %(portal_user_name)s by %(user_name)s "
 "(#%(user_id)s)"
 msgstr ""
-"ถูกบล็อกโดยการลบบัญชีพอร์ทัล %(portal_user_name)s โดย %(user_name)s "
-"(#%(user_id)s)"
 
 #. module: phone_validation
 #: model_terms:ir.ui.view,arch_db:phone_validation.phone_blacklist_remove_view_form
@@ -196,7 +180,6 @@ msgstr ""
 "ทางเมลกลุ่มจากรายการใด ๆ อีกต่อไป"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Impossible number %s: probably invalid number of digits."
@@ -223,14 +206,12 @@ msgstr ""
 "ช่วยแยกแยะว่าหมายเลขที่ถูกขึ้นบัญชีดำเมื่อมีฟิลด์มือถือและโทรศัพท์ในโมเดล"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Invalid number %s: probably incorrect prefix."
 msgstr ""
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/mail_thread_phone.py:0
 #: code:addons/phone_validation/models/mail_thread_phone.py:0
 #, python-format
@@ -242,6 +223,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_is_follower
 msgid "Is Follower"
 msgstr "เป็นผู้ติดตาม"
+
+#. module: phone_validation
+#: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist____last_update
+#: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist_remove____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__write_uid
@@ -256,6 +243,12 @@ msgid "Last Updated on"
 msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 
 #. module: phone_validation
+#: model:ir.model.fields,field_description:phone_validation.field_mail_thread_phone__message_main_attachment_id
+#: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "เอกสารหลักที่แนบมา"
+
+#. module: phone_validation
 #: model:ir.model.fields,field_description:phone_validation.field_mail_thread_phone__message_has_error
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_has_error
 msgid "Message Delivery error"
@@ -266,13 +259,6 @@ msgstr "เกิดข้อผิดพลาดในการส่งข้
 #: model:ir.model.fields,field_description:phone_validation.field_phone_blacklist__message_ids
 msgid "Messages"
 msgstr "ข้อความ"
-
-#. module: phone_validation
-#. odoo-python
-#: code:addons/phone_validation/models/mail_thread_phone.py:0
-#, python-format
-msgid "Missing definition of phone fields."
-msgstr ""
 
 #. module: phone_validation
 #: model:ir.model.constraint,message:phone_validation.constraint_phone_blacklist_unique_number
@@ -294,8 +280,8 @@ msgstr "จํานวนข้อผิดพลาด"
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__message_needaction_counter
 #: model:ir.model.fields,help:phone_validation.field_phone_blacklist__message_needaction_counter
-msgid "Number of messages requiring action"
-msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+msgid "Number of messages which requires an action"
+msgstr "จํานวนข้อความที่ต้องดําเนินการ"
 
 #. module: phone_validation
 #: model:ir.model.fields,help:phone_validation.field_mail_thread_phone__message_has_error_counter
@@ -344,7 +330,6 @@ msgid "Phone/Mobile"
 msgstr "โทรศัพท์/มือถือ"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/models/mail_thread_phone.py:0
 #, python-format
 msgid ""
@@ -368,7 +353,6 @@ msgid "Sanitized Number"
 msgstr "เบอร์ถูกต้อง"
 
 #. module: phone_validation
-#. odoo-python
 #: code:addons/phone_validation/tools/phone_validation.py:0
 #, python-format
 msgid "Unable to parse %(phone)s: %(error)s"
@@ -377,14 +361,13 @@ msgstr ""
 #. module: phone_validation
 #: model_terms:ir.ui.view,arch_db:phone_validation.phone_blacklist_view_form
 msgid "Unblacklist"
-msgstr "ยกเลิกการแบล็คลิสต์"
+msgstr ""
 
 #. module: phone_validation
-#. odoo-python
-#: code:addons/phone_validation/wizard/phone_blacklist_remove.py:0
+#: code:addons/phone_validation/models/phone_blacklist.py:0
 #, python-format
-msgid "Unblock Reason: %(reason)s"
-msgstr "เหตุผลในการเลิกบล็อก: %(reason)s"
+msgid "Unblacklisting Reason: %s"
+msgstr ""
 
 #. module: phone_validation
 #: model:ir.model,name:phone_validation.model_res_users

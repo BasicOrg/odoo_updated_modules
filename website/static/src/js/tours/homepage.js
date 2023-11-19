@@ -1,54 +1,46 @@
-/** @odoo-module **/
+odoo.define("website.tour.homepage", function (require) {
+"use strict";
 
-import wTourUtils from "@website/js/tours/tour_utils";
+const wTourUtils = require("website.tour_utils");
 
 const snippets = [
     {
-        id: 's_banner',
-        name: 'Banner',
+        id: 's_cover',
+        name: 'Cover',
+    },
+    {
+        id: 's_text_image',
+        name: 'Text - Image',
     },
     {
         id: 's_three_columns',
         name: 'Columns',
     },
     {
-        id: 's_text_image',
-        name: 'Image - Text',
-    },
-    {
-        id: 's_masonry_block',
-        name: 'Masonry',
-    },
-    {
-        id: 's_title',
-        name: 'Title',
-    },
-    {
-        id: 's_showcase',
-        name: 'Showcase',
-    },
-    {
-        id: 's_call_to_action',
-        name: 'Call to Action',
+        id: 's_picture',
+        name: 'Picture',
     },
     {
         id: 's_quotes_carousel',
         name: 'Quotes',
     },
+    {
+        id: 's_call_to_action',
+        name: 'Call to Action',
+    },
 ];
 
-wTourUtils.registerThemeHomepageTour('homepage', () => [
-    wTourUtils.dragNDrop(snippets[0], 'top'),
+wTourUtils.registerThemeHomepageTour('homepage', [
+    wTourUtils.dragNDrop(snippets[0]),
     wTourUtils.clickOnText(snippets[0], 'h1'),
     wTourUtils.goBackToBlocks(),
     wTourUtils.dragNDrop(snippets[1]),
     wTourUtils.dragNDrop(snippets[2]),
-    wTourUtils.clickOnSnippet(snippets[2], 'top'),
-    wTourUtils.changeBackgroundColor(),
-    wTourUtils.goBackToBlocks(),
     wTourUtils.dragNDrop(snippets[3]),
-    wTourUtils.dragNDrop(snippets[4], 'top'),
+    wTourUtils.dragNDrop(snippets[4]),
     wTourUtils.dragNDrop(snippets[5]),
-    wTourUtils.dragNDrop(snippets[6]),
-    wTourUtils.dragNDrop(snippets[7]),
+    wTourUtils.clickOnSnippet(snippets[5], 'top'),
+    wTourUtils.changeBackgroundColor(),
 ]);
+
+});

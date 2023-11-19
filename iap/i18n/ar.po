@@ -3,28 +3,22 @@
 # 	* iap
 # 
 # Translators:
-# Martin Trigaux, 2023
-# Wil Odoo, 2023
-# Malaz Abuidris <msea@odoo.com>, 2023
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~15.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Malaz Abuidris <msea@odoo.com>, 2023\n"
-"Language-Team: Arabic (https://app.transifex.com/odoo/teams/41243/ar/)\n"
+"POT-Creation-Date: 2022-06-09 14:06+0000\n"
+"PO-Revision-Date: 2022-09-22 05:52+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__account_info_id
-msgid "Account Info"
-msgstr "معلومات الحساب "
 
 #. module: iap
 #: model_terms:ir.ui.view,arch_db:iap.iap_account_view_form
@@ -33,51 +27,23 @@ msgstr "معلومات الحساب"
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__account_token
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__account_token
 msgid "Account Token"
 msgstr "رمز الحساب "
 
 #. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__account_uuid_hashed
-msgid "Account UUID"
-msgstr "معرف الحساب الفريد عالميًا"
-
-#. module: iap
-#: model:ir.model.fields,help:iap.field_iap_account__account_token
-msgid ""
-"Account token is your authentication key for this service. Do not share it."
-msgstr "رمز الحساب هو مفتاح المصادقة الخاص بك لهذه الخدمة. لا تشاركه. "
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__account_info_ids
-msgid "Accounts from IAP"
-msgstr "الحسابات من عمليات الشراء داخل التطبيق "
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__balance
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__balance
-msgid "Balance"
-msgstr "الرصيد"
-
-#. module: iap
-#: model_terms:ir.ui.view,arch_db:iap.iap_account_view_form
-msgid "Buy Credit"
-msgstr "شراء رصيد "
-
-#. module: iap
-#. odoo-javascript
-#: code:addons/iap/static/src/action_buttons_widget/action_buttons_widget.xml:0
+#. openerp-web
 #: code:addons/iap/static/src/js/insufficient_credit_error_handler.js:0
+#: code:addons/iap/static/src/xml/iap_templates.xml:0
 #, python-format
 msgid "Buy credits"
 msgstr "شراء رصيد"
 
 #. module: iap
-#. odoo-javascript
+#. openerp-web
 #: code:addons/iap/static/src/xml/iap_templates.xml:0
 #, python-format
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "إلغاء "
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__company_ids
@@ -91,32 +57,23 @@ msgstr "تهيئة الإعدادات "
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__create_uid
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__create_uid
 msgid "Created by"
 msgstr "أنشئ بواسطة"
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__create_date
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__create_date
 msgid "Created on"
 msgstr "أنشئ في"
 
 #. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__description
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__description
-msgid "Description"
-msgstr "الوصف"
-
-#. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__display_name
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__display_name
 msgid "Display Name"
 msgstr "اسم العرض "
 
 #. module: iap
-#: model_terms:ir.ui.view,arch_db:iap.iap_account_view_form
-msgid "Hide Token"
-msgstr "إخفاء الرمز "
+#: model_terms:ir.ui.view,arch_db:iap.res_config_settings_view_form
+msgid "Documentation"
+msgstr "التوثيق"
 
 #. module: iap
 #: model:ir.ui.menu,name:iap.iap_root_menu
@@ -126,15 +83,9 @@ msgstr "الوكيل المدرك للهوية (IAP) "
 #. module: iap
 #: model:ir.actions.act_window,name:iap.iap_account_action
 #: model:ir.model,name:iap.model_iap_account
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__account_id
 #: model_terms:ir.ui.view,arch_db:iap.iap_account_view_form
 msgid "IAP Account"
 msgstr "حساب IAP"
-
-#. module: iap
-#: model:ir.model,name:iap.model_iap_account_info
-msgid "IAP Account Info"
-msgstr "معلومات حساب IAP "
 
 #. module: iap
 #: model:ir.ui.menu,name:iap.iap_account_menu
@@ -149,33 +100,30 @@ msgstr "الواجهة البرمجية للتطبيق لـ IAP إثراء ال�
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__id
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__id
 msgid "ID"
 msgstr "المُعرف"
 
 #. module: iap
-#. odoo-javascript
+#. openerp-web
 #: code:addons/iap/static/src/xml/iap_templates.xml:0
 #, python-format
 msgid "Insufficient credit to perform this service."
 msgstr "الرصيد غير كافٍ لإجراء هذه الخدمة."
 
 #. module: iap
+#: model:ir.model.fields,field_description:iap.field_iap_account____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__write_uid
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__write_uid
 msgid "Last Updated by"
 msgstr "آخر تحديث بواسطة"
 
 #. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__write_date
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__write_date
 msgid "Last Updated on"
 msgstr "آخر تحديث في"
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__name
-msgid "Name"
-msgstr "الاسم"
 
 #. module: iap
 #: model_terms:ir.ui.view,arch_db:iap.res_config_settings_view_form
@@ -188,30 +136,18 @@ msgid "Open IAP Account"
 msgstr "فتح حساب IAP"
 
 #. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__service_name
-msgid "Related Service"
-msgstr "الخدمة ذات الصلة "
-
-#. module: iap
 #: model:ir.model.fields,field_description:iap.field_iap_account__service_name
 msgid "Service Name"
 msgstr "اسم الخدمة"
 
 #. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__show_token
-#: model_terms:ir.ui.view,arch_db:iap.iap_account_view_form
-msgid "Show Token"
-msgstr "إظهار الرمز "
-
-#. module: iap
-#. odoo-javascript
+#. openerp-web
 #: code:addons/iap/static/src/js/insufficient_credit_error_handler.js:0
 #, python-format
 msgid "Start a Trial at Odoo"
 msgstr "بدء نسخة تجريبية في أودو"
 
 #. module: iap
-#. odoo-python
 #: code:addons/iap/tools/iap_tools.py:0
 #, python-format
 msgid ""
@@ -222,19 +158,8 @@ msgstr ""
 "منشئ هذا التطبيق. الرابط الذي حاولت الخدمة التواصل معه هو %s "
 
 #. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__warning_threshold
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__warning_threshold
-msgid "Threshold"
-msgstr "الحد الأدنى "
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__unit_name
-msgid "Unit Name"
-msgstr "اسم الوحدة "
-
-#. module: iap
-#. odoo-javascript
-#: code:addons/iap/static/src/action_buttons_widget/action_buttons_widget.xml:0
+#. openerp-web
+#: code:addons/iap/static/src/xml/iap_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:iap.res_config_settings_view_form
 #, python-format
 msgid "View My Services"
@@ -244,20 +169,3 @@ msgstr "عرض خدماتي "
 #: model_terms:ir.ui.view,arch_db:iap.res_config_settings_view_form
 msgid "View your IAP Services and recharge your credits"
 msgstr "قم عرض خدمات IAP الخاصة بك وقم بإعادة شحن رصيدك "
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__warn_me
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__warn_me
-msgid "Warn me"
-msgstr "قم بتحذيري "
-
-#. module: iap
-#: model:ir.model.fields,field_description:iap.field_iap_account__warning_email
-#: model:ir.model.fields,field_description:iap.field_iap_account_info__warning_email
-msgid "Warning Email"
-msgstr "البريد الإلكتروني للتحذير  "
-
-#. module: iap
-#: model:ir.model.fields,help:iap.field_iap_account__warn_me
-msgid "We will send you an email when your balance gets below that threshold"
-msgstr "سنرسل إليك بريداً إلكترونياً عندما يقل رصيدك عن هذا الحد "

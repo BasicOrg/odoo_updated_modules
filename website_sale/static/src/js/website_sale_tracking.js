@@ -1,13 +1,13 @@
-/** @odoo-module **/
+odoo.define('website_sale.tracking', function (require) {
 
-import publicWidget from "@web/legacy/js/public/public_widget";
+var publicWidget = require('web.public.widget');
 
 publicWidget.registry.websiteSaleTracking = publicWidget.Widget.extend({
     selector: '.oe_website_sale',
     events: {
         'click form[action="/shop/cart/update"] a.a-submit': '_onAddProductIntoCart',
-        'click a[href^="/shop/checkout"]': '_onCheckoutStart',
-        'click a[href^="/web/login?redirect"][href*="/shop/checkout"]': '_onCustomerSignin',
+        'click a[href="/shop/checkout"]': '_onCheckoutStart',
+        'click div.oe_cart a[href^="/web?redirect"][href$="/shop/checkout"]': '_onCustomerSignin',
         'click form[action="/shop/confirm_order"] a.a-submit': '_onOrder',
         'click form[target="_self"] button[type=submit]': '_onOrderPayment',
         'view_item_event': '_onViewItem',
@@ -103,7 +103,7 @@ publicWidget.registry.websiteSaleTracking = publicWidget.Widget.extend({
      * @private
      */
     _onOrder: function () {
-        if ($('header#top [href="/web/login"]').length) {
+        if ($('#top_menu [href="/web/login"]').length) {
             this._vpv('/stats/ecom/customer_signup');
         }
         this._vpv('/stats/ecom/order_checkout');
@@ -117,4 +117,6 @@ publicWidget.registry.websiteSaleTracking = publicWidget.Widget.extend({
     },
 });
 
-export default publicWidget.registry.websiteSaleTracking;
+return publicWidget.registry.websiteSaleTracking;
+
+});

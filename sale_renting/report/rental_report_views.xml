@@ -37,7 +37,7 @@
                 <field name="categ_id" optional="hide"/>
                 <field name="user_id" optional="show" widget="many2one_avatar_user"/>
                 <field name="company_id" optional="show" groups="base.group_multi_company"/>
-                <field name="currency_id" optional="show" column_invisible="True"/>
+                <field name="currency_id" optional="show" invisible="1"/>
                 <field name="quantity" optional="show" sum="Sum of Daily Ordered Qty"/>
                 <field name="qty_delivered" optional="hide" sum="Sum of Daily Picked-Up Qty"/>
                 <field name="price" optional="show" widget="monetary" sum="Sum of Daily Amount"/>
@@ -54,7 +54,7 @@
                 <field name="date"/>
                 <filter string="Date" name="year" invisible="1" date="date" default_period="this_year"/>
                 <filter name="Quotations" string="Quotations" domain="[('state','in', ['draft', 'sent'])]"/>
-                <filter name="confirmed_orders" string="Confirmed Orders" domain="[('state', '=', 'sale')]"/>
+                <filter name="confirmed_orders" string="Confirmed Orders" domain="[('state', 'in', ['sale', 'done'])]"/>
                 <separator/>
                 <filter name="filter_date" date="date" default_period="this_year"/>
                 <field name="product_id"/>

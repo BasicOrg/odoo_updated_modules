@@ -1,45 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <!-- Extended views -->
-    <record id="timesheet_view_grid_by_my_timesheet" model="ir.ui.view">
-        <field name="name">account.analytic.line.grid.project</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="timesheet_grid.timesheet_view_grid"/>
-        <field name="arch" type="xml">
-            <field name="task_id" position="after">
-                <field name="helpdesk_ticket_id" type="row"/>
-            </field>
-        </field>
-    </record>
-
-    <record id="hr_timesheet_line_tree_my_inherit_helpdesk_timesheet" model="ir.ui.view">
+     <record id="hr_timesheet_line_tree_inherit_helpdesk_timesheet" model="ir.ui.view">
         <field name="name">account.analytic.line.tree.inherit.helpdesk.timesheet</field>
         <field name="model">account.analytic.line</field>
         <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='task_id']" position="after">
-                <field name="helpdesk_ticket_id" column_invisible="True"/>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="hr_timesheet_line_tree_inherit_helpdesk_timesheet" model="ir.ui.view">
-        <field name="name">account.analytic.line.tree.inherit.helpdesk.timesheet</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="hr_timesheet.timesheet_view_tree_user"/>
-        <field name="arch" type="xml">
             <xpath expr="//field[@name='task_id']" position="attributes">
-                <attribute name="invisible">helpdesk_ticket_id</attribute>
-                <attribute name="readonly">readonly_timesheet</attribute>
+                <attribute name="attrs">{'invisible': [('helpdesk_ticket_id', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//field[@name='task_id']" position="after">
-                <field name="has_helpdesk_team" column_invisible="True"/>
+                <field name="has_helpdesk_team" invisible="1"/>
+                <field name="helpdesk_ticket_id" invisible="1"/>
                 <field name="helpdesk_ticket_id" string="Ticket"
-                    invisible="not has_helpdesk_team or task_id"
-                    readonly="readonly_timesheet"
+                    attrs="{'invisible': ['|', ('has_helpdesk_team', '=', False), ('task_id', '!=', False)]}"
                     optional="hide" groups="helpdesk_timesheet.group_use_helpdesk_timesheet"/>
-                <field name="helpdesk_ticket_id" column_invisible="True"/>
             </xpath>
         </field>
     </record>
@@ -74,63 +48,6 @@
         </field>
     </record>
 
-    <!-- Primary views -->
-    <record id="timesheet_view_form_inherit" model="ir.ui.view">
-        <field name="name">account.analytic.line.form.inherit</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='project_id']" position="after">
-                <field name="display_task" invisible="1"/>
-                <field name="helpdesk_ticket_id" string="Ticket"
-                    invisible="display_task"
-                    readonly="readonly_timesheet"
-                    options="{'no_open': True}" groups="helpdesk_timesheet.group_use_helpdesk_timesheet"/>
-            </xpath>
-            <xpath expr="//field[@name='task_id']" position="attributes">
-                <attribute name="invisible">not display_task</attribute>
-                <attribute name="readonly">readonly_timesheet</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="timesheet_view_form_helpdesk" model="ir.ui.view">
-        <field name="name">account.analytic.line.form.helpdesk</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="helpdesk_timesheet.timesheet_view_form_inherit"/>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <field name="unit_amount" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </field>
-        </field>
-    </record>
-
-    <record id="timesheet_view_form_helpdesk_grid" model="ir.ui.view">
-        <field name="name">account.analytic.line.form.helpdesk.grid</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="helpdesk_timesheet.timesheet_view_form_helpdesk"/>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <header position="replace"/>
-        </field>
-    </record>
-
-    <record id="timesheet_view_grid_by_employee_ticket" model="ir.ui.view">
-        <field name="name">sale_timesheet_enterprise.account.analytic.line.grid.employee</field>
-        <field name="model">account.analytic.line</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="timesheet_grid.timesheet_view_grid_by_employee_editable_manager"/>
-        <field name="arch" type="xml">
-            <xpath expr="//grid" position="attributes">
-                <attribute name="form_view_id">%(helpdesk_timesheet.timesheet_view_form_helpdesk_grid)d</attribute>
-            </xpath>
-            <xpath expr="//field[@name='project_id']" position="replace">
-                <field name="helpdesk_ticket_id" type="row"/>
-            </xpath>
-        </field>
-    </record>
-
     <record id="hr_timesheet_line_tree_helpdesk" model="ir.ui.view">
         <field name="name">account.analytic.line.tree.helpdesk</field>
         <field name="model">account.analytic.line</field>
@@ -141,16 +58,56 @@
             <field name="helpdesk_ticket_id" position="attributes">
                 <attribute name="optional">show</attribute>
             </field>
-            <field name="project_id" position="attributes">
-                <attribute name="optional">hide</attribute>
-            </field>
             <field name="task_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
-            <field name="unit_amount" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </field>
         </field>
+    </record>
+
+    <!-- All Timesheet -->
+    <record id="timesheet_view_form_helpdesk" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.helpdesk</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="timesheet_grid.timesheet_view_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">5000</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='task_id']" position="after">
+                <field name="display_task" invisible="1"/>
+                <field name="helpdesk_ticket_id" string="Ticket"
+                    attrs="{'invisible': [('display_task', '=', True)]}"
+                    groups="helpdesk_timesheet.group_use_helpdesk_timesheet"/>
+            </xpath>
+            <xpath expr="//field[@name='task_id']" position="attributes">
+                <attribute name="attrs">{'invisible': [('display_task', '!=', True)]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_timesheet.timesheet_action_view_all_form" model="ir.actions.act_window.view">
+        <field name="view_id" ref="timesheet_view_form_helpdesk"/>
+    </record>
+
+    <!-- MY Timesheet -->
+    <record id="my_timesheet_view_form_helpdesk" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.helpdesk</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="timesheet_grid.my_timesheet_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='task_id']" position="after">
+                <field name="display_task" invisible="1"/>
+                <field name="helpdesk_ticket_id" string="Ticket"
+                    attrs="{'invisible': [('display_task', '=', True)]}"
+                    groups="helpdesk_timesheet.group_use_helpdesk_timesheet"/>
+            </xpath>
+            <xpath expr="//field[@name='task_id']" position="attributes">
+                <attribute name="attrs">{'invisible': [('display_task', '!=', True)]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_timesheet.act_hr_timesheet_line_view_form" model="ir.actions.act_window.view">
+        <field name="view_id" ref="my_timesheet_view_form_helpdesk"/>
     </record>
 
     <record id="view_kanban_account_analytic_line_helpdesk" model="ir.ui.view">
@@ -183,14 +140,10 @@
         </field>
     </record>
 
-    <!-- Timesheets from helpdesk action -->
     <record id="act_hr_timesheet_line_helpdesk" model="ir.actions.act_window">
         <field name="name">Timesheets</field>
         <field name="res_model">account.analytic.line</field>
-        <field name="view_mode">grid,tree,form,kanban,pivot,graph</field>
-        <field name="context">{
-            "is_timesheet": 1,
-        }</field>
+        <field name="view_mode">tree,form,grid,kanban,pivot,graph</field>
         <field name="search_view_id" ref="hr_timesheet_line_search_helpdesk"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -212,10 +165,10 @@
         <field name="view_id" ref="timesheet_view_form_helpdesk"/>
         <field name="act_window_id" ref="act_hr_timesheet_line_helpdesk"/>
     </record>
-    <record id="act_hr_timesheet_line_helpdesk_grid" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1"/>
+     <record id="act_hr_timesheet_line_helpdesk_grid" model="ir.actions.act_window.view">
+        <field name="sequence" eval="16"/>
         <field name="view_mode">grid</field>
-        <field name="view_id" ref="timesheet_view_grid_by_employee_ticket"/>
+        <field name="view_id" ref="timesheet_grid.timesheet_view_grid_by_employee_readonly"/>
         <field name="act_window_id" ref="act_hr_timesheet_line_helpdesk"/>
     </record>
     <record id="act_hr_timesheet_line_helpdesk_kanban" model="ir.actions.act_window.view">
@@ -237,5 +190,26 @@
         <field name="act_window_id" ref="act_hr_timesheet_line_helpdesk"/>
     </record>
 
+    <record id="timesheet_view_grid_by_my_timesheet" model="ir.ui.view">
+        <field name="name">account.analytic.line.grid.project</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="timesheet_grid.timesheet_view_grid"/>
+        <field name="arch" type="xml">
+            <field name="task_id" position="after">
+                <field name="helpdesk_ticket_id" type="row"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="timesheet_view_grid_by_task_readonly" model="ir.ui.view">
+        <field name="name">account.analytic.line.grid.task</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="timesheet_grid.timesheet_view_grid_by_task_readonly"/>
+        <field name="arch" type="xml">
+            <field name="task_id" position="after">
+                <field name="helpdesk_ticket_id" type="row"/>
+            </field>
+        </field>
+    </record>
 
 </odoo>

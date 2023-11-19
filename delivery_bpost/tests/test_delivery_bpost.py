@@ -110,8 +110,7 @@ class TestDeliveryBpost(TransactionCase):
         picking = sale_order.picking_ids[0]
         self.assertEqual(picking.carrier_id.id, sale_order.carrier_id.id, "Carrier is not the same on Picking and on SO.")
 
-        picking.move_ids[0].quantity = 1.0
-        picking.move_ids[0].picked = True
+        picking.move_ids[0].quantity_done = 1.0
         self.assertGreater(picking.shipping_weight, 0.0, "Picking weight should be positive.")
 
         move_lines_to_pack = picking.move_line_ids.filtered(lambda line: line.product_id.id in [self.product2.id, self.product3.id])
@@ -158,8 +157,7 @@ class TestDeliveryBpost(TransactionCase):
         picking = sale_order.picking_ids[0]
         self.assertEqual(picking.carrier_id.id, sale_order.carrier_id.id, "Carrier is not the same on Picking and on SO.")
 
-        picking.move_ids[0].quantity = 1.0
-        picking.move_ids[0].picked = True
+        picking.move_ids[0].quantity_done = 1.0
         self.assertGreater(picking.shipping_weight, 0.0, "Picking weight should be positive.")
 
         try:
@@ -206,8 +204,7 @@ class TestDeliveryBpost(TransactionCase):
         picking = sale_order.picking_ids[0]
         self.assertEqual(picking.carrier_id.id, sale_order.carrier_id.id, "Carrier is not the same on Picking and on SO.")
 
-        picking.move_ids[0].quantity = 1.0
-        picking.move_ids[0].picked = True
+        picking.move_ids[0].quantity_done = 1.0
         self.assertGreater(picking.shipping_weight, 0.0, "Picking weight should be positive.")
 
         try:
@@ -239,16 +236,17 @@ class TestDeliveryBpost(TransactionCase):
                     'location_id': self.stock_location.id,
                     'location_dest_id': self.customer_location.id,
                     'picking_type_id': self.env.ref('stock.picking_type_out').id,
-                    'state': 'draft',
                     'move_ids_without_package': [(0, None, order1_vals)]}
 
         delivery_order = StockPicking.create(do_vals)
         self.assertEqual(delivery_order.state, 'draft', 'Shipment state should be draft.')
 
         delivery_order.action_confirm()
+        self.assertEqual(delivery_order.state, 'confirmed', 'Shipment state should be waiting(confirmed).')
+
+        delivery_order.action_assign()
         self.assertEqual(delivery_order.state, 'assigned', 'Shipment state should be ready(assigned).')
-        delivery_order.move_ids_without_package.quantity = 1.0
-        delivery_order.move_ids_without_package.picked = True
+        delivery_order.move_ids_without_package.quantity_done = 1.0
 
         try:
             delivery_order.button_validate()

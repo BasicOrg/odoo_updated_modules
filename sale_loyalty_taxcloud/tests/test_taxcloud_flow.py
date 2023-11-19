@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 from . import common
 
-from odoo.exceptions import UserError
 from odoo.fields import Command
 
 class TestSaleCouponTaxCloudFlow(common.TestSaleCouponTaxCloudCommon):
@@ -96,15 +95,3 @@ class TestSaleCouponTaxCloudFlow(common.TestSaleCouponTaxCloudCommon):
         for line in self.order.order_line.filtered(lambda l: not l.reward_id):
             self.assertEqual(line.price_taxcloud, line.price_unit * .9,
                              "The discount should have been applied evenly.")
-
-        self.order.action_confirm()
-        self.assertAlmostEqual(self.order.amount_tax, 12.78, 4,
-                               "Confirming the sale order should not alter the taxes")
-
-    def test_flow_with_auto_done(self):
-        self.env.user.groups_id += self.env.ref('sale.group_auto_done_setting')
-        try:
-            self.test_flow()
-        except UserError:
-            self.fail(
-                "We should be able to confirm the sale order, even if 'Lock Confirmed Sales' is enabled.")

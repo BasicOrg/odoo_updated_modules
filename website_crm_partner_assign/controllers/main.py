@@ -34,19 +34,10 @@ class WebsiteAccount(CustomerPortal):
 
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
-        CrmLead = request.env['crm.lead']
         if 'lead_count' in counters:
-            values['lead_count'] = (
-                CrmLead.search_count(self.get_domain_my_lead(request.env.user))
-                if CrmLead.check_access_rights('read', raise_exception=False)
-                else 0
-            )
+            values['lead_count'] = request.env['crm.lead'].search_count(self.get_domain_my_lead(request.env.user))
         if 'opp_count' in counters:
-            values['opp_count'] = (
-                CrmLead.search_count(self.get_domain_my_opp(request.env.user))
-                if CrmLead.check_access_rights('read', raise_exception=False)
-                else 0
-            )
+            values['opp_count'] = request.env['crm.lead'].search_count(self.get_domain_my_opp(request.env.user))
         return values
 
     @http.route(['/my/leads', '/my/leads/page/<int:page>'], type='http', auth="user", website=True)
@@ -172,9 +163,7 @@ class WebsiteAccount(CustomerPortal):
             "website_crm_partner_assign.portal_my_opportunity", {
                 'opportunity': opp,
                 'user_activity': opp.sudo().activity_ids.filtered(lambda activity: activity.user_id == request.env.user)[:1],
-                'stages': request.env['crm.stage'].search([
-                    ('is_won', '!=', True), '|', ('team_id', '=', False), ('team_id', '=', opp.team_id.id)
-                ], order='sequence desc, name desc, id desc'),
+                'stages': request.env['crm.stage'].search([('is_won', '!=', True)], order='sequence desc, name desc, id desc'),
                 'activity_types': request.env['mail.activity.type'].sudo().search(['|', ('res_model', '=', opp._name), ('res_model', '=', False)]),
                 'states': request.env['res.country.state'].sudo().search([]),
                 'countries': request.env['res.country'].sudo().search([]),
@@ -199,9 +188,9 @@ class WebsiteCrmPartnerAssign(WebsitePartnerPage):
         partners_dom = [('is_company', '=', True), ('grade_id', '!=', False), ('website_published', '=', True),
                         ('grade_id.website_published', '=', True), ('country_id', '!=', False)]
         dom += sitemap_qs2dom(qs=qs, route='/partners/country/')
-        countries = env['res.partner'].sudo()._read_group(partners_dom, groupby=['country_id'])
-        for [country] in countries:
-            loc = '/partners/country/%s' % slug(country)
+        countries = env['res.partner'].sudo().read_group(partners_dom, fields=['id', 'country_id'], groupby='country_id')
+        for country in countries:
+            loc = '/partners/country/%s' % slug(country['country_id'])
             if not qs or qs.lower() in loc:
                 yield {'loc': loc}
 
@@ -233,8 +222,9 @@ class WebsiteCrmPartnerAssign(WebsitePartnerPage):
         # group by grade
         grade_domain = list(base_partner_domain)
         if not country and not country_all:
-            if request.geoip.country_code:
-                country = country_obj.search([('code', '=', request.geoip.country_code)], limit=1)
+            country_code = request.geoip.get('country_code')
+            if country_code:
+                country = country_obj.search([('code', '=', country_code)], limit=1)
         if country:
             grade_domain += [('country_id', '=', country.id)]
         grades = partner_obj.sudo().read_group(
@@ -295,7 +285,7 @@ class WebsiteCrmPartnerAssign(WebsitePartnerPage):
 
         # search partners matching current search parameters
         partner_ids = partner_obj.sudo().search(
-            base_partner_domain, order="grade_sequence ASC, implemented_partner_count DESC, complete_name ASC, id ASC",
+            base_partner_domain, order="grade_sequence ASC, implemented_partner_count DESC, display_name ASC, id ASC",
             offset=pager['offset'], limit=self._references_per_page)
         partners = partner_ids.sudo()
 
@@ -319,7 +309,7 @@ class WebsiteCrmPartnerAssign(WebsitePartnerPage):
 
 
     # Do not use semantic controller due to sudo()
-    @http.route()
+    @http.route(['/partners/<partner_id>'], type='http', auth="public", website=True)
     def partners_detail(self, partner_id, **post):
         _, partner_id = unslug(partner_id)
         current_grade, current_country = None, None

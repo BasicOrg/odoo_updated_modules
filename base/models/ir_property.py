@@ -17,7 +17,6 @@ TYPE2FIELD = {
     'date': 'value_datetime',
     'datetime': 'value_datetime',
     'selection': 'value_text',
-    'html': 'value_text',
 }
 
 TYPE2CLEAN = {
@@ -30,7 +29,6 @@ TYPE2CLEAN = {
     'binary': lambda val: val or False,
     'date': lambda val: val.date() if val else False,
     'datetime': lambda val: val or False,
-    'html': lambda val: val or False,
 }
 
 
@@ -58,7 +56,6 @@ class Property(models.Model):
                              ('date', 'Date'),
                              ('datetime', 'DateTime'),
                              ('selection', 'Selection'),
-                             ('html', 'Html'),
                              ],
                             required=True,
                             default='many2one',
@@ -113,24 +110,21 @@ class Property(models.Model):
         # if any of the records we're writing on has a res_id=False *or*
         # we're writing a res_id=False on any record
         default_set = False
-
-        values = self._update_values(values)
-        default_set = (
-            # turning a record value into a fallback value
-            values.get('res_id') is False and any(record.res_id for record in self)
-        ) or any(
-            # changing a fallback value
-            not record.res_id and any(record[fname] != self._fields[fname].convert_to_record(value, self) for fname, value in values.items())
-            for record in self
-        )
-        r = super().write(values)
+        if self._ids:
+            self.env.cr.execute(
+                'SELECT EXISTS (SELECT 1 FROM ir_property WHERE id in %s AND res_id IS NULL)', [self._ids])
+            default_set = self.env.cr.rowcount == 1 or any(
+                v.get('res_id') is False
+                for v in values
+            )
+        r = super(Property, self).write(self._update_values(values))
         if default_set:
             # DLE P44: test `test_27_company_dependent`
             # Easy solution, need to flush write when changing a property.
             # Maybe it would be better to be able to compute all impacted cache value and update those instead
-            # Then clear_cache must be removed as well.
+            # Then clear_caches must be removed as well.
             self.env.flush_all()
-            self.env.registry.clear_cache()
+            self.clear_caches()
         return r
 
     @api.model_create_multi
@@ -141,7 +135,7 @@ class Property(models.Model):
         if created_default:
             # DLE P44: test `test_27_company_dependent`
             self.env.flush_all()
-            self.env.registry.clear_cache()
+            self.clear_caches()
         return r
 
     def unlink(self):
@@ -154,7 +148,7 @@ class Property(models.Model):
             default_deleted = self.env.cr.rowcount == 1
         r = super().unlink()
         if default_deleted:
-            self.env.registry.clear_cache()
+            self.clear_caches()
         return r
 
     def get_by_record(self):
@@ -271,7 +265,7 @@ class Property(models.Model):
 
         field = self.env[model]._fields[name]
         field_id = self.env['ir.model.fields']._get(model, name).id
-        company_id = self.env.company.id or None
+        company_id = self.env.company.id
 
         if field.type == 'many2one':
             comodel = self.env[field.comodel_name]
@@ -420,11 +414,6 @@ class Property(models.Model):
                 target_names = target.name_search(value, operator=operator, limit=None)
                 target_ids = [n[0] for n in target_names]
                 operator, value = 'in', [makeref(v) for v in target_ids]
-            elif operator in ('any', 'not any'):
-                if operator == 'not any':
-                    negate = True
-                operator = 'in'
-                value = list(map(makeref, self.env[field.comodel_name]._search(value)))
 
         elif field.type in ('integer', 'float'):
             # No record is created in ir.property if the field's type is float or integer with a value

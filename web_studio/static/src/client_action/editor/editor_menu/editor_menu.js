@@ -1,50 +1,96 @@
 /** @odoo-module */
-import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
+
+import { useBus, useService } from "@web/core/utils/hooks";
+import { _lt } from "@web/core/l10n/translation";
+import { sprintf } from "@web/core/utils/strings";
 import { localization } from "@web/core/l10n/localization";
 import { registry } from "@web/core/registry";
 
-import { Component, useState } from "@odoo/owl";
+const { Component, useState } = owl;
 const editorTabRegistry = registry.category("web_studio.editor_tabs");
 
-class Breadcrumbs extends Component {
-    static template = "web_studio.EditorMenu.Breadcrumbs";
-    static props = {
-        currentTab: { type: Object },
-        switchTab: Function,
-    };
-    setup() {
-        this.editionFlow = useState(this.env.editionFlow);
-        this.nextCrumbId = 1;
-    }
-    get breadcrumbs() {
-        const currentTab = this.props.currentTab;
-        const crumbs = [
-            {
-                data: {
-                    name: currentTab.name,
-                },
-                handler: () => this.props.switchTab({ tab: currentTab.id }),
-            },
-        ];
-        const breadcrumbs = this.editionFlow.breadcrumbs;
-        breadcrumbs.forEach((crumb) => {
-            crumbs.push(crumb);
-        });
-        for (const crumb of crumbs) {
-            crumb.id = this.nextCrumbId++;
-        }
-        return crumbs;
-    }
-}
-
 export class EditorMenu extends Component {
-    static components = { Breadcrumbs };
     setup() {
         this.l10n = localization;
         this.studio = useService("studio");
         this.rpc = useService("rpc");
-        this.editionFlow = useState(this.env.editionFlow);
+        this.state = useState({
+            redo_available: false,
+            undo_available: false,
+            snackbar: undefined,
+        });
+
+        this.nextCrumbId = 1;
+
+        useBus(this.studio.bus, "UPDATE", async () => {
+            await this.render(true);
+            this.state.snackbar = "off";
+        });
+
+        useBus(this.studio.bus, "undo_available", () => {
+            this.state.undo_available = true;
+        });
+        useBus(this.studio.bus, "undo_not_available", () => {
+            this.state.undo_available = false;
+        });
+        useBus(this.studio.bus, "redo_available", () => {
+            this.state.redo_available = true;
+        });
+        useBus(this.studio.bus, "redo_not_available", () => {
+            this.state.redo_available = false;
+        });
+
+        useBus(this.studio.bus, "toggle_snack_bar", (e) => {
+            this.state.snackbar = e.detail;
+        });
+    }
+
+    get breadcrumbs() {
+        const { editorTab } = this.studio;
+        const currentTab = this.editorTabs.find((tab) => tab.id === editorTab);
+        const crumbs = [
+            {
+                name: currentTab.name,
+                handler: () => this.openTab(currentTab.id),
+            },
+        ];
+        if (currentTab.id === "views") {
+            const { editedViewType, x2mEditorPath } = this.studio;
+            if (editedViewType) {
+                const currentViewType = this.constructor.viewTypes.find(
+                    (vt) => vt.type === editedViewType
+                );
+                crumbs.push({
+                    name: currentViewType.title,
+                    handler: () =>
+                        this.studio.setParams({
+                            x2mEditorPath: [],
+                        }),
+                });
+            }
+            x2mEditorPath.forEach(({ x2mViewType }, index) => {
+                const viewType = this.constructor.viewTypes.find((vt) => vt.type === x2mViewType);
+                crumbs.push({
+                    name: sprintf(
+                        this.env._t("Subview %s"),
+                        (viewType && viewType.title) || this.env._t("Other")
+                    ),
+                    handler: () =>
+                        this.studio.setParams({
+                            x2mEditorPath: x2mEditorPath.slice(0, index + 1),
+                        }),
+                });
+            });
+        } else if (currentTab.id === "reports" && this.studio.editedReport) {
+            crumbs.push({
+                name: this.studio.editedReport.data.name,
+                handler: () => this.studio.setParams({}),
+            });
+        }
+        for (const crumb of crumbs) {
+            crumb.id = this.nextCrumbId++;
+        }
+        return crumbs;
     }
 
     get activeViews() {
@@ -58,81 +104,77 @@ export class EditorMenu extends Component {
         return entries.map((entry) => Object.assign({}, entry[1], { id: entry[0] }));
     }
 
-    get currentTab() {
-        return this.editorTabs.find((tab) => tab.id === this.studio.editorTab);
-    }
-
     openTab(tab) {
         this.props.switchTab({ tab });
     }
 }
-EditorMenu.props = {
-    switchTab: Function,
-    switchView: Function,
-};
 EditorMenu.template = "web_studio.EditorMenu";
 EditorMenu.viewTypes = [
     {
-        title: _t("Form"),
+        title: _lt("Form"),
         type: "form",
         iconClasses: "fa fa-address-card",
     },
     {
-        title: _t("List"),
+        title: _lt("List"),
         type: "list",
         iconClasses: "oi oi-view-list",
     },
     {
-        title: _t("Kanban"),
+        title: _lt("Kanban"),
         type: "kanban",
         iconClasses: "oi oi-view-kanban",
     },
     {
-        title: _t("Map"),
+        title: _lt("Map"),
         type: "map",
         iconClasses: "fa fa-map-marker",
     },
     {
-        title: _t("Calendar"),
+        title: _lt("Calendar"),
         type: "calendar",
         iconClasses: "fa fa-calendar",
     },
     {
-        title: _t("Graph"),
+        title: _lt("Graph"),
         type: "graph",
         iconClasses: "fa fa-area-chart",
     },
     {
-        title: _t("Pivot"),
+        title: _lt("Pivot"),
         type: "pivot",
         iconClasses: "oi oi-view-pivot",
     },
     {
-        title: _t("Gantt"),
+        title: _lt("Gantt"),
         type: "gantt",
         iconClasses: "fa fa-tasks",
     },
     {
-        title: _t("Cohort"),
+        title: _lt("Dashboard"),
+        type: "dashboard",
+        iconClasses: "fa fa-tachometer",
+    },
+    {
+        title: _lt("Cohort"),
         type: "cohort",
         iconClasses: "oi oi-view-cohort",
     },
     {
-        title: _t("Activity"),
+        title: _lt("Activity"),
         type: "activity",
         iconClasses: "fa fa-clock-o",
     },
     {
-        title: _t("Search"),
+        title: _lt("Search"),
         type: "search",
         iconClasses: "oi oi-search",
     },
 ];
 
 editorTabRegistry
-    .add("views", { name: _t("Views"), action: "web_studio.action_editor" })
-    .add("reports", { name: _t("Reports") })
-    .add("automations", { name: _t("Automations") })
-    .add("automation_webhooks", { name: _t("Webhooks") })
-    .add("acl", { name: _t("Access Control") })
-    .add("filters", { name: _t("Filter Rules") });
+    .add("views", { name: _lt("Views"), action: "web_studio.action_editor" })
+    .add("reports", { name: _lt("Reports") })
+    .add("automations", { name: _lt("Automations") })
+    .add("acl", { name: _lt("Access Control") })
+    .add("filters", { name: _lt("Filter Rules") });

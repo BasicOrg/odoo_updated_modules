@@ -58,7 +58,7 @@ QUnit.module('Marketing Automation', (hooks) => {
     });
 
     QUnit.test('render basic hirarchy kanban', async function (assert) {
-        assert.expect(9);
+        assert.expect(10);
 
         await makeView({
             type: "form",
@@ -76,11 +76,16 @@ QUnit.module('Marketing Automation', (hooks) => {
                                     '<field name="name"/>' +
                                     '<field name="parent_id"/>' +
                                     '<templates>' +
-                                        '<div t-name="kanban-box">' +
-                                            '<div class="o_ma_body position-relative" t-att-data-record-id="record.id.raw_value">' +
-                                                '<div class="o_title">' +
-                                                    '<t t-esc="record.name.value"/>' +
-                                                '</div>' +
+                                        '<div t-name="kanban-box" t-if="!record.parent_id.raw_value || props.displayChildren">' +
+                                            '<div class="o_title">' +
+                                                '<t t-esc="record.name.value"/>' +
+                                            '</div>' +
+                                            '<t t-set="children" t-value="props.record.data.children"/>' +
+                                            '<div class="o_hierarchy_children" t-if="children and children.length !== 0">' +
+                                                '<t t-foreach="children" t-as="record" t-key="record.data.id">' +
+                                                    '<HierarchyKanbanRecord displayChildren="true" archInfo="props.archInfo" record="record" templates="props.templates" list="props.list"' +
+                                                    '/>' +
+                                                '</t>' +
                                             '</div>' +
                                         '</div>' +
                                     '</templates>' +
@@ -94,38 +99,36 @@ QUnit.module('Marketing Automation', (hooks) => {
 
         // Checking number of child and their positions
         const parentRecords = target
-            .querySelectorAll('.o_ma_hierarchy_container .o_kanban_renderer > .o_kanban_record:not(.o_kanban_ghost):not(:empty) > .o_ma_body');
-        const childrenRecords = target
-            .querySelectorAll('.o_ma_hierarchy_container .o_kanban_renderer > .o_kanban_record:not(.o_kanban_ghost):not(:empty) > .o_ma_body_wrapper > .o_ma_body');
-        const grandChildrenRecords = target
-            .querySelectorAll('.o_ma_hierarchy_container .o_kanban_renderer > .o_kanban_record:not(.o_kanban_ghost):not(:empty) > .o_ma_body_wrapper > .o_ma_body_wrapper > .o_ma_body');
-        assert.strictEqual(parentRecords.length, 2, "There should be 2 parents");
-        assert.strictEqual(childrenRecords.length, 3, "There should be 3 children");
-        assert.strictEqual(grandChildrenRecords.length, 1, "There should be 1 grand-child");
+            .querySelectorAll('.o_ma_hierarchy_container .o_kanban_renderer > .o_kanban_record:not(.o_kanban_ghost):not(:empty)')
+        const childSelector = '> div > .o_hierarchy_children > .o_kanban_record:not(.o_kanban_ghost):not(:empty)';
+        assert.strictEqual(parentRecords.length, 2, "There should be 2 parent");
+        assert.containsOnce(parentRecords[0], childSelector, "First parent should have 1 child");
+        assert.containsN(parentRecords[1], childSelector, 2, "Second parent should have 2 child");
+        assert.containsOnce(parentRecords[1], childSelector + ' ' + childSelector, "2nd parent's 2nd Child should have 1 child");
 
         // Checking titles of kanban to verify proper values
         assert.strictEqual(
-            parentRecords[0].querySelector(':scope .o_title').innerText,
+            parentRecords[0].querySelector(':scope > div > .o_title').innerText,
             'Parent 1',
             "Title of 1st parent");
         assert.strictEqual(
-            parentRecords[1].querySelector(':scope .o_title').innerText,
+            parentRecords[1].querySelector(':scope > div > .o_title').innerText,
             'Parent 2',
             "Title of 2nd parent");
         assert.strictEqual(
-            childrenRecords[0].querySelector(':scope .o_title').innerText,
+            parentRecords[0].querySelector(':scope ' + childSelector + ' > div > .o_title').innerText,
             'Parent 1 > Child 1',
             "Title of 1st parent's child");
         assert.strictEqual(
-            childrenRecords[1].querySelector(':scope .o_title').innerText,
+            parentRecords[1].querySelector(':scope ' + childSelector + ':first-child > div > .o_title').innerText,
             'Parent 2 > Child 1',
             "Title of 2nd parent's 1st child");
         assert.strictEqual(
-            childrenRecords[2].querySelector(':scope > .o_title').innerText,
+            parentRecords[1].querySelector(':scope ' + childSelector + ':last-child > div > .o_title').innerText,
             'Parent 2 > Child 2',
             "Title of 2nd parent's 2nd child");
         assert.strictEqual(
-            grandChildrenRecords[0].querySelector(':scope > .o_title').innerText,
+            parentRecords[1].querySelector(':scope ' + childSelector + ':last-child ' + childSelector +' > div > .o_title').innerText,
             'Parent 2 > Child 2 > Child 1',
             "Title of 2nd parent's 2nd child's 1st child");
     });

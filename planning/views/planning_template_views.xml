@@ -8,17 +8,17 @@
             <field name="arch" type="xml">
                 <form string="Shift Template Form">
                     <sheet>
-                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <group>
-                                <label for="start_time" string="Start &amp; End Hours" widget="float_time"/>
+                                <label for="start_time" widget="float_time"/>
                                 <div class="d-flex flex-column flex-shrink-1">
                                     <div class="d-flex">
                                         <field name="start_time" widget="float_time" class="oe_inline"/>
                                         <i class="fa fa-long-arrow-right my-1 mx-1" aria-label="Arrow icon" title="Arrow"/>
-                                        <field name="end_time" widget="float_time" class="flex-shrink-1 oe_inline"/>
-                                        <span class="ms-2 flex-shrink-1" invisible="duration_days &lt;= 1">
-                                            (<field name="duration_days" class="oe_inline"/> days span)
+                                        <field name="end_time" widget="float_time" class="flex-shrink-1"/>
+                                        <span class="ms-2 flex-shrink-1" attrs="{'invisible': [('duration_days', '&lt;=', 1)]}">
+                                            (<field name="duration_days"/> days span)
                                         </span>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                                         <div class="row">
                                             <strong class="col-12">
                                                 <i class="fa fa-clock-o" role="img" aria-label="Hours" title="Hours"/>
-                                                <field name="name" class="ms-2"/>
+                                                <field name="name" />
                                             </strong>
                                             <strong class="col-12">
                                                 <field name="role_id" />
@@ -94,6 +94,7 @@
                     <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
                     <group expand="1" string="Group By">
                         <filter string="Role" name="group_by_role" context="{'group_by':'role_id'}"/>
+                        <filter string="Start Hour" name="group_by_start_time" context="{'group_by': 'start_time'}"/>
                     </group>
                 </search>
             </field>

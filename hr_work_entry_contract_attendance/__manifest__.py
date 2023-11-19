@@ -6,6 +6,10 @@
     'category': 'Human Resources/Employees',
     'sequence': 95,
     'summary': 'Create work entries from the employee\'s attendances',
+    'description': '',
+    'installable': True,
+    'application': False,
+    'auto_install': True,
     'post_init_hook': '_generate_attendances',
     'depends': [
         'hr_work_entry_contract',
@@ -18,6 +22,4 @@
         'data/hr_work_entry_contract_attendance_demo.xml',
     ],
     'license': 'OEEL-1',
-    'installable': True,
-    'auto_install': True,
 }

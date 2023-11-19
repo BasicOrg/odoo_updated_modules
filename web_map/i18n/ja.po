@@ -3,16 +3,20 @@
 # 	* web_map
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
+# Tim Siu Lai <tl@roomsfor.hk>, 2022
+# Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
+# Noma Yuki, 2022
+# Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server saas~15.4+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
+"POT-Creation-Date: 2022-06-09 14:11+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Ryoko Tsuda <ryoko@quartile.co>, 2022\n"
+"Language-Team: Japanese (https://www.transifex.com/odoo/teams/41243/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,7 +24,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
@@ -28,17 +32,20 @@ msgid ""
 ".st0{opacity:0.3;enable-background:new;}\n"
 "                .st1{fill:currentColor;stroke:#1A1919;stroke-width:3;stroke-miterlimit:10;}"
 msgstr ""
-".st0{opacity:0.3;enable-background:new;}\n"
-"                .st1{fill:currentColor;stroke:#1A1919;stroke-width:3;stroke-miterlimit:10;}"
 
 #. module: web_map
 #: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
 msgid ""
-"<i class=\"oi oi-arrow-right\"/>\n"
-"                                Sign up to MapBox to get a free token"
+"<i class=\"fa fa-arrow-right\"/>\n"
+"                                    Get token"
 msgstr ""
-"<i class=\"oi oi-arrow-right\"/>\n"
-"                               MapBoxに登録して無料トークンを取得"
+"<i class=\"fa fa-arrow-right\"/>\n"
+"                                    トークンを取得"
+
+#. module: web_map
+#: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Map Routes</span>"
+msgstr "<span class=\"o_form_label\">地図ルート</span>"
 
 #. module: web_map
 #: model:ir.model,name:web_map.model_ir_actions_act_window_view
@@ -46,12 +53,14 @@ msgid "Action Window View"
 msgstr "アクションウィンドウビュー"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #, python-format
 msgid "Address"
-msgstr "住所"
+msgstr "アドレス"
 
 #. module: web_map
 #: model:ir.model,name:web_map.model_base
@@ -59,7 +68,9 @@ msgid "Base"
 msgstr "ベース"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
@@ -88,21 +99,23 @@ msgid "HTTP Routing"
 msgstr "HTTPルーティング"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_view.js:0
 #: code:addons/web_map/static/src/map_view/map_view.js:0
 #, python-format
 msgid "Items"
 msgstr "件"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Locating new addresses..."
 msgstr "新しいアドレスを見つけています..."
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_view.js:0
 #: model:ir.model.fields.selection,name:web_map.selection__ir_actions_act_window_view__view_mode__map
 #: model:ir.model.fields.selection,name:web_map.selection__ir_ui_view__type__map
@@ -111,30 +124,20 @@ msgid "Map"
 msgstr "マップ"
 
 #. module: web_map
-#: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
-msgid "Map Routes"
-msgstr "地図ルート"
-
-#. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "MapBox servers unreachable"
 msgstr "マップボックスサーバに通信できません"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_renderer.js:0
 #: code:addons/web_map/static/src/map_view/map_renderer.js:0
 #, python-format
 msgid "Name"
 msgstr "名称"
-
-#. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
-#, python-format
-msgid "Navigate to"
-msgstr "ナビゲート先:"
 
 #. module: web_map
 #: model:ir.model.fields,help:web_map.field_res_config_settings__map_box_token
@@ -142,32 +145,25 @@ msgid "Necessary for some functionalities in the map view"
 msgstr "マップビューのいくつかの機能で必要です"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "No"
 msgstr "いいえ"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "None"
 msgstr "なし"
 
 #. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
-#, python-format
-msgid "Open"
-msgstr "開く"
-
-#. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "OpenStreetMap's request limit exceeded, try again later."
-msgstr "オープンストリートマップの限度を超えました。後ほど試して下さい。"
+msgstr ""
 
 #. module: web_map
 #: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
@@ -175,35 +171,38 @@ msgid "Set a MapBox account to activate routes and style"
 msgstr "ルートとスタイルを有効にするためにマップボックスアカウントを設定してください"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Set up token"
 msgstr "トークンの設定をする"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Some routing points are too far apart"
 msgstr "いくつかのルーティング地点が離れすぎています"
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "The MapBox server is unreachable"
 msgstr "マップボックスサーバに通信できません"
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "The token input is not valid"
 msgstr "トークン入力が有効ではありません"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
@@ -214,20 +213,18 @@ msgid ""
 msgstr "ビューが他のプロバイダに変わりましたが機能は限定されます。"
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/res_config_settings.py:0
 #, python-format
 msgid "This referer is not authorized"
 msgstr "このリファラはオーソライズされていません。"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
-msgid ""
-"To get routing on your map, you first need to set up your MapBox token. It's"
-" free."
-msgstr "地図上で経路を有効にするために、まず、マップボックストークンを設定して下さい。無料です。"
+msgid "To get routing on your map, you first need to setup your Mapbox token."
+msgstr "地図上で経路を有効にするために、マップボックストークンを設定してください"
 
 #. module: web_map
 #: model_terms:ir.ui.view,arch_db:web_map.res_config_settings_view_form
@@ -240,49 +237,56 @@ msgid "Token Map Box"
 msgstr "トークンマップボックス"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Token invalid"
 msgstr "不正なトークン"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Too many requests, try again in a few minutes"
-msgstr "要求数が過剰です。数分後にお試し下さい。"
+msgstr "リクエスト量が過剰です。数分後にお試しください"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Too many routing points (maximum 25)"
 msgstr "ルーティング地点が多すぎます(最大25)"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_model.js:0
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Unauthorized connection"
 msgstr "オーソライズされていない接続"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Undefined"
 msgstr "未定義"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
 #: code:addons/web_map/static/src/map_view/map_renderer.xml:0
 #, python-format
 msgid "Unsuccessful routing request:"
-msgstr "ルーティング要求が失敗:"
+msgstr "ルーティングリクエストが失敗:"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/js/map_view.js:0
 #: code:addons/web_map/static/src/map_view/map_controller.js:0
 #, python-format
 msgid "Untitled"
@@ -296,28 +300,42 @@ msgstr "ビュー"
 #. module: web_map
 #: model:ir.model.fields,field_description:web_map.field_ir_actions_act_window_view__view_mode
 #: model:ir.model.fields,field_description:web_map.field_ir_ui_view__type
-#: model:ir.model.fields,field_description:web_map.field_website_controller_page__type
-#: model:ir.model.fields,field_description:web_map.field_website_page__type
 msgid "View Type"
 msgstr "ビュータイプ"
 
 #. module: web_map
-#. odoo-javascript
-#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_controller.xml:0
 #, python-format
 msgid "View in Google Maps"
 msgstr "Googleマップで参照"
 
 #. module: web_map
-#. odoo-javascript
+#. openerp-web
 #: code:addons/web_map/static/src/map_view/map_model.js:0
 #, python-format
 msgid "Yes"
 msgstr "はい"
 
 #. module: web_map
-#. odoo-python
 #: code:addons/web_map/models/models.py:0
 #, python-format
 msgid "You need to set a Contact field on this model to use the Map View"
 msgstr "マップビューを使うには連絡先フィールドを設定してください"
+
+#. module: web_map
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#, python-format
+msgid "navigate to"
+msgstr "ナビゲート先は"
+
+#. module: web_map
+#. openerp-web
+#: code:addons/web_map/static/src/legacy/xml/map.xml:0
+#: code:addons/web_map/static/src/map_view/map_renderer.xml:0
+#, python-format
+msgid "open"
+msgstr "オープン"

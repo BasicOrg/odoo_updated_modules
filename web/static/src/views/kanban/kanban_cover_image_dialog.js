@@ -4,7 +4,7 @@ import { Dialog } from "@web/core/dialog/dialog";
 import { FileInput } from "@web/core/file_input/file_input";
 import { useService } from "@web/core/utils/hooks";
 
-import { Component, useState, onWillStart } from "@odoo/owl";
+const { Component, useState, onWillStart } = owl;
 
 let nextDialogId = 1;
 
@@ -59,7 +59,8 @@ export class KanbanCoverImageDialog extends Component {
 
     async setCover() {
         const id = this.state.selectedAttachmentId ? [this.state.selectedAttachmentId] : false;
-        await this.props.record.update({ [this.props.fieldName]: id }, { save: true });
+        await this.props.record.update({ [this.props.fieldName]: id });
+        await this.props.record.save();
         this.props.close();
     }
 

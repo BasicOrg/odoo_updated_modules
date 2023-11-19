@@ -3,16 +3,17 @@
 # 	* account_edi_proxy_client
 # 
 # Translators:
-# Wil Odoo, 2023
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Dutch (https://app.transifex.com/odoo/teams/41243/nl/)\n"
+"POT-Creation-Date: 2021-11-16 13:18+0000\n"
+"PO-Revision-Date: 2022-09-22 05:44+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Dutch (https://www.transifex.com/odoo/teams/41243/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -30,14 +31,14 @@ msgid "Account Edi Proxy Client"
 msgstr "Account EDI-proxyclient"
 
 #. module: account_edi_proxy_client
-#: model_terms:ir.ui.view,arch_db:account_edi_proxy_client.view_form_account_edi_proxy_client_user
-msgid "Account Journal"
-msgstr "Dagboek"
-
-#. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__active
 msgid "Active"
 msgstr "Actief"
+
+#. module: account_edi_proxy_client
+#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__edi_format_code
+msgid "Code"
+msgstr "Code"
 
 #. module: account_edi_proxy_client
 #: model:ir.model,name:account_edi_proxy_client.model_res_company
@@ -52,37 +53,27 @@ msgstr "Bedrijf"
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__create_uid
 msgid "Created by"
-msgstr "Aangemaakt door"
+msgstr "Gemaakt door"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__create_date
 msgid "Created on"
-msgstr "Aangemaakt op"
-
-#. module: account_edi_proxy_client
-#: model:ir.model.fields.selection,name:account_edi_proxy_client.selection__account_edi_proxy_client_user__edi_mode__demo
-msgid "Demo mode"
-msgstr "Demomodus"
+msgstr "Gemaakt op"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__display_name
 msgid "Display Name"
-msgstr "Schermnaam"
+msgstr "Weergavenaam"
 
 #. module: account_edi_proxy_client
-#: model:ir.actions.act_window,name:account_edi_proxy_client.action_tree_account_edi_proxy_client_user
-msgid "EDI Proxy User"
-msgstr "EDI-proxygebruiker"
+#: model:ir.model,name:account_edi_proxy_client.model_account_edi_format
+msgid "EDI format"
+msgstr "EDI formaat"
 
 #. module: account_edi_proxy_client
-#: model:ir.ui.menu,name:account_edi_proxy_client.menu_account_proxy_client_user
-msgid "EDI Proxy Users"
-msgstr "EDI-proxygebruikers"
-
-#. module: account_edi_proxy_client
-#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__edi_mode
-msgid "EDI operating mode"
-msgstr "EDI bedrijfsmodus"
+#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__edi_format_id
+msgid "Edi Format"
+msgstr "EDI formaat"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__edi_identification
@@ -100,6 +91,11 @@ msgid "Id Client"
 msgstr "Id Client"
 
 #. module: account_edi_proxy_client
+#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__write_uid
 msgid "Last Updated by"
 msgstr "Laatst bijgewerkt door"
@@ -107,7 +103,7 @@ msgstr "Laatst bijgewerkt door"
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__write_date
 msgid "Last Updated on"
-msgstr "Laatst bijgewerkt op"
+msgstr "Laatst geupdate op"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__private_key
@@ -115,29 +111,9 @@ msgid "Private Key"
 msgstr "Private Key"
 
 #. module: account_edi_proxy_client
-#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__private_key_filename
-msgid "Private Key Filename"
-msgstr "Bestandsnaam Private Key"
-
-#. module: account_edi_proxy_client
-#: model:ir.model.fields.selection,name:account_edi_proxy_client.selection__account_edi_proxy_client_user__edi_mode__prod
-msgid "Production mode"
-msgstr "Productiemodus"
-
-#. module: account_edi_proxy_client
-#: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__proxy_type
-msgid "Proxy Type"
-msgstr "Type proxy"
-
-#. module: account_edi_proxy_client
 #: model:ir.model.fields,field_description:account_edi_proxy_client.field_account_edi_proxy_client_user__refresh_token
 msgid "Refresh Token"
 msgstr "Vernieuw token"
-
-#. module: account_edi_proxy_client
-#: model:ir.model.fields.selection,name:account_edi_proxy_client.selection__account_edi_proxy_client_user__edi_mode__test
-msgid "Test mode"
-msgstr "Test mode"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,help:account_edi_proxy_client.field_account_edi_proxy_client_user__private_key
@@ -146,11 +122,14 @@ msgstr "De sleutel om alle gegevens van de gebruiker te versleutelen"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.fields,help:account_edi_proxy_client.field_account_edi_proxy_client_user__edi_identification
-msgid "The unique id that identifies this user, typically the vat"
-msgstr "De unieke id die deze gebruiker identificeert, meestal het BTW-nummer"
+msgid ""
+"The unique id that identifies this user for on the edi format, typically the"
+" vat"
+msgstr ""
+"De unieke id die deze gebruiker identificeert in het edi-formaat, meestal "
+"het btw-nummer"
 
 #. module: account_edi_proxy_client
-#. odoo-python
 #: code:addons/account_edi_proxy_client/models/account_edi_proxy_user.py:0
 #, python-format
 msgid ""
@@ -161,7 +140,6 @@ msgstr ""
 "De URL waarmee contact werd gezocht, was %s"
 
 #. module: account_edi_proxy_client
-#. odoo-python
 #: code:addons/account_edi_proxy_client/models/account_edi_proxy_user.py:0
 #, python-format
 msgid ""
@@ -172,7 +150,6 @@ msgstr ""
 "De URL waarmee contact werd gezocht, was %s. %s"
 
 #. module: account_edi_proxy_client
-#. odoo-python
 #: code:addons/account_edi_proxy_client/models/account_edi_proxy_user.py:0
 #, python-format
 msgid ""
@@ -182,14 +159,9 @@ msgstr ""
 "%r"
 
 #. module: account_edi_proxy_client
-#: model:ir.model.constraint,message:account_edi_proxy_client.constraint_account_edi_proxy_client_user_unique_active_company_proxy
-msgid "This company has an active user already created for this EDI type"
-msgstr ""
-
-#. module: account_edi_proxy_client
-#: model:ir.model.constraint,message:account_edi_proxy_client.constraint_account_edi_proxy_client_user_unique_active_edi_identification
-msgid "This edi identification is already assigned to an active user"
-msgstr ""
+#: model:ir.model.constraint,message:account_edi_proxy_client.constraint_account_edi_proxy_client_user_unique_edi_identification_per_format
+msgid "This edi identification is already assigned to a user"
+msgstr "Deze edi-identificatie is al toegewezen aan een gebruiker"
 
 #. module: account_edi_proxy_client
 #: model:ir.model.constraint,message:account_edi_proxy_client.constraint_account_edi_proxy_client_user_unique_id_client

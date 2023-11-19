@@ -75,12 +75,6 @@ QUnit.module("Fields", (hooks) => {
             "should have rendered the email button as a link with correct classes"
         );
         assert.hasAttrValue(emailBtn, "href", "mailto:yop", "should have proper mailto prefix");
-        assert.hasAttrValue(
-            emailBtn,
-            "target",
-            "_blank",
-            "should have target attribute set to _blank"
-        );
 
         // change value in edit mode
         await editInput(target, ".o_field_email input[type='email']", "new");

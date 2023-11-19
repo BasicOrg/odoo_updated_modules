@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from odoo import _
 from odoo.addons.appointment.controllers.calendar_view import AppointmentCalendarView
+from odoo.exceptions import AccessError
+from odoo.http import request, route
 
 
 class AppointmentHRCalendarView(AppointmentCalendarView):

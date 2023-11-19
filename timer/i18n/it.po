@@ -3,16 +3,16 @@
 # 	* timer
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.4alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
+"POT-Creation-Date: 2022-04-21 08:56+0000\n"
+"PO-Revision-Date: 2022-09-22 05:49+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -66,6 +66,11 @@ msgid "Is Timer Running"
 msgstr "Timer in esecuzione"
 
 #. module: timer
+#: model:ir.model.fields,field_description:timer.field_timer_timer____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__write_uid
 msgid "Last Updated by"
 msgstr "Ultimo aggiornamento di"
@@ -78,19 +83,25 @@ msgstr "Ultimo aggiornamento il"
 #. module: timer
 #: model:ir.model.constraint,message:timer.constraint_timer_timer_unique_timer
 msgid "Only one timer occurrence by model, record and user"
-msgstr "Solo una occorrenza per modello, record e utente"
+msgstr ""
 
 #. module: timer
-#. odoo-python
 #: code:addons/timer/models/timer_mixin.py:0
 #, python-format
 msgid "Operation not supported"
 msgstr "Operazione non supportata"
 
 #. module: timer
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
+#, python-format
+msgid "Play"
+msgstr "Avvia"
+
+#. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__res_id
 msgid "Res"
-msgstr "Ris"
+msgstr ""
 
 #. module: timer
 #: model:ir.model.fields,field_description:timer.field_timer_timer__res_model
@@ -98,15 +109,16 @@ msgid "Res Model"
 msgstr "Modello res"
 
 #. module: timer
-#. odoo-javascript
-#: code:addons/timer/static/src/component/timer_toggle_button/timer_toggle_button.js:0
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
 #, python-format
 msgid "Start"
 msgstr "Avvio"
 
 #. module: timer
-#. odoo-javascript
-#: code:addons/timer/static/src/component/timer_toggle_button/timer_toggle_button.js:0
+#. openerp-web
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
+#: code:addons/timer/static/src/js/timer_toggle_button.js:0
 #, python-format
 msgid "Stop"
 msgstr "Ferma"

@@ -2,7 +2,6 @@
 
 import logging
 import pprint
-import uuid
 
 from lxml import etree, objectify
 from werkzeug import urls
@@ -10,10 +9,9 @@ from werkzeug import urls
 from odoo import _, api, models
 from odoo.exceptions import UserError, ValidationError
 
+from . import const
 from odoo.addons.payment import utils as payment_utils
-from odoo.addons.payment_ogone import const
 from odoo.addons.payment_ogone.controllers.main import OgoneController
-
 
 _logger = logging.getLogger(__name__)
 
@@ -71,7 +69,6 @@ class PaymentTransaction(models.Model):
             'CURRENCY': self.currency_id.name,
             'LANGUAGE': self.partner_lang or 'en_US',
             'EMAIL': self.partner_email or '',
-            'CN': self.partner_name or '',  # Cardholder Name
             'OWNERADDRESS': self.partner_address or '',
             'OWNERZIP': self.partner_zip or '',
             'OWNERTOWN': self.partner_city or '',
@@ -83,13 +80,10 @@ class PaymentTransaction(models.Model):
             'DECLINEURL': return_url,
             'EXCEPTIONURL': return_url,
             'CANCELURL': return_url,
-            'PM': const.PAYMENT_METHODS_MAPPING.get(
-                self.payment_method_code, self.payment_method_code
-            ),
         }
         if self.tokenize:
             rendering_values.update({
-                'ALIAS': f'ODOO-ALIAS-{uuid.uuid4().hex}',
+                'ALIAS': payment_utils.singularize_reference_prefix(prefix='ODOO-ALIAS'),
                 'ALIASUSAGE': _("Storing your payment details is necessary for future use."),
             })
         rendering_values.update({
@@ -197,17 +191,7 @@ class PaymentTransaction(models.Model):
         if 'tree' in notification_data:
             notification_data = notification_data['tree']
 
-        # Update the provider reference.
         self.provider_reference = notification_data.get('PAYID')
-
-        # Update the payment method.
-        payment_method_code = notification_data.get('BRAND', '')
-        payment_method = self.env['payment.method']._get_from_code(
-            payment_method_code, mapping=const.PAYMENT_METHODS_MAPPING
-        )
-        self.payment_method_id = payment_method or self.payment_method_id
-
-        # Update the payment state.
         payment_status = int(notification_data.get('STATUS', '0'))
         if payment_status in const.PAYMENT_STATUS_MAPPING['pending']:
             self._set_pending()
@@ -246,10 +230,10 @@ class PaymentTransaction(models.Model):
         """
         token = self.env['payment.token'].create({
             'provider_id': self.provider_id.id,
-            'payment_method_id': self.payment_method_id.id,
             'payment_details': notification_data.get('CARDNO')[-4:],  # Ogone pads details with X's.
             'partner_id': self.partner_id.id,
             'provider_ref': notification_data['ALIAS'],
+            'verified': True,  # The payment is authorized, so the payment method is valid
         })
         self.write({
             'token_id': token.id,

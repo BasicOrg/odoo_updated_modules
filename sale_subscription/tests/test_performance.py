@@ -11,18 +11,16 @@ class TestSubscriptionPerformance(TestSubscriptionCommon):
     @users('__system__')
     @warmup
     def test_recurring_order_creation_perf(self):
-        # Prevent trigger base_automation actions
-        self.env['sale.order.alert'].search([]).unlink()
         ORDER_COUNT = 100
         partners = self.env['res.partner'].create([{
             'name': 'Jean-Luc %s' % (idx),
             'email': 'jean-luc-%s@opoo.com' % (idx)
         } for idx in range(ORDER_COUNT)])
-        with self.assertQueryCount(__system__=2230):
+        with self.assertQueryCount(__system__=3600):
             sale_orders = self.env['sale.order'].create([{
                 'name': "SO %s" % idx,
                 'partner_id': partners[idx].id,
-                'plan_id': self.plan_month.id,
+                'recurrence_id': self.recurrence_month.id,
                 'pricelist_id': self.company_data['default_pricelist'].id,
                 'order_line': [
                     (0, 0, {
@@ -78,3 +76,6 @@ class TestSubscriptionPerformance(TestSubscriptionCommon):
             ],
 
         } for idx in range(NR_COUNT)])
+
+        with self.assertQueryCount(__system__=4):
+            (sale_orders | non_recuring_sale_orders)._compute_recurring_live()

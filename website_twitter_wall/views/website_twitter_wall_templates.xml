@@ -23,9 +23,7 @@
                                 <h4 class="mt4 mb8 o-tw-ellipsis">
                                     <a t-att-title="wall.name" t-attf-href="/twitter_wall/view/#{wall.id}" t-field="wall.name" />
                                 </h4>
-                                <!-- Remove h5 in master -->
-                                <h5 t-if="False" t-att-title="wall.description" t-field="wall.description" class="o-tw-ellipsis" />
-                                <div t-if="not is_html_empty(wall.description)" t-field="wall.description" class="o-tw-ellipsis h5" />
+                                <h5 t-if="not is_html_empty(wall.description)" t-att-title="wall.description" t-field="wall.description" class="o-tw-ellipsis" />
                             </div>
                         </div>
                     </div>

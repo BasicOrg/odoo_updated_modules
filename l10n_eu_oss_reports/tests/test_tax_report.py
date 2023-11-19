@@ -15,41 +15,21 @@ class OSSTaxReportTest(TestAccountReportsCommon):
 
         cls.env.company.account_fiscal_country_id = cls.env.ref('base.be')
         cls.env.company.vat = 'BE0477472701'
-        cls.env.company.currency_id = cls.env.ref('base.EUR')
 
-        cls.env['account.tax.group'].create({
-            'name': 'tax_group',
-            'country_id': cls.env.ref('base.be').id,
+        tax_21 = cls.env['account.tax'].create({
+            'name': "tax_21",
+            'amount_type': 'percent',
+            'amount': 21.0,
+            'country_id': cls.env.ref('base.be').id
         })
-        tax_21, tax_06 = cls.env['account.tax'].create([
-            {
-                'name': "tax_21",
-                'amount_type': 'percent',
-                'amount': 21.0,
-                'country_id': cls.env.ref('base.be').id
-            },
-            {
-                'name': "tax_06",
-                'amount_type': 'percent',
-                'amount': 6.0,
-                'country_id': cls.env.ref('base.be').id
-            },
-        ])
 
         cls.env.company._map_eu_taxes()
 
-        cls.product_1, cls.product_2 = cls.env['product.product'].create([
-            {
-                'name': 'product_1',
-                'lst_price': 1000.0,
-                'taxes_id': [Command.set(tax_21.ids)],
-            },
-            {
-                'name': 'product_2',
-                'lst_price': 500.0,
-                'taxes_id': [Command.set(tax_06.ids)],
-            },
-        ])
+        cls.product_1 = cls.env['product.product'].create({
+            'name': 'product_1',
+            'lst_price': 1000.0,
+            'taxes_id': [Command.set(tax_21.ids)],
+        })
 
         cls.partner_be = cls.env['res.partner'].create({
             'name': 'Partner BE',
@@ -63,22 +43,10 @@ class OSSTaxReportTest(TestAccountReportsCommon):
             'name': 'Partner LU',
             'country_id': cls.env.ref('base.lu').id,
         })
-        cls.partner_nl = cls.env['res.partner'].create({
-            'name': 'Partner NL',
-            'country_id': cls.env.ref('base.nl').id,
-        })
-        cls.partner_gr = cls.env['res.partner'].create({
-            'name': 'Partner GR',
-            'country_id': cls.env.ref('base.gr').id,
-        })
 
         cls.init_invoice('out_invoice', partner=cls.partner_be, products=cls.product_1, invoice_date=fields.Date.from_string('2021-04-01'), post=True)
         cls.init_invoice('out_invoice', partner=cls.partner_fr, products=cls.product_1, invoice_date=fields.Date.from_string('2021-05-23'), post=True)
         cls.init_invoice('out_invoice', partner=cls.partner_lu, products=cls.product_1, invoice_date=fields.Date.from_string('2021-06-12'), post=True)
-        cls.init_invoice('out_refund', partner=cls.partner_lu, products=cls.product_2, invoice_date=fields.Date.from_string('2021-06-15'), post=True)
-        cls.init_invoice('out_invoice', partner=cls.partner_nl, products=cls.product_1, invoice_date=fields.Date.from_string('2021-05-09'), post=True)
-        cls.init_invoice('out_refund', partner=cls.partner_nl, products=cls.product_1, invoice_date=fields.Date.from_string('2021-05-11'), post=True)
-        cls.init_invoice('out_refund', partner=cls.partner_gr, products=cls.product_1, invoice_date=fields.Date.from_string('2021-06-26'), post=True)
 
     def test_tax_report_oss(self):
         """ Test tax report's content for 'domestic' foreign VAT fiscal position option.
@@ -92,23 +60,15 @@ class OSSTaxReportTest(TestAccountReportsCommon):
             #   Name                        Net               Tax
             [   0,                            1,                2],
             [
-                ("Sales",                    '',               85),
+                ("Sales",                    '',              370),
                 ("France",                   '',              200),
                 ("20.0% FR VAT (20.0%)",   1000,              200),
                 ("Total France",             '',              200),
-                ("Greece",                   '',             -240),
-                ("24.0% GR VAT (24.0%)",  -1000,             -240),
-                ("Total Greece",             '',             -240),
-                ("Luxembourg",               '',              125),
-                ("16.0% LU VAT (16.0%)",   1000,              160),
-                ("7.0% LU VAT (7.0%)",     -500,              -35),
-                ("Total Luxembourg",         '',              125),
-                ("Netherlands",              '',              0.0),
-                ("21.0% NL VAT (21.0%)",    0.0,              0.0),
-                ("Total Netherlands",        '',              0.0),
-                ("Total Sales",              '',               85),
+                ("Luxembourg",               '',              170),
+                ("17.0% LU VAT (17.0%)",   1000,              170),
+                ("Total Luxembourg",         '',              170),
+                ("Total Sales",              '',              370),
             ],
-            options,
         )
 
     def test_generate_oss_xml_be(self):
@@ -136,38 +96,25 @@ class OSSTaxReportTest(TestAccountReportsCommon):
                     <ns2:FixedEstablishment>
                         <ns2:VATIdentificationNumber issuedBy="BE">0477472701</ns2:VATIdentificationNumber>
                     </ns2:FixedEstablishment>
-                    <ns2:VatRateType type="STANDARD">20.00</ns2:VatRateType>
-                    <ns2:VatAmount currency="EUR">200.0</ns2:VatAmount>
-                    <ns2:TaxableAmount currency="EUR">1000.0</ns2:TaxableAmount>
+                    <ns2:VatRateType>20.0</ns2:VatRateType>
+                    <ns2:VatAmount currency="USD">200.0</ns2:VatAmount>
+                    <ns2:TaxableAmount currency="USD">1000.0</ns2:TaxableAmount>
                   </ns2:OSSDeclarationRows>
-                </ns0:OSSDeclarationInfo>
-                <ns0:OSSDeclarationInfo SequenceNumber="2">
-                  <ns2:MemberStateOfConsumption>EL</ns2:MemberStateOfConsumption>
                   <ns2:CorrectionsInfo>
-                    <ns2:Period>
-                      <ns2:Year>2021</ns2:Year>
-                      <ns2:Quarter>1</ns2:Quarter>
-                    </ns2:Period>
-                    <ns2:TotalVATAmountCorrection currency="EUR">-240.0</ns2:TotalVATAmountCorrection>
                   </ns2:CorrectionsInfo>
                 </ns0:OSSDeclarationInfo>
-                <ns0:OSSDeclarationInfo SequenceNumber="3">
+                <ns0:OSSDeclarationInfo SequenceNumber="2">
                   <ns2:MemberStateOfConsumption>LU</ns2:MemberStateOfConsumption>
                   <ns2:OSSDeclarationRows SequenceNumber="1">
                     <ns2:SupplyType>GOODS</ns2:SupplyType>
                     <ns2:FixedEstablishment>
                         <ns2:VATIdentificationNumber issuedBy="BE">0477472701</ns2:VATIdentificationNumber>
                     </ns2:FixedEstablishment>
-                    <ns2:VatRateType type="REDUCED">16.00</ns2:VatRateType>
-                    <ns2:VatAmount currency="EUR">160.0</ns2:VatAmount>
-                    <ns2:TaxableAmount currency="EUR">1000.0</ns2:TaxableAmount>
+                    <ns2:VatRateType>17.0</ns2:VatRateType>
+                    <ns2:VatAmount currency="USD">170.0</ns2:VatAmount>
+                    <ns2:TaxableAmount currency="USD">1000.0</ns2:TaxableAmount>
                   </ns2:OSSDeclarationRows>
                   <ns2:CorrectionsInfo>
-                    <ns2:Period>
-                      <ns2:Year>2021</ns2:Year>
-                      <ns2:Quarter>2</ns2:Quarter>
-                    </ns2:Period>
-                    <ns2:TotalVATAmountCorrection currency="EUR">-35.0</ns2:TotalVATAmountCorrection>
                   </ns2:CorrectionsInfo>
                 </ns0:OSSDeclarationInfo>
               </ns0:OSSDeclaration>
@@ -198,12 +145,6 @@ class TestTaxReportOSSNoMapping(TestAccountReportsCommon):
         report_line_refund_base_line = cls._create_tax_report_line('Refund base', cls.tax_report, sequence=2, tag_name='refund_base_line')
 
         # Create an OSS tax from scratch
-        cls.env['account.tax.group'].create({
-            'name': 'tax_group',
-            'country_id': cls.company_data['company'].account_fiscal_country_id.id,
-            'tax_payable_account_id': cls.company_data['default_account_expense'].id,
-            'tax_receivable_account_id': cls.company_data['default_account_revenue'].id,
-        })
         oss_tag = cls.env.ref('l10n_eu_oss.tag_oss')
         cls.oss_tax = cls.env['account.tax'].create({
             'name': 'OSS tax for DK',
@@ -212,7 +153,7 @@ class TestTaxReportOSSNoMapping(TestAccountReportsCommon):
             'invoice_repartition_line_ids': [
                 Command.create({
                     'repartition_type': 'base',
-                    'tag_ids': [Command.set(report_line_invoice_base_line.expression_ids._get_matching_tags("+").ids + oss_tag.ids)],
+                    'tag_ids': [Command.set(report_line_invoice_base_line.expression_ids._get_matching_tags().filtered(lambda x: not x.tax_negate).ids + oss_tag.ids)],
                 }),
                 Command.create({
                     'repartition_type': 'tax',
@@ -222,7 +163,7 @@ class TestTaxReportOSSNoMapping(TestAccountReportsCommon):
             'refund_repartition_line_ids': [
                 Command.create({
                     'repartition_type': 'base',
-                    'tag_ids': [Command.set(report_line_refund_base_line.expression_ids._get_matching_tags("+").ids + oss_tag.ids)],
+                    'tag_ids': [Command.set(report_line_refund_base_line.expression_ids._get_matching_tags().filtered(lambda x: not x.tax_negate).ids + oss_tag.ids)],
                 }),
                 Command.create({
                     'repartition_type': 'tax',
@@ -266,9 +207,8 @@ class TestTaxReportOSSNoMapping(TestAccountReportsCommon):
             [   0,                    1],
             [
                 ('Invoice base', 100.00),
-                ('Refund base',    0.00),
+                ('Refund base',      ''),
             ],
-            options,
         )
 
     def test_closing_entry(self):
@@ -314,5 +254,4 @@ class TestTaxReportOSSNoMapping(TestAccountReportsCommon):
                 ("Total Denmark",              '',             25.0),
                 ("Total Sales",                '',             25.0),
             ],
-            options,
         )

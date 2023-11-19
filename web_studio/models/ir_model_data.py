@@ -25,8 +25,20 @@ class IrModelData(models.Model):
             vals['studio'] = True
         return super(IrModelData, self).write(vals)
 
-    def _build_insert_xmlids_values(self):
-        values = super()._build_insert_xmlids_values()
+    def _build_update_xmlids_query(self, sub_rows, update):
+        '''Override of the base method to include the `studio` attribute for studio module imports.'''
         if self._context.get('studio'):
-            values['studio'] = 'true'
-        return values
+            rowf = "(%s, %s, %s, %s, %s, 't')"
+            return """
+                INSERT INTO ir_model_data (module, name, model, res_id, noupdate, studio)
+                VALUES {rows}
+                ON CONFLICT (module, name)
+                DO UPDATE SET (model, res_id, write_date, noupdate) =
+                    (EXCLUDED.model, EXCLUDED.res_id, now() at time zone 'UTC', 't')
+                    {where}
+            """.format(
+                rows=", ".join([rowf] * len(sub_rows)),
+                where="WHERE NOT ir_model_data.noupdate" if update else "",
+            )
+        else:
+            return super(IrModelData, self)._build_update_xmlids_query(sub_rows, update)

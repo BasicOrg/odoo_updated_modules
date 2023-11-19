@@ -36,8 +36,8 @@ class MassMailCase(MailCase, MockLinkTracker):
             )
 
     def assertMailTraces(self, recipients_info, mailing, records,
-                         check_mail=True, sent_unlink=False,
-                         author=None, mail_links_info=None):
+                         check_mail=True, sent_unlink=False, author=None,
+                         mail_links_info=None):
         """ Check content of traces. Traces are fetched based on a given mailing
         and records. Their content is compared to recipients_info structure that
         holds expected information. Links content may be checked, notably to
@@ -52,9 +52,6 @@ class MassMailCase(MailCase, MockLinkTracker):
             'record: linked record,
             # MAIL.MAIL
             'content': optional content that should be present in mail.mail body_html;
-            'email_to_mail': optional email used for the mail, when different from the
-              one stored on the trace itself;
-            'email_to_recipients': optional, see '_assertMailMail';
             'failure_type': optional failure reason;
             }, { ... }]
 
@@ -85,12 +82,6 @@ class MassMailCase(MailCase, MockLinkTracker):
             ('mass_mailing_id', 'in', mailing.ids),
             ('res_id', 'in', records.ids)
         ])
-        debug_info = '\n'.join(
-            (
-                f'Trace: to {t.email} - state {t.trace_status}'
-                for t in traces
-            )
-        )
 
         # ensure trace coherency
         self.assertTrue(all(s.model == records._name for s in traces))
@@ -102,8 +93,6 @@ class MassMailCase(MailCase, MockLinkTracker):
         for recipient_info, link_info, record in zip(recipients_info, mail_links_info, records):
             partner = recipient_info.get('partner', self.env['res.partner'])
             email = recipient_info.get('email')
-            email_to_mail = recipient_info.get('email_to_mail') or email
-            email_to_recipients = recipient_info.get('email_to_recipients')
             status = recipient_info.get('trace_status', 'sent')
             record = record or recipient_info.get('record')
             content = recipient_info.get('content')
@@ -117,16 +106,11 @@ class MassMailCase(MailCase, MockLinkTracker):
             )
             self.assertTrue(
                 len(recipient_trace) == 1,
-                'MailTrace: email %s (recipient %s, status: %s, record: %s): found %s records (1 expected)\n%s' % (
-                    email, partner, status, record,
-                    len(recipient_trace), debug_info)
+                'MailTrace: email %s (recipient %s, status: %s, record: %s): found %s records (1 expected)' % (email, partner, status, record, len(recipient_trace))
             )
             self.assertTrue(bool(recipient_trace.mail_mail_id_int))
             if 'failure_type' in recipient_info or status in ('error', 'cancel', 'bounce'):
                 self.assertEqual(recipient_trace.failure_type, recipient_info['failure_type'])
-
-            if 'failure_reason' in recipient_info:
-                self.assertEqual(recipient_trace.failure_reason, recipient_info['failure_reason'])
 
             if check_mail:
                 if author is None:
@@ -134,40 +118,18 @@ class MassMailCase(MailCase, MockLinkTracker):
 
                 # mail.mail specific values to check
                 fields_values = {'mailing_id': mailing}
-                if 'failure_reason' in recipient_info:
-                    fields_values['failure_reason'] = recipient_info['failure_reason']
-                if 'email_to_mail' in recipient_info:
-                    fields_values['email_to'] = recipient_info['email_to_mail']
 
                 # specific for partner: email_formatted is used
                 if partner:
                     if status == 'sent' and sent_unlink:
                         self.assertSentEmail(author, [partner])
                     else:
-                        self.assertMailMail(
-                            partner, state_mapping[status],
-                            author=author,
-                            content=content,
-                            email_to_recipients=email_to_recipients,
-                            fields_values=fields_values,
-                        )
+                        self.assertMailMail(partner, state_mapping[status], author=author, content=content, fields_values=fields_values)
                 # specific if email is False -> could have troubles finding it if several falsy traces
                 elif not email and status in ('cancel', 'bounce'):
-                    self.assertMailMailWId(
-                        recipient_trace.mail_mail_id_int, state_mapping[status],
-                        author=author,
-                        content=content,
-                        email_to_recipients=email_to_recipients,
-                        fields_values=fields_values,
-                    )
+                    self.assertMailMailWId(recipient_trace.mail_mail_id_int, state_mapping[status], content=content, fields_values=fields_values)
                 else:
-                    self.assertMailMailWEmails(
-                        [email_to_mail], state_mapping[status],
-                        author=author,
-                        content=content,
-                        email_to_recipients=email_to_recipients,
-                        fields_values=fields_values,
-                    )
+                    self.assertMailMailWEmails([email], state_mapping[status], author=author, content=content, fields_values=fields_values)
 
             if link_info:
                 trace_mail = self._find_mail_mail_wrecord(record)
@@ -200,14 +162,13 @@ class MassMailCase(MailCase, MockLinkTracker):
             'to': 'bounce@test.example.com',  # TDE check: bounce alias ?
             'message_id': tools.generate_tracking_message_id('MailTest'),
             'bounced_partner': self.env['res.partner'].sudo(),
-            'bounced_message': self.env['mail.message'].sudo(),
-            'body': 'This is the bounce email',
+            'bounced_message': self.env['mail.message'].sudo()
         }
         if bounce_base_values:
             parsed_bounce_values.update(bounce_base_values)
         parsed_bounce_values.update({
             'bounced_email': trace.email,
-            'bounced_msg_ids': [trace.message_id],
+            'bounced_msg_id': [trace.message_id],
         })
         self.env['mail.thread']._routing_handle_bounce(False, parsed_bounce_values)
 
@@ -278,12 +239,9 @@ class MassMailCommon(MailCommon, MassMailCase):
         super(MassMailCommon, cls).setUpClass()
 
         cls.user_marketing = mail_new_test_user(
-            cls.env,
+            cls.env, login='user_marketing',
             groups='base.group_user,base.group_partner_manager,mass_mailing.group_mass_mailing_user',
-            login='user_marketing',
-            name='Martial Marketing',
-            signature='--\nMartial',
-        )
+            name='Martial Marketing', signature='--\nMartial')
 
         cls.email_reply_to = 'MyCompany SomehowAlias <test.alias@test.mycompany.com>'
 
@@ -291,33 +249,23 @@ class MassMailCommon(MailCommon, MassMailCase):
     def _create_mailing_list(cls):
         """ Shortcut to create mailing lists. Currently hardcoded, maybe evolve
         in a near future. """
-        cls.mailing_list_1, cls.mailing_list_2, cls.mailing_list_3, cls.mailing_list_4 = cls.env['mailing.list'].with_context(cls._test_context).create([
-            {
-                'contact_ids': [
-                    (0, 0, {'name': 'Déboulonneur', 'email': 'fleurus@example.com'}),
-                    (0, 0, {'name': 'Gorramts', 'email': 'gorramts@example.com'}),
-                    (0, 0, {'name': 'Ybrant', 'email': 'ybrant@example.com'}),
-                ],
-                'name': 'List1',
-            }, {
-                'contact_ids': [
-                    (0, 0, {'name': 'Gilberte', 'email': 'gilberte@example.com'}),
-                    (0, 0, {'name': 'Gilberte En Mieux', 'email': 'gilberte@example.com'}),
-                    (0, 0, {'name': 'Norbert', 'email': 'norbert@example.com'}),
-                    (0, 0, {'name': 'Ybrant', 'email': 'ybrant@example.com'}),
-                ],
-                'name': 'List2',
-            }, {
-                'contact_ids': [
-                    (0, 0, {'name': 'Déboulonneur', 'email': 'fleurus@example.com'}),
-                ],
-                'name': 'List3',
-            }, {
-                'is_public': False,
-                'name': 'List4',
-            }
-        ])
-        cls.mailing_list_3.subscription_ids[0].opt_out = True
+        cls.mailing_list_1 = cls.env['mailing.list'].with_context(cls._test_context).create({
+            'name': 'List1',
+            'contact_ids': [
+                (0, 0, {'name': 'Déboulonneur', 'email': 'fleurus@example.com'}),
+                (0, 0, {'name': 'Gorramts', 'email': 'gorramts@example.com'}),
+                (0, 0, {'name': 'Ybrant', 'email': 'ybrant@example.com'}),
+            ]
+        })
+        cls.mailing_list_2 = cls.env['mailing.list'].with_context(cls._test_context).create({
+            'name': 'List2',
+            'contact_ids': [
+                (0, 0, {'name': 'Gilberte', 'email': 'gilberte@example.com'}),
+                (0, 0, {'name': 'Gilberte En Mieux', 'email': 'gilberte@example.com'}),
+                (0, 0, {'name': 'Norbert', 'email': 'norbert@example.com'}),
+                (0, 0, {'name': 'Ybrant', 'email': 'ybrant@example.com'}),
+            ]
+        })
 
     @classmethod
     def _create_mailing_list_of_x_contacts(cls, contacts_nbr):
@@ -326,10 +274,7 @@ class MassMailCommon(MailCommon, MassMailCase):
         return cls.env['mailing.list'].with_context(cls._test_context).create({
             'name': 'Test List',
             'contact_ids': [
-                (0, 0, {
-                    'name': f'Contact %{idx}',
-                    'email': f'contact%{idx}@example.com'
-                })
-                for idx in range(contacts_nbr)
+                (0, 0, {'name': 'Contact %s' % i, 'email': 'contact%s@example.com' % i})
+                for i in range(contacts_nbr)
             ],
         })

@@ -74,13 +74,13 @@ class TestM2MGrouping(common.TransactionCase):
                 'user_ids': (self.users[0].id, "Mario"),
                 'user_ids_count': 1,
                 'name': ["Super Mario Bros."],
-                '__domain': ['&', ('id', '=', self.tasks[0].id), ('user_ids', '=', self.users[0].id)],
+                '__domain': ['&', ('user_ids', '=', self.users[0].id), ('id', '=', self.tasks[0].id)],
             },
             {   # task of Luigi
                 'user_ids': (self.users[1].id, "Luigi"),
                 'user_ids_count': 1,
                 'name': ["Super Mario Bros."],
-                '__domain': ['&', ('id', '=', self.tasks[0].id), ('user_ids', '=', self.users[1].id)],
+                '__domain': ['&', ('user_ids', '=', self.users[1].id), ('id', '=', self.tasks[0].id)],
             },
         ])
 
@@ -130,23 +130,18 @@ class TestM2MGrouping(common.TransactionCase):
             'domain_force': [('id', '=', self.users[0].id)],
         })
 
-        # warmup
-        as_admin = self.tasks.read_group(
-            domain=[],
-            fields=['name:array_agg'],
-            groupby=['user_ids'],
-        )
-
         # as superuser, ir.rule should not apply
         expected = """
             SELECT
-                "test_read_group_task__user_ids"."user_id",
-                COUNT(*),
-                ARRAY_AGG("test_read_group_task"."name" ORDER BY "test_read_group_task"."id")
+                min("test_read_group_task".id) AS id,
+                count("test_read_group_task".id) AS "user_ids_count",
+                array_agg("test_read_group_task"."name") AS "name",
+                "test_read_group_task__user_ids"."user_id" AS "user_ids"
             FROM "test_read_group_task"
-            LEFT JOIN "test_read_group_task_user_rel" AS "test_read_group_task__user_ids" ON ("test_read_group_task"."id" = "test_read_group_task__user_ids"."task_id")
+            LEFT JOIN "test_read_group_task_user_rel" AS "test_read_group_task__user_ids"
+                ON ("test_read_group_task"."id" = "test_read_group_task__user_ids"."task_id")
             GROUP BY "test_read_group_task__user_ids"."user_id"
-            ORDER BY "test_read_group_task__user_ids"."user_id" ASC
+            ORDER BY "user_ids"
         """
         with self.assertQueries([expected]):
             as_admin = self.tasks.read_group(
@@ -183,21 +178,22 @@ class TestM2MGrouping(common.TransactionCase):
 
         expected = """
             SELECT
-                "test_read_group_task__user_ids"."user_id",
-                COUNT(*),
-                ARRAY_AGG("test_read_group_task"."name" ORDER BY "test_read_group_task"."id")
+                min("test_read_group_task".id) AS id,
+                count("test_read_group_task".id) AS "user_ids_count",
+                array_agg("test_read_group_task"."name") AS "name",
+                "test_read_group_task__user_ids"."user_id" AS "user_ids"
             FROM "test_read_group_task"
             LEFT JOIN "test_read_group_task_user_rel" AS "test_read_group_task__user_ids"
                 ON (
                     "test_read_group_task"."id" = "test_read_group_task__user_ids"."task_id"
                     AND "test_read_group_task__user_ids"."user_id" IN (
-                        SELECT "test_read_group_user"."id"
+                        SELECT "test_read_group_user".id
                         FROM "test_read_group_user"
                         WHERE ("test_read_group_user"."id" = %s)
                     )
                 )
             GROUP BY "test_read_group_task__user_ids"."user_id"
-            ORDER BY "test_read_group_task__user_ids"."user_id" ASC
+            ORDER BY "user_ids"
         """
         with self.assertQueries([expected]):
             as_demo = tasks.read_group(

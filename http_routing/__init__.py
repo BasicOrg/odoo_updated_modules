@@ -6,7 +6,7 @@ from . import models
 from odoo.http import request
 
 
-def _post_init_hook(env):
+def _post_init_hook(cr, registry):
     if request:
         request.is_frontend = False
         request.is_frontend_multilang = False

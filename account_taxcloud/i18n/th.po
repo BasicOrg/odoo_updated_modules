@@ -3,16 +3,17 @@
 # 	* account_taxcloud
 # 
 # Translators:
-# Wil Odoo, 2023
+# Wichanon Jamwutthipreecha, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Thai (https://app.transifex.com/odoo/teams/41243/th/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Thai (https://www.transifex.com/odoo/teams/41243/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,8 +22,8 @@ msgstr ""
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.res_config_settings_view_form
-msgid "<i class=\"oi oi-fw oi-arrow-right\"/>How to Get Credentials"
-msgstr "<i class=\"oi oi-fw oi-arrow-right\"/>วิธีการรับข้อมูลประจำตัว"
+msgid "<i class=\"fa fa-fw fa-arrow-right\"/>How to Get Credentials"
+msgstr ""
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.res_config_settings_view_form
@@ -30,28 +31,21 @@ msgid ""
 "<i title=\"Import/update TICs from TaxCloud\" role=\"img\" aria-"
 "label=\"Import/update TICs from TaxCloud\" class=\"fa fa-refresh fa-fw\"/>"
 msgstr ""
-"<i title=\"นำเข้า/อัปเดต TIC จาก TaxCloud\" role=\"รูปภาพ\" aria-"
-"label=\"นำเข้า/อัปเดต TIC จาก TaxCloud\" class=\"fa fa-refresh fa-fw\"/>"
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.res_config_settings_view_form
 msgid "API ID"
-msgstr "API ID"
+msgstr ""
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.res_config_settings_view_form
 msgid "API KEY"
-msgstr "API KEY"
-
-#. module: account_taxcloud
-#: model:account.fiscal.position,name:account_taxcloud.account_fiscal_position_taxcloud_us
-msgid "Automatic Tax Mapping (TaxCloud)"
-msgstr "การแมปภาษีอัตโนมัติ (TaxCloud)"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_res_company
 msgid "Companies"
-msgstr "บริษัท"
+msgstr "หลายบริษัท"
 
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_res_config_settings
@@ -71,13 +65,13 @@ msgstr "สร้างเมื่อ"
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.res_config_settings_view_form
 msgid "Default Category"
-msgstr "หมวดหมู่เริ่มต้น"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_company__tic_category_id
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_config_settings__tic_category_id
 msgid "Default TIC Code"
-msgstr "รหัส TIC เริ่มต้น"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_tic_category__display_name
@@ -90,13 +84,11 @@ msgid ""
 "Enable <b>Detect Automatically</b> to automatically use TaxCloud when "
 "selling to American customers."
 msgstr ""
-"เปิดใช้งาน <b>ตรวจจับอัตโนมัติ</b> เพื่อใช้ TaxCloud "
-"โดยอัตโนมัติเมื่อขายให้กับลูกค้าจากประเทศอเมริกา"
 
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_account_fiscal_position
 msgid "Fiscal Position"
-msgstr "สถานะทางการเงิน"
+msgstr "ฐานะทางการเงิน"
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.account_position_taxcloud_inherit_from_view
@@ -121,12 +113,17 @@ msgstr "มีการกำหนดค่า Taxcloud"
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_account_move
 msgid "Journal Entry"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึกประจำวัน"
 
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_account_move_line
 msgid "Journal Item"
-msgstr "รายการสมุดรายวัน"
+msgstr "รายการบันทึก"
+
+#. module: account_taxcloud
+#: model:ir.model.fields,field_description:account_taxcloud.field_product_tic_category____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_tic_category__write_uid
@@ -139,15 +136,12 @@ msgid "Last Updated on"
 msgstr "อัปเดตครั้งล่าสุดเมื่อ"
 
 #. module: account_taxcloud
-#. odoo-python
 #: code:addons/account_taxcloud/models/taxcloud_request.py:0
 #, python-format
 msgid ""
 "Please configure taxcloud credentials on the current company or use a "
 "different fiscal position"
 msgstr ""
-"โปรดกำหนดค่าข้อมูลรับรอง Taxcloud ของบริษัทปัจจุบัน "
-"หรือใช้สถานะทางการเงินอื่น"
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.account_position_taxcloud_inherit_from_view
@@ -169,12 +163,12 @@ msgstr "หมวดหมู่สินค้า"
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.account_taxcloud_tic_category_search
 msgid "Product TIC Categories"
-msgstr "หมวดหมู่สินค้า TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model,name:account_taxcloud.model_product_tic_category
 msgid "Product TIC Category"
-msgstr "หมวดหมู่สินค้า TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,help:account_taxcloud.field_res_company__tic_category_id
@@ -186,33 +180,27 @@ msgid ""
 "By default, TaxCloud relies on the TIC *[0] Uncategorized* default referring"
 " to general goods and services."
 msgstr ""
-"TIC (Taxability Information Codes) "
-"อนุญาตให้ได้รับอัตราภาษีเฉพาะสินค้าแต่ละประเภท "
-"ค่าเริ่มต้นนี้จะถูกใช้หากไม่มีการใช้สินค้าในคำสั่งซื้อ/ใบแจ้งหนี้ "
-"หรือหากไม่มีการตั้งค่า TIC บนสินค้าหรือประเภทสินค้าตามค่าเริ่มต้น TaxCloud "
-"จะใช้ค่าเริ่มต้น TIC *[0] ไม่มีหมวดหมู่* "
-"ซึ่งจะอ้างอิงถึงสินค้าและบริการทั่วไป"
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.account_taxcloud_tic_category_tree
 msgid "TIC Category"
-msgstr "หมวดหมู่ TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_tic_category__code
 msgid "TIC Category Code"
-msgstr "รหัสหมวดหมู่ TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_category__tic_category_id
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.account_taxcloud_tic_category_search
 msgid "TIC Code"
-msgstr "รหัส TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_tic_category__description
 msgid "TIC Description"
-msgstr "คำอธิบาย TIC"
+msgstr ""
 
 #. module: account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.product_category_view_form_inherit_account_taxcloud
@@ -223,19 +211,19 @@ msgstr "เลขที่บัญชี"
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_company__taxcloud_api_id
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_config_settings__taxcloud_api_id
 msgid "TaxCloud API ID"
-msgstr "รหัส TaxCloud API"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_company__taxcloud_api_key
 #: model:ir.model.fields,field_description:account_taxcloud.field_res_config_settings__taxcloud_api_key
 msgid "TaxCloud API KEY"
-msgstr "คีย์ API ของ TaxCloud"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.actions.act_window,name:account_taxcloud.account_taxcloud_tic_category_action
 #: model:ir.ui.menu,name:account_taxcloud.menu_taxcloud_tic_category_action
 msgid "TaxCloud Categories"
-msgstr "หมวดหมู่ TaxCloud"
+msgstr ""
 
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_product_product__tic_category_id
@@ -243,24 +231,19 @@ msgstr "หมวดหมู่ TaxCloud"
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.product_category_view_form_inherit_account_taxcloud
 #: model_terms:ir.ui.view,arch_db:account_taxcloud.product_template_taxcloud_inherit_form
 msgid "TaxCloud Category"
-msgstr "หมวดหมู่ TaxCloud"
+msgstr ""
 
 #. module: account_taxcloud
-#. odoo-python
-#: code:addons/account_taxcloud/models/product.py:0
-#, python-format
-msgid "The Taxcloud Category must be integer."
-msgstr "หมวดหมู่ Taxcloud ต้องเป็นจำนวนเต็ม"
+#: model:ir.model,name:account_taxcloud.model_account_fiscal_position_template
+msgid "Template for Fiscal Position"
+msgstr "Template for Fiscal Position"
 
 #. module: account_taxcloud
-#. odoo-python
 #: code:addons/account_taxcloud/models/account_invoice.py:0
 #, python-format
 msgid ""
 "The tax rates have been updated, you may want to check it before validation"
 msgstr ""
-"อัตราภาษีได้รับการอัปเดตแล้ว "
-"คุณอาจต้องการตรวจสอบก่อนที่จะทำการตรวจสอบความถูกต้อง"
 
 #. module: account_taxcloud
 #: model:ir.model.fields,help:account_taxcloud.field_product_product__tic_category_id
@@ -270,9 +253,6 @@ msgid ""
 "TaxCloud to compute specific tax rates for each product type. The value set "
 "here prevails over the one set on the product category."
 msgstr ""
-"นี่หมายถึง TIC (Taxability Information Codes) ซึ่ง TaxCloud "
-"ใช้เพื่อคำนวณอัตราภาษีเฉพาะสินค้าแต่ละประเภท "
-"ค่าที่ตั้งไว้ที่นี่จะมีผลเหนือกว่าค่าที่ตั้งไว้ในหมวดหมู่สินค้า"
 
 #. module: account_taxcloud
 #: model:ir.model.fields,help:account_taxcloud.field_product_category__tic_category_id
@@ -282,13 +262,8 @@ msgid ""
 "used when no TIC is set on the product. If no value is set here, the default"
 " value set in Invoicing settings is used."
 msgstr ""
-"นี่หมายถึง TIC (Taxability Information Codes) ซึ่ง TaxCloud "
-"ใช้เพื่อคำนวณอัตราภาษีเฉพาะสินค้าแต่ละประเภท ค่านี้จะใช้เมื่อไม่ได้ตั้งค่า "
-"TIC บนสินค้า หากไม่มีการตั้งค่าที่นี่ "
-"ระบบจะใช้ค่าเริ่มต้นที่ตั้งไว้ในการตั้งค่าการออกใบแจ้งหนี้"
 
 #. module: account_taxcloud
-#. odoo-python
 #: code:addons/account_taxcloud/models/account_invoice.py:0
 #: code:addons/account_taxcloud/models/res_config_settings.py:0
 #, python-format
@@ -298,6 +273,7 @@ msgstr "ไม่สามารถเรียกภาษีจาก TaxCloud
 #. module: account_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_account_bank_statement_line__is_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_account_fiscal_position__is_taxcloud
+#: model:ir.model.fields,field_description:account_taxcloud.field_account_fiscal_position_template__is_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_account_move__is_taxcloud
 #: model:ir.model.fields,field_description:account_taxcloud.field_account_payment__is_taxcloud
 msgid "Use TaxCloud API"
@@ -314,7 +290,6 @@ msgid ""
 msgstr "ใช้เพื่อกำหนดว่าควรจะเตือนผู้ใช้ให้กำหนดค่า TaxCloud หรือไม่"
 
 #. module: account_taxcloud
-#. odoo-python
 #: code:addons/account_taxcloud/models/account_invoice.py:0
 #, python-format
 msgid ""
@@ -322,13 +297,9 @@ msgid ""
 "You need to issue a refund (credit note) for it instead.\n"
 "This way the tax entries will be cancelled in TaxCloud."
 msgstr ""
-"คุณไม่สามารถยกเลิกใบแจ้งหนี้ที่ส่งไปยัง TaxCloud ได้\n"
-"คุณต้องออกเงินคืน (ใบลดหนี้) แทน\n"
-"วิธีนี้รายการภาษีจะถูกยกเลิกใน TaxCloud"
 
 #. module: account_taxcloud
-#. odoo-python
 #: code:addons/account_taxcloud/models/product.py:0
 #, python-format
 msgid "[%s] %s"
-msgstr "[%s] %s"
+msgstr ""

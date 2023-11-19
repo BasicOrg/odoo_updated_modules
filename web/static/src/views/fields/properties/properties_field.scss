@@ -1,9 +1,9 @@
 .o_field_properties {
     width: 100%;
-    // be sure that the property field can take zero height
-    // in case no property exists
-    display: block;
-    margin-bottom: 0 !important;
+
+    .o_group {
+        gap: map-get($spacers, 2) $o-horizontal-padding * 2;
+    }
 }
 
 // The web client will add a "o_field_invalid" class when the field is considered
@@ -16,14 +16,7 @@
     .o_dropdown_button,
     .o_datepicker_button {
         @include print-variable(o-input-border-color, $o-form-lightsecondary);
-        color: $o-main-text-color !important;
-    }
-    .o_dropdown_button,
-    .o_datepicker_button {
         color: initial !important;
-    }
-    .o_input_dropdown {
-        color: $o-main-text-color !important;
     }
 
     & {
@@ -32,9 +25,9 @@
         .dropdown:focus-within ~ .o_dropdown_button,
         .o_input:focus ~ .o_datepicker_button,
         .o_dropdown_button:focus {
-            @include print-variable(o-input-border-color, $o-action);
+            @include print-variable(o-input-border-color, $o-brand-primary);
             * {
-                @include print-variable(o-input-border-color, $o-action);
+                @include print-variable(o-input-border-color, $o-brand-primary);
             }
         }
     }
@@ -44,32 +37,64 @@
     }
 }
 
-.o_property_field_highlight .o_field_property_empty_label,
-.o_property_field_highlight {
-    border: 1px solid $primary;
-    padding: 5px;
-    margin: -5px;
-    border-radius: 3px;
-}
-
-.o_field_property_label {
-    width: 180px;
-
-    &:hover .o_field_property_open_popover,
-    .o_field_property_open_popover:focus,
-    &:hover .oi-draggable,
-    .oi-draggable:focus {
-        opacity: 1;
+.o_property_field {
+    .o_property_field_value {
+        height: fit-content;
+        padding: 0 $o-innergroup-rpadding 0 0;
     }
-    .o_field_property_open_popover,
-    .oi-draggable {
-        opacity: 0;
+
+    .o_field_property_dropdown input {
         cursor: pointer;
-        transition: 0.1s;
     }
-    .o_field_property_open_popover:hover,
-    .oi-draggable:hover {
-        color: $primary;
+
+    .o_input_dropdown {
+        min-width: 100%;
+    }
+
+    .popover-body {
+        min-width: 500px;
+    }
+    .o_td_label {
+        min-width: 150px;
+    }
+
+    .o_field_property_label {
+        max-width: 150px;
+        width: fit-content;
+        margin-right: -25px !important;
+
+        b {
+            word-break: break-word;
+            max-height: 100px;
+            overflow-y: hidden;
+        }
+
+        &:hover .o_field_property_open_popover,
+        .o_field_property_open_popover:focus {
+            opacity: 1;
+        }
+        .o_field_property_open_popover {
+            opacity: 0;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .o_field_property_open_popover:hover {
+            color: $primary;
+        }
+    }
+
+    .o-dropdown {
+        .dropdown-menu {
+            max-height: 300px;
+        }
+    }
+
+    .o_property_field_highlight .o_field_property_empty_label,
+    .o_property_field_highlight b, {
+        border: 1px solid $primary;
+        padding: 5px;
+        margin: -5px;
+        border-radius: 3px;
     }
 }
 
@@ -79,22 +104,42 @@
     margin-left: -1rem;
 }
 
-.o_property_folded {
-    .o_field_property_label,
-    .o_property_field_value {
-        display: none !important;
-    }
-}
-
 .o_property_field_popover {
     // put the popover behind datetime component
-    z-index: $zindex-popover !important;
+    z-index: 1000 !important;
     font-size: inherit;
+    box-shadow: 0 3rem 5rem rgba($black, .18) !important;
     box-sizing: border-box;
+    .end-auto {
+        display: none;
+    }
+
+    .o_input_dropdown {
+        width: 100%;
+    }
 }
 
 .o_xxs_form_view .o_field_properties {
     // mobile view
+    .o_property_field {
+        margin-bottom: 20px;
+        min-width: 100%;
+        flex-wrap: wrap;
+        padding: 0;
+
+        .o_td_label,
+        .o_property_field_value {
+            min-width: 100%;
+            padding: 0 !important;
+            &>* {
+                max-width: 100%;
+            }
+            .o_input_dropdown {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+    }
     .o_field_property_add,
     .o_field_property_open_popover {
         display: none;
@@ -102,47 +147,4 @@
     .o_field_property_open_popover.disabled {
         pointer-events: none;
     }
-}
-
-.o_field_property_group_label {
-    cursor: pointer;
-    user-select: none;
-    height: 20px;
-    box-shadow: 0 $border-width 0 $o-form-separator-color;
-}
-
-.o_field_properties {
-    .oi-draggable {
-        cursor: url(/web/static/img/openhand.cur), grab;
-    }
-}
-
-.o_property_dragging {
-    // make the background transparent for "o_property_drag_group" effect
-    input {
-        background: transparent;
-    }
-
-    // disabled click interaction when dragging on those elements
-    .o_field_property_open_popover,
-    .o_field_property_label,
-    input {
-        pointer-events: none;
-    }
-
-    .o_property_drag_item {
-        opacity: 0.7;
-        transform: rotate(2deg);
-    }
-
-    .o_field_property_add {
-        display: none;
-    }
-}
-
-.o_field_properties div:not([columns="1"]) .o_property_drag_group {
-    // highlight effect on the group is activated only in multi-columns
-    box-sizing: border-box;
-    background-color: #{tint-color($o-action, 90%)};
-    border: 1px solid #{$o-action};
 }

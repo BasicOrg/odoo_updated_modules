@@ -87,14 +87,13 @@ class TestPurchaseOrder(TestCommissionsSetup):
         self.referrer.commission_plan_id = self.gold_plan
         self.referrer.grade_id = self.gold
 
-        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True),
-                    view=self.env.ref('sale_subscription.sale_subscription_primary_form_view'))
+        form = Form(self.env['sale.order'].with_user(self.salesman).with_context(tracking_disable=True))
         form.partner_id = self.customer
         form.partner_invoice_id = self.customer
         form.partner_shipping_id = self.customer
         form.referrer_id = self.referrer
         # form.commission_plan_frozen = False
-        form.plan_id = self.plan_year
+        form.recurrence_id = self.recurrence_year
 
         # Testing same rules, with cap reached, are grouped together.
         with form.order_line.new() as line:
@@ -106,8 +105,8 @@ class TestPurchaseOrder(TestCommissionsSetup):
         so.pricelist_id = self.eur_20
         so.action_confirm()
         inv = so._create_invoices()
-        inv.action_post()
         inv.name = 'INV/12345/0001'
+        inv.action_post()
         self._pay_invoice(inv)
         date_from = fields.Date.today()
         date_to = date_from + get_timedelta(1, 'year') - relativedelta(days=1)
@@ -130,6 +129,8 @@ class TestPurchaseOrder(TestCommissionsSetup):
                 line.name = product.name
                 line.product_id = product
                 line.product_uom_qty = 1
+                if product.recurring_invoice:
+                    line.pricing_id = product.product_tmpl_id.product_pricing_ids[-1]
 
             so = form.save()
             so.action_confirm()
@@ -158,7 +159,7 @@ class TestPurchaseOrder(TestCommissionsSetup):
                 'property_account_income_id': self.account_sale.id,
                 'invoice_policy': 'order',
             })
-            self.env['sale.subscription.pricing'].create({'plan_id': self.plan_month.id, 'price': 20, 'product_template_id': bar.product_tmpl_id.id})
+            self.env['product.pricing'].create({'recurrence_id': self.recurrence_month.id, 'price': 20, 'product_template_id': bar.product_tmpl_id.id})
             rule = self.env['commission.rule'].create({
                 'plan_id': self.gold_plan.id,
                 'category_id': foo.id,

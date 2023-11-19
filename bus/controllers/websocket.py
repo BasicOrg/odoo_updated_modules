@@ -44,9 +44,6 @@ class WebsocketController(Controller):
             channel_with_db(request.db, c)
             for c in request.env['ir.websocket']._build_bus_channel_list(channels)
         ))
-        last_known_notification_id = request.env['bus.bus'].sudo().search([], limit=1, order='id desc').id or 0
-        if last > last_known_notification_id:
-            last = 0
         notifications = request.env['bus.bus']._poll(channels, last)
         return {'channels': channels, 'notifications': notifications}
 
@@ -58,12 +55,9 @@ class WebsocketController(Controller):
         return {}
 
     @route('/bus/websocket_worker_bundle', type='http', auth='public', cors='*')
-    def get_websocket_worker_bundle(self, v=None):  # pylint: disable=unused-argument
-        """
-        :param str v: Version of the worker, frontend only argument used to
-            prevent new worker versions to be loaded from the browser cache.
-        """
-        bundle_name = 'bus.websocket_worker_assets'
-        bundle = request.env["ir.qweb"]._get_asset_bundle(bundle_name, debug_assets="assets" in request.session.debug)
-        stream = request.env['ir.binary']._get_stream_from(bundle.js())
+    def get_websocket_worker_bundle(self):
+        bundle = 'bus.websocket_worker_assets'
+        files, _ = request.env["ir.qweb"]._get_asset_content(bundle)
+        asset = AssetsBundle(bundle, files)
+        stream = request.env['ir.binary']._get_stream_from(asset.js())
         return stream.get_response()

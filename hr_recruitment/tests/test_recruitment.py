@@ -31,9 +31,8 @@ class TestRecruitment(TransactionCase):
         """ Test that we find same applicants based on simmilar mail,
             phone or mobile phone.
         """
-        A, B, C, D, E, F, _ = self.env['hr.applicant'].create([
+        A, B, C, D, E, F = self.env['hr.applicant'].create([
             {
-                'active': False,  # Refused/archived application should still count
                 'name': 'Application A',
                 'email_from': 'abc@odoo.com',
                 'partner_phone': '123',
@@ -58,22 +57,15 @@ class TestRecruitment(TransactionCase):
             },
             {
                 'name': 'Application E',
-                'partner_phone': '',
             },
             {
                 'name': 'Application F',
                 'partner_phone': '11-12-13', # In case phone is configured in a wrong field
-            },
-            {
-                'name': 'Application G',
-                'partner_phone': '',
-            },
+            }
         ])
-
         self.assertEqual(A.application_count, 2) # C, D
         self.assertEqual(B.application_count, 2) # D, F
         self.assertEqual(C.application_count, 2) # A, D
         self.assertEqual(D.application_count, 3) # A, B, C
-        self.assertEqual(E.application_count, 0) # Should not match with G
+        self.assertEqual(E.application_count, 0)
         self.assertEqual(F.application_count, 1) # B
-

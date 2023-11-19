@@ -1,5 +1,6 @@
 /** @odoo-module */
 
-import { unpatchGraphSpreadsheet } from "@spreadsheet_edition/assets/graph_view/graph_view";
+import { unpatch } from "@web/core/utils/patch";
+import { GraphController } from "@web/views/graph/graph_controller";
 
-unpatchGraphSpreadsheet();
+unpatch(GraphController.prototype, "graph_spreadsheet");

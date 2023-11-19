@@ -1,12 +1,11 @@
 /** @odoo-module **/
 
-import { _t } from "@web/core/l10n/translation";
 import { DataCleaningCommonListController } from "@data_recycle/views/data_cleaning_common_list";
 import { registry } from '@web/core/registry';
 import { listView } from '@web/views/list/list_view';
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { useService } from "@web/core/utils/hooks";
-import { useSubEnv } from "@odoo/owl";
+import { sprintf } from "@web/core/utils/strings";
 
 export class DataMergeListModel extends listView.Model {}
 export class DataMergeListRecord extends DataMergeListModel.Record {
@@ -26,10 +25,9 @@ export class DataMergeListController extends DataCleaningCommonListController {
         super.setup();
         this.dialog = useService("dialog");
         this.actionService = useService("action");
-        this.notificationService = useService("notification");
         const onClickViewButton = this.env.onClickViewButton;
 
-        useSubEnv({
+        owl.useSubEnv({
             onClickViewButton: (params) => {
                 const paramsName = params.clickParams.name;
                 const ResParams = params.getResParams();
@@ -40,7 +38,7 @@ export class DataMergeListController extends DataCleaningCommonListController {
 
                 if (action === 'merge_records') {
                     this.dialog.add(ConfirmationDialog, {
-                        body: _t("Are you sure that you want to merge these records?"),
+                        body: this.env._t("Are you sure that you want to merge these records?"),
                         confirm: async () => {
                             await this.doActionMergeDiscard(action, groupId, recordIds);
                         },
@@ -102,11 +100,16 @@ export class DataMergeListController extends DataCleaningCommonListController {
 
 
         this.dialog.add(ConfirmationDialog, {
-            body: _t("Are you sure that you want to merge the selected records in their respective group?"),
+            body: this.env._t("Are you sure that you want to merge the selected records in their respective group?"),
             confirm: async () => {
-                await this.orm.call('data_merge.group', 'merge_multiple_records', [group_ids]);
+                this.orm.call('data_merge.group', 'merge_multiple_records', [group_ids]);
                 this.showMergeNotification();
+                records.forEach(record => this.model.root.removeRecord(record));
+                this.model.root.groups
+                    .filter(group => !group.count)
+                    .forEach(group => this.model.root.removeGroup(group));
                 await this.model.load();
+                this.model.notify();
             },
             cancel: () => {},
         });
@@ -126,7 +129,13 @@ export class DataMergeListController extends DataCleaningCommonListController {
                 const records_merged = res && 'records_merged' in res ? res.records_merged : false;
                 this.showMergeNotification(records_merged);
             }
+            this.model.root.records
+                .filter(record => record.resId in recordIds)
+                .forEach(record => this.model.root.removeRecord(record));
+            this.model.root.removeGroup(this.model.root.groups
+                .filter(group => group.resId === groupId));
             await this.model.load();
+            this.model.notify();
         }
     }
 
@@ -137,9 +146,9 @@ export class DataMergeListController extends DataCleaningCommonListController {
     showMergeNotification(recordsMerged) {
         let message;
         if (recordsMerged) {
-            message = _t("%s records have been merged", recordsMerged);
+            message = sprintf(this.env._t("%s records have been merged"), recordsMerged);
         } else {
-            message = _t("The selected records have been merged");
+            message = this.env._t("The selected records have been merged");
         }
         this.notificationService.add(message, {});
     }

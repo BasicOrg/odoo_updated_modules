@@ -1,13 +1,10 @@
-/** @odoo-module **/
+odoo.define('website.content.menu', function (require) {
+'use strict';
 
-import publicWidget from "@web/legacy/js/public/public_widget";
-import animations from "@website/js/content/snippets.animation";
-export const extraMenuUpdateCallbacks = [];
-import { SIZES, utils as uiUtils } from "@web/core/ui/ui_service";
-
-// The header height may vary with sections hidden on scroll (see the class
-// `o_header_hide_on_scroll`). To avoid scroll jumps, we cache the value.
-let headerHeight;
+const config = require('web.config');
+var publicWidget = require('web.public.widget');
+var animations = require('website.content.snippets.animation');
+const extraMenuUpdateCallbacks = [];
 
 const BaseAnimatedHeader = animations.Animation.extend({
     disabledInEditableMode: false,
@@ -28,8 +25,6 @@ const BaseAnimatedHeader = animations.Animation.extend({
         this.scrolledPoint = 0;
         this.hasScrolled = false;
         this.closeOpenedMenus = false;
-        this.scrollHeightTooShort = false;
-        this.scrollableEl = $().getScrollingElement()[0];
     },
     /**
      * @override
@@ -38,12 +33,11 @@ const BaseAnimatedHeader = animations.Animation.extend({
         this.$main = this.$el.next('main');
         this.isOverlayHeader = !!this.$el.closest('.o_header_overlay, .o_header_overlay_theme').length;
         this.$dropdowns = this.$el.find('.dropdown, .dropdown-menu');
-        this.hiddenOnScrollEl = this.el.querySelector(".o_header_hide_on_scroll");
         this.$navbarCollapses = this.$el.find('.navbar-collapse');
 
         // While scrolling through navbar menus on medium devices, body should not be scrolled with it
         this.$navbarCollapses.on('show.bs.collapse.BaseAnimatedHeader', function () {
-            if (uiUtils.getSize() <= SIZES.SM) {
+            if (config.device.size_class <= config.device.SIZES.SM) {
                 $(document.body).addClass('overflow-hidden');
             }
         }).on('hide.bs.collapse.BaseAnimatedHeader', function () {
@@ -83,7 +77,17 @@ const BaseAnimatedHeader = animations.Animation.extend({
      * @private
      */
     _adaptFixedHeaderPosition() {
-        $(this.el).compensateScrollbar(this.fixedHeader, false, 'right');
+        // Compensate scrollbar
+        this.el.style.removeProperty('right');
+        if (this.fixedHeader) {
+            const scrollableEl = $(this.el).parent().closestScrollable()[0];
+            const style = window.getComputedStyle(this.el);
+            const borderLeftWidth = parseInt(style.borderLeftWidth.replace('px', ''));
+            const borderRightWidth = parseInt(style.borderRightWidth.replace('px', ''));
+            const bordersWidth = borderLeftWidth + borderRightWidth;
+            const newValue = parseInt(style['right']) + scrollableEl.offsetWidth - scrollableEl.clientWidth - bordersWidth;
+            this.el.style.setProperty('right', `${newValue}px`, 'important');
+        }
     },
     /**
      * @private
@@ -131,18 +135,6 @@ const BaseAnimatedHeader = animations.Animation.extend({
         }
     },
     /**
-     * Scrolls to correctly display the section specified in the URL
-     *
-     * @private
-     */
-    _adjustUrlAutoScroll() {
-        // When the url contains #aRandomSection, prevent the navbar to overlap
-        // on the section, for this, we scroll as many px as the navbar height.
-        if (!this.editableMode) {
-            this.scrollableEl.scrollBy(0, -this.el.offsetHeight);
-        }
-    },
-    /**
      * @private
      */
     _computeTopGap() {
@@ -168,40 +160,13 @@ const BaseAnimatedHeader = animations.Animation.extend({
      * @private
      */
     _updateMainPaddingTop: function () {
-        headerHeight ||= this.el.getBoundingClientRect().height;
+        this.headerHeight = this.$el.outerHeight();
         this.topGap = this._computeTopGap();
 
         if (this.isOverlayHeader) {
             return;
         }
-        this.$main.css('padding-top', this.fixedHeader ? headerHeight : '');
-    },
-    /**
-     * Checks if the size of the header will decrease by adding the
-     * 'o_header_is_scrolled' class. If so, we do not add this class if the
-     * remaining scroll height is not enough to stay above 'this.scrolledPoint'
-     * after the transition, otherwise it causes the scroll position to move up
-     * again below 'this.scrolledPoint' and trigger an infinite loop.
-     *
-     * @todo header effects should be improved in the future to not ever change
-     * the page scroll-height during their animation. The code would probably be
-     * simpler but also prevent having weird scroll "jumps" during animations
-     * (= depending on the logo height after/before scroll, a scroll step (one
-     * mousewheel event for example) can be bigger than other ones).
-     *
-     * @private
-     * @returns {boolean}
-     */
-    _scrollHeightTooShort() {
-        const scrollEl = this.scrollableEl;
-        const remainingScroll = (scrollEl.scrollHeight - scrollEl.clientHeight) - this.scrolledPoint;
-        const clonedHeader = this.el.cloneNode(true);
-        scrollEl.append(clonedHeader);
-        clonedHeader.classList.add('o_header_is_scrolled', 'o_header_affixed', 'o_header_no_transition');
-        const endHeaderHeight = clonedHeader.offsetHeight;
-        clonedHeader.remove();
-        const heightDiff = headerHeight - endHeaderHeight;
-        return heightDiff > 0 ? remainingScroll <= heightDiff : false;
+        this.$main.css('padding-top', this.fixedHeader ? this.headerHeight : '');
     },
 
     //--------------------------------------------------------------------------
@@ -220,7 +185,6 @@ const BaseAnimatedHeader = animations.Animation.extend({
             this.hasScrolled = true;
             if (scroll > 0) {
                 this.$el.addClass('o_header_no_transition');
-                this._adjustUrlAutoScroll();
             }
         } else {
             this.$el.removeClass('o_header_no_transition');
@@ -230,21 +194,14 @@ const BaseAnimatedHeader = animations.Animation.extend({
         // Indicates the page is scrolled, the logo size is changed.
         const headerIsScrolled = (scroll > this.scrolledPoint);
         if (this.headerIsScrolled !== headerIsScrolled) {
-            this.scrollHeightTooShort = headerIsScrolled && this._scrollHeightTooShort();
-            if (!this.scrollHeightTooShort) {
-                this.el.classList.toggle('o_header_is_scrolled', headerIsScrolled);
-                this.$el.trigger('odoo-transitionstart');
-                this.headerIsScrolled = headerIsScrolled;
-            }
+            this.el.classList.toggle('o_header_is_scrolled', headerIsScrolled);
+            this.$el.trigger('odoo-transitionstart');
+            this.headerIsScrolled = headerIsScrolled;
         }
 
         if (this.closeOpenedMenus) {
-            // TODO master: make this.$dropdowns the .dropdown-toggle directly.
-            for (const dropdownMenuEl of this.$dropdowns) {
-                Dropdown.getOrCreateInstance(
-                    dropdownMenuEl.closest('.dropdown').querySelector('.dropdown-toggle')
-                ).hide();
-            }
+            this.$dropdowns.removeClass('show');
+            this.$navbarCollapses.removeClass('show').attr('aria-expanded', false);
         }
     },
     /**
@@ -255,7 +212,7 @@ const BaseAnimatedHeader = animations.Animation.extend({
     _updateHeaderOnResize: function () {
         this._adaptFixedHeaderPosition();
         if (document.body.classList.contains('overflow-hidden')
-                && uiUtils.getSize() > SIZES.SM) {
+                && config.device.size_class > config.device.SIZES.SM) {
             document.body.classList.remove('overflow-hidden');
             this.$el.find('.navbar-collapse').removeClass('show');
         }
@@ -277,15 +234,8 @@ publicWidget.registry.StandardAffixedHeader = BaseAnimatedHeader.extend({
      * @override
      */
     start: function () {
-        headerHeight ||= this.el.getBoundingClientRect().height;
+        this.headerHeight = this.$el.outerHeight();
         return this._super.apply(this, arguments);
-    },
-    /**
-     * @override
-     */
-    destroy() {
-        this.$el.css('transform', '');
-        this._super(...arguments);
     },
 
     //--------------------------------------------------------------------------
@@ -301,14 +251,14 @@ publicWidget.registry.StandardAffixedHeader = BaseAnimatedHeader.extend({
     /**
      * Called when the window is scrolled
      *
-     * @override
+     * @private
      * @param {integer} scroll
      */
     _updateHeaderOnScroll: function (scroll) {
         this._super(...arguments);
 
-        const mainPosScrolled = (scroll > headerHeight + this.topGap);
-        const reachPosScrolled = (scroll > this.scrolledPoint + this.topGap) && !this.scrollHeightTooShort;
+        const mainPosScrolled = (scroll > this.headerHeight + this.topGap);
+        const reachPosScrolled = (scroll > this.scrolledPoint + this.topGap);
         const fixedUpdate = (this.fixedHeader !== mainPosScrolled);
         const showUpdate = (this.fixedHeaderShow !== reachPosScrolled);
 
@@ -323,7 +273,6 @@ publicWidget.registry.StandardAffixedHeader = BaseAnimatedHeader.extend({
         }
 
         this.fixedHeaderShow = reachPosScrolled;
-        this.hiddenOnScrollEl?.classList.toggle("hidden", mainPosScrolled);
 
         if (fixedUpdate) {
             this._toggleFixedHeader(mainPosScrolled);
@@ -357,28 +306,6 @@ publicWidget.registry.FixedHeader = BaseAnimatedHeader.extend({
             this._toggleFixedHeader(false);
             void this.$el[0].offsetWidth; // Force a paint refresh
             this.$el.css('transform', '');
-        }
-
-        if (this.hiddenOnScrollEl) {
-            const scrollDelta = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches ?
-                scroll : Math.floor(scroll / 4);
-            const elHeight = Math.max(0, this.hiddenOnScrollEl.scrollHeight - scrollDelta);
-            this.hiddenOnScrollEl.classList.toggle("hidden", elHeight === 0);
-            if (elHeight === 0) {
-                this.hiddenOnScrollEl.removeAttribute("style");
-            } else {
-                this.hiddenOnScrollEl.style.overflow = "hidden";
-                this.hiddenOnScrollEl.style.height = `${elHeight}px`;
-                let elPadding = parseInt(getComputedStyle(this.hiddenOnScrollEl).paddingBlock);
-                if (elHeight < elPadding * 2) {
-                    const heightDifference = elPadding * 2 - elHeight;
-                    elPadding = Math.max(0, elPadding - Math.floor(heightDifference / 2));
-                    this.hiddenOnScrollEl.style
-                        .setProperty("padding-block", `${elPadding}px`, "important");
-                } else {
-                    this.hiddenOnScrollEl.style.paddingBlock = "";
-                }
-            }
         }
     },
 });
@@ -477,10 +404,6 @@ publicWidget.registry.DisappearingHeader = BaseDisappearingHeader.extend({
     /**
      * @override
      */
-    _adjustUrlAutoScroll() {},
-    /**
-     * @override
-     */
     _hideHeader: function () {
         this._super(...arguments);
         this.$el.css('transform', 'translate(0, -100%)');
@@ -504,10 +427,6 @@ publicWidget.registry.FadeOutHeader = BaseDisappearingHeader.extend({
     /**
      * @override
      */
-    _adjustUrlAutoScroll() {},
-    /**
-     * @override
-     */
     _hideHeader: function () {
         this._super(...arguments);
         this.$el.stop(false, true).fadeOut();
@@ -519,6 +438,86 @@ publicWidget.registry.FadeOutHeader = BaseDisappearingHeader.extend({
         this._super(...arguments);
         this.$el.css('transform', this.atTop ? '' : `translate(0, -${this.topGap}px)`);
         this.$el.stop(false, true).fadeIn();
+    },
+});
+
+/**
+ * Note: this works well with the affixMenu... by chance (menuDirection is
+ * called after alphabetically).
+ *
+ * @todo check bootstrap v4: maybe handled automatically now ?
+ */
+publicWidget.registry.menuDirection = publicWidget.Widget.extend({
+    selector: 'header .navbar .nav',
+    disabledInEditableMode: false,
+    events: {
+        'show.bs.dropdown': '_onDropdownShow',
+    },
+
+    /**
+     * @override
+     */
+    start: function () {
+        this.defaultAlignment = this.$el.is('.ms-auto, .ms-auto ~ *') ? 'right' : 'left';
+        return this._super.apply(this, arguments);
+    },
+
+    //--------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------
+
+    /**
+     * @private
+     * @param {string} alignment - either 'left' or 'right'
+     * @param {integer} liOffset
+     * @param {integer} liWidth
+     * @param {integer} menuWidth
+     * @param {integer} pageWidth
+     * @returns {boolean}
+     */
+    _checkOpening: function (alignment, liOffset, liWidth, menuWidth, pageWidth) {
+        if (alignment === 'left') {
+            // Check if ok to open the dropdown to the right (no window overflow)
+            return (liOffset + menuWidth <= pageWidth);
+        } else {
+            // Check if ok to open the dropdown to the left (no window overflow)
+            return (liOffset + liWidth - menuWidth >= 0);
+        }
+    },
+
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+
+    /**
+     * @private
+     */
+    _onDropdownShow: function (ev) {
+        var $li = $(ev.target);
+        var $menu = $li.children('.dropdown-menu');
+        var liOffset = $li.offset().left;
+        var liWidth = $li.outerWidth();
+        var menuWidth = $menu.outerWidth();
+        var pageWidth = $('#wrapwrap').outerWidth();
+
+        $menu.removeClass('dropdown-menu-start dropdown-menu-end');
+
+        var alignment = this.defaultAlignment;
+        if ($li.nextAll(':visible').length === 0) {
+            // The dropdown is the last menu item, open to the left
+            alignment = 'right';
+        }
+
+        // If can't open in the current direction because it would overflow the
+        // page, change the direction. But if the other direction would do the
+        // same, change back the direction.
+        for (var i = 0; i < 2; i++) {
+            if (!this._checkOpening(alignment, liOffset, liWidth, menuWidth, pageWidth)) {
+                alignment = (alignment === 'left' ? 'right' : 'left');
+            }
+        }
+
+        $menu.addClass('dropdown-menu-' + alignment);
     },
 });
 
@@ -538,22 +537,9 @@ publicWidget.registry.hoverableDropdown = animations.Animation.extend({
      * @override
      */
     start: function () {
-        if (this.editableMode) {
-            this._onPageClick = this._onPageClick.bind(this);
-            this.el.closest('#wrapwrap').addEventListener('click', this._onPageClick, {capture: true});
-        }
         this.$dropdownMenus = this.$el.find('.dropdown-menu');
         this.$dropdownToggles = this.$el.find('.dropdown-toggle');
         this._dropdownHover();
-        return this._super.apply(this, arguments);
-    },
-    /**
-     * @override
-     */
-    destroy() {
-        if (this.editableMode) {
-            this.el.closest('#wrapwrap').removeEventListener('click', this._onPageClick, {capture: true});
-        }
         return this._super.apply(this, arguments);
     },
 
@@ -566,45 +552,12 @@ publicWidget.registry.hoverableDropdown = animations.Animation.extend({
      */
     _dropdownHover: function () {
         this.$dropdownMenus.attr('data-bs-popper', 'none');
-        if (uiUtils.getSize() > SIZES.SM) {
+        if (config.device.size_class > config.device.SIZES.SM) {
             this.$dropdownMenus.css('margin-top', '0');
             this.$dropdownMenus.css('top', 'unset');
         } else {
             this.$dropdownMenus.css('margin-top', '');
             this.$dropdownMenus.css('top', '');
-        }
-    },
-    /**
-     * Hides all opened dropdowns.
-     *
-     * @private
-     */
-    _hideDropdowns() {
-        for (const toggleEl of this.el.querySelectorAll('.dropdown-toggle.show')) {
-            Dropdown.getOrCreateInstance(toggleEl).hide();
-        }
-    },
-    /**
-     * @private
-     * @param {Event} ev
-     * @param {boolean} [doShow=true] true to show, false to hide
-     */
-    _updateDropdownVisibility(ev, doShow = true) {
-        if (uiUtils.getSize() <= SIZES.SM) {
-            return;
-        }
-        if (ev.currentTarget.closest('.o_extra_menu_items')) {
-            return;
-        }
-        const dropdownToggleEl = ev.currentTarget.querySelector('.dropdown-toggle');
-        if (!dropdownToggleEl) {
-            return;
-        }
-        const dropdown = Dropdown.getOrCreateInstance(dropdownToggleEl);
-        if (doShow) {
-            dropdown.show();
-        } else {
-            dropdown.hide();
         }
     },
 
@@ -617,52 +570,36 @@ publicWidget.registry.hoverableDropdown = animations.Animation.extend({
      * @param {Event} ev
      */
     _onMouseEnter: function (ev) {
-        if (this.editableMode) {
-            // Do not handle hover if another dropdown is opened.
-            if (this.el.querySelector('.dropdown-toggle.show')) {
-                return;
-            }
+        if (config.device.size_class <= config.device.SIZES.SM) {
+            return;
         }
-        // The user must click on the dropdown if he is on mobile (no way to
-        // hover) or if the dropdown is the (or in the) extra menu ('+').
-        this._updateDropdownVisibility(ev, true);
+
+        const $dropdown = $(ev.currentTarget);
+        $dropdown.addClass('show');
+        $dropdown.find(this.$dropdownToggles).attr('aria-expanded', 'true');
+        $dropdown.find(this.$dropdownMenus).addClass('show');
     },
     /**
      * @private
      * @param {Event} ev
      */
     _onMouseLeave: function (ev) {
-        if (this.editableMode) {
-            // Cancel handling from view mode.
+        if (config.device.size_class <= config.device.SIZES.SM) {
             return;
         }
-        this._updateDropdownVisibility(ev, false);
-    },
-    /**
-     * Called when the page is clicked anywhere.
-     * Closes the shown dropdown if the click is outside of it.
-     *
-     * @private
-     * @param {Event} ev
-     */
-    _onPageClick(ev) {
-        if (ev.target.closest('.dropdown-menu.show')) {
-            return;
-        }
-        this._hideDropdowns();
+
+        const $dropdown = $(ev.currentTarget);
+        $dropdown.removeClass('show');
+        $dropdown.find(this.$dropdownToggles).attr('aria-expanded', 'false');
+        $dropdown.find(this.$dropdownMenus).removeClass('show');
     },
 });
 
-publicWidget.registry.HeaderGeneral = publicWidget.Widget.extend({
+publicWidget.registry.HeaderMainCollapse = publicWidget.Widget.extend({
     selector: 'header#top',
-    disabledInEditableMode: false,
     events: {
         'show.bs.collapse #top_menu_collapse': '_onCollapseShow',
         'hidden.bs.collapse #top_menu_collapse': '_onCollapseHidden',
-        "show.bs.modal #o_search_modal": "_onSearchModalShow",
-        "shown.bs.modal #o_search_modal": "_onSearchModalShown",
-        "shown.bs.offcanvas #top_menu_collapse_mobile": "_onMobileMenuToggled",
-        "hidden.bs.offcanvas #top_menu_collapse_mobile": "_onMobileMenuToggled",
     },
 
     //--------------------------------------------------------------------------
@@ -681,79 +618,9 @@ publicWidget.registry.HeaderGeneral = publicWidget.Widget.extend({
     _onCollapseHidden() {
         this.el.classList.remove('o_top_menu_collapse_shown');
     },
-    /**
-     * @private
-     */
-    _onMobileMenuToggled(ev) {
-        // TODO: Fix for Safari. Once the scroll is moved back from the
-        //       #wrapwrap to the body, this code should not be needed anymore.
-        document.querySelector("#wrapwrap").classList.toggle("overflow-hidden");
-    },
-    /**
-     * @private
-     */
-    _onSearchModalShow(ev) {
-        if (this.editableMode) {
-            ev.preventDefault();
-        }
-    },
-    /**
-     * @private
-     */
-    _onSearchModalShown(ev) {
-        const searchModalEl = this.el.querySelector("#o_search_modal");
-        const searchInputEl = this.el.querySelector(".search-query");
-        if (searchModalEl) {
-            searchInputEl.focus();
-        }
-    },
 });
 
-publicWidget.registry.navbarDropdown = animations.Animation.extend({
-    selector: "header .navbar",
-    disabledInEditableMode: false,
-    events: {
-        "shown.bs.collapse": "_onCollapseShown",
-        "hidden.bs.collapse": "_onCollapseHidden",
-    },
-
-    //--------------------------------------------------------------------------
-    // Private
-    //--------------------------------------------------------------------------
-
-    /**
-     * Updates the Dropdowns to trigger the "_detectNavbar" function from the
-     * Bootstrap Dropdown class. This allows the dropdowns to adapt based on
-     * whether they are located within a hamburger menu. If they are not inside
-     * an "hamburger" style menu, automatic dropdown positioning is enabled
-     * using popper.js.
-     *
-     * @private
-     */
-    _updateDropdowns() {
-        for (const toggleEl of this.el.querySelectorAll(".nav .dropdown-toggle")) {
-            Dropdown.getOrCreateInstance(toggleEl).update();
-        }
-    },
-
-    //--------------------------------------------------------------------------
-    // Handlers
-    //--------------------------------------------------------------------------
-
-    /**
-     * @private
-     */
-    _onCollapseShown() {
-        this._updateDropdowns();
-    },
-    /**
-     * @private
-     */
-    _onCollapseHidden() {
-        this._updateDropdowns();
-    },
-});
-
-export default {
+return {
     extraMenuUpdateCallbacks: extraMenuUpdateCallbacks,
 };
+});

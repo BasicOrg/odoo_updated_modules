@@ -8,7 +8,7 @@
         <record id="email_template_edi_invoice" model="mail.template">
             <field name="name">Invoice: Sending</field>
             <field name="model_id" ref="account.model_account_move"/>
-            <field name="email_from">{{ (object.invoice_user_id.email_formatted or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">{{ (object.invoice_user_id.email_formatted or user.email_formatted) }}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="subject">{{ object.company_id.name }} Invoice (Ref {{ object.name or 'n/a' }})</field>
             <field name="description">Sent to customers with their invoices in attachment</field>
@@ -45,10 +45,6 @@
                 Please use the following communication for your payment: <span style="font-weight:bold;" t-out="object.payment_reference or ''">INV/2021/05/0005</span>.
             </t>
         </t>
-        <t t-if="hasattr(object, 'timesheet_count') and object.timesheet_count">
-            <br /><br />
-            PS: you can review your timesheets <a t-att-href="'my/timesheets?search_in=invoice&amp;search=%s' % object.name">from the portal.</a>
-        </t>
         <br /><br />
         Do not hesitate to contact us if you have any questions.
         <t t-if="not is_html_empty(object.invoice_user_id.signature)">
@@ -58,7 +54,8 @@
     </p>
 </div>
             </field>
-            <field name="report_template_ids" eval="[(4, ref('account.account_invoices'))]"/>
+            <field name="report_template" ref="account_invoices"/>
+            <field name="report_name">Invoice_{{ (object.name or '').replace('/','_') }}{{ object.state == 'draft' and '_draft' or '' }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>
@@ -87,7 +84,8 @@
     </p>
 </div>
 </field>
-            <field name="report_template_ids" eval="[(4, ref('account.action_report_payment_receipt'))]"/>
+            <field name="report_template" ref="account.action_report_payment_receipt"/>
+            <field name="report_name">{{ (object.name or '').replace('/','-') }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>
@@ -95,7 +93,7 @@
         <record id="email_template_edi_credit_note" model="mail.template">
             <field name="name">Credit Note: Sending</field>
             <field name="model_id" ref="account.model_account_move"/>
-            <field name="email_from">{{ (object.invoice_user_id.email_formatted or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">{{ (object.invoice_user_id.email_formatted or user.email_formatted) }}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="subject">{{ object.company_id.name }} Credit Note (Ref {{ object.name or 'n/a' }})</field>
             <field name="description">Sent to customers with the credit note in attachment</field>
@@ -131,7 +129,8 @@
     </p>
 </div>
             </field>
-            <field name="report_template_ids" eval="[(4, ref('account.account_invoices'))]"/>
+            <field name="report_template" ref="account_invoices"/>
+            <field name="report_name">Credit_note_{{ (object.name or '').replace('/','_') }}{{ object.state == 'draft' and '_draft' or '' }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>

@@ -1,9 +1,14 @@
-/** @odoo-module **/
+odoo.define('rating.portal.chatter', function (require) {
+'use strict';
 
-import { _t } from "@web/core/l10n/translation";
-import PortalChatter from "@portal/js/portal_chatter";
-import { roundPrecision } from "@web/core/utils/numbers";
-import { renderToElement } from "@web/core/utils/render";
+var core = require('web.core');
+var portalChatter = require('portal.chatter');
+var utils = require('web.utils');
+var time = require('web.time');
+
+var _t = core._t;
+var PortalChatter = portalChatter.PortalChatter;
+var qweb = core.qweb;
 
 /**
  * PortalChatter
@@ -11,7 +16,7 @@ import { renderToElement } from "@web/core/utils/render";
  * Extends Frontend Chatter to handle rating
  */
 PortalChatter.include({
-    events: Object.assign({}, PortalChatter.prototype.events, {
+    events: _.extend({}, PortalChatter.prototype.events, {
         // star based control
         'click .o_website_rating_table_row': '_onClickStarDomain',
         'click .o_website_rating_selection_reset': '_onClickStarDomainReset',
@@ -28,11 +33,11 @@ PortalChatter.include({
     init: function (parent, options) {
         this._super.apply(this, arguments);
         // options
-        if (!Object.keys(this.options).includes("display_rating")) {
-            this.options = Object.assign({
+        if (!_.contains(this.options, 'display_rating')) {
+            this.options = _.defaults(this.options, {
                 'display_rating': false,
                 'rating_default_value': 0.0,
-            }, this.options);
+            });
         }
         // rating card
         this.set('rating_card_values', {});
@@ -61,7 +66,7 @@ PortalChatter.include({
         var self = this;
         messages = this._super.apply(this, arguments);
         if (this.options['display_rating']) {
-            messages.forEach((m, i) => {
+            _.each(messages, function (m, i) {
                 m.rating_value = self.roundToHalf(m['rating_value']);
                 m.rating = self._preprocessCommentData(m.rating, i);
             });
@@ -132,15 +137,12 @@ PortalChatter.include({
             'avg': Math.round(result['rating_stats']['avg'] * 100) / 100,
             'percent': [],
         };
-        Object.keys(result["rating_stats"]["percent"])
-            .sort()
-            .reverse()
-            .forEach((rating) => {
-                ratingData["percent"].push({
-                    num: self.roundToHalf(rating),
-                    percent: roundPrecision(result["rating_stats"]["percent"][rating], 0.01),
-                });
+        _.each(_.sortBy(_.keys(result['rating_stats']['percent'])).reverse(), function (rating) {
+            ratingData['percent'].push({
+                'num': self.roundToHalf(rating),
+                'percent': utils.round_precision(result['rating_stats']['percent'][rating], 0.01),
             });
+        });
         this.set('rating_card_values', ratingData);
     },
     /**
@@ -160,41 +162,45 @@ PortalChatter.include({
      * @private
      */
     _renderRatingCard: function () {
-        this.$('.o_website_rating_card_container').replaceWith(renderToElement("portal_rating.rating_card", {widget: this}));
+        this.$('.o_website_rating_card_container').replaceWith(qweb.render("portal_rating.rating_card", {widget: this}));
     },
     /**
      * Default rating data for publisher comment qweb template
      * @private
-     * @param {Integer} messageIndex
+     * @param {Integer} messageIndex 
      */
     _newPublisherCommentData: function (messageIndex) {
         return {
             mes_index: messageIndex,
             publisher_id: this.options.partner_id,
-            publisher_avatar: `/web/image/res.partner/${this.options.partner_id}/avatar_128/50x50`,
+            publisher_avatar: _.str.sprintf('/web/image/res.partner/%s/avatar_128/50x50', this.options.partner_id),
             publisher_name: _t("Write your comment"),
             publisher_datetime: '',
             publisher_comment: '',
         };
-    },
+    }, 
 
      /**
      * preprocess the rating data comming from /website/rating/comment or the chatter_init
      * Can be also use to have new rating data for a new publisher comment
-     * @param {JSON} rawRating
+     * @param {JSON} rawRating 
      * @returns {JSON} the process rating data
      */
     _preprocessCommentData: function (rawRating, messageIndex) {
         var ratingData = {
             id: rawRating.id,
             mes_index: messageIndex,
-            publisher_avatar: rawRating.publisher_avatar,
-            publisher_comment: rawRating.publisher_comment,
-            publisher_datetime: rawRating.publisher_datetime,
-            publisher_id: rawRating.publisher_id,
-            publisher_name: rawRating.publisher_name,
+            publisher_datetime: rawRating.publisher_datetime ? moment(time.str_to_datetime(rawRating.publisher_datetime)).format('MMMM Do YYYY, h:mm:ss a') : "",
+            publisher_comment: rawRating.publisher_comment ? rawRating.publisher_comment : '',
         };
-        var commentData = {...this._newPublisherCommentData(messageIndex), ...ratingData};
+
+        // split array (id, display_name) of publisher_id into publisher_id and publisher_name
+        if (rawRating.publisher_id && rawRating.publisher_id.length >= 2) {
+            ratingData.publisher_id = rawRating.publisher_id[0];
+            ratingData.publisher_name = rawRating.publisher_id[1];
+            ratingData.publisher_avatar = _.str.sprintf('/web/image/res.partner/%s/avatar_128/50x50', ratingData.publisher_id);
+        }
+        var commentData = _.extend(this._newPublisherCommentData(messageIndex), ratingData);
         return commentData;
     },
 
@@ -273,12 +279,12 @@ PortalChatter.include({
             return;
         }
         var messageIndex = $source.data("mes_index");
-        var data = {is_publisher: this.options['is_user_publisher']};
+        var data = {is_publisher: this.options['is_user_publisher']}; 
         data.rating = this._newPublisherCommentData(messageIndex);
-
+        
         var oldRating = this.messages[messageIndex].rating;
         data.rating.publisher_comment = oldRating.publisher_comment ? oldRating.publisher_comment : '';
-        this._getCommentContainer($source).empty().append(renderToElement("portal_rating.chatter_rating_publisher_form", data));
+        this._getCommentContainer($source).html($(qweb.render("portal_rating.chatter_rating_publisher_form", data)));
         this._focusTextComment($source);
     },
 
@@ -293,15 +299,18 @@ PortalChatter.include({
         var messageIndex = $source.data("mes_index");
         var ratingId = this.messages[messageIndex].rating.id;
 
-        this.rpc('/website/rating/comment', {
-            "rating_id": ratingId,
-            "publisher_comment": '' // Empty publisher comment means no comment
+        this._rpc({
+            route: '/website/rating/comment',
+            params: {
+                "rating_id": ratingId,
+                "publisher_comment": '' // Empty publisher comment means no comment
+            }
         }).then(function (res) {
             self.messages[messageIndex].rating = self._preprocessCommentData(res, messageIndex);
             self._getCommentButton($source).removeClass("d-none");
             self._getCommentContainer($source).empty();
         });
-    },
+    },  
 
      /**
      * @private
@@ -315,9 +324,12 @@ PortalChatter.include({
         var comment = this._getCommentTextarea($source).val();
         var ratingId = this.messages[messageIndex].rating.id;
 
-        this.rpc('/website/rating/comment', {
-            "rating_id": ratingId,
-            "publisher_comment": comment
+        this._rpc({
+            route: '/website/rating/comment',
+            params: {
+                "rating_id": ratingId,
+                "publisher_comment": comment
+            }
         }).then(function (res) {
 
             // Modify the related message
@@ -325,14 +337,14 @@ PortalChatter.include({
             if (self.messages[messageIndex].rating.publisher_comment !== '') {
                 // Remove the button comment if exist and render the comment
                 self._getCommentButton($source).addClass('d-none');
-                self._getCommentContainer($source).empty().append(renderToElement("portal_rating.chatter_rating_publisher_comment", {
+                self._getCommentContainer($source).html($(qweb.render("portal_rating.chatter_rating_publisher_comment", { 
                     rating: self.messages[messageIndex].rating,
                     is_publisher: self.options.is_user_publisher
-                }));
+                })));
             } else {
                 // Empty string or false considers as no comment
                 self._getCommentButton($source).removeClass("d-none");
-                self._getCommentContainer($source).empty();
+                self._getCommentContainer($source).empty();       
             }
         });
     },
@@ -346,13 +358,14 @@ PortalChatter.include({
         var messageIndex = $source.data("mes_index");
 
         var comment = this.messages[messageIndex].rating.publisher_comment;
-        this._getCommentContainer($source).empty();
         if (comment) {
             var data = {
                 rating: this.messages[messageIndex].rating,
-                is_publisher: this.options.is_user_publisher,
+                is_publisher: this.options.is_user_publisher
             };
-            this._getCommentContainer($source).append(renderToElement("portal_rating.chatter_rating_publisher_comment", data));
+            this._getCommentContainer($source).html($(qweb.render("portal_rating.chatter_rating_publisher_comment", data)));
+        } else {
+            this._getCommentContainer($source).empty();
         }
     },
 
@@ -366,4 +379,5 @@ PortalChatter.include({
         }
         this._changeCurrentPage(1, domain);
     },
+});
 });

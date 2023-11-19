@@ -8,7 +8,7 @@ from odoo.osv import expression
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    module_industry_fsm_report = fields.Boolean("Worksheets")
+    module_industry_fsm_report = fields.Boolean("Custom Worksheets")
     module_industry_fsm_sale = fields.Boolean(
         string="Time and Material Invoicing",
         compute='_compute_module_industry_fsm_sale',

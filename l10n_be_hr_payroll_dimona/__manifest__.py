@@ -3,7 +3,7 @@
 
 {
     'name': 'Belgium - Payroll - Dimona',
-    'countries': ['be'],
+    'icon': '/l10n_be/static/description/icon.png',
     'category': 'Human Resources',
     'depends': ['l10n_be_hr_payroll'],
     'external_dependencies': {
@@ -23,11 +23,11 @@ Prerequisites:
   a technical user (.cer file) and to authenticate remotely to the ONSS (.pem) file. On a UNIX
   system, you may use the following commands:
 
-  - PFX -> CRT: openssl pkcs12 -in my_cert.pfx -out my_cert.crt -nokeys -clcerts
+  - PFX -> CRT : openssl pkcs12 -in my_cert.pfx -out my_cert.crt -nokeys -clcerts
 
-  - CRT -> CER: openssl x509 -inform pem -in my_cert.crt -outform der -out my_cert.cer
+  - CRT -> CER : openssl x509 -inform pem -in my_cert.crt -outform der -out my_cert.cer
 
-  - PFX -> PEM: openssl pkcs12 -in my_cert.pfx -out my_cert.pem -nodes
+  - PFX -> PEM : openssl pkcs12 -in my_cert.pfx -out my_cert.pem -nodes
 
 - Before you can use the social security REST web service, you must create an account
   for yourself or for your client and configure the security. (The whole procedure is
@@ -46,11 +46,13 @@ Prerequisites:
     encode in in the payroll Settings, with the .pem file and the related password, if any.
 
     """,
+    'auto_install': False,
     'data':[
         'security/ir.model.access.csv',
         'data/ir_cron_data.xml',
         'views/hr_contract_views.xml',
         'wizard/l10n_be_dimona_wizard_views.xml',
     ],
+    'demo':[],
     'license': 'OEEL-1',
 }

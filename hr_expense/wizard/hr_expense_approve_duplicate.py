@@ -29,8 +29,6 @@ class HrExpenseApproveDuplicate(models.TransientModel):
 
     def action_approve(self):
         self.sheet_ids._do_approve()
-        return {'type': 'ir.actions.act_window_close'}
 
     def action_refuse(self):
-        self.sheet_ids._do_refuse(_('Duplicate Expense'))
-        return {'type': 'ir.actions.act_window_close'}
+        self.sheet_ids.refuse_sheet(_('Duplicate Expense'))

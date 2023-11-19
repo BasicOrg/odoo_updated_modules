@@ -2,10 +2,14 @@
 <odoo>
 
     <template id="sale_order_portal_content_inherit" inherit_id="sale.sale_order_portal_template">
-        <xpath expr="//t[@t-set='entries']/div/div/div[hasclass('o_download_pdf')]" position="inside">
-            <div t-if="sale_order.timesheet_count > 0 and sale_order.state == 'sale'" class="flex-grow-1">
-                <a class="btn btn-secondary d-block w-100" t-att-href="'/my/timesheets?search_in=so&amp;search=%s' % sale_order.name">View Timesheets</a>
-            </div>
+        <xpath expr="//li[.//a[@id='print_invoice_report']]" position="after">
+            <li t-if="sale_order.timesheet_count > 0 and sale_order.state in ('sale', 'done')" class="list-group-item flex-grow-1">
+                <div class="btn-toolbar flex-sm-nowrap justify-content-center">
+                    <div class="btn-group">
+                        <a t-att-href="'/my/timesheets?search_in=so&amp;search=%s' % sale_order.name">View Timesheets</a>
+                    </div>
+                </div>
+            </li>
         </xpath>
     </template>
 
@@ -28,7 +32,7 @@
                         </t>
                     </t>
                     <t t-else="">
-                        Not Billed
+                        No Sales Order Item
                     </t>
                 </th>
                 <th colspan="1" class="text-end text-muted fw-normal">
@@ -88,28 +92,26 @@
     </template>
 
     <template id="portal_invoice_page_inherit" inherit_id="account.portal_invoice_page">
-        <xpath expr="//t[@t-set='entries']/div/div/div[hasclass('o_download_pdf')]" position="inside">
-            <div t-if="invoice.timesheet_count > 0" class="flex-grow-1 border-0">
+        <xpath expr="//t[@t-set='entries']/ul/li[.//a[@id='print_invoice_report']]" position="after">
+            <li class="list-group-item flex-grow-1">
                 <div class="btn-toolbar flex-sm-nowrap justify-content-center">
                     <div class="btn-group mb-1">
-                        <t t-set="search_value" t-value="invoice.name"/>
-                        <t t-if="invoice.state == 'draft'" t-set="search_value" t-value="invoice.id"/>
                         <a t-if="invoice.move_type == 'out_invoice' and invoice.state in ('draft', 'posted') and invoice.timesheet_count > 0"
-                           target="_blank" t-att-href="'/my/timesheets?search_in=invoice&amp;search=%s' % search_value">View Timesheets</a>
+                        target="_blank" t-att-href="'/my/timesheets?search_in=invoice&amp;search=%s' % invoice.name">View Timesheets</a>
                     </div>
                 </div>
-            </div>
+            </li>
         </xpath>
     </template>
 
     <template id="portal_my_task_inherit" inherit_id="project.portal_my_task">
         <xpath expr="//div[@name='portal_my_task_second_column']" position="inside">
-            <t t-if="task.project_id.allow_billable and env.user.has_group('sales_team.group_sale_salesman')">
+            <t t-if="task.project_id.allow_billable">
                 <div t-if="task.sale_order_id"><strong>Sales Order:</strong>
-                    <span t-if="so_accessible"><a t-attf-href="{{ task.sale_order_id.access_url }}" t-field="task.sale_order_id"></a></span>
+                    <span t-if="so_accessible"><a t-attf-href="/my/orders/{{ task.sale_order_id.id }}" t-field="task.sale_order_id"></a></span>
                     <span t-else="" t-field="task.sale_order_id"></span>
                 </div>
-                <div t-if="invoices_accessible"><strong>Invoices:</strong>
+                <div t-if="task.sale_order_id.invoice_ids"><strong>Invoices:</strong>
                     <span t-foreach="task.sale_order_id.invoice_ids" t-as="invoice_line">
                         <t t-if="invoice_line.id in invoices_accessible">
                             <a t-attf-href="/my/invoices/{{ invoice_line.id }}">
@@ -123,7 +125,7 @@
                 <div t-if="task.sale_line_id.untaxed_amount_invoiced > 0"><strong>Invoiced:</strong>
                     <span t-field="task.sale_line_id.untaxed_amount_invoiced"/>
                 </div>
-                <div name="amount_due" t-if="task.sale_line_id.untaxed_amount_to_invoice > 0"><strong>Amount Due:</strong>
+                <div t-if="task.sale_line_id.untaxed_amount_to_invoice > 0"><strong>To invoice:</strong>
                     <span t-field="task.sale_line_id.untaxed_amount_to_invoice"/>
                 </div>
             </t>
@@ -131,7 +133,7 @@
     </template>
 
     <template id="portal_timesheet_table_inherit" inherit_id="hr_timesheet.portal_timesheet_table">
-        <xpath expr="//div[@name='allocated_time']" position="after">
+        <xpath expr="//div[@name='planned_time']" position="after">
             <span t-if="task.allow_billable and task.sale_line_id and task.sale_line_id.remaining_hours_available" t-attf-class="{{task.remaining_hours_so &lt; 0 and 'text-danger' or ''}}">
                 <div t-if="is_uom_day">Remaining Days on SO: <span t-esc="timesheets._convert_hours_to_days(task.remaining_hours_so)" t-options='{"widget": "timesheet_uom"}'/></div>
                 <div t-else="">Remaining Hours on SO: <span t-esc="task.remaining_hours_so" t-options='{"widget": "float_time"}'/></div>

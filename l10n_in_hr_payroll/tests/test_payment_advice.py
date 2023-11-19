@@ -5,11 +5,11 @@ import os
 
 from odoo.tests import tagged
 from odoo.tools import test_reports
-from odoo.addons.l10n_in_hr_payroll.tests.common import TestPayrollCommon
+from odoo.addons.l10n_in_hr_payroll.tests.common import TestPaymentAdviceBase
 
 
 @tagged('post_install_l10n', 'post_install', '-at_install')
-class TestPaymentAdvice(TestPayrollCommon):
+class TestPaymentAdvice(TestPaymentAdviceBase):
 
     def test_00_payment_advice_flow(self):
         # I create a new Payment Advice with NEFT Transaction Enable

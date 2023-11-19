@@ -8,12 +8,27 @@ from odoo.exceptions import ValidationError
 class HrContract(models.Model):
     _inherit = 'hr.contract'
 
+    l10n_ke_mortgage_interest = fields.Monetary("Mortgage Interest")
     l10n_ke_pension_contribution = fields.Monetary("Pension Contribution")
+    l10n_ke_insurance_relief = fields.Monetary("Insurance Relief")
 
-    l10n_ke_food_allowance = fields.Monetary("Food Allowance")
-    l10n_ke_airtime_allowance = fields.Monetary("Airtime Allowance")
-    l10n_ke_pension_allowance = fields.Monetary("Pension Allowance")
+    @api.constrains('l10n_ke_mortgage_interest')
+    def _check_l10n_ke_mortgage_interest(self):
+        max_amount = self.env['hr.rule.parameter'].sudo()._get_parameter_from_code('l10n_ke_max_mortgage_interest', raise_if_not_found=False)
+        for contract in self:
+            if max_amount and contract.l10n_ke_mortgage_interest > max_amount:
+                raise ValidationError(_('The mortgage interest cannot exceed %s Ksh!', max_amount))
 
-    l10n_ke_voluntary_medical_insurance = fields.Monetary("Voluntary medical Insurance")
-    l10n_ke_life_insurance = fields.Monetary("Life Insurance")
-    l10n_ke_education = fields.Monetary("Education")
+    @api.constrains('l10n_ke_pension_contribution')
+    def _check_l10n_ke_pension_contribution(self):
+        max_amount = self.env['hr.rule.parameter'].sudo()._get_parameter_from_code('l10n_ke_max_pension_contribution', raise_if_not_found=False)
+        for contract in self:
+            if max_amount and contract.l10n_ke_pension_contribution > max_amount:
+                raise ValidationError(_('The pension contribution cannot exceed %s Ksh!', max_amount))
+
+    @api.constrains('l10n_ke_insurance_relief')
+    def _check_l10n_ke_insurance_relief(self):
+        max_amount = self.env['hr.rule.parameter'].sudo()._get_parameter_from_code('l10n_ke_max_insurance_relief', raise_if_not_found=False)
+        for contract in self:
+            if max_amount and contract.l10n_ke_insurance_relief > max_amount:
+                raise ValidationError(_('The insurance relief cannot exceed %s Ksh!', max_amount))

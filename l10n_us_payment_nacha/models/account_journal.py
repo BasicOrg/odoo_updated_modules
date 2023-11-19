@@ -21,11 +21,3 @@ class AccountJournal(models.Model):
                                                string="Company Identification")
     nacha_origination_dfi_identification = fields.Char(help="This will be provided by your bank.",
                                                        string="Origination Dfi Identification")
-    nacha_entry_class_code = fields.Selection([
-        ("CCD", "Corporate Credit or Debit (CCD)"),
-        ("PPD", "Prearranged Payment and Deposit (PPD)"),
-    ], default="CCD", required=True, string="Standard Entry Class Code",
-    help="Corporate Credit or Debit (CCD) - Used to pay from corporate (business) accounts.\n"
-         "Prearranged Payment and Deposit (PPD) - Used to pay from personal (consumer) accounts.")
-    nacha_is_balanced = fields.Boolean("Generate Balanced Files",
-                                       help="Use if your bank asks for a \"balanced\" NACHA file.")

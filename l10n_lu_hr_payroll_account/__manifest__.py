@@ -3,7 +3,7 @@
 
 {
     'name': 'Luxembourg - Payroll with Accounting',
-    'countries': ['lu'],
+    'icon': '/l10n_lu/static/description/icon.png',
     'author': 'Odoo',
     'version': '1.0',
     'category': 'Human Resources',
@@ -14,6 +14,7 @@ Accounting Data for Luxembourg Payroll Rules
     'depends': ['hr_payroll_account', 'l10n_lu', 'l10n_lu_hr_payroll'],
     'data': [
         'data/account_chart_template_data.xml',
+        'data/l10n_lu_hr_payroll_account_data.xml',
     ],
     'demo': [
         'data/l10n_lu_hr_payroll_account_demo.xml',

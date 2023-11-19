@@ -6,7 +6,7 @@
              <field name="name">sale.report.graph</field>
              <field name="model">sale.report</field>
              <field name="arch" type="xml">
-                 <graph string="Sales Analysis" type="line" sample="1" banner_route="/onboarding/website_sale_dashboard">
+                 <graph string="Sales Analysis" type="line" sample="1" banner_route="/website_sale_dashboard/website_sale_dashboard_onboarding">
                      <field name="date" interval="day"/>
                      <field name="price_subtotal" type="measure"/>
                  </graph>
@@ -19,7 +19,7 @@
             <field name="arch" type="xml">
                 <pivot string="Sales Analysis" display_quantity="1" sample="1">
                     <field name="categ_id" type="row"/>
-                    <field name="order_reference" type="measure"/>
+                    <field name="order_id" type="measure"/>
                     <field name="price_subtotal" type="measure"/>
                     <field name="price_total" type="measure"/>
                 </pivot>
@@ -32,7 +32,7 @@
             <field name="inherit_id" ref="website_sale.sale_report_view_search_website"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="before">
-                    <field name="order_reference"/>
+                    <field name="order_id"/>
                 </xpath>
 
                 <xpath expr="//filter[@name='confirmed']" position="after">
@@ -76,5 +76,30 @@
             <field name="active" eval="True"/>
         </record>
 
+        <!-- ONBOARDING -->
+        <template id="website_sale_onboarding_payment_provider_step">
+            <t t-call="base.onboarding_step">
+                <t t-set="title">Online Payments</t>
+                <t t-set="description">Enable credit &amp; debit card payments supported by Stripe</t>
+                <t t-set="btn_text">Activate Stripe</t>
+                <t t-set="done_text">Online payments enabled</t>
+                <t t-set="model" t-value="'res.company'" />
+                <t t-set="method" t-value="'action_open_website_sale_onboarding_payment_provider'" />
+                <t t-set="state" t-value="state.get('payment_provider_onboarding_state')" />
+            </t>
+        </template>
+
+        <template id="website_sale_dashboard_onboarding_panel" name="website.sale.dashboard.onboarding.panel">
+            <t t-call="base.onboarding_container">
+                <t t-set="classes" t-valuef="o_onboarding_orange"/>
+                <t t-set="bg_image" t-translation="off">/website_sale_dashboard/static/src/img/website_sale_dashboard_onboarding_bg.jpg</t>
+                <t t-set="close_method" t-valuef="action_close_website_sale_dashboard_onboarding"/>
+                <t t-set="close_model" t-valuef="res.company"/>
+                <t t-set="text_completed">The configuration is done. Happy selling!</t>
+                <t t-call="base.onboarding_company_step" name="company_step" />
+                <t t-call="website_sale_dashboard.website_sale_onboarding_payment_provider_step" name="payment_provider_step" />
+                <t t-call="account.onboarding_sale_tax_step" name="sale_tax_step" />
+            </t>
+        </template>
     </data>
 </odoo>

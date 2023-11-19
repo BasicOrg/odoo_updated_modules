@@ -1,65 +1,64 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 from ast import literal_eval
 
 from odoo import api, fields, models, _
-from odoo.tools import float_round
+from odoo.tools import float_is_zero, float_round
+
+
+class MrpProductionWorkcenterLineTime(models.Model):
+    _inherit = 'mrp.workcenter.productivity'
+
+    # checked when a ongoing production posts journal entries for its costs.
+    # This way, we can record one production's cost multiple times and only
+    # consider new entries in the work centers time lines."
+    cost_already_recorded = fields.Boolean('Cost Recorded')
 
 
 class MrpProduction(models.Model):
-    _name = 'mrp.production'
-    _inherit = ['mrp.production', 'analytic.mixin']
+    _inherit = 'mrp.production'
 
     extra_cost = fields.Float(copy=False, string='Extra Unit Cost')
     show_valuation = fields.Boolean(compute='_compute_show_valuation')
-    analytic_account_ids = fields.Many2many('account.analytic.account', compute='_compute_analytic_account_ids', store=True)
+    analytic_account_id = fields.Many2one(
+        'account.analytic.account', 'Analytic Account', copy=True,
+        help="Analytic account in which cost and revenue entries will take\
+        place for financial management of the manufacturing order.",
+        compute='_compute_analytic_account_id', store=True, readonly=False)
 
     def _compute_show_valuation(self):
         for order in self:
             order.show_valuation = any(m.state == 'done' for m in order.move_finished_ids)
 
-    @api.depends('bom_id', 'product_id')
-    def _compute_analytic_distribution(self):
-        for record in self:
-            if record.bom_id.analytic_distribution:
-                record.analytic_distribution = record.bom_id.analytic_distribution
-            else:
-                record.analytic_distribution = record.env['account.analytic.distribution.model']._get_distribution({
-                    "product_id": record.product_id.id,
-                    "product_categ_id": record.product_id.categ_id.id,
-                    "company_id": record.company_id.id,
-                })
-
-    @api.depends('analytic_distribution')
-    def _compute_analytic_account_ids(self):
-        for record in self:
-            record.analytic_account_ids = list(
-                map(int, record.analytic_distribution.keys())) if record.analytic_distribution else []
-
-    @api.constrains('analytic_distribution')
-    def _check_analytic(self):
-        for record in self:
-            params = {'business_domain': 'manufacturing_order', 'company_id': record.company_id.id}
-            if record.product_id:
-                params['product'] = record.product_id.id
-            record.with_context({'validate_analytic': True})._validate_distribution(**params)
+    @api.depends('bom_id')
+    def _compute_analytic_account_id(self):
+        if self.bom_id.analytic_account_id:
+            self.analytic_account_id = self.bom_id.analytic_account_id
 
     def write(self, vals):
+        origin_analytic_account = {production: production.analytic_account_id for production in self}
         res = super().write(vals)
         for production in self:
             if vals.get('name'):
-                production.move_raw_ids.analytic_account_line_ids.ref = production.display_name
+                production.move_raw_ids.analytic_account_line_id.ref = production.display_name
                 for workorder in production.workorder_ids:
-                    workorder.mo_analytic_account_line_ids.ref = production.display_name
-                    workorder.mo_analytic_account_line_ids.name = _("[WC] %s", workorder.display_name)
-            if 'analytic_distribution' in vals and production.state != 'draft':
-                production.move_raw_ids._account_analytic_entry_move()
-                production.workorder_ids._create_or_update_analytic_entry()
+                    workorder.mo_analytic_account_line_id.ref = production.display_name
+                    workorder.mo_analytic_account_line_id.name = _("[WC] %s", workorder.display_name)
+            if 'analytic_account_id' in vals and production.state != 'draft':
+                if vals['analytic_account_id'] and origin_analytic_account[production]:
+                    # Link the account analytic lines to the new AA
+                    production.move_raw_ids.analytic_account_line_id.write({'account_id': vals['analytic_account_id']})
+                elif vals['analytic_account_id'] and not origin_analytic_account[production]:
+                    # Create the account analytic lines if no AA is set in the MO
+                    production.move_raw_ids._account_analytic_entry_move()
+                else:
+                    production.move_raw_ids.analytic_account_line_id.unlink()
         return res
 
     def action_view_stock_valuation_layers(self):
         self.ensure_one()
-        domain = [('id', 'in', (self.move_raw_ids + self.move_finished_ids + self.scrap_ids.move_ids).stock_valuation_layer_ids.ids)]
+        domain = [('id', 'in', (self.move_raw_ids + self.move_finished_ids + self.scrap_ids.move_id).stock_valuation_layer_ids.ids)]
         action = self.env["ir.actions.actions"]._for_xml_id("stock_account.stock_valuation_layer_action")
         context = literal_eval(action['context'])
         context.update(self.env.context)
@@ -67,14 +66,15 @@ class MrpProduction(models.Model):
         context['search_default_group_by_product_id'] = False
         return dict(action, domain=domain, context=context)
 
-    def action_view_analytic_accounts(self):
+    def action_view_analytic_account(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
             "res_model": "account.analytic.account",
-            'domain': [('id', 'in', self.analytic_account_ids.ids)],
-            "name": _("Analytic Accounts"),
-            'view_mode': 'tree,form',
+            'res_id': self.analytic_account_id.id,
+            "context": {"create": False},
+            "name": "Analytic Account",
+            'view_mode': 'form',
         }
 
     def _cal_price(self, consumed_moves):
@@ -83,25 +83,30 @@ class MrpProduction(models.Model):
         super(MrpProduction, self)._cal_price(consumed_moves)
         work_center_cost = 0
         finished_move = self.move_finished_ids.filtered(
-            lambda x: x.product_id == self.product_id and x.state not in ('done', 'cancel') and x.quantity > 0)
+            lambda x: x.product_id == self.product_id and x.state not in ('done', 'cancel') and x.quantity_done > 0)
         if finished_move:
             finished_move.ensure_one()
             for work_order in self.workorder_ids:
-                work_center_cost += work_order._cal_cost()
-            quantity = finished_move.product_uom._compute_quantity(
-                finished_move.quantity, finished_move.product_id.uom_id)
-            extra_cost = self.extra_cost * quantity
-            total_cost = - sum(consumed_moves.sudo().stock_valuation_layer_ids.mapped('value')) + work_center_cost + extra_cost
-            byproduct_moves = self.move_byproduct_ids.filtered(lambda m: m.state not in ('done', 'cancel') and m.quantity > 0)
+                time_lines = work_order.time_ids.filtered(
+                    lambda x: x.date_end and not x.cost_already_recorded)
+                duration = sum(time_lines.mapped('duration'))
+                time_lines.write({'cost_already_recorded': True})
+                work_center_cost += (duration / 60.0) * \
+                    work_order.workcenter_id.costs_hour
+            qty_done = finished_move.product_uom._compute_quantity(
+                finished_move.quantity_done, finished_move.product_id.uom_id)
+            extra_cost = self.extra_cost * qty_done
+            total_cost = (sum(-m.stock_valuation_layer_ids.value for m in consumed_moves.sudo()) + work_center_cost + extra_cost)
+            byproduct_moves = self.move_byproduct_ids.filtered(lambda m: m.state not in ('done', 'cancel') and m.quantity_done > 0)
             byproduct_cost_share = 0
             for byproduct in byproduct_moves:
                 if byproduct.cost_share == 0:
                     continue
                 byproduct_cost_share += byproduct.cost_share
                 if byproduct.product_id.cost_method in ('fifo', 'average'):
-                    byproduct.price_unit = total_cost * byproduct.cost_share / 100 / byproduct.product_uom._compute_quantity(byproduct.quantity, byproduct.product_id.uom_id)
+                    byproduct.price_unit = total_cost * byproduct.cost_share / 100 / byproduct.product_uom._compute_quantity(byproduct.quantity_done, byproduct.product_id.uom_id)
             if finished_move.product_id.cost_method in ('fifo', 'average'):
-                finished_move.price_unit = total_cost * float_round(1 - byproduct_cost_share / 100, precision_rounding=0.0001) / quantity
+                finished_move.price_unit = total_cost * float_round(1 - byproduct_cost_share / 100, precision_rounding=0.0001) / qty_done
         return True
 
     def _get_backorder_mo_vals(self):

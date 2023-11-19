@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": """Chile - Electronic Receipt""",
-    'countries': ['cl'],
+    'icon': '/l10n_cl/static/description/icon.png',
     'version': '1.0',
     'category': 'Accounting/Localizations/EDI',
     'sequence': 12,
@@ -16,13 +16,13 @@
 Purpose of the Module:
 ======================
 
-As part of the SII requirements (Legal requirement in Chile),
-beginning on March 2021 boletas transactions must be sent to the SII under the
-electronic workflow using a different web service than the one used for electronic Invoices.
+As part of the SII requirements (Legal requirement in Chile), 
+beginning on March 2021 boletas transactions must be sent to the SII under the 
+electronic workflow using a different web service than the one used for electronic Invoices. 
 Previously, there was no need to send the boletas to the SII, just a daily report.
 
-The requirement to send a daily sales book
-"Libro de ventas diarias" (former "reporte de consumo de folios" or RCOF) has been eliminated by the authority,
+The requirement to send a daily sales book 
+"Libro de ventas diarias" (former "reporte de consumo de folios" or RCOF) has been eliminated by the authority, 
 effective August 1st 2022. For that reason it has been eliminated from this new version of Odoo.
 
 Differences between Electronic boletas vs Electronic Invoicing Workflows:

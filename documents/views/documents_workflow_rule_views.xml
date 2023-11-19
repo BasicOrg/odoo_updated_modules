@@ -45,8 +45,8 @@
                                     </group>
                                     <group/>
                                 </group>
-                                <field name="domain" string="Domain" nolabel="1" widget="domain" colspan="2" options="{'model':'documents.document'}" invisible="condition_type == 'criteria'"/>
-                                <group invisible="condition_type == 'domain'">
+                                <field name="domain" string="Domain" nolabel="1" widget="domain" colspan="2" options="{'model':'documents.document'}" attrs="{ 'invisible' : [('condition_type', '=', 'criteria')]}"/>
+                                <group attrs="{ 'invisible' : [('condition_type', '=', 'domain')]}">
                                     <group string="Tags">
                                         <field name="required_tag_ids"
                                                string="Contains"
@@ -76,7 +76,7 @@
                                     <group>
                                         <field name="folder_id"/>
                                         <field name="create_model"/>
-                                        <field name="link_model" invisible="create_model != 'link.to.record'"/>
+                                        <field name="link_model" attrs="{'invisible' : [('create_model', '!=', 'link.to.record')]}"/>
                                     </group>
                                 </group>
                                 <group>
@@ -100,9 +100,9 @@
                                     <field name="remove_activities"/>
                                     <field name="activity_option"/>
                                 </group>
-                                <group name="next_activity" invisible="not activity_option">
+                                <group name="next_activity" attrs="{'invisible': [('activity_option', '=', False)]}">
                                     <group>
-                                        <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" required="activity_option"/>
+                                        <field name="activity_type_id" options="{'no_create': True, 'no_open': True}" attrs="{'required': [('activity_option', '=', True)]}"/>
                                         <field name="activity_summary" placeholder="e.g. Discuss proposal"/>
                                     </group>
                                     <group>
@@ -115,7 +115,7 @@
                                         <field name="activity_user_id"/>
                                     </group>
                                 </group>
-                                <group invisible="not activity_option">
+                                <group attrs="{'invisible': [('activity_option', '=', False)]}">
                                     <field name="activity_note" placeholder="Log a note..."/>
                                 </group>
                             </page>

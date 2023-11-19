@@ -9,24 +9,24 @@ class TestQwebFieldTime(common.TransactionCase):
         return self.env['ir.qweb.field.time'].value_to_html(value, options)
 
     def test_time_value_to_html(self):
-        default_fmt = {'format': 'h:mm a'}
+
         self.assertEqual(
-            self.value_to_html(0, default_fmt),
+            self.value_to_html(0),
             "12:00 AM"
         )
 
         self.assertEqual(
-            self.value_to_html(11.75, default_fmt),
+            self.value_to_html(11.75),
             "11:45 AM"
         )
 
         self.assertEqual(
-            self.value_to_html(12, default_fmt),
+            self.value_to_html(12),
             "12:00 PM"
         )
 
         self.assertEqual(
-            self.value_to_html(14.25, default_fmt),
+            self.value_to_html(14.25),
             "2:15 PM"
         )
 

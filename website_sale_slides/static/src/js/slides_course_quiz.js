@@ -1,10 +1,11 @@
-/** @odoo-module **/
+odoo.define('website_sale_slides.quiz', function (require) {
+"use strict";
 
-import {websiteSlidesQuizNoFullscreen} from "@website_slides/js/slides_course_quiz";
+const {websiteSlidesQuizNoFullscreen} = require('@website_slides/js/slides_course_quiz');
 
 websiteSlidesQuizNoFullscreen.include({
     _extractChannelData: function (slideData) {
-        return Object.assign({}, this._super.apply(this, arguments), {
+        return _.extend({}, this._super.apply(this, arguments), {
             productId: slideData.productId,
             enroll: slideData.enroll,
             currencyName: slideData.currencyName,
@@ -13,4 +14,5 @@ websiteSlidesQuizNoFullscreen.include({
             hasDiscountedPrice: slideData.hasDiscountedPrice
         });
     }
+});
 });

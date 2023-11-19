@@ -4,7 +4,7 @@
 {
     'name': 'Digest Enterprise',
     'description': """
-Enterprise digest data
+        Enterprise digest data
     """,
     'category': 'Hidden',
     'version': '1.0',

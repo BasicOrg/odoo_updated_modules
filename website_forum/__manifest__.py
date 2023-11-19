@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-
 {
     'name': 'Forum',
     'category': 'Website/Website',
     'sequence': 265,
     'summary': 'Manage a forum with FAQ and Q&A',
-    'version': '1.2',
+    'version': '1.1',
     'description': """
 Ask questions, get answers, no distractions
         """,
@@ -18,47 +17,30 @@ Ask questions, get answers, no distractions
         'website_profile',
     ],
     'data': [
-        'data/ir_config_parameter_data.xml',
-        'data/forum_forum_template_faq.xml',
-        'data/forum_forum_data.xml',
-        'data/forum_post_reason_data.xml',
-        'data/ir_actions_data.xml',
+        'data/forum_default_faq.xml',
+        'data/forum_data.xml',
         'data/mail_message_subtype_data.xml',
         'data/mail_templates.xml',
-        'data/website_menu_data.xml',
-
-        'views/forum_post_views.xml',
-        'views/forum_post_reason_views.xml',
-        'views/forum_tag_views.xml',
-        'views/forum_forum_views.xml',
+        'views/forum.xml',
         'views/res_users_views.xml',
-        'views/gamification_karma_tracking_views.xml',
-        'views/forum_menus.xml',
-
-        'views/base_contact_templates.xml',
-        'views/forum_forum_templates.xml',
-        'views/forum_forum_templates_forum_all.xml',
-        'views/forum_forum_templates_layout.xml',
-        'views/forum_forum_templates_moderation.xml',
-        'views/forum_forum_templates_post.xml',
-        'views/forum_forum_templates_tools.xml',
-        'views/forum_templates_mail.xml',
-        'views/website_profile_templates.xml',
+        'views/website_forum.xml',
+        'views/website_forum_profile.xml',
+        'views/ir_qweb.xml',
         'views/snippets/snippets.xml',
-
+        'views/website_pages_views.xml',
+        'views/forum_forum_add.xml',
         'security/ir.model.access.csv',
-        'security/ir_rule_data.xml',
-
-        'data/gamification_badge_data_question.xml',
-        'data/gamification_badge_data_answer.xml',
-        'data/gamification_badge_data_participation.xml',
-        'data/gamification_badge_data_moderation.xml',
+        'security/website_forum_security.xml',
+        'data/badges_question.xml',
+        'data/badges_answer.xml',
+        'data/badges_participation.xml',
+        'data/badges_moderation.xml',
     ],
     'demo': [
-        'data/forum_tag_demo.xml',
-        'data/forum_post_demo.xml',
+        'data/forum_demo.xml',
     ],
     'installable': True,
+    'application': True,
     'assets': {
         'website.assets_editor': [
             'website_forum/static/src/js/systray_items/*.js',
@@ -66,7 +48,7 @@ Ask questions, get answers, no distractions
         'web.assets_tests': [
             'website_forum/static/tests/**/*',
         ],
-        'web.assets_backend': [
+        'web.assets_common': [
             'website_forum/static/src/js/tours/website_forum.js',
         ],
         'web.assets_frontend': [
@@ -75,8 +57,10 @@ Ask questions, get answers, no distractions
             'website_forum/static/src/js/website_forum.js',
             'website_forum/static/src/js/website_forum.share.js',
             'website_forum/static/src/xml/public_templates.xml',
-            'website_forum/static/src/components/flag_mark_as_offensive/**/*',
         ],
+        'web_editor.assets_wysiwyg': {
+            'website_forum/static/src/xml/forum_wysiwyg.xml',
+        },
     },
     'license': 'LGPL-3',
 }

@@ -3,17 +3,17 @@
 # 	* auth_totp
 # 
 # Translators:
-# Wil Odoo, 2023
-# Abe Manyo, 2023
+# Martin Trigaux, 2022
+# Abdul Munif Hanafi <amunifhanafi@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 15.5alpha1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Abe Manyo, 2023\n"
-"Language-Team: Indonesian (https://app.transifex.com/odoo/teams/41243/id/)\n"
+"POT-Creation-Date: 2022-09-20 09:01+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Abdul Munif Hanafi <amunifhanafi@gmail.com>, 2022\n"
+"Language-Team: Indonesian (https://www.transifex.com/odoo/teams/41243/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,41 +21,35 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/controllers/home.py:0
 #, python-format
 msgid "%(browser)s on %(platform)s"
-msgstr "%(browser)s pada %(platform)s"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model,name:auth_totp.model_auth_totp_wizard
 msgid "2-Factor Setup Wizard"
-msgstr "2-Factor Setup Wizard"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/wizard/auth_totp_wizard.py:0
 #, python-format
 msgid "2-Factor authentication is now enabled."
-msgstr "Autentikasi 2-Faktor sekarang diaktifkan."
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid ""
-"<i title=\"Documentation\" class=\"fa fa-fw o_button_icon fa-info-circle\"/>\n"
-"                                    Learn More"
+"<span attrs=\"{'invisible': [('totp_enabled', '=', False)]}\" class=\"text-"
+"muted\">This account is protected!</span>"
 msgstr ""
-"<i title=\"Dokumentasi\" class=\"fa fa-fw o_button_icon fa-info-circle\"/>\n"
-"                                    Pelajari Lebih"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 msgid ""
-"<i title=\"Documentation\" class=\"fa fa-fw o_button_icon fa-info-circle\"/>\n"
-"                            Learn More"
+"<span attrs=\"{'invisible': [('totp_enabled', '=', False)]}\" class=\"text-"
+"muted\">Your account is protected!</span>"
 msgstr ""
-"<i title=\"Dokumentasi\" class=\"fa fa-fw o_button_icon fa-info-circle\"/>\n"
-"                            Pelajari Lebih"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
@@ -63,8 +57,6 @@ msgid ""
 "<span class=\"d-md-none d-block\">Or install an authenticator app</span>\n"
 "                                        <span class=\"d-none d-md-block\">Install an authenticator app on your mobile device</span>"
 msgstr ""
-"<span class=\"d-md-none d-block\">Atau instal aplikasi autentikator</span>\n"
-"                                        <span class=\"d-none d-md-block\">Instal aplikasi autentikator pada perangkat mobile Anda</span>"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
@@ -72,8 +64,6 @@ msgid ""
 "<span class=\"d-none d-md-block\">When requested to do so, scan the barcode below</span>\n"
 "                                    <span class=\"d-block d-md-none\">When requested to do so, copy the key below</span>"
 msgstr ""
-"<span class=\"d-none d-md-block\">Saat diminta, scan barcode dibawah</span>\n"
-"                                    <span class=\"d-block d-md-none\">Saat diminta, salin kunci di bawah</span>"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
@@ -81,31 +71,11 @@ msgid ""
 "<span class=\"text-muted\">Popular ones include Authy, Google Authenticator "
 "or the Microsoft Authenticator.</span>"
 msgstr ""
-"<span class=\"text-muted\">Pilihan populer termasuk Authy, Google "
-"Authenticator atau Microsoft Authenticator.</span>"
-
-#. module: auth_totp
-#: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
-msgid ""
-"<span invisible=\"not totp_enabled\" class=\"text-muted\">This account is "
-"protected!</span>"
-msgstr ""
-"<span invisible=\"not totp_enabled\" class=\"text-muted\">Akun ini "
-"dilindungi!</span>"
-
-#. module: auth_totp
-#: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
-msgid ""
-"<span invisible=\"not totp_enabled\" class=\"text-muted\">Your account is "
-"protected!</span>"
-msgstr ""
-"<span invisible=\"not totp_enabled\" class=\"text-muted\">Akun Anda "
-"dilindungi!</span>"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Account Security"
-msgstr "Keamanan Akun"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
@@ -116,7 +86,7 @@ msgstr "Aktifkan"
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Added On"
-msgstr "Ditambahkan Pada"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
@@ -124,8 +94,6 @@ msgid ""
 "Are you sure? The user may be asked to enter two-factor codes again on those"
 " devices"
 msgstr ""
-"Apakah Anda yakin? User mungkin diminta untuk memasukkan kode dua-faktor "
-"lagi pada perangkat tersebut"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
@@ -133,23 +101,21 @@ msgid ""
 "Are you sure? You may be asked to enter two-factor codes again on those "
 "devices"
 msgstr ""
-"Apakah Anda yakin? Anda mungkin diminta untuk memasukkan kode dua-faktor "
-"lagi pada perangkat tersebut"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
 msgid "Authentication Code"
-msgstr "Kode Autentikasi"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model,name:auth_totp.model_auth_totp_device
 msgid "Authentication Device"
-msgstr "Perangkat Autentikasi"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Authenticator App Setup"
-msgstr "Setup Aplikasi Autentikator"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
@@ -160,12 +126,12 @@ msgstr "Batal"
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Cannot scan it?"
-msgstr "Tidak dapat scan?"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Click on this link to open your authenticator app"
-msgstr "Klik pada link ini untuk membuka aplikasi autentikator Anda"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__create_uid
@@ -191,18 +157,18 @@ msgstr "Deskripsi"
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Device"
-msgstr "Perangkat"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Disable 2FA"
-msgstr "Nonaktifkan 2FA"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.actions.server,name:auth_totp.action_disable_totp
 msgid "Disable two-factor authentication"
-msgstr "Nonaktifkan autentikasi dua-faktor"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_device__display_name
@@ -213,18 +179,18 @@ msgstr "Nama Tampilan"
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
 msgid "Don't ask again on this device"
-msgstr "Jangan tanyakan lagi untuk perangkat ini"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Enable 2FA"
-msgstr "Aktifkan 2FA"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Enter your six-digit code below"
-msgstr "Masukkan kode enam-digit di bawah"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model,name:auth_totp.model_ir_http
@@ -238,28 +204,33 @@ msgid "ID"
 msgstr "ID"
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/controllers/home.py:0
 #, python-format
 msgid "Invalid authentication code format."
-msgstr "Format kode autentikasi tidak valid."
+msgstr ""
+
+#. module: auth_totp
+#: model:ir.model.fields,field_description:auth_totp.field_auth_totp_device____last_update
+#: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard____last_update
+msgid "Last Modified on"
+msgstr "Terakhir diubah pada"
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Terakhir Diperbarui oleh"
+msgstr "Terakhir diperbarui oleh"
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__write_date
 msgid "Last Updated on"
-msgstr "Terakhir Diperbarui pada"
+msgstr "Terakhir diperbarui pada"
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Learn More"
-msgstr "Pelajari Lebih"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
@@ -269,34 +240,34 @@ msgstr "Log masuk"
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Look for an \"Add an account\" button"
-msgstr "Cari tombol \"Tambahkan akun\""
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "On Apple Store"
-msgstr "Pada Apple Store"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "On Google Play"
-msgstr "Pada Google Play"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__qrcode
 msgid "Qrcode"
-msgstr "Qrcode"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Revoke"
-msgstr "Cabut"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Revoke All"
-msgstr "Cabut Semua"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_device__scope
@@ -306,14 +277,13 @@ msgstr "Lingkup"
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__secret
 msgid "Secret"
-msgstr "Rahasia"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/wizard/auth_totp_wizard.py:0
 #, python-format
 msgid "The verification code should only contain numbers"
-msgstr "Kode verifikasi harus hanya memiliki angka"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
@@ -321,34 +291,31 @@ msgid ""
 "To login, enter below the six-digit authentication code provided by your Authenticator app.\n"
 "                        <br/>"
 msgstr ""
-"Untuk login, masukkan di bawah kode autentikasi 6-digit yang disediakan aplikasi Autentikator Anda.\n"
-"                        <br/>"
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_res_users__totp_secret
 msgid "Totp Secret"
-msgstr "Totp Secret"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_res_users__totp_trusted_device_ids
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Trusted Devices"
-msgstr "Perangkat Terpercaya"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/models/res_users.py:0
 #, python-format
 msgid "Two-Factor Authentication Activation"
-msgstr "Aktifvasi Autentikasi Dua-Faktor"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
 msgid "Two-factor Authentication"
-msgstr "Autentikasi Dua-faktor"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_form
@@ -357,20 +324,14 @@ msgid ""
 "                                The first one is done with your password and the second one with a code you get from a dedicated mobile app.\n"
 "                                Popular ones include Authy, Google Authenticator or the Microsoft Authenticator."
 msgstr ""
-"Autentikasi Dua-Faktor (\"2FA\") adalah sistem autentikasi dua kali.\n"
-"                                Autentikasi pertama dilakukan dengan password Anda dan yang kedua dilakukan dengan kode yang Anda dapat dari aplikasi mobile khusus.\n"
-"                                Aplikasi populer termasuk Authy, Google Authenticator atau Microsoft Authenticator."
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_field
 msgid ""
 "Two-factor Authentication (\"2FA\") is a system of double authentication.\n"
-"                        The first one is done with your password and the second one with a code you get from a dedicated mobile app.\n"
-"                        Popular ones include Authy, Google Authenticator or the Microsoft Authenticator."
+"                            The first one is done with your password and the second one with a code you get from a dedicated mobile app.\n"
+"                            Popular ones include Authy, Google Authenticator or the Microsoft Authenticator."
 msgstr ""
-"Autentikasi Dua-Faktor (\"2FA\") adalah sistem autentikasi dua kali.\n"
-"                        Autentikasi pertama dilakukan dengan password Anda dan yang kedua dilakukan dengan kode yang Anda dapat dari aplikasi mobile khusus.\n"
-"                        Aplikasi populer termasuk Authy, Google Authenticator atau Microsoft Authenticator."
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_res_users__totp_enabled
@@ -380,33 +341,30 @@ msgstr "Otentikasi dua faktor"
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.res_users_view_search
 msgid "Two-factor authentication Disabled"
-msgstr "Autentikasi dua-faktor Dibatalkan"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.res_users_view_search
 msgid "Two-factor authentication Enabled"
-msgstr "Autentikasi dua-faktor Diaktifkan"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/models/res_users.py:0
 #, python-format
 msgid "Two-factor authentication already enabled"
-msgstr "Autentikasi dua-faktor sudah diaktifkan"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/models/res_users.py:0
 #, python-format
 msgid "Two-factor authentication can only be enabled for yourself"
-msgstr "Autentikasi dua-faktor hanya dapat diaktifkan oleh Anda"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/models/res_users.py:0
 #, python-format
 msgid "Two-factor authentication disabled for the following user(s): %s"
-msgstr "Autentikasi dua-faktor dibatalkan untuk user-user berikut: %s"
+msgstr ""
 
 #. module: auth_totp
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__url
@@ -424,18 +382,17 @@ msgstr "Pengguna"
 #: model:ir.model.fields,field_description:auth_totp.field_auth_totp_wizard__code
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "Verification Code"
-msgstr "Kode Verifikasi"
+msgstr ""
 
 #. module: auth_totp
-#. odoo-python
 #: code:addons/auth_totp/models/res_users.py:0
 #: code:addons/auth_totp/wizard/auth_totp_wizard.py:0
 #, python-format
 msgid "Verification failed, please double-check the 6-digit code"
-msgstr "Verifikasi gagal, mohon periksa ulang kode 6-digit"
+msgstr ""
 
 #. module: auth_totp
 #: model_terms:ir.ui.view,arch_db:auth_totp.auth_totp_form
 #: model_terms:ir.ui.view,arch_db:auth_totp.view_totp_wizard
 msgid "e.g. 123456"
-msgstr "contoh 123456"
+msgstr ""

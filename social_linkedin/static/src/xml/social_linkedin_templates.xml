@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-inherit="social.StreamPostCommentsOriginalPost" t-inherit-mode="extension">
+    <t t-inherit="social.StreamPostCommentsOriginalPost" t-inherit-mode="extension" owl="1">
         <xpath expr="//span[hasclass('o_social_original_post_author_image')]" position="inside">
-            <img t-if="originalPost.linkedin_author_image_url.raw_value" t-att-src="originalPost.linkedin_author_image_url.raw_value" alt="Author Image" class="rounded"/>
+            <img t-if="originalPost.linkedin_author_image_url.raw_value" t-att-src="originalPost.linkedin_author_image_url.raw_value" alt="Author Image"/>
         </xpath>
         <xpath expr="//div[hasclass('o_social_comments_modal_original_post_content')]" position="inside">
             <div t-if="originalPost.media_type.raw_value === 'linkedin'" class="text-start">

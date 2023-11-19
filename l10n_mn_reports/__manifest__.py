@@ -3,7 +3,7 @@
 
 {
     "name" : "Mongolia - Accounting Reports",
-    'countries': ['mn'],
+    'icon': '/l10n_mn/static/description/icon.png',
     "version" : "1.0",
     'category': 'Accounting/Localizations/Reporting',
     "author" : "BumanIT LLC, Odoo S.A",
@@ -23,6 +23,7 @@ Financial requirement contributor: Baskhuu Lodoikhuu. BumanIT LLC
         'data/balancesheet_report.xml',
         'data/cashflow_report.xml',
         'data/profit_and_loss_reports.xml',
+        'data/vat_report.xml',
         'data/tax_report.xml'
     ],
     'auto_install': ['l10n_mn', 'account_reports'],

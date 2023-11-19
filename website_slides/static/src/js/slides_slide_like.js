@@ -1,19 +1,14 @@
 /** @odoo-module **/
 
 import { sprintf } from '@web/core/utils/strings';
-import { _t } from "@web/core/l10n/translation";
-import publicWidget from '@web/legacy/js/public/public_widget';
+import { _t } from 'web.core';
+import publicWidget from 'web.public.widget';
 import '@website_slides/js/slides';
 
 var SlideLikeWidget = publicWidget.Widget.extend({
     events: {
         'click .o_wslides_js_slide_like_up': '_onClickUp',
         'click .o_wslides_js_slide_like_down': '_onClickDown',
-    },
-
-    init() {
-        this._super(...arguments);
-        this.rpc = this.bindService("rpc");
     },
 
     //--------------------------------------------------------------------------
@@ -47,9 +42,12 @@ var SlideLikeWidget = publicWidget.Widget.extend({
      */
     _onClick: function (slideId, voteType) {
         var self = this;
-        this.rpc('/slides/slide/like', {
-            slide_id: slideId,
-            upvote: voteType === 'like',
+        this._rpc({
+            route: '/slides/slide/like',
+            params: {
+                slide_id: slideId,
+                upvote: voteType === 'like',
+            },
         }).then(function (data) {
             if (! data.error) {
                 const $likesBtn = self.$('span.o_wslides_js_slide_like_up');
@@ -72,7 +70,7 @@ var SlideLikeWidget = publicWidget.Widget.extend({
                     const message = data.error_signup_allowed ?
                         _t('Please <a href="/web/login?redirect=%s">login</a> or <a href="/web/signup?redirect=%s">create an account</a> to vote for this lesson') :
                         _t('Please <a href="/web/login?redirect=%s">login</a> to vote for this lesson');
-                    self._popoverAlert(self.$el, sprintf(message, encodeURIComponent(document.URL), encodeURIComponent(document.URL)));
+                    self._popoverAlert(self.$el, sprintf(message, document.URL, document.URL));
                 } else if (data.error === 'slide_access') {
                     self._popoverAlert(self.$el, _t('You don\'t have access to this lesson'));
                 } else if (data.error === 'channel_membership_required') {

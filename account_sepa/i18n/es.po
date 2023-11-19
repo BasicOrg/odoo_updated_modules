@@ -3,16 +3,16 @@
 # 	* account_sepa
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:20+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
+"POT-Creation-Date: 2022-09-20 09:48+0000\n"
+"PO-Revision-Date: 2022-09-22 05:45+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -20,14 +20,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid "A bank account is not defined."
 msgstr "Una cuenta bancaria no está definida."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_payment_register.py:0
 #, python-format
 msgid "A bank account must be set on the following documents: "
@@ -39,19 +37,19 @@ msgid "Austrian"
 msgstr "Austriaco"
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
 "Bank account %s 's bank does not have any BIC number associated. Please "
 "define one."
 msgstr ""
-"La cuenta bancaria %s no tienen ningún número BIC asociado. Defina uno. "
+"La cuenta bancaria %s no tienen ningún número BIC asociado. Por favor defina"
+" una."
 
 #. module: account_sepa
 #: model_terms:ir.ui.view,arch_db:account_sepa.view_batch_payment_form_inherit
 msgid "Batch Booking"
-msgstr "Reserva por lotes"
+msgstr "Reserva en lote"
 
 #. module: account_sepa
 #: model:ir.model,name:account_sepa.model_account_batch_payment
@@ -69,11 +67,6 @@ msgid "Config Settings"
 msgstr "Opciones de configuración"
 
 #. module: account_sepa
-#: model:ir.model,name:account_sepa.model_res_partner
-msgid "Contact"
-msgstr "Contacto"
-
-#. module: account_sepa
 #: model:ir.model.fields,help:account_sepa.field_res_company__sepa_orgid_issr
 msgid ""
 "Entity that assigns the identification (eg. KBE-BCO or Finanzamt Muenchen "
@@ -86,14 +79,14 @@ msgid "Generic"
 msgstr "Genérico"
 
 #. module: account_sepa
-#: model:ir.model.fields.selection,name:account_sepa.selection__account_journal__sepa_pain_version__pain_001_001_03_de
+#: model:ir.model.fields.selection,name:account_sepa.selection__account_journal__sepa_pain_version__pain_001_003_03
 msgid "German"
 msgstr "Alemán"
 
 #. module: account_sepa
 #: model:ir.model.fields,field_description:account_sepa.field_account_journal__has_sepa_ct_payment_method
 msgid "Has Sepa Ct Payment Method"
-msgstr "Cuenta con el método de pago transferencia de crédito SEPA "
+msgstr "Tiene el método de pago SEPA Credit Transfer"
 
 #. module: account_sepa
 #: model:ir.model.fields,field_description:account_sepa.field_res_company__sepa_orgid_id
@@ -105,7 +98,7 @@ msgstr "Identificación"
 #: model:ir.model.fields,help:account_sepa.field_res_company__sepa_orgid_id
 #: model:ir.model.fields,help:account_sepa.field_res_config_settings__sepa_orgid_id
 msgid "Identification assigned by an institution (eg. VAT number)."
-msgstr "Identificación asignada por una institución (por ejemplo, RFC)."
+msgstr "Identificación asignada por una institución (por ejemplo, el NIF)"
 
 #. module: account_sepa
 #: model:ir.model.fields,field_description:account_sepa.field_res_company__sepa_orgid_issr
@@ -119,31 +112,11 @@ msgid "Journal"
 msgstr "Diario"
 
 #. module: account_sepa
-#: model:ir.model.fields,field_description:account_sepa.field_res_company__account_sepa_lei
-#: model:ir.model.fields,field_description:account_sepa.field_res_partner__account_sepa_lei
-#: model:ir.model.fields,field_description:account_sepa.field_res_users__account_sepa_lei
-msgid "LEI"
-msgstr ""
-
-#. module: account_sepa
-#: model:ir.model.fields,help:account_sepa.field_res_company__account_sepa_lei
-#: model:ir.model.fields,help:account_sepa.field_res_partner__account_sepa_lei
-#: model:ir.model.fields,help:account_sepa.field_res_users__account_sepa_lei
-msgid "Legal Entity Identifier"
-msgstr ""
-
-#. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid "Maximum amount is %s for payments in Euros, %s for other currencies."
 msgstr ""
 "La cantidad maxima es de %s para pagos en euros y de %s para otras monedas."
-
-#. module: account_sepa
-#: model_terms:ir.ui.view,arch_db:account_sepa.res_partner_sepa_inherit_form
-msgid "Miscellaneous"
-msgstr "Varios"
 
 #. module: account_sepa
 #: model:ir.model.fields,help:account_sepa.field_res_config_settings__sepa_initiating_party_name
@@ -155,19 +128,12 @@ msgstr ""
 "70 caracteres de longitud."
 
 #. module: account_sepa
-#: model:ir.model.fields.selection,name:account_sepa.selection__account_journal__sepa_pain_version__pain_001_001_09
-msgid "New generic version (09)"
-msgstr ""
-
-#. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid "Partner %s has no country code defined."
 msgstr "El partner %s no tiene un código de país definido."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid "Partner %s has not bank account defined."
@@ -194,7 +160,6 @@ msgid "Payments to send via SEPA"
 msgstr "Pagos a enviar vía SEPA"
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -226,28 +191,25 @@ msgid "SEPA Credit Transfer"
 msgstr "Transferencias de crédito SEPA"
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal_dashboard.py:0
 #, python-format
 msgid "SEPA Credit Transfers to Send"
-msgstr "Transferencias de Crédito SEPA por enviar"
+msgstr "Transferencias de crédito SEPA a enviar"
 
 #. module: account_sepa
 #: model:ir.model.fields,field_description:account_sepa.field_account_journal__sepa_pain_version
-#: model:ir.model.fields,field_description:account_sepa.field_account_payment__sepa_pain_version
 #: model_terms:ir.ui.view,arch_db:account_sepa.view_account_journal_form
 msgid "SEPA Pain Version"
 msgstr "Versión Pain SEPA "
 
 #. module: account_sepa
 #: model:ir.model.fields,help:account_sepa.field_account_journal__sepa_pain_version
-#: model:ir.model.fields,help:account_sepa.field_account_payment__sepa_pain_version
 msgid ""
 "SEPA may be a generic format, some countries differ from the SEPA "
 "recommendations made by the EPC (European Payment Council) and thus the XML "
 "created need some tweaking."
 msgstr ""
-"Aunque la SEPA sea un formato genérico, algunos países difieren con las "
+"Aunque la SEPA sea un formato genérico, algunos países difieren de las "
 "recomendaciones de la SEPA hechas por el EPC (Consejo Europeo de Pagos, por "
 "sus siglas en inglés) y, por lo tanto, es necesario modificar el XML creado."
 
@@ -257,14 +219,20 @@ msgid "Sct Generic"
 msgstr "Pagos por transferencia de crédito SEPA genérico"
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid "Some payments are above the maximum amount allowed."
 msgstr "Algunos pagos rebasan el monto máximo permitido."
 
 #. module: account_sepa
-#. odoo-python
+#: code:addons/account_sepa/models/account_batch_payment.py:0
+#, python-format
+msgid ""
+"Some payments are linked to partner addresses with characters not supported "
+"by SEPA. These characters have been replaced by blanks."
+msgstr ""
+
+#. module: account_sepa
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid ""
@@ -275,22 +243,31 @@ msgstr ""
 "ello, puede que esté lote sea rechazado por algunos bancos."
 
 #. module: account_sepa
-#. odoo-python
+#: code:addons/account_sepa/models/account_batch_payment.py:0
+#, python-format
+msgid ""
+"Some payments have a name or reference containing characters not supported "
+"by SEPA. These characters have been replaced by blanks."
+msgstr ""
+"Algunos pagamientos como referencia o nombre,  contiene carácteres que no "
+"estan apoyados por la SEPA. Estos carácteres tienen que ser reemplazadas por"
+" espacios."
+
+#. module: account_sepa
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid "Some payments have no recipient bank account set."
 msgstr "Algunos pagos no tienen una cuenta bancaria acreedora registrada."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid ""
 "Some payments were instructed in another currency than Euro. This batch "
 "might not be accepted by certain banks because of that."
 msgstr ""
-"Algunos pagos se hicieron en una divisa diferente al euro. Por ello, puede "
-"que este lote no se acepte en algunos bancos."
+"Algunos pagos se registraron en monedas distintas al euro. Por ello, este "
+"lote puede ser rechazado por algunos bancos."
 
 #. module: account_sepa
 #: model:ir.model.fields.selection,name:account_sepa.selection__account_journal__sepa_pain_version__pain_001_001_03_se
@@ -310,14 +287,13 @@ msgid ""
 "transfer. That is if the bank journal is not in €, a transaction is not in €"
 " or a payee is not identified by an IBAN account number."
 msgstr ""
-"Se utilizó una función técnica para la creación de este archivo. Se dice que"
-" un mensaje SEPA es \"genérico\" si no se puede considerar como una "
-"transferencia de crédito europea estándar. Esto pasa si el diario de banco "
-"no se encuentra en €, si las transacciones no se encuentran en € o si el "
-"beneficiario no se identifica con un número de cuenta IBAN."
+"Se utilizó una función técnica para la creación de este archivo. Un mensaje "
+"de SEPA indica que es \"generico\" si no se considera como una transferencia"
+" de crédito estándar europea.  Esto sucede si la cuenta bancaria no está en "
+"€, una transacción que no está en € o que no tiene un beneficiario con un "
+"número de cuenta IBAN."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -328,36 +304,18 @@ msgid ""
 "- 2 letters or digits: location code\n"
 "- 3 letters or digits: branch code, optional\n"
 msgstr ""
-"El código BIC '%s' vinculado al banco '%s' de la cuenta bancaria '%s' del socio '%s' no cumple con los requisitos.\n"
-"Debe contener 8 u 11 caracteres y seguir la siguiente estructura:\n"
-"- 4 letras: código de la institución o del banco\n"
-"- 2 letras: código del país\n"
-"- 2 letras o dígitos: código de ubicación\n"
-"- 3 letras o dígitos: código de sucursal, opcional\n"
 
 #. module: account_sepa
-#. odoo-python
-#: code:addons/account_sepa/models/res_partner.py:0
-#, python-format
-msgid ""
-"The LEI number must contain 20 characters and match the following structure:\n"
-"- 18 alphanumeric characters with capital letters\n"
-"- 2 digits in the end\n"
-msgstr ""
-
-#. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
 "The account %s, linked to partner '%s', is not of type IBAN.\n"
 "A valid IBAN account is required to use SEPA features."
 msgstr ""
-"La cuenta bancaria %s, vinculada a la empresa '%s', no es de tipo IBAN.\n"
+"La cuenta bancaria %s, enlazada a la empresa '%s', no es de tipo IBAN.\n"
 "Se requiere una cuenta bancaria IBAN para usar las características SEPA."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_batch_payment.py:0
 #, python-format
 msgid ""
@@ -368,7 +326,6 @@ msgstr ""
 "Se requiere una cuenta bancaria IBAN para usar las características SEPA."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -379,7 +336,6 @@ msgstr ""
 "permitido es de %(limit)s."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid ""
@@ -390,32 +346,40 @@ msgstr ""
 "Primero establezca uno."
 
 #. module: account_sepa
-#. odoo-python
 #: code:addons/account_sepa/models/account_payment.py:0
 #, python-format
 msgid ""
 "The journal '%s' requires a proper IBAN account to pay via SEPA. Please "
 "configure it first."
 msgstr ""
-"El diario '%s' requiere una cuenta IBAN para pagar vía SEPA. Configúrela "
-"primero."
+"El diario '%s' requiere una cuenta IBAN para pagar via SEPA. Por favor "
+"configurala primero."
 
 #. module: account_sepa
-#. odoo-python
+#: code:addons/account_sepa/models/account_batch_payment.py:0
+#: code:addons/account_sepa/models/account_batch_payment.py:0
+#: code:addons/account_sepa/models/account_batch_payment.py:0
+#, python-format
+msgid ""
+"The text used in SEPA files can only contain the following characters :\n"
+"\n"
+"a b c d e f g h i j k l m n o p q r s t u v w x y z\n"
+"A B C D E F G H I J K L M N O P Q R S T U V W X Y Z\n"
+"0 1 2 3 4 5 6 7 8 9\n"
+"/ - ? : ( ) . , ' + (space)"
+msgstr ""
+"El texto usado en los archivos SEPA sólo puede contener los siguientes caracteres:\n"
+"\n"
+"a b c d e f g h i j k l m n o p q r s t u v w x y z\n"
+"A B C D E F G H I J K L M N O P Q R S T U V W X Y Z\n"
+"0 1 2 3 4 5 6 7 8 9\n"
+"/ - ? : ( ) . , ' + (espacio)"
+
+#. module: account_sepa
 #: code:addons/account_sepa/models/account_journal.py:0
 #, python-format
 msgid "Too many transactions for a single file."
 msgstr "Son demasiadas transacciones para un solo archivo."
-
-#. module: account_sepa
-#: model:ir.model.fields,field_description:account_sepa.field_account_payment__sepa_uetr
-msgid "UETR"
-msgstr ""
-
-#. module: account_sepa
-#: model:ir.model.fields,help:account_sepa.field_account_payment__sepa_uetr
-msgid "Unique end-to-end transaction reference"
-msgstr ""
 
 #. module: account_sepa
 #: model:ir.model.fields,help:account_sepa.field_res_company__sepa_initiating_party_name
@@ -431,4 +395,4 @@ msgstr ""
 #: model:ir.model.fields,field_description:account_sepa.field_res_company__sepa_initiating_party_name
 #: model:ir.model.fields,field_description:account_sepa.field_res_config_settings__sepa_initiating_party_name
 msgid "Your Company Name"
-msgstr "El nombre de su empresa."
+msgstr "Nombre de la compañía"

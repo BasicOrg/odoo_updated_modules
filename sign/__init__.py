@@ -7,10 +7,12 @@ from . import report
 from . import wizard
 from . import PYPDF2_MonkeyPatch
 
+from odoo import api, SUPERUSER_ID
+
 ITSME_AVAILABLE_COUNTRIES = ['BE', 'NL']
 
-
-def _sign_post_init(env):
+def _sign_post_init(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
     # check if any company is within itsme available countries
     country_codes = env['res.company'].search([]).mapped('country_id.code')
     if any(country_code in ITSME_AVAILABLE_COUNTRIES for country_code in country_codes):

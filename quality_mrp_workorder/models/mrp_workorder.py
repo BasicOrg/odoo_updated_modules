@@ -24,3 +24,15 @@ class MrpProductionWorkcenterLine(models.Model):
             'discard_on_footer_button': True,
         }
         return action
+
+    def button_finish(self):
+        """ When using the Done button of the simplified view, validate directly some types of quality checks
+        """
+        for check in self.check_ids:
+            if check.quality_state in ['pass', 'fail']:
+                continue
+            if check.test_type in ['register_consumed_materials', 'register_byproducts', 'instructions']:
+                check.quality_state = 'pass'
+            else:
+                raise UserError(_("You first need to complete the Quality Check using the Tablet View before marking the Operation as Done."))
+        return super().button_finish()

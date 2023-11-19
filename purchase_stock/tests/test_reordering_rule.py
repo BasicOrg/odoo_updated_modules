@@ -44,14 +44,6 @@ class TestReorderingRule(TransactionCase):
         warehouse_1.write({'reception_steps': 'two_steps'})
         warehouse_2 = self.env['stock.warehouse'].create({'name': 'WH 2', 'code': 'WH2', 'company_id': self.env.company.id, 'partner_id': self.env.company.partner_id.id, 'reception_steps': 'one_step'})
 
-        # Create and set specific buyer for partner
-        buyer_id = self.env['res.users'].create({
-            'login': 'buyer1',
-            'name': 'Buyer1',
-            'email': 'buyer1@example.com',
-        })
-        self.partner.buyer_id = buyer_id.id
-
         # create reordering rule
         orderpoint_form = Form(self.env['stock.warehouse.orderpoint'])
         orderpoint_form.warehouse_id = warehouse_1
@@ -68,6 +60,7 @@ class TestReorderingRule(TransactionCase):
             move.product_id = self.product_01
             move.product_uom_qty = 10.0
         customer_picking = picking_form.save()
+        # picking confirm
         customer_picking.action_confirm()
         # Run scheduler
         self.env['procurement.group'].run_scheduler()
@@ -86,7 +79,6 @@ class TestReorderingRule(TransactionCase):
         self.assertEqual(order_point.name, purchase_order.origin, 'Source document on purchase order should be the name of the reordering rule.')
         self.assertEqual(purchase_order.order_line.product_qty, 10)
         self.assertEqual(purchase_order.order_line.name, 'Product A')
-        self.assertEqual(purchase_order.user_id, buyer_id)
 
         # Increase the quantity on the RFQ before confirming it
         purchase_order.order_line.product_qty = 12
@@ -260,64 +252,6 @@ class TestReorderingRule(TransactionCase):
         self.assertTrue(purchase_order, 'No purchase order created.')
         self.assertEqual(len(purchase_order.order_line), 1, 'Not enough purchase order lines created.')
         purchase_order.button_confirm()
-
-    def test_reordering_rule_triggered_two_times(self):
-        """
-        A product P wth RR 0-0-1.
-        Confirm a delivery with 1 x P -> PO created for it.
-        Confirm a second delivery, with 1 x P again:
-        - The PO should be updated
-        - The qty to order of the RR should be zero
-        """
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.id)], limit=1)
-        stock_location = warehouse.lot_stock_id
-        out_type = warehouse.out_type_id
-        customer_location = self.env.ref('stock.stock_location_customers')
-
-        rr = self.env['stock.warehouse.orderpoint'].create({
-            'location_id': stock_location.id,
-            'product_id': self.product_01.id,
-            'product_min_qty': 0,
-            'product_max_qty': 0,
-            'qty_multiple': 1,
-        })
-
-        delivery = self.env['stock.picking'].create({
-            'picking_type_id': out_type.id,
-            'location_id': stock_location.id,
-            'location_dest_id': customer_location.id,
-            'move_ids': [(0, 0, {
-                'name': self.product_01.name,
-                'product_id': self.product_01.id,
-                'product_uom_qty': 1,
-                'product_uom': self.product_01.uom_id.id,
-                'location_id': stock_location.id,
-                'location_dest_id': customer_location.id,
-            })]
-        })
-        delivery.action_confirm()
-
-        pol = self.env['purchase.order.line'].search([('product_id', '=', self.product_01.id)])
-        self.assertEqual(pol.product_qty, 1.0)
-        self.assertEqual(rr.qty_to_order, 0.0)
-
-        delivery = self.env['stock.picking'].create({
-            'picking_type_id': out_type.id,
-            'location_id': stock_location.id,
-            'location_dest_id': customer_location.id,
-            'move_ids': [(0, 0, {
-                'name': self.product_01.name,
-                'product_id': self.product_01.id,
-                'product_uom_qty': 1,
-                'product_uom': self.product_01.uom_id.id,
-                'location_id': stock_location.id,
-                'location_dest_id': customer_location.id,
-            })]
-        })
-        delivery.action_confirm()
-
-        self.assertEqual(pol.product_qty, 2.0)
-        self.assertEqual(rr.qty_to_order, 0.0)
 
     def test_replenish_report_1(self):
         """Tests the auto generation of manual orderpoints.
@@ -720,11 +654,13 @@ class TestReorderingRule(TransactionCase):
 
         po.button_confirm()
         picking = po.picking_ids
-        picking.button_validate()
+        action = picking.button_validate()
+        wizard = Form(self.env[(action.get('res_model'))].with_context(action['context'])).save()
+        wizard.process()
 
         self.assertRecordValues(picking.move_line_ids, [
-            {'product_id': self.product_01.id, 'quantity': 1.0, 'state': 'done', 'location_dest_id': stock_location.id},
-            {'product_id': self.product_01.id, 'quantity': 2.0, 'state': 'done', 'location_dest_id': sub_location.id},
+            {'product_id': self.product_01.id, 'qty_done': 1.0, 'state': 'done', 'location_dest_id': stock_location.id},
+            {'product_id': self.product_01.id, 'qty_done': 2.0, 'state': 'done', 'location_dest_id': sub_location.id},
         ])
 
     def test_2steps_and_partner_on_orderpoint(self):
@@ -888,135 +824,3 @@ class TestReorderingRule(TransactionCase):
             {'location_id': supplier_location_id, 'location_dest_id': input_location_id, 'product_qty': 1},
             {'location_id': input_location_id, 'location_dest_id': stock_location_id, 'product_qty': 1},
         ])
-
-    def test_add_line_to_existing_draft_po(self):
-        """
-        Days to purchase = 10
-        Two products P1, P2 from the same supplier
-        Several use cases, each time we run the RR one by one. Then, according
-        to the dates and the configuration, it should use the existing PO or not
-        """
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
-
-        self.env.company.days_to_purchase = 10
-        expected_order_date = dt.combine(dt.today() + td(days=10), dt.min.time())
-        expected_delivery_date = expected_order_date + td(days=1.0)
-        # expected_delivery_date = expected_delivery_date.replace(hour=12, minute=0, second=0)
-
-        product_02 = self.env['product.product'].create({
-            'name': 'Super Product',
-            'type': 'product',
-            'seller_ids': [(0, 0, {'partner_id': self.partner.id})],
-        })
-
-        op_01, op_02 = self.env['stock.warehouse.orderpoint'].create([{
-            'warehouse_id': warehouse.id,
-            'location_id': warehouse.lot_stock_id.id,
-            'product_id': p.id,
-            'product_min_qty': 1,
-            'product_max_qty': 0,
-        } for p in [self.product_01, product_02]])
-
-        op_01.action_replenish()
-        po01 = self.env['purchase.order'].search([], order='id desc', limit=1)
-        self.assertEqual(po01.date_order, expected_order_date)
-
-        op_02.action_replenish()
-        self.assertEqual(po01.date_order, expected_order_date)
-        self.assertRecordValues(po01.order_line, [
-            {'product_id': self.product_01.id, 'date_planned': expected_delivery_date},
-            {'product_id': product_02.id, 'date_planned': expected_delivery_date},
-        ])
-
-        # Reset and try another flow
-        po01.button_cancel()
-        op_01.action_replenish()
-        po02 = self.env['purchase.order'].search([], order='id desc', limit=1)
-        self.assertNotEqual(po02, po01)
-
-        with freeze_time(dt.today() + td(days=1)):
-            op_02.invalidate_recordset(fnames=['lead_days_date'])
-            op_02.action_replenish()
-            self.assertEqual(po02.date_order, expected_order_date)
-            self.assertRecordValues(po02.order_line, [
-                {'product_id': self.product_01.id, 'date_planned': expected_delivery_date},
-                {'product_id': product_02.id, 'date_planned': expected_delivery_date + td(days=1)},
-            ])
-
-        # Restrict the merge with POs that have their order deadline in [today - 2 days, today + 2 days]
-        self.env['ir.config_parameter'].set_param('purchase_stock.delta_days_merge', '2')
-
-        # Reset and try with a second RR executed in the dates range (-> should still use the existing PO)
-        po02.button_cancel()
-        op_01.action_replenish()
-        po03 = self.env['purchase.order'].search([], order='id desc', limit=1)
-        self.assertNotEqual(po03, po02)
-
-        with freeze_time(dt.today() + td(days=2)):
-            op_02.invalidate_recordset(fnames=['lead_days_date'])
-            op_02.action_replenish()
-            self.assertEqual(po03.date_order, expected_order_date)
-            self.assertRecordValues(po03.order_line, [
-                {'product_id': self.product_01.id, 'date_planned': expected_delivery_date},
-                {'product_id': product_02.id, 'date_planned': expected_delivery_date + td(days=2)},
-            ])
-
-        # Reset and try with a second RR executed after the dates range (-> should not use the existing PO)
-        po03.button_cancel()
-        op_01.action_replenish()
-        po04 = self.env['purchase.order'].search([], order='id desc', limit=1)
-        self.assertNotEqual(po04, po03)
-
-        with freeze_time(dt.today() + td(days=3)):
-            op_02.invalidate_recordset(fnames=['lead_days_date'])
-            op_02.action_replenish()
-            self.assertEqual(po04.order_line.product_id, self.product_01, 'There should be only a line for product 01')
-            po05 = self.env['purchase.order'].search([], order='id desc', limit=1)
-            self.assertNotEqual(po05, po04, 'A new PO should be generated')
-            self.assertEqual(po05.order_line.product_id, product_02)
-
-    def test_update_po_line_without_purchase_access_right(self):
-        """ Test that a user without purchase access right can update a PO line from picking."""
-        # create a user with only inventory access right
-        user = self.env['res.users'].create({
-            'name': 'Inventory Manager',
-            'login': 'inv_manager',
-            'groups_id': [(6, 0, [self.env.ref('stock.group_stock_user').id])]
-        })
-        product = self.env['product.product'].create({
-            'name': 'Storable Product',
-            'type': 'product',
-            'seller_ids': [(0, 0, {'partner_id': self.partner.id})],
-        })
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.company.id)], limit=1)
-        self.env['stock.warehouse.orderpoint'].create({
-            'warehouse_id': warehouse.id,
-            'location_id': warehouse.lot_stock_id.id,
-            'product_id': product.id,
-            'product_min_qty': 5,
-            'product_max_qty': 0,
-        })
-        # run the scheduler
-        self.env['procurement.group'].run_scheduler()
-        # check that the PO line is created
-        po_line = self.env['purchase.order.line'].search([('product_id', '=', product.id)])
-        self.assertEqual(len(po_line), 1, 'There should be only one PO line')
-        self.assertEqual(po_line.product_qty, 5, 'The PO line quantity should be 5')
-        # Update the po line from the picking
-        picking = self.env['stock.picking'].with_user(user).create({
-            'location_id': warehouse.lot_stock_id.id,
-            'location_dest_id': self.env.ref('stock.stock_location_customers').id,
-            'picking_type_id': warehouse.out_type_id.id,
-            'move_ids': [(0, 0, {
-                'name': product.name,
-                'product_id': product.id,
-                'product_uom': product.uom_id.id,
-                'product_uom_qty': 1,
-                'location_id': warehouse.lot_stock_id.id,
-                'location_dest_id': self.env.ref('stock.stock_location_customers').id,
-            })],
-            'state': 'draft',
-        })
-        picking.with_user(user).action_assign()
-        # check that the PO line quantity has been updated
-        self.assertEqual(po_line.product_qty, 6, 'The PO line quantity should be 6')

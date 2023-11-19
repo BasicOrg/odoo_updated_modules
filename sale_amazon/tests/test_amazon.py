@@ -134,7 +134,6 @@ class TestAmazon(common.TestAmazonCommon):
                 msg="The unitary price should be the quotient of the item price (tax excluded) "
                     "divided by the quantity.",
             )
-            self.assertEqual(product_line.discount, 5)  # 5% discount.
             self.assertEqual(product_line.product_uom_qty, 2.0)
             self.assertEqual(product_line.amazon_item_ref, '987654321')
             self.assertTrue(product_line.amazon_offer_id)
@@ -143,7 +142,6 @@ class TestAmazon(common.TestAmazonCommon):
                 lambda l: l.product_id.default_code == 'SHIPPING-CODE'
             )
             self.assertEqual(shipping_line.price_unit, 12.5)
-            self.assertEqual(shipping_line.discount, 20)  # 2.5/12.5*100
             self.assertEqual(shipping_line.product_uom_qty, 1.0)
             self.assertFalse(shipping_line.amazon_item_ref)
             self.assertFalse(shipping_line.amazon_offer_id)
@@ -418,7 +416,7 @@ class TestAmazon(common.TestAmazonCommon):
     @mute_logger('odoo.addons.sale_amazon.models.amazon_account')
     @mute_logger('odoo.addons.sale_amazon.models.stock_picking')
     def test_sync_orders_cancel_abort(self):
-        """ Test the pickings that were confirmed at odoo and then order is canceled at Amazon. """
+        """ Test the pickings that were confirmed at odoo and then order is canceled at amazon. """
 
         def get_sp_api_response_mock(_account, operation_, **_kwargs):
             """ Return a mock response without making an actual call to the Selling Partner API. """
@@ -449,7 +447,8 @@ class TestAmazon(common.TestAmazonCommon):
             order = self.env['sale.order'].search([('amazon_order_ref', '=', '123456789')])
             self.assertNotEqual(order.state, 'cancel')
             picking = self.env['stock.picking'].search([('sale_id', '=', order.id)])
-            picking.move_ids.picked = True
+            for ml in picking.move_line_ids:
+                ml.qty_done = ml.reserved_uom_qty
             picking.carrier_id, picking.carrier_tracking_ref = self.carrier, self.tracking_ref
             picking._action_done()
             self.assertEqual(picking.state, 'done')
@@ -457,43 +456,6 @@ class TestAmazon(common.TestAmazonCommon):
             # Sync an order canceled from Amazon.
             self.order_canceled = True
             self.account._sync_orders(auto_commit=False)
-
-    def test_inventory_sync_is_skipped_when_disabled(self):
-        """ Test that the inventory synchronization is skipped when the account has disabled it. """
-        self.account.synchronize_inventory = False
-        with patch(
-            'odoo.addons.sale_amazon.utils.make_proxy_request',
-            return_value=common.AWS_RESPONSE_MOCK
-        ) as mock:
-            self.assertEqual(self.account.offer_ids, self.offer)
-            self.assertEqual(self.offer.amazon_sync_status, False)
-            self.account._sync_inventory()
-            self.assertEqual(
-                mock.call_count,
-                0,
-                msg="The stock synchronization is deactivated, no call should have been made.",
-            )
-            self.assertEqual(self.offer.amazon_sync_status, False)
-
-    @mute_logger('odoo.addons.sale_amazon.models.amazon_account')
-    @mute_logger('odoo.addons.sale_amazon.models.amazon_offer')
-    def test_sync_inventory(self):
-        """ Test the inventory availability confirmation synchronization. """
-        self.account.synchronize_inventory = True
-        with patch(
-            'odoo.addons.sale_amazon.utils.make_proxy_request',
-            return_value=common.AWS_RESPONSE_MOCK
-        ), patch('odoo.addons.sale_amazon.utils.submit_feed', return_value='An_amazing_id') as mock:
-            self.account.aws_credentials_expiry = '1970-01-01'  # The field is not stored.
-            self.assertEqual(self.account.offer_ids, self.offer)
-            self.assertEqual(self.offer.amazon_sync_status, False)
-            self.account._sync_inventory()
-            self.assertEqual(self.offer.amazon_sync_status, 'processing')
-            self.assertEqual(
-                mock.call_count,
-                1,
-                msg="An inventory availability feed should be sent to Amazon for all the offers.",
-            )
 
     @mute_logger('odoo.addons.sale_amazon.models.amazon_account')
     @mute_logger('odoo.addons.sale_amazon.models.stock_picking')
@@ -515,7 +477,7 @@ class TestAmazon(common.TestAmazonCommon):
             self.assertEqual(len(picking), 1, msg="FBM orders should generate exactly one picking.")
             picking.carrier_id, picking.carrier_tracking_ref = self.carrier, self.tracking_ref
             picking._action_done()
-            self.assertEqual(picking.amazon_sync_status, 'pending')
+            self.assertTrue(picking.amazon_sync_pending)
             picking._sync_pickings(account_ids=(self.account.id,))
             self.assertEqual(
                 mock.call_count,
@@ -523,7 +485,7 @@ class TestAmazon(common.TestAmazonCommon):
                 msg="An order fulfillment feed should be sent to Amazon for each confirmed "
                     "picking.",
             )
-            self.assertEqual(picking.amazon_sync_status, 'processing')
+            self.assertFalse(picking.amazon_sync_pending)
 
     def test_find_matching_product_search(self):
         """ Test the product search based on the internal reference. """

@@ -3,11 +3,12 @@
     <record id="knowledge_article_favorite_view_form" model="ir.ui.view">
         <field name="name">knowledge.article.favorite.view.form</field>
         <field name="model">knowledge.article.favorite</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Favorite">
                 <sheet>
                     <group>
-                        <field name="article_id" domain="[('is_template', '=', False)]"/>
+                        <field name="article_id"/>
                         <field name="user_id"/>
                     </group>
                 </sheet>
@@ -20,7 +21,7 @@
         <field name="model">knowledge.article.favorite</field>
         <field name="arch" type="xml">
             <tree string="Favorites" sample="1" editable="bottom">
-                <field name="article_id" options="{'no_open': True}" domain="[('is_template', '=', False)]"/>
+                <field name="article_id" options="{'no_open': True}"/>
                 <field name="user_id" widget="many2one_avatar"/>
             </tree>
         </field>
@@ -47,7 +48,6 @@
         <field name="name">Favorites</field>
         <field name="res_model">knowledge.article.favorite</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('article_id.is_template', '=', False)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No Favorites yet!

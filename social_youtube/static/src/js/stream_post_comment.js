@@ -22,7 +22,7 @@ export class StreamPostCommentYoutube extends StreamPostComment {
      * Worst case scenario you just land on the video, which is fine too.
      */
     get link() {
-        return `https://www.youtube.com/watch?v=${encodeURIComponent(this.originalPost.youtube_video_id.raw_value)}&lc=${encodeURIComponent(this.comment.id)}&feature=em-comments`
+        return `https://www.youtube.com/watch?v=${this.originalPost.youtube_video_id.raw_value}&lc=${this.comment.id}&feature=em-comments`
     }
 
     get authorLink() {

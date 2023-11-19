@@ -1,13 +1,14 @@
 /** @odoo-module **/
 
-import { jsonrpc } from "@web/core/network/rpc_service";
-import { registry } from "@web/core/registry";
-import tourUtils from '@website_sale/js/tours/tour_utils';
+import tour from 'web_tour.tour';
+import ajax from 'web.ajax';
+import tourUtils from 'website_sale.tour_utils';
 
-registry.category("web_tour.tours").add('shop_sale_loyalty', {
+tour.register('shop_sale_loyalty', {
     test: true,
     url: '/shop?search=Small%20Cabinet',
-    steps: () => [
+},
+    [
         /* 1. Buy 1 Small Cabinet, enable coupon code & insert 10% code */
         {
             content: "select Small Cabinet",
@@ -21,9 +22,14 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
         },
         {
             content: "click on 'Add to Cart' button",
-            trigger: "a:contains(Add to cart)",
+            trigger: "a:contains(ADD TO CART)",
         },
             tourUtils.goToCart({quantity: 2}),
+        {
+            content: "click on 'I have a promo code'",
+            extra_trigger: '.show_coupon',
+            trigger: '.show_coupon',
+        },
         {
             content: "insert promo code 'testcode'",
             extra_trigger: 'form[name="coupon_code"]',
@@ -36,24 +42,24 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
         },
         {
             content: "check reward product",
-            trigger: 'div>strong:contains("10.0% discount on total amount")',
+            trigger: '.td-product_name:contains("10.0% discount on total amount")',
             run: function () {}, // it's a check
         },
         /* 2. Add some cabinet to get a free one, play with quantity */
         {
             content: "go to shop",
-            trigger: 'div>strong:contains("10.0% discount on total amount")',
+            trigger: '.td-product_name:contains("10.0% discount on total amount")',
             run: function () {
-                jsonrpc('/web/dataset/call_kw/account.tax/create', {
+                ajax.jsonRpc('/web/dataset/call_kw', 'call', {
                     model: 'account.tax',
                     method: 'create',
                     args: [{
-                      'name':'15% tax incl ' + new Date().getTime(),
+                      'name':'15% tax incl ' + _.now(),
                       'amount': 15,
                     }],
                     kwargs: {},
                 }).then(function (tax_id) {
-                    jsonrpc('/web/dataset/call_kw/product.template/create', {
+                    ajax.jsonRpc('/web/dataset/call_kw', 'call', {
                         model: 'product.template',
                         method: 'create',
                         args: [{
@@ -69,11 +75,28 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
                 });
             },
         },
-            ...tourUtils.addToCart({productName: "Taxed Product"}),
+        {
+            content: "type Taxed Product in search",
+            trigger: 'form input[name="search"]',
+            run: "text Taxed Product",
+        },
+        {
+            content: "start search",
+            trigger: 'form:has(input[name="search"]) .oe_search_button',
+        },
+        {
+            content: "select Taxed Product",
+            extra_trigger: '.oe_search_found', // Wait to be on search results or it sometimes throws concurent error (sent search form + click on product on /shop)
+            trigger: '.oe_product_cart a:containsExact("Taxed Product")',
+        },
+        {
+            content: "click on 'Add to Cart' button",
+            trigger: "a:contains(ADD TO CART)",
+        },
             tourUtils.goToCart({quantity: 3}),
         {
             content: "check reduction amount got recomputed and merged both discount lines into one only",
-            extra_trigger: '.oe_currency_value:contains("-﻿74.00"):not(#cart_total .oe_currency_value:contains("-﻿74.00"))',
+            extra_trigger: '.oe_currency_value:contains("-﻿75.50"):not(#cart_total .oe_currency_value:contains("-﻿75.50"))',
             trigger: '.oe_website_sale .oe_cart',
             run: function () {}, // it's a check
         },
@@ -85,7 +108,7 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
         },
         {
             content: "check reduction amount got recomputed when changing qty",
-            trigger: '.oe_currency_value:contains("-﻿106.00")',
+            trigger: '.oe_currency_value:contains("-﻿107.50")',
             run: function () {}, // it's a check
         },
         {
@@ -95,7 +118,7 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
         },
         {
             content: "check free product is added",
-            trigger: '#wrap:has(div>strong:contains("Free Product - Small Cabinet"))',
+            trigger: '#wrap:has(.td-product_name:contains("Free Product - Small Cabinet"))',
             run: function () {}, // it's a check
         },
         {
@@ -105,7 +128,7 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
         },
         {
             content: "check free product is removed",
-            trigger: '#wrap:not(:has(div>strong:contains("Free Product - Small Cabinet")))',
+            trigger: '#wrap:not(:has(.td-product_name:contains("Free Product - Small Cabinet")))',
             run: function () {}, // it's a check
         },
         /* 4. Check /shop/payment does not break the `merged discount lines split per tax` (eg: with _compute_tax_id) */
@@ -113,8 +136,11 @@ registry.category("web_tour.tours").add('shop_sale_loyalty', {
             content: "go to checkout",
             trigger: 'a[href="/shop/checkout?express=1"]',
         },
-        ...tourUtils.assertCartAmounts({
-            total: '967.50',
-        }),
+        {
+            content: "check total is unchanged once we land on payment page",
+            extra_trigger: '#payment_method h3:contains("Pay with")',
+            trigger: 'tr#order_total .oe_currency_value:contains("967.50")',
+            run: function () {}, // it's a check
+        },
     ]
-});
+);

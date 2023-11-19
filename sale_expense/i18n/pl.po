@@ -3,16 +3,19 @@
 # 	* sale_expense
 # 
 # Translators:
-# Wil Odoo, 2023
+# Martin Trigaux, 2019
+# Dariusz Żbikowski <darek@krokus.com.pl>, 2019
+# Grzegorz Grzelak <grzegorz.grzelak@openglobe.pl>, 2019
+# Judyta Kaźmierczak <judyta.kazmierczak@openglobe.pl>, 2019
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server saas~12.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 21:55+0000\n"
-"PO-Revision-Date: 2023-10-26 23:09+0000\n"
-"Last-Translator: Wil Odoo, 2023\n"
-"Language-Team: Polish (https://app.transifex.com/odoo/teams/41243/pl/)\n"
+"POT-Creation-Date: 2019-08-26 08:17+0000\n"
+"PO-Revision-Date: 2019-08-26 09:14+0000\n"
+"Last-Translator: Judyta Kaźmierczak <judyta.kazmierczak@openglobe.pl>, 2019\n"
+"Language-Team: Polish (https://www.transifex.com/odoo/teams/41243/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,40 +25,27 @@ msgstr ""
 #. module: sale_expense
 #: model:ir.model.fields,field_description:sale_expense.field_sale_order__expense_count
 msgid "# of Expenses"
-msgstr "# wydatków"
+msgstr ""
+
+#. module: sale_expense
+#: model_terms:digest.tip,tip_description:sale_expense.digest_tip_sale_expense_0
+msgid "<strong style=\"font-size: 16px;\">Submit expenses by email</strong>"
+msgstr ""
+
+#. module: sale_expense
+#: model_terms:digest.tip,tip_description:sale_expense.digest_tip_sale_expense_0
+msgid "Activate Expense Emails"
+msgstr ""
 
 #. module: sale_expense
 #: model:ir.model.fields,field_description:sale_expense.field_hr_expense__can_be_reinvoiced
-#: model:ir.model.fields,field_description:sale_expense.field_hr_expense_split__can_be_reinvoiced
 msgid "Can be reinvoiced"
-msgstr "Może być ponownie fakturowane"
-
-#. module: sale_expense
-#: model:ir.model.fields,field_description:sale_expense.field_hr_expense__sale_order_id
-#: model:ir.model.fields,field_description:sale_expense.field_hr_expense_split__sale_order_id
-msgid "Customer to Reinvoice"
-msgstr "Klient Do Refakturowania"
+msgstr ""
 
 #. module: sale_expense
 #: model:ir.model,name:sale_expense.model_hr_expense
 msgid "Expense"
 msgstr "Wydatek"
-
-#. module: sale_expense
-#: model:ir.model.fields,field_description:sale_expense.field_product_product__expense_policy_tooltip
-#: model:ir.model.fields,field_description:sale_expense.field_product_template__expense_policy_tooltip
-msgid "Expense Policy Tooltip"
-msgstr "Etykieta polityki wydatków"
-
-#. module: sale_expense
-#: model:ir.model,name:sale_expense.model_hr_expense_sheet
-msgid "Expense Report"
-msgstr "Raport wydatków"
-
-#. module: sale_expense
-#: model:ir.model,name:sale_expense.model_hr_expense_split
-msgid "Expense Split"
-msgstr "Podział wydatków"
 
 #. module: sale_expense
 #: model:ir.actions.act_window,name:sale_expense.hr_expense_action_from_sale_order
@@ -65,41 +55,11 @@ msgid "Expenses"
 msgstr "Wydatki"
 
 #. module: sale_expense
-#. odoo-python
-#: code:addons/sale_expense/models/product_template.py:0
-#, python-format
-msgid "Expenses of this category may not be added to a Sales Order."
-msgstr "Wydatki z tej kategorii mogą być dodane do zamówienia sprzedaży"
-
-#. module: sale_expense
-#. odoo-python
-#: code:addons/sale_expense/models/product_template.py:0
-#, python-format
-msgid ""
-"Expenses will be added to the Sales Order at their actual cost when posted."
-msgstr ""
-"Wydatki zostaną dodane do zamówienia sprzedaży po ich rzeczywistym koszcie w"
-" momencie zaksięgowania."
-
-#. module: sale_expense
-#. odoo-python
-#: code:addons/sale_expense/models/product_template.py:0
-#, python-format
-msgid ""
-"Expenses will be added to the Sales Order at their sales price (product "
-"price, pricelist, etc.) when posted."
-msgstr ""
-"Wydatki zostaną dodane do zamówienia sprzedaży po aktualnej cenie sprzedaży "
-"w momencie księgowania."
-
-#. module: sale_expense
 #: model:ir.model.fields,help:sale_expense.field_hr_expense__sale_order_id
 msgid ""
-"If the category has an expense policy, it will be reinvoiced on this sales "
+"If the product has an expense policy, it will be reinvoiced on this sales "
 "order"
 msgstr ""
-"Jeżeli kategoria ma politykę wydatków, zostanie fakturowana ponownie na tym "
-"zamówieniu sprzedaży."
 
 #. module: sale_expense
 #: model_terms:ir.ui.view,arch_db:sale_expense.product_product_view_form_inherit_sale_expense
@@ -113,20 +73,13 @@ msgstr "Pozycja zapisu"
 
 #. module: sale_expense
 #: model:ir.model,name:sale_expense.model_product_template
-msgid "Product"
-msgstr "Produkt"
+msgid "Product Template"
+msgstr "Szablon produktu"
 
 #. module: sale_expense
-#. odoo-python
-#: code:addons/sale_expense/models/hr_expense_sheet.py:0
-#, python-format
-msgid "Reinvoiced Sales Orders"
-msgstr "Refakturowane zamówienia sprzedaży"
-
-#. module: sale_expense
-#: model:ir.model.fields,field_description:sale_expense.field_hr_expense_sheet__sale_order_count
-msgid "Sale Order Count"
-msgstr "Liczba zamówień sprzedaży"
+#: model:ir.model.fields,field_description:sale_expense.field_hr_expense__sale_order_id
+msgid "Reinvoice Customer"
+msgstr ""
 
 #. module: sale_expense
 #: model:ir.model,name:sale_expense.model_sale_order
@@ -134,6 +87,7 @@ msgid "Sales Order"
 msgstr "Zamówienie sprzedaży"
 
 #. module: sale_expense
-#: model_terms:ir.ui.view,arch_db:sale_expense.hr_expense_sheet_view_form
-msgid "Sales Orders"
-msgstr "Zamówienia sprzedaży"
+#: model_terms:digest.tip,tip_description:sale_expense.digest_tip_sale_expense_0
+msgid ""
+"Take a snapshot of your expenses and submit your expenses by email.<br>"
+msgstr ""

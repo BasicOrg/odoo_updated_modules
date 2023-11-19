@@ -38,9 +38,9 @@ class TestAccountConsolidationJournal(AccountConsolidationTestCase):
         self.assertAlmostEqual(journal.balance, amount * count)
 
     @patch(
-        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationPeriodComposition._get_journal_lines_values')
+        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationPeriodComposition.get_journal_lines_values')
     @patch(
-        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationCompanyPeriod._get_journal_lines_values')
+        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationCompanyPeriod.get_journal_lines_values')
     def test_action_generate_journal_lines_when_origin_is_company_period(self, patched_company_period_method,
                                                                          patched_conso_method):
         Journal = self.env['consolidation.journal']
@@ -76,9 +76,9 @@ class TestAccountConsolidationJournal(AccountConsolidationTestCase):
         self.assertRecordValues(journals[0].line_ids, expected)
 
     @patch(
-        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationPeriodComposition._get_journal_lines_values')
+        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationPeriodComposition.get_journal_lines_values')
     @patch(
-        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationCompanyPeriod._get_journal_lines_values')
+        'odoo.addons.account_consolidation.models.consolidation_period.ConsolidationCompanyPeriod.get_journal_lines_values')
     def test_action_generate_journal_lines_when_origin_is_composition(self, patched_company_period_method,
                                                                       patched_conso_method):
 
@@ -189,7 +189,7 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
         with self.assertRaises(UserError):
             not_editable_journal_line.write({'account_id': account.id})
 
-    def test_grid_update_cell_editable_journal(self):
+    def test_adjust_grid_editable_journal(self):
         journal = self.env['consolidation.journal'].create({'name': 'blah', 'chart_id': self.chart.id})
         account = self._create_consolidation_account()
         initial_amount = 42.0
@@ -201,17 +201,12 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
         })
         params = {
             'row_domain': [('id', '=', journal_line.id)],
+            'column_field': 'journal_id',
+            'column_value': journal.id,
             'cell_field': 'amount',
             'change': change_amount
         }
-        journal_line \
-            .with_context(default_account_id=journal_line.account_id.id, default_journal_id=journal.id) \
-            .grid_update_cell(*params.values())
-        created_lines = self.env['consolidation.journal.line'].search([
-            ("id", "!=", journal_line.id),
-            ("account_id", "=", journal_line.account_id.id),
-            ("journal_id", "=", journal_line.journal_id.id),
-        ])
+        created_lines = journal_line.adjust_grid(*params.values())
         self.assertAlmostEqual(journal_line.amount, initial_amount)
         self.assertAlmostEqual(journal.balance, initial_amount + change_amount)
         self.assertEqual(len(created_lines), 1)
@@ -221,28 +216,21 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
         self.assertEqual(created_lines.account_id.id, account.id)
         self.assertEqual(created_lines.journal_id.id, journal.id)
 
-    def test_grid_update_cell(self):
-        journal_line = self._create_journal_line(True)
+    def test_adjust_grid(self):
         JournalLine = self.env['consolidation.journal.line']
+        journal_line = self._create_journal_line(True)
         params = {
             'domain': [('id', '=', journal_line.id)],
+            'column_field': 'journal_id',
+            'column_value': journal_line.journal_id.id,
             'cell_field': 'amount',
             'change': 14.0
         }
-        journal_line = journal_line.with_context(
-            default_account_id=journal_line.account_id.id,
-            default_journal_id=journal_line.journal_id.id,
-        )
 
         # JUST EDITED (no journal line created)
         # GIVEN
         # WHEN
-        journal_line.grid_update_cell(*params.values())
-        created_journal_line = JournalLine.search([
-            ('id', '!=', journal_line.id),
-            ('account_id', '=', journal_line.account_id.id),
-            ('journal_id', '=', journal_line.journal_id.id),
-        ])
+        created_journal_line = journal_line.adjust_grid(*params.values())
         # THEN
         self.assertEqual(len(created_journal_line), 1, 'A journal line has been created')
         self.assertAlmostEqual(created_journal_line.amount, params['change'],
@@ -254,17 +242,18 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
         amount_before = journal_line.amount
         # WHEN
         with self.assertRaises(UserError):
-            journal_line.grid_update_cell(*params.values())
+            journal_line.adjust_grid(*params.values())
         # THEN
         self.assertAlmostEqual(journal_line.amount, amount_before, msg='Old journal line did not change')
 
         # CANNOT CREATE AS JOURNAL LINKED TO COMPANY (no journal line created)
         # GIVEN
         journal = self.env['consolidation.journal'].create({'name': 'bluh', 'auto_generated': True, 'chart_id': self.chart.id})
+        params['column_value'] = journal.id
 
         # THEN
         with self.assertRaises(UserError):
-            journal_line.with_context(default_journal_id=journal.id).grid_update_cell(*params.values())
+            journal_line.adjust_grid(*params.values())
 
         # CAN CREATE AS JOURNAL NOT AUTO-GENERATED
         # GIVEN
@@ -272,12 +261,7 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
         params['change'] = 999.42
         amount_before = journal_line.amount
         # WHEN
-        journal_line.with_context(default_journal_id=journal.id).grid_update_cell(*params.values())
-        created_journal_line = JournalLine.search([
-            ('id', 'not in', [journal_line.id, created_journal_line.id]),
-            ('account_id', '=', journal_line.account_id.id),
-            ('journal_id', '=', journal.id),
-        ])
+        created_journal_line = journal_line.adjust_grid(*params.values())
         # THEN
         self.assertAlmostEqual(journal_line.amount, amount_before, msg='Old journal line did not change')
         self.assertEqual(len(created_journal_line), 1, 'A journal line has been created')
@@ -309,6 +293,47 @@ class TestAccountConsolidationJournalLine(AccountConsolidationTestCase):
             journal_line.unlink()
         journal.write({'auto_generated': False})
         journal_line.unlink()
+
+    def test__grid_column_info(self):
+        JournalLine = self.env['consolidation.journal.line']
+        Journal = self.env['consolidation.journal']
+        aperiod = self._create_analysis_period()
+        journal_in = Journal.create({'name': 'blah', 'period_id': aperiod.id, 'chart_id': self.chart.id,})
+        journal_out = Journal.create({'name': 'bluh', 'chart_id': self.chart.id,})
+        manager = JournalLine.with_context(default_period_id=aperiod.id)
+        cinfo = manager._grid_column_info('journal_id', 'dummyrange')
+        self.assertEqual(len(cinfo.values), 1)
+        self.assertEqual(cinfo.values[0]['values']['journal_id'], (journal_in.id, journal_in.name))
+        self.assertEqual(cinfo.values[0]['domain'], [('journal_id', '=', journal_in.id)], )
+
+        journal_out.write({'period_id': aperiod.id})
+        manager = JournalLine.with_context(default_period_id=aperiod.id)
+        cinfo = manager._grid_column_info('journal_id', 'dummyrange')
+        self.assertEqual(len(cinfo.values), 2)
+        for i, journal in enumerate((journal_in, journal_out)):
+            self.assertEqual(cinfo.values[i]['values']['journal_id'], (journal.id, journal.name))
+            self.assertEqual(cinfo.values[i]['domain'], [('journal_id', '=', journal.id)], )
+
+    def test__grid_make_empty_cell(self):
+        # Needed to call method
+        ml = self._create_journal_line()
+        row_domain = []
+        column_domain = []
+        view_domain = []
+
+        cell = ml._grid_make_empty_cell(row_domain, column_domain, view_domain)
+        self.assertFalse(cell['readonly'], 'Created empty cell in a column with no journal should not be readonly')
+
+        m = self.env['consolidation.journal'].create({'name': 'bluh', 'chart_id': self.chart.id})
+        column_domain.append(('journal_id', '=', m.id))
+
+        cell = ml._grid_make_empty_cell(row_domain, column_domain, view_domain)
+        self.assertFalse(cell['readonly'],
+                         'Created empty cell in the column of a non-readonly journal should not be readonly')
+
+        m.write({'auto_generated': True})
+        cell = ml._grid_make_empty_cell(row_domain, column_domain, view_domain)
+        self.assertTrue(cell['readonly'], 'Created empty cell in the column of a readonly journal should be readonly')
 
     def test__journal_is_editable(self):
         journal = self.env['consolidation.journal'].create({'name': 'blah', 'chart_id': self.chart.id})

@@ -3,17 +3,17 @@
 # 	* worksheet
 # 
 # Translators:
-# Wil Odoo, 2023
-# 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
+# Martin Trigaux, 2022
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0+e\n"
+"Project-Id-Version: Odoo Server 15.5alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:22+0000\n"
-"PO-Revision-Date: 2023-10-26 23:10+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2023\n"
-"Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
+"POT-Creation-Date: 2022-09-20 09:50+0000\n"
+"PO-Revision-Date: 2022-09-22 05:50+0000\n"
+"Last-Translator: Martin Trigaux, 2022\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -21,11 +21,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: worksheet
-#. odoo-python
 #: code:addons/worksheet/models/worksheet_template.py:0
 #, python-format
 msgid "%s (copy)"
-msgstr "%s（副本）"
+msgstr "%s (副本)"
 
 #. module: worksheet
 #: model_terms:ir.ui.view,arch_db:worksheet.worksheet_template_view_form
@@ -35,15 +34,14 @@ msgstr "<span class=\"o_stat_text\">工作表</span>"
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__action_id
 msgid "Action"
-msgstr "操作"
+msgstr "动作"
 
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__active
 msgid "Active"
-msgstr "已启用"
+msgstr "启用"
 
 #. module: worksheet
-#. odoo-python
 #: code:addons/worksheet/models/worksheet_template.py:0
 #: model_terms:ir.ui.view,arch_db:worksheet.worksheet_template_view_form
 #, python-format
@@ -54,7 +52,7 @@ msgstr "分析"
 #: model_terms:ir.ui.view,arch_db:worksheet.worksheet_template_view_form
 #: model_terms:ir.ui.view,arch_db:worksheet.worksheet_template_view_search
 msgid "Archived"
-msgstr "已存档"
+msgstr "已归档"
 
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__color
@@ -74,10 +72,10 @@ msgstr "创建人"
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__create_date
 msgid "Created on"
-msgstr "创建日期"
+msgstr "创建时间"
 
 #. module: worksheet
-#. odoo-javascript
+#. openerp-web
 #: code:addons/worksheet/static/src/open_studio_button_widget/open_studio_button_widget.xml:0
 #, python-format
 msgid "Design Template"
@@ -99,6 +97,11 @@ msgid "ID"
 msgstr "ID"
 
 #. module: worksheet
+#: model:ir.model.fields,field_description:worksheet.field_worksheet_template____last_update
+msgid "Last Modified on"
+msgstr "最后修改时间"
+
+#. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__write_uid
 msgid "Last Updated by"
 msgstr "最后更新人"
@@ -106,7 +109,7 @@ msgstr "最后更新人"
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__write_date
 msgid "Last Updated on"
-msgstr "上次更新日期"
+msgstr "最后更新时间"
 
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__model_id
@@ -126,10 +129,9 @@ msgstr "报告视图"
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__sequence
 msgid "Sequence"
-msgstr "序列"
+msgstr "序号"
 
 #. module: worksheet
-#. odoo-python
 #: code:addons/worksheet/models/worksheet_template.py:0
 #, python-format
 msgid "The host model name should be an existing model."
@@ -141,7 +143,6 @@ msgid "The model that is using this template"
 msgstr "使用该模板的模型"
 
 #. module: worksheet
-#. odoo-python
 #: code:addons/worksheet/models/worksheet_template.py:0
 #, python-format
 msgid ""
@@ -149,18 +150,15 @@ msgid ""
 msgstr "打印这个工作表模板的模板应该是一个QWeb模板。"
 
 #. module: worksheet
-#. odoo-python
 #: code:addons/worksheet/models/worksheet_template.py:0
 #, python-format
-msgid ""
-"Unfortunately, you cannot unlink this worksheet template from %s because the"
-" template is still connected to tasks within the company."
-msgstr "遗憾的是，您无法从 %s 取消对该工作表模板的链接，因为该模板仍与公司内的任务相连。"
+msgid "There is still %s linked to this template. Please unlink them first."
+msgstr "仍然有%s链接到这个模板。请先解除它们的链接。"
 
 #. module: worksheet
 #: model:ir.model.fields,field_description:worksheet.field_worksheet_template__worksheet_count
 msgid "Worksheet Count"
-msgstr "工作表计数"
+msgstr "工作表数量"
 
 #. module: worksheet
 #: model:ir.model,name:worksheet.model_worksheet_template
@@ -180,4 +178,4 @@ msgstr "工时单"
 #. module: worksheet
 #: model_terms:ir.ui.view,arch_db:worksheet.worksheet_template_view_form
 msgid "e.g Device Installation"
-msgstr "例如：设备安装"
+msgstr ""
